@@ -368,7 +368,6 @@ static void prefs_filter_create(void)
 			    NULL);
 
 	PACK_CHECK_BUTTON (dest_hbox, regex_chkbtn, _("Use regex"));
-	//gtk_widget_set_sensitive(regex_chkbtn, FALSE);
 	gtk_signal_connect
 		(GTK_OBJECT (regex_chkbtn), "toggled",
 		 GTK_SIGNAL_FUNC (prefs_filter_regex_check_button_toggled),

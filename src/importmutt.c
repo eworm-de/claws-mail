@@ -271,7 +271,7 @@ static void imp_mutt_create( gboolean *cancelled ) {
 	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8 );
 
-	// First row
+	/* First row */
 	top = 0;
 	label = gtk_label_new(_("Name"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
@@ -280,7 +280,7 @@ static void imp_mutt_create( gboolean *cancelled ) {
 	name_entry = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
-	// Second row
+	/* Second row */
 	top = 1;
 	label = gtk_label_new(_("File"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
@@ -292,13 +292,13 @@ static void imp_mutt_create( gboolean *cancelled ) {
 	file_btn = gtk_button_new_with_label( _(" ... "));
 	gtk_table_attach(GTK_TABLE(table), file_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0);
 
-	// Status line
+	/* Status line */
 	hsbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, BORDER_WIDTH);
 	statusbar = gtk_statusbar_new();
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
 
-	// Button panel
+	/* Button panel */
 	gtkut_button_set_create(&hbbox, &ok_btn, _("OK"),
 				&cancel_btn, _("Cancel"), NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);

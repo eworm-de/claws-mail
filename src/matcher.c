@@ -90,15 +90,8 @@ static MatchParser matchparser_tab[] = {
 	{MATCHACTION_BOUNCE, "bounce"}
 };
 
-/*
-  syntax for matcher
-
-  header "x-mailing" match "toto" score -10
-  subject match "regexp" & to regexp "regexp" score 50
-  subject match "regexp" | to regexpcase "regexp" | age_sup 5 score 30
-
-*/
-
+/* get_matchparser_tab_str() - used by filtering.c to translate 
+ * actions to debug strings */
 gchar * get_matchparser_tab_str(gint id)
 {
 	gint i;
@@ -156,7 +149,8 @@ gchar *matcher_unescape_str(gchar *str)
 
 /* **************** data structure allocation **************** */
 
-
+/* matcherprop_new() - allocates a structure for one condition
+ */
 MatcherProp * matcherprop_new(gint criteria, gchar * header,
 			      gint matchtype, gchar * expr,
 			      int value)
@@ -189,6 +183,8 @@ MatcherProp * matcherprop_new(gint criteria, gchar * header,
 	return prop;
 }
 
+/* matcherprop_free()
+ */
 void matcherprop_free(MatcherProp * prop)
 {
 	if (prop->expr) 
@@ -210,8 +206,8 @@ void matcherprop_free(MatcherProp * prop)
 /* ************** match ******************************/
 
 
-/* match the given string */
-
+/* matcherprop_string_match() - finds out if a string matches
+ * with a criterium */
 static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 {
 	gchar * str1;
@@ -654,8 +650,8 @@ gboolean matcherlist_match_file(MatcherList * matchers, MsgInfo * info,
 		MatcherProp * matcher = (MatcherProp *) l->data;
 
 		if (matcherprop_criteria_headers(matcher) ||
-		    matcherprop_criteria_body(matcher) ||
-		    matcherprop_criteria_message(matcher))
+		    matcherprop_criteria_body(matcher)	  ||
+		    matcherprop_criteria_message(matcher)) {
 			if (matcher->result) {
 				if (!matchers->bool_and) {
 					result = TRUE;
@@ -667,7 +663,8 @@ gboolean matcherlist_match_file(MatcherList * matchers, MsgInfo * info,
 					result = FALSE;
 					break;
 				}
-		}
+			}
+		}			
 	}
 
 	g_free(file);
@@ -1015,13 +1012,7 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 	return processed_cmd;
 }
 
-
 /* ************************************************************ */
-/* ************************************************************ */
-/* ************************************************************ */
-/* ************************************************************ */
-/* ************************************************************ */
-
 
 static void prefs_scoring_write(FILE * fp, GSList * prefs_scoring)
 {
@@ -1147,11 +1138,6 @@ void prefs_matcher_write_config(void)
 		return;
 	}
 }
-
-
-
-
-
 
 /* ******************************************************************* */
 

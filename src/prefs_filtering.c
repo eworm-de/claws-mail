@@ -361,7 +361,6 @@ static void prefs_filtering_create(void)
 
 	cond_entry = gtk_entry_new ();
 	gtk_widget_show (cond_entry);
-//	gtk_widget_set_usize (cond_entry, 200, -1);
 	gtk_box_pack_start (GTK_BOX (hbox1), cond_entry, TRUE, TRUE, 0);
 
 	cond_btn = gtk_button_new_with_label (_("Define ..."));
@@ -383,7 +382,6 @@ static void prefs_filtering_create(void)
 
 	action_combo = gtk_combo_new ();
 	gtk_widget_show (action_combo);
-//	gtk_widget_set_usize (action_combo, 200, -1);
 	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(action_combo)->entry),
 			       FALSE);
 
@@ -473,13 +471,11 @@ static void prefs_filtering_create(void)
 
 	dest_entry = gtk_entry_new ();
 	gtk_widget_show (dest_entry);
-//	gtk_widget_set_usize (dest_entry, 200, -1);
 	gtk_box_pack_start (GTK_BOX (hbox1), dest_entry, TRUE, TRUE, 0);
 	
 	color_optmenu = gtk_option_menu_new();
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(color_optmenu),
 				 colorlabel_create_color_menu());
-//	gtk_widget_set_usize(color_optmenu, -1, -1);
 	gtk_box_pack_start(GTK_BOX(hbox1), color_optmenu, TRUE, TRUE, 0);
 
 	dest_btn = gtk_button_new_with_label (_("Select ..."));
@@ -495,11 +491,6 @@ static void prefs_filtering_create(void)
 	gtk_signal_connect (GTK_OBJECT (exec_btn), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_matcher_exec_info),
 			    NULL);
-
-//	dummy = gtk_label_new("");
-//	gtk_widget_show (dummy);
-//	gtk_box_pack_start(GTK_BOX (hbox1), dummy, FALSE, FALSE, 0);
-	
 
 	/* register / substitute / delete */
 

@@ -1,4 +1,10 @@
 2001-12-23 [alfons]	0.6.6claws13
+
+	* src/prefs_filter.c
+	* src/prefs_filtering.c
+	* src/matcher.c
+	* src/importmutt.c
+		clean up a little bit
 	
 	* src/string_match.c
 		validate input strings a little bit more
