@@ -1,3 +1,14 @@
+2003-03-04 [christoph]	0.8.10claws81
+
+	* src/folder.c
+		o fix moving and copying when folder returns 0 for new
+		  message number
+		o remove some code for single message copy and move
+		  operations and use functions for multiple messages
+
+	* src/news.c
+		remove unused include
+
 2003-03-04 [paul]	0.8.10claws80
 
 	* src/gtk/about.c
@@ -5,7 +16,7 @@
 
 2003-03-03 [christoph]	0.8.10claws79
 
-	* src/news.c
+	* src/news.[ch]
 		have to multiply the percentage of the current fetch with
 		the percentage that it has of the total fetch operation
 		for correct values
