@@ -1,7 +1,7 @@
 /*
  * Sylpheed templates subsystem 
  * Copyright (C) 2001 Alexander Barinov
- * Copyright (C) 2001 Hiroyuki Yamamoto
+ * Copyright (C) 2001-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -190,7 +190,6 @@ void template_write_config(GSList *tmpl_list)
 		if ((fp = fopen(filename, "wb")) == NULL) {
 			FILE_OP_ERROR(filename, "fopen");
 			g_free(filename);
-			g_free(path);
 			return;
 		}
 

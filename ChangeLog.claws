@@ -1,3 +1,11 @@
+2005-01-15 [paul]	0.9.13cvs34
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/common/template.c
+		sync with main, see ChangeLog 2005-01-11
+		(fix potential memory corruption bug)
+
 2005-01-14 [colin]	0.9.13cvs33
 
 	* src/html.c
