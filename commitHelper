@@ -73,14 +73,14 @@ if [ "$EDITOR" == "" ]; then
 	EDITOR=vi
 fi;
 
-if [ -n "/tmp/logentry" ]; then
-	echo -e "\n#please type in the changelog entry" > /tmp/logentry
-fi;
+
+echo -e "#please complete the changelog entry below" > /tmp/logentry
+echo -e -n $log >> /tmp/logentry
+
 $EDITOR /tmp/logentry
 
 echo "--8<----------"
-echo -e -n $log
-grep -v "^#" /tmp/logentry |grep -v "^$" | sed "s/^/		/" > /tmp/log.tmp.$$ \
+grep -v "^#" /tmp/logentry > /tmp/log.tmp.$$ \
 && mv /tmp/log.tmp.$$ /tmp/logentry
 echo >> /tmp/logentry
 cat /tmp/logentry
@@ -97,8 +97,7 @@ echo -n "Is it ok (write to $chlog and update configure.ac) [y/N]?"
 read ans
 if [ "$ans" == "y" ]; then
 	mv $chlog $chlog.old
-	echo -e -n $log > $chlog
-	cat /tmp/logentry >> $chlog
+	cat /tmp/logentry > $chlog
 	cat $chlog.old >> $chlog
 	rm $chlog.old
 
