@@ -290,7 +290,6 @@ static GtkItemFactoryEntry folderview_mbox_popup_entries[] =
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Properties..."),		NULL, NULL, 0, NULL},
 	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
-	{N_("/_Scoring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
 #endif
 
@@ -1539,7 +1538,6 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(mail_factory, "/Search folder...", search_folder);
 		SET_SENS(mail_factory, "/Properties...", folder_property);
 		SET_SENS(mail_factory, "/Processing...", folder_processing);
-		SET_SENS(mail_factory, "/Scoring...", folder_scoring);
 	} else if (FOLDER_TYPE(folder) == F_IMAP) {
 		popup = folderview->imap_popup;
 		menu_set_insensitive_all(GTK_MENU_SHELL(popup));
@@ -1554,7 +1552,6 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(imap_factory, "/Search folder...", search_folder);
 		SET_SENS(imap_factory, "/Properties...", folder_property);
 		SET_SENS(imap_factory, "/Processing...", folder_processing);
-		SET_SENS(imap_factory, "/Scoring...", folder_scoring);
 	} else if (FOLDER_TYPE(folder) == F_NEWS) {
 		popup = folderview->news_popup;
 		menu_set_insensitive_all(GTK_MENU_SHELL(popup));
@@ -1566,7 +1563,6 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(news_factory, "/Search folder...", search_folder);
 		SET_SENS(news_factory, "/Properties...", folder_property);
 		SET_SENS(news_factory, "/Processing...", folder_processing);
-		SET_SENS(news_factory, "/Scoring...", folder_scoring);
 #if 0
 	} else if (FOLDER_TYPE(folder) == F_MBOX) {
 		popup = folderview->mbox_popup;
@@ -1577,7 +1573,6 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(mbox_factory, "/Delete folder", delete_folder);
 		SET_SENS(news_factory, "/Properties...", folder_property);
 		SET_SENS(mbox_factory, "/Processing...", folder_processing);
-		SET_SENS(mbox_factory, "/Scoring...", folder_scoring);
 #endif
 	} else
 		return;

@@ -1,3 +1,9 @@
+2004-01-20 [christoph]	0.9.8claws39
+
+	* src/folderview.c
+		remove setting sensitivity for no longer existing
+		/Scoring... popup entry
+
 2004-01-20 [keith]	0.9.8claws38
 
 	* configure.ac
