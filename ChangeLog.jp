@@ -1,3 +1,22 @@
+2001-06-08
+
+	* src/imap.[ch]: ファイルを IMAP4 フォルダに追加する
+	  imap_add_msg() と imap_append_message() を追加。
+
+2001-06-07
+
+	* src/utils.[ch]: 引数にバッファをとる itos_buf() を追加。
+	* src/imap.[ch]: imap_copy_msg(), imap_copy_msgs_with_dest(): 新規。
+	* src/folder.c: copy_msg と copy_msgs_with_dest メソッドを IMAP
+	  クラスに追加。
+
+2001-06-06
+
+	* src/utils.[ch]: move_file(): 新規。
+	* src/mh.c: mh_move_msg(), mh_move_msgs_with_dest(): move_file()
+	  を使用するように修正。エラーが発生したときにファイルを閉じて
+	  いなかったバグを修正。
+
 2001-06-06
 
 	* src/imap.c: imap_delete_messages() と imap_delete_all_messages()

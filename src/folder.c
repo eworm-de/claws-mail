@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -924,19 +924,15 @@ static void folder_init(Folder *folder, FolderType type, const gchar *name)
 	case F_IMAP:
 		folder->get_msg_list        = imap_get_msg_list;
 		folder->fetch_msg           = imap_fetch_msg;
-		/*
 		folder->move_msg            = imap_move_msg;
 		folder->move_msgs_with_dest = imap_move_msgs_with_dest;
-		*/
+		folder->copy_msg            = imap_copy_msg;
+		folder->copy_msgs_with_dest = imap_copy_msgs_with_dest;
 		folder->remove_msg          = imap_remove_msg;
 		folder->remove_all_msg      = imap_remove_all_msg;
 		folder->scan                = imap_scan_folder;
 		folder->create_folder       = imap_create_folder;
 		folder->remove_folder       = imap_remove_folder;
-		/*
-		folder->copy_msg            = imap_copy_msg;
-		folder->finished_remove     = imap_finished_remove;
-		*/
 		break;
 	case F_NEWS:
 		folder->get_msg_list        = news_get_article_list;

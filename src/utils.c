@@ -106,23 +106,20 @@ gint to_number(const gchar *nstr)
 	return atoi(nstr);
 }
 
-/* convert integer into string
-   nstr must be a 11 characters table
-*/
-gchar *itos_buf(gchar nstr[], gint n)
+/* convert integer into string,
+   nstr must be not lower than 11 characters length */
+gchar *itos_buf(gchar *nstr, gint n)
 {
 	g_snprintf(nstr, 11, "%d", n);
 	return nstr;
 }
 
-/* convert integer into string
-   use an internal static buffer */
+/* convert integer into string */
 gchar *itos(gint n)
 {
 	static gchar nstr[11];
 
-	g_snprintf(nstr, 11, "%d", n);
-	return nstr;
+	return itos_buf(nstr, n);
 }
 
 gchar *to_human_readable(off_t size)
@@ -1619,6 +1616,27 @@ gint copy_file(const gchar *src, const gchar *dest)
 	}
 
 	g_free(dest_bak);
+
+	return 0;
+}
+
+gint move_file(const gchar *src, const gchar *dest)
+{
+	if (is_file_exist(dest)) {
+		g_warning(_("move_file(): file %s already exists."), dest);
+		return -1;
+	}
+
+	if (rename(src, dest) == 0) return 0;
+
+	if (EXDEV != errno) {
+		FILE_OP_ERROR(src, "rename");
+		return -1;
+	}
+
+	if (copy_file(src, dest) < 0) return -1;
+
+	unlink(src);
 
 	return 0;
 }

@@ -1,3 +1,9 @@
+2001-06-08
+
+        0.4.99claws7
+
+        * sync with sylpheed 0.4.99cvs7
+
 2001-06-06 [sergey]
 
 	* src/quote_fmt.h: renamed from src/quote_fmt_parse.h (which

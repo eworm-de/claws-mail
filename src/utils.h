@@ -130,8 +130,9 @@ void ptr_array_free_strings	(GPtrArray	*array);
 
 /* number-string conversion */
 gint to_number			(const gchar *nstr);
+gchar *itos_buf			(gchar	     *nstr,
+				 gint	      n);
 gchar *itos			(gint	      n);
-gchar *itos_buf                 (gchar nstr[], gint n);
 gchar *to_human_readable	(off_t	      size);
 
 /* alternative string functions */
@@ -255,6 +256,8 @@ gint remove_all_files		(const gchar	*dir);
 gint remove_all_numbered_files	(const gchar	*dir);
 gint remove_dir_recursive	(const gchar	*dir);
 gint copy_file			(const gchar	*src,
+				 const gchar	*dest);
+gint move_file			(const gchar	*src,
 				 const gchar	*dest);
 gint change_file_mode_rw	(FILE		*fp,
 				 const gchar	*file);

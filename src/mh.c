@@ -177,7 +177,6 @@ gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 	return dest->last_num;
 }
 
-/*
 gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 {
 	gchar *destdir;
@@ -199,10 +198,6 @@ gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	}
 
 	destdir = folder_item_get_path(dest);
-
-	if (!is_dir_exist(destdir))
-		make_dir_hier(destdir);
-
 	if ((fp = procmsg_open_mark_file(destdir, TRUE)) == NULL)
 		g_warning(_("Can't open mark file.\n"));
 
@@ -214,29 +209,11 @@ gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 				   dest->last_num + 1);
 	g_free(destdir);
 
-	if (is_file_exist(destfile)) {
-		g_warning(_("%s already exists."), destfile);
+	if (move_file(srcfile, destfile) < 0) {
 		g_free(srcfile);
 		g_free(destfile);
 		if (fp) fclose(fp);
 		return -1;
-	}
-
-	if (rename(srcfile, destfile) < 0) {
-		if (EXDEV == errno) {
-			if (copy_file(srcfile, destfile) < 0) {
-				g_free(srcfile);
-				g_free(destfile);
-				return -1;
-			}
-			unlink(srcfile);
-		} else {
-			FILE_OP_ERROR(srcfile, "rename");
-			g_free(srcfile);
-			g_free(destfile);
-			if (fp) fclose(fp);
-			return -1;
-		}
 	}
 
 	g_free(srcfile);
@@ -261,32 +238,7 @@ gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 
 	return dest->last_num;
 }
-*/
 
-/*
-gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
-{
-	Folder * src_folder;
-	gchar * filename;
-	gint num;
-	gchar * destdir;
-	
-	src_folder = msginfo->folder->folder;
-
-	g_return_val_if_fail(src_folder->remove_msg != NULL, -1);	
-
-	num = folder->copy_msg(folder, item, msginfo);
-		
-	if (num != -1)
-		src_folder->remove_msg(src_folder,
-				       msginfo->folder,
-				       msginfo->msgnum);
-
-	return num;
-}
-*/
-
-/*
 gint mh_move_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 {
 	gchar *destdir;
@@ -305,9 +257,6 @@ gint mh_move_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 	}
 
 	destdir = folder_item_get_path(dest);
-	if (!is_dir_exist(destdir))
-		make_dir_hier(destdir);
-
 	if ((fp = procmsg_open_mark_file(destdir, TRUE)) == NULL)
 		g_warning(_("Can't open mark file.\n"));
 
@@ -326,27 +275,10 @@ gint mh_move_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 		destfile = g_strdup_printf("%s%c%d", destdir, G_DIR_SEPARATOR,
 					   dest->last_num + 1);
 
-		if (is_file_exist(destfile)) {
-			g_warning(_("%s already exists."), destfile);
+		if (move_file(srcfile, destfile) < 0) {
 			g_free(srcfile);
 			g_free(destfile);
 			break;
-		}
-
-		if (rename(srcfile, destfile) < 0) {
-			if (EXDEV == errno) {
-				if (copy_file(srcfile, destfile) < 0) {
-					g_free(srcfile);
-					g_free(destfile);
-					break;
-				}
-				unlink(srcfile);
-			} else {
-				FILE_OP_ERROR(srcfile, "rename");
-				g_free(srcfile);
-				g_free(destfile);
-				break;
-			}
 		}
 
 		g_free(srcfile);
@@ -374,9 +306,7 @@ gint mh_move_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 
 	return dest->last_num;
 }
-*/
 
-/*
 gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 {
 	gchar *destdir;
@@ -449,8 +379,8 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 
 	return dest->last_num;
 }
-*/
 
+/*
 gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 {
 	Folder * src_folder;
@@ -493,8 +423,8 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	
 	return num;
 }
+*/
 
-/*
 gint mh_copy_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 {
 	gchar *destdir;
@@ -572,7 +502,6 @@ gint mh_copy_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 
 	return dest->last_num;
 }
-*/
 
 gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
 {

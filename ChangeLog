@@ -1,3 +1,23 @@
+2001-06-08
+
+	* src/imap.[ch]: added imap_add_msg(), and imap_append_message(),
+	  which appends file into IMAP4 folder.
+
+2001-06-07
+
+	* src/utils.[ch]: added itos_buf() that takes the buffer for its
+	  argument.
+	* src/imap.[ch]: imap_copy_msg(), imap_copy_msgs_with_dest(): new.
+	* src/folder.c: added copy_msg and copy_msgs_with_dest methods
+	  to the IMAP class.
+
+2001-06-06
+
+	* src/utils.[ch]: move_file(): new.
+	* src/mh.c: mh_move_msg(), mh_move_msgs_with_dest(): modified to
+	  use move_file(), and fixed a bug that didn't close file when
+	  error occured.
+
 2001-06-06
 
 	* src/imap.c: renamed imap_delete_messages() and

@@ -83,6 +83,9 @@ static gint imap_search		(SockInfo	*sock,
 static gint imap_get_message	(SockInfo	*sock,
 				 gint		 num,
 				 const gchar	*filename);
+static gint imap_append_message	(SockInfo	*sock,
+				 const gchar	*destfolder,
+				 const gchar	*file);
 static gint imap_copy_message	(SockInfo	*sock,
 				 gint		 num,
 				 const gchar	*destfolder);
@@ -156,6 +159,8 @@ static IMAPSession *imap_session_connect_if_not(Folder *folder)
 					 IMAP4_PORT, folder->account->userid,
 					 folder->account->passwd);
 	}
+
+	statusbar_pop_all();
 
 	return IMAP_SESSION(rfolder->session);
 }
@@ -233,7 +238,6 @@ GSList *imap_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 		item->last_num = procmsg_get_last_num_in_cache(mlist);
 		procmsg_set_flags(mlist, item);
 		statusbar_pop_all();
-
 		return mlist;
 	}
 
@@ -243,6 +247,7 @@ GSList *imap_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 			 &exists, &recent, &unseen, &uid);
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't select folder: %s\n"), item->path);
+		statusbar_pop_all();
 		return NULL;
 	}
 
@@ -336,7 +341,41 @@ gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	return filename;
 }
 
-gint imap_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
+gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
+		  gboolean remove_source)
+{
+	IMAPSession *session;
+	gint ok;
+
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(dest != NULL, -1);
+	g_return_val_if_fail(file != NULL, -1);
+
+	session = imap_session_connect_if_not(folder);
+	if (!session)
+		return -1;
+
+	if (dest->last_num < 0) {
+		imap_scan_folder(folder, dest);
+		if (dest->last_num < 0) return -1;
+	}
+
+	ok = imap_append_message(SESSION(session)->sock, dest->path, file);
+	if (ok != IMAP_SUCCESS) {
+		g_warning(_("can't append message %s\n"), file);
+		return -1;
+	}
+
+	if (remove_source) {
+		if (unlink(file) < 0)
+			FILE_OP_ERROR(file, "unlink");
+	}
+
+	return dest->last_num;
+}
+
+static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
+			 gboolean remove_source)
 {
 	gchar *destdir;
 	IMAPSession *session;
@@ -356,20 +395,24 @@ gint imap_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	Xstrdup_a(destdir, dest->path, return -1);
 	/* imap_path_subst_slash_to_dot(destdir); */
 
-	imap_copy_message(SESSION(session)->sock, msginfo->msgnum, destdir);
-	imap_set_article_flags(session, msginfo->msgnum, msginfo->msgnum,
-			       IMAP_FLAG_DELETED, TRUE);
-	debug_print(_("Moving message %s%c%d to %s ...\n"),
+	debug_print(_("%s message %s%c%d to %s ...\n"),
+		    remove_source ? "Moving" : "Copying",
 		    msginfo->folder->path, G_DIR_SEPARATOR,
-		    msginfo->msgnum, dest->path);
+		    msginfo->msgnum, destdir);
 
-	imap_expunge(session);
+	imap_copy_message(SESSION(session)->sock, msginfo->msgnum, destdir);
+
+	if (remove_source) {
+		imap_set_article_flags(session, msginfo->msgnum, msginfo->msgnum,
+				       IMAP_FLAG_DELETED, TRUE);
+		imap_expunge(session);
+	}
 
 	return IMAP_SUCCESS;
 }
 
-gint imap_move_msgs_with_dest(Folder *folder, FolderItem *dest, 
-			      GSList *msglist)
+gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
+				 GSList *msglist, gboolean remove_source)
 {
 	gchar *destdir;
 	GSList *cur;
@@ -393,22 +436,49 @@ gint imap_move_msgs_with_dest(Folder *folder, FolderItem *dest,
 			g_warning(_("the src folder is identical to the dest.\n"));
 			continue;
 		}
+
+		debug_print(_("%s message %s%c%d to %s ...\n"),
+			    remove_source ? "Moving" : "Copying",
+			    msginfo->folder->path, G_DIR_SEPARATOR,
+			    msginfo->msgnum, destdir);
+
 		imap_copy_message(SESSION(session)->sock,
 				  msginfo->msgnum, destdir);
-		imap_set_article_flags
-			(session, msginfo->msgnum, msginfo->msgnum,
-			 IMAP_FLAG_DELETED, TRUE);
 
-		debug_print(_("Moving message %s%c%d to %s ...\n"),
-			    msginfo->folder->path, G_DIR_SEPARATOR,
-			    msginfo->msgnum, dest->path);
-		
+		if (remove_source) {
+			imap_set_article_flags
+				(session, msginfo->msgnum, msginfo->msgnum,
+				 IMAP_FLAG_DELETED, TRUE);
+		}
 	}
 
-	imap_expunge(session);
+	if (remove_source)
+		imap_expunge(session);
 
 	return IMAP_SUCCESS;
 
+}
+
+gint imap_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
+{
+	return imap_do_copy(folder, dest, msginfo, TRUE);
+}
+
+gint imap_move_msgs_with_dest(Folder *folder, FolderItem *dest,
+			      GSList *msglist)
+{
+	return imap_do_copy_msgs_with_dest(folder, dest, msglist, TRUE);
+}
+
+gint imap_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
+{
+	return imap_do_copy(folder, dest, msginfo, FALSE);
+}
+
+gint imap_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
+			      GSList *msglist)
+{
+	return imap_do_copy_msgs_with_dest(folder, dest, msglist, FALSE);
 }
 
 gint imap_remove_msg(Folder *folder, FolderItem *item, gint num)
@@ -817,6 +887,24 @@ static gint imap_get_message(SockInfo *sock, gint num, const gchar *filename)
 		return IMAP_ERROR;
 
 	ok = imap_ok(sock, NULL);
+
+	return ok;
+}
+
+static gint imap_append_message(SockInfo *sock, const gchar *destfolder,
+				const gchar *file)
+{
+	gint ok;
+	gint size;
+
+	g_return_val_if_fail(file != NULL, IMAP_ERROR);
+
+	imap_gen_send(sock, "APPEND %s () {%d}", destfolder, size);
+	ok = imap_ok(sock, NULL);
+	if (ok != IMAP_SUCCESS) {
+		log_warning(_("can't append %s to %s\n"), file, destfolder);
+		return -1;
+	}
 
 	return ok;
 }

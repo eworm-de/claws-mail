@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,14 +76,24 @@ GSList *imap_get_msg_list		(Folder		*folder,
 gchar *imap_fetch_msg			(Folder		*folder,
 					 FolderItem	*item,
 					 gint		 num);
+gint imap_add_msg			(Folder		*folder,
+					 FolderItem	*dest,
+					 const gchar	*file,
+					 gboolean	 remove_source);
 
 gint imap_move_msg			(Folder		*folder,
 					 FolderItem	*dest,
 					 MsgInfo	*msginfo);
-
 gint imap_move_msgs_with_dest		(Folder		*folder,
 					 FolderItem	*dest,
 					 GSList		*msglist);
+gint imap_copy_msg			(Folder		*folder,
+					 FolderItem	*dest,
+					 MsgInfo	*msginfo);
+gint imap_copy_msgs_with_dest		(Folder		*folder,
+					 FolderItem	*dest,
+					 GSList		*msglist);
+
 gint imap_remove_msg			(Folder		*folder,
 					 FolderItem	*item,
 					 gint		 num);
