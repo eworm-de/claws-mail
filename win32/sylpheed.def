@@ -747,6 +747,7 @@ EXPORTS
 	folderview_set_all 
 	folderview_set_target_folder_color 
 	folderview_unselect 
+	folderview_update_folder 
 	folderview_update_item 
 	folderview_update_msg_num 
 	fromuutobits 

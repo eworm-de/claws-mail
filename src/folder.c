@@ -454,6 +454,7 @@ gboolean folder_scan_tree_func(GNode *node, gpointer data)
 void folder_scan_tree(Folder *folder)
 {
 	GHashTable *pptable;
+	FolderUpdateData hookdata;
 	
 	if (!folder->klass->scan_tree)
 		return;
@@ -466,6 +467,10 @@ void folder_scan_tree(Folder *folder)
 	 */
 	folder_tree_destroy(folder);
 	folder->klass->scan_tree(folder);
+
+	hookdata.folder = folder;
+	hookdata.update_flags = FOLDER_TREE_CHANGED;
+	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 
 	g_node_traverse(folder->node, G_POST_ORDER, G_TRAVERSE_ALL, -1, folder_scan_tree_func, pptable);
 	folder_persist_prefs_free(pptable);

@@ -31,6 +31,8 @@ typedef struct _RemoteFolder		RemoteFolder;
 typedef struct _MaildirFolder		MaildirFolder;
 #endif
 typedef struct _FolderItem		FolderItem;
+
+typedef struct _FolderUpdateData	FolderUpdateData;
 typedef struct _FolderItemUpdateData	FolderItemUpdateData;
 
 #define FOLDER(obj)		((Folder *)obj)
@@ -50,6 +52,7 @@ typedef struct _FolderItemUpdateData	FolderItemUpdateData;
 
 #define FOLDER_ITEM(obj)	((FolderItem *)obj)
 
+#define FOLDER_UPDATE_HOOKLIST "folder_update"
 #define FOLDER_ITEM_UPDATE_HOOKLIST "folder_item_update"
 
 typedef enum
@@ -103,6 +106,16 @@ typedef enum
 	F_MOVE_FAILED_DEST_OUTSIDE_MAILBOX = -3,
 	F_MOVE_FAILED = -4,
 } FolderItemMoveResult;
+
+typedef enum
+{
+	FOLDER_TREE_CHANGED = 1 << 0,
+/*
+	maybe enhance with:
+	FOLDER_NEW_FOLDERITEM
+	FOLDER_REMOVE_FOLDERITEM
+*/
+} FolderUpdateFlags;
 
 typedef enum
 {
@@ -303,6 +316,15 @@ typedef struct {
 	guint		hide_read_msgs	: 1; /* CLAWS */
 	guint		ret_rcpt	: 1; /* CLAWS */
 } PersistPrefs;
+
+struct _FolderUpdateData
+{
+	Folder			*folder;
+	FolderUpdateFlags	 update_flags;
+/*
+	FolderItem		*item
+*/
+};
 
 struct _FolderItemUpdateData
 {

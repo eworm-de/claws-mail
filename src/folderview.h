@@ -56,6 +56,7 @@ struct _FolderView
 	MainWindow   *mainwin;
 	SummaryView  *summaryview;
 
+	gint folder_update_callback_id;
 	gint folder_item_update_callback_id;
 	
 	/* for drag and drop */

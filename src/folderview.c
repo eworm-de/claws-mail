@@ -264,6 +264,8 @@ static void folderview_drag_data_get     (GtkWidget        *widget,
 
 void folderview_create_folder_node       (FolderView       *folderview, 
 					  FolderItem       *item);
+gboolean folderview_update_folder	 (gpointer 	    source,
+					  gpointer 	    userdata);
 gboolean folderview_update_item		 (gpointer 	    source,
 					  gpointer	    data);
 
@@ -509,6 +511,8 @@ FolderView *folderview_create(void)
 	folderview->mbox_popup   = mbox_popup;
 	folderview->mbox_factory = mbox_factory;
 
+	folderview->folder_update_callback_id =
+		hooks_register_hook(FOLDER_UPDATE_HOOKLIST, folderview_update_folder, (gpointer) folderview);
 	folderview->folder_item_update_callback_id =
 		hooks_register_hook(FOLDER_ITEM_UPDATE_HOOKLIST, folderview_update_item, (gpointer) folderview);
 
@@ -2928,3 +2932,23 @@ static void folderview_drag_data_get(GtkWidget        *widget,
 	}
 }
 
+gboolean folderview_update_folder(gpointer source, gpointer userdata)
+{
+	FolderUpdateData *hookdata;
+	FolderView *folderview;
+	GtkWidget *ctree;
+
+	hookdata = source;
+	folderview = (FolderView *) userdata;	
+	g_return_val_if_fail(hookdata != NULL, FALSE);
+	g_return_val_if_fail(folderview != NULL, FALSE);
+
+	ctree = folderview->ctree;
+	g_return_val_if_fail(ctree != NULL, FALSE);
+
+	if (hookdata->update_flags & FOLDER_TREE_CHANGED) {
+		folderview_set(folderview);
+	}
+
+	return FALSE;
+}
