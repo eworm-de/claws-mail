@@ -1,3 +1,10 @@
+2002-12-14 [thorsten]	0.8.6claws113
+
+	* tools/Makefile.am
+	  tools/README
+	  tools/google_msgid.pl	** NEW FILE **
+	  	Added "search for message-id" script and doc
+
 2002-12-14 [thorsten]	0.8.6claws112
 
 	* po/hu.po

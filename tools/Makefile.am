@@ -5,6 +5,7 @@ EXTRA_TOOLS = \
 	filter_conv.pl \
 	gif2xface.pl \
 	gpg-sign-syl \
+	google_msgid.pl \
 	kmail2sylpheed.pl \
 	kmail2sylpheed_v2.pl \
 	newscache_clean.pl \
