@@ -125,7 +125,7 @@ static void prefs_display_header_set_default(void)
 	gint i;
 	DisplayHeaderProp *dp;
 
-	for(i = 0; i < sizeof(defaults) / sizeof(defaults[0]); i++) {
+	for(i = 0; i < (gint) (sizeof(defaults) / sizeof(defaults[0])); i++) {
 		dp = display_header_prop_read_str(defaults[i]);
 		prefs_common.disphdr_list =
 			g_slist_append(prefs_common.disphdr_list, dp);

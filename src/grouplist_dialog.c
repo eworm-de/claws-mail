@@ -202,6 +202,10 @@ static void grouplist_dialog_set_list(void)
 
 	group_selected = NULL;
 	group_list = news_get_group_list(item);
+	if (group_list == NULL) {
+		alertpanel_error(_("Can't retrieve group list."));
+		return;
+	}
 
 	gtk_clist_clear(GTK_CLIST(group_clist));
 	for(elt = group_list; elt != NULL ; elt = elt->next)

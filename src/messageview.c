@@ -46,6 +46,7 @@
 #include "rfc2015.h"
 #include "account.h"
 #include "alertpanel.h"
+#include "send.h"
 
 static void messageview_change_view_type(MessageView	*messageview,
 					 MessageType	 type);

@@ -1400,8 +1400,11 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 
 	if (prefs_common.use_addr_book)
 		start_address_completion();
+	
+	main_window_set_thread_option(summaryview->mainwin);
 
-	if (prefs_common.enable_thread) {
+	/*	if (prefs_common.enable_thread) { */
+	if (summaryview->folder_item->prefs->enable_thread) {
 		for (; mlist != NULL; mlist = mlist->next) {
 			msginfo = (MsgInfo *)mlist->data;
 			parent = NULL;

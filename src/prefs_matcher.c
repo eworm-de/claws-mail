@@ -52,17 +52,21 @@ static struct Matcher {
 	GtkWidget *ok_btn;
 
 	GtkWidget *predicate_combo;
+	GtkWidget *predicate_flag_combo;
 	GtkWidget *header_combo;
 
 	GtkWidget *criteria_list;
+
 	GtkWidget *predicate_list;
+	GtkWidget *predicate_label;
+	GtkWidget *predicate_flag_list;
+
 	GtkWidget *bool_op_list;
 
 	GtkWidget *header_entry;
 	GtkWidget *header_label;
 	GtkWidget *value_entry;
 	GtkWidget *value_label;
-	GtkWidget *predicate_label;
 	GtkWidget *case_chkbtn;
 	GtkWidget *regexp_chkbtn;
 
@@ -73,6 +77,7 @@ static struct Matcher {
 
 enum {
 	CRITERIA_ALL = 0,
+
 	CRITERIA_SUBJECT = 1,
 	CRITERIA_FROM = 2,
 	CRITERIA_TO = 3,
@@ -84,15 +89,41 @@ enum {
 	CRITERIA_HEADER = 9,
 	CRITERIA_HEADERS_PART = 10,
 	CRITERIA_BODY_PART = 11,
-	CRITERIA_MESSAGE = 12
+	CRITERIA_MESSAGE = 12,
+
+	CRITERIA_UNREAD = 13,
+	CRITERIA_NEW = 14,
+	CRITERIA_MARKED = 15,
+	CRITERIA_DELETED = 16,
+	CRITERIA_REPLIED = 17,
+	CRITERIA_FORWARDED = 18
+};
+
+enum {
+	BOOL_OP_OR = 0,
+	BOOL_OP_AND = 1
 };
 
 gchar * bool_op_text [] = {
 	"or", "and"
 };
 
+enum {
+	PREDICATE_CONTAINS = 0,
+	PREDICATE_DOES_NOT_CONTAIN = 1
+};
+
 gchar * predicate_text [] = {
 	"contains", "does not contain"
+};
+
+enum {
+	PREDICATE_FLAG_ENABLED = 0,
+	PREDICATE_FLAG_DISABLED = 1
+};
+
+gchar * predicate_flag_text [] = {
+	"flag enabled", "flag disabled"
 };
 
 gchar * criteria_text [] = {
@@ -101,7 +132,10 @@ gchar * criteria_text [] = {
 	"Newsgroups",
 	"Age greater than", "Age lower than",
 	"Header", "Headers part",
-	"Body part", "Whole message"
+	"Body part", "Whole message",
+	"Unread flag", "New flag",
+	"Marked flag", "Deleted flag",
+	"Replied flag", "Forwarded flag"
 };
 
 gint get_sel_from_list(GtkList * list)
@@ -121,12 +155,7 @@ gint get_sel_from_list(GtkList * list)
 	return row;
 }
 
-enum {
-	PREDICATE_CONTAINS = 0,
-	PREDICATE_DOES_NOT_CONTAIN = 1
-};
-
-static MatcherList * tmp_matchers;
+static PrefsMatcherSignal * matchers_callback;
 
 #define VSPACING		12
 #define VSPACING_NARROW		4
@@ -136,7 +165,7 @@ static MatcherList * tmp_matchers;
 /* widget creating functions */
 static void prefs_matcher_create	(void);
 
-static void prefs_matcher_set_dialog	(void);
+static void prefs_matcher_set_dialog	(MatcherList * matchers);
 
 /*
 static void prefs_matcher_set_list	(void);
@@ -168,9 +197,9 @@ static gint prefs_matcher_deleted(GtkWidget *widget, GdkEventAny *event,
 static void prefs_matcher_criteria_select(GtkList *list,
 					  GtkWidget *widget,
 					  gpointer user_data);
-static void prefs_matcher_set_list(void);
+static MatcherList * prefs_matcher_get_list(void);
 
-void prefs_matcher_open(MatcherList * matchers)
+void prefs_matcher_open(MatcherList * matchers, PrefsMatcherSignal * cb)
 {
 	inc_autocheck_timer_remove();
 
@@ -181,8 +210,9 @@ void prefs_matcher_open(MatcherList * matchers)
 	manage_window_set_transient(GTK_WINDOW(matcher.window));
 	gtk_widget_grab_focus(matcher.ok_btn);
 
-	tmp_matchers = matchers;
-	prefs_matcher_set_dialog();
+	matchers_callback = cb;
+
+	prefs_matcher_set_dialog(matchers);
 
 	gtk_widget_show(matcher.window);
 }
@@ -212,6 +242,8 @@ static void prefs_matcher_create(void)
 	GtkWidget *value_entry;
 	GtkWidget *predicate_combo;
 	GtkWidget *predicate_list;
+	GtkWidget *predicate_flag_combo;
+	GtkWidget *predicate_flag_list;
 	GtkWidget *predicate_label;
 	GtkWidget *bool_op_combo;
 	GtkWidget *bool_op_list;
@@ -258,13 +290,6 @@ static void prefs_matcher_create(void)
 	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default (ok_btn);
 
-	/*
-	gtkut_button_set_create (&confirm_area, &close_btn, _("Close"),
-				 NULL, NULL, NULL, NULL);
-	gtk_widget_show (confirm_area);
-	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
-	gtk_widget_grab_default (close_btn);*/
-
 	gtk_window_set_title (GTK_WINDOW(window),
 			      _("Condition setting"));
 	gtk_signal_connect (GTK_OBJECT(window), "delete_event",
@@ -288,7 +313,7 @@ static void prefs_matcher_create(void)
 	table1 = gtk_table_new (2, 3, FALSE);
 	gtk_widget_show (table1);
 
-	gtk_box_pack_start (GTK_BOX (vbox1), table1, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox1), table1, FALSE, FALSE, 0);
 	gtk_table_set_row_spacings (GTK_TABLE (table1), 8);
 	gtk_table_set_col_spacings (GTK_TABLE (table1), 8);
 
@@ -352,24 +377,24 @@ static void prefs_matcher_create(void)
 	gtk_widget_show (value_label);
 	gtk_misc_set_alignment (GTK_MISC (value_label), 0, 0.5);
 	gtk_table_attach (GTK_TABLE (table1), value_label, 2, 3, 0, 1,
-			  GTK_FILL, 0, 0, 0);
+			  GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
 
 	value_entry = gtk_entry_new ();
 	gtk_widget_show (value_entry);
 	gtk_widget_set_usize (value_entry, 200, -1);
 	gtk_table_attach (GTK_TABLE (table1), value_entry, 2, 3, 1, 2,
-			  0, 0, 0, 0);
+			  GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
 
 
 	/* predicate */
 
 	vbox2 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox2);
-	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 
 	predicate_label = gtk_label_new (_("Predicate"));
 	gtk_widget_show (predicate_label);
@@ -397,9 +422,31 @@ static void prefs_matcher_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), predicate_combo,
 			    FALSE, FALSE, 0);
 
+	/* predicate flag */
+
+	predicate_flag_combo = gtk_combo_new ();
+	gtk_widget_hide (predicate_flag_combo);
+	gtk_widget_set_usize (predicate_flag_combo, 120, -1);
+	predicate_flag_list = GTK_COMBO(predicate_flag_combo)->list;
+	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(predicate_flag_combo)->entry), FALSE);
+
+	combo_items = NULL;
+
+	for(i = 0 ; i < (gint) (sizeof(predicate_text) / sizeof(gchar *)) ;
+	    i++) {
+		combo_items = g_list_append(combo_items, (gpointer) _(predicate_flag_text[i]));
+	}
+	gtk_combo_set_popdown_strings(GTK_COMBO(predicate_flag_combo),
+				      combo_items);
+
+	g_list_free(combo_items);
+
+	gtk_box_pack_start (GTK_BOX (hbox1), predicate_flag_combo,
+			    FALSE, FALSE, 0);
+
 	vbox3 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox3);
-	gtk_box_pack_start (GTK_BOX (hbox1), vbox3, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox1), vbox3, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (vbox3, case_chkbtn, _("Case sensitive"));
 	PACK_CHECK_BUTTON (vbox3, regexp_chkbtn, _("Use regexp"));
@@ -465,7 +512,7 @@ static void prefs_matcher_create(void)
 	g_list_free(combo_items);
 
 	gtk_box_pack_start (GTK_BOX (btn_hbox), bool_op_combo,
-			    FALSE, TRUE, 0);
+			    FALSE, FALSE, 0);
 
 	cond_hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (cond_hbox);
@@ -522,6 +569,8 @@ static void prefs_matcher_create(void)
 	matcher.predicate_label = predicate_label;
 	matcher.predicate_list = predicate_list;
 	matcher.predicate_combo = predicate_combo;
+	matcher.predicate_flag_list = predicate_flag_list;
+	matcher.predicate_flag_combo = predicate_flag_combo;
 	matcher.case_chkbtn = case_chkbtn;
 	matcher.regexp_chkbtn = regexp_chkbtn;
 	matcher.bool_op_list = bool_op_list;
@@ -559,7 +608,7 @@ static void prefs_matcher_reset_condition(void)
 	gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), "");
 }
 
- static void prefs_matcher_set_dialog(void)
+static void prefs_matcher_set_dialog(MatcherList * matchers)
 {
 	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
 	GSList * cur;
@@ -569,17 +618,17 @@ static void prefs_matcher_reset_condition(void)
 	gtk_clist_clear(clist);
 
 	prefs_matcher_clist_set_row(-1, NULL);
-	if (tmp_matchers != NULL) {
-		for (cur = tmp_matchers->matchers ; cur != NULL ;
+	if (matchers != NULL) {
+		for (cur = matchers->matchers ; cur != NULL ;
 		     cur = g_slist_next(cur)) {
 			MatcherProp * prop;
 			prop = (MatcherProp *) cur->data;
 			prefs_matcher_clist_set_row(-1, prop);
-			matcherprop_free(prop);
 		}
 
-		bool_op = tmp_matchers->bool_and;
+		bool_op = matchers->bool_and;
 	}
+
 	gtk_clist_thaw(clist);
 
 	gtk_list_select_item(GTK_LIST(matcher.bool_op_list), bool_op);
@@ -587,25 +636,17 @@ static void prefs_matcher_reset_condition(void)
 	prefs_matcher_reset_condition();
 }
 
-static void prefs_matcher_set_list(void)
+static MatcherList * prefs_matcher_get_list(void)
 {
 	gchar * matcher_str;
 	MatcherProp * prop;
 	gint row = 1;
-	GSList * l;
 	gchar * tmp;
+	gboolean bool_and;
+	GSList * matcher_list;
+	MatcherList * matchers;
 
-	if (tmp_matchers == NULL)
-		return;
-
-	/* free old */
-
-	for(l = tmp_matchers->matchers ; l != NULL ; l = g_slist_next(l))
-		matcherprop_free((MatcherProp *) l->data);
-	g_slist_free(tmp_matchers->matchers);
-	tmp_matchers->matchers = NULL;
-
-	/* set new */
+	matcher_list = NULL;
 
 	while (gtk_clist_get_text(GTK_CLIST(matcher.cond_clist),
 				  row, 0, &matcher_str)) {
@@ -617,14 +658,16 @@ static void prefs_matcher_set_list(void)
 			if (tmp == NULL)
 				break;
 			
-			tmp_matchers->matchers =
-				g_slist_append(tmp_matchers->matchers, prop);
+			matcher_list = g_slist_append(matcher_list, prop);
 		}
 		row ++;
 	}
 
-	tmp_matchers->bool_and = get_sel_from_list(GTK_LIST(matcher.bool_op_list));
+	bool_and = get_sel_from_list(GTK_LIST(matcher.bool_op_list));
 
+	matchers = matcherlist_new(matcher_list, bool_and);
+
+	return matchers;
 }
 
 static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
@@ -632,6 +675,18 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 	switch (criteria_id) {
 	case CRITERIA_ALL:
 		return MATCHING_ALL;
+	case CRITERIA_UNREAD:
+		return MATCHING_UNREAD;
+	case CRITERIA_NEW:
+		return MATCHING_NEW;
+	case CRITERIA_MARKED:
+		return MATCHING_MARKED;
+	case CRITERIA_DELETED:
+		return MATCHING_DELETED;
+	case CRITERIA_REPLIED:
+		return MATCHING_REPLIED;
+	case CRITERIA_FORWARDED:
+		return MATCHING_FORWARDED;
 	case CRITERIA_SUBJECT:
 		return MATCHING_SUBJECT;
 	case CRITERIA_FROM:
@@ -664,6 +719,18 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 static gint prefs_matcher_not_criteria(gint matcher_criteria)
 {
 	switch(matcher_criteria) {
+	case MATCHING_UNREAD:
+		return MATCHING_NOT_UNREAD;
+	case MATCHING_NEW:
+		return MATCHING_NOT_NEW;
+	case MATCHING_MARKED:
+		return MATCHING_NOT_MARKED;
+	case MATCHING_DELETED:
+		return MATCHING_NOT_DELETED;
+	case MATCHING_REPLIED:
+		return MATCHING_NOT_REPLIED;
+	case MATCHING_FORWARDED:
+		return MATCHING_NOT_FORWARDED;
 	case MATCHING_SUBJECT:
 		return MATCHING_NOT_SUBJECT;
 	case MATCHING_FROM:
@@ -695,6 +762,7 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 	gint criteria;
 	gint matchtype;
 	gint value_pred;
+	gint value_pred_flag;
 	gint value_criteria;
 	gboolean use_regexp;
 	gboolean case_sensitive;
@@ -708,12 +776,37 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 	criteria = prefs_matcher_get_matching_from_criteria(value_criteria);
 
 	value_pred = get_sel_from_list(GTK_LIST(matcher.predicate_list));
+	value_pred_flag = get_sel_from_list(GTK_LIST(matcher.predicate_flag_list));
 
 	use_regexp = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn));
 	case_sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn));
 
-	if (value_pred != PREDICATE_CONTAINS)
-		criteria = prefs_matcher_not_criteria(criteria);
+	switch (value_criteria) {
+	case CRITERIA_UNREAD:
+	case CRITERIA_NEW:
+	case CRITERIA_MARKED:
+	case CRITERIA_DELETED:
+	case CRITERIA_REPLIED:
+	case CRITERIA_FORWARDED:
+		if (value_pred_flag == PREDICATE_FLAG_DISABLED)
+			criteria = prefs_matcher_not_criteria(criteria);
+		break;
+	case CRITERIA_SUBJECT:
+	case CRITERIA_FROM:
+	case CRITERIA_TO:
+	case CRITERIA_CC:
+	case CRITERIA_TO_OR_CC:
+	case CRITERIA_NEWSGROUPS:
+	case CRITERIA_HEADERS_PART:
+	case CRITERIA_BODY_PART:
+	case CRITERIA_MESSAGE:
+	case CRITERIA_AGE_GREATER:
+	case CRITERIA_AGE_LOWER:
+	case CRITERIA_HEADER:
+		if (value_pred == PREDICATE_DOES_NOT_CONTAIN)
+			criteria = prefs_matcher_not_criteria(criteria);
+		break;
+	}
 
 	if (use_regexp) {
 		if (case_sensitive)
@@ -734,6 +827,12 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 
 	switch (value_criteria) {
 	case CRITERIA_ALL:
+	case CRITERIA_UNREAD:
+	case CRITERIA_NEW:
+	case CRITERIA_MARKED:
+	case CRITERIA_DELETED:
+	case CRITERIA_REPLIED:
+	case CRITERIA_FORWARDED:
 		break;
 
 	case CRITERIA_SUBJECT:
@@ -747,11 +846,12 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 	case CRITERIA_MESSAGE:
 		expr = gtk_entry_get_text(GTK_ENTRY(matcher.value_entry));
 
+		/*
 		if (*expr == '\0') {
 		    alertpanel_error(_("Match string is not set."));
 		    return NULL;
 		}
-
+		*/
 		break;
 
 	case CRITERIA_AGE_GREATER:
@@ -776,16 +876,17 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 		    alertpanel_error(_("Header name is not set."));
 		    return NULL;
 		}
+		/*
 		if (*expr == '\0') {
 		    alertpanel_error(_("Match string is not set."));
 		    return NULL;
 		}
-
+		*/
 		break;
 	}
 
 	matcherprop =  matcherprop_new(criteria, header, matchtype, expr, age);
-	
+
 	return matcherprop;
 }
 
@@ -890,6 +991,48 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 	case MATCHING_ALL:
 		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
 				     CRITERIA_ALL);
+		break;
+
+	case MATCHING_NOT_UNREAD:
+		negative_cond = TRUE;
+	case MATCHING_UNREAD:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_UNREAD);
+		break;
+
+	case MATCHING_NOT_NEW:
+		negative_cond = TRUE;
+	case MATCHING_NEW:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_NEW);
+		break;
+
+	case MATCHING_NOT_MARKED:
+		negative_cond = TRUE;
+	case MATCHING_MARKED:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_MARKED);
+		break;
+
+	case MATCHING_NOT_DELETED:
+		negative_cond = TRUE;
+	case MATCHING_DELETED:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_DELETED);
+		break;
+
+	case MATCHING_NOT_REPLIED:
+		negative_cond = TRUE;
+	case MATCHING_REPLIED:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_REPLIED);
+		break;
+
+	case MATCHING_NOT_FORWARDED:
+		negative_cond = TRUE;
+	case MATCHING_FORWARDED:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_FORWARDED);
 		break;
 
 	case MATCHING_NOT_SUBJECT:
@@ -1054,6 +1197,28 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		gtk_widget_set_sensitive(matcher.value_entry, FALSE);
 		gtk_widget_set_sensitive(matcher.predicate_label, FALSE);
 		gtk_widget_set_sensitive(matcher.predicate_combo, FALSE);
+		gtk_widget_set_sensitive(matcher.predicate_flag_combo, FALSE);
+		gtk_widget_hide(matcher.predicate_combo);
+		gtk_widget_show(matcher.predicate_flag_combo);
+		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
+		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
+		break;
+
+	case CRITERIA_UNREAD:
+	case CRITERIA_NEW:
+	case CRITERIA_MARKED:
+	case CRITERIA_DELETED:
+	case CRITERIA_REPLIED:
+	case CRITERIA_FORWARDED:
+		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
+		gtk_widget_set_sensitive(matcher.header_label, FALSE);
+		gtk_widget_set_sensitive(matcher.value_label, FALSE);
+		gtk_widget_set_sensitive(matcher.value_entry, FALSE);
+		gtk_widget_set_sensitive(matcher.predicate_label, TRUE);
+		gtk_widget_set_sensitive(matcher.predicate_combo, FALSE);
+		gtk_widget_set_sensitive(matcher.predicate_flag_combo, TRUE);
+		gtk_widget_hide(matcher.predicate_combo);
+		gtk_widget_show(matcher.predicate_flag_combo);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
 		break;
@@ -1073,6 +1238,9 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		gtk_widget_set_sensitive(matcher.value_entry, TRUE);
 		gtk_widget_set_sensitive(matcher.predicate_label, TRUE);
 		gtk_widget_set_sensitive(matcher.predicate_combo, TRUE);
+		gtk_widget_set_sensitive(matcher.predicate_flag_combo, FALSE);
+		gtk_widget_show(matcher.predicate_combo);
+		gtk_widget_hide(matcher.predicate_flag_combo);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, TRUE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, TRUE);
 		break;
@@ -1085,6 +1253,9 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		gtk_widget_set_sensitive(matcher.value_entry, TRUE);
 		gtk_widget_set_sensitive(matcher.predicate_label, FALSE);
 		gtk_widget_set_sensitive(matcher.predicate_combo, FALSE);
+		gtk_widget_set_sensitive(matcher.predicate_flag_combo, FALSE);
+		gtk_widget_show(matcher.predicate_combo);
+		gtk_widget_hide(matcher.predicate_flag_combo);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
 		break;
@@ -1096,6 +1267,9 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		gtk_widget_set_sensitive(matcher.value_entry, TRUE);
 		gtk_widget_set_sensitive(matcher.predicate_label, TRUE);
 		gtk_widget_set_sensitive(matcher.predicate_combo, TRUE);
+		gtk_widget_set_sensitive(matcher.predicate_flag_combo, FALSE);
+		gtk_widget_show(matcher.predicate_combo);
+		gtk_widget_hide(matcher.predicate_flag_combo);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, TRUE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, TRUE);
 		break;
@@ -1116,8 +1290,18 @@ static void prefs_matcher_cancel(void)
 
 static void prefs_matcher_ok(void)
 {
-	prefs_matcher_set_list();
-	gtk_widget_hide(matcher.window);
+	MatcherList * matchers;
+
+	matchers = prefs_matcher_get_list();
+	if (matchers != NULL) {
+		gtk_widget_hide(matcher.window);
+		if (matchers_callback != NULL)
+			matchers_callback(matchers);
+		matcherlist_free(matchers);
+	}
+	else {
+		gtk_widget_hide(matcher.window);
+	}
 }
 
 static gint prefs_matcher_deleted(GtkWidget *widget, GdkEventAny *event,

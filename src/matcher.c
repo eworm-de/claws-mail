@@ -15,8 +15,22 @@ struct _MatchParser {
 typedef struct _MatchParser MatchParser;
 
 MatchParser matchparser_tab[] = {
-	/* msginfo */
+	/* msginfo flags */
 	{MATCHING_ALL, "all"},
+	{MATCHING_UNREAD, "unread"},
+	{MATCHING_NOT_UNREAD, "~unread"},
+	{MATCHING_NEW, "new"},
+	{MATCHING_NOT_NEW, "~new"},
+	{MATCHING_MARKED, "marked"},
+	{MATCHING_NOT_MARKED, "~marked"},
+	{MATCHING_DELETED, "deleted"},
+	{MATCHING_NOT_DELETED, "~deleted"},
+	{MATCHING_REPLIED, "replied"},
+	{MATCHING_NOT_REPLIED, "~replied"},
+	{MATCHING_FORWARDED, "forwarded"},
+	{MATCHING_NOT_FORWARDED, "~forwarded"},
+
+	/* msginfo headers */
 	{MATCHING_SUBJECT, "subject"},
 	{MATCHING_NOT_SUBJECT, "~subject"},
 	{MATCHING_FROM, "from"},
@@ -103,6 +117,18 @@ MatcherProp * matcherprop_parse(gchar ** str)
 		return prop;
 
 	case MATCHING_ALL:
+	case MATCHING_UNREAD:
+	case MATCHING_NOT_UNREAD:
+	case MATCHING_NEW:
+	case MATCHING_NOT_NEW:
+	case MATCHING_MARKED:
+	case MATCHING_NOT_MARKED:
+	case MATCHING_DELETED:
+	case MATCHING_NOT_DELETED:
+	case MATCHING_REPLIED:
+	case MATCHING_NOT_REPLIED:
+	case MATCHING_FORWARDED:
+	case MATCHING_NOT_FORWARDED:
 		prop = matcherprop_new(key, NULL, 0, NULL, 0);
 		*str = tmp;
 
@@ -201,13 +227,15 @@ gint matcher_parse_keyword(gchar ** str)
 		p++;
 
 	start = p;
+
+	while (!matcher_is_blank(*p) && (*p != '\0'))
+		p++;
 	
 	match = -1;
 	for(i = 0 ; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)) ;
 	    i++) {
-		if (strncasecmp(matchparser_tab[i].str, p,
-				strlen(matchparser_tab[i].str)) == 0) {
-			p += strlen(matchparser_tab[i].str);
+		if (strncasecmp(matchparser_tab[i].str, start,
+				p - start) == 0) {
 			match = i;
 			break;
 		}
@@ -392,9 +420,10 @@ void matcherprop_free(MatcherProp * prop)
 static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 {
 	gchar * str1;
+	gchar * str2;
 
 	if (str == NULL)
-		str = "";
+		return FALSE;
 
 	switch(prop->matchtype) {
 	case MATCHING_REGEXP:
@@ -410,25 +439,27 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 			}
 		}
 		if (prop->preg == NULL)
-			return 0;
+			return FALSE;
 		
 		if (regexec(prop->preg, str, 0, NULL, 0) == 0)
-			return 1;
+			return TRUE;
 		else
-			return 0;
+			return FALSE;
 
 	case MATCHING_MATCH:
 		return (strstr(str, prop->expr) != NULL);
 
 	case MATCHING_MATCHCASE:
-		g_strup(prop->expr);
+		str2 = alloca(strlen(prop->expr) + 1);
+		strcpy(str2, prop->expr);
+		g_strup(str2);
 		str1 = alloca(strlen(str) + 1);
 		strcpy(str1, str);
 		g_strup(str1);
-		return (strstr(str1, prop->expr) != NULL);
+		return (strstr(str1, str2) != NULL);
 		
 	default:
-		return 0;
+		return FALSE;
 	}
 }
 
@@ -442,6 +473,30 @@ gboolean matcherprop_match(MatcherProp * prop, MsgInfo * info)
 	switch(prop->criteria) {
 	case MATCHING_ALL:
 		return 1;
+	case MATCHING_UNREAD:
+		return MSG_IS_UNREAD(info->flags);
+	case MATCHING_NOT_UNREAD:
+		return !MSG_IS_UNREAD(info->flags);
+	case MATCHING_NEW:
+		return MSG_IS_NEW(info->flags);
+	case MATCHING_NOT_NEW:
+		return !MSG_IS_NEW(info->flags);
+	case MATCHING_MARKED:
+		return MSG_IS_MARKED(info->flags);
+	case MATCHING_NOT_MARKED:
+		return !MSG_IS_MARKED(info->flags);
+	case MATCHING_DELETED:
+		return MSG_IS_DELETED(info->flags);
+	case MATCHING_NOT_DELETED:
+		return !MSG_IS_DELETED(info->flags);
+	case MATCHING_REPLIED:
+		return MSG_IS_REPLIED(info->flags);
+	case MATCHING_NOT_REPLIED:
+		return !MSG_IS_REPLIED(info->flags);
+	case MATCHING_FORWARDED:
+		return MSG_IS_FORWARDED(info->flags);
+	case MATCHING_NOT_FORWARDED:
+		return !MSG_IS_FORWARDED(info->flags);
 	case MATCHING_SUBJECT:
 		return matcherprop_string_match(prop, info->subject);
 	case MATCHING_NOT_SUBJECT:
@@ -494,10 +549,12 @@ MatcherList * matcherlist_parse(gchar ** str)
 	gchar * save;
 	MatcherList * cond;
 	gboolean main_bool_and = TRUE;
+	GSList * l;
 
 	tmp = * str;
 
 	matcher = matcherprop_parse(&tmp);
+
 	if (tmp == NULL) {
 		* str = NULL;
 		return NULL;
@@ -518,6 +575,11 @@ MatcherList * matcherlist_parse(gchar ** str)
 					g_slist_append(matchers_list, matcher);
 			}
 			else {
+				for(l = matchers_list ; l != NULL ;
+				    l = g_slist_next(l))
+					matcherprop_free((MatcherProp *)
+							 l->data);
+				g_slist_free(matchers_list);
 				* str = NULL;
 				return NULL;
 			}
@@ -546,6 +608,7 @@ MatcherList * matcherlist_new(GSList * matchers, gboolean bool_and)
 void matcherlist_free(MatcherList * cond)
 {
 	GSList * l;
+
 	for(l = cond->matchers ; l != NULL ; l = g_slist_next(l)) {
 		matcherprop_free((MatcherProp *) l->data);
 	}
@@ -914,7 +977,7 @@ static void matcherprop_print(MatcherProp * matcher)
 
 gchar * matcherprop_to_string(MatcherProp * matcher)
 {
-	gchar * matcher_str;
+	gchar * matcher_str = NULL;
 	gchar * criteria_str;
 	gchar * matchtype_str;
 	int i;
@@ -938,6 +1001,18 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 		return g_strdup_printf("%s %i", criteria_str, matcher->age);
 		break;
 	case MATCHING_ALL:
+	case MATCHING_UNREAD:
+	case MATCHING_NOT_UNREAD:
+	case MATCHING_NEW:
+	case MATCHING_NOT_NEW:
+	case MATCHING_MARKED:
+	case MATCHING_NOT_MARKED:
+	case MATCHING_DELETED:
+	case MATCHING_NOT_DELETED:
+	case MATCHING_REPLIED:
+	case MATCHING_NOT_REPLIED:
+	case MATCHING_FORWARDED:
+	case MATCHING_NOT_FORWARDED:
 		return g_strdup(criteria_str);
 	}
 

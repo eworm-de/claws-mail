@@ -44,6 +44,7 @@
 #include "gtkutils.h"
 #include "utils.h"
 #include "alertpanel.h"
+#include "prefs_headers.h"
 
 static gboolean cancelled;
 

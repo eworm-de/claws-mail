@@ -17,19 +17,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __PREFS_MATCHER_H__
-#define __PREFS_MATCHER_H__
-
-#include "matcher.h"
+#ifndef __PREFS_SCORING_H__
+#define __PREFS_SCORING_H__
 
 /*
-void prefs_matcher_read_config	(void);
-void prefs_matcher_write_config	(void);
+void prefs_scoring_read_config	(void);
+void prefs_scoring_write_config	(void);
 */
+void prefs_scoring_open		(void);
 
-typedef void PrefsMatcherSignal(MatcherList * matchers);
-
-void prefs_matcher_open		(MatcherList * matchers,
-				 PrefsMatcherSignal * cb);
-
-#endif /* __PREFS_FILTER_H__ */
+#endif /* __PREFS_SCORING_H__ */

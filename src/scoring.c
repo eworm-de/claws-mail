@@ -9,6 +9,7 @@
 #include "procheader.h"
 #include "matcher.h"
 #include "scoring.h"
+#include "prefs.h"
 
 #define PREFSBUFSIZE		1024
 
@@ -17,7 +18,6 @@ GSList * prefs_scoring = NULL;
 ScoringProp * scoringprop_parse(gchar ** str)
 {
 	gchar * tmp;
-	gchar * save;
 	gint key;
 	ScoringProp * scoring;
 	gint score;
@@ -174,11 +174,70 @@ void prefs_scoring_read_config(void)
 							       scoring);
 			}
 			else {
-				// debug
+				/* debug */
 				g_warning(_("syntax error : %s\n"), buf);
 			}
 		}
  	}
 
  	fclose(fp);
+}
+
+gchar * scoringprop_to_string(ScoringProp * prop)
+{
+	gchar * list_str;
+	gchar * score_str;
+	gchar * scoring_str;
+
+	list_str = matcherlist_to_string(prop->matchers);
+
+	if (list_str == NULL)
+		return NULL;
+
+	score_str = itos(prop->score);
+	scoring_str = g_strconcat(list_str, " score ", score_str, NULL);
+	g_free(list_str);
+
+	return scoring_str;
+}
+
+void prefs_scoring_write_config(void)
+{
+	gchar *rcpath;
+	PrefFile *pfile;
+	GSList *cur;
+	ScoringProp * prop;
+
+	debug_print(_("Writing scoring configuration...\n"));
+
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, SCORING_RC, NULL);
+
+	if ((pfile = prefs_write_open(rcpath)) == NULL) {
+		g_warning(_("failed to write configuration to file\n"));
+		g_free(rcpath);
+		return;
+	}
+
+	for (cur = prefs_scoring; cur != NULL; cur = cur->next) {
+		gchar *scoring_str;
+
+		prop = (ScoringProp *) cur->data;
+		scoring_str = scoringprop_to_string(prop);
+		if (fputs(scoring_str, pfile->fp) == EOF ||
+		    fputc('\n', pfile->fp) == EOF) {
+			FILE_OP_ERROR(rcpath, "fputs || fputc");
+			prefs_write_close_revert(pfile);
+			g_free(rcpath);
+			g_free(scoring_str);
+			return;
+		}
+		g_free(scoring_str);
+	}
+
+	g_free(rcpath);
+
+	if (prefs_write_close(pfile) < 0) {
+		g_warning(_("failed to write configuration to file\n"));
+		return;
+	}
 }

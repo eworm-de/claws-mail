@@ -57,7 +57,9 @@
 #include "export.h"
 #include "prefs_common.h"
 #include "prefs_filter.h"
+#include "prefs_scoring.h"
 #include "prefs_account.h"
+#include "prefs_folder_item.h"
 #include "account.h"
 #include "addressbook.h"
 #include "headerwindow.h"
@@ -318,7 +320,7 @@ static void prefs_common_open_cb (MainWindow	*mainwin,
 static void prefs_filter_open_cb (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
-static void prefs_matcher_open_cb (MainWindow	*mainwin,
+static void prefs_scoring_open_cb (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 static void prefs_account_open_cb(MainWindow	*mainwin,
@@ -522,7 +524,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Configuration/_Filter setting..."),
 						NULL, prefs_filter_open_cb, 0, NULL},
 	{N_("/_Configuration/_Scoring ..."),
-						NULL, prefs_matcher_open_cb, 0, NULL},
+						NULL, prefs_scoring_open_cb, 0, NULL},
 	{N_("/_Configuration/_Preferences per account..."),
 						NULL, prefs_account_open_cb, 0, NULL},
 	{N_("/_Configuration/---"),		NULL, NULL, 0, "<Separator>"},
@@ -1921,23 +1923,49 @@ static void set_charset_cb(MainWindow *mainwin, guint action,
 	debug_print(_("forced charset: %s\n"), str ? str : "Auto-Detect");
 }
 
-static void thread_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+void main_window_set_thread_option(MainWindow *mainwin)
 {
 	GtkItemFactory *ifactory;
 
-	ifactory = gtk_item_factory_from_widget(widget);
+	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
 
+	if (mainwin->summaryview->folder_item->prefs->enable_thread) {
+		menu_set_sensitive(ifactory, "/Summary/Thread view",   FALSE);
+		menu_set_sensitive(ifactory, "/Summary/Unthread view", TRUE);
+		summary_thread_build(mainwin->summaryview);
+	}
+	else {
+		menu_set_sensitive(ifactory, "/Summary/Thread view",   TRUE);
+		menu_set_sensitive(ifactory, "/Summary/Unthread view", FALSE);
+		summary_unthread(mainwin->summaryview);
+	}
+	prefs_folder_item_save_config(mainwin->summaryview->folder_item);
+}
+
+static void thread_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+{
+	/*
+	ifactory = gtk_item_factory_from_widget(widget);
+	*/
+	mainwin->summaryview->folder_item->prefs->enable_thread =
+		!mainwin->summaryview->folder_item->prefs->enable_thread;
+	main_window_set_thread_option(mainwin);
+
+	/*
 	if (0 == action) {
 		summary_thread_build(mainwin->summaryview);
-		prefs_common.enable_thread = TRUE;
+		mainwin->summaryview->folder_item->prefs->enable_thread =
+			TRUE;
 		menu_set_sensitive(ifactory, "/Summary/Thread view",   FALSE);
 		menu_set_sensitive(ifactory, "/Summary/Unthread view", TRUE);
 	} else {
 		summary_unthread(mainwin->summaryview);
-		prefs_common.enable_thread = FALSE;
+		mainwin->summaryview->folder_item->prefs->enable_thread =
+			FALSE;
 		menu_set_sensitive(ifactory, "/Summary/Thread view",   TRUE);
 		menu_set_sensitive(ifactory, "/Summary/Unthread view", FALSE);
 	}
+	*/
 }
 
 static void set_display_item_cb(MainWindow *mainwin, guint action,
@@ -2056,10 +2084,10 @@ static void prefs_filter_open_cb(MainWindow *mainwin, guint action,
 	prefs_filter_open();
 }
 
-static void prefs_matcher_open_cb(MainWindow *mainwin, guint action,
+static void prefs_scoring_open_cb(MainWindow *mainwin, guint action,
 				  GtkWidget *widget)
 {
-	prefs_matcher_open(NULL);
+	prefs_scoring_open();
 }
 
 static void prefs_account_open_cb(MainWindow *mainwin, guint action,

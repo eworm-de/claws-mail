@@ -1,3 +1,35 @@
+2001-05-11 [hoa]
+
+	* src/main.c
+	* src/messageview.c
+	* src/prefs_account.c
+	* src/prefs_display_header.c
+		removed warning
+	* src/Makefile.am
+		added prefs_scoring.[ch]
+	* src/grouplist_dialog.c
+		display an error dialog box if the group list
+		cannot be fetched.
+	* src/mainwindow.[ch]
+		added main_window_set_thread_option() function
+		scoring dialog box enabled
+	* src/matcher.[ch]
+		added flags matching unread /new / marked
+		/ deleted / replied / forwarded
+	* src/news.c
+		newsgroups are now finally in newscache
+	* src/prefs_matcher.[ch]
+		finished preferences for matching dialog
+	* added src/prefs_scoring.[ch]
+		scoring dialog box completed
+	* src/scoring.[ch]
+		conversion to string : added scoringprop_to_string()
+		write config for preferences :
+		added prefs_scoring_write_config()
+	* src/summaryview.c
+		threads can be enabled/disabled independently
+		for each folder
+
 2001-05-10 [alfons]
 
 	0.4.67claws1

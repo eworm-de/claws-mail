@@ -57,6 +57,7 @@
 #include "prefs_common.h"
 #include "prefs_filter.h"
 #include "prefs_account.h"
+#include "scoring.h"
 #include "prefs_display_header.h"
 #include "account.h"
 #include "procmsg.h"
