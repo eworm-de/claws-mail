@@ -28,11 +28,15 @@
 #include "intl.h"
 #include "plugin.h"
 
+#include "../filesel.h"
+#include "../alertpanel.h"
+
 typedef struct _PluginWindow
 {
 	GtkWidget *window;
 	GtkWidget *plugin_list;
 	GtkWidget *plugin_desc;
+	GtkWidget *unload_btn;
 
 	Plugin *selected_plugin;
 } PluginWindow;
@@ -41,6 +45,7 @@ static void close_cb(GtkButton *button, PluginWindow *pluginwindow)
 {
 	gtk_widget_destroy(pluginwindow->window);
 	g_free(pluginwindow);
+	plugin_save_list();
 }
 
 static void set_plugin_list(PluginWindow *pluginwindow)
@@ -53,6 +58,8 @@ static void set_plugin_list(PluginWindow *pluginwindow)
 	plugins = plugin_get_list();
 	gtk_clist_freeze(clist);
 	gtk_clist_clear(clist);
+	gtk_editable_delete_text(GTK_EDITABLE(pluginwindow->plugin_desc), 0, -1);
+	gtk_widget_set_sensitive(pluginwindow->unload_btn, FALSE);
 	
 	for(cur = plugins; cur != NULL; cur = g_slist_next(cur)) {
 		Plugin *plugin = (Plugin *) cur->data;
@@ -75,9 +82,46 @@ static void select_row_cb(GtkCList *clist, gint row, gint column,
 	plugin = (Plugin *) gtk_clist_get_row_data(clist, row);
 	pluginwindow->selected_plugin = plugin;
 
-	gtk_editable_delete_text(plugin_desc, 0, -1);
-	text = plugin_get_desc(plugin);
-	gtk_editable_insert_text(plugin_desc, text, strlen(text), &pos);
+	if (pluginwindow->selected_plugin != NULL) {
+		gtk_editable_delete_text(plugin_desc, 0, -1);
+		text = plugin_get_desc(plugin);
+		gtk_editable_insert_text(plugin_desc, text, strlen(text), &pos);
+		gtk_widget_set_sensitive(pluginwindow->unload_btn, TRUE);
+	} else {
+		gtk_widget_set_sensitive(pluginwindow->unload_btn, FALSE);
+	}
+}
+
+static void unselect_row_cb(GtkCList * clist, gint row, gint column,
+			    GdkEventButton * event, PluginWindow *pluginwindow)
+{
+	gtk_widget_set_sensitive(pluginwindow->unload_btn, FALSE);	
+}
+
+static void unload_cb(GtkButton *button, PluginWindow *pluginwindow)
+{
+	Plugin *plugin = pluginwindow->selected_plugin;
+	
+	g_return_if_fail(plugin != NULL);
+	plugin_unload(plugin);
+	set_plugin_list(pluginwindow);
+}
+
+static void load_cb(GtkButton *button, PluginWindow *pluginwindow)
+{
+	gchar *file, *error = NULL;
+
+	file = filesel_select_file(_("Select Plugin to load"), "");
+	if (file == NULL)
+		return;
+
+	plugin_load(file, &error);
+	if (error != NULL) {
+		alertpanel_error("The following error occured while loading the plugin:\n%s\n", error);
+		g_free(error);
+	}
+
+	set_plugin_list(pluginwindow);		
 }
 
 void pluginwindow_create()
@@ -184,19 +228,25 @@ void pluginwindow_create()
 	/* ----------------------------------------------------------- */
 
 	gtk_text_set_word_wrap(GTK_TEXT(plugin_desc), TRUE);
-	gtk_widget_set_sensitive(GTK_WIDGET(load_btn), FALSE);
 	gtk_widget_set_sensitive(GTK_WIDGET(unload_btn), FALSE);
 
 	pluginwindow = g_new0(PluginWindow, 1);
 
+	gtk_signal_connect(GTK_OBJECT(load_btn), "released",
+			   GTK_SIGNAL_FUNC(load_cb), pluginwindow);
+	gtk_signal_connect(GTK_OBJECT(unload_btn), "released",
+			   GTK_SIGNAL_FUNC(unload_cb), pluginwindow);
 	gtk_signal_connect(GTK_OBJECT(close_btn), "released",
 			   GTK_SIGNAL_FUNC(close_cb), pluginwindow);
 	gtk_signal_connect(GTK_OBJECT(plugin_list), "select-row",
 			   GTK_SIGNAL_FUNC(select_row_cb), pluginwindow);
+	gtk_signal_connect(GTK_OBJECT(plugin_list), "unselect-row",
+			   GTK_SIGNAL_FUNC(unselect_row_cb), pluginwindow);
 
 	pluginwindow->window = window;
 	pluginwindow->plugin_list = plugin_list;
 	pluginwindow->plugin_desc = plugin_desc;
+	pluginwindow->unload_btn = unload_btn;
 	pluginwindow->selected_plugin = NULL;
 
 	set_plugin_list(pluginwindow);

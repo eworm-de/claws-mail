@@ -49,9 +49,14 @@ struct _PrefsWindow
 	GtkWidget *apply_btn;
 };
 
-void prefswindow_register_new_page(PrefsPage *page)
+void prefswindow_register_page(PrefsPage *page)
 {
 	prefs_pages = g_slist_append(prefs_pages, page);
+}
+
+void prefswindow_unregister_page(PrefsPage *page)
+{
+	prefs_pages = g_slist_remove(prefs_pages, page);
 }
 
 static gboolean ctree_select_row(GtkCTree *ctree, GList *node, gint column, gpointer user_data)
@@ -170,7 +175,7 @@ static gboolean find_child_by_name(GtkCTree *ctree, GtkCTreeNode *node, struct n
 
 void prefswindow_create()
 {
-	static gchar *titles [] = {"Pages"};
+	static gchar *titles [] = {"Page Index"};
 	GSList *cur;
 	gint optsize;
 	PrefsWindow *prefswindow;

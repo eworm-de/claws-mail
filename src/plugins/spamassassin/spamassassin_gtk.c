@@ -253,6 +253,8 @@ static void spamassassin_destroy_func(PrefsPage *_page)
 	g_free(_page);
 }
 
+static struct SpamAssassinPage *spamassassin_page;
+
 gint plugin_init(gchar **error)
 {
 	struct SpamAssassinPage *page;
@@ -263,15 +265,19 @@ gint plugin_init(gchar **error)
 	page->page.destroy_widget = spamassassin_destroy_widget_func;
 	page->page.save_page = spamassassin_save_func;
 	page->page.destroy_page = spamassassin_destroy_func;
-	prefswindow_register_new_page((PrefsPage *) page);
+	prefswindow_register_page((PrefsPage *) page);
+
+	spamassassin_page = page;
 
 	debug_print("SpamAssassin GTK plugin loaded\n");
-
 	return 0;	
 }
 
 void plugin_done()
 {
+	prefswindow_unregister_page((PrefsPage *) spamassassin_page);
+	g_free(spamassassin_page);
+
 	debug_print("SpamAssassin GTK plugin unloaded\n");
 }
 

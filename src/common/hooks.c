@@ -38,6 +38,7 @@ GHookList *hooks_get_hooklist(gchar *hooklist_name)
 	if (hooklist != NULL)
 		return hooklist;
 	
+printf("new hooklist '%s'\n",hooklist_name);
 	hooklist = g_new0(GHookList, 1);
 	g_hook_list_init(hooklist, sizeof(GHook));
 	g_hash_table_insert(hooklist_table, hooklist_name, hooklist);
@@ -65,6 +66,7 @@ gint hooks_register_hook(gchar *hooklist_name,
 	hook->data = userdata;
 
 	g_hook_append(hooklist, hook);
+printf("new hook '%s' %d\n", hooklist_name, hook->hook_id );
 
 	return hook->hook_id;
 }

@@ -1,3 +1,36 @@
+2003-01-02 [christoph]	0.8.8claws42
+
+	* src/common/plugin.c
+		fix unloading of all plugins and unload
+		plugins in reverse order
+		
+	* src/gtk/pluginwindow.c
+		implement function of load and unload button
+
+	* src/gtk/prefswindow.c
+	* src/gtk/prefswindow.h
+		rename register function and add new unregister
+		function
+
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		unregister prefs page and update for changes in
+		src/gtk/prefswindow.c
+
+2003-01-02 [paul]	0.8.8claws41
+
+	* po/es.po
+		updated by Ricardo Mones Lastra
+
+2003-01-02 [paul]
+
+	* tools/tb2sylpheed
+		fixes and improvements by Urke MMI
+
+2003-01-02 [thorsten]	0.8.8claws40
+
+	* src/procmsg.c
+		fixed wrong return value
+
 2003-01-02 [thorsten]	0.8.8claws39
 
 	* src/prefs.c

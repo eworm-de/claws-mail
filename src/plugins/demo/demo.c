@@ -36,6 +36,7 @@ static guint hook_id;
 gint plugin_init(gchar **error)
 {
 	hook_id = hooks_register_hook(LOG_APPEND_TEXT_HOOKLIST, my_log_hook, NULL);
+printf("hook_id:%d\n",hook_id);	
 	if (hook_id == -1) {
 		*error = g_strdup("Failed to register log text hook");
 		return -1;
