@@ -1,3 +1,14 @@
+2005-04-05
+
+	* src/send_message.c: send_message_smtp(): consider EOF right after
+	  QUIT successful (workaround for Gmail SMTP server).
+	* src/socket.c: ssl_read(), ssl_peek(): check EOF which violates the
+	  SSL protocol.
+
+2005-03-25
+
+	* src/about.c: updated copyright year.
+
 2005-03-24
 
 	* version 1.0.4

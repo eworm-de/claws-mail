@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -412,6 +412,11 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 			ac_prefs->tmp_smtp_pass = NULL;
 		}
 		ret = -1;
+	} else if (session->state == SESSION_EOF &&
+		   SMTP_SESSION(session)->state == SMTP_QUIT) {
+		/* consider EOF right after QUIT successful */
+		log_warning("%s\n", _("Connection closed by the remote host."));
+		ret = 0;
 	} else if (session->state == SESSION_ERROR ||
 		   session->state == SESSION_EOF ||
 		   session->state == SESSION_TIMEOUT ||

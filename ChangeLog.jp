@@ -1,3 +1,14 @@
+2005-04-05
+
+	* src/send_messages.c: send_message_smtp(): QUIT 直後の EOF を成功と
+	  みなすようにした(Gmail の SMTP サーバへの対処)。
+	* src/socket.c: ssl_read(), ssl_peek(): SSL プロトコル違反の EOF を
+	  チェック。
+
+2005-03-25
+
+	* src/about.c: 著作権の年を更新。
+
 2005-03-24
 
 	* version 1.0.4
