@@ -1,3 +1,11 @@
+2002-06-16 [alfons]	0.7.8claws1
+
+	* AUTHORS
+	* src/logwindow.c
+	* src/prefscommon.[ch]
+		control size of log text in log window; 
+		closes patch #569155 submitted by Mitko Haralanov.
+
 2002-06-15 [paul]	0.7.8claws
 
 	* release of 0.7.8claws

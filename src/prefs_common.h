@@ -226,7 +226,10 @@ struct _PrefsCommon
 	gchar *print_cmd;
 	gchar *ext_editor_cmd;
 
-	gboolean confirm_on_exit;
+        gboolean cliplog;
+        guint loglength;
+
+        gboolean confirm_on_exit;
 	gboolean clean_on_exit;
 	gboolean ask_on_clean;
 	gboolean warn_queued_on_exit;
