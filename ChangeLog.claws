@@ -1,3 +1,8 @@
+2002-11-30 [paul]	0.8.6claws40
+
+	* src/compose.c
+		fix bug [642731] 'Wrong selected account with drafted mail'
+
 2002-11-29 [oliver]	0.8.6claws39
 	
 	* src/messageview.c

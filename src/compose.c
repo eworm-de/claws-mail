@@ -1160,11 +1160,11 @@ void compose_reedit(MsgInfo *msginfo)
 
 		/* Select Account from queue headers */
 		if (!get_header_from_msginfo(msginfo, queueheader_buf, 
-					     sizeof(queueheader_buf), "H_X_SYLPHEED_ACCOUNT_ID:")) {
-			id = atoi(&queueheader_buf[5]);
+					     sizeof(queueheader_buf), "X-Sylpheed-Account-Id:")) {
+			id = atoi(&queueheader_buf[22]);
 			account = account_find_from_id(id);
 		}
-		if (!get_header_from_msginfo(msginfo, queueheader_buf, 
+		if (!account && !get_header_from_msginfo(msginfo, queueheader_buf, 
 					     sizeof(queueheader_buf), "NAID:")) {
 			id = atoi(&queueheader_buf[5]);
 			account = account_find_from_id(id);
@@ -3898,6 +3898,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 
 	/* Save draft infos */
 	if (is_draft) {
+		fprintf(fp, "X-Sylpheed-Account-Id:%d\n", compose->account->account_id);
 		fprintf(fp, "S:%s\n", compose->account->address);
 		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
 			gchar *savefolderid;
@@ -4105,10 +4106,6 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 			procmime_get_encoding_str(encoding));
 	}
 
-	/* X-Sylpheed header */
-	if (is_draft)
-		fprintf(fp, "X-Sylpheed-Account-Id: %d\n",
-			compose->account->account_id);
 	/* PRIORITY */
 	switch (compose->priority) {
 		case PRIORITY_HIGHEST: fprintf(fp, "Importance: high\n"
