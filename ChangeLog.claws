@@ -1,3 +1,9 @@
+2003-02-14 [paul]	0.9.9claws10
+
+	* src/foldersel.c
+		fix updating of the folder view when creating a
+		new folder
+
 2003-02-13 [paul]	0.9.9claws9
 
 	* src/plugins/clamav/clamav_plugin.c

@@ -388,8 +388,7 @@ static void foldersel_new_folder(GtkButton *button, gpointer data)
 		return;
 	}
 
-	new_item = selected_item->folder->klass->create_folder
-		(selected_item->folder, selected_item, new_folder);
+	new_item = folder_create_folder(selected_item, new_folder);
 	if (!new_item) {
 		alertpanel_error(_("Can't create the folder `%s'."), disp_name);
 		return;
