@@ -32,6 +32,7 @@
 #include "prefs.h"
 #include "manage_window.h"
 #include "utils.h"
+#include "addr_compl.h"
 
 PrefsFolderItem tmp_prefs;
 
@@ -482,11 +483,15 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 
 	g_free(infotext);
 
+	address_completion_start(window);
+
 	gtk_widget_show(window);
 }
 
 void prefs_folder_item_destroy(struct PrefsFolderItemDialog *dialog) 
 {
+	address_completion_unregister_entry(GTK_ENTRY(dialog->entry_default_to));
+	address_completion_end(dialog->window);
 	gtk_widget_destroy(dialog->window);
 	g_free(dialog);
 }

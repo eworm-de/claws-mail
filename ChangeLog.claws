@@ -1,3 +1,9 @@
+2001-12-24 [alfons]	0.6.6claws18
+
+	* src/prefs_folder_item.c
+		make address completion actually work for the
+		Default To address in the Folder Property dialog.
+
 2001-12-24 [alfons]	0.6.6claws17
 	
 	* src/summaryview.c
