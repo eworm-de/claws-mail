@@ -1,3 +1,9 @@
+2003-01-16 [colin]	0.8.8claws104
+
+	* src/compose.[ch]
+		Fix bug with autosaved drafts for IMAP, when draft
+		folder is specified - fixes bugzilla bug #20
+
 2003-01-15 [paul]	0.8.8claws103
 
 	* src/compose.[ch]

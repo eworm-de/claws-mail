@@ -3467,7 +3467,8 @@ static gint compose_remove_reedit_target(Compose *compose)
 	g_return_val_if_fail(item != NULL, -1);
 
 	if (procmsg_msg_exist(msginfo) &&
-	    (item->stype == F_DRAFT || item->stype == F_QUEUE)) {
+	    (item->stype == F_DRAFT || item->stype == F_QUEUE 
+	     || msginfo == compose->autosaved_draft)) {
 		if (folder_item_remove_msg(item, msginfo->msgnum) < 0) {
 			g_warning("can't remove the old message\n");
 			return -1;
@@ -6094,7 +6095,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	
 	lock = FALSE;
 
-	/* 0: quit editing  1: keep editing */
+	/* 0: quit editing  1: keep editing  2: keep editing (autosave) */
 	if (action == 0)
 		gtk_widget_destroy(compose->window);
 	else {
@@ -6118,6 +6119,10 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		compose->targetinfo->mtime = s.st_mtime;
 		compose->targetinfo->folder = draft;
 		compose->mode = COMPOSE_REEDIT;
+		
+		if (action == 2) {
+			compose->autosaved_draft = compose->targetinfo;
+		}
 	}
 }
 
@@ -6778,7 +6783,7 @@ static void text_inserted(GtkWidget *widget, const gchar *text,
 	
 	if (prefs_common.autosave && 
 	    gtk_stext_get_length(GTK_STEXT(widget)) % prefs_common.autosave_length == 0)
-		compose_draft_cb((gpointer)compose, 1, NULL);
+		compose_draft_cb((gpointer)compose, 2, NULL);
 }
 
 static gboolean compose_send_control_enter(Compose *compose)
