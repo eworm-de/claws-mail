@@ -845,7 +845,9 @@ static void addressbook_button_set_sensitive(void)
 	if (addrbook.target_compose) {
 		to_sens = TRUE;
 		cc_sens = TRUE;
+#ifndef CLAWS		
 		if (addrbook.target_compose->use_bcc)
+#endif			
 			bcc_sens = TRUE;
 	}
 

@@ -1,3 +1,9 @@
+2002-01-20 [melvin] 0.7.0claws18
+
+	* src/addressbook.c
+		Made "Bcc" sensitive when addressbook is called from
+		compose window (it was a Claws only bug).
+
 2002-01-19 [alfons] 0.7.0claws17
 
 	* src/inc.c
