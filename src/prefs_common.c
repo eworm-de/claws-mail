@@ -1077,6 +1077,196 @@ static void prefs_compose_create(void)
 	compose.checkbtn_wrapatsend  = checkbtn_wrapatsend;
 }
 
+
+/* alfons - nice ui for darko */
+
+static void date_format_close_btn_clicked(GtkButton *button, GtkWidget **widget)
+{
+	g_return_if_fail(widget != NULL);
+	g_return_if_fail(*widget != NULL);
+	gtk_widget_destroy(*widget);
+	*widget = NULL;
+}
+
+static gboolean date_format_on_delete(GtkWidget *dialogwidget, gpointer d1, GtkWidget **widget)
+{
+	g_return_if_fail(widget != NULL);
+	g_return_if_fail(*widget != NULL);
+	*widget = NULL;
+	return FALSE;
+}
+
+static void date_format_entry_on_change(GtkEditable *editable, GtkLabel *example)
+{
+	time_t cur_time;
+	struct tm *cal_time;
+	char buffer[100];
+	char *text;
+	cur_time = time(NULL);
+	cal_time = localtime(&cur_time);
+	buffer[0] = 0;
+	text = gtk_editable_get_chars(editable, 0, -1);
+	if (text) {
+		strftime(buffer, sizeof buffer, text, cal_time); 
+	}
+	gtk_label_set_text(example, buffer);
+}
+
+static GtkWidget *create_date_format(GtkButton *button, void *data)
+{
+	static GtkWidget *date_format = NULL;
+	GtkWidget      *vbox1;
+	GtkWidget      *scrolledwindow1;
+	GtkWidget      *date_format_list;
+	GtkWidget      *label3;
+	GtkWidget      *label4;
+	GtkWidget      *table2;
+	GtkWidget      *vbox2;
+	GtkWidget      *vbox3;
+	GtkWidget      *hbox2;
+	GtkWidget      *label5;
+	GtkWidget      *entry1;
+	GtkWidget      *hbox1;
+	GtkWidget      *label6;
+	GtkWidget      *label7;
+	GtkWidget      *hbox3;
+	GtkWidget      *button1;
+
+	const struct  {
+		gchar *fmt;
+		gchar *txt;
+	} time_format[] = {
+		{ "%a", _("the full abbreviated weekday name") },
+		{ "%A", _("the full weekday name") },
+		{ "%b", _("the abbreviated month name") },
+		{ "%B", _("the full month name") },
+		{ "%c", _("the preferred date and time for the current locale") },
+		{ "%C", _("the century number (year/100)") },
+		{ "%d", _("the day of the month as a decimal number") },
+		{ "%H", _("the hour as a decimal number using a 24-hour clock") },
+		{ "%I", _("the hour as a decimal number using a 12-hour clock") },
+		{ "%j", _("the day of the year as a decimal number") },
+		{ "%m", _("the month as a decimal number") },
+		{ "%M", _("the minute as a decimal number") },
+		{ "%p", _("either AM or PM") },
+		{ "%S", _("the second as a decimal number") },
+		{ "%w", _("the day of the week as a decimal number") },
+		{ "%x", _("the preferred date for the current locale") },
+		{ "%y", _("the last two digits of a year") },
+		{ "%Y", _("the year as a decimal number") },
+		{ "%Z", _("the time zone or name or abbreviation") }
+	};
+	int tmp;
+	const int TIME_FORMAT_ELEMS = sizeof time_format / sizeof time_format[0];
+
+	if (date_format) return date_format;
+
+	date_format = gtk_window_new(GTK_WINDOW_DIALOG);
+	gtk_window_set_title(GTK_WINDOW(date_format), _("Date format"));
+	gtk_window_set_position(GTK_WINDOW(date_format), GTK_WIN_POS_CENTER);
+	gtk_window_set_default_size(GTK_WINDOW(date_format), 440, 200);
+
+	vbox1 = gtk_vbox_new(FALSE, 10);
+	gtk_widget_show(vbox1);
+	gtk_container_add(GTK_CONTAINER(date_format), vbox1);
+
+	scrolledwindow1 = gtk_scrolled_window_new(NULL, NULL);
+	gtk_widget_show(scrolledwindow1);
+	gtk_box_pack_start(GTK_BOX(vbox1), scrolledwindow1, TRUE, TRUE, 0);
+
+	date_format_list = gtk_clist_new(2);
+	gtk_widget_show(date_format_list);
+	gtk_container_add(GTK_CONTAINER(scrolledwindow1), date_format_list);
+	gtk_clist_set_column_width(GTK_CLIST(date_format_list), 0, 80);
+	gtk_clist_set_column_width(GTK_CLIST(date_format_list), 1, 80);
+	gtk_clist_column_titles_show(GTK_CLIST(date_format_list));
+
+	label3 = gtk_label_new(_("Date Format"));
+	gtk_widget_show(label3);
+	gtk_clist_set_column_widget(GTK_CLIST(date_format_list), 0, label3);
+
+	label4 = gtk_label_new(_("Date Format Description"));
+	gtk_widget_show(label4);
+	gtk_clist_set_column_widget(GTK_CLIST(date_format_list), 1, label4);
+
+	for (tmp = 0; tmp < TIME_FORMAT_ELEMS; tmp++) {
+		gchar *text[3];
+		/* phoney casting necessary because of gtk... */
+		text[0] = (gchar *) time_format[tmp].fmt;
+		text[1] = (gchar *) time_format[tmp].txt;
+		text[2] = NULL;
+		gtk_clist_append(GTK_CLIST(date_format_list), text);
+	}
+
+	table2 = gtk_table_new(1, 1, TRUE);
+	gtk_widget_show(table2);
+	gtk_box_pack_start(GTK_BOX(vbox1), table2, FALSE, TRUE, 0);
+
+	vbox2 = gtk_vbox_new(FALSE, 0);
+	gtk_widget_show(vbox2);
+	gtk_table_attach(GTK_TABLE(table2), vbox2, 0, 1, 0, 1,
+					 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+					 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+
+	vbox3 = gtk_vbox_new(TRUE, 4);
+	gtk_widget_show(vbox3);
+	gtk_box_pack_end(GTK_BOX(vbox2), vbox3, FALSE, FALSE, 10);
+
+	hbox2 = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(hbox2);
+	gtk_box_pack_start(GTK_BOX(vbox3), hbox2, TRUE, TRUE, 0);
+
+	label5 = gtk_label_new(_("Date format"));
+	gtk_widget_show(label5);
+	gtk_box_pack_start(GTK_BOX(hbox2), label5, FALSE, FALSE, 0);
+	gtk_misc_set_padding(GTK_MISC(label5), 8, 0);
+
+	entry1 = gtk_entry_new_with_max_length(300);
+	gtk_widget_show(entry1);
+	gtk_box_pack_start(GTK_BOX(hbox2), entry1, TRUE, TRUE, 40);
+
+	hbox1 = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(hbox1);
+	gtk_box_pack_start(GTK_BOX(vbox3), hbox1, TRUE, TRUE, 0);
+
+	label6 = gtk_label_new(_("Example"));
+	gtk_widget_show(label6);
+	gtk_box_pack_start(GTK_BOX(hbox1), label6, FALSE, TRUE, 0);
+	gtk_misc_set_padding(GTK_MISC(label6), 8, 0);
+
+	label7 = gtk_label_new(_("label7"));
+	gtk_widget_show(label7);
+	gtk_box_pack_start(GTK_BOX(hbox1), label7, TRUE, TRUE, 60);
+	gtk_label_set_justify(GTK_LABEL(label7), GTK_JUSTIFY_LEFT);
+
+	hbox3 = gtk_hbox_new(TRUE, 0);
+	gtk_widget_show(hbox3);
+	gtk_box_pack_end(GTK_BOX(vbox3), hbox3, FALSE, FALSE, 0);
+
+	button1 = gtk_button_new_with_label(_("Close"));
+	gtk_widget_show(button1);
+	gtk_box_pack_start(GTK_BOX(hbox3), button1, FALSE, TRUE, 144);
+
+	/* set the current format */
+	gtk_entry_set_text(GTK_ENTRY(entry1), prefs_common.date_format);
+	date_format_entry_on_change(GTK_EDITABLE(entry1), GTK_LABEL(label7));
+
+	gtk_signal_connect(GTK_OBJECT(button1), "clicked",
+				  GTK_SIGNAL_FUNC(date_format_close_btn_clicked), &date_format);
+				  
+	gtk_signal_connect(GTK_OBJECT(date_format), "delete_event",
+			    GTK_SIGNAL_FUNC(date_format_on_delete), &date_format);
+
+	gtk_signal_connect(GTK_OBJECT(entry1), "changed",
+				GTK_SIGNAL_FUNC(date_format_entry_on_change), label7);
+				  
+	gtk_window_set_position(GTK_WINDOW(date_format), GTK_WIN_POS_CENTER);
+	gtk_window_set_modal(GTK_WINDOW(date_format), TRUE);
+
+	gtk_widget_show(date_format);					
+	return date_format;
+}
+
 static void prefs_display_create(void)
 {
 	GtkWidget *vbox1;
@@ -1094,7 +1284,6 @@ static void prefs_display_create(void)
 	GtkWidget *hbox1;
 	GtkWidget *label_datefmt;
 	GtkWidget *entry_datefmt;
-	GtkTooltips *tooltips_datefmt;
 	GtkWidget *button_dispitem;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
@@ -1158,41 +1347,16 @@ static void prefs_display_create(void)
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
 
-	label_datefmt = gtk_label_new (_("Date format"));
+	label_datefmt = gtk_button_new_with_label (_("Date format"));
 	gtk_widget_show (label_datefmt);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_datefmt, FALSE, FALSE, 0);
+	gtk_signal_connect(GTK_OBJECT(label_datefmt), "clicked",
+				  GTK_SIGNAL_FUNC(create_date_format), NULL);
 
 	entry_datefmt = gtk_entry_new ();
 	gtk_widget_show (entry_datefmt);
 	gtk_box_pack_start (GTK_BOX (hbox1), entry_datefmt, TRUE, TRUE, 0);
-
-	tooltips_datefmt = gtk_tooltips_new ();
-	gtk_tooltips_set_tip
-		(tooltips_datefmt, entry_datefmt,
-		 _("Ordinary characters placed in the format string are copied "
-		   "without conversion. Conversion specifiers are introduced by "
-		   "a % character, and are replaced as follows:\n"
-		   "%a: the abbreviated weekday name\n"
-		   "%A: the full weekday name\n"
-		   "%b: the abbreviated month name\n"
-		   "%B: the full month name\n"
-		   "%c: the preferred date and time for the current locale\n"
-		   "%C: the century number (year/100)\n"
-		   "%d: the day of the month as a decimal number\n"
-		   "%H: the hour as a decimal number using a 24-hour clock\n"
-		   "%I: the hour as a decimal number using a 12-hour clock\n"
-		   "%j: the day of the year as a decimal number\n"
-		   "%m: the month as a decimal number\n"
-		   "%M: the minute as a decimal number\n"
-		   "%p: either AM or PM\n"
-		   "%S: the second as a decimal number\n"
-		   "%w: the day of the week as a decimal number\n"
-		   "%x: the preferred date for the current locale\n"
-		   "%y: the last two digits of a year\n"
-		   "%Y: the year as a decimal number\n"
-		   "%Z: the time zone or name or abbreviation"),
-		 NULL);
-
+	
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
