@@ -93,6 +93,7 @@ static struct Cmd {
 	gboolean receive_all;
 	gboolean compose;
 	const gchar *compose_mailto;
+	gboolean status;
 } cmd;
 
 static void parse_cmd_opt(int argc, char *argv[]);
@@ -194,7 +195,11 @@ int main(int argc, char *argv[])
 	/* check and create unix domain socket */
 	lock_socket = prohibit_duplicate_launch();
 	if (lock_socket < 0) return 0;
-    
+	if (cmd.status) {
+		puts("0 Sylpheed not running.\n");
+		return 0;
+	}
+
 	/* backup if old rc file exists */
 	if (is_file_exist(RC_DIR)) {
 		if (rename(RC_DIR, RC_DIR ".bak") < 0)
@@ -333,6 +338,8 @@ static void parse_cmd_opt(int argc, char *argv[])
 		} else if (!strncmp(argv[i], "--version", 9)) {
 			puts("Sylpheed version " VERSION);
 			exit(0);
+		} else if (!strncmp(argv[i], "--status", 5)) {
+			cmd.status = TRUE;
 		} else if (!strncmp(argv[i], "--help", 6)) {
 			g_print(_("Usage: %s [OPTION]...\n"),
 				g_basename(argv[0]));
@@ -470,6 +477,12 @@ static gint prohibit_duplicate_launch(void)
 
 		fd_write(uxsock, compose_str, strlen(compose_str));
 		g_free(compose_str);
+	} else if (cmd.status) {
+		gchar buf[BUFFSIZE];
+
+		fd_write(uxsock, "status\n", 9);
+		fd_gets(uxsock, buf, sizeof(buf));
+		puts(buf);
 	} else
 		fd_write(uxsock, "popup\n", 6);
 
@@ -487,7 +500,6 @@ static void lock_socket_input_cb(gpointer data,
 
 	sock = fd_accept(source);
 	fd_gets(sock, buf, sizeof(buf));
-	fd_close(sock);
 
 	if (!strncmp(buf, "popup", 5)){
 		main_window_popup(mainwin);
@@ -499,7 +511,15 @@ static void lock_socket_input_cb(gpointer data,
 		inc_mail(mainwin);
 	} else if (!strncmp(buf, "compose", 7)) {
 		open_compose_new_with_recipient(buf + strlen("compose") + 1);
+	} else if (!strncmp(buf, "status", 6)) {
+		gchar buf[BUFFSIZE];
+		guint newmsgs, unreadmsgs, totalmsgs;
+
+		folder_count_total_msgs(&newmsgs, &unreadmsgs, &totalmsgs);
+		snprintf(buf, sizeof(buf), "%d %d %d\n", newmsgs, unreadmsgs, totalmsgs);
+		fd_write(sock, buf, strlen(buf));
 	}
+	fd_close(sock);
 }
 
 static void open_compose_new_with_recipient(const gchar *address)

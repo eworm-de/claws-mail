@@ -1499,3 +1499,41 @@ FolderItem * folder_find_item_from_identifier(const gchar *identifier)
 			folder_item_find_func, d);
 	return d[1];
 }
+
+static void folder_count_total_newmsgs_func(const GNode *node, guint *newmsgs, 
+					    guint *unreadmsgs, guint *totalmsgs)
+{
+	if (node->data) {
+		FolderItem *item = node->data;
+		*newmsgs += item->new;
+		*unreadmsgs += item->unread;
+		*totalmsgs += item->total;
+	}
+	if (node->children)
+		folder_count_total_newmsgs_func(node->children, newmsgs, unreadmsgs, totalmsgs);
+	if (node->next)
+		folder_count_total_newmsgs_func(node->next, newmsgs, unreadmsgs, totalmsgs);
+}
+
+void folder_count_total_msgs(guint *newmsgs, guint *unreadmsgs, guint *totalmsgs)
+{
+	GList *list;
+	Folder *folder;
+
+	*newmsgs = 0;
+	*unreadmsgs = 0;
+	*totalmsgs = 0;
+
+	debug_print(_("Counting total number of messages...\n"));
+	list = folder_get_list();
+	for (; list != NULL; list = list->next) {
+		folder = FOLDER(list->data);
+		if (folder->node)
+			folder_count_total_newmsgs_func(folder->node, newmsgs, unreadmsgs, totalmsgs);
+	}
+	debug_print(_("  New: %d\n"), *newmsgs);
+	debug_print(_("  Unread: %d\n"), *unreadmsgs);
+	debug_print(_("  Total: %d\n"), *totalmsgs);
+
+	return;
+}

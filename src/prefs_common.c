@@ -350,8 +350,7 @@ static PrefParam param[] = {
 	 prefs_dictionary_set_data_from_optmenu, prefs_dictionary_set_optmenu },
 #endif
 	{"reply_with_quote", "TRUE", &prefs_common.reply_with_quote, P_BOOL,
-	 &compose.checkbtn_quote,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
 
 	/* Account autoselection */
 	{"reply_account_autoselect", "TRUE",

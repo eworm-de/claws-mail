@@ -547,13 +547,13 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 		next = node->next;
 		msginfo = (MsgInfo *)node->data;
 		parent = NULL;
-		/* CLAWS: ignore thread */
 		if (msginfo->inreplyto) 
 			parent = g_hash_table_lookup(msgid_table, msginfo->inreplyto);
 		if (parent && parent != node) {
 			g_node_unlink(node);
 			g_node_insert_before
 				(parent, parent->children, node);
+			/* CLAWS: ignore thread */
 			if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags)) {
 				MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
 			}
@@ -584,6 +584,10 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			if (parent) {
 				g_node_unlink(node);
 				g_node_append(parent, node);
+				/* CLAWS: ignore thread */
+				if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags)) {
+					MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
+				}
 			}
 		}					
 		node = next;

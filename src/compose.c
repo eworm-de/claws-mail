@@ -2840,7 +2840,7 @@ static gint compose_bounce_write_to_file(Compose *compose, const gchar *file)
 		return -1;
 	}
 
-	if ((fdest = fopen(file, "a+")) == NULL) {
+	if ((fdest = fopen(file, "w")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		fclose(fp);
 		return -1;
@@ -2893,7 +2893,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	const gchar *out_codeset;
 	EncodingType encoding;
 
-	if ((fp = fopen(file, "a+")) == NULL) {
+	if ((fp = fopen(file, "w")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return -1;
 	}
@@ -3117,7 +3117,7 @@ static gint compose_remove_reedit_target(Compose *compose)
 static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
 {
 	FolderItem *queue;
-	gchar *tmpfilename, *queue_path;
+	gchar *tmp, *tmp2, *queue_path;
 	FILE *fp, *src_fp;
 	GSList *cur;
 	gchar buf[BUFFSIZE];
@@ -3143,22 +3143,6 @@ static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
                 return -1;
         }
 
-        if (prefs_common.linewrap_at_send)
-    		compose_wrap_line_all(compose);
-			
-	/* write to temporary file */
-	tmpfilename = g_strdup_printf("%s%cqueue.%d", g_get_tmp_dir(),
-				      G_DIR_SEPARATOR, (gint)compose);
-	if ((fp = fopen(tmpfilename, "w")) == NULL) {
-		FILE_OP_ERROR(tmpfilename, "fopen");
-		g_free(tmpfilename);
-		return -1;
-	}
-	if (change_file_mode_rw(fp, tmpfilename) < 0) {
-		FILE_OP_ERROR(tmpfilename, "chmod");
-		g_warning(_("can't change file mode\n"));
-	}
-
 	if(compose->to_list) {
     		if (compose->account->protocol != A_NNTP)
             		mailac = compose->account;
@@ -3167,7 +3151,6 @@ static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
 		else if (cur_account && cur_account->protocol != A_NNTP)
 	    		mailac = cur_account;
 		else if (!(mailac = compose_current_mail_account())) {
-			unlink(tmpfilename);
 			lock = FALSE;
 			alertpanel_error(_("No account for sending mails available!"));
 			return -1;
@@ -3178,11 +3161,54 @@ static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
                 if (compose->account->protocol == A_NNTP)
                         newsac = compose->account;
                 else if(!(newsac = compose->orig_account) || (newsac->protocol != A_NNTP)) {
-			unlink(tmpfilename);
 			lock = FALSE;
 			alertpanel_error(_("No account for posting news available!"));
 			return -1;
 		}			
+	}
+
+        if (prefs_common.linewrap_at_send)
+    		compose_wrap_line_all(compose);
+			
+	/* write to temporary file */
+	tmp2 = g_strdup_printf("%s%ctmp%d", g_get_tmp_dir(),
+				      G_DIR_SEPARATOR, (gint)compose);
+
+	if (compose->bounce_filename != NULL) {
+		if (compose_bounce_write_to_file(compose, tmp2) < 0) {
+			unlink(tmp2);
+			lock = FALSE;
+			return -1;
+		}
+	}
+	else {
+		if (compose_write_to_file(compose, tmp2, FALSE) < 0) {
+			unlink(tmp2);
+			lock = FALSE;
+			return -1;
+		}
+	}
+
+	/* add queue header */
+	tmp = g_strdup_printf("%s%cqueue.%d", g_get_tmp_dir(),
+				      G_DIR_SEPARATOR, (gint)compose);
+	if ((fp = fopen(tmp, "w")) == NULL) {
+		FILE_OP_ERROR(tmp, "fopen");
+		g_free(tmp);
+		return -1;
+	}
+	if ((src_fp = fopen(tmp2, "r")) == NULL) {
+		FILE_OP_ERROR(tmp2, "fopen");
+		fclose(fp);
+		unlink(tmp);
+		g_free(tmp);
+		unlink(tmp2);
+		g_free(tmp2);
+		return -1;
+	}
+	if (change_file_mode_rw(fp, tmp) < 0) {
+		FILE_OP_ERROR(tmp, "chmod");
+		g_warning(_("can't change file mode\n"));
 	}
 
 	/* queueing variables */
@@ -3233,21 +3259,27 @@ static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
 		fprintf(fp, "NAID:%d\n", newsac->account_id);
 	}
 	fprintf(fp, "\n");
-	fclose(fp);
 
-	if (compose->bounce_filename != NULL) {
-		if (compose_bounce_write_to_file(compose, tmpfilename) < 0) {
-			unlink(tmpfilename);
-			lock = FALSE;
+	while (fgets(buf, sizeof(buf), src_fp) != NULL) {
+		if (fputs(buf, fp) == EOF) {
+			FILE_OP_ERROR(tmp, "fputs");
+			fclose(fp);
+			fclose(src_fp);
+			unlink(tmp);
+			g_free(tmp);
+			unlink(tmp2);
+			g_free(tmp2);
 			return -1;
 		}
 	}
-	else {
-		if (compose_write_to_file(compose, tmpfilename, FALSE) < 0) {
-			unlink(tmpfilename);
-			lock = FALSE;
-			return -1;
-		}
+	fclose(src_fp);
+	if (fclose(fp) == EOF) {
+		FILE_OP_ERROR(tmp, "fclose");
+		unlink(tmp);
+		g_free(tmp);
+		unlink(tmp2);
+		g_free(tmp2);
+		return -1;
 	}
 						
 	/* queue message */
@@ -3257,14 +3289,17 @@ static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
 	queue_path = folder_item_get_path(queue);
 	if (!is_dir_exist(queue_path))
 		make_dir_hier(queue_path);
-	if ((num = folder_item_add_msg(queue, tmpfilename, TRUE)) < 0) {
+	if ((num = folder_item_add_msg(queue, tmp, TRUE)) < 0) {
 		g_warning(_("can't queue the message\n"));
-		unlink(tmpfilename);
-		g_free(tmpfilename);
+		unlink(tmp);
+		g_free(tmp);
 		g_free(queue_path);
 		return -1;
 	}
-	g_free(tmpfilename);
+	unlink(tmp);
+	g_free(tmp);
+	unlink(tmp2);
+	g_free(tmp2);
 
 	if (compose->mode == COMPOSE_REEDIT) {
 		compose_remove_reedit_target(compose);

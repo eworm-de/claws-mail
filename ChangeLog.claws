@@ -1,3 +1,21 @@
+2001-11-23 [christoph]	0.6.5claws29
+
+	* src/.cvsignore
+		added ylwrap
+	* src/compose.c
+		fixed gpg signing and encoding
+	* src/folder.[ch]
+	* src/main.c
+		added --status option to get new, unread and total
+		message count from a running sylpheed
+	* src/prefs_common.c
+		temporary fix for reply_with_quote problem
+		(don't call functions for non existing widget)
+	* src/procmsg.c
+		one more check for ignored threads but still not
+		always working correctly. probably a recursive
+		check for all parents is needed
+
 2001-11-23 [darko]	0.6.5claws28
 
 	* src/compose.c
@@ -149,6 +167,7 @@
 
 2001-11-13 [christoph]	0.6.5claws11
 
+	* src/compose.c
 		Cleanup a mess i add before commiting
 
 2001-11-13 [hoa] 	0.6.5claws10
