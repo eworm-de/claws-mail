@@ -1,3 +1,8 @@
+2005-03-18 [paul]	1.0.3cvs2.5
+
+	* src/foldersel.c
+		fix bug 694 'Enter doesn't trigger OK in "Move" window'
+
 2005-03-18 [paul]	1.0.3cvs2.4
 
 	* src/addrharvest.c

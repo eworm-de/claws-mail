@@ -474,8 +474,13 @@ static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data)
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-	if (event && event->keyval == GDK_Escape)
-		foldersel_cancel(NULL, NULL);
+	if (event) {
+		if (event->keyval == GDK_Escape)
+			foldersel_cancel(NULL, NULL);
+		else if (event->keyval == GDK_Return)
+			foldersel_ok(NULL, NULL);
+	}
+
 	return FALSE;
 }
 
