@@ -74,10 +74,12 @@ are hardly noticable, but deserve mentioning:
   You can also share or use shared mail folders. Right-click a folder and
   select Property. Change the Folder chmod setting.
 
-* default reply-to address for folders
+* default to address for folders
   Most people filter mailing list mails to separate folders. Claws allows
-  you to associate a folder with a mailing list. Right-click a folder, 
-  select Property and change the Default To setting.
+  you to associate a folder with a mailing list or a person. Right-click a
+  folder, select Property and change the Default To setting. When you
+  compose a new mail, when this folder is selected the recepient address
+  will be set to this address.
 
   (NOTE: this is also a shoot-yourself-in-the-foot-setting! If you want
    to send a private mail, don't have a folder selected with this setting
@@ -145,6 +147,6 @@ Ask around in both Sylpheed ML and Sylpheed Claws Users ML. Note
 that some developers may already thought about your feature, may
 perhaps be implementing it - or the feature was already discussed
 and rejected for whatever reason.  You might want to go ahead and 
-hack a patch for it. (That would be very cool!)
-
-
+hack a patch for it. (That would be very cool!) Another
+possibility is to use the Feature Request Tracker at the
+sourceforge project page.

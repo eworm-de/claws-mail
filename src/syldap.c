@@ -39,12 +39,16 @@
 #include "addritem.h"
 #include "addrcache.h"
 #include "syldap.h"
+#include "utils.h"
 
 /*
 * Create new LDAP server interface object.
 */
 SyldapServer *syldap_create() {
 	SyldapServer *ldapServer;
+
+	debug_print("Creating LDAP server interface object\n");
+
 	ldapServer = g_new0( SyldapServer, 1 );
 	ldapServer->name = NULL;
 	ldapServer->hostName = NULL;
@@ -217,6 +221,8 @@ gboolean syldap_get_accessed( SyldapServer *ldapServer ) {
 void syldap_free( SyldapServer *ldapServer ) {
 	g_return_if_fail( ldapServer != NULL );
 
+	debug_print("Freeing LDAP server interface object\n");
+
 	ldapServer->callBack = NULL;
 
 	/* Free internal stuff */
@@ -246,6 +252,7 @@ void syldap_free( SyldapServer *ldapServer ) {
 	ldapServer->searchCriteria = NULL;
 	ldapServer->searchValue = NULL;
 	ldapServer->addressCache = NULL;
+	g_free(ldapServer->thread);
 	ldapServer->thread = NULL;
 	ldapServer->busyFlag = FALSE;
 	ldapServer->retVal = MGU_SUCCESS;
@@ -649,8 +656,11 @@ gint syldap_read_data( SyldapServer *ldapServer ) {
 	if( ldapServer->callBack ) {
 		( ldapServer->callBack )( ldapServer );
 	}
+	/* The thread struct should not be freed inside the thread
+	g_free(ldapServer->thread);
 	ldapServer->thread = NULL;
 	pthread_exit( NULL );
+	*/
 	return ldapServer->retVal;
 }
 
@@ -664,9 +674,14 @@ void syldap_cancel_read( SyldapServer *ldapServer ) {
 
 	if( ldapServer->thread ) {
 		/* printf( "thread cancelled\n" ); */
+		/* The thread is cancleing itself, ok?
 		pthread_cancel( *ldapServer->thread );
+		*/
 	}
+	/* The thread struct should not be freed inside the thread
+	g_free(ldapServer->thread);
 	ldapServer->thread = NULL;
+	*/
 	ldapServer->busyFlag = FALSE;
 }
 
@@ -678,15 +693,15 @@ void syldap_cancel_read( SyldapServer *ldapServer ) {
 */
 /* ============================================================================================ */
 gint syldap_read_data_th( SyldapServer *ldapServer ) {
-	pthread_t thread;
-
 	g_return_val_if_fail( ldapServer != NULL, -1 );
 
 	ldapServer->busyFlag = FALSE;
 	syldap_check_search( ldapServer );
 	if( ldapServer->retVal == MGU_SUCCESS ) {
+		debug_print("Staring LDAP read thread\n");
+
 		ldapServer->busyFlag = TRUE;
-		ldapServer->thread = &thread;
+		ldapServer->thread = g_new0(pthread_t, 1);
 		pthread_create( ldapServer->thread, NULL, (void *) &syldap_read_data, (void *) ldapServer );
 	}
 	return ldapServer->retVal;

@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
 	gtk_set_locale();
 	gtk_init(&argc, &argv);
 
-#if USE_THREADS
+#if USE_THREADS || USE_LDAP
 	g_thread_init(NULL);
 	if (!g_thread_supported())
 		g_error(_("g_thread is not supported by glib.\n"));
@@ -296,7 +296,9 @@ int main(int argc, char *argv[])
 	/* ignore SIGPIPE signal for preventing sudden death of program */
 	signal(SIGPIPE, SIG_IGN);
 
+	gdk_threads_enter();
 	gtk_main();
+	gdk_threads_leave();
 
 #if USE_PSPELL       
 	gtkpspell_finished(gtkpspellconfig);

@@ -3395,7 +3395,7 @@ msgstr "Gefunden %s\n"
 
 #: src/prefs.c:88
 msgid "Finished reading configuration.\n"
-msgstr "Einlesen der Konfuguration beendet.\n"
+msgstr "Einlesen der Konfiguration beendet.\n"
 
 #: src/prefs.c:139 src/prefs.c:167 src/prefs.c:212 src/prefs_account.c:437
 #: src/prefs_account.c:451 src/prefs_customheader.c:388
