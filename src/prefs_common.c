@@ -170,7 +170,7 @@ static struct Message {
 #if USE_GPGME
 static struct Privacy {
 	GtkWidget *checkbtn_default_encrypt;
-    GtkWidget *checkbtn_ascii_armored;
+        GtkWidget *checkbtn_ascii_armored;
 	GtkWidget *checkbtn_default_sign;
 	GtkWidget *checkbtn_auto_check_signatures;
 	GtkWidget *checkbtn_gpg_signature_popup;
@@ -223,7 +223,7 @@ static void prefs_common_default_signkey_set_data_from_optmenu
 							(PrefParam *pparam);
 static void prefs_common_default_signkey_set_optmenu	(PrefParam *pparam);
 static void prefs_common_ascii_armored_warning(GtkWidget* widget, 
-												gpointer unused);
+				               gpointer unused);
 #endif
 static void prefs_common_recv_dialog_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_common_recv_dialog_set_optmenu(PrefParam *pparam);
@@ -1930,7 +1930,7 @@ static void prefs_privacy_create(void)
 	GtkWidget *vbox2;
 	GtkWidget *hbox1;
 	GtkWidget *checkbtn_default_encrypt;
-    GtkWidget *checkbtn_ascii_armored;
+        GtkWidget *checkbtn_ascii_armored;
 	GtkWidget *checkbtn_default_sign;
 	GtkWidget *checkbtn_auto_check_signatures;
 	GtkWidget *checkbtn_gpg_signature_popup;
@@ -1996,7 +1996,7 @@ static void prefs_privacy_create(void)
 	gtk_widget_set_sensitive(optmenu, FALSE);
 
 	privacy.checkbtn_default_encrypt = checkbtn_default_encrypt;
-    privacy.checkbtn_ascii_armored = checkbtn_ascii_armored;
+        privacy.checkbtn_ascii_armored   = checkbtn_ascii_armored;
 	privacy.checkbtn_default_sign    = checkbtn_default_sign;
 	privacy.checkbtn_auto_check_signatures
 					 = checkbtn_auto_check_signatures;
@@ -2054,14 +2054,14 @@ static void prefs_common_default_signkey_set_optmenu(PrefParam *pparam)
 }
 
 static void prefs_common_ascii_armored_warning(GtkWidget* widget,
-												gpointer unused)
+					       gpointer unused)
 {
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget))
 		&& gtk_notebook_get_current_page(GTK_NOTEBOOK(dialog.notebook))) {
-		alertpanel_message("Warning - Privacy/Plain ASCII armored",
-			"Its not recommend to use the old style plain ASCII\n"
+		alertpanel_message(_("Warning - Privacy/Plain ASCII armored"),
+			_("Its not recommend to use the old style plain ASCII\n"
 			"armored mode for encypted messages. It doesn't comply\n"
-			"with the RFC 3156 - MIME security with OpenPGP.");
+			"with the RFC 3156 - MIME security with OpenPGP."));
 	}
 }
 #endif /* USE_GPGME */
