@@ -4494,13 +4494,17 @@ static gint summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 	switch (event->keyval) {
 	case GDK_space:		/* Page down or go to the next */
-		if (summaryview->displayed != summaryview->selected) {
-			summary_display_msg(summaryview,
-					    summaryview->selected);
-			break;
-		}
-		if (!textview_scroll_page(textview, FALSE))
-			summary_select_next_unread(summaryview);
+		if (event->state & GDK_SHIFT_MASK) 
+			textview_scroll_page(textview, TRUE);
+		else {
+			if (summaryview->displayed != summaryview->selected) {
+				summary_display_msg(summaryview,
+						    summaryview->selected);
+				break;
+			}
+			if (!textview_scroll_page(textview, FALSE))
+				summary_select_next_unread(summaryview);
+		}				
 		break;
 	case GDK_BackSpace:	/* Page up */
 		textview_scroll_page(textview, TRUE);
