@@ -1,8 +1,15 @@
+2002-01-13 [paul]	0.7.0claws
+
+	* release 0.7.0, with cvs tag 'rel_0_7_0'
+
 2002-01-13 [paul]
 
 	* tools/filter_conv.pl
 	* tools/README
-		rewritten to output to matcherrc instead of filteringrc 
+		rewritten to output to matcherrc instead of filteringrc
+
+	* po/es.po
+		updated Spanish translation by Ricardo Mones Lastra
 
 2002-01-13 [alfons]
 
