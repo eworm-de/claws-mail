@@ -291,7 +291,7 @@ gint execute_command_line	(const gchar	*cmdline,
 				 gboolean	 async);
 
 /* open URI with external browser */
-gint open_uri(const gchar *uri, const gchar *cmdline);
+gint open_uri			(const gchar *uri, const gchar *cmdline);
 
 /* time functions */
 time_t remote_tzoffset_sec	(const gchar	*zone);

@@ -1,5 +1,8 @@
 2001-11-04 [alfons]	0.6.4claws24
-	
+
+	* src/utils.[ch]
+		edit to comply more with coding style
+
 	* src/textview.c
 		fix bug reported by Kim Schulz. introduced by the patch integrated
 		in 0.6.4claws15. the code did not check the return value of

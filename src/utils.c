@@ -1817,17 +1817,17 @@ gint execute_command_line(const gchar *cmdline, gboolean async)
 
 static gint is_unchanged_uri_char(char c)
 {
-  switch (c) {
-    case '(':
-    case ')':
-    case ',':
-      return 0;
-    default:
-      return 1;
-    }
+	switch (c) {
+		case '(':
+		case ')':
+		case ',':
+			return 0;
+		default:
+			return 1;
+	}
 }
 
-void encode_uri(gchar * encoded_uri, gint bufsize, const gchar * uri)
+void encode_uri(gchar *encoded_uri, gint bufsize, const gchar *uri)
 {
 	int i;
 	int k;
@@ -1857,31 +1857,31 @@ void encode_uri(gchar * encoded_uri, gint bufsize, const gchar * uri)
  */
 static gint axtoi(const gchar *hexstr)
 {
-	gint Hi, Lo, Result;
+	gint hi, lo, result;
        
-	Hi = hexstr[0];
-	if ('0' <= Hi && Hi <= '9') {
-		Hi -= '0';
+	hi = hexstr[0];
+	if ('0' <= hi && hi <= '9') {
+		hi -= '0';
 	} else
-		if ('a' <= Hi && Hi <= 'f') {
-			Hi -=('a'-10);
+		if ('a' <= hi && hi <= 'f') {
+			hi -= ('a' - 10);
 		} else
-			if ('A' <= Hi && Hi <= 'F') {
-				Hi -= ('A'-10);
+			if ('A' <= hi && hi <= 'F') {
+				hi -= ('A' - 10);
 			}
 
-	Lo = hexstr[1];
-	if ('0' <= Lo && Lo <='9') {
-		Lo -= '0';
+	lo = hexstr[1];
+	if ('0' <= lo && lo <= '9') {
+		lo -= '0';
 	} else
-		if ('a' <= Lo && Lo <= 'f') {
-			Lo -= ('a'-10);
+		if ('a' <= lo && lo <= 'f') {
+			lo -= ('a'-10);
 		} else
-			if ('A' <= Lo && Lo <= 'F') {
-				Lo -= ('A'-10);
+			if ('A' <= lo && lo <= 'F') {
+				lo -= ('A' - 10);
 			}
-	Result = Lo + (16 * Hi);
-	return (Result);
+	result = lo + (16 * hi);
+	return result;
 }
 
 
@@ -1889,40 +1889,37 @@ static gint axtoi(const gchar *hexstr)
  * plusses, and escape characters are used)
  */
 
-void decode_uri(gchar * decoded_uri, const gchar * encoded_uri)
+void decode_uri(gchar *decoded_uri, const gchar *encoded_uri)
 {
-	const gchar * encoded;
-	gchar * decoded;
+	const gchar *encoded;
+	gchar *decoded;
 
-	//	strcpy(decoded_uri, encoded_uri);
-	//	subst_char(decoded_uri, '+', ' ');
-	
 	encoded = encoded_uri;
 	decoded = decoded_uri;
 
-	while (* encoded) {
-		if (* encoded == '%') {
-			encoded ++;
+	while (*encoded) {
+		if (*encoded == '%') {
+			encoded++;
 			if (isxdigit(encoded[0])
 			    && isxdigit(encoded[1])) {
-				* decoded = (gchar) axtoi(encoded);
-				decoded ++;
+				*decoded = (gchar) axtoi(encoded);
+				decoded++;
 				encoded += 2;
 			}
 		}
-		else if (* encoded == '+') {
-			* decoded = ' ';
-			decoded ++;
-			encoded ++;
+		else if (*encoded == '+') {
+			*decoded = ' ';
+			decoded++;
+			encoded++;
 		}
 		else {
-			* decoded = * encoded;
-			decoded ++;
-			encoded ++;
+			*decoded = *encoded;
+			decoded++;
+			encoded++;
 		}
 	}
 
-	* decoded = '\0';
+	*decoded = '\0';
 }
 
 
