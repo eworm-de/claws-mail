@@ -475,6 +475,7 @@ EXPORTS
 	compose_send 
 	compose_toolbar_cb 
 	conv_X_any_to_disp 
+	conv_X_get_current_iso_charset_str 
 	conv_X_locale_from_utf8 
 	conv_X_locale_to_utf8 
 	conv_anytodisp 

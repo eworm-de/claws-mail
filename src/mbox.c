@@ -105,6 +105,8 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox)
 
 	tmp_file = get_tmp_file();
 
+	folder_item_update_freeze();
+	
 	do {
 		FILE *tmp_fp;
 		FolderItem *dropfolder;
@@ -224,6 +226,8 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox)
 		msgs++;
 	} while (from_line[0] != '\0');
 
+	folder_item_update_thaw();
+	
 	g_free(tmp_file);
 	fclose(mbox_fp);
 	debug_print("%d messages found.\n", msgs);

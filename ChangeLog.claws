@@ -1,3 +1,46 @@
+2003-02-09 [paul]	0.8.9claws49
+
+	* src/folderview.c
+		fix bug where a newsgroup folder's processing rules were
+		merged with the global filtering rules when the newsgroup
+		folder was deleted, causing some seriously bad results,
+		see <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=180253>
+
+2003-02-08 [melvin]	0.8.9claws48
+
+	* src/compose.c
+		Corrected and modified an alert message.
+
+2003-02-07 [paul]	0.8.9claws47
+
+	* src/folderview.c
+		fix bug where both an 'Account properties' window and a
+		'Folder properties' window were opened when clicking on
+		'Properties' in an NNTP or IMAP folder's popup menu.
+
+2003-02-07 [paul]	0.8.9claws46
+
+	* sync with 0.8.10cvs6
+		see ChangeLog 2003-02-06
+
+2003-02-06 [christoph]	0.8.9claws45
+
+	* src/mbox.c
+		freeze folder updates while importing mbox files
+		(closes bug 43 importing mbox took hours)
+		
+	Patch submitted by Jens Rantil <jens.rantil@telia.com>
+
+2003-02-06 [thorsten]	0.8.9claws44
+
+	* po/de.po
+		Updated german translations
+
+2003-02-06 [thorsten]	0.8.9claws43
+
+	* src/news.h
+		use guint for message numbers (fix count in grouplist dialog)
+
 2003-02-05 [paul]	0.8.9claws42
 
 	* sync with 0.8.10cvs2

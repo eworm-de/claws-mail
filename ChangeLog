@@ -1,3 +1,23 @@
+2003-02-07
+
+	* src/filter.c: filter_match_condition(): fixed the bug that
+	  second condition ignored regex.
+	* src/news.h: NewsGroupInfo: use guint for message numbers
+	  (fix count in grouplist dialog) (thanks to Thorsten Maerz).
+
+2003-02-06
+
+	* src/codeconv.c: conv_encode_header(): fixed a segfault bug
+	  on code conversion failure.
+	  conv_get_charset_str()
+	  conv_get_charset_from_str(): optimized using hash table.
+
+2003-02-06
+
+	* src/quote_fmt_parse.y:
+	  SHOW_MESSAGE_NO_SIGNATURE, SHOW_QUOTED_MESSAGE_NO_SIGNATURE:
+	  treat only "\n-- \n" as a signature separator.
+
 2003-02-05
 
 	* src/gtkutils.[ch]: gtkut_ctree_node_prev(): new.

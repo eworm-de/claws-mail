@@ -1,3 +1,24 @@
+2003-02-07
+
+	* src/filter.c: filter_match_condition(): 2番目の条件が正規表現を
+	  無視していたバグを修正。
+	* src/news.h: NewsGroupInfo: メッセージ番号に guint を使用
+	  (グループリストダイアログのメッセージ数を修正) (Thorsten Maerz
+	  さん thanks)。
+
+2003-02-06
+
+	* src/codeconv.c: conv_encode_header(): コード変換失敗時に segfault
+	  を起こすバグを修正。
+	  conv_get_charset_str()
+	  conv_get_charset_from_str(): ハッシュテーブルを使用して最適化。
+
+2003-02-06
+
+	* src/quote_fmt_parse.y:
+	  SHOW_MESSAGE_NO_SIGNATURE, SHOW_QUOTED_MESSAGE_NO_SIGNATURE:
+	  "\n-- \n" のみを署名の区切りとして扱うようにした。
+
 2003-02-05
 
 	* src/gtkutils.[ch]: gtkut_ctree_node_prev(): 新規。

@@ -1003,30 +1003,81 @@ static const struct {
 #endif
 };
 
-const gchar *conv_get_charset_str(CharSet charset)
+static GHashTable *conv_get_charset_to_str_table(void)
 {
+	static GHashTable *table;
 	gint i;
 
+	if (table)
+		return table;
+
+	table = g_hash_table_new(NULL, g_direct_equal);
+
 	for (i = 0; i < sizeof(charsets) / sizeof(charsets[0]); i++) {
-		if (charsets[i].charset == charset)
-			return charsets[i].name;
+		if (g_hash_table_lookup(table, GUINT_TO_POINTER(charsets[i].charset))
+		    == NULL) {
+			g_hash_table_insert
+				(table, GUINT_TO_POINTER(charsets[i].charset),
+				 charsets[i].name);
+		}
 	}
 
-	return NULL;
+	return table;
+}
+
+static gint str_case_equal(gconstpointer v, gconstpointer v2)
+{
+	return strcasecmp((const gchar *)v, (const gchar *)v2) == 0;
+}
+
+static guint str_case_hash(gconstpointer key)
+{
+	const gchar *p = key;
+	guint h = *p;
+
+	if (h) {
+		h = tolower(h);
+		for (p += 1; *p != '\0'; p++)
+			h = (h << 5) - h + tolower(*p);
+	}
+
+	return h;
+}
+
+static GHashTable *conv_get_charset_from_str_table(void)
+{
+	static GHashTable *table;
+	gint i;
+
+	if (table)
+		return table;
+
+	table = g_hash_table_new(str_case_hash, str_case_equal);
+
+	for (i = 0; i < sizeof(charsets) / sizeof(charsets[0]); i++) {
+		g_hash_table_insert(table, charsets[i].name,
+				    GUINT_TO_POINTER(charsets[i].charset));
+	}
+
+	return table;
+}
+
+const gchar *conv_get_charset_str(CharSet charset)
+{
+	GHashTable *table;
+
+	table = conv_get_charset_to_str_table();
+	return g_hash_table_lookup(table, GUINT_TO_POINTER(charset));
 }
 
 CharSet conv_get_charset_from_str(const gchar *charset)
 {
-	gint i;
+	GHashTable *table;
 
 	if (!charset) return C_AUTO;
 
-	for (i = 0; i < sizeof(charsets) / sizeof(charsets[0]); i++) {
-		if (!strcasecmp(charsets[i].name, charset))
-			return charsets[i].charset;
-	}
-
-	return C_AUTO;
+	table = conv_get_charset_from_str_table();
+	return GPOINTER_TO_UINT(g_hash_table_lookup(table, charset));
 }
 
 CharSet conv_get_current_charset(void)
@@ -1366,7 +1417,8 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 					(part_str, cur_encoding, out_encoding);
 				if (!out_str) {
 					g_warning("conv_encode_header(): code conversion failed\n");
-					out_str = g_strdup(out_str);
+					conv_unreadable_8bit(part_str);
+					out_str = g_strdup(part_str);
 				}
 				out_str_len = strlen(out_str);
 
@@ -1396,7 +1448,8 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 					(part_str, cur_encoding, out_encoding);
 				if (!out_str) {
 					g_warning("conv_encode_header(): code conversion failed\n");
-					out_str = g_strdup(out_str);
+					conv_unreadable_8bit(part_str);
+					out_str = g_strdup(part_str);
 				}
 				out_str_len = strlen(out_str);
 
