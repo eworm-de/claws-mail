@@ -1,3 +1,14 @@
+2004-03-11 [christoph]	0.9.10claws4
+
+	* src/folder.[ch]
+	* src/imap.c
+	* src/procmsg.h
+		syncronize flags in cache with IMAP folder flags
+
+	Adapted a patch submitted by Simon 'corecode' Schubert
+	<corecode@corecode.ath.cx> 
+
+
 2004-03-11 [alfons]	0.9.10claws3
 
 	* src/textview.[ch]

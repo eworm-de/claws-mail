@@ -279,10 +279,10 @@ gint procmsg_send_message_queue		(const gchar *file);
 
 void procmsg_msginfo_set_flags		(MsgInfo *msginfo,
 					 MsgPermFlags perm_flags,
-					  MsgTmpFlags tmp_flags);
+					 MsgTmpFlags tmp_flags);
 void procmsg_msginfo_unset_flags	(MsgInfo *msginfo,
 					 MsgPermFlags perm_flags,
-					  MsgTmpFlags tmp_flags);
+					 MsgTmpFlags tmp_flags);
 gint procmsg_remove_special_headers	(const gchar 	*in, 
 					 const gchar 	*out);
 

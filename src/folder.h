@@ -169,7 +169,7 @@ struct _FolderClass
 	 * user. Can be upper and lowercase unlike the idstr.
 	 */
 	gchar	   *uistr;
-
+	
 	/* virtual functions */
 
 	/* Folder funtions */
@@ -538,6 +538,21 @@ struct _FolderClass
 						 FolderItem	*item,
 						 MsgInfo        *msginfo,
 						 MsgPermFlags	 newflags);
+	/**
+	 * Get the flags for a list of messages
+	 *
+	 * \param folder The \c Folder of the messages
+	 * \param item The \c FolderItem of the messages
+	 * \param msglist The list of \c MsgInfos for which the flags should
+	 *                   be returned
+	 * \param msgflags A \c GRelation for tuples of (message number,
+	 *                 permanent flags). Add tuples for the messages in msgnumlist
+	 * \return 0 on success, a negative number otherwise
+	 */
+	gint		(*get_flags)		(Folder		*folder,
+						 FolderItem	*item,
+						 MsgInfoList	*msglist,
+						 GRelation	*msgflags);
 };
 
 struct _FolderItem
