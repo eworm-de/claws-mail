@@ -142,7 +142,10 @@ GList *filesel_select_multiple_files(const gchar *title, const gchar *file)
 						file);
 	gtk_widget_show(filesel);
 
-	gtk_main();
+	filesel_ack = filesel_fin = FALSE;
+
+	while (filesel_fin == FALSE)
+		gtk_main_iteration();
 
 	if (filesel_ack) {
 		gchar *fname = NULL;
@@ -150,8 +153,8 @@ GList *filesel_select_multiple_files(const gchar *title, const gchar *file)
 		list = filesel_get_multiple_filenames();
 
 		if (!list) {
-			fname = gtk_file_selection_get_filename (GTK_FILE_SELECTION(filesel));
-			list = g_list_append (list, g_strdup(fname));
+			fname = gtk_file_selection_get_filename(GTK_FILE_SELECTION(filesel));
+			list = g_list_append(list, g_strdup(fname));
 		}
 	}
 
