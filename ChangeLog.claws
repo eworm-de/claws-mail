@@ -5,7 +5,8 @@
 	* src/pixmaps/outbox-hrm.xpm	** NEW FILE **
 	* src/pixmaps/trash-hrm.xpm	** NEW FILE **
 		improvements to 'Hide read messages': Inbox, Outbox,
-		and Trash icons now reveal presence of hidden messages
+		Trash, Queue, and Draft icons now reveal presence of hidden 
+		messages
 
 2001-12-12 [alfons]	0.6.5claws81
 
