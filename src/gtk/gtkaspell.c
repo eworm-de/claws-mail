@@ -280,7 +280,7 @@ GtkAspell *gtkaspell_new(const gchar *dictionary_path,
 	
 	gtkaspell = g_new0(GtkAspell, 1);
 
-	gtkaspell->dictionary_path    = dictionary_path;
+	gtkaspell->dictionary_path    = g_strdup(dictionary_path);
 
 	gtkaspell->gtkaspeller	      = gtkaspeller;
 	gtkaspell->alternate_speller  = NULL;
@@ -348,6 +348,8 @@ void gtkaspell_delete(GtkAspell * gtkaspell)
 
 	if (gtkaspell->suggestions_list)
 		free_suggestions_list(gtkaspell);
+
+	g_free((gchar *)gtkaspell->dictionary_path);
 
 	debug_print("Aspell: deleting gtkaspell %0x\n", (guint) gtkaspell);
 

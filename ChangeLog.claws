@@ -1,3 +1,10 @@
+2003-06-09 [christoph]	0.9.0claws24
+
+	* src/gtk/gtkaspell.c
+		revert Thorsten's fix and add forgotten g_strdup for
+		aspell path (it should not be possible to alter the path a
+		GtkASpell uses from outside)
+
 2003-06-09 [thorsten]	0.9.0claws23
 
 	* src/gtk/gtkaspell.c
