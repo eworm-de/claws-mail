@@ -1879,7 +1879,7 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 	log_message(_("Moving %s to %s...\n"), 
 			src->name, new_item->path);
 #endif
-	folder_item_move_msgs_with_dest(new_item, mlist);
+	folder_item_move_msgs(new_item, mlist);
 	
 	/*copy prefs*/
 	folder_item_prefs_copy_prefs(src, new_item);
@@ -1991,7 +1991,7 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 	gint ret;
 
 	list = g_slist_append(list, msginfo);
-	ret = folder_item_move_msgs_with_dest(dest, list);
+	ret = folder_item_move_msgs(dest, list);
 	g_slist_free(list);
 	
 	return ret;
@@ -2023,7 +2023,7 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
  * \param dest Destination folder
  * \param msglist List of messages
  */
-gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
+gint folder_item_move_msgs(FolderItem *dest, GSList *msglist)
 {
 	Folder *folder;
 	GSList *l;
@@ -2164,7 +2164,7 @@ gint folder_item_copy_msg(FolderItem *dest, MsgInfo *msginfo)
 	msglist.data = msginfo;
 	msglist.next = NULL;
 	
-	return folder_item_copy_msgs_with_dest(dest, &msglist);
+	return folder_item_copy_msgs(dest, &msglist);
 }
 
 /*
@@ -2187,7 +2187,7 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 }
 */
 
-gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
+gint folder_item_copy_msgs(FolderItem *dest, GSList *msglist)
 {
 	Folder *folder;
 	gint num, lastnum = -1;

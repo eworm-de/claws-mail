@@ -532,6 +532,9 @@ static gint prefs_filtering_action_clist_set_row(gint row, FilteringAction *acti
 
         filteringaction_to_string(buf, sizeof buf, action);
 	action_str = g_strdup(buf);
+#ifdef WIN32
+	locale_to_utf8(&action_str);
+#endif /* WIN32 */
         
 	action_tab_str[0] = action_str;
 	if (row < 0)
@@ -753,7 +756,15 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 		break;
 	}
 	
+#ifdef WIN32
+	if (destination)
+		destination = g_locale_from_utf8(destination, -1, NULL, NULL, NULL);
+#endif
 	action = filteringaction_new(action_type, account_id, destination, labelcolor);
+#ifdef WIN32
+	if (destination)
+		g_free(destination);
+#endif
 
         return action;
 }

@@ -22,7 +22,9 @@
  */
 
 #include <sys/stat.h>
+#ifndef WIN32
 #include <dirent.h>
+#endif
 #include <errno.h>
 #include <time.h>
 #include <string.h>

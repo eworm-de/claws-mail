@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002 Match Grun
+ * Copyright (C) 2002-2003 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,9 @@
 #define EXPORTHTML_WIDTH           480
 #define EXPORTHTML_HEIGHT          -1
 
+/**
+ * Dialog object.
+ */
 static struct _ExpHtml_Dlg {
 	GtkWidget *window;
 	GtkWidget *notebook;
@@ -79,6 +82,10 @@ static struct _AddressFileSelection _exp_html_file_selector_;
 static ExportHtmlCtl *_exportCtl_ = NULL;
 static AddressCache *_addressCache_ = NULL;
 
+/**
+ * Display message in status field.
+ * \param msg Message to display.
+ */
 static void export_html_status_show( gchar *msg ) {
 	if( exphtml_dlg.statusbar != NULL ) {
 		gtk_statusbar_pop(
@@ -92,6 +99,9 @@ static void export_html_status_show( gchar *msg ) {
 	}
 }
 
+/**
+ * Select and display status message appropriate for the page being displayed.
+ */
 static void export_html_message( void ) {
 	gchar *sMsg = NULL;
 	gint pageNum;
@@ -109,6 +119,11 @@ static void export_html_message( void ) {
 	export_html_status_show( sMsg );
 }
 
+/**
+ * Callback function to cancel HTML file selection dialog.
+ * \param widget Widget (button).
+ * \param data   User data.
+ */
 static void export_html_cancel( GtkWidget *widget, gpointer data ) {
 	gint pageNum;
 
@@ -119,22 +134,34 @@ static void export_html_cancel( GtkWidget *widget, gpointer data ) {
 	gtk_main_quit();
 }
 
+/**
+ * Callback function to handle dialog close event.
+ * \param widget Widget (dialog).
+ * \param event  Event object.
+ * \param data   User data.
+ */
 static gint export_html_delete_event( GtkWidget *widget, GdkEventAny *event, gpointer data ) {
 	export_html_cancel( widget, data );
 	return TRUE;
 }
 
+/**
+ * Callback function to respond to dialog key press events.
+ * \param widget Widget.
+ * \param event  Event object.
+ * \param data   User data.
+ */
 static void export_html_key_pressed( GtkWidget *widget, GdkEventKey *event, gpointer data ) {
 	if (event && event->keyval == GDK_Escape) {
 		export_html_cancel( widget, data );
 	}
 }
 
-/*
- * Move off file info page.
- * return: TRUE if OK to move off page.
+/**
+ * Test whether we can move off file page.
+ * \return <i>TRUE</i> if OK to move off page.
  */
-static gboolean exp_html_move_file() {
+static gboolean exp_html_move_file( void ) {
 	gchar *sFile, *msg, *reason;
 	AlertValue aval;
 
@@ -174,11 +201,12 @@ static gboolean exp_html_move_file() {
 	return TRUE;
 }
 
-/*
- * Move off format page.
- * return: TRUE if OK to move off page.
+/**
+ * Test whether we can move off format page.
+ * \return <i>TRUE</i> if OK to move off page.
  */
-static gboolean exp_html_move_format() {
+static gboolean exp_html_move_format( void ) {
+	gboolean retVal = FALSE;
 	GtkWidget *menu, *menuItem;
 	gint id;
 
@@ -206,21 +234,27 @@ static gboolean exp_html_move_format() {
 
 	/* Process export */
 	exporthtml_process( _exportCtl_, _addressCache_ );
-
-	return TRUE;
+	if( _exportCtl_->retVal == MGU_SUCCESS ) {
+		retVal = TRUE;
+	}
+	else {
+		export_html_status_show( _( "Error creating HTML file" ) );
+	}
+	return retVal;
 }
 
-/*
+/**
  * Display finish page.
  */
-static void exp_html_finish_show() {
+static void exp_html_finish_show( void ) {
 	gtk_label_set_text( GTK_LABEL(exphtml_dlg.labelOutFile), _exportCtl_->path );
 	gtk_widget_set_sensitive( exphtml_dlg.btnNext, FALSE );
 	gtk_widget_grab_focus( exphtml_dlg.btnCancel );
 }
 
-/*
- * Previous button handler.
+/**
+ * Callback function to select previous page.
+ * \param widget Widget (button).
  */
 static void export_html_prev( GtkWidget *widget ) {
 	gint pageNum;
@@ -241,8 +275,9 @@ static void export_html_prev( GtkWidget *widget ) {
 	export_html_message();
 }
 
-/*
- * Next button handler.
+/**
+ * Callback function to select previous page.
+ * \param widget Widget (button).
  */
 static void export_html_next( GtkWidget *widget ) {
 	gint pageNum;
@@ -255,6 +290,7 @@ static void export_html_next( GtkWidget *widget ) {
 				GTK_NOTEBOOK(exphtml_dlg.notebook), PAGE_FORMAT );
 			gtk_widget_set_sensitive( exphtml_dlg.btnPrev, TRUE );
 		}
+		export_html_message();
 	}
 	else if( pageNum == PAGE_FORMAT ) {
 		/* Goto finish page */
@@ -263,13 +299,15 @@ static void export_html_next( GtkWidget *widget ) {
 				GTK_NOTEBOOK(exphtml_dlg.notebook), PAGE_FINISH );
 			exp_html_finish_show();
 			exporthtml_save_settings( _exportCtl_ );
+			export_html_message();
 		}
 	}
-	export_html_message();
 }
 
-/*
+/**
  * Open file with web browser.
+ * \param widget Widget (button).
+ * \param data   User data.
  */
 static void export_html_browse( GtkWidget *widget, gpointer data ) {
 	gchar *uri;
@@ -279,8 +317,10 @@ static void export_html_browse( GtkWidget *widget, gpointer data ) {
 	g_free( uri );
 }
 
-/*
- * Output file - Ok.
+/**
+ * Callback function to accept HTML file selection.
+ * \param widget Widget (button).
+ * \param data   User data.
  */
 static void exp_html_file_ok( GtkWidget *widget, gpointer data ) {
 	gchar *sFile;
@@ -298,8 +338,10 @@ static void exp_html_file_ok( GtkWidget *widget, gpointer data ) {
 	gtk_widget_grab_focus( exphtml_dlg.entryHtml );
 }
 
-/*
- * Output file - Cancel.
+/**
+ * Callback function to cancel HTML file selection dialog.
+ * \param widget Widget (button).
+ * \param data   User data.
  */
 static void exp_html_file_cancel( GtkWidget *widget, gpointer data ) {
 	AddressFileSelection *afs = ( AddressFileSelection * ) data;
@@ -309,8 +351,9 @@ static void exp_html_file_cancel( GtkWidget *widget, gpointer data ) {
 	gtk_widget_grab_focus( exphtml_dlg.entryHtml );
 }
 
-/*
- * Output file - Create.
+/**
+ * Create HTML file selection dialog.
+ * \param afs Address file selection data.
  */
 static void exp_html_file_select_create( AddressFileSelection *afs ) {
 	GtkWidget *fileSelector;
@@ -326,8 +369,8 @@ static void exp_html_file_select_create( AddressFileSelection *afs ) {
 	afs->cancelled = TRUE;
 }
 
-/*
- * Output file - Handle file selection.
+/**
+ * Callback function to display HTML file selection dialog.
  */
 static void exp_html_file_select( void ) {
 	gchar *sFile;
@@ -343,6 +386,11 @@ static void exp_html_file_select( void ) {
 	gtk_grab_add( _exp_html_file_selector_.fileSelector );
 }
 
+/**
+ * Format notebook file specification page.
+ * \param pageNum Page (tab) number.
+ * \param pageLbl Page (tab) label.
+ */
 static void export_html_page_file( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *vbox;
 	GtkWidget *table;
@@ -407,6 +455,11 @@ static void export_html_page_file( gint pageNum, gchar *pageLbl ) {
 	exphtml_dlg.entryHtml = entryHtml;
 }
 
+/**
+ * Format notebook format page.
+ * \param pageNum Page (tab) number.
+ * \param pageLbl Page (tab) label.
+ */
 static void export_html_page_format( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *vbox;
 	GtkWidget *table;
@@ -445,7 +498,7 @@ static void export_html_page_format( gint pageNum, gchar *pageLbl ) {
 		GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
-	menu = gtk_menu_new ();
+	menu = gtk_menu_new();
 
 	menuItem = gtk_menu_item_new_with_label( _( "None" ) );
 	gtk_object_set_user_data( GTK_OBJECT( menuItem ),
@@ -502,7 +555,7 @@ static void export_html_page_format( gint pageNum, gchar *pageLbl ) {
 		GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
-	menu = gtk_menu_new ();
+	menu = gtk_menu_new();
 
 	menuItem = gtk_menu_item_new_with_label( _( "First Name, Last Name" ) );
 	gtk_object_set_user_data( GTK_OBJECT( menuItem ),
@@ -549,6 +602,11 @@ static void export_html_page_format( gint pageNum, gchar *pageLbl ) {
 	exphtml_dlg.checkAttributes = checkAttributes;
 }
 
+/**
+ * Format notebook finish page.
+ * \param pageNum Page (tab) number.
+ * \param pageLbl Page (tab) label.
+ */
 static void export_html_page_finish( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *vbox;
 	GtkWidget *table;
@@ -576,9 +634,9 @@ static void export_html_page_finish( gint pageNum, gchar *pageLbl ) {
 
 	/* First row */
 	top = 0;
-	label = gtk_label_new( _( "Address Book" ) );
+	label = gtk_label_new( _( "Address Book :" ) );
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 
 	labelBook = gtk_label_new("Full name of address book goes here");
 	gtk_table_attach(GTK_TABLE(table), labelBook, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
@@ -586,9 +644,9 @@ static void export_html_page_finish( gint pageNum, gchar *pageLbl ) {
 
 	/* Second row */
 	top++;
-	label = gtk_label_new( _( "File Name" ) );
+	label = gtk_label_new( _( "File Name :" ) );
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 
 	labelFile = gtk_label_new("File name goes here");
 	gtk_table_attach(GTK_TABLE(table), labelFile, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
@@ -609,7 +667,10 @@ static void export_html_page_finish( gint pageNum, gchar *pageLbl ) {
 	exphtml_dlg.labelOutFile = labelFile;
 }
 
-static void export_html_dialog_create() {
+/**
+ * Create main dialog decorations (excluding notebook pages).
+ */
+static void export_html_dialog_create( void ) {
 	GtkWidget *window;
 	GtkWidget *vbox;
 	GtkWidget *vnbox;
@@ -646,7 +707,7 @@ static void export_html_dialog_create() {
 
 	/* Notebook */
 	notebook = gtk_notebook_new();
-	gtk_notebook_set_show_tabs( GTK_NOTEBOOK(notebook), FALSE );
+	gtk_notebook_set_show_tabs( GTK_NOTEBOOK(notebook), FALSE ); /* Hide */
 	/* gtk_notebook_set_show_tabs( GTK_NOTEBOOK(notebook), TRUE ); */
 	gtk_widget_show(notebook);
 	gtk_box_pack_start(GTK_BOX(vnbox), notebook, TRUE, TRUE, 0);
@@ -684,10 +745,12 @@ static void export_html_dialog_create() {
 	exphtml_dlg.statusbar  = statusbar;
 	exphtml_dlg.status_cid = gtk_statusbar_get_context_id(
 			GTK_STATUSBAR(statusbar), "Export HTML Dialog" );
-
 }
 
-static void export_html_create() {
+/**
+ * Create export HTML dialog.
+ */
+static void export_html_create( void ) {
 	export_html_dialog_create();
 	export_html_page_file( PAGE_FILE_INFO, _( "File Info" ) );
 	export_html_page_format( PAGE_FORMAT, _( "Format" ) );
@@ -695,9 +758,9 @@ static void export_html_create() {
 	gtk_widget_show_all( exphtml_dlg.window );
 }
 
-/*
+/**
  * Populate fields from control data.
- * Enter:  ctl   Export control data.
+ * \param ctl Export control data.
  */
 static void export_html_fill_fields( ExportHtmlCtl *ctl ) {
 	gtk_entry_set_text( GTK_ENTRY(exphtml_dlg.entryHtml), "" );
@@ -718,9 +781,9 @@ static void export_html_fill_fields( ExportHtmlCtl *ctl ) {
 		GTK_TOGGLE_BUTTON( exphtml_dlg.checkAttributes ), ctl->showAttribs );
 }
 
-/*
+/**
  * Process export address dialog.
- * Enter: cache Address book/data source cache.
+ * \param cache Address book/data source cache.
  */
 void addressbook_exp_html( AddressCache *cache ) {
 	/* Set references to control data */
@@ -757,6 +820,8 @@ void addressbook_exp_html( AddressCache *cache ) {
 }
 
 /*
-* End of Source.
-*/
+ * ============================================================================
+ * End of Source.
+ * ============================================================================
+ */
 

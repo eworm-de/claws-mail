@@ -15,6 +15,8 @@ claws-branch (http://sylpheed-claws.sourceforge.net)
 	Darko Koruga		<darko@users.sourceforge.net>
 	Colin Leroy		<colin@colino.net>
 	Paul Mangan		<claws@thewildbeast.co.uk>
+	Leandro A. F. Pereira 	<leandro@linuxmag.com.br>
+	Luke Plant 		<lukeplant@softhome.net>
 	Martin Schaaf		<mascha@ma-scha.de>
 	Carsten Schurig		<Carsten.Schurig@web.de>
 	Sergey Vlasov		<vsu@users.sourceforge.net>
@@ -74,7 +76,6 @@ contributors (beside the above; based on Changelog)
 	John E.P. Hynes
 	Maki
 	Takahashi
-	Leandro Pereira
 	Nishimura
 	Yoichi Imai
 	Tsutsui
@@ -163,7 +164,6 @@ contributors (beside the above; based on Changelog)
 	Nicolas Kaiser
 	Ivan Francolin Martinez
 	Topia
-	Luke Plant
 	Gál Zoltán
 	Mohammed Sameer
 	Kim Schulz

@@ -574,3 +574,17 @@ GtkWidget *gtkut_account_menu_new(GList			*ac_list,
 	}
 	return menu;
 }
+
+void gtkut_set_widget_bgcolor_rgb(GtkWidget *widget, guint rgbvalue)
+{
+	GtkStyle *newstyle;
+	GdkColor gdk_color;
+
+	gtkut_convert_int_to_gdk_color(rgbvalue, &gdk_color);
+	newstyle = gtk_style_copy(gtk_widget_get_default_style());
+	newstyle->bg[GTK_STATE_NORMAL]   = gdk_color;
+	newstyle->bg[GTK_STATE_PRELIGHT] = gdk_color;
+	newstyle->bg[GTK_STATE_ACTIVE]   = gdk_color;
+	gtk_widget_set_style(widget, newstyle);
+}
+

@@ -83,11 +83,16 @@ struct _IMAPSession
 {
 	Session session;
 
-	gchar **capability;
-	gchar *mbox;
-	time_t last_access_time;
 	gboolean authenticated;
+
+	gchar **capability;
+	gboolean uidplus;
+
+	gchar *mbox;
 	guint cmd_count;
+
+	/* CLAWS */
+	time_t last_access_time;
 	gboolean folder_content_changed;
 	guint exists;
 };
@@ -213,6 +218,7 @@ static void imap_folder_item_destroy	(Folder		*folder,
 
 static IMAPSession *imap_session_get	(Folder		*folder);
 
+static gint imap_greeting		(IMAPSession	*session);
 static gint imap_auth			(IMAPSession	*session,
 					 const gchar	*user,
 					 const gchar	*pass,
@@ -303,10 +309,10 @@ static MsgFlags imap_parse_flags	(const gchar	*flag_str);
 static MsgInfo *imap_parse_envelope	(SockInfo	*sock,
 					 FolderItem	*item,
 					 GString	*line_str);
-static gint imap_greeting		(IMAPSession	*session);
+
 static gboolean imap_has_capability	(IMAPSession	*session,
  					 const gchar	*cap);
-void imap_free_capabilities		(IMAPSession 	*session);
+static void imap_free_capabilities	(IMAPSession 	*session);
 
 /* low-level IMAP4rev1 commands */
 static gint imap_cmd_authenticate
@@ -361,7 +367,7 @@ static gint imap_cmd_append	(IMAPSession	*session,
 				 const gchar	*destfolder,
 				 const gchar	*file,
 				 IMAPFlags	 flags,
-				 gint32		*newuid);
+				 guint32	*new_uid);
 static gint imap_cmd_copy       (IMAPSession    *session, 
                                  const gchar    *seq_set, 
                                  const gchar    *destfolder,
@@ -540,13 +546,53 @@ static void imap_reset_uid_lists(Folder *folder)
 	g_node_traverse(folder->node, G_IN_ORDER, G_TRAVERSE_ALL, -1, imap_reset_uid_lists_func, NULL);	
 }
 
+/* Send CAPABILITY, and examine the server's response to see whether this
+ * connection is pre-authenticated or not and build a list of CAPABILITIES. */
+static gint imap_greeting(IMAPSession *session)
+{
+	gchar *capstr;
+	GPtrArray *argbuf;
+
+	imap_gen_send(session, "CAPABILITY");
+	
+	argbuf = g_ptr_array_new();
+
+	if (imap_cmd_ok(session, argbuf) != IMAP_SUCCESS ||
+	    ((capstr = search_array_str(argbuf, "CAPABILITY ")) == NULL)) {
+		ptr_array_free_strings(argbuf);
+		g_ptr_array_free(argbuf, TRUE);
+		return -1;
+	}
+
+	session->authenticated = search_array_str(argbuf, "PREAUTH") != NULL;
+	
+	capstr += strlen("CAPABILITY ");
+
+	IMAP_SESSION(session)->capability = g_strsplit(capstr, " ", 0);
+	
+	ptr_array_free_strings(argbuf);
+	g_ptr_array_free(argbuf, TRUE);
+
+	if (imap_has_capability(session, "UIDPLUS")) 
+    		session->uidplus = TRUE; 
+
+	return 0;
+}
+
 static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass,
 		      IMAPAuthType type)
 {
+	gint ok;
+
 	if (type == 0 || type == IMAP_AUTH_LOGIN)
-		return imap_cmd_login(session, user, pass);
+		ok = imap_cmd_login(session, user, pass);
 	else
-		return imap_cmd_authenticate(session, user, pass, type);
+		ok = imap_cmd_authenticate(session, user, pass, type);
+
+	if (ok == IMAP_SUCCESS)
+		session->authenticated = TRUE;
+
+	return ok;
 }
 
 static IMAPSession *imap_session_get(Folder *folder)
@@ -682,8 +728,8 @@ IMAPSession *imap_session_new(const PrefsAccount *account)
 
 	session->capability = NULL;
 
-	session->mbox = NULL;
 	session->authenticated = FALSE;
+	session->mbox = NULL;
 	session->cmd_count = 0;
 
 	/* Only need to log in if the connection was not PREAUTH */
@@ -693,7 +739,8 @@ IMAPSession *imap_session_new(const PrefsAccount *account)
 	}
 
 #if USE_OPENSSL
-	if (account->ssl_imap == SSL_STARTTLS && imap_has_capability(session, "STARTTLS")) {
+	if (account->ssl_imap == SSL_STARTTLS && 
+	    imap_has_capability(session, "STARTTLS")) {
 		gint ok;
 
 		ok = imap_cmd_starttls(session);
@@ -709,6 +756,7 @@ IMAPSession *imap_session_new(const PrefsAccount *account)
 
 		imap_free_capabilities(session);
 		session->authenticated = FALSE;
+		session->uidplus = FALSE;
 		session->cmd_count = 1;
 
 		if (imap_greeting(session) != IMAP_SUCCESS) {
@@ -749,11 +797,10 @@ void imap_session_authenticate(IMAPSession *session, const PrefsAccount *account
 
 void imap_session_destroy(Session *session)
 {
+	imap_free_capabilities(IMAP_SESSION(session));
+	g_free(IMAP_SESSION(session)->mbox);
 	sock_close(session->sock);
 	session->sock = NULL;
-
-	g_free(IMAP_SESSION(session)->mbox);
-	imap_free_capabilities(IMAP_SESSION(session));
 }
 
 gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
@@ -831,7 +878,7 @@ gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 	guint32 last_uid = 0;
 	GSList *cur;
 	MsgFileInfo *fileinfo;
-	gint ok, newnum;
+	gint ok;
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(dest != NULL, -1);
@@ -844,6 +891,7 @@ gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 
 	for (cur = file_list; cur != NULL; cur = cur->next) {
 		IMAPFlags iflags = 0;
+		guint32 new_uid = 0;
 
 		fileinfo = (MsgFileInfo *)cur->data;
 
@@ -862,7 +910,8 @@ gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		    dest->stype == F_TRASH)
 			iflags |= IMAP_FLAG_SEEN;
 
-		ok = imap_cmd_append(session, destdir, fileinfo->file, iflags, &newnum);
+		ok = imap_cmd_append(session, destdir, fileinfo->file, iflags, 
+				     &new_uid);
 
 		if (ok != IMAP_SUCCESS) {
 			g_warning("can't append message %s\n", fileinfo->file);
@@ -872,10 +921,10 @@ gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 
 		if (relation != NULL)
 			g_relation_insert(relation, fileinfo->msginfo != NULL ? 
-					  fileinfo->msginfo : fileinfo,
+					  (gpointer) fileinfo->msginfo : (gpointer) fileinfo,
 					  GINT_TO_POINTER(dest->last_num + 1));
-		if (newnum > last_uid)
-			last_uid = newnum;
+		if (last_uid < new_uid)
+			last_uid = new_uid;
 	}
 
 	g_free(destdir);
@@ -886,6 +935,7 @@ gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest, 
 			      MsgInfoList *msglist, GRelation *relation)
 {
+	FolderItem *src;
 	gchar *destdir;
 	GSList *seq_list, *cur;
 	MsgInfo *msginfo;
@@ -902,10 +952,17 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	if (!session) return -1;
 
 	msginfo = (MsgInfo *)msglist->data;
-	if (msginfo->folder == dest) {
+
+	src = msginfo->folder;
+	if (src == dest) {
 		g_warning("the src folder is identical to the dest.\n");
 		return -1;
 	}
+
+	ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
+			 NULL, NULL, NULL, NULL);
+	if (ok != IMAP_SUCCESS)
+		return ok;
 
 	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
 	seq_list = imap_get_seq_set_from_msglist(msglist);
@@ -916,7 +973,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 		gchar *seq_set = (gchar *)cur->data;
 
 		debug_print("Copying message %s%c[%s] to %s ...\n",
-			    msginfo->folder->path, G_DIR_SEPARATOR,
+			    src->path, G_DIR_SEPARATOR,
 			    seq_set, destdir);
 
 		ok = imap_cmd_copy(session, seq_set, destdir, uid_mapping);
@@ -1044,8 +1101,6 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 
 gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 {
-        gint exists, recent, unseen;
-        guint32 uid_validity;
 	gint ok;
 	IMAPSession *session;
 	gchar *dir;
@@ -1057,17 +1112,14 @@ gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 	if (!session) return -1;
 
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
-			 &exists, &recent, &unseen, &uid_validity);
+			 NULL, NULL, NULL, NULL);
 	if (ok != IMAP_SUCCESS)
 		return ok;
-	if (exists == 0)
-		return IMAP_SUCCESS;
 
-	imap_gen_send(session,
-		      "STORE 1:%d +FLAGS.SILENT (\\Deleted)", exists);
+	imap_gen_send(session, "STORE 1:* +FLAGS.SILENT (\\Deleted)");
 	ok = imap_cmd_ok(session, NULL);
 	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't set deleted flags: 1:%d\n"), exists);
+		log_warning(_("can't set deleted flags: 1:*\n"));
 		return ok;
 	}
 
@@ -1105,6 +1157,9 @@ gint imap_close(Folder *folder, FolderItem *item)
 	if (!session) return -1;
 
 	if (session->mbox) {
+		if (strcmp(item->path, session->mbox))
+			return -1;
+
 		ok = imap_cmd_close(session);
 		if (ok != IMAP_SUCCESS)
 			log_warning(_("can't close folder\n"));
@@ -2470,6 +2525,23 @@ catch:
 
 #undef THROW
 
+static gboolean imap_has_capability(IMAPSession *session, const gchar *cap)
+{
+	gchar **p;
+	
+	for (p = session->capability; *p != NULL; ++p) {
+		if (!g_strcasecmp(*p, cap))
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
+void imap_free_capabilities(IMAPSession *session)
+{
+	g_strfreev(session->capability);
+	session->capability = NULL;
+}
 
 /* low-level IMAP4rev1 commands */
 
@@ -2539,53 +2611,6 @@ static gint imap_cmd_logout(IMAPSession *session)
 {
 	imap_gen_send(session, "LOGOUT");
 	return imap_cmd_ok(session, NULL);
-}
-
-/* Send CAPABILITY, and examine the server's response to see whether this
- * connection is pre-authenticated or not and build a list of CAPABILITIES. */
-static gint imap_greeting(IMAPSession *session)
-{
-	gchar *capstr;
-	GPtrArray *argbuf;
-
-	imap_gen_send(session, "CAPABILITY");
-	
-	argbuf = g_ptr_array_new();
-
-	if (imap_cmd_ok(session, argbuf) != IMAP_SUCCESS ||
-	    ((capstr = search_array_str(argbuf, "CAPABILITY ")) == NULL)) {
-		ptr_array_free_strings(argbuf);
-		g_ptr_array_free(argbuf, TRUE);
-		return -1;
-	}
-
-	session->authenticated = search_array_str(argbuf, "PREAUTH") != NULL;
-	
-	capstr += strlen("CAPABILITY ");
-
-	IMAP_SESSION(session)->capability = g_strsplit(capstr, " ", 0);
-	
-	ptr_array_free_strings(argbuf);
-	g_ptr_array_free(argbuf, TRUE);
-
-	return 0;
-}
-
-static gboolean imap_has_capability(IMAPSession *session, const gchar *cap)
-{
-	gchar **p;
-	
-	for (p = session->capability; *p != NULL; ++p)
-		if (g_strcasecmp(*p, cap) == 0)
-			return TRUE;
-
-	return FALSE;
-}
-
-void imap_free_capabilities(IMAPSession *session)
-{
-	g_strfreev(session->capability);
-	session->capability = NULL;
 }
 
 static gint imap_cmd_noop(IMAPSession *session)
@@ -2861,17 +2886,18 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid, const gchar *filen
 }
 
 static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
-			    const gchar *file, IMAPFlags flags, gint32 *new_uid)
+			    const gchar *file, IMAPFlags flags, guint32 *new_uid)
 {
 	gint ok;
-	gint size, newuid;
+	gint size;
 	gchar *destfolder_;
 	gchar *flag_str;
+	guint32 new_uid_;
 	gchar *ret = NULL;
 	gchar buf[BUFFSIZE];
 	FILE *fp;
-	GPtrArray *reply;
-	gchar *okmsginfo;
+	GPtrArray *argbuf;
+	gchar *resp_str;
 
 	g_return_val_if_fail(file != NULL, IMAP_ERROR);
 
@@ -2915,22 +2941,30 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 
 	fclose(fp);
 
-	reply = g_ptr_array_new();
+	if (new_uid != NULL)
+		*new_uid = 0;
 
-	*new_uid = 0;
-	ok = imap_cmd_ok(session, reply);
-	if (ok != IMAP_SUCCESS)
-		log_warning(_("can't append message to %s\n"), destfolder_);
-	else if (
-	    (new_uid != NULL) && 
-	    (imap_has_capability(session, "UIDPLUS") && reply->len > 0) &&
-	    ((okmsginfo = g_ptr_array_index(reply, reply->len - 1)) != NULL) &&
-	    (sscanf(okmsginfo, "%*u OK [APPENDUID %*u %u]", &newuid) == 1)) {
-		*new_uid = newuid;
-	}
+	if (new_uid != NULL && session->uidplus) {
+		argbuf = g_ptr_array_new();
 
-	ptr_array_free_strings(reply);
-	g_ptr_array_free(reply, TRUE);
+		ok = imap_cmd_ok(session, argbuf);
+		if (ok != IMAP_SUCCESS)
+			log_warning(_("can't append message to %s\n"),
+				    destfolder_);
+		else if (argbuf->len > 0) {
+			resp_str = g_ptr_array_index(argbuf, argbuf->len - 1);
+			if (resp_str &&
+			    sscanf(resp_str, "%*u OK [APPENDUID %*u %u]",
+				   &new_uid_) == 1) {
+				*new_uid = new_uid_;
+			}
+		}
+
+		ptr_array_free_strings(argbuf);
+		g_ptr_array_free(argbuf, TRUE);
+	} else
+		ok = imap_cmd_ok(session, NULL);
+
 	return ok;
 }
 

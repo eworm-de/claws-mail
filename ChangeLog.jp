@@ -1,3 +1,49 @@
+2003-08-07
+
+	* src/mainwindow.c
+	  src/prefs_common.[ch]: 分離されたビューのサイズと位置を記憶。
+	  main_window_set_widgets(): ビュータイプを変更した時にヘッダビュー
+	  の隠し項目が表示されていたバグを修正。
+	  ウィンドウのサイズを指定する代わりに各ビューのサイズを指定。
+
+2003-08-01
+
+	* src/compose.c: compose_select_account(): リダイレクトモードで
+	  署名を追加しないようにした。
+	  compose_insert_sig(): 署名文字列が存在しない場合は "\n\n" を
+	  挿入しないようにした。常にメッセージの終わりに署名を挿入。
+
+2003-08-01
+
+	* sylpheed.spec.in を改良(Andre Oliveira da Costa さん thanks)。
+
+2003-07-31
+
+	* フォルダシステムのコードを少し整理。
+	* src/compose.c: compose_queue(), compose_draft_cb(): コードの整理。
+	* src/folder.c: コードの整理。
+	* src/imap.c
+	  src/mh.c: 関数内でメッセージ数を計算。
+	* src/procmsg.c: procmsg_set_flags(): メッセージ数を計算。
+	* src/summaryview.[ch]: SummaryView 内でメッセージ数を計算・保持
+	  しないようにした。
+
+2003-07-30
+
+	* src/folder.[ch]
+	  src/imap.[ch]
+	  src/mh.[ch]
+	  src/procmsg.c
+	  src/summaryview.c: *_msgs_with_dest() を *_msgs() に改名。
+
+2003-07-29
+
+	* src/imap.[ch]: プロトコル拡張を使用するために CAPABILITY を使用。
+	  imap_greeting(): 最初のサーバグリーティングを解析。 PREAUTH 応答
+	  にも対応。
+	  imap_add_msgs()
+	  imap_cmd_append(): UIDPLUS に対応していれば APPENDUID 応答を使用。
+
 2003-07-28
 
 	* src/imap.c: imap_get_flag_str(): バッファオーバーランを修正。

@@ -96,6 +96,7 @@
 #include "addrgather.h"
 #include "adbookbase.h"
 #include "exphtmldlg.h"
+#include "expldifdlg.h"
 
 typedef enum
 {
@@ -340,6 +341,7 @@ static void addressbook_import_ldif_cb		( void );
 static void addressbook_import_mutt_cb		( void );
 static void addressbook_import_pine_cb		( void );
 static void addressbook_export_html_cb		( void );
+static void addressbook_export_ldif_cb		( void );
 static void addressbook_clip_cut_cb		( void );
 static void addressbook_clip_copy_cb		( void );
 static void addressbook_clip_paste_cb		( void );
@@ -384,6 +386,7 @@ static GtkItemFactoryEntry addressbook_entries[] =
 	{N_("/_Tools/Import _Pine file..."), NULL,	addressbook_import_pine_cb,	0, NULL},
 	{N_("/_Tools/---"),		NULL,		NULL, 0, "<Separator>"},
 	{N_("/_Tools/Export _HTML..."), NULL,           addressbook_export_html_cb,	0, NULL},
+	{N_("/_Tools/Export LDI_F..."), NULL,           addressbook_export_ldif_cb,	0, NULL},
 	{N_("/_Help"),			NULL,		NULL, 0, "<LastBranch>"},
 	{N_("/_Help/_About"),		NULL,		about_show, 0, NULL}
 };
@@ -1280,6 +1283,7 @@ static void addressbook_menuitem_set_sensitive( AddressObject *obj, GtkCTreeNode
 
 	/* Export data */
 	menu_set_sensitive( addrbook.menu_factory, "/Tools/Export HTML...", canExport );
+	menu_set_sensitive( addrbook.menu_factory, "/Tools/Export LDIF...", canExport );
 }
 
 static void addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
@@ -4129,6 +4133,30 @@ static void addressbook_export_html_cb( void ) {
 	adbase = ( AddrBookBase * ) ds->rawDataSource;
 	cache = adbase->addressCache;
 	addressbook_exp_html( cache );
+}
+
+/*
+* Export LDIF file.
+*/
+static void addressbook_export_ldif_cb( void ) {
+	GtkCTree *ctree = GTK_CTREE(addrbook.ctree);
+	AddressObject *obj;
+	AddressDataSource *ds = NULL;
+	AddrBookBase *adbase;
+	AddressCache *cache;
+	GtkCTreeNode *node = NULL;
+
+	if( ! addrbook.treeSelected ) return;
+	node = addrbook.treeSelected;
+	if( GTK_CTREE_ROW(node)->level == 1 ) return;
+	obj = gtk_ctree_node_get_row_data( ctree, node );
+	if( obj == NULL ) return;
+
+	ds = addressbook_find_datasource( node );
+	if( ds == NULL ) return;
+	adbase = ( AddrBookBase * ) ds->rawDataSource;
+	cache = adbase->addressCache;
+	addressbook_exp_ldif( cache );
 }
 
 /*

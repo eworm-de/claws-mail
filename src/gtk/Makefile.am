@@ -1,21 +1,41 @@
 noinst_LTLIBRARIES = libsylpheedgtk.la
 
 libsylpheedgtk_la_SOURCES = \
-	about.c about.h \
-	colorlabel.c colorlabel.h \
-	description_window.c description_window.h \
-	filesel.c filesel.h \
-	gtkaspell.c gtkaspell.h \
-	gtkutils.c gtkutils.h \
-	gtkshruler.c gtkshruler.h \
-	gtksctree.c gtksctree.h \
-	gtkstext.c gtkstext.h \
-	manage_window.c manage_window.h \
-	menu.c menu.h \
-	pluginwindow.c pluginwindow.h \
-	prefswindow.c prefswindow.h \
-	sslcertwindow.c sslcertwindow.h \
-	gtkvscrollbutton.c gtkvscrollbutton.h
+	about.c \
+	colorlabel.c \
+	colorsel.c \
+	description_window.c \
+	filesel.c \
+	gtkaspell.c \
+	gtkutils.c \
+	gtkshruler.c \
+	gtksctree.c \
+	gtkstext.c \
+	manage_window.c \
+	menu.c \
+	pluginwindow.c \
+	prefswindow.c \
+	sslcertwindow.c \
+	gtkvscrollbutton.c
+
+sylpheedgtkincludedir = $(pkgincludedir)/gtk
+sylpheedgtkinclude_HEADERS = \
+	about.h \
+	colorlabel.h \
+	colorsel.h \
+	description_window.h \
+	filesel.h \
+	gtkaspell.h \
+	gtkutils.h \
+	gtkshruler.h \
+	gtksctree.h \
+	gtkstext.h \
+	manage_window.h \
+	menu.h \
+	pluginwindow.h \
+	prefswindow.h \
+	sslcertwindow.h \
+	gtkvscrollbutton.h
 
 AM_CPPFLAGS = \
 	-I../common \

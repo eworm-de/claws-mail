@@ -471,6 +471,7 @@ EXPORTS
 	colorlabel_get_color_count 
 	colorlabel_get_color_menu_active_item 
 	colorlabel_get_color_text 
+	colorsel_select_color_rgb 
 	complete_address 
 	compose_create_attach 
 	compose_draft 
@@ -634,6 +635,7 @@ EXPORTS
 	filesel_select_multiple_files 
 	filter_message_by_msginfo 
 	filteringaction_free 
+	filteringaction_list_to_string 
 	filteringaction_new 
 	filteringaction_to_string 
 	filteringprop_copy 
@@ -675,7 +677,7 @@ EXPORTS
 	folder_item_close 
 	folder_item_compose_page 
 	folder_item_copy_msg 
-	folder_item_copy_msgs_with_dest 
+	folder_item_copy_msgs 
 	folder_item_destroy 
 	folder_item_fetch_msg 
 	folder_item_free_cache 
@@ -690,7 +692,7 @@ EXPORTS
 	folder_item_get_path 
 	folder_item_is_msg_changed 
 	folder_item_move_msg 
-	folder_item_move_msgs_with_dest 
+	folder_item_move_msgs 
 	folder_item_move_recursive 
 	folder_item_move_to 
 	folder_item_new 
@@ -902,6 +904,7 @@ EXPORTS
 	gtkut_font_load_from_fontset 
 	gtkut_get_font_height 
 	gtkut_get_font_width 
+	gtkut_set_widget_bgcolor_rgb 
 	gtkut_stext_clear 
 	gtkut_stext_find 
 	gtkut_widget_disable_theme_engine 
@@ -930,7 +933,6 @@ EXPORTS
 	html_parser_destroy 
 	html_parser_new 
 	imap_class 
-	imap_free_capabilities 
 	imap_get_class 
 	imp_mutt_status_show 
 	imp_pine_status_show 
@@ -971,6 +973,9 @@ EXPORTS
 	jconv_strdup_conv_autodetect 
 	jconv_strdup_conv_fullauto 
 	ldif_create 
+	ldif_field_set_name 
+	ldif_field_set_selected 
+	ldif_field_toggle 
 	ldif_free 
 	ldif_get_fieldlist 
 	ldif_import_data 
@@ -980,6 +985,8 @@ EXPORTS
 	ldif_set_accessed 
 	ldif_set_callback 
 	ldif_set_file 
+	ldif_write_eor 
+	ldif_write_value 
 	line_has_quote_char 
 	line_has_quote_char_last 
 	list_free_strings 
@@ -1003,6 +1010,8 @@ EXPORTS
 	main_window_destroy_all 
 	main_window_empty_trash 
 	main_window_get_current_state 
+	main_window_get_folder_window 
+	main_window_get_message_window 
 	main_window_get_position 
 	main_window_get_size 
 	main_window_hide 
@@ -1037,6 +1046,7 @@ EXPORTS
 	matcher_parser_create_buffer 
 	matcher_parser_delete_buffer 
 	matcher_parser_flush_buffer 
+	matcher_parser_get_action_list 
 	matcher_parser_get_cond 
 	matcher_parser_get_filtering 
 	matcher_parser_get_prop 
@@ -1282,6 +1292,8 @@ EXPORTS
 	prefs_display_header_write_config 
 	prefs_file_close 
 	prefs_file_close_revert 
+	prefs_filtering_action_exec_info 
+	prefs_filtering_action_open 
 	prefs_filtering_clear 
 	prefs_filtering_clear_folder 
 	prefs_filtering_delete_path 
@@ -1330,6 +1342,11 @@ EXPORTS
 	prefs_set_spinbtn 
 	prefs_set_text 
 	prefs_set_toggle 
+	prefs_spelling 
+	prefs_spelling_create_widget 
+	prefs_spelling_done 
+	prefs_spelling_init 
+	prefs_spelling_save 
 	prefs_summary_column_get_config 
 	prefs_summary_column_open 
 	prefs_summary_column_set_config 

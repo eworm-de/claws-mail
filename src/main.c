@@ -57,6 +57,7 @@
 #include "prefs_common.h"
 #include "prefs_account.h"
 #include "prefs_actions.h"
+#include "prefs_spelling.h"
 #include "scoring.h"
 #include "prefs_display_header.h"
 #include "account.h"
@@ -345,6 +346,7 @@ int main(int argc, char *argv[])
 	w32_aspell_init();
 #endif
 	gtkaspell_checkers_init();
+	prefs_spelling_init();
 #endif
 	
 	sock_set_io_timeout(prefs_common.io_timeout_secs);
@@ -451,6 +453,7 @@ int main(int argc, char *argv[])
 	addressbook_destroy();
 
 #ifdef USE_ASPELL       
+	prefs_spelling_done();
 	gtkaspell_checkers_quit();
 #endif
 	sylpheed_done();

@@ -54,18 +54,20 @@
 #define PAGE_ATTRIBUTES            1
 #define PAGE_FINISH                2
 
-#define IMPORTLDIF_WIDTH           380
+#define IMPORTLDIF_WIDTH           390
 #define IMPORTLDIF_HEIGHT          300
 
-#define FIELDS_N_COLS              3
+#define FIELDS_N_COLS              4
+#define FIELDS_COL_WIDTH_RESERVED  10
 #define FIELDS_COL_WIDTH_SELECT    10
 #define FIELDS_COL_WIDTH_FIELD     140
 #define FIELDS_COL_WIDTH_ATTRIB    140
 
 typedef enum {
-	FIELD_COL_SELECT  = 0,
-	FIELD_COL_FIELD   = 1,
-	FIELD_COL_ATTRIB  = 2
+	FIELD_COL_RESERVED = 0,
+	FIELD_COL_SELECT   = 1,
+	FIELD_COL_FIELD    = 2,
+	FIELD_COL_ATTRIB   = 3
 } ImpLdif_FieldColPos;
 
 /**
@@ -74,12 +76,13 @@ typedef enum {
 static struct _ImpLdif_Dlg {
 	GtkWidget *window;
 	GtkWidget *notebook;
-	GtkWidget *file_entry;
-	GtkWidget *name_entry;
+	GtkWidget *entryFile;
+	GtkWidget *entryName;
 	GtkWidget *clist_field;
-	GtkWidget *name_ldif;
-	GtkWidget *name_attrib;
-	GtkWidget *check_select;
+	GtkWidget *entryField;
+	GtkWidget *entryAttrib;
+	GtkWidget *checkSelect;
+	GtkWidget *btnModify;
 	GtkWidget *labelBook;
 	GtkWidget *labelFile;
 	GtkWidget *labelRecords;
@@ -207,9 +210,10 @@ static void imp_ldif_update_row( GtkCList *clist ) {
 	row = impldif_dlg.rowIndSelect;
 
 	rec = gtk_clist_get_row_data( clist, row );
-	text[ FIELD_COL_SELECT ] = "";
-	text[ FIELD_COL_FIELD  ] = rec->tagName;
-	text[ FIELD_COL_ATTRIB ] = rec->userName;
+	text[ FIELD_COL_RESERVED ] = "";
+	text[ FIELD_COL_SELECT   ] = "";
+	text[ FIELD_COL_FIELD    ] = rec->tagName;
+	text[ FIELD_COL_ATTRIB   ] = rec->userName;
 
 	gtk_clist_freeze( clist );
 	gtk_clist_remove( clist, row );
@@ -219,8 +223,14 @@ static void imp_ldif_update_row( GtkCList *clist ) {
 	else {
 		gtk_clist_insert( clist, row, text );
 	}
-	if( rec->selected )
-		gtk_clist_set_pixmap( clist, row, FIELD_COL_SELECT, markxpm, markxpmmask );
+	if( rec->selected ) {
+		gtk_clist_set_pixmap(
+			clist, row, FIELD_COL_SELECT, markxpm, markxpmmask );
+	}
+	if( rec->reserved ) {
+		gtk_clist_set_pixmap(
+			clist, row, FIELD_COL_RESERVED, markxpm, markxpmmask );
+	}
 
 	gtk_clist_set_row_data( clist, row, rec );
 	gtk_clist_thaw( clist );
@@ -245,18 +255,21 @@ static void imp_ldif_load_fields( LdifFile *ldf ) {
 		Ldif_FieldRec *rec = node->data;
 		gint row;
 
-		if( ! rec->reserved ) {
-			text[ FIELD_COL_SELECT ] = "";
-			text[ FIELD_COL_FIELD  ] = rec->tagName;
-			text[ FIELD_COL_ATTRIB ] = rec->userName;
-			row = gtk_clist_append( clist, text );
-			gtk_clist_set_row_data( clist, row, rec );
-			if( rec->selected )
-				gtk_clist_set_pixmap(
-					clist, row, FIELD_COL_SELECT, markxpm,
-					markxpmmask );
-			impldif_dlg.rowCount++;
+		text[ FIELD_COL_RESERVED ] = "";
+		text[ FIELD_COL_SELECT   ] = "";
+		text[ FIELD_COL_FIELD    ] = rec->tagName;
+		text[ FIELD_COL_ATTRIB   ] = rec->userName;
+		row = gtk_clist_append( clist, text );
+		gtk_clist_set_row_data( clist, row, rec );
+		if( rec->selected ) {
+			gtk_clist_set_pixmap( clist, row,
+				FIELD_COL_SELECT, markxpm, markxpmmask );
 		}
+		if( rec->reserved ) {
+			gtk_clist_set_pixmap( clist, row,
+				FIELD_COL_RESERVED, markxpm, markxpmmask );
+		}
+		impldif_dlg.rowCount++;
 		node = g_list_next( node );
 	}
 	g_list_free( list );
@@ -264,6 +277,14 @@ static void imp_ldif_load_fields( LdifFile *ldf ) {
 	ldif_set_accessed( ldf, FALSE );
 }
 
+/**
+ * Callback function when list iterm selected.
+ * \param clist List widget.
+ * \param row   Row.
+ * \param col   Column.
+ * \param event Event object.
+ * \param data  User data.
+ */
 static void imp_ldif_field_list_selected(
 		GtkCList *clist, gint row, gint column, GdkEvent *event,
 		gpointer data )
@@ -271,17 +292,27 @@ static void imp_ldif_field_list_selected(
 	Ldif_FieldRec *rec = gtk_clist_get_row_data( clist, row );
 
 	impldif_dlg.rowIndSelect = row;
-	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.name_attrib), "" );
+	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryAttrib), "" );
 	if( rec ) {
-		gtk_label_set_text( GTK_LABEL(impldif_dlg.name_ldif), rec->tagName );
+		/* Update widget contents */
+		gtk_label_set_text(
+			GTK_LABEL(impldif_dlg.entryField), rec->tagName );
 		if( rec->userName )
 			gtk_entry_set_text(
-				GTK_ENTRY(impldif_dlg.name_attrib), rec->userName );
+				GTK_ENTRY(impldif_dlg.entryAttrib), rec->userName );
 		gtk_toggle_button_set_active(
-			GTK_TOGGLE_BUTTON( impldif_dlg.check_select),
+			GTK_TOGGLE_BUTTON( impldif_dlg.checkSelect),
 			rec->selected );
+
+		/* Disable widgets for reserved fields */
+		gtk_widget_set_sensitive(
+			impldif_dlg.entryAttrib, ! rec->reserved );
+		gtk_widget_set_sensitive(
+			impldif_dlg.checkSelect, ! rec->reserved );
+		gtk_widget_set_sensitive(
+			impldif_dlg.btnModify,   ! rec->reserved );
 	}
-	gtk_widget_grab_focus(impldif_dlg.name_attrib);
+	gtk_widget_grab_focus(impldif_dlg.entryAttrib);
 }
 
 /**
@@ -299,14 +330,14 @@ static void imp_ldif_field_list_toggle(
 	if( ! event ) return;
 	if( impldif_dlg.rowIndSelect < 0 ) return;
 	if( event->button == 1 ) {
-		/* If single click in first column */
+		/* If single click in select column */
 		if( event->type == GDK_BUTTON_PRESS ) {
 			gint x = event->x;
 			gint y = event->y;
 			gint row, col;
 
 			gtk_clist_get_selection_info( clist, x, y, &row, &col );
-			if( col > 0 ) return;
+			if( col != FIELD_COL_SELECT ) return;
 			if( row > impldif_dlg.rowCount ) return;
 
 			/* Set row */
@@ -324,7 +355,7 @@ static void imp_ldif_field_list_toggle(
 		rec = gtk_clist_get_row_data(
 			clist, impldif_dlg.rowIndSelect );
 		if( rec ) {
-			rec->selected = ! rec->selected;
+			ldif_field_toggle( rec );
 			imp_ldif_update_row( clist );
 		}
 	}
@@ -344,23 +375,22 @@ static void imp_ldif_modify_pressed( GtkWidget *widget, gpointer data ) {
 	row = impldif_dlg.rowIndSelect;
 	rec = gtk_clist_get_row_data( clist, impldif_dlg.rowIndSelect );
 
-	g_free( rec->userName );
-	rec->userName = gtk_editable_get_chars(
-				GTK_EDITABLE(impldif_dlg.name_attrib), 0, -1 );
-	rec->selected = gtk_toggle_button_get_active(
-				GTK_TOGGLE_BUTTON( impldif_dlg.check_select) );
+	ldif_field_set_name( rec, gtk_editable_get_chars(
+		GTK_EDITABLE(impldif_dlg.entryAttrib), 0, -1 ) );
+	ldif_field_set_selected( rec, gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON( impldif_dlg.checkSelect) ) );
 	imp_ldif_update_row( clist );
 	gtk_clist_select_row( clist, row, 0 );
-	gtk_label_set_text( GTK_LABEL(impldif_dlg.name_ldif), "" );
-	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.name_attrib), "" );
+	gtk_label_set_text( GTK_LABEL(impldif_dlg.entryField), "" );
+	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryAttrib), "" );
 	gtk_toggle_button_set_active(
-		GTK_TOGGLE_BUTTON( impldif_dlg.check_select), FALSE );
+		GTK_TOGGLE_BUTTON( impldif_dlg.checkSelect), FALSE );
 }
 
-/*
-* Move off fields page.
-* return: TRUE if OK to move off page.
-*/
+/**
+ * Test whether we can move off fields page.
+ * \return <i>TRUE</i> if OK to move off page.
+ */
 static gboolean imp_ldif_field_move() {
 	gboolean retVal = FALSE;
 	gchar *newFile;
@@ -391,7 +421,7 @@ static gboolean imp_ldif_field_move() {
 }
 
 /**
- * Test whether we can move of file page.
+ * Test whether we can move off file page.
  * \return <i>TRUE</i> if OK to move off page.
  */
 static gboolean imp_ldif_file_move() {
@@ -401,10 +431,10 @@ static gboolean imp_ldif_file_move() {
 	gchar *sMsg = NULL;
 	gboolean errFlag = FALSE;
 
-	sFile = gtk_editable_get_chars( GTK_EDITABLE(impldif_dlg.file_entry), 0, -1 );
+	sFile = gtk_editable_get_chars( GTK_EDITABLE(impldif_dlg.entryFile), 0, -1 );
 	g_strchug( sFile ); g_strchomp( sFile );
 
-	sName = gtk_editable_get_chars( GTK_EDITABLE(impldif_dlg.name_entry), 0, -1 );
+	sName = gtk_editable_get_chars( GTK_EDITABLE(impldif_dlg.entryName), 0, -1 );
 	g_strchug( sName ); g_strchomp( sName );
 
 	g_free( impldif_dlg.nameBook );
@@ -412,18 +442,18 @@ static gboolean imp_ldif_file_move() {
 	impldif_dlg.nameBook = sName;
 	impldif_dlg.fileName = sFile;
 
-	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.file_entry), sFile );
-	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.name_entry), sName );
+	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryFile), sFile );
+	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryName), sName );
 
 	if( *sFile == '\0'|| strlen( sFile ) < 1 ) {
 		sMsg = _( "Please select a file." );
-		gtk_widget_grab_focus(impldif_dlg.file_entry);
+		gtk_widget_grab_focus(impldif_dlg.entryFile);
 		errFlag = TRUE;
 	}
 
 	if( *sName == '\0'|| strlen( sName ) < 1 ) {
 		if( ! errFlag ) sMsg = _( "Address book name must be supplied." );
-		gtk_widget_grab_focus(impldif_dlg.name_entry);
+		gtk_widget_grab_focus(impldif_dlg.entryName);
 		errFlag = TRUE;
 	}
 
@@ -452,7 +482,7 @@ static void imp_ldif_finish_show() {
 	gchar *sMsg;
 	gchar *name;
 
-	name = gtk_editable_get_chars( GTK_EDITABLE(impldif_dlg.name_entry), 0, -1 );
+	name = gtk_editable_get_chars( GTK_EDITABLE(impldif_dlg.entryName), 0, -1 );
 	gtk_label_set_text( GTK_LABEL(impldif_dlg.labelBook), name );
 	g_free( name );
 	gtk_label_set_text( GTK_LABEL(impldif_dlg.labelFile), _ldifFile_->path );
@@ -546,10 +576,10 @@ static void imp_ldif_file_ok( GtkWidget *widget, gpointer data ) {
 	sFile = gtk_file_selection_get_filename( GTK_FILE_SELECTION(fileSel) );
 
 	afs->cancelled = FALSE;
-	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.file_entry), sFile );
+	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryFile), sFile );
 	gtk_widget_hide( afs->fileSelector );
 	gtk_grab_remove( afs->fileSelector );
-	gtk_widget_grab_focus( impldif_dlg.file_entry );
+	gtk_widget_grab_focus( impldif_dlg.entryFile );
 }
 
 /**
@@ -562,7 +592,7 @@ static void imp_ldif_file_cancel( GtkWidget *widget, gpointer data ) {
 	afs->cancelled = TRUE;
 	gtk_widget_hide( afs->fileSelector );
 	gtk_grab_remove( afs->fileSelector );
-	gtk_widget_grab_focus( impldif_dlg.file_entry );
+	gtk_widget_grab_focus( impldif_dlg.entryFile );
 }
 
 /**
@@ -590,7 +620,7 @@ static void imp_ldif_file_select( void ) {
 	if( ! _imp_ldif_file_selector_.fileSelector )
 		imp_ldif_file_select_create( & _imp_ldif_file_selector_ );
 
-	sFile = gtk_editable_get_chars( GTK_EDITABLE(impldif_dlg.file_entry), 0, -1 );
+	sFile = gtk_editable_get_chars( GTK_EDITABLE(impldif_dlg.entryFile), 0, -1 );
 	gtk_file_selection_set_filename(
 		GTK_FILE_SELECTION( _imp_ldif_file_selector_.fileSelector ),
 		sFile );
@@ -631,9 +661,10 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *vbox;
 	GtkWidget *table;
 	GtkWidget *label;
-	GtkWidget *file_entry;
-	GtkWidget *name_entry;
-	GtkWidget *file_btn;
+	GtkWidget *entryFile;
+	GtkWidget *entryName;
+	GtkWidget *btnFile;
+	GtkTooltips *toolTip;
 	gint top;
 
 	vbox = gtk_vbox_new(FALSE, 8);
@@ -661,9 +692,15 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 		GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
-	name_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, top, (top + 1),
+	entryName = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), entryName, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, entryName, _( 
+		"Specify the name for the address book that will " \
+		"be created from the LDIF file data." ),
+		NULL );
 
 	/* Second row */
 	top = 1;
@@ -672,22 +709,32 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 		GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
-	file_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), file_entry, 1, 2, top, (top + 1),
+	entryFile = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), entryFile, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
-	file_btn = gtk_button_new_with_label( _(" ... "));
-	gtk_table_attach(GTK_TABLE(table), file_btn, 2, 3, top, (top + 1),
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, entryFile,
+		_( "The full file specification of the LDIF file to import." ),
+		NULL );
+
+	btnFile = gtk_button_new_with_label( _(" ... "));
+	gtk_table_attach(GTK_TABLE(table), btnFile, 2, 3, top, (top + 1),
 		GTK_FILL, 0, 3, 0);
+
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, btnFile,
+		_( "Select the LDIF file to import." ),
+		NULL );
 
 	gtk_widget_show_all(vbox);
 
 	/* Button handler */
-	gtk_signal_connect(GTK_OBJECT(file_btn), "clicked",
+	gtk_signal_connect(GTK_OBJECT(btnFile), "clicked",
 			   GTK_SIGNAL_FUNC(imp_ldif_file_select), NULL);
 
-	impldif_dlg.file_entry = file_entry;
-	impldif_dlg.name_entry = name_entry;
+	impldif_dlg.entryFile = entryFile;
+	impldif_dlg.entryName = entryName;
 }
 
 /**
@@ -699,23 +746,25 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *vbox;
 	GtkWidget *vboxt;
 	GtkWidget *vboxb;
-	GtkWidget *buttonMod;
-
 	GtkWidget *table;
 	GtkWidget *label;
 	GtkWidget *clist_swin;
 	GtkWidget *clist_field;
-	GtkWidget *name_ldif;
-	GtkWidget *name_attrib;
-	GtkWidget *check_select;
+	GtkWidget *entryField;
+	GtkWidget *entryAttrib;
+	GtkWidget *checkSelect;
+	GtkWidget *btnModify;
+	GtkWidget *eventBox;
+	GtkTooltips *toolTip;
 	gint top;
 
 	gchar *titles[ FIELDS_N_COLS ];
 	gint i;
 
-	titles[ FIELD_COL_SELECT ] = _("S");
-	titles[ FIELD_COL_FIELD  ] = _("LDIF Field");
-	titles[ FIELD_COL_ATTRIB ] = _("Attribute Name");
+	titles[ FIELD_COL_RESERVED ] = _("R");
+	titles[ FIELD_COL_SELECT   ] = _("S");
+	titles[ FIELD_COL_FIELD    ] = _("LDIF Field Name");
+	titles[ FIELD_COL_ATTRIB   ] = _("Attribute Name");
 
 	vbox = gtk_vbox_new(FALSE, 8);
 	gtk_container_add( GTK_CONTAINER( impldif_dlg.notebook ), vbox );
@@ -740,16 +789,23 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 
 	clist_field = gtk_clist_new_with_titles( FIELDS_N_COLS, titles );
 	gtk_container_add( GTK_CONTAINER(clist_swin), clist_field );
-	gtk_clist_set_selection_mode( GTK_CLIST(clist_field), GTK_SELECTION_BROWSE );
-	gtk_clist_set_column_width(
-			GTK_CLIST(clist_field), FIELD_COL_SELECT, FIELDS_COL_WIDTH_SELECT );
-	gtk_clist_set_column_width(
-			GTK_CLIST(clist_field), FIELD_COL_FIELD, FIELDS_COL_WIDTH_FIELD );
-	gtk_clist_set_column_width(
-			GTK_CLIST(clist_field), FIELD_COL_ATTRIB, FIELDS_COL_WIDTH_ATTRIB );
+	gtk_clist_set_selection_mode(
+		GTK_CLIST(clist_field), GTK_SELECTION_BROWSE );
+	gtk_clist_set_column_width( GTK_CLIST(clist_field),
+		FIELD_COL_RESERVED, FIELDS_COL_WIDTH_RESERVED );
+	gtk_clist_set_column_width( GTK_CLIST(clist_field),
+		FIELD_COL_SELECT, FIELDS_COL_WIDTH_SELECT );
+	gtk_clist_set_column_width( GTK_CLIST(clist_field),
+		FIELD_COL_FIELD, FIELDS_COL_WIDTH_FIELD );
+	gtk_clist_set_column_width( GTK_CLIST(clist_field),
+		FIELD_COL_ATTRIB, FIELDS_COL_WIDTH_ATTRIB );
 
-	for( i = 0; i < FIELDS_N_COLS; i++ )
-		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(clist_field)->column[i].button, GTK_CAN_FOCUS);
+	/* Remove focus capability for column headers */
+	for( i = 0; i < FIELDS_N_COLS; i++ ) {
+		GTK_WIDGET_UNSET_FLAGS(
+			GTK_CLIST(clist_field)->column[i].button,
+			GTK_CAN_FOCUS);
+	}
 
 	/* Lower area - Edit area */
 	vboxb = gtk_vbox_new( FALSE, 4 );
@@ -768,9 +824,9 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 		GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
-	name_ldif = gtk_label_new( "" );
-	gtk_misc_set_alignment(GTK_MISC(name_ldif), 0.01, 0.5);
-	gtk_table_attach(GTK_TABLE(table), name_ldif, 1, 3, top, (top + 1),
+	entryField = gtk_label_new( "" );
+	gtk_misc_set_alignment(GTK_MISC(entryField), 0.01, 0.5);
+	gtk_table_attach(GTK_TABLE(table), entryField, 1, 3, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
 	/* Second row */
@@ -780,24 +836,64 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 		GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
-	name_attrib = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), name_attrib, 1, 3, top, (top + 1),
+	entryAttrib = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), entryAttrib, 1, 3, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, entryAttrib,
+		_( "The LDIF field can be renamed to the User Attribute name." ),
+		NULL );
 
 	/* Next row */
 	++top;
-	label = gtk_label_new(_("Select"));
+	label = gtk_label_new( _( "???" ) );
+	/*
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
 		GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	*/
+	gtk_misc_set_alignment(GTK_MISC(label), 0.5, 0.5);
 
-	check_select = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), check_select, 1, 2, top, (top + 1),
+	/*
+	 * Use an event box to attach some help in the form of a tooltip.
+	 * Tried this for the clist but it looked bad.
+	 */
+	eventBox = gtk_event_box_new();
+	gtk_container_add( GTK_CONTAINER(eventBox), label );
+	gtk_table_attach(GTK_TABLE(table), eventBox, 0, 1, top, (top + 1),
+		GTK_FILL, 0, 0, 0);
+
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, eventBox, _(
+		"Choose the LDIF field that will be renamed or selected " \
+		"for import in the list above. Reserved fields (marked " \
+		"with a tick in the \"R\" column), are automatically " \
+		"imported and cannot be renamed. A single click in the " \
+		"Select (\"S\") column will select the field for import " \
+		"with a tick. A single click anywhere in the row will " \
+		"select that field for rename in the input area below " \
+		"the list. A double click anywhere in the row will also " \
+		"select the field for import."
+		), NULL );
+
+
+	checkSelect = gtk_check_button_new_with_label( _( "Select for Import" ) );
+	gtk_table_attach(GTK_TABLE(table), checkSelect, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
-	buttonMod = gtk_button_new_with_label( _("Modify"));
-	gtk_table_attach(GTK_TABLE(table), buttonMod, 2, 3, top, (top + 1),
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, checkSelect,
+		_( "Select the LDIF field for import into the address book." ),
+		NULL );
+
+	btnModify = gtk_button_new_with_label( _(" Modify "));
+	gtk_table_attach(GTK_TABLE(table), btnModify, 2, 3, top, (top + 1),
 		GTK_FILL, 0, 3, 0);
+
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, btnModify,
+		_( "This button will update the list above with the data supplied." ),
+		NULL );
 
 	gtk_widget_show_all(vbox);
 
@@ -806,13 +902,14 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 			GTK_SIGNAL_FUNC(imp_ldif_field_list_selected), NULL );
 	gtk_signal_connect( GTK_OBJECT(clist_field), "button_press_event",
 			GTK_SIGNAL_FUNC(imp_ldif_field_list_toggle), NULL );
-	gtk_signal_connect( GTK_OBJECT(buttonMod), "clicked",
+	gtk_signal_connect( GTK_OBJECT(btnModify), "clicked",
 			GTK_SIGNAL_FUNC(imp_ldif_modify_pressed), NULL );
 
-	impldif_dlg.clist_field  = clist_field;
-	impldif_dlg.name_ldif    = name_ldif;
-	impldif_dlg.name_attrib  = name_attrib;
-	impldif_dlg.check_select = check_select;
+	impldif_dlg.clist_field = clist_field;
+	impldif_dlg.entryField  = entryField;
+	impldif_dlg.entryAttrib = entryAttrib;
+	impldif_dlg.checkSelect = checkSelect;
+	impldif_dlg.btnModify   = btnModify;
 }
 
 /**
@@ -844,11 +941,11 @@ static void imp_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
 	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8 );
+	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
 	/* First row */
 	top = 0;
-	label = gtk_label_new(_("Address Book :"));
+	label = gtk_label_new( _( "Address Book :" ) );
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 
@@ -858,7 +955,7 @@ static void imp_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 
 	/* Second row */
 	top++;
-	label = gtk_label_new(_("File Name :"));
+	label = gtk_label_new( _( "File Name :" ) );
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 
@@ -868,7 +965,7 @@ static void imp_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 
 	/* Third row */
 	top++;
-	label = gtk_label_new(_("Records :"));
+	label = gtk_label_new( _("Records Imported :") );
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 
@@ -988,10 +1085,10 @@ AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex ) {
 	manage_window_set_transient(GTK_WINDOW(impldif_dlg.window));
 	gtk_widget_grab_default(impldif_dlg.btnNext);
 
-	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.name_entry), IMPORTLDIF_GUESS_NAME );
-	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.file_entry), "" );
-	gtk_label_set_text( GTK_LABEL(impldif_dlg.name_ldif), "" );
-	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.name_attrib), "" );
+	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryName), IMPORTLDIF_GUESS_NAME );
+	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryFile), "" );
+	gtk_label_set_text( GTK_LABEL(impldif_dlg.entryField), "" );
+	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryAttrib), "" );
 	gtk_clist_clear( GTK_CLIST(impldif_dlg.clist_field) );
 	gtk_notebook_set_page( GTK_NOTEBOOK(impldif_dlg.notebook), PAGE_FILE_INFO );
 	gtk_widget_set_sensitive( impldif_dlg.btnPrev, FALSE );
@@ -999,7 +1096,7 @@ AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex ) {
 	stock_pixmap_gdk( impldif_dlg.window, STOCK_PIXMAP_MARK,
 			  &markxpm, &markxpmmask );
 	imp_ldif_message();
-	gtk_widget_grab_focus(impldif_dlg.file_entry);
+	gtk_widget_grab_focus(impldif_dlg.entryFile);
 
 	impldif_dlg.rowIndSelect = -1;
 	impldif_dlg.rowCount = 0;
@@ -1025,6 +1122,8 @@ AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex ) {
 }
 
 /*
-* End of Source.
-*/
+ * ============================================================================
+ * End of Source.
+ * ============================================================================
+ */
 

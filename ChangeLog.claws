@@ -1,3 +1,111 @@
+2003-08-09 [paul]	0.9.4claws12
+
+	* sync with 0.9.4cvs6
+		see ChangeLog 2003-08-07
+		
+	* AUTHORS
+		add Leandro and Luke to claws-branch section
+
+2003-08-09 [christoph]	0.9.4claws11
+
+	* src/gtk/Makefile.am
+	* src/gtk/colorsel.[ch]			** NEW **
+		create a color selection dialog that can be used as a simple
+		function call with it's own gtk main loop like filesel.[ch]
+
+	* src/Makefile.am
+	* src/main.c
+	* src/prefs_common.c
+	* src/prefs_spelling.[ch]		** NEW **
+	* src/prefs_spelling.glade		** NEW **
+	* src/gtk/gtkutils.[ch]
+		move "Spell Checker" prefs to new prefs dialog
+
+	* src/prefs_folder_item.c
+		use new colorsel dialog
+
+2003-08-08 [paul]	0.9.4claws10
+
+	* src/inc.c
+		clear the progress bar unconditionally
+
+2003-08-08 [paul]	0.9.4claws9
+
+	* sync with 0.9.4cvs4
+		see ChangeLog 2003-07-31
+
+2003-08-07 [christoph]	0.9.4claws8
+
+	* configure.ac
+		fix bug in image viewer plugin part
+
+	* src/imap.c
+		don't execute close command if the folder item is not selected
+
+2003-08-07 [hoa]	0.9.4claws7
+
+	* src/filtering.[ch]
+	* src/matcher_parser.h
+	* src/matcher_parser_parse.y
+		can define several actions for each filtering rule
+		can import old versions of filtering rules
+
+	* src/prefs_filtering.c
+		call to a new dialog box to define actions
+
+	* src/prefs_filtering_action.[ch]
+		dialog box to define actions for filtering rules
+
+2003-08-06 [christoph]	0.9.4claws6
+
+	* src/imap.c
+		make sure source folder is selected when copying messages
+
+2003-08-06 [christoph]	0.9.4claws5
+
+	* sync with 0.9.4cvs2
+		see ChangeLog 2003-07-29		
+
+2003-08-05 [paul]	0.9.4claws4
+
+	* sync with 0.9.4cvs3
+		see ChangeLog 2003-07-30
+
+2003-08-04 [match]	0.9.4claws3
+
+	* po/POTFILES.in
+		export of LDIF files.
+
+2003-08-04 [match]	0.9.4claws2
+
+	* src/ldif.[ch]
+		support for export LDIF. documented.
+	* src/importldif.[ch]
+	* src/exportldif.[ch]
+		add tooltips. documented.
+	* src/exphtmldlg.[ch]
+	* src/common/xmlprops.[ch]
+		documented.
+	* src/exportldif.[ch]			** NEW **
+	* src/expldifdlg.[ch]			** NEW **
+	* src/addressbook.[ch]
+	* src/Makefile.am
+		export of LDIF files.
+		documented.
+
+2003-08-04 [christoph]	0.9.4claws1
+
+	* .cvsignore
+	* Makefile.am
+	* configure.ac
+	* sylpheed-claws.pc.in			** NEW **
+	* src/Makefile.am
+	* src/common/Makefile.am
+	* src/gtk/Makefile.am
+		install sylpheed header files in $(pkgincludedir) and create a
+		pkg-config file to allow building a plugin without the source
+		package
+
 2003-08-04 [paul]	0.9.4claws
 
 	* version 0.9.4claws
@@ -67,7 +175,7 @@
 	
 	* src/messageview.c
 		o fixed bug 4 - focus lost when changing messageview view type
-	
+
 2003-08-02 [christoph]	0.9.3claws90
 
 	* src/common/hooks.c
@@ -559,7 +667,7 @@
 	* src/gtk/gtkvscrollbutton.[ch]  	** NEW **
 	* src/pixmaps/mime_*.xpm         	** NEW **
 		o mimeview rearrangement with a new icon shortcut bar
-	
+
 2003-07-19 [alfons]	0.9.3claws27
 
 	* src/folderview.c

@@ -700,7 +700,8 @@ static void folderview_select_node(FolderView *folderview, GtkCTreeNode *node)
 	folderview->open_folder = TRUE;
 	gtkut_ctree_set_focus_row(ctree, node);
 	gtk_ctree_select(ctree, node);
-	if (folderview->summaryview->messages > 0)
+	if (folderview->summaryview->folder_item &&
+	    folderview->summaryview->folder_item->total_msgs > 0)
 		gtk_widget_grab_focus(folderview->summaryview->ctree);
 	else
 		gtk_widget_grab_focus(folderview->ctree);
@@ -1625,7 +1626,8 @@ static void folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_space:
 		if (folderview->selected) {
 			if (folderview->opened == folderview->selected &&
-			    folderview->summaryview->messages == 0)
+			    (!folderview->summaryview->folder_item ||
+			     folderview->summaryview->folder_item->total_msgs == 0))
 				folderview_select_next_unread(folderview);
 			else
 				folderview_select_node(folderview,

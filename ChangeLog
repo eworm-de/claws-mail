@@ -1,3 +1,50 @@
+2003-08-07
+
+	* src/mainwindow.c
+	  src/prefs_common.[ch]: remember the size and position of
+	  separated views.
+	  main_window_set_widgets(): fixed a bug that the hidden items on
+	  the header view were shown when changing the view type.
+	  Instead of setting the window size, set the each view's size.
+
+2003-08-01
+
+	* src/compose.c: compose_select_account(): don't append signature
+	  on redirect mode.
+	  compose_insert_sig(): don't insert "\n\n" if signature string
+	  doesn't exist. Always insert signature at the end of message.
+
+2003-08-01
+
+	* improved sylpheed.spec.in (thanks to Andre Oliveira da Costa).
+
+2003-07-31
+
+	* minor code cleanups for the folder system.
+	* src/compose.c: compose_queue(), compose_draft_cb(): code cleanup.
+	* src/folder.c: code cleanups.
+	* src/imap.c
+	  src/mh.c: calculate message numbers inside the functions.
+	* src/procmsg.c: procmsg_set_flags(): calculate message numbers.
+	* src/summaryview.[ch]: don't calculate and preserve message numbers
+	  inside SummaryView,
+
+2003-07-30
+
+	* src/folder.[ch]
+	  src/imap.[ch]
+	  src/mh.[ch]
+	  src/procmsg.c
+	  src/summaryview.c: renamed *_msgs_with_dest() to *_msgs().
+
+2003-07-29
+
+	* src/imap.[ch]: use CAPABILITY to use protocol extentions.
+	  imap_greeting(): parse initial server greeting. Also support
+	  PREAUTH response.
+	  imap_add_msgs()
+	  imap_cmd_append(): use APPENDUID responses if UIDPLUS is supported.
+
 2003-07-28
 
 	* src/imap.c: imap_get_flag_str(): fixed a buffer overrun.

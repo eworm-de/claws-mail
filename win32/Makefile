@@ -214,6 +214,7 @@ OBJECTS= \
 	base64.o \
 	codeconv.o \
 	colorlabel.o \
+	colorsel.o \
 	compat.o \
 	compose.o \
 	conv.o \
@@ -229,8 +230,10 @@ OBJECTS= \
 	editvcard.o \
 	enriched.o \
 	exphtmldlg.o \
+	expldifdlg.o \
 	export.o \
 	exporthtml.o \
+	exportldif.o \
 	filesel.o \
 	filtering.o \
 	folder.o \
@@ -297,10 +300,12 @@ OBJECTS= \
 	prefs_customheader.o \
 	prefs_display_header.o \
 	prefs_filtering.o \
+	prefs_filtering_action.o \
 	prefs_folder_item.o \
 	prefs_gtk.o \
 	prefs_matcher.o \
 	prefs_scoring.o \
+	prefs_spelling.o \
 	prefs_summary_column.o \
 	prefs_template.o \
 	prefs_toolbar.o \
@@ -527,6 +532,7 @@ alertpanel.o: 	alertpanel.c alertpanel.h
 base64.o: 	base64.c base64.h
 codeconv.o: 	codeconv.c codeconv.h
 colorlabel.o: 	colorlabel.c colorlabel.h
+colorsel.o:	colorsel.c colorsel.h
 compose.o: 	compose.c compose.h
 customheader.o: 	customheader.c customheader.h
 description_window.o:	description_window.c description_window.h
@@ -540,8 +546,10 @@ editldap_basedn.o: 	editldap_basedn.c editldap_basedn.h
 editvcard.o: 	editvcard.c editvcard.h
 enriched.o: 	enriched.c enriched.h
 exphtmldlg.o: 	exphtmldlg.c exphtmldlg.h
+expldifdlg.o: 	expldifdlg.c expldifdlg.h
 export.o: 	export.c export.h
 exporthtml.o: 	exporthtml.c exporthtml.h
+exportldif.o: 	exportldif.c exportldif.h
 filesel.o: 	filesel.c filesel.h
 filtering.o: 	filtering.c filtering.h
 folder.o: 	folder.c folder.h
@@ -605,10 +613,12 @@ prefs_common.o: 	prefs_common.c prefs_common.h
 prefs_customheader.o: 	prefs_customheader.c prefs_customheader.h
 prefs_display_header.o: 	prefs_display_header.c prefs_display_header.h
 prefs_filtering.o: 	prefs_filtering.c prefs_filtering.h
+prefs_filtering_action.o:	prefs_filtering_action.c prefs_filtering_action.h
 prefs_folder_item.o: 	prefs_folder_item.c prefs_folder_item.h
 prefs_gtk.o: 	prefs_gtk.c prefs_gtk.h
 prefs_matcher.o: 	prefs_matcher.c prefs_matcher.h
 prefs_scoring.o: 	prefs_scoring.c prefs_scoring.h
+prefs_spelling.o:	prefs_spelling.c prefs_spelling.h
 prefs_summary_column.o: 	prefs_summary_column.c prefs_summary_column.h
 prefs_template.o: 	prefs_template.c prefs_template.h
 prefs_toolbar.o: 	prefs_toolbar.c prefs_toolbar.h

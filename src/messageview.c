@@ -313,6 +313,7 @@ MessageView *messageview_create(MainWindow *mainwin)
 			   FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET_PTR(textview),
 			   TRUE, TRUE, 0);
+	gtk_widget_show(vbox);
 
 	/* to remove without destroyed */
 	gtk_widget_ref(GTK_WIDGET_PTR(textview));

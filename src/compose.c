@@ -3149,6 +3149,8 @@ gint compose_send(Compose *compose)
 	g_free(msgpath);
 
 	folder_item_remove_msg(folder, msgnum);
+	
+	folder_item_scan(folder);
 
 	return val;
 }
@@ -3848,6 +3850,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	GSList *cur;
 	gchar buf[BUFFSIZE];
 	gint num;
+	MsgFlags flag = {0, 0};
         static gboolean lock = FALSE;
 	PrefsAccount *mailac = NULL, *newsac = NULL;
 	
@@ -6684,6 +6687,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	FolderItem *draft;
 	gchar *tmp;
 	gint msgnum;
+	MsgFlags flag = {0, 0};
 	static gboolean lock = FALSE;
 	MsgInfo *newmsginfo;
 	
@@ -6703,7 +6707,8 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		return;
 	}
 
-	if ((msgnum = folder_item_add_msg(draft, tmp, NULL, TRUE)) < 0) {
+	folder_item_scan(draft);
+	if ((msgnum = folder_item_add_msg(draft, tmp, &flag, TRUE)) < 0) {
 		unlink(tmp);
 		g_free(tmp);
 		lock = FALSE;
@@ -6722,6 +6727,8 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		procmsg_msginfo_set_flags(newmsginfo, 0, MSG_DRAFT);
 		procmsg_msginfo_free(newmsginfo);
 	}
+	
+	folder_item_scan(draft);
 	
 	lock = FALSE;
 

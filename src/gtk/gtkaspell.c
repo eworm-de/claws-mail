@@ -1640,10 +1640,21 @@ GtkWidget *gtkaspell_dictionary_option_menu_new(const gchar *aspell_path)
 	menu = gtk_menu_new();
 	
 	for (tmp = dict_list; tmp != NULL; tmp = g_slist_next(tmp)) {
+#ifdef WIN32
+	  	gchar *dictname_utf8, *fullname_utf8;
+#endif /* WIN32 */
 		dict = (Dictionary *) tmp->data;
+#ifdef WIN32
+	  	dictname_utf8 = g_locale_to_utf8(dict->dictname, -1, NULL, NULL, NULL);
+	  	fullname_utf8 = g_locale_to_utf8(dict->fullname, -1, NULL, NULL, NULL);
+		item = gtk_menu_item_new_with_label(dictname_utf8);
+		gtk_object_set_data(GTK_OBJECT(item), "dict_name",
+				    fullname_utf8); 
+#else
 		item = gtk_menu_item_new_with_label(dict->dictname);
 		gtk_object_set_data(GTK_OBJECT(item), "dict_name",
 				    dict->fullname); 
+#endif /* WIN32 */
 					 
 		gtk_menu_append(GTK_MENU(menu), item);					 
 		gtk_widget_show(item);

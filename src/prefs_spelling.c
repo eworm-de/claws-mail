@@ -70,6 +70,12 @@ static void prefs_spelling_enable(SpellingPage *spelling, gboolean enable)
 	gtk_widget_set_sensitive(spelling->misspelled_btn,      	enable);
 	gtk_widget_set_sensitive(spelling->checkbtn_use_alternate,      enable);
 	gtk_widget_set_sensitive(spelling->checkbtn_check_while_typing, enable);
+#ifdef WIN32
+	if (enable && !w32_aspell_loaded())
+		alertpanel_message(_("Restart required."),
+			_("Please restart Sylpheed to load Aspell.\n"
+			  "You can clear the dictionaries path entry for autodetection"));
+#endif /* WIN32 */
 }
 
 static void prefs_spelling_checkbtn_enable_aspell_toggle_cb
@@ -95,6 +101,9 @@ static void prefs_spelling_btn_aspell_path_clicked_cb(GtkWidget *widget,
 	if (file_path != NULL) {
 		gchar *tmp_path, *tmp;
 
+#ifdef WIN32
+		subst_char(file_path, '/', G_DIR_SEPARATOR);
+#endif /* WIN32 */
 		tmp_path = g_dirname(file_path);
 		tmp = g_strdup_printf("%s%s", tmp_path, G_DIR_SEPARATOR_S);
 		g_free(tmp_path);
@@ -103,6 +112,9 @@ static void prefs_spelling_btn_aspell_path_clicked_cb(GtkWidget *widget,
 		gtk_option_menu_set_menu(GTK_OPTION_MENU(spelling->optmenu_dictionary),
 					 new_menu);
 
+#ifdef WIN32
+		locale_to_utf8(&tmp);
+#endif /* WIN32 */
 		gtk_entry_set_text(GTK_ENTRY(spelling->entry_aspell_path), tmp);
 		/* select first one */
 		gtk_option_menu_set_history(GTK_OPTION_MENU(
@@ -347,6 +359,9 @@ void prefs_spelling_save(PrefsPage *_page)
 		g_free(prefs_common.aspell_path);
 	prefs_common.aspell_path =
 		gtk_editable_get_chars(GTK_EDITABLE(spelling->entry_aspell_path), 0, -1);
+#ifdef WIN32
+	locale_from_utf8(&prefs_common.aspell_path);
+#endif
 
 	if (prefs_common.dictionary != NULL)
 		g_free(prefs_common.dictionary);
@@ -355,6 +370,9 @@ void prefs_spelling_save(PrefsPage *_page)
 			gtk_option_menu_get_menu(
 				GTK_OPTION_MENU(
 					spelling->optmenu_dictionary)));
+#ifdef WIN32
+	locale_from_utf8(&prefs_common.dictionary);
+#endif
 
 	prefs_common.aspell_sugmode =
 		gtkaspell_get_sugmode_from_option_menu(

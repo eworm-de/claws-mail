@@ -35,5 +35,6 @@ MatcherList *matcher_parser_get_cond	(gchar *str);
 MatcherProp *matcher_parser_get_prop	(gchar *str);
 FilteringProp *matcher_parser_get_filtering	(gchar *str);
 ScoringProp *matcher_parser_get_scoring		(gchar *str);
+GSList *matcher_parser_get_action_list(gchar *str);
 
 #endif

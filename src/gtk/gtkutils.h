@@ -142,4 +142,7 @@ void gtkut_widget_set_composer_icon	(GtkWidget	*widget);
 GtkWidget *gtkut_account_menu_new	(GList			*ac_list,
 				  	 GtkSignalFunc	 	 callback,
 					 gpointer		 data);
+
+void gtkut_set_widget_bgcolor_rgb	(GtkWidget 	*widget,
+					 guint 		 rgbvalue);
 #endif /* __GTKUTILS_H__ */

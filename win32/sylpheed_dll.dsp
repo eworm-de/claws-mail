@@ -168,6 +168,10 @@ SOURCE=..\src\gtk\colorlabel.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\gtk\colorsel.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\libjconv\compat.c
 # End Source File
 # Begin Source File
@@ -228,11 +232,19 @@ SOURCE=..\src\exphtmldlg.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\expldifdlg.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\export.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\exporthtml.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\exportldif.c
 # End Source File
 # Begin Source File
 
@@ -500,6 +512,10 @@ SOURCE=..\src\prefs_filtering.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\prefs_filtering_action.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\prefs_folder_item.c
 # End Source File
 # Begin Source File
@@ -513,6 +529,10 @@ SOURCE=..\src\prefs_matcher.c
 # Begin Source File
 
 SOURCE=..\src\prefs_scoring.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\prefs_spelling.c
 # End Source File
 # Begin Source File
 
@@ -792,6 +812,10 @@ SOURCE=..\src\gtk\colorlabel.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\gtk\colorsel.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\compose.h
 # End Source File
 # Begin Source File
@@ -848,11 +872,19 @@ SOURCE=..\src\exphtmldlg.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\expldifdlg.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\export.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\exporthtml.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\exportldif.h
 # End Source File
 # Begin Source File
 
@@ -1084,11 +1116,19 @@ SOURCE=..\src\prefs_display_header.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\prefs_filtering_action.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\prefs_folder_item.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\prefs_gtk.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\prefs_spelling.h
 # End Source File
 # Begin Source File
 

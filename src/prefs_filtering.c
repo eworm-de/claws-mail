@@ -58,25 +58,9 @@ static struct Filtering {
 
 	GtkWidget *ok_btn;
 	GtkWidget *cond_entry;
-	GtkWidget *action_list;
-	GtkWidget *action_combo;
-	GtkWidget *account_label;
-	GtkWidget *account_list;
-	GtkWidget *account_combo;
-	GtkWidget *dest_entry;
-	GtkWidget *dest_btn;
-	GtkWidget *dest_label;
-	GtkWidget *recip_label;
-	GtkWidget *exec_label;
-	GtkWidget *exec_btn;
-
-	GtkWidget *color_label;
-	GtkWidget *color_optmenu;
+	GtkWidget *action_entry;
 
 	GtkWidget *cond_clist;
-
-	/* need this to make address completion entry work */
-	gint current_action;
 } filtering;
 
 /* widget creating functions */
@@ -107,6 +91,7 @@ static void prefs_filtering_cancel	(void);
 static void prefs_filtering_ok		(void);
 
 static void prefs_filtering_condition_define	(void);
+static void prefs_filtering_action_define(void);
 static gint prefs_filtering_clist_set_row	(gint row, FilteringProp * prop);
 static void prefs_filtering_select_dest		(void);
 static void prefs_filtering_action_select	(GtkList *list,
@@ -312,19 +297,8 @@ static void prefs_filtering_create(void)
 	GtkWidget *cond_entry;
 	GtkWidget *cond_btn;
 	GtkWidget *action_label;
-	GtkWidget *action_list;
-	GtkWidget *action_combo;
-	GtkWidget *account_label;
-	GtkWidget *account_list;
-	GtkWidget *account_combo;
-	GtkWidget *dest_label;
-	GtkWidget *recip_label;
-	GtkWidget *exec_label;
-	GtkWidget *dest_entry;
-	GtkWidget *dest_btn;
-	GtkWidget *exec_btn;
-	GtkWidget *color_label;
-	GtkWidget *color_optmenu;
+	GtkWidget *action_entry;
+	GtkWidget *action_btn;
 
 	GtkWidget *reg_btn;
 	GtkWidget *subst_btn;
@@ -404,128 +378,25 @@ static void prefs_filtering_create(void)
 			    GTK_SIGNAL_FUNC (prefs_filtering_condition_define),
 			    NULL);
 
-	hbox1 = gtk_hbox_new (FALSE, VSPACING);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
-
 	action_label = gtk_label_new (_("Action"));
 	gtk_widget_show (action_label);
 	gtk_misc_set_alignment (GTK_MISC (action_label), 0, 0.5);
-	gtk_box_pack_start (GTK_BOX (hbox1), action_label, FALSE, FALSE, 0);
-
-	action_combo = gtk_combo_new ();
-	gtk_widget_show (action_combo);
-	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(action_combo)->entry),
-			       FALSE);
-
-	combo_items = NULL;
-	for (i = 0; i < sizeof action_text / sizeof action_text[0]; i++)
-		combo_items = g_list_append
-			(combo_items, (gpointer) _(action_text[i].text));
-	gtk_combo_set_popdown_strings(GTK_COMBO(action_combo), combo_items);
-
-	g_list_free(combo_items);
-
-	gtk_box_pack_start (GTK_BOX (hbox1), action_combo,
-			    TRUE, TRUE, 0);
-	action_list = GTK_COMBO(action_combo)->list;
-	gtk_signal_connect (GTK_OBJECT (action_list), "select-child",
-			    GTK_SIGNAL_FUNC (prefs_filtering_action_select),
-			    NULL);
-
-	gtk_signal_connect(GTK_OBJECT(action_list), "selection-changed",
-			   GTK_SIGNAL_FUNC(prefs_filtering_action_selection_changed),
-			   NULL);
-
-	/* accounts */
+	gtk_box_pack_start (GTK_BOX (vbox1), action_label, FALSE, FALSE, 0);
 
 	hbox1 = gtk_hbox_new (FALSE, VSPACING);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
-	account_label = gtk_label_new (_("Account"));
-	gtk_widget_show (account_label);
-	gtk_misc_set_alignment (GTK_MISC (account_label), 0, 0.5);
-	gtk_box_pack_start (GTK_BOX (hbox1), account_label, FALSE, FALSE, 0);
+	action_entry = gtk_entry_new ();
+	gtk_widget_show (action_entry);
+	gtk_box_pack_start (GTK_BOX (hbox1), action_entry, TRUE, TRUE, 0);
 
-	account_combo = gtk_combo_new ();
-	gtk_widget_show (account_combo);
-
-	combo_items = NULL;
-	for (accounts = account_get_list() ; accounts != NULL;
-	     accounts = accounts->next) {
-		PrefsAccount *ac = (PrefsAccount *)accounts->data;
-		gchar *name;
-
-		name = g_strdup_printf("%s <%s> (%s)",
-				       ac->name, ac->address,
-				       ac->account_name);
-		combo_items = g_list_append(combo_items, (gpointer) name);
-	}
-
-	gtk_combo_set_popdown_strings(GTK_COMBO(account_combo), combo_items);
-
-	for(cur = g_list_first(combo_items) ; cur != NULL ;
-	    cur = g_list_next(cur))
-		g_free(cur->data);
-	g_list_free(combo_items);
-
-	gtk_box_pack_start (GTK_BOX (hbox1), account_combo,
-			    TRUE, TRUE, 0);
-	account_list = GTK_COMBO(account_combo)->list;
-	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(account_combo)->entry),
-			       FALSE);
-
-	/* destination */
-
-	hbox1 = gtk_hbox_new (FALSE, VSPACING);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
-
-	dest_label = gtk_label_new (_("Destination"));
-	gtk_widget_show (dest_label);
-	gtk_misc_set_alignment (GTK_MISC (dest_label), 0, 0.5);
-	gtk_box_pack_start (GTK_BOX (hbox1), dest_label, FALSE, FALSE, 0);
-
-	recip_label = gtk_label_new (_("Recipient"));
-	gtk_widget_show (recip_label);
-	gtk_misc_set_alignment (GTK_MISC (recip_label), 0, 0.5);
-	gtk_box_pack_start (GTK_BOX (hbox1), recip_label, FALSE, FALSE, 0);
-
-	exec_label = gtk_label_new (_("Execute"));
-	gtk_widget_show (exec_label);
-	gtk_misc_set_alignment (GTK_MISC (exec_label), 0, 0.5);
-	gtk_box_pack_start (GTK_BOX (hbox1), exec_label, FALSE, FALSE, 0);
-	
-	color_label = gtk_label_new (_("Color"));
-	gtk_widget_show(color_label);
-	gtk_misc_set_alignment(GTK_MISC(color_label), 0, 0.5);
-	gtk_box_pack_start(GTK_BOX(hbox1), color_label, FALSE, FALSE, 0);
-
-	dest_entry = gtk_entry_new ();
-	gtk_widget_show (dest_entry);
-	gtk_box_pack_start (GTK_BOX (hbox1), dest_entry, TRUE, TRUE, 0);
-	
-	color_optmenu = gtk_option_menu_new();
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(color_optmenu),
-				 colorlabel_create_color_menu());
-	gtk_box_pack_start(GTK_BOX(hbox1), color_optmenu, TRUE, TRUE, 0);
-
-	dest_btn = gtk_button_new_with_label (_("Select ..."));
-	gtk_widget_show (dest_btn);
-	gtk_box_pack_start (GTK_BOX (hbox1), dest_btn, FALSE, FALSE, 0);
-	gtk_signal_connect (GTK_OBJECT (dest_btn), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_filtering_select_dest),
-			    NULL);
-
-	exec_btn = gtk_button_new_with_label (_("Info ..."));
-	gtk_widget_show (exec_btn);
-	gtk_box_pack_start (GTK_BOX (hbox1), exec_btn, FALSE, FALSE, 0);
-	gtk_signal_connect (GTK_OBJECT (exec_btn), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_matcher_exec_info),
+	action_btn = gtk_button_new_with_label (_("Define ..."));
+	gtk_widget_show (action_btn);
+	gtk_box_pack_start (GTK_BOX (hbox1), action_btn, FALSE, FALSE, 0);
+	gtk_signal_connect (GTK_OBJECT (action_btn), "clicked",
+			    GTK_SIGNAL_FUNC (prefs_filtering_action_define),
 			    NULL);
 
 	/* register / substitute / delete */
@@ -611,22 +482,8 @@ static void prefs_filtering_create(void)
 	filtering.ok_btn = ok_btn;
 
 	filtering.cond_entry = cond_entry;
-	filtering.action_list = action_list;
-	filtering.action_combo = action_combo;
-	filtering.account_label = account_label;
-	filtering.account_list = account_list;
-	filtering.account_combo = account_combo;
-	filtering.dest_entry = dest_entry;
-	filtering.dest_btn = dest_btn;
-	filtering.dest_label = dest_label;
-	filtering.recip_label = recip_label;
-	filtering.exec_label = exec_label;
-	filtering.exec_btn = exec_btn;
-
+	filtering.action_entry = action_entry;
 	filtering.cond_clist   = cond_clist;
-
-	filtering.color_label   = color_label;
-	filtering.color_optmenu = color_optmenu;
 }
 
 static void prefs_filtering_update_hscrollbar(void)
@@ -663,6 +520,7 @@ static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data)
 	gint prefixlen;
 	gint oldpathlen;
 	FolderItem *item;
+        GSList * action_cur;
 
 	old_path = ((gchar **)data)[0];
 	new_path = ((gchar **)data)[1];
@@ -687,59 +545,66 @@ static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data)
 		cur = item->prefs->processing;
 	}
 
+
 	for (; cur != NULL; cur = cur->next) {
 		FilteringProp   *filtering = (FilteringProp *)cur->data;
-		FilteringAction *action = filtering->action;
+                
+                for(action_cur = filtering->action_list ; action_cur != NULL ;
+                    action_cur = action_cur->next) {
 
-		if (!action->destination) continue;
-
-		destlen = strlen(action->destination);
-
-		if (destlen > oldpathlen) {
-			prefixlen = destlen - oldpathlen;
-			suffix = action->destination + prefixlen;
-
-			if (!strncmp(old_path, suffix, oldpathlen)) {
-				prefix = g_malloc0(prefixlen + 1);
-				strncpy2(prefix, action->destination, prefixlen);
-
-				base = suffix + oldpathlen;
-				while (*base == G_DIR_SEPARATOR) base++;
-				if (*base == '\0')
-					dest_path = g_strconcat(prefix,
-								G_DIR_SEPARATOR_S,
-								new_path, NULL);
-				else
-					dest_path = g_strconcat(prefix,
-								G_DIR_SEPARATOR_S,
-								new_path,
-								G_DIR_SEPARATOR_S,
-								base, NULL);
-
-				g_free(prefix);
-				g_free(action->destination);
-				action->destination = dest_path;
-			} else { /* for non-leaf folders */
-				/* compare with trailing slash */
-				if (!strncmp(old_path_with_sep, action->destination, oldpathlen+1)) {
-					
-					suffix = action->destination + oldpathlen + 1;
-					dest_path = g_strconcat(new_path,
-								G_DIR_SEPARATOR_S,
-								suffix, NULL);
-					g_free(action->destination);
-					action->destination = dest_path;
-				}
-			}
-		} else {
-			/* folder-moving a leaf */
-			if (!strcmp(old_path, action->destination)) {		
-				dest_path = g_strdup(new_path);
-				g_free(action->destination);
-				action->destination = dest_path;
-			}
-		}
-	}
+                        FilteringAction *action = action_cur->data;
+                        
+                        if (!action->destination) continue;
+                        
+                        destlen = strlen(action->destination);
+                        
+                        if (destlen > oldpathlen) {
+                                prefixlen = destlen - oldpathlen;
+                                suffix = action->destination + prefixlen;
+                                
+                                if (!strncmp(old_path, suffix, oldpathlen)) {
+                                        prefix = g_malloc0(prefixlen + 1);
+                                        strncpy2(prefix, action->destination, prefixlen);
+                                        
+                                        base = suffix + oldpathlen;
+                                        while (*base == G_DIR_SEPARATOR) base++;
+                                        if (*base == '\0')
+                                                dest_path = g_strconcat(prefix,
+                                                    G_DIR_SEPARATOR_S,
+                                                    new_path, NULL);
+                                        else
+                                                dest_path = g_strconcat(prefix,
+                                                    G_DIR_SEPARATOR_S,
+                                                    new_path,
+                                                    G_DIR_SEPARATOR_S,
+                                                    base, NULL);
+                                        
+                                        g_free(prefix);
+                                        g_free(action->destination);
+                                        action->destination = dest_path;
+                                } else { /* for non-leaf folders */
+                                        /* compare with trailing slash */
+                                        if (!strncmp(old_path_with_sep, action->destination, oldpathlen+1)) {
+                                                
+                                                suffix = action->destination + oldpathlen + 1;
+                                                dest_path = g_strconcat(new_path,
+                                                    G_DIR_SEPARATOR_S,
+                                                    suffix, NULL);
+                                                g_free(action->destination);
+                                                action->destination = dest_path;
+                                        }
+                                }
+                        } else {
+                                /* folder-moving a leaf */
+                                if (!strcmp(old_path, action->destination)) {		
+                                        dest_path = g_strdup(new_path);
+                                        g_free(action->destination);
+                                        action->destination = dest_path;
+                                }
+                        }
+                }
+        }
+        
 #ifdef WIN32
 	g_free(old_path);
 	g_free(new_path);
@@ -765,13 +630,13 @@ void prefs_filtering_delete_path(const gchar *path)
 static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data)
 {
 	GSList *cur, *orig;
-	GSList *next;
 	gchar *path = (gchar *)data;
 	gchar *suffix;
 	gint destlen;
 	gint prefixlen;
 	gint pathlen;
 	FolderItem *item;
+        GSList * action_cur;
 	
 	g_return_val_if_fail(path != NULL, FALSE);
 
@@ -788,41 +653,43 @@ static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data)
 	
 	for (; cur != NULL; cur = cur->next) {
 		FilteringProp *filtering = (FilteringProp *)cur->data;
-		FilteringAction *action;
-		if (!cur->data)
-			break;
-		
-		action = filtering->action;
-		next = cur->next;
-
-		if (!action->destination) continue;
-
-		destlen = strlen(action->destination);
-
-		if (destlen > pathlen) {
-			prefixlen = destlen - pathlen;
-			suffix = action->destination + prefixlen;
-
-			if (suffix && !strncmp(path, suffix, pathlen)) {
-				filteringprop_free(filtering);
-				orig = g_slist_remove(orig, filtering);
-			}
-		} else if (strcmp(action->destination, path) == 0) {
-			filteringprop_free(filtering);
-			orig = g_slist_remove(orig, filtering);
-
-		}
-	}
-
-	if (node == NULL)
-		global_processing = orig;
-	else {
-		item = node->data;
-		if (!item || !item->prefs)
+                
+                for(action_cur = filtering->action_list ; action_cur != NULL ;
+                    action_cur = action_cur->next) {
+                
+                        FilteringAction *action;
+                        
+                        action = action_cur->data;
+                        
+                        if (!action->destination) continue;
+                        
+                        destlen = strlen(action->destination);
+                        
+                        if (destlen > pathlen) {
+                                prefixlen = destlen - pathlen;
+                                suffix = action->destination + prefixlen;
+                                
+                                if (suffix && !strncmp(path, suffix, pathlen)) {
+                                        filteringprop_free(filtering);
+                                        orig = g_slist_remove(orig, filtering);
+                                }
+                        } else if (strcmp(action->destination, path) == 0) {
+                                filteringprop_free(filtering);
+                                orig = g_slist_remove(orig, filtering);
+                                
+                        }
+                }
+        }                
+        
+        if (node == NULL)
+                global_processing = orig;
+        else {
+                item = node->data;
+                if (!item || !item->prefs)
 			return FALSE;
-		item->prefs->processing = orig;
-	}
-
+                item->prefs->processing = orig;
+        }
+        
 	prefs_matcher_write_config();
 
 	return FALSE;
@@ -878,10 +745,8 @@ static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 
 static void prefs_filtering_reset_dialog(void)
 {
-	gtk_list_select_item(GTK_LIST(filtering.action_list), 0);
-	gtk_list_select_item(GTK_LIST(filtering.account_list), 0);
-	gtk_entry_set_text(GTK_ENTRY(filtering.dest_entry), "");
 	gtk_entry_set_text(GTK_ENTRY(filtering.cond_entry), "");
+	gtk_entry_set_text(GTK_ENTRY(filtering.action_entry), "");
 }
 
 static void prefs_filtering_set_list(void)
@@ -909,7 +774,6 @@ static void prefs_filtering_set_list(void)
 		locale_from_utf8(&filtering_str);
 #endif
 		if (strcmp(filtering_str, _("(New)")) != 0) {
-			/* tmp = filtering_str; */
 			prop = matcher_parser_get_filtering(filtering_str);
 			if (prop != NULL)
 				prefs_filtering =
@@ -990,6 +854,48 @@ static void prefs_filtering_condition_define(void)
 		matcherlist_free(matchers);
 }
 
+static void prefs_filtering_action_define_done(GSList * action_list)
+{
+	gchar * str;
+
+	if (action_list == NULL)
+		return;
+
+	str = filteringaction_list_to_string(action_list);
+
+	if (str != NULL) {
+		gtk_entry_set_text(GTK_ENTRY(filtering.action_entry), str);
+		g_free(str);
+	}
+}
+
+static void prefs_filtering_action_define(void)
+{
+	gchar * action_str;
+	GSList * action_list = NULL;
+
+	action_str = gtk_entry_get_text(GTK_ENTRY(filtering.action_entry));
+
+	if (*action_str != '\0') {
+#ifdef WIN32
+		locale_from_utf8(&action_str);
+#endif
+		action_list = matcher_parser_get_action_list(action_str);
+		if (action_list == NULL)
+			alertpanel_error(_("Action string is not valid."));
+	}
+
+	prefs_filtering_action_open(action_list,
+            prefs_filtering_action_define_done);
+
+	if (action_list != NULL) {
+                GSList * cur;
+		for(cur = action_list ; cur != NULL ; cur = cur->next) {
+                        filteringaction_free(cur->data);
+                }
+        }
+}
+
 
 /* register / substitute delete buttons */
 
@@ -998,6 +904,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(gboolean alert)
 {
 	MatcherList * cond;
 	gchar * cond_str;
+	gchar * action_str;
 	FilteringProp * prop;
 	FilteringAction * action;
 	gint list_id;
@@ -1006,67 +913,39 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(gboolean alert)
 	gint account_id;
 	gchar * destination;
 	gint labelcolor = 0;
-	
+	GSList * action_list;
+
 	cond_str = gtk_entry_get_text(GTK_ENTRY(filtering.cond_entry));
 	if (*cond_str == '\0') {
 		if(alert == TRUE) alertpanel_error(_("Condition string is empty."));
 		return NULL;
 	}
 
-	action_id = get_sel_from_list(GTK_LIST(filtering.action_list));
-	action_type = prefs_filtering_get_matching_from_action(action_id);
-	list_id = get_sel_from_list(GTK_LIST(filtering.account_list));
-	account_id = get_account_id_from_list_id(list_id);
-
-	switch (action_id) {
-	case ACTION_MOVE:
-	case ACTION_COPY:
-	case ACTION_EXECUTE:
-		destination = gtk_entry_get_text(GTK_ENTRY(filtering.dest_entry));
-		if (*destination == '\0') {
-			if(alert == TRUE) alertpanel_error(_("Destination is not set."));
-			return NULL;
-		}
-		break;
-	case ACTION_FORWARD:
-	case ACTION_FORWARD_AS_ATTACHMENT:
-	case ACTION_REDIRECT:
-		destination = gtk_entry_get_text(GTK_ENTRY(filtering.dest_entry));
-		if (*destination == '\0') {
-			if(alert == TRUE) alertpanel_error(_("Recipient is not set."));
-			return NULL;
-		}
-		break;
-	case ACTION_COLOR:
-		labelcolor = colorlabel_get_color_menu_active_item(
-			gtk_option_menu_get_menu(GTK_OPTION_MENU(filtering.color_optmenu)));
-		destination = NULL;	
-		break;
-	default:
-		destination = NULL;
-		break;
+	action_str = gtk_entry_get_text(GTK_ENTRY(filtering.action_entry));
+	if (*action_str == '\0') {
+		if(alert == TRUE) alertpanel_error(_("Action string is empty."));
+		return NULL;
 	}
-	
 #ifdef WIN32
-	if (destination) {
-		destination = g_strdup(destination);
-		locale_from_utf8(&destination);
-	}
+	cond_str = g_locale_from_utf8(cond_str, -1, NULL, NULL, NULL);
+	action_str = g_locale_from_utf8(action_str, -1, NULL, NULL, NULL);
 #endif
-	action = filteringaction_new(action_type, account_id, destination, labelcolor);
 
 	cond = matcher_parser_get_cond(cond_str);
 
 	if (cond == NULL) {
 		if(alert == TRUE) alertpanel_error(_("Condition string is not valid."));
-		filteringaction_free(action);
+		return NULL;
+	}
+        
+        action_list = matcher_parser_get_action_list(action_str);
+
+	if (action_list == NULL) {
+		if(alert == TRUE) alertpanel_error(_("Action string is not valid."));
 		return NULL;
 	}
 
-	prop = filteringprop_new(cond, action);
-#ifdef WIN32
-	if (destination) g_free(destination);
-#endif
+	prop = filteringprop_new(cond, action_list);
 
 	return prop;
 }
@@ -1164,93 +1043,24 @@ static void prefs_filtering_select_set(FilteringProp *prop)
 	FilteringAction *action;
 	gchar *matcher_str;
 	gint list_id;
+        gchar *action_str;
 
 	prefs_filtering_reset_dialog();
 
-	action = prop->action;
-
 	matcher_str = matcherlist_to_string(prop->matchers);
 	if (matcher_str == NULL) {
-		filteringprop_free(prop);
 		return;
 	}
 
 	gtk_entry_set_text(GTK_ENTRY(filtering.cond_entry), matcher_str);
-	
-	if (action->destination)
-		gtk_entry_set_text(GTK_ENTRY(filtering.dest_entry), action->destination);
-	else
-		gtk_entry_set_text(GTK_ENTRY(filtering.dest_entry), "");
 
-	switch(action->type) {
-	case MATCHACTION_MOVE:
-		gtk_list_select_item(GTK_LIST(filtering.action_list),
-				     ACTION_MOVE);
-		break;
-	case MATCHACTION_COPY:
-		gtk_list_select_item(GTK_LIST(filtering.action_list),
-				     ACTION_COPY);
-		break;
-	case MATCHACTION_DELETE:
-		gtk_list_select_item(GTK_LIST(filtering.action_list),
-				     ACTION_DELETE);
-		break;
-	case MATCHACTION_MARK:
-		gtk_list_select_item(GTK_LIST(filtering.action_list),
-				     ACTION_MARK);
-		break;
-	case MATCHACTION_UNMARK:
-		gtk_list_select_item(GTK_LIST(filtering.action_list),
-				     ACTION_UNMARK);
-		break;
-	case MATCHACTION_LOCK:
-		gtk_list_select_item(GTK_LIST(filtering.action_list),
-				     ACTION_LOCK);
-		break;
-	case MATCHACTION_UNLOCK:
-		gtk_list_select_item(GTK_LIST(filtering.action_list),
-				     ACTION_UNLOCK);
-		break;
-	case MATCHACTION_MARK_AS_READ:
-		gtk_list_select_item(GTK_LIST(filtering.action_list),
-				     ACTION_MARK_AS_READ);
-		break;
-	case MATCHACTION_MARK_AS_UNREAD:
-		gtk_list_select_item(GTK_LIST(filtering.action_list),
-				     ACTION_MARK_AS_UNREAD);
-		break;
-	case MATCHACTION_FORWARD:
-		list_id = get_list_id_from_account_id(action->account_id);
-		gtk_list_select_item(GTK_LIST(filtering.action_list),
-				     ACTION_FORWARD);
-		gtk_list_select_item(GTK_LIST(filtering.account_list),
-				     list_id);
-		break;
-	case MATCHACTION_FORWARD_AS_ATTACHMENT:
-		list_id = get_list_id_from_account_id(action->account_id);
-		gtk_list_select_item(GTK_LIST(filtering.action_list),
-				     ACTION_FORWARD_AS_ATTACHMENT);
-		gtk_list_select_item(GTK_LIST(filtering.account_list),
-				     list_id);
-		break;
-	case MATCHACTION_REDIRECT:
-		list_id = get_list_id_from_account_id(action->account_id);
-		gtk_list_select_item(GTK_LIST(filtering.action_list),
-				     ACTION_REDIRECT);
-		gtk_list_select_item(GTK_LIST(filtering.account_list),
-				     list_id);
-		break;
-	case MATCHACTION_EXECUTE:
-		gtk_list_select_item(GTK_LIST(filtering.action_list),
-				     ACTION_EXECUTE);
-		break;
-	case MATCHACTION_COLOR:
-		gtk_list_select_item(GTK_LIST(filtering.action_list),
-				     ACTION_COLOR);
-		gtk_option_menu_set_history(GTK_OPTION_MENU(filtering.color_optmenu), action->labelcolor);     
-		break;
+        action_str = filteringaction_list_to_string(prop->action_list);
+	if (matcher_str == NULL) {
+		return;
 	}
+	gtk_entry_set_text(GTK_ENTRY(filtering.action_entry), action_str);
 
+	g_free(action_str);
 	g_free(matcher_str);
 }
 
@@ -1278,200 +1088,6 @@ static void prefs_filtering_select(GtkCList *clist, gint row, gint column,
 	filteringprop_free(prop);
 }
 
-static void prefs_filtering_select_dest(void)
-{
-	FolderItem *dest;
-	gchar * path;
-
-	dest = foldersel_folder_sel(NULL, FOLDER_SEL_COPY, NULL);
-	if (!dest) return;
-
-	path = folder_item_get_identifier(dest);
-
-	gtk_entry_set_text(GTK_ENTRY(filtering.dest_entry), path);
-	g_free(path);
-}
-
-static void prefs_filtering_action_selection_changed(GtkList *list,
-						     gpointer user_data)
-{
-	gint value;
-
-	value = get_sel_from_list(GTK_LIST(filtering.action_list));
-
-	if (filtering.current_action != value) {
-		if (filtering.current_action == ACTION_FORWARD 
-		||  filtering.current_action == ACTION_FORWARD_AS_ATTACHMENT
-		||  filtering.current_action == ACTION_REDIRECT) {
-			debug_print("unregistering address completion entry\n");
-			address_completion_unregister_entry(GTK_ENTRY(filtering.dest_entry));
-		}
-		if (value == ACTION_FORWARD || value == ACTION_FORWARD_AS_ATTACHMENT
-		||  value == ACTION_REDIRECT) {
-			debug_print("registering address completion entry\n");
-			address_completion_register_entry(GTK_ENTRY(filtering.dest_entry));
-		}
-		filtering.current_action = value;
-	}
-}
-
-static void prefs_filtering_action_select(GtkList *list,
-					  GtkWidget *widget,
-					  gpointer user_data)
-{
-	Action value;
-
-	value = (Action) get_sel_from_list(GTK_LIST(filtering.action_list));
-
-	switch (value) {
-	case ACTION_MOVE:
-		gtk_widget_show(filtering.account_label);
-		gtk_widget_set_sensitive(filtering.account_label, FALSE);
-		gtk_widget_set_sensitive(filtering.account_combo, FALSE);
-		gtk_widget_show(filtering.dest_entry);
-		gtk_widget_set_sensitive(filtering.dest_entry, TRUE);
-		gtk_widget_show(filtering.dest_btn);
-		gtk_widget_set_sensitive(filtering.dest_btn, TRUE);
-		gtk_widget_show(filtering.dest_label);
-		gtk_widget_set_sensitive(filtering.dest_label, TRUE);
-		gtk_widget_hide(filtering.recip_label);
-		gtk_widget_hide(filtering.exec_label);
-		gtk_widget_hide(filtering.exec_btn);
-		gtk_widget_hide(filtering.color_optmenu);
-		gtk_widget_hide(filtering.color_label);
-		break;
-	case ACTION_COPY:
-		gtk_widget_show(filtering.account_label);
-		gtk_widget_set_sensitive(filtering.account_label, FALSE);
-		gtk_widget_set_sensitive(filtering.account_combo, FALSE);
-		gtk_widget_show(filtering.dest_entry);
-		gtk_widget_set_sensitive(filtering.dest_entry, TRUE);
-		gtk_widget_show(filtering.dest_btn);
-		gtk_widget_set_sensitive(filtering.dest_btn, TRUE);
-		gtk_widget_show(filtering.dest_label);
-		gtk_widget_set_sensitive(filtering.dest_label, TRUE);
-		gtk_widget_hide(filtering.recip_label);
-		gtk_widget_hide(filtering.exec_label);
-		gtk_widget_hide(filtering.exec_btn);
-		gtk_widget_hide(filtering.color_optmenu);
-		gtk_widget_hide(filtering.color_label);
-		break;
-	case ACTION_DELETE:
-		gtk_widget_show(filtering.account_label);
-		gtk_widget_set_sensitive(filtering.account_label, FALSE);
-		gtk_widget_set_sensitive(filtering.account_combo, FALSE);
-		gtk_widget_show(filtering.dest_entry);
-		gtk_widget_set_sensitive(filtering.dest_entry, FALSE);
-		gtk_widget_show(filtering.dest_btn);
-		gtk_widget_set_sensitive(filtering.dest_btn, FALSE);
-		gtk_widget_show(filtering.dest_label);
-		gtk_widget_set_sensitive(filtering.dest_label, FALSE);
-		gtk_widget_hide(filtering.recip_label);
-		gtk_widget_hide(filtering.exec_label);
-		gtk_widget_hide(filtering.exec_btn);
-		gtk_widget_hide(filtering.color_optmenu);
-		gtk_widget_hide(filtering.color_label);
-		break;
-	case ACTION_MARK:
-	case ACTION_UNMARK:
-	case ACTION_LOCK:
-	case ACTION_UNLOCK:
-	case ACTION_MARK_AS_READ:
-	case ACTION_MARK_AS_UNREAD:
-		gtk_widget_show(filtering.account_label);
-		gtk_widget_set_sensitive(filtering.account_label, FALSE);
-		gtk_widget_set_sensitive(filtering.account_combo, FALSE);
-		gtk_widget_show(filtering.dest_entry);
-		gtk_widget_set_sensitive(filtering.dest_entry, FALSE);
-		gtk_widget_show(filtering.dest_btn);
-		gtk_widget_set_sensitive(filtering.dest_btn, FALSE);
-		gtk_widget_show(filtering.dest_label);
-		gtk_widget_set_sensitive(filtering.dest_label, FALSE);
-		gtk_widget_hide(filtering.recip_label);
-		gtk_widget_hide(filtering.exec_label);
-		gtk_widget_hide(filtering.exec_btn);
-		gtk_widget_hide(filtering.color_optmenu);
-		gtk_widget_hide(filtering.color_label);
-		break;
-	case ACTION_FORWARD:
-		gtk_widget_show(filtering.account_label);
-		gtk_widget_set_sensitive(filtering.account_label, TRUE);
-		gtk_widget_set_sensitive(filtering.account_combo, TRUE);
-		gtk_widget_show(filtering.dest_entry);
-		gtk_widget_set_sensitive(filtering.dest_entry, TRUE);
-		gtk_widget_show(filtering.dest_btn);
-		gtk_widget_set_sensitive(filtering.dest_btn, FALSE);
-		gtk_widget_hide(filtering.dest_label);
-		gtk_widget_show(filtering.recip_label);
-		gtk_widget_set_sensitive(filtering.recip_label, TRUE);
-		gtk_widget_hide(filtering.exec_label);
-		gtk_widget_hide(filtering.exec_btn);
-		gtk_widget_hide(filtering.color_optmenu);
-		gtk_widget_hide(filtering.color_label);
-		break;
-	case ACTION_FORWARD_AS_ATTACHMENT:
-		gtk_widget_show(filtering.account_label);
-		gtk_widget_set_sensitive(filtering.account_label, TRUE);
-		gtk_widget_set_sensitive(filtering.account_combo, TRUE);
-		gtk_widget_show(filtering.dest_entry);
-		gtk_widget_set_sensitive(filtering.dest_entry, TRUE);
-		gtk_widget_show(filtering.dest_btn);
-		gtk_widget_set_sensitive(filtering.dest_btn, FALSE);
-		gtk_widget_hide(filtering.dest_label);
-		gtk_widget_show(filtering.recip_label);
-		gtk_widget_set_sensitive(filtering.recip_label, TRUE);
-		gtk_widget_hide(filtering.exec_label);
-		gtk_widget_hide(filtering.exec_btn);
-		gtk_widget_hide(filtering.color_optmenu);
-		gtk_widget_hide(filtering.color_label);
-		break;
-	case ACTION_REDIRECT:
-		gtk_widget_show(filtering.account_label);
-		gtk_widget_set_sensitive(filtering.account_label, TRUE);
-		gtk_widget_set_sensitive(filtering.account_combo, TRUE);
-		gtk_widget_show(filtering.dest_entry);
-		gtk_widget_set_sensitive(filtering.dest_entry, TRUE);
-		gtk_widget_show(filtering.dest_btn);
-		gtk_widget_set_sensitive(filtering.dest_btn, FALSE);
-		gtk_widget_hide(filtering.dest_label);
-		gtk_widget_show(filtering.recip_label);
-		gtk_widget_set_sensitive(filtering.recip_label, TRUE);
-		gtk_widget_hide(filtering.exec_label);
-		gtk_widget_hide(filtering.exec_btn);
-		gtk_widget_hide(filtering.color_optmenu);
-		gtk_widget_hide(filtering.color_label);
-		break;
-	case ACTION_EXECUTE:
-		gtk_widget_show(filtering.account_label);
-		gtk_widget_set_sensitive(filtering.account_label, FALSE);
-		gtk_widget_set_sensitive(filtering.account_combo, FALSE);
-		gtk_widget_show(filtering.dest_entry);
-		gtk_widget_set_sensitive(filtering.dest_entry, TRUE);
-		gtk_widget_hide(filtering.dest_btn);
-		gtk_widget_hide(filtering.dest_label);
-		gtk_widget_hide(filtering.recip_label);
-		gtk_widget_show(filtering.exec_label);
-		gtk_widget_set_sensitive(filtering.exec_btn, TRUE);
-		gtk_widget_show(filtering.exec_btn);
-		gtk_widget_hide(filtering.color_optmenu);
-		gtk_widget_hide(filtering.color_label);
-		break;
-	case ACTION_COLOR:
-		gtk_widget_show(filtering.account_label);
-		gtk_widget_set_sensitive(filtering.account_label, FALSE);
-		gtk_widget_set_sensitive(filtering.account_combo, FALSE);
-		gtk_widget_hide(filtering.dest_entry);
-		gtk_widget_hide(filtering.dest_btn);
-		gtk_widget_hide(filtering.dest_label);
-		gtk_widget_hide(filtering.recip_label);
-		gtk_widget_hide(filtering.exec_label);
-		gtk_widget_show(filtering.exec_btn);
-		gtk_widget_set_sensitive(filtering.exec_btn, FALSE);
-		gtk_widget_show(filtering.color_optmenu);
-		gtk_widget_show(filtering.color_label);
-		break;
-	}
-}
 
 static gint prefs_filtering_deleted(GtkWidget *widget, GdkEventAny *event,
 				 gpointer data)

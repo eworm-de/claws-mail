@@ -36,6 +36,8 @@
 
 GSList * global_processing = NULL;
 
+static gboolean filtering_is_final_action(FilteringAction *filtering_action);
+
 #define STRLEN_WITH_CHECK(expr) \
         strlen_with_check(#expr, __LINE__, expr)
 
@@ -90,15 +92,36 @@ void filteringaction_free(FilteringAction * action)
 }
 
 FilteringProp * filteringprop_new(MatcherList * matchers,
-				  FilteringAction * action)
+				  GSList * action_list)
 {
 	FilteringProp * filtering;
 
 	filtering = g_new0(FilteringProp, 1);
 	filtering->matchers = matchers;
-	filtering->action = action;
+	filtering->action_list = action_list;
 
 	return filtering;
+}
+
+static FilteringAction * filteringaction_copy(FilteringAction * src)
+{
+        FilteringAction * new;
+        
+        new = g_new0(FilteringAction, 1);
+        
+	new->type = src->type;
+	new->account_id = src->account_id;
+	if (src->destination)
+		new->destination = g_strdup(src->destination);
+	else 
+		new->destination = NULL;
+	if (src->unesc_destination)
+		new->unesc_destination = g_strdup(src->unesc_destination);
+	else
+		new->unesc_destination = NULL;
+	new->labelcolor = src->labelcolor;
+
+        return new;
 }
 
 FilteringProp * filteringprop_copy(FilteringProp *src)
@@ -108,7 +131,11 @@ FilteringProp * filteringprop_copy(FilteringProp *src)
 	
 	new = g_new0(FilteringProp, 1);
 	new->matchers = g_new0(MatcherList, 1);
+
+#if 0
 	new->action = g_new0(FilteringAction, 1);
+#endif
+
 	for (tmp = src->matchers->matchers; tmp != NULL && tmp->data != NULL;) {
 		MatcherProp *matcher = (MatcherProp *)tmp->data;
 		
@@ -116,7 +143,10 @@ FilteringProp * filteringprop_copy(FilteringProp *src)
 						   matcherprop_copy(matcher));
 		tmp = tmp->next;
 	}
+
 	new->matchers->bool_and = src->matchers->bool_and;
+
+#if 0
 	new->action->type = src->action->type;
 	new->action->account_id = src->action->account_id;
 	if (src->action->destination)
@@ -128,14 +158,31 @@ FilteringProp * filteringprop_copy(FilteringProp *src)
 	else
 		new->action->unesc_destination = NULL;
 	new->action->labelcolor = src->action->labelcolor;
+#endif
+        new->action_list = NULL;
+
+        for (tmp = src->action_list ; tmp != NULL ; tmp = tmp->next) {
+                FilteringAction *filtering_action;
+                
+                filtering_action = tmp->data;
+                
+                new->action_list = g_slist_append(new->action_list,
+                    filteringaction_copy(filtering_action));
+        }
+
 	return new;
 }
 
 void filteringprop_free(FilteringProp * prop)
 {
+        GSList * tmp;
+
 	g_return_if_fail(prop);
 	matcherlist_free(prop->matchers);
-	filteringaction_free(prop->action);
+        
+        for (tmp = prop->action_list ; tmp != NULL ; tmp = tmp->next) {
+                filteringaction_free(tmp->data);
+        }
 	g_free(prop);
 }
 
@@ -301,21 +348,35 @@ static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *inf
 	return matcherlist_match(filtering->matchers, info);
 }
 
-static gboolean filtering_apply_rule(FilteringProp *filtering, MsgInfo *info)
+static gboolean filtering_apply_rule(FilteringProp *filtering, MsgInfo *info,
+    gboolean * final)
 {
 	gboolean result;
 	gchar    buf[50];
-
-	if (FALSE == (result = filteringaction_apply(filtering->action, info))) {
-		g_warning("action %s could not be applied", 
-		filteringaction_to_string(buf, sizeof buf, filtering->action));
-	}
+        GSList * tmp;
+        
+        * final = FALSE;
+        for (tmp = filtering->action_list ; tmp != NULL ; tmp = tmp->next) {
+                FilteringAction * action;
+                
+                action = tmp->data;
+                
+                if (FALSE == (result = filteringaction_apply(action, info))) {
+                        g_warning("action %s could not be applied", 
+                            filteringaction_to_string(buf, sizeof buf, action));
+                }
+                
+                if (filtering_is_final_action(action)) {
+                        * final = TRUE;
+                        break;
+                }
+        }
 	return result;
 }
 
-static gboolean filtering_is_final_action(FilteringProp *filtering)
+static gboolean filtering_is_final_action(FilteringAction *filtering_action)
 {
-	switch(filtering->action->type) {
+	switch(filtering_action->type) {
 	case MATCHACTION_MOVE:
 	case MATCHACTION_DELETE:
 		return TRUE; /* MsgInfo invalid for message */
@@ -348,9 +409,13 @@ static gboolean filter_msginfo(GSList * filtering_list, MsgInfo * info)
 		FilteringProp * filtering = (FilteringProp *) l->data;
 
 		if (filtering_match_condition(filtering, info)) {
-			applied = filtering_apply_rule(filtering, info);
+			applied = filtering_apply_rule(filtering, info, &final);
+#if 0
 			if (TRUE == (final = filtering_is_final_action(filtering)))
 				break;
+#endif
+                        if (final)
+                                break;
 		}		
 	}
 
@@ -408,24 +473,57 @@ gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *act
 	}
 }
 
+gchar * filteringaction_list_to_string(GSList * action_list)
+{
+	gchar *action_list_str;
+	gchar  buf[256];
+        GSList * tmp;
+	gchar *list_str;
+
+        action_list_str = NULL;
+        for (tmp = action_list ; tmp != NULL ; tmp = tmp->next) {
+                gchar *action_str;
+                FilteringAction * action;
+                
+                action = tmp->data;
+                
+                action_str = filteringaction_to_string(buf,
+                    sizeof buf, action);
+                
+                if (action_list_str != NULL) {
+                        list_str = g_strconcat(action_list_str, " ", action_str, NULL);
+                        g_free(action_list_str);
+                }
+                else {
+                        list_str = g_strdup(action_str);
+                }
+                action_list_str = list_str;
+        }
+
+        return action_list_str;
+}
+
 gchar * filteringprop_to_string(FilteringProp * prop)
 {
 	gchar *list_str;
-	gchar *action_str;
+	gchar *action_list_str;
 	gchar *filtering_str;
-	gchar  buf[256];
+        GSList * tmp;
 
-	action_str = filteringaction_to_string(buf, sizeof buf, prop->action);
+        action_list_str = filteringaction_list_to_string(prop->action_list);
 
-	if (action_str == NULL)
+	if (action_list_str == NULL)
 		return NULL;
 
 	list_str = matcherlist_to_string(prop->matchers);
 
-	if (list_str == NULL)
+	if (list_str == NULL) {
+                g_free(action_list_str);
 		return NULL;
+        }
 
-	filtering_str = g_strconcat(list_str, " ", action_str, NULL);
+	filtering_str = g_strconcat(list_str, " ", action_list_str, NULL);
+	g_free(action_list_str);
 	g_free(list_str);
 
 	return filtering_str;
