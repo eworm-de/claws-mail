@@ -1,3 +1,8 @@
+2002-11-12 [paul]	0.8.5claws129
+
+	* src/folder.c
+		fix a typo in last commit
+
 2002-11-12 [paul]	0.8.5claws128
 
 	* sync with 0.8.5cvs23
