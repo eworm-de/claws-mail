@@ -1,3 +1,9 @@
+2003-04-30 [alfons]	0.8.11claws131
+
+	* src/common/plugin.[ch]
+		see? this ANSI C'fication immediately gives us type
+		checking for free.
+
 2003-04-30 [alfons]	0.8.11claws130
 
 	* src/common/plugin.[ch]
