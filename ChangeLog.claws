@@ -1,3 +1,11 @@
+2002-11-21 [colin]	0.8.5claws175
+
+	* src/procmsg.[ch]
+		Add procmsg_remove_special_headers()
+	* src/mh.c
+		Use procmsg_remove_special_headers() for 
+		previous fix
+
 2002-11-21 [colin]	0.8.5claws174
 
 	* src/mh.c

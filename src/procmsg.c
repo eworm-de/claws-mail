@@ -903,12 +903,33 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 
 	return ret;
 }
+gint procmsg_remove_special_headers(const gchar *in, const gchar *out)
+{
+	FILE *fp, *outfp;
+	gchar buf[BUFFSIZE];
+	
+	if ((fp = fopen(in, "rb")) == NULL) {
+		FILE_OP_ERROR(in, "fopen");
+		return -1;
+	}
+	if ((outfp = fopen(out, "wb")) == NULL) {
+		FILE_OP_ERROR(out, "fopen");
+		fclose(fp);
+		return -1;
+	}
+	while (fgets(buf, sizeof(buf), fp) != NULL)
+		if (buf[0] == '\r' || buf[0] == '\n') break;
+	while (fgets(buf, sizeof(buf), fp) != NULL)
+		fputs(buf, outfp);
+	fclose(outfp);
+	fclose(fp);
+	return 0;
 
+}
 gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 			    gboolean is_queued)
 {
 	gint num;
-	FILE *fp;
 	MsgInfo *msginfo;
 
 	debug_print("saving sent message...\n");
@@ -920,26 +941,12 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 	/* remove queueing headers */
 	if (is_queued) {
 		gchar tmp[MAXPATHLEN + 1];
-		gchar buf[BUFFSIZE];
-		FILE *outfp;
 
 		g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg.out.%08x",
 			   get_rc_dir(), G_DIR_SEPARATOR, (guint)random());
-		if ((fp = fopen(file, "rb")) == NULL) {
-			FILE_OP_ERROR(file, "fopen");
+		
+		if (procmsg_remove_special_headers(file, tmp) !=0)
 			return -1;
-		}
-		if ((outfp = fopen(tmp, "wb")) == NULL) {
-			FILE_OP_ERROR(tmp, "fopen");
-			fclose(fp);
-			return -1;
-		}
-		while (fgets(buf, sizeof(buf), fp) != NULL)
-			if (buf[0] == '\r' || buf[0] == '\n') break;
-		while (fgets(buf, sizeof(buf), fp) != NULL)
-			fputs(buf, outfp);
-		fclose(outfp);
-		fclose(fp);
 
 		folder_item_scan(outbox);
 		if ((num = folder_item_add_msg(outbox, tmp, TRUE)) < 0) {

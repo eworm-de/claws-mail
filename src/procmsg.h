@@ -287,4 +287,7 @@ gint msginfo_update_callback_register(MsgInfoUpdateFunc func, gpointer data);
 void msginfo_update_callback_unregister(gint id);
 
 void msginfo_update_item		(MsgInfo	*info);
+gint procmsg_remove_special_headers	(const gchar 	*in, 
+					 const gchar 	*out);
+
 #endif /* __PROCMSG_H__ */

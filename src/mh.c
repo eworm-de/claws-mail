@@ -566,40 +566,6 @@ gint mh_move_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 	return ret;
 }
 
-static void mh_remove_queue_headers (const gchar *file)
-{
-	FILE *fp, *fp2;
-	char *tmp;
-	fp = fopen(file, "rb");
-	tmp = get_tmp_file();
-	
-	fp2 = fopen(tmp, "wb");
-	if (fp && fp2) {
-		char buf[BUFFSIZE];
-		int len;
-		while (fgets(buf, sizeof(buf), fp) != NULL)
-			if (buf[0] == '\r' || buf[0] == '\n') 
-				break;
-
-		while ((len=fread(buf, sizeof(char), sizeof(buf), fp)) > 0) {
-			fwrite(buf, len, 1, fp2);
-		}
-		fclose(fp);
-		fclose(fp2);
-		move_file(tmp, file, TRUE);
-	} else {
-		if (fp)
-			fclose(fp);
-		else 
-			g_warning (_("Couldn't fopen(\"%s\",\"rb\")\n"), file);
-		if (fp2)
-			fclose(fp2);
-		else 
-			g_warning (_("Couldn't fopen(\"%s\",\"wb\")\n"), tmp);
-	}
-	g_free(tmp);
-}
-
 gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 {
 	gchar *srcfile;
@@ -634,16 +600,20 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 		    msginfo->msgnum, dest->path);
 	
 
-	if (copy_file(srcfile, destfile, TRUE) < 0) {
+	if ((MSG_IS_QUEUED(msginfo->flags) || MSG_IS_DRAFT(msginfo->flags))
+	&&  dest->stype != F_QUEUE && dest->stype != F_DRAFT) {
+		if (procmsg_remove_special_headers(srcfile, destfile) !=0) {
+			g_free(srcfile);
+			g_free(destfile);
+			return -1;
+		}
+	} else if (copy_file(srcfile, destfile, TRUE) < 0) {
 		FILE_OP_ERROR(srcfile, "copy");
 		g_free(srcfile);
 		g_free(destfile);
 		return -1;
 	}
 
-	if ((MSG_IS_QUEUED(msginfo->flags) || MSG_IS_DRAFT(msginfo->flags))
-	&&  dest->stype != F_QUEUE && dest->stype != F_DRAFT)
-		mh_remove_queue_headers(destfile);
 
 	if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
 		if (chmod(destfile, prefs->folder_chmod) < 0)
