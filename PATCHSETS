@@ -13,4 +13,4 @@
 ( cvs diff -u -r 1.251 -r 1.252 src/folder.c; ) > 0.9.12cvs24.patchset
 ( cvs diff -u -r 1.438 -r 1.439 ChangeLog; cvs diff -u -r 1.433 -r 1.434 ChangeLog.jp; cvs diff -u -r 1.68 -r 1.69 src/account.c; cvs diff -u -r 1.11 -r 1.12 src/account.h; cvs diff -u -r 1.8 -r 1.9 src/folder_item_prefs.c; cvs diff -u -r 1.135 -r 1.136 src/main.c; cvs diff -u -r 1.63 -r 1.64 src/pop.c; cvs diff -u -r 1.21 -r 1.22 src/pop.h; cvs diff -u -r 1.112 -r 1.113 src/prefs_account.c; cvs diff -u -r 1.51 -r 1.52 src/prefs_account.h; cvs diff -u -r 1.225 -r 1.226 src/prefs_common.c; cvs diff -u -r 1.112 -r 1.113 src/prefs_common.h; cvs diff -u -r 1.11 -r 1.12 src/prefs_gtk.c; cvs diff -u -r 1.5 -r 1.6 src/prefs_gtk.h; ) > 0.9.12cvs25.patchset
 ( cvs diff -u -r 1.120 -r 1.121 src/mimeview.c; ) > 0.9.12cvs27.patchset
-( cvs diff -u -r 1.121 -r 1.122 src/mimeview.c; ) > 0.9.12cvs28.patchset
+( cvs diff -u -r 1.121 -r 1.123 src/mimeview.c; ) > 0.9.12cvs28.patchset

@@ -808,7 +808,7 @@ static void part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 	static guint32 lasttime;
 
 	if (event->button == 2 ||
-	    (event->button == 1 && (event->time - lasttime) < DOUBLE_CLICK_TIME)) {
+	    (event->button == 1 && (event->time - lasttime) < DOUBLE_CLICK_TIME && lastinfo == partinfo)) {
 		/* call external program for image, audio or html */
 		mimeview_launch(mimeview);
 	} else if (event->button == 3) {
