@@ -309,7 +309,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 				      "provided hidden text to command\n"
 				      " End with:\n   '|' to replace "
 				      "message body or selection with command "
-				      "output\n   '&' to"
+				      "output\n   '&' to "
 				      "run command asynchronously\n Use '%f' "
 				      "for message file name\n and '%F' for the"
 				      " list of the file names of selected "
@@ -1389,7 +1389,8 @@ static void update_io_dialog(Children *children)
 		gtk_widget_show(children->scrolledwin);
 		gtk_text_freeze(GTK_TEXT(text));
 		gtk_text_set_point(GTK_TEXT(text), 0);
-		gtk_text_forward_delete(GTK_TEXT(text), -1);
+		gtk_text_forward_delete(GTK_TEXT(text), 
+					gtk_text_get_length(GTK_TEXT(text)));
 		for (cur = children->list; cur; cur = cur->next)
 		{
 			child_info = (ChildInfo *) cur->data;
@@ -1564,10 +1565,6 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 			c = read(source, buf, PREFSBUFSIZE - 1);
 			if (c == 0) 
 				break;
-			if (source == child_info->chld_out) 
-				printf("stdout\n");
-			else
-				printf("stderr\n");
 			for (i = 0; i < c; i++)
 				child_info->output = g_string_append_c(
 						child_info->output, buf[i]);
