@@ -1,3 +1,4 @@
-*.o
-*.rej
-*.orig
+Makefile
+.deps
+.libs
+sylpheed
