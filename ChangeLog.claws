@@ -1,3 +1,8 @@
+2003-11-25 [melvin]	0.9.6claws93
+
+	* src/editldap.c
+		Fixed a couple of typos.
+
 2003-11-24 [paul]	0.9.6claws92
 
 	* po/POTFILES.in
