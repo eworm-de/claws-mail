@@ -1,3 +1,15 @@
+2002-01-25
+
+	* src/procmime.c:
+	  procmime_get_mime_type()
+	  procmime_get_mime_type_table(): MIME タイプの検索を大小文字を
+	  区別しないようにした。
+	* src/gtkstext.c:
+	  gtk_stext_delete_line(): 空行では改行を消すようにした。
+	  gtk_stext_delete_to_line_end(): カーソルが行末にある場合は改行
+	  を消すようにした。
+	  (Yasuzaki Masayoshi さん thanks.)
+
 2002-01-23
 
 	* src/compose.c

@@ -4717,13 +4717,27 @@ void
 gtk_stext_delete_line (GtkSText *text)
 {
   gtk_stext_move_to_column (GTK_EDITABLE (text), 0);
-  gtk_stext_kill_line (GTK_EDITABLE (text), 1);
+  if (GTK_STEXT_INDEX(text, GTK_EDITABLE (text)->current_pos) == LINE_DELIM)
+    {
+      gtk_stext_kill_char (GTK_EDITABLE (text), 1);
+    }
+  else
+    {
+      gtk_stext_kill_line (GTK_EDITABLE (text), 1);
+    }
 }
 
 void
 gtk_stext_delete_to_line_end (GtkSText *text)
 {
-  gtk_stext_kill_line (GTK_EDITABLE (text), 1);
+  if (GTK_STEXT_INDEX(text, GTK_EDITABLE (text)->current_pos) == LINE_DELIM)
+    {
+      gtk_stext_kill_char (GTK_EDITABLE (text), 1);
+    }
+  else
+    {
+      gtk_stext_kill_line (GTK_EDITABLE (text), 1);
+    }
 }
 
 static void

@@ -964,7 +964,8 @@ gchar *procmime_get_mime_type(const gchar *filename)
 {
 	static GHashTable *mime_type_table = NULL;
 	MimeType *mime_type;
-	const gchar *ext, *p;
+	const gchar *p;
+	gchar *ext;
 
 	if (!mime_type_table) {
 		mime_type_table = procmime_get_mime_type_table();
@@ -973,11 +974,10 @@ gchar *procmime_get_mime_type(const gchar *filename)
 
 	filename = g_basename(filename);
 	p = strrchr(filename, '.');
-	if (p)
-		ext = p + 1;
-	else
-		return NULL;
+	if (!p) return NULL;
 
+	Xstrdup_a(ext, p + 1, return NULL);
+	g_strdown(ext);
 	mime_type = g_hash_table_lookup(mime_type_table, ext);
 	if (mime_type) {
 		gchar *str;
@@ -1027,15 +1027,23 @@ static GHashTable *procmime_get_mime_type_table(void)
 
 	for (cur = mime_type_list; cur != NULL; cur = cur->next) {
 		gint i;
+		gchar *key;
 
 		mime_type = (MimeType *)cur->data;
 
 		if (!mime_type->extension) continue;
 
 		exts = g_strsplit(mime_type->extension, " ", 16);
-		for (i = 0; exts[i] != NULL; i++)
-			g_hash_table_insert(table, g_strdup(exts[i]),
-					    mime_type);
+		for (i = 0; exts[i] != NULL; i++) {
+			/* make the key case insensitive */
+			g_strdown(exts[i]);
+			/* use previously dup'd key on overwriting */
+			if (g_hash_table_lookup(table, exts[i]))
+				key = exts[i];
+			else
+				key = g_strdup(exts[i]);
+			g_hash_table_insert(table, key, mime_type);
+		}
 		g_strfreev(exts);
 	}
 

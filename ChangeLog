@@ -1,3 +1,15 @@
+2002-01-25
+
+	* src/procmime.c:
+	  procmime_get_mime_type()
+	  procmime_get_mime_type_table(): made the MIME type search case
+	  insensitive.
+	* src/gtkstext.c:
+	  gtk_stext_delete_line(): delete newline on empty line.
+	  gtk_stext_delete_to_line_end(): delete newline if cursor is on
+	  the last of line.
+	  (thanks to Yasuzaki Masayoshi.)
+
 2002-01-23
 
 	* src/compose.c
