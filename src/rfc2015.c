@@ -61,12 +61,6 @@ static char *mime_version_name[] = {
     NULL
 };
 
-
-struct passphrase_cb_info_s {
-    GpgmeCtx c;
-    int did_it;
-};
-
 static char *create_boundary (void);
 
 #if 0
@@ -335,31 +329,6 @@ leave:
 	gpgmegtk_sig_status_destroy (statuswindow);
 }
 
-static const char *
-passphrase_cb (void *opaque, const char *desc, void **r_hd)
-{
-    struct passphrase_cb_info_s *info = opaque;
-    GpgmeCtx ctx = info ? info->c : NULL;
-    const char *pass;
-
-    if (!desc) {
-        /* FIXME: cleanup by looking at **r_hd */
-        return NULL;
-    }
-
-    gpgmegtk_set_passphrase_grab (prefs_common.passphrase_grab);
-    debug_print ("%% requesting passphrase for `%s': ", desc );
-    pass = gpgmegtk_passphrase_mbox (desc);
-    if (!pass) {
-        debug_print ("%% cancel passphrase entry");
-        gpgme_cancel (ctx);
-    }
-    else
-        debug_print ("%% sending passphrase");
-
-    return pass;
-}
-
 /*
  * Copy a gpgme data object to a temporary file and
  * return this filename 
@@ -434,7 +403,7 @@ pgp_decrypt (MimeInfo *partinfo, FILE *fp)
 
     if (!getenv("GPG_AGENT_INFO")) {
         info.c = ctx;
-        gpgme_set_passphrase_cb (ctx, passphrase_cb, &info);
+        gpgme_set_passphrase_cb (ctx, gpgmegtk_passphrase_cb, &info);
     } 
 
     err = gpgme_op_decrypt (ctx, cipher, plain);
@@ -442,6 +411,7 @@ pgp_decrypt (MimeInfo *partinfo, FILE *fp)
 leave:
     gpgme_data_release (cipher);
     if (err) {
+        gpgmegtk_free_passphrase();
         debug_print ("decryption failed: %s\n", gpgme_strerror (err));
         gpgme_data_release (plain);
         plain = NULL;
@@ -963,7 +933,7 @@ pgp_sign (GpgmeData plain, GSList *key_list)
 
     if (!getenv("GPG_AGENT_INFO")) {
         info.c = ctx;
-        gpgme_set_passphrase_cb (ctx, passphrase_cb, &info);
+        gpgme_set_passphrase_cb (ctx, gpgmegtk_passphrase_cb, &info);
     }
     gpgme_set_textmode (ctx, 1);
     gpgme_set_armor (ctx, 1);
@@ -983,6 +953,7 @@ pgp_sign (GpgmeData plain, GSList *key_list)
 
 leave:
     if (err) {
+        gpgmegtk_free_passphrase();
         debug_print ("signing failed: %s\n", gpgme_strerror (err));
         gpgme_data_release (sig);
         sig = NULL;

@@ -20,8 +20,15 @@
 #define GPGMEGTK_PASSPHRASE_H
 
 #include <glib.h>
+#include <gpgme.h>
+
+struct passphrase_cb_info_s {
+    GpgmeCtx c;
+    int did_it;
+};
 
 void gpgmegtk_set_passphrase_grab (gint yesno);
-gchar *gpgmegtk_passphrase_mbox (const gchar *desc);
+const char* gpgmegtk_passphrase_cb(void *opaque, const char *desc, void *r_hd);
+void gpgmegtk_free_passphrase();
 
 #endif /* GPGMEGTK_PASSPHRASE_H */

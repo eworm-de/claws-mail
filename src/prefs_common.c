@@ -194,6 +194,9 @@ static struct Message {
 static struct Privacy {
 	GtkWidget *checkbtn_auto_check_signatures;
 	GtkWidget *checkbtn_gpg_signature_popup;
+	GtkWidget *checkbtn_store_passphrase;
+	GtkWidget *spinbtn_store_passphrase;
+	GtkObject *spinbtn_store_passphrase_adj;
 	GtkWidget *checkbtn_passphrase_grab;
 	GtkWidget *checkbtn_gpg_warning;
 	GtkWidget *optmenu_default_signkey;
@@ -667,6 +670,12 @@ static PrefParam param[] = {
 	 &prefs_common.gpg_signature_popup, P_BOOL,
 	 &privacy.checkbtn_gpg_signature_popup,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"store_passphrase", "FALSE", &prefs_common.store_passphrase, P_BOOL,
+	 &privacy.checkbtn_store_passphrase,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"store_passphrase_timeout", "0", &prefs_common.store_passphrase_timeout,
+	 P_INT, &privacy.spinbtn_store_passphrase, 
+	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 #ifndef __MINGW32__
 	{"passphrase_grab", "FALSE", &prefs_common.passphrase_grab, P_BOOL,
 	 &privacy.checkbtn_passphrase_grab,
@@ -2356,6 +2365,14 @@ static void prefs_privacy_create(void)
 	GtkWidget *hbox1;
 	GtkWidget *checkbtn_auto_check_signatures;
 	GtkWidget *checkbtn_gpg_signature_popup;
+	GtkWidget *hbox_stpass;
+	GtkWidget *checkbtn_store_passphrase;
+	GtkWidget *label_stpass1;
+	GtkObject *spinbtn_store_passphrase_adj;
+	GtkWidget *spinbtn_store_passphrase;
+	GtkWidget *label_stpass2;
+	GtkWidget *hbox_stpassinfo;
+	GtkWidget *label_stpassinfo;
 	GtkWidget *checkbtn_passphrase_grab;
 	GtkWidget *checkbtn_gpg_warning;
 	GtkWidget *label;
@@ -2377,6 +2394,43 @@ static void prefs_privacy_create(void)
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_gpg_signature_popup,
 			   _("Show signature check result in a popup window"));
+
+	hbox_stpass = gtk_hbox_new(FALSE, 8);
+	gtk_box_pack_start(GTK_BOX(vbox2), hbox_stpass, FALSE, FALSE, 0);
+
+	PACK_CHECK_BUTTON (hbox_stpass, checkbtn_store_passphrase,
+			   _("Store passphrase temporarily"));
+
+	label_stpass1 = gtk_label_new(_("- remove after"));
+	gtk_box_pack_start(GTK_BOX(hbox_stpass), label_stpass1, FALSE, FALSE, 0);
+
+	spinbtn_store_passphrase_adj = gtk_adjustment_new(0, 0, 1440, 1, 5, 5);
+	spinbtn_store_passphrase = gtk_spin_button_new(
+			GTK_ADJUSTMENT(spinbtn_store_passphrase_adj), 1, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_stpass), spinbtn_store_passphrase, FALSE, 
+			   FALSE, 0);
+	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spinbtn_store_passphrase), 
+				    TRUE);
+	gtk_widget_set_usize(spinbtn_store_passphrase, 50, -1);
+    
+	label_stpass2 = gtk_label_new(_("minute(s)"));
+	gtk_box_pack_start(GTK_BOX(hbox_stpass), label_stpass2, FALSE, FALSE, 0);
+	gtk_widget_show_all(hbox_stpass);
+
+	hbox_stpassinfo = gtk_hbox_new(FALSE, 8);
+	gtk_box_pack_start(GTK_BOX(vbox2), hbox_stpassinfo, FALSE, FALSE, 0);
+
+	label_stpassinfo = gtk_label_new
+		(_("(A setting of '0' will store the passphrase\n"
+		   " for the whole session)"));
+	gtk_box_pack_start (GTK_BOX (hbox_stpassinfo), label_stpassinfo, FALSE, FALSE, 0);
+	gtk_label_set_justify (GTK_LABEL (label_stpassinfo), GTK_JUSTIFY_LEFT);
+	gtk_widget_show_all(hbox_stpassinfo);
+
+	SET_TOGGLE_SENSITIVITY(checkbtn_store_passphrase, label_stpass1);
+	SET_TOGGLE_SENSITIVITY(checkbtn_store_passphrase, spinbtn_store_passphrase); 
+	SET_TOGGLE_SENSITIVITY(checkbtn_store_passphrase, label_stpass2);
+	SET_TOGGLE_SENSITIVITY(checkbtn_store_passphrase, label_stpassinfo);
 
 #ifndef __MINGW32__
 	PACK_CHECK_BUTTON (vbox2, checkbtn_passphrase_grab,
@@ -2410,6 +2464,9 @@ static void prefs_privacy_create(void)
 					 = checkbtn_auto_check_signatures;
 	privacy.checkbtn_gpg_signature_popup
 					 = checkbtn_gpg_signature_popup;
+	privacy.checkbtn_store_passphrase    = checkbtn_store_passphrase;
+	privacy.spinbtn_store_passphrase     = spinbtn_store_passphrase;
+	privacy.spinbtn_store_passphrase_adj = spinbtn_store_passphrase_adj;
 	privacy.checkbtn_passphrase_grab = checkbtn_passphrase_grab;
 	privacy.checkbtn_gpg_warning     = checkbtn_gpg_warning;
 	privacy.optmenu_default_signkey  = optmenu;
@@ -2709,7 +2766,7 @@ static void prefs_other_create(void)
 			       "netscape -remote 'openURL(%s,raise)'",
 			       "netscape '%s'",
 			       "gnome-moz-remote --raise --newwin '%s'",
-			       "kfmclient openProfile webbrowsing '%s'",
+			       "kfmclient openURL '%s'",
 			       "opera -newwindow '%s'",	       
 			       "kterm -e w3m '%s'",
 			       "kterm -e lynx '%s'",

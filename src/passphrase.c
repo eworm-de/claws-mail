@@ -23,6 +23,7 @@
 #if USE_GPGME
 
 #include <string.h>
+#include <sys/mman.h>
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdkx.h>  /* GDK_DISPLAY() */
@@ -40,12 +41,14 @@
 
 #include "intl.h"
 #include "passphrase.h"
+#include "prefs_common.h"
 #include "manage_window.h"
 
 
 static int grab_all = 0;
 
 static gboolean pass_ack;
+static gchar* lastPass = NULL;
 
 static void passphrase_ok_cb(GtkWidget *widget, gpointer data);
 static void passphrase_cancel_cb(GtkWidget *widget, gpointer data);
@@ -53,6 +56,9 @@ static gint passphrase_deleted(GtkWidget *widget, GdkEventAny *event,
 			       gpointer data);
 static void passphrase_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				   gpointer data);
+static gchar* passphrase_mbox (const gchar *desc);
+
+
 static GtkWidget *create_description (const gchar *desc);
 
 void
@@ -61,8 +67,8 @@ gpgmegtk_set_passphrase_grab (gint yes)
     grab_all = yes;
 }
 
-gchar *
-gpgmegtk_passphrase_mbox (const gchar *desc)
+static gchar*
+passphrase_mbox (const gchar *desc)
 {
     gchar *the_passphrase = NULL;
     GtkWidget *vbox;
@@ -258,6 +264,63 @@ create_description (const gchar *desc)
     g_free (buf);
 
     return label;
+}
+
+static int free_passphrase(gpointer _unused)
+{
+    if (lastPass != NULL) {
+        munlock(lastPass, strlen(lastPass));
+        g_free(lastPass);
+        lastPass = NULL; // necessary?
+        g_message("%% passphrase removed");
+    }
+    
+    return FALSE;
+}
+
+const char*
+gpgmegtk_passphrase_cb (void *opaque, const char *desc, void *r_hd)
+{
+    struct passphrase_cb_info_s *info = opaque;
+    GpgmeCtx ctx = info ? info->c : NULL;
+    const char *pass;
+
+    if (!desc) {
+        /* FIXME: cleanup by looking at *r_hd */
+        return NULL;
+    }
+    if (prefs_common.store_passphrase
+        && strncmp(desc, "TRY_AGAIN", 9) && (lastPass != NULL))
+        return g_strdup(lastPass);
+
+    gpgmegtk_set_passphrase_grab (prefs_common.passphrase_grab);
+    g_message ("%% requesting passphrase for `%s': ", desc );
+    pass = passphrase_mbox (desc);
+    gpgmegtk_free_passphrase();
+    if (!pass) {
+        g_message ("%% cancel passphrase entry");
+        gpgme_cancel (ctx);
+    }
+    else {
+        if (prefs_common.store_passphrase) {
+            lastPass = g_strdup(pass);
+            if (mlock(lastPass, strlen(lastPass)) == -1)
+                g_message("%% locking passphrase failed");
+
+            if (prefs_common.store_passphrase_timeout > 0) {
+                gtk_timeout_add(prefs_common.store_passphrase_timeout*60*1000,
+                                free_passphrase, NULL);
+            }
+        }
+        g_message ("%% sending passphrase");
+    }
+
+    return pass;
+}
+
+void gpgmegtk_free_passphrase()
+{
+    (void)free_passphrase(NULL); // could be inline
 }
 
 #endif /* USE_GPGME */

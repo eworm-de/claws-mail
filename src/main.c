@@ -47,6 +47,7 @@
 
 #if USE_GPGME
 #  include <gpgme.h>
+#  include "passphrase.h"
 #endif
 
 #include "intl.h"
@@ -413,6 +414,10 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	}
 
 	inc_autocheck_timer_remove();
+
+#if USE_GPGME
+        gpgmegtk_free_passphrase();
+#endif
 
 	if (prefs_common.clean_on_exit)
 		main_window_empty_trash(mainwin, prefs_common.ask_on_clean);

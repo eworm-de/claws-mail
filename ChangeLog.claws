@@ -1,3 +1,14 @@
+2002-04-13 [paul]	0.7.4claws80
+	
+	* src/main.c
+	  src/passphrase.[ch]
+	  src/pgptext.c
+	  src/prefs_common.[ch]
+	  src/rfc2015.c
+		enable storing of GnuPG passphrase for the whole 
+		session or a user-defined number of minutes. patch 
+		submitted by Ravemax <ravemax@dextrose.com>
+
 2002-04-13 [alfons]	0.7.4claws79
 
 	* src/textview.c
