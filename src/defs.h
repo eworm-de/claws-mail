@@ -106,70 +106,38 @@
   #define LOCK_PORT			54321	// (-_-;;
 #endif
  
-#ifdef xxxWIN32
-#  define NORMAL_FONT \
-				"-*-*-normal-r-normal--12-*-*-*-m-*-*-0,"
-// 	        	"-*-*-normal-r-normal--12-*-*-*-*-*-*-*"
-#  define BOLD_FONT \
-				"-*-*-bold-r-normal--12-*-*-*-m-*-*-0,"
-// 	        	"-*-*-bold-r-normal--12-*-*-*-*-*-*-*"
-#  define SMALL_FONT \
-				"-*-*-normal-r-normal--10-*-*-*-m-*-*-0,"
-//	        	"-*-*-normal-r-normal--10-*-*-*-*-*-*-*"
- // Added
-#  define DEFAULT_MESSAGE_FONT \
-				"-*-*-normal-r-normal--12-*-*-*-m-*-*-0,"
-// 	        	"-*-*-normal-r-normal--12-*-*-*-*-*-*-*"
-#  define DEFAULT_SPACING_FONT \
-				"-*-*-normal-r-normal--12-*-*-*-m-*-*-0,"
-// 				"-*-*-normal-r-normal--12-*-*-*-*-*-*-*"
-#endif
 #ifdef jjjWIN32
-#  define NORMAL_FONT	"-*-*-normal-r-normal--12-*-*-*-m-*-jisx0208.1983-0," \
- 						"-*-*-normal-r-normal--12-*-*-*-*-*-*-*"
+#  define NORMAL_FONT		"-*-*-normal-r-normal--12-*-*-*-m-*-jisx0208.1983-0," \
+				"-*-*-normal-r-normal--12-*-*-*-*-*-*-*"
 #  define BOLD_FONT		"-*-*-bold-r-normal--12-*-*-*-m-*-jisx0208.1983-0," \
- 						"-*-*-bold-r-normal--12-*-*-*-*-*-*-*"
-#  define SMALL_FONT	"-*-*-normal-r-normal--10-*-*-*-m-*-jisx0208.1983-0," \
-						"-*-*-normal-r-normal--10-*-*-*-*-*-*-*"
+				"-*-*-bold-r-normal--12-*-*-*-*-*-*-*"
+#  define SMALL_FONT		"-*-*-normal-r-normal--10-*-*-*-m-*-jisx0208.1983-0," \
+				"-*-*-normal-r-normal--10-*-*-*-*-*-*-*"
  // Added
 #  define DEFAULT_MESSAGE_FONT	"-*-*-normal-r-normal--12-*-*-*-m-*-jisx0208.1983-0," \
- 	        					"-*-*-normal-r-normal--12-*-*-*-*-*-*-*"
+				"-*-*-normal-r-normal--12-*-*-*-*-*-*-*"
 #  define DEFAULT_SPACING_FONT	"-*-*-normal-r-normal--6-*-*-*-m-*-jisx0208.1983-0," \
- 								"-*-*-normal-r-normal--6-*-*-*-*-*-*-*"
-#endif
-//-----------------------------------------------------------------------------
-#ifdef xxWIN32
-//#  define NORMAL_FONT	"-*-*-normal-r-normal--18-*-*-*-m-*-*-*," \
-// 						"-*-*-normal-r-normal--18-*-*-*-*-*-*-*"
-//#  define BOLD_FONT		"-*-*-bold-r-normal--18-*-*-*-m-*-*-*," \
-// 						"-*-*-bold-r-normal--18-*-*-*-*-*-*-*"
-//#  define SMALL_FONT	"-*-*-normal-r-normal--14-*-*-*-m-*-*-*," \
-//						"-*-*-normal-r-normal--14-*-*-*-*-*-*-*"
- // Added
-#  define DEFAULT_MESSAGE_FONT	"-*-*-normal-r-normal--18-*-*-*-m-*-*-*," \
- 	        					"-*-*-normal-r-normal--18-*-*-*-*-*-*-*"
-#  define DEFAULT_SPACING_FONT	"-*-*-normal-r-normal--12-*-*-*-m-*-*-*," \
- 								"-*-*-normal-r-normal--12-*-*-*-*-*-*-*"
+				"-*-*-normal-r-normal--6-*-*-*-*-*-*-*"
 #endif
 //-----------------------------------------------------------------------------
 #ifdef WIN32
-#  define NORMAL_FONT	"-*-Arial-normal-r-normal--15-*-*-*-*-*-*-*"
+#  define NORMAL_FONT		"-*-Arial-normal-r-normal--15-*-*-*-*-*-*-*"
 #  define BOLD_FONT		"-*-Arial-bold-r-normal--15-*-*-*-*-*-*-*"
-#  define SMALL_FONT	"-*-Arial-normal-r-normal--14-*-*-*-*-*-*-*"
-//#  define NORMAL_FONT	"-*-Microsoft Sans Serif-normal-r-normal--14-*-*-*-*-*-iso8859-1"
+#  define SMALL_FONT		"-*-Arial-normal-r-normal--14-*-*-*-*-*-*-*"
+//#  define NORMAL_FONT		"-*-Microsoft Sans Serif-normal-r-normal--14-*-*-*-*-*-iso8859-1"
 //#  define BOLD_FONT		"-*-Microsoft Sans Serif-bold-r-normal--14-*-*-*-*-*-iso8859-1"
-//#  define SMALL_FONT	"-*-Microsoft Sans Serif-normal-r-normal--14-*-*-*-*-*-iso8859-1"
+//#  define SMALL_FONT		"-*-Microsoft Sans Serif-normal-r-normal--14-*-*-*-*-*-iso8859-1"
  // Added
 #  define DEFAULT_MESSAGE_FONT	"-*-*-normal-r-normal--18-*-*-*-m-*-*-*"
 #  define DEFAULT_SPACING_FONT	"-*-*-normal-r-normal--12-*-*-*-m-*-*-*"
 #else
-#  define NORMAL_FONT prefs_common.normalfont
-#  define BOLD_FONT   prefs_common.boldfont
+#  define NORMAL_FONT	prefs_common.normalfont
+#  define BOLD_FONT	prefs_common.boldfont
 #  define SMALL_FONT	prefs_common.smallfont
 #endif
 
 #define DEFAULT_PIXMAP_THEME	"INTERNAL_DEFAULT"
-#define PIXMAP_THEME_DIR		"themes"
+#define PIXMAP_THEME_DIR	"themes"
 
 #ifdef WIN32
 //XXX:tm   w32lib.h ?

@@ -978,7 +978,11 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 
 void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 {
+#ifdef WIN32
+	static const gchar *def_cmd = "notepad /p \"%s\"";
+#else
 	static const gchar *def_cmd = "lpr %s";
+#endif
 	static guint id = 0;
 	gchar *prtmp;
 	FILE *tmpfp, *prfp;

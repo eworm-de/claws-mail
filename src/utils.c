@@ -2334,7 +2334,11 @@ void decode_uri(gchar *decoded_uri, const gchar *encoded_uri)
 
 gint open_uri(const gchar *uri, const gchar *cmdline)
 {
+#ifdef WIN32
 	static gchar *default_cmdline = "netscape -remote openURL(%s,raise)";
+#else
+	static gchar *default_cmdline = "netscape -remote openURL(\"%s\",raise)";
+#endif
 	gchar buf[BUFFSIZE];
 	gchar *p;
 	gchar encoded_uri[BUFFSIZE];

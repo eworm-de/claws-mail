@@ -310,10 +310,27 @@ static void check_signature (MimeInfo *mimeinfo, MimeInfo *partinfo, FILE *fp)
     /* FIXME: check what the heck this sig_status_full stuff is.
      * it should better go into sigstatus.c */
     g_free (partinfo->sigstatus_full);
+#ifdef WIN32
+	{
+		gchar *tmp = sig_status_full(ctx);
+		locale_from_utf8(&tmp);
+		partinfo->sigstatus_full = g_strdup(tmp);
+		g_free(tmp);
+	}
+#else
     partinfo->sigstatus_full = sig_status_full (ctx);
+#endif
 
 leave:
     result = gpgmegtk_sig_status_to_string(status);
+#ifdef WIN32
+	{
+		gchar* tmp = g_strdup(result);
+		locale_from_utf8(&tmp);
+		result = g_strdup(tmp);
+		g_free(tmp);
+	}
+#endif
     debug_print("verification status: %s\n", result);
     if (prefs_common.gpg_signature_popup)
 	gpgmegtk_sig_status_update (statuswindow,ctx);

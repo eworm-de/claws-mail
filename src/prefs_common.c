@@ -784,6 +784,16 @@ static PrefParam param[] = {
 	 &Xinterface.entry_pixmap_theme,	prefs_set_data_from_entry, prefs_set_entry},
 	
 	/* Other */
+#ifdef WIN32
+	{"uri_open_command", "netscape -remote \"openURL(%s,raise)\"",
+	 &prefs_common.uri_cmd, P_STRING,
+	 &other.uri_entry, prefs_set_data_from_entry, prefs_set_entry},
+	{"print_command", "notepad /p \"%s\"", &prefs_common.print_cmd, P_STRING,
+	 &other.printcmd_entry, prefs_set_data_from_entry, prefs_set_entry},
+	{"ext_editor_command", "notepad \"%s\"",
+	 &prefs_common.ext_editor_cmd, P_STRING,
+	 &other.exteditor_entry, prefs_set_data_from_entry, prefs_set_entry},
+#else
 	{"uri_open_command", "netscape -remote 'openURL(%s,raise)'",
 	 &prefs_common.uri_cmd, P_STRING,
 	 &other.uri_entry, prefs_set_data_from_entry, prefs_set_entry},
@@ -792,6 +802,7 @@ static PrefParam param[] = {
 	{"ext_editor_command", "gedit %s",
 	 &prefs_common.ext_editor_cmd, P_STRING,
 	 &other.exteditor_entry, prefs_set_data_from_entry, prefs_set_entry},
+#endif
 
 	{"confirm_on_exit", "TRUE", &prefs_common.confirm_on_exit, P_BOOL,
 	 &other.checkbtn_confonexit,
@@ -2899,8 +2910,14 @@ static void prefs_other_create(void)
 	gtk_table_attach (GTK_TABLE (ext_table), uri_combo, 1, 2, 0, 1,
 			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtkut_combo_set_items (GTK_COMBO (uri_combo),
+#ifdef WIN32
+			       "netscape -remote \"openURL(%s,raise)\"",
+			       "netscape \"%s\"",
+			       "c:\\program files\\internet explorer\\iexplore \"%s\"",
+#else
 			       "netscape -remote 'openURL(%s,raise)'",
 			       "netscape '%s'",
+#endif
 			       "gnome-moz-remote --raise --newwin '%s'",
 			       "kfmclient openURL '%s'",
 			       "opera -newwindow '%s'",	       
@@ -2931,6 +2948,9 @@ static void prefs_other_create(void)
 	gtk_table_attach (GTK_TABLE (ext_table), exteditor_combo, 1, 2, 2, 3,
 			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtkut_combo_set_items (GTK_COMBO (exteditor_combo),
+#ifdef WIN32
+			       "notepad \"%s\"",
+#endif
 			       "gedit %s",
 			       "kedit %s",
 			       "mgedit --no-fork %s",
