@@ -1,3 +1,9 @@
+2003-06-21 [leandro]	0.9.0claws54
+
+	* src/compose.[ch]
+		create a new thread if subject changes
+		(it's on by default, can be disabled in Message menu)
+
 2003-06-21 [alfons]	0.9.0claws53
 
 	* src/summaryview.c

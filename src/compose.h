@@ -205,6 +205,9 @@ struct _Compose
  	gint priority;
 
 	gchar *redirect_filename;
+	
+	gboolean remove_references;
+	gchar *original_subject;
 };
 
 struct _AttachInfo

@@ -415,6 +415,8 @@ static void activate_gnupg_mode 	(Compose *compose,
 #endif
 static void compose_toggle_return_receipt_cb(gpointer data, guint action,
 					     GtkWidget *widget);
+static void compose_toggle_new_thread_cb(gpointer data, guint action,
+					     GtkWidget *widget);
 static void compose_set_priority_cb	(gpointer 	 data,
 					 guint 		 action,
 					 GtkWidget 	*widget);
@@ -657,6 +659,7 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Message/Priority/_Lowest"),  NULL, compose_set_priority_cb, PRIORITY_LOWEST, "/Message/Priority/Highest"},
 	{N_("/_Message/---"),		NULL,		NULL,	0, "<Separator>"},
 	{N_("/_Message/_Request Return Receipt"),	NULL, compose_toggle_return_receipt_cb, 0, "<ToggleItem>"},
+	{N_("/_Message/_Create new thread"),	NULL, compose_toggle_new_thread_cb, 0, "<ToggleItem>"},
 	{N_("/_Tools"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/Show _ruler"),	NULL, compose_toggle_ruler_cb, 0, "<ToggleItem>"},
 	{N_("/_Tools/_Address book"),	"<shift><control>A", compose_address_cb , 0, NULL},
@@ -900,6 +903,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean followup_and_reply_to,
 				  const gchar *body)
 {
+	GtkItemFactory *ifactory;
 	Compose *compose;
 	PrefsAccount *account = NULL;
 	PrefsAccount *reply_account;
@@ -924,17 +928,16 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		reply_account = account;
 
 	compose = compose_create(account, COMPOSE_REPLY);
+	ifactory = gtk_item_factory_from_widget(compose->menubar);
+	menu_set_toggle(ifactory, "/Message/Create new thread", TRUE);
 
 	compose->replyinfo = procmsg_msginfo_get_full_info(msginfo);
 	if (!compose->replyinfo)
 		compose->replyinfo = procmsg_msginfo_copy(msginfo);
 
-    	if (msginfo->folder && msginfo->folder->ret_rcpt) {
-		GtkItemFactory *ifactory;
-	
-		ifactory = gtk_item_factory_from_widget(compose->menubar);
+    	if (msginfo->folder && msginfo->folder->ret_rcpt)
 		menu_set_toggle(ifactory, "/Message/Request Return Receipt", TRUE);
-	}
+
 
 	/* Set save folder */
 	if (msginfo->folder && msginfo->folder->prefs && msginfo->folder->prefs->save_copy_to_folder) {
@@ -981,6 +984,8 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
+
+
 }
 
 #define INSERT_FW_HEADER(var, hdr) \
@@ -1295,9 +1300,15 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	
 	compose_attach_parts(compose, msginfo);
 
-	if (msginfo->subject)
+	if (msginfo->subject) {
+		if (compose->original_subject)
+			g_free(compose->original_subject);
+	
+		compose->original_subject = g_strdup(msginfo->subject);
+
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry),
 				   msginfo->subject);
+	}
 	gtk_editable_set_editable(GTK_EDITABLE(compose->subject_entry), FALSE);
 
 	gtk_stext_freeze(GTK_STEXT(compose->text));
@@ -1469,8 +1480,14 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 		compose_entry_append(compose, cc, COMPOSE_CC);
 	if (bcc)
 		compose_entry_append(compose, bcc, COMPOSE_BCC);
-	if (subject)
+	if (subject) {
+		if (compose->original_subject)
+			g_free(compose->original_subject);
+			
+		compose->original_subject = g_strdup(subject);
+		
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), subject);
+	}
 	if (body) {
 		gtk_stext_insert(GTK_STEXT(compose->text),
 				NULL, NULL, NULL, body, -1);
@@ -1792,6 +1809,12 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 
 		buf2 = g_strdup_printf("Re: %s", buf);
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), buf2);
+
+		if (compose->original_subject)
+			g_free(compose->original_subject);
+			
+		compose->original_subject = g_strdup(buf2);
+
 		g_free(buf2);
 		g_free(buf);
 	} else
@@ -1846,6 +1869,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 		slist_free_strings(cc_list);
 		g_slist_free(cc_list);
 	}
+
 }
 
 #define SET_ENTRY(entry, str) \
@@ -2129,7 +2153,7 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 			child = procmime_mimeinfo_next(child);
 			continue;
 		}
-		if(child->parent && child->parent->parent
+		if (child->parent && child->parent->parent
 		&& !strcasecmp(child->parent->parent->content_type, "multipart/signed")
 		&& child->mime_type == MIME_TEXT) {
 			/* this is the main text part of a signed message */
@@ -4137,10 +4161,25 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		compose->msgid = g_strdup(buf);
 	}
 
+	if (compose->remove_references == TRUE) {
+		gchar *subj;
+		
+		subj = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
+
+		if (compose->original_subject != NULL &&
+			strcmp(subj, compose->original_subject)) {
+				g_free(compose->inreplyto);
+				g_free(compose->references);
+		
+				compose->inreplyto = NULL;
+				compose->references = NULL;
+		}
+	}
+		
 	/* In-Reply-To */
 	if (compose->inreplyto && compose->to_list)
 		fprintf(fp, "In-Reply-To: <%s>\n", compose->inreplyto);
-
+	
 	/* References */
 	if (compose->references)
 		fprintf(fp, "References: %s\n", compose->references);
@@ -5401,6 +5440,8 @@ static void compose_destroy(Compose *compose)
 	procmsg_msginfo_free(compose->targetinfo);
 	procmsg_msginfo_free(compose->replyinfo);
 	procmsg_msginfo_free(compose->fwdinfo);
+
+	g_free(compose->original_subject);
 
 	g_free(compose->replyto);
 	g_free(compose->cc);
@@ -6864,6 +6905,17 @@ static void compose_toggle_return_receipt_cb(gpointer data, guint action,
 		compose->return_receipt = TRUE;
 	else
 		compose->return_receipt = FALSE;
+}
+
+static void compose_toggle_new_thread_cb(gpointer data, guint action,
+					     GtkWidget *widget)
+{
+	Compose *compose = (Compose *)data;
+
+	if (GTK_CHECK_MENU_ITEM(widget)->active)
+		compose->remove_references = TRUE;
+	else
+		compose->remove_references = FALSE;
 }
 
 void compose_headerentry_key_press_event_cb(GtkWidget *entry,
