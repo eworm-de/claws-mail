@@ -327,6 +327,8 @@ static void summary_subject_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
 static void summary_score_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
+static void summary_locked_clicked	(GtkWidget		*button,
+					 SummaryView		*summaryview);
 
 static void summary_start_drag		(GtkWidget        *widget, 
 					 int button,
@@ -368,6 +370,8 @@ static gint summary_cmp_by_subject	(GtkCList		*clist,
 static gint summary_cmp_by_score	(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
+static gint summary_cmp_by_locked	(GtkCList *clist,
+				         gconstpointer ptr1, gconstpointer ptr2);
 static gint summary_cmp_by_label	(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
@@ -1830,6 +1834,9 @@ void summary_sort(SummaryView *summaryview, SummarySortType type)
 		break;
 	case SORT_BY_SCORE:
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_score;
+		break;
+	case SORT_BY_LOCKED:
+		cmp_func = (GtkCListCompareFunc)summary_cmp_by_locked;
 		break;
 	case SORT_BY_LABEL:
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_label;
@@ -3904,6 +3911,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_FROM   , summary_from_clicked);
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SUBJECT, summary_subject_clicked);
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SCORE,   summary_score_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_LOCKED,  summary_locked_clicked);
 
 #undef CLIST_BUTTON_SIGNAL_CONNECT
 
@@ -4406,6 +4414,12 @@ static void summary_score_clicked(GtkWidget *button,
 	summary_sort(summaryview, SORT_BY_SCORE);
 }
 
+static void summary_locked_clicked(GtkWidget *button,
+				  SummaryView *summaryview)
+{
+	summary_sort(summaryview, SORT_BY_LOCKED);
+}
+
 static void summary_size_clicked(GtkWidget *button, SummaryView *summaryview)
 {
 	summary_sort(summaryview, SORT_BY_SIZE);
@@ -4601,6 +4615,15 @@ static gint summary_cmp_by_score(GtkCList *clist,
 		return diff;
 	else
 		return summary_cmp_by_date(clist, ptr1, ptr2);
+}
+
+static gint summary_cmp_by_locked(GtkCList *clist,
+				  gconstpointer ptr1, gconstpointer ptr2)
+{
+	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
+	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
+
+	return MSG_IS_LOCKED(msginfo1->flags) - MSG_IS_LOCKED(msginfo2->flags);
 }
 
 static void summary_ignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpointer data)
