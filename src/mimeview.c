@@ -84,6 +84,11 @@ static void mimeview_show_message_part		(MimeView	*mimeview,
 						 MimeInfo	*partinfo);
 static void mimeview_change_view_type		(MimeView	*mimeview,
 						 MimeViewType	 type);
+gchar *mimeview_get_filename_for_part		(MimeInfo	*partinfo,
+						 const gchar	*basedir,
+						 gint		 number);
+static gboolean mimeview_write_part		(const gchar	*filename,
+						 MimeInfo	*partinfo);
 
 static void mimeview_selected		(GtkCTree	*ctree,
 					 GtkCTreeNode	*node,
@@ -537,7 +542,7 @@ static MimeViewer *get_viewer_for_mimeinfo(MimeView *mimeview, MimeInfo *partinf
 		if (filename != NULL)
 			content_type = procmime_get_mime_type(filename);
 	} else {
-		content_type = g_strdup_printf("%s/%s", procmime_get_type_str(partinfo->type), partinfo->subtype);
+		content_type = procmime_get_content_type_str(partinfo->type, partinfo->subtype);
 	}
 
 	if (content_type != NULL) {
@@ -960,79 +965,180 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 	g_free(filename);
 }
 
+/**
+ * Returns a filename (with path) for an attachment
+ * \param partinfo The attachment to save
+ * \param basedir The target directory
+ * \param number Used for dummy filename if attachment is unnamed
+ */
+gchar *mimeview_get_filename_for_part(MimeInfo *partinfo,
+				      const gchar *basedir,
+				      gint number)
+{
+	gchar *fullname;
+	gchar *filename;
+
+	filename = g_strdup(get_part_name(partinfo));
+	if (!filename || !*filename)
+		filename = g_strdup_printf("noname.%d", number);
+	subst_for_shellsafe_filename(filename);
+
+	fullname = g_strconcat
+		(basedir, G_DIR_SEPARATOR_S, (filename[0] == G_DIR_SEPARATOR)
+		 ? &filename[1] : filename, NULL);
+	subst_chars(fullname, "/\\", G_DIR_SEPARATOR);
+
+	g_free(filename);
+	return fullname;
+}
+
+/**
+ * Write a single attachment to file
+ * \param filename Filename with path
+ * \param partinfo Attachment to save
+ */
+static gboolean mimeview_write_part(const gchar *filename,
+				    MimeInfo *partinfo)
+{
+	gchar *dir;
+	
+	dir= g_dirname(filename);
+	if (!is_dir_exist(dir))
+		make_dir_hier(dir);
+	g_free(dir);
+
+	if (is_file_exist(filename)) {
+		AlertValue aval;
+		gchar *res;
+		
+		res = g_strdup_printf(_("Overwrite existing file '%s'?"),
+				      filename);
+		aval = alertpanel(_("Overwrite"), res, _("OK"), 
+				  _("Cancel"), NULL);
+		g_free(res);					  
+		if (G_ALERTDEFAULT != aval) return FALSE;
+	}
+
+	if (procmime_get_part(filename, partinfo) < 0) {
+		alertpanel_error
+			(_("Can't save the part of multipart message."));
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+/**
+ * Menu callback: Save all attached files
+ * \param mimeview Current display
+ */
 static void mimeview_save_all(MimeView *mimeview)
 {
+	MimeInfo *partinfo;
 	gchar *dirname;
-	gchar *defname = NULL;
-	MimeInfo *attachment;
-	gchar buf[1024];
+	gchar *startdir = NULL;
+	gint number = 1;
 
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
+	if (!mimeview->mimeinfo) return;
 
-	attachment = mimeview->mimeinfo;
-	g_return_if_fail(attachment != NULL);
+	partinfo = mimeview->mimeinfo;
+	if (prefs_common.attach_save_dir)
+		startdir = g_strconcat(prefs_common.attach_save_dir,
+				       G_DIR_SEPARATOR_S, NULL);
 
-	dirname = filesel_select_file(_("Save as"), defname);
-	if (!dirname) return;
+	dirname = filesel_select_file(_("Select destination folder"), startdir);
+	if (!dirname) {
+		if (startdir) g_free(startdir);
+		return;
+	}
 
 	if (!is_dir_exist (dirname)) {
 		alertpanel_error(_("`%s' is not a directory."),
 				 dirname);
-		g_free (dirname);
-		dirname = NULL;
+		if (startdir) g_free(startdir);
 		return;
 	}
+
+	if (dirname[strlen(dirname)-1] == G_DIR_SEPARATOR)
+		dirname[strlen(dirname)-1] = '\0';
+
+	while (partinfo != NULL) {
+		if (partinfo->type != MIMETYPE_MESSAGE &&
+		    partinfo->type != MIMETYPE_MULTIPART &&
+		    partinfo->disposition != DISPOSITIONTYPE_INLINE) {
+			gchar *filename = mimeview_get_filename_for_part
+				(partinfo, dirname, number++);
+
+			mimeview_write_part(filename, partinfo);
+			g_free(filename);
+		}
+		partinfo = procmime_mimeinfo_next(partinfo);
+	}
+
+	if (prefs_common.attach_save_dir)
+		g_free(prefs_common.attach_save_dir);
+
+	prefs_common.attach_save_dir = g_strdup(dirname);
+
+	if (startdir) g_free(startdir);
+}
+
+/**
+ * Menu callback: Save the selected attachment
+ * \param mimeview Current display
+ */
+static void mimeview_save_as(MimeView *mimeview)
+{
+	gchar *filename;
+	gchar *defname = NULL;
+	gchar *filepath = NULL;
+	gchar *filedir = NULL;
+	MimeInfo *partinfo;
+	const gchar *partname = NULL;
+
+	if (!mimeview->opened) return;
+	if (!mimeview->file) return;
+
+	partinfo = mimeview_get_selected_part(mimeview);
+	if (!partinfo) { 
+		partinfo = (MimeInfo *) gtk_object_get_data
+			(GTK_OBJECT(mimeview->popupmenu),
+			 "pop_partinfo");
+		gtk_object_set_data(GTK_OBJECT(mimeview->popupmenu),
+				    "pop_partinfo", NULL);
+	}			 
+	g_return_if_fail(partinfo != NULL);
 	
-	{ /* add a / after the dirname, in case the user didn't */
-		gchar *dirname_tmp = NULL;
-		int dirname_last_char = strlen (dirname) - 1;
-
-		if (dirname[dirname_last_char] != G_DIR_SEPARATOR) {
-			dirname_tmp = g_strconcat (dirname, G_DIR_SEPARATOR_S, NULL);
-			g_free (dirname);
-			dirname = dirname_tmp;
-		}
+	if ((partname = get_part_name(partinfo)) != NULL) {
+		Xstrdup_a(defname, partname, return);
+		subst_for_shellsafe_filename(defname);
 	}
 
-	/* for each attachment, extract it in the selected dir. */
-	while (attachment != NULL) {
-		if (attachment->type != MIMETYPE_MESSAGE &&
-		    attachment->type != MIMETYPE_MULTIPART &&
-		    attachment->disposition != DISPOSITIONTYPE_INLINE) {
-			static guint subst_cnt = 1;
-			gchar *attachdir;
-			gchar *attachname = g_strdup(get_part_name(attachment));
-			AlertValue aval = G_ALERTDEFAULT;
-			gchar *res;
+	if (prefs_common.attach_save_dir)
+		filepath = g_strconcat(prefs_common.attach_save_dir,
+				       G_DIR_SEPARATOR_S, defname, NULL);
+	else
+		filepath = g_strdup(defname);
 
-			if (!attachname || !strlen(attachname))
-				attachname = g_strdup_printf("noname.%d",subst_cnt++);
-			subst_chars(attachname, ":?*&|<>\t\r\n", '_');
-			g_snprintf(buf, sizeof(buf), "%s%s",
-				   dirname,
-				   (attachname[0] == G_DIR_SEPARATOR)
-				   ? &attachname[1]
-				   : attachname);
-			subst_chars(buf, "/\\", G_DIR_SEPARATOR);
-			attachdir = g_dirname(buf);
-			make_dir_hier(attachdir);
-			g_free(attachdir);
-			
-			if (is_file_exist(buf)) {
-				res = g_strdup_printf(_("Overwrite existing file '%s'?"),
-						      attachname);
-				aval = alertpanel(_("Overwrite"), res, _("OK"), 
-						  _("Cancel"), NULL);
-				g_free(res);					  
-			}
-			g_free(attachname);
-			
-			if ((G_ALERTDEFAULT != aval) || (procmime_get_part(buf, attachment) < 0))
-				alertpanel_error(_("Can't save the part of multipart message."));
-		}
-		attachment = procmime_mimeinfo_next(attachment);
+	filename = filesel_select_file(_("Save as"), filepath);
+	if (!filename) {
+		g_free(filepath);
+		return;
 	}
+
+	mimeview_write_part(filename, partinfo);
+
+	filedir = g_dirname(filename);
+	if (filedir && strcmp(filedir, ".")) {
+		if (prefs_common.attach_save_dir)
+			g_free(prefs_common.attach_save_dir);
+		prefs_common.attach_save_dir = g_strdup(filedir);
+	}
+
+	g_free(filedir);
+	g_free(filepath);
 }
 
 static void mimeview_display_as_text(MimeView *mimeview)
@@ -1052,49 +1158,6 @@ static void mimeview_display_as_text(MimeView *mimeview)
 	}			 
 	g_return_if_fail(partinfo != NULL);
 	mimeview_show_message_part(mimeview, partinfo);
-}
-
-static void mimeview_save_as(MimeView *mimeview)
-{
-	gchar *filename;
-	gchar *defname = NULL;
-	MimeInfo *partinfo;
-	gchar *res;
-	const gchar *partname = NULL;
-
-	if (!mimeview->opened) return;
-	if (!mimeview->file) return;
-
-	partinfo = mimeview_get_selected_part(mimeview);
-	if (!partinfo) { 
-		partinfo = (MimeInfo *) gtk_object_get_data
-			(GTK_OBJECT(mimeview->popupmenu),
-			 "pop_partinfo");
-		gtk_object_set_data(GTK_OBJECT(mimeview->popupmenu),
-				    "pop_partinfo", NULL);
-	}			 
-	g_return_if_fail(partinfo != NULL);
-	
-	if ((partname = get_part_name(partinfo)) != NULL) {
-		Xstrdup_a(defname, partname, return);
-		subst_for_filename(defname);
-	}
-
-	filename = filesel_select_file(_("Save as"), defname);
-	if (!filename) return;
-	if (is_file_exist(filename)) {
-		AlertValue aval;
-		res = g_strdup_printf(_("Overwrite existing file '%s'?"),
-				      filename);
-		aval = alertpanel(_("Overwrite"), res, _("OK"), 
-				  _("Cancel"), NULL);
-		g_free(res);					  
-		if (G_ALERTDEFAULT != aval) return;
-	}
-
-	if (procmime_get_part(filename, partinfo) < 0)
-		alertpanel_error
-			(_("Can't save the part of multipart message."));
 }
 
 static void mimeview_launch(MimeView *mimeview)
@@ -1207,7 +1270,7 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 	} else {
 		gchar *content_type;
 		
-		content_type = g_strdup_printf("%s/%s", procmime_get_type_str(partinfo->type), partinfo->subtype);
+		content_type = procmime_get_content_type_str(partinfo->type, partinfo->subtype);
 		g_snprintf(m_buf, sizeof(m_buf), mime_cmdline,
 			   content_type, "%s");
 		g_free(content_type);
@@ -1421,7 +1484,8 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	GtkWidget *vbox;
 	GtkWidget *button;
 	gchar *tip;
-	const gchar *desc = NULL;
+	const gchar *desc = NULL; 
+	gchar *content_type;
 	StockPixmap stockp;
 	
 	vbox = mimeview->icon_vbox;
@@ -1470,16 +1534,17 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 			desc = get_part_name(mimeinfo);
 	}
 
+	content_type = procmime_get_content_type_str(mimeinfo->type,
+						     mimeinfo->subtype);
+
 	if (desc && *desc)
-		tip = g_strdup_printf("%s\n%s/%s\n%s", desc,
-				procmime_get_type_str(mimeinfo->type),
-				mimeinfo->subtype, 
-				to_human_readable(mimeinfo->length));
+		tip = g_strdup_printf("%s\n%s\n%s", desc, content_type, 
+				      to_human_readable(mimeinfo->length));
 	else 		
-		tip = g_strdup_printf("%s/%s\n%s",
-				procmime_get_type_str(mimeinfo->type),
-				mimeinfo->subtype, 
-				to_human_readable(mimeinfo->length));
+		tip = g_strdup_printf("%s\n%s", content_type,
+				      to_human_readable(mimeinfo->length));
+	
+	g_free(content_type);
 
 	gtk_tooltips_set_tip(mimeview->tooltips, button, tip, NULL);
 	g_free(tip);

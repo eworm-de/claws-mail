@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,6 @@
 #include "md5.h"
 #include "prefs_account.h"
 #include "utils.h"
-#include "inc.h"
 #include "recv.h"
 
 #include "log.h"
@@ -149,7 +148,7 @@ static gint pop3_getauth_apop_send(Pop3Session *session)
 
 	if ((start = strchr(session->greeting, '<')) == NULL) {
 		log_warning(_("Required APOP timestamp not found "
-			      "in greeting\n"));
+			    "in greeting\n"));
 		session->error_val = PS_PROTOCOL;
 		return -1;
 	}
@@ -345,7 +344,7 @@ static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 	g_free(mail_receive_data.data);
 
 	/* drop_ok: 0: success 1: don't receive -1: error */
-	drop_ok = inc_drop_message(file, session);
+	drop_ok = session->drop_message(session, file);
 	g_free(file);
 	if (drop_ok < 0) {
 		session->error_val = PS_IOERR;
@@ -625,16 +624,17 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 		    msg->recv_time != RECV_TIME_KEEP &&
 		    session->current_time - msg->recv_time >=
 		    ac->msg_leave_time * 24 * 60 * 60) {
-			log_print(_("POP3: Deleting expired message %d\n"),
-				  session->cur_msg);
+			log_message
+				(_("POP3: Deleting expired message %d\n"),
+				   session->cur_msg);
 			pop3_delete_send(session);
 			return POP3_DELETE;
 		}
 
 		if (size_limit_over)
-			log_print
+			log_message
 				(_("POP3: Skipping message %d (%d bytes)\n"),
-				  session->cur_msg, size);
+				   session->cur_msg, size);
 
 		if (size == 0 || msg->received || size_limit_over) {
 			session->cur_total_bytes += size;

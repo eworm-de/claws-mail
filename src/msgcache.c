@@ -84,7 +84,7 @@ void msgcache_add_msg(MsgCache *cache, MsgInfo *msginfo)
 	cache->memusage += procmsg_msginfo_memusage(msginfo);
 	cache->last_access = time(NULL);
 
-	debug_print("Cache size: %d messages, %d byte\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
+	debug_print("Cache size: %d messages, %d bytes\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
 }
 
 void msgcache_remove_msg(MsgCache *cache, guint msgnum)

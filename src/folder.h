@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2003 Hiroyuki Yamamoto
@@ -98,10 +100,10 @@ typedef enum
 
 typedef enum
 {
-	FOLDER_NEW_FOLDER 		= 1 << 0,
-	FOLDER_DESTROY_FOLDER 		= 1 << 1,
+	FOLDER_ADD_FOLDER 		= 1 << 0,
+	FOLDER_REMOVE_FOLDER 		= 1 << 1,
 	FOLDER_TREE_CHANGED 		= 1 << 2,
-	FOLDER_NEW_FOLDERITEM 		= 1 << 3,
+	FOLDER_ADD_FOLDERITEM 		= 1 << 3,
 	FOLDER_REMOVE_FOLDERITEM 	= 1 << 4,
 } FolderUpdateFlags;
 
@@ -109,6 +111,7 @@ typedef enum
 {
 	F_ITEM_UPDATE_MSGCNT = 1 << 0,
 	F_ITEM_UPDATE_CONTENT = 1 << 1,
+	F_ITEM_UPDATE_NAME = 1 << 2,
 } FolderItemUpdateFlags;
 
 typedef void (*FolderUIFunc)		(Folder		*folder,
@@ -117,7 +120,7 @@ typedef void (*FolderUIFunc)		(Folder		*folder,
 typedef void (*FolderDestroyNotify)	(Folder		*folder,
 					 FolderItem	*item,
 					 gpointer	 data);
-typedef void (*FolderItemFunc)		(FolderItem	*item,
+typedef void (*FolderItemFunc)	(FolderItem	*item,
 					 gpointer	 data);
 
 
@@ -134,6 +137,7 @@ struct _Folder
 
 	gchar *name;
 	PrefsAccount *account;
+	guint sort;
 
 	FolderItem *inbox;
 	FolderItem *outbox;
@@ -153,95 +157,406 @@ struct _Folder
 
 struct _FolderClass
 {
+	/**
+	 * A numeric identifier for the FolderClass. Will be removed in the future
+	 */
 	FolderType  type;
+	/**
+	 * A string identifier for the FolderClass. Currently used in folderlist.xml.
+	 * Should be lowercase.
+	 */
 	gchar 	   *idstr;
+	/**
+	 * A string for the User Interface that identifies the FolderClass to the
+	 * user. Can be upper and lowercase unlike the idstr.
+	 */
 	gchar	   *uistr;
-
+	
 	/* virtual functions */
 
 	/* Folder funtions */
+	/**
+	 * Create a new \c Folder of this \c FolderClass.
+	 *
+	 * \param name The name of the new Folder
+	 * \param path The path of the new Folder
+	 * \return The new \c Folder, or \c NULL when creating the \c Folder 
+	 *         failed
+	 */
 	Folder 		*(*new_folder)		(const gchar	*name,
 						 const gchar	*path);
+	/**
+	 * Destroy a \c Folder of this \c FolderClass, frees all resources
+	 * allocated by the Folder
+	 *
+	 * \param folder The \c Folder that should be destroyed.
+	 */
 	void     	(*destroy_folder)	(Folder		*folder);
+	/**
+	 * Set the Folder's internal attributes from an \c XMLTag. Also sets the
+	 * parameters of the root-FolderItem of the \c Folder. If \c NULL
+	 * the default function of the basic \¢ FolderClass is used, so it
+	 * must not be \c NULL if one of the parent \c FolderClasses has a \c set_xml
+	 * function. In that case the parent \c FolderClass' \c set_xml function
+	 * can be used or it has to be called with the \c folder and \c tag by
+	 * the implementation.
+	 *
+	 * \param folder The \c Folder which's attributes should be updated
+	 * \param tag The \c XMLTag containing the \c XMLAttrs for the attributes
+	 */
 	void		 (*set_xml)		(Folder		*folder,
 						 XMLTag		*tag);
+	/**
+	 * Get an \c XMLTag for the attributes of the \c Folder and the root-FolderItem
+	 * of the \c Folder. If \c NULL the default implementation for the basic
+	 * FolderClass will be used, so it must not be \c NULL if one of the
+	 * parent \c FolderClasses has it's own implementation for \c get_xml.
+	 * In that case the parent FolderClass' \c get_xml function can be
+	 * used or the \c XMLTag has to be fetched from the parent's \c get_xml
+	 * function and then the \c FolderClass specific attributes can be
+	 * added to it.
+	 *
+	 * \param Folder The \c Folder which's attributes should be set in the
+	 *               \c XMLTag's \c XMLAttrs
+	 * \return XMLTag An \c XMLTag with \c XMLAttrs containing the \c Folder's
+	 *                attributes.
+	 */
 	XMLTag		*(*get_xml)		(Folder		*folder);
+	/**
+	 * Rebuild the folder tree from the folder's data
+	 * \todo New implementations of MH and IMAP are actually syncronizing
+	 *       the tree with the folder by reusing the old \c FolderItems.
+	 *       Claws still destroys the old tree before calling this function.
+	 *
+	 * \param folder The folder which's tree should be rebuild
+	 * \return 0 on success, a negative number otherwise
+	 */
 	gint     	(*scan_tree)		(Folder		*folder);
 
 	gint     	(*create_tree)		(Folder		*folder);
 
 	/* FolderItem functions */
+	/**
+	 * Create a new \c FolderItem structure for the \c FolderClass.
+	 * \c FolderClasses can have their own \c FolderItem structure with
+	 * extra attributes.
+	 *
+	 * \param folder The \c Folder for that a \c FolderItem should be
+	 *               created
+	 * \return The new \c FolderItem or NULL in case of an error
+	 */
 	FolderItem	*(*item_new)		(Folder		*folder);
+	/**
+	 * Destroy a \c FolderItem from this \c FolderClass. The \c FolderClass
+	 * has to free all private resources used by the \c FolderItem.
+	 *
+	 * \param folder The \c Folder of the \c FolderItem
+	 * \param item The \c FolderItem that should be destroyed
+	 */
 	void	 	 (*item_destroy)	(Folder		*folder,
 						 FolderItem	*item);
+	/**
+	 * Set the \c FolderItem's internal attributes from an \c XMLTag. If
+	 * \c NULL the default function of the basic \c FolderClass is used, so it
+	 * must not be \c NULL if one of the parent \c FolderClasses has a \c item_set_xml
+	 * function. In that case the parent \c FolderClass' \c item_set_xml function
+	 * can be used or it has to be called with the \c folder, \c item and \c tag by
+	 * the implementation.
+	 *
+	 * \param folder The \c Folder of the \c FolderItem
+	 * \param item The \c FolderItems which's attributes should be set
+	 * \param tag The \c XMLTag with \c XMLAttrs for the \c FolderItem's
+	 *            attributes
+	 */
 	void		 (*item_set_xml)	(Folder		*folder,
 						 FolderItem	*item,
 						 XMLTag		*tag);
+	/**
+	 * Get an \c XMLTag for the attributes of the \c FolderItem If \c NULL
+	 * the default implementation for the basic \c FolderClass will be used,
+	 * so it must not be \c NULL if one of the parent \c FolderClasses has
+	 * it's own implementation for \c item_get_xml. In that case the parent 
+	 * FolderClass' \c item_get_xml function can be used or the \c XMLTag
+	 * has to be fetched from the parent's \c item_get_xml function and 
+	 * then the \c FolderClass specific attributes can be added to it.
+	 *
+	 * \param folder The \c Folder of the \c FolderItem
+	 * \parem item The \c FolderItem which's attributes should be set in
+	 *             the \c XMLTag's \c XMLAttrs
+	 * \return An \c XMLTag with \c XMLAttrs containing the \c FolderItem's
+	 *         attributes.
+	 */
 	XMLTag		*(*item_get_xml)	(Folder		*folder,
 						 FolderItem	*item);
+	/**
+	 * Get a local path for the \c FolderItem where Sylpheed can save
+	 * it's cache data. For local directory based folders this can be the
+	 * real path. For other folders it can be the local cache directory.
+	 *
+	 * \param folder The \c Folder of the \c FolderItem
+	 * \param item The \c FolderItem for that a path should be returned
+	 * \return A path for the \c FolderItem
+	 */
 	gchar		*(*item_get_path)	(Folder		*folder,
 						 FolderItem	*item);
+	/**
+	 * Create a new \c FolderItem. The function must use folder_item_append
+	 * to add the new \c FolderItem to the folder tree
+	 *
+	 * \param folder The \c Folder in which a new \c FolderItem should be
+	 *               created
+	 * \param parent \c The parent \c FolderItem for the new \c FolderItem
+	 * \parem name The name for the new \c FolderItem
+	 * \return The new \c FolderItem
+	 */
 	FolderItem 	*(*create_folder)	(Folder		*folder,
 						 FolderItem	*parent,
 						 const gchar	*name);
+	/**
+	 * Rename a \c FolderItem
+	 *
+	 * \param folder The \c Folder of the \c FolderItem that should be
+	 *               renamed
+	 * \param item The \c FolderItem that should be renamed
+	 * \param name The new name of the \c FolderItem
+	 * \return 0 on success, a negative number otherwise
+	 */
 	gint     	 (*rename_folder)	(Folder		*folder,
 						 FolderItem	*item,
 						 const gchar	*name);
+	/**
+	 * Remove a \c FolderItem from the \c Folder
+	 *
+	 * \param folder The \c Folder that contains the \c FolderItem
+	 * \param item The \c FolderItem that should be removed
+	 * \return 0 on sucess, a negative number otherwise
+	 */
 	gint     	 (*remove_folder)	(Folder		*folder,
 						 FolderItem	*item);
+	/**
+	 * Close a \c FolderItem. Called when the user deselects a
+	 * \c FolderItem.
+	 * 
+	 * \attention In Sylpheed-Main operations can only be done on the
+	 *            \c FolderItem that is opened in the SummaryView. This
+	 *            \c FolderItem will be closed when you select a new
+	 *            \c FolderItem in the FolderView. In Claws operations can
+	 *            be done any time on any folder and you should not expect
+	 *            that all \c FolderItems get closed after operations
+	 *
+	 * \param folder The \c Folder that contains the \c FolderItem
+	 * \param item The \c FolderItem that should be closed
+	 * \return 0 on success, a negative number otherwise
+	 */
 	gint		 (*close)		(Folder		*folder,
 						 FolderItem	*item);
+	/**
+	 * Get the list of message numbers for the messages in the \c FolderItem
+	 *
+	 * \param folder The \c Folder that contains the \c FolderItem
+	 * \param item The \c FolderItem for which the message numbers should
+	 *             be fetched
+	 * \param list Pointer to a GSList where message numbers have to be
+	 *             added. Because of the implementation of the GSList that
+	 *             changes the pointer of the GSList itself when the first
+	 *             item is added this is a pointer to a pointer to a
+	 *             GSList structure. Use *item = g_slist_...(*item, ...)
+	 *             operations to modify the list.
+	 * \param old_uids_valid In some \c Folders the old UIDs can be invalid.
+	 *                       Set this pointer to a gboolean to TRUE if the
+	 *                       old UIDs are still valid, otherwise set it to
+	 *                       FALSE and the folder system will discard it's
+	 *                       cache data of the previously know UIDs
+	 * \return The number of message numbers add to the list on success,
+	 *         a negative number otherwise.
+	 */
 	gint	 	 (*get_num_list)	(Folder		*folder,
 						 FolderItem	*item,
 						 GSList	       **list,
 						 gboolean	*old_uids_valid);
-	void     	(*update_mark)		(Folder		*folder,
-						 FolderItem	*item);
-	void    	(*finished_copy)        (Folder 	*folder,
-						 FolderItem 	*item);
-	void    	(*finished_remove)      (Folder 	*folder,
-						 FolderItem 	*item);
+	/**
+	 * Tell the folder system if a \c FolderItem should be scanned
+	 * (cache data syncronized with the folder content) when it is required
+	 * because the \c FolderItem's content changed. If NULL the folder
+	 * system will not do automatic scanning of \c FolderItems
+	 *
+	 * \param folder The \c Folder that contains the \c FolderItem
+	 * \param item The \c FolderItem which's content should be checked
+	 * \return TRUE if the \c FolderItem should be scanned, FALSE otherwise
+	 */
 	gboolean	(*scan_required)	(Folder 	*folder,
 						 FolderItem 	*item);
 
 	/* Message functions */
+	/**
+	 * Get a MsgInfo for a message in a \c FolderItem
+	 *
+	 * \param folder The \c Folder containing the message
+	 * \param item The \c FolderItem containing the message
+	 * \param num The message number of the message
+	 * \return A pointer to a \c MsgInfo decribing the message or \c 
+	 *         NULL in case of an error
+	 */
 	MsgInfo 	*(*get_msginfo)		(Folder		*folder,
 						 FolderItem	*item,
 						 gint		 num);
-	GSList  	*(*get_msginfos)	(Folder		*folder,
+	/**
+	 * Get \c MsgInfos for a list of message numbers
+	 *
+	 * \param folder The \c Folder containing the message
+	 * \param item The \c FolderItem containing the message
+	 * \param msgnum_list A list of message numbers for which the
+	 *                    \c MsgInfos should be fetched
+	 * \return A list of \c MsgInfos for the messages in the \c msgnum_list
+	 *         that really exist. Messages that are not found can simply
+	 *         be left out.
+	 */
+	MsgInfoList  	*(*get_msginfos)	(Folder		*folder,
 						 FolderItem	*item,
 						 MsgNumberList	*msgnum_list);
-	/* return value is locale charset */
- 	gchar 		*(*fetch_msg)		(Folder		*folder,
+	/**
+	 * Get the filename for a message. This can either be the real message
+	 * file for local folders or a temporary file for remote folders.
+	 *
+	 * \param folder The \c Folder containing the message
+	 * \param item The \c FolderItem containing the message
+	 * \param num The message number of the message
+	 * \return A string with the filename of the message file. The returned
+	 *         string has to be freed with \c g_free(). If message is not
+	 *         available return NULL.
+	 */
+	gchar 		*(*fetch_msg)		(Folder		*folder,
 						 FolderItem	*item,
 						 gint		 num);
+	/**
+	 * Add a single message file to a folder with the given flags (if
+	 * flag handling is supported by the folder)
+	 *
+	 * \param folder The target \c Folder for the message
+	 * \param dest the target \c FolderItem for the message
+	 * \param file The file that contains the message
+	 * \param flags The flags the new message should have in the folder
+	 * \return 0 on success, a negative number otherwise
+	 */
 	gint     	(*add_msg)		(Folder		*folder,
 						 FolderItem	*dest,
 						 const gchar	*file,
 						 MsgFlags	*flags);
+	/**
+	 * Add multiple messages to a \c FolderItem. If NULL the folder
+	 * system will add messages with \c add_msg one by one
+	 *
+	 * \param folder The target \c Folder for the messages
+	 * \param dest the target \c FolderItem for the messages
+	 * \param file_list A list of \c MsgFileInfos which contain the
+	 *                  filenames and flags for the new messages
+	 * \param relation Insert tuples of (MsgFileInfo, new message number) to
+	 *                 provide feedback for the folder system which new
+	 *                 message number a \c MsgFileInfo got in dest. Insert
+	 *                 0 if the new message number is unknown.
+	 */
 	gint     	(*add_msgs)             (Folder         *folder,
                                     		 FolderItem     *dest,
                                     		 GSList         *file_list,
                                     		 GRelation	*relation);
+	/**
+	 * Copy a message to a FolderItem
+	 *
+	 * \param folder The \c Folder of the destination FolderItem
+	 * \param dest The destination \c FolderItem for the message
+	 * \param msginfo The message that should be copied
+	 * \return The message number the copied message got, 0 if it is
+	 *         unknown because message numbers are assigned by an external
+	 *         system and not available after copying or a negative number
+	 *         if an error occuried
+	 */
 	gint    	(*copy_msg)		(Folder		*folder,
 						 FolderItem	*dest,
 						 MsgInfo	*msginfo);
+	/**
+	 * Copy multiple messages to a \c FolderItem. If \c NULL the folder
+	 * system will use \c copy_msg to copy messages one by one.
+	 *
+	 * \param folder The \c Folder of the destination FolderItem
+	 * \param dest The destination \c FolderItem for the message
+	 * \param msglist A list of \c MsgInfos which should be copied to dest
+	 * \param relation Insert tuples of (MsgInfo, new message number) to
+	 *                 provide feedback for the folder system which new
+	 *                 message number a \c MsgInfo got in dest. Insert
+	 *                 0 if the new message number is unknown.
+	 * \return 0 on success, a negative number otherwise
+	 */
 	gint    	(*copy_msgs)		(Folder		*folder,
 						 FolderItem	*dest,
 						 MsgInfoList	*msglist,
                                     		 GRelation	*relation);
+	/**
+	 * Remove a message from a \c FolderItem.
+	 *
+	 * \param folder The \c Folder of the message
+	 * \param item The \c FolderItem containing the message
+	 * \param num The message number of the message
+	 * \return 0 on success, a negative number otherwise
+	 */
 	gint    	(*remove_msg)		(Folder		*folder,
 						 FolderItem	*item,
 						 gint		 num);
+	/**
+	 * Remove all messages in a \ c FolderItem
+	 *
+	 * \param folder The \c Folder of the \c FolderItem
+	 * \param item The \FolderItem which's messages should be deleted
+	 * \return 0 on succes, a negative number otherwise
+	 */
 	gint    	(*remove_all_msg)	(Folder		*folder,
 						 FolderItem	*item);
+	/**
+	 * Check if a message has been modified by someone else
+	 *
+	 * \param folder The \c Folder of the message
+	 * \param item The \c FolderItem containing the message
+	 * \param msginfo The \c MsgInfo for the message that should be checked
+	 * \return \c TRUE if the message was modified, \c FALSE otherwise
+	 */
 	gboolean	(*is_msg_changed)	(Folder		*folder,
 						 FolderItem	*item,
 						 MsgInfo	*msginfo);
+	/**
+	 * Update a message's flags in the folder data. If NULL only the
+	 * internal flag management will be used. The function has to set
+	 * \c msginfo->flags.perm_flags. It does not have to set the flags
+	 * that it got as \c newflags. If a flag can not be set in this
+	 * \c FolderClass the function can refuse to set it. Flags that are not
+	 * supported by the \c FolderClass should not be refused. They will be
+	 * managed by the internal cache in this case.
+	 *
+	 * \param folder The \c Folder of the message
+	 * \param item The \c FolderItem of the message
+	 * \param msginfo The \c MsgInfo for the message which's flags should be
+	 *                updated
+	 * \param newflags The flags the message should get
+	 */
 	void    	(*change_flags)		(Folder		*folder,
 						 FolderItem	*item,
 						 MsgInfo        *msginfo,
 						 MsgPermFlags	 newflags);
+	/**
+	 * Get the flags for a list of messages. Flags that are not supported
+	 * by the folder should be preserved. They can be copied from
+	 * \c msginfo->flags.perm_flags
+	 *
+	 * \param folder The \c Folder of the messages
+	 * \param item The \c FolderItem of the messages
+	 * \param msglist The list of \c MsgInfos for which the flags should
+	 *                   be returned
+	 * \param msgflags A \c GRelation for tuples of (MsgInfo, new permanent
+         *        flags for MsgInfo). Add tuples for the messages in msglist
+	 * \return 0 on success, a negative number otherwise
+	 */
+	gint		(*get_flags)		(Folder		*folder,
+						 FolderItem	*item,
+						 MsgInfoList	*msglist,
+						 GRelation	*msgflags);
 };
 
 struct _FolderItem
@@ -353,15 +668,19 @@ void        folder_set_ui_func	(Folder		*folder,
 				 gpointer	 data);
 void        folder_set_name	(Folder		*folder,
 				 const gchar	*name);
+void	    folder_set_sort	(Folder		*folder,
+				 guint		 sort);
 void        folder_tree_destroy	(Folder		*folder);
 
 void   folder_add		(Folder		*folder);
+void   folder_remove		(Folder 	*folder);
 
 GList *folder_get_list		(void);
 gint   folder_read_list		(void);
 void   folder_write_list	(void);
 void   folder_scan_tree		(Folder *folder);
 FolderItem *folder_create_folder(FolderItem	*parent, const gchar *name);
+gint   folder_item_rename	(FolderItem *item, gchar *newname);
 void   folder_update_op_count		(void);
 void   folder_func_to_all_folders	(FolderItemFunc function,
 					 gpointer data);
@@ -377,6 +696,8 @@ Folder     *folder_find_from_name		(const gchar	*name,
 						 FolderClass	*klass);
 FolderItem *folder_find_item_from_path		(const gchar	*path);
 FolderClass *folder_get_class_from_string	(const gchar 	*str);
+FolderItem *folder_find_child_item_by_name	(FolderItem	*item,
+						 const gchar	*name);
 gchar      *folder_get_identifier		(Folder		*folder);
 gchar      *folder_item_get_identifier		(FolderItem	*item);
 FolderItem *folder_find_item_from_identifier	(const gchar	*identifier);

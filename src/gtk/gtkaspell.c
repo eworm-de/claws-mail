@@ -2406,7 +2406,7 @@ static void gtkaspell_alert_dialog(gchar *message)
 
 	dialog = gtk_dialog_new();
 	gtk_window_set_policy(GTK_WINDOW(dialog), FALSE, FALSE, FALSE);
-	gtk_window_set_position(GTK_WINDOW(dialog),GTK_WIN_POS_MOUSE);
+	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_MOUSE);
 	gtk_signal_connect_object(GTK_OBJECT(dialog), "destroy",
 				   GTK_SIGNAL_FUNC(gtk_widget_destroy), 
 				   GTK_OBJECT(dialog));

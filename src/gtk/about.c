@@ -91,7 +91,6 @@ static void about_create(void)
 	gtk_window_set_title(GTK_WINDOW(window), _("About"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_widget_set_size_request(window, 518, 358);
-	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
@@ -165,7 +164,7 @@ static void about_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
 	label = gtk_label_new
-		("Copyright (C) 1999-2003 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>");
+		("Copyright (C) 1999-2004 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>");
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
 	hbox = gtk_hbox_new(FALSE, 0);

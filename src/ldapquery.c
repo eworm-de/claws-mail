@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003 Match Grun
+ * Copyright (C) 2003-2004 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -518,9 +518,10 @@ static GList *ldapqry_build_items_fl(
 	ItemPerson *person;
 	ItemEMail *email;
 	ItemFolder *folder;
-	GList *listReturn;
+	GList *listReturn = NULL;
 
-	listReturn = NULL;
+	folder = ADDRQUERY_FOLDER(qry);
+	if( folder == NULL ) return listReturn;
 	if( listAddr == NULL ) return listReturn;
 
 	/* Find longest first name in list */
@@ -553,21 +554,6 @@ static GList *ldapqry_build_items_fl(
 			g_strchug( fullName ); g_strchomp( fullName );
 			allocated = TRUE;
 		}
-	}
-
-	/* Create new folder for results */
-	if( ADDRQUERY_FOLDER(qry) == NULL ) {
-		folder = addritem_create_item_folder();
-		addritem_folder_set_name( folder, ADDRQUERY_NAME(qry) );
-		addritem_folder_set_remarks( folder, "" );
-		addrcache_id_folder( cache, folder );
-		addrcache_add_folder( cache, folder );
-		ADDRQUERY_FOLDER(qry) = folder;
-
-		/* Specify folder type and back reference */			
-		folder->folderType = ADDRFOLDER_QUERY_RESULTS;
-		folder->folderData = ( gpointer ) qry;
-		folder->isHidden = TRUE;
 	}
 
 	/* Add person into folder */		
@@ -708,6 +694,7 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	LdapControl *ctl;
 	LDAP *ld;
 	gint rc;
+	gint version;
 
 	/* Initialize connection */
 	/* printf( "===ldapqry_connect===\n" ); */
@@ -732,6 +719,29 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	/*
 	printf( "connected to LDAP host %s on port %d\n", ctl->hostName, ctl->port );
 	*/
+
+#ifdef USE_LDAP_TLS
+	/* Handle TLS */
+	version = LDAP_VERSION3;
+	rc = ldap_set_option( ld, LDAP_OPT_PROTOCOL_VERSION, &version );
+	if( rc == LDAP_OPT_SUCCESS ) {
+		ctl->version = LDAP_VERSION3;
+	}
+
+	if( ctl->version == LDAP_VERSION3 ) {
+		if( ctl->enableTLS ) {
+			ADDRQUERY_RETVAL(qry) = LDAPRC_TLS;
+			rc = ldap_start_tls_s( ld, NULL, NULL );
+			/*
+			printf( "rc=%d\n", rc );
+			printf( "LDAP Status: set_option: %s\n", ldap_err2string( rc ) );
+			*/
+			if( rc != LDAP_SUCCESS ) {
+				return ADDRQUERY_RETVAL(qry);
+			}
+		}
+	}
+#endif
 
 	/* Bind to the server, if required */
 	ADDRQUERY_RETVAL(qry) = LDAPRC_BIND;
@@ -792,6 +802,7 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 	LDAPMessage *result, *e;
 	char **attribs;
 	gchar *criteria;
+	gboolean searchFlag;
 	gboolean entriesFound;
 	gboolean first;
 	struct timeval timeout;
@@ -829,17 +840,26 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 		return ADDRQUERY_RETVAL(qry);
 	}
 	ADDRQUERY_RETVAL(qry) = LDAPRC_SEARCH;
-	if( rc != LDAP_SUCCESS ) {
+
+	/* Test valid returns */
+	searchFlag = FALSE;
+	if( rc == LDAP_ADMINLIMIT_EXCEEDED ) {
+		searchFlag = TRUE;
+	}
+	else if( rc == LDAP_SUCCESS ) {
+		searchFlag = TRUE;
+	}
+	else if( rc == LDAP_PARTIAL_RESULTS ) {
+		searchFlag = TRUE;
+	}
+	else {
 		/*
+		printf( "LDAP Error: ldap_search_st: %d\n", rc );
 		printf( "LDAP Error: ldap_search_st: %s\n", ldap_err2string( rc ) );
 		*/
 		return ADDRQUERY_RETVAL(qry);
 	}
 	ADDRQUERY_RETVAL(qry) = LDAPRC_STOP_FLAG;
-	if( ldapqry_get_stop_flag( qry ) ) {
-		return ADDRQUERY_RETVAL(qry);
-	}
-	ldapqry_touch( qry );
 
 	/*
 	printf( "Total results are: %d\n", ldap_count_entries( ld, result ) );
@@ -847,7 +867,7 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 
 	/* Process results */
 	first = TRUE;
-	while( TRUE ) {
+	while( searchFlag ) {
 		ldapqry_touch( qry );
 		if( qry->entriesRead >= ctl->maxEntries ) break;		
 
@@ -865,7 +885,6 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 			e = ldap_next_entry( ld, e );
 		}
 		if( e == NULL ) break;
-
 		entriesFound = TRUE;
 
 		/* Setup a critical section here */
@@ -881,18 +900,19 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 		else {
 			g_list_free( listEMail );
 		}
-
 		pthread_mutex_unlock( qry->mutexEntry );
 	}
 
 	/* Free up and disconnect */
 	ldap_msgfree( result );
 
-	if( entriesFound ) {
-		ADDRQUERY_RETVAL(qry) = LDAPRC_SUCCESS;
-	}
-	else {
-		ADDRQUERY_RETVAL(qry) = LDAPRC_NOENTRIES;
+	if( searchFlag ) {
+		if( entriesFound ) {
+			ADDRQUERY_RETVAL(qry) = LDAPRC_SUCCESS;
+		}
+		else {
+			ADDRQUERY_RETVAL(qry) = LDAPRC_NOENTRIES;
+		}
 	}
 
 	return ADDRQUERY_RETVAL(qry);
@@ -1028,9 +1048,6 @@ static void ldapqry_destroyer( void * ptr ) {
 	qry->control = NULL;
 	qry->thread = NULL;
 	ldapqry_set_busy_flag( qry, FALSE );
-	/*
-	printf( "...destroy exiting\n" );
-	*/
 }
 
 /**
@@ -1045,6 +1062,7 @@ void ldapqry_cancel( LdapQuery *qry ) {
 	*/
 	if( ldapqry_get_busy_flag( qry ) ) {
 		if( qry->thread ) {
+			/* printf( "calling pthread_cancel\n" ); */
 			pthread_cancel( * qry->thread );
 		}
 	}
@@ -1260,17 +1278,13 @@ static gint ldapqry_locate_retrieve( LdapQuery *qry ) {
 		*/
 		return ADDRQUERY_RETVAL(qry);
 	}
-	ADDRQUERY_RETVAL(qry) = LDAPRC_STOP_FLAG;
-	if( ldapqry_get_stop_flag( qry ) ) {
-		return ADDRQUERY_RETVAL(qry);
-	}
-	ldapqry_touch( qry );
 
 	/*
 	printf( "Total results are: %d\n", ldap_count_entries( ld, result ) );
 	*/
 
 	/* Process results */
+	ADDRQUERY_RETVAL(qry) = LDAPRC_STOP_FLAG;
 	first = TRUE;
 	while( TRUE ) {
 		ldapqry_touch( qry );
@@ -1352,8 +1366,11 @@ gint ldapqry_perform_locate( LdapQuery *qry ) {
 /**
  * Remove results (folder and data) for specified LDAP query.
  * \param  qry Query object to process.
+ * \return TRUE if folder deleted successfully.
  */
-void ldapquery_remove_results( LdapQuery *qry ) {
+gboolean ldapquery_remove_results( LdapQuery *qry ) {
+	gboolean retVal = FALSE;
+
 	/* Set query as aged - will be retired on a later call */
 	ldapqry_set_aged_flag( qry, TRUE );
 	/*
@@ -1364,13 +1381,17 @@ void ldapquery_remove_results( LdapQuery *qry ) {
 		/* Query is still busy - cancel query */
 		/* printf( "\tquery is still busy running...\n" ); */
 		ldapqry_set_stop_flag( qry, TRUE );
-		ldapqry_cancel( qry );
+
+		/* ldapqry_cancel( qry ); */
 	}
 	else {
 		/* Delete folder */
 		/* printf( "\tquery can be deleted!\n" ); */
-		ldapqry_delete_folder( qry );
+		/* ldapqry_delete_folder( qry ); */
+		retVal = TRUE;
+		/* printf( "\tquery deleted!\n" ); */
 	}
+	return retVal;
 }
 
 #endif	/* USE_LDAP */

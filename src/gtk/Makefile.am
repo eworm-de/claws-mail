@@ -1,3 +1,5 @@
+PLUGINDIR = $(pkglibdir)/plugins/
+
 noinst_LTLIBRARIES = libsylpheedgtk.la
 
 EXTRA_DIST = \
@@ -9,6 +11,7 @@ libsylpheedgtk_la_SOURCES = \
 	colorsel.c \
 	description_window.c \
 	filesel.c \
+	foldersort.c \
 	gtkaspell.c \
 	gtksctree.c \
 	gtkshruler.c \
@@ -16,6 +19,7 @@ libsylpheedgtk_la_SOURCES = \
 	gtkutils.c \
 	gtkvscrollbutton.c \
 	logwindow.c \
+	inputdialog.c \
 	manage_window.c \
 	menu.c \
 	pluginwindow.c \
@@ -31,12 +35,14 @@ sylpheedgtkinclude_HEADERS = \
 	colorsel.h \
 	description_window.h \
 	filesel.h \
+	foldersort.h \
 	gtkaspell.h \
 	gtksctree.h \
 	gtkshruler.h \
 	gtksctree.h \
 	gtkutils.h \
 	gtkvscrollbutton.h \
+	inputdialog.h \
 	logwindow.h \
 	manage_window.h \
 	menu.h \
@@ -52,7 +58,8 @@ AM_CPPFLAGS = \
 	-I.. \
 	$(GTK_CFLAGS) \
 	$(OPENSSL_CFLAGS) \
-	$(ASPELL_CFLAGS)
+	$(ASPELL_CFLAGS) \
+	-DPLUGINDIR=\"$(PLUGINDIR)\"
 
 libsylpheedgtk_la_LIBADD = \
 	../common/libsylpheedcommon.la \

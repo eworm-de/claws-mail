@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@
 #define ACTIONS_RC		"actionsrc"
 #define RENDERER_RC		"rendererrc"
 #define COMMAND_HISTORY		"command_history"
+#define QUICKSEARCH_HISTORY	"quicksearch_history"
 #define TEMPLATE_DIR		"templates"
 #define TMP_DIR			"tmp"
 #define NEWSGROUP_LIST		".newsgroup_list"
@@ -112,6 +113,8 @@
 #define MAX_ENTRY_LENGTH		8191
 #define COLOR_DIM			35000
 #define UI_REFRESH_INTERVAL		50000	/* usec */
+#define FOLDER_UPDATE_INTERVAL		1500	/* msec */
+#define PROGRESS_UPDATE_INTERVAL	200	/* msec */
 #define SESSION_TIMEOUT			60	/* sec */
 #define MAX_HISTORY_SIZE		16
 

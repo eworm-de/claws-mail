@@ -1,3 +1,162 @@
+2004-03-19
+
+	* src/defs.h
+	  src/inc.[ch]: changed the method of updating the progress dialog
+	  to reduce the overhead on a fast network.
+
+2004-03-16
+
+	* src/nntp.c: nntp_session_new(): attempt to authenticate at the
+	  beginning of a session (thanks to Shiino Yuki and IWAMOTO, Kouichi).
+	* src/news.c
+	  src/nntp.c: destroy session when socket error occurred.
+
+2004-03-12
+
+	* src/mainwindow.c
+	  src/summaryview.[ch]: added a function to filter selected
+	  messages.
+
+2004-03-12
+
+	* src/filter.[ch]
+	  src/prefs_filter.c: rewrote the filtering system (the UI is not
+	  implemented yet).
+
+2004-03-09
+
+	* src/filter.c: fixed the matching algorithm of "not contain" flag
+	  (also match if a header not exist, and handle same multiple
+	  headers).
+	* src/imageview.c: get_resized_size(): fixed a typo that caused
+	  resizing problem.
+
+2004-03-02
+
+	* src/folder.c
+	  src/mh.c: only update FolderItem::last_num when removing the last
+	  number of message in MH folders, and don't scan in other case
+	  (fixes wrong message count on moving).
+
+2004-03-02
+
+	* src/folderview.c
+	  src/summaryview.c: always move messages by default when using DnD
+	  (except for News folder). Copy messages if Ctrl-key is pressed.
+	* src/mainwindow.c: main_window_empty_trash()
+	  src/summaryview.c: summary_execute(): added missing
+	  statusbar_pop_all().
+
+2004-02-29
+
+	* version 0.9.10
+
+2004-02-26
+
+	* src/prefs_common.c: made the default of "inc_local" FALSE.
+
+2004-02-26
+
+	* src/account.c
+	  src/folderview.c: toggle online mode when checking IMAP4 accounts.
+	  Pop status bar after that.
+	* src/inc.c: code cleanup.
+	* src/mainwindow.[ch]: added main_window_get() and
+	  main_window_toggle_online_if_offline().
+	* src/prefs_common.c: prefs_common_read_config(): fixed a bug that
+	  made it offline mode on first execution.
+
+2004-02-25
+
+	* src/imageview.c: enabled automatic resize on window resize.
+	  restrict the minimum size to 16 pixels to prevent crash.
+	  imageview_init(): don't cache images when using imlib.
+	  imageview_show_image(): fixed memory leak.
+	* src/mimeview.c: mimeview_init(): call imageview_init().
+
+2004-02-24
+
+	* src/codeconv.[ch]: added ISO-2022-JP-3 encoding.
+
+2004-02-24
+
+	* src/codeconv.c
+	  src/mainwindow.c
+	  src/messageview.c: added KOI8-U encoding.
+	* src/prefs_common.c: prefs_message_create(): modified the string
+	  of resizing image option.
+
+2004-02-19
+
+	* src/addressbook.c: addressbook_list_selected(): corrected its
+	  argument.
+	* src/imageview.[ch]: keep original image data in ImageView, and
+	  enabled the toggle of resizing.
+	* src/messageview.[ch]
+	  src/mimeview.[ch]: handle ImageView in MimeView instead of
+	  MessageView.
+
+2004-02-16
+
+	* src/imap.c
+	  src/news.c
+	  src/summaryview.c: removed statusbar_pop_all() from imap.c and
+	  news.c (do it in summaryview.c).
+
+2004-02-12
+
+	* src/inc.[ch]
+	  src/pop.[ch]: made inc_drop_message() the virtual function of
+	  Pop3Session and removed the dependency of pop.c on inc.h.
+
+2004-02-12
+
+	* src/mainwindow.c
+	  src/messageview.[ch]
+	  src/textview.c: added statusbar to the message view with new window.
+
+2004-02-10
+
+	* src/inc.[ch]: use hash table for progressive update.
+	  changed update interval to 2 sec.
+	* src/folder.[ch]
+	  src/mh.c
+	  src/procmsg.c
+	  src/summaryview.c: added FolderItem::unmarked_num to correct the
+	  folder message counting.
+
+2004-02-09
+
+	* src/inc.[ch]: update folderview progressively.
+	* src/foldersel.c: display full id for selected item.
+
+2004-02-06
+
+	* src/folderview.[ch]: code cleanup.
+	  folderview_append_item(): new. It appends the folder to the folder
+	  view.
+	* src/foldersel.c: foldersel_new_folder(): use
+	  folderview_append_item().
+
+2004-02-06
+
+	* src/foldersel.c: implemented 'create new folder' function.
+	* src/folder.[ch]: folder_find_child_item_by_name(): new.
+	* src/utils.h: AUTORELEASE_STR(): convert malloc'd string into
+	  auto-release (alloca'd) one.
+
+2004-02-05
+
+	* src/folderview.c: put together folderview_new_imap_folder_cb() into
+	  folderview_new_folder_cb().
+
+2004-02-04
+
+	* src/compose.c: compose_write_to_file(): removed redundant strlen()
+	  (thanks to Alfons).
+	* src/textview.c: textview_button_pressed(): select correct account
+	  when address is clicked.
+
 2004-01-29
 
 	* version 0.9.9
@@ -5879,7 +6038,7 @@
 
 	* src/alertpanel.c: alertpanel_create(): fixed truncated message.
 	* src/rfc2015.c: rfc2015_decrypt_message(): fixed the case problem
-	  of content-type (thanks to René Rebe for the patch).
+	  of content-type (thanks to Ren?Rebe for the patch).
 	* src/codeconv.c: code_get_code_conv_func(): fixed the ISO-8859-1
 	  detection.
 	* src/prefs_common.c: prefs_send_create(): made some more character

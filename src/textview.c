@@ -119,6 +119,18 @@ static GdkColor bad_sig_color = {
 	(gushort)0
 };
 
+#define TEXTVIEW_STATUSBAR_PUSH(textview, str)					    \
+{									    \
+	gtk_statusbar_push(GTK_STATUSBAR(textview->messageview->statusbar), \
+			   textview->messageview->statusbar_cid, str);	    \
+}
+
+#define TEXTVIEW_STATUSBAR_POP(textview)						   \
+{									   \
+	gtk_statusbar_pop(GTK_STATUSBAR(textview->messageview->statusbar), \
+			  textview->messageview->statusbar_cid);	   \
+}
+
 static void textview_show_ertf		(TextView	*textview,
 					 FILE		*fp,
 					 CodeConverter	*conv);
@@ -1008,6 +1020,19 @@ static gchar *make_email_string(const gchar *bp, const gchar *ep)
 	return result;
 }
 
+static gchar *make_http_string(const gchar *bp, const gchar *ep)
+{
+	/* returns an http: URI; */
+	gchar *tmp;
+	gchar *result;
+
+	tmp = g_strndup(bp, ep - bp);
+	result = g_strconcat("http://", tmp, NULL);
+	g_free(tmp);
+
+	return result;
+}
+
 #define ADD_TXT_POS(bp_, ep_, pti_) \
 	if ((last->next = alloca(sizeof(struct txtpos))) != NULL) { \
 		last = last->next; \
@@ -1052,7 +1077,7 @@ static void textview_make_clickable_parts(TextView *textview,
 		{"http://",  strcasestr, get_uri_part,   make_uri_string},
 		{"https://", strcasestr, get_uri_part,   make_uri_string},
 		{"ftp://",   strcasestr, get_uri_part,   make_uri_string},
-		{"www.",     strcasestr, get_uri_part,   make_uri_string},
+		{"www.",     strcasestr, get_uri_part,   make_http_string},
 		{"mailto:",  strcasestr, get_uri_part,   make_uri_string},
 		{"@",        strcasestr, get_email_part, make_email_string}
 	};
@@ -1278,6 +1303,7 @@ void textview_clear(TextView *textview)
 	buffer = gtk_text_view_get_buffer(text);
 	gtk_text_buffer_set_text(buffer, "\0", -1);
 
+	TEXTVIEW_STATUSBAR_POP(textview);
 	textview_uri_list_remove_all(textview->uri_list);
 	textview->uri_list = NULL;
 
@@ -1885,13 +1911,8 @@ static gint show_url_timeout_cb(gpointer data)
 {
 	TextView *textview = (TextView *)data;
 	
-	if (textview->messageview->mainwin)
-	  	if (textview->show_url_msgid)
-			gtk_statusbar_remove(GTK_STATUSBAR(
-				textview->messageview->mainwin->statusbar),
-				textview->messageview->mainwin->folderview_cid,
-				textview->show_url_msgid);
-		return FALSE;
+	TEXTVIEW_STATUSBAR_POP(textview);
+	return FALSE;
 }
 
 /*!
@@ -2001,20 +2022,9 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 		if (event->type == GDK_MOTION_NOTIFY
 		    || (event->type == GDK_BUTTON_PRESS && bevent->button == 1)) {
 			if (textview->messageview->mainwin) {
-				if (textview->show_url_msgid) {
-				  	gtk_timeout_remove(textview->show_url_timeout_tag);
-					gtk_statusbar_remove(GTK_STATUSBAR(
-						textview->messageview->mainwin->statusbar),
-						textview->messageview->mainwin->folderview_cid,
-						textview->show_url_msgid);
-					textview->show_url_msgid = 0;
-				}
-				textview->show_url_msgid = gtk_statusbar_push(
-						GTK_STATUSBAR(textview->messageview->mainwin->statusbar),
-						textview->messageview->mainwin->folderview_cid,
-						trimmed_uri);
-				textview->show_url_timeout_tag = gtk_timeout_add( 4000, show_url_timeout_cb, textview );
-				gtkut_widget_wait_for_draw(textview->messageview->mainwin->hbox_stat);
+				TEXTVIEW_STATUSBAR_PUSH(textview, trimmed_uri);
+				textview->show_url_timeout_tag = gtk_timeout_add
+					(4000, show_url_timeout_cb, textview);
 			}
 			return TRUE;
 		}

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #define __FOLDERVIEW_H__
 
 typedef struct _FolderView	FolderView;
+typedef struct _FolderViewPopup	FolderViewPopup;
 
 #include <glib.h>
 #include <gtk/gtkwidget.h>
@@ -34,19 +35,8 @@ struct _FolderView
 {
 	GtkWidget *scrolledwin;
 	GtkWidget *ctree;
-	GtkWidget *mail_popup;
-	GtkWidget *imap_popup;
-	GtkWidget *news_popup;
-#if 0
-	GtkWidget *mbox_popup;
-#endif
 
-	GtkItemFactory *mail_factory;
-	GtkItemFactory *imap_factory;
-	GtkItemFactory *news_factory;
-#if 0
-	GtkItemFactory *mbox_factory;
-#endif
+	GHashTable *popups;
 
 	GtkCTreeNode *selected;
 	GtkCTreeNode *opened;
@@ -71,6 +61,15 @@ struct _FolderView
 	GtkTargetList *target_list; /* DnD */
 };
 
+struct _FolderViewPopup
+{
+	gchar		 *klass;
+	gchar		 *path;
+	GSList		 *entries;
+	void		(*set_sensitivity)	(GtkItemFactory *menu, FolderItem *item);
+};
+
+void folderview_initialize		(void);
 FolderView *folderview_create		(void);
 void folderview_init			(FolderView	*folderview);
 void folderview_set			(FolderView	*folderview);
@@ -78,20 +77,31 @@ void folderview_set_all			(void);
 void folderview_select			(FolderView	*folderview,
 					 FolderItem	*item);
 void folderview_unselect		(FolderView	*folderview);
+FolderItem *folderview_get_selected	(FolderView 	*folderview);
 void folderview_select_next_unread	(FolderView	*folderview);
 void folderview_update_msg_num		(FolderView	*folderview,
 					 GtkCTreeNode	*row);
+
+void folderview_append_item		(FolderItem	*item);
+
 void folderview_rescan_tree		(Folder		*folder);
 void folderview_rescan_all		(void);
 gint folderview_check_new		(Folder		*folder);
 void folderview_check_new_all		(void);
 
-void folderview_new_folder		(FolderView	*folderview);
-void folderview_rename_folder		(FolderView	*folderview);
-void folderview_delete_folder		(FolderView	*folderview);
+void folderview_update_item_foreach	(GHashTable	*table,
+					 gboolean	 update_summary);
+void folderview_update_all_updated	(gboolean	 update_summary);
+
+void folderview_move_folder		(FolderView 	*folderview,
+					 FolderItem 	*from_folder,
+					 FolderItem 	*to_folder);
 
 void folderview_set_target_folder_color (gint		color_op);
 
 void folderview_reflect_prefs_pixmap_theme	(FolderView *folderview);
+
+void folderview_register_popup		(FolderViewPopup	*fpopup);
+void folderview_unregister_popup	(FolderViewPopup	*fpopup);
 
 #endif /* __FOLDERVIEW_H__ */

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,6 +72,7 @@ typedef enum
 	C_KOI8_U,
 	C_ISO_2022_JP,
 	C_ISO_2022_JP_2,
+	C_ISO_2022_JP_3,
 	C_EUC_JP,
 	C_SHIFT_JIS,
 	C_ISO_2022_KR,
@@ -141,6 +142,7 @@ struct _CodeConverter
 #define CS_KOI8_U		"KOI8-U"
 #define CS_ISO_2022_JP		"ISO-2022-JP"
 #define CS_ISO_2022_JP_2	"ISO-2022-JP-2"
+#define CS_ISO_2022_JP_3	"ISO-2022-JP-3"
 #define CS_EUC_JP		"EUC-JP"
 #define CS_EUCJP		"EUCJP"
 #define CS_SHIFT_JIS		"Shift_JIS"

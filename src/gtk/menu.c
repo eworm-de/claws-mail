@@ -35,8 +35,6 @@
 #include "menu.h"
 #include "utils.h"
 
-static gchar *menu_translate(const gchar *path, gpointer data);
-
 static void menu_item_add_accel( GtkWidget *widget, guint accel_signal_id, GtkAccelGroup *accel_group,
 				 guint accel_key, GdkModifierType accel_mods, GtkAccelFlags accel_flags,
 				 gpointer user_data);
@@ -90,7 +88,7 @@ GtkWidget *popupmenu_create(GtkWidget *window, GtkItemFactoryEntry *entries,
 	return gtk_item_factory_get_widget(factory, path);
 }
 
-static gchar *menu_translate(const gchar *path, gpointer data)
+gchar *menu_translate(const gchar *path, gpointer data)
 {
 	gchar *retval;
 

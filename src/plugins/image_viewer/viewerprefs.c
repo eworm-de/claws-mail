@@ -150,7 +150,7 @@ void image_viewer_prefs_init(void)
 	prefs_set_default(param);
 	prefs_read_config(param, PREFS_BLOCK_NAME, COMMON_RC);
 
-	imageviewer_page.page.path = "Message View/Image Viewer";
+	imageviewer_page.page.path = _("Message View/Image Viewer");
 	imageviewer_page.page.create_widget = imageviewer_create_widget_func;
 	imageviewer_page.page.destroy_widget = imageviewer_destroy_widget_func;
 	imageviewer_page.page.save_page = imageviewer_save_func;

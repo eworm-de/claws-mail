@@ -53,11 +53,12 @@ GtkWidget *menu_create_items	(GtkItemFactoryEntry	*entries,
 				 const gchar		*path,
 				 GtkItemFactory	       **factory,
 				 gpointer		 data);
-GtkWidget *popupmenu_create(GtkWidget *window,
+GtkWidget *popupmenu_create	(GtkWidget *window,
 				 GtkItemFactoryEntry *entries,
-			     guint n_entries,
+				 guint n_entries,
 				 const gchar *path,
 				 gpointer data);
+gchar *menu_translate		(const gchar *path, gpointer data);
 
 GString *menu_factory_get_rc	(const gchar		*path);
 void menu_factory_clear_rc	(const gchar		*rc_str);

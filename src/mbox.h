@@ -34,7 +34,8 @@ typedef enum {
 /*  file name should be locale encode. */
 
 gint proc_mbox		(FolderItem	*dest,
-			 const gchar	*mbox);
+			 const gchar	*mbox,
+			 gboolean	 apply_filter);
 gint lock_mbox		(const gchar	*base,
 			 LockType	 type);
 gint unlock_mbox	(const gchar	*base,

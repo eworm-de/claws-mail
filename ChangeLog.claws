@@ -1,3 +1,834 @@
+2004-05-09 [christoph]	0.9.10claws57
+
+	* src/folderview.c
+		check for folder class functions and not folder type to detect
+		valid drag targets
+
+2004-05-08 [christoph]	0.9.10claws56
+
+	* src/sgpgme.c
+		fix date output for signature expire times
+
+	(Patch by Edgar Toernig <froese@gmx.de>)
+
+2004-05-06 [christoph]	0.9.10claws55
+
+	* src/gtk/prefswindow.c
+		change window type to DIALOG
+
+	* src/folder.[ch]
+	* src/folderview.c
+	* src/news_gtk.c
+		o add folder_remove()
+		o change FolderUpdate hook flag names (NEW -> ADD, DESTROY -> REMOVE)
+		o add new "sort" field to Folder, no longer sort folders by type
+		  higher sort values will be first in the folder list, new folders get 0
+		  and will be added to the end
+
+	* src/mainwindow.c
+	* src/gtk/Makefile.am
+	* src/gtk/foldersort.(c|h|glade)			** NEW **
+		add dialog to allow users to change the folder order
+
+2004-05-04 [paul]	0.9.10claws54
+
+	* src/inc.c
+		Display account_name in statusbar when retrieving
+		messages from a pop account
+	* src/prefs_account.c
+		display account name in title of prefs_account
+		window
+	* src/prefs_folder_item.c
+		display folder name in title of prefs_folder window
+
+	all 3 patches submitted by Fabien Vantard
+
+	* AUTHORS
+		add Fabien Vantard
+
+2004-05-04 [paul]	0.9.10claws53
+
+	* src/prefs_actions.c
+	  src/prefs_template.c
+	  	'Esc' Key exits alertpanel
+		Patch submitted by Fabien Vantard <fzz@ifrance.com>
+
+2004-04-26 [christoph]	0.9.10claws52
+
+	* src/gtk/about.c
+	* src/gtk/colorsel.c
+	* src/gtk/description_window.c
+	* src/gtk/filesel.c
+	* src/gtk/gtkaspell.c
+	* src/gtk/inputdialog.c
+	* src/gtk/pluginwindow.c
+	* src/gtk/progressdialog.c
+		o remove gtk_window_set_position(..., GTK_WIN_POS_CENTER) because
+		  it does not work correctly with xinerama
+		o lock incorporation while the plugin window is open
+
+2004-04-23 [paul]	0.9.10claws51
+
+	* po/POTFILES.in
+		update location of inputdialog.c
+		
+	* src/gtk/about.c
+		update Copyright string
+		
+	* src/msgcache.c
+	  src/prefs_common.c
+	  src/prefs_themes.c
+	  	improve the english a little
+
+2004-04-22 [christoph]	0.9.10claws50
+
+	* src/folderutils.[ch]
+		add folderutils_mark_all_read()
+
+	* src/folderview.c
+		readd "mark all read" from popup menu, now works
+		in all folders and not only the opened folder
+
+2004-04-21 [christoph]	0.9.10claws49
+
+	* src/Makefile.am
+	* src/inputdialog.[ch]			** REMOVED **
+	* src/gtk/Makefile.am
+	* src/gtk/inputdialog.[ch]		** NEW **
+		move inputdialog.[ch] into gtk directory
+
+	* src/mh_gtk.c
+		remove check for missing IMAP folder account
+
+2004-04-20 [christoph]	0.9.10claws48
+
+	* src/mainwindow.c
+	* src/foldersel.c
+		remove new/rename/delete folder GUI functions because
+		they are always active, even for news folders, and can
+		not be easily made folder class dependent
+
+	* src/gtk/menu.[ch]
+		make menu_translate() public
+
+	* src/Makefile.am
+	* src/folder.[ch]
+	* src/folderview.[ch]
+	* src/imap_gtk.[ch]			** NEW **
+	* src/main.c
+	* src/mh_gtk.[ch]			** NEW **
+	* src/news_gtk.[ch]			** NEW **
+		o dynamically build FolderView popup menus from a folder
+		  specific part, with callbacks to seperated code, and
+                  a common part
+		o remove the folder class specifiy code from folderview.c
+
+2004-04-15 [luke]	0.9.10claws47
+
+	* src/prefs_folder_item.c
+		o remove buttons for applying 'scan for new mail'
+		  and 'process at startup' to sub folders
+		o add 'apply to sub folder' check buttons for all
+		  properties and set folder prefs accordingly
+		o replace multiple gtk_widget_show() with one
+		  gtk_widget_show_all() on container
+
+2004-04-14 [darko]	0.9.10claws46
+
+	* src/gtk/Makefile.am
+	* src/gtk/pluginwindow.c
+		load plugins from to $(prefix)/lib/sylpheed/plugins
+		in file selection dialog
+	* src/plugins/clamav/clamav_plugin.c
+		const correctness
+
+2004-04-14 [christoph]	0.9.10claws45
+
+	* src/folder.c
+	* src/plugins/image_viewer/viewer.c
+		fix g_warnings
+
+2004-04-10 [alfons]	0.9.10claws44
+	
+	* src/compose.c
+		appropriate auto account selection when forwarding
+		(fixes bug #476, "forward as attachment does not listen
+		to account rules")
+
+2004-04-09 [alfons]	0.9.10claws43
+
+	* src/summaryview.c
+		make quick search combo matching case sensitive
+
+2004-04-06 [alfons]	0.9.10claws42
+
+	* src/addr_compl.c
+		use cursor position to prevent clearing the entire entry
+
+2004-04-06 [alfons]	0.9.10claws41
+
+	* src/folderview.c
+		fix bug #472, "filter not updated when renaming folder" 
+
+2004-04-06 [alfons]	0.9.10claws40
+
+	* src/messageview.[ch]
+	  src/summaryview.c
+		reflect changes to Show all headers to main view
+		and message view (only affects detached message
+		view). see also bug #473, 'Show All Headers 
+		"problem"'.
+
+2004-04-03 [alfons]	0.9.10claws39
+
+	* src/matcher.c
+		free address list
+
+2004-04-03 [alfons]	0.9.10claws38
+
+	* src/matcher_parser_parse.y
+	  src/matcher.[ch]
+		prepare address look up matcher type; marginally
+		tested, and not hooked into the UI yet.
+
+		basically it accepts the result of the left hand
+		side of the matcher (the "criteria"):
+
+			from all_in_addressbook ""
+			~to_or_cc any_in_addressbook ""
+		
+		the first case matches all addresses found in the
+		from header, and the second case matches if any
+		(at least one) of the addresses in to or cc headers 
+		are not in the address book.
+
+		the string argument is not used yet, but is intended
+		to match a group of addresses 
+
+2004-04-02 [luke] 	0.9.10claws37
+
+	* src/prefs_folder_item.c
+		Add two buttons to apply 'scan for new mail'
+		and 'process at startup' to sub folders
+
+2004-04-02 [luke]
+	* tools/textviewer.sh
+		better filename extension matching plus some support for
+		MS Excel, MS Powerpoint and HTML
+
+2004-03-29 [christoph]	0.9.10claws36
+
+	* src/folder.h
+	* src/folderutils.[ch]
+	* src/mainwindow.c
+		add delete duplicates for all folders
+
+2004-03-29 [alfons]	0.9.10claws35
+
+	* src/folder.c
+		don't pass NULL to XXXprintf(); fixes Solaris crashes
+		when selecting top-level folder node (thanks to 
+		Alex S. Moore)
+
+2004-03-28 [keith]	0.9.10claws34
+
+	* src/textview.c
+		prepend "http://" to URIs of the form "www.example.com"
+
+2004-03-28 [paul]	0.9.10claws33
+
+	* src/common/nntp.c
+	  src/common/smtp.c
+	  src/folder.c
+	  src/imap.c
+	  src/inc.c
+	  src/news.c
+	  src/pop.c
+	  	revise 'translatable string' policy:
+	  	don't translate debug_print() or log_print(),
+		translate log_message() and log_warning()
+	
+	* po/zh_CN.po
+		update submitted by Hansom Young
+
+2004-03-25 [alfons]	0.9.10claws32
+
+	* src/prefs_common.c
+		I mean this one: Return the GList...
+
+2004-03-25 [alfons]	0.9.10claws31
+
+	* src/prefs_common.h
+		add new members at the end of prefs_common, so
+		they get properly initialized
+
+2004-03-24 [christoph]	0.9.10claws30
+
+	* src/imap.c
+		o NULL is a valid GSList
+
+2004-03-24 [alfons]	0.9.10claws29
+
+	* src/prefs_common.[ch]
+	  src/summaryview.c
+	  src/common/defs.h
+		add history to quick search (patch submitted by 
+		Ivan Francolin Martinez - thanks!)
+
+2004-03-24 [alfons]	0.9.10claws28
+
+	* src/imap.c
+		NULL output pointer parameter
+
+2004-03-21 [alfons]	0.9.10claws27
+
+	* src/addrindex.[ch]
+	  src/addr_compl.c
+		complete addresses on nicks and aliases
+
+2004-03-21 [alfons]	0.9.10claws26
+
+	* src/import.c
+	  src/inc.c
+	  src/mbox.[ch]
+		disable filters on import mbox (patch submitted
+		by Edgar Toernig)
+
+2004-03-21 [darko]	0.9.10claws25
+
+	* src/addr_compl.c
+		select the address when only one match is found while
+		doing address completion with tab key (feature
+		request #914720)
+
+2004-03-21 [alfons]	0.9.10claws24
+
+	* src/messageview.c
+	  src/toolbar.c
+		don't `navigate-delete` when a summary view's selection does not 
+		match the accompanying message view's message
+
+2004-03-20 [alfons]	0.9.10claws23
+
+	* src/summaryview.c
+		hide ext search button on initial display (should fix bug #459,
+		"Toggling quick-search at 1st time: minor UI inconsistency")
+
+2004-03-20 [alfons]	0.9.10claws22
+
+	* src/summaryview.[ch]
+		add function to get selected msginfo, if there's
+		only one selected
+
+2004-03-20 [paul]	0.9.10claws21
+
+	* sync with 0.9.10cvs7
+		see ChangeLog 2004-03-19
+
+2004-03-19 [paul]	0.9.10claws20
+
+	* src/common/nntp.c
+	  src/common/smtp.c
+	  src/common/ssl.c
+	  src/folder.c
+	  src/imap.c
+	  src/inc.c
+	  src/news.c
+	  src/pop.c
+	  	don't translate strings in debug_print(), log_print(),
+		log_message(),  and log_warning()
+
+2004-03-19 [alfons]	0.9.10claws19
+
+	better next/previous/delete/focus navigation with separate 
+	message view 
+	
+	* src/toolbar.c
+		call summaryview_delete() instead of messageview_delete()
+	* src/messageview.c
+		disable messageview_delete()
+
+2004-03-18 [paul]	0.9.10claws18
+
+	* sync with 0.9.10cvs6
+		see ChangeLog 2004-03-16
+
+2004-03-17 [alfons]	0.9.10claws17
+
+	* src/gtk/filesel.c
+		remove bogus semicolon after if() (sometimes it pays to
+		read LKML :)
+
+2004-03-15 [darko]	0.9.10claws16
+
+	* src/gtk/filesel.c
+		support full path in place of a filename
+	* src/mimeview.c
+		store directory attachments were saved to and
+		use it when saving attachments
+	* src/prefs_common.[hc]
+		store directory attachments were last saved to
+
+2004-03-15 [paul]	0.9.10claws15
+
+	* src/folderview.c
+		fix bug where unsubscribing a newsgroup would destroy
+		(most of the) filtering rules
+
+2004-03-15 [paul]	0.9.10claws14
+
+	* src/folderview.c
+		fix Bug 458, 'Folder View remaining empty after 
+		removing a NEWS account' (was also true of IMAP
+		accounts)
+
+2004-03-15 [paul]	0.9.10claws13
+
+	* src/folderview.c
+		fix folderview invisibility of newly subscribed
+		newsgroups
+
+2004-03-13 [paul]	0.9.10claws12
+
+	* src/compose.c
+	  src/plugins/dillo_viewer/dillo_prefs.c
+	  src/plugins/image_viewer/viewerprefs.c
+	  	gettextise some forgotten parts
+
+2004-03-13 [alfons]	0.9.10claws11
+
+	* src/imap.c
+		make sure the correct type is passed to sscanf()
+
+2004-03-13 [paul]	0.9.10claws10
+
+	* sync with 0.9.10cvs5
+		see ChangeLog 2004-03-02 and 2004-03-12, 
+		specifically:
+		'always move messages by default when using DnD (except 
+		for News folder). Copy messages if Ctrl-key is pressed.'
+		and 'added a function to filter selected messages'
+
+2004-03-12 [christoph]	0.9.10claws9
+
+	* src/codeconv.c
+		add parameter check to conv_unmime_header_overwrite()
+
+	* src/imap.c
+		o fix spelling
+		o fix removing of NEW flag when UNREAD is unset
+
+	* src/procmime.c
+		decode MIME-headers
+
+	(Closes 437 i18n attachment display error.)
+
+2004-03-12 [paul]	0.9.10claws8
+
+	* po/it.po
+		update. submitted by Andrea Spadaccini <lupin85@email.it>
+		
+	* tools/Makefile.am
+		add 'textviewer.sh'
+
+2004-03-12 [alfons]	0.9.10claws7
+
+	* src/imap.c
+		o quiet compiler and typecast Folder * to IMAP Folder *
+		o wake up and fix my previous incompatible type assignment bug
+
+2004-03-12 [alfons]	0.9.10claws6
+
+	* src/imap.c
+		don't mix up pointers to int, guint32 _and_ 
+		unsigned int 
+
+2004-03-12 [christoph]	0.9.10claws5
+
+	* src/folderview.c
+		Add error requester when renaming a folder failed
+
+	* src/imap.c
+		Check new FolderItem name for namespace seperator
+		before renaming
+
+	(Closes Bug 443 Bad named IMAP folders won't be displayed)
+
+2004-03-11 [christoph]	0.9.10claws4
+
+	* src/folder.[ch]
+	* src/imap.c
+	* src/procmsg.h
+		syncronize flags in cache with IMAP folder flags
+
+	Adapted a patch submitted by Simon 'corecode' Schubert
+	<corecode@corecode.ath.cx> 
+
+
+2004-03-11 [alfons]	0.9.10claws3
+
+	* src/textview.[ch]
+		remove dead code that at one time controlled display of
+		URIs in status bar
+
+2004-03-10 [paul]	0.9.10claws2
+
+	* po/it.po
+		updated by Lupino <lupin85@email.it>
+
+2004-03-09 [alfons]	0.9.10claws1
+
+	* src/matcher.c
+		we're not using yywrap, but we may, so close yyin instead
+		of initial FILE *
+
+2004-03-08 [paul]	0.9.10claws
+
+	* 0.9.10claws released
+
+2004-03-08 [paul]	0.9.9claws41
+
+	* po/es.po
+	  po/ja.po
+	  po/ru.po
+	  po/sk.po
+	  po/sr.po
+	  po/zh_CN.po
+	  	update translations. submitted by Ricardo Mones Lastra,
+		Rui Hirokawa, Pavlo Bohmat, Andrej Kacian, Urke MMI,
+		Hansom Young
+
+2004-03-06 [paul]	0.9.9claws40
+
+	* src/stock_pixmap.c
+		fix crash: g_strdup(DEFAULT_PIXMAP_THEME)
+		patch submitted by Pawel Pekala
+
+2004-03-06 [alfons]		0.9.9claws39
+
+	* src/addrindex.c
+		allow nick name completion again 
+
+2004-03-02 [match]		0.9.9claws38
+
+	* configure.ac
+		added definition of USE_LDAP_TLS to support TLS.
+	* src/ldapctrl.[ch]
+	* src/ldapquery.c
+	* src/ldapserver.[ch]
+	* src/addressbook.c
+	* src/addrindex.c
+	* src/editldap.c
+		included LDAP TLS support.
+
+2004-03-02 [christoph]		0.9.9claws37
+
+	* src/folder.[ch]
+		o add more documentation for FolderClass
+		o remove usused FolderClass virtual functions
+
+	* src/imap.c
+	* src/mh.c
+	* src/news.c
+		change creation of FolderClass because static initializations
+		for structs suck in C89
+
+2004-03-01 [paul]
+
+	* sync with 0.9.10
+
+2004-02-28 [keith]	0.9.9claws36
+
+	* src/common/utils.c
+		Fix treatment of whitespace in quicksearch bar (leading
+		spaces and >1 space between commands and parameters).
+
+2004-02-27 [alfons]	0.9.9claws35
+
+	* src/compose.[ch]
+		Explicitly remove draft timeout to fix nasty race between 
+		compose_send_cb() (which destroys the compose window) and 
+		compose_defer_auto_save_draft() (which expects compose 
+		window to exist). Should fix Keith's and Fred Marton's
+		bug report (#128, "crash after complaining about character
+		set conversion")
+
+2004-02-27 [luke]	0.9.9claws34
+	
+	* src/folder.c
+		Do folder_item_apply_processing() even if no processing
+		rules for the folder exist (so global processing is applied)
+
+2004-02-26 [thorsten]	0.9.9claws33
+
+	* src/mimeview.c
+		Remove misleading static declaration
+
+2004-02-26 [alfons]	0.9.9claws32
+
+	* src/procmime.[ch]
+	  src/compose.c
+	  src/mimeview.c
+	  src/textview.c
+		use/add procmime_get_content_type_str() as a safe wrapper
+		for returning a Content-Type type string; should fix 
+		bug #444, 0.9.7..0.9.9 crashes with "Content-Type: type= 
+		 - attachments."
+
+2004-02-26 [thorsten]	0.9.9claws31
+
+	* src/mimeview.c
+		Restructure save_as/save_all
+
+2004-02-26 [alfons]	0.9.9claws30
+
+	* src/procmime.c
+		clean up (2)
+
+2004-02-26 [alfons]	0.9.9claws29
+
+	* src/procmime.c
+		clean up (1)
+
+2004-02-24 [luke]
+
+	* tools/textviewer.sh
+		tweaks from Johann Koenig, recognition of shell
+		scripts in particular
+
+2004-02-24 [paul]	0.9.9claws28
+
+	* sync with 0.9.9cvs13
+		see ChangeLog 2004-02-24
+
+2004-02-23 [paul]	0.9.9claws27
+
+	* src/inc.c
+		one alertpanel on pop3 authentication error will suffice
+		
+	* src/prefs_fonts.c
+		remove unnecessary printf
+
+2004-02-22 [alfons]	0.9.9claws26
+
+	* src/messageview.c
+		put back a lost check
+
+2004-02-21 [alfons]	0.9.9claws25
+
+	* src/folderview.c
+		don't forget to save folder properties after renaming folder
+
+2004-02-20 [paul]	0.9.9.claws24
+
+	* src/addressbook.c
+	  	sync with 0.9.9cvs11, see ChangeLog 2004-02-19
+		
+	* src/inc.c
+		complete sync with 0.9.9cvs9's 'update folderview
+		progressively'
+		
+	* configure.ac
+		require gettext >= 0.12.1
+
+2004-02-17 [match]	0.9.9claws23
+
+	* src/compose.c
+		keep the peace - change style.
+
+2004-02-17 [alfons]	0.9.9claws22
+
+	* src/filtering.c
+		make MATCHACTION_STOP cancel filtering / processing;
+		clean up and document it to make it a little bit more clear;
+
+2004-02-17 [alfons]	0.9.9claws21
+
+	%X marks the cursor spot for reply quote format
+
+	* src/quote_fmt_lex.l 
+	  src/quote_fmt.c
+		add %X token
+		
+	* src/quote_fmt.h
+	  src/quote_fmt_parse.y
+		handle %X token
+		
+	* src/compose.c
+		handle %X token for replies only (for now)
+
+2004-02-17 [paul]	0.9.9claws20
+
+	* po/sk.po
+		updated by Andrej Kacian
+		
+	* src/news.c
+		remove unneeded include
+		
+	* src/prefs_fonts.c
+		be a little more user-friendly with the labels
+		
+	* configure.ac
+		a change forgotten in the last commit: 
+		SYLPHEED_ACLOCAL_INCLUDE(m4)
+
+2004-02-17 [paul]	0.9.9claws19
+
+	* ac/*				** REMOVED **
+	  ac/				** REMOVED **
+	  intl/Makefile.in		** REMOVED **
+	  m4/				** NEW **
+	  m4/missing			** NEW **
+	  m4/missing/gdk-pixbuf.m4	** NEW **
+	  m4/missing/gettext.m4		** NEW **
+	  m4/missing/gpgme.m4		** NEW **
+	  m4/missing/imlib.m4		** NEW **
+	  m4/.cvsignore			** NEW **
+	  m4/Makefile.am		** NEW **
+	  m4/README			** NEW **
+	  m4/aclocal-include.m4		** NEW **
+	  m4/aspell.m4			** NEW **
+	  m4/check-type.m4		** NEW **
+	  m4/gnupg-check-typedef.m4	** NEW **
+	  m4/openssl.m4			** NEW **
+	  m4/spamassassin.m4		** NEW **
+	  po/ChangeLog			** REMOVED **
+	  po/Makefile.in.in		** REMOVED **
+	  po/Rules-quot			** REMOVED **
+	  po/boldquot.sed		** REMOVED **
+	  po/en@boldquot.header		** REMOVED **
+	  po/en@quot.header		** REMOVED **
+	  po/insert-header.sin		** REMOVED **
+	  po/quot.sed			** REMOVED **
+	  po/remove-potcdate.sed	** REMOVED **
+	  po/remove-potcdate.sin	** REMOVED **
+	  po/stamp-po			** REMOVED **
+	  Makefile.am
+	  autogen.sh
+	  configure.ac
+		enable building with automake 1.8.x
+		add 'autopoint' to autogen.sh and remove all
+		auto-generated files, remove ac/ in favour of
+		m4/
+
+2004-02-17 [alfons]	0.9.9claws18
+	
+	* src/summaryview.c
+		MSG_IS_NEWS() is not stored at all, and is bogus
+
+2004-02-17 [martin]	0.9.9claws17
+
+	* src/prefs_themes.c
+		fix crash when installing wrong theme and output an
+		error message
+
+2004-02-16 [christoph]	0.9.9claws16
+
+	* src/compose.c
+	* src/stock_pixmap.[ch]
+	* src/toolbar.[ch]
+	* src/pixmaps/linewrapcurrent.xpm		** NEW **
+		add "Wrap current paragraph" to compose toolbar
+
+2004-02-15 [alfons]	0.9.9claws15
+
+	* src/folderview.c
+		refine previous commit to make sure other hook functions
+		get their grab of the pie too
+
+2004-02-15 [alfons]	0.9.9claws14
+
+	* src/folderview.c
+		fix sync breakage so we don't pass invalid pointer types
+
+2004-02-15 [match]	0.9.9claws13
+
+	* src/ldapquery.[ch]
+	* src/ldapserver.h
+	* src/addrindex.[ch]
+		tweak threading calls.
+	* src/addr_compl.[ch]
+		add alias into completion list.
+	* src/addressbook.c
+		fix ldap browse.
+		improve context menu behavior.
+		change menu sequence.
+		add send mail from addressbook.
+	* src/addrselect.[ch]
+	* src/compose.[ch]
+		add send mail from addressbook.
+
+2004-02-15 [christoph]	0.9.9claws12
+
+	* src/folderutils.c
+		skip deleting when duplist is empty
+
+	* src/folderview.[ch]
+	* src/mainwindow.c
+	* src/summaryview.[ch]
+		call folderutils_delete_duplicates() from mainwindow code
+
+2004-02-15 [alfons]	0.9.9claws11
+	
+	* src/common/utils.c
+		add prefix for italian ms o(e) 
+
+2004-02-14 [paul]	0.9.9claws10
+
+	* src/foldersel.c
+		fix updating of the folder view when creating a
+		new folder
+
+2004-02-13 [paul]	0.9.9claws9
+
+	* src/plugins/clamav/clamav_plugin.c
+		remove GUI code
+
+2004-02-13 [paul]	0.9.9claws8
+
+	* sync with 0.9.9cvs9
+		see ChangeLog 2004-02-09, 2004-02-10, 2004-02-12
+
+2004-02-13 [alfons]	0.9.9claws7
+
+	* src/common/utils.c
+		fix wrong type of argument for ctype functions (pass unsigned
+		char instead of signed char)
+
+2004-02-12 [alfons]	0.9.9claws6
+
+	* src/compose.[ch]
+		don't select text in header entry when composing to a 
+		default address, but rather give the header entry a
+		different color / style (same as the folder new color)
+
+2004-02-12 [alfons]	0.9.9claws5
+
+	* src/plugins/clamav/clamav_plugin.c
+		don't exit(2) on libclamav init error - show a warning.
+		(tested by damaging a clamav database file.)
+
+2004-02-12 [paul]	0.9.9claws4
+
+	* sync with 0.9.9cvs4
+		see ChangeLog 2004-02-04, 2004-02-05, and 2004-02-06
+
+2004-02-11 [luke]	0.9.9claws3
+
+	* src/mimeview.c
+		remove redundant check introduced in 0.9.9claws1
+
+2004-02-11 [luke]	0.9.9claws2
+
+	* src/mimeview.c
+		fix compilation of my previous commit without gpg enabled
+
+2004-02-10 [luke]	0.9.9claws1
+
+	* src/mimeview.c
+		add borders to icons to indicate the privacy status for
+		the message part (unknown/bad/good)
+
 2004-02-06 [paul]	0.9.9claws
 
 	0.9.9claws released
@@ -129,7 +960,7 @@
 
 2004-01-25 [paul]	0.9.8claws48
 
-	src/prefs_ext_prog.c
+	* src/prefs_ext_prog.c
 		apply Alfons' patch to check for NULL pointers
 		fixes bug #424
 

@@ -207,6 +207,8 @@ struct _Compose
 	gchar *redirect_filename;
 	
 	gboolean remove_references;
+
+	guint draft_timeout_tag;
 };
 
 struct _AttachInfo
@@ -226,6 +228,9 @@ Compose *compose_new			(PrefsAccount	*account,
 
 Compose *compose_new_with_folderitem	(PrefsAccount	*account,
 					 FolderItem	*item);
+
+Compose *compose_new_with_list		(PrefsAccount	*account,
+					 GList          *listAddress);
 
 void compose_reply_mode			(ComposeMode 	 mode, 
 					 GSList 	*msginfo_list, 
@@ -261,7 +266,7 @@ void compose_entry_append		(Compose	  *compose,
 					 const gchar	  *address,
 					 ComposeEntryType  type);
 
-void compose_entry_select		(Compose	  *compose,
+void compose_entry_mark_default_to	(Compose	  *compose,
 					 const gchar	  *address);
 
 gint compose_send			(Compose	  *compose);

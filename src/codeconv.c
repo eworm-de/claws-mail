@@ -869,6 +869,7 @@ CodeConvFunc conv_get_code_conv_func(const gchar *src_charset_str,
 	switch (src_charset) {
 	case C_ISO_2022_JP:
 	case C_ISO_2022_JP_2:
+	case C_ISO_2022_JP_3:
 		if (dest_charset == C_AUTO &&
 		    conv_get_current_charset() == C_EUC_JP)
 			code_conv = conv_jistodisp;
@@ -909,8 +910,9 @@ CodeConvFunc conv_get_code_conv_func(const gchar *src_charset_str,
 		if (dest_charset == C_AUTO &&
 		    conv_get_current_charset() == C_EUC_JP)
 			code_conv = conv_euctodisp;
-		else if (dest_charset == C_ISO_2022_JP ||
-			 dest_charset == C_ISO_2022_JP_2)
+		else if (dest_charset == C_ISO_2022_JP   ||
+			 dest_charset == C_ISO_2022_JP_2 ||
+			 dest_charset == C_ISO_2022_JP_3)
 			code_conv = conv_euctojis;
 		break;
 	default:
@@ -1059,6 +1061,7 @@ static const struct {
 	{C_KOI8_U,		CS_KOI8_U},
 	{C_ISO_2022_JP,		CS_ISO_2022_JP},
 	{C_ISO_2022_JP_2,	CS_ISO_2022_JP_2},
+	{C_ISO_2022_JP_3,	CS_ISO_2022_JP_3},
 	{C_EUC_JP,		CS_EUC_JP},
 	{C_EUC_JP,		CS_EUCJP},
 	{C_SHIFT_JIS,		CS_SHIFT_JIS},
@@ -1108,6 +1111,7 @@ static const struct {
 	{"ru_RU"	, C_ISO_8859_5	, C_KOI8_R},
 	{"tg_TJ"	, C_KOI8_T	, C_KOI8_T},
 	{"ru_UA"	, C_KOI8_U	, C_KOI8_U},
+	{"uk_UA.CP1251"	, C_WINDOWS_1251, C_KOI8_U},
 	{"uk_UA"	, C_KOI8_U	, C_KOI8_U},
 
 	{"be_BY"	, C_WINDOWS_1251, C_WINDOWS_1251},
@@ -1453,6 +1457,7 @@ gboolean conv_is_multibyte_encoding(CharSet encoding)
 	case C_EUC_CN:
 	case C_ISO_2022_JP:
 	case C_ISO_2022_JP_2:
+	case C_ISO_2022_JP_3:
 	case C_ISO_2022_KR:
 	case C_ISO_2022_CN:
 	case C_SHIFT_JIS:
@@ -1488,6 +1493,8 @@ void conv_unmime_header_overwrite(gchar *str)
 	CharSet cur_charset;
 	const gchar *locale;
 
+	g_return_if_fail(str != NULL);
+	
 	cur_charset = conv_get_current_charset();
 
 #warning FIXME_GTK2

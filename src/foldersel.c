@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,7 @@ static GtkWidget *ok_button;
 static GtkWidget *cancel_button;
 
 static FolderItem *folder_item;
+static FolderItem *selected_item;
 
 static gboolean cancelled;
 static gboolean finished;
@@ -97,6 +98,8 @@ FolderItem *foldersel_folder_sel(Folder *cur_folder,
 {
 	GtkCTreeNode *node;
 
+	selected_item = NULL;
+
 	if (!window) {
 		foldersel_create();
 		foldersel_init();
@@ -132,9 +135,11 @@ FolderItem *foldersel_folder_sel(Folder *cur_folder,
 	gtk_entry_set_text(GTK_ENTRY(entry), "");
 	gtk_clist_clear(GTK_CLIST(ctree));
 
-	if (!cancelled && folder_item && folder_item->path)
+	if (!cancelled &&
+	    selected_item && selected_item->path) {
+		folder_item = selected_item;
 		return folder_item;
-	else
+	} else
 		return NULL;
 }
 
@@ -146,11 +151,10 @@ static void foldersel_create(void)
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Select folder"));
-	gtk_widget_set_size_request(window, 300, 400);
-	gtk_container_set_border_width(GTK_CONTAINER(window), BORDER_WIDTH);
+	gtk_container_set_border_width(GTK_CONTAINER(window), 4);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, TRUE);
+	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, FALSE);
 	gtk_window_set_wmclass
 		(GTK_WINDOW(window), "folder_selection", "Sylpheed");
 	g_signal_connect(G_OBJECT(window), "delete_event",
@@ -163,6 +167,7 @@ static void foldersel_create(void)
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_widget_set_size_request(window, 300, 360);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 0);
@@ -185,6 +190,7 @@ static void foldersel_create(void)
 			 G_CALLBACK(foldersel_selected), NULL);
 
 	entry = gtk_entry_new();
+	gtk_entry_set_editable(GTK_ENTRY(entry), FALSE);
 	gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(entry), "activate",
 			 G_CALLBACK(foldersel_activated), NULL);
@@ -192,7 +198,7 @@ static void foldersel_create(void)
 	gtkut_button_set_create(&confirm_area,
 				&ok_button,	_("OK"),
 				&cancel_button,	_("Cancel"),
-				NULL, NULL);
+				NULL,    	NULL);
 
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_button);
@@ -307,12 +313,16 @@ static void foldersel_set_tree(Folder *cur_folder, FolderSelectionType type)
 static void foldersel_selected(GtkCList *clist, gint row, gint column,
 			       GdkEvent *event, gpointer data)
 {
-	FolderItem *item;
 	GdkEventButton *ev = (GdkEventButton *)event;
 
-	item = gtk_clist_get_row_data(clist, row);
-	if (item) gtk_entry_set_text(GTK_ENTRY(entry),
-				     item->path ? item->path : "");
+	selected_item = gtk_clist_get_row_data(clist, row);
+	if (selected_item && selected_item->path) {
+		gchar *id;
+		id = folder_item_get_identifier(selected_item);
+		gtk_entry_set_text(GTK_ENTRY(entry), id);
+		g_free(id);
+	} else
+		gtk_entry_set_text(GTK_ENTRY(entry), "");
 
 	if (ev && GDK_2BUTTON_PRESS == ev->type)
 		gtk_button_clicked(GTK_BUTTON(ok_button));
@@ -320,13 +330,6 @@ static void foldersel_selected(GtkCList *clist, gint row, gint column,
 
 static void foldersel_ok(GtkButton *button, gpointer data)
 {
-	GList *list;
-
-	list = GTK_CLIST(ctree)->selection;
-	if (list)
-		folder_item = gtk_ctree_node_get_row_data
-			(GTK_CTREE(ctree), GTK_CTREE_NODE(list->data));
-
 	finished = TRUE;
 }
 

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2003 Match Grun
+ * Copyright (C) 2001-2004 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,6 +95,7 @@
 #define ATTAG_LDAP_MAX_AGE    "max-age"
 #define ATTAG_LDAP_DYN_SEARCH "dyn-search"
 #define ATTAG_LDAP_MATCH_OPT  "match-opt"
+#define ATTAG_LDAP_ENABLE_TLS "enable-tls"
 
 #define ELTAG_LDAP_ATTR_SRCH  "attribute"
 #define ATTAG_LDAP_ATTR_NAME  "name"
@@ -1349,11 +1350,13 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 	gchar *serverName = NULL;
 	gchar *criteria = NULL;
 	gboolean bDynSearch;
+	gboolean bTLS;
 	gint iMatch;
 
 	/* printf( "addrindex_parse_ldap\n" ); */
 	/* Set up some defaults */
 	bDynSearch = FALSE;
+	bTLS = FALSE;
 	iMatch = LDAPCTL_MATCH_BEGINWITH;
 
 	ds = addrindex_create_datasource( ADDR_IF_LDAP );
@@ -1408,6 +1411,12 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 				iMatch = LDAPCTL_MATCH_CONTAINS;
 			}
 		}
+		else if( strcmp( name, ATTAG_LDAP_ENABLE_TLS ) == 0 ) {
+			bTLS = FALSE;
+			if( strcmp( value, ATVAL_BOOLEAN_YES ) == 0 ) {
+				bTLS = TRUE;
+			}
+		}
 		attr = g_list_next( attr );
 	}
 
@@ -1415,6 +1424,7 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 	ldapsvr_set_name( server, serverName );
 	ldapsvr_set_search_flag( server, bDynSearch );
 	ldapctl_set_matching_option( ctl, iMatch );
+	ldapctl_set_tls( ctl, bTLS );
 	g_free( serverName );
 	ldapsvr_set_control( server, ctl );
 	ds->rawDataSource = server;
@@ -1474,6 +1484,10 @@ static void addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
 		( ctl->matchingOption == LDAPCTL_MATCH_CONTAINS ) ?
 		ATVAL_LDAP_MATCH_CONTAINS : ATVAL_LDAP_MATCH_BEGIN );
 
+	addrindex_write_attr( fp, ATTAG_LDAP_ENABLE_TLS,
+			ctl->enableTLS ?
+			ATVAL_BOOLEAN_YES : ATVAL_BOOLEAN_NO );
+
 	fputs(" >\n", fp);
 
 	/* Output attributes */
@@ -1487,7 +1501,6 @@ static void addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
 
 	/* End of element */	
 	addrindex_write_elem_e( fp, lvl, TAG_DS_LDAP );
-
 }
 
 #else
@@ -2737,8 +2750,11 @@ void addrindex_remove_results( AddressDataSource *ds, ItemFolder *folder ) {
 	AddressCache *cache;
 	gint queryID = 0;
 
+	/* printf( "addrindex_remove_results/start\n" ); */
+
 	/* Test for folder */
 	if( folder->folderType != ADDRFOLDER_QUERY_RESULTS ) return;
+	/* printf( "folder name ::%s::\n", ADDRITEM_NAME(folder) ); */
 	adbase = ( AddrBookBase * ) ds->rawDataSource;
 	if( adbase == NULL ) return;
 	cache = adbase->addressCache;
@@ -2748,13 +2764,26 @@ void addrindex_remove_results( AddressDataSource *ds, ItemFolder *folder ) {
 
 	if( ds->type == ADDR_IF_LDAP ) {
 #ifdef USE_LDAP
-		LdapQuery  *qry;
+		LdapQuery *qry;
+		gboolean  delFlag;
 
 		qry = ( LdapQuery * ) folder->folderData;
 		queryID = ADDRQUERY_ID(qry);
-		ldapquery_remove_results( qry );
+		/* printf( "calling ldapquery_remove_results...queryID=%d\n", queryID ); */
+		delFlag = ldapquery_remove_results( qry );
+		/* printf( "calling ldapquery_remove_results...done\n" ); */
+		/*
+		if( delFlag ) {
+			printf( "delFlag IS-TRUE\n" );
+		}
+		else {
+			printf( "delFlag IS-FALSE\n" );
+			addressbook_clear_idler( queryID );
+		}
+		*/
 #endif
 	}
+	/* printf( "addrindex_remove_results/end\n" ); */
 
 	/* Delete query request */
 	if( queryID > 0 ) {
@@ -2776,13 +2805,14 @@ void addrindex_remove_results( AddressDataSource *ds, ItemFolder *folder ) {
  * \return <i>TRUE</i> if data loaded, <i>FALSE</i> if address index not loaded.
  */
 gboolean addrindex_load_completion(
-		gint (*callBackFunc) ( const gchar *, const gchar *, const gchar * ) )
+		gint (*callBackFunc) ( const gchar *, const gchar *, 
+				       const gchar *, const gchar * ) )
 {
 	AddressDataSource *ds;
 	GList *nodeIf, *nodeDS;
 	GList *listP, *nodeP;
 	GList *nodeM;
-	gchar *sName, *sAddress, *sAlias, *sFriendly;
+	gchar *sName;
 
 	nodeIf = addrindex_get_interface_list( _addressIndex_ );
 	while( nodeIf ) {
@@ -2816,25 +2846,18 @@ gboolean addrindex_load_completion(
 				nodeM = person->listEMail;
 
 				/* Figure out name to use */
-				sName = person->nickName;
+				sName = ADDRITEM_NAME(person);
 				if( sName == NULL || *sName == '\0' ) {
-					sName = ADDRITEM_NAME(person);
+					sName = person->nickName;
 				}
 
 				/* Process each E-Mail address */
 				while( nodeM ) {
 					ItemEMail *email = nodeM->data;
-					/* Have mail */
-					sFriendly = sName;
-					sAddress = email->address;
-					if( sAddress || *sAddress != '\0' ) {
-						sAlias = ADDRITEM_NAME(email);
-						if( sAlias && *sAlias != '\0' ) {
-							sFriendly = sAlias;
-						}
-						( callBackFunc ) ( sFriendly, sAddress, sName );
-					}
-
+					
+					callBackFunc( sName, email->address, person->nickName, 
+						      ADDRITEM_NAME(email) );
+					
 					nodeM = g_list_next( nodeM );
 				}
 				nodeP = g_list_next( nodeP );

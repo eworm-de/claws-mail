@@ -95,7 +95,6 @@ static void prefs_font_select(GtkButton *button, GtkEntry *entry)
 	         "clicked",
 		 GTK_SIGNAL_FUNC(prefs_font_selection_ok),
 		 entry);
-	printf("%i\n", font_sel_conn_id);
 
 	font_name = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
 	gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(font_sel_win), font_name);
@@ -151,7 +150,7 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
-	tmplabel = gtk_label_new (_("Folder View"));
+	tmplabel = gtk_label_new (_("Folder List"));
 	gtk_widget_show (tmplabel);
 	gtk_table_attach (GTK_TABLE (table), tmplabel, 0, 1, 0, 1,
 			 (GtkAttachOptions) GTK_FILL,
@@ -173,7 +172,7 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_signal_connect (GTK_OBJECT(tmpbutton), "clicked",
 				GTK_SIGNAL_FUNC(prefs_font_select), entry_folderviewfont);
 
-	tmplabel = gtk_label_new (_("Summary View"));
+	tmplabel = gtk_label_new (_("Message List"));
 	gtk_widget_show (tmplabel);
 	gtk_table_attach (GTK_TABLE (table), tmplabel, 0, 1, 1, 2,
 			 (GtkAttachOptions) GTK_FILL,
@@ -195,7 +194,7 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_signal_connect (GTK_OBJECT(tmpbutton), "clicked",
 			    GTK_SIGNAL_FUNC(prefs_font_select), entry_summaryviewfont);
 
-	tmplabel = gtk_label_new (_("Message View"));
+	tmplabel = gtk_label_new (_("Message"));
 	gtk_widget_show (tmplabel);
 	gtk_table_attach (GTK_TABLE (table), tmplabel, 0, 1, 2, 3,
 			 (GtkAttachOptions) GTK_FILL,

@@ -243,6 +243,7 @@ struct _PrefsCommon
 	gchar *mime_image_viewer;
 	gchar *mime_audio_player;
 	gchar *mime_open_cmd;
+	gchar *attach_save_dir;
 
 	GList *mime_open_cmd_history;
 
@@ -301,6 +302,8 @@ struct _PrefsCommon
 	
 	gint summary_quicksearch_type;
 	gulong color_new;
+	
+	GList *summary_quicksearch_history;
 };
 
 extern PrefsCommon prefs_common;

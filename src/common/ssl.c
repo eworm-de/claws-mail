@@ -101,8 +101,7 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 
 	/* Get the cipher */
 
-	debug_print(_("SSL connection using %s\n"),
-		    SSL_get_cipher(ssl));
+	debug_print("SSL connection using %s\n", SSL_get_cipher(ssl));
 
 	/* Get server's certificate (note: beware of dynamic allocation) */
 	if ((server_cert = SSL_get_peer_certificate(ssl)) == NULL) {

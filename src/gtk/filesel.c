@@ -59,6 +59,8 @@ gchar *filesel_select_file(const gchar *title, const gchar *file)
 {
 	static gchar *filename = NULL;
 	static gchar *cwd = NULL;
+	gchar *startdir = NULL;
+	gchar *realfile = NULL;
 
 	filesel_create(title, FALSE);
 
@@ -69,15 +71,27 @@ gchar *filesel_select_file(const gchar *title, const gchar *file)
 		filename = NULL;
 	}
 
-	if (!cwd)
+	/* try to extract the directory and filename from file */
+	if (file) {
+		startdir = g_dirname(file);
+		realfile = g_basename(file);
+	} else {
+		realfile = file;
+	}
+
+	/* use sylpheed's startup directory if we can't find anything useful */
+	if (!startdir || !strcmp(startdir, ".")) {
 		cwd = g_strconcat(sylpheed_get_startup_dir(), G_DIR_SEPARATOR_S, NULL);
+	} else {
+		cwd = g_strconcat(startdir, G_DIR_SEPARATOR_S, NULL);
+	}
 
 	gtk_file_selection_set_filename(GTK_FILE_SELECTION(filesel), cwd);
 
-	if (file) {
+	if (realfile) {
 		gtk_file_selection_set_filename(GTK_FILE_SELECTION(filesel),
-						file);
-		filesel_oldfilename = g_strdup(file);
+						realfile);
+		filesel_oldfilename = g_strdup(realfile);
 	} else {
 		filesel_oldfilename = NULL;
 	}
@@ -107,6 +121,9 @@ gchar *filesel_select_file(const gchar *title, const gchar *file)
 
 	if (filesel_oldfilename) 
 		g_free(filesel_oldfilename);
+
+	if (startdir)
+		g_free(startdir);
 
 	manage_window_focus_out(filesel, NULL, NULL);
 	gtk_widget_destroy(filesel);
@@ -177,7 +194,6 @@ GList *filesel_select_multiple_files(const gchar *title, const gchar *file)
 static void filesel_create(const gchar *title, gboolean multiple_files)
 {
 	filesel = gtk_file_selection_new(title);
-	gtk_window_set_position(GTK_WINDOW(filesel), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(filesel), TRUE);
 	gtk_window_set_wmclass
 		(GTK_WINDOW(filesel), "file_selection", "Sylpheed");

@@ -130,6 +130,14 @@
 	ptr = __tmp; \
 }
 
+#define AUTORELEASE_STR(str, iffail) \
+{ \
+	gchar *__str; \
+	Xstrdup_a(__str, str, iffail); \
+	g_free(str); \
+	str = __str; \
+}
+
 #define FILE_OP_ERROR(file, func) \
 { \
 	fprintf(stderr, "%s: ", file); \

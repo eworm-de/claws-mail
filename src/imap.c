@@ -435,57 +435,56 @@ static gboolean imap_scan_required		(Folder 	*folder,
 static void imap_change_flags			(Folder 	*folder,
 						 FolderItem 	*item,
 						 MsgInfo 	*msginfo,
-						 MsgPermFlags 	newflags);
+						 MsgPermFlags 	 newflags);
+static gint imap_get_flags			(Folder 	*folder,
+						 FolderItem 	*item,
+                    				 MsgInfoList 	*msglist,
+						 GRelation 	*msgflags);
 static gchar *imap_folder_get_path		(Folder		*folder);
 static gchar *imap_item_get_path		(Folder		*folder,
 						 FolderItem	*item);
 
-static FolderClass imap_class =
-{
-	F_IMAP,
-	"imap",
-	"IMAP4",
-
-	/* Folder functions */
-	imap_folder_new,
-	imap_folder_destroy,
-	NULL,
-	NULL,
-	imap_scan_tree,
-	imap_create_tree,
-
-	/* FolderItem functions */
-	imap_folder_item_new,
-	imap_folder_item_destroy,
-	NULL,
-	NULL,
-	imap_item_get_path,
-	imap_create_folder,
-	imap_rename_folder,
-	imap_remove_folder,
-	imap_close,
-	imap_get_num_list,
-	NULL,
-	NULL,
-	NULL,
-	imap_scan_required,
-
-	/* Message functions */
-	imap_get_msginfo,
-	imap_get_msginfos,
-	imap_fetch_msg,
-	imap_add_msg,
-	imap_add_msgs,
-	imap_copy_msg,
-	imap_copy_msgs,
-	imap_remove_msg,
-	imap_remove_all_msg,
-	imap_is_msg_changed,
-	imap_change_flags,
-};
+static FolderClass imap_class;
 
 FolderClass *imap_get_class(void)
 {
+	if (imap_class.idstr == NULL) {
+		imap_class.type = F_IMAP;
+		imap_class.idstr = "imap";
+		imap_class.uistr = "IMAP4";
+
+		/* Folder functions */
+		imap_class.new_folder = imap_folder_new;
+		imap_class.destroy_folder = imap_folder_destroy;
+		imap_class.scan_tree = imap_scan_tree;
+		imap_class.create_tree = imap_create_tree;
+
+		/* FolderItem functions */
+		imap_class.item_new = imap_folder_item_new;
+		imap_class.item_destroy = imap_folder_item_destroy;
+		imap_class.item_get_path = imap_item_get_path;
+		imap_class.create_folder = imap_create_folder;
+		imap_class.rename_folder = imap_rename_folder;
+		imap_class.remove_folder = imap_remove_folder;
+		imap_class.close = imap_close;
+		imap_class.get_num_list = imap_get_num_list;
+		imap_class.scan_required = imap_scan_required;
+
+		/* Message functions */
+		imap_class.get_msginfo = imap_get_msginfo;
+		imap_class.get_msginfos = imap_get_msginfos;
+		imap_class.fetch_msg = imap_fetch_msg;
+		imap_class.add_msg = imap_add_msg;
+		imap_class.add_msgs = imap_add_msgs;
+		imap_class.copy_msg = imap_copy_msg;
+		imap_class.copy_msgs = imap_copy_msgs;
+		imap_class.remove_msg = imap_remove_msg;
+		imap_class.remove_all_msg = imap_remove_all_msg;
+		imap_class.is_msg_changed = imap_is_msg_changed;
+		imap_class.change_flags = imap_change_flags;
+		imap_class.get_flags = imap_get_flags;
+	}
+	
 	return &imap_class;
 }
 
@@ -666,13 +665,13 @@ static IMAPSession *imap_session_get(Folder *folder)
 			/* Check if this is the first try to establish a
 			   connection, if yes we don't try to reconnect */
 			if (rfolder->session == NULL) {
-				log_warning(_("Connecting %s failed"),
+				log_warning(_("Connecting to %s failed"),
 					    folder->account->recv_server);
 				session_destroy(SESSION(session));
 				session = NULL;
 			} else {
 				log_warning(_("IMAP4 connection to %s has been"
-					      " disconnected. Reconnecting...\n"),
+					    " disconnected. Reconnecting...\n"),
 					    folder->account->recv_server);
 				session_destroy(SESSION(session));
 				/* Clear folders session to make imap_session_get create
@@ -1718,6 +1717,12 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 	g_return_val_if_fail(item->path != NULL, -1);
 	g_return_val_if_fail(name != NULL, -1);
 
+	if (strchr(name, imap_get_path_separator(IMAP_FOLDER(folder), item->path)) != NULL) {
+		g_warning(_("New folder name must not contain the namespace "
+			    "path separator"));
+		return -1;
+	}
+
 	session = imap_session_get(folder);
 	if (!session) return -1;
 
@@ -2465,7 +2470,8 @@ static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 {
 	gchar *real_path;
 	gint ok;
-	gint exists_, recent_, unseen_, uid_validity_;
+	gint exists_, recent_, unseen_;
+	guint32 uid_validity_;
 
 	if (!exists || !recent || !unseen || !uid_validity) {
 		if (session->mbox && strcmp(session->mbox, path) == 0)
@@ -2717,6 +2723,7 @@ static gint imap_cmd_do_select(IMAPSession *session, const gchar *folder,
 	GPtrArray *argbuf;
 	gchar *select_cmd;
 	gchar *folder_;
+	unsigned int uid_validity_;
 
 	*exists = *recent = *unseen = *uid_validity = 0;
 	argbuf = g_ptr_array_new();
@@ -2749,11 +2756,12 @@ static gint imap_cmd_do_select(IMAPSession *session, const gchar *folder,
 
 	resp_str = search_array_contain_str(argbuf, "UIDVALIDITY");
 	if (resp_str) {
-		if (sscanf(resp_str, "OK [UIDVALIDITY %u] ", uid_validity)
+		if (sscanf(resp_str, "OK [UIDVALIDITY %u] ", &uid_validity_)
 		    != 1) {
 			g_warning("imap_cmd_select(): invalid UIDVALIDITY line.\n");
 			THROW;
 		}
+		*uid_validity = uid_validity_;
 	}
 
 	resp_str = search_array_contain_str(argbuf, "UNSEEN");
@@ -2850,7 +2858,7 @@ static gint imap_cmd_search(IMAPSession *session, const gchar *criteria,
 		for (p = strlist; *p != NULL; ++p) {
 			guint msgnum;
 
-			if (sscanf(*p, "%d", &msgnum) == 1)
+			if (sscanf(*p, "%u", &msgnum) == 1)
 				*list = g_slist_append(*list, GINT_TO_POINTER(msgnum));
 		}
 		g_strfreev(strlist);
@@ -2934,7 +2942,7 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 	gint size;
 	gchar *destfolder_;
 	gchar *flag_str;
-	guint32 new_uid_;
+	unsigned int new_uid_;
 	gchar *ret = NULL;
 	gchar buf[BUFFSIZE];
 	FILE *fp;
@@ -2963,7 +2971,7 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 	}
 	g_free(ret);
 
-	log_print("IMAP4> %s\n", _("(sending file...)"));
+	log_print("IMAP4> %s\n", "(sending file...)");
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		strretchomp(buf);
@@ -3014,13 +3022,13 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 static MsgNumberList *imapset_to_numlist(IMAPSet imapset)
 {
 	gchar **ranges, **range;
-	guint32 low, high;
+	unsigned int low, high;
 	MsgNumberList *uids = NULL;
 	
 	ranges = g_strsplit(imapset, ",", 0);
 	for (range = ranges; *range != NULL; range++) {
 		printf("%s\n", *range);
-		if(sscanf(*range, "%u:%u", &low, &high) == 1)
+		if (sscanf(*range, "%u:%u", &low, &high) == 1)
 			uids = g_slist_prepend(uids, GINT_TO_POINTER(low));
 		else {
 			int i;
@@ -3753,7 +3761,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
 	IMAPSession *session;
 	gint ok, nummsgs = 0, exists, recent, uid_val, uid_next, unseen;
-	GSList *uidlist;
+	GSList *uidlist = NULL;
 	gchar *dir;
 	gboolean selected_folder;
 
@@ -4056,4 +4064,153 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 	msginfo->flags.perm_flags = newflags;
 
 	return;
+}
+
+static gint compare_msginfo(gconstpointer a, gconstpointer b)
+{
+	return ((MsgInfo *)a)->msgnum - ((MsgInfo *)b)->msgnum;
+}
+
+static guint gslist_find_next_num(MsgNumberList **list, guint num)
+{
+	GSList *elem;
+
+	g_return_val_if_fail(list != NULL, -1);
+
+	for (elem = *list; elem != NULL; elem = g_slist_next(elem))
+		if (GPOINTER_TO_INT(elem->data) >= num)
+			break;
+	*list = elem;
+	return elem != NULL ? GPOINTER_TO_INT(elem->data) : (gint)-1;
+}
+
+/*
+ * NEW and DELETED flags are not syncronized
+ * - The NEW/RECENT flags in IMAP folders can not really be directly
+ *   modified by Sylpheed
+ * - The DELETE/DELETED flag in IMAP and Sylpheed don't have the same
+ *   meaning, in IMAP it always removes the messages from the FolderItem
+ *   in Sylpheed it can mean to move the message to trash
+ */
+static gint imap_get_flags(Folder *folder, FolderItem *item,
+                           MsgInfoList *msginfo_list, GRelation *msgflags)
+{
+	IMAPSession *session;
+	GSList *sorted_list;
+	/*
+	GSList *new = NULL, *p_new;
+	GSList *deleted = NULL, *p_deleted;
+	*/
+	GSList *unseen = NULL, *answered = NULL, *flagged = NULL;
+	GSList *p_unseen, *p_answered, *p_flagged;
+	GSList *elem;
+	GSList *seq_list, *cur;
+	gboolean reverse_seen = FALSE;
+	GString *cmd_buf;
+	gint ok;
+	gint exists_cnt, recent_cnt, unseen_cnt, uid_next;
+	guint32 uidvalidity;
+
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(item != NULL, -1);
+	if (msginfo_list == NULL)
+		return 0;
+
+	session = imap_session_get(folder);
+	g_return_val_if_fail(session != NULL, -1);
+
+	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
+			NULL, NULL, NULL, NULL);
+	if (ok != IMAP_SUCCESS)
+		return -1;
+
+	ok = imap_status(session, IMAP_FOLDER(folder), item->path,
+			 &exists_cnt, &recent_cnt, &uid_next, &uidvalidity, &unseen_cnt);
+
+	if (unseen_cnt > exists_cnt / 2)
+		reverse_seen = TRUE;
+
+	cmd_buf = g_string_new(NULL);
+
+	sorted_list = g_slist_sort(g_slist_copy(msginfo_list), compare_msginfo);
+
+	seq_list = imap_get_seq_set_from_msglist(msginfo_list);
+
+	for (cur = seq_list; cur != NULL; cur = g_slist_next(cur)) {
+		IMAPSet imapset = cur->data;
+/*
+		g_string_sprintf(cmd_buf, "RECENT UID %s", imapset);
+		imap_cmd_search(session, cmd_buf->str, &p_new);
+		new = g_slist_concat(new, p_new);
+*/
+		g_string_sprintf(cmd_buf, "%sSEEN UID %s", reverse_seen ? "" : "UN", imapset);
+		imap_cmd_search(session, cmd_buf->str, &p_unseen);
+		unseen = g_slist_concat(unseen, p_unseen);
+
+		g_string_sprintf(cmd_buf, "ANSWERED UID %s", imapset);
+		imap_cmd_search(session, cmd_buf->str, &p_answered);
+		answered = g_slist_concat(answered, p_answered);
+
+		g_string_sprintf(cmd_buf, "FLAGGED UID %s", imapset);
+		imap_cmd_search(session, cmd_buf->str, &p_flagged);
+		flagged = g_slist_concat(flagged, p_flagged);
+/*
+		g_string_sprintf(cmd_buf, "DELETED UID %s", imapset);
+		imap_cmd_search(session, cmd_buf->str, &p_deleted);
+		deleted = g_slist_concat(deleted, p_deleted);
+*/
+	}
+
+/*
+	p_new = new;
+*/
+	p_unseen = unseen;
+	p_answered = answered;
+	p_flagged = flagged;
+/*
+	p_deleted = deleted;
+*/	
+	for (elem = sorted_list; elem != NULL; elem = g_slist_next(elem)) {
+		MsgInfo *msginfo;
+		MsgPermFlags flags;
+		gboolean wasnew;
+		
+		msginfo = (MsgInfo *) elem->data;
+		flags = msginfo->flags.perm_flags;
+		wasnew = (flags & MSG_NEW);
+		flags &= ~((reverse_seen ? 0 : MSG_UNREAD | MSG_NEW) | MSG_REPLIED | MSG_MARKED);
+		if (reverse_seen)
+			flags |= MSG_UNREAD | (wasnew ? MSG_NEW : 0);
+		/*
+		if (gslist_find_next_num(&p_new, msginfo->msgnum) == msginfo->msgnum)
+			flags |= MSG_NEW;
+		*/
+		if (gslist_find_next_num(&p_unseen, msginfo->msgnum) == msginfo->msgnum) {
+			if (!reverse_seen) {
+				flags |= MSG_UNREAD | (wasnew ? MSG_NEW : 0);
+			} else {
+				flags &= ~(MSG_UNREAD | MSG_NEW);
+			}
+		}
+		if (gslist_find_next_num(&p_answered, msginfo->msgnum) == msginfo->msgnum)
+			flags |= MSG_REPLIED;
+		if (gslist_find_next_num(&p_flagged, msginfo->msgnum) == msginfo->msgnum)
+			flags |= MSG_MARKED;
+		/*
+		if (gslist_find_next_num(&p_deleted, msginfo->msgnum) == msginfo->msgnum)
+			MSG_SET_PERM_FLAGS(msginfo->flags, MSG_DELETED);
+		 */
+		g_relation_insert(msgflags, msginfo, GINT_TO_POINTER(flags));
+	}
+
+	imap_seq_set_free(seq_list);
+	/* g_slist_free(deleted); */
+	g_slist_free(flagged);
+	g_slist_free(answered);
+	g_slist_free(unseen);
+	/* new not freed in original patch ??? */
+	g_slist_free(sorted_list);
+	g_string_free(cmd_buf, TRUE);
+
+	return 0;
 }

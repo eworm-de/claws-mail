@@ -1,8 +1,8 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
- * This program is free software; you can redistributte it and/or modify
+ * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
@@ -202,11 +202,6 @@ static void summary_move_row_to		(SummaryView		*summaryview,
 static void summary_copy_row_to		(SummaryView		*summaryview,
 					 GtkCTreeNode		*row,
 					 FolderItem		*to_folder);
-
-static void summary_delete_duplicated_func
-					(GtkCTree		*ctree,
-					 GtkCTreeNode		*node,
-					 SummaryView		*summaryview);
 
 static void summary_execute_move	(SummaryView		*summaryview);
 static void summary_execute_move_func	(GtkCTree		*ctree,
@@ -663,10 +658,16 @@ SummaryView *summary_create(void)
 	
 	gtk_widget_show(search_type);
 	
-	search_string = gtk_entry_new();
-	
+	search_string = gtk_combo_new();
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_string, FALSE, FALSE, 2);
-	
+	gtk_combo_set_value_in_list(GTK_COMBO(search_string), FALSE, TRUE);
+	gtk_combo_set_case_sensitive(GTK_COMBO(search_string), TRUE);
+	if (prefs_common.summary_quicksearch_history) 
+		gtk_combo_set_popdown_strings(GTK_COMBO(search_string), 
+			prefs_common.summary_quicksearch_history);
+	gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(search_string)->entry), "");
+	gtk_widget_show(search_string);
+		
 	gtkut_button_set_create(&search_hbbox, &search_description, _("Extended Symbols"),
 				NULL, NULL, NULL, NULL);
 	g_signal_connect(G_OBJECT(search_description), "clicked",
@@ -676,15 +677,18 @@ SummaryView *summary_create(void)
 	gtk_widget_show(search_string);
 	gtk_widget_show(hbox_search);
 
-	g_signal_connect(G_OBJECT(search_string), "key_press_event",
-			 G_CALLBACK(summary_searchbar_pressed),
-			 summaryview);
+	g_signal_connect(G_OBJECT(GTK_COMBO(search_string)->entry), 
+			   "key_press_event",
+			   G_CALLBACK(summary_searchbar_pressed),
+			   summaryview);
 
-	g_signal_connect(G_OBJECT(search_string), "focus_in_event",
+	g_signal_connect(G_OBJECT(GTK_COMBO(search_string)->entry), 
+			 "focus_in_event",
 			 G_CALLBACK(summary_searchbar_focus_evt),
 			 summaryview);
 
-	g_signal_connect(G_OBJECT(search_string), "focus_out_event",
+	g_signal_connect(G_OBJECT(GTK_COMBO(search_string)->entry), 
+			 "focus_out_event",
 			 G_CALLBACK(summary_searchbar_focus_evt),
 			 summaryview);
 
@@ -727,6 +731,10 @@ SummaryView *summary_create(void)
 	gtk_object_set_data(GTK_OBJECT(ctree), "summaryview", (gpointer)summaryview); 
 
 	gtk_widget_show_all(vbox);
+
+	/* hide widgets that shouldn't be displayed */
+	if (prefs_common.summary_quicksearch_type != S_SEARCH_EXTENDED)
+		gtk_widget_hide(search_description);
 
 	return summaryview;
 }
@@ -923,7 +931,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	if (item != summaryview->folder_item) {
 		/* changing folder, reset search */
-		gtk_entry_set_text(GTK_ENTRY(summaryview->search_string), "");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(summaryview->search_string)->entry), "");
 	}
 	
 	/* STATUSBAR_POP(summaryview->mainwin); */
@@ -1024,12 +1032,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		summary_set_hide_read_msgs_menu(summaryview, FALSE);
 	}
 
-	if (strlen(gtk_entry_get_text(GTK_ENTRY(summaryview->search_string))) > 0) {
+	if (strlen(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(summaryview->search_string)->entry))) > 0) {
 		GSList *not_killed;
-		gint search_type = GPOINTER_TO_INT(g_object_get_data(
+		gint search_type = GPOINTER_TO_INT(gtk_object_get_user_data(
 				   GTK_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
-				   GTK_MENU(summaryview->search_type)))), MENU_VAL_ID));
-		const gchar *search_string = gtk_entry_get_text(GTK_ENTRY(summaryview->search_string));
+				   GTK_MENU(summaryview->search_type))))));
+		const gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(summaryview->search_string)->entry));
 		gchar *searched_header = NULL;
 		MatcherList * tmp_list = NULL;
 		
@@ -1281,6 +1289,22 @@ SummarySelection summary_get_selection_type(SummaryView *summaryview)
 		selection = SUMMARY_SELECTED_MULTIPLE;
 
 	return selection;
+}
+
+/*!
+ *\return	MsgInfo	* Selected message if there's one selected;
+ *		if multiple selected, or none, return NULL.
+ */ 
+MsgInfo *summary_get_selected_msg(SummaryView *summaryview)
+{
+	/* summaryview->selected may be valid when multiple 
+	 * messages were selected */
+	GList *sellist = GTK_CLIST(summaryview->ctree)->selection;
+
+	if (sellist == NULL || sellist->next) 
+		return NULL;
+	
+	return GTKUT_CTREE_NODE_GET_ROW_DATA(sellist->data);
 }
 
 GSList *summary_get_selected_msg_list(SummaryView *summaryview)
@@ -2407,8 +2431,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 
 	text[col_pos[S_COL_FROM]] = msginfo->fromname ? msginfo->fromname :
 		_("(No From)");
-	if (prefs_common.swap_from && msginfo->from && msginfo->to &&
-	    !MSG_IS_NEWS(msginfo->flags)) {
+	if (prefs_common.swap_from && msginfo->from && msginfo->to) {
 		gchar *addr = NULL;
 
 		Xstrdup_a(addr, msginfo->from, return);
@@ -2523,6 +2546,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 
 	summary_set_menu_sensitive(summaryview);
 	toolbar_main_set_sensitive(summaryview->mainwin);
+	messageview_set_menu_sensitive(summaryview->messageview);
 
 	summary_unlock(summaryview);
 }
@@ -2946,8 +2970,8 @@ void summary_mark_all_read(SummaryView *summaryview)
 	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list); node != NULL;
 	     node = gtkut_ctree_node_next(ctree, node))
 		summary_mark_row_as_read(summaryview, node);
-	gtk_clist_thaw(clist);
 	folder_item_update_thaw();
+	gtk_clist_thaw(clist);
 
 	summary_status_show(summaryview);
 }
@@ -3147,18 +3171,6 @@ void summary_delete(SummaryView *summaryview)
 	} else
 		summary_status_show(summaryview);
 		
-	main_window_cursor_normal(summaryview->mainwin);
-}
-
-void summary_delete_duplicated(SummaryView *summaryview)
-{
-	main_window_cursor_wait(summaryview->mainwin);
-	STATUSBAR_PUSH(summaryview->mainwin,
-		       _("Deleting duplicated messages..."));
-
-	folderutils_delete_duplicates(summaryview->folder_item);
-
-	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
 }
 
@@ -3954,7 +3966,7 @@ void summary_collapse_threads(SummaryView *summaryview)
 	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
 }
 
-void summary_filter(SummaryView *summaryview)
+void summary_filter(SummaryView *summaryview, gboolean selected_only)
 {
 	if (!filtering_rules) {
 		alertpanel_error(_("No filter rules defined."));
@@ -3986,10 +3998,20 @@ void summary_filter(SummaryView *summaryview)
 			summary_status_show(summaryview);
 	}
 	else {
-		gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
-					GTK_CTREE_FUNC(summary_filter_func),
-					summaryview);
+		if (selected_only) {
+			GList *cur;
 
+			for (cur = GTK_CLIST(summaryview->ctree)->selection;
+		     	     cur != NULL; cur = cur->next) {
+				summary_filter_func(GTK_CTREE(summaryview->ctree),
+					    	    GTK_CTREE_NODE(cur->data),
+					    	    summaryview);
+			}
+		} else {
+			gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
+						GTK_CTREE_FUNC(summary_filter_func),
+						summaryview);
+		}
 		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 	}
 
@@ -4557,9 +4579,19 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 static gboolean summary_searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 					  SummaryView *summaryview)
 {
-	if (event != NULL && event->keyval == GDK_Return)
+	if (event != NULL && event->keyval == GDK_Return) {
+		gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(summaryview->search_string)->entry));
+		if (search_string && strlen(search_string) != 0) {
+			prefs_common.summary_quicksearch_history =
+				add_history(prefs_common.summary_quicksearch_history,
+					    search_string);
+			gtk_combo_set_popdown_strings(GTK_COMBO(summaryview->search_string), 
+				prefs_common.summary_quicksearch_history);			
+		}
 	 	summary_show(summaryview, summaryview->folder_item);
-	return FALSE;
+	 	gtk_signal_emit_stop_by_name(GTK_OBJECT(widget), "key_press_event");
+	}
+	return TRUE; 		
 }
 
 static gboolean summary_searchbar_focus_evt(GtkWidget *widget, GdkEventFocus *event,
@@ -4591,7 +4623,7 @@ static void summary_searchtype_changed(GtkMenuItem *widget, gpointer data)
 		gtk_widget_hide(sw->search_description);
 	}
 
-	if (gtk_entry_get_text(GTK_ENTRY(sw->search_string)))
+	if (gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(sw->search_string)->entry)))
 	 	summary_show(sw, sw->folder_item);
 }
 
@@ -5442,7 +5474,7 @@ static void summary_find_answers (SummaryView *summaryview, MsgInfo *msg)
 				    S_SEARCH_EXTENDED);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(summaryview->toggle_search), TRUE);
 
-	gtk_entry_set_text(GTK_ENTRY(summaryview->search_string), buf);
+	gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(summaryview->search_string)->entry), buf);
 	g_free(buf);
 	summary_show(summaryview, summaryview->folder_item);
 	node = gtk_ctree_node_nth(GTK_CTREE(summaryview->ctree), 0);

@@ -1,3 +1,162 @@
+2004-03-19
+
+	* src/defs.h
+	  src/inc.[ch]: 進捗ダイアログの更新方法を変更し、高速なネットワーク
+	  におけるオーバーヘッドを軽減。
+
+2004-03-16
+
+	* src/nntp.c: nntp_session_new(): セッションの開始時に認証を試みる
+	  ようにした(Shiino Yuki さん、 IWAMOTO, Kouichi さん thanks)。
+	* src/news.c
+	  src/nntp.c: ソケットエラーが発生したときはセッションを破棄する
+	  ようにした。
+
+2004-03-12
+
+	* src/mainwindow.c
+	  src/summaryview.[ch]: 選択中のメッセージを振り分ける機能を追加。
+
+2004-03-12
+
+	* src/filter.[ch]
+	  src/prefs_filter.c: フィルタシステムを再実装(UI は未実装)。
+
+2004-03-09
+
+	* src/filter.c: 「含まない」フラグのマッチングアルゴリズムを修正
+	  (ヘッダが存在しない場合でもマッチし、複数の同一ヘッダを正しく扱う
+	  ようにした)。
+	* src/imageview.c: get_resized_size(): リサイズの問題を起こしていた
+	  typo を修正。
+
+2004-03-02
+
+	* src/folder.c
+	  src/mh.c: MH フォルダの最後の番号のメッセージを削除したとき
+	  FolderItem::last_num のみを更新し、その他の場合はスキャンしない
+	  ようにした(移動時にメッセージ数の計算を誤るバグを修正)。
+
+2004-03-02
+
+	* src/folderview.c
+	  src/summaryview.c: DnD 使用時は常にデフォルトでメッセージを移動する
+	  ようにした(ニュースフォルダを除く)。 Ctrl キーが押された場合は
+	  メッセージをコピーするようにした。
+	* src/mainwindow.c: main_window_empty_trash()
+	  src/summaryview.c: summary_execute(): 不足していた
+	  statusbar_pop_all() を追加。
+
+2004-02-29
+
+	* version 0.9.10
+
+2004-02-26
+
+	* src/prefs_common.c: "inc_local" のデフォルトを FALSE にした。
+
+2004-02-26
+
+	* src/account.c
+	  src/folderview.c: IMAP4 アカウントをチェックするときはオンライン
+	  モードに切り替えるようにした。その後ステータスバーを pop するように
+	  した。
+	* src/inc.c: コードの整理。
+	* src/mainwindow.[ch]: main_window_get() と
+	  main_window_toggle_online_if_offline() を追加。
+	* src/prefs_common.c: prefs_common_read_config(): 初回起動時に
+	  オフラインモードにしてしまっていたバグを修正。
+
+2004-02-25
+
+	* src/imageview.c: ウィンドウのリサイズ時に自動リサイズするようにした。
+	  クラッシュを防ぐために最小サイズを16ピクセルに制限。
+	  imageview_init(): imlib 使用時は画像をキャッシュしないようにした。
+	  imageview_show_image(): メモリリークを修正。
+	* src/mimeview.c: mimeview_init(): imageview_init() を呼ぶようにした。
+
+2004-02-24
+
+	* src/codeconv.[ch]: ISO-2022-JP-3 エンコーディングを追加。
+
+2004-02-24
+
+	* src/codeconv.c
+	  src/mainwindow.c
+	  src/messageview.c: KOI8-U エンコーディングを追加。
+	* src/prefs_common.c: prefs_message_create(): 画像リサイズオプション
+	  の文字列を修正。
+
+2004-02-19
+
+	* src/addressbook.c: addressbook_list_selected(): 引数を修正。
+	* src/imageview.[ch]: 元の画像データを ImageView に保持し、
+	  リサイズの切り替えができるようにした。
+	* src/messageview.[ch]
+	  src/mimeview.[ch]: MessageView でなく MimeView で ImageView を
+	  扱うようにした。
+
+2004-02-16
+
+	* src/imap.c
+	  src/news.c
+	  src/summaryview.c: imap.c と news.c から statusbar_pop_all() を
+	  除去(summaryview.c 内で実行)。
+
+2004-02-12
+
+	* src/inc.[ch]
+	  src/pop.[ch]: inc_drop_message() を Pop3Session の仮想関数にし、
+	  pop3.c の inc.h への依存を除去。
+
+2004-02-12
+
+	* src/mainwindow.c
+	  src/messageview.[ch]
+	  src/textview.c: 新規ウィンドウのメッセージビューにステータスバーを
+	  追加。
+
+2004-02-10
+
+	* src/inc.[ch]: 逐次更新にハッシュテーブルを使用。
+	  更新間隔を2秒に変更。
+	* src/folder.[ch]
+	  src/mh.c
+	  src/procmsg.c
+	  src/summaryview.c: フォルダのメッセージ数の集計を補正するために
+	  FolderItem::unmarked_num を追加。
+
+2004-02-09
+
+	* src/inc.[ch]: フォルダビューを逐次更新するようにした。
+	* src/foldersel.c: 選択項目の完全な ID を表示。
+
+2004-02-06
+
+	* src/folderview.[ch]: コードの整理。
+	  folderview_append_item(): 新規。フォルダをフォルダビューに追加する。
+	* src/foldersel.c: foldersel_new_folder(): folderview_append_item()
+	  を使用。
+
+2004-02-06
+
+	* src/foldersel.c: 「新規フォルダを作成」機能を実装。
+	* src/folder.[ch]: folder_find_child_item_by_name(): 新規。
+	* src/utils.h: AUTORELEASE_STR(): malloc 文字列を自動開放(alloca)
+	  文字列に変換。
+
+2004-02-05
+
+	* src/folderview.c: folderview_new_imap_folder_cb() を
+	  folderview_new_folder_cb() にまとめた。
+
+2004-02-04
+
+	* src/compose.c: compose_write_to_file(): 無駄な strlen() を除去
+	  (Alfons さん thanks)。
+	* src/textview.c: textview_button_pressed(): アドレスをクリックした
+	  とき正しいアカウントを選択するようにした。
+
 2004-01-29
 
 	* version 0.9.9

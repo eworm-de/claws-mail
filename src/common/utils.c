@@ -3420,6 +3420,7 @@ int subject_get_prefix_length(const gchar *subject)
 		"Fw\\:",			/* "Fw:" Forward */
 		"Enc\\:",			/* "Enc:" Forward (Brazilian Outlook) */
 		"Odp\\:",			/* "Odp:" Re (Polish Outlook) */
+		"Rif\\:"			/* "Rif:" (Italian Outlook) */
 		/* add more */
 	};
 	const int PREFIXES = sizeof prefixes / sizeof prefixes[0];
@@ -3543,14 +3544,15 @@ gchar *expand_search_string(const gchar *search_string)
 		return copy_str;
 
 	matcherstr = g_string_sized_new(16);
-	cmd_start = cmd_end = copy_str;
-	while (cmd_end && *cmd_end) {
+	cmd_start = copy_str;
+	while (cmd_start && *cmd_start) {
 		/* skip all white spaces */
-		while (*cmd_end && isspace(*cmd_end))
-			cmd_end++;
+		while (*cmd_start && isspace((guchar)*cmd_start))
+			cmd_start++;
+        cmd_end = cmd_start;
 
 		/* extract a command */
-		while (*cmd_end && !isspace(*cmd_end))
+		while (*cmd_end && !isspace((guchar)*cmd_end))
 			cmd_end++;
 
 		/* save character */
@@ -3593,7 +3595,8 @@ gchar *expand_search_string(const gchar *search_string)
 					break;
 
 				/* extract a parameter, allow quotes */
-				cmd_end++;
+                while (*cmd_end && isspace((guchar)*cmd_end))
+			      cmd_end++;
 				cmd_start = cmd_end;
 				if (*cmd_start == '"') {
 					term_char = '"';
@@ -3605,9 +3608,6 @@ gchar *expand_search_string(const gchar *search_string)
 				/* extract actual parameter */
 				while ((*cmd_end) && (*cmd_end != term_char))
 					cmd_end++;
-
-				if (*cmd_end && (*cmd_end != term_char))
-					break;
 
 				if (*cmd_end == '"')
 					cmd_end++;
@@ -3640,10 +3640,9 @@ gchar *expand_search_string(const gchar *search_string)
 			}
 		}
 
-		if (*cmd_end) {
+		if (*cmd_end)
 			cmd_end++;
-			cmd_start = cmd_end;
-		}
+		cmd_start = cmd_end;
 	}
 
 	g_free(copy_str);
@@ -3658,7 +3657,7 @@ guint g_stricase_hash(gconstpointer gptr)
 	const char *str;
 
 	for (str = gptr; str && *str; str++) {
-		if (isupper(*str)) hash_result += (*str + ' ');
+		if (isupper((guchar)*str)) hash_result += (*str + ' ');
 		else hash_result += *str;
 	}
 
@@ -3728,7 +3727,7 @@ gint quote_cmd_argument(gchar * result, guint size,
 
 	for(p = path ; * p != '\0' ; p ++) {
 
-		if (isalnum(* p) || (* p == '/')) {
+		if (isalnum((guchar)*p) || (* p == '/')) {
 			if (remaining > 0) {
 				* result_p = * p;
 				result_p ++; 

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -196,6 +196,8 @@ static GtkItemFactoryEntry msgview_entries[] =
 	 CODESET_ACTION(C_ISO_8859_5)},
 	{N_("/_View/_Code set/Cyrillic (KOI8-_R)"),
 	 CODESET_ACTION(C_KOI8_R)},
+	{N_("/_View/_Code set/Cyrillic (KOI8-U)"),
+	 CODESET_ACTION(C_KOI8_U)},
 	{N_("/_View/_Code set/Cyrillic (Windows-1251)"),
 	 CODESET_ACTION(C_CP1251)},
 	CODESET_SEPARATOR,
@@ -237,7 +239,7 @@ static GtkItemFactoryEntry msgview_entries[] =
 
 	{N_("/_View/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Mess_age source"),	NULL, view_source_cb, 0, NULL},
-	{N_("/_View/Show all _header"),	NULL, show_all_header_cb, 0, "<ToggleItem>"},
+	{N_("/_View/Show all _headers"),NULL, show_all_header_cb, 0, "<ToggleItem>"},
 
 	{N_("/_Message"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Message/Compose _new message"),
@@ -319,19 +321,22 @@ MessageView *messageview_create(MainWindow *mainwin)
                            GTK_WIDGET_PTR(mimeview), TRUE, TRUE, 0);
 	gtk_widget_show(vbox);
 
-	messageview->vbox       = vbox;
-	messageview->new_window = FALSE;
-	messageview->window     = NULL;
-	messageview->headerview = headerview;
-	messageview->mimeview   = mimeview;
+	messageview->vbox        = vbox;
+	messageview->new_window  = FALSE;
+	messageview->window      = NULL;
+	messageview->headerview  = headerview;
+	messageview->mimeview    = mimeview;
 	messageview->noticeview = noticeview;
 	messageview->mainwin    = mainwin;
+
+	messageview->statusbar     = NULL;
+	messageview->statusbar_cid = 0;
+
 	messageview->msginfo_update_callback_id =
 		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, messageview_update_msg, (gpointer) messageview);
 
 	return messageview;
 }
-
 
 GList *messageview_get_msgview_list(void)
 {
@@ -354,22 +359,32 @@ void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
  	GtkWidget *handlebox;
 	GtkWidget *vbox;
 	GtkWidget *menubar;
+	GtkWidget *statusbar;
 	GtkItemFactory *ifactory;
 	guint n_menu_entries;
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);	
-	
+
 	n_menu_entries = sizeof(msgview_entries) / sizeof(msgview_entries[0]);
 	menubar = menubar_create(window, msgview_entries,
 				 n_menu_entries, "<MessageView>", msgview);
+	gtk_widget_show(menubar);
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 
 	handlebox = gtk_handle_box_new();
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 	msgview->toolbar = toolbar_create(TOOLBAR_MSGVIEW, handlebox,
 					  (gpointer)msgview);
+
+	statusbar = gtk_statusbar_new();
+	gtk_widget_show(statusbar);
+	gtk_box_pack_end(GTK_BOX(vbox), statusbar, FALSE, FALSE, 0);
+	msgview->statusbar = statusbar;
+	msgview->statusbar_cid = gtk_statusbar_get_context_id
+		(GTK_STATUSBAR(statusbar), "Message View");
+
 	msgview->handlebox = handlebox;
 	msgview->menubar   = menubar;
 
@@ -383,8 +398,8 @@ void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 
 MessageView *messageview_create_with_new_window(MainWindow *mainwin)
 {
-	GtkWidget *window;
 	MessageView *msgview;
+	GtkWidget *window;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Sylpheed - Message View"));
@@ -765,35 +780,47 @@ void messageview_destroy(MessageView *messageview)
 
 void messageview_delete(MessageView *msgview)
 {
-	MsgInfo *msginfo = (MsgInfo *) msgview->msginfo;
+	MsgInfo *msginfo = NULL;
 	FolderItem *trash = NULL;
 	PrefsAccount *ac = NULL;
 
-	g_return_if_fail(msginfo != NULL);
+	if (msgview->msginfo && msgview->mainwin && msgview->mainwin->summaryview)
+		msginfo = summary_get_selected_msg(msgview->mainwin->summaryview);
+	
+	/* need a procmsg_msginfo_equal() */
+	if (msginfo && msgview->msginfo && 
+	    msginfo->msgnum == msgview->msginfo->msgnum && 
+	    msginfo->folder == msgview->msginfo->folder) {
+		summary_delete(msgview->mainwin->summaryview);
+	} else {		
+		msginfo = msgview->msginfo;
 
-	/* to get the trash folder, we have to choose either
-	 * the folder's or account's trash default - we prefer
-	 * the one in the account prefs */
-	if (msginfo->folder) {
-		if (NULL != (ac = account_find_from_item(msginfo->folder)))
-			trash = account_get_special_folder(ac, F_TRASH);
-		if (!trash && msginfo->folder->folder)	
-			trash = msginfo->folder->folder->trash;
-		/* if still not found, use the default */
-		if (!trash) 
-			trash =	folder_get_default_trash();
-	}	
+		g_return_if_fail(msginfo != NULL);
 
-	g_return_if_fail(trash   != NULL);
+		/* to get the trash folder, we have to choose either
+		 * the folder's or account's trash default - we prefer
+		 * the one in the account prefs */
+		if (msginfo->folder) {
+			if (NULL != (ac = account_find_from_item(msginfo->folder)))
+				trash = account_get_special_folder(ac, F_TRASH);
+			if (!trash && msginfo->folder->folder)	
+				trash = msginfo->folder->folder->trash;
+			/* if still not found, use the default */
+			if (!trash) 
+				trash =	folder_get_default_trash();
+		}	
 
-	if (prefs_common.immediate_exec)
-		/* TODO: Delete from trash */
-		folder_item_move_msg(trash, msginfo);
-	else {
-		procmsg_msginfo_set_to_folder(msginfo, trash);
-		procmsg_msginfo_set_flags(msginfo, MSG_DELETED, 0);
-		/* NOTE: does not update to next message in summaryview */
-	}
+		g_return_if_fail(trash != NULL);
+
+		if (prefs_common.immediate_exec)
+			/* TODO: Delete from trash */
+			folder_item_move_msg(trash, msginfo);
+		else {
+			procmsg_msginfo_set_to_folder(msginfo, trash);
+			procmsg_msginfo_set_flags(msginfo, MSG_DELETED, 0);
+			/* NOTE: does not update to next message in summaryview */
+		}
+	}		
 }
 
 /* 
@@ -891,6 +918,7 @@ gboolean messageview_search_string_backward(MessageView *messageview,
 	TextView *text;
 
 	text = messageview_get_current_textview(messageview);
+	if (text)	
 		return textview_search_string_backward(text,
 						       str, case_sens);
 	return FALSE;
@@ -1188,6 +1216,7 @@ static void show_all_header_cb(gpointer data, guint action, GtkWidget *widget)
 	messageview_show(messageview, msginfo,
 			 GTK_CHECK_MENU_ITEM(widget)->active);
 	procmsg_msginfo_free(msginfo);
+	main_window_set_menu_sensitive(messageview->mainwin);
 }
 
 static void compose_cb(gpointer data, guint action, GtkWidget *widget)
@@ -1382,4 +1411,23 @@ static gboolean messageview_update_msg(gpointer source, gpointer data)
 	}
 
 	return FALSE;
+}
+
+void messageview_set_menu_sensitive(MessageView *messageview)
+{
+	GtkItemFactory *ifactory;
+	GtkWidget *menuitem;
+
+	if (!messageview && !messageview->new_window) 
+		return;
+	/* do some smart things */
+	if (!messageview->menubar) return;
+	ifactory = gtk_item_factory_from_widget(messageview->menubar);
+	if (!ifactory) return;
+	if (messageview->mainwin->type == SEPARATE_MESSAGE) {
+		menuitem = gtk_item_factory_get_widget(ifactory, "/View/Show all headers");
+		gtk_check_menu_item_set_active
+			(GTK_CHECK_MENU_ITEM(menuitem),
+			 messageview->mimeview->textview->show_all_headers);
+	}
 }

@@ -56,7 +56,7 @@
 	} \
 }
 
-gint proc_mbox(FolderItem *dest, const gchar *mbox)
+gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 {
 	FILE *mbox_fp;
 	gchar buf[MSGBUFSIZE], from_line[MSGBUFSIZE];
@@ -214,7 +214,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox)
 		}
 
 		msginfo = folder_item_get_msginfo(dropfolder, msgnum);
-		if (!procmsg_msginfo_filter(msginfo))
+                if (!apply_filter || !procmsg_msginfo_filter(msginfo))
 			folder_item_move_msg(dest, msginfo);
 		procmsg_msginfo_free(msginfo);
 

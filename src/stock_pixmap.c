@@ -52,6 +52,7 @@
 #include "pixmaps/key.xpm"
 #include "pixmaps/ldap.xpm"
 #include "pixmaps/linewrap.xpm"
+#include "pixmaps/linewrapcurrent.xpm"
 #include "pixmaps/mark.xpm"
 #include "pixmaps/locked.xpm"
 #include "pixmaps/new.xpm"
@@ -160,6 +161,7 @@ static StockPixmapData pixmaps[] =
 	{jpilot_xpm				, NULL, NULL, "jpilot", NULL},
 	{key_xpm				, NULL, NULL, "key", NULL},
 	{ldap_xpm				, NULL, NULL, "ldap", NULL},
+	{linewrapcurrent_xpm			, NULL, NULL, "linewrapcurrent", NULL},
 	{linewrap_xpm				, NULL, NULL, "linewrap", NULL},
 	{locked_xpm				, NULL, NULL, "locked", NULL},
 	{mail_xpm				, NULL, NULL, "mail", NULL},
@@ -272,7 +274,7 @@ gint stock_pixmap_gdk(GtkWidget *window, StockPixmap icon,
 			} else {
 				/* even the path does not exist (deleted between two sessions), so
 				set the preferences to the internal theme */
-				prefs_common.pixmap_theme_path = DEFAULT_PIXMAP_THEME;
+				prefs_common.pixmap_theme_path = g_strdup(DEFAULT_PIXMAP_THEME);
 			}
 		}
 		pix_d->pixmap = pix;

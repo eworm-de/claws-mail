@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,9 +94,22 @@ static void inc_session_destroy		(IncSession		*session);
 static gint inc_start			(IncProgressDialog	*inc_dialog);
 static IncState inc_pop3_session_do	(IncSession		*session);
 
+static void inc_timer_start		(IncProgressDialog	*inc_dialog,
+					 IncSession		*inc_session);
+static void inc_timer_stop		(IncProgressDialog	*inc_dialog);
+
+static void inc_progress_dialog_update	(IncProgressDialog	*inc_dialog,
+					 IncSession		*inc_session);
+
 static void inc_progress_dialog_set_label
 					(IncProgressDialog	*inc_dialog,
 					 IncSession		*inc_session);
+static void inc_progress_dialog_set_progress
+					(IncProgressDialog	*inc_dialog,
+					 IncSession		*inc_session);
+
+static gint inc_progress_timer_func	(gpointer	 data);
+static gint inc_folder_timer_func	(gpointer	 data);
 
 static gint inc_recv_data_progressive	(Session	*session,
 					 guint		 cur_len,
@@ -108,6 +121,8 @@ static gint inc_recv_data_finished	(Session	*session,
 static gint inc_recv_message		(Session	*session,
 					 const gchar	*msg,
 					 gpointer	 data);
+static gint inc_drop_message		(Pop3Session	*session,
+					 const gchar	*file);
 
 static void inc_put_error		(IncState	 istate,
 					 const gchar	*msg);
@@ -379,6 +394,8 @@ static IncProgressDialog *inc_progress_dialog_create(gboolean autocheck)
 	}
 
 	dialog->dialog = progress;
+	dialog->progress_timer_id = 0;
+	dialog->folder_timer_id = 0;
 	dialog->queue_list = NULL;
 	dialog->cur_row = 0;
 
@@ -438,8 +455,20 @@ static IncSession *inc_session_new(PrefsAccount *account)
 		return NULL;
 
 	session = g_new0(IncSession, 1);
+
 	session->session = pop3_session_new(account);
 	session->session->data = session;
+	POP3_SESSION(session->session)->drop_message = inc_drop_message;
+	session_set_recv_message_notify(session->session,
+					inc_recv_message, session);
+	session_set_recv_data_progressive_notify(session->session,
+						 inc_recv_data_progressive,
+						 session);
+	session_set_recv_data_notify(session->session,
+				     inc_recv_data_finished, session);
+
+	session->folder_table = g_hash_table_new(NULL, NULL);
+	session->tmp_folder_table = g_hash_table_new(NULL, NULL);
 
 	return session;
 }
@@ -449,6 +478,8 @@ static void inc_session_destroy(IncSession *session)
 	g_return_if_fail(session != NULL);
 
 	session_destroy(session->session);
+	g_hash_table_destroy(session->folder_table);
+	g_hash_table_destroy(session->tmp_folder_table);
 	g_free(session);
 }
 
@@ -531,13 +562,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		SET_PIXMAP_AND_TEXT(currentxpm, currentxpmmask,
 				    _("Retrieving"));
 
-		session_set_recv_message_notify(session->session,
-						inc_recv_message, session);
-		session_set_recv_data_progressive_notify
-			(session->session, inc_recv_data_progressive, session);
-		session_set_recv_data_notify(session->session,
-					     inc_recv_data_finished, session);
-
 		/* begin POP3 session */
 		inc_state = inc_pop3_session_do(session);
 
@@ -582,13 +606,8 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		if (pop3_session->error_val == PS_AUTHFAIL) {
 			if(!prefs_common.no_recv_err_panel) {
 				if((prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS) ||
-				    ((prefs_common.recv_dialog_mode == RECV_DIALOG_MANUAL) && focus_window)) {
+				    ((prefs_common.recv_dialog_mode == RECV_DIALOG_MANUAL) && focus_window))
 					manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
-				}
-				alertpanel_error
-					(_("Authorization for %s on %s failed"),
-					 pop3_session->user,
-					 pop3_session->ac_prefs->recv_server);
 			}
 		}
 
@@ -607,8 +626,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		folder_item_scan(processing);
 		msglist = folder_item_get_msg_list(processing);
 
-		folder_item_update_freeze();
-
 		/* process messages */
 		for(msglist_element = msglist; msglist_element != NULL; msglist_element = msglist_element->next) {
 			msginfo = (MsgInfo *) msglist_element->data;
@@ -617,8 +634,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			procmsg_msginfo_free(msginfo);
 		}
 		g_slist_free(msglist);
-
-		folder_item_update_thaw();
 
 		statusbar_pop_all();
 
@@ -682,7 +697,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			g_list_remove(inc_dialog->queue_list, session);
 	}
 
-	if (prefs_common.close_recv_dialog)
+	if (prefs_common.close_recv_dialog || !inc_dialog->show_dialog)
 		inc_progress_dialog_destroy(inc_dialog);
 	else {
 		gtk_window_set_title(GTK_WINDOW(inc_dialog->dialog->window),
@@ -755,6 +770,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	       session->inc_state != INC_CANCEL)
 		gtk_main_iteration();
 
+	inc_timer_stop(inc_dialog);
 	statusbar_pop_all();
 
 	if (session->inc_state == INC_SUCCESS) {
@@ -791,6 +807,40 @@ static IncState inc_pop3_session_do(IncSession *session)
 	return session->inc_state;
 }
 
+static void inc_timer_start(IncProgressDialog *inc_dialog,
+			    IncSession *inc_session)
+{
+	if (inc_dialog->progress_timer_id == 0) {
+		inc_dialog->progress_timer_id =
+			gtk_timeout_add(PROGRESS_UPDATE_INTERVAL,
+					inc_progress_timer_func, inc_session);
+	}
+	if (inc_dialog->folder_timer_id == 0) {
+		inc_dialog->folder_timer_id =
+			gtk_timeout_add(FOLDER_UPDATE_INTERVAL,
+					inc_folder_timer_func, inc_session);
+	}
+}
+
+static void inc_timer_stop(IncProgressDialog *inc_dialog)
+{
+	if (inc_dialog->progress_timer_id) {
+		gtk_timeout_remove(inc_dialog->progress_timer_id);
+		inc_dialog->progress_timer_id = 0;
+	}
+	if (inc_dialog->folder_timer_id) {
+		gtk_timeout_remove(inc_dialog->folder_timer_id);
+		inc_dialog->folder_timer_id = 0;
+	}
+}
+
+static void inc_progress_dialog_update(IncProgressDialog *inc_dialog,
+				       IncSession *inc_session)
+{
+	inc_progress_dialog_set_label(inc_dialog, inc_session);
+	inc_progress_dialog_set_progress(inc_dialog, inc_session);
+}
+
 static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
 					  IncSession *inc_session)
 {
@@ -809,8 +859,9 @@ static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
 	case POP3_GETAUTH_PASS:
 	case POP3_GETAUTH_APOP:
 		progress_dialog_set_label(dialog, _("Authenticating..."));
-		statusbar_print_all(_("Retrieving messages from %s..."),
-				    SESSION(session)->server);
+		statusbar_print_all(_("Retrieving messages from %s (%s) ..."),
+				    SESSION(session)->server,
+				    session->ac_prefs->account_name);
 		break;
 	case POP3_GETRANGE_STAT:
 		progress_dialog_set_label
@@ -829,16 +880,7 @@ static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
 			(dialog, _("Getting the size of messages (LIST)..."));
 		break;
 	case POP3_RETR:
-		gtk_progress_set_show_text
-			(GTK_PROGRESS(inc_dialog->mainwin->progressbar), TRUE);
-		g_snprintf(buf, sizeof(buf), "%d / %d",
-			   session->cur_msg, session->count);
-		gtk_progress_set_format_string
-			(GTK_PROGRESS(inc_dialog->mainwin->progressbar), buf);
-		inc_recv_data_progressive
-			(SESSION(session), 0,
-			 session->msg[session->cur_msg].size,
-			 inc_session);
+	case POP3_RETR_RECV:
 		break;
 	case POP3_DELETE:
 		if (session->msg[session->cur_msg].recv_time <
@@ -856,16 +898,93 @@ static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
 	}
 }
 
+static void inc_progress_dialog_set_progress(IncProgressDialog *inc_dialog,
+					     IncSession *inc_session)
+{
+	gchar buf[MSGBUFSIZE];
+	Pop3Session *pop3_session = POP3_SESSION(inc_session->session);
+	gchar *total_size_str;
+	gint cur_total;
+	gint total;
+
+	if (!pop3_session->new_msg_exist) return;
+
+	cur_total = inc_session->cur_total_bytes;
+	total = pop3_session->total_bytes;
+	if (pop3_session->state == POP3_RETR ||
+	    pop3_session->state == POP3_RETR_RECV) {
+		Xstrdup_a(total_size_str, to_human_readable(total), return);
+		g_snprintf(buf, sizeof(buf),
+			   _("Retrieving message (%d / %d) (%s / %s)"),
+			   pop3_session->cur_msg, pop3_session->count,
+			   to_human_readable(cur_total), total_size_str);
+		progress_dialog_set_label(inc_dialog->dialog, buf);
+	}
+
+	progress_dialog_set_percentage
+		(inc_dialog->dialog,(gfloat)cur_total / (gfloat)total);
+
+	gtk_progress_set_show_text
+		(GTK_PROGRESS(inc_dialog->mainwin->progressbar), TRUE);
+	g_snprintf(buf, sizeof(buf), "%d / %d",
+		   pop3_session->cur_msg, pop3_session->count);
+	gtk_progress_set_format_string
+		(GTK_PROGRESS(inc_dialog->mainwin->progressbar), buf);
+	gtk_progress_bar_update
+		(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
+		 (gfloat)cur_total / (gfloat)total);
+
+	if (pop3_session->cur_total_num > 0) {
+		g_snprintf(buf, sizeof(buf),
+			   _("Retrieving (%d message(s) (%s) received)"),
+			   pop3_session->cur_total_num,
+			   to_human_readable
+			   (pop3_session->cur_total_recv_bytes));
+		gtk_clist_set_text(GTK_CLIST(inc_dialog->dialog->clist),
+				   inc_dialog->cur_row, 2, buf);
+	}
+}
+
+static gboolean hash_remove_func(gpointer key, gpointer value, gpointer data)
+{
+	return TRUE;
+}
+
+static gint inc_progress_timer_func(gpointer data)
+{
+	IncSession *inc_session = (IncSession *)data;
+	IncProgressDialog *inc_dialog;
+
+	inc_dialog = (IncProgressDialog *)inc_session->data;
+
+	inc_progress_dialog_update(inc_dialog, inc_session);
+
+	return TRUE;
+}
+
+static gint inc_folder_timer_func(gpointer data)
+{
+	IncSession *inc_session = (IncSession *)data;
+	IncProgressDialog *inc_dialog;
+
+	inc_dialog = (IncProgressDialog *)inc_session->data;
+
+	if (g_hash_table_size(inc_session->tmp_folder_table) > 0) {
+		folderview_update_item_foreach(inc_session->tmp_folder_table,
+					       FALSE);
+		g_hash_table_foreach_remove(inc_session->tmp_folder_table,
+					    hash_remove_func, NULL);
+	}
+
+	return TRUE;
+}
+
 static gint inc_recv_data_progressive(Session *session, guint cur_len,
 				      guint total_len, gpointer data)
 {
-	gchar buf[MSGBUFSIZE];
 	IncSession *inc_session = (IncSession *)data;
 	Pop3Session *pop3_session = POP3_SESSION(session);
-	IncProgressDialog *inc_dialog;
-	ProgressDialog *dialog;
 	gint cur_total;
-	gchar *total_size;
 
 	g_return_val_if_fail(inc_session != NULL, -1);
 
@@ -876,26 +995,10 @@ static gint inc_recv_data_progressive(Session *session, guint cur_len,
 
 	if (!pop3_session->new_msg_exist) return 0;
 
-	inc_dialog = (IncProgressDialog *)inc_session->data;
-	dialog = inc_dialog->dialog;
-
 	cur_total = pop3_session->cur_total_bytes + cur_len;
 	if (cur_total > pop3_session->total_bytes)
 		cur_total = pop3_session->total_bytes;
-
-	Xstrdup_a(total_size, to_human_readable(pop3_session->total_bytes),
-		  return FALSE);
-	g_snprintf(buf, sizeof(buf),
-		   _("Retrieving message (%d / %d) (%s / %s)"),
-		   pop3_session->cur_msg, pop3_session->count,
-		   to_human_readable(cur_total), total_size);
-	progress_dialog_set_label(dialog, buf);
-	progress_dialog_set_percentage
-		(dialog, (gfloat)cur_total / (gfloat)pop3_session->total_bytes);
-	if (inc_dialog->mainwin)
-		gtk_progress_bar_update
-			(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
-			 (gfloat)cur_total / (gfloat)pop3_session->total_bytes);
+	inc_session->cur_total_bytes = cur_total;
 
 	return 0;
 }
@@ -903,25 +1006,25 @@ static gint inc_recv_data_progressive(Session *session, guint cur_len,
 static gint inc_recv_data_finished(Session *session, guint len, gpointer data)
 {
 	IncSession *inc_session = (IncSession *)data;
-	Pop3Session *pop3_session = POP3_SESSION(session);
 	IncProgressDialog *inc_dialog;
-	gchar *msg;
 
 	g_return_val_if_fail(inc_session != NULL, -1);
 
 	inc_dialog = (IncProgressDialog *)inc_session->data;
-	inc_recv_data_progressive(session, 0, len, inc_session);
-	inc_progress_dialog_set_label(inc_dialog, inc_session);
+	inc_recv_data_progressive(session, 0, 0, inc_session);
 
-	if (pop3_session->cur_total_num == 0) return 0;
-
-	msg = g_strdup_printf(_("Retrieving (%d message(s) (%s) received)"),
-			      pop3_session->cur_total_num,
-			      to_human_readable
-				(pop3_session->cur_total_recv_bytes));
-	gtk_clist_set_text(GTK_CLIST(inc_dialog->dialog->clist),
-			   inc_dialog->cur_row, 2, msg);
-	g_free(msg);			   
+	if (POP3_SESSION(session)->state == POP3_RETR) {
+		if (inc_dialog->progress_timer_id == 0) {
+			inc_timer_start(inc_dialog, inc_session);
+			inc_progress_dialog_update(inc_dialog, inc_session);
+		}
+	} else if (POP3_SESSION(session)->state == POP3_LOGOUT) {
+		inc_progress_dialog_update(inc_dialog, inc_session);
+		if (inc_dialog->progress_timer_id) {
+			inc_folder_timer_func(data);
+			inc_timer_stop(inc_dialog);
+		}
+	}
 
 	return 0;
 }
@@ -934,16 +1037,48 @@ static gint inc_recv_message(Session *session, const gchar *msg, gpointer data)
 	g_return_val_if_fail(inc_session != NULL, -1);
 
 	inc_dialog = (IncProgressDialog *)inc_session->data;
-	inc_progress_dialog_set_label(inc_dialog, inc_session);
+
+	switch (POP3_SESSION(session)->state) {
+	case POP3_GETAUTH_USER:
+	case POP3_GETAUTH_PASS:
+	case POP3_GETAUTH_APOP:
+	case POP3_GETRANGE_STAT:
+	case POP3_GETRANGE_LAST:
+	case POP3_GETRANGE_UIDL:
+	case POP3_GETSIZE_LIST:
+		inc_progress_dialog_update(inc_dialog, inc_session);
+		break;
+	case POP3_RETR:
+		inc_recv_data_progressive(session, 0, 0, inc_session);
+		if (inc_dialog->progress_timer_id == 0) {
+			inc_timer_start(inc_dialog, inc_session);
+			inc_progress_dialog_update(inc_dialog, inc_session);
+		}
+		break;
+	case POP3_LOGOUT:
+		inc_progress_dialog_update(inc_dialog, inc_session);
+		if (inc_dialog->progress_timer_id) {
+			inc_folder_timer_func(data);
+			inc_timer_stop(inc_dialog);
+		}
+		break;
+	default:
+		break;
+	}
 
 	return 0;
 }
 
-gint inc_drop_message(const gchar *file, Pop3Session *session)
+static gint inc_drop_message(Pop3Session *session, const gchar *file)
 {
 	FolderItem *inbox;
 	FolderItem *dropfolder;
+	IncSession *inc_session = (IncSession *)(SESSION(session)->data);
+	IncProgressDialog *inc_dialog;
 	gint msgnum;
+	gint val;
+
+	g_return_val_if_fail(inc_session != NULL, -1);
 
 	if (session->ac_prefs->inbox) {
 		inbox = folder_find_item_from_identifier
@@ -965,6 +1100,8 @@ gint inc_drop_message(const gchar *file, Pop3Session *session)
 		unlink(file);
 		return -1;
 	}
+
+	inc_dialog = (IncProgressDialog *)inc_session->data;
 
 	return 0;
 }
@@ -1101,8 +1238,7 @@ static gint inc_dialog_delete_cb(GtkWidget *widget, GdkEventAny *event,
 static gint inc_spool_account(PrefsAccount *account)
 {
 	FolderItem *inbox;
-	gchar *mbox;
-	const gchar *logname;
+	gchar *mbox, *logname;
 	gint result;
 
 	logname = g_get_user_name();
@@ -1180,7 +1316,7 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 	debug_print("Getting new messages from %s into %s...\n",
 		    mbox, dest->path);
 
-	msgs = proc_mbox(dest, tmp_mbox);
+	msgs = proc_mbox(dest, tmp_mbox, TRUE);
 
 	unlink(tmp_mbox);
 	if (msgs >= 0) empty_mbox(mbox);

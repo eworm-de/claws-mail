@@ -88,6 +88,8 @@
 #include "progressindicator.h"
 #include "localfolder.h"
 #include "filtering.h"
+#include "folderutils.h"
+#include "foldersort.h"
 
 #define AC_LABEL_WIDTH	240
 
@@ -143,21 +145,15 @@ static void message_window_size_allocate_cb	(GtkWidget	*widget,
 						 GtkAllocation	*allocation,
 						 gpointer	 data);
 
-static void new_folder_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void rename_folder_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void delete_folder_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
 static void update_folderview_cb (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 static void add_mailbox_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void foldersort_cb	 (MainWindow 	*mainwin,
+				  guint		 action,
+                        	  GtkWidget 	*widget);
 static void import_mbox_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -291,6 +287,9 @@ static void attract_by_subject_cb(MainWindow	*mainwin,
 				  GtkWidget	*widget);
 
 static void delete_duplicated_cb (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
+static void delete_duplicated_all_cb (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 static void filter_cb		 (MainWindow	*mainwin,
@@ -433,16 +432,9 @@ gboolean mainwindow_progressindicator_hook	(gpointer 	 source,
 static GtkItemFactoryEntry mainwin_entries[] =
 {
 	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_File/_Folder"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_File/_Folder/Create _new folder..."),
-						NULL, new_folder_cb, 0, NULL},
-	{N_("/_File/_Folder/_Rename folder..."),NULL, rename_folder_cb, 0, NULL},
-	{N_("/_File/_Folder/_Delete folder"),	NULL, delete_folder_cb, 0, NULL},
-	{N_("/_File/_Folder/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_File/_Folder/_Check for new messages in all folders"),
-						NULL, update_folderview_cb, 0, NULL},
 	{N_("/_File/_Add mailbox"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Add mailbox/MH..."),	NULL, add_mailbox_cb, 0, NULL},
+	{N_("/_File/Change folder order"),	NULL, foldersort_cb,  0, NULL},
 	{N_("/_File/_Import mbox file..."),	NULL, import_mbox_cb, 0, NULL},
 	{N_("/_File/_Export to mbox file..."),	NULL, export_mbox_cb, 0, NULL},
 	{N_("/_File/Empty _trash"),		"<shift>D", empty_trash_cb, 0, NULL},
@@ -580,6 +572,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	 CODESET_ACTION(C_ISO_8859_5)},
 	{N_("/_View/_Code set/Cyrillic (KOI8-_R)"),
 	 CODESET_ACTION(C_KOI8_R)},
+	{N_("/_View/_Code set/Cyrillic (KOI8-U)"),
+	 CODESET_ACTION(C_KOI8_U)},
 	{N_("/_View/_Code set/Cyrillic (Windows-1251)"),
 	 CODESET_ACTION(C_WINDOWS_1251)},
 	CODESET_SEPARATOR,
@@ -676,7 +670,10 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Tools/_Harvest addresses/from _Messages..."),
 						NULL, addr_harvest_msg_cb, 0, NULL},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Tools/_Filter messages"),		NULL, filter_cb, 0, NULL},
+	{N_("/_Tools/_Filter all messages in folder"),
+						NULL, filter_cb, 0, NULL},
+	{N_("/_Tools/Filter _selected messages"),
+						NULL, filter_cb, 1, NULL},
 	{N_("/_Tools/_Create filter rule"),	NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/_Create filter rule/_Automatically"),
 						NULL, create_filter_cb, FILTER_BY_AUTO, NULL},
@@ -698,8 +695,14 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/Actio_ns"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Tools/_Check for new messages in all folders"),
+						NULL, update_folderview_cb, 0, NULL},
 	{N_("/_Tools/Delete du_plicated messages"),
+						NULL, NULL, 0, "<Branch>"},
+	{N_("/_Tools/Delete du_plicated messages/In selected folder"),
 						NULL, delete_duplicated_cb,   0, NULL},
+	{N_("/_Tools/Delete du_plicated messages/In all folders"),
+						NULL, delete_duplicated_all_cb,   0, NULL},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/E_xecute"),		"X", execute_summary_cb, 0, NULL},
 #ifdef USE_OPENSSL
@@ -914,22 +917,22 @@ MainWindow *main_window_create(SeparateType type)
 	summaryview->messageview = messageview;
 	summaryview->window      = window;
 
-	mainwin->vbox         = vbox;
-	mainwin->menubar      = menubar;
-	mainwin->menu_factory = ifactory;
-	mainwin->handlebox    = handlebox;
-	mainwin->vbox_body    = vbox_body;
-	mainwin->hbox_stat    = hbox_stat;
-	mainwin->statusbar    = statusbar;
-	mainwin->progressbar  = progressbar;
-	mainwin->statuslabel  = statuslabel;
-	mainwin->ac_button    = ac_button;
-	mainwin->ac_label     = ac_label;
-	
-	mainwin->online_switch     = online_switch;
+	messageview->statusbar   = statusbar;
+	mainwin->vbox           = vbox;
+	mainwin->menubar        = menubar;
+	mainwin->menu_factory   = ifactory;
+	mainwin->handlebox      = handlebox;
+	mainwin->vbox_body      = vbox_body;
+	mainwin->hbox_stat      = hbox_stat;
+	mainwin->statusbar      = statusbar;
+	mainwin->progressbar    = progressbar;
+	mainwin->statuslabel    = statuslabel;
+	mainwin->online_switch  = online_switch;
+	mainwin->online_pixmap  = online_pixmap;
+	mainwin->offline_pixmap = offline_pixmap;
+	mainwin->ac_button      = ac_button;
+	mainwin->ac_label       = ac_label;
 	mainwin->offline_switch    = offline_switch;
-	mainwin->online_pixmap	   = online_pixmap;
-	mainwin->offline_pixmap    = offline_pixmap;
 	
 	/* set context IDs for status bar */
 	mainwin->mainwin_cid = gtk_statusbar_get_context_id
@@ -940,6 +943,8 @@ MainWindow *main_window_create(SeparateType type)
 		(GTK_STATUSBAR(statusbar), "Summary View");
 	mainwin->messageview_cid = gtk_statusbar_get_context_id
 		(GTK_STATUSBAR(statusbar), "Message View");
+
+	messageview->statusbar_cid = mainwin->messageview_cid;
 
 	/* allocate colors for summary view and folder view */
 	summaryview->color_marked.red = summaryview->color_marked.green = 0;
@@ -1688,10 +1693,10 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		gchar *const entry;
 		SensitiveCond cond;
 	} entry[] = {
-		{"/File/Folder"                               , M_UNLOCKED},
 		{"/File/Add mailbox"                          , M_UNLOCKED},
 
                 {"/File/Add mailbox/MH..."   		      , M_UNLOCKED},
+		{"/File/Change folder order"	      	      , M_UNLOCKED},
 		{"/File/Export to mbox file..."               , M_UNLOCKED},
 		{"/File/Empty trash"                          , M_UNLOCKED},
 		{"/File/Work offline"	       		      , M_UNLOCKED},
@@ -1740,13 +1745,14 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Cancel a news message" , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NEWS},
 		{"/Message/Mark"   		  , M_TARGET_EXIST},
 
-		{"/Tools/Add sender to address book", M_SINGLE_TARGET_EXIST},
-		{"/Tools/Harvest addresses"	    , M_UNLOCKED},
-		{"/Tools/Filter messages"           , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Tools/Create filter rule"        , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
-		{"/Tools/Actions"                   , M_TARGET_EXIST|M_UNLOCKED},
-		{"/Tools/Execute"                   , M_DELAY_EXEC},
-		{"/Tools/Delete duplicated messages", M_MSG_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
+		{"/Tools/Add sender to address book"   , M_SINGLE_TARGET_EXIST},
+		{"/Tools/Harvest addresses"	       , M_UNLOCKED},
+		{"/Tools/Filter all messages in folder", M_MSG_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Tools/Filter selected messages"     , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Tools/Create filter rule"           , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+		{"/Tools/Actions"                      , M_TARGET_EXIST|M_UNLOCKED},
+		{"/Tools/Execute"                      , M_DELAY_EXEC},
+		{"/Tools/Delete duplicated messages/In selected folder"   , M_MSG_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 
 		{"/Configuration", M_UNLOCKED},
 
@@ -2308,22 +2314,10 @@ static void update_folderview_cb(MainWindow *mainwin, guint action,
 	folderview_check_new_all();
 }
 
-static void new_folder_cb(MainWindow *mainwin, guint action,
-			  GtkWidget *widget)
+static void foldersort_cb(MainWindow *mainwin, guint action,
+                           GtkWidget *widget)
 {
-	folderview_new_folder(mainwin->folderview);
-}
-
-static void rename_folder_cb(MainWindow *mainwin, guint action,
-			     GtkWidget *widget)
-{
-	folderview_rename_folder(mainwin->folderview);
-}
-
-static void delete_folder_cb(MainWindow *mainwin, guint action,
-			     GtkWidget *widget)
-{
-	folderview_delete_folder(mainwin->folderview);
+	foldersort_open();
 }
 
 static void import_mbox_cb(MainWindow *mainwin, guint action,
@@ -2707,12 +2701,52 @@ static void attract_by_subject_cb(MainWindow *mainwin, guint action,
 static void delete_duplicated_cb(MainWindow *mainwin, guint action,
 				 GtkWidget *widget)
 {
-	summary_delete_duplicated(mainwin->summaryview);
+	FolderItem *item;
+
+	item = folderview_get_selected(mainwin->folderview);
+	if (item) {
+		main_window_cursor_wait(mainwin);
+		STATUSBAR_PUSH(mainwin, _("Deleting duplicated messages..."));
+
+		folderutils_delete_duplicates(item, prefs_common.immediate_exec ?
+					      DELETE_DUPLICATES_REMOVE : DELETE_DUPLICATES_SETFLAG);
+
+		STATUSBAR_POP(mainwin);
+		main_window_cursor_normal(mainwin);
+	}
+}
+
+struct DelDupsData
+{
+	guint	dups;
+	guint	folders;
+};
+
+static void deldup_all(FolderItem *item, gpointer _data)
+{
+	struct DelDupsData *data = _data;
+	gint result;
+	
+	result = folderutils_delete_duplicates(item, DELETE_DUPLICATES_REMOVE);
+	if (result >= 0) {
+		data->dups += result;
+		data->folders += 1;
+	}
+}
+
+static void delete_duplicated_all_cb(MainWindow *mainwin, guint action,
+				 GtkWidget *widget)
+{
+	struct DelDupsData data = {0, 0};
+
+	folder_func_to_all_folders(deldup_all, &data);
+	alertpanel_notice(_("Deleted %d duplicate message(s) in %d folders.\n"),
+			  data.dups, data.folders);
 }
 
 static void filter_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
-	summary_filter(mainwin->summaryview);
+	summary_filter(mainwin->summaryview, (gboolean)action);
 }
 
 static void execute_summary_cb(MainWindow *mainwin, guint action,

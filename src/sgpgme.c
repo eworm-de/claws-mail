@@ -214,7 +214,7 @@ gchar *sgpgme_sigstat_info_full(GpgmeCtx ctx, GpgmeSigStat status)
 				format = _("Signature expires %s\n");
 			else
 				format = _("Signature expired %s\n");
-			g_string_sprintfa(siginfo, format, time);
+			g_string_sprintfa(siginfo, format, timestr);
 		}
 		
 		g_string_append(siginfo, "\n");

@@ -61,12 +61,12 @@ sylpheed_SOURCES = \
 	headerview.c \
 	html.c \
 	imap.c \
+	imap_gtk.c \
 	import.c \
 	importldif.c \
 	importmutt.c \
 	importpine.c \
 	inc.c \
-	inputdialog.c \
 	jpilot.c \
 	ldapctrl.c \
 	ldaplocate.c \
@@ -85,10 +85,12 @@ sylpheed_SOURCES = \
 	message_search.c \
 	messageview.c \
 	mh.c \
+	mh_gtk.c \
 	mimeview.c \
 	msgcache.c \
 	mutt.c \
 	news.c \
+	news_gtk.c \
 	noticeview.c \
 	passphrase.c \
 	pgpmime.c \
@@ -187,12 +189,12 @@ sylpheedinclude_HEADERS = \
 	headerview.h \
 	html.h \
 	imap.h \
+	imap_gtk.h \
 	import.h \
 	importldif.h \
 	importmutt.h \
 	importpine.h \
 	inc.h \
-	inputdialog.h \
 	jpilot.h \
 	ldapctrl.h \
 	ldaplocate.h \
@@ -212,10 +214,12 @@ sylpheedinclude_HEADERS = \
 	message_search.h \
 	messageview.h \
 	mh.h \
+	mh_gtk.h \
 	mimeview.h \
 	msgcache.h \
 	mutt.h \
 	news.h \
+	news_gtk.h \
 	noticeview.h \
 	passphrase.h \
 	pgpmime.h \
@@ -304,6 +308,7 @@ EXTRA_DIST = \
 	pixmaps/key.xpm \
 	pixmaps/ldap.xpm \
 	pixmaps/linewrap.xpm \
+	pixmaps/linewrapcurrent.xpm \
 	pixmaps/locked.xpm \
 	pixmaps/mail_attach.xpm \
 	pixmaps/mail_compose.xpm \

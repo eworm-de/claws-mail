@@ -38,10 +38,11 @@ sylpheed-claws translation team
 	[es]	Ricardo Mones Lastra 	<mones@aic.uniovi.es>
 	[fr]	Melvin Hadasht		<melvin.hadasht@free.fr>
 	[hr]	Dragan 			<drleskov@inet.hr>
-	[it]	Alessandro Maestri 	<maestri@cs.tin.it>
+	[it]	Andrea Spadaccini 	<lupin85@email.it>
 	[ja]	Rui Hirokawa 		<rui_hirokawa@ybb.ne.jp>
 	[pl]	Emil			<eminowbl@posejdon.wpk.p.lodz.pl>
 	[ru]	Ruslan N. Balkin 	<baron@voices.ru>
+	[ru]	Pavlo Bohmat 		<bohm@ukr.net>
 	[sk]	Andrej Kacian 		<andrej@kacian.sk>
 	[sr]	Urke MMI 		<urke@gmx.net>
 	[zh_CN] Hansom Young 		<hansom_young@yahoo.com>
@@ -200,3 +201,5 @@ contributors (beside the above; based on Changelog)
 	Matthias Förste
 	David Chalmers
 	Chad Robinson
+	Edgar Toernig
+	Fabien Vantard

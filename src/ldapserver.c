@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003 Match Grun
+ * Copyright (C) 2003-2004 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -609,6 +609,7 @@ LdapQuery *ldapsvr_new_dynamic_search( LdapServer *server, QueryRequest *req )
 	LdapQuery *qry;
 	gchar *name;
 	gchar *searchTerm;
+	ItemFolder *folder;
 
 	g_return_val_if_fail( server != NULL, NULL );
 	g_return_val_if_fail( req != NULL, NULL );
@@ -616,7 +617,14 @@ LdapQuery *ldapsvr_new_dynamic_search( LdapServer *server, QueryRequest *req )
 	/* Retire any aged queries */
 	/* // ldapsvr_retire_query( server ); */
 
+	/* Name of folder and query */
 	searchTerm = req->searchTerm;
+	name = g_strdup_printf( "Search '%s'", searchTerm );
+
+	/* Create a folder for the search results */
+	folder = addrcache_add_new_folder( server->addressCache, NULL );
+	addritem_folder_set_name( folder, name );
+	addritem_folder_set_remarks( folder, "" );
 
 	/* Construct a query */
 	qry = ldapqry_create();
@@ -626,8 +634,13 @@ LdapQuery *ldapsvr_new_dynamic_search( LdapServer *server, QueryRequest *req )
 	ldapqry_set_callback_entry( qry, req->callBackEntry );
 	ldapqry_set_callback_end( qry, req->callBackEnd );
 
+	/* Specify folder type and back reference */
+	ADDRQUERY_FOLDER(qry) = folder;
+	folder->folderType = ADDRFOLDER_QUERY_RESULTS;
+	folder->folderData = ( gpointer ) qry;
+	folder->isHidden = TRUE;
+
 	/* Name the query */
-	name = g_strdup_printf( "Search for '%s'", searchTerm );
 	ldapqry_set_name( qry, name );
 	g_free( name );
 
@@ -646,7 +659,7 @@ LdapQuery *ldapsvr_new_dynamic_search( LdapServer *server, QueryRequest *req )
  *
  * \param server LdapServer.
  * \param req    Query request.
- * \param folder Folder that will be used to contain search results; may be NULL.
+ * \param folder Folder that will be used to contain search results.
  * \return LdapQuery object, or <i>NULL</i> if none created.
  */
 LdapQuery *ldapsvr_new_explicit_search(
@@ -658,12 +671,13 @@ LdapQuery *ldapsvr_new_explicit_search(
 
 	g_return_val_if_fail( server != NULL, NULL );
 	g_return_val_if_fail( req != NULL, NULL );
-	searchTerm = req->searchTerm;
+	g_return_val_if_fail( folder != NULL, NULL );
 
 	/* Retire any aged queries */
 	/* // ldapsvr_retire_query( server ); */
 
 	/* Name the query */
+	searchTerm = req->searchTerm;
 	name = g_strdup_printf( "Explicit search for '%s'", searchTerm );
 
 	/* Construct a query */
@@ -675,12 +689,10 @@ LdapQuery *ldapsvr_new_explicit_search(
 	ldapqry_set_callback_end( qry, req->callBackEnd );
 	ldapqry_set_callback_entry( qry, req->callBackEntry );
 
-	if( folder ) {
-		/* Specify folder type and back reference */
-		ADDRQUERY_FOLDER(qry) = folder;
-		folder->folderType = ADDRFOLDER_QUERY_RESULTS;
-		folder->folderData = ( gpointer ) qry;
-	}
+	/* Specify folder type and back reference */
+	ADDRQUERY_FOLDER(qry) = folder;
+	folder->folderType = ADDRFOLDER_QUERY_RESULTS;
+	folder->folderData = ( gpointer ) qry;
 
 	/* Setup server */
 	ldapsvr_add_query( server, qry );

@@ -74,7 +74,7 @@ static gboolean scan_func(GNode *node, gpointer data)
 	gchar *outfile;
 	int ret;
 	unsigned long int size;
-	char *virname;
+	const char *virname;
 
 	outfile = procmime_get_tmp_file_name(mimeinfo);
 	if (procmime_get_part(outfile, mimeinfo) < 0)
@@ -125,10 +125,11 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	if (config.clamav_enable_arc)
 		params.scan_archive = TRUE;
 
-    	if((ret = cl_loaddbdir(cl_retdbdir(), &params.root, &no))) {
+    	if ((ret = cl_loaddbdir(cl_retdbdir(), &params.root, &no))) {
 		debug_print("cl_loaddbdir: %s\n", cl_strerror(ret));
-		exit(2);
+		return FALSE;
     	}
+
     	debug_print("Database loaded (containing in total %d signatures)\n", no);
 
     	cl_buildtrie(params.root);

@@ -28,10 +28,11 @@
 #include "addressitem.h"
 #include "mgutils.h"
 
-/*
-* Create a selection record from an address cache item.
-* Enter: aio Item object.
-*/
+/**
+ * Create a selection record from an address cache item.
+ * \param  aio Item object.
+ * \return Address select item.
+ */
 AddrSelectItem *addrselect_create_item( AddrItemObject *aio ) {
 	AddrSelectItem *item = NULL;
 
@@ -45,10 +46,11 @@ AddrSelectItem *addrselect_create_item( AddrItemObject *aio ) {
 	return item;
 }
 
-/*
-* Create a selection record from an address object (in tree node).
-* Enter: obj Address object.
-*/
+/**
+ * Create a selection record from an address object (in tree node).
+ * \param obj Address object.
+ * \return Address select item.
+ */
 AddrSelectItem *addrselect_create_node( AddressObject *obj ) {
 	AddrSelectItem *item = NULL;
 
@@ -62,10 +64,11 @@ AddrSelectItem *addrselect_create_node( AddressObject *obj ) {
 	return item;
 }
 
-/*
-* Create a copy of a selection record.
-* Enter: item Address entry to copy.
-*/
+/**
+ * Create a copy of a selection record.
+ * Enter: item Address entry to copy.
+ * \return Address select item.
+ */
 AddrSelectItem *addrselect_item_copy( AddrSelectItem *item ) {
 	AddrSelectItem *copy = NULL;
 
@@ -79,9 +82,10 @@ AddrSelectItem *addrselect_item_copy( AddrSelectItem *item ) {
 	return copy;
 }
 
-/*
-* Free selection record.
-*/
+/**
+ * Free selection record.
+ * \return Address select item.
+ */
 void addrselect_item_free( AddrSelectItem *item ) {
 	if( item ) {
 		g_free( item->uid );
@@ -94,14 +98,21 @@ void addrselect_item_free( AddrSelectItem *item ) {
 	g_free( item );
 }
 
-/*
-* Properties.
-*/
+/**
+ * Specify cache ID for specified item.
+ * \param item  Address select item.
+ * \param value Cache ID.
+ */
 void addrselect_set_cache_id( AddrSelectItem *item, const gchar *value ) {
 	g_return_if_fail( item != NULL );
 	item->cacheID = mgu_replace_string( item->cacheID, value );
 }
 
+/**
+ * Print address selection item.
+ * \param item   Address select item.
+ * \param stream Output stream.
+ */
 void addrselect_item_print( AddrSelectItem *item, FILE *stream ) {
 	fprintf( stream, "Select Record\n" );
 	fprintf( stream, "obj type: %d\n", item->objectType );
@@ -110,10 +121,10 @@ void addrselect_item_print( AddrSelectItem *item, FILE *stream ) {
 	fprintf( stream, "---\n" );
 }
 
-/*
-* Create a new selection.
-* Return: Initialized object.
-*/
+/**
+ * Create a new address selection object.
+ * \return Initialized object.
+ */
 AddrSelectList *addrselect_list_create() {
 	AddrSelectList *asl;
 
@@ -122,10 +133,10 @@ AddrSelectList *addrselect_list_create() {
 	return asl;
 }
 
-/*
-* Clear list of selection records.
-* Enter: asl List to process.
-*/
+/**
+ * Clear list of selection records.
+ * \param asl  List to process.
+ */
 void addrselect_list_clear( AddrSelectList *asl ) {
 	GList *node;
 
@@ -143,10 +154,10 @@ void addrselect_list_clear( AddrSelectList *asl ) {
 	asl->listSelect = NULL;
 }
 
-/*
-* Free selection list.
-* Enter: asl List to free.
-*/
+/**
+ * Free selection list.
+ * \param asl  List to free.
+ */
 void addrselect_list_free( AddrSelectList *asl ) {
 	g_return_if_fail( asl != NULL );
 
@@ -156,22 +167,23 @@ void addrselect_list_free( AddrSelectList *asl ) {
 	g_free( asl );
 }
 
-/*
-* Test whether selection is empty.
-* Enter: asl List to test.
-* Return: TRUE if list is empty.
-*/
+/**
+ * Test whether selection is empty.
+ * \param  asl List to test.
+ * \return <i>TRUE</i> if list is empty.
+ */
 gboolean addrselect_test_empty( AddrSelectList *asl ) {
 	g_return_val_if_fail( asl != NULL, TRUE );
 	return ( asl->listSelect == NULL );
 }
 
-/*
-* Return list of AddrSelectItem objects.
-* Enter: asl List to process.
-* Return: List of selection items. The list should should be g_list_free()
-* when done. Items contained in the list should not be freed!!!
-*/
+/**
+ * Return list of AddrSelectItem objects.
+ * \param  asl  List to process.
+ * \return List of selection items. The list should should be freed with
+ *         <code>g_list_free()</code> when done. Items contained in the
+ *         list should <b>not</b> be freed!!!
+ */
 GList *addrselect_get_list( AddrSelectList *asl ) {
 	GList *node, *list;
 
@@ -185,6 +197,11 @@ GList *addrselect_get_list( AddrSelectList *asl ) {
 	return list;
 }
 
+/**
+ * Format address item.
+ * \param  aio Item.
+ * \return Formatted address.
+ */
 static gchar *addrselect_format_address( AddrItemObject * aio ) {
 	gchar *buf = NULL;
 	gchar *name = NULL;
@@ -232,11 +249,11 @@ static gchar *addrselect_format_address( AddrItemObject * aio ) {
 	return buf;
 }
 
-/*
-* Print formatted addresses list to specified stream.
-* Enter: asl    List to process.
-*        stream Stream.
-*/
+/**
+ * Print formatted addresses list to specified stream.
+ * \param asl    List to process.
+ * \param stream Stream.
+ */
 void addrselect_list_print( AddrSelectList *asl, FILE *stream ) {
 	GList *node;
 
@@ -282,11 +299,11 @@ void addrselect_list_print( AddrSelectList *asl, FILE *stream ) {
 	fprintf( stream, "show selection...<<<\n" );
 }
 
-/*
-* Print address items to specified stream.
-* Enter: asl    List to process.
-*        stream Stream.
-*/
+/**
+ * Print address items to specified stream.
+ * \param asl    List to process.
+ * \param stream Stream.
+ */
 void addrselect_list_show( AddrSelectList *asl, FILE *stream ) {
 	GList *node;
 
@@ -303,12 +320,12 @@ void addrselect_list_show( AddrSelectList *asl, FILE *stream ) {
 	fprintf( stream, "show selection...<<<\n" );
 }
 
-/*
-* Test whether specified object is in list.
-* Enter: list List to check.
-*        aio  Object to test.
-* Return item found, or NULL if not in list.
-*/
+/**
+ * Test whether specified object is in list.
+ * \param list List to check.
+ * \param aio  Object to test.
+ * \param item found, or <i>NULL</i> if not in list.
+ */
 static AddrSelectItem *addrselect_list_find( GList *list, AddrItemObject *aio ) {
 	GList *node;
 
@@ -323,13 +340,12 @@ static AddrSelectItem *addrselect_list_find( GList *list, AddrItemObject *aio ) 
 	return NULL;
 }
 
-/*
-* Add a single object into the list.
-* Enter: asl     Address selection object.
-*        obj     Address object.
-*        cacheID Cache ID. Should be g_free() after calling function.
-* Return: Adjusted list.
-*/
+/**
+ * Add a single object into the list.
+ * \param asl     Address selection object.
+ * \param aio     Address object.
+ * \param cacheID Cache ID. Should be freed after calling function.
+ */
 void addrselect_list_add_obj( AddrSelectList *asl, AddrItemObject *aio, gchar *cacheID ) {
 	AddrSelectItem *item;
 
@@ -349,13 +365,12 @@ void addrselect_list_add_obj( AddrSelectList *asl, AddrItemObject *aio, gchar *c
 	/* addrselect_list_show( asl, stdout ); */
 }
 
-/*
-* Add a single item into the list.
-* Enter: asl     Address selection object.
-*        item    Address select item.
-*        cacheID Cache ID. Should be g_free() after calling function.
-* Return: Adjusted list.
-*/
+/**
+ * Add a single item into the list.
+ * \param  asl     Address selection object.
+ * \param  item    Address select item.
+ * \param  cacheID Cache ID. Should be g_free() after calling function.
+ */
 void addrselect_list_add( AddrSelectList *asl, AddrSelectItem *item, gchar *cacheID ) {
 	g_return_if_fail( asl != NULL );
 	if( item == NULL ) return;
@@ -367,11 +382,11 @@ void addrselect_list_add( AddrSelectList *asl, AddrSelectItem *item, gchar *cach
 	asl->listSelect = g_list_append( asl->listSelect, item );
 }
 
-/*
-* Remove specified object from list.
-* Enter: asl  Address selection object.
-*        aio  Object to remove.
-*/
+/**
+ * Remove specified object from list.
+ * \param asl  Address selection object.
+ * \param aio  Object to remove.
+ */
 void addrselect_list_remove( AddrSelectList *asl, AddrItemObject *aio ) {
 	GList *node;
 	AddrSelectItem *item;
@@ -390,6 +405,52 @@ void addrselect_list_remove( AddrSelectList *asl, AddrItemObject *aio ) {
 		node = g_list_next( node );
 	}
 	/* addrselect_list_show( list, stdout ); */
+}
+
+/**
+ * Build list of formatted addresses.
+ * \param  asl List to process.
+ * \return List of addresses, formatted as character strings. List should be
+ *         freed when no longer required.
+ */
+GList *addrselect_build_list( AddrSelectList *asl ) {
+	GList *list;
+	GList *node;
+
+	g_return_val_if_fail(asl != NULL, NULL);
+	list = NULL;
+	node = asl->listSelect;
+	while( node != NULL ) {
+		AddrSelectItem *item;
+		AddrItemObject *aio;
+		gchar *addr;
+
+		item = node->data;
+		aio = ( AddrItemObject * ) item->addressItem;
+		if( aio ) {
+			if( aio->type == ADDR_ITEM_GROUP ) {
+				ItemGroup *group = ( ItemGroup * ) aio;
+				GList *node = group->listEMail;
+				while( node ) {
+					ItemEMail *email = node->data;
+					addr = addrselect_format_address(
+						( AddrItemObject * ) email );
+					if( addr ) {
+						list = g_list_append( list, addr );
+					}
+					node = g_list_next( node );
+				}
+			}
+			else {
+				addr = addrselect_format_address( aio );
+				if( addr ) {
+					list = g_list_append( list, addr );
+				}
+			}
+		}
+		node = g_list_next( node );
+	}
+	return list;
 }
 
 /*

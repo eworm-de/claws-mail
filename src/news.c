@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -131,52 +131,30 @@ static gchar *news_folder_get_path	 (Folder	*folder);
 gchar *news_item_get_path		 (Folder	*folder,
 					  FolderItem	*item);
 
-static FolderClass news_class =
-{
-	F_NEWS,
-	"news",
-	"News",
-
-	/* Folder functions */
-	news_folder_new,
-	news_folder_destroy,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-
-	/* FolderItem functions */
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	news_item_get_path,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	news_get_num_list,
-	NULL,
-	NULL,
-	NULL,
-	news_scan_required,
-
-	/* Message functions */
-	news_get_msginfo,
-	news_get_msginfos,
-	news_fetch_msg,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-};
+static FolderClass news_class;
 
 FolderClass *news_get_class(void)
 {
+	if (news_class.idstr == NULL) {
+		news_class.type = F_NEWS;
+		news_class.idstr = "news";
+		news_class.uistr = "News";
+
+		/* Folder functions */
+		news_class.new_folder = news_folder_new;
+		news_class.destroy_folder = news_folder_destroy;
+
+		/* FolderItem functions */
+		news_class.item_get_path = news_item_get_path;
+		news_class.get_num_list = news_get_num_list;
+		news_class.scan_required = news_scan_required;
+
+		/* Message functions */
+		news_class.get_msginfo = news_get_msginfo;
+		news_class.get_msginfos = news_get_msginfos;
+		news_class.fetch_msg = news_fetch_msg;
+	};
+
 	return &news_class;
 }
 
@@ -296,8 +274,8 @@ static NNTPSession *news_session_get(Folder *folder)
 
 	if (nntp_mode(NNTP_SESSION(rfolder->session), FALSE)
 	    != NN_SUCCESS) {
-		log_warning("NNTP connection to %s:%d has been"
-			      " disconnected. Reconnecting...\n",
+		log_warning(_("NNTP connection to %s:%d has been"
+			      " disconnected. Reconnecting...\n"),
 			    folder->account->nntp_server,
 			    folder->account->set_nntpport ?
 			    folder->account->nntpport : NNTP_PORT);
@@ -338,7 +316,10 @@ static gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 
 	ok = news_select_group(session, item->path, NULL, NULL, NULL);
 	if (ok != NN_SUCCESS) {
-		g_warning("can't select group %s\n", item->path);
+		if (ok == NN_SOCKET) {
+			session_destroy(SESSION(session));
+			REMOTE_FOLDER(folder)->session = NULL;
+		}
 		g_free(filename);
 		return NULL;
 	}
@@ -346,10 +327,12 @@ static gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	debug_print("getting article %d...\n", num);
 	ok = news_get_article(NNTP_SESSION(REMOTE_FOLDER(folder)->session),
 			      num, filename);
-	if (ok < 0) {
+	if (ok != NN_SUCCESS) {
 		g_warning("can't read article %d\n", num);
-		session_destroy(SESSION(session));
-		REMOTE_FOLDER(folder)->session = NULL;
+		if (ok == NN_SOCKET) {
+			session_destroy(SESSION(session));
+			REMOTE_FOLDER(folder)->session = NULL;
+		}
 		g_free(filename);
 		return NULL;
 	}
@@ -402,6 +385,7 @@ GSList *news_get_group_list(Folder *folder)
 
 	if ((fp = fopen(filename, "rb")) == NULL) {
 		NNTPSession *session;
+		gint ok;
 
 		session = news_session_get(folder);
 		if (!session) {
@@ -409,12 +393,17 @@ GSList *news_get_group_list(Folder *folder)
 			return NULL;
 		}
 
-		if (nntp_list(session) != NN_SUCCESS) {
+		ok = nntp_list(session);
+		if (ok != NN_SUCCESS) {
+			if (ok == NN_SOCKET) {
+				session_destroy(SESSION(session));
+				REMOTE_FOLDER(folder)->session = NULL;
+			}
 			g_free(filename);
 			return NULL;
 		}
 		if (recv_write_to_file(SESSION(session)->sock, filename) < 0) {
-			log_warning("can't retrieve newsgroup list\n");
+			log_warning(_("can't retrieve newsgroup list\n"));
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(folder)->session = NULL;
 			g_free(filename);
@@ -527,7 +516,11 @@ gint news_post_stream(Folder *folder, FILE *fp)
 
 	ok = nntp_post(session, fp);
 	if (ok != NN_SUCCESS) {
-		log_warning("can't post article.\n");
+		log_warning(_("can't post article.\n"));
+		if (ok == NN_SOCKET) {
+			session_destroy(SESSION(session));
+			REMOTE_FOLDER(folder)->session = NULL;
+		}
 		return -1;
 	}
 
@@ -538,20 +531,25 @@ static gint news_get_article_cmd(NNTPSession *session, const gchar *cmd,
 				 gint num, gchar *filename)
 {
 	gchar *msgid;
+	gint ok;
 
-	if (nntp_get_article(session, cmd, num, &msgid)
-	    != NN_SUCCESS)
-		return -1;
+	ok = nntp_get_article(session, cmd, num, &msgid);
+	if (ok != NN_SUCCESS)
+		return ok;
 
 	debug_print("Message-Id = %s, num = %d\n", msgid, num);
 	g_free(msgid);
 
-	if (recv_write_to_file(SESSION(session)->sock, filename) < 0) {
-		log_warning("can't retrieve article %d\n", num);
-		return -1;
+	ok = recv_write_to_file(SESSION(session)->sock, filename);
+	if (ok < 0) {
+		log_warning(_("can't retrieve article %d\n"), num);
+		if (ok == -2)
+			return NN_SOCKET;
+		else
+			return NN_IOERR;
 	}
 
-	return 0;
+	return NN_SUCCESS;
 }
 
 static gint news_get_article(NNTPSession *session, gint num, gchar *filename)
@@ -592,6 +590,8 @@ static gint news_select_group(NNTPSession *session, const gchar *group,
 	ok = nntp_group(session, group, num, first, last);
 	if (ok == NN_SUCCESS)
 		session->group = g_strdup(group);
+	else
+		log_warning(_("can't select group: %s\n"), group);
 
 	return ok;
 }
@@ -842,6 +842,7 @@ MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	NNTPSession *session;
 	MsgInfo *msginfo = NULL;
 	gchar buf[NNTPBUFSIZE];
+	gint ok;
 
 	session = news_session_get(folder);
 	g_return_val_if_fail(session != NULL, NULL);
@@ -851,8 +852,13 @@ MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 
 	log_message(_("getting xover %d in %s...\n"),
 		    num, item->path);
-	if (nntp_xover(session, num, num) != NN_SUCCESS) {
+	ok = nntp_xover(session, num, num);
+	if (ok != NN_SUCCESS) {
 		log_warning(_("can't get xover\n"));
+		if (ok == NN_SOCKET) {
+			session_destroy(SESSION(session));
+			REMOTE_FOLDER(item->folder)->session = NULL;
+		}
 		return NULL;
 	}
 	
@@ -876,8 +882,13 @@ MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	msginfo->flags.tmp_flags = MSG_NEWS;
 	msginfo->newsgroups = g_strdup(item->path);
 
-	if (nntp_xhdr(session, "to", num, num) != NN_SUCCESS) {
+	ok = nntp_xhdr(session, "to", num, num);
+	if (ok != NN_SUCCESS) {
 		log_warning(_("can't get xhdr\n"));
+		if (ok == NN_SOCKET) {
+			session_destroy(SESSION(session));
+			REMOTE_FOLDER(item->folder)->session = NULL;
+		}
 		return msginfo;
 	}
 
@@ -890,8 +901,13 @@ MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 
 	READ_TO_LISTEND("xhdr (to)");
 
-	if (nntp_xhdr(session, "cc", num, num) != NN_SUCCESS) {
+	ok = nntp_xhdr(session, "cc", num, num);
+	if (ok != NN_SUCCESS) {
 		log_warning(_("can't get xhdr\n"));
+		if (ok == NN_SOCKET) {
+			session_destroy(SESSION(session));
+			REMOTE_FOLDER(item->folder)->session = NULL;
+		}
 		return msginfo;
 	}
 
@@ -914,14 +930,20 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 	GSList *llast = NULL;
 	MsgInfo *msginfo;
 	guint count = 0, lines = (end - begin + 2) * 3;
+	gint ok;
 
 	g_return_val_if_fail(session != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
 
 	log_message(_("getting xover %d - %d in %s...\n"),
 		    begin, end, item->path);
-	if (nntp_xover(session, begin, end) != NN_SUCCESS) {
+	ok = nntp_xover(session, begin, end);
+	if (ok != NN_SUCCESS) {
 		log_warning(_("can't get xover\n"));
+		if (ok == NN_SOCKET) {
+			session_destroy(SESSION(session));
+			REMOTE_FOLDER(item->folder)->session = NULL;
+		}
 		return NULL;
 	}
 
@@ -957,8 +979,13 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 		}
 	}
 
-	if (nntp_xhdr(session, "to", begin, end) != NN_SUCCESS) {
+	ok = nntp_xhdr(session, "to", begin, end);
+	if (ok != NN_SUCCESS) {
 		log_warning(_("can't get xhdr\n"));
+		if (ok == NN_SOCKET) {
+			session_destroy(SESSION(session));
+			REMOTE_FOLDER(item->folder)->session = NULL;
+		}
 		return newlist;
 	}
 
@@ -987,8 +1014,13 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 		llast = llast->next;
 	}
 
-	if (nntp_xhdr(session, "cc", begin, end) != NN_SUCCESS) {
+	ok = nntp_xhdr(session, "cc", begin, end);
+	if (ok != NN_SUCCESS) {
 		log_warning(_("can't get xhdr\n"));
+		if (ok == NN_SOCKET) {
+			session_destroy(SESSION(session));
+			REMOTE_FOLDER(item->folder)->session = NULL;
+		}
 		return newlist;
 	}
 
