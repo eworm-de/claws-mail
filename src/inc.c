@@ -378,6 +378,7 @@ static IncProgressDialog *inc_progress_dialog_create(void)
 
 	dialog->dialog = progress;
 	dialog->queue_list = NULL;
+	dialog->cur_row = 0;
 
 	inc_dialog_list = g_list_append(inc_dialog_list, dialog);
 
@@ -462,7 +463,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 	GList *qlist;
 	Pop3Session *pop3_session;
 	IncState inc_state;
-	gint num = 0;
 	gint error_num = 0;
 	gint new_msgs = 0;
 	gchar *msg;
@@ -511,13 +511,18 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		qlist = next;
 	}
 
-	for (; inc_dialog->queue_list != NULL; num++) {
+#define SET_PIXMAP_AND_TEXT(xpm, xpmmask, str)				   \
+{									   \
+	gtk_clist_set_pixmap(clist, inc_dialog->cur_row, 0, xpm, xpmmask); \
+	gtk_clist_set_text(clist, inc_dialog->cur_row, 2, str);		   \
+}
+
+	for (; inc_dialog->queue_list != NULL; inc_dialog->cur_row++) {
 		session = inc_dialog->queue_list->data;
 		pop3_session = POP3_SESSION(session->session);
 
 		if (pop3_session->pass == NULL) {
-			gtk_clist_set_pixmap(clist, num, 0, okxpm, okxpmmask);
-			gtk_clist_set_text(clist, num, 2, _("Cancelled"));
+			SET_PIXMAP_AND_TEXT(okxpm, okxpmmask, _("Cancelled"));
 			inc_session_destroy(session);
 			inc_dialog->queue_list =
 				g_list_remove(inc_dialog->queue_list, session);
@@ -525,10 +530,10 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		}
 
 		inc_progress_dialog_clear(inc_dialog);
-		gtk_clist_moveto(clist, num, -1, 1.0, 0.0);
+		gtk_clist_moveto(clist, inc_dialog->cur_row, -1, 1.0, 0.0);
 
-		gtk_clist_set_pixmap(clist, num, 0, currentxpm, currentxpmmask);
-		gtk_clist_set_text(clist, num, 2, _("Retrieving"));
+		SET_PIXMAP_AND_TEXT(currentxpm, currentxpmmask,
+				    _("Retrieving"));
 
 		session_set_recv_message_notify(session->session,
 						inc_recv_message, session);
@@ -549,32 +554,29 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 					 to_human_readable(pop3_session->cur_total_recv_bytes));
 			else
 				msg = g_strdup_printf(_("Done (no new messages)"));
-			gtk_clist_set_pixmap(clist, num, 0, okxpm, okxpmmask);
-			gtk_clist_set_text(clist, num, 2, msg);
+			SET_PIXMAP_AND_TEXT(okxpm, okxpmmask, msg);
 			g_free(msg);
 			break;
 		case INC_CONNECT_ERROR:
-			gtk_clist_set_pixmap(clist, num, 0, errorxpm, errorxpmmask);
-			gtk_clist_set_text(clist, num, 2, _("Connection failed"));
+			SET_PIXMAP_AND_TEXT(errorxpm, errorxpmmask,
+					    _("Connection failed"));
 			break;
 		case INC_AUTH_FAILED:
-			gtk_clist_set_pixmap(clist, num, 0, errorxpm, errorxpmmask);
-			gtk_clist_set_text(clist, num, 2, _("Auth failed"));
+			SET_PIXMAP_AND_TEXT(errorxpm, errorxpmmask,
+					    _("Auth failed"));
 			break;
 		case INC_LOCKED:
-			gtk_clist_set_pixmap(clist, num, 0, errorxpm, errorxpmmask);
-			gtk_clist_set_text(clist, num, 2, _("Locked"));
+			SET_PIXMAP_AND_TEXT(errorxpm, errorxpmmask,
+					    _("Locked"));
 			break;
 		case INC_ERROR:
 		case INC_NO_SPACE:
 		case INC_IO_ERROR:
 		case INC_SOCKET_ERROR:
-			gtk_clist_set_pixmap(clist, num, 0, errorxpm, errorxpmmask);
-			gtk_clist_set_text(clist, num, 2, _("Error"));
+			SET_PIXMAP_AND_TEXT(errorxpm, errorxpmmask, _("Error"));
 			break;
 		case INC_CANCEL:
-			gtk_clist_set_pixmap(clist, num, 0, okxpm, okxpmmask);
-			gtk_clist_set_text(clist, num, 2, _("Cancelled"));
+			SET_PIXMAP_AND_TEXT(okxpm, okxpmmask, _("Cancelled"));
 			break;
 		default:
 			break;
@@ -653,6 +655,8 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		inc_dialog->queue_list =
 			g_list_remove(inc_dialog->queue_list, session);
 	}
+
+#undef SET_PIXMAP_AND_TEXT
 
 	if (new_msgs > 0)
 		fin_msg = g_strdup_printf(_("Finished (%d new message(s))"),
@@ -901,13 +905,24 @@ static gint inc_recv_data_progressive(Session *session, guint cur_len,
 static gint inc_recv_data_finished(Session *session, guint len, gpointer data)
 {
 	IncSession *inc_session = (IncSession *)data;
+	Pop3Session *pop3_session = POP3_SESSION(session);
 	IncProgressDialog *inc_dialog;
+	gchar *msg;
 
 	g_return_val_if_fail(inc_session != NULL, -1);
 
 	inc_dialog = (IncProgressDialog *)inc_session->data;
 	inc_recv_data_progressive(session, 0, len, inc_session);
 	inc_progress_dialog_set_label(inc_dialog, inc_session);
+
+	if (pop3_session->cur_total_num == 0) return 0;
+
+	msg = g_strdup_printf(_("Retrieving (%d message(s) (%s) received)"),
+			      pop3_session->cur_total_num,
+			      to_human_readable
+				(pop3_session->cur_total_recv_bytes));
+	gtk_clist_set_text(GTK_CLIST(inc_dialog->dialog->clist),
+			   inc_dialog->cur_row, 2, msg);
 
 	return 0;
 }

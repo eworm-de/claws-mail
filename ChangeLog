@@ -1,3 +1,10 @@
+2003-07-03
+
+	* src/inc.[ch]: update received message number on CList while
+	  retrieving.
+	* src/session.c: session_read_data_cb(): optimized by removing
+	  g_malloc() and memcpy().
+
 2003-07-02
 
 	* src/socket.[ch]: sock_add_watch(): new. It monitors SSL by original

@@ -1,3 +1,9 @@
+2003-07-03
+
+	* src/inc.[ch]: 受信中に CList の受信済メッセージ数を更新。
+	* src/session.c: session_read_data_cb(): g_malloc() と memcpy() を
+	  取り除いて最適化。
+
 2003-07-02
 
 	* src/socket.[ch]: sock_add_watch(): 新規。 SSL をオリジナルの watch
