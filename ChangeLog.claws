@@ -1,3 +1,14 @@
+2001-10-24 [paul]	0.6.4claws2
+
+	* src/prefs_common.c
+		gettextize the gpg ascii-armored warning message
+
+	* src/compose.c
+		insert a DOS/MAC file into the composed message
+		(improvements)
+
+	* Both submitted by Thierry Godefroy <godefroy@imaginet.fr>
+
 2001-10-22 [paul]	0.6.4claws1
 
 	* sync with sylpheed 0.6.4 release

@@ -1853,6 +1853,7 @@ static void compose_insert_file(Compose *compose, const gchar *file)
 {
 	GtkSText *text = GTK_STEXT(compose->text);
 	gchar buf[BUFFSIZE];
+	gint len;
 	FILE *fp;
 
 	g_return_if_fail(file != NULL);
@@ -1865,10 +1866,17 @@ static void compose_insert_file(Compose *compose, const gchar *file)
 	gtk_stext_freeze(text);
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		if (strlen(buf) > 1 && buf[strlen(buf) - 2] == '\r' && buf[strlen(buf) - 1] == '\n') {
-			buf[strlen(buf) - 2] = '\n';
-			buf[strlen(buf) - 1] = 0;
+		/* Strip <CR> if DOS/Windoze file, replace <CR> with <LF> if MAC file */
+		len = strlen(buf);
+		if (len > 1 && buf[len - 2] == '\r' && buf[len - 1] == '\n') {
+			buf[len - 2] = '\n';
+			buf[len - 1] = '\0';
+		} else {
+			while (--len > 0)
+				if (buf[len] == '\r')
+					buf[len] = '\n';
 		}
+
  		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
 	}
 
