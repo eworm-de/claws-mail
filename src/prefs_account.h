@@ -60,11 +60,6 @@ typedef enum {
 #include "smtp.h"
 #include "folder.h"
 
-#ifdef USE_GPGME
-#  include "rfc2015.h"
-#endif
-
-
 struct _PrefsAccount
 {
 	gchar *account_name;
