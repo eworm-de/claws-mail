@@ -263,6 +263,14 @@ static void alertpanel_create(const gchar *title,
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 
+	/* Claws: custom widget */
+	if (custom_widget) {
+		GtkWidget *custom_hbox = gtk_hbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(msg_vbox), custom_hbox, FALSE,
+				   FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(custom_hbox), custom_widget, FALSE,
+				   FALSE, 24);
+	}
 	if (can_disable) {
 		hbox = gtk_hbox_new(FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
