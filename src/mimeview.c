@@ -305,7 +305,8 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 
 	procmime_scan_multipart_message(mimeinfo, fp);
 #if USE_GPGME
-	if (prefs_common.auto_check_signatures)
+	if ((prefs_common.auto_check_signatures)
+	    && (gpg_started))
 		rfc2015_check_signature(mimeinfo, fp);
 	else
 		set_unchecked_signature(mimeinfo);
@@ -1064,6 +1065,7 @@ void mimeview_check_signature(MimeView *mimeview)
 	FILE *fp;
 
 	g_return_if_fail (mimeview_is_signed(mimeview));
+	g_return_if_fail (gpg_started);
 
 	mimeinfo = gtk_ctree_node_get_row_data
 		(GTK_CTREE(mimeview->ctree), mimeview->opened);
