@@ -1,3 +1,10 @@
+2003-09-07 [christoph]	0.9.4claws68
+
+	* src/compose.c
+		o make sure we don't have any newlines in header values
+		o check custom headers for spaces and newlines and ignore
+		  malformed header names
+
 2003-09-06 [christoph]	0.9.4claws67
 
 	* src/folder.c

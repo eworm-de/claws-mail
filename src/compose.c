@@ -4349,6 +4349,11 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		headerentry = ((ComposeHeaderEntry *)list->data);
 		
 		tmp = g_strdup(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(headerentry->combo)->entry)));
+		if (strchr(tmp, ' ') != NULL || strchr(tmp, '\r') != NULL || strchr(tmp, '\n') != NULL) {
+			g_free(tmp);
+			continue;
+		}
+
 		if (!strstr(tmp, ":")) {
 			headername_wcolon = g_strconcat(tmp, ":", NULL);
 			headername = g_strdup(tmp);
@@ -4359,6 +4364,8 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		g_free(tmp);
 		
 		headervalue = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
+		subst_char(headervalue, '\r', ' ');
+		subst_char(headervalue, '\n', ' ');
 		string = std_headers;
 		while (*string != NULL) {
 			headername_trans = prefs_common.trans_hdr ? gettext(*string) : *string;
@@ -4370,8 +4377,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 			fprintf(fp, "%s %s\n", headername_wcolon, headervalue);
 				
 		g_free(headername);
-		g_free(headername_wcolon);
-		
+		g_free(headername_wcolon);		
 	}
 
 	/* separator between header and body */
@@ -4391,6 +4397,8 @@ static void compose_convert_header(gchar *dest, gint len, gchar *src,
 	if (len < 1) return;
 
 	g_strchomp(src);
+	subst_char(src, '\n', ' ');
+	subst_char(src, '\r', ' ');
 
 	conv_encode_header(dest, len, src, header_len, addr_field);
 }
