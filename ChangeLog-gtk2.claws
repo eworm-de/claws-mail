@@ -1,3 +1,8 @@
+2004-11-24 [colin]	0.9.12cvs171.1
+
+	* src/plugins/pgpmime/pgpmime.c
+		Sync with head (gpgmectx leaks)
+
 2004-11-24 [colin]	0.9.12cvs169.1
 
 	* src/plugins/pgpmime/plugin.c
