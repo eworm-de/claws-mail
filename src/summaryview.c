@@ -3799,6 +3799,7 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	GtkCTreeNode *node;
 	FolderItem *to_folder;
 
+	if (summary_is_locked(summaryview)) return;
 	if (!event) return;
 
 	switch (event->keyval) {

@@ -1,3 +1,7 @@
+2001-10-03
+
+	* src/procmime.c: procmime_get_text_content(): supported HTML.
+
 2001-10-02
 
 	* src/summaryview.[ch]: implemented new locking mechanism, and

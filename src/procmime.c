@@ -35,6 +35,7 @@
 #include "base64.h"
 #include "uuencode.h"
 #include "unmime.h"
+#include "html.h"
 #include "codeconv.h"
 #include "utils.h"
 #include "prefs_common.h"
@@ -642,6 +643,7 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 	gchar *src_codeset;
 	gboolean conv_fail = FALSE;
 	gchar buf[BUFFSIZE];
+	gchar *str;
 
 	g_return_val_if_fail(mimeinfo != NULL, NULL);
 	g_return_val_if_fail(infp != NULL, NULL);
@@ -669,18 +671,30 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 	src_codeset = prefs_common.force_charset
 		? prefs_common.force_charset : mimeinfo->charset;
 
-	while (fgets(buf, sizeof(buf), tmpfp) != NULL) {
-		gchar *str;
-
-		str = conv_codeset_strdup(buf, src_codeset, NULL);
-		if (str) {
-			fputs(str, outfp);
-			g_free(str);
-		} else {
-			conv_fail = TRUE;
-			fputs(buf, outfp);
+	if (mimeinfo->mime_type == MIME_TEXT) {
+		while (fgets(buf, sizeof(buf), tmpfp) != NULL) {
+			str = conv_codeset_strdup(buf, src_codeset, NULL);
+			if (str) {
+				fputs(str, outfp);
+				g_free(str);
+			} else {
+				conv_fail = TRUE;
+				fputs(buf, outfp);
+			}
 		}
+	} else if (mimeinfo->mime_type == MIME_TEXT_HTML) {
+		HTMLParser *parser;
+		CodeConverter *conv;
+
+		conv = conv_code_converter_new(src_codeset);
+		parser = html_parser_new(tmpfp, conv);
+		while ((str = html_parse(parser)) != NULL) {
+			fputs(str, outfp);
+		}
+		html_parser_destroy(parser);
+		conv_code_converter_destroy(conv);
 	}
+
 	if (conv_fail)
 		g_warning(_("procmime_get_text_content(): Code conversion failed.\n"));
 
@@ -710,6 +724,11 @@ FILE *procmime_get_first_text_content(MsgInfo *msginfo)
 	partinfo = mimeinfo;
 	while (partinfo && partinfo->mime_type != MIME_TEXT)
 		partinfo = procmime_mimeinfo_next(partinfo);
+	if (!partinfo) {
+		partinfo = mimeinfo;
+		while (partinfo && partinfo->mime_type != MIME_TEXT_HTML)
+			partinfo = procmime_mimeinfo_next(partinfo);
+	}
 
 	if (partinfo)
 		outfp = procmime_get_text_content(partinfo, infp);

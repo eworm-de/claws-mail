@@ -1,3 +1,7 @@
+2001-10-03
+
+	* src/procmime.c: procmime_get_text_content(): HTML に対応。
+
 2001-10-02
 
 	* src/summaryview.[ch]: 新たなロック機構を実装し、全ての静的な
