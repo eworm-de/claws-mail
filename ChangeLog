@@ -1,3 +1,22 @@
+2001-09-23
+
+	* src/message_search.[ch]: new. A Dialog for searching in current
+	  message.
+	* src/gtkutils.[ch]: gtkut_text_match_string(): new. Compare the
+	  text in current position of GtkText and given wide-character
+	  string.
+	* src/messageview.[ch]: messageview_search_string()
+	  src/textview.[ch]: textview_search_string(): return TRUE if
+	  found.
+	* src/textview.[ch]: remember the beginning of body.
+
+2001-09-21
+
+	* src/procmime.c: procmime_get_first_text_content(): modified so
+	  that it search entire MIME structure.
+	* src/summary_search.c: summary_search_execute(): use
+	  strdup_mbstowcs() instead of macro. Display matched message.
+
 2001-09-20
 
 	* src/inc.c: fix for background POP3 hangs and crashes (thanks to

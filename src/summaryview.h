@@ -172,6 +172,9 @@ void summary_select_next_labeled  (SummaryView		*summaryview);
 void summary_select_by_msgnum	  (SummaryView		*summaryview,
 				   guint		 msgnum);
 guint summary_get_current_msgnum  (SummaryView		*summaryview);
+void summary_select_node	  (SummaryView		*summaryview,
+				   GtkCTreeNode		*node,
+				   gboolean		 display_msg);
 void summary_thread_build	  (SummaryView		*summaryview,
 				   gboolean		 init);
 void summary_unthread		  (SummaryView		*summaryview);

@@ -20,6 +20,10 @@
 #ifndef __TEXTVIEW_H__
 #define __TEXTVIEW_H__
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include <glib.h>
 #include <gtk/gtkwidget.h>
 
@@ -41,6 +45,7 @@ struct _TextView
 	gboolean text_is_mb;
 
 	GSList *uri_list;
+	gint body_pos;
 
 	GdkFont *msgfont;
 	GdkFont *boldfont;
@@ -72,6 +77,11 @@ void textview_scroll_one_line	(TextView	*textview,
 				 gboolean	 up);
 gboolean textview_scroll_page	(TextView	*textview,
 				 gboolean	 up);
-void textview_update_message_colors(void);
+
+void textview_update_message_colors	(void);
+
+gboolean textview_search_string	(TextView	*textview,
+				 const gchar	*str,
+				 gboolean	 case_sens);
 
 #endif /* __TEXTVIEW_H__ */

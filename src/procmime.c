@@ -693,11 +693,8 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
    decode, convert it and output to outfp. */
 FILE *procmime_get_first_text_content(MsgInfo *msginfo)
 {
-	FILE *infp, *tmpfp, *outfp;
-	MimeInfo *mimeinfo, *partinfo = NULL;
-	gchar *src_codeset;
-	gboolean conv_fail = FALSE;
-	gchar buf[BUFFSIZE];
+	FILE *infp, *outfp = NULL;
+	MimeInfo *mimeinfo, *partinfo;
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
 
@@ -710,57 +707,14 @@ FILE *procmime_get_first_text_content(MsgInfo *msginfo)
 	}
 
 	partinfo = mimeinfo;
-	while (partinfo && partinfo->mime_type == MIME_MULTIPART)
-		partinfo = partinfo->children;
+	while (partinfo && partinfo->mime_type != MIME_TEXT)
+		partinfo = procmime_mimeinfo_next(partinfo);
 
-	if (partinfo && partinfo->mime_type == MIME_TEXT) {
-		if (fseek(infp, partinfo->fpos, SEEK_SET) < 0) {
-			perror("fseek");
-			partinfo = NULL;
-		}
-	}
+	if (partinfo)
+		outfp = procmime_get_text_content(partinfo, infp);
 
-	if (!partinfo) {
-		procmime_mimeinfo_free_all(mimeinfo);
-		return NULL;
-	}
-
-	while (fgets(buf, sizeof(buf), infp) != NULL)
-		if (buf[0] == '\r' || buf[0] == '\n') break;
-
-	tmpfp = procmime_decode_content(NULL, infp, partinfo);
-	if (!tmpfp) {
-		procmime_mimeinfo_free_all(mimeinfo);
-		return NULL;
-	}
-
-	if ((outfp = my_tmpfile()) == NULL) {
-		perror("tmpfile");
-		fclose(tmpfp);
-		procmime_mimeinfo_free_all(mimeinfo);
-		return NULL;
-	}
-
-	src_codeset = prefs_common.force_charset
-		? prefs_common.force_charset : partinfo->charset;
-
-	while (fgets(buf, sizeof(buf), tmpfp) != NULL) {
-		gchar *str;
-
-		str = conv_codeset_strdup(buf, src_codeset, NULL);
-		if (str) {
-			fputs(str, outfp);
-			g_free(str);
-		} else {
-			conv_fail = TRUE;
-			fputs(buf, outfp);
-		}
-	}
-	if (conv_fail) g_warning(_("Code conversion failed.\n"));
-
-	fclose(tmpfp);
+	fclose(infp);
 	procmime_mimeinfo_free_all(mimeinfo);
-	rewind(outfp);
 
 	return outfp;
 }
@@ -814,8 +768,8 @@ gboolean procmime_find_string(MsgInfo *msginfo, const gchar *str,
 	gchar *filename;
 	gboolean found = FALSE;
 
-	g_return_val_if_fail(msginfo != NULL, NULL);
-	g_return_val_if_fail(str != NULL, NULL);
+	g_return_val_if_fail(msginfo != NULL, FALSE);
+	g_return_val_if_fail(str != NULL, FALSE);
 
 	filename = procmsg_get_message_file(msginfo);
 	if (!filename) return FALSE;

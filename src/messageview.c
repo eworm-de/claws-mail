@@ -523,6 +523,15 @@ void messageview_select_all(MessageView *messageview)
 			(GTK_EDITABLE(messageview->textview->text), 0, -1);
 }
 
+gboolean messageview_search_string(MessageView *messageview, const gchar *str,
+				   gboolean case_sens)
+{
+	if (messageview->type == MVIEW_TEXT)
+		return textview_search_string(messageview->textview,
+					      str, case_sens);
+	return FALSE;
+}
+
 GtkWidget *messageview_get_text_widget(MessageView *messageview)
 {
 	return messageview->textview->text;

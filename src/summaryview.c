@@ -150,10 +150,6 @@ static void summary_write_cache_func	(GtkCTree		*ctree,
 
 static void summary_set_menu_sensitive	(SummaryView		*summaryview);
 
-static void summary_select_node		(SummaryView		*summaryview,
-					 GtkCTreeNode		*node,
-					 gboolean		 display_msg);
-
 static guint summary_get_msgnum		(SummaryView		*summaryview,
 					 GtkCTreeNode		*node);
 
@@ -1292,8 +1288,8 @@ void summary_select_by_msgnum(SummaryView *summaryview, guint msgnum)
  * thread, if necessary) and unselect all others.  If @display_msg is
  * TRUE, display the corresponding message in the message view.
  **/
-static void summary_select_node(SummaryView *summaryview, GtkCTreeNode *node,
-				gboolean display_msg)
+void summary_select_node(SummaryView *summaryview, GtkCTreeNode *node,
+			 gboolean display_msg)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 

@@ -44,6 +44,7 @@
 #include "main.h"
 #include "summary_search.h"
 #include "summaryview.h"
+#include "mainwindow.h"
 #include "utils.h"
 #include "gtkutils.h"
 #include "manage_window.h"
@@ -80,13 +81,6 @@ void summary_search(SummaryView *summaryview)
 	gtk_widget_show(window);
 }
 
-void summary_search_cb(gpointer data, guint action, GtkWidget *widget)
-{
-	MainWindow *mainwin = data;
-
-	summary_search(mainwin->summaryview);
-}
-
 static void summary_search_create(SummaryView *summaryview)
 {
 	GtkWidget *vbox1;
@@ -99,7 +93,7 @@ static void summary_search_create(SummaryView *summaryview)
 	GtkWidget *confirm_area;
 
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
-	gtk_window_set_title (GTK_WINDOW (window), _("Search"));
+	gtk_window_set_title (GTK_WINDOW (window), _("Search folder"));
 	gtk_widget_set_usize (window, 450, -1);
 	/*gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);*/
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, TRUE);
@@ -173,7 +167,7 @@ static void summary_search_create(SummaryView *summaryview)
 	gtk_label_set_justify (GTK_LABEL (subject_label), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment (GTK_MISC (subject_label), 1, 0.5);
 
-	body_label = gtk_label_new (_("Body"));
+	body_label = gtk_label_new (_("Body:"));
 	gtk_widget_show (body_label);
 	gtk_table_attach (GTK_TABLE (table1), body_label, 0, 1, 3, 4,
 			  GTK_FILL, 0, 0, 0);
@@ -219,13 +213,6 @@ static void summary_search_create(SummaryView *summaryview)
 	gtk_signal_connect_object(GTK_OBJECT(close_btn), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_hide),
 				  GTK_OBJECT(window));
-
-}
-
-#define STRDUP_MBSTOWCS(wcs, s) \
-{ \
-	wcs = g_malloc((strlen(s) + 1) * sizeof(wchar_t)); \
-	mbstowcs(wcs, s, strlen(s) + 1); \
 }
 
 static void summary_search_execute(GtkButton *button, gpointer data)
@@ -290,6 +277,9 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 			node = GTK_CTREE_NODE_NEXT(summaryview->selected);
 	}
 
+	if (*body_str)
+		main_window_cursor_wait(summaryview->mainwin);
+
 	for (;;) {
 		if (!node) {
 			gchar *str;
@@ -334,20 +324,20 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
 
 		if (*fromwcs && msginfo->from) {
-			STRDUP_MBSTOWCS(wcs_hs, msginfo->from);
-			if (WCSFindFunc(wcs_hs, fromwcs) != NULL)
+			wcs_hs = strdup_mbstowcs(msginfo->from);
+			if (wcs_hs && WCSFindFunc(wcs_hs, fromwcs) != NULL)
 				from_matched = TRUE;
 			g_free(wcs_hs);
 		}
 		if (*towcs && msginfo->to) {
-			STRDUP_MBSTOWCS(wcs_hs, msginfo->to);
-			if (WCSFindFunc(wcs_hs, towcs) != NULL)
+			wcs_hs = strdup_mbstowcs(msginfo->to);
+			if (wcs_hs && WCSFindFunc(wcs_hs, towcs) != NULL)
 				to_matched = TRUE;
 			g_free(wcs_hs);
 		}
 		if (*subjwcs && msginfo->subject) {
-			STRDUP_MBSTOWCS(wcs_hs, msginfo->subject);
-			if (WCSFindFunc(wcs_hs, subjwcs) != NULL)
+			wcs_hs = strdup_mbstowcs(msginfo->subject);
+			if (wcs_hs && WCSFindFunc(wcs_hs, subjwcs) != NULL)
 				subj_matched = TRUE;
 			g_free(wcs_hs);
 		}
@@ -360,12 +350,12 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 			if (search_all)
 				gtk_ctree_select(ctree, node);
 			else {
-				gtk_clist_freeze(GTK_CLIST(ctree));
-				gtk_clist_unselect_all(GTK_CLIST(ctree));
-				gtk_ctree_select(ctree, node);
-				gtk_ctree_node_moveto(ctree, node, 0, 0.5, 0);
-				gtkut_ctree_set_focus_row(ctree, node);
-				gtk_clist_thaw(GTK_CLIST(ctree));
+				summary_select_node(summaryview, node, TRUE);
+				if (body_matched) {
+					messageview_search_string
+						(summaryview->messageview,
+						 body_str, case_sens);
+				}
 				break;
 			}
 		}
@@ -373,6 +363,9 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 		node = backward ? GTK_CTREE_NODE_PREV(node)
 				: GTK_CTREE_NODE_NEXT(node);
 	}
+
+	if (*body_str)
+		main_window_cursor_normal(summaryview->mainwin);
 }
 
 static void summary_search_clear(GtkButton *button, gpointer data)

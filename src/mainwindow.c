@@ -48,6 +48,7 @@
 #include "summaryview.h"
 #include "summary_search.h"
 #include "messageview.h"
+#include "message_search.h"
 #include "headerview.h"
 #include "menu.h"
 #include "folder.h"
@@ -193,6 +194,10 @@ static void print_cb		 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 static void app_exit_cb		 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
+
+static void search_cb		 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 
@@ -415,7 +420,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Edit/_Copy"),			"<control>C", copy_cb, 0, NULL},
 	{N_("/_Edit/Select _all"),		"<control>A", allsel_cb, 0, NULL},
 	{N_("/_Edit/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Edit/_Search"),			"<control>S", summary_search_cb, 0, NULL},
+	{N_("/_Edit/_Find in current message"),	"<control>F", search_cb, 0, NULL},
+	{N_("/_Edit/_Search folder"),		"<control>S", search_cb, 1, NULL},
 
 	{N_("/_View"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/_Folder tree"),		NULL, toggle_folder_cb, 0, "<ToggleItem>"},
@@ -521,7 +527,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/Repl_y to sender"),	"<control><alt>R", reply_cb, COMPOSE_REPLY_TO_SENDER, NULL},
 	{N_("/_Message/Follow-up and reply to"), NULL, reply_cb, COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL},
 	{N_("/_Message/Reply to a_ll"),		"<shift><alt>R", reply_cb, COMPOSE_REPLY_TO_ALL, NULL},
-	{N_("/_Message/_Forward"),		"<control>F", reply_cb, COMPOSE_FORWARD, NULL},
+	{N_("/_Message/_Forward"),		"<shift><alt>F", reply_cb, COMPOSE_FORWARD, NULL},
 	{N_("/_Message/Forward as a_ttachment"),
 						"<shift><control>F", reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
@@ -2176,6 +2182,14 @@ static void app_exit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 	}
 
 	app_will_exit(widget, mainwin);
+}
+
+static void search_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+{
+	if (action == 1)
+		summary_search(mainwin->summaryview);
+	else
+		message_search(mainwin->messageview);
 }
 
 static void toggle_folder_cb(MainWindow *mainwin, guint action,

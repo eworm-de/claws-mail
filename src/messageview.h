@@ -65,6 +65,11 @@ void messageview_quote_color_set		(void);
 void messageview_set_font			(MessageView	*messageview);
 void messageview_copy_clipboard			(MessageView	*messageview);
 void messageview_select_all			(MessageView	*messageview);
+
+gboolean messageview_search_string		(MessageView	*messageview,
+						 const gchar	*str,
+						 gboolean	 case_sens);
+
 GtkWidget *messageview_get_text_widget		(MessageView	*messageview);
 
 #endif /* __MESSAGEVIEW_H__ */

@@ -33,6 +33,11 @@
 #include <gtk/gtkbindings.h>
 #include <stdarg.h>
 
+#if (HAVE_WCTYPE_H && HAVE_WCHAR_H)
+#  include <wchar.h>
+#  include <wctype.h>
+#endif
+
 #include "intl.h"
 #include "gtkutils.h"
 #include "utils.h"
@@ -241,6 +246,28 @@ void gtkut_combo_set_items(GtkCombo *combo, const gchar *str1, ...)
 	gtk_combo_set_popdown_strings(combo, combo_items);
 
 	g_list_free(combo_items);
+}
+
+gboolean gtkut_text_match_string(GtkText *text, gint pos, wchar_t *wcs,
+				 gint len, gboolean case_sens)
+{
+	gint match_count = 0;
+
+	for (; match_count < len; pos++, match_count++) {
+		if (case_sens) {
+			if (GTK_TEXT_INDEX(text, pos) != wcs[match_count])
+				break;
+		} else {
+			if (towlower(GTK_TEXT_INDEX(text, pos)) !=
+			    towlower(wcs[match_count]))
+				break;
+		}
+	}
+
+	if (match_count == len)
+		return TRUE;
+	else
+		return FALSE;
 }
 
 void gtkut_widget_disable_theme_engine(GtkWidget *widget)

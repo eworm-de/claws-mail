@@ -17,13 +17,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __SUMMARY_SEARCH_H__
-#define __SUMMARY_SEARCH_H__
+#ifndef __MESSAGE_SEARCH_H__
+#define __MESSAGE_SEARCH_H__
 
 #include <glib.h>
 
-#include "summaryview.h"
+#include "messageview.h"
 
-void summary_search	(SummaryView	*summaryview);
+void message_search	(MessageView	*messageview);
 
-#endif /* __SUMMARY_SEARCH_H__ */
+#endif /* __MESSAGE_SEARCH_H__ */

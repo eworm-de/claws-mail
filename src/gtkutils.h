@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,12 +20,21 @@
 #ifndef __GTKUTILS_H__
 #define __GTKUTILS_H__
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include <glib.h>
 #include <gdk/gdk.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkctree.h>
 #include <gtk/gtkcombo.h>
+#include <gtk/gtktext.h>
+#include <stdlib.h>
+#if HAVE_WCHAR_H
+#  include <wchar.h>
+#endif
 
 #define GTK_EVENTS_FLUSH() \
 { \
@@ -84,18 +93,24 @@ void gtkut_ctree_expand_parent_all	(GtkCTree	*ctree,
 					 GtkCTreeNode	*node);
 void gtkut_ctree_set_focus_row		(GtkCTree	*ctree,
 					 GtkCTreeNode	*node);
+
 void gtkut_clist_set_focus_row		(GtkCList	*clist,
 					 gint		 row);
+
 void gtkut_combo_set_items		(GtkCombo	*combo,
 					 const gchar	*str1, ...);
+
+gboolean gtkut_text_match_string	(GtkText	*text,
+					 gint		 pos,
+					 wchar_t	*wcs,
+					 gint		 len,
+					 gboolean	 case_sens);
+
 void gtkut_widget_disable_theme_engine	(GtkWidget	*widget);
-
 void gtkut_widget_wait_for_draw		(GtkWidget	*widget);
-
 void gtkut_widget_get_uposition		(GtkWidget	*widget,
 					 gint		*px,
 					 gint		*py);
-
 void gtkut_widget_init			(void);
 
 void gtk_widget_set_app_icon		(GtkWidget	*widget);

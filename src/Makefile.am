@@ -14,6 +14,7 @@ sylpheed_SOURCES = \
 	imageview.c imageview.h \
 	mimeview.c mimeview.h \
 	summary_search.c summary_search.h \
+	message_search.c message_search.h \
 	colorlabel.c colorlabel.h \
 	folder.c folder.h \
 	procmsg.c procmsg.h \

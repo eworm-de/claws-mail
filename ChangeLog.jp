@@ -1,3 +1,20 @@
+2001-09-23
+
+	* src/message_search.[ch]: 新規。現在のメッセージの検索ダイアログ。
+	* src/gtkutils.[ch]: gtkut_text_match_string(): 新規。 GtkText の
+	  現在位置のテキストと与えられたワイドキャラクタ文字列を比較。
+	* src/messageview.[ch]: messageview_search_string()
+	  src/textview.[ch]: textview_search_string(): 見つかったら TRUE
+	  を返すようにした。
+	* src/textview.[ch]: 本文の開始位置を記憶。
+
+2001-09-21
+
+	* src/procmime.c: procmime_get_first_text_content(): MIME 構造全体
+	  を探索するように修正。
+	* src/summary_search.c: summary_search_execute(): マクロの代わりに
+	  strdup_mbstowcs() を使用。マッチしたメッセージを表示するようにした。
+
 2001-09-20
 
 	* src/inc.c: バックグラウンドの POP3 プロセスのハングまたはクラッシュ

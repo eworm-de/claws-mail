@@ -44,6 +44,7 @@ src/matcher.c
 src/mbox.c
 src/mbox_folder.c
 src/menu.c
+src/message_search.c
 src/messageview.c
 src/mgutils.c
 src/mh.c

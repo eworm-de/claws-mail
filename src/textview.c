@@ -208,6 +208,7 @@ TextView *textview_create(void)
 	textview->text_mb        = text_mb;
 	textview->text_is_mb     = FALSE;
 	textview->uri_list       = NULL;
+	textview->body_pos       = 0;
 
 	return textview;
 }
@@ -332,6 +333,8 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	textview_clear(textview);
 	text = GTK_TEXT(textview->text);
 	gtk_text_freeze(text);
+
+	textview->body_pos = 0;
 
 	if (headers) {
 		textview_show_header(textview, headers);
@@ -800,7 +803,8 @@ void textview_clear(TextView *textview)
 	GtkText *text = GTK_TEXT(textview->text);
 
 	gtk_text_freeze(text);
-	gtk_text_backward_delete(text, gtk_text_get_length(text));
+	gtk_text_set_point(text, 0);
+	gtk_text_forward_delete(text, gtk_text_get_length(text));
 	gtk_text_thaw(text);
 
 	textview_uri_list_remove_all(textview->uri_list);
@@ -1028,6 +1032,46 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 
 	gtk_text_insert(text, textview->msgfont, NULL, NULL, "\n", 1);
 	gtk_text_thaw(text);
+	textview->body_pos = gtk_text_get_length(text);
+}
+
+gboolean textview_search_string(TextView *textview, const gchar *str,
+				gboolean case_sens)
+{
+	GtkText *text = GTK_TEXT(textview->text);
+	gint pos;
+	wchar_t *wcs;
+	gint len;
+	gint text_len;
+	gboolean found = FALSE;
+
+	g_return_val_if_fail(str != NULL, FALSE);
+
+	wcs = strdup_mbstowcs(str);
+	g_return_val_if_fail(wcs != NULL, FALSE);
+	len = wcslen(wcs);
+	pos = gtk_editable_get_position(GTK_EDITABLE(text));
+	if (pos < textview->body_pos)
+		pos = textview->body_pos;
+	text_len = gtk_text_get_length(text);
+
+	for (; pos < text_len; pos++) {
+		if (text_len - pos < len) break;
+		if (gtkut_text_match_string(text, pos, wcs, len, case_sens)
+		    == TRUE) {
+			gtk_text_freeze(text);
+			gtk_text_set_point(text, pos + len);
+			gtk_editable_set_position(GTK_EDITABLE(text), pos + len);
+			gtk_editable_select_region(GTK_EDITABLE(text),
+						   pos, pos + len);
+			gtk_text_thaw(text);
+			found = TRUE;
+			break;
+		}
+	}
+
+	g_free(wcs);
+	return found;
 }
 
 void textview_scroll_one_line(TextView *textview, gboolean up)
