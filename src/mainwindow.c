@@ -1379,6 +1379,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Follow-up and reply to", M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST|M_NEWS},
 		{"/Message/Forward"               , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{"/Message/Forward as attachment" , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+                {"/Message/Bounce"		  , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{"/Message/Open in new window"    , M_SINGLE_TARGET_EXIST},
 		{"/Message/Re-edit", M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 		{"/Message/Move...", M_TARGET_EXIST|M_EXEC|M_UNLOCKED},

@@ -1,3 +1,11 @@
+2001-11-30 [paul]	0.6.5claws46
+	
+        * src/compose.c
+        	remove conflicts introduced by Hoa's last commit
+         
+        * src/mainwindow.c
+        	make 'Message/Bounce' sensitive
+
 2001-11-30 [hoa]	0.6.5claws45
 
 	* src/compose.c
