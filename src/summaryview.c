@@ -4066,8 +4066,16 @@ void summary_set_column_order(SummaryView *summaryview)
 	GtkWidget *scrolledwin = summaryview->scrolledwin;
 	GtkWidget *pixmap;
 	FolderItem *item;
+	guint selected_msgnum = summary_get_msgnum(summaryview, summaryview->selected);
+	guint displayed_msgnum = summary_get_msgnum(summaryview, summaryview->displayed);
 
+	
 	item = summaryview->folder_item;
+
+	summary_lock(summaryview);
+	summary_write_cache(summaryview);
+	summary_unlock(summaryview);
+	
 	summary_clear_all(summaryview);
 	gtk_widget_destroy(summaryview->ctree);
 
@@ -4084,6 +4092,13 @@ void summary_set_column_order(SummaryView *summaryview)
 	gtk_widget_show(ctree);
 
 	summary_show(summaryview, item, FALSE);
+
+	summary_select_by_msgnum(summaryview, selected_msgnum);
+	summaryview->displayed = summary_find_msg_by_msgnum(summaryview, displayed_msgnum);
+	if (!summaryview->displayed)
+		messageview_clear(summaryview->messageview);
+	else
+		summary_redisplay_msg(summaryview);
 }
 
 
