@@ -1,3 +1,14 @@
+2001-10-07
+
+	* src/prefs_common.c: prefs_receive_create(): correction to English.
+	* src/compose.c: compose_set_ext_editor_sensitive(): fixed a bug
+	  that didn't set the menu sensitivity correctly (thanks to
+	  Melvin Hadasht).
+	* src/summaryview.c: delete messages permanently if the current
+	  folder is trash and 'delete' operation is executed.
+	* src/folder.[ch]: folder_item_remove_msgs(): new. It removes
+	  all messages given in the list.
+
 2001-10-05
 
 	* src/summaryview.c: summary_show(): fixed a bug that didn't show

@@ -1,3 +1,14 @@
+2001-10-07
+
+	* src/prefs_common.c: prefs_receive_create(): 英語の修正。
+	* src/compose.c: compose_set_ext_editor_sensitive(): メニューの
+	  sensitivity を正しくセットしていなかったバグを修正(Melvin Hadasht
+	  さん thanks)。
+	* src/summaryview.c: 現在のフォルダがごみ箱の場合に「削除」操作を
+	  実行したらメッセージを完全削除するようにした。
+	* src/folder.[ch]: folder_item_remove_msgs(): 新規。リストで与え
+	  られた全てのメッセージを削除する。
+
 2001-10-05
 
 	* src/summaryview.c: summary_show(): 「フォルダに入ったときに未読

@@ -814,6 +814,23 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 	return ret;
 }
 
+gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
+{
+	gint ret = 0;
+
+	g_return_val_if_fail(item != NULL, -1);
+
+	while (msglist != NULL) {
+		MsgInfo *msginfo = (MsgInfo *)msglist->data;
+
+		ret = folder_item_remove_msg(item, msginfo->msgnum);
+		if (ret != 0) break;
+		msglist = msglist->next;
+	}
+
+	return ret;
+}
+
 gint folder_item_remove_all_msg(FolderItem *item)
 {
 	Folder *folder;

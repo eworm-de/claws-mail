@@ -1,3 +1,8 @@
+2001-10-07 [paul]	0.6.2claws23
+
+	* sync with sylpheed 0.6.2cvs12
+		see ChangeLog entry 2001-10-07
+
 2001-10-06 [match]
 	* src/jpilot.[ch]
 		enable jpilot to read unsynch'ed addresses.

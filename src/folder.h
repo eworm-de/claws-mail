@@ -294,6 +294,8 @@ gint   folder_item_copy_msgs_with_dest	(FolderItem	*dest,
 					 GSList		*msglist);
 gint   folder_item_remove_msg		(FolderItem	*item,
 					 gint		 num);
+gint   folder_item_remove_msgs		(FolderItem	*item,
+					 GSList		*msglist);
 gint   folder_item_remove_all_msg	(FolderItem	*item);
 gboolean folder_item_is_msg_changed	(FolderItem	*item,
 					 MsgInfo	*msginfo);

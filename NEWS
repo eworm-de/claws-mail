@@ -6,6 +6,7 @@ Changes of Sylpheed
     * The text part of nested multipart message, or HTML only message
       is now correctly quoted on replying.
     * The status of threading is now preserved for each folders.
+    * Selective removal from trash folder has been enabled.
     * User name and password of IMAP4 account which include spaces are now
       handled correctly.
     * Workaround for 8bit characters conversion failure on C locale when

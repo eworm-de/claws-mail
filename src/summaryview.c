@@ -1068,8 +1068,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	if (summaryview->folder_item->folder->type != F_NEWS) {
 		menu_set_sensitive(ifactory, "/Move...", TRUE);
 		menu_set_sensitive(ifactory, "/Copy...", TRUE);
-		if (summaryview->folder_item->stype != F_TRASH)
-			menu_set_sensitive(ifactory, "/Delete", TRUE);
+		menu_set_sensitive(ifactory, "/Delete", TRUE);
 	}
 
 	menu_set_sensitive(ifactory, "/Execute", TRUE);
@@ -2686,7 +2685,8 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 	CHANGE_FLAGS(msginfo);
 	summaryview->deleted++;
 
-	if (!prefs_common.immediate_exec)
+	if (!prefs_common.immediate_exec && 
+	    summaryview->folder_item->stype != F_TRASH)
 		summary_set_row_marks(summaryview, row);
 
 	debug_print(_("Message %s/%d is set to delete\n"),
@@ -2696,25 +2696,30 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 void summary_delete(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	FolderItem *item = summaryview->folder_item;
 	GList *cur;
 
-	if (!summaryview->folder_item ||
-	    summaryview->folder_item->folder->type == F_NEWS) return;
+	if (!item || item->folder->type == F_NEWS) return;
 
 	if (summary_is_locked(summaryview)) return;
 
-	/* if current folder is trash, don't delete */
-	if (summaryview->folder_item->stype == F_TRASH) {
-		alertpanel_notice(_("Current folder is Trash."));
-		return;
+	/* if current folder is trash, ask for confirmation */
+	if (item->stype == F_TRASH) {
+		AlertValue aval;
+
+		aval = alertpanel(_("Delete message(s)"),
+				  _("Do you really want to delete message(s) from the trash?"),
+				  _("Yes"), _("No"), NULL);
+		if (aval != G_ALERTDEFAULT) return;
 	}
 
-	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
+	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next) {
 		summary_delete_row(summaryview, GTK_CTREE_NODE(cur->data));
+	}
 
 	summary_step(summaryview, GTK_SCROLL_STEP_FORWARD);
 
-	if (prefs_common.immediate_exec)
+	if (prefs_common.immediate_exec || item->stype == F_TRASH)
 		summary_execute(summaryview);
 	else
 		summary_status_show(summaryview);
@@ -3245,7 +3250,6 @@ static void summary_execute_delete(SummaryView *summaryview)
 	if (summaryview->folder_item->folder->type == F_MH) {
 		g_return_if_fail(trash != NULL);
 	}
-	if (summaryview->folder_item == trash) return;
 
 	/* search deleting messages and execute */
 	gtk_ctree_pre_recursive
@@ -3253,12 +3257,10 @@ static void summary_execute_delete(SummaryView *summaryview)
 
 	if (!summaryview->mlist) return;
 
-	for(cur = summaryview->mlist ; cur != NULL ; cur = cur->next) {
-		MsgInfo * msginfo = cur->data;
-		MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_DELETED);
-	}
-
-	folder_item_move_msgs_with_dest(trash, summaryview->mlist);
+	if (summaryview->folder_item != trash)
+		folder_item_move_msgs_with_dest(trash, summaryview->mlist);
+	else
+		folder_item_remove_msgs(trash, summaryview->mlist);
 
 	for (cur = summaryview->mlist; cur != NULL; cur = cur->next)
 		procmsg_msginfo_free((MsgInfo *)cur->data);
@@ -3266,8 +3268,10 @@ static void summary_execute_delete(SummaryView *summaryview)
 	g_slist_free(summaryview->mlist);
 	summaryview->mlist = NULL;
 
-	folder_item_scan(trash);
-	folderview_update_item(trash, FALSE);
+	if (summaryview->folder_item != trash) {
+		folder_item_scan(trash);
+		folderview_update_item(trash, FALSE);
+	}
 }
 
 static void summary_execute_delete_func(GtkCTree *ctree, GtkCTreeNode *node,
