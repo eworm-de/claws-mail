@@ -2658,9 +2658,6 @@ static void account_menu_cb(GtkMenuItem	*menuitem, gpointer data)
 {
 	cur_account = (PrefsAccount *)data;
 	main_window_reflect_prefs_all();
-	debug_print("XXX set account %s\n", cur_account == NULL ? 
-		    (const gchar *) "NULL ACCOUNT POINTER" : 
-		    cur_account->account_name); 	
 }
 
 static void prefs_open_cb(GtkMenuItem *menuitem, gpointer data)
