@@ -175,6 +175,7 @@ static gboolean addrgather_dlg_harvest() {
 		addrgather_dlg_status_show(
 			_( "Please select the mail headers to search." ) );
 		addrharvest_free( harvester );
+		g_free( name );
 		return FALSE;
 	}
 

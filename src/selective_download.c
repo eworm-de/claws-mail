@@ -145,8 +145,6 @@ void sd_init_pixmaps		(MainWindow	*mainwin);
 
 void selective_download(MainWindow *mainwin)
 {
-	summary_write_cache(mainwin->summaryview);
-
 	sd_remove_header_files();
 	
 	inc_lock();

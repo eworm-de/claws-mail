@@ -180,7 +180,6 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 		return;
 
 	inc_autocheck_timer_remove();
-	summary_write_cache(mainwin->summaryview);
 	main_window_lock(mainwin);
 
 	if (prefs_common.use_extinc && prefs_common.extinc_cmd) {
@@ -285,7 +284,6 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 	if (inc_lock_count) return;
 
 	inc_autocheck_timer_remove();
-	summary_write_cache(mainwin->summaryview);
 	main_window_lock(mainwin);
 
 	if (prefs_common.inc_local)

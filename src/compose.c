@@ -2807,7 +2807,7 @@ gboolean compose_check_for_valid_recipient(Compose *compose) {
 	for(list = compose->header_list; list; list = list->next) {
 		gchar *header;
 		gchar *entry;
-		header = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(((ComposeHeaderEntry *)list->data)->combo)->entry));
+		header = gtk_editable_get_chars(GTK_EDITABLE(GTK_COMBO(((ComposeHeaderEntry *)list->data)->combo)->entry), 0, -1);
 		entry = gtk_editable_get_chars(GTK_EDITABLE(((ComposeHeaderEntry *)list->data)->entry), 0, -1);
 		g_strstrip(entry);
 		if(entry[0] != '\0') {
@@ -2824,6 +2824,7 @@ gboolean compose_check_for_valid_recipient(Compose *compose) {
 				}
 			}
 		}
+		g_free(header);
 		g_free(entry);
 	}
 	return recipient_found;

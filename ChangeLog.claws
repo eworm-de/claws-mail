@@ -1,3 +1,53 @@
+2002-07-24 [paul]	0.8.0claws7
+
+	* sync with 0.8.0cvs3
+		see ChangeLog 2002-07-24
+
+2002-07-23 [christoph]	0.8.0claws6
+
+	* src/folder.c
+        * src/folder.h
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/main.c
+		o separate processing and summaryview
+		o removed summary_write_cache from summaryview
+		o removed summaryview->killed_messages, because we don't have
+		  to keep a list of killed messages anymore. New cache will
+		  keep the hidden messages in cache anyway
+	* src/folderview.c
+	* src/inc.c
+	* src/selective_download.c
+		o removed unnecessary summary_write_cache calls
+	* src/procmsg.c
+		o don't set ignore thread flag in procmsg_get_thread_tree
+		  if it is already set
+	* src/mainwindow.c
+	* src/statusbar.h
+		o moved STATUSBAR_PUSH/POP to statusbar.h because
+		  they are used in different files
+
+2002-07-23 [melvin]	0.8.0claws5
+
+	* src/addressbook.c
+	* src/addrgather.c
+	* src/editaddress.c
+	* src/editgroup.c
+	* src/editldap_basedn.c
+	* src/importldif.c
+	* src/prefs_common.c
+		Fixed few memory leak (gtk_editable_get_chars returns
+		an allocated string)
+	* src/logwindow.c
+		Fixed few memory leak (gtk_editable_get_chars returns
+		an allocated string) and modified a little the log cutting
+		loop.
+	* src/compose.c
+		Replaced a call to an obsolete function gtk_entry_get_text()
+		by gtk_editable_get_chars()
+	* src/send.c
+		Removed a debug printf
+
 2002-07-23 [christoph]	0.8.0claws4
 
 	* src/filesel.c

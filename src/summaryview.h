@@ -118,7 +118,6 @@ struct _SummaryView
 
 	FolderItem *folder_item;
 
-	GSList * killed_messages;
 	gint important_score;
 
 	/* current message status */
@@ -240,7 +239,9 @@ void summary_set_colorlabel_color (GtkCTree		*ctree,
 
 void summary_set_column_order	  (SummaryView		*summaryview);
 
+#if 0 /* OLD PROCESSING */
 void processing_apply();
+#endif
 
 void summary_toggle_show_read_messages (SummaryView *summaryview);
 

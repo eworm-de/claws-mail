@@ -35,4 +35,17 @@ void statusbar_print_all	(const gchar	*format, ...)
 				 G_GNUC_PRINTF(1, 2);
 void statusbar_pop_all		(void);
 
+#define STATUSBAR_PUSH(mainwin, str) \
+{ \
+	gtk_statusbar_push(GTK_STATUSBAR(mainwin->statusbar), \
+			   mainwin->folderview_cid, str); \
+	gtkut_widget_wait_for_draw(mainwin->hbox_stat); \
+}
+
+#define STATUSBAR_POP(mainwin) \
+{ \
+	gtk_statusbar_pop(GTK_STATUSBAR(mainwin->statusbar), \
+			  mainwin->folderview_cid); \
+}
+
 #endif /* __STATUSBAR_H__ */

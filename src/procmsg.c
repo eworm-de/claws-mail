@@ -553,7 +553,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			if (parent == NULL) {
 				parent = root;
 			} else {
-				if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags)) {
+				if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 					procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 				}
 			}
@@ -594,7 +594,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			g_node_insert_before
 				(parent, parent->children, node);
 			/* CLAWS: ignore thread */
-			if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags)) {
+			if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 				procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 			}
 		}
@@ -625,7 +625,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 				g_node_unlink(node);
 				g_node_append(parent, node);
 				/* CLAWS: ignore thread */
-				if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags)) {
+				if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 					procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 				}
 			}

@@ -61,6 +61,7 @@
 #include "account.h"
 #include "folder.h"
 #include "inc.h"
+#include "statusbar.h"
 
 typedef enum
 {
@@ -73,19 +74,6 @@ typedef enum
 #define N_FOLDER_COLS		4
 #define COL_FOLDER_WIDTH	150
 #define COL_NUM_WIDTH		32
-
-#define STATUSBAR_PUSH(mainwin, str) \
-{ \
-	gtk_statusbar_push(GTK_STATUSBAR(mainwin->statusbar), \
-			   mainwin->folderview_cid, str); \
-	gtkut_widget_wait_for_draw(mainwin->hbox_stat); \
-}
-
-#define STATUSBAR_POP(mainwin) \
-{ \
-	gtk_statusbar_pop(GTK_STATUSBAR(mainwin->statusbar), \
-			  mainwin->folderview_cid); \
-}
 
 static GList *folderview_list = NULL;
 
@@ -1653,6 +1641,15 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 	can_select = FALSE;
 
+	/* Save cache for old folder */
+	/* We don't want to lose all caches if sylpheed crashed */
+	if(folderview->opened) {
+		FolderItem *olditem;
+		
+		olditem = gtk_ctree_node_get_row_data(ctree, folderview->opened);
+		folder_item_write_cache(olditem);
+	}
+	
 	/* CLAWS: set compose button type: news folder items 
 	 * always have a news folder as parent */
 	if (item->folder) 
@@ -1681,10 +1678,29 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		folder_item_scan(item);
 	}
 
+	/* Processing */
+	if(item->prefs->processing != NULL) {
+		gchar *buf;
+		
+		buf = g_strdup_printf(_("Processing (%s)..."), item->path);
+		debug_print("%s\n", buf);
+		STATUSBAR_PUSH(folderview->mainwin, buf);
+		g_free(buf);
+	
+		main_window_cursor_wait(folderview->mainwin);
+	
+		folder_item_apply_processing(item);
+
+		debug_print(_("done.\n"));
+		STATUSBAR_POP(folderview->mainwin);
+		main_window_cursor_normal(folderview->mainwin);
+	}
+		
+	/* Show messages */
 	opened = summary_show(folderview->summaryview, item, FALSE);
 
 	folder_clean_cache_memory();
-	
+
 	if (!opened) {
 		gtkut_ctree_set_focus_row(ctree, folderview->opened);
 		gtk_ctree_select(ctree, folderview->opened);

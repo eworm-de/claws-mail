@@ -1,3 +1,15 @@
+2002-07-24
+
+	* src/addressbook.c
+	  src/editaddress.c
+	  src/editgroup.c
+	  src/editldap_basedn.c
+	  src/importldif.c
+	  src/prefs_common.c: gtk_editable_get_chars() が返す文字列を free
+	  していなかったメモリリークを修正。少しコードを整理。
+	* src/importldif.h
+	  src/vcard.h: C++ スタイルのコメントを除去。
+
 2002-07-23
 
 	* src/codeconv.c: conv_encode_header(): マルチバイトと us-ascii

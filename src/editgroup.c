@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,8 +91,10 @@ static void edit_group_status_show( gchar *msg ) {
 }
 
 static void edit_group_ok(GtkWidget *widget, gboolean *cancelled) {
-	gchar *sName = g_strdup( gtk_editable_get_chars( GTK_EDITABLE(groupeditdlg.entry_name), 0, -1 ) );
+	gchar *sName;
 	gboolean errFlag = TRUE;
+
+	sName = gtk_editable_get_chars( GTK_EDITABLE(groupeditdlg.entry_name), 0, -1 );
 	if( sName ) {
 		g_strstrip( sName );
 		if( *sName != '\0' ) {
@@ -431,6 +433,7 @@ static GList *edit_group_build_email_list() {
 ItemGroup *addressbook_edit_group( AddressBookFile *abf, ItemFolder *parent, ItemGroup *group ) {
 	static gboolean cancelled;
 	GList *listEMail = NULL;
+	gchar *name;
 
 	if (!groupeditdlg.window)
 		addressbook_edit_group_create(&cancelled);
@@ -482,7 +485,9 @@ ItemGroup *addressbook_edit_group( AddressBookFile *abf, ItemFolder *parent, Ite
 		/* Create new person and email list */
 		group = addrbook_add_group_list( abf, parent, listEMail );
 	}
-	addritem_group_set_name( group, gtk_editable_get_chars( GTK_EDITABLE(groupeditdlg.entry_name), 0, -1 ) );
+	name = gtk_editable_get_chars( GTK_EDITABLE(groupeditdlg.entry_name), 0, -1 );
+	addritem_group_set_name( group, name );
+	g_free( name );
 
 	listEMail = NULL;
 	return group;
