@@ -1,3 +1,14 @@
+2003-09-21 [christoph]	0.9.5claws23
+
+	* src/Makefile.am
+	* src/logwindow.[ch]			** REMOVE **
+	* src/mainwindow.c
+	* src/prefs_common.c
+	* src/gtk/Makefile.am
+	* src/gtk/logwindow.[ch]		** ADD **
+		make logwindow prefs_common independent and move
+		it to gtk directory
+
 2003-09-20 [christoph]	0.9.5claws22
 
 	* src/compose.c

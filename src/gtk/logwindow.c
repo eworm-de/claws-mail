@@ -34,7 +34,6 @@
 #include "logwindow.h"
 #include "utils.h"
 #include "gtkutils.h"
-#include "prefs_common.h"
 #include "log.h"
 #include "hooks.h"
 
@@ -45,7 +44,8 @@ static void key_pressed			(GtkWidget	*widget,
 					 LogWindow	*logwin);
 static gboolean log_window_append	(gpointer 	 source,
 					 gpointer   	 data);
-void log_window_clear			(GtkWidget 	*text);
+static void log_window_clip		(GtkWidget 	*text,
+					 guint		 glip_length);
 
 LogWindow *log_window_create(void)
 {
@@ -135,6 +135,14 @@ void log_window_show(LogWindow *logwin)
 	gtk_widget_show(logwin->window);
 }
 
+void log_window_set_clipping(LogWindow *logwin, gboolean clip, guint clip_length)
+{
+	g_return_if_fail(logwin != NULL);
+
+	logwin->clip = clip;
+	logwin->clip_length = clip_length;
+}
+
 static gboolean log_window_append(gpointer source, gpointer data)
 {
 	LogText *logtext = (LogText *) source;
@@ -147,7 +155,7 @@ static gboolean log_window_append(gpointer source, gpointer data)
 	g_return_val_if_fail(logtext->text != NULL, TRUE);
 	g_return_val_if_fail(logwindow != NULL, FALSE);
 
-	if (prefs_common.cliplog && !prefs_common.loglength)
+	if (logwindow->clip && !logwindow->clip_length)
 		return FALSE;
 
 	text = GTK_TEXT(logwindow->text);
@@ -171,8 +179,8 @@ static gboolean log_window_append(gpointer source, gpointer data)
 
 	if (head) gtk_text_insert(text, NULL, color, NULL, head, -1);
 	gtk_text_insert(text, NULL, color, NULL, logtext->text, -1);
-	if (prefs_common.cliplog)
-	       log_window_clear (GTK_WIDGET (text));
+	if (logwindow->clip)
+	       log_window_clip (GTK_WIDGET (text), logwindow->clip_length);
 
 	return FALSE;
 }
@@ -190,7 +198,7 @@ static void key_pressed(GtkWidget *widget, GdkEventKey *event,
 		gtk_widget_hide(logwin->window);
 }
 
-void log_window_clear(GtkWidget *textw)
+static void log_window_clip(GtkWidget *textw, guint clip_length)
 {
         guint length;
 	guint point;
@@ -200,10 +208,10 @@ void log_window_clear(GtkWidget *textw)
 	length = gtk_text_get_length (text);
 	debug_print("Log window length: %u\n", length);
 	
-	if (length > prefs_common.loglength) {
+	if (length > clip_length) {
 	        /* find the end of the first line after the cut off
 		 * point */
-       	        point = length - prefs_common.loglength;
+       	        point = length - clip_length;
 		while (point < length && GTK_TEXT_INDEX(text, point) != '\n')
 			point++;
 		/* erase the text */
@@ -222,5 +230,3 @@ void log_window_clear(GtkWidget *textw)
 			gtk_text_freeze(text);
 	}
 }
-
-

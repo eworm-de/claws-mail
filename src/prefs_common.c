@@ -3921,6 +3921,7 @@ static void prefs_common_apply(void)
 	gchar *entry_pixmap_theme_str;
 	gboolean update_pixmap_theme;
 	gchar *backup_theme_path;
+	MainWindow *mainwindow;
 	
 	entry_pixmap_theme_str = gtk_entry_get_text(GTK_ENTRY(interface.entry_pixmap_theme));
 	if (entry_pixmap_theme_str && 
@@ -3947,9 +3948,13 @@ static void prefs_common_apply(void)
 
 	/*!< FIXME: Now it's safe to delete the backup path */
 	g_free(backup_theme_path);
-	
+
 	prefs_common_save_config();
 
+	mainwindow = mainwindow_get_mainwindow();
+	log_window_set_clipping(mainwindow->logwin, prefs_common.cliplog,
+				prefs_common.loglength);
+	
 	inc_autocheck_timer_remove();
 	inc_autocheck_timer_set();
 }

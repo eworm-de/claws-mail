@@ -35,11 +35,14 @@ struct _LogWindow
 	GdkColor warn_color;
 	GdkColor error_color;
 
-	guint hook_id;
+	gboolean clip;
+	guint	 clip_length;
+	guint 	 hook_id;
 };
 
 LogWindow *log_window_create(void);
 void log_window_init(LogWindow *logwin);
 void log_window_show(LogWindow *logwin);
+void log_window_set_clipping(LogWindow *logwin, gboolean clip, guint clip_length);
 
 #endif /* __LOGWINDOW_H__ */

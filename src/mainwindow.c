@@ -1013,6 +1013,8 @@ MainWindow *main_window_create(SeparateType type)
 	summary_init(summaryview);
 	messageview_init(messageview);
 	log_window_init(mainwin->logwin);
+	log_window_set_clipping(mainwin->logwin, prefs_common.cliplog,
+				prefs_common.loglength);
 #ifdef USE_OPENSSL
 	sslcertwindow_register_hook();
 #endif
@@ -1485,7 +1487,6 @@ void main_window_add_mbox(MainWindow *mainwin)
 {
 	gchar *path;
 	Folder *folder;
-	FolderItem * item;
 
 	path = input_dialog(_("Add mbox mailbox"),
 			    _("Input the location of mailbox."),
