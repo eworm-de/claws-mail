@@ -175,4 +175,6 @@ gchar *matching_build_command		(const gchar	*cmd,
 void prefs_matcher_read_config		(void);
 void prefs_matcher_write_config		(void);
 
+gchar * matcher_quote_str(const gchar * src);
+
 #endif

@@ -47,7 +47,7 @@ gchar *privacy_mimeinfo_sig_info_short		(MimeInfo *);
 gchar *privacy_mimeinfo_sig_info_full		(MimeInfo *);
 
 gboolean privacy_mimeinfo_is_encrypted		(MimeInfo *);
-gint privacy_mimeinfo_decrypt			(MimeInfo *);
+MimeInfo * privacy_mimeinfo_decrypt		(MimeInfo *);
 
 struct _PrivacySystem {
 	gchar		 *name;

@@ -28,6 +28,7 @@
 #include "intl.h"
 #include "matcher_parser.h"
 #include "prefs_gtk.h"
+#include <ctype.h>
 
 /*!
  *\brief	Keyword lookup element
@@ -193,6 +194,7 @@ gint get_matchparser_tab_id(const gchar *str)
  *
  *\return	gchar * Newly allocated string with escaped characters
  */
+#if 0
 gchar *matcher_escape_str(const gchar *str)
 {
 	register const gchar *walk;
@@ -220,6 +222,7 @@ gchar *matcher_escape_str(const gchar *str)
 	*reswalk = 0;
 	return res;
 }
+#endif
 
 /*!
  *\brief	Unescape string by replacing escaped char sequences
@@ -233,6 +236,7 @@ gchar *matcher_escape_str(const gchar *str)
  *
  *\return	gchar * Pointer to changed buffer
  */
+#if 0
 gchar *matcher_unescape_str(gchar *str)
 {
 	gchar *tmp = alloca(strlen(str) + 1);
@@ -271,6 +275,7 @@ gchar *matcher_unescape_str(gchar *str)
 	*dst = 0;
 	return str;
 }
+#endif
 
 /* **************** data structure allocation **************** */
 
@@ -360,6 +365,7 @@ MatcherProp *matcherprop_copy(const MatcherProp *src)
  *\return	MatcherProp * Pointer to newly allocated matcher
  *		structure
  */
+#if 0
 MatcherProp *matcherprop_unquote_new(gint criteria, const gchar *header,
 				     gint matchtype, const gchar *expr,
 				     int value)
@@ -379,7 +385,7 @@ MatcherProp *matcherprop_unquote_new(gint criteria, const gchar *header,
 
 	return prop;
 }
-
+#endif
 
 /* ************** match ******************************/
 
@@ -1060,6 +1066,68 @@ gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 	return result;
 }
 
+
+static gint quote_filter_str(gchar * result, guint size,
+			     const gchar * path)
+{
+	const gchar * p;
+	gchar * result_p;
+	guint remaining;
+
+	result_p = result;
+	remaining = size;
+
+	for(p = path ; * p != '\0' ; p ++) {
+
+		if ((* p != '\"') || (* p != '\\')) {
+			if (remaining > 0) {
+				* result_p = * p;
+				result_p ++; 
+				remaining --;
+			}
+			else {
+				result[size - 1] = '\0';
+				return -1;
+			}
+		}
+		else { 
+			if (remaining >= 2) {
+				* result_p = '\\';
+				result_p ++; 
+				* result_p = * p;
+				result_p ++; 
+				remaining -= 2;
+			}
+			else {
+				result[size - 1] = '\0';
+				return -1;
+			}
+		}
+	}
+	if (remaining > 0) {
+		* result_p = '\0';
+	}
+	else {
+		result[size - 1] = '\0';
+		return -1;
+	}
+  
+	return 0;
+}
+
+
+gchar * matcher_quote_str(const gchar * src)
+{
+	gchar * res;
+	gint len;
+	
+	len = strlen(src) * 2 + 1;
+	res = g_malloc(len);
+	quote_filter_str(res, len, src);
+	
+	return res;
+}
+
 /*!
  *\brief	Convert a matcher structure to a string
  *
@@ -1073,8 +1141,8 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 	const gchar *criteria_str;
 	const gchar *matchtype_str;
 	int i;
-        gchar *expr;
-
+	gchar * quoted_expr;
+	
 	criteria_str = NULL;
 	for (i = 0; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)); i++) {
 		if (matchparser_tab[i].id == matcher->criteria)
@@ -1115,9 +1183,10 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 		return g_strdup(criteria_str);
 	case MATCHCRITERIA_TEST:
 	case MATCHCRITERIA_NOT_TEST:
-                expr = matcher_escape_str(matcher->expr);
-		matcher_str = g_strdup_printf("%s \"%s\"", criteria_str, expr);
-                g_free((gpointer) expr);
+		quoted_expr = matcher_quote_str(matcher->expr);
+		matcher_str = g_strdup_printf("%s \"%s\"",
+					      criteria_str, quoted_expr);
+		g_free(quoted_expr);
                 return matcher_str;
 	}
 
@@ -1135,17 +1204,22 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 	case MATCHTYPE_MATCHCASE:
 	case MATCHTYPE_REGEXP:
 	case MATCHTYPE_REGEXPCASE:
-                expr = matcher_escape_str(matcher->expr);
-		if (matcher->header)
+		quoted_expr = matcher_quote_str(matcher->expr);
+		if (matcher->header) {
+			gchar * quoted_header;
+			
+			quoted_header = matcher_quote_str(matcher->header);
 			matcher_str = g_strdup_printf
 					("%s \"%s\" %s \"%s\"",
-					 criteria_str, matcher->header,
-					 matchtype_str, expr);
+					 criteria_str, quoted_header,
+					 matchtype_str, quoted_expr);
+			g_free(quoted_header);
+		}
 		else
 			matcher_str = g_strdup_printf
 					("%s %s \"%s\"", criteria_str,
-					 matchtype_str, expr);
-                g_free((gpointer) expr);
+					 matchtype_str, quoted_expr);
+                g_free(quoted_expr);
 		break;
 	}
 
@@ -1190,8 +1264,27 @@ gchar *matcherlist_to_string(const MatcherList *matchers)
 	return result;
 }
 
+
 #define STRLEN_ZERO(s) ((s) ? strlen(s) : 0)
 #define STRLEN_DEFAULT(s,d) ((s) ? strlen(s) : STRLEN_ZERO(d))
+
+static void add_str_default(gchar ** dest,
+			    const gchar * s, const gchar * d)
+{
+	gchar quoted_str[4096];
+	const gchar * str;
+	
+        if (s != NULL)
+		str = s;
+	else
+		str = d;
+	
+	quote_cmd_argument(quoted_str, sizeof(quoted_str), str);
+	strcpy(* dest, quoted_str);
+	
+	(* dest) += strlen(* dest);
+}
+
 /* matching_build_command() - preferably cmd should be unescaped */
 /*!
  *\brief	Build the command line to execute
@@ -1254,21 +1347,25 @@ gchar *matching_build_command(const gchar *cmd, MsgInfo *info)
 				size += STRLEN_DEFAULT(info->references, no_references) - 2;
 				break;
 			case 'F': /* file */
-				filename = folder_item_fetch_msg(info->folder,
-								 info->msgnum);
+				if (filename != NULL)
+					filename = folder_item_fetch_msg(info->folder, info->msgnum);
 				
 				if (filename == NULL) {
 					g_warning("filename is not set");
 					return NULL;
 				}
-				else
+				else {
 					size += strlen(filename) - 2;
+				}
 				break;
 			}
 			s++;
 		}
 		else s++;
 	}
+	
+	/* as the string can be quoted, we double the result */
+	size *= 2;
 
 	processed_cmd = g_new0(gchar, size);
 	s = cmd;
@@ -1283,65 +1380,40 @@ gchar *matching_build_command(const gchar *cmd, MsgInfo *info)
 				p++;
 				break;
 			case 's': /* subject */
-				if (info->subject != NULL)
-					strcpy(p, info->subject);
-				else
-					strcpy(p, no_subject);
-				p += strlen(p);
+				add_str_default(&p, info->subject,
+						no_subject);
 				break;
 			case 'f': /* from */
-				if (info->from != NULL)
-					strcpy(p, info->from);
-				else
-					strcpy(p, no_from);
-				p += strlen(p);
+				add_str_default(&p, info->from,
+						no_from);
 				break;
 			case 't': /* to */
-				if (info->to != NULL)
-					strcpy(p, info->to);
-				else
-					strcpy(p, no_to);
-				p += strlen(p);
+				add_str_default(&p, info->to,
+						no_to);
 				break;
 			case 'c': /* cc */
-				if (info->cc != NULL)
-					strcpy(p, info->cc);
-				else
-					strcpy(p, no_cc);
-				p += strlen(p);
+				add_str_default(&p, info->cc,
+						no_cc);
 				break;
 			case 'd': /* date */
-				if (info->date != NULL)
-					strcpy(p, info->date);
-				else
-					strcpy(p, no_date);
-				p += strlen(p);
+				add_str_default(&p, info->date,
+						no_date);
 				break;
 			case 'i': /* message-id */
-				if (info->msgid != NULL)
-					strcpy(p, info->msgid);
-				else
-					strcpy(p, no_msgid);
-				p += strlen(p);
+				add_str_default(&p, info->msgid,
+						no_msgid);
 				break;
 			case 'n': /* newsgroups */
-				if (info->newsgroups != NULL)
-					strcpy(p, info->newsgroups);
-				else
-					strcpy(p, no_newsgroups);
-				p += strlen(p);
+				add_str_default(&p, info->newsgroups,
+						no_newsgroups);
 				break;
 			case 'r': /* references */
-				if (info->references != NULL)
-					strcpy(p, info->references);
-				else
-					strcpy(p, no_references);
-				p += strlen(p);
+				add_str_default(&p, info->references,
+						no_references);
 				break;
 			case 'F': /* file */
-				strcpy(p, filename);
-				p += strlen(p);
-				g_free(filename);
+				if (filename != NULL)
+					add_str_default(&p, filename, NULL);
 				break;
 			default:
 				*p = '%';
@@ -1358,7 +1430,8 @@ gchar *matching_build_command(const gchar *cmd, MsgInfo *info)
 			s++;
 		}
 	}
-
+	g_free(filename);
+	
 	return processed_cmd;
 }
 #undef STRLEN_DEFAULT

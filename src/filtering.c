@@ -65,10 +65,8 @@ FilteringAction * filteringaction_new(int type, int account_id,
 	action->account_id = account_id;
 	if (destination) {
 		action->destination	  = g_strdup(destination);
-		action->unesc_destination = matcher_unescape_str(g_strdup(destination));
 	} else {
 		action->destination       = NULL;
-		action->unesc_destination = NULL;
 	}
 	action->labelcolor = labelcolor;	
         action->score = score;
@@ -80,8 +78,6 @@ void filteringaction_free(FilteringAction * action)
 	g_return_if_fail(action);
 	if (action->destination)
 		g_free(action->destination);
-	if (action->unesc_destination)
-		g_free(action->unesc_destination);
 	g_free(action);
 }
 
@@ -109,10 +105,6 @@ static FilteringAction * filteringaction_copy(FilteringAction * src)
 		new->destination = g_strdup(src->destination);
 	else 
 		new->destination = NULL;
-	if (src->unesc_destination)
-		new->unesc_destination = g_strdup(src->unesc_destination);
-	else
-		new->unesc_destination = NULL;
 	new->labelcolor = src->labelcolor;
 
         return new;
@@ -126,10 +118,6 @@ FilteringProp * filteringprop_copy(FilteringProp *src)
 	new = g_new0(FilteringProp, 1);
 	new->matchers = g_new0(MatcherList, 1);
 
-#if 0
-	new->action = g_new0(FilteringAction, 1);
-#endif
-
 	for (tmp = src->matchers->matchers; tmp != NULL && tmp->data != NULL;) {
 		MatcherProp *matcher = (MatcherProp *)tmp->data;
 		
@@ -140,19 +128,6 @@ FilteringProp * filteringprop_copy(FilteringProp *src)
 
 	new->matchers->bool_and = src->matchers->bool_and;
 
-#if 0
-	new->action->type = src->action->type;
-	new->action->account_id = src->action->account_id;
-	if (src->action->destination)
-		new->action->destination = g_strdup(src->action->destination);
-	else 
-		new->action->destination = NULL;
-	if (src->action->unesc_destination)
-		new->action->unesc_destination = g_strdup(src->action->unesc_destination);
-	else
-		new->action->unesc_destination = NULL;
-	new->action->labelcolor = src->action->labelcolor;
-#endif
         new->action_list = NULL;
 
         for (tmp = src->action_list ; tmp != NULL ; tmp = tmp->next) {
@@ -285,7 +260,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		return val == 0 ? TRUE : FALSE;
 
 	case MATCHACTION_EXECUTE:
-		cmd = matching_build_command(action->unesc_destination, info);
+		cmd = matching_build_command(action->destination, info);
 		if (cmd == NULL)
 			return FALSE;
 		else {
@@ -388,10 +363,6 @@ static gboolean filter_msginfo(GSList * filtering_list, MsgInfo * info)
 
 		if (filtering_match_condition(filtering, info)) {
 			applied = filtering_apply_rule(filtering, info, &final);
-#if 0
-			if (TRUE == (final = filtering_is_final_action(filtering)))
-				break;
-#endif
                         if (final)
                                 break;
 		}		
@@ -414,7 +385,8 @@ gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info)
 gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *action)
 {
 	const gchar *command_str;
-
+	gchar * quoted_dest;
+	
 	command_str = get_matchparser_tab_str(action->type);
 
 	if (command_str == NULL)
@@ -424,7 +396,9 @@ gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *act
 	case MATCHACTION_MOVE:
 	case MATCHACTION_COPY:
 	case MATCHACTION_EXECUTE:
-		g_snprintf(dest, destlen, "%s \"%s\"", command_str, action->destination);
+		quoted_dest = matcher_quote_str(action->destination);
+		g_snprintf(dest, destlen, "%s \"%s\"", command_str, quoted_dest);
+		g_free(quoted_dest);
 		return dest;
 
 	case MATCHACTION_DELETE:
@@ -442,7 +416,9 @@ gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *act
 	case MATCHACTION_REDIRECT:
 	case MATCHACTION_FORWARD:
 	case MATCHACTION_FORWARD_AS_ATTACHMENT:
-		g_snprintf(dest, destlen, "%s %d \"%s\"", command_str, action->account_id, action->destination); 
+		quoted_dest = matcher_quote_str(action->destination);
+		g_snprintf(dest, destlen, "%s %d \"%s\"", command_str, action->account_id, quoted_dest);
+		g_free(quoted_dest);
 		return dest; 
 
 	case MATCHACTION_COLOR:

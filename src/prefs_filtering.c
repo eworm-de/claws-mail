@@ -108,8 +108,6 @@ void prefs_filtering_open(GSList ** p_processing,
 			  const gchar *header,
 			  const gchar *key)
 {
-	gchar *esckey;
-
 	if (prefs_rc_is_readonly(FILTERING_RC))
 		return;
 
@@ -128,12 +126,9 @@ void prefs_filtering_open(GSList ** p_processing,
 		gtk_window_set_title (GTK_WINDOW(filtering.window),
 				      _("Filtering/Processing configuration"));
 	
-	esckey = matcher_escape_str(key);
-	
         p_processing_list = p_processing;
         
-	prefs_filtering_set_dialog(header, esckey);
-	g_free(esckey);
+	prefs_filtering_set_dialog(header, key);
 
 	gtk_widget_show(filtering.window);
 
@@ -619,9 +614,15 @@ static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 	prefs_filtering_reset_dialog();
 
 	if (header && key) {
-		gchar *match_str = g_strconcat(header, " ",
-			get_matchparser_tab_str(MATCHTYPE_MATCHCASE),
-			" \"", key, "\"", NULL);
+		gchar * quoted_key;
+		gchar *match_str;
+
+		quoted_key = matcher_quote_str(key);
+		
+		match_str = g_strconcat(header, " ", get_matchparser_tab_str(MATCHTYPE_MATCHCASE),
+					" \"", quoted_key, "\"", NULL);
+		g_free(quoted_key);
+		
 		gtk_entry_set_text(GTK_ENTRY(filtering.cond_entry), match_str);
 		g_free(match_str);
 	}
