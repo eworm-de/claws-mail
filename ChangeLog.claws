@@ -1,3 +1,8 @@
+2002-08-22 [colin]	0.8.1claws101
+
+	* src/mainwindow.c
+		Fix some of the gdk warnings
+
 2002-08-22 [colin]	0.8.1claws100
 
 	* src/Makefile.am

@@ -769,6 +769,9 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_widget_show(handlebox);
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 
+	/* link window to mainwin->window to avoid gdk warnings */
+	mainwin->window       = window;
+	
 	/* create toolbar */
 	toolbar_create(mainwin, handlebox);
 
@@ -834,7 +837,6 @@ MainWindow *main_window_create(SeparateType type)
 
 	messageview->mainwin     = mainwin;
 
-	mainwin->window       = window;
 	mainwin->vbox         = vbox;
 	mainwin->menubar      = menubar;
 	mainwin->menu_factory = ifactory;
