@@ -1859,8 +1859,8 @@ static void folderview_drag_data_get(GtkWidget        *widget,
 {
 	FolderItem *item;
 	GList *cur;
-	gchar *source=NULL;
-	
+	gchar *source = NULL;
+
 	for (cur = GTK_CLIST(folderview->ctree)->selection;
 	     cur != NULL; cur = cur->next) {
 		item = gtk_ctree_node_get_row_data
@@ -1924,6 +1924,8 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 
 	if (gtk_clist_get_selection_info
 		(GTK_CLIST(widget), x - 24, y - 24, &row, &column)) {
+		GtkWidget *srcwidget;
+
 		if (y > height - 24 && height + vpos < total_height)
 			gtk_adjustment_set_value(pos, (vpos+5 > height ? height : vpos+5));
 
@@ -1934,26 +1936,23 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 		item = gtk_ctree_node_get_row_data(GTK_CTREE(widget), node);
 		src_item = folderview->summaryview->folder_item;
 
-		if (item && item->folder && item->path &&
-		    src_item && src_item != item) {
-			switch (FOLDER_TYPE(item->folder)) {
-			case F_MH:
-#if 0
-			case F_MBOX:
-#endif
-			case F_IMAP:
+		srcwidget = gtk_drag_get_source_widget(context);
+		if (srcwidget == folderview->summaryview->ctree) {
+			/* comes from summaryview */
+			/* we are copying messages, so only accept folder items that are not
+			   the source item, are no root items and can copy messages */
+			if (item && item->folder && folder_item_parent(item) != NULL && src_item &&
+			    src_item != item && FOLDER_CLASS(item->folder)->copy_msg != NULL)
 				acceptable = TRUE;
-				break;
-			default:
-				break;
-			}
-		} else if (item && item->folder && folder_item_get_path(item) &&
-			   src_item && src_item != item) {
-			/* a root folder - acceptable only from folderview */
-			if (FOLDER_TYPE(item->folder) == F_MH || FOLDER_TYPE(item->folder) == F_IMAP)
+		} else if (srcwidget == folderview->ctree) {
+			/* comes from folderview */
+			/* we are moving folder items, only accept folders that are not
+                           the source items and can copy messages and create folder items */
+			if (item && item->folder && src_item && src_item != item &&
+			    FOLDER_CLASS(item->folder)->copy_msg != NULL &&
+			    FOLDER_CLASS(item->folder)->create_folder != NULL)
 				acceptable = TRUE;
 		}
-			
 	}
 
 	if (acceptable || (src_item && src_item == item))
@@ -2013,24 +2012,23 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		
 		/* re-check (due to acceptable possibly set for folder moves */
 		if (!(item && item->folder && item->path &&
-		      src_item && src_item != item && 
-		      (FOLDER_TYPE(item->folder) == F_MH || FOLDER_TYPE(item->folder) == F_IMAP))) {
+		      src_item && src_item != item && FOLDER_CLASS(item->folder)->copy_msg != NULL)) {
 			return;
 		}
 		if (item && src_item) {
 			switch (drag_context->action) {
-				case GDK_ACTION_COPY:
-					summary_copy_selected_to(folderview->summaryview, item);
-					gtk_drag_finish(drag_context, TRUE, FALSE, time);
-					break;
-				case GDK_ACTION_MOVE:
-				case GDK_ACTION_DEFAULT:
-				default:
-			if (FOLDER_TYPE(src_item->folder) == F_NEWS)
+			case GDK_ACTION_COPY:
 				summary_copy_selected_to(folderview->summaryview, item);
-			else
-				summary_move_selected_to(folderview->summaryview, item);
-			gtk_drag_finish(drag_context, TRUE, TRUE, time);
+				gtk_drag_finish(drag_context, TRUE, FALSE, time);
+				break;
+			case GDK_ACTION_MOVE:
+			case GDK_ACTION_DEFAULT:
+			default:
+				if (FOLDER_CLASS(src_item->folder)->remove_msg == NULL)
+				        summary_copy_selected_to(folderview->summaryview, item);
+				else
+					summary_move_selected_to(folderview->summaryview, item);
+				gtk_drag_finish(drag_context, TRUE, TRUE, time);
 			}
 		} else
 			gtk_drag_finish(drag_context, FALSE, FALSE, time);
