@@ -52,7 +52,7 @@ FolderItem *filter_get_dest_folder(GSList *fltlist, const gchar *file)
 		if (filter_match_condition(filter, hlist)) {
 			if (filter->action == FLT_NOTRECV) {
 				if (!dummy) {
-					dummy = g_new0(FolderItem, 0);
+					dummy = g_new0(FolderItem, 1);
 					dummy->path = g_strdup(FILTER_NOT_RECEIVE);
 				}
 				dest_folder = dummy;
@@ -61,6 +61,11 @@ FolderItem *filter_get_dest_folder(GSList *fltlist, const gchar *file)
 					(filter->dest);
 			break;
 		}
+	}
+
+	if (dummy != NULL) {
+		g_free(dummy->path);
+		g_free(dummy);
 	}
 
 	procheader_header_list_destroy(hlist);
