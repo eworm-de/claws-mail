@@ -2,6 +2,8 @@
 
 	* sync with 0.9.5cvs2
 		see ChangeLog 2003-09-05
+		
+	fixes bug 197 'Header lines encrypted by GPG'
 
 2003-09-11 [paul]	0.9.5claws1
 
