@@ -1116,8 +1116,8 @@ MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 	full_msginfo->decryption_failed = msginfo->decryption_failed;
 #endif
 
-	/* return full_msginfo;*/
-	return procmsg_msginfo_new_ref(msginfo);
+	return full_msginfo;
+
 }
 
 void procmsg_msginfo_free(MsgInfo *msginfo)

@@ -1077,7 +1077,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 			else
 				qmark = "> ";
 
-			quote_str = compose_quote_fmt(compose, msginfo,
+			quote_str = compose_quote_fmt(compose, full_msginfo,
 						      prefs_common.fw_quotefmt,
 						      qmark, body);
 			compose_attach_parts(compose, msginfo);
