@@ -1,3 +1,11 @@
+2002-09-27 [christoph]	0.8.3claws31
+
+	* doc-src/readme.txt
+	* doc-src/rfc1806.txt
+	* doc-src/rfc2183.txt
+	* doc-src/rfc2980.txt
+		update rfcs
+
 2002-09-27 [melvin]	0.8.3claws30
 
 	* ac/aspell.m4
