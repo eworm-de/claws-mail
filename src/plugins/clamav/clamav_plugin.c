@@ -37,12 +37,10 @@
 #include "folder.h"
 #include "prefs.h"
 #include "prefs_gtk.h"
-#include "alertpanel.h"
 
 #include "clamav_plugin.h"
 
 static guint hook_id;
-static gboolean clamav_init_error = FALSE;
 
 static ClamAvConfig config;
 
@@ -129,16 +127,9 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
     	if ((ret = cl_loaddbdir(cl_retdbdir(), &params.root, &no))) {
 		debug_print("cl_loaddbdir: %s\n", cl_strerror(ret));
-		if (!clamav_init_error) {
-			alertpanel_error("Clamav reported error \"%s\".\nThis error should be resolved "
-			                 "to enable virus checking.",
-					  cl_strerror(ret));
-			clamav_init_error = TRUE;
-		}			
 		return FALSE;
-    	} else if (clamav_init_error) {	
-		clamav_init_error = FALSE;
-	}
+    	}
+
     	debug_print("Database loaded (containing in total %d signatures)\n", no);
 
     	cl_buildtrie(params.root);

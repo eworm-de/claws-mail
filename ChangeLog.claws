@@ -1,3 +1,8 @@
+2003-02-13 [paul]	0.9.9claws9
+
+	* src/plugins/clamav/clamav_plugin.c
+		remove GUI code
+
 2003-02-13 [paul]	0.9.9claws8
 
 	* sync with 0.9.9cvs9
