@@ -1,3 +1,18 @@
+2003-10-21 [hoa]	0.9.6claws38
+	
+	* src/Makefile.am
+	* src/carray.[ch]		* NEW *
+	* src/chash.[ch]		* NEW *
+	* src/folder.c
+	* src/maillock.[ch]		* NEW *
+	* src/mailmbox.[ch]		* NEW *
+	* src/mailmbox_folder.[ch]	* NEW *
+	* src/mailmbox_parse.[ch]	* NEW *
+	* src/mailmbox_types.[ch]	* NEW *
+		implementation of mbox folder with unique message numbers
+
+		made use of libEtPan! implementation of mbox for lower-layer.
+
 2003-10-20 [alfons]	0.9.6claws37
 
 	* src/noticeview.c
