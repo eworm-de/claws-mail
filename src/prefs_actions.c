@@ -125,7 +125,7 @@ struct _ChildInfo
 
 struct _UserStringDialog {
 	GtkWidget	*dialog;
-	GtkEntry	*entry;
+	GtkWidget	*entry;
 	gchar		*user_str;
 };
 
@@ -1970,6 +1970,7 @@ static gchar *get_user_string(const gchar *action, ActionType type )
 						"action:\n%s"), action);
 			break;
 		default:
+			label_text = NULL;
 			debug_print("Unsupported action type %d", type);
 	}
 

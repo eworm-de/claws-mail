@@ -1,5 +1,11 @@
+2003-03-15 [melvin]	0.8.11claws15
+
+	* src/prefs_actions.c
+		Fixed compilation warnings.
+
 2003-03-15 [melvin]	0.8.11claws14
 
+	* src/plugins/Makefile.am
 	* src/plugins/dillo_viewer/.cvsignore			** NEW **
 	* src/plugins/dillo_viewer/Makefile.am			** NEW **
 	* src/plugins/dillo_viewer/dillo_viewer.c		** NEW **
