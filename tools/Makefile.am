@@ -6,7 +6,6 @@ EXTRA_TOOLS = \
 	gif2xface.pl \
 	gpg-sign-syl \
 	kmail2sylpheed.pl \
-	ldif-to-xml.py \
 	newscache_clean.pl \
 	outlook2sylpheed.pl \
 	sylpheed-switcher \

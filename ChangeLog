@@ -1,3 +1,33 @@
+2002-09-06
+
+	* src/prefs_common.c: corrected English.
+
+2002-09-06
+
+	* src/prefs_common.[ch]: added an option: "Mark messages as read
+	  only when opened in new window".
+
+2002-09-04
+
+	* src/folder.c:
+	  folder_tree_destroy()
+	  folder_write_list_recursive(): added sanity check.
+	* src/imap.c: imap_scan_tree(): if folder->node is NULL and
+	  can't get session, create empty folder node (based on the
+	  Alfons' suggestion).
+
+2002-09-03
+
+	* src/textview.c: textview_key_pressed(): pass GDK_Delete event to
+	  SummaryView.
+	* src/summaryview.c: summary_key_pressed(): scroll correct TextView
+	  on MIME mode.
+
+2002-09-02
+
+	* src/news.c: news_scan_group(): fixed wrong message number
+	  calculation.
+
 2002-08-30
 
 	* major refactoring for POP3.

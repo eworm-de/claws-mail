@@ -127,6 +127,7 @@ static void idle_function_for_gpgme(void);
 #endif /* USE_GPGME */
 
 static gint prohibit_duplicate_launch	(void);
+static gchar * get_crashfile_name	(void);
 static void lock_socket_input_cb	(gpointer	   data,
 					 gint		   source,
 					 GdkInputCondition condition);
@@ -408,6 +409,18 @@ int main(int argc, char *argv[])
 	/* make one all-folder processing before using sylpheed */
 	folder_func_to_all_folders(initial_processing, (gpointer *)mainwin);
 
+	/* if Sylpheed crashed, rebuild caches */
+#ifdef WIN32
+	if (is_file_exist(get_crashfile_name())) {
+#else
+	if (!cmd.crash && is_file_exist(get_crashfile_name())) {
+#endif
+		debug_print("Sylpheed crashed, checking for new messages\n");
+		folderview_check_new_all();
+	}
+	/* make the crash-indicator file */
+	str_write_to_file("foo", get_crashfile_name());
+
 	addressbook_read_file();
 
 	inc_autocheck_timer_init(mainwin);
@@ -645,6 +658,12 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	fd_close(lock_socket);
 	filename = get_socket_name();
 	unlink(filename);
+	
+	/* delete crashfile */
+#ifndef WIN32
+	if (!cmd.crash)
+#endif
+		unlink(get_crashfile_name());
 
 #if USE_SSL
 	ssl_done();
@@ -676,6 +695,18 @@ gchar *get_socket_name(void)
 		filename = g_strdup_printf("%s%csylpheed-%d",
 					   g_get_tmp_dir(), G_DIR_SEPARATOR,
 					   getuid());
+	}
+
+	return filename;
+}
+
+static gchar *get_crashfile_name(void)
+{
+	static gchar *filename = NULL;
+
+	if (filename == NULL) {
+		filename = g_strdup_printf("%s%csylpheed-crashed",
+					   get_tmp_dir(), G_DIR_SEPARATOR);
 	}
 
 	return filename;

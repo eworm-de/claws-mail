@@ -83,7 +83,9 @@ struct _PrefsCommon
 	gboolean forward_account_autosel;
 	gboolean reedit_account_autosel;
 	gboolean show_ruler;
-
+	gboolean autosave;
+	gint autosave_length;
+	
 	/* Quote */
 	gboolean reply_with_quote;
 	gchar *quotemark;
@@ -181,7 +183,7 @@ struct _PrefsCommon
 	gint quote_level3_col;
 	gint uri_col;
 	gint tgt_folder_col;
-	gushort sig_col;
+	gint signature_col;
 	gboolean recycle_quote_colors;
 	gboolean conv_mb_alnum;
 	gboolean display_header_pane;
@@ -221,6 +223,7 @@ struct _PrefsCommon
 	gboolean emulate_emacs;
 	gboolean show_msg_with_cursor_key;
 	gboolean open_unread_on_enter;
+	gboolean mark_as_read_on_new_window;
 	gboolean open_inbox_on_inc;
 	gboolean immediate_exec;
 	RecvDialogMode recv_dialog_mode;

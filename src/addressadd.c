@@ -315,9 +315,9 @@ static void addressadd_load_data( AddressIndex *addrIndex ) {
 	gtk_clist_clear( GTK_CLIST( tree ) );
 	list = addrindex_get_interface_list( addrIndex );
 	while( list ) {
-		AddressInterface *interface = list->data;
-		if( interface->type == ADDR_IF_BOOK ) {
-			nodeDS = interface->listSource;
+		AddressInterface *Xinterface = list->data;
+		if( Xinterface->type == ADDR_IF_BOOK ) {
+			nodeDS = Xinterface->listSource;
 			while( nodeDS ) {
 				ds = nodeDS->data;
 				dsName = g_strdup( addrindex_ds_get_name( ds ) );

@@ -91,6 +91,13 @@ static GdkColor quote_colors[3] = {
 	{(gulong)0, (gushort)0, (gushort)0, (gushort)0}
 };
 
+static GdkColor signature_color = {
+	(gulong)0,
+	(gushort)0x7fff,
+	(gushort)0x7fff,
+	(gushort)0x7fff
+};
+	
 static GdkColor uri_color = {
 	(gulong)0,
 	(gushort)0,
@@ -305,9 +312,11 @@ void textview_update_message_colors(void)
 					       &quote_colors[2]);
 		gtkut_convert_int_to_gdk_color(prefs_common.uri_col,
 					       &uri_color);
+		gtkut_convert_int_to_gdk_color(prefs_common.signature_col,
+					       &signature_color);
 	} else {
 		quote_colors[0] = quote_colors[1] = quote_colors[2] = 
-			uri_color = emphasis_color = black;
+			uri_color = emphasis_color = signature_color = black;
 	}
 }
 
@@ -633,7 +642,11 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo,
 	conv = conv_code_converter_new(charset);
 
 	tmpfp = procmime_decode_content(NULL, fp, mimeinfo);
+	
+	textview->is_in_signature = FALSE;
+
 	if (tmpfp) {
+		
 		if (mimeinfo->mime_type == MIME_TEXT_HTML)
 			textview_show_html(textview, tmpfp, conv);
 		else if (mimeinfo->mime_type == MIME_TEXT_ENRICHED)
@@ -1106,6 +1119,11 @@ static void textview_write_line(TextView *textview, const gchar *str,
 	else
 		fg_color = &quote_colors[quotelevel];
 
+	if (prefs_common.enable_color && (strcmp(buf,"-- \n") == 0 || textview->is_in_signature)) {
+		fg_color = &signature_color;
+		textview->is_in_signature = TRUE;
+	}
+	
 	if (prefs_common.head_space && spacingfont && buf[0] != '\n')
 		gtk_stext_insert(text, spacingfont, NULL, NULL, " ", 1);
 
@@ -1713,6 +1731,10 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_Return:
 		textview_scroll_one_line(textview,
 					 (event->state & GDK_MOD1_MASK) != 0);
+		break;
+	case GDK_Delete:
+		if (summaryview)
+			summary_pass_key_press_event(summaryview, event);
 		break;
 	case GDK_n:
 	case GDK_N:

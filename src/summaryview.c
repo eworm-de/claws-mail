@@ -2394,17 +2394,21 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	}
 	g_free(filename);
 
-	if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-		summaryview->newmsgs--;
-	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-		summaryview->unread--;
-
-	procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
-	summary_set_row_marks(summaryview, row);
-	gtk_clist_thaw(GTK_CLIST(ctree));
-	summary_status_show(summaryview);
-
-	flags = msginfo->flags;
+	if (new_window || !prefs_common.mark_as_read_on_new_window) {
+		if (MSG_IS_NEW(msginfo->flags) && MSG_IS_IGNORE_THREAD(msginfo->flags))
+			summaryview->newmsgs--;
+		if (MSG_IS_UNREAD(msginfo->flags) && MSG_IS_IGNORE_THREAD(msginfo->flags))
+			summaryview->unread--;
+		if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
+			procmsg_msginfo_unset_flags
+				(msginfo, MSG_NEW | MSG_UNREAD, 0);
+			summary_set_row_marks(summaryview, row);
+			gtk_clist_thaw(GTK_CLIST(ctree));
+			summary_status_show(summaryview);
+			
+			flags = msginfo->flags;
+		}
+	}
 
 	if (new_window) {
 		MessageView *msgview;
@@ -4545,6 +4549,8 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 {
 	GtkCTree *ctree = GTK_CTREE(widget);
 	GtkCTreeNode *node;
+	MessageView *messageview;
+	TextView *textview;
 
 	if (summary_is_locked(summaryview)) return;
 	if (!event) return;
@@ -4566,6 +4572,14 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 			return;
 	}
 
+	messageview = summaryview->messageview;
+	if (messageview->type == MVIEW_MIME &&
+	    gtk_notebook_get_current_page
+		(GTK_NOTEBOOK(messageview->mimeview->notebook)) == 1)
+		textview = messageview->mimeview->textview;
+	else
+		textview = messageview->textview;
+
 	switch (event->keyval) {
 	case GDK_space:		/* Page down or go to the next */
 		if (summaryview->displayed != summaryview->selected) {
@@ -4573,12 +4587,11 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 					    summaryview->selected);
 			break;
 		}
-		if (!textview_scroll_page(summaryview->messageview->textview,
-					  FALSE))
+		if (!textview_scroll_page(textview, FALSE))
 			summary_select_next_unread(summaryview);
 		break;
 	case GDK_BackSpace:	/* Page up */
-		textview_scroll_page(summaryview->messageview->textview, TRUE);
+		textview_scroll_page(textview, TRUE);
 		break;
 	case GDK_Return:	/* Scroll up/down one line */
 		if (summaryview->displayed != summaryview->selected) {
@@ -4586,8 +4599,8 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 					    summaryview->selected);
 			break;
 		}
-		textview_scroll_one_line(summaryview->messageview->textview,
-					 (event->state & GDK_MOD1_MASK) != 0);
+		textview_scroll_one_line
+			(textview, (event->state & GDK_MOD1_MASK) != 0);
 		break;
 	case GDK_asterisk:	/* Mark */
 		summary_mark(summaryview);

@@ -1092,7 +1092,15 @@ void imap_scan_tree(Folder *folder)
 	g_return_if_fail(folder->account != NULL);
 
 	session = imap_session_get(folder);
-	if (!session) return;
+	if (!session) {
+		if (!folder->node) {
+			folder_tree_destroy(folder);
+			item = folder_item_new(folder, folder->name, NULL);
+			item->folder = folder;
+			folder->node = g_node_new(item);
+		}
+		return;
+	}
 
 	if (folder->account->imap_dir && *folder->account->imap_dir) {
 		Xstrdup_a(root_folder, folder->account->imap_dir, return);

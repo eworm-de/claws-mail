@@ -1,3 +1,32 @@
+2002-09-06
+
+	* src/prefs_common.c: 英語を訂正。
+
+2002-09-06
+
+	* src/prefs_common.[ch]: オプション「新規ウィンドウで開いたときのみ
+	  メッセージを既読としてマーク」を追加。
+
+2002-09-04
+
+	* src/folder.c:
+	  folder_tree_destroy()
+	  folder_write_list_recursive(): 整合性チェックを追加。
+	* src/imap.c: imap_scan_tree(): folder->node が NULL で session
+	  を取得できない場合、空のフォルダノードを作成するようにした
+	  (Alfons さんの提案に基づく)。
+
+2002-09-03
+
+	* src/textview.c: textview_key_pressed(): GDK_Delete イベントを
+	  SummaryView に渡すようにした。
+	* src/summaryview.c: summary_key_pressed(): MIME モードのときに
+	  正しい TextView をスクロールするようにした。
+
+2002-09-02
+
+	* src/news.c: news_scan_group(): 誤ったメッセージ数計算を修正。
+
 2002-08-30
 
 	* 主要な POP3 のリファクタリング。

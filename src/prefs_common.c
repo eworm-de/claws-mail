@@ -130,6 +130,9 @@ static struct Compose {
 	GtkWidget *checkbtn_smart_wrapping;
 	GtkWidget *checkbtn_block_cursor;
 	GtkWidget *checkbtn_reply_with_quote;
+	
+	GtkWidget *checkbtn_autosave;
+	GtkWidget *entry_autosave_length;
 } compose;
 
 	/* spelling */
@@ -215,6 +218,7 @@ static struct Interface {
 	/* GtkWidget *checkbtn_emacs; */
 	GtkWidget *checkbtn_show_msg_with_cursor;
 	GtkWidget *checkbtn_openunread;
+	GtkWidget *checkbtn_mark_as_read_on_newwin;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
 	GtkWidget *checkbtn_addaddrbyclick;
@@ -248,6 +252,7 @@ static struct MessageColorButtons {
 	GtkWidget *quote_level3_btn;
 	GtkWidget *uri_btn;
 	GtkWidget *tgt_folder_btn;
+	GtkWidget *signature_btn;
 } color_buttons;
 
 static struct KeybindDialog {
@@ -388,6 +393,12 @@ static PrefParam param[] = {
         {"smart_wrapping", "TRUE", &prefs_common.smart_wrapping,
 	 P_BOOL, &compose.checkbtn_smart_wrapping,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+        {"autosave", "FALSE", &prefs_common.autosave,
+	 P_BOOL, &compose.checkbtn_autosave,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+        {"autosave_length", "50", &prefs_common.autosave_length,
+	 P_INT, &compose.entry_autosave_length,
+	 prefs_set_data_from_entry, prefs_set_entry},
 #if USE_ASPELL
 	{"enable_aspell", "TRUE", &prefs_common.enable_aspell,
 	 P_BOOL, &spelling.checkbtn_enable_aspell,
@@ -681,7 +692,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"target_folder_color", "14294218", &prefs_common.tgt_folder_col, P_INT,
 	 NULL, NULL, NULL},
-	{"signature_color", "0", &prefs_common.sig_col, P_USHORT,
+	{"signature_color", "7960953", &prefs_common.signature_col, P_INT,
 	 NULL, NULL, NULL},
 	{"recycle_quote_colors", "FALSE", &prefs_common.recycle_quote_colors,
 	 P_BOOL, NULL, NULL, NULL},
@@ -765,6 +776,10 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"open_unread_on_enter", "FALSE", &prefs_common.open_unread_on_enter,
 	 P_BOOL, &Xinterface.checkbtn_openunread,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"mark_as_read_on_new_window", "FALSE",
+	 &prefs_common.mark_as_read_on_new_window,
+	 P_BOOL, &Xinterface.checkbtn_mark_as_read_on_newwin,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"open_inbox_on_inc", "FALSE", &prefs_common.open_inbox_on_inc,
 	 P_BOOL, &Xinterface.checkbtn_openinbox,
@@ -1781,6 +1796,11 @@ static void prefs_compose_create(void)
 	GtkWidget *checkbtn_block_cursor;
 	GtkWidget *frame_msgwrap;
 
+	GtkWidget *hbox_autosave;
+	GtkWidget *checkbtn_autosave;
+	GtkWidget *entry_autosave_length;
+	GtkWidget *label_autosave_length;
+	
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
@@ -1844,6 +1864,23 @@ static void prefs_compose_create(void)
 	PACK_CHECK_BUTTON (vbox2, checkbtn_redirect_keep_from,
 			   _("Keep the original 'From' header when redirecting"));
 
+	
+	hbox_autosave = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox_autosave);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox_autosave, FALSE, FALSE, 0);
+	
+	PACK_CHECK_BUTTON (hbox_autosave, checkbtn_autosave,
+			   _("Autosave to drafts every "));
+
+	entry_autosave_length = gtk_entry_new();
+	gtk_widget_set_usize (entry_autosave_length, 64, -1);	
+	gtk_widget_show (entry_autosave_length);
+	gtk_box_pack_start (GTK_BOX (hbox_autosave), entry_autosave_length, FALSE, FALSE, 0);
+	
+	label_autosave_length = gtk_label_new(_("characters"));
+	gtk_widget_show (label_autosave_length);
+	gtk_box_pack_start (GTK_BOX (hbox_autosave), label_autosave_length, FALSE, FALSE, 0);
+	
 	hbox_undolevel = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_undolevel);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox_undolevel, FALSE, FALSE, 0);
@@ -1920,12 +1957,15 @@ static void prefs_compose_create(void)
 	compose.spinbtn_undolevel     = spinbtn_undolevel;
 	compose.spinbtn_undolevel_adj = spinbtn_undolevel_adj;
 
-	compose.spinbtn_linewrap     = spinbtn_linewrap;
-	compose.spinbtn_linewrap_adj = spinbtn_linewrap_adj;
-	compose.checkbtn_wrapquote   = checkbtn_wrapquote;
-	compose.checkbtn_autowrap    = checkbtn_autowrap;
-	compose.checkbtn_wrapatsend  = checkbtn_wrapatsend;
+	compose.spinbtn_linewrap      = spinbtn_linewrap;
+	compose.spinbtn_linewrap_adj  = spinbtn_linewrap_adj;
+	compose.checkbtn_wrapquote    = checkbtn_wrapquote;
+	compose.checkbtn_autowrap     = checkbtn_autowrap;
+	compose.checkbtn_wrapatsend   = checkbtn_wrapatsend;
 
+	compose.checkbtn_autosave     = checkbtn_autosave;
+	compose.entry_autosave_length = entry_autosave_length;
+	
 	compose.checkbtn_forward_as_attachment =
 		checkbtn_forward_as_attachment;
 	compose.checkbtn_redirect_keep_from =
@@ -2604,6 +2644,7 @@ static void prefs_interface_create(void)
 	/* GtkWidget *checkbtn_emacs; */
 	GtkWidget *checkbtn_show_msg_with_cursor;
 	GtkWidget *checkbtn_openunread;
+	GtkWidget *checkbtn_mark_as_read_on_newwin;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
 	GtkWidget *hbox1;
@@ -2653,6 +2694,10 @@ static void prefs_interface_create(void)
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_openunread,
 		 _("Open first unread message when entering a folder"));
+
+	PACK_CHECK_BUTTON
+		(vbox2, checkbtn_mark_as_read_on_newwin,
+		 _("Only mark message as read when opened in new window"));
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_openinbox,
@@ -2795,6 +2840,8 @@ static void prefs_interface_create(void)
 	Xinterface.checkbtn_show_msg_with_cursor
 					      = checkbtn_show_msg_with_cursor;
 	Xinterface.checkbtn_openunread         = checkbtn_openunread;
+	Xinterface.checkbtn_mark_as_read_on_newwin
+					      = checkbtn_mark_as_read_on_newwin;
 	Xinterface.checkbtn_openinbox          = checkbtn_openinbox;
 	Xinterface.checkbtn_immedexec          = checkbtn_immedexec;
 	Xinterface.optmenu_recvdialog	      = optmenu_recvdialog;
@@ -3311,6 +3358,7 @@ static void prefs_quote_colors_dialog_create(void)
 	GtkWidget *quotelevel2_label;
 	GtkWidget *quotelevel3_label;
 	GtkWidget *uri_label;
+	GtkWidget *signature_label;
 	GtkWidget *tgt_folder_label;
 	GtkWidget *hbbox;
 	GtkWidget *ok_btn;
@@ -3329,7 +3377,7 @@ static void prefs_quote_colors_dialog_create(void)
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 8);
 	PACK_FRAME(vbox, frame_colors, _("Colors"));
 
-	table = gtk_table_new (4, 2, FALSE);
+	table = gtk_table_new (5, 2, FALSE);
 	gtk_container_add (GTK_CONTAINER (frame_colors), table);
 	gtk_container_set_border_width (GTK_CONTAINER (table), 8);
 	gtk_table_set_row_spacings (GTK_TABLE (table), 2);
@@ -3368,6 +3416,12 @@ static void prefs_quote_colors_dialog_create(void)
 	gtk_widget_set_usize (color_buttons.tgt_folder_btn, 40, 30);
 	gtk_container_set_border_width (GTK_CONTAINER (color_buttons.tgt_folder_btn), 5);
 
+	color_buttons.signature_btn = gtk_button_new_with_label ("");
+	gtk_table_attach (GTK_TABLE (table), color_buttons.signature_btn,
+			  0, 1, 5, 6, 0, 0, 0, 0);
+	gtk_widget_set_usize (color_buttons.signature_btn, 40, 30);
+	gtk_container_set_border_width (GTK_CONTAINER (color_buttons.signature_btn), 5);
+
 	quotelevel1_label = gtk_label_new (_("Quoted Text - First Level"));
 	gtk_table_attach (GTK_TABLE (table), quotelevel1_label, 1, 2, 0, 1,
 			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
@@ -3398,6 +3452,12 @@ static void prefs_quote_colors_dialog_create(void)
 	gtk_label_set_justify (GTK_LABEL (tgt_folder_label), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment (GTK_MISC (tgt_folder_label), 0, 0.5);
 
+	signature_label = gtk_label_new (_("Signatures"));
+	gtk_table_attach (GTK_TABLE (table), signature_label, 1, 2, 5, 6,
+			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
+	gtk_label_set_justify (GTK_LABEL (signature_label), GTK_JUSTIFY_LEFT);
+	gtk_misc_set_alignment (GTK_MISC (signature_label), 0, 0.5);
+
 	PACK_CHECK_BUTTON (vbox, recycle_colors_btn,
 			   _("Recycle quote colors"));
 
@@ -3423,6 +3483,8 @@ static void prefs_quote_colors_dialog_create(void)
 			   GTK_SIGNAL_FUNC(quote_color_set_dialog), "URI");
 	gtk_signal_connect(GTK_OBJECT(color_buttons.tgt_folder_btn), "clicked",
 			   GTK_SIGNAL_FUNC(quote_color_set_dialog), "TGTFLD");
+	gtk_signal_connect(GTK_OBJECT(color_buttons.signature_btn), "clicked",
+			   GTK_SIGNAL_FUNC(quote_color_set_dialog), "SIGNATURE");
 	gtk_signal_connect(GTK_OBJECT(recycle_colors_btn), "toggled",
 			   GTK_SIGNAL_FUNC(prefs_recycle_colors_toggled), NULL);
 	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
@@ -3439,6 +3501,8 @@ static void prefs_quote_colors_dialog_create(void)
 			    prefs_common.uri_col);
 	set_button_bg_color(color_buttons.tgt_folder_btn,
 			    prefs_common.tgt_folder_col);
+	set_button_bg_color(color_buttons.signature_btn,
+			    prefs_common.signature_col);
 	gtk_toggle_button_set_active((GtkToggleButton *)recycle_colors_btn,
 				     prefs_common.recycle_quote_colors);
 
@@ -3476,6 +3540,9 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	} else if(g_strcasecmp(type, "TGTFLD") == 0) {
 		title = _("Pick color for target folder");
 		rgbvalue = prefs_common.tgt_folder_col;
+	} else if(g_strcasecmp(type, "SIGNATURE") == 0) {
+		title = _("Pick color for signatures");
+		rgbvalue = prefs_common.signature_col;
 #if USE_ASPELL		
 	} else if(g_strcasecmp(type, "Misspelled word") == 0) {
 		title = _("Pick color for misspelled word");
@@ -3548,6 +3615,9 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 		prefs_common.tgt_folder_col = rgbvalue;
 		set_button_bg_color(color_buttons.tgt_folder_btn, rgbvalue);
 		folderview_set_target_folder_color(prefs_common.tgt_folder_col);
+	} else if (g_strcasecmp(type, "SIGNATURE") == 0) {
+		prefs_common.signature_col = rgbvalue;
+		set_button_bg_color(color_buttons.signature_btn, rgbvalue);
 #if USE_ASPELL		
 	} else if (g_strcasecmp(type, "Misspelled word") == 0) {
 		prefs_common.misspelled_col = rgbvalue;

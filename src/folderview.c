@@ -1918,6 +1918,8 @@ static void folderview_new_folder_cb(FolderView *folderview, guint action,
 				     FALSE, FALSE);
 	gtk_ctree_expand(ctree, folderview->selected);
 	gtk_ctree_node_set_row_data(ctree, node, new_item);
+	if (normal_style)
+		gtk_ctree_node_set_row_style(ctree, node, normal_style);
 	folderview_sort_folders(folderview, folderview->selected, item->folder);
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
@@ -1968,6 +1970,8 @@ static void folderview_new_mbox_folder_cb(FolderView *folderview, guint action,
 				     FALSE, FALSE);
 	gtk_ctree_expand(ctree, folderview->selected);
 	gtk_ctree_node_set_row_data(ctree, node, new_item);
+	if (normal_style)
+		gtk_ctree_node_set_row_style(ctree, node, normal_style);
 	folderview_sort_folders(folderview, folderview->selected, item->folder);
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
@@ -2309,6 +2313,8 @@ static void folderview_new_imap_folder_cb(FolderView *folderview, guint action,
 				     FALSE, FALSE);
 	gtk_ctree_expand(ctree, folderview->selected);
 	gtk_ctree_node_set_row_data(ctree, node, new_item);
+	if (normal_style)
+		gtk_ctree_node_set_row_style(ctree, node, normal_style);
 	folderview_sort_folders(folderview, folderview->selected, item->folder);
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
