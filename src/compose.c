@@ -1566,10 +1566,10 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 
 	if ((compose->account->protocol != A_NNTP) || followup_and_reply_to)
 		compose_entry_append(compose,
-		 		    ((compose->mailinglist && !ignore_replyto)
-				     ? compose->mailinglist
-				     : (compose->replyto && !ignore_replyto)
+		 		    ((compose->replyto && !ignore_replyto)
 				     ? compose->replyto
+				     : (compose->mailinglist && !ignore_replyto)
+				     ? compose->mailinglist
 				     : msginfo->from ? msginfo->from : ""),
 				     COMPOSE_TO);
 	if (compose->account->protocol == A_NNTP) {

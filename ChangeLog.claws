@@ -1,3 +1,10 @@
+2001-12-13 [paul]	0.6.5claws83
+
+	* src/compose.c
+		prefer 'Reply-To' header over mailing list header when
+		replying to a message. Finally prevent all those confirmation 
+		messages being sent to the list itself.
+
 2001-12-13 [paul]	0.6.5claws82
 
 	* src/folderview.c
