@@ -1,3 +1,8 @@
+2004-10-29 [colin]	0.9.12cvs136.1
+
+	* src/common/utils.c
+		Sync with HEAD (don't use '=' in mime boundary)
+
 2004-10-29 [paul]	0.9.12cvs135.1
 
 	* configure.ac

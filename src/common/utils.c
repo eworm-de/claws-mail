@@ -2872,7 +2872,7 @@ gchar *generate_mime_boundary(const gchar *prefix)
 	subst_char(buf_date, ',', '_');
 	subst_char(buf_date, ':', '_');
 
-	return g_strdup_printf("%s=_%s_%s", prefix ? prefix : "Multipart",
+	return g_strdup_printf("%s_%s_%s", prefix ? prefix : "Multipart",
 			       buf_date, buf_uniq);
 }
 
