@@ -1924,7 +1924,7 @@ void summary_sort(SummaryView *summaryview,
 	GtkCListCompareFunc cmp_func;
 	FolderItem *item = summaryview->folder_item;
 
-	if (!item) return;
+	if (!item || !item->path || !item->parent || item->no_select) return;
 
 	switch (sort_key) {
 	case SORT_BY_MARK:

@@ -1,5 +1,12 @@
 Changes of Sylpheed
 
+* 0.7.8
+
+    * The feature to leave messages on POP3 server for specified days has
+      been implemented.
+    * The SSL preferences which was broken at the previous version has been
+      fixed.
+
 * 0.7.7
 
     * The 'Redirect' (aka Bounce) feature has been implemented.
@@ -11,8 +18,8 @@ Changes of Sylpheed
     * The common / account preferences button has been removed from the
       toolbar.
     * Some fixes and improvements for MIME view have been made.
-    * The behavior of 'Folder tree' and 'Message view' toggle menu have been
-      fixed.
+    * The behavior of the toggle menu of 'Folder tree' and 'Message view'
+      have been fixed.
     * The behavior of address completion has been fixed.
     * A bug in the header MIME encoding routine on Japanese locale has been
       fixed.

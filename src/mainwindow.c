@@ -1559,7 +1559,7 @@ static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		state |= M_UNLOCKED;
 	if (selection != SUMMARY_NONE)
 		state |= M_MSG_EXIST;
-	if (item) {
+	if (item && item->path && item->parent && !item->no_select) {
 		state |= M_EXEC;
 		if (item->threaded)
 			state |= M_THREADED;
@@ -1681,7 +1681,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/File/Exit" , M_UNLOCKED},
 
 		{"/Edit/Select thread"		   , M_SINGLE_TARGET_EXIST},
-		{"/View/Sort"                      , M_MSG_EXIST},
+		{"/View/Sort"                      , M_EXEC},
 		{"/View/Thread view"               , M_EXEC},
 		{"/View/Expand all threads"        , M_MSG_EXIST},
 		{"/View/Collapse all threads"      , M_MSG_EXIST},

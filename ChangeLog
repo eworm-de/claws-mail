@@ -1,3 +1,44 @@
+2002-06-17
+
+	* po/zh_TW.Big5.po: fixed a mistake that caused a crash.
+
+2002-06-15
+
+	* version 0.7.8
+
+2002-06-13
+
+	* src/inc.c: inc_get_uidl_table(): fixed a bug that garbage time
+	  could be inserted into the hash table.
+	  inc_write_uidl_list(): a minor code cleanup.
+	* src/mainwindow.c: main_window_get_current_state():
+	  make the state unexecutable on an empty folder.
+	* src/summaryview.c: summary_sort(): don't sort on an empty folder.
+	* src/pop.c: minor code cleanups.
+
+2002-06-12
+
+	* src/prefs_account.c: CREATE_RADIO_BUTTONS(): fixed a typo and
+	  corrected the behavior of the radio buttons.
+
+2002-06-11
+
+	* implemented 'Delete messages after N days' feature for POP3.
+	* src/inc.[ch]:
+	  inc_get_uidl_table()
+	  inc_write_uidl_list(): moved the location of UIDL list file from
+	  RC_DIR/uidl-* to RC_DIR/uidl/*.
+	  Added received time for each UIDLs.
+	  src/main.c: main(): create RC_DIR/uidl/ directory.
+	  src/pop.[ch]: LOOKUP_NEXT_MSG(): delete expired messages here.
+	  Added recv_time to Pop3MsgInfo.
+	  src/prefs_account.[ch]: added an option for the number of days for
+	  leaving messages.
+
+2002-06-09
+
+	* version 0.7.7
+
 2002-06-07
 
 	* src/folder.c: folder_set_missing_folders(): fixed a bug that

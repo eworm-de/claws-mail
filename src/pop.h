@@ -25,6 +25,7 @@
 #endif
 
 #include <glib.h>
+#include <time.h>
 
 #include "socket.h"
 
@@ -66,6 +67,7 @@ struct _Pop3MsgInfo
 {
 	gint size;
 	gchar *uidl;
+	time_t recv_time;
 	guint received : 1;
 	guint deleted  : 1;
 };

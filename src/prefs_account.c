@@ -267,8 +267,8 @@ static PrefParam param[] = {
 	{"remove_mail", "TRUE", &tmp_ac_prefs.rmmail, P_BOOL,
 	 &receive.rmmail_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	
-	{"leave_mail_time", "0", &tmp_ac_prefs.leave_time, P_STRING,
+
+	{"message_leave_time", "0", &tmp_ac_prefs.msg_leave_time, P_INT,
 	 &receive.leave_time_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
@@ -1040,6 +1040,9 @@ static void prefs_account_receive_create(void)
 	GtkWidget *frame1;
 	GtkWidget *vbox2;
 	GtkWidget *rmmail_chkbtn;
+	GtkWidget *hbox_spc;
+	GtkWidget *leave_time_label;
+	GtkWidget *leave_time_entry;
 	GtkWidget *getall_chkbtn;
 	GtkWidget *hbox1;
 	GtkWidget *size_limit_chkbtn;
@@ -1052,9 +1055,6 @@ static void prefs_account_receive_create(void)
 	GtkWidget *hbox2;
 	GtkWidget *inbox_label;
 	GtkWidget *inbox_entry;
-	GtkWidget *leave_time_entry;
-	GtkWidget *leave_time_label;
-	GtkWidget *leave_time_hint;	
 	GtkWidget *inbox_btn;
 	GtkWidget *recvatgetall_chkbtn;
 
@@ -1070,26 +1070,50 @@ static void prefs_account_receive_create(void)
 	gtk_container_add (GTK_CONTAINER (frame1), vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
 
-	hbox2 = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox2);
-	gtk_container_add (GTK_CONTAINER (vbox2), hbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (hbox2), 0);
+	PACK_CHECK_BUTTON (vbox2, rmmail_chkbtn,
+			   _("Remove messages on server when received"));
 
-	PACK_CHECK_BUTTON (hbox2, rmmail_chkbtn,
-			   _("Remove messages on server when received for "));
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
+
+	hbox_spc = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox_spc);
+	gtk_box_pack_start (GTK_BOX (hbox1), hbox_spc, FALSE, FALSE, 0);
+	gtk_widget_set_usize (hbox_spc, 12, -1);
+
+	leave_time_label = gtk_label_new (_("Remove after"));
+	gtk_widget_show (leave_time_label);
+	gtk_box_pack_start (GTK_BOX (hbox1), leave_time_label, FALSE, FALSE, 0);
+
 	leave_time_entry = gtk_entry_new ();
 	gtk_widget_show (leave_time_entry);
-	gtk_widget_set_usize (leave_time_entry, DEFAULT_ENTRY_WIDTH, -1);
-	gtk_box_pack_start (GTK_BOX (hbox2), leave_time_entry, TRUE, TRUE, 0);
-   	
-	leave_time_label = gtk_label_new (_(" days"));
+	gtk_widget_set_usize (leave_time_entry, 64, -1);
+	gtk_box_pack_start (GTK_BOX (hbox1), leave_time_entry, FALSE, FALSE, 0);
+
+	leave_time_label = gtk_label_new (_("days"));
 	gtk_widget_show (leave_time_label);
-	gtk_box_pack_start (GTK_BOX (hbox2), leave_time_label, FALSE, FALSE, 0);
-	
-	leave_time_hint=gtk_label_new (_("(Setting to 0 days will delete messages immediately)"));
-	gtk_widget_show(leave_time_hint);
-	gtk_box_pack_start (GTK_BOX (vbox2), leave_time_hint, FALSE, FALSE, 0);
-		
+	gtk_box_pack_start (GTK_BOX (hbox1), leave_time_label, FALSE, FALSE, 0);
+
+	SET_TOGGLE_SENSITIVITY (rmmail_chkbtn, hbox1);
+
+	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
+
+	hbox_spc = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox_spc);
+	gtk_box_pack_start (GTK_BOX (hbox1), hbox_spc, FALSE, FALSE, 0);
+	gtk_widget_set_usize (hbox_spc, 12, -1);
+
+	leave_time_label = gtk_label_new (_("(0 days: remove immediately)"));
+	gtk_widget_show (leave_time_label);
+	gtk_box_pack_start (GTK_BOX (hbox1), leave_time_label, FALSE, FALSE, 0);
+
+	SET_TOGGLE_SENSITIVITY (rmmail_chkbtn, hbox1);
+
 	PACK_CHECK_BUTTON (vbox2, getall_chkbtn,
 			   _("Download all messages on server"));
 	PACK_CHECK_BUTTON (vbox2, sd_filter_on_recv_chkbtn,
@@ -1244,7 +1268,7 @@ static void prefs_account_send_create(void)
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
-	gtk_widget_set_usize (hbox_spc, 16, -1);
+	gtk_widget_set_usize (hbox_spc, 12, -1);
 
 	label = gtk_label_new (_("User ID"));
 	gtk_widget_show (label);
@@ -1274,7 +1298,7 @@ static void prefs_account_send_create(void)
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
-	gtk_widget_set_usize (hbox_spc, 16, -1);
+	gtk_widget_set_usize (hbox_spc, 12, -1);
 
 	label = gtk_label_new
 		(_("If you leave these entries empty, the same\n"

@@ -99,7 +99,7 @@ struct _PrefsAccount
 
 	/* Receive */
 	gboolean rmmail;
-	gchar *leave_time;	
+	gint msg_leave_time;
 	gboolean getall;
 	gboolean recv_at_getall;
 	gboolean sd_rmmail_on_download;
