@@ -1,3 +1,10 @@
+2003-04-12 [paul]	0.8.11claws87
+
+	* src/plugins/clamav/clamav_plugin.c
+		activate enable/disable archive scanning option
+		
+	* src/plugins/clamav/.cvsignore		** NEW FILE **
+
 2003-04-12 [paul]	0.8.11claws86
 
 	* src/plugins/Makefile.am

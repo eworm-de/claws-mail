@@ -81,6 +81,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	MimeInfo *child;
 	gchar *infile;
 	gchar *outfile;
+	gint scan_archive = 0;
 
 	int ret, no;
 	unsigned long int size;
@@ -127,6 +128,9 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
     	limits.maxfilesize = config.clamav_max_size * 1048576; /* maximal archived file size == 10 Mb */
     	limits.maxreclevel = 8; /* maximal recursion level */
 
+	if (config.clamav_archive_enable)
+		scan_archive = TRUE;
+
 	while (child != NULL) {
 		if (child->children || child->mime_type == MIME_MULTIPART) {
 			child = procmime_mimeinfo_next(child);
@@ -144,9 +148,8 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			g_warning("Can't get the part of multipart message.");
 		else {
 			debug_print("Scanning %s\n", outfile);
-
     	 		if((ret = cl_scanfile(outfile, &virname, &size, root, 
-					      &limits, CL_ARCHIVE)) == CL_VIRUS) {
+					      &limits, scan_archive)) == CL_VIRUS) {
 				is_infected = TRUE;
 				debug_print("Detected %s virus.\n", virname); 
     			} else {
