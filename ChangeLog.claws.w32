@@ -1,3 +1,9 @@
+2004-01-25 [thorsten]	0.9.8claws33-1
+
+	* src/w32_aspell_init.[ch]
+		fix: don't compile aspell if disabled in config.h,
+		added copyright note
+
 2004-01-18 [thorsten]	0.9.8claws30-5
 
 	* src/common/utils.c

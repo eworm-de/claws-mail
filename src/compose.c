@@ -6597,14 +6597,11 @@ static void compose_undo_state_changed(UndoMain *undostruct, gint undo_state,
 
 	g_return_if_fail(widget != NULL);
 
-	debug_print("Set_undo.  UNDO:%i  REDO:%i\n", undo_state, redo_state);
-
 	ifactory = gtk_item_factory_from_widget(widget);
 
 	switch (undo_state) {
 	case UNDO_STATE_TRUE:
 		if (!undostruct->undo_state) {
-			debug_print ("Set_undo - Testpoint\n");
 			undostruct->undo_state = TRUE;
 			menu_set_sensitive(ifactory, "/Edit/Undo", TRUE);
 		}
@@ -6990,7 +6987,7 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	Compose *compose = (Compose *)data;
 	AlertValue val;
-    
+
 	if (compose->exteditor_tag != -1) {
 		if (!compose_ext_editor_kill(compose))
 			return;

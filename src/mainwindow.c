@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,6 +109,14 @@ static void toolbar_account_button_pressed	(GtkWidget	*widget,
 						 GdkEventButton	*event,
 						 gpointer	 data);
 #endif
+
+static void toolbar_child_attached		(GtkWidget	*widget,
+						 GtkWidget	*child,
+						 gpointer	 data);
+static void toolbar_child_detached		(GtkWidget	*widget,
+						 GtkWidget	*child,
+						 gpointer	 data);
+
 static void ac_label_button_pressed		(GtkWidget	*widget,
 						 GdkEventButton	*event,
 						 gpointer	 data);
@@ -842,6 +850,10 @@ MainWindow *main_window_create(SeparateType type)
 	handlebox = gtk_handle_box_new();
 	gtk_widget_show(handlebox);
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
+	gtk_signal_connect(GTK_OBJECT(handlebox), "child_attached",
+			   GTK_SIGNAL_FUNC(toolbar_child_attached), mainwin);
+	gtk_signal_connect(GTK_OBJECT(handlebox), "child_detached",
+			   GTK_SIGNAL_FUNC(toolbar_child_detached), mainwin);
 
 	/* link window to mainwin->window to avoid gdk warnings */
 	mainwin->window       = window;
@@ -2184,6 +2196,18 @@ static void toolbar_account_button_pressed(GtkWidget *widget,
 		       event->button, event->time);
 }
 #endif
+
+static void toolbar_child_attached(GtkWidget *widget, GtkWidget *child,
+				   gpointer data)
+{
+	gtk_widget_set_usize(child, 1, -1);
+}
+
+static void toolbar_child_detached(GtkWidget *widget, GtkWidget *child,
+				   gpointer data)
+{
+	gtk_widget_set_usize(child, -1, -1);
+}
 
 static void ac_label_button_pressed(GtkWidget *widget, GdkEventButton *event,
 				    gpointer data)
