@@ -169,6 +169,7 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
 		return;
 
+	inc_lock();
 	inc_autocheck_timer_remove();
 	main_window_lock(mainwin);
 
@@ -199,6 +200,7 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 	main_window_unlock(mainwin);
  	inc_notify_cmd(new_msgs, notify);
 	inc_autocheck_timer_set();
+	inc_unlock();
 }
 
 void inc_selective_download(MainWindow *mainwin, PrefsAccount *acc, gint session)

@@ -1,3 +1,12 @@
+2002-11-09 [christoph}	0.8.5claws111
+
+	* src/folderview.c
+		just changed order of calls (reverse order of
+		associated calls)
+	* src/inc.c
+		lock inc when checking only one account, otherwise
+		inc all could be executed at the same time
+
 2002-11-09 [christoph]	0.8.5claws110
 
 	* src/folderview.c
