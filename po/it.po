@@ -4084,7 +4084,7 @@ msgstr "POP3: elimino il messaggio scaduto %d\n"
 #: src/pop.c:73
 #, c-format
 msgid "POP3: Skipping message %d (%d bytes)\n"
-msgstr "POP3: Salto il messaggio (%d bytes)\n"
+msgstr "POP3: Salto il messaggio %d (%d bytes)\n"
 
 #: src/pop.c:139
 msgid "can't start TLS session\n"

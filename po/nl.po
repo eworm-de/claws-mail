@@ -2526,7 +2526,7 @@ msgstr "kan bericht %d niet ophalen\n"
 #: src/imap.c:659 src/imap.c:668
 #, c-format
 msgid "can't append message %s\n"
-msgstr "kan bericht niet opslaan\n"
+msgstr "kan bericht niet opslaan %s\n"
 
 #: src/imap.c:698 src/imap.c:761 src/mh.c:440 src/mh.c:548 src/mh.c:605
 #: src/mh.c:716
@@ -2662,7 +2662,7 @@ msgstr "IMAP4 login mislukt.\n"
 #: src/imap.c:2584
 #, c-format
 msgid "can't append %s to %s\n"
-msgstr "kan %d niet naar %s kopiëren\n"
+msgstr "kan %s niet naar %s kopiëren\n"
 
 #: src/imap.c:2589
 msgid "(sending file...)"
@@ -4068,7 +4068,7 @@ msgstr "wijziging opslaan - %s\n"
 #: src/mbox_folder.c:2008 src/mbox_folder.c:2104
 #, c-format
 msgid "can't rename %s to %s\n"
-msgstr "kan %d niet naar %s hernoemen\n"
+msgstr "kan %s niet naar %s hernoemen\n"
 
 #: src/mbox_folder.c:2029 src/mbox_folder.c:2125
 #, c-format
@@ -4275,7 +4275,7 @@ msgstr "verbinding met nieuwsserver (NNTP) %s%d wordt opgezet...\n"
 #: src/news.c:263
 #, c-format
 msgid "NNTP connection to %s:%d has been disconnected. Reconnecting...\n"
-msgstr "De NNTP-verbinding is verbroken. Opnieuw contact aan het leggen...\n"
+msgstr "De NNTP-verbinding %s:%d is verbroken. Opnieuw contact aan het leggen...\n"
 
 #: src/news.c:339
 #, c-format

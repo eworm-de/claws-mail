@@ -914,6 +914,8 @@ msgid ""
 "Mail won't be retrieved on this account until you save the certificate.\n"
 "(Uncheck the \"%s\" preference).\n"
 msgstr ""
+"%s\n"
+"\n"
 "Poruka neæe biti preuzeta na ovaj nalog dok ne saèuvate sertifikat.\n"
 "(Uklonite potvrdu \"%s\" iz pode¹avnja).\n"
 
@@ -1294,7 +1296,7 @@ msgstr "%s - Sastavljanje poruke%s"
 #: src/compose.c:2621
 #, c-format
 msgid "Compose message%s"
-msgstr "%s - Sastavljanje poruke %s"
+msgstr "Sastavljanje poruke %s"
 
 #: src/compose.c:2645 src/compose.c:2888
 msgid ""
