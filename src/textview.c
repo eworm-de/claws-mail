@@ -999,6 +999,19 @@ static gchar *make_email_string(const gchar *bp, const gchar *ep)
 	return result;
 }
 
+static gchar *make_http_string(const gchar *bp, const gchar *ep)
+{
+	/* returns an http: URI; */
+	gchar *tmp;
+	gchar *result;
+
+	tmp = g_strndup(bp, ep - bp);
+	result = g_strconcat("http://", tmp, NULL);
+	g_free(tmp);
+
+	return result;
+}
+
 #define ADD_TXT_POS(bp_, ep_, pti_) \
 	if ((last->next = alloca(sizeof(struct txtpos))) != NULL) { \
 		last = last->next; \
@@ -1039,7 +1052,7 @@ static void textview_make_clickable_parts(TextView *textview,
 		{"http://",  strcasestr, get_uri_part,   make_uri_string},
 		{"https://", strcasestr, get_uri_part,   make_uri_string},
 		{"ftp://",   strcasestr, get_uri_part,   make_uri_string},
-		{"www.",     strcasestr, get_uri_part,   make_uri_string},
+		{"www.",     strcasestr, get_uri_part,   make_http_string},
 		{"mailto:",  strcasestr, get_uri_part,   make_uri_string},
 		{"@",        strcasestr, get_email_part, make_email_string}
 	};
