@@ -1,3 +1,9 @@
+2003-08-30 [christoph]	0.9.4claws46
+
+	* src/plugins/spamassassin/spamassassin_gtk.c
+	* src/plugins/spamassassin/spamassassin_gtk.glade
+		reduce GUI clutter by placing hints into tooltips
+
 2003-08-30 [paul]	0.9.4claws45
 
 	* src/compose.c

@@ -88,42 +88,44 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	GtkWidget *port;
 	GtkWidget *enable;
 	GtkWidget *receive_spam;
-	GtkWidget *label10;
 	GtkWidget *save_folder;
 	GtkWidget *button4;
 	GtkWidget *label11;
 	GtkWidget *hbox3;
 	GtkObject *max_size_adj;
 	GtkWidget *max_size;
+	GtkTooltips *tooltips;
 
-	table1 = gtk_table_new(6, 3, FALSE);
+	tooltips = gtk_tooltips_new();
+
+	table1 = gtk_table_new(5, 3, FALSE);
 	gtk_widget_show(table1);
 	gtk_container_set_border_width(GTK_CONTAINER(table1), 8);
 	gtk_table_set_row_spacings(GTK_TABLE(table1), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table1), 8);
 
-	label3 = gtk_label_new(_("Enable SpamAssassin Filtering"));
+	label3 = gtk_label_new(_("Enable"));
 	gtk_widget_show(label3);
 	gtk_table_attach(GTK_TABLE(table1), label3, 0, 1, 0, 1,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label3), 0, 0.5);
 
-	label4 = gtk_label_new(_("SpamAssassin Server (spamd)"));
+	label4 = gtk_label_new(_("spamd "));
 	gtk_widget_show(label4);
 	gtk_table_attach(GTK_TABLE(table1), label4, 0, 1, 1, 2,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label4), 0, 0.5);
 
-	label6 = gtk_label_new(_("Maximum Message Size"));
+	label6 = gtk_label_new(_("Maximum Size"));
 	gtk_widget_show(label6);
 	gtk_table_attach(GTK_TABLE(table1), label6, 0, 1, 2, 3,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label6), 0, 0.5);
 
-	label8 = gtk_label_new(_("Folder for saved Spam"));
+	label8 = gtk_label_new(_("Save Folder"));
 	gtk_widget_show(label8);
 	gtk_table_attach(GTK_TABLE(table1), label8, 0, 1, 4, 5,
 			 (GtkAttachOptions) (GTK_FILL),
@@ -131,7 +133,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_label_set_justify(GTK_LABEL(label8), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment(GTK_MISC(label8), 0, 0.5);
 
-	label9 = gtk_label_new(_("Receive Spam"));
+	label9 = gtk_label_new(_("Save Spam"));
 	gtk_widget_show(label9);
 	gtk_table_attach(GTK_TABLE(table1), label9, 0, 1, 3, 4,
 			 (GtkAttachOptions) (GTK_FILL),
@@ -147,6 +149,9 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	hostname = gtk_entry_new();
 	gtk_widget_show(hostname);
 	gtk_box_pack_start(GTK_BOX(hbox1), hostname, TRUE, TRUE, 0);
+	gtk_tooltips_set_tip(tooltips, hostname,
+			     _("Hostname or IP address of spamd server"),
+			     NULL);
 
 	label5 = gtk_label_new(_(":"));
 	gtk_widget_show(label5);
@@ -158,6 +163,8 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(port);
 	gtk_box_pack_end(GTK_BOX(hbox1), port, FALSE, TRUE, 0);
 	gtk_widget_set_usize(port, 64, -2);
+	gtk_tooltips_set_tip(tooltips, port, _("Port of spamd server"),
+			     NULL);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(port), TRUE);
 
 	enable = gtk_check_button_new_with_label("");
@@ -165,28 +172,28 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_table_attach(GTK_TABLE(table1), enable, 1, 2, 0, 1,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
+	gtk_tooltips_set_tip(tooltips, enable,
+			     _("Enable SpamAssassin filtering"), NULL);
 
 	receive_spam = gtk_check_button_new_with_label("");
 	gtk_widget_show(receive_spam);
 	gtk_table_attach(GTK_TABLE(table1), receive_spam, 1, 2, 3, 4,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
-
-	label10 =
-	    gtk_label_new(_
-			  ("Leave empty to use the default trash folder"));
-	gtk_widget_show(label10);
-	gtk_table_attach(GTK_TABLE(table1), label10, 1, 2, 5, 6,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_label_set_justify(GTK_LABEL(label10), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(label10), 1, 0.5);
+	gtk_tooltips_set_tip(tooltips, receive_spam,
+			     _
+			     ("Save mails that where identified as spam to a folder"),
+			     NULL);
 
 	save_folder = gtk_entry_new();
 	gtk_widget_show(save_folder);
 	gtk_table_attach(GTK_TABLE(table1), save_folder, 1, 2, 4, 5,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
+	gtk_tooltips_set_tip(tooltips, save_folder,
+			     _
+			     ("Folder that will be used to save spam. Leave empty to use the default trash folder"),
+			     NULL);
 
 	button4 = gtk_button_new_with_label(_("..."));
 	gtk_widget_show(button4);
@@ -212,6 +219,10 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(max_size);
 	gtk_box_pack_end(GTK_BOX(hbox3), max_size, FALSE, TRUE, 0);
 	gtk_widget_set_usize(max_size, 64, -2);
+	gtk_tooltips_set_tip(tooltips, max_size,
+			     _
+			     ("Maximum size a message is allowed to have to be checked"),
+			     NULL);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(max_size), TRUE);
 	/*
 	 * END GLADE CODE
