@@ -1,7 +1,10 @@
 [Desktop Entry]
 Actions=AttachFiles;GZipAndAttach;BZipAndAttach;
 Encoding=UTF8
+Name=Sylpheed compress and attach files
+Comment=kde service menu for compressing and attaching files to Sylpheed
 X-KDE-Submenu=Sylpheed
+X-KDE-Priority=TopLevel
 ServiceTypes=all/allfiles
 
 [Desktop Action AttachFiles]

@@ -1,3 +1,22 @@
+2004-12-05 [paul]	0.9.12cvs185
+
+	* INSTALL
+	* Makefile.am
+	* README.claws
+		update
+	* TODO.claws 	**REMOVED**
+		removed, use the wiki instead
+	* tools/Makefile.am
+	* tools/README
+		remove newscache_conv.pl from the release package
+		and notes as it is broken and not currently maintained
+	* tools/filter_conv.pl
+		use --config-dir to find claws' config dir
+	* tools/kdeservicemenu/README
+	* tools/kdeservicemenu/template_sylpheed-attach-files.desktop
+	* tools/kdeservicemenu/template_sylpheed-compress-attach.desktop
+		make a top-level menu entry
+
 2004-12-04 [paul]	0.9.12cvs184
 
 	* src/addrharvest.c
