@@ -1522,6 +1522,30 @@ void main_window_get_position(MainWindow *mainwin)
 	}
 }
 
+void main_window_progress_on(MainWindow *mainwin)
+{
+	gtk_progress_set_show_text(GTK_PROGRESS(mainwin->progressbar), TRUE);
+	gtk_progress_set_format_string(GTK_PROGRESS(mainwin->progressbar), "");
+}
+
+void main_window_progress_off(MainWindow *mainwin)
+{
+	gtk_progress_set_show_text(GTK_PROGRESS(mainwin->progressbar), FALSE);
+	gtk_progress_bar_update(GTK_PROGRESS_BAR(mainwin->progressbar), 0.0);
+	gtk_progress_set_format_string(GTK_PROGRESS(mainwin->progressbar), "");
+}
+
+void main_window_progress_set(MainWindow *mainwin, gint cur, gint total)
+{
+	gchar buf[32];
+
+	g_snprintf(buf, sizeof(buf), "%d / %d", cur, total);
+	gtk_progress_set_format_string(GTK_PROGRESS(mainwin->progressbar), buf);
+	gtk_progress_bar_update(GTK_PROGRESS_BAR(mainwin->progressbar),
+				(cur == 0 && total == 0) ? 0 :
+				(gfloat)cur / (gfloat)total);
+}
+
 void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 {
 	GList *list;

@@ -163,6 +163,12 @@ void main_window_toggle_message_view	(MainWindow *mainwin);
 void main_window_get_size		(MainWindow	*mainwin);
 void main_window_get_position		(MainWindow	*mainwin);
 
+void main_window_progress_on		(MainWindow	*mainwin);
+void main_window_progress_off		(MainWindow	*mainwin);
+void main_window_progress_set		(MainWindow	*mainwin,
+					 gint		 cur,
+					 gint		 total);
+
 void main_window_empty_trash		(MainWindow	*mainwin,
 					 gboolean	 confirm);
 void main_window_add_mailbox		(MainWindow	*mainwin);

@@ -1,5 +1,16 @@
 2004-01-29
 
+	* version 0.9.9
+
+2004-01-29
+
+	* src/folder.c: folder_item_fetch_all_msg()
+	  src/folderview.c: folderview_download_cb(): show progress with
+	  the progressbar.
+	* src/mainwindow.[ch]: added new functions for progressbar.
+
+2004-01-29
+
 	* src/summaryview.c: summary_key_pressed(): GDK_Left should only
 	  switch to folderview when summaryview hscrollbar is at the leftmost
 	  position (thanks to Alfons).

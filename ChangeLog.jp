@@ -1,5 +1,16 @@
 2004-01-29
 
+	* version 0.9.9
+
+2004-01-29
+
+	* src/folder.c: folder_item_fetch_all_msg()
+	  src/folderview.c: folderview_download_cb(): 進捗をプログレスバーで
+	  表示。
+	* src/mainwindow.[ch]: 新たにプログレスバー用の関数を追加。
+
+2004-01-29
+
 	* src/summaryview.c: summary_key_pressed(): サマリビューの水平
 	  スクロールバーが左端にあるときのみ GDK_Left でフォルダビューに
 	  切り替えるようにした(Alfons さん thanks)。
