@@ -1,3 +1,8 @@
+2004-09-02 [colin]	0.9.12cvs91.1
+
+	* src/gtk/menu.c
+		Sync with HEAD (menu accel don't work, but whatever)
+
 2004-09-02 [colin]	0.9.12cvs90.1
 
 	* src/account.c
