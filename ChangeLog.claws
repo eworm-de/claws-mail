@@ -1,3 +1,8 @@
+2004-09-27 [christoph]	0.9.12cvs105
+
+	* src/folderview.c
+		right-align new and unread column
+
 2004-09-27 [paul]
 
 	* 0.9.12b released
@@ -6,7 +11,6 @@
 
 	* src/main.c
 		revert 0.9.12cvs101, it causes another segfault
-
 
 2004-09-23 [christoph]	0.9.12cvs103
 
