@@ -2374,9 +2374,6 @@ gtk_stext_key_press (GtkWidget   *widget,
 #endif
 	  break;
 	case GDK_Delete:
-#ifdef WIN32
-	  gtk_stext_freeze(text);
-#endif
 	  if (event->state & GDK_CONTROL_MASK)
 	    gtk_stext_delete_forward_word (text);
 	  else if (event->state & GDK_SHIFT_MASK)
@@ -2386,9 +2383,6 @@ gtk_stext_key_press (GtkWidget   *widget,
 	    }
 	  else
 	    gtk_stext_delete_forward_character (text);
-#ifdef WIN32
-	  gtk_stext_thaw(text);
-#endif
 	  break;
 	case GDK_Tab:
 	  position = text->point.index;

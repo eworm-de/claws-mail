@@ -432,9 +432,7 @@ static void entry_delete_cb(GtkSText *gtktext,
 	gtk_stext_set_point(gtktext, origpos);
 	/* this is to *UNDO* the selection, in case they were holding shift
          * while hitting backspace. */
-#ifndef WIN32 /* why does this result in an invalid mark? */
 	gtk_editable_select_region(GTK_EDITABLE(gtktext), origpos, origpos);
-#endif
 }
 
 /* ok, this is pretty wacky:
