@@ -759,6 +759,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"summary_quicksearch_type", "0", &prefs_common.summary_quicksearch_type, P_INT,
 	 NULL, NULL, NULL},
+	{"summary_quicksearch_sticky", "1", &prefs_common.summary_quicksearch_sticky, P_INT,
+	 NULL, NULL, NULL},
 
 	{"io_timeout_secs", "60", &prefs_common.io_timeout_secs,
 	 P_INT, &other.spinbtn_iotimeout,
