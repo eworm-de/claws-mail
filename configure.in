@@ -62,7 +62,7 @@ AC_PROG_YACC
 SYLPHEED_ACLOCAL_INCLUDE(ac)
 
 dnl for gettext
-ALL_LINGUAS="cs de el es fr it ja ko nl pt_BR ru zh_CN.GB2312 zh_TW.Big5"
+ALL_LINGUAS="cs de el es fr it ja ko nl pl pt_BR ru zh_CN.GB2312 zh_TW.Big5"
 AM_GNU_GETTEXT
 dnl AC_CHECK_FUNC(gettext, AC_CHECK_LIB(intl, gettext))
 localedir='${prefix}/${DATADIRNAME}/locale'
