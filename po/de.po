@@ -16,7 +16,7 @@ msgstr ""
 
 #: src/about.c:91
 msgid "About"
-msgstr "?ber"
+msgstr "Über"
 
 #: src/about.c:212
 msgid ""
@@ -28,7 +28,7 @@ msgid ""
 msgstr ""
 "Das Urheberrecht der Teile von fetchmail 1997 liegt bei Eric S. Raymond. Bei "
 "Teilen davon liegt das Urheberrecht bei Carl Harris, 1993 und 1995. Das "
-"Urheberecht wird bewahrt f?r den Zweck der Weitergabe der Quellen.\n"
+"Urheberecht wird bewahrt für den Zweck der Weitergabe der Quellen.\n"
 "\n"
 
 #: src/about.c:218
@@ -71,10 +71,10 @@ msgid ""
 "more details.\n"
 "\n"
 msgstr ""
-"Dieses Programm wird weitergereicht in der Hoffnung das es n?tzlich ist, "
-"aber OHNE JEDE GARANTIE; ohne die implizierte Garantie der MARKTG?NGIGKEIT "
-"oder der EIGNUNG F?R EINEN BESTIMMTEN ZWECK. Lesen Sie die GNU General "
-"Public License f?r weitere Details.\n"
+"Dieses Programm wird weitergereicht in der Hoffnung das es nützlich ist, "
+"aber OHNE JEDE GARANTIE; ohne die implizierte Garantie der MARKTGÄNGIGKEIT "
+"oder der EIGNUNG FÜR EINEN BESTIMMTEN ZWECK. Lesen Sie die GNU General "
+"Public License für weitere Details.\n"
 "\n"
 
 #: src/about.c:239
@@ -108,7 +108,7 @@ msgstr "OK"
 
 #: src/account.c:119
 msgid "Reading all config for each account...\n"
-msgstr "Lese Konfiguration f?r jeden Account...\n"
+msgstr "Lese Konfiguration für jeden Account...\n"
 
 #: src/account.c:134
 #, c-format
@@ -121,11 +121,11 @@ msgid ""
 "Please close all the composing windows before editing the accounts."
 msgstr ""
 "Es sind einige Fenster zum Verfassen von Nachrichten geöffnet.\n"
-"Bitte schlieÏen Sie diese Fenster vor dem Beabeiten der Accounts."
+"Bitte schließen Sie diese Fenster vor dem Beabeiten der Accounts."
 
 #: src/account.c:254
 msgid "Opening account edit window...\n"
-msgstr "?ffne Accountbearbeitungsfenster...\n"
+msgstr "Öffne Accountbearbeitungsfenster...\n"
 
 #: src/account.c:401
 msgid "Creating account edit window...\n"
@@ -163,7 +163,7 @@ msgstr "Server"
 #: src/editaddress.c:988 src/prefs_customheader.c:237
 #: src/prefs_display_header.c:278 src/prefs_display_header.c:333
 msgid "Add"
-msgstr "Hinzuf?gen"
+msgstr "Hinzufügen"
 
 #: src/account.c:482
 msgid "Edit"
@@ -195,7 +195,7 @@ msgstr " Als Standardaccount setzen "
 #: src/addressbook.c:2440 src/addressbook.c:2546 src/addressbook.c:2552
 #: src/message_search.c:138 src/summary_search.c:203
 msgid "Close"
-msgstr "SchlieÏen"
+msgstr "Schließen"
 
 #: src/account.c:600
 msgid "Delete account"
@@ -225,11 +225,11 @@ msgstr "+Nein"
 
 #: src/account.c:614
 msgid "Removing deleted account references for all the folders...\n"
-msgstr "Lösche alle Accountreferenzen f?r alle Ablagen...\n"
+msgstr "Lösche alle Accountreferenzen für alle Ablagen...\n"
 
 #: src/addressadd.c:165
 msgid "Add Address to Book"
-msgstr "Adresse dem Adressbuch hinzuf?gen"
+msgstr "Adresse dem Adressbuch hinzufügen"
 
 #: src/addressadd.c:195 src/compose.c:4180 src/editaddress.c:195
 #: src/select-keys.c:302
@@ -301,7 +301,7 @@ msgstr "/_Datei/_Speichern"
 
 #: src/addressbook.c:361 src/compose.c:422 src/mainwindow.c:416
 msgid "/_File/_Close"
-msgstr "/_Datei/S_chlieÏen"
+msgstr "/_Datei/S_chließen"
 
 #: src/addressbook.c:362
 msgid "/_Address"
@@ -349,7 +349,7 @@ msgstr "/_Hilfe"
 
 #: src/addressbook.c:373 src/compose.c:469 src/mainwindow.c:625
 msgid "/_Help/_About"
-msgstr "/_Hilfe/_?ber"
+msgstr "/_Hilfe/_Über"
 
 #: src/addressbook.c:392 src/addressbook.c:402
 msgid "/New _Address"
@@ -388,7 +388,7 @@ msgstr "E-Mail Adresse"
 
 #: src/addressbook.c:503 src/compose.c:4181 src/prefs_common.c:2301
 msgid "Address book"
-msgstr "AdreÏbuch"
+msgstr "Adressbuch"
 
 #: src/addressbook.c:604
 msgid "Name:"
@@ -447,7 +447,7 @@ msgid ""
 msgstr ""
 "Ablage und alles Adressen in '%s' löschen?\n"
 "Wenn nur die Ablage gelöscht wird, werden die Adressen in die "
-"dar?berliegende Ablage verschoben"
+"darüberliegende Ablage verschoben"
 
 #: src/addressbook.c:1668
 msgid "Folder only"
@@ -563,7 +563,7 @@ msgstr "Benutzerschnittstelle"
 
 #: src/addressbook.c:3058 src/importldif.c:510
 msgid "Address Book"
-msgstr "AdreÏbuch"
+msgstr "Adressbuch"
 
 #: src/addressbook.c:3074
 msgid "Person"
@@ -648,7 +648,7 @@ msgstr "Blau"
 
 #: src/colorlabel.c:50
 msgid "Green"
-msgstr "Gr?n"
+msgstr "Grün"
 
 #: src/colorlabel.c:51
 msgid "Brown"
@@ -665,7 +665,7 @@ msgstr "Keine"
 
 #: src/compose.c:409
 msgid "/_Add..."
-msgstr "/_Hinzuf?gen..."
+msgstr "/_Hinzufügen..."
 
 #: src/compose.c:410
 msgid "/_Remove"
@@ -682,15 +682,15 @@ msgstr "/_Datei/Datei _anhängen"
 
 #: src/compose.c:419
 msgid "/_File/_Insert file"
-msgstr "/_Datei/Datei _einf?gen"
+msgstr "/_Datei/Datei _einfügen"
 
 #: src/compose.c:420
 msgid "/_File/Insert si_gnature"
-msgstr "/_Datei/_Unterschrift einf?gen"
+msgstr "/_Datei/_Unterschrift einfügen"
 
 #: src/compose.c:425
 msgid "/_Edit/_Undo"
-msgstr "/_Bearbeiten/_Zur?ck"
+msgstr "/_Bearbeiten/_Zurück"
 
 #: src/compose.c:426
 msgid "/_Edit/_Redo"
@@ -710,7 +710,7 @@ msgstr "/_Bearbeiten/_Kopieren"
 
 #: src/compose.c:430
 msgid "/_Edit/_Paste"
-msgstr "/_Bearbeiten/_Einf?gen"
+msgstr "/_Bearbeiten/_Einfügen"
 
 #: src/compose.c:431 src/mainwindow.c:421
 msgid "/_Edit/Select _all"
@@ -781,7 +781,7 @@ msgstr "/_Nachricht/Digital _unterschreiben"
 
 #: src/compose.c:460
 msgid "/_Message/_Encrypt"
-msgstr "/_Nachricht/_Verschl?sseln"
+msgstr "/_Nachricht/_Verschlüsseln"
 
 #: src/compose.c:463
 msgid "/_Message/_Request Return Receipt"
@@ -845,7 +845,7 @@ msgstr "Datei %s existiert nicht\n"
 #: src/compose.c:1760 src/compose.c:1810
 #, c-format
 msgid "Can't get file size of %s\n"
-msgstr "Kann DateigröÏe von %s nicht ermitteln\n"
+msgstr "Kann Dateigröße von %s nicht ermitteln\n"
 
 #: src/compose.c:1764 src/compose.c:1814
 #, c-format
@@ -978,7 +978,7 @@ msgstr "MIME-Typ"
 #: src/compose.c:3499 src/mimeview.c:140 src/prefs_summary_column.c:73
 #: src/select-keys.c:299 src/summaryview.c:429
 msgid "Size"
-msgstr "GröÏe"
+msgstr "Größe"
 
 #: src/compose.c:3521
 msgid "Creating compose window...\n"
@@ -1024,11 +1024,11 @@ msgstr "Speichern in Entwurfablage"
 
 #: src/compose.c:4133
 msgid "Insert"
-msgstr "Einf?gen"
+msgstr "Einfügen"
 
 #: src/compose.c:4134
 msgid "Insert file"
-msgstr "Datei einf?gen"
+msgstr "Datei einfügen"
 
 #: src/compose.c:4141
 msgid "Attach"
@@ -1044,7 +1044,7 @@ msgstr "Unterschrift"
 
 #: src/compose.c:4152
 msgid "Insert signature"
-msgstr "Unterschrift einf?gen"
+msgstr "Unterschrift einfügen"
 
 #: src/compose.c:4160
 msgid "Editor"
@@ -1064,7 +1064,7 @@ msgstr "Umbrechen des aktuellen Paragraph"
 
 #: src/compose.c:4449
 msgid "Invalid MIME type."
-msgstr "Ung?ltiger MIME Typ"
+msgstr "Ungültiger MIME Typ"
 
 #: src/compose.c:4467
 msgid "File doesn't exist or is empty."
@@ -1089,7 +1089,7 @@ msgstr "Dateiname"
 #: src/compose.c:4752
 #, c-format
 msgid "External editor command line is invalid: `%s'\n"
-msgstr "Kommandozeile f?r den externen Editor ist ung?ltig: `%s'\n"
+msgstr "Kommandozeile für den externen Editor ist ungültig: `%s'\n"
 
 #: src/compose.c:4778
 #, c-format
@@ -1114,12 +1114,12 @@ msgstr "Temporäre Datei: %s"
 
 #: src/compose.c:4816
 msgid "Compose: input from monitoring process\n"
-msgstr "Verfassen: Eingabe vom ?berwachungsprozess\n"
+msgstr "Verfassen: Eingabe vom Überwachungsprozess\n"
 
 #. failed
 #: src/compose.c:4849
 msgid "Couldn't exec external editor\n"
-msgstr "Kann externen Editor nicht ausf?hren\n"
+msgstr "Kann externen Editor nicht ausführen\n"
 
 #: src/compose.c:4853
 msgid "Couldn't write to file\n"
@@ -1156,7 +1156,7 @@ msgstr "Bearbeite Adresse"
 
 #: src/editaddress.c:318
 msgid "Add New Person"
-msgstr "F?ge neue Person hinzu"
+msgstr "Füge neue Person hinzu"
 
 #: src/editaddress.c:319
 msgid "Edit Person Details"
@@ -1164,11 +1164,11 @@ msgstr "Bearbeite Personendetails"
 
 #: src/editaddress.c:455
 msgid "An E-Mail address must be supplied."
-msgstr "Eine E-Mail-Adresse muÏ angegeben werden."
+msgstr "Eine E-Mail-Adresse muss angegeben werden."
 
 #: src/editaddress.c:565
 msgid "A Name and Value must be supplied."
-msgstr "Ein Name und Wert m?ssen angegeben werden."
+msgstr "Ein Name und Wert müssen angegeben werden."
 
 #. gtk_container_set_border_width(GTK_CONTAINER(window), 0);
 #: src/editaddress.c:619
@@ -1238,7 +1238,7 @@ msgstr "Datei scheint OK zu sein."
 
 #: src/editbook.c:117
 msgid "File does not appear to be a valid address book format."
-msgstr "Datei scheint nicht im einem g?ltigen Adressbuchformat zu sein."
+msgstr "Datei scheint nicht im einem gültigen Adressbuchformat zu sein."
 
 #: src/editbook.c:120 src/editjpilot.c:192 src/editvcard.c:99
 msgid "Could not read file."
@@ -1250,7 +1250,7 @@ msgstr "Bearbeite Adressbuch"
 
 #: src/editbook.c:197 src/editjpilot.c:302 src/editvcard.c:217
 msgid " Check File "
-msgstr " ?berpr?fe Datei "
+msgstr " Überprüfe Datei "
 
 #: src/editbook.c:202 src/editjpilot.c:307 src/editvcard.c:222
 #: src/importmutt.c:285
@@ -1259,11 +1259,11 @@ msgstr "Datei"
 
 #: src/editbook.c:297
 msgid "Add New Addressbook"
-msgstr "Neues Adressbuch hinzuf?gen"
+msgstr "Neues Adressbuch hinzufügen"
 
 #: src/editgroup.c:103
 msgid "A Group Name must be supplied."
-msgstr "Ein Gruppenname muÏ angegeben werden."
+msgstr "Ein Gruppenname muss angegeben werden."
 
 #: src/editgroup.c:255
 msgid "Edit Group Data"
@@ -1287,7 +1287,7 @@ msgstr " <- "
 
 #: src/editgroup.c:333
 msgid "Available Addresses"
-msgstr "Verf?gbare Adressen"
+msgstr "Verfügbare Adressen"
 
 #: src/editgroup.c:397
 msgid "Move E-Mail Addresses to or from Group with arrow buttons"
@@ -1299,7 +1299,7 @@ msgstr "Bearbeite Gruppendetails"
 
 #: src/editgroup.c:449
 msgid "Add New Group"
-msgstr "Neue Gruppe hinzuf?gen"
+msgstr "Neue Gruppe hinzufügen"
 
 #: src/editgroup.c:497
 msgid "Edit folder"
@@ -1341,7 +1341,7 @@ msgstr "Zusätzliche e-Mail Adresselemente"
 
 #: src/editjpilot.c:407
 msgid "Add New JPilot Entry"
-msgstr "Neuen J-Pilot Eintrag hinzuf?gen"
+msgstr "Neuen J-Pilot Eintrag hinzufügen"
 
 #: src/editldap.c:164
 msgid "Connected successfully to server"
@@ -1365,7 +1365,7 @@ msgstr "Port"
 
 #: src/editldap.c:328
 msgid " Check Server "
-msgstr " ?berpr?fe Server "
+msgstr " Überprüfe Server "
 
 #: src/editldap.c:333 src/editldap_basedn.c:181
 msgid "Search Base"
@@ -1405,7 +1405,7 @@ msgstr "Erweitert"
 
 #: src/editldap.c:546
 msgid "Add New LDAP Server"
-msgstr "F?ge neuen LDAP Server hinzu"
+msgstr "Füge neuen LDAP Server hinzu"
 
 #: src/editldap_basedn.c:141
 msgid "Edit LDAP - Select Search Base"
@@ -1413,7 +1413,7 @@ msgstr "Bearbeite LDAP - Wähle Suchbasis"
 
 #: src/editldap_basedn.c:202
 msgid "Available Search Base(s)"
-msgstr "Verf?gbare Suchbasen"
+msgstr "Verfügbare Suchbasen"
 
 #: src/editldap_basedn.c:286
 msgid "Could not read Search Base(s) from server - please set manually"
@@ -1433,7 +1433,7 @@ msgstr "Bearbeite vCard Eintrag"
 
 #: src/editvcard.c:296
 msgid "Add New vCard Entry"
-msgstr "Neuen vCard Eintrag hinzuf?gen"
+msgstr "Neuen vCard Eintrag hinzufügen"
 
 #: src/export.c:122
 msgid "Export"
@@ -1596,7 +1596,7 @@ msgstr "Die Ablage `%s' konnte nicht erstellt werden."
 #: src/folderview.c:1642 src/folderview.c:1704
 #, c-format
 msgid "Input new name for `%s':"
-msgstr "Neuer Name f?r `%s':"
+msgstr "Neuer Name für `%s':"
 
 #: src/folderview.c:1644 src/folderview.c:1706
 msgid "Rename folder"
@@ -1640,7 +1640,7 @@ msgid ""
 " append `/' at the end of the name)"
 msgstr ""
 "Namen der neuen Ablage eingeben:\n"
-"(um eine neue Ablage f?r Unterablagen zu erstellen\n"
+"(um eine neue Ablage für Unterablagen zu erstellen\n"
 " `/' an Ende des Namens anhängen)"
 
 #: src/folderview.c:1862
@@ -1791,7 +1791,7 @@ msgstr "Schlechtschreiber Modus"
 #: src/gtkspell.c:525
 msgid "Pspell set_sug_mod could not reset path & dict\n"
 msgstr ""
-"Pspell set_sug_mod konnte nicht mit Pfad und Wörterbuch zur?ckgesetzt "
+"Pspell set_sug_mod konnte nicht mit Pfad und Wörterbuch zurückgesetzt "
 "werden\n"
 
 #: src/gtkspell.c:536
@@ -1801,7 +1801,7 @@ msgstr "Pspell fehler beim setzen des Vorschlagsmodus %s\n"
 
 #: src/gtkspell.c:960
 msgid "Spell check all"
-msgstr "Alles auf Rechtschreibung pr?fen"
+msgstr "Alles auf Rechtschreibung prüfen"
 
 #: src/gtkspell.c:973
 msgid "Change dictionary"
@@ -1818,12 +1818,12 @@ msgstr "Lerne aus Fehlern"
 #: src/gtkspell.c:1083
 #, c-format
 msgid "Accept `%s' for this session"
-msgstr "Akzeptiere `%s' f?r diese Sitzung"
+msgstr "Akzeptiere `%s' für diese Sitzung"
 
 #: src/gtkspell.c:1093
 #, c-format
 msgid "Add `%s' to personal dictionary"
-msgstr "F?ge `%s' dem persönlichen Wörterbuch hinzu"
+msgstr "Füge `%s' dem persönlichen Wörterbuch hinzu"
 
 #: src/gtkspell.c:1109
 msgid "(no suggestions)"
@@ -1836,12 +1836,12 @@ msgstr "Weitere..."
 #: src/gtkspell.c:1302
 #, c-format
 msgid "Checking for dictionaries in %s\n"
-msgstr "Suche nach Wörterb?chern in %s\n"
+msgstr "Suche nach Wörterbüchern in %s\n"
 
 #: src/gtkspell.c:1310
 #, c-format
 msgid "Found dictionary %s\n"
-msgstr "Gefundene Wörterb?cher %s\n"
+msgstr "Gefundene Wörterbücher %s\n"
 
 #: src/gtkspell.c:1318 src/gtkspell.c:1322
 msgid "No dictionary found\n"
@@ -1901,7 +1901,7 @@ msgstr "IMAP4-Verbindung zu %s:%d wurde unterbrochen. Verbinden...\n"
 #: src/imap.c:290 src/inc.c:437 src/news.c:135 src/send.c:608
 #, c-format
 msgid "Input password for %s on %s:"
-msgstr "Kennwort f?r %s auf %s angeben:"
+msgstr "Kennwort für %s auf %s angeben:"
 
 #: src/imap.c:292 src/inc.c:441 src/news.c:137 src/send.c:610
 msgid "Input password"
@@ -2085,7 +2085,7 @@ msgstr "Bitte Datei wählen"
 
 #: src/importldif.c:318 src/importmutt.c:144
 msgid "Address book name must be supplied."
-msgstr "Ein Adressbuchname muÏ angegeben werden."
+msgstr "Ein Adressbuchname muss angegeben werden."
 
 #: src/importldif.c:333
 msgid "Error reading LDIF fields."
@@ -2125,7 +2125,7 @@ msgstr "Wählen"
 
 #: src/importldif.c:685
 msgid "Address Book :"
-msgstr "AdreÏbuch :"
+msgstr "Adressbuch :"
 
 #: src/importldif.c:695
 msgid "File Name :"
@@ -2316,7 +2316,7 @@ msgstr ""
 
 #: src/main.c:155
 msgid "g_thread is not supported by glib.\n"
-msgstr "g_thread wird nicht unterst?tzt von Glib.\n"
+msgstr "g_thread wird nicht unterstützt von Glib.\n"
 
 #: src/main.c:237
 msgid ""
@@ -2324,7 +2324,7 @@ msgid ""
 "OpenPGP support disabled."
 msgstr ""
 "Gnup is nicht richtig installiert\n"
-"OpenPGP-Unterst?tzung ausgeschaltet"
+"OpenPGP-Unterstützung ausgeschaltet"
 
 #: src/main.c:336
 #, c-format
@@ -2374,11 +2374,11 @@ msgstr "Ein anderes Sylpheed läuft schon.\n"
 
 #: src/mainwindow.c:401
 msgid "/_File/_Add mailbox..."
-msgstr "/_Datei/_Mailbox hinzuf?gen..."
+msgstr "/_Datei/_Mailbox hinzufügen..."
 
 #: src/mainwindow.c:402
 msgid "/_File/_Add mbox mailbox..."
-msgstr "/_Datei/mbox _Mailbox hinzuf?gen..."
+msgstr "/_Datei/mbox _Mailbox hinzufügen..."
 
 #: src/mainwindow.c:403
 msgid "/_File/_Rescan folder tree"
@@ -2670,7 +2670,7 @@ msgstr "/_Nachricht/_Markieren/Markieren als _gelesen"
 
 #: src/mainwindow.c:548
 msgid "/_Message/Open in new _window"
-msgstr "/_Nachricht/?ffne in neuen _Fenster"
+msgstr "/_Nachricht/Öffne in neuen _Fenster"
 
 #: src/mainwindow.c:550
 msgid "/_Summary"
@@ -2686,7 +2686,7 @@ msgstr "/E_xtras/Nachrichten _filtern"
 
 #: src/mainwindow.c:554
 msgid "/_Summary/E_xecute"
-msgstr "/E_xtras/_Ausf?hren"
+msgstr "/E_xtras/_Ausführen"
 
 #: src/mainwindow.c:555
 msgid "/_Summary/_Update"
@@ -2750,7 +2750,7 @@ msgstr "/E_xtras/_Sortieren/Sortieren nach _Nummer"
 
 #: src/mainwindow.c:579
 msgid "/_Summary/_Sort/Sort by s_ize"
-msgstr "/E_xtras/_Sortieren/Sortieren nach _GröÏe"
+msgstr "/E_xtras/_Sortieren/Sortieren nach _Größe"
 
 #: src/mainwindow.c:580
 msgid "/_Summary/_Sort/Sort by _date"
@@ -2948,7 +2948,7 @@ msgstr "Holen"
 
 #: src/mainwindow.c:1657
 msgid "Get new mail from current account"
-msgstr "Empfange Nachrichten f?r diesen Account"
+msgstr "Empfange Nachrichten für diesen Account"
 
 #: src/mainwindow.c:1662
 msgid "Get all"
@@ -3033,11 +3033,11 @@ msgstr "Nachricht löschen"
 #: src/mainwindow.c:1819 src/prefs_filtering.c:220 src/prefs_filtering.c:456
 #: src/prefs_matcher.c:151
 msgid "Execute"
-msgstr "Ausf?hren"
+msgstr "Ausführen"
 
 #: src/mainwindow.c:1820
 msgid "Execute marked process"
-msgstr "Markierten Prozess ausf?hren"
+msgstr "Markierten Prozess ausführen"
 
 #: src/mainwindow.c:1829
 msgid "Next unread message"
@@ -3089,7 +3089,7 @@ msgstr "Kann Mbox-Datei nicht lesen.\n"
 #: src/mbox.c:86
 #, c-format
 msgid "invalid mbox format: %s\n"
-msgstr "Ung?ltiges Mbox-Format: %s\n"
+msgstr "Ungültiges Mbox-Format: %s\n"
 
 #: src/mbox.c:93
 #, c-format
@@ -3139,7 +3139,7 @@ msgstr "kann %s nicht sperren\n"
 
 #: src/mbox.c:315 src/mbox.c:362
 msgid "invalid lock type\n"
-msgstr "ung?ltiger Sperrtyp\n"
+msgstr "ungültiger Sperrtyp\n"
 
 #: src/mbox.c:348
 #, c-format
@@ -3178,7 +3178,7 @@ msgstr "Lese Mbox aus Datei - %s\n"
 #: src/mbox_folder.c:1378 src/mbox_folder.c:1390
 #, c-format
 msgid "unvalid file - %s.\n"
-msgstr "ung?ltige Datei - %s.\n"
+msgstr "ungültige Datei - %s.\n"
 
 #: src/mbox_folder.c:1408 src/mbox_folder.c:1783 src/utils.c:1603
 #: src/utils.c:1680
@@ -3199,7 +3199,7 @@ msgstr "keine Veränderungen - %s\n"
 #: src/mbox_folder.c:1928
 #, c-format
 msgid "save modification - %s\n"
-msgstr "speicher ?nderungen - %s\n"
+msgstr "speicher Änderungen - %s\n"
 
 #: src/mbox_folder.c:1961 src/mbox_folder.c:2057
 #, c-format
@@ -3240,11 +3240,11 @@ msgstr "Suche Text:"
 
 #: src/message_search.c:124 src/prefs_matcher.c:469 src/summary_search.c:183
 msgid "Case sensitive"
-msgstr "GroÏ-/Kleinschreibung"
+msgstr "Groß-/Kleinschreibung"
 
 #: src/message_search.c:130 src/summary_search.c:189
 msgid "Backward search"
-msgstr "R?ckwärts suchen"
+msgstr "Rückwärts suchen"
 
 #: src/message_search.c:136 src/summary_search.c:201
 msgid "Search"
@@ -3333,11 +3333,11 @@ msgstr ""
 
 #: src/mimeview.c:114
 msgid "/_Open"
-msgstr "/_?ffnen"
+msgstr "/_Öffnen"
 
 #: src/mimeview.c:115
 msgid "/Open _with..."
-msgstr "/?ffne _mit..."
+msgstr "/Öffne _mit..."
 
 #: src/mimeview.c:116
 msgid "/_Display as text"
@@ -3349,7 +3349,7 @@ msgstr "/Speichern _als..."
 
 #: src/mimeview.c:120
 msgid "/_Check signature"
-msgstr "/_Digitale Unterschrift ?berpr?fen"
+msgstr "/_Digitale Unterschrift Überprüfen"
 
 #: src/mimeview.c:140
 msgid "MIME Type"
@@ -3361,7 +3361,7 @@ msgstr "Erstelle MIME-Ansicht...\n"
 
 #: src/mimeview.c:247
 msgid "Select \"Check signature\" to check"
-msgstr "Wähle \"Digitale Unterschrift ?berpr?fen\" zum ?berpr?fen"
+msgstr "Wähle \"Digitale Unterschrift Überprüfen\" zum Überprüfen"
 
 #: src/mimeview.c:697 src/mimeview.c:745 src/mimeview.c:764 src/mimeview.c:788
 msgid "Can't save the part of multipart message."
@@ -3373,15 +3373,15 @@ msgstr "Speichern als"
 
 #: src/mimeview.c:737 src/summaryview.c:3045
 msgid "Overwrite"
-msgstr "?berschreiben"
+msgstr "Überschreiben"
 
 #: src/mimeview.c:738 src/summaryview.c:3046
 msgid "Overwrite existing file?"
-msgstr "?berschreibe existierende Datei?"
+msgstr "Überschreibe existierende Datei?"
 
 #: src/mimeview.c:798
 msgid "Open with"
-msgstr "?ffnen mit"
+msgstr "Öffnen mit"
 
 #: src/mimeview.c:799
 #, c-format
@@ -3389,13 +3389,13 @@ msgid ""
 "Enter the command line to open file:\n"
 "(`%s' will be replaced with file name)"
 msgstr ""
-"Geben Sie die Befehlszeile zum ?ffnen der Datei an:\n"
+"Geben Sie die Befehlszeile zum Öffnen der Datei an:\n"
 "(`%s' wird durch den Dateinamen ersetzt)"
 
 #: src/mimeview.c:854
 #, c-format
 msgid "MIME viewer command line is invalid: `%s'"
-msgstr "MIME Betrachterbefehl ist ung?ltig: `%s'"
+msgstr "MIME Betrachterbefehl ist ungültig: `%s'"
 
 #: src/news.c:95
 #, c-format
@@ -3448,7 +3448,7 @@ msgstr "kann die Gruppe: %s nicht setzen\n"
 #: src/news.c:588
 #, c-format
 msgid "invalid article range: %d - %d\n"
-msgstr "ung?ltiger Artikelbereich: %d - %d\n"
+msgstr "ungültiger Artikelbereich: %d - %d\n"
 
 #: src/news.c:597
 msgid "no new articles.\n"
@@ -3457,20 +3457,20 @@ msgstr "Keine neuen Artikel.\n"
 #: src/news.c:610
 #, c-format
 msgid "getting xover %d - %d in %s...\n"
-msgstr "bekomme News?bersicht %d - %d in %s...\n"
+msgstr "bekomme Newsübersicht %d - %d in %s...\n"
 
 #: src/news.c:613
 msgid "can't get xover\n"
-msgstr "kann News?bersicht nicht bekommen\n"
+msgstr "kann Newsübersicht nicht bekommen\n"
 
 #: src/news.c:619
 msgid "error occurred while getting xover.\n"
-msgstr "Fehler beim Empfang der News?bersicht.\n"
+msgstr "Fehler beim Empfang der Newsübersicht.\n"
 
 #: src/news.c:627
 #, c-format
 msgid "invalid xover line: %s\n"
-msgstr "ung?ltige News?bersichtszeile: %s\n"
+msgstr "ungültige Newsübersichtszeile: %s\n"
 
 #: src/news.c:645 src/news.c:670
 msgid "can't get xhdr\n"
@@ -3523,7 +3523,7 @@ msgid ""
 "  %.*s  \n"
 "(%.*s)\n"
 msgstr ""
-"%sGeben Sie, bitte, das Mantra f?r:\n"
+"%sGeben Sie, bitte, das Mantra für:\n"
 "\n"
 "  %.*s  \n"
 "(%.*s) an\n"
@@ -3542,11 +3542,11 @@ msgstr "Fehler bei der Autorisierung\n"
 
 #: src/pop.c:124
 msgid "Required APOP timestamp not found in greeting\n"
-msgstr "Erforderlichen APOP-Zeitstempel in der Begr?Ïung nicht gefunden\n"
+msgstr "Erforderlichen APOP-Zeitstempel in der Begrüßung nicht gefunden\n"
 
 #: src/pop.c:130
 msgid "Timestamp syntax error in greeting\n"
-msgstr "Zeitstempel Syntax-Fehler in Begr?Ïung\n"
+msgstr "Zeitstempel Syntax-Fehler in Begrüßung\n"
 
 #: src/pop.c:179 src/pop.c:220
 msgid "POP3 protocol error\n"
@@ -3584,11 +3584,11 @@ msgstr "keine Berechtigung - %s\n"
 
 #: src/prefs.c:475
 msgid "Apply"
-msgstr "?bernehmen"
+msgstr "Übernehmen"
 
 #: src/prefs_account.c:497
 msgid "Opening account preferences window...\n"
-msgstr "?ffne Accounteinstellungenfenster...\n"
+msgstr "Öffne Accounteinstellungenfenster...\n"
 
 #: src/prefs_account.c:524
 #, c-format
@@ -3728,7 +3728,7 @@ msgstr "Empfange alle Nachrichten vom Server"
 #: src/prefs_account.c:959
 msgid "`Get all' checks for new mail on this account"
 msgstr ""
-"`Empfange alle' ?berpr?ft ob neue E-Mails f?r diesen Account vorhanden sind"
+"`Empfange alle' überprüft ob neue E-Mails für diesen Account vorhanden sind"
 
 #: src/prefs_account.c:961
 msgid "Filter messages on receiving"
@@ -3748,7 +3748,7 @@ msgstr "IMAP Serververzeichnis"
 
 #: src/prefs_account.c:1062
 msgid "Add Date header field"
-msgstr "F?ge Datum in Kopfzeile ein"
+msgstr "Füge Datum in Kopfzeile ein"
 
 #: src/prefs_account.c:1063
 msgid "Generate Message-ID"
@@ -3756,7 +3756,7 @@ msgstr "Erzeuge Nachrichten-ID"
 
 #: src/prefs_account.c:1070
 msgid "Add user-defined header"
-msgstr "F?ge benutzerdefinierte Kopfzeile ein"
+msgstr "Füge benutzerdefinierte Kopfzeile ein"
 
 #: src/prefs_account.c:1072 src/prefs_common.c:1943 src/prefs_common.c:1968
 msgid " Edit... "
@@ -3796,31 +3796,31 @@ msgstr "Antwort an"
 
 #: src/prefs_account.c:1251
 msgid "Sign key"
-msgstr "Schl?ssel f?r digitale Unterschrift"
+msgstr "Schlüssel für digitale Unterschrift"
 
 #: src/prefs_account.c:1259
 msgid "Use default GnuPG key"
-msgstr "Benutze voreingestellten GnuPg Schl?ssel"
+msgstr "Benutze voreingestellten GnuPg Schlüssel"
 
 #: src/prefs_account.c:1268
 msgid "Select key by your email address"
-msgstr "Wähle Schl?ssel nach E-Mail Adresse"
+msgstr "Wähle Schlüssel nach E-Mail Adresse"
 
 #: src/prefs_account.c:1277
 msgid "Specify key manually"
-msgstr "Schl?ssel manuell angeben"
+msgstr "Schlüssel manuell angeben"
 
 #: src/prefs_account.c:1293
 msgid "User or key ID:"
-msgstr "Benutzer- oder Schl?ssel-ID"
+msgstr "Benutzer- oder Schlüssel-ID"
 
 #: src/prefs_account.c:1340
 msgid "Use SSL for POP3 connection"
-msgstr "Verwende SSL f?r POP3-Verbinung"
+msgstr "Verwende SSL für POP3-Verbinung"
 
 #: src/prefs_account.c:1342
 msgid "Use SSL for IMAP4 connection"
-msgstr "Verwende SSL f?r IMAP-Verbinung"
+msgstr "Verwende SSL fürIMAP-Verbinung"
 
 #: src/prefs_account.c:1344
 msgid "Send (SMTP)"
@@ -3832,7 +3832,7 @@ msgstr "Verwende kein SSL"
 
 #: src/prefs_account.c:1361
 msgid "Use SSL for SMTP connection"
-msgstr "Verwende SSL f?r SMTP Verbindung"
+msgstr "Verwende SSL fürSMTP Verbindung"
 
 #: src/prefs_account.c:1370
 msgid "Use STARTTLS command to start SSL session"
@@ -3884,7 +3884,7 @@ msgstr "Keinen NNTP-Server angegeben."
 
 #: src/prefs_account.c:1543
 msgid "local mailbox filename is not entered."
-msgstr "Keine Dateinamen f?r die lokale Mailbox angegeben."
+msgstr "Keine Dateinamen fürdie lokale Mailbox angegeben."
 
 #: src/prefs_account.c:1549
 msgid "mail command is not entered."
@@ -3973,7 +3973,7 @@ msgid ""
 "(unlimited if 0 is specified)"
 msgstr ""
 "Maximum an herunterzuladenten Artikeln\n"
-"(0 angeben f?r unbegrenzt)"
+"(0 angeben fürunbegrenzt)"
 
 #: src/prefs_common.c:1124
 msgid "Use external program for sending"
@@ -4029,7 +4029,7 @@ msgstr "Griechisch (ISO-8859-7)"
 
 #: src/prefs_common.c:1185
 msgid "Turkish (ISO-8859-9)"
-msgstr "T?rkisch (ISO-8859-9)"
+msgstr "Türkisch (ISO-8859-9)"
 
 #: src/prefs_common.c:1187
 msgid "Cyrillic (ISO-8859-5)"
@@ -4085,15 +4085,15 @@ msgid ""
 "for the current locale will be used."
 msgstr ""
 "Wenn `Automatisch' gewählt ist, wird die optimale\n"
-"Codierung f?r die aktuellen Lokalisierungen verwendet"
+"Codierung fürdie aktuellen Lokalisierungen verwendet"
 
 #: src/prefs_common.c:1299
 msgid "Select dictionaries location"
-msgstr "Wähle Ort der Wörterb?cher"
+msgstr "Wähle Ort der Wörterbücher"
 
 #: src/prefs_common.c:1411
 msgid "Insert signature automatically"
-msgstr "F?ge Unterschrift automatisch hinzu"
+msgstr "Füge Unterschrift automatisch hinzu"
 
 #: src/prefs_common.c:1416
 msgid "Signature separator"
@@ -4151,11 +4151,11 @@ msgstr "Cursor Rechteck"
 #. spell checker defaults
 #: src/prefs_common.c:1497
 msgid "Global spelling checker settings"
-msgstr "Allgemeine Rechtschreibpr?fungeinstellungen"
+msgstr "Allgemeine Rechtschreibprüfungeinstellungen"
 
 #: src/prefs_common.c:1504
 msgid "Enable spell checker (EXPERIMENTAL)"
-msgstr "Aktiviere Rechtschreibpr?fung (EXPERIMENTEL)"
+msgstr "Aktiviere Rechtschreibprüfung (EXPERIMENTEL)"
 
 #: src/prefs_common.c:1514
 msgid "Dictionaries path"
@@ -4209,7 +4209,7 @@ msgstr "Fett"
 
 #: src/prefs_common.c:1824
 msgid "Translate header name (such as `From:', `Subject:')"
-msgstr "?bersetze Kopfzeilennamen (wie `Von:', `Betreff:')"
+msgstr "Übersetze Kopfzeilennamen (wie `Von:', `Betreff:')"
 
 #: src/prefs_common.c:1827
 msgid "Display unread number next to folder name"
@@ -4250,7 +4250,7 @@ msgstr " Setze Einträge der Ablageninhaltsansicht... "
 
 #: src/prefs_common.c:1938
 msgid "Enable coloration of message"
-msgstr "Benutze Farben f?r Nachrichten"
+msgstr "Benutze Farben für Nachrichten"
 
 #: src/prefs_common.c:1957
 msgid "Display 2-byte alphabet and numeric with 1-byte character"
@@ -4258,7 +4258,7 @@ msgstr "Stelle 2-byte Alphabet und Zahlen mit 1-byte Zeichen dar"
 
 #: src/prefs_common.c:1959
 msgid "Display header pane above message view"
-msgstr "Zeige Kopfzeilenleiste ?ber Nachrichtenansicht"
+msgstr "Zeige Kopfzeilenleiste über Nachrichtenansicht"
 
 #: src/prefs_common.c:1966
 msgid "Display short headers on message view"
@@ -4286,7 +4286,7 @@ msgstr "Halbe Seite"
 
 #: src/prefs_common.c:2022
 msgid "Smooth scroll"
-msgstr "FlieÏendes Scrollen"
+msgstr "Fließendes Scrollen"
 
 #: src/prefs_common.c:2028
 msgid "Step"
@@ -4294,7 +4294,7 @@ msgstr "Schritt"
 
 #: src/prefs_common.c:2090
 msgid "Encrypt message by default"
-msgstr "Nachrichten immer verschl?sseln"
+msgstr "Nachrichten immer verschlüsseln"
 
 #: src/prefs_common.c:2093
 msgid "Plain ASCII armored"
@@ -4306,12 +4306,12 @@ msgstr "Nachrichten immer digital unterschreiben"
 
 #: src/prefs_common.c:2101
 msgid "Automatically check signatures"
-msgstr "?berpr?fe digitale Unterschriften automatisch"
+msgstr "Überprüfe digitale Unterschriften automatisch"
 
 #: src/prefs_common.c:2104
 msgid "Show signature check result in a popup window"
 msgstr ""
-"Zeige das Ergebnis der ?berpr?fung der digitalen Unterschrift in einem POPUP-"
+"Zeige das Ergebnis der Überprüfung der digitalen Unterschrift in einem POPUP-"
 "Fenster an"
 
 #: src/prefs_common.c:2108
@@ -4325,7 +4325,7 @@ msgstr "Zeige Warnung beim Start, wenn GnuPG nicht funktioniert"
 #. create default signkey box
 #: src/prefs_common.c:2120
 msgid "Default Sign Key"
-msgstr "Standard Schl?ssel zum Unterschreiben"
+msgstr "Standard Schlüssel zum Unterschreiben"
 
 #: src/prefs_common.c:2197
 msgid "Warning - Privacy/Plain ASCII armored"
@@ -4338,12 +4338,12 @@ msgid ""
 "with the RFC 3156 - MIME security with OpenPGP."
 msgstr ""
 "Es wird nicht empfohlen, die alte Variante des reinen ASCII Schutzes\n"
-"(plain ASCII armored) zum verschl?sseln von Nachrichten zu verwenden.\n"
-"Es erf?llt nicht RFC 3156 - MIME security with OpenPGP."
+"(plain ASCII armored) zum verschlüsseln von Nachrichten zu verwenden.\n"
+"Es erfüllt nicht RFC 3156 - MIME security with OpenPGP."
 
 #: src/prefs_common.c:2253
 msgid "Open first unread message when entering a folder"
-msgstr "Erste Nachricht anzeigen beim ?ffnen einer Ablage"
+msgstr "Erste Nachricht anzeigen beim Öffnen einer Ablage"
 
 #: src/prefs_common.c:2257
 msgid "Go to inbox after receiving new mail"
@@ -4351,14 +4351,14 @@ msgstr "Wechsle zu Inbox nach dem Empfang neuer E-Mail"
 
 #: src/prefs_common.c:2265
 msgid "Execute immediately when moving or deleting messages"
-msgstr "Sofort Ausf?hren beim Bewegen oder Löschen von Nachrichten"
+msgstr "Sofort Ausführen beim Bewegen oder Löschen von Nachrichten"
 
 #: src/prefs_common.c:2272
 msgid ""
 "(Messages will be marked until execution\n"
 " if this is turned off)"
 msgstr ""
-"(Nachricht wird markiert bis zur Ausf?hrung,\n"
+"(Nachricht wird markiert bis zur Ausführung,\n"
 " wenn dies ausgeschaltet)"
 
 #: src/prefs_common.c:2284
@@ -4379,7 +4379,7 @@ msgstr "Niemals"
 
 #: src/prefs_common.c:2310
 msgid "Add address to destination when double-clicked"
-msgstr "Adresse ins Ziel einf?gen bei Doppel-Click"
+msgstr "Adresse ins Ziel einfügen bei Doppel-Click"
 
 #: src/prefs_common.c:2317
 msgid "Show no-unread-message dialog"
@@ -4451,7 +4451,7 @@ msgstr "Externer Editor (%s wird durch Dateinamen ersetzt)"
 
 #: src/prefs_common.c:2621
 msgid "the full abbreviated weekday name"
-msgstr "den abgek?rzten Namen des Wochentags"
+msgstr "den abgekürzten Namen des Wochentags"
 
 #: src/prefs_common.c:2622
 msgid "the full weekday name"
@@ -4459,7 +4459,7 @@ msgstr "den vollständigen Namen des Wochentags"
 
 #: src/prefs_common.c:2623
 msgid "the abbreviated month name"
-msgstr "den abgek?rzten Namen des Monats"
+msgstr "den abgekürzten Namen des Monats"
 
 #: src/prefs_common.c:2624
 msgid "the full month name"
@@ -4523,7 +4523,7 @@ msgstr "das Jahr als Dezimalzahl"
 
 #: src/prefs_common.c:2639
 msgid "the time zone or name or abbreviation"
-msgstr "die Zeitzone oder Abk?rzung"
+msgstr "die Zeitzone oder Abkürzung"
 
 #: src/prefs_common.c:2666
 msgid "Specifier"
@@ -4571,23 +4571,23 @@ msgstr "Stelle Zitatfarben wiederher"
 
 #: src/prefs_common.c:2942
 msgid "Pick color for quotation level 1"
-msgstr "Wähle Farbe f?r Zitatebene 1"
+msgstr "Wähle Farbe fürZitatebene 1"
 
 #: src/prefs_common.c:2945
 msgid "Pick color for quotation level 2"
-msgstr "Wähle Farbe f?r Zitatebene 2"
+msgstr "Wähle Farbe fürZitatebene 2"
 
 #: src/prefs_common.c:2948
 msgid "Pick color for quotation level 3"
-msgstr "Wähle Farbe f?r Zitatebene 3"
+msgstr "Wähle Farbe fürZitatebene 3"
 
 #: src/prefs_common.c:2951
 msgid "Pick color for URI"
-msgstr "Wähle Farbe f?r URI"
+msgstr "Wähle Farbe fürURI"
 
 #: src/prefs_common.c:2954
 msgid "Pick color for target folder"
-msgstr "Wähle Farbe f?r Zielablage"
+msgstr "Wähle Farbe fürZielablage"
 
 #: src/prefs_common.c:3094 src/prefs_matcher.c:1416
 msgid "Description of symbols"
@@ -4763,7 +4763,7 @@ msgstr "Ziel"
 
 #: src/prefs_filter.c:369
 msgid "Use regex"
-msgstr "Benutze reguläre Ausdr?cke"
+msgstr "Benutze reguläre Ausdrücke"
 
 #: src/prefs_filter.c:373
 msgid "Don't receive"
@@ -4930,7 +4930,7 @@ msgstr "Referenzrn"
 
 #: src/prefs_matcher.c:143
 msgid "Age greater than"
-msgstr "Alter gröÏer als"
+msgstr "Alter größer als"
 
 #: src/prefs_matcher.c:143
 msgid "Age lower than"
@@ -4974,7 +4974,7 @@ msgstr "Weiterleitungszeichen"
 
 #: src/prefs_matcher.c:149
 msgid "Score greater than"
-msgstr "Note gröÏer als"
+msgstr "Note größer als"
 
 #: src/prefs_matcher.c:149
 msgid "Score lower than"
@@ -4986,7 +4986,7 @@ msgstr "Note gleich"
 
 #: src/prefs_matcher.c:286
 msgid "Creating matcher setting window...\n"
-msgstr "Erstelle ?bereinstimmungseinstellungs-Fenster...\n"
+msgstr "Erstelle Übereinstimmungseinstellungs-Fenster...\n"
 
 #: src/prefs_matcher.c:305
 msgid "Condition setting"
@@ -4995,7 +4995,7 @@ msgstr "Bedingungseinstellungen"
 #. criteria combo box
 #: src/prefs_matcher.c:333
 msgid "Match type"
-msgstr "?bereinstimmungs Typ"
+msgstr "Übereinstimmungs Typ"
 
 #: src/prefs_matcher.c:470
 msgid "Use regexp"
@@ -5038,7 +5038,7 @@ msgstr ""
 "Referenzen\n"
 "Dateiname - sollte nicht verändert werden\n"
 "neue Zeile\n"
-"Escape Zeichen f?r Zitate\n"
+"Escape Zeichen fürZitate\n"
 "Zitatzeichen\n"
 "%"
 
@@ -5065,7 +5065,7 @@ msgstr "Wichtige Note"
 
 #: src/prefs_scoring.c:562 src/prefs_scoring.c:608
 msgid "Match string is not set."
-msgstr "?bereinstimmung ist nicht gesetzt."
+msgstr "Übereinstimmung ist nicht gesetzt."
 
 #. S_COL_UNREAD
 #: src/prefs_summary_column.c:69
@@ -5084,7 +5084,7 @@ msgstr "Nummer"
 
 #: src/prefs_summary_column.c:168
 msgid "Creating summary column setting window...\n"
-msgstr "Erstelle Fenster f?r die Einstellungen der Gesamtansichtsspalten...\n"
+msgstr "Erstelle Fenster fürdie Einstellungen der Gesamtansichtsspalten...\n"
 
 #: src/prefs_summary_column.c:176
 msgid "Summary display item setting"
@@ -5101,7 +5101,7 @@ msgstr ""
 
 #: src/prefs_summary_column.c:220
 msgid "Available items"
-msgstr "Verf?gbare Eigenschaften"
+msgstr "Verfügbare Eigenschaften"
 
 #: src/prefs_summary_column.c:238
 msgid "  ->  "
@@ -5117,7 +5117,7 @@ msgstr "Angezeigte Eigentschaften"
 
 #: src/prefs_summary_column.c:304
 msgid " Revert to default "
-msgstr " Zur?cksetzen zu Default"
+msgstr " Zurücksetzen zu Default"
 
 #. self-documenting
 #: src/prefs_template.c:136
@@ -5202,7 +5202,7 @@ msgstr "Senden der wartenden Nachricht %d fehlgeschlagen.\n"
 #: src/procmsg.c:826
 #, c-format
 msgid "Print command line is invalid: `%s'\n"
-msgstr "Druck-Befehlszeile ist ung?ltig: `%s'\n"
+msgstr "Druck-Befehlszeile ist ungültig: `%s'\n"
 
 #: src/progressdialog.c:53
 msgid "Status"
@@ -5239,7 +5239,7 @@ msgstr "SCHLECHTE digitale Unterschrift"
 #: src/rfc2015.c:149 src/rfc2015.c:184 src/sigstatus.c:231
 msgid "No public key to verify the signature"
 msgstr ""
-"Kein öffentlicher Schl?ssel zum verifizieren der digitalen Unterschrift"
+"Kein öffentlicher Schlüssel zum verifizieren der digitalen Unterschrift"
 
 #: src/rfc2015.c:152 src/rfc2015.c:187 src/sigstatus.c:234
 msgid "Error verifying the signature"
@@ -5247,7 +5247,7 @@ msgstr "Fehler beim Verifizieren der digitalen Unterschrift"
 
 #: src/rfc2015.c:155 src/rfc2015.c:190
 msgid "Different results for signatures"
-msgstr "Unterschiedliche Ergebnisse f?r Unterschriften"
+msgstr "Unterschiedliche Ergebnisse fürUnterschriften"
 
 #: src/rfc2015.c:158 src/rfc2015.c:193
 msgid "Error: Unknown status"
@@ -5265,7 +5265,7 @@ msgstr "SCHLECHTE digitale Unterschrift von \"%s\""
 
 #: src/rfc2015.c:213
 msgid "Cannot find user ID for this key."
-msgstr "Finde keine User-ID f?r diesen Schl?ssel."
+msgstr "Finde keine User-ID fürdiesen Schlüssel."
 
 #: src/rfc2015.c:224
 #, c-format
@@ -5280,7 +5280,7 @@ msgstr "Digitale Unterschrift von %s\n"
 #: src/rfc2015.c:261
 #, c-format
 msgid "Key fingerprint: %s\n"
-msgstr "Schl?ssel Fingerprint: %s\n"
+msgstr "Schlüssel Fingerprint: %s\n"
 
 #: src/scoring.c:295
 msgid "Reading headers configuration...\n"
@@ -5299,20 +5299,20 @@ msgstr "Schreibe Benotungseinstellungen...\n"
 #: src/select-keys.c:101
 #, c-format
 msgid "Please select key for `%s'"
-msgstr "Wähle Schl?ssel f?r '%s' "
+msgstr "Wähle Schlüssel für'%s' "
 
 #: src/select-keys.c:104
 #, c-format
 msgid "Collecting info for `%s' ... %c"
-msgstr "Sammle Informationen f?r '%s' ... %c"
+msgstr "Sammle Informationen für'%s' ... %c"
 
 #: src/select-keys.c:272
 msgid "Select Keys"
-msgstr "Wähle Schl?ssel"
+msgstr "Wähle Schlüssel"
 
 #: src/select-keys.c:300
 msgid "Key ID"
-msgstr "Schl?ssel-ID"
+msgstr "Schlüssel-ID"
 
 #: src/select-keys.c:303
 msgid "Val"
@@ -5320,11 +5320,11 @@ msgstr "Val"
 
 #: src/select-keys.c:445
 msgid "Add key"
-msgstr "Schl??sel hinzuf?gen"
+msgstr "Schlüssel hinzufügen"
 
 #: src/select-keys.c:446
 msgid "Enter another user or key ID\n"
-msgstr "Eine andere Benutzer- oder Schl?ssel-ID angeben\n"
+msgstr "Eine andere Benutzer- oder Schlüssel-ID angeben\n"
 
 #: src/send.c:171
 msgid "Queued message header is broken.\n"
@@ -5341,7 +5341,7 @@ msgstr "Account nicht gefunden.\n"
 #: src/send.c:219
 #, c-format
 msgid "Can't execute external command: %s\n"
-msgstr "Kann externes Kommando nicht ausf?hren: %s\n"
+msgstr "Kann externes Kommando nicht ausführen: %s\n"
 
 #: src/send.c:331
 #, c-format
@@ -5418,13 +5418,13 @@ msgid ""
 "if you have the one.\n"
 "If you're not sure, just select OK."
 msgstr ""
-"Zuerst muÏ der Ort der Mailbox gesetzt werden.\n"
+"Zuerst muss der Ort der Mailbox gesetzt werden.\n"
 "Sie können eine vorhandene Mailbox im MH-Format nutzen.\n"
 "Wenn Sie sich nicht sicher sind, wählen Sie OK."
 
 #: src/sigstatus.c:129
 msgid "Checking signature"
-msgstr "?berpr?fe Digitale Unterschrift"
+msgstr "Überprüfe Digitale Unterschrift"
 
 #: src/sourcewindow.c:76
 msgid "Creating source window...\n"
@@ -5446,23 +5446,23 @@ msgstr "%s - Quellen"
 
 #: src/ssl.c:44
 msgid "SSLv23 not available\n"
-msgstr "SSLv23 nicht verf?gbar\n"
+msgstr "SSLv23 nicht verfügbar\n"
 
 #: src/ssl.c:46
 msgid "SSLv23 available\n"
-msgstr "SSLv23 nicht verf?gbar\n"
+msgstr "SSLv23 nicht verfügbar\n"
 
 #: src/ssl.c:51
 msgid "TLSv1 not available\n"
-msgstr "TLSv1 nicht verf?gbar\n"
+msgstr "TLSv1 nicht verfügbar\n"
 
 #: src/ssl.c:53
 msgid "TLSv1 available\n"
-msgstr "TLSv1 verf?gbar\n"
+msgstr "TLSv1 verfügbar\n"
 
 #: src/ssl.c:81 src/ssl.c:88
 msgid "SSL method not available\n"
-msgstr "SSL Methode nicht verf?gbar\n"
+msgstr "SSL Methode nicht verfügbar\n"
 
 #: src/ssl.c:94
 msgid "Unknown SSL method *PROGRAM BUG*\n"
@@ -5555,7 +5555,7 @@ msgstr "/_Kopieren..."
 
 #: src/summaryview.c:393
 msgid "/E_xecute"
-msgstr "/_Ausf?hren"
+msgstr "/_Ausführen"
 
 #: src/summaryview.c:395
 msgid "/_Mark"
@@ -5599,11 +5599,11 @@ msgstr "/Einfärben"
 
 #: src/summaryview.c:407
 msgid "/Add sender to address boo_k"
-msgstr "/Absender dem _Adressbuch hinzuf?gen"
+msgstr "/Absender dem _Adressbuch hinzufügen"
 
 #: src/summaryview.c:411
 msgid "/_View/Open in new _window"
-msgstr "/_Ansicht/?ffnen in _neuem Fenster"
+msgstr "/_Ansicht/Öffnen in _neuem Fenster"
 
 #: src/summaryview.c:413
 msgid "/_View/_Source"
@@ -5645,7 +5645,7 @@ msgstr "Markierte verarbeiten"
 
 #: src/summaryview.c:688
 msgid "Some marks are left. Process it?"
-msgstr "Einige Markierungen sind ?brig. Verarbeiten?"
+msgstr "Einige Markierungen sind übrig. Verarbeiten?"
 
 #: src/summaryview.c:723
 msgid ""
@@ -5672,7 +5672,7 @@ msgstr "Keine ungelesene Nachricht gefunden. Vom Ende suchen?"
 msgid ""
 "Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"
 msgstr ""
-"Interner Fehler: Unerwarteter Wert f?r prefs_common.next_unread_msg_dialog\n"
+"Interner Fehler: Unerwarteter Wert fürprefs_common.next_unread_msg_dialog\n"
 
 #: src/summaryview.c:1064
 msgid "No unread messages."
@@ -5798,7 +5798,7 @@ msgstr "Nachricht(en) löschen"
 
 #: src/summaryview.c:2700
 msgid "Do you really want to delete message(s) from the trash?"
-msgstr "Wollen Sie wirklich diese Nachricht(en) aus dem M?ll löschen?"
+msgstr "Wollen Sie wirklich diese Nachricht(en) aus dem Müll löschen?"
 
 #: src/summaryview.c:2739 src/summaryview.c:2741
 msgid "Deleting duplicated messages..."
@@ -5850,7 +5850,7 @@ msgid ""
 "Print command line is invalid:\n"
 "`%s'"
 msgstr ""
-"Druck-Befehlszeile ist ung?ltig:\n"
+"Druck-Befehlszeile ist ungültig:\n"
 "`%s'"
 
 #: src/summaryview.c:3314 src/summaryview.c:3315
@@ -5863,7 +5863,7 @@ msgstr "Hebe Threads auf"
 
 #: src/summaryview.c:3446
 msgid "Unthreading for execution..."
-msgstr "Hebe Threads zur Ausf?hrung auf"
+msgstr "Hebe Threads zur Ausführung auf"
 
 #: src/summaryview.c:3497
 msgid "No filter rules defined."
@@ -5928,7 +5928,7 @@ msgstr "Erstelle Textansicht...\n"
 
 #: src/textview.c:380
 msgid "To save this part, pop up the context menu with "
-msgstr "Zum Speichern dieses Teiles, öffnen Sie das Kontextmen? mit der "
+msgstr "Zum Speichern dieses Teiles, öffnen Sie das Kontextmenü mit der "
 
 #: src/textview.c:381
 msgid "right click and select `Save as...', "
@@ -5939,7 +5939,7 @@ msgid ""
 "or press `y' key.\n"
 "\n"
 msgstr ""
-"oder dr?cken die `y'-Taste.\n"
+"oder drücken die `y'-Taste.\n"
 "\n"
 
 #: src/textview.c:384
@@ -5951,20 +5951,20 @@ msgid ""
 "`Display as text', or press `t' key.\n"
 "\n"
 msgstr ""
-"`Darstellung als Text', oder dr?cken die `t'-Taste.\n"
+"`Darstellung als Text', oder drücken die `t'-Taste.\n"
 "\n"
 
 #: src/textview.c:387
 msgid "To open this part with external program, select "
-msgstr "Zum ?ffnen dieses Teiles mit einem externen Programm, wählen Sie "
+msgstr "Zum Öffnen dieses Teiles mit einem externen Programm, wählen Sie "
 
 #: src/textview.c:388
 msgid "`Open' or `Open with...', "
-msgstr "`?ffnen' oder `?ffnen mit...', "
+msgstr "`Öffnen' oder `Öffnen mit...', "
 
 #: src/textview.c:389
 msgid "or double-click, or click the center button, "
-msgstr "oder Doppelclick, oder dr?cken Sie die mittlere Maustaste, "
+msgstr "oder Doppelclick, oder drücken Sie die mittlere Maustaste, "
 
 #: src/textview.c:390
 msgid "or press `l' key."
@@ -5972,16 +5972,16 @@ msgstr "oder die `l'-Taste."
 
 #: src/textview.c:409
 msgid "This signature has not been checked yet.\n"
-msgstr "Diese digitale Unterschrift wurde noch nicht gepr?ft.\n"
+msgstr "Diese digitale Unterschrift wurde noch nicht geprüft.\n"
 
 #: src/textview.c:410
 msgid "To check it, pop up the context menu with\n"
-msgstr "Zum ?berpr?fen, öffnen Sie das Kontextmen? mit der\n"
+msgstr "Zum Überprüfen, öffnen Sie das Kontextmenü mit der\n"
 
 #: src/textview.c:411
 msgid "right click and select `Check signature'.\n"
 msgstr ""
-"rechten Maustaste und wählen `Digitale Unterschrift ?berpr?fen'.\n"
+"rechten Maustaste und wählen `Digitale Unterschrift Überprüfen'.\n"
 "\n"
 
 #: src/utils.c:1623
@@ -5997,7 +5997,7 @@ msgstr "move_file(): Datei %s' existiert bereits."
 #: src/utils.c:1998
 #, c-format
 msgid "Open URI command line is invalid: `%s'"
-msgstr "?ffne-URI-Befehlszeile ist ung?ltig: `%s'"
+msgstr "Öffne-URI-Befehlszeile ist ungültig: `%s'"
 
 #~ msgid " Enable/Disable 'Receive at Get all' "
 #~ msgstr " De-/Aktivieren 'Holen bei alle Empfangen' "
@@ -6009,7 +6009,7 @@ msgstr "?ffne-URI-Befehlszeile ist ung?ltig: `%s'"
 #~ msgstr " Zitatformat "
 
 #~ msgid "Compose Preferences"
-#~ msgstr "Einstellungen f?r Nachrichtenverfassen"
+#~ msgstr "Einstellungen fürNachrichtenverfassen"
 
 #~ msgid "Quote message when replying"
 #~ msgstr "Zitiere Nachricht in der Antwort"
