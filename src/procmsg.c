@@ -207,7 +207,7 @@ GSList *procmsg_read_cache(FolderItem *item, gboolean scan_file)
 	setvbuf(fp, file_buf, _IOFBF, sizeof(file_buf));
 	g_free(cache_file);
 
-	debug_print(_("\tReading summary cache..."));
+	debug_print(_("\tReading summary cache...\n"));
 
 	/* compare cache version */
 	if (fread(&ver, sizeof(ver), 1, fp) != 1 ||
@@ -280,7 +280,7 @@ void procmsg_set_flags(GSList *mlist, FolderItem *item)
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 
-	debug_print(_("\tMarking the messages..."));
+	debug_print(_("\tMarking the messages...\n"));
 
 	markdir = folder_item_get_path(item);
 	if (!is_dir_exist(markdir))

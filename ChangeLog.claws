@@ -1,3 +1,11 @@
+2001-09-20 [christoph]
+
+	* src/utils.[ch]
+		more portable debug_print with source filename
+		and linenumber
+	* src/procmsg.c
+		more newlines after debug messages
+
 2001-09-20 [paul]
 
 	* configure.in
