@@ -1,3 +1,13 @@
+2001-12-27 [melvin]	0.6.6claws25
+
+	* src/prefs_common.c
+		Put spell checker options in a separate tab to decrease
+		the Common Preferences window height.
+
+	* README.claws	
+		Update spell checker usage instruction about its options
+		location.
+
 2001-12-27 [melvin]	0.6.6claws24
 
 	* src/compose.c
