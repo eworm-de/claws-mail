@@ -1457,6 +1457,7 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 		hentry[H_BCC].body = NULL;
 	}
 	if (hentry[H_NEWSGROUPS].body != NULL) {
+		conv_unmime_header_overwrite(hentry[H_NEWSGROUPS].body);
 		compose->newsgroups = hentry[H_NEWSGROUPS].body;
 		hentry[H_NEWSGROUPS].body = NULL;
 	}
@@ -1766,6 +1767,8 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 	SET_ADDRESS(COMPOSE_CC, compose->cc);
 	SET_ADDRESS(COMPOSE_BCC, compose->bcc);
 	SET_ADDRESS(COMPOSE_REPLYTO, compose->replyto);
+	SET_ADDRESS(COMPOSE_NEWSGROUPS, compose->newsgroups);
+	SET_ADDRESS(COMPOSE_FOLLOWUPTO, compose->followup_to);
 
 	compose_update_priority_menu_item(compose);
 #if USE_GPGME	

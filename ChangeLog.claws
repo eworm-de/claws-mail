@@ -1,3 +1,8 @@
+2003-01-23 [colin]	0.8.8claws127
+
+	* src/compose.c
+		Fix drafted and queued news articles re-edition
+
 2003-01-23 [melvin]	0.8.8claws126
 
 	* po/fr.po
