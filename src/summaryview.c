@@ -2171,12 +2171,13 @@ void summary_sort(SummaryView *summaryview,
 	summaryview->sort_key = sort_key;
 	summaryview->sort_type = sort_type;
 
+	summary_set_column_titles(summaryview);
+	summary_set_menu_sensitive(summaryview);
+
 	/* allow fallback to don't sort */
 	if (summaryview->sort_key == SORT_BY_NONE)
 		return;
 
-	summary_set_column_titles(summaryview);
-	summary_set_menu_sensitive(summaryview);
 	if(cmp_func != NULL) {
 		debug_print("Sorting summary...");
 		STATUSBAR_PUSH(summaryview->mainwin, _("Sorting summary..."));

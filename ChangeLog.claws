@@ -1,3 +1,8 @@
+2003-12-11 [darko]	0.9.7claws35
+
+	* src/summaryview.c
+		also update the sort arrow (thanks Christoph)
+
 2003-12-11 [darko]	0.9.7claws34
 
 	* src/summaryview.c
