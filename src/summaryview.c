@@ -5292,12 +5292,12 @@ void summary_set_prefs_from_folderitem(SummaryView *summaryview, FolderItem *ite
 	summaryview->threaded = item->threaded;
 
 	/* Scoring */
-	if (global_scoring || summaryview->folder_item->prefs->scoring) {
+	if (global_scoring || item->prefs->scoring) {
 		summaryview->important_score = prefs_common.important_score;
-		if (summaryview->folder_item->prefs->important_score >
+		if (item->prefs->important_score >
 		    summaryview->important_score)
 			summaryview->important_score =
-				summaryview->folder_item->prefs->important_score;
+				item->prefs->important_score;
 	}
 }
 
