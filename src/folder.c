@@ -198,8 +198,10 @@ FolderItem *folder_item_new(const gchar *name, const gchar *path)
 	item->collapsed = FALSE;
 	item->threaded  = TRUE;
 	item->ret_rcpt  = FALSE;
+	item->opened    = FALSE;
 	item->parent = NULL;
 	item->folder = NULL;
+	item->mark_queue = NULL;
 	item->data = NULL;
 
 	item->prefs = prefs_folder_item_new();

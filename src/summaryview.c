@@ -774,6 +774,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	g_free(buf);
 
 	summaryview->folder_item = item;
+	item->opened = TRUE;
 
 	gtk_signal_handler_block_by_data(GTK_OBJECT(ctree), summaryview);
 
@@ -951,7 +952,10 @@ void summary_clear_list(SummaryView *summaryview)
 	gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree),
 				NULL, summary_free_msginfo_func, NULL);
 
-	summaryview->folder_item = NULL;
+	if (summaryview->folder_item) {
+		summaryview->folder_item->opened = FALSE;
+		summaryview->folder_item = NULL;
+	}
 
 	summaryview->display_msg = FALSE;
 
@@ -2171,13 +2175,7 @@ gint summary_write_cache(SummaryView *summaryview)
 
 	gtk_ctree_pre_recursive(ctree, NULL, summary_write_cache_func, &fps);
 
-	for(cur = summaryview->killed_messages ; cur != NULL ;
-	    cur = g_slist_next(cur)) {
-		MsgInfo *msginfo = (MsgInfo *) cur->data;
-
-		procmsg_write_cache(msginfo, fps.cache_fp);
-		procmsg_write_flags(msginfo, fps.mark_fp);
-	}
+	procmsg_flush_mark_queue(summaryview->folder_item, fps.mark_fp);
 
 	fclose(fps.cache_fp);
 	fclose(fps.mark_fp);

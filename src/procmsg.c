@@ -400,6 +400,57 @@ void procmsg_write_flags(MsgInfo *msginfo, FILE *fp)
 	WRITE_CACHE_DATA_INT(flags, fp);
 }
 
+void procmsg_flush_mark_queue(FolderItem *item, FILE *fp)
+{
+	MsgInfo *flaginfo;
+
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(fp != NULL);
+
+	while (item->mark_queue != NULL) {
+		flaginfo = (MsgInfo *)item->mark_queue->data;
+		procmsg_write_flags(flaginfo, fp);
+		procmsg_msginfo_free(flaginfo);
+		item->mark_queue = g_slist_remove(item->mark_queue, flaginfo);
+	}
+}
+
+void procmsg_add_flags(FolderItem *item, gint num, MsgFlags flags)
+{
+	FILE *fp;
+	gchar *path;
+	MsgInfo msginfo;
+
+	g_return_if_fail(item != NULL);
+
+	if (item->opened) {
+		MsgInfo *queue_msginfo;
+
+		queue_msginfo = g_new0(MsgInfo, 1);
+		queue_msginfo->msgnum = num;
+		queue_msginfo->flags = flags;
+		item->mark_queue = g_slist_append
+			(item->mark_queue, queue_msginfo);
+		return;
+	}
+
+	path = folder_item_get_path(item);
+	g_return_if_fail(path != NULL);
+
+	if ((fp = procmsg_open_mark_file(path, TRUE)) == NULL) {
+		g_warning(_("can't open mark file\n"));
+		g_free(path);
+		return;
+	}
+	g_free(path);
+
+	msginfo.msgnum = num;
+	msginfo.flags = flags;
+
+	procmsg_write_flags(&msginfo, fp);
+	fclose(fp);
+}
+
 struct MarkSum {
 	gint *new;
 	gint *unread;
@@ -828,14 +879,15 @@ void procmsg_empty_trash(void)
 	}
 }
 
-gint procmsg_send_queue(gboolean save_msgs)
+gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 {
-	FolderItem *queue;
 	gint i;
 	gint ret = 0;
 
-	queue = folder_get_default_queue();
+	if (!queue)
+		queue = folder_get_default_queue();
 	g_return_val_if_fail(queue != NULL, -1);
+
 	folder_item_scan(queue);
 	if (queue->last_num < 0) return -1;
 	else if (queue->last_num == 0) return 0;
@@ -873,7 +925,7 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 {
 	gint num;
 	FILE *fp;
-	gchar *path;
+	MsgFlags flag = {0, 0};
 
 	debug_print(_("saving sent message...\n"));
 
@@ -917,19 +969,7 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 		unlink(file);
 	}
 
-	path = folder_item_get_path(outbox);
-	if ((fp = procmsg_open_mark_file(path, TRUE)) == NULL)
-		g_warning(_("can't open mark file\n"));
-	else {
-		MsgInfo newmsginfo;
-
-		newmsginfo.msgnum = num;
-		newmsginfo.flags.perm_flags = 0;
-		newmsginfo.flags.tmp_flags = 0;
-		procmsg_write_flags(&newmsginfo, fp);
-		fclose(fp);
-	}
-	g_free(path);
+	procmsg_add_flags(outbox, num, flag);
 
 	return 0;
 }

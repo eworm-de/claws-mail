@@ -2784,9 +2784,13 @@ gint compose_send(Compose *compose)
 
 			if (folder)
 				outbox = folder->outbox;
+			if (!outbox)
+				outbox = folder_get_default_outbox();
 			if (procmsg_save_to_outbox(outbox, tmp, FALSE) < 0)
 				alertpanel_error
 					(_("Can't save the message to outbox."));
+			else
+				folderview_update_item(outbox, TRUE);
 		}
 	}
 
@@ -3216,6 +3220,7 @@ static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
 	GSList *cur;
 	gchar buf[BUFFSIZE];
 	gint num;
+	MsgFlags flag = {0, 0};
         static gboolean lock = FALSE;
 	PrefsAccount *mailac = NULL, *newsac = NULL;
 	
@@ -3413,19 +3418,7 @@ static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
 				(compose->targetinfo->folder, TRUE);
 	}
 
-	if ((fp = procmsg_open_mark_file(queue_path, TRUE)) == NULL)
-		g_warning(_("can't open mark file\n"));
-	else {
-		MsgInfo newmsginfo;
-
-		newmsginfo.msgnum = num;
-		newmsginfo.flags.perm_flags = 0;
-		newmsginfo.flags.tmp_flags = 0;
-		procmsg_write_flags(&newmsginfo, fp);
-		fclose(fp);
-	}
-	g_free(queue_path);
-
+	procmsg_add_flags(queue, num, flag);
 	folder_item_scan(queue);
 	folderview_update_item(queue, TRUE);
 
@@ -5936,8 +5929,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	FolderItem *draft;
 	gchar *tmp;
 	gint msgnum;
-	gchar *draft_path;
-	FILE *fp;
+	MsgFlags flag = {0, 0};
 	static gboolean lock = FALSE;
 
 	if (lock) return;
@@ -5978,20 +5970,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 					       TRUE);
 	}
 
-	draft_path = folder_item_get_path(draft);
-	if ((fp = procmsg_open_mark_file(draft_path, TRUE)) == NULL)
-		g_warning(_("can't open mark file\n"));
-	else {
-		MsgInfo newmsginfo;
-
-		newmsginfo.msgnum = msgnum;
-		newmsginfo.flags.perm_flags = 0;
-		newmsginfo.flags.tmp_flags = 0;
-		procmsg_write_flags(&newmsginfo, fp);
-		fclose(fp);
-	}
-	g_free(draft_path);
-
+	procmsg_add_flags(draft, msgnum, flag);
 	folder_item_scan(draft);
 	folderview_update_item(draft, TRUE);
 

@@ -217,6 +217,11 @@ void	procmsg_write_cache		(MsgInfo	*msginfo,
 					 FILE		*fp);
 void	procmsg_write_flags		(MsgInfo	*msginfo,
 					 FILE		*fp);
+void	procmsg_flush_mark_queue	(FolderItem	*item,
+					 FILE		*fp);
+void	procmsg_add_flags		(FolderItem	*item,
+					 gint		 num,
+					 MsgFlags	 flags);
 void	procmsg_get_mark_sum		(const gchar	*folder,
 					 gint		*new,
 					 gint		*unread,
@@ -242,7 +247,8 @@ FILE   *procmsg_open_message_decrypted	(MsgInfo	*msginfo,
 gboolean procmsg_msg_exist		(MsgInfo	*msginfo);
 
 void	procmsg_empty_trash		(void);
-gint	procmsg_send_queue		(gboolean	 save_msgs);
+gint	procmsg_send_queue		(FolderItem	*queue,
+					 gboolean	 save_msgs);
 gint	procmsg_save_to_outbox		(FolderItem	*outbox,
 					 const gchar	*file,
 					 gboolean	 is_queued);

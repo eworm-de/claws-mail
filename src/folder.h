@@ -201,10 +201,13 @@ struct _FolderItem
 	guint ret_rcpt       : 1; /* return receipt       */
 
 	gint op_count;
+	guint opened    : 1; /* opened by summary view */
 
 	FolderItem *parent;
 
 	Folder *folder;
+
+	GSList *mark_queue;
 
 	gpointer data;
 

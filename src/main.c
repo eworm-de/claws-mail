@@ -568,19 +568,28 @@ static void open_compose_new_with_recipient(const gchar *address)
 static void send_queue(void)
 {
 	GList *list;
+	FolderItem *def_outbox;
 
-	if (procmsg_send_queue(prefs_common.savemsg) < 0)
-		alertpanel_error(_("Some errors occurred while sending queued messages."));
-
-	statusbar_pop_all();
+	def_outbox = folder_get_default_outbox();
 
 	for (list = folder_get_list(); list != NULL; list = list->next) {
-		Folder *folder;
+		Folder *folder = list->data;
 
-		folder = list->data;
 		if (folder->queue) {
+			if (procmsg_send_queue
+				(folder->queue, prefs_common.savemsg) < 0)
+				alertpanel_error(_("Some errors occurred while sending queued messages."));
+			statusbar_pop_all();
 			folder_item_scan(folder->queue);
 			folderview_update_item(folder->queue, TRUE);
+			if (prefs_common.savemsg && folder->outbox) {
+				folderview_update_item(folder->outbox, TRUE);
+				if (folder->outbox == def_outbox)
+					def_outbox = NULL;
+			}
 		}
 	}
+
+	if (prefs_common.savemsg && def_outbox)
+		folderview_update_item(def_outbox, TRUE);
 }

@@ -1,3 +1,34 @@
+2002-04-03
+
+	* src/imap.c: imap_parse_atom(): 継続行を読んだ後に cur_pos が正しい
+	  アドレスを指していなかったバグを修正。
+	  imap_scan_folder(): 未読数が0のときは新着数を0にセット。
+	  imap_parse_flags(): \Seen フラグが存在すれば新着・未読フラグを
+	  追加しないようにした。
+	* ac/Makefile.am: MACROS から gpgme.m4 を削除。
+
+2002-04-02
+
+	* 現在開いているフォルダにフラグを追加できない問題を修正。
+	* src/compose.c:
+	  compose_send(): 保存後 outbox を更新。
+	  compose_queue()
+	  compose_draft_cb(): procmsg_add_flags() を使用。
+	* src/folder.[ch]: FolderItem に "opened" フラグと "mark_queue"
+	  リストを追加。
+	* src/main.c: send_queue(): 全ての queue フォルダから送信。
+	* src/mainwindow.c: send_queue_cb(): 全ての queue フォルダから送信。
+	* src/procmsg.[ch]:
+	  procmsg_flush_mark_queue(): 新規。全ての待ち状態のフラグをファイル
+	  に書き出す。
+	  procmsg_add_flags(): 新規。フォルダに指定されたフラグを追加。
+	  procmsg_send_queue(): 送信待ちフォルダを指定するための引数を追加。
+	  procmsg_save_to_outbox(): procmsg_add_flags() を使用。
+	* src/summaryview.c:
+	  summary_show(): FolderItem の opened フラグを立てる。
+	  summary_clear_list(): FolderItem の opened フラグを下げる。
+	  summary_write_cache(): procmsg_flush_mark_queue() を呼ぶようにした。
+
 2002-04-01
 
 	* src/summaryview.[ch]: スペースが十分になければステータスラベルの
