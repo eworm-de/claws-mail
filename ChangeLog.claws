@@ -1,3 +1,8 @@
+2002-12-27 [paul]	0.8.8claws9
+
+	* po/pt_BR.po
+		updated by Ivan F. Martinez
+		
 2002-12-27 [darko]	0.8.8claws8
 
 	* src/common/utils.c
