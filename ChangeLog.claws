@@ -1,3 +1,12 @@
+2002-02-12 |melvin]	0.7.0claws71
+
+	* src/gtkutils.c
+		Made gtkut_editable_get_selection return NULL if selection
+		is of length zero.
+		This fixes a bug where selecting part of message A then
+		switching to message B and replying to it will not
+		quote the message's body.
+
 2002-02-12 [paul]	0.7.0claws70
 
 	* src/mainwindow.c
