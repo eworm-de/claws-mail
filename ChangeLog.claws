@@ -1,3 +1,11 @@
+2002-10-08 [colin]	0.8.5claws2
+
+	* src/inc.[ch]
+	  src/pop.c
+	  src/recv.c
+		Differentiate socket errors from disk full
+		errors
+
 2002-10-08 [christoph]	0.8.5claws1
 
 	* Makefile.am

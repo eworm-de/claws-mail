@@ -551,6 +551,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			break;
 		case INC_ERROR:
 		case INC_NOSPACE:
+		case INC_SOCKERR:
 			gtk_clist_set_pixmap(clist, num, 0, errorxpm, errorxpmmask);
 			gtk_clist_set_text(clist, num, 2, _("Error"));
 			break;
@@ -635,7 +636,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 		if (inc_state != INC_SUCCESS && inc_state != INC_CANCEL) {
 			error_num++;
-			if (inc_state == INC_NOSPACE) {
+			if (inc_state == INC_NOSPACE || inc_state == INC_SOCKERR) {
 				inc_put_error(inc_state);
 				break;
 			}
@@ -827,6 +828,9 @@ static IncState inc_pop3_session_do(IncSession *session)
 		break;
 	case PS_IOERR:
 		session->inc_state = INC_NOSPACE;
+		break;
+	case PS_SOCKET:
+		session->inc_state = INC_SOCKERR;
 		break;
 	case PS_LOCKBUSY:
 		session->inc_state = INC_LOCKED;
@@ -1045,6 +1049,9 @@ static void inc_put_error(IncState istate)
 		break;
 	case INC_NOSPACE:
 		alertpanel_error(_("No disk space left."));
+		break;
+	case INC_SOCKERR:
+		alertpanel_error(_("Socket error."));
 		break;
 	case INC_LOCKED:
 		if (!prefs_common.no_recv_err_panel)
