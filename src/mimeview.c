@@ -805,51 +805,46 @@ static void mimeview_save_all(MimeView *mimeview)
 
 	partinfo = gtk_ctree_node_get_row_data
 		(GTK_CTREE(mimeview->ctree), mimeview->opened);
-
 	g_return_if_fail(partinfo != NULL);
 
 	dirname = filesel_select_file(_("Save as"), defname);
-
 	if (!dirname) return;
 
 	/* return to first children */
 	attachment = partinfo->parent->children->next;
-
 	/* for each attachment, extract it in the selected dir. */
 	while(attachment != NULL)
 	{
-		if(attachment->filename)
-		{
+		if(attachment->filename) {
+			gchar *attachdir;
 			gchar *attachname = g_strdup(attachment->filename);
 
 			subst_chars(attachname, "/\\", G_DIR_SEPARATOR);
 			subst_chars(attachname, ":?*&|<>\t\r\n", '_');
 			g_snprintf(buf, sizeof(buf), "%s%s",
-					dirname,
-					(attachname[0] == G_DIR_SEPARATOR)
-					? &attachname[1]
-					: attachname );
-			g_free(attachname);
+				   dirname,
+				   (attachname[0] == G_DIR_SEPARATOR)
+				   ? &attachname[1]
+				   : attachname);
+			attachdir = g_dirname(buf);
 			make_dir_hier(g_dirname(buf));
+			g_free(attachdir);
+			g_free(attachname);
 
-			if (is_file_exist(buf))
-			{
+			if (is_file_exist(buf)) {
 				AlertValue aval;
 
 				aval = alertpanel(_("Overwrite"),
-						_("Overwrite existing file?"),
-						_("OK"), _("Cancel"), NULL);
-
+						  _("Overwrite existing file?"),
+						  _("OK"), _("Cancel"), NULL);
 				if (G_ALERTDEFAULT != aval) return;
 			}
-
 			if (procmime_get_part(buf, mimeview->file, attachment) < 0)
-				alertpanel_error
-					(_("Can't save the part of multipart message."));
+				alertpanel_error(_("Can't save the part of multipart message."));
 		}
-
 		attachment = attachment->next;
 	}
+	g_free(dirname);
 }
 
 static void mimeview_display_as_text(MimeView *mimeview)
