@@ -1,5 +1,22 @@
 Changes of Sylpheed
 
+* 0.8.0
+
+    * The "Paste as quotation" feature has been implemented.
+    * The "Action" feature (function to pass contents of messages to external
+      programs) has been added.
+    * Automatic line-wrapping on input has been enabled.
+    * The Japanese encoding conversion routine has been rewritten and libkcc
+      has been removed.
+    * The MIME encode/decode routines based on fetchmail have been rewritten.
+    * The IMAP response parser has been improved.
+    * The authentication method on SMTP AUTH can be forced.
+    * The receive error dialog can be disabled.
+    * The option to change the displayed message automatically with cursor
+      key on the summary view has been added.
+    * The copy and paste problem in MIME mode has been mostly fixed.
+    * Some other minor bugfixes and improvements have been made.
+
 * 0.7.8
 
     * The feature to leave messages on POP3 server for specified days has

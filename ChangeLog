@@ -1,3 +1,11 @@
+2002-07-14
+
+	* version 0.8.0
+
+2002-07-14
+
+	* src/compose.c: added 'Tools/Actions' menu.
+
 2002-07-12
 
 	* src/base64.c: a minor fix for BASE64VAL() macro.

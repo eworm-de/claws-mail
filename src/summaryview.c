@@ -892,9 +892,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 
 	g_slist_free(mlist);
 
-	summaryview->folder_item->new    = summaryview->newmsgs;
-      	summaryview->folder_item->unread = summaryview->unread;
-      	summaryview->folder_item->total  = summaryview->messages;
 	folderview_update_msg_num(summaryview->folderview,
 				  summaryview->folderview->opened);
 
@@ -1720,10 +1717,6 @@ static void summary_status_show(SummaryView *summaryview)
 		return;
 	}
 
-	summaryview->newmsgs	= summaryview->folder_item->new;
-      	summaryview->unread	= summaryview->folder_item->unread;
-      	summaryview->messages	= summaryview->folder_item->total;
-
 	rowlist = GTK_CLIST(summaryview->ctree)->selection;
 	for (cur = rowlist; cur != NULL; cur = cur->next) {
 		msginfo = gtk_ctree_node_get_row_data
@@ -2341,10 +2334,10 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	    !MSG_IS_NEWS(msginfo->flags)) {
 		gchar *addr = NULL;
 
-		if (prefs_common.use_addr_book) {
-			Xstrdup_a(addr, msginfo->from, return);
-			extract_address(addr);
+		Xstrdup_a(addr, msginfo->from, return);
+		extract_address(addr);
 
+		if (prefs_common.use_addr_book) {
 			if (account_find_from_address(addr)) {
 				addr = summary_complete_address(msginfo->to);
 				g_free(to);
@@ -2360,6 +2353,12 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 #else
 				text[col_pos[S_COL_FROM]] = to;
 #endif
+			}
+		} else {
+			if (cur_account && cur_account->address && !strcmp( addr, cur_account->address)) {
+				g_free(to);
+				to = g_strconcat("-->", msginfo->to, NULL);
+				text[col_pos[S_COL_FROM]] = to;
 			}
 		}
 	}

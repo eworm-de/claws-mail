@@ -1,4 +1,39 @@
-2002-07-09 [melvin]	0.7.8claws65
+2002-07-15 [christoph]	0.7.8claws71
+
+	* src/folder.c
+		fix folder message count for folders without
+		msg_is_changed (includes news folders)
+
+2002-07-15 [martin]	0.7.8claws70
+
+	* src/summaryview.c
+		option "display recipient on 'From'..." now works
+		without the need of enabling the option
+		"display  sender  using  address  book".
+
+2002-07-15 [christoph]	0.7.8claws69
+
+	* src/summaryview.c
+		removed setting folder status from summaryview.
+		folder.c should update all message counts correctly.
+	
+2002-07-15 [paul]	0.7.8claws68
+
+	* po/pt_BR.po
+		updated by Fabio Junior Beneditto
+
+2002-07-15 [darko]	0.7.8claws67
+
+	* src/mh.c
+		Fixed target folder colorization, don't decrease op
+		number twice
+
+2002-07-14 [paul]	0.7.8claws66
+
+	* sync with main 0.8.0
+		see ChangeLog 2002-07-14
+
+2002-07-13 [melvin]	0.7.8claws65
 	
 	* src/addrbook.c
 	* src/addressbook.c
