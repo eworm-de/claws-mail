@@ -1,3 +1,8 @@
+2003-11-25 [christoph]	0.9.6claws95
+
+	* src/procmime.c
+		display mime structure only in debug mode
+
 2003-11-25 [melvin]	0.9.6claws94
 
 	* po/fr.po
