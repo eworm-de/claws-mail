@@ -145,6 +145,8 @@ struct _PrefsCommon
 	gboolean bold_unread;
 	gboolean enable_thread;
 	gboolean thread_by_subject;
+	gint thread_by_subject_max_age; /*!< Max. age of a thread which was threaded
+					 *   by subject (days) */
 
 	ToolbarStyle toolbar_style;
 	gboolean show_statusbar;

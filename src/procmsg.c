@@ -232,6 +232,10 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 					parent = NULL;
 				if (parent == node)
 					parent = NULL;
+				/* check if the message should be added to this thread */
+				if (parent && abs(((MsgInfo *)parent->data)->date_t - msginfo->date_t) > 
+						prefs_common.thread_by_subject_max_age * 3600 * 24)
+					parent = NULL;
 			}
 
 			if (parent) {
