@@ -1,3 +1,8 @@
+2003-01-27 [christoph]	0.8.9claws17
+
+	* src/folder.c
+		fix wrong use of procheader_get_header_fields
+
 2003-01-27 [christoph]	0.8.9claws16
 
 	* src/news.c

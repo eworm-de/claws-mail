@@ -1488,6 +1488,7 @@ static gint folder_item_get_msg_num_by_file(FolderItem *dest, const gchar *file)
 	}
 	
 	g_free(hentry[0].body);
+	hentry[0].body = NULL;
 	fclose(fp);
 
 	return msgnum;
