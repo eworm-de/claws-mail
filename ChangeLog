@@ -1,3 +1,22 @@
+2002-01-28
+
+	* src/mainwindow.c
+	  src/prefs_common.c: reorganized the menu shortcuts.
+	  Added 'View - Toggle summary view'.
+	* src/summaryview.[ch]: summary_toggle_view(): made it public
+	  function.
+	* src/prefs_common.[ch]: swapped the position of 'Shortcut key'
+	  and 'On exit'.
+	* src/importldif.c: imp_ldif_delete_event(): fixed segfault when
+	  closing the dialog with window manager (in more appropriate way).
+
+2002-01-28
+
+	* src/prefs_common.c: implemented shortcut quick changer.
+	* src/folderview.c: folderview_key_pressed()
+	  src/summaryview.c: summary_key_pressed(): removed some hardcoded
+	  key binds.
+
 2002-01-25
 
 	* src/procmime.c:

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -205,16 +205,16 @@ struct _PrefsCommon
 	NextUnreadMsgDialogShow next_unread_msg_dialog;
 	gboolean add_address_by_click;
 
+	/* Other */
+	gchar *uri_cmd;
+	gchar *print_cmd;
+	gchar *ext_editor_cmd;
+
 	gboolean confirm_on_exit;
 	gboolean clean_on_exit;
 	gboolean ask_on_clean;
 	gboolean warn_queued_on_exit;
 	gboolean return_receipt;
-
-	/* Other */
-	gchar *uri_cmd;
-	gchar *print_cmd;
-	gchar *ext_editor_cmd;
 };
 
 extern PrefsCommon prefs_common;

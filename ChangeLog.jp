@@ -1,3 +1,21 @@
+2002-01-28
+
+	* src/mainwindow.c
+	  src/prefs_common.c: メニューのショートカットを再構成。
+	  「表示 - サマリビューを切替」を追加。
+	* src/summaryview.[ch]: summary_toggle_view(): public な関数にした。
+	* src/prefs_common.[ch]: 「ショートカットキー」と「終了時」の位置を
+	  交換。
+	* src/importldif.c: imp_ldif_delete_event(): ダイアログをウィンドウ
+	  マネージャで閉じたときの segfault を修正(より正しい方法で)。
+
+2002-01-28
+
+	* src/prefs_common.c: ショートカット簡易変更機能を実装。
+	* src/folderview.c: folderview_key_pressed()
+	  src/summaryview.c: summary_key_pressed(): ハードコードされたキー
+	  バインドをいくつか削除。
+
 2002-01-25
 
 	* src/procmime.c:

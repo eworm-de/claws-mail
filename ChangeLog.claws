@@ -1,3 +1,8 @@
+2002-01-28 [paul]	0.7.0claws36
+
+	* sync with sylpheed 0.7.0cvs19
+		see ChangeLog entries for 2002-01-28
+
 2002-01-28 [hoa]	0.7.0claws35
 
 	* src/defs.h

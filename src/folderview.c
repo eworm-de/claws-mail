@@ -1476,9 +1476,6 @@ static void folderview_button_released(GtkWidget *ctree, GdkEventButton *event,
 	}
 }
 
-#define BREAK_ON_MODIFIER_KEY() \
-	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) != 0) break
-
 static void folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				   FolderView *folderview)
 {
@@ -1501,18 +1498,8 @@ static void folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 						       folderview->selected);
 		}
 		break;
-	case GDK_v:
-	case GDK_V:
-	case GDK_g:
-	case GDK_G:
-	case GDK_x:
-	case GDK_X:
-	case GDK_w:
-	case GDK_D:
-	case GDK_Q:
-		BREAK_ON_MODIFIER_KEY();
-		summary_pass_key_press_event(folderview->summaryview, event);
 	default:
+		break;
 	}
 }
 

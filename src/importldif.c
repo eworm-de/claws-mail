@@ -462,8 +462,7 @@ static void imp_ldif_file_select( void ) {
 }
 
 static gint imp_ldif_delete_event( GtkWidget *widget, GdkEventAny *event, gpointer data ) {
-	impldif_dlg.cancelled = TRUE;
-	gtk_main_quit();
+	imp_ldif_cancel( widget, data );
 	return TRUE;
 }
 
