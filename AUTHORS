@@ -6,8 +6,10 @@ main-branch (http://sylpheed.good-day.net)
 claws-branch (http://sylpheed-claws.sourceforge.net)
 
 	Hoa viet Dinh		<dinh.viet.hoa@free.fr>
+	Keith Edmunds 		<keith@midnighthax.com>	
 	Match Grun		<match@dimensional.com>
 	Melvin Hadasht		<melvin.hadasht@free.fr>
+	Oliver Haertel 		<o.h.a@gmx.net>
 	Christoph Hohmann	<reboot@gmx.ch>
 	Alfons Hoogervorst	<alfons@proteus.demon.nl>
 	Darko Koruga		<darko.koruga@hermes.si>
@@ -157,3 +159,5 @@ contributors (beside the above; based on Changelog)
 	Martin Kluge
 	George Danchev
 	Satoshi Nagayasu
+	Ruslan N. Balkin
+	Nicolas Kaiser
