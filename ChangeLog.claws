@@ -1,3 +1,10 @@
+2005-01-22 [colin]	1.0.0cvs8
+
+	* src/summaryview.c
+	* src/gtk/quicksearch.c
+		Make recursive quicksearch work in
+		root folders (and code fixes)
+
 2005-01-21 [colin]	1.0.0cvs7
 
 	* src/summaryview.c
