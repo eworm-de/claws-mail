@@ -3,6 +3,9 @@
 	* src/compose.c: To:, Cc:, Bcc:, Newsgroups: のどれかが有効な
 	  宛先を持っていればメッセージを送信するように修正。
 	  compose_check_for_valid_recipient(): 新規。
+	* src/grouplistdialog.c: UI を改良。
+	  適切な説明と検索ボタンを追加。
+	  検索でグループリストを再び取得しないようにした。
 
 2001-11-15
 

@@ -3,6 +3,9 @@
 	* src/compose.c: modified so that it sends message when any of
 	  To:, Cc:, Bcc:, or Newsgroups: fields have valid recipient.
 	  compose_check_for_valid_recipient(): new.
+	* src/grouplistdialog.c: improved the UI.
+	  Added appropriate description and search button.
+	  Search doesn't get group list again.
 
 2001-11-15
 

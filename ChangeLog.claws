@@ -1,3 +1,8 @@
+2001-11-16 [paul]	0.6.5claws17
+
+	* sync with sylpheed 0.6.5cvs8
+		see ChangeLog entry 2001-11-16, src/grouplistdialog.c
+
 2001-11-16 [paul]	0.6.5claws16
 
 	* sync with sylpheed 0.6.5cvs7
@@ -2217,7 +2222,7 @@
 	* src/summaryview.c
 		fixed some bug when building threads
 
-2001-06-18 [paul]
+2001-06-18 [pau]l
 
         * src/prefs_account.c
                 UI stuff: More changes to the English
