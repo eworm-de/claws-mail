@@ -1346,12 +1346,21 @@ gint procmsg_send_message_queue(const gchar *file)
 		gchar **tokens;
 		FolderItem *item;
 		
-		tokens = g_strsplit(replymessageid, "%", 0);
+		tokens = g_strsplit(replymessageid, "\x7f", 0);
 		item = folder_find_item_from_identifier(tokens[0]);
 		if(item != NULL) {
 			MsgInfo *msginfo;
 			
-			msginfo = folder_item_fetch_msginfo_by_id(item, tokens[1]);
+			msginfo = folder_item_fetch_msginfo(item, atoi(tokens[1]));
+			if((msginfo != NULL) && (strcmp(msginfo->msgid, tokens[2]) != 0)) {
+				procmsg_msginfo_free(msginfo);
+				msginfo = NULL;
+			}
+			
+			if(msginfo == NULL) {
+				msginfo = folder_item_fetch_msginfo_by_id(item, tokens[2]);
+			}
+			
 			if(msginfo != NULL) {
 				procmsg_msginfo_unset_flags(msginfo, MSG_FORWARDED, 0);
 				procmsg_msginfo_set_flags(msginfo, MSG_REPLIED, 0);

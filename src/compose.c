@@ -3437,7 +3437,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		gchar *folderid;
 		
 		folderid = folder_item_get_identifier(compose->replyinfo->folder);
-		fprintf(fp, "RMID:%s%%%s\n", folderid, compose->replyinfo->msgid);
+		fprintf(fp, "RMID:%s\x7f%d\x7f%s\n", folderid, compose->replyinfo->msgnum, compose->replyinfo->msgid);
 		g_free(folderid);
 	}
 	fprintf(fp, "\n");

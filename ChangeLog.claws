@@ -1,3 +1,14 @@
+2002-07-11 [christoph]	0.7.8claws60
+
+	* src/compose.c
+	* src/procmsg.c
+		first use the message number to find the message
+		to mark with a reply flag but check the
+		message-id if we got the correct message, if not
+		try to find it by message-id.
+		use new string seperator that is not allowed
+		in message-ids.
+
 2002-07-11 [paul]	0.7.8claws59
 
 	* sync with 0.7.8cvs23
