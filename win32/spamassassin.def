@@ -14,6 +14,7 @@ EXPORTS
 	message_process 
 	message_read 
 	message_write 
+	msg_is_spam_thread 
 	mswin_helper_timeout_tag 
 	plugin_desc 
 	plugin_done 
@@ -25,3 +26,4 @@ EXPORTS
 	spamassassin_get_config 
 	spamassassin_save_config 
 	ssl_timeout_read 
+	timeout_func 
