@@ -823,10 +823,8 @@ gtk_stext_new (GtkAdjustment *hadj,
    * force widget name to be GtkText so it silently adapts
    * the GtkText widget's style...
    */
-#if 0
   gtk_widget_set_name (text, "GtkText");
   gtk_widget_ensure_style (text);
-#endif
 
   return text;
 }

@@ -1,3 +1,9 @@
+2001-01-25 [alfons]	0.7.0claws28
+
+	* src/gtkstext.c
+		put the gtk class name back so GtkSText adapts the 
+		settings of GtkText
+
 2001-01-25 [alfons]	0.7.0claws27
 
 	* src/folderview.c 
