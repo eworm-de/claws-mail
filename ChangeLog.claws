@@ -1,3 +1,11 @@
+2003-03-01 [oliver]	0.8.10claws66
+
+	* src/mainwindow.c
+	* src/messageview.c
+		menu callbacks call toolbar_menu_reply
+	* src/toolbar.[ch]
+		callbacks from menu handled by toolbar_menu_reply
+		
 2003-03-01 [paul]	0.8.10claws65
 
 	* src/addressbook.c

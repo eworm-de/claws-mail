@@ -397,7 +397,9 @@ static void addr_harvest_msg_cb	 ( MainWindow  *mainwin,
 static gboolean mainwindow_focus_in_event	(GtkWidget	*widget, 
 						 GdkEventFocus	*focus,
 						 gpointer	 data);
-
+void main_window_reply_cb			(MainWindow 	*mainwin, 
+						 guint 		 action,
+						 GtkWidget 	*widget);
 #define  SEPARATE_ACTION 500 
 
 static GtkItemFactoryEntry mainwin_entries[] =
@@ -604,16 +606,16 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Compose a_n email message"),	"<control>M", compose_mail_cb, 0, NULL},
 	{N_("/_Message/Compose a news message"),	NULL,	compose_news_cb, 0, NULL},
-	{N_("/_Message/_Reply"),		"<control>R", 	reply_cb, COMPOSE_REPLY, NULL},
+	{N_("/_Message/_Reply"),		"<control>R", 	main_window_reply_cb, COMPOSE_REPLY, NULL},
 	{N_("/_Message/Repl_y to"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/Repl_y to/_all"),	"<shift><control>R", reply_cb, COMPOSE_REPLY_TO_ALL, NULL},
-	{N_("/_Message/Repl_y to/_sender"),	NULL, reply_cb, COMPOSE_REPLY_TO_SENDER, NULL},
+	{N_("/_Message/Repl_y to/_all"),	"<shift><control>R", main_window_reply_cb, COMPOSE_REPLY_TO_ALL, NULL},
+	{N_("/_Message/Repl_y to/_sender"),	NULL, main_window_reply_cb, COMPOSE_REPLY_TO_SENDER, NULL},
 	{N_("/_Message/Repl_y to/mailing _list"),
-						"<control>L", reply_cb, COMPOSE_REPLY_TO_LIST, NULL},
-	{N_("/_Message/Follow-up and reply to"),NULL, reply_cb, COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL},
+						"<control>L", main_window_reply_cb, COMPOSE_REPLY_TO_LIST, NULL},
+	{N_("/_Message/Follow-up and reply to"),NULL, main_window_reply_cb, COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Forward"),		"<control><alt>F", reply_cb, COMPOSE_FORWARD, NULL},
-	{N_("/_Message/Redirect"),		NULL, reply_cb, COMPOSE_REDIRECT, NULL},
+	{N_("/_Message/_Forward"),		"<control><alt>F", main_window_reply_cb, COMPOSE_FORWARD, NULL},
+	{N_("/_Message/Redirect"),		NULL, main_window_reply_cb, COMPOSE_REDIRECT, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Re-_edit"),		NULL, reedit_cb, 0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
@@ -2150,6 +2152,11 @@ static void toggle_toolbar_cb(MainWindow *mainwin, guint action,
 	toolbar_toggle(action, mainwin);
 }
 
+void main_window_reply_cb(MainWindow *mainwin, guint action,
+			  GtkWidget *widget)
+{
+	toolbar_menu_reply(TOOLBAR_MAIN, mainwin, action);
+}
 /* END Toolbar Stuff */
 
 static void toggle_statusbar_cb(MainWindow *mainwin, guint action,

@@ -87,6 +87,8 @@ static void activate_compose_button 		(Toolbar	*toolbar,
 				     		 ComposeButtonType type);
 
 /* toolbar callbacks */
+static void toolbar_reply			(gpointer 	 data, 
+						 guint 		 action);
 static void toolbar_delete_cb			(GtkWidget	*widget,
 					 	 gpointer        data);
 
@@ -1356,7 +1358,7 @@ static GtkWidget *get_window_widget(ToolbarType type, gpointer data)
 }
 
 static void toolbar_buttons_cb(GtkWidget   *widget, 
-				      ToolbarItem *item)
+			       ToolbarItem *item)
 {
 	gint num_items;
 	gint i;
@@ -1951,7 +1953,20 @@ void delete_msgview_cb(gpointer data, guint action, GtkWidget *widget)
 	}	
 }
 
-void toolbar_reply(gpointer data, guint action)
+void toolbar_menu_reply(ToolbarType type, gpointer data, guint action)
+{
+	ToolbarItem *item;
+
+	g_return_if_fail(data != NULL);
+
+	item = g_new0(ToolbarItem, 1);
+	item->parent = data;
+	item->type = type;
+	toolbar_reply(item, action);
+	g_free(item);	
+}
+
+static void toolbar_reply(gpointer data, guint action)
 {
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	MainWindow *mainwin;
@@ -1976,10 +1991,11 @@ void toolbar_reply(gpointer data, guint action)
 		msginfo = msgview->msginfo;
 		break;
 	default:
-		break;
+		return;
 	}
 
-	if (!msginfo) return;
+	g_return_if_fail (msginfo != NULL);
+	g_return_if_fail (summaryview != NULL);
 
 	text = gtkut_editable_get_selection
 		(GTK_EDITABLE(msgview->textview->text));
@@ -2087,12 +2103,6 @@ void toolbar_reply(gpointer data, guint action)
 	summary_set_marks_selected(summaryview);
 
 	g_free(text); 	
-}
-
-
-void reply_cb(gpointer data, guint action, GtkWidget *widget)
-{
-	toolbar_reply(data, action);
 }
 
 void inc_mail_cb(gpointer data, guint action, GtkWidget *widget)

@@ -195,9 +195,6 @@ void 	toolbar_comp_set_sensitive	(gpointer	 data,
 					 gboolean	 sensitive);
 
 /* invoked by mainwindow entries and toolbar actions */
-void 	reply_cb			(gpointer 	 data, 
-					 guint 		 action, 
-					 GtkWidget 	*widget);
 void 	delete_msgview_cb		(gpointer	 data, 
 					 guint		 action, 
 					 GtkWidget 	*widget);
@@ -230,6 +227,7 @@ void	toolbar_set_style		(GtkWidget	*toolbar_wid,
 					 guint		 action);
 void 	toolbar_destroy			(Toolbar	*toolbar);
 void 	toolbar_init			(Toolbar	*toolbar);
-void 	toolbar_reply			(gpointer 	 data, 
+void 	toolbar_menu_reply		(ToolbarType	 type,
+					 gpointer 	 data, 	
 					 guint 		 action);
 #endif /* __CUSTOM_TOOLBAR_H__ */

@@ -71,7 +71,7 @@ static void return_receipt_send_clicked (NoticeView	*noticeview,
 static PrefsAccount *select_account_from_list
 					(GList		*ac_list);
 
-static void messageview_menubar_cb	(gpointer 	 data, 
+static void messageview_menubar_cb	(MessageView 	*msgview,
 					 guint 		 action, 
 					 GtkWidget 	*widget);
 					 
@@ -826,13 +826,9 @@ static PrefsAccount *select_account_from_list(GList *ac_list)
 	return account_find_from_id(account_id);
 }
 
-static void messageview_menubar_cb(gpointer data, guint action, GtkWidget *widget)
+static void messageview_menubar_cb(MessageView *msgview, guint action, GtkWidget *widget)
 {
-	MessageView *msgview = (MessageView*)data;
-	MainWindow *mainwin = (MainWindow*)msgview->mainwin;
-
-	g_return_if_fail(mainwin != NULL);
-	reply_cb(mainwin, action, widget);
+	toolbar_menu_reply(TOOLBAR_MSGVIEW, msgview, action);
 }
 
 static void messageview_close_cb(gpointer data, guint action, GtkWidget *widget)
