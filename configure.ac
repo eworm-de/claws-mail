@@ -284,7 +284,9 @@ AC_ARG_ENABLE(openssl,
 	[ac_cv_enable_openssl=$enableval], [ac_cv_enable_openssl=yes])
 if test x"$ac_cv_enable_openssl" = xyes; then
 	PKG_CHECK_MODULES(OPENSSL, openssl >= 0.9.7, :, ac_cv_enable_openssl=no)
-	AC_DEFINE(USE_OPENSSL, 1, Define if you want OpenSSL support)
+	if test x$ac_cv_enable_openssl = xyes; then
+		AC_DEFINE(USE_OPENSSL, 1, Define if you want OpenSSL support)
+	fi
 fi
 AC_SUBST(OPENSSL_CFLAGS)
 AC_SUBST(OPENSSL_LIBS)
