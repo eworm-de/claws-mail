@@ -2116,8 +2116,11 @@ gint canonicalize_file(const gchar *src, const gchar *dest)
 		} else if (len > 1 && buf[len - 1] == '\n' && buf[len - 2] == '\r') {
 			r = fputs(buf, dest_fp);
 		} else {
-			if (len > 1)
+			if (len > 1) {
 				r = fwrite(buf, len - 1, 1, dest_fp);
+				if (r != 1)
+					r = EOF;
+			}
 			if (r != EOF)
 				r = fputs("\r\n", dest_fp);
 		}
