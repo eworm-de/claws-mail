@@ -201,7 +201,7 @@ EXTRA_DIST = \
 	pixmaps/replied.xpm \
 	pixmaps/search.xpm \
 	pixmaps/sylpheed.xpm \
-	pixmaps/sylpheed-logo.xpm \
+	pixmaps/sylpheed_logo.xpm \
 	pixmaps/trash.xpm \
 	pixmaps/trash_hrm.xpm \
 	pixmaps/unread.xpm \

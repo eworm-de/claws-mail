@@ -7,6 +7,7 @@
 	* src/Makefile.am
 		add missing \
 		correct path for ignorethread.xpm
+		incorrect filename for sylpheed_logo.xpm
 
 2002-05-18 [paul]	0.7.6claws3
 
