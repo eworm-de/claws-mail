@@ -296,7 +296,6 @@ char *ssl_certificate_check_signer (X509 *cert)
 	X509_STORE_CTX store_ctx;
 	X509_STORE *store;
 	int ok = 0;
-	char *cert_file = NULL;
 	char *err_msg = NULL;
 
 	store = X509_STORE_new();
@@ -304,20 +303,14 @@ char *ssl_certificate_check_signer (X509 *cert)
 		printf("Can't create X509_STORE\n");
 		return NULL;
 	}
-	if (X509_STORE_set_default_paths(store)) 
-		ok++;
-	if (X509_STORE_load_locations(store, cert_file, NULL))
-		ok++;
-
-	if (ok == 0) {
+	if (!X509_STORE_set_default_paths(store)) {
 		X509_STORE_free (store);
 		return g_strdup(_("Can't load X509 default paths"));
 	}
 	
 	X509_STORE_CTX_init (&store_ctx, store, cert, NULL);
-	ok = X509_verify_cert (&store_ctx);
-	
-	if (ok == 0) {
+
+	if(!X509_verify_cert (&store_ctx)) {
 		err_msg = g_strdup(X509_verify_cert_error_string(
 					X509_STORE_CTX_get_error(&store_ctx)));
 		debug_print("Can't check signer: %s\n", err_msg);

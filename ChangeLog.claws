@@ -1,3 +1,8 @@
+2002-12-09 [colin]	0.8.6claws87
+
+	* src/ssl_certificate.c
+		cleanup
+
 2002-12-09 [colin]	0.8.6claws86
 
 	* src/ssl.c
