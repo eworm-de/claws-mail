@@ -78,6 +78,7 @@
 #include "pixmaps/paste.xpm"
 #include "pixmaps/preferences.xpm"
 #include "pixmaps/properties.xpm"
+#include "pixmaps/sylpheed_icon.xpm"
 #include "pixmaps/sylpheed_logo.xpm"
 #include "pixmaps/address_book.xpm"
 #include "pixmaps/trash.xpm"
@@ -247,6 +248,7 @@ static StockPixmapData pixmaps[] =
 	{privacy_emblem_failed_xpm		, NULL, NULL, "privacy_emblem_failed", NULL},	
 	{privacy_emblem_warn_xpm		, NULL, NULL, "privacy_emblem_warn", NULL},
 	{mime_message_xpm			, NULL, NULL, "mime_message", NULL},
+	{sylpheed_icon_xpm			, NULL, NULL, "sylpheed_icon", NULL},
 	{sylpheed_logo_xpm			, NULL, NULL, "sylpheed_logo", NULL},
 };
 

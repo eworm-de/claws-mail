@@ -1,6 +1,7 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * This file (C) 2004 Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,14 +18,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __SETUP_H__
-#define __SETUP_H__
+#ifndef __WIZARD_H__
+#define __WIZARD_H__
 
 #include <glib.h>
+#include <gdk/gdk.h>
+#include <gtk/gtkwidget.h>
 
 #include "mainwindow.h"
 
-void setup(MainWindow *mainwin);
-gboolean setup_write_mailbox_path(MainWindow *mainwin, const gchar *path);
+gboolean wizard_run(MainWindow *, gboolean create_mailbox);
 
-#endif /* __SETUP_H__ */
+#endif

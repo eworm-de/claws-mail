@@ -36,7 +36,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <signal.h>
-
+#include "wizard.h"
 #ifdef HAVE_STARTUP_NOTIFICATION
 # define SN_API_NOT_YET_FROZEN
 # include <libsn/sn-launchee.h>
@@ -351,15 +351,18 @@ int main(int argc, char *argv[])
 					lock_socket_input_cb,
 					mainwin);
 
-	account_read_config_all();
-
 	if (folder_read_list() < 0) {
-		setup(mainwin);
+		run_wizard(mainwin, TRUE);
 		folder_write_list();
 	}
+	
+	account_read_config_all();
+	
 	if (!account_get_list()) {
-		account_edit_open();
-		account_add();
+		run_wizard(mainwin, FALSE);
+		account_read_config_all();
+		if(!account_get_list())
+			exit_sylpheed(mainwin);
 	}
 
 	account_set_missing_folder();

@@ -31,7 +31,7 @@
 #include "mainwindow.h"
 #include "gtkutils.h"
 #include "mh.h"
-
+#include "wizard.h"
 #define SETUP_DIALOG_WIDTH	540
 
 static void scan_tree_func(Folder *folder, FolderItem *item, gpointer data);
@@ -39,8 +39,7 @@ static void scan_tree_func(Folder *folder, FolderItem *item, gpointer data);
 void setup(MainWindow *mainwin)
 {
 	gchar *path;
-	Folder *folder;
-
+	
 	path = input_dialog
 		(_("Mailbox setting"),
 		 _("First, you have to set the location of mailbox.\n"
@@ -48,27 +47,34 @@ void setup(MainWindow *mainwin)
 		   "if you have the one.\n"
 		   "If you're not sure, just select OK."),
 		 "Mail");
-	if (!path) return;
+	setup_write_mailbox_path(mainwin, path);
+	g_free(path);
+}
+
+gboolean setup_write_mailbox_path(MainWindow *mainwin, const gchar *path)
+{
+	Folder *folder;
+
+	if (!path) return FALSE;
 	if (folder_find_from_path(path)) {
 		g_warning("The mailbox already exists.\n");
-		g_free(path);
-		return;
+		return FALSE;
 	}
 
 	folder = folder_new(mh_get_class(), !strcmp(path, "Mail") ? _("Mailbox") : g_basename(path), path);
-	g_free(path);
 
 	if (folder->klass->create_tree(folder) < 0) {
 		alertpanel_error(_("Creation of the mailbox failed.\n"
 				   "Maybe some files already exist, or you don't have the permission to write there."));
 		folder_destroy(folder);
-		return;
+		return FALSE;
 	}
 
 	folder_add(folder);
 	folder_set_ui_func(folder, scan_tree_func, mainwin);
 	folder_scan_tree(folder);
 	folder_set_ui_func(folder, NULL, NULL);
+	return TRUE;
 }
 
 static void scan_tree_func(Folder *folder, FolderItem *item, gpointer data)

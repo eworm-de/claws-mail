@@ -124,7 +124,8 @@ sylpheed_SOURCES = \
 	toolbar.c \
 	undo.c \
 	unmime.c \
-	vcard.c
+	vcard.c \
+	wizard.c
 
 sylpheedincludedir = $(pkgincludedir)
 sylpheedinclude_HEADERS = \
@@ -252,7 +253,8 @@ sylpheedinclude_HEADERS = \
 	toolbar.h \
 	undo.h \
 	unmime.h \
-	vcard.h
+	vcard.h \
+	wizard.h
 
 BUILT_SOURCES = \
 	matcher_parser_parse.h \
@@ -342,6 +344,7 @@ EXTRA_DIST = \
 	pixmaps/regular.xpm \
 	pixmaps/replied.xpm \
 	pixmaps/search.xpm \
+	pixmaps/sylpheed_icon.xpm \
 	pixmaps/sylpheed_logo.xpm \
 	pixmaps/sylpheed.xpm \
 	pixmaps/trash_hrm.xpm \

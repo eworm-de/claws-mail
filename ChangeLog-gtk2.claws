@@ -1,3 +1,16 @@
+2004-08-24 [colin]	0.9.12cvs80.2
+
+	* src/Makefile.am
+	* src/main.c
+	* src/setup.c
+	* src/setup.h
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/wizard.c ** ADDED **
+	* src/wizard.h ** ADDED ** 
+	* src/pixmaps/sylpheed_icon.xpm ** ADDED **
+		Add a setup wizard 
+
 2004-08-24 [colin]	0.9.12cvs80.1
 
 	* src/folder.c
