@@ -1204,22 +1204,26 @@ void compose_entry_append(Compose *compose, const gchar *address,
 
 static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 {
-	static HeaderEntry hentry[] = {{"Reply-To:",	NULL, TRUE},
-				       {"Cc:",		NULL, FALSE},
-				       {"References:",	NULL, FALSE},
-				       {"Bcc:",		NULL, FALSE},
-				       {"Newsgroups:",  NULL, FALSE},
-				       {"Followup-To:", NULL, FALSE},
-				       {NULL,		NULL, FALSE}};
+	static HeaderEntry hentry[] = {{"Reply-To:",	   NULL, TRUE},
+				       {"Cc:",		   NULL, FALSE},
+				       {"References:",	   NULL, FALSE},
+				       {"Bcc:",		   NULL, FALSE},
+				       {"Newsgroups:",     NULL, FALSE},
+				       {"Followup-To:",    NULL, FALSE},
+				       {"X-Mailing-List:", NULL, FALSE},
+				       {"X-BeenThere:",    NULL, FALSE},
+				       {NULL,		   NULL, FALSE}};
 
 	enum
 	{
-		H_REPLY_TO	= 0,
-		H_CC		= 1,
-		H_REFERENCES	= 2,
-		H_BCC		= 3,
-		H_NEWSGROUPS    = 4,
-		H_FOLLOWUP_TO	= 5
+		H_REPLY_TO	 = 0,
+		H_CC		 = 1,
+		H_REFERENCES	 = 2,
+		H_BCC		 = 3,
+		H_NEWSGROUPS     = 4,
+		H_FOLLOWUP_TO	 = 5,
+		H_X_MAILING_LIST = 6,
+		H_X_BEENTHERE    = 7
 	};
 
 	FILE *fp;
@@ -1239,6 +1243,26 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 		conv_unmime_header_overwrite(hentry[H_CC].body);
 		compose->cc = hentry[H_CC].body;
 		hentry[H_CC].body = NULL;
+	}
+	if (hentry[H_X_MAILING_LIST].body != NULL) {
+		/* this is good enough to parse debian-devel */
+		char * buf = g_malloc(strlen(hentry[H_X_MAILING_LIST].body));
+		g_return_val_if_fail(buf != NULL, -1 );
+		if (1 == sscanf(hentry[H_X_MAILING_LIST].body, "<%[^>]>", buf))
+			compose->mailinglist = g_strdup(buf);
+		g_free(buf);
+		g_free(hentry[H_X_MAILING_LIST].body);
+		hentry[H_X_MAILING_LIST].body = NULL ;
+	}
+	if (hentry[H_X_BEENTHERE].body != NULL) {
+		/* this is good enough to parse the sylpheed-claws lists */
+		char * buf = g_malloc(strlen(hentry[H_X_BEENTHERE].body));
+		g_return_val_if_fail(buf != NULL, -1 );
+		if (1 == sscanf(hentry[H_X_BEENTHERE].body, "%[^>]", buf))
+			compose->mailinglist = g_strdup(buf);
+		g_free(buf);
+		g_free(hentry[H_X_BEENTHERE].body);
+		hentry[H_X_BEENTHERE].body = NULL ;
 	}
 	if (hentry[H_REFERENCES].body != NULL) {
 		if (compose->mode == COMPOSE_REEDIT)
@@ -1618,7 +1642,9 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 
 	if ((compose->account->protocol != A_NNTP) || followup_and_reply_to)
 		compose_entry_append(compose,
-				     ((compose->replyto && !ignore_replyto) 
+		 		    ((compose->mailinglist && !ignore_replyto)
+				     ? compose->mailinglist
+				     : (compose->replyto && !ignore_replyto)
 				     ? compose->replyto
 				     : msginfo->from ? msginfo->from : ""),
 				     COMPOSE_TO);
@@ -3793,6 +3819,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->mode = mode;
 
 	compose->replyto     = NULL;
+	compose->mailinglist = NULL;
 	compose->cc	     = NULL;
 	compose->bcc	     = NULL;
 	compose->followup_to = NULL;

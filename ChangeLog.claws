@@ -1,3 +1,11 @@
+2001-10-04 [paul] 	0.6.2claws18
+
+	* src/compose.[ch], src/mainwindow.c
+		make "Message/Reply" reply to mailing lists; matches
+		'X-Mailing-list:' and 'X-BeenThere:' ML headers.
+		based on portions of the patch submitted by
+		Junichi Uekawa <dancer@netfort.gr.jp>
+
 2001-10-04 [darko]	0.6.2claws17
 
 	* src/compose.c

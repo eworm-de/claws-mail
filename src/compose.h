@@ -142,6 +142,7 @@ struct _Compose
 	gchar	*bcc;
 	gchar	*newsgroups;
 	gchar	*followup_to;
+	gchar	*mailinglist;
 
 	gchar	*inreplyto;
 	gchar	*references;
@@ -153,6 +154,7 @@ struct _Compose
 	gboolean use_bcc;
 	gboolean use_replyto;
 	gboolean use_followupto;
+	gboolean use_mailinglist;
 	gboolean use_attach;
 
 	/* privacy settings */
