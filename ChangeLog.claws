@@ -1,3 +1,13 @@
+2002-04-26 [melvin]	0.7.4claws100
+
+	* src/procmsg.c
+		fixed a typo in an alert message ("temorary").
+	* po/it.po
+	* po/pt_BR.po
+		corrected the typo  described above.
+	* po/fr.po
+		updated French translation.
+
 2002-04-26 [darko]	0.7.4claws99
 
 	* src/summaryview.c

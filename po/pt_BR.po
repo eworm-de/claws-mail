@@ -6164,7 +6164,7 @@ msgid "Error occurred while sending the message with command `%s'."
 msgstr "Ocorreu um erro ao enviar a mensagem com o comando `%s'."
 
 #: src/procmsg.c:1272
-msgid "Could not create temorary file for news sending."
+msgid "Could not create temporary file for news sending."
 msgstr "Não foi possível criar o arquivo temporário para envio de notícia."
 
 #: src/procmsg.c:1283
