@@ -335,3 +335,4 @@
 ( cvs diff -u -r 1.87.2.9 -r 1.87.2.10 src/folder.h; cvs diff -u -r 1.207.2.24 -r 1.207.2.25 src/folderview.c; cvs diff -u -r 1.20.2.3 -r 1.20.2.4 src/folderview.h; cvs diff -u -r 1.395.2.42 -r 1.395.2.43 src/summaryview.c; cvs diff -u -r 1.1.2.13 -r 1.1.2.14 src/gtk/quicksearch.c; cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/gtk/quicksearch.h; ) > 1.0.0cvs4.1.patchset
 ( cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/gtk/quicksearch.c; cvs diff -u -r 1.204.2.27 -r 1.204.2.28 src/prefs_common.c; cvs diff -u -r 1.103.2.10 -r 1.103.2.11 src/prefs_common.h; ) > 1.0.0cvs5.1.patchset
 ( cvs diff -u -r 1.395.2.43 -r 1.395.2.44 src/summaryview.c; ) > 1.0.0cvs6.1.patchset
+( cvs diff -u -r 1.395.2.44 -r 1.395.2.45 src/summaryview.c; ) > 1.0.0cvs7.1.patchset
