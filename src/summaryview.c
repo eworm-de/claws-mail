@@ -477,8 +477,8 @@ static const gchar *const col_label[N_SUMMARY_COLS] = {
  */
 static gchar *search_descr_strings[] = {
 	"a",	 N_("all messages"),
-	"ag #",  N_("messages whose age is greather than #"),
-	"al #",  N_("messages whose age is greather than #"),
+	"ag #",  N_("messages whose age is greater than #"),
+	"al #",  N_("messages whose age is less than #"),
 	"b S",	 N_("messages which contain S in the message body"),
 	"B S",	 N_("messages which contain S in the whole message"),
 	"c S",	 N_("messages carbon-copied to S"),

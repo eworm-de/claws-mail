@@ -941,7 +941,9 @@ static void mimeview_save_all(MimeView *mimeview)
 	/* for each attachment, extract it in the selected dir. */
 	while (attachment != NULL) {
 		if (attachment->type != MIMETYPE_MESSAGE &&
-		    attachment->type != MIMETYPE_MULTIPART) {
+		    attachment->type != MIMETYPE_MULTIPART &&
+		    (procmime_mimeinfo_get_parameter(attachment, "name") ||
+		     procmime_mimeinfo_get_parameter(attachment, "filename"))) {
 			static guint subst_cnt = 1;
 			gchar *attachdir;
 			gchar *attachname = g_strdup(get_part_name(attachment));

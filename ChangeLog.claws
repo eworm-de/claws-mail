@@ -1,3 +1,14 @@
+2003-11-08 [luke]	0.9.6claws69
+	* src/summaryview.c
+                fix some typos
+
+        * src/compose.c
+                rewrite compose_attach_parts(), fixing various bugs mainly
+		to do with re-editing.
+
+        * src/mimeview.c
+                "save all" now only saves attachments with names/filenames
+
 2003-11-04 [match]	0.9.6claws68
 	* src/ldapctrl.[ch]
 		fix broken LDAP support.
