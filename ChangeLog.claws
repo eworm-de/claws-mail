@@ -1,3 +1,8 @@
+2003-11-24 [paul]	0.9.6claws91
+
+	* src/sgpgme.c
+		fix typo. spotted by Rui Hirokawa <rui_hirokawa@ybb.ne.jp>
+
 2003-11-24 [paul]	0.9.6claws90
 
 	* src/plugins/image_viewer/viewer.c
