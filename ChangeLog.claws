@@ -1,3 +1,10 @@
+2002-11-26 [melvin]	0.8.6claws14
+
+	* src/prefs_actions.c
+		Made pipe-actions ignore short headers in message view
+		Made trailing-pipe-actions write in the message view with
+		the same font as the original message
+
 2002-11-26 [paul]	0.8.6claws13
 
 	* src/compose.c

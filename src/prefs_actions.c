@@ -50,6 +50,7 @@
 #include "procmsg.h"
 #include "gtkstext.h"
 #include "mimeview.h"
+#include "textview.h"
 
 typedef enum
 {
@@ -114,6 +115,7 @@ struct _ChildInfo
 	gint		 new_out;
 	GString		*output;
 	GtkWidget	*text;
+	GdkFont		*msgfont;
 };
 
 /* widget creating functions */
@@ -167,6 +169,8 @@ static gboolean execute_actions		(gchar		*action,
 					 GtkWidget	*window,
 					 GtkCTree	*ctree, 
 					 GtkWidget	*text,
+					 GdkFont 	*msgfont,
+					 gint		 body_pos,
 					 MimeView	*mimeview);
 
 static gchar *parse_action_cmd		(gchar		*action,
@@ -183,6 +187,8 @@ static gboolean parse_append_msgpart	(GString	**cmd,
 ChildInfo *fork_child			(gchar		*cmd,
 					 gint		 action_type,
 					 GtkWidget	*text,
+					 GdkFont 	*msgfont,
+					 gint            body_pos,
 					 Children	*children);
 
 static gint wait_for_children		(gpointer	 data);
@@ -1088,14 +1094,15 @@ static void compose_actions_execute_cb(Compose *compose, guint action_nb,
 		return;
 	}
 
-	execute_actions(action, compose->window, NULL, compose->text, NULL);
+	execute_actions(action, compose->window, NULL, compose->text, NULL, 0,
+			NULL);
 }
 
 static void mainwin_actions_execute_cb(MainWindow *mainwin, guint action_nb,
 				       GtkWidget *widget)
 {
 	MessageView *messageview = mainwin->messageview;
-	GtkWidget   *text = NULL;
+	TextView    *textview = NULL;
 	gchar 	    *buf,
 		    *action;
 	MimeView    *mimeview = NULL;
@@ -1113,7 +1120,7 @@ static void mainwin_actions_execute_cb(MainWindow *mainwin, guint action_nb,
 	switch (messageview->type) {
 	case MVIEW_TEXT:
 		if (messageview->textview && messageview->textview->text)
-			text = messageview->textview->text;
+			textview = messageview->textview;
 		break;
 	case MVIEW_MIME:
 		if (messageview->mimeview) {
@@ -1121,17 +1128,19 @@ static void mainwin_actions_execute_cb(MainWindow *mainwin, guint action_nb,
 			if (messageview->mimeview->type == MIMEVIEW_TEXT &&
 					messageview->mimeview->textview &&
 					messageview->mimeview->textview->text)
-				text = messageview->mimeview->textview->text;
+				textview = messageview->mimeview->textview;
 		} 
 		break;
 	}
 
 	execute_actions(action, mainwin->window,
-			GTK_CTREE(mainwin->summaryview->ctree), text, mimeview);
+			GTK_CTREE(mainwin->summaryview->ctree), textview->text,
+			textview->msgfont, textview->body_pos, mimeview);
 }
 
 static gboolean execute_actions(gchar *action, GtkWidget *window,
-				GtkCTree *ctree, GtkWidget *text,
+				GtkCTree *ctree, GtkWidget *text, 
+				GdkFont *msgfont, gint body_pos,
 				MimeView *mimeview)
 {
 	GList *cur, *selection = NULL;
@@ -1185,6 +1194,7 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 				break;
 			}
 			if ((child_info = fork_child(cmd, action_type, text,
+						     msgfont, body_pos,
 						     children))) {
 				children_list = g_slist_append(children_list,
 							       child_info);
@@ -1199,6 +1209,7 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 		cmd = parse_action_cmd(action, NULL, ctree, mimeview);
 		if (cmd) {
 			if ((child_info = fork_child(cmd, action_type, text,
+						     msgfont, body_pos,
 						     children))) {
 				children_list = g_slist_append(children_list,
 							       child_info);
@@ -1238,7 +1249,7 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 }
 
 ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
-		      Children *children)
+		      GdkFont *msgfont, gint body_pos, Children *children)
 {
 	gint chld_in[2], chld_out[2], chld_err[2], chld_status[2];
 	gchar *cmdline[4];
@@ -1387,8 +1398,9 @@ ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 		return child_info;
 
 	child_info->text        = text;
+	child_info->msgfont     = msgfont;
 
-	start = 0;
+	start = body_pos;
 	end   = gtk_stext_get_length(GTK_STEXT(text));
 
 	if (GTK_EDITABLE(text)->has_selection) {
@@ -1752,8 +1764,8 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 			c = read(source, buf, PREFSBUFSIZE - 1);
 			if (c == 0)
 				break;
-			gtk_stext_insert(GTK_STEXT(text), NULL, NULL, NULL,
-					 buf, c);
+			gtk_stext_insert(GTK_STEXT(text), child_info->msgfont,
+					 NULL, NULL, buf, c);
 		}
 		if (is_selection) {
 			/* Using the select_region draws things. Should not.
