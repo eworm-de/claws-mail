@@ -3564,7 +3564,8 @@ static void key_pressed (GtkWidget *widget, GdkEventKey *event,	gpointer data)
 		app_exit_cb(mainwin, 0, NULL);
 		return;
 	case GDK_space:
-		if (mainwin->folderview && mainwin->summaryview ) {
+		if (mainwin->folderview && mainwin->summaryview
+		    && !mainwin->summaryview->displayed) {
 			summary_lock(mainwin->summaryview);
 			folderview_select_next_unread(mainwin->folderview);
 			summary_unlock(mainwin->summaryview);

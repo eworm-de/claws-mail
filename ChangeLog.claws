@@ -1,3 +1,9 @@
+2002-10-12 [colin]	0.8.5claws26
+
+	* src/mainwindow.c
+		Fix folder-flicker when space-reading, introduced 
+		in claws22.
+
 2002-10-12 [colin]	0.8.5claws25
 
 	* src/compose.c
