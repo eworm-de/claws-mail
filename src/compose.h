@@ -185,6 +185,9 @@ void compose_reply		(MsgInfo	*msginfo,
 Compose * compose_forward	(PrefsAccount *account,
 				 MsgInfo	*msginfo,
 				 gboolean	 as_attach);
+Compose * compose_forward_multiple(PrefsAccount * account, 
+			  GSList *msginfo_list);
+			  
 void compose_reedit		(MsgInfo	*msginfo);
 
 GList *compose_get_compose_list	(void);

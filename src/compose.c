@@ -954,6 +954,60 @@ Compose * compose_forward(PrefsAccount * account, MsgInfo *msginfo,
 
 #undef INSERT_FW_HEADER
 
+Compose * compose_forward_multiple(PrefsAccount * account, 
+			  GSList *msginfo_list) 
+{
+	Compose *compose;
+	GtkSText *text;
+	GSList *msginfo;
+	gchar *msgfile;
+
+	g_return_val_if_fail(msginfo_list != NULL, NULL);
+	
+	for (msginfo = msginfo_list; msginfo != NULL; msginfo = msginfo->next) {
+		if ( ((MsgInfo *)msginfo->data)->folder == NULL )
+			return NULL;
+	}
+	
+	if (account == NULL) {
+		account = cur_account;
+		/*
+		account = msginfo->folder->folder->account;
+		if (!account) account = cur_account;
+		*/
+	}
+	g_return_val_if_fail(account != NULL, NULL);
+
+	compose = compose_create(account);
+	compose->mode = COMPOSE_FORWARD;
+
+	text = GTK_STEXT(compose->text);
+	gtk_stext_freeze(text);
+
+	for (msginfo = msginfo_list; msginfo != NULL; msginfo = msginfo->next) {
+		msgfile = procmsg_get_message_file_path((MsgInfo *)msginfo->data);
+		if (!is_file_exist(msgfile))
+			g_warning(_("%s: file not exist\n"), msgfile);
+		else
+			compose_attach_append(compose, msgfile,
+				MIME_MESSAGE_RFC822);
+		g_free(msgfile);
+	}
+
+	if (prefs_common.auto_sig)
+		compose_insert_sig(compose);
+	gtk_editable_set_position(GTK_EDITABLE(compose->text), 0);
+	gtk_stext_set_point(GTK_STEXT(compose->text), 0);
+
+	gtk_stext_thaw(text);
+	if (account->protocol != A_NNTP)
+		gtk_widget_grab_focus(compose->to_entry);
+	else
+		gtk_widget_grab_focus(compose->newsgroups_entry);
+
+	return compose;
+}
+
 void compose_reedit(MsgInfo *msginfo)
 {
 	Compose *compose;

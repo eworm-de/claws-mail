@@ -936,9 +936,10 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/Reply",			  sens);
 	menu_set_sensitive(ifactory, "/Reply to sender",	  sens);
 	menu_set_sensitive(ifactory, "/Reply to all",		  sens);
-	menu_set_sensitive(ifactory, "/Forward",		  sens);
-	menu_set_sensitive(ifactory, "/Forward as attachment",    sens);
-
+	
+	menu_set_sensitive(ifactory, "/Forward",				TRUE);
+	menu_set_sensitive(ifactory, "/Forward as attachment",  TRUE);
+	
 	menu_set_sensitive(ifactory, "/Open in new window", sens);
 	menu_set_sensitive(ifactory, "/View source", sens);
 	menu_set_sensitive(ifactory, "/Show all header", sens);
@@ -3264,6 +3265,7 @@ static void summary_reply_cb(SummaryView *summaryview, guint action,
 			     GtkWidget *widget)
 {
 	MsgInfo *msginfo;
+	GList  *sel = GTK_CLIST(summaryview->ctree)->selection;
 
 	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
 					      summaryview->selected);
@@ -3306,10 +3308,21 @@ static void summary_reply_cb(SummaryView *summaryview, guint action,
 		compose_reply(msginfo, FALSE, TRUE, FALSE);
 		break;
 	case COMPOSE_FORWARD:
-		compose_forward(NULL, msginfo, FALSE);
-		break;
+		if (!sel->next)	{
+			compose_forward(NULL, msginfo, FALSE);
+			break;
+		}
+		/* if (sel->next) FALL THROUGH */
 	case COMPOSE_FORWARD_AS_ATTACH:
-		compose_forward(NULL, msginfo, TRUE);
+		{
+			GSList *msginfo_list = NULL;
+			for ( ; sel != NULL; sel = sel->next)
+				msginfo_list = g_slist_append(msginfo_list, 
+					gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
+						GTK_CTREE_NODE(sel->data)));
+			compose_forward_multiple(NULL, msginfo_list);
+			g_slist_free(msginfo_list);
+		}			
 		break;
 	default:
 		g_warning("summary_reply_cb(): invalid action: %d\n", action);
