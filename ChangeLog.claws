@@ -1,4 +1,9 @@
-2003-03-26 [oliver]	0.8.11claws55
+2003-03-27 [oliver]	0.8.11claws56
+
+	* src/maiwindow.c
+		remove sel_download_cb
+
+2003-03-27 [oliver]	0.8.11claws55
 	
 	* src/inc.c
 		remove POP3_TOP
