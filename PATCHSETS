@@ -314,3 +314,4 @@
 ( cvs diff -u -r 1.43.2.11 -r 1.43.2.12 src/prefs_matcher.c; ) > 0.9.13cvs27.3.patchset
 ( cvs diff -u -r 1.43.2.12 -r 1.43.2.13 src/prefs_matcher.c; ) > 0.9.13cvs27.4.patchset
 ( cvs diff -u -r 1.43.2.13 -r 1.43.2.14 src/prefs_matcher.c; ) > 0.9.13cvs28.1.patchset
+( cvs diff -u -r 1.16.2.5 -r 1.16.2.6 src/prefs_display_header.c; cvs diff -u -r 1.60.2.8 -r 1.60.2.9 src/prefs_actions.c; cvs diff -u -r 1.43.2.14 -r 1.43.2.15 src/prefs_matcher.c; ) > 0.9.13cvs28.2.patchset

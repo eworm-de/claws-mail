@@ -1,3 +1,11 @@
+2005-01-06 [colin]	0.9.13cvs28.2
+
+	* src/prefs_display_header.c
+		GTK2 conversion by Alfons
+	* src/prefs_actions.c
+	* src/prefs_matcher.c
+		Fix 2 leaks - patch by Alfons
+
 2005-01-06 [colin]	0.9.13cvs28.1
 
 	* src/prefs_matcher.c

@@ -41,6 +41,12 @@
 #include "utils.h"
 #include "gtkutils.h"
 
+enum {
+	PREFS_HDR_HEADER,
+	PREFS_HDR_DATA,
+	N_PREFS_HDR_COLUMNS
+};
+
 static struct DisplayHeader {
 	GtkWidget *window;
 
@@ -50,8 +56,8 @@ static struct DisplayHeader {
 	GtkWidget *hdr_combo;
 	GtkWidget *hdr_entry;
 	GtkWidget *key_check;
-	GtkWidget *headers_clist;
-	GtkWidget *hidden_headers_clist;
+	GtkWidget *headers_list_view;
+	GtkWidget *hidden_headers_list_view;
 
 	GtkWidget *other_headers;
 } dispheader;
@@ -61,29 +67,50 @@ static void prefs_display_header_create	(void);
 
 static void prefs_display_header_set_dialog	(void);
 static void prefs_display_header_set_list	(void);
-static gint prefs_display_header_clist_set_row	(gboolean hidden);
+static void prefs_display_header_list_view_set_row	(gboolean hidden);
 
 /* callback functions */
 static void prefs_display_header_register_cb	(GtkButton	*btn,
 						 gpointer	 hidden_data);
 static void prefs_display_header_delete_cb	(GtkButton	*btn,
-						 gpointer	 clist_data);
+						 gpointer	 list_view_data);
 static void prefs_display_header_up		(void);
 static void prefs_display_header_down		(void);
 
-static void prefs_display_header_row_moved	(GtkCList	*clist,
-						 gint		 source_row,
-						 gint		 dest_row,
-						 gpointer	 data);
-
 static gboolean prefs_display_header_key_pressed	(GtkWidget	*widget,
-													 GdkEventKey	*event,
-													 gpointer	 data);
+							 GdkEventKey	*event,
+							 gpointer	 data);
 static void prefs_display_header_ok		(void);
 static void prefs_display_header_cancel		(void);
 static gint prefs_display_header_deleted	(GtkWidget	*widget,
 						 GdkEventAny	*event,
 						 gpointer	 data);
+
+
+static GtkListStore *prefs_display_header_create_store	(void);
+static void prefs_display_header_insert_header		(GtkListStore *store,
+							 gchar *name,
+							 DisplayHeaderProp *dp);
+static GtkWidget *prefs_display_header_list_view_create	(const gchar *name);
+static void prefs_filtering_create_list_view_columns	(GtkWidget *list_view, 
+							 const gchar *name);
+static void headers_list_model_row_changed		(GtkTreeModel *model, 
+							 GtkTreePath *path, 
+							 GtkTreeIter *iter, 
+							 GtkTreeView *list_view);
+static void headers_list_model_rows_reordered		(GtkTreeModel *model,
+							 GtkTreePath  *path, 
+							 GtkTreeIter  *iter,
+							 gpointer      arg,
+							 GtkTreeView  *list_view);
+							 
+static void drag_begin	(GtkTreeView *list_view,
+			 GdkDragContext *context,
+			 gpointer data);
+
+static void drag_end	(GtkTreeView *list_view,
+			 GdkDragContext *context,
+			 gpointer data);
 
 static gchar *defaults[] =
 {
@@ -164,16 +191,14 @@ static void prefs_display_header_create(void)
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
 
-	GtkWidget *clist_hbox;
-	GtkWidget *clist_hbox1;
-	GtkWidget *clist_hbox2;
-	GtkWidget *clist_scrolledwin;
-	GtkWidget *headers_clist;
-	GtkWidget *hidden_headers_clist;
+	GtkWidget *list_view_hbox;
+	GtkWidget *list_view_hbox1;
+	GtkWidget *list_view_hbox2;
+	GtkWidget *list_view_scrolledwin;
+	GtkWidget *headers_list_view;
+	GtkWidget *hidden_headers_list_view;
 
 	GtkWidget *checkbtn_other_headers;
-
-	gchar *title[1];
 
 	debug_print("Creating display header setting window...\n");
 
@@ -191,8 +216,8 @@ static void prefs_display_header_create(void)
 	gtk_widget_show (btn_hbox);
 	gtk_box_pack_end (GTK_BOX (vbox), btn_hbox, FALSE, FALSE, 0);
 
-	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
-				&cancel_btn, _("Cancel"), NULL, NULL);
+	gtkut_button_set_create_stock(&confirm_area, &ok_btn, GTK_STOCK_OK,
+				      &cancel_btn, GTK_STOCK_CANCEL, NULL, NULL);
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_end (GTK_BOX(btn_hbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default (ok_btn);
@@ -235,63 +260,69 @@ static void prefs_display_header_create(void)
 			       "Reply-To", "Sender", "User-Agent", "X-Mailer",
 			       NULL);
 
-	clist_hbox = gtk_hbox_new (FALSE, 10);
-	gtk_widget_show (clist_hbox);
-	gtk_box_pack_start (GTK_BOX (vbox1), clist_hbox, TRUE, TRUE, 0);
+	list_view_hbox = gtk_hbox_new (FALSE, 10);
+	gtk_widget_show (list_view_hbox);
+	gtk_box_pack_start (GTK_BOX (vbox1), list_view_hbox, TRUE, TRUE, 0);
 
 	/* display headers list */
 
-	clist_hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (clist_hbox1);
-	gtk_box_pack_start (GTK_BOX (clist_hbox), clist_hbox1, TRUE, TRUE, 0);
+	list_view_hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (list_view_hbox1);
+	gtk_box_pack_start (GTK_BOX (list_view_hbox), list_view_hbox1, TRUE, TRUE, 0);
 
-	clist_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_set_size_request (clist_scrolledwin, 200, 210);
-	gtk_widget_show (clist_scrolledwin);
-	gtk_box_pack_start (GTK_BOX (clist_hbox1), clist_scrolledwin,
+	list_view_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
+	gtk_widget_set_size_request (list_view_scrolledwin, 200, 210);
+	gtk_widget_show (list_view_scrolledwin);
+	gtk_box_pack_start (GTK_BOX (list_view_hbox1), list_view_scrolledwin,
 			    TRUE, TRUE, 0);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (clist_scrolledwin),
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (list_view_scrolledwin),
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 
-	title[0] = _("Displayed Headers");
-	headers_clist = gtk_clist_new_with_titles(1, title);
-	gtk_widget_show (headers_clist);
-	gtk_container_add (GTK_CONTAINER (clist_scrolledwin), headers_clist);
-	gtk_clist_set_selection_mode (GTK_CLIST (headers_clist),
-				      GTK_SELECTION_BROWSE);
-	gtk_clist_set_reorderable (GTK_CLIST (headers_clist), TRUE);
-	gtk_clist_set_use_drag_icons (GTK_CLIST (headers_clist), FALSE);
-	GTK_WIDGET_UNSET_FLAGS (GTK_CLIST (headers_clist)->column[0].button,
-				GTK_CAN_FOCUS);
-	g_signal_connect_after
-		(G_OBJECT (headers_clist), "row_move",
-		 G_CALLBACK (prefs_display_header_row_moved), NULL);
+	headers_list_view = prefs_display_header_list_view_create
+				(_("Displayed Headers"));
+	gtk_widget_show (headers_list_view);
+	gtk_container_add(GTK_CONTAINER(list_view_scrolledwin), headers_list_view);
+	gtk_tree_view_set_reorderable(GTK_TREE_VIEW(headers_list_view), TRUE);
+
+	g_signal_connect(G_OBJECT(headers_list_view), "drag_begin", 			 
+			 G_CALLBACK(drag_begin),
+			 headers_list_view);
+			 
+	g_signal_connect(G_OBJECT(headers_list_view), "drag_end", 			 
+			 G_CALLBACK(drag_end),
+			 headers_list_view);
+	
+	/* connect rows change for this list view's model */
+	g_signal_connect(G_OBJECT(gtk_tree_view_get_model(GTK_TREE_VIEW(headers_list_view))),
+			 "rows-reordered", 
+			 G_CALLBACK(headers_list_model_rows_reordered),
+			 headers_list_view);
 
 	btn_vbox = gtk_vbox_new (FALSE, 8);
 	gtk_widget_show (btn_vbox);
-	gtk_box_pack_start (GTK_BOX (clist_hbox1), btn_vbox, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (list_view_hbox1), btn_vbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_with_label (_("Add"));
+	reg_btn = gtk_button_new_from_stock (GTK_STOCK_ADD);
 	gtk_widget_show (reg_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect (G_OBJECT (reg_btn), "clicked",
 			  G_CALLBACK (prefs_display_header_register_cb),
 			    GINT_TO_POINTER(FALSE));
-	del_btn = gtk_button_new_with_label (_("Delete"));
+	del_btn = gtk_button_new_from_stock (GTK_STOCK_REMOVE);
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect (G_OBJECT (del_btn), "clicked",
 			  G_CALLBACK (prefs_display_header_delete_cb),
-			  headers_clist);
+			  headers_list_view);
 
-	up_btn = gtk_button_new_with_label (_("Up"));
+	up_btn = gtk_button_new_from_stock (GTK_STOCK_GO_UP);
 	gtk_widget_show (up_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), up_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (up_btn), "clicked",
 			  G_CALLBACK (prefs_display_header_up), NULL);
 
-	down_btn = gtk_button_new_with_label (_("Down"));
+	down_btn = gtk_button_new_from_stock (GTK_STOCK_GO_DOWN);
 	gtk_widget_show (down_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (down_btn), "clicked",
@@ -299,51 +330,46 @@ static void prefs_display_header_create(void)
 
 	/* hidden headers list */
 
-	clist_hbox2 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (clist_hbox2);
-	gtk_box_pack_start (GTK_BOX (clist_hbox), clist_hbox2, TRUE, TRUE, 0);
+	list_view_hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (list_view_hbox2);
+	gtk_box_pack_start (GTK_BOX (list_view_hbox), list_view_hbox2, TRUE, TRUE, 0);
 
-	clist_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_set_size_request (clist_scrolledwin, 200, 210);
-	gtk_widget_show (clist_scrolledwin);
-	gtk_box_pack_start (GTK_BOX (clist_hbox2), clist_scrolledwin,
+	list_view_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
+	gtk_widget_set_size_request (list_view_scrolledwin, 200, 210);
+	gtk_widget_show (list_view_scrolledwin);
+	gtk_box_pack_start (GTK_BOX (list_view_hbox2), list_view_scrolledwin,
 			    TRUE, TRUE, 0);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (clist_scrolledwin),
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (list_view_scrolledwin),
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 
-	title[0] = _("Hidden headers");
-	hidden_headers_clist = gtk_clist_new_with_titles(1, title);
-	gtk_widget_show (hidden_headers_clist);
-	gtk_container_add (GTK_CONTAINER (clist_scrolledwin),
-			   hidden_headers_clist);
-	gtk_clist_set_selection_mode (GTK_CLIST (hidden_headers_clist),
-				      GTK_SELECTION_BROWSE);
-	gtk_clist_set_auto_sort(GTK_CLIST (hidden_headers_clist), TRUE);
-	GTK_WIDGET_UNSET_FLAGS (GTK_CLIST (hidden_headers_clist)->
-				column[0].button, GTK_CAN_FOCUS);
+	hidden_headers_list_view = prefs_display_header_list_view_create
+					(_("Hidden headers"));
+	gtk_widget_show (hidden_headers_list_view);
+	gtk_container_add (GTK_CONTAINER (list_view_scrolledwin),
+			   hidden_headers_list_view);
 
 	btn_vbox = gtk_vbox_new (FALSE, 8);
 	gtk_widget_show (btn_vbox);
-	gtk_box_pack_start (GTK_BOX (clist_hbox2), btn_vbox, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (list_view_hbox2), btn_vbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_with_label (_("Add"));
+	reg_btn = gtk_button_new_from_stock (GTK_STOCK_ADD);
 	gtk_widget_show (reg_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect (G_OBJECT (reg_btn), "clicked",
 			    G_CALLBACK
 			    (prefs_display_header_register_cb),
 			    GINT_TO_POINTER(TRUE));
-	del_btn = gtk_button_new_with_label (_("Delete"));
+	del_btn = gtk_button_new_from_stock (GTK_STOCK_REMOVE);
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect (G_OBJECT	 (del_btn), "clicked",
 			    G_CALLBACK (prefs_display_header_delete_cb),
-			    hidden_headers_clist);
+			    hidden_headers_list_view);
 
 	PACK_CHECK_BUTTON (btn_hbox, checkbtn_other_headers,
 			   _("Show all unspecified headers"));
-	SET_TOGGLE_SENSITIVITY (checkbtn_other_headers, clist_hbox2);
+	SET_TOGGLE_SENSITIVITY (checkbtn_other_headers, list_view_hbox2);
 
 	gtk_widget_show_all(window);
 
@@ -354,8 +380,8 @@ static void prefs_display_header_create(void)
 	dispheader.hdr_combo     = hdr_combo;
 	dispheader.hdr_entry     = GTK_COMBO (hdr_combo)->entry;
 
-	dispheader.headers_clist        = headers_clist;
-	dispheader.hidden_headers_clist = hidden_headers_clist;
+	dispheader.headers_list_view        = headers_list_view;
+	dispheader.hidden_headers_list_view = hidden_headers_list_view;
 
 	dispheader.other_headers = checkbtn_other_headers;
 }
@@ -443,73 +469,77 @@ void prefs_display_header_write_config(void)
 
 static void prefs_display_header_set_dialog(void)
 {
-	GtkCList *clist = GTK_CLIST(dispheader.headers_clist);
-	GtkCList *hidden_clist = GTK_CLIST(dispheader.hidden_headers_clist);
+	GtkTreeView *list_view = GTK_TREE_VIEW(dispheader.headers_list_view);
+	GtkTreeView *hidden_list_view = GTK_TREE_VIEW(dispheader.hidden_headers_list_view);
 	GSList *cur;
-	gchar *dp_str[1];
-	gint row;
+	GtkTreeModel *model_list, *model_hidden;
 
-	gtk_clist_freeze(clist);
-	gtk_clist_freeze(hidden_clist);
+	model_list = gtk_tree_view_get_model(list_view);
+	model_hidden = gtk_tree_view_get_model(hidden_list_view);
 
-	gtk_clist_clear(clist);
-	gtk_clist_clear(hidden_clist);
+	gtk_list_store_clear(GTK_LIST_STORE(model_list));
+	gtk_list_store_clear(GTK_LIST_STORE(model_hidden));
 
 	for (cur = prefs_common.disphdr_list; cur != NULL;
 	     cur = cur->next) {
 		DisplayHeaderProp *dp = (DisplayHeaderProp *)cur->data;
 
-		dp_str[0] = dp->name;
-
-		if (dp->hidden) {
-			row = gtk_clist_append(hidden_clist, dp_str);
-			gtk_clist_set_row_data(hidden_clist, row, dp);
-		} else {
-			row = gtk_clist_append(clist, dp_str);
-			gtk_clist_set_row_data(clist, row, dp);
-		}
+		if (dp->hidden)
+			prefs_display_header_insert_header(GTK_LIST_STORE
+						(model_hidden), dp->name, dp);	
+		else
+			prefs_display_header_insert_header(GTK_LIST_STORE
+						(model_list), dp->name, dp);
 	}
-
-	gtk_clist_thaw(hidden_clist);
-	gtk_clist_thaw(clist);
 
 	gtk_toggle_button_set_active
 		(GTK_TOGGLE_BUTTON(dispheader.other_headers),
 		 prefs_common.show_other_header);
 }
 
-static void prefs_display_header_set_list()
+static void prefs_display_header_set_list(void)
 {
 	gint row = 0;
 	DisplayHeaderProp *dp;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
 
 	g_slist_free(prefs_common.disphdr_list);
 	prefs_common.disphdr_list = NULL;
 
-	while ((dp = gtk_clist_get_row_data
-		(GTK_CLIST(dispheader.headers_clist), row)) != NULL) {
-		prefs_common.disphdr_list =
-			g_slist_append(prefs_common.disphdr_list, dp);
-		row++;
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(dispheader.headers_list_view));
+	while (gtk_tree_model_iter_nth_child(model, &iter, NULL, row)) {
+		gtk_tree_model_get(model, &iter, PREFS_HDR_DATA, &dp, -1);
+		if (dp)
+			prefs_common.disphdr_list =
+				g_slist_append(prefs_common.disphdr_list, dp);
+		row++;				
 	}
 
+	model = gtk_tree_view_get_model
+			(GTK_TREE_VIEW(dispheader.hidden_headers_list_view));
 	row = 0;
-	while ((dp = gtk_clist_get_row_data
-		(GTK_CLIST(dispheader.hidden_headers_clist), row)) != NULL) {
-		prefs_common.disphdr_list =
-			g_slist_append(prefs_common.disphdr_list, dp);
+	while (gtk_tree_model_iter_nth_child(model, &iter, NULL, row)) {
+		gtk_tree_model_get(model, &iter, PREFS_HDR_DATA, &dp, -1);
+		if (dp) 
+			prefs_common.disphdr_list =
+				g_slist_append(prefs_common.disphdr_list, dp);
 		row++;
 	}
 }
 
-static gint prefs_display_header_find_header(GtkCList *clist,
+static gint prefs_display_header_find_header(GtkTreeView *list_view,
 					     const gchar *header)
 {
 	gint row = 0;
 	DisplayHeaderProp *dp;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
 
-	while ((dp = gtk_clist_get_row_data(clist, row)) != NULL) {
-		if (g_ascii_strcasecmp(dp->name, header) == 0)
+	model = gtk_tree_view_get_model(list_view);
+	while (gtk_tree_model_iter_nth_child(model, &iter, NULL, row)) {
+		gtk_tree_model_get(model, &iter, PREFS_HDR_DATA, &dp, -1);
+		if (dp && g_ascii_strcasecmp(dp->name, header) == 0)
 			return row;
 		row++;
 	}
@@ -517,28 +547,27 @@ static gint prefs_display_header_find_header(GtkCList *clist,
 	return -1;
 }
 
-static gint prefs_display_header_clist_set_row(gboolean hidden)
+static void prefs_display_header_list_view_set_row(gboolean hidden)
 {
-	GtkCList *clist;
+	GtkTreeView *list_view;
 	DisplayHeaderProp *dp;
 	const gchar *entry_text;
-	gchar *dp_str[1];
-	gint row;
+	GtkTreeModel *model;
 
 	entry_text = gtk_entry_get_text(GTK_ENTRY(dispheader.hdr_entry));
 	if (entry_text[0] == '\0') {
 		alertpanel_error(_("Header name is not set."));
-		return -1;
+		return;
 	}
 
 	if (hidden)
-		clist = GTK_CLIST(dispheader.hidden_headers_clist);
+		list_view = GTK_TREE_VIEW(dispheader.hidden_headers_list_view);
 	else
-		clist = GTK_CLIST(dispheader.headers_clist);
+		list_view = GTK_TREE_VIEW(dispheader.headers_list_view);
 
-	if (prefs_display_header_find_header(clist, entry_text) != -1) {
+	if (prefs_display_header_find_header(list_view, entry_text) != -1) {
 		alertpanel_error(_("This header is already in the list."));
-		return -1;
+		return;
 	}
 
 	dp = g_new0(DisplayHeaderProp, 1);
@@ -546,65 +575,97 @@ static gint prefs_display_header_clist_set_row(gboolean hidden)
 	dp->name = g_strdup(entry_text);
 	dp->hidden = hidden;
 
-	dp_str[0] = dp->name;
-	row = gtk_clist_append(clist, dp_str);
-	gtk_clist_set_row_data(clist, row, dp);
+	model = gtk_tree_view_get_model(list_view);
+	prefs_display_header_insert_header(GTK_LIST_STORE(model),
+					   dp->name, dp);
 
 	prefs_display_header_set_list();
-
-	return row;
 }
 
 static void prefs_display_header_register_cb(GtkButton *btn,
 					     gpointer hidden_data)
 {
-	prefs_display_header_clist_set_row(GPOINTER_TO_INT(hidden_data));
+	prefs_display_header_list_view_set_row(GPOINTER_TO_INT(hidden_data));
 }
 
-static void prefs_display_header_delete_cb(GtkButton *btn, gpointer clist_data)
+static void prefs_display_header_delete_cb(GtkButton *btn, gpointer list_view_data)
 {
-	GtkCList *clist = GTK_CLIST(clist_data);
+	GtkTreeView *list_view = GTK_TREE_VIEW(list_view_data);
 	DisplayHeaderProp *dp;
-	gint row;
+	GtkListStore *store = GTK_LIST_STORE(gtk_tree_view_get_model(list_view));
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(list_view);
+	GtkTreeIter iter;
 
-	if (!clist->selection) return;
-	row = GPOINTER_TO_INT(clist->selection->data);
+	if (!gtk_tree_selection_get_selected(selection, NULL, &iter))
+		return;
 
-	dp = gtk_clist_get_row_data(clist, row);
-	display_header_prop_free(dp);
-	gtk_clist_remove(clist, row);
+	gtk_tree_model_get(GTK_TREE_MODEL(store), &iter, PREFS_HDR_DATA, &dp, -1);
+	if (!dp) 
+		return;
+
 	prefs_common.disphdr_list =
 		g_slist_remove(prefs_common.disphdr_list, dp);
+	display_header_prop_free(dp);
+	gtk_list_store_remove(store, &iter);
 }
 
 static void prefs_display_header_up(void)
 {
-	GtkCList *clist = GTK_CLIST(dispheader.headers_clist);
-	gint row;
+	GtkTreePath *prev, *sel, *try;
+	GtkTreeIter isel;
+	GtkListStore *store;
+	GtkTreeIter iprev;
+	
+	if (!gtk_tree_selection_get_selected
+		(gtk_tree_view_get_selection
+			(GTK_TREE_VIEW(dispheader.headers_list_view)),
+		 (GtkTreeModel **) &store,	
+		 &isel))
+		return;
 
-	if (!clist->selection) return;
+	sel = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &isel);
+	if (!sel)
+		return;
+	
+	/* no move if we're at row 0... */
+	try = gtk_tree_path_copy(sel);
+	if (!gtk_tree_path_prev(try)) {
+		gtk_tree_path_free(try);
+		gtk_tree_path_free(sel);
+		return;
+	}
 
-	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row > 0)
-		gtk_clist_row_move(clist, row, row - 1);
+	prev = try;
+	gtk_tree_model_get_iter(GTK_TREE_MODEL(store),
+				&iprev, prev);
+	gtk_list_store_swap(store, &iprev, &isel);
+
+	gtk_tree_path_free(sel);
+	gtk_tree_path_free(prev);
 }
 
 static void prefs_display_header_down(void)
 {
-	GtkCList *clist = GTK_CLIST(dispheader.headers_clist);
-	gint row;
+	GtkListStore *store;
+	GtkTreeIter next, sel;
+	GtkTreePath *try;
+	
+	if (!gtk_tree_selection_get_selected
+		(gtk_tree_view_get_selection
+			(GTK_TREE_VIEW(dispheader.headers_list_view)),
+		 (GtkTreeModel **) &store,
+		 &sel))
+		return;
 
-	if (!clist->selection) return;
-
-	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row >= 0 && row < clist->rows - 1)
-		gtk_clist_row_move(clist, row, row + 1);
-}
-
-static void prefs_display_header_row_moved(GtkCList *clist, gint source_row,
-					   gint dest_row, gpointer data)
-{
-	prefs_display_header_set_list();
+	try = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &sel);
+	if (!try) 
+		return;
+	
+	next = sel;
+	if (gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &next))
+		gtk_list_store_swap(store, &next, &sel);
+		
+	gtk_tree_path_free(try);
 }
 
 static gboolean prefs_display_header_key_pressed(GtkWidget *widget,
@@ -637,3 +698,106 @@ static gint prefs_display_header_deleted(GtkWidget *widget, GdkEventAny *event,
 	prefs_display_header_cancel();
 	return TRUE;
 }
+
+static GtkListStore *prefs_display_header_create_store(void)
+{
+	return gtk_list_store_new(N_PREFS_HDR_COLUMNS,
+				  G_TYPE_STRING,
+				  G_TYPE_POINTER,
+				  -1);
+}
+
+static void prefs_display_header_insert_header(GtkListStore *store,
+					       gchar *name,
+					       DisplayHeaderProp *dp)
+{
+	GtkTreeIter iter;
+
+	/* add new */
+	gtk_list_store_append(store, &iter);
+	gtk_list_store_set(store, &iter,
+			   PREFS_HDR_HEADER, name,
+			   PREFS_HDR_DATA, dp,
+			   -1);
+}
+
+static GtkWidget *prefs_display_header_list_view_create(const gchar *name)
+{
+	GtkWidget *list_view;
+	GtkTreeSelection *selector;
+	GtkTreeModel *model;
+
+	model = GTK_TREE_MODEL(prefs_display_header_create_store());
+	list_view = gtk_tree_view_new_with_model(model);
+	g_object_unref(G_OBJECT(model));
+	
+	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(list_view), TRUE);
+	
+	selector = gtk_tree_view_get_selection(GTK_TREE_VIEW(list_view));
+	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
+
+	prefs_filtering_create_list_view_columns(GTK_WIDGET(list_view), name);
+
+	return list_view;
+}
+
+static void prefs_filtering_create_list_view_columns(GtkWidget *list_view, 
+						     const gchar *name)
+{
+	GtkTreeViewColumn *column;
+	GtkCellRenderer *renderer;
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes
+		(name, renderer, "text", PREFS_HDR_HEADER, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
+}
+
+/*!
+ *\brief	Called as a result of a drag & drop
+ */
+static void headers_list_model_row_changed(GtkTreeModel *model, 
+					   GtkTreePath *path, 
+					   GtkTreeIter *iter, 
+					   GtkTreeView *list_view)
+{
+	prefs_display_header_set_list();
+}
+
+/*!
+ *\brief	Called as a result of a gtk_list_store_swap()
+ */
+static void headers_list_model_rows_reordered(GtkTreeModel *model,
+					      GtkTreePath  *path, 
+					      GtkTreeIter  *iter,
+					      gpointer	    arg,
+					      GtkTreeView  *list_view)
+{
+	prefs_display_header_set_list();
+}
+
+static void drag_begin(GtkTreeView *list_view,
+		      GdkDragContext *context,
+		      gpointer data)
+{
+	/* XXX unfortunately a completed drag & drop does not emit 
+	 * a "rows_reordered" signal, but a "row_changed" signal.
+	 * So during drag and drop, listen to "row_changed", and
+	 * update the account list accordingly */
+
+	GtkTreeModel *model = gtk_tree_view_get_model(list_view);
+	g_signal_connect(G_OBJECT(model), "row_changed",
+			 G_CALLBACK(headers_list_model_row_changed),
+			 list_view);
+}
+
+static void drag_end(GtkTreeView *list_view,
+		    GdkDragContext *context,
+		    gpointer data)
+{
+	GtkTreeModel *model = gtk_tree_view_get_model(list_view);
+	g_signal_handlers_disconnect_by_func(G_OBJECT(model),
+					     G_CALLBACK(headers_list_model_row_changed),
+					     list_view);
+}
+

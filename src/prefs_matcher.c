@@ -1310,6 +1310,7 @@ static void prefs_matcher_up(void)
 		gtk_tree_path_free(sel);
 		return;
 	}
+	gtk_tree_path_free(try);
 
 	prev = gtk_tree_path_copy(sel);		
 	if (gtk_tree_path_prev(prev)) {
