@@ -1,0 +1,149 @@
+# British English translation of Sylpheed
+# Copyright (C) 2000 Free Software Foundation, Inc.
+# Paul Mangan <claws@thewildbeast.co.uk>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: sylpheed\n"
+"POT-Creation-Date: 2002-03-18 08:30+0000\n"
+"PO-Revision-Date: 2002-03-18 08:30+0000\n"
+"Last-Translator: Paul Mangan <claws@thewildbeast.co.uk>\n"
+"Language-Team: Paul Mangan <claws@thewildbeast.co.uk>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/mainwindow.c:513
+msgid "/_View/_Sort/Sort by _color label"
+msgstr "/_View/_Sort/Sort by _colour label"
+
+#: src/imap.c:379
+msgid "creating tunneled IMAP4 connection\n"
+msgstr "creating tunnelled IMAP4 connection\n"
+
+#: src/imap.c:1071
+msgid "error occured while getting LIST.\n"
+msgstr "error occurred while getting LIST.\n"
+
+#: src/inc.c:530
+#, c-format
+msgid "Authorization for %s on %s failed"
+msgstr "Authorisation for %s on %s failed"
+
+#: src/mainwindow.c:622
+msgid "/_View/_Go to/Prev _labeled message"
+msgstr "/_View/_Go to/Prev _labelled message"
+
+#: src/mainwindow.c:624
+msgid "/_View/_Go to/Next la_beled message"
+msgstr "/_View/_Go to/Next la_belled message"
+
+#: src/mainwindow.c:943
+#, c-format
+msgid "MainWindow: color allocation %d failed\n"
+msgstr "MainWindow: colour allocation %d failed\n"
+
+#: src/prefs_account.c:774
+msgid "Organization"
+msgstr "Organisation"
+
+#: src/prefs_account.c:1648
+msgid "Mark cross-posted messages as read and color:"
+msgstr "Mark cross-posted messages as read and colour:"
+
+#. Color
+#: src/prefs_common.c:1606
+msgid "Misspelled word color:"
+msgstr "Misspelled word colour:"
+
+#: src/prefs_common.c:2207
+msgid "Enable coloration of message"
+msgstr "Enable colouration of message"
+
+#: src/prefs_common.c:2525
+msgid "Show receive dialog"
+msgstr "Show receive dialogue"
+
+#: src/prefs_common.c:2558
+msgid "Show no-unread-message dialog"
+msgstr "Show no-unread-message dialogue"
+
+#: src/prefs_common.c:3087
+msgid "Set message colors"
+msgstr "Set message colours"
+
+#: src/prefs_common.c:3095
+msgid "Colors"
+msgstr "Colours"
+
+#: src/prefs_common.c:3167
+msgid "Recycle quote colors"
+msgstr "Recycle quote colours"
+
+#: src/prefs_common.c:3230
+msgid "Pick color for quotation level 1"
+msgstr "Pick colour for quotation level 1"
+
+#: src/prefs_common.c:3233
+msgid "Pick color for quotation level 2"
+msgstr "Pick colour for quotation level 2"
+
+#: src/prefs_common.c:3236
+msgid "Pick color for quotation level 3"
+msgstr "Pick colour for quotation level 3"
+
+#: src/prefs_common.c:3239
+msgid "Pick color for URI"
+msgstr "Pick colour for URI"
+
+#: src/prefs_common.c:3242
+msgid "Pick color for target folder"
+msgstr "Pick colour for target folder"
+
+#: src/prefs_common.c:3246
+msgid "Pick color for misspelled word"
+msgstr "Pick colour for misspelled word"
+
+#: src/prefs_actions.c:1435
+msgid "Updating actions input/output dialog.\n"
+msgstr "Updating actions input/output dialogue.\n"
+
+#: src/prefs_actions.c:1490
+msgid "Creating actions dialog\n"
+msgstr "Creating actions dialogue\n"
+
+#: src/progressdialog.c:55
+msgid "Creating progress dialog...\n"
+msgstr "Creating progress dialogue...\n"
+
+#: src/selective_download.c:530
+msgid "Exit Dialog"
+msgstr "Exit Dialogue"
+
+#: src/summaryview.c:1242 src/summaryview.c:1265
+msgid "No more labeled messages"
+msgstr "No more labelled messages"
+
+#: src/summaryview.c:1243
+msgid "No labeled message found. Search from the end?"
+msgstr "No labelled message found. Search from the end?"
+
+#: src/summaryview.c:1251 src/summaryview.c:1274
+msgid "No labeled messages."
+msgstr "No labelled messages."
+
+#: src/summaryview.c:1266
+msgid "No labeled message found. Search from the beginning?"
+msgstr "No labelled message found. Search from the beginning?"
+
+#: src/textview.c:531
+msgid "or double-click, or click the center button, "
+msgstr "or double-click, or click the centre button, "
+
+#: src/prefs_filtering.c:232 src/prefs_filtering.c:471
+msgid "Color"
+msgstr "Colour"
+
+#: src/summaryview.c:419
+msgid "/Color la_bel"
+msgstr "Colour la_bel"

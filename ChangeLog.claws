@@ -1,3 +1,13 @@
+2002-03-18 [paul]	0.7.4claws21
+
+	* po/en_GB.po
+		add en_GB message catalogue
+
+	* src/mbox_folder.c
+	  src/prefs_account.c
+	  src/prefs_actions.c
+		correct a few spelling mistakes
+
 2002-03-17 [alfons]	0.7.4claws20
 
 	* src/matcher.c
