@@ -1160,7 +1160,7 @@ gint imap_close(Folder *folder, FolderItem *item)
 
 void imap_scan_tree(Folder *folder)
 {
-	FolderItem *item;
+	FolderItem *item = NULL;
 	IMAPSession *session;
 	gchar *root_folder = NULL;
 
@@ -1184,12 +1184,17 @@ void imap_scan_tree(Folder *folder)
 		debug_print("IMAP root directory: %s\n", root_folder);
 	}
 
-	item = folder_item_new(folder, folder->name, root_folder);
-	item->folder = folder;
-	item->no_select = TRUE;
-	folder->node = item->node = g_node_new(item);
+	if (folder->node)
+		item = FOLDER_ITEM(folder->node->data);
+	if (!item || ((item->path || root_folder) &&
+		      strcmp2(item->path, root_folder) != 0)) {
+		folder_tree_destroy(folder);
+		item = folder_item_new(folder, folder->name, root_folder);
+		item->folder = folder;
+		folder->node = item->node = g_node_new(item);
+	}
 
-	imap_scan_tree_recursive(session, item);
+	imap_scan_tree_recursive(session, FOLDER_ITEM(folder->node->data));
 	imap_create_missing_folders(folder);
 }
 
@@ -1199,6 +1204,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 	IMAPFolder *imapfolder;
 	FolderItem *new_item;
 	GSList *item_list, *cur;
+	GNode *node;
 	gchar *real_path;
 	gchar *wildcard_path;
 	gchar separator;
@@ -1238,16 +1244,59 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 	item_list = imap_parse_list(imapfolder, session, real_path, NULL);
 	g_free(real_path);
 
-	for (cur = item_list; cur != NULL; cur = cur->next) {
-		new_item = cur->data;
-		if (!strcmp(new_item->path, "INBOX")) {
-			if (!folder->inbox) {
-				new_item->stype = F_INBOX;
-				folder->inbox = new_item;
-			} else {
-				folder_item_destroy(new_item);
-				continue;
+	node = item->node->children;
+	while (node != NULL) {
+		FolderItem *old_item = FOLDER_ITEM(node->data);
+		new_item = NULL;
+		GNode *next = node->next;
+
+		for (cur = item_list; cur != NULL; cur = cur->next) {
+			FolderItem *cur_item = FOLDER_ITEM(cur->data);
+			if (!strcmp2(old_item->path, cur_item->path)) {
+				new_item = cur_item;
+				break;
 			}
+		}
+		if (!new_item) {
+			debug_print("folder '%s' not found. removing...\n",
+				    old_item->path);
+			folder_item_remove(old_item);
+		} else {
+			old_item->no_sub = new_item->no_sub;
+			old_item->no_select = new_item->no_select;
+			if (old_item->no_sub == TRUE && node->children) {
+				debug_print("folder '%s' doesn't have "
+					    "subfolders. removing...\n",
+					    old_item->path);
+				folder_item_remove_children(old_item);
+			}
+		}
+
+		node = next;
+	}
+
+	for (cur = item_list; cur != NULL; cur = cur->next) {
+		FolderItem *cur_item = FOLDER_ITEM(cur->data);
+		new_item = NULL;
+		for (node = item->node->children; node != NULL;
+		     node = node->next) {
+			if (!strcmp2(FOLDER_ITEM(node->data)->path,
+				     cur_item->path)) {
+				new_item = FOLDER_ITEM(node->data);
+				folder_item_destroy(cur_item);
+				cur_item = NULL;
+				break;
+			}
+		}
+		if (!new_item) {
+			new_item = cur_item;
+			debug_print("new folder '%s' found.\n", new_item->path);
+			folder_item_append(item, new_item);
+		}
+
+		if (!strcmp(new_item->path, "INBOX")) {
+			new_item->stype = F_INBOX;
+			folder->inbox = new_item;
 		} else if (!item->parent || item->stype == F_INBOX) {
 			gchar *base;
 
@@ -1267,7 +1316,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 				folder->trash = new_item;
 			}
 		}
-		folder_item_append(item, new_item);
+
 		if (new_item->no_sub == FALSE)
 			imap_scan_tree_recursive(session, new_item);
 	}
@@ -1353,7 +1402,7 @@ static GSList *imap_parse_list(IMAPFolder *folder, IMAPSession *session,
 
 		item_list = g_slist_append(item_list, new_item);
 
-		debug_print("folder %s has been added.\n", loc_path);
+		debug_print("folder '%s' found.\n", loc_path);
 		g_free(loc_path);
 		g_free(loc_name);
 	}

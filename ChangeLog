@@ -1,3 +1,11 @@
+2003-08-26
+
+	* src/folder.[ch]: folder_item_remove_children(): new. It removes
+	  all children under a FolderItem.
+	* src/folderview.c: folderview_rescan_tree(): modified the message.
+	* src/imap.c: imap_scan_tree(), imap_scan_tree_recursive(): reuse
+	  the previous FolderItem objects.
+
 2003-08-25
 
 	* src/folder.[ch]: added a reference to its own GNode in FolderItem.

@@ -359,13 +359,14 @@ void        folder_destroy		(Folder		*folder);
 void        folder_local_folder_destroy	(LocalFolder	*lfolder);
 void        folder_remote_folder_destroy(RemoteFolder	*rfolder);
 
-FolderItem *folder_item_new	(Folder		*folder,
-				 const gchar	*name,
-				 const gchar	*path);
-void        folder_item_append	(FolderItem	*parent,
-				 FolderItem	*item);
-void        folder_item_remove	(FolderItem	*item);
-void        folder_item_destroy	(FolderItem	*item);
+FolderItem *folder_item_new		(Folder		*folder,
+				 	 const gchar	*name,
+				 	 const gchar	*path);
+void        folder_item_append		(FolderItem	*parent,
+				 	 FolderItem	*item);
+void        folder_item_remove		(FolderItem	*item);
+void        folder_item_remove_children	(FolderItem	*item);
+void        folder_item_destroy		(FolderItem	*item);
 
 void        folder_set_ui_func	(Folder		*folder,
 				 FolderUIFunc	 func,

@@ -253,6 +253,22 @@ void folder_item_remove(FolderItem *item)
 	g_node_destroy(node);
 }
 
+void folder_item_remove_children(FolderItem *item)
+{
+	GNode *node, *next;
+
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->folder != NULL);
+	g_return_if_fail(item->node != NULL);
+
+	node = item->node->children;
+	while (node != NULL) {
+		next = node->next;
+		folder_item_remove(FOLDER_ITEM(node->data));
+		node = next;
+	}
+}
+
 void folder_item_destroy(FolderItem *item)
 {
 	Folder *folder;
