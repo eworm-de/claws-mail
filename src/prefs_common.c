@@ -98,11 +98,6 @@ static struct Compose {
 	GtkWidget *checkbtn_autoextedit;
 	GtkWidget *spinbtn_undolevel;
 	GtkObject *spinbtn_undolevel_adj;
-	GtkWidget *spinbtn_linewrap;
-	GtkObject *spinbtn_linewrap_adj;
-	GtkWidget *checkbtn_wrapquote;
-	GtkWidget *checkbtn_autowrap;
-	GtkWidget *checkbtn_wrapatsend;
 
 	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *checkbtn_forward_account_autosel;
@@ -111,7 +106,6 @@ static struct Compose {
 	GtkWidget *checkbtn_default_reply_list;
 	GtkWidget *checkbtn_forward_as_attachment;
 	GtkWidget *checkbtn_redirect_keep_from;
-	GtkWidget *checkbtn_smart_wrapping;
 	GtkWidget *checkbtn_block_cursor;
 	GtkWidget *checkbtn_reply_with_quote;
 	
@@ -320,21 +314,15 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"linewrap_length", "72", &prefs_common.linewrap_len, P_INT,
-	 &compose.spinbtn_linewrap,
-	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
+	 NULL, NULL, NULL},
 	{"linewrap_quotation", "FALSE", &prefs_common.linewrap_quote, P_BOOL,
-	 &compose.checkbtn_wrapquote,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
 	{"linewrap_auto", "FALSE", &prefs_common.autowrap, P_BOOL,
-	 &compose.checkbtn_autowrap,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"linewrap_before_sending", "FALSE",
-	 &prefs_common.linewrap_at_send, P_BOOL,
-	 &compose.checkbtn_wrapatsend,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-        {"smart_wrapping", "TRUE", &prefs_common.smart_wrapping,
-	 P_BOOL, &compose.checkbtn_smart_wrapping,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
+	{"linewrap_before_sending", "FALSE", &prefs_common.linewrap_at_send, P_BOOL, 
+	 NULL, NULL, NULL},
+        {"smart_wrapping", "TRUE", &prefs_common.smart_wrapping, P_BOOL, 
+	 NULL, NULL, NULL},
         {"autosave", "FALSE", &prefs_common.autosave,
 	 P_BOOL, &compose.checkbtn_autosave,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -1389,25 +1377,13 @@ static void prefs_compose_create(void)
 	GtkObject *spinbtn_undolevel_adj;
 	GtkWidget *spinbtn_undolevel;
 
-	GtkWidget *vbox_linewrap;
-
- 	GtkWidget *hbox3;
-	GtkWidget *hbox4;
 	GtkWidget *hbox5;
-	GtkWidget *label_linewrap;
-	GtkObject *spinbtn_linewrap_adj;
-	GtkWidget *spinbtn_linewrap;
-	GtkWidget *checkbtn_wrapquote;
-	GtkWidget *checkbtn_autowrap;
-	GtkWidget *checkbtn_wrapatsend;
 
 	GtkWidget *checkbtn_default_reply_list;
 
 	GtkWidget *checkbtn_forward_as_attachment;
 	GtkWidget *checkbtn_redirect_keep_from;
-	GtkWidget *checkbtn_smart_wrapping;
 	GtkWidget *checkbtn_block_cursor;
-	GtkWidget *frame_msgwrap;
 
 	GtkWidget *hbox_autosave;
 	GtkWidget *checkbtn_autosave;
@@ -1490,49 +1466,6 @@ static void prefs_compose_create(void)
 	gtk_widget_set_usize (spinbtn_undolevel, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_undolevel), TRUE);
 
-        /* line-wrapping */
-	PACK_FRAME(vbox1, frame_msgwrap, _("Message wrapping"));
-
-	vbox_linewrap = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox_linewrap);
-	gtk_container_add (GTK_CONTAINER (frame_msgwrap), vbox_linewrap);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_linewrap), 8);
-
-	hbox3 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox3);
-	gtk_box_pack_start (GTK_BOX (vbox_linewrap), hbox3, FALSE, FALSE, 0);
-
-
-	label_linewrap = gtk_label_new (_("Wrap messages at"));
-	gtk_widget_show (label_linewrap);
-	gtk_box_pack_start (GTK_BOX (hbox3), label_linewrap, FALSE, FALSE, 0);
-
-	spinbtn_linewrap_adj = gtk_adjustment_new (72, 20, 1024, 1, 10, 10);
-	spinbtn_linewrap = gtk_spin_button_new
-		(GTK_ADJUSTMENT (spinbtn_linewrap_adj), 1, 0);
-	gtk_widget_show (spinbtn_linewrap);
-	gtk_box_pack_start (GTK_BOX (hbox3), spinbtn_linewrap, FALSE, FALSE, 0);
-	gtk_widget_set_usize (spinbtn_linewrap, 64, -1);
-	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_linewrap), TRUE);
-
-	label_linewrap = gtk_label_new (_("characters"));
-	gtk_widget_show (label_linewrap);
-	gtk_box_pack_start (GTK_BOX (hbox3), label_linewrap, FALSE, FALSE, 0);
-
-	hbox4 = gtk_hbox_new (FALSE, VSPACING);
-	gtk_widget_show (hbox4);
-	gtk_box_pack_start (GTK_BOX (vbox_linewrap), hbox4, FALSE, FALSE, 0);
-
-	PACK_CHECK_BUTTON (hbox4, checkbtn_wrapquote, _("Wrap quotation"));
-
-	PACK_CHECK_BUTTON (hbox4, checkbtn_autowrap, _("Wrap on input"));
-
-	PACK_CHECK_BUTTON
-		(hbox4, checkbtn_wrapatsend, _("Wrap before sending"));
-
-	PACK_CHECK_BUTTON (vbox_linewrap, checkbtn_smart_wrapping,
-			   _("Smart wrapping (EXPERIMENTAL)"));
-	
        /*
 	compose.checkbtn_quote   = checkbtn_quote;
 	compose.entry_quotemark  = entry_quotemark;
@@ -1548,12 +1481,6 @@ static void prefs_compose_create(void)
 	compose.spinbtn_undolevel     = spinbtn_undolevel;
 	compose.spinbtn_undolevel_adj = spinbtn_undolevel_adj;
 
-	compose.spinbtn_linewrap      = spinbtn_linewrap;
-	compose.spinbtn_linewrap_adj  = spinbtn_linewrap_adj;
-	compose.checkbtn_wrapquote    = checkbtn_wrapquote;
-	compose.checkbtn_autowrap     = checkbtn_autowrap;
-	compose.checkbtn_wrapatsend   = checkbtn_wrapatsend;
-
 	compose.checkbtn_autosave     = checkbtn_autosave;
 	compose.entry_autosave_length = entry_autosave_length;
 	
@@ -1561,8 +1488,6 @@ static void prefs_compose_create(void)
 		checkbtn_forward_as_attachment;
 	compose.checkbtn_redirect_keep_from =
 		checkbtn_redirect_keep_from;
-	compose.checkbtn_smart_wrapping = 
-		checkbtn_smart_wrapping;
 	compose.checkbtn_block_cursor   =
 		checkbtn_block_cursor;
 	compose.checkbtn_default_reply_list = checkbtn_default_reply_list;

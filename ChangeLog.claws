@@ -1,3 +1,13 @@
+2004-06-30 [paul]	0.9.12cvs1
+
+	* po/POTFILES.in
+	  src/Makefile.am
+	  src/main.c
+	  src/prefs_common.c
+	  src/prefs_wrapping.[ch]	** NEW FILES **
+	  	move message wrapping options to
+		/'Other Preferences/Compose/Message Wrapping'
+
 2004-06-28 [paul]	0.9.12
 
 	* Sylpheed-Claws 0.9.12 released
