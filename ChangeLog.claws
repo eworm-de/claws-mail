@@ -1,3 +1,11 @@
+2004-07-14 [christoph]	0.9.12cvs23
+
+	* src/pgpmime.c
+		add missing fclose
+
+	* src/procmime.c
+		add checks if fopen really worked
+
 2004-07-14 [colin]	0.9.12cvs22
 
 	* src/pop.c
