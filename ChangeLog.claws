@@ -1,7 +1,7 @@
 2002-02-12 [melvin]	0.7.0claws62
 
 	* src/prefs_actions.c
-		Children wait loop is not triggered with a timeout of 1s
+		Children wait loop is now triggered with a timeout of 1s
 		Added %F which is replaced with the list of filenames 
 		of all selected messages (as suggested by Ricardo Mones Lestra)
 		Pipe syntax changed. Prefix with | to send selection, postfix
