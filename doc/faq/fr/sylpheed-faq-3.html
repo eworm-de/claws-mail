@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
+ <TITLE>FAQ Sylpheed: FAQ Sylpheed - L'interface</TITLE>
+ <LINK HREF="sylpheed-faq-2.html" REL=previous>
+ <LINK HREF="sylpheed-faq.html#toc3" REL=contents>
+</HEAD>
+<BODY>
+Next
+<A HREF="sylpheed-faq-2.html">Previous</A>
+<A HREF="sylpheed-faq.html#toc3">Contents</A>
+<HR>
+<H2><A NAME="s3">3. FAQ Sylpheed - L'interface</A></H2>
+
+<H2><A NAME="ss3.1">3.1 Q01  Comment faire pour que Sylpheed parle ma langue?</A>
+</H2>
+
+<P>A.   Vous devez définir les variables d'environnement telles que
+<CODE>LANG,LC_CTYPE, LC_MESSAGES</CODE>
+pour votre langue (par exemple a "fr_FR" pour le francais).
+Normalement <CODE>LANG</CODE> (ou <CODE>LC_ALL</CODE>) est suffisant.
+<H2><A NAME="ss3.2">3.2 Q02  Je n'aime pas la police par défaut, comment la changer?</A>
+</H2>
+
+<P>A.   Dans la configuration, les préférences communes, dans la section
+"Affichage".
+<H2><A NAME="ss3.3">3.3 Q03  Il y a trop de colonnes dans la listes des messages (fenetre de résumé)!!</A>
+</H2>
+
+<P>A.   Dans la configuration, préférences communes, dans la section "Affichage",
+clickez sur le boutton "Eléments affichés dans le résumé".
+Cela fera apparaitre une fenetre dans laquelle vous pourrez choisir les
+éléments a afficher dans la fenetre de résumé. Dé-cochez ceux dont vous
+ne souhaitez pas.
+<H2><A NAME="ss3.4">3.4 Q04  Comment utiliser mon editeur préféré pour composer mes messages?</A>
+</H2>
+
+<P>A.   Dans le menu de configuration, dans les préférences communes, dans
+la section "Autre", définissez l'editeur de votre choix.
+Attention, si vous sélectionnez un editeur en mode console, tel que vi ou emacs
+vous devez le faire démarrer a partir d'un shell (term, xterm, rxvt,...)
+avec le parametre -e pour définir l'éditeur. Par exemple: 
+<CODE>rxvt -e vi %s</CODE>
+<H2><A NAME="ss3.5">3.5 Q05  Comment changer la taille de la police dans Sylpheed?</A>
+</H2>
+
+<P>A.   Vous pouvez définir la police Gtk+ par le fichier <CODE>~/.gtkrc</CODE>,
+ou <CODE>~/.gtkrc.mine</CODE>,
+(qui est appelé par <CODE>~/.gtkrc</CODE>).
+Par exemple:
+<CODE>style "default"
+{
+font =
+"-adobe-helvetica-medium-r-normal--12-*-*-*-*-*-iso8859-1
+"
+}
+widget_class "*"        style "default"</CODE>
+<H2><A NAME="ss3.6">3.6 Q06  Sylpheed sauve mes messages sortant (dans Outbox). Comment arréter cela?</A>
+</H2>
+
+<P>A.   Dans le menu de configuration, sous les préférences communes,
+dé-cocher la boite "Save to outbox".
+<H2><A NAME="ss3.7">3.7 Q07  Comment changer les racourcis de Sylpheed?</A>
+</H2>
+
+<P>A.   C'est très simple. imaginons que vous souhaitez assigner
+le racourci Ctrl-Y a la fonction "Envoyer tous les messages".
+Clicker sur le menu "Messages", déplacez le curseur sur la fonction
+"Envoyer tous les messages", et maintenant appuyez sur Ctrl-Y.
+Immédiatement, le texte du menu est mis a jours et contient le
+racourci que vous venez de définir. Notez que la fonction
+dont le racourci était Ctrl-Y (si il y en avait une) n'a plus
+de racourci.
+Pour supprimer un racourci, appuyez sur la touche "Suppr" lorsque
+le curseur est sur la fonction, cela supprimera le racourci associé.
+<H2><A NAME="ss3.8">3.8 Q08  Comment fermer les fenetres sans utiliser la souris?</A>
+</H2>
+
+<P>A.   Vous ne pouvez pas fermer toutes les fenetres de cette façon, 
+mais beaucoup se ferment en utilisant la touche "Echap" (telles que
+le carnet d'adresses, le fenetre d'affichage du code source du message, la
+fenetre d'affichage des entetes, et d'autres).
+Essayez, vous verrez.
+<H2><A NAME="ss3.9">3.9 Q09  Comment changer le façon de décrire la date dans la fenetre de résumé?</A>
+</H2>
+
+<P>A.   a partir de la version 0.4.65 vous le pouvez. Les options sont:
+%y = année en chiffres     %m = mois en chiffre
+%d = jours en chiffre     %c = date/time for locale
+%A = nom du jours         %a = nom du jours (abrége)
+%B = nom du mois          %b = nom du mois (abrégé)
+%H = heure (24 heures)    %I = heure (12 heures)
+Pour plus d'informations, voir le menu de configuration, les préférences
+communes, dans la section "Affichage", utiliser la fenetre d'entrée
+du format de date.
+<H2><A NAME="ss3.10">3.10 Q10  Pourquoi ne puis-je pas voir l'image compface?</A>
+</H2>
+
+<P>A.   Vous devez autoriser l'affichage de cet élément d'entete dans les préférences.
+<H2><A NAME="ss3.11">3.11 Q11  Je ne vois toujours pas l'image, pourquoi?</A>
+</H2>
+
+<P>A.   Vérifez que vous avez bien compilé Sylpheed avec le support
+des images compfaces. Voir Q11 dans la section Installation/Configuration.
+<H2><A NAME="ss3.12">3.12 Q12  Pourquoi aucun navigateur n'est lancé lorsque je clique sur un URL?</A>
+</H2>
+
+<P>A.   Il faut double-cliquer (deux fois rapidement).
+<H2><A NAME="ss3.13">3.13 Q13 Les pieces jointes dont le nom contient un espace ne peuvent etre ouvertes!</A>
+</H2>
+
+<P>A.   Lorsque vous lancez une application, tel que le visualisateur d'images,
+avec une piece jointe dont le nom contient des espaces, ajoutez des apostrophes
+autour du parametre %s. Par exemple: gedit '%s'
+<HR>
+Next
+<A HREF="sylpheed-faq-2.html">Previous</A>
+<A HREF="sylpheed-faq.html#toc3">Contents</A>
+</BODY>
+</HTML>

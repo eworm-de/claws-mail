@@ -1,3 +1,31 @@
+2002-03-05 [paul]	0.7.2claws31
+
+	* configure.in
+	  Makefile.am
+	* faq/Makefile.am
+	* faq/en/Makefile.am
+	  faq/en/sylpheed-faq.html
+	  faq/en/sylpheed-faq-1.html
+          faq/en/sylpheed-faq-2.html
+	  faq/en/sylpheed-faq-3.html
+	* faq/es/Makefile.am
+	  faq/es/sylpheed-faq.html
+	  faq/es/sylpheed-faq-1.html
+          faq/es/sylpheed-faq-2.html
+	  faq/es/sylpheed-faq-3.html
+	  faq/es/sylpheed-faq-4.html
+	* faq/fr/Makefile.am
+	  faq/fr/sylpheed-faq.html
+	  faq/fr/sylpheed-faq-1.html
+          faq/fr/sylpheed-faq-2.html
+	  faq/fr/sylpheed-faq-3.html
+	* src/Makefile.am
+	  src/defs.h
+	  src/mainwindow.c
+	  src/manual.[ch]
+		add FAQs in English, Spanish and French
+
+
 2002-03-05 [paul]	0.7.2claws30
 
 	* manual/en/sylpheed.html

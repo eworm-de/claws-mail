@@ -53,3 +53,30 @@ void manual_open(ManualLang lang)
 	open_uri(file_uri, prefs_common.uri_cmd);
 	g_free(file_uri);
 }
+
+void faq_open(FaqLang lang)
+{
+	gchar *lang_str;
+	gchar *file_uri;
+
+	switch (lang) {
+	case FAQ_LANG_EN:
+		lang_str = "en";
+		break;
+	case FAQ_LANG_ES:
+		lang_str = "es";
+		break;
+	case FAQ_LANG_FR:
+		lang_str = "fr";
+		break;
+	default:
+		return;
+	}
+
+	file_uri = g_strconcat("file://", FAQDIR,
+			       G_DIR_SEPARATOR_S, lang_str, G_DIR_SEPARATOR_S,
+			       FAQ_HTML_INDEX, NULL);
+	debug_print("Opening FAQ: %s\n", file_uri);
+	open_uri(file_uri, prefs_common.uri_cmd);
+	g_free(file_uri);
+}

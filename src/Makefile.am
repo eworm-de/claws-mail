@@ -218,6 +218,7 @@ sylpheed_LDADD = \
 CPPFLAGS = \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DMANUALDIR=\""$(manualdir)"\" \
+	-DFAQDIR=\""$(faqdir)"\" \
 	-DHOST_ALIAS=\""$(host_alias)"\" \
 	-DSYSCONFDIR=\""$(sysconfdir)"\"
 

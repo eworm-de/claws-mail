@@ -433,6 +433,10 @@ static void manual_open_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 
+static void faq_open_cb	 	(MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
+
 static void scan_tree_func	 (Folder	*folder,
 				  FolderItem	*item,
 				  gpointer	 data);
@@ -705,6 +709,9 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Help/_Manual"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Help/_Manual/_English"),		NULL, manual_open_cb, MANUAL_LANG_EN, NULL},
 	{N_("/_Help/_Manual/_Japanese"),	NULL, manual_open_cb, MANUAL_LANG_JA, NULL},
+	{N_("/_Help/_FAQ/_English"),		NULL, faq_open_cb, FAQ_LANG_EN, NULL},
+	{N_("/_Help/_FAQ/_Spanish"),		NULL, faq_open_cb, FAQ_LANG_ES, NULL},
+	{N_("/_Help/_FAQ/_French"),		NULL, faq_open_cb, FAQ_LANG_FR, NULL},
 	{N_("/_Help/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Help/_About"),			NULL, about_show, 0, NULL}
 };
@@ -2955,6 +2962,12 @@ static void manual_open_cb(MainWindow *mainwin, guint action,
 			   GtkWidget *widget)
 {
 	manual_open((ManualLang)action);
+}
+
+static void faq_open_cb(MainWindow *mainwin, guint action,
+			GtkWidget *widget)
+{
+	faq_open((FaqLang)action);
 }
 
 static void scan_tree_func(Folder *folder, FolderItem *item, gpointer data)

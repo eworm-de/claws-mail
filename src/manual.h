@@ -26,6 +26,14 @@ typedef enum
 	MANUAL_LANG_JA,
 } ManualLang;
 
+typedef enum
+{
+	FAQ_LANG_EN,
+	FAQ_LANG_ES,
+	FAQ_LANG_FR,
+} FaqLang;
+
 void manual_open(ManualLang lang);
+void faq_open(FaqLang lang);
 
 #endif /* __MANUAL_H__ */

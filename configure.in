@@ -8,7 +8,7 @@ MINOR_VERSION=7
 MICRO_VERSION=2
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws30
+EXTRA_VERSION=claws31
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -78,6 +78,9 @@ AC_SUBST(localedir)
 
 manualdir='${prefix}/${DATADIRNAME}/${PACKAGE}/manual'
 AC_SUBST(manualdir)
+
+faqdir='${prefix}/${DATADIRNAME}/${PACKAGE}/faq'
+AC_SUBST(faqdir)
 
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${datadir}" = 'x${prefix}/share'; then
@@ -344,6 +347,10 @@ Makefile
 sylpheed.spec
 intl/Makefile
 ac/Makefile
+faq/Makefile
+faq/en/Makefile
+faq/es/Makefile
+faq/fr/Makefile
 po/Makefile.in
 libkcc/Makefile
 src/version.h
