@@ -1,3 +1,11 @@
+2003-02-09 [paul]	0.8.9claws49
+
+	* src/folderview.c
+		fix bug where a newsgroup folder's processing rules were
+		merged with the global filtering rules when the newsgroup
+		folder was deleted, causing some seriously bad results,
+		see <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=180253>
+
 2003-02-08 [melvin]	0.8.9claws48
 
 	* src/compose.c
