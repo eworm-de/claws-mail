@@ -1,3 +1,14 @@
+2004-01-03 [luke]	0.9.8claws17
+
+	* src/procheader.c
+		Clean up:
+		o remove unused functions string_getchar() and file_getchar()
+		o remove the getchar_ parameter from generic_get_one_field()
+		o add an 'unfold' parameter to generic_get_one_field, to
+		  be used if no HeaderEntry is supplied
+		o procheader_get_one_field_asis() uses
+		  generic_get_one_field().
+
 2004-01-01 [christoph]	0.9.8claws16
 
 	* src/common/xml.[ch]
