@@ -232,7 +232,7 @@ static void browse_create( void ) {
 	GtkWidget *statusbar;
 	gint top;
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
+	window = gtk_dialog_new();
 	gtk_widget_set_usize( window, BROWSELDAP_WIDTH, BROWSELDAP_HEIGHT );
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title( GTK_WINDOW(window), _("Browse Directory Entry") );

@@ -1,3 +1,12 @@
+2004-07-24 [colin]	0.9.12cvs33.19
+
+	* src/browseldap.c
+	* src/ldapctrl.c
+	* src/ldapctrl.h
+	* src/ldapserver.h
+		Sync ldap with HEAD
+	(Fixes 546 LDAP completely broken)
+
 2004-07-24 [colin]	0.9.12cvs33.18
 
 	* src/prefs_msg_colors.c
