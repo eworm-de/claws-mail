@@ -37,6 +37,7 @@
 #include <gtk/gtkalignment.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkwindow.h>
+#include <gtk/gtkdrawingarea.h>
 
 #include "intl.h"
 #include "colorlabel.h"
@@ -68,7 +69,7 @@ static struct
 	/* XXX: note that the label member is supposed to be dynamically 
 	 * allocated and fffreed */
 	gchar			*label;
-	GtkPixmap		*pixmap;
+	GtkWidget		*widget;
 } label_colors[] = {
 	{ LCCF_ALL, { 0, 0xffff, (0x99 << 8), 0x0 },		NULL, NULL },
 	{ LCCF_ALL, { 0, 0xffff, 0, 0 },			NULL, NULL },
@@ -109,60 +110,52 @@ gchar *colorlabel_get_color_text(gint color_index)
 	return label_colors[color_index].label;
 }
 
-GtkPixmap *colorlabel_create_color_pixmap(GdkColor color)
+static gboolean colorlabel_drawing_area_expose_event_cb
+	(GtkWidget *widget, GdkEventExpose *expose, gpointer data)
 {
-	const gchar *FMT = "+      c #%2.2X%2.2X%2.2X";
-	gchar buf[40];
+	GdkDrawable *drawable = widget->window;
+	gulong c = (gulong) GPOINTER_TO_INT(data);
+	GdkColor color;
+	GdkGC *gc;
 
-	/* black frame of 1 pixel */
-	gchar *dummy_xpm[] = {
-		"16 16 3 1",
-		"       c None",
-		".      c #000000",
-		"+      c #000000",
-		"................",
-		".++++++++++++++.",
-		".++++++++++++++.",
-		".++++++++++++++.",
-		".++++++++++++++.",
-		".++++++++++++++.",
-		".++++++++++++++.",
-		".++++++++++++++.",
-		".++++++++++++++.",
-		".++++++++++++++.",
-		".++++++++++++++.",
-		".++++++++++++++.",
-		".++++++++++++++.",
-		".++++++++++++++.",
-		".++++++++++++++.",
-		"................"
-	};
+	color.red   = ((c >> 16UL) & 0xFFUL) << 8UL;
+	color.green = ((c >>  8UL) & 0xFFUL) << 8UL;
+	color.blue  = ((c)         & 0xFFUL) << 8UL;
 
-	GdkBitmap *xpmmask;
-	GdkPixmap *xpm;
-	GtkPixmap *pixmap;
+	gdk_colormap_alloc_color(gtk_widget_get_colormap(widget), &color, FALSE, TRUE);
 
-	/* put correct color in xpm data */
-	sprintf(buf, FMT, color.red >> 8, color.green >> 8, color.blue >> 8);
-	dummy_xpm[3] = buf;				
+	gc = gdk_gc_new(drawable);
 
-#ifdef WIN32
-#define GDK_ROOT_PARENT() NULL
-#endif
+	gdk_gc_set_foreground(gc, &color);
+	gdk_draw_rectangle(drawable, gc,
+			   TRUE, 0, 0, widget->allocation.width,
+			   widget->allocation.height);
+	gdk_draw_rectangle(drawable, widget->style->black_gc,
+			   FALSE, 0, 0, widget->allocation.width,
+			   widget->allocation.height);
 
-	/* XXX: passing NULL as GdkWindow* seems to be possible */
-	xpm = gdk_pixmap_create_from_xpm_d
-		(GDK_ROOT_PARENT(),&xpmmask, NULL, (gchar **) &dummy_xpm);
-	if (xpm == NULL)
-		debug_print("*** NO XPM\n");
-	pixmap = GTK_PIXMAP(gtk_pixmap_new(xpm, xpmmask)); 
+	gdk_gc_unref(gc);			   
+	
+	return FALSE;
+}
 
-	g_return_val_if_fail(pixmap, NULL);
+static GtkWidget *colorlabel_create_color_widget(GdkColor color)
+{
+	GtkWidget *widget;
 
-	gdk_pixmap_unref(xpm);
-	gdk_bitmap_unref(xpmmask);
+	widget = gtk_drawing_area_new();
+	gtk_drawing_area_size(GTK_DRAWING_AREA(widget), 16, 16);
 
-	return pixmap;
+#define CL(x)		(((gulong) (x) >> (gulong) 8) & 0xFFUL)	
+#define CR(r, g, b)	((CL(r) << (gulong) 16) | \
+			 (CL(g) << (gulong)  8) | \
+			 (CL(b)))
+
+	gtk_signal_connect(GTK_OBJECT(widget), "expose_event", 
+			   colorlabel_drawing_area_expose_event_cb,
+			   GINT_TO_POINTER( (gint) CR(color.red, color.green, color.blue )));
+
+	return widget;
 }
 
 /* XXX: this function to check if menus with colors and labels should
@@ -184,18 +177,18 @@ gboolean colorlabel_changed(void)
  * function */
 static void colorlabel_recreate_color(gint color)
 {
-	GtkPixmap *pixmap;
+	GtkWidget *widget;
 
 	if (!(label_colors[color].changed & LCCF_COLOR))
 		return;
 
-	pixmap = GTK_PIXMAP(colorlabel_create_color_pixmap(label_colors[color].color));
-	g_return_if_fail(pixmap);
+	widget = colorlabel_create_color_widget(label_colors[color].color);
+	g_return_if_fail(widget);
 
-	if (label_colors[color].pixmap)
-		gtk_widget_destroy(GTK_WIDGET(label_colors[color].pixmap));
+	if (label_colors[color].widget) 
+		gtk_widget_destroy(label_colors[color].widget);
 
-	label_colors[color].pixmap = pixmap;		
+	label_colors[color].widget = widget;		
 	label_colors[color].changed &= ~LCCF_COLOR;
 }
 
@@ -255,9 +248,8 @@ GtkWidget *colorlabel_create_check_color_menu_item(gint color_index)
 	gtk_widget_show(align);
 	gtk_container_set_border_width(GTK_CONTAINER(align), 1);
 
-	gtk_container_add(GTK_CONTAINER(align),
-			  GTK_WIDGET(label_colors[color_index].pixmap));
-	gtk_widget_show(GTK_WIDGET(label_colors[color_index].pixmap));
+	gtk_container_add(GTK_CONTAINER(align), label_colors[color_index].widget);
+	gtk_widget_show(label_colors[color_index].widget);
 	gtk_widget_set_usize(align, 16, 16);
 
 	gtk_box_pack_start(GTK_BOX(hbox), align, FALSE, FALSE, 0);
@@ -290,7 +282,7 @@ GtkWidget *colorlabel_create_color_menu(void)
 	
 	/* and the color items */
 	for (i = 0; i < LABEL_COLORS_ELEMS; i++) {
-		GtkPixmap *pixmap = colorlabel_create_color_pixmap(label_colors[i].color);
+		GtkWidget *widget = colorlabel_create_color_widget(label_colors[i].color);
 
 		item  = gtk_menu_item_new();
 		gtk_object_set_data(GTK_OBJECT(item), "color", GUINT_TO_POINTER(i + 1));
@@ -307,8 +299,8 @@ GtkWidget *colorlabel_create_color_menu(void)
 		gtk_widget_show(align);
 		gtk_container_set_border_width(GTK_CONTAINER(align), 1);
 
-		gtk_container_add(GTK_CONTAINER(align), GTK_WIDGET(pixmap));
-		gtk_widget_show(GTK_WIDGET(pixmap));
+		gtk_container_add(GTK_CONTAINER(align), widget);
+		gtk_widget_show(widget);
 		gtk_widget_set_usize(align, 16, 16);
 
 		gtk_box_pack_start(GTK_BOX(hbox), align, FALSE, FALSE, 0);
@@ -335,5 +327,3 @@ guint colorlabel_get_color_menu_active_item(GtkWidget *menu)
 		(gtk_object_get_data(GTK_OBJECT(menuitem), "color"));
 	return color;
 }
-
-

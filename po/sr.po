@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.9claws\n"
-"POT-Creation-Date: 2003-01-23 16:51+0100\n"
-"PO-Revision-Date: 2003-01-23 16:53+0100\n"
+"POT-Creation-Date: 2003-02-11 20:58+0100\n"
+"PO-Revision-Date: 2003-02-11 22:50+0100\n"
 "Last-Translator: Aleksandar Urosevic aka Urke MMI <urke@gmx.net>\n"
 "Language-Team: Aleksandar Urosevic <urke@gmx.net>\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgid ""
 "GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>\n"
 "\n"
 msgstr ""
-"GPGME je u vlasni¹tvu Werner Koch <dd9jn@gnu.org> od 2001\n"
+"GPGME Autorska prava (C) 2001 Werner Koch <dd9jn@gnu.org>\n"
 "\n"
 
 #: src/about.c:214
@@ -33,9 +33,10 @@ msgid ""
 "version.\n"
 "\n"
 msgstr ""
-"Ovaj program je besplatan; mo¾ete ga redistribuirati i/ili modifikovati ga "
-"pod uslovima naznaèenim u GNU General Public Licenci, objavljenoj od strane "
-"Free Software Foundation; u verziji 2, ili (po svom izboru) novijoj.\n"
+"Ovaj program je slobodan softver; mo¾ete ga raspodeliti i/ili "
+"menjati pod odredbama GNUove op¹te javne licence koju je objavila "
+"Fondacija za slobodni softver; i to, bilo verzije 2 Licence, ili "
+"(po va¹em izboru) bilo koje sledeæe verzije.\n"
 "\n"
 
 #: src/about.c:220
@@ -46,9 +47,10 @@ msgid ""
 "more details.\n"
 "\n"
 msgstr ""
-"Ovaj se program distribuira u nadi da æe biti od koristi, ali BEZ GARANCIJA; "
-"èak ni ako se ukljuèi u garancije TRGOVINE ili UPOTREBE U ODREÐENE SVRHE. "
-"Pogledajte GNU General Public Licencu za vi¹e detalja.\n"
+"Ovaj program se raspodeljuje u nameri da bude koristan, ali BEZ "
+"IKAKVE GARANCIJE; èak i bez implicitne garancije KOMERCIJALNE "
+"VREDNOSTI ili ISPUNJAVANJA ODREÐENE POTREBE. Pogledajte GNUovu op¹tu "
+"javnu licencu za vi¹e detalja.\n"
 "\n"
 
 #: src/about.c:226
@@ -57,22 +59,23 @@ msgid ""
 "this program; if not, write to the Free Software Foundation, Inc., 59 Temple "
 "Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr ""
-"Uz ovaj program ste trebali dobiti i kopiju GNU General Public Licence; "
-"ukoliko niste, obratite se pismom na adresu Free Software Foundation, Inc., "
-"59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+"Trebalo bi da primite kopiju GNUove op¹te javne licence zajedno sa "
+"ovim programom; ako to nije sluèaj, pi¹ite Fondaciji za slobodni "
+"softver na adresu: Free Software Foundation, Inc., 59 Temple Place - "
+"Suite 330, Boston, MA 02111-1307, USA."
 
 #: src/about.c:233 src/addressadd.c:241 src/addrgather.c:506
-#: src/alertpanel.c:190 src/alertpanel.c:324 src/compose.c:2916
-#: src/compose.c:5540 src/editaddress.c:513 src/editbook.c:204
+#: src/alertpanel.c:190 src/alertpanel.c:324 src/compose.c:2921
+#: src/compose.c:5549 src/editaddress.c:513 src/editbook.c:204
 #: src/editgroup.c:369 src/editjpilot.c:344 src/editldap.c:243
 #: src/editldap_basedn.c:212 src/editvcard.c:239 src/export.c:187
-#: src/foldersel.c:191 src/grouplistdialog.c:241 src/gtk/sslcertwindow.c:230
-#: src/gtkaspell.c:1347 src/gtkaspell.c:2263 src/import.c:190
-#: src/importmutt.c:287 src/importpine.c:287 src/inputdialog.c:202
-#: src/main.c:549 src/mainwindow.c:2075 src/messageview.c:488
-#: src/mimeview.c:838 src/mimeview.c:899 src/passphrase.c:130
-#: src/prefs_gtk.c:379 src/prefs_actions.c:294 src/prefs_common.c:3338
-#: src/prefs_common.c:3507 src/prefs_common.c:3844
+#: src/foldersel.c:191 src/grouplistdialog.c:241 src/gtk/prefswindow.c:258
+#: src/gtk/sslcertwindow.c:230 src/gtkaspell.c:1347 src/gtkaspell.c:2263
+#: src/import.c:190 src/importmutt.c:287 src/importpine.c:287
+#: src/inputdialog.c:202 src/main.c:549 src/mainwindow.c:2075
+#: src/messageview.c:488 src/mimeview.c:838 src/mimeview.c:899
+#: src/passphrase.c:130 src/prefs_gtk.c:379 src/prefs_actions.c:294
+#: src/prefs_common.c:3339 src/prefs_common.c:3508 src/prefs_common.c:3845
 #: src/prefs_customheader.c:157 src/prefs_display_header.c:194
 #: src/prefs_filtering.c:343 src/prefs_folder_item.c:499
 #: src/prefs_matcher.c:370 src/prefs_scoring.c:196
@@ -101,8 +104,8 @@ msgstr ""
 "Prikupljanje poruka po nalozima æe se obaviti po ovom redosledu.\n"
 "Ukljuèite opciju u koloni 'G' za proveru naloga sa 'Proveri sve'."
 
-#: src/account.c:592 src/addressadd.c:183 src/addressbook.c:529
-#: src/compose.c:4445 src/compose.c:4615 src/editaddress.c:774
+#: src/account.c:592 src/addressadd.c:183 src/addressbook.c:602
+#: src/compose.c:4454 src/compose.c:4624 src/editaddress.c:774
 #: src/editaddress.c:823 src/editbook.c:174 src/editgroup.c:257
 #: src/editjpilot.c:295 src/editldap.c:298 src/editvcard.c:210
 #: src/importmutt.c:261 src/importpine.c:261 src/mimeview.c:152
@@ -110,7 +113,7 @@ msgstr ""
 msgid "Name"
 msgstr "Naziv"
 
-#: src/account.c:593 src/prefs_account.c:893
+#: src/account.c:593 src/prefs_account.c:896
 msgid "Protocol"
 msgstr "Protokol"
 
@@ -118,7 +121,7 @@ msgstr "Protokol"
 msgid "Server"
 msgstr "Server"
 
-#: src/account.c:623 src/addressbook.c:668 src/editaddress.c:722
+#: src/account.c:623 src/addressbook.c:741 src/editaddress.c:722
 #: src/editaddress.c:856 src/prefs_actions.c:354 src/prefs_customheader.c:234
 #: src/prefs_display_header.c:275 src/prefs_display_header.c:330
 #: src/prefs_filtering.c:525 src/prefs_matcher.c:557 src/prefs_scoring.c:271
@@ -152,10 +155,10 @@ msgstr " Gore "
 msgid " Set as default account "
 msgstr " Postavi kao podrazumevani nalog "
 
-#: src/account.c:667 src/addressbook.c:892 src/addressbook.c:2842
-#: src/addressbook.c:2846 src/addressbook.c:2883 src/crash.c:245
-#: src/exphtmldlg.c:169 src/inc.c:680 src/message_search.c:135
-#: src/prefs_actions.c:1696 src/summary_search.c:208
+#: src/account.c:667 src/addressbook.c:966 src/addressbook.c:2916
+#: src/addressbook.c:2920 src/addressbook.c:2957 src/crash.c:245
+#: src/exphtmldlg.c:169 src/gtk/pluginwindow.c:224 src/inc.c:679
+#: src/message_search.c:135 src/prefs_actions.c:1696 src/summary_search.c:208
 msgid "Close"
 msgstr " Zatvori "
 
@@ -167,25 +170,25 @@ msgstr " Ukloni nalog "
 msgid "Do you really want to delete this account?"
 msgstr "Da li zaista ¾elite da uklonite nalog?"
 
-#: src/account.c:737 src/addressbook.c:915 src/addressbook.c:2088
-#: src/compose.c:2798 src/compose.c:3273 src/compose.c:5718 src/compose.c:6024
+#: src/account.c:737 src/addressbook.c:989 src/addressbook.c:2162
+#: src/compose.c:2798 src/compose.c:3280 src/compose.c:5727 src/compose.c:6033
 #: src/exphtmldlg.c:158 src/folderview.c:2170 src/folderview.c:2229
-#: src/folderview.c:2321 src/folderview.c:2456 src/folderview.c:2493
+#: src/folderview.c:2321 src/folderview.c:2456 src/folderview.c:2495
 #: src/inc.c:167 src/inc.c:298 src/mainwindow.c:1346 src/message_search.c:198
 #: src/prefs_actions.c:869 src/prefs_customheader.c:543
 #: src/prefs_filtering.c:1063 src/prefs_filtering.c:1491
-#: src/prefs_matcher.c:1663 src/prefs_scoring.c:632 src/prefs_scoring.c:769
-#: src/prefs_template.c:544 src/ssl_manager.c:271 src/summary_search.c:322
-#: src/summaryview.c:907 src/summaryview.c:1350 src/summaryview.c:1394
-#: src/summaryview.c:1437 src/summaryview.c:1461 src/summaryview.c:1493
-#: src/summaryview.c:1518 src/summaryview.c:1543 src/summaryview.c:1568
-#: src/summaryview.c:3042 src/toolbar.c:2105
+#: src/prefs_matcher.c:1664 src/prefs_scoring.c:632 src/prefs_scoring.c:769
+#: src/prefs_template.c:544 src/ssl_manager.c:271 src/summary_search.c:324
+#: src/summaryview.c:912 src/summaryview.c:1356 src/summaryview.c:1400
+#: src/summaryview.c:1443 src/summaryview.c:1467 src/summaryview.c:1499
+#: src/summaryview.c:1524 src/summaryview.c:1549 src/summaryview.c:1574
+#: src/summaryview.c:3060 src/toolbar.c:2105
 msgid "Yes"
 msgstr "Da"
 
-#: src/account.c:737 src/compose.c:3273 src/compose.c:5718
+#: src/account.c:737 src/compose.c:3280 src/compose.c:5727
 #: src/folderview.c:2170 src/folderview.c:2229 src/folderview.c:2321
-#: src/folderview.c:2456 src/folderview.c:2493 src/ssl_manager.c:271
+#: src/folderview.c:2456 src/folderview.c:2495 src/ssl_manager.c:271
 msgid "+No"
 msgstr "+Ne"
 
@@ -197,7 +200,7 @@ msgstr "Dodaj u adresar"
 msgid "Address"
 msgstr "Adresa"
 
-#: src/addressadd.c:205 src/addressbook.c:531 src/editaddress.c:628
+#: src/addressadd.c:205 src/addressbook.c:604 src/editaddress.c:628
 #: src/editaddress.c:692 src/editgroup.c:259
 msgid "Remarks"
 msgstr "Napomena"
@@ -206,23 +209,23 @@ msgstr "Napomena"
 msgid "Select Address Book Folder"
 msgstr "Odaberite direktorijum adresara"
 
-#: src/addressadd.c:242 src/addressbook.c:2082 src/addrgather.c:507
-#: src/compose.c:2916 src/compose.c:5541 src/compose.c:6195 src/compose.c:6233
+#: src/addressadd.c:242 src/addressbook.c:2156 src/addrgather.c:507
+#: src/compose.c:2921 src/compose.c:5550 src/compose.c:6204 src/compose.c:6242
 #: src/editaddress.c:514 src/editbook.c:205 src/editgroup.c:370
 #: src/editjpilot.c:345 src/editldap.c:244 src/editldap_basedn.c:213
 #: src/editvcard.c:240 src/exphtmldlg.c:664 src/export.c:188
-#: src/foldersel.c:192 src/grouplistdialog.c:242 src/gtkaspell.c:1356
-#: src/import.c:191 src/importldif.c:747 src/importmutt.c:288
-#: src/importpine.c:288 src/inputdialog.c:203 src/main.c:549
-#: src/mainwindow.c:2075 src/messageview.c:488 src/mimeview.c:839
-#: src/mimeview.c:900 src/passphrase.c:134 src/prefs_gtk.c:380
-#: src/prefs_actions.c:295 src/prefs_common.c:3339 src/prefs_common.c:3845
-#: src/prefs_customheader.c:158 src/prefs_display_header.c:195
-#: src/prefs_filtering.c:344 src/prefs_folder_item.c:500
-#: src/prefs_matcher.c:371 src/prefs_scoring.c:197
+#: src/foldersel.c:192 src/grouplistdialog.c:242 src/gtk/prefswindow.c:259
+#: src/gtkaspell.c:1356 src/import.c:191 src/importldif.c:825
+#: src/importmutt.c:288 src/importpine.c:288 src/inputdialog.c:203
+#: src/main.c:549 src/mainwindow.c:2075 src/messageview.c:488
+#: src/mimeview.c:839 src/mimeview.c:900 src/passphrase.c:134
+#: src/prefs_gtk.c:380 src/prefs_actions.c:295 src/prefs_common.c:3340
+#: src/prefs_common.c:3846 src/prefs_customheader.c:158
+#: src/prefs_display_header.c:195 src/prefs_filtering.c:344
+#: src/prefs_folder_item.c:500 src/prefs_matcher.c:371 src/prefs_scoring.c:197
 #: src/prefs_summary_column.c:314 src/prefs_template.c:264
-#: src/progressdialog.c:77 src/select-keys.c:323 src/summaryview.c:907
-#: src/summaryview.c:3382
+#: src/progressdialog.c:77 src/select-keys.c:323 src/summaryview.c:912
+#: src/summaryview.c:3404
 msgid "Cancel"
 msgstr "Poni¹ti"
 
@@ -372,14 +375,14 @@ msgstr "/Novi _direktorijum"
 #: src/folderview.c:296 src/folderview.c:300 src/folderview.c:302
 #: src/folderview.c:312 src/folderview.c:317 src/folderview.c:321
 #: src/folderview.c:323 src/folderview.c:333 src/folderview.c:337
-#: src/folderview.c:340 src/folderview.c:342 src/summaryview.c:409
-#: src/summaryview.c:412 src/summaryview.c:414 src/summaryview.c:420
-#: src/summaryview.c:432 src/summaryview.c:444 src/summaryview.c:450
-#: src/summaryview.c:453
+#: src/folderview.c:340 src/folderview.c:342 src/summaryview.c:412
+#: src/summaryview.c:415 src/summaryview.c:417 src/summaryview.c:423
+#: src/summaryview.c:435 src/summaryview.c:447 src/summaryview.c:453
+#: src/summaryview.c:456
 msgid "/---"
 msgstr "/---"
 
-#: src/addressbook.c:388 src/addressbook.c:402 src/summaryview.c:417
+#: src/addressbook.c:388 src/addressbook.c:402 src/summaryview.c:420
 msgid "/_Delete"
 msgstr "/_Ukloni"
 
@@ -399,20 +402,96 @@ msgstr "/_Prenesi"
 msgid "/Pa_ste Address"
 msgstr "/Prenesi _adresu"
 
-#: src/addressbook.c:530
+#: src/addressbook.c:420 src/crash.c:448 src/crash.c:467 src/importldif.c:112
+msgid "Unknown"
+msgstr "Nepoznato"
+
+#: src/addressbook.c:427 src/addressbook.c:446 src/importldif.c:119
+msgid "Success"
+msgstr "Uspe¹no"
+
+#: src/addressbook.c:428 src/importldif.c:120
+msgid "Bad arguments"
+msgstr "Lo¹i argumenti"
+
+#: src/addressbook.c:429 src/importldif.c:121
+msgid "File not specified"
+msgstr "Fajl nije odreðen"
+
+#: src/addressbook.c:430 src/importldif.c:122
+msgid "Error opening file"
+msgstr "Gre¹ka pri otvaranju fajla"
+
+#: src/addressbook.c:431 src/importldif.c:123
+msgid "Error reading file"
+msgstr "Gre¹ka pri èitanju fajla"
+
+#: src/addressbook.c:432 src/importldif.c:124
+msgid "End of file encountered"
+msgstr "Detektovan kraj fajla"
+
+#: src/addressbook.c:433 src/importldif.c:125
+msgid "Error allocating memory"
+msgstr "Gre¹ka pri rezervisanju memorije"
+
+#: src/addressbook.c:434 src/importldif.c:126
+msgid "Bad file format"
+msgstr "Neispravan format fajla"
+
+#: src/addressbook.c:435 src/importldif.c:127
+msgid "Error writing to file"
+msgstr "Gre¹ka pri pisanju u fajl"
+
+#: src/addressbook.c:436 src/importldif.c:128
+msgid "Error opening directory"
+msgstr "Gre¹ka pri otvaranju direktorijuma"
+
+#: src/addressbook.c:437 src/importldif.c:129
+msgid "No path specified"
+msgstr "Putanja nije odreðena"
+
+#: src/addressbook.c:447
+msgid "Error connecting to LDAP server"
+msgstr "Gre¹ka pri povezivanju na LDAP server"
+
+#: src/addressbook.c:448
+msgid "Error initializing LDAP"
+msgstr "Gre¹ka pri LDAP inicijalizaciji"
+
+#: src/addressbook.c:449
+msgid "Error binding to LDAP server"
+msgstr "Gre¹ka pri spajanju na LDAP server"
+
+#: src/addressbook.c:450
+msgid "Error searching LDAP database"
+msgstr "Gre¹ka pri ptreta¾ivanju LDIF baze podataka"
+
+#: src/addressbook.c:451
+msgid "Timeout performing LDAP operation"
+msgstr "Isteklo je vreme predviðeno za LDAP komandu"
+
+#: src/addressbook.c:452 src/addressbook.c:453
+msgid "Error in LDAP search criteria"
+msgstr "Gre¹ka u kriterijumu za LDAP pretragu"
+
+#: src/addressbook.c:454
+msgid "No LDAP entries found for search criteria"
+msgstr "Nema pronaðenih LDAP unosa za zadati kriterijum pretrage"
+
+#: src/addressbook.c:603
 msgid "E-Mail address"
 msgstr "E-mail adresa"
 
-#: src/addressbook.c:534 src/prefs_common.c:2989 src/toolbar.c:166
+#: src/addressbook.c:607 src/prefs_common.c:2990 src/toolbar.c:166
 #: src/toolbar.c:1813
 msgid "Address book"
 msgstr "Adresar"
 
-#: src/addressbook.c:633
+#: src/addressbook.c:706
 msgid "Name:"
 msgstr "Ime:"
 
-#: src/addressbook.c:665 src/addressbook.c:2081 src/addressbook.c:2088
+#: src/addressbook.c:738 src/addressbook.c:2155 src/addressbook.c:2162
 #: src/editaddress.c:716 src/editaddress.c:850 src/prefs_actions.c:367
 #: src/prefs_display_header.c:281 src/prefs_display_header.c:337
 #: src/prefs_filtering.c:228 src/prefs_filtering.c:538 src/prefs_matcher.c:570
@@ -421,59 +500,59 @@ msgstr "Ime:"
 msgid "Delete"
 msgstr "Ukloni"
 
-#: src/addressbook.c:671
+#: src/addressbook.c:744
 msgid "Lookup"
 msgstr " Pronaði "
 
-#: src/addressbook.c:683 src/compose.c:1305 src/compose.c:2965
-#: src/compose.c:4262 src/compose.c:4961 src/headerview.c:54
+#: src/addressbook.c:756 src/compose.c:1305 src/compose.c:2970
+#: src/compose.c:4271 src/compose.c:4970 src/headerview.c:54
 #: src/prefs_template.c:173 src/summary_search.c:156
 msgid "To:"
 msgstr "Primalac:"
 
-#: src/addressbook.c:687 src/compose.c:1289 src/compose.c:2964
+#: src/addressbook.c:760 src/compose.c:1289 src/compose.c:2969
 #: src/prefs_template.c:175
 msgid "Cc:"
 msgstr "Kopija:"
 
-#: src/addressbook.c:691 src/compose.c:1292 src/prefs_template.c:176
+#: src/addressbook.c:764 src/compose.c:1292 src/prefs_template.c:176
 msgid "Bcc:"
 msgstr "Nevidljiva kopija:"
 
-#: src/addressbook.c:890 src/addressbook.c:913
+#: src/addressbook.c:964 src/addressbook.c:987
 msgid "Delete address(es)"
 msgstr "Ukloni adresu(e)"
 
-#: src/addressbook.c:891
+#: src/addressbook.c:965
 msgid "This address data is readonly and cannot be deleted."
 msgstr "Podatak o ovoj adresi je samo za èitanje i ne mo¾e se obrisati."
 
-#: src/addressbook.c:914
+#: src/addressbook.c:988
 msgid "Really delete the address(es)?"
 msgstr "Zaista ¾elite da uklonite adresu(e)?"
 
-#: src/addressbook.c:915 src/addressbook.c:2088 src/compose.c:2798
-#: src/compose.c:6024 src/exphtmldlg.c:158 src/inc.c:167 src/inc.c:298
+#: src/addressbook.c:989 src/addressbook.c:2162 src/compose.c:2798
+#: src/compose.c:6033 src/exphtmldlg.c:158 src/inc.c:167 src/inc.c:298
 #: src/mainwindow.c:1346 src/message_search.c:198 src/prefs_actions.c:869
 #: src/prefs_customheader.c:543 src/prefs_filtering.c:1063
-#: src/prefs_filtering.c:1491 src/prefs_matcher.c:1663 src/prefs_scoring.c:632
-#: src/prefs_scoring.c:769 src/prefs_template.c:544 src/summary_search.c:322
-#: src/summaryview.c:907 src/summaryview.c:1350 src/summaryview.c:1394
-#: src/summaryview.c:1437 src/summaryview.c:1461 src/summaryview.c:1493
-#: src/summaryview.c:1518 src/summaryview.c:1543 src/summaryview.c:1568
-#: src/summaryview.c:3042 src/toolbar.c:2105
+#: src/prefs_filtering.c:1491 src/prefs_matcher.c:1664 src/prefs_scoring.c:632
+#: src/prefs_scoring.c:769 src/prefs_template.c:544 src/summary_search.c:324
+#: src/summaryview.c:912 src/summaryview.c:1356 src/summaryview.c:1400
+#: src/summaryview.c:1443 src/summaryview.c:1467 src/summaryview.c:1499
+#: src/summaryview.c:1524 src/summaryview.c:1549 src/summaryview.c:1574
+#: src/summaryview.c:3060 src/toolbar.c:2105
 msgid "No"
 msgstr "Ne"
 
-#: src/addressbook.c:1424 src/addressbook.c:1497
+#: src/addressbook.c:1498 src/addressbook.c:1571
 msgid "Cannot paste. Target address book is readonly."
 msgstr "Prenos nije moguæ. Ciljni adresar je samo za èitanje."
 
-#: src/addressbook.c:1435
+#: src/addressbook.c:1509
 msgid "Cannot paste into an address group."
 msgstr "Prenos u grupu nije moguæ."
 
-#: src/addressbook.c:2078
+#: src/addressbook.c:2152
 #, c-format
 msgid ""
 "Do you want to delete the folder AND all addresses in `%s' ? \n"
@@ -483,32 +562,32 @@ msgstr ""
 "Ako uklonite samo direktorijum, adrese æe biti preme¹tene u roditeljski "
 "direktorijum."
 
-#: src/addressbook.c:2082
+#: src/addressbook.c:2156
 msgid "Folder only"
 msgstr "Samo direktorijum"
 
-#: src/addressbook.c:2082
+#: src/addressbook.c:2156
 msgid "Folder and Addresses"
 msgstr "Direktorijum i adrese"
 
-#: src/addressbook.c:2087
+#: src/addressbook.c:2161
 #, c-format
 msgid "Really delete `%s' ?"
 msgstr "Zaista ¾elite da uklonite '%s' ?"
 
-#: src/addressbook.c:2792
+#: src/addressbook.c:2866
 msgid "New user, could not save index file."
 msgstr "Vi ste nov korisnik, ne mogu da saèuvam indeksni fajl."
 
-#: src/addressbook.c:2796
+#: src/addressbook.c:2870
 msgid "New user, could not save address book files."
 msgstr "Vi ste nov korisnik, ne mogu da saèuvam adresar."
 
-#: src/addressbook.c:2806
+#: src/addressbook.c:2880
 msgid "Old address book converted successfully."
 msgstr "Stari adresar je uspe¹no konvertovan."
 
-#: src/addressbook.c:2811
+#: src/addressbook.c:2885
 msgid ""
 "Old address book converted,\n"
 "could not save new address index file"
@@ -516,7 +595,7 @@ msgstr ""
 "Stari adresar je konvertovan,\n"
 "ne mogu da saèuvam novi fajl za indekse"
 
-#: src/addressbook.c:2824
+#: src/addressbook.c:2898
 msgid ""
 "Could not convert address book,\n"
 "but created empty new address book files."
@@ -524,7 +603,7 @@ msgstr ""
 "Ne mogu da konvertujem adresar,\n"
 "ali je kreirana nova prazna datoteka za adresar."
 
-#: src/addressbook.c:2830
+#: src/addressbook.c:2904
 msgid ""
 "Could not convert address book,\n"
 "could not create new address book files."
@@ -532,7 +611,7 @@ msgstr ""
 "Ne mogu da konvertujem adresar,\n"
 "ne mogu da kreiram novi fajl za adresar."
 
-#: src/addressbook.c:2835
+#: src/addressbook.c:2909
 msgid ""
 "Could not convert address book\n"
 "and could not create new address book files."
@@ -540,57 +619,57 @@ msgstr ""
 "Ne mogu da konvertujem adresar,\n"
 "i ne mogu da kreiram novi fajl za adresar."
 
-#: src/addressbook.c:2842
+#: src/addressbook.c:2916
 msgid "Addressbook conversion error"
 msgstr "Gre¹ka pri konverziji adresara"
 
-#: src/addressbook.c:2846
+#: src/addressbook.c:2920
 msgid "Addressbook conversion"
 msgstr "Konverzija adresara"
 
-#: src/addressbook.c:2881
+#: src/addressbook.c:2955
 msgid "Addressbook Error"
 msgstr "Gre¹ka u adresaru"
 
-#: src/addressbook.c:2882
+#: src/addressbook.c:2956
 msgid "Could not read address index"
 msgstr "Ne mogu da proèitam fajl za indekse"
 
-#: src/addressbook.c:3373 src/prefs_common.c:1053
+#: src/addressbook.c:3449 src/prefs_common.c:1053
 msgid "Interface"
 msgstr "Interfejs"
 
-#: src/addressbook.c:3389 src/exphtmldlg.c:375 src/exphtmldlg.c:579
-#: src/exporthtml.c:1011 src/importldif.c:490
+#: src/addressbook.c:3465 src/exphtmldlg.c:375 src/exphtmldlg.c:579
+#: src/exporthtml.c:1011 src/importldif.c:560
 msgid "Address Book"
 msgstr "Adresar"
 
-#: src/addressbook.c:3405
+#: src/addressbook.c:3481
 msgid "Person"
 msgstr "Osoba"
 
-#: src/addressbook.c:3421
+#: src/addressbook.c:3497
 msgid "EMail Address"
 msgstr "E-mail adresa"
 
-#: src/addressbook.c:3437
+#: src/addressbook.c:3513
 msgid "Group"
 msgstr "Grupa"
 
-#: src/addressbook.c:3453 src/exporthtml.c:913 src/folderview.c:370
-#: src/prefs_account.c:1950
+#: src/addressbook.c:3529 src/exporthtml.c:913 src/folderview.c:370
+#: src/prefs_account.c:1963
 msgid "Folder"
 msgstr "Direktorijum"
 
-#: src/addressbook.c:3469
+#: src/addressbook.c:3545
 msgid "vCard"
 msgstr "Kontakt"
 
-#: src/addressbook.c:3485 src/addressbook.c:3501
+#: src/addressbook.c:3561 src/addressbook.c:3577
 msgid "JPilot"
 msgstr "JPilot"
 
-#: src/addressbook.c:3517
+#: src/addressbook.c:3593
 msgid "LDAP Server"
 msgstr "LDAP server"
 
@@ -628,7 +707,7 @@ msgstr ""
 msgid "Folder :"
 msgstr "Direktorijum :"
 
-#: src/addrgather.c:356 src/importldif.c:664
+#: src/addrgather.c:356 src/importldif.c:742
 msgid "Address Book :"
 msgstr "Adresar :"
 
@@ -661,17 +740,17 @@ msgstr "Upozorenje"
 msgid "Header Fields"
 msgstr "Polja zaglavlja poruke"
 
-#: src/addrgather.c:529 src/exphtmldlg.c:694 src/importldif.c:777
+#: src/addrgather.c:529 src/exphtmldlg.c:694 src/importldif.c:855
 msgid "Finish"
 msgstr "Gotovo"
 
 #: src/addrgather.c:588
 msgid "Harvest E-Mail Addresses - from Selected Messages"
-msgstr "Sakupljene e-mail adrese - iz odabrane(ih) poruke(a)"
+msgstr "Sakupljene e-mail adresa - iz odabrane(ih) poruke(a)"
 
 #: src/addrgather.c:596
 msgid "Harvest E-Mail Addresses - from Folder"
-msgstr "Sakupljene e-mail adrese - iz odabranog direktorijuma"
+msgstr "Sakupljene e-mail adresa - iz odabranog direktorijuma"
 
 #: src/addrindex.c:93 src/addrindex.c:97 src/addrindex.c:104
 msgid "Common address"
@@ -681,11 +760,11 @@ msgstr "Op¹te adrese"
 msgid "Personal address"
 msgstr "Liène adrese"
 
-#: src/alertpanel.c:142 src/compose.c:5718 src/main.c:531
+#: src/alertpanel.c:142 src/compose.c:5727 src/main.c:531
 msgid "Notice"
 msgstr "Napomena"
 
-#: src/alertpanel.c:168 src/alertpanel.c:190 src/compose.c:3271 src/inc.c:558
+#: src/alertpanel.c:168 src/alertpanel.c:190 src/compose.c:3280 src/inc.c:556
 msgid "Error"
 msgstr "Gre¹ka"
 
@@ -725,8 +804,8 @@ msgstr "Zelena"
 msgid "Brown"
 msgstr "Braon"
 
-#: src/colorlabel.c:280 src/compose.c:4916 src/exphtmldlg.c:450
-#: src/gtkaspell.c:1421 src/gtkaspell.c:2021 src/summaryview.c:4332
+#: src/colorlabel.c:280 src/compose.c:4925 src/exphtmldlg.c:450
+#: src/gtkaspell.c:1421 src/gtkaspell.c:2021 src/summaryview.c:4376
 msgid "None"
 msgstr "Ni¹ta"
 
@@ -735,16 +814,16 @@ msgstr "Ni¹ta"
 msgid "Can't connect to NNTP server: %s:%d\n"
 msgstr "Ne mogu se povezati na NNTP server: %s:%d\n"
 
-#: src/common/nntp.c:140 src/common/nntp.c:203
+#: src/common/nntp.c:149 src/common/nntp.c:212
 #, c-format
 msgid "protocol error: %s\n"
 msgstr "gre¹ka u protokolu: %s\n"
 
-#: src/common/nntp.c:163 src/common/nntp.c:209
+#: src/common/nntp.c:172 src/common/nntp.c:218
 msgid "protocol error\n"
 msgstr "gre¹ka u protokolu\n"
 
-#: src/common/nntp.c:259 src/common/nntp.c:265
+#: src/common/nntp.c:268 src/common/nntp.c:274
 msgid "Error occurred while posting\n"
 msgstr "Nastala je gre¹ka pri slanju\n"
 
@@ -839,7 +918,7 @@ msgstr ""
 "(Uklonite potvrdu \"%s\" iz pode¹avnja).\n"
 
 #: src/common/ssl_certificate.c:372 src/common/ssl_certificate.c:410
-#: src/prefs_common.c:2824
+#: src/prefs_common.c:2825
 msgid "Don't popup error dialog on receive error"
 msgstr "Nemoj prikazivati dijalog o gre¹ci u sluèaju nastanka gre¹ke"
 
@@ -1013,7 +1092,7 @@ msgstr "/_Pravopis/---"
 msgid "/_Spelling/_Spelling Configuration"
 msgstr "/_Pravopis/Pode¹avanje pravopi_sa"
 
-#: src/compose.c:604 src/mainwindow.c:434 src/summaryview.c:445
+#: src/compose.c:604 src/mainwindow.c:434 src/summaryview.c:448
 msgid "/_View"
 msgstr "/I_zgled"
 
@@ -1171,7 +1250,7 @@ msgstr "/_Alati/Ak_cije"
 msgid "Reply-To:"
 msgstr "Odgovor-Za:"
 
-#: src/compose.c:1298 src/compose.c:4259 src/compose.c:4963
+#: src/compose.c:1298 src/compose.c:4268 src/compose.c:4972
 #: src/headerview.c:55
 msgid "Newsgroups:"
 msgstr "News grupa:"
@@ -1217,7 +1296,7 @@ msgstr "%s - Sastavljanje poruke%s"
 msgid "Compose message%s"
 msgstr "%s - Sastavljanje poruke %s"
 
-#: src/compose.c:2645 src/compose.c:2883
+#: src/compose.c:2645 src/compose.c:2888
 msgid ""
 "Account for sending mail is not specified.\n"
 "Please select a mail account before sending."
@@ -1229,7 +1308,7 @@ msgstr ""
 msgid "Recipient is not specified."
 msgstr "Primalac nije odreðen"
 
-#: src/compose.c:2796 src/messageview.c:408 src/prefs_account.c:734
+#: src/compose.c:2796 src/messageview.c:408 src/prefs_account.c:736
 #: src/prefs_common.c:1035 src/toolbar.c:347 src/toolbar.c:394
 msgid "Send"
 msgstr "Slanje"
@@ -1242,16 +1321,22 @@ msgstr "Tema je prazna. Da ipak po¹aljem poruku?"
 msgid "Could not queue message for sending"
 msgstr "Nije moguæe staviti poruku u red za slanje"
 
-#: src/compose.c:2899 src/procmsg.c:1379
+#: src/compose.c:2823
+msgid ""
+"The message was queued but could not be sent.\n"
+"Use \"Send queued messages\" from the main window to retry."
+msgstr ""
+
+#: src/compose.c:2904 src/procmsg.c:1383
 #, c-format
 msgid "Error occurred while posting the message to %s ."
 msgstr "Nastala je gre¹ka pri slanju poruke na %s ."
 
-#: src/compose.c:2913 src/messageview.c:485
+#: src/compose.c:2918 src/messageview.c:485
 msgid "Queueing"
 msgstr "Stavljanje u red za slanje"
 
-#: src/compose.c:2914
+#: src/compose.c:2919
 msgid ""
 "Error occurred while sending the message.\n"
 "Put this message into queue folder?"
@@ -1259,80 +1344,82 @@ msgstr ""
 "Nastala je gre¹ka pri slanju poruke.\n"
 "Da li da stavim ovu poruku u direktorijum 'Pripremljeno'?"
 
-#: src/compose.c:2920
+#: src/compose.c:2925
 msgid "Can't queue the message."
 msgstr "Ne mogu staviti ovu poruku u red na èekanje za slanje."
 
-#: src/compose.c:2923
+#: src/compose.c:2928
 msgid "Error occurred while sending the message."
 msgstr "Nastala je gre¹ka pri slanju poruke."
 
-#: src/compose.c:2936
+#: src/compose.c:2941
 msgid "Can't save the message to Sent."
 msgstr "Nije moguæe saèuvati poruku u direktorijumu za poslate poruke."
 
-#: src/compose.c:3165
+#: src/compose.c:3170
 #, c-format
 msgid "Could not find any key associated with currently selected key id `%s'."
 msgstr "Ne mogu da pronaðem ni jedan kljuè asociran sa odabranim kljuèem `%s'"
 
-#: src/compose.c:3272
+#: src/compose.c:3276
 msgid ""
-"Can't convert the character encoding of the message.\n"
+"Can't convert the character encoding of the message from\n"
+"%s to %s.\n"
 "Send it anyway?"
 msgstr ""
-"Nije moguæe konvertovati enkodiranje karaktera poruke.\n"
+"Ne mogu da konvertujem kodni raspored poruke iz\n"
+"%s u %s.\n"
 "Da ipak po¹aljem poruku?"
 
-#: src/compose.c:3525
+#: src/compose.c:3534
 msgid "No account for sending mails available!"
 msgstr "Ovu poruku ne mo¾ete poslati sa odabranog naloga!"
 
-#: src/compose.c:3535
+#: src/compose.c:3544
 msgid "No account for posting news available!"
 msgstr "Nema dostupnog naloga za slanje news poruke!"
 
-#: src/compose.c:4339 src/headerview.c:53 src/summary_search.c:149
+#: src/compose.c:4348 src/headerview.c:53 src/summary_search.c:149
 msgid "From:"
 msgstr "Po¹iljalac:"
 
-#: src/compose.c:4443 src/compose.c:4613 src/compose.c:5479
+#: src/compose.c:4452 src/compose.c:4622 src/compose.c:5488
 msgid "MIME type"
 msgstr "MIME tip"
 
-#: src/compose.c:4444 src/compose.c:4614 src/mimeview.c:151
+#: src/compose.c:4453 src/compose.c:4623 src/mimeview.c:151
 #: src/prefs_summary_column.c:73 src/select-keys.c:297
-#: src/selective_download.c:812 src/summaryview.c:465
+#: src/selective_download.c:812 src/summaryview.c:468
 msgid "Size"
 msgstr "Velièina"
 
-#: src/compose.c:4508
+#: src/compose.c:4517
 msgid "Save Message to "
 msgstr "Saèuvaj poruku u "
 
-#: src/compose.c:4528 src/prefs_filtering.c:496
+#: src/compose.c:4537 src/prefs_filtering.c:496
 msgid "Select ..."
 msgstr " Odaberi ... "
 
-#: src/compose.c:4664 src/prefs_account.c:1251 src/prefs_customheader.c:188
+#: src/compose.c:4673 src/prefs_account.c:1264 src/prefs_customheader.c:188
 #: src/prefs_matcher.c:146
 msgid "Header"
 msgstr "Polje zaglavlja"
 
-#: src/compose.c:4666 src/mimeview.c:198
+#: src/compose.c:4675 src/mimeview.c:198
 msgid "Attachments"
 msgstr "Prilozi"
 
-#: src/compose.c:4668
+#: src/compose.c:4677
 msgid "Others"
 msgstr "Drugo"
 
-#: src/compose.c:4683 src/headerview.c:56 src/prefs_template.c:177
+#: src/compose.c:4692 src/headerview.c:56 src/prefs_template.c:177
 #: src/summary_search.c:163
 msgid "Subject:"
 msgstr "Tema:"
 
-#: src/compose.c:4924
+#: src/compose.c:4933
 #, c-format
 msgid ""
 "Spell checker could not be started.\n"
@@ -1341,31 +1428,31 @@ msgstr ""
 "Ne mogu da pokrenem pravopisnu proveru.\n"
 "%s"
 
-#: src/compose.c:5374
+#: src/compose.c:5383
 msgid "Invalid MIME type."
 msgstr "Neva¾eæi MIME tip."
 
-#: src/compose.c:5392
+#: src/compose.c:5401
 msgid "File doesn't exist or is empty."
 msgstr "Fajl ne postoji ili je prazan."
 
-#: src/compose.c:5461
+#: src/compose.c:5470
 msgid "Properties"
 msgstr "Osobine"
 
-#: src/compose.c:5506
+#: src/compose.c:5515
 msgid "Encoding"
 msgstr "Enkodiranje"
 
-#: src/compose.c:5537
+#: src/compose.c:5546
 msgid "Path"
 msgstr "Putanja"
 
-#: src/compose.c:5538 src/prefs_toolbar.c:803
+#: src/compose.c:5547 src/prefs_toolbar.c:803
 msgid "File name"
 msgstr "Naziv fajla"
 
-#: src/compose.c:5715
+#: src/compose.c:5724
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -1376,48 +1463,48 @@ msgstr ""
 "Da li da nasilno prekinem proces?\n"
 "©ifra grupe procesa: %d"
 
-#: src/compose.c:6022 src/inc.c:165 src/inc.c:296 src/toolbar.c:2103
+#: src/compose.c:6031 src/inc.c:165 src/inc.c:296 src/toolbar.c:2103
 msgid "Offline warning"
 msgstr "Nezavisno upozorenje"
 
-#: src/compose.c:6023 src/inc.c:166 src/inc.c:297 src/toolbar.c:2104
+#: src/compose.c:6032 src/inc.c:166 src/inc.c:297 src/toolbar.c:2104
 msgid "You're working offline. Override?"
 msgstr "Nezavisan re¾im rada. Zaobiæi?"
 
-#: src/compose.c:6137 src/compose.c:6158
+#: src/compose.c:6146 src/compose.c:6167
 msgid "Select file"
 msgstr "Odaberite fajl"
 
-#: src/compose.c:6193
+#: src/compose.c:6202
 msgid "Discard message"
 msgstr "Odbaci poruku"
 
-#: src/compose.c:6194
+#: src/compose.c:6203
 msgid "This message has been modified. discard it?"
 msgstr "Ova poruka je izmenjena. Da li da je odbacim?"
 
-#: src/compose.c:6195
+#: src/compose.c:6204
 msgid "Discard"
 msgstr "Odbaci"
 
-#: src/compose.c:6195
+#: src/compose.c:6204
 msgid "to Draft"
 msgstr "u Nedovr¹ene"
 
-#: src/compose.c:6230
+#: src/compose.c:6239
 #, c-format
 msgid "Do you want to apply the template `%s' ?"
 msgstr "®elite li da primenite ¹ablon '%s' ?"
 
-#: src/compose.c:6232
+#: src/compose.c:6241
 msgid "Apply template"
 msgstr "Primeni ¹ablon"
 
-#: src/compose.c:6233
+#: src/compose.c:6242
 msgid "Replace"
 msgstr "Zameni"
 
-#: src/compose.c:6233 src/toolbar.c:398
+#: src/compose.c:6242 src/toolbar.c:398
 msgid "Insert"
 msgstr "Umetni"
 
@@ -1454,10 +1541,6 @@ msgstr "Kreiraj izve¹taj o gre¹ci"
 #: src/crash.c:304
 msgid "Save crash information"
 msgstr "Saèuvaj informacije o prestanku rada programa"
-
-#: src/crash.c:448 src/crash.c:467
-msgid "Unknown"
-msgstr "Nepoznato"
 
 #: src/editaddress.c:143
 msgid "Add New Person"
@@ -1512,7 +1595,7 @@ msgstr "Pomeri gore"
 msgid "Move Down"
 msgstr "Pomeri dole"
 
-#: src/editaddress.c:719 src/editaddress.c:853 src/importldif.c:618
+#: src/editaddress.c:719 src/editaddress.c:853 src/importldif.c:694
 msgid "Modify"
 msgstr "Izmeni"
 
@@ -1633,8 +1716,8 @@ msgid "Edit JPilot Entry"
 msgstr "Izmeni JPilot zapis"
 
 #: src/editjpilot.c:314 src/editldap.c:340 src/editvcard.c:229
-#: src/exphtmldlg.c:396 src/importldif.c:510 src/importmutt.c:277
-#: src/importpine.c:277 src/prefs_account.c:1978
+#: src/exphtmldlg.c:396 src/importldif.c:580 src/importmutt.c:277
+#: src/importpine.c:277 src/prefs_account.c:1991
 msgid " ... "
 msgstr " ... "
 
@@ -1698,13 +1781,13 @@ msgstr "Pauza (sekundi)"
 msgid "Maximum Entries"
 msgstr "Maksimalan broj upisa"
 
-#: src/editldap.c:461 src/prefs_account.c:730
+#: src/editldap.c:461 src/prefs_account.c:732
 msgid "Basic"
 msgstr "Osnovno"
 
-#: src/editldap.c:462 src/summaryview.c:639
+#: src/editldap.c:462 src/summaryview.c:642
 msgid "Extended"
-msgstr "Pro¹ireno"
+msgstr "Pro¹ireno..."
 
 #: src/editldap.c:547
 msgid "Add New LDAP Server"
@@ -1788,7 +1871,7 @@ msgstr "Izlazni HTML fajl"
 msgid "Stylesheet"
 msgstr "Datoteka o stilu"
 
-#: src/exphtmldlg.c:456 src/prefs_common.c:3825 src/prefs_common.c:4160
+#: src/exphtmldlg.c:456 src/prefs_common.c:3826 src/prefs_common.c:4161
 msgid "Default"
 msgstr "Standardni"
 
@@ -1836,7 +1919,7 @@ msgstr "E-mail veze"
 msgid "Format User Attributes"
 msgstr "Korisnièki atributi"
 
-#: src/exphtmldlg.c:589 src/importldif.c:501
+#: src/exphtmldlg.c:589 src/importldif.c:571
 msgid "File Name"
 msgstr "Naziv fajla"
 
@@ -1848,16 +1931,16 @@ msgstr "Otvori sa pretra¾ivaèem"
 msgid "Export Address Book to HTML File"
 msgstr "Izvoz adresara u HTML fajl"
 
-#: src/exphtmldlg.c:662 src/importldif.c:745
+#: src/exphtmldlg.c:662 src/importldif.c:823
 msgid "Prev"
 msgstr "Nazad"
 
-#: src/exphtmldlg.c:663 src/importldif.c:746 src/toolbar.c:357
+#: src/exphtmldlg.c:663 src/importldif.c:824 src/toolbar.c:357
 #: src/toolbar.c:448
 msgid "Next"
 msgstr "Napred"
 
-#: src/exphtmldlg.c:692 src/importldif.c:775
+#: src/exphtmldlg.c:692 src/importldif.c:853
 msgid "File Info"
 msgstr "Informacije"
 
@@ -1882,7 +1965,7 @@ msgid "Exporting file:"
 msgstr "Izvozni fajl:"
 
 #: src/export.c:174 src/export.c:180 src/import.c:177 src/import.c:183
-#: src/prefs_account.c:1183
+#: src/prefs_account.c:1196
 msgid " Select... "
 msgstr " Odaberite... "
 
@@ -1894,7 +1977,7 @@ msgstr "Odaberite izvozni fajl"
 msgid "Full Name"
 msgstr "Puno ime"
 
-#: src/exporthtml.c:800 src/importldif.c:776
+#: src/exporthtml.c:800 src/importldif.c:854
 msgid "Attributes"
 msgstr "Atributi"
 
@@ -1918,12 +2001,12 @@ msgstr "Naziv je predugaèak."
 msgid "Not specified."
 msgstr "Nije specifikovano."
 
-#: src/folder.c:959
+#: src/folder.c:960
 #, c-format
 msgid "Processing (%s)...\n"
 msgstr "Izvr¹avanje (%s)...\n"
 
-#: src/folder.c:1553
+#: src/folder.c:1597
 #, c-format
 msgid "Moving %s to %s (%d%%)...\n"
 msgstr "Preme¹tanje %s u %s (%d%%)...\n"
@@ -2021,7 +2104,7 @@ msgstr "/Ukloni news n_alog"
 msgid "New"
 msgstr "Novo"
 
-#: src/folderview.c:372 src/prefs_summary_column.c:68
+#: src/folderview.c:372
 msgid "Unread"
 msgstr "Neproèitano"
 
@@ -2152,33 +2235,33 @@ msgstr "Zaista ¾elite da se odjavite sa news grupe '%s'?"
 msgid "Delete newsgroup"
 msgstr "Odjava sa news grupe"
 
-#: src/folderview.c:2491
+#: src/folderview.c:2493
 #, c-format
 msgid "Really delete news account `%s'?"
 msgstr "Zaista ¾elite da uklonite news nalog '%s'?"
 
-#: src/folderview.c:2492
+#: src/folderview.c:2494
 msgid "Delete news account"
 msgstr "Uklanjanje news naloga"
 
-#: src/folderview.c:2587
+#: src/folderview.c:2591
 #, c-format
 msgid "Moving %s to %s..."
 msgstr "Preme¹tanje %s u %s..."
 
-#: src/folderview.c:2617
+#: src/folderview.c:2621
 msgid "Source and destination are the same."
 msgstr "Izvor i odredi¹te su na istoj lokaciji."
 
-#: src/folderview.c:2620
+#: src/folderview.c:2624
 msgid "Can't move a folder to one of its children."
 msgstr "Nije moguæe premestiti direktorijum u njegov poddirektorijum."
 
-#: src/folderview.c:2623
+#: src/folderview.c:2627
 msgid "Folder moving cannot be done between different mailboxes."
 msgstr "Preme¹tanje direktorijuma u izmeðu razlièitih sanduèiæa nije moguæe."
 
-#: src/folderview.c:2626
+#: src/folderview.c:2630
 msgid "Move failed!"
 msgstr "Neuspelo preme¹tanje!"
 
@@ -2230,7 +2313,7 @@ msgstr "nepoznato"
 msgid "Can't retrieve newsgroup list."
 msgstr "Ne mogu da preuzem listu news grupa."
 
-#: src/grouplistdialog.c:441 src/summaryview.c:1149
+#: src/grouplistdialog.c:441 src/summaryview.c:1155
 msgid "Done."
 msgstr "Gotovo."
 
@@ -2238,6 +2321,38 @@ msgstr "Gotovo."
 #, c-format
 msgid "%d newsgroups received (%s read)"
 msgstr "%d news grupa preuzeto (%s proèitano)"
+
+#: src/gtk/gtkutils.c:60 src/gtk/gtkutils.c:76
+msgid "Abcdef"
+msgstr "Abcdef"
+
+#: src/gtk/pluginwindow.c:114
+msgid "Select Plugin to load"
+msgstr "Odaberite dodatak za uèitavanje"
+
+#: src/gtk/pluginwindow.c:150 src/gtk/pluginwindow.c:176
+msgid "Plugins"
+msgstr "Dodatci"
+
+#: src/gtk/pluginwindow.c:190 src/prefs_common.c:3286
+msgid "Description"
+msgstr "Opis"
+
+#: src/gtk/pluginwindow.c:214
+msgid "Load Plugin"
+msgstr "Uèitaj dodatak"
+
+#: src/gtk/pluginwindow.c:219
+msgid "Unload Plugin"
+msgstr "Ukloni dodatak iz memorije"
+
+#: src/gtk/prefswindow.c:184
+msgid "Preferences"
+msgstr "Pode¹avanja"
+
+#: src/gtk/prefswindow.c:260 src/prefs_gtk.c:381
+msgid "Apply"
+msgstr "Primeni"
 
 #: src/gtk/sslcertwindow.c:114 src/gtk/sslcertwindow.c:268
 #: src/gtk/sslcertwindow.c:321
@@ -2252,7 +2367,8 @@ msgstr "Vlasnik"
 msgid "Signer"
 msgstr "Potpisnik"
 
-#: src/gtk/sslcertwindow.c:121 src/progressdialog.c:53
+#: src/gtk/sslcertwindow.c:121 src/prefs_summary_column.c:68
+#: src/progressdialog.c:53
 msgid "Status"
 msgstr "Status"
 
@@ -2426,15 +2542,11 @@ msgstr ""
 "Modul za pravopisnu proveru ne mo¾e da promeni reènik.\n"
 "%s"
 
-#: src/gtkutils.c:60 src/gtkutils.c:76
-msgid "Abcdef"
-msgstr "Abcdef"
-
-#: src/headerview.c:173 src/summaryview.c:2359
+#: src/headerview.c:173 src/summaryview.c:2368
 msgid "(No From)"
 msgstr "(Bez po¹iljaoca)"
 
-#: src/headerview.c:188 src/summaryview.c:2402 src/summaryview.c:2405
+#: src/headerview.c:188 src/summaryview.c:2411 src/summaryview.c:2414
 msgid "(No Subject)"
 msgstr "(Bez teme)"
 
@@ -2458,112 +2570,117 @@ msgstr "kreiranje tunnel IMAP4 konekcije\n"
 msgid "creating IMAP4 connection to %s:%d ...\n"
 msgstr "kreiranje IMAP4 konekcije sa %s:%d ...\n"
 
-#: src/imap.c:1060 src/imap.c:1107
+#: src/imap.c:1051 src/imap.c:1098
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "ne mogu postaviti oznaku 'Obirsano': %d\n"
 
-#: src/imap.c:1066 src/imap.c:1114 src/imap.c:1162
+#: src/imap.c:1057 src/imap.c:1105 src/imap.c:1153
 msgid "can't expunge\n"
 msgstr "ne mogu izbrisati\n"
 
-#: src/imap.c:1156
+#: src/imap.c:1147
 #, c-format
 msgid "can't set deleted flags: 1:%d\n"
 msgstr "ne mogu postaviti oznaku 'Obirsano': 1:%d\n"
 
-#: src/imap.c:1346
+#: src/imap.c:1337
 msgid "error occured while getting LIST.\n"
 msgstr "nastala je gre¹ka pri preuzimanju rezultata komande LIST.\n"
 
-#: src/imap.c:1532
+#: src/imap.c:1523
 msgid "can't create mailbox: LIST failed\n"
 msgstr "ne mogu kreirati sanduèe: neuspela komanda LIST\n"
 
-#: src/imap.c:1554
+#: src/imap.c:1545
 msgid "can't create mailbox\n"
 msgstr "ne mogu kreirati sanduèe\n"
 
-#: src/imap.c:1623
+#: src/imap.c:1614
 #, c-format
 msgid "can't rename mailbox: %s to %s\n"
 msgstr "ne mogu preimenovati sanduèe: %s u %s\n"
 
-#: src/imap.c:1687
+#: src/imap.c:1678
 msgid "can't delete mailbox\n"
 msgstr "ne mogu ukloniti sanduè\n"
 
-#: src/imap.c:1720
+#: src/imap.c:1711
 msgid "can't get envelope\n"
 msgstr "ne mogu preuzeti uvodno zaglavlje poruke\n"
 
-#: src/imap.c:1728
+#: src/imap.c:1719
 msgid "error occurred while getting envelope.\n"
 msgstr "nastala je gre¹ka pri preuzimanju uvodnog zaglavlja poruke.\n"
 
-#: src/imap.c:1750
+#: src/imap.c:1741
 #, c-format
 msgid "can't parse envelope: %s\n"
 msgstr "ne mogu rasèlaniti uvodno zaglavlje poruke: %s\n"
 
-#: src/imap.c:1841
+#: src/imap.c:1832
 #, c-format
 msgid "Can't establish IMAP4 session with: %s\n"
 msgstr "Ne mogu uspostaviti IMAP4 sesiju sa: %s\n"
 
-#: src/imap.c:1862
+#: src/imap.c:1853
 #, c-format
 msgid "Can't connect to IMAP4 server: %s:%d\n"
 msgstr "Ne mogu se povezati na IMAP4 server: %s:%d\n"
 
-#: src/imap.c:1869
+#: src/imap.c:1860
 #, c-format
 msgid "Can't establish IMAP4 session with: %s:%d\n"
 msgstr "Ne mogu uspostaviti IMAP4 sesiju sa: %s:%d\n"
 
-#: src/imap.c:1893
+#: src/imap.c:1884
 msgid "Can't start TLS session.\n"
 msgstr "Ne mogu pogrenuti TLS sesiju.\n"
 
-#: src/imap.c:1905
+#: src/imap.c:1896
 msgid "Can't establish IMAP4 session.\n"
 msgstr "Ne mogu uspostaviti IMAP4 sesiju.\n"
 
-#: src/imap.c:1984
+#: src/imap.c:1975
 msgid "can't get namespace\n"
 msgstr "ne mogu saznati namespace\n"
 
-#: src/imap.c:2447
+#: src/imap.c:2438
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "ne mogu odabrati direktorijum: %s\n"
 
-#: src/imap.c:2567
+#: src/imap.c:2558
 msgid "IMAP4 login failed.\n"
 msgstr "IMAP4 prijavljivanje neuspelo.\n"
 
-#: src/imap.c:2869
+#: src/imap.c:2860
 #, c-format
 msgid "can't append %s to %s\n"
 msgstr "ne mogu dodati %s na %s\n"
 
-#: src/imap.c:2874
+#: src/imap.c:2865
 msgid "(sending file...)"
 msgstr "(slanje fajlova...)"
 
-#: src/imap.c:2951
+#: src/imap.c:2942
 #, c-format
 msgid "can't copy %d to %s\n"
 msgstr "ne mogu kopirati %d u %s\n"
 
-#: src/imap.c:2981
+#: src/imap.c:2972
 #, c-format
 msgid "error while imap command: STORE %d:%d %s\n"
 msgstr "nastala je gre¹ka pri izvr¹avanju imap naredbe: STORE %d:%d %s\n"
 
-#: src/imap.c:2995
+#: src/imap.c:2986
 msgid "error while imap command: EXPUNGE\n"
 msgstr "nastala je gre¹ka pri izvr¹avanju imap naredbe: EXPUNGE\n"
+
+#: src/imap.c:3207
+#, c-format
+msgid "iconv cannot convert UTF-7 to %s\n"
+msgstr "iconv ne mo¾e da prevede UTF-7 u %s\n"
 
 #: src/import.c:130
 msgid "Import"
@@ -2585,67 +2702,67 @@ msgstr "Destinacioni direktorijum:"
 msgid "Select importing file"
 msgstr "Odaberite fajl za uvoz"
 
-#: src/importldif.c:118
+#: src/importldif.c:176
 msgid "Please specify address book name and file to import."
 msgstr "Odredite naziv adresara i fajl za uvoz."
 
-#: src/importldif.c:121
+#: src/importldif.c:179
 msgid "Select and rename LDIF field names to import."
 msgstr "Odaberi i preimenuj LDIF polje za uvoz."
 
-#: src/importldif.c:124
+#: src/importldif.c:182
 msgid "File imported."
 msgstr "Uvezeni fajl."
 
-#: src/importldif.c:297 src/importmutt.c:124 src/importpine.c:124
+#: src/importldif.c:367 src/importmutt.c:124 src/importpine.c:124
 msgid "Please select a file."
 msgstr "Odaberite fajl."
 
-#: src/importldif.c:303 src/importmutt.c:129 src/importpine.c:129
+#: src/importldif.c:373 src/importmutt.c:129 src/importpine.c:129
 msgid "Address book name must be supplied."
 msgstr "Morate postaviti naziv adresara."
 
-#: src/importldif.c:318
+#: src/importldif.c:388
 msgid "Error reading LDIF fields."
 msgstr "Gre¹ka pri èitanju LDIF polja."
 
-#: src/importldif.c:341
+#: src/importldif.c:411
 msgid "LDIF file imported successfully."
 msgstr "LDIF fajl uspe¹no uvezen."
 
-#: src/importldif.c:426
+#: src/importldif.c:496
 msgid "Select LDIF File"
 msgstr "Odaberite LDIF fajl"
 
-#: src/importldif.c:542
+#: src/importldif.c:612 src/summaryview.c:463
 msgid "S"
 msgstr "S"
 
-#: src/importldif.c:543 src/importldif.c:592
+#: src/importldif.c:613 src/importldif.c:662
 msgid "LDIF Field"
 msgstr "LDIF fajl"
 
-#: src/importldif.c:544
+#: src/importldif.c:614
 msgid "Attribute Name"
 msgstr "Naziv atributa"
 
-#: src/importldif.c:602
+#: src/importldif.c:674
 msgid "Attribute"
 msgstr "Atributi"
 
-#: src/importldif.c:611 src/select-keys.c:322
+#: src/importldif.c:685 src/select-keys.c:322
 msgid "Select"
 msgstr "Odaberi"
 
-#: src/importldif.c:674
+#: src/importldif.c:752
 msgid "File Name :"
 msgstr "Naziv fajla :"
 
-#: src/importldif.c:684
+#: src/importldif.c:762
 msgid "Records :"
 msgstr "Zapis :"
 
-#: src/importldif.c:712
+#: src/importldif.c:790
 msgid "Import LDIF file into Address Book"
 msgstr "Uvoz LDIF fajla u adresar"
 
@@ -2678,141 +2795,141 @@ msgstr "Odaberite Pine fajl"
 msgid "Import Pine file into Address Book"
 msgstr "Uvoz Pine fajla u adresar"
 
-#: src/inc.c:269 src/inc.c:368 src/send.c:396
+#: src/inc.c:269 src/inc.c:366 src/send.c:396
 msgid "Standby"
 msgstr "U pripravnosti..."
 
-#: src/inc.c:391
+#: src/inc.c:389
 msgid "Retrieving new messages"
 msgstr "Preuzimanje novih poruka"
 
-#: src/inc.c:523
+#: src/inc.c:521
 msgid "Retrieving"
 msgstr "Preuzimanje u toku..."
 
-#: src/inc.c:532
+#: src/inc.c:530
 #, c-format
 msgid "Done (%d message(s) (%s) received)"
 msgstr "Gotovo (%d poruka(e) (%s) preuzeto)"
 
-#: src/inc.c:536
+#: src/inc.c:534
 msgid "Done (no new messages)"
 msgstr "Gotovo (nema novih poruka)"
 
-#: src/inc.c:543
+#: src/inc.c:541
 msgid "Connection failed"
 msgstr "Neuspelo povezivanje"
 
-#: src/inc.c:547
+#: src/inc.c:545
 msgid "Auth failed"
 msgstr "Neuspela prijavljivanje"
 
-#: src/inc.c:551 src/prefs_summary_column.c:76
+#: src/inc.c:549 src/prefs_summary_column.c:76
 msgid "Locked"
 msgstr "Zakljuèano"
 
-#: src/inc.c:562
+#: src/inc.c:560
 msgid "Cancelled"
 msgstr "Otkazano"
 
-#: src/inc.c:575
+#: src/inc.c:573
 #, c-format
 msgid "Authorization for %s on %s failed"
 msgstr "Prijavljivanje za %s na %s neuspelo"
 
-#: src/inc.c:650
+#: src/inc.c:649
 #, c-format
 msgid "Finished (%d new message(s))"
 msgstr "Zavr¹eno (%d nova(ih) poruka)"
 
-#: src/inc.c:653
+#: src/inc.c:652
 msgid "Finished (no new messages)"
 msgstr "Zavr¹eno (nema novih poruka)"
 
-#: src/inc.c:661
+#: src/inc.c:660
 msgid "Some errors occurred while getting mail."
 msgstr "Nastale su gre¹ke pri preuzimanju poruka."
 
-#: src/inc.c:725
+#: src/inc.c:724
 #, c-format
 msgid "%s: Retrieving new messages"
 msgstr "%s: Preuzimanje novih poruka"
 
-#: src/inc.c:754
+#: src/inc.c:753
 #, c-format
 msgid "Connecting to POP3 server: %s ..."
 msgstr "Povezivanje na POP3 server: %s ..."
 
-#: src/inc.c:763
+#: src/inc.c:765
 #, c-format
 msgid "Can't connect to POP3 server: %s:%d\n"
 msgstr "Ne mogu se povezati na POP3 server: %s:%d\n"
 
-#: src/inc.c:770
+#: src/inc.c:772
 #, c-format
 msgid "Can't connect to POP3 server: %s:%d"
 msgstr "Ne mogu se povezati na POP3 server: %s:%d"
 
-#: src/inc.c:886 src/inc.c:955
+#: src/inc.c:888 src/inc.c:957
 #, c-format
 msgid "Retrieving message (%d / %d) (%s / %s)"
 msgstr "Preuzimanje poruka (%d / %d) (%s / %s)"
 
-#: src/inc.c:919 src/send.c:630
+#: src/inc.c:921 src/send.c:630
 msgid "Authenticating..."
 msgstr "Identifikacija..."
 
-#: src/inc.c:923
+#: src/inc.c:925
 msgid "Getting the number of new messages (STAT)..."
 msgstr "Preuzimanje broja novih poruka (STAT)..."
 
-#: src/inc.c:927
+#: src/inc.c:929
 msgid "Getting the number of new messages (LAST)..."
 msgstr "Preuzimanje broja novih poruka (LAST)..."
 
-#: src/inc.c:931
+#: src/inc.c:933
 msgid "Getting the number of new messages (UIDL)..."
 msgstr "Preuzimanje broja novih poruka (UIDL)..."
 
-#: src/inc.c:935
+#: src/inc.c:937
 msgid "Getting the size of messages (LIST)..."
 msgstr "Preuzimanje velièine poruka (LIST)..."
 
-#: src/inc.c:939
+#: src/inc.c:941
 #, c-format
 msgid "Retrieving header (%d / %d)"
 msgstr "Preuzimanje zaglavlja (%d / %d)"
 
-#: src/inc.c:972
+#: src/inc.c:974
 #, c-format
 msgid "Deleting message %d"
 msgstr "Uklanjanje poruke %d"
 
-#: src/inc.c:978 src/send.c:648
+#: src/inc.c:980 src/send.c:648
 msgid "Quitting"
 msgstr "Zatvaranje konekcije sa serverom u toku..."
 
-#: src/inc.c:1023
+#: src/inc.c:1025
 msgid "Error occurred while processing mail."
 msgstr "Nastala je gre¹ka pri procesiranju poruke."
 
-#: src/inc.c:1026
+#: src/inc.c:1028
 msgid "No disk space left."
 msgstr "Na disku vi¹e nema mesta."
 
-#: src/inc.c:1029
+#: src/inc.c:1031
 msgid "Can't write file."
 msgstr "Ne mogu zapisati fajl."
 
-#: src/inc.c:1032
+#: src/inc.c:1034
 msgid "Socket error."
 msgstr "Gre¹ka u socket-u"
 
-#: src/inc.c:1036
+#: src/inc.c:1038
 msgid "Mailbox is locked."
 msgstr "Sanduèe je zakljuèano."
 
-#: src/inc.c:1064
+#: src/inc.c:1066
 msgid "Incorporation cancelled\n"
 msgstr "Ujedinjavanje obustavljeno\n"
 
@@ -2906,7 +3023,7 @@ msgstr ""
 "  --version\t\t\tprikazuje informacije o verziji\n"
 "\t\t\t\ti zatvara program"
 
-#: src/main.c:481 src/summaryview.c:5205
+#: src/main.c:481 src/summaryview.c:5250
 #, c-format
 msgid "Processing (%s)..."
 msgstr "Izvr¹avanje (%s)..."
@@ -3094,8 +3211,8 @@ msgid "/_View/_Sort/by _mark"
 msgstr "/I_zgled/_Sortiranje/po _oznaci"
 
 #: src/mainwindow.c:466
-msgid "/_View/_Sort/by _unread"
-msgstr "/I_zgled/_Sortiranje/po _neproèitanim"
+msgid "/_View/_Sort/by _status"
+msgstr "/I_zgled/_Sortiranje/po _statusu"
 
 #: src/mainwindow.c:467
 msgid "/_View/_Sort/by a_ttachment"
@@ -3310,7 +3427,7 @@ msgstr "/I_zgled/_Kodni raspored/Tai (TIS-620)"
 msgid "/_View/_Code set/Thai (Windows-874)"
 msgstr "/I_zgled/_Kodni raspored/Tai (Windwos-874)"
 
-#: src/mainwindow.c:591 src/summaryview.c:446
+#: src/mainwindow.c:591 src/summaryview.c:449
 msgid "/_View/Open in new _window"
 msgstr "/I_zgled/Prika¾i poruku u _novom prozoru"
 
@@ -3324,7 +3441,7 @@ msgstr "/I_zgled/Prika¾i kompletno za_glavlje poruke"
 
 #: src/mainwindow.c:595
 msgid "/_View/_Update summary"
-msgstr "/I_zgled/_Osve¾i zbirni pregled"
+msgstr "/I_zgled/_Osve¾i listu poruka"
 
 #: src/mainwindow.c:598
 msgid "/_Message/Get new ma_il"
@@ -3500,15 +3617,15 @@ msgstr "/_Konfiguracija"
 
 #: src/mainwindow.c:672
 msgid "/_Configuration/C_hange current account"
-msgstr "/_Konfiguracija/_Promeni trenutni nalog"
+msgstr "/_Konfiguracija/_Promena aktivnog naloga"
 
 #: src/mainwindow.c:674
 msgid "/_Configuration/_Preferences for current account..."
-msgstr "/_Konfiguracija/Pode¹avanja _trenutnog naloga..."
+msgstr "/_Konfiguracija/Pode¹avanja ak_tivnog naloga..."
 
 #: src/mainwindow.c:676
 msgid "/_Configuration/Create _new account..."
-msgstr "/_Konfiguracija/_Kreiraj novi nalog..."
+msgstr "/_Konfiguracija/_Kreiranje novog naloga..."
 
 #: src/mainwindow.c:678
 msgid "/_Configuration/_Edit accounts..."
@@ -3668,11 +3785,11 @@ msgstr "Pretra¾i unazad"
 msgid "Search"
 msgstr "Tra¾i"
 
-#: src/message_search.c:183 src/summary_search.c:311
+#: src/message_search.c:183 src/summary_search.c:313
 msgid "Search failed"
 msgstr "Neuspela pretraga"
 
-#: src/message_search.c:184 src/summary_search.c:312
+#: src/message_search.c:184 src/summary_search.c:314
 msgid "Search string not found."
 msgstr "Tra¾eni kriterijum nije pronaðen."
 
@@ -3684,7 +3801,7 @@ msgstr "Do¹li ste do poèetka poruke. Da nastavim od kraja?"
 msgid "End of message reached; continue from beginning?"
 msgstr "Do¹li ste do kraja poruke. Da nastavim od poèetka?"
 
-#: src/message_search.c:197 src/summary_search.c:321
+#: src/message_search.c:197 src/summary_search.c:323
 msgid "Search finished"
 msgstr "Gotova pretraga."
 
@@ -3785,7 +3902,7 @@ msgstr "/_Prika¾i kao tekst"
 msgid "/_Display image"
 msgstr "/Prika¾i _sliku"
 
-#: src/mimeview.c:118 src/summaryview.c:451
+#: src/mimeview.c:118 src/summaryview.c:454
 msgid "/_Save as..."
 msgstr "/_Saèuvaj kao..."
 
@@ -3818,15 +3935,16 @@ msgstr "Deo kombinovane poruke je nerazumljiv."
 msgid "Can't save the part of multipart message."
 msgstr "Ne mogu snimiti deo kombinovane poruke."
 
-#: src/mimeview.c:809 src/mimeview.c:893 src/summaryview.c:3377
+#: src/mimeview.c:809 src/mimeview.c:893 src/summaryview.c:3399
 msgid "Save as"
 msgstr "Saèuvaj kao"
 
 #: src/mimeview.c:836 src/mimeview.c:897
+#, c-format
 msgid "Overwrite existing file '%s'?"
 msgstr "Prepi¹i postojeæi fajl '%s'?"
 
-#: src/mimeview.c:838 src/mimeview.c:899 src/summaryview.c:3382
+#: src/mimeview.c:838 src/mimeview.c:899 src/summaryview.c:3404
 msgid "Overwrite"
 msgstr "Prepi¹i"
 
@@ -3848,49 +3966,49 @@ msgstr ""
 msgid "creating NNTP connection to %s:%d ...\n"
 msgstr "Uspostavljanje NNTP konekcije sa %s:%d je u toku ...\n"
 
-#: src/news.c:747 src/news.c:1165
+#: src/news.c:750 src/news.c:1168
 #, c-format
 msgid "getting xover %d - %d in %s...\n"
 msgstr "preuzimanje XOVER %d - %d u %s...\n"
 
-#: src/news.c:1054
+#: src/news.c:1057
 #, c-format
 msgid "can't set group: %s\n"
 msgstr "ne mogu postaviti grupu: %s\n"
 
-#: src/news.c:1059
+#: src/news.c:1062
 #, c-format
 msgid "invalid article range: %d - %d\n"
 msgstr "neispravan opseg poruka: %d - %d\n"
 
-#: src/news.c:1080
+#: src/news.c:1083
 #, c-format
 msgid "error occurred while getting %s.\n"
 msgstr "nastala je gre¹ka pri pruzimanju %s.\n"
 
-#: src/news.c:1097
+#: src/news.c:1100
 #, c-format
 msgid "getting xover %d in %s...\n"
 msgstr "preuzimam XOVER %d u %s...\n"
 
-#: src/news.c:1100 src/news.c:1168
+#: src/news.c:1103 src/news.c:1171
 msgid "can't get xover\n"
 msgstr "ne mogu preuzeti rezultate komande XOVER\n"
 
-#: src/news.c:1105 src/news.c:1174
+#: src/news.c:1108 src/news.c:1177
 msgid "error occurred while getting xover.\n"
 msgstr "nastala je gre¹ka pri preuzimanju rezultata komande XOVER.\n"
 
-#: src/news.c:1111 src/news.c:1182
+#: src/news.c:1114 src/news.c:1185
 #, c-format
 msgid "invalid xover line: %s\n"
 msgstr "neispravna linija rezultata komande XOVER: %s\n"
 
-#: src/news.c:1125 src/news.c:1139 src/news.c:1200 src/news.c:1225
+#: src/news.c:1128 src/news.c:1142 src/news.c:1203 src/news.c:1228
 msgid "can't get xhdr\n"
 msgstr "ne mogu preuzeti rezultate komande XHDR\n"
 
-#: src/news.c:1130 src/news.c:1144 src/news.c:1208 src/news.c:1233
+#: src/news.c:1133 src/news.c:1147 src/news.c:1211 src/news.c:1236
 msgid "error occurred while getting xhdr.\n"
 msgstr "nastala je gre¹ka pri preuzimanju rezultata komande XHDR.\n"
 
@@ -3961,213 +4079,212 @@ msgstr "Gre¹ka u POP3 protokolu\n"
 msgid "Socket error\n"
 msgstr "Gre¹ka u socket-u\n"
 
-#: src/prefs_gtk.c:381
-msgid "Apply"
-msgstr "Primeni"
-
-#: src/prefs_account.c:658
+#: src/prefs_account.c:660
 #, c-format
 msgid "Account%d"
 msgstr "Nalog %d"
 
-#: src/prefs_account.c:677
+#: src/prefs_account.c:679
 msgid "Preferences for new account"
 msgstr "Pode¹avanja novog naloga"
 
-#: src/prefs_account.c:682
+#: src/prefs_account.c:684
 msgid "Account preferences"
 msgstr "Pode¹avanja naloga"
 
-#: src/prefs_account.c:732 src/prefs_common.c:1033
+#: src/prefs_account.c:734 src/prefs_common.c:1033
 msgid "Receive"
 msgstr "Preuzimanje"
 
-#: src/prefs_account.c:736 src/prefs_common.c:1037
+#: src/prefs_account.c:738 src/prefs_common.c:1037
 msgid "Compose"
 msgstr "Kreiranje"
 
-#: src/prefs_account.c:739 src/prefs_common.c:1050
+#: src/prefs_account.c:741 src/prefs_common.c:1050
 msgid "Privacy"
 msgstr "Privatnost"
 
-#: src/prefs_account.c:743
+#: src/prefs_account.c:745
 msgid "SSL"
 msgstr "SSL"
 
-#: src/prefs_account.c:746
+#: src/prefs_account.c:748
 msgid "Advanced"
 msgstr "Napredno"
 
-#: src/prefs_account.c:824
+#: src/prefs_account.c:827
 msgid "Name of account"
 msgstr "Naziv naloga"
 
-#: src/prefs_account.c:833
+#: src/prefs_account.c:836
 msgid "Set as default"
-msgstr " Postavi kao podrazumevani "
+msgstr "Podrazumevani nalog"
 
-#: src/prefs_account.c:837
+#: src/prefs_account.c:840
 msgid "Personal information"
 msgstr "Lièni podaci"
 
-#: src/prefs_account.c:846
+#: src/prefs_account.c:849
 msgid "Full name"
 msgstr "Ime i prezime"
 
-#: src/prefs_account.c:852
+#: src/prefs_account.c:855
 msgid "Mail address"
 msgstr "E-mail adresa"
 
-#: src/prefs_account.c:858
+#: src/prefs_account.c:861
 msgid "Organization"
 msgstr "Organizacija"
 
-#: src/prefs_account.c:882
+#: src/prefs_account.c:885
 msgid "Server information"
 msgstr "Informacije o serveru"
 
-#: src/prefs_account.c:903
+#: src/prefs_account.c:906
 msgid "POP3 (normal)"
 msgstr "POP3 (normalan)"
 
-#: src/prefs_account.c:905
+#: src/prefs_account.c:908
 msgid "POP3 (APOP auth)"
 msgstr "POP3 (APOP identifikacija)"
 
-#: src/prefs_account.c:907 src/prefs_account.c:1702 src/prefs_account.c:1926
+#: src/prefs_account.c:910 src/prefs_account.c:1715 src/prefs_account.c:1939
 msgid "IMAP4"
 msgstr "IMAP4"
 
-#: src/prefs_account.c:909
+#: src/prefs_account.c:912
 msgid "News (NNTP)"
 msgstr "News (NNTP)"
 
-#: src/prefs_account.c:911
+#: src/prefs_account.c:914
 msgid "None (local)"
 msgstr "Ni¹ta (lokalni)"
 
-#: src/prefs_account.c:931
+#: src/prefs_account.c:934
 msgid "This server requires authentication"
 msgstr "Ovaj server zahteva identifikaciju"
 
-#: src/prefs_account.c:975
+#: src/prefs_account.c:941
+msgid "Authenticate on connect"
+msgstr "Identifikacija pri povezivanju"
+
+#: src/prefs_account.c:986
 msgid "News server"
 msgstr "News server"
 
-#: src/prefs_account.c:981
+#: src/prefs_account.c:992
 msgid "Server for receiving"
 msgstr "Server za preuzimane poruka"
 
-#: src/prefs_account.c:987
+#: src/prefs_account.c:998
 msgid "Local mailbox file"
 msgstr "Lokalni fajl za sanduèiæ"
 
-#: src/prefs_account.c:994
+#: src/prefs_account.c:1005
 msgid "SMTP server (send)"
 msgstr "SMTP server (slanje)"
 
-#: src/prefs_account.c:1002
+#: src/prefs_account.c:1013
 msgid "Use mail command rather than SMTP server"
 msgstr "Koristi mail komandu umesto SMTP servera"
 
-#: src/prefs_account.c:1011
+#: src/prefs_account.c:1022
 msgid "command to send mails"
 msgstr "Komanda za slanje poruka"
 
-#: src/prefs_account.c:1018 src/prefs_account.c:1330
+#: src/prefs_account.c:1029 src/prefs_account.c:1343
 msgid "User ID"
 msgstr "Korisnièko ime"
 
-#: src/prefs_account.c:1024 src/prefs_account.c:1339
+#: src/prefs_account.c:1035 src/prefs_account.c:1352
 msgid "Password"
 msgstr "Lozinka"
 
-#: src/prefs_account.c:1090 src/prefs_account.c:1685
+#: src/prefs_account.c:1103 src/prefs_account.c:1698
 msgid "POP3"
 msgstr "POP3"
 
-#: src/prefs_account.c:1098
+#: src/prefs_account.c:1111
 msgid "Remove messages on server when received"
 msgstr "Ukloni poruke sa servera pri preuzimanju"
 
-#: src/prefs_account.c:1109
+#: src/prefs_account.c:1122
 msgid "Remove after"
 msgstr "Ukloni nakon"
 
-#: src/prefs_account.c:1118
+#: src/prefs_account.c:1131
 msgid "days"
 msgstr "dana"
 
-#: src/prefs_account.c:1135
+#: src/prefs_account.c:1148
 msgid "(0 days: remove immediately)"
 msgstr "(0 dana: ukloni odmah)"
 
-#: src/prefs_account.c:1142
+#: src/prefs_account.c:1155
 msgid "Download all messages on server"
 msgstr "Preuzmi sve poruke sa servera"
 
-#: src/prefs_account.c:1144
+#: src/prefs_account.c:1157
 msgid "Use filtering rules with Selective Download"
 msgstr "Primeni filter pravila za selektivno preuzimanje"
 
-#: src/prefs_account.c:1146
+#: src/prefs_account.c:1159
 msgid "Remove mail after downloading with Selective Download"
 msgstr "Ukloni po¹tu nakon selektivnog preuzimanja"
 
-#: src/prefs_account.c:1152
+#: src/prefs_account.c:1165
 msgid "Receive size limit"
 msgstr "Ogranièi velièinu poruke za preuzianje na"
 
-#: src/prefs_account.c:1166
+#: src/prefs_account.c:1179
 msgid "Filter messages on receiving"
 msgstr "Primeni filter pri preuzimanju poruka"
 
-#: src/prefs_account.c:1174
+#: src/prefs_account.c:1187
 msgid "Default inbox"
 msgstr "Podrazumevano sanduèe"
 
-#: src/prefs_account.c:1197
+#: src/prefs_account.c:1210
 msgid "(Unfiltered messages will be stored in this folder)"
 msgstr "(Nefiltrirane poruke æe biti sme¹tene u ovaj direktorijum)"
 
-#: src/prefs_account.c:1204
+#: src/prefs_account.c:1217
 msgid "`Get all' checks for new messages on this account"
-msgstr ""
-"'Preuzmi sve poruke' proverava da li postoje nove poruke i na ovom nalogu"
+msgstr "'Preuzmi sve poruke' proverava da li postoje nove poruke i na ovom nalogu"
 
-#: src/prefs_account.c:1258
+#: src/prefs_account.c:1271
 msgid "Add Date"
 msgstr "Dodaj datum"
 
-#: src/prefs_account.c:1259
+#: src/prefs_account.c:1272
 msgid "Generate Message-ID"
 msgstr "Generi¹i ID poruke"
 
-#: src/prefs_account.c:1266
+#: src/prefs_account.c:1279
 msgid "Add user-defined header"
 msgstr "Dodaj korisnièki definisana polja zaglavlja"
 
-#: src/prefs_account.c:1268 src/prefs_common.c:2428 src/prefs_common.c:2453
+#: src/prefs_account.c:1281 src/prefs_common.c:2429 src/prefs_common.c:2454
 msgid " Edit... "
 msgstr " Izmeni... "
 
-#: src/prefs_account.c:1278
+#: src/prefs_account.c:1291
 msgid "Authentication"
 msgstr "Identifikacija"
 
-#: src/prefs_account.c:1286
+#: src/prefs_account.c:1299
 msgid "SMTP Authentication (SMTP AUTH)"
 msgstr "SMTP identifkacija (SMTP AUTH)"
 
-#: src/prefs_account.c:1301
+#: src/prefs_account.c:1314
 msgid "Authentication method"
 msgstr "Metod identifikacije"
 
-#: src/prefs_account.c:1311 src/prefs_common.c:1444
+#: src/prefs_account.c:1324 src/prefs_common.c:1444
 msgid "Automatic"
 msgstr "Automatski"
 
-#: src/prefs_account.c:1361
+#: src/prefs_account.c:1374
 msgid ""
 "If you leave these entries empty, the same\n"
 "user ID and password as receiving will be used."
@@ -4175,193 +4292,193 @@ msgstr ""
 "Ako ostavite ovo polje nepopunjeno, koristiæe se\n"
 "isti naziv korisnika i lozinka kao i za preuzimanje."
 
-#: src/prefs_account.c:1370
+#: src/prefs_account.c:1383
 msgid "Authenticate with POP3 before sending"
 msgstr "Identifikacija sa POP3 pre slanja"
 
-#: src/prefs_account.c:1385
+#: src/prefs_account.c:1398
 msgid "POP authentication timeout: "
 msgstr "Vreme trajanja POP identifikacije: "
 
-#: src/prefs_account.c:1394
+#: src/prefs_account.c:1407
 msgid "minutes"
 msgstr "minut(a)"
 
-#: src/prefs_account.c:1436
+#: src/prefs_account.c:1449
 msgid "Signature file"
 msgstr "Fajl sa potpisom"
 
-#: src/prefs_account.c:1444
+#: src/prefs_account.c:1457
 msgid "Automatically set the following addresses"
 msgstr "Automatski postavi adresu za prosleðivanje"
 
-#: src/prefs_account.c:1453 src/prefs_matcher.c:143 src/prefs_matcher.c:1706
+#: src/prefs_account.c:1466 src/prefs_matcher.c:143 src/prefs_matcher.c:1707
 #: src/quote_fmt.c:49
 msgid "Cc"
 msgstr "Kopija"
 
-#: src/prefs_account.c:1466
+#: src/prefs_account.c:1479
 msgid "Bcc"
 msgstr "Nevidljiva kopija"
 
-#: src/prefs_account.c:1479
+#: src/prefs_account.c:1492
 msgid "Reply-To"
 msgstr "Odgovor-Za"
 
-#: src/prefs_account.c:1531
+#: src/prefs_account.c:1544
 msgid "Encrypt message by default"
 msgstr "Enkriptovanje poruke je podrazumevano"
 
-#: src/prefs_account.c:1533
+#: src/prefs_account.c:1546
 msgid "Sign message by default"
 msgstr "Potpisivanje poruke je podrazumevano"
 
-#: src/prefs_account.c:1535
+#: src/prefs_account.c:1548
 msgid "Default mode"
 msgstr "Podrazumevani mod"
 
-#: src/prefs_account.c:1543
+#: src/prefs_account.c:1556
 msgid "Use PGP/MIME"
 msgstr "koristi PGP/MIME"
 
-#: src/prefs_account.c:1552
+#: src/prefs_account.c:1565
 msgid "Use Inline"
 msgstr "Koristi linijski"
 
-#: src/prefs_account.c:1562
+#: src/prefs_account.c:1575
 msgid "Sign key"
 msgstr "Kljuè za potpis"
 
-#: src/prefs_account.c:1570
+#: src/prefs_account.c:1583
 msgid "Use default GnuPG key"
 msgstr "Koristi podrazumevani GnuPG kljuè"
 
-#: src/prefs_account.c:1579
+#: src/prefs_account.c:1592
 msgid "Select key by your email address"
 msgstr "Odaberi kljuè po e-mail adresi"
 
-#: src/prefs_account.c:1588
+#: src/prefs_account.c:1601
 msgid "Specify key manually"
 msgstr "Ruèno odaberi kljuè"
 
-#: src/prefs_account.c:1604
+#: src/prefs_account.c:1617
 msgid "User or key ID:"
 msgstr "Korisnik ili ID kljuèa:"
 
-#: src/prefs_account.c:1693 src/prefs_account.c:1710 src/prefs_account.c:1726
-#: src/prefs_account.c:1744
+#: src/prefs_account.c:1706 src/prefs_account.c:1723 src/prefs_account.c:1739
+#: src/prefs_account.c:1757
 msgid "Don't use SSL"
 msgstr "Nemoj koristiti SSL"
 
-#: src/prefs_account.c:1696
+#: src/prefs_account.c:1709
 msgid "Use SSL for POP3 connection"
 msgstr "Koristi SSL za POP3 vezu"
 
-#: src/prefs_account.c:1699 src/prefs_account.c:1716 src/prefs_account.c:1750
+#: src/prefs_account.c:1712 src/prefs_account.c:1729 src/prefs_account.c:1763
 msgid "Use STARTTLS command to start SSL session"
 msgstr "Koristi STARTTLS komandu za pokretanje SSL sesije"
 
-#: src/prefs_account.c:1713
+#: src/prefs_account.c:1726
 msgid "Use SSL for IMAP4 connection"
 msgstr "Koristi SSL za IMAP4 vezu"
 
-#: src/prefs_account.c:1719
+#: src/prefs_account.c:1732
 msgid "NNTP"
 msgstr "NNTP"
 
-#: src/prefs_account.c:1734
+#: src/prefs_account.c:1747
 msgid "Use SSL for NNTP connection"
 msgstr "Koristi SSL za NNTP vezu"
 
-#: src/prefs_account.c:1736
+#: src/prefs_account.c:1749
 msgid "Send (SMTP)"
 msgstr "Slanje (SMTP)"
 
-#: src/prefs_account.c:1747
+#: src/prefs_account.c:1760
 msgid "Use SSL for SMTP connection"
 msgstr "Koristi SSL za SMTP vezu"
 
-#: src/prefs_account.c:1872
+#: src/prefs_account.c:1885
 msgid "Specify SMTP port"
 msgstr "Poseban SMTP port"
 
-#: src/prefs_account.c:1878
+#: src/prefs_account.c:1891
 msgid "Specify POP3 port"
 msgstr "Poseban POP3 port"
 
-#: src/prefs_account.c:1884
+#: src/prefs_account.c:1897
 msgid "Specify IMAP4 port"
 msgstr "Poseban IMAP4 port"
 
-#: src/prefs_account.c:1890
+#: src/prefs_account.c:1903
 msgid "Specify NNTP port"
 msgstr "Poseban NNTP port"
 
-#: src/prefs_account.c:1895
+#: src/prefs_account.c:1908
 msgid "Specify domain name"
 msgstr "Poseban domen"
 
-#: src/prefs_account.c:1905
+#: src/prefs_account.c:1918
 msgid "Tunnel command to open connection"
 msgstr "Tunnel komanda za otvaranje veze"
 
-#: src/prefs_account.c:1913
+#: src/prefs_account.c:1926
 msgid "Mark cross-posted messages as read and color:"
 msgstr "Obele¾i krospostovane poruke kao proèitane i oboj ih u:"
 
-#: src/prefs_account.c:1937
+#: src/prefs_account.c:1950
 msgid "IMAP server directory"
 msgstr "IMAP server direktorijum"
 
-#: src/prefs_account.c:1991
+#: src/prefs_account.c:2004
 msgid "Put sent messages in"
 msgstr "Smesti poslate poruke u"
 
-#: src/prefs_account.c:1993
+#: src/prefs_account.c:2006
 msgid "Put draft messages in"
 msgstr "Smesti nedovr¹ene poruke u"
 
-#: src/prefs_account.c:1995
+#: src/prefs_account.c:2008
 msgid "Put deleted messages in"
 msgstr "Smesti uklonjene poruke u"
 
-#: src/prefs_account.c:2059
+#: src/prefs_account.c:2072
 msgid "Account name is not entered."
 msgstr "Naziv naloga nije unet."
 
-#: src/prefs_account.c:2063
+#: src/prefs_account.c:2076
 msgid "Mail address is not entered."
 msgstr "E-mail adresa nije uneta."
 
-#: src/prefs_account.c:2068
+#: src/prefs_account.c:2081
 msgid "SMTP server is not entered."
 msgstr "SMTP server nije unet."
 
-#: src/prefs_account.c:2073
+#: src/prefs_account.c:2086
 msgid "User ID is not entered."
 msgstr "ID korisnika nije unet."
 
-#: src/prefs_account.c:2078
+#: src/prefs_account.c:2091
 msgid "POP3 server is not entered."
 msgstr "POP3 server nije unet."
 
-#: src/prefs_account.c:2083
+#: src/prefs_account.c:2096
 msgid "IMAP4 server is not entered."
 msgstr "IMAP4 server nije unet."
 
-#: src/prefs_account.c:2088
+#: src/prefs_account.c:2101
 msgid "NNTP server is not entered."
 msgstr "NNTP server nije unet."
 
-#: src/prefs_account.c:2094
+#: src/prefs_account.c:2107
 msgid "local mailbox filename is not entered."
 msgstr "naziv fajla lokalnog sanduèeta nije unet."
 
-#: src/prefs_account.c:2100
+#: src/prefs_account.c:2113
 msgid "mail command is not entered."
 msgstr "mail komanda nije uneta."
 
-#: src/prefs_account.c:2187
+#: src/prefs_account.c:2200
 msgid ""
 "Its not recommended to use the old style Inline\n"
 "mode for GnuPG messages. It doesn't comply with\n"
@@ -4375,11 +4492,11 @@ msgstr ""
 msgid "Actions configuration"
 msgstr "Konfiguracija akcija"
 
-#: src/prefs_actions.c:322 src/prefs_actions.c:1811
+#: src/prefs_actions.c:322
 msgid "Menu name:"
 msgstr "Naziv u meniju:"
 
-#: src/prefs_actions.c:331 src/prefs_actions.c:1814
+#: src/prefs_actions.c:331
 msgid "Command line:"
 msgstr "Komanda:"
 
@@ -4517,62 +4634,67 @@ msgstr " Po¹alji "
 msgid "Abort"
 msgstr "Obustavi"
 
+#: src/prefs_actions.c:1811
+msgid "MENU NAME:"
+msgstr "Naziv menija:"
+
 #: src/prefs_actions.c:1812
-msgid "   Use / in menu name to make submenus."
-msgstr "\tKoristite / kao naziv menija da bi napravili podmeni."
+msgid "Use / in menu name to make submenus."
+msgstr "Koristite / u nazivu menija za formiranje podmenija."
+
+#: src/prefs_actions.c:1814
+msgid "COMMAND LINE:"
+msgstr "Komandna linija:"
 
 #: src/prefs_actions.c:1815
-msgid "* Begin with:"
-msgstr "* Poèinje sa"
+msgid "Begin with:"
+msgstr "Poèinje sa:"
 
 #: src/prefs_actions.c:1816
-msgid "     | to send message body or selection to command"
-msgstr "\t|\tza slanje tela poruke ili odabranog teksta komandi"
+msgid "to send message body or selection to command"
+msgstr "za slanje tela poruke ili odabranog teksta komandi"
 
 #: src/prefs_actions.c:1817
-msgid "     > to send user provided text to command"
-msgstr "\t>\tza slanje korisnièki definisanog teksta komandi"
+msgid "to send user provided text to command"
+msgstr "za slanje korisnièki definisanog teksta komandi"
 
 #: src/prefs_actions.c:1818
-msgid "     * to send user provided hidden text to command"
-msgstr "\t*\tza slanje skrivenog korisnièki definisanog teksta komandi"
+msgid "to send user provided hidden text to command"
+msgstr "za slanje skrivenog korisnièki definisanog teksta komandi"
 
 #: src/prefs_actions.c:1819
-msgid "* End with:"
-msgstr "* Zavr¹ava se sa:"
+msgid "End with:"
+msgstr "Zavr¹ava se sa:"
 
 #: src/prefs_actions.c:1820
-msgid "     | to replace message body or selection with command output"
-msgstr "\t|\tza zamenu tela poruke ili odabranog teksta rezultatom komande"
+msgid "to replace message body or selection with command output"
+msgstr "za zamenu tela poruke ili odabranog teksta rezultatom komande"
 
 #: src/prefs_actions.c:1821
-msgid "     > to insert command's output without replacing old text"
-msgstr "\t>\tza umetanje rezultata komande bez prepisivanja starog teksta"
+msgid "to insert command's output without replacing old text"
+msgstr "za umetanje rezultata komande bez prepisivanja starog teksta"
 
 #: src/prefs_actions.c:1822
-msgid "     & to run command asynchronously"
-msgstr "\t&\tza asinhorno pokretanje komande"
+msgid "to run command asynchronously"
+msgstr "za asinhorno pokretanje komande"
 
 #: src/prefs_actions.c:1823
-msgid "* Use:"
-msgstr "* Koristite:"
+msgid "Use:"
+msgstr "Koristite:"
 
 #: src/prefs_actions.c:1824
-#, c-format
-msgid "     %f for message file name"
-msgstr "\t%f\tza naziv fajla poruke"
+msgid "for message file name"
+msgstr "za naziv fajla poruke"
 
 #: src/prefs_actions.c:1825
-#, c-format
-msgid "     %F for the list of the file names of selected messages"
-msgstr "\t%F\tza listu naziva fajlova odabranih poruka"
+msgid "for the list of the file names of selected messages"
+msgstr "za listu naziva fajlova odabranih poruka"
 
 #: src/prefs_actions.c:1826
-#, c-format
-msgid "     %p for the selected message MIME part."
-msgstr "\t%p\tza MIME deo odabrane poruke"
+msgid "for the selected message MIME part."
+msgstr "za MIME deo odabrane poruke"
 
-#: src/prefs_actions.c:1834 src/prefs_matcher.c:1721 src/quote_fmt.c:75
+#: src/prefs_actions.c:1834 src/prefs_matcher.c:1722 src/quote_fmt.c:75
 msgid "Description of symbols"
 msgstr "Opis simbola"
 
@@ -5009,93 +5131,93 @@ msgstr "Prika¾i primaoca u koloni 'Po¹iljalac' ukoliko ste Vi po¹iljalac"
 msgid "Display sender using address book"
 msgstr "Prika¾i po¹iljaoca koristeæi adresar"
 
-#: src/prefs_common.c:2328
-msgid "Expand threads"
-msgstr "Razgranaj niti rasprava"
+#: src/prefs_common.c:2329
+msgid "Thread using subject in addition to standard headers"
+msgstr "Formiranje niti rasprava po temi poruke\nuz dodavanje na standardne delove zaglavlja"
 
-#: src/prefs_common.c:2336 src/prefs_common.c:3269 src/prefs_common.c:3307
+#: src/prefs_common.c:2337 src/prefs_common.c:3270 src/prefs_common.c:3308
 msgid "Date format"
 msgstr "Format datuma"
 
-#: src/prefs_common.c:2358
+#: src/prefs_common.c:2359
 msgid " Set displayed items in summary... "
 msgstr " Odaberite polja za prikaz u listi poruka... "
 
-#: src/prefs_common.c:2423
+#: src/prefs_common.c:2424
 msgid "Enable coloration of message"
 msgstr "Omoguæi bojenje citata i potpisa u poruci"
 
-#: src/prefs_common.c:2438
+#: src/prefs_common.c:2439
 msgid ""
 "Display multi-byte alphanumeric as\n"
 "ASCII character (Japanese only)"
 msgstr "Prika¾i vi¹ebajtnu abecedu kao ASCII karakter (samo Japanska verzija)"
 
-#: src/prefs_common.c:2444
+#: src/prefs_common.c:2445
 msgid "Display header pane above message view"
 msgstr "Prika¾i zaglavlje iznad prikaza poruke"
 
-#: src/prefs_common.c:2451
+#: src/prefs_common.c:2452
 msgid "Display short headers on message view"
 msgstr "Prika¾i kratko zaglavlje u poruci"
 
-#: src/prefs_common.c:2473
+#: src/prefs_common.c:2474
 msgid "Line space"
 msgstr "Razmak izmeðu linija teksta"
 
-#: src/prefs_common.c:2487 src/prefs_common.c:2527
+#: src/prefs_common.c:2488 src/prefs_common.c:2528
 msgid "pixel(s)"
 msgstr "taèaka"
 
-#: src/prefs_common.c:2492
+#: src/prefs_common.c:2493
 msgid "Leave space on head"
 msgstr "Ostavi praznu liniju na poèetku poruke"
 
-#: src/prefs_common.c:2494
+#: src/prefs_common.c:2495
 msgid "Scroll"
 msgstr "Pomeranje teksta"
 
-#: src/prefs_common.c:2501
+#: src/prefs_common.c:2502
 msgid "Half page"
 msgstr "Pola strane"
 
-#: src/prefs_common.c:2507
+#: src/prefs_common.c:2508
 msgid "Smooth scroll"
 msgstr "Glatko pomeranje"
 
-#: src/prefs_common.c:2513
+#: src/prefs_common.c:2514
 msgid "Step"
 msgstr "Korak pomeranja"
 
-#: src/prefs_common.c:2538
+#: src/prefs_common.c:2539
 msgid "Automatically display attached images"
 msgstr "Automatski prikaz prilo¾enih slika"
 
-#: src/prefs_common.c:2541
+#: src/prefs_common.c:2542
 msgid "Resize attached images"
 msgstr "Promeni velièinu prilo¾ene slike"
 
-#: src/prefs_common.c:2587
+#: src/prefs_common.c:2588
 msgid "Automatically check signatures"
 msgstr "Automatska provera potpisa"
 
-#: src/prefs_common.c:2590
+#: src/prefs_common.c:2591
 msgid "Show signature check result in a popup window"
 msgstr "Prika¾i rezultat provere potpisa u iskaèuæem prozoru"
 
-#: src/prefs_common.c:2593
+#: src/prefs_common.c:2594
 msgid "Store passphrase in memory temporarily"
 msgstr "Privremeno saèuvaj lozinku u memoriji"
 
-#: src/prefs_common.c:2608
+#: src/prefs_common.c:2609
 msgid "Expire after"
 msgstr "Istièe nakon"
 
-#: src/prefs_common.c:2621
+#: src/prefs_common.c:2622
 msgid "minute(s) "
 msgstr "minut(a)"
 
-#: src/prefs_common.c:2634
+#: src/prefs_common.c:2635
 msgid ""
 "(Setting to '0' will store the passphrase\n"
 " for the whole session)"
@@ -5103,35 +5225,35 @@ msgstr ""
 "(Ako je vrednost '0', lozinka æe biti\n"
 "saèuvana tokom cele sesije)"
 
-#: src/prefs_common.c:2644
+#: src/prefs_common.c:2645
 msgid "Grab input while entering a passphrase"
 msgstr "Uhvati unos pri upisu lozinke"
 
-#: src/prefs_common.c:2649
+#: src/prefs_common.c:2650
 msgid "Display warning on startup if GnuPG doesn't work"
 msgstr "Prika¾i upozorenje na pokretanju programa ako GnuPG ne radi"
 
-#: src/prefs_common.c:2717
+#: src/prefs_common.c:2718
 msgid "Open messages in summary with cursor keys"
-msgstr "Otvori poruku u listi poruka kada se odabere kursorom"
+msgstr "Prika¾i poruku kada se u listi poruka odabere kursorom"
 
-#: src/prefs_common.c:2721
+#: src/prefs_common.c:2722
 msgid "Open first unread message when entering a folder"
-msgstr "Otvori prvu neproèitanu poruku pri ulasku u direktorijum"
+msgstr "Prika¾i prvu neproèitanu poruku pri ulasku u direktorijum"
 
-#: src/prefs_common.c:2725
+#: src/prefs_common.c:2726
 msgid "Only mark message as read when opened in new window"
 msgstr "Obele¾i poruku kao proèitanu samo kada se otvori u novom prozoru"
 
-#: src/prefs_common.c:2729
+#: src/prefs_common.c:2730
 msgid "Go to inbox after receiving new mail"
-msgstr "Idi u direktorijum 'Sanduèe' po preuzimanju novih poruka"
+msgstr "Automatski prelazak u direktorijum 'Sanduèe' po preuzimanju novih poruka"
 
-#: src/prefs_common.c:2737
+#: src/prefs_common.c:2738
 msgid "Execute immediately when moving or deleting messages"
 msgstr "Izvr¹i promene odmah po preme¹tanju ili uklanjanju poruke"
 
-#: src/prefs_common.c:2744
+#: src/prefs_common.c:2745
 msgid ""
 "(Messages will be marked until execution\n"
 " if this is turned off)"
@@ -5139,288 +5261,284 @@ msgstr ""
 "(Ukoliko je ova opcija iskljuèena, poruka æe do sledeæeg\n"
 "izvr¹avanja biti samo obele¾ena za datu akciju)"
 
-#: src/prefs_common.c:2750
+#: src/prefs_common.c:2751
 msgid "Dialogs"
 msgstr "Dijalozi"
 
-#: src/prefs_common.c:2764
+#: src/prefs_common.c:2765
 msgid "Show no-unread-message dialog"
 msgstr "Prika¾i dijalog 'Nema neproèitanih poruka'"
 
-#: src/prefs_common.c:2778 src/prefs_common.c:2799 src/prefs_common.c:2816
+#: src/prefs_common.c:2779 src/prefs_common.c:2800 src/prefs_common.c:2817
 msgid "Always"
 msgstr "Uvek"
 
-#: src/prefs_common.c:2779
+#: src/prefs_common.c:2780
 msgid "Assume 'Yes'"
 msgstr "Podrazumeva se 'Da'"
 
-#: src/prefs_common.c:2781
+#: src/prefs_common.c:2782
 msgid "Assume 'No'"
 msgstr "Podrazumeva se 'Ne'"
 
-#: src/prefs_common.c:2786
+#: src/prefs_common.c:2787
 msgid "Show send dialog"
 msgstr "Prika¾i dijalog za slanje poruka"
 
-#: src/prefs_common.c:2800 src/prefs_common.c:2819
+#: src/prefs_common.c:2801 src/prefs_common.c:2820
 msgid "Never"
 msgstr "Nikada"
 
-#: src/prefs_common.c:2804
+#: src/prefs_common.c:2805
 msgid "Show receive dialog"
 msgstr "Prika¾i dijalog za preuzimanje poruka"
 
-#: src/prefs_common.c:2817
+#: src/prefs_common.c:2818
 msgid "Only if a window is active"
 msgstr "Samo ukoliko je prozor aktivan"
 
-#: src/prefs_common.c:2827
+#: src/prefs_common.c:2828
 msgid "Close receive dialog when finished"
 msgstr "Zatvori dijalog za preuzimanje po zavr¹etku transfera"
 
-#: src/prefs_common.c:2834
+#: src/prefs_common.c:2835
 msgid " Set key bindings... "
 msgstr " Odaberite predefinisani skup tasterskih preèica... "
 
-#: src/prefs_common.c:2840
+#: src/prefs_common.c:2841
 msgid "Icon theme"
 msgstr "Grafièka tema ikonica"
 
-#: src/prefs_common.c:2923
+#: src/prefs_common.c:2924
 #, c-format
 msgid "External commands (%s will be replaced with file name / URI)"
 msgstr "Eksterne komande (%s je putanja do fajla ili URL)"
 
-#: src/prefs_common.c:2932
+#: src/prefs_common.c:2933
 msgid "Web browser"
 msgstr "Internet pretra¾ivaè"
 
-#: src/prefs_common.c:2957 src/summaryview.c:3429
+#: src/prefs_common.c:2958 src/summaryview.c:3451
 msgid "Print"
 msgstr "©tampanje"
 
-#: src/prefs_common.c:2968 src/toolbar.c:402
+#: src/prefs_common.c:2969 src/toolbar.c:402
 msgid "Editor"
 msgstr "Ureðivaè teksta"
 
-#: src/prefs_common.c:2998
+#: src/prefs_common.c:2999
 msgid "Add address to destination when double-clicked"
 msgstr "Dodaj adresu u destinaciju na dvoklik"
 
-#: src/prefs_common.c:3001
+#: src/prefs_common.c:3002
 msgid "Log Size"
 msgstr "Velièina dnevnika rada"
 
-#: src/prefs_common.c:3008
+#: src/prefs_common.c:3009
 msgid "Clip the log size"
 msgstr "Prekrati veliki dnevnik rada"
 
-#: src/prefs_common.c:3013
+#: src/prefs_common.c:3014
 msgid "Log window length"
 msgstr "Du¾ina prozora dnevnika rada"
 
-#: src/prefs_common.c:3022
+#: src/prefs_common.c:3023
 msgid "(0 to stop logging in the log window)"
 msgstr "(0 za zaustavljanje logovanja u prozoru dnevnika rada)"
 
-#: src/prefs_common.c:3030
+#: src/prefs_common.c:3031
 msgid "Security"
 msgstr "Bezbednost"
 
-#: src/prefs_common.c:3037
+#: src/prefs_common.c:3038
 msgid "Ask before accepting SSL certificates"
 msgstr "Upitaj pre prihvatanja SSL sertifikata"
 
-#: src/prefs_common.c:3045
+#: src/prefs_common.c:3046
 msgid "On exit"
 msgstr "Pri napu¹tanju programa"
 
-#: src/prefs_common.c:3053
+#: src/prefs_common.c:3054
 msgid "Confirm on exit"
 msgstr "Upitaj za potvrdu napu¹tanja programa"
 
-#: src/prefs_common.c:3060
+#: src/prefs_common.c:3061
 msgid "Empty trash on exit"
 msgstr "Isprazni smeæe"
 
-#: src/prefs_common.c:3062
+#: src/prefs_common.c:3063
 msgid "Ask before emptying"
 msgstr "Upitaj za potvrdu pre pra¾njenja smeæa"
 
-#: src/prefs_common.c:3066
+#: src/prefs_common.c:3067
 msgid "Warn if there are queued messages"
 msgstr "Prika¾i obave¹tenje o postojanju poruka pripremljenih za slanje"
 
-#: src/prefs_common.c:3245
+#: src/prefs_common.c:3246
 msgid "the full abbreviated weekday name"
 msgstr "skraæeni naziv sedmice"
 
-#: src/prefs_common.c:3246
+#: src/prefs_common.c:3247
 msgid "the full weekday name"
 msgstr "pun naziv sedmice"
 
-#: src/prefs_common.c:3247
+#: src/prefs_common.c:3248
 msgid "the abbreviated month name"
 msgstr "skraæeni naziv meseca"
 
-#: src/prefs_common.c:3248
+#: src/prefs_common.c:3249
 msgid "the full month name"
 msgstr "pun naziv meseca"
 
-#: src/prefs_common.c:3249
+#: src/prefs_common.c:3250
 msgid "the preferred date and time for the current locale"
 msgstr "prioritetan datum i vreme trenutne lokalizacije"
 
-#: src/prefs_common.c:3250
+#: src/prefs_common.c:3251
 msgid "the century number (year/100)"
 msgstr "broj stoleæa (godina/100)"
 
-#: src/prefs_common.c:3251
+#: src/prefs_common.c:3252
 msgid "the day of the month as a decimal number"
 msgstr "dan u mesecu kao decimalan broj"
 
-#: src/prefs_common.c:3252
+#: src/prefs_common.c:3253
 msgid "the hour as a decimal number using a 24-hour clock"
 msgstr "èas kao decimalan broj koristeæi 24-èasovni sat"
 
-#: src/prefs_common.c:3253
+#: src/prefs_common.c:3254
 msgid "the hour as a decimal number using a 12-hour clock"
 msgstr "èas kao decimalan broj koristeæi 12-èasovni sat"
 
-#: src/prefs_common.c:3254
+#: src/prefs_common.c:3255
 msgid "the day of the year as a decimal number"
 msgstr "dan u godini kao decimalan broj"
 
-#: src/prefs_common.c:3255
+#: src/prefs_common.c:3256
 msgid "the month as a decimal number"
 msgstr "mesec kao decimalan broj"
 
-#: src/prefs_common.c:3256
+#: src/prefs_common.c:3257
 msgid "the minute as a decimal number"
 msgstr "minut kao decimalan broj"
 
-#: src/prefs_common.c:3257
+#: src/prefs_common.c:3258
 msgid "either AM or PM"
 msgstr "AM ili PM"
 
-#: src/prefs_common.c:3258
+#: src/prefs_common.c:3259
 msgid "the second as a decimal number"
 msgstr "sekunde kao decimalan broj"
 
-#: src/prefs_common.c:3259
+#: src/prefs_common.c:3260
 msgid "the day of the week as a decimal number"
 msgstr "dan u sedmici kao decimalan broj"
 
-#: src/prefs_common.c:3260
+#: src/prefs_common.c:3261
 msgid "the preferred date for the current locale"
 msgstr "prioritetan datum za trenutnu lokalizaciju"
 
-#: src/prefs_common.c:3261
+#: src/prefs_common.c:3262
 msgid "the last two digits of a year"
 msgstr "poslednje dve cifre godine"
 
-#: src/prefs_common.c:3262
+#: src/prefs_common.c:3263
 msgid "the year as a decimal number"
 msgstr "godina kao decimalan broj"
 
-#: src/prefs_common.c:3263
+#: src/prefs_common.c:3264
 msgid "the time zone or name or abbreviation"
 msgstr "vremenska zona"
 
-#: src/prefs_common.c:3284
+#: src/prefs_common.c:3285
 msgid "Specifier"
 msgstr "Identifikator"
 
-#: src/prefs_common.c:3285
-msgid "Description"
-msgstr "Opis"
-
-#: src/prefs_common.c:3324
+#: src/prefs_common.c:3325
 msgid "Example"
 msgstr "Primer"
 
-#: src/prefs_common.c:3413
+#: src/prefs_common.c:3414
 msgid "Set message colors"
 msgstr "Boje citata i potpisa"
 
-#: src/prefs_common.c:3421
+#: src/prefs_common.c:3422
 msgid "Colors"
-msgstr "Boje"
+msgstr "Boje za"
 
-#: src/prefs_common.c:3468
+#: src/prefs_common.c:3469
 msgid "Quoted Text - First Level"
 msgstr "Citat - prvi nivo"
 
-#: src/prefs_common.c:3474
+#: src/prefs_common.c:3475
 msgid "Quoted Text - Second Level"
 msgstr "Citat - drugi nivo"
 
-#: src/prefs_common.c:3480
+#: src/prefs_common.c:3481
 msgid "Quoted Text - Third Level"
 msgstr "Citat - treæi nivo"
 
-#: src/prefs_common.c:3486
+#: src/prefs_common.c:3487
 msgid "URI link"
-msgstr "URI link"
+msgstr "URL veza"
 
-#: src/prefs_common.c:3492
+#: src/prefs_common.c:3493
 msgid "Target folder"
 msgstr "Ciljni direktorijum"
 
-#: src/prefs_common.c:3498
+#: src/prefs_common.c:3499
 msgid "Signatures"
-msgstr "Potpisi"
+msgstr "Potpis"
 
-#: src/prefs_common.c:3505
+#: src/prefs_common.c:3506
 msgid "Recycle quote colors"
 msgstr "Kru¾i kroz boje citata"
 
-#: src/prefs_common.c:3572
+#: src/prefs_common.c:3573
 msgid "Pick color for quotation level 1"
 msgstr "Odaberi boju za citat prvog nivoa"
 
-#: src/prefs_common.c:3575
+#: src/prefs_common.c:3576
 msgid "Pick color for quotation level 2"
 msgstr "Odaberi boju za citat drugog nivoa"
 
-#: src/prefs_common.c:3578
+#: src/prefs_common.c:3579
 msgid "Pick color for quotation level 3"
 msgstr "Odaberi boju za citat treæegg nivoa"
 
-#: src/prefs_common.c:3581
+#: src/prefs_common.c:3582
 msgid "Pick color for URI"
 msgstr "Odaberi boju za link"
 
-#: src/prefs_common.c:3584
+#: src/prefs_common.c:3585
 msgid "Pick color for target folder"
 msgstr "Odaberi boju za ciljni direktorijum"
 
-#: src/prefs_common.c:3587
+#: src/prefs_common.c:3588
 msgid "Pick color for signatures"
 msgstr "Odaberi boju za potpis"
 
-#: src/prefs_common.c:3591
+#: src/prefs_common.c:3592
 msgid "Pick color for misspelled word"
 msgstr "Odaberi boju za pogre¹no napisane reèi"
 
-#: src/prefs_common.c:3727
+#: src/prefs_common.c:3728
 msgid "Font selection"
 msgstr "Odabir fonta"
 
-#: src/prefs_common.c:3801
+#: src/prefs_common.c:3802
 msgid "Key bindings"
 msgstr "Tasterske preèice"
 
-#: src/prefs_common.c:3815
+#: src/prefs_common.c:3816
 msgid "Select preset:"
 msgstr "Odaberite predefinisani skup tasterskih preèica:"
 
-#: src/prefs_common.c:3828 src/prefs_common.c:4166
+#: src/prefs_common.c:3829 src/prefs_common.c:4167
 msgid "Old Sylpheed"
 msgstr "Stari Sylpheed"
 
-#: src/prefs_common.c:3836
+#: src/prefs_common.c:3837
 msgid ""
 "You can also modify each menu shortcut by pressing\n"
 "any key(s) when placing the mouse pointer on the item."
@@ -5571,7 +5689,7 @@ msgstr "Ukloni pravilo"
 msgid "Do you really want to delete this rule?"
 msgstr "Da li zaista ¾elite da uklonite ovo pravilo?"
 
-#: src/prefs_filtering.c:1489 src/prefs_matcher.c:1661 src/prefs_scoring.c:767
+#: src/prefs_filtering.c:1489 src/prefs_matcher.c:1662 src/prefs_scoring.c:767
 msgid "Entry not saved"
 msgstr "Unos nije saèuvan"
 
@@ -5627,20 +5745,20 @@ msgstr "Odaberite boju za naziv direktorijuma"
 msgid "All messages"
 msgstr "Sve poruke"
 
-#: src/prefs_matcher.c:142 src/prefs_matcher.c:1703
+#: src/prefs_matcher.c:142 src/prefs_matcher.c:1704
 #: src/prefs_summary_column.c:70 src/quote_fmt.c:47
-#: src/selective_download.c:806 src/summaryview.c:462 src/summaryview.c:627
+#: src/selective_download.c:806 src/summaryview.c:465 src/summaryview.c:630
 msgid "Subject"
 msgstr "Tema"
 
-#: src/prefs_matcher.c:143 src/prefs_matcher.c:1704
+#: src/prefs_matcher.c:143 src/prefs_matcher.c:1705
 #: src/prefs_summary_column.c:71 src/quote_fmt.c:42
-#: src/selective_download.c:803 src/summaryview.c:463 src/summaryview.c:631
+#: src/selective_download.c:803 src/summaryview.c:466 src/summaryview.c:634
 msgid "From"
 msgstr "Po¹iljalac"
 
-#: src/prefs_matcher.c:143 src/prefs_matcher.c:1705 src/quote_fmt.c:48
-#: src/summaryview.c:635
+#: src/prefs_matcher.c:143 src/prefs_matcher.c:1706 src/quote_fmt.c:48
+#: src/summaryview.c:638
 msgid "To"
 msgstr "Primalac"
 
@@ -5648,7 +5766,7 @@ msgstr "Primalac"
 msgid "To or Cc"
 msgstr "Primalac ili Kopija"
 
-#: src/prefs_matcher.c:144 src/prefs_matcher.c:1709 src/quote_fmt.c:50
+#: src/prefs_matcher.c:144 src/prefs_matcher.c:1710 src/quote_fmt.c:50
 msgid "Newsgroups"
 msgstr "News grupa"
 
@@ -5656,7 +5774,7 @@ msgstr "News grupa"
 msgid "In reply to"
 msgstr "U odgovoru na"
 
-#: src/prefs_matcher.c:144 src/prefs_matcher.c:1710 src/quote_fmt.c:51
+#: src/prefs_matcher.c:144 src/prefs_matcher.c:1711 src/quote_fmt.c:51
 msgid "References"
 msgstr "Reference"
 
@@ -5792,7 +5910,7 @@ msgstr "Postojeæa pravila uslova"
 msgid "Value is not set."
 msgstr "Vrednost nije odreðena."
 
-#: src/prefs_matcher.c:1662 src/prefs_scoring.c:768
+#: src/prefs_matcher.c:1663 src/prefs_scoring.c:768
 msgid ""
 "The entry was not saved\n"
 "Have you really finished?"
@@ -5800,28 +5918,28 @@ msgstr ""
 "Unos nije saèuvan\n"
 "Da li ste zaista zavr¹ili?"
 
-#: src/prefs_matcher.c:1707 src/prefs_summary_column.c:72 src/quote_fmt.c:41
-#: src/selective_download.c:809 src/summaryview.c:464
+#: src/prefs_matcher.c:1708 src/prefs_summary_column.c:72 src/quote_fmt.c:41
+#: src/selective_download.c:809 src/summaryview.c:467
 msgid "Date"
 msgstr "Datum"
 
-#: src/prefs_matcher.c:1708 src/quote_fmt.c:52
+#: src/prefs_matcher.c:1709 src/quote_fmt.c:52
 msgid "Message-ID"
 msgstr "ID poruke"
 
-#: src/prefs_matcher.c:1711
+#: src/prefs_matcher.c:1712
 msgid "Filename - should not be modified"
 msgstr "Naziv fajla ne mo¾e biti izmenjen"
 
-#: src/prefs_matcher.c:1712
+#: src/prefs_matcher.c:1713
 msgid "new line"
 msgstr "nova linija"
 
-#: src/prefs_matcher.c:1713
+#: src/prefs_matcher.c:1714
 msgid "escape character for quotes"
 msgstr "iskljuèni karakter za citat"
 
-#: src/prefs_matcher.c:1714
+#: src/prefs_matcher.c:1715
 msgid "quote character"
 msgstr "karakter za citat"
 
@@ -5829,7 +5947,7 @@ msgstr "karakter za citat"
 msgid "Scoring configuration"
 msgstr "Konfiguracija bodovanja"
 
-#: src/prefs_scoring.c:246 src/prefs_summary_column.c:75 src/summaryview.c:467
+#: src/prefs_scoring.c:246 src/prefs_summary_column.c:75 src/summaryview.c:470
 msgid "Score"
 msgstr "Skor"
 
@@ -5979,38 +6097,37 @@ msgstr "Prikljuèena akcija"
 
 #: src/prefs_toolbar.c:868
 msgid "Customize Toolbars/Main Window"
-msgstr "Pode¹avanja _linije alata/_Glavni prozor"
+msgstr "Pode¹avanja linije alata/Glavni prozor"
 
 #: src/prefs_toolbar.c:877
 msgid "Customize Toolbars/Message Window"
-msgstr "Pode¹avanja _linije alata/_Pregled poruka"
+msgstr "Pode¹avanja linije alata/Pregled poruka"
 
 #: src/prefs_toolbar.c:886
 msgid "Customize Toolbars/Compose Window"
-msgstr "Pode¹avanja _linije alata/_Ureðivaè porka"
+msgstr "Pode¹avanja linije alata/Ureðivaè porka"
 
-#: src/procmsg.c:1333
+#: src/procmsg.c:1337
 #, c-format
 msgid "Error occurred while sending the message to `%s'."
 msgstr "Nastala je gre¹ka pri slanju poruke na '%s'."
 
-#: src/procmsg.c:1337
+#: src/procmsg.c:1341
 #, c-format
 msgid "Error occurred while sending the message with command `%s'."
 msgstr "Nastala je gre¹ka pri slanju poruke sa komandom '%s'."
 
-#: src/procmsg.c:1356
+#: src/procmsg.c:1360
 msgid "Could not create temporary file for news sending."
 msgstr "Nije moguæe kreirati privremenu datoteku za slanje news poruka."
 
-#: src/procmsg.c:1367
+#: src/procmsg.c:1371
 msgid "Error when writing temporary file for news sending."
-msgstr ""
-"Nastala je gre¹ka pri pisanju privremene datoteke za slanje news poruka."
+msgstr "Nastala je gre¹ka pri pisanju privremene datoteke za slanje news poruka."
 
 #: src/quote_fmt.c:40
 msgid "Customize date format (see man strftime)"
-msgstr "Korisnièki definisan format datuma (pogledajte #man strftime)"
+msgstr "Korisnièki definisan format datuma ($man strftime)"
 
 #: src/quote_fmt.c:43
 msgid "Full Name of Sender"
@@ -6421,513 +6538,509 @@ msgstr "Odaberi pronaðene"
 msgid "AND search"
 msgstr "I tra¾i"
 
-#: src/summary_search.c:317
+#: src/summary_search.c:319
 msgid "Beginning of list reached; continue from end?"
 msgstr "Do¹li ste do poèetka liste. Da nastavimo od kraja?"
 
-#: src/summary_search.c:319
+#: src/summary_search.c:321
 msgid "End of list reached; continue from beginning?"
 msgstr "Do¹li ste do kraja liste. Da nastavimo od poèetka?"
 
-#: src/summaryview.c:402
+#: src/summaryview.c:405
 msgid "/_Reply"
 msgstr "/_Odgovori"
 
-#: src/summaryview.c:403
+#: src/summaryview.c:406
 msgid "/Repl_y to"
 msgstr "/Odgovori_..."
 
-#: src/summaryview.c:404
+#: src/summaryview.c:407
 msgid "/Repl_y to/_all"
 msgstr "/Odgovori_.../_Svima"
 
-#: src/summaryview.c:405
+#: src/summaryview.c:408
 msgid "/Repl_y to/_sender"
 msgstr "/Odgovori_.../_Po¹iljaocu"
 
-#: src/summaryview.c:406
+#: src/summaryview.c:409
 msgid "/Repl_y to/mailing _list"
 msgstr "/Odgovori_.../Na _mail listu"
 
-#: src/summaryview.c:408
+#: src/summaryview.c:411
 msgid "/Follow-up and reply to"
 msgstr "/Nastavi na i odgovori"
 
-#: src/summaryview.c:410
+#: src/summaryview.c:413
 msgid "/_Forward"
 msgstr "/_Prosledi"
 
-#: src/summaryview.c:411
+#: src/summaryview.c:414
 msgid "/Redirect"
 msgstr "/P_reusmeri"
 
-#: src/summaryview.c:413
+#: src/summaryview.c:416
 msgid "/Re-_edit"
 msgstr "/Pre_uredi"
 
-#: src/summaryview.c:415
+#: src/summaryview.c:418
 msgid "/M_ove..."
 msgstr "/Pr_emesti..."
 
-#: src/summaryview.c:416
+#: src/summaryview.c:419
 msgid "/_Copy..."
 msgstr "/_Kopiraj..."
 
-#: src/summaryview.c:418
+#: src/summaryview.c:421
 msgid "/Cancel a news message"
 msgstr "/Ukini ne_ws poruku"
 
-#: src/summaryview.c:419
+#: src/summaryview.c:422
 msgid "/E_xecute"
 msgstr "/_Izvr¹i oznaèene akcije"
 
-#: src/summaryview.c:421
+#: src/summaryview.c:424
 msgid "/_Mark"
 msgstr "/_Obele¾i"
 
-#: src/summaryview.c:422
+#: src/summaryview.c:425
 msgid "/_Mark/_Mark"
 msgstr "/_Obele¾i/_Postavi oznaku"
 
-#: src/summaryview.c:423
+#: src/summaryview.c:426
 msgid "/_Mark/_Unmark"
 msgstr "/_Obele¾i/_Ukloni oznaku"
 
-#: src/summaryview.c:424
+#: src/summaryview.c:427
 msgid "/_Mark/---"
 msgstr "/_Obele¾i/---"
 
-#: src/summaryview.c:425
+#: src/summaryview.c:428
 msgid "/_Mark/Mark as unr_ead"
 msgstr "/_Obele¾i/Obele¾i kao _neproèitano"
 
-#: src/summaryview.c:426
+#: src/summaryview.c:429
 msgid "/_Mark/Mark as rea_d"
 msgstr "/_Obele¾i/Obele¾i _kao proèitano"
 
-#: src/summaryview.c:427
+#: src/summaryview.c:430
 msgid "/_Mark/Mark all read"
 msgstr "/_Obele¾i/Obele¾i _sve kao proèitano"
 
-#: src/summaryview.c:428
+#: src/summaryview.c:431
 msgid "/_Mark/Ignore thread"
 msgstr "/_Obele¾i/_Ignori¹i nit rasprave"
 
-#: src/summaryview.c:429
+#: src/summaryview.c:432
 msgid "/_Mark/Unignore thread"
 msgstr "/_Obele¾i/Ukini i_gnorisanje niti rasprave"
 
-#: src/summaryview.c:430
+#: src/summaryview.c:433
 msgid "/Color la_bel"
 msgstr "/_Boja poruke"
 
-#: src/summaryview.c:433
+#: src/summaryview.c:436
 msgid "/Add sender to address boo_k"
 msgstr "/_Dodaj po¹iljaoca u adresar"
 
-#: src/summaryview.c:435
+#: src/summaryview.c:438
 msgid "/Create f_ilter rule"
 msgstr "/Kreiraj _filter pravilo"
 
-#: src/summaryview.c:436
+#: src/summaryview.c:439
 msgid "/Create f_ilter rule/_Automatically"
 msgstr "/Kreiraj _filter pravilo/_Automatski"
 
-#: src/summaryview.c:438
+#: src/summaryview.c:441
 msgid "/Create f_ilter rule/by _From"
 msgstr "/Kreiraj _filter pravilo/po _po¹iljaocu"
 
-#: src/summaryview.c:440
+#: src/summaryview.c:443
 msgid "/Create f_ilter rule/by _To"
 msgstr "/Kreiraj _filter pravilo/po p_rimaocu"
 
-#: src/summaryview.c:442
+#: src/summaryview.c:445
 msgid "/Create f_ilter rule/by _Subject"
 msgstr "/Kreiraj _filter pravilo/po _temi"
 
-#: src/summaryview.c:448
+#: src/summaryview.c:451
 msgid "/_View/_Source"
 msgstr "/I_zgled/Prika¾i _izvor poruke u novom prozoru"
 
-#: src/summaryview.c:449
+#: src/summaryview.c:452
 msgid "/_View/All _header"
 msgstr "/I_zgled/_Kompletno zaglavlje poruke"
 
-#: src/summaryview.c:452
+#: src/summaryview.c:455
 msgid "/_Print..."
 msgstr "/_©tampa..."
 
-#: src/summaryview.c:454
+#: src/summaryview.c:457
 msgid "/Select _all"
 msgstr "/Odaberi _sve"
 
-#: src/summaryview.c:455
+#: src/summaryview.c:458
 msgid "/Select t_hread"
 msgstr "/Odaberi _nit rasprave"
 
-#: src/summaryview.c:459
+#: src/summaryview.c:462
 msgid "M"
 msgstr "M"
 
-#: src/summaryview.c:460
-msgid "U"
-msgstr "U"
-
-#: src/summaryview.c:466
+#: src/summaryview.c:469
 msgid "No."
 msgstr "Poruka"
 
-#: src/summaryview.c:468
+#: src/summaryview.c:471
 msgid "L"
 msgstr "L"
 
-#: src/summaryview.c:477
+#: src/summaryview.c:480
 msgid "all messages"
 msgstr "sve poruke"
 
-#: src/summaryview.c:478 src/summaryview.c:479
+#: src/summaryview.c:481 src/summaryview.c:482
 msgid "messages whose age is greather than #"
-msgstr "poruke koje su starija od #"
-
-#: src/summaryview.c:480
-msgid "messages which contain S in the message body"
-msgstr "poruke koje sadr¾e S u telu poruke"
-
-#: src/summaryview.c:481
-msgid "messages which contain S in the whole message"
-msgstr "poruke koje sadr¾e S u zaglavlju i telu poruke"
-
-#: src/summaryview.c:482
-msgid "messages carbon-copied to S"
-msgstr "poruke èija je Kopija: za S"
+msgstr "poruke koje su starije od # dana"
 
 #: src/summaryview.c:483
-msgid "message is either to: or cc: to S"
-msgstr "poruke u kojima je Primalac: ili Kopija: za S"
+msgid "messages which contain S in the message body"
+msgstr "poruke koje sadr¾e \"S\" u telu poruke"
 
 #: src/summaryview.c:484
-msgid "deleted messages"
-msgstr "uklonjene poruke"
+msgid "messages which contain S in the whole message"
+msgstr "poruke koje sadr¾e \"S\" u zaglavlju ili telu poruke"
 
 #: src/summaryview.c:485
-msgid "messages which contain S in the Sender field"
-msgstr "poruke koje sadr¾e S u polju Po¹iljalac:"
+msgid "messages carbon-copied to S"
+msgstr "poruke èija je Kopija: za \"S\""
 
 #: src/summaryview.c:486
-msgid "true if execute \"S\" succeeds"
-msgstr "taèno ako se \"S\" uspe¹no izvr¹i"
+msgid "message is either to: or cc: to S"
+msgstr "poruke u kojima je Primalac: ili Kopija: za \"S\""
 
 #: src/summaryview.c:487
-msgid "messages originating from user S"
-msgstr "poruke èiji je autor S"
+msgid "deleted messages"
+msgstr "poruke koje imaju oznaku 'uklonjeno'"
 
 #: src/summaryview.c:488
+msgid "messages which contain S in the Sender field"
+msgstr "poruke koje sadr¾e \"S\" u polju Po¹iljalac:"
+
+#: src/summaryview.c:489
+msgid "true if execute \"S\" succeeds"
+msgstr "taèno ako se \"S\" uspe¹no izvr¹i [FIX]"
+
+#: src/summaryview.c:490
+msgid "messages originating from user S"
+msgstr "poruke èiji je autor \"S\""
+
+#: src/summaryview.c:491
 msgid "forwarded messages"
 msgstr "prosleðene poruke"
 
-#: src/summaryview.c:489
-msgid "messages which contain header S"
-msgstr "poruke koje sadr¾e polje zaglavlja S"
-
-#: src/summaryview.c:490
-msgid "messages which contain S in Message-Id header"
-msgstr "poruke koje sadr¾e S u Message-ID polju zaglavlja"
-
-#: src/summaryview.c:491
-msgid "messages which contain S in inreplyto header"
-msgstr "poruke koje sadr¾e S u In-Reply-To polju zaglavlja"
-
 #: src/summaryview.c:492
+msgid "messages which contain header S"
+msgstr "poruke koje sadr¾e polje zaglavlja \"S\""
+
+#: src/summaryview.c:493
+msgid "messages which contain S in Message-Id header"
+msgstr "poruke koje sadr¾e \"S\" u Message-ID polju zaglavlja"
+
+#: src/summaryview.c:494
+msgid "messages which contain S in inreplyto header"
+msgstr "poruke koje sadr¾e \"S\" u In-Reply-To polju zaglavlja"
+
+#: src/summaryview.c:495
 msgid "locked messages"
 msgstr "zakljuèane poruke"
 
-#: src/summaryview.c:493
+#: src/summaryview.c:496
 msgid "messages which are in newsgroup S"
-msgstr "poruke koje su u news grupi S"
+msgstr "poruke koje su u news grupi \"S\""
 
-#: src/summaryview.c:494
+#: src/summaryview.c:497
 msgid "new messages"
 msgstr "nove poruke"
 
-#: src/summaryview.c:495
+#: src/summaryview.c:498
 msgid "old messages"
 msgstr "stare poruke"
 
-#: src/summaryview.c:496
+#: src/summaryview.c:499
 msgid "messages which have been replied to"
-msgstr "poruke koje su odgovori za"
+msgstr "poruke na koje postoje odgovori (replike)"
 
-#: src/summaryview.c:497
+#: src/summaryview.c:500
 msgid "read messages"
 msgstr "proèitane poruke"
 
-#: src/summaryview.c:498
-msgid "messages which contain S in subject"
-msgstr "poruke koje sadr¾e S u temi poruke"
-
-#: src/summaryview.c:499
-msgid "messages whose score is equal to #"
-msgstr "poruke èiji je broj bodova #"
-
-#: src/summaryview.c:500
-msgid "messages whose score is greater than #"
-msgstr "poruke èiji je broj bodova veæi od #"
-
 #: src/summaryview.c:501
-msgid "messages whose score is lower than #"
-msgstr "poruke èiji je broj bodova manji od #"
+msgid "messages which contain S in subject"
+msgstr "poruke koje sadr¾e \"S\" u temi poruke"
 
 #: src/summaryview.c:502
-msgid "messages whose size is equal to #"
-msgstr "poruke èija je velièina #"
+msgid "messages whose score is equal to #"
+msgstr "poruke sa # bodova"
 
 #: src/summaryview.c:503
-msgid "messages whose size is greater than #"
-msgstr "poruke èija je velièina veæa od #"
+msgid "messages whose score is greater than #"
+msgstr "poruke sa vi¹e od # bodova"
 
 #: src/summaryview.c:504
-msgid "messages whose size is smaller than #"
-msgstr "poruke èija je velièina manja od #"
+msgid "messages whose score is lower than #"
+msgstr "poruke sa manje od # bodova"
 
 #: src/summaryview.c:505
-msgid "messages which have been sent to S"
-msgstr "poruke koje su poslate za S"
+msgid "messages whose size is equal to #"
+msgstr "poruke velièine # bajtova"
 
 #: src/summaryview.c:506
+msgid "messages whose size is greater than #"
+msgstr "poruke veæe od # bajtova"
+
+#: src/summaryview.c:507
+msgid "messages whose size is smaller than #"
+msgstr "poruke manje od # bajtova"
+
+#: src/summaryview.c:508
+msgid "messages which have been sent to S"
+msgstr "poruke poslate za \"S\""
+
+#: src/summaryview.c:509
 msgid "marked messages"
 msgstr "obele¾ene poruke"
 
-#: src/summaryview.c:507
+#: src/summaryview.c:510
 msgid "unread messages"
 msgstr "neproèitane poruke"
 
-#: src/summaryview.c:508
-msgid "messages which contain S in References header"
-msgstr "poruke koje sadr¾e S u References polju zaglavlja"
-
-#: src/summaryview.c:509
-msgid "messages which contain S in X-Label header"
-msgstr "poruke koje sadr¾e S u X-Label polju zaglavlja"
-
 #: src/summaryview.c:511
+msgid "messages which contain S in References header"
+msgstr "poruke koje sadr¾e \"S\" u References: polju zaglavlja"
+
+#: src/summaryview.c:512
+msgid "messages which contain S in X-Label header"
+msgstr "poruke koje sadr¾e \"S\" u X-Label: polju zaglavlja"
+
+#: src/summaryview.c:514
 msgid "logical AND operator"
 msgstr "logièki operator I"
 
-#: src/summaryview.c:512
+#: src/summaryview.c:515
 msgid "logical OR operator"
 msgstr "logièki operator ILI"
 
-#: src/summaryview.c:513
+#: src/summaryview.c:516
 msgid "logical NOT operator"
 msgstr "logièki operator NE"
 
-#: src/summaryview.c:514
+#: src/summaryview.c:517
 msgid "case sensitive search"
-msgstr "razlika mala/VELIKA slova"
+msgstr "mala/VELIKA slova se razlikuju"
 
-#: src/summaryview.c:521
+#: src/summaryview.c:524
 msgid "Extended Search symbols"
 msgstr "Karakteri za naprednu pretragu"
 
-#: src/summaryview.c:570
+#: src/summaryview.c:573
 msgid "Toggle quick-search bar"
 msgstr "Ukljuèi/iskljuèi polje za brzu pretragu"
 
-#: src/summaryview.c:654
+#: src/summaryview.c:657
 msgid "Extended Symbols"
-msgstr "Napredni simboli"
+msgstr "Karakteri napredne brze pretrage"
 
-#: src/summaryview.c:905
+#: src/summaryview.c:910
 msgid "Process mark"
 msgstr "Procesiranje oznaèenih poruka"
 
-#: src/summaryview.c:906
+#: src/summaryview.c:911
 msgid "Some marks are left. Process it?"
 msgstr ""
 "Neke poruke su obele¾ene za izvr¹avnje odreðenih akcija.\n"
 "Da li ¾elite da se sada izvr¹e oznaèene akcije nad tim porukama?\n"
 "\n"
 "Ako odgovorite sa 'Ne', po napu¹tanju programa oznaèene akcije æe biti "
-"ukinute!"
+"zanemarene!"
 
-#: src/summaryview.c:953
+#: src/summaryview.c:958
 #, c-format
 msgid "Scanning folder (%s)..."
 msgstr "Skeniranje direktorijuma (%s)..."
 
-#: src/summaryview.c:1347 src/summaryview.c:1391
+#: src/summaryview.c:1353 src/summaryview.c:1397
 msgid "No more unread messages"
 msgstr "Nema vi¹e neproèitanih poruka"
 
-#: src/summaryview.c:1348
+#: src/summaryview.c:1354
 msgid "No unread message found. Search from the end?"
 msgstr "Nema neproèitanih poruka. Da nastavim pretragu od kraja?"
 
-#: src/summaryview.c:1360 src/summaryview.c:1404
+#: src/summaryview.c:1366 src/summaryview.c:1410
 msgid ""
 "Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"
 msgstr ""
 "Interna gre¹ka: neoèekivana vrednost za prefs_common.next_unread_msg_dialog\n"
 
-#: src/summaryview.c:1368
+#: src/summaryview.c:1374
 msgid "No unread messages."
 msgstr "Nema neproèitanih poruka."
 
-#: src/summaryview.c:1392
+#: src/summaryview.c:1398
 msgid "No unread message found. Go to next folder?"
 msgstr "Nema neproèitanih poruka. Da idem u sledeæi direktorijum?"
 
-#: src/summaryview.c:1434 src/summaryview.c:1458
+#: src/summaryview.c:1440 src/summaryview.c:1464
 msgid "No more new messages"
 msgstr "Nema vi¹e novih poruka"
 
-#: src/summaryview.c:1435
+#: src/summaryview.c:1441
 msgid "No new message found. Search from the end?"
 msgstr "Nema vi¹e novih poruka. Da nastavim pretragu od kraja?"
 
-#: src/summaryview.c:1444
+#: src/summaryview.c:1450
 msgid "No new messages."
 msgstr "Nema novih poruka."
 
-#: src/summaryview.c:1459
+#: src/summaryview.c:1465
 msgid "No new message found. Go to next folder?"
 msgstr "Nema novih poruka. Da idem u sledeæi direktorijum?"
 
-#: src/summaryview.c:1461
+#: src/summaryview.c:1467
 msgid "Search again"
 msgstr "Pretra¾i ponovo"
 
-#: src/summaryview.c:1490 src/summaryview.c:1515
+#: src/summaryview.c:1496 src/summaryview.c:1521
 msgid "No more marked messages"
 msgstr "Nema vi¹e obele¾enih poruka"
 
-#: src/summaryview.c:1491
+#: src/summaryview.c:1497
 msgid "No marked message found. Search from the end?"
 msgstr "Nema obele¾enih poruka. Da nastavim pretragu od kraja?"
 
-#: src/summaryview.c:1500 src/summaryview.c:1525
+#: src/summaryview.c:1506 src/summaryview.c:1531
 msgid "No marked messages."
 msgstr "Nema obele¾enih poruka."
 
-#: src/summaryview.c:1516
+#: src/summaryview.c:1522
 msgid "No marked message found. Search from the beginning?"
 msgstr "Nema obele¾enih poruka. Da nastavim pretragu od poèetka?"
 
-#: src/summaryview.c:1540 src/summaryview.c:1565
+#: src/summaryview.c:1546 src/summaryview.c:1571
 msgid "No more labeled messages"
 msgstr "Nema vi¹e oznaèenih poruka"
 
-#: src/summaryview.c:1541
+#: src/summaryview.c:1547
 msgid "No labeled message found. Search from the end?"
 msgstr "Nema oznaèenih poruka. Da nastavim pretragu od kraja?"
 
-#: src/summaryview.c:1550 src/summaryview.c:1575
+#: src/summaryview.c:1556 src/summaryview.c:1581
 msgid "No labeled messages."
 msgstr "Nema oznaèenih poruka."
 
-#: src/summaryview.c:1566
+#: src/summaryview.c:1572
 msgid "No labeled message found. Search from the beginning?"
 msgstr "Nema oznaèenih poruka. Da nastavim pretragu od poèetka?"
 
-#: src/summaryview.c:1779
+#: src/summaryview.c:1785
 msgid "Attracting messages by subject..."
 msgstr "Reðanje poruka po temi..."
 
-#: src/summaryview.c:1939
+#: src/summaryview.c:1949
 #, c-format
 msgid "%d deleted"
 msgstr "%d uklonjen"
 
-#: src/summaryview.c:1943
+#: src/summaryview.c:1953
 #, c-format
 msgid "%s%d moved"
 msgstr "%s%d preme¹ten"
 
-#: src/summaryview.c:1944 src/summaryview.c:1951
+#: src/summaryview.c:1954 src/summaryview.c:1961
 msgid ", "
 msgstr ", "
 
-#: src/summaryview.c:1949
+#: src/summaryview.c:1959
 #, c-format
 msgid "%s%d copied"
 msgstr "%s%d kopiran"
 
-#: src/summaryview.c:1964
+#: src/summaryview.c:1974
 msgid " item selected"
 msgstr " odabrana poruka"
 
-#: src/summaryview.c:1966
+#: src/summaryview.c:1976
 msgid " items selected"
 msgstr " odabrane(ih) poruke(a)"
 
-#: src/summaryview.c:1983
+#: src/summaryview.c:1993
 #, c-format
 msgid "%d new, %d unread, %d total (%s)"
 msgstr "novih: %d, neproèitanih: %d, ukupno: %d (%s)"
 
-#: src/summaryview.c:1989
+#: src/summaryview.c:1999
 #, c-format
 msgid "%d new, %d unread, %d total"
 msgstr "%d novih(e), %d neproèitanih(e), %d ukupno"
 
-#: src/summaryview.c:2158
+#: src/summaryview.c:2168
 msgid "Sorting summary..."
 msgstr "Sortiranje liste poruka..."
 
-#: src/summaryview.c:2228
+#: src/summaryview.c:2238
 msgid "Setting summary from message data..."
 msgstr "Obele¾avanje poruka na osnovu informacija u porukama..."
 
-#: src/summaryview.c:2356
+#: src/summaryview.c:2365
 msgid "(No Date)"
 msgstr "(Nema datuma)"
 
-#: src/summaryview.c:2950
+#: src/summaryview.c:2968
 msgid "You're not the author of the article\n"
 msgstr "Vi niste autor poruke\n"
 
-#: src/summaryview.c:3040
+#: src/summaryview.c:3058
 msgid "Delete message(s)"
 msgstr "Ukloni poruku(e)"
 
-#: src/summaryview.c:3041
+#: src/summaryview.c:3059
 msgid "Do you really want to delete message(s) from the trash?"
 msgstr "Da li zaista ¾elite da uklonite poruku(e) iz smeæa?"
 
-#: src/summaryview.c:3089
+#: src/summaryview.c:3107
 msgid "Deleting duplicated messages..."
 msgstr "Uklanjanje dupliranih poruka..."
 
-#: src/summaryview.c:3197
+#: src/summaryview.c:3219
 msgid "Destination is same as current folder."
 msgstr "Destinacija je ista kao i trenutni direktorijum."
 
-#: src/summaryview.c:3274
+#: src/summaryview.c:3296
 msgid "Destination to copy is same as current folder."
 msgstr "Destinacija za kopiranje je ista kao i trenutni direktorijum."
 
-#: src/summaryview.c:3322
+#: src/summaryview.c:3344
 msgid "Selecting all messages..."
 msgstr "Odabiranje svih poruka..."
 
-#: src/summaryview.c:3380
+#: src/summaryview.c:3402
 msgid "Append or Overwrite"
 msgstr "Dodaj ili prepi¹i"
 
-#: src/summaryview.c:3381
+#: src/summaryview.c:3403
 msgid "Append or overwrite existing file?"
 msgstr "Dodaj na ili prepi¹i postojeæi fajl?"
 
-#: src/summaryview.c:3382
+#: src/summaryview.c:3404
 msgid "Append"
 msgstr "Dodaj na"
 
-#: src/summaryview.c:3390 src/summaryview.c:3394 src/summaryview.c:3411
+#: src/summaryview.c:3412 src/summaryview.c:3416 src/summaryview.c:3433
 #, c-format
 msgid "Can't save the file `%s'."
 msgstr "Ne mogu da saèuvam fajl '%s'."
 
-#: src/summaryview.c:3430
+#: src/summaryview.c:3452
 #, c-format
 msgid ""
 "Enter the print command line:\n"
@@ -6936,7 +7049,7 @@ msgstr ""
 "Unesite komandu za ¹tampanje:\n"
 "('%s' æe biti zamenjeno nazivom fajla)"
 
-#: src/summaryview.c:3436
+#: src/summaryview.c:3458
 #, c-format
 msgid ""
 "Print command line is invalid:\n"
@@ -6945,23 +7058,23 @@ msgstr ""
 "Komanda za ¹tampanje je neispravna:\n"
 "'%s'"
 
-#: src/summaryview.c:3657
+#: src/summaryview.c:3697
 msgid "Building threads..."
 msgstr "Kreiranje niti rasprava..."
 
-#: src/summaryview.c:3755
+#: src/summaryview.c:3795
 msgid "Unthreading..."
 msgstr "Ukidanje niti rasprava..."
 
-#: src/summaryview.c:3884
+#: src/summaryview.c:3928
 msgid "No filter rules defined."
 msgstr "Nema definisanih prafila filtera."
 
-#: src/summaryview.c:3891
+#: src/summaryview.c:3935
 msgid "Filtering..."
 msgstr "Filtriranje u toku..."
 
-#: src/summaryview.c:5336
+#: src/summaryview.c:5382
 #, c-format
 msgid ""
 "Regular expression (regexp) error:\n"
@@ -7052,7 +7165,7 @@ msgstr "Prelom svih dugih linija"
 
 #: src/toolbar.c:168
 msgid "Sylpheed Actions Feature"
-msgstr "Osobine Sylpheed Akcija"
+msgstr "Sylpheed Akcije"
 
 #: src/toolbar.c:188
 msgid "/Reply with _quote"

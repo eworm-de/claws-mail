@@ -261,14 +261,18 @@ MATCHER_SECTION MATCHER_EOL
 	FolderItem *item = NULL;
 
 	if (!matcher_parser_dialog) {
-		item = folder_find_item_from_identifier(folder);
-		if (item == NULL) {
+		if (!strcmp(folder, "global")) {
 			prefs_scoring = &global_scoring;
 			prefs_filtering = &global_processing;
-		}
-		else {
-			prefs_scoring = &item->prefs->scoring;
-			prefs_filtering = &item->prefs->processing;
+		} else {
+			item = folder_find_item_from_identifier(folder);
+			if (item != NULL) {
+				prefs_scoring = &item->prefs->scoring;
+				prefs_filtering = &item->prefs->processing;
+			} else {
+				prefs_scoring = NULL;
+				prefs_filtering = NULL;
+			}
 		}
 	}
 }
@@ -311,7 +315,7 @@ filtering_action
 	filtering = filteringprop_new(cond, action);
 	cond = NULL;
 	action = NULL;
-	if (!matcher_parser_dialog) {
+	if (!matcher_parser_dialog && (prefs_filtering != NULL)) {
 		*prefs_filtering = g_slist_append(*prefs_filtering,
 						  filtering);
 		filtering = NULL;
@@ -322,7 +326,7 @@ filtering_action
 	scoring = scoringprop_new(cond, score);
 	cond = NULL;
 	score = 0;
-	if (!matcher_parser_dialog) {
+	if (!matcher_parser_dialog && (prefs_scoring != NULL)) {
 		*prefs_scoring = g_slist_append(*prefs_scoring, scoring);
 		scoring = NULL;
 	}

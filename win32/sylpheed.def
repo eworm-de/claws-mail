@@ -445,7 +445,6 @@ EXPORTS
 	colorlabel_changed 
 	colorlabel_create_check_color_menu_item 
 	colorlabel_create_color_menu 
-	colorlabel_create_color_pixmap 
 	colorlabel_get_color 
 	colorlabel_get_color_count 
 	colorlabel_get_color_menu_active_item 
