@@ -1,3 +1,19 @@
+2003-06-22 [christoph]	0.9.0claws55
+
+	* src/folder.[ch]
+		o add notification hook for folder tree changes
+		o invoke hooks after folder tree scanning
+
+	* src/folderview.[ch]
+		register hook for folder tree changes that
+		updates the ctree
+
+	(there are more places that should be updated, like add, remove 
+	 or move folder)
+
+	(closes Bug 164 Crash on rebuild folder tree)
+	(closes Bug 190 Crash on 'rebuilding folder tree')
+
 2003-06-21 [leandro]	0.9.0claws54
 
 	* src/compose.[ch]
