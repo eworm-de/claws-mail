@@ -208,7 +208,9 @@ static void update_io_dialog		(Children	*children);
 
 static void hide_io_dialog_cb		(GtkWidget	*widget,
 					 gpointer	 data);
-
+static gint io_dialog_key_pressed_cb	(GtkWidget	*widget,
+					 GdkEventKey	*event,
+					 gpointer	 data);
 static void catch_output		(gpointer		 data,
 					 gint			 source,
 					 GdkInputCondition	 cond);
@@ -1523,6 +1525,15 @@ static void hide_io_dialog_cb(GtkWidget *w, gpointer data)
 	}
 }
 
+static gint io_dialog_key_pressed_cb(GtkWidget	*widget,
+				     GdkEventKey	*event,
+				     gpointer	 data)
+{
+	if (event && event->keyval == GDK_Escape)
+		hide_io_dialog_cb(widget, data);
+	return TRUE;	
+}
+
 static void childinfo_close_pipes(ChildInfo *child_info)
 {
 	if (child_info->tag_in > 0)
@@ -1567,6 +1578,11 @@ static void update_io_dialog(Children *children)
 		gtk_widget_set_sensitive(children->close_btn, TRUE);
 		if (children->input_hbox)
 			gtk_widget_set_sensitive(children->input_hbox, FALSE);
+		gtk_widget_grab_focus(children->close_btn);
+		gtk_signal_connect(GTK_OBJECT(children->dialog), 
+				   "key_press_event",
+			   	   GTK_SIGNAL_FUNC(io_dialog_key_pressed_cb),
+				   children);
 	}
 
 	if (children->output) {

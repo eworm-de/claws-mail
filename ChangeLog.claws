@@ -1,3 +1,10 @@
+2003-01-18 [melvin]	0.8.8claws115
+
+	* src/prefs_actions.c
+		Actions IO dialog: when the action ends
+		the "Close" button now has focus and [Escape] closes the
+		window.
+
 2003-01-18 [christoph]	0.8.8claws114
 
 	* src/procmsg.c
