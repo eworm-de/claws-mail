@@ -2249,8 +2249,11 @@ const PersistPrefs *folder_get_persist_prefs(GHashTable *pptable, const char *na
 void folder_item_restore_persist_prefs(FolderItem *item, GHashTable *pptable)
 {
 	const PersistPrefs *pp;
+	gchar *id = folder_item_get_identifier(item);
 
-	pp = folder_get_persist_prefs(pptable, item->path); 
+	pp = folder_get_persist_prefs(pptable, id); 
+	g_free(id);
+
 	if (!pp) return;
 
 	/* CLAWS: since not all folder properties have been migrated to 

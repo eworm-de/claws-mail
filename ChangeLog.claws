@@ -1,3 +1,8 @@
+2002-07-26 [alfons]	0.8.0claws19
+
+	* src/folder.c
+		ofcourse compare with identifier, not the path
+
 2002-07-26 [alfons]	0.8.0claws18
 
 	* src/folder.c
