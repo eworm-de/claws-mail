@@ -1,3 +1,8 @@
+2004-02-17 [match]	0.9.9claws23
+
+	* src/compose.c
+		keep the peace - change style.
+
 2004-02-17 [alfons]	0.9.9claws22
 
 	* src/filtering.c

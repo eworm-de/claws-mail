@@ -7316,9 +7316,11 @@ static void compose_check_forwards_go(Compose *compose)
  * \param listAddress List of (formatted) E-Mail addresses.
  */
 static void compose_add_field_list( Compose *compose, GList *listAddress ) {
-	GList *node = listAddress;
+	GList *node;
+	gchar *addr;
+	node = listAddress;
 	while( node ) {
-		gchar *addr = node->data;
+		addr = ( gchar * ) node->data;
 		compose_entry_append( compose, addr, COMPOSE_TO );
 		node = g_list_next( node );
 	}
