@@ -211,6 +211,7 @@ static struct Interface {
 	/* GtkWidget *checkbtn_emacs; */
 	GtkWidget *checkbtn_show_msg_with_cursor;
 	GtkWidget *checkbtn_openunread;
+	GtkWidget *checkbtn_mark_as_read_on_newwin;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
 	GtkWidget *checkbtn_addaddrbyclick;
@@ -729,6 +730,10 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"open_unread_on_enter", "FALSE", &prefs_common.open_unread_on_enter,
 	 P_BOOL, &interface.checkbtn_openunread,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"mark_as_read_on_new_window", "FALSE",
+	 &prefs_common.mark_as_read_on_new_window,
+	 P_BOOL, &interface.checkbtn_mark_as_read_on_newwin,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"open_inbox_on_inc", "FALSE", &prefs_common.open_inbox_on_inc,
 	 P_BOOL, &interface.checkbtn_openinbox,
@@ -2575,6 +2580,7 @@ static void prefs_interface_create(void)
 	/* GtkWidget *checkbtn_emacs; */
 	GtkWidget *checkbtn_show_msg_with_cursor;
 	GtkWidget *checkbtn_openunread;
+	GtkWidget *checkbtn_mark_as_read_on_newwin;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
 	GtkWidget *hbox1;
@@ -2624,6 +2630,10 @@ static void prefs_interface_create(void)
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_openunread,
 		 _("Open first unread message when entering a folder"));
+
+	PACK_CHECK_BUTTON
+		(vbox2, checkbtn_mark_as_read_on_newwin,
+		 _("Mark message as read only when opened in new window"));
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_openinbox,
@@ -2766,6 +2776,8 @@ static void prefs_interface_create(void)
 	interface.checkbtn_show_msg_with_cursor
 					      = checkbtn_show_msg_with_cursor;
 	interface.checkbtn_openunread         = checkbtn_openunread;
+	interface.checkbtn_mark_as_read_on_newwin
+					      = checkbtn_mark_as_read_on_newwin;
 	interface.checkbtn_openinbox          = checkbtn_openinbox;
 	interface.checkbtn_immedexec          = checkbtn_immedexec;
 	interface.optmenu_recvdialog	      = optmenu_recvdialog;

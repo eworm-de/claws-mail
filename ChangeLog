@@ -1,3 +1,8 @@
+2002-09-06
+
+	* src/prefs_common.[ch]: added an option: "Mark messages as read
+	  only when opened in new window".
+
 2002-09-04
 
 	* src/folder.c:

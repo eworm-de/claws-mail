@@ -219,6 +219,7 @@ struct _PrefsCommon
 	gboolean emulate_emacs;
 	gboolean show_msg_with_cursor_key;
 	gboolean open_unread_on_enter;
+	gboolean mark_as_read_on_new_window;
 	gboolean open_inbox_on_inc;
 	gboolean immediate_exec;
 	RecvDialogMode recv_dialog_mode;

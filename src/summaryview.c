@@ -2310,17 +2310,21 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	}
 	g_free(filename);
 
-	if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-		summaryview->newmsgs--;
-	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-		summaryview->unread--;
-
-	procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
-	summary_set_row_marks(summaryview, row);
-	gtk_clist_thaw(GTK_CLIST(ctree));
-	summary_status_show(summaryview);
-
-	flags = msginfo->flags;
+	if (new_window || !prefs_common.mark_as_read_on_new_window) {
+		if (MSG_IS_NEW(msginfo->flags) && MSG_IS_IGNORE_THREAD(msginfo->flags))
+			summaryview->newmsgs--;
+		if (MSG_IS_UNREAD(msginfo->flags) && MSG_IS_IGNORE_THREAD(msginfo->flags))
+			summaryview->unread--;
+		if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
+			procmsg_msginfo_unset_flags
+				(msginfo, MSG_NEW | MSG_UNREAD, 0);
+			summary_set_row_marks(summaryview, row);
+			gtk_clist_thaw(GTK_CLIST(ctree));
+			summary_status_show(summaryview);
+			
+			flags = msginfo->flags;
+		}
+	}
 
 	if (new_window) {
 		MessageView *msgview;
