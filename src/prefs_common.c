@@ -377,13 +377,13 @@ static PrefParam param[] = {
 	 &prefs_common.quotefmt, P_STRING, &quote.text_quotefmt,
 	 prefs_set_data_from_text, prefs_set_text},
 
-	{"fw_quote_mark", "> ", &prefs_common.fw_quotemark, P_STRING,
+	{"forward_quote_mark", "> ", &prefs_common.fw_quotemark, P_STRING,
 	 &quote.entry_fw_quotemark,
 	 prefs_set_data_from_entry, prefs_set_entry},
-	{"fw_quote_format",
+	{"forward_quote_format",
 	 "\\n\\nBegin forwarded message:\\n\\n"
-	 "?d(Date: %d\\n)?f(From: %f\\n)?t(To: %t\\n)?c(Cc: %c\\n)"
-	 "?n(Newsgroups: %n\\n)?s(Subject: %s\\n)\\n\\n%M",
+	 "?d{Date: %d\\n}?f{From: %f\\n}?t{To: %t\\n}?c{Cc: %c\\n}"
+	 "?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M",
 	 &prefs_common.fw_quotefmt, P_STRING, &quote.text_fw_quotefmt,
 	 prefs_set_data_from_text, prefs_set_text},
 
@@ -3140,7 +3140,7 @@ static void prefs_quote_description_create(void)
 	PACK_LABEL();
 
 	label = gtk_label_new
-		("?x(expr)");	/* condition */
+		("?x{expr}");	/* condition */
 	PACK_LABEL();
 
 	label = gtk_label_new
@@ -3154,8 +3154,8 @@ static void prefs_quote_description_create(void)
 	label = gtk_label_new
 		("\\\\\n"	/* literal backslash */
 		 "\\?\n"	/* literal question mark */
-		 "\\(\n"	/* literal opening parenthesis */
-		 "\\)");	/* literal closing parenthesis */
+		 "\\{\n"	/* literal opening curly brace */
+		 "\\}");	/* literal closing curly brace */
 	PACK_LABEL();
 
 	vbox2 = gtk_vbox_new(FALSE, 8);
@@ -3190,8 +3190,8 @@ static void prefs_quote_description_create(void)
 	label = gtk_label_new
 		(_("Literal backslash\n"
 		   "Literal question mark\n"
-		   "Literal opening parenthesis\n"
-		   "Literal closing parenthesis"));
+		   "Literal opening curly brace\n"
+		   "Literal closing curly brace"));
 	PACK_LABEL();
 
 #undef PACK_LABEL

@@ -1,3 +1,14 @@
+2001-12-03
+
+	* src/compose.c: fixed a bug that empty body was refused.
+	* src/prefs_template.c: fixed a bug that didn't set To: entry
+	  correctly. Display error dialog if format is illegal.
+	* src/prefs_common.c
+	  src/quote_fmt_lex.l
+	  src/quote_fmt_parse.y: changed parenthesis "( )" to curly braces
+	  "{ }" to prevent confusion on using parenthesis.
+	* src/html.c: html_get_parenthesis(): ignore CSS / script stuff.
+
 2001-11-29
 
 	* src/prefs_template.c: added colon to the header labels.

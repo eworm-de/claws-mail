@@ -28,8 +28,8 @@
 "\\t"|"\t" /* tab */ return SHOW_TAB;
 "\\n"|"\n" /* return */ return SHOW_EOL;
 "\\?" /* ? */ return SHOW_QUESTION_MARK;
-"\\(" return SHOW_OPARENT;
-"\\)" return SHOW_CPARENT;
+"\\{" return SHOW_OPARENT;
+"\\}" return SHOW_CPARENT;
 "?d" /* query date */ return QUERY_DATE;
 "?f" /* query from */ return QUERY_FROM;
 "?N"|"?F"|"?I" /* query from name */ return QUERY_FULLNAME;
@@ -39,8 +39,8 @@
 "?n" /* query newsgroups */ return QUERY_NEWSGROUPS;
 "?i" /* query message-id */ return QUERY_MESSAGEID;
 "?r" /* query references */ return QUERY_REFERENCES;
-"(" return OPARENT;
-")" return CPARENT;
+"{" return OPARENT;
+"}" return CPARENT;
 . { yylval.chr = yytext[0]; return CHARACTER; }
 
 %%

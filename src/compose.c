@@ -1512,15 +1512,18 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 			Xstrdup_a(quote_str, buf, return NULL)
 	}
 
-	quote_fmt_init(msginfo, quote_str);
-	quote_fmt_scan_string(fmt);
-	quote_fmt_parse();
+	if (fmt && *fmt != '\0') {
+		quote_fmt_init(msginfo, quote_str);
+		quote_fmt_scan_string(fmt);
+		quote_fmt_parse();
 
-	buf = quote_fmt_get_buffer();
-	if (buf == NULL) {
-		alertpanel_error(_("Message reply/forward format error."));
-		return NULL;
-	}
+		buf = quote_fmt_get_buffer();
+		if (buf == NULL) {
+			alertpanel_error(_("Message reply/forward format error."));
+			return NULL;
+		}
+	} else
+		buf = "";
 
 	gtk_stext_freeze(text);
 	gtk_stext_set_point(text, 0);

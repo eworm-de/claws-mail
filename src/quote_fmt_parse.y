@@ -107,7 +107,7 @@ void quote_fmt_init(MsgInfo *info, gchar *my_quote_str)
 
 void quote_fmterror(char *str)
 {
-	g_warning(_("Error %s\n"), str);
+	g_warning(_("Error: %s\n"), str);
 	error = 1;
 }
 
@@ -357,11 +357,11 @@ special:
 	}
 	| SHOW_OPARENT
 	{
-		INSERT("(");
+		INSERT("{");
 	}
 	| SHOW_CPARENT
 	{
-		INSERT(")");
+		INSERT("}");
 	};
 
 query:

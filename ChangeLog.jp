@@ -1,3 +1,14 @@
+2001-12-03
+
+	* src/compose.c: 空の本文が拒否されるバグを修正。
+	* src/prefs_template.c: To: エントリを正しくセットしないバグを修正。
+	  フォーマットが不正ならエラーダイアログを表示。
+	* src/prefs_common.c
+	  src/quote_fmt_lex.l
+	  src/quote_fmt_parse.y: 丸括弧を使ったときの混乱を避けるため、
+	  丸括弧「( )」を中括弧「{ }」に変更。
+	* src/html.c: html_get_parenthesis(): CSS / script を無視。
+
 2001-11-29
 
 	* src/prefs_template.c: ヘッダのラベルにコロンを追加。

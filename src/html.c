@@ -674,7 +674,7 @@ static void html_get_parenthesis(HTMLParser *parser, gchar *buf, gint len)
 	buf[0] = '\0';
 	g_return_if_fail(*parser->bufp == '<');
 
-	/* ignore comments */
+	/* ignore comment / CSS / script stuff */
 	if (!strncmp(parser->bufp, "<!--", 4)) {
 		parser->bufp += 4;
 		while ((p = strstr(parser->bufp, "-->")) == NULL)
@@ -682,38 +682,18 @@ static void html_get_parenthesis(HTMLParser *parser, gchar *buf, gint len)
 		parser->bufp = p + 3;
 		return;
 	}
-	/* because html is not strict regarding case and double-quoting of
-	   tags we have to check for both */
-	/* ignore css stuff */
-	if (!g_strncasecmp(parser->bufp, "<STYLE type=text/css>", 21)) {
-		parser->bufp += 21;
-		while ((p = strcasestr(parser->bufp, "</STYLE>")) == NULL)
+	if (!g_strncasecmp(parser->bufp, "<style", 6)) {
+		parser->bufp += 6;
+		while ((p = strcasestr(parser->bufp, "</style>")) == NULL)
 			if (html_read_line(parser) == HTML_EOF) return;
 		parser->bufp = p + 8;
 		return;
 	}
-	/* ignore css stuff with double quotes*/
-	if (!g_strncasecmp(parser->bufp, "<STYLE type=\"text/css\">", 23)) {
-		parser->bufp += 23;
-		while ((p = strcasestr(parser->bufp, "</STYLE>")) == NULL)
+	if (!g_strncasecmp(parser->bufp, "<script", 7)) {
+		parser->bufp += 7;
+		while ((p = strcasestr(parser->bufp, "</script>")) == NULL)
 			if (html_read_line(parser) == HTML_EOF) return;
-		parser->bufp = p + 8;
-		return;
-	}
-	/* ignore javascipt stuff */
-	if (!g_strncasecmp(parser->bufp, "<SCRIPT language=javascript>", 28)) {
-		parser->bufp += 28;
-		while ((p = strcasestr(parser->bufp, "</SCRIPT>")) == NULL)
-			if (html_read_line(parser) == HTML_EOF) return;
-		parser->bufp = p + 8;
-		return;
-	}
-	/* ignore javascipt stuff with double-quotes */
-	if (!g_strncasecmp(parser->bufp, "<SCRIPT language=\"javascript\">", 30)) {
-		parser->bufp += 30;
-		while ((p = strcasestr(parser->bufp, "</SCRIPT>")) == NULL)
-			if (html_read_line(parser) == HTML_EOF) return;
-		parser->bufp = p + 8;
+		parser->bufp = p + 9;
 		return;
 	}
 
