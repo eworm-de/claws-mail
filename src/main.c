@@ -444,7 +444,6 @@ static void initial_processing(FolderItem *item, gpointer data)
 			      ? item->path 
 			      : _("top level folder"));
 	debug_print("%s\n", buf);
-	STATUSBAR_PUSH(mainwin, buf);
 	g_free(buf);
 
 	main_window_cursor_wait(mainwin);
