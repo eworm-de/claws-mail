@@ -1164,13 +1164,6 @@ PrefsAccount *account_get_reply_account(MsgInfo *msginfo, gboolean reply_autosel
 	if (msginfo->folder->prefs && msginfo->folder->prefs->enable_default_account)
 		account = account_find_from_id(msginfo->folder->prefs->default_account);
 	
-	/* select the account for the whole folder (IMAP / NNTP) */
-	if (!account)
-		/* FIXME: this is not right, because folder may be nested. we should
-		 * ascend the tree until we find a parent with proper account 
-		 * information */
-		account = msginfo->folder->folder->account;
-
 	/* select account by to: and cc: header if enabled */
 	if (reply_autosel) {
 		if (!account && msginfo->to) {
@@ -1187,6 +1180,13 @@ PrefsAccount *account_get_reply_account(MsgInfo *msginfo, gboolean reply_autosel
 			}        
 		}
 	}
+
+	/* select the account for the whole folder (IMAP / NNTP) */
+	if (!account) 
+		/* FIXME: this is not right, because folder may be nested. we should
+		 * ascend the tree until we find a parent with proper account 
+		 * information */
+		account = msginfo->folder->folder->account;
 
 	/* select current account */
 	if (!account) account = cur_account;

@@ -1,3 +1,8 @@
+2004-07-04 [paul]	0.9.12cvs7
+
+	* src/account.c
+		fix auto-account selection on imap/news
+
 2004-07-01 [paul]	0.9.12cvs6
 
 	* src/gtk/quicksearch.c
