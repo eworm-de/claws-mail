@@ -1,3 +1,8 @@
+2003-12-07 [paul]	0.9.7claws30
+
+	* src/plugins/clamav/clamav_plugin.c
+		fix signature count
+
 2003-12-07 [thorsten]	0.9.7claws29
 
 	* src/filtering.c

@@ -103,7 +103,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	MsgInfo *msginfo = mail_filtering_data->msginfo;
 	MimeInfo *mimeinfo;
 
-	int ret, no;
+	int ret, no = 0;
 	struct scan_parameters params;
 
 	if (!config.clamav_enable)
@@ -128,7 +128,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		debug_print("cl_loaddbdir: %s\n", cl_perror(ret));
 		exit(2);
     	}
-    	debug_print("Database loaded (containing in total %d signatures)\n", no);
+    	debug_print("Database loaded (containing in total %d signatures)\n", no / 2);
 
     	cl_buildtrie(params.root);
 
