@@ -1,3 +1,8 @@
+2003-01-30
+
+	* src/summaryview.c: summary_status_show(): 削除あるいは移動時に
+	  たまにクラッシュするのを修正。
+
 2003-01-29
 
 	* src/codeconv.c: conv_unreadable_eucjp(): EUC-JP の正当性チェック

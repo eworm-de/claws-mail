@@ -1920,8 +1920,12 @@ static void summary_status_show(SummaryView *summaryview)
 		msginfo = gtk_ctree_node_get_row_data
 			(GTK_CTREE(summaryview->ctree),
 			 GTK_CTREE_NODE(cur->data));
-		sel_size += msginfo->size;
-		n_selected++;
+		if (!msginfo)
+			g_warning("summary_status_show(): msginfo == NULL\n");
+		else {
+			sel_size += msginfo->size;
+			n_selected++;
+		}
 	}
 
 	if (summaryview->folder_item->folder->type == F_NEWS) {
@@ -4755,7 +4759,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	summary_status_show(summaryview);
 
 	if (GTK_CLIST(ctree)->selection &&
-	     GTK_CLIST(ctree)->selection->next) {
+	    GTK_CLIST(ctree)->selection->next) {
 		summaryview->display_msg = FALSE;
 		summary_set_menu_sensitive(summaryview);
 		toolbar_main_set_sensitive(summaryview->mainwin);
@@ -4765,6 +4769,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	summaryview->selected = row;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
+	g_return_if_fail(msginfo != NULL);
 
 	switch (column < 0 ? column : summaryview->col_state[column].type) {
 	case S_COL_MARK:
