@@ -834,7 +834,9 @@ static void part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 				   "/Check signature",
 				   mimeview_is_signed(mimeview));
 #endif
-
+		gtk_object_set_data(GTK_OBJECT(mimeview->popupmenu),
+				    "pop_partinfo", partinfo);
+				    
 		gtk_menu_popup(GTK_MENU(mimeview->popupmenu),
 			       NULL, NULL, NULL, NULL,
 			       event->button, event->time);
@@ -1029,6 +1031,14 @@ static void mimeview_display_as_text(MimeView *mimeview)
 	if (!mimeview->opened) return;
 
 	partinfo = mimeview_get_selected_part(mimeview);
+	if (!partinfo)  {
+		partinfo = (MimeInfo *) gtk_object_get_data
+			(GTK_OBJECT(mimeview->popupmenu),
+			 "pop_partinfo");
+		gtk_object_set_data(GTK_OBJECT(mimeview->popupmenu),
+				    "pop_partinfo", NULL);
+	
+	}			 
 	g_return_if_fail(partinfo != NULL);
 	mimeview_show_message_part(mimeview, partinfo);
 }
@@ -1044,6 +1054,13 @@ static void mimeview_save_as(MimeView *mimeview)
 	if (!mimeview->file) return;
 
 	partinfo = mimeview_get_selected_part(mimeview);
+	if (!partinfo) { 
+		partinfo = (MimeInfo *) gtk_object_get_data
+			(GTK_OBJECT(mimeview->popupmenu),
+			 "pop_partinfo");
+		gtk_object_set_data(GTK_OBJECT(mimeview->popupmenu),
+				    "pop_partinfo", NULL);
+	}			 
 	g_return_if_fail(partinfo != NULL);
 
 	if (partinfo->filename)
@@ -1079,6 +1096,13 @@ static void mimeview_launch(MimeView *mimeview)
 	if (!mimeview->file) return;
 
 	partinfo = mimeview_get_selected_part(mimeview);
+	if (!partinfo) { 
+		partinfo = (MimeInfo *) gtk_object_get_data
+			(GTK_OBJECT(mimeview->popupmenu),
+			 "pop_partinfo");
+		gtk_object_set_data(GTK_OBJECT(mimeview->popupmenu),
+				    "pop_partinfo", NULL);
+	}			 
 	g_return_if_fail(partinfo != NULL);
 
 	filename = procmime_get_tmp_file_name(partinfo);
@@ -1102,6 +1126,13 @@ static void mimeview_open_with(MimeView *mimeview)
 	if (!mimeview->file) return;
 
 	partinfo = mimeview_get_selected_part(mimeview);
+	if (!partinfo) { 
+		partinfo = (MimeInfo *) gtk_object_get_data
+			(GTK_OBJECT(mimeview->popupmenu),
+			 "pop_partinfo");
+		gtk_object_set_data(GTK_OBJECT(mimeview->popupmenu),
+				    "pop_partinfo", NULL);
+	}			 
 	g_return_if_fail(partinfo != NULL);
 
 	filename = procmime_get_tmp_file_name(partinfo);
