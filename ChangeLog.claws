@@ -1,9 +1,20 @@
+2003-02-04 [christoph]	0.8.9claws40
+
+	* src/inc.c
+		only abort fetching mails from multiple accounts when the
+		error is fatal and does not allow to check any more accounts
+		(currently only disk full error)
+
+	(closes bug 31 after POP3 error: "no such mail" Sylpheed does not
+	 receive mails for other accouts)
+
 2003-02-04 [christoph]	0.8.9claws39
 
 	* src/folder.c
 		first add the new message to the cache, then
 		send the update notification
-		(closes bug 39 after sending message folderview doesnt get updated)
+
+	(closes bug 39 after sending message folderview doesnt get updated)
 
 2003-02-04 [colin]	0.8.9claws38
 

@@ -328,8 +328,6 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 		PrefsAccount *account = list->data;
 		if ((account->protocol == A_IMAP4 ||
 		     account->protocol == A_NNTP) && account->recv_at_getall) {
-			FolderItem *item = mainwin->summaryview->folder_item;
-
 			new_msgs += folderview_check_new(FOLDER(account->folder));
 		}
 	}
@@ -631,9 +629,10 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		if (inc_state != INC_SUCCESS && inc_state != INC_CANCEL) {
 			error_num++;
 			if (inc_state == INC_ERROR    ||
-			    inc_state == INC_NO_SPACE ||
 			    inc_state == INC_IO_ERROR ||
 			    inc_state == INC_SOCKET_ERROR) {
+				inc_put_error(inc_state);
+			} else if (inc_state == INC_NO_SPACE) {
 				inc_put_error(inc_state);
 				break;
 			}
