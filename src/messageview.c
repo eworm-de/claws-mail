@@ -59,7 +59,6 @@
 #include "utils.h"
 #include "rfc2015.h"
 #include "send_message.h"
-#include "pgptext.h"
 #include "stock_pixmap.h"
 
 static GList *messageview_list = NULL;

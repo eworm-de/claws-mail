@@ -53,7 +53,6 @@
 #include "gtkutils.h"
 #include "prefs_common.h"
 #include "rfc2015.h"
-#include "pgptext.h"
 
 typedef enum
 {
