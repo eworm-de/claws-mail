@@ -1,3 +1,14 @@
+2004-11-24 [colin]	0.9.12cvs169
+
+	* src/plugins/pgpmime/plugin.c
+		Update requirements
+	* src/plugins/trayicon/Makefile.am
+	* src/plugins/trayicon/newmarkedmail.xpm
+	* src/plugins/trayicon/trayicon.c
+	* src/plugins/trayicon/unreadmarkedmail.xpm
+		Add new icons when there are unread marked mails
+		answers
+
 2004-11-23 [thorsten]	0.9.12cvs168
 
 	* src/plugins/pgpmime/plugin.c
