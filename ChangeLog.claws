@@ -3,7 +3,7 @@
 	* sync with 0.8.6cvs15
 		see ChangeLog 2002-12-03
 
-2002-11-30 [christoph]	0.8.6claws51
+2002-12-02 [christoph]	0.8.6claws51
 
 	* src/logwindow.[ch]
 	* src/common/log.[ch]
@@ -17,7 +17,7 @@
 	* src/toolbar.c
 		fix warnings
 
-2002-11-30 [christoph]	0.8.6claws50
+2002-12-02 [christoph]	0.8.6claws50
 
 	* src/common/Makefile.am
 		add src/common/hooks.[ch]
@@ -29,7 +29,7 @@
 	* src/folderview.c
 		use new hook system for folder item updates
 
-2002-11-30 [christoph]	0.8.6claws49
+2002-12-02 [christoph]	0.8.6claws49
 
 	* doc-src/ui_seperation.txt	** NEW **
 		information for ui seperation
@@ -99,19 +99,19 @@
 	* src/common/utils.[ch]		** NEW **
 		replacement for files in src/
 
-2002-11-30 [colin]	0.8.6claws48
+2002-12-02 [colin]	0.8.6claws48
 
 	* src/folderview.c
 		Scroll folderview if necessary during dnd
 
-2002-11-30 [colin]	0.8.6claws47
+2002-12-02 [colin]	0.8.6claws47
 
 	* src/folder.[ch]
 		Add check to verify a move is within a single mailbox
 	* src/folderview.c
 		Add specific error string for this check
 
-2002-11-30 [colin]	0.8.6claws46
+2002-12-02 [colin]	0.8.6claws46
 
 	* src/folder.c
 		Add a test to folder moving, remove a statusbar_print
@@ -120,7 +120,7 @@
 		Factorize folder moving code
 		Enable folder DND for mbox
 
-2002-11-30 [christoph]	0.8.6claws45
+2002-12-01 [christoph]	0.8.6claws45
 
 	* ac/aspell.m4
 		remove conf.aspelltest if the version check fails
