@@ -1,10 +1,18 @@
-2003-02-24 [melvin] 0.8.10claws48
+2003-02-24 [christoph]	0.8.10claws49
+
+	* src/news.c
+		check for valid session before trying to authenticate
+
+	(closes Bug 60 crash if "authenticate on logon" is activated
+	 and newsserver-hostname is not valid)
+
+2003-02-24 [melvin]	0.8.10claws48
 
 	* src/prefs_actions.c
 		Make sure all user's input is sent to the action and then
 		close the socket..
 
-2003-02-23 [alfons]
+2003-02-23 [alfons]	0.8.10claws46
 
 	* src/summaryview.c
 		also wait cursor when deleting files
