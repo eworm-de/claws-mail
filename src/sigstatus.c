@@ -209,11 +209,6 @@ void gpgmegtk_sig_status_update(GpgmegtkSigStatus hd, GpgmeCtx ctx)
 	while (gtk_events_pending())
 		gtk_main_iteration();
 }
-#ifdef WIN32
-/* XXX:tm gpgme */
-#define GPGME_SIG_STAT_GOOD_EXP     7
-#define GPGME_SIG_STAT_GOOD_EXPKEY  8
-#endif
 const char *gpgmegtk_sig_status_to_string(GpgmeSigStat status)
 {
 	const char *result = "?";

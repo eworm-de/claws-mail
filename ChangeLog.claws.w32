@@ -1,3 +1,8 @@
+2002-12-03 [thorsten]	0.8.6claws50-1
+
+	* src/rfc2015.c
+		removed gpgme-0.3.4 workaround (update to 0.3.12)
+
 2002-11-24 [thorsten]	0.8.5claws178-1
 
 	* src/w32_aspell_init.c

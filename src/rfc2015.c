@@ -135,11 +135,6 @@ rfc2015_secure_remove (const char *fname)
 }
 
 
-#ifdef WIN32
-/* XXX:tm gpgme */
-#define GPGME_SIG_STAT_GOOD_EXP     7
-#define GPGME_SIG_STAT_GOOD_EXPKEY  8
-#endif
 static const gchar *
 sig_status_to_string (GpgmeSigStat status)
 {
@@ -266,14 +261,9 @@ sig_expiration_check(GString *str, GpgmeCtx ctx, GpgmeKey key,
 static void
 sig_expired(GString *str, GpgmeCtx ctx, int idx)
 {
-#ifdef WIN32
-/* XXX:tm gpgme */
-	g_string_sprintfa(str, _("Signature expiration unchecked"));
-#else
 	unsigned long exp_time;
 	exp_time = gpgme_get_sig_ulong_attr(ctx, idx, GPGME_ATTR_EXPIRE, 0);
 	g_string_sprintfa(str, _("Signature expired %s"), ctime(&exp_time));	
-#endif
 }
 
 static void
