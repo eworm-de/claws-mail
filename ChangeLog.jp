@@ -1,3 +1,95 @@
+2003-09-17
+
+	* version 0.9.6
+
+2003-09-17
+
+	* src/addressbook.c:
+	  addressbook_folder_load_person()
+	  addressbook_folder_load_group(): ループの後で ctree をソートする
+	  ようにした(一つのフォルダに多くのアドレスがある場合のパフォーマンス
+	  の問題を解決)(christian mock さん thanks)。
+
+2003-09-16
+
+	* src/folderview.c: folder_init(): コードを整理。
+	* src/summaryview.c: summary_init(): boldfont が正しくロードされたか
+	  どうかをチェック。
+	* src/grouplistdialog.c: delete_event に適切なコールバックを使用する
+	  ようにした(足永さん thanks)。
+	* src/imap.c: ゼロ長メッセージを許すようにした。
+	* src/recv.c: recv_bytes_write(): size == 0 の場合はすぐに戻るように
+	  した。
+
+2003-09-16
+
+	* src/folderview.c: folderview_init(): フォントが読み込めない場合は
+	  gtk のデフォルトに fallback するようにした(起動時のクラッシュを
+	  修正)。さらに不要なコードを除去。
+
+2003-09-15
+
+	* src/compose.c: compose_insert_sig(): マニュアル操作のときは現在の
+	  カーソルの位置に署名を挿入するようにした。
+
+2003-09-11
+
+	* src/summaryview.c: summary_key_pressed(): メインウィンドウがロック
+	  されていても delete キーを無視しないようにした。
+
+2003-09-10
+
+	* src/action.c: action 終了のコードを改良(RH9 で action 終了時に
+	  長時間待たされるのを修正) (Melvin さん thanks)。
+	* src/stringtable.[ch]: string_table_insert_string(): 警告
+	  "dereferencing type-punned pointer will break strict-aliasing
+	  rules" を除去するためにコードを修正。
+	  引数に gchar * の代わりに const gchar * を使用。
+
+2003-09-05
+
+	* src/utils.[ch]: generate_mime_boundary(): MIME boundary を作成する
+	  新規関数(rfc2015.c から移動)。
+	  さらに特別文字を除去。
+	  obsolete な lrand48() のかわりに random() を使用。
+	  重複を避けるために prefix の引数を追加。
+	  対 QP シーケンスとして常に "=_" を追加し、コードを単純化。
+	* src/rfc2015.c:
+	  rfc2015_decrypt_message()
+	  rfc2015_encrypt()
+	  rfc2015_sign(): 継続する content 行を正しく扱っていなかったバグを
+	  修正。
+	* src/compose.c
+	  src/rfc2015.c: generate_mime_boundary() を使用。
+
+2003-09-05
+
+	* src/folderview.c:
+	  folderview_delete_folder_cb()
+	  folderview_remove_mailbox_cb(): FolderItem を削除する前に現在表示
+	  されているフォルダを閉じるようにした(フォルダ削除時のクラッシュを
+	  修正)。
+	* src/folder.h
+	  src/imap.[ch]: imap_scan_tree()
+	  src/mh.[ch]: mh_scan_tree(): スキャンに失敗したときは -1 を返す。
+	* src/summaryview.c: summary_clear_all(): メッセージビューもクリア。
+	* src/imap.c: imap_close(): 指定したフォルダが選択されていなければ
+	  失敗。
+	  imap_scan_tree(): 指定したルートディレクトリが存在するかどうかを
+	  調べ、なければ作成するようにした。
+	  imap_parse_list(): サーバがエラーを返したら警告を出力。
+	  imap_find_namespace_from_list(): スラッシュで区切られていないパス
+	  に対応。
+	  imap_status(): 指定しなければ値を返さないようにした。
+
+2003-09-02
+
+	* sylpheed.spec.in: typo を修正。
+
+2003-09-02
+
+	* version 0.9.5
+
 2003-09-01
 
 	* src/inc.[ch]

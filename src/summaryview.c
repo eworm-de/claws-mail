@@ -91,8 +91,6 @@
 #define SUMMARY_COL_LOCKED_WIDTH	13
 #define SUMMARY_COL_MIME_WIDTH		11
 
-static GdkFont *boldfont;
-static GdkFont *smallfont;
 
 static GtkStyle *bold_style;
 static GtkStyle *bold_marked_style;
@@ -722,6 +720,8 @@ SummaryView *summary_create(void)
 
 void summary_init(SummaryView *summaryview)
 {
+	static GdkFont *boldfont = NULL;
+	static GdkFont *smallfont = NULL;
 	GtkStyle *style;
 	GtkWidget *pixmap;
 
@@ -751,6 +751,26 @@ void summary_init(SummaryView *summaryview)
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_GPG_SIGNED,
 			 &gpgsignedxpm, &gpgsignedxpmmask);
 
+	if (!bold_style) {
+		bold_style = gtk_style_copy
+			(gtk_widget_get_style(summaryview->ctree));
+		if (!boldfont)
+#ifdef WIN32
+			if (prefs_common.boldfont)
+				boldfont = gtkut_font_load(prefs_common.boldfont);
+			else
+#endif
+			boldfont = gtkut_font_load(BOLD_FONT);
+		if (boldfont)
+			bold_style->font = boldfont;
+		bold_marked_style = gtk_style_copy(bold_style);
+		bold_marked_style->fg[GTK_STATE_NORMAL] =
+			summaryview->color_marked;
+		bold_deleted_style = gtk_style_copy(bold_style);
+		bold_deleted_style->fg[GTK_STATE_NORMAL] =
+			summaryview->color_dim;
+	}
+	
 	if (!small_style) {
 		small_style = gtk_style_copy
 			(gtk_widget_get_style(summaryview->ctree));
@@ -769,28 +789,11 @@ void summary_init(SummaryView *summaryview)
 		small_deleted_style->fg[GTK_STATE_NORMAL] =
 			summaryview->color_dim;
 	}
-	if (!bold_style) {
-		bold_style = gtk_style_copy
-			(gtk_widget_get_style(summaryview->ctree));
-		if (!boldfont)
-#ifdef WIN32
-			if (prefs_common.boldfont)
-				boldfont = gtkut_font_load(prefs_common.boldfont);
-			else
-#endif
-			boldfont = gtkut_font_load(BOLD_FONT);
-		bold_style->font = boldfont;
-		bold_marked_style = gtk_style_copy(bold_style);
-		bold_marked_style->fg[GTK_STATE_NORMAL] =
-			summaryview->color_marked;
-		bold_deleted_style = gtk_style_copy(bold_style);
-		bold_deleted_style->fg[GTK_STATE_NORMAL] =
-			summaryview->color_dim;
-	}
 
 	style = gtk_style_copy(gtk_widget_get_style
 				(summaryview->statlabel_folder));
-
+	if (smallfont)
+		style->font = smallfont;
 	gtk_widget_set_style(summaryview->statlabel_folder, style);
 	gtk_widget_set_style(summaryview->statlabel_select, style);
 	gtk_widget_set_style(summaryview->statlabel_msgs, style);
@@ -943,16 +946,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	summary_clear_list(summaryview);
 	summary_set_column_titles(summaryview);
-	if (!is_refresh)
-		messageview_clear(summaryview->messageview);
 
 	buf = NULL;
 	if (!item || !item->path || !item->parent || item->no_select) {
 		g_free(buf);
 		debug_print("empty folder\n\n");
 		summary_set_hide_read_msgs_menu(summaryview, FALSE);
-		if (is_refresh)
-			messageview_clear(summaryview->messageview);
 		summary_clear_all(summaryview);
 		summaryview->folder_item = item;
 		gtk_clist_thaw(GTK_CLIST(ctree));
@@ -961,6 +960,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		return TRUE;
 	}
 	g_free(buf);
+
+	if (!is_refresh)
+		messageview_clear(summaryview->messageview);
 
 	summaryview->folder_item = item;
 	item->opened = TRUE;
@@ -1236,6 +1238,7 @@ void summary_clear_list(SummaryView *summaryview)
 
 void summary_clear_all(SummaryView *summaryview)
 {
+	messageview_clear(summaryview->messageview);
 	summary_clear_list(summaryview);
 	summary_set_menu_sensitive(summaryview);
 	toolbar_main_set_sensitive(summaryview->mainwin);
@@ -2613,9 +2616,12 @@ void summary_redisplay_msg(SummaryView *summaryview)
 void summary_open_msg(SummaryView *summaryview)
 {
 	if (!summaryview->selected) return;
-
+	
+	/* CLAWS: if separate message view, don't open a new window
+	 * but rather use the current separated message view */
 	summary_display_msg_full(summaryview, summaryview->selected,
-				 TRUE, FALSE);
+				 prefs_common.sep_msg ? FALSE : TRUE, 
+				 FALSE);
 }
 
 void summary_view_source(SummaryView * summaryview)
@@ -4535,9 +4541,6 @@ void summary_pass_key_press_event(SummaryView *summaryview, GdkEventKey *event)
 #define BREAK_ON_MODIFIER_KEY() \
 	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) != 0) break
 
-#define RETURN_IF_LOCKED() \
-	if (summaryview->mainwin->lock_count) return TRUE
-
 static gint summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				SummaryView *summaryview)
 {
@@ -4607,7 +4610,6 @@ static gint summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		summary_mark_as_unread(summaryview);
 		break;
 	case GDK_Delete:
-		RETURN_IF_LOCKED();
 		BREAK_ON_MODIFIER_KEY();
 		summary_delete(summaryview);
 		break;

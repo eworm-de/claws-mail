@@ -343,6 +343,23 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 	return FALSE;
 }
 
+gboolean filteringaction_apply_action_list(GSList *action_list, MsgInfo *info)
+{
+	GSList *p;
+	g_return_val_if_fail(action_list, FALSE);
+	g_return_val_if_fail(info, FALSE);
+	for (p = action_list; p && p->data; p = g_slist_next(p)) {
+		FilteringAction *a = (FilteringAction *) p->data;
+		if (filteringaction_apply(a, info)) {
+			if (filtering_is_final_action(a))
+				break;
+		} else
+			return FALSE;
+		
+	}
+	return TRUE;
+}
+
 static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *info)
 {
 	return matcherlist_match(filtering->matchers, info);

@@ -68,26 +68,29 @@ StringTable *string_table_new(void)
 	return strtable;
 }
 
-gchar *string_table_lookup_string(StringTable *table, gchar *str)
+gchar *string_table_lookup_string(StringTable *table, const gchar *str)
 {
-	StringEntry *entry = g_hash_table_lookup(table->hash_table,
-						 (gconstpointer)str);
-	if (!entry) {
-		return NULL;
-	} else {
+	StringEntry *entry;
+
+	entry = g_hash_table_lookup(table->hash_table, str);
+
+	if (entry) {
 		return entry->string;
+	} else {
+		return NULL;
 	}
 }
 
-gchar *string_table_insert_string(StringTable *table, gchar *str)
+gchar *string_table_insert_string(StringTable *table, const gchar *str)
 {
-	gchar *key = NULL;
-	StringEntry *entry = NULL;
+	StringEntry *entry;
 
-	if (g_hash_table_lookup_extended
-		(table->hash_table, str, (gpointer *)&key, (gpointer *)&entry)) {
+	entry = g_hash_table_lookup(table->hash_table, str);
+
+	if (entry) {
 		entry->ref_count++;
-		XXX_DEBUG ("ref++ for %s (%d)\n", entry->string, entry->ref_count);
+		XXX_DEBUG ("ref++ for %s (%d)\n", entry->string,
+			   entry->ref_count);
 	} else {
 		entry = string_entry_new(str);
 		XXX_DEBUG ("inserting %s\n", str);
@@ -99,7 +102,7 @@ gchar *string_table_insert_string(StringTable *table, gchar *str)
 	return entry->string;
 }
 
-void string_table_free_string(StringTable *table, gchar *str)
+void string_table_free_string(StringTable *table, const gchar *str)
 {
 	StringEntry *entry;
 
@@ -108,11 +111,13 @@ void string_table_free_string(StringTable *table, gchar *str)
 	if (entry) {
 		entry->ref_count--;
 		if (entry->ref_count <= 0) {
-			XXX_DEBUG ("refcount of string %s dropped to zero\n", entry->string);
+			XXX_DEBUG ("refcount of string %s dropped to zero\n",
+				   entry->string);
 			g_hash_table_remove(table->hash_table, str);
 			string_entry_free(entry);
 		} else {
-			XXX_DEBUG ("ref-- for %s (%d)\n", entry->string, entry->ref_count); 
+			XXX_DEBUG ("ref-- for %s (%d)\n", entry->string,
+				   entry->ref_count); 
 		}
 	}
 }

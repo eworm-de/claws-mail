@@ -171,7 +171,7 @@ struct _FolderClass
 	Folder 		*(*new_folder)		(const gchar	*name,
 						 const gchar	*path);
 	void     	(*destroy_folder)	(Folder		*folder);
-	void     	(*scan_tree)		(Folder		*folder);
+	gint     	(*scan_tree)		(Folder		*folder);
 
 	gint     	(*create_tree)		(Folder		*folder);
 

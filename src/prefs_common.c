@@ -283,16 +283,6 @@ static PrefParam param[] = {
 	 &receive.entry_incext,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
-	{"inc_local", "TRUE", &prefs_common.inc_local, P_BOOL,
-	 &receive.checkbtn_local,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"filter_on_inc_local", "TRUE", &prefs_common.filter_on_inc, P_BOOL,
-	 &receive.checkbtn_filter_on_inc,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"spool_path", DEFAULT_SPOOL_PATH, &prefs_common.spool_path, P_STRING,
-	 &receive.entry_spool,
-	 prefs_set_data_from_entry, prefs_set_entry},
-
 	{"autochk_newmail", "FALSE", &prefs_common.autochk_newmail, P_BOOL,
 	 &receive.checkbtn_autochk,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -1180,35 +1170,6 @@ static void prefs_receive_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox), button_incext, FALSE, FALSE, 0);
 #endif
 
-	PACK_FRAME(vbox1, frame_spool, _("Local spool"));
-
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame_spool), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
-
-	hbox = gtk_hbox_new (FALSE, 32);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
-
-	PACK_CHECK_BUTTON (hbox, checkbtn_local, _("Incorporate from spool"));
-	PACK_CHECK_BUTTON (hbox, checkbtn_filter_on_inc,
-			   _("Filter on incorporation"));
-	SET_TOGGLE_SENSITIVITY (checkbtn_local, checkbtn_filter_on_inc);
-
-	hbox = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY (checkbtn_local, hbox);
-
-	label_spool = gtk_label_new (_("Spool directory"));
-	gtk_widget_show (label_spool);
-	gtk_box_pack_start (GTK_BOX (hbox), label_spool, FALSE, FALSE, 0);
-
-	entry_spool = gtk_entry_new ();
-	gtk_widget_show (entry_spool);
-	gtk_box_pack_start (GTK_BOX (hbox), entry_spool, TRUE, TRUE, 0);
-
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
@@ -1322,10 +1283,6 @@ static void prefs_receive_create(void)
 	receive.checkbtn_incext = checkbtn_incext;
 	receive.entry_incext    = entry_incext;
 	/* receive.button_incext   = button_incext; */
-
-	receive.checkbtn_local         = checkbtn_local;
-	receive.checkbtn_filter_on_inc = checkbtn_filter_on_inc;
-	receive.entry_spool            = entry_spool;
 
 	receive.checkbtn_autochk    = checkbtn_autochk;
 	receive.spinbtn_autochk     = spinbtn_autochk;
@@ -4019,6 +3976,7 @@ static void prefs_common_apply(void)
 	gchar *entry_pixmap_theme_str;
 	gboolean update_pixmap_theme;
 	gchar *backup_theme_path;
+	MainWindow *mainwindow;
 	
 	entry_pixmap_theme_str = gtk_entry_get_text(GTK_ENTRY(Xinterface.entry_pixmap_theme));
 	if (entry_pixmap_theme_str && 
@@ -4045,9 +4003,13 @@ static void prefs_common_apply(void)
 
 	/*!< FIXME: Now it's safe to delete the backup path */
 	g_free(backup_theme_path);
-	
+
 	prefs_common_save_config();
 
+	mainwindow = mainwindow_get_mainwindow();
+	log_window_set_clipping(mainwindow->logwin, prefs_common.cliplog,
+				prefs_common.loglength);
+	
 	inc_autocheck_timer_remove();
 	inc_autocheck_timer_set();
 }

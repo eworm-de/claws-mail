@@ -1,3 +1,92 @@
+2003-09-17
+
+	* version 0.9.6
+
+2003-09-17
+
+	* src/addressbook.c:
+	  addressbook_folder_load_person()
+	  addressbook_folder_load_group(): sort the ctree after the end of
+	  the loop (fixes performance issue when many addresses are in one
+	  folder) (thanks to christian mock).
+
+2003-09-16
+
+	* src/folderview.c: folder_init(): code cleanup.
+	* src/summaryview.c: summary_init(): check if boldfont is
+	  successfully loaded.
+	* src/grouplistdialog.c: use proper callback for delete_event (thanks
+	  to Takuro Ashie).
+	* src/imap.c: allow zero-length messages.
+	* src/recv.c: recv_bytes_write(): return immediately if size == 0.
+
+2003-09-16
+
+	* src/folderview.c: folderview_init(): if font can't be loaded, fall
+	  back to gtk default (fixes crashes on startup). Also removed the
+	  redundant code.
+
+2003-09-15
+
+	* src/compose.c: compose_insert_sig(): insert signature at the
+	  current cursor position on manual operation.
+
+2003-09-11
+
+	* src/summaryview.c: summary_key_pressed(): don't ignore delete key
+	  even if the main window is locked.
+
+2003-09-10
+
+	* src/action.c: improved synchronous action exit code (fixes long
+	  delay after action exit on RH9) (thanks to Melvin).
+	* src/stringtable.[ch]: string_table_insert_string(): modified the
+	  code to remove the warning "dereferencing type-punned pointer will
+	  break strict-aliasing rules".
+	  Use const gchar * instead of gchar * for arguments.
+
+2003-09-05
+
+	* src/utils.[ch]: generate_mime_boundary(): a new function to create
+	  MIME boundary (moved from rfc2015.c).
+	  Removed more special characters.
+	  Use random() instead of lrand48() which is obsolete.
+	  Added an argument for prefix to prevent duplication.
+	  Always add "=_" as a counter-QP sequence to simplify the code.
+	* src/rfc2015.c:
+	  rfc2015_decrypt_message()
+	  rfc2015_encrypt()
+	  rfc2015_sign(): fixed a bug that didn't handle continuous content
+	  lines correctly.
+	* src/compose.c
+	  src/rfc2015.c: use generate_mime_boundary().
+
+2003-09-05
+
+	* src/folderview.c:
+	  folderview_delete_folder_cb()
+	  folderview_remove_mailbox_cb(): close currently displayed folder
+	  before removing FolderItem (fixes crash on deleting folder).
+	* src/folder.h
+	  src/imap.[ch]: imap_scan_tree()
+	  src/mh.[ch]: mh_scan_tree(): return -1 when scanning failed.
+	* src/summaryview.c: summary_clear_all(): also clear the message view.
+	* src/imap.c: imap_close(): fail if the specified folder is not
+	  selected.
+	  imap_scan_tree(): check if the specified root directory exist, and
+	  try creating it if not.
+	  imap_parse_list(): output warning if a server returns error.
+	  imap_find_namespace_from_list(): support not slash-delimited path.
+	  imap_status(): don't return values if they're not specified.
+
+2003-09-02
+
+	* sylpheed.spec.in: fixed a typo.
+
+2003-09-02
+
+	* version 0.9.5
+
 2003-09-01
 
 	* src/inc.[ch]

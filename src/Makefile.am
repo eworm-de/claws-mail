@@ -57,7 +57,6 @@ sylpheed_SOURCES = \
 	ldapserver.c \
 	ldaputil.c \
 	ldif.c \
-	logwindow.c \
 	main.c \
 	mainwindow.c \
 	manual.c \
@@ -178,7 +177,6 @@ sylpheedinclude_HEADERS = \
 	ldapserver.h \
 	ldaputil.h \
 	ldif.h \
-	logwindow.h \
 	main.h \
 	mainwindow.h \
 	manual.h \

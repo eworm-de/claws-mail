@@ -1035,6 +1035,8 @@ MainWindow *main_window_create(SeparateType type)
 	summary_init(summaryview);
 	messageview_init(messageview);
 	log_window_init(mainwin->logwin);
+	log_window_set_clipping(mainwin->logwin, prefs_common.cliplog,
+				prefs_common.loglength);
 #ifdef USE_OPENSSL
 	sslcertwindow_register_hook();
 #endif
@@ -1524,7 +1526,6 @@ void main_window_add_mbox(MainWindow *mainwin)
 {
 	gchar *path;
 	Folder *folder;
-	FolderItem * item;
 
 	path = input_dialog(_("Add mbox mailbox"),
 			    _("Input the location of mailbox."),
@@ -1892,9 +1893,6 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		gtk_signal_connect(GTK_OBJECT(messagewin), "delete_event",
 				   GTK_SIGNAL_FUNC(message_window_close_cb),
 				   mainwin);
-		gtk_container_add(GTK_CONTAINER(messagewin),
-				  GTK_WIDGET_PTR(mainwin->messageview));
-		gtk_widget_realize(messagewin);
 		if (messageview_is_visible(mainwin->messageview))
 			gtk_widget_show(messagewin);
 	}
@@ -1981,6 +1979,13 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 
 		mainwin->win.sep_message.messagewin = messagewin;
 		mainwin->win.sep_message.hpaned     = hpaned;
+
+		gtk_widget_realize(messagewin);
+		gtk_widget_show_all(GTK_WIDGET_PTR(mainwin->messageview));
+		gtk_widget_show_all(messagewin);
+		toolbar_set_style(mainwin->messageview->toolbar->toolbar, 
+				  mainwin->messageview->handlebox, 
+				  prefs_common.toolbar_style);
 
 		break;
 	case SEPARATE_BOTH:
@@ -2837,6 +2842,11 @@ static gboolean mainwindow_focus_in_event(GtkWidget *widget, GdkEventFocus *focu
 	g_return_val_if_fail(data, FALSE);
 	summary = ((MainWindow *)data)->summaryview;
 	g_return_val_if_fail(summary, FALSE);
+
+	if (GTK_CLIST(summary->ctree)->selection && 
+	    g_list_length(GTK_CLIST(summary->ctree)->selection) > 1)
+		return FALSE;
+
 	if (summary->selected != summary->displayed)
 		summary_select_node(summary, summary->displayed, FALSE, TRUE);
 	return FALSE;

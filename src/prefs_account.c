@@ -264,13 +264,13 @@ static PrefParam param[] = {
 	{"nntp_server", NULL, &tmp_ac_prefs.nntp_server, P_STRING,
 	 &basic.nntpserv_entry, prefs_set_data_from_entry, prefs_set_entry},
 
-	{"local_mbox", NULL, &tmp_ac_prefs.local_mbox, P_STRING,
+	{"local_mbox", "/var/mail", &tmp_ac_prefs.local_mbox, P_STRING,
 	 &basic.localmbox_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"use_mail_command", "FALSE", &tmp_ac_prefs.use_mail_command, P_BOOL,
 	 &basic.mailcmd_chkbtn, prefs_set_data_from_toggle, prefs_set_toggle},
 
-	{"mail_command", "/usr/sbin/sendmail -t", &tmp_ac_prefs.mail_command, P_STRING,
+	{"mail_command", DEFAULT_SENDMAIL_CMD, &tmp_ac_prefs.mail_command, P_STRING,
 	 &basic.mailcmd_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"use_nntp_auth", "FALSE", &tmp_ac_prefs.use_nntp_auth, P_BOOL,
@@ -1028,7 +1028,7 @@ static void prefs_account_basic_create(void)
 			  GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment (GTK_MISC (recvserv_label), 1, 0.5);
 
-	localmbox_label = gtk_label_new (_("Local mailbox file"));
+	localmbox_label = gtk_label_new (_("Local mailbox directory"));
 	gtk_widget_show (localmbox_label);
 	gtk_table_attach (GTK_TABLE (serv_table), localmbox_label, 0, 1, 3, 4,
 			  GTK_FILL, 0, 0, 0);

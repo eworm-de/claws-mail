@@ -110,10 +110,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		scan_archive = TRUE;
 
 	while (child != NULL) {
-		if (child->children || child->mime_type == MIME_MULTIPART) {
-			child = procmime_mimeinfo_next(child);
-			continue;
-		}
 		if(child->parent && child->parent->parent
 		&& !strcasecmp(child->parent->parent->content_type, "multipart/signed")
 		&& child->mime_type == MIME_TEXT) {

@@ -376,7 +376,7 @@ SOURCE=..\src\common\log.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\logwindow.c
+SOURCE=..\src\gtk\logwindow.c
 # End Source File
 # Begin Source File
 
@@ -1008,7 +1008,7 @@ SOURCE=..\src\common\log.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\logwindow.h
+SOURCE=..\src\gtk\logwindow.h
 # End Source File
 # Begin Source File
 

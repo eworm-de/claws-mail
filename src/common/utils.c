@@ -2754,6 +2754,55 @@ gchar *get_outgoing_rfc2822_str(FILE *fp)
 	return ret;
 }
 
+/*
+ * Create a new boundary in a way that it is very unlikely that this
+ * will occur in the following text.  It would be easy to ensure
+ * uniqueness if everything is either quoted-printable or base64
+ * encoded (note that conversion is allowed), but because MIME bodies
+ * may be nested, it may happen that the same boundary has already
+ * been used. We avoid scanning the message for conflicts and hope the
+ * best.
+ *
+ *   boundary := 0*69<bchars> bcharsnospace
+ *   bchars := bcharsnospace / " "
+ *   bcharsnospace := DIGIT / ALPHA / "'" / "(" / ")" /
+ *                    "+" / "_" / "," / "-" / "." /
+ *                    "/" / ":" / "=" / "?"
+ *
+ * some special characters removed because of buggy MTAs
+ */
+
+gchar *generate_mime_boundary(const gchar *prefix)
+{
+	static gchar tbl[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+			     "abcdefghijklmnopqrstuvwxyz"
+			     "1234567890+_./=";
+	gchar buf_uniq[17];
+	gchar buf_date[64];
+	gint i;
+	gint pid;
+
+	pid = getpid();
+
+	/* We make the boundary depend on the pid, so that all running
+	 * processes generate different values even when they have been
+	 * started within the same second and srandom(time(NULL)) has been
+	 * used.  I can't see whether this is really an advantage but it
+	 * doesn't do any harm.
+	 */
+	for (i = 0; i < sizeof(buf_uniq) - 1; i++)
+		buf_uniq[i] = tbl[(random() ^ pid) % (sizeof(tbl) - 1)];
+	buf_uniq[i] = '\0';
+
+	get_rfc822_date(buf_date, sizeof(buf_date));
+	subst_char(buf_date, ' ', '_');
+	subst_char(buf_date, ',', '_');
+	subst_char(buf_date, ':', '_');
+
+	return g_strdup_printf("%s=_%s_%s", prefix ? prefix : "Multipart",
+			       buf_date, buf_uniq);
+}
+
 gint change_file_mode_rw(FILE *fp, const gchar *file)
 {
 #if HAVE_FCHMOD
@@ -3815,72 +3864,6 @@ gchar *generate_msgid(const gchar *address, gchar *buf, gint len)
 
 	g_free(addr);
 	return buf;
-}
-
-/**
- * Create a new boundary in a way that it is very unlikely that this
- * will occur in the following text.  It would be easy to ensure
- * uniqueness if everything is either quoted-printable or base64
- * encoded (note that conversion is allowed), but because MIME bodies
- * may be nested, it may happen that the same boundary has already
- * been used. We avoid scanning the message for conflicts and hope the
- * best.
- *
- *   boundary := 0*69<bchars> bcharsnospace
- *   bchars := bcharsnospace / " "
- *   bcharsnospace := DIGIT / ALPHA / "'" / "(" / ")" /
- *                    "+" / "_" / "," / "-" / "." /
- *                    "/" / ":" / "=" / "?"  
- *
- * ":" and "," removed because of buggy MTAs
- */
-
-gchar *generate_mime_boundary(void)
-{
-	static gchar tbl[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	                     "abcdefghijklmnopqrstuvwxyz" 
-			     "1234567890'()+_./=?";
-	gchar bufuniq[17];
-	gchar bufdate[BUFFSIZE];
-	int i, equal;
-	int pid;
-
-	pid = getpid();
-
-	/* We make the boundary depend on the pid, so that all running
-	 * processed generate different values even when they have been
-	 * started within the same second and srand48(time(NULL)) has been
-	 * used.  I can't see whether this is really an advantage but it
-	 * doesn't do any harm.
-	 */
-	equal = -1;
-	for (i = 0; i < sizeof(bufuniq) - 1; i++) {
-#ifdef WIN32
-		bufuniq[i] = tbl[(rand() ^ pid) % (sizeof(tbl) - 1)];	/* fill with random */
-#else
-		bufuniq[i] = tbl[(lrand48() ^ pid) % (sizeof(tbl) - 1)];	/* fill with random */
-#endif
-		if (bufuniq[i] == '=' && equal == -1)
-			equal = i;
-	}
-	bufuniq[i] = 0;
-
-	/* now make sure that we do have the sequence "=." in it which cannot
-	 * be matched by quoted-printable or base64 encoding */
-	if (equal != -1 && (equal + 1) < i)
-		bufuniq[equal + 1] = '.';
-	else {
-		bufuniq[0] = '=';
-		bufuniq[1] = '.';
-	}
-
-	get_rfc822_date(bufdate, sizeof(bufdate));
-	subst_char(bufdate, ' ', '_');
-	subst_char(bufdate, ',', '_');
-	subst_char(bufdate, ':', '_');
-
-	return g_strdup_printf("Multipart_%s_%s",
-			       bufdate, bufuniq);
 }
 
 #ifdef WIN32

@@ -128,7 +128,7 @@ enum {
 	CRITERIA_SCORE_LOWER = 25,
 	CRITERIA_SCORE_EQUAL = 26,
 
-	CRITERIA_EXECUTE = 27,
+	CRITERIA_TEST = 27,
 
 	CRITERIA_SIZE_GREATER = 28,
 	CRITERIA_SIZE_SMALLER = 29,
@@ -232,7 +232,7 @@ static void prefs_matcher_select	(GtkCList	*clist,
 					 gint		 row,
 					 gint		 column,
 					 GdkEvent	*event);
-static void prefs_matcher_key_pressed	(GtkWidget	*widget,
+static gboolean prefs_matcher_key_pressed(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
 static void prefs_matcher_ok		(void);
@@ -881,9 +881,9 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 		return CRITERIA_SCORE_LOWER;
 	case MATCHCRITERIA_SCORE_EQUAL:
 		return CRITERIA_SCORE_EQUAL;
-	case MATCHCRITERIA_NOT_EXECUTE:
-	case MATCHCRITERIA_EXECUTE:
-		return CRITERIA_EXECUTE;
+	case MATCHCRITERIA_NOT_TEST:
+	case MATCHCRITERIA_TEST:
+		return CRITERIA_TEST;
 	case MATCHCRITERIA_SIZE_GREATER:
 		return CRITERIA_SIZE_GREATER;
 	case MATCHCRITERIA_SIZE_SMALLER:
@@ -960,8 +960,8 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHCRITERIA_BODY_PART;
 	case CRITERIA_MESSAGE:
 		return MATCHCRITERIA_MESSAGE;
-	case CRITERIA_EXECUTE:
-		return MATCHCRITERIA_EXECUTE;
+	case CRITERIA_TEST:
+		return MATCHCRITERIA_TEST;
 	case CRITERIA_SIZE_GREATER:
 		return MATCHCRITERIA_SIZE_GREATER;
 	case CRITERIA_SIZE_SMALLER:
@@ -1024,8 +1024,8 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 		return MATCHCRITERIA_NOT_HEADERS_PART;
 	case MATCHCRITERIA_MESSAGE:
 		return MATCHCRITERIA_NOT_MESSAGE;
-	case MATCHCRITERIA_EXECUTE:
-		return MATCHCRITERIA_NOT_EXECUTE;
+	case MATCHCRITERIA_TEST:
+		return MATCHCRITERIA_NOT_TEST;
 	case MATCHCRITERIA_BODY_PART:
 		return MATCHCRITERIA_NOT_BODY_PART;
 	default:
@@ -1072,7 +1072,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_REPLIED:
 	case CRITERIA_FORWARDED:
 	case CRITERIA_LOCKED:
-	case CRITERIA_EXECUTE:
+	case CRITERIA_TEST:
 	case CRITERIA_COLORLABEL:
 	case CRITERIA_IGNORE_THREAD:
 		if (value_pred_flag == PREDICATE_FLAG_DISABLED)
@@ -1137,7 +1137,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_HEADERS_PART:
 	case CRITERIA_BODY_PART:
 	case CRITERIA_MESSAGE:
-	case CRITERIA_EXECUTE:
+	case CRITERIA_TEST:
 		expr = gtk_entry_get_text(GTK_ENTRY(matcher.value_entry));
 		break;
 
@@ -1374,7 +1374,7 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 	case MATCHCRITERIA_HEADERS_PART:
 	case MATCHCRITERIA_BODY_PART:
 	case MATCHCRITERIA_MESSAGE:
-	case MATCHCRITERIA_EXECUTE:
+	case MATCHCRITERIA_TEST:
 		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), prop->expr);
 		break;
 
@@ -1558,7 +1558,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		gtk_widget_set_sensitive(matcher.exec_btn, FALSE);
 		break;
 
-	case CRITERIA_EXECUTE:
+	case CRITERIA_TEST:
 		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
 		gtk_widget_set_sensitive(matcher.header_label, FALSE);
 		gtk_widget_set_sensitive(matcher.value_label, TRUE);
@@ -1619,11 +1619,12 @@ static void prefs_matcher_criteria_select(GtkList *list,
  *\param	event Key event
  *\param	data User data
  */
-static void prefs_matcher_key_pressed(GtkWidget *widget, GdkEventKey *event,
+static gboolean prefs_matcher_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				     gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		prefs_matcher_cancel();
+	return TRUE;		
 }
 
 /*!

@@ -73,7 +73,7 @@ static gboolean mh_is_msg_changed(Folder * folder,
 
 static gint mh_get_num_list(Folder * folder,
 			    FolderItem * item, GSList ** list, gboolean *old_uids_valid);
-static void mh_scan_tree(Folder * folder);
+static gint mh_scan_tree(Folder * folder);
 
 static gint mh_create_tree(Folder * folder);
 static FolderItem *mh_create_folder(Folder * folder,
@@ -480,12 +480,12 @@ gboolean mh_is_msg_changed(Folder *folder, FolderItem *item, MsgInfo *msginfo)
 	return FALSE;
 }
 
-void mh_scan_tree(Folder *folder)
+gint mh_scan_tree(Folder *folder)
 {
 	FolderItem *item;
 	gchar *rootpath;
 
-	g_return_if_fail(folder != NULL);
+	g_return_val_if_fail(folder != NULL, -1);
 
 	if (!folder->node) {
 #ifdef WIN32
@@ -505,13 +505,15 @@ void mh_scan_tree(Folder *folder)
 	rootpath = folder_item_get_path(item);
 	if (change_dir(rootpath) < 0) {
 		g_free(rootpath);
-		return;
+		return -1;
 	}
 	g_free(rootpath);
 
 	mh_create_tree(folder);
 	mh_remove_missing_folder_items(folder);
 	mh_scan_tree_recursive(item);
+
+	return 0;
 }
 
 #define MAKE_DIR_IF_NOT_EXIST(dir) \

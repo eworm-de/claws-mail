@@ -31,7 +31,6 @@
 #include "utils.h"
 #include "gtkutils.h"
 #include "inc.h"
-#include "log.h"
 #include "logwindow.h"
 #ifdef WIN32
 #include "defs.h"

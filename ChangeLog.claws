@@ -1,3 +1,237 @@
+2003-09-27 [paul]	0.9.5claws32
+
+	* src/prefs_account.c
+		o make correction to gui text:
+		  'Local mailbox file' -> 'Local mailbox directory'
+		o give 'local_mbox' option a reasonable default value:
+		  '/var/mail'
+		o use 'DEFAULT_SENDMAIL_CMD' as default 'mail_command'
+		  value
+
+2003-09-26 [paul]	0.9.5claws31
+
+	* src/inc.c
+	  src/prefs_common.[ch]
+	  	remove 'Incorporate from spool' common pref,
+		force creation of a 'Local' account
+
+2003-09-26 [christoph]	0.9.5claws30
+
+	* src/folder.c
+	* src/msgcache.c
+		add more NULL pointer checks
+
+2003-09-25 [christoph]	0.9.5claws29
+
+	* src/folder.c
+		o don't fetch source message to get it's message id
+		o immediately scan dest folder when copying a message did not
+		  return a new message number and not do it when the first message
+		  without a new message number is found
+
+2003-09-23 [christoph]	0.9.5claws28
+
+	* src/compose.c
+		fix generating of headers
+
+	(patch by David Relson <relson@osagesoftware.com>)
+
+2003-09-23 [paul]	0.9.5claws27
+
+	* po/zh_CN.po
+		update Simplified Chinese translation. submitted by
+		Hansom Young
+
+2003-09-23 [paul]	0.9.5claws26
+
+	* tools/Makefile.am
+	  tools/README
+	  tools/vcard2xml.py	** NEW FILE **
+	  	add a script that converts an evolution vcard to
+		sylpheed's xml format
+		submitted by Bogdan Sumanariu <bsumanariu@one5.ro>
+
+2003-09-22 [paul]	0.9.5claws25
+
+	* src/plugins/clamav/clamav_plugin.c
+		don't skip MULTIPART parts
+
+2003-09-21 [christoph]	0.9.5claws24
+
+	* src/alertpanel.c
+		remove unneeded include
+
+	* src/folder.c
+		clean up copy/move mess with duplicated code
+
+	* src/imap.c
+		fix problem that sometimes the folder was not scanned
+		also it was changed
+
+2003-09-21 [christoph]	0.9.5claws23
+
+	* src/Makefile.am
+	* src/logwindow.[ch]			** REMOVE **
+	* src/mainwindow.c
+	* src/prefs_common.c
+	* src/gtk/Makefile.am
+	* src/gtk/logwindow.[ch]		** ADD **
+		make logwindow prefs_common independent and move
+		it to gtk directory
+
+2003-09-20 [christoph]	0.9.5claws22
+
+	* src/compose.c
+		add extra space for address code conversion
+		(4 * unconvered size could be too small for short headers)
+
+2003-09-20 [christoph]	0.9.5claws21
+
+	* src/compose.c
+		increase temp buffer size when writing headers
+
+2003-09-19 [darko]	0.9.5claws20
+
+	* src/compose.c
+		don't ignore value of 'Save copy of outgoing messages to
+		this folder instead of Sent' in message redirect
+
+2003-09-17 [christoph]	0.9.5claws19
+
+	* src/compose.c
+		use ", " as address seperator for mail headers and pass whole
+		header line at once to compose_convert_header to make sure
+		it is correctly folded
+
+	(closes Bug 64 Problem when sending to many recipients)
+
+2003-09-17 [hoa]	0.9.5claws18
+	
+	* changed the keyword used for command execution in condition
+		keyword is changed from "execute" to "test"
+		so that it is not the same as the one used for action.
+		This will fix a bug when using filtering dialog.
+		All semantic in the code is also changed to reflect
+		the keyword change.
+
+2003-09-17 [paul]
+	
+	* sync with 0.9.6 release
+
+2003-09-17 [paul]	0.9.5claws17
+
+	* sync with 0.9.5cvs8
+		see ChangeLog 2003-09-16 and 2003-09-17
+
+2003-09-16 [paul]	0.9.5claws16
+
+	* sync with 0.9.5cvs6
+		see ChangeLog 2003-09-16
+
+2003-09-15 [paul]	0.9.5claws15
+
+	* sync with 0.9.5cvs5
+		see ChangeLog 2003-09-15
+
+2003-09-14 [alfons]	0.9.5claws14
+
+	* src/inc.c
+		make "Go to inbox after receiving new mail" again;
+		regression of a sync, restored to sylpheed main 
+		behaviour. (misses still some bits)
+
+2003-09-14 [alfons]	0.9.5claws13
+
+	* src/prefs_filtering_action.c
+		o add proper message if empty execute command line
+		o don't select first action item after registering a
+		  new action to prevent (what seems to be a GTK) bug
+		  #36, "filtering will only accept one action change 
+		  per invocation".
+
+2003-09-14 [alfons]	0.9.5claws12
+
+	* src/prefs_filtering.c
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+		fix function signature for key_pressed_event signal handlers
+
+2003-09-14 [alfons]	0.9.5claws11
+
+	* src/mainwindow.c
+		fix regression caused by fix for invalid bug #7
+		(should fix #246, "Multiple selections are deselected when 
+		moving from search window to main window")
+		
+2003-09-14 [alfons]	0.9.5claws10
+	
+	* src/actions.[ch]
+	* src/filtering.[ch]
+	* src/prefs_actions.c
+		allow `filtering actions` in actions; only for advanced users
+		right now: try for example, "%as{mark color 2}" 
+	
+2003-09-13 [paul]	0.9.5claws9
+	
+	* po/pl.po
+	  po/zh_CN.po	** NEW FILE **
+	  	update Polish translation, submitted by Emil 
+		<eminowbl@posejdon.wpk.p.lodz.pl>
+		add new Simplified Chinese translation, submitted by
+		Hansom Young <hansom_young@yahoo.com>
+
+2003-09-12 [alfons]	0.9.5claws8
+
+	* src/summaryview.c
+		don't open separate message views when View | Separate message view
+		is active 
+		(please look carefully for any navigation regressions)
+
+2003-09-11 [alfons]	0.9.5claws7
+
+	* src/mainwindow.c
+		make default message view, opened by View | Separate message 
+		view, look like a claws message view (which includes a menu
+		bar and a toolbar)
+		(fixes bug #298, "message view loses tool bar")	
+
+2003-09-11 [christoph]	0.9.5claws6
+
+	* src/folderview.c
+		fix double deleting of newsgroup folders
+
+	(closes Bug 305 crash after deleting of a newsgroup)
+
+2003-09-11 [paul]	0.9.5claws5
+
+	* src/rfc2015.c
+	  src/common/utils.h
+		more sync'ing from 0.9.5cvs2
+
+	fixes bug 197 'Header lines encrypted by GPG'
+
+2003-09-11 [christoph]	0.9.5claws4
+
+	* src/compose.c
+	* src/rfc2015.c
+	* src/common/utils.h
+		fix sync with 0.9.5cvs2
+
+2003-09-11 [paul]	0.9.5claws3
+
+	* sync with 0.9.5cvs4
+		see ChangeLog 2003-09-11
+
+2003-09-11 [paul]	0.9.5claws2
+
+	* sync with 0.9.5cvs2
+		see ChangeLog 2003-09-05
+		
+2003-09-11 [paul]	0.9.5claws1
+
+	* sync with 0.9.5cvs3
+		see ChangeLog 2003-09-10
+
 2003-09-10 [paul]	0.9.5claws
 
 	* 0.9.5claws released

@@ -100,8 +100,8 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHCRITERIA_NOT_MESSAGE, "~message"},
 	{MATCHCRITERIA_BODY_PART, "body_part"},
 	{MATCHCRITERIA_NOT_BODY_PART, "~body_part"},
-	{MATCHCRITERIA_EXECUTE, "execute"},
-	{MATCHCRITERIA_NOT_EXECUTE, "~execute"},
+	{MATCHCRITERIA_TEST, "test"},
+	{MATCHCRITERIA_NOT_TEST, "~test"},
 
 	/* match type */
 	{MATCHTYPE_MATCHCASE, "matchcase"},
@@ -478,7 +478,7 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str)
  *
  *\return	gboolean TRUE if command was executed succesfully
  */
-static gboolean matcherprop_match_execute(const MatcherProp *prop, 
+static gboolean matcherprop_match_test(const MatcherProp *prop, 
 					  MsgInfo *info)
 {
 	gchar *file;
@@ -609,10 +609,10 @@ gboolean matcherprop_match(MatcherProp *prop,
 		return matcherprop_string_match(prop, info->references);
 	case MATCHCRITERIA_NOT_REFERENCES:
 		return !matcherprop_string_match(prop, info->references);
-	case MATCHCRITERIA_EXECUTE:
-		return matcherprop_match_execute(prop, info);
-	case MATCHCRITERIA_NOT_EXECUTE:
-		return !matcherprop_match_execute(prop, info);
+	case MATCHCRITERIA_TEST:
+		return matcherprop_match_test(prop, info);
+	case MATCHCRITERIA_NOT_TEST:
+		return !matcherprop_match_test(prop, info);
 	default:
 		return 0;
 	}
@@ -1060,8 +1060,8 @@ gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 		case MATCHCRITERIA_SIZE_GREATER:
 		case MATCHCRITERIA_SIZE_SMALLER:
 		case MATCHCRITERIA_SIZE_EQUAL:
-		case MATCHCRITERIA_EXECUTE:
-		case MATCHCRITERIA_NOT_EXECUTE:
+		case MATCHCRITERIA_TEST:
+		case MATCHCRITERIA_NOT_TEST:
 			if (matcherprop_match(matcher, info)) {
 				if (!matchers->bool_and) {
 					return TRUE;
@@ -1142,8 +1142,8 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 	case MATCHCRITERIA_IGNORE_THREAD:
 	case MATCHCRITERIA_NOT_IGNORE_THREAD:
 		return g_strdup(criteria_str);
-	case MATCHCRITERIA_EXECUTE:
-	case MATCHCRITERIA_NOT_EXECUTE:
+	case MATCHCRITERIA_TEST:
+	case MATCHCRITERIA_NOT_TEST:
                 expr = matcher_escape_str(matcher->expr);
 		matcher_str = g_strdup_printf("%s \"%s\"", criteria_str, expr);
                 g_free((gpointer) expr);

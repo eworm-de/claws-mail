@@ -665,6 +665,7 @@ EXPORTS
 	filesel_select_file 
 	filesel_select_multiple_files 
 	filter_message_by_msginfo 
+	filteringaction_apply_action_list 
 	filteringaction_free 
 	filteringaction_list_to_string 
 	filteringaction_new 
@@ -1031,9 +1032,9 @@ EXPORTS
 	log_message 
 	log_print 
 	log_warning 
-	log_window_clear 
 	log_window_create 
 	log_window_init 
+	log_window_set_clipping 
 	log_window_show 
 	main_real 
 	main_window_add_mailbox 

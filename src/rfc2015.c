@@ -667,6 +667,7 @@ void rfc2015_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
     FILE *dstfp;
     size_t nread;
     char buf[BUFFSIZE];
+    int in_cline;
     GpgmeError err;
 
     g_return_if_fail (msginfo != NULL);
@@ -747,9 +748,17 @@ void rfc2015_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
     if (fseek(fp, tmpinfo->fpos, SEEK_SET) < 0)
         perror("fseek");
 
+    in_cline = 0;
     while (fgets(buf, sizeof(buf), fp)) {
-        if (headerp (buf, content_names))
+        if (headerp (buf, content_names)) {
+            in_cline = 1;
             continue;
+        }
+        if (in_cline) {
+            if (buf[0] == ' ' || buf[0] == '\t')
+                continue;
+            in_cline = 0;
+        }
         if (buf[0] == '\r' || buf[0] == '\n')
             break;
         fputs (buf, dstfp);
@@ -868,7 +877,9 @@ rfc2015_encrypt (const char *file, GSList *recp_list, gboolean ascii_armored)
     GpgmeRecipients rset = NULL;
     size_t nread;
     int mime_version_seen = 0;
-    char *boundary = generate_mime_boundary ();
+    char *boundary;
+
+    boundary = generate_mime_boundary ("Encrypt");
 
     /* Create the list of recipients */
     rset = gpgmegtk_recipient_selection (recp_list);
@@ -892,7 +903,7 @@ rfc2015_encrypt (const char *file, GSList *recp_list, gboolean ascii_armored)
     }
 
     /* get the content header lines from the source */
-    clineidx=0;
+    clineidx = 0;
     saved_last = 0;
     while (!err && fgets(buf, sizeof(buf), fp)) {
         /* fixme: check for overlong lines */
@@ -906,13 +917,13 @@ rfc2015_encrypt (const char *file, GSList *recp_list, gboolean ascii_armored)
             continue;
         }
         if (saved_last) {
-            saved_last = 0;
             if (*buf == ' ' || *buf == '\t') {
-                char *last = clines[clineidx-1];
-                clines[clineidx-1] = g_strconcat (last, buf, NULL);
+                char *last = clines[clineidx - 1];
+                clines[clineidx - 1] = g_strconcat (last, buf, NULL);
                 g_free (last);
                 continue;
             }
+            saved_last = 0;
         }
 
         if (headerp (buf, mime_version_name)) 
@@ -1200,9 +1211,11 @@ rfc2015_sign (const char *file, GSList *key_list)
     GpgmeData sigdata = NULL;
     size_t nread;
     int mime_version_seen = 0;
-    char *boundary = generate_mime_boundary ();
+    char *boundary;
     char *micalg = NULL;
     char *siginfo;
+
+    boundary = generate_mime_boundary ("Signature");
 
     /* Open the source file */
     if ((fp = fopen(file, "rb")) == NULL) {
@@ -1233,13 +1246,13 @@ rfc2015_sign (const char *file, GSList *key_list)
             continue;
         }
         if (saved_last) {
-            saved_last = 0;
             if (*buf == ' ' || *buf == '\t') {
                 char *last = clines[clineidx - 1];
                 clines[clineidx - 1] = g_strconcat (last, buf, NULL);
                 g_free (last);
                 continue;
             }
+            saved_last = 0;
         }
 
         if (headerp (buf, mime_version_name)) 
@@ -1316,7 +1329,7 @@ rfc2015_sign (const char *file, GSList *key_list)
     fprintf (fp, "Content-Type: multipart/signed; "
              "protocol=\"application/pgp-signature\";\r\n");
     if (micalg)
-        fprintf (fp, " micalg=\"%s\";", micalg);
+        fprintf (fp, " micalg=\"%s\";\r\n", micalg);
     fprintf (fp, " boundary=\"%s\"\r\n", boundary);
 
     /* Part 1: signed material */

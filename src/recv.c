@@ -44,7 +44,7 @@ gint recv_write_to_file(SockInfo *sock, const gchar *filename)
 {
 	FILE *fp;
 	gint ret;
-	
+
 	g_return_val_if_fail(filename != NULL, -1);
 
 	if ((fp = fopen(filename, "wb")) == NULL) {
@@ -188,6 +188,9 @@ gint recv_bytes_write(SockInfo *sock, glong size, FILE *fp)
 	gchar *buf;
 	glong count = 0;
 	gchar *prev, *cur;
+
+	if (size == 0)
+		return 0;
 
 	buf = g_malloc(size);
 

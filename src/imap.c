@@ -67,6 +67,7 @@ typedef struct _IMAPFolderItem	IMAPFolderItem;
 #include "prefs_account.h"
 
 #define IMAP_FOLDER(obj)	((IMAPFolder *)obj)
+#define IMAP_FOLDER_ITEM(obj)	((IMAPFolderItem *)obj)
 #define IMAP_SESSION(obj)	((IMAPSession *)obj)
 
 struct _IMAPFolder
@@ -196,7 +197,7 @@ static gboolean imap_is_msg_changed(Folder * folder,
 
 static gint imap_close(Folder * folder, FolderItem * item);
 
-static void imap_scan_tree(Folder * folder);
+static gint imap_scan_tree(Folder * folder);
 
 static gint imap_create_tree(Folder * folder);
 
@@ -988,7 +989,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
 		MsgInfo *msginfo = (MsgInfo *)cur->data;
 		GTuples *tuples;
-		
+
 		tuples = g_relation_select(uid_mapping, 
 					   GINT_TO_POINTER(msginfo->msgnum),
 					   0);
@@ -1089,6 +1090,8 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 		return ok;
 	}
 
+	IMAP_FOLDER_ITEM(item)->uid_list = g_slist_remove(
+	    IMAP_FOLDER_ITEM(item)->uid_list, numlist.data);
 	dir = folder_item_get_path(item);
 #ifdef WIN32
 	subst_char(dir, '/', G_DIR_SEPARATOR);
@@ -1160,8 +1163,7 @@ gint imap_close(Folder *folder, FolderItem *item)
 	if (!session) return -1;
 
 	if (session->mbox) {
-		if (strcmp(item->path, session->mbox))
-			return -1;
+		if (strcmp2(session->mbox, item->path) != 0) return -1;
 
 		ok = imap_cmd_close(session);
 		if (ok != IMAP_SUCCESS)
@@ -1176,14 +1178,14 @@ gint imap_close(Folder *folder, FolderItem *item)
 	return 0;
 }
 
-void imap_scan_tree(Folder *folder)
+gint imap_scan_tree(Folder *folder)
 {
 	FolderItem *item = NULL;
 	IMAPSession *session;
 	gchar *root_folder = NULL;
 
-	g_return_if_fail(folder != NULL);
-	g_return_if_fail(folder->account != NULL);
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(folder->account != NULL, -1);
 
 	session = imap_session_get(folder);
 	if (!session) {
@@ -1193,13 +1195,30 @@ void imap_scan_tree(Folder *folder)
 			item->folder = folder;
 			folder->node = item->node = g_node_new(item);
 		}
-		return;
+		return -1;
 	}
 
 	if (folder->account->imap_dir && *folder->account->imap_dir) {
-		Xstrdup_a(root_folder, folder->account->imap_dir, return);
+		gchar *real_path;
+
+		Xstrdup_a(root_folder, folder->account->imap_dir, return -1);
 		strtailchomp(root_folder, '/');
-		debug_print("IMAP root directory: %s\n", root_folder);
+		extract_quote(root_folder, '"');
+		real_path = imap_get_real_path
+			(IMAP_FOLDER(folder), root_folder);
+		debug_print("IMAP root directory: %s\n", real_path);
+		if (imap_status(session, IMAP_FOLDER(folder), root_folder,
+				    NULL, NULL, NULL, NULL, NULL)
+		    != IMAP_SUCCESS) {
+			if (imap_cmd_create(session, real_path)
+			    != IMAP_SUCCESS) {
+				log_warning(_("can't create root folder %s\n"),
+					    real_path);
+				g_free(real_path);
+				return -1;
+			}
+		}
+		g_free(real_path);
 	}
 
 	if (folder->node)
@@ -1214,6 +1233,8 @@ void imap_scan_tree(Folder *folder)
 
 	imap_scan_tree_recursive(session, FOLDER_ITEM(folder->node->data));
 	imap_create_missing_folders(folder);
+
+	return 0;
 }
 
 static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
@@ -1381,6 +1402,10 @@ static GSList *imap_parse_list(IMAPFolder *folder, IMAPSession *session,
 		strretchomp(buf);
 		if (buf[0] != '*' || buf[1] != ' ') {
 			log_print("IMAP4< %s\n", buf);
+			if (sscanf(buf, "%*d %16s", buf) < 1 ||
+			    strcmp(buf, "OK") != 0)
+				log_warning(_("error occurred while getting LIST.\n"));
+				
 			break;
 		}
 		debug_print("IMAP4< %s\n", buf);
@@ -2110,14 +2135,15 @@ static IMAPNameSpace *imap_find_namespace_from_list(GList *ns_list,
 
 	if (!path) path = "";
 
-	Xstrcat_a(tmp_path, path, "/", return NULL);
-
 	for (; ns_list != NULL; ns_list = ns_list->next) {
 		IMAPNameSpace *tmp_ns = ns_list->data;
 
+		Xstrcat_a(tmp_path, path, "/", return namespace);
 		Xstrdup_a(name, tmp_ns->name, return namespace);
-		if (tmp_ns->separator && tmp_ns->separator != '/')
+		if (tmp_ns->separator && tmp_ns->separator != '/') {
+			subst_char(tmp_path, tmp_ns->separator, '/');
 			subst_char(name, tmp_ns->separator, '/');
+		}
 		if (strncmp(tmp_path, name, strlen(name)) == 0)
 			namespace = tmp_ns;
 	}
@@ -2207,7 +2233,7 @@ static gchar *imap_parse_atom(SockInfo *sock, gchar *src,
 
 		cur_pos = strchr_cpy(cur_pos + 1, '}', buf, sizeof(buf));
 		len = atoi(buf);
-		g_return_val_if_fail(len > 0, cur_pos);
+		g_return_val_if_fail(len >= 0, cur_pos);
 
 		g_string_truncate(str, 0);
 		cur_pos = str->str;
@@ -2250,7 +2276,7 @@ static gchar *imap_get_header(SockInfo *sock, gchar *cur_pos, gchar **headers,
 
 	cur_pos = strchr_cpy(cur_pos + 1, '}', buf, sizeof(buf));
 	len = atoi(buf);
-	g_return_val_if_fail(len > 0, cur_pos);
+	g_return_val_if_fail(len >= 0, cur_pos);
 
 	g_string_truncate(str, 0);
 	cur_pos = str->str;
@@ -2519,15 +2545,13 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 	gchar *real_path;
 	gchar *real_path_;
 	gint ok;
-	GPtrArray *argbuf;
+	GPtrArray *argbuf = NULL;
 	gchar *str;
 
-	*messages = *recent = *uid_next = *uid_validity = *unseen = 0;
-
-	if (path == NULL)
-		return -1;
-
-	argbuf = g_ptr_array_new();
+	if (messages && recent && uid_next && uid_validity && unseen) {
+		*messages = *recent = *uid_next = *uid_validity = *unseen = 0;
+		argbuf = g_ptr_array_new();
+	}
 
 	real_path = imap_get_real_path(folder, path);
 	QUOTE_IF_REQUIRED(real_path_, real_path);
@@ -2536,7 +2560,7 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 		      real_path_);
 
 	ok = imap_cmd_ok(session, argbuf);
-	if (ok != IMAP_SUCCESS) THROW(ok);
+	if (ok != IMAP_SUCCESS || !argbuf) THROW(ok);
 
 	str = search_array_str(argbuf, "STATUS");
 	if (!str) THROW(IMAP_ERROR);
@@ -2570,8 +2594,10 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 
 catch:
 	g_free(real_path);
-	ptr_array_free_strings(argbuf);
-	g_ptr_array_free(argbuf, TRUE);
+	if (argbuf) {
+		ptr_array_free_strings(argbuf);
+		g_ptr_array_free(argbuf, TRUE);
+	}
 
 	return ok;
 }
@@ -2911,7 +2937,7 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid, const gchar *filen
 	cur_pos = strchr_cpy(cur_pos + 1, '}', size_str, sizeof(size_str));
 	RETURN_ERROR_IF_FAIL(cur_pos != NULL);
 	size_num = atol(size_str);
-	RETURN_ERROR_IF_FAIL(size_num > 0);
+	RETURN_ERROR_IF_FAIL(size_num >= 0);
 
 	RETURN_ERROR_IF_FAIL(*cur_pos == '\0');
 

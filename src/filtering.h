@@ -50,6 +50,7 @@ FilteringAction * filteringaction_new(int type, int account_id,
 				      gint labelcolor);
 void filteringaction_free(FilteringAction *action);
 FilteringAction * filteringaction_parse(gchar **str);
+gboolean filteringaction_apply_action_list (GSList *action_list, MsgInfo *info);
 
 FilteringProp * filteringprop_new(MatcherList *matchers,
 				  GSList *action_list);
