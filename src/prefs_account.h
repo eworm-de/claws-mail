@@ -118,13 +118,9 @@ struct _PrefsAccount
 	gboolean gen_msgid;
 	gboolean add_customhdr;
 	gboolean use_smtp_auth;
+	SMTPAuthType smtp_auth_type;
 	gchar *smtp_userid;
 	gchar *smtp_passwd;
-
-	/* CLAWS: SMTP AUTH */
-	gboolean smtp_auth_enable_login;
-	gboolean smtp_auth_enable_cram_md5;
-	gboolean smtp_auth_enable_digest_md5;
 
 	/* Temporarily preserved password */
 	gchar *tmp_smtp_pass;

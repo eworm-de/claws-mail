@@ -69,26 +69,25 @@ Session *smtp_session_new	(const gchar	*server,
 				 const gchar	*domain,
 				 const gchar	*user,
 				 const gchar	*pass,
-				 SSLType	 ssl_type,
-				 SMTPAuthType	 enable_auth_type);
+				 SSLType	 ssl_type);
 #else
 Session *smtp_session_new	(const gchar	*server,
 				 gushort	 port,
 				 const gchar	*domain,
 				 const gchar	*user,
-				 const gchar	*pass,
-				 SMTPAuthType	 enable_auth_type);
+				 const gchar	*pass);
 #endif
 void smtp_session_destroy	(SMTPSession	*session);
 
 gint smtp_from			(SMTPSession	*session,
-				 const gchar	*from);
-gint smtp_auth			(SMTPSession	*session);
+				 const gchar	*from,
+				 SMTPAuthType	 forced_auth_type);
+gint smtp_auth			(SMTPSession	*session,
+				 SMTPAuthType	 forced_auth_type);
 
 gint smtp_ehlo			(SockInfo	*sock,
 				 const gchar	*hostname,
-				 SMTPAuthType	*avail_auth_type,
-				 SMTPAuthType	 enable_auth_type);
+				 SMTPAuthType	*avail_auth_type);
 
 gint smtp_helo			(SockInfo	*sock,
 				 const gchar	*hostname);

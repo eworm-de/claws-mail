@@ -1,3 +1,25 @@
+2002-06-28
+
+	* src/gtksctree.[ch]: 行の移動後に無効にならないように
+	  GtkSCTree::anchor_row を gint から GtkCTreeNode* に変更。
+	  gtkutils.c に依存しないようにした。
+
+2002-06-28
+
+	* configure.in
+	  src/Makefile.am
+	  src/compose.c: クロスコンパイル時に正しいシステム名を表示するように
+	  "host_alias" を "target_alias" に変更(Patrice Mandin さん thanks)。
+
+2002-06-27
+
+	* src/prefs_account.[ch]: SMTP AUTH の認証方式を強制指定する
+	  オプションメニューを追加。
+	* src/send.c
+	  src/smtp.[ch]: smtp_from(), smtp_auth(): SMTP AUTH の認証方式を
+	  指定する引数を追加。
+	  smtp_ehlo(): RFC に準拠しない AUTH 応答を許可するようにした。
+
 2002-06-25
 
 	* src/prefs_common.[ch]

@@ -235,7 +235,7 @@ CPPFLAGS = \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DMANUALDIR=\""$(manualdir)"\" \
 	-DFAQDIR=\""$(faqdir)"\" \
-	-DHOST_ALIAS=\""$(host_alias)"\" \
+	-DTARGET_ALIAS=\""$(target_alias)"\" \
 	-DSYSCONFDIR=\""$(sysconfdir)"\"
 
 YFLAGS = -d

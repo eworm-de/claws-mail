@@ -107,11 +107,9 @@ static struct Send {
 	GtkWidget *customhdr_chkbtn;
 
 	GtkWidget *smtp_auth_chkbtn;
+	GtkWidget *smtp_auth_type_optmenu;
 	GtkWidget *smtp_uid_entry;
 	GtkWidget *smtp_pass_entry;
-	GtkWidget *smtp_auth_enable_login_chkbtn;	/* CLAWS: smtp auth options */
-	GtkWidget *smtp_auth_enable_cram_md5_chkbtn;
-	GtkWidget *smtp_auth_enable_digest_md5_chkbtn;
 	GtkWidget *pop_bfr_smtp_chkbtn;
 } send;
 
@@ -196,6 +194,11 @@ static void prefs_account_fix_size			(void);
 static void prefs_account_protocol_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_account_protocol_set_optmenu		(PrefParam *pparam);
 static void prefs_account_protocol_activated		(GtkMenuItem *menuitem);
+
+static void prefs_account_smtp_auth_type_set_data_from_optmenu
+							(PrefParam *pparam);
+static void prefs_account_smtp_auth_type_set_optmenu	(PrefParam *pparam);
+
 #if USE_GPGME || USE_SSL
 static void prefs_account_enum_set_data_from_radiobtn	(PrefParam *pparam);
 static void prefs_account_enum_set_radiobtn		(PrefParam *pparam);
@@ -319,19 +322,15 @@ static PrefParam param[] = {
 	 &send.smtp_auth_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
+	{"smtp_auth_method", "0", &tmp_ac_prefs.smtp_auth_type, P_ENUM,
+	 &send.smtp_auth_type_optmenu,
+	 prefs_account_smtp_auth_type_set_data_from_optmenu,
+	 prefs_account_smtp_auth_type_set_optmenu},
+
 	{"smtp_user_id", NULL, &tmp_ac_prefs.smtp_userid, P_STRING,
 	 &send.smtp_uid_entry, prefs_set_data_from_entry, prefs_set_entry},
 	{"smtp_password", NULL, &tmp_ac_prefs.smtp_passwd, P_STRING,
 	 &send.smtp_pass_entry, prefs_set_data_from_entry, prefs_set_entry},
-	{"smtp_auth_enable_digest_md5", "TRUE", &tmp_ac_prefs.smtp_auth_enable_digest_md5, P_BOOL,
-	 &send.smtp_auth_enable_digest_md5_chkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"smtp_auth_enable_cram_md5", "TRUE", &tmp_ac_prefs.smtp_auth_enable_cram_md5, P_BOOL,
-	 &send.smtp_auth_enable_cram_md5_chkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"smtp_auth_enable_login", "TRUE", &tmp_ac_prefs.smtp_auth_enable_login, P_BOOL,
-	 &send.smtp_auth_enable_login_chkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"pop_before_smtp", "FALSE", &tmp_ac_prefs.pop_before_smtp, P_BOOL,
 	 &send.pop_bfr_smtp_chkbtn,
@@ -1219,6 +1218,9 @@ static void prefs_account_send_create(void)
 	GtkWidget *customhdr_edit_btn;
 	GtkWidget *vbox3;
 	GtkWidget *smtp_auth_chkbtn;
+	GtkWidget *optmenu;
+	GtkWidget *optmenu_menu;
+	GtkWidget *menuitem;
 	GtkWidget *vbox4;
 	GtkWidget *hbox_spc;
 	GtkWidget *label;
@@ -1226,9 +1228,6 @@ static void prefs_account_send_create(void)
 	GtkWidget *smtp_pass_entry;
 	GtkWidget *vbox_spc;
 	GtkWidget *pop_bfr_smtp_chkbtn;
-	GtkWidget *smtp_auth_enable_login_chkbtn;	/* CLAWS: SMTP AUTH */
-	GtkWidget *smtp_auth_enable_cram_md5_chkbtn;
-	GtkWidget *smtp_auth_enable_digest_md5_chkbtn;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1285,6 +1284,35 @@ static void prefs_account_send_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_usize (hbox_spc, 12, -1);
 
+	label = gtk_label_new (_("Authentication method"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
+	optmenu = gtk_option_menu_new ();
+	gtk_widget_show (optmenu);
+	gtk_box_pack_start (GTK_BOX (hbox), optmenu, FALSE, FALSE, 0);
+
+	optmenu_menu = gtk_menu_new ();
+
+	MENUITEM_ADD (optmenu_menu, menuitem, _("Automatic"), 0);
+	MENUITEM_ADD (optmenu_menu, menuitem, "LOGIN", SMTPAUTH_LOGIN);
+	MENUITEM_ADD (optmenu_menu, menuitem, "CRAM-MD5", SMTPAUTH_CRAM_MD5);
+	MENUITEM_ADD (optmenu_menu, menuitem, "DIGEST-MD5", SMTPAUTH_DIGEST_MD5);
+	gtk_widget_set_sensitive (menuitem, FALSE);
+
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu), optmenu_menu);
+
+	PACK_VSPACER(vbox4, vbox_spc, VSPACING_NARROW_2);
+
+	hbox = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox4), hbox, FALSE, FALSE, 0);
+
+	hbox_spc = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox_spc);
+	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
+	gtk_widget_set_usize (hbox_spc, 12, -1);
+
 	label = gtk_label_new (_("User ID"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
@@ -1324,15 +1352,6 @@ static void prefs_account_send_create(void)
 
 	SET_TOGGLE_SENSITIVITY (smtp_auth_chkbtn, vbox4);
 
-	PACK_CHECK_BUTTON (vbox4, smtp_auth_enable_login_chkbtn,
-		_("LOGIN Authentication"));
-
-	PACK_CHECK_BUTTON (vbox4, smtp_auth_enable_cram_md5_chkbtn,
-		_("CRAM-MD5 Authentication"));
-
-	PACK_CHECK_BUTTON (vbox4, smtp_auth_enable_digest_md5_chkbtn,
-		_("DIGEST-MD5 Authentication"));	
-
 	PACK_CHECK_BUTTON (vbox3, pop_bfr_smtp_chkbtn,
 		_("Authenticate with POP3 before sending"));
 	gtk_widget_set_sensitive(pop_bfr_smtp_chkbtn, FALSE);
@@ -1341,15 +1360,11 @@ static void prefs_account_send_create(void)
 	send.msgid_chkbtn     = msgid_chkbtn;
 	send.customhdr_chkbtn = customhdr_chkbtn;
 
-	send.smtp_auth_chkbtn    = smtp_auth_chkbtn;
-	send.smtp_uid_entry      = smtp_uid_entry;
-	send.smtp_pass_entry     = smtp_pass_entry;
-	send.pop_bfr_smtp_chkbtn = pop_bfr_smtp_chkbtn;
-	
-	/* CLAWS: SMTP AUTH */
-	send.smtp_auth_enable_login_chkbtn      = smtp_auth_enable_login_chkbtn;
-	send.smtp_auth_enable_cram_md5_chkbtn   = smtp_auth_enable_cram_md5_chkbtn;
-	send.smtp_auth_enable_digest_md5_chkbtn = smtp_auth_enable_digest_md5_chkbtn;
+	send.smtp_auth_chkbtn       = smtp_auth_chkbtn;
+	send.smtp_auth_type_optmenu = optmenu;
+	send.smtp_uid_entry         = smtp_uid_entry;
+	send.smtp_pass_entry        = smtp_pass_entry;
+	send.pop_bfr_smtp_chkbtn    = pop_bfr_smtp_chkbtn;
 }
 
 static void prefs_account_compose_create(void)
@@ -2162,6 +2177,44 @@ static void prefs_account_protocol_set_optmenu(PrefParam *pparam)
 
 #undef SET_NTH_SENSITIVE
 
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
+}
+
+static void prefs_account_smtp_auth_type_set_data_from_optmenu(PrefParam *pparam)
+{
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	*((RecvProtocol *)pparam->data) = GPOINTER_TO_INT
+		(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+}
+
+static void prefs_account_smtp_auth_type_set_optmenu(PrefParam *pparam)
+{
+	SMTPAuthType type = *((SMTPAuthType *)pparam->data);
+	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	switch (type) {
+	case SMTPAUTH_LOGIN:
+		gtk_option_menu_set_history(optmenu, 1);
+		break;
+	case SMTPAUTH_CRAM_MD5:
+		gtk_option_menu_set_history(optmenu, 2);
+		break;
+	case SMTPAUTH_DIGEST_MD5:
+		gtk_option_menu_set_history(optmenu, 3);
+		break;
+	case 0:
+	default:
+		gtk_option_menu_set_history(optmenu, 0);
+	}
+
+	menu = gtk_option_menu_get_menu(optmenu);
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
 }
