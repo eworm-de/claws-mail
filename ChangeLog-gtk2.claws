@@ -1,3 +1,8 @@
+2004-07-13 [colin]	0.9.12cvs18.4
+
+	* src/pop.c
+		Fix misplaced block
+
 2004-07-13 [colin]	0.9.12cvs18.3
 
 	* src/pop.c
