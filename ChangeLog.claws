@@ -1,3 +1,9 @@
+2004-08-06 [colin]	0.9.12cvs47
+
+	* src/compose.c
+		close compose window after queuing, before 
+		sending when user presses Send
+
 2004-08-05 [christoph]	0.9.12cvs46
 
 	* src/msgcache.c

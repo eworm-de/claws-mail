@@ -28,3 +28,4 @@
 ( cvs diff -u -r 1.121 -r 1.122 src/messageview.c; ) > 0.9.12cvs39.patchset
 ( cvs diff -u -r 1.120 -r 1.121 AUTHORS; cvs diff -u -r 1.50 -r 1.51 po/pt_BR.po; ) > 0.9.12cvs40.patchset
 ( cvs diff -u -r 1.439 -r 1.440 ChangeLog; cvs diff -u -r 1.434 -r 1.435 ChangeLog.jp; cvs diff -u -r 1.204 -r 1.205 src/imap.c; cvs diff -u -r 1.116 -r 1.117 src/news.c; cvs diff -u -r 1.10 -r 1.11 src/common/nntp.c; cvs diff -u -r 1.25 -r 1.26 src/common/session.c; cvs diff -u -r 1.10 -r 1.11 src/common/session.h; cvs diff -u -r 1.13 -r 1.14 src/common/socket.c; ) > 0.9.12cvs43.patchset
+( cvs diff -u -r 1.431 -r 1.432 src/compose.c; ) > 0.9.12cvs47.patchset
