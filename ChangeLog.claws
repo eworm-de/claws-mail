@@ -1,3 +1,8 @@
+2001-12-27 [alfons]	0.6.6claws28
+
+	* src/filter.c
+		sync the Hiro's bug fix for BSD
+
 2001-12-27 [melvin]	0.6.6claws27
 	
 	* src/compose.c
