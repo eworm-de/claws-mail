@@ -1815,7 +1815,7 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 static gchar *actions_desc_strings[] = {
 	N_("Menu name:"),
 	N_("   Use / in menu name to make submenus."),
-	N_(""),
+	"",
 	N_("Command line:"),
 	N_("   Begin with:"),
 	N_("     | to send message body or selection to command"),
