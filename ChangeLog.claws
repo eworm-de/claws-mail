@@ -1,3 +1,9 @@
+2001-12-18 [hiro]	0.6.6claws3
+
+	* src/undo.c
+		fix for multibyte characters (obtain the number of letters
+		instead of bytes).
+
 2001-12-17 [paul]	0.6.6claws2
 
 	* sync with sylpheed 0.6.6cvs1

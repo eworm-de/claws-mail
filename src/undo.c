@@ -20,8 +20,14 @@
 /* code ported from gedit */
 /* This is for my patient girlfirend Regina */
 
-#include <config.h>
-#include <string.h> /* For strlen */
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
+#include <glib.h>
+
+#include <string.h> /* for strlen */
+#include <stdlib.h> /* for mbstowcs */
 
 #include "undo.h"
 #include "utils.h"
@@ -32,37 +38,51 @@ typedef struct _UndoInfo UndoInfo;
 
 struct _UndoInfo 
 {
-        UndoAction action;
-        gchar *text;
-        gint start_pos;
-        gint end_pos;
-        gfloat window_position;
-        gint mergeable;
+	UndoAction action;
+	gchar *text;
+	gint start_pos;
+	gint end_pos;
+	gfloat window_position;
+	gint mergeable;
 };
 
-static void undo_free_list	(GList **list_pointer);
-static void undo_check_size	(UndoMain *undostruct);
-static gint undo_merge		(GList *list, guint start_pos,
-		                 guint end_pos, gint action, 
-				 const guchar *text);
-static void undo_add		(const gchar *text, gint start_pos, gint end_pos,
-                                 UndoAction action, UndoMain *undostruct);
-static gint undo_get_selection	(GtkEditable *text, guint *start, guint *end);
-static void undo_insert_text_cb (GtkEditable *editable, gchar *new_text,
-				 gint new_text_length, gint *position, 
-				 UndoMain *undostruct);
-static void undo_delete_text_cb (GtkEditable *editable, gint start_pos,
-				 gint end_pos, UndoMain *undostruct);
-static void undo_paste_clipboard_cb (GtkEditable *editable, UndoMain *undostruct);
-void undo_undo			(UndoMain *undostruct);
-void undo_redo			(UndoMain *undostruct);
+static void undo_free_list	(GList	       **list_pointer);
+static void undo_check_size	(UndoMain	*undostruct);
+static gint undo_merge		(GList		*list,
+				 guint		 start_pos,
+				 guint		 end_pos,
+				 gint		 action,
+				 const guchar	*text);
+static void undo_add		(const gchar	*text,
+				 gint		 start_pos,
+				 gint		 end_pos,
+				 UndoAction	 action,
+				 UndoMain	*undostruct);
+static gint undo_get_selection	(GtkEditable	*text,
+				 guint		*start,
+				 guint		*end);
+static void undo_insert_text_cb	(GtkEditable	*editable,
+				 gchar		*new_text,
+				 gint		 new_text_length,
+				 gint		*position,
+				 UndoMain	*undostruct);
+static void undo_delete_text_cb	(GtkEditable	*editable,
+				 gint		 start_pos,
+				 gint		 end_pos,
+				 UndoMain	*undostruct);
+
+static void undo_paste_clipboard_cb	(GtkEditable	*editable,
+					 UndoMain	*undostruct);
+
+void undo_undo			(UndoMain	*undostruct);
+void undo_redo			(UndoMain	*undostruct);
 
 
 UndoMain *undo_init (GtkWidget *text) 
 {
 	UndoMain *undostruct;
 	
-	g_return_if_fail(text != NULL);
+	g_return_val_if_fail(text != NULL, NULL);
 
 	undostruct = g_new(UndoMain, 1);
 	undostruct->text = text;
@@ -71,7 +91,6 @@ UndoMain *undo_init (GtkWidget *text)
 	undostruct->paste = 0;
 	undostruct->undo_state = FALSE;
 	undostruct->redo_state = FALSE;
-	debug_print("undostruct: %x\n", &undostruct);
 
 	gtk_signal_connect(GTK_OBJECT(text), "insert-text",
 			   GTK_SIGNAL_FUNC(undo_insert_text_cb), undostruct);
@@ -117,7 +136,6 @@ static void undo_object_free(UndoInfo *undo)
  **/
 static void undo_free_list(GList **list_pointer) 
 {
-	gint n;
 	UndoInfo *nth_redo;
         GList *cur, *list = *list_pointer;
 
@@ -153,7 +171,6 @@ void undo_set_undo_change_funct(UndoMain *undostruct, UndoChangeState func,
  **/
 static void undo_check_size(UndoMain *undostruct) 
 {
-        gint n;
         UndoInfo *nth_undo;
 
         if (prefs_common.undolevels < 1)
@@ -501,14 +518,22 @@ void undo_insert_text_cb(GtkEditable *editable, gchar *new_text,
 			 UndoMain *undostruct) 
 {
 	guchar *text_to_insert;
+	size_t wlen;
 
-        if (prefs_common.undolevels > 0){
-		text_to_insert = g_strndup(new_text, new_text_length);
+	if (prefs_common.undolevels <= 0) return;
 
-		undo_add(text_to_insert, *position, (*position + new_text_length),
-			 UNDO_ACTION_INSERT, undostruct);
-		g_free (text_to_insert);
-	}
+	Xstrndup_a(text_to_insert, new_text, new_text_length, return);
+	if (MB_CUR_MAX > 1) {
+		wchar_t *wstr;
+
+		Xalloca(wstr, sizeof(wchar_t) * (new_text_length + 1), return);
+		wlen = mbstowcs(wstr, text_to_insert, new_text_length + 1);
+		if (wlen < 0) return;
+	} else
+		wlen = new_text_length;
+
+	undo_add(text_to_insert, *position, *position + wlen,
+		 UNDO_ACTION_INSERT, undostruct);
 }
 
 void undo_delete_text_cb(GtkEditable *editable, gint start_pos,
@@ -516,15 +541,14 @@ void undo_delete_text_cb(GtkEditable *editable, gint start_pos,
 {
         guchar *text_to_delete;
 
-        if (prefs_common.undolevels > 0){
-        	if (start_pos == end_pos )
-			return;
+	if (prefs_common.undolevels <= 0) return;
+	if (start_pos == end_pos) return;
 
-        	text_to_delete = gtk_editable_get_chars(GTK_EDITABLE(editable),
+       	text_to_delete = gtk_editable_get_chars(GTK_EDITABLE(editable),
 						start_pos, end_pos);
-		undo_add(text_to_delete, start_pos, end_pos, UNDO_ACTION_DELETE, undostruct);
-		g_free (text_to_delete);
-	}
+	undo_add(text_to_delete, start_pos, end_pos, UNDO_ACTION_DELETE,
+		 undostruct);
+	g_free (text_to_delete);
 }
 
 void undo_paste_clipboard_cb (GtkEditable *editable, UndoMain *undostruct) 
