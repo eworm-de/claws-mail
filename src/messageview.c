@@ -527,23 +527,20 @@ void messageview_copy_clipboard(MessageView *messageview)
 
 void messageview_select_all(MessageView *messageview)
 {
-	gint displaytype = /* force MVIEV_TEXT on first page */
-		((messageview->type == MVIEW_MIME)
-		&& (gtk_notebook_get_current_page(GTK_NOTEBOOK(
-				messageview->mimeview->notebook)) > 0))
-		? MVIEW_MIME
-		: MVIEW_TEXT;
+	GtkWidget *text = NULL;
 
-	switch (displaytype) {
-	case MVIEW_TEXT:
-		gtk_editable_select_region(GTK_EDITABLE(messageview->textview->text), 0, -1);
-		break;
-	case MVIEW_MIME:
-		if (messageview->mimeview->type == MIMEVIEW_TEXT)
-			gtk_editable_select_region(GTK_EDITABLE(messageview->mimeview->textview->text), 0, -1);
-	default:
-		break;
+	if (messageview->type == MVIEW_TEXT)
+		text = messageview->textview->text;
+	else if (messageview->type == MVIEW_MIME) {
+		if (gtk_notebook_get_current_page
+			(GTK_NOTEBOOK(messageview->mimeview->notebook)) == 0)
+			text = messageview->textview->text;
+		else if (messageview->mimeview->type == MIMEVIEW_TEXT)
+			text = messageview->mimeview->textview->text;
 	}
+
+	if (text)
+		gtk_editable_select_region(GTK_EDITABLE(text), 0, -1);
 }
 
 void messageview_set_position(MessageView *messageview, gint pos)

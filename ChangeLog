@@ -1,3 +1,17 @@
+2002-05-15
+
+	* src/imap.c: imap_create_folder(): keep trailing directory separator
+	  to create a folder that contains sub folder.
+
+2002-05-14
+
+	* src/foldersel.c: sort tree with case insensitive.
+	* src/mainwindow.c: allsel_cb()
+	  src/messageview.c: messageview_select_all(): fixed 'Select all'
+	  on MIME view.
+	* src/mainwindow.c: removed common and account prefs button from
+	  the toolbar.
+
 2002-05-13
 
 	* src/compose.c: compose_account_option_menu_create(): check if
@@ -13,7 +27,7 @@
 	  manual/en/*: updated the English manual.
 	* faq/de/*
 	  faq/it/*: added German and Italian FAQ.
-	  faq/en/*
+	* faq/en/*
 	  faq/es/*
 	  faq/fr/*: updated FAQs.
 	* src/manual.[ch]

@@ -86,6 +86,10 @@ static void key_pressed		(GtkWidget	*widget,
 				 GdkEventKey	*event,
 				 gpointer	 data);
 
+static gint foldersel_clist_compare	(GtkCList	*clist,
+					 gconstpointer	 ptr1,
+					 gconstpointer	 ptr2);
+
 FolderItem *foldersel_folder_sel(Folder *cur_folder,
 				 FolderSelectionType type,
 				 const gchar *default_folder)
@@ -170,6 +174,7 @@ static void foldersel_create(void)
 	gtk_ctree_set_expander_style(GTK_CTREE(ctree),
 				     GTK_CTREE_EXPANDER_SQUARE);
 	gtk_ctree_set_indent(GTK_CTREE(ctree), CTREE_INDENT);
+	gtk_clist_set_compare_func(GTK_CLIST(ctree), foldersel_clist_compare);
 	GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(ctree)->column[0].button,
 			       GTK_CAN_FOCUS);
 	/* gtk_signal_connect(GTK_OBJECT(ctree), "tree_select_row",
@@ -375,4 +380,18 @@ static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		foldersel_cancel(NULL, NULL);
+}
+
+static gint foldersel_clist_compare(GtkCList *clist,
+				    gconstpointer ptr1, gconstpointer ptr2)
+{
+	FolderItem *item1 = ((GtkCListRow *)ptr1)->data;
+	FolderItem *item2 = ((GtkCListRow *)ptr2)->data;
+
+	if (!item1->name)
+		return (item2->name != NULL);
+	if (!item2->name)
+		return -1;
+
+	return g_strcasecmp(item1->name, item2->name);
 }
