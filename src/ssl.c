@@ -32,10 +32,10 @@ SSL_CTX *ssl_ctx;
 void ssl_init() {
     SSL_METHOD *meth;
 		
-    SSLeay_add_ssl_algorithms();
-    meth = SSLv2_client_method();
+    SSL_library_init();
     SSL_load_error_strings();
-    ssl_ctx = SSL_CTX_new(meth);
+    
+    ssl_ctx = SSL_CTX_new(SSLv23_client_method());
     if(ssl_ctx == NULL) {
     	debug_print(_("SSL disabled\n"));
     } else {
@@ -44,9 +44,10 @@ void ssl_init() {
 }
 
 void ssl_done() {
-    if(ssl_ctx) {
-	SSL_CTX_free(ssl_ctx);
-    }
+    if(!ssl_ctx)
+	return;
+	
+    SSL_CTX_free(ssl_ctx);
 }
 
 gboolean ssl_init_socket(SockInfo *sockinfo) {
@@ -64,6 +65,7 @@ gboolean ssl_init_socket(SockInfo *sockinfo) {
 
 	return FALSE;
     }
+
     SSL_set_fd(sockinfo->ssl, sockinfo->sock);
     if(SSL_connect(sockinfo->ssl) == -1) {
 	log_warning(_("SSL connect failed\n"));

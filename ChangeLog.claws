@@ -6,6 +6,16 @@
 	* src/prefs_scoring.c
 		scroll list when moving rows up or down
 
+	* src/imap.c
+	* src/imap.h
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/send.c
+		SMTP over SSL (untested, feedback requested)
+		IMAP over SSL
+	* src/ssl.c
+		code cleanup
+
 2001-07-26 [alfons]
 	
 	* configure.in, acconfig.h

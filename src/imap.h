@@ -70,10 +70,18 @@ typedef enum
 #define IMAP_IS_DELETED(flags)	((flags & IMAP_FLAG_DELETED) != 0)
 #define IMAP_IS_DRAFT(flags)	((flags & IMAP_FLAG_DRAFT) != 0)
 
+#if !USE_SSL
 Session *imap_session_new		(const gchar	*server,
 					 gushort	 port,
 					 const gchar	*user,
 					 const gchar	*pass);
+#else
+Session *imap_session_new		(const gchar	*server,
+					 gushort	 port,
+					 const gchar	*user,
+					 const gchar	*pass,
+					 gboolean	 use_ssl);
+#endif
 void imap_session_destroy		(IMAPSession	*session);
 void imap_session_destroy_all		(void);
 
