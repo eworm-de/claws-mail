@@ -1,3 +1,13 @@
+2005-01-07 [paul]	0.9.13cvs29.1
+
+	* ChangeLog
+	* ChangeLog.claws
+	* ChangeLog.jp
+	* configure.ac
+	* src/pop.c
+	* src/pop.h
+		sync with HEAD
+
 2005-01-07 [colin]	0.9.13cvs28.3
 
 	* src/gtk/progressdialog.c

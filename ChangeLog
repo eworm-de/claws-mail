@@ -1,3 +1,15 @@
+2005-01-06
+
+	* src/pop.[ch]: added POP3_DONE to Pop3State (it is set when logout
+	  is completed).
+	  pop3_write_uidl_list(): force output of UIDLs of deleted messages
+	  when POP3 session is aborted (thanks to Masahiro Tomita).
+
+2005-01-06
+
+	* src/Makefile.am: use AM_CPPFLAGS and AM_YFLAGS instead of CPPFLAGS
+	  and YFLAGS (they are reserved for users).
+
 2004-12-24
 
 	* version 1.0.0

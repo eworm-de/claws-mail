@@ -316,3 +316,4 @@
 ( cvs diff -u -r 1.43.2.13 -r 1.43.2.14 src/prefs_matcher.c; ) > 0.9.13cvs28.1.patchset
 ( cvs diff -u -r 1.16.2.5 -r 1.16.2.6 src/prefs_display_header.c; cvs diff -u -r 1.60.2.8 -r 1.60.2.9 src/prefs_actions.c; cvs diff -u -r 1.43.2.14 -r 1.43.2.15 src/prefs_matcher.c; ) > 0.9.13cvs28.2.patchset
 ( cvs diff -u -r 1.1.4.4 -r 1.1.4.5 src/gtk/progressdialog.c; cvs diff -u -r 1.1.4.2 -r 1.1.4.3 src/gtk/progressdialog.h; cvs diff -u -r 1.149.2.18 -r 1.149.2.19 src/inc.c; cvs diff -u -r 1.17.2.5 -r 1.17.2.6 src/send_message.c; ) > 0.9.13cvs28.3.patchset
+( cvs diff -u -r 1.396.2.18 -r 1.396.2.19 ChangeLog; cvs diff -u -r 1.2504.2.41 -r 1.2504.2.42 ChangeLog.claws; cvs diff -u -r 1.391.2.18 -r 1.391.2.19 ChangeLog.jp; cvs diff -u -r 1.654.2.351 -r 1.654.2.352 configure.ac; cvs diff -u -r 1.56.2.31 -r 1.56.2.32 src/pop.c; cvs diff -u -r 1.17.2.13 -r 1.17.2.14 src/pop.h; ) > 0.9.13cvs29.1.patchset

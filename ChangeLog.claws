@@ -1,3 +1,50 @@
+2005-01-07 [paul]	0.9.13cvs29
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/pop.c
+	* src/pop.h
+		sync with main, see ChangeLog 2005-01-06
+
+2005-01-06 [colin]	0.9.13cvs28
+
+	* src/prefs_matcher.c
+		Plug leak. Patch by Alfons
+
+2005-01-04 [christoph]	0.9.13cvs27
+
+	* src/folderview.c
+	* src/imap_gtk.c
+	* src/news_gtk.c
+		Create extra popup menu entries for account settings
+
+	(Closes Bug 663 segfault choosing "Properties" for root MH mailbox)
+
+2005-01-03 [colin]	0.9.13cvs26
+
+	* src/main.c
+		Plugins should be loaded before --receive or --receive-all 
+		is processed. 
+		Patch by Felix Eckhofer <felix-ml@tribut.de>
+
+2005-01-03 [colin]	0.9.13cvs25
+
+	* src/pop.c
+	* src/pop.h
+		Add data_len member, because we can get NULs from network
+		Patch by Alfons
+
+2005-01-01 [colin]	0.9.13cvs24
+
+	* src/procmime.c
+		Fix possible memleak in corner case - found by
+		Martin Kluge, patch by Alfons
+
+2004-12-30 [colin]	0.9.13cvs23
+
+	* src/account.c
+		Fix prototypes - patch by Alfons
+
 2004-12-30 [paul]	0.9.13cvs22
 
 	* ChangeLog
