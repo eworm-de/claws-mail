@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,7 +60,15 @@ void procheader_header_free			(Header		*header);
 
 void procheader_get_header_fields	(FILE		*fp,
 					 HeaderEntry	 hentry[]);
-MsgInfo *procheader_parse		(const gchar	*file,
+MsgInfo *procheader_parse_file		(const gchar	*file,
+					 MsgFlags	 flags,
+					 gboolean	 full,
+					 gboolean	 decrypted);
+MsgInfo *procheader_parse_str		(const gchar	*str,
+					 MsgFlags	 flags,
+					 gboolean	 full,
+					 gboolean	 decrypted);
+MsgInfo *procheader_parse_stream	(FILE		*fp,
 					 MsgFlags	 flags,
 					 gboolean	 full,
 					 gboolean	 decrypted);

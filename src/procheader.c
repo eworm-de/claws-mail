@@ -416,6 +416,36 @@ void procheader_get_header_fields(FILE *fp, HeaderEntry hentry[])
 	}
 }
 
+MsgInfo *procheader_parse_file(const gchar *file, MsgFlags flags,
+			       gboolean full, gboolean decrypted)
+{
+	FILE *fp;
+	MsgInfo *msginfo;
+
+	if ((fp = fopen(file, "rb")) == NULL) {
+		FILE_OP_ERROR(file, "fopen");
+		return NULL;
+	}
+
+	msginfo = procheader_parse_stream(fp, flags, full, decrypted);
+	fclose(fp);
+	return msginfo;
+}
+
+MsgInfo *procheader_parse_str(const gchar *str, MsgFlags flags, gboolean full,
+			      gboolean decrypted)
+{
+	FILE *fp;
+	MsgInfo *msginfo;
+
+	if ((fp = str_open_as_stream(str)) == NULL)
+		return NULL;
+
+	msginfo = procheader_parse_stream(fp, flags, full, decrypted);
+	fclose(fp);
+	return msginfo;
+}
+
 enum
 {
 	H_DATE		= 0,
@@ -437,33 +467,8 @@ enum
 	H_RETURN_RECEIPT_TO = 16
 };
 
-MsgInfo *procheader_parse(const gchar *file, MsgFlags flags,
-			  gboolean full, gboolean decrypted)
-{
-	FILE *fp;
-	MsgInfo *msginfo;
-
-	if ((fp = fopen(file, "rb")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
-		return NULL;
-	}
-
-	msginfo = procheader_file_parse(fp, flags, full, decrypted);
-
-	fclose(fp);
-
-	return msginfo;
-}
-
-
-/* FIXME: we should not allow headers in messages to change the sylpheed marks
- * so we're currently disabling setting any MsgFlags when detecting X-Seen,
- * Seen, X-Status, Status. See macro ALLOW_HEADER_HINT */  
-
-/* #define ALLOW_HEADER_HINT */
-
-MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
-			       gboolean full, gboolean decrypted)
+MsgInfo *procheader_parse_stream(FILE *fp, MsgFlags flags, gboolean full, 
+				 gboolean decrypted)
 {
 	static HeaderEntry hentry_full[] = {{"Date:",		NULL, FALSE},
 					   {"From:",		NULL, TRUE},
@@ -499,7 +504,7 @@ MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
 					    {"X-Status:",	NULL, FALSE},
 					    {"From ",		NULL, FALSE},
 					    {NULL,		NULL, FALSE}};
-	
+
 	MsgInfo *msginfo;
 	gchar buf[BUFFSIZE], tmp[BUFFSIZE];
 	gchar *reference = NULL;
@@ -530,7 +535,6 @@ MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
 	while ((hnum = procheader_get_one_field(buf, sizeof(buf), fp, hentry))
 	       != -1) {
 		hp = buf + strlen(hentry[hnum].name);
-
 		while (*hp == ' ' || *hp == '\t') hp++;
 
 		switch (hnum) {

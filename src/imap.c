@@ -171,18 +171,9 @@ static gchar *imap_parse_atom		(SockInfo	*sock,
 					 gchar		*dest,
 					 gint		 dest_len,
 					 GString	*str);
-static gchar *imap_parse_one_address	(SockInfo	*sock,
-					 gchar		*start,
-					 gchar		*out_from_str,
-					 gchar		*out_fromname_str,
-					 GString	*str);
-static gchar *imap_parse_address	(SockInfo	*sock,
-					 gchar		*start,
-					 gchar	       **out_from_str,
-					 gchar	       **out_fromname_str,
-					 GString	*str);
 static MsgFlags imap_parse_flags	(const gchar	*flag_str);
 static MsgInfo *imap_parse_envelope	(SockInfo	*sock,
+					 FolderItem	*item,
 					 GString	*line_str);
 static gint imap_greeting		(SockInfo *sock,
 					 gboolean *is_preauth);
@@ -799,7 +790,7 @@ gint imap_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	ret = imap_add_msg(folder, dest, srcfile, FALSE);
 	g_free(srcfile);
 
-	if (ret == 0)
+	if (ret != -1)
 		ret = folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
 
 	return ret;
@@ -823,7 +814,7 @@ gint imap_move_msgs_with_dest(Folder *folder, FolderItem *dest,
 	for (cur = msglist; cur != NULL; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;
 		ret = imap_move_msg(folder, dest, msginfo);
-		if (ret != 0) break;
+		if (ret == -1) break;
 	}
 
 	return ret;
@@ -871,7 +862,7 @@ gint imap_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
 	for (cur = msglist; cur != NULL; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;
 		ret = imap_copy_msg(folder, dest, msginfo);
-		if (ret != 0) break;
+		if (ret == -1) break;
 	}
 
 	return ret;
@@ -1520,12 +1511,12 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 			g_free(tmp);
 			continue;
 		}
-		/* log_print("IMAP4< %s\n", tmp); */
-		debug_print("IMAP4< %s\n", tmp);
+		log_print("IMAP4< %s\n", tmp);
 		g_string_assign(str, tmp);
 		g_free(tmp);
 
-		msginfo = imap_parse_envelope(SESSION(session)->sock, str);
+		msginfo = imap_parse_envelope
+			(SESSION(session)->sock, item, str);
 		if (!msginfo) {
 			log_warning(_("can't parse envelope: %s\n"), str->str);
 			continue;
@@ -1562,7 +1553,7 @@ static GSList *imap_delete_cached_messages(GSList *mlist, FolderItem *item,
 	g_return_val_if_fail(item->folder != NULL, mlist);
 	g_return_val_if_fail(item->folder->type == F_IMAP, mlist);
 
-	debug_print(_("Deleting cached messages %d - %d ... "),
+	debug_print(_("Deleting cached messages %u - %u ... "),
 		    first_uid, last_uid);
 
 	dir = folder_item_get_path(item);
@@ -1898,87 +1889,56 @@ static gchar *imap_parse_atom(SockInfo *sock, gchar *src,
 	return cur_pos;
 }
 
-static gchar *imap_parse_one_address(SockInfo *sock, gchar *start,
-				     gchar *out_from_str,
-				     gchar *out_fromname_str,
-				     GString *str)
+static gchar *imap_get_header(SockInfo *sock, gchar *cur_pos, gchar **headers,
+			      GString *str)
 {
-	gchar buf[IMAPBUFSIZE];
-	gchar *userid;
-	gchar *domain;
-	gchar *cur_pos = start;
+	gchar *nextline;
+	gchar buf[32];
+	gint len;
+	gint block_len = 0;
 
-	cur_pos = imap_parse_atom(sock, cur_pos, buf, sizeof(buf), str);
-	conv_unmime_header(out_fromname_str, IMAPBUFSIZE, buf, NULL);
+	*headers = NULL;
 
-	cur_pos = imap_parse_atom(sock, cur_pos, buf, sizeof(buf), str);
+	g_return_val_if_fail(str != NULL, cur_pos);
 
-	cur_pos = imap_parse_atom(sock, cur_pos, buf, sizeof(buf), str);
-	Xstrdup_a(userid, buf, return cur_pos + 1);
+	while (isspace(*cur_pos)) cur_pos++;
 
-	cur_pos = imap_parse_atom(sock, cur_pos, buf, sizeof(buf), str);
-	Xstrdup_a(domain, buf, return cur_pos + 1);
+	g_return_val_if_fail(*cur_pos == '{', cur_pos);
 
-	if (out_fromname_str[0] != '\0') {
-		g_snprintf(out_from_str, IMAPBUFSIZE, "\"%s\" <%s@%s>",
-			   out_fromname_str, userid, domain);
-	} else {
-		g_snprintf(out_from_str, IMAPBUFSIZE, "%s@%s",
-			   userid, domain);
-		strcpy(out_fromname_str, out_from_str);
+	cur_pos = strchr_cpy(cur_pos + 1, '}', buf, sizeof(buf));
+	len = atoi(buf);
+
+	g_string_truncate(str, 0);
+	cur_pos = str->str;
+
+	do {
+		if ((nextline = sock_getline(sock)) == NULL)
+			return cur_pos;
+		block_len += strlen(nextline);
+		g_string_append(str, nextline);
+		cur_pos = str->str;
+		strretchomp(nextline);
+		/* debug_print("IMAP4< %s\n", nextline); */
+		g_free(nextline);
+	} while (block_len < len);
+
+	debug_print("IMAP4< [contents of RFC822.HEADER]\n");
+
+	*headers = g_strndup(cur_pos, len);
+	cur_pos += len;
+
+	while (isspace(*cur_pos)) cur_pos++;
+	while (*cur_pos == '\0') {
+		if ((nextline = sock_getline(sock)) == NULL)
+			return cur_pos;
+		g_string_assign(str, nextline);
+		cur_pos = str->str;
+		strretchomp(nextline);
+		debug_print("IMAP4< %s\n", nextline);
+		g_free(nextline);
+
+		while (isspace(*cur_pos)) cur_pos++;
 	}
-
-	while (*cur_pos == ' ') cur_pos++;
-	g_return_val_if_fail(*cur_pos == ')', NULL);
-
-	return cur_pos + 1;
-}
-
-static gchar *imap_parse_address(SockInfo *sock, gchar *start,
-				 gchar **out_from_str,
-				 gchar **out_fromname_str,
-				 GString *str)
-{
-	gchar buf[IMAPBUFSIZE];
-	gchar name_buf[IMAPBUFSIZE];
-	gchar *cur_pos = start;
-	GString *addr_str;
-
-	if (out_from_str)     *out_from_str     = NULL;
-	if (out_fromname_str) *out_fromname_str = NULL;
-	buf[0] = name_buf[0] = '\0';
-
-	if (!strncmp(cur_pos, "NIL", 3)) {
-		if (out_from_str)     *out_from_str     = g_strdup("");
-		if (out_fromname_str) *out_fromname_str = g_strdup("");
-		return cur_pos + 3;
-	}
-
-	g_return_val_if_fail(*cur_pos == '(', NULL);
-	cur_pos++;
-
-	addr_str = g_string_new(NULL);
-
-	for (;;) {
-		gchar ch = *cur_pos++;
-		if (ch == ')') break;
-		if (ch == '(') {
-			cur_pos = imap_parse_one_address
-				(sock, cur_pos, buf, name_buf, str);
-			if (!cur_pos) {
-				g_string_free(addr_str, TRUE);
-				return NULL;
-			}
-			if (addr_str->str[0] != '\0')
-				g_string_append(addr_str, ", ");
-			g_string_append(addr_str, buf);
-		}
-	}
-
-	if (out_from_str)     *out_from_str     = g_strdup(addr_str->str);
-	if (out_fromname_str) *out_fromname_str = g_strdup(name_buf);
-
-	g_string_free(addr_str, TRUE);
 
 	return cur_pos;
 }
@@ -1986,10 +1946,9 @@ static gchar *imap_parse_address(SockInfo *sock, gchar *start,
 static MsgFlags imap_parse_flags(const gchar *flag_str)  
 {
 	const gchar *p = flag_str;
-	MsgFlags flags;
+	MsgFlags flags = {0, 0};
 
 	flags.perm_flags = MSG_UNREAD;
-	flags.tmp_flags  = MSG_IMAP;
 
 	while ((p = strchr(p, '\\')) != NULL) {
 		p++;
@@ -2010,38 +1969,38 @@ static MsgFlags imap_parse_flags(const gchar *flag_str)
 	return flags;
 }
 
-static MsgInfo *imap_parse_envelope(SockInfo *sock, GString *line_str)
+static MsgInfo *imap_parse_envelope(SockInfo *sock, FolderItem *item,
+				    GString *line_str)
 {
-	MsgInfo *msginfo;
 	gchar buf[IMAPBUFSIZE];
-	gchar tmp[IMAPBUFSIZE];
+	MsgInfo *msginfo = NULL;
 	gchar *cur_pos;
 	gint msgnum;
 	guint32 uid = 0;
 	size_t size = 0;
-	gchar *date = NULL;
-	time_t date_t = 0;
-	gchar *subject = NULL;
-	gchar *tmp_from;
-	gchar *tmp_fromname;
-	gchar *from = NULL;
-	gchar *fromname = NULL;
-	gchar *tmp_to;
-	gchar *to = NULL;
-	gchar *inreplyto = NULL;
-	gchar *msgid = NULL;
-	MsgFlags flags = {0, 0};
+	MsgFlags flags = {0, 0}, imap_flags = {0, 0};
 
 	g_return_val_if_fail(line_str != NULL, NULL);
 	g_return_val_if_fail(line_str->str[0] == '*' &&
 			     line_str->str[1] == ' ', NULL);
 
+	MSG_SET_TMP_FLAGS(flags, MSG_IMAP);
+	if (item->stype == F_QUEUE) {
+		MSG_SET_TMP_FLAGS(flags, MSG_QUEUED);
+	} else if (item->stype == F_DRAFT) {
+		MSG_SET_TMP_FLAGS(flags, MSG_DRAFT);
+	}
+
 	cur_pos = line_str->str + 2;
 
-#define PARSE_ONE_ELEMENT(ch) \
-{ \
-	cur_pos = strchr_cpy(cur_pos, ch, buf, sizeof(buf)); \
-	g_return_val_if_fail(cur_pos != NULL, NULL); \
+#define PARSE_ONE_ELEMENT(ch)					\
+{								\
+	cur_pos = strchr_cpy(cur_pos, ch, buf, sizeof(buf));	\
+	if (cur_pos == NULL) {					\
+		g_warning("cur_pos == NULL\n");			\
+		procmsg_msginfo_free(msginfo);			\
+		return NULL;					\
+	}							\
 }
 
 	PARSE_ONE_ELEMENT(' ');
@@ -2061,114 +2020,37 @@ static MsgInfo *imap_parse_envelope(SockInfo *sock, GString *line_str)
 			uid = strtoul(cur_pos, &cur_pos, 10);
 		} else if (!strncmp(cur_pos, "FLAGS ", 6)) {
 			cur_pos += 6;
-			g_return_val_if_fail(*cur_pos == '(', NULL);
+			if (*cur_pos != '(') {
+				g_warning("*cur_pos != '('\n");
+				procmsg_msginfo_free(msginfo);
+				return NULL;
+			}
 			cur_pos++;
 			PARSE_ONE_ELEMENT(')');
-			flags = imap_parse_flags(buf);
+			imap_flags = imap_parse_flags(buf);
 		} else if (!strncmp(cur_pos, "RFC822.SIZE ", 12)) {
 			cur_pos += 12;
 			size = strtol(cur_pos, &cur_pos, 10);
-		} else if (!strncmp(cur_pos, "ENVELOPE ", 9)) {
-			cur_pos += 9;
-			g_return_val_if_fail(*cur_pos == '(', NULL);
-			cur_pos = imap_parse_atom
-				(sock, cur_pos + 1, buf, sizeof(buf), line_str);
-			if (buf[0] != '\0') {
-				Xstrdup_a(date, buf, return NULL);
-				date_t = procheader_date_parse(NULL, date, 0);
-			}
+		} else if (!strncmp(cur_pos, "RFC822.HEADER ", 14)) {
+			gchar *headers;
 
-			cur_pos = imap_parse_atom
-				(sock, cur_pos, buf, sizeof(buf), line_str);
-			if (buf[0] != '\0') {
-				conv_unmime_header(tmp, sizeof(tmp), buf, NULL);
-				Xstrdup_a(subject, tmp, return NULL);
-			}
-
-			g_return_val_if_fail(*cur_pos == ' ', NULL);
-			cur_pos = imap_parse_address(sock, cur_pos + 1,
-						     &tmp_from, &tmp_fromname,
-						     line_str);
-			g_return_val_if_fail(cur_pos != NULL, NULL);
-			if (tmp_from && *tmp_from != '\0')
-				Xstrdup_a(from, tmp_from,
-					  {g_free(tmp_from);
-					   g_free(tmp_fromname);
-					   return NULL;});
-			if (tmp_fromname && *tmp_fromname != '\0')
-				Xstrdup_a(fromname, tmp_fromname,
-					  {g_free(tmp_from);
-					   g_free(tmp_fromname);
-					   return NULL;});
-			g_free(tmp_from);
-			g_free(tmp_fromname);
-
-#define SKIP_ONE_ELEMENT() \
-{ \
-	g_return_val_if_fail(*cur_pos == ' ', NULL); \
-	cur_pos = imap_parse_address(sock, cur_pos + 1, NULL, NULL, \
-				     line_str); \
-	g_return_val_if_fail(cur_pos != NULL, NULL); \
-}
-
-			/* skip sender and reply-to */
-			SKIP_ONE_ELEMENT();
-			SKIP_ONE_ELEMENT();
-
-			g_return_val_if_fail(*cur_pos == ' ', NULL);
-			cur_pos = imap_parse_address(sock, cur_pos + 1,
-						     &tmp_to, NULL, line_str);
-			g_return_val_if_fail(cur_pos != NULL, NULL);
-			Xstrdup_a(to, tmp_to, {g_free(tmp_to); return NULL;});
-			g_free(tmp_to);
-
-			/* skip Cc and Bcc */
-			SKIP_ONE_ELEMENT();
-			SKIP_ONE_ELEMENT();
-
-#undef SKIP_ONE_ELEMENT
-
-			g_return_val_if_fail(*cur_pos == ' ', NULL);
-			cur_pos = imap_parse_atom
-				(sock, cur_pos, buf, sizeof(buf), line_str);
-			g_return_val_if_fail(cur_pos != NULL, NULL);
-			if (buf[0] != '\0') {
-				eliminate_parenthesis(buf, '(', ')');
-				extract_parenthesis(buf, '<', '>');
-				remove_space(buf);
-				Xstrdup_a(inreplyto, buf, return NULL);
-			}
-
-			g_return_val_if_fail(*cur_pos == ' ', NULL);
-			cur_pos = imap_parse_atom
-				(sock, cur_pos, buf, sizeof(buf), line_str);
-			g_return_val_if_fail(cur_pos != NULL, NULL);
-			if (buf[0] != '\0') {
-				extract_parenthesis(buf, '<', '>');
-				remove_space(buf);
-				Xstrdup_a(msgid, buf, return NULL);
-			}
-
-			g_return_val_if_fail(*cur_pos == ')', NULL);
-			cur_pos++;
+			cur_pos += 14;
+			cur_pos = imap_get_header(sock, cur_pos, &headers,
+						  line_str);
+			msginfo = procheader_parse_str(headers, flags, FALSE, FALSE);
+			g_free(headers);
 		} else {
 			g_warning("invalid FETCH response: %s\n", cur_pos);
 			break;
 		}
 	}
 
-	msginfo = g_new0(MsgInfo, 1);
-	msginfo->msgnum = uid;
-	msginfo->size = size;
-	msginfo->date = g_strdup(date);
-	msginfo->date_t = date_t;
-	msginfo->subject = g_strdup(subject);
-	msginfo->from = g_strdup(from);
-	msginfo->fromname = g_strdup(fromname);
-	msginfo->to = g_strdup(to);
-	msginfo->inreplyto = g_strdup(inreplyto);
-	msginfo->msgid = g_strdup(msgid);
-	msginfo->flags = flags;
+	if (msginfo) {
+		msginfo->msgnum = uid;
+		msginfo->size = size;
+		msginfo->flags.tmp_flags |= imap_flags.tmp_flags;
+		msginfo->flags.perm_flags = imap_flags.perm_flags;
+	}
 
 	return msginfo;
 }
@@ -2725,7 +2607,7 @@ static gint imap_cmd_copy(SockInfo *sock, guint32 uid, const gchar *destfolder)
 gint imap_cmd_envelope(SockInfo *sock, guint32 first_uid, guint32 last_uid)
 {
 	imap_cmd_gen_send
-		(sock, "UID FETCH %d:%d (UID FLAGS RFC822.SIZE ENVELOPE)",
+		(sock, "UID FETCH %d:%d (UID FLAGS RFC822.SIZE RFC822.HEADER)",
 		 first_uid, last_uid);
 
 	return IMAP_SUCCESS;

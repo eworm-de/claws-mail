@@ -1,3 +1,23 @@
+2002-06-18
+
+	* src/folder.c: folder_build_tree(): use strtoul() instead of atoi()
+	  for mtime to prevent flooring.
+	* src/imap.c:
+	  imap_move_msg()
+	  imap_move_msgs_with_dest()
+	  imap_copy_msgs_with_dest(): fixed a bug that prevented multiple
+	  message copy/move.
+	  imap_parse_envelope()
+	  imap_cmd_envelope(): use RFC822.HEADER instead of ENVELOPE to get
+	  full information of messages and simplify the parser. Also fixed
+	  the bug that References header was ignored on threading.
+	  imap_parse_one_address()
+	  imap_parse_address(): removed.
+	  imap_get_header(): new. It reads the RFC822 header and returns
+	  a newly allocated string.
+	* src/procheader.[ch]: changed procheader_parse() to
+	  procheader_parse_stream() and added different interfaces for it.
+
 2002-06-17
 
 	* po/zh_TW.Big5.po: fixed a mistake that caused a crash.

@@ -26,6 +26,7 @@
 #include <glib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "intl.h"
 #include "folder.h"
@@ -1145,7 +1146,8 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 		 threaded = TRUE, ret_rcpt = FALSE, hidereadmsgs = FALSE;
 	FolderSortKey sort_key = SORT_BY_NONE;
 	FolderSortType sort_type = SORT_ASCENDING;
-	gint mtime = 0, new = 0, unread = 0, total = 0;
+	gint new = 0, unread = 0, total = 0;
+	time_t mtime = 0;
 
 	g_return_val_if_fail(node->data != NULL, FALSE);
 	if (!node->parent) return FALSE;
@@ -1183,7 +1185,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 			if (!account) g_warning("account_id: %s not found\n",
 						attr->value);
 		} else if (!strcmp(attr->name, "mtime"))
-			mtime = atoi(attr->value);
+			mtime = strtoul(attr->value, NULL, 10);
 		else if (!strcmp(attr->name, "new"))
 			new = atoi(attr->value);
 		else if (!strcmp(attr->name, "unread"))

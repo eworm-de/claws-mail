@@ -397,7 +397,7 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	 * in any case, checking tmpmsginfo->flags for MSG_UNREAD
 	 * fixes the return-receipt-request bug */
 
-	tmpmsginfo = procheader_parse(file, msginfo->flags, TRUE, TRUE);
+	tmpmsginfo = procheader_parse_file(file, msginfo->flags, TRUE, TRUE);
 	if (MSG_IS_MIME(tmpmsginfo->flags))
 		MSG_SET_TMP_FLAGS(msginfo->flags, MSG_MIME);
 
