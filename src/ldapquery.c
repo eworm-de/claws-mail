@@ -494,6 +494,7 @@ static GList *ldapqry_build_items_fl(
 	GList *listReturn;
 
 	listReturn = NULL;
+	if( listAddr == NULL ) return listReturn;
 
 	/* Find longest first name in list */
 	firstName = mgu_slist_longest_entry( listFirst );
@@ -527,32 +528,31 @@ static GList *ldapqry_build_items_fl(
 		}
 	}
 
-	if( listAddr ) {
-		/* Create new folder for results */
-		if( qry->folder == NULL ) {
-			folder = addritem_create_item_folder();
-			addritem_folder_set_name( folder, qry->queryName );
-			addritem_folder_set_remarks( folder, "" );
-			addrcache_id_folder( cache, folder );
-			addrcache_add_folder( cache, folder );
-			qry->folder = folder;
+	/* Create new folder for results */
+	if( qry->folder == NULL ) {
+		folder = addritem_create_item_folder();
+		addritem_folder_set_name( folder, qry->queryName );
+		addritem_folder_set_remarks( folder, "" );
+		addrcache_id_folder( cache, folder );
+		addrcache_add_folder( cache, folder );
+		qry->folder = folder;
 
-			/* Specify folder type and back reference */			
-			folder->folderType = ADDRFOLDER_LDAP_QUERY;
-			folder->folderData = ( gpointer ) qry;
-		}
-
-		/* Add person into folder */		
-		person = addritem_create_item_person();
-		addritem_person_set_common_name( person, fullName );
-		addritem_person_set_first_name( person, firstName );
-		addritem_person_set_last_name( person, lastName );
-		addrcache_id_person( cache, person );
-		addritem_person_set_external_id( person, dn );
-		addrcache_folder_add_person( cache, qry->folder, person );
-
-		qry->entriesRead++;
+		/* Specify folder type and back reference */			
+		folder->folderType = ADDRFOLDER_LDAP_QUERY;
+		folder->folderData = ( gpointer ) qry;
+		folder->isHidden = TRUE;
 	}
+
+	/* Add person into folder */		
+	person = addritem_create_item_person();
+	addritem_person_set_common_name( person, fullName );
+	addritem_person_set_first_name( person, firstName );
+	addritem_person_set_last_name( person, lastName );
+	addrcache_id_person( cache, person );
+	addritem_person_set_external_id( person, dn );
+	addrcache_folder_add_person( cache, qry->folder, person );
+
+	qry->entriesRead++;
 
 	/* Add each address item */
 	nodeAddress = listAddr;

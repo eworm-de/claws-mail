@@ -923,6 +923,7 @@ ItemFolder *addritem_create_item_folder( void ) {
 	folder->listGroup = NULL;
 	folder->folderType = ADDRFOLDER_NONE;
 	folder->folderData = NULL;
+	folder->isHidden = FALSE;
 	return folder;
 }
 
@@ -972,6 +973,15 @@ void addritem_folder_set_remarks( ItemFolder *folder, const gchar *value ) {
 }
 
 /**
+ * Specify visibility of folder.
+ * \param folder Folder.
+ * \param value  Set to <code>TRUE</code> to hide folder.
+ */
+void addritem_folder_set_hidden( ItemFolder *folder, const gboolean value ) {
+	folder->isHidden = value;
+}
+
+/**
  * Free address folder. Note: this does not free up the lists of children
  * (folders, groups and person). This should be done prior to calling this
  * function.
@@ -1000,6 +1010,7 @@ void addritem_free_item_folder( ItemFolder *folder ) {
 	folder->listPerson = NULL;
 	folder->folderType = ADDRFOLDER_NONE;
 	folder->folderData = NULL;
+	folder->isHidden = FALSE;
 
 	g_free( folder );
 }
@@ -1108,6 +1119,7 @@ void addritem_print_item_folder( ItemFolder *folder, FILE *stream ) {
 	fprintf( stream, "\tnam: '%s'\n", ADDRITEM_NAME(folder) );
 	fprintf( stream, "\trem: '%s'\n", folder->remarks );
 	fprintf( stream, "\ttyp: %d\n", folder->folderType );
+	fprintf( stream, "\thid: %s\n", folder->isHidden ? "hidden" : "visible" );
 	fprintf( stream, "\t---\n" );
 	parent = ( ItemFolder * ) ADDRITEM_PARENT(folder);
 	if( parent ) {

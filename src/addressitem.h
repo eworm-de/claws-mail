@@ -52,7 +52,8 @@ typedef enum {
 	ADDR_VCARD,		/* Sub-type */
 	ADDR_JPILOT,		/* Sub-type */
 	ADDR_CATEGORY,		/* Sub-type */
-	ADDR_LDAP		/* Sub-type */
+	ADDR_LDAP,		/* Sub-type */
+	ADDR_LDAP_QUERY		/* Sub-type */
 } AddressObjectType;
 
 typedef struct _AddressBook_win	AddressBook_win;

@@ -99,6 +99,7 @@ struct _ItemFolder {
 	GList    *listGroup;	/* List of contained (child) groups */
 	AddressFolderType folderType;	/* Folder type */
 	gpointer *folderData;		/* Pointer to folder's data */
+	gboolean isHidden;	/* TRUE if folder is hidden */
 };
 
 typedef struct _ItemGroup ItemGroup;
@@ -168,6 +169,7 @@ ItemFolder *addritem_copy_item_folder	( ItemFolder *item );
 void addritem_folder_set_id		( ItemFolder *folder, const gchar *value );
 void addritem_folder_set_name		( ItemFolder *folder, const gchar *value );
 void addritem_folder_set_remarks	( ItemFolder *folder, const gchar *value );
+void addritem_folder_set_hidden		( ItemFolder *folder, const gboolean value );
 void addritem_free_item_folder		( ItemFolder *folder );
 void addritem_free_item_folder_recurse	( ItemFolder *parent );
 
