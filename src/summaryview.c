@@ -5134,7 +5134,7 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 
 	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_DIR_OPEN);
 	gtk_box_pack_start(GTK_BOX(summaryview->hbox), pixmap, FALSE, FALSE, 4);
-	gtk_box_reorder_child(GTK_BOX(summaryview->hbox), pixmap, 0);
+	gtk_box_reorder_child(GTK_BOX(summaryview->hbox), pixmap, 1); /* search_toggle before */
 	gtk_widget_show(pixmap);
 	summaryview->folder_pixmap = pixmap; 
 

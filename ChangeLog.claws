@@ -1,4 +1,11 @@
-2002-08-22 [colin]	0.8.1claws103
+2002-08-23 [colin]	0.8.1claws104
+
+	* src/summaryview.c
+		Fix folder and search pixmaps exchanging positions
+		after theme or toolbar changes. Thank to Oliver for 
+		reporting this.
+
+2002-08-23 [colin]	0.8.1claws103
 
 	* src/mainwindow.c
 	  src/messageview.[ch]
