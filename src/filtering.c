@@ -249,7 +249,6 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 					    : COMPOSE_TO);
 
 		val = compose_send(compose);
-		gtk_widget_destroy(compose->window);
 
 		return val == 0 ? TRUE : FALSE;
 
@@ -263,7 +262,6 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 					     COMPOSE_TO);
 
 		val = compose_send(compose);
-		gtk_widget_destroy(compose->window);
 		
 		return val == 0 ? TRUE : FALSE;
 
