@@ -169,5 +169,5 @@ void noticeview_set_icon(NoticeView *noticeview, StockPixmap icon)
 	if (stock_pixmap_gdk(noticeview->window, icon, &pixmap, &bitmap) < 0)
 		return;
 	
-	gtk_pixmap_set(GTK_PIXMAP(noticeview->icon), pixmap, bitmap);
+	gtk_image_set_from_pixmap(GTK_IMAGE(noticeview->icon), pixmap, bitmap);
 }

@@ -3,19 +3,21 @@ AC_PREREQ(2.50)
 AC_INIT(src/main.c)
 AC_CONFIG_AUX_DIR(config)
 
-PACKAGE=sylpheed
+PACKAGE=sylpheed-claws
 
 dnl version number
 MAJOR_VERSION=0
 MINOR_VERSION=9
-MICRO_VERSION=10
+MICRO_VERSION=11
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=67.10
-if test $EXTRA_VERSION -eq 0; then
-    VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}claws
+EXTRA_VERSION=17
+EXTRA_RELEASE=
+
+if test \( $EXTRA_VERSION -eq 0 \) -o \( "x$EXTRA_RELEASE" != "x" \); then
+    VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}${EXTRA_RELEASE}
 else
-    VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}claws${EXTRA_VERSION}
+    VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}
 fi
 
 dnl set $target
@@ -278,7 +280,14 @@ fi
 dnl Check for OpenSSL
 AM_PATH_OPENSSL
 
-dnl Key for password encryption
+dnl password encryption
+OLDLIBS=$LIBS
+LIBS=
+AC_SEARCH_LIBS(encrypt, crypt, [], AC_MSG_ERROR(['encrypt'-function not found.]))
+CRYPT_LIBS=$LIBS
+AC_SUBST(CRYPT_LIBS)
+LIBS=$OLDLIBS
+
 AC_ARG_WITH(passcrypt-key, [  --with-passcrypt-key=KEY     Key used to encode passwords (8 byte string)],
 	    with_passcrypt_key="$withval", with_passcrypt_key="passkey0")
 AC_SUBST(PASSCRYPT_KEY, $with_passcrypt_key)

@@ -87,7 +87,7 @@ static void set_trayicon_pixmap(TrayIconType icontype)
 		break;
 	}
 
-	gtk_pixmap_set(GTK_PIXMAP(image), pixmap, bitmap);
+	gtk_image_set_from_pixmap(GTK_IMAGE(image), pixmap, bitmap);
 	gtk_widget_shape_combine_mask(GTK_WIDGET(trayicon), bitmap, GTK_WIDGET(image)->allocation.x, GTK_WIDGET(image)->allocation.y);
 }
 
@@ -166,10 +166,10 @@ static void create_trayicon()
         gtk_container_add(GTK_CONTAINER(eventbox), GTK_WIDGET(packer));
         gtk_container_set_border_width(GTK_CONTAINER(packer), 0);
 
-        image = gtk_pixmap_new(nomail_pixmap, nomail_bitmap);
+        image = gtk_image_new_from_pixmap(nomail_pixmap, nomail_bitmap);
         gtk_packer_add_defaults(GTK_PACKER(packer), GTK_WIDGET(image), GTK_SIDE_TOP, GTK_ANCHOR_CENTER, GTK_PACK_EXPAND);
 #else
-        image = gtk_pixmap_new(nomail_pixmap, nomail_bitmap);
+        image = gtk_image_new_from_pixmap(nomail_pixmap, nomail_bitmap);
         gtk_container_add(GTK_CONTAINER(eventbox), image);
 #endif
 

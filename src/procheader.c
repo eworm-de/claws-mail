@@ -579,9 +579,6 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 	else 
 		MSG_SET_PERM_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
 	
-	if (decrypted)
-		MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_MIME);
-
 	msginfo->inreplyto = NULL;
 
 	while ((hnum = get_one_field(buf, sizeof(buf), data, hentry))
@@ -658,27 +655,8 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			}
 			break;
 		case H_CONTENT_TYPE:
-			if (decrypted) {
-				if (!strncasecmp(hp, "multipart", 9)) {
-					if (strncasecmp(hp, "multipart/signed", 16)) {
-						MSG_SET_TMP_FLAGS(msginfo->flags,
-							  MSG_MIME);
-					} else {
-						MSG_SET_TMP_FLAGS(msginfo->flags,
-							  MSG_SIGNED);
-					}
-				}
-			}
-			else if (!strncasecmp(hp, "multipart/encrypted", 19)) {
-				MSG_SET_TMP_FLAGS(msginfo->flags,
-						  MSG_ENCRYPTED);
-			} 
-			else if (!strncasecmp(hp, "multipart", 9) &&
-				   !strncasecmp(hp, "multipart/signed", 16)) {
-				MSG_SET_TMP_FLAGS(msginfo->flags, MSG_SIGNED);
-			} 
-			else if (!strncasecmp(hp, "multipart", 9))
-				MSG_SET_TMP_FLAGS(msginfo->flags, MSG_MIME);
+			if (!strncasecmp(hp, "multipart/", 10))
+				MSG_SET_TMP_FLAGS(msginfo->flags, MSG_MULTIPART);
 			break;
 #ifdef ALLOW_HEADER_HINT			
 		case H_SEEN:

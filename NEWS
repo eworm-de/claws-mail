@@ -1,5 +1,38 @@
 Changes of Sylpheed
 
+* 0.9.12
+
+    * A session timeout for POP3/SMTP has been implemented.
+    * The 'Print' menu on the context menu has been restored.
+    * the value of CACHE_VERSION has been increased to prevent a cache
+      incompatibility problem on some platforms such as FreeBSD.
+
+* 0.9.11
+
+    * The spring-loaded folder has been implemented for the folder view.
+    * A function to filter selected messages has been added.
+    * Always move messages by default when using DnD (copy if Ctrl key is
+      pressed).
+    * On filtering, the matching algorithm of 'not contain' flag has
+      been fixed.
+    * NNTP servers that require authentication at the beginning of the
+      session has been supported.
+    * The method of updating the progress dialog has been modified.
+    * The context menu on the summary view has been cleaned up.
+    * The image viewer has been fixed.
+    * The cache handling has been fixed for AMD64 and other 64-bit platforms.
+    * The SMTP routine has been fixed to fully comply with RFC 2821.
+
+* 0.9.10
+
+    * A new folder can be created on the folder selection dialog now.
+    * The folder view is now updated progressively when receiving.
+    * Statasbar has been added to the message view window.
+    * The built-in image viewer has been improved, and its memory leaks
+      have been fixed.
+    * Ukrainian translation has been added.
+    * Other bugfixes have been made.
+
 * 0.9.9
 
     * Word wrapping on multibyte locales has been improved.

@@ -63,14 +63,6 @@ typedef enum
 	TARGET_DUMMY
 } TargetInfo;
 
-typedef enum
-{
-	S_SEARCH_SUBJECT,
-	S_SEARCH_FROM,
-	S_SEARCH_TO,
-	S_SEARCH_EXTENDED
-} SummarySearchType;
-
 #include "mainwindow.h"
 #include "folderview.h"
 #include "headerview.h"
@@ -79,6 +71,7 @@ typedef enum
 #include "folder.h"
 #include "gtksctree.h"
 #include "prefs_filtering.h"
+#include "quicksearch.h"
 
 extern GtkTargetEntry summary_drag_types[1];
 
@@ -95,7 +88,6 @@ struct _SummaryView
 	GtkWidget *ctree;
 	GtkWidget *hbox;
 	GtkWidget *hbox_l;
-	GtkWidget *hbox_search;
 	GtkWidget *folder_pixmap;
 	GtkWidget *statlabel_folder;
 	GtkWidget *statlabel_select;
@@ -106,10 +98,6 @@ struct _SummaryView
 	GtkWidget *quick_search_pixmap;
 	GtkWidget *popupmenu;
 	GtkWidget *colorlabel_menu;
-	GtkWidget *search_type_opt;
-	GtkWidget *search_type;
-	GtkWidget *search_string;
-	GtkWidget *search_description;
 
 	GtkItemFactory *popupfactory;
 
@@ -133,6 +121,7 @@ struct _SummaryView
 	FolderView   *folderview;
 	HeaderView   *headerview;
 	MessageView  *messageview;
+	QuickSearch  *quicksearch;
 
 	FolderItem *folder_item;
 

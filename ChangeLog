@@ -1,3 +1,68 @@
+2004-06-23
+
+	* src/prefs_common.c: made the default of confirm_on_exit FALSE.
+
+2004-06-23
+
+	* src/menu.[ch]: added menu_set_active().
+	* src/compose.c: don't change 'View/Auto wrapping' mode when selecting
+	  accounts.
+
+2004-06-23
+
+	* src/compose.[ch]: autowrap can be switchd on/off from the compose
+	  window.
+
+2004-06-17
+
+	* version 0.9.12
+
+2004-06-17
+
+	* src/session.c: session_set_timeout(): fixed a bug that didn't
+	  reset timeout_tag when interval is 0.
+
+2004-06-16
+
+	* src/gtkstext.c: gtk_stext_update_text(): added null checking for
+	  cache (thanks to Jim Hranicky).
+
+2004-06-15
+
+	* src/defs.h: increased CACHE_VERSION to work around the
+	  incompatibility of the cache on some platforms (ex. FreeBSD).
+	* src/procmsg.c: procmsg_read_cache(): discard all read cache data
+	  if an error occurred.
+
+2004-06-10
+
+	* src/summaryview.[ch]: hide 'Re-edit' menu when it's unusable.
+
+2004-06-08
+
+	* src/inc.[ch]
+	  src/send_message.c
+	  src/session.[ch]: implemented session timeout.
+	* src/pop.h: removed unused values from Pop3ErrorValue.
+
+2004-06-07
+
+	* src/inc.c: inc_all_account_mail(): code cleanup.
+
+2004-06-03
+
+	* src/procmsg.c: procmsg_read_cache_data_str(): changed gint32 to
+	  guint32 for some platforms.
+	* src/summaryview.c: restored 'Print' menu.
+
+2004-06-01
+
+	* src/about.c: modified copyright year.
+
+2004-05-28
+
+	* version 0.9.11
+
 2004-05-21
 
 	* src/smtp.c: comply with RFC 2821 (thanks to Alfons).

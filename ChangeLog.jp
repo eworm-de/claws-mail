@@ -1,3 +1,70 @@
+2004-06-23
+
+	* src/prefs_common.c: confirm_on_exit のデフォルトを FALSE にした。
+
+2004-06-23
+
+	* src/menu.[ch]: menu_set_active() を追加。
+	* src/compose.c: アカウントを選択するときに「表示/自動整形」モードを
+	  切り替えないようにした。
+
+2004-06-23
+
+	* src/compose.[ch]: メッセージ作成ウィンドウから自動整形を切り替え
+	  られるようにした。
+
+2004-06-17
+
+	* version 0.9.12
+
+2004-06-17
+
+	* src/session.c: session_set_timeout(): interval が 0 のとき
+	  timeout_tag をリセットしていなかったバグを修正。
+
+2004-06-16
+
+	* src/gtkstext.c: gtk_stext_update_text(): cache の null チェックを
+	  追加(Jim Hranicky さん thanks)。
+
+2004-06-15
+
+	* src/defs.h: 特定のプラットフォーム(例: FreeBSD)におけるキャッシュ
+	  の非互換性問題に対処するために CACHE_VERSION を増加。
+	* src/procmsg.c: procmsg_read_cache(): エラーが発生したら読み込んだ
+	  キャッシュデータを全て破棄するようにした。
+
+2004-06-10
+
+	* src/summaryview.[ch]: 使用不可能なときは「再編集」メニューを隠す
+	  ようにした。
+
+2004-06-08
+
+	* src/inc.[ch]
+	  src/send_message.c
+	  src/session.[ch]: セッションのタイムアウトを実装。
+	* src/pop.h: Pop3ErrorValue から未使用の値を削除。
+
+2004-06-07
+
+	* src/inc.c: inc_all_account_mail(): コードの整理。
+
+2004-06-03
+
+	* src/procmsg.c: procmsg_read_cache_data_str(): いくつかの環境のため
+	  に gint32 を guint32 に変更。
+	* src/summaryview.c: 「印刷」メニューを復活し、「振り分けルールを
+	  作成」メニューを削除。
+
+2004-06-01
+
+	* src/about.c: 著作権の年を修正。
+
+2004-05-28
+
+	* version 0.9.11
+
 2004-05-21
 
 	* src/smtp.c: RFC 2821 に準拠(Alfons さん thanks)。

@@ -111,7 +111,9 @@ typedef enum
 {
 	F_ITEM_UPDATE_MSGCNT = 1 << 0,
 	F_ITEM_UPDATE_CONTENT = 1 << 1,
-	F_ITEM_UPDATE_NAME = 1 << 2,
+	F_ITEM_UPDATE_ADDMSG = 1 << 2,
+	F_ITEM_UPDATE_REMOVEMSG = 1 << 3,
+	F_ITEM_UPDATE_NAME = 1 << 4,
 } FolderItemUpdateFlags;
 
 typedef void (*FolderUIFunc)		(Folder		*folder,
@@ -630,6 +632,7 @@ struct _FolderItemUpdateData
 {
 	FolderItem		*item;
 	FolderItemUpdateFlags	 update_flags;
+	MsgInfo			*msg;
 };
 
 void	    folder_system_init		(void);
@@ -719,6 +722,7 @@ gchar *folder_item_get_path		(FolderItem	*item);
 gint   folder_item_open			(FolderItem	*item);
 gint   folder_item_close		(FolderItem	*item);
 gint   folder_item_scan			(FolderItem	*item);
+gint   folder_item_syncronize_flags	(FolderItem 	*item);
 void   folder_item_scan_foreach		(GHashTable	*table);
 MsgInfo *folder_item_get_msginfo	(FolderItem 	*item,
 					 gint		 num);

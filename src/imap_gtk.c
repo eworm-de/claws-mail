@@ -313,10 +313,8 @@ static void delete_folder_cb(FolderView *folderview, guint action,
 	}
 
 	if (item->folder->klass->remove_folder(item->folder, item) < 0) {
+		folder_item_scan(item);
 		alertpanel_error(_("Can't remove the folder `%s'."), name);
-		if (folderview->opened == folderview->selected)
-			summary_show(folderview->summaryview,
-				     folderview->summaryview->folder_item);
 		g_free(old_id);
 		return;
 	}

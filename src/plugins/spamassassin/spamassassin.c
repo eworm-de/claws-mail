@@ -197,10 +197,17 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		running |= TIMEOUT_RUNNING;
 
 		while(running & CHILD_RUNNING) {
-			waitpid(pid, &status, WNOHANG);
-			if (WIFEXITED(status)) {
+			int ret;
+
+			ret = waitpid(pid, &status, WNOHANG);
+			if (ret == pid) {
+				if (WIFEXITED(status)) {
+					running &= ~CHILD_RUNNING;
+    					is_spam = WEXITSTATUS(status) == 1 ? TRUE : FALSE;
+				}
+			} if (ret < 0) {
 				running &= ~CHILD_RUNNING;
-			}
+			} /* ret == 0 continue */
 	    
 			g_main_iteration(TRUE);
     		}
@@ -208,7 +215,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		while (running & TIMEOUT_RUNNING)
 			g_main_iteration(TRUE);
 	}
-        is_spam = WEXITSTATUS(status) == 1 ? TRUE : FALSE;
 
 	fclose(fp);
 

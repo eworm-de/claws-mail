@@ -115,7 +115,7 @@
 #define UI_REFRESH_INTERVAL		50000	/* usec */
 #define FOLDER_UPDATE_INTERVAL		1500	/* msec */
 #define PROGRESS_UPDATE_INTERVAL	200	/* msec */
-#define SESSION_TIMEOUT			60	/* sec */
+#define SESSION_TIMEOUT_INTERVAL	60	/* sec */
 #define MAX_HISTORY_SIZE		16
 
 #define NORMAL_FONT prefs_common.normalfont

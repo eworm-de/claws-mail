@@ -360,7 +360,6 @@ void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	GtkWidget *vbox;
 	GtkWidget *menubar;
 	GtkWidget *statusbar;
-	GtkItemFactory *ifactory;
 	guint n_menu_entries;
 
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -754,8 +753,6 @@ void messageview_clear(MessageView *messageview)
 
 void messageview_destroy(MessageView *messageview)
 {
-	GtkWidget *mimeview  = GTK_WIDGET_PTR(messageview->mimeview);
-
 	debug_print("destroy messageview\n");
 	messageview_list = g_list_remove(messageview_list, messageview);
 

@@ -92,9 +92,6 @@ static void account_set_default		(void);
 
 static void account_edit_close		(void);
 
-static gint account_clone_event		(GtkWidget	*widget,
-					 GdkEventAny	*event,
-					 gpointer	 data);
 static gint account_delete_event	(GtkWidget	*widget,
 					 GdkEventAny	*event,
 					 gpointer	 data);
@@ -988,13 +985,6 @@ static void account_edit_close(void)
 	gtk_widget_hide(edit_account.window);
 
 	inc_unlock();
-}
-
-static gint account_clone_event(GtkWidget *widget, GdkEventAny *event,
-				 gpointer data)
-{
-	account_clone();
-	return TRUE;
 }
 
 static gint account_delete_event(GtkWidget *widget, GdkEventAny *event,

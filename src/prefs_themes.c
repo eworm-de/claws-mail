@@ -369,7 +369,6 @@ static void prefs_themes_free_names(ThemesData *tdata)
 void prefs_themes_done(void)
 {
 	ThemesData *tdata = prefs_themes_data;
-	GList      *n;
 
 	debug_print("Finished prefereces for themes.\n");
 	
@@ -448,7 +447,6 @@ static void prefs_themes_btn_remove_clicked_cb(GtkWidget *widget, gpointer data)
 
 static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data)
 {
-	struct stat s;
 	gchar      *filename, *source;
 	gchar      *themeinfo, *themename;
 	gchar      *alert_title = NULL;
@@ -592,7 +590,7 @@ static void prefs_themes_display_theme_info(ThemesData *tdata, const ThemeInfo *
 	for (i = 0; i < PREVIEW_ICONS; ++i) {
 		stock_pixmap_gdk(theme->window, prefs_themes_icons[i], 
 				&(theme->pixmaps[i]), &(theme->masks[i]));
-		gtk_pixmap_set(GTK_PIXMAP(theme->icons[i]),
+		gtk_image_set_from_pixmap(GTK_IMAGE(theme->icons[i]),
 				theme->pixmaps[i], theme->masks[i]);
 	}
 	prefs_common.pixmap_theme_path = save_prefs_path;
@@ -740,9 +738,9 @@ static GtkWidget* create_dummy_pixmap(GtkWidget *widget)
 			NULL, dummy_pixmap_xpm);
 	if (gdkpixmap == NULL)
 		g_error ("Couldn't create replacement pixmap.");
-	pixmap = gtk_pixmap_new (gdkpixmap, mask);
-	gdk_pixmap_unref (gdkpixmap);
-	gdk_bitmap_unref (mask);
+	pixmap = gtk_image_new_from_pixmap(gdkpixmap, mask);
+	g_object_unref (gdkpixmap);
+	g_object_unref (mask);
 	return pixmap;
 }
 /* END GLADE CODE */

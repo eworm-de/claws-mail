@@ -332,6 +332,11 @@ EXTRA_DIST = \
 	pixmaps/privacy_signed.xpm \
 	pixmaps/privacy_unknown.xpm \
 	pixmaps/privacy_warn.xpm \
+	pixmaps/privacy_emblem_encrypted.xpm \
+	pixmaps/privacy_emblem_failed.xpm \
+	pixmaps/privacy_emblem_passed.xpm \
+	pixmaps/privacy_emblem_signed.xpm \
+	pixmaps/privacy_emblem_warn.xpm \
 	pixmaps/properties.xpm \
 	pixmaps/quicksearch.xpm \
 	pixmaps/regular.xpm \

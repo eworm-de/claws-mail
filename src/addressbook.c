@@ -360,7 +360,9 @@ static void addressbook_treenode_paste_cb	( void );
 
 static void addressbook_mail_to_cb		( void );
 
+#ifdef USE_LDAP
 static void addressbook_browse_entry_cb		( void );
+#endif
 
 static GtkItemFactoryEntry addressbook_entries[] =
 {
@@ -433,10 +435,9 @@ static GtkItemFactoryEntry addressbook_list_popup_entries[] =
 	{N_("/_Paste"),		NULL, addressbook_clip_paste_cb,     0, NULL},
 	{N_("/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/Pa_ste Address"),	NULL, addressbook_clip_paste_address_cb, 0, NULL},
-	{N_("/_Mail To"),	NULL, addressbook_mail_to_cb,            0, NULL}
+	{N_("/_Mail To"),	NULL, addressbook_mail_to_cb,            0, NULL},
 #ifdef USE_LDAP
-	,
-	{N_("/_Browse Entry"),  NULL, addressbook_browse_entry_cb,	 0, NULL}
+	{N_("/_Browse Entry"),  NULL, addressbook_browse_entry_cb,	 0, NULL},
 #endif	
 };
 
@@ -3765,6 +3766,7 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 	g_free( searchTerm );
 }
 
+#ifdef USE_LDAP
 /**
  * Browse address entry for highlighted entry.
  */
@@ -3809,12 +3811,10 @@ static void addressbook_browse_entry_cb(void)
 	}
 
 	if( iface->type == ADDR_IF_LDAP ) {
-#ifdef USE_LDAP
 		browseldap_entry(ds, person->externalID);
-#endif
 	}
 }
-
+#endif
 
 /* **********************************************************************
 * Build lookup tables.

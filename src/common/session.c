@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,8 @@
 static gint session_connect_cb		(SockInfo	*sock,
 					 gpointer	 data);
 static gint session_close		(Session	*session);
+
+static gboolean session_timeout_cb	(gpointer	 data);
 
 static gboolean session_recv_msg_idle_cb	(gpointer	 data);
 static gboolean session_recv_data_idle_cb	(gpointer	 data);
@@ -87,6 +89,9 @@ void session_init(Session *session)
 	session->write_buf = NULL;
 	session->write_buf_p = NULL;
 	session->write_buf_len = 0;
+
+	session->timeout_tag = 0;
+	session->timeout_interval = 0;
 
 	session->data = NULL;
 }
@@ -200,6 +205,36 @@ gboolean session_is_connected(Session *session)
 		session->state == SESSION_RECV);
 }
 
+void session_set_timeout(Session *session, guint interval)
+{
+	if (session->timeout_tag > 0)
+		g_source_remove(session->timeout_tag);
+
+	session->timeout_interval = interval;
+	if (interval > 0)
+		session->timeout_tag =
+			g_timeout_add(interval, session_timeout_cb, session);
+	else
+		session->timeout_tag = 0;
+}
+
+static gboolean session_timeout_cb(gpointer data)
+{
+	Session *session = SESSION(data);
+
+	g_warning("session timeout.\n");
+
+	if (session->io_tag > 0) {
+		g_source_remove(session->io_tag);
+		session->io_tag = 0;
+	}
+
+	session->timeout_tag = 0;
+	session->state = SESSION_TIMEOUT;
+
+	return FALSE;
+}
+
 void session_set_recv_message_notify(Session *session,
 				     RecvMsgNotify notify_func, gpointer data)
 {
@@ -253,7 +288,10 @@ static gint session_close(Session *session)
 	if (session->conn_id > 0) {
 		sock_connect_async_cancel(session->conn_id);
 		session->conn_id = 0;
+		debug_print("session (%p): connection cancelled\n", session);
 	}
+
+	session_set_timeout(session, 0);
 
 	if (session->io_tag > 0) {
 		g_source_remove(session->io_tag);
@@ -264,9 +302,8 @@ static gint session_close(Session *session)
 		sock_close(session->sock);
 		session->sock = NULL;
 		session->state = SESSION_DISCONNECTED;
+		debug_print("session (%p): closed\n", session);
 	}
-
-	debug_print("session (%p): closed\n", session);
 
 	return 0;
 }
@@ -431,6 +468,8 @@ static gboolean session_read_msg_cb(SockInfo *source, GIOCondition condition,
 
 	g_return_val_if_fail(condition == G_IO_IN, FALSE);
 
+	session_set_timeout(session, session->timeout_interval);
+
 	if (session->read_buf_len == 0) {
 		gint read_len;
 
@@ -523,6 +562,8 @@ static gboolean session_read_data_cb(SockInfo *source, GIOCondition condition,
 	gint ret;
 
 	g_return_val_if_fail(condition == G_IO_IN, FALSE);
+
+	session_set_timeout(session, session->timeout_interval);
 
 	if (session->read_buf_len == 0) {
 		gint read_len;
@@ -713,6 +754,7 @@ static gboolean session_write_data_cb(SockInfo *source,
 		if (tv_cur.tv_sec - session->tv_prev.tv_sec > 0 ||
 		    tv_cur.tv_usec - session->tv_prev.tv_usec >
 		    UI_REFRESH_INTERVAL) {
+			session_set_timeout(session, session->timeout_interval);
 			session->send_data_progressive_notify
 				(session,
 				 session->write_buf_p - session->write_buf,

@@ -305,10 +305,10 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str)
 {
 	gchar buf[BUFFSIZE];
 	gint ret = 0;
-	gint32 len;
+	guint32 len;
 
 	if (fread(&len, sizeof(len), 1, fp) == 1) {
-		if (len < 0)
+		if (len > G_MAXINT)
 			ret = -1;
 		else {
 			gchar *tmp = NULL;
@@ -402,15 +402,14 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 		cache->memusage += procmsg_msginfo_memusage(msginfo);
 	}
 	fclose(fp);
+	g_hash_table_thaw(cache->msgnum_table);
 
 	if(error) {
-		g_hash_table_thaw(cache->msgnum_table);
 		msgcache_destroy(cache);
 		return NULL;
 	}
 
 	cache->last_access = time(NULL);
-	g_hash_table_thaw(cache->msgnum_table);
 
 	debug_print("done. (%d items read)\n", g_hash_table_size(cache->msgnum_table));
 	debug_print("Cache size: %d messages, %d byte\n", g_hash_table_size(cache->msgnum_table), cache->memusage);

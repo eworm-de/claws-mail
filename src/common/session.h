@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ typedef enum {
 	SESSION_IMAP,
 	SESSION_NEWS,
 	SESSION_SMTP,
-	SESSION_POP3
+	SESSION_POP3,
 } SessionType;
 
 typedef enum {
@@ -51,6 +51,7 @@ typedef enum {
 	SESSION_SEND,
 	SESSION_RECV,
 	SESSION_EOF,
+	SESSION_TIMEOUT,
 	SESSION_ERROR,
 	SESSION_DISCONNECTED
 } SessionState;
@@ -119,6 +120,9 @@ struct _Session
 	gchar *write_buf_p;
 	gint write_buf_len;
 
+	guint timeout_tag;
+	guint timeout_interval;
+
 	gpointer data;
 
 	/* virtual methods to parse server responses */
@@ -154,6 +158,9 @@ gint session_connect		(Session	*session,
 gint session_disconnect		(Session	*session);
 void session_destroy		(Session	*session);
 gboolean session_is_connected	(Session	*session);
+
+void session_set_timeout	(Session	*session,
+				 guint		 interval);
 
 void session_set_recv_message_notify	(Session	*session,
 					 RecvMsgNotify	 notify_func,

@@ -987,7 +987,7 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 				{NULL,		   NULL, FALSE}};
 	guint content_start, i;
 	FILE *fp;
-	gint mime_major, mime_minor, a;
+	gint mime_major, mime_minor;
 
 	if (mimeinfo->encoding_type != ENC_BINARY && 
 	   mimeinfo->encoding_type != ENC_7BIT && 

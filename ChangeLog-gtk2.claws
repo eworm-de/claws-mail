@@ -1,3 +1,9 @@
+2004-06-25 [paul]	0.9.10cvs17
+
+	* sync with 0.9.10cvs17 HEAD
+	
+	NOTE: QuickSearch is broken
+
 2004-06-07 [colin]	0.9.10claws67.10
 	* src/plugins/trayicon/trayicon.c
 	  src/plugins/trayicon/libeggtrayicon/Makefile.am

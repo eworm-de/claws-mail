@@ -682,6 +682,8 @@ static void check_signature_cb(GtkWidget *widget, gpointer user_data)
 	
 	privacy_mimeinfo_check_signature(mimeinfo);
 	update_signature_noticeview(mimeview, mimeview->siginfo);
+	icon_list_clear(mimeview);
+	icon_list_create(mimeview, mimeview->mimeinfo);
 }
 
 static void display_full_info_cb(GtkWidget *widget, gpointer user_data)
@@ -1484,9 +1486,14 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	GtkWidget *vbox;
 	GtkWidget *button;
 	gchar *tip;
+	gchar *tiptmp;
 	const gchar *desc = NULL; 
+	gchar *sigshort = NULL;
 	gchar *content_type;
 	StockPixmap stockp;
+	MimeInfo *partinfo;
+	MimeInfo *siginfo = NULL;
+	MimeInfo *encrypted = NULL;
 	
 	vbox = mimeview->icon_vbox;
 	mimeview->icon_count++;
@@ -1524,7 +1531,47 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 		break;
 	}
 	
-	pixmap = stock_pixmap_widget(mimeview->mainwin->window, stockp);
+	partinfo = mimeinfo;
+	while (partinfo != NULL) {
+		if (privacy_mimeinfo_is_signed(partinfo)) {
+			siginfo = partinfo;
+			break;
+		}
+		if (privacy_mimeinfo_is_encrypted(partinfo)) {
+			encrypted = partinfo;
+			break;
+		}
+		partinfo = procmime_mimeinfo_parent(partinfo);
+	}	
+
+	if (siginfo != NULL) {
+		switch (privacy_mimeinfo_get_sig_status(siginfo)) {
+		case SIGNATURE_UNCHECKED:
+		case SIGNATURE_CHECK_FAILED:
+			pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp,
+			    STOCK_PIXMAP_PRIVACY_EMBLEM_SIGNED, OVERLAY_BOTTOM_RIGHT, 6, 3);
+			break;
+		case SIGNATURE_OK:
+			pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp,
+			    STOCK_PIXMAP_PRIVACY_EMBLEM_PASSED, OVERLAY_BOTTOM_RIGHT, 6, 3);
+			break;
+		case SIGNATURE_WARN:
+			pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp,
+			    STOCK_PIXMAP_PRIVACY_EMBLEM_WARN, OVERLAY_BOTTOM_RIGHT, 6, 3);
+			break;
+		case SIGNATURE_INVALID:
+			pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp,
+			    STOCK_PIXMAP_PRIVACY_EMBLEM_FAILED, OVERLAY_BOTTOM_RIGHT, 6, 3);
+			break;
+		}
+		sigshort = privacy_mimeinfo_sig_info_short(siginfo);
+	} else if (encrypted != NULL) {
+			pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp,
+			    STOCK_PIXMAP_PRIVACY_EMBLEM_ENCRYPTED, OVERLAY_BOTTOM_RIGHT, 6, 3);		
+	} else {
+		pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp, 0,
+							  OVERLAY_NONE, 6, 3);
+	}
 	gtk_container_add(GTK_CONTAINER(button), pixmap);
 	
 	if (!desc) {
@@ -1537,14 +1584,20 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	content_type = procmime_get_content_type_str(mimeinfo->type,
 						     mimeinfo->subtype);
 
-	if (desc && *desc)
-		tip = g_strdup_printf("%s\n%s\n%s", desc, content_type, 
-				      to_human_readable(mimeinfo->length));
-	else 		
-		tip = g_strdup_printf("%s\n%s", content_type,
-				      to_human_readable(mimeinfo->length));
-	
+	tip = g_strjoin("\n", content_type,
+			to_human_readable(mimeinfo->length), NULL);
 	g_free(content_type);
+	if (desc && *desc) {
+		tiptmp = g_strjoin("\n", desc, tip, NULL);
+		g_free(tip);
+		tip = tiptmp;
+	}
+	if (sigshort && *sigshort) {
+		tiptmp = g_strjoin("\n", tip, sigshort, NULL);
+		g_free(tip);
+		tip = tiptmp;
+	}
+	g_free(sigshort);
 
 	gtk_tooltips_set_tip(mimeview->tooltips, button, tip, NULL);
 	g_free(tip);

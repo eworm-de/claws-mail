@@ -234,7 +234,7 @@ static void headerview_show_xface(HeaderView *headerview, MsgInfo *msginfo)
 		gtk_widget_show(headerview->image);
 	}
 
-	gdk_pixmap_unref(pixmap);
+	g_object_unref(pixmap);
 }
 #endif
 

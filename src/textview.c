@@ -98,26 +98,6 @@ static GdkColor error_color = {
 };
 #endif
 
-static GdkColor good_sig_color = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0xbfff,
-	(gushort)0
-};
-
-static GdkColor nocheck_sig_color = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0,
-	(gushort)0xcfff
-};
-
-static GdkColor bad_sig_color = {
-	(gulong)0,
-	(gushort)0xefff,
-	(gushort)0,
-	(gushort)0
-};
 
 #define TEXTVIEW_STATUSBAR_PUSH(textview, str)					    \
 {									    \
@@ -289,17 +269,6 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
  	tag = gtk_text_buffer_create_tag(buffer, "link",
 					 "foreground-gdk", &uri_color,
 					 NULL);
-#if USE_GPGME
-	gtk_text_buffer_create_tag(buffer, "good-signature",
-				   "foreground-gdk", &good_sig_color,
-				   NULL);
-	gtk_text_buffer_create_tag(buffer, "bad-signature",
-				   "foreground-gdk", &bad_sig_color,
-				   NULL);
-	gtk_text_buffer_create_tag(buffer, "nocheck-signature",
-				   "foreground-gdk", &nocheck_sig_color,
-				   NULL);
-#endif /*USE_GPGME  */
 
        g_signal_connect(G_OBJECT(tag), "event",
                          G_CALLBACK(textview_uri_button_pressed), textview);
@@ -1912,6 +1881,7 @@ static gint show_url_timeout_cb(gpointer data)
 	TextView *textview = (TextView *)data;
 	
 	TEXTVIEW_STATUSBAR_POP(textview);
+	textview->show_url_timeout_tag = 0;
 	return FALSE;
 }
 
@@ -2048,23 +2018,24 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 					g_free(fromname);
 				} else {
 					PrefsAccount *account = NULL;
-					FolderItem   *folder_item;
 
-					if (textview->messageview && textview->messageview->mainwin 
-					&&  textview->messageview->mainwin->summaryview 
-					&&  textview->messageview->mainwin->summaryview->folder_item) {
-						folder_item = textview->messageview->mainwin->summaryview->folder_item;
-						if (folder_item->prefs && folder_item->prefs->enable_default_account)
-							account = account_find_from_id(folder_item->prefs->default_account);
+						if (textview->messageview && textview->messageview->msginfo &&
+						    textview->messageview->msginfo->folder) {
+							FolderItem   *folder_item;
+
+							folder_item = textview->messageview->msginfo->folder;
+							if (folder_item->prefs && folder_item->prefs->enable_default_account)
+								account = account_find_from_id(folder_item->prefs->default_account);
+						}
+						compose_new(account, uri->uri + 7, NULL);
 					}
-					compose_new(account, uri->uri + 7, NULL);
-				}
-			else
-				if (uri_security_check(uri, textview) == TRUE)
-					open_uri(uri->uri, prefs_common.uri_cmd);
-			return TRUE;
-		}
-		g_free(trimmed_uri);
+			} else {
+				if (textview_uri_security_check(textview, uri) == TRUE) 
+					open_uri(uri->uri,
+						 prefs_common.uri_cmd);
+				return TRUE;
+			}
+			g_free(trimmed_uri);
 	}
 
 	return FALSE;

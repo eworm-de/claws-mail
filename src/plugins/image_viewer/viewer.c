@@ -110,7 +110,7 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 
 		pixbuf_scaled = gdk_pixbuf_scale_simple
 			(pixbuf, new_width, new_height, GDK_INTERP_BILINEAR);
-		gdk_pixbuf_unref(pixbuf);
+		g_object_unref(pixbuf);
 		pixbuf = pixbuf_scaled;
 	}
 
@@ -123,11 +123,11 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 			(GTK_SCROLLED_WINDOW(imageviewer->scrolledwin),
 			 imageviewer->image);
 	} else
-		gtk_pixmap_set(GTK_PIXMAP(imageviewer->image), pixmap, mask);
+		gtk_image_set_from_pixmap(GTK_IMAGE(imageviewer->image), pixmap, mask);
 
 	gtk_widget_show(imageviewer->image);
 
-	gdk_pixbuf_unref(pixbuf);
+	g_object_unref(pixbuf);
 }
 #else
 #if HAVE_GDK_IMLIB
@@ -164,14 +164,14 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 	gdk_imlib_render(im, new_width, new_height);
 
 	if (!imageviewer->image) {
-		imageviewer->image = gtk_pixmap_new(gdk_imlib_move_image(im),
-						    gdk_imlib_move_mask(im));
+		imageviewer->image = gtk_image_new_from_pixmap(gdk_imlib_move_image(im),
+						    	       gdk_imlib_move_mask(im));
 
 		gtk_scrolled_window_add_with_viewport
 			(GTK_SCROLLED_WINDOW(imageviewer->scrolledwin),
 			 imageviewer->image);
 	} else
-		gtk_pixmap_set(GTK_PIXMAP(imageviewer->image),
+		gtk_image_set_from_pixmap(GTK_IMAGE(imageviewer->image),
 			       gdk_imlib_move_image(im),
 			       gdk_imlib_move_mask(im));      
 
@@ -239,7 +239,7 @@ static void image_viewer_clear_viewer(MimeViewer *_mimeviewer)
 	image_viewer_set_notebook_page(_mimeviewer);
 
 	if (imageviewer->image != NULL)
-		gtk_pixmap_set(GTK_PIXMAP(imageviewer->image), NULL, NULL);
+		gtk_image_set_from_pixmap(GTK_IMAGE(imageviewer->image), NULL, NULL);
 	hadj = gtk_scrolled_window_get_hadjustment
 		(GTK_SCROLLED_WINDOW(imageviewer->scrolledwin));
 	gtk_adjustment_set_value(hadj, 0.0);
@@ -260,7 +260,7 @@ static void image_viewer_destroy_viewer(MimeViewer *_mimeviewer)
 	debug_print("image_viewer_destroy_viewer\n");
 
 	image_viewer_clear_viewer(_mimeviewer);
-	gtk_widget_unref(imageviewer->notebook);
+	g_object_unref(imageviewer->notebook);
 	g_free(imageviewer);
 }
 

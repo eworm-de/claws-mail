@@ -25,6 +25,7 @@ libsylpheedgtk_la_SOURCES = \
 	pluginwindow.c \
 	prefswindow.c \
 	progressdialog.c \
+	quicksearch.c \
 	sslcertwindow.c \
 	sylpheed-marshal.c
 
@@ -50,6 +51,7 @@ sylpheedgtkinclude_HEADERS = \
 	prefswindow.h \
 	gtkvscrollbutton.h \
 	progressdialog.h \
+	quicksearch.h \
 	sslcertwindow.h \
 	sylpheed-marshal.h
 

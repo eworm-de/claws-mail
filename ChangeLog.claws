@@ -1,3 +1,208 @@
+2004-06-25 [paul]	0.9.11cvs17
+
+	* sync with main 0.9.12cvs1
+		see ChangeLog 2004-06-23
+		
+	* src/gtk/menu.c
+		remove unused menu_toggle_toggle()
+
+2004-06-23 [christoph]	0.9.11cvs16
+
+	* src/folder.c
+	* src/procheader.c
+	* src/procmsg.h
+	* src/summaryview.c
+		scan the mime structure of multipart mails for correct
+		attachment, encryped and signed (with privacy API) part
+		detection
+
+2004-06-22 [paul]
+
+	* po/ru.po
+		updated by Pavlo Bohmat
+
+2004-06-20 [christoph]	0.9.11cvs15
+
+	* src/inc.c
+	* src/pop.[ch]
+		disconnect after authentication when doing POP before SMTP
+
+	(Closes Bug 393 Bad inerpretation of "Pop Before SMTP")
+
+2004-06-19 [christoph]	0.9.11cvs14
+
+	* src/folder.c
+		fix FolderItem name update
+
+	(Closes Bug 511 Folder-Renaming not reflected immediately)
+
+2004-06-17 [paul]	0.9.11cvs13
+	
+	* sync with main 0.9.12 release
+	  src/session.c
+		session_set_timeout(): fixed a bug that didn't
+	  	reset timeout_tag when interval is 0.
+
+2004-06-16 [christoph]	0.9.11cvs12
+
+	* src/textview.c
+		correctly clear the URL in the status bar
+
+2004-06-15 [christoph]	0.9.11cvs11
+
+	* src/summaryview.c
+		add missing gtk_widget_show()
+
+2004-06-11 [christoph]	0.9.11cvs10
+
+	* src/plugins/spamassassin/spamassassin.c
+		correctly check waitpid return code
+
+	(Closes Bug 396 Zombie process when spamassassin is called)
+
+2004-06-10 [christoph]	0.9.11cvs9
+
+	* src/mainwindow.c
+	* src/summaryview.[ch]
+	* src/gtk/Makefile.am
+	* src/gtk/quicksearch.c				** NEW **
+		separate quick search from summaryview
+
+2004-06-09 [christoph]	0.9.11cvs8
+
+	* src/inc.c
+		remove unused code
+
+	* src/textview.c
+		get folder for compose default account from MsgInfo and not
+		from SummaryView
+
+2004-06-09 [christoph]	0.9.11cvs7
+
+	* src/folder.[ch]
+		add information about added or removed messages to
+		FOLDER_ITEM_UPDATE hook
+
+	* src/imap_gtk.c
+	* src/mh_gtk.c
+		scan folder when removing a folder failed instead of
+		updating the summaryview
+
+2004-06-08 [paul]	0.9.11cvs6
+
+	* sync with main 0.9.11cvs2
+		see ChangeLog 2004-06-08
+
+2004-06-07 [christoph]	0.9.11cvs5
+
+	* configure.ac
+	* src/common/Makefile.am
+        	detect library providing 'encrypt' function
+
+2004-06-07 [paul]	0.9.11cvs4
+
+	* src/inc.c
+		sync with main, 'code cleanup'
+		
+	* tools/nautilus2sylpheed.sh
+		fix whitespace limitation. patch submitted by
+		Stephan Sachse <white@teg-clan.de>
+
+2004-06-04 [christoph]	0.9.11cvs3
+
+	* src/account.c
+	* src/action.[ch]
+	* src/addressbook.c
+	* src/addrindex.h
+	* src/folder.h
+	* src/folder_item_prefs.c
+	* src/inc.c
+	* src/main.c
+	* src/messageview.c
+	* src/mh_gtk.c
+	* src/prefs_themes.c
+	* src/procmime.c
+	* src/quote_fmt.h
+	* src/stock_pixmap.c
+	* src/toolbar.c
+		fix compiler warnings
+
+2004-06-03 [paul]	0.9.11cvs2
+
+	* src/msgcache.c
+		sync with main 0.9.11cvs1: "changed gint32 to
+	  	guint32 for some platforms"
+
+2004-06-02 [christoph]	0.9.11cvs1
+
+	* src/common/ssl.c
+		fix SSL_CTX variable name for older OpenSSL versions
+
+	(Closes Bug 503 fix compilation with older OpenSSL)
+
+2004-05-31 [paul]	0.9.11claws
+
+	* 0.9.11claws released
+
+2004-05-31 [paul]	0.9.10claws72
+
+	* po/es.po
+	  po/it.po
+	  po/ja.po
+	  po/pl.po
+	  po/sk.po
+	  po/sr.po
+	  po/zh_CN.po
+	  	update translations, submitted by Ricardo Mones Lastra,
+		Andrea Spadaccini, Rui Hirokawa, Emil, Andrej Kacian,
+		Urke MMI, and Hansom Young
+
+2004-05-25 [luke]	0.9.10claws71
+
+	* AUTHORS
+	* src/mimeview.c
+	* src/stockpixmap.[ch]
+	* src/Makefile.am
+	* src/pixmaps/privacy_emblem_encrypted.xpm	** NEW **
+	* src/pixmaps/privacy_emblem_failed.xpm		** NEW **
+	* src/pixmaps/privacy_emblem_passed.xpm		** NEW **
+	* src/pixmaps/privacy_emblem_signed.xpm		** NEW **
+	* src/pixmaps/privacy_emblem_warn.xpm		** NEW **
+
+		o Added privacy emblems from Jesper Shultz 
+		  <jesper@schultz-net.dk>
+		o Overlay emblems onto mimeview icons to indicate
+	          status of signature and if a message is encrypted
+	
+	* src/textview.c
+		remove unused color definitions (were used to 
+		indicate sig status)
+
+2004-05-25 [paul]	0.9.10claws70
+
+	* AUTHORS
+	  tools/Makefile.am
+	  tools/README
+	  tools/nautilus2sylpheed.sh		** NEW FILE **
+		add script to enable sending files from
+		nautilus.
+		Submitted by Reza Pakdel <hrpakdel@cpsc.ucalgary.ca>
+		
+	* tools/launch_firebird			** REMOVED **
+		removed as the standard "firefox '%s'" now functions
+		correctly
+
+2004-05-23 [paul]	0.9.10claws69
+
+	* src/compose.c
+		fix %X cursor point segfault
+		patch by Christoph
+
+2004-05-23 [christoph]	0.9.10claws68
+
+	* src/folder.c
+		fix folder moving
+
 2004-05-21 [paul]	0.9.10claws67
 
 	* sync with 0.9.10cvs17
