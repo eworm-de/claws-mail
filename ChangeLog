@@ -1,7 +1,16 @@
+2002-05-08
+
+	* src/procheader.c: procheader_date_parse(): fixed a bug that didn't
+	  parse date string like "Mon,6 May 2002 20:31:12 +0800".
+	  procheader_scan_date_string(): new. Separated string scanning
+	  part from procheader_date_parse().
+
 2002-05-07
 
 	* src/summary_search.c: summary_search_execute(): unlock while
 	  selecting summary row (thanks to Martin Schaaf).
+	* src/summaryview.c: summary_set_column_titles(): reversed the
+	  direction of the arrow so that it matches with Win/Mac style.
 
 2002-05-02
 

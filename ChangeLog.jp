@@ -1,7 +1,16 @@
+2002-05-08
+
+	* src/procheader.c: procheader_date_parse(): "Mon,6 May 2002 20:31:12
+	  +0800" のような日時文字列をパースできないバグを修正。
+	  procheader_scan_date_string(): 新規。 procheader_date_parse() から
+	  文字列スキャン部分を分離。
+
 2002-05-07
 
 	* src/summary_search.c: summary_search_execute(): サマリの行を選択
 	  するときにロックを解除するようにした(Martin Schaaf さん thanks)。
+	* src/summaryview.c: summary_set_column_titles(): Win/Mac のスタイル
+	  に合うように矢印の方向を逆にした。
 
 2002-05-02
 

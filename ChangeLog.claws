@@ -1,3 +1,8 @@
+2002-05-08 [paul]	0.7.5claws13
+
+	* sync with 0.7.5cvs11
+		see ChangeLog entry 2002-05-08
+
 2002-05-08 [paul]	0.7.5claws12
 
 	* src/mainwindow.c

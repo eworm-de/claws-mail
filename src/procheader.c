@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -702,6 +702,38 @@ gchar *procheader_get_fromname(const gchar *str)
 	return name;
 }
 
+static gint procheader_scan_date_string(const gchar *str,
+					gchar *weekday, gint *day,
+					gchar *month, gint *year,
+					gint *hh, gint *mm, gint *ss,
+					gchar *zone)
+{
+	gint result;
+
+	result = sscanf(str, "%10s %d %9s %d %2d:%2d:%2d %5s",
+			weekday, day, month, year, hh, mm, ss, zone);
+	if (result == 8) return 0;
+
+	result = sscanf(str, "%3s,%d %9s %d %2d:%2d:%2d %5s",
+			weekday, day, month, year, hh, mm, ss, zone);
+	if (result == 8) return 0;
+
+	result = sscanf(str, "%d %9s %d %2d:%2d:%2d %5s",
+			day, month, year, hh, mm, ss, zone);
+	if (result == 7) return 0;
+
+	*ss = 0;
+	result = sscanf(str, "%10s %d %9s %d %2d:%2d %5s",
+			weekday, day, month, year, hh, mm, zone);
+	if (result == 7) return 0;
+
+	result = sscanf(str, "%d %9s %d %2d:%2d %5s",
+			day, month, year, hh, mm, zone);
+	if (result == 6) return 0;
+
+	return -1;
+}
+
 time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 {
 	static gchar monthstr[] = "JanFebMarAprMayJunJulAugSepOctNovDec";
@@ -711,34 +743,17 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 	gint year;
 	gint hh, mm, ss;
 	gchar zone[6];
-	gint result;
 	GDateMonth dmonth;
 	struct tm t;
 	gchar *p;
 	time_t timer;
 
-	/* parsing date field... */
-	result = sscanf(src, "%10s %d %9s %d %2d:%2d:%2d %5s",
-			weekday, &day, month, &year, &hh, &mm, &ss, zone);
-	if (result != 8) {
-		result = sscanf(src, "%d %9s %d %2d:%2d:%2d %5s",
-				&day, month, &year, &hh, &mm, &ss, zone);
-		if (result != 7) {
-			ss = 0;
-			result = sscanf(src, "%10s %d %9s %d %2d:%2d %5s",
-					weekday, &day, month, &year, &hh, &mm, zone);
-			if (result != 7) {
-				result = sscanf(src, "%d %9s %d %2d:%2d %5s",
-						&day, month, &year, &hh, &mm,
-						zone);
-				if (result != 6) {
-					g_warning("Invalid date: %s\n", src);
-					if (dest && len > 0)
-						strncpy2(dest, src, len);
-					return 0;
-				}
-			}
-		}
+	if (procheader_scan_date_string(src, weekday, &day, month, &year,
+					&hh, &mm, &ss, zone) < 0) {
+		g_warning("Invalid date: %s\n", src);
+		if (dest && len > 0)
+			strncpy2(dest, src, len);
+		return 0;
 	}
 
 	/* Y2K compliant :) */
