@@ -304,8 +304,10 @@ static void check_signature (MimeInfo *mimeinfo, MimeInfo *partinfo, FILE *fp)
     }
 
     err = gpgme_op_verify (ctx, sig, text, &status);
-    if (err) 
+    if (err)  {
         debug_print ("gpgme_op_verify failed: %s\n", gpgme_strerror (err));
+        goto leave;
+    }
 
     /* FIXME: check what the heck this sig_status_full stuff is.
      * it should better go into sigstatus.c */
@@ -316,9 +318,8 @@ leave:
     result = gpgmegtk_sig_status_to_string(status);
     debug_print("verification status: %s\n", result);
     if (prefs_common.gpg_signature_popup)
-	gpgmegtk_sig_status_update (statuswindow,ctx);
+	gpgmegtk_sig_status_update (statuswindow, ctx);
 
-    g_assert (!err); /* FIXME: Hey: this may indeed happen */
     g_free (partinfo->sigstatus);
     partinfo->sigstatus = g_strdup (result);
 
