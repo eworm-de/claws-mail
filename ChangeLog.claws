@@ -1,3 +1,12 @@
+2003-10-24 [paul]	0.9.6claws49
+
+	* po/sk.po
+	  	update Slovak translation
+		submitted by Andrej Kacian
+		
+	* src/mainwindow.c
+		remove unknown menu entry /File/Add mailbox/mbox...
+
 2003-10-24 [hoa]	0.9.6claws48
 
 	* src/Makefile.am
