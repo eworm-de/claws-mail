@@ -742,7 +742,7 @@ static MsgInfo *mbox_parse_msg(FILE * fp, struct _message * msg,
 		}
 	}
 
-	msginfo = procheader_file_parse(fp, flags, FALSE, FALSE);
+	msginfo = procheader_parse_stream(fp, flags, FALSE, FALSE);
 
 	if (!msginfo) return NULL;
 

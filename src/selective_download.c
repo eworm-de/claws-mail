@@ -247,7 +247,7 @@ MsgInfo *sd_get_msginfo_from_file(const gchar *filename)
 	MsgInfo *msg;
 	MsgFlags msgflags = { 0, 0 };
 
-	msg  = procheader_parse(filename, msgflags, TRUE, FALSE);
+	msg  = procheader_parse_file(filename, msgflags, TRUE, FALSE);
 
 	if (!msg) {
 		msginfo->subject = _("(No Subject)");

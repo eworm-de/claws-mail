@@ -411,7 +411,7 @@ void filter_message(GSList *filtering_list, FolderItem *inbox,
 		return;
 	}
 
-	msginfo = procheader_parse(filename, msgflags, TRUE, FALSE);
+	msginfo = procheader_parse_file(filename, msgflags, TRUE, FALSE);
 	
 	g_free(filename);
 

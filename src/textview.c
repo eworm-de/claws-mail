@@ -1704,7 +1704,8 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_y:
 	case GDK_t:
 	case GDK_l:
-		if (messageview->type == MVIEW_MIME) {
+		if (messageview->type == MVIEW_MIME &&
+		    textview == messageview->mimeview->textview) {
 			KEY_PRESS_EVENT_STOP();
 			mimeview_pass_key_press_event(messageview->mimeview,
 						      event);
@@ -1712,8 +1713,15 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		}
 		/* fall through */
 	default:
-		if (summaryview)
-			summary_pass_key_press_event(summaryview, event);
+		if (summaryview &&
+		    event->window != messageview->mainwin->window->window) {
+			GdkEventKey tmpev = *event;
+
+			tmpev.window = messageview->mainwin->window->window;
+			KEY_PRESS_EVENT_STOP();
+			gtk_widget_event(messageview->mainwin->window,
+					 (GdkEvent *)&tmpev);
+		}
 		break;
 	}
 

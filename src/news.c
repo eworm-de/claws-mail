@@ -622,7 +622,7 @@ static gint news_remove_msg(Folder *folder, FolderItem *item, gint num)
 	if (filename == NULL)
 		return -1;
 
-	msginfo = procheader_parse(filename, msgflags, FALSE, FALSE);
+	msginfo = procheader_parse_file(filename, msgflags, FALSE, FALSE);
 	if (msginfo == NULL)
 		return -1;
 

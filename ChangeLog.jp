@@ -1,3 +1,35 @@
+2002-06-19
+
+	* src/compose.c: ファイルの Content-Type が text/* の場合は、その
+	  内容をチェックして最適な Content-Transfer-Encoding を指定
+	  (湯浅さん thanks)。
+
+2002-06-18
+
+	* src/textview.c: textview_key_pressed(): メニューショートカットを
+	  作動させるためにキープレスイベントをメインウィンドウに渡すように
+	  した(Alfons さん thanks)。
+
+2002-06-18
+
+	* src/folder.c: folder_build_tree(): 繰り下げを防ぐために mtime に
+	  atoi() の代わりに strtoul() を使用。
+	* src/imap.c:
+	  imap_move_msg()
+	  imap_move_msgs_with_dest()
+	  imap_copy_msgs_with_dest(): 複数メッセージのコピー/移動を妨げる
+	  バグを修正。
+	  imap_parse_envelope()
+	  imap_cmd_envelope(): メッセージの完全な情報を取得し、パーサを
+	  単純化するために ENVELOPE の代わりに RFC822.HEADER を使用。
+	  スレッド構築の際に References ヘッダが無視されていたバグを修正。
+	  imap_parse_one_address()
+	  imap_parse_address(): 削除。
+	  imap_get_header(): 新規。 RFC822 ヘッダを読みこみ新たに確保された
+	  文字列を返す。
+	* src/procheader.[ch]: procheader_parse() を procheader_parse_stream()
+	  に変更し、異なるインタフェースを追加。
+
 2002-06-17
 
 	* po/zh_TW.Big5.po: クラッシュを起こすミスを修正。
