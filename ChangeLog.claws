@@ -1,3 +1,12 @@
+2002-10-12 [colin]	0.8.5claws22
+
+	* src/folderview.c
+		Fix a bug after "Check for new messages":
+		If a folder was opened, it was still selected at
+		the end of the check, but displayed empty.
+	* src/mainwindow.c
+		Remove unnecessary check
+
 2002-10-12 [paul]
 
 	* tools/README
