@@ -235,9 +235,9 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		gtk_widget_destroy(compose->window);
 		return FALSE;
 
-	case MATCHACTION_BOUNCE:
+	case MATCHACTION_REDIRECT:
 		account = account_find_from_id(action->account_id);
-		compose = compose_bounce(account, info);
+		compose = compose_redirect(account, info);
 		if (compose->account->protocol == A_NNTP)
 			break;
 		else
@@ -301,7 +301,7 @@ static gboolean filtering_is_final_action(FilteringProp *filtering)
 	case MATCHACTION_MARK_AS_UNREAD:
 	case MATCHACTION_FORWARD:
 	case MATCHACTION_FORWARD_AS_ATTACHMENT:
-	case MATCHACTION_BOUNCE:
+	case MATCHACTION_REDIRECT:
 		return FALSE; /* MsgInfo still valid for message */
 	default:
 		return FALSE;
@@ -452,7 +452,7 @@ gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *act
 		g_snprintf(dest, destlen, "%s", command_str);
 		return dest;
 
-	case MATCHACTION_BOUNCE:
+	case MATCHACTION_REDIRECT:
 	case MATCHACTION_FORWARD:
 	case MATCHACTION_FORWARD_AS_ATTACHMENT:
 		g_snprintf(dest, destlen, "%s %d \"%s\"", command_str, action->account_id, action->destination); 

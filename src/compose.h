@@ -62,7 +62,7 @@ typedef enum
 	COMPOSE_FORWARD,
 	COMPOSE_FORWARD_AS_ATTACH,
 	COMPOSE_FORWARD_INLINE,
-	COMPOSE_BOUNCE,
+	COMPOSE_REDIRECT,
 	COMPOSE_NEW,
 	COMPOSE_REEDIT
 } ComposeMode;
@@ -199,7 +199,7 @@ struct _Compose
  	/* Priority */
  	gint priority;
 
-	gchar *bounce_filename;
+	gchar *redirect_filename;
 };
 
 struct _AttachInfo
@@ -235,7 +235,7 @@ Compose *compose_forward		(PrefsAccount *account,
 					 const gchar	*body);
 Compose *compose_forward_multiple	(PrefsAccount	*account, 
 					 GSList		*msginfo_list);
-Compose *compose_bounce			(PrefsAccount	*account,
+Compose *compose_redirect		(PrefsAccount	*account,
 					 MsgInfo	*msginfo);
 void compose_reedit			(MsgInfo	*msginfo);
 

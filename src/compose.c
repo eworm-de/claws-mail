@@ -685,7 +685,7 @@ Compose *compose_new(PrefsAccount *account)
 	return compose_generic_new(account, NULL, NULL);
 }
 
-Compose *compose_bounce(PrefsAccount *account, MsgInfo *msginfo)
+Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 {
 	Compose *c;
 	gchar *filename;
@@ -697,7 +697,8 @@ Compose *compose_bounce(PrefsAccount *account, MsgInfo *msginfo)
 	if (filename == NULL)
 		return NULL;
 
-	c->bounce_filename = filename;
+	c->redirect_filename = filename;
+	
 	if (msginfo->subject)
 #ifdef WIN32
 	{
@@ -2992,8 +2993,8 @@ static gboolean compose_use_attach(Compose *compose) {
     return(gtk_clist_get_row_data(GTK_CLIST(compose->attach_clist), 0) != NULL);
 }
 
-static gint compose_bounce_write_headers_from_headerlist(Compose *compose, 
-							 FILE *fp)
+static gint compose_redirect_write_headers_from_headerlist(Compose *compose, 
+							   FILE *fp)
 {
 	gchar buf[BUFFSIZE];
 	gchar *str;
@@ -3005,7 +3006,7 @@ static gint compose_bounce_write_headers_from_headerlist(Compose *compose,
 	gchar *cc_hdr;
 	gchar *to_hdr;
 
-	debug_print(_("Writing bounce header\n"));
+	debug_print(_("Writing redirect header\n"));
 
 	header_w_colon = g_strconcat("To:", NULL);
 	to_hdr = (prefs_common.trans_hdr ? gettext(header_w_colon) : header_w_colon);
@@ -3043,7 +3044,7 @@ static gint compose_bounce_write_headers_from_headerlist(Compose *compose,
 	return(0);
 }
 
-static gint compose_bounce_write_headers(Compose *compose, FILE *fp)
+static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 {
 	gchar buf[BUFFSIZE];
 	gchar *str;
@@ -3068,7 +3069,7 @@ static gint compose_bounce_write_headers(Compose *compose, FILE *fp)
 		fprintf(fp, "Resent-From: %s\n", compose->account->address);
 
 	/* To */
-	compose_bounce_write_headers_from_headerlist(compose, fp);
+	compose_redirect_write_headers_from_headerlist(compose, fp);
 
 	/* separator between header and body */
 	fputs("\n", fp);
@@ -3076,14 +3077,14 @@ static gint compose_bounce_write_headers(Compose *compose, FILE *fp)
 	return 0;
 }
 
-static gint compose_bounce_write_to_file(Compose *compose, const gchar *file)
+static gint compose_redirect_write_to_file(Compose *compose, const gchar *file)
 {
 	FILE *fp;
 	FILE *fdest;
 	size_t len;
 	gchar buf[BUFFSIZE];
 
-	if ((fp = fopen(compose->bounce_filename, "rb")) == NULL) {
+	if ((fp = fopen(compose->redirect_filename, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return -1;
 	}
@@ -3111,7 +3112,7 @@ static gint compose_bounce_write_to_file(Compose *compose, const gchar *file)
 		if (fputs(buf, fdest) == -1)
 			goto error;
 
-		if (!prefs_common.bounce_keep_from) {
+		if (!prefs_common.redirect_keep_from) {
 			if (g_strncasecmp(buf, "From:",
 					  strlen("From:")) == 0) {
 				fputs(" (by way of ", fdest);
@@ -3135,20 +3136,27 @@ static gint compose_bounce_write_to_file(Compose *compose, const gchar *file)
 			goto error;
 	}
 
-	compose_bounce_write_headers(compose, fdest);
+	compose_redirect_write_headers(compose, fdest);
 
-	while ((len = fread(buf, sizeof(gchar), BUFFSIZE, fp)) > 0) {
-		if (fwrite(buf, sizeof(gchar), len, fdest) == -1)
+	while ((len = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
+		if (fwrite(buf, sizeof(gchar), len, fdest) != len) {
+			FILE_OP_ERROR(file, "fwrite");
 			goto error;
+		}
 	}
 
-	fclose(fdest);
 	fclose(fp);
+	if (fclose(fdest) == EOF) {
+		FILE_OP_ERROR(file, "fclose");
+		unlink(file);
+		return -1;
+	}
 
 	return 0;
  error:
-	fclose(fdest);
 	fclose(fp);
+	fclose(fdest);
+	unlink(file);
 
 	return -1;
 }
@@ -3474,8 +3482,8 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	tmp2 = g_strdup_printf("%s%ctmp%d", g_get_tmp_dir(),
 				      G_DIR_SEPARATOR, (gint)compose);
 
-	if (compose->bounce_filename != NULL) {
-		if (compose_bounce_write_to_file(compose, tmp2) < 0) {
+	if (compose->redirect_filename != NULL) {
+		if (compose_redirect_write_to_file(compose, tmp2) < 0) {
 			unlink(tmp2);
 			lock = FALSE;
 			return -1;
@@ -4890,7 +4898,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->exteditor_readdes = -1;
 	compose->exteditor_tag     = -1;
 
-	compose->bounce_filename = NULL;
+	compose->redirect_filename = NULL;
 	compose->undostruct = undostruct;
 #if USE_PSPELL
 	
@@ -5385,8 +5393,8 @@ static void compose_destroy(Compose *compose)
 	g_free(compose->msgid);
 	g_free(compose->boundary);
 
-	if (compose->bounce_filename)
-		g_free(compose->bounce_filename);
+	if (compose->redirect_filename)
+		g_free(compose->redirect_filename);
 
 	g_free(compose->exteditor_file);
 
@@ -6490,7 +6498,7 @@ static void compose_attach_cb(gpointer data, guint action, GtkWidget *widget)
 	Compose *compose = (Compose *)data;
 	GList *file_list;
 
-	if (compose->bounce_filename != NULL)
+	if (compose->redirect_filename != NULL)
 		return;
 
 	file_list = filesel_select_multiple_files(_("Select file"), NULL);
