@@ -1,7 +1,8 @@
-2003-05-19 [christoph]
+2003-05-19 [paul]	0.8.11claws167
 
-	* src/Makefile.am
-		add -export-dynamic for linking
+	* src/plugins/clamav/Makefile.am
+	  configure.ac
+	  	link clamav_lib to the plugin and not to the main program
 
 2003-05-19 [paul]	0.8.11claws166
 
@@ -24,7 +25,7 @@
 	* src/plugins/dillo_viewer/dillo_viewer.c
 	* src/plugins/image_viewer/viewer.c
 	* src/plugins/mathml_viewer/mathml_viewer.c
-		let a viewer have a list of Content-Types
+		let a viewer to have a list of Content-Types
 
 2003-05-18 [paul]	0.8.11claws162
 

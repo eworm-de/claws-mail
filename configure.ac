@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=11
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws166
+EXTRA_VERSION=claws167
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -445,7 +445,9 @@ if test x"$ac_cv_enable_clamav_plugin" = xyes; then
 	then
 		AC_MSG_ERROR(clamav library not found)
 	fi
-	LIBS="${clamav_lib} ${LIBS}"
+	CLAMAV_LIBS="${clamav_lib}"
+	AC_SUBST(CLAMAV_LIBS)
+
 	PLUGINS="clamav $PLUGINS"
 fi
 
