@@ -1175,7 +1175,8 @@ void compose_reedit(MsgInfo *msginfo)
 	compose = compose_create(account, COMPOSE_REEDIT);
 	compose->targetinfo = procmsg_msginfo_copy(msginfo);
 
-        if (msginfo->folder->stype == F_QUEUE) {
+        if (msginfo->folder->stype == F_QUEUE
+	||  msginfo->folder->stype == F_DRAFT) {
 		gchar queueheader_buf[BUFFSIZE];
 
 		/* Set message save folder */
@@ -4009,6 +4010,15 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 			} else
 				fprintf(fp, "Disposition-Notification-To: %s\n", compose->account->address);
 		}
+	}
+	
+	/* Save copy folder */
+	if(is_draft && gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
+		gchar *savefolderid;
+		
+		savefolderid = gtk_editable_get_chars(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
+		fprintf(fp, "SCF:%s\n", savefolderid);
+		g_free(savefolderid);
 	}
 
 	/* separator between header and body */
