@@ -1391,9 +1391,12 @@ const gchar *conv_get_current_locale(void)
 	const gchar *cur_locale;
 
 	cur_locale = g_getenv("LC_ALL");
-	if (!cur_locale) cur_locale = g_getenv("LC_CTYPE");
-	if (!cur_locale) cur_locale = g_getenv("LANG");
-	if (!cur_locale) cur_locale = setlocale(LC_CTYPE, NULL);
+	if (!cur_locale || !strlen(cur_locale)) 
+		cur_locale = g_getenv("LC_CTYPE");
+	if (!cur_locale || !strlen(cur_locale)) 
+		cur_locale = g_getenv("LANG");
+	if (!cur_locale || !strlen(cur_locale)) 
+		cur_locale = setlocale(LC_CTYPE, NULL);
 
 /*	debug_print("current locale: %s\n",
 		    cur_locale ? cur_locale : "(none)"); */
