@@ -4213,12 +4213,18 @@ static gint back_display_row_fetcher(GtkSText *text,
 									 LineParams *params,
 									 bdrf *data)
 {
-	if (data->start == params->start.index
-	&&  data->end   == params->end.index) {
+	if (data->start <= params->start.index
+	&&  data->end   >= params->end.index) {
+		TDEBUG( ("%s(%d) - FOUND search (%d, %d), current (%d, %d)", __FILE__, __LINE__, 
+		          data->start, data->end,
+				  params->start.index, params->end.index) )
 		data->found = TRUE;
 		return TRUE;
 	}
 	else {
+		TDEBUG( ("%s(%d) - NEXT search (%d, %d), current (%d, %d)", __FILE__, __LINE__, 
+		          data->start, data->end,
+				  params->start.index, params->end.index) );
 		data->lp = *params;
 		return FALSE;
 	}
@@ -4234,6 +4240,7 @@ static void move_cursor_to_display_row_up(GtkSText *text)
 
 	/* top of buffer */
 	if (mark.index == 0) {
+		TDEBUG ( ("%s(%d) top of buffer", __FILE__, __LINE__) );	
 		return;
 	}
 
@@ -4248,23 +4255,30 @@ static void move_cursor_to_display_row_up(GtkSText *text)
 	/* get the previous line */
 	if (mark.index - 1 > 0) {
 		decrement_mark(&mark);
+		TDEBUG( ("%s(%d) mark decrement", __FILE__, __LINE__) );
 		if (mark.index - 1 > 0) {
-			mark = find_this_line_start_mark(text, mark.index -1,  &mark);
+			GtkSPropertyMark smark = mark;
+			TDEBUG( ("%s(%d) finding line start mark", __FILE__, __LINE__) );
+			mark = find_this_line_start_mark(text, smark.index -1,  &smark);
 		}			
 	}		
 	
 	/* let's get the previous display line */
+	TDEBUG( ("%s(%d) iterating to get display lines", __FILE__, __LINE__) );
 	line_params_iterate(text, &mark, NULL, FALSE, &data, 
 						(LineIteratorFunction)back_display_row_fetcher);	
+	TDEBUG( ("%s(%d) done iterating. found = %d", __FILE__, __LINE__, data.found) );					
 		
 	if (data.found) {
 		if (col < text->persist_column) col = text->persist_column; 
 		else text->persist_column = col;
 		new_index = data.lp.start.index + col;
+		TDEBUG( ("%s(%d) - new index = %d", __FILE__, __LINE__, new_index) );
 		if (new_index > data.lp.end.index) {
 			new_index = data.lp.end.index;
 		}
 		/* and move the cursor */
+		TDEBUG( ("%s(%d) - setting index", __FILE__, __LINE__) );
 		gtk_stext_set_position_X(GTK_EDITABLE(text), new_index);		
 	}
 }
@@ -4285,7 +4299,7 @@ static gint forward_display_row_fetcher(GtkSText *text,
 		data->completed = TRUE;
 		return TRUE;
 	}
-	else if (data->start == lp->start.index && data->end == lp->end.index) {
+	else if (data->start <= lp->start.index && data->end >= lp->end.index) {
 		data->found = TRUE;
 		return FALSE;
 	}
@@ -5541,7 +5555,7 @@ undraw_cursor (GtkSText* text, gint absolute)
 	      draw_bg_rect (text, &text->cursor_mark,
 		              	text->cursor_pos_x - 1,
 					    text->cursor_pos_y - text->cursor_char_offset - font->ascent,
-						2, font->ascent + 1, FALSE);
+						2, font->descent + font->ascent + 1, FALSE);
 											  
 	 }
       
@@ -5639,9 +5653,9 @@ draw_cursor (GtkSText* text, gint absolute)
 		gdk_gc_set_line_attributes(text->gc, 2, GDK_LINE_SOLID, GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
 		gdk_gc_set_foreground(text->gc, &GTK_WIDGET (text)->style->text[GTK_STATE_NORMAL]);
 	    gdk_draw_line(text->text_area, text->gc, text->cursor_pos_x,
-		              text->cursor_pos_y - text->cursor_char_offset,
+		              text->cursor_pos_y + font->descent - text->cursor_char_offset,
 					  text->cursor_pos_x,
-					  text->cursor_pos_y - text->cursor_char_offset - font->ascent);
+					  text->cursor_pos_y - text->cursor_char_offset - font->ascent );
 												   
 	  }
 	  gdk_gc_copy(text->gc, gc);						
