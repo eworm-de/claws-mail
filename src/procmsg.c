@@ -942,6 +942,10 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	g_free(msginfo->inreplyto);
 	g_free(msginfo->xref);
 
+	g_free(msginfo->partial_recv);
+	g_free(msginfo->account_server);
+	g_free(msginfo->account_login);
+
 	g_free(msginfo);
 }
 

@@ -1040,7 +1040,8 @@ static gint inc_recv_message(Session *session, const gchar *msg, gpointer data)
 	return 0;
 }
 
-static gint inc_drop_message(Pop3Session *session, const gchar *file, gboolean update_file)
+static gint inc_drop_message(Pop3Session *session, const gchar *file, 
+			     gboolean update_file)
 {
 	FolderItem *inbox;
 	FolderItem *dropfolder;
@@ -1061,11 +1062,15 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file, gboolean u
 		return -1;
 	}
 
+	if (FOLDER_TYPE(inbox->folder) != F_MH)
+		update_file = FALSE;
+
 	/* CLAWS: claws uses a global .processing folder for the filtering. */
 	dropfolder = folder_get_default_processing();
 
 	/* add msg file to drop folder */
-	if ((msgnum = folder_item_add_msg(dropfolder, file, NULL, !update_file)) < 0) {
+	if ((msgnum = folder_item_add_msg(
+			dropfolder, file, NULL, !update_file)) < 0) {
 		unlink(file);
 		return -1;
 	}

@@ -1,3 +1,18 @@
+2004-07-08 [colin]	0.9.11cvs17.13
+
+	* src/inc.c
+	* src/messageview.c
+	* src/pop.c
+	* src/pop.h
+	* src/procmsg.c
+		Fix partial-downloading issues:
+			catch unsupported TOP
+			don't delete partially downloaded mails before 5 days
+			don't update existing with non-MH folders; that'll
+			make dups, but it's better than trashing the folder
+			free new msginfo parts
+		Fix indentation ;-)
+
 2004-07-08 [colin]	0.9.11cvs17.12
 
 	* src/common/smtp.c

@@ -154,8 +154,11 @@ struct _Pop3Session
 
 
 Session *pop3_session_new	(PrefsAccount	*account);
-GHashTable *pop3_get_uidl_table	(PrefsAccount	*account, Pop3Session *session);
+void pop3_get_uidl_table	(PrefsAccount	*account, Pop3Session *session);
 gint pop3_write_uidl_list	(Pop3Session	*session);
-int pop3_mark_for_download(const gchar *server, const gchar *login, const gchar *uidl, const gchar *filename);
+int pop3_mark_for_download	(const gchar 	*server, 
+				 const gchar 	*login, 
+				 const gchar 	*uidl, 
+				 const gchar 	*filename);
 
 #endif /* __POP_H__ */
