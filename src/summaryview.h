@@ -215,8 +215,9 @@ gint summary_write_cache	  (SummaryView		*summaryview);
 void summary_pass_key_press_event (SummaryView		*summaryview,
 				   GdkEventKey		*event);
 
-void summary_redisplay_msg	  (SummaryView		*summaryview,
+void summary_display_msg_selected (SummaryView		*summaryview,
 				   gboolean		 all_headers);
+void summary_redisplay_msg	  (SummaryView		*summaryview);
 void summary_open_msg		  (SummaryView		*summaryview);
 void summary_view_source	  (SummaryView		*summaryview);
 void summary_reedit		  (SummaryView		*summaryview);

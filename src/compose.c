@@ -5497,7 +5497,7 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 		g_snprintf(buf, sizeof(buf), def_cmd, file);
 	}
 
-	cmdline = g_strsplit(buf, " ", 1024);
+	cmdline = strsplit_with_quote(buf, " ", 1024);
 	execvp(cmdline[0], cmdline);
 
 	perror("execvp");

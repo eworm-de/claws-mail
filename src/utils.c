@@ -1303,41 +1303,20 @@ off_t get_file_size_as_crlf(const gchar *file)
 {
 	FILE *fp;
 	off_t size = 0;
-	gint left;
-	gint line_len;
-	gchar buf[BUFSIZ];
-	gchar *p, *prev;
+	gchar buf[BUFFSIZE];
 
 	if ((fp = fopen(file, "r")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return -1;
 	}
 
-	while ((left = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
-		prev = buf;
-
-		if (left < sizeof(buf) && ferror(fp))
-			break;
-
-		do {
-			p = memchr(prev, '\n', left);
-			if (p != NULL) {
-				line_len = p - prev;
-				if (p > buf && *(p - 1) == '\r')
-					size += line_len + 1;
-				else
-					size += line_len + 2;
-				left -= line_len + 1;
-				prev = p + 1;
-			} else {
-				size += left;
-				break;
-			}
-		} while (left > 0);
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		strretchomp(buf);
+		size += strlen(buf) + 2;
 	}
 
 	if (ferror(fp)) {
-		FILE_OP_ERROR(file, "fread");
+		FILE_OP_ERROR(file, "fgets");
 		size = -1;
 	}
 

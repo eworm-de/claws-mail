@@ -1037,10 +1037,10 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 
 	if (summaryview->folder_item->folder->type != F_NEWS) {
 		menu_set_sensitive(ifactory, "/Move...", TRUE);
-		menu_set_sensitive(ifactory, "/Copy...", TRUE);
 		menu_set_sensitive(ifactory, "/Delete", TRUE);
 	}
 
+	menu_set_sensitive(ifactory, "/Copy...", TRUE);
 	menu_set_sensitive(ifactory, "/Execute", TRUE);
 
         menu_set_sensitive(ifactory, "/Mark", TRUE);
@@ -2378,14 +2378,22 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	summary_unlock(summaryview);
 }
 
-void summary_redisplay_msg(SummaryView *summaryview, gboolean all_headers)
+void summary_display_msg_selected(SummaryView *summaryview,
+				  gboolean all_headers)
+{
+	summaryview->displayed = NULL;
+	summary_display_msg_full(summaryview, summaryview->selected, FALSE,
+				 all_headers);
+}
+
+void summary_redisplay_msg(SummaryView *summaryview)
 {
 	GtkCTreeNode *node;
 
 	if (summaryview->displayed) {
 		node = summaryview->displayed;
 		summaryview->displayed = NULL;
-		summary_display_msg_full(summaryview, node, FALSE, all_headers);
+		summary_display_msg(summaryview, node);
 	}
 }
 
@@ -3188,8 +3196,7 @@ void summary_copy_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 	GList *cur;
 
 	if (!to_folder) return;
-	if (!summaryview->folder_item ||
-	    summaryview->folder_item->folder->type == F_NEWS) return;
+	if (!summaryview->folder_item) return;
 
 	if (summary_is_locked(summaryview)) return;
 
@@ -3219,8 +3226,7 @@ void summary_copy_to(SummaryView *summaryview)
 {
 	FolderItem *to_folder;
 
-	if (!summaryview->folder_item ||
-	    summaryview->folder_item->folder->type == F_NEWS) return;
+	if (!summaryview->folder_item) return;
 
 	to_folder = foldersel_folder_sel(NULL, NULL);
 	summary_copy_selected_to(summaryview, to_folder);
@@ -3332,8 +3338,7 @@ gboolean summary_execute(SummaryView *summaryview)
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
 	GtkCTreeNode *node, *next;
 
-	if (!summaryview->folder_item ||
-	    summaryview->folder_item->folder->type == F_NEWS) return FALSE;
+	if (!summaryview->folder_item) return FALSE;
 
 	if (summary_is_locked(summaryview)) return FALSE;
 	summary_lock(summaryview);
@@ -3863,7 +3868,7 @@ static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
 
 	if (global_processing == NULL) {
 		/* old filtering */
-		file = procmsg_get_message_file_path(msginfo);
+		file = procmsg_get_message_file(msginfo);
 		dest = filter_get_dest_folder(prefs_common.fltlist, file);
 		g_free(file);
 
@@ -4389,7 +4394,7 @@ void summary_set_column_order(SummaryView *summaryview)
 	if (!summaryview->displayed)
 		messageview_clear(summaryview->messageview);
 	else
-		summary_redisplay_msg(summaryview, TRUE);
+		summary_redisplay_msg(summaryview);
 }
 
 
@@ -4605,7 +4610,7 @@ static void summary_execute_cb(SummaryView *summaryview, guint action,
 static void summary_show_all_header_cb(SummaryView *summaryview,
 				       guint action, GtkWidget *widget)
 {
-	summary_redisplay_msg(summaryview, TRUE);
+	summary_display_msg_selected(summaryview, TRUE);
 }
 
 static void summary_add_address_cb(SummaryView *summaryview,
@@ -4676,9 +4681,7 @@ static void summary_start_drag(GtkWidget *widget, gint button, GdkEvent *event,
 	g_return_if_fail(summaryview != NULL);
 	g_return_if_fail(summaryview->folder_item != NULL);
 	g_return_if_fail(summaryview->folder_item->folder != NULL);
-	if (summaryview->folder_item->folder->type == F_NEWS ||
-	    summaryview->selected == NULL)
-		return;
+	if (summaryview->selected == NULL) return;
 
 	list = gtk_target_list_new(summary_drag_types, 1);
 
@@ -4704,7 +4707,7 @@ static void summary_drag_data_get(GtkWidget        *widget,
 		     cur != NULL; cur = cur->next) {
 			msginfo = gtk_ctree_node_get_row_data
 				(ctree, GTK_CTREE_NODE(cur->data));
-			tmp2 = procmsg_get_message_file_path(msginfo);
+			tmp2 = procmsg_get_message_file(msginfo);
 			if (!tmp2) continue;
 			tmp1 = g_strconcat("file:/", tmp2, NULL);
 			g_free(tmp2);

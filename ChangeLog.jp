@@ -1,3 +1,22 @@
+2002-02-05
+
+	* src/compose.c: compose_exec_ext_editor_real(): g_strsplit() を
+	  strsplit_with_quote() で置き換えた。
+	* src/foldersel.c
+	  src/folderview.c: folderview_drag_motion_cb(): 少しコードの整理。
+	* src/folderview.c:
+	  folderview_drag_motion_cb()
+	  folderview_drag_received_cb(): IMAP4 フォルダへのドロップを可能
+	  にした。
+	* src/utils.c: get_file_size_as_crlf(): fread() の代わりに fgets()
+	  を使用。
+	* src/imap.c
+	  imap_copy_msg()
+	  imap_copy_msgs_with_dest(): メッセージのソースが現在のメール
+	  ボックスと異なっていれば imap_add_msg() を使用するようにした。
+	  正しい値を返すようにした。
+	  imap_cmd_append(): APPEND コマンドを正しく実装。
+
 2002-02-04
 
 	* src/mainwindow.c
@@ -8,6 +27,21 @@
 	* src/mainwindow.c
 	  src/prefs_common.c: 「新規メッセージを作成」のデフォルトの
 	  ショートカットを変更。
+	* src/mainwindow.c
+	  src/summaryview.[ch]: summary_display_msg_selected(): 新規。
+	  「全てのヘッダを表示」を選択したら選択されたメッセージを表示
+	  するようにした。
+	* src/mh.c
+	  src/sourcewindow.c: いくつかの procmsg_get_message_file_path()
+	  を procmsg_get_message_file() に変更し、メッセージが確実に
+	  取得されているようにした。
+	* src/folderview.c: folderview_drag_motion_cb(): 任意のフォルダ
+	  から MH フォルダへの DnD を許可。
+	  folderview_drag_received_cb(): ドラッグ元フォルダがニュース
+	  あるいは IMAP の場合メッセージを移動するかわりにコピーするように
+	  した。
+	* src/mainwindow.c
+	  src/summaryview.c: ニュースフォルダからのコピーを許可。
 
 2002-02-03
 

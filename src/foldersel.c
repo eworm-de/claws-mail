@@ -63,17 +63,26 @@ static FolderItem *folder_item;
 
 static gboolean cancelled;
 
-static void foldersel_create(void);
-static void foldersel_init(void);
-static void foldersel_set_tree(Folder *cur_folder);
-static void foldersel_selected(GtkCList *clist, gint row, gint column,
-			       GdkEvent *event, gpointer data);
+static void foldersel_create	(void);
+static void foldersel_init	(void);
+static void foldersel_set_tree	(Folder		*cur_folder);
+static void foldersel_selected	(GtkCList	*clist,
+				 gint		 row,
+				 gint		 column,
+				 GdkEvent	*event,
+				 gpointer	 data);
 
-static void foldersel_ok(GtkButton *button, gpointer data);
-static void foldersel_cancel(GtkButton *button, gpointer data);
-static void foldersel_activated(void);
-static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data);
-static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
+static void foldersel_ok	(GtkButton	*button,
+				 gpointer	 data);
+static void foldersel_cancel	(GtkButton	*button,
+				 gpointer	 data);
+static void foldersel_activated	(void);
+static gint delete_event	(GtkWidget	*widget,
+				 GdkEventAny	*event,
+				 gpointer	 data);
+static void key_pressed		(GtkWidget	*widget,
+				 GdkEventKey	*event,
+				 gpointer	 data);
 
 FolderItem *foldersel_folder_sel(Folder *cur_folder,
 				 const gchar *default_folder)

@@ -129,7 +129,7 @@ void source_window_show_msg(SourceWindow *sourcewin, MsgInfo *msginfo)
 
 	g_return_if_fail(msginfo != NULL);
 
-	file = procmsg_get_message_file_path(msginfo);
+	file = procmsg_get_message_file(msginfo);
 	g_return_if_fail(file != NULL);
 
 	if ((fp = fopen(file, "r")) == NULL) {

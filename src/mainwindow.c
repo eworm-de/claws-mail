@@ -1074,7 +1074,7 @@ void main_window_reflect_prefs_all(void)
 		else
 			gtk_widget_show(mainwin->exec_btn);
 
-		summary_redisplay_msg(mainwin->summaryview, FALSE);
+		summary_redisplay_msg(mainwin->summaryview);
 		headerview_set_visibility(mainwin->messageview->headerview,
 					  prefs_common.display_header_pane);
 	}
@@ -1365,11 +1365,12 @@ typedef enum
 	M_EXEC                = 1 << 4,
 	M_ALLOW_REEDIT        = 1 << 5,
 	M_HAVE_ACCOUNT        = 1 << 6,
-	M_THREADED            = 1 << 7,
+	M_THREADED	      = 1 << 7,
 	M_UNTHREADED	      = 1 << 8,
-	M_NEWS                = 1 << 9,
-	M_HAVE_NEWS_ACCOUNT   = 1 << 10,
-	M_HIDE_READ_MSG	      = 1 << 11
+	M_ALLOW_DELETE	      = 1 << 9,
+	M_NEWS                = 1 << 10,
+	M_HAVE_NEWS_ACCOUNT   = 1 << 11,
+	M_HIDE_READ_MSG	      = 1 << 12
 } SensitiveCond;
 
 static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
@@ -1386,10 +1387,13 @@ static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	if (selection != SUMMARY_NONE)
 		state |= M_MSG_EXIST;
 	if (item) {
+		state |= M_EXEC;
 		if (item->threaded)
 			state |= M_THREADED;
 		else
-			state |= M_UNTHREADED;
+			state |= M_UNTHREADED;	
+		if (item->folder->type != F_NEWS)
+			state |= M_ALLOW_DELETE;
 
 		if (selection == SUMMARY_NONE && item->hide_read_msgs
 		    || selection != SUMMARY_NONE)
@@ -1400,8 +1404,6 @@ static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		state |= M_TARGET_EXIST;
 	if (selection == SUMMARY_SELECTED_SINGLE)
 		state |= M_SINGLE_TARGET_EXIST;
-	if (item && item->folder->type != F_NEWS)
-		state |= M_EXEC;
 	if (mainwin->summaryview->folder_item &&
 	    mainwin->summaryview->folder_item->folder->type == F_NEWS)
 		state |= M_NEWS;
@@ -1444,7 +1446,7 @@ void main_window_set_toolbar_sensitive(MainWindow *mainwin)
 		/* {mainwin->prefs_btn      , M_UNLOCKED},
 		{mainwin->account_btn    , M_UNLOCKED}, */
 		{mainwin->next_btn        , M_MSG_EXIST},
-		{mainwin->delete_btn      , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
+		{mainwin->delete_btn      , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 		{mainwin->exec_btn        , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
 		{NULL, 0}
 	};
@@ -1510,11 +1512,11 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Forward"               , M_HAVE_ACCOUNT|M_TARGET_EXIST},
         	{"/Message/Bounce"		  , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{"/Message/Re-edit"		  , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
-		{"/Message/Move..."		  , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Message/Move..."		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 		{"/Message/Copy..."		  , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Message/Delete" 		  , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Message/Delete" 		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 		{"/Message/Mark"   		  , M_TARGET_EXIST},
-		{"/Message/Delete duplicated messages", M_MSG_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Message/Delete duplicated messages", M_MSG_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 
 		{"/Tool/Add sender to address book", M_SINGLE_TARGET_EXIST},
 		{"/Tool/Filter messages"           , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
@@ -2614,7 +2616,7 @@ static void view_source_cb(MainWindow *mainwin, guint action,
 static void show_all_header_cb(MainWindow *mainwin, guint action,
 			       GtkWidget *widget)
 {
-	summary_redisplay_msg(mainwin->summaryview, TRUE);
+	summary_display_msg_selected(mainwin->summaryview, TRUE);
 }
 
 static void reedit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
@@ -2665,7 +2667,7 @@ static void set_charset_cb(MainWindow *mainwin, guint action,
 	g_free(prefs_common.force_charset);
 	prefs_common.force_charset = str ? g_strdup(str) : NULL;
 
-	summary_redisplay_msg(mainwin->summaryview, FALSE);
+	summary_redisplay_msg(mainwin->summaryview);
 
 	debug_print(_("forced charset: %s\n"), str ? str : "Auto-Detect");
 }

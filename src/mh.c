@@ -269,7 +269,7 @@ gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	debug_print(_("Moving message %s%c%d to %s ...\n"),
 		    msginfo->folder->path, G_DIR_SEPARATOR,
 		    msginfo->msgnum, dest->path);
-	srcfile = procmsg_get_message_file_path(msginfo);
+	srcfile = procmsg_get_message_file(msginfo);
 
 	destfile = mh_get_newmsg_filename(dest);
 	if(!destfile) return -1;
@@ -366,7 +366,7 @@ gint mh_move_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 			    msginfo->folder->path, G_DIR_SEPARATOR,
 			    msginfo->msgnum, dest->path);
 
-		srcfile = procmsg_get_message_file_path(msginfo);
+		srcfile = procmsg_get_message_file(msginfo);
 		destfile = mh_get_newmsg_filename(dest);
 		if(!destfile) return -1;
 
@@ -437,7 +437,7 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	debug_print(_("Copying message %s%c%d to %s ...\n"),
 		    msginfo->folder->path, G_DIR_SEPARATOR,
 		    msginfo->msgnum, dest->path);
-	srcfile = procmsg_get_message_file_path(msginfo);
+	srcfile = procmsg_get_message_file(msginfo);
 	destfile = mh_get_newmsg_filename(dest);
 	if(!destfile) {
 		g_free(srcfile);
@@ -584,7 +584,7 @@ gint mh_copy_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 			    msginfo->folder->path, G_DIR_SEPARATOR,
 			    msginfo->msgnum, dest->path);
 
-		srcfile = procmsg_get_message_file_path(msginfo);
+		srcfile = procmsg_get_message_file(msginfo);
 		destfile = mh_get_newmsg_filename(dest);
 		if(!destfile) {
 			g_free(srcfile);

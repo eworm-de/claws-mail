@@ -1,3 +1,21 @@
+2002-02-05
+
+	* src/compose.c: compose_exec_ext_editor_real(): replaced
+	  g_strsplit() with strsplit_with_quote().
+	* src/foldersel.c
+	  src/folderview.c: folderview_drag_motion_cb(): minor code cleanups.
+	* src/folderview.c:
+	  folderview_drag_motion_cb()
+	  folderview_drag_received_cb(): allow dropping into IMAP4 folder.
+	* src/utils.c: get_file_size_as_crlf(): use fgets() instead of
+	  fread().
+	* src/imap.c
+	  imap_copy_msg()
+	  imap_copy_msgs_with_dest(): use imap_add_msg() if the source
+	  of the message is different from the current mailbox.
+	  Return the correct value.
+	  imap_cmd_append(): properly implemented the APPEND command.
+
 2002-02-04
 
 	* src/mainwindow.c
@@ -8,6 +26,19 @@
 	* src/mainwindow.c
 	  src/prefs_common.c: changed the default shortcut of 'compose new
 	  message'.
+	* src/mainwindow.c
+	  src/summaryview.[ch]: summary_display_msg_selected(): new.
+	  Show the selected message if 'Show all header' is selected.
+	* src/mh.c
+	  src/sourcewindow.c: changed some procmsg_get_message_file_path()
+	  to procmsg_get_message_file() to be sure the message is
+	  retrieved.
+	* src/folderview.c: folderview_drag_motion_cb(): allow DnD from
+	  any folder to MH folder.
+	  folderview_drag_received_cb(): copy messages instead of moving
+	  if the source folder is news or IMAP.
+	* src/mainwindow.c
+	  src/summaryview.c: allow copy from news folder.
 
 2002-02-03
 

@@ -33,7 +33,6 @@
 #include <time.h>
 
 #include "intl.h"
-#include "prefs_account.h"
 #include "imap.h"
 #include "socket.h"
 #include "ssl.h"
@@ -42,6 +41,7 @@
 #include "procheader.h"
 #include "folder.h"
 #include "statusbar.h"
+#include "prefs_account.h"
 #include "codeconv.h"
 #include "utils.h"
 #include "inputdialog.h"
@@ -610,7 +610,7 @@ gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 			FILE_OP_ERROR(file, "unlink");
 	}
 
-	return dest->last_num;
+	return 0;
 }
 
 static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
@@ -655,7 +655,10 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 	g_free(destdir);
 	statusbar_pop_all();
 
-	return ok;
+	if (ok == IMAP_SUCCESS)
+		return 0;
+	else
+		return -1;
 }
 
 static gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest, 
@@ -666,7 +669,7 @@ static gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
 	GSList *cur;
 	MsgInfo *msginfo;
 	IMAPSession *session;
-	gint ok;
+	gint ok = IMAP_SUCCESS;
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(dest != NULL, -1);
@@ -710,7 +713,10 @@ static gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
 	g_free(destdir);
 	statusbar_pop_all();
 
-	return IMAP_SUCCESS;
+	if (ok == IMAP_SUCCESS)
+		return 0;
+	else
+		return -1;
 }
 
 gint imap_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
@@ -726,13 +732,50 @@ gint imap_move_msgs_with_dest(Folder *folder, FolderItem *dest,
 
 gint imap_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 {
-	return imap_do_copy(folder, dest, msginfo, FALSE);
+	gchar *srcfile;
+	gint ret = 0;
+
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(dest != NULL, -1);
+	g_return_val_if_fail(msginfo != NULL, -1);
+	g_return_val_if_fail(msginfo->folder != NULL, -1);
+
+	if (folder == msginfo->folder->folder)
+		return imap_do_copy(folder, dest, msginfo, FALSE);
+
+	srcfile = procmsg_get_message_file(msginfo);
+	if (!srcfile) return -1;
+
+	ret = imap_add_msg(folder, dest, srcfile, FALSE);
+
+	g_free(srcfile);
+
+	return ret;
 }
 
 gint imap_copy_msgs_with_dest(Folder *folder, FolderItem *dest, 
 			      GSList *msglist)
 {
-	return imap_do_copy_msgs_with_dest(folder, dest, msglist, FALSE);
+	MsgInfo *msginfo;
+	GSList *cur;
+	gint ret = 0;
+
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(dest != NULL, -1);
+	g_return_val_if_fail(msglist != NULL, -1);
+
+	msginfo = (MsgInfo *)msglist->data;
+	if (folder == msginfo->folder->folder)
+		return imap_do_copy_msgs_with_dest
+			(folder, dest, msglist, FALSE);
+
+	for (cur = msglist; cur != NULL; cur = cur->next) {
+		msginfo = (MsgInfo *)msglist->data;
+		ret = imap_copy_msg(folder, dest, msginfo);
+		if (ret != 0) break;
+	}
+
+	return ret;
 }
 
 gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
@@ -1411,6 +1454,12 @@ static SockInfo *imap_open(const gchar *server, gushort port)
 static SockInfo *imap_init_sock(SockInfo *sock)
 {
 	imap_cmd_count = 0;
+
+	if (imap_cmd_noop(sock) != IMAP_SUCCESS) {
+		sock_close(sock);
+		return NULL;
+	}
+
 	return sock;
 }
 
@@ -2286,19 +2335,48 @@ static gint imap_cmd_append(SockInfo *sock, const gchar *destfolder,
 	gint ok;
 	gint size;
 	gchar *destfolder_;
+	gchar buf[BUFFSIZE];
+	FILE *fp;
 
 	g_return_val_if_fail(file != NULL, IMAP_ERROR);
 
 	size = get_file_size_as_crlf(file);
+	if ((fp = fopen(file, "r")) == NULL) {
+		FILE_OP_ERROR(file, "fopen");
+		return -1;
+	}
 	QUOTE_IF_REQUIRED(destfolder_, destfolder);
-	imap_cmd_gen_send(sock, "APPEND %s {%d}", destfolder_, size);
-	ok = imap_cmd_ok(sock, NULL);
-	if (ok != IMAP_SUCCESS) {
+	imap_cmd_gen_send(sock, "APPEND %s (\\Seen) {%d}", destfolder_, size);
+
+	ok = imap_cmd_gen_recv(sock, buf, sizeof(buf));
+	if (ok != IMAP_SUCCESS || buf[0] != '+' || buf[1] != ' ') {
 		log_warning(_("can't append %s to %s\n"), file, destfolder_);
+		fclose(fp);
+		return IMAP_ERROR;
+	}
+
+	log_print("IMAP4> %s\n", _("(sending file...)"));
+
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		strretchomp(buf);
+		if (sock_puts(sock, buf) < 0) {
+			fclose(fp);
+			sock_close(sock);
+			return -1;
+		}
+	}
+
+	if (ferror(fp)) {
+		FILE_OP_ERROR(file, "fgets");
+		fclose(fp);
+		sock_close(sock);
 		return -1;
 	}
 
-	return ok;
+	sock_puts(sock, "");
+
+	fclose(fp);
+	return imap_cmd_ok(sock, NULL);
 }
 
 static gint imap_cmd_copy(SockInfo *sock, guint32 uid, const gchar *destfolder)
