@@ -71,6 +71,8 @@ static void dillo_show_mimepart(MimeViewer *_viewer, const gchar *infile, MimeIn
 	
 	if (!(procmime_get_part(viewer->filename, infile, partinfo) < 0)) {
 		gchar *cmd;
+		if (viewer->socket)
+			gtk_widget_destroy(viewer->socket);
 		viewer->socket = gtk_socket_new();
 		debug_print("Adding dillo socket %p", viewer->socket);
 		gtk_container_add(GTK_CONTAINER(viewer->widget),

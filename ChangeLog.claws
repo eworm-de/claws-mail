@@ -1,3 +1,10 @@
+2003-03-16 [melvin]	0.8.11claws16
+
+	* src/plugins/dillo_viewer.c
+		Fixed bug where it was not possible to view more than
+		one text/html attachment per message (bug discovered
+		by Christoph Hohmann).
+
 2003-03-15 [melvin]	0.8.11claws15
 
 	* src/prefs_actions.c
