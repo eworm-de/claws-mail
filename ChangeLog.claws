@@ -1,3 +1,8 @@
+2005-01-27 [colin]	1.0.0cvs19
+
+	* src/procmime.c
+		Forgot to commit this file with cvs18.
+
 2005-01-27 [colin]	1.0.0cvs18
 
 	* src/compose.c

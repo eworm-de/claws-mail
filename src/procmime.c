@@ -228,9 +228,14 @@ MimeInfo *procmime_scan_message(MsgInfo *msginfo)
 	gchar *filename;
 	MimeInfo *mimeinfo;
 
-	filename = procmsg_get_message_file(msginfo);
-	if (!filename)
+	filename = procmsg_get_message_file_path(msginfo);
+	if (!filename || !is_file_exist(filename)) {
+		g_free(filename);
+		filename = procmsg_get_message_file(msginfo);
+	}
+	if (!filename || !is_file_exist(filename)) 
 		return NULL;
+
 	if (msginfo->folder->stype != F_QUEUE && 
 	    msginfo->folder->stype != F_DRAFT)
 		mimeinfo = procmime_scan_file(filename);
