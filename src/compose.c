@@ -2212,15 +2212,16 @@ compose_end:
 /* Darko: used when I debug wrapping */
 void dump_text(GtkSText *text, int pos, int tlen, int breakoncr)
 {
-	gint i;
-	gchar ch;
+	gint i, clen;
+	gchar cbuf[MB_LEN_MAX];
 
 	printf("%d [", pos);
 	for (i = pos; i < tlen; i++) {
-		ch = GTK_STEXT_INDEX(text, i);
-		if (breakoncr && ch == '\n')
+		GET_CHAR(i, cbuf, clen);
+		if (clen < 0) break;
+		if (breakoncr && clen == 1 && cbuf[0] == '\n')
 			break;
-		printf("%c", ch);
+		fwrite(cbuf, clen, 1, stdout);
 	}
 	printf("]\n");
 }
@@ -2333,7 +2334,7 @@ static gboolean join_next_line(GtkSText *text, guint start_pos, guint tlen,
 
 	indent_len = get_indent_length(text, start_pos, tlen);
 
-	if ((indent_len > 0) && (indent_len == prev_ilen)) {
+	if (indent_len == prev_ilen) {
 		GET_CHAR(start_pos + indent_len, cbuf, ch_len);
 		if (ch_len > 0 && (cbuf[0] != '\n'))
 			do_join = TRUE;
@@ -2402,7 +2403,7 @@ static void compose_wrap_line_all(Compose *compose)
 			gchar cb[MB_LEN_MAX];
 
 			/* should we join the next line */
-			if ((i_len != cur_len) && do_delete &&
+			if (do_delete &&
 			    join_next_line(text, cur_pos + 1, tlen, i_len))
 				do_delete = TRUE;
 			else
@@ -2550,10 +2551,7 @@ static void compose_wrap_line_all(Compose *compose)
 			is_new_line = TRUE;
 			line_len = 0;
 			cur_len = 0;
-			if (i_len)
-				do_delete = TRUE;
-			else
-				do_delete = FALSE;
+			do_delete = TRUE;
 #ifdef WRAP_DEBUG
 			g_print("after CR insert ");
 			dump_text(text, line_pos, tlen, 1);
