@@ -2400,7 +2400,7 @@ static void compose_wrap_line_all(Compose *compose)
 		/* we have encountered line break */
 		if (ch_len == 1 && *cbuf == '\n') {
 			gint clen;
-			gchar cb[MB_CUR_MAX];
+			gchar cb[MB_LEN_MAX];
 
 			/* should we join the next line */
 			if ((i_len != cur_len) && do_delete &&

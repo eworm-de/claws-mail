@@ -1,3 +1,19 @@
+2002-08-01
+
+	* src/compose.c: compose_wrap_line_all(): fixed character buffer
+	  initialization.
+
+2002-07-31
+
+	* src/socket.c:
+	  corrected a typo (HAVE_SYS_SELECT -> HAVE_SYS_SELECT_H)
+
+2002-07-31
+
+	* src/socket.c: implemented socket I/O timeout.
+	  fd_recv(): new.
+	* src/pop.c: check errors and return error value correctly.
+
 2002-07-31
 
 	* src/prefs_actions.c: made the action's input/output dialog display

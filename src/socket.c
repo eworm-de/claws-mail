@@ -37,6 +37,9 @@
 #include <errno.h>
 #include <signal.h>
 #include <setjmp.h>
+#if HAVE_SYS_SELECT_H
+#  include <sys/select.h>
+#endif
 
 #include "socket.h"
 #include "utils.h"
@@ -49,6 +52,7 @@
 #endif
 
 #define BUFFSIZE	8192
+#define IO_TIMEOUT	60
 
 static gint sock_connect_with_timeout	(gint			 sock,
 					 const struct sockaddr	*serv_addr,
@@ -178,6 +182,31 @@ gboolean sock_is_nonblocking_mode(SockInfo *sock)
 	return is_nonblocking_mode(sock->sock);
 }
 
+static gint fd_check_io(gint fd, GIOCondition cond)
+{
+	struct timeval timeout;
+	fd_set fds;
+
+	timeout.tv_sec  = IO_TIMEOUT;
+	timeout.tv_usec = 0;
+
+	FD_ZERO(&fds);
+	FD_SET(fd, &fds);
+
+	if (cond == G_IO_IN) {
+		select(fd + 1, &fds, NULL, NULL, &timeout);
+	} else {
+		select(fd + 1, NULL, &fds, NULL, &timeout);
+	}
+
+	if (FD_ISSET(fd, &fds)) {
+		return 0;
+	} else {
+		g_warning("Socket IO timeout\n");
+		return -1;
+	}
+}
+
 static sigjmp_buf jmpenv;
 
 static void timeout_handler(gint sig)
@@ -237,7 +266,7 @@ static gint sock_connect_by_hostname(gint sock, const gchar *hostname,
 {
 	struct hostent *hp;
 	struct sockaddr_in ad;
-	guint timeout_secs = 30;
+	guint timeout_secs = IO_TIMEOUT;
 
 	memset(&ad, 0, sizeof(ad));
 	ad.sin_family = AF_INET;
@@ -286,7 +315,7 @@ static gint sock_connect_by_getaddrinfo(const gchar *hostname, gushort	port)
 {
 	gint sock = -1, gai_error;
 	struct addrinfo hints, *res, *ai;
-	guint timeout_secs = 30;
+	guint timeout_secs = IO_TIMEOUT;
 	gchar port_str[6];
 
 	memset(&hints, 0, sizeof(hints));
@@ -421,6 +450,9 @@ gint sock_read(SockInfo *sock, gchar *buf, gint len)
 
 gint fd_read(gint fd, gchar *buf, gint len)
 {
+	if (fd_check_io(fd, G_IO_IN) < 0)
+		return -1;
+
 	return read(fd, buf, len);
 }
 
@@ -447,6 +479,8 @@ gint fd_write(gint fd, const gchar *buf, gint len)
 	gint n, wrlen = 0;
 
 	while (len) {
+		if (fd_check_io(fd, G_IO_OUT) < 0)
+			return -1;
 		signal(SIGPIPE, SIG_IGN);
 		n = write(fd, buf, len);
 		if (n <= 0) {
@@ -479,6 +513,14 @@ gint ssl_write(SSL *ssl, const gchar *buf, gint len)
 }
 #endif
 
+gint fd_recv(gint fd, gchar *buf, gint len, gint flags)
+{
+	if (fd_check_io(fd, G_IO_IN) < 0)
+		return -1;
+
+	return recv(fd, buf, len, flags);
+}
+
 gint fd_gets(gint fd, gchar *buf, gint len)
 {
 	gchar *newline, *bp = buf;
@@ -487,11 +529,11 @@ gint fd_gets(gint fd, gchar *buf, gint len)
 	if (--len < 1)
 		return -1;
 	do {
-		if ((n = recv(fd, bp, len, MSG_PEEK)) <= 0)
+		if ((n = fd_recv(fd, bp, len, MSG_PEEK)) <= 0)
 			return -1;
 		if ((newline = memchr(bp, '\n', n)) != NULL)
 			n = newline - bp + 1;
-		if ((n = read(fd, bp, n)) < 0)
+		if ((n = fd_read(fd, bp, n)) < 0)
 			return -1;
 		bp += n;
 		len -= n;
