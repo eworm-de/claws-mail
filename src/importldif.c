@@ -787,7 +787,7 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	gtk_container_add( GTK_CONTAINER(vboxt), clist_swin );
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(clist_swin),
 				       GTK_POLICY_AUTOMATIC,
-				       GTK_POLICY_ALWAYS);
+				       GTK_POLICY_AUTOMATIC);
 
 	clist_field = gtk_clist_new_with_titles( FIELDS_N_COLS, titles );
 	gtk_container_add( GTK_CONTAINER(clist_swin), clist_field );

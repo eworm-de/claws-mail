@@ -439,7 +439,7 @@ static void addrgather_page_finish( gint pageNum, gchar *pageLbl ) {
 	gtk_container_add( GTK_CONTAINER(vbox), clistSWin );
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(clistSWin),
 				       GTK_POLICY_AUTOMATIC,
-				       GTK_POLICY_ALWAYS);
+				       GTK_POLICY_AUTOMATIC);
 
 	clistCount = gtk_clist_new_with_titles( FIELDS_N_COLS, titles );
 	gtk_container_add( GTK_CONTAINER(clistSWin), clistCount );

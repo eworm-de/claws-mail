@@ -213,7 +213,7 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 	gtk_container_add(GTK_CONTAINER(frame1), scrolledwindow1);
 	gtk_container_set_border_width(GTK_CONTAINER(scrolledwindow1), 3);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow1),
-				       GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
 	text1 = gtk_text_new(NULL, NULL);
 	gtk_text_set_editable((text1), FALSE);

@@ -4957,7 +4957,7 @@ GtkWidget *compose_create_attach(Compose *compose)
 	attach_scrwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(attach_scrwin),
 				       GTK_POLICY_AUTOMATIC,
-				       GTK_POLICY_ALWAYS);
+				       GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_size_request(attach_scrwin, -1, 80);
 
 	attach_clist = gtk_clist_new_with_titles(N_ATTACH_COLS, titles);
@@ -5232,7 +5232,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	/* text widget */
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
-				       GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(edit_vbox), scrolledwin, TRUE, TRUE, 0);
 	gtk_widget_set_size_request(scrolledwin, prefs_common.compose_width, -1);
 

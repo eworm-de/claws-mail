@@ -673,7 +673,7 @@ static void addressbook_create(void)
 	ctree_swin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(ctree_swin),
 				       GTK_POLICY_AUTOMATIC,
-				       GTK_POLICY_ALWAYS);
+				       GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_size_request(ctree_swin, COL_FOLDER_WIDTH + 40, -1);
 
 	/* Address index */
@@ -705,7 +705,7 @@ static void addressbook_create(void)
 	clist_swin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(clist_swin),
 				       GTK_POLICY_AUTOMATIC,
-				       GTK_POLICY_ALWAYS);
+				       GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(clist_vbox), clist_swin, TRUE, TRUE, 0);
 
 	/* Address list */

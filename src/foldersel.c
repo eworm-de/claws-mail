@@ -167,7 +167,7 @@ static void foldersel_create(void)
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_set_size_request(window, 300, 360);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
-				       GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 0);
 
 	ctree = gtk_ctree_new(1, 0);

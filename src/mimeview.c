@@ -202,7 +202,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	gtk_widget_show(scrolledwin);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_AUTOMATIC,
-				       GTK_POLICY_ALWAYS);
+				       GTK_POLICY_AUTOMATIC);
 
 	ctree = gtk_sctree_new_with_titles(N_MIMEVIEW_COLS, 0, titles);
 	gtk_widget_show(ctree);

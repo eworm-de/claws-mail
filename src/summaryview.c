@@ -538,7 +538,7 @@ SummaryView *summary_create(void)
 	gtk_widget_show(scrolledwin);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_AUTOMATIC,
-				       GTK_POLICY_ALWAYS);
+				       GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 0);
 	gtk_widget_set_size_request(vbox,
 			     prefs_common.summaryview_width,

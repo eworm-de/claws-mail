@@ -1521,7 +1521,7 @@ static void prefs_quote_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox_quote), scrolledwin_quotefmt, TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy
 		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt),
-		 GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+		 GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
 	text_quotefmt = gtk_text_view_new ();
 	gtk_widget_show (text_quotefmt);
@@ -1561,7 +1561,7 @@ static void prefs_quote_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox_quote), scrolledwin_quotefmt, TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy
 		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt),
-		 GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+		 GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
 	text_fw_quotefmt = gtk_text_view_new ();
 	gtk_widget_show (text_fw_quotefmt);

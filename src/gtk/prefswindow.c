@@ -230,7 +230,7 @@ void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data)
 	gtk_container_add(GTK_CONTAINER(prefswindow->window), prefswindow->table1);
 
 	prefswindow->scrolledwindow1 = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow1), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow1), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_table_attach(GTK_TABLE(prefswindow->table1), prefswindow->scrolledwindow1, 0, 1, 0, 1, GTK_FILL, GTK_FILL | GTK_EXPAND, 2, 2);
 
 	prefswindow->ctree = gtk_ctree_new_with_titles(1, 0, titles);

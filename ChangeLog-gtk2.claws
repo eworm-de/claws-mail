@@ -1,3 +1,30 @@
+2004-08-03 [paul]	0.9.12cvs40.2
+
+	* src/action.c
+	* src/addressadd.c
+	* src/addressbook.c
+	* src/addrgather.c
+	* src/browseldap.c
+	* src/compose.c
+	* src/crash.c
+	* src/editaddress.c
+	* src/editgroup.c
+	* src/editldap_basedn.c
+	* src/foldersel.c
+	* src/importldif.c
+	* src/mimeview.c
+	* src/prefs_common.c
+	* src/prefs_template.c
+	* src/sourcewindow.c
+	* src/summaryview.c
+	* src/gtk/about.c
+	* src/gtk/foldersort.c
+	* src/gtk/logwindow.c
+	* src/gtk/pluginwindow.c
+	* src/gtk/prefswindow.c
+		change all gtk_scrolled_window_set_policy from 
+		GTK_POLICY_ALWAYS to GTK_POLICY_AUTOMATIC
+
 2004-08-02 [paul]	0.9.12cvs40.1
 
 	* AUTHORS

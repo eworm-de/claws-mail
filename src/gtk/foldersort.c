@@ -208,7 +208,7 @@ void foldersort_open()
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW
 				       (scrolledwindow1),
 				       GTK_POLICY_AUTOMATIC,
-				       GTK_POLICY_ALWAYS);
+				       GTK_POLICY_AUTOMATIC);
 
 	folderlist = gtk_clist_new(1);
 	gtk_widget_show(folderlist);
