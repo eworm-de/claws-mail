@@ -1218,7 +1218,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		GdkColor gdk_color;
 
 		gtkut_convert_int_to_gdk_color(item->prefs->color, &gdk_color);
-		color_style = gtk_style_copy(gtk_widget_get_default_style());
+		color_style = gtk_style_copy(gtk_widget_get_style(GTK_WIDGET(ctree)));
 		color_style->fg[GTK_STATE_NORMAL] = gdk_color;
 		style = color_style;
 	} else {
