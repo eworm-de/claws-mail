@@ -828,7 +828,8 @@ static GHashTable *inc_get_uidl_table(PrefsAccount *ac_prefs)
 			return NULL;
 		}
 		g_free(path);
-	}
+	} else 
+		g_free(path);
 
 	table = g_hash_table_new(g_str_hash, g_str_equal);
 

@@ -1,7 +1,8 @@
 2002-08-18 [alfons]	0.8.1claws75
 
+	* src/inc.c
 	* src/matcher.c
-		plug another memleak reported by Martin Kluge
+		plug other memleaks reported by Martin Kluge
 
 2002-08-18 [paul]	0.8.1claws74
 
