@@ -998,13 +998,13 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 	FILE *fp;
 
 	boundary = g_hash_table_lookup(mimeinfo->parameters, "boundary");
-	if(!boundary)
+	if (!boundary)
 		return;
 	boundary_len = strlen(boundary);
 
-	if(mimeinfo->encoding_type != ENC_BINARY && 
-	   mimeinfo->encoding_type != ENC_7BIT && 
-	   mimeinfo->encoding_type != ENC_8BIT)
+	if (mimeinfo->encoding_type != ENC_BINARY && 
+	    mimeinfo->encoding_type != ENC_7BIT && 
+	    mimeinfo->encoding_type != ENC_8BIT)
 		procmime_decode_content(mimeinfo);
 
 	fp = fopen(mimeinfo->filename, "rb");
@@ -1014,7 +1014,7 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 			break;
 
 		if (IS_BOUNDARY(buf, boundary, boundary_len)) {
-			if(lastoffset != -1) {
+			if (lastoffset != -1) {
 				procmime_parse_mimepart(mimeinfo,
 				                        hentry[0].body, hentry[1].body,
 							hentry[2].body, hentry[3].body, 
@@ -1033,6 +1033,10 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 			procheader_get_header_fields(fp, hentry);
 			lastoffset = ftell(fp);
 		}
+	}
+	for (i = 0; i < 4; i++) {
+		g_free(hentry[i].body);
+		hentry[i].body = NULL;
 	}
 	fclose(fp);
 }

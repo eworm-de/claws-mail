@@ -1,4 +1,10 @@
+2003-11-09 [alfons]	0.9.6claws70
+
+	* src/procmime.c
+		plug leak
+
 2003-11-08 [luke]	0.9.6claws69
+
 	* src/summaryview.c
                 fix some typos
 
@@ -10,6 +16,7 @@
                 "save all" now only saves attachments with names/filenames
 
 2003-11-04 [match]	0.9.6claws68
+
 	* src/ldapctrl.[ch]
 		fix broken LDAP support.
 
@@ -17,6 +24,7 @@
 		remove printf's.
 
 2003-11-04 [luke]	0.9.6claws67
+
         * src/mimeview.c
                 o  fixed bug 4 "focus lost on messages with attachments"
                 o  fixed 'Save all' attachments for new mime changes
@@ -38,6 +46,7 @@
                 to cause problems if you tried to redefine the shortcuts)
 
 2003-11-04 [luke]	0.9.6claws66
+
         * src/plugins/image_viewer/viewer.c
 	* src/plugins/image_viewer/viewerprefs.c
 	* src/plugins/image_viewer/viewerprefs.glade
