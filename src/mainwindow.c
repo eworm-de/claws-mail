@@ -1143,7 +1143,21 @@ void main_window_get_position(MainWindow *mainwin)
 void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 {
 	GList *list;
+	gboolean hasTrash = 0;
 
+	for (list = folder_get_list(); list != NULL; list = list->next) {
+		Folder *folder;
+
+		folder = list->data;
+		if (folder->trash) {
+			hasTrash = (folder->trash->total > 0);
+		}
+	}
+
+	if (!hasTrash) {
+	  return;
+	}
+ 
 	if (confirm) {
 		if (alertpanel(_("Empty trash"),
 			       _("Empty all messages in trash?"),
