@@ -1,3 +1,9 @@
+2003-10-03 [thorsten]	0.9.6claws0-1
+
+	* win32/utils/Makefile
+	  win32/utils/mk_translation.bat
+	  	add sk and zh_CN translations 
+
 2003-10-01 [thorsten]	0.9.5claws32-1
 
 	* src/action.c
