@@ -1,3 +1,18 @@
+2003-03-02 [christoph]	0.8.10claws70
+
+	* configure.ac
+	* src/prefs_account.c
+	* src/prefs_gtk.[ch]
+	* src/common/.cvsignore
+	* src/common/Makefile.am
+	* src/common/passcrypt.c		** NEW **
+	* src/common/passcrypt.h.in		** NEW **
+		Implement password encryption in config files
+		using unix encrypt and setkey functions. The crypt
+		key can be set as a configure parameter. Old
+		passwords will be converted if they do not begin
+		with '!'
+
 2003-03-02 [paul]	0.8.10claws69
 
 	* src/prefs_account.c

@@ -6,3 +6,4 @@ version.h
 *.o
 *.lo
 *.la
+passcrypt.h

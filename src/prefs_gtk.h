@@ -51,6 +51,7 @@ typedef enum
 	P_ENUM,
 	P_USHORT,
 	P_COLOR,
+	P_PASSWORD,
 	P_OTHER
 } PrefType;
 
