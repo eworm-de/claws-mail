@@ -3589,7 +3589,6 @@ static void prefs_common_ok(void)
 
 static void prefs_common_apply(void)
 {
-	gchar *backup_theme_path;
 	MainWindow *mainwindow;
 
 	prefs_set_data_from_dialog(param);
