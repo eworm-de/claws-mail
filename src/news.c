@@ -146,6 +146,7 @@ FolderClass news_class =
 	NULL,
 	NULL,
 	NULL,
+	NULL,
 };
 
 FolderClass *news_get_class(void)

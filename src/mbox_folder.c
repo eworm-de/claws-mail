@@ -102,6 +102,7 @@ FolderClass mbox_class =
 	NULL,
 	mbox_fetch_msg,
 	mbox_add_msg,
+	NULL,
 	mbox_copy_msg,
 	mbox_remove_msg,
 	mbox_remove_all_msg,

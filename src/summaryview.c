@@ -1254,15 +1254,32 @@ SummarySelection summary_get_selection_type(SummaryView *summaryview)
 GSList *summary_get_selected_msg_list(SummaryView *summaryview)
 {
 	GSList *mlist = NULL;
-	GList *row_list;
 	GList *cur;
 	MsgInfo *msginfo;
 
-	row_list = GTK_CLIST(summaryview->ctree)->selection;
-	for (cur = row_list; cur != NULL; cur = cur->next) {
-		msginfo = gtk_ctree_node_get_row_data
-			(GTK_CTREE(summaryview->ctree),
-			 GTK_CTREE_NODE(cur->data));
+	for (cur = GTK_CLIST(summaryview->ctree)->selection; cur != NULL;
+	     cur = cur->next) {
+		msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(cur->data);
+		mlist = g_slist_prepend(mlist, msginfo);
+	}
+
+	mlist = g_slist_reverse(mlist);
+
+	return mlist;
+}
+
+GSList *summary_get_msg_list(SummaryView *summaryview)
+{
+	GSList *mlist = NULL;
+	GtkCTree *ctree;
+	GtkCTreeNode *node;
+	MsgInfo *msginfo;
+
+	ctree = GTK_CTREE(summaryview->ctree);
+
+	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+	     node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
+		msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 		mlist = g_slist_prepend(mlist, msginfo);
 	}
 
@@ -2438,7 +2455,6 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 	MsgFlags flags;
-	gchar *filename;
 
 	if (!new_window) {
 		if (summaryview->displayed == row)
@@ -2456,13 +2472,6 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	GTK_EVENTS_FLUSH();
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
-
-	filename = procmsg_get_message_file(msginfo);
-	if (!filename) {
-		summary_unlock(summaryview);
-		return;
-	}
-	g_free(filename);
 
 	if (new_window || !prefs_common.mark_as_read_on_new_window) {
 		if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
@@ -2709,9 +2718,6 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 		}
 			gtk_ctree_node_set_foreground
 				(ctree, row, &summaryview->color_dim);
-	} else if (MSG_IS_MARKED(flags)) {
-		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MARK],
-					  markxpm, markxpmmask);
 	} else if (MSG_IS_MOVE(flags)) {
 		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_MARK], "o");
 		if (style)
@@ -2730,14 +2736,16 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 		}
 			gtk_ctree_node_set_foreground
                         	(ctree, row, &summaryview->color_marked);
-	}
-	else if ((global_scoring ||
+	} else if ((global_scoring ||
 		  summaryview->folder_item->prefs->scoring) &&
 		 (msginfo->score >= summaryview->important_score) &&
 		 (MSG_IS_MARKED(msginfo->flags) || MSG_IS_MOVE(msginfo->flags) || MSG_IS_COPY(msginfo->flags))) {
 		gtk_ctree_node_set_text(ctree, row, S_COL_MARK, "!");
 		gtk_ctree_node_set_foreground(ctree, row,
 					      &summaryview->color_important);
+	} else if (MSG_IS_MARKED(flags)) {
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MARK],
+					  markxpm, markxpmmask);
 	} else {
 		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_MARK], NULL);
 	}
@@ -3176,10 +3184,12 @@ static void summary_delete_duplicated_func(GtkCTree *ctree, GtkCTreeNode *node,
 					   SummaryView *summaryview)
 {
 	GtkCTreeNode *found;
-	MsgInfo *msginfo = GTK_CTREE_ROW(node)->row.data;
+	MsgInfo *msginfo;
 	MsgInfo *dup_msginfo;
+
+	msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 	
-	if (!msginfo->msgid || !*msginfo->msgid) return;
+	if (!msginfo || !msginfo->msgid || !*msginfo->msgid) return;
 
 	found = g_hash_table_lookup(summaryview->msgid_table, msginfo->msgid);
 	
@@ -3627,7 +3637,7 @@ static void summary_execute_move_func(GtkCTree *ctree, GtkCTreeNode *node,
 
 	if (msginfo && MSG_IS_MOVE(msginfo->flags) && msginfo->to_folder) {
 		summaryview->mlist =
-			g_slist_append(summaryview->mlist, msginfo);
+			g_slist_prepend(summaryview->mlist, msginfo);
 		gtk_ctree_node_set_row_data(ctree, node, NULL);
 
 		if (msginfo->msgid && *msginfo->msgid &&
@@ -3647,6 +3657,7 @@ static void summary_execute_copy(SummaryView *summaryview)
 				summaryview);
 
 	if (summaryview->mlist) {
+		summaryview->mlist = g_slist_reverse(summaryview->mlist);
 		procmsg_copy_messages(summaryview->mlist);
 
 		g_slist_free(summaryview->mlist);
@@ -3664,7 +3675,7 @@ static void summary_execute_copy_func(GtkCTree *ctree, GtkCTreeNode *node,
 
 	if (msginfo && MSG_IS_COPY(msginfo->flags) && msginfo->to_folder) {
 		summaryview->mlist =
-			g_slist_append(summaryview->mlist, msginfo);
+			g_slist_prepend(summaryview->mlist, msginfo);
 
 		procmsg_msginfo_unset_flags(msginfo, 0, MSG_COPY);
 		summary_set_row_marks(summaryview, node);
@@ -4652,10 +4663,15 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 	switch (column < 0 ? column : summaryview->col_state[column].type) {
 	case S_COL_MARK:
-		if (MSG_IS_MARKED(msginfo->flags)) {
-			summary_unmark_row(summaryview, row);
-		} else
-			summary_mark_row(summaryview, row);
+		if (!MSG_IS_DELETED(msginfo->flags) &&
+		    !MSG_IS_MOVE(msginfo->flags) &&
+		    !MSG_IS_COPY(msginfo->flags)) {
+			if (MSG_IS_MARKED(msginfo->flags)) {
+				summary_unmark_row(summaryview, row);
+			} else {
+				summary_mark_row(summaryview, row);
+			}
+		}
 		break;
 	case S_COL_STATUS:
 		if (MSG_IS_UNREAD(msginfo->flags)) {

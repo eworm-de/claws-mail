@@ -1694,6 +1694,30 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 	return num;
 }
 
+gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
+                          gboolean remove_source, gint *first)
+{
+        Folder *folder;
+        gint num;
+
+        g_return_val_if_fail(dest != NULL, -1);
+        g_return_val_if_fail(file_list != NULL, -1);
+        g_return_val_if_fail(dest->folder != NULL, -1);
+        g_return_val_if_fail(dest->folder->klass->add_msgs != NULL, -1);
+
+        folder = dest->folder;
+
+        num = folder->klass->add_msgs(folder, dest, file_list, remove_source, first);
+
+	/*
+         * TODO: Claws should get feedback about each message
+	 *       remove source done here in claws, not in folder
+         *       function
+	 */
+       
+        return num;
+}
+
 /*
 gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 {

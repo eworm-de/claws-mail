@@ -217,7 +217,12 @@ struct _FolderClass
 	gint     	(*add_msg)		(Folder		*folder,
 						 FolderItem	*dest,
 						 const gchar	*file,
-						gboolean	 remove_source);
+						 gboolean	 remove_source);
+	gint     	(*add_msgs)             (Folder         *folder,
+                                    		 FolderItem     *dest,
+                                    		 GSList         *file_list,
+                                    		 gboolean        remove_source,
+                                    		 gint           *first);
 	gint    	(*copy_msg)		(Folder		*folder,
 						 FolderItem	*dest,
 						 MsgInfo	*msginfo);
@@ -414,6 +419,10 @@ gchar *folder_item_fetch_msg		(FolderItem	*item,
 gint   folder_item_add_msg		(FolderItem	*dest,
 					 const gchar	*file,
 					 gboolean	 remove_source);
+gint   folder_item_add_msgs             (FolderItem     *dest,
+                                         GSList         *file_list,
+                                         gboolean        remove_source,
+                                         gint           *first);
 gint   folder_item_move_to		(FolderItem	*src,
 					 FolderItem	*dest,
 					 FolderItem    **new_item);

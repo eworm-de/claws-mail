@@ -54,6 +54,11 @@ static MsgInfo *mh_get_msginfo(Folder * folder,
 static gint mh_add_msg(Folder * folder,
 		       FolderItem * dest,
 		       const gchar * file, gboolean remove_source);
+gint     mh_add_msgs		(Folder		*folder,
+				 FolderItem	*dest,
+				 GSList		*file_list,
+				 gboolean	 remove_source,
+				 gint		*first);
 static gint mh_copy_msg(Folder * folder,
 			FolderItem * dest, MsgInfo * msginfo);
 static gint mh_remove_msg(Folder * folder, FolderItem * item, gint num);
@@ -111,6 +116,7 @@ FolderClass mh_class =
 	NULL,
 	mh_fetch_msg,
 	mh_add_msg,
+	mh_add_msgs,
 	mh_copy_msg,
 	mh_remove_msg,
 	mh_remove_all_msg,
@@ -308,36 +314,65 @@ gchar *mh_get_new_msg_filename(FolderItem *dest)
 gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 		gboolean remove_source)
 {
+        GSList file_list; 
+  
+        g_return_val_if_fail(file != NULL, -1); 
+  
+        file_list.data = (gpointer) file; 
+        file_list.next = NULL; 
+  
+        return mh_add_msgs(folder, dest, &file_list, remove_source, NULL); 
+} 
+ 
+gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list, 
+                gboolean remove_source, gint *first) 
+{ 
 	gchar *destfile;
+        GSList *cur; 
+        gchar *file; 
+        gint first_ = 0; 
 
 	g_return_val_if_fail(dest != NULL, -1);
-	g_return_val_if_fail(file != NULL, -1);
+	g_return_val_if_fail(file_list != NULL, -1);
 
 	if (dest->last_num < 0) {
 		mh_get_last_num(folder, dest);
 		if (dest->last_num < 0) return -1;
 	}
 
-	destfile = mh_get_new_msg_filename(dest);
-	g_return_val_if_fail(destfile != NULL, -1);
+        for (cur = file_list; cur != NULL; cur = cur->next) { 
+                file = (gchar *)cur->data; 
 
-	if (link(file, destfile) < 0) {
-		if (copy_file(file, destfile, TRUE) < 0) {
-			g_warning("can't copy message %s to %s\n",
-				  file, destfile);
-			g_free(destfile);
-			return -1;
+                destfile = mh_get_new_msg_filename(dest); 
+                if (destfile == NULL) return -1; 
+                if (first_ == 0 || first_ > dest->last_num + 1) 
+                        first_ = dest->last_num + 1; 
+  
+                if (link(file, destfile) < 0) { 
+                        if (copy_file(file, destfile, TRUE) < 0) { 
+                                g_warning(_("can't copy message %s to %s\n"), 
+                                          file, destfile); 
+                                g_free(destfile); 
+                                return -1; 
+                        } 
 		}
+
+		g_free(destfile);
+		dest->last_num++;
 	}
+
+	if (first)
+		*first = first_;
 
 	if (remove_source) {
-		if (unlink(file) < 0)
-			FILE_OP_ERROR(file, "unlink");
+		for (cur = file_list; cur != NULL; cur = cur->next) {
+			file = (gchar *)cur->data;
+			if (unlink(file) < 0)
+				FILE_OP_ERROR(file, "unlink");
+ 		}
 	}
 
-	g_free(destfile);
-	dest->last_num++;
-	return dest->last_num;
+	return dest->last_num; 
 }
 
 gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)

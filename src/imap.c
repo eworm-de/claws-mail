@@ -431,6 +431,7 @@ FolderClass imap_class =
 	imap_get_msginfos,
 	imap_fetch_msg,
 	imap_add_msg,
+	NULL,
 	imap_copy_msg,
 	imap_remove_msg,
 	imap_remove_all_msg,
