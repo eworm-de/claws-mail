@@ -2455,6 +2455,12 @@ void summary_step(SummaryView *summaryview, GtkScrollType type)
 
 	gtk_signal_emit_by_name(GTK_OBJECT(ctree), "scroll_vertical",
 				type, 0.0);
+	
+	if(summaryview->selected) {
+		gtk_sctree_reanchor (GTK_SCTREE(ctree), summaryview->selected);
+	}
+
+
 }
 
 void summary_toggle_view(SummaryView *summaryview)
@@ -2952,11 +2958,11 @@ void summary_delete(SummaryView *summaryview)
 			summary_step(summaryview, GTK_SCROLL_STEP_FORWARD);
 		else if (sel_last && node == GTK_CTREE_NODE_PREV(sel_last))
 			summary_step(summaryview, GTK_SCROLL_STEP_BACKWARD);
-		
-		summary_select_node
-			(summaryview, node,
-			 messageview_is_visible(summaryview->messageview),
-			 FALSE);
+		else
+			summary_select_node
+				(summaryview, node,
+				 messageview_is_visible(summaryview->messageview),
+				 FALSE);
 	}
 
 	if (prefs_common.immediate_exec || item->stype == F_TRASH)

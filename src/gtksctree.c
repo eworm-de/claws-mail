@@ -202,6 +202,7 @@ select_range (GtkSCTree *sctree, gint row)
 	if (row < prev_row) {
 		min = row;
 		max = prev_row;
+		GTK_CLIST(sctree)->focus_row = max;
 	} else {
 		min = prev_row;
 		max = row;
@@ -1033,4 +1034,12 @@ gtk_ctree_last_visible (GtkCTree     *ctree,
 		work = GTK_CTREE_ROW (work)->sibling;
 
 	return gtk_ctree_last_visible (ctree, work);
+}
+
+void gtk_sctree_reanchor (GtkSCTree *sctree, GtkCTreeNode *node)
+{
+	g_return_if_fail (sctree != NULL);
+	g_return_if_fail (node != NULL);
+	sctree->anchor_row = node;
+	
 }
