@@ -3305,7 +3305,7 @@ static gint folder_item_update_freeze_cnt = 0;
 
 static void folder_item_update_with_msg(FolderItem *item, FolderItemUpdateFlags update_flags, MsgInfo *msg)
 {
-	if (folder_item_update_freeze_cnt == 0 || (msg != NULL && item->opened)) {
+	if (folder_item_update_freeze_cnt == 0 /* || (msg != NULL && item->opened) */) {
 		FolderItemUpdateData source;
 	
 		source.item = item;

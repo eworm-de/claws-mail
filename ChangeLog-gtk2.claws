@@ -1,3 +1,9 @@
+2004-08-08 [paul]	0.9.12cvs51.1
+
+	* configure.ac
+	* src/folder.c
+		sync with HEAD
+
 2004-08-07 [colin]	0.9.12cvs50.1
 
 	* src/pop.c
