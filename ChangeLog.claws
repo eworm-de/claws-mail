@@ -1,3 +1,9 @@
+2002-08-26 [martin]	0.8.1claws122
+
+	* ChangeLog.claws
+		changed string under 0.8.1claws79 changed by myself
+		i'm sorry alfons :(
+
 2002-08-26 [martin]	0.8.1claws121
 
 	* src/crash.c
@@ -301,7 +307,7 @@
 2002-08-19 [alfons]	0.8.1claws79
 
 	* src/mainwindow.c
-		hide notice view when selecting seperate f-older
+		hide notice view when selecting seperate folder
 		view (reported by Urke MMI)
 
 2002-08-19 [christoph]	0.8.1claws78
