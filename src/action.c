@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto & The Sylpheed Claws Team
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto & The Sylpheed Claws Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -334,34 +334,30 @@ static gchar *parse_action_cmd(gchar *action, MsgInfo *msginfo,
 static gboolean parse_append_filename(GString *cmd, MsgInfo *msginfo)
 {
 	gchar *filename;
-	gchar *p;
+	gchar *p, *q;
+	gchar escape_ch[] = "\\ ";
 
 	g_return_val_if_fail(msginfo, FALSE);
 
 	filename = procmsg_get_message_file(msginfo);
 
-	if (filename) {
-		g_string_append_c(cmd, '"');
-		for (p = filename; *p != '\0'; p++) {
-			switch (*p) {
-			case '$':
-			case '"':
-			case '`':
-			case '\\':
-				g_string_append_c(cmd, '\\');
-				break;
-			default:
-				break;
-			}
-			g_string_append_c(cmd, *p);
-		}
-		g_string_append_c(cmd, '"');
-		g_free(filename);
-	} else {
+	if (!filename) {
 		alertpanel_error(_("Could not get message file %d"),
 				 msginfo->msgnum);
 		return FALSE;
 	}
+
+	p = filename;
+	while ((q = strpbrk(p, "$\"`'\\ \t*?[]&|;<>()!#~")) != NULL) {
+		escape_ch[1] = *q;
+		*q = '\0';
+		g_string_append(cmd, p);
+		g_string_append(cmd, escape_ch);
+		p = q + 1;
+	}
+	g_string_append(cmd, p);
+
+	g_free(filename);
 
 	return TRUE;
 }
