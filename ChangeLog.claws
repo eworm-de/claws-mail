@@ -1,3 +1,8 @@
+2003-01-26 [melvin]	0.8.9claws9
+
+	* src/prefs_actions.c
+		Cosmetical changes to the help text
+
 2003-01-26 [paul]	0.8.9claws8
 
 	* src/folder.[ch]
