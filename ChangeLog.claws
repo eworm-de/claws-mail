@@ -1,3 +1,10 @@
+2002-10-18 [alfons]	0.8.5claws47
+
+	* src/mbox.c
+		drop imported messages in folder selected by user,
+		and not in the inbox
+		(closes bug [ 625424 ] Import mbox always to "Inbox" folder)
+
 2002-10-18 [alfons]	0.8.5claws46
 
 	* src/compose.c
