@@ -112,7 +112,10 @@
   WHAT IT DOES
 
   This perl script will convert an exported Kmail addressbook into a
-  Sylpheed addressbook.
+  Sylpheed addressbook. If your version of Kmail is 1.37 or greater
+  and/or your version of KAddressBook is 3.1beta1 or greater, or
+  this script mixes up your definitions and their related data, use
+  'kmail2sylpheed_v2.pl' instead.
 
   HOW TO USE IT
 
@@ -129,6 +132,38 @@
 
   Your Kmail addressbook data will now be contained in Sylpheed's
   addressbook, under the name 'Kmail Address Book'.
+
+  Any questions, comments or problems, contact Paul <claws@thewildbeast.co.uk>  
+
+-----------------------------------------------------------------------
+
+* kmail2sylpheed_v2.pl
+
+  This script has been tested with Kmail 1.37 and KAddressBook 3.1beta1
+
+  WHAT IT DOES
+
+  This perl script will convert a Kmail addressbook that has been
+  exported in csv format into a Sylpheed addressbook.
+
+  HOW TO USE IT
+
+  (You must run sylpheed at least once before running this script.)
+  
+  Open Kmail's Addressbook, /File/Address Book
+  In Kmail's Addressbook choose '/File/Export/Export List...'. This 
+  will allow you to export your Kmail addressbook data to a *.csv file.
+
+  If Sylpheed is running, close it.
+
+  From the command line, execute the following:
+ 
+	perl kmail2sylpheed_v2.pl --kmailfile=/path/to/addressbook.csv
+	
+  You can also use --help to see usage instructions.
+
+  Your Kmail addressbook data will now be contained in Sylpheed's
+  addressbook, under the name 'Kmail address book'.
 
   Any questions, comments or problems, contact Paul <claws@thewildbeast.co.uk>  
 
