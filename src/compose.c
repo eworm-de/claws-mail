@@ -1634,7 +1634,13 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			compose_entry_append(compose,
 					   compose->ml_post,
 					   COMPOSE_TO);
-		else
+		else if (!(to_all || ignore_replyto)
+			 && msginfo->folder
+			 && msginfo->folder->prefs->enable_default_reply_to) {
+			compose_entry_append(compose,
+			    msginfo->folder->prefs->default_reply_to,
+			    COMPOSE_TO);
+		} else
 			compose_entry_append(compose,
 				 (compose->replyto && !ignore_replyto)
 				 ? compose->replyto

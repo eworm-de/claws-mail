@@ -1,3 +1,8 @@
+2002-11-05 [thorsten]	0.8.5claws75
+
+	* src/compose.c
+		reenabled default_reply_to folder option
+
 2002-11-05 [colin]	0.8.5claws74
 
 	* src/compose.[ch] 
