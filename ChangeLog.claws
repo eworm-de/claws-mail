@@ -3,7 +3,7 @@
 	* src/compose.[ch]
 	  src/procmsg.c
 		store folder and message-id of message forwarding
-		to in queue header and set forward flag after sending
+		in queue header and set forward flag after sending
 
 2003-01-15 [paul]	0.8.8claws102
 
