@@ -136,9 +136,9 @@ static void image_viewer_set_notebook_page(MimeViewer *_mimeviewer)
 	ImageViewer *imageviewer = (ImageViewer *) _mimeviewer;
 
 	if (!imageviewerprefs.display_img)
-		gtk_notebook_set_page(GTK_NOTEBOOK(imageviewer->notebook), 0);
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(imageviewer->notebook), 0);
 	else
-		gtk_notebook_set_page(GTK_NOTEBOOK(imageviewer->notebook), 1);
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(imageviewer->notebook), 1);
 }
 
 static void image_viewer_load_image(ImageViewer *imageviewer)
@@ -239,7 +239,7 @@ static void image_viewer_get_resized_size(gint w, gint h, gint aw, gint ah,
 
 static void load_cb(GtkButton *button, ImageViewer *imageviewer)
 {
-	gtk_notebook_set_page(GTK_NOTEBOOK(imageviewer->notebook), 1);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(imageviewer->notebook), 1);
 	image_viewer_load_image(imageviewer);
 }
 

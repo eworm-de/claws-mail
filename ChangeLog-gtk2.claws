@@ -1,3 +1,15 @@
+2004-11-18 [paul]	0.9.12cvs158.2
+
+	* src/addrgather.c
+	* src/exphtmldlg.c
+	* src/expldifdlg.c
+	* src/mimeview.c
+	* src/prefs_common.c
+	* src/plugins/image_viewer/viewer.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		replace deprecated gtk_notebook_set_page
+		and gtk_notebook_current_page
+
 2004-11-18 [paul]	0.9.12cvs158.1
 
 	* configure.ac

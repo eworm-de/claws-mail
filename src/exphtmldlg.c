@@ -106,7 +106,7 @@ static void export_html_message( void ) {
 	gchar *sMsg = NULL;
 	gint pageNum;
 
-	pageNum = gtk_notebook_current_page( GTK_NOTEBOOK(exphtml_dlg.notebook) );
+	pageNum = gtk_notebook_get_current_page( GTK_NOTEBOOK(exphtml_dlg.notebook) );
 	if( pageNum == PAGE_FILE_INFO ) {
 		sMsg = _( "Please specify output directory and file to create." );
 	}
@@ -127,7 +127,7 @@ static void export_html_message( void ) {
 static void export_html_cancel( GtkWidget *widget, gpointer data ) {
 	gint pageNum;
 
-	pageNum = gtk_notebook_current_page( GTK_NOTEBOOK(exphtml_dlg.notebook) );
+	pageNum = gtk_notebook_get_current_page( GTK_NOTEBOOK(exphtml_dlg.notebook) );
 	if( pageNum != PAGE_FINISH ) {
 		exphtml_dlg.cancelled = TRUE;
 	}
@@ -260,16 +260,16 @@ static void exp_html_finish_show( void ) {
 static void export_html_prev( GtkWidget *widget ) {
 	gint pageNum;
 
-	pageNum = gtk_notebook_current_page( GTK_NOTEBOOK(exphtml_dlg.notebook) );
+	pageNum = gtk_notebook_get_current_page( GTK_NOTEBOOK(exphtml_dlg.notebook) );
 	if( pageNum == PAGE_FORMAT ) {
 		/* Goto file page stuff */
-		gtk_notebook_set_page(
+		gtk_notebook_set_current_page(
 			GTK_NOTEBOOK(exphtml_dlg.notebook), PAGE_FILE_INFO );
 		gtk_widget_set_sensitive( exphtml_dlg.btnPrev, FALSE );
 	}
 	else if( pageNum == PAGE_FINISH ) {
 		/* Goto format page */
-		gtk_notebook_set_page(
+		gtk_notebook_set_current_page(
 			GTK_NOTEBOOK(exphtml_dlg.notebook), PAGE_FORMAT );
 		gtk_widget_set_sensitive( exphtml_dlg.btnNext, TRUE );
 	}
@@ -283,11 +283,11 @@ static void export_html_prev( GtkWidget *widget ) {
 static void export_html_next( GtkWidget *widget ) {
 	gint pageNum;
 
-	pageNum = gtk_notebook_current_page( GTK_NOTEBOOK(exphtml_dlg.notebook) );
+	pageNum = gtk_notebook_get_current_page( GTK_NOTEBOOK(exphtml_dlg.notebook) );
 	if( pageNum == PAGE_FILE_INFO ) {
 		/* Goto format page */
 		if( exp_html_move_file() ) {
-			gtk_notebook_set_page(
+			gtk_notebook_set_current_page(
 				GTK_NOTEBOOK(exphtml_dlg.notebook), PAGE_FORMAT );
 			gtk_widget_set_sensitive( exphtml_dlg.btnPrev, TRUE );
 		}
@@ -296,7 +296,7 @@ static void export_html_next( GtkWidget *widget ) {
 	else if( pageNum == PAGE_FORMAT ) {
 		/* Goto finish page */
 		if( exp_html_move_format() ) {
-			gtk_notebook_set_page(
+			gtk_notebook_set_current_page(
 				GTK_NOTEBOOK(exphtml_dlg.notebook), PAGE_FINISH );
 			exp_html_finish_show();
 			exporthtml_save_settings( _exportCtl_ );
@@ -807,7 +807,7 @@ void addressbook_exp_html( AddressCache *cache ) {
 	export_html_fill_fields( _exportCtl_ );
 
 	gtk_widget_grab_default(exphtml_dlg.btnNext);
-	gtk_notebook_set_page( GTK_NOTEBOOK(exphtml_dlg.notebook), PAGE_FILE_INFO );
+	gtk_notebook_set_current_page( GTK_NOTEBOOK(exphtml_dlg.notebook), PAGE_FILE_INFO );
 	gtk_widget_set_sensitive( exphtml_dlg.btnPrev, FALSE );
 	gtk_widget_set_sensitive( exphtml_dlg.btnNext, TRUE );
 

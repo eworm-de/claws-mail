@@ -584,12 +584,12 @@ static void mimeview_change_view_type(MimeView *mimeview, MimeViewType type)
 
 	switch (type) {
 	case MIMEVIEW_TEXT:
-		gtk_notebook_set_page(GTK_NOTEBOOK(mimeview->mime_notebook),
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(mimeview->mime_notebook),
 			gtk_notebook_page_num(GTK_NOTEBOOK(mimeview->mime_notebook), 
 			GTK_WIDGET_PTR(textview)));
 		break;
 	case MIMEVIEW_VIEWER:
-		gtk_notebook_set_page(GTK_NOTEBOOK(mimeview->mime_notebook),
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(mimeview->mime_notebook),
 			gtk_notebook_page_num(GTK_NOTEBOOK(mimeview->mime_notebook), 
 			GTK_WIDGET(mimeview->mimeviewer->get_widget(mimeview->mimeviewer))));
 		break;

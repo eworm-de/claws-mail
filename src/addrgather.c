@@ -222,7 +222,7 @@ static gboolean addrgather_dlg_harvest() {
 	addrgather_dlg_status_show( _("Addresses gathered successfully.") );
 
 	/* Display summary page */
-	gtk_notebook_set_page(
+	gtk_notebook_set_current_page(
 		GTK_NOTEBOOK(addrgather_dlg.notebook), PAGE_FINISH );
 	gtk_widget_set_sensitive( addrgather_dlg.btnOk, FALSE );
 	gtk_widget_grab_default( addrgather_dlg.btnCancel );
@@ -557,7 +557,7 @@ AddressBookFile *addrgather_dlg_execute(
 
 	errFlag = TRUE;
 	if( folderItem && folderItem->path ) {
-		gtk_notebook_set_page(
+		gtk_notebook_set_current_page(
 			GTK_NOTEBOOK(addrgather_dlg.notebook), PAGE_FIELDS );
 		addrgather_dlg.folderPath = folder_item_get_path( folderItem );
 
@@ -604,7 +604,7 @@ AddressBookFile *addrgather_dlg_execute(
 	gtk_widget_show( addrgather_dlg.window );
 
 	if( errFlag ) {
-		gtk_notebook_set_page(
+		gtk_notebook_set_current_page(
 			GTK_NOTEBOOK(addrgather_dlg.notebook), PAGE_WARNING );
 		gtk_widget_set_sensitive( addrgather_dlg.btnOk, FALSE );
 		gtk_widget_grab_default( addrgather_dlg.btnCancel );

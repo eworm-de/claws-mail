@@ -793,7 +793,7 @@ static void create_widget_func(PrefsPage * _page,
 	if (notebook == NULL)
 		prefs_common_create();
 	gtk_box_pack_start (GTK_BOX (vbox), notebook, TRUE, TRUE, 0);
-	gtk_notebook_set_page(GTK_NOTEBOOK(notebook), 0);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 0);
 
 	prefs_set_dialog(param);
 

@@ -113,7 +113,7 @@ static void show_transport(struct SpamAssassinPage *page, struct Transport *tran
 	default:
 		break;
 	}
-	gtk_notebook_set_page(GTK_NOTEBOOK(page->transport_notebook), transport->page);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(page->transport_notebook), transport->page);
 }
 
 static void transport_sel_cb(GtkMenuItem *menuitem, gpointer data)
