@@ -1,3 +1,13 @@
+2003-04-08 [christoph]	0.8.11claws79
+
+	* src/folder.c
+	* src/prefs_account.c
+		Filter new messages that are found in an INBOX folder
+		when 'Filter messages on receiving' is enabled in the
+		Folder's AccountPrefs. This allows to use Sylpheed's
+		filtering engine for IMAP folders where messages are
+		added to the INBOX by a MTA
+
 2003-04-08 [paul]	0.8.11claws78
 
 	* src/procmsg.h

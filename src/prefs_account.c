@@ -91,11 +91,11 @@ static struct Receive {
 	GtkWidget *getall_chkbtn;
 	GtkWidget *size_limit_chkbtn;
 	GtkWidget *size_limit_entry;
-	GtkWidget *filter_on_recv_chkbtn;
 	GtkWidget *inbox_label;
 	GtkWidget *inbox_entry;
 	GtkWidget *inbox_btn;
 
+	GtkWidget *filter_on_recv_chkbtn;
 	GtkWidget *recvatgetall_chkbtn;
 
 	GtkWidget *frame_maxarticle;
@@ -1187,9 +1187,6 @@ static void prefs_account_receive_create(void)
 
 	SET_TOGGLE_SENSITIVITY (size_limit_chkbtn, size_limit_entry);
 
-	PACK_CHECK_BUTTON (vbox2, filter_on_recv_chkbtn,
-			   _("Filter messages on receiving"));
-
 	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
@@ -1248,6 +1245,8 @@ static void prefs_account_receive_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox2), label_maxarticle, FALSE, FALSE, 0);
 	gtk_label_set_justify (GTK_LABEL (label_maxarticle), GTK_JUSTIFY_LEFT);
 
+	PACK_CHECK_BUTTON (vbox1, filter_on_recv_chkbtn,
+			   _("Filter messages on receiving"));
 
 	PACK_CHECK_BUTTON
 		(vbox1, recvatgetall_chkbtn,
