@@ -1,3 +1,20 @@
+2005-02-15 [christoph]	1.0.1cvs9
+
+	* configure.ac
+	* src/Makefile.am
+	* src/privacy.c					** REMOVE **
+	* src/privacy.cpp				** NEW **
+	* src/privacy.h
+	* src/plugins/pgpmime/Makefile.am
+	* src/plugins/pgpmime/passphrase.h
+	* src/plugins/pgpmime/pgpmime.c			** REMOVE **
+	* src/plugins/pgpmime/pgpmime.cpp		** NEW **
+	* src/plugins/pgpmime/pgpmime.h
+	* src/plugins/pgpmime/prefs_gpg.h
+	* src/plugins/pgpmime/select-keys.h
+	* src/plugins/pgpmime/sgpgme.h
+		change Privacy-API to C++
+
 2005-02-15 [colin]	1.0.1cvs8
 
 	* src/mimeview.c
