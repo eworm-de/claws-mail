@@ -28,6 +28,8 @@
 #include <gtk/gtkentry.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtknotebook.h>
+#include <gtk/gtktogglebutton.h>
+#include <gtk/gtkcheckbutton.h>
 #include <gtk/gtk.h>
 
 #include <stdio.h>
@@ -47,7 +49,9 @@
 #include "stock_pixmap.h"
 #include "setup.h"
 #include "folder.h"
-
+#ifdef USE_OPENSSL			
+#include "ssl.h"
+#endif
 typedef enum
 {
 	GO_BACK,
@@ -71,13 +75,16 @@ typedef struct
 	GtkWidget *mailbox_name;
 	
 	GtkWidget *smtp_server;
-	GtkWidget *smtp_port;
-	
+
 	GtkWidget *recv_type;
 	GtkWidget *recv_server;
-	GtkWidget *recv_port;
 	GtkWidget *recv_username;
 	GtkWidget *recv_password;
+
+#ifdef USE_OPENSSL
+	GtkWidget *smtp_use_ssl;
+	GtkWidget *recv_use_ssl;
+#endif
 	
 	gboolean create_mailbox;
 	gboolean finished;
@@ -96,7 +103,8 @@ static void wizard_write_config(WizardWindow *wizard)
 				gtk_entry_get_text(GTK_ENTRY(wizard->mailbox_name)));
 	}
 
-	prefs_account->account_name = g_strdup(
+	prefs_account->account_name = g_strdup_printf("%s@%s",
+				gtk_entry_get_text(GTK_ENTRY(wizard->recv_username)),
 				gtk_entry_get_text(GTK_ENTRY(wizard->recv_server)));
 	prefs_account->name = g_strdup(
 				gtk_entry_get_text(GTK_ENTRY(wizard->full_name)));
@@ -118,20 +126,15 @@ static void wizard_write_config(WizardWindow *wizard)
 	prefs_account->protocol = GPOINTER_TO_INT
 			(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 
-	tmp = atoi(gtk_entry_get_text(GTK_ENTRY(wizard->smtp_port)));
-	if (tmp != 25) {
-		prefs_account->smtpport = tmp;
-		prefs_account->set_smtpport = TRUE;
-	}
-
-	tmp = atoi(gtk_entry_get_text(GTK_ENTRY(wizard->recv_port)));
-	if (prefs_account->protocol == A_POP3 && tmp != 110) {
-		prefs_account->popport = tmp;
-		prefs_account->set_popport = TRUE;
-	} else if (prefs_account->protocol == A_IMAP4 && tmp != 143) {
-		prefs_account->imapport = tmp;
-		prefs_account->set_imapport = TRUE;
-	}
+#ifdef USE_OPENSSL			
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wizard->smtp_use_ssl)))
+		prefs_account->ssl_smtp = SSL_TUNNEL;
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wizard->smtp_use_ssl)))
+		if (prefs_account->protocol == A_IMAP4)
+			prefs_account->ssl_imap = SSL_TUNNEL;
+		else
+			prefs_account->ssl_pop = SSL_TUNNEL;
+#endif
 
 	account_list = g_list_append(account_list, prefs_account);
 	prefs_account_write_config_all(account_list);
@@ -277,7 +280,7 @@ static gchar *get_default_server(const gchar *type)
 
 static GtkWidget* smtp_page (WizardWindow * wizard)
 {
-	GtkWidget *table = gtk_table_new(2,2, FALSE);
+	GtkWidget *table = gtk_table_new(1,2, FALSE);
 	gchar *text;
 	gint i = 0;
 	
@@ -290,12 +293,6 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	g_free(text);
 	GTK_TABLE_ADD_ROW_AT(table, _("SMTP server address:"), 
 			     wizard->smtp_server, i); i++;
-	
-	wizard->smtp_port = gtk_entry_new();
-	gtk_entry_set_text(GTK_ENTRY(wizard->smtp_port), "25");
-	GTK_TABLE_ADD_ROW_AT(table, _("SMTP port:"), 
-			     wizard->smtp_port, i); i++;
-	
 	return table;
 }
 
@@ -311,12 +308,10 @@ static void wizard_protocol_changed(GtkMenuItem *menuitem, gpointer data)
 		text = get_default_server("pop");
 		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), text);
 		g_free(text);
-		gtk_entry_set_text(GTK_ENTRY(wizard->recv_port), "110");
 	} else {
 		text = get_default_server("imap");
 		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), text);
 		g_free(text);
-		gtk_entry_set_text(GTK_ENTRY(wizard->recv_port), "143");		
 	}
 }
 
@@ -352,11 +347,6 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	GTK_TABLE_ADD_ROW_AT(table, _("Server address:"), 
 			     wizard->recv_server, i); i++;
 	
-	wizard->recv_port = gtk_entry_new();
-	gtk_entry_set_text(GTK_ENTRY(wizard->recv_port), "110");
-	GTK_TABLE_ADD_ROW_AT(table, _("Port:"), 
-			     wizard->recv_port, i); i++;
-	
 	wizard->recv_username = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(wizard->recv_username), g_get_user_name());
 	GTK_TABLE_ADD_ROW_AT(table, _("Username:"), 
@@ -369,6 +359,32 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	
 	return table;
 }
+
+#ifdef USE_OPENSSL
+static GtkWidget* ssl_page (WizardWindow * wizard)
+{
+	GtkWidget *table = gtk_table_new(2,2, FALSE);
+	gchar *text;
+	gint i = 0;
+	
+	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
+	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+
+	wizard->smtp_use_ssl = gtk_check_button_new_with_label(
+					_("Use SSL to connect to SMTP server"));
+	gtk_table_attach(GTK_TABLE(table), wizard->smtp_use_ssl,      
+			 0,1,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0); i++;
+	gtk_misc_set_alignment(GTK_MISC(wizard->smtp_use_ssl), 0, 0.5);
+	
+	wizard->recv_use_ssl = gtk_check_button_new_with_label(
+					_("Use SSL to connect to receiving server"));
+	gtk_table_attach(GTK_TABLE(table), wizard->recv_use_ssl,      
+			 0,1,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_misc_set_alignment(GTK_MISC(wizard->recv_use_ssl), 0, 0.5);
+	
+	return table;
+}
+#endif
 
 static void
 wizard_response_cb (GtkDialog * dialog, int response, gpointer data)
@@ -499,6 +515,13 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 	gtk_box_pack_start (GTK_BOX(widget), recv_page(wizard), FALSE, FALSE, 0);
 	wizard->pages = g_slist_append(wizard->pages, widget);
 
+/* ssl page */
+#ifdef USE_OPENSSL
+	widget = create_page (wizard, _("Security"));
+	gtk_box_pack_start (GTK_BOX(widget), ssl_page(wizard), FALSE, FALSE, 0);
+	wizard->pages = g_slist_append(wizard->pages, widget);
+#endif
+	
 	for (cur = wizard->pages; cur && cur->data; cur = cur->next) {
 		gtk_notebook_append_page (GTK_NOTEBOOK(wizard->notebook), 
 					  GTK_WIDGET(cur->data), NULL);

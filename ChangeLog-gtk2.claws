@@ -1,3 +1,10 @@
+2004-08-25 [colin]	0.9.12cvs82.2
+
+	* src/wizard.c
+		Remove ports
+		Add SSL selection
+		Use login@server as account name
+
 2004-08-25 [colin]	0.9.12cvs82.1
 
 	* src/plugins/pgpmime/pgpmime.c

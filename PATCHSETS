@@ -141,3 +141,4 @@
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/wizard.c; ) > 0.9.12cvs80.3.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/pgpmime/pgpmime.c; cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/pgpmime/sgpgme.c; cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/pgpmime/sgpgme.h; ) > 0.9.12cvs81.1.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs82.1.patchset
+( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/wizard.c; ) > 0.9.12cvs82.2.patchset
