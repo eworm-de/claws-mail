@@ -1,3 +1,19 @@
+2003-01-11 [colin]	0.8.8claws81
+
+	* src/mainwindow.c
+	  src/mainwindow.h
+	  	Add mainwindow_get_mainwindow()
+	* src/alertpanel.c
+	  src/alertpanel.h
+	  	Add alertpanel_error_log() 
+	* src/compose.c
+	  src/inc.c
+	  src/messageview.c
+	  src/toolbar.c
+	  src/main.c
+	  src/procmsg.c
+	  	Network errors get a View Log button
+
 2003-01-10 [alfons]	0.8.8claws80
 
 	* src/prefs_toolbar.c

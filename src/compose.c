@@ -2912,7 +2912,7 @@ gint compose_send(Compose *compose)
 					alertpanel_error(_("Can't queue the message."));
 			}
 		} else
-			alertpanel_error(_("Error occurred while sending the message."));
+			alertpanel_error_log(_("Error occurred while sending the message."));
 	} else {
 		if (compose->mode == COMPOSE_REEDIT) {
 			compose_remove_reedit_target(compose);

@@ -2713,6 +2713,19 @@ static void addr_harvest_msg_cb( MainWindow *mainwin,
 	summary_harvest_address( mainwin->summaryview );
 }
 
+/*!
+ *\brief	get a MainWindow
+ *
+ *\return	MainWindow * The first mainwindow in the mainwin_list
+ */
+MainWindow *mainwindow_get_mainwindow(void)
+{
+	if (mainwin_list && mainwin_list->data)
+		return (MainWindow *)(mainwin_list->data);
+	else
+		return NULL;
+}
+
 /*
 * End of Source.
 */

@@ -1323,11 +1323,11 @@ gint procmsg_send_message_queue(const gchar *file)
 		}
 		if (mailval < 0) {
             		if (!local)
-				alertpanel_error(
+				alertpanel_error_log(
 					_("Error occurred while sending the message to `%s'."),
 					mailac ? mailac->smtp_server : smtpserver);
 			else
-				alertpanel_error(
+				alertpanel_error_log(
 					_("Error occurred while sending the message with command `%s'."),
 					(mailac && mailac->use_mail_command && 
 					 mailac->mail_command && (*mailac->mail_command)) ? 

@@ -177,4 +177,5 @@ void main_window_toggle_work_offline          (MainWindow        *mainwin,
 void mainwindow_key_pressed 		      (GtkWidget 	 *widget, 
 					       GdkEventKey 	 *event,
 				   	       gpointer 	  data);
+MainWindow *mainwindow_get_mainwindow 	      (void);
 #endif /* __MAINWINDOW_H__ */

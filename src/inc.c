@@ -650,7 +650,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		if (inc_dialog->show_dialog)
 			manage_window_focus_in(inc_dialog->dialog->window,
 					       NULL, NULL);
-		alertpanel_error(_("Some errors occurred while getting mail."));
+		alertpanel_error_log(_("Some errors occurred while getting mail."));
 		if (inc_dialog->show_dialog)
 			manage_window_focus_out(inc_dialog->dialog->window,
 						NULL, NULL);
