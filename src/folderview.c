@@ -2107,13 +2107,15 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 
 	Xstrdup_a(old_path, item->path, {g_free(new_folder); return;});
 
+	old_id = folder_item_get_identifier(item);
+	
 	if (item->folder->klass->rename_folder(item->folder, item, new_folder) < 0) {
 		alertpanel_error(_("The folder could not be renamed.\n"
 				   "The new folder name is not allowed."));
+		g_free(old_id);
 		return;
 	}
 
-	old_id = folder_item_get_identifier(item);
 	/* if (FOLDER_TYPE(item->folder) == F_MH)
 		prefs_filtering_rename_path(old_path, item->path); */
 	new_id = folder_item_get_identifier(item);

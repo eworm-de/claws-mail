@@ -1,3 +1,8 @@
+2004-04-06 [alfons]	0.9.10claws41
+
+	* src/folderview.c
+		fix bug #472, "filter not updated when renaming folder" 
+
 2004-04-06 [alfons]	0.9.10claws40
 
 	* src/messageview.[ch]
