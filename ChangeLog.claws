@@ -1,3 +1,11 @@
+2002-12-22 [paul]	0.8.6claws124
+
+	* po/bg.po
+	  po/es.po
+	  po/sr.po
+	  	updated translations. submitted by George Danchev,
+		Ricardo Mones Lastra, and Urke MMI respectively
+
 2002-12-21 [paul]	0.8.6claws123
 
 	* src/addrbook.c
