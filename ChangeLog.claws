@@ -11,6 +11,7 @@
 		     freezes while sending)
 		  - Allow queuing of newspostings
 		  - No copy in outbox before sending
+		    (closes bug #469501)
 		  - No more redundant code for send and send_later
 	* src/summaryview.c
 		Applied wwp <subscript@free.fr>'s patch that fixes
