@@ -1,3 +1,10 @@
+2004-07-09 [colin]	0.9.11cvs17.17
+
+	* src/pop.c
+		strlen checking...
+	* src/messageview.c
+		refactoring a bit
+
 2004-07-08 [colin]	0.9.11cvs17.16
 
 	* src/noticeview.c
