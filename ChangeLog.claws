@@ -1,3 +1,8 @@
+2002-08-21 [colin] 	0.8.1claws88
+
+	* src/summaryview.c
+		Made quick search case-insensitive
+
 2002-08-21 [paul]	0.8.1claws87
 
 	* sync with 0.8.1cvs26
@@ -15,11 +20,11 @@
 
 2002-08-20 [colin]	0.8.1claws85
 
-        * src/summaryview.[ch]
-                Added a quick search box
-        * src/mainwindow.c
-        * src/prefs_common.[ch]
-                Added a show/hide option for the quick search
+	* src/summaryview.[ch]
+		Added a quick search box
+	* src/mainwindow.c
+	* src/prefs_common.[ch]
+		Added a show/hide option for the quick search
 
 2002-08-20 [oliver]	0.8.1claws84
 	
