@@ -1008,13 +1008,20 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	if (account->auto_sig)
 		compose_insert_sig(compose, FALSE);
 
-	if (quote && prefs_common.linewrap_quote)
-		compose_wrap_line_all(compose);
-
-	gtk_editable_set_position(GTK_EDITABLE(text), 0);
-	gtk_stext_set_point(text, 0);
-
+	/* Must thaw here, otherwise the GtkSTextEdit will become confused 
+	 * when positioning cursor */
 	gtk_stext_thaw(text);
+
+	gtk_editable_set_position
+		(GTK_EDITABLE(text), quote_fmt_get_cursor_pos());
+	gtk_stext_set_point(text, quote_fmt_get_cursor_pos());
+
+	if (quote && prefs_common.linewrap_quote) {
+		gtk_stext_freeze(text);
+		compose_wrap_line_all(compose);
+		gtk_stext_thaw(text);
+	}
+
 	gtk_widget_grab_focus(compose->text);
 
 	if (prefs_common.auto_exteditor)

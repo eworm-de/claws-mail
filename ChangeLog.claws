@@ -1,3 +1,18 @@
+2004-02-17 [alfons]	0.9.9claws21
+
+	%X marks the cursor spot for reply quote format
+
+	* src/quote_fmt_lex.l 
+	  src/quote_fmt.c
+		add %X token
+		
+	* src/quote_fmt.h
+	  src/quote_fmt_parse.y
+		handle %X token
+		
+	* src/compose.c
+		handle %X token for replies only (for now)
+
 2004-02-17 [paul]	0.9.9claws20
 
 	* po/sk.po

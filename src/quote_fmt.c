@@ -54,6 +54,7 @@ static gchar *quote_desc_strings[] = {
 	"%Q",		N_("Quoted message body"), /* quoted message */ 
 	"%m",		N_("Message body without signature"), /* message with no signature */ 
 	"%q",		N_("Quoted message body without signature"), /* quoted message with no signature */ 
+	"%X",		N_("Cursor position"), /* X marks the cursor spot */
 	"",		NULL,
 	"?x{expr}",	N_("Insert expr if x is set\nx is one of the characters above after %"),
 	"",		NULL,
