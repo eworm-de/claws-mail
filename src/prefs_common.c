@@ -306,7 +306,7 @@ static PrefParam param[] = {
 	{"inc_local", "TRUE", &prefs_common.inc_local, P_BOOL,
 	 &receive.checkbtn_local,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"filter_on_inc_local", "FALSE", &prefs_common.filter_on_inc, P_BOOL,
+	{"filter_on_inc_local", "TRUE", &prefs_common.filter_on_inc, P_BOOL,
 	 &receive.checkbtn_filter_on_inc,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"spool_path", DEFAULT_SPOOL_PATH, &prefs_common.spool_path, P_STRING,

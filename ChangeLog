@@ -1,5 +1,12 @@
 2003-01-30
 
+	* src/summaryview.c: summary_execute(): select appropriate node
+	  if currently selected node is to be deleted.
+	* src/gtkutils.[ch]: gtkut_ctree_node_is_selected(): new. Returns
+	  TRUE if the specified node is selected.
+
+2003-01-30
+
 	* src/summaryview.c: summary_status_show(): fixed a occasional crash
 	  on deleting or moving.
 

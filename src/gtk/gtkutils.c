@@ -236,6 +236,19 @@ GtkCTreeNode *gtkut_ctree_node_next(GtkCTree *ctree, GtkCTreeNode *node)
 	return NULL;
 }
 
+gboolean gtkut_ctree_node_is_selected(GtkCTree *ctree, GtkCTreeNode *node)
+{
+	GtkCList *clist = GTK_CLIST(ctree);
+	GList *cur;
+
+	for (cur = clist->selection; cur != NULL; cur = cur->next) {
+		if (node == GTK_CTREE_NODE(cur->data))
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
 GtkCTreeNode *gtkut_ctree_find_collapsed_parent(GtkCTree *ctree,
 						GtkCTreeNode *node)
 {

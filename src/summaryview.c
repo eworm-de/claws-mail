@@ -1643,7 +1643,7 @@ static GtkCTreeNode *summary_find_prev_msg(SummaryView *summaryview,
 
 	for (; node != NULL; node = GTK_CTREE_NODE_PREV(node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (!MSG_IS_DELETED(msginfo->flags)) break;
+		if (msginfo && !MSG_IS_DELETED(msginfo->flags)) break;
 	}
 
 	return node;
@@ -1663,7 +1663,7 @@ static GtkCTreeNode *summary_find_next_msg(SummaryView *summaryview,
 
 	for (; node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (!MSG_IS_DELETED(msginfo->flags)) break;
+		if (msginfo && !MSG_IS_DELETED(msginfo->flags)) break;
 	}
 
 	return node;
@@ -1688,7 +1688,7 @@ static GtkCTreeNode *summary_find_prev_flagged_msg(SummaryView *summaryview,
 
 	for (; node != NULL; node = GTK_CTREE_NODE_PREV(node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if ((msginfo->flags.perm_flags & flags) != 0) break;
+		if (msginfo && (msginfo->flags.perm_flags & flags) != 0) break;
 	}
 
 	return node;
@@ -1716,7 +1716,7 @@ static GtkCTreeNode *summary_find_next_flagged_msg(SummaryView *summaryview,
 		/* Find msg with matching flags but ignore messages with
 		   ignore flags, if searching for new or unread messages */
 		if (!(((flags & (MSG_NEW | MSG_UNREAD)) != 0) && MSG_IS_IGNORE_THREAD(msginfo->flags)) && 
-			((msginfo->flags.perm_flags & flags) != 0))
+			(msginfo && (msginfo->flags.perm_flags & flags) != 0))
 			break;
 	}
 
@@ -1734,7 +1734,7 @@ static GtkCTreeNode *summary_find_msg_by_msgnum(SummaryView *summaryview,
 
 	for (; node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (msginfo->msgnum == msgnum) break;
+		if (msginfo && msginfo->msgnum == msgnum) break;
 	}
 
 	return node;
@@ -3464,6 +3464,7 @@ gboolean summary_execute(SummaryView *summaryview)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
 	GtkCTreeNode *node, *next;
+	GtkCTreeNode *new_selected = NULL;
 
 	if (!summaryview->folder_item) return FALSE;
 
@@ -3482,19 +3483,36 @@ gboolean summary_execute(SummaryView *summaryview)
 	folder_item_update_thaw();
 
 	node = GTK_CTREE_NODE(clist->row_list);
-	while (node != NULL) {
+	for (; node != NULL; node = next) {
 		next = gtkut_ctree_node_next(ctree, node);
-		if (gtk_ctree_node_get_row_data(ctree, node) == NULL) {
-			if (node == summaryview->displayed) {
-				messageview_clear(summaryview->messageview);
-				summaryview->displayed = NULL;
-			}
-			if (GTK_CTREE_ROW(node)->children != NULL)
-				g_warning("summary_execute(): children != NULL\n");
-			else
-				gtk_ctree_remove_node(ctree, node);
+		if (gtk_ctree_node_get_row_data(ctree, node) != NULL) continue;
+
+		if (node == summaryview->displayed) {
+			messageview_clear(summaryview->messageview);
+			summaryview->displayed = NULL;
 		}
-		node = next;
+		if (GTK_CTREE_ROW(node)->children != NULL) {
+			g_warning("summary_execute(): children != NULL\n");
+			continue;
+		}
+
+		if (!new_selected &&
+		    gtkut_ctree_node_is_selected(ctree, node)) {
+			gtk_sctree_unselect_all(GTK_SCTREE(ctree));
+			new_selected = summary_find_next_msg(summaryview, node);
+			if (!new_selected)
+				new_selected = summary_find_prev_msg
+					(summaryview, node);
+		}
+
+		gtk_ctree_remove_node(ctree, node);
+	}
+
+	if (new_selected) {
+		gtk_sctree_select
+			(GTK_SCTREE(ctree),
+			 summaryview->displayed ? summaryview->displayed
+			 : new_selected);
 	}
 
 	if (summaryview->threaded)

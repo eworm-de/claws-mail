@@ -1,5 +1,12 @@
 2003-01-30
 
+	* src/summaryview.c: summary_execute(): 現在選択されているノードが
+	  削除される場合は適切なノードを選択するようにした。
+	* src/gtkutils.[ch]: gtkut_ctree_node_is_selected(): 新規。指定した
+	  ノードが選択されていれば TRUE を返す。
+
+2003-01-30
+
 	* src/summaryview.c: summary_status_show(): 削除あるいは移動時に
 	  たまにクラッシュするのを修正。
 
