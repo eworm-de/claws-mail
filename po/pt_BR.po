@@ -6168,7 +6168,7 @@ msgid "Could not create temporary file for news sending."
 msgstr "Não foi possível criar o arquivo temporário para envio de notícia."
 
 #: src/procmsg.c:1283
-msgid "Error when writing temorary file for news sending."
+msgid "Error when writing temporary file for news sending."
 msgstr "Erro ao gravar no arquivo temporário de notícia a enviar."
 
 #: src/procmsg.c:1289

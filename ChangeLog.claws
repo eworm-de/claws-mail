@@ -1,3 +1,12 @@
+2002-04-26 [melvin]	0.7.4claws101
+
+	* src/procmsg.c
+		fixed a second typo (same one)
+	* po/fr.po
+	  po/it.po
+	  po/pt_BR.po
+	  	fixed the type again...
+
 2002-04-26 [melvin]	0.7.4claws100
 
 	* src/procmsg.c
