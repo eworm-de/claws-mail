@@ -100,6 +100,8 @@ struct _Folder
 
 	gpointer data;
 
+	GHashTable *newsart;
+
 	/* virtual functions */
 	GSList * (*get_msg_list)	(Folder		*folder,
 					 FolderItem	*item,

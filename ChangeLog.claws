@@ -1,3 +1,16 @@
+2002-03-17 [paul]	0.7.4claws19
+
+	* src/defs.h
+	  src/folder.h
+	  src/news.c
+  	  src/prefs_account.[ch]
+	  src/procmsg.[ch]
+	  src/summaryview.c
+		automatically mark cross-posted messages as read 
+		and (optionally) give them a colour label
+		Patch submitted by Stefaan Eeckels <Stefaan.Eeckels@eec.lu>
+		
+
 2002-03-17 [paul]	0.7.4claws18
 
 	* sync with sylpheed 0.7.4cvs5

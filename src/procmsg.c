@@ -241,6 +241,8 @@ GSList *procmsg_read_cache(FolderItem *item, gboolean scan_file)
 		READ_CACHE_DATA(msginfo->msgid, fp);
 		READ_CACHE_DATA(msginfo->inreplyto, fp);
 		READ_CACHE_DATA(msginfo->references, fp);
+                READ_CACHE_DATA(msginfo->xref, fp);
+
 
 		MSG_SET_PERM_FLAGS(msginfo->flags, default_flags.perm_flags);
 		MSG_SET_TMP_FLAGS(msginfo->flags, default_flags.tmp_flags);
@@ -385,6 +387,8 @@ void procmsg_write_cache(MsgInfo *msginfo, FILE *fp)
 	WRITE_CACHE_DATA(msginfo->msgid, fp);
 	WRITE_CACHE_DATA(msginfo->inreplyto, fp);
 	WRITE_CACHE_DATA(msginfo->references, fp);
+	WRITE_CACHE_DATA(msginfo->xref, fp);
+
 }
 
 void procmsg_write_flags(MsgInfo *msginfo, FILE *fp)
@@ -942,6 +946,7 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 	MEMBDUP(subject);
 	MEMBDUP(msgid);
 	MEMBDUP(inreplyto);
+	MEMBDUP(xref);
 
 	MEMBCOPY(folder);
 	MEMBCOPY(to_folder);
@@ -977,6 +982,7 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	g_free(msginfo->subject);
 	g_free(msginfo->msgid);
 	g_free(msginfo->inreplyto);
+	g_free(msginfo->xref);
 
 	g_free(msginfo);
 }

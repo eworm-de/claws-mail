@@ -46,6 +46,7 @@
 #include "gtkutils.h"
 #include "utils.h"
 #include "alertpanel.h"
+#include "colorlabel.h"
 
 static gboolean cancelled;
 
@@ -163,6 +164,9 @@ static struct Advanced {
 	GtkWidget *domain_entry;
 	GtkWidget *tunnelcmd_chkbtn;
 	GtkWidget *tunnelcmd_entry;
+	GtkWidget *crosspost_chkbtn;
+ 	GtkWidget *crosspost_colormenu;
+
 } advanced;
 
 static void prefs_account_fix_size			(void);
@@ -176,6 +180,8 @@ static void prefs_account_enum_set_radiobtn		(PrefParam *pparam);
 static void prefs_account_ascii_armored_warning(GtkWidget* widget, 
 				               gpointer unused);
 #endif /* USE_GPGME || USE_SSL */
+static void prefs_account_crosspost_set_data_from_colormenu(PrefParam *pparam);
+static void prefs_account_crosspost_set_colormenu(PrefParam *pparam);
 
 static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
 					   gpointer user_data);
@@ -401,6 +407,16 @@ static PrefParam param[] = {
 	{"tunnelcmd", NULL, &tmp_ac_prefs.tunnelcmd, P_STRING,
 	 &advanced.tunnelcmd_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{"mark_crosspost_read", "FALSE", &tmp_ac_prefs.mark_crosspost_read, P_BOOL,
+	 &advanced.crosspost_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"crosspost_color", NULL, &tmp_ac_prefs.crosspost_col, P_ENUM,
+	 &advanced.crosspost_colormenu,
+	 prefs_account_crosspost_set_data_from_colormenu,
+	 prefs_account_crosspost_set_colormenu},
+
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -1502,6 +1518,40 @@ static void prefs_account_ssl_create(void)
 }
 #endif /* USE_SSL */
 
+static void crosspost_color_toggled(void)
+{
+	gboolean is_active;
+
+	is_active = gtk_toggle_button_get_active
+		(GTK_TOGGLE_BUTTON(advanced.crosspost_chkbtn));
+	gtk_widget_set_sensitive(advanced.crosspost_colormenu, is_active);
+}
+
+static void prefs_account_crosspost_set_data_from_colormenu(PrefParam *pparam)
+{
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(advanced.crosspost_colormenu));
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	*((gint *)pparam->data) = GPOINTER_TO_INT
+		(gtk_object_get_data(GTK_OBJECT(menuitem), "color"));
+}
+
+static void prefs_account_crosspost_set_colormenu(PrefParam *pparam)
+{
+	gint colorlabel = *((gint *)pparam->data);
+	GtkOptionMenu *colormenu = GTK_OPTION_MENU(*pparam->widget);
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	gtk_option_menu_set_history(colormenu, colorlabel);
+	menu = gtk_option_menu_get_menu(colormenu);
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
+}
+
+
 static void prefs_account_advanced_create(void)
 {
 	GtkWidget *vbox1;
@@ -1522,6 +1572,12 @@ static void prefs_account_advanced_create(void)
 	GtkWidget *entry_domain;
 	GtkWidget *checkbtn_tunnelcmd;
 	GtkWidget *entry_tunnelcmd;
+ 	GtkWidget *checkbtn_crosspost;
+ 	GtkWidget *colormenu_crosspost;
+ 	GtkWidget *menu;
+ 	GtkWidget *menuitem;
+ 	GtkWidget *item;
+ 	gint i;
 
 #define PACK_HBOX(hbox) \
 	{ \
@@ -1587,6 +1643,21 @@ static void prefs_account_advanced_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), entry_tunnelcmd, TRUE, TRUE, 0);
 	SET_TOGGLE_SENSITIVITY (checkbtn_tunnelcmd, entry_tunnelcmd);
 
+	PACK_HBOX (hbox1);
+	PACK_CHECK_BUTTON (hbox1, checkbtn_crosspost, 
+			   _("Mark crossposted messages as read and color:"));
+	gtk_signal_connect (GTK_OBJECT (checkbtn_crosspost), "toggled",
+					GTK_SIGNAL_FUNC (crosspost_color_toggled),
+					NULL);
+
+	colormenu_crosspost = gtk_option_menu_new();
+	gtk_widget_show (colormenu_crosspost);
+	gtk_box_pack_start (GTK_BOX (hbox1), colormenu_crosspost, FALSE, FALSE, 0);
+
+	menu = colorlabel_create_color_menu();
+	gtk_option_menu_set_menu (GTK_OPTION_MENU(colormenu_crosspost), menu);
+	SET_TOGGLE_SENSITIVITY(checkbtn_crosspost, colormenu_crosspost);
+
 #undef PACK_HBOX
 #undef PACK_PORT_ENTRY
 
@@ -1605,6 +1676,8 @@ static void prefs_account_advanced_create(void)
 	advanced.domain_entry		= entry_domain;
 	advanced.tunnelcmd_chkbtn	= checkbtn_tunnelcmd;
 	advanced.tunnelcmd_entry	= entry_tunnelcmd;
+ 	advanced.crosspost_chkbtn	= checkbtn_crosspost;
+ 	advanced.crosspost_colormenu	= colormenu_crosspost;
 }
 
 static gint prefs_account_deleted(GtkWidget *widget, GdkEventAny *event,
@@ -1870,6 +1943,8 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(advanced.popport_hbox);
 		gtk_widget_hide(advanced.imapport_hbox);
 		gtk_widget_show(advanced.nntpport_hbox);
+		gtk_widget_show(advanced.crosspost_chkbtn);
+		gtk_widget_show(advanced.crosspost_colormenu);
 		break;
 	case A_LOCAL:
 		gtk_widget_hide(basic.nntpserv_label);
@@ -1925,6 +2000,8 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(advanced.popport_hbox);
 		gtk_widget_hide(advanced.imapport_hbox);
 		gtk_widget_hide(advanced.nntpport_hbox);
+		gtk_widget_hide(advanced.crosspost_chkbtn);
+		gtk_widget_hide(advanced.crosspost_colormenu);
 		break;
 	case A_IMAP4:
 		gtk_widget_hide(basic.nntpserv_label);
@@ -1982,6 +2059,8 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(advanced.popport_hbox);
 		gtk_widget_show(advanced.imapport_hbox);
 		gtk_widget_hide(advanced.nntpport_hbox);
+		gtk_widget_hide(advanced.crosspost_chkbtn);
+		gtk_widget_hide(advanced.crosspost_colormenu);
 		break;
 	case A_POP3:
 	default:
@@ -2040,6 +2119,8 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_show(advanced.popport_hbox);
 		gtk_widget_hide(advanced.imapport_hbox);
 		gtk_widget_hide(advanced.nntpport_hbox);
+		gtk_widget_hide(advanced.crosspost_chkbtn);
+		gtk_widget_hide(advanced.crosspost_colormenu);
 		break;
 	}
 

@@ -380,6 +380,9 @@ static gint summary_cmp_by_label	(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
 
+static void news_process_crossposted  	(MsgInfo *msginfo);
+static void news_flag_crosspost		(MsgInfo *msginfo);
+
 GtkTargetEntry summary_drag_types[1] =
 {
 	{"text/plain", GTK_TARGET_SAME_APP, TARGET_DUMMY}
@@ -1606,6 +1609,9 @@ static void summary_set_marks_func(GtkCTree *ctree, GtkCTreeNode *node,
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, node);
+
+ 	if (MSG_IS_NEWS(msginfo->flags))
+ 		news_flag_crosspost(msginfo);
 
 	if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->newmsgs++;
@@ -4833,6 +4839,69 @@ static gint summary_cmp_by_label(GtkCList *clist,
 	return MSG_GET_COLORLABEL(msginfo1->flags) -
 		MSG_GET_COLORLABEL(msginfo2->flags);
 }
+
+static void news_flag_crosspost(MsgInfo *msginfo)
+{
+	GString *line;
+	gpointer key;
+	gpointer value;
+	MsgPermFlags flags;
+	Folder *mff = msginfo->folder->folder;
+
+	if (mff->account->mark_crosspost_read && MSG_IS_NEWS(msginfo->flags)) {
+		line = g_string_sized_new(128);
+		g_string_sprintf(line, "%s:%d", msginfo->folder->path, msginfo->msgnum);
+		debug_print(_("nfcp: checking <%s>"), line->str);
+		if (mff->newsart && 
+		    g_hash_table_lookup_extended(mff->newsart, line->str, &key, &value)) {
+			debug_print(_(" <%s>"), value);
+			if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
+				MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
+				MSG_SET_COLORLABEL_VALUE(msginfo->flags, mff->account->crosspost_col);
+			}
+			g_hash_table_remove(mff->newsart, key);
+			g_free(key);
+		}
+		g_string_free(line, TRUE);
+		debug_print(_("\n"));
+	}
+}
+
+static void news_process_crossposted(MsgInfo *msginfo)
+{
+	gchar **crossref;
+	gchar **crp;
+	gchar *cp;
+	gint cnt;
+	static char *read = "read";
+	Folder *mff = msginfo->folder->folder;
+
+	/* Get the Xref: line */
+	if (msginfo->xref) {
+		/* Retrieve the cross-posted groups and message ids */
+		/* Format of Xref is Xref: server message:id message:id ... */
+		crossref = g_strsplit(msginfo->xref, " ", 1024);
+		for (crp = crossref+2, cnt = 0; *crp; crp++, cnt++) {
+			if ((cp = strchr(*crp, ':'))) {
+				*cp = '\0';
+				if (!strcmp(*crp, msginfo->folder->path)) continue;
+				*cp = ':';
+
+				/* On first pass, create a GHashTable to hold the list of
+				 * article numbers per newsgroup that have been read. */
+				if (!mff->newsart) {
+					mff->newsart = g_hash_table_new(g_str_hash, g_str_equal);
+				}
+				/* When a summary is selected, the articles for that
+				 * newsgroup are marked based on this entry */
+				g_hash_table_insert(mff->newsart, g_strdup(*crp), read);
+				debug_print(_("Cross-reference %d: Hash <%s>\n"), cnt, *crp);
+			}
+		}
+		g_strfreev(crossref);
+	}
+}
+
 static gint summary_cmp_by_score(GtkCList *clist,
 				 gconstpointer ptr1, gconstpointer ptr2)
 {

@@ -159,6 +159,8 @@ struct _PrefsAccount
 	gushort   nntpport;
 	gboolean  set_domain;
 	gchar    *domain;
+	gboolean  mark_crosspost_read;
+	gint	  crosspost_col;
 
 	/* Use this command to open a socket, rather than doing so
 	 * directly.  Good if you want to perhaps use a special socks

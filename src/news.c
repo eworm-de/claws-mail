@@ -774,7 +774,7 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
 {
 	MsgInfo *msginfo;
 	gchar buf[NNTPBUFSIZE];
-	gchar *subject, *sender, *size, *line, *date, *msgid, *ref, *tmp;
+	gchar *subject, *sender, *size, *line, *date, *msgid, *ref, *tmp, *xref;
 	gchar *p;
 	gint num, size_int, line_int;
 	gchar *xover_buf;
@@ -788,8 +788,9 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
 	PARSE_ONE_PARAM(ref, msgid);
 	PARSE_ONE_PARAM(size, ref);
 	PARSE_ONE_PARAM(line, size);
+	PARSE_ONE_PARAM(xref, line);
 
-	tmp = strchr(line, '\t');
+	tmp = strchr(xref, '\t');
 	if (!tmp) tmp = strchr(line, '\r');
 	if (!tmp) tmp = strchr(line, '\n');
 	if (tmp) *tmp = '\0';
@@ -825,6 +826,13 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
 		remove_space(p);
 		if (*p != '\0')
 			msginfo->inreplyto = g_strdup(p);
+	}
+
+	msginfo->xref = g_strdup(xref);
+	p = msginfo->xref+strlen(msginfo->xref) - 1;
+	while (*p == '\r' || *p == '\n') {
+		*p = '\0';
+		p--;
 	}
 
 	return msginfo;
