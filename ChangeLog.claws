@@ -1,4 +1,9 @@
-2001-11-04 [alfons]
+2001-11-04 [alfons]	0.6.4claws24
+	
+	* src/textview.c
+		fix bug reported by Kim Schulz. introduced by the patch integrated
+		in 0.6.4claws15. the code did not check the return value of
+		the html parser.
 
 	* AUTHORS
 		add Jonathan Ware and close "[ #475955 ] Enhanced Mailto Patch"

@@ -433,10 +433,15 @@ static void textview_show_html(TextView *textview, FILE *fp,
 	        if (parser->state == HTML_HREF) {
 		        /* first time : get and copy the URL */
 		        if (url == NULL) {
-		                url = strdup(strtok(str, " "));
-				/* the URL may (or not) be followed by the
-				 * referenced text */
-		                str = strtok(NULL, "");
+				/* ALF - the sylpheed html parser returns an empty string,
+				 * if still inside an <a>, but already parsed past HREF */
+				str = strtok(str, " ");
+				if (str) { 
+					url = strdup(str);
+					/* the URL may (or not) be followed by the
+					 * referenced text */
+					str = strtok(NULL, "");
+				}	
 		        }
 		        if (str != NULL) {
 			        textview_write_link(textview, url, str, NULL);
