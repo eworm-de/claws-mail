@@ -333,7 +333,7 @@ void
 md5_hex_digest(char *hexdigest, const unsigned char *s)
 {
 	int i;
-	MD5_CTX context;
+	MD5_CTX_syl context;
 	unsigned char digest[16];
 
 	md5_init(&context);
@@ -355,7 +355,7 @@ md5_hmac(unsigned char *digest,
 	 const unsigned char* text, int text_len,
 	 const unsigned char* key, int key_len)
 {
-	MD5_CTX context;
+	MD5_CTX_syl context;
 	unsigned char k_ipad[64];    /* inner padding -
 				      * key XORd with ipad
 				      */
@@ -370,7 +370,7 @@ md5_hmac(unsigned char *digest,
 	memset(k_opad, 0, sizeof k_opad);
 	if (key_len > 64) {
 		/* if key is longer than 64 bytes reset it to key=MD5(key) */
-		MD5_CTX tctx;
+		MD5_CTX_syl tctx;
 
 		md5_init(&tctx);
 		md5_update(&tctx, key, key_len);

@@ -23,9 +23,21 @@
 #include <glib.h>
 #include <gtk/gtkwidget.h>
 
+#ifdef USE_SSL
+#include <openssl/crypto.h>
+#include <openssl/x509.h>
+#include <openssl/pem.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+#endif
+
 extern gchar *prog_version;
 extern gchar *startup_dir;
 extern gboolean debug_mode;
+
+#ifdef USE_SSL
+extern SSL_CTX *ssl_ctx;
+#endif
 
 void app_will_exit	(GtkWidget *widget, gpointer data);
 

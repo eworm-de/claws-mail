@@ -31,6 +31,14 @@
 #  include <pthread.h>
 #endif
 
+#if USE_SSL
+#  include <openssl/crypto.h>
+#  include <openssl/x509.h>
+#  include <openssl/pem.h>
+#  include <openssl/ssl.h>
+#  include <openssl/err.h>
+#endif
+
 typedef struct _SockInfo	SockInfo;
 
 typedef enum
@@ -58,6 +66,9 @@ struct _SockInfo
 #if USE_THREADS
 	pthread_t connect_thr;
 	pthread_mutex_t mutex;
+#endif
+#if USE_SSL
+	SSL *ssl;
 #endif
 };
 

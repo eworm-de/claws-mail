@@ -2179,6 +2179,11 @@ static void compose_mail_cb(MainWindow *mainwin, guint action,
 		}
 	}
 
+	if(cur_account && (cur_account->protocol != A_NNTP)) {
+		compose_new(cur_account);
+		return;
+	}
+
 	list = account_get_list();
 	for(cur = list ; cur != NULL ; cur = g_list_next(cur)) {
 		ac = (PrefsAccount *) cur->data;

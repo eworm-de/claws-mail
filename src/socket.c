@@ -397,6 +397,11 @@ gint sock_read(SockInfo *sock, gchar *buf, gint len)
 {
 	g_return_val_if_fail(sock != NULL, -1);
 
+#if USE_SSL
+	if(sock->ssl) {
+		return ssl_read(sock->ssl, buf, len);
+	}
+#endif
 	return fd_read(sock->sock, buf, len);
 }
 
@@ -405,10 +410,22 @@ gint fd_read(gint fd, gchar *buf, gint len)
 	return read(fd, buf, len);
 }
 
+#ifdef USE_SSL
+gint ssl_read(SSL *ssl, gchar *buf, gint len)
+{
+	return SSL_read(ssl, buf, len);
+}
+#endif
+
 gint sock_write(SockInfo *sock, const gchar *buf, gint len)
 {
 	g_return_val_if_fail(sock != NULL, -1);
 
+#if USE_SSL
+	if(sock->ssl) {
+		return ssl_write(sock->ssl, buf, len);
+	}
+#endif
 	return fd_write(sock->sock, buf, len);
 }
 
@@ -427,6 +444,24 @@ gint fd_write(gint fd, const gchar *buf, gint len)
 
 	return wrlen;
 }
+
+#ifdef USE_SSL
+gint ssl_write(SSL *ssl, const gchar *buf, gint len)
+{
+	gint n, wrlen = 0;
+
+	while (len) {
+		n = SSL_write(ssl, buf, len);
+		if (n <= 0)
+			return -1;
+		len -= n;
+		wrlen += n;
+		buf += n;
+	}
+
+	return wrlen;
+}
+#endif
 
 gint fd_gets(gint fd, gchar *buf, gint len)
 {
@@ -450,10 +485,39 @@ gint fd_gets(gint fd, gchar *buf, gint len)
 	return bp - buf;
 }
 
+#if USE_SSL
+gint ssl_gets(SSL *ssl, gchar *buf, gint len)
+{
+	gchar *buf2 = buf;
+	gboolean newline = FALSE;
+	gint n, count = 0;
+
+	if (--len < 1)
+		return -1;
+	while(len > 0 && !newline) {
+		*buf2 = '\0';
+		if((n = SSL_read(ssl, buf2, 1)) < 0)
+			return -1;
+		if(*buf2 == '\n')
+			newline = TRUE;
+		buf2 += n;
+		count += n;
+	}
+
+	*buf2 = '\0';
+	return n;
+}
+#endif
+
 gint sock_gets(SockInfo *sock, gchar *buf, gint len)
 {
 	g_return_val_if_fail(sock != NULL, -1);
 
+#if USE_SSL
+	if(sock->ssl) {
+		return ssl_gets(sock->ssl, buf, len);
+	}
+#endif
 	return fd_gets(sock->sock, buf, len);
 }
 
@@ -479,10 +543,39 @@ gchar *fd_getline(gint fd)
 	return str;
 }
 
+#if USE_SSL
+gchar *ssl_getline(SSL *ssl)
+{
+	gchar buf[BUFFSIZE];
+	gchar *str = NULL;
+	gint len;
+	gulong size = 1;
+
+	while ((len = ssl_gets(ssl, buf, sizeof(buf))) > 0) {
+		size += len;
+		if (!str)
+			str = g_strdup(buf);
+		else {
+			str = g_realloc(str, size);
+			strcat(str, buf);
+		}
+		if (buf[len - 1] == '\n')
+			break;
+	}
+
+	return str;
+}
+#endif
+
 gchar *sock_getline(SockInfo *sock)
 {
 	g_return_val_if_fail(sock != NULL, NULL);
 
+#if USE_SSL
+	if(sock->ssl) {
+		return ssl_getline(sock->ssl);
+	}
+#endif
 	return fd_getline(sock->sock);
 }
 

@@ -1,3 +1,20 @@
+2001-07-10 [christoph]
+
+	* acconfig.h
+	* configure.in
+		added --enable-ssl
+	* src/md5.[ch]
+		renamed MD5_CTX to MD5_CTX_syl
+		conflicts with a struct in openssl
+	* src/inc.c
+	* src/main.[ch]
+	* src/prefs_account.[ch]
+	* src/socket.[ch]
+		SSL support for POP
+	* src/mainwindow.c
+		fixed compose with current account
+		broken by new compose button stuff
+
 2001-07-09 [hoa]
 
 	* AUTHORS

@@ -24,6 +24,9 @@
 /* Define if we use GPGME to support OpenPGP */
 #undef USE_GPGME
 
+/* Define if we use GPGME to support OpenPGP */
+#undef USE_SSL
+
 /* Define to `unsigned int' if <stddef.h> or <wchar.h> doesn't define.  */
 #undef wint_t
 

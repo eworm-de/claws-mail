@@ -130,6 +130,9 @@ static struct Advanced {
 	GtkWidget *popport_hbox;
 	GtkWidget *popport_chkbtn;
 	GtkWidget *popport_entry;
+#if USE_SSL
+	GtkWidget *popssl_chkbtn;
+#endif
 	GtkWidget *imapport_hbox;
 	GtkWidget *imapport_chkbtn;
 	GtkWidget *imapport_entry;
@@ -306,6 +309,12 @@ static PrefParam param[] = {
 	{"pop_port", "110", &tmp_ac_prefs.popport, P_USHORT,
 	 &advanced.popport_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
+
+#if USE_SSL
+	{"pop_ssl", "FALSE", &tmp_ac_prefs.pop_ssl, P_BOOL,
+	 &advanced.popssl_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+#endif
 
 	{"set_imapport", "FALSE", &tmp_ac_prefs.set_imapport, P_BOOL,
 	 &advanced.imapport_chkbtn,
@@ -1205,6 +1214,9 @@ static void prefs_account_advanced_create(void)
 	GtkWidget *hbox_popport;
 	GtkWidget *checkbtn_popport;
 	GtkWidget *entry_popport;
+#ifdef USE_SSL
+	GtkWidget *checkbtn_popssl;
+#endif
 	GtkWidget *hbox_imapport;
 	GtkWidget *checkbtn_imapport;
 	GtkWidget *entry_imapport;
@@ -1249,6 +1261,10 @@ static void prefs_account_advanced_create(void)
 	PACK_PORT_ENTRY (hbox_popport, entry_popport);
 	SET_TOGGLE_SENSITIVITY (checkbtn_popport, entry_popport);
 
+#ifdef USE_SSL
+	PACK_CHECK_BUTTON (vbox2, checkbtn_popssl, _("Use SSL to connect to POP server"));
+#endif
+
 	PACK_HBOX (hbox_imapport);
 	PACK_CHECK_BUTTON (hbox_imapport, checkbtn_imapport,
 			   _("Specify IMAP4 port"));
@@ -1277,6 +1293,9 @@ static void prefs_account_advanced_create(void)
 	advanced.popport_hbox		= hbox_popport;
 	advanced.popport_chkbtn		= checkbtn_popport;
 	advanced.popport_entry		= entry_popport;
+#ifdef USE_SSL
+	advanced.popssl_chkbtn		 = checkbtn_popssl;
+#endif
 	advanced.imapport_hbox		= hbox_imapport;
 	advanced.imapport_chkbtn	= checkbtn_imapport;
 	advanced.imapport_entry		= entry_imapport;

@@ -110,6 +110,9 @@ struct _PrefsAccount
 	gushort   smtpport;
 	gboolean  set_popport;
 	gushort   popport;
+#if USE_SSL
+	gboolean  pop_ssl;
+#endif
 	gboolean  set_imapport;
 	gushort   imapport;
 	gboolean  set_nntpport;
