@@ -527,7 +527,7 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	/* Display: Summary View */
-	{"enable_swap_from", "TRUE", &prefs_common.swap_from, P_BOOL,
+	{"enable_swap_from", "FALSE", &prefs_common.swap_from, P_BOOL,
 	 &display.chkbtn_swapfrom,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"enable_hscrollbar", "TRUE", &prefs_common.enable_hscrollbar, P_BOOL,

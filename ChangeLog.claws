@@ -1,3 +1,11 @@
+2002-05-22 [paul]	0.7.6claws11
+
+	* sync with 0.7.6cvs13
+	  src/codeconv.c
+		see ChangeLog 2002-05-20
+	  src/prefs_common.c
+		see ChangeLog 2002-05-22
+
 2002-05-21 [melvin]	0.7.6claws10
 
 	* src/folderview.c
