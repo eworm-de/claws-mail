@@ -49,15 +49,6 @@ static StringEntry *string_entry_new(const gchar *str)
 	return entry;
 }
 
-static void string_entry_free(StringEntry *entry)
-{
-	g_return_if_fail(entry != NULL);
-	g_return_if_fail(entry->string);
-
-	g_free(entry->string);
-	g_free(entry);
-}
-
 StringTable *string_table_new(void)
 {
 	StringTable *strtable;

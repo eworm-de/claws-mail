@@ -3752,6 +3752,9 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 				fputc('\n', fp);
 			}
 			break;
+		default:
+			debug_print("Tried to write attachment in unsupported encoding type\n");
+			break;
 		}
 
 		fclose(attach_fp);

@@ -84,6 +84,7 @@
 #include "filtering.h"
 #include "string_match.h"
 #include "toolbar.h"
+#include "news.h"
 
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_UNREAD_WIDTH	13

@@ -119,7 +119,7 @@ Folder *mh_folder_new(const gchar *name, const gchar *path)
 	return folder;
 }
 
-void mh_folder_destroy(MHFolder *folder)
+void mh_folder_destroy(Folder *folder)
 {
 	folder_local_folder_destroy(LOCAL_FOLDER(folder));
 }

@@ -40,7 +40,6 @@ static void gtk_sctree_collapse (GtkCTree *ctree, GtkCTreeNode *node);
        
 static void tree_sort (GtkCTree *ctree, GtkCTreeNode  *node, gpointer data);
 void gtk_sctree_sort_node (GtkCTree *ctree, GtkCTreeNode *node);
-static void real_sort_list (GtkCList *clist);
 void gtk_sctree_sort_recursive (GtkCTree *ctree, GtkCTreeNode *node);
 
 static void gtk_ctree_link (GtkCTree *ctree,
@@ -717,12 +716,6 @@ gtk_sctree_sort_recursive (GtkCTree     *ctree,
 	}
 
 	gtk_clist_thaw (clist);
-}
-
-static void
-real_sort_list (GtkCList *clist)
-{
-	gtk_sctree_sort_recursive (GTK_CTREE (clist), NULL);
 }
 
 void

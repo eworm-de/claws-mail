@@ -1019,7 +1019,7 @@ void exporthtml_process(
 
 	tt = time( NULL );
 	fprintf( htmlFile, "<p>%s</p>\n", ctime( &tt ) );
-	fprintf( htmlFile, "<hr width=\"100\%\"></hr>\n" );
+	fprintf( htmlFile, "<hr width=\"100%%\"></hr>\n" );
 
 	fprintf( htmlFile, "</body>\n" );
 	fprintf( htmlFile, "</html>\n" );

@@ -302,7 +302,6 @@ static void prefs_toolbar_save(void)
 	gint row = 0;
 	GtkCList *clist = GTK_CLIST(toolbar.clist_set);
 	gchar *entry = NULL;
-	GSList *toolbar_list = NULL;
 	
 	toolbar_clear_list(toolbar.source);
 

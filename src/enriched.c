@@ -32,9 +32,6 @@
 static ERTFState ertf_read_line		(ERTFParser	*parser);
 static void ertf_append_char		(ERTFParser	*parser,
 					 gchar		 ch);
-static void ertf_append_str		(ERTFParser	*parser,
-					 const gchar	*str,
-					 gint		 len);
 
 static ERTFState ertf_parse_tag		(ERTFParser	*parser);
 static void ertf_get_parenthesis	(ERTFParser	*parser, 
@@ -162,33 +159,6 @@ static void ertf_append_char(ERTFParser *parser, gchar ch)
 			parser->empty_line = TRUE;
 		else
 			parser->newline = TRUE;
-	} else
-		parser->newline = FALSE;
-}
-
-static void ertf_append_str(ERTFParser *parser, const gchar *str, gint len)
-{
-	GString *string = parser->str;
-
-	if (!parser->pre && parser->space) {
-		g_string_append_c(string, ' ');
-		parser->space = FALSE;
-	}
-
-	if (len == 0) return;
-	if (len < 0)
-		g_string_append(string, str);
-	else {
-		gchar *s;
-		Xstrndup_a(s, str, len, return);
-		g_string_append(string, s);
-	}
-
-	parser->empty_line = FALSE;
-	if (string->len > 0 && string->str[string->len - 1] == '\n') {
-		parser->newline = TRUE;
-		if (string->len > 1 && string->str[string->len - 2] == '\n')
-			parser->empty_line = TRUE;
 	} else
 		parser->newline = FALSE;
 }

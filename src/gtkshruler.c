@@ -43,8 +43,6 @@
 
 static void gtk_shruler_class_init   	(GtkSHRulerClass *klass);
 static void gtk_shruler_init         	(GtkSHRuler      *hruler);
-static gint gtk_shruler_motion_notify	(GtkWidget       *widget,
-					 GdkEventMotion  *event);
 static void gtk_shruler_draw_ticks 	(GtkRuler        *ruler);
 #if 0
 static void gtk_shruler_draw_pos      	(GtkRuler        *ruler);

@@ -27,6 +27,8 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <time.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #include <errno.h>
 #include <fcntl.h>
@@ -62,7 +64,7 @@
 
 static GtkWidget	*crash_dialog_show		(const gchar *text, 
 							 const gchar *debug_output);
-static gboolean		 crash_create_debugger_file	(void);
+static void		 crash_create_debugger_file	(void);
 static void		 crash_save_crash_log		(GtkButton *, const gchar *);
 static void		 crash_create_bug_report	(GtkButton *, const gchar *);
 static void		 crash_debug			(unsigned long crash_pid, 
@@ -171,9 +173,6 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 	GtkWidget *button3;
 	GtkWidget *button4;
 	GtkWidget *button5;
-	GtkWidget *pixwid;
-	GdkPixmap *pix;
-	GdkBitmap *msk;
 	gchar	  *crash_report;
 
 	window1 = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -279,7 +278,7 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
  *		all the other options (creating temp files) looked too 
  *		convoluted.
  */
-static gboolean crash_create_debugger_file(void)
+static void crash_create_debugger_file(void)
 {
 	gchar *filespec = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, DEBUGGERRC, NULL);
 	

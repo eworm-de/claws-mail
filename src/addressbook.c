@@ -3304,13 +3304,13 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 ItemObjectType addressbook_type2item( AddressObjectType abType ) {
 	ItemObjectType ioType;
 
-	ioType = ITEMTYPE_NONE;
 	switch( abType ) {
 		case ADDR_ITEM_PERSON: ioType = ITEMTYPE_PERSON;     break;
 		case ADDR_ITEM_EMAIL:  ioType = ITEMTYPE_EMAIL;      break;
 		case ADDR_ITEM_FOLDER: ioType = ITEMTYPE_FOLDER;     break;
 		case ADDR_ITEM_GROUP:  ioType = ITEMTYPE_GROUP;      break;
 		case ADDR_DATASOURCE:  ioType = ITEMTYPE_DATASOURCE; break;
+		default:               ioType = ITEMTYPE_NONE;       break;
 	}
 	return ioType;
 }

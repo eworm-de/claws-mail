@@ -217,8 +217,6 @@ static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
 					   gpointer user_data);
 static void prefs_account_mailcmd_toggled(GtkToggleButton *button,
 					  gpointer user_data);
-static void prefs_account_smtp_userid_cb(GtkEditable *editable,
-					 gpointer smtp_passwd);
 
 static PrefParam param[] = {
 	/* Basic */

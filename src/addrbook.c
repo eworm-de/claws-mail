@@ -1367,22 +1367,6 @@ ItemPerson *addrbook_add_address_list( AddressBookFile *book, ItemFolder *folder
 }
 
 /*
-* Load hash table visitor function.
-*/
-static void addrbook_load_hash_table_email_vis( gpointer key, gpointer value, gpointer data ) {
-	AddrItemObject *obj = ( AddrItemObject * ) value;
-
-	if( ADDRITEM_TYPE(obj) == ITEMTYPE_EMAIL ) {
-		GHashTable *table = ( GHashTable * ) data;
-		gchar *newKey = g_strdup( key );
-		ItemEMail *email = ( ItemEMail * ) obj;
-		if( ! g_hash_table_lookup( table, newKey ) ) {
-			g_hash_table_insert( table, newKey, email );
-		}
-	}
-}
-
-/*
 * Build available email list visitor function.
 */
 static void addrbook_build_avail_email_vis( gpointer key, gpointer value, gpointer data ) {

@@ -36,6 +36,6 @@ struct _MHFolder
 
 Folder	*mh_folder_new		(const gchar	*name,
 				 const gchar	*path);
-void     mh_folder_destroy	(MHFolder	*folder);
+void     mh_folder_destroy	(Folder		*folder);
 
 #endif /* __MH_H__ */

@@ -270,6 +270,9 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 	case A_LOCAL:
 		inc_spool_account(account);
 		return 1;
+
+	default:
+		break;
 	}
 	return 0;
 }

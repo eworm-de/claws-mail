@@ -834,10 +834,6 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 	gchar * criteria_str;
 	gchar * matchtype_str;
 	int i;
-	gchar * p;
-	gint count;
-	gchar * expr_str;
-	gchar * out;
 
 	criteria_str = NULL;
 	for(i = 0 ; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)) ;
@@ -1208,8 +1204,6 @@ void prefs_matcher_write_config(void)
 {
 	gchar *rcpath;
 	PrefFile *pfile;
-	GSList *cur;
-	ScoringProp * prop;
 
 	debug_print("Writing matcher configuration...\n");
 

@@ -92,7 +92,7 @@ static void mbox_folder_init(Folder *folder, const gchar *name, const gchar *pat
 				    = mbox_check_msgnum_validity;
 }
 
-static gchar * mbox_folder_create_parent(const gchar * path)
+static void mbox_folder_create_parent(const gchar * path)
 {
 	if (!is_file_exist(path)) {
 		gchar * new_path;
@@ -758,11 +758,6 @@ static void mbox_cache_init()
 	mbox_cache_table = g_hash_table_new(g_str_hash, g_str_equal);
 }
 
-static void mbox_cache_done()
-{
-	g_hash_table_destroy(mbox_cache_table);
-}
-
 static void mbox_cache_free_mbox(mboxcache * cache)
 {
 	g_hash_table_remove(mbox_cache_table, cache->filename);
@@ -907,16 +902,6 @@ static gint mbox_cache_get_count(gchar * filename)
 	return cache->mf->count;
 }
 
-static gint mbox_cache_get_mtime(gchar * filename)
-{
-	mboxcache * cache;
-
-	cache = mbox_cache_get_mbox(filename);
-	if (cache == NULL)
-		return -1;
-	return cache->mtime;
-}
-
 static GList * mbox_cache_get_msg_list(gchar * filename)
 {
 	mboxcache * cache;
@@ -982,8 +967,6 @@ static void mbox_cache_synchronize(gchar * filename, gboolean sync)
 	}
 
 	if (scan_new) {
-		GList * l;
-
 		/*		
 		if (strstr(filename, "trash") == 0)
 			printf("old_cache: %p %s\n", old_cache, filename);
@@ -1648,9 +1631,6 @@ gint mbox_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	Folder * src_folder;
 	gchar * filename;
 	gint num;
-	gchar * destdir;
-	gchar * mbox_path;
-	struct _message * msg;
 	CopyFlagsInfo * flags_info;
 
 	src_folder = msginfo->folder->folder;

@@ -1,3 +1,15 @@
+2002-09-29 [christoph]	0.8.3claws34
+
+	* major code cleanup (part 2)
+	
+		- unused variables removed
+		- unused functions removed
+		- uninitialized variables checked
+		- missing return statements added
+		- missing function return types added
+		- added parentheses around assignment
+	          when suggested by gcc
+
 2002-09-29 [alfons]	0.8.3claws33
 
 	* src/logwindow.c
@@ -15,9 +27,9 @@
 2002-09-27 [christoph]	0.8.3claws31
 
 	* doc-src/readme.txt
-	* doc-src/rfc1806.txt
-	* doc-src/rfc2183.txt
-	* doc-src/rfc2980.txt
+	* doc-src/rfc1806.txt	** REMOVED **
+	* doc-src/rfc2183.txt	** NEW FILE **
+	* doc-src/rfc2980.txt	** NEW FILE **
 		update rfcs
 
 2002-09-27 [melvin]	0.8.3claws30

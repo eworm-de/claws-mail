@@ -455,9 +455,6 @@ static void create_filter_cb	 (MainWindow	*mainwin,
 static void prefs_common_open_cb	(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
-static void prefs_filter_open_cb	(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
 static void prefs_template_open_cb	(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -3443,12 +3440,6 @@ static void prefs_common_open_cb(MainWindow *mainwin, guint action,
 				 GtkWidget *widget)
 {
 	prefs_common_open();
-}
-
-static void prefs_filter_open_cb(MainWindow *mainwin, guint action,
-				 GtkWidget *widget)
-{
-	prefs_filter_open(NULL, NULL);
 }
 
 static void prefs_scoring_open_cb(MainWindow *mainwin, guint action,
