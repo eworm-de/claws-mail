@@ -419,6 +419,7 @@ Session *pop3_session_new(PrefsAccount *account)
 
 	session->state = POP3_READY;
 	session->ac_prefs = account;
+	session->pop_before_smtp = FALSE;
 	session->uidl_table = pop3_get_uidl_table(account);
 	session->current_time = time(NULL);
 	session->error_val = PS_SUCCESS;
@@ -758,7 +759,10 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 		break;
 	case POP3_GETAUTH_PASS:
 	case POP3_GETAUTH_APOP:
-		pop3_getrange_stat_send(pop3_session);
+		if (!pop3_session->pop_before_smtp)
+			pop3_getrange_stat_send(pop3_session);
+		else
+			pop3_logout_send(pop3_session);
 		break;
 	case POP3_GETRANGE_STAT:
 		if (pop3_getrange_stat_recv(pop3_session, body) < 0)

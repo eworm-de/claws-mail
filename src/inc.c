@@ -208,8 +208,29 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 
 void inc_pop_before_smtp(PrefsAccount *acc)
 {
+	IncProgressDialog *inc_dialog;
+	IncSession *session;
+	MainWindow *mainwin;
+
+	mainwin = mainwindow_get_mainwindow();
+
+    	session = inc_session_new(acc);
+    	if (!session) return;
+	POP3_SESSION(session->session)->pop_before_smtp = TRUE;
+		
+    	inc_dialog = inc_progress_dialog_create(FALSE);
+    	inc_dialog->queue_list = g_list_append(inc_dialog->queue_list,
+					       session);
 	/* FIXME: assumes to attach to first main window */
-	inc_account_mail(mainwindow_get_mainwindow(), acc);
+	inc_dialog->mainwin = mainwin;
+	inc_progress_dialog_set_list(inc_dialog);
+
+	if (mainwin) {
+		toolbar_main_set_sensitive(mainwin);
+		main_window_set_menu_sensitive(mainwin);
+	}
+			
+	inc_start(inc_dialog);
 }
 
 static gint inc_account_mail_real(MainWindow *mainwin, PrefsAccount *account)

@@ -43,7 +43,7 @@ typedef enum {
 	SESSION_IMAP,
 	SESSION_NEWS,
 	SESSION_SMTP,
-	SESSION_POP3
+	SESSION_POP3,
 } SessionType;
 
 typedef enum {

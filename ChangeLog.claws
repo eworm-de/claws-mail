@@ -1,3 +1,11 @@
+2004-06-20 [christoph]	0.9.11cvs15
+
+	* src/inc.c
+	* src/pop.[ch]
+		disconnect after authentication when doing POP before SMTP
+
+	(Closes Bug 393 Bad inerpretation of "Pop Before SMTP")
+
 2004-06-19 [christoph]	0.9.11cvs14
 
 	* src/folder.c

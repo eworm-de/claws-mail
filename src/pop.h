@@ -113,6 +113,7 @@ struct _Pop3Session
 	gchar *prev_folder;
 
 	PrefsAccount *ac_prefs;
+	gboolean pop_before_smtp;
 
 	gchar *greeting;
 	gchar *user;
