@@ -1,3 +1,10 @@
+2003-02-18 [colin]	0.8.10claws23
+
+	* src/common/smtp.[ch]
+	  src/prefs_account.c
+		Try to starttls if it seems to be the only
+		way to authenticate a user
+
 2003-02-18 [paul]	0.8.10claws22
 
 	* src/Makefile.am

@@ -51,7 +51,8 @@ typedef enum
 {
 	SMTPAUTH_LOGIN      = 1 << 0,
 	SMTPAUTH_CRAM_MD5   = 1 << 1,
-	SMTPAUTH_DIGEST_MD5 = 1 << 2
+	SMTPAUTH_DIGEST_MD5 = 1 << 2,
+	SMTPAUTH_TLS_AVAILABLE = 1 << 3
 } SMTPAuthType;
 
 typedef enum
