@@ -1,3 +1,9 @@
+2004-04-02 [luke] 	0.9.10claws37
+
+	* src/prefs_folder_item.c
+		Add two buttons to apply 'scan for new mail'
+		and 'process at startup' to sub folders
+
 2004-04-02 [luke]
 	* tools/textviewer.sh
 		better filename extension matching plus some support for
