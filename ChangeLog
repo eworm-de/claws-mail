@@ -1,3 +1,22 @@
+2002-06-04
+
+	* src/compose.c: compose_reply(), compose_forward(): reverted the
+	  last change since it causes lockup problem.
+
+2002-06-04
+
+	* src/compose.c: compose_reply(), compose_forward(): don't autowrap
+	  the signature part.
+	  compose_new_with_recipient(): workaround for initial XIM problem.
+
+2002-06-04
+
+	* src/mainwindow.c: sort ascending / descending order can be
+	  specified with separated menu items.
+	  Added "View/Sort/Don't sort" menu item.
+	* src/summaryview.[ch]: summary_sort(): added an argument for
+	  sort type.
+
 2002-05-31
 
 	* implemented persistent sort order.

@@ -1,3 +1,21 @@
+2002-06-04
+
+	* src/compose.c: compose_reply(), compose_forward(): lockup を起こす
+	  ので直前の変更を元に戻した。
+
+2002-06-04
+
+	* src/compose.c: compose_reply(), compose_forward(): 署名部分を
+	  自動改行しないようにした。
+	  compose_new_with_recipient(): 起動直後の XIM の問題を回避。
+
+2002-06-04
+
+	* src/mainwindow.c: ソートの昇順 / 降順を別のメニュー項目から指定
+	  できるようにした。
+	  「表示/ソート/ソートしない」メニュー項目を追加。
+	* src/summaryview.[ch]: summary_sort(): ソートタイプの引数を追加。
+
 2002-05-31
 
 	* 永続的なソート順を実装。
