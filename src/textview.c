@@ -452,7 +452,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 
 	if (mimeinfo->type != MIMETYPE_TEXT) {
 		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
-	} else {
+	} else if (mimeinfo->disposition != DISPOSITIONTYPE_ATTACHMENT) {
 		if (prefs_common.display_header && (gtk_stext_get_length(text) > 0))
 			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
 		if (textview->messageview->forced_charset)

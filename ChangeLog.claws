@@ -1,3 +1,12 @@
+2004-01-09 [paul]	0.9.8claws22
+
+	* src/compose.c
+		when changing account also change the save folder
+
+	* src/textview.c
+		if a text/plain attachment has 'Content-Disposition: attachment'
+		don't display it inline
+
 2004-01-08 [christoph]	0.9.8claws21
 
 	* src/procmime.c
