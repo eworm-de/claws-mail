@@ -2694,30 +2694,31 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		STATUSBAR_PUSH(folderview->mainwin, buf);
 		g_free(buf);
 		main_window_cursor_wait(folderview->mainwin);
-		if ((new_item = folder_item_move_to(src_item, item)) != NULL)
+		if ((new_item = folder_item_move_to(src_item, item)) != NULL) {
 			gtk_drag_finish(drag_context, TRUE, TRUE, time);
-		else
-			gtk_drag_finish(drag_context, FALSE, FALSE, time);
 		
-		if (src_node)
-			gtk_ctree_remove_node(GTK_CTREE(widget), src_node);
-		else 
-			debug_print("can't remove src node: is null\n");
-		
-		folderview_create_folder_node_recursive(folderview, new_item);
-		folderview_update_item(src_parent, TRUE);
-		folderview_update_item_recursive(new_item, TRUE);
-		if (new_item)
+			if (src_node)
+				gtk_ctree_remove_node(GTK_CTREE(widget), src_node);
+			else 
+				debug_print("can't remove src node: is null\n");
+
+			folderview_create_folder_node_recursive(folderview, new_item);
+			folderview_update_item(src_parent, TRUE);
+			folderview_update_item_recursive(new_item, TRUE);
 			gtk_sctree_sort_recursive(GTK_CTREE(widget), 
 				gtk_ctree_find_by_row_data(GTK_CTREE(widget), 
 					NULL, new_item->parent));
-		STATUSBAR_PUSH(folderview->mainwin, _("Done."));
-		main_window_cursor_normal(folderview->mainwin);
-		summary_clear_all(folderview->summaryview);
-		folderview->opened = NULL;
-		folderview->selected = NULL;
-		if (new_item)
+			STATUSBAR_PUSH(folderview->mainwin, _("Done."));
+			main_window_cursor_normal(folderview->mainwin);
+			summary_clear_all(folderview->summaryview);
+			folderview->opened = NULL;
+			folderview->selected = NULL;
 			folderview_select(folderview, new_item);
+		} else {
+			gtk_drag_finish(drag_context, FALSE, FALSE, time);
+			STATUSBAR_PUSH(folderview->mainwin, _("Done."));
+			main_window_cursor_normal(folderview->mainwin);
+		}			
 	}
 }
 

@@ -1,3 +1,15 @@
+2002-11-08 [colin]	0.8.5claws98
+
+	* src/folderview.c
+		Fixes in case of failure
+	* src/filtering.[ch]	
+		Add function to duplicate a FilteringProp
+	* src/matcher.[ch]
+		Add function to duplicate a MatcherProp
+	* src/prefs_folder_item.c
+		Save folder's processing rules when copying 
+		its prefs
+
 2002-11-08 [colin]	0.8.5claws97
 	
 	* src/folderview.c

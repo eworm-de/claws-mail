@@ -92,6 +92,36 @@ FilteringProp * filteringprop_new(MatcherList * matchers,
 	return filtering;
 }
 
+FilteringProp * filteringprop_copy(FilteringProp *src)
+{
+	FilteringProp * new;
+	GSList *tmp;
+	
+	new = g_new0(FilteringProp, 1);
+	new->matchers = g_new0(MatcherList, 1);
+	new->action = g_new0(FilteringAction, 1);
+	for (tmp = src->matchers->matchers; tmp != NULL && tmp->data != NULL;) {
+		MatcherProp *matcher = (MatcherProp *)tmp->data;
+		
+		new->matchers->matchers = g_slist_append(new->matchers->matchers,
+						   matcherprop_copy(matcher));
+		tmp = tmp->next;
+	}
+	new->matchers->bool_and = src->matchers->bool_and;
+	new->action->type = src->action->type;
+	new->action->account_id = src->action->account_id;
+	if (src->action->destination)
+		new->action->destination = g_strdup(src->action->destination);
+	else 
+		new->action->destination = NULL;
+	if (src->action->unesc_destination)
+		new->action->unesc_destination = g_strdup(src->action->unesc_destination);
+	else
+		new->action->unesc_destination = NULL;
+	new->action->labelcolor = src->action->labelcolor;
+	return new;
+}
+
 void filteringprop_free(FilteringProp * prop)
 {
 	matcherlist_free(prop->matchers);

@@ -39,6 +39,7 @@
 #include "addr_compl.h"
 #include "prefs_scoring.h"
 #include "gtkutils.h"
+#include "filtering.h"
 
 PrefsFolderItem tmp_prefs;
 
@@ -712,38 +713,46 @@ static void folder_color_set_dialog_key_pressed(GtkWidget *widget,
 
 void prefs_folder_item_copy_prefs(FolderItem * src, FolderItem * dest)
 {
-	PrefsFolderItem old_prefs;
+	GSList *tmp_prop_list = NULL, *tmp;
 	prefs_folder_item_read_config(src);
-	old_prefs = *src->prefs;
 
-	tmp_prefs.directory			= g_strdup(old_prefs.directory);
-	tmp_prefs.sort_by_number		= old_prefs.sort_by_number;
-	tmp_prefs.sort_by_size			= old_prefs.sort_by_size;
-	tmp_prefs.sort_by_date			= old_prefs.sort_by_date;
-	tmp_prefs.sort_by_from			= old_prefs.sort_by_from;
-	tmp_prefs.sort_by_subject		= old_prefs.sort_by_subject;
-	tmp_prefs.sort_by_score			= old_prefs.sort_by_score;
-	tmp_prefs.sort_descending		= old_prefs.sort_descending;
-	tmp_prefs.enable_thread			= old_prefs.enable_thread;
-	tmp_prefs.kill_score			= old_prefs.kill_score;
-	tmp_prefs.important_score		= old_prefs.important_score;
+	tmp_prefs.directory			= g_strdup(src->prefs->directory);
+	tmp_prefs.sort_by_number		= src->prefs->sort_by_number;
+	tmp_prefs.sort_by_size			= src->prefs->sort_by_size;
+	tmp_prefs.sort_by_date			= src->prefs->sort_by_date;
+	tmp_prefs.sort_by_from			= src->prefs->sort_by_from;
+	tmp_prefs.sort_by_subject		= src->prefs->sort_by_subject;
+	tmp_prefs.sort_by_score			= src->prefs->sort_by_score;
+	tmp_prefs.sort_descending		= src->prefs->sort_descending;
+	tmp_prefs.enable_thread			= src->prefs->enable_thread;
+	tmp_prefs.kill_score			= src->prefs->kill_score;
+	tmp_prefs.important_score		= src->prefs->important_score;
 	/* FIXME!
-	tmp_prefs.scoring			= g_slist_copy(old_prefs.scoring); 
-	tmp_prefs.processing			= g_slist_copy(old_prefs.processing);
+	tmp_prefs.scoring			= g_slist_copy(src->prefs->scoring); 
 	*/
-	tmp_prefs.request_return_receipt	= old_prefs.request_return_receipt;
-	tmp_prefs.enable_default_to		= old_prefs.enable_default_to;
-	tmp_prefs.default_to			= g_strdup(old_prefs.default_to);
-	tmp_prefs.enable_default_reply_to	= old_prefs.enable_default_reply_to;
-	tmp_prefs.default_reply_to		= old_prefs.default_reply_to;
-	tmp_prefs.enable_simplify_subject	= old_prefs.enable_simplify_subject;
-	tmp_prefs.simplify_subject_regexp	= g_strdup(old_prefs.simplify_subject_regexp);
-	tmp_prefs.enable_folder_chmod		= old_prefs.enable_folder_chmod;
-	tmp_prefs.folder_chmod			= old_prefs.folder_chmod;
-	tmp_prefs.enable_default_account	= old_prefs.enable_default_account;
-	tmp_prefs.default_account		= old_prefs.default_account;
-	tmp_prefs.save_copy_to_folder		= old_prefs.save_copy_to_folder;
-	tmp_prefs.color				= old_prefs.color;
+
+	for (tmp = src->prefs->processing; tmp != NULL && tmp->data != NULL;) {
+		FilteringProp *prop = (FilteringProp *)tmp->data;
+		
+		tmp_prop_list = g_slist_append(tmp_prop_list,
+					   filteringprop_copy(prop));
+		tmp = tmp->next;
+	}
+	tmp_prefs.processing			= tmp_prop_list;
+	
+	tmp_prefs.request_return_receipt	= src->prefs->request_return_receipt;
+	tmp_prefs.enable_default_to		= src->prefs->enable_default_to;
+	tmp_prefs.default_to			= g_strdup(src->prefs->default_to);
+	tmp_prefs.enable_default_reply_to	= src->prefs->enable_default_reply_to;
+	tmp_prefs.default_reply_to		= src->prefs->default_reply_to;
+	tmp_prefs.enable_simplify_subject	= src->prefs->enable_simplify_subject;
+	tmp_prefs.simplify_subject_regexp	= g_strdup(src->prefs->simplify_subject_regexp);
+	tmp_prefs.enable_folder_chmod		= src->prefs->enable_folder_chmod;
+	tmp_prefs.folder_chmod			= src->prefs->folder_chmod;
+	tmp_prefs.enable_default_account	= src->prefs->enable_default_account;
+	tmp_prefs.default_account		= src->prefs->default_account;
+	tmp_prefs.save_copy_to_folder		= src->prefs->save_copy_to_folder;
+	tmp_prefs.color				= src->prefs->color;
 
 	*dest->prefs = tmp_prefs;
 	prefs_folder_item_save_config(dest);

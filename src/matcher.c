@@ -246,6 +246,27 @@ void matcherprop_free(MatcherProp * prop)
 	g_free(prop);
 }
 
+MatcherProp *matcherprop_copy(MatcherProp *src)
+{
+	MatcherProp *prop = g_new0(MatcherProp, 1);
+	prop->criteria 	  = src->criteria;
+	if (src->header)
+		prop->header = g_strdup(src->header);
+	else	
+		prop->header = NULL;
+	if (src->expr)
+		prop->expr	  = g_strdup(src->expr);
+	else
+		prop->expr = NULL;
+	prop->matchtype   = src->matchtype;
+	if (src->preg != NULL)
+		memcpy(prop->preg, src->preg, sizeof(regex_t));
+	else 
+		prop->preg = NULL;
+	prop->value       = src->value;
+	prop->error       = src->error;	
+	return prop;		
+}
 
 /* ****************** wrapper for file reading ************** */
 

@@ -112,6 +112,8 @@ MatcherProp * matcherprop_unquote_new(gint criteria, gchar * header,
 void matcherprop_free(MatcherProp * prop);
 MatcherProp * matcherprop_parse(gchar ** str);
 
+MatcherProp * matcherprop_copy(MatcherProp *src);
+
 gboolean matcherprop_match(MatcherProp * prop, MsgInfo * info);
 
 MatcherList * matcherlist_new(GSList * matchers, gboolean bool_and);
