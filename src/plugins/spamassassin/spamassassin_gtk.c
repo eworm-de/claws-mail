@@ -260,7 +260,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_set_usize(timeout, 64, -2);
 	gtk_tooltips_set_tip(tooltips, timeout,
 			     _
-			     ("Maximum size a message is allowed to have to be checked"),
+			     ("Time that is allowed for checking. If the check takes longer the check will be aborted and the message will be handled as not spam."),
 			     NULL);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(timeout), TRUE);
 

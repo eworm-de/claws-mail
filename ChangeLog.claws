@@ -1,3 +1,9 @@
+2003-10-15 [christoph]	0.9.6claws30
+
+	* src/plugins/spamassassin/spamassassin_gtk.c
+	* src/plugins/spamassassin/spamassassin_gtk.glade
+		fix timeout tooltip
+
 2003-10-15 [paul]	0.9.6claws29
 
 	* src/messageview.c
