@@ -2193,8 +2193,6 @@ static void prefs_other_create(void)
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(loglength_tooltip), loglength_entry,
 			     _("0 to stop logging in the log window"),
 			     NULL);
-	gtk_box_pack_start (GTK_BOX (hbox_cliplog), loglength_label,
-			    FALSE, TRUE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_cliplog, loglength_entry);
 
 #if 0
