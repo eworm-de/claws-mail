@@ -1,3 +1,8 @@
+2002-01-13 [melvin]	0.6.6claws53
+
+	* po/fr.po
+		Updated french translation
+
 2002-01-12 [alfons]	0.6.6claws52
 
 	* src/filtering.c
