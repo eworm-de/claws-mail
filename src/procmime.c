@@ -867,7 +867,7 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 		if (basetmp == NULL)
 			basetmp = "mimetmp";
 		base = g_basename(basetmp);
-		if (*base == '\0') base = g_strdup("mimetmp");
+		if (*base == '\0') base = "mimetmp";
 		Xstrdup_a(base, base, return NULL);
 		subst_for_shellsafe_filename(base);
 	}
