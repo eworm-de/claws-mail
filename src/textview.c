@@ -1464,14 +1464,31 @@ static void textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 				if (!g_strncasecmp(uri->uri, "mailto:", 7)) {
 					if (event->button == 3) {
 						gchar *fromname, *fromaddress;
+						GdkEventButton tmpev;	
+						
 						/* extract url */
 						fromaddress = g_strdup(uri->uri + 7);
 						/* Hiroyuki: please put this function in utils.c! */
 						fromname = procheader_get_fromname(fromaddress);
 						extract_address(fromaddress);
 						g_message("adding from textview %s <%s>", fromname, fromaddress);
-						// Add to address book - Match
+						/* Add to address book - Match */
 						addressbook_add_contact( fromname, fromaddress, NULL );
+						
+						/* force press and release at (0, 0) to work around secondary 
+						 * selection claim */
+						tmpev	      = *event;
+						tmpev.x_root -= tmpev.x;
+						tmpev.y_root -= tmpev.y;
+						tmpev.x       = 0;
+						tmpev.y       = 0;
+						tmpev.time    = GDK_CURRENT_TIME;
+						gtk_widget_event(widget, (GdkEvent *)&tmpev);
+
+						tmpev.type    = GDK_BUTTON_RELEASE;
+						tmpev.time    = GDK_CURRENT_TIME;
+						gtk_widget_event(widget, (GdkEvent *)&tmpev);
+
 						g_free(fromaddress);
 						g_free(fromname);
 					} else {
@@ -1485,6 +1502,7 @@ static void textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 			}
 		}
 	}
+	return TRUE;
 }
 
 static void textview_uri_list_remove_all(GSList *uri_list)

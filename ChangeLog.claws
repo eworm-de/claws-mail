@@ -1,3 +1,10 @@
+2001-12-08 [alfons]	0.6.5claws65
+
+	* src/textview.c
+		prevent secondary selection claim after "add to sender" dialog
+		popped up. this is because there's a GDK_BUTTON_RELEASE pending.
+		we trick GTK by simulating a click at (0, 0) in the textview.
+
 2001-12-08 [hoa]	0.6.5claws64
 
 	* src/folder.c
