@@ -1,3 +1,11 @@
+2004-01-17 Colin Leroy <colin@colino.net>
+	* src/addr_compl.c
+		Fix completion address too thin
+	* src/compose.c
+		Fix tab-to-subject behaviour
+	* src/summaryview.c
+		Implement key up & down in summaryview
+
 2004-01-12 Thorsten Maerz <torte@netztorte.de>
 
 	* sync 098claws

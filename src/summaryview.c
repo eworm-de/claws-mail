@@ -4523,6 +4523,19 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_Escape:
 		gtk_widget_grab_focus(summaryview->folderview->ctree);
 		return TRUE;
+	case GDK_Up:
+	case GDK_Down:
+		if ((node = summaryview->selected) != NULL) {
+			GtkCTreeNode *next = NULL;
+			next = (event->keyval == GDK_Down)
+					? gtkut_ctree_node_next(ctree, node)
+					: gtkut_ctree_node_prev(ctree, node);
+			if (next) {
+				gtk_sctree_select(GTK_SCTREE(ctree), next);
+				return TRUE;
+			}
+		}
+		break;
 	default:
 		break;
 	}

@@ -695,8 +695,7 @@ static void addrcompl_resize_window( CompletionWindow *cw ) {
 	/* Get current geometry of window */
 	gdk_window_get_geometry( cw->window->window, &x, &y, &width, &height, &depth );
 
-	gtk_widget_size_request( cw->clist, &r );
-	gtk_widget_set_size_request( cw->window, width, r.height );
+	gtk_widget_hide_all( cw->window );
 	gtk_widget_show_all( cw->window );
 	gtk_widget_size_request( cw->clist, &r );
 
@@ -704,7 +703,8 @@ static void addrcompl_resize_window( CompletionWindow *cw ) {
 	if( ( y + r.height ) > gdk_screen_height() ) {
 		gtk_window_set_policy( GTK_WINDOW( cw->window ), TRUE, FALSE, FALSE );
 		gtk_widget_set_size_request( cw->window, width, gdk_screen_height() - y );
-	}
+	} else
+		gtk_widget_set_size_request(cw->window, width, r.height);
 }
 
 /**

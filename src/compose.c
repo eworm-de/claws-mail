@@ -7433,6 +7433,7 @@ gboolean compose_headerentry_key_press_event_cb(GtkWidget *entry,
 			 */
 			gtk_signal_emit_stop_by_name(GTK_OBJECT(entry), "key-press-event"); 
 			gtk_widget_grab_focus(headerentry->compose->subject_entry);
+			return TRUE;
 		}
 	}
 	return FALSE;
