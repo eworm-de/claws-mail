@@ -2799,10 +2799,19 @@ int calc_child(const gchar *path){
 
 int Xrename(const char *oldpath, const char *newpath){
 	int ret;
+	char cur_dir[BUFSIZ];
 
+	if (getcwd(cur_dir, sizeof(cur_dir))){
+		if (!strcmp(cur_dir, oldpath)){
+			gchar *p;
+			p = g_strdup_printf("%s\\..", cur_dir);
+			chdir(p);
+			g_free(p);
+		}
+	}
 	unlink(newpath);
 	ret = rename(oldpath, newpath);
-	unlink(oldpath);
+	// unlink(oldpath);
 	return ret;
 }
 
