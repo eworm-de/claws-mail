@@ -128,13 +128,15 @@ void matcher_parsererror(char * str)
 
 	if (matchers_list) {
 		for(l = matchers_list ; l != NULL ;
-		    l = g_slist_next(l))
+		    l = g_slist_next(l)) {
 			matcherprop_free((MatcherProp *)
 					 l->data);
+			l->data = NULL;
+		}
 		g_slist_free(matchers_list);
 		matchers_list = NULL;
 	}
-
+	cond = NULL;
 	g_warning(_("scoring / filtering parsing: %i: %s\n"),
 		  matcher_parserlineno, str);
 	error = 1;

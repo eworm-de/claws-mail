@@ -1,3 +1,10 @@
+2002-11-13 [colin]	0.8.5claws139
+
+	* src/matcher_parser_parse.y
+		Fix a segfault in the parser (happening when
+		a good expression had been tested and a bad 
+		one arrives)
+
 2002-11-13 [paul]	0.8.5claws138
 
 	* sync with 0.8.5cvs24

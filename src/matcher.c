@@ -956,7 +956,7 @@ gchar * matcherlist_to_string(MatcherList * matchers)
 	gchar ** vstr;
 	GSList * l;
 	gchar ** cur_str;
-	gchar * result;
+	gchar * result = NULL;
 
 	count = g_slist_length(matchers->matchers);
 	vstr = g_new(gchar *, count + 1);
