@@ -1,3 +1,11 @@
+2002-11-22 [paul]	0.8.5claws177
+
+	* .cvsignore
+		add 'autom4te.cache'
+		
+	* ltconfig	** REMOVED **
+		not needed
+
 2002-11-22 [paul]	0.8.5claws176
 
 	* src/textview.c
