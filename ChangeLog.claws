@@ -1,3 +1,9 @@
+2003-07-30 [alfons]	0.9.3claws80
+
+	* src/common/plugin.c
+		fix a possibly harmful function signature mismatch 
+		for plugin_done
+
 2003-07-30 [alfons]	0.9.3claws79
 
 	* src/common/hooks[.ch]

@@ -141,7 +141,7 @@ gint plugin_load(const gchar *filename, gchar **error)
 
 void plugin_unload(Plugin *plugin)
 {
-	void (*plugin_done) ();
+	void (*plugin_done) (void);
 
 	if (g_module_symbol(plugin->module, "plugin_done", (gpointer *)&plugin_done)) {
 		plugin_done();
