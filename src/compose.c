@@ -1279,19 +1279,19 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	menu_set_sensitive(ifactory, "/File/Insert file", FALSE);
 	menu_set_sensitive(ifactory, "/File/Attach file", FALSE);
 	menu_set_sensitive(ifactory, "/File/Insert signature", FALSE);
-	menu_set_sensitive(ifactory, "/Edit/Paste", FALSE);
-	menu_set_sensitive(ifactory, "/Edit/Wrap current paragraph", FALSE);
-	menu_set_sensitive(ifactory, "/Edit/Wrap all long lines", FALSE);
-	menu_set_sensitive(ifactory, "/Edit/Edit with external editor", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Attach", FALSE);
+	menu_set_sensitive(ifactory, "/Edit", FALSE);
+	menu_set_sensitive(ifactory, "/Spelling", FALSE);
+	menu_set_sensitive(ifactory, "/Message/Save to draft folder", FALSE);
+	menu_set_sensitive(ifactory, "/Message/Save and keep editing", FALSE);
 #if USE_GPGME
 	menu_set_sensitive(ifactory, "/Message/Sign", FALSE);
 	menu_set_sensitive(ifactory, "/Message/Encrypt", FALSE);
 	menu_set_sensitive(ifactory, "/Message/Mode/MIME", FALSE);
 	menu_set_sensitive(ifactory, "/Message/Mode/Inline", FALSE);
 #endif
+	menu_set_sensitive(ifactory, "/Message/Priority", FALSE);
 	menu_set_sensitive(ifactory, "/Message/Request Return Receipt", FALSE);
-	menu_set_sensitive(ifactory, "/Tools/Template", FALSE);
+	menu_set_sensitive(ifactory, "/Tools", FALSE);
 	
 	gtk_widget_set_sensitive(compose->toolbar->insert_btn, FALSE);
 	gtk_widget_set_sensitive(compose->toolbar->attach_btn, FALSE);
