@@ -1,3 +1,10 @@
+2005-03-19 [holger]	1.0.3cvs4
+
+	* src/summaryview.c
+	* src/summaryview.h
+		Add plugin hook for manual filtering invocation,
+		remove some dead code.
+
 2005-03-18 [paul]	1.0.3cvs3
 
 	* AUTHORS

@@ -263,3 +263,4 @@
 ( cvs diff -u -r 1.22 -r 1.23 po/ru.po; ) > 1.0.3cvs1.patchset
 ( cvs diff -u -r 1.18 -r 1.19 src/plugins/trayicon/trayicon.c; ) > 1.0.3cvs2.patchset
 ( cvs diff -u -r 1.129 -r 1.130 AUTHORS; cvs diff -u -r 1.7 -r 1.8 src/gtk/about.c; cvs diff -u -r 1.1 -r 1.2 src/pixmaps/sylpheed_logo.xpm; ) > 1.0.3cvs3.patchset
+( cvs diff -u -r 1.458 -r 1.459 src/summaryview.c; cvs diff -u -r 1.75 -r 1.76 src/summaryview.h; ) > 1.0.3cvs4.patchset

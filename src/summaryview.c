@@ -3863,11 +3863,6 @@ void summary_collapse_threads(SummaryView *summaryview)
 
 void summary_filter(SummaryView *summaryview, gboolean selected_only)
 {
-	if (!filtering_rules) {
-		alertpanel_error(_("No filter rules defined."));
-		return;
-	}
-
 	summary_lock(summaryview);
 
 	folder_item_update_freeze();
@@ -3878,37 +3873,21 @@ void summary_filter(SummaryView *summaryview, gboolean selected_only)
 
 	gtk_clist_freeze(GTK_CLIST(summaryview->ctree));
 
-	if (filtering_rules == NULL) {
+	if (selected_only) {
+		GList *cur;
+
+		for (cur = GTK_CLIST(summaryview->ctree)->selection;
+	     	     cur != NULL; cur = cur->next) {
+			summary_filter_func(GTK_CTREE(summaryview->ctree),
+				    	    GTK_CTREE_NODE(cur->data),
+				    	    summaryview);
+		}
+	} else {
 		gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
 					GTK_CTREE_FUNC(summary_filter_func),
 					summaryview);
-		
-		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
-		
-		if (prefs_common.immediate_exec) {
-			summary_unlock(summaryview);
-			summary_execute(summaryview);
-			summary_lock(summaryview);
-		} else
-			summary_status_show(summaryview);
 	}
-	else {
-		if (selected_only) {
-			GList *cur;
-
-			for (cur = GTK_CLIST(summaryview->ctree)->selection;
-		     	     cur != NULL; cur = cur->next) {
-				summary_filter_func(GTK_CTREE(summaryview->ctree),
-					    	    GTK_CTREE_NODE(cur->data),
-					    	    summaryview);
-			}
-		} else {
-			gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
-						GTK_CTREE_FUNC(summary_filter_func),
-						summaryview);
-		}
-		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
-	}
+	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 
 	folder_item_update_thaw();
 	debug_print("done.\n");
@@ -3921,15 +3900,18 @@ void summary_filter(SummaryView *summaryview, gboolean selected_only)
 	 * CLAWS: summary_show() only valid after having a lock. ideally
 	 * we want the lock to be context aware...  
 	 */
-	if (filtering_rules) {
-		summary_show(summaryview, summaryview->folder_item);
-	}		
+	summary_show(summaryview, summaryview->folder_item);
 }
 
 static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
 				gpointer data)
 {
+	MailFilteringData mail_filtering_data;
 	MsgInfo *msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
+
+	mail_filtering_data.msginfo = msginfo;
+	if (hooks_invoke(MAIL_MANUAL_FILTERING_HOOKLIST, &mail_filtering_data))
+		return;
 
 	filter_message_by_msginfo(filtering_rules, msginfo);
 }
