@@ -1,3 +1,11 @@
+2003-08-09 [paul]	0.9.4claws12
+
+	* sync with 0.9.4cvs6
+		see ChangeLog 2003-08-07
+		
+	* AUTHORS
+		add Leandro and Luke to claws-branch section
+
 2003-08-09 [christoph]	0.9.4claws11
 
 	* src/gtk/Makefile.am

@@ -1,3 +1,22 @@
+2003-08-07
+
+	* src/mainwindow.c
+	  src/prefs_common.[ch]: 分離されたビューのサイズと位置を記憶。
+	  main_window_set_widgets(): ビュータイプを変更した時にヘッダビュー
+	  の隠し項目が表示されていたバグを修正。
+	  ウィンドウのサイズを指定する代わりに各ビューのサイズを指定。
+
+2003-08-01
+
+	* src/compose.c: compose_select_account(): リダイレクトモードで
+	  署名を追加しないようにした。
+	  compose_insert_sig(): 署名文字列が存在しない場合は "\n\n" を
+	  挿入しないようにした。常にメッセージの終わりに署名を挿入。
+
+2003-08-01
+
+	* sylpheed.spec.in を改良(Andre Oliveira da Costa さん thanks)。
+
 2003-07-31
 
 	* フォルダシステムのコードを少し整理。

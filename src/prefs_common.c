@@ -575,10 +575,15 @@ static PrefParam param[] = {
 	 &prefs_common.summary_col_size[S_COL_LOCKED], P_INT, NULL, NULL, NULL},
 
 	/* Widget size */
+	{"folderwin_x", "16", &prefs_common.folderwin_x, P_INT,
+	 NULL, NULL, NULL},
+	{"folderwin_y", "16", &prefs_common.folderwin_y, P_INT,
+	 NULL, NULL, NULL},
 	{"folderview_width", "179", &prefs_common.folderview_width, P_INT,
 	 NULL, NULL, NULL},
 	{"folderview_height", "600", &prefs_common.folderview_height, P_INT,
 	 NULL, NULL, NULL},
+
 	{"folder_col_folder", "150", &prefs_common.folder_col_folder, P_INT,
 	 NULL, NULL, NULL},
 	{"folder_col_new", "32", &prefs_common.folder_col_new, P_INT,
@@ -591,6 +596,15 @@ static PrefParam param[] = {
 	{"summaryview_width", "600", &prefs_common.summaryview_width, P_INT,
 	 NULL, NULL, NULL},
 	{"summaryview_height", "173", &prefs_common.summaryview_height, P_INT,
+	 NULL, NULL, NULL},
+
+	{"main_messagewin_x", "256", &prefs_common.main_msgwin_x, P_INT,
+	 NULL, NULL, NULL},
+	{"main_messagewin_y", "210", &prefs_common.main_msgwin_y, P_INT,
+	 NULL, NULL, NULL},
+	{"messageview_width", "600", &prefs_common.msgview_width, P_INT,
+	 NULL, NULL, NULL},
+	{"messageview_height", "540", &prefs_common.msgview_height, P_INT,
 	 NULL, NULL, NULL},
 
 	{"mainview_x", "64", &prefs_common.mainview_x, P_INT,

@@ -1,3 +1,23 @@
+2003-08-07
+
+	* src/mainwindow.c
+	  src/prefs_common.[ch]: remember the size and position of
+	  separated views.
+	  main_window_set_widgets(): fixed a bug that the hidden items on
+	  the header view were shown when changing the view type.
+	  Instead of setting the window size, set the each view's size.
+
+2003-08-01
+
+	* src/compose.c: compose_select_account(): don't append signature
+	  on redirect mode.
+	  compose_insert_sig(): don't insert "\n\n" if signature string
+	  doesn't exist. Always insert signature at the end of message.
+
+2003-08-01
+
+	* improved sylpheed.spec.in (thanks to Andre Oliveira da Costa).
+
 2003-07-31
 
 	* minor code cleanups for the folder system.
