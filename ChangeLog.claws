@@ -1,3 +1,12 @@
+2003-04-17 [paul]	0.8.11claws100
+
+	* src/prefs_common.[ch]
+	  src/summaryview.c
+	  	remove 'Open next message on deletion' option,
+		as the same effect can now be achieved via the
+		'Always open messages in summary when selected'
+		option.
+
 2003-04-17 [paul]	0.8.11claws99
 
 	* sync with 0.8.11cvs28

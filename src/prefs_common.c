@@ -211,7 +211,6 @@ static struct Interface {
 	GtkWidget *checkbtn_show_msg_with_cursor;
 	GtkWidget *checkbtn_openunread;
 	GtkWidget *checkbtn_mark_as_read_on_newwin;
-	GtkWidget *checkbtn_open_on_delete;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
  	GtkWidget *optmenu_nextunreadmsgdialog;
@@ -756,10 +755,6 @@ static PrefParam param[] = {
 	{"mark_as_read_on_new_window", "FALSE",
 	 &prefs_common.mark_as_read_on_new_window,
 	 P_BOOL, &interface.checkbtn_mark_as_read_on_newwin,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"open_on_delete", "TRUE",
-	 &prefs_common.open_on_delete,
-	 P_BOOL, &interface.checkbtn_open_on_delete,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"open_inbox_on_inc", "FALSE", &prefs_common.open_inbox_on_inc,
 	 P_BOOL, &interface.checkbtn_openinbox,
@@ -2664,7 +2659,6 @@ static void prefs_interface_create(void)
 	GtkWidget *checkbtn_show_msg_with_cursor;
 	GtkWidget *checkbtn_openunread;
 	GtkWidget *checkbtn_mark_as_read_on_newwin;
-	GtkWidget *checkbtn_open_on_delete;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
 	GtkWidget *hbox1;
@@ -2709,10 +2703,6 @@ static void prefs_interface_create(void)
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_mark_as_read_on_newwin,
 		 _("Only mark message as read when opened in new window"));
-
-	PACK_CHECK_BUTTON
-		(vbox2, checkbtn_open_on_delete,
-		 _("Open next message on deletion"));
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_openinbox,
@@ -2792,8 +2782,6 @@ static void prefs_interface_create(void)
 	interface.checkbtn_openunread         = checkbtn_openunread;
 	interface.checkbtn_mark_as_read_on_newwin
 					      = checkbtn_mark_as_read_on_newwin;
-	interface.checkbtn_open_on_delete
-					      = checkbtn_open_on_delete;
 	interface.checkbtn_openinbox          = checkbtn_openinbox;
 	interface.checkbtn_immedexec          = checkbtn_immedexec;
 	interface.optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
