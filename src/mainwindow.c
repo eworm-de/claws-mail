@@ -938,6 +938,8 @@ MainWindow *main_window_create(SeparateType type)
 		(GTK_STATUSBAR(statusbar), "Folder View");
 	mainwin->summaryview_cid = gtk_statusbar_get_context_id
 		(GTK_STATUSBAR(statusbar), "Summary View");
+	mainwin->messageview_cid = gtk_statusbar_get_context_id
+		(GTK_STATUSBAR(statusbar), "Message View");
 
 	/* allocate colors for summary view and folder view */
 	summaryview->color_marked.red = summaryview->color_marked.green = 0;
@@ -1432,6 +1434,9 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 		gtk_arrow_set(GTK_ARROW(summaryview->toggle_arrow),
 			      GTK_ARROW_DOWN, GTK_SHADOW_OUT);
 	}
+
+	if (mainwin->messageview->visible == FALSE)
+		messageview_clear(mainwin->messageview);
 
 	main_window_set_menu_sensitive(mainwin);
 

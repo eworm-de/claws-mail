@@ -519,7 +519,7 @@ static HTMLTag *html_get_tag(const gchar *str)
 {
 	HTMLTag *tag;
 	gchar *tmp;
-	gchar *tmpp;
+	guchar *tmpp;
 
 	g_return_val_if_fail(str != NULL, NULL);
 
@@ -664,7 +664,7 @@ static HTMLState html_parse_tag(HTMLParser *parser)
 		   !strcmp(tag->name, "li")     ||
 		   !strcmp(tag->name, "table")  ||
 		   !strcmp(tag->name, "tr")     ||
-		   (tag->name[0] == 'h' && isdigit(tag->name[1]))) {
+		   (tag->name[0] == 'h' && isdigit((guchar)tag->name[1]))) {
 		if (!parser->newline) {
 			parser->space = FALSE;
 			html_append_char(parser, '\n');
@@ -673,7 +673,7 @@ static HTMLState html_parse_tag(HTMLParser *parser)
 	} else if (!strcmp(tag->name, "/table") ||
 		   (tag->name[0] == '/' &&
 		    tag->name[1] == 'h' &&
-		    isdigit(tag->name[1]))) {
+		    isdigit((guchar)tag->name[1]))) {
 		if (!parser->empty_line) {
 			parser->space = FALSE;
 			if (!parser->newline) html_append_char(parser, '\n');
@@ -721,7 +721,7 @@ static void html_parse_special(HTMLParser *parser)
 		html_append_str(parser, val, -1);
 		parser->state = HTML_NORMAL;
 		return;
-	} else if (symbol_name[1] == '#' && isdigit(symbol_name[2])) {
+	} else if (symbol_name[1] == '#' && isdigit((guchar)symbol_name[2])) {
 		gint ch;
 
 		ch = atoi(symbol_name + 2);

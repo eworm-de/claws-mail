@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1981,7 +1981,7 @@ static SockInfo *imap_init_sock(SockInfo *sock)
 
 static GList *imap_parse_namespace_str(gchar *str)
 {
-	gchar *p = str;
+	guchar *p = str;
 	gchar *name;
 	gchar *separator;
 	IMAPNameSpace *namespace;
@@ -2173,7 +2173,7 @@ static gchar *imap_parse_atom(SockInfo *sock, gchar *src,
 	g_return_val_if_fail(str != NULL, cur_pos);
 
 	/* read the next line if the current response buffer is empty */
-	while (isspace(*cur_pos)) cur_pos++;
+	while (isspace(*(guchar *)cur_pos)) cur_pos++;
 	while (*cur_pos == '\0') {
 		if ((nextline = sock_getline(sock)) == NULL)
 			return cur_pos;
@@ -2184,7 +2184,7 @@ static gchar *imap_parse_atom(SockInfo *sock, gchar *src,
 		debug_print("IMAP4< %s\n", nextline);
 		g_free(nextline);
 
-		while (isspace(*cur_pos)) cur_pos++;
+		while (isspace(*(guchar *)cur_pos)) cur_pos++;
 	}
 
 	if (!strncmp(cur_pos, "NIL", 3)) {
@@ -2239,7 +2239,7 @@ static gchar *imap_get_header(SockInfo *sock, gchar *cur_pos, gchar **headers,
 
 	g_return_val_if_fail(str != NULL, cur_pos);
 
-	while (isspace(*cur_pos)) cur_pos++;
+	while (isspace(*(guchar *)cur_pos)) cur_pos++;
 
 	g_return_val_if_fail(*cur_pos == '{', cur_pos);
 
@@ -2266,7 +2266,7 @@ static gchar *imap_get_header(SockInfo *sock, gchar *cur_pos, gchar **headers,
 	*headers = g_strndup(cur_pos, len);
 	cur_pos += len;
 
-	while (isspace(*cur_pos)) cur_pos++;
+	while (isspace(*(guchar *)cur_pos)) cur_pos++;
 	while (*cur_pos == '\0') {
 		if ((nextline = sock_getline(sock)) == NULL)
 			return cur_pos;
@@ -2276,7 +2276,7 @@ static gchar *imap_get_header(SockInfo *sock, gchar *cur_pos, gchar **headers,
 		debug_print("IMAP4< %s\n", nextline);
 		g_free(nextline);
 
-		while (isspace(*cur_pos)) cur_pos++;
+		while (isspace(*(guchar *)cur_pos)) cur_pos++;
 	}
 
 	return cur_pos;
@@ -3493,7 +3493,7 @@ static gchar *imap_locale_to_modified_utf7(const gchar *from)
 			norm_utf7_len -= 2;
 			from_tmp++;
 			from_len--;
-		} else if (IS_PRINT(*from_tmp)) {
+		} else if (IS_PRINT(*(guchar *)from_tmp)) {
 			/* printable ascii char */
 			*norm_utf7_p = *from_tmp;
 			norm_utf7_p++;
@@ -3505,7 +3505,7 @@ static gchar *imap_locale_to_modified_utf7(const gchar *from)
 
 			/* unprintable char: convert to UTF-7 */
 			p = from_tmp;
-			while (!IS_PRINT(*p) && conv_len < from_len) {
+			while (!IS_PRINT(*(guchar *)p) && conv_len < from_len) {
 				mb_len = mblen(p, MB_LEN_MAX);
 				if (mb_len <= 0) {
 					g_warning("wrong multibyte sequence\n");

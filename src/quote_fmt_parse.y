@@ -131,7 +131,7 @@ int quote_fmtwrap(void)
 	return 1;
 }
 
-static int isseparator(char ch)
+static int isseparator(int ch)
 {
 	return isspace(ch) || ch == '.' || ch == '-';
 }
@@ -284,7 +284,7 @@ special:
 	| SHOW_FIRST_NAME
 	{
 		if (msginfo->fromname) {
-			gchar *p;
+			guchar *p;
 			gchar *str;
 
 			str = alloca(strlen(msginfo->fromname) + 1);
@@ -333,7 +333,7 @@ special:
 #define MAX_SENDER_INITIAL 20
 		if (msginfo->fromname) {
 			gchar tmp[MAX_SENDER_INITIAL];
-			gchar *p;
+			guchar *p;
 			gchar *cur;
 			gint len = 0;
 

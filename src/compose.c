@@ -1840,7 +1840,8 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	}
 
 	if (msginfo->subject && *msginfo->subject) {
-		gchar *buf, *buf2, *p;
+		gchar *buf, *buf2;
+		guchar *p;
 
 		buf = p = g_strdup(msginfo->subject);
 		p += subject_get_prefix_length(p);
@@ -2348,7 +2349,7 @@ static void compose_wrap_line(Compose *compose)
 			if (ch_len == 1 
 			    && strchr(prefs_common.quote_chars, *cbuf))
 				quoted = 1;
-			else if (ch_len != 1 || !isspace(*cbuf))
+			else if (ch_len != 1 || !isspace(*(guchar *)cbuf))
 				quoted = 0;
 
 			line_end = 0;
@@ -2395,15 +2396,16 @@ static void compose_wrap_line(Compose *compose)
 			ch_len = 1;
 		}
 
-		if (ch_len == 1 && isspace(*cbuf))
+		if (ch_len == 1 && isspace(*(guchar *)cbuf))
 			space = 1;
 
 		if (ch_len == 1 && *cbuf == '\n') {
 			guint replace = 0;
-			if (last_ch_len == 1 && !isspace(last_ch)) {
+			if (last_ch_len == 1 && !isspace((guchar)last_ch)) {
 				if (cur_pos + 1 < p_end) {
 					GET_CHAR(cur_pos + 1, cbuf, ch_len);
-					if (ch_len == 1 && !isspace(*cbuf))
+					if (ch_len == 1 &&
+					    !isspace(*(guchar *)cbuf))
 						replace = 1;
 				}
 			}
@@ -2434,7 +2436,7 @@ static void compose_wrap_line(Compose *compose)
 			gint tlen = ch_len;
 
 			GET_CHAR(line_pos - 1, cbuf, ch_len);
-			if (ch_len == 1 && isspace(*cbuf)) {
+			if (ch_len == 1 && isspace(*(guchar *)cbuf)) {
 				gtk_stext_set_point(text, line_pos);
 				gtk_stext_backward_delete(text, 1);
 				p_end--;
@@ -2530,7 +2532,7 @@ static guint get_indent_length(GtkSText *text, guint start_pos, guint text_len)
 			break;
 		case WAIT_FOR_INDENT_CHAR_OR_SPACE:
 			if (is_indent == FALSE && is_space == FALSE &&
-			    !isupper(cbuf[0]))
+			    !isupper((guchar)cbuf[0]))
 				goto out;
 			if (is_space == TRUE) {
 				alnum_cnt = 0;
@@ -2544,7 +2546,7 @@ static guint get_indent_length(GtkSText *text, guint start_pos, guint text_len)
 			}
 			break;
 		case WAIT_FOR_INDENT_CHAR:
-			if (is_indent == FALSE && !isupper(cbuf[0]))
+			if (is_indent == FALSE && !isupper((guchar)cbuf[0]))
 				goto out;
 			if (is_indent == TRUE) {
 				if (alnum_cnt > 0 
@@ -2721,7 +2723,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 
 				/* insert space if it's alphanumeric */
 				if ((cur_pos != line_pos) &&
-				    ((clen > 1) || isalnum(cb[0]))) {
+				    ((clen > 1) || isalnum((guchar)cb[0]))) {
 					gtk_stext_insert(text, NULL, NULL,
 							NULL, " ", 1);
 					tlen++;
@@ -2762,7 +2764,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 		}
 
 		/* possible line break */
-		if (ch_len == 1 && isspace(*cbuf)) {
+		if (ch_len == 1 && isspace(*(guchar *)cbuf)) {
 			line_pos = cur_pos + 1;
 			line_len = cur_len + ch_len;
 		}
@@ -2788,7 +2790,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 			GET_CHAR(line_pos - 1, cbuf, clen);
 
 			/* if next character is space delete it */
-			if (clen == 1 && isspace(*cbuf)) {
+			if (clen == 1 && isspace(*(guchar *)cbuf)) {
 				if (p_pos + i_len != line_pos ||
                             	    !gtk_stext_is_uri_string
 					(text, line_pos, tlen)) {

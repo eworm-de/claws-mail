@@ -550,7 +550,7 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 			SET_FILTER_KEY("header \"List-Id\"", H_LIST_ID);
 			extract_list_id_str(*key);
 		} else if (hentry[H_X_SEQUENCE].body != NULL) {
-			gchar *p;
+			guchar *p;
 
 			SET_FILTER_KEY("X-Sequence", H_X_SEQUENCE);
 			p = *key;

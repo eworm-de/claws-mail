@@ -144,7 +144,7 @@ void ptr_array_free_strings(GPtrArray *array)
 
 gint to_number(const gchar *nstr)
 {
-	register const gchar *p;
+	register const guchar *p;
 
 	if (*nstr == '\0') return -1;
 
@@ -529,7 +529,7 @@ gboolean is_next_nonascii(const guchar *s)
 	return FALSE;
 }
 
-gint get_next_word_len(const gchar *s)
+gint get_next_word_len(const guchar *s)
 {
 	gint len = 0;
 
@@ -575,7 +575,7 @@ gint subject_compare_for_sort(const gchar *s1, const gchar *s2)
 
 void trim_subject_for_compare(gchar *str)
 {
-	gchar *srcp;
+	guchar *srcp;
 
 	eliminate_parenthesis(str, '[', ']');
 	eliminate_parenthesis(str, '(', ')');
@@ -588,7 +588,7 @@ void trim_subject_for_compare(gchar *str)
 
 void trim_subject_for_sort(gchar *str)
 {
-	gchar *srcp;
+	guchar *srcp;
 
 	g_strstrip(str);
 
@@ -599,7 +599,7 @@ void trim_subject_for_sort(gchar *str)
 
 void trim_subject(gchar *str)
 {
-	register gchar *srcp, *destp;
+	register guchar *srcp, *destp;
 	gchar op, cl;
 	gint in_brace;
 
@@ -631,7 +631,7 @@ void trim_subject(gchar *str)
 
 void eliminate_parenthesis(gchar *str, gchar op, gchar cl)
 {
-	register gchar *srcp, *destp;
+	register guchar *srcp, *destp;
 	gint in_brace;
 
 	srcp = destp = str;
@@ -713,7 +713,7 @@ void extract_parenthesis_with_skip_quote(gchar *str, gchar quote_chr,
 
 void eliminate_quote(gchar *str, gchar quote_chr)
 {
-	register gchar *srcp, *destp;
+	register guchar *srcp, *destp;
 
 	srcp = destp = str;
 
@@ -748,7 +748,7 @@ void extract_quote(gchar *str, gchar quote_chr)
 
 void eliminate_address_comment(gchar *str)
 {
-	register gchar *srcp, *destp;
+	register guchar *srcp, *destp;
 	gint in_brace;
 
 	srcp = destp = str;
@@ -980,7 +980,7 @@ void remove_return(gchar *str)
 
 void remove_space(gchar *str)
 {
-	register gchar *p = str;
+	register guchar *p = str;
 	register gint spc;
 
 	while (*p) {
@@ -996,7 +996,7 @@ void remove_space(gchar *str)
 
 void unfold_line(gchar *str)
 {
-	register gchar *p = str;
+	register guchar *p = str;
 	register gint spc;
 
 	while (*p) {
@@ -1075,15 +1075,15 @@ gboolean is_ascii_str(const guchar *str)
 
 gint get_quote_level(const gchar *str, const gchar *quote_chars)
 {
-	const gchar *first_pos;
-	const gchar *last_pos;
-	const gchar *p = str;
+	const guchar *first_pos;
+	const guchar *last_pos;
+	const guchar *p = str;
 	gint quote_level = -1;
 
 	/* speed up line processing by only searching to the last '>' */
 	if ((first_pos = line_has_quote_char(str, quote_chars)) != NULL) {
 		/* skip a line if it contains a '<' before the initial '>' */
-		if (memchr(str, '<', first_pos - str) != NULL)
+		if (memchr(str, '<', first_pos - (const guchar *)str) != NULL)
 			return -1;
 		last_pos = line_has_quote_char_last(first_pos, quote_chars);
 	} else
@@ -1252,7 +1252,7 @@ gchar **strsplit_parenthesis(const gchar *str, gchar op, gchar cl,
 			n++;
 			str = s_cl + 1;
 
-			while (*str && isspace(*str)) str++;
+			while (*str && isspace(*(guchar *)str)) str++;
 			if (*str != op) {
 				string_list = g_slist_prepend(string_list,
 							      g_strdup(""));
@@ -1398,7 +1398,7 @@ gchar *trim_string(const gchar *str, gint len)
 GList *uri_list_extract_filenames(const gchar *uri_list)
 {
 	GList *result = NULL;
-	const gchar *p, *q;
+	const guchar *p, *q;
 	gchar *file;
 
 	p = uri_list;
@@ -1441,6 +1441,88 @@ GList *uri_list_extract_filenames(const gchar *uri_list)
 	} else { \
 		val = 0; \
 	} \
+}
+
+/* Converts two-digit hexadecimal to decimal.  Used for unescaping escaped 
+ * characters
+ */
+static gint axtoi(const gchar *hexstr)
+{
+	gint hi, lo, result;
+       
+	hi = hexstr[0];
+	if ('0' <= hi && hi <= '9') {
+		hi -= '0';
+	} else
+		if ('a' <= hi && hi <= 'f') {
+			hi -= ('a' - 10);
+		} else
+			if ('A' <= hi && hi <= 'F') {
+				hi -= ('A' - 10);
+			}
+
+	lo = hexstr[1];
+	if ('0' <= lo && lo <= '9') {
+		lo -= '0';
+	} else
+		if ('a' <= lo && lo <= 'f') {
+			lo -= ('a'-10);
+		} else
+			if ('A' <= lo && lo <= 'F') {
+				lo -= ('A' - 10);
+			}
+	result = lo + (16 * hi);
+	return result;
+}
+
+gboolean is_uri_string(const gchar *str)
+{
+	return (g_strncasecmp(str, "http://", 7) == 0 ||
+		g_strncasecmp(str, "https://", 8) == 0 ||
+		g_strncasecmp(str, "ftp://", 6) == 0 ||
+		g_strncasecmp(str, "www.", 4) == 0);
+}
+
+gchar *get_uri_path(const gchar *uri)
+{
+	if (g_strncasecmp(uri, "http://", 7) == 0)
+		return (gchar *)(uri + 7);
+	else if (g_strncasecmp(uri, "https://", 8) == 0)
+		return (gchar *)(uri + 8);
+	else if (g_strncasecmp(uri, "ftp://", 6) == 0)
+		return (gchar *)(uri + 6);
+	else
+		return (gchar *)uri;
+}
+
+/* Decodes URL-Encoded strings (i.e. strings in which spaces are replaced by
+ * plusses, and escape characters are used)
+ */
+void decode_uri(gchar *decoded_uri, const gchar *encoded_uri)
+{
+	gchar *dec = decoded_uri;
+	const gchar *enc = encoded_uri;
+
+	while (*enc) {
+		if (*enc == '%') {
+			enc++;
+			if (isxdigit((guchar)enc[0]) &&
+			    isxdigit((guchar)enc[1])) {
+				*dec = axtoi(enc);
+				dec++;
+				enc += 2;
+			}
+		} else {
+			if (*enc == '+')
+				*dec = ' ';
+			else
+				*dec = *enc;
+			dec++;
+			enc++;
+		}
+	}
+
+	*dec = '\0';
 }
 
 gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
@@ -3067,77 +3149,6 @@ void encode_uri(gchar *encoded_uri, gint bufsize, const gchar *uri)
 	}
 	encoded_uri[k] = 0;
 }
-
-/* Converts two-digit hexadecimal to decimal.  Used for unescaping escaped 
- * characters
- */
-static gint axtoi(const gchar *hexstr)
-{
-	gint hi, lo, result;
-       
-	hi = hexstr[0];
-	if ('0' <= hi && hi <= '9') {
-		hi -= '0';
-	} else
-		if ('a' <= hi && hi <= 'f') {
-			hi -= ('a' - 10);
-		} else
-			if ('A' <= hi && hi <= 'F') {
-				hi -= ('A' - 10);
-			}
-
-	lo = hexstr[1];
-	if ('0' <= lo && lo <= '9') {
-		lo -= '0';
-	} else
-		if ('a' <= lo && lo <= 'f') {
-			lo -= ('a'-10);
-		} else
-			if ('A' <= lo && lo <= 'F') {
-				lo -= ('A' - 10);
-			}
-	result = lo + (16 * hi);
-	return result;
-}
-
-
-/* Decodes URL-Encoded strings (i.e. strings in which spaces are replaced by
- * plusses, and escape characters are used)
- */
-
-void decode_uri(gchar *decoded_uri, const gchar *encoded_uri)
-{
-	const gchar *encoded;
-	gchar *decoded;
-
-	encoded = encoded_uri;
-	decoded = decoded_uri;
-
-	while (*encoded) {
-		if (*encoded == '%') {
-			encoded++;
-			if (isxdigit(encoded[0])
-			    && isxdigit(encoded[1])) {
-				*decoded = (gchar) axtoi(encoded);
-				decoded++;
-				encoded += 2;
-			}
-		}
-		else if (*encoded == '+') {
-			*decoded = ' ';
-			decoded++;
-			encoded++;
-		}
-		else {
-			*decoded = *encoded;
-			decoded++;
-			encoded++;
-		}
-	}
-
-	*decoded = '\0';
-}
-
 
 gint open_uri(const gchar *uri, const gchar *cmdline)
 {
