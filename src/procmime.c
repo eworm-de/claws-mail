@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -168,6 +168,12 @@ MimeInfo *procmime_mimeinfo_next(MimeInfo *mimeinfo)
 	if (mimeinfo->next)
 		return mimeinfo->next;
 
+	if (mimeinfo->main) {
+		mimeinfo = mimeinfo->main;
+		if (mimeinfo->next)
+			return mimeinfo->next;
+	}
+
 	for (mimeinfo = mimeinfo->parent; mimeinfo != NULL;
 	     mimeinfo = mimeinfo->parent) {
 		if (mimeinfo->next)
@@ -244,12 +250,12 @@ void procmime_scan_multipart_message(MimeInfo *mimeinfo, FILE *fp)
 		return;
 	}
 
-
 	for (npart = 0;; npart++) {
 		MimeInfo *partinfo;
 		gboolean eom = FALSE;
 
 		prev_fpos = fpos;
+		debug_print("prev_fpos: %ld\n", fpos);
 
 		partinfo = procmime_scan_mime_header(fp);
 		if (!partinfo) break;
@@ -263,14 +269,20 @@ void procmime_scan_multipart_message(MimeInfo *mimeinfo, FILE *fp)
 
 			partinfo->sub = sub = procmime_scan_mime_header(fp);
 			if (!sub) break;
+
 			sub->level = partinfo->level + 1;
 			sub->parent = partinfo->parent;
 			sub->main = partinfo;
 
-			if (sub->mime_type == MIME_MULTIPART) {
-				if (sub->level < 8)
+			if (sub->level < 8) {
+				if (sub->mime_type == MIME_MULTIPART) {
 					procmime_scan_multipart_message
 						(sub, fp);
+				} else if (sub->mime_type == MIME_MESSAGE_RFC822) {
+					fseek(fp, sub->fpos, SEEK_SET);
+					procmime_scan_multipart_message
+						(sub, fp);
+				}
 			}
 		}
 
@@ -284,11 +296,23 @@ void procmime_scan_multipart_message(MimeInfo *mimeinfo, FILE *fp)
 				break;
 			}
 		}
-		if (p == NULL)
-			eom = TRUE;	/* broken MIME message */
+		if (p == NULL) {
+			/* broken MIME, or single part MIME message */
+			buf[0] = '\0';
+			eom = TRUE;
+		}
 		fpos = ftell(fp);
+		debug_print("fpos: %ld\n", fpos);
 
 		partinfo->size = fpos - prev_fpos - strlen(buf);
+		debug_print("partinfo->size: %d\n", partinfo->size);
+		if (partinfo->sub && !partinfo->sub->sub &&
+		    !partinfo->sub->children) {
+			partinfo->sub->size = fpos - partinfo->sub->fpos - strlen(buf);
+			debug_print("partinfo->sub->size: %d\n",
+				    partinfo->sub->size);
+		}
+		debug_print("boundary: %s\n", buf);
 
 		if (eom) break;
 	}

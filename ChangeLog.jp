@@ -1,3 +1,46 @@
+2002-05-17
+
+	* src/mainwindow.c: 「すべてのスレッドを展開/閉じる」メニューを追加。
+	* src/summaryview.[ch]:
+	  summary_expand_threads(), summary_collapse_threads(): 新規。
+
+2002-05-17
+
+	* src/mainwindow.c: 「/表示/表示・非表示/フォルダツリー」と
+	  「/表示/表示・非表示/メッセージビュー」トグルメニューの挙動を修正。
+	  「/表示/サマリビューを切替」メニューを削除し、その機能を
+	  「/表示/表示・非表示/メッセージビュー」に統合。
+	  main_window_set_widgets(): トグルメニュー項目の状態を変更。
+	* src/prefs_common.c: prefs_keybind_apply_clicked(): menurc 文字列を
+	  更新。
+
+2002-05-16
+
+	* src/mimeview.c: mimeview_set_multipart_tree(): テキスト以外の
+	  シングルパート MIME の内容を message/rfc822 のパートの子として表示。
+	* src/procmime.c:
+	  procmime_mimeinfo_next(): content-type がシングルパート MIME の
+	  message/rfc822 パートのための修正。
+	  procmime_scan_multipart_message(): 入れ子になった message/rfc822
+	  パートの修正。 message/rfc822 の内容のサイズを訂正。
+	* src/textview.c: textview_show_part(): multipart/* と message/rfc822
+	  の内容を展開。コードの整理。
+	  textview_add_parts(): 新規。あるパート以下の全てのパートを textview
+	  に追加する。
+	  textview_clear(): body_pos と cur_pos をリセット。
+
+2002-05-16
+
+	* src/addr_compl.c: 挙動を向上させるために修正。
+	  get_address_from_edit(): 鉤括弧中のカンマを無視。
+	  completion_window_apply_selection(): 新規。現在の clist の選択行
+	  の適用のみ行う。
+	  completion_window_accept_selection(): 削除。
+	  address_completion_complete_address_in_entry(): 少しコードを整理。
+	  ここでエントリ中のアドレスを置換しない。
+	  completion_window_select_row(): clist の選択を常に適用。
+	  completion_window_key_press(): 選択をここでは適用しない。
+
 2002-05-15
 
 	* src/imap.c: imap_create_folder(): サブフォルダを含むフォルダを

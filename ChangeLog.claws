@@ -1,16 +1,24 @@
+2002-05-18 [christoph]	0.7.6claws4
+
+	* src/summaryview.c
+		fix indentation of some code
+	* tools/Makefile.am
+		fix spaces after \
+	* src/Makefile.am
+		add missing \
+		correct path for ignorethread.xpm
+		incorrect filename for sylpheed_logo.xpm
+
+2002-05-18 [paul]	0.7.6claws3
+
+	* sync with 0.7.6cvs8
+		see ChangeLog 2002-05-16 and 2002-05-17
+
 2002-05-18 [melvin]	0.7.6claws2
 
 	* README.claws
 		Corrected an action's definition and fixed some misspellings.
-	* tools/newscache_clean.pl 
-	  tools/sylprint.pl 
-	  tools/filter_conv.pl 
-	  tools/eud2gc.py 
-	  tools/gif2xface.pl
-	  tools/gpg-sign
-	  tools/uudec
-		Made scripts have execution permission.
-	
+
 2002-05-18 [paul]	0.7.6claws1
 
 	* tools/Makefile.am
