@@ -34,12 +34,13 @@ extern PrefsAccount *cur_account;
 void	      account_read_config_all	(void);
 void	      account_save_config_all	(void);
 
+GList        *account_find_all_from_address	(GList		*ac_list,
+						 const gchar	*address);
 PrefsAccount *account_find_from_smtp_server	(const gchar	*address,
 						 const gchar	*smtp_server);
 PrefsAccount *account_find_from_address		(const gchar	*address);
 PrefsAccount *account_find_from_id		(gint		 id);
-GList        *account_find_all_from_address	(GList		*ac_list,
-						 const gchar	*address);
+PrefsAccount *account_find_from_item		(FolderItem	*item);
 
 void	      account_set_menu		(void);
 
@@ -49,6 +50,7 @@ GList	     *account_get_list		(void);
 
 void	      account_edit_open		(void);
 void	      account_add		(void);
+void	      account_open		(PrefsAccount	*ac_prefs);
 void	      account_set_as_default	(PrefsAccount	*ac_prefs);
 void	      account_set_as_recv_at_get_all	(PrefsAccount	*ac_prefs);
 PrefsAccount *account_get_default	(void);

@@ -161,6 +161,9 @@ struct _Folder
 	gint     (*remove_msg)		(Folder		*folder,
 					 FolderItem	*item,
 					 gint		 num);
+	gint     (*remove_msgs)		(Folder		*folder,
+					 FolderItem	*item,
+					 GSList		*msglist);
 	gint     (*remove_all_msg)	(Folder		*folder,
 					 FolderItem	*item);
 	gboolean (*is_msg_changed)	(Folder		*folder,
@@ -219,7 +222,6 @@ struct _FolderItem
 
 	gchar *name;
 	gchar *path;
-	PrefsAccount *account;
 
 	time_t mtime;
 
@@ -250,6 +252,10 @@ struct _FolderItem
 
 	Folder *folder;
 
+	PrefsAccount *account;
+
+	gboolean apply_sub;
+	
 	GSList *mark_queue;
 
 	gpointer data;
@@ -329,6 +335,7 @@ FolderItem *folder_get_default_queue	(void);
 FolderItem *folder_get_default_trash	(void);
 FolderItem *folder_get_default_processing (void);
 void folder_set_missing_folders		(void);
+void folder_unref_account_all		(PrefsAccount	*account);
 
 gchar *folder_get_path			(Folder		*folder);
 gchar *folder_item_get_path		(FolderItem	*item);

@@ -169,3 +169,29 @@ void menu_button_position(GtkMenu *menu, gint *x, gint *y, gpointer user_data)
 	*x = xpos;
 	*y = ypos;
 }
+
+gint menu_find_option_menu_index(GtkOptionMenu *optmenu, gpointer data,
+				 GCompareFunc func)
+{
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+	gpointer menu_data;
+	GList *cur;
+	gint n;
+
+	menu = gtk_option_menu_get_menu(optmenu);
+
+	for (cur = GTK_MENU_SHELL(menu)->children, n = 0;
+	     cur != NULL; cur = cur->next, n++) {
+		menuitem = GTK_WIDGET(cur->data);
+		menu_data = gtk_object_get_user_data(GTK_OBJECT(menuitem));
+		if (func) {
+			if (func(menu_data, data) == 0)
+				return n;
+		} else if (menu_data == data)
+			return n;
+	}
+
+	return -1;
+}
+

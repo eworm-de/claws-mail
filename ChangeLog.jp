@@ -1,3 +1,67 @@
+2002-10-08
+ 
+	* src/account.c: account_edit_prefs(): 未使用の変数を削除。
+	* src/compose.[ch]: ComposeMode の WITH_QUOTE/WITHOUT_QUOTE フラグ
+	  を分離。
+	  compose_reply()
+	  compose_reply_set_entry(): 返信形式を一つの引数で受け取るように
+	  した。
+	* src/summaryview.c: summary_reply(): 条件分岐を削減。
+
+2002-10-08
+ 
+	* src/compose.c: compose_redirect(), compose_reedit(): strip CR
+	  from line ends (thanks to Sergey Vlasov).
+	* src/folderview.c: 「フォルダツリーを再スキャン」を「フォルダツリー
+	  を再構築」に改名。
+
+2002-10-08
+
+	* src/folder.[ch]: 仮想メソッド Folder::remove_msgs() を追加。
+	* src/imap.[ch]: メッセージを一度に削除する imap_remove_msgs()
+	  を実装。
+
+2002-10-07
+ 
+	* src/account.[ch]: account_open(): 新規。アカウント設定ダイアログ
+	  を開き、終了時に UI に反映させる。
+	* src/folderview.c:
+	  folderview_button_pressed()
+	  folderview_property_cb(): リモートアカウントのルートフォルダの
+	  プロパティを要求されたらアカウント設定ダイアログを開くようにした。
+
+2002-10-07
+
+	* src/account.c: account_destroy(): フォルダ中のアカウント情報への
+	  参照を解除するようにした。
+	* src/folder.[ch]: folder_unref_account_all(): 新規。全フォルダ中
+	  の指定したアカウント情報への参照を解除する。
+	* src/folderview.c:
+	  folderview_rm_imap_server_cb()
+	  folderview_rm_news_server_cb(): folder_destroy() がアカウント情報
+	  を参照しているため Folder を先に削除するようにした。
+
+2002-10-04
+
+	* src/account.c: account_find_from_item(): 正しいアカウントを選択
+	  していなかったバグを修正。
+	* inc_pop3_session_do():
+	  SSL の初期化に失敗したときのリソースのリークを修正。
+	  キャンセルされたら一時的なイベントループからすぐに抜けるようにした。
+
+2002-10-04
+
+	* src/account.[ch]: account_find_from_item(): 新規。
+	* src/compose.c:
+	  compose_reply(), compose_forward(), compose_redirect()
+	  src/mainwindow.c: compose_cb(): 作成時に最適なアカウントを選択
+	  するようにした。
+	* src/folder.[ch]: FolderItem::apply_sub を追加。
+	* src/menu.[ch]: menu_find_option_menu_index(): 新規。指定した
+	  データを含むオプションメニューのインデックスを検索する。
+	* src/prefs_folder_item(): 作成タブと、フォルダアカウントの設定を
+	  追加。
+
 2002-10-04
 
 	* configure.in: lber ライブラリの検出に $LDAP_LIBS を追加。

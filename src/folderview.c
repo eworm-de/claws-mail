@@ -276,7 +276,7 @@ static GtkItemFactoryEntry folderview_mail_popup_entries[] =
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Check for new messages"),
 					NULL, folderview_update_tree_cb, 0, NULL},
-	{N_("/R_escan folder tree"),	NULL, folderview_update_tree_cb, 1, NULL},
+	{N_("/R_ebuild folder tree"),	NULL, folderview_update_tree_cb, 1, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/Remove _mailbox"),	NULL, folderview_remove_mailbox_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
@@ -296,7 +296,7 @@ static GtkItemFactoryEntry folderview_imap_popup_entries[] =
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Check for new messages"),
 					NULL, folderview_update_tree_cb, 0, NULL},
-	{N_("/R_escan folder tree"),	NULL, folderview_update_tree_cb, 1, NULL},
+	{N_("/R_ebuild folder tree"),	NULL, folderview_update_tree_cb, 1, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/Remove _IMAP4 account"),	NULL, folderview_rm_imap_server_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
@@ -825,7 +825,7 @@ void folderview_rescan_tree(Folder *folder)
 	if (!folder->scan_tree) return;
 
 	inc_lock();
-	window = label_window_create(_("Rescanning folder tree..."));
+	window = label_window_create(_("Rebuilding folder tree..."));
 
 	folder_set_ui_func(folder, folderview_scan_tree_func, NULL);
 	folder_scan_tree(folder);
@@ -1548,10 +1548,13 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 
 	if (folderview->mainwin->lock_count == 0) {
 		new_folder = TRUE;
-		if (item->parent == NULL)
+		if (item->parent == NULL) {
 			update_tree = remove_tree = TRUE;
-		else
+			if (folder->account)
+				folder_property = TRUE;
+		} else
 			mark_all_read = search_folder = folder_property = TRUE;
+			
 		if (FOLDER_IS_LOCAL(folder) || FOLDER_TYPE(folder) == F_IMAP || FOLDER_TYPE(folder) == F_MBOX) {
 			if (item->parent == NULL)
 				update_tree = rescan_tree = TRUE;
@@ -1585,7 +1588,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(mail_factory, "/Rename folder...", rename_folder);
 		SET_SENS(mail_factory, "/Delete folder", delete_folder);
 		SET_SENS(mail_factory, "/Check for new messages", update_tree);
-		SET_SENS(mail_factory, "/Rescan folder tree", rescan_tree);
+		SET_SENS(mail_factory, "/Rebuild folder tree", rescan_tree);
 		SET_SENS(mail_factory, "/Remove mailbox", remove_tree);
 		SET_SENS(mail_factory, "/Search folder...", search_folder);
 		SET_SENS(mail_factory, "/Property...", folder_property);
@@ -1599,7 +1602,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(imap_factory, "/Rename folder...", rename_folder);
 		SET_SENS(imap_factory, "/Delete folder", delete_folder);
 		SET_SENS(imap_factory, "/Check for new messages", update_tree);
-		SET_SENS(imap_factory, "/Rescan folder tree", rescan_tree);
+		SET_SENS(imap_factory, "/Rebuild folder tree", rescan_tree);
 		SET_SENS(imap_factory, "/Remove IMAP4 account", remove_tree);
 		SET_SENS(imap_factory, "/Search folder...", search_folder);
 		SET_SENS(imap_factory, "/Property...", folder_property);
@@ -2362,6 +2365,7 @@ static void folderview_rm_imap_server_cb(FolderView *folderview, guint action,
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	FolderItem *item;
+	PrefsAccount *account;
 	gchar *name, *name_;
 	gchar *message;
 	AlertValue avalue;
@@ -2392,8 +2396,9 @@ static void folderview_rm_imap_server_cb(FolderView *folderview, guint action,
 		folderview->opened = NULL;
 	}
 
-	account_destroy(item->folder->account);
+	account = item->folder->account;
 	folder_destroy(item->folder);
+	account_destroy(account);
 	gtk_ctree_remove_node(ctree, folderview->selected);
 	account_set_menu();
 	main_window_reflect_prefs_all();
@@ -2532,6 +2537,7 @@ static void folderview_rm_news_server_cb(FolderView *folderview, guint action,
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	FolderItem *item;
+	PrefsAccount *account;
 	gchar *name, *name_;
 	gchar *message;
 	AlertValue avalue;
@@ -2562,8 +2568,9 @@ static void folderview_rm_news_server_cb(FolderView *folderview, guint action,
 		folderview->opened = NULL;
 	}
 
-	account_destroy(item->folder->account);
-	folder_destroy(item->folder);
+	account = item->folder->account;
+ 	folder_destroy(item->folder);
+	account_destroy(account);
 	gtk_ctree_remove_node(ctree, folderview->selected);
 	account_set_menu();
 	main_window_reflect_prefs_all();
@@ -2594,7 +2601,10 @@ static void folderview_property_cb(FolderView *folderview, guint action,
 	/*
 	 * CLAWS: wait till Hiro has completed his stuff
 	 */
-	prefs_folder_item_open(item);
+	if (item->parent == NULL && item->folder->account)
+		account_open(item->folder->account);
+	else
+		prefs_folder_item_open(item);
 #endif	
 }
 

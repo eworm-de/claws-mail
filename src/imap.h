@@ -141,8 +141,12 @@ gint imap_copy_msgs_with_dest		(Folder		*folder,
 gint imap_remove_msg			(Folder		*folder,
 					 FolderItem	*item,
 					 gint		 uid);
+gint imap_remove_msgs			(Folder		*folder,
+					 FolderItem	*item,
+					 GSList		*msglist);
 gint imap_remove_all_msg		(Folder		*folder,
 					 FolderItem	*item);
+
 gboolean imap_is_msg_changed		(Folder		*folder,
 					 FolderItem	*item,
 					 MsgInfo	*msginfo);

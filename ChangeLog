@@ -1,3 +1,66 @@
+2002-10-08
+ 
+	* src/account.c: account_edit_prefs(): removed unused variables.
+	* src/compose.[ch]: separated WITH_QUOTE/WITHOUT_QUOTE flags in
+	  ComposeMode.
+	  compose_reply()
+	  compose_reply_set_entry(): receive reply type with one argument.
+	* src/summaryview.c: summary_reply(): reduced conditional branches.
+
+2002-10-08
+ 
+	* src/compose.c: compose_redirect(), compose_reedit(): strip CR
+	  from line ends (thanks to Sergey Vlasov).
+	* src/folderview.c: renamed 'Rescan folder tree' to 'Rebuild
+	  folder tree'.
+
+2002-10-08
+
+	* src/folder.[ch]: added a virtual method Folder::remove_msgs().
+	* src/imap.[ch]: implemented imap_remove_msgs() which expunges
+	  messages all at once.
+
+2002-10-07
+ 
+	* src/account.[ch]: account_open(): new. It opens account prefs
+	  dialog and reflects to UI when finished.
+	* src/folderview.c:
+	  folderview_button_pressed()
+	  folderview_property_cb(): open account prefs dialog when the
+	  property of the root folder of remote account is requested.
+
+2002-10-07
+
+	* src/account.c: account_destroy(): unref account information in
+	  folders.
+	* src/folder.[ch]: folder_unref_account_all(): new. It unref the
+	  specified account information in all folders.
+	* src/folderview.c:
+	  folderview_rm_imap_server_cb()
+	  folderview_rm_news_server_cb(): destroy Folder first because
+	  folder_destroy() refers to account information.
+
+2002-10-04
+
+	* src/account.c: account_find_from_item(): fixed a bug which didn't
+	  select the correct account.
+	* inc_pop3_session_do():
+	  fixed the resource leak when SSL initialization failed.
+	  Immediately break from temporary event loop if cancelled.
+
+2002-10-04
+
+	* src/account.[ch]: account_find_from_item(): new.
+	* src/compose.c:
+	  compose_reply(), compose_forward(), compose_redirect()
+	  src/mainwindow.c: compose_cb(): select optimal account when
+	  composing.
+	* src/folder.[ch]: added FolderItem::apply_sub.
+	* src/menu.[ch]: menu_find_option_menu_index(): new. It finds the
+	  index of option menu which contains the specified data.
+	* src/prefs_folder_item(): added Compose tab, and the setting of
+	  folder account.
+
 2002-10-04
 
 	* configure.in: added $LDAP_LIBS for lber library detection.

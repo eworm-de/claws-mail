@@ -1,3 +1,20 @@
+2002-10-12 [alfons]	0.8.5claws29
+	
+	* sync with main changes of 2002-10-08
+	- drop changes to src/compose.c (requires claws specific changes)
+        - drop changes to src/summaryview.c (requires changes to compose.c)	
+
+2002-10-12 [alfons]	0.8.5claws28
+	
+	* sync with main changes of 2002-10-07
+
+2002-10-12 [alfons]	0.8.5claws27
+
+	* sync with main changes of 2002-10-04
+	- drop changes to src/compose.c (requires claws specific changes)
+	- drop changes to src/prefs_folder_item.c (claws implementation
+	  seems to be working)
+
 2002-10-12 [colin]	0.8.5claws26
 
 	* src/mainwindow.c
