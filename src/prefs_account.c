@@ -1388,6 +1388,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 {
 	RecvProtocol protocol;
 	gboolean active;
+	gint auth;
 
 	protocol = GPOINTER_TO_INT
 		(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
@@ -1425,11 +1426,15 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 					   5, 0);
 		gtk_widget_show(basic.uid_label);
 		gtk_widget_show(basic.pass_label);
+		gtk_widget_show(basic.uid_entry);
+		gtk_widget_show(basic.pass_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   7, VSPACING_NARROW);
 
 		gtk_widget_set_sensitive(basic.uid_label,  TRUE);
 		gtk_widget_set_sensitive(basic.pass_label, TRUE);
+		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
+		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
 
 		/* update userid/passwd sensitive state */
 		prefs_account_nntpauth_toggled
@@ -1468,11 +1473,15 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 					   5, VSPACING_NARROW);
 		gtk_widget_hide(basic.uid_label);
 		gtk_widget_hide(basic.pass_label);
+		gtk_widget_hide(basic.uid_entry);
+		gtk_widget_hide(basic.pass_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   7, 0);
 
 		gtk_widget_set_sensitive(basic.uid_label,  TRUE);
 		gtk_widget_set_sensitive(basic.pass_label, TRUE);
+		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
+		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
 		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
 		prefs_account_mailcmd_toggled
 			(GTK_TOGGLE_BUTTON(basic.mailcmd_chkbtn), NULL);
@@ -1511,11 +1520,15 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 					   5, 0);
 		gtk_widget_show(basic.uid_label);
 		gtk_widget_show(basic.pass_label);
+		gtk_widget_show(basic.uid_entry);
+		gtk_widget_show(basic.pass_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   7, VSPACING_NARROW);
 
 		gtk_widget_set_sensitive(basic.uid_label,  TRUE);
 		gtk_widget_set_sensitive(basic.pass_label, TRUE);
+		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
+		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
 		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
@@ -1555,11 +1568,15 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 					   5, 0);
 		gtk_widget_show(basic.uid_label);
 		gtk_widget_show(basic.pass_label);
+		gtk_widget_show(basic.uid_entry);
+		gtk_widget_show(basic.pass_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   7, VSPACING_NARROW);
 
 		gtk_widget_set_sensitive(basic.uid_label,  TRUE);
 		gtk_widget_set_sensitive(basic.pass_label, TRUE);
+		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
+		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
 		gtk_widget_set_sensitive(receive.pop3_frame, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);

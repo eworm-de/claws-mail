@@ -1379,3 +1379,14 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 	}
 	return processed_cmd;
 }
+
+
+/* ************************************************************ */
+
+/*
+static void matcher_parse		(gchar * str)
+{
+	matcher_parser_scan_string(str);
+	matcher_parserparse();
+}
+*/

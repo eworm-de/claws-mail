@@ -88,7 +88,9 @@ sylpheed_SOURCES = \
 	prefs_filtering.c prefs_filtering.h \
 	mbox_folder.c mbox_folder.h \
 	quote_fmt_lex.l quote_fmt_lex.h \
-	quote_fmt_parse.y quote_fmt.h
+	quote_fmt_parse.y quote_fmt.h \
+	matcher_parser_lex.l matcher_parser_lex.h \
+	matcher_parser_parse.y matcher_parser.h
 
 EXTRA_DIST = \
 	quote_fmt_parse.h \
