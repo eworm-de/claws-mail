@@ -1,3 +1,143 @@
+2001-08-14
+
+	* version 0.5.3
+
+2001-08-14
+
+	* src/summaryview.c: summary_set_row_marks(): got the color of
+	  unread row set properly.
+	* src/folderview.c: foldreview_update_node(): don't use
+	  gtk_style_copy(), and reuse previously allocated styles.
+	* README, README.jp: modified.
+
+2001-08-14
+
+	* src/pop.c: pop3_getsize_list_recv(): fixed a remotly exploitable
+	  memory corruption bug (thanks to David Looney).
+	* src/inc.c: inc_all_account_mail(): call inc_finished() even if
+	  there are no enabled accounts, or local spool only.
+	* src/summaryview.c: applied the summary update improvement patch
+	  from Sergey Vlasov (thanks!). It keeps the position of the
+	  message displayed. Selected and displayed message are also kept.
+	  summary_get_msgnum(): new.
+	  summary_get_current_msgnum(): removed.
+	  summary_select_by_msgnum(): don't display the message.
+	* src/account.c: added "Get all" column.
+	  account_clist_set_row(): show default and get-all flags with the
+	  mark icon.
+	* src/utils.c: to_human_readable(): increased the number of decimals
+	  of MB and GB to 2.
+
+2001-08-13
+
+	* implemented the long-awaited :) "Add sender to address book" feature.
+	* src/address.[ch]: added the argument for remarks to
+	  address_item_new().
+	  address_get_folder_list(): new. It traverses the address tree and
+	  returns the folder list.
+	  address_delete_object(): modified so that it removes the node
+	  from the tree.
+	* src/addressbook.[ch]: addressbook_add_submenu(): new. It creates
+	  a address folder menu and attaches it to the menu item.
+	  addressbook_refresh(): reload the address book folder tree.
+	* src/summaryview.c: summary_set_add_sender_menu(): new. It attaches
+	  the menu to add sender to address book.
+	  summary_button_pressed(): call summary_set_add_sender_menu()
+	  before popup the menu.
+
+2001-08-12
+
+	* src/summaryview.c: summary_thread_build(): fixed a bug that locked
+	  up the process. Optimized the initial thread build.
+
+2001-08-12
+
+	* src/summaryview.c: made many code cleanups.
+	  summary_show(): block/unblock the signal handlers instead of
+	  disconnect/connect them.
+	  summary_set_row_marks(): made the font of collapsed node bold if
+	  it has cnildren marked as unread.
+	  summary_thread_build(): block tree_expand signals while processing.
+	  Use loop instead of the recursive function. Mark collapsed nodes
+	  correctly.
+	  summary_unthread(): block tree_collapse signals while processing.
+	  Use loop instead of the recursive function.
+	  summary_thread_func(), summary_unthread_func(): removed.
+	  summary_tree_expanded(), summary_tree_collapsed(): new callback
+	  functions.
+	* src/inc.[ch]: inc_pop3_session_do(): don't show alert panel when
+	  failed to connect. Show more detailed status on the dialog.
+
+2001-08-10
+
+	* src/folderview.c: folderview_update_all_node(): new. It updates
+	  all local folders.
+	* src/inc.c: update all local folders after incorporation if
+	  scan_all_after_inc option is set.
+	* src/prefs_common.[ch]: added scan_all_after_inc option.
+	* src/folder.h: FOLDER_IS_LOCAL(): new macro.
+
+2001-08-09
+
+	* src/defs.h
+	  src/headerview.c
+	  src/headerwindow.c
+	  src/textview.c
+	  src/prefs_common.c
+	  src/prefs_common.h: made bold and small font configurable.
+	  src/summaryview.c: display unread messages with bold font.
+	* src/prefs_common.c
+	  src/prefs_common.h
+	  src/summaryview.c: added an option to enable/disable the
+	  emphasis of unread messages.
+
+2001-08-08
+
+	* src/pixmaps/mark.xpm: modified.
+	* src/gtkutils.[ch]: gtkut_ctree_expand_parent_all(): new.
+	* src/summaryview.c: summary_set_ctree_from_list(): don't expand
+	  the root messages of threads for performance improvement.
+	  summary_show()
+	  summary_select_next_unread()
+	  summary_step(): expand threads when opening messages.
+	  summary_thread_build(): expand threads if the option is turned on.
+	* src/prefs_common.[ch]: added "Expand threads" option.
+
+2001-08-08
+
+	* src/prefs_common.c: removed "Emulate the behavior of mouse
+	  operation of Emacs-based mailer".
+	* src/prefs_common.c
+	  src/prefs_account.c: changed the value of VSPACING_NARROW to 3.
+	* src/pixmaps/new.xpm
+	  src/pixmaps/unread.xpm: reverted.
+
+2001-08-07
+
+	* src/address.[ch]:
+	  address_folder_new()
+	  address_group_new()
+	  address_item_new(): changed the return value to AddressObject.
+	  address_build_tree(): don't put assertion for file.
+	* src/pixmaps/new.xpm
+	  src/pixmaps/unread.xpm: modified a bit.
+
+2001-08-06
+
+	* src/addressbook.c: fixed some bugs.
+
+2001-08-06
+
+	* separated the logic part of addressbook into another module
+	  (still in progress).
+	* src/address.[ch]: new. It contains the logic part of addressbook.
+	* src/addressbook.[ch]: removed the logic part.
+
+2001-08-04
+
+	* src/textview.c: textview_show_header(): fixed a bug that a garbage
+	  character was shown after header names.
+
 2001-08-02
 
 	* src/inc.c: inc_start(): don't abort with non-fatal error.

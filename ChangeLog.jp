@@ -1,3 +1,144 @@
+2001-08-14
+
+	* version 0.5.3
+
+2001-08-14
+
+	* src/summaryview.c: summary_set_row_marks(): 未読の行の色が正しく
+	  指定されるようにした。
+	* src/folderview.c: foldreview_update_node(): gtk_style_copy() を
+	  使用せず、あらかじめ割り当てられた style を再使用するようにした。
+	* README, README.jp: 修正。
+
+2001-08-14
+
+	* src/pop.c: pop3_getsize_list_recv(): リモートから攻撃可能な
+	  メモリ破壊バグを修正(David Looney さん thanks)。
+	* src/inc.c: inc_all_account_mail(): 有効なアカウントがない、
+	  あるいはローカルスプールのみの場合でも inc_finished() を呼ぶ
+	  ようにした。
+	* src/summaryview.c: サマリの更新を改良する Sergey Vlasov さん
+	  からのパッチを適用(thanks!)。表示されているメッセージの位置が
+	  保持される。選択、表示されているメッセージも同様に保持される。
+	  summary_get_msgnum(): 新規。
+	  summary_get_current_msgnum(): 削除。
+	  summary_select_by_msgnum(): メッセージを表示しないようにした。
+	* src/account.c: 「全受信」カラムを追加。
+	  account_clist_set_row(): 通常使用と全受信のフラグをマークアイコン
+	  で表示。
+	* src/utils.c: to_human_readable(): MB と GB の小数点以下の桁数
+	  を 2 に増加。
+
+2001-08-13
+
+	* 待望の :)「差出人をアドレス帳に追加」機能を実装。
+	* src/address.[ch]: address_item_new() に備考のための引数を追加。
+	  address_get_folder_list(): 新規。アドレスツリーをトラバースし、
+	  フォルダのリストを返す。
+	  address_delete_object(): ツリーからノードを削除するように修正。
+	* src/addressbook.[ch]: addressbook_add_submenu(): 新規。アドレス
+	  フォルダのメニューを作成し、それをメニューアイテムに付加する。
+	  addressbook_refresh(): アドレス帳のフォルダツリーを再読込する。
+	* src/summaryview.c: summary_set_add_sender_menu(): 新規。差出人
+	  をアドレス帳に追加するためのメニューを付加する。
+	  summary_button_pressed(): メニューをポップアップする前に
+	  summary_set_add_sender_menu() を呼ぶようにした。
+
+2001-08-12
+
+	* src/summaryview.c: summary_thread_build(): プロセスを固まらせる
+	  バグを修正。初期のスレッド構築を最適化。
+
+2001-08-12
+
+	* src/summaryview.c: 多数のコードの整理を行った。
+	  summary_show(): シグナルハンドラを切断/接続する代わりにブロック/
+	  ブロック解除するようにした。
+	  summary_set_row_marks(): 閉じたノードが未読マークの付いた子を
+	  持っていればフォントをボールドで表示するようにした。
+	  summary_thread_build(): 処理中に tree_expand シグナルをブロック
+	  するようにした。再帰関数の代わりにループを使用するようにした。
+	  閉じたノードを正しくマークするようにした。
+	  summary_unthread(): 処理中に tree_collapse シグナルをブロック
+	  するようにした。再帰関数の代わりにループを使用するようにした。
+	  summary_thread_func(), summary_unthread_func(): 削除。
+	  summary_tree_expanded(), summary_tree_collapsed(): 新規コール
+	  バック関数。
+	* src/inc.[ch]: inc_pop3_session_do(): 接続に失敗したときに警告パネル
+	  を表示しないようにした。ダイアログにより詳細な状態を表示する
+	  ようにした。
+
+2001-08-10
+
+	* src/folderview.c: folderview_update_all_node(): 新規。全ての
+	  ローカルフォルダを更新する。
+	* src/inc.c: scan_all_after_inc オプションがセットされていれば
+	  受信後にローカルフォルダを更新するようにした。
+	* src/prefs_common.[ch]: scan_all_after_inc オプションを追加。
+	* src/folder.h: FOLDER_IS_LOCAL(): 新規マクロ。
+
+2001-08-09
+
+	* src/defs.h
+	  src/headerview.c
+	  src/headerwindow.c
+	  src/textview.c
+	  src/prefs_common.c
+	  src/prefs_common.h: ボールドと小フォントを設定可能にした。
+	  src/summaryview.c: 未読メッセージをボールドフォントで表示する
+	  ようにした。
+	* src/prefs_common.c
+	  src/prefs_common.h
+	  src/summaryview.c: 未読メッセージの強調を有効/無効にするオプション
+	  を追加。
+
+2001-08-08
+
+	* src/pixmaps/mark.xpm: 修正。
+	* src/gtkutils.[ch]: gtkut_ctree_expand_parent_all(): 新規。
+	* src/summaryview.c: summary_set_ctree_from_list(): パフォーマンス
+	  向上のためにスレッドのルートメッセージを展開しないようにした。
+	  summary_show()
+	  summary_select_next_unread()
+	  summary_step(): メッセージを開くときにスレッドを展開するようにした。
+	  summary_thread_build(): オプションが ON になっていたらスレッドを
+	  展開するようにした。
+	* src/prefs_common.[ch]: 「スレッドを展開する」オプションを追加。
+
+2001-08-08
+
+	* src/prefs_common.c: 「Emacs上のメーラのマウス操作時の挙動を
+	  エミュレートする」を削除。
+	* src/prefs_common.c
+	  src/prefs_account.c: VSPACING_NARROW の値を 3 に変更。
+	* src/pixmaps/new.xpm
+	  src/pixmaps/unread.xpm: 元に戻した。
+
+2001-08-07
+
+	* src/address.[ch]:
+	  address_folder_new()
+	  address_group_new()
+	  address_item_new(): 戻り値を AddressObject に変更。
+	  address_build_tree(): file の assertion を出さないようにした。
+	* src/pixmaps/new.xpm
+	  src/pixmaps/unread.xpm: 少し修正。
+
+2001-08-06
+
+	* src/addressbook.c: いくつかのバグを修正。
+
+2001-08-06
+
+	* アドレス帳のロジック部分を別モジュールに分離(現在進行中)。
+	* src/address.[ch]: 新規。アドレス帳のロジック部分を含む。
+	* src/addressbook.[ch]: ロジック部分を削除。
+
+2001-08-04
+
+	* src/textview.c: textview_show_header(): ヘッダ名の後にゴミ文字が
+	  表示されるバグを修正。
+
 2001-08-02
 
 	* src/inc.c: inc_start(): 致命的でないエラーで中断しないようにした。

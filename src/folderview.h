@@ -72,6 +72,7 @@ void folderview_update_msg_num		(FolderView	*folderview,
 					 gint		 total);
 void folderview_update_tree		(Folder		*folder);
 void folderview_update_all		(void);
+void folderview_update_all_node		(void);
 
 void folderview_update_item		(FolderItem	*item,
 					 gboolean	 update_summary);

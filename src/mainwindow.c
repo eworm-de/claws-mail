@@ -75,7 +75,6 @@
 #include "about.h"
 #include "manual.h"
 
-
 #define AC_LABEL_WIDTH	240
 
 #define STATUSBAR_PUSH(mainwin, str) \
@@ -204,7 +203,9 @@ static void toggle_toolbar_cb	 (MainWindow	*mainwin,
 static void toggle_statusbar_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
-static void separate_widget_cb(GtkCheckMenuItem *checkitem, guint action);
+static void separate_widget_cb	(GtkCheckMenuItem *checkitem,
+				 guint action,
+				 GtkWidget *widget);
 
 static void addressbook_open_cb	(MainWindow	*mainwin,
 				 guint		 action,
@@ -593,8 +594,8 @@ MainWindow *main_window_create(SeparateType type)
 	SummaryView *summaryview;
 	MessageView *messageview;
 	GdkColormap *colormap;
-	GdkColor color[4];
-	gboolean success[4];
+	GdkColor color[3];
+	gboolean success[3];
 	guint n_menu_entries;
 	GtkItemFactory *ifactory;
 	GtkWidget *ac_menu;
@@ -717,8 +718,8 @@ MainWindow *main_window_create(SeparateType type)
 	color[3] = folderview->color_op;
 
 	colormap = gdk_window_get_colormap(window->window);
-	gdk_colormap_alloc_colors(colormap, color, 4, FALSE, TRUE, success);
-	for (i = 0; i < 4; i++) {
+	gdk_colormap_alloc_colors(colormap, color, 3, FALSE, TRUE, success);
+	for (i = 0; i < 3; i++) {
 		if (success[i] == FALSE)
 			g_warning(_("MainWindow: color allocation %d failed\n"), i);
 	}
@@ -773,13 +774,13 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_signal_connect(GTK_OBJECT(menuitem), "toggled", GTK_SIGNAL_FUNC(separate_widget_cb), 
 					   GUINT_TO_POINTER(SEPARATE_MESSAGE));
 
-	/*
+
 	menu_set_sensitive(ifactory, "/Summary/Thread view",
 			   prefs_common.enable_thread ? FALSE : TRUE);
 	menu_set_sensitive(ifactory, "/Summary/Unthread view",
 			   prefs_common.enable_thread ? TRUE : FALSE);
-	*/
-	main_window_set_thread_option(mainwin);
+	
+	/*main_window_set_thread_option(mainwin);*/
 
 
 	/* set account selection menu */
@@ -1054,12 +1055,10 @@ void main_window_add_mailbox(MainWindow *mainwin)
 		g_free(path);
 		return;
 	}
-
 	if (!strcmp(path, "Mail"))
 		folder = folder_new(F_MH, _("Mailbox"), path);
 	else
 		folder = folder_new(F_MH, g_basename(path), path);
-
 	g_free(path);
 
 	if (folder->create_tree(folder) < 0) {
@@ -2087,7 +2086,8 @@ static void toggle_statusbar_cb(MainWindow *mainwin, guint action,
 	}
 }
 
-static void separate_widget_cb(GtkCheckMenuItem *checkitem, guint action)
+static void separate_widget_cb(GtkCheckMenuItem *checkitem, guint action, GtkWidget *widget)
+
 {
 	MainWindow *mainwin;
 	SeparateType type;
@@ -2334,7 +2334,7 @@ static void set_charset_cb(MainWindow *mainwin, guint action,
 	debug_print(_("forced charset: %s\n"), str ? str : "Auto-Detect");
 }
 
-void main_window_set_thread_option(MainWindow *mainwin)
+/*void main_window_set_thread_option(MainWindow *mainwin)
 {
 	GtkItemFactory *ifactory;
 	gboolean no_item = FALSE;
@@ -2356,7 +2356,7 @@ void main_window_set_thread_option(MainWindow *mainwin)
 					   "/Summary/Thread view",   FALSE);
 			menu_set_sensitive(ifactory,
 					   "/Summary/Unthread view", TRUE);
-			summary_thread_build(mainwin->summaryview);
+			summary_thread_build(mainwin->summaryview, TRUE);
 		}
 		else {
 			menu_set_sensitive(ifactory,
@@ -2367,29 +2367,31 @@ void main_window_set_thread_option(MainWindow *mainwin)
 		}
 		prefs_folder_item_save_config(mainwin->summaryview->folder_item);
 	}
-}
+}*/
 
 static void thread_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
-	mainwin->summaryview->folder_item->prefs->enable_thread =
+	/*mainwin->summaryview->folder_item->prefs->enable_thread =
 		!mainwin->summaryview->folder_item->prefs->enable_thread;
 	main_window_set_thread_option(mainwin);
+        */
 
-	/*
+        GtkItemFactory *ifactory;
+
+	ifactory = gtk_item_factory_from_widget(widget);
+
 	if (0 == action) {
-		summary_thread_build(mainwin->summaryview);
-		mainwin->summaryview->folder_item->prefs->enable_thread =
-			TRUE;
+		summary_thread_build(mainwin->summaryview, FALSE);
+		prefs_common.enable_thread = TRUE;
 		menu_set_sensitive(ifactory, "/Summary/Thread view",   FALSE);
 		menu_set_sensitive(ifactory, "/Summary/Unthread view", TRUE);
 	} else {
 		summary_unthread(mainwin->summaryview);
-		mainwin->summaryview->folder_item->prefs->enable_thread =
-			FALSE;
+		prefs_common.enable_thread = FALSE;
 		menu_set_sensitive(ifactory, "/Summary/Thread view",   TRUE);
 		menu_set_sensitive(ifactory, "/Summary/Unthread view", FALSE);
 	}
-	*/
+	
 }
 
 static void set_display_item_cb(MainWindow *mainwin, guint action,

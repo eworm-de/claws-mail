@@ -1271,7 +1271,7 @@ static void textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 						fromname = procheader_get_fromname(fromaddress);
 						extract_address(fromaddress);
 						g_message("adding from textview %s <%s>", fromname, fromaddress);
-						addressbook_add_contact_by_menu(NULL, fromname, fromaddress, NULL);
+						addressbook_add_submenu(NULL, fromname, fromaddress, NULL);
 						g_free(fromaddress);
 						g_free(fromname);
 					} else {

@@ -7,7 +7,7 @@ claws-branch (http://sylpheed-claws.sourceforge.net)
 
 	Hoa viet Dinh		<dinh.viet.hoa@free.fr>
 	Match Grun		<match@dimensional.com>
-        Christoph Hohmann       <reboot@gmx.ch>
+	Christoph Hohmann	<reboot@gmx.ch>
 	Alfons Hoogervorst	<alfons@proteus.demon.nl>
 	Darko Koruga		<darko.koruga@hermes.si>
 	Paul Mangan		<claws@thewildbeast.co.uk>
@@ -77,3 +77,4 @@ contributors (beside the above; based on Changelog)
 	Ricardo Mones Lastra
 	Henrik Carlqvist
 	Don Quijote
+	David Looney

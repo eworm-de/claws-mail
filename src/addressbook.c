@@ -3622,10 +3622,10 @@ static void addressbook_group_menu_selected(GtkMenuItem *menuitem,
 
 /* addressbook_add_contact_by_meny() - launches menu with group items. submenu may be
  * the menu item in the parent menu, or NULL for a normal right-click context menu */
-gboolean addressbook_add_contact_by_menu(GtkWidget   *submenu,
-										 const gchar *name, 
-										 const gchar *address, 
-										 const gchar *remarks)
+gboolean addressbook_add_submenu(GtkWidget   *submenu,
+				 const gchar *name,
+				 const gchar *address,
+				 const gchar *remarks)
 {
 	GtkWidget	*menu, *menuitem;
 	GList		*groups, *tmp;

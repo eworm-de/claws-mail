@@ -80,6 +80,8 @@ GtkCTreeNode *gtkut_ctree_node_next	(GtkCTree	*ctree,
 GtkCTreeNode *gtkut_ctree_find_collapsed_parent
 					(GtkCTree	*ctree,
 					 GtkCTreeNode	*node);
+void gtkut_ctree_expand_parent_all	(GtkCTree	*ctree,
+					 GtkCTreeNode	*node);
 void gtkut_ctree_set_focus_row		(GtkCTree	*ctree,
 					 GtkCTreeNode	*node);
 void gtkut_clist_set_focus_row		(GtkCList	*clist,

@@ -1717,9 +1717,9 @@ void mbox_scan_folder(Folder *folder, FolderItem *item)
 			struct _message * msg = (struct _message *) l->data;
 			if (!MSG_IS_REALLY_DELETED(msg->flags))
 				total ++;
-			if (MSG_IS_NEW(msg->flags) && !MSG_IS_IGNORE_THREAD(msg->flags))
+			if (MSG_IS_NEW(msg->flags) /*&& !MSG_IS_IGNORE_THREAD(msg->flags)*/)
 				new ++;
-			if (MSG_IS_UNREAD(msg->flags) && !MSG_IS_IGNORE_THREAD(msg->flags))
+			if (MSG_IS_UNREAD(msg->flags) /*&& !MSG_IS_IGNORE_THREAD(msg->flags)*/)
 				unread ++;
 		}
 		

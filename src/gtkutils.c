@@ -201,6 +201,12 @@ GtkCTreeNode *gtkut_ctree_find_collapsed_parent(GtkCTree *ctree,
 	return NULL;
 }
 
+void gtkut_ctree_expand_parent_all(GtkCTree *ctree, GtkCTreeNode *node)
+{
+	while ((node = gtkut_ctree_find_collapsed_parent(ctree, node)) != NULL)
+		gtk_ctree_expand(ctree, node);
+}
+
 void gtkut_ctree_set_focus_row(GtkCTree *ctree, GtkCTreeNode *node)
 {
 	gtkut_clist_set_focus_row(GTK_CLIST(ctree),

@@ -72,6 +72,8 @@ static struct Receive {
 
 	GtkWidget *checkbtn_chkonstartup;
 	GtkWidget *checkbtn_noerrorpanel;
+	GtkWidget *checkbtn_scan_after_inc;
+
 
 	GtkWidget *spinbtn_maxarticle;
 	GtkObject *spinbtn_maxarticle_adj;
@@ -131,6 +133,8 @@ static struct Display {
 	GtkWidget *chkbtn_swapfrom;
 	GtkWidget *chkbtn_hscrollbar;
 	GtkWidget *chkbtn_useaddrbook;
+	GtkWidget *chkbtn_expand_thread;
+	GtkWidget *chkbtn_bold_unread;
 
 	GtkWidget *entry_datefmt;
 } display;
@@ -250,7 +254,9 @@ static PrefParam param[] = {
 	{"noerrorpanel", "FALSE", &prefs_common.noerrorpanel, P_BOOL,
 	 &receive.checkbtn_noerrorpanel,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-
+	{"scan_all_after_inc", "FALSE", &prefs_common.scan_all_after_inc,
+	 P_BOOL, &receive.checkbtn_scan_after_inc,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"max_news_articles", "300", &prefs_common.max_articles, P_INT,
 	 &receive.spinbtn_maxarticle,
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
@@ -280,6 +286,7 @@ static PrefParam param[] = {
 	{"quote_mark", "> ", &prefs_common.quotemark, P_STRING,
 	 &compose.entry_quotemark, prefs_set_data_from_entry, prefs_set_entry},
 	{"quote_format", "On %d\\n%f wrote:\\n\\n%Q",
+
 	 &prefs_common.quotefmt, P_STRING, &compose.text_quotefmt,
 	 prefs_set_data_from_text, prefs_set_text},
 	{"fw_quote_mark", "> ", &prefs_common.fw_quotemark, P_STRING,
@@ -348,6 +355,7 @@ static PrefParam param[] = {
 	 &display.entry_normalfont, 
 	 prefs_set_data_from_entry, prefs_set_entry},
 
+
 	{"display_folder_unread_num", "TRUE",
 	 &prefs_common.display_folder_unread, P_BOOL,
 	 &display.chkbtn_folder_unread,
@@ -370,11 +378,16 @@ static PrefParam param[] = {
 	{"date_format", "%y/%m/%d(%a) %H:%M", &prefs_common.date_format,
 	 P_STRING, &display.entry_datefmt,
 	 prefs_set_data_from_entry, prefs_set_entry},
+	{"expand_thread", "TRUE", &prefs_common.expand_thread, P_BOOL,
+	 &display.chkbtn_expand_thread,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"bold_unread", "TRUE", &prefs_common.bold_unread, P_BOOL,
+	 &display.chkbtn_bold_unread,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
 
-	/*
 	{"enable_thread", "TRUE", &prefs_common.enable_thread, P_BOOL,
 	 NULL, NULL, NULL},
-	*/
+	
 	{"toolbar_style", "3", &prefs_common.toolbar_style, P_ENUM,
 	 NULL, NULL, NULL},
 	{"show_statusbar", "TRUE", &prefs_common.show_statusbar, P_BOOL,
@@ -552,8 +565,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 
 	{"emulate_emacs", "FALSE", &prefs_common.emulate_emacs, P_BOOL,
-	 &interface.checkbtn_emacs,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
+
 	{"open_unread_on_enter", "FALSE", &prefs_common.open_unread_on_enter,
 	 P_BOOL, &interface.checkbtn_openunread,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -606,7 +619,8 @@ static PrefParam param[] = {
 };
 
 #define VSPACING		12
-#define VSPACING_NARROW		4
+#define VSPACING_NARROW		3
+
 #define VBOX_BORDER		16
 #define DEFAULT_ENTRY_WIDTH	80
 #define PREFSBUFSIZE		1024
@@ -680,6 +694,7 @@ static void display_item_key_pressed	(GtkWidget	*widget,
 					 gboolean	*cancelled);
 
 static void prefs_font_select	(GtkButton *button, GtkEntry *entry);
+
 static void prefs_font_selection_key_pressed	(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gpointer	 data);
@@ -803,6 +818,8 @@ static void prefs_receive_create(void)
 	GtkWidget *label_autochk2;
 	GtkWidget *checkbtn_chkonstartup;
 	GtkWidget *checkbtn_noerrorpanel;
+	GtkWidget *checkbtn_scan_after_inc;
+
 
 	GtkWidget *frame_news;
 	GtkWidget *label_maxarticle;
@@ -838,7 +855,8 @@ static void prefs_receive_create(void)
 	gtk_widget_show (entry_incext);
 	gtk_box_pack_start (GTK_BOX (hbox), entry_incext, TRUE, TRUE, 0);
 
-	button_incext = gtk_button_new_with_label (" ... ");
+	button_incext = gtk_button_new_with_label ("... ");
+
 	gtk_widget_show (button_incext);
 	gtk_box_pack_start (GTK_BOX (hbox), button_incext, FALSE, FALSE, 0);
 
@@ -908,6 +926,9 @@ static void prefs_receive_create(void)
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_noerrorpanel,
 			   _("No error popup on receive error"));
+	PACK_CHECK_BUTTON (vbox2, checkbtn_scan_after_inc,
+			   _("Update all local folders after incorporation"));
+
 
 	PACK_FRAME(vbox1, frame_news, _("News"));
 
@@ -948,6 +969,8 @@ static void prefs_receive_create(void)
 
 	receive.checkbtn_chkonstartup = checkbtn_chkonstartup;
 	receive.checkbtn_noerrorpanel = checkbtn_noerrorpanel;
+	receive.checkbtn_scan_after_inc = checkbtn_scan_after_inc;
+
 
 	receive.spinbtn_maxarticle     = spinbtn_maxarticle;
 	receive.spinbtn_maxarticle_adj = spinbtn_maxarticle_adj;
@@ -1201,6 +1224,7 @@ static void prefs_compose_create(void)
 
 	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *vbox_linewrap;
+
 	GtkWidget *hbox3;
 	GtkWidget *hbox4;
 	GtkWidget *label_linewrap;
@@ -1262,11 +1286,13 @@ static void prefs_compose_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox2), label_quotefmt, FALSE, FALSE, 0);
 
 	btn_quotedesc =
-		gtk_button_new_with_label (_(" Quote format "));
+		gtk_button_new_with_label (_(" Description of symbols "));
+
 	gtk_widget_show (btn_quotedesc);
 	gtk_box_pack_end (GTK_BOX (hbox2), btn_quotedesc, FALSE, FALSE, 0);
 	gtk_signal_connect(GTK_OBJECT(btn_quotedesc), "clicked",
-			   GTK_SIGNAL_FUNC(compose_prefs_fmt_open), &cancelled);
+			   GTK_SIGNAL_FUNC(prefs_quote_description), NULL);
+
 
 	scrolledwin_quotefmt = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (scrolledwin_quotefmt);
@@ -1305,7 +1331,6 @@ static void prefs_compose_create(void)
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox_sig), hbox1, TRUE, TRUE, 0);
-
 	label_sigsep = gtk_label_new (_("Signature separator"));
 	gtk_widget_show (label_sigsep);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_sigsep, FALSE, FALSE, 0);
@@ -1313,6 +1338,7 @@ static void prefs_compose_create(void)
 	entry_sigsep = gtk_entry_new ();
 	gtk_widget_show (entry_sigsep);
 	gtk_box_pack_start (GTK_BOX (hbox1), entry_sigsep, FALSE, FALSE, 0);
+
 	gtk_widget_set_usize (entry_sigsep, 64, -1);
 
 	/* line-wrapping */
@@ -1323,6 +1349,7 @@ static void prefs_compose_create(void)
 	hbox3 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox3);
 	gtk_box_pack_start (GTK_BOX (vbox_linewrap), hbox3, FALSE, FALSE, 0);
+
 
 	label_linewrap = gtk_label_new (_("Wrap messages at"));
 	gtk_widget_show (label_linewrap);
@@ -1450,6 +1477,8 @@ static void prefs_display_create(void)
 	GtkWidget *chkbtn_swapfrom;
 	GtkWidget *chkbtn_hscrollbar;
 	GtkWidget *chkbtn_useaddrbook;
+	GtkWidget *chkbtn_expand_thread;
+	GtkWidget *chkbtn_bold_unread;
 	GtkWidget *hbox1;
 	GtkWidget *label_datefmt;
 	GtkWidget *button_datefmt;
@@ -1466,6 +1495,7 @@ static void prefs_display_create(void)
 	PACK_FRAME(vbox1, frame_font, _("Font"));
 
 	table1 = gtk_table_new (4, 3, FALSE);
+
 	gtk_widget_show (table1);
 	gtk_container_add (GTK_CONTAINER (frame_font), table1);
 	gtk_container_set_border_width (GTK_CONTAINER (table1), 8);
@@ -1483,7 +1513,8 @@ static void prefs_display_create(void)
 	gtk_table_attach (GTK_TABLE (table1), entry_textfont, 1, 2, 0, 1,
 			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
 
-	button_textfont = gtk_button_new_with_label (" ... ");
+	button_textfont = gtk_button_new_with_label ("... ");
+
 	gtk_widget_show (button_textfont);
 	gtk_table_attach (GTK_TABLE (table1), button_textfont, 2, 3, 0, 1,
 			  0, 0, 0, 0);
@@ -1545,7 +1576,7 @@ static void prefs_display_create(void)
 			  0, 0, 0, 0);
 	gtk_signal_connect (GTK_OBJECT(tmpbutton), "clicked",
 				GTK_SIGNAL_FUNC(prefs_font_select), tmpentry);
-	display.entry_boldfont = tmpentry;			  
+	display.entry_boldfont = tmpentry;
 
 	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox2);
@@ -1575,6 +1606,11 @@ static void prefs_display_create(void)
 		 _("Display sender using address book"));
 	PACK_CHECK_BUTTON
 		(vbox2, chkbtn_hscrollbar, _("Enable horizontal scroll bar"));
+	PACK_CHECK_BUTTON
+		(vbox2, chkbtn_expand_thread, _("Expand threads"));
+	PACK_CHECK_BUTTON
+		(vbox2, chkbtn_bold_unread,
+		 _("Display unread messages with bold font"));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -1588,7 +1624,8 @@ static void prefs_display_create(void)
 	gtk_widget_show (entry_datefmt);
 	gtk_box_pack_start (GTK_BOX (hbox1), entry_datefmt, TRUE, TRUE, 0);
 
-	button_datefmt = gtk_button_new_with_label (_("... "));
+	button_datefmt = gtk_button_new_with_label ("... ");
+
 	gtk_widget_show (button_datefmt);
 	gtk_box_pack_start (GTK_BOX (hbox1), button_datefmt, FALSE, FALSE, 0);
 	gtk_signal_connect (GTK_OBJECT (button_datefmt), "clicked",
@@ -1617,10 +1654,12 @@ static void prefs_display_create(void)
 	display.chkbtn_folder_unread = chkbtn_folder_unread;
 	display.chkbtn_transhdr   = chkbtn_transhdr;
 
-	display.chkbtn_swapfrom    = chkbtn_swapfrom;
-	display.chkbtn_hscrollbar  = chkbtn_hscrollbar;
-	display.chkbtn_useaddrbook = chkbtn_useaddrbook;
-	display.entry_datefmt      = entry_datefmt;
+	display.chkbtn_swapfrom      = chkbtn_swapfrom;
+	display.chkbtn_hscrollbar    = chkbtn_hscrollbar;
+	display.chkbtn_expand_thread = chkbtn_expand_thread;
+	display.chkbtn_bold_unread   = chkbtn_bold_unread;
+	display.chkbtn_useaddrbook   = chkbtn_useaddrbook;
+	display.entry_datefmt        = entry_datefmt;
 }
 
 static void prefs_message_create(void)
@@ -1974,6 +2013,7 @@ static void prefs_interface_create(void)
 		(vbox2, checkbtn_addaddrbyclick,
 		 _("Add address to destination when double-clicked"));
 
+
 	/* Receive Dialog */
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
@@ -2206,7 +2246,8 @@ static void date_format_select_row(GtkWidget *date_format_list, gint row,
 	GtkWidget *datefmt_sample;
 
 	/* only on double click */
-	if (!event ||event->type != GDK_2BUTTON_PRESS) return;
+	if (!event || event->type != GDK_2BUTTON_PRESS) return;
+
 
 	datefmt_sample = GTK_WIDGET(gtk_object_get_data
 				    (GTK_OBJECT(date_format), "datefmt_sample"));
@@ -2305,6 +2346,7 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	gtk_widget_show(datefmt_clist);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow1), datefmt_clist);
 /*	gtk_clist_set_column_width(GTK_CLIST(datefmt_clist), 0, 80);   */
+
 	gtk_clist_set_selection_mode(GTK_CLIST(datefmt_clist),
 				     GTK_SELECTION_BROWSE);
 
@@ -2443,6 +2485,7 @@ static void prefs_quote_colors_dialog_create(void)
 	gtk_container_set_border_width (GTK_CONTAINER (table), 8);
 	gtk_table_set_row_spacings (GTK_TABLE (table), 2);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 5);
+
 
 	color_buttons.quote_level1_btn = gtk_button_new();
 	gtk_table_attach (GTK_TABLE (table), color_buttons.quote_level1_btn,
@@ -3016,6 +3059,7 @@ static void prefs_font_selection_ok(GtkButton *button, GtkEntry *entry)
 
 	if (fontname) {
 		gtk_entry_set_text(entry, fontname);
+
 		g_free(fontname);
 	}
 

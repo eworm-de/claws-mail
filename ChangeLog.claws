@@ -1,3 +1,33 @@
+2001-08-16 [paul]
+
+	* configure.in
+		change to version 0.5.3claws
+
+	* src/folder.h, src/folderview.[ch], src/gtkutils.[ch],
+	  src/inc.[ch], src/mainwindow.c, src/pop.c, src/prefs_account.c,
+	  src/prefs_common.[ch], src/summaryview.[ch], src/textview.c, src/utils.c
+
+		sync with sylpheed 0.5.3 release, but keep claws method of
+		configuring/saving fonts
+
+	* src/addressbook.[ch]
+		rename addressbook_add_contact_by_menu() to addressbook_add_submenu()
+		in line with a similar change in Hiroyuki's branch
+
+	* src/mainwindow.[ch]
+		disable main_window_set_thread_option()
+	* src/prefs_folder_item.c
+		comment out &tmps_prefs.enable_thread,
+	* src/mbox_folder.c, src/procmsg.[ch]
+		comment out MSG_IS_IGNORE_THREAD
+	* src/summaryview.c
+		comment out summary_ignore_thread() and summary_unignore_thread()
+		comment out MSG_IS_IGNORE_THREAD
+
+                use Hiroyuki's threading instead.
+
+
+
 2001-08-15 [paul]
 
 	* src/account.c

@@ -91,6 +91,9 @@ static GList *folderview_list = NULL;
 static GdkFont *normalfont;
 static GdkFont *boldfont;
 
+static GtkStyle *bold_style;
+static GtkStyle *bold_color_style;
+
 static GdkPixmap *inboxxpm;
 static GdkBitmap *inboxxpmmask;
 static GdkPixmap *outboxxpm;
@@ -429,6 +432,13 @@ void folderview_init(FolderView *folderview)
 		normalfont = gdk_fontset_load(NORMAL_FONT);
 	if (!boldfont)
 		boldfont = gdk_fontset_load(BOLD_FONT);
+
+	if (!bold_style) {
+		bold_style = gtk_style_copy(gtk_widget_get_style(ctree));
+		bold_style->font = boldfont;
+		bold_color_style = gtk_style_copy(bold_style);
+		bold_color_style->fg[GTK_STATE_NORMAL] = folderview->color_new;
+	}
 }
 
 void folderview_set(FolderView *folderview)
@@ -493,9 +503,7 @@ static void folderview_select_node(FolderView *folderview, GtkCTreeNode *node)
 	else
 		gtk_widget_grab_focus(folderview->ctree);
 
-	while ((node = gtkut_ctree_find_collapsed_parent(ctree, node))
-	       != NULL)
-		gtk_ctree_expand(ctree, node);
+	gtkut_ctree_expand_parent_all(ctree, node);
 }
 
 void folderview_unselect(FolderView *folderview)
@@ -587,8 +595,7 @@ static void folderview_scan_tree_func(Folder *folder, FolderItem *item,
 	GList *list;
 	gchar *rootpath;
 
-	if (folder->type == F_MH || folder->type == F_MBOX ||
-	    folder->type == F_MAILDIR)
+	if (FOLDER_IS_LOCAL(folder))
 		rootpath = LOCAL_FOLDER(folder)->rootpath;
 	else if (folder->type == F_IMAP && folder->account &&
 		 folder->account->recv_server)
@@ -677,7 +684,37 @@ void folderview_update_all(void)
 
 	folder_write_list();
 	folderview_set_all();
+	gtk_widget_destroy(window);
+}
 
+void folderview_update_all_node(void)
+{
+	GList *list;
+	FolderItem *item;
+	FolderView *folderview;
+	GtkCTree *ctree;
+	GtkCTreeNode *node;
+	GtkWidget *window;
+
+	window = label_window_create(_("Updating all folders..."));
+
+	for (list = folderview_list; list != NULL; list = list->next) {
+		folderview = (FolderView *)list->data;
+		ctree = GTK_CTREE(folderview->ctree);
+
+		for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+		     node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
+			item = gtk_ctree_node_get_row_data(ctree, node);
+			if (!item || !FOLDER_IS_LOCAL(item->folder) ||
+			    !item->path)
+				continue;
+			folderview_scan_tree_func(item->folder, item, NULL);
+			folder_item_scan(item);
+			folderview_update_node(folderview, node);
+		}
+	}
+
+	folder_write_list();
 	gtk_widget_destroy(window);
 }
 
@@ -906,29 +943,15 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 			 folderview_have_new_children(folderview, node));
 	}
 
-	if (use_bold && boldfont)
-		style->font = boldfont;
-	else
-		style->font = normalfont;
+	gtk_ctree_node_set_foreground(ctree, node, NULL);
 
-	if (use_color) {
-		style->fg[GTK_STATE_NORMAL]   = folderview->color_new;
-		style->fg[GTK_STATE_SELECTED] = folderview->color_new;
-	} else {
-		if (item->op_count > 0) {
-			if (boldfont)
-				style->font = boldfont;
-			style->fg[GTK_STATE_NORMAL]   =
-				folderview->color_op;
-			style->fg[GTK_STATE_SELECTED] =
-				folderview->color_op;
-		} else {
-			style->fg[GTK_STATE_NORMAL] =
-				ctree_style->fg[GTK_STATE_NORMAL];
-			style->fg[GTK_STATE_SELECTED] =
-				ctree_style->fg[GTK_STATE_SELECTED];
-		}
-	}
+	if (use_bold && use_color)
+		style = bold_color_style;
+	else if (use_bold)
+		style = bold_style;
+	else if (use_color)
+		gtk_ctree_node_set_foreground(ctree, node,
+					      &folderview->color_new);
 
 	gtk_ctree_node_set_row_style(ctree, node, style);
 
@@ -1194,19 +1217,19 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	menu_set_insensitive_all(GTK_MENU_SHELL(folderview->news_popup));
 	menu_set_insensitive_all(GTK_MENU_SHELL(folderview->mbox_popup));
 
-	if (folder->type == F_MH && item->parent == NULL) {
+	if (FOLDER_IS_LOCAL(folder) && item->parent == NULL) {
 		menu_set_sensitive(folderview->mail_factory,
 				   "/Create new folder...", TRUE);
 		menu_set_sensitive(folderview->mail_factory,
 				   "/Update folder tree", TRUE);
 		menu_set_sensitive(folderview->mail_factory,
 				   "/Remove mailbox", TRUE);
-	} else if (folder->type == F_MH && item->stype != F_NORMAL) {
+	} else if (FOLDER_IS_LOCAL(folder) && item->stype != F_NORMAL) {
 		menu_set_sensitive(folderview->mail_factory,
 				   "/Create new folder...", TRUE);
 		menu_set_sensitive(folderview->mail_factory,
 				   "/Scoring...", TRUE);
-	} else if (folder->type == F_MH) {
+	} else if (FOLDER_IS_LOCAL(folder)) {
 		menu_set_sensitive(folderview->mail_factory,
 				   "/Create new folder...", TRUE);
 		menu_set_sensitive(folderview->mail_factory,
@@ -1268,7 +1291,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 				   "/Scoring...", TRUE);
 	}
 
-	if (folder->type == F_MH)
+	if (FOLDER_IS_LOCAL(folder))
 		gtk_menu_popup(GTK_MENU(folderview->mail_popup), NULL, NULL,
 			       NULL, NULL, event->button, event->time);
 	else if (folder->type == F_IMAP)
@@ -1379,7 +1402,6 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 	folderview->open_folder = FALSE;
 	can_select = TRUE;
-
 }
 
 static void folderview_tree_expanded(GtkCTree *ctree, GtkCTreeNode *node,

@@ -44,6 +44,10 @@ typedef struct _FolderItem	FolderItem;
 #define LOCAL_FOLDER(obj)	((LocalFolder *)obj)
 #define REMOTE_FOLDER(obj)	((RemoteFolder *)obj)
 
+#define FOLDER_IS_LOCAL(obj)	(FOLDER_TYPE(obj) == F_MH      || \
+				 FOLDER_TYPE(obj) == F_MBOX    || \
+				 FOLDER_TYPE(obj) == F_MAILDIR)
+
 #define MH_FOLDER(obj)		((MHFolder *)obj)
 #define MBOX_FOLDER(obj)	((MboxFolder *)obj)
 #define MAILDIR_FOLDER(obj)	((MaildirFolder *)obj)

@@ -40,6 +40,8 @@ typedef struct _Pop3State		Pop3State;
 typedef enum
 {
 	INC_SUCCESS,
+	INC_CONNECT_ERROR,
+	INC_AUTH_FAILED,
 	INC_ERROR,
 	INC_NOSPACE,
 	INC_CANCEL

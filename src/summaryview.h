@@ -168,7 +168,8 @@ void summary_select_prev_marked   (SummaryView		*summaryview);
 void summary_select_by_msgnum	  (SummaryView		*summaryview,
 				   guint		 msgnum);
 guint summary_get_current_msgnum  (SummaryView		*summaryview);
-void summary_thread_build	  (SummaryView		*summaryview);
+void summary_thread_build	  (SummaryView		*summaryview,
+				   gboolean		init);
 void summary_unthread		  (SummaryView		*summaryview);
 void summary_filter		  (SummaryView		*summaryview);
 void summary_sort		  (SummaryView		*summaryview,

@@ -184,9 +184,9 @@ GList *addressbook_get_group_list (void);
 gint addressbook_add_contact  (const gchar *group, const gchar *name, 
                                const gchar *address, const gchar *remarks); 
 
-gboolean addressbook_add_contact_by_menu(GtkWidget   *submenu,
-					 const gchar *name, 
-					 const gchar *address, 
-					 const gchar *remarks);
+gboolean addressbook_add_submenu(GtkWidget   *submenu,
+				 const gchar *name,
+				 const gchar *address,
+				 const gchar *remarks);
 
 #endif /* __ADDRESSBOOK_H__ */

@@ -47,6 +47,7 @@ struct _PrefsCommon
 	gboolean inc_local;
 	gboolean filter_on_inc;
 	gchar *spool_path;
+	gboolean scan_all_after_inc;
 	gboolean autochk_newmail;
 	gint autochk_itv;
 	gboolean chk_on_startup;
@@ -82,15 +83,17 @@ struct _PrefsCommon
 	/* Display */
 	gchar *widgetfont;
 	gchar *textfont;
-	gchar *smallfont;
-	gchar *boldfont;
 	gchar *normalfont;
+	gchar *boldfont;
+	gchar *smallfont;
 	gboolean display_folder_unread;
 	ToolbarStyle toolbar_style;
 	gboolean show_statusbar;
 	gboolean trans_hdr;
-	/* gboolean enable_thread; */
+	gboolean enable_thread;
 	gboolean enable_hscrollbar;
+	gboolean expand_thread;
+	gboolean bold_unread;
 	gboolean swap_from;
 	gboolean use_addr_book;
 	gchar *date_format;

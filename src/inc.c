@@ -120,6 +120,8 @@ static void inc_finished(MainWindow *mainwin)
 {
 	FolderItem *item;
 
+	if (prefs_common.scan_all_after_inc)
+		folderview_update_all_node();
 	/* XXX: major problems right here. if we change marks after
 	 * incorporation of mail, folderview_select() rewrites it
 	 * right under our nose. folderview_select() eventually
@@ -136,6 +138,7 @@ static void inc_finished(MainWindow *mainwin)
 	mainwin->summaryview->filtering_happened = TRUE;
 
 	/* XXX: filtering_happened is reset by summary_show() */
+
 
 	if (prefs_common.open_inbox_on_inc) {
 		item = cur_account && cur_account->inbox
@@ -225,6 +228,7 @@ void inc_all_account_mail(MainWindow *mainwin)
 
 	list = account_get_list();
 	if (!list) {
+		inc_finished(mainwin);
 		inc_autocheck_timer_set();
 		return;
 	}
@@ -241,6 +245,7 @@ void inc_all_account_mail(MainWindow *mainwin)
 	}
 
 	if (!queue_list) {
+		inc_finished(mainwin);
 		inc_autocheck_timer_set();
 		return;
 	}
@@ -445,12 +450,22 @@ static void inc_start(IncProgressDialog *inc_dialog)
 		/* begin POP3 session */
 		inc_state = inc_pop3_session_do(session);
 
-		if (inc_state == INC_SUCCESS || inc_state == INC_CANCEL) {
+		if (inc_state == INC_SUCCESS) {
 			gtk_clist_set_pixmap(clist, num, 0, okxpm, okxpmmask);
 			gtk_clist_set_text(clist, num, 2, _("Done"));
+		} else if (inc_state == INC_CANCEL) {
+			gtk_clist_set_pixmap(clist, num, 0, okxpm, okxpmmask);
+			gtk_clist_set_text(clist, num, 2, _("Cancelled"));
 		} else {
 			gtk_clist_set_pixmap(clist, num, 0, errorxpm, errorxpmmask);
-			gtk_clist_set_text(clist, num, 2, _("Error"));
+			if (inc_state == INC_CONNECT_ERROR)
+				gtk_clist_set_text(clist, num, 2,
+						   _("Connection failed"));
+			else if (inc_state == INC_AUTH_FAILED)
+				gtk_clist_set_text(clist, num, 2,
+						   _("Auth failed"));
+			else
+				gtk_clist_set_text(clist, num, 2, _("Error"));
 		}
 
 		if (pop3_state->error_val == PS_AUTHFAIL) {
@@ -472,8 +487,11 @@ static void inc_start(IncProgressDialog *inc_dialog)
 			manage_window_focus_in(inc_dialog->mainwin->window, NULL, NULL);
 		}
 		
-		folder_item_scan_foreach(pop3_state->folder_table);
-		folderview_update_item_foreach(pop3_state->folder_table);
+		if (!prefs_common.scan_all_after_inc) {
+			folder_item_scan_foreach(pop3_state->folder_table);
+			folderview_update_item_foreach
+				(pop3_state->folder_table);
+		}
 
 		if (pop3_state->error_val == PS_AUTHFAIL &&
 		    pop3_state->ac_prefs->tmp_pass) {
@@ -483,7 +501,7 @@ static void inc_start(IncProgressDialog *inc_dialog)
 
 		inc_write_uidl_list(pop3_state);
 
-		if (inc_state != INC_SUCCESS) {
+		if (inc_state != INC_SUCCESS && inc_state != INC_CANCEL) {
 			error_num++;
 			if (inc_state == INC_NOSPACE) {
 				inc_put_error(inc_state);
@@ -498,9 +516,10 @@ static void inc_start(IncProgressDialog *inc_dialog)
 		num++;
 	}
 
-	if(!prefs_common.noerrorpanel) {
-		if (error_num)
-			alertpanel_error(_("Some errors occured while getting mail."));
+	if (error_num) {
+		manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
+		alertpanel_error(_("Some errors occured while getting mail."));
+		manage_window_focus_out(inc_dialog->dialog->window, NULL, NULL);
 	}
 
 	while (inc_dialog->queue_list != NULL) {
@@ -597,7 +616,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 		pop3_automaton_terminate(NULL, atm);
 		automaton_destroy(atm);
 
-		return INC_ERROR;
+		return INC_CONNECT_ERROR;
 	}
 
 	/* :WK: Hmmm, with the later sock_gdk_input, we have 2 references
@@ -611,12 +630,13 @@ static IncState inc_pop3_session_do(IncSession *session)
 			pop3_automaton_terminate(NULL, atm);
 			automaton_destroy(atm);
 			
-			return INC_ERROR;
+			return INC_CONNECT_ERROR;
 		}
 	} else {
 		sockinfo->ssl = NULL;
 	}
 #endif
+
 
 	recv_set_ui_func(inc_pop3_recv_func, session);
 
@@ -1032,12 +1052,14 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 	unlock_mbox(mbox, lockfd, LOCK_FLOCK);
 
 	if (folder_table) {
+		if (!prefs_common.scan_all_after_inc) {
 		g_hash_table_insert(folder_table, dest,
 				    GINT_TO_POINTER(1));
-		folder_item_scan_foreach(folder_table);
-		folderview_update_item_foreach(folder_table);
+			folder_item_scan_foreach(folder_table);
+			folderview_update_item_foreach(folder_table);
+		}
 		g_hash_table_destroy(folder_table);
-	} else {
+	} else if (!prefs_common.scan_all_after_inc) {
 		folder_item_scan(dest);
 		folderview_update_item(dest, FALSE);
 	}

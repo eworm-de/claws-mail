@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,6 +97,7 @@ gint pop3_getauth_pass_recv(SockInfo *sock, gpointer data)
 	else {
 		log_warning(_("error occurred on authentication\n"));
 		state->error_val = PS_AUTHFAIL;
+		state->inc_state = INC_AUTH_FAILED;
 		return -1;
 	}
 }
@@ -144,6 +145,7 @@ gint pop3_getauth_apop_recv(SockInfo *sock, gpointer data)
 	else {
 		log_warning(_("error occurred on authentication\n"));
 		state->error_val = PS_AUTHFAIL;
+		state->inc_state = INC_AUTH_FAILED;
 		return -1;
 	}
 }
@@ -299,12 +301,12 @@ gint pop3_getsize_list_recv(SockInfo *sock, gpointer data)
 		gint num, size;
 
 		if (buf[0] == '.') break;
-		if (sscanf(buf, "%d %d", &num, &size) != 2)
+		if (sscanf(buf, "%u %u", &num, &size) != 2)
 			break;
 
-		if (num <= state->count)
+		if (num > 0 && num <= state->count)
 			state->sizes[num] = size;
-		if (num < state->cur_msg)
+		if (num > 0 && num < state->cur_msg)
 			state->cur_total_bytes += size;
 	}
 

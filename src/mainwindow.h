@@ -149,6 +149,6 @@ void main_window_set_toolbar_sensitive	(MainWindow	*mainwin,
 void main_window_set_menu_sensitive	(MainWindow	*mainwin,
 					 gint		 selection);
 void main_window_popup			(MainWindow	*mainwin);
-void main_window_set_thread_option      (MainWindow *mainwin);
+/*void main_window_set_thread_option      (MainWindow *mainwin);*/
 
 #endif /* __MAINWINDOW_H__ */

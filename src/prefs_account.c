@@ -387,7 +387,7 @@ static gint prefs_account_apply			(void);
 static void prefs_account_cancel		(void);
 
 #define VSPACING		12
-#define VSPACING_NARROW		4
+#define VSPACING_NARROW		3
 #define BOX_BORDER		16
 #define DEFAULT_ENTRY_WIDTH	80
 

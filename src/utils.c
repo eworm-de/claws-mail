@@ -135,7 +135,7 @@ gchar *itos(gint n)
 
 gchar *to_human_readable(off_t size)
 {
-	static gchar str[9];
+	static gchar str[10];
 	gint count;
 	guint32 div = 1;
 
@@ -150,10 +150,10 @@ gchar *to_human_readable(off_t size)
 	case 0: g_snprintf(str, sizeof(str), "%dB",    (gint)size);   break;
 	case 1: g_snprintf(str, sizeof(str), "%.1fKB", (gfloat)size / div);
 		break;
-	case 2: g_snprintf(str, sizeof(str), "%.1fMB", (gfloat)size / div);
+	case 2: g_snprintf(str, sizeof(str), "%.2fMB", (gfloat)size / div);
 		break;
 	default:
-		g_snprintf(str, sizeof(str), "%.1fGB", (gfloat)size / div);
+		g_snprintf(str, sizeof(str), "%.2fGB", (gfloat)size / div);
 		break;
 	}
 
