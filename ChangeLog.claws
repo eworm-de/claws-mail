@@ -37,7 +37,7 @@
 		o don't set ignore thread flag in procmsg_get_thread_tree
 		  if it is already set
 	* src/mainwindow.c
-	* src/shttps://sourceforge.net/account/login.phptatusbar.h
+	* src/statusbar.h
 		o moved STATUSBAR_PUSH/POP to statusbar.h because
 		  they are used in different files
 
