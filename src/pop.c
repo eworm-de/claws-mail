@@ -645,7 +645,7 @@ static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 				ok = PS_AUTHFAIL;
 				break;
 			default:
-				log_warning(_("error occured on POP3 session\n"));
+				log_warning(_("error occurred on POP3 session\n"));
 				ok = PS_ERROR;
 			}
 		}

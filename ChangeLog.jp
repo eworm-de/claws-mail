@@ -1,3 +1,10 @@
+2003-04-14
+
+	* src/compose.c: compose_parse_header(): 再編集時に不要な改行が含ま
+	  れるバグを修正。
+	* src/imap.c
+	  src/pop.c: 'occured' という typo を修正。
+
 2003-04-11
 
 	* src/compose.[ch]: アカウント変更時の自動署名切り替えを実装。

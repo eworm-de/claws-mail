@@ -1045,7 +1045,7 @@ static GSList *imap_parse_list(Folder *folder, IMAPSession *session,
 
 	for (;;) {
 		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) <= 0) {
-			log_warning(_("error occured while getting LIST.\n"));
+			log_warning(_("error occurred while getting LIST.\n"));
 			break;
 		}
 		strretchomp(buf);

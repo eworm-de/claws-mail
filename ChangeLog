@@ -1,3 +1,10 @@
+2003-04-14
+
+	* src/compose.c: compose_parse_header(): fixed a bug that unnecessary
+	  linebreaks were included on reediting.
+	* src/imap.c
+	  src/pop.c: fixed typos: 'occured'.
+
 2003-04-11
 
 	* src/compose.[ch]: implemented auto signature replacement on

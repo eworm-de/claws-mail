@@ -1490,11 +1490,11 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 {
 	static HeaderEntry hentry[] = {{"Reply-To:",	NULL, TRUE},
-				       {"Cc:",		NULL, FALSE},
+				       {"Cc:",		NULL, TRUE},
 				       {"References:",	NULL, FALSE},
-				       {"Bcc:",		NULL, FALSE},
-				       {"Newsgroups:",	NULL, FALSE},
-				       {"Followup-To:",	NULL, FALSE},
+				       {"Bcc:",		NULL, TRUE},
+				       {"Newsgroups:",  NULL, TRUE},
+				       {"Followup-To:", NULL, TRUE},
 				       {"List-Post:",	NULL, FALSE},
 				       {"X-Priority:",	NULL, FALSE},
 				       {NULL,		NULL, FALSE}};
