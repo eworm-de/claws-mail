@@ -94,6 +94,7 @@
 
 #include "addrselect.h"
 #include "addrclip.h"
+#include "addrgather.h"
 
 typedef enum
 {
@@ -3920,6 +3921,38 @@ static void addressbook_import_mutt_cb() {
 				invalidate_address_completion();
 			}
 		}
+	}
+}
+
+/*
+* Gather addresses.
+* Enter: folderItem Folder to import.
+*/
+void addressbook_gather( FolderItem *folderItem ) {
+	AddressDataSource *ds = NULL;
+	AdapterDSource *ads = NULL;
+	AddressBookFile *abf = NULL;
+	AdapterInterface *adapter;
+	GtkCTreeNode *newNode;
+
+	abf = addrgather_dlg_execute( folderItem, _addressIndex_ );
+	if( abf ) {
+		ds = addrindex_index_add_datasource(
+			_addressIndex_, ADDR_IF_BOOK, abf );
+
+		adapter = addrbookctl_find_interface( ADDR_IF_BOOK );
+		if( adapter ) {
+			if( adapter->treeNode ) {
+				ads = addressbook_create_ds_adapter(
+					ds, ADDR_BOOK, addrbook_get_name( abf ) );
+				newNode = addressbook_add_object(
+						adapter->treeNode,
+						ADDRESS_OBJECT(ads) );
+			}
+		}
+
+		/* Notify address completion */
+		invalidate_address_completion();
 	}
 }
 

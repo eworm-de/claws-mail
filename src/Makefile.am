@@ -64,6 +64,8 @@ sylpheed_SOURCES = \
 	editldap.c editldap.h \
 	editldap_basedn.c editldap_basedn.h \
 	addressadd.c addressadd.h \
+	addrharvest.c addrharvest.h \
+	addrgather.c addrgather.h \
 	filesel.c filesel.h \
 	foldersel.c foldersel.h \
 	statusbar.c statusbar.h \

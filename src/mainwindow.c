@@ -457,6 +457,10 @@ static void key_pressed (GtkWidget *widget,
 
 static void set_toolbar_style(MainWindow *mainwin);
 
+static void addr_gather_cb	 ( MainWindow  *mainwin,
+				   guint       action,
+				   GtkWidget   *widget );
+
 #define  SEPARATE_ACTION  667
 
 static GtkItemFactoryEntry mainwin_entries[] =
@@ -473,6 +477,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File/_Import mbox file..."),	NULL, import_mbox_cb, 0, NULL},
 	{N_("/_File/_Export to mbox file..."),	NULL, export_mbox_cb, 0, NULL},
 	{N_("/_File/Empty _trash"),		"<shift>D", empty_trash_cb, 0, NULL},
+	{N_("/_File/_Gather addresses..."),	NULL, addr_gather_cb, 0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Save as..."),		"<control>S", save_as_cb, 0, NULL},
 	{N_("/_File/_Print..."),		NULL, print_cb, 0, NULL},
@@ -1548,6 +1553,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/File/Import mbox file..."   , M_UNLOCKED},
 		{"/File/Export to mbox file...", M_UNLOCKED},
 		{"/File/Empty trash"           , M_UNLOCKED},
+		{"/File/Gather addresses...", M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/File/Save as...", M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/File/Print..."  , M_TARGET_EXIST|M_UNLOCKED},
 		/* {"/File/Close", M_UNLOCKED}, */
@@ -3088,4 +3094,15 @@ static void set_toolbar_style(MainWindow *mainwin)
 			gtk_widget_show(mainwin->exec_btn);
 	}
 }
+
+static void addr_gather_cb( MainWindow *mainwin,
+			    guint action,
+			    GtkWidget *widget )
+{
+	addressbook_gather( mainwin->summaryview->folder_item );
+}
+
+/*
+* End of Source.
+*/
 
