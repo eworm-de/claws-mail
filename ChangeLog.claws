@@ -1,3 +1,8 @@
+2002-09-10 [paul]	0.8.2claws34
+
+	* sync with 0.8.2cvs13
+		see ChangeLog 2002-09-10
+
 2002-09-10 [christoph]	0.8.2claws33
 
 	* src/msgcache.c

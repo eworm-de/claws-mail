@@ -3,6 +3,8 @@
 	* src/summaryview.c: summary_show(): open_inbox_on_inc がセット
 	  されていてもリフレッシュするようにした(サマリのリフレッシュの
 	  問題を防ぐため)。
+	* src/imap.c: remove*_numbered_files() を呼ぶ前にディレクトリの
+	  存在をチェックして警告を除去。
 
 2002-09-06
 
