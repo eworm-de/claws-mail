@@ -50,11 +50,10 @@ typedef enum
 } DummyEnum;
 
 void prefs_read_config(PrefParam *param, const gchar *label,
-		       const gchar *rcfile)
+		       const gchar *rcfile, const gchar *encoding)
 {
 	FILE *fp;
 	gchar buf[PREFSBUFSIZE];
-	gchar *rcpath;
 	gchar *block_label;
 
 	g_return_if_fail(param != NULL);
@@ -65,13 +64,10 @@ void prefs_read_config(PrefParam *param, const gchar *label,
 
 	prefs_set_default(param);
 
-	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, rcfile, NULL);
-	if ((fp = fopen(rcpath, "rb")) == NULL) {
-		if (ENOENT != errno) FILE_OP_ERROR(rcpath, "fopen");
-		g_free(rcpath);
+	if ((fp = fopen(rcfile, "rb")) == NULL) {
+		if (ENOENT != errno) FILE_OP_ERROR(rcfile, "fopen");
 		return;
 	}
-	g_free(rcpath);
 
 	block_label = g_strdup_printf("[%s]", label);
 
@@ -79,7 +75,18 @@ void prefs_read_config(PrefParam *param, const gchar *label,
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		gint val;
 
-		val = strncmp(buf, block_label, strlen(block_label));
+		if (encoding) {
+			gchar *conv_str;
+
+			conv_str = conv_codeset_strdup
+				(buf, encoding, CS_INTERNAL);
+			if (!conv_str)
+				conv_str = g_strdup(buf);
+			val = strncmp
+				(conv_str, block_label, strlen(block_label));
+			g_free(conv_str);
+		} else
+			val = strncmp(buf, block_label, strlen(block_label));
 		if (val == 0) {
 			debug_print("Found %s\n", block_label);
 			break;
@@ -92,7 +99,17 @@ void prefs_read_config(PrefParam *param, const gchar *label,
 		/* reached next block */
 		if (buf[0] == '[') break;
 
-		prefs_config_parse_one_line(param, buf);
+		if (encoding) {
+			gchar *conv_str;
+
+			conv_str = conv_codeset_strdup
+				(buf, encoding, CS_INTERNAL);
+			if (!conv_str)
+				conv_str = g_strdup(buf);
+			prefs_config_parse_one_line(param, conv_str);
+			g_free(conv_str);
+		} else
+			prefs_config_parse_one_line(param, buf);
 	}
 
 	debug_print("Finished reading configuration.\n");
@@ -122,7 +139,7 @@ void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 
 			tmp = *value ?
 				conv_codeset_strdup(value,
-						    conv_get_current_charset_str(),
+						    conv_get_locale_charset_str(),
 						    CS_UTF_8)
 				: g_strdup("");
 			if (!tmp) {
@@ -275,7 +292,7 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 			if (*((gchar **)param[i].data)) {
 				tmp = conv_codeset_strdup(*((gchar **)param[i].data),
 							  CS_UTF_8,
-							  conv_get_current_charset_str());
+							  conv_get_locale_charset_str());
 				if (!tmp)
 					tmp = g_strdup(*((gchar **)param[i].data));
 			}
@@ -365,7 +382,7 @@ void prefs_set_default(PrefParam *param)
 					envstr = g_getenv(param[i].defval + 4);
 					tmp = envstr && *envstr ?
 						conv_codeset_strdup(envstr,
-								    conv_get_current_charset_str(),
+								    conv_get_locale_charset_str(),
 								    CS_UTF_8)
 						: g_strdup("");
 					if (!tmp) {

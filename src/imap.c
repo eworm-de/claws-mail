@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3366,24 +3366,6 @@ static void imap_path_separator_subst(gchar *str, gchar separator)
 
 static gchar *imap_modified_utf7_to_utf8(const gchar *mutf7_str)
 {
-#if !HAVE_ICONV
-	const gchar *from_p;
-	gchar *to, *to_p;
-
-	to = g_malloc(strlen(mutf7_str) + 1);
-	to_p = to;
-
-	for (from_p = mutf7_str; *from_p != '\0'; from_p++) {
-		if (*from_p == '&' && *(from_p + 1) == '-') {
-			*to_p++ = '&';
-			from_p++;
-		} else
-			*to_p++ = *from_p;
-	}
-	*to_p = '\0';
-
-	return to;
-#else
 	static iconv_t cd = (iconv_t)-1;
 	static gboolean iconv_ok = TRUE;
 	GString *norm_utf7;
@@ -3397,14 +3379,16 @@ static gchar *imap_modified_utf7_to_utf8(const gchar *mutf7_str)
 	if (!iconv_ok) return g_strdup(mutf7_str);
 
 	if (cd == (iconv_t)-1) {
-		cd = iconv_open(conv_get_current_charset_str(), CS_UTF_8);
+		cd = iconv_open(CS_INTERNAL, CS_UTF_7);
 		if (cd == (iconv_t)-1) {
-			g_warning(_("iconv cannot convert UTF-7 to UTF-8\n"));
+			g_warning("iconv cannot convert UTF-7 to %s\n",
+				  CS_INTERNAL);
 			iconv_ok = FALSE;
 			return g_strdup(mutf7_str);
 		}
 	}
 
+	/* modified UTF-7 to normal UTF-7 conversion */
 	norm_utf7 = g_string_new(NULL);
 
 	for (p = mutf7_str; *p != '\0'; p++) {
@@ -3436,7 +3420,8 @@ static gchar *imap_modified_utf7_to_utf8(const gchar *mutf7_str)
 
 	if (iconv(cd, (ICONV_CONST gchar **)&norm_utf7_p, &norm_utf7_len,
 		  &to_p, &to_len) == -1) {
-		g_warning(_("iconv cannot convert UTF-7 to UTF-8\n"));
+		g_warning(_("iconv cannot convert UTF-7 to %s\n"),
+			  conv_get_locale_charset_str());
 		g_string_free(norm_utf7, TRUE);
 		g_free(to_str);
 		return g_strdup(mutf7_str);
@@ -3448,29 +3433,10 @@ static gchar *imap_modified_utf7_to_utf8(const gchar *mutf7_str)
 	*to_p = '\0';
 
 	return to_str;
-#endif /* !HAVE_ICONV */
 }
 
 static gchar *imap_utf8_to_modified_utf7(const gchar *from)
 {
-#if !HAVE_ICONV
-	const gchar *from_p;
-	gchar *to, *to_p;
-
-	to = g_malloc(strlen(from) * 2 + 1);
-	to_p = to;
-
-	for (from_p = from; *from_p != '\0'; from_p++) {
-		if (*from_p == '&') {
-			*to_p++ = '&';
-			*to_p++ = '-';
-		} else
-			*to_p++ = *from_p;
-	}
-	*to_p = '\0';
-
-	return to;
-#else
 	static iconv_t cd = (iconv_t)-1;
 	static gboolean iconv_ok = TRUE;
 	gchar *norm_utf7, *norm_utf7_p;
@@ -3482,14 +3448,16 @@ static gchar *imap_utf8_to_modified_utf7(const gchar *from)
 	if (!iconv_ok) return g_strdup(from);
 
 	if (cd == (iconv_t)-1) {
-		cd = iconv_open("UTF-7", CS_UTF_8);
+		cd = iconv_open(CS_UTF_7, CS_INTERNAL);
 		if (cd == (iconv_t)-1) {
-			g_warning("iconv cannot convert UTF-8 to UTF-7\n");
+			g_warning(_("iconv cannot convert %s to UTF-7\n"),
+				  CS_INTERNAL);
 			iconv_ok = FALSE;
 			return g_strdup(from);
 		}
 	}
 
+	/* UTF-8 to normal UTF-7 conversion */
 	Xstrdup_a(from_tmp, from, return g_strdup(from));
 	from_len = strlen(from);
 	norm_utf7_len = from_len * 5;
@@ -3513,18 +3481,13 @@ static gchar *imap_utf8_to_modified_utf7(const gchar *from)
 			from_tmp++;
 			from_len--;
 		} else {
-			size_t mb_len = 0, conv_len = 0;
+			size_t conv_len = 0;
 
 			/* unprintable char: convert to UTF-7 */
 			p = from_tmp;
 			while (!IS_PRINT(*(guchar *)p) && conv_len < from_len) {
-				mb_len = mblen(p, MB_LEN_MAX);
-				if (mb_len <= 0) {
-					g_warning("wrong multibyte sequence\n");
-					return g_strdup(from);
-				}
-				conv_len += mb_len;
-				p += mb_len;
+				conv_len += g_utf8_skip[*(guchar *)p];
+				p += g_utf8_skip[*(guchar *)p];
 			}
 
 			from_len -= conv_len;
@@ -3578,7 +3541,6 @@ static gchar *imap_utf8_to_modified_utf7(const gchar *from)
 	g_string_free(to_str, FALSE);
 
 	return to;
-#endif /* !HAVE_ICONV */
 }
 
 static GSList *imap_get_seq_set_from_numlist(MsgNumberList *numlist)

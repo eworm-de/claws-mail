@@ -958,7 +958,7 @@ void procheader_date_get_localtime(gchar *dest, gint len, const time_t timer)
 	else
 		strftime(dest, len, default_format, lt);
 
-	src_codeset = conv_get_current_charset_str();
+	src_codeset = conv_get_locale_charset_str();
 	dest_codeset = CS_UTF_8;
 	str = conv_codeset_strdup(dest, src_codeset, dest_codeset);
 	if (str) {

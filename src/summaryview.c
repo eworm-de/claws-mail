@@ -3344,7 +3344,7 @@ void summary_save_as(SummaryView *summaryview)
 		gchar *oldstr = filename;
 		filename = conv_codeset_strdup(filename,
 					       CS_UTF_8,
-					       conv_get_current_charset_str());
+					       conv_get_locale_charset_str());
 		if (!filename) {
 			g_warning("summary_save_as(): faild to convert character set.");
 			filename = g_strdup(oldstr);

@@ -581,7 +581,7 @@ static void prefs_themes_update_buttons(const ThemesData *tdata)
 									\
 	if (!g_utf8_validate(text, -1, NULL))				\
 		tmpstr = conv_codeset_strdup(text,			\
-			conv_get_current_charset_str(),	CS_UTF_8);	\
+			conv_get_locale_charset_str(),	CS_UTF_8);	\
 	else								\
 		tmpstr = g_strdup(text);				\
 									\

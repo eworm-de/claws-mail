@@ -1780,7 +1780,7 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 
 	case ENC_AS_EXTENDED:
 		g_string_append_printf(buf, "%s*=%s''", param,
-			conv_get_current_charset_str());
+			conv_get_locale_charset_str());
 		for (valpos = val; *valpos != '\0'; valpos++) {
 			if (IS_ASCII(*valpos) && isalnum(*valpos)) {
 				g_string_append_printf(buf, "%c", *valpos);

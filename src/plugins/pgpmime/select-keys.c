@@ -37,7 +37,7 @@
 #include <gtk/gtkentry.h>
 #include <gtk/gtkhbbox.h>
 #include <gtk/gtkbutton.h>
-#include <gtk/gtksignal.h>
+#include <gtk/gtkstock.h>
 
 #include "intl.h"
 #include "select-keys.h"
@@ -341,10 +341,10 @@ create_dialog (struct select_keys_s *sk)
     g_signal_connect(G_OBJECT (showall_btn), "clicked",
                      G_CALLBACK(showall_btn_cb), sk);
 
-    gtkut_button_set_create (&bbox, 
-                             &select_btn, _("Select"),
-                             &cancel_btn, _("Cancel"),
-                             &other_btn,  _("Other"));
+    gtkut_stock_button_set_create (&bbox, 
+                                   &select_btn, _("Select"),
+                                   &cancel_btn, GTK_STOCK_CANCEL,
+                                   &other_btn,  _("Other"));
     gtk_box_pack_end (GTK_BOX (hbox), bbox, FALSE, FALSE, 0);
     gtk_widget_grab_default (select_btn);
 

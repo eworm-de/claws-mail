@@ -82,7 +82,7 @@ void matcher_parser_init(void)
 		BEGIN(0);
 		*string_buf_ptr = '\0';
 		if (!g_utf8_validate(string_buf, -1, NULL)) {
-			gchar *tmp = conv_codeset_strdup(string_buf, conv_get_current_charset_str(), CS_UTF_8);
+			gchar *tmp = conv_codeset_strdup(string_buf, conv_get_locale_charset_str(), CS_INTERNAL);
 			if (tmp) {
 				strcpy(string_buf, tmp);
 				g_free(tmp);

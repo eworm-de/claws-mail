@@ -98,14 +98,10 @@ gint import_mbox(FolderItem *default_dest)
 		utf8filename = gtk_entry_get_text(GTK_ENTRY(file_entry));
 		destdir = gtk_entry_get_text(GTK_ENTRY(dest_entry));
 		if (utf8filename && *utf8filename) {
-			const gchar *src_codeset = CS_UTF_8;
-			const gchar *dest_codeset = conv_get_current_charset_str();
 			gchar *filename;
 
-#warning FIXME_GTK2 /* should we use g_filename_from_utf8? */
-			filename = conv_codeset_strdup(utf8filename,
-						       src_codeset,
-						       dest_codeset);
+			filename = g_filename_from_utf8
+				(utf8filename, -1, NULL, NULL, NULL);
 			if (!filename) {
 				g_warning("faild to convert character set\n");
 				filename = g_strdup(utf8filename);
@@ -235,23 +231,18 @@ static void import_cancel_cb(GtkWidget *widget, gpointer data)
 static void import_filesel_cb(GtkWidget *widget, gpointer data)
 {
 	gchar *filename;
+	gchar *utf8_filename;
 
 	filename = filesel_select_file_open(_("Select importing file"), NULL);
 	if (!filename) return;
 
-	if (g_getenv ("G_BROKEN_FILENAMES")) {
-		const gchar *oldstr = filename;
-		filename = conv_codeset_strdup (filename,
-						conv_get_current_charset_str(),
-						CS_UTF_8);
-		if (!filename) {
-			g_warning("import_filesel_cb(): faild to convert character set.");
-			filename = g_strdup(oldstr);
-		}
-		gtk_entry_set_text(GTK_ENTRY(file_entry), filename);
-		g_free(filename);
-	} else
-		gtk_entry_set_text(GTK_ENTRY(file_entry), filename);
+	utf8_filename = g_filename_to_utf8(filename, -1, NULL, NULL, NULL);
+	if (!utf8_filename) {
+		g_warning("import_filesel_cb(): faild to convert characer set.");
+		utf8_filename = g_strdup(filename);
+	}
+	gtk_entry_set_text(GTK_ENTRY(file_entry), utf8_filename);
+	g_free(utf8_filename);
 }
 
 static void import_destsel_cb(GtkWidget *widget, gpointer data)

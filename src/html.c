@@ -375,7 +375,7 @@ HTMLParser *html_parser_new(FILE *fp, CodeConverter *conv)
 		  conv->charset == C_ISO_2022_JP_2 ||
 		  conv->charset == C_EUC_JP        ||
 		  conv->charset == C_SHIFT_JIS) &&
-		 conv_get_current_charset() == C_EUC_JP)
+		 conv_get_locale_charset() == C_EUC_JP)
 		parser->symbol_table = eucjp_symbol_table;
 	else
 		parser->symbol_table = default_symbol_table;
@@ -456,7 +456,7 @@ static HTMLState html_read_line(HTMLParser *parser)
 	if (conv_convert(parser->conv, buf2, sizeof(buf2), buf) < 0) {
 		index = parser->bufp - parser->buf->str;
 
-		conv_localetodisp(buf2, sizeof(buf2), buf);
+		conv_utf8todisp(buf2, sizeof(buf2), buf);
 		g_string_append(parser->buf, buf2);
 
 		parser->bufp = parser->buf->str + index;

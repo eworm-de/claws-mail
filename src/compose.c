@@ -2166,6 +2166,7 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 	GtkTextBuffer *buffer;
 	GtkTextMark *mark;
 	GtkTextIter iter;
+	const gchar *cur_encoding;
 	gchar buf[BUFFSIZE];
 	gint len;
 	FILE *fp;
@@ -2187,14 +2188,12 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 					G_CALLBACK(text_inserted),
 					compose);
 
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		const gchar *cur_encoding = conv_get_current_charset_str();
-		gchar *str = NULL;
-		if (!g_utf8_validate(buf, -1, NULL))
-			str = conv_codeset_strdup(buf, cur_encoding, CS_UTF_8);
-		else
-			str = g_strdup(buf);
+	cur_encoding = conv_get_locale_charset_str();
 
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		gchar *str;
+
+		str = conv_codeset_strdup(buf, cur_encoding, CS_INTERNAL);
 		if (!str) continue;
 
 		/* strip <CR> if DOS/Windows file,
@@ -2205,9 +2204,9 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 			while (--len >= 0)
 				if (str[len] == '\r') str[len] = '\n';
 		}
-		gtk_text_buffer_insert(buffer, &iter, str, -1);
 
-		g_free (str);
+		gtk_text_buffer_insert(buffer, &iter, str, -1);
+		g_free(str);
 	}
 
 	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
@@ -2479,8 +2478,8 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 }
 
 #define DISP_WIDTH(len) \
-	((len > 2 && conv_get_current_charset() == C_UTF_8) ? 2 : \
-	 (len == 2 && conv_get_current_charset() == C_UTF_8) ? 1 : len)
+	((len > 2 && conv_get_locale_charset() == C_UTF_8) ? 2 : \
+	 (len == 2 && conv_get_locale_charset() == C_UTF_8) ? 1 : len)
 
 #define SPACE_CHARS	" \t"
 
@@ -3637,7 +3636,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 		else
 			encoding = procmime_get_encoding_for_charset(out_codeset);
 
-		src_codeset = CS_UTF_8;
+		src_codeset = CS_INTERNAL;
 		/* if current encoding is US-ASCII, set it the same as
 		   outgoing one to prevent code conversion failure */
 		if (!g_ascii_strcasecmp(src_codeset, CS_US_ASCII))
@@ -3746,9 +3745,9 @@ static gint compose_write_body_to_file(Compose *compose, const gchar *file)
 	gtk_text_buffer_get_end_iter(buffer, &end);
 	tmp = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
 
-	src_codeset = CS_UTF_8;
-	dest_codeset = conv_get_current_charset_str();
-	chars = conv_codeset_strdup(tmp, src_codeset, dest_codeset);
+	chars = conv_codeset_strdup
+		(tmp, CS_INTERNAL, conv_get_locale_charset_str());
+
 	g_free(tmp);
 	if (!chars) return -1;
 
@@ -5114,7 +5113,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	    	    strcmp(prefs_common.dictionary, _("None"))) {
 			gtkaspell = gtkaspell_new(prefs_common.aspell_path,
 						  prefs_common.dictionary,
-						  conv_get_current_charset_str(),
+						  conv_get_locale_charset_str(),
 						  prefs_common.misspelled_col,
 						  prefs_common.check_while_typing,
 						  prefs_common.use_alternate,

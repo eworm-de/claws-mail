@@ -1913,7 +1913,7 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 			}
 
 			utf8buf  = conv_codeset_strdup((unsigned char*)l->data,
-							conv_get_current_charset_str(),
+							conv_get_locale_charset_str(),
 							CS_UTF_8);
 			item = gtk_menu_item_new_with_label(utf8buf);
 			gtk_widget_show(item);

@@ -163,22 +163,10 @@ void source_window_append(SourceWindow *sourcewin, const gchar *str)
 
 	len = strlen(str) + 1;
 	Xalloca(out, len, return);
-	
-	conv_localetodisp(out, len, str);
-	if (!g_utf8_validate(out, -1, NULL)) {
-		gchar *buf;
-		gint buflen;
-		const gchar *src_codeset, *dest_codeset;
-		src_codeset = conv_get_current_charset_str();
-		dest_codeset = CS_UTF_8;
-		buf = conv_codeset_strdup(out, src_codeset, dest_codeset);
-		gtk_text_buffer_get_iter_at_offset(buffer, &iter, -1);
-		gtk_text_buffer_insert(buffer, &iter, buf, -1);
-		g_free(buf);
-	} else {
-		gtk_text_buffer_get_iter_at_offset(buffer, &iter, -1);
-		gtk_text_buffer_insert(buffer, &iter, out, -1);
-	}
+	conv_utf8todisp(out, len, str);
+
+	gtk_text_buffer_get_iter_at_offset(buffer, &iter, -1);
+	gtk_text_buffer_insert(buffer, &iter, out, -1);
 }
 
 static void source_window_size_alloc_cb(GtkWidget *widget,

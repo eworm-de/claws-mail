@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 #endif
 
 #include <glib.h>
+#include <iconv.h>
 
 typedef struct _CodeConverter	CodeConverter;
 
@@ -74,6 +75,7 @@ typedef enum
 	C_ISO_2022_JP_2,
 	C_ISO_2022_JP_3,
 	C_EUC_JP,
+	C_EUC_JP_MS,
 	C_SHIFT_JIS,
 	C_ISO_2022_KR,
 	C_EUC_KR,
@@ -145,6 +147,7 @@ struct _CodeConverter
 #define CS_ISO_2022_JP_3	"ISO-2022-JP-3"
 #define CS_EUC_JP		"EUC-JP"
 #define CS_EUCJP		"EUCJP"
+#define CS_EUC_JP_MS		"EUC-JP-MS"
 #define CS_SHIFT_JIS		"Shift_JIS"
 #define CS_SHIFT__JIS		"SHIFT-JIS"
 #define CS_SJIS			"SJIS"
@@ -163,31 +166,17 @@ struct _CodeConverter
 #define CS_GEORGIAN_PS		"GEORGIAN-PS"
 #define CS_TCVN5712_1		"TCVN5712-1"
 
-void conv_jistoeuc	(gchar *outbuf, gint outlen, const gchar *inbuf);
-void conv_euctojis	(gchar *outbuf, gint outlen, const gchar *inbuf);
-void conv_sjistoeuc	(gchar *outbuf, gint outlen, const gchar *inbuf);
-void conv_anytoeuc	(gchar *outbuf, gint outlen, const gchar *inbuf);
-void conv_anytoutf8	(gchar *outbuf, gint outlen, const gchar *inbuf);
-void conv_anytojis	(gchar *outbuf, gint outlen, const gchar *inbuf);
+#define C_INTERNAL		C_UTF_8
+#define CS_INTERNAL		CS_UTF_8
 
-void conv_unreadable_eucjp	(gchar *str);
-void conv_unreadable_8bit	(gchar *str);
-void conv_unreadable_latin	(gchar *str);
-void conv_unreadable_locale	(gchar *str);
-
-void conv_mb_alnum(gchar *str);
+//void conv_mb_alnum(gchar *str);
 
 CharSet conv_guess_ja_encoding(const gchar *str);
 
-void conv_jistodisp	(gchar *outbuf, gint outlen, const gchar *inbuf);
-void conv_sjistodisp	(gchar *outbuf, gint outlen, const gchar *inbuf);
-void conv_euctodisp	(gchar *outbuf, gint outlen, const gchar *inbuf);
-void conv_ustodisp	(gchar *outbuf, gint outlen, const gchar *inbuf);
-void conv_latintodisp	(gchar *outbuf, gint outlen, const gchar *inbuf);
-void conv_noconv	(gchar *outbuf, gint outlen, const gchar *inbuf);
+void conv_utf8todisp	(gchar *outbuf, gint outlen, const gchar *inbuf);
 void conv_localetodisp	(gchar *outbuf, gint outlen, const gchar *inbuf);
 
-CodeConverter *conv_code_converter_new	(const gchar	*charset);
+CodeConverter *conv_code_converter_new	(const gchar	*src_charset);
 void conv_code_converter_destroy	(CodeConverter	*conv);
 gint conv_convert			(CodeConverter	*conv,
 					 gchar		*outbuf,
@@ -204,11 +193,15 @@ CodeConvFunc conv_get_code_conv_func	(const gchar	*src_charset_str,
 gchar *conv_iconv_strdup		(const gchar	*inbuf,
 					 const gchar	*src_code,
 					 const gchar	*dest_code);
+gchar *conv_iconv_strdup_with_cd	(const gchar	*inbuf,
+					 iconv_t	 cd);
 
 const gchar *conv_get_charset_str		(CharSet	 charset);
 CharSet conv_get_charset_from_str		(const gchar	*charset);
-CharSet conv_get_current_charset		(void);
-const gchar *conv_get_current_charset_str	(void);
+CharSet conv_get_locale_charset			(void);
+const gchar *conv_get_locale_charset_str	(void);
+CharSet conv_get_internal_charset		(void);
+const gchar *conv_get_internal_charset_str	(void);
 CharSet conv_get_outgoing_charset		(void);
 const gchar *conv_get_outgoing_charset_str	(void);
 gboolean conv_is_multibyte_encoding		(CharSet	 encoding);

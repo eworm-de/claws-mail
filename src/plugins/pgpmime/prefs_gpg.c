@@ -489,9 +489,12 @@ static struct GPGAccountPage gpg_account_page;
 void prefs_gpg_init()
 {
 	static gchar *path[3];
+	gchar *rcpath;
 
 	prefs_set_default(param);
-	prefs_read_config(param, "GPG", COMMON_RC);
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
+	prefs_read_config(param, "GPG", rcpath, NULL);
+	g_free(rcpath);
 
         path[0] = _("Privacy");
         path[1] = _("GPG");

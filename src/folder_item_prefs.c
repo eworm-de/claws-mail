@@ -103,11 +103,14 @@ static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs);
 void folder_item_prefs_read_config(FolderItem * item)
 {
 	gchar * id;
+	gchar *rcpath;
 
 	id = folder_item_get_identifier(item);
 	folder_item_prefs_clear(&tmp_prefs);
-	prefs_read_config(param, id, FOLDERITEM_RC);
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, FOLDERITEM_RC, NULL);
+	prefs_read_config(param, id, rcpath, NULL);
 	g_free(id);
+	g_free(rcpath);
 
 	*item->prefs = tmp_prefs;
 

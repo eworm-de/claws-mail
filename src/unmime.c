@@ -112,15 +112,15 @@ void unmime_header(gchar *out, const gchar *str)
 			continue;
 		}
 
-		/* convert to locale encoding */
-		conv_str = conv_codeset_strdup(decoded_text, charset, CS_UTF_8);
+		/* convert to UTF-8 */
+		conv_str = conv_codeset_strdup(decoded_text, charset, NULL);
 		if (conv_str) {
 			len = strlen(conv_str);
 			memcpy(outp, conv_str, len);
 			g_free(conv_str);
 		} else {
 			len = strlen(decoded_text);
-			conv_localetodisp(outp, len + 1, decoded_text);
+			conv_utf8todisp(outp, len + 1, decoded_text);
 		}
 		outp += len;
 

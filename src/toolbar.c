@@ -528,8 +528,7 @@ void toolbar_save_config_file(ToolbarType source)
 	g_free( fileSpec );
 	if( pfile ) {
 		fp = pfile->fp;
-		fprintf(fp, "<?xml version=\"1.0\" encoding=\"%s\" ?>\n",
-			conv_get_current_charset_str());
+		fprintf(fp, "<?xml version=\"1.0\" encoding=\"%s\" ?>\n", CS_INTERNAL);
 
 		fprintf(fp, "<%s>\n", TOOLBAR_TAG_INDEX);
 

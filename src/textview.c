@@ -1155,11 +1155,10 @@ static void textview_write_line(TextView *textview, const gchar *str,
 	buffer = gtk_text_view_get_buffer(text);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 
-	if (!conv) {
+	if (!conv)
 		strncpy2(buf, str, sizeof(buf));
-	} else if (conv_convert(conv, buf, sizeof(buf), str) < 0) {
-		conv_localetodisp(buf, sizeof(buf), str);
-	}
+	else if (conv_convert(conv, buf, sizeof(buf), str) < 0)
+		conv_utf8todisp(buf, sizeof(buf), str);
 
 	strcrchomp(buf);
 	//if (prefs_common.conv_mb_alnum) conv_mb_alnum(buf);
@@ -1220,23 +1219,10 @@ void textview_write_link(TextView *textview, const gchar *str,
 	buffer = gtk_text_view_get_buffer(text);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 
-#warning FIXME_GTK2
-#if 0
-	if (!conv) {
-		if (textview->text_is_mb)
-			conv_localetodisp(buf, sizeof(buf), str);
-		else
-			strncpy2(buf, str, sizeof(buf));
-	} else if (conv_convert(conv, buf, sizeof(buf), str) < 0)
-		conv_localetodisp(buf, sizeof(buf), str);
-	else if (textview->text_is_mb)
-		conv_unreadable_locale(buf);
-#else
 	if (!conv)
 		strncpy2(buf, str, sizeof(buf));
 	else if (conv_convert(conv, buf, sizeof(buf), str) < 0)
-		conv_localetodisp(buf, sizeof(buf), str);
-#endif
+		conv_utf8todisp(buf, sizeof(buf), str);
 
 	strcrchomp(buf);
 

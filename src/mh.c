@@ -938,7 +938,7 @@ static gboolean mh_rename_folder_func(GNode *node, gpointer data)
 static gchar *mh_filename_from_utf8(const gchar *path)
 {
 	const gchar *src_codeset = CS_UTF_8;
-	const gchar *dest_codeset = conv_get_current_charset_str();
+	const gchar *dest_codeset = conv_get_locale_charset_str();
 	gchar *real_path;
 
 	real_path = conv_codeset_strdup(path, src_codeset, dest_codeset);
@@ -954,7 +954,7 @@ static gchar *mh_filename_from_utf8(const gchar *path)
 #warning FIXME_GTK2 /* should we use g_filename_to_utf8()? */
 static gchar *mh_filename_to_utf8(const gchar *path)
 {
-	const gchar *src_codeset = conv_get_current_charset_str();
+	const gchar *src_codeset = conv_get_locale_charset_str();
 	const gchar *dest_codeset = CS_UTF_8;
 	gchar *utf8path;
 

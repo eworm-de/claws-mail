@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto & The Sylpheed-Claws Team
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto & The Sylpheed-Claws Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -544,11 +544,9 @@ gint get_mbs_len(const gchar *s)
 		return -1;
 
 	while (*p != '\0') {
-		mb_len = mblen(p, MB_LEN_MAX);
+		mb_len = g_utf8_skip[*(guchar *)p];
 		if (mb_len == 0)
 			break;
-		else if (mb_len < 0)
-			return -1;
 		else
 			len++;
 
@@ -1422,17 +1420,17 @@ gchar *trim_string(const gchar *str, gint len)
 	if (!str) return NULL;
 	if (strlen(str) <= len)
 		return g_strdup(str);
+	if (g_utf8_validate(str, -1, NULL) == FALSE)
+		return g_strdup(str);
 
 	while (*p != '\0') {
-		mb_len = mblen(p, MB_LEN_MAX);
+		mb_len = g_utf8_skip[*(guchar *)p];
 		if (mb_len == 0)
 			break;
-		else if (mb_len < 0)
-			return g_strdup(str);
 		else if (new_len + mb_len > len)
 			break;
-		else
-			new_len += mb_len;
+
+		new_len += mb_len;
 		p += mb_len;
 	}
 
@@ -1479,7 +1477,7 @@ GList *uri_list_extract_filenames(const gchar *uri_list)
 							= conv_codeset_strdup(
 								file + 5,
 								CS_UTF_8,
-								conv_get_current_charset_str());
+								conv_get_locale_charset_str());
 					if (!locale_file)
 						locale_file = g_strdup(file + 5);
 					result = g_list_append(result, locale_file);
@@ -3076,7 +3074,7 @@ gchar *file_read_stream_to_str(FILE *fp)
 	if (!g_utf8_validate(str, -1, NULL)) {
 		const gchar *src_codeset, *dest_codeset;
 		gchar *tmp = NULL;
-		src_codeset = conv_get_current_charset_str();
+		src_codeset = conv_get_locale_charset_str();
 		dest_codeset = CS_UTF_8;
 		tmp = conv_codeset_strdup(str, src_codeset, dest_codeset);
 		g_free(str);
@@ -3193,7 +3191,7 @@ gchar *get_command_output(const gchar *cmdline)
 	if (!g_utf8_validate(ret, -1, NULL)) {
 		const gchar *src_codeset, *dest_codeset;
 		gchar *tmp = NULL;
-		src_codeset = conv_get_current_charset_str();
+		src_codeset = conv_get_locale_charset_str();
 		dest_codeset = CS_UTF_8;
 		tmp = conv_codeset_strdup(ret, src_codeset, dest_codeset);
 		g_free(ret);

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,6 +83,7 @@ XMLFile *xml_open_file(const gchar *path)
 	newfile->bufp = newfile->buf->str;
 
 	newfile->dtd = NULL;
+	newfile->encoding = NULL;
 	newfile->tag_stack = NULL;
 	newfile->level = 0;
 	newfile->is_empty_element = FALSE;
@@ -99,6 +100,7 @@ void xml_close_file(XMLFile *file)
 	g_string_free(file->buf, TRUE);
 
 	g_free(file->dtd);
+	g_free(file->encoding);
 
 	while (file->tag_stack != NULL)
 		xml_pop_tag(file);
@@ -167,9 +169,15 @@ gint xml_get_dtd(XMLFile *file)
 	if ((*bufp++ == '?') &&
 	    (bufp = strcasestr(bufp, "xml")) &&
 	    (bufp = strcasestr(bufp + 3, "version")) &&
-	    (bufp = strchr(bufp + 7, '?')))
+	    (bufp = strchr(bufp + 7, '?'))) {
 		file->dtd = g_strdup(buf);
-	else {
+		if ((bufp = strcasestr(buf, "encoding=\""))) {
+			bufp += 9;
+			extract_quote(bufp, '"');
+			file->encoding = g_strdup(bufp);
+		} else
+			file->encoding = g_strdup(CS_INTERNAL);
+	} else {
 		g_warning("Can't get xml dtd\n");
 		return -1;
 	}
@@ -181,6 +189,7 @@ gint xml_parse_next_tag(XMLFile *file)
 {
 	gchar buf[XMLBUFSIZE];
 	guchar *bufp = buf;
+	gchar *tag_str;
 	XMLTag *tag;
 	gint len;
 
@@ -221,18 +230,30 @@ gint xml_parse_next_tag(XMLFile *file)
 
 	while (*bufp != '\0' && !isspace(*bufp)) bufp++;
 	if (*bufp == '\0') {
-		tag->tag = XML_STRING_ADD(buf);
+		tag_str = conv_codeset_strdup(buf, file->encoding, CS_INTERNAL);
+		if (tag_str) {
+			tag->tag = XML_STRING_ADD(tag_str);
+			g_free(tag_str);
+		} else
+			tag->tag = XML_STRING_ADD(buf);
 		return 0;
 	} else {
 		*bufp++ = '\0';
-		tag->tag = XML_STRING_ADD(buf);
+		tag_str = conv_codeset_strdup(buf, file->encoding, CS_INTERNAL);
+		if (tag_str) {
+			tag->tag = XML_STRING_ADD(tag_str);
+			g_free(tag_str);
+		} else
+			tag->tag = XML_STRING_ADD(buf);
 	}
 
 	/* parse attributes ( name=value ) */
 	while (*bufp) {
 		XMLAttr *attr;
-		gchar *attr_name, *attr_value;
-		gchar *utf8attr_name, *utf8attr_value;
+		gchar *attr_name;
+		gchar *attr_value;
+		gchar *utf8_attr_name;
+		gchar *utf8_attr_value;
 		gchar *p;
 		gchar quote;
 
@@ -262,28 +283,20 @@ gint xml_parse_next_tag(XMLFile *file)
 
 		g_strchomp(attr_name);
 		xml_unescape_str(attr_value);
+		utf8_attr_name = conv_codeset_strdup
+			(attr_name, file->encoding, CS_INTERNAL);
+		utf8_attr_value = conv_codeset_strdup
+			(attr_value, file->encoding, CS_INTERNAL);
+		if (!utf8_attr_name)
+			utf8_attr_name = g_strdup(attr_name);
+		if (!utf8_attr_value)
+			utf8_attr_value = g_strdup(attr_value);
 
-		if (!g_utf8_validate(attr_name, -1, NULL))
-			utf8attr_name  = conv_codeset_strdup
-					(attr_name,
-					 conv_get_current_charset_str(),
-					 CS_UTF_8);
-		else
-			utf8attr_name = g_strdup(attr_name);
-		
-		if (!g_utf8_validate(attr_value, -1, NULL))
-			utf8attr_value = conv_codeset_strdup
-					(attr_value,
-					 conv_get_current_charset_str(),
-					 CS_UTF_8);
-		else
-			utf8attr_value = g_strdup(attr_value);
-					
-		attr = xml_attr_new(utf8attr_name, utf8attr_value);
+		attr = xml_attr_new(utf8_attr_name, utf8_attr_value);
 		xml_tag_add_attr(tag, attr);
 
-		g_free(utf8attr_name);
-		g_free(utf8attr_value);
+		g_free(utf8_attr_value);
+		g_free(utf8_attr_name);
 	}
 
 	return 0;
@@ -331,8 +344,8 @@ GList *xml_get_current_tag_attr(XMLFile *file)
 gchar *xml_get_element(XMLFile *file)
 {
 	gchar *str;
+	gchar *new_str;
 	gchar *end;
-	gchar *utf8str;
 
 	while ((end = strchr(file->bufp, '<')) == NULL)
 		if (xml_read_line(file) < 0) return NULL;
@@ -353,18 +366,12 @@ gchar *xml_get_element(XMLFile *file)
 		return NULL;
 	}
 
-	utf8str = conv_codeset_strdup
-			(str,
-			 conv_get_current_charset_str(),
-			 CS_UTF_8);
-	if (!utf8str) {
-		g_warning("xml_get_element(): "
-			  "faild to convert character set.\n");
-		utf8str = str;
-	} else
-		g_free(str);
+	new_str = conv_codeset_strdup(str, file->encoding, CS_INTERNAL);
+	if (!new_str)
+		new_str = g_strdup(str);
+	g_free(str);
 
-	return utf8str;
+	return new_str;
 }
 
 gint xml_read_line(XMLFile *file)
@@ -533,7 +540,7 @@ gint xml_unescape_str(gchar *str)
 gint xml_file_put_escape_str(FILE *fp, const gchar *str)
 {
 	const gchar *src_codeset = CS_UTF_8;
-	const gchar *dest_codeset = conv_get_current_charset_str();
+	const gchar *dest_codeset = conv_get_locale_charset_str();
 	gchar *tmpstr = NULL;
 	const gchar *p;
 
@@ -578,8 +585,7 @@ gint xml_file_put_xml_decl(FILE *fp)
 {
 	g_return_val_if_fail(fp != NULL, -1);
 
-	fprintf(fp, "<?xml version=\"1.0\" encoding=\"%s\"?>\n",
-	conv_get_current_charset_str());
+	fprintf(fp, "<?xml version=\"1.0\" encoding=\"%s\"?>\n", CS_INTERNAL);
 	return 0;
 }
 

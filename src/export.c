@@ -102,7 +102,7 @@ gint export_mbox(FolderItem *default_src)
 		utf8mbox = gtk_entry_get_text(GTK_ENTRY(file_entry));
 		if (utf8mbox && *utf8mbox) {
 			const gchar *src_codeset = CS_UTF_8;
-			const gchar *dest_codeset = conv_get_current_charset_str();
+			const gchar *dest_codeset = conv_get_locale_charset_str();
 			gchar *mbox;
 
 #warning FIXME_GTK2 /* should we use g_filename_from_utf8()? */
@@ -236,7 +236,7 @@ static void export_filesel_cb(GtkWidget *widget, gpointer data)
 	if (g_getenv ("G_BROKEN_FILENAMES")) {
 		const gchar *oldstr = filename;
 		filename = conv_codeset_strdup (filename,
-						conv_get_current_charset_str(),
+						conv_get_locale_charset_str(),
 						CS_UTF_8);
 		if (!filename) {
 			g_warning("export_filesel_cb(): faild to convert character set.");

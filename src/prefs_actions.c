@@ -330,7 +330,7 @@ void prefs_actions_read_config(void)
 	}
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		const gchar *src_codeset = conv_get_current_charset_str();
+		const gchar *src_codeset = conv_get_locale_charset_str();
 		const gchar *dest_codeset = CS_UTF_8;
 		gchar *tmp;
 
@@ -371,7 +371,7 @@ void prefs_actions_write_config(void)
 	for (cur = prefs_common.actions_list; cur != NULL; cur = cur->next) {
 		gchar *tmp = (gchar *)cur->data;
 		const gchar *src_codeset = CS_UTF_8;
-		const gchar *dest_codeset = conv_get_current_charset_str();
+		const gchar *dest_codeset = conv_get_locale_charset_str();
 		gchar *act;
 
 		act = conv_codeset_strdup(tmp, src_codeset, dest_codeset);

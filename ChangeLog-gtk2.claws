@@ -1,3 +1,50 @@
+2005-02-01 [paul]	1.0.0cvs24.2
+
+	* src/addrbook.c
+	* src/addrindex.c
+	* src/alertpanel.h
+	* src/codeconv.c
+	* src/codeconv.h
+	* src/compose.c
+	* src/export.c
+	* src/folder_item_prefs.c
+	* src/html.c
+	* src/imap.c
+	* src/import.c
+	* src/jpilot.c
+	* src/mainwindow.c
+	* src/matcher_parser_lex.l
+	* src/messageview.c
+	* src/mh.c
+	* src/prefs_account.c
+	* src/prefs_actions.c
+	* src/prefs_common.c
+	* src/prefs_gtk.c
+	* src/prefs_gtk.h
+	* src/prefs_themes.c
+	* src/procheader.c
+	* src/procmime.c
+	* src/sourcewindow.c
+	* src/statusbar.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/toolbar.c
+	* src/unmime.c
+	* src/common/template.c
+	* src/common/utils.c
+	* src/common/xml.c
+	* src/common/xml.h
+	* src/gtk/gtkaspell.c
+	* src/plugins/clamav/clamav_plugin.c
+	* src/plugins/dillo_viewer/dillo_prefs.c
+	* src/plugins/image_viewer/viewerprefs.c
+	* src/plugins/pgpmime/passphrase.c
+	* src/plugins/pgpmime/prefs_gpg.c
+	* src/plugins/pgpmime/select-keys.c
+	* src/plugins/spamassassin/spamassassin.c
+		second part of initial sync with main-gtk2
+		(more to follow)
+
 2005-01-31 [colin]	1.0.0cvs24.1
 
 	* src/compose.c
