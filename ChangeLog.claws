@@ -1,9 +1,16 @@
+2001-11-11 [alfons]	0.6.5.claws5
+
+	* src/procmsg.c
+		prevent threading by subject on nodes that have already been
+		threaded by in-reply-to (as in "circular references in a tree
+		result in a dead branch")
+
 2001-11-09 [hoa]	0.6.5.claws4
 	
 	* src/folderview.c
 		allows creation of mbox folder item from any files.
 
-2001-11-07 [alfons]	0.6.5.claws3
+2001-11-09 [alfons]	0.6.5.claws3
 	
 	* src/utils.c
 	* src/procmsg.c

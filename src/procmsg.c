@@ -545,12 +545,9 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 		next = node->next;
 		msginfo = (MsgInfo *)node->data;
 		parent = NULL;
-
-		if (msginfo->inreplyto)
+		/* CLAWS: ignore thread */
+		if (msginfo->inreplyto) 
 			parent = g_hash_table_lookup(msgid_table, msginfo->inreplyto);
-		if (parent == NULL && subject_is_reply(msginfo->subject))
-			parent = subject_table_lookup(subject_table, msginfo->subject);
-		
 		if (parent && parent != node) {
 			g_node_unlink(node);
 			g_node_insert_before
@@ -562,6 +559,29 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 		node = next;
 	}
 
+	/* CLAWS: now see if the first level (below root) still has some nodes that can be
+	 * threaded by subject line. we need to handle this in a special way to prevent
+	 * circular reference from a node that has already been threaded by IN-REPLY-TO
+	 * but is also in the subject line hash table */
+	for (node = root->children; node != NULL; ) {
+		next = node->next;
+		msginfo = (MsgInfo *) node->data;
+		parent = NULL;
+		if (subject_is_reply(msginfo->subject)) {
+			if (NULL != (parent = subject_table_lookup(subject_table, msginfo->subject))) {
+				/* the node may already be threaded by IN-REPLY-TO, so go up in the 
+				 * tree to find the parent node */
+				for (; parent->parent && parent->parent != root; parent = parent->parent) 
+					;
+			}					
+		}					
+		if (parent && parent != node) {
+			g_node_unlink(node);
+			g_node_append(parent, node);
+		}
+		node = next;
+	}		
+		
 	g_hash_table_destroy(subject_table);
 	g_hash_table_destroy(msgid_table);
 
