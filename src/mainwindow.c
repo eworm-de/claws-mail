@@ -1082,34 +1082,26 @@ void main_window_reflect_prefs_all(void)
 		main_window_set_menu_sensitive(mainwin);
 		main_window_set_toolbar_sensitive(mainwin);
 
+		/* pixmap themes */
+		gtk_container_remove(GTK_CONTAINER(mainwin->handlebox), GTK_WIDGET(mainwin->toolbar));
+		mainwin->toolbar = NULL;
+		main_window_toolbar_create(mainwin, mainwin->handlebox);
+		set_toolbar_style(mainwin);
+		folderview_reflect_prefs_pixmap_theme(mainwin->folderview);
+		summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
+
 		if (prefs_common.immediate_exec)
 			gtk_widget_hide(mainwin->exec_btn);
 		else
 			gtk_widget_show(mainwin->exec_btn);
+
+		activate_compose_button(mainwin, prefs_common.toolbar_style, mainwin->compose_btn_type);
 
 		summary_redisplay_msg(mainwin->summaryview);
 		headerview_set_visibility(mainwin->messageview->headerview,
 					  prefs_common.display_header_pane);
 	}
 }
-
-void main_window_reflect_prefs_pixmap_theme(void)
-{
-	GList *cur;
-	MainWindow *mainwin;
-
-	for (cur = mainwin_list; cur != NULL; cur = cur->next) {
-		mainwin = (MainWindow *)cur->data;
-		gtk_container_remove(GTK_CONTAINER(mainwin->handlebox), GTK_WIDGET(mainwin->toolbar));
-		mainwin->toolbar = NULL;
-		main_window_toolbar_create(mainwin, mainwin->handlebox);
-		set_toolbar_style(mainwin);
-		main_window_set_toolbar_sensitive(mainwin);
-		folderview_reflect_prefs_pixmap_theme(mainwin->folderview);
-		summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
-	}
-}
-
 
 void main_window_set_summary_column(void)
 {
@@ -3027,3 +3019,4 @@ static void set_toolbar_style(MainWindow *mainwin)
 		gtk_widget_queue_resize(mainwin->handlebox);
 	}
 }
+

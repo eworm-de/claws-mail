@@ -179,8 +179,10 @@ GtkWidget *stock_pixmap_widget(GtkWidget *window, StockPixmap icon)
 	g_return_val_if_fail(window != NULL, NULL);
 	g_return_val_if_fail(icon >= 0 && icon < N_STOCK_PIXMAPS, NULL);
 
-	stock_pixmap_gdk(window, icon, &pixmap, &mask);
-	return gtk_pixmap_new(pixmap, mask);
+	if (stock_pixmap_gdk(window, icon, &pixmap, &mask) != -1)
+		return gtk_pixmap_new(pixmap, mask);
+	
+	return NULL;
 }
 
 /* create GdkPixmap if it has not created yet */
@@ -209,7 +211,7 @@ gint stock_pixmap_gdk(GtkWidget *window, StockPixmap icon,
 							     pix_d->file,
 							     ".xpm",
 							     NULL);
-				if (file_exist(icon_file_name, FALSE))
+				if (is_file_exist(icon_file_name))
 					PIXMAP_CREATE_FROM_FILE(window, pix, pix_d->mask, icon_file_name);
 				if (pix) 
 					pix_d->icon_path = prefs_common.pixmap_theme_path;
@@ -260,7 +262,7 @@ static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname)
 			
 			for (i = 0; i < N_STOCK_PIXMAPS; i++) {
 				filetoexist = g_strconcat(fullentry, G_DIR_SEPARATOR_S, pixmaps[i].file, ".xpm", NULL);
-				if (file_exist(filetoexist, FALSE)) {
+				if (is_file_exist(filetoexist)) {
 					*list = g_list_append(*list, fullentry);
 					break;
 				}
@@ -292,7 +294,7 @@ GList *stock_pixmap_themes_list_new(void)
 	
 	stock_pixmap_find_themes_in_dir(&list, userthemes);
 	stock_pixmap_find_themes_in_dir(&list, systemthemes);
-	
+
 	g_free(userthemes);
 	g_free(systemthemes);
 	return list;

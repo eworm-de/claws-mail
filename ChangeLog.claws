@@ -3,6 +3,7 @@
 	  src/mainwindow.[ch]
 	  src/stock_pixmap.c
 	  src/summaryview.c
+	  src/prefs_common.c
 	  	- refreshing after changing pixmap theme better
 		  now (thanks Paul)
 		- wanted to remove some mem leaks, but alfons was

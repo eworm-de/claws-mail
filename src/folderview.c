@@ -2502,8 +2502,4 @@ void folderview_reflect_prefs_pixmap_theme(FolderView *folderview)
 {
 	folderview_init(folderview);
 	folderview_set_all();
-	
-	summary_write_cache(folderview->summaryview);
-
-	folderview_select(folderview, folderview->summaryview->folder_item);
 }

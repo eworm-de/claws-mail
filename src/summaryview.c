@@ -5044,9 +5044,7 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
 	GtkCTreeNode *node;
-	GtkWidget *pixmap;
-
-	summary_write_cache(summaryview);
+	GtkWidget *pixmap; 
 
 	gtk_widget_destroy(summaryview->folder_pixmap);
 
@@ -5066,9 +5064,10 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	gtk_box_pack_start(GTK_BOX(summaryview->hbox), pixmap, FALSE, FALSE, 4);
 	gtk_box_reorder_child(GTK_BOX(summaryview->hbox), pixmap, 0);
 	gtk_widget_show(pixmap);
-	summaryview->folder_pixmap = pixmap;
-	
-	summary_show(summaryview, summaryview->folder_item, FALSE);
+	summaryview->folder_pixmap = pixmap; 
+
+	folderview_unselect(summaryview->folderview);
+	folderview_select(summaryview->folderview, summaryview->folder_item);
 }
 
 

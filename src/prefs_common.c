@@ -3995,7 +3995,6 @@ static void prefs_common_apply(void)
 {
 	prefs_set_data_from_dialog(param);
 	main_window_reflect_prefs_all();
-	main_window_reflect_prefs_pixmap_theme();
 	compose_reflect_prefs_pixmap_theme();
 	prefs_common_save_config();
 
