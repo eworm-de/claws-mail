@@ -747,6 +747,11 @@ static int pop3_uidl_mark_mail(MsgInfo *msginfo, int download)
 	}
 	tinfo = procheader_parse_file(filename, msginfo->flags, TRUE, TRUE);
 
+	if (!tinfo->account_server
+	||  !tinfo->account_login
+	||  !tinfo->partial_recv) {
+		goto bail;
+	}
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl", G_DIR_SEPARATOR_S, tinfo->account_server,
 			   "-", tinfo->account_login, NULL);

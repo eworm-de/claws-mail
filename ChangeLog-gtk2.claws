@@ -1,3 +1,8 @@
+2004-07-13 [colin]	0.9.12cvs18.8
+
+	* src/pop.c
+		Be paranoid on the checks
+
 2004-07-13 [colin]	0.9.12cvs18.7
 
 	* src/gtk/quicksearch.c
