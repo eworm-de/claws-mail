@@ -30,3 +30,6 @@ CPPFLAGS = \
 libsylpheedcommon_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(OPENSSL_LIBS)
+
+EXTRA_DIST = \
+	version.h.in

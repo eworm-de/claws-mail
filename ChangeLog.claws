@@ -1,3 +1,9 @@
+2002-12-26 [christoph]	0.8.8claws3
+
+	* src/Makefile.am
+	* src/common/Makefile.am
+		fix "make distdir"
+
 2002-12-26 [christoph]	0.8.8claws2
 
 	* configure.in

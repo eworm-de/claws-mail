@@ -135,7 +135,6 @@ BUILT_SOURCES = \
 
 EXTRA_DIST = \
 	quote_fmt_parse.h \
-	version.h.in \
 	pixmaps/address_book.xpm \
 	pixmaps/address.xpm \
 	pixmaps/book.xpm \
