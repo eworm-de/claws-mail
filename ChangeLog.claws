@@ -1,3 +1,8 @@
+2003-01-15 [colin]	0.8.8claws101
+
+	* src/Makefile.am
+		Fix linking with GNU libiconv
+
 2003-01-15 [darko]	0.8.8claws100
 
 	* src/pine.c
