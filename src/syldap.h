@@ -65,6 +65,7 @@ struct _SyldapServer {
 	pthread_t    *thread;
 	gboolean     busyFlag;
 	void         (*callBack)( void * );
+	guint	     idleId;
 };
 
 /* Function prototypes */

@@ -1,3 +1,15 @@
+2001-10-13 [alfons, christoph, melvin]	
+			0.6.3claws15
+
+	solution #2 to solve MT-safety problems defers all GUI related calls
+	to the main thread using a gtk_idle_add() callback. discussed on
+	ircnet #sylpheed, with christoph spotting some issues with the
+	original code, and melvin allowing us to lobotomize his sylpheed.
+
+	* src/syldap.[ch], src/main.c
+		fix race problem in ldap search thread by deferring GUI 
+		stuff to main thread using gtk_idle_add()
+
 2001-10-13 [paul]	0.6.3claws14
 
 	* src/prefs_account.[ch], src/send.c, src/smtp.[ch]

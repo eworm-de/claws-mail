@@ -68,6 +68,7 @@ SyldapServer *syldap_create() {
 	ldapServer->retVal = MGU_SUCCESS;
 	ldapServer->callBack = NULL;
 	ldapServer->accessFlag = FALSE;
+	ldapServer->idleId = 0;
 	return ldapServer;
 }
 
@@ -630,6 +631,19 @@ gint syldap_search( SyldapServer *ldapServer ) {
 	return ldapServer->retVal;
 }
 
+/* syldap_display_search_results() - updates the ui. this function is called from the
+ * main thread (the thread running the GTK event loop). */
+static gint syldap_display_search_results(SyldapServer *ldapServer)
+{
+	/* NOTE: when this function is called the accompanying thread should 
+	 * already be terminated. */
+	gtk_idle_remove(ldapServer->idleId);
+	ldapServer->callBack(ldapServer);
+	/* FIXME:  match should know whether to free this SyldapServer stuff.  */
+	g_free(ldapServer->thread); 
+	return TRUE;
+}
+
 /* ============================================================================================ */
 /*
 * Read data into list. Main entry point
@@ -654,13 +668,15 @@ gint syldap_read_data( SyldapServer *ldapServer ) {
 	/* Callback */
 	ldapServer->busyFlag = FALSE;
 	if( ldapServer->callBack ) {
-		( ldapServer->callBack )( ldapServer );
+		/* make the ui thread update the search results */
+		/* TODO: really necessary to call gdk_threads_XXX()??? gtk_idle_add()
+		 * should do this - could someone check the GTK sources please? */
+		gdk_threads_enter();
+		ldapServer->idleId = gtk_idle_add(syldap_display_search_results, ldapServer);
+		gdk_threads_leave();
+	
 	}
-	/* The thread struct should not be freed inside the thread
-	g_free(ldapServer->thread);
-	ldapServer->thread = NULL;
-	pthread_exit( NULL );
-	*/
+
 	return ldapServer->retVal;
 }
 
@@ -672,16 +688,13 @@ gint syldap_read_data( SyldapServer *ldapServer ) {
 void syldap_cancel_read( SyldapServer *ldapServer ) {
 	g_return_if_fail( ldapServer != NULL );
 
+	/* DELETEME: this is called from inside UI thread so it's OK, Christoph! */
 	if( ldapServer->thread ) {
 		/* printf( "thread cancelled\n" ); */
-		/* The thread is cancleing itself, ok?
 		pthread_cancel( *ldapServer->thread );
-		*/
 	}
-	/* The thread struct should not be freed inside the thread
 	g_free(ldapServer->thread);
 	ldapServer->thread = NULL;
-	*/
 	ldapServer->busyFlag = FALSE;
 }
 
@@ -702,7 +715,7 @@ gint syldap_read_data_th( SyldapServer *ldapServer ) {
 
 		ldapServer->busyFlag = TRUE;
 		ldapServer->thread = g_new0(pthread_t, 1);
-		pthread_create( ldapServer->thread, NULL, (void *) &syldap_read_data, (void *) ldapServer );
+		pthread_create( ldapServer->thread, NULL, (void *) syldap_read_data, (void *) ldapServer );
 	}
 	return ldapServer->retVal;
 }

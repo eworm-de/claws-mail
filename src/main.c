@@ -296,9 +296,7 @@ int main(int argc, char *argv[])
 	/* ignore SIGPIPE signal for preventing sudden death of program */
 	signal(SIGPIPE, SIG_IGN);
 
-	gdk_threads_enter();
 	gtk_main();
-	gdk_threads_leave();
 
 #if USE_PSPELL       
 	gtkpspell_finished(gtkpspellconfig);
