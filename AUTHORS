@@ -21,6 +21,10 @@ sylpheed-w32 (http://www.gnupg.org/cvs-access.html)
 
 	Werner Koch		<wk@gnupg.org>
 
+sylpheed-claws-w32 (http://sylpheed-claws.sourceforge.net)
+
+	Thorsten Maerz		<torte@netztorte.de>
+
 sylpheed documentation (http://sylpheeddoc.sourceforge.net)
 
 	François Barriere 	<barriere.francois@libertysurf.fr>
@@ -142,4 +146,3 @@ contributors (beside the above; based on Changelog)
 	Stefaan Eeckels
 	Pascal Jermini
 	Thorsten Thielen
-	Thorsten Maerz
