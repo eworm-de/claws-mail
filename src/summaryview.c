@@ -708,7 +708,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 		}
    		folder_update_op_count();
 	}
-
+        
+	summary_write_cache(summaryview);
+        
 	summaryview->folderview->opened = selected_node;
 
 	gtk_clist_freeze(GTK_CLIST(ctree));

@@ -1,4 +1,7 @@
-2001-11-26 [paul]
+2001-11-26 [paul]	0.6.5claws37
+
+	* src/summaryview.c
+        	fix 'recurring unread state' bug 
 
 	* tools/README, tools/filter_conv.pl
         	read name of top level mailbox from folderlist.xml
