@@ -3207,7 +3207,7 @@ static void addressbook_ldap_show_message( SyldapServer *svr ) {
 	addressbook_status_show( addressbook_msgbuf );
 }
 
-static void ldapsearch_callback( SyldapServer *sls ) {
+static void addressbook_ldap_show_results( SyldapServer *sls ) {
 	GtkCTree *ctree = GTK_CTREE(addrbook.ctree);
 	AddressObject *obj;
 	AdapterDSource *ads = NULL;
@@ -3241,6 +3241,52 @@ static void ldapsearch_callback( SyldapServer *sls ) {
 		}
 	}
 }
+
+/*
+ * LDAP idle function. This function is called during UI idle time while
+ * an LDAP search is in progress.
+ * Enter: data Reference to LDAP server object.
+ */
+static void addressbook_ldap_idle( gpointer data ) {
+	SyldapServer *server;
+
+	server = ( SyldapServer * ) data;	
+	if( ! server->busyFlag ) {
+		/* Server has completed search - remove from idle list */
+		gtk_idle_remove( server->idleId );
+
+		/* Process callback and free up the thread */
+		addressbook_ldap_show_results( server );
+		g_free( server->thread );
+		server->thread = NULL;
+	}
+}
+
+/*
+ * Perform lookup for LDAP search.
+ * Enter: ads     Adapter for data source.
+ *        sLookup Lookup string.
+ */
+static void addressbook_ldap_lookup( AdapterDSource *ads, gchar *sLookup ) {
+	AddressDataSource *ds = NULL;
+	AddressInterface *iface = NULL;
+	SyldapServer *server;
+
+	ds = ads->dataSource;
+	if( ds == NULL ) return;
+	iface = ds->interface;
+	if( ! iface->haveLibrary ) return;
+	server = ds->rawDataSource;
+	if( server ) {
+		syldap_cancel_read( server );
+		if( *sLookup == '\0' || strlen( sLookup ) < 1 ) return;
+		syldap_set_search_value( server, sLookup );
+		server->idleId = gtk_idle_add(
+			( GtkFunction ) addressbook_ldap_idle, server );
+		syldap_read_data_th( server );
+		addressbook_ldap_show_message( server );
+	}
+}
 #endif
 
 /*
@@ -3250,10 +3296,6 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 	GtkCTree *ctree = GTK_CTREE(addrbook.ctree);
 	AddressObject *obj;
 	AdapterDSource *ads = NULL;
-#ifdef USE_LDAP
-	AddressDataSource *ds = NULL;
-	AddressInterface *iface = NULL;
-#endif /* USE_LDAP */
 	gchar *sLookup;
 
 	if( ! addrbook.treeSelected ) return;
@@ -3269,21 +3311,7 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 		ads = ADAPTER_DSOURCE(obj);
 #ifdef USE_LDAP
 		if( ads->subType == ADDR_LDAP ) {
-			SyldapServer *server;
-
-			ds = ads->dataSource;
-			if( ds == NULL ) return;
-			iface = ds->interface;
-			if( ! iface->haveLibrary ) return;
-			server = ds->rawDataSource;
-			if( server ) {
-				syldap_cancel_read( server );
-				if( *sLookup == '\0' || strlen( sLookup ) < 1 ) return;
-				syldap_set_search_value( server, sLookup );
-				syldap_set_callback( server, ldapsearch_callback );
-				syldap_read_data_th( server );
-				addressbook_ldap_show_message( server );
-			}
+			addressbook_ldap_lookup( ads, sLookup );
 		}
 #endif /* USE_LDAP */
 	}
