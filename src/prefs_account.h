@@ -50,12 +50,6 @@ typedef enum {
 	SIG_DIRECT
 } SigType;
 
-typedef enum {
-	/* login and retrieve messages, as before */
-	STYPE_NORMAL,
-	/* just login (pop before smtp) */
-	STYPE_POP_BEFORE_SMTP,
-} Pop3SessionType;
 
 #if USE_GPGME
 typedef enum {
@@ -115,10 +109,6 @@ struct _PrefsAccount
 	gboolean filter_on_recv;
 	gchar *inbox;
 	gint max_articles;
-
-	/* selective Download */
-	gint   session;
-	GSList *msg_list;
 
 	/* Send */
 	gboolean add_date;

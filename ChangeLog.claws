@@ -1,3 +1,11 @@
+2003-04-18 [oliver]	0.8.11claws102
+
+	* src/inc.c 
+	* src/prefs_account.h
+		remove Pop3SessionType (used by selective download)
+	* src/prefs_toolbar.c
+		enable set Default Toolbar button
+
 2003-04-18 [paul]	0.8.11claws101
 
 	* sync with 0.8.11cvs29

@@ -193,7 +193,7 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 			if (account_new_msgs > 0)
 				new_msgs += account_new_msgs;
 		}
-		cur_account->session = STYPE_NORMAL;
+
 		account_new_msgs = inc_account_mail(cur_account, mainwin);
 		if (account_new_msgs > 0)
 			new_msgs += account_new_msgs;
@@ -208,7 +208,6 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 
 void inc_pop_before_smtp(PrefsAccount *acc)
 {
-	acc->session = STYPE_POP_BEFORE_SMTP;
 	inc_account_mail(acc, NULL);
 }
 
@@ -315,7 +314,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 	for (list = account_get_list(); list != NULL; list = list->next) {
 		IncSession *session;
 		PrefsAccount *account = list->data;
-		account->session = STYPE_NORMAL;
+
 		if (account->recv_at_getall) {
 			session = inc_session_new(account);
 			if (session)
