@@ -1,3 +1,22 @@
+2001-08-21 [paul]
+
+	clean up after sync with sylpheed 0.5.3 release
+
+	* src/account.c, src/mainwindow.c
+		replace folderview_update_all() with
+		folderview_update_all_node()
+
+	* src/folderview.c
+		remove folderview_update_all()
+		fix re-introduced font mess, see Christoph's
+		entry 2001-06-24
+
+	* src/summaryview.c
+		remove prev_msgnum
+                use sylpheed's small font instead of
+		gtk default font for summary view
+
+
 2001-08-17 [paul]
 
 	* configure.in

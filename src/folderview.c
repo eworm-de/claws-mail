@@ -91,6 +91,8 @@ static GList *folderview_list = NULL;
 static GdkFont *normalfont;
 static GdkFont *boldfont;
 
+static GtkStyle *normal_style;
+static GtkStyle *normal_color_style;
 static GtkStyle *bold_style;
 static GtkStyle *bold_color_style;
 
@@ -439,6 +441,13 @@ void folderview_init(FolderView *folderview)
 		bold_color_style = gtk_style_copy(bold_style);
 		bold_color_style->fg[GTK_STATE_NORMAL] = folderview->color_new;
 	}
+	if (!normal_style) {
+		normal_style = gtk_style_copy(gtk_widget_get_style(ctree));
+		normal_style->font = normalfont;
+		normal_color_style = gtk_style_copy(normal_style);
+		normal_color_style->fg[GTK_STATE_NORMAL] = folderview->color_new;
+	}
+
 }
 
 void folderview_set(FolderView *folderview)
@@ -665,28 +674,6 @@ void folderview_update_tree(Folder *folder)
 	gtk_widget_destroy(window);
 }
 
-void folderview_update_all(void)
-{
-	GList *list;
-	GtkWidget *window;
-
-	window = label_window_create(_("Updating all folders..."));
-
-	list = folder_get_list();
-	for (; list != NULL; list = list->next) {
-		Folder *folder = list->data;
-
-		if (!folder->scan_tree) continue;
-		folder_set_ui_func(folder, folderview_scan_tree_func, NULL);
-		folder->scan_tree(folder);
-		folder_set_ui_func(folder, NULL, NULL);
-	}
-
-	folder_write_list();
-	folderview_set_all();
-	gtk_widget_destroy(window);
-}
-
 void folderview_update_all_node(void)
 {
 	GList *list;
@@ -813,7 +800,7 @@ static gboolean folderview_have_unread_children(FolderView *folderview,
 static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
-	GtkStyle *style, *prev_style, *ctree_style;
+	GtkStyle *style = NULL;
 	GtkCTreeNode *parent;
 	FolderItem *item;
 	GdkPixmap *xpm, *openxpm;
@@ -919,20 +906,11 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		gtk_ctree_node_set_text(ctree, node, COL_TOTAL,  itos(item->total));
 	}
 
-	ctree_style = gtk_widget_get_style(GTK_WIDGET(ctree));
-	prev_style = gtk_ctree_node_get_row_style(ctree, node);
-	if (!prev_style)
-		prev_style = ctree_style;
-	style = gtk_style_copy(prev_style);
-	if (!style) return;
+	if (item->stype == F_TRASH) return;
 
 	if (item->stype == F_QUEUE) {
 		/* highlight queue folder if there are any messages */
 		use_bold = use_color = (item->total > 0);
-	} else if (item->stype == F_TRASH) {
-		/* Never highlight trash */
-		use_bold = FALSE;
-		use_color = FALSE;
 	} else {
 		/* if unread messages exist, print with bold font */
 		use_bold = (item->unread > 0) || add_unread_mark;
@@ -943,28 +921,30 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 			 folderview_have_new_children(folderview, node));
 	}
 
-	if (use_bold && boldfont)
-		style->font = boldfont;
-	else
-		style->font = normalfont;
+	gtk_ctree_node_set_foreground(ctree, node, NULL);
 
-	if (use_color) {
-		style->fg[GTK_STATE_NORMAL]   = folderview->color_new;
-		style->fg[GTK_STATE_SELECTED] = folderview->color_new;
-	} else {
+	if (use_bold && use_color)
+		style = bold_color_style;
+	else if (use_bold) {
+		style = bold_style;
 		if (item->op_count > 0) {
-			if (boldfont)
-				style->font = boldfont;
-			style->fg[GTK_STATE_NORMAL]   =
-				folderview->color_op;
-			style->fg[GTK_STATE_SELECTED] =
-				folderview->color_op;
+			gtk_ctree_node_set_foreground(ctree, node,
+			                              &folderview->color_op);
 		} else {
-			style->fg[GTK_STATE_NORMAL] =
-				ctree_style->fg[GTK_STATE_NORMAL];
-			style->fg[GTK_STATE_SELECTED] =
-				ctree_style->fg[GTK_STATE_SELECTED];
+			style = bold_style;
 		}
+	}
+	else if (use_color) {
+		style = normal_color_style;
+		gtk_ctree_node_set_foreground(ctree, node,
+					      &folderview->color_new);
+	}
+	else if (item->op_count > 0) {
+        	style = normal_color_style;
+		gtk_ctree_node_set_foreground(ctree, node,
+					      &folderview->color_op);
+	} else {
+		style = normal_style;
 	}
 
 	gtk_ctree_node_set_row_style(ctree, node, style);

@@ -111,6 +111,9 @@ static GdkFont *smallfont;
 static GtkStyle *bold_style;
 static GtkStyle *bold_marked_style;
 static GtkStyle *bold_deleted_style;
+static GtkStyle *small_style;
+static GtkStyle *small_marked_style;
+static GtkStyle *small_deleted_style;
 
 static GdkPixmap *folderxpm;
 static GdkBitmap *folderxpmmask;
@@ -787,11 +790,24 @@ void summary_init(SummaryView *summaryview)
 				    S_COL_MIME, pixmap);
 	gtk_widget_show(pixmap);
 
+	if (!small_style) {
+		small_style = gtk_style_copy
+			(gtk_widget_get_style(summaryview->ctree));
+		if (!smallfont)
+			smallfont = gdk_fontset_load(SMALL_FONT);
+		small_style->font = smallfont;
+		small_marked_style = gtk_style_copy(small_style);
+		small_marked_style->fg[GTK_STATE_NORMAL] =
+			summaryview->color_marked;
+		small_deleted_style = gtk_style_copy(small_style);
+		small_deleted_style->fg[GTK_STATE_NORMAL] =
+			summaryview->color_dim;
+	}
 	if (!bold_style) {
 		bold_style = gtk_style_copy
 			(gtk_widget_get_style(summaryview->ctree));
 		if (!boldfont)
-			boldfont = gdk_fontset_load(prefs_common.boldfont);
+			boldfont = gdk_fontset_load(BOLD_FONT);
 		bold_style->font = boldfont;
 		bold_marked_style = gtk_style_copy(bold_style);
 		bold_marked_style->fg[GTK_STATE_NORMAL] =
@@ -801,12 +817,27 @@ void summary_init(SummaryView *summaryview)
 			summaryview->color_dim;
 	}
 
-	if (!smallfont)
-		smallfont = gdk_fontset_load(SMALL_FONT);
+	/* if (!smallfont)
+		smallfont = gdk_fontset_load(SMALL_FONT);*/
+
+	if (!small_style) {
+		small_style = gtk_style_copy
+			(gtk_widget_get_style(summaryview->ctree));
+		if (!smallfont)
+			smallfont = gdk_fontset_load(SMALL_FONT);
+		small_style->font = smallfont;
+		small_marked_style = gtk_style_copy(small_style);
+		small_marked_style->fg[GTK_STATE_NORMAL] =
+			summaryview->color_marked;
+		small_deleted_style = gtk_style_copy(small_style);
+		small_deleted_style->fg[GTK_STATE_NORMAL] =
+			summaryview->color_dim;
+	}
 
 	style = gtk_style_copy(gtk_widget_get_style
 				(summaryview->statlabel_folder));
-	if (smallfont) style->font = smallfont;
+	/* if (smallfont) style->font = smallfont;*/
+
 	gtk_widget_set_style(summaryview->statlabel_folder, style);
 	gtk_widget_set_style(summaryview->statlabel_select, style);
 	gtk_widget_set_style(summaryview->statlabel_msgs, style);
@@ -892,7 +923,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	GSList *mlist = NULL;
 	gchar *buf;
 	gboolean is_refresh;
-	guint prev_msgnum = 0;
 	guint selected_msgnum = 0;
 	guint displayed_msgnum = 0;
 
@@ -925,6 +955,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 			summary_write_cache(summaryview);
 		else
 			return FALSE;
+   		folder_update_op_count();
 	}
 	else if (!summaryview->filtering_happened) {
 		summary_write_cache(summaryview);
@@ -2427,26 +2458,32 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 					  deletedxpm, deletedxpmmask);
 		if (style)
 			style = bold_deleted_style;
-		else
+		else {
+			style = small_deleted_style;
+		}
 			gtk_ctree_node_set_foreground
 				(ctree, row, &summaryview->color_dim);
 	} else if (MSG_IS_MARKED(flags)) {
-		gtk_ctree_node_set_pixmap(ctree, row, S_COL_MARK,
+        	gtk_ctree_node_set_pixmap(ctree, row, S_COL_MARK,
 					  markxpm, markxpmmask);
 	} else if (MSG_IS_MOVE(flags)) {
 		gtk_ctree_node_set_text(ctree, row, S_COL_MARK, "o");
 		if (style)
 			style = bold_marked_style;
-		else
+		else {
+			style = small_marked_style;
+		}
 			gtk_ctree_node_set_foreground
 				(ctree, row, &summaryview->color_marked);
 	} else if (MSG_IS_COPY(flags)) {
 		gtk_ctree_node_set_text(ctree, row, S_COL_MARK, "O");
                 if (style)
 			style = bold_marked_style;
-		else
-		gtk_ctree_node_set_foreground(ctree, row,
-					      &summaryview->color_marked);
+		else {
+			style = small_marked_style;
+		}
+			gtk_ctree_node_set_foreground
+                        	(ctree, row, &summaryview->color_marked);
 	}
 	else if ((global_scoring ||
 		  summaryview->folder_item->prefs->scoring) &&
@@ -2465,6 +2502,8 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 	} else {
 		gtk_ctree_node_set_text(ctree, row, S_COL_MIME, NULL);
 	}
+        if (!style)
+		style = small_style;
 
 	gtk_ctree_node_set_row_style(ctree, row, style);
 }
