@@ -2682,6 +2682,9 @@ void folder_item_apply_processing(FolderItem *item)
 	g_slist_free(mlist);
 }
 
+/*
+ *  Callback handling for FolderItem content changes
+ */
 GSList *folder_item_update_callbacks_list = NULL;
 gint	folder_item_update_callbacks_nextid = 0;
 
@@ -2746,12 +2749,10 @@ void folder_update_item(FolderItem *item, gboolean contentchange)
 	folder_item_update_callback_execute(item, contentchange);
 }
 
-static void folder_update_item_func(FolderItem *item, gpointer data)
+static void folder_update_item_func(FolderItem *item, gpointer contentchange)
 {
-	gboolean contentchange = GPOINTER_TO_INT(data);
-	
 	if (item->need_update) {
-		folder_item_update_callback_execute(item, contentchange);
+		folder_item_update_callback_execute(item, GPOINTER_TO_INT(contentchange));
 		item->need_update = FALSE;
 	}
 }

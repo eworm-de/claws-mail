@@ -2107,14 +2107,6 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		msginfo->threadscore = msginfo->score;
 	}
 
-	if (global_scoring || summaryview->folder_item->prefs->scoring) {
-		summaryview->important_score = prefs_common.important_score;
-		if (summaryview->folder_item->prefs->important_score >
-		    summaryview->important_score)
-			summaryview->important_score =
-				summaryview->folder_item->prefs->important_score;
-	}
-
 	if (summaryview->threaded) {
 		GNode *root, *gnode;
 
@@ -3871,9 +3863,6 @@ static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
 				gpointer data)
 {
 	MsgInfo *msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
-	SummaryView *summaryview = data;
-	gchar *file;
-	FolderItem *dest;
 
 	filter_message_by_msginfo(global_processing, msginfo);
 }
@@ -5301,6 +5290,15 @@ void summary_set_prefs_from_folderitem(SummaryView *summaryview, FolderItem *ite
 
 	/* Threading */
 	summaryview->threaded = item->threaded;
+
+	/* Scoring */
+	if (global_scoring || summaryview->folder_item->prefs->scoring) {
+		summaryview->important_score = prefs_common.important_score;
+		if (summaryview->folder_item->prefs->important_score >
+		    summaryview->important_score)
+			summaryview->important_score =
+				summaryview->folder_item->prefs->important_score;
+	}
 }
 
 void summary_save_prefs_to_folderitem(SummaryView *summaryview, FolderItem *item)
