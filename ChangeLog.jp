@@ -1,3 +1,28 @@
+2001-07-01
+
+	* version 0.5.0pre3
+
+	* src/folderview.[ch]: folderview_set_all(): 新規。
+	* src/account.c: account_add(): IMAP4 ツリーを作成した後
+	  folderview_set_all() を呼ぶようにした。
+	  account_edit_create(): リストをダブルクリックしてアカウントの設定
+	  ダイアログを開けるようにした。
+	  account_selected(): 新規。
+	  account_clist_set(): CList のフォーカスを正しくセットするようにした。
+
+2001-06-30
+
+	* src/imap.c: imap_scan_tree(): trash が見つからなければ
+	  imap_create_tree() を呼ぶようにした。
+	  imap_scan_tree_recursive(): INBOX のサブフォルダを探すようにした。
+	  Trash フォルダを認識するようにした。
+	  imap_create_tree(): trash を作成する部分を分割した。
+	  imap_create_trash(): 新規。
+	* src/folder.c: folder_build_tree(), folder_write_list_recursive():
+	  no_sub と no_select を保存するようにした。
+	* src/summaryview.c: summary_show(): item->no_select が真の場合
+	  続行しないようにした。
+
 2001-06-29
 
 	* src/imap.c: imap_scan_tree(): ルートフォルダを正しくセットして

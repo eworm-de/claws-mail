@@ -312,7 +312,7 @@ FolderView *folderview_create(void)
 	gtk_ctree_set_expander_style(GTK_CTREE(ctree),
 				     GTK_CTREE_EXPANDER_SQUARE);
 	gtk_ctree_set_indent(GTK_CTREE(ctree), CTREE_INDENT);
-	
+
 	/* don't let title buttons take key focus */
 	for (i = 0; i < N_FOLDER_COLS; i++)
 		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(ctree)->column[i].button,
@@ -454,6 +454,14 @@ void folderview_set(FolderView *folderview)
 	gtk_clist_thaw(GTK_CLIST(ctree));
 	main_window_cursor_normal(mainwin);
 	STATUSBAR_POP(mainwin);
+}
+
+void folderview_set_all(void)
+{
+	GList *list;
+
+	for (list = folderview_list; list != NULL; list = list->next)
+		folderview_set((FolderView *)list->data);
 }
 
 void folderview_select(FolderView *folderview, FolderItem *item)
@@ -628,7 +636,6 @@ static GtkWidget *label_window_create(const gchar *str)
 
 void folderview_update_tree(Folder *folder)
 {
-	GList *list;
 	GtkWidget *window;
 
 	g_return_if_fail(folder != NULL);
@@ -642,12 +649,7 @@ void folderview_update_tree(Folder *folder)
 	folder_set_ui_func(folder, NULL, NULL);
 
 	folder_write_list();
-
-	for (list = folderview_list; list != NULL; list = list->next) {
-		FolderView *folderview = (FolderView *)list->data;
-
-		folderview_set(folderview);
-	}
+	folderview_set_all();
 
 	gtk_widget_destroy(window);
 }
@@ -670,12 +672,7 @@ void folderview_update_all(void)
 	}
 
 	folder_write_list();
-
-	for (list = folderview_list; list != NULL; list = list->next) {
-		FolderView *folderview = (FolderView *)list->data;
-
-		folderview_set(folderview);
-	}
+	folderview_set_all();
 
 	gtk_widget_destroy(window);
 }

@@ -80,6 +80,11 @@ static void account_edit_close		(void);
 static gint account_delete_event	(GtkWidget	*widget,
 					 GdkEventAny	*event,
 					 gpointer	 data);
+static void account_selected		(GtkCList	*clist,
+					 gint		 row,
+					 gint		 column,
+					 GdkEvent	*event,
+					 gpointer	 data);
 static void account_key_pressed		(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
@@ -280,9 +285,10 @@ void account_add(void)
 		folder->account = ac_prefs;
 		ac_prefs->folder = REMOTE_FOLDER(folder);
 		folder_add(folder);
-		if (ac_prefs->protocol == A_IMAP4)
+		if (ac_prefs->protocol == A_IMAP4) {
 			folder->create_tree(folder);
-		folderview_update_all();
+			folderview_set_all();
+		}
 	}
 }
 
@@ -435,6 +441,9 @@ static void account_edit_create(void)
 	for (i = 0; i < N_EDIT_ACCOUNT_COLS; i++)
 		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(clist)->column[i].button,
 				       GTK_CAN_FOCUS);
+
+	gtk_signal_connect (GTK_OBJECT (clist), "select_row",
+			    GTK_SIGNAL_FUNC (account_selected), NULL);
 
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
@@ -625,6 +634,13 @@ static gint account_delete_event(GtkWidget *widget, GdkEventAny *event,
 	return TRUE;
 }
 
+static void account_selected(GtkCList *clist, gint row, gint column,
+			     GdkEvent *event, gpointer data)
+{
+	if (event && event->type == GDK_2BUTTON_PRESS)
+		account_edit_prefs();
+}
+
 static void account_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				gpointer data)
 {
@@ -681,12 +697,16 @@ static void account_clist_set(void)
 		gint row;
 
 		row = account_clist_set_row((PrefsAccount *)cur->data, -1);
-		if ((PrefsAccount *)cur->data == cur_account)
+		if ((PrefsAccount *)cur->data == cur_account) {
 			gtk_clist_select_row(clist, row, -1);
+			gtkut_clist_set_focus_row(clist, row);
+		}
 	}
 
-	if (prev_row >= 0)
+	if (prev_row >= 0) {
 		gtk_clist_select_row(clist, prev_row, -1);
+		gtkut_clist_set_focus_row(clist, prev_row);
+	}
 
 	gtk_clist_thaw(clist);
 }

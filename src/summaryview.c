@@ -687,7 +687,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	messageview_clear(summaryview->messageview);
 
 	buf = NULL;
-	if (!item || !item->path || !item->parent ||
+	if (!item || !item->path || !item->parent || item->no_select ||
 	    (item->folder->type == F_MH &&
 	     ((buf = folder_item_get_path(item)) == NULL ||
 	      change_dir(buf) < 0))) {
@@ -936,9 +936,8 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/Reply",			  sens);
 	menu_set_sensitive(ifactory, "/Reply to sender",	  sens);
 	menu_set_sensitive(ifactory, "/Reply to all",		  sens);
-	
-	menu_set_sensitive(ifactory, "/Forward",				TRUE);
-	menu_set_sensitive(ifactory, "/Forward as attachment",  TRUE);
+	menu_set_sensitive(ifactory, "/Forward",		  TRUE);
+	menu_set_sensitive(ifactory, "/Forward as attachment",    TRUE);
 	
 	menu_set_sensitive(ifactory, "/Open in new window", sens);
 	menu_set_sensitive(ifactory, "/View source", sens);
@@ -956,8 +955,8 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/Mark/Mark",   TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Unmark", TRUE);
 
-	menu_set_sensitive(ifactory, "/Mark/Mark as unread",        TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Mark as read",          TRUE);
+	menu_set_sensitive(ifactory, "/Mark/Mark as unread", TRUE);
+	menu_set_sensitive(ifactory, "/Mark/Mark as read",   TRUE);
 
 	menu_set_sensitive(ifactory, "/Select all", TRUE);
 
@@ -2162,7 +2161,6 @@ static void summary_mark_row_as_unread(SummaryView *summaryview,
 	MSG_UNSET_FLAGS(msginfo->flags, MSG_REPLIED | MSG_FORWARDED);
 	if (!MSG_IS_UNREAD(msginfo->flags)) {
 		MSG_SET_FLAGS(msginfo->flags, MSG_UNREAD);
-
 		gtk_ctree_node_set_pixmap(ctree, row, S_COL_UNREAD,
 					  unreadxpm, unreadxpmmask);
 		summaryview->unread++;

@@ -1,3 +1,28 @@
+2001-07-01
+
+	* version 0.5.0pre3
+
+	* src/folderview.[ch]: folderview_set_all(): new.
+	* src/account.c: account_add(): call folderview_set_all() after
+	  creating IMAP4 tree.
+	  account_edit_create(): account preferences dialog can be opened
+	  with double clicking of the list.
+	  account_selected(): new.
+	  account_clist_set(): made the CList focus set correctly.
+
+2001-06-30
+
+	* src/imap.c: imap_scan_tree(): call imap_create_trash() if trash
+	  is not found.
+	  imap_scan_tree_recursive(): search the sub folders of INBOX.
+	  recognize Trash folder.
+	  imap_create_tree(): separated the part of creating trash.
+	  imap_create_trash(): new.
+	* src/folder.c: folder_build_tree(), folder_write_list_recursive():
+	  preserve no_sub and no_select.
+	* src/summaryview.c: summary_show(): don't proceed if item->no_select
+	  is TRUE.
+
 2001-06-29
 
 	* src/imap.c: imap_scan_tree(): fixed a bug that didn't set the

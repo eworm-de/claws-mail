@@ -196,6 +196,15 @@ void folder_item_remove(FolderItem *item)
 	g_node_destroy(node);
 }
 
+void folder_item_destroy(FolderItem *item)
+{
+	g_return_if_fail(item != NULL);
+
+	g_free(item->name);
+	g_free(item->path);
+	g_free(item);
+}
+
 void folder_set_ui_func(Folder *folder, FolderUIFunc func, gpointer data)
 {
 	g_return_if_fail(folder != NULL);
@@ -1041,6 +1050,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	const gchar *name = NULL;
 	const gchar *path = NULL;
 	PrefsAccount *account = NULL;
+	gboolean no_sub = FALSE, no_select = FALSE;
 	gint mtime = 0, new = 0, unread = 0, total = 0;
 
 	g_return_val_if_fail(node->data != NULL, FALSE);
@@ -1078,8 +1088,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 			account = account_find_from_id(atoi(attr->value));
 			if (!account) g_warning("account_id: %s not found\n",
 						attr->value);
-		}
-		else if (!strcmp(attr->name, "mtime"))
+		} else if (!strcmp(attr->name, "mtime"))
 			mtime = atoi(attr->value);
 		else if (!strcmp(attr->name, "new"))
 			new = atoi(attr->value);
@@ -1087,6 +1096,10 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 			unread = atoi(attr->value);
 		else if (!strcmp(attr->name, "total"))
 			total = atoi(attr->value);
+		else if (!strcmp(attr->name, "no_sub"))
+			no_sub = *attr->value == '1' ? TRUE : FALSE;
+		else if (!strcmp(attr->name, "no_select"))
+			no_select = *attr->value == '1' ? TRUE : FALSE;
 	}
 
 	item = folder_item_new(name, path);
@@ -1096,6 +1109,8 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	item->new = new;
 	item->unread = unread;
 	item->total = total;
+	item->no_sub = no_sub;
+	item->no_select = no_select;
 	item->parent = FOLDER_ITEM(node->parent->data);
 	item->folder = folder;
 	switch (stype) {
@@ -1236,8 +1251,12 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 			fputs("\"", fp);
 		}
 		if (item->account)
-			fprintf(fp, " account_id = \"%d\"",
+			fprintf(fp, " account_id=\"%d\"",
 				item->account->account_id);
+		if (item->no_sub)
+			fputs(" no_sub=\"1\"", fp);
+		if (item->no_select)
+			fputs(" no_select=\"1\"", fp);
 		fprintf(fp,
 			" mtime=\"%ld\" new=\"%d\" unread=\"%d\" total=\"%d\"",
 			item->mtime, item->new, item->unread, item->total);

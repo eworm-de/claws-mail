@@ -241,6 +241,7 @@ FolderItem *folder_item_new	(const gchar	*name,
 void        folder_item_append	(FolderItem	*parent,
 				 FolderItem	*item);
 void        folder_item_remove	(FolderItem	*item);
+void        folder_item_destroy	(FolderItem	*item);
 void        folder_set_ui_func	(Folder		*folder,
 				 FolderUIFunc	 func,
 				 gpointer	 data);

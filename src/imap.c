@@ -57,6 +57,7 @@ static void imap_scan_tree_recursive	(IMAPSession	*session,
 					 IMAPNameSpace	*namespace);
 static GSList *imap_parse_list		(IMAPSession	*session,
 					 const gchar	*path);
+static gint imap_create_trash		(Folder		*folder);
 
 static gint imap_do_copy		(Folder		*folder,
 					 FolderItem	*dest,
@@ -717,12 +718,16 @@ void imap_scan_tree(Folder *folder)
 	folder->node = g_node_new(item);
 	g_free(root_folder);
 
-	inbox = folder_item_new("INBOX", "INBOX");
-	inbox->stype = F_INBOX;
-	folder_item_append(item, inbox);
-	folder->inbox = inbox;
-
 	imap_scan_tree_recursive(session, item, namespace);
+
+	if (!folder->inbox) {
+		inbox = folder_item_new("INBOX", "INBOX");
+		inbox->stype = F_INBOX;
+		folder_item_append(item, inbox);
+		folder->inbox = inbox;
+	}
+	if (!folder->trash)
+		imap_create_trash(folder);
 }
 
 static void imap_scan_tree_recursive(IMAPSession *session,
@@ -763,6 +768,20 @@ static void imap_scan_tree_recursive(IMAPSession *session,
 	item_list = imap_parse_list(session, real_path);
 	for (cur = item_list; cur != NULL; cur = cur->next) {
 		new_item = cur->data;
+		if (!strcmp(new_item->path, "INBOX")) {
+			if (!item->folder->inbox) {
+				new_item->stype = F_INBOX;
+				item->folder->inbox = new_item;
+			} else {
+				folder_item_destroy(new_item);
+				continue;
+			}
+		} else if (!item->parent && !item->folder->trash) {
+			if (!strcasecmp(g_basename(new_item->path), "Trash")) {
+				new_item->stype = F_TRASH;
+				item->folder->trash = new_item;
+			}
+		}
 		folder_item_append(item, new_item);
 		if (new_item->no_sub == FALSE)
 			imap_scan_tree_recursive(session, new_item, namespace);
@@ -823,7 +842,6 @@ static GSList *imap_parse_list(IMAPSession *session, const gchar *path)
 		strtailchomp(buf, separator[0]);
 		if (buf[0] == '\0') continue;
 		if (!strcmp(buf, path)) continue;
-		if (!strcmp(buf, "INBOX")) continue;
 
 		if (separator[0] != '\0')
 			subst_char(buf, separator[0], '/');
@@ -849,6 +867,33 @@ static GSList *imap_parse_list(IMAPSession *session, const gchar *path)
 
 gint imap_create_tree(Folder *folder)
 {
+	FolderItem *item;
+
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(folder->node != NULL, -1);
+	g_return_val_if_fail(folder->node->data != NULL, -1);
+	g_return_val_if_fail(folder->account != NULL, -1);
+
+	imap_scan_tree(folder);
+
+	item = FOLDER_ITEM(folder->node->data);
+
+	if (!folder->inbox) {
+		FolderItem *inbox;
+
+		inbox = folder_item_new("INBOX", "INBOX");
+		inbox->stype = F_INBOX;
+		folder_item_append(item, inbox);
+		folder->inbox = inbox;
+	}
+	if (!folder->trash)
+		imap_create_trash(folder);
+
+	return 0;
+}
+
+static gint imap_create_trash(Folder *folder)
+{
 	IMAPFolder *imapfolder = IMAP_FOLDER(folder);
 	FolderItem *item;
 	FolderItem *new_item;
@@ -859,15 +904,6 @@ gint imap_create_tree(Folder *folder)
 	g_return_val_if_fail(folder->node != NULL, -1);
 	g_return_val_if_fail(folder->node->data != NULL, -1);
 	g_return_val_if_fail(folder->account != NULL, -1);
-
-	imap_session_get(folder);
-
-	item = FOLDER_ITEM(folder->node->data);
-
-	new_item = folder_item_new("INBOX", "INBOX");
-	new_item->stype = F_INBOX;
-	folder_item_append(item, new_item);
-	folder->inbox = new_item;
 
 	if (folder->account->imap_dir && *folder->account->imap_dir) {
 		gchar *tmpdir;
@@ -887,12 +923,13 @@ gint imap_create_tree(Folder *folder)
 
 			Xstrdup_a(name, namespace->name, return -1);
 			subst_char(name, namespace->separator, '/');
-			trash_path = g_strconcat(name, imap_dir, "trash", NULL);
+			trash_path = g_strconcat(name, imap_dir, "Trash", NULL);
 		} else
-			trash_path = g_strconcat(imap_dir, "trash", NULL);
+			trash_path = g_strconcat(imap_dir, "Trash", NULL);
 	} else
-		trash_path = g_strconcat(imap_dir, "trash", NULL);
+		trash_path = g_strconcat(imap_dir, "Trash", NULL);
 
+	item = FOLDER_ITEM(folder->node->data);
 	new_item = imap_create_folder(folder, item, trash_path);
 
 	if (!new_item) {
@@ -913,6 +950,7 @@ gint imap_create_tree(Folder *folder)
 	folder->trash = new_item;
 
 	g_free(trash_path);
+
 	return 0;
 }
 
