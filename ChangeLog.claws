@@ -1,3 +1,9 @@
+2002-11-06 [paul]	0.8.5claws78
+
+	* sync with 0.8.5cvs19
+		see ChangeLog 2002-11-06 for src/account.c: 
+		account_get_special_folder()
+		
 2002-11-05 [alfons]	0.8.5claws77
 
 	* src/crash.c
