@@ -2159,13 +2159,15 @@ static void summary_set_header(gchar *text[], MsgInfo *msginfo)
 		Xalloca(from, strlen(msginfo->from) + 1, return);
 		strcpy(from, msginfo->from);
 		extract_address(from);
-		count = complete_address(from);
-		if (count > 1) {
-			g_free(from_name);
-			from = get_complete_address(1);
-			from_name = procheader_get_fromname(from);
-			g_free(from);
-			text[S_COL_FROM] = from_name;
+		if (*from) {
+			count = complete_address(from);
+			if (count > 1) {
+				g_free(from_name);
+				from = get_complete_address(1);
+				from_name = procheader_get_fromname(from);
+				g_free(from);
+				text[S_COL_FROM] = from_name;
+			}
 		}
 	}
 

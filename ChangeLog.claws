@@ -1,3 +1,9 @@
+2001-07-20 [darko]
+
+	* src/summaryview.c
+		fix show sender using address book with no e-mail
+		address in From: field
+
 2001-07-19 [alfons]
 
 	* src/matcher.[ch], src/filtering.c, src/prefs_filtering.c
