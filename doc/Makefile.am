@@ -1,0 +1,1 @@
+SUBDIRS = faq man manual
