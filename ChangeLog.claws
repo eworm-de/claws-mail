@@ -1,3 +1,11 @@
+2002-10-24 [christoph]	0.8.5claws52
+
+	* src/mainwindow.c
+	* src/manual.[ch]
+		o use manual of current locale or english if current
+		  locale is not available (and english is available)
+		o also link to sylpheed doc project manuals
+
 2002-10-23 [paul]	0.8.5claws51
 
 	* tools/README
