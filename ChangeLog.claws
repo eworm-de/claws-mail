@@ -1,3 +1,10 @@
+2003-02-04 [christoph]	0.8.9claws39
+
+	* src/folder.c
+		first add the new message to the cache, then
+		send the update notification
+		(closes bug 39 after sending message folderview doesnt get updated)
+
 2003-02-04 [colin]	0.8.9claws38
 
 	* src/inc.c

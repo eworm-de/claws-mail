@@ -1526,11 +1526,11 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 			if (procmsg_msg_has_flagged_parent(msginfo, MSG_IGNORE_THREAD))
 				procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 			dest->total++;
-			folder_item_update(dest, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 
             		msgcache_add_msg(dest->cache, msginfo);
-
     			procmsg_msginfo_free(msginfo);
+
+			folder_item_update(dest, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 		}
 
                 dest->last_num = num;
