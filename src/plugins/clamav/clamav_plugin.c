@@ -88,7 +88,7 @@ static gboolean scan_func(GNode *node, gpointer data)
     		} else {
 			debug_print("No virus detected.\n");
 			if (ret != CL_CLEAN)
-				debug_print("Error: %s\n", cl_perror(ret));
+				debug_print("Error: %s\n", cl_strerror(ret));
     		}
 
 		unlink(outfile);
@@ -125,10 +125,10 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		params.scan_archive = TRUE;
 
     	if((ret = cl_loaddbdir(cl_retdbdir(), &params.root, &no))) {
-		debug_print("cl_loaddbdir: %s\n", cl_perror(ret));
+		debug_print("cl_loaddbdir: %s\n", cl_strerror(ret));
 		exit(2);
     	}
-    	debug_print("Database loaded (containing in total %d signatures)\n", no / 2);
+    	debug_print("Database loaded (containing in total %d signatures)\n", no);
 
     	cl_buildtrie(params.root);
 

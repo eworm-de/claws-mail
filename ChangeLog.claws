@@ -1,3 +1,10 @@
+2003-12-11 [paul]	0.9.7claws36
+
+	* src/plugins/clamav/clamav_plugin.c
+		fix (don't break) signature count
+		use cl_strerror() instead of deprecated cl_perror()
+		
+	
 2003-12-11 [darko]	0.9.7claws35
 
 	* src/summaryview.c
