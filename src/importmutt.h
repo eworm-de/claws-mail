@@ -24,7 +24,7 @@
 #ifndef __IMPORT_MUTT_H__
 #define __IMPORT_MUTT_H__
 
-// Function prototypes
+/* Function prototypes */
 AddressBookFile *addressbook_imp_mutt( AddressIndex *addrIndex );
 
 #endif /* __IMPORT_MUTT_H__ */

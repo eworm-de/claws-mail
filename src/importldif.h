@@ -24,7 +24,7 @@
 #ifndef __IMPORT_LDIF_H__
 #define __IMPORT_LDIF_H__
 
-// Function prototypes
+/* Function prototypes */
 AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex );
 
 #endif /* __IMPORT_LDIF_H__ */

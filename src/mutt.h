@@ -35,21 +35,21 @@
 #define	MUTT_TAG_ALIAS      "alias"
 
 /*
-// Typical MUTT entry:
-//
-// alias alias-name email-address (friendly-name) [, email-address (friendly-name) ...]
-//
-// The alias-name maybe the name of an individual or the name of a group
-// comprising many individuals. The alias name should not contain the space,
-// comma (,) or at (@) character. The friendly-name is optional. A back-slash
-// character at end-of-line may be used as a continuation character.
-//
-// An example:
-// 
-// alias myhome  axel@axelrose.com (Axel Rose)
-// alias axe     axelrose@aol.com  (The Axe)
-// alias buddies esr@wheres-my-mail.com (Eric Raymond), bgates@hotmail.com (Oops Lost It)
-//
+* Typical MUTT entry:
+*
+* alias alias-name email-address (friendly-name) [, email-address (friendly-name) ...]
+*
+* The alias-name maybe the name of an individual or the name of a group
+* comprising many individuals. The alias name should not contain the space,
+* comma (,) or at (@) character. The friendly-name is optional. A back-slash
+* character at end-of-line may be used as a continuation character.
+*
+* An example:
+* 
+* alias myhome  axel@axelrose.com (Axel Rose)
+* alias axe     axelrose@aol.com  (The Axe)
+* alias buddies esr@wheres-my-mail.com (Eric Raymond), bgates@hotmail.com (Oops Lost It)
+*
 */
 
 /* MUTT file object */
