@@ -1,3 +1,8 @@
+2002-02-12 [carsten]	0.7.0claws61 (more 59.75)
+	* src/stock_pixmap.c
+		fixed a bug: if there's no theme directory don't
+		throw an error, just do "nothing" (thanks Alfons)
+
 2002-02-12 [carsten]	0.7.0claws60
 	* src/folderview.c
 	  src/summaryview.c

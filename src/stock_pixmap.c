@@ -240,9 +240,7 @@ static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname)
 	int n;
 
 	n = scandir(dirname, &namelist, 0, alphasort);
-	if (n < 0)
-		g_error("scandir");
-	else {
+	if (n > 0) {
 		while(n--) {
 			gchar *entry = namelist[n]->d_name;
 			gchar *fullentry = g_strconcat(dirname, G_DIR_SEPARATOR_S, entry, NULL);
@@ -260,7 +258,7 @@ static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname)
 			}
 			g_free(namelist[n]);
 		}
-	g_free(namelist);
+		g_free(namelist);
 	}
 }
 
