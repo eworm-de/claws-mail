@@ -379,6 +379,19 @@ static GtkCTreeNode *grouplist_create_branch(NewsGroupInfo *ginfo,
 	return node;
 }
 
+static void grouplist_expand_upwards(GtkCTree *ctree, const gchar *name) {
+	const gchar *ptr;
+	gchar *newname=g_malloc0(strlen(name));
+
+	for (ptr=name; *ptr; ptr++) {
+		if (*ptr == '.')
+			gtk_ctree_expand(ctree, 
+				grouplist_hash_get_branch_node(newname));
+		newname[ptr-name] = *ptr;
+	}
+	g_free(newname);
+}
+
 static void grouplist_dialog_set_list(const gchar *pattern, gboolean refresh)
 {
 	GSList *cur;
@@ -418,8 +431,8 @@ static void grouplist_dialog_set_list(const gchar *pattern, gboolean refresh)
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
 	g_signal_handlers_block_by_func(G_OBJECT(ctree),
-									G_CALLBACK(ctree_selected),
-									NULL);
+					G_CALLBACK(ctree_selected),
+					NULL);
 
 	for (cur = group_list; cur != NULL ; cur = cur->next) {
 		NewsGroupInfo *ginfo = (NewsGroupInfo *)cur->data;
@@ -428,10 +441,13 @@ static void grouplist_dialog_set_list(const gchar *pattern, gboolean refresh)
 			node = grouplist_create_branch(ginfo, pattern);
 			if (g_slist_find_custom(subscribed, ginfo->name,
 						(GCompareFunc)g_strcasecmp)
-			    != NULL)
+						!= NULL) {
 				gtk_ctree_select(GTK_CTREE(ctree), node);
+			}
 		}
 	}
+	for (cur = subscribed; cur; cur = g_slist_next(cur))
+		grouplist_expand_upwards(GTK_CTREE(ctree), (gchar *)cur->data);
 
 	g_signal_handlers_unblock_by_func(G_OBJECT(ctree),
 					  G_CALLBACK(ctree_selected),
