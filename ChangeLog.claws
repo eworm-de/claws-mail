@@ -1,3 +1,8 @@
+2001-10-24 [christoph]	0.6.4claws3
+
+	* src/socket.c
+		fix ssl deadlock, when peer closes connection
+
 2001-10-24 [paul]	0.6.4claws2
 
 	* src/prefs_common.c

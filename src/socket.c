@@ -455,7 +455,7 @@ gint ssl_gets(SSL *ssl, gchar *buf, gint len)
 		return -1;
 	while (len > 0 && !newline) {
 		*bp = '\0';
-		if ((n = SSL_read(ssl, bp, 1)) < 0)
+		if ((n = SSL_read(ssl, bp, 1)) <= 0)
 			return -1;
 		if (*bp == '\n')
 			newline = TRUE;
