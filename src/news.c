@@ -919,7 +919,9 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 		}
 		count++;
 		progressindicator_set_percentage
-			(PROGRESS_TYPE_NETWORK, session->fetch_base_percentage + ((gfloat) count / (gfloat) lines));
+			(PROGRESS_TYPE_NETWORK,
+			 session->fetch_base_percentage +
+			 (((gfloat) count) / ((gfloat) lines)) * session->fetch_total_percentage);
 
 		if (buf[0] == '.' && buf[1] == '\r') break;
 
@@ -956,7 +958,9 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 		}
 		count++;
 		progressindicator_set_percentage
-			(PROGRESS_TYPE_NETWORK, session->fetch_base_percentage + ((gfloat) count / (gfloat) lines));
+			(PROGRESS_TYPE_NETWORK,
+			 session->fetch_base_percentage +
+			 (((gfloat) count) / ((gfloat) lines)) * session->fetch_total_percentage);
 
 		if (buf[0] == '.' && buf[1] == '\r') break;
 		if (!llast) {
@@ -984,7 +988,9 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 		}
 		count++;
 		progressindicator_set_percentage
-			(PROGRESS_TYPE_NETWORK, session->fetch_base_percentage + ((gfloat) count / (gfloat) lines));
+			(PROGRESS_TYPE_NETWORK,
+			 session->fetch_base_percentage +
+			 (((gfloat) count) / ((gfloat) lines)) * session->fetch_total_percentage);
 
 		if (buf[0] == '.' && buf[1] == '\r') break;
 		if (!llast) {
@@ -1033,7 +1039,8 @@ GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 	for(elem = g_slist_next(tmp_msgnum_list); elem != NULL; elem = g_slist_next(elem)) {
 		next = GPOINTER_TO_INT(elem->data);
 		if(next != (last + 1)) {
-			session->fetch_base_percentage = (gfloat) fetched / (gfloat) tofetch;
+			session->fetch_base_percentage = ((gfloat) fetched) / ((gfloat) tofetch);
+			session->fetch_total_percentage = ((gfloat) (last - first + 1)) / ((gfloat) tofetch);
 			tmp_msginfo_list = news_get_msginfos_for_range(session, item, first, last);
 			msginfo_list = g_slist_concat(msginfo_list, tmp_msginfo_list);
 			fetched = last - first + 1;
@@ -1041,6 +1048,8 @@ GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 		}
 		last = next;
 	}
+	session->fetch_base_percentage = ((gfloat) fetched) / ((gfloat) tofetch);
+	session->fetch_total_percentage = ((gfloat) (last - first + 1)) / ((gfloat) tofetch);
 	tmp_msginfo_list = news_get_msginfos_for_range(session, item, first, last);
 	msginfo_list = g_slist_concat(msginfo_list, tmp_msginfo_list);
 

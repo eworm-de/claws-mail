@@ -1,3 +1,10 @@
+2003-03-03 [christoph]	0.8.10claws79
+
+	* src/news.c
+		have to multiply the percentage of the current fetch with
+		the percentage that it has of the total fetch operation
+		for correct values
+
 2003-03-03 [christoph]	0.8.10claws78
 
 	* src/news.c

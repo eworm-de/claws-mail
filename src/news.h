@@ -48,6 +48,7 @@ struct _NNTPSession
 	NNTPSockInfo *nntp_sock;
 	gchar *group;
 	gfloat fetch_base_percentage;
+	gfloat fetch_total_percentage;
 };
 
 struct _NewsGroupInfo
