@@ -1,3 +1,9 @@
+2003-01-09
+
+	* src/codeconv.c: conv_encode_header(): 改行の後に生の文字列を出力
+	  してしまうバグを修正。
+	* INSTALL を更新。
+
 2003-01-08
 
 	* src/codeconv.[ch]: コードの整理と最適化。

@@ -118,7 +118,7 @@ Sylpheed は標準で US-ASCII, ISO-8859-1, EUC-JP に対応しています。
 
   http://ghost.math.sci.hokudai.ac.jp/misc/libjconv/
 
-GnuPG (PGP)対応を有効にしたい場合は、 GPGME 0.3.10 以降と GnuPG 1.0.7 以降が
+GnuPG (PGP)対応を有効にしたい場合は、 GPGME 0.3.10 以降と GnuPG 1.2.0 以降が
 必要です。以下の場所から取得できます:
 
   ftp://ftp.gnupg.org/pub/gcrypt/alpha/gpgme/
@@ -129,7 +129,7 @@ configure スクリプトのオプション
 
   --disable-compface  compface (X-Face)対応を無効にする
   --disable-jconv     libjconv 対応を無効にする
-  --enable-openssl    SSL 対応 (要 OpenSSL)
+  --enable-ssl        SSL 対応 (要 OpenSSL)
   --enable-ipv6       IPv6 対応
   --enable-gpgme      GnuPG 対応 (要 GPGME と GnuPG)
   --enable-ldap       LDAP 対応

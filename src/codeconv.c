@@ -1117,10 +1117,11 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 
 			word_len = get_next_word_len(srcp);
 			LBREAK_IF_REQUIRED(left < word_len);
-			while(*srcp && !isspace(*srcp)) {
+			while (word_len > 0) {
+				LBREAK_IF_REQUIRED(left <= 0);
 				*destp++ = *srcp++;
 				left--;
-				LBREAK_IF_REQUIRED(left <= 0);
+				word_len--;
 			}
 
 			continue;

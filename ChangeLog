@@ -1,3 +1,9 @@
+2003-01-09
+
+	* src/codeconv.c: conv_encode_header(): fixed a bug which output raw
+	  strings after linefeed.
+	* updated INSTALL.
+
 2003-01-08
 
 	* src/codeconv.[ch]: code cleanup and optimization.

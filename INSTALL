@@ -118,7 +118,7 @@ iconv(). You can obtain it from the following location:
 
   http://ghost.math.sci.hokudai.ac.jp/misc/libjconv/
 
-GnuPG (>= 1.0.7) and GPGME (>= 0.3.10) are required for GnuPG (PGP) support.
+GnuPG (>= 1.2.0) and GPGME (>= 0.3.10) are required for GnuPG (PGP) support.
 You can get GnuPG and GPGME from the following location:
 
   ftp://ftp.gnupg.org/pub/gcrypt/alpha/gpgme/
@@ -129,7 +129,7 @@ Options for configure script
 
   --disable-compface  disable compface (X-Face) support
   --disable-jconv     disable libjconv support
-  --enable-openssl    SSL support (requires OpenSSL)
+  --enable-ssl        SSL support (requires OpenSSL)
   --enable-ipv6       IPv6 support
   --enable-gpgme      GnuPG support (requires GPGME and GnuPG)
   --enable-ldap       LDAP support
