@@ -1,3 +1,13 @@
+2004-02-15 [darko]	0.9.10claws16
+
+	* src/gtk/filesel.c
+		support full path in place of a filename
+	* src/mimeview.c
+		store directory attachments were saved to and
+		use it when saving attachments
+	* src/prefs_common.[hc]
+		store directory attachments were last saved to
+
 2004-02-15 [paul]	0.9.10claws15
 
 	* src/folderview.c

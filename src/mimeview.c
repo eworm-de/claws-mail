@@ -1031,6 +1031,7 @@ static void mimeview_save_all(MimeView *mimeview)
 {
 	MimeInfo *partinfo;
 	gchar *dirname;
+	gchar *startdir = NULL;
 	gint number = 1;
 
 	if (!mimeview->opened) return;
@@ -1038,12 +1039,20 @@ static void mimeview_save_all(MimeView *mimeview)
 	if (!mimeview->mimeinfo) return;
 
 	partinfo = mimeview->mimeinfo;
-	dirname = filesel_select_file(_("Select destination folder"), NULL);
-	if (!dirname) return;
+	if (prefs_common.attach_save_dir)
+		startdir = g_strconcat(prefs_common.attach_save_dir,
+				       G_DIR_SEPARATOR_S, NULL);
+
+	dirname = filesel_select_file(_("Select destination folder"), startdir);
+	if (!dirname) {
+		if (startdir) g_free(startdir);
+		return;
+	}
 
 	if (!is_dir_exist (dirname)) {
 		alertpanel_error(_("`%s' is not a directory."),
 				 dirname);
+		if (startdir) g_free(startdir);
 		return;
 	}
 
@@ -1062,6 +1071,13 @@ static void mimeview_save_all(MimeView *mimeview)
 		}
 		partinfo = procmime_mimeinfo_next(partinfo);
 	}
+
+	if (prefs_common.attach_save_dir)
+		g_free(prefs_common.attach_save_dir);
+
+	prefs_common.attach_save_dir = g_strdup(dirname);
+
+	if (startdir) g_free(startdir);
 }
 
 /**
@@ -1072,6 +1088,8 @@ static void mimeview_save_as(MimeView *mimeview)
 {
 	gchar *filename;
 	gchar *defname = NULL;
+	gchar *filepath = NULL;
+	gchar *filedir = NULL;
 	MimeInfo *partinfo;
 	const gchar *partname = NULL;
 
@@ -1093,10 +1111,29 @@ static void mimeview_save_as(MimeView *mimeview)
 		subst_for_shellsafe_filename(defname);
 	}
 
-	filename = filesel_select_file(_("Save as"), defname);
-	if (!filename) return;
+	if (prefs_common.attach_save_dir)
+		filepath = g_strconcat(prefs_common.attach_save_dir,
+				       G_DIR_SEPARATOR_S, defname, NULL);
+	else
+		filepath = g_strdup(defname);
+
+	filename = filesel_select_file(_("Save as"), filepath);
+	if (!filename) {
+		g_free(filepath);
+		return;
+	}
 
 	mimeview_write_part(filename, partinfo);
+
+	filedir = g_dirname(filename);
+	if (filedir && strcmp(filedir, ".")) {
+		if (prefs_common.attach_save_dir)
+			g_free(prefs_common.attach_save_dir);
+		prefs_common.attach_save_dir = g_strdup(filedir);
+	}
+
+	g_free(filedir);
+	g_free(filepath);
 }
 
 static void mimeview_display_as_text(MimeView *mimeview)

@@ -649,6 +649,8 @@ static PrefParam param[] = {
 	{"attach_desc", "TRUE", &prefs_common.attach_desc, P_BOOL,
 	 &message.chkbtn_attach_desc,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"attach_save_directory", NULL,
+	 &prefs_common.attach_save_dir, P_STRING, NULL, NULL, NULL},
 
 	/* MIME viewer */
 	{"mime_image_viewer", "display '%s'",
