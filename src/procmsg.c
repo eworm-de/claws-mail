@@ -349,10 +349,11 @@ gint procmsg_get_last_num_in_cache(GSList *mlist)
 
 void procmsg_msg_list_free(GSList *mlist)
 {
+	GSList *cur;
 	MsgInfo *msginfo;
 
-	for (; mlist != NULL; mlist = mlist->next) {
-		msginfo = (MsgInfo *)mlist->data;
+	for (cur = mlist; cur != NULL; cur = cur->next) {
+		msginfo = (MsgInfo *)cur->data;
 		procmsg_msginfo_free(msginfo);
 	}
 	g_slist_free(mlist);

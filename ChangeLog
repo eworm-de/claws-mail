@@ -1,3 +1,8 @@
+2001-06-17
+
+	* src/procmsg.c: procmsg_msg_list_free(): fixed a bug that didn't
+	  free list correctly.
+
 2001-06-16
 
 	* version 0.4.99
