@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -123,9 +123,9 @@ static gint smtp_from(SMTPSession *session)
 	session->state = SMTP_FROM;
 
 	if (strchr(session->from, '<'))
-		g_snprintf(buf, sizeof(buf), "MAIL FROM: %s", session->from);
+		g_snprintf(buf, sizeof(buf), "MAIL FROM:%s", session->from);
 	else
-		g_snprintf(buf, sizeof(buf), "MAIL FROM: <%s>", session->from);
+		g_snprintf(buf, sizeof(buf), "MAIL FROM:<%s>", session->from);
 
 	session_send_msg(SESSION(session), SESSION_MSG_NORMAL, buf);
 	log_print("SMTP> %s\n", buf);
@@ -345,9 +345,9 @@ static gint smtp_rcpt(SMTPSession *session)
 	to = (gchar *)session->cur_to->data;
 
 	if (strchr(to, '<'))
-		g_snprintf(buf, sizeof(buf), "RCPT TO: %s", to);
+		g_snprintf(buf, sizeof(buf), "RCPT TO:%s", to);
 	else
-		g_snprintf(buf, sizeof(buf), "RCPT TO: <%s>", to);
+		g_snprintf(buf, sizeof(buf), "RCPT TO:<%s>", to);
 	session_send_msg(SESSION(session), SESSION_MSG_NORMAL, buf);
 	log_print("SMTP> %s\n", buf);
 

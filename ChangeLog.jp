@@ -1,3 +1,7 @@
+2004-05-21
+
+	* src/smtp.c: RFC 2821 に準拠(Alfons さん thanks)。
+
 2004-05-20
 
 	* src/folderview.[ch]: スプリングローデッドフォルダを実装。
