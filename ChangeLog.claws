@@ -1,3 +1,15 @@
+2003-09-21 [christoph]	0.9.5claws24
+
+	* src/alertpanel.c
+		remove unneeded include
+
+	* src/folder.c
+		clean up copy/move mess with duplicated code
+
+	* src/imap.c
+		fix problem that sometimes the folder was not scanned
+		also it was changed
+
 2003-09-21 [christoph]	0.9.5claws23
 
 	* src/Makefile.am

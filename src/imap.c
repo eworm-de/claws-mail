@@ -63,6 +63,7 @@ typedef struct _IMAPFolderItem	IMAPFolderItem;
 #include "prefs_account.h"
 
 #define IMAP_FOLDER(obj)	((IMAPFolder *)obj)
+#define IMAP_FOLDER_ITEM(obj)	((IMAPFolderItem *)obj)
 #define IMAP_SESSION(obj)	((IMAPSession *)obj)
 
 struct _IMAPFolder
@@ -976,7 +977,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
 		MsgInfo *msginfo = (MsgInfo *)cur->data;
 		GTuples *tuples;
-		
+
 		tuples = g_relation_select(uid_mapping, 
 					   GINT_TO_POINTER(msginfo->msgnum),
 					   0);
@@ -1077,6 +1078,8 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 		return ok;
 	}
 
+	IMAP_FOLDER_ITEM(item)->uid_list = g_slist_remove(
+	    IMAP_FOLDER_ITEM(item)->uid_list, numlist.data);
 	dir = folder_item_get_path(item);
 	if (is_dir_exist(dir))
 		remove_numbered_files(dir, uid, uid);

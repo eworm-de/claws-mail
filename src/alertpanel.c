@@ -31,7 +31,6 @@
 #include "utils.h"
 #include "gtkutils.h"
 #include "inc.h"
-#include "log.h"
 #include "logwindow.h"
 
 #define TITLE_FONT	"-*-helvetica-medium-r-normal--17-*-*-*-*-*-*-*," \
