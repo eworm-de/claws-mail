@@ -57,3 +57,4 @@
 ( cvs diff -u -r 1.436 -r 1.437 src/compose.c; ) > 0.9.12cvs72.patchset
 ( cvs diff -u -r 1.53 -r 1.54 src/toolbar.c; ) > 0.9.12cvs73.patchset
 ( cvs diff -u -r 1.437 -r 1.438 src/compose.c; ) > 0.9.12cvs74.patchset
+( cvs diff -u -r 1.1 -r 1.2 m4/Makefile.am; ) > 0.9.12cvs75.patchset
