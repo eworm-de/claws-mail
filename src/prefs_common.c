@@ -1111,7 +1111,7 @@ static void prefs_compose_create(void)
 
 /* alfons - nice ui for darko */
 
-static void date_format_close_btn_clicked(GtkButton *button, GtkWidget **widget)
+static void date_format_ok_btn_clicked(GtkButton *button, GtkWidget **widget)
 {
 	gchar *text;
 
@@ -1129,10 +1129,20 @@ static void date_format_close_btn_clicked(GtkButton *button, GtkWidget **widget)
 	*widget = NULL;
 }
 
-static gboolean date_format_on_delete(GtkWidget *dialogwidget, gpointer d1, GtkWidget **widget)
+static void date_format_cancel_btn_clicked(GtkButton *button,
+					   GtkWidget **widget)
 {
 	g_return_if_fail(widget != NULL);
 	g_return_if_fail(*widget != NULL);
+
+	gtk_widget_destroy(*widget);
+	*widget = NULL;
+}
+
+static gboolean date_format_on_delete(GtkWidget *dialogwidget, gpointer d1, GtkWidget **widget)
+{
+	g_return_val_if_fail(widget != NULL, FALSE);
+	g_return_val_if_fail(*widget != NULL, FALSE);
 	*widget = NULL;
 	return FALSE;
 }
@@ -1153,6 +1163,41 @@ static void date_format_entry_on_change(GtkEditable *editable, GtkLabel *example
 	gtk_label_set_text(example, buffer);
 }
 
+static void date_format_select_row(GtkWidget *date_format_list, gint row,
+					gint column, GdkEventButton *event,
+					gpointer data)
+{
+	gint curs_pos;
+	gchar *format;
+	gchar *old_format;
+	gchar *new_format;
+
+	g_return_if_fail(date_format_list != NULL);
+
+	/* only on double click */
+	if (event->type != GDK_2BUTTON_PRESS)
+		return;
+
+	/* get format from clist */
+	gtk_clist_get_text(GTK_CLIST(date_format_list), row, 0, &format);
+
+	curs_pos = gtk_editable_get_position(GTK_EDITABLE(datefmt_sample));
+	old_format = gtk_entry_get_text(GTK_ENTRY(datefmt_sample));
+
+	/* insert the format into the text entry */
+	new_format = g_malloc(strlen(old_format) + 3);
+
+	strncpy(new_format, old_format, curs_pos);
+	new_format[curs_pos] = '\0';
+	strcat(new_format, format);
+	strcat(new_format, &old_format[curs_pos]);
+
+	gtk_entry_set_text(GTK_ENTRY(datefmt_sample), new_format);
+	gtk_editable_set_position(GTK_EDITABLE(datefmt_sample), curs_pos + 2);
+
+	g_free(new_format);
+}
+
 static GtkWidget *create_date_format(GtkButton *button, void *data)
 {
 	static GtkWidget *date_format = NULL;
@@ -1169,8 +1214,9 @@ static GtkWidget *create_date_format(GtkButton *button, void *data)
 	GtkWidget      *hbox1;
 	GtkWidget      *label6;
 	GtkWidget      *label7;
-	GtkWidget      *hbox3;
-	GtkWidget      *button1;
+	GtkWidget      *confirm_area;
+	GtkWidget      *ok_btn;
+	GtkWidget      *cancel_btn;
 
 	const struct  {
 		gchar *fmt;
@@ -1204,7 +1250,7 @@ static GtkWidget *create_date_format(GtkButton *button, void *data)
 	date_format = gtk_window_new(GTK_WINDOW_DIALOG);
 	gtk_window_set_title(GTK_WINDOW(date_format), _("Date format"));
 	gtk_window_set_position(GTK_WINDOW(date_format), GTK_WIN_POS_CENTER);
-	gtk_window_set_default_size(GTK_WINDOW(date_format), 440, 200);
+	gtk_window_set_default_size(GTK_WINDOW(date_format), 440, 280);
 
 	vbox1 = gtk_vbox_new(FALSE, 10);
 	gtk_widget_show(vbox1);
@@ -1245,8 +1291,8 @@ static GtkWidget *create_date_format(GtkButton *button, void *data)
 	vbox2 = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox2);
 	gtk_table_attach(GTK_TABLE(table2), vbox2, 0, 1, 0, 1,
-					 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-					 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
 
 	vbox3 = gtk_vbox_new(TRUE, 4);
 	gtk_widget_show(vbox3);
@@ -1279,32 +1325,44 @@ static GtkWidget *create_date_format(GtkButton *button, void *data)
 	gtk_box_pack_start(GTK_BOX(hbox1), label7, TRUE, TRUE, 60);
 	gtk_label_set_justify(GTK_LABEL(label7), GTK_JUSTIFY_LEFT);
 
-	hbox3 = gtk_hbox_new(TRUE, 0);
-	gtk_widget_show(hbox3);
-	gtk_box_pack_end(GTK_BOX(vbox3), hbox3, FALSE, FALSE, 0);
+	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
+				&cancel_btn, _("Cancel"), NULL, NULL);
+	gtk_widget_grab_default(ok_btn);
 
-	button1 = gtk_button_new_with_label(_("Close"));
-	gtk_widget_show(button1);
-	gtk_box_pack_start(GTK_BOX(hbox3), button1, FALSE, TRUE, 144);
+	gtk_widget_show(confirm_area);
+
+	gtk_box_pack_start(GTK_BOX(vbox1), confirm_area, FALSE, FALSE, 0);
 
 	/* set the current format */
 	gtk_entry_set_text(GTK_ENTRY(datefmt_sample), prefs_common.date_format);
 	date_format_entry_on_change(GTK_EDITABLE(datefmt_sample),
 				    GTK_LABEL(label7));
 
-	gtk_signal_connect(GTK_OBJECT(button1), "clicked",
-				  GTK_SIGNAL_FUNC(date_format_close_btn_clicked), &date_format);
+	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
+			   GTK_SIGNAL_FUNC(date_format_ok_btn_clicked),
+			   &date_format);
 				  
+	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
+			   GTK_SIGNAL_FUNC(date_format_cancel_btn_clicked),
+			   &date_format);
+
 	gtk_signal_connect(GTK_OBJECT(date_format), "delete_event",
-			    GTK_SIGNAL_FUNC(date_format_on_delete), &date_format);
+			   GTK_SIGNAL_FUNC(date_format_on_delete),
+			   &date_format);
 
 	gtk_signal_connect(GTK_OBJECT(datefmt_sample), "changed",
-				GTK_SIGNAL_FUNC(date_format_entry_on_change), label7);
+			   GTK_SIGNAL_FUNC(date_format_entry_on_change),
+			   label7);
 				  
 	gtk_window_set_position(GTK_WINDOW(date_format), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(date_format), TRUE);
 
 	gtk_widget_show(date_format);					
+
+	gtk_signal_connect(GTK_OBJECT(date_format_list), "select_row",
+			   GTK_SIGNAL_FUNC(date_format_select_row),
+			   &datefmt_sample);
+
 	return date_format;
 }
 
@@ -1325,6 +1383,7 @@ static void prefs_display_create(void)
 	GtkWidget *chkbtn_useaddrbook;
 	GtkWidget *hbox1;
 	GtkWidget *label_datefmt;
+	GtkWidget *label_datefmt_btn;
 	GtkWidget *button_dispitem;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
@@ -1391,16 +1450,20 @@ static void prefs_display_create(void)
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
 
-	label_datefmt = gtk_button_new_with_label (_("Date format"));
-	gtk_widget_show (label_datefmt);
-	gtk_box_pack_start (GTK_BOX (hbox1), label_datefmt, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(label_datefmt), "clicked",
-				  GTK_SIGNAL_FUNC(create_date_format), NULL);
+	label_datefmt = gtk_label_new(_("Date format"));
+	gtk_widget_show(label_datefmt);
+	gtk_box_pack_start(GTK_BOX (hbox1), label_datefmt, FALSE, FALSE, 0);
 
 	entry_datefmt = gtk_entry_new ();
 	gtk_widget_show (entry_datefmt);
 	gtk_box_pack_start (GTK_BOX (hbox1), entry_datefmt, TRUE, TRUE, 0);
 	
+	label_datefmt_btn = gtk_button_new_with_label(_("Customize"));
+	gtk_widget_show(label_datefmt_btn);
+	gtk_box_pack_start(GTK_BOX (hbox1), label_datefmt_btn, FALSE, FALSE, 0);
+	gtk_signal_connect(GTK_OBJECT(label_datefmt_btn), "clicked",
+			   GTK_SIGNAL_FUNC(create_date_format), NULL);
+
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);

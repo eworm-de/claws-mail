@@ -1,3 +1,12 @@
+2001-05-10 [darko]
+
+	* src/prefs_common.c:
+		better UI for strftime format, double clicking
+		on format now inserts the format in text entry
+		replaced close button with standard OK/Cancel
+		moved date format button to the right of the
+		text entry field
+
 2001-05-09 [alfons]
 
 	* src/gtkstext.c:
