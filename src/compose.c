@@ -484,6 +484,7 @@ static void compose_check_forwards_go	   (Compose *compose);
 #endif
 
 static gboolean compose_send_control_enter	(Compose	*compose);
+static gint compose_defer_auto_save_draft	(Compose	*compose);
 
 static GtkItemFactoryEntry compose_popup_entries[] =
 {
@@ -7014,10 +7015,15 @@ static void text_inserted(GtkWidget *widget, const gchar *text,
 					   compose);
 	gtk_signal_emit_stop_by_name(GTK_OBJECT(editable), "insert_text");
 
-	
 	if (prefs_common.autosave && 
 	    gtk_stext_get_length(GTK_STEXT(widget)) % prefs_common.autosave_length == 0)
-		compose_draft_cb((gpointer)compose, 2, NULL);
+		gtk_timeout_add(500, (GtkFunction) compose_defer_auto_save_draft, compose);
+}
+
+static gint compose_defer_auto_save_draft(Compose *compose)
+{
+	compose_draft_cb((gpointer)compose, 2, NULL);
+	return FALSE;
 }
 
 static gboolean compose_send_control_enter(Compose *compose)

@@ -1,3 +1,10 @@
+2003-07-30 [alfons]	0.9.3claws83
+
+	* src/compose.c
+		don't do auto-save-draft inside key press handler, but rather
+		schedule it half of a second later; should fix #67, "autosave 
+		make re-rediting message crazy"
+
 2003-07-30 [christoph]	0.9.3claws82
 
 	* src/plugins/trayicon/trayicon.c
