@@ -1,3 +1,8 @@
+2003-01-08 [darko]
+
+	* README.claws, src/summaryview.c
+	  	fix description for marked messages
+
 2003-01-08 [paul]
 
 	* tools/Makefile.am

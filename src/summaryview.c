@@ -503,7 +503,7 @@ static gchar *search_descr_strings[] = {
 	"Sg #",  N_("messages whose size is greater than #"),
 	"Ss #",  N_("messages whose size is smaller than #"),
 	"t S",	 N_("messages which have been sent to S"),
-	"T",	 N_("marked marked"),
+	"T",	 N_("marked messages"),
 	"U",	 N_("unread messages"),
 	"x S",	 N_("messages which contain S in References header"),
 	"y S",	 N_("messages which contain S in X-Label header"),
