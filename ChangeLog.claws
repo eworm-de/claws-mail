@@ -1,3 +1,10 @@
+2003-03-16 [christoph]	0.8.11claws18
+
+	* src/mimeview.c
+	* src/plugins/dillo_viewer/dillo_viewer.c
+	* src/plugins/mathml_viewer/mathml_viewer.c
+		make unregistering of MimeViewerFactorys possible
+
 2003-03-16 [alfons]	0.8.11claws17
 
 	* configure.ac

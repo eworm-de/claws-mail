@@ -130,6 +130,7 @@ static GtkTargetEntry mimeview_mime_types[] =
 };
 
 GSList *mimeviewer_factories;
+GSList *mimeviews;
 
 MimeView *mimeview_create(void)
 {
@@ -218,6 +219,8 @@ MimeView *mimeview_create(void)
 	mimeview->popupmenu    = popupmenu;
 	mimeview->popupfactory = popupfactory;
 	mimeview->type         = -1;
+
+	mimeviews = g_slist_prepend(mimeviews, mimeview);
 
 	return mimeview;
 }
@@ -360,6 +363,8 @@ void mimeview_destroy(MimeView *mimeview)
 	procmime_mimeinfo_free_all(mimeview->mimeinfo);
 	g_free(mimeview->file);
 	g_free(mimeview);
+
+	mimeviews = g_slist_remove(mimeviews, mimeview);
 }
 
 static void mimeview_set_multipart_tree(MimeView *mimeview,
@@ -1189,7 +1194,30 @@ void mimeview_register_viewer_factory(MimeViewerFactory *factory)
 	mimeviewer_factories = g_slist_append(mimeviewer_factories, factory);
 }
 
+static gint cmp_viewer_by_factroy(gconstpointer a, gconstpointer b)
+{
+	return ((MimeViewer *) a)->factory == (MimeViewerFactory *) b ? 0 : -1;
+}
+
 void mimeview_unregister_viewer_factory(MimeViewerFactory *factory)
 {
+	GSList *mimeview_list, *viewer_list;
+
+	for (mimeview_list = mimeviews; mimeview_list != NULL; mimeview_list = g_slist_next(mimeview_list)) {
+		MimeView *mimeview = (MimeView *) mimeview_list->data;
+		
+		if (mimeview->mimeviewer && mimeview->mimeviewer->factory == factory) {
+			mimeview_change_view_type(mimeview, MIMEVIEW_TEXT);
+			mimeview->mimeviewer = NULL;
+		}
+
+		while ((viewer_list = g_slist_find_custom(mimeview->viewers, factory, cmp_viewer_by_factroy)) != NULL) {
+			MimeViewer *mimeviewer = (MimeViewer *) viewer_list->data;
+
+			mimeviewer->destroy_viewer(mimeviewer);
+			mimeview->viewers = g_slist_remove(mimeview->viewers, mimeviewer);
+		}
+	}
+
 	mimeviewer_factories = g_slist_remove(mimeviewer_factories, factory);
 }

@@ -84,7 +84,7 @@ static void dillo_show_mimepart(MimeViewer *_viewer, const gchar *infile, MimeIn
 				   GTK_SIGNAL_FUNC(socket_destroy_cb),
 				   viewer);
 		cmd = g_strdup_printf("dillo -f -l -x %d \"%s\"", 
-				GDK_WINDOW_XWINDOW(viewer->socket->window),
+				(gint) GDK_WINDOW_XWINDOW(viewer->socket->window),
 				viewer->filename);
 		execute_command_line(cmd, TRUE);
 		g_free(cmd);
@@ -153,11 +153,12 @@ gint plugin_init(gchar **error)
 
 void plugin_done()
 {
+	mimeview_unregister_viewer_factory(&dillo_viewer_factory);
 }
 
 const gchar *plugin_name()
 {
-	return "View HTML mail with Dillo";
+	return "Dillo HTML Viewer";
 }
 
 const gchar *plugin_desc()

@@ -135,6 +135,7 @@ gint plugin_init(gchar **error)
 
 void plugin_done()
 {
+	mimeview_unregister_viewer_factory(&mathml_viewer_factory);
 }
 
 const gchar *plugin_name()
