@@ -1,3 +1,8 @@
+2001-11-14 [paul]	0.6.5claws13
+
+	* merge with SYNC-B4-REL and sync with sylpheed 0.6.5cvs5
+		see ChangeLog entries 2001-11-08 to 2001-11-14
+
 2001-11-14 [hoa] 0.6.5claws12
 
 	* src/compose.[ch]

@@ -457,6 +457,7 @@ static const struct {
 	{C_ISO_8859_7,		CS_ISO_8859_7},
 	{C_ISO_8859_8,		CS_ISO_8859_8},
 	{C_ISO_8859_9,		CS_ISO_8859_9},
+	{C_ISO_8859_11,		CS_ISO_8859_11},
 	{C_ISO_8859_13,		CS_ISO_8859_13},
 	{C_ISO_8859_15,		CS_ISO_8859_15},
 	{C_BALTIC,		CS_BALTIC},
@@ -476,6 +477,8 @@ static const struct {
 	{C_GB2312,		CS_GB2312},
 	{C_EUC_TW,		CS_EUC_TW},
 	{C_BIG5,		CS_BIG5},
+	{C_TIS_620,		CS_TIS_620},
+	{C_WINDOWS_874,		CS_WINDOWS_874},
 };
 
 #if !HAVE_LIBJCONV
@@ -525,6 +528,7 @@ static const struct {
 	{"el_GR"	, C_ISO_8859_7},
 	{"iw_IL"	, C_ISO_8859_8},
 	{"tr_TR"	, C_ISO_8859_9},
+	{"th_TH"	, C_ISO_8859_11},
 
 	{"lt_LT.iso88594"	, C_ISO_8859_4},
 	{"lt_LT.ISO8859-4"	, C_ISO_8859_4},
@@ -874,8 +878,8 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 				}
 				/* g_free(raw); */
 				src_codeset = conv_get_current_charset_str();
-				/* printf ("tmp = %s, tlen = %d, mbl\n", 
-				        tmp, tlen, mbl); */
+				/* printf ("tmp = %s, tlen = %d, mbl\n",
+					tmp, tlen, mbl); */
 				if (jconv_alloc_conv(tmp, tlen + mbl,
 						     &raw_new, &raw_new_len,
 						     &src_codeset, 1,
@@ -989,7 +993,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 
 	g_free(wsrc);
 
-	/* g_print("dest = %s\n", dest);  */
+	/* g_print("dest = %s\n", dest); */
 }
 #else /* !HAVE_LIBJCONV */
 

@@ -248,12 +248,15 @@ void subst_char				(gchar		*str,
 gboolean is_header_line			(const gchar	*str);
 gboolean is_ascii_str			(const guchar	*str);
 gint get_quote_level			(const gchar	*str);
-GList *uri_list_extract_filenames	(const gchar	*uri_list);
 gchar *strstr_with_skip_quote		(const gchar	*haystack,
 					 const gchar	*needle);
 gchar **strsplit_with_quote		(const gchar	*str,
 					 const gchar	*delim,
 					 gint		 max_tokens);
+
+GList *uri_list_extract_filenames	(const gchar	*uri_list);
+void decode_uri				(gchar		*decoded_uri,
+					 const gchar	*encoded_uri);
 
 /* return static strings */
 gchar *get_home_dir		(void);
@@ -298,7 +301,7 @@ gint execute_command_line	(const gchar	*cmdline,
 				 gboolean	 async);
 
 /* open URI with external browser */
-gint open_uri			(const gchar *uri, const gchar *cmdline);
+gint open_uri(const gchar *uri, const gchar *cmdline);
 
 /* time functions */
 time_t remote_tzoffset_sec	(const gchar	*zone);

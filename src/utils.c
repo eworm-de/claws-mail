@@ -1009,39 +1009,6 @@ gint get_quote_level(const gchar *str)
 	return quote_level;
 }
 
-GList *uri_list_extract_filenames(const gchar *uri_list)
-{
-	GList *result = NULL;
-	const gchar *p, *q;
-	gchar *file;
-
-	p = uri_list;
-
-	while (p) {
-		if (*p != '#') {
-			while (isspace(*p)) p++;
-			if (!strncmp(p, "file:", 5)) {
-				p += 5;
-				q = p;
-				while (*q && *q != '\n' && *q != '\r') q++;
-
-				if (q > p) {
-					q--;
-					while (q > p && isspace(*q)) q--;
-					file = g_malloc(q - p + 2);
-					strncpy(file, p, q - p + 1);
-					file[q - p + 1] = '\0';
-					result = g_list_append(result,file);
-				}
-			}
-		}
-		p = strchr(p, '\n');
-		if (p) p++;
-	}
-
-	return result;
-}
-
 gchar *strstr_with_skip_quote(const gchar *haystack, const gchar *needle)
 {
 	register guint haystack_len, needle_len;
@@ -1130,10 +1097,58 @@ gchar **strsplit_with_quote(const gchar *str, const gchar *delim,
 	return str_array;
 }
 
+GList *uri_list_extract_filenames(const gchar *uri_list)
+{
+	GList *result = NULL;
+	const gchar *p, *q;
+	gchar *file;
+
+	p = uri_list;
+
+	while (p) {
+		if (*p != '#') {
+			while (isspace(*p)) p++;
+			if (!strncmp(p, "file:", 5)) {
+				p += 5;
+				q = p;
+				while (*q && *q != '\n' && *q != '\r') q++;
+
+				if (q > p) {
+					q--;
+					while (q > p && isspace(*q)) q--;
+					file = g_malloc(q - p + 2);
+					strncpy(file, p, q - p + 1);
+					file[q - p + 1] = '\0';
+					result = g_list_append(result,file);
+				}
+			}
+		}
+		p = strchr(p, '\n');
+		if (p) p++;
+	}
+
+	return result;
+}
+
+#define HEX_TO_INT(val, hex) \
+{ \
+	gchar c = hex; \
+ \
+	if ('0' <= c && c <= '9') { \
+		val = c - '0'; \
+	} else if ('a' <= c && c <= 'f') { \
+		val = c - 'a' + 10; \
+	} else if ('A' <= c && c <= 'F') { \
+		val = c - 'A' + 10; \
+	} else { \
+		val = 0; \
+	} \
+}
+
 /*
  * We need this wrapper around g_get_home_dir(), so that
  * we can fix some Windoze things here.  Should be done in glibc of course
- * but as long as we are not able to do our own extensions to glibc, we do 
+ * but as long as we are not able to do our own extensions to glibc, we do
  * it here.
  */
 gchar *get_home_dir(void)

@@ -44,6 +44,7 @@ typedef enum
 	C_ISO_8859_7,
 	C_ISO_8859_8,
 	C_ISO_8859_9,
+	C_ISO_8859_11,
 	C_ISO_8859_13,
 	C_ISO_8859_15,
 	C_BALTIC,
@@ -61,7 +62,9 @@ typedef enum
 	C_EUC_CN,
 	C_GB2312,
 	C_EUC_TW,
-	C_BIG5
+	C_BIG5,
+	C_TIS_620,
+	C_WINDOWS_874
 } CharSet;
 
 typedef void (*CodeConvFunc) (gchar *outbuf, gint outlen, const gchar *inbuf);
@@ -86,6 +89,7 @@ struct _CodeConverter
 #define CS_ISO_8859_7		"ISO-8859-7"
 #define CS_ISO_8859_8		"ISO-8859-8"
 #define CS_ISO_8859_9		"ISO-8859-9"
+#define CS_ISO_8859_11		"ISO-8859-11"
 #define CS_ISO_8859_13		"ISO-8859-13"
 #define CS_ISO_8859_15		"ISO-8859-15"
 #define CS_BALTIC		"BALTIC"
@@ -105,6 +109,8 @@ struct _CodeConverter
 #define CS_GB2312		"GB2312"
 #define CS_EUC_TW		"EUC-TW"
 #define CS_BIG5			"Big5"
+#define CS_TIS_620		"TIS-620"
+#define CS_WINDOWS_874		"Windows-874"
 
 void conv_jistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf);
 void conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf);

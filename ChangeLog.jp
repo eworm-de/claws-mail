@@ -1,3 +1,48 @@
+2001-11-14
+
+	* src/defs.h: MAX_ENTRY_LENGTH の定義を追加。
+	* src/compose.c: compose_add_entry_field(): 最大長を指定して
+	  新規エントリを作成するようにした。
+
+2001-11-13
+
+	* src/grouplistdialog.c: リーフでないノードも選択可能にした。
+	  各ノードに完全なニュースグループ名を付けるようにした。
+
+2001-11-13
+
+	* src/grouplistdialog.c
+	  src/news.[ch]: 新ニュースグループ購読ダイアログのマージ
+	  (現在進行中。まだ使わないで下さい!)。
+
+2001-11-12
+
+	* src/utils.[ch]: decode_uri(): 新規。 URL エンコードされた文字列
+	  をデコードする。
+	* src/compose.[ch]: compose_new_with_recipient(): mailto URL を
+	  受け付けるようにした。
+	  compose_entries_set(): 新規。 mailto URL をパースし、各値を
+	  エントリに入れる。
+
+2001-11-12
+
+	* src/compose.c: compose_forward(): 転送時の引用符を使用していな
+	  かったバグを修正(岩根さん thanks)。
+	* src/codeconv.[ch]
+	  src/mainwindow.c
+	  src/prefs_common.c: タイ語のエンコーディングを追加(Manrat
+	  Chobchuen さん thanks)。
+
+2001-11-08
+
+	* src/socket.c: sock_connect_by_hostname(): h_errno を削除。
+	* src/session.h
+	  src/defs.h
+	  src/imap.[ch]
+	  src/news.c: Session に last_access_time を追加。
+	  imap_session_get(): アクセス間隔が超過したときのみ接続を
+	  チェックするようにした。
+
 2001-11-07
 
 	* version 0.6.5

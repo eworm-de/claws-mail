@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <time.h>
 
 #include "intl.h"
 #include "news.h"
@@ -102,13 +103,14 @@ static Session *news_session_new(const gchar *server, gushort port,
 		return NULL;
 
 	session = g_new(NNTPSession, 1);
-	SESSION(session)->type      = SESSION_NEWS;
-	SESSION(session)->server    = g_strdup(server);
-	session->nntp_sock          = nntp_sock;
-	SESSION(session)->sock      = nntp_sock->sock;
-	SESSION(session)->connected = TRUE;
-	SESSION(session)->phase     = SESSION_READY;
-	SESSION(session)->data      = NULL;
+	SESSION(session)->type             = SESSION_NEWS;
+	SESSION(session)->server           = g_strdup(server);
+	session->nntp_sock                 = nntp_sock;
+	SESSION(session)->sock             = nntp_sock->sock;
+	SESSION(session)->connected        = TRUE;
+	SESSION(session)->phase            = SESSION_READY;
+	SESSION(session)->last_access_time = time(NULL);
+	SESSION(session)->data             = NULL;
 	session->group = NULL;
 	session->group_list = NULL;
 
@@ -183,6 +185,12 @@ NNTPSession *news_session_get(Folder *folder)
 	}
 
 	session = NNTP_SESSION(REMOTE_FOLDER(folder)->session);
+
+	if (time(NULL) - SESSION(session)->last_access_time < SESSION_TIMEOUT) {
+		SESSION(session)->last_access_time = time(NULL);
+		statusbar_pop_all();
+		return session;
+	}
 
 	if (nntp_mode(session->nntp_sock, FALSE) != NN_SUCCESS) {
 		log_warning(_("NNTP connection to %s:%d has been"

@@ -508,6 +508,11 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	 CODESET_ACTION(C_EUC_KR)},
 	{N_("/_View/_Code set/Korean (ISO-2022-KR)"),
 	 CODESET_ACTION(C_ISO_2022_KR)},
+	CODESET_SEPARATOR,
+	{N_("/_View/_Code set/Thai (TIS-620)"),
+	 CODESET_ACTION(C_TIS_620)},
+	{N_("/_View/_Code set/Thai (Windows-874)"),
+	 CODESET_ACTION(C_WINDOWS_874)},
 #endif
 
 #undef CODESET_SEPARATOR

@@ -25,6 +25,7 @@
 #endif
 
 #include <glib.h>
+#include <time.h>
 
 #include "folder.h"
 #include "session.h"
@@ -41,6 +42,7 @@ struct _IMAPSession
 	Session session;
 
 	gchar *mbox;
+	time_t last_access_time;
 };
 
 struct _IMAPNameSpace

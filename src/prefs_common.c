@@ -1203,6 +1203,8 @@ static void prefs_send_create(void)
 	SET_MENUITEM(_("Chinese (ISO-2022-CN)"),	 CS_ISO_2022_CN);
 #endif /* 0 */
 	SET_MENUITEM(_("Korean (EUC-KR)"),		 CS_EUC_KR);
+	SET_MENUITEM(_("Thai (TIS-620)"),		 CS_TIS_620);
+	SET_MENUITEM(_("Thai (Windows-874)"),		 CS_WINDOWS_874);
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu), optmenu_menu);
 

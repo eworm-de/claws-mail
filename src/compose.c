@@ -3660,7 +3660,7 @@ static void compose_add_entry_field(GtkWidget *table, GtkWidget **hbox,
 	gtk_box_pack_end(GTK_BOX(*hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), *hbox, 0, 1, *count, (*count) + 1,
 			 GTK_FILL, 0, 2, 0);
-	*entry = gtk_entry_new();
+	*entry = gtk_entry_new_with_max_length(MAX_ENTRY_LENGTH);
 	gtk_table_attach
 		(GTK_TABLE(table), *entry, 1, 2, *count, (*count) + 1, GTK_FILL | GTK_EXPAND, GTK_SHRINK, 0, 0);
 #if 0 /* NEW COMPOSE GUI */

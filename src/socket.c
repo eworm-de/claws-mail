@@ -207,8 +207,8 @@ static gint sock_connect_by_hostname(gint sock, const gchar *hostname,
 		}
 
 		if (hp->h_length != 4 && hp->h_length != 8) {
-			h_errno = errno = 0;
 			fprintf(stderr, "illegal address length received for host %s\n", hostname);
+			errno = 0;
 			return -1;
 		}
 

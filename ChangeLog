@@ -1,3 +1,47 @@
+2001-11-14
+
+	* src/defs.h: added MAX_ENTRY_LENGTH definition.
+	* src/compose.c: compose_add_entry_field(): create new entry with
+	  max length.
+
+2001-11-13
+
+	* src/grouplistdialog.c: made non-leaf node selectable.
+	  Give the complete newsgroup name for each nodes.
+
+2001-11-13
+
+	* src/grouplistdialog.c
+	  src/news.[ch]: merging of new newsgroup subscription dialog
+	  (still in progress. Don't use it yet!).
+
+2001-11-12
+
+	* src/utils.[ch]: decode_uri(): new. It decodes URL-encoded strings.
+	* src/compose.[ch]: compose_new_with_recipient(): accept mailto
+	  URL.
+	  compose_entries_set(): new. It parses mailto URL and put each
+	  values into the entries.
+
+2001-11-12
+
+	* src/compose.c: compose_forward(): fixed a bug that forward
+	  quote mark wasn't used (thanks to Hironori IWANE).
+	* src/codeconv.[ch]
+	  src/mainwindow.c
+	  src/prefs_common.c: added Thai encodings (thanks to Manrat
+	  Chobchuen).
+
+2001-11-08
+
+	* src/socket.c: sock_connect_by_hostname(): removed h_errno.
+	* src/session.h
+	  src/defs.h
+	  src/imap.[ch]
+	  src/news.c: added last_access_time to Session.
+	  imap_session_get(): check connection only when access interval
+	  has been exceeded.
+
 2001-11-07
 
 	* version 0.6.5

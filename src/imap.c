@@ -21,6 +21,8 @@
 #  include "config.h"
 #endif
 
+#include "defs.h"
+
 #include <glib.h>
 #include <stdio.h>
 #include <string.h>
@@ -28,6 +30,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <time.h>
 
 #include "intl.h"
 #include "imap.h"
@@ -253,6 +256,14 @@ static IMAPSession *imap_session_get(Folder *folder)
 		if (rfolder->session)
 			imap_parse_namespace(IMAP_SESSION(rfolder->session),
 					     IMAP_FOLDER(folder));
+
+		rfolder->session->last_access_time = time(NULL);
+		statusbar_pop_all();
+		return IMAP_SESSION(rfolder->session);
+	}
+
+	if (time(NULL) - rfolder->session->last_access_time < SESSION_TIMEOUT) {
+		rfolder->session->last_access_time = time(NULL);
 		statusbar_pop_all();
 		return IMAP_SESSION(rfolder->session);
 	}
@@ -278,6 +289,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 					     IMAP_FOLDER(folder));
 	}
 
+	rfolder->session->last_access_time = time(NULL);
 	statusbar_pop_all();
 	return IMAP_SESSION(rfolder->session);
 }
@@ -336,12 +348,13 @@ Session *imap_session_new(const gchar *server, gushort port,
 	}
 
 	session = g_new(IMAPSession, 1);
-	SESSION(session)->type      = SESSION_IMAP;
-	SESSION(session)->server    = g_strdup(server);
-	SESSION(session)->sock      = imap_sock;
-	SESSION(session)->connected = TRUE;
-	SESSION(session)->phase     = SESSION_READY;
-	SESSION(session)->data      = NULL;
+	SESSION(session)->type             = SESSION_IMAP;
+	SESSION(session)->server           = g_strdup(server);
+	SESSION(session)->sock             = imap_sock;
+	SESSION(session)->connected        = TRUE;
+	SESSION(session)->phase            = SESSION_READY;
+	SESSION(session)->last_access_time = time(NULL);
+	SESSION(session)->data             = NULL;
 	session->mbox = NULL;
 
 	session_list = g_list_append(session_list, session);
