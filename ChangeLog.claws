@@ -1,3 +1,8 @@
+2002-11-14 [colin]	0.8.5claws152
+	
+	* src/procmsg.c
+		Update the FolderItem after sending (fixes 617593)
+
 2002-11-14 [christoph]	0.8.5claws151
 
 	* src/folder.c

@@ -1410,6 +1410,7 @@ gint procmsg_send_message_queue(const gchar *file)
 				procmsg_msginfo_set_flags(msginfo, MSG_REPLIED, 0);
 
 				procmsg_msginfo_free(msginfo);
+				folder_update_item(item,TRUE);
 			}
 		}
 		g_strfreev(tokens);
