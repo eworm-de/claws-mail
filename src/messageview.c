@@ -1128,19 +1128,18 @@ static PrefsAccount *select_account_from_list(GList *ac_list)
  */
 gchar *messageview_get_selection(MessageView *msgview)
 {
+	TextView *textview;
 	gchar *text = NULL;
 	GtkEditable *edit = NULL;
 	gint body_pos = 0;
 	
 	g_return_val_if_fail(msgview != NULL, NULL);
 
-	if (msgview->type == MVIEW_TEXT) {
-		edit = GTK_EDITABLE(msgview->textview->text);
-		body_pos = msgview->textview->body_pos;
-	} else if (msgview->type == MVIEW_MIME
-		 && msgview->mimeview->type == MIMEVIEW_TEXT
-		 && msgview->mimeview->textview
-		 && !msgview->mimeview->textview->default_text) {
+	textview = messageview_get_current_textview(msgview);
+	if (textview) {
+		edit = GTK_EDITABLE(textview->text);
+		body_pos = textview->body_pos;
+	} else {
 		edit = GTK_EDITABLE(msgview->mimeview->textview->text);
 		body_pos = msgview->mimeview->textview->body_pos;
 	}
