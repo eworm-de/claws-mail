@@ -1,3 +1,10 @@
+2001-06-03 [alfons]
+
+	* src/prefs_common.c:
+
+		(prefs_font_select): pass font name in font entry box to font
+		selection dialog.
+
 2001-06-03 [sergey]
 
 	* src/smtp.c (smtp_ok): fixed sock_gets() error handling.

@@ -2580,6 +2580,10 @@ static void display_item_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 static void prefs_font_select(GtkButton *button, GtkEntry *entry)
 {
+	gchar *font_name;
+	
+	g_return_if_fail(entry != NULL);
+	
 	if (!font_sel_win) {
 		font_sel_win = gtk_font_selection_dialog_new
 			(_("Font selection"));
@@ -2604,6 +2608,9 @@ static void prefs_font_select(GtkButton *button, GtkEntry *entry)
 			 GTK_OBJECT(font_sel_win));
 	}
 
+	font_name = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
+	gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(font_sel_win), font_name);
+	g_free(font_name);
 	manage_window_set_transient(GTK_WINDOW(font_sel_win));
 	gtk_window_set_modal(GTK_WINDOW(font_sel_win), TRUE);
 	gtk_widget_grab_focus
