@@ -8,10 +8,8 @@
 
 struct _FilteringAction {
 	gint type;
-	gchar * dest_folder;
 	gint account_id;
-	gchar * address;
-	gchar * newsgroups;
+	gchar * destination;
 };
 
 typedef struct _FilteringAction FilteringAction;
@@ -26,9 +24,8 @@ typedef struct _FilteringProp FilteringProp;
 extern GSList * prefs_filtering;
 
 
-FilteringAction * filteringaction_new(int type, gchar * dest_folder,
-				      int account_id, gchar * address,
-				      gchar * newsgroups);
+FilteringAction * filteringaction_new(int type, int account_id,
+				      gchar * destination);
 void filteringaction_free(FilteringAction * action);
 FilteringAction * filteringaction_parse(gchar ** str);
 

@@ -81,8 +81,6 @@ static MatchParser matchparser_tab[] = {
 	{MATCHING_ACTION_MARK_AS_UNREAD, "mark_as_unread"},
 	{MATCHING_ACTION_FORWARD, "forward"},
 	{MATCHING_ACTION_FORWARD_AS_ATTACHEMENT, "forward_as_attachement"},
-	{MATCHING_ACTION_FORWARD_NEWS, "forward_news"},
-	{MATCHING_ACTION_FORWARD_NEWS_AS_ATTACHEMENT, "forward_news_as_attachement"}
 };
 
 gchar * get_matchparser_tab_str(gint id)

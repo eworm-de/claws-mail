@@ -15,31 +15,25 @@
 
 GSList * prefs_filtering = NULL;
 
-FilteringAction * filteringaction_new(int type, gchar * dest_folder,
-				      int account_id, gchar * address,
-				      gchar * newsgroups)
+FilteringAction * filteringaction_new(int type, int account_id,
+				      gchar * destination)
 {
 	FilteringAction * action;
 
 	action = g_new0(FilteringAction, 1);
 
-	action->type = type;;
-	if (dest_folder)
-		action->dest_folder = g_strdup(dest_folder);
-	if (address)
-		action->address = address;
+	action->type = type;
+	action->account_id = account_id;
+	if (destination)
+		action->destination = g_strdup(destination);
 
 	return action;
 }
 
 void filteringaction_free(FilteringAction * action)
 {
-	if (action->dest_folder)
-		g_free(action->dest_folder);
-	if (action->address)
-		g_free(action->address);
-	if (action->newsgroups)
-		g_free(action->newsgroups);
+	if (action->destination)
+		g_free(action->destination);
 	g_free(action);
 }
 
@@ -47,9 +41,7 @@ FilteringAction * filteringaction_parse(gchar ** str)
 {
 	FilteringAction * action;
 	gchar * tmp;
-	gchar * dest_folder = NULL;
-	gchar * address = NULL;
-	gchar * newsgroups = NULL;
+	gchar * destination = NULL;
 	gint account_id = 0;
 	gint key;
 
@@ -59,13 +51,18 @@ FilteringAction * filteringaction_parse(gchar ** str)
 
 	switch (key) {
 	case MATCHING_ACTION_MOVE:
-		dest_folder = matcher_parse_str(&tmp);
-		if (tmp == NULL)
+		destination = matcher_parse_str(&tmp);
+		if (tmp == NULL) {
+			* str = NULL;
 			return NULL;
-
+		}
 		break;
 	case MATCHING_ACTION_COPY:
-		dest_folder = matcher_parse_str(&tmp);
+		destination = matcher_parse_str(&tmp);
+		if (tmp == NULL) {
+			* str = NULL;
+			return NULL;
+		}
 		break;
 	case MATCHING_ACTION_DELETE:
 		break;
@@ -79,42 +76,30 @@ FilteringAction * filteringaction_parse(gchar ** str)
 		break;
 	case MATCHING_ACTION_FORWARD:
 		account_id = matcher_parse_number(&tmp);
-		if (tmp == NULL)
+		if (tmp == NULL) {
+			* str = NULL;
 			return NULL;
+		}
 
-		address = matcher_parse_str(&tmp);
-		if (tmp == NULL)
+		destination = matcher_parse_str(&tmp);
+		if (tmp == NULL) {
+			* str = NULL;
 			return NULL;
+		}
 
 		break;
 	case MATCHING_ACTION_FORWARD_AS_ATTACHEMENT:
 		account_id = matcher_parse_number(&tmp);
-		if (tmp == NULL)
+		if (tmp == NULL) {
+			* str = NULL;
 			return NULL;
+		}
 
-		address = matcher_parse_str(&tmp);
-		if (tmp == NULL)
+		destination = matcher_parse_str(&tmp);
+		if (tmp == NULL) {
+			* str = NULL;
 			return NULL;
-
-		break;
-	case MATCHING_ACTION_FORWARD_NEWS:
-		account_id = matcher_parse_number(&tmp);
-		if (tmp == NULL)
-			return NULL;
-
-		newsgroups = matcher_parse_str(&tmp);
-		if (tmp == NULL)
-			return NULL;
-
-		break;
-	case MATCHING_ACTION_FORWARD_NEWS_AS_ATTACHEMENT:
-		account_id = matcher_parse_number(&tmp);
-		if (tmp == NULL)
-			return NULL;
-
-		newsgroups = matcher_parse_str(&tmp);
-		if (tmp == NULL)
-			return NULL;
+		}
 
 		break;
 	default:
@@ -123,8 +108,7 @@ FilteringAction * filteringaction_parse(gchar ** str)
 	}
 
 	* str = tmp;
-	action = filteringaction_new(key, dest_folder,
-				     account_id, address, newsgroups);
+	action = filteringaction_new(key, account_id, destination);
 
 	return action;
 }
@@ -220,7 +204,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 
 	switch(action->type) {
 	case MATCHING_ACTION_MOVE:
-		dest_folder = folder_find_item_from_path(action->dest_folder);
+		dest_folder = folder_find_item_from_path(action->destination);
 		if (!dest_folder)
 			return FALSE;
 
@@ -248,7 +232,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		return TRUE;
 
 	case MATCHING_ACTION_COPY:
-		dest_folder = folder_find_item_from_path(action->dest_folder);
+		dest_folder = folder_find_item_from_path(action->destination);
 		if (!dest_folder)
 			return FALSE;
 
@@ -266,7 +250,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		return TRUE;
 
 	case MATCHING_ACTION_DELETE:
-		if (folder_item_remove_msg(dest_folder, info->msgnum) == -1)
+		if (folder_item_remove_msg(info->folder, info->msgnum) == -1)
 			return FALSE;
 
 		info->flags = 0;
@@ -303,14 +287,6 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		return FALSE;
 
 	case MATCHING_ACTION_FORWARD_AS_ATTACHEMENT:
-
-		return FALSE;
-
-	case MATCHING_ACTION_FORWARD_NEWS:
-
-		return FALSE;
-
-	case MATCHING_ACTION_FORWARD_NEWS_AS_ATTACHEMENT:
 
 		return FALSE;
 
@@ -360,8 +336,6 @@ static gboolean filteringprop_apply(FilteringProp * filtering, MsgInfo * info,
 		case MATCHING_ACTION_MARK_AS_UNREAD:
 		case MATCHING_ACTION_FORWARD:
 		case MATCHING_ACTION_FORWARD_AS_ATTACHEMENT:
-		case MATCHING_ACTION_FORWARD_NEWS:
-		case MATCHING_ACTION_FORWARD_NEWS_AS_ATTACHEMENT:
 			return FALSE;
 		default:
 			return FALSE;
@@ -472,25 +446,6 @@ void prefs_filtering_read_config(void)
  	fclose(fp);
 }
 
-/*
-struct _FilteringAction {
-	int type;
-	gchar * dest_folder;
-	gchar * address;
-	gchar * newsgroups;
-}
-
-	MATCHING_ACTION_MOVE,
-	MATCHING_ACTION_COPY,
-	MATCHING_ACTION_DELETE,
-	MATCHING_ACTION_MARK,
-	MATCHING_ACTION_MARK_AS_READ,
-	MATCHING_ACTION_FORWARD,
-	MATCHING_ACTION_FORWARD_AS_ATTACHEMENT,
-	MATCHING_ACTION_FORWARD_NEWS,
-	MATCHING_ACTION_FORWARD_NEWS_AS_ATTACHEMENT,
-*/
-
 gchar * filteringaction_to_string(FilteringAction * action)
 {
 	gchar * command_str;
@@ -506,8 +461,8 @@ gchar * filteringaction_to_string(FilteringAction * action)
 	switch(action->type) {
 	case MATCHING_ACTION_MOVE:
 	case MATCHING_ACTION_COPY:
-		return g_strconcat(command_str, " ", action->dest_folder,
-				   NULL);
+		return g_strconcat(command_str, " \"", action->destination,
+				   "\"", NULL);
 
 	case MATCHING_ACTION_DELETE:
 	case MATCHING_ACTION_MARK:
@@ -521,13 +476,7 @@ gchar * filteringaction_to_string(FilteringAction * action)
 	case MATCHING_ACTION_FORWARD_AS_ATTACHEMENT:
 		account_id_str = itos(action->account_id);
 		return g_strconcat(command_str, " ", account_id_str,
-				   " \"", action->address, "\"", NULL);
-
-	case MATCHING_ACTION_FORWARD_NEWS:
-	case MATCHING_ACTION_FORWARD_NEWS_AS_ATTACHEMENT:
-		account_id_str = itos(action->account_id);
-		return g_strconcat(command_str, " ", account_id_str,
-				   " \"", action->newsgroups, "\"", NULL);
+				   " \"", action->destination, "\"", NULL);
 
 	default:
 		return NULL;

@@ -144,7 +144,7 @@ gchar * criteria_text [] = {
 	"Score greater than", "Score lower than"
 };
 
-gint get_sel_from_list(GtkList * list)
+static gint get_sel_from_list(GtkList * list)
 {
 	gint row = 0;
 	void * sel;
@@ -676,6 +676,80 @@ static MatcherList * prefs_matcher_get_list(void)
 	return matchers;
 }
 
+static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
+{
+	switch(matching_id) {
+	case MATCHING_ALL:
+		return CRITERIA_ALL;
+	case MATCHING_NOT_UNREAD:
+	case MATCHING_UNREAD:
+		return CRITERIA_UNREAD;
+	case MATCHING_NOT_NEW:
+	case MATCHING_NEW:
+		return CRITERIA_NEW;
+	case MATCHING_NOT_MARKED:
+	case MATCHING_MARKED:
+		return CRITERIA_MARKED;
+	case MATCHING_NOT_DELETED:
+	case MATCHING_DELETED:
+		return CRITERIA_DELETED;
+		break;
+	case MATCHING_NOT_REPLIED:
+	case MATCHING_REPLIED:
+		return CRITERIA_REPLIED;
+	case MATCHING_NOT_FORWARDED:
+	case MATCHING_FORWARDED:
+		return CRITERIA_FORWARDED;
+	case MATCHING_NOT_SUBJECT:
+	case MATCHING_SUBJECT:
+		return CRITERIA_SUBJECT;
+	case MATCHING_NOT_FROM:
+	case MATCHING_FROM:
+		return CRITERIA_FROM;
+	case MATCHING_NOT_TO:
+	case MATCHING_TO:
+		return CRITERIA_TO;
+	case MATCHING_NOT_CC:
+	case MATCHING_CC:
+		return CRITERIA_CC;
+	case MATCHING_NOT_NEWSGROUPS:
+	case MATCHING_NEWSGROUPS:
+		return CRITERIA_NEWSGROUPS;
+	case MATCHING_NOT_INREPLYTO:
+	case MATCHING_INREPLYTO:
+		return CRITERIA_INREPLYTO;
+	case MATCHING_NOT_REFERENCES:
+	case MATCHING_REFERENCES:
+		return CRITERIA_REFERENCES;
+	case MATCHING_NOT_TO_AND_NOT_CC:
+	case MATCHING_TO_OR_CC:
+		return CRITERIA_TO_OR_CC;
+	case MATCHING_NOT_BODY_PART:
+	case MATCHING_BODY_PART:
+		return CRITERIA_BODY_PART;
+	case MATCHING_NOT_MESSAGE:
+	case MATCHING_MESSAGE:
+		return CRITERIA_MESSAGE;
+		break;
+	case MATCHING_NOT_HEADERS_PART:
+	case MATCHING_HEADERS_PART:
+		return CRITERIA_HEADERS_PART;
+	case MATCHING_NOT_HEADER:
+	case MATCHING_HEADER:
+		return CRITERIA_HEADER;
+	case MATCHING_AGE_GREATER:
+		return CRITERIA_AGE_GREATER;
+	case MATCHING_AGE_LOWER:
+		return CRITERIA_AGE_LOWER;
+	case MATCHING_SCORE_GREATER:
+		return CRITERIA_SCORE_GREATER;
+	case MATCHING_SCORE_LOWER:
+		return CRITERIA_SCORE_LOWER;
+	default:
+		return -1;
+	}
+}
+
 static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 {
 	switch (criteria_id) {
@@ -995,6 +1069,7 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 	gchar * tmp;
 	MatcherProp * prop;
 	gboolean negative_cond;
+	gint criteria;
 
 	if (!gtk_clist_get_text(GTK_CLIST(matcher.cond_clist),
 				row, 0, &matcher_str))
@@ -1012,156 +1087,31 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 	if (tmp == NULL)
 		return;
 
+	criteria = prefs_matcher_get_criteria_from_matching(prop->criteria);
+	if (criteria != -1)
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     criteria);
+
 	switch(prop->criteria) {
-	case MATCHING_ALL:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_ALL);
-		break;
-
 	case MATCHING_NOT_UNREAD:
-		negative_cond = TRUE;
-	case MATCHING_UNREAD:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_UNREAD);
-		break;
-
 	case MATCHING_NOT_NEW:
-		negative_cond = TRUE;
-	case MATCHING_NEW:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_NEW);
-		break;
-
 	case MATCHING_NOT_MARKED:
-		negative_cond = TRUE;
-	case MATCHING_MARKED:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_MARKED);
-		break;
-
 	case MATCHING_NOT_DELETED:
-		negative_cond = TRUE;
-	case MATCHING_DELETED:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_DELETED);
-		break;
-
 	case MATCHING_NOT_REPLIED:
-		negative_cond = TRUE;
-	case MATCHING_REPLIED:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_REPLIED);
-		break;
-
 	case MATCHING_NOT_FORWARDED:
-		negative_cond = TRUE;
-	case MATCHING_FORWARDED:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_FORWARDED);
-		break;
-
 	case MATCHING_NOT_SUBJECT:
-		negative_cond = TRUE;
-	case MATCHING_SUBJECT:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_SUBJECT);
-		break;
-
 	case MATCHING_NOT_FROM:
-		negative_cond = TRUE;
-	case MATCHING_FROM:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_FROM);
-		break;
-
 	case MATCHING_NOT_TO:
-		negative_cond = TRUE;
-	case MATCHING_TO:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_TO);
-		break;
-
 	case MATCHING_NOT_CC:
-		negative_cond = TRUE;
-	case MATCHING_CC:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_CC);
-		break;
-
 	case MATCHING_NOT_NEWSGROUPS:
-		negative_cond = TRUE;
-	case MATCHING_NEWSGROUPS:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_NEWSGROUPS);
-		break;
-
 	case MATCHING_NOT_INREPLYTO:
-		negative_cond = TRUE;
-	case MATCHING_INREPLYTO:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_INREPLYTO);
-		break;
-
 	case MATCHING_NOT_REFERENCES:
-		negative_cond = TRUE;
-	case MATCHING_REFERENCES:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_REFERENCES);
-		break;
-
 	case MATCHING_NOT_TO_AND_NOT_CC:
-		negative_cond = TRUE;
-	case MATCHING_TO_OR_CC:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_TO_OR_CC);
-		break;
-
 	case MATCHING_NOT_BODY_PART:
-		negative_cond = TRUE;
-	case MATCHING_BODY_PART:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_BODY_PART);
-		break;
-
 	case MATCHING_NOT_MESSAGE:
-		negative_cond = TRUE;
-	case MATCHING_MESSAGE:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_MESSAGE);
-		break;
-
 	case MATCHING_NOT_HEADERS_PART:
-		negative_cond = TRUE;
-	case MATCHING_HEADERS_PART:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_HEADERS_PART);
-		break;
-
 	case MATCHING_NOT_HEADER:
 		negative_cond = TRUE;
-	case MATCHING_HEADER:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_HEADER);
-		break;
-
-	case MATCHING_AGE_GREATER:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_AGE_GREATER);
-		break;
-
-	case MATCHING_AGE_LOWER:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_AGE_LOWER);
-		break;
-
-	case MATCHING_SCORE_GREATER:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_SCORE_GREATER);
-		break;
-
-	case MATCHING_SCORE_LOWER:
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     CRITERIA_SCORE_LOWER);
 		break;
 	}
 	

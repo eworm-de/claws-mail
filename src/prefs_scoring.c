@@ -483,6 +483,8 @@ static void prefs_scoring_register_cb(void)
 	prefs_scoring_clist_set_row(-1, prop);
 
 	scoringprop_free(prop);
+
+	prefs_scoring_reset_dialog();
 }
 
 static void prefs_scoring_substitute_cb(void)
@@ -527,6 +529,8 @@ static void prefs_scoring_substitute_cb(void)
 	prefs_scoring_clist_set_row(row, prop);
 
 	scoringprop_free(prop);
+
+	prefs_scoring_reset_dialog();
 }
 
 static void prefs_scoring_delete_cb(void)
@@ -602,10 +606,15 @@ static void prefs_scoring_select(GtkCList *clist, gint row, gint column,
 
 	gchar * scoring_str;
 
+	if (row == 0) {
+		prefs_scoring_reset_dialog();
+		return;
+	}
+
         if (!gtk_clist_get_text(GTK_CLIST(scoring.cond_clist),
 				row, 0, &scoring_str))
 		return;
-	
+
 	tmp = scoring_str;
 	prop = scoringprop_parse(&tmp);
 	if (tmp == NULL)
