@@ -874,13 +874,14 @@ void folderview_rescan_all(void)
 }
 #endif
 
-void folderview_check_new(Folder *folder)
+gint folderview_check_new(Folder *folder)
 {
 	GList *list;
 	FolderItem *item;
 	FolderView *folderview;
 	GtkCTree *ctree;
 	GtkCTreeNode *node;
+	gint new_msgs = 0;
 
 	for (list = folderview_list; list != NULL; list = list->next) {
 		folderview = (FolderView *)list->data;
@@ -904,6 +905,7 @@ void folderview_check_new(Folder *folder)
 					break;
 			}
 			folderview_update_node(folderview, node);
+			new_msgs += item->new;
 		}
 
 		gtk_widget_set_sensitive(folderview->ctree, TRUE);
@@ -912,6 +914,7 @@ void folderview_check_new(Folder *folder)
 	}
 
 	folder_write_list();
+	return new_msgs;
 }
 
 void folderview_check_new_all(void)

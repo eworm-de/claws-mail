@@ -113,8 +113,8 @@ static gint inc_spool			(void);
 static gint get_spool			(FolderItem	*dest,
 					 const gchar	*mbox);
 
-static void inc_spool_account(PrefsAccount *account);
-static void inc_all_spool(void);
+static gint inc_spool_account(PrefsAccount *account);
+static gint inc_all_spool(void);
 static void inc_autocheck_timer_set_interval	(guint		 interval);
 static gint inc_autocheck_func			(gpointer	 data);
 
@@ -157,6 +157,7 @@ static void inc_finished(MainWindow *mainwin, gboolean new_messages)
 void inc_mail(MainWindow *mainwin, gboolean notify)
 {
 	gint new_msgs = 0;
+	gint account_new_msgs = 0;
 
 	if (inc_lock_count) return;
 
@@ -178,19 +179,21 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 			return;
 		}
 
-		if (prefs_common.inc_local)
-			new_msgs = inc_spool();
-
-		if (new_msgs <= 0)
-			new_msgs = 1;
+		if (prefs_common.inc_local) {
+			account_new_msgs = inc_spool();
+			if (account_new_msgs > 0)
+				new_msgs += account_new_msgs;
+		}
 	} else {
 		if (prefs_common.inc_local) {
-			new_msgs = inc_spool();
-			if (new_msgs < 0)
-				new_msgs = 0;
+			account_new_msgs = inc_spool();
+			if (account_new_msgs > 0)
+				new_msgs += account_new_msgs;
 		}
 		cur_account->session = STYPE_NORMAL;
-		new_msgs += inc_account_mail(cur_account, mainwin);
+		account_new_msgs = inc_account_mail(cur_account, mainwin);
+		if (account_new_msgs > 0)
+			new_msgs += account_new_msgs;
 	}
 
 	inc_finished(mainwin, new_msgs > 0);
@@ -243,8 +246,7 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 	switch (account->protocol) {
 	case A_IMAP4:
 	case A_NNTP:
-		folderview_check_new(FOLDER(account->folder));
-		return 1;
+		return folderview_check_new(FOLDER(account->folder));
 
 	case A_POP3:
 	case A_APOP:
@@ -270,8 +272,7 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 		return inc_start(inc_dialog);
 
 	case A_LOCAL:
-		inc_spool_account(account);
-		return 1;
+		return inc_spool_account(account);
 
 	default:
 		break;
@@ -284,6 +285,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 	GList *list, *queue_list = NULL;
 	IncProgressDialog *inc_dialog;
 	gint new_msgs = 0;
+	gint account_new_msgs = 0;
 	
 	if (prefs_common.work_offline)
 		if (alertpanel(_("Offline warning"), 
@@ -297,9 +299,9 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 	main_window_lock(mainwin);
 
 	if (prefs_common.inc_local) {
-		new_msgs = inc_spool();
-		if (new_msgs < 0)
-			new_msgs = 0;
+		account_new_msgs = inc_spool();
+		if (account_new_msgs > 0)
+			new_msgs += account_new_msgs;	
 	}
 
 	list = account_get_list();
@@ -312,7 +314,9 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 	}
 
 	/* check local folders */
-	inc_all_spool();
+	account_new_msgs = inc_all_spool();
+	if (account_new_msgs > 0)
+		new_msgs += account_new_msgs;
 
 	/* check IMAP4 folders */
 	for (; list != NULL; list = list->next) {
@@ -321,7 +325,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 		     account->protocol == A_NNTP) && account->recv_at_getall) {
 			FolderItem *item = mainwin->summaryview->folder_item;
 
-			folderview_check_new(FOLDER(account->folder));
+			new_msgs += folderview_check_new(FOLDER(account->folder));
 		}
 	}
 
@@ -363,8 +367,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 	toolbar_main_set_sensitive(mainwin);
 	main_window_set_menu_sensitive(mainwin);
 
-	new_msgs += inc_start(inc_dialog);
-
+	new_msgs = inc_start(inc_dialog);
 	inc_finished(mainwin, new_msgs > 0);
 	main_window_unlock(mainwin);
  	inc_notify_cmd(new_msgs, notify);
@@ -1097,7 +1100,7 @@ static gint inc_spool(void)
 	return msgs;
 }
 
-static void inc_spool_account(PrefsAccount *account)
+static gint inc_spool_account(PrefsAccount *account)
 {
 	FolderItem *inbox;
 
@@ -1108,23 +1111,30 @@ static void inc_spool_account(PrefsAccount *account)
 	} else
 		inbox = folder_get_default_inbox();
 
-	get_spool(inbox, account->local_mbox);
+	return get_spool(inbox, account->local_mbox);
 }
 
-static void inc_all_spool(void)
+static gint inc_all_spool(void)
 {
 	GList *list = NULL;
+	gint new_msgs = 0;
+	gint account_new_msgs = 0;
 
 	list = account_get_list();
-	if (!list) return;
+	if (!list) return 0;
 
 	for (; list != NULL; list = list->next) {
 		PrefsAccount *account = list->data;
 
 		if ((account->protocol == A_LOCAL) &&
-		    (account->recv_at_getall))
-			inc_spool_account(account);
+		    (account->recv_at_getall)) {
+			account_new_msgs = inc_spool_account(account);
+			if (account_new_msgs > 0)
+				new_msgs += account_new_msgs;
+		}
 	}
+
+	return new_msgs;
 }
 
 static gint get_spool(FolderItem *dest, const gchar *mbox)

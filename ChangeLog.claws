@@ -1,3 +1,13 @@
+2003-01-13 [melvin]	0.8.8claws92
+
+	* src/folderview.[ch]
+		folderview_check_new(): return the number of new messages.
+	* src/inc.c
+		Should fix bug [14] where new mail notification worked 
+			incorrectly with IMAP accounts.
+		inc_spool_account(): return number of new msgs, or -1 on error
+		inc_all_spool(): return number of new msgs
+		
 2003-01-13 [melvin]	0.8.8claws91
 
 	* src/prefs_actions.c
