@@ -196,7 +196,7 @@
 	* src/folderview.c
 		Sync with 0.9.12cvs31
 
-2004-07-18 [colin]	0.9.12cvs30.3
+2004-07-18 [colin]	0.9.12cvs30.4
 
 	* src/compose.c
 		Also block text_inserted when inserting a file
