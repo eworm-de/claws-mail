@@ -106,7 +106,6 @@ static struct Display {
 
 	GtkWidget *chkbtn_swapfrom;
 	GtkWidget *chkbtn_hscrollbar;
-	GtkWidget *entry_datefmt;
 } display;
 
 static struct Message {
@@ -168,6 +167,8 @@ static GtkWidget *quote_desc_win;
 static GtkWidget *font_sel_win;
 static GtkWidget *quote_color_win;
 static GtkWidget *color_dialog;
+static GtkWidget *entry_datefmt;
+static GtkWidget *datefmt_sample;
 
 static void prefs_common_charset_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_common_charset_set_optmenu	      (PrefParam *pparam);
@@ -290,7 +291,7 @@ static PrefParam param[] = {
 	 &display.chkbtn_hscrollbar,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"date_format", "%y/%m/%d(%a) %H:%M", &prefs_common.date_format,
-	 P_STRING, &display.entry_datefmt,
+	 P_STRING, &entry_datefmt,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"enable_thread", "TRUE", &prefs_common.enable_thread, P_BOOL,
@@ -1091,8 +1092,18 @@ static void prefs_compose_create(void)
 
 static void date_format_close_btn_clicked(GtkButton *button, GtkWidget **widget)
 {
+	gchar *text;
+
 	g_return_if_fail(widget != NULL);
 	g_return_if_fail(*widget != NULL);
+	g_return_if_fail(entry_datefmt != NULL);
+	g_return_if_fail(datefmt_sample != NULL);
+
+	text = gtk_editable_get_chars(GTK_EDITABLE(datefmt_sample), 0, -1);
+	g_free(prefs_common.date_format);
+	prefs_common.date_format = text;
+	gtk_entry_set_text(GTK_ENTRY(entry_datefmt), text);
+
 	gtk_widget_destroy(*widget);
 	*widget = NULL;
 }
@@ -1134,7 +1145,6 @@ static GtkWidget *create_date_format(GtkButton *button, void *data)
 	GtkWidget      *vbox3;
 	GtkWidget      *hbox2;
 	GtkWidget      *label5;
-	GtkWidget      *entry1;
 	GtkWidget      *hbox1;
 	GtkWidget      *label6;
 	GtkWidget      *label7;
@@ -1230,9 +1240,9 @@ static GtkWidget *create_date_format(GtkButton *button, void *data)
 	gtk_box_pack_start(GTK_BOX(hbox2), label5, FALSE, FALSE, 0);
 	gtk_misc_set_padding(GTK_MISC(label5), 8, 0);
 
-	entry1 = gtk_entry_new_with_max_length(300);
-	gtk_widget_show(entry1);
-	gtk_box_pack_start(GTK_BOX(hbox2), entry1, TRUE, TRUE, 40);
+	datefmt_sample = gtk_entry_new_with_max_length(300);
+	gtk_widget_show(datefmt_sample);
+	gtk_box_pack_start(GTK_BOX(hbox2), datefmt_sample, TRUE, TRUE, 40);
 
 	hbox1 = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(hbox1);
@@ -1257,8 +1267,9 @@ static GtkWidget *create_date_format(GtkButton *button, void *data)
 	gtk_box_pack_start(GTK_BOX(hbox3), button1, FALSE, TRUE, 144);
 
 	/* set the current format */
-	gtk_entry_set_text(GTK_ENTRY(entry1), prefs_common.date_format);
-	date_format_entry_on_change(GTK_EDITABLE(entry1), GTK_LABEL(label7));
+	gtk_entry_set_text(GTK_ENTRY(datefmt_sample), prefs_common.date_format);
+	date_format_entry_on_change(GTK_EDITABLE(datefmt_sample),
+				    GTK_LABEL(label7));
 
 	gtk_signal_connect(GTK_OBJECT(button1), "clicked",
 				  GTK_SIGNAL_FUNC(date_format_close_btn_clicked), &date_format);
@@ -1266,7 +1277,7 @@ static GtkWidget *create_date_format(GtkButton *button, void *data)
 	gtk_signal_connect(GTK_OBJECT(date_format), "delete_event",
 			    GTK_SIGNAL_FUNC(date_format_on_delete), &date_format);
 
-	gtk_signal_connect(GTK_OBJECT(entry1), "changed",
+	gtk_signal_connect(GTK_OBJECT(datefmt_sample), "changed",
 				GTK_SIGNAL_FUNC(date_format_entry_on_change), label7);
 				  
 	gtk_window_set_position(GTK_WINDOW(date_format), GTK_WIN_POS_CENTER);
@@ -1292,7 +1303,6 @@ static void prefs_display_create(void)
 	GtkWidget *chkbtn_hscrollbar;
 	GtkWidget *hbox1;
 	GtkWidget *label_datefmt;
-	GtkWidget *entry_datefmt;
 	GtkWidget *button_dispitem;
 	GtkWidget *button_headers_display;
 
@@ -1400,7 +1410,6 @@ static void prefs_display_create(void)
 
 	display.chkbtn_swapfrom   = chkbtn_swapfrom;
 	display.chkbtn_hscrollbar = chkbtn_hscrollbar;
-	display.entry_datefmt     = entry_datefmt;
 }
 
 static void prefs_message_create(void)
