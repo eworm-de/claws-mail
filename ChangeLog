@@ -1,3 +1,19 @@
+2002-05-09
+
+	* src/folderview.c: folderview_check_new(): skip unselectable folders.
+	* src/summaryview.c: added 'Create filter rule' to the context menu.
+
+2002-05-08
+
+	* src/imap.[ch]: supported namespace for others/shared folders
+	  (in progress).
+	  imap_parse_namespace(): parse also others/shared namespace.
+	  imap_find_namespace(): search also others/shared namespace.
+	* src/utils.[ch]:
+	  strchr_parenthesis_close(): return pointer to closing parenthesis.
+	  strsplit_parenthesis(): split parenthetic list into array of
+	  strings.
+
 2002-05-08
 
 	* src/procheader.c: procheader_date_parse(): fixed a bug that didn't

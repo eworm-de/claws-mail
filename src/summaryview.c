@@ -310,6 +310,9 @@ static void summary_show_all_header_cb	(SummaryView		*summaryview,
 static void summary_add_address_cb	(SummaryView		*summaryview,
 					 guint			 action,
 					 GtkWidget		*widget);
+static void summary_create_filter_cb	(SummaryView		*summaryview,
+					 guint			 action,
+					 GtkWidget		*widget);
 
 static void summary_mark_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
@@ -421,6 +424,15 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/Add sender to address boo_k"),
 					NULL, summary_add_address_cb, 0, NULL},
+	{N_("/Create f_ilter rule"),	NULL, NULL,		0, "<Branch>"},
+	{N_("/Create f_ilter rule/_Automatically"),
+					NULL, summary_create_filter_cb, FILTER_BY_AUTO, NULL},
+	{N_("/Create f_ilter rule/by _From"),
+					NULL, summary_create_filter_cb, FILTER_BY_FROM, NULL},
+	{N_("/Create f_ilter rule/by _To"),
+					NULL, summary_create_filter_cb, FILTER_BY_TO, NULL},
+	{N_("/Create f_ilter rule/by _Subject"),
+					NULL, summary_create_filter_cb, FILTER_BY_SUBJECT, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_View"),			NULL, NULL,		0, "<Branch>"},
 	{N_("/_View/Open in new _window"),
@@ -1088,6 +1100,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/Bounce",	                  TRUE);
 
 	menu_set_sensitive(ifactory, "/Add sender to address book", sens);
+	menu_set_sensitive(ifactory, "/Create filter rule",         sens);
 
 	menu_set_sensitive(ifactory, "/View", sens);
 	menu_set_sensitive(ifactory, "/View/Open in new window", sens);
@@ -4769,6 +4782,12 @@ static void summary_add_address_cb(SummaryView *summaryview,
 				   guint action, GtkWidget *widget)
 {
 	summary_add_address(summaryview);
+}
+
+static void summary_create_filter_cb(SummaryView *summaryview,
+				     guint action, GtkWidget *widget)
+{
+	summary_filter_open(summaryview, (PrefsFilterType)action);
 }
 
 static void summary_mark_clicked(GtkWidget *button, SummaryView *summaryview)

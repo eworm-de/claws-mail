@@ -1,3 +1,19 @@
+2002-05-09
+
+	* src/folderview.c: folderview_check_new(): 選択できないフォルダを
+	  スキップ。
+	* src/summaryview.c: コンテキストメニューに「振り分けルールを作成」
+	  を追加。
+
+2002-05-08
+
+	* src/imap.[ch]: others/shared フォルダの namespace に対応(作業中)。
+	  imap_parse_namespace(): others/shared namespace もパース。
+	  imap_find_namespace(): others/shared namespace も検索。
+	* src/utils.[ch]:
+	  strchr_parenthesis_close(): 閉じ括弧へのポインタを返す。
+	  strsplit_parenthesis(): 括弧のリストを文字列の配列に分割。
+
 2002-05-08
 
 	* src/procheader.c: procheader_date_parse(): "Mon,6 May 2002 20:31:12

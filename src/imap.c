@@ -983,8 +983,8 @@ void imap_scan_tree(Folder *folder)
 	session = imap_session_get(folder);
 	if (!session) return;
 
-	if (imapfolder->namespace && imapfolder->namespace->data)
-		namespace = (IMAPNameSpace *)imapfolder->namespace->data;
+	if (imapfolder->ns_personal && imapfolder->ns_personal->data)
+		namespace = (IMAPNameSpace *)imapfolder->ns_personal->data;
 
 	if (folder->account->imap_dir && *folder->account->imap_dir) {
 		gchar *imap_dir;
@@ -1659,21 +1659,69 @@ static SockInfo *imap_init_sock(SockInfo *sock)
 	return sock;
 }
 
-#define THROW goto catch
+static GList *imap_parse_namespace_str(gchar *str)
+{
+	gchar *p = str;
+	gchar *name;
+	gchar *separator;
+	IMAPNameSpace *namespace;
+	GList *ns_list = NULL;
+
+	while (*p != '\0') {
+		/* parse ("#foo" "/") */
+
+		while (*p && *p != '(') p++;
+		if (*p == '\0') break;
+		p++;
+
+		while (*p && *p != '"') p++;
+		if (*p == '\0') break;
+		p++;
+		name = p;
+
+		while (*p && *p != '"') p++;
+		if (*p == '\0') break;
+		*p = '\0';
+		p++;
+
+		while (*p && isspace(*p)) p++;
+		if (*p == '\0') break;
+		if (strncmp(p, "NIL", 3) == 0)
+			separator = NULL;
+		else if (*p == '"') {
+			p++;
+			separator = p;
+			while (*p && *p != '"') p++;
+			if (*p == '\0') break;
+			*p = '\0';
+			p++;
+		} else break;
+
+		while (*p && *p != ')') p++;
+		if (*p == '\0') break;
+		p++;
+
+		namespace = g_new(IMAPNameSpace, 1);
+		namespace->name = g_strdup(name);
+		namespace->separator = separator ? separator[0] : '\0';
+		ns_list = g_list_append(ns_list, namespace);
+	}
+
+	return ns_list;
+}
 
 static void imap_parse_namespace(IMAPSession *session, IMAPFolder *folder)
 {
 	gchar *ns_str;
-	gchar *name;
-	gchar *separator;
-	gchar *p;
-	IMAPNameSpace *namespace;
-	GList *ns_list = NULL;
+	gchar **str_array;
 
 	g_return_if_fail(session != NULL);
 	g_return_if_fail(folder != NULL);
 
-	if (folder->namespace != NULL) return;
+	if (folder->ns_personal != NULL ||
+	    folder->ns_others   != NULL ||
+	    folder->ns_shared   != NULL)
+		return;
 
 	if (imap_cmd_namespace(SESSION(session)->sock, &ns_str)
 	    != IMAP_SUCCESS) {
@@ -1681,70 +1729,24 @@ static void imap_parse_namespace(IMAPSession *session, IMAPFolder *folder)
 		return;
 	}
 
-	/* get the first element */
-	extract_one_parenthesis_with_skip_quote(ns_str, '"', '(', ')');
-	g_strstrip(ns_str);
-	p = ns_str;
-
-	while (*p != '\0') {
-		/* parse ("#foo" "/") */
-
-		while (*p && *p != '(') p++;
-		if (*p == '\0') THROW;
-		p++;
-
-		while (*p && *p != '"') p++;
-		if (*p == '\0') THROW;
-		p++;
-		name = p;
-
-		while (*p && *p != '"') p++;
-		if (*p == '\0') THROW;
-		*p = '\0';
-		p++;
-
-		while (*p && isspace(*p)) p++;
-		if (*p == '\0') THROW;
-		if (strncmp(p, "NIL", 3) == 0)
-			separator = NULL;
-		else if (*p == '"') {
-			p++;
-			separator = p;
-			while (*p && *p != '"') p++;
-			if (*p == '\0') THROW;
-			*p = '\0';
-			p++;
-		} else THROW;
-
-		while (*p && *p != ')') p++;
-		if (*p == '\0') THROW;
-		p++;
-
-		namespace = g_new(IMAPNameSpace, 1);
-		namespace->name = g_strdup(name);
-		namespace->separator = separator ? separator[0] : '\0';
-		ns_list = g_list_append(ns_list, namespace);
-		IMAP_FOLDER(folder)->namespace = ns_list;
-	}
-
-catch:
-	g_free(ns_str);
+	str_array = strsplit_parenthesis(ns_str, '(', ')', 3);
+	if (str_array[0])
+		folder->ns_personal = imap_parse_namespace_str(str_array[0]);
+	if (str_array[0] && str_array[1])
+		folder->ns_others = imap_parse_namespace_str(str_array[1]);
+	if (str_array[0] && str_array[1] && str_array[2])
+		folder->ns_shared = imap_parse_namespace_str(str_array[2]);
+	g_strfreev(str_array);
 	return;
 }
 
-#undef THROW
-
-static IMAPNameSpace *imap_find_namespace(IMAPFolder *folder,
-					  const gchar *path)
+static IMAPNameSpace *imap_find_namespace_from_list(GList *ns_list,
+						    const gchar *path)
 {
 	IMAPNameSpace *namespace = NULL;
-	GList *ns_list;
 	gchar *name;
 
-	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(path != NULL, NULL);
-
-	ns_list = folder->namespace;
 
 	for (; ns_list != NULL; ns_list = ns_list->next) {
 		IMAPNameSpace *tmp_ns = ns_list->data;
@@ -1757,6 +1759,21 @@ static IMAPNameSpace *imap_find_namespace(IMAPFolder *folder,
 	}
 
 	return namespace;
+}
+
+static IMAPNameSpace *imap_find_namespace(IMAPFolder *folder,
+					  const gchar *path)
+{
+	IMAPNameSpace *namespace;
+
+	namespace = imap_find_namespace_from_list(folder->ns_personal, path);
+	if (namespace) return namespace;
+	namespace = imap_find_namespace_from_list(folder->ns_others, path);
+	if (namespace) return namespace;
+	namespace = imap_find_namespace_from_list(folder->ns_shared, path);
+	if (namespace) return namespace;
+
+	return NULL;
 }
 
 static gchar *imap_get_real_path(IMAPFolder *folder, const gchar *path)

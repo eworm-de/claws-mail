@@ -44,7 +44,10 @@ struct _IMAPFolder
 {
 	RemoteFolder rfolder;
 
-	GList *namespace;	/* list of IMAPNameSpace */
+	/* list of IMAPNameSpace */
+	GList *ns_personal;
+	GList *ns_others;
+	GList *ns_shared;
 };
 
 struct _IMAPSession

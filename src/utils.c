@@ -1101,7 +1101,94 @@ gchar *strstr_with_skip_quote(const gchar *haystack, const gchar *needle)
 	return NULL;
 }
 
-/* this fuction was taken from gstrfuncs.c in glib. */
+gchar *strchr_parenthesis_close(const gchar *str, gchar op, gchar cl)
+{
+	const gchar *p;
+	gchar quote_chr = '"';
+	gint in_brace;
+	gboolean in_quote = FALSE;
+
+	p = str;
+
+	if ((p = strchr_with_skip_quote(p, quote_chr, op))) {
+		p++;
+		in_brace = 1;
+		while (*p) {
+			if (*p == op && !in_quote)
+				in_brace++;
+			else if (*p == cl && !in_quote)
+				in_brace--;
+			else if (*p == quote_chr)
+				in_quote ^= TRUE;
+
+			if (in_brace == 0)
+				return (gchar *)p;
+
+			p++;
+		}
+	}
+
+	return NULL;
+}
+
+gchar **strsplit_parenthesis(const gchar *str, gchar op, gchar cl,
+			     gint max_tokens)
+{
+	GSList *string_list = NULL, *slist;
+	gchar **str_array;
+	const gchar *s_op, *s_cl;
+	guint i, n = 1;
+
+	g_return_val_if_fail(str != NULL, NULL);
+
+	if (max_tokens < 1)
+		max_tokens = G_MAXINT;
+
+	s_op = strchr_with_skip_quote(str, '"', op);
+	if (!s_op) return NULL;
+	str = s_op;
+	s_cl = strchr_parenthesis_close(str, op, cl);
+	if (s_cl) {
+		do {
+			guint len;
+			gchar *new_string;
+
+			str++;
+			len = s_cl - str;
+			new_string = g_new(gchar, len + 1);
+			strncpy(new_string, str, len);
+			new_string[len] = 0;
+			string_list = g_slist_prepend(string_list, new_string);
+			n++;
+			str = s_cl + 1;
+
+			while (*str && isspace(*str)) str++;
+			if (*str != op) {
+				string_list = g_slist_prepend(string_list,
+							      g_strdup(""));
+				n++;
+				s_op = strchr_with_skip_quote(str, '"', op);
+				if (!--max_tokens || !s_op) break;
+				str = s_op;
+			} else
+				s_op = str;
+			s_cl = strchr_parenthesis_close(str, op, cl);
+		} while (--max_tokens && s_cl);
+	}
+
+	str_array = g_new(gchar*, n);
+
+	i = n - 1;
+
+	str_array[i--] = NULL;
+	for (slist = string_list; slist; slist = slist->next)
+		str_array[i--] = slist->data;
+
+	g_slist_free(string_list);
+
+	return str_array;
+}
+
 gchar **strsplit_with_quote(const gchar *str, const gchar *delim,
 			    gint max_tokens)
 {

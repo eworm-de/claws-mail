@@ -853,6 +853,7 @@ void folderview_check_new(Folder *folder)
 		     node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 			item = gtk_ctree_node_get_row_data(ctree, node);
 			if (!item || !item->path || !item->folder) continue;
+			if (item->no_select) continue;
 			if (folder && folder != item->folder) continue;
 			if (!folder && !FOLDER_IS_LOCAL(item->folder)) continue;
 

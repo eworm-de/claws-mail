@@ -273,6 +273,14 @@ gint get_quote_level			(const gchar	*str,
 					 const gchar	*quote_chars);
 gchar *strstr_with_skip_quote		(const gchar	*haystack,
 					 const gchar	*needle);
+gchar *strchr_parenthesis_close		(const gchar	*str,
+					 gchar		 op,
+					 gchar		 cl);
+
+gchar **strsplit_parenthesis		(const gchar	*str,
+					 gchar		 op,
+					 gchar		 cl,
+					 gint		 max_tokens);
 gchar **strsplit_with_quote		(const gchar	*str,
 					 const gchar	*delim,
 					 gint		 max_tokens);
