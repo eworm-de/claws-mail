@@ -1,3 +1,8 @@
+2003-10-02 [christoph]	0.9.6claws1
+
+	* src/imap.c
+		add UIDPLUS support for COPY and EXPUNGE
+
 2003-10-02 [paul]	0.9.6claws
 
 	* 0.9.6claws released

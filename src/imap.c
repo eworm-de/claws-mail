@@ -312,32 +312,32 @@ static gint imap_cmd_authenticate
 				 const gchar	*user,
 				 const gchar	*pass,
 				 IMAPAuthType	 type);
-static gint imap_cmd_login	(IMAPSession	*sock,
+static gint imap_cmd_login	(IMAPSession	*session,
 				 const gchar	*user,
 				 const gchar	*pass);
-static gint imap_cmd_logout	(IMAPSession	*sock);
-static gint imap_cmd_noop	(IMAPSession	*sock);
-static gint imap_cmd_starttls	(IMAPSession	*sock);
-static gint imap_cmd_namespace	(IMAPSession	*sock,
+static gint imap_cmd_logout	(IMAPSession	*session);
+static gint imap_cmd_noop	(IMAPSession	*session);
+static gint imap_cmd_starttls	(IMAPSession	*session);
+static gint imap_cmd_namespace	(IMAPSession	*session,
 				 gchar	       **ns_str);
 static gint imap_cmd_list	(IMAPSession	*session,
 				 const gchar	*ref,
 				 const gchar	*mailbox,
 				 GPtrArray	*argbuf);
-static gint imap_cmd_do_select	(IMAPSession	*sock,
+static gint imap_cmd_do_select	(IMAPSession	*session,
 				 const gchar	*folder,
 				 gboolean	 examine,
 				 gint		*exists,
 				 gint		*recent,
 				 gint		*unseen,
 				 guint32	*uid_validity);
-static gint imap_cmd_select	(IMAPSession	*sock,
+static gint imap_cmd_select	(IMAPSession	*session,
 				 const gchar	*folder,
 				 gint		*exists,
 				 gint		*recent,
 				 gint		*unseen,
 				 guint32	*uid_validity);
-static gint imap_cmd_examine	(IMAPSession	*sock,
+static gint imap_cmd_examine	(IMAPSession	*session,
 				 const gchar	*folder,
 				 gint		*exists,
 				 gint		*recent,
@@ -348,9 +348,9 @@ static gint imap_cmd_create	(IMAPSession	*sock,
 static gint imap_cmd_rename	(IMAPSession	*sock,
 				 const gchar	*oldfolder,
 				 const gchar	*newfolder);
-static gint imap_cmd_delete	(IMAPSession	*sock,
+static gint imap_cmd_delete	(IMAPSession	*session,
 				 const gchar	*folder);
-static gint imap_cmd_envelope	(IMAPSession	*sock,
+static gint imap_cmd_envelope	(IMAPSession	*session,
 				 IMAPSet	 set);
 static gint imap_cmd_fetch	(IMAPSession	*sock,
 				 guint32	 uid,
@@ -364,17 +364,18 @@ static gint imap_cmd_copy       (IMAPSession    *session,
                                  const gchar    *seq_set, 
                                  const gchar    *destfolder,
 				 GRelation	*uid_mapping);
-static gint imap_cmd_store	(IMAPSession	*sock,
+static gint imap_cmd_store	(IMAPSession	*session,
 				 IMAPSet	 set,
 				 gchar		*sub_cmd);
-static gint imap_cmd_expunge	(IMAPSession	*sock);
-static gint imap_cmd_close     (IMAPSession    *session);
+static gint imap_cmd_expunge	(IMAPSession	*session,
+				 IMAPSet	 seq_set);
+static gint imap_cmd_close      (IMAPSession    *session);
 
 static gint imap_cmd_ok		(IMAPSession	*session,
 				 GPtrArray	*argbuf);
-static void imap_gen_send	(IMAPSession	*sock,
+static void imap_gen_send	(IMAPSession	*session,
 				 const gchar	*format, ...);
-static gint imap_gen_recv	(IMAPSession	*sock,
+static gint imap_gen_recv	(IMAPSession	*session,
 				 gchar	       **ret);
 
 /* misc utility functions */
@@ -1072,7 +1073,15 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 		return ok;
 	}
 
-	ok = imap_cmd_expunge(session);
+	if (!session->uidplus) {
+		ok = imap_cmd_expunge(session, NULL);
+	} else {
+		gchar *uidstr;
+
+		uidstr = g_strdup_printf("%u", uid);
+		ok = imap_cmd_expunge(session, uidstr);
+		g_free(uidstr);
+	}
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't expunge\n"));
 		return ok;
@@ -1112,7 +1121,7 @@ gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 		return ok;
 	}
 
-	ok = imap_cmd_expunge(session);
+	ok = imap_cmd_expunge(session, NULL);
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't expunge\n"));
 		return ok;
@@ -2934,10 +2943,7 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 		argbuf = g_ptr_array_new();
 
 		ok = imap_cmd_ok(session, argbuf);
-		if (ok != IMAP_SUCCESS)
-			log_warning(_("can't append message to %s\n"),
-				    destfolder_);
-		else if (argbuf->len > 0) {
+		if ((ok == IMAP_SUCCESS) && (argbuf->len > 0)) {
 			resp_str = g_ptr_array_index(argbuf, argbuf->len - 1);
 			if (resp_str &&
 			    sscanf(resp_str, "%*u OK [APPENDUID %*u %u]",
@@ -2951,7 +2957,34 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 	} else
 		ok = imap_cmd_ok(session, NULL);
 
+	if (ok != IMAP_SUCCESS)
+		log_warning(_("can't append message to %s\n"),
+			    destfolder_);
+
 	return ok;
+}
+
+static MsgNumberList *imapset_to_numlist(IMAPSet imapset)
+{
+	gchar **ranges, **range;
+	guint32 low, high;
+	MsgNumberList *uids = NULL;
+	
+	ranges = g_strsplit(imapset, ",", 0);
+	for (range = ranges; *range != NULL; range++) {
+		printf("%s\n", *range);
+		if(sscanf(*range, "%u:%u", &low, &high) == 1)
+			uids = g_slist_prepend(uids, GINT_TO_POINTER(low));
+		else {
+			int i;
+			for (i = low; i <= high; i++)
+				uids = g_slist_prepend(uids, GINT_TO_POINTER(i));
+		}
+	}
+	uids = g_slist_reverse(uids);
+	g_strfreev(ranges);
+
+	return uids;
 }
 
 static gint imap_cmd_copy(IMAPSession *session, const gchar *seq_set,
@@ -2959,7 +2992,6 @@ static gint imap_cmd_copy(IMAPSession *session, const gchar *seq_set,
 {
 	gint ok;
 	gchar *destfolder_;
-	GPtrArray *reply;
 	
 	g_return_val_if_fail(session != NULL, IMAP_ERROR);
 	g_return_val_if_fail(seq_set != NULL, IMAP_ERROR);
@@ -2968,25 +3000,48 @@ static gint imap_cmd_copy(IMAPSession *session, const gchar *seq_set,
 	QUOTE_IF_REQUIRED(destfolder_, destfolder);
 	imap_gen_send(session, "UID COPY %s %s", seq_set, destfolder_);
 
-	reply = g_ptr_array_new();
+	if (uid_mapping != NULL && session->uidplus) {
+		GPtrArray *reply;		
+		gchar *resp_str = NULL, *olduids_str, *newuids_str;
+		MsgNumberList *olduids, *old_cur, *newuids, *new_cur;
 
-	ok = imap_cmd_ok(session, reply);
+		reply = g_ptr_array_new();
+		ok = imap_cmd_ok(session, reply);
+		if ((ok == IMAP_SUCCESS) && (reply->len > 0)) {
+			resp_str = g_ptr_array_index(reply, reply->len - 1);
+			if (resp_str) {
+				olduids_str = g_new0(gchar, strlen(resp_str));
+				newuids_str = g_new0(gchar, strlen(resp_str));
+				if (sscanf(resp_str, "%*s OK [COPYUID %*u %[0-9,:] %[0-9,:]]",
+					   olduids_str, newuids_str) == 2) {
+					olduids = imapset_to_numlist(olduids_str);
+					newuids = imapset_to_numlist(newuids_str);
+
+					old_cur = olduids;
+					new_cur = newuids;
+					while(old_cur != NULL && new_cur != NULL) {
+						g_relation_insert(uid_mapping, 
+								  GPOINTER_TO_INT(old_cur->data),
+								  GPOINTER_TO_INT(new_cur->data));
+					        old_cur = g_slist_next(old_cur);
+						new_cur = g_slist_next(new_cur);
+					}
+
+					g_slist_free(olduids);
+					g_slist_free(newuids);
+				}
+				g_free(olduids_str);
+				g_free(newuids_str);
+			}
+		}
+		ptr_array_free_strings(reply);
+		g_ptr_array_free(reply, TRUE);
+	} else
+		ok = imap_cmd_ok(session, NULL);
+
 	if (ok != IMAP_SUCCESS)
 		log_warning(_("can't copy %s to %s\n"), seq_set, destfolder_);
-/*
-	TODO: UIDPLUS
-	
-	- split IMAPSets into uids
-	- g_relation_insert(uid_mapping, olduid, newuid);
 
-	else if (imap_has_capability(session, "UIDPLUS") && reply->len > 0)
-		if ((okmsginfo = g_ptr_array_index(reply, reply->len - 1)) != NULL &&
-		    sscanf(okmsginfo, "%*u OK [COPYUID %*u %u %u]", &olduid, &newuid) == 2 &&
-		    olduid == msgnum)
-			*new_uid = newuid;
-*/
-	ptr_array_free_strings(reply);
-	g_ptr_array_free(reply, TRUE);
 	return ok;
 }
 
@@ -3043,11 +3098,14 @@ static gint imap_cmd_store(IMAPSession *session, IMAPSet seq_set,
 	return IMAP_SUCCESS;
 }
 
-static gint imap_cmd_expunge(IMAPSession *session)
+static gint imap_cmd_expunge(IMAPSession *session, IMAPSet seq_set)
 {
 	gint ok;
 
-	imap_gen_send(session, "EXPUNGE");
+	if (seq_set && session->uidplus)
+		imap_gen_send(session, "UID EXPUNGE %s", seq_set);
+	else	
+		imap_gen_send(session, "EXPUNGE");
 	if ((ok = imap_cmd_ok(session, NULL)) != IMAP_SUCCESS) {
 		log_warning(_("error while imap command: EXPUNGE\n"));
 		return ok;
