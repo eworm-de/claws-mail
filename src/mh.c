@@ -56,7 +56,7 @@ static gint mh_add_msg(Folder * folder,
 		       const gchar * file,
 		       MsgFlags * flags);
 static gint mh_add_msgs(Folder * folder,
-		 FolderItem * dest, GSList * file_list, MsgNumberList **newnum_list);
+		 FolderItem * dest, GSList * file_list, GRelation *relation);
 static gint mh_copy_msg(Folder * folder,
 			FolderItem * dest, MsgInfo * msginfo);
 static gint mh_remove_msg(Folder * folder, FolderItem * item, gint num);
@@ -316,7 +316,6 @@ gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file, MsgFlags *f
 	gint ret;
 	GSList file_list;
 	MsgFileInfo fileinfo;
-	MsgNumberList *newnum_list = NULL;
 
 	g_return_val_if_fail(file != NULL, -1);
 
@@ -325,13 +324,12 @@ gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file, MsgFlags *f
 	file_list.data = &fileinfo;
 	file_list.next = NULL;
 
-        ret = mh_add_msgs(folder, dest, &file_list, &newnum_list);
-	g_slist_free(newnum_list);
+        ret = mh_add_msgs(folder, dest, &file_list, NULL);
 	return ret;
 } 
  
 gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list, 
-                 MsgNumberList **newnum_list) 
+                 GRelation *relation)
 { 
 	gchar *destfile;
 	GSList *cur;
@@ -359,7 +357,8 @@ gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 				return -1;
 			}
 		}
-		*newnum_list = g_slist_append(*newnum_list, GINT_TO_POINTER(dest->last_num + 1));
+		if (relation != NULL)
+			g_relation_insert(relation, fileinfo, GINT_TO_POINTER(dest->last_num + 1));
 
 		g_free(destfile);
 		dest->last_num++;

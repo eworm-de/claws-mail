@@ -1684,7 +1684,7 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
         Folder *folder;
         gint ret, num, lastnum = -1;
 	GSList *file_cur;
-	MsgNumberList *newnum_list = NULL, *newnum_cur = NULL;
+	GRelation *relation;
 	MsgFileInfo *fileinfo = NULL;
 	gboolean folderscan = FALSE;
 
@@ -1694,10 +1694,13 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
 
         folder = dest->folder;
 
+	relation = g_relation_new(2);
+	g_relation_index(relation, 0, g_direct_hash, g_direct_equal);
+
 	if (folder->klass->add_msgs != NULL) {
-    		ret = folder->klass->add_msgs(folder, dest, file_list, &newnum_list);
+    		ret = folder->klass->add_msgs(folder, dest, file_list, relation);
 		if (ret < 0) {
-			g_slist_free(newnum_list);
+			g_relation_destroy(relation);
 			return ret;
 		}
 	} else {
@@ -1706,19 +1709,20 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
 
     			ret = folder->klass->add_msg(folder, dest, fileinfo->file, fileinfo->flags);
 			if (ret < 0) {
-				g_slist_free(newnum_list);
+				g_relation_destroy(relation);
 				return ret;
 			}
-			newnum_list = g_slist_append(newnum_list, GINT_TO_POINTER(ret));
+			g_relation_insert(relation, fileinfo, GINT_TO_POINTER(ret));
 		}
 	}
 
-	for (newnum_cur = newnum_list, file_cur = file_list;
-	     newnum_cur != NULL && file_cur != NULL;
-	     newnum_cur = g_slist_next(newnum_cur), file_cur = g_slist_next(file_cur)) {
+	for (file_cur = file_list; file_cur != NULL; file_cur = g_slist_next(file_cur)) {
+		GTuples *tuples;
 
-		num = GPOINTER_TO_INT(newnum_cur->data);
 		fileinfo = (MsgFileInfo *) file_cur->data;
+		tuples = g_relation_select(relation, fileinfo, 0);
+		num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
+		g_tuples_destroy(tuples);
 
 		if (num >= 0) {
 			MsgInfo *newmsginfo;
@@ -1753,7 +1757,7 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
 		}
 	}
 
-	g_slist_free(newnum_list);
+	g_relation_destroy(relation);
 
         return lastnum;
 }
@@ -1948,10 +1952,10 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 {
 	Folder *folder;
-	GSList *newmsgnums = NULL;
-	GSList *l, *l2;
+	GSList *l;
 	gint num, lastnum = -1;
 	gboolean folderscan = FALSE;
+	GRelation *relation;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
@@ -1960,13 +1964,16 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 
 	g_return_val_if_fail(folder->klass->copy_msg != NULL, -1);
 
+	relation = g_relation_new(2);
+	g_relation_index(relation, 0, g_direct_hash, g_direct_equal);
+
 	/* 
 	 * Copy messages to destination folder and 
 	 * store new message numbers in newmsgnums
 	 */
 	if (folder->klass->copy_msgs != NULL) {
-		if (folder->klass->copy_msgs(folder, dest, msglist, &newmsgnums) < 0) {
-			g_slist_free(newmsgnums);
+		if (folder->klass->copy_msgs(folder, dest, msglist, relation) < 0) {
+			g_relation_destroy(relation);
 			return -1;
 		}
 	} else {
@@ -1974,7 +1981,7 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 			MsgInfo * msginfo = (MsgInfo *) l->data;
 
 			num = folder->klass->copy_msg(folder, dest, msginfo);
-			newmsgnums = g_slist_append(newmsgnums, GINT_TO_POINTER(num));
+			g_relation_insert(relation, msginfo, GINT_TO_POINTER(num));
 		}
 	}
 
@@ -1985,12 +1992,13 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	 * Fetch new MsgInfos for new messages in dest folder,
 	 * add them to the msgcache and update folder message counts
 	 */
-	for (l = msglist, l2 = newmsgnums; 
-	     l != NULL && l2 != NULL;
-	     l = g_slist_next(l), l2 = g_slist_next(l2)) {
+	for (l = msglist; l != NULL; l = g_slist_next(l)) {
 		MsgInfo *msginfo = (MsgInfo *) l->data;
+                GTuples *tuples;
 
-		num = GPOINTER_TO_INT(l2->data);
+                tuples = g_relation_select(relation, msginfo, 0);
+                num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
+                g_tuples_destroy(tuples);
 
 		if (num >= 0) {
 			MsgInfo *newmsginfo;
@@ -2029,14 +2037,14 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	 * copying was successfull and update folder
 	 * message counts
 	 */
-	l2 = newmsgnums;
-	for (l = msglist, l2 = newmsgnums;
-	     l != NULL && l2 != NULL;
-	     l = g_slist_next(l), l2 = g_slist_next(l2)) {
+	for (l = msglist; l != NULL; l = g_slist_next(l)) {
 		MsgInfo *msginfo = (MsgInfo *) l->data;
 		FolderItem *item = msginfo->folder;
+                GTuples *tuples;
 
-		num = GPOINTER_TO_INT(l2->data);
+                tuples = g_relation_select(relation, msginfo, 0);
+                num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
+                g_tuples_destroy(tuples);
 
 		if ((num >= 0) && (item->folder->klass->remove_msg != NULL)) {
 			item->folder->klass->remove_msg(item->folder,
@@ -2046,11 +2054,10 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 		}
 	}
 
-
 	if (folder->klass->finished_copy)
 		folder->klass->finished_copy(folder, dest);
 
-	g_slist_free(newmsgnums);
+	g_relation_destroy(relation);
 	return lastnum;
 }
 
@@ -2110,9 +2117,9 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 {
 	Folder *folder;
 	gint num, lastnum = -1;
-	GSList *newmsgnums = NULL;
-	GSList *l, *l2;
+	GSList *l;
 	gboolean folderscan = FALSE;
+	GRelation *relation;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
@@ -2121,13 +2128,16 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
  
 	g_return_val_if_fail(folder->klass->copy_msg != NULL, -1);
 
+        relation = g_relation_new(2);
+        g_relation_index(relation, 0, g_direct_hash, g_direct_equal);
+
 	/*
 	 * Copy messages to destination folder and 
 	 * store new message numbers in newmsgnums
 	 */
 	if (folder->klass->copy_msgs != NULL) {
-		if (folder->klass->copy_msgs(folder, dest, msglist, &newmsgnums) < 0) {
-			g_slist_free(newmsgnums);
+		if (folder->klass->copy_msgs(folder, dest, msglist, relation) < 0) {
+			g_relation_destroy(relation);
 			return -1;
 		}
 	} else {
@@ -2135,7 +2145,7 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 			MsgInfo * msginfo = (MsgInfo *) l->data;
 
 			num = folder->klass->copy_msg(folder, dest, msginfo);
-			newmsgnums = g_slist_append(newmsgnums, GINT_TO_POINTER(num));
+			g_relation_insert(relation, msginfo, GINT_TO_POINTER(num));
 		}
 	}
 
@@ -2146,12 +2156,13 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	 * Fetch new MsgInfos for new messages in dest folder,
 	 * add them to the msgcache and update folder message counts
 	 */
-	for (l = msglist, l2 = newmsgnums;
-	     l != NULL && l2 != NULL;
-	     l = g_slist_next(l), l2 = g_slist_next(l2)) {
+	for (l = msglist; l != NULL; l = g_slist_next(l)) {
 		MsgInfo *msginfo = (MsgInfo *) l->data;
+                GTuples *tuples;
 
-		num = GPOINTER_TO_INT(l2->data);
+                tuples = g_relation_select(relation, msginfo, 0);
+                num = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
+                g_tuples_destroy(tuples);
 
 		if (num >= 0) {
 			MsgInfo *newmsginfo;
@@ -2189,7 +2200,8 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	if (folder->klass->finished_copy)
 		folder->klass->finished_copy(folder, dest);
 
-	g_slist_free(newmsgnums);
+	g_relation_destroy(relation);
+
 	return lastnum;
 }
 

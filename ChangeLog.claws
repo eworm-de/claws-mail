@@ -1,3 +1,18 @@
+2003-07-28 [christoph]	0.9.3claws64
+
+	* src/folder.[ch]
+	* src/imap.c
+	* src/mh.c
+		return new message numbers as a GRelation instead of a GSList
+		that has to be in the same order as the input list. A list
+		would make it hard for IMAP to optimize oepration by sorting
+		the input list. The returned list would have to be reordered
+		to match the same order that input list has.
+
+	* src/gtk/gtkaspell.c
+		fix missing return value, could cause a crash when garbage is
+		on the stack that is used as the expected return value
+
 2003-07-28 [paul]	0.9.3claws63
 
 	* sync with 0.9.4cvs1

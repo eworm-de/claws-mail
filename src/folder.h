@@ -223,14 +223,14 @@ struct _FolderClass
 	gint     	(*add_msgs)             (Folder         *folder,
                                     		 FolderItem     *dest,
                                     		 GSList         *file_list,
-                                    		 MsgNumberList **newnum_list);
+                                    		 GRelation	*relation);
 	gint    	(*copy_msg)		(Folder		*folder,
 						 FolderItem	*dest,
 						 MsgInfo	*msginfo);
 	gint    	(*copy_msgs)		(Folder		*folder,
 						 FolderItem	*dest,
 						 MsgInfoList	*msglist,
-                                    		 MsgNumberList **newnum_list);
+                                    		 GRelation	*relation);
 	gint    	(*remove_msg)		(Folder		*folder,
 						 FolderItem	*item,
 						 gint		 num);

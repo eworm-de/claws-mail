@@ -303,7 +303,7 @@ static void gtkaspell_checkers_error_message (gchar *message)
 
 const char *gtkaspell_checkers_strerror(void)
 {
-	g_return_if_fail(gtkaspellcheckers);
+	g_return_val_if_fail(gtkaspellcheckers, "");
 	return gtkaspellcheckers->error_message;
 }
 

@@ -166,7 +166,7 @@ static gint imap_add_msg(Folder * folder,
 			 const gchar * file, MsgFlags * flags);
 static gint imap_add_msgs(Folder * folder, FolderItem * dest,
 			  GSList * file_list,
-			  MsgNumberList **newnum_list);
+			  GRelation *relation);
 
 static gint imap_copy_msg(Folder * folder,
 			  FolderItem * dest, MsgInfo * msginfo);
@@ -793,7 +793,6 @@ gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file, MsgFlags 
 	gint ret;
 	GSList file_list;
 	MsgFileInfo fileinfo;
-	MsgNumberList *msgnum_list = NULL;
 
 	g_return_val_if_fail(file != NULL, -1);
 
@@ -802,13 +801,12 @@ gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file, MsgFlags 
 	file_list.data = &fileinfo;
 	file_list.next = NULL;
 
-	ret = imap_add_msgs(folder, dest, &file_list, &msgnum_list);
-	g_slist_free(msgnum_list);
+	ret = imap_add_msgs(folder, dest, &file_list, NULL);
 	return ret;
 }
 
 gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
-		   MsgNumberList **newnum_list)
+		   GRelation *relation)
 {
 	gchar *destdir;
 	IMAPSession *session;
@@ -854,7 +852,8 @@ gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 			return -1;
 		}
 
-		*newnum_list = g_slist_append(*newnum_list, GINT_TO_POINTER(newnum));
+		if (relation != NULL)
+			g_relation_insert(relation, fileinfo, GINT_TO_POINTER(newnum));
 		if (newnum > last_uid)
 			last_uid = newnum;
 	}
