@@ -142,7 +142,7 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 			       "kterm -e lynx '%s'",
 			       NULL);
 	uri_entry = GTK_COMBO (uri_combo)->entry;
-	gtk_entry_set_text(GTK_ENTRY(uri_entry), prefs_common.uri_cmd);
+	gtk_entry_set_text(GTK_ENTRY(uri_entry), prefs_common.uri_cmd ? prefs_common.uri_cmd : "");
 	
 	printcmd_label = gtk_label_new (_("Print command"));
 	gtk_widget_show(printcmd_label);
@@ -158,7 +158,7 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_table_attach(GTK_TABLE (table2), printcmd_entry, 1, 2, 1, 2,
                     	 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 0);
-	gtk_entry_set_text(GTK_ENTRY(printcmd_entry), prefs_common.print_cmd);
+	gtk_entry_set_text(GTK_ENTRY(printcmd_entry), prefs_common.print_cmd ? prefs_common.print_cmd : "");
 
 	exteditor_label = gtk_label_new (_("Text editor"));
 	gtk_widget_show(exteditor_label);
@@ -185,7 +185,7 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 			       NULL);
 	exteditor_entry = GTK_COMBO (exteditor_combo)->entry;
 	gtk_entry_set_text(GTK_ENTRY(exteditor_entry), 
-			   prefs_common.ext_editor_cmd);
+			   prefs_common.ext_editor_cmd ? prefs_common.ext_editor_cmd : "");
 
 	image_viewer_label = gtk_label_new (_("Image viewer"));
 	gtk_widget_show(image_viewer_label);
@@ -203,7 +203,7 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
                     	 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 0);
 	gtk_entry_set_text(GTK_ENTRY(image_viewer_entry), 
-			   prefs_common.mime_image_viewer);
+			   prefs_common.mime_image_viewer ? prefs_common.mime_image_viewer : "");
 
 	audio_player_label = gtk_label_new (_("Audio player"));
 	gtk_widget_show(audio_player_label);
@@ -221,7 +221,7 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
                     	 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 0);
 	gtk_entry_set_text(GTK_ENTRY(audio_player_entry), 
-			   prefs_common.mime_audio_player);
+			   prefs_common.mime_audio_player ? prefs_common.mime_audio_player : "");
 
 	prefs_ext_prog->window			= GTK_WIDGET(window);
 	prefs_ext_prog->uri_entry		= uri_entry;
