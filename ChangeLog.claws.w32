@@ -1,3 +1,11 @@
+2004-01-17 [thorsten]	0.9.8claws30-3
+
+	* src/gtk/gtkvscrollbutton.c
+		fix: force resize event to update mime icon positions
+
+2004-01-15 [thorsten]	0.9.8claws30-2
+	(wrong binary)
+
 2004-01-14 [thorsten]	0.9.8claws30-1
 
 	* src/mimeview.c

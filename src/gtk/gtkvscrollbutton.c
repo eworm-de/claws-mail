@@ -285,6 +285,9 @@ static gint gtk_vscrollbutton_scroll(GtkVScrollbutton *scrollbutton)
 	gtk_signal_emit_by_name(GTK_OBJECT
 				(scrollbutton->adjustment),
 				"value_changed");
+#ifdef WIN32
+	gtk_widget_queue_resize(GTK_WIDGET(scrollbutton));
+#endif
     }
 
     return return_val;
