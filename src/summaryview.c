@@ -2988,13 +2988,19 @@ static void summary_delete_duplicated_func(GtkCTree *ctree, GtkCTreeNode *node,
 {
 	GtkCTreeNode *found;
 	MsgInfo *msginfo = GTK_CTREE_ROW(node)->row.data;
-
+	MsgInfo *dup_msginfo;
+	
 	if (!msginfo->msgid || !*msginfo->msgid) return;
 
 	found = g_hash_table_lookup(summaryview->msgid_table, msginfo->msgid);
-
-	if (found && found != node)
-		summary_delete_row(summaryview, node);
+	
+	if (found && found != node) {
+		dup_msginfo = gtk_ctree_node_get_row_data(ctree, found);
+		/* prefer to delete the unread one */
+		if ((MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_UNREAD(dup_msginfo->flags))
+		||  (MSG_IS_UNREAD(msginfo->flags) == MSG_IS_UNREAD(dup_msginfo->flags)))
+			summary_delete_row(summaryview, node);
+	}
 }
 
 static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)

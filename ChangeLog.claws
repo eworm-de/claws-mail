@@ -1,3 +1,9 @@
+2002-11-25 [colin]	0.8.6claws1
+
+	* src/summaryview.c
+		Deletion of duplicates now prefer deleting
+		the unread dup (fixes feature-request 638989).
+
 2002-11-24 [paul]	0.8.6claws
 
 	* po/es.po
