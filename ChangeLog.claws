@@ -1,3 +1,10 @@
+2004-03-21 [darko]	0.9.10claws25
+
+	* src/addr_compl.c
+		select the address when only one match is found while
+		doing address completion with tab key (feature
+		request #914720)
+
 2004-03-21 [alfons]	0.9.10claws24
 
 	* src/messageview.c

@@ -1088,8 +1088,21 @@ static gboolean address_completion_complete_address_in_entry(GtkEntry *entry,
 		g_free( new );
 	}
 
+	/* Select the address if there is only one match */
+	if (ncount == 2) {
+		/* Display selected address in entry field */		
+		gchar *addr = get_complete_address(1);
+
+		if (addr) {
+			replace_address_in_edit(entry, addr, 0);
+			g_free(addr);
+		}
+
+		/* Discard the window */
+		clear_completion_cache();
+	}
 	/* Make sure that drop-down appears uniform! */
-	if( ncount == 0 ) {
+	else if( ncount == 0 ) {
 		addrcompl_add_queue( g_strdup( searchTerm ) );
 	}
 	g_free( searchTerm );
