@@ -22,7 +22,7 @@
 	* src/summaryview.c
 	        merged scoring and filtering.
 		
-		Note : compatibility is kept by parsing score such as 
+		Note : compatibility is kept by parsing score like 
 		  add_score. To get the behaviour of older scoring 
 		  system, you have to define some equivalent rule :
 		  "score_lower -9999 hide"
