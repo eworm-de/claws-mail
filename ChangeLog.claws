@@ -1,3 +1,11 @@
+2003-02-15 [christoph]	0.9.9claws16
+
+	* src/compose.c
+	* src/stock_pixmap.[ch]
+	* src/toolbar.[ch]
+	* src/pixmaps/linewrapcurrent.xpm		** NEW **
+		add "Wrap current paragraph" to compose toolbar
+
 2003-02-15 [alfons]	0.9.9claws15
 
 	* src/folderview.c

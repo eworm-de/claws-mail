@@ -1393,7 +1393,8 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	gtk_widget_set_sensitive(compose->toolbar->attach_btn, FALSE);
 	gtk_widget_set_sensitive(compose->toolbar->sig_btn, FALSE);
 	gtk_widget_set_sensitive(compose->toolbar->exteditor_btn, FALSE);
-	gtk_widget_set_sensitive(compose->toolbar->linewrap_btn, FALSE);
+	gtk_widget_set_sensitive(compose->toolbar->linewrap_current_btn, FALSE);
+	gtk_widget_set_sensitive(compose->toolbar->linewrap_all_btn, FALSE);
 
         return compose;
 }
@@ -1518,7 +1519,10 @@ void compose_toolbar_cb(gint action, gpointer data)
 	case A_EXTEDITOR:
 		compose_ext_editor_cb(compose, 0, NULL);
 		break;
-	case A_LINEWRAP:
+	case A_LINEWRAP_CURRENT:
+		compose_wrap_line(compose);
+		break;
+	case A_LINEWRAP_ALL:
 		compose_wrap_line_all(compose);
 		break;
 	case A_ADDRBOOK:
@@ -6181,7 +6185,8 @@ static void compose_set_ext_editor_sensitive(Compose *compose,
 	gtk_widget_set_sensitive(compose->toolbar->insert_btn,    sensitive);
 	gtk_widget_set_sensitive(compose->toolbar->sig_btn,       sensitive);
 	gtk_widget_set_sensitive(compose->toolbar->exteditor_btn, sensitive);
-	gtk_widget_set_sensitive(compose->toolbar->linewrap_btn,  sensitive);
+	gtk_widget_set_sensitive(compose->toolbar->linewrap_current_btn,  sensitive);
+	gtk_widget_set_sensitive(compose->toolbar->linewrap_all_btn,  sensitive);
 }
 
 /**

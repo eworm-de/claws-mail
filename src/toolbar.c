@@ -139,7 +139,9 @@ static void toolbar_sig_cb			(GtkWidget	*widget,
 					 	 gpointer	 data);
 static void toolbar_ext_editor_cb		(GtkWidget	*widget,
 					 	 gpointer	 data);
-static void toolbar_linewrap_cb			(GtkWidget	*widget,
+static void toolbar_linewrap_current_cb		(GtkWidget	*widget,
+					 	 gpointer	 data);
+static void toolbar_linewrap_all_cb		(GtkWidget	*widget,
 					 	 gpointer	 data);
 static void toolbar_addrbook_cb   		(GtkWidget   	*widget, 
 					 	 gpointer     	 data);
@@ -154,36 +156,37 @@ struct {
 	gchar *index_str;
 	const gchar *descr;
 } toolbar_text [] = {
-	{ "A_RECEIVE_ALL",   N_("Receive Mail on all Accounts")         },
-	{ "A_RECEIVE_CUR",   N_("Receive Mail on current Account")      },
-	{ "A_SEND_QUEUED",   N_("Send Queued Message(s)")               },
-	{ "A_COMPOSE_EMAIL", N_("Compose Email")                        },
-	{ "A_COMPOSE_NEWS",  N_("Compose News")                         },
-	{ "A_REPLY_MESSAGE", N_("Reply to Message")                     },
-	{ "A_REPLY_SENDER",  N_("Reply to Sender")                      },
-	{ "A_REPLY_ALL",     N_("Reply to All")                         },
-	{ "A_REPLY_ML",      N_("Reply to Mailing-list")                },
-	{ "A_FORWARD",       N_("Forward Message")                      }, 
-	{ "A_DELETE",        N_("Delete Message")                       },
-	{ "A_EXECUTE",       N_("Execute")                              },
-	{ "A_GOTO_NEXT",     N_("Goto Next Message")                    },
-	{ "A_IGNORE_THREAD", N_("Ignore thread")			},
-	{ "A_PRINT",	     N_("Print")				},
+	{ "A_RECEIVE_ALL",   	N_("Receive Mail on all Accounts")         },
+	{ "A_RECEIVE_CUR",   	N_("Receive Mail on current Account")      },
+	{ "A_SEND_QUEUED",   	N_("Send Queued Message(s)")               },
+	{ "A_COMPOSE_EMAIL", 	N_("Compose Email")                        },
+	{ "A_COMPOSE_NEWS",  	N_("Compose News")                         },
+	{ "A_REPLY_MESSAGE", 	N_("Reply to Message")                     },
+	{ "A_REPLY_SENDER",  	N_("Reply to Sender")                      },
+	{ "A_REPLY_ALL",     	N_("Reply to All")                         },
+	{ "A_REPLY_ML",      	N_("Reply to Mailing-list")                },
+	{ "A_FORWARD",       	N_("Forward Message")                      }, 
+	{ "A_DELETE",        	N_("Delete Message")                       },
+	{ "A_EXECUTE",       	N_("Execute")                              },
+	{ "A_GOTO_NEXT",     	N_("Goto Next Message")                    },
+	{ "A_IGNORE_THREAD", 	N_("Ignore thread")			},
+	{ "A_PRINT",	     	N_("Print")				},
 
-	{ "A_SEND",          N_("Send Message")                         },
-	{ "A_SENDL",         N_("Put into queue folder and send later") },
-	{ "A_DRAFT",         N_("Save to draft folder")                 },
-	{ "A_INSERT",        N_("Insert file")                          },   
-	{ "A_ATTACH",        N_("Attach file")                          },
-	{ "A_SIG",           N_("Insert signature")                     },
-	{ "A_EXTEDITOR",     N_("Edit with external editor")            },
-	{ "A_LINEWRAP",      N_("Wrap all long lines")                  }, 
-	{ "A_ADDRBOOK",      N_("Address book")                         },
+	{ "A_SEND",          	N_("Send Message")                         },
+	{ "A_SENDL",         	N_("Put into queue folder and send later") },
+	{ "A_DRAFT",         	N_("Save to draft folder")                 },
+	{ "A_INSERT",        	N_("Insert file")                          },   
+	{ "A_ATTACH",        	N_("Attach file")                          },
+	{ "A_SIG",           	N_("Insert signature")                     },
+	{ "A_EXTEDITOR",     	N_("Edit with external editor")            },
+	{ "A_LINEWRAP_CURRENT",	N_("Wrap long lines of current paragraph") }, 
+	{ "A_LINEWRAP_ALL",     N_("Wrap all long lines")                  }, 
+	{ "A_ADDRBOOK",      	N_("Address book")                         },
 #ifdef USE_ASPELL
-	{ "A_CHECK_SPELLING",N_("Check spelling")                       },
+	{ "A_CHECK_SPELLING",	N_("Check spelling")                       },
 #endif
-	{ "A_SYL_ACTIONS",   N_("Sylpheed Actions Feature")             }, 
-	{ "A_SEPARATOR",     "Separator"				}
+	{ "A_SYL_ACTIONS",   	N_("Sylpheed Actions Feature")             }, 
+	{ "A_SEPARATOR",     	"Separator"				}
 };
 
 /* struct holds configuration files and a list of
@@ -311,7 +314,8 @@ GList *toolbar_get_action_items(ToolbarType source)
 	else if (source == TOOLBAR_COMPOSE) {
 		gint comp_items[] =   {	A_SEND,          A_SENDL,        A_DRAFT,
 					A_INSERT,        A_ATTACH,       A_SIG,
-					A_EXTEDITOR,     A_LINEWRAP,     A_ADDRBOOK,
+					A_EXTEDITOR,     A_LINEWRAP_CURRENT,     
+					A_LINEWRAP_ALL,  A_ADDRBOOK,
 #ifdef USE_ASPELL
 					A_CHECK_SPELLING, 
 #endif
@@ -419,18 +423,19 @@ static void toolbar_set_default_compose(void)
 		gint icon;
 		gchar *text;
 	} default_toolbar[] = {
-		{ A_SEND,      STOCK_PIXMAP_MAIL_SEND,         _("Send")       },
-		{ A_SENDL,     STOCK_PIXMAP_MAIL_SEND_QUEUE,   _("Send later") },
-		{ A_DRAFT,     STOCK_PIXMAP_MAIL,              _("Draft")      },
-		{ A_SEPARATOR, 0,                               ("")           }, 
-		{ A_INSERT,    STOCK_PIXMAP_INSERT_FILE,       _("Insert")     },
-		{ A_ATTACH,    STOCK_PIXMAP_MAIL_ATTACH,       _("Attach")     },
-		{ A_SIG,       STOCK_PIXMAP_MAIL_SIGN,         _("Signature")  },
-		{ A_SEPARATOR, 0,                               ("")           },
-		{ A_EXTEDITOR, STOCK_PIXMAP_EDIT_EXTERN,       _("Editor")     },
-		{ A_LINEWRAP,  STOCK_PIXMAP_LINEWRAP,          _("Linewrap")   },
-		{ A_SEPARATOR, 0,                               ("")           },
-		{ A_ADDRBOOK,  STOCK_PIXMAP_ADDRESS_BOOK,      _("Address")    }
+		{ A_SEND,      		STOCK_PIXMAP_MAIL_SEND,         _("Send")       	},
+		{ A_SENDL,     		STOCK_PIXMAP_MAIL_SEND_QUEUE,   _("Send later") 	},
+		{ A_DRAFT,     		STOCK_PIXMAP_MAIL,              _("Draft")      	},
+		{ A_SEPARATOR, 		0,                               ("")           	}, 
+		{ A_INSERT,    		STOCK_PIXMAP_INSERT_FILE,       _("Insert")     	},
+		{ A_ATTACH,    		STOCK_PIXMAP_MAIL_ATTACH,       _("Attach")     	},
+		{ A_SIG,       		STOCK_PIXMAP_MAIL_SIGN,         _("Signature")  	},
+		{ A_SEPARATOR, 		0,                               ("")           	},
+		{ A_EXTEDITOR, 		STOCK_PIXMAP_EDIT_EXTERN,       _("Editor")     	},
+		{ A_LINEWRAP_CURRENT,	STOCK_PIXMAP_LINEWRAP_CURRENT,  _("Wrap paragraph")   	},
+		{ A_LINEWRAP_ALL,  	STOCK_PIXMAP_LINEWRAP_ALL,      _("Wrap all")   	},
+		{ A_SEPARATOR, 		0,                               ("")           	},
+		{ A_ADDRBOOK,  		STOCK_PIXMAP_ADDRESS_BOOK,      _("Address")    	}
 	};
 	
 	gint i;
@@ -1134,9 +1139,14 @@ static void toolbar_ext_editor_cb(GtkWidget *widget, gpointer data)
 	compose_toolbar_cb(A_EXTEDITOR, data);
 }
 
-static void toolbar_linewrap_cb(GtkWidget *widget, gpointer data)
+static void toolbar_linewrap_current_cb(GtkWidget *widget, gpointer data)
 {
-	compose_toolbar_cb(A_LINEWRAP, data);
+	compose_toolbar_cb(A_LINEWRAP_CURRENT, data);
+}
+
+static void toolbar_linewrap_all_cb(GtkWidget *widget, gpointer data)
+{
+	compose_toolbar_cb(A_LINEWRAP_ALL, data);
 }
 
 #ifdef USE_ASPELL
@@ -1254,7 +1264,8 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 		{ A_ATTACH,		toolbar_attach_cb     		},
 		{ A_SIG,		toolbar_sig_cb	      		},
 		{ A_EXTEDITOR,		toolbar_ext_editor_cb 		},
-		{ A_LINEWRAP,		toolbar_linewrap_cb   		},
+		{ A_LINEWRAP_CURRENT,	toolbar_linewrap_current_cb   	},
+		{ A_LINEWRAP_ALL,	toolbar_linewrap_all_cb   	},
 		{ A_ADDRBOOK,		toolbar_addrbook_cb		},
 #ifdef USE_ASPELL
 		{ A_CHECK_SPELLING,     toolbar_check_spelling_cb       },
@@ -1530,10 +1541,16 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 					     toolbar_data->exteditor_btn,
 					     _("Edit with external editor"), NULL);
 			break;
-		case A_LINEWRAP:
-			toolbar_data->linewrap_btn = item;
+		case A_LINEWRAP_CURRENT:
+			toolbar_data->linewrap_current_btn = item;
 			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     toolbar_data->linewrap_btn,
+					     toolbar_data->linewrap_current_btn,
+					     _("Wrap long lines of current paragraph"), NULL);
+			break;
+		case A_LINEWRAP_ALL:
+			toolbar_data->linewrap_all_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->linewrap_all_btn,
 					     _("Wrap all long lines"), NULL);
 			break;
 		case A_ADDRBOOK:
@@ -1755,8 +1772,10 @@ void toolbar_comp_set_sensitive(gpointer data, gboolean sensitive)
 		gtk_widget_set_sensitive(compose->toolbar->sig_btn, sensitive);
 	if (compose->toolbar->exteditor_btn)
 		gtk_widget_set_sensitive(compose->toolbar->exteditor_btn, sensitive);
-	if (compose->toolbar->linewrap_btn)
-		gtk_widget_set_sensitive(compose->toolbar->linewrap_btn, sensitive);
+	if (compose->toolbar->linewrap_current_btn)
+		gtk_widget_set_sensitive(compose->toolbar->linewrap_current_btn, sensitive);
+	if (compose->toolbar->linewrap_all_btn)
+		gtk_widget_set_sensitive(compose->toolbar->linewrap_all_btn, sensitive);
 	if (compose->toolbar->addrbook_btn)
 		gtk_widget_set_sensitive(compose->toolbar->addrbook_btn, sensitive);
 #ifdef USE_ASPELL
@@ -1774,32 +1793,33 @@ void toolbar_comp_set_sensitive(gpointer data, gboolean sensitive)
  **/
 void toolbar_init(Toolbar * toolbar) {
 
-	toolbar->toolbar          = NULL;
-	toolbar->get_btn          = NULL;
-	toolbar->getall_btn       = NULL;
-	toolbar->send_btn         = NULL;
-	toolbar->compose_mail_btn = NULL;
-	toolbar->compose_news_btn = NULL;
-	toolbar->reply_btn        = NULL;
-	toolbar->replysender_btn  = NULL;
-	toolbar->replyall_btn     = NULL;
-	toolbar->replylist_btn    = NULL;
-	toolbar->fwd_btn          = NULL;
-	toolbar->delete_btn       = NULL;
-	toolbar->next_btn         = NULL;
-	toolbar->exec_btn         = NULL;
+	toolbar->toolbar          	= NULL;
+	toolbar->get_btn          	= NULL;
+	toolbar->getall_btn       	= NULL;
+	toolbar->send_btn         	= NULL;
+	toolbar->compose_mail_btn 	= NULL;
+	toolbar->compose_news_btn 	= NULL;
+	toolbar->reply_btn        	= NULL;
+	toolbar->replysender_btn  	= NULL;
+	toolbar->replyall_btn     	= NULL;
+	toolbar->replylist_btn    	= NULL;
+	toolbar->fwd_btn          	= NULL;
+	toolbar->delete_btn       	= NULL;
+	toolbar->next_btn         	= NULL;
+	toolbar->exec_btn         	= NULL;
 
 	/* compose buttons */ 
-	toolbar->sendl_btn        = NULL;
-	toolbar->draft_btn        = NULL;
-	toolbar->insert_btn       = NULL;
-	toolbar->attach_btn       = NULL;
-	toolbar->sig_btn          = NULL;	
-	toolbar->exteditor_btn    = NULL;	
-	toolbar->linewrap_btn     = NULL;	
-	toolbar->addrbook_btn     = NULL;	
+	toolbar->sendl_btn        	= NULL;
+	toolbar->draft_btn        	= NULL;
+	toolbar->insert_btn       	= NULL;
+	toolbar->attach_btn       	= NULL;
+	toolbar->sig_btn          	= NULL;	
+	toolbar->exteditor_btn    	= NULL;	
+	toolbar->linewrap_current_btn	= NULL;	
+	toolbar->linewrap_all_btn     	= NULL;	
+	toolbar->addrbook_btn     	= NULL;	
 #ifdef USE_ASPELL
-	toolbar->spellcheck_btn   = NULL;
+	toolbar->spellcheck_btn   	= NULL;
 #endif
 
 	toolbar_destroy(toolbar);

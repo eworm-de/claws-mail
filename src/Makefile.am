@@ -289,6 +289,7 @@ EXTRA_DIST = \
 	pixmaps/key.xpm \
 	pixmaps/ldap.xpm \
 	pixmaps/linewrap.xpm \
+	pixmaps/linewrapcurrent.xpm \
 	pixmaps/locked.xpm \
 	pixmaps/mail_attach.xpm \
 	pixmaps/mail_compose.xpm \
