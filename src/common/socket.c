@@ -925,7 +925,24 @@ gint fd_read(gint fd, gchar *buf, gint len)
 #if USE_OPENSSL
 gint ssl_read(SSL *ssl, gchar *buf, gint len)
 {
-	return SSL_read(ssl, buf, len);
+	gint ret;
+
+	ret = SSL_read(ssl, buf, len);
+
+	switch (SSL_get_error(ssl, ret)) {
+	case SSL_ERROR_NONE:
+		return ret;
+	case SSL_ERROR_WANT_READ:
+		g_print("ssl_read(): SSL_ERROR_WANT_READ\n");
+		errno = EAGAIN;
+		return -1;
+	case SSL_ERROR_WANT_WRITE:
+		g_print("ssl_read(): SSL_ERROR_WANT_WRITE\n");
+		errno = EAGAIN;
+		return -1;
+	default:
+		return -1;
+	}
 }
 #endif
 
@@ -958,7 +975,24 @@ gint fd_write(gint fd, const gchar *buf, gint len)
 #if USE_OPENSSL
 gint ssl_write(SSL *ssl, const gchar *buf, gint len)
 {
-	return SSL_write(ssl, buf, len);
+	gint ret;
+
+	ret = SSL_write(ssl, buf, len);
+
+	switch (SSL_get_error(ssl, ret)) {
+	case SSL_ERROR_NONE:
+		return ret;
+	case SSL_ERROR_WANT_READ:
+		g_print("ssl_write(): SSL_ERROR_WANT_READ\n");
+		errno = EAGAIN;
+		return -1;
+	case SSL_ERROR_WANT_WRITE:
+		g_print("ssl_write(): SSL_ERROR_WANT_WRITE\n");
+		errno = EAGAIN;
+		return -1;
+	default:
+		return -1;
+	}
 }
 #endif
 
@@ -1007,7 +1041,7 @@ gint ssl_write_all(SSL *ssl, const gchar *buf, gint len)
 	gint n, wrlen = 0;
 
 	while (len) {
-		n = SSL_write(ssl, buf, len);
+		n = ssl_write(ssl, buf, len);
 		if (n <= 0)
 			return -1;
 		len -= n;
@@ -1076,11 +1110,11 @@ gint ssl_gets(SSL *ssl, gchar *buf, gint len)
 	if (--len < 1)
 		return -1;
 	do {
-		if ((n = SSL_peek(ssl, bp, len)) <= 0)
+		if ((n = ssl_peek(ssl, bp, len)) <= 0)
 			return -1;
 		if ((newline = memchr(bp, '\n', n)) != NULL)
 			n = newline - bp + 1;
-		if ((n = SSL_read(ssl, bp, n)) < 0)
+		if ((n = ssl_read(ssl, bp, n)) < 0)
 			return -1;
 		bp += n;
 		len -= n;
@@ -1186,13 +1220,37 @@ gint sock_puts(SockInfo *sock, const gchar *buf)
 }
 
 /* peek at the socket data without actually reading it */
+#if USE_OPENSSL
+gint ssl_peek(SSL *ssl, gchar *buf, gint len)
+{
+	gint ret;
+
+	ret = SSL_peek(ssl, buf, len);
+
+	switch (SSL_get_error(ssl, ret)) {
+	case SSL_ERROR_NONE:
+		return ret;
+	case SSL_ERROR_WANT_READ:
+		g_print("ssl_peek(): SSL_ERROR_WANT_READ\n");
+		errno = EAGAIN;
+		return -1;
+	case SSL_ERROR_WANT_WRITE:
+		g_print("ssl_peek(): SSL_ERROR_WANT_WRITE\n");
+		errno = EAGAIN;
+		return -1;
+	default:
+		return -1;
+	}
+}
+#endif
+
 gint sock_peek(SockInfo *sock, gchar *buf, gint len)
 {
 	g_return_val_if_fail(sock != NULL, -1);
 
 #if USE_OPENSSL
 	if (sock->ssl)
-		return SSL_peek(sock->ssl, buf, len);
+		return ssl_peek(sock->ssl, buf, len);
 #endif
 	return fd_recv(sock->sock, buf, len, MSG_PEEK);
 }

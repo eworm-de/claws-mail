@@ -107,6 +107,7 @@ gint ssl_write		(SSL *ssl, const gchar *buf, gint len);
 gint ssl_write_all	(SSL *ssl, const gchar *buf, gint len);
 gint ssl_gets		(SSL *ssl, gchar *buf, gint len);
 gint ssl_getline	(SSL *ssl, gchar **str);
+gint ssl_peek		(SSL *ssl, gchar *buf, gint len);
 #endif
 
 #endif /* __SOCKET_H__ */

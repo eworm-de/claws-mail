@@ -1,3 +1,12 @@
+2003-06-30
+
+	* src/socket.c: check return value in SSL functions.
+
+2003-06-30
+
+	* src/mimeview.c: mimeview_init(): initialize TextView to prevent
+	  slowdown caused by GTK+ themes (thanks to Yuri Arapov).
+
 2003-06-27
 
 	* src/session.c: session_read_data_cb(): clear Session::read_data_buf

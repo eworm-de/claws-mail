@@ -1,3 +1,12 @@
+2003-06-30
+
+	* src/socket.c: SSL 関数で戻り値をチェック。
+
+2003-06-30
+
+	* src/mimeview.c: mimeview_init(): GTK+ テーマによる速度低下を防ぐ
+	  ために TextView を初期化(Yuri Arapov さん thanks)。
+
 2003-06-27
 
 	* src/session.c: session_read_data_cb(): コールバックを呼ぶ前に

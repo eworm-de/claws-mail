@@ -226,6 +226,7 @@ MimeView *mimeview_create(void)
 
 void mimeview_init(MimeView *mimeview)
 {
+	textview_init(mimeview->textview);
 }
 
 /* 
