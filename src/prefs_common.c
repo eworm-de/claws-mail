@@ -104,6 +104,10 @@ static struct Display {
 	GtkWidget *chkbtn_transhdr;
 	GtkWidget *chkbtn_swapfrom;
 	GtkWidget *chkbtn_hscrollbar;
+#ifdef HAVE_STRFTIME
+	GtkWidget *entry_dateformat;
+	GtkTooltips tooltips_dateformat
+#endif
 } display;
 
 static struct Message {
@@ -283,6 +287,13 @@ static PrefParam param[] = {
 	{"enable_hscrollbar", "TRUE", &prefs_common.enable_hscrollbar, P_BOOL,
 	 &display.chkbtn_hscrollbar,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+#ifdef HAVE_STRFTIME
+	{"date_format", "%y/%m/%d(%a) %H:%M", &prefs_common.date_format,
+	 P_STRING, &display.entry_dateformat,
+	 prefs_set_data_from_entry, prefs_set_entry},
+#endif
+
 
 	{"enable_thread", "TRUE", &prefs_common.enable_thread, P_BOOL,
 	 NULL, NULL, NULL},
@@ -1086,6 +1097,13 @@ static void prefs_display_create(void)
 	GtkWidget *hbox1;
 	GtkWidget *button_dispitem;
 
+#ifdef HAVE_STRFTIME
+	GtkWidget *hbox_dateformat;
+	GtkWidget *label_dateformat;
+	GtkWidget *entry_dateformat;
+	GtkTooltips *tooltips_dateformat;
+#endif
+
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
@@ -1155,6 +1173,54 @@ static void prefs_display_create(void)
 			    GTK_SIGNAL_FUNC (prefs_summary_display_item_set),
 			    NULL);
 
+	/* ---- Date format ---- */
+
+#ifdef HAVE_STRFTIME
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
+
+	hbox_dateformat = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (hbox1), hbox_dateformat, FALSE, TRUE, 0);
+
+	label_dateformat = gtk_label_new (_("Date format"));
+	gtk_widget_show (label_dateformat);
+	gtk_box_pack_start (GTK_BOX (hbox_dateformat), label_dateformat,
+			    FALSE, FALSE, 0);
+	entry_dateformat = gtk_entry_new ();
+	gtk_widget_show (entry_dateformat);
+	gtk_box_pack_start (GTK_BOX (hbox1), entry_dateformat, TRUE, TRUE, 0);
+
+	tooltips_dateformat = gtk_tooltips_new();
+	gtk_tooltips_set_tip(tooltips_dateformat, entry_dateformat,
+		_("Ordinary characters placed in the format string are copied "
+		  "without conversion. Conversion specifiers are introduced by "
+		  "a % character, and are replaced as follows:\n"
+		  "%a the abbreviated weekday name\n"
+		  "%A the full weekday name\n"
+		  "%b the abbreviated month name\n"
+		  "%B the full month name\n"
+		  "%c the preferred date and time for the current locale\n"
+		  "%C the century number (year/100)\n"
+		  "%d the day of the month as a decimal number\n"
+		  "%H the hour as a decimal number using a 24-hour clock\n"
+		  "%I the hour as a decimal number using a 12-hour clock\n"
+		  "%j the day of the year as a decimal number\n"
+		  "%m the month as a decimal number\n"
+		  "%M the minute as a decimal number\n"
+		  "%p either AM or PM\n"
+		  "%S the second as a decimal number\n"
+		  "%w the day of the week as a decimal number\n"
+		  "%x the preferred date for the current locale\n"
+		  "%y the last two digits of a year\n"
+		  "%Y the year as a decimal number\n"
+		  "%Z the time zone or name or abbreviation"
+		 ),
+	     NULL);
+#endif
+
+
 	display.entry_textfont	= entry_textfont;
 	display.button_textfont	= button_textfont;
 
@@ -1163,6 +1229,10 @@ static void prefs_display_create(void)
 	display.chkbtn_transhdr   = chkbtn_transhdr;
 	display.chkbtn_swapfrom   = chkbtn_swapfrom;
 	display.chkbtn_hscrollbar = chkbtn_hscrollbar;
+
+#ifdef HAVE_STRFTIME
+	display.entry_dateformat  = entry_dateformat;
+#endif
 }
 
 static void prefs_message_create(void)

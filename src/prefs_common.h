@@ -69,6 +69,9 @@ struct _PrefsCommon
 	gboolean enable_thread;
 	gboolean enable_hscrollbar;
 	gboolean swap_from;
+#ifdef HAVE_STRFTIME
+	gchar *date_format;
+#endif
 
 	/* Filtering */
 	GSList *fltlist;

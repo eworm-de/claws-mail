@@ -32,6 +32,7 @@
 #include "procmsg.h"
 #include "codeconv.h"
 #include "utils.h"
+#include "prefs_common.h"
 
 #define BUFFSIZE	8192
 
@@ -523,6 +524,16 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 
 void procheader_date_get_localtime(gchar *dest, gint len, const time_t timer)
 {
+#ifdef HAVE_STRFTIME
+	struct tm *lt;
+
+	lt = localtime(&timer);
+
+	if (prefs_common.date_format)
+		strftime(dest, len, prefs_common.date_format, lt);
+	else
+		*dest = '\0';
+#else
 	static gchar *wdaystr = N_("SunMonTueWedThuFriSat");
 	static gchar *tr_wday = NULL;
 	struct tm *lt;
@@ -543,4 +554,5 @@ void procheader_date_get_localtime(gchar *dest, gint len, const time_t timer)
 	g_snprintf(dest, len, "%02d/%d/%d(%s) %02d:%02d",
 		   lt->tm_year % 100, lt->tm_mon + 1, lt->tm_mday,
 		   wday, lt->tm_hour, lt->tm_min);
+#endif
 }
