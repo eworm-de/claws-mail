@@ -1,3 +1,8 @@
+2003-04-26 [christoph]	0.8.11claws117
+
+	* src/folder.c
+		fix remove virtual check
+
 2003-04-26 [paul]	0.8.11claws116
 
 	* src/messageview.c
