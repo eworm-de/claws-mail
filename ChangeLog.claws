@@ -1,3 +1,20 @@
+2003-07-23 [luke]	0.9.3claws46
+	* src/pixmaps/mimeview_gpg_expired.xpm
+	* src/pixmaps/mimeview_gpg_failed.xpm
+	* src/pixmaps/mimeview_gpg_passed.xpm
+	* src/pixmaps/mimeview_text_html.xpm
+	* src/pixmaps/mimeview_image.xpm
+		o all icons the same size
+
+	* src/mimeview.[ch]
+		o mimeview ctree arranged vertically above the viewer
+		o icons changed to buttons
+		o can use keyboard to select an icon (Enter)
+		o resize icon list to width of icons
+
+	*  src/gtk/gtkvscrollbutton.c
+		o sensitivity of buttons reacts to position
+
 2003-07-23 [christoph]	0.9.3claws45
 
 	* sync with 0.9.3cvs14 (incomplete)
