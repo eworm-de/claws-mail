@@ -486,10 +486,10 @@ static void exit_sylpheed(MainWindow *mainwin)
 
 	lock_socket_remove();
 
-	main_window_destroy(mainwin);
-	
 	plugin_unload_all("GTK");
 
+	main_window_destroy(mainwin);
+	
 	prefs_toolbar_done();
 
 	addressbook_destroy();

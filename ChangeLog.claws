@@ -1,3 +1,15 @@
+2004-09-17 [colin]	0.9.12cvs101
+
+	* src/main.c
+		Fix segfaults when quitting. valgrind says:
+			==12144== Invalid read of size 4
+			==12144==    at 0x80D7DDA: messageview_is_visible (messageview.c:938)
+			[...]
+			==12144==  Address 0x1BF1BD30 is 56 bytes inside a block of size 72 free'd
+			[...]
+			==12144==    by 0x80CC671: exit_sylpheed (main.c:498)
+
+
 2004-09-13 [christoph]	0.9.12cvs100
 
 	* src/folder.c
