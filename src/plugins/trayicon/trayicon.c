@@ -195,6 +195,9 @@ void plugin_done(void)
 
 	gtk_widget_destroy(GTK_WIDGET(trayicon));
 	hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, hook_id);
+
+	while (gtk_events_pending())
+		gtk_main_iteration();		
 }
 
 const gchar *plugin_name(void)

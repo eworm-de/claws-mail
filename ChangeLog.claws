@@ -1,3 +1,10 @@
+2003-07-30 [christoph]	0.9.3claws82
+
+	* src/plugins/trayicon/trayicon.c
+		process pending events before unloading the plugin
+
+	(closes Bug 196 Unloading Trayicon plugin crashes Sylpheed-Claws)
+
 2003-07-30 [alfons]	0.9.3claws81
 
 	* src/common/hooks.c
@@ -110,6 +117,9 @@
 		see ChangeLog 2003-07-18
 	* sync with 0.9.3cvs17
 		see ChangeLog 2003-07-23
+
+	(closes Bug 234 segmentation fault after sending out mail via
+	 smtp(auth))
 
 2003-07-28 [paul]	0.9.3claws65
 
@@ -484,6 +494,9 @@
 
 	* src/plugins/spamassassin/spamassassin.c
 		remove setlocale workaround (fixed in libspamc)
+
+	(closes Bug Bug 184 Entering non-ascii character deletes previous char
+	 if spell checking enabled)
 
 2003-07-17 [alfons]	0.9.3claws19
 
