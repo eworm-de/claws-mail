@@ -1,3 +1,10 @@
+2004-11-23 [colin]	0.9.12cvs163
+
+	* src/main.c
+		Fix cursor going from normal to wait
+		as many times as there are folders
+		(very noticeable on exported displays)
+
 2004-11-23 [colin]	0.9.12cvs162
 
 	* src/msgcache.c

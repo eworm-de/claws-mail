@@ -361,7 +361,9 @@ int main(int argc, char *argv[])
 	prefs_matcher_read_config();
 
 	/* make one all-folder processing before using sylpheed */
+	main_window_cursor_wait(mainwin);
 	folder_func_to_all_folders(initial_processing, (gpointer *)mainwin);
+	main_window_cursor_normal(mainwin);
 
 	/* if Sylpheed crashed, rebuild caches */
 	if (!cmd.crash && is_file_exist(get_crashfile_name())) {
@@ -638,14 +640,11 @@ static void initial_processing(FolderItem *item, gpointer data)
 	debug_print("%s\n", buf);
 	g_free(buf);
 
-	main_window_cursor_wait(mainwin);
-	
         if (item->prefs->enable_processing)
                 folder_item_apply_processing(item);
 
 	debug_print("done.\n");
 	STATUSBAR_POP(mainwin);
-	main_window_cursor_normal(mainwin);
 }
 
 static void draft_all_messages(void)
