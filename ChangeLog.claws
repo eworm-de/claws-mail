@@ -1,3 +1,18 @@
+2003-03-03 [oliver]	0.8.10claws73
+	
+	* src/messageview.[ch]
+		new functions
+		- messageview_delete: delete message shown in messagview
+		- messageview_update_view: update messageview to currently 
+		  selected summaryview message
+ 		- add separate messageview to msgview_list in order to update 
+		  toolbar to new toolbar style on the fly (TOOLBAR_NONE, TOOLBAR_ICON etc.)
+	* src/summaryview.[ch]
+		summary_get_selection returns a list of selected msgs
+		in summaryview
+	* src/mainwindow.c
+		toolbar reply refactoring
+
 2003-03-03 [paul]	0.8.10claws72
 
 	* sync with 0.8.10cvs21

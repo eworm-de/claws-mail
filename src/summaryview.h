@@ -241,6 +241,7 @@ void summary_move_selected_to	  (SummaryView		*summaryview,
 void summary_move_to		  (SummaryView		*summaryview);
 void summary_copy_selected_to	  (SummaryView		*summaryview,
 				   FolderItem		*to_folder);
+GSList *summary_get_selection	  (SummaryView 		*summaryview);
 void summary_copy_to		  (SummaryView		*summaryview);
 void summary_save_as		  (SummaryView		*summaryview);
 void summary_print		  (SummaryView		*summaryview);

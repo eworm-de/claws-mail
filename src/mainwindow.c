@@ -2155,9 +2155,21 @@ static void toggle_toolbar_cb(MainWindow *mainwin, guint action,
 void main_window_reply_cb(MainWindow *mainwin, guint action,
 			  GtkWidget *widget)
 {
-	toolbar_menu_reply(TOOLBAR_MAIN, mainwin, action);
+	MessageView *msgview = (MessageView*)mainwin->messageview;
+	GSList *msginfo_list = NULL;
+	gchar *body;
+
+	g_return_if_fail(msgview != NULL);
+
+	msginfo_list = summary_get_selection(mainwin->summaryview);
+	g_return_if_fail(msginfo_list != NULL);
+	
+	body = messageview_get_selection(msgview);
+	compose_reply_mode((ComposeMode)action, msginfo_list, body);
+	g_free(body);
+	g_slist_free(msginfo_list);
 }
-/* END Toolbar Stuff */
+
 
 static void toggle_statusbar_cb(MainWindow *mainwin, guint action,
 				GtkWidget *widget)
