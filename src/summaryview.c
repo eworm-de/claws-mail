@@ -1944,7 +1944,7 @@ void summary_sort(SummaryView *summaryview,
 	summary_set_column_titles(summaryview);
 	summary_set_menu_sensitive(summaryview);
 
-	gtk_ctree_sort_recursive(ctree, NULL);
+	gtk_sctree_sort_recursive(ctree, NULL);
 
 	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
 

@@ -1,3 +1,21 @@
+2002-07-09 [martin]	0.7.8claws56
+	* src/gtksctree.c
+		Added gtk_ctree_last_visible(), tree_update_level(),
+		gtk_ctree_link(), gtk_ctree_unlink(), real_sort_list(),
+		tree_sort(), gtk_ctree_sort_recursive() and gtk_ctree_sort_node()
+		from gtk+ to gtksctree.c for the new sorting code
+ 		Renamed gtk_ctree_sort_recusive() to gtk_sctree_sort_recursive
+		Renamed gtk_ctree_sort_node() to gtk_sctree_sort_node
+	* src/gtksctree.h
+		Added declaration for gtk_sctree_sort_recursive() and
+		gtk_sctree_sort_node
+	* src/addressbook.c
+	* src/foldersel.c
+	* src/folderview.c
+	* src/summaryview.c
+		changed calls from gtk_ctree_sort_recursive() and gtk_ctree_sort_node()
+		to gtk_sctree_sort_recursive() and gtk_sctree_sort_node()
+
 2002-07-08	[paul]	0.7.8claws55
 
 	* more sync with 0.7.8cvs21

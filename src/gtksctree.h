@@ -61,4 +61,15 @@ void  gtk_sctree_select (GtkSCTree *sctree,
 
 void  gtk_sctree_unselect_all (GtkSCTree *sctree);
 
+/***********************************************************
+ *             Tree sorting functions                      *
+ ***********************************************************/
+
+void gtk_sctree_sort_node (GtkCTree *ctree, GtkCTreeNode *node);
+
+void gtk_sctree_sort_recursive (GtkCTree *ctree, GtkCTreeNode *node);
+
+
+
+
 #endif /* __GTK_SCTREE_H__ */

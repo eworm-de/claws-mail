@@ -2022,7 +2022,7 @@ static void addressbook_treenode_edit_cb(gpointer data, guint action,
 	if( name && parentNode ) {
 		/* Update node in tree view */
 		addressbook_change_node_name( node, name );
-		gtk_ctree_sort_node(ctree, parentNode);
+		gtk_sctree_sort_node(ctree, parentNode);
 		gtk_ctree_expand( ctree, node );
 		gtk_ctree_select( ctree, node );
 	}
@@ -2242,7 +2242,7 @@ static void addressbook_move_nodes_up( GtkCTree *ctree, GtkCTreeNode *node ) {
 		while( (child = currRow->children) ) {
 			gtk_ctree_move( ctree, child, parent, node );
 		}
-		gtk_ctree_sort_node( ctree, parent );
+		gtk_sctree_sort_node( ctree, parent );
 	}
 }
 
@@ -2312,7 +2312,7 @@ static void addressbook_edit_address_cb( gpointer data, guint action, GtkWidget 
 	/* Update tree node with node name */
 	if( node == NULL ) return;
 	addressbook_change_node_name( node, name );
-	gtk_ctree_sort_node( ctree, parentNode );
+	gtk_sctree_sort_node( ctree, parentNode );
 	gtk_ctree_select( ctree, addrbook.opened );
 }
 
@@ -2471,7 +2471,7 @@ static void addressbook_folder_load_person( GtkCTree *clist, ItemFolder *itemFol
 					FALSE, person->isOpened );
 			gtk_ctree_node_set_row_data(clist, nodePerson, person );
 		}
-		gtk_ctree_sort_node(GTK_CTREE(clist), NULL);
+		gtk_sctree_sort_node(GTK_CTREE(clist), NULL);
 	}
 	/* Free up the list */
 	mgu_clear_list( items );
@@ -2499,7 +2499,7 @@ static void addressbook_folder_load_group( GtkCTree *clist, ItemFolder *itemFold
 				      atci->iconXpmOpen, atci->maskXpmOpen,
 				      FALSE, FALSE);
 		gtk_ctree_node_set_row_data(clist, nodeGroup, group );
-		gtk_ctree_sort_node(clist, NULL);
+		gtk_sctree_sort_node(clist, NULL);
 	}
 	/* Free up the list */
 	mgu_clear_list( items );
@@ -2926,7 +2926,7 @@ static GtkCTreeNode *addressbook_add_object(GtkCTreeNode *node,
 		}
 	}
 
-	gtk_ctree_sort_node(ctree, node);
+	gtk_sctree_sort_node(ctree, node);
 
 	return added;
 }
@@ -2962,7 +2962,7 @@ static GtkCTreeNode *addressbook_node_add_group( GtkCTreeNode *node, AddressData
 			atci->treeLeaf, atci->treeExpand );
 	gtk_ctree_node_set_row_data_full( ctree, newNode, adapter,
 		addressbook_free_treenode );
-	gtk_ctree_sort_node( ctree, node );
+	gtk_sctree_sort_node( ctree, node );
 	return newNode;
 }
 
@@ -3023,7 +3023,7 @@ static GtkCTreeNode *addressbook_node_add_folder(
 		addressbook_node_add_group( newNode, ds, item );
 		listItems = g_list_next( listItems );
 	}
-	gtk_ctree_sort_node( ctree, node );
+	gtk_sctree_sort_node( ctree, node );
 	return newNode;
 }
 
