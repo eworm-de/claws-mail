@@ -1,4 +1,9 @@
-2002-08-07 [christoph]	0.8.1claws24
+2002-08-07 [christoph]	0.8.1claws35
+
+	* src/utils.c
+		fixed a memory leak in new canonicalize_file_replace
+
+2002-08-07 [christoph]	0.8.1claws34
 
 	* src/utils.[ch]
 		o canonicalize_file_replace should create the temporary

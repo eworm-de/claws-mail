@@ -2137,6 +2137,7 @@ gint canonicalize_file_replace(const gchar *file)
 
 	dirname = g_dirname(file);
 	dest = get_tmpfile_in_dir(dirname, &tmp_file);
+	g_free(dirname);
 
 	debug_print("Writing canonicalized file to %s\n", tmp_file);
 
