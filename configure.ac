@@ -201,6 +201,14 @@ dnl *****************
 dnl ** common code **
 dnl *****************
 
+dnl search for encrypt function
+OLDLIBS=$LIBS
+LIBS=
+AC_SEARCH_LIBS(encrypt, crypt, [], AC_MSG_ERROR(['encrypt'-function not found.]))
+CRYPT_LIBS=$LIBS
+AC_SUBST(CRYPT_LIBS)
+LIBS=$OLDLIBS
+
 dnl check for glib
 AM_PATH_GLIB(1.2.6,,
 	AC_MSG_ERROR(Test for GLIB failed. See the file 'INSTALL' for help.),
