@@ -1,6 +1,8 @@
 %{
 #include "quote_fmt_lex.h"
 #include "quote_fmt_parse.h"
+
+#define YY_NO_UNPUT 1
 %}
 
 %option prefix="quote_fmt"

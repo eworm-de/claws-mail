@@ -101,7 +101,6 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox)
 		FILE *tmp_fp;
 		FolderItem *dropfolder;
 		gint empty_line;
-		gint val;
 		gboolean is_next_msg = FALSE;
 		gint msgnum;
 

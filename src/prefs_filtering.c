@@ -639,8 +639,8 @@ static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data)
 	gint oldpathlen;
 	FolderItem *item;
 	
-	g_return_if_fail(old_path != NULL);
-	g_return_if_fail(new_path != NULL);
+	g_return_val_if_fail(old_path != NULL, FALSE);
+	g_return_val_if_fail(new_path != NULL, FALSE);
 
 	old_path = ((gchar **)data)[0];
 	new_path = ((gchar **)data)[1];
@@ -711,6 +711,7 @@ static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data)
 	}
 	g_free(old_path_with_sep);
 	prefs_matcher_write_config();
+
 	return FALSE;
 }
 
@@ -737,7 +738,7 @@ static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data)
 	gint pathlen;
 	FolderItem *item;
 	
-	g_return_if_fail(path != NULL);
+	g_return_val_if_fail(path != NULL, FALSE);
 
 	pathlen = strlen(path);
 	if (node == NULL)
@@ -781,6 +782,8 @@ static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data)
 	}
 
 	prefs_matcher_write_config();
+
+	return FALSE;
 }
 
 static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)

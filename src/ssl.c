@@ -75,9 +75,6 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 {
 	X509 *server_cert;
 	gboolean ret;
-	unsigned char md[EVP_MAX_MD_SIZE];
-	char *issuer;
-	char *subject;
 
 	switch (method) {
 	case SSL_METHOD_SSLv23:

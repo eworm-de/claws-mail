@@ -45,3 +45,4 @@
 #define yygindex matcher_parseryygindex
 #define yytable	 matcher_parseryytable
 #define yycheck	 matcher_parseryycheck
+#define yyrestart matcher_parserrestart

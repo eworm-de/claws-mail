@@ -387,7 +387,6 @@ Header * procheader_parse_header(gchar * buf)
 	gchar tmp[BUFFSIZE];
 	gchar *p = buf;
 	Header * header;
-	gchar *backup;
 
 	if ((*buf == ':') || (*buf == ' '))
 		return NULL;
