@@ -319,6 +319,7 @@ gboolean matcherprop_match_execute(MatcherProp * prop, MsgInfo * info)
 	file = procmsg_get_message_file(info);
 	if (file == NULL)
 		return FALSE;
+	g_free(file);		
 
 	cmd = matching_build_command(prop->unesc_expr, info);
 	if (cmd == NULL)
