@@ -2588,7 +2588,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 	gint n_menurc;
 
 	static struct KeyBind default_menurc[] = {
-		{"<Main>/File/Empty trash",			""},
+		{"<Main>/File/Empty all Trash folders",		""},
 		{"<Main>/File/Save as...",			"<control>S"},
 		{"<Main>/File/Print...",			""},
 		{"<Main>/File/Exit",				"<control>Q"},
@@ -2598,8 +2598,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/Edit/Find in current message...",	"<control>F"},
 		{"<Main>/Edit/Search folder...",		"<shift><control>F"},
 
-		{"<Main>/View/Expand Summary View",		"V"},
-		{"<Main>/View/Expand Message View",		"<shift>V"},
+		{"<Main>/View/Show or hide/Message View",	"V"},
 		{"<Main>/View/Thread view",			"<control>T"},
 		{"<Main>/View/Go to/Prev message",		"P"},
 		{"<Main>/View/Go to/Next message",		"N"},
@@ -2607,12 +2606,13 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/View/Go to/Next unread message",	"<shift>N"},
 		{"<Main>/View/Go to/Other folder...",		"G"},
 		{"<Main>/View/Open in new window",		"<control><alt>N"},
-		{"<Main>/View/View source",			"<control>U"},
+		{"<Main>/View/Message source",			"<control>U"},
 		{"<Main>/View/Show all headers",		"<control>H"},
-		{"<Main>/View/Update",				"<control><alt>U"},
+		{"<Main>/View/Update summary",			"<control><alt>U"},
 
-		{"<Main>/Message/Receive/Get new mail",		"<control>I"},
-		{"<Main>/Message/Receive/Get from all accounts",	"<shift><control>I"},
+		{"<Main>/Message/Receive/Get from current account",
+								"<control>I"},
+		{"<Main>/Message/Receive/Get from all accounts","<shift><control>I"},
 		{"<Main>/Message/Compose an email message",	"<control>M"},
 		{"<Main>/Message/Reply",			"<control>R"},
 		{"<Main>/Message/Reply to/all",			"<shift><control>R"},
@@ -2632,7 +2632,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/Tools/Execute",			"X"},
 		{"<Main>/Tools/Log window",			"<shift><control>L"},
 
-		{"<Compose>/File/Close",				"<control>W"},
+		{"<Compose>/Message/Close",				"<control>W"},
 		{"<Compose>/Edit/Select all",				"<control>A"},
 		{"<Compose>/Edit/Advanced/Move a word backward",	""},
 		{"<Compose>/Edit/Advanced/Move a word forward",		""},
@@ -2642,7 +2642,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 	};
 
 	static struct KeyBind mew_wl_menurc[] = {
-		{"<Main>/File/Empty trash",			"<shift>D"},
+		{"<Main>/File/Empty all Trash folders",			"<shift>D"},
 		{"<Main>/File/Save as...",			"Y"},
 		{"<Main>/File/Print...",			"<shift>numbersign"},
 		{"<Main>/File/Exit",				"<shift>Q"},
@@ -2652,8 +2652,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/Edit/Find in current message...",	"<control>F"},
 		{"<Main>/Edit/Search folder...",		"<control>S"},
 
-		{"<Main>/View/Expand Summary View",		""},
-		{"<Main>/View/Expand Message View",		""},
+		{"<Main>/View/Show or hide/Message View",	""},
 		{"<Main>/View/Thread view",			"<shift>T"},
 		{"<Main>/View/Go to/Prev message",		"P"},
 		{"<Main>/View/Go to/Next message",		"N"},
@@ -2661,12 +2660,13 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/View/Go to/Next unread message",	"<shift>N"},
 		{"<Main>/View/Go to/Other folder...",		"G"},
 		{"<Main>/View/Open in new window",		"<control><alt>N"},
-		{"<Main>/View/View source",			"<control>U"},
+		{"<Main>/View/Message source",			"<control>U"},
 		{"<Main>/View/Show all headers",		"<shift>H"},
-		{"<Main>/View/Update",				"<shift>S"},
+		{"<Main>/View/Update summary",			"<shift>S"},
 
-		{"<Main>/Message/Receive/Get new mail",		"<control>I"},
-		{"<Main>/Message/Receive/Get from all accounts",	"<shift><control>I"},
+		{"<Main>/Message/Receive/Get from current account",
+								"<control>I"},
+		{"<Main>/Message/Receive/Get from all accounts","<shift><control>I"},
 		{"<Main>/Message/Compose an email message",	"W"},
 		{"<Main>/Message/Reply",			"<control>R"},
 		{"<Main>/Message/Reply to/all",			"<shift>A"},
@@ -2686,7 +2686,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/Tools/Execute",			"X"},
 		{"<Main>/Tools/Log window",			"<shift><control>L"},
 
-		{"<Compose>/File/Close",				"<alt>W"},
+		{"<Compose>/Message/Close",				"<alt>W"},
 		{"<Compose>/Edit/Select all",				""},
 		{"<Compose>/Edit/Advanced/Move a word backward,"	"<alt>B"},
 		{"<Compose>/Edit/Advanced/Move a word forward",		"<alt>F"},
@@ -2696,7 +2696,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 	};
 
 	static struct KeyBind mutt_menurc[] = {
-		{"<Main>/File/Empty trash",			""},
+		{"<Main>/File/Empty all Trash folders",		""},
 		{"<Main>/File/Save as...",			"S"},
 		{"<Main>/File/Print...",			"P"},
 		{"<Main>/File/Exit",				"Q"},
@@ -2706,7 +2706,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/Edit/Find in current message...",	"<control>F"},
 		{"<Main>/Edit/Search messages...",		"slash"},
 
-		{"<Main>/View/Toggle summary view",		"V"},
+		{"<Main>/View/Show or hide/Message view",	"V"},
 		{"<Main>/View/Thread view",			"<control>T"},
 		{"<Main>/View/Go to/Prev message",		""},
 		{"<Main>/View/Go to/Next message",		""},
@@ -2714,12 +2714,13 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/View/Go to/Next unread message",	""},
 		{"<Main>/View/Go to/Other folder...",		"C"},
 		{"<Main>/View/Open in new window",		"<control><alt>N"},
-		{"<Main>/View/View source",			"<control>U"},
+		{"<Main>/View/Message source",			"<control>U"},
 		{"<Main>/View/Show all headers",		"<control>H"},
-		{"<Main>/View/Update",				"<control><alt>U"},
+		{"<Main>/View/Update summary",				"<control><alt>U"},
 
-		{"<Main>/Message/Receive/Get new mail",			"<control>I"},
-		{"<Main>/Message/Receive/Get from all accounts",	"<shift><control>I"},
+		{"<Main>/Message/Receive/Get from current account",
+								"<control>I"},
+		{"<Main>/Message/Receive/Get from all accounts","<shift><control>I"},
 		{"<Main>/Message/Compose an email message",		"M"},
 		{"<Main>/Message/Reply",			"R"},
 		{"<Main>/Message/Reply to/all",			"G"},
@@ -2739,7 +2740,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/Tools/Execute",			"X"},
 		{"<Main>/Tools/Log window",			"<shift><control>L"},
 
-		{"<Compose>/File/Close",				"<alt>W"},
+		{"<Compose>/Message/Close",				"<alt>W"},
 		{"<Compose>/Edit/Select all",				""},
 		{"<Compose>/Edit/Advanced/Move a word backward",	"<alt>B"},
 		{"<Compose>/Edit/Advanced/Move a word forward",		"<alt>F"},
@@ -2749,7 +2750,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 	};
 
 	static struct KeyBind old_sylpheed_menurc[] = {
-		{"<Main>/File/Empty trash",			""},
+		{"<Main>/File/Empty all Trash folders",		""},
 		{"<Main>/File/Save as...",			""},
 		{"<Main>/File/Print...",			"<alt>P"},
 		{"<Main>/File/Exit",				"<alt>Q"},
@@ -2759,8 +2760,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/Edit/Find in current message...",	"<control>F"},
 		{"<Main>/Edit/Search folder...",		"<control>S"},
 
-		{"<Main>/View/Expand Summary View",		""},
-		{"<Main>/View/Expand Message View",		""},
+		{"<Main>/View/Show or hide/Message View",	""},
 		{"<Main>/View/Thread view",			"<control>T"},
 		{"<Main>/View/Go to/Prev message",		"P"},
 		{"<Main>/View/Go to/Next message",		"N"},
@@ -2768,12 +2768,13 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/View/Go to/Next unread message",	"<shift>N"},
 		{"<Main>/View/Go to/Other folder...",		"<alt>G"},
 		{"<Main>/View/Open in new window",		"<shift><control>N"},
-		{"<Main>/View/View source",			"<control>U"},
+		{"<Main>/View/Message source",			"<control>U"},
 		{"<Main>/View/Show all headers",		"<control>H"},
-		{"<Main>/View/Update",				"<alt>U"},
+		{"<Main>/View/Update summary",			"<alt>U"},
 
-		{"<Main>/Message/Receive/Get new mail",			"<alt>I"},
-		{"<Main>/Message/Receive/Get from all accounts",	"<shift><alt>I"},
+		{"<Main>/Message/Receive/Get from current account",
+								"<alt>I"},
+		{"<Main>/Message/Receive/Get from all accounts","<shift><alt>I"},
 		{"<Main>/Message/Compose an email message",	"<alt>N"},
 		{"<Main>/Message/Reply",			"<alt>R"},
 		{"<Main>/Message/Reply to/all",			"<shift><alt>R"},
@@ -2793,7 +2794,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/Tools/Execute",			"<alt>X"},
 		{"<Main>/Tools/Log window",			"<alt>L"},
 
-		{"<Compose>/File/Close",				"<alt>W"},
+		{"<Compose>/Message/Close",				"<alt>W"},
 		{"<Compose>/Edit/Select all",				""},
 		{"<Compose>/Edit/Advanced/Move a word backward",	"<alt>B"},
 		{"<Compose>/Edit/Advanced/Move a word forward",		"<alt>F"},

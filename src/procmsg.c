@@ -602,8 +602,6 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 
 void procmsg_empty_trash(FolderItem *trash)
 {
-	FILE *fp;
-
 	if (trash && trash->total_msgs > 0) {
 		GSList *mlist = folder_item_get_msg_list(trash);
 		GSList *cur;
