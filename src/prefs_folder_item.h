@@ -23,7 +23,6 @@
 
 #include "folder.h"
 #include <glib.h>
-#include <gtk/gtk.h>
 #include <sys/types.h>
 
 struct _PrefsFolderItem {

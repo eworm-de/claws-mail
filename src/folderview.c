@@ -1013,6 +1013,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	GtkStyle *style = NULL;
+	GtkStyle *color_style = NULL;
 	FolderItem *item;
 	GdkPixmap *xpm, *openxpm;
 	GdkBitmap *mask, *openmask;
@@ -1214,7 +1215,12 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	} else if (item->op_count > 0) {
 		style = bold_tgtfold_style;
 	} else if (item->prefs->color > 0) {
-		style = item->color_style;
+		GdkColor gdk_color;
+
+		gtkut_convert_int_to_gdk_color(item->prefs->color, &gdk_color);
+		color_style = gtk_style_copy(gtk_widget_get_default_style());
+		color_style->fg[GTK_STATE_NORMAL] = gdk_color;
+		style = color_style;
 	} else {
 		style = normal_style;
 	}

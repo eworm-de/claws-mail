@@ -240,8 +240,6 @@ struct _FolderItem
 	gint op_count;
 	guint opened    : 1; /* opened by summary view */
 
-	GtkStyle *color_style; /* used for folder color */
-
 	FolderSortKey sort_key;
 	FolderSortType sort_type;
 

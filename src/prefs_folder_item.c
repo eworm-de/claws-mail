@@ -161,15 +161,6 @@ void prefs_folder_item_read_config(FolderItem * item)
 								 SORT_BY_NONE);
 		item->sort_type = tmp_prefs.sort_descending ? SORT_DESCENDING : SORT_ASCENDING;
 	}								
-
-	/* create style for folder color */
-	if (tmp_prefs.color > 0) {
-		GdkColor gdk_color;
-
-		gtkut_convert_int_to_gdk_color(tmp_prefs.color, &gdk_color);
-		item->color_style = gtk_style_copy(gtk_widget_get_default_style());
-		item->color_style->fg[GTK_STATE_NORMAL] = gdk_color;
-	}
 }
 
 void prefs_folder_item_save_config(FolderItem * item)
@@ -581,15 +572,9 @@ void prefs_folder_item_ok_cb(GtkWidget *widget,
  	prefs->default_account = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
 
 	prefs->color = dialog->item->prefs->color;
-	if (prefs->color > 0) {
-		GdkColor gdk_color;
-
-		dialog->item->color_style = gtk_style_copy(gtk_widget_get_default_style());
-		dialog->item->color_style->fg[GTK_STATE_NORMAL] = gdk_color;
-
-		/* update folder view */
+	/* update folder view */
+	if (prefs->color > 0)
 		folderview_update_item(dialog->item, FALSE);
-	}
 
 	prefs_folder_item_save_config(dialog->item);
 	prefs_folder_item_destroy(dialog);
