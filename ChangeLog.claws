@@ -1,3 +1,9 @@
+2002-09-15 [colin]	0.8.2claws51
+
+	* src/compose.c
+		Allow dynamically-added custom headers
+		Yet not reparsed if reedited
+
 2002-09-15 [alfons]	0.8.2claws50
 
 	* src/prefs_account.c
