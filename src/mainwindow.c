@@ -386,6 +386,12 @@ static void prev_unread_cb	 (MainWindow	*mainwin,
 static void next_unread_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void prev_new_cb		 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
+static void next_new_cb		 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
 static void prev_marked_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -569,6 +575,9 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						"<shift>P", prev_unread_cb, 0, NULL},
 	{N_("/_View/_Go to/N_ext unread message"),
 						"<shift>N", next_unread_cb, 0, NULL},
+	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/_Go to/Prev ne_w message"),	NULL, prev_new_cb, 0, NULL},
+	{N_("/_View/_Go to/Ne_xt new message"),	NULL, next_new_cb, 0, NULL},
 	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Go to/Prev _marked message"),
 						NULL, prev_marked_cb, 0, NULL},
@@ -1695,6 +1704,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/View/Go to/Next message"        , M_MSG_EXIST},
 		{"/View/Go to/Prev unread message" , M_MSG_EXIST},
 		{"/View/Go to/Next unread message" , M_MSG_EXIST},
+		{"/View/Go to/Prev new message"    , M_MSG_EXIST},
+		{"/View/Go to/Next new message"    , M_MSG_EXIST},
 		{"/View/Go to/Prev marked message" , M_MSG_EXIST},
 		{"/View/Go to/Next marked message" , M_MSG_EXIST},
 		{"/View/Go to/Prev labeled message", M_MSG_EXIST},
@@ -3140,6 +3151,16 @@ static void next_unread_cb(MainWindow *mainwin, guint action,
 			   GtkWidget *widget)
 {
 	summary_select_next_unread(mainwin->summaryview);
+}
+
+static void prev_new_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+{
+	summary_select_prev_new(mainwin->summaryview);
+}
+
+static void next_new_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+{
+	summary_select_next_new(mainwin->summaryview);
 }
 
 static void prev_marked_cb(MainWindow *mainwin, guint action,
