@@ -1,3 +1,8 @@
+2004-07-06 [paul]	0.9.12cvs11
+
+	* src/toolbar.c
+		fix typo. (spotted by Fabien Vantard)
+
 2004-07-06 [paul]	0.9.12cvs10
 
 	* src/main.c

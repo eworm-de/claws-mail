@@ -1369,7 +1369,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 					     toolbar_data->reply_btn,
 					   _("Reply to Message"), NULL);
 			n_menu_entries = sizeof(reply_entries) / 
-				sizeof(replysender_entries[0]);
+				sizeof(reply_entries[0]);
 			reply_combo = gtkut_combo_button_create(toolbar_data->reply_btn,
 					      reply_entries, n_menu_entries,
 					      "<Reply>", (gpointer)toolbar_item);
