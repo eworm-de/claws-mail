@@ -1,3 +1,11 @@
+2003-02-27 [martin]	0.8.10claws57
+
+	* src/prefs_matcher.c 
+		fix segfault in prefs_matcher_ok() when the
+		last entry is deleted and prevents that the
+		message "entry not saved" comes up after deleting
+		an entry
+
 2003-02-27 [martin]	0.8.10claws56
 
 	* src/prefs_filtering.c 

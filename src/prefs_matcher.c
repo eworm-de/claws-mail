@@ -1244,7 +1244,9 @@ static void prefs_matcher_delete_cb(void)
 		return;
 
 	gtk_clist_remove(clist, row);
-	
+
+	prefs_matcher_reset_condition();
+
 	prefs_matcher_update_hscrollbar();
 }
 
@@ -1658,14 +1660,15 @@ static void prefs_matcher_ok(void)
 					if (strcmp(matcher_str, str) == 0) break;
 					row++;
 				}
+
 				if (strcmp(matcher_str, str) != 0) {
-		                        val = alertpanel(_("Entry not saved"),
-        		                         _("The entry was not saved\nHave you really finished?"),
-                		                 _("Yes"), _("No"), NULL);
-	                        	if (G_ALERTDEFAULT != val) {
+	                        	val = alertpanel(_("Entry not saved"),
+       		                        	 _("The entry was not saved\nHave you really finished?"),
+               		                	 _("Yes"), _("No"), NULL);
+					if (G_ALERTDEFAULT != val) {
 	        	                        g_free(str);
-        	        	                return;
-	        	                }
+						return;
+					}
 				}
 			}
 		}
