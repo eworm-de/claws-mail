@@ -1241,8 +1241,8 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 			child_info->tag_status = 
 #ifdef WIN32
 				g_io_add_watch(g_io_channel_unix_new( child_info->chld_status ),
-					      G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP,
-					      catch_status, child_info);
+					       G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP,
+					       catch_status, child_info);
 #else
 				gdk_input_add(child_info->chld_status,
 					      GDK_INPUT_READ,
@@ -1269,12 +1269,59 @@ ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 	pid_t pid, gch_pid;
 	ChildInfo *child_info;
 	gint sync;
+#ifdef WIN32
+	gchar **child_argv;
+	GError *error=NULL;
+	GIOChannel *ch_in, *ch_out, *ch_err;
+	gint n;
+#endif
 
 	sync = !(action_type & ACTION_ASYNC);
 
 	chld_in[0] = chld_in[1] = chld_out[0] = chld_out[1] = chld_err[0]
 		= chld_err[1] = chld_status[0] = chld_status[1] = -1;
 
+#ifdef WIN32
+	pid = 0;
+	pipe(chld_status);
+	child_argv = g_strsplit(cmd, " ", 1024);
+	if (g_spawn_async_with_pipes((const gchar *)NULL,
+				     child_argv,
+				     (gchar**)NULL,
+				     G_SPAWN_SEARCH_PATH,
+				     (GSpawnChildSetupFunc)NULL,
+				     (gpointer)NULL,
+				     &pid,
+				     &chld_in[1],
+				     &chld_out[0],
+				     &chld_err[0],
+				     &error) == TRUE) {
+		ch_in  = g_io_channel_unix_new(chld_in[1]);
+		ch_out = g_io_channel_unix_new(chld_out[0]);
+		ch_err = g_io_channel_unix_new(chld_err[0]);
+		/* g_io_channel_win32_set_debug(chan,TRUE); */
+		/* XXX:tm status */
+		write(chld_status[1], "0\n", 2);
+		close(chld_status[1]);
+
+		for (n=0; child_argv[n]; n++) g_free(child_argv[n]);
+		g_free(child_argv);
+	} else {
+		printf("spawn:%s\n",(error) ? error->message : "(unknown)");
+		/* Closing fd = -1 fails silently */
+		close(chld_in[0]);
+		close(chld_in[1]);
+		close(chld_out[0]);
+		close(chld_out[1]);
+		close(chld_err[0]);
+		close(chld_err[1]);
+		close(chld_status[0]);
+		close(chld_status[1]);
+		for (n=0; child_argv[n]; n++) g_free(child_argv[n]);
+		g_free(child_argv);
+		return NULL; /* Pipe error */
+	}
+#else
 	if (sync) {
 		if (pipe(chld_status) || pipe(chld_in) || pipe(chld_out) ||
 		    pipe(chld_err)) {
@@ -1296,54 +1343,6 @@ ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 
 	debug_print(_("Forking child and grandchild.\n"));
 
-#ifdef WIN32
-	{
-		SECURITY_ATTRIBUTES sa;
-		STARTUPINFO si;
-		PROCESS_INFORMATION pi;
-
-		HANDLE hIn, hOut, hErr ;
-		memset(&sa,0,sizeof(sa));
-		memset(&si,0,sizeof(si));
-		memset(&pi,0,sizeof(pi));
-
-		sa.bInheritHandle = TRUE ;
-		sa.lpSecurityDescriptor = NULL ;
-		sa.nLength = sizeof(sa);
-
-		hIn  = fdopen( chld_in[1],  "wb" );
-		hOut = fdopen( chld_out[0], "rb" );
-		hErr = fdopen( chld_err[0], "rb" );
-
-		si.hStdInput	= hIn;
-		si.hStdOutput	= hOut;
-		si.hStdError	= hErr;
-		si.cb		= sizeof(si);
-
-		si.dwFlags = (action_type & (ACTION_PIPE_IN |
-					     ACTION_OPEN_IN |
-					     ACTION_HIDE_IN))
-		  		? STARTF_USESTDHANDLES : 0;
-
-		if (!CreateProcess(NULL,	/* pointer to name of executable module */
-				   cmd,		/* pointer to command line string       */
-				   &sa,		/* process security attributes          */
-				   &sa,		/* thread security attributes           */
-				   TRUE,	/* handle inheritance flag              */
-				   0,		/* creation flags                       */
-				   NULL,	/* pointer to new environment block     */
-				   NULL,	/* pointer to current directory name    */
-				   &si,		/* pointer to STARTUPINFO               */
-				   &pi)) {	/* pointer to PROCESS_INFORMATION       */
-			perror("CreateProcess");
-			return NULL;
-		}
-
-		pid = pi.dwProcessId;
-		write(chld_status[1], "0\n", 2);
-		close(chld_status[1]);
-	}
-#else
 	pid = fork();
 	if (pid == 0) { /* Child */
 		if (setpgid(0, 0))
@@ -1571,9 +1570,9 @@ static void send_input(GtkWidget *w, gpointer data)
 	ChildInfo *child_info = (ChildInfo *) children->list->data;
 
 #ifdef WIN32
-	g_io_add_watch(g_io_channel_unix_new(child_info->chld_in ),
-					     G_IO_OUT | G_IO_PRI | G_IO_ERR | G_IO_HUP,
-					     catch_input, children);
+	child_info->tag_in = g_io_add_watch(g_io_channel_unix_new(child_info->chld_in ),
+					    G_IO_OUT | G_IO_PRI | G_IO_ERR | G_IO_HUP,
+					    catch_input, children);
 #else
 	child_info->tag_in = gdk_input_add(child_info->chld_in,
 					   GDK_INPUT_WRITE,
@@ -1598,13 +1597,15 @@ static void hide_io_dialog_cb(GtkWidget *w, gpointer data)
 		gtk_signal_disconnect_by_data(GTK_OBJECT(children->dialog),
 					      children);
 		gtk_widget_destroy(children->dialog);
+#ifndef WIN32 /* process still running */
 		free_children(children);
+#endif
 	}
 }
 
 static void childinfo_close_pipes(ChildInfo *child_info)
 {
-#ifndef WIN32
+#ifndef WIN32 /* WIN32:event sources are deleted by returning FALSE */
 	if (child_info->tag_in > 0)
 		gdk_input_remove(child_info->tag_in);
 	gdk_input_remove(child_info->tag_out);
@@ -1613,8 +1614,10 @@ static void childinfo_close_pipes(ChildInfo *child_info)
 
 	if (child_info->chld_in >= 0)
 		close(child_info->chld_in);
+#ifndef WIN32 /* WIN32:process still running, close at G_IO_HUP */
 	close(child_info->chld_out);
 	close(child_info->chld_err);
+#endif
 	close(child_info->chld_status);
 }
 
@@ -1797,6 +1800,7 @@ static void catch_status(gpointer data, gint source, GdkInputCondition cond)
 
 #ifdef WIN32
 	g_io_channel_read(channel, &buf, 1, &c);
+	if (c == 0) return TRUE ;
 #else
 	gdk_input_remove(child_info->tag_status);
 	c = read(source, &buf, 1);
@@ -1861,7 +1865,7 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 {
 	ChildInfo *child_info = (ChildInfo *)data;
 	gint c, i;
-	gchar buf[PREFSBUFSIZE];
+	gchar buf[PREFSBUFSIZE] = {0};
 #ifdef WIN32
 	gint source = g_io_channel_unix_get_fd(channel);
 #endif
@@ -1876,7 +1880,14 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 		gtk_stext_freeze(GTK_STEXT(text));
 		while (TRUE) {
 #ifdef WIN32
-			g_io_channel_read(channel, buf, PREFSBUFSIZE - 1, &c);
+			gchar *p_buf;
+			GIOError err;
+			GError gerr;
+
+			err = g_io_channel_read(channel, buf, PREFSBUFSIZE - 1, &c);
+			p_buf = g_locale_to_utf8(buf, c, NULL, NULL, NULL); /* XXX:tm OEM conversion */
+			memmove(buf, p_buf, c);
+			g_free(p_buf);
 #else
 			c = read(source, buf, PREFSBUFSIZE - 1);
 #endif
@@ -1896,7 +1907,14 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 		gtk_stext_thaw(GTK_STEXT(child_info->text));
 	} else {
 #ifdef WIN32
-			g_io_channel_read(channel, buf, PREFSBUFSIZE - 1, &c);
+		gchar *p_buf;
+		GIOError err;
+
+		err = g_io_channel_read(channel, buf, PREFSBUFSIZE - 1, &c);
+		p_buf = g_locale_to_utf8(buf, c, NULL, NULL, NULL); /* XXX:tm OEM conversion */
+		memmove(buf, p_buf, c);
+		g_free(p_buf);
+		/* child_info sometimes overwritten */
 #else
 		c = read(source, buf, PREFSBUFSIZE - 1);
 #endif
@@ -1907,6 +1925,23 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 			child_info->new_out = TRUE;
 	}
 #ifdef WIN32
-	return FALSE;
+	if (cond & G_IO_HUP) {
+		if (source == child_info->chld_out)
+			child_info->chld_out = -1 ;
+		else if (source == child_info->chld_err)
+			child_info->chld_err = -1 ;
+/* XXX:tm cleanup */
+#if 0		
+		if ((child_info->chld_out == -1)
+		&&  (child_info->chld_err == -1)) {
+				write(child_info->chld_status, "0\n", 2);
+				close(child_info->chld_status);
+		}
+#endif
+		close(source);
+		return FALSE;
+	} else {
+		return TRUE;
+	}
 #endif
 }

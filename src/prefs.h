@@ -40,7 +40,11 @@ typedef struct _PrefsDialog	PrefsDialog;
 #define VSPACING_NARROW_2	2
 #define VBOX_BORDER		16
 #define DEFAULT_ENTRY_WIDTH	80
+#ifdef WIN32
+#define PREFSBUFSIZE		4096
+#else
 #define PREFSBUFSIZE		1024
+#endif
 
 typedef enum
 {
