@@ -1946,8 +1946,13 @@ static void send_queue_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 
 static void compose_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
-	if (mainwin->summaryview->folder_item)
-		compose_new(mainwin->summaryview->folder_item->folder->account);
+	if (mainwin->summaryview->folder_item) {
+		if (mainwin->summaryview->folder_item->folder->account != NULL
+		    && mainwin->summaryview->folder_item->folder->account->protocol == A_NNTP)
+			compose_new_with_recipient(mainwin->summaryview->folder_item->folder->account, mainwin->summaryview->folder_item->path);
+		else
+			compose_new(mainwin->summaryview->folder_item->folder->account);
+	}
 	else
 		compose_new(NULL);
 }

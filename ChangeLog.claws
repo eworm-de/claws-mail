@@ -1,3 +1,17 @@
+2001-06-17 [hoa]
+
+	* src/compose.c
+		Better interface for compose, displayed fields
+		are updated whenever we change account.
+		Newsgroups field is automatically filled.
+
+	* src/mainwindow.c
+		Newsgroups field is automatically filled.
+
+	* src/prefs_account.c
+		Some interface stuff when fields appear and
+		disappear.
+
 2001-06-16 [paul]
 
         0.4.99claws
