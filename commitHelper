@@ -1,28 +1,12 @@
 #!/bin/bash
-if [ "$1" == "--syncgtk2" ]; then
-	shift
-	echo -n "sync with EXTRA_VERSION ? [xx] "
-	read newmicro
-	cat configure.ac | sed "s/^EXTRA_VERSION=.*/EXTRA_VERSION=$newmicro/" > configure.ac.new \
-		&& mv configure.ac.new configure.ac ;	
-	cat configure.ac | sed "s/^EXTRA_GTK2_VERSION=.*/EXTRA_GTK2_VERSION=.0/" > configure.ac.new \
-		&& mv configure.ac.new configure.ac ;	
-fi;
 args=`echo $@`
 
 head -n 16 configure.ac | grep VERSION= > /tmp/commitTool.tmp
 source /tmp/commitTool.tmp
-if [ -z "$EXTRA_GTK2_VERSION" ]; then
-	EXTRA_VERSION=`echo $EXTRA_VERSION | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
-	nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}"
-	nextextra="$EXTRA_VERSION"
-	nextextratype="head"
-else
-	EXTRA_GTK2_VERSION=`echo $EXTRA_GTK2_VERSION | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
-	nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}${EXTRA_GTK2_VERSION}"
-	nextextra="$EXTRA_GTK2_VERSION"
-	nextextratype="gtk2"
-fi
+EXTRA_VERSION=`echo $EXTRA_VERSION | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
+nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}"
+nextextra="$EXTRA_VERSION"
+nextextratype="head"
 rm /tmp/commitTool.tmp
 
 IFS='
@@ -107,13 +91,8 @@ if [ "$ans" == "y" ]; then
 	cat $chlog.old >> $chlog
 	rm $chlog.old
 
-	if [ "$nextextratype" == "head" ]; then
-		cat configure.ac | sed "s/^EXTRA_VERSION=.*/EXTRA_VERSION=$nextextra/" > configure.ac.new \
-		&& mv configure.ac.new configure.ac ;
-	else
-		cat configure.ac | sed "s/^EXTRA_GTK2_VERSION=.*/EXTRA_GTK2_VERSION=$nextextra/" > configure.ac.new \
-		&& mv configure.ac.new configure.ac ;
-	fi;
+	cat configure.ac | sed "s/^EXTRA_VERSION=.*/EXTRA_VERSION=$nextextra/" > configure.ac.new \
+	&& mv configure.ac.new configure.ac ;
 	
 	echo "$patchset" >> PATCHSETS
 
