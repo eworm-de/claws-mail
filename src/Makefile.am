@@ -103,6 +103,7 @@ sylpheed_SOURCES = \
 
 EXTRA_DIST = \
 	quote_fmt_parse.h \
+	matcher_parser_parse.h \
 	pixmaps/clip.xpm \
 	pixmaps/deleted.xpm \
 	pixmaps/dir-close.xpm \

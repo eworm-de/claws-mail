@@ -9,7 +9,8 @@ EXTRA_DIST = \
 	sylpheed.spec.in \
 	autogen.sh \
 	sylpheed.png \
-	sylpheed.desktop
+	sylpheed.desktop \
+	ChangeLog.claws
 
 if SYLPHEED_GNOME
 pixmapdir=$(gnomedir)/share/pixmaps
