@@ -240,3 +240,4 @@
 ( cvs diff -u -r 1.382.2.65 -r 1.382.2.66 src/compose.c; ) > 0.9.12cvs146.13.patchset
 ( cvs diff -u -r 1.382.2.66 -r 1.382.2.67 src/compose.c; ) > 0.9.12cvs146.14.patchset
 ( cvs diff -u -r 1.150.2.12 -r 1.150.2.13 src/procmsg.c; ) > 0.9.12cvs147.1.patchset
+( cvs diff -u -r 1.150.2.13 -r 1.150.2.14 src/procmsg.c; ) > 0.9.12cvs148.1.patchset

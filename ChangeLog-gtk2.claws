@@ -1,3 +1,8 @@
+2004-11-16 [colin]	0.9.12cvs148.1
+
+	* src/procmsg.c
+		Sync with head (Fix the fix)
+
 2004-11-16 [colin]	0.9.12cvs147.1
 
 	* src/procmsg.c
