@@ -1,3 +1,11 @@
+2002-10-23 [paul]
+
+	* tools/README
+	  tools/kmail2sylpheed_v2.pl
+	  	add new version of kmail addressbook importer script.
+		works with newer versions of Kmail/KAddressBook which
+		have new and rearranged data.
+
 2002-10-23 [martin]	0.8.5claws50
 
 	* src/folderview.c
