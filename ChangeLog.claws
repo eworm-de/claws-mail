@@ -20,6 +20,11 @@
 
 	0.8.11claws release
 
+2003-03-12 [christoph]
+
+	* src/gtk/prefswindow.c
+		fix translation of "Page Index"
+
 2003-03-12 [paul]	0.8.10claws110
 
 	a sync from 0.8.11cvs4 before the release
