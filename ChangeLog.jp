@@ -1,3 +1,60 @@
+2002-01-04
+
+	* src/compose.c: compose_wrap_line_all(): 特定のパターンの引用文
+	  を折り返すときに無限ループに入るバグを修正。
+
+2002-01-02
+
+	* src/imap.c: imap_parse_envelope(): segmentation fault を防ぐ
+	  ために imap_parse_address() の後に assertion を置いた。
+
+2001-12-31
+
+	* src/folderview.c
+	  src/mainwindow.c: いくつかのメニュー項目のラベルを修正。
+	* src/ldif.c: fgetc() の戻り値を gint に入れるようにした。
+	* src/importldif.c: ヌル文字列を _() で括らないようにした。
+	* src/compose.c: Subject エントリの位置を最後に移動。
+	  メニューを再構成。
+	  compose_draft_cb(): 「草稿に保存後編集を続ける」機能を追加。
+
+2001-12-30
+
+	* src/mainwindow.c: メインメニューの再構成。「サマリ」メニューを削除。
+	  「ヘルプ」メニューを「設定」のすぐ右側に移動。「ファイル - 閉じる」
+	  メニュー項目を削除。
+
+2001-12-25
+
+	* src/mainwindow.c: メニューを多少再構成。
+	* AUTHORS: 更新。さらに contributor を追加。
+	* src/account.c: account_row_moved(): 新規。上 / 下ボタンが押された
+	  ときに表示行を正しい位置に移動。
+	  account_clist_set(): 表示行を正しい位置に移動するようにした。
+	* src/compose.c
+	  src/mainwindow.c: ウィンドウを生成するときにタイトルと wmclass
+	  をセットするようにした。
+
+2001-12-24
+
+	* src/gtkstext.c: ブロックカーソルを正しく表示しないバグを修正。
+	  不要な GdkGC コピーを削除。カーソルの座標を修正。
+	* src/compose.c
+	  src/gtkutils.[ch]
+	  src/textview.[ch]
+	  src/undo.c: GtkSText を使用するように修正。
+	* src/menu.h: #include <gtk/gtkmenu.h> を追加。
+
+2001-12-23
+
+	* acconfig.h
+	  configure.in: GTK+ の XIM チェックを追加。
+	* src/gtkstext.[ch]: 新規。 GTK+ の GtkText をコピーし、名称変更。
+
+2001-12-22
+
+	* src/filter.c: #include <sys/types.h> を追加。
+
 2001-12-21
 
 	* src/template.c: template_write_config(): typo を修正。

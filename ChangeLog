@@ -1,3 +1,61 @@
+2002-01-04
+
+	* src/compose.c: compose_wrap_line_all(): fixed the bug that
+	  caused infinite loop when wrapping certain patterns of quoted text.
+
+2002-01-02
+
+	* src/imap.c: imap_parse_envelope(): put the assertion after
+	  imap_parse_address() to prevent segmentation fault.
+
+2001-12-31
+
+	* src/folderview.c
+	  src/mainwindow.c: modified some labels of menu items.
+	* src/ldif.c: put the return value of fgetc() in a gint.
+	* src/importldif.c: don't brace null strings with _().
+	* src/compose.c: moved the position of Subject entry to the last.
+	  Reorganized the menu.
+	  compose_draft_cb(): added 'keep editing after saving to draft'
+	  feature.
+
+2001-12-30
+
+	* src/mainwindow.c: reorganization of main menu. Removed 'Summary'
+	  menu. Moved 'Help' menu to just the right of 'Configuration'.
+	  Removed 'File - Close' menu item.
+
+2001-12-25
+
+	* src/mainwindow.c: some menu reorganization.
+	* AUTHORS: updated. Added more contributors.
+	* src/account.c: account_row_moved(): new. Moves displayed row to
+	  the appropriate position when up / down button are pressed.
+	  account_clist_set(): move displayed row to the appropriate position.
+	* src/compose.c
+	  src/mainwindow.c: set title and wmclass when creating windows.
+
+2001-12-24
+
+	* src/gtkstext.c: fixed a bug that didn't show block cursor
+	  correctly. Removed unnecessary GdkGC copy. Fixed cursor
+	  coordinate.
+	* src/compose.c
+	  src/gtkutils.[ch]
+	  src/textview.[ch]
+	  src/undo.c: modified to use GtkSText.
+	* src/menu.h: added #include <gtk/gtkmenu.h>.
+
+2001-12-23
+
+	* acconfig.h
+	  configure.in: added XIM checking for GTK+.
+	* src/gtkstext.[ch]: new. Copied GtkText in GTK+ and renamed.
+
+2001-12-22
+
+	* src/filter.c: added #include <sys/types.h>.
+
 2001-12-21
 
 	* src/template.c: template_write_config(): fixed a typo.
