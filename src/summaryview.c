@@ -765,6 +765,10 @@ GtkCTreeNode * summary_find_prev_important_score(SummaryView *summaryview,
 		return best_node;
 }
 
+#define CURRENTLY_DISPLAYED(m) \
+( (m->msgnum == displayed_msgnum) \
+  && (!g_strcasecmp(m->folder->name,item->name)) )
+
 gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
@@ -888,7 +892,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			
 			if ((MSG_IS_UNREAD(msginfo->flags)
 			     || MSG_IS_MARKED(msginfo->flags)
-			     || MSG_IS_LOCKED(msginfo->flags))
+			     || MSG_IS_LOCKED(msginfo->flags)
+			     || CURRENTLY_DISPLAYED(msginfo))
 			     && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 			    not_killed = g_slist_append(not_killed, msginfo);
 			else
@@ -1024,6 +1029,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	return TRUE;
 }
+
+#undef CURRENTLY_DISPLAYED
 
 void summary_clear_list(SummaryView *summaryview)
 {

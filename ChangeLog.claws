@@ -1,3 +1,8 @@
+2002-10-08 [thorsten]	0.8.5claws3
+
+	* src/summaryview.c
+		exclude current msg from -hide read messages-
+
 2002-10-08 [colin]	0.8.5claws2
 
 	* src/inc.[ch]
