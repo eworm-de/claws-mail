@@ -20,6 +20,21 @@
 chdir;
 chdir '.sylpheed' || die("You don't appear to have Sylpheed installed\n");
 
+open(FOLDERLIST, "<folderlist.xml") || die("Can't find folderlist.xml\n");
+@folderlist = <FOLDERLIST>;
+close FOLDERLIST;
+
+foreach $folderlist (@folderlist) {
+	unless ($mailbox) {
+		if ($folderlist =~ m/<folder type="mh"/) {
+      			$folderlist =~ s/<folder type="mh" name="//;
+                	$folderlist =~ s/" path="[A-Z0-9]+">\n//ig;
+                	$folderlist =~ s/^ +//;
+                	$mailbox = $folderlist;
+        	}
+	}
+}
+
 open (FILTERRC, "<filterrc") || die("Can't find your old filter rules\n");
 @filterrc = <FILTERRC>;
 close FILTERRC;
@@ -98,7 +113,7 @@ foreach $filterrc (@filterrc) {
 	if ($split_lines[8] eq "n\n") {
 		$WRITE_THIS .= " delete";
 	} elsif ($split_lines[8] eq "m\n"){
-		$WRITE_THIS .= " move \"$split_lines[5]\"";
+		$WRITE_THIS .= " move \"\#mh/$mailbox/$split_lines[5]\"";
 	}
 	$WRITE_THIS .= "\n";
 	@split_lines = "";
