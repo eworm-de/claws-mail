@@ -134,5 +134,5 @@ void gtkut_widget_init			(void);
 void gtkut_widget_set_app_icon		(GtkWidget	*widget);
 void gtkut_widget_set_composer_icon	(GtkWidget	*widget);
 
-const gchar *gtkut_get_selection	(GtkWidget	*widget);
+gchar *gtkut_get_selection		(GtkWidget	*widget);
 #endif /* __GTKUTILS_H__ */

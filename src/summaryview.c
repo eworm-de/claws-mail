@@ -3975,7 +3975,7 @@ void summary_reply(SummaryView *summaryview, ComposeMode mode)
 	if (summaryview && summaryview->messageview  &&
 	    summaryview->messageview->textview       &&
 	    summaryview->messageview->textview->text)
-		seltext = (gchar *) gtkut_get_selection(
+		seltext = gtkut_get_selection(
 				summaryview->messageview->textview->text);
 
 	switch (mode) {

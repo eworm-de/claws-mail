@@ -486,7 +486,7 @@ void gtkut_widget_set_composer_icon(GtkWidget *widget)
 	gdk_window_set_icon(widget->window, NULL, xpm, bmp);	
 }
 
-const gchar *gtkut_get_selection(GtkWidget *widget)
+gchar *gtkut_get_selection(GtkWidget *widget)
 {
 	gchar *seltext = NULL;
 	guint start_pos, end_pos;
