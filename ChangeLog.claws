@@ -5,6 +5,10 @@
 
 	* sync with sylpheed 0.5.3cvs5
 
+	* src/mimeview.c
+		double quote '%s' in 'gedit %s' to fix bug when
+		opening attachment with spaces in the name
+
 2001-08-22 [alte]
 	* src/Makefile.am, src/compose.[ch], src/defs.h, src/mainwindow.c,
 	  src/prefs_templates.[ch], src/template.[ch], src/template_select.[ch]
