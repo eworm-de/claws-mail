@@ -5883,6 +5883,8 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	FolderItem *draft;
 	gchar *tmp;
 	gint msgnum;
+	gchar *draft_path;
+	FILE *fp;
 	static gboolean lock = FALSE;
 
 	if (lock) return;
@@ -5922,6 +5924,20 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 			folderview_update_item(compose->targetinfo->folder,
 					       TRUE);
 	}
+
+	draft_path = folder_item_get_path(draft);
+	if ((fp = procmsg_open_mark_file(draft_path, TRUE)) == NULL)
+		g_warning(_("can't open mark file\n"));
+	else {
+		MsgInfo newmsginfo;
+
+		newmsginfo.msgnum = msgnum;
+		newmsginfo.flags.perm_flags = 0;
+		newmsginfo.flags.tmp_flags = 0;
+		procmsg_write_flags(&newmsginfo, fp);
+		fclose(fp);
+	}
+	g_free(draft_path);
 
 	folder_item_scan(draft);
 	folderview_update_item(draft, TRUE);

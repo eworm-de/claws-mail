@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,7 +76,6 @@ gint esmtp_auth(SockInfo *sock, SMTPAuthType authtype,
 	guchar hexdigest[33];
 	gchar *challenge, *response, *response64;
 	gint challengelen;
-	gchar *token;
 
 	switch (authtype) {
 	case SMTPAUTH_LOGIN:
@@ -103,21 +102,22 @@ gint esmtp_auth(SockInfo *sock, SMTPAuthType authtype,
 	case SMTPAUTH_CRAM_MD5:
 		if (!strncmp(esmtp_response, "334 ", 4)) {
 			/* remove 334 from esmtp_response */
-			g_snprintf(buf, sizeof(buf), "%s",esmtp_response);
-			token = strtok(buf, " ");
-			token = strtok(NULL, " ");
-			challenge = g_malloc(strlen(token)+1);
-			challengelen = from64tobits(challenge,token);
+			gchar *p = esmtp_response + 4;
+
+			challenge = g_malloc(strlen(p) + 1);
+			challengelen = from64tobits(challenge, p);
+			challenge[challengelen] = '\0';
 			if (verbose)
-				log_print("ESMTP< Decoded: %s\n", challenge);
+				log_print("ESMTP< [Decoded: %s]\n", challenge);
 
 			g_snprintf(buf, sizeof(buf), "%s", passwd);
 			md5_hex_hmac(hexdigest, challenge, challengelen,
 				     buf, strlen(passwd));
+			g_free(challenge);
 
 			response = g_strdup_printf("%s %s", userid, hexdigest);
 			if (verbose)
-				log_print("ESMTP> Encoded %s\n",response);
+				log_print("ESMTP> [Encoded: %s]\n", response);
 
 			response64 = g_malloc((strlen(response) + 3) * 2 + 1);
 			to64frombits(response64, response, strlen(response));

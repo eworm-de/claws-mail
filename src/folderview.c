@@ -1121,9 +1121,10 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		gtk_ctree_node_set_text(ctree, node, COL_TOTAL,  itos(item->total));
 	}
 
-	if (item->stype == F_TRASH)
+	if (item->stype == F_OUTBOX || item->stype == F_DRAFT ||
+	    item->stype == F_TRASH) {
 		use_bold = use_color = FALSE;
-	if (item->stype == F_QUEUE) {
+	} else if (item->stype == F_QUEUE) {
 		/* highlight queue folder if there are any messages */
 		use_bold = use_color = (item->total > 0);
 	} else {
