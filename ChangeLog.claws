@@ -1,3 +1,10 @@
+2001-09-27 [melvin]	0.6.2claws11
+
+	* src/gtkspell.c
+		fixed crash when using default path (introduced 
+		in 0.6.2claws10)
+		fixed tiny bug for initial suggestion mode
+
 2001-09-27 [melvin]	0.6.2claws10
 	
 	* src/gtkspell.c
