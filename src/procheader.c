@@ -212,7 +212,7 @@ GSList *procheader_get_header_list(FILE *fp)
 
 	while (procheader_get_unfolded_line(buf, sizeof(buf), fp) != NULL) {
 		if (header = procheader_parse_header(buf))
-			g_ptr_array_add(headers, header);
+			hlist = g_slist_append(hlist, header);
 		/*
 		if (*buf == ':') continue;
 		for (p = buf; *p && *p != ' '; p++) {
@@ -262,8 +262,8 @@ GPtrArray *procheader_get_header_array(FILE *fp)
 				g_ptr_array_add(headers, header);
 				break;
 			}
-		*/
 		}
+		*/
 	}
 
 	return headers;
