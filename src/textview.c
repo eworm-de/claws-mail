@@ -547,8 +547,18 @@ static void textview_add_parts(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	}
 }
 
+#ifdef WIN32
+#define TEXT_INSERT(str) \
+{ \
+	gchar *tmp = g_strdup(str); \
+	locale_from_utf8(&tmp); \
+	gtk_stext_insert(text, textview->msgfont, NULL, NULL, tmp, -1); \
+	g_free(tmp); \
+}
+#else
 #define TEXT_INSERT(str) \
 	gtk_stext_insert(text, textview->msgfont, NULL, NULL, str, -1)
+#endif
 
 void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 {
