@@ -52,6 +52,8 @@ struct _MessageView
 	MimeView *mimeview;
 
 	MainWindow *mainwin;
+
+	gboolean visible;
 };
 
 MessageView *messageview_create			(void);
@@ -78,5 +80,7 @@ gboolean messageview_search_string_backward	(MessageView	*messageview,
 						 gboolean	 case_sens);
 
 GtkWidget *messageview_get_text_widget		(MessageView	*messageview);
+
+gboolean messageview_is_visible			(MessageView	*messageview);
 
 #endif /* __MESSAGEVIEW_H__ */

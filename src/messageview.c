@@ -58,7 +58,6 @@ static void messageview_size_allocate_cb(GtkWidget	*widget,
 static void key_pressed			(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 MessageView	*messageview);
-static void messageview_toggle_view(MessageView *messageview);
 
 MessageView *messageview_create(void)
 {
@@ -139,6 +138,7 @@ MessageView *messageview_create_with_new_window(void)
 
 	msgview->new_window = TRUE;
 	msgview->window = window;
+	msgview->visible = TRUE;
 
 	messageview_init(msgview);
 
@@ -567,6 +567,11 @@ gboolean messageview_search_string_backward(MessageView *messageview,
 GtkWidget *messageview_get_text_widget(MessageView *messageview)
 {
 	return messageview->textview->text;
+}
+
+gboolean messageview_is_visible(MessageView *messageview)
+{
+	return messageview->visible;
 }
 
 static void messageview_destroy_cb(GtkWidget *widget, MessageView *messageview)
