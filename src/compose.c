@@ -6967,9 +6967,6 @@ static void text_activated(GtkWidget *widget, Compose *compose)
 	compose_send_control_enter(compose);
 }
 
-#define EDITABLE_LENGTH(x) \
-	strlen(gtk_editable_get_chars(x,0,-1))
-
 static void text_inserted(GtkWidget *widget, const gchar *text,
 			  gint length, gint *position, Compose *compose)
 {
