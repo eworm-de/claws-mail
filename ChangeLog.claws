@@ -1,3 +1,11 @@
+2003-05-03 [alfons]	0.8.11claws141
+
+	* src/compose.[ch]
+		make paste as quotation work even when the call to 
+		text_inserted() was deferred (fixes bug #140 "Paste 
+		as quotation does not work when using "external" 
+		clipboard")
+
 2003-05-03 [thorsten]	0.8.11claws140
 
 	* src/addrquery.h
