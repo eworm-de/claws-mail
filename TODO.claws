@@ -1,0 +1,16 @@
+[alfons]
+	
+0.8.0claws
+	o make noticeview display only when no retrcpt is pending
+	(can switch this on and off, but there's somewhere a
+	gtk_show_all() which displays the noticeview when
+	messageview is displayed for the first time)
+
+0.8.0claws+
+	o make noticeview interface more generic
+	o revisit email/URL parser 
+	o include and adapt Christian Mertes' top level domain patch
+	o with the new cache / mark system done by Christoph, it's
+	  about time to make the cache files endian neutral (bribe
+	  Hiro to accept the new system too)
+	
