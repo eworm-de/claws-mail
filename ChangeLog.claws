@@ -1,3 +1,8 @@
+2002-10-11 [christoph]	0.8.5claws14
+
+	* src/summaryview.c
+		update folderview stats after ignore/unignore thread
+
 2002-10-11 [hoa]	0.8.5claws13
 
 	* src/quote_fmt_parse.y
