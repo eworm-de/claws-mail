@@ -272,6 +272,7 @@ void template_write_config(GSList *tmpl_list)
 		fwrite(tmp, sizeof(gchar) * strlen(tmp), 1, fp);
 		g_free(tmp);
 		fclose(fp);
+		g_free(filename);
 	}
 }
 
