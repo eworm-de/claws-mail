@@ -1,3 +1,8 @@
+2003-11-26 [paul]	0.9.6claws98
+
+	* po/POTFILES.in
+		remove reference to src/sigstatus.c
+
 2003-11-26 [christoph]	0.9.6claws97
 
 	* src/Makefile.am

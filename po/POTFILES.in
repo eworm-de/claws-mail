@@ -93,7 +93,6 @@ src/select-keys.c
 src/send_message.c
 src/setup.c
 src/sgpgme.c
-src/sigstatus.c
 src/sourcewindow.c
 src/ssl_manager.c
 src/string_match.c
