@@ -21,35 +21,34 @@
 # This script will recursively attach a number of selected 
 # files/directories from Nautilus to a new blank e-mail.
 
-attachments=""
+# Authors: Reza Pakdel <hrpakdel@cpsc.ucalgary.ca>
+#		   Stephan Sachse <white@teg-clan.de>
+#
+# Fixes:
+#		Stephan Sachse  :  files/directorys with whitspaces
 
-attach_dir()
-{   
-    if [ -d $1 ] 
-    then
-	for j in $(ls $1)
-	do
-	  attach_dir $1"/"$j
-	done
-    else
-	attachments="$attachments $1"
-    fi
-}
 
-for i in $*
-do
-  if [ -d $i ]
-  then
-      for file in $(ls $i)
-      do
-	attach_dir $i"/"$file
-      done
-  else
-      attachments="$attachments $i";
-  fi  
+SELECTED_PATHS="${NAUTILUS_SCRIPT_SELECTED_FILE_PATHS}"
+NB_SELECTED_PATHS=`echo -n "${SELECTED_PATHS}" | wc -l | awk '{print $1}'`
+
+ATTACHMENTS=""
+
+for ((i=${NB_SELECTED_PATHS}; i>0; i--)) ; do
+	CURRENT_PATH=`echo -n "${SELECTED_PATHS}" | head -n${i} | tail -n1`
+	if test -d "${CURRENT_PATH}" ; then
+		FILES_FOUND=`find "${CURRENT_PATH}" -type f`
+		NB_FILES_FOUND=`echo "${FILES_FOUND}" | wc -l | awk '{print $1}'`
+		for ((j=${NB_FILES_FOUND}; j>0; j--)) ; do
+			CURRENT_FILE=`echo "${FILES_FOUND}" | head -n${j} | tail -n1`
+			ATTACHMENTS="${ATTACHMENTS} \"${CURRENT_FILE}\""
+		done
+	else
+		ATTACHMENTS="${ATTACHMENTS} \"${CURRENT_PATH}\""
+	fi
 done
 
 echo "-----------"
-echo $attachments
-sylpheed --compose --attach $attachments
+echo ${ATTACHMENTS}
+
+eval "sylpheed --compose --attach ${ATTACHMENTS}"
 

@@ -397,10 +397,6 @@ Other tools
 	and restart nautilus (killall -9 nautilus). You will now have 
 	a right-click menu item: '/Scripts/nautilus2sylpheed.sh'
 	
-  LIMITATIONS
-  	Files/Directories with spaces in the names cannot be handled
-	correctly.
-
   Contact: Reza Pakdel <hrpakdel@cpsc.ucalgary.ca>
 
 

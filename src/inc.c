@@ -315,8 +315,8 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 	if (account_new_msgs > 0)
 		new_msgs += account_new_msgs;
 
-	/* check IMAP4 folders */
-	for (; list != NULL; list = list->next) {
+	/* check IMAP4 / News folders */
+	for (list = account_get_list(); list != NULL; list = list->next) {
 		PrefsAccount *account = list->data;
 		if ((account->protocol == A_IMAP4 ||
 		     account->protocol == A_NNTP) && account->recv_at_getall) {
@@ -336,23 +336,17 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 		}
 	}
 
-	if (!queue_list) {
-		inc_finished(mainwin, new_msgs > 0);
-		main_window_unlock(mainwin);
- 		inc_notify_cmd(new_msgs, notify);
-		inc_autocheck_timer_set();
-		return;
+	if (queue_list) {
+		inc_dialog = inc_progress_dialog_create(autocheck);
+		inc_dialog->queue_list = queue_list;
+		inc_dialog->mainwin = mainwin;
+		inc_progress_dialog_set_list(inc_dialog);
+
+		toolbar_main_set_sensitive(mainwin);
+		main_window_set_menu_sensitive(mainwin);
+		new_msgs += inc_start(inc_dialog);
 	}
 
-	inc_dialog = inc_progress_dialog_create(autocheck);
-	inc_dialog->queue_list = queue_list;
-	inc_dialog->mainwin = mainwin;
-	inc_progress_dialog_set_list(inc_dialog);
-
-	toolbar_main_set_sensitive(mainwin);
-	main_window_set_menu_sensitive(mainwin);
-
-	new_msgs += inc_start(inc_dialog);
 	inc_finished(mainwin, new_msgs > 0);
 	main_window_unlock(mainwin);
  	inc_notify_cmd(new_msgs, notify);

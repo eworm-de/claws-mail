@@ -1,3 +1,7 @@
+2004-06-07
+
+	* src/inc.c: inc_all_account_mail(): code cleanup.
+
 2004-06-03
 
 	* src/procmsg.c: procmsg_read_cache_data_str(): changed gint32 to

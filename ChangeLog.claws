@@ -1,3 +1,12 @@
+2004-06-07 [paul]	0.9.11cvs4
+
+	* src/inc.c
+		sync with main, 'code cleanup'
+		
+	* tools/nautilus2sylpheed.sh
+		fix whitespace limitation. patch submitted by
+		Stephan Sachse <white@teg-clan.de>
+
 2004-06-04 [christoph]	0.9.11cvs3
 
 	* src/account.c
