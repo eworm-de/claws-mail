@@ -22,9 +22,14 @@ if BUILD_TRAYICON_PLUGIN
 trayicon_dir = trayicon
 endif
 
+if BUILD_CLAMAV_PLUGIN
+clamav_dir = clamav
+endif
+
 SUBDIRS = $(demo_dir) \
 	$(spamassasssin_dir) \
 	$(mathml_viewer_dir) \
 	$(dillo_viewer_dir) \
 	$(image_viewer_dir) \
-	$(trayicon_dir)
+	$(trayicon_dir) \
+	$(clamav_dir)
