@@ -246,6 +246,9 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 {
 	gchar * str1;
 	gchar * str2;
+#ifdef WIN32
+	gboolean result;
+#endif
 
 	if (str == NULL)
 		return FALSE;
@@ -256,13 +259,22 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 		if (!prop->preg && (prop->error == 0)) {
 			prop->preg = g_new0(regex_t, 1);
 			/* if regexp then don't use the escaped string */
+#ifdef WIN32
+			str1 = g_strdup(prop->expr);
+			locale_from_utf8(&str1);
+			if (regcomp(prop->preg, str1,
+#else
 			if (regcomp(prop->preg, prop->expr,
+#endif
 				    REG_NOSUB | REG_EXTENDED
 				    | ((prop->matchtype == MATCHTYPE_REGEXPCASE)
 				    ? REG_ICASE : 0)) != 0) {
 				prop->error = 1;
 				g_free(prop->preg);
 			}
+#ifdef WIN32
+			g_free(str1);
+#endif
 		}
 		if (prop->preg == NULL)
 			return FALSE;
@@ -273,10 +285,29 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 			return FALSE;
 
 	case MATCHTYPE_MATCH:
+#ifdef WIN32
+		str2 = g_strdup(prop->unesc_expr);
+		locale_from_utf8(&str2);
+		result = (strstr(str, str2) != NULL);
+		g_free(str2);
+		return result;
+#else
 		return (strstr(str, prop->unesc_expr) != NULL);
+#endif
 
 	/* FIXME: put upper in unesc_str */
 	case MATCHTYPE_MATCHCASE:
+#ifdef WIN32
+		str2 = g_strdup(prop->unesc_expr);
+		locale_from_utf8(&str2);
+		g_strup(str2);
+		str1 = g_strdup(str);
+		g_strup(str1);
+		result = (strstr(str1, str2) != NULL);
+		g_free(str1);
+		g_free(str2);
+		return result;
+#else
 		str2 = alloca(strlen(prop->unesc_expr) + 1);
 		strcpy(str2, prop->unesc_expr);
 		g_strup(str2);
@@ -284,6 +315,7 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 		strcpy(str1, str);
 		g_strup(str1);
 		return (strstr(str1, str2) != NULL);
+#endif
 		
 	default:
 		return FALSE;

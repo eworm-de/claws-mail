@@ -645,6 +645,13 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 		    msginfo->msgnum, dest->path);
 
 	srcfile = procmsg_get_message_file(msginfo);
+#ifdef WIN32
+	/* after a crash/kill, folderdata (cache?) can be wrong */
+	if(!srcfile) {
+		g_warning(_("mh_copy_msg:srcfile not found. Run View/Update Summary to clean up."));
+		return -1;
+	}
+#endif
 	destfile = mh_get_new_msg_filename(dest);
 	if(!destfile) {
 		g_free(srcfile);

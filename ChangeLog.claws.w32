@@ -1,3 +1,13 @@
+2002-07-08 [thorsten]	0.7.8claws55-1
+
+	* src/mh.c
+		fix: prevent crashes (on corrupted folder data)
+	* src/matcher.c
+		fix: utf8 conversion for filtering
+	* src/summary_search.c
+	* src/textview.c
+		fix: utf8 conversion when searching bodies
+
 2002-07-07 [thorsten]	0.7.8claws52-1
 
 	* src/utils.[ch]

@@ -1407,7 +1407,16 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 
 	g_return_val_if_fail(str != NULL, FALSE);
 
+#ifdef WIN32
+	{
+		gchar *p_str = g_strdup(str);
+		locale_from_utf8(&p_str);
+		wcs = strdup_mbstowcs(p_str);
+		g_free(p_str);
+	}
+#else
 	wcs = strdup_mbstowcs(str);
+#endif
 	g_return_val_if_fail(wcs != NULL, FALSE);
 	len = wcslen(wcs);
 	pos = textview->cur_pos;

@@ -353,8 +353,16 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 			g_free(wcs_hs);
 		}
 		if (*body_str) {
+#ifdef WIN32
+			gchar *p_body_str = g_strdup(body_str);
+			locale_from_utf8(&p_body_str);
+			if (procmime_find_string(msginfo, p_body_str, case_sens))
+				body_matched = TRUE;
+			g_free(p_body_str);
+#else
 			if (procmime_find_string(msginfo, body_str, case_sens))
 				body_matched = TRUE;
+#endif
 		}
 
 		if (from_matched || to_matched || subj_matched || body_matched) {
