@@ -486,7 +486,7 @@ $(PASSCRYPT_H): $(PASSCRYPT_H_IN)
 
 ### msvc .def : strip ordinals
 msvcdefs:
-	$(SED) -e "s/ @ .* ;//; s/;.*//" sylpheed.dll.def > sylpheed.def
+	$(SED) -e "s/ @ .* ;//; s/;.*//; /gai_strerror.@/ s/^/;/;" sylpheed.dll.def > sylpheed.def
 	$(SED) -e "s/ @ .* ;//; s/;.*//" demo.dll.def > demo.def
 	$(SED) -e "s/ @ .* ;//; s/;.*//" spamassassin.dll.def > spamassassin.def
 	$(SED) -e "s/ @ .* ;//; s/;.*//" spamassassin_gtk.dll.def > spamassassin_gtk.def

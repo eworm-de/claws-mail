@@ -741,6 +741,8 @@ EXPORTS
 	g_int_compare 
 	g_stricase_equal 
 	g_stricase_hash 
+;	gai_strerrorA@4 
+;	gai_strerrorW@4 
 	get_abbrev_newsgroup_name 
 	get_address_from_edit 
 	get_aspell_dict_info_list 
