@@ -170,6 +170,22 @@ static void source_window_destroy_cb(GtkWidget *widget,
 static void key_pressed(GtkWidget *widget, GdkEventKey *event,
 			SourceWindow *sourcewin)
 {
-	if (event && event->keyval == GDK_Escape)
-		gtk_widget_destroy(sourcewin->window);
+	if (event) {
+		if (event->state == GDK_CONTROL_MASK) {
+			switch (event->keyval) {
+			case 'A':
+				gtk_editable_select_region(GTK_EDITABLE(sourcewin->text), 0, -1);
+				break;
+			case 'C':
+				gtk_editable_copy_clipboard(GTK_EDITABLE(sourcewin->text));
+				break;
+			}
+		} else {
+			switch (event->keyval) {
+			case GDK_Escape:
+				gtk_widget_destroy(sourcewin->window);
+				break;
+			}
+		}
+	}
 }
