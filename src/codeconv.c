@@ -360,7 +360,6 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 #else /* !HAVE_LIBJCONV */
 	CharSet src_charset = C_AUTO, dest_charset = C_AUTO;
 #endif
-
 	if (!dest_codeset) {
 		CodeConvFunc func;
 
