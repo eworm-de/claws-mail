@@ -1,3 +1,8 @@
+2003-11-21 [paul]	0.9.6claws87
+
+	* src/mimeview.c
+		define shortcut key 'o' for 'Open with...'
+
 2003-11-21 [alfons]	0.9.6claws86
 
 	* src/messageview.c

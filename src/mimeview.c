@@ -902,6 +902,11 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		KEY_PRESS_EVENT_STOP();
 		mimeview_launch(mimeview);
 		return TRUE;
+	case GDK_o:
+		BREAK_ON_MODIFIER_KEY();
+		KEY_PRESS_EVENT_STOP();
+		mimeview_open_with(mimeview);
+		return TRUE;
 	default:
 		break;
 	}
@@ -1369,6 +1374,11 @@ static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
 		mimeview_launch(mimeview);
+		return TRUE;
+	case GDK_o:
+		BREAK_ON_MODIFIER_KEY();
+		KEY_PRESS_EVENT_STOP();
+		mimeview_open_with(mimeview);
 		return TRUE;
 	default:
 		break;
