@@ -1,3 +1,23 @@
+2002-09-22 [paul]	0.8.3claws
+
+	*po/bg.po
+	 po/en_GB.po
+	 po/es.po
+	 po/it.po
+	 po/pl.po
+	 po/pt_BR.po
+	 po/sr.po
+	 	updated translations, submitted by George Danchev,
+		me, Ricardo Mones Lastra, Alessandro Maestri,
+		Witold Wladyslaw Wojciech Wilk, Fabio Jr.Beneditto 
+		and Urke MMI, respectively.	
+
+2002-09-22 [alfons]	0.8.2claws65
+
+	* src/procmsg.c
+	* src/pgptext.c
+		no furry valgrinds have been used to plug these memleaks
+
 2002-09-20 [paul]	0.8.2claws64
 
 	* sync with 0.8.3cvs4

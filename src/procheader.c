@@ -906,12 +906,12 @@ void procheader_date_get_localtime(gchar *dest, gint len, const time_t timer)
 		strftime(dest, len, default_format, lt);
 }
 
-gint get_header_from_msginfo(MsgInfo *msginfo, gchar *buf, gint len,gchar *header)
+gint get_header_from_msginfo(MsgInfo *msginfo, gchar *buf, gint len, gchar *header)
 {
 	gchar *file;
 	FILE *fp;
-	HeaderEntry hentry[]={{header,NULL,TRUE},
-                              {NULL,NULL,FALSE}};
+	HeaderEntry hentry[]={ { header, NULL, TRUE  },
+                               { NULL,   NULL, FALSE } };
 	gint val;
        
 	g_return_val_if_fail(msginfo != NULL, -1);
@@ -921,12 +921,15 @@ gint get_header_from_msginfo(MsgInfo *msginfo, gchar *buf, gint len,gchar *heade
                g_free(file);
                return -1;
 	}
-	val=procheader_get_one_field(buf,len, fp, hentry);
+	val = procheader_get_one_field(buf,len, fp, hentry);
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(file, "fclose");
 		unlink(file);
+		g_free(file);
 		return -1;
 	}
+
+	g_free(file);
         if (val == -1)
 		return -1;
 

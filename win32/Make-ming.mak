@@ -25,7 +25,7 @@
 DEBUGVERSION=0
 
 # GCCVERSION: set to 3 if using gcc3.x (-fnative-struct | -mms-bitfields)
-GCCVERSION=2
+GCCVERSION=3
 
 # CYGWIN: set to 1 if building from cygwin shell (-mno-cygwin)
 CYGWIN=0
@@ -120,7 +120,7 @@ SUPPORTLIBS= \
 	$(GPGMEDIR)/gpgme.lib \
 	$(LIBCOMPFACEDIR)/libcompface.lib \
 	$(REGEXDIR)/regex.lib \
-	$(W32LIBDIR)/w32lib/w32lib.lib
+	$(W32LIBDIR)/w32lib.lib
 endif
 LIBS= \
 	$(LIBDIR)/glib-2.0.lib \
