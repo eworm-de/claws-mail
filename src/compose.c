@@ -2691,9 +2691,9 @@ static gint compose_bounce_write_headers_from_headerlist(Compose *compose,
 			}
 		}
 	}
-	/* if(!first_address) {
+	/* if(!first_address) { */
 	fprintf(fp, "\n");
-	} */
+	/* } */
 
 	return(0);
 }

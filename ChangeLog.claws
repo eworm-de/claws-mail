@@ -2,6 +2,7 @@
 
 	* src/compose.c
 		GTK_TEXT -> GTK_STEXT
+		fix for wrong comment
 
 2001-11-20 [hiro]	0.6.5claws24
 
