@@ -1,3 +1,8 @@
+2003-03-06 [paul]	0.8.10claws96
+
+	* src/compose.c
+		revert commit 0.8.10claws92
+
 2003-03-06 [paul]	0.8.10claws95
 
 	* src/folderview.c
