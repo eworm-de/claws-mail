@@ -1,3 +1,11 @@
+2002-11-19 [christoph]	0.8.5claws171
+
+	* src/compose.c
+		fix segfault, when draft saving does not get
+		the MsgInfo of the new message
+		(closes bug [ 640699 ] Claws170: crash drafting
+		 mail ( IMAP ))
+
 2002-11-19 [christoph]	0.8.5claws170
 
 	* src/procmsg.c

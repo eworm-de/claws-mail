@@ -6399,10 +6399,12 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 
 	newmsginfo = folder_item_get_msginfo(draft, msgnum);
-	procmsg_msginfo_unset_flags(newmsginfo, ~0, ~0);
-	MSG_SET_TMP_FLAGS(newmsginfo->flags, MSG_DRAFT);
-	folder_update_item(draft, TRUE);
-	procmsg_msginfo_free(newmsginfo);
+	if (newmsginfo) {
+		procmsg_msginfo_unset_flags(newmsginfo, ~0, ~0);
+		procmsg_msginfo_set_flags(newmsginfo, 0, MSG_DRAFT);
+		folder_update_item(draft, TRUE);
+		procmsg_msginfo_free(newmsginfo);
+	}
 	
 	lock = FALSE;
 
