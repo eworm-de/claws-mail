@@ -500,6 +500,7 @@ static void compose_check_forwards_go	   (Compose *compose);
 
 static gboolean compose_send_control_enter	(Compose	*compose);
 static gint compose_defer_auto_save_draft	(Compose	*compose);
+static PrefsAccount *compose_guess_forward_account_from_msginfo	(MsgInfo *msginfo);
 
 static GtkItemFactoryEntry compose_popup_entries[] =
 {
@@ -1046,33 +1047,10 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	g_return_val_if_fail(msginfo != NULL, NULL);
 	g_return_val_if_fail(msginfo->folder != NULL, NULL);
 
-	if (msginfo->folder->prefs->enable_default_account)
-		account = account_find_from_id(msginfo->folder->prefs->default_account);
-	if (!account) 
-		account = msginfo->folder->folder->account;
-	if (!account && msginfo->to && prefs_common.forward_account_autosel) {
-		gchar *to;
-		Xstrdup_a(to, msginfo->to, return NULL);
-		extract_address(to);
-		account = account_find_from_address(to);
-	}
-
-	if (!account && prefs_common.forward_account_autosel) {
-		gchar cc[BUFFSIZE];
-		if (!procheader_get_header_from_msginfo(msginfo,cc,sizeof(cc),"CC:")){ /* Found a CC header */
-		        extract_address(cc);
-		        account = account_find_from_address(cc);
-                }
-	}
-
-	if (account == NULL) {
+	if (!account && 
+	    !(account = compose_guess_forward_account_from_msginfo
+				(msginfo)))
 		account = cur_account;
-		/*
-		account = msginfo->folder->folder->account;
-		if (!account) account = cur_account;
-		*/
-	}
-	g_return_val_if_fail(account != NULL, NULL);
 
 	compose = compose_create(account, COMPOSE_FORWARD);
 
@@ -1174,19 +1152,17 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 	gchar *msgfile;
 
 	g_return_val_if_fail(msginfo_list != NULL, NULL);
-	
-	for (msginfo = msginfo_list; msginfo != NULL; msginfo = msginfo->next) {
-		if ( ((MsgInfo *)msginfo->data)->folder == NULL )
-			return NULL;
-	}
 
-	if (account == NULL) {
+	for (msginfo = msginfo_list; msginfo != NULL; msginfo = msginfo->next)
+		if (((MsgInfo *)msginfo->data)->folder == NULL)
+			return NULL;
+
+	/* guess account from first selected message */
+	if (!account && 
+	    !(account = compose_guess_forward_account_from_msginfo
+				(msginfo_list->data)))
 		account = cur_account;
-		/*
-		account = msginfo->folder->folder->account;
-		if (!account) account = cur_account;
-		*/
-	}
+
 	g_return_val_if_fail(account != NULL, NULL);
 
 	for (msginfo = msginfo_list; msginfo != NULL; msginfo = msginfo->next) {
@@ -1198,7 +1174,7 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 
 	text = GTK_STEXT(compose->text);
 	gtk_stext_freeze(text);
-
+		
 	for (msginfo = msginfo_list; msginfo != NULL; msginfo = msginfo->next) {
 		msgfile = procmsg_get_message_file_path((MsgInfo *)msginfo->data);
 		if (!is_file_exist(msgfile))
@@ -7318,6 +7294,43 @@ static void compose_check_forwards_go(Compose *compose)
 	}
 }
 #endif
+
+/*!
+ *\brief	Guess originating forward account from MsgInfo and several 
+ *		"common preference" settings. Return NULL if no guess. 
+ */
+static PrefsAccount *compose_guess_forward_account_from_msginfo(MsgInfo *msginfo)
+{
+	PrefsAccount *account = NULL;
+	
+	g_return_val_if_fail(msginfo, NULL);
+	g_return_val_if_fail(msginfo->folder, NULL);
+	g_return_val_if_fail(msginfo->folder->prefs, NULL);
+
+	if (msginfo->folder->prefs->enable_default_account)
+		account = account_find_from_id(msginfo->folder->prefs->default_account);
+		
+	if (!account) 
+		account = msginfo->folder->folder->account;
+		
+	if (!account && msginfo->to && prefs_common.forward_account_autosel) {
+		gchar *to;
+		Xstrdup_a(to, msginfo->to, return NULL);
+		extract_address(to);
+		account = account_find_from_address(to);
+	}
+
+	if (!account && prefs_common.forward_account_autosel) {
+		gchar cc[BUFFSIZE];
+		if (!procheader_get_header_from_msginfo
+			(msginfo, cc,sizeof cc , "CC:")) { /* Found a CC header */
+		        extract_address(cc);
+		        account = account_find_from_address(cc);
+                }
+	}
+	
+	return account;
+}
 
 /**
  * Add entry field for each address in list.

@@ -1,3 +1,10 @@
+2004-04-10 [alfons]	0.9.10claws44
+	
+	* src/compose.c
+		appropriate auto account selection when forwarding
+		(fixes bug #476, "forward as attachment does not listen
+		to account rules")
+
 2004-04-09 [alfons]	0.9.10claws43
 
 	* src/summaryview.c
