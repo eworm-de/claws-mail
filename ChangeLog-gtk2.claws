@@ -1,3 +1,8 @@
+2004-11-08 [colin]	0.9.12cvs141.1
+
+	* src/textview.c
+		Sync with HEAD (fix some mail URIs)
+
 2004-11-08 [colin]	0.9.12cvs140.3
 
 	* src/textview.c

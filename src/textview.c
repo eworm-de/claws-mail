@@ -1029,7 +1029,7 @@ static void textview_make_clickable_parts(TextView *textview,
 		const gchar	*bp, *ep;	/* text position */
 		gint		 pti;		/* index in parse table */
 		struct txtpos	*next;		/* next */
-	} head = {NULL, NULL, 0,  NULL}, *last = &head;
+	} head = {NULL, NULL, 0,  NULL}, *last = &head, *next = NULL;
 
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 
@@ -1072,7 +1072,15 @@ static void textview_make_clickable_parts(TextView *textview,
 		for (last = head.next; last != NULL;
 		     normal_text = last->ep, last = last->next) {
 			RemoteURI *uri;
-
+			next = last->next;
+			/* fix "colin@colino.net" <colin@colino.net> types of URIs
+			/* FIXME would be better to fix it in the email parser */
+			if (next && next->bp == last->ep) {
+				next->bp = last->bp;
+				if (*(next->bp -1 )=='"' && strchr(next->bp, '"'))
+					next->bp--;
+				continue;
+			}
 			uri = g_new(RemoteURI, 1);
 			if (last->bp - normal_text > 0)
 				gtk_text_buffer_insert_with_tags_by_name
