@@ -1,3 +1,14 @@
+2003-03-06 [christoph]	0.8.10claws98
+
+	* src/send.c
+		fix in 0.8.10claws94 was wrong
+		local delivery does not require escaping, remove escaping
+		code to make signatures of mails with "." lines valid
+		
+		NOTE: requires that sendmail is executed with "-i" option,
+		      what is the default now, but has to be changed in all
+		      exsiting accounts)
+
 2003-03-07 [paul]	0.8.10claws97
 
 	* sync with 0.8.11 release
