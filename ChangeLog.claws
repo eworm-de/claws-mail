@@ -1,3 +1,15 @@
+2004-01-28 [christoph]	0.9.8claws56
+
+	* src/pgpmime.c
+	* src/sgpgme.[ch]
+		return WARN signature status when signature is not trusted
+
+	* src/Makefile.am
+	* src/folder.c
+	* src/folderutils.[ch]			** NEW **
+	* src/summaryview.c
+		implement delete duplicates summaryview independent
+
 2004-01-28 [paul]	0.9.8claws55
 
 	* sync with 0.9.8cvs10

@@ -41,6 +41,7 @@ sylpheed_SOURCES = \
 	folder.c \
 	folder_item_prefs.c \
 	foldersel.c \
+	folderutils.c \
 	folderview.c \
 	grouplistdialog.c \
 	headerview.c \
@@ -59,6 +60,7 @@ sylpheed_SOURCES = \
 	ldapserver.c \
 	ldaputil.c \
 	ldif.c \
+	localfolder.c \
 	main.c \
 	mainwindow.c \
 	manual.c \
@@ -91,9 +93,9 @@ sylpheed_SOURCES = \
 	prefs_gtk.c \
 	prefs_matcher.c \
 	prefs_spelling.c \
-	prefs_themes.c \
 	prefs_summary_column.c \
 	prefs_template.c \
+	prefs_themes.c \
 	prefs_toolbar.c \
 	privacy.c \
 	procheader.c \
@@ -103,6 +105,7 @@ sylpheed_SOURCES = \
 	quote_fmt_lex.l \
 	quote_fmt_parse.y \
 	recv.c \
+	remotefolder.c \
 	rfc2015.c \
 	select-keys.c \
 	send_message.c \
@@ -119,8 +122,6 @@ sylpheed_SOURCES = \
 	toolbar.c \
 	undo.c \
 	unmime.c \
-	localfolder.c \
-	remotefolder.c \
 	vcard.c
 
 sylpheedincludedir = $(pkgincludedir)
@@ -166,6 +167,7 @@ sylpheedinclude_HEADERS = \
 	folder.h \
 	folder_item_prefs.h \
 	foldersel.h \
+	folderutils.h \
 	folderview.h \
 	grouplistdialog.h \
 	headerview.h \
@@ -184,6 +186,7 @@ sylpheedinclude_HEADERS = \
 	ldapserver.h \
 	ldaputil.h \
 	ldif.h \
+	localfolder.h \
 	main.h \
 	mainwindow.h \
 	manual.h \
@@ -217,9 +220,9 @@ sylpheedinclude_HEADERS = \
 	prefs_gtk.h \
 	prefs_matcher.h \
 	prefs_spelling.h \
-	prefs_themes.h \
 	prefs_summary_column.h \
 	prefs_template.h \
+	prefs_themes.h \
 	prefs_toolbar.h \
 	privacy.h \
 	procheader.h \
@@ -229,6 +232,7 @@ sylpheedinclude_HEADERS = \
 	quote_fmt_lex.h \
 	quote_fmt_parse.h \
 	recv.h \
+	remotefolder.h \
 	rfc2015.h \
 	select-keys.h \
 	send_message.h \
@@ -244,8 +248,6 @@ sylpheedinclude_HEADERS = \
 	toolbar.h \
 	undo.h \
 	unmime.h \
-	localfolder.h \
-	remotefolder.h \
 	vcard.h
 
 BUILT_SOURCES = \

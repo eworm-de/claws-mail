@@ -58,10 +58,19 @@ GpgmeSigStat sgpgme_verify_signature(GpgmeCtx ctx, GpgmeData sig,
 	return status;
 }
 
-SignatureStatus sgpgme_sigstat_gpgme_to_privacy(GpgmeSigStat status)
+SignatureStatus sgpgme_sigstat_gpgme_to_privacy(GpgmeCtx ctx, GpgmeSigStat status)
 {
+	unsigned long validity = 0;
+	
+	validity = gpgme_get_sig_ulong_attr(ctx, 0,
+		GPGME_ATTR_VALIDITY, 0);
+
 	switch (status) {
 	case GPGME_SIG_STAT_GOOD:
+		if ((validity != GPGME_VALIDITY_MARGINAL) &&
+		    (validity != GPGME_VALIDITY_FULL) &&
+		    (validity != GPGME_VALIDITY_ULTIMATE))
+			return SIGNATURE_WARN;
 		return SIGNATURE_OK;
 	case GPGME_SIG_STAT_GOOD_EXP:
 	case GPGME_SIG_STAT_GOOD_EXPKEY:

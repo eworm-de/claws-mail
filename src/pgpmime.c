@@ -182,7 +182,7 @@ static SignatureStatus pgpmime_get_sig_status(MimeInfo *mimeinfo)
 	
 	g_return_val_if_fail(data != NULL, SIGNATURE_INVALID);
 
-	return sgpgme_sigstat_gpgme_to_privacy(data->sigstatus);
+	return sgpgme_sigstat_gpgme_to_privacy(data->ctx, data->sigstatus);
 }
 
 static gchar *pgpmime_get_sig_info_short(MimeInfo *mimeinfo)

@@ -2487,6 +2487,7 @@ gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
 
 	if (!item->cache) folder_item_read_cache(item);
 
+	folder_item_update_freeze();
 	while (msglist != NULL) {
 		MsgInfo *msginfo = (MsgInfo *)msglist->data;
 
@@ -2495,6 +2496,7 @@ gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
 		msgcache_remove_msg(item->cache, msginfo->msgnum);
 		msglist = msglist->next;
 	}
+	folder_item_update_thaw();
 
 	return ret;
 }
