@@ -1,3 +1,8 @@
+2003-04-18 [paul]	0.8.11claws101
+
+	* sync with 0.8.11cvs29
+		see ChangeLog 2003-04-18
+
 2003-04-17 [paul]	0.8.11claws100
 
 	* src/prefs_common.[ch]

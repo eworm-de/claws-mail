@@ -43,6 +43,7 @@
 #include "mainwindow.h"
 #include "prefs_common.h"
 #include "alertpanel.h"
+#include "inputdialog.h"
 #include "action.h"
 #include "compose.h"
 #include "procmsg.h"
@@ -91,14 +92,7 @@ struct _ChildInfo
 	GdkFont		*msgfont;
 };
 
-struct _UserStringDialog
-{
-	GtkWidget	*dialog;
-	GtkWidget	*entry;
-	gchar		*user_str;
-};
-
-static void update_actions_menu		(GtkItemFactory	*ifactory,
+static void action_update_menu		(GtkItemFactory	*ifactory,
 					 gchar		*branch_path,
 					 gpointer	 callback,
 					 gpointer	 data);
@@ -143,7 +137,7 @@ static ChildInfo *fork_child		(gchar		*cmd,
 					 gint		 body_pos,
 					 Children	*children);
 
-static gint wait_for_children		(gpointer	 data);
+static gint wait_for_children		(Children	*children);
 
 static void free_children		(Children	*children);
 
@@ -168,22 +162,11 @@ static void catch_status		(gpointer		 data,
 					 gint			 source,
 					 GdkInputCondition	 cond);
 
-static gboolean user_string_dialog_delete_cb
-					(GtkWidget	*widget,
-					 GdkEvent	*event,
-					 gpointer	 data);
-static void user_string_dialog_destroy_cb
-					(GtkWidget	*widget,
-					 gpointer	 data);
-static void user_string_dialog_activate_cb
-					(GtkWidget	*widget,
-					 gpointer	 data);
-
 static gchar *get_user_string		(const gchar	*action,
 					 ActionType	 type);
 
 
-ActionType get_action_type(const gchar *action_str)
+ActionType action_get_type(const gchar *action_str)
 {
 	const gchar *p;
 	ActionType action_type = ACTION_NONE;
@@ -434,28 +417,20 @@ void actions_execute(gpointer data,
 		msgview_actions_execute_cb((MessageView*)data, action_nb, widget);	
 }
 
-
-void update_mainwin_actions_menu(GtkItemFactory *ifactory,
-				 MainWindow *mainwin)
+void action_update_mainwin_menu(GtkItemFactory *ifactory, MainWindow *mainwin)
 {
-	update_actions_menu(ifactory, "/Tools/Actions",
-			    mainwin_actions_execute_cb,
-			    mainwin);
+	action_update_menu(ifactory, "/Tools/Actions",
+			   mainwin_actions_execute_cb, mainwin);
 }
 
-void update_compose_actions_menu(GtkItemFactory *ifactory,
-				 gchar *branch_path,
-				 Compose *compose)
+void action_update_compose_menu(GtkItemFactory *ifactory, Compose *compose)
 {
-	update_actions_menu(ifactory, branch_path,
-			    compose_actions_execute_cb,
-			    compose);
+	action_update_menu(ifactory, "/Tools/Actions",
+			   compose_actions_execute_cb, compose);
 }
 
-static void update_actions_menu(GtkItemFactory *ifactory,
-				gchar *branch_path,
-				gpointer callback,
-				gpointer data)
+static void action_update_menu(GtkItemFactory *ifactory, gchar *branch_path,
+			       gpointer callback, gpointer data)
 {
 	GtkWidget *menuitem;
 	gchar *menu_path;
@@ -484,7 +459,7 @@ static void update_actions_menu(GtkItemFactory *ifactory,
 		action   = g_strdup((gchar *)cur->data);
 		action_p = strstr(action, ": ");
 		if (action_p && action_p[2] &&
-		    get_action_type(&action_p[2]) != ACTION_ERROR) {
+		    action_get_type(&action_p[2]) != ACTION_ERROR) {
 			action_p[0] = 0x00;
 			menu_path = g_strdup_printf("%s/%s", branch_path,
 						    action);
@@ -514,7 +489,7 @@ static void compose_actions_execute_cb(Compose *compose, guint action_nb,
 	/* Point to the beginning of the command-line */
 	action += 2;
 
-	action_type = get_action_type(action);
+	action_type = action_get_type(action);
 	if (action_type & (ACTION_SINGLE | ACTION_MULTIPLE)) {
 		alertpanel_warning
 			(_("The selected action cannot be used in the compose window\n"
@@ -603,7 +578,7 @@ static gboolean execute_actions(gchar *action, GtkCTree *ctree,
 
 	g_return_val_if_fail(action && *action, FALSE);
 
-	action_type = get_action_type(action);
+	action_type = action_get_type(action);
 
 	if (action_type == ACTION_ERROR)
 		return FALSE;         /* ERR: syntax error */
@@ -938,10 +913,9 @@ static void kill_children_cb(GtkWidget *widget, gpointer data)
 	}
 }
 
-static gint wait_for_children(gpointer data)
+static gint wait_for_children(Children *children)
 {
 	gboolean new_output;
-	Children *children = (Children *)data;
 	ChildInfo *child_info;
 	GSList *cur;
 	gint nb = children->nb;
@@ -1303,96 +1277,33 @@ static void user_string_dialog_destroy_cb(GtkWidget *widget, gpointer data)
 	gtk_main_quit();
 }
 
-static void user_string_dialog_activate_cb(GtkWidget *widget, gpointer data)
-{
-	UserStringDialog *user_dialog = (UserStringDialog *) data;
-
-	g_free(user_dialog->user_str);
-	user_dialog->user_str =
-		gtk_editable_get_chars(GTK_EDITABLE(user_dialog->entry), 0, -1);
-	gtk_widget_destroy(user_dialog->dialog);
-}
-
 static gchar *get_user_string(const gchar *action, ActionType type)
 {
-	GtkWidget *dialog;
-	GtkWidget *label;
-	GtkWidget *entry;
-	GtkWidget *ok_button;
-	GtkWidget *cancel_button;
-	gchar *label_text;
-	UserStringDialog user_dialog;
-
-	dialog = gtk_dialog_new();
-	gtk_window_set_policy(GTK_WINDOW(dialog), FALSE, FALSE, FALSE);
-	gtk_container_set_border_width
-		(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), 8);
-	gtk_container_set_border_width
-		(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 5);
-	gtk_window_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+	gchar *message;
+	gchar *user_str = NULL;
 
 	switch (type) {
 	case ACTION_USER_HIDDEN_STR:
-		gtk_window_set_title(GTK_WINDOW(dialog),
-				     _("Action's hidden user argument"));
-		label_text = g_strdup_printf(_("Enter the '%%h' "
-					     "argument for the following "
-					     "action:\n%s"), action);
+		message = g_strdup_printf
+			(_("Enter the argument for the following action:\n"
+			   "(`%%h' will be replaced with the argument)\n"
+			   "  %s"),
+			 action);
+		user_str = input_dialog_with_invisible
+			(_("Action's hidden user argument"), message, NULL);
 		break;
 	case ACTION_USER_STR:
-		gtk_window_set_title(GTK_WINDOW(dialog),
-				     _("Action's user argument"));
-		label_text = g_strdup_printf(_("Enter the '%%u' "
-					     "argument for the following "
-					     "action:\n%s"), action);
+		message = g_strdup_printf
+			(_("Enter the argument for the following action:\n"
+			   "(`%%u' will be replaced with the argument)\n"
+			   "  %s"),
+			 action);
+		user_str = input_dialog
+			(_("Action's user argument"), message, NULL);
 		break;
 	default:
-		label_text = NULL;
-		debug_print("Unsupported action type %d", type);
+		g_warning("Unsupported action type %d", type);
 	}
 
-	label = gtk_label_new(label_text);
-	g_free(label_text);
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label,
-			   TRUE, TRUE, 0);
-
-	entry = gtk_entry_new();
-	gtk_entry_set_visibility(GTK_ENTRY(entry),
-				 type != ACTION_USER_HIDDEN_STR);
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), entry,
-			   TRUE, TRUE, 0);
-
-	ok_button = gtk_button_new_with_label(_("OK"));
-	gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->action_area),
-			 ok_button, TRUE, TRUE, 0);
-
-	cancel_button = gtk_button_new_with_label(_("Cancel"));
-	gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->action_area),
-			 cancel_button, TRUE, TRUE, 0);
-
-	user_dialog.dialog   = dialog;
-	user_dialog.user_str = NULL;
-	user_dialog.entry    = entry;
-
-	gtk_signal_connect(GTK_OBJECT(dialog), "delete_event",
-			   GTK_SIGNAL_FUNC(user_string_dialog_delete_cb),
-			   &user_dialog);
-	gtk_signal_connect(GTK_OBJECT(dialog), "destroy",
-			   GTK_SIGNAL_FUNC(user_string_dialog_destroy_cb),
-			   &user_dialog);
-	gtk_signal_connect(GTK_OBJECT(entry), "activate",
-			   GTK_SIGNAL_FUNC(user_string_dialog_activate_cb),
-			   &user_dialog);
-	gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
-			   GTK_SIGNAL_FUNC(user_string_dialog_activate_cb),
-			   &user_dialog);
-	gtk_signal_connect_object(GTK_OBJECT(cancel_button), "clicked",
-				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				  GTK_OBJECT(dialog));
-
-	gtk_widget_grab_focus(entry);
-	gtk_widget_show_all(dialog);
-	gtk_main();
-
-	return user_dialog.user_str;
+	return user_str;
 }

@@ -43,17 +43,16 @@ typedef enum
 	ACTION_ERROR		= 1 << 30
 } ActionType;
 
-void update_mainwin_actions_menu	(GtkItemFactory	*ifactory, 
-					 MainWindow	*mainwin);
-void update_compose_actions_menu	(GtkItemFactory	*ifactory, 
-					 gchar		*branch_path,
-					 Compose	*compose);
+ActionType action_get_type	(const gchar	*action_str);
 
 void actions_execute                    (gpointer       data, 
 					 guint          action_nb,
 					 GtkWidget      *widget,
 					 gint           source);
 
-ActionType get_action_type		(const gchar	*action_str);
+void action_update_mainwin_menu	(GtkItemFactory	*ifactory, 
+				 MainWindow	*mainwin);
+void action_update_compose_menu	(GtkItemFactory	*ifactory, 
+				 Compose	*compose);
 
 #endif /* __ACTION_H__ */

@@ -5006,7 +5006,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	}
 #endif
 
-	update_compose_actions_menu(ifactory, "/Tools/Actions", compose);
+	action_update_compose_menu(ifactory, compose);
 
 
 	undostruct = undo_init(text);
@@ -5131,7 +5131,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry), prefs_common.trans_hdr ? _("Newsgroups:") : "Newsgroups:");
 
 	addressbook_set_target_compose(compose);
-	update_compose_actions_menu(ifactory, "/Tools/Actions", compose);
+	action_update_compose_menu(ifactory, compose);
 	
 	if (mode != COMPOSE_REDIRECT)
 		compose_set_template_menu(compose);

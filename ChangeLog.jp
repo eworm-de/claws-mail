@@ -1,3 +1,13 @@
+2003-04-18
+
+	* src/procmsg.c: procmsg_get_filter_keyword(): 自動検出されるヘッダ
+	  に X-Sequence を追加。
+	* src/action.[ch]
+	  src/prefs_actions.c
+	  src/compose.c
+	  src/mainwindow.c: 関数名を修正。
+	  get_user_string(): 独自の実装の代わりに input_dialog() を使用。
+
 2003-04-17
 
 	* src/codeconv.[ch]: conv_encode_header(): addr_field が TRUE の

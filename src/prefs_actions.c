@@ -327,7 +327,7 @@ void prefs_actions_read_config(void)
 		g_strchomp(buf);
 		act = strstr(buf, ": ");
 		if (act && act[2] && 
-		    get_action_type(&act[2]) != ACTION_ERROR)
+		    action_get_type(&act[2]) != ACTION_ERROR)
 			prefs_common.actions_list =
 				g_slist_append(prefs_common.actions_list,
 					       g_strdup(buf));
@@ -458,7 +458,7 @@ static gint prefs_actions_clist_set_row(gint row)
 		return -1;
 	}
 
-	if (get_action_type(entry_text) == ACTION_ERROR) {
+	if (action_get_type(entry_text) == ACTION_ERROR) {
 		alertpanel_error(_("The command\n%s\nhas a syntax error."), 
 				 entry_text);
 		return -1;
@@ -624,7 +624,7 @@ static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 
 	prefs_actions_write_config();
 	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
-	update_mainwin_actions_menu(ifactory, mainwin);
+	action_update_mainwin_menu(ifactory, mainwin);
 	gtk_widget_hide(actions.window);
 	inc_unlock();
 }

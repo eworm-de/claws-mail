@@ -1,3 +1,14 @@
+2003-04-18
+
+	* src/procmsg.c: procmsg_get_filter_keyword(): added X-Sequence to
+	  auto-detected headers.
+	* src/action.[ch]
+	  src/prefs_actions.c
+	  src/compose.c
+	  src/mainwindow.c: modified function names.
+	  get_user_string(): Use input_dialog() instead of its own
+	  implementation.
+
 2003-04-17
 
 	* src/codeconv.[ch]: conv_encode_header(): don't include '(' and ')'
