@@ -1,3 +1,8 @@
+2003-01-19 [alfons]	0.8.8claws121
+
+	* src/crash.c
+		change bug tracker URL to bugzilla URL
+
 2003-01-19 [alfons]	0.8.8claws120
 
 	* src/mimeview.c
