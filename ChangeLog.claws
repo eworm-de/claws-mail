@@ -1,4 +1,10 @@
+2001-05-09 [alfons]
+
+	* src/gtkstext.c:
+		Ctrl-Home / Ctrl-End have proper cursor navigation
+
 2001-05-09 [hoa]
+
 	* src/prefs_matcher.c
 		finished UI to define matching properties
 		added ok and cancel button

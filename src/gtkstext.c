@@ -2189,8 +2189,17 @@ gtk_stext_key_press (GtkWidget   *widget,
       switch (event->keyval)
 	{
 	case GDK_Home:
-	  if (event->state & GDK_CONTROL_MASK)
-	    move_cursor_buffer_ver (text, -1);
+	  if (event->state & GDK_CONTROL_MASK) {
+		if (text->wrap_rmargin == 0) {
+			/* SYLPHEED: old behaviour */
+			move_cursor_buffer_ver (text, -1);
+		}
+		else {
+			/* SYLPHEED: contrived, but "trusty" */
+			move_cursor_buffer_ver(text, -1);
+			move_cursor_to_display_row_start(text);
+		}
+	  }	
 	  else {
 		if (text->wrap_rmargin > 0) {
 			/* SYLPHEED: line start */
@@ -2202,8 +2211,17 @@ gtk_stext_key_press (GtkWidget   *widget,
 	  }	
 	  break;
 	case GDK_End:
-	  if (event->state & GDK_CONTROL_MASK)
-	    move_cursor_buffer_ver (text, +1);
+	  if (event->state & GDK_CONTROL_MASK) {
+		/* SYLPHEED: a little bit contrived... */
+		if (text->wrap_rmargin == 0) {
+			/* old behaviour */
+			move_cursor_buffer_ver (text, +1);
+		}
+		else {
+			move_cursor_buffer_ver(text, +1);
+			move_cursor_to_display_row_end(text);
+		}
+	  }		
 	  else {
 		if (text->wrap_rmargin > 0) {
 			/* SYLPHEED: line end */
