@@ -1,3 +1,8 @@
+2005-01-06 [colin]	0.9.13cvs27.4
+
+	* src/prefs_matcher.c
+		Fix double-free. Patch by Alfons
+
 2005-01-06 [colin]	0.9.13cvs27.3
 
 	* src/prefs_matcher.c

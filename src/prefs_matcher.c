@@ -1602,8 +1602,8 @@ static void prefs_matcher_ok(void)
 	                        	val = alertpanel(_("Entry not saved"),
        		                        	 _("The entry was not saved\nHave you really finished?"),
                		                	 _("Yes"), _("No"), NULL);
-					g_free(matcher_str);						 
 					if (G_ALERTDEFAULT != val) {
+						g_free(matcher_str);						 
 	        	                        g_free(str);
 						return;
 					}
