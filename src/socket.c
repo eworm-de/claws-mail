@@ -447,20 +447,21 @@ gint fd_gets(gint fd, gchar *buf, gint len)
 #if USE_SSL
 gint ssl_gets(SSL *ssl, gchar *buf, gint len)
 {
-	gchar *bp = buf;
-	gboolean newline = FALSE;
+	gchar *newline, *bp = buf;
 	gint n;
 
 	if (--len < 1)
 		return -1;
-	while (len > 0 && !newline) {
-		*bp = '\0';
-		if ((n = SSL_read(ssl, bp, 1)) <= 0)
+	do {
+		if ((n = SSL_peek(ssl, bp, len)) <= 0)
 			return -1;
-		if (*bp == '\n')
-			newline = TRUE;
+		if ((newline = memchr(bp, '\n', n)) != NULL)
+			n = newline - bp + 1;
+		if ((n = SSL_read(ssl, bp, n)) < 0)
+			return -1;
 		bp += n;
-	}
+		len -= n;
+	} while (!newline && len);
 
 	*bp = '\0';
 	return bp - buf;

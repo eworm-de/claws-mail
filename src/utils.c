@@ -653,13 +653,13 @@ void eliminate_quote(gchar *str, gchar quote_chr)
 
 void extract_quote(gchar *str, gchar quote_chr)
 {
-	register gchar *p, *p2;
+	register gchar *p;
 
 	if ((str = strchr(str, quote_chr))) {
-		p2 = str;
-		while ((p = strchr(p2 + 1, quote_chr)) && (p[-1] == '\\')) {
+		p = str;
+		while ((p = strchr(p + 1, quote_chr)) && (p[-1] == '\\')) {
 			memmove(p - 1, p, strlen(p) + 1);
-			p2 = p - 1;
+			p--;
 		}
 		if(p) {
 			*p = '\0';
