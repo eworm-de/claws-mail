@@ -143,6 +143,7 @@ static int isseparator(char ch)
 %token INSERT_FILE INSERT_PROGRAMOUTPUT
 %token OPARENT CPARENT
 %token CHARACTER
+%token SHOW_DATE_EXPR
 
 %start quote_fmt
 
@@ -190,6 +191,18 @@ special:
 	{
 		if (msginfo->newsgroups)
 			INSERT(msginfo->newsgroups);
+	}
+	| SHOW_DATE_EXPR OPARENT string CPARENT
+	{
+		if (msginfo->date_t) {
+			char timef[128];
+			struct tm *lt;
+
+			if (NULL != (lt = localtime(&msginfo->date_t))) {
+				strftime(timef, sizeof timef, $3, lt);
+				INSERT(timef);
+			}
+		}
 	}
 	| SHOW_DATE
 	{
