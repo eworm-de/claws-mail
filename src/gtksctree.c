@@ -676,8 +676,8 @@ tree_sort (GtkCTree    *ctree,
 		
 	}
 
-	g_ptr_array_free( row_array, FALSE);
-	g_ptr_array_free( viewable_array, FALSE);
+	g_ptr_array_free( row_array, TRUE);
+	g_ptr_array_free( viewable_array, TRUE);
 }
 
 void

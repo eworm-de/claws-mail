@@ -1,3 +1,8 @@
+2002-08-16 [alfons]	0.8.1claws69
+
+	* src/gtksctree.c
+		plug memory leak reported by Kim Schultz & Martin Kluge
+
 2002-08-16 [paul]	0.8.1claws68
 
 	* po/es.po
