@@ -1,3 +1,8 @@
+2004-09-02 [colin]	0.9.12cvs88.1
+
+	* src/ldapquery.c
+		Sync with HEAD (fix LDAP freezes)
+
 2004-09-02 [colin]	0.9.12cvs87.1
 
 	* src/prefs_spelling.c
