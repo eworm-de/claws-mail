@@ -1,3 +1,12 @@
+2002-11-30 [colin]	0.8.6claws46
+
+	* src/folder.c
+		Add a test to folder moving, remove a statusbar_print
+	* src/folderview.c
+		Add Move folder... context-menu item
+		Factorize folder moving code
+		Enable folder DND for mbox
+
 2002-11-30 [christoph]	0.8.6claws45
 
 	* ac/aspell.m4

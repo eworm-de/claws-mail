@@ -1530,8 +1530,6 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 		return NULL;
 	}
 	
-	statusbar_print_all(_("Moving %s to %s..."), src->name, new_item->path);
-
 	if (new_item->folder == NULL)
 		new_item->folder = dest->folder;
 
@@ -1620,7 +1618,7 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 	phys_srcpath = folder_item_get_path(src);
 	phys_dstpath = g_strconcat(folder_item_get_path(dest),G_DIR_SEPARATOR_S,g_basename(phys_srcpath),NULL);
 
-	if (src->parent == dest) {
+	if (src->parent == dest || src == dest) {
 		g_free(src_identifier);
 		g_free(dst_identifier);
 		g_free(phys_srcpath);
