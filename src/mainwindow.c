@@ -1431,7 +1431,7 @@ void main_window_set_toolbar_sensitive(MainWindow *mainwin)
 		{mainwin->reply_btn       , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{mainwin->replyall_btn    , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{mainwin->replysender_btn , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{mainwin->fwd_btn         , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{mainwin->fwd_btn         , M_HAVE_ACCOUNT|M_TARGET_EXIST},
 		/* {mainwin->prefs_btn      , M_UNLOCKED},
 		{mainwin->account_btn    , M_UNLOCKED}, */
 		{mainwin->next_btn        , M_MSG_EXIST},
@@ -1497,13 +1497,13 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Reply to sender"       , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{"/Message/Reply to all"          , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{"/Message/Follow-up and reply to", M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST|M_NEWS},
-		{"/Message/Forward"               , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Message/Forward"               , M_HAVE_ACCOUNT|M_TARGET_EXIST},
         	{"/Message/Bounce"		  , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Message/Re-edit", M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
-		{"/Message/Move...", M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Message/Copy...", M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Message/Delete" , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Message/Mark"   , M_TARGET_EXIST},
+		{"/Message/Re-edit"		  , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
+		{"/Message/Move..."		  , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Message/Copy..."		  , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Message/Delete" 		  , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Message/Mark"   		  , M_TARGET_EXIST},
 		{"/Message/Delete duplicated messages", M_MSG_EXIST|M_EXEC|M_UNLOCKED},
 
 		{"/Tool/Add sender to address book", M_SINGLE_TARGET_EXIST},
@@ -2572,85 +2572,7 @@ static void compose_news_cb(MainWindow *mainwin, guint action,
 
 static void reply_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
-	GList  *sel = GTK_CLIST(mainwin->summaryview->ctree)->selection;
-	MsgInfo *msginfo;
-
-	msginfo = gtk_ctree_node_get_row_data
-		(GTK_CTREE(mainwin->summaryview->ctree),
-		 mainwin->summaryview->selected);
-
-	if (!msginfo) return;
-
-	switch (action) {
-	case COMPOSE_REPLY:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, FALSE);
-		break;
-	case COMPOSE_REPLY_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, FALSE);
-		break;
-	case COMPOSE_REPLY_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, FALSE);
-		break;
-	case COMPOSE_REPLY_TO_SENDER:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, TRUE);
-		break;
-	case COMPOSE_REPLY_TO_SENDER_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, TRUE);
-		break;
-	case COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, TRUE);
-		break;
-	case COMPOSE_FOLLOWUP_AND_REPLY_TO:
-		compose_followup_and_reply_to(msginfo,
-					      prefs_common.reply_with_quote,
-					      FALSE, TRUE);
-		break;
-	case COMPOSE_REPLY_TO_ALL:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      TRUE, TRUE);
-		break;
-	case COMPOSE_REPLY_TO_ALL_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, TRUE, TRUE);
-		break;
-	case COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, TRUE, TRUE);
-		break;
-	case COMPOSE_FORWARD:
-		if (prefs_common.forward_as_attachment) {
-			reply_cb(mainwin, COMPOSE_FORWARD_AS_ATTACH, widget);
-			return;
-		} else {
-			reply_cb(mainwin, COMPOSE_FORWARD_INLINE, widget);
-			return;
-		}
-		break;
-	case COMPOSE_FORWARD_INLINE:
-		if (!sel->next) {
-			compose_forward(NULL, msginfo, FALSE);
-			break;
-		}
-		/* if (sel->next) FALL_THROUGH */
-	case COMPOSE_FORWARD_AS_ATTACH:
-		{
-			GSList *msginfo_list = NULL;
-			for ( ; sel != NULL; sel = sel->next)
-				msginfo_list = g_slist_append(msginfo_list, 
-					gtk_ctree_node_get_row_data(GTK_CTREE(mainwin->summaryview->ctree),
-						GTK_CTREE_NODE(sel->data)));
-			compose_forward_multiple(NULL, msginfo_list);
-			g_slist_free(msginfo_list);
-		}			
-		break;
-	case COMPOSE_BOUNCE:
-			compose_bounce(NULL, msginfo);
-			break;
-	default:
-		g_warning("reply_cb(): invalid action type: %d\n", action);
-	}
-
-	summary_set_marks_selected(mainwin->summaryview);
+	summary_reply(mainwin->summaryview, (ComposeMode)action);
 }
 
 static void move_to_cb(MainWindow *mainwin, guint action, GtkWidget *widget)

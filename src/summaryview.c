@@ -16,6 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
+
 #include "defs.h"
 
 #include <glib.h>
@@ -2675,10 +2676,10 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 
 void summary_set_marks_selected(SummaryView *summaryview)
 {
-	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
 
-	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
+	for (cur = GTK_CLIST(summaryview->ctree)->selection; cur != NULL;
+	     cur = cur->next)
 		summary_set_row_marks(summaryview, GTK_CTREE_NODE(cur->data));
 }
 
@@ -3944,6 +3945,88 @@ void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
 	prefs_filter_open(header, key);
 }
 
+void summary_reply(SummaryView *summaryview, ComposeMode mode)
+{
+	GtkWidget *widget;
+	MsgInfo *msginfo;
+	GList  *sel = GTK_CLIST(summaryview->ctree)->selection;
+
+	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
+					      summaryview->selected);
+	if (!msginfo) return;
+
+	switch (mode) {
+	case COMPOSE_REPLY:
+		compose_reply(msginfo, prefs_common.reply_with_quote,
+			      FALSE, FALSE);
+		break;
+	case COMPOSE_REPLY_WITH_QUOTE:
+		compose_reply(msginfo, TRUE, FALSE, FALSE);
+		break;
+	case COMPOSE_REPLY_WITHOUT_QUOTE:
+		compose_reply(msginfo, FALSE, FALSE, FALSE);
+		break;
+	case COMPOSE_REPLY_TO_SENDER:
+		compose_reply(msginfo, prefs_common.reply_with_quote,
+			      FALSE, TRUE);
+		break;
+	case COMPOSE_FOLLOWUP_AND_REPLY_TO:
+		compose_followup_and_reply_to(msginfo,
+					      prefs_common.reply_with_quote,
+					      FALSE, TRUE);
+		break;
+	case COMPOSE_REPLY_TO_SENDER_WITH_QUOTE:
+		compose_reply(msginfo, TRUE, FALSE, TRUE);
+		break;
+	case COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE:
+		compose_reply(msginfo, FALSE, FALSE, TRUE);
+		break;
+	case COMPOSE_REPLY_TO_ALL:
+		compose_reply(msginfo, prefs_common.reply_with_quote,
+			      TRUE, TRUE);
+		break;
+	case COMPOSE_REPLY_TO_ALL_WITH_QUOTE:
+		compose_reply(msginfo, TRUE, TRUE, FALSE);
+		break;
+	case COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE:
+		compose_reply(msginfo, FALSE, TRUE, FALSE);
+		break;
+	case COMPOSE_FORWARD:
+		if (prefs_common.forward_as_attachment) {
+			summary_reply_cb(summaryview, COMPOSE_FORWARD_AS_ATTACH, widget);
+			return;
+		} else {
+			summary_reply_cb(summaryview, COMPOSE_FORWARD_INLINE, widget);
+			return;
+		}
+		break;
+	case COMPOSE_FORWARD_INLINE:
+		if (!sel->next) {
+			compose_forward(NULL, msginfo, FALSE);
+			break;
+		}
+		/* if (sel->next) FALL THROUGH */
+	case COMPOSE_FORWARD_AS_ATTACH:
+		{
+			GSList *msginfo_list = NULL;
+			for ( ; sel != NULL; sel = sel->next)
+				msginfo_list = g_slist_append(msginfo_list, 
+					gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
+						GTK_CTREE_NODE(sel->data)));
+			compose_forward_multiple(NULL, msginfo_list);
+			g_slist_free(msginfo_list);
+		}			
+		break;
+	case COMPOSE_BOUNCE:
+		compose_bounce(NULL, msginfo);
+		break;
+	default:
+		g_warning("summary_reply_cb(): invalid action: %d\n", mode);
+	}
+
+	summary_set_marks_selected(summaryview);
+}
+
 /* color label */
 
 #define N_COLOR_LABELS colorlabel_get_color_count()
@@ -4395,12 +4478,6 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		textview_scroll_one_line(summaryview->messageview->textview,
 					 (event->state & GDK_MOD1_MASK) != 0);
 		break;
-	case GDK_asterisk:	/* Mark */
-		summary_mark(summaryview);
-		break;
-	case GDK_exclam:	/* Mark as unread */
-		summary_mark_as_unread(summaryview);
-		break;
 	case GDK_Delete:
 		RETURN_IF_LOCKED();
 		BREAK_ON_MODIFIER_KEY();
@@ -4442,6 +4519,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 	summary_status_show(summaryview);
 	summary_set_menu_sensitive(summaryview);
+	main_window_set_toolbar_sensitive(summaryview->mainwin);
 
 	if (GTK_CLIST(ctree)->selection &&
 	     GTK_CLIST(ctree)->selection->next) {
@@ -4504,83 +4582,7 @@ static void summary_col_resized(GtkCList *clist, gint column, gint width,
 static void summary_reply_cb(SummaryView *summaryview, guint action,
 			     GtkWidget *widget)
 {
-	MsgInfo *msginfo;
-	GList  *sel = GTK_CLIST(summaryview->ctree)->selection;
-
-	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
-					      summaryview->selected);
-	if (!msginfo) return;
-
-	switch ((ComposeMode)action) {
-	case COMPOSE_REPLY:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, FALSE);
-		break;
-	case COMPOSE_REPLY_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, FALSE);
-		break;
-	case COMPOSE_REPLY_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, FALSE);
-		break;
-	case COMPOSE_REPLY_TO_SENDER:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, TRUE);
-		break;
-	case COMPOSE_FOLLOWUP_AND_REPLY_TO:
-		compose_followup_and_reply_to(msginfo,
-					      prefs_common.reply_with_quote,
-					      FALSE, TRUE);
-		break;
-	case COMPOSE_REPLY_TO_SENDER_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, TRUE);
-		break;
-	case COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, TRUE);
-		break;
-	case COMPOSE_REPLY_TO_ALL:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      TRUE, TRUE);
-		break;
-	case COMPOSE_REPLY_TO_ALL_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, TRUE, FALSE);
-		break;
-	case COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, TRUE, FALSE);
-		break;
-	case COMPOSE_FORWARD:
-		if (prefs_common.forward_as_attachment) {
-			summary_reply_cb(summaryview, COMPOSE_FORWARD_AS_ATTACH, widget);
-			return;
-		} else {
-			summary_reply_cb(summaryview, COMPOSE_FORWARD_INLINE, widget);
-			return;
-		}
-		break;
-	case COMPOSE_FORWARD_INLINE:
-		if (!sel->next) {
-			compose_forward(NULL, msginfo, FALSE);
-			break;
-		}
-		/* if (sel->next) FALL THROUGH */
-	case COMPOSE_FORWARD_AS_ATTACH:
-		{
-			GSList *msginfo_list = NULL;
-			for ( ; sel != NULL; sel = sel->next)
-				msginfo_list = g_slist_append(msginfo_list, 
-					gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
-						GTK_CTREE_NODE(sel->data)));
-			compose_forward_multiple(NULL, msginfo_list);
-			g_slist_free(msginfo_list);
-		}			
-		break;
-	case COMPOSE_BOUNCE:
-		compose_bounce(NULL, msginfo);
-		break;
-	default:
-		g_warning("summary_reply_cb(): invalid action: %d\n", action);
-	}
-
-	summary_set_marks_selected(summaryview);
+	summary_reply(summaryview, (ComposeMode)action);
 }
 
 static void summary_execute_cb(SummaryView *summaryview, guint action,

@@ -382,7 +382,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		procheader_header_array_destroy(headers);
 	}
 
-#if 0
+/* #if 0 */
 	tmpfp = procmime_decode_content(NULL, fp, mimeinfo);
 
 	if (tmpfp) {
@@ -395,14 +395,14 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 				textview_write_line(textview, buf, conv);
 		fclose(tmpfp);
 	}
-#else
+/* #else
 	tmpfp = procmime_get_text_content(mimeinfo, fp);
 
 	while (fgets(buf, sizeof(buf), tmpfp) != NULL)
 		textview_write_line(textview, buf, conv);
 
 	fclose(tmpfp);
-#endif
+#endif */
 
 	conv_code_converter_destroy(conv);
 

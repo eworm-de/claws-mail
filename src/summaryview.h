@@ -35,6 +35,7 @@ typedef struct _SummaryColumnState	SummaryColumnState;
 #include "headerview.h"
 #include "messageview.h"
 #include "headerwindow.h"
+#include "compose.h"
 #include "prefs_filter.h"
 #include "folder.h"
 #include "gtksctree.h"
@@ -198,6 +199,7 @@ void summary_unthread		  (SummaryView		*summaryview);
 void summary_filter		  (SummaryView		*summaryview);
 void summary_filter_open	  (SummaryView		*summaryview,
 				   PrefsFilterType	 type);
+
 void summary_sort		  (SummaryView		*summaryview,
 				   SummarySortType	 type);
 
@@ -237,6 +239,9 @@ void summary_mark_all_read	  (SummaryView		*summaryview);
 void summary_add_address	  (SummaryView		*summaryview);
 void summary_select_all		  (SummaryView		*summaryview);
 void summary_unselect_all	  (SummaryView		*summaryview);
+
+void summary_reply		  (SummaryView		*summaryview,
+				   ComposeMode		 mode);
 
 void summary_set_colorlabel	  (SummaryView		*summaryview,
 				   guint		 labelcolor,

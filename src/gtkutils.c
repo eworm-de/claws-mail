@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -359,6 +359,14 @@ gboolean gtkut_stext_is_uri_string(GtkSText *text,
 		return TRUE;
 
 	return FALSE;
+}
+
+void gtk_stext_clear(GtkSText *text)
+{
+	gtk_stext_freeze(text);
+	gtk_stext_set_point(text, 0);
+	gtk_stext_forward_delete(text, gtk_stext_get_length(text));
+	gtk_stext_thaw(text);
 }
 
 void gtkut_widget_disable_theme_engine(GtkWidget *widget)

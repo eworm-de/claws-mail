@@ -2496,7 +2496,7 @@ PACK_FRAME(vbox1, keybind_frame, _("Shortcut key"));
 
 	keybind_label = gtk_label_new
 		(_("Select the preset key bindings.\n"
-		   "You can also modify each menu shortcut by pressing\n"
+		   "You can also modify each menu's shortcuts by pressing\n"
 		   "any key(s) when placing the mouse pointer on the item."));
 	gtk_widget_show (keybind_label);
 	gtk_box_pack_start (GTK_BOX (hbox1), keybind_label, FALSE, FALSE, 0);
@@ -3504,7 +3504,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Message/Move...\" \"<control>O\")\n"
 		"(menu-path \"<Main>/Message/Copy...\" \"<shift><control>O\")\n"
 		"(menu-path \"<Main>/Message/Delete\" \"<control>D\")\n"
+		"(menu-path \"<Main>/Message/Mark/Mark\" \"<shift>asterisk\")\n"
 		"(menu-path \"<Main>/Message/Mark/Unmark\" \"U\")\n"
+		"(menu-path \"<Main>/Message/Mark/Mark as unread\" \"<shift>exclam\")\n"
 
 		"(menu-path \"<Main>/Tool/Address book\" \"<shift><control>A\")\n"
 		"(menu-path \"<Main>/Tool/Execute\" \"X\")\n"
@@ -3546,7 +3548,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Message/Move...\" \"O\")\n"
 		"(menu-path \"<Main>/Message/Copy...\" \"<shift>O\")\n"
 		"(menu-path \"<Main>/Message/Delete\" \"D\")\n"
+		"(menu-path \"<Main>/Message/Mark/Mark\" \"<shift>asterisk\")\n"
 		"(menu-path \"<Main>/Message/Mark/Unmark\" \"U\")\n"
+		"(menu-path \"<Main>/Message/Mark/Mark as unread\" \"<shift>exclam\")\n"
 
 		"(menu-path \"<Main>/Tool/Address book\" \"<shift><control>A\")\n"
 		"(menu-path \"<Main>/Tool/Execute\" \"X\")\n"
@@ -3588,7 +3592,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Message/Move...\" \"<alt>O\")\n"
 		"(menu-path \"<Main>/Message/Copy...\" \"\")\n"
 		"(menu-path \"<Main>/Message/Delete\" \"<alt>D\")\n"
+		"(menu-path \"<Main>/Message/Mark/Mark\" \"<shift>asterisk\")\n"
 		"(menu-path \"<Main>/Message/Mark/Unmark\" \"U\")\n"
+		"(menu-path \"<Main>/Message/Mark/Mark as unread\" \"<shift>exclam\")\n"
 
 		"(menu-path \"<Main>/Tool/Address book\" \"<alt>A\")\n"
 		"(menu-path \"<Main>/Tool/Execute\" \"<alt>X\")\n"
@@ -3630,7 +3636,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Message/Move...\" \"\")\n"
 		"(menu-path \"<Main>/Message/Copy...\" \"\")\n"
 		"(menu-path \"<Main>/Message/Delete\" \"\")\n"
+		"(menu-path \"<Main>/Message/Mark/Mark\" \"\")\n"
 		"(menu-path \"<Main>/Message/Mark/Unmark\" \"\")\n"
+		"(menu-path \"<Main>/Message/Mark/Mark as unread\" \"\")\n"
 
 		"(menu-path \"<Main>/Tool/Address book\" \"\")\n"
 		"(menu-path \"<Main>/Tool/Execute\" \"\")\n"

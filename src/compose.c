@@ -1723,8 +1723,6 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 		buf = "";
 
 	gtk_stext_freeze(text);
-	gtk_stext_set_point(text, 0);
-	gtk_stext_forward_delete(text, gtk_stext_get_length(text));
 
 	for (p = buf; *p != '\0'; ) {
 		lastp = strchr(p, '\n');
@@ -4994,6 +4992,8 @@ static void compose_template_apply(Compose *compose, Template *tmpl)
 				   tmpl->subject);
 	if (tmpl->to && *tmpl->to != '\0')
 		compose_entry_append(compose, tmpl->to, COMPOSE_TO);
+
+	gtk_stext_clear(GTK_STEXT(compose->text));
 
 	if (compose->replyinfo == NULL) {
 		MsgInfo dummyinfo;

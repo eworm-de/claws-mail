@@ -1,3 +1,22 @@
+2002-01-31
+
+	* src/gtkutils.[ch]: added gtk_stext_clear().
+	* src/compose.[ch]
+	  src/mainwindow.c
+	  src/summaryview.[ch]: enabled multiple forwarding.
+	* src/summaryview.c:
+	  summary_set_marks_selected(): set marks for all selected row.
+	  summary_reply(): moved from summary_reply_cb().
+	* compose.[ch]: compose_forward(): modified so that it receives
+	  the message list.
+	* src/mainwindow.c: cleanup for reply processing.
+	* src/summaryview.c: summary_reply(): fixed a memory leak.
+	  summary_key_pressed(): removed hardcoded mark / mark as unread
+	  shortcuts.
+	* src/mainwindow.c
+	  src/prefs_common.c: added mark / mark as unread shortcuts to
+	  the menu.
+
 2002-01-30
 
 	* src/compose.c: compose_wrap_line_all(): wrap quoted part even
@@ -5,6 +24,10 @@
 	  auto-wrapping on reply).
 	* src/prefs_account.c: prefs_account_open(): initialize tmp_ac_prefs
 	  when creating a new account.
+	* src/mh.c: mh_get_msg_list(): use also st_ctime to detect
+	  directory change.
+	* src/prefs_common.c: prefs_interface_create(): modified the
+	  description of key binds selector.
 
 2002-01-29
 

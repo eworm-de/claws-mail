@@ -116,11 +116,14 @@ GSList *mh_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 	if (stat(path, &s) < 0) {
 		FILE_OP_ERROR(path, "stat");
 	} else {
-		if (item->mtime == s.st_mtime) {
+		time_t mtime;
+
+		mtime = MAX(s.st_mtime, s.st_ctime);
+		if (item->mtime == mtime) {
 			debug_print("Folder is not modified.\n");
 			scan_new = FALSE;
 		} else
-			item->mtime = s.st_mtime;
+			item->mtime = mtime;
 	}
 	g_free(path);
 

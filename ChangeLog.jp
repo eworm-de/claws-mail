@@ -1,3 +1,22 @@
+2002-01-31
+
+	* src/gtkutils.[ch]: gtk_stext_clear() を追加。
+	* src/compose.[ch]
+	  src/mainwindow.c
+	  src/summaryview.[ch]: 複数転送ができるようにした。
+	* src/summaryview.c:
+	  summary_set_marks_selected(): 選択行全てにマークを付けるようにした。
+	  summary_reply(): summary_reply_cb() から移動。
+	* compose.[ch]: compose_forward(): メッセージリストを受けるように
+	  修正。
+	* src/mainwindow.c: 返信の処理を整理。
+	* src/summaryview.c: summary_reply(): メモリリークを修正。
+	  summary_key_pressed(): ハードコードされたマーク／未読としてマーク
+	  のショートカットを削除。
+	* src/mainwindow.c
+	  src/prefs_common.c: メニューにマーク／未読としてマークのショート
+	  カットを追加。
+
 2002-01-30
 
 	* src/compose.c: compose_wrap_line_all():
@@ -6,6 +25,10 @@
 	  改行のためにあるので)。
 	* src/prefs_account.c: prefs_account_open(): 新規アカウントを作成
 	  するときに tmp_ac_prefs を初期化するようにした。
+	* src/mh.c: mh_get_msg_list(): ディレクトリの更新を検出するために
+	  st_ctime も使うようにした。
+	* src/prefs_common.c: prefs_interface_create(): キーバインドセレクタ
+	  の説明を修正。
 
 2002-01-29
 
