@@ -2017,18 +2017,27 @@ void log_print(const gchar *format, ...)
 {
 	va_list args;
 	gchar buf[BUFFSIZE];
+	gchar *logbuf;
+	gchar timestr[6];
+	time_t t;
 
 	va_start(args, format);
 	g_vsnprintf(buf, sizeof(buf), format, args);
 	va_end(args);
+	
+	time(&t);
+	strftime(timestr, 6, "%H:%M", localtime(&t));
+	logbuf = g_strdup_printf("[%s] %s", timestr, buf);
 
-	if (debug_mode) fputs(buf, stdout);
-	log_window_append(buf, LOG_NORMAL);
+	if (debug_mode) fputs(logbuf, stdout);
+	log_window_append(logbuf, LOG_NORMAL);
 	if (log_fp) {
-		fputs(buf, log_fp);
+		fputs(logbuf, log_fp);
 		fflush(log_fp);
 	}
 	statusbar_puts_all(buf);
+	
+	g_free(logbuf);
 }
 
 void log_message(const gchar *format, ...)

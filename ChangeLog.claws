@@ -1,3 +1,8 @@
+2001-07-17 [christoph]
+
+	* src/utils.c
+		timestamp log
+
 2001-07-17 [alfons]
 
 	0.5.0claws5
