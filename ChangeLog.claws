@@ -1,3 +1,8 @@
+2003-11-02 [alfons]	0.9.6claws64
+
+	* src/browseldap.c
+		fix build bustage if not compiling ldap support
+
 2003-11-01 [match]	0.9.6claws63
 
 	* po/POTFILES.in

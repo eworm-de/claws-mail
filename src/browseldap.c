@@ -25,6 +25,8 @@
 #  include "config.h"
 #endif
 
+#ifdef USE_LDAP
+
 #include "defs.h"
 
 #include <glib.h>
@@ -432,6 +434,8 @@ gboolean browseldap_entry( AddressDataSource *ds, const gchar *dn ) {
 
 	return TRUE;
 }
+
+#endif /* USE_LDAP */
 
 /*
 * End of Source.
