@@ -198,6 +198,9 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtkut_combo_set_items (GTK_COMBO (exteditor_combo),
 #ifdef WIN32
 			       "notepad \"%s\"",
+			       "wordpad \"%s\"",
+			       "write \"%s\"",
+			       "gvim -f -c \"set ft=mail\" \"%s\"",
 #endif
 			       "gedit %s",
 			       "kedit %s",

@@ -126,10 +126,24 @@
 #define SESSION_TIMEOUT_INTERVAL	60	/* sec */
 #define MAX_HISTORY_SIZE		16
 
-#ifdef WIN32
-# define LOCK_PORT			54321
+#ifndef WIN32
+#define NORMAL_FONT prefs_common.normalfont
+#define BOLD_FONT   prefs_common.boldfont
+#define SMALL_FONT	prefs_common.smallfont
 #endif
+
+#define DEFAULT_PIXMAP_THEME	"INTERNAL_DEFAULT"
+#define PIXMAP_THEME_DIR		"themes"
+
+#ifdef WIN32
+#  define LOCK_PORT		54321
  
+#  define COMMON_WIN_RC		"sylpheedwinrc"
+#  define ACCOUNT_WIN_RC	"accountwinrc"
+#  define ACTIONS_WIN_RC	"actionswinrc"
+#  define W32_MAILCAP_NAME	"mailcap.win32"
+#  define W32_PLUGINDIR		"\\bin\\plugins"
+
 #ifdef jpWIN32
 #  define NORMAL_FONT		"-*-*-normal-r-normal--12-*-*-*-m-*-jisx0208.1983-0," \
 				"-*-*-normal-r-normal--12-*-*-*-*-*-*-*"
@@ -142,50 +156,27 @@
 				"-*-*-normal-r-normal--12-*-*-*-*-*-*-*"
 #  define DEFAULT_SPACING_FONT	"-*-*-normal-r-normal--6-*-*-*-m-*-jisx0208.1983-0," \
 				"-*-*-normal-r-normal--6-*-*-*-*-*-*-*"
-#endif
-/*---------------------------------------------------------------------------*/
-#ifdef WIN32
-#  define NORMAL_FONT		"-*-Arial-normal-r-normal--15-*-*-*-*-*-*-*"
-#  define BOLD_FONT		"-*-Arial-bold-r-normal--15-*-*-*-*-*-*-*"
-#  define SMALL_FONT		"-*-Arial-normal-r-normal--14-*-*-*-*-*-*-*"
-/*#  define NORMAL_FONT		"-*-Microsoft Sans Serif-normal-r-normal--14-*-*-*-*-*-iso8859-1" */
-/*#  define BOLD_FONT		"-*-Microsoft Sans Serif-bold-r-normal--14-*-*-*-*-*-iso8859-1"   */
-/*#  define SMALL_FONT		"-*-Microsoft Sans Serif-normal-r-normal--14-*-*-*-*-*-iso8859-1" */
+#endif /* jpWIN32 ---------------------------------------------------------- */
+#  define NORMAL_FONT		"-*-Arial-normal-r-normal-*-*-110-*-*-p-*-*-*"
+#  define BOLD_FONT		"-*-Arial-bold-r-normal-*-*-110-*-*-p-*-*-*"
+#  define SMALL_FONT		"-*-Arial-normal-r-normal-*-*-110-*-*-p-*-*-*"
 /* Added */
-#  define DEFAULT_MESSAGE_FONT	"-*-*-normal-r-normal--18-*-*-*-m-*-*-*"
-#  define DEFAULT_SPACING_FONT	"-*-*-normal-r-normal--12-*-*-*-m-*-*-*"
-#else
-#  define NORMAL_FONT	prefs_common.normalfont
-#  define BOLD_FONT	prefs_common.boldfont
-#  define SMALL_FONT	prefs_common.smallfont
-#endif
+#  define DEFAULT_MESSAGE_FONT	"-*-Courier New-normal-r-normal-*-*-120-*-*-m-*-*-*"
+#  define DEFAULT_SPACING_FONT	"-*-Arial-normal-r-normal-*-*-110-*-*-p-*-*-*"
 
-#define DEFAULT_PIXMAP_THEME	"INTERNAL_DEFAULT"
-#define PIXMAP_THEME_DIR	"themes"
+#  define F_EXISTS		00 /* Existence only            */
+#  define W_OK			02 /* Write permission          */
+#  define R_OK			04 /* Read permission           */
+#  define F_OK			06 /* Read and write permission */
 
-#ifdef WIN32
-#  define F_EXISTS	00 /* Existence only            */
-#  define W_OK		02 /* Write permission          */
-#  define R_OK		04 /* Read permission           */
-#  define F_OK		06 /* Read and write permission */
-#endif
-
-#ifdef WIN32
-#  define S_IRGRP	_S_IREAD
-#  define S_IWGRP	_S_IWRITE
-#  define S_IXGRP	_S_IEXEC
-#  define S_IRWXG	(_S_IREAD|_S_IWRITE|_S_IEXEC)
-#  define S_IROTH	_S_IREAD
-#  define S_IWOTH	_S_IWRITE
-#  define S_IXOTH	_S_IEXEC
-#  define S_IRWXO	(_S_IREAD|_S_IWRITE|_S_IEXEC)
-#endif
-
-#ifdef WIN32
-#  define COMMON_WIN_RC		"sylpheedwinrc"
-#  define W32_MAILCAP_NAME	"mailcap.win32"
-#  define W32_PLUGINDIR		"\\bin\\plugins"
+#  define S_IRGRP		_S_IREAD
+#  define S_IWGRP		_S_IWRITE
+#  define S_IXGRP		_S_IEXEC
+#  define S_IRWXG		(_S_IREAD|_S_IWRITE|_S_IEXEC)
+#  define S_IROTH		_S_IREAD
+#  define S_IWOTH		_S_IWRITE
+#  define S_IXOTH		_S_IEXEC
+#  define S_IRWXO		(_S_IREAD|_S_IWRITE|_S_IEXEC)
 #endif /* WIN32 */
-
 
 #endif /* __DEFS_H__ */

@@ -50,31 +50,6 @@ typedef enum
 	DUMMY_PARAM
 } DummyEnum;
 
-#ifdef WIN32
-void prefs_init_config(PrefParam *param)
-{
-	gchar *value;
-	int i;
-
-	for (i = 0; param[i].name != NULL; i++) {
-		switch (param[i].type) {
-		case P_STRING:
-			value = param[i].defval;
-			if (value){
-				value = g_strdup(value);
-				locale_to_utf8(&value);
-				/* g_free(param[i].defval); */
-				param[i].defval = g_strdup(value);
-				g_free(value);
-			}
-			break;
-		default:
-			break;
-		}
-	}
-}
-#endif
-
 void prefs_read_config(PrefParam *param, const gchar *label,
 		       const gchar *rcfile)
 {

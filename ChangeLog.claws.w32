@@ -1,3 +1,13 @@
+2004-12-19 [thorsten]	0.9.13cvs20.3
+
+	* src/prefs_common.c
+	* src/prefs_gtk.c
+		fix: move init function to correct place
+	* src/prefs_ext_prog.c
+		add: add some editors
+	* src/common/defs.h
+		chg: rearrange settings
+
 2004-12-19 [thorsten]	0.9.13cvs20.2
 
 	* src/prefs_common.c
