@@ -434,6 +434,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 	session_destroy(session);
 	send_progress_dialog_destroy(dialog);
 
+	statusbar_pop_all();
 	statusbar_verbosity_set(FALSE);
 	return ret;
 }
