@@ -1,5 +1,10 @@
 2004-01-20
 
+	* src/gtkstext.c: find_line_params(): also break between mutlibyte
+	  and single-byte characters.
+
+2004-01-20
+
 	* src/gtkstext.c: find_line_params(): break lines between multibyte
 	  characters on word wrap mode.
 

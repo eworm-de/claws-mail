@@ -5228,16 +5228,22 @@ find_line_params (GtkSText* text,
 		      if (text->use_wchar)
 			{
 			  gchar mb[MB_LEN_MAX];
+			  gint mb_len_1;
+			  gint mb_len_2;
 
+			  mb_len_1 = wctomb (mb, GTK_STEXT_INDEX (text, lp.end.index));
 			  while (!gdk_iswspace (GTK_STEXT_INDEX (text, lp.end.index)) &&
 				 (lp.end.index > lp.start.index))
 			    {
 			      decrement_mark (&lp.end);
 			      lp.displayable_chars -= 1;
 
+			      mb_len_2 = wctomb (mb, GTK_STEXT_INDEX (text, lp.end.index));
 			      /* multibyte chars are always breakable */
-			      if (wctomb (mb, GTK_STEXT_INDEX (text, lp.end.index)) > 1)
+			      if (mb_len_1 > 1 ||
+				  (mb_len_1 == 1 && mb_len_2 > 1))
 				break;
+			      mb_len_1 = mb_len_2;
 			    }
 			}
 		      else

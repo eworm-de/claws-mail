@@ -1,5 +1,10 @@
 2004-01-20
 
+	* src/gtkstext.c: find_line_params(): マルチバイトとシングルバイト
+	  文字の間でも改行するようにした。
+
+2004-01-20
+
 	* src/gtkstext.c: find_line_params(): ワードラップモードのとき
 	  マルチバイト文字間でも改行するようにした。
 
