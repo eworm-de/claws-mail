@@ -1,3 +1,12 @@
+2003-09-07 [alfons]	0.9.4claws69
+	
+	* src/summaryview.c
+		abandon setting usize for messageview because it gives layout problems
+		with the quick search bar and the headerview; fixes assorted UI glitches:
+		
+		o bug #148, "Toggling of quick-search bar reduces index view area" 
+		o bug #280, "Window resiizes for line length but does not revert"
+
 2003-09-07 [christoph]	0.9.4claws68
 
 	* src/compose.c
