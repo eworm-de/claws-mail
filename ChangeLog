@@ -1,5 +1,18 @@
 2002-09-19
 
+	* src/rfc2015.c: check_signature(): corrected error handling and
+	  fixed memory leak.
+
+2002-09-19
+
+	* src/rfc2015.c: check_signature(): correctly remove the last empty
+	  line, and canonicalize the file part before verifying (this should
+	  fix incompatibility with Evolution or some other MUAs).
+	* src/utils.[ch]: copy_file_part(): new. It copies the specified
+	  range of file stream to another file.
+
+2002-09-19
+
 	* src/compose.c: compose_write_to_file(): force BASE64 encoding for
 	  8-bit text when signing (thanks to Colin Leroy).
 
