@@ -1,3 +1,9 @@
+2004-02-28 [keith]	0.9.9claws36
+
+	* src/common/utils.c
+		Fix treatment of whitespace in quicksearch bar (leading
+		spaces and >1 space between commands and parameters).
+
 2004-02-27 [alfons]	0.9.9claws35
 
 	* src/compose.[ch]
