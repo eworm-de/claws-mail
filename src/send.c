@@ -85,6 +85,9 @@ static SockInfo *send_smtp_open	(const gchar *server, gushort port,
 				 const gchar *domain, gboolean use_smtp_auth);
 #endif
 
+static gint send_message_data	(SendProgressDialog *dialog, SockInfo *sock,
+				 FILE *fp, gint size);
+
 static SendProgressDialog *send_progress_dialog_create(void);
 static void send_progress_dialog_destroy(SendProgressDialog *dialog);
 static void send_cancel(GtkWidget *widget, gpointer data);
@@ -328,11 +331,8 @@ static gint send_message_smtp(GSList *to_list, const gchar *from,
 	GtkCList *clist;
 	const gchar *text[3];
 	gchar buf[BUFFSIZE];
-	gchar str[BUFFSIZE];
 	GSList *cur;
 	gint size;
-	gint bytes = 0;
-	struct timeval tv_prev, tv_cur;
 
 	g_return_val_if_fail(to_list != NULL, -1);
 	g_return_val_if_fail(from != NULL, -1);
@@ -387,33 +387,9 @@ static gint send_message_smtp(GSList *to_list, const gchar *from,
 
 	SEND_EXIT_IF_NOTOK(smtp_data(smtp_sock), "sending DATA");
 
-	gettimeofday(&tv_prev, NULL);
-
 	/* send main part */
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		bytes += strlen(buf);
-		strretchomp(buf);
-
-		gettimeofday(&tv_cur, NULL);
-		if (tv_cur.tv_sec - tv_prev.tv_sec > 0 ||
-		    tv_cur.tv_usec - tv_prev.tv_usec > UI_REFRESH_INTERVAL) {
-			g_snprintf(str, sizeof(str),
-				   _("Sending message (%d / %d bytes)"),
-				   bytes, size);
-			progress_dialog_set_label(dialog->dialog, str);
-			progress_dialog_set_percentage
-				(dialog->dialog, (gfloat)bytes / (gfloat)size);
-			GTK_EVENTS_FLUSH();
-			gettimeofday(&tv_prev, NULL);
-		}
-
-		/* escape when a dot appears on the top */
-		if (buf[0] == '.')
-			SEND_EXIT_IF_ERROR(sock_write(smtp_sock, ".", 1),
-					   "sending data");
-
-		SEND_EXIT_IF_ERROR(sock_puts(smtp_sock, buf), "sending data");
-	}
+	SEND_EXIT_IF_ERROR(send_message_data(dialog, smtp_sock, fp, size) == 0,
+			   "sending data");
 
 	progress_dialog_set_label(dialog->dialog, _("Quitting..."));
 	GTK_EVENTS_FLUSH();
@@ -426,6 +402,103 @@ static gint send_message_smtp(GSList *to_list, const gchar *from,
 
 	return 0;
 }
+
+#undef EXIT_IF_CANCELLED
+#undef SEND_EXIT_IF_ERROR
+#undef SEND_EXIT_IF_NOTOK
+
+#define EXIT_IF_CANCELLED() \
+{ \
+	if (dialog->cancelled) return -1; \
+}
+
+#define SEND_EXIT_IF_ERROR(f) \
+{ \
+	EXIT_IF_CANCELLED(); \
+	if ((f) <= 0) return -1; \
+}
+
+#define SEND_DIALOG_UPDATE() \
+{ \
+	gettimeofday(&tv_cur, NULL); \
+	if (tv_cur.tv_sec - tv_prev.tv_sec > 0 || \
+	    tv_cur.tv_usec - tv_prev.tv_usec > UI_REFRESH_INTERVAL) { \
+		g_snprintf(str, sizeof(str), \
+			   _("Sending message (%d / %d bytes)"), \
+			   bytes, size); \
+		progress_dialog_set_label(dialog->dialog, str); \
+		progress_dialog_set_percentage \
+			(dialog->dialog, (gfloat)bytes / (gfloat)size); \
+		GTK_EVENTS_FLUSH(); \
+		gettimeofday(&tv_prev, NULL); \
+	} \
+}
+
+static gint send_message_data(SendProgressDialog *dialog, SockInfo *sock,
+			      FILE *fp, gint size)
+{
+	gchar buf[BUFFSIZE];
+	gchar str[BUFFSIZE];
+	gint bytes = 0;
+	struct timeval tv_prev, tv_cur;
+
+	gettimeofday(&tv_prev, NULL);
+
+	/* output header part */
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		bytes += strlen(buf);
+		strretchomp(buf);
+
+		SEND_DIALOG_UPDATE();
+
+		if (!g_strncasecmp(buf, "Bcc:", 4)) {
+			gint next;
+
+			for (;;) {
+				next = fgetc(fp);
+				if (next != ' ' && next != '\t') {
+					ungetc(next, fp);
+					break;
+				}
+				if (fgets(buf, sizeof(buf), fp) == NULL)
+					break;
+				else
+					bytes += strlen(buf);
+			}
+		} else {
+			SEND_EXIT_IF_ERROR(sock_puts(sock, buf));
+		}
+	}
+
+	SEND_EXIT_IF_ERROR(sock_write(sock, "\r\n", 2));
+
+	/* output body part */
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		bytes += strlen(buf);
+		strretchomp(buf);
+
+		SEND_DIALOG_UPDATE();
+
+		/* escape when a dot appears on the top */
+		if (buf[0] == '.')
+			SEND_EXIT_IF_ERROR(sock_write(sock, ".", 1));
+
+		SEND_EXIT_IF_ERROR(sock_puts(sock, buf));
+	}
+
+	g_snprintf(str, sizeof(str), _("Sending message (%d / %d bytes)"),
+		   bytes, size);
+	progress_dialog_set_label(dialog->dialog, str);
+	progress_dialog_set_percentage
+		(dialog->dialog, (gfloat)bytes / (gfloat)size);
+	GTK_EVENTS_FLUSH();
+
+	return 0;
+}
+
+#undef EXIT_IF_CANCELLED
+#undef SEND_EXIT_IF_ERROR
+#undef SEND_DIALOG_UPDATE
 
 #if USE_SSL
 static SockInfo *send_smtp_open(const gchar *server, gushort port,

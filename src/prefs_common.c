@@ -740,7 +740,7 @@ void prefs_common_open(void)
 	if (prefs_rc_is_readonly(COMMON_RC))
 		return;
 
-	inc_autocheck_timer_remove();
+	inc_lock();
 
 	if (!dialog.window) {
 		prefs_common_create();
@@ -3225,7 +3225,7 @@ static void prefs_common_ok(void)
 	if (quote_desc_win && GTK_WIDGET_VISIBLE(quote_desc_win))
 		gtk_widget_hide(quote_desc_win);
 
-	inc_autocheck_timer_set();
+	inc_unlock();
 }
 
 static void prefs_common_apply(void)
@@ -3233,12 +3233,15 @@ static void prefs_common_apply(void)
 	prefs_set_data_from_dialog(param);
 	main_window_reflect_prefs_all();
 	prefs_common_save_config();
+
+	inc_autocheck_timer_remove();
+	inc_autocheck_timer_set();
 }
 
 static void prefs_common_cancel(void)
 {
 	gtk_widget_hide(dialog.window);
-	inc_autocheck_timer_set();
+	inc_unlock();
 }
 
 

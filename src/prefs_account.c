@@ -489,7 +489,7 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
 
 	debug_print(_("Opening account preferences window...\n"));
 
-	inc_autocheck_timer_remove();
+	inc_lock();
 
 	cancelled = FALSE;
 
@@ -545,7 +545,7 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
 	gtk_main();
 	gtk_widget_hide(dialog.window);
 
-	inc_autocheck_timer_set();
+	inc_unlock();
 
 	if (cancelled && new_account) {
 		g_free(ac_prefs);

@@ -1,3 +1,10 @@
+2001-09-02 [paul]
+
+	* configure.in
+		change to 0.6.0claws2
+
+	* sync with sylpheed 0.6.0cvs4
+
 2001-09-01 [match]
 	* pixmaps/
 		interface.xpm

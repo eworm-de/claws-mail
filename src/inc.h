@@ -106,6 +106,10 @@ void inc_progress_update	(Pop3State	*state,
 				 Pop3Phase	 phase);
 gint inc_drop_message		(const gchar	*file,
 				 Pop3State	*state);
+
+void inc_lock			(void);
+void inc_unlock			(void);
+
 void inc_autocheck_timer_init	(MainWindow	*mainwin);
 void inc_autocheck_timer_set	(void);
 void inc_autocheck_timer_remove	(void);

@@ -3,6 +3,7 @@ bin_PROGRAMS = sylpheed
 sylpheed_SOURCES = \
 	intl.h \
 	defs.h \
+	version.h \
 	main.c main.h \
 	mainwindow.c mainwindow.h \
 	folderview.c folderview.h \
@@ -117,6 +118,7 @@ sylpheed_SOURCES = \
 
 EXTRA_DIST = \
 	quote_fmt_parse.h \
+	version.h.in \
 	pixmaps/clip.xpm \
 	pixmaps/deleted.xpm \
 	pixmaps/dir-close.xpm \

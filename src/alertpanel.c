@@ -29,6 +29,7 @@
 #include "manage_window.h"
 #include "utils.h"
 #include "gtkutils.h"
+#include "inc.h"
 
 #define TITLE_FONT	"-*-helvetica-medium-r-normal--17-*-*-*-*-*-*-*," \
 			"-*-*-medium-r-normal--16-*-*-*-*-*-*-*,*"
@@ -151,10 +152,9 @@ static void alertpanel_show(void)
 	manage_window_set_transient(GTK_WINDOW(dialog));
 	value = G_ALERTWAIT;
 
-	/* ungrab the mouse events ? */
 	if (gdk_pointer_is_grabbed())
 		gdk_pointer_ungrab(GDK_CURRENT_TIME);
-
+	inc_lock();
 	while ((value & G_ALERT_VALUE_MASK) == G_ALERTWAIT)
 		gtk_main_iteration();
 
@@ -162,6 +162,7 @@ static void alertpanel_show(void)
 	GTK_EVENTS_FLUSH();
 
 	alertpanel_is_open = FALSE;
+	inc_unlock();
 }
 
 static void alertpanel_create(const gchar *title,

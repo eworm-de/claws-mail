@@ -68,12 +68,14 @@
 #include "pixmaps/complete.xpm"
 #include "pixmaps/error.xpm"
 
-GdkPixmap *currentxpm;
-GdkBitmap *currentxpmmask;
-GdkPixmap *errorxpm;
-GdkBitmap *errorxpmmask;
-GdkPixmap *okxpm;
-GdkBitmap *okxpmmask;
+static guint inc_lock_count = 0;
+
+static GdkPixmap *currentxpm;
+static GdkBitmap *currentxpmmask;
+static GdkPixmap *errorxpm;
+static GdkBitmap *errorxpmmask;
+static GdkPixmap *okxpm;
+static GdkBitmap *okxpmmask;
 
 #define MSGBUFSIZE	8192
 
@@ -116,8 +118,8 @@ static gint get_spool			(FolderItem	*dest,
 					 const gchar	*mbox);
 
 static void inc_all_spool(void);
-
-static gint inc_autocheck_func		(gpointer	 data);
+static void inc_autocheck_timer_set_interval	(guint		 interval);
+static gint inc_autocheck_func			(gpointer	 data);
 
 /**
  * inc_finished:
@@ -169,6 +171,8 @@ static void inc_finished(MainWindow *mainwin, gboolean new_messages)
 void inc_mail(MainWindow *mainwin)
 {
 	gint new_msgs = 0;
+
+	if (inc_lock_count) return;
 
 	inc_autocheck_timer_remove();
 	summary_write_cache(mainwin->summaryview);
@@ -239,6 +243,8 @@ void inc_all_account_mail(MainWindow *mainwin)
 	GList *list, *queue_list = NULL;
 	IncProgressDialog *inc_dialog;
 	gint new_msgs = 0;
+
+	if (inc_lock_count) return;
 
 	inc_autocheck_timer_remove();
 	summary_write_cache(mainwin->summaryview);
@@ -1094,6 +1100,17 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 	return msgs;
 }
 
+void inc_lock(void)
+{
+	inc_lock_count++;
+}
+
+void inc_unlock(void)
+{
+	if (inc_lock_count > 0)
+		inc_lock_count--;
+}
+
 static guint autocheck_timer = 0;
 static gpointer autocheck_data = NULL;
 
@@ -1103,21 +1120,26 @@ void inc_autocheck_timer_init(MainWindow *mainwin)
 	inc_autocheck_timer_set();
 }
 
-void inc_autocheck_timer_set(void)
+static void inc_autocheck_timer_set_interval(guint interval)
 {
 	inc_autocheck_timer_remove();
 
 	if (prefs_common.autochk_newmail && autocheck_data) {
 		autocheck_timer = gtk_timeout_add
-			(prefs_common.autochk_itv * 60000,
-			 inc_autocheck_func,
-			 autocheck_data);
+			(interval, inc_autocheck_func, autocheck_data);
+		debug_print("added timer = %d\n", autocheck_timer);
 	}
+}
+
+void inc_autocheck_timer_set(void)
+{
+	inc_autocheck_timer_set_interval(prefs_common.autochk_itv * 60000);
 }
 
 void inc_autocheck_timer_remove(void)
 {
 	if (autocheck_timer) {
+		debug_print("removed timer = %d\n", autocheck_timer);
 		gtk_timeout_remove(autocheck_timer);
 		autocheck_timer = 0;
 	}
@@ -1126,6 +1148,12 @@ void inc_autocheck_timer_remove(void)
 static gint inc_autocheck_func(gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
+
+	if (inc_lock_count) {
+		debug_print("autocheck is locked.\n");
+		inc_autocheck_timer_set_interval(1000);
+		return FALSE;
+	}
 
 	inc_all_account_mail(mainwin);
 

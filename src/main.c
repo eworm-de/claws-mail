@@ -79,6 +79,8 @@
 #  include "ssl.h"
 #endif
 
+#include "version.h"
+
 gchar *prog_version;
 gchar *startup_dir;
 gboolean debug_mode = FALSE;
@@ -370,6 +372,8 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 			return;
 		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}
+
+	inc_autocheck_timer_remove();
 
 	if (prefs_common.clean_on_exit)
 		main_window_empty_trash(mainwin, prefs_common.ask_on_clean);

@@ -2662,12 +2662,9 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 			if (*str != '\0') {
 				compose->to_list = address_list_append
 					(compose->to_list, str);
-				if (is_draft) {
-					compose_convert_header
-						(buf, sizeof(buf), str,
-						 strlen("Bcc: "));
-					fprintf(fp, "Bcc: %s\n", buf);
-				}
+				compose_convert_header(buf, sizeof(buf), str,
+						       strlen("Bcc: "));
+				fprintf(fp, "Bcc: %s\n", buf);
 			}
 		}
 	}

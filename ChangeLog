@@ -1,3 +1,29 @@
+2001-09-02
+
+	* src/inc.[ch]: changed inc_autocheck_(un)lock() to inc_(un)lock().
+	  inc_mail(), inc_all_account_mail(): return immediately if locked.
+	* src/account.c
+	  src/prefs_common.c
+	  src/prefs_account.c: use inc_lock() and inc_unlock() instead of
+	  inc_autocheck_timer_{remove,set}().
+
+2001-09-01
+
+	* src/inc.[ch]: inc_autocheck_lock(), inc_autocheck_unlock(): new.
+	  They increase/decrease the lock count.
+	  inc_autocheck_func(): if locked, delay the autochecking 1 second.
+	  inc_autocheck_timer_set_interval(): set interval by its argument.
+	* src/summaryview.c: summary_show(): lock the autochecking while
+	  processing.
+	* src/main.c: app_will_exit(): remove autocheck timer.
+	* acconfig.h
+	  src/defs.h: removed the definitions of PACKAGE and VERSION to
+	  prevent unnecessary compilation.
+	* configure.in: changed AC_DEFINE_UNQUOTED of PACKAGE and VERSION
+	  to AC_SUBST, and added src/version.h to AC_OUTPUT.
+	* src/version.h.in: new.
+	* src/intl.h: changed dgettext() to gettext().
+
 2001-08-31
 
 	* po/ja.po: fixed a typo that crashed Sylpheed with older version
@@ -5,6 +31,12 @@
 	* configure.in: fixed a bug that didn't show results correctly.
 	  Fixed a bug that --enable-compface and --enable-jconv disabled
 	  the options.
+	* src/procmsg.c: procmsg_send_queue(): don't abort when sending
+	  message failed.
+	* src/compose.c: compose_write_headers(): add Bcc: header to the
+	  output file.
+	* src/send.c: send_message_data(): new. Separated from
+	  send_message_smtp(). Remove Bcc: header before sending.
 
 2001-08-30
 

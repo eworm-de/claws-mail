@@ -76,6 +76,7 @@
 #include "about.h"
 #include "manual.h"
 #include "prefs_templates.h"
+#include "version.h"
 
 #define AC_LABEL_WIDTH	240
 
@@ -2271,7 +2272,7 @@ static void send_queue_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 	GList *list;
 
 	if (procmsg_send_queue() < 0)
-		alertpanel_error(_("Sending queued message failed."));
+		alertpanel_error(_("Some errors occurred while sending queued messages."));
 
 	statusbar_pop_all();
 

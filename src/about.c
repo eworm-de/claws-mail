@@ -45,6 +45,7 @@
 #include "gtkutils.h"
 #include "prefs_common.h"
 #include "utils.h"
+#include "version.h"
 
 #include "pixmaps/sylpheed-logo.xpm"
 

@@ -72,6 +72,7 @@
 #include "filter.h"
 #include "folder.h"
 #include "colorlabel.h"
+#include "inc.h"
 #include "addressbook.h"
 #include "addr_compl.h"
 #include "scoring.h"
@@ -758,6 +759,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 
 	if (locked)
 		return FALSE;
+
+	inc_lock();
 	locked = TRUE;
 
 	STATUSBAR_POP(summaryview->mainwin);
@@ -786,6 +789,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 			summary_write_cache(summaryview);
 		else {
 			locked = FALSE;
+			inc_unlock();
                         return FALSE;
 		}
    		folder_update_op_count();
@@ -818,6 +822,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 		summaryview->folder_item = item;
 		gtk_clist_thaw(GTK_CLIST(ctree));
 		locked = FALSE;
+		inc_unlock();
 		return TRUE;
 	}
 	g_free(buf);
@@ -939,6 +944,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 
 	main_window_cursor_normal(summaryview->mainwin);
 	locked = FALSE;
+	inc_unlock();
 
 	return TRUE;
 }

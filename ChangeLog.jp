@@ -1,3 +1,31 @@
+2001-09-02
+
+	* src/inc.[ch]: inc_autocheck_(un)lock() を inc_(un)lock() に変更。
+	  inc_mail(), inc_all_account_mail(): ロックされていればすぐに戻る
+	  ようにした。
+	* src/account.c
+	  src/prefs_common.c
+	  src/prefs_account.c: inc_autocheck_timer_{remove,set}() の代わりに
+	  inc_lock() と inc_unlock() を用いるようにした。
+
+2001-09-01
+
+	* src/inc.[ch]: inc_autocheck_lock(), inc_autocheck_unlock(): 新規。
+	  ロックカウントを増加/減少させる。
+	* inc_autocheck_func(): ロックされていれば、自動チェックを1秒遅ら
+	  せるようにした。
+	  inc_autocheck_timer_set_interval(): 引数で間隔を指定。
+	* src/summaryview.c: summary_show(): 処理中は自動チェックをロック
+	  するようにした。
+	* src/main.c: app_will_exit(): 自動チェックタイマを削除。
+	* acconfig.h
+	  src/defs.h: 不要なコンパイルを避けるために PACKAGE と VERSION 
+	  の定義を削除。
+	* configure.in: PACKAGE と VERSION の AC_DEFINE_UNQUOTED() を
+	  AC_SUBST に変更し、 src/version.h を AC_OUTPUT に追加。
+	* src/version.h.in: 新規。
+	* src/intl.h: dgettext() を gettext() に変更。
+
 2001-08-31
 
 	* po/ja.po: 古いバージョンの GTK+ で Sylpheed をクラッシュさせる
@@ -5,6 +33,12 @@
 	* configure.in: 結果を正しく表示していなかったバグを修正。
 	  --enable-compface と --enable-jconv がオプションを無効にしていた
 	  バグを修正。
+	* src/procmsg.c: procmsg_send_queue(): メッセージの送信に失敗しても
+	  中断しないようにした。
+	* src/compose.c: compose_write_headers(): 出力ファイルに Bcc:
+	  ヘッダを付加するようにした。
+	* src/send.c: send_message_data(): 新規。send_message_smtp() から
+	  分離。送信前に Bcc: ヘッダを削除するようにした。
 
 2001-08-30
 
