@@ -68,6 +68,7 @@ typedef struct _GtkPspell
 	gchar *path;
 	gchar *dict;
 	guint mode;
+	guint learn;
         guint orig_pos;
 	     
 	GSList * dictionary_list;
@@ -76,27 +77,28 @@ typedef struct _GtkPspell
 } GtkPspell;
 
 typedef PspellConfig GtkPspellConfig;
+
 /* Create a new gtkspell instance to manage one text widget */
 
 /* These one create and delete a pspell config */
-GtkPspellConfig * gtkpspell_init();
+GtkPspellConfig *gtkpspell_init();
 void gtkpspell_finished(GtkPspellConfig * gtkpspellconfig);
 
 /* These ones create and delete a manager*/
-GtkPspell * gtkpspell_new(GtkPspellConfig * config);
+GtkPspell *gtkpspell_new(GtkPspellConfig * config);
 
 GtkPspell *gtkpspell_new_with_config(GtkPspellConfig *gtkpspellconfig, 
                                      guchar *path, 
                                      guchar *dict, 
                                      guint mode, 
                                      guchar *encoding);
-GtkPspell * gtkpspell_delete(GtkPspell *gtkpspell);
+GtkPspell *gtkpspell_delete(GtkPspell *gtkpspell);
 
 int gtkpspell_set_path_and_dict(GtkPspell *gtkpspell, guchar * path,
                                 guchar * dict);
-guchar * gtkpspell_get_dict(GtkPspell *gtkpspell);
+guchar *gtkpspell_get_dict(GtkPspell *gtkpspell);
 
-guchar * gtkpspell_get_path(GtkPspell *gtkpspell);
+guchar *gtkpspell_get_path(GtkPspell *gtkpspell);
 
 /* This sets suggestion mode "fast" "normal" "bad-spellers" */
 /* and resets the dict & path (which should be set first)  */

@@ -72,11 +72,14 @@
 static void add_word_to_session		(GtkWidget *w, GtkPspell *d);
 static void add_word_to_personal	(GtkWidget *w, GtkPspell *d);
 static void set_sug_mode		(GtkWidget *w, GtkPspell *gtkpspell);
+static void set_learn_mode		(GtkWidget *w, GtkPspell *gtkpspell);
 static void check_all			(GtkWidget *w, GtkPspell *gtkpspell);
 static void menu_change_dict		(GtkWidget *w, GtkPspell *gtkpspell);
 static void entry_insert_cb		(GtkXText *gtktext, gchar *newtext, 
 					 guint len, guint *ppos, 
 					 GtkPspell *gtkpspell);
+static gint compare_dict		(Dictionary *a, Dictionary *b);
+
 
 /* gtkspellconfig - only one config per session */
 GtkPspellConfig * gtkpspellconfig;
@@ -146,6 +149,7 @@ GtkPspell * gtkpspell_new(GtkPspellConfig *gtkpspellconfig)
 	gtkpspell->path            = NULL;
 	gtkpspell->dict            = NULL;
 	gtkpspell->mode            = PSPELL_FASTMODE;
+	gtkpspell->learn	   = TRUE;
 	gtkpspell->gtktext         = NULL;
 	return gtkpspell;
 }
@@ -175,6 +179,7 @@ GtkPspell *gtkpspell_new_with_config(GtkPspellConfig *gtkpspellconfig,
   
 	gtkpspell->config	   = pspell_config_clone(gtkpspellconfig);
 	gtkpspell->mode		   = PSPELL_FASTMODE;
+	gtkpspell->learn	   = TRUE;
 	
 	if (!set_path_and_dict(gtkpspell, gtkpspell->config, path, dict)) {
 		debug_print(_("Pspell could not be configured."));
@@ -204,6 +209,8 @@ GtkPspell *gtkpspell_new_with_config(GtkPspellConfig *gtkpspellconfig,
 GtkPspell *gtkpspell_delete( GtkPspell *gtkpspell )
 {
 	if ( gtkpspell->checker ) {
+		/* First save all word lists */
+		pspell_manager_save_all_word_lists(gtkpspell->checker);
 		delete_pspell_manager(gtkpspell->checker);
 		gtkpspell->checker      = NULL;
 		gtkpspell->possible_err = NULL; /* checker is a cast from possible_err */
@@ -246,46 +253,49 @@ int set_path_and_dict(GtkPspell *gtkpspell, PspellConfig *config,
   	/* pspell dict name format :                         */
 	/*   <lang>[[-<spelling>[-<jargon>]]-<module>.pwli   */
 	/* Strip off path                                    */
-
-	if (!strrchr(dict, G_DIR_SEPARATOR)) { /* plain dict name */
-		strncpy(buf, dict, BUFSIZE - 1);
+	
+	if (!strrchr(dict,G_DIR_SEPARATOR)) {
+		/* plain dict name */
+		strncpy(buf,dict,BUFSIZE-1);
 	}
-	else { /* strip path */
-		strncpy(buf, strrchr(dict, G_DIR_SEPARATOR) + 1, BUFSIZE - 1);
+	else { 
+		/* strip path */
+		strncpy(buf, strrchr(dict, G_DIR_SEPARATOR)+1, BUFSIZE-1);
 	}
+	
 	g_free(gtkpspell->dict);
 
 	/* Ensure no buffers overflows if the dict is to long */
-	buf[BUFSIZE - 1] = 0x00;
-  
+	buf[BUFSIZE-1] = 0x00;
+
 	language = buf;
-	if ((module = strrchr(buf,'-')) != NULL) {
+	if ((module = strrchr(buf, '-')) != NULL) {
 		module++;
-		if ((end = strrchr(module,'.')) != NULL)
-			*end = 0;
+		if ((end = strrchr(module, '.')) != NULL)
+			end[0] = 0x00;
 	}
 
 	/* In tempdict, we have only the dict name, without path nor
-         * extension. Useful in the popup menus */
+	   extension. Useful in the popup menus */
 
 	tempdict = g_strdup(buf);
 
 	/* Probably I am too paranoied... */
-	if (!( language[0] != 0x00 && language[1] != 0x00))
+	if (!(language[0] != 0x00 && language[1] != 0x00))
 		language = NULL;
 	else {
-		spelling = strchr(language,'-');
-		if (spelling!=NULL) {
-			*spelling = 0;
+		spelling = strchr(language, '-');
+		if (spelling != NULL) {
+			spelling[0] = 0x00;
 			spelling++;
 		}
 		if (spelling != module) {
-			if ((end = strchr(spelling, '-' )) != NULL) {
-				*end = 0;
+			if ((end = strchr(spelling, '-')) != NULL) {
+				end[0] = 0x00;
 				jargon = end + 1;
 				if (jargon != module)
 					if ((end = strchr(jargon, '-')) != NULL)
-						*end = 0;
+						end[0] = 0x00;
 					else
 						jargon = NULL;
 				else
@@ -300,7 +310,7 @@ int set_path_and_dict(GtkPspell *gtkpspell, PspellConfig *config,
 
 	debug_print(_("Language : %s\nSpelling: %s\nJargon: %s\nModule: %s\n"),
 		    language, spelling, jargon, module);
-
+	
 	if (language) 
 		pspell_config_replace(config, "language-tag", language);
 	if (spelling) 
@@ -329,12 +339,13 @@ int set_path_and_dict(GtkPspell *gtkpspell, PspellConfig *config,
 	g_free(temppath);
 	g_free(tempdict);
 
-	return -1;
+	return TRUE;
 }
+
 
 /* gtkpspell_set_path_and_dict() - Set path and dict. The session is 
  * resetted. 
- * 0 on error, -1 on success */
+ * FALSE on error, TRUE on success */
 int gtkpspell_set_path_and_dict(GtkPspell * gtkpspell, guchar * path, 
 				guchar * dict)
 {
@@ -345,15 +356,17 @@ int gtkpspell_set_path_and_dict(GtkPspell * gtkpspell, guchar * path,
 
 	config2 = pspell_config_clone(gtkpspell->config);
 
-	if (gtkpspell->checker) 
+	if (gtkpspell->checker) {
+		pspell_manager_save_all_word_lists(gtkpspell->checker);
 		delete_pspell_manager(gtkpspell->checker);
+	}
 	
 	gtkpspell->checker      = NULL;
 	gtkpspell->possible_err = NULL;
 
 	if (set_path_and_dict(gtkpspell,config2,path,dict) == 0) {
 		debug_print(_("Pspell set_path_and_dict error."));
-		return 0;
+		return FALSE;
 	}
   
 	gtkpspell->possible_err = new_pspell_manager(config2);
@@ -366,12 +379,12 @@ int gtkpspell_set_path_and_dict(GtkPspell * gtkpspell, guchar * path,
 			    pspell_error_message(gtkpspell->possible_err));
 		delete_pspell_can_have_error(gtkpspell->possible_err);
 		gtkpspell->possible_err = NULL;
-		return 0;
+		return FALSE;
 	}
 
 	gtkpspell->checker=to_pspell_manager(gtkpspell->possible_err);
 
-	return -1;
+	return TRUE;
 }
   
 /* gtkpspell_get_dict() - What dict are we using ? language-spelling-jargon-module format */
@@ -471,14 +484,16 @@ int gtkpspell_set_sug_mode(GtkPspell *gtkpspell, gchar *themode)
 	guchar       *path;
 	guchar       *dict;
 
+	pspell_manager_save_all_word_lists(gtkpspell->checker);
 	delete_pspell_manager(gtkpspell->checker);
+
 	gtkpspell->checker = NULL;
 
 	config2 = pspell_config_clone(gtkpspell->config);
 
 	if (!set_path_and_dict(gtkpspell, config2, gtkpspell->path, gtkpspell->dict)) {
 		debug_print(_("Pspell set_sug_mod could not reset path & dict\n"));
-		return 0;
+		return FALSE;
 	}
 
 	pspell_config_replace(config2, "sug-mode", themode);
@@ -492,10 +507,16 @@ int gtkpspell_set_sug_mode(GtkPspell *gtkpspell, gchar *themode)
 			    pspell_error_message(gtkpspell->possible_err));
 		delete_pspell_can_have_error(gtkpspell->possible_err);
 		gtkpspell->possible_err = NULL;
-		return 0;
+		return FALSE;
 	}
 	gtkpspell->checker = to_pspell_manager(gtkpspell->possible_err);
-	return -1;
+	return TRUE;
+}
+
+/* set_learn_mode() - menu callback to toggle learn mode */
+static void set_learn_mode (GtkWidget *w, GtkPspell *gtkpspell)
+{
+	gtkpspell->learn = gtkpspell->learn == FALSE ;
 }
   
 /* misspelled_suggest() - Create a suggestion list for  word  */
@@ -547,28 +568,71 @@ static guchar get_text_index_whar(GtkPspell *gtkpspell, int pos)
 	return a;
 }
 
+/* get_word_from_pos () - return the word pointed to. */
+/* Handles correctly the quotes. */
 static gboolean get_word_from_pos(GtkPspell *gtkpspell, int pos, 
                                   unsigned char* buf,
                                   int *pstart, int *pend) 
 {
-	gint start, end;
+
+	/* TODO : when correcting a word into quotes, change the color of */
+	/* the quotes too, as may be they were highlighted before. To do  */
+	/* so, we can use two others pointers that points to the whole    */
+	/* word including quotes. */
+
+	gint      start, 
+	          end;
+	guchar    c;
 	GtkXText *gtktext;
 	
 	gtktext = gtkpspell->gtktext;
 	if (iswordsep(get_text_index_whar(gtkpspell, pos))) 
 		return FALSE;
-
+	
+	/* The apostrophe character is somtimes used for quotes 
+	 * So include it in the word only if it is not surrounded 
+	 * by other characters. 
+	 */
+	 
 	for (start = pos; start >= 0; --start) {
-		if (iswordsep(get_text_index_whar(gtkpspell, start))) 
-			break;
+		c = get_text_index_whar(gtkpspell, start);
+		if (c == '\'') {
+			if (start > 0) {
+				if (!isalpha(get_text_index_whar(gtkpspell, start - 1))) {
+					/* start_quote = TRUE; */
+					break;
+				}
+			}
+			else {
+				/* start_quote = TRUE; */
+				break;
+			}
+		}
+		else
+			if (!isalpha(c))
+				break;
 	}
 	start++;
 
 	for (end = pos; end < gtk_xtext_get_length(gtktext); end++) {
-		if (iswordsep(get_text_index_whar(gtkpspell, end))) 
-			break;
+		c = get_text_index_whar(gtkpspell, end); 
+		if (c == '\'') {
+			if (end < gtk_xtext_get_length(gtktext)) {
+				if (!isalpha(get_text_index_whar(gtkpspell, end + 1))) {
+					/* end_quote = TRUE; */
+					break;
+				}
+			}
+			else {
+				/* end_quote = TRUE; */
+				break;
+			}
+		}
+		else
+			if(!isalpha(c))
+				break;
 	}
-
+						
 	if (buf) {
 		for (pos = start; pos < end; pos++) 
 			buf[pos - start] = get_text_index_whar(gtkpspell, pos);
@@ -627,8 +691,10 @@ static gboolean check_at(GtkPspell *gtkpspell, int from_pos)
 	g_return_val_if_fail(from_pos >= 0, FALSE);
     
 	gtktext = gtkpspell->gtktext;
+
 	if (!get_word_from_pos(gtkpspell, from_pos, buf, &start, &end))
 		return FALSE;
+
 	strncpy(gtkpspell->theword, buf, BUFSIZE - 1);
 	gtkpspell->theword[BUFSIZE - 1] = 0;
 
@@ -656,10 +722,10 @@ static void check_all(GtkWidget *w, GtkPspell *gtkpspell)
 
 void gtkpspell_check_all(GtkPspell *gtkpspell) 
 {
-	guint origpos;
-	guint pos = 0;
-	guint len;
-	float adj_value;
+	guint     origpos;
+	guint     pos = 0;
+	guint     len;
+	float     adj_value;
 	GtkXText *gtktext;
 
 	
@@ -689,9 +755,19 @@ static void entry_insert_cb(GtkXText *gtktext, gchar *newtext,
 			    guint len, guint *ppos, 
                             GtkPspell * gtkpspell) 
 {
+	guint origpos;
 	if (!gtkpspell_running(gtkpspell)) 
 		return;
 
+	/* We must insert ourself the character to impose the */
+	/* color of the inserted character to be default */
+	/* Never mess with set_insertion when frozen */
+	gtk_xtext_freeze(gtktext);
+	gtk_xtext_backward_delete(GTK_XTEXT(gtktext), len);
+	gtk_xtext_insert(GTK_XTEXT(gtktext), NULL,
+                        &(GTK_WIDGET(gtktext)->style->fg[0]), NULL, newtext, len);
+	*ppos = gtk_xtext_get_point(GTK_XTEXT(gtktext));
+	       
 	if (iswordsep(newtext[0])) {
 		/* did we just end a word? */
 		if (*ppos >= 2) 
@@ -708,7 +784,8 @@ static void entry_insert_cb(GtkXText *gtktext, gchar *newtext,
 		&&  !iswordsep(get_text_index_whar(gtkpspell, *ppos)))
 			check_at(gtkpspell, *ppos - 1);
 		}
-
+	gtk_xtext_thaw(gtktext);
+	gtk_editable_set_position(GTK_EDITABLE(gtktext), *ppos);
 }
 
 static void entry_delete_cb(GtkXText *gtktext, gint start, gint end, 
@@ -720,7 +797,8 @@ static void entry_delete_cb(GtkXText *gtktext, gint start, gint end,
 		return;
 
 	origpos = gtk_editable_get_position(GTK_EDITABLE(gtktext));
-	check_at(gtkpspell, start - 1);
+	if (start)
+		check_at(gtkpspell, start - 1);
 	gtk_editable_set_position(GTK_EDITABLE(gtktext), origpos);
 	gtk_editable_select_region(GTK_EDITABLE(gtktext), origpos, origpos);
 	/* this is to *UNDO* the selection, in case they were holding shift
@@ -752,14 +830,14 @@ static void replace_word(GtkWidget *w, GtkPspell *gtkpspell)
 	gtk_xtext_backward_delete(GTK_XTEXT(gtktext), end - start);
 	gtk_xtext_insert(GTK_XTEXT(gtktext), NULL, NULL, NULL, newword, strlen(newword));
     
-#if 0
-    if(end-start>0 /*&& gtkpspell->learn*/){ 
-      buf[end-start]=0x00; /* Just be sure the buffer is correct... */
-      /* Learn from common misspellings */
-      pspell_manager_store_replacement(gtkpspell->checker,buf,end-start,
-				       newword,strlen(newword));
-    }
-#endif
+	if (end-start > 0 && gtkpspell->learn) { 
+		/* Just be sure the buffer ends somewhere... */
+		buf[end-start] = 0; 
+		/* Learn from common misspellings */
+		pspell_manager_store_replacement(gtkpspell->checker, buf, 
+						 end-start, newword, 
+						 strlen(newword));
+	}
 
 	/* Put the point and the position where we clicked with the mouse */
 	/* It seems to be a hack, as I must thaw,freeze,thaw the widget   */
@@ -814,8 +892,7 @@ static void add_word_to_session(GtkWidget *w, GtkPspell *gtkpspell)
 	gtk_xtext_thaw(GTK_XTEXT(gtkxtext));
 }
 
-/* add_word_to_personal() - add word to personal dict. Save the list at every addition (may be
- *  not efficient...) */
+/* add_word_to_personal() - add word to personal dict. */
 
 static void add_word_to_personal(GtkWidget *w, GtkPspell *gtkpspell)
 {
@@ -828,7 +905,6 @@ static void add_word_to_personal(GtkWidget *w, GtkPspell *gtkpspell)
 	pos = gtk_editable_get_position(GTK_EDITABLE(gtkxtext));
     
 	pspell_manager_add_to_personal(gtkpspell->checker,gtkpspell->theword,strlen(gtkpspell->theword));
-	pspell_manager_save_all_word_lists(gtkpspell->checker);
     
 	check_at(gtkpspell,gtk_editable_get_position(GTK_EDITABLE(gtkxtext)));
 	gtk_xtext_thaw(GTK_XTEXT(gtkxtext));
@@ -915,7 +991,7 @@ static GtkMenu *make_menu_config(GtkPspell *gtkpspell)
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item),TRUE);
 	}
         else
-		gtk_signal_connect(GTK_OBJECT(item),"activate",
+		gtk_signal_connect(GTK_OBJECT(item), "activate",
 				   GTK_SIGNAL_FUNC(set_sug_mode),
 				   gtkpspell);
 
@@ -933,16 +1009,28 @@ static GtkMenu *make_menu_config(GtkPspell *gtkpspell)
         
         item = gtk_check_menu_item_new_with_label(_("Bad Spellers Mode"));
 	gtk_widget_show(item);
-        gtk_menu_append(GTK_MENU(menu),item);
+        gtk_menu_append(GTK_MENU(menu), item);
         if (gtkpspell->mode==PSPELL_BADSPELLERMODE) {
 		gtk_widget_set_sensitive(GTK_WIDGET(item), FALSE);
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
 	}
         else
-		gtk_signal_connect(GTK_OBJECT(item),"activate",
+		gtk_signal_connect(GTK_OBJECT(item), "activate",
 				   GTK_SIGNAL_FUNC(set_sug_mode),
 				   gtkpspell);
+        item = gtk_menu_item_new();
+        gtk_widget_show(item);
+        gtk_menu_append(GTK_MENU(menu), item);
 
+	item = gtk_check_menu_item_new_with_label(_("Learn from mistakes"));
+	gtk_widget_show(item);
+	gtk_menu_append(GTK_MENU(menu), item);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), 
+				       gtkpspell->learn);
+	gtk_signal_connect(GTK_OBJECT(item), "activate", 
+			   GTK_SIGNAL_FUNC(set_learn_mode), gtkpspell);
+			
+	
         return GTK_MENU(menu);
 }
   
@@ -1114,12 +1202,10 @@ void gtkpspell_uncheck_all(GtkPspell * gtkpspell)
 void gtkpspell_attach(GtkPspell *gtkpspell, GtkXText *gtktext) 
 {
 	gtkpspell->gtktext=gtktext;
-/*    if (prefs_common.auto_makepspell) { */
-	gtk_signal_connect(GTK_OBJECT(gtktext), "insert-text",
+	gtk_signal_connect_after(GTK_OBJECT(gtktext), "insert-text",
 		           GTK_SIGNAL_FUNC(entry_insert_cb), gtkpspell);
 	gtk_signal_connect_after(GTK_OBJECT(gtktext), "delete-text",
 		                 GTK_SIGNAL_FUNC(entry_delete_cb), gtkpspell);
-/*    }; */
 	gtk_signal_connect(GTK_OBJECT(gtktext), "button-press-event",
 		           GTK_SIGNAL_FUNC(button_press_intercept_cb), gtkpspell);
 
@@ -1187,7 +1273,7 @@ GSList *gtkpspell_get_dictionary_list(const gchar *pspell_path)
 				dict = g_new0(Dictionary, 1);
 				dict->name = g_strndup(ent->d_name, tmp - ent->d_name);
 				debug_print(_("Found dictionary %s\n"), dict->name);
-				list = g_slist_append(list, dict);
+				list = g_slist_insert_sorted(list, dict, (GCompareFunc) compare_dict);
 			}
 		}			
 		closedir(dir);
@@ -1207,6 +1293,28 @@ GSList *gtkpspell_get_dictionary_list(const gchar *pspell_path)
 	return list;
 }
 
+/* compare_dict () - compare 2 dict names */
+
+static gint compare_dict(Dictionary *a, Dictionary *b)
+{
+	guchar *alanguage, *blanguage,
+	       *aspelling, *bspelling,
+	       *ajargon  , *bjargon  ,
+	       *amodule  , *bmodule  ;
+	guint aparts = 0, bparts = 0, i;
+
+	for (i=0; i < strlen(a->name) ; i++)
+		if (a->name[i]=='-')
+			aparts++;
+	for (i=0; i < strlen(b->name) ; i++)
+		if (b->name[i]=='-')
+			bparts++;
+
+	if (aparts != bparts) 
+		return (aparts < bparts) ? -1 : +1 ;
+	else 
+		return strcmp2(a->name, b->name);
+}
 void gtkpspell_free_dictionary_list(GSList *list)
 {
 	Dictionary *dict;
