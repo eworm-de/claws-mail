@@ -1,3 +1,17 @@
+2003-12-03 [christoph]	0.9.7claws11
+
+	* src/folder.[ch]
+	* src/imap.c
+	* src/localfolder.[ch]
+	* src/mh.c
+	* src/news.c
+	* src/common/xml.[ch]
+		add set_xml() and get_xml() virtual functions to FolderClass to
+		save extra information for Folders (for example the rootpath
+		only used by LocalFolder). The folderlist write function no
+		longer needs to know the folder type to save this extra
+		information.
+
 2003-12-02 [christoph]	0.9.7claws10
 
 	* src/Makefile.am

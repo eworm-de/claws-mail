@@ -161,6 +161,9 @@ struct _FolderClass
 	Folder 		*(*new_folder)		(const gchar	*name,
 						 const gchar	*path);
 	void     	(*destroy_folder)	(Folder		*folder);
+	void		 (*set_xml)		(Folder		*folder,
+						 XMLTag		*tag);
+	XMLTag		*(*get_xml)		(Folder		*folder);
 	gint     	(*scan_tree)		(Folder		*folder);
 
 	gint     	(*create_tree)		(Folder		*folder);
@@ -323,8 +326,9 @@ void 	    folder_init			(Folder		*folder,
 
 void        folder_destroy		(Folder		*folder);
 
-XMLTag 	   *folder_item_get_attrs	(Folder		 *folder,
-					 FolderItem	 *item);
+void 	    folder_set_xml		(Folder		 *folder,
+					 XMLTag		 *tag);
+XMLTag 	   *folder_get_xml		(Folder		 *folder);
 
 FolderItem *folder_item_new		(Folder		*folder,
 				 	 const gchar	*name,
@@ -334,6 +338,12 @@ void        folder_item_append		(FolderItem	*parent,
 void        folder_item_remove		(FolderItem	*item);
 void        folder_item_remove_children	(FolderItem	*item);
 void        folder_item_destroy		(FolderItem	*item);
+
+void 	    folder_item_set_xml		(Folder		 *folder,
+					 FolderItem	 *item,
+					 XMLTag		 *tag);
+XMLTag 	   *folder_item_get_xml		(Folder		 *folder,
+					 FolderItem	 *item);
 
 void        folder_set_ui_func	(Folder		*folder,
 				 FolderUIFunc	 func,

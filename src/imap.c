@@ -447,6 +447,8 @@ static FolderClass imap_class =
 	/* Folder functions */
 	imap_folder_new,
 	imap_folder_destroy,
+	NULL,
+	NULL,
 	imap_scan_tree,
 	imap_create_tree,
 

@@ -141,6 +141,8 @@ static FolderClass news_class =
 	news_folder_destroy,
 	NULL,
 	NULL,
+	NULL,
+	NULL,
 
 	/* FolderItem functions */
 	NULL,

@@ -548,3 +548,14 @@ static gint xml_get_parenthesis(XMLFile *file, gchar *buf, gint len)
 
 	return 0;
 }
+
+void xml_tag_add_attr(XMLTag *tag, const gchar *name, gchar *value)
+{
+	XMLAttr *attr;
+
+	attr = g_new0(XMLAttr, 1);
+	attr->name = XML_STRING_ADD(name);
+	attr->value = value;
+
+	tag->attr = g_list_append(tag->attr, attr);
+}

@@ -113,6 +113,8 @@ static FolderClass mh_class =
 	/* Folder functions */
 	mh_folder_new,
 	mh_folder_destroy,
+	folder_local_set_xml,
+	folder_local_get_xml,
 	mh_scan_tree,
 	mh_create_tree,
 
