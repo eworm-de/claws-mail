@@ -324,14 +324,17 @@ static GtkItemFactoryEntry folderview_news_popup_entries[] =
 	{N_("/Mark all _read"),		NULL, mark_all_read_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Subscribe to newsgroup..."),
-					 NULL, folderview_new_news_group_cb, 0, NULL},
-	{N_("/_Remove newsgroup"),	 NULL, folderview_rm_news_group_cb, 0, NULL},
-	{N_("/---"),			 NULL, NULL, 0, "<Separator>"},
-	{N_("/Remove _news account"),	 NULL, folderview_rm_news_server_cb, 0, NULL},
-	{N_("/---"),			 NULL, NULL, 0, "<Separator>"},
-	{N_("/_Search folder..."),	 NULL, folderview_search_cb, 0, NULL},
-	{N_("/_Properties..."),		 NULL, folderview_property_cb, 0, NULL},
-	{N_("/_Processing..."),		 NULL, folderview_processing_cb, 0, NULL},
+					NULL, folderview_new_news_group_cb, 0, NULL},
+	{N_("/_Remove newsgroup"),	NULL, folderview_rm_news_group_cb, 0, NULL},
+	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Check for new messages"),
+					NULL, folderview_update_tree_cb, 0, NULL},
+	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/Remove _news account"),	NULL, folderview_rm_news_server_cb, 0, NULL},
+	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Search folder..."),	NULL, folderview_search_cb, 0, NULL},
+	{N_("/_Properties..."),		NULL, folderview_property_cb, 0, NULL},
+	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
 	{N_("/S_coring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
 
@@ -1566,9 +1569,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(news_factory, "/Mark all read", mark_all_read);
 		SET_SENS(news_factory, "/Subscribe to newsgroup...", new_folder);
 		SET_SENS(news_factory, "/Remove newsgroup", delete_folder);
-#if 0
 		SET_SENS(news_factory, "/Check for new messages", update_tree);
-#endif
 		SET_SENS(news_factory, "/Remove news account", remove_tree);
 		SET_SENS(news_factory, "/Search folder...", search_folder);
 		SET_SENS(news_factory, "/Properties...", folder_property);
