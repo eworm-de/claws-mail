@@ -6,13 +6,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Sylpheed 0.5.0claws2\n"
-"POT-Creation-Date: 2001-07-22 14:42+0200\n"
-"PO-Revision-Date: 2001-07-22 14:47+0200\n"
+"POT-Creation-Date: 2001-08-12 21:13+0100\n"
+"PO-Revision-Date: 2001-08-13 20:36CET\n"
 "Last-Translator: Alfons Hoogervorst <alfons@users.sourceforge.net>\n"
 "Language-Team: Nederlands <nl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.7.1\n"
 
 #: src/about.c:90
 msgid "About"
@@ -27,9 +28,9 @@ msgid ""
 "\n"
 msgstr ""
 "De delen die toegepast zijn van fetchmail zijn copyright 1997 door Eric S. "
-"Raymond. Delen daarvan zijn ook copyright 1993 en 1995 door Carl "
-"Harris.Copyright voorbehouden met het doel de verspreiding van vrije broncode "
-"te beschermen.\n"
+"Raymond. Delen daarvan zijn ook copyright 1993 en 1995 door Carl Harris."
+"Copyright voorbehouden met het doel de verspreiding van vrije broncode te "
+"beschermen.\n"
 "\n"
 
 #: src/about.c:211
@@ -52,9 +53,10 @@ msgstr ""
 
 #: src/about.c:220
 msgid ""
-"This program is free software; you can redistribute it and/or modify it under "
-"the terms of the GNU General Public License as published by the Free Software "
-"Foundation; either version 2, or (at your option) any later version.\n"
+"This program is free software; you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2, or (at your option) any later "
+"version.\n"
 "\n"
 msgstr ""
 "Dit programma is vrije software. U kunt het verspreiden en/of aanpassen "
@@ -66,15 +68,15 @@ msgstr ""
 #: src/about.c:226
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
-"FOR A PARTICULAR PURPOSE. See the GNU General Public License for more "
-"details.\n"
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for "
+"more details.\n"
 "\n"
 msgstr ""
-"Dit programma wordt verspreid in de hoop dat het nuttig is, maar ZONDER ENIGE "
-"GARANTIE. Zelfs zonder de impliciete garantie van VERKOOPWAARDIGHEID of "
-"GESCHIKTHEID VOOR ENIG DOEL. Lees de GNU General Public License voor verdere "
-"details.\n"
+"Dit programma wordt verspreid in de hoop dat het nuttig is, maar ZONDER "
+"ENIGE GARANTIE. Zelfs zonder de impliciete garantie van VERKOOPWAARDIGHEID "
+"of GESCHIKTHEID VOOR ENIG DOEL. Lees de GNU General Public License voor "
+"verdere details.\n"
 "\n"
 
 #: src/about.c:232
@@ -85,35 +87,35 @@ msgid ""
 msgstr ""
 "U zou een kopie van de GNU GPL (General Public License) ontvangen moeten "
 "hebben bij dit programma. Als dit niet het geval is, dan kun u een aanvragen "
-"bij de Free Software Foundation Inc., 59 Temple Place - Suite 330, Boston, MA "
-"02111-1307, USA."
+"bij de Free Software Foundation Inc., 59 Temple Place - Suite 330, Boston, "
+"MA 02111-1307, USA."
 
 #. Button panel
 #: src/about.c:239 src/addressbook.c:1815 src/alertpanel.c:238
-#: src/compose.c:1981 src/compose.c:3723 src/editjpilot.c:340
+#: src/compose.c:2008 src/compose.c:3751 src/editjpilot.c:340
 #: src/editldap.c:241 src/editldap_basedn.c:212 src/editvcard.c:236
 #: src/export.c:185 src/foldersel.c:179 src/grouplistdialog.c:204
-#: src/import.c:189 src/inputdialog.c:160 src/main.c:357 src/main.c:365
-#: src/mainwindow.c:2000 src/messageview.c:348 src/mimeview.c:717
-#: src/passphrase.c:119 src/prefs.c:475 src/prefs_common.c:1459
-#: src/prefs_common.c:2289 src/prefs_common.c:2557 src/prefs_common.c:2676
-#: src/prefs_customheader.c:165 src/prefs_display_header.c:206
+#: src/import.c:189 src/inputdialog.c:160 src/main.c:360 src/main.c:368
+#: src/mainwindow.c:1994 src/messageview.c:348 src/mimeview.c:724
+#: src/passphrase.c:119 src/prefs.c:475 src/prefs_common.c:2356
+#: src/prefs_common.c:2512 src/prefs_common.c:2791 src/prefs_common.c:2910
+#: src/prefs_customheader.c:162 src/prefs_display_header.c:206
 #: src/prefs_filter.c:203 src/prefs_filtering.c:323 src/prefs_matcher.c:301
-#: src/prefs_matcher.c:1454 src/prefs_scoring.c:199 src/sigstatus.c:134
-#: src/summaryview.c:2732 src/summaryview.c:3297
+#: src/prefs_matcher.c:1462 src/prefs_scoring.c:199 src/sigstatus.c:134
+#: src/summaryview.c:2839 src/summaryview.c:3404
 msgid "OK"
 msgstr "OK"
 
-#: src/account.c:106
+#: src/account.c:109
 msgid "Reading all config for each account...\n"
 msgstr "Postvak eigenschappen worden ingelezen...\n"
 
-#: src/account.c:121
+#: src/account.c:124
 #, c-format
 msgid "Found label: %s\n"
 msgstr "Label gevonden: %s\n"
 
-#: src/account.c:236
+#: src/account.c:238
 msgid ""
 "Some composing windows are open.\n"
 "Please close all the composing windows before editing the accounts."
@@ -121,91 +123,108 @@ msgstr ""
 "Er zijn nog schermen open om een nieuw bericht op te stellen.\n"
 "Deze moeten gesloten worden om de postvakken te kunnen bewerken."
 
-#: src/account.c:242
+#: src/account.c:244
 msgid "Opening account edit window...\n"
 msgstr "Postvak eigenschappen worden geopend...\n"
 
-#: src/account.c:389
+#: src/account.c:414
 msgid "Creating account edit window...\n"
 msgstr "Postvak eigenschappen venster word gemaakt...\n"
 
-#: src/account.c:394
+#: src/account.c:419
 msgid "Edit accounts"
 msgstr "Accountbeheer"
 
-#: src/account.c:422 src/addressbook.c:443 src/addressbook.c:1811
-#: src/compose.c:2774 src/editjpilot.c:291 src/editldap.c:296
+#: src/account.c:447 src/addressbook.c:443 src/addressbook.c:1811
+#: src/compose.c:2801 src/editjpilot.c:291 src/editldap.c:296
 #: src/editvcard.c:207 src/mimeview.c:139 src/select-keys.c:301
 msgid "Name"
 msgstr "Naam"
 
-#: src/account.c:423 src/prefs_account.c:726
+#: src/account.c:448 src/prefs_account.c:751
 msgid "Protocol"
 msgstr "Protocol"
 
-#: src/account.c:424
+#: src/account.c:449
 msgid "Server"
 msgstr "Server"
 
-#: src/account.c:446 src/addressbook.c:578 src/prefs_customheader.c:243
+#: src/account.c:450 src/mainwindow.c:1490
+msgid "Get all"
+msgstr "Alles oph."
+
+#: src/account.c:473 src/addressbook.c:578 src/prefs_customheader.c:242
 #: src/prefs_display_header.c:290 src/prefs_display_header.c:345
 msgid "Add"
 msgstr "Toevoegen"
 
-#: src/account.c:452
+#: src/account.c:479
 msgid "Edit"
 msgstr "Bewerken"
 
-#: src/account.c:458 src/prefs_customheader.c:250
+#: src/account.c:485 src/prefs_customheader.c:249
 msgid " Delete "
 msgstr "Verwijderen"
 
-#: src/account.c:464 src/prefs_customheader.c:297
+#: src/account.c:491 src/prefs_customheader.c:296
 #: src/prefs_display_header.c:309 src/prefs_filter.c:453
 #: src/prefs_filtering.c:569 src/prefs_matcher.c:572 src/prefs_scoring.c:330
 msgid "Down"
 msgstr "Omlaag"
 
-#: src/account.c:470 src/prefs_customheader.c:291
+#: src/account.c:497 src/prefs_customheader.c:290
 #: src/prefs_display_header.c:303 src/prefs_filter.c:447
 #: src/prefs_filtering.c:563 src/prefs_matcher.c:566 src/prefs_scoring.c:324
 msgid "Up"
 msgstr "Omhoog"
 
-#: src/account.c:484
-msgid " Set as usually used account "
-msgstr "Instellen als hoofdaccount"
+#: src/account.c:511
+msgid " Set as default account "
+msgstr " Instellen als hoofdaccount "
 
-#: src/account.c:490 src/prefs_common.c:3012 src/summary_search.c:192
+#: src/account.c:517
+msgid " Enable/Disable 'Receive at Get all' "
+msgstr " Eerst ontvangen bij Alles ophalen "
+
+#: src/account.c:523 src/prefs_common.c:3246 src/summary_search.c:192
 msgid "Close"
 msgstr "Sluiten"
 
-#: src/account.c:544
+#: src/account.c:577
 msgid "Delete account"
 msgstr "Verwijder Postvak"
 
-#: src/account.c:545
+#: src/account.c:578
 msgid "Do you really want to delete this account?"
 msgstr "Wilt u werkelijk dit postvak verwijderen?"
 
-#: src/account.c:546 src/addressbook.c:785 src/addressbook.c:1746
-#: src/compose.c:3897 src/folderview.c:1704 src/folderview.c:1747
-#: src/folderview.c:1846 src/folderview.c:1891 src/folderview.c:1989
-#: src/folderview.c:2022 src/mainwindow.c:1026 src/messageview.c:417
-#: src/prefs_customheader.c:546 src/prefs_filter.c:736
+#: src/account.c:579 src/account.c:724 src/addressbook.c:785
+#: src/addressbook.c:1746 src/compose.c:3925 src/folderview.c:1720
+#: src/folderview.c:1763 src/folderview.c:1862 src/folderview.c:1907
+#: src/folderview.c:2005 src/folderview.c:2038 src/mainwindow.c:1019
+#: src/messageview.c:417 src/prefs_customheader.c:548 src/prefs_filter.c:736
 #: src/prefs_filtering.c:836 src/prefs_scoring.c:646 src/summary_search.c:297
-#: src/summaryview.c:879 src/summaryview.c:1215 src/summaryview.c:1241
-#: src/summaryview.c:1271
+#: src/summaryview.c:880 src/summaryview.c:1216 src/summaryview.c:1242
+#: src/summaryview.c:1272
 msgid "Yes"
 msgstr "Ja"
 
-#: src/account.c:546 src/compose.c:3897 src/folderview.c:1704
-#: src/folderview.c:1747 src/folderview.c:1846 src/folderview.c:1891
-#: src/folderview.c:1989 src/folderview.c:2022
+#: src/account.c:579 src/compose.c:3925 src/folderview.c:1720
+#: src/folderview.c:1763 src/folderview.c:1862 src/folderview.c:1907
+#: src/folderview.c:2005 src/folderview.c:2038
 msgid "+No"
 msgstr "+Nee"
 
-#: src/addressbook.c:336 src/compose.c:401 src/mainwindow.c:371
+#: src/account.c:720 src/account.c:721 src/account.c:725 src/addressbook.c:785
+#: src/addressbook.c:1746 src/mainwindow.c:1019 src/messageview.c:417
+#: src/prefs_customheader.c:548 src/prefs_filter.c:736
+#: src/prefs_filtering.c:836 src/prefs_scoring.c:646 src/summary_search.c:297
+#: src/summaryview.c:880 src/summaryview.c:1216 src/summaryview.c:1242
+#: src/summaryview.c:1272
+msgid "No"
+msgstr "Nee"
+
+#: src/addressbook.c:336 src/compose.c:405 src/mainwindow.c:372
 msgid "/_File"
 msgstr "/_Bestand"
 
@@ -233,8 +252,8 @@ msgstr "/_Bestand/Nieuwe J-Pilot"
 msgid "/_File/New _Server"
 msgstr "/_Bestand/Nieuwe Server"
 
-#: src/addressbook.c:347 src/addressbook.c:350 src/compose.c:405
-#: src/mainwindow.c:383 src/mainwindow.c:386
+#: src/addressbook.c:347 src/addressbook.c:350 src/compose.c:409
+#: src/mainwindow.c:384 src/mainwindow.c:387
 msgid "/_File/---"
 msgstr "/_Bestand/---"
 
@@ -246,15 +265,15 @@ msgstr "/_Bestand/Aanpassen"
 msgid "/_File/_Delete"
 msgstr "/_Bestand/_Verwijderen"
 
-#: src/addressbook.c:351 src/compose.c:406 src/mainwindow.c:387
+#: src/addressbook.c:351 src/compose.c:410 src/mainwindow.c:388
 msgid "/_File/_Close"
 msgstr "/_Bestand/_Sluiten"
 
-#: src/addressbook.c:352 src/compose.c:447 src/mainwindow.c:570
+#: src/addressbook.c:352 src/compose.c:451 src/mainwindow.c:571
 msgid "/_Help"
 msgstr "/_Help"
 
-#: src/addressbook.c:353 src/compose.c:448 src/mainwindow.c:575
+#: src/addressbook.c:353 src/compose.c:452 src/mainwindow.c:576
 msgid "/_Help/_About"
 msgstr "/_Help/_Info"
 
@@ -282,20 +301,20 @@ msgstr "/New J-Pilot"
 msgid "/New _Server"
 msgstr "Nieuwe Server"
 
-#: src/addressbook.c:368 src/addressbook.c:378 src/compose.c:395
-#: src/folderview.c:219 src/folderview.c:221 src/folderview.c:231
-#: src/folderview.c:234 src/folderview.c:244 src/folderview.c:247
-#: src/folderview.c:257 src/folderview.c:259 src/summaryview.c:340
-#: src/summaryview.c:348 src/summaryview.c:353 src/summaryview.c:356
+#: src/addressbook.c:368 src/addressbook.c:378 src/compose.c:399
+#: src/folderview.c:220 src/folderview.c:222 src/folderview.c:232
+#: src/folderview.c:235 src/folderview.c:245 src/folderview.c:248
+#: src/folderview.c:258 src/folderview.c:260 src/summaryview.c:341
+#: src/summaryview.c:349 src/summaryview.c:354 src/summaryview.c:357
 msgid "/---"
 msgstr "/---"
 
-#: src/addressbook.c:369 src/addressbook.c:379 src/compose.c:408
-#: src/mainwindow.c:390
+#: src/addressbook.c:369 src/addressbook.c:379 src/compose.c:412
+#: src/mainwindow.c:391
 msgid "/_Edit"
 msgstr "/Be_werken"
 
-#: src/addressbook.c:370 src/addressbook.c:380 src/summaryview.c:326
+#: src/addressbook.c:370 src/addressbook.c:380 src/summaryview.c:327
 msgid "/_Delete"
 msgstr "/Ver_wijderen"
 
@@ -307,7 +326,7 @@ msgstr "E-Mail adres"
 msgid "Remarks"
 msgstr "Opmerkingen"
 
-#: src/addressbook.c:454 src/compose.c:3369
+#: src/addressbook.c:454 src/compose.c:3397
 msgid "Address book"
 msgstr "Adresboek"
 
@@ -315,7 +334,7 @@ msgstr "Adresboek"
 msgid "Name:"
 msgstr "Naam:"
 
-#: src/addressbook.c:575 src/addressbook.c:1746 src/mainwindow.c:1644
+#: src/addressbook.c:575 src/addressbook.c:1746 src/mainwindow.c:1638
 #: src/prefs_display_header.c:296 src/prefs_display_header.c:352
 #: src/prefs_filter.c:413 src/prefs_filtering.c:218 src/prefs_filtering.c:529
 #: src/prefs_matcher.c:503 src/prefs_scoring.c:290
@@ -366,25 +385,17 @@ msgstr "Verwijder adres(sen)"
 msgid "Really delete the address(es)?"
 msgstr "Wilt u de adressen echt verwijderen?"
 
-#: src/addressbook.c:785 src/addressbook.c:1746 src/mainwindow.c:1026
-#: src/messageview.c:417 src/prefs_customheader.c:546 src/prefs_filter.c:736
-#: src/prefs_filtering.c:836 src/prefs_scoring.c:646 src/summary_search.c:297
-#: src/summaryview.c:879 src/summaryview.c:1215 src/summaryview.c:1241
-#: src/summaryview.c:1271
-msgid "No"
-msgstr "Nee"
-
-#: src/addressbook.c:1469 src/folderview.c:1477 src/folderview.c:1534
-#: src/folderview.c:1778
+#: src/addressbook.c:1469 src/folderview.c:1493 src/folderview.c:1550
+#: src/folderview.c:1794
 msgid "New folder"
 msgstr "Nieuwe map"
 
-#: src/addressbook.c:1470 src/folderview.c:1478 src/folderview.c:1535
+#: src/addressbook.c:1470 src/folderview.c:1494 src/folderview.c:1551
 msgid "Input the name of new folder:"
 msgstr "Geef de naam van de nieuwe map:"
 
-#: src/addressbook.c:1471 src/folderview.c:1479 src/folderview.c:1536
-#: src/folderview.c:1782
+#: src/addressbook.c:1471 src/folderview.c:1495 src/folderview.c:1552
+#: src/folderview.c:1798
 msgid "NewFolder"
 msgstr "NieuweMap"
 
@@ -430,21 +441,21 @@ msgstr "Wilt u '%s' echt verwijderen?"
 msgid "Edit address"
 msgstr "Adres aanpassen"
 
-#: src/addressbook.c:1812 src/compose.c:3368 src/select-keys.c:302
+#: src/addressbook.c:1812 src/compose.c:3396 src/select-keys.c:302
 msgid "Address"
 msgstr "Adres"
 
-#: src/addressbook.c:1816 src/compose.c:1981 src/compose.c:3724
-#: src/compose.c:4387 src/editjpilot.c:341 src/editldap.c:242
+#: src/addressbook.c:1816 src/compose.c:2008 src/compose.c:3752
+#: src/compose.c:4415 src/editjpilot.c:341 src/editldap.c:242
 #: src/editldap_basedn.c:213 src/editvcard.c:237 src/export.c:186
 #: src/foldersel.c:180 src/grouplistdialog.c:205 src/import.c:190
-#: src/inputdialog.c:161 src/main.c:357 src/main.c:365 src/mainwindow.c:2000
-#: src/messageview.c:348 src/mimeview.c:717 src/passphrase.c:123
-#: src/prefs.c:476 src/prefs_common.c:1460 src/prefs_common.c:2677
-#: src/prefs_customheader.c:166 src/prefs_display_header.c:207
+#: src/inputdialog.c:161 src/main.c:360 src/main.c:368 src/mainwindow.c:1994
+#: src/messageview.c:348 src/mimeview.c:724 src/passphrase.c:123
+#: src/prefs.c:476 src/prefs_common.c:2357 src/prefs_common.c:2911
+#: src/prefs_customheader.c:163 src/prefs_display_header.c:207
 #: src/prefs_filter.c:204 src/prefs_filtering.c:324 src/prefs_matcher.c:302
 #: src/prefs_scoring.c:200 src/progressdialog.c:77 src/select-keys.c:326
-#: src/summaryview.c:879 src/summaryview.c:2732 src/summaryview.c:3297
+#: src/summaryview.c:880 src/summaryview.c:2839 src/summaryview.c:3404
 msgid "Cancel"
 msgstr "Annuleren"
 
@@ -457,12 +468,12 @@ msgstr "Adresboek wordt ingelezen..."
 msgid "%s doesn't exist.\n"
 msgstr "%s bestaat niet.\n"
 
-#: src/addressbook.c:2201 src/addressbook.c:2593 src/imap.c:1211
-#: src/imap.c:1230 src/mainwindow.c:721 src/mainwindow.c:1423 src/mh.c:871
-#: src/mh.c:878 src/news.c:749 src/procmsg.c:261 src/procmsg.c:325
-#: src/summaryview.c:1501 src/summaryview.c:1721 src/summaryview.c:1920
-#: src/summaryview.c:1996 src/summaryview.c:2518 src/summaryview.c:3008
-#: src/summaryview.c:3031 src/summaryview.c:3052 src/summaryview.c:3173
+#: src/addressbook.c:2201 src/addressbook.c:2593 src/imap.c:1260
+#: src/imap.c:1279 src/mainwindow.c:726 src/mainwindow.c:1417 src/mh.c:930
+#: src/mh.c:937 src/news.c:748 src/procmsg.c:261 src/procmsg.c:325
+#: src/summaryview.c:1504 src/summaryview.c:1724 src/summaryview.c:1923
+#: src/summaryview.c:2023 src/summaryview.c:2565 src/summaryview.c:3115
+#: src/summaryview.c:3138 src/summaryview.c:3159 src/summaryview.c:3280
 msgid "done.\n"
 msgstr "klaar.\n"
 
@@ -497,7 +508,7 @@ msgstr "%s(%d) geen adresboek\n"
 msgid "%s(%d) leaving read_address_book - OK\n"
 msgstr "%s(%d)·leaving·read_address_book·-·OK\n"
 
-#: src/alertpanel.c:119 src/compose.c:3897 src/main.c:355
+#: src/alertpanel.c:119 src/compose.c:3925 src/main.c:358
 msgid "Notice"
 msgstr "Bericht"
 
@@ -505,7 +516,7 @@ msgstr "Bericht"
 msgid "Warning"
 msgstr "Waarschuwing"
 
-#: src/alertpanel.c:145 src/inc.c:452
+#: src/alertpanel.c:145 src/inc.c:453
 msgid "Error"
 msgstr "Fout"
 
@@ -521,187 +532,185 @@ msgstr "Deze waarschuwing volgende keer herhalen"
 msgid "can't allocate memory\n"
 msgstr "kan geen geheugen toewijzen\n"
 
-#: src/compose.c:393
+#: src/compose.c:397
 msgid "/_Add..."
 msgstr "/_Toevoegen..."
 
-#: src/compose.c:394
+#: src/compose.c:398
 msgid "/_Remove"
 msgstr "/_Verwijderen"
 
-#: src/compose.c:396 src/folderview.c:222 src/folderview.c:235
-#: src/folderview.c:248 src/folderview.c:260
+#: src/compose.c:400 src/folderview.c:223 src/folderview.c:236
+#: src/folderview.c:249 src/folderview.c:261
 msgid "/_Property..."
 msgstr "/_Eigenschap..."
 
-#: src/compose.c:402
+#: src/compose.c:406
 msgid "/_File/_Attach file"
 msgstr "/_Bestand/_Bijlage toevoegen"
 
-#: src/compose.c:403
+#: src/compose.c:407
 msgid "/_File/_Insert file"
 msgstr "/_Bestand/Bijlage _invoegen"
 
-#: src/compose.c:404
+#: src/compose.c:408
 msgid "/_File/Insert si_gnature"
 msgstr "/_Bestand/_Handtekening Invoegen"
 
-#: src/compose.c:409
+#: src/compose.c:413
 msgid "/_Edit/_Undo"
 msgstr "/B_ewerken/_Ongedaan maken"
 
-#: src/compose.c:410
+#: src/compose.c:414
 msgid "/_Edit/_Redo"
 msgstr "/B_ewerken/O_pnieuw toepassen"
 
-#: src/compose.c:411 src/compose.c:416 src/mainwindow.c:393
+#: src/compose.c:415 src/compose.c:420 src/mainwindow.c:394
 msgid "/_Edit/---"
 msgstr "/B_ewerken/---"
 
-#: src/compose.c:412
+#: src/compose.c:416
 msgid "/_Edit/Cu_t"
 msgstr "/B_ewerken/Knippen"
 
-#: src/compose.c:413 src/mainwindow.c:391
+#: src/compose.c:417 src/mainwindow.c:392
 msgid "/_Edit/_Copy"
 msgstr "/B_ewerken/_Kopiëren"
 
-#: src/compose.c:414
+#: src/compose.c:418
 msgid "/_Edit/_Paste"
 msgstr "/B_ewerken/_Plakken"
 
-#: src/compose.c:415 src/mainwindow.c:392
+#: src/compose.c:419 src/mainwindow.c:393
 msgid "/_Edit/Select _all"
 msgstr "/B_ewerken/_Alles selecteren"
 
-#: src/compose.c:417
+#: src/compose.c:421
 msgid "/_Edit/Wrap long _lines"
 msgstr "/B_ewerken/Regelterugloop"
 
-#: src/compose.c:418
+#: src/compose.c:422
 msgid "/_Edit/Edit with e_xternal editor"
 msgstr "/B_ewerken/Be_werken met externe editor"
 
-#: src/compose.c:421 src/mainwindow.c:483
+#: src/compose.c:425 src/mainwindow.c:484
 msgid "/_Message"
 msgstr "/Be_richt"
 
-#: src/compose.c:422
+#: src/compose.c:426
 msgid "/_Message/_Send"
 msgstr "/Be_richt/_Verzenden"
 
-#: src/compose.c:424
+#: src/compose.c:428
 msgid "/_Message/Send _later"
 msgstr "/Be_richt/_Later verzenden"
 
-#: src/compose.c:426
+#: src/compose.c:430
 msgid "/_Message/Save to _draft folder"
 msgstr "/Be_richt/Klad opslaan"
 
-#: src/compose.c:428 src/compose.c:433 src/compose.c:435 src/compose.c:438
-#: src/compose.c:442 src/mainwindow.c:487 src/mainwindow.c:490
-#: src/mainwindow.c:500 src/mainwindow.c:511
+#: src/compose.c:432 src/compose.c:437 src/compose.c:439 src/compose.c:442
+#: src/compose.c:446 src/mainwindow.c:488 src/mainwindow.c:491
+#: src/mainwindow.c:501 src/mainwindow.c:512
 msgid "/_Message/---"
 msgstr "/Be_richt/---"
 
-#: src/compose.c:429
+#: src/compose.c:433
 msgid "/_Message/_To"
 msgstr "/Be_richt/Aan"
 
-#: src/compose.c:430
+#: src/compose.c:434
 msgid "/_Message/_Cc"
 msgstr "/Be_richt/Cc"
 
-#: src/compose.c:431
+#: src/compose.c:435
 msgid "/_Message/_Bcc"
 msgstr "/Be_richt/Bcc"
 
-#: src/compose.c:432
+#: src/compose.c:436
 msgid "/_Message/_Reply to"
 msgstr "/Be_richt/Reply to"
 
-#: src/compose.c:434
+#: src/compose.c:438
 msgid "/_Message/_Followup to"
 msgstr "/Be_richt/Vervolg op"
 
-#: src/compose.c:436
+#: src/compose.c:440
 msgid "/_Message/_Attach"
 msgstr "/Be_richt/Bijlagen"
 
-#: src/compose.c:439
+#: src/compose.c:443
 msgid "/_Message/Si_gn"
 msgstr "/Be_richt/Si_gneer"
 
-#: src/compose.c:440
+#: src/compose.c:444
 msgid "/_Message/_Encrypt"
 msgstr "/Be_richt/Codeer"
 
-#: src/compose.c:443
+#: src/compose.c:447
 msgid "/_Message/_Request Return Receipt"
 msgstr "/Be_richt/Verstuur bevestigingsverzoek"
 
-#: src/compose.c:444 src/mainwindow.c:547
+#: src/compose.c:448 src/mainwindow.c:548
 msgid "/_Tool"
 msgstr "/_Gereedschap"
 
-#: src/compose.c:445
+#: src/compose.c:449
 msgid "/_Tool/Show _ruler"
 msgstr "/_Gereedschap/Lineaal weergeven"
 
-#: src/compose.c:446 src/mainwindow.c:548
+#: src/compose.c:450 src/mainwindow.c:549
 msgid "/_Tool/_Address book"
 msgstr "/_Gereedschap/Adresboek"
 
-#: quote_fmt_parse.y:268 quote_fmt_parse.y:280 quote_fmt_parse.y:294
-#: quote_fmt_parse.y:308 src/compose.c:603 src/compose.c:915
-#: src/compose.c:1035 src/procmsg.c:693
+#: src/compose.c:626 src/compose.c:938 src/compose.c:1058 src/procmsg.c:693
 msgid "Can't get text part\n"
 msgstr "Kan tekstgedeelte niet ophalen\n"
 
-#: src/compose.c:685 src/mimeview.c:415
+#: src/compose.c:708 src/mimeview.c:415
 msgid "Can't get the part of multipart message."
 msgstr "Kan deel van een bericht niet ophalen"
 
-#: src/compose.c:904 src/compose.c:988
+#: src/compose.c:927 src/compose.c:1011
 #, c-format
 msgid "%s: file not exist\n"
 msgstr "Bestand %s bestaat niet\n"
 
-#: src/compose.c:1674 src/compose.c:1724
+#: src/compose.c:1701 src/compose.c:1751
 #, c-format
 msgid "File %s doesn't exist\n"
 msgstr "Bestand %s bestaat niet\n"
 
-#: src/compose.c:1678 src/compose.c:1728
+#: src/compose.c:1705 src/compose.c:1755
 #, c-format
 msgid "Can't get file size of %s\n"
 msgstr "Kan de bestandsgrootte niet bepalen van %s\n"
 
-#: src/compose.c:1682 src/compose.c:1732
+#: src/compose.c:1709 src/compose.c:1759
 #, c-format
 msgid "File %s is empty\n"
 msgstr "Bestand %s is leeg\n"
 
-#: src/compose.c:1702 src/compose.c:1753
+#: src/compose.c:1729 src/compose.c:1780
 #, c-format
 msgid "Message: %s"
 msgstr "Bericht: %s"
 
-#: src/compose.c:1851
+#: src/compose.c:1878
 msgid " [Edited]"
 msgstr " [Aangepast]"
 
-#: src/compose.c:1853
+#: src/compose.c:1880
 #, c-format
 msgid "%s - Compose message%s"
 msgstr "%s - bericht opstellen%s"
 
-#: src/compose.c:1856
+#: src/compose.c:1883
 #, c-format
 msgid "Compose message%s"
 msgstr "Bericht opstellen"
 
-#: src/compose.c:1880
+#: src/compose.c:1907
 msgid ""
 "Account for sending mail is not specified.\n"
 "Please select a mail account before sending."
@@ -709,24 +718,24 @@ msgstr ""
 "Geen postvak opgegeven voor het verzenden van berichten.\n"
 "Selecteer eerst een postvak."
 
-#: src/compose.c:1905 src/compose.c:4264
+#: src/compose.c:1932 src/compose.c:4292
 msgid "Recipient is not specified."
 msgstr "Ontvanger is niet gespecificeerd."
 
-#: src/compose.c:1923
+#: src/compose.c:1950
 msgid "can't get recipient list."
 msgstr "fout in lijst met geadresseerden."
 
-#: src/compose.c:1964
+#: src/compose.c:1991
 #, c-format
 msgid "Error occurred while posting the message to %s ."
 msgstr "Er is een fout opgetreden bij het versturen van het bericht naar %s."
 
-#: src/compose.c:1978 src/messageview.c:345
+#: src/compose.c:2005 src/messageview.c:345
 msgid "Queueing"
 msgstr "Wordt in de wachtrij geplaatst"
 
-#: src/compose.c:1979
+#: src/compose.c:2006
 msgid ""
 "Error occurred while sending the message.\n"
 "Put this message into queue folder?"
@@ -734,175 +743,176 @@ msgstr ""
 "Er is een fout opgetreden bij het verzenden.\n"
 "Wilt u het bericht in de wachtrij plaatsen?"
 
-#: src/compose.c:1985 src/compose.c:4276
+#: src/compose.c:2012 src/compose.c:4304
 msgid "Can't queue the message."
 msgstr "Kan bericht niet in de wachtrij plaatsen."
 
-#: src/compose.c:1988
+#: src/compose.c:2015
 msgid "Error occurred while sending the message."
 msgstr "Er is een fout opgetreden bij het verzenden."
 
-#: src/compose.c:1995 src/compose.c:4283
+#: src/compose.c:2022 src/compose.c:4311
 msgid "Can't save the message to outbox."
 msgstr "Het bericht kan niet opgeslagen worden in de outbox."
 
-#: src/compose.c:2021 src/compose.c:2142 src/compose.c:2233
+#: src/compose.c:2048 src/compose.c:2169 src/compose.c:2260
 #: src/mbox_folder.c:1267 src/mbox_folder.c:1369 src/mbox_folder.c:1940
 #: src/mbox_folder.c:1971 src/mbox_folder.c:2034 src/mbox_folder.c:2067
 #: src/messageview.c:199 src/messageview.c:303 src/utils.c:1641
 msgid "can't change file mode\n"
 msgstr "kan de bestandmodus niet veranderen\n"
 
-#: src/compose.c:2047
+#: src/compose.c:2074
 msgid "Can't convert the codeset of the message."
 msgstr "Kan de karakterset niet converteren."
 
-#: src/compose.c:2056
+#: src/compose.c:2083
 msgid "can't write headers\n"
 msgstr "kan geen headers schrijven\n"
 
-#: src/compose.c:2174
+#: src/compose.c:2201
 msgid "saving sent message...\n"
 msgstr "verzonden bericht wordt opgeslagen...\n"
 
-#: src/compose.c:2184
+#: src/compose.c:2211
 msgid "can't save message\n"
 msgstr "kan bericht niet opslaan\n"
 
-#: src/compose.c:2189 src/compose.c:2300 src/messageview.c:261
+#: src/compose.c:2216 src/compose.c:2327 src/messageview.c:261
 msgid "can't open mark file\n"
 msgstr "kan het bestand met markeringen niet openen\n"
 
-#: src/compose.c:2213 src/messageview.c:180
+#: src/compose.c:2240 src/messageview.c:180
 msgid "queueing message...\n"
 msgstr "bericht wordt in de wachtrij geplaatst...\n"
 
-#: src/compose.c:2291 src/messageview.c:252
+#: src/compose.c:2318 src/messageview.c:252
 msgid "can't queue the message\n"
 msgstr "kan het bericht niet in de wachtrij plaatsen\n"
 
-#: src/compose.c:2330
+#: src/compose.c:2357
 #, c-format
 msgid "Can't open file %s\n"
 msgstr "Kan bestand niet openen %s\n"
 
-#: src/compose.c:2700
+#: src/compose.c:2727
 #, c-format
 msgid "generated Message-ID: %s\n"
 msgstr "gegenereerd bericht-ID: %s\n"
 
-#: src/compose.c:2774 src/compose.c:3670
+#: src/compose.c:2801 src/compose.c:3698
 msgid "MIME type"
 msgstr "MIME type"
 
-#: src/compose.c:2774 src/mimeview.c:139 src/prefs_common.c:2671
-#: src/select-keys.c:299 src/summaryview.c:582
+#: src/compose.c:2801 src/mimeview.c:139 src/prefs_common.c:2905
+#: src/select-keys.c:299 src/summaryview.c:583
 msgid "Size"
 msgstr "Grootte"
 
-#: src/compose.c:2791
+#: src/compose.c:2818
 msgid "Creating compose window...\n"
 msgstr "Venster \"Bericht opstellen\" wordt aangemaakt...\n"
 
-#: src/compose.c:2837 src/headerview.c:54 src/summary_search.c:145
+#: src/compose.c:2864 src/headerview.c:54 src/summary_search.c:145
 msgid "From:"
 msgstr "Afzender:"
 
-#: src/compose.c:3295 src/mainwindow.c:1507 src/prefs_account.c:568
-#: src/prefs_common.c:713
+#. Send Options
+#: src/compose.c:3323 src/mainwindow.c:1501 src/prefs_account.c:589
+#: src/prefs_account.c:1266 src/prefs_common.c:760
 msgid "Send"
 msgstr "Verzenden"
 
-#: src/compose.c:3296
+#: src/compose.c:3324
 msgid "Send message"
 msgstr "Verzend bericht"
 
-#: src/compose.c:3303
+#: src/compose.c:3331
 msgid "Send later"
 msgstr "Wachtrij"
 
-#: src/compose.c:3304
+#: src/compose.c:3332
 msgid "Put into queue folder and send later"
 msgstr "In de wachtrij plaatsen en later verzenden"
 
-#: src/compose.c:3311 src/folderview.c:813
+#: src/compose.c:3339 src/folderview.c:818
 msgid "Draft"
 msgstr "Klad"
 
-#: src/compose.c:3312
+#: src/compose.c:3340
 msgid "Save to draft folder"
 msgstr "Opslaan als klad"
 
-#: src/compose.c:3321
+#: src/compose.c:3349
 msgid "Insert"
 msgstr "Invoegen"
 
-#: src/compose.c:3322
+#: src/compose.c:3350
 msgid "Insert file"
 msgstr "Bestand invoegen"
 
-#: src/compose.c:3329
+#: src/compose.c:3357
 msgid "Attach"
 msgstr "Bijvoegen"
 
-#: src/compose.c:3330
+#: src/compose.c:3358
 msgid "Attach file"
 msgstr "Bestand bijvoegen"
 
-#: src/compose.c:3339 src/prefs_common.c:1146
+#: src/compose.c:3367 src/prefs_common.c:1295
 msgid "Signature"
 msgstr "Tekenen"
 
-#: src/compose.c:3340
+#: src/compose.c:3368
 msgid "Insert signature"
 msgstr "Handtekening (signature) invoegen"
 
-#: src/compose.c:3348
+#: src/compose.c:3376
 msgid "Editor"
 msgstr "Editor"
 
-#: src/compose.c:3349
+#: src/compose.c:3377
 msgid "Edit with external editor"
 msgstr "Aanpassen met externe editor"
 
-#: src/compose.c:3357
+#: src/compose.c:3385
 msgid "Linewrap"
 msgstr "Terugloop"
 
-#: src/compose.c:3358
+#: src/compose.c:3386
 msgid "Wrap long lines"
 msgstr "Lange regels op meerdere regels zetten"
 
-#: src/compose.c:3565
+#: src/compose.c:3593
 msgid "Invalid MIME type."
 msgstr "Ongeldig MIME type."
 
-#: src/compose.c:3583
+#: src/compose.c:3611
 msgid "File doesn't exist or is empty."
 msgstr "Bestand bestaat niet of is leeg."
 
-#: src/compose.c:3652
+#: src/compose.c:3680
 msgid "Property"
 msgstr "Eigenschap"
 
-#: src/compose.c:3697
+#: src/compose.c:3725
 msgid "Encoding"
 msgstr "Codering"
 
-#: src/compose.c:3720
+#: src/compose.c:3748
 msgid "Path"
 msgstr "Pad"
 
-#: src/compose.c:3721
+#: src/compose.c:3749
 msgid "File name"
 msgstr "Bestandsnaam"
 
-#: src/compose.c:3868
+#: src/compose.c:3896
 #, c-format
 msgid "External editor command line is invalid: `%s'\n"
 msgstr "De ingegeven opdracht voor de externe editor is onjuist: '%s'\n"
 
-#: src/compose.c:3894
+#: src/compose.c:3922
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -913,62 +923,62 @@ msgstr ""
 "Zal ik het programma afbreken?\n"
 "procesgroep id: %d"
 
-#: src/compose.c:3907
+#: src/compose.c:3935
 #, c-format
 msgid "Terminated process group id: %d"
 msgstr "Programma (id: %d) afgebroken."
 
-#: src/compose.c:3908
+#: src/compose.c:3936
 #, c-format
 msgid "Temporary file: %s"
 msgstr "Tijdelijk bestand: %s"
 
-#: src/compose.c:3932
+#: src/compose.c:3960
 msgid "Compose: input from monitoring process\n"
 msgstr "Opstellen: invoer van \"monitoring process\"\n"
 
 #. failed
-#: src/compose.c:3965
+#: src/compose.c:3993
 msgid "Couldn't exec external editor\n"
 msgstr "Kon de externe editor niet aanroepen\n"
 
-#: src/compose.c:3969
+#: src/compose.c:3997
 msgid "Couldn't write to file\n"
 msgstr "Kon niet naar bestand schrijven\n"
 
-#: src/compose.c:3971
+#: src/compose.c:3999
 msgid "Pipe read failed\n"
 msgstr "Leesfout pipe\n"
 
-#: src/compose.c:4305
+#: src/compose.c:4333
 msgid "can't remove the old draft message\n"
 msgstr "kan het oude kladbericht niet verwijderen\n"
 
-#: src/compose.c:4333 src/compose.c:4353
+#: src/compose.c:4361 src/compose.c:4381
 msgid "Select file"
 msgstr "Selecteer bestand"
 
-#: src/compose.c:4385
+#: src/compose.c:4413
 msgid "Discard message"
 msgstr "Gooi bericht weg"
 
-#: src/compose.c:4386
+#: src/compose.c:4414
 msgid "This message has been modified. discard it?"
 msgstr "Bericht is gewijzigd, weggooien?"
 
-#: src/compose.c:4387
+#: src/compose.c:4415
 msgid "Discard"
 msgstr "Gooi weg"
 
-#: src/compose.c:4387
+#: src/compose.c:4415
 msgid "to Draft"
 msgstr "opslaan als klad"
 
-#: src/compose.c:4793
+#: src/compose.c:4821
 msgid "Quote mark format error."
 msgstr "Fout in citaatformaat."
 
-#: src/compose.c:4807
+#: src/compose.c:4835
 msgid "Message reply/forward format error."
 msgstr "Fout in formaat beantwoorden/doorsturen."
 
@@ -1060,7 +1070,7 @@ msgstr "Wachttijd (sec)"
 msgid "Maximum Entries"
 msgstr "Maximum"
 
-#: src/editldap.c:459 src/prefs_account.c:564
+#: src/editldap.c:459 src/prefs_account.c:585
 msgid "Basic"
 msgstr "Algemeen"
 
@@ -1129,135 +1139,135 @@ msgstr "Selecteer doelbestand"
 msgid "Select folder"
 msgstr "Selecteer map"
 
-#: src/folderview.c:216 src/folderview.c:228 src/folderview.c:241
+#: src/folderview.c:217 src/folderview.c:229 src/folderview.c:242
 msgid "/Create _new folder..."
 msgstr "/Maak nieuwe map"
 
-#: src/folderview.c:217 src/folderview.c:229 src/folderview.c:242
+#: src/folderview.c:218 src/folderview.c:230 src/folderview.c:243
 msgid "/_Rename folder..."
 msgstr "/Hernoem map"
 
-#: src/folderview.c:218 src/folderview.c:230 src/folderview.c:243
+#: src/folderview.c:219 src/folderview.c:231 src/folderview.c:244
 msgid "/_Delete folder"
 msgstr "/Verwijder map"
 
-#: src/folderview.c:220 src/folderview.c:233
+#: src/folderview.c:221 src/folderview.c:234
 msgid "/Remove _mailbox"
 msgstr "/Verwijder mailbox"
 
-#: src/folderview.c:223 src/folderview.c:236 src/folderview.c:249
-#: src/folderview.c:261
+#: src/folderview.c:224 src/folderview.c:237 src/folderview.c:250
+#: src/folderview.c:262
 msgid "/_Scoring..."
 msgstr "/_Scoring..."
 
-#: src/folderview.c:232 src/folderview.c:245
+#: src/folderview.c:233 src/folderview.c:246
 msgid "/_Update folder tree"
 msgstr "/Ververs mapvenster"
 
-#: src/folderview.c:246
+#: src/folderview.c:247
 msgid "/Remove _IMAP4 account"
 msgstr "/Verwijder IMAP4 server"
 
-#: src/folderview.c:254
+#: src/folderview.c:255
 msgid "/_Subscribe to newsgroup..."
 msgstr "/Abonneren op een nieuwsgroep"
 
-#: src/folderview.c:256
+#: src/folderview.c:257
 msgid "/_Remove newsgroup"
 msgstr "/Verwijder nieuwsgroep"
 
-#: src/folderview.c:258
+#: src/folderview.c:259
 msgid "/Remove _news account"
 msgstr "/Verwijder nieuwsgroep"
 
-#: src/folderview.c:270
+#: src/folderview.c:271
 msgid "Folder"
 msgstr "Map"
 
-#: src/folderview.c:270
+#: src/folderview.c:271
 msgid "New"
 msgstr "Nieuw"
 
-#: src/folderview.c:271 src/prefs_common.c:2667
+#: src/folderview.c:272 src/prefs_common.c:2901
 msgid "Unread"
 msgstr "Ongelezen"
 
-#: src/folderview.c:271
+#: src/folderview.c:272
 msgid "#"
 msgstr "#"
 
-#: src/folderview.c:283
+#: src/folderview.c:284
 msgid "Creating folder view...\n"
 msgstr "Mapzicht wordt gemaakt...\n"
 
-#: src/folderview.c:438
+#: src/folderview.c:439
 msgid "Setting folder info...\n"
 msgstr "Mapinfo wordt ingesteld...\n"
 
-#: src/folderview.c:439
+#: src/folderview.c:440
 msgid "Setting folder info..."
 msgstr "Mapinfo wordt ingesteld..."
 
-#: src/folderview.c:600 src/mainwindow.c:2571 src/setup.c:81
+#: src/folderview.c:605 src/mainwindow.c:2567 src/setup.c:81
 #, c-format
 msgid "Scanning folder %s%c%s ..."
 msgstr "Map wordt ingelezen %s%c%s ..."
 
-#: src/folderview.c:604 src/mainwindow.c:2576 src/setup.c:86
+#: src/folderview.c:609 src/mainwindow.c:2572 src/setup.c:86
 #, c-format
 msgid "Scanning folder %s ..."
 msgstr "Map wordt ingelezen %s ..."
 
-#: src/folderview.c:644
+#: src/folderview.c:649
 msgid "Updating folder tree..."
 msgstr "Mappen worden ververst..."
 
-#: src/folderview.c:661
+#: src/folderview.c:666
 msgid "Updating all folders..."
 msgstr "Mappen worden ververst..."
 
-#: src/folderview.c:791 src/prefs_account.c:749
+#: src/folderview.c:796 src/prefs_account.c:774
 msgid "Inbox"
 msgstr "Inbox"
 
-#: src/folderview.c:796
+#: src/folderview.c:801
 msgid "Outbox"
 msgstr "Outbox"
 
-#: src/folderview.c:801
+#: src/folderview.c:806
 msgid "Queue"
 msgstr "Wachtrij"
 
-#: src/folderview.c:806
+#: src/folderview.c:811
 msgid "Trash"
 msgstr "Prullenbak"
 
-#: src/folderview.c:1341
+#: src/folderview.c:1357
 #, c-format
 msgid "Folder %s is selected\n"
 msgstr "Map %s is geselecteerd\n"
 
-#: src/folderview.c:1483 src/folderview.c:1591 src/folderview.c:1787
+#: src/folderview.c:1499 src/folderview.c:1607 src/folderview.c:1803
 #, c-format
 msgid "`%c' can't be included in folder name."
 msgstr "'%c' mag niet in de naam van een map."
 
-#: src/folderview.c:1491 src/folderview.c:1541 src/folderview.c:1600
-#: src/folderview.c:1655 src/folderview.c:1795
+#: src/folderview.c:1507 src/folderview.c:1557 src/folderview.c:1616
+#: src/folderview.c:1671 src/folderview.c:1811
 #, c-format
 msgid "The folder `%s' already exists."
 msgstr "De map '%s' bestaat al."
 
-#: src/folderview.c:1583 src/folderview.c:1645
+#: src/folderview.c:1599 src/folderview.c:1661
 #, c-format
 msgid "Input new name for `%s':"
 msgstr "Geef een nieuwe naam voor '%s':"
 
-#: src/folderview.c:1585 src/folderview.c:1647
+#: src/folderview.c:1601 src/folderview.c:1663
 msgid "Rename folder"
 msgstr "Hernoem map"
 
-#: src/folderview.c:1700
+#: src/folderview.c:1716
 #, c-format
 msgid ""
 "All folder(s) and message(s) under `%s' will be deleted.\n"
@@ -1266,16 +1276,16 @@ msgstr ""
 "Alle mappen en berichten in '%s' zullen worden verwijderd.\n"
 "Wilt u werkelijk verwijderen?"
 
-#: src/folderview.c:1703 src/folderview.c:1845
+#: src/folderview.c:1719 src/folderview.c:1861
 msgid "Delete folder"
 msgstr "Verwijder map"
 
-#: src/folderview.c:1709 src/folderview.c:1851
+#: src/folderview.c:1725 src/folderview.c:1867
 #, c-format
 msgid "Can't remove the folder `%s'."
 msgstr "Kan map '%s' niet verwijderen."
 
-#: src/folderview.c:1743
+#: src/folderview.c:1759
 #, c-format
 msgid ""
 "Really remove the mailbox `%s' ?\n"
@@ -1284,11 +1294,11 @@ msgstr ""
 "Wilt u het '%s' mailbox werkelijk verwijderen?\n"
 "(De berichten zullen niet van de schijf worden verwijderd)"
 
-#: src/folderview.c:1746
+#: src/folderview.c:1762
 msgid "Remove folder"
 msgstr "Verwijder map"
 
-#: src/folderview.c:1779
+#: src/folderview.c:1795
 msgid ""
 "Input the name of new folder:\n"
 "(if you want to create a folder to store subfolders,\n"
@@ -1298,45 +1308,45 @@ msgstr ""
 "(wanneer deze meerdere mappen moet bevatten,\n"
 " voeg een `/' toe aan het eind van de naam)"
 
-#: src/folderview.c:1803
+#: src/folderview.c:1819
 #, c-format
 msgid "Can't create the folder `%s'."
 msgstr "Kan map '%s' niet verwijderen."
 
-#: src/folderview.c:1843
+#: src/folderview.c:1859
 #, c-format
 msgid "Really delete folder `%s'?"
 msgstr "Map '%s' werkelijk verwijderen?"
 
-#: src/folderview.c:1888
+#: src/folderview.c:1904
 #, c-format
 msgid "Really delete IMAP4 account `%s'?"
 msgstr "IMAP4 server '%s' werkelijk verwijderen?"
 
-#: src/folderview.c:1890
+#: src/folderview.c:1906
 msgid "Delete IMAP4 account"
 msgstr "Verwijder IMAP4 Postvak"
 
-#: src/folderview.c:1940
+#: src/folderview.c:1956
 #, c-format
 msgid "The newsgroup `%s' already exists."
 msgstr "De nieuwsgroep '%s' betsaat al."
 
-#: src/folderview.c:1986
+#: src/folderview.c:2002
 #, c-format
 msgid "Really delete newsgroup `%s'?"
 msgstr "Nieuwsgroep '%s' werkelijk verwijderen?"
 
-#: src/folderview.c:1988
+#: src/folderview.c:2004
 msgid "Delete newsgroup"
 msgstr "Verwijder nieuwsgroep"
 
-#: src/folderview.c:2019
+#: src/folderview.c:2035
 #, c-format
 msgid "Really delete news account `%s'?"
 msgstr "Nieuwsgroep '%s' werkelijk verwijderen?"
 
-#: src/folderview.c:2021
+#: src/folderview.c:2037
 msgid "Delete news account"
 msgstr "Verwijder Nieuws Postvak"
 
@@ -1356,7 +1366,7 @@ msgstr "Verversen"
 msgid "Can't retrieve newsgroup list."
 msgstr "Kan groeplijst niet ophalen."
 
-#: src/grouplistdialog.c:249 src/summaryview.c:1042
+#: src/grouplistdialog.c:249 src/summaryview.c:1043
 msgid "Done."
 msgstr "Klaar."
 
@@ -1381,11 +1391,11 @@ msgstr "Onderwerp:"
 msgid "Creating header view...\n"
 msgstr "Header view wordt aangemaakt...\n"
 
-#: src/headerview.c:174 src/summaryview.c:2044
+#: src/headerview.c:174 src/summaryview.c:2071
 msgid "(No From)"
 msgstr "(Geen afzender)"
 
-#: src/headerview.c:189 src/summaryview.c:2080
+#: src/headerview.c:189 src/summaryview.c:2107
 msgid "(No Subject)"
 msgstr "(Geen onderwerp)"
 
@@ -1415,147 +1425,146 @@ msgstr "Plaatje wordt weergegeven...\n"
 msgid "Can't load the image."
 msgstr "Kan plaatje niet weergeven."
 
-#: src/imap.c:234
+#: src/imap.c:261
 #, c-format
 msgid "IMAP4 connection to %s:%d has been disconnected. Reconnecting...\n"
-msgstr ""
-"IMAP4 verbinding naar %s:%d is verbroken. Contact wordt opnieuw gelegd...\n"
+msgstr "IMAP4 verbinding naar %s:%d is verbroken. Contact wordt opnieuw gelegd...\n"
 
-#: src/imap.c:256 src/inc.c:418 src/news.c:129
+#: src/imap.c:290 src/inc.c:419 src/news.c:129
 #, c-format
 msgid "Input password for %s on %s:"
 msgstr "Geef wachtwoord voor %s op %s:"
 
-#: src/imap.c:258 src/inc.c:422 src/news.c:131
+#: src/imap.c:292 src/inc.c:423 src/news.c:131
 msgid "Input password"
 msgstr "Geef wachtwoord"
 
-#: src/imap.c:283
+#: src/imap.c:323
 #, c-format
 msgid "creating IMAP4 connection to %s:%d ...\n"
 msgstr "IMAP4 verbinden %s:%d ...\n"
 
-#: src/imap.c:438
+#: src/imap.c:487
 #, c-format
 msgid "message %d has been already cached.\n"
 msgstr "bericht %d is reeds gebufferd.\n"
 
-#: src/imap.c:448
+#: src/imap.c:497
 #, c-format
 msgid "getting message %d...\n"
 msgstr "bericht %d wordt opgehaald...\n"
 
-#: src/imap.c:454 src/procmsg.c:593
+#: src/imap.c:503 src/procmsg.c:593
 #, c-format
 msgid "can't fetch message %d\n"
 msgstr "kan bericht %d niet ophalen\n"
 
-#: src/imap.c:478
+#: src/imap.c:527
 #, c-format
 msgid "can't append message %s\n"
 msgstr "kan bericht niet opslaan\n"
 
-#: src/imap.c:506 src/imap.c:558 src/mh.c:191 src/mh.c:267 src/mh.c:322
-#: src/mh.c:457
+#: src/imap.c:555 src/imap.c:607 src/mh.c:193 src/mh.c:297 src/mh.c:354
+#: src/mh.c:516
 msgid "the src folder is identical to the dest.\n"
 msgstr "de bronmap is hetzelfde als de doelmap.\n"
 
-#: src/imap.c:513 src/imap.c:563 src/mh.c:204 src/mh.c:270
+#: src/imap.c:562 src/imap.c:612 src/mh.c:208 src/mh.c:300
 #, c-format
 msgid "Moving message %s%c%d to %s ...\n"
 msgstr "Bericht %s%c%d wordt verplaatst naar %s ...\n"
 
-#: src/imap.c:517 src/imap.c:567 src/mh.c:338 src/mh.c:460
+#: src/imap.c:566 src/imap.c:616 src/mh.c:372 src/mh.c:519
 #, c-format
 msgid "Copying message %s%c%d to %s ...\n"
 msgstr "Bericht %s%c%d wordt gekopieerd naar %s...\n"
 
-#: src/imap.c:637
+#: src/imap.c:686
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "kan verwijderde vlaggen: %d niet instellen\n"
 
-#: src/imap.c:644 src/imap.c:684
+#: src/imap.c:693 src/imap.c:733
 msgid "can't expunge\n"
 msgstr "kan niet wissen\n"
 
-#: src/imap.c:677
+#: src/imap.c:726
 #, c-format
 msgid "can't set deleted flags: 1:%d\n"
 msgstr "kan de vlaggen \"verwijderd\" : 1.%d niet instellen\n"
 
-#: src/imap.c:841
+#: src/imap.c:890
 msgid "error occured while getting LIST.\n"
 msgstr "er is een fout opgetreden bij ophalen LIST\n"
 
-#: src/imap.c:1042
+#: src/imap.c:1091
 msgid "can't create mailbox: LIST failed\n"
 msgstr "LIST mistlukt; kan mailbox niet maken\n"
 
-#: src/imap.c:1062
+#: src/imap.c:1111
 msgid "can't create mailbox\n"
 msgstr "Ik kan geen mailbox maken\n"
 
-#: src/imap.c:1109
+#: src/imap.c:1158
 msgid "can't delete mailbox\n"
 msgstr "Ik kan de mailbox niet verwijderen\n"
 
-#: src/imap.c:1138
+#: src/imap.c:1187
 msgid "can't get envelope\n"
 msgstr "Ik kan de envelope niet verkrijgen\n"
 
-#: src/imap.c:1146
+#: src/imap.c:1195
 msgid "error occurred while getting envelope.\n"
 msgstr "Er is een fout opgetreden bij het verkrijgen van de envelope.\n"
 
-#: src/imap.c:1161
+#: src/imap.c:1210
 #, c-format
 msgid "can't parse envelope: %s\n"
 msgstr "Ik kan de envelope niet verwerken: %s\n"
 
-#: src/imap.c:1191
+#: src/imap.c:1240
 #, c-format
 msgid "Deleting cached messages %d - %d ... "
 msgstr "Verwijderen cache berichten %d - %d ... "
 
-#: src/imap.c:1224
+#: src/imap.c:1273
 msgid "Deleting all cached messages... "
 msgstr "Verwijderen van alle cache berichten..."
 
-#: src/imap.c:1238
+#: src/imap.c:1291
 #, c-format
 msgid "Can't connect to IMAP4 server: %s:%d\n"
 msgstr "Kan geen verbinding maken met de IMAP4 server: %s:%d\n"
 
-#: src/imap.c:1271
+#: src/imap.c:1331
 msgid "can't get namespace\n"
 msgstr "Ik kan de envelope niet verkrijgen\n"
 
-#: src/imap.c:1712
+#: src/imap.c:1772
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "kan map niet selecteren: %s\n"
 
-#: src/imap.c:1829
+#: src/imap.c:1889
 msgid "IMAP4 login failed.\n"
 msgstr "IMAP4 login mislukt.\n"
 
-#: src/imap.c:2057
+#: src/imap.c:2117
 #, c-format
 msgid "can't append %s to %s\n"
 msgstr "kan %d niet naar %s kopiëren\n"
 
-#: src/imap.c:2077
+#: src/imap.c:2137
 #, c-format
 msgid "can't copy %d to %s\n"
 msgstr "kan %d niet naar %s kopiëren\n"
 
-#: src/imap.c:2102
+#: src/imap.c:2162
 #, c-format
 msgid "error while imap command: STORE %d:%d %s\n"
 msgstr "Fout tijdens IMAP opdracht: STORE %d:%d %s\n"
 
-#: src/imap.c:2116
+#: src/imap.c:2176
 msgid "error while imap command: EXPUNGE\n"
 msgstr "Fout tijdens IMAP opdracht: EXPUNGE\n"
 
@@ -1579,7 +1588,7 @@ msgstr "Doelmap:"
 msgid "Select importing file"
 msgstr "Selecteer het te importeren bestand"
 
-#: src/inc.c:210 src/inc.c:259 src/send.c:298
+#: src/inc.c:210 src/inc.c:259 src/send.c:350
 msgid "Standby"
 msgstr "Een ogenblik geduld alstublieft"
 
@@ -1587,94 +1596,98 @@ msgstr "Een ogenblik geduld alstublieft"
 msgid "Retrieving new messages"
 msgstr "Nieuwe berichten worden opgehaald"
 
-#: src/inc.c:442
+#: src/inc.c:443
 msgid "Retrieving"
 msgstr "Bezig met ophalen"
 
-#: src/inc.c:449
+#: src/inc.c:450
 msgid "Done"
 msgstr "Klaar"
 
-#: src/inc.c:462
+#: src/inc.c:463
 #, c-format
 msgid "Authorization for %s on %s failed"
 msgstr "Identificatie voor %s op %s is mislukt"
 
-#: src/inc.c:532
+#: src/inc.c:503
+msgid "Some errors occured while getting mail."
+msgstr "Fout bij ophalen berichten"
+
+#: src/inc.c:541
 #, c-format
 msgid "getting new messages of account %s...\n"
 msgstr "nieuwe berichten voor account %s worden opgehaald...\n"
 
-#: src/inc.c:540
+#: src/inc.c:549
 #, c-format
 msgid "%s: Retrieving new messages"
 msgstr "%s: Nieuwe berichten worden opgehaald"
 
-#: src/inc.c:566
+#: src/inc.c:575
 #, c-format
 msgid "Connecting to POP3 server: %s ..."
 msgstr "Verbinden met POP3 server: %s ..."
 
-#: src/inc.c:577 src/inc.c:734
+#: src/inc.c:586 src/inc.c:743
 #, c-format
 msgid "Can't connect to POP3 server: %s:%d\n"
 msgstr "Kan geen verbinding maken met POP3 server: %s:%d\n"
 
-#: src/inc.c:584 src/inc.c:741
+#: src/inc.c:593 src/inc.c:750
 #, c-format
 msgid "Can't connect to POP3 server: %s:%d"
 msgstr "Kan geen verbinding maken met POP3 server: %s:%d"
 
-#: src/inc.c:776 src/inc.c:828
+#: src/inc.c:785 src/inc.c:837
 #, c-format
 msgid "Retrieving message (%d / %d) (%s / %s)"
 msgstr "Bericht wordt opgehaald (%d / %d) (%s / %s)"
 
-#: src/inc.c:802
+#: src/inc.c:811
 msgid "Authorizing..."
 msgstr "Bezig met identificatie..."
 
-#: src/inc.c:807
+#: src/inc.c:816
 msgid "Getting the number of new messages (STAT)..."
 msgstr "Opvragen van het aantal nieuwe berichten (STAT)..."
 
-#: src/inc.c:812
+#: src/inc.c:821
 msgid "Getting the number of new messages (LAST)..."
 msgstr "Opvragen van het aantal nieuwe berichten (LAST)..."
 
-#: src/inc.c:817
+#: src/inc.c:826
 msgid "Getting the number of new messages (UIDL)..."
 msgstr "Opvragen van het aantal nieuwe berichten (UIDL)..."
 
-#: src/inc.c:822
+#: src/inc.c:831
 msgid "Getting the size of messages (LIST)..."
 msgstr "Opvragen van de grootte van de nieuwe berichten (LIST)..."
 
-#: src/inc.c:840
+#: src/inc.c:849
 msgid "Deleting message"
 msgstr "Bericht wordt verwijderd"
 
-#: src/inc.c:844
+#: src/inc.c:853
 msgid "Quitting"
 msgstr "Bezig met afsluiten"
 
-#: src/inc.c:876
+#: src/inc.c:885
 msgid "a message won't be received\n"
 msgstr "een bericht wordt niet ontvangen\n"
 
-#: src/inc.c:912
+#: src/inc.c:921
 msgid "Error occurred while processing mail."
 msgstr "Fout bij het verwerken van de e-mail"
 
-#: src/inc.c:916
+#: src/inc.c:925
 msgid "No disk space left."
 msgstr "De ruimte op de schijf is op."
 
-#: src/inc.c:1000
+#: src/inc.c:1009
 msgid "no messages in local mailbox.\n"
 msgstr "geen berichten in de lokale mailbox\n"
 
-#: src/inc.c:1014
+#: src/inc.c:1023
 #, c-format
 msgid "Getting new messages from %s into %s...\n"
 msgstr "Nieuwe berichten worden opgehaald van %s naar %s ...\n"
@@ -1711,7 +1724,7 @@ msgstr "Bruin"
 #. * index of label_colors[] as data parameter. for the None color we pass
 #. * an invalid (high) value. also we attach a data pointer so we can
 #. * always get back the SummaryView pointer.
-#: src/labelcolors.c:281 src/summaryview.c:511
+#: src/labelcolors.c:281 src/summaryview.c:512
 msgid "None"
 msgstr "Geen"
 
@@ -1724,7 +1737,7 @@ msgid "Protocol log"
 msgstr "Protocol log"
 
 #. for gettext
-#: src/main.c:113 src/main.c:122 src/mbox_folder.c:2089 src/mh.c:639
+#: src/main.c:113 src/main.c:122 src/mbox_folder.c:2089 src/mh.c:698
 #, c-format
 msgid ""
 "File `%s' already exists.\n"
@@ -1745,550 +1758,550 @@ msgstr ""
 "GnuPG is niet goed geïnstalleerd.\n"
 "OpenPGP ondersteuning wordt uitgeschakeld."
 
-#: src/main.c:323
+#: src/main.c:326
 #, c-format
 msgid "Usage: %s [OPTION]...\n"
 msgstr "Gebruik: %s [OPTIES]...\n"
 
-#: src/main.c:326
+#: src/main.c:329
 msgid "  --compose [address]    open composition window"
 msgstr "  --compose [adres]      open venster \"Bericht opstellen\""
 
-#: src/main.c:327
+#: src/main.c:330
 msgid "  --receive              receive new messages"
 msgstr "  --receive              haal nieuwe berichten op"
 
-#: src/main.c:328
+#: src/main.c:331
 msgid "  --receive-all          receive new messages of all accounts"
 msgstr "  --receive-all          Berichten ophalen van alle accounts"
 
-#: src/main.c:329
+#: src/main.c:332
 msgid "  --debug                debug mode"
 msgstr "  --debug                debug modus"
 
-#: src/main.c:330
+#: src/main.c:333
 msgid "  --help                 display this help and exit"
 msgstr "  --help                 geef deze hulp weer"
 
-#: src/main.c:331
+#: src/main.c:334
 msgid "  --version              output version information and exit"
 msgstr " --version\t\tgeef versie informatie en sluit af"
 
-#: src/main.c:356
+#: src/main.c:359
 msgid "Composing message exists. Really quit?"
 msgstr ""
 "U bent een bericht aan het opstellen.\n"
 "Wilt u werkelijk het programma afsluiten?"
 
-#: src/main.c:363
+#: src/main.c:366
 msgid "Queued messages"
 msgstr "Berichten zijn in de wachtrij gezet"
 
-#: src/main.c:364
+#: src/main.c:367
 msgid "Some unsent messages are queued. Exit now?"
 msgstr "Er staan nog berichten in de wachtrij. Toch afsluiten?"
 
 #. remote command mode
-#: src/main.c:437
+#: src/main.c:440
 msgid "another Sylpheed is already running.\n"
 msgstr "er draait al een Sylpheed.\n"
 
-#: src/mainwindow.c:372
+#: src/mainwindow.c:373
 msgid "/_File/_Add mailbox..."
 msgstr "/_Bestand/Nieuw mailbox..."
 
-#: src/mainwindow.c:373
+#: src/mainwindow.c:374
 msgid "/_File/_Add mbox mailbox..."
 msgstr "/_Bestand/Toevoegen mbox mailbox..."
 
-#: src/mainwindow.c:374
+#: src/mainwindow.c:375
 msgid "/_File/_Update folder tree"
 msgstr "/_Bestand/Ververs mapvenster"
 
-#: src/mainwindow.c:375
+#: src/mainwindow.c:376
 msgid "/_File/_Folder"
 msgstr "/_Bestand/_Map"
 
-#: src/mainwindow.c:376
+#: src/mainwindow.c:377
 msgid "/_File/_Folder/Create _new folder..."
 msgstr "/_Bestand/_Map/Maak nieuwe map aan..."
 
-#: src/mainwindow.c:378
+#: src/mainwindow.c:379
 msgid "/_File/_Folder/_Rename folder..."
 msgstr "/_Bestand/_Map/Hernoem map..."
 
-#: src/mainwindow.c:379
+#: src/mainwindow.c:380
 msgid "/_File/_Folder/_Delete folder"
 msgstr "/_Bestand/_Map/Verwijder map"
 
-#: src/mainwindow.c:380
+#: src/mainwindow.c:381
 msgid "/_File/_Import mbox file..."
 msgstr "/_Bestand/_Importeer mbox bestand..."
 
-#: src/mainwindow.c:381
+#: src/mainwindow.c:382
 msgid "/_File/_Export to mbox file..."
 msgstr "/_Bestand/_Exporteer naar mbox bestand..."
 
-#: src/mainwindow.c:382
+#: src/mainwindow.c:383
 msgid "/_File/Empty _trash"
 msgstr "/_Bestand/_Leeg prullenbak"
 
-#: src/mainwindow.c:384
+#: src/mainwindow.c:385
 msgid "/_File/_Save as..."
 msgstr "/_Bestand/Opslaan _als..."
 
-#: src/mainwindow.c:385
+#: src/mainwindow.c:386
 msgid "/_File/_Print..."
 msgstr "/_Bestand/Af_drukken..."
 
-#: src/mainwindow.c:388
+#: src/mainwindow.c:389
 msgid "/_File/E_xit"
 msgstr "/_Bestand/A_fsluiten"
 
-#: src/mainwindow.c:394
+#: src/mainwindow.c:395
 msgid "/_Edit/_Search"
 msgstr "/Be_werken/_Zoek"
 
-#: src/mainwindow.c:396
+#: src/mainwindow.c:397
 msgid "/_View"
 msgstr "/B_eeld"
 
-#: src/mainwindow.c:397
+#: src/mainwindow.c:398
 msgid "/_View/_Folder tree"
 msgstr "/B_eeld/Mappenboom"
 
-#: src/mainwindow.c:398
+#: src/mainwindow.c:399
 msgid "/_View/_Message view"
 msgstr "/B_eeld/Bericht"
 
-#: src/mainwindow.c:399
+#: src/mainwindow.c:400
 msgid "/_View/_Toolbar"
 msgstr "/B_eeld/Werkbalk"
 
-#: src/mainwindow.c:400
+#: src/mainwindow.c:401
 msgid "/_View/_Toolbar/Icon _and text"
 msgstr "/B_eeld/Werkbalk/Afbeelding en tekst"
 
-#: src/mainwindow.c:401
+#: src/mainwindow.c:402
 msgid "/_View/_Toolbar/_Icon"
 msgstr "/B_eeld/Werkbalk/Afbeelding"
 
-#: src/mainwindow.c:402
+#: src/mainwindow.c:403
 msgid "/_View/_Toolbar/_Text"
 msgstr "/B_eeld/Werkbalk/Tekst"
 
-#: src/mainwindow.c:403
+#: src/mainwindow.c:404
 msgid "/_View/_Toolbar/_None"
 msgstr "/B_eeld/Werkbalk/Niet weergeven"
 
-#: src/mainwindow.c:404
+#: src/mainwindow.c:405
 msgid "/_View/_Status bar"
 msgstr "/B_eeld/Statusbalk"
 
-#: src/mainwindow.c:405 src/mainwindow.c:408
+#: src/mainwindow.c:406 src/mainwindow.c:409
 msgid "/_View/---"
 msgstr "/B_eeld/---"
 
-#: src/mainwindow.c:406
+#: src/mainwindow.c:407
 msgid "/_View/Separate f_older tree"
 msgstr "/B_eeld/Mappenboom los"
 
-#: src/mainwindow.c:407
+#: src/mainwindow.c:408
 msgid "/_View/Separate m_essage view"
 msgstr "/B_eeld/Bericht los"
 
-#: src/mainwindow.c:409
+#: src/mainwindow.c:410
 msgid "/_View/_Code set"
 msgstr "/B_eeld/Codering"
 
-#: src/mainwindow.c:410
+#: src/mainwindow.c:411
 msgid "/_View/_Code set/_Auto detect"
 msgstr "/B_eeld/Codering/Automatisch"
 
-#: src/mainwindow.c:414 src/mainwindow.c:418
+#: src/mainwindow.c:415 src/mainwindow.c:419
 msgid "/_View/_Code set/---"
 msgstr "/B_eeld/Codering/---"
 
-#: src/mainwindow.c:419
+#: src/mainwindow.c:420
 msgid "/_View/_Code set/7bit ascii (US-ASC_II)"
 msgstr "/B_eeld/Codering/7bit ascii (US-ASC_II)"
 
-#: src/mainwindow.c:423
+#: src/mainwindow.c:424
 msgid "/_View/_Code set/Unicode (_UTF-8)"
 msgstr "/B_eeld/Codering/Unicode (_UTF-8)"
 
-#: src/mainwindow.c:427
+#: src/mainwindow.c:428
 msgid "/_View/_Code set/Western European (ISO-8859-_1)"
 msgstr "/B_eeld/Codering/Westeuropees (ISO-8859-_1)"
 
-#: src/mainwindow.c:431
+#: src/mainwindow.c:432
 msgid "/_View/_Code set/Central European (ISO-8859-_2)"
 msgstr "/B_eeld/Codering/Centraaleuropees (ISO-8859-_2)"
 
-#: src/mainwindow.c:434
+#: src/mainwindow.c:435
 msgid "/_View/_Code set/_Baltic (ISO-8859-13)"
 msgstr "/B_eeld/Codering/Baltisch (ISO-8859-13)"
 
-#: src/mainwindow.c:436
+#: src/mainwindow.c:437
 msgid "/_View/_Code set/Baltic (ISO-8859-_4)"
 msgstr "/B_eeld/Codering/Baltisch (ISO-8859-_4)"
 
-#: src/mainwindow.c:439
+#: src/mainwindow.c:440
 msgid "/_View/_Code set/Greek (ISO-8859-_7)"
 msgstr "/B_eeld/Codering/Grieks (ISO-8859-_7)"
 
-#: src/mainwindow.c:442
+#: src/mainwindow.c:443
 msgid "/_View/_Code set/Turkish (ISO-8859-_9)"
 msgstr "/B_eeld/Codering/Turks (ISO-8859-_9)"
 
-#: src/mainwindow.c:445
+#: src/mainwindow.c:446
 msgid "/_View/_Code set/Cyrillic (ISO-8859-_5)"
 msgstr "/B_eeld/Codering/Cyrillisch (ISO-8859-_5)"
 
-#: src/mainwindow.c:447
+#: src/mainwindow.c:448
 msgid "/_View/_Code set/Cyrillic (KOI8-_R)"
 msgstr "/B_eeld/Codering/Cyrillisch (KOI8-_R)"
 
-#: src/mainwindow.c:449
+#: src/mainwindow.c:450
 msgid "/_View/_Code set/Cyrillic (Windows-1251)"
 msgstr "/B_eeld/Codering/Cyrillisch (Windows-1251)"
 
-#: src/mainwindow.c:453
+#: src/mainwindow.c:454
 msgid "/_View/_Code set/Japanese (ISO-2022-_JP)"
 msgstr "/B_eeld/Codering/Japans (ISO-2022-_JP)"
 
-#: src/mainwindow.c:456
+#: src/mainwindow.c:457
 msgid "/_View/_Code set/Japanese (ISO-2022-JP-2)"
 msgstr "/B_eeld/Codering/Japans (ISO-2022-JP-2)"
 
-#: src/mainwindow.c:459
+#: src/mainwindow.c:460
 msgid "/_View/_Code set/Japanese (_EUC-JP)"
 msgstr "/B_eeld/Codering/Japans (_EUC-JP)"
 
-#: src/mainwindow.c:461
+#: src/mainwindow.c:462
 msgid "/_View/_Code set/Japanese (_Shift__JIS)"
 msgstr "/B_eeld/Codering/Japans (_Shift__JIS)"
 
-#: src/mainwindow.c:465
+#: src/mainwindow.c:466
 msgid "/_View/_Code set/Simplified Chinese (_GB2312)"
 msgstr "/B_eeld/Codering/Simpel Chinees (_GB2312)"
 
-#: src/mainwindow.c:467
+#: src/mainwindow.c:468
 msgid "/_View/_Code set/Traditional Chinese (_Big5)"
 msgstr "/B_eeld/Codering/Traditioneel Chinees (_Big5)"
 
-#: src/mainwindow.c:469
+#: src/mainwindow.c:470
 msgid "/_View/_Code set/Traditional Chinese (EUC-_TW)"
 msgstr "/B_eeld/Codering/Traditioneel Chinees (EUC-_TW)"
 
-#: src/mainwindow.c:471
+#: src/mainwindow.c:472
 msgid "/_View/_Code set/Chinese (ISO-2022-_CN)"
 msgstr "/B_eeld/Codering/Chinees (ISO-2022-_CN)"
 
-#: src/mainwindow.c:474
+#: src/mainwindow.c:475
 msgid "/_View/_Code set/Korean (EUC-_KR)"
 msgstr "/B_eeld/Codering/Koreaans (EUC-_KR)"
 
-#: src/mainwindow.c:476
+#: src/mainwindow.c:477
 msgid "/_View/_Code set/Korean (ISO-2022-KR)"
 msgstr "/B_eeld/Codering/Koreaans (ISO-2022-KR)"
 
-#: src/mainwindow.c:484
+#: src/mainwindow.c:485
 msgid "/_Message/Get new ma_il"
 msgstr "/Be_richt/Haal e-mail op"
 
-#: src/mainwindow.c:485
+#: src/mainwindow.c:486
 msgid "/_Message/Get from _all accounts"
 msgstr "/Be_richt/Haal alle e-mail op"
 
-#: src/mainwindow.c:488
+#: src/mainwindow.c:489
 msgid "/_Message/Send queued messa_ges"
 msgstr "/Be_richt/Verzend berichten uit de wachtrij"
 
-#: src/mainwindow.c:491
+#: src/mainwindow.c:492
 msgid "/_Message/Compose a_n email message"
 msgstr "/Be_richt/Nieuw bericht"
 
-#: src/mainwindow.c:492
+#: src/mainwindow.c:493
 msgid "/_Message/Compose a news message"
 msgstr "/_Bericht/Nieuw nieuwsartikel"
 
-#: src/mainwindow.c:493
+#: src/mainwindow.c:494
 msgid "/_Message/_Reply"
 msgstr "/Be_richt/Antwoord"
 
-#: src/mainwindow.c:494
+#: src/mainwindow.c:495
 msgid "/_Message/Repl_y to sender"
 msgstr "/Be_richt/Beantwoorden afzender"
 
-#: src/mainwindow.c:495
+#: src/mainwindow.c:496
 msgid "/_Message/Follow-up and reply to"
 msgstr "/_Bericht/Doorsturen en beantwoorden"
 
-#: src/mainwindow.c:496
+#: src/mainwindow.c:497
 msgid "/_Message/Reply to a_ll"
 msgstr "/Be_richt/Antwoord iedereen"
 
-#: src/mainwindow.c:497
+#: src/mainwindow.c:498
 msgid "/_Message/_Forward"
 msgstr "/Be_richt/Doorsturen"
 
-#: src/mainwindow.c:498
+#: src/mainwindow.c:499
 msgid "/_Message/Forward as a_ttachment"
 msgstr "/Be_richt/Doorsturen als bijvoeging"
 
-#: src/mainwindow.c:501
+#: src/mainwindow.c:502
 msgid "/_Message/M_ove..."
 msgstr "/Be_richt/Verplaats..."
 
-#: src/mainwindow.c:502
+#: src/mainwindow.c:503
 msgid "/_Message/_Copy..."
 msgstr "/Be_richt/_Kopieer..."
 
-#: src/mainwindow.c:503
+#: src/mainwindow.c:504
 msgid "/_Message/_Delete"
 msgstr "/Be_richt/Verwijder"
 
-#: src/mainwindow.c:504
+#: src/mainwindow.c:505
 msgid "/_Message/_Mark"
 msgstr "/Be_richt/Markeer"
 
-#: src/mainwindow.c:505
+#: src/mainwindow.c:506
 msgid "/_Message/_Mark/_Mark"
 msgstr "/Be_richt/Markeer/Markeer"
 
-#: src/mainwindow.c:506
+#: src/mainwindow.c:507
 msgid "/_Message/_Mark/_Unmark"
 msgstr "/Be_richt/Markeer/Demarkeer"
 
-#: src/mainwindow.c:507
+#: src/mainwindow.c:508
 msgid "/_Message/_Mark/---"
 msgstr "/Be_richt/Markeer/---"
 
-#: src/mainwindow.c:508
+#: src/mainwindow.c:509
 msgid "/_Message/_Mark/Mark as unr_ead"
 msgstr "/Be_richt/Markeer/Markeer als ongelezen"
 
-#: src/mainwindow.c:509
+#: src/mainwindow.c:510
 msgid "/_Message/_Mark/Mark as rea_d"
 msgstr "/Be_richt/Markeer/Markeer als gelezen"
 
-#: src/mainwindow.c:512
+#: src/mainwindow.c:513
 msgid "/_Message/Open in new _window"
 msgstr "/Be_richt/Open in nieuw venster"
 
-#: src/mainwindow.c:513
+#: src/mainwindow.c:514
 msgid "/_Message/View _source"
 msgstr "/Be_richt/Bekijk broncode"
 
-#: src/mainwindow.c:514
+#: src/mainwindow.c:515
 msgid "/_Message/Show all _header"
 msgstr "/Be_richt/Laat complete header zien"
 
-#: src/mainwindow.c:515
+#: src/mainwindow.c:516
 msgid "/_Message/Re-_edit"
 msgstr "/Be_richt/Bewerken"
 
-#: src/mainwindow.c:517
+#: src/mainwindow.c:518
 msgid "/_Summary"
 msgstr "/Berichten_lijst"
 
-#: src/mainwindow.c:518
+#: src/mainwindow.c:519
 msgid "/_Summary/_Delete duplicated messages"
 msgstr "/Berichten_lijst/Verwijder dubbele berichten"
 
-#: src/mainwindow.c:520
+#: src/mainwindow.c:521
 msgid "/_Summary/_Filter messages"
 msgstr "/Berichten_lijst/Filter berichten"
 
-#: src/mainwindow.c:521
+#: src/mainwindow.c:522
 msgid "/_Summary/E_xecute"
 msgstr "/Berichten_lijst/Uitvoeren"
 
-#: src/mainwindow.c:522
+#: src/mainwindow.c:523
 msgid "/_Summary/_Update"
 msgstr "/Berichten_lijst/Ververs"
 
-#: src/mainwindow.c:523 src/mainwindow.c:529 src/mainwindow.c:531
+#: src/mainwindow.c:524 src/mainwindow.c:530 src/mainwindow.c:532
 msgid "/_Summary/---"
 msgstr "/Berichten_lijst/---"
 
-#: src/mainwindow.c:524
+#: src/mainwindow.c:525
 msgid "/_Summary/_Prev message"
 msgstr "/Berichten_lijst/Vorige bericht"
 
-#: src/mainwindow.c:525
+#: src/mainwindow.c:526
 msgid "/_Summary/_Next message"
 msgstr "/Berichten_lijst/Volgende bericht"
 
-#: src/mainwindow.c:526
+#: src/mainwindow.c:527
 msgid "/_Summary/N_ext unread message"
 msgstr "/Berichten_lijst/Volgende ongelezen bericht"
 
-#: src/mainwindow.c:527
+#: src/mainwindow.c:528
 msgid "/_Summary/Prev marked message"
 msgstr "/_Summary/Vorige gemarkeerde bericht"
 
-#: src/mainwindow.c:528
+#: src/mainwindow.c:529
 msgid "/_Summary/Next marked message"
 msgstr "/_Summary/Volgende gemarkeerde bericht"
 
-#: src/mainwindow.c:530
+#: src/mainwindow.c:531
 msgid "/_Summary/_Go to other folder"
 msgstr "/Berichten_lijst/Ga naar andere map"
 
-#: src/mainwindow.c:532
+#: src/mainwindow.c:533
 msgid "/_Summary/_Sort"
 msgstr "/Berichten_lijst/Sorteer"
 
-#: src/mainwindow.c:533
+#: src/mainwindow.c:534
 msgid "/_Summary/_Sort/Sort by _number"
 msgstr "/Berichten_lijst/Sorteer/Op nummer"
 
-#: src/mainwindow.c:534
+#: src/mainwindow.c:535
 msgid "/_Summary/_Sort/Sort by s_ize"
 msgstr "/Berichten_lijst/Sorteer/Op grootte"
 
-#: src/mainwindow.c:535
+#: src/mainwindow.c:536
 msgid "/_Summary/_Sort/Sort by _date"
 msgstr "/Berichten_lijst/Sorteer/Op datum"
 
-#: src/mainwindow.c:536
+#: src/mainwindow.c:537
 msgid "/_Summary/_Sort/Sort by _from"
 msgstr "/Berichten_lijst/Sorteer/Op afzender"
 
-#: src/mainwindow.c:537
+#: src/mainwindow.c:538
 msgid "/_Summary/_Sort/Sort by _subject"
 msgstr "/Berichten_lijst/Sorteer/Op onderwerp"
 
-#: src/mainwindow.c:538
+#: src/mainwindow.c:539
 msgid "/_Summary/_Sort/Sort by sco_re"
 msgstr "/Berichten_lijst/Sorteer/Op sco_re"
 
-#: src/mainwindow.c:539
+#: src/mainwindow.c:540
 msgid "/_Summary/_Sort/Sort by _label"
 msgstr "/Berichten_lijst/Sorteer/Op label"
 
-#: src/mainwindow.c:540
+#: src/mainwindow.c:541
 msgid "/_Summary/_Sort/---"
 msgstr "/Berichten_lijst/Sorteer/---"
 
-#: src/mainwindow.c:541
+#: src/mainwindow.c:542
 msgid "/_Summary/_Sort/_Attract by subject"
 msgstr "/Berichten_lijst/Sorteer/Attract by subject"
 
-#: src/mainwindow.c:543
+#: src/mainwindow.c:544
 msgid "/_Summary/_Thread view"
 msgstr "/Berichten_lijst/Sorteer genest"
 
-#: src/mainwindow.c:544
+#: src/mainwindow.c:545
 msgid "/_Summary/Unt_hread view"
 msgstr "/Berichten_lijst/Sorteer ongenest"
 
-#: src/mainwindow.c:545
+#: src/mainwindow.c:546
 msgid "/_Summary/Set display _item..."
 msgstr "/Berichten_lijst/Selecteer kolommen..."
 
-#: src/mainwindow.c:549
+#: src/mainwindow.c:550
 msgid "/_Tool/_Log window"
 msgstr "/Gereedschap/Logvenster"
 
-#: src/mainwindow.c:551
+#: src/mainwindow.c:552
 msgid "/_Configuration"
 msgstr "/_Instellingen"
 
-#: src/mainwindow.c:552
+#: src/mainwindow.c:553
 msgid "/_Configuration/_Common preferences..."
 msgstr "/_Instellingen/Algemene voorkeuren..."
 
-#: src/mainwindow.c:554
+#: src/mainwindow.c:555
 msgid "/_Configuration/_Filter setting..."
 msgstr "/_Instellingen/_Filterinstellingen..."
 
-#: src/mainwindow.c:556
+#: src/mainwindow.c:557
 msgid "/_Configuration/_Scoring ..."
 msgstr "/_Instellingen/_Scoring ..."
 
-#: src/mainwindow.c:558
+#: src/mainwindow.c:559
 msgid "/_Configuration/_Filtering ..."
 msgstr "/_Instellingen/Geavanceerd filteren"
 
-#: src/mainwindow.c:560
+#: src/mainwindow.c:561
 msgid "/_Configuration/_Preferences per account..."
 msgstr "/_Instellingen/Voorkeuren hoofdaccount..."
 
-#: src/mainwindow.c:562
+#: src/mainwindow.c:563
 msgid "/_Configuration/---"
 msgstr "/_Instellingen/---"
 
-#: src/mainwindow.c:563
+#: src/mainwindow.c:564
 msgid "/_Configuration/Create _new account..."
 msgstr "/_Instellingen/Nieuw account aanmaken..."
 
-#: src/mainwindow.c:565
+#: src/mainwindow.c:566
 msgid "/_Configuration/_Edit accounts..."
 msgstr "/_Instellingen/Accountbeheer..."
 
-#: src/mainwindow.c:567
+#: src/mainwindow.c:568
 msgid "/_Configuration/C_hange current account"
 msgstr "/_Instellingen/Huidig account veranderen"
 
-#: src/mainwindow.c:571
+#: src/mainwindow.c:572
 msgid "/_Help/_Manual"
 msgstr "/_Help/_Handboek"
 
-#: src/mainwindow.c:572
+#: src/mainwindow.c:573
 msgid "/_Help/_Manual/_English"
 msgstr "/_Help/_Handboek/_Engels"
 
-#: src/mainwindow.c:573
+#: src/mainwindow.c:574
 msgid "/_Help/_Manual/_Japanese"
 msgstr "/_Help/_Handboek/_Japans"
 
-#: src/mainwindow.c:574
+#: src/mainwindow.c:575
 msgid "/_Help/---"
 msgstr "/_Help/---"
 
-#: src/mainwindow.c:603
+#: src/mainwindow.c:604
 msgid "Creating main window...\n"
 msgstr "Hoofdvenster wordt aangemaakt...\n"
 
-#: src/mainwindow.c:718
+#: src/mainwindow.c:723
 #, c-format
 msgid "MainWindow: color allocation %d failed\n"
 msgstr "HoofdVenster: kleur %d kon niet gealloceerd worden\n"
 
-#: src/mainwindow.c:898 src/mainwindow.c:915
+#: src/mainwindow.c:891 src/mainwindow.c:908
 msgid "Untitled"
 msgstr "Geen titel"
 
-#: src/mainwindow.c:916
+#: src/mainwindow.c:909
 msgid "none"
 msgstr "niets"
 
-#: src/mainwindow.c:925
+#: src/mainwindow.c:918
 #, c-format
 msgid "Current account: %s"
 msgstr "Huidig account: %s"
 
-#: src/mainwindow.c:1016
+#: src/mainwindow.c:1009
 #, c-format
 msgid "window position: x = %d, y = %d\n"
 msgstr "Vensterpositie: x = %d, y = %d\n"
 
-#: src/mainwindow.c:1024
+#: src/mainwindow.c:1017
 msgid "Empty trash"
 msgstr "Leeg prullenbak"
 
-#: src/mainwindow.c:1025
+#: src/mainwindow.c:1018
 msgid "Empty all messages in trash?"
 msgstr "Alle berichten uit de prullenbak weggooien?"
 
-#: src/mainwindow.c:1053
+#: src/mainwindow.c:1046
 msgid "Add mailbox"
 msgstr "Mailbox toevoegen"
 
-#: src/mainwindow.c:1054
+#: src/mainwindow.c:1047
 msgid ""
 "Input the location of mailbox.\n"
 "If the existing mailbox is specified, it will be\n"
@@ -2298,16 +2311,16 @@ msgstr ""
 "Als een bestaande mailbox wordt ingevuld,\n"
 "dan wordt hij automatisch gescand."
 
-#: src/mainwindow.c:1060 src/mainwindow.c:1100
+#: src/mainwindow.c:1053 src/mainwindow.c:1093
 #, c-format
 msgid "The mailbox `%s' already exists."
 msgstr "De mailbox '%s' bestaat al."
 
-#: src/mainwindow.c:1066 src/setup.c:57
+#: src/mainwindow.c:1059 src/setup.c:57
 msgid "Mailbox"
 msgstr "Mailbox"
 
-#: src/mainwindow.c:1073 src/setup.c:63
+#: src/mainwindow.c:1066 src/setup.c:63
 msgid ""
 "Creation of the mailbox failed.\n"
 "Maybe some files already exist, or you don't have the permission to write "
@@ -2317,148 +2330,144 @@ msgstr ""
 "Misschien bestaan er al wat bestanden, of heb je geen toestemming om er te "
 "schrijven."
 
-#: src/mainwindow.c:1093
+#: src/mainwindow.c:1086
 msgid "Add mbox mailbox"
 msgstr "Toevoegen mbox mailbox"
 
-#: src/mainwindow.c:1094
+#: src/mainwindow.c:1087
 msgid "Input the location of mailbox."
 msgstr "Geef de lokatie van de mailbox"
 
-#: src/mainwindow.c:1115
+#: src/mainwindow.c:1108
 msgid "Creation of the mailbox failed."
 msgstr "Mailbox kon niet worden gemaakt"
 
-#: src/mainwindow.c:1276
+#: src/mainwindow.c:1270
 msgid "Setting widgets..."
 msgstr "Widgets worden aangemaakt..."
 
-#: src/mainwindow.c:1490
+#: src/mainwindow.c:1484
 msgid "Get"
 msgstr "Ophalen"
 
-#: src/mainwindow.c:1491
+#: src/mainwindow.c:1485
 msgid "Get new mail from current account"
 msgstr "E-mail ophalen en in de lijst zetten."
 
-#: src/mainwindow.c:1496
-msgid "Get all"
-msgstr "Alles oph."
-
-#: src/mainwindow.c:1497
+#: src/mainwindow.c:1491
 msgid "Get new mail from all accounts"
 msgstr "E-mail van alle accounts ophalen en in de lijsten zetten"
 
-#: src/mainwindow.c:1508
+#: src/mainwindow.c:1502
 msgid "Send queued message(s)"
 msgstr "Verzend berichten uit de wachtrij"
 
-#: src/mainwindow.c:1525
+#: src/mainwindow.c:1519
 msgid "Compose email message"
 msgstr "Opstellen email bericht"
 
-#: src/mainwindow.c:1526
+#: src/mainwindow.c:1520
 msgid "email"
 msgstr "email"
 
-#: src/mainwindow.c:1534 src/mainwindow.c:1571
+#: src/mainwindow.c:1528 src/mainwindow.c:1565
 msgid "Email"
 msgstr "Email"
 
-#: src/mainwindow.c:1549
+#: src/mainwindow.c:1543
 msgid "Compose news article"
 msgstr "Opstellen nieuwsartikel"
 
-#: src/mainwindow.c:1550
+#: src/mainwindow.c:1544
 msgid "news"
 msgstr "nieuws"
 
-#: src/mainwindow.c:1558 src/mainwindow.c:1582 src/prefs_common.c:865
+#: src/mainwindow.c:1552 src/mainwindow.c:1576 src/prefs_common.c:912
 msgid "News"
 msgstr "Nieuws"
 
-#: src/mainwindow.c:1572
+#: src/mainwindow.c:1566
 msgid "Compose an email message"
 msgstr "Opstellen"
 
-#: src/mainwindow.c:1583
+#: src/mainwindow.c:1577
 msgid "Compose a news message"
 msgstr "Nieuw bericht opstellen"
 
-#: src/mainwindow.c:1609
+#: src/mainwindow.c:1603
 msgid "Reply"
 msgstr "Antwoord"
 
-#: src/mainwindow.c:1610
+#: src/mainwindow.c:1604
 msgid "Reply to the message"
 msgstr "Stuur een bericht terug naar de afzender"
 
-#: src/mainwindow.c:1617
+#: src/mainwindow.c:1611
 msgid "All"
 msgstr "Iedereen"
 
-#: src/mainwindow.c:1618
+#: src/mainwindow.c:1612
 msgid "Reply to all"
 msgstr "Bericht naar iedereen terugsturen."
 
-#: src/mainwindow.c:1625
+#: src/mainwindow.c:1619
 msgid "Sender"
 msgstr "Afzender"
 
-#: src/mainwindow.c:1626
+#: src/mainwindow.c:1620
 msgid "Reply to sender"
 msgstr "Afzender beantwoorden"
 
-#: src/mainwindow.c:1633 src/prefs_filtering.c:223
+#: src/mainwindow.c:1627 src/prefs_filtering.c:223
 msgid "Forward"
 msgstr "Doorsturen"
 
-#: src/mainwindow.c:1634
+#: src/mainwindow.c:1628
 msgid "Forward the message"
 msgstr "Stuur dit bericht door"
 
-#: src/mainwindow.c:1645
+#: src/mainwindow.c:1639
 msgid "Delete the message"
 msgstr "Verwijder dit bericht"
 
-#: src/mainwindow.c:1653 src/prefs_filtering.c:225 src/prefs_filtering.c:461
+#: src/mainwindow.c:1647 src/prefs_filtering.c:225 src/prefs_filtering.c:461
 #: src/prefs_matcher.c:149
 msgid "Execute"
 msgstr "Doen!"
 
-#: src/mainwindow.c:1654
+#: src/mainwindow.c:1648
 msgid "Execute marked process"
 msgstr "Voer de gemarkeerde acties uit"
 
-#: src/mainwindow.c:1662
+#: src/mainwindow.c:1656
 msgid "Next"
 msgstr "Volgende"
 
-#: src/mainwindow.c:1663
+#: src/mainwindow.c:1657
 msgid "Next unread message"
 msgstr "Volgende ongelezen"
 
-#: src/mainwindow.c:1745
+#: src/mainwindow.c:1739
 msgid "Email message"
 msgstr "Email bericht"
 
-#: src/mainwindow.c:1753
+#: src/mainwindow.c:1747
 msgid "News article"
 msgstr "Nieuwsartikel"
 
-#: src/mainwindow.c:1999 src/summaryview.c:3296
+#: src/mainwindow.c:1993 src/summaryview.c:3403
 msgid "Exit"
 msgstr "Afsluiten"
 
-#: src/mainwindow.c:1999 src/summaryview.c:3296
+#: src/mainwindow.c:1993 src/summaryview.c:3403
 msgid "Exit this program?"
 msgstr "Sylpheed afsluiten?"
 
-#: src/mainwindow.c:2139
+#: src/mainwindow.c:2133
 msgid "Sending queued message failed."
 msgstr "Het verzenden van de berichten uit de wachtrij is mislukt."
 
-#: src/mainwindow.c:2340
+#: src/mainwindow.c:2334
 #, c-format
 msgid "forced charset: %s\n"
 msgstr "geforceerde karakterset: %s\n"
@@ -2581,7 +2590,7 @@ msgstr "ongeldig bestand - %s.\n"
 msgid "writing to %s failed.\n"
 msgstr "schrijven naar %s is mislukt.\n"
 
-#: src/mbox_folder.c:1731 src/mh.c:609
+#: src/mbox_folder.c:1731 src/mh.c:668
 #, c-format
 msgid "Last number in dir %s = %d\n"
 msgstr "Laatste nummer in map %s = %d\n"
@@ -2657,25 +2666,25 @@ msgstr "Fout bij het versturen van bevestiging."
 msgid "can't copy message %s to %s\n"
 msgstr "kan bericht niet kopiëren van %s naar %s\n"
 
-#: src/mh.c:202 src/mh.c:261 src/mh.c:336 src/mh.c:451
+#: src/mh.c:206 src/mh.c:291 src/mh.c:370 src/mh.c:510
 msgid "Can't open mark file.\n"
 msgstr "kan het bestand met markeringen niet openen\n"
 
-#: src/mh.c:347 src/mh.c:469
+#: src/mh.c:383 src/mh.c:528
 #, c-format
 msgid "%s already exists."
 msgstr "%s bestaat al."
 
-#: src/mh.c:814
+#: src/mh.c:873
 msgid "\tSearching uncached messages... "
 msgstr "\tOngebufferde berichten worden doorzocht..."
 
-#: src/mh.c:869
+#: src/mh.c:928
 #, c-format
 msgid "%d uncached message(s) found.\n"
 msgstr "%d ongebufferde bericht(en) gevonden.\n"
 
-#: src/mh.c:875
+#: src/mh.c:934
 msgid "\tSorting uncached messages in numerical order... "
 msgstr "\tOngebufferde berichten worden op nummer gesorteerd..."
 
@@ -2691,7 +2700,7 @@ msgstr "/Open met..."
 msgid "/_Display as text"
 msgstr "/Als tekst weergeven"
 
-#: src/mimeview.c:116 src/summaryview.c:354
+#: src/mimeview.c:116 src/summaryview.c:355
 msgid "/_Save as..."
 msgstr "/Opslaan als..."
 
@@ -2711,27 +2720,27 @@ msgstr "MIME view wordt aangemaakt...\n"
 msgid "Select \"Check signature\" to check"
 msgstr "Selecteer \"Verifieer handtekening\" om te controleren"
 
-#: src/mimeview.c:675 src/mimeview.c:723 src/mimeview.c:742 src/mimeview.c:765
+#: src/mimeview.c:682 src/mimeview.c:730 src/mimeview.c:749 src/mimeview.c:772
 msgid "Can't save the part of multipart message."
 msgstr "Kan het deel van een meerdelig bericht niet opslaan."
 
-#: src/mimeview.c:709 src/summaryview.c:2725
+#: src/mimeview.c:716 src/summaryview.c:2832
 msgid "Save as"
 msgstr "Opslaan als"
 
-#: src/mimeview.c:715 src/summaryview.c:2730
+#: src/mimeview.c:722 src/summaryview.c:2837
 msgid "Overwrite"
 msgstr "Overschrijven"
 
-#: src/mimeview.c:716 src/summaryview.c:2731
+#: src/mimeview.c:723 src/summaryview.c:2838
 msgid "Overwrite existing file?"
 msgstr "Bestaand bestand overschrijven?"
 
-#: src/mimeview.c:770
+#: src/mimeview.c:777
 msgid "Open with"
 msgstr "Open met"
 
-#: src/mimeview.c:771
+#: src/mimeview.c:778
 #, c-format
 msgid ""
 "Enter the command line to open file:\n"
@@ -2740,7 +2749,7 @@ msgstr ""
 "Geef de opdracht om het bestand mee te openen:\n"
 "('%s' zal vervangen worden door de bestandsnaam)"
 
-#: src/mimeview.c:823
+#: src/mimeview.c:830
 #, c-format
 msgid "MIME viewer command line is invalid: `%s'"
 msgstr "MIMEviewer commandoregel is ongeldig: '%s'"
@@ -2755,85 +2764,85 @@ msgstr "verbinding met nieuwsserver (NNTP) %s%d wordt opgezet...\n"
 msgid "NNTP connection to %s:%d has been disconnected. Reconnecting...\n"
 msgstr "De NNTP-verbinding is verbroken. Opnieuw contact aan het leggen...\n"
 
-#: src/news.c:258
+#: src/news.c:257
 #, c-format
 msgid "article %d has been already cached.\n"
 msgstr "artikel %d is al gebufferd.\n"
 
-#: src/news.c:271
+#: src/news.c:270
 #, c-format
 msgid "can't select group %s\n"
 msgstr "kan groep niet instellen: %s\n"
 
-#: src/news.c:276
+#: src/news.c:275
 #, c-format
 msgid "getting article %d...\n"
 msgstr "artikel %d wordt opgehaald...\n"
 
-#: src/news.c:281
+#: src/news.c:280
 #, c-format
 msgid "can't read article %d\n"
 msgstr "kan artikel %d niet lezen\n"
 
-#: src/news.c:324
+#: src/news.c:325
 msgid "can't retrieve newsgroup list\n"
 msgstr "Kan groeplijst niet ophalen\n"
 
-#: src/news.c:396
+#: src/news.c:397
 msgid "can't post article.\n"
 msgstr "kan het ertikel niet versturen.\n"
 
-#: src/news.c:420
+#: src/news.c:421
 #, c-format
 msgid "can't retrieve article %d\n"
 msgstr "kan het artikel %d niet ophalen\n"
 
-#: src/news.c:490
+#: src/news.c:491
 #, c-format
 msgid "can't set group: %s\n"
 msgstr "kan groep niet instellen: %s\n"
 
-#: src/news.c:497
+#: src/news.c:498
 #, c-format
 msgid "invalid article range: %d - %d\n"
 msgstr "ongeldig artikelbereik: %d - %d\n"
 
-#: src/news.c:506
+#: src/news.c:507
 msgid "no new articles.\n"
 msgstr "geen nieuwe artikelen.\n"
 
-#: src/news.c:519
+#: src/news.c:520
 #, c-format
 msgid "getting xover %d - %d in %s...\n"
 msgstr "xover %d - %d uit %s wordt opgehaald...\n"
 
-#: src/news.c:522
+#: src/news.c:523
 msgid "can't get xover\n"
 msgstr "Kan xover niet ophalen\n"
 
-#: src/news.c:528
+#: src/news.c:529
 msgid "error occurred while getting xover.\n"
 msgstr "er is een fout opgetreden tijdens het ophalen van de xover.\n"
 
-#: src/news.c:536
+#: src/news.c:537
 #, c-format
 msgid "invalid xover line: %s\n"
 msgstr "Ongeldige xover regel: %s\n"
 
-#: src/news.c:554 src/news.c:579
+#: src/news.c:555 src/news.c:580
 msgid "can't get xhdr\n"
 msgstr "Kan xover niet ophalen\n"
 
-#: src/news.c:562 src/news.c:587
+#: src/news.c:563 src/news.c:588
 msgid "error occurred while getting xhdr.\n"
 msgstr "er is een fout opgetreden tijdens het ophalen van de xover.\n"
 
-#: src/news.c:712
+#: src/news.c:713
 #, c-format
 msgid "Deleting cached articles 1 - %d ... "
 msgstr "Verwijderen cache berichten 1 - %d ... "
 
-#: src/news.c:741
+#: src/news.c:742
 msgid "\tDeleting all cached articles... "
 msgstr "\tAlle gebufferde artikelen worden verwijderd..."
 
@@ -2883,7 +2892,7 @@ msgid ""
 msgstr "Slecht wachtwoord! Probeer opnieuw...\n"
 
 #: src/pop.c:98 src/pop.c:145
-msgid "error occurred on authorization\n"
+msgid "error occurred on authentication\n"
 msgstr "er is een fout opgetreden tijdens de identificatie\n"
 
 #: src/pop.c:117
@@ -2911,11 +2920,11 @@ msgstr "%s gevonden\n"
 msgid "Finished reading configuration.\n"
 msgstr "Klaar met inlezen van de configuratie.\n"
 
-#: src/prefs.c:141 src/prefs.c:169 src/prefs.c:214 src/prefs_account.c:423
-#: src/prefs_account.c:437 src/prefs_customheader.c:394
-#: src/prefs_customheader.c:440 src/prefs_display_header.c:429
+#: src/prefs.c:141 src/prefs.c:169 src/prefs.c:214 src/prefs_account.c:444
+#: src/prefs_account.c:458 src/prefs_customheader.c:393
+#: src/prefs_customheader.c:439 src/prefs_display_header.c:429
 #: src/prefs_display_header.c:454 src/prefs_filter.c:533
-#: src/prefs_filter.c:557 src/scoring.c:425 src/scoring.c:436
+#: src/prefs_filter.c:557 src/scoring.c:428 src/scoring.c:439
 msgid "failed to write configuration to file\n"
 msgstr "opslaan van de configuratie is mislukt\n"
 
@@ -2932,355 +2941,376 @@ msgstr "geen permissie - %s\n"
 msgid "Apply"
 msgstr "Toepassen"
 
-#: src/prefs_account.c:471
+#: src/prefs_account.c:492
 msgid "Opening account preferences window...\n"
 msgstr "Venster accountvoorkeuren wordt geopend...\n"
 
-#: src/prefs_account.c:498
+#: src/prefs_account.c:519
 #, c-format
 msgid "Account%d"
 msgstr "Account%d"
 
-#: src/prefs_account.c:511
+#: src/prefs_account.c:532
 msgid "Preferences for new account"
 msgstr "Voorkeuren voor nieuw account"
 
-#: src/prefs_account.c:516
+#: src/prefs_account.c:537
 msgid "Preferences for each account"
 msgstr "Accountvoorkeuren"
 
-#: src/prefs_account.c:544
+#: src/prefs_account.c:565
 msgid "Creating account preferences window...\n"
 msgstr "Venster accountvoorkeuren wordt geopend...\n"
 
-#: src/prefs_account.c:566 src/prefs_common.c:711
+#. Receive Options
+#: src/prefs_account.c:587 src/prefs_account.c:1255 src/prefs_common.c:758
 msgid "Receive"
 msgstr "Ontvangen"
 
-#: src/prefs_account.c:570 src/prefs_common.c:715
+#: src/prefs_account.c:591 src/prefs_common.c:762
 msgid "Compose"
 msgstr "Opstellen"
 
-#: src/prefs_account.c:573 src/prefs_common.c:722
+#: src/prefs_account.c:594 src/prefs_common.c:769
 msgid "Privacy"
 msgstr "Privacy"
 
-#: src/prefs_account.c:576
+#: src/prefs_account.c:598
+msgid "SSL"
+msgstr "SSL"
+
+#: src/prefs_account.c:601
 msgid "Advanced"
 msgstr "Geavanceerd"
 
-#: src/prefs_account.c:657
+#: src/prefs_account.c:682
 msgid "Name of this account"
 msgstr "Naam van dit account"
 
-#: src/prefs_account.c:666
+#: src/prefs_account.c:691
 msgid "Usually used"
 msgstr "Hoofdaccount"
 
-#: src/prefs_account.c:670
+#: src/prefs_account.c:695
 msgid "Personal information"
 msgstr "Persoonlijke informatie"
 
-#: src/prefs_account.c:679
+#: src/prefs_account.c:704
 msgid "Full name"
 msgstr "Volledige naam"
 
-#: src/prefs_account.c:685
+#: src/prefs_account.c:710
 msgid "Mail address"
 msgstr "E-mail adres"
 
-#: src/prefs_account.c:691
+#: src/prefs_account.c:716
 msgid "Organization"
 msgstr "Organisatie"
 
-#: src/prefs_account.c:715
+#: src/prefs_account.c:740
 msgid "Server information"
 msgstr "Serverinformatie"
 
-#: src/prefs_account.c:736
+#: src/prefs_account.c:761
 msgid "POP3 (normal)"
 msgstr "POP3 (normaal)"
 
-#: src/prefs_account.c:738
+#: src/prefs_account.c:763
 msgid "POP3 (APOP auth)"
 msgstr "POP3 (APOP identificatie)"
 
-#: src/prefs_account.c:740 src/prefs_account.c:942
+#: src/prefs_account.c:765 src/prefs_account.c:967
 msgid "IMAP4"
 msgstr "IMAP4"
 
-#: src/prefs_account.c:742
+#: src/prefs_account.c:767
 msgid "News (NNTP)"
 msgstr "Nieuws (NNTP)"
 
-#: src/prefs_account.c:744
+#: src/prefs_account.c:769
 msgid "None (local)"
 msgstr "Niets (lokaal)"
 
-#: src/prefs_account.c:773
+#: src/prefs_account.c:798
 msgid "This server requires authentication"
 msgstr "Deze server vereist identificatie"
 
-#: src/prefs_account.c:817
+#: src/prefs_account.c:842
 msgid "News server"
 msgstr "Nieuwsserver"
 
-#: src/prefs_account.c:823
+#: src/prefs_account.c:848
 msgid "Server for receiving"
 msgstr "Server om van te ontvangen"
 
-#: src/prefs_account.c:829
+#: src/prefs_account.c:854
 msgid "Local mailbox file"
 msgstr "Lokale mailbox"
 
 #. gtk_table_set_row_spacing (GTK_TABLE (serv_table), 2, 0);
-#: src/prefs_account.c:836
+#: src/prefs_account.c:861
 msgid "SMTP server (send)"
 msgstr "SMTP server (zenden)"
 
-#: src/prefs_account.c:844
+#: src/prefs_account.c:869
 msgid "Use mail command rather than SMTP server"
 msgstr "Gebruik mail opdracht ipv SMTP"
 
-#: src/prefs_account.c:853
+#: src/prefs_account.c:878
 msgid "command to send mails"
 msgstr "opdracht voor versturen berichten"
 
 #. gtk_table_set_row_spacing (GTK_TABLE (serv_table), 2, 0);
-#: src/prefs_account.c:860
+#: src/prefs_account.c:885
 msgid "User ID"
 msgstr "Gebruikersnaam"
 
-#: src/prefs_account.c:866
+#: src/prefs_account.c:891
 msgid "Password"
 msgstr "Wachtwoord"
 
-#: src/prefs_account.c:925
+#: src/prefs_account.c:950
 msgid "POP3"
 msgstr "POP3"
 
-#: src/prefs_account.c:933
+#: src/prefs_account.c:958
 msgid "Remove messages on server when received"
 msgstr "Verwijder berichten op de server wanneer ze worden opgehaald"
 
-#: src/prefs_account.c:935
+#: src/prefs_account.c:960
 msgid "Download all messages on server"
 msgstr "Haal alle berichten op"
 
-#: src/prefs_account.c:938
+#: src/prefs_account.c:963
 msgid "`Get all' checks for new mail on this account"
 msgstr "'Alles ophalen' haalt de e-mail voor dit account op"
 
-#: src/prefs_account.c:940
+#: src/prefs_account.c:965
 msgid "Filter messages on receiving"
 msgstr "Filter de berichten bij het ophalen"
 
-#: src/prefs_account.c:953
+#: src/prefs_account.c:978
 msgid "IMAP server directory"
 msgstr "IMAP server directory"
 
-#: src/prefs_account.c:999 src/prefs_customheader.c:199 src/prefs_filter.c:259
-#: src/prefs_matcher.c:143
+#: src/prefs_account.c:1024 src/prefs_customheader.c:196
+#: src/prefs_filter.c:259 src/prefs_matcher.c:143
 msgid "Header"
 msgstr "Header"
 
-#: src/prefs_account.c:1006
+#: src/prefs_account.c:1031
 msgid "Add Date header field"
 msgstr "Datum veld toevoegen aan header"
 
-#: src/prefs_account.c:1007
+#: src/prefs_account.c:1032
 msgid "Generate Message-ID"
 msgstr "Bericht-ID aanmaken"
 
-#: src/prefs_account.c:1014
+#: src/prefs_account.c:1039
 msgid "Add user-defined header"
 msgstr "Voeg een door de gebruiker gespecificeerde header toe"
 
-#: src/prefs_account.c:1016 src/prefs_common.c:1724 src/prefs_common.c:1749
+#: src/prefs_account.c:1041 src/prefs_common.c:1667 src/prefs_common.c:1692
 msgid " Edit... "
 msgstr "Bewerken"
 
-#: src/prefs_account.c:1026
+#: src/prefs_account.c:1051
 msgid "Automatically set following addresses"
 msgstr "Velden om automatisch in te vullen"
 
-#: src/prefs_account.c:1035 src/prefs_matcher.c:140
+#: src/prefs_account.c:1060 src/prefs_matcher.c:140
 msgid "Cc"
 msgstr "Cc"
 
-#: src/prefs_account.c:1048
+#: src/prefs_account.c:1073
 msgid "Bcc"
 msgstr "Bcc"
 
-#: src/prefs_account.c:1061
+#: src/prefs_account.c:1086
 msgid "Reply-To"
 msgstr "Antwoorden naar"
 
-#: src/prefs_account.c:1074
+#: src/prefs_account.c:1099
 msgid "Authentication"
 msgstr "Identificatie"
 
-#: src/prefs_account.c:1082
+#: src/prefs_account.c:1107
 msgid "SMTP Authentication (SMTP AUTH)"
 msgstr "SMTP identificatie (SMTP AUTH)"
 
-#: src/prefs_account.c:1084
+#: src/prefs_account.c:1109
 msgid "Authenticate with POP3 before sending"
 msgstr "Identificatie met POP3 voor het verzenden"
 
-#: src/prefs_account.c:1118
+#: src/prefs_account.c:1143
 msgid "Signature file"
 msgstr "Bestand met handtekening"
 
-#: src/prefs_account.c:1147
+#: src/prefs_account.c:1172
 msgid "Sign key"
 msgstr "Signeersleutel"
 
-#: src/prefs_account.c:1155
+#: src/prefs_account.c:1180
 msgid "Use default GnuPG key"
 msgstr "Gebruik standaard GnuPG sleutel"
 
-#: src/prefs_account.c:1164
+#: src/prefs_account.c:1189
 msgid "Select key by your email address"
 msgstr "Selecteer sleutel naar e-mail adres"
 
-#: src/prefs_account.c:1173
+#: src/prefs_account.c:1198
 msgid "Specify key manually"
 msgstr "Specificeer sleutel zelf"
 
-#: src/prefs_account.c:1189
+#: src/prefs_account.c:1214
 msgid "User or key ID:"
 msgstr "Gebruikers- of sleutel-ID:"
 
-#: src/prefs_account.c:1254
+#: src/prefs_account.c:1262
+msgid "Use SSL tunnel to connect to POP server"
+msgstr "Gebruik SSL tunnel voor POP3 verbinding"
+
+#: src/prefs_account.c:1263
+msgid "Use SSL tunnel to connect to IMAP server"
+msgstr "Gebruik SSL-tunnel voor IMAP verbinding"
+
+#: src/prefs_account.c:1274
+msgid "No SSL for SMTP"
+msgstr "Geen SMTP over SSL"
+
+#: src/prefs_account.c:1283
+msgid "Use SSL tunnel to connect to SMTP server"
+msgstr "Gebruik SSL tunnel voor SMTP verbinding"
+
+#: src/prefs_account.c:1292
+msgid "Use STARTTLS command to start SMTP SSL session"
+msgstr "Gebruik STARTTLS voor starten SMTP-SSL sessie"
+
+#: src/prefs_account.c:1351
 msgid "Specify SMTP port"
 msgstr "Eigen SMTP poort"
 
-#: src/prefs_account.c:1260
+#: src/prefs_account.c:1357
 msgid "Specify POP3 port"
 msgstr "Eigen POP3 poort"
 
-#: src/prefs_account.c:1265
-msgid "Use SSL to connect to POP server"
-msgstr "Gebruik SSL voor POP3 verbinding"
-
-#: src/prefs_account.c:1270
+#: src/prefs_account.c:1363
 msgid "Specify IMAP4 port"
 msgstr "Geef IMAP4 poort"
 
-#: src/prefs_account.c:1276
+#: src/prefs_account.c:1369
 msgid "Specify NNTP port"
 msgstr "Geef NNTP poort"
 
-#: src/prefs_account.c:1281
+#: src/prefs_account.c:1374
 msgid "Specify domain name"
 msgstr "Geef domeinnaam"
 
-#: src/prefs_account.c:1341
+#: src/prefs_account.c:1431
 msgid "Mail address is not entered."
 msgstr "E-mail adres is niet ingevoerd."
 
-#: src/prefs_account.c:1346
+#: src/prefs_account.c:1436
 msgid "SMTP server is not entered."
 msgstr "SMTP server is niet ingevoerd."
 
-#: src/prefs_account.c:1351
+#: src/prefs_account.c:1441
 msgid "User ID is not entered."
 msgstr "Gebruikersnaam is niet ingevoerd."
 
-#: src/prefs_account.c:1356
+#: src/prefs_account.c:1446
 msgid "POP3 server is not entered."
 msgstr "POP3 server is niet ingevoerd."
 
-#: src/prefs_account.c:1361
+#: src/prefs_account.c:1451
 msgid "IMAP4 server is not entered."
 msgstr "IMAP4 server is niet ingevoerd."
 
-#: src/prefs_account.c:1366
+#: src/prefs_account.c:1456
 msgid "NNTP server is not entered."
 msgstr "NNTP server is niet ingevoerd."
 
-#: src/prefs_account.c:1372
+#: src/prefs_account.c:1462
 msgid "local mailbox filename is not entered."
 msgstr "naam lokale mailbox niet ingevoerd."
 
-#: src/prefs_account.c:1378
+#: src/prefs_account.c:1468
 msgid "mail command is not entered."
 msgstr "geen mail opdracht ingevoerd"
 
-#: src/prefs_common.c:688
+#: src/prefs_common.c:735
 msgid "Creating common preferences window...\n"
 msgstr "Venster algemene voorkeuren wordt aangemaakt...\n"
 
-#: src/prefs_common.c:692
+#: src/prefs_common.c:739
 msgid "Common Preferences"
 msgstr "Algemene voorkeuren"
 
-#: src/prefs_common.c:717
+#: src/prefs_common.c:764
 msgid "Display"
 msgstr "Beeld"
 
-#: src/prefs_common.c:719
+#: src/prefs_common.c:766
 msgid "Message"
 msgstr "Bericht"
 
-#: src/prefs_common.c:725
+#: src/prefs_common.c:772
 msgid "Interface"
 msgstr "Interface"
 
-#: src/prefs_common.c:727 src/select-keys.c:324
+#: src/prefs_common.c:774 src/select-keys.c:324
 msgid "Other"
 msgstr "Diversen"
 
-#: src/prefs_common.c:770 src/prefs_common.c:933
+#: src/prefs_common.c:817 src/prefs_common.c:980
 msgid "External program"
 msgstr "Extern programma"
 
-#: src/prefs_common.c:779
+#: src/prefs_common.c:826
 msgid "Use external program for incorporation"
 msgstr "Gebruik extern programma voor verwerking van de e-mail"
 
-#: src/prefs_common.c:786 src/prefs_common.c:950
+#: src/prefs_common.c:833 src/prefs_common.c:997
 msgid "Program path"
 msgstr "Programmapad"
 
-#: src/prefs_common.c:798
+#: src/prefs_common.c:845
 msgid "Local spool"
 msgstr "Lokale e-mail spool"
 
-#: src/prefs_common.c:809
+#: src/prefs_common.c:856
 msgid "Incorporate from spool"
 msgstr "Beheer lokale mail"
 
-#: src/prefs_common.c:811
+#: src/prefs_common.c:858
 msgid "Filter on incorporation"
 msgstr "Filter bij het ophalen"
 
-#: src/prefs_common.c:819
+#: src/prefs_common.c:866
 msgid "Spool directory"
 msgstr "Map voor de lokale mail"
 
-#: src/prefs_common.c:837
+#: src/prefs_common.c:884
 msgid "Auto-check new mail"
 msgstr "Kijk "
 
-#: src/prefs_common.c:839
+#: src/prefs_common.c:886
 msgid "each"
 msgstr "iedere"
 
-#: src/prefs_common.c:851
+#: src/prefs_common.c:898
 msgid "minute(s)"
 msgstr "minuten of er nieuwe e-mail is."
 
-#: src/prefs_common.c:860
+#: src/prefs_common.c:907
 msgid "Check new mail on startup"
 msgstr "Kijk bij opstarten of er nieuwe e-mail is"
 
-#: src/prefs_common.c:863
+#: src/prefs_common.c:910
 msgid "No error popup on receive error"
 msgstr "Geen waarschuwing bij ontvangstfouten"
 
-#: src/prefs_common.c:873
+#: src/prefs_common.c:920
 msgid ""
 "Maximum article number to download\n"
 "(unlimited if 0 is specified)"
@@ -3288,388 +3318,324 @@ msgstr ""
 "Maximum aantal artikelen wat gedownload zal worden\n"
 "(0 = alles)"
 
-#: src/prefs_common.c:943
+#: src/prefs_common.c:990
 msgid "Use external program for sending"
 msgstr "Gebruik extern programma voor het verzenden"
 
-#: src/prefs_common.c:967
+#: src/prefs_common.c:1014
 msgid "Save sent messages to outbox"
 msgstr "Bewaar verzonden berichten in Outbox"
 
-#: src/prefs_common.c:969
+#: src/prefs_common.c:1016
 msgid "Queue messages that fail to send"
 msgstr "Verzonden berichten opslaan in de outbox"
 
-#: src/prefs_common.c:971
+#: src/prefs_common.c:1018
 msgid "Send return receipt on request"
 msgstr "Zet berichten die niet verzonden konden worden in de wachtrij"
 
-#: src/prefs_common.c:977
+#: src/prefs_common.c:1024
 msgid "Outgoing codeset"
 msgstr "Codering voor uitgaande berichten"
 
-#: src/prefs_common.c:992
+#: src/prefs_common.c:1039
 msgid "Automatic (Recommended)"
 msgstr "Automatisch (aanbevolen)"
 
-#: src/prefs_common.c:993
+#: src/prefs_common.c:1040
 msgid "7bit ascii (US-ASCII)"
 msgstr "7bit ascii (US-ASCII)"
 
-#: src/prefs_common.c:995
+#: src/prefs_common.c:1042
 msgid "Unicode (UTF-8)"
 msgstr "Unicode (UTF-8)"
 
-#: src/prefs_common.c:997
+#: src/prefs_common.c:1044
 msgid "Western European (ISO-8859-1)"
 msgstr "Westeuropees (ISO-8859-1)"
 
-#: src/prefs_common.c:999
+#: src/prefs_common.c:1045
 msgid "Central European (ISO-8859-2)"
 msgstr "Centraaleuropees (ISO-8859-2)"
 
-#: src/prefs_common.c:1000
+#: src/prefs_common.c:1046
 msgid "Baltic (ISO-8859-13)"
 msgstr "Baltisch (ISO-8859-13)"
 
-#: src/prefs_common.c:1001
+#: src/prefs_common.c:1047
 msgid "Baltic (ISO-8859-4)"
 msgstr "Baltisch (ISO-8859-4)"
 
-#: src/prefs_common.c:1002
+#: src/prefs_common.c:1048
 msgid "Greek (ISO-8859-7)"
 msgstr "Grieks (ISO-8859-7)"
 
-#: src/prefs_common.c:1003
+#: src/prefs_common.c:1049
 msgid "Turkish (ISO-8859-9)"
 msgstr "Turks (ISO-8859-9)"
 
-#: src/prefs_common.c:1004
+#: src/prefs_common.c:1051
 msgid "Cyrillic (ISO-8859-5)"
 msgstr "Cyrillisch (ISO-8859-5)"
 
-#: src/prefs_common.c:1005
+#: src/prefs_common.c:1053
 msgid "Cyrillic (KOI8-R)"
 msgstr "Cyrillisch (KOI8-R)"
 
-#: src/prefs_common.c:1006
+#: src/prefs_common.c:1055
 msgid "Cyrillic (Windows-1251)"
 msgstr "Cyrillisch (Windows-1251)"
 
-#: src/prefs_common.c:1007
+#: src/prefs_common.c:1056
 msgid "Cyrillic (KOI8-U)"
 msgstr "Cyrillisch (KOI8-U)"
 
-#: src/prefs_common.c:1009
+#: src/prefs_common.c:1058
 msgid "Japanese (ISO-2022-JP)"
 msgstr "Japans (ISO-2022-JP)"
 
-#: src/prefs_common.c:1011
+#: src/prefs_common.c:1060
 msgid "Japanese (EUC-JP)"
 msgstr "Japans (EUC-JP)"
 
-#: src/prefs_common.c:1012
+#: src/prefs_common.c:1061
 msgid "Japanese (Shift_JIS)"
 msgstr "Japans (Shift_JIS)"
 
-#: src/prefs_common.c:1015
+#: src/prefs_common.c:1063
 msgid "Simplified Chinese (GB2312)"
 msgstr "Vereenvoudigd Chinees (GB2312)"
 
-#: src/prefs_common.c:1016
+#: src/prefs_common.c:1064
 msgid "Traditional Chinese (Big5)"
 msgstr "Traditioneel Chinees (Big5)"
 
-#: src/prefs_common.c:1018
+#: src/prefs_common.c:1066
 msgid "Traditional Chinese (EUC-TW)"
 msgstr "Traditioneel Chinees (EUC-TW)"
 
-#: src/prefs_common.c:1019
+#: src/prefs_common.c:1067
 msgid "Chinese (ISO-2022-CN)"
 msgstr "Chinees (ISO-2022-CN)"
 
-#: src/prefs_common.c:1021
+#: src/prefs_common.c:1069
 msgid "Korean (EUC-KR)"
 msgstr "Koreaans (EUC-KR)"
 
-#: src/prefs_common.c:1140
+#: src/prefs_common.c:1150
+msgid "Select spelling checker location"
+msgstr "Locatie spelling checker"
+
+#: src/prefs_common.c:1289
 msgid " Quote format "
 msgstr "Citeren"
 
-#: src/prefs_common.c:1154
+#: src/prefs_common.c:1303
 msgid "Insert signature automatically"
 msgstr "Handtekening automatich invoegen"
 
-#: src/prefs_common.c:1160
+#: src/prefs_common.c:1309
 msgid "Signature separator"
 msgstr "Handtekening scheidingsteken"
 
-#: src/prefs_common.c:1178
+#: src/prefs_common.c:1327
 msgid "Wrap messages at"
 msgstr "Regelterugloop na:"
 
-#: src/prefs_common.c:1190
+#: src/prefs_common.c:1339
 msgid "characters"
 msgstr "tekens"
 
-#: src/prefs_common.c:1198
+#: src/prefs_common.c:1347
 msgid "Wrap quotation"
 msgstr "Regels met citaten afbreken"
 
-#: src/prefs_common.c:1200
+#: src/prefs_common.c:1349
 msgid "Wrap before sending"
 msgstr "Regels afbreken voor verzenden"
 
-#: src/prefs_common.c:1203 src/prefs_filtering.c:224
+#: src/prefs_common.c:1352 src/prefs_filtering.c:224
 msgid "Forward as attachment"
 msgstr "Doorsturen als bijvoegsel"
 
-#: src/prefs_common.c:1206
+#: src/prefs_common.c:1355
 msgid "Automatically select account for mail replies"
 msgstr "Selecteer account automatisch bij beantwoorden"
 
-#: src/prefs_common.c:1209
+#: src/prefs_common.c:1358
 msgid "Smart wrapping (EXPERIMENTAL)"
 msgstr "Slim woordafbreken (EXPERIMENTEEL)"
 
-#: src/prefs_common.c:1350
-msgid "the full abbreviated weekday name"
-msgstr "Afkorting naam van de dag"
-
-#: src/prefs_common.c:1351
-msgid "the full weekday name"
-msgstr "Volledige naam van dag"
-
-#: src/prefs_common.c:1352
-msgid "the abbreviated month name"
-msgstr "Afkorting naam van de dag"
-
-#: src/prefs_common.c:1353
-msgid "the full month name"
-msgstr "Volledige naam van maand"
-
-#: src/prefs_common.c:1354
-msgid "the preferred date and time for the current locale"
-msgstr "Voorkeursdatum en -tijd voor huidige locale"
-
-#: src/prefs_common.c:1355
-msgid "the century number (year/100)"
-msgstr "Eeuw (jaar/100)"
-
-#: src/prefs_common.c:1356
-msgid "the day of the month as a decimal number"
-msgstr "Dag van de maand"
-
-#: src/prefs_common.c:1357
-msgid "the hour as a decimal number using a 24-hour clock"
-msgstr "Uur (24-uurs klok)"
-
-#: src/prefs_common.c:1358
-msgid "the hour as a decimal number using a 12-hour clock"
-msgstr "Uur (12-uurs klok)"
-
-#: src/prefs_common.c:1359
-msgid "the day of the year as a decimal number"
-msgstr "Dagnummer van het jaar"
-
-#: src/prefs_common.c:1360
-msgid "the month as a decimal number"
-msgstr "Maandnummer"
-
+#. spell checker defaults
 #: src/prefs_common.c:1361
-msgid "the minute as a decimal number"
-msgstr "Minuut"
-
-#: src/prefs_common.c:1362
-msgid "either AM or PM"
-msgstr "AM / PM"
-
-#: src/prefs_common.c:1363
-msgid "the second as a decimal number"
-msgstr "Seconden"
-
-#: src/prefs_common.c:1364
-msgid "the day of the week as a decimal number"
-msgstr "Dag van de week"
-
-#: src/prefs_common.c:1365
-msgid "the preferred date for the current locale"
-msgstr "Voorkeursdatum voor huidige locale"
-
-#: src/prefs_common.c:1366
-msgid "the last two digits of a year"
-msgstr "Laatste twee decimalen van een jaar"
-
-#: src/prefs_common.c:1367
-msgid "the year as a decimal number"
-msgstr "Jaar"
+msgid "Global spelling checker settings"
+msgstr "Globale speling checker opties"
 
 #: src/prefs_common.c:1368
-msgid "the time zone or name or abbreviation"
-msgstr "Tijdzone of naam of afkorting"
+msgid "Enable spell checker"
+msgstr "Inschakelen spelling checker"
 
-#: src/prefs_common.c:1376 src/prefs_common.c:1432 src/prefs_common.c:1645
-msgid "Date format"
-msgstr "Datumformaat"
+#: src/prefs_common.c:1378
+msgid "Ispelll path"
+msgstr "Pad voor ISPELL"
 
-#: src/prefs_common.c:1397
-msgid "Date Format"
-msgstr "Datumformaat"
+#: src/prefs_common.c:1388
+msgid "..."
+msgstr "..."
 
 #: src/prefs_common.c:1401
-msgid "Date Format Description"
-msgstr "Omschrijving datumformaat"
+msgid "Dictionaries"
+msgstr "Woordenlijsten"
 
-#: src/prefs_common.c:1449
-msgid "Example"
-msgstr "Voorbeeld"
-
-#: src/prefs_common.c:1528
+#: src/prefs_common.c:1466
 msgid "Font"
 msgstr "Lettertype"
 
-#: src/prefs_common.c:1537
+#: src/prefs_common.c:1475
 msgid "Text"
 msgstr "Tekst"
 
-#: src/prefs_common.c:1555
+#: src/prefs_common.c:1493
 msgid "Small"
 msgstr "Klein"
 
-#: src/prefs_common.c:1574
+#: src/prefs_common.c:1512
 msgid "Normal"
 msgstr "Normaal"
 
-#: src/prefs_common.c:1593
+#: src/prefs_common.c:1531
 msgid "Bold"
 msgstr "Vet"
 
-#: src/prefs_common.c:1618
+#: src/prefs_common.c:1556
 msgid "Translate header name (such as `From:', `Subject:')"
 msgstr "Vertaal Headervelden (zoals 'From:', 'Subject:')"
 
-#: src/prefs_common.c:1621
+#: src/prefs_common.c:1559
 msgid "Display unread number next to folder name"
 msgstr "Geef aantal ongelezen berichten weer naast mapnaam"
 
 #. ---- Summary ----
-#: src/prefs_common.c:1625
+#: src/prefs_common.c:1563
 msgid "Summary View"
 msgstr "Berichtenlijst"
 
-#: src/prefs_common.c:1634
+#: src/prefs_common.c:1572
 msgid "Display recipient on `From' column if sender is yourself"
-msgstr ""
-"Geef ontvanger weer in 'Afzender' kolom wanneer je zelf de afzender bent"
+msgstr "Geef ontvanger weer in 'Afzender' kolom wanneer je zelf de afzender bent"
 
-#: src/prefs_common.c:1637
+#: src/prefs_common.c:1575
 msgid "Display sender using address book"
 msgstr "Toon afzender mbv. adresboek"
 
-#: src/prefs_common.c:1639
+#: src/prefs_common.c:1577
 msgid "Enable horizontal scroll bar"
 msgstr "Horizontale schuifbalk weergeven"
 
-#: src/prefs_common.c:1653
-msgid "Customize"
-msgstr "Aanpassen"
+#: src/prefs_common.c:1583 src/prefs_common.c:2287 src/prefs_common.c:2325
+msgid "Date format"
+msgstr "Datumformaat"
 
-#: src/prefs_common.c:1664
+#: src/prefs_common.c:1591
+msgid "... "
+msgstr "... "
+
+#: src/prefs_common.c:1607
 msgid " Set display item of summary... "
 msgstr "Kies kolommen voor berichtenlijst..."
 
-#: src/prefs_common.c:1719
+#: src/prefs_common.c:1662
 msgid "Enable coloration of message"
 msgstr "Kleurmarkering in berichten aanzetten"
 
-#: src/prefs_common.c:1738
+#: src/prefs_common.c:1681
 msgid "Display 2-byte alphabet and numeric with 1-byte character"
 msgstr "Geef  2-byte grote cijfers en letters weer met 1-byte grote karakters"
 
-#: src/prefs_common.c:1740
+#: src/prefs_common.c:1683
 msgid "Display header pane above message view"
 msgstr "Geef headerinformatie weer boven bericht"
 
-#: src/prefs_common.c:1747
+#: src/prefs_common.c:1690
 msgid "Display short headers on message view"
 msgstr "Geef korte headerinformatie weer boven bericht"
 
-#: src/prefs_common.c:1767
+#: src/prefs_common.c:1710
 msgid "Line space"
 msgstr "Regelafstand"
 
-#: src/prefs_common.c:1781 src/prefs_common.c:1821
+#: src/prefs_common.c:1724 src/prefs_common.c:1764
 msgid "pixel(s)"
 msgstr "pixel(s)"
 
-#: src/prefs_common.c:1786
+#: src/prefs_common.c:1729
 msgid "Leave space on head"
 msgstr "Laat ruimte aan de bovenkant"
 
-#: src/prefs_common.c:1788
+#: src/prefs_common.c:1731
 msgid "Scroll"
 msgstr "Schuiven"
 
-#: src/prefs_common.c:1795
+#: src/prefs_common.c:1738
 msgid "Half page"
 msgstr "Halve pagina"
 
-#: src/prefs_common.c:1801
+#: src/prefs_common.c:1744
 msgid "Smooth scroll"
 msgstr "Vloeiend schuiven"
 
-#: src/prefs_common.c:1807
+#: src/prefs_common.c:1750
 msgid "Step"
 msgstr "Stap"
 
-#: src/prefs_common.c:1868
+#: src/prefs_common.c:1811
 msgid "Encrypt message by default"
 msgstr "Normaal gesproken het bericht coderen"
 
-#: src/prefs_common.c:1871
+#: src/prefs_common.c:1814
 msgid "Sign message by default"
 msgstr "Voeg handtekening automatisch toe"
 
-#: src/prefs_common.c:1874
+#: src/prefs_common.c:1817
 msgid "Automatically check signatures"
 msgstr "Controleer handtekeningen automatisch"
 
-#: src/prefs_common.c:1877
+#: src/prefs_common.c:1820
 msgid "Show signature check result in a popup window"
 msgstr "Toon resultaat handtekeningcontrole in venster"
 
-#: src/prefs_common.c:1881
+#: src/prefs_common.c:1824
 msgid "Grab input while entering a passphrase"
 msgstr "Houd het toetsenbord vast tijdens het intikken van het wachtwoord"
 
-#: src/prefs_common.c:1886
+#: src/prefs_common.c:1829
 msgid "Display warning on startup if GnuPG doesn't work"
 msgstr "Waarschuwing bij het opstarten als GnuPG niet werkt."
 
 #. create default signkey box
-#: src/prefs_common.c:1893
+#: src/prefs_common.c:1836
 msgid "Default Sign Key"
 msgstr "Standaard key"
 
-#: src/prefs_common.c:1999
+#: src/prefs_common.c:1942
 msgid ""
 "Emulate the behavior of mouse operation of\n"
 "Emacs-based mailer"
 msgstr "Emuleer het muisgebruik van Emacs"
 
-#: src/prefs_common.c:2006
+#: src/prefs_common.c:1949
 msgid "Open first unread message when entering a folder"
 msgstr "Open het eerste ongelezen e-mailtje wanneer een map geopend wordt"
 
-#: src/prefs_common.c:2010
+#: src/prefs_common.c:1953
 msgid "Go to inbox after receiving new mail"
 msgstr "Ga naar de inbox na het ophalen van nieuwe e-mail"
 
-#: src/prefs_common.c:2018
+#: src/prefs_common.c:1961
 msgid "Execute immediately when moving or deleting messages"
 msgstr "Meteen uitvoeren wanneer een bericht verplaatst of verwijderd wordt"
 
-#: src/prefs_common.c:2025
+#: src/prefs_common.c:1968
 msgid ""
 "(Messages will be just marked till execution\n"
 " if this is turned off)"
@@ -3677,115 +3643,211 @@ msgstr ""
 "(Berichten worden gemarkeerd voor deze acties\n"
 "wanneer dit uitgeschakeld is)"
 
-#: src/prefs_common.c:2032
+#: src/prefs_common.c:1975
 msgid "Add address to destination when double-clicked"
 msgstr "Voeg adres toe aan 'Geadresseerden' na dubbelklikken"
 
-#: src/prefs_common.c:2039
+#: src/prefs_common.c:1982
 msgid "Show receive Dialog"
 msgstr "Ontvangstvenster weergeven"
 
-#: src/prefs_common.c:2049
+#: src/prefs_common.c:1992
 msgid "Always"
 msgstr "Altijd"
 
-#: src/prefs_common.c:2050
+#: src/prefs_common.c:1993
 msgid "Only if a sylpheed window is active"
 msgstr "Alleen wanneer een venster actief is"
 
-#: src/prefs_common.c:2051
+#: src/prefs_common.c:1994
 msgid "Never"
 msgstr "Nooit"
 
 #. On Exit
-#: src/prefs_common.c:2056
+#: src/prefs_common.c:1999
 msgid "On exit"
 msgstr "Afsluiten"
 
-#: src/prefs_common.c:2064
+#: src/prefs_common.c:2007
 msgid "Confirm on exit"
 msgstr "Bevestigen bij het afsluiten"
 
-#: src/prefs_common.c:2071
+#: src/prefs_common.c:2014
 msgid "Empty trash on exit"
 msgstr "Prullenbak legen bij het afsluiten"
 
-#: src/prefs_common.c:2073
+#: src/prefs_common.c:2016
 msgid "Ask before emptying"
 msgstr "Bevestigen bij het legen"
 
-#: src/prefs_common.c:2077
+#: src/prefs_common.c:2020
 msgid "Warn if there are queued messages"
 msgstr "Waarschuw wanneer er berichten in de wachtrij staan"
 
-#: src/prefs_common.c:2116
+#: src/prefs_common.c:2059
 #, c-format
 msgid "External Web browser (%s will be replaced with URI)"
 msgstr "Externe Webbrowser (%s is de URI)"
 
-#: src/prefs_common.c:2123 src/prefs_common.c:2148 src/prefs_common.c:2164
+#: src/prefs_common.c:2066 src/prefs_common.c:2091 src/prefs_common.c:2107
 msgid "Command"
 msgstr "Opdracht"
 
-#: src/prefs_common.c:2141
+#: src/prefs_common.c:2084
 #, c-format
 msgid "Printing (%s will be replaced with file name)"
 msgstr "Afdrukken (%s is het bestand)"
 
-#: src/prefs_common.c:2157
+#: src/prefs_common.c:2100
 #, c-format
 msgid "External editor (%s will be replaced with file name)"
 msgstr "Externe editor (%s is het bestand)"
 
-#: src/prefs_common.c:2220
+#: src/prefs_common.c:2257
+msgid "the full abbreviated weekday name"
+msgstr "Afkorting naam van de dag"
+
+#: src/prefs_common.c:2258
+msgid "the full weekday name"
+msgstr "Volledige naam van dag"
+
+#: src/prefs_common.c:2259
+msgid "the abbreviated month name"
+msgstr "Afkorting naam van de dag"
+
+#: src/prefs_common.c:2260
+msgid "the full month name"
+msgstr "Volledige naam van maand"
+
+#: src/prefs_common.c:2261
+msgid "the preferred date and time for the current locale"
+msgstr "Voorkeursdatum en -tijd voor huidige locale"
+
+#: src/prefs_common.c:2262
+msgid "the century number (year/100)"
+msgstr "Eeuw (jaar/100)"
+
+#: src/prefs_common.c:2263
+msgid "the day of the month as a decimal number"
+msgstr "Dag van de maand"
+
+#: src/prefs_common.c:2264
+msgid "the hour as a decimal number using a 24-hour clock"
+msgstr "Uur (24-uurs klok)"
+
+#: src/prefs_common.c:2265
+msgid "the hour as a decimal number using a 12-hour clock"
+msgstr "Uur (12-uurs klok)"
+
+#: src/prefs_common.c:2266
+msgid "the day of the year as a decimal number"
+msgstr "Dagnummer van het jaar"
+
+#: src/prefs_common.c:2267
+msgid "the month as a decimal number"
+msgstr "Maandnummer"
+
+#: src/prefs_common.c:2268
+msgid "the minute as a decimal number"
+msgstr "Minuut"
+
+#: src/prefs_common.c:2269
+msgid "either AM or PM"
+msgstr "AM / PM"
+
+#: src/prefs_common.c:2270
+msgid "the second as a decimal number"
+msgstr "Seconden"
+
+#: src/prefs_common.c:2271
+msgid "the day of the week as a decimal number"
+msgstr "Dag van de week"
+
+#: src/prefs_common.c:2272
+msgid "the preferred date for the current locale"
+msgstr "Voorkeursdatum voor huidige locale"
+
+#: src/prefs_common.c:2273
+msgid "the last two digits of a year"
+msgstr "Laatste twee decimalen van een jaar"
+
+#: src/prefs_common.c:2274
+msgid "the year as a decimal number"
+msgstr "Jaar"
+
+#: src/prefs_common.c:2275
+msgid "the time zone or name or abbreviation"
+msgstr "Tijdzone of naam of afkorting"
+
+#: src/prefs_common.c:2302
+msgid "Specifier"
+msgstr "Specificieer"
+
+#: src/prefs_common.c:2303
+msgid "Description"
+msgstr "Beschrijving"
+
+#: src/prefs_common.c:2342
+msgid "Example"
+msgstr "Voorbeeld"
+
+#: src/prefs_common.c:2431
 msgid "Set message colors"
 msgstr "Berichtkleuren instellen"
 
-#: src/prefs_common.c:2228
+#: src/prefs_common.c:2439
 msgid "Colors"
 msgstr "Kleuren"
 
-#: src/prefs_common.c:2262
+#: src/prefs_common.c:2479
 msgid "Quoted Text - First Level"
 msgstr "Geciteerde tekst - eerste niveau"
 
-#: src/prefs_common.c:2268
+#: src/prefs_common.c:2485
 msgid "Quoted Text - Second Level"
 msgstr "Geciteerde tekst - tweede niveau"
 
-#: src/prefs_common.c:2274
+#: src/prefs_common.c:2491
 msgid "Quoted Text - Third Level"
 msgstr "Geciteerde tekst - derde niveau"
 
-#: src/prefs_common.c:2280
+#: src/prefs_common.c:2497
 msgid "URI link"
 msgstr "URI link"
 
-#: src/prefs_common.c:2287
+#: src/prefs_common.c:2503
+msgid "Target folder"
+msgstr "Doel folder"
+
+#: src/prefs_common.c:2510
 msgid "Recycle quote colors"
 msgstr "Gebruikte kleuren opnieuw gebruiken"
 
-#: src/prefs_common.c:2349
+#: src/prefs_common.c:2576
 msgid "Pick color for quotation level 1"
 msgstr "Selecteer kleur voor niveau 1"
 
-#: src/prefs_common.c:2352
+#: src/prefs_common.c:2579
 msgid "Pick color for quotation level 2"
 msgstr "Selecteer kleur voor niveau 2"
 
-#: src/prefs_common.c:2355
+#: src/prefs_common.c:2582
 msgid "Pick color for quotation level 3"
 msgstr "Selecteer kleur voor niveau 3"
 
-#: src/prefs_common.c:2358
+#: src/prefs_common.c:2585
 msgid "Pick color for URI"
 msgstr "Selecteer kleur voor URI"
 
-#: src/prefs_common.c:2493 src/prefs_matcher.c:1404
+#: src/prefs_common.c:2588
+msgid "Pick color for target folder"
+msgstr "Selecteer kleur voor doelmap"
+
+#: src/prefs_common.c:2727 src/prefs_matcher.c:1412
 msgid "Description of symbols"
 msgstr "Beschrijving der symbolen"
 
-#: src/prefs_common.c:2532
+#: src/prefs_common.c:2766
 #, c-format
 msgid ""
 "DESCRIPTION\n"
@@ -3834,105 +3896,105 @@ msgstr ""
 "Geciteerde berichttekst zonder handtekening\n"
 "%"
 
-#: src/prefs_common.c:2649
+#: src/prefs_common.c:2883
 msgid "Set display item"
 msgstr "Kies kolommen"
 
-#: src/prefs_common.c:2666 src/prefs_filtering.c:219
+#: src/prefs_common.c:2900 src/prefs_filtering.c:219
 msgid "Mark"
 msgstr "Markeer"
 
-#: src/prefs_common.c:2668
+#: src/prefs_common.c:2902
 msgid "MIME"
 msgstr "MIME"
 
-#: src/prefs_common.c:2669
+#: src/prefs_common.c:2903
 msgid "Number"
 msgstr "Nummer"
 
-#: src/prefs_common.c:2670 src/prefs_scoring.c:252 src/summaryview.c:583
+#: src/prefs_common.c:2904 src/prefs_scoring.c:252 src/summaryview.c:584
 msgid "Score"
 msgstr "Score"
 
-#: src/prefs_common.c:2672 src/summaryview.c:573
+#: src/prefs_common.c:2906 src/summaryview.c:574
 msgid "Date"
 msgstr "Datum"
 
-#: src/prefs_common.c:2673 src/prefs_matcher.c:140 src/summaryview.c:574
+#: src/prefs_common.c:2907 src/prefs_matcher.c:140 src/summaryview.c:575
 msgid "From"
 msgstr "Afzender"
 
-#: src/prefs_common.c:2674 src/prefs_matcher.c:139 src/summaryview.c:575
+#: src/prefs_common.c:2908 src/prefs_matcher.c:139 src/summaryview.c:576
 msgid "Subject"
 msgstr "Onderwerp"
 
-#: src/prefs_common.c:2731
+#: src/prefs_common.c:2965
 msgid "Font selection"
 msgstr "Lettertype"
 
-#: src/prefs_common.c:2913
+#: src/prefs_common.c:3147
 msgid "Compose Preferences"
 msgstr "Voorkeuren bericht opstellen"
 
-#: src/prefs_common.c:2928
+#: src/prefs_common.c:3162
 msgid "Quote message when replying"
 msgstr "Citeer bericht bij antwoorden"
 
-#: src/prefs_common.c:2934
+#: src/prefs_common.c:3168
 msgid "Quotation mark"
 msgstr "Citeerformaat"
 
-#: src/prefs_common.c:2947
+#: src/prefs_common.c:3181
 msgid "Quotation format:"
 msgstr "Citeerformaat:"
 
-#: src/prefs_common.c:2968
+#: src/prefs_common.c:3202
 msgid "Forward quotation mark"
 msgstr "Doorstuurformaat"
 
-#: src/prefs_common.c:2981
+#: src/prefs_common.c:3215
 msgid "Forward format:"
 msgstr "Doorstuurformaat:"
 
-#: src/prefs_common.c:3003
+#: src/prefs_common.c:3237
 msgid " Description of symbols "
 msgstr "Beschrijving van speciale tekens "
 
-#: src/prefs_customheader.c:151
+#: src/prefs_customheader.c:148
 msgid "Custom headers"
 msgstr "Aangepaste headers"
 
-#: src/prefs_customheader.c:153
+#: src/prefs_customheader.c:150
 msgid "Creating custom header setting window...\n"
 msgstr "Aangepaste header instellingenvenster wordt aangemaakt...\n"
 
-#: src/prefs_customheader.c:171
+#: src/prefs_customheader.c:168
 msgid "Custom header setting"
 msgstr "Aangepaste header instellingen"
 
 #. value
-#: src/prefs_customheader.c:215 src/prefs_matcher.c:390
+#: src/prefs_customheader.c:213 src/prefs_matcher.c:390
 msgid "Value"
 msgstr "Waarde"
 
-#: src/prefs_customheader.c:323
+#: src/prefs_customheader.c:322
 msgid "Reading custom header configuration...\n"
 msgstr "Inlezen aangepaste header configuratie...\n"
 
-#: src/prefs_customheader.c:368
+#: src/prefs_customheader.c:367
 msgid "Writing custom header configuration...\n"
 msgstr "Aangepaste header configuratie wordt opgeslagen...\n"
 
-#: src/prefs_customheader.c:493 src/prefs_display_header.c:545
+#: src/prefs_customheader.c:492 src/prefs_display_header.c:545
 #: src/prefs_filter.c:628 src/prefs_matcher.c:1008
 msgid "Header name is not set."
 msgstr "Header-naam niet ingevoerd."
 
-#: src/prefs_customheader.c:544
+#: src/prefs_customheader.c:546
 msgid "Delete header"
 msgstr "Verwijder header"
 
-#: src/prefs_customheader.c:545
+#: src/prefs_customheader.c:547
 msgid "Do you really want to delete this header?"
 msgstr "Wil je deze header werkelijk verwijderen?"
 
@@ -3990,8 +4052,8 @@ msgstr "Filterinstellingen"
 msgid "Operator"
 msgstr "Operator"
 
-#: src/prefs_filter.c:281 src/prefs_filter.c:641 src/prefs_filter.c:780
-#: src/prefs_filter.c:792
+#: src/prefs_filter.c:281 src/prefs_filter.c:641 src/prefs_filter.c:786
+#: src/prefs_filter.c:798
 msgid "(none)"
 msgstr "(niets)"
 
@@ -4004,13 +4066,13 @@ msgid "Predicate"
 msgstr "Operator"
 
 #: src/prefs_filter.c:320 src/prefs_filter.c:331 src/prefs_filter.c:650
-#: src/prefs_filter.c:653 src/prefs_filter.c:797 src/prefs_filter.c:800
+#: src/prefs_filter.c:653 src/prefs_filter.c:803 src/prefs_filter.c:806
 #: src/prefs_matcher.c:126
 msgid "contains"
 msgstr "bevat"
 
-#: src/prefs_filter.c:320 src/prefs_filter.c:331 src/prefs_filter.c:797
-#: src/prefs_filter.c:800
+#: src/prefs_filter.c:320 src/prefs_filter.c:331 src/prefs_filter.c:803
+#: src/prefs_filter.c:806
 msgid "not contain"
 msgstr "bevat niet"
 
@@ -4253,7 +4315,7 @@ msgstr "Logische op"
 msgid "Value is not set."
 msgstr "Geen waarde ingevoerd."
 
-#: src/prefs_matcher.c:1436
+#: src/prefs_matcher.c:1444
 msgid ""
 "%\n"
 "Subject\n"
@@ -4305,7 +4367,7 @@ msgstr "Score: belangrijk"
 msgid "Match string is not set."
 msgstr "Type niet ingesteld."
 
-#: src/procmime.c:687
+#: src/procmime.c:685
 msgid "Code conversion failed.\n"
 msgstr "Codeconversie is mislukt\n"
 
@@ -4341,8 +4403,7 @@ msgstr "Markeerbestand is niet gevonden\n"
 #: src/procmsg.c:465
 #, c-format
 msgid "Mark version is different (%d != %d). Discarding it.\n"
-msgstr ""
-"Markeerversie is ander (%d != %d).  Het markeerbestand wordt genegeerd.\n"
+msgstr "Markeerversie is ander (%d != %d).  Het markeerbestand wordt genegeerd.\n"
 
 #: src/procmsg.c:481
 msgid "Can't open mark file with append mode.\n"
@@ -4369,16 +4430,11 @@ msgstr "Status"
 msgid "Creating progress dialog...\n"
 msgstr "Voortgangdialoog wordt gemaakt...\n"
 
-#: quote_fmt_parse.y:109
-#, c-format
-msgid "Error %s\n"
-msgstr "Fout %s\n"
-
 #: src/recv.c:112
 msgid "error occurred while retrieving data.\n"
 msgstr "er is een fout opgetreden bij het ontvangen van de gegevens.\n"
 
-#: src/recv.c:152 src/recv.c:189 src/recv.c:204
+#: src/recv.c:152 src/recv.c:191 src/recv.c:207
 msgid "Can't write to file.\n"
 msgstr "Het bestand is niet beschrijfbaar.\n"
 
@@ -4443,17 +4499,17 @@ msgstr "Handtekening gemaakt %s\n"
 msgid "Key fingerprint: %s\n"
 msgstr "Sleutel vingerafdruk: %s\n"
 
-#: src/scoring.c:292
+#: src/scoring.c:295
 msgid "Reading headers configuration...\n"
 msgstr "Header configuratie wordt ingelezen...\n"
 
 #. debug
-#: src/scoring.c:344
+#: src/scoring.c:347
 #, c-format
 msgid "syntax error : %s\n"
 msgstr "Syntaxisfout: %s\n"
 
-#: src/scoring.c:420
+#: src/scoring.c:423
 msgid "Writing scoring configuration...\n"
 msgstr "Scoreconfiguratie wordt opgeslagen...\n"
 
@@ -4491,71 +4547,79 @@ msgstr "Sleutel toevoegen"
 msgid "Enter another user or key ID\n"
 msgstr "Kies een ander gebruikers- of sleutel-ID\n"
 
-#: src/send.c:138
+#: src/send.c:166
 #, c-format
 msgid "Using command to send mail: %s ...\n"
 msgstr "Opdracht %s voor het verzenden van berichten: %s...\n"
 
-#: src/send.c:155
+#: src/send.c:183
 msgid "Mail sent successfully ...\n"
 msgstr "Berichten verzonden!\n"
 
-#: src/send.c:200
+#: src/send.c:228
 msgid "Queued message header is broken.\n"
 msgstr "De header van het bericht in de wachtrij is kapot.\n"
 
-#: src/send.c:209
+#: src/send.c:237
 msgid "Account not found. Using current account...\n"
 msgstr "Account is niet gevonden. Huidig account wordt gebruikt...\n"
 
-#: src/send.c:220
+#: src/send.c:258
 msgid "Account not found.\n"
 msgstr "Account is niet gevonden.\n"
 
-#: src/send.c:302
+#: src/send.c:354
 #, c-format
 msgid "Connecting to SMTP server: %s ..."
 msgstr "Verbinding met SMTP server wordt gemaakt: %s ..."
 
-#: src/send.c:306
+#: src/send.c:358
 msgid "Connecting"
 msgstr "Verbinding wordt gemaakt"
 
-#: src/send.c:313
+#: src/send.c:371
 msgid "Sending MAIL FROM..."
 msgstr "Email wordt verzonden van..."
 
-#: src/send.c:314
+#: src/send.c:372
 msgid "Sending"
 msgstr "Bezig met verzenden"
 
-#: src/send.c:321
+#: src/send.c:379
 msgid "Sending RCPT TO..."
 msgstr "RCPT wordt verzonden naar..."
 
-#: src/send.c:328
+#: src/send.c:386
 msgid "Sending DATA..."
 msgstr "DATA wordt verzonden..."
 
-#: src/send.c:344
+#: src/send.c:402
 #, c-format
 msgid "Sending message (%d / %d bytes)"
 msgstr "Bericht wordt verzonden (%d / %d bytes)"
 
-#: src/send.c:361
+#: src/send.c:419
 msgid "Quitting..."
 msgstr "Bezig met afsluiten..."
 
-#: src/send.c:382
+#: src/send.c:449
 #, c-format
 msgid "Can't connect to SMTP server: %s:%d\n"
 msgstr "Kan geen verbindingmaken met de SMTP server: %s:%d\n"
 
-#: src/send.c:393
+#: src/send.c:456
+msgid "SSL connection failed"
+msgstr "SSL-verbinding mislukt"
+
+#: src/send.c:466
 msgid "Error occurred while sending HELO\n"
 msgstr "Er is een fout opgetreden bij het verzenden van de HELO\n"
 
-#: src/send.c:409
+#: src/send.c:477
+msgid "Error occurred while sending STARTTLS\n"
+msgstr "Fout bij zenden STARTTLS\n"
+
+#: src/send.c:497
 msgid "Sending message"
 msgstr "Bericht wordt verzonden"
 
@@ -4632,283 +4696,283 @@ msgstr "Einde van de lijst bereikt; verdergaan vanaf het begin?"
 msgid "Search finished"
 msgstr "Zoeken voltooid"
 
-#: src/summaryview.c:324
+#: src/summaryview.c:325
 msgid "/M_ove..."
 msgstr "/_Verplaats..."
 
-#: src/summaryview.c:325
+#: src/summaryview.c:326
 msgid "/_Copy..."
 msgstr "/_Kopieer..."
 
-#: src/summaryview.c:327
+#: src/summaryview.c:328
 msgid "/E_xecute"
 msgstr "/_Doen!"
 
-#: src/summaryview.c:328
+#: src/summaryview.c:329
 msgid "/_Mark"
 msgstr "/_Markeer"
 
-#: src/summaryview.c:329
+#: src/summaryview.c:330
 msgid "/_Mark/_Mark"
 msgstr "/_Markeer/_Markeer"
 
-#: src/summaryview.c:330
+#: src/summaryview.c:331
 msgid "/_Mark/_Unmark"
 msgstr "/_Markeer/D_emarkeer"
 
-#: src/summaryview.c:331
+#: src/summaryview.c:332
 msgid "/_Mark/---"
 msgstr "/_Markeer/---"
 
-#: src/summaryview.c:332
+#: src/summaryview.c:333
 msgid "/_Mark/Mark as unr_ead"
 msgstr "/_Markeer/Markeer als _ongelezen"
 
-#: src/summaryview.c:333
+#: src/summaryview.c:334
 msgid "/_Mark/Mark as rea_d"
 msgstr "/_Markeer/Markeer als 'wordt gelezen'"
 
-#: src/summaryview.c:335
+#: src/summaryview.c:336
 msgid "/_Mark/Mark all read"
 msgstr "/_Markeer/Markeer alles gelezen"
 
-#: src/summaryview.c:337
+#: src/summaryview.c:338
 msgid "/_Mark/Ignore thread"
 msgstr "/_Markeer/Markeer als 'Negeren'"
 
-#: src/summaryview.c:338
+#: src/summaryview.c:339
 msgid "/_Mark/Unignore thread"
 msgstr "/_Markeer/Markeer als 'Niet negeren'"
 
-#: src/summaryview.c:341
+#: src/summaryview.c:342
 msgid "/_Reply"
 msgstr "/_Antwoord"
 
-#: src/summaryview.c:342
+#: src/summaryview.c:343
 msgid "/Repl_y to sender"
 msgstr "/Antwoord _iedereen"
 
-#: src/summaryview.c:343
+#: src/summaryview.c:344
 msgid "/Follow-up and reply to"
 msgstr "/Doorsturen en beantwoorden"
 
-#: src/summaryview.c:344
+#: src/summaryview.c:345
 msgid "/Reply to a_ll"
 msgstr "/Antwoord _iedereen"
 
-#: src/summaryview.c:345
+#: src/summaryview.c:346
 msgid "/_Forward"
 msgstr "/D_oorsturen"
 
-#: src/summaryview.c:346
+#: src/summaryview.c:347
 msgid "/Forward as a_ttachment"
 msgstr "/Doorsturen als _bijvoeging"
 
-#: src/summaryview.c:349
+#: src/summaryview.c:350
 msgid "/Open in new _window"
 msgstr "/Open in _nieuw venster"
 
-#: src/summaryview.c:350
+#: src/summaryview.c:351
 msgid "/View so_urce"
 msgstr "/B_ron weergeven"
 
-#: src/summaryview.c:351
+#: src/summaryview.c:352
 msgid "/Show all _header"
 msgstr "/Vo_lledig header"
 
-#: src/summaryview.c:352
+#: src/summaryview.c:353
 msgid "/Re-_edit"
 msgstr "/Bewerken"
 
-#: src/summaryview.c:355
+#: src/summaryview.c:356
 msgid "/_Print..."
 msgstr "/Afdrukken..."
 
-#: src/summaryview.c:357
+#: src/summaryview.c:358
 msgid "/Select _all"
 msgstr "/Selecteer alles"
 
-#: src/summaryview.c:496
+#: src/summaryview.c:497
 msgid "Label"
 msgstr "Label"
 
-#: src/summaryview.c:542
+#: src/summaryview.c:543
 msgid "M"
 msgstr "M"
 
-#: src/summaryview.c:542
+#: src/summaryview.c:543
 msgid "U"
 msgstr "O"
 
-#: src/summaryview.c:557
+#: src/summaryview.c:558
 msgid "Creating summary view...\n"
 msgstr "Venster Berichtenlijst wordt aangemaakt...\n"
 
-#: src/summaryview.c:572
+#: src/summaryview.c:573
 msgid "No."
 msgstr "Nee."
 
-#: src/summaryview.c:877
+#: src/summaryview.c:878
 msgid "Process mark"
 msgstr "Verwerk markering"
 
-#: src/summaryview.c:878
+#: src/summaryview.c:879
 msgid "Some marks are left. Process it?"
 msgstr "Sommige markeringen zijn nog aanwezig. Verwerken?"
 
-#: src/summaryview.c:907
+#: src/summaryview.c:908
 msgid ""
 "empty folder\n"
 "\n"
 msgstr "lege map\n"
 
-#: src/summaryview.c:919
+#: src/summaryview.c:920
 #, c-format
 msgid "Scanning folder (%s)..."
 msgstr "Map wordt ingelezen (%s)..."
 
-#: src/summaryview.c:1213
+#: src/summaryview.c:1214
 msgid "No unread message"
 msgstr "Geen ongelezen berichten"
 
-#: src/summaryview.c:1214
+#: src/summaryview.c:1215
 msgid "No unread message found. Go to next folder?"
 msgstr "Geen ongelezen berichten gevonden. Doorgaan naar de volgende map?"
 
-#: src/summaryview.c:1238 src/summaryview.c:1268
+#: src/summaryview.c:1239 src/summaryview.c:1269
 msgid "No more marked messages"
 msgstr "Laatste gemarkeerde bericht"
 
-#: src/summaryview.c:1239
+#: src/summaryview.c:1240
 msgid "No marked message found. Search from the beginning?"
 msgstr "Geen gemarkeerde berichten gevonden. Opnieuw beginnen?"
 
-#: src/summaryview.c:1247 src/summaryview.c:1277
+#: src/summaryview.c:1248 src/summaryview.c:1278
 msgid "No marked messages."
 msgstr "Geen gemarkeerde berichten."
 
-#: src/summaryview.c:1269
+#: src/summaryview.c:1270
 msgid "No marked message found. Search from the end?"
 msgstr "Geen gemarkeerde berichten gevonden. Opnieuw?"
 
-#: src/summaryview.c:1455 src/summaryview.c:1457
+#: src/summaryview.c:1458 src/summaryview.c:1460
 msgid "Attracting messages by subject..."
 msgstr "Berichten worden aangetrokken op onderwerp..."
 
-#: src/summaryview.c:1600
+#: src/summaryview.c:1603
 #, c-format
 msgid "%d deleted"
 msgstr "%d verwijderd"
 
-#: src/summaryview.c:1604
+#: src/summaryview.c:1607
 #, c-format
 msgid "%s%d moved"
 msgstr "%s%d verplaatst"
 
-#: src/summaryview.c:1605 src/summaryview.c:1612
+#: src/summaryview.c:1608 src/summaryview.c:1615
 msgid ", "
 msgstr ","
 
-#: src/summaryview.c:1610
+#: src/summaryview.c:1613
 #, c-format
 msgid "%s%d copied"
 msgstr "%s%d gekopieerd"
 
-#: src/summaryview.c:1627
+#: src/summaryview.c:1630
 msgid " item(s) selected"
 msgstr "item(s) geselecteerd"
 
-#: src/summaryview.c:1638
+#: src/summaryview.c:1641
 #, c-format
 msgid "%d new, %d unread, %d total (%s)"
 msgstr "nieuw: %d, ongelezen:%d, totaal: %d (%s)"
 
-#: src/summaryview.c:1644
+#: src/summaryview.c:1647
 #, c-format
 msgid "%d new, %d unread, %d total"
 msgstr "nieuw: %d, ongelezen:%d, totaal: %d"
 
-#: src/summaryview.c:1694 src/summaryview.c:1695
+#: src/summaryview.c:1697 src/summaryview.c:1698
 msgid "Sorting summary..."
 msgstr "Lijst wordt gesorteerd..."
 
-#: src/summaryview.c:1761
+#: src/summaryview.c:1764
 msgid "\tSetting summary from message data..."
 msgstr "\t"
 
-#: src/summaryview.c:1763
+#: src/summaryview.c:1766
 msgid "Setting summary from message data..."
 msgstr "Samenvatting wordt ingesteld van berichtinformatie..."
 
-#: src/summaryview.c:1973
+#: src/summaryview.c:2000
 #, c-format
 msgid "Writing summary cache (%s)..."
 msgstr "Samenvattingbuffer wordt weggeschreven (%s)..."
 
-#: src/summaryview.c:2041
+#: src/summaryview.c:2068
 msgid "(No Date)"
 msgstr "(Geen datum)"
 
-#: src/summaryview.c:2350
+#: src/summaryview.c:2387
 #, c-format
 msgid "Message %d is marked\n"
 msgstr "Bericht %d is gemarkeerd\n"
 
-#: src/summaryview.c:2381
+#: src/summaryview.c:2418
 #, c-format
 msgid "Message %d is marked as read\n"
 msgstr "Bericht %d is gemarkeerd als gelezen.\n"
 
-#: src/summaryview.c:2425
+#: src/summaryview.c:2462
 #, c-format
 msgid "Message %d is marked as unread\n"
 msgstr "Bericht %d is gemarkeerd als ongelezen\n"
 
-#: src/summaryview.c:2469
+#: src/summaryview.c:2516
 #, c-format
 msgid "Message %s/%d is set to delete\n"
 msgstr "Bericht %s/%d staat klaar verwijderd te worden\n"
 
-#: src/summaryview.c:2483
+#: src/summaryview.c:2530
 msgid "Current folder is Trash."
 msgstr "Huidige map is de Prullenbak"
 
-#: src/summaryview.c:2505 src/summaryview.c:2507
+#: src/summaryview.c:2552 src/summaryview.c:2554
 msgid "Deleting duplicated messages..."
 msgstr "Dubbele berichten worden verwijderd..."
 
-#: src/summaryview.c:2555
+#: src/summaryview.c:2612
 #, c-format
 msgid "Message %s/%d is unmarked\n"
 msgstr "Bericht %s/%d is gedemarkeerd\n"
 
-#: src/summaryview.c:2592
+#: src/summaryview.c:2671
 #, c-format
 msgid "Message %d is set to move to %s\n"
 msgstr "Bericht %d staat klaar verplaatst te worden naar %s\n"
 
-#: src/summaryview.c:2604
+#: src/summaryview.c:2683
 msgid "Destination is same as current folder."
 msgstr "Doel is gelijk aan de huidige map."
 
-#: src/summaryview.c:2653
+#: src/summaryview.c:2757
 #, c-format
 msgid "Message %d is set to copy to %s\n"
 msgstr "Bericht %d staat klaar gekopieerd te worden naar %s\n"
 
-#: src/summaryview.c:2666
+#: src/summaryview.c:2770
 msgid "Destination to copy is same as current folder."
 msgstr "Doel is gelijk aan de huidige map."
 
-#: src/summaryview.c:2698
+#: src/summaryview.c:2805
 msgid "Selecting all messages..."
 msgstr "Alle berichten worden geselecteerd..."
 
-#: src/summaryview.c:2752
+#: src/summaryview.c:2859
 msgid "Print"
 msgstr "Afdrukken"
 
-#: src/summaryview.c:2753
+#: src/summaryview.c:2860
 #, c-format
 msgid ""
 "Enter the print command line:\n"
@@ -4917,7 +4981,7 @@ msgstr ""
 "Geef de afdrukopdracht:\n"
 "('%s' zal vervangen worden door de bestandsnaam)"
 
-#: src/summaryview.c:2759
+#: src/summaryview.c:2866
 #, c-format
 msgid ""
 "Print command line is invalid:\n"
@@ -4926,41 +4990,41 @@ msgstr ""
 "Afdrukopdracht is ongeldig:\n"
 "'%s'"
 
-#: src/summaryview.c:2995 src/summaryview.c:2996
+#: src/summaryview.c:3102 src/summaryview.c:3103
 msgid "Building threads..."
 msgstr "Discussies worden bij elkaar gevoegd..."
 
-#: src/summaryview.c:3018 src/summaryview.c:3019
+#: src/summaryview.c:3125 src/summaryview.c:3126
 msgid "Unthreading..."
 msgstr "Discussies worden uit elkaar gehaald..."
 
-#: src/summaryview.c:3041
+#: src/summaryview.c:3148
 msgid "Unthreading for execution..."
 msgstr "Discussies worden uit elkaar gehaald voor de uitvoering..."
 
-#: src/summaryview.c:3137
+#: src/summaryview.c:3244
 msgid "filtering..."
 msgstr "Bezig met filteren..."
 
-#: src/summaryview.c:3138
+#: src/summaryview.c:3245
 msgid "Filtering..."
 msgstr "Bezig met filteren..."
 
-#: src/summaryview.c:3270
+#: src/summaryview.c:3377
 #, c-format
 msgid "Go to %s\n"
 msgstr "Ga naar %s\n"
 
-#: src/summaryview.c:3626
+#: src/summaryview.c:3733
 msgid "Add sender to address book"
 msgstr "Afzender toevoegen aan adresboek"
 
-#: src/summaryview.c:3872
+#: src/summaryview.c:3979
 #, c-format
 msgid "Message %d is marked as ignore thread\n"
 msgstr "Bericht %d is gemarkeerd als negeren\n"
 
-#: src/summaryview.c:3903
+#: src/summaryview.c:4010
 #, c-format
 msgid "Message %d is marked as unignore thread\n"
 msgstr "Bericht %d is gemarkeerd als niet negeren\n"
@@ -4969,58 +5033,57 @@ msgstr "Bericht %d is gemarkeerd als niet negeren\n"
 msgid "Creating text view...\n"
 msgstr "Tekstvenster wordt aangemaakt...\n"
 
-#: src/textview.c:369
+#: src/textview.c:371
 msgid "To save this part, pop up the context menu with "
 msgstr ""
 "Om dit deel te bewaren, kunt u met de rechter muisknop het contextmenu "
 "oproepen"
 
-#: src/textview.c:370
+#: src/textview.c:372
 msgid "right click and select `Save as...', "
 msgstr "en de optie 'Opslaan als...' selecteren,"
 
-#: src/textview.c:371
+#: src/textview.c:373
 msgid ""
 "or press `y' key.\n"
 "\n"
 msgstr "of druk op de 'y'-toets.\n"
 
-#: src/textview.c:373
+#: src/textview.c:375
 msgid "To display this part as a text message, select "
 msgstr "Om dit gedeelte weer te geven als een tekstbericht"
 
-#: src/textview.c:374
+#: src/textview.c:376
 msgid ""
 "`Display as text', or press `t' key.\n"
 "\n"
 msgstr "selecteert u de optie 'Als tekst weergeven', of druk op de 't'-toets.\n"
 
-#: src/textview.c:376
+#: src/textview.c:378
 msgid "To open this part with external program, select "
 msgstr "Om dit deel te openen met een extern programma selecteert u"
 
-#: src/textview.c:377
+#: src/textview.c:379
 msgid "`Open' or `Open with...', "
 msgstr "de optie 'Openen' of 'Openen met...',"
 
-#: src/textview.c:378
+#: src/textview.c:380
 msgid "or double-click, or click the center button, "
 msgstr "of dubbelklik, of klik met de middelste muisknop,"
 
-#: src/textview.c:379
+#: src/textview.c:381
 msgid "or press `l' key."
 msgstr "of druk op de 'l'-toets."
 
-#: src/textview.c:398
+#: src/textview.c:400
 msgid "This signature has not been checked yet.\n"
 msgstr "Deze handtekening is nog niet gecontroleerd.\n"
 
-#: src/textview.c:399
+#: src/textview.c:401
 msgid "To check it, pop up the context menu with\n"
-msgstr ""
-"Om te controleren kunt u met de rechter muisknop het contextmenu oproepen\n"
+msgstr "Om te controleren kunt u met de rechter muisknop het contextmenu oproepen\n"
 
-#: src/textview.c:400
+#: src/textview.c:402
 msgid "right click and select `Check signature'.\n"
 msgstr "en de optie'Controleer handtekening' selecteren.\n"
 
@@ -5038,4 +5101,57 @@ msgstr "De map '%s' bestaat al."
 #, c-format
 msgid "Open URI command line is invalid: `%s'"
 msgstr "Open URI opdrachtregel is onjuist: '%s'"
+
+#: src/ssl.c:41
+msgid "SSLv23 not available\n"
+msgstr "Geen SSLv23 aanwezig\n"
+
+#: src/ssl.c:43
+msgid "SSLv23 available\n"
+msgstr "SSLv23 beschikbaar\n"
+
+#: src/ssl.c:48
+msgid "TLSv1 not available\n"
+msgstr "TLSv1 niet beschikbaar\n"
+
+#: src/ssl.c:50
+msgid "TLSv1 available\n"
+msgstr "TLSv1 beschikbaar\n"
+
+#: src/ssl.c:75 src/ssl.c:82
+msgid "SSL method not available\n"
+msgstr "SSL-opdracht niet beschikbaar\n"
+
+#: src/ssl.c:88
+msgid "Unknown SSL method *PROGRAM BUG*\n"
+msgstr "Onbekende SSL-opdracht *PROGRAMMA FOUT*\n"
+
+#: src/ssl.c:94
+msgid "Error creating ssl context\n"
+msgstr "Geen SSL-context\n"
+
+#: src/ssl.c:101
+#, c-format
+msgid "SSL connect failed (%s)\n"
+msgstr "SSL verbinding mislukt (%s)\n"
+
+#. Get the cipher
+#: src/ssl.c:108
+#, c-format
+msgid "SSL connection using %s\n"
+msgstr "SSL-verbinding %s\n"
+
+#: src/ssl.c:115
+msgid "Server certificate:\n"
+msgstr "Server certificaat:\n"
+
+#: src/ssl.c:118
+#, c-format
+msgid "  Subject: %s\n"
+msgstr "  Onderwerp: %s\n"
+
+#: src/ssl.c:123
+#, c-format
+msgid "  Issuer: %s\n"
+msgstr "..Uitgever: %s\n"
 
