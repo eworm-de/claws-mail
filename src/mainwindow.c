@@ -532,6 +532,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 #endif
 	{N_("/_View/_Code set/Western European (ISO-8859-_1)"),
 	 CODESET_ACTION(C_ISO_8859_1)},
+	{N_("/_View/_Code set/Western European (ISO-8859-15)"),
+	 CODESET_ACTION(C_ISO_8859_15)},
 	CODESET_SEPARATOR,
 #if HAVE_LIBJCONV
 	{N_("/_View/_Code set/Central European (ISO-8859-_2)"),

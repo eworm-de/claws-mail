@@ -378,7 +378,7 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 		g_warning("code conversion from %s to %s failed\n",
 			  codesets && codesets[0] ? codesets[0] : "(unknown)",
 			  dest_codeset);
-		return g_strdup(inbuf);
+		return NULL;
 	}
 #else /* !HAVE_LIBJCONV */
 	if (src_codeset) {

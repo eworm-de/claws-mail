@@ -1,7 +1,24 @@
+2002-02-28
+
+	* src/mainwindow.c
+	  src/prefs_common.c: 表示と送信用のコードセットに ISO-8859-15 を
+	  追加。
+	* src/codeconv.c: conv_codeset_strdup(): コード変換に失敗したら
+	  NULL を返し、呼び出し側がそれに対処するようにした。
+	* src/compose.c: compose_write_to_file(): コード変換に失敗したら
+	  エラーダイアログを表示し、それをそのまま送信するかどうかをユーザ
+	  に選択させるようにした。
+	* src/textview.c: textview_write_line(): コード変換に失敗したら
+	  元の文字列を表示するようにした。
+
 2002-02-27
 
 	* src/inc.c: get_spool(): copy_mbox() に失敗したとき mbox をロック
 	  解除していなかったバグを修正(Alexander Kabaev さん thanks)。
+	* src/prefs_account.[ch]: SMTP AUTH 用の別のユーザ ID / パスワード
+	  の設定を追加。
+	* src/send.c: send_message_smtp(): SMTP AUTH 用の別のユーザ ID /
+	  パスワードが指定されていればそれを使用。
 
 2002-02-26
 

@@ -883,6 +883,7 @@ static void textview_write_line(TextView *textview, const gchar *str,
 	GdkColor *fg_color;
 	gint quotelevel = -1;
 
+#if 0
 	if (!conv)
 		strncpy2(buf, str, sizeof(buf));
 	else if (conv_convert(conv, buf, sizeof(buf), str) < 0) {
@@ -893,6 +894,9 @@ static void textview_write_line(TextView *textview, const gchar *str,
 				-1);
 		return;
 	}
+#endif
+	if (!conv || conv_convert(conv, buf, sizeof(buf), str) < 0)
+		strncpy2(buf, str, sizeof(buf));
 
 	strcrchomp(buf);
 	if (prefs_common.conv_mb_alnum) conv_mb_alnum(buf);

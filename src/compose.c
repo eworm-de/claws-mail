@@ -2963,11 +2963,20 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 
 		buf = conv_codeset_strdup(chars, src_codeset, out_codeset);
 		if (!buf) {
-			g_free(chars);
-			fclose(fp);
-			unlink(file);
-			alertpanel_error(_("Can't convert the codeset of the message."));
-			return -1;
+			AlertValue aval;
+
+			aval = alertpanel
+				(_("Error"),
+				 _("Can't convert the character encoding of the message.\n"
+				   "Send it anyway?"), _("Yes"), _("+No"), NULL);
+			if (aval != G_ALERTDEFAULT) {
+				g_free(chars);
+				fclose(fp);
+				unlink(file);
+				return -1;
+			} else {
+				buf = g_strdup(chars);
+			}
 		}
 	}
 	g_free(chars);

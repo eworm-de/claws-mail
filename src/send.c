@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -255,6 +255,10 @@ gint send_message_local(const gchar *command, FILE *fp)
 				g_free(ac_prefs->tmp_pass); \
 				ac_prefs->tmp_pass = NULL; \
 			} \
+			if (ac_prefs->tmp_smtp_pass) { \
+				g_free(ac_prefs->tmp_smtp_pass); \
+				ac_prefs->tmp_smtp_pass = NULL; \
+			} \
 		} \
 		if (smtp_quit(smtp_sock) != SM_OK) \
 			log_warning("Error occurred while sending QUIT\n"); \
@@ -299,25 +303,25 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 	if (ac_prefs->use_smtp_auth) {
 		if (ac_prefs->smtp_userid) {
 			user = ac_prefs->smtp_userid;
-			if(ac_prefs->smtp_passwd)
+			if (ac_prefs->smtp_passwd)
 				pass = ac_prefs->smtp_passwd;
+			else if (ac_prefs->tmp_smtp_pass)
+				pass = ac_prefs->tmp_smtp_pass;
+			else {
+				pass = input_dialog_query_password
+					(ac_prefs->smtp_server, user);
+				if (!pass) pass = g_strdup("");
+				ac_prefs->tmp_smtp_pass = pass;
+			}
+		} else {
+			user = ac_prefs->userid;
+			if (ac_prefs->passwd)
+				pass = ac_prefs->passwd;
 			else if (ac_prefs->tmp_pass)
 				pass = ac_prefs->tmp_pass;
 			else {
 				pass = input_dialog_query_password
-					(ac_prefs->smtp_server, ac_prefs->smtp_userid);
-				if (!pass) pass = g_strdup("");
-				ac_prefs->tmp_pass = pass;
-			}
-		} else {
-			user = ac_prefs->userid;
-			if (ac_prefs->passwd) {
-				pass = ac_prefs->passwd;
-			} else if (ac_prefs->tmp_pass)
-				pass = ac_prefs->tmp_pass;
-			else {
-				pass = input_dialog_query_password
-					(ac_prefs->smtp_server, ac_prefs->userid);
+					(ac_prefs->smtp_server, user);
 				if (!pass) pass = g_strdup("");
 				ac_prefs->tmp_pass = pass;
 			}
@@ -356,8 +360,8 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 	GTK_EVENTS_FLUSH();
 
 	SEND_EXIT_IF_NOTOK
-		(smtp_from(smtp_sock, ac_prefs->address, user,
-			   pass, ac_prefs->use_smtp_auth),
+		(smtp_from(smtp_sock, ac_prefs->address, user, pass,
+			   ac_prefs->use_smtp_auth),
 		 "sending MAIL FROM");
 
 	progress_dialog_set_label(dialog->dialog, _("Sending RCPT TO..."));

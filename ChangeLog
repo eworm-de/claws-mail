@@ -1,7 +1,24 @@
+2002-02-28
+
+	* src/mainwindow.c
+	  src/prefs_common.c: added ISO-8859-15 to the codesets for
+	  displaying and sending.
+	* src/codeconv.c: conv_codeset_strdup(): return NULL if code
+	  conversion failed, and made caller deal with it.
+	* src/compose.c: compose_write_to_file(): show error dialog when
+	  code conversion failed, and let user select whether to send it
+	  as is or not.
+	* src/textview.c: textview_write_line(): show the original string
+	  if code conversion failed.
+
 2002-02-27
 
 	* src/inc.c: get_spool(): fixed a bug that failed to unlock mbox
 	  if copy_mbox() failed (thanks to Alexander Kabaev).
+	* src/prefs_account.[ch]: added separate user ID / password setting
+	  for SMTP AUTH.
+	* src/send.c: send_message_smtp(): use separate user ID / password
+	  for SMTP AUTH if it is specified.
 
 2002-02-26
 
