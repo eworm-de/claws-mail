@@ -810,24 +810,25 @@ static void mimeview_save_all(MimeView *mimeview)
 	if (!dirname) return;
 
 	/* return to first children */
+	if (!partinfo->parent->children) return;  /* multipart container? */
 	attachment = partinfo->parent->children->next;
 	/* for each attachment, extract it in the selected dir. */
 	while (attachment != NULL) {
 		static guint subst_cnt = 1;
 		gchar *attachdir;
-		gchar *attachname = (attachment->filename)
-			? g_strdup(attachment->filename)
-			: g_strdup_printf("noname.%d",subst_cnt++);
-		AlertValue aval;
+		gchar *attachname = g_strdup(get_part_name(attachment));
+		AlertValue aval = G_ALERTDEFAULT;
 		gchar *res;
 
-		subst_chars(attachname, "/\\", G_DIR_SEPARATOR);
+		if (!attachname || !strlen(attachname))
+			attachname = g_strdup_printf("noname.%d",subst_cnt++);
 		subst_chars(attachname, ":?*&|<>\t\r\n", '_');
 		g_snprintf(buf, sizeof(buf), "%s%s",
 			   dirname,
 			   (attachname[0] == G_DIR_SEPARATOR)
 			   ? &attachname[1]
 			   : attachname);
+		subst_chars(buf, "/\\", G_DIR_SEPARATOR);
 		attachdir = g_dirname(buf);
 		make_dir_hier(attachdir);
 		g_free(attachdir);
@@ -841,7 +842,7 @@ static void mimeview_save_all(MimeView *mimeview)
 		}
 		g_free(attachname);
 
-		if (G_ALERTDEFAULT == aval && procmime_get_part(buf, mimeview->file, attachment) < 0)
+		if ((G_ALERTDEFAULT != aval) || (procmime_get_part(buf, mimeview->file, attachment) < 0))
 			alertpanel_error(_("Can't save the part of multipart message."));
 		attachment = attachment->next;
 	}
