@@ -3773,7 +3773,7 @@ gboolean addressbook_add_contact( const gchar *name, const gchar *address, const
 *                     to be loaded.
 * Return: TRUE if data loaded, FALSE if address index not loaded.
 */
-gboolean addressbook_load_completion( gint (*callBackFunc) ( const gchar *, const gchar * ) ) {
+gboolean addressbook_load_completion( gint (*callBackFunc) ( const gchar *, const gchar *, const gchar * ) ) {
 	AddressDataSource *ds;
 	GList *nodeIf, *nodeDS;
 	GList *listP, *nodeP;
@@ -3824,7 +3824,7 @@ gboolean addressbook_load_completion( gint (*callBackFunc) ( const gchar *, cons
 						if( sAlias && *sAlias != '\0' ) {
 							sFriendly = sAlias;
 						}
-						( callBackFunc ) ( sFriendly, sAddress );
+						( callBackFunc ) ( sFriendly, sAddress, sName );
 					}
 
 					nodeM = g_list_next( nodeM );

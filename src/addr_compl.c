@@ -144,39 +144,41 @@ static void free_all(void)
 	g_completion = NULL;
 }
 
+static gint add_address1(const char *str, address_entry *ae)
+{
+	completion_entry *ce1;
+	ce1 = g_new0(completion_entry, 1),
+	ce1->string = g_strdup(str);
+	/* GCompletion list is case sensitive */
+	g_strdown(ce1->string);
+	ce1->ref = ae;
+
+	g_completion_list = g_list_append(g_completion_list, ce1);
+}
+
 /* add_address() - adds address to the completion list. this function looks
  * complicated, but it's only allocation checks.
  */
-static gint add_address(const gchar *name, const gchar *address)
+static gint add_address(const gchar *name, const gchar *address, const gchar *alias)
 {
 	address_entry    *ae;
-	completion_entry *ce1;
-	completion_entry *ce2;
 
 	if (!name || !address) return -1;
 
 	debug_print( "completion: add_address: %s - %s\n", name, address );
 
 	ae = g_new0(address_entry, 1);
-	ce1 = g_new0(completion_entry, 1),
-	ce2 = g_new0(completion_entry, 1);
 
 	g_return_val_if_fail(ae != NULL, -1);
-	g_return_val_if_fail(ce1 != NULL && ce2 != NULL, -1);	
 
 	ae->name    = g_strdup(name);
 	ae->address = g_strdup(address);		
-	ce1->string = g_strdup(name);
-	ce2->string = g_strdup(address);
 
-	/* GCompletion list is case sensitive */
-	g_strdown(ce2->string);
-	g_strdown(ce1->string);
-	ce1->ref = ce2->ref = ae;
-
-	g_completion_list = g_list_append(g_completion_list, ce1);
-	g_completion_list = g_list_append(g_completion_list, ce2);
 	g_address_list 	  = g_list_append(g_address_list,    ae);
+
+	add_address1(name, ae);
+	add_address1(address, ae);
+	add_address1(alias, ae);
 
 	return 0;
 }

@@ -38,7 +38,7 @@ gboolean addressbook_add_contact	( const gchar	*name,
 					  const gchar	*address,
 					  const gchar	*remarks );
 
-gboolean addressbook_load_completion	( gint (*callBackFunc) ( const gchar *, const gchar * ) );
+gboolean addressbook_load_completion	( gint (*callBackFunc) ( const gchar *, const gchar *, const gchar * ) );
 
 void addressbook_gather			( FolderItem *folderItem );
 
