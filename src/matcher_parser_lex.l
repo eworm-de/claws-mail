@@ -92,48 +92,12 @@ static void add_char(char ch)
 		BEGIN(string);
 		string_buf_ptr = string_buf;
 		}
-		/* the following tokens \n \t \r \b \f \\ could be
-		 * removed from the list, but we let them here for
-		 * the sake of clarity; they are unescaped by 
-		 * matcher.c:unescape_str()) */
-<string>\\n  	{
-		/* paste as-is */
-		add_char('\\');
-		add_char('n');
-		}
-<string>\\t  	{
-		/* paste as-is */
-		add_char('\\');
-		add_char('t');
-		}
-<string>\\r  	{
-		/* paste as-is */
-		add_char('\\');
-		add_char('r');
-		}
-<string>\\b	{
-		/* paste as-is */
-		add_char('\\');
-		add_char('b');
-		}
-<string>\\f  	{
-		/* paste as-is */
-		add_char('\\');
-		add_char('f');
-		}
-<string>\\\'	{
-		/* paste as-is */
-		add_char('\\');
-		add_char('\'');
-		}
-<string>\\\"	{
-		/* paste as-is */
-		add_char('\\');
-		add_char('\"');
-		}
-		/* we only miss the thing with nested escaping like
-		 * \\\\" which should mean something like 'forget it, we want a "'
-		 * right here in the token stream.... */
+<string>\\n  	add_char('\n');
+<string>\\t  	add_char('\t');
+<string>\\r  	add_char('\r');
+<string>\\b  	add_char('\b');
+<string>\\f  	add_char('\f');
+<string>\\. 	add_char(yytext[1]);
 <string>\"	{
 		BEGIN(0);
 		*string_buf_ptr = '\0';
@@ -141,14 +105,14 @@ static void add_char(char ch)
 		return MATCHER_STRING;
 		}
 <string>.	{
-		add_char(yytext[0]);
-		}
+add_char(yytext[0]);
+}
 \[[^\[\]]*\]	{
-		BEGIN(0);
-		yylval.str = yytext + 1;
-		yytext[strlen(yytext) - 1] = '\0';
-		return MATCHER_SECTION;
-		}
+			BEGIN(0);
+			yylval.str = yytext + 1;
+			yytext[strlen(yytext) - 1] = '\0';
+			return MATCHER_SECTION;
+			}
 [-+]?[0-9]+	{
 		yylval.str = yytext;
 		return MATCHER_INTEGER;

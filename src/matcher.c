@@ -127,20 +127,12 @@ gchar *matcher_unescape_str(gchar *str)
 		else {
 			src++;
 			if (*src == '\\')
-				*dst++ = '\\';				/* insert backslash */
-			else if (*src == 'n')				/* insert control characters */
+				*dst++ = '\\';
+			else if (*src == 'n')
 				*dst++ = '\n';
 			else if (*src == 'r') 
 				*dst++ = '\r';
-			else if (*src == 't') 
-				*dst++ = '\t';
-			else if (*src == 'r') 
-				*dst++ = '\r';
-			else if (*src == 'b')
-				*dst++ = '\b';
-			else if (*src == 'f')
-				*dst++ = '\f';
-			else if (*src == '\'' || *src == '\"')		/* insert \' or \" */
+			else if (*src == '\'' || *src == '\"')
 				*dst++ = *src;
 			else {
 				src--;
@@ -1072,7 +1064,6 @@ static void prefs_filtering_write(FILE * fp, GSList * prefs_scoring)
 
 		prop = (FilteringProp *) cur->data;
 		filtering_str = filteringprop_to_string(prop);
-		debug_print("FILTERING WRITING %s\n", filtering_str);
 		
 		if (fputs(filtering_str, fp) == EOF ||
 		    fputc('\n', fp) == EOF) {
