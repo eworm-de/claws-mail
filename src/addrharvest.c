@@ -201,7 +201,8 @@ static HeaderEntry *addrharvest_find(
 		HeaderEntry *entry;
 
 		entry = node->data;
-		if( g_utf8_collate( entry->header, name ) == 0 ) {
+		if (g_ascii_strncasecmp(entry->header, name,
+					sizeof(entry->header)) == 0 ) {
 			retVal = entry;
 			break;
 		}
@@ -555,6 +556,7 @@ static void addrharvest_parse_address(
 			}
 			else {
 				name = buffer;
+				conv_unmime_header_overwrite(name);
 			}
 
 			/* Insert into address book */
@@ -586,7 +588,7 @@ static gboolean addrharvest_check_hdr( GList *listHdr, gchar *buf ) {
 		node = listHdr;
 		while( node ) {
 			nhdr = node->data;
-			if( g_utf8_collate( nhdr, hdr ) == 0 ) {
+			if (g_ascii_strncasecmp(nhdr, hdr, sizeof(nhdr)) == 0 ) {
 				retVal = TRUE;
 				break;
 			}
