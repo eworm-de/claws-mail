@@ -62,6 +62,7 @@
 #include "folder.h"
 #include "inc.h"
 #include "statusbar.h"
+#include "toolbar.h"
 
 typedef enum
 {
@@ -1640,8 +1641,8 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	/* CLAWS: set compose button type: news folder items 
 	 * always have a news folder as parent */
 	if (item->folder) 
-		main_window_toolbar_set_compose_button
-			(folderview->mainwin,
+		toolbar_set_compose_button
+			(folderview->mainwin->toolbar,
 			 item->folder->type == F_NEWS ? 
 			 COMPOSEBUTTON_NEWS : COMPOSEBUTTON_MAIL);
 

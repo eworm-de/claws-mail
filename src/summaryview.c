@@ -83,6 +83,7 @@
 #include "prefs_folder_item.h"
 #include "filtering.h"
 #include "string_match.h"
+#include "toolbar.h"
 
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_UNREAD_WIDTH	13
@@ -884,7 +885,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	summary_status_show(summaryview);
 	summary_set_menu_sensitive(summaryview);
-	main_window_set_toolbar_sensitive(summaryview->mainwin);
+	toolbar_set_sensitive(summaryview->mainwin);
 
 	debug_print("\n");
 	STATUSBAR_PUSH(summaryview->mainwin, _("Done."));
@@ -949,7 +950,7 @@ void summary_clear_all(SummaryView *summaryview)
 {
 	summary_clear_list(summaryview);
 	summary_set_menu_sensitive(summaryview);
-	main_window_set_toolbar_sensitive(summaryview->mainwin);
+	toolbar_set_sensitive(summaryview->mainwin);
 	summary_status_show(summaryview);
 }
 
@@ -2234,7 +2235,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	}
 
 	summary_set_menu_sensitive(summaryview);
-	main_window_set_toolbar_sensitive(summaryview->mainwin);
+	toolbar_set_sensitive(summaryview->mainwin);
 
 	summary_unlock(summaryview);
 }
@@ -4406,7 +4407,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	     GTK_CLIST(ctree)->selection->next) {
 		summaryview->display_msg = FALSE;
 		summary_set_menu_sensitive(summaryview);
-		main_window_set_toolbar_sensitive(summaryview->mainwin);
+		toolbar_set_sensitive(summaryview->mainwin);
 		return;
 	}
 
@@ -4451,7 +4452,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		summaryview->display_msg = FALSE;
 	} else {
 		summary_set_menu_sensitive(summaryview);
-		main_window_set_toolbar_sensitive(summaryview->mainwin);
+		toolbar_set_sensitive(summaryview->mainwin);
 	}
 }
 

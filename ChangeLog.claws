@@ -1,3 +1,23 @@
+2002-08-06 [oliver]	0.8.1claws27
+
+	* Custom Toolbar Final 
+	* src/folderview.c
+	* src/inc.c
+	* src/summaryview.c
+		o toolbar stuff now lives in src/toolbar.[ch]
+		o main_window_toolbar_* functions are renamed to
+		  toolbar_* reflecting their new source file
+	* src/mainwindow.[ch]
+		o remove toolbar stuff	
+
+2002-08-06 [oliver]	0.8.1claws26
+	
+	* src/Makefile.am
+	* src/prefs_toolbar.[ch] 	**New File**
+	* src/toolbar.[ch]   		**New File**
+		o prefs_toolbar.[ch] custom toolbar frontend
+		o toolbar.[ch]       backend 
+ 
 2002-08-06 [oliver]	0.8.1claws25
 
 	* src/prefs_actions.[ch]
