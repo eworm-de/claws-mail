@@ -89,7 +89,6 @@ sylpheed_SOURCES = \
 	unmime.c unmime.h \
 	ssl_manager.c ssl_manager.h \
 	automaton.c automaton.h \
-	smtp.c smtp.h \
 	pop.c pop.h \
 	mh.c mh.h \
 	mbox.c mbox.h \

@@ -1,3 +1,11 @@
+2002-12-09 [christoph]	0.8.6claws90
+
+	* src/Makefile.am
+	* src/smtp.[ch]			** REMOVE **
+	* src/common/Makefile.am
+	* src/common/smtp.[ch]		** NEW **
+		move smtp files to common directory
+
 2002-12-09 [christoph]	0.8.6claws89
 
 	* src/Makefile.am

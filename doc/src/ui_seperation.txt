@@ -25,3 +25,7 @@ gtksctree.[ch]		gtk/gtksctree.[ch]	ok
 template.[ch]		common/template.[ch]	ok
 
 nntp.[ch]		common/nntp.[ch]	ok
+
+session.[ch]		common/session.[ch]	ok
+
+smtp.[ch]		common/smtp.[ch]	ok

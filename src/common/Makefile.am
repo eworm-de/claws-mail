@@ -7,12 +7,13 @@ libsylpheedcommon_la_SOURCES = \
 	md5.c md5.h \
 	nntp.c nntp.h \
 	session.c session.h \
+	smtp.c smtp.h \
 	socket.c socket.h \
+	ssl_certificate.c ssl_certificate.h \
 	ssl.c ssl.h \
 	sylpheed.c sylpheed.h \
 	template.c template.h \
 	utils.c utils.h \
-	ssl_certificate.c ssl_certificate.h \
 	uuencode.c uuencode.h
 
 INCLUDES = \
