@@ -348,3 +348,4 @@
 ( cvs diff -u -r 1.94.2.38 -r 1.94.2.39 src/messageview.c; cvs diff -u -r 1.395.2.47 -r 1.395.2.48 src/summaryview.c; cvs diff -u -r 1.274.2.27 -r 1.274.2.28 src/mainwindow.c; cvs diff -u -r 1.382.2.88 -r 1.382.2.89 src/compose.c; cvs diff -u -r 1.50.2.6 -r 1.50.2.7 src/compose.h; cvs diff -u -r 1.150.2.18 -r 1.150.2.19 src/procmsg.c; cvs diff -u -r 1.60.2.9 -r 1.60.2.10 src/procmsg.h; cvs diff -u -r 1.43.2.12 -r 1.43.2.13 src/toolbar.c; ) > 1.0.0cvs18.1.patchset
 ( cvs diff -u -r 1.49.2.29 -r 1.49.2.30 src/procmime.c; ) > 1.0.0cvs19.1.patchset
 ( cvs diff -u -r 1.213.2.22 -r 1.213.2.23 src/folder.c; cvs diff -u -r 1.207.2.26 -r 1.207.2.27 src/folderview.c; ) > 1.0.0cvs21.1.patchset
+( cvs diff -u -r 1.207.2.27 -r 1.207.2.28 src/folderview.c; ) > 1.0.0cvs23.1.patchset
