@@ -82,6 +82,8 @@ struct _IMAPSession
 	time_t last_access_time;
 	gboolean authenticated;
 	guint cmd_count;
+	gboolean folder_content_changed;
+	guint exists;
 };
 
 struct _IMAPNameSpace
@@ -2119,8 +2121,10 @@ static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 			     exists, recent, unseen, uid_validity);
 	if (ok != IMAP_SUCCESS)
 		log_warning(_("can't select folder: %s\n"), real_path);
-	else
+	else {
 		session->mbox = g_strdup(path);
+		session->folder_content_changed = FALSE;
+	}
 	g_free(real_path);
 
 	return ok;
@@ -2756,21 +2760,39 @@ static gint imap_cmd_ok(IMAPSession *session, GPtrArray *argbuf)
 	gint ok;
 	gchar *buf;
 	gint cmd_num;
-	gchar cmd_status[IMAPBUFSIZE];
+	gchar *data;
 
 	while ((ok = imap_gen_recv(session, &buf))
 	       == IMAP_SUCCESS) {
+		// make sure data is long enough for any substring of buf
+		data = alloca(strlen(buf) + 1);
+
 		if (buf[0] == '*' && buf[1] == ' ') {
+			gint num;
 			if (argbuf)
 				g_ptr_array_add(argbuf, g_strdup(buf + 2));
+
+			if (sscanf(buf + 2, "%d %s", &num, data) < 2)
+				continue;
+
+			if (!strcmp(data, "EXISTS")) {
+				session->exists = num;
+				session->folder_content_changed = TRUE;
+			}
+
+			if(!strcmp(data, "EXPUNGE")) {
+				session->exists--;
+				session->folder_content_changed = TRUE;
+			}
+
 			continue;
 		}
 
-		if (sscanf(buf, "%d %s", &cmd_num, cmd_status) < 2) {
+		if (sscanf(buf, "%d %s", &cmd_num, data) < 2) {
 			g_free(buf);
 			return IMAP_ERROR;
 		} else if (cmd_num == session->cmd_count &&
-			 !strcmp(cmd_status, "OK")) {
+			 !strcmp(data, "OK")) {
 			if (argbuf)
 				g_ptr_array_add(argbuf, g_strdup(buf));
 			g_free(buf);
@@ -3193,6 +3215,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	gint ok, nummsgs = 0, exists, recent, unseen, uid_val, uid_next;
 	GSList *uidlist;
 	gchar *dir;
+	gboolean selected_folder;
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(item != NULL, -1);
@@ -3203,16 +3226,26 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, -1);
 
-	ok = imap_status(session, IMAP_FOLDER(folder), item->item.path,
-			 &exists, &recent, &uid_next, &uid_val, &unseen);
-	if (ok != IMAP_SUCCESS)
-		return -1;
+	selected_folder = (session->mbox != NULL) &&
+			  (!strcmp(session->mbox, item->item.path));
+	if (selected_folder) {
+		ok = imap_cmd_noop(session);
+		if (ok != IMAP_SUCCESS)
+			return -1;
+		exists = session->exists;
+	} else {
+		ok = imap_status(session, IMAP_FOLDER(folder), item->item.path,
+				 &exists, &recent, &uid_next, &uid_val, &unseen);
+		if (ok != IMAP_SUCCESS)
+			return -1;
+	}
 
 	/* If old uid_next matches new uid_next we can be sure no message
 	   was added to the folder */
-	if (uid_next == item->uid_next) {
+	if (( selected_folder && !session->folder_content_changed) ||
+	    (!selected_folder && uid_next == item->uid_next)) {
 		nummsgs = g_slist_length(item->uid_list);
-		
+
 		/* If number of messages is still the same we
                    know our caches message numbers are still valid,
                    otherwise if the number of messages has decrease
@@ -3228,7 +3261,8 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 			item->uid_list = NULL;
 		}
 	}
-	item->uid_next = uid_next;
+	if (!selected_folder)
+		item->uid_next = uid_next;
 
 	if (exists == 0) {
 		*msgnum_list = NULL;

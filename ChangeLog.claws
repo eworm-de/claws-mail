@@ -1,3 +1,10 @@
+2003-05-17 [christoph]	0.8.11claws160
+
+	* src/imap.c
+		don't use STATUS command on current folder to check for
+		content changes. imap_cmd_ok() now tracks changes to
+		folder and number of existing messages.
+
 2003-05-17 [paul]	0.8.11claws159
 
 	* src/plugins/clamav/clamav_plugin.c
