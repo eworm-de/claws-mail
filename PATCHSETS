@@ -184,3 +184,4 @@
 ( cvs diff -u -r 1.127 -r 1.128 src/messageview.c; cvs diff -u -r 1.314 -r 1.315 src/mainwindow.c; ) > 0.9.13cvs12.patchset
 ( cvs diff -u -r 1.27 -r 1.28 src/quote_fmt_parse.y; ) > 0.9.13cvs13.patchset
 ( cvs diff -u -r 1.17 -r 1.18 src/gtk/prefswindow.c; cvs diff -u -r 1.9 -r 1.10 src/gtk/pluginwindow.c; ) > 0.9.13cvs14.patchset
+( cvs diff -u -r 1.8 -r 1.9 src/plugins/spamassassin/libspamc.c; ) > 0.9.13cvs15.patchset

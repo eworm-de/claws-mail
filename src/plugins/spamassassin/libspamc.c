@@ -1087,7 +1087,7 @@ int message_process(struct transport *trans, char *username, int max_size,
 
 void message_cleanup(struct message *m)
 {
-    if (m->out != NULL && m->pre != NULL && m->out != m->pre+m->pre_len)
+    if (m->out != NULL)
 	free(m->out);
     if (m->raw != NULL)
 	free(m->raw);
