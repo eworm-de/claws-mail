@@ -1,16 +1,22 @@
+2002-12-05 [colin]	0.8.6claws65
+	
+	* src/common/utils.c
+		Don't modify original search_string or it'll change
+		the next iterations in the for()
+
 2002-12-05 [darko]	0.8.6claws64
 
-	* src/utils.c
+	* src/common/utils.c
 		proper check for filtering commands, found by Colin
 
 2002-12-05 [darko]	0.8.6claws63
 
-	* src/utils.c
+	* src/common/utils.c
 		check proper string for NULL pointer, found by Colin
 
 2002-12-05 [darko]	0.8.6claws62
 
-	* src/utils.[ch]
+	* src/common/utils.[ch]
 		expand_search_string(): new function
 		converts Mutt-like patterns to Sylpheed's
 		filtering engine

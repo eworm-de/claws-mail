@@ -3090,11 +3090,12 @@ gchar *expand_search_string(const gchar *search_string)
 	/* if it's a full command don't process it so users
 	   can still do something like from regexpcase "foo" */
 	for (i = 0; cmds[i].command; i++) {
+		gchar *tmp_search_string = search_string;
 		cmd_start = cmds[i].command;
 		/* allow logical NOT */
-		if (*search_string == '~')
-			search_string++;
-		if (!strncmp(search_string, cmd_start, strlen(cmd_start)))
+		if (*tmp_search_string == '~')
+			tmp_search_string++;
+		if (!strncmp(tmp_search_string, cmd_start, strlen(cmd_start)))
 			break;
 	}
 	if (cmds[i].command)
