@@ -6,15 +6,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed\n"
 "Report-Msgid-Bugs-To: twb@users.sourceforge.net\n"
-"POT-Creation-Date: 2004-05-28 00:06+0900\n"
-"PO-Revision-Date: 2004-05-28 00:32+0900\n"
+"POT-Creation-Date: 2004-08-24 00:04+0900\n"
+"PO-Revision-Date: 2004-08-24 00:12+0900\n"
 "Last-Translator: Rui Hirokawa <rui_hirokawa@ybb.ne.jp>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/account.c:312
+#: src/account.c:309
 msgid ""
 "Some composing windows are open.\n"
 "Please close all the composing windows before editing the accounts."
@@ -22,11 +22,11 @@ msgstr ""
 "メッセージ作成ウィンドウが開いています。\n"
 "アカウントを編集する前に全てのメッセージ作成ウィンドウを閉じてください。"
 
-#: src/account.c:563
+#: src/account.c:561
 msgid "Edit accounts"
 msgstr "アカウントの編集"
 
-#: src/account.c:581
+#: src/account.c:579
 msgid ""
 "New messages will be checked in this order. Check the boxes\n"
 "on the `G' column to enable message retrieval by `Get all'."
@@ -34,105 +34,108 @@ msgstr ""
 "新規メッセージはこの順番でチェックされます。`全て取得'によるメッセージ\n"
 "取得を有効にするには、`G'カラムのボックスをチェックして下さい。"
 
-#: src/account.c:601 src/addressadd.c:182 src/addressbook.c:642
-#: src/compose.c:4754 src/compose.c:4924 src/editaddress.c:774
+#: src/account.c:599 src/addressadd.c:182 src/addressbook.c:643
+#: src/compose.c:4784 src/compose.c:4954 src/editaddress.c:774
 #: src/editaddress.c:823 src/editbook.c:174 src/editgroup.c:257
 #: src/editjpilot.c:295 src/editldap.c:400 src/editvcard.c:210
-#: src/importmutt.c:261 src/importpine.c:261 src/mimeview.c:199
+#: src/importmutt.c:261 src/importpine.c:261 src/mimeview.c:198
 #: src/select-keys.c:301
 msgid "Name"
 msgstr "名前"
 
-#: src/account.c:602 src/prefs_account.c:926
+#: src/account.c:600 src/prefs_account.c:926
 msgid "Protocol"
 msgstr "プロトコル"
 
-#: src/account.c:603 src/ssl_manager.c:105
+#: src/account.c:601 src/ssl_manager.c:105
 msgid "Server"
 msgstr "サーバ"
 
-#: src/account.c:632 src/addressbook.c:784 src/editaddress.c:722
+#: src/account.c:630 src/addressbook.c:785 src/editaddress.c:722
 #: src/editaddress.c:856 src/prefs_actions.c:221 src/prefs_customheader.c:234
 #: src/prefs_display_header.c:275 src/prefs_display_header.c:330
 #: src/prefs_filtering_action.c:449 src/prefs_filtering.c:280
-#: src/prefs_matcher.c:557 src/prefs_template.c:216 src/prefs_toolbar.c:769
+#: src/prefs_matcher.c:559 src/prefs_template.c:216 src/prefs_toolbar.c:769
 msgid "Add"
 msgstr "追加"
 
-#: src/account.c:638
+#: src/account.c:636
 msgid "Edit"
 msgstr "編集"
 
-#: src/account.c:644 src/prefs_customheader.c:241
+#: src/account.c:642 src/prefs_customheader.c:241
 msgid " Delete "
 msgstr "  削除  "
 
-#: src/account.c:650
+#: src/account.c:648
 msgid " Clone "
 msgstr " コピー "
 
-#: src/account.c:656 src/prefs_actions.c:284 src/prefs_customheader.c:289
+#: src/account.c:654 src/prefs_actions.c:284 src/prefs_customheader.c:289
 #: src/prefs_display_header.c:294 src/prefs_filtering_action.c:503
-#: src/prefs_filtering.c:342 src/prefs_matcher.c:639
+#: src/prefs_filtering.c:342 src/prefs_matcher.c:641
 #: src/prefs_summary_column.c:289 src/prefs_toolbar.c:830
 msgid "Down"
 msgstr "  ↓  "
 
-#: src/account.c:662 src/prefs_actions.c:278 src/prefs_customheader.c:283
+#: src/account.c:660 src/prefs_actions.c:278 src/prefs_customheader.c:283
 #: src/prefs_display_header.c:288 src/prefs_filtering_action.c:497
-#: src/prefs_filtering.c:336 src/prefs_matcher.c:633
+#: src/prefs_filtering.c:336 src/prefs_matcher.c:635
 #: src/prefs_summary_column.c:285 src/prefs_toolbar.c:826
 msgid "Up"
 msgstr "  ↑  "
 
-#: src/account.c:676
+#: src/account.c:674
 msgid " Set as default account "
 msgstr " 通常アカウントに指定 "
 
-#: src/account.c:682 src/action.c:1212 src/addressbook.c:1018
-#: src/addressbook.c:3166 src/addressbook.c:3170 src/addressbook.c:3208
+#: src/account.c:680 src/action.c:1212 src/addressbook.c:1019
+#: src/addressbook.c:3167 src/addressbook.c:3172 src/addressbook.c:3211
 #: src/browseldap.c:307 src/crash.c:242 src/exphtmldlg.c:196
-#: src/expldifdlg.c:203 src/gtk/pluginwindow.c:223 src/inc.c:699
+#: src/expldifdlg.c:203 src/gtk/pluginwindow.c:223 src/inc.c:713
 #: src/message_search.c:135 src/summary_search.c:211
 msgid "Close"
 msgstr "閉じる"
 
-#: src/account.c:758
+#: src/account.c:756
 msgid "Accounts with remote folders cannot be cloned"
 msgstr "リモートフォルダを油宇するアカウントのコピーは作成できません"
 
-#: src/account.c:764
+#: src/account.c:762
 #, c-format
 msgid "Cloned %s"
 msgstr "%s のコピーを作成しました。"
 
-#: src/account.c:906
+#: src/account.c:904
 msgid "Delete account"
 msgstr "アカウントの削除"
 
-#: src/account.c:907
+#: src/account.c:905
 msgid "Do you really want to delete this account?"
 msgstr "本当にこのアカウントを削除してもいいですか?"
 
-#: src/account.c:908 src/addressbook.c:1041 src/addressbook.c:2304
-#: src/addressbook.c:2332 src/compose.c:2248 src/compose.c:3093
-#: src/compose.c:3575 src/compose.c:6045 src/compose.c:6367
+#: src/account.c:906 src/addressbook.c:1042 src/addressbook.c:2305
+#: src/addressbook.c:2333 src/compose.c:2298 src/compose.c:3129
+#: src/compose.c:3633 src/compose.c:6078 src/compose.c:6397
 #: src/exphtmldlg.c:185 src/expldifdlg.c:192 src/expldifdlg.c:250
-#: src/inc.c:182 src/inc.c:270 src/inc.c:296 src/mainwindow.c:1572
-#: src/message_search.c:198 src/prefs_actions.c:525
-#: src/prefs_customheader.c:547 src/prefs_filtering.c:853
-#: src/prefs_filtering.c:1001 src/prefs_matcher.c:1667
-#: src/prefs_template.c:544 src/prefs_themes.c:422 src/prefs_themes.c:472
-#: src/prefs_themes.c:479 src/ssl_manager.c:271 src/summary_search.c:328
-#: src/summaryview.c:934 src/summaryview.c:1417 src/summaryview.c:1461
-#: src/summaryview.c:1504 src/summaryview.c:1528 src/summaryview.c:1560
-#: src/summaryview.c:1585 src/summaryview.c:1610 src/summaryview.c:1635
-#: src/summaryview.c:3129 src/textview.c:1950 src/toolbar.c:1889
+#: src/imap_gtk.c:253 src/imap_gtk.c:300 src/imap_gtk.c:363 src/inc.c:182
+#: src/inc.c:287 src/inc.c:313 src/mainwindow.c:1569 src/message_search.c:197
+#: src/mh_gtk.c:170 src/mh_gtk.c:311 src/news_gtk.c:204 src/news_gtk.c:242
+#: src/news_gtk.c:297 src/prefs_actions.c:525 src/prefs_customheader.c:547
+#: src/prefs_filtering.c:853 src/prefs_filtering.c:1001
+#: src/prefs_matcher.c:1680 src/prefs_template.c:544 src/prefs_themes.c:426
+#: src/prefs_themes.c:475 src/prefs_themes.c:482 src/ssl_manager.c:271
+#: src/summary_search.c:327 src/summaryview.c:813 src/summaryview.c:1251
+#: src/summaryview.c:1295 src/summaryview.c:1338 src/summaryview.c:1362
+#: src/summaryview.c:1394 src/summaryview.c:1419 src/summaryview.c:1444
+#: src/summaryview.c:1469 src/summaryview.c:2964 src/textview.c:1955
+#: src/toolbar.c:1868
 msgid "Yes"
 msgstr "はい"
 
-#: src/account.c:908 src/compose.c:3575 src/compose.c:6045
-#: src/ssl_manager.c:271
+#: src/account.c:906 src/compose.c:3633 src/compose.c:6078 src/imap_gtk.c:253
+#: src/imap_gtk.c:300 src/mh_gtk.c:170 src/mh_gtk.c:311 src/news_gtk.c:204
+#: src/news_gtk.c:242 src/ssl_manager.c:271
 msgid "+No"
 msgstr "+いいえ"
 
@@ -238,11 +241,11 @@ msgstr "アクションのユーザ引数"
 msgid "Add to address book"
 msgstr "アドレス帳に追加"
 
-#: src/addressadd.c:194 src/select-keys.c:302 src/toolbar.c:438
+#: src/addressadd.c:194 src/select-keys.c:302 src/toolbar.c:434
 msgid "Address"
 msgstr "アドレス"
 
-#: src/addressadd.c:204 src/addressbook.c:644 src/editaddress.c:628
+#: src/addressadd.c:204 src/addressbook.c:645 src/editaddress.c:628
 #: src/editaddress.c:692 src/editgroup.c:259
 msgid "Remarks"
 msgstr "備考"
@@ -251,402 +254,407 @@ msgstr "備考"
 msgid "Select Address Book Folder"
 msgstr "アドレス帳フォルダの選択"
 
-#: src/addressadd.c:240 src/addrgather.c:506 src/alertpanel.c:190
-#: src/alertpanel.c:324 src/compose.c:5867 src/editaddress.c:513
+#: src/addressadd.c:240 src/addrgather.c:506 src/alertpanel.c:203
+#: src/alertpanel.c:339 src/compose.c:5900 src/editaddress.c:513
 #: src/editbook.c:204 src/editgroup.c:369 src/editjpilot.c:344
 #: src/editldap_basedn.c:212 src/editldap.c:342 src/editvcard.c:239
 #: src/export.c:188 src/foldersel.c:199 src/grouplistdialog.c:244
 #: src/gtk/about.c:232 src/gtk/description_window.c:120
 #: src/gtk/gtkaspell.c:1425 src/gtk/gtkaspell.c:2378 src/gtk/inputdialog.c:202
-#: src/gtk/prefswindow.c:318 src/gtk/sslcertwindow.c:230 src/import.c:190
-#: src/importmutt.c:287 src/importpine.c:287 src/main.c:660
-#: src/mainwindow.c:2352 src/messageview.c:946 src/mimeview.c:1011
-#: src/passphrase.c:130 src/prefs_actions.c:161 src/prefs_common.c:2658
-#: src/prefs_common.c:2827 src/prefs_common.c:3085
+#: src/gtk/prefswindow.c:316 src/gtk/sslcertwindow.c:230 src/import.c:190
+#: src/importmutt.c:287 src/importpine.c:287 src/main.c:723
+#: src/mainwindow.c:2345 src/messageview.c:955 src/mimeview.c:1019
+#: src/passphrase.c:130 src/plugins/trayicon/trayicon.c:307
+#: src/prefs_actions.c:161 src/prefs_common.c:2528 src/prefs_common.c:2627
 #: src/prefs_customheader.c:157 src/prefs_display_header.c:194
 #: src/prefs_filtering_action.c:278 src/prefs_filtering.c:199
-#: src/prefs_gtk.c:451 src/prefs_matcher.c:370 src/prefs_summary_column.c:313
+#: src/prefs_gtk.c:451 src/prefs_matcher.c:372 src/prefs_summary_column.c:313
 #: src/prefs_template.c:263 src/ssl_manager.c:98
 msgid "OK"
 msgstr "OK"
 
-#: src/addressadd.c:241 src/addressbook.c:2320 src/addrgather.c:507
-#: src/compose.c:5868 src/compose.c:6573 src/compose.c:6611
+#: src/addressadd.c:241 src/addressbook.c:2321 src/addrgather.c:507
+#: src/compose.c:5901 src/compose.c:6601 src/compose.c:6639
 #: src/editaddress.c:514 src/editbook.c:205 src/editgroup.c:370
 #: src/editjpilot.c:345 src/editldap_basedn.c:213 src/editldap.c:343
 #: src/editvcard.c:240 src/exphtmldlg.c:725 src/expldifdlg.c:746
 #: src/export.c:189 src/foldersel.c:200 src/grouplistdialog.c:245
-#: src/gtk/gtkaspell.c:1434 src/gtk/inputdialog.c:203
-#: src/gtk/prefswindow.c:319 src/gtk/progressdialog.c:76 src/import.c:191
+#: src/gtk/foldersort.c:176 src/gtk/gtkaspell.c:1434 src/gtk/inputdialog.c:203
+#: src/gtk/prefswindow.c:317 src/gtk/progressdialog.c:76 src/import.c:191
 #: src/importldif.c:1034 src/importmutt.c:288 src/importpine.c:288
-#: src/main.c:660 src/mainwindow.c:2352 src/messageview.c:946
-#: src/mimeview.c:1012 src/passphrase.c:134 src/prefs_actions.c:162
-#: src/prefs_common.c:2659 src/prefs_common.c:3086
+#: src/main.c:723 src/mainwindow.c:2345 src/messageview.c:955
+#: src/mimeview.c:1020 src/passphrase.c:134
+#: src/plugins/trayicon/trayicon.c:307 src/prefs_actions.c:162
+#: src/prefs_common.c:2529 src/prefs_common.c:2628
 #: src/prefs_customheader.c:158 src/prefs_display_header.c:195
 #: src/prefs_filtering_action.c:279 src/prefs_filtering.c:200
-#: src/prefs_gtk.c:452 src/prefs_matcher.c:371 src/prefs_summary_column.c:314
-#: src/prefs_template.c:264 src/prefs_themes.c:422 src/prefs_themes.c:472
-#: src/prefs_themes.c:479 src/select-keys.c:332 src/summaryview.c:934
-#: src/summaryview.c:3420
+#: src/prefs_gtk.c:452 src/prefs_matcher.c:373 src/prefs_summary_column.c:314
+#: src/prefs_template.c:264 src/prefs_themes.c:426 src/prefs_themes.c:475
+#: src/prefs_themes.c:482 src/select-keys.c:332 src/summaryview.c:813
+#: src/summaryview.c:3262
 msgid "Cancel"
 msgstr "キャンセル"
 
-#: src/addressbook.c:367 src/compose.c:515 src/mainwindow.c:435
-#: src/messageview.c:143
+#: src/addressbook.c:369 src/compose.c:522 src/mainwindow.c:435
+#: src/messageview.c:151
 msgid "/_File"
 msgstr "/ファイル(_F)"
 
-#: src/addressbook.c:368
+#: src/addressbook.c:370
 msgid "/_File/New _Book"
 msgstr "/ファイル(_F)/新規 アドレス帳(_B)"
 
-#: src/addressbook.c:369
+#: src/addressbook.c:371
 msgid "/_File/New _vCard"
 msgstr "/ファイル(_F)/新規 _vCard"
 
-#: src/addressbook.c:371
+#: src/addressbook.c:373
 msgid "/_File/New _JPilot"
 msgstr "/ファイル(_F)/新規 _JPilot"
 
-#: src/addressbook.c:374
+#: src/addressbook.c:376
 msgid "/_File/New _Server"
 msgstr "/ファイル(_F)/新規 サーバー(_S)"
 
-#: src/addressbook.c:376 src/addressbook.c:379 src/compose.c:519
-#: src/mainwindow.c:442 src/mainwindow.c:445 src/mainwindow.c:447
-#: src/messageview.c:146
+#: src/addressbook.c:378 src/addressbook.c:381 src/compose.c:525
+#: src/compose.c:529 src/mainwindow.c:442 src/mainwindow.c:445
+#: src/mainwindow.c:447 src/messageview.c:154
 msgid "/_File/---"
 msgstr "/ファイル(_F)/---"
 
-#: src/addressbook.c:377
+#: src/addressbook.c:379
 msgid "/_File/_Edit"
 msgstr "/ファイル(_F)/編集(_E)"
 
-#: src/addressbook.c:378
+#: src/addressbook.c:380
 msgid "/_File/_Delete"
 msgstr "/ファイル(_F)/削除(_D)"
 
-#: src/addressbook.c:380
+#: src/addressbook.c:382 src/compose.c:523
 msgid "/_File/_Save"
 msgstr "/ファイル(_F)/保存(_S)"
 
-#: src/addressbook.c:381 src/compose.c:520 src/messageview.c:147
+#: src/addressbook.c:383 src/compose.c:530 src/messageview.c:155
 msgid "/_File/_Close"
 msgstr "/ファイル(_F)/閉じる(_C)"
 
-#: src/addressbook.c:382 src/addressbook.c:410 src/addressbook.c:424
-#: src/compose.c:522 src/mainwindow.c:451 src/messageview.c:149
+#: src/addressbook.c:384 src/addressbook.c:412 src/addressbook.c:426
+#: src/compose.c:532 src/mainwindow.c:451 src/messageview.c:157
 msgid "/_Edit"
 msgstr "/編集(_E)"
 
-#: src/addressbook.c:383
+#: src/addressbook.c:385
 msgid "/_Edit/C_ut"
 msgstr "/編集(_E)/カット(_u)"
 
-#: src/addressbook.c:384 src/compose.c:527 src/mainwindow.c:452
-#: src/messageview.c:150
+#: src/addressbook.c:386 src/compose.c:537 src/mainwindow.c:452
+#: src/messageview.c:158
 msgid "/_Edit/_Copy"
 msgstr "/編集(_E)/コピー(_C)"
 
-#: src/addressbook.c:385 src/compose.c:528
+#: src/addressbook.c:387 src/compose.c:538
 msgid "/_Edit/_Paste"
 msgstr "/編集(_E)/ペースト(_E)"
 
-#: src/addressbook.c:386 src/compose.c:525 src/compose.c:608
-#: src/mainwindow.c:455 src/messageview.c:152
+#: src/addressbook.c:388 src/compose.c:535 src/compose.c:618 src/compose.c:624
+#: src/mainwindow.c:455 src/messageview.c:160
 msgid "/_Edit/---"
 msgstr "/編集(_E)/---"
 
-#: src/addressbook.c:387
+#: src/addressbook.c:389
 msgid "/_Edit/Pa_ste Address"
 msgstr "/編集(_E)/アドレスをペースト(_s)"
 
-#: src/addressbook.c:388
+#: src/addressbook.c:390
 msgid "/_Address"
 msgstr "/アドレス(_A)"
 
-#: src/addressbook.c:389
+#: src/addressbook.c:391
 msgid "/_Address/New _Address"
 msgstr "/アドレス(_A)/新規アドレス(_A)"
 
-#: src/addressbook.c:390
+#: src/addressbook.c:392
 msgid "/_Address/New _Group"
 msgstr "/アドレス(_A)/新規グループ(_G)"
 
-#: src/addressbook.c:391
+#: src/addressbook.c:393
 msgid "/_Address/New _Folder"
 msgstr "/アドレス(_A)/新規フォルダ(_F)"
 
-#: src/addressbook.c:392 src/addressbook.c:395
+#: src/addressbook.c:394 src/addressbook.c:397
 msgid "/_Address/---"
 msgstr "/アドレス(_A)/---"
 
-#: src/addressbook.c:393
+#: src/addressbook.c:395
 msgid "/_Address/_Edit"
 msgstr "/アドレス(_A)/編集(_E)"
 
-#: src/addressbook.c:394
+#: src/addressbook.c:396
 msgid "/_Address/_Delete"
 msgstr "/_アドレス(_A)/削除(_D)"
 
-#: src/addressbook.c:396
+#: src/addressbook.c:398
 msgid "/_Address/_Mail To"
 msgstr "/アドレス(_A)/宛先(_M)"
 
-#: src/addressbook.c:397 src/addressbook.c:401 src/mainwindow.c:673
+#: src/addressbook.c:399 src/addressbook.c:403 src/mainwindow.c:673
 #: src/mainwindow.c:696 src/mainwindow.c:698 src/mainwindow.c:707
-#: src/mainwindow.c:710 src/mainwindow.c:714 src/messageview.c:267
-#: src/messageview.c:288
+#: src/mainwindow.c:710 src/mainwindow.c:714 src/messageview.c:275
+#: src/messageview.c:296
 msgid "/_Tools/---"
 msgstr "/ツール(_T)/---"
 
-#: src/addressbook.c:398
+#: src/addressbook.c:400
 msgid "/_Tools/Import _LDIF file..."
 msgstr "/ツール(_T)/_LDIFファイルをインポート..."
 
-#: src/addressbook.c:399
+#: src/addressbook.c:401
 msgid "/_Tools/Import M_utt file..."
 msgstr "/ツール(_T)/M_uttファイルをインポート..."
 
-#: src/addressbook.c:400
+#: src/addressbook.c:402
 msgid "/_Tools/Import _Pine file..."
 msgstr "/ツール(_T)/_Pineファイルをインポート..."
 
-#: src/addressbook.c:402
+#: src/addressbook.c:404
 msgid "/_Tools/Export _HTML..."
 msgstr "/ツール(_T)/_HTMLをエクスポート..."
 
-#: src/addressbook.c:403
+#: src/addressbook.c:405
 msgid "/_Tools/Export LDI_F..."
 msgstr "/ツール(_T)/LDI_Fをエクスポート..."
 
-#: src/addressbook.c:404 src/compose.c:686 src/mainwindow.c:740
-#: src/messageview.c:291
+#: src/addressbook.c:406 src/compose.c:693 src/mainwindow.c:740
+#: src/messageview.c:299
 msgid "/_Help"
 msgstr "/ヘルプ(_H)"
 
-#: src/addressbook.c:405 src/compose.c:687 src/mainwindow.c:750
-#: src/messageview.c:292
+#: src/addressbook.c:407 src/compose.c:694 src/mainwindow.c:750
+#: src/messageview.c:300
 msgid "/_Help/_About"
 msgstr "/ヘルプ(_H)/このプログラムについて(_A)"
 
-#: src/addressbook.c:411 src/addressbook.c:425 src/summaryview.c:409
+#: src/addressbook.c:413 src/addressbook.c:427 src/summaryview.c:403
 msgid "/_Delete"
 msgstr "/削除(_D)"
 
-#: src/addressbook.c:412 src/addressbook.c:416 src/addressbook.c:426
-#: src/addressbook.c:430 src/addressbook.c:434 src/compose.c:509
-#: src/summaryview.c:403 src/summaryview.c:406 src/summaryview.c:411
-#: src/summaryview.c:425 src/summaryview.c:427 src/summaryview.c:448
+#: src/addressbook.c:414 src/addressbook.c:418 src/addressbook.c:428
+#: src/addressbook.c:432 src/addressbook.c:436 src/compose.c:516
+#: src/imap_gtk.c:56 src/imap_gtk.c:58 src/imap_gtk.c:61 src/imap_gtk.c:63
+#: src/mh_gtk.c:54 src/mh_gtk.c:57 src/mh_gtk.c:59 src/news_gtk.c:51
+#: src/news_gtk.c:53 src/news_gtk.c:55 src/news_gtk.c:57
+#: src/plugins/trayicon/trayicon.c:80 src/plugins/trayicon/trayicon.c:83
+#: src/summaryview.c:397 src/summaryview.c:400 src/summaryview.c:405
+#: src/summaryview.c:419 src/summaryview.c:421 src/summaryview.c:442
 msgid "/---"
 msgstr "/---"
 
-#: src/addressbook.c:413 src/addressbook.c:427
+#: src/addressbook.c:415 src/addressbook.c:429
 msgid "/New _Address"
 msgstr "/新規アドレス(_A)"
 
-#: src/addressbook.c:414 src/addressbook.c:428
+#: src/addressbook.c:416 src/addressbook.c:430
 msgid "/New _Group"
 msgstr "/新規グループ(_G)"
 
-#: src/addressbook.c:415 src/addressbook.c:429
+#: src/addressbook.c:417 src/addressbook.c:431
 msgid "/New _Folder"
 msgstr "/新規フォルダ(_F)"
 
-#: src/addressbook.c:417 src/addressbook.c:431
+#: src/addressbook.c:419 src/addressbook.c:433
 msgid "/C_ut"
 msgstr "カット(_u)"
 
-#: src/addressbook.c:418 src/addressbook.c:432
+#: src/addressbook.c:420 src/addressbook.c:434
 msgid "/_Copy"
 msgstr "/コピー(_C)"
 
-#: src/addressbook.c:419 src/addressbook.c:433
+#: src/addressbook.c:421 src/addressbook.c:435
 msgid "/_Paste"
 msgstr "/ペースト(_P)"
 
-#: src/addressbook.c:435
+#: src/addressbook.c:437
 msgid "/Pa_ste Address"
 msgstr "/アドレスをペースト(_s)"
 
-#: src/addressbook.c:436
+#: src/addressbook.c:438
 msgid "/_Mail To"
 msgstr "/宛先(_M)"
 
-#: src/addressbook.c:439
+#: src/addressbook.c:440
 msgid "/_Browse Entry"
 msgstr "/エントリを見る(_B)"
 
-#: src/addressbook.c:452 src/crash.c:444 src/crash.c:463 src/importldif.c:118
-#: src/prefs_themes.c:624 src/prefs_themes.c:656 src/prefs_themes.c:657
-#: src/sgpgme.c:95
+#: src/addressbook.c:453 src/crash.c:444 src/crash.c:463 src/importldif.c:118
+#: src/plugins/pgpmime/sgpgme.c:95 src/prefs_themes.c:627
+#: src/prefs_themes.c:659 src/prefs_themes.c:660
 msgid "Unknown"
 msgstr "不明"
 
-#: src/addressbook.c:459 src/addressbook.c:478 src/importldif.c:125
+#: src/addressbook.c:460 src/addressbook.c:479 src/importldif.c:125
 msgid "Success"
 msgstr "成功"
 
-#: src/addressbook.c:460 src/importldif.c:126
+#: src/addressbook.c:461 src/importldif.c:126
 msgid "Bad arguments"
 msgstr "引数が不正です。"
 
-#: src/addressbook.c:461 src/importldif.c:127
+#: src/addressbook.c:462 src/importldif.c:127
 msgid "File not specified"
 msgstr "ファイルが指定されていません。"
 
-#: src/addressbook.c:462 src/importldif.c:128
+#: src/addressbook.c:463 src/importldif.c:128
 msgid "Error opening file"
 msgstr "ファイルオープンエラー"
 
-#: src/addressbook.c:463 src/importldif.c:129
+#: src/addressbook.c:464 src/importldif.c:129
 msgid "Error reading file"
 msgstr "ファイル読み込みエラー"
 
-#: src/addressbook.c:464 src/importldif.c:130
+#: src/addressbook.c:465 src/importldif.c:130
 msgid "End of file encountered"
 msgstr "ファイルの終端に達しました。"
 
-#: src/addressbook.c:465 src/importldif.c:131
+#: src/addressbook.c:466 src/importldif.c:131
 msgid "Error allocating memory"
 msgstr "メモリを確保できません"
 
-#: src/addressbook.c:466 src/importldif.c:132
+#: src/addressbook.c:467 src/importldif.c:132
 msgid "Bad file format"
 msgstr "日付の書式が不正です"
 
-#: src/addressbook.c:467 src/importldif.c:133
+#: src/addressbook.c:468 src/importldif.c:133
 msgid "Error writing to file"
 msgstr "ファイル書き込みエラー"
 
-#: src/addressbook.c:468 src/importldif.c:134
+#: src/addressbook.c:469 src/importldif.c:134
 msgid "Error opening directory"
 msgstr "辞書オープンエラー"
 
-#: src/addressbook.c:469 src/importldif.c:135
+#: src/addressbook.c:470 src/importldif.c:135
 msgid "No path specified"
 msgstr "パスが指定されていません。"
 
-#: src/addressbook.c:479
+#: src/addressbook.c:480
 msgid "Error connecting to LDAP server"
 msgstr "LDAPサーバ接続エラー"
 
-#: src/addressbook.c:480
+#: src/addressbook.c:481
 msgid "Error initializing LDAP"
 msgstr "LDAP初期化エラー"
 
-#: src/addressbook.c:481
+#: src/addressbook.c:482
 msgid "Error binding to LDAP server"
 msgstr "LDAPサーバーへのバインド時エラー"
 
-#: src/addressbook.c:482
+#: src/addressbook.c:483
 msgid "Error searching LDAP database"
 msgstr "LDAPデータベース検索エラー"
 
-#: src/addressbook.c:483
+#: src/addressbook.c:484
 msgid "Timeout performing LDAP operation"
 msgstr "LDAP処理実行時タイムアウト"
 
-#: src/addressbook.c:484
+#: src/addressbook.c:485
 msgid "Error in LDAP search criteria"
 msgstr "LDAPサーチ条件にエラーがあります。"
 
-#: src/addressbook.c:485
+#: src/addressbook.c:486
 msgid "No LDAP entries found for search criteria"
 msgstr "指定したサーチ条件に関してLDAPエントリが見つかりません。"
 
-#: src/addressbook.c:486
+#: src/addressbook.c:487
 msgid "LDAP search terminated on request"
 msgstr "LDAP検索は要求により終了しました"
 
-#: src/addressbook.c:487
+#: src/addressbook.c:488
 msgid "Error starting TLS connection"
 msgstr "TLS接続開始時にエラーを発生しました"
 
-#: src/addressbook.c:643
+#: src/addressbook.c:644
 msgid "E-Mail address"
 msgstr "電子メール アドレス"
 
-#: src/addressbook.c:647 src/prefs_common.c:2287 src/toolbar.c:184
-#: src/toolbar.c:1559
+#: src/addressbook.c:648 src/prefs_common.c:2157 src/toolbar.c:180
+#: src/toolbar.c:1529
 msgid "Address book"
 msgstr "アドレス帳"
 
-#: src/addressbook.c:749
+#: src/addressbook.c:750
 msgid "Name:"
 msgstr "名前:"
 
-#: src/addressbook.c:781 src/addressbook.c:2303 src/addressbook.c:2317
-#: src/addressbook.c:2332 src/editaddress.c:716 src/editaddress.c:850
+#: src/addressbook.c:782 src/addressbook.c:2304 src/addressbook.c:2318
+#: src/addressbook.c:2333 src/editaddress.c:716 src/editaddress.c:850
 #: src/prefs_actions.c:234 src/prefs_display_header.c:281
 #: src/prefs_display_header.c:337 src/prefs_filtering_action.c:135
 #: src/prefs_filtering_action.c:462 src/prefs_filtering.c:293
-#: src/prefs_matcher.c:570 src/prefs_template.c:229 src/prefs_toolbar.c:781
-#: src/ssl_manager.c:92 src/toolbar.c:387 src/toolbar.c:480
+#: src/prefs_matcher.c:572 src/prefs_template.c:229 src/prefs_toolbar.c:781
+#: src/ssl_manager.c:92 src/toolbar.c:383 src/toolbar.c:476
 msgid "Delete"
 msgstr "削除"
 
-#: src/addressbook.c:787
+#: src/addressbook.c:788
 msgid "Lookup"
 msgstr "検索"
 
-#: src/addressbook.c:799 src/compose.c:1441 src/compose.c:3252
-#: src/compose.c:4568 src/compose.c:5274 src/headerview.c:53
+#: src/addressbook.c:800 src/compose.c:1480 src/compose.c:3305
+#: src/compose.c:4598 src/compose.c:5307 src/headerview.c:53
 #: src/prefs_template.c:173 src/summary_search.c:157
 msgid "To:"
 msgstr "宛先:"
 
-#: src/addressbook.c:803 src/compose.c:1425 src/compose.c:3251
+#: src/addressbook.c:804 src/compose.c:1464 src/compose.c:3304
 #: src/prefs_template.c:175
 msgid "Cc:"
 msgstr "Cc:"
 
-#: src/addressbook.c:807 src/compose.c:1428 src/prefs_template.c:176
+#: src/addressbook.c:808 src/compose.c:1467 src/prefs_template.c:176
 msgid "Bcc:"
 msgstr "Bcc:"
 
-#: src/addressbook.c:1016 src/addressbook.c:1039
+#: src/addressbook.c:1017 src/addressbook.c:1040
 msgid "Delete address(es)"
 msgstr "アドレスの削除"
 
-#: src/addressbook.c:1017
+#: src/addressbook.c:1018
 msgid "This address data is readonly and cannot be deleted."
 msgstr "このアドレスデータは読み込みのみかであり、削除されます。"
 
-#: src/addressbook.c:1040
+#: src/addressbook.c:1041
 msgid "Really delete the address(es)?"
 msgstr "本当にこのアドレスを削除しますか?"
 
-#: src/addressbook.c:1041 src/addressbook.c:2304 src/addressbook.c:2332
-#: src/compose.c:2248 src/compose.c:3093 src/compose.c:6367
+#: src/addressbook.c:1042 src/addressbook.c:2305 src/addressbook.c:2333
+#: src/compose.c:2298 src/compose.c:3129 src/compose.c:6397
 #: src/exphtmldlg.c:185 src/expldifdlg.c:192 src/expldifdlg.c:250
-#: src/inc.c:182 src/inc.c:270 src/inc.c:296 src/mainwindow.c:1572
-#: src/message_search.c:198 src/prefs_actions.c:525
-#: src/prefs_customheader.c:547 src/prefs_filtering.c:853
-#: src/prefs_filtering.c:1001 src/prefs_matcher.c:1667
-#: src/prefs_template.c:544 src/prefs_themes.c:422 src/prefs_themes.c:472
-#: src/prefs_themes.c:479 src/summary_search.c:328 src/summaryview.c:934
-#: src/summaryview.c:1417 src/summaryview.c:1461 src/summaryview.c:1504
-#: src/summaryview.c:1528 src/summaryview.c:1560 src/summaryview.c:1585
-#: src/summaryview.c:1610 src/summaryview.c:1635 src/summaryview.c:3129
-#: src/textview.c:1950 src/toolbar.c:1889
+#: src/imap_gtk.c:363 src/inc.c:182 src/inc.c:287 src/inc.c:313
+#: src/mainwindow.c:1569 src/message_search.c:197 src/news_gtk.c:297
+#: src/prefs_actions.c:525 src/prefs_customheader.c:547
+#: src/prefs_filtering.c:853 src/prefs_filtering.c:1001
+#: src/prefs_matcher.c:1680 src/prefs_template.c:544 src/prefs_themes.c:426
+#: src/prefs_themes.c:475 src/prefs_themes.c:482 src/summary_search.c:327
+#: src/summaryview.c:813 src/summaryview.c:1251 src/summaryview.c:1295
+#: src/summaryview.c:1338 src/summaryview.c:1362 src/summaryview.c:1394
+#: src/summaryview.c:1419 src/summaryview.c:1444 src/summaryview.c:1469
+#: src/summaryview.c:2964 src/textview.c:1956 src/toolbar.c:1868
 msgid "No"
 msgstr "いいえ"
 
-#: src/addressbook.c:1593 src/addressbook.c:1666
+#: src/addressbook.c:1594 src/addressbook.c:1667
 msgid "Cannot paste. Target address book is readonly."
 msgstr "ペーストできません。ペースト先のアドレス帳は読み込み専用です。"
 
-#: src/addressbook.c:1604
+#: src/addressbook.c:1605
 msgid "Cannot paste into an address group."
 msgstr "アドレスグループにペーストできません。"
 
-#: src/addressbook.c:2300
+#: src/addressbook.c:2301
 #, c-format
 msgid "Do you want to delete the query results and addresses in `%s' ?"
 msgstr "`%s'のクエリ結果とアドレスを削除しますか ?"
 
-#: src/addressbook.c:2312
+#: src/addressbook.c:2313
 #, c-format
 msgid ""
 "Do you want to delete the folder AND all addresses in `%s' ? \n"
@@ -655,32 +663,32 @@ msgstr ""
 "フォルダと`%s'の全てのアドレスを削除しますか ? \n"
 "フォルダのみを削除する場合、アドレスは親フォルダに移動されます。"
 
-#: src/addressbook.c:2318
+#: src/addressbook.c:2319
 msgid "Folder only"
 msgstr "フォルダのみ"
 
-#: src/addressbook.c:2319
+#: src/addressbook.c:2320
 msgid "Folder and Addresses"
 msgstr "アドレスとアドレス"
 
-#: src/addressbook.c:2331
+#: src/addressbook.c:2332
 #, c-format
 msgid "Really delete `%s' ?"
 msgstr "本当に `%s' を削除しますか?"
 
-#: src/addressbook.c:3116
+#: src/addressbook.c:3117
 msgid "New user, could not save index file."
 msgstr "新規ユーザをインデックスファイルに保存できませんでした。"
 
-#: src/addressbook.c:3120
+#: src/addressbook.c:3121
 msgid "New user, could not save address book files."
 msgstr "新規ユーザをアドレス帳ファイルに保存できませんでした。"
 
-#: src/addressbook.c:3130
+#: src/addressbook.c:3131
 msgid "Old address book converted successfully."
 msgstr "古いアドレス帳の変換に成功しました。"
 
-#: src/addressbook.c:3135
+#: src/addressbook.c:3136
 msgid ""
 "Old address book converted,\n"
 "could not save new address index file"
@@ -688,7 +696,7 @@ msgstr ""
 "古いアドレス帳を変換しましたが、\n"
 "新規アドレスインデックスファイルに保存できませんでした。"
 
-#: src/addressbook.c:3148
+#: src/addressbook.c:3149
 msgid ""
 "Could not convert address book,\n"
 "but created empty new address book files."
@@ -696,7 +704,7 @@ msgstr ""
 "アドレス帳を変換できませんでしたが、\n"
 "空の新規アドレス帳ファイルを作成しました。"
 
-#: src/addressbook.c:3154
+#: src/addressbook.c:3155
 msgid ""
 "Could not convert address book,\n"
 "could not create new address book files."
@@ -704,7 +712,7 @@ msgstr ""
 "アドレス帳を変換できません。\n"
 "新規アドレス帳ファイルを作成できません。"
 
-#: src/addressbook.c:3159
+#: src/addressbook.c:3160
 msgid ""
 "Could not convert address book\n"
 "and could not create new address book files."
@@ -712,70 +720,70 @@ msgstr ""
 "アドレス帳を変換できません。\n"
 "新規アドレス帳ファイルを作成できません。"
 
-#: src/addressbook.c:3166
+#: src/addressbook.c:3167
 msgid "Addressbook conversion error"
 msgstr "アドレス帳変換エラー"
 
-#: src/addressbook.c:3170
+#: src/addressbook.c:3172
 msgid "Addressbook conversion"
 msgstr "アドレス帳変換"
 
-#: src/addressbook.c:3206
+#: src/addressbook.c:3209
 msgid "Addressbook Error"
 msgstr "アドレス帳エラー"
 
-#: src/addressbook.c:3207
+#: src/addressbook.c:3210
 msgid "Could not read address index"
 msgstr "アドレスインデックスを読みこめません"
 
-#: src/addressbook.c:3564
+#: src/addressbook.c:3568
 msgid "Busy searching..."
 msgstr "検索実行中..."
 
-#: src/addressbook.c:3635
+#: src/addressbook.c:3639
 #, c-format
 msgid "Search '%s'"
 msgstr "'%s'を検索"
 
-#: src/addressbook.c:3856 src/prefs_common.c:1000
+#: src/addressbook.c:3859 src/prefs_common.c:956
 msgid "Interface"
 msgstr "インタフェース"
 
-#: src/addressbook.c:3872 src/exphtmldlg.c:423 src/expldifdlg.c:435
+#: src/addressbook.c:3875 src/exphtmldlg.c:423 src/expldifdlg.c:435
 #: src/exporthtml.c:1011 src/importldif.c:690
 msgid "Address Book"
 msgstr "アドレス帳"
 
-#: src/addressbook.c:3888
+#: src/addressbook.c:3891
 msgid "Person"
 msgstr "個人"
 
-#: src/addressbook.c:3904
+#: src/addressbook.c:3907
 msgid "EMail Address"
 msgstr "電子メール アドレス"
 
-#: src/addressbook.c:3920
+#: src/addressbook.c:3923
 msgid "Group"
 msgstr "グループ"
 
-#: src/addressbook.c:3936 src/exporthtml.c:913 src/folderview.c:313
+#: src/addressbook.c:3939 src/exporthtml.c:913 src/folderview.c:313
 #: src/prefs_account.c:2126
 msgid "Folder"
 msgstr "フォルダ"
 
-#: src/addressbook.c:3952
+#: src/addressbook.c:3955
 msgid "vCard"
 msgstr "vCard"
 
-#: src/addressbook.c:3968 src/addressbook.c:3984
+#: src/addressbook.c:3971 src/addressbook.c:3987
 msgid "JPilot"
 msgstr "JPilot"
 
-#: src/addressbook.c:4000
+#: src/addressbook.c:4003
 msgid "LDAP Server"
 msgstr "LDAPサーバ"
 
-#: src/addressbook.c:4016
+#: src/addressbook.c:4019
 msgid "LDAP Query"
 msgstr "LDAPクエリ"
 
@@ -838,8 +846,8 @@ msgstr "ヘッダ名"
 msgid "Address Count"
 msgstr "アドレス数"
 
-#: src/addrgather.c:527 src/alertpanel.c:155 src/messageview.c:518
-#: src/sgpgme.c:288 src/textview.c:1950
+#: src/addrgather.c:527 src/alertpanel.c:168 src/messageview.c:525
+#: src/plugins/pgpmime/sgpgme.c:288 src/textview.c:1955
 msgid "Warning"
 msgstr "警告"
 
@@ -868,20 +876,21 @@ msgstr "共有アドレス"
 msgid "Personal address"
 msgstr "個人用アドレス"
 
-#: src/alertpanel.c:142 src/compose.c:6045 src/main.c:642
+#: src/alertpanel.c:155 src/compose.c:6078
 msgid "Notice"
 msgstr "注意"
 
-#: src/alertpanel.c:168 src/alertpanel.c:190 src/compose.c:3575 src/inc.c:590
-#: src/sgpgme.c:107 src/sgpgme.c:120 src/sgpgme.c:146
+#: src/alertpanel.c:181 src/alertpanel.c:203 src/compose.c:3633 src/inc.c:601
+#: src/plugins/pgpmime/sgpgme.c:107 src/plugins/pgpmime/sgpgme.c:120
+#: src/plugins/pgpmime/sgpgme.c:146
 msgid "Error"
 msgstr "エラー"
 
-#: src/alertpanel.c:190
+#: src/alertpanel.c:203
 msgid "View log"
 msgstr "ログを見る"
 
-#: src/alertpanel.c:308
+#: src/alertpanel.c:327
 msgid "Show this message next time"
 msgstr "次回もこのメッセージを表示"
 
@@ -910,20 +919,20 @@ msgstr "属性値"
 msgid "Can't connect to NNTP server: %s:%d\n"
 msgstr "NNTPサーバ: %s:%d に接続できません\n"
 
-#: src/common/nntp.c:172 src/common/nntp.c:235
+#: src/common/nntp.c:174 src/common/nntp.c:237
 #, c-format
 msgid "protocol error: %s\n"
 msgstr "プロトコルエラー: %s\n"
 
-#: src/common/nntp.c:195 src/common/nntp.c:241
+#: src/common/nntp.c:197 src/common/nntp.c:243
 msgid "protocol error\n"
 msgstr "プロトコルエラー\n"
 
-#: src/common/nntp.c:291
+#: src/common/nntp.c:293
 msgid "Error occurred while posting\n"
 msgstr "ポスト中にエラーが発生しました\n"
 
-#: src/common/nntp.c:369
+#: src/common/nntp.c:373
 msgid "Error occurred while sending command\n"
 msgstr "コマンドの送信中にエラーが発生しました \n"
 
@@ -931,31 +940,36 @@ msgstr "コマンドの送信中にエラーが発生しました \n"
 msgid "Failed to allocate memory for Plugin"
 msgstr "プラグイン用のメモリ確保に失敗しました"
 
-#: src/common/smtp.c:152
+#: src/common/smtp.c:154
 msgid "SMTP AUTH not available\n"
 msgstr "SMTP認証は利用できません\n"
 
-#: src/common/smtp.c:417 src/common/smtp.c:466
+#: src/common/smtp.c:423 src/common/smtp.c:472
 msgid "bad SMTP response\n"
 msgstr "不正なSMTPレスポンス\n"
 
-#: src/common/smtp.c:437 src/common/smtp.c:455 src/common/smtp.c:551
+#: src/common/smtp.c:443 src/common/smtp.c:461 src/common/smtp.c:568
 msgid "error occurred on SMTP session\n"
 msgstr "SMTPセッションでエラーが発生しました\n"
 
-#: src/common/smtp.c:446 src/pop.c:683
+#: src/common/smtp.c:452 src/pop.c:816
 msgid "error occurred on authentication\n"
 msgstr "認証中にエラーが発生しました\n"
 
-#: src/common/smtp.c:511 src/pop.c:676
+#: src/common/smtp.c:503
+#, c-format
+msgid "Message is too big (Maximum size is %s)\n"
+msgstr "メッセージが大きすぎます(最大サイズは %s です)\n"
+
+#: src/common/smtp.c:528 src/pop.c:809
 msgid "can't start TLS session\n"
 msgstr "TLSセッションを開始できません\n"
 
-#: src/common/ssl.c:77
+#: src/common/ssl.c:136
 msgid "Error creating ssl context\n"
 msgstr "SSLコンテンツ作成エラー\n"
 
-#: src/common/ssl.c:96
+#: src/common/ssl.c:155
 #, c-format
 msgid "SSL connect failed (%s)\n"
 msgstr "SSL接続に失敗しました (%s)\n"
@@ -1009,7 +1023,7 @@ msgstr ""
 "(\"%s\" 設定のチェックを外して下さい)\n"
 
 #: src/common/ssl_certificate.c:371 src/common/ssl_certificate.c:409
-#: src/prefs_common.c:1139
+#: src/prefs_common.c:1095
 msgid "Don't popup error dialog on receive error"
 msgstr "受信エラー時にエラーダイアログを表示しない"
 
@@ -1058,358 +1072,354 @@ msgstr "%.2fMB"
 msgid "%.2fGB"
 msgstr "%.2fGB"
 
-#: src/compose.c:507
+#: src/compose.c:514
 msgid "/_Add..."
 msgstr "/追加(_A)..."
 
-#: src/compose.c:508
+#: src/compose.c:515
 msgid "/_Remove"
 msgstr "/削除(_R)"
 
-#: src/compose.c:510 src/folderview.c:234
+#: src/compose.c:517 src/folderview.c:234
 msgid "/_Properties..."
 msgstr "/プロパティ(_P)..."
 
-#: src/compose.c:516
+#: src/compose.c:526
 msgid "/_File/_Attach file"
 msgstr "/ファイル(_F)/ファイルを添付(_A)"
 
-#: src/compose.c:517
+#: src/compose.c:527
 msgid "/_File/_Insert file"
 msgstr "/ファイル(_F)/ファイルを挿入(_I)"
 
-#: src/compose.c:518
+#: src/compose.c:528
 msgid "/_File/Insert si_gnature"
 msgstr "/ファイル(_F)/署名を挿入(_G)"
 
-#: src/compose.c:523
+#: src/compose.c:533
 msgid "/_Edit/_Undo"
 msgstr "/編集(_E)/元に戻す(_U)"
 
-#: src/compose.c:524
+#: src/compose.c:534
 msgid "/_Edit/_Redo"
 msgstr "/編集(_E)/やり直し(_R)"
 
-#: src/compose.c:526
+#: src/compose.c:536
 msgid "/_Edit/Cu_t"
 msgstr "/編集(_E)/カット(_T)"
 
-#: src/compose.c:529
+#: src/compose.c:539
 msgid "/_Edit/Paste as _quotation"
 msgstr "/編集(_E)/引用としてペースト(_q)"
 
-#: src/compose.c:531 src/mainwindow.c:453 src/messageview.c:151
+#: src/compose.c:541 src/mainwindow.c:453 src/messageview.c:159
 msgid "/_Edit/Select _all"
 msgstr "/編集(_E)/全て選択(_A)"
 
-#: src/compose.c:532
+#: src/compose.c:542
 msgid "/_Edit/A_dvanced"
 msgstr "/編集(_E)/高度(_d)"
 
-#: src/compose.c:533
+#: src/compose.c:543
 msgid "/_Edit/A_dvanced/Move a character backward"
 msgstr "/編集(_E)/高度(d)/一文字後方へ移動"
 
-#: src/compose.c:538
+#: src/compose.c:548
 msgid "/_Edit/A_dvanced/Move a character forward"
 msgstr "/編集(_E)/高度(d)/一文字前方へ移動"
 
-#: src/compose.c:543
+#: src/compose.c:553
 msgid "/_Edit/A_dvanced/Move a word backward"
 msgstr "/編集(_E)/高度(d)/一単語後方へ移動"
 
-#: src/compose.c:548
+#: src/compose.c:558
 msgid "/_Edit/A_dvanced/Move a word forward"
 msgstr "/編集(_E)/高度(d)/一単語前方へ移動"
 
-#: src/compose.c:553
+#: src/compose.c:563
 msgid "/_Edit/A_dvanced/Move to beginning of line"
 msgstr "/編集(_E)/高度(d)/行頭へ移動"
 
-#: src/compose.c:558
+#: src/compose.c:568
 msgid "/_Edit/A_dvanced/Move to end of line"
 msgstr "/編集(_E)/高度(d)/行末へ移動"
 
-#: src/compose.c:563
+#: src/compose.c:573
 msgid "/_Edit/A_dvanced/Move to previous line"
 msgstr "/編集(_E)/高度(d)/前の行へ移動"
 
-#: src/compose.c:568
+#: src/compose.c:578
 msgid "/_Edit/A_dvanced/Move to next line"
 msgstr "/編集(_E)/高度(d)/次の行へ移動"
 
-#: src/compose.c:573
+#: src/compose.c:583
 msgid "/_Edit/A_dvanced/Delete a character backward"
 msgstr "/編集(_E)/高度(d)/文字を削除して後方へ移動"
 
-#: src/compose.c:578
+#: src/compose.c:588
 msgid "/_Edit/A_dvanced/Delete a character forward"
 msgstr "/編集(_E)/高度(d)/文字を削除して前方へ移動"
 
-#: src/compose.c:583
+#: src/compose.c:593
 msgid "/_Edit/A_dvanced/Delete a word backward"
 msgstr "/編集(_E)/高度(d)/単語を削除して後方へ移動"
 
-#: src/compose.c:588
+#: src/compose.c:598
 msgid "/_Edit/A_dvanced/Delete a word forward"
 msgstr "/編集(_E)/高度(d)/単語を削除して前方へ移動"
 
-#: src/compose.c:593
+#: src/compose.c:603
 msgid "/_Edit/A_dvanced/Delete line"
 msgstr "/編集(_E)/高度(d)/行を削除"
 
-#: src/compose.c:598
+#: src/compose.c:608
 msgid "/_Edit/A_dvanced/Delete entire line"
 msgstr "/編集(_E)/高度(d)/行全体を削除"
 
-#: src/compose.c:603
+#: src/compose.c:613
 msgid "/_Edit/A_dvanced/Delete to end of line"
 msgstr "/編集(_E)/高度(d)/行末まで削除"
 
-#: src/compose.c:609
+#: src/compose.c:619
 msgid "/_Edit/_Wrap current paragraph"
 msgstr "/編集(_E)/現在のパラグラフを折り返す(_W)"
 
-#: src/compose.c:611
+#: src/compose.c:621
 msgid "/_Edit/Wrap all long _lines"
 msgstr "/編集(_E)/長い行を折り返す(_l)"
 
-#: src/compose.c:613
+#: src/compose.c:623
+msgid "/_Edit/Aut_o wrapping"
+msgstr "/編集(_E)/自動改行(_o)"
+
+#: src/compose.c:625
 msgid "/_Edit/Edit with e_xternal editor"
 msgstr "/編集(_E)/外部エディタで編集(_X)"
 
-#: src/compose.c:616
+#: src/compose.c:628
 msgid "/_Spelling"
 msgstr "/スペルチェック(_S)"
 
-#: src/compose.c:617
+#: src/compose.c:629
 msgid "/_Spelling/_Check all or check selection"
 msgstr "/スペルチェック(_S)/全てチェックまたは選択部をチェック(_C)"
 
-#: src/compose.c:619
+#: src/compose.c:631
 msgid "/_Spelling/_Highlight all misspelled words"
 msgstr "/スペルチェック(_S)/スペル間違いの単語を全て強調表示(_H)"
 
-#: src/compose.c:621
+#: src/compose.c:633
 msgid "/_Spelling/Check _backwards misspelled word"
 msgstr "/スペルチェック(_S)/後方へスペル間違いの単語を検索(_b)"
 
-#: src/compose.c:623
+#: src/compose.c:635
 msgid "/_Spelling/_Forward to next misspelled word"
 msgstr "/スペルチェック(_S)/次のスペル間違いの単語まで前進(_F)"
 
-#: src/compose.c:625
+#: src/compose.c:637
 msgid "/_Spelling/---"
 msgstr "/スペルチェック(_S)/---"
 
-#: src/compose.c:626
+#: src/compose.c:638
 msgid "/_Spelling/_Spelling Configuration"
 msgstr "/スペルチェック(_S)/スペルチェック設定(_S)"
 
-#: src/compose.c:630 src/mainwindow.c:459 src/messageview.c:156
-#: src/summaryview.c:449
+#: src/compose.c:642 src/mainwindow.c:459 src/messageview.c:164
+#: src/summaryview.c:443
 msgid "/_View"
 msgstr "/表示(_V)"
 
-#: src/compose.c:631
+#: src/compose.c:643
 msgid "/_View/_To"
 msgstr "/表示(_V)/_To"
 
-#: src/compose.c:632
+#: src/compose.c:644
 msgid "/_View/_Cc"
 msgstr "/表示(_V)/_Cc"
 
-#: src/compose.c:633
+#: src/compose.c:645
 msgid "/_View/_Bcc"
 msgstr "/表示(_V)/_Bcc"
 
-#: src/compose.c:634
+#: src/compose.c:646
 msgid "/_View/_Reply to"
 msgstr "/表示(_V)/_Reply To"
 
-#: src/compose.c:635 src/compose.c:637 src/compose.c:639 src/mainwindow.c:477
+#: src/compose.c:647 src/compose.c:649 src/compose.c:651 src/mainwindow.c:477
 #: src/mainwindow.c:480 src/mainwindow.c:509 src/mainwindow.c:533
-#: src/mainwindow.c:617 src/mainwindow.c:621 src/messageview.c:240
+#: src/mainwindow.c:617 src/mainwindow.c:621 src/messageview.c:248
 msgid "/_View/---"
 msgstr "/表示(_V)/---"
 
-#: src/compose.c:636
+#: src/compose.c:648
 msgid "/_View/_Followup to"
 msgstr "/表示(_V)/_Followup To"
 
-#: src/compose.c:638
+#: src/compose.c:650
 msgid "/_View/R_uler"
 msgstr "/表示(_V)/定規(_u)"
 
-#: src/compose.c:640
+#: src/compose.c:652
 msgid "/_View/_Attachment"
 msgstr "/表示(_V)/添付ファイル(_A)"
 
-#: src/compose.c:642 src/mainwindow.c:624 src/messageview.c:244
+#: src/compose.c:654 src/mainwindow.c:624 src/messageview.c:252
 msgid "/_Message"
 msgstr "/メッセージ(_M)"
 
-#: src/compose.c:643
+#: src/compose.c:655
 msgid "/_Message/_Send"
 msgstr "/メッセージ(_M)/送信(_S)"
 
-#: src/compose.c:645
+#: src/compose.c:657
 msgid "/_Message/Send _later"
 msgstr "/メッセージ(_M)/後で送信(_L)"
 
-#: src/compose.c:647 src/compose.c:653 src/compose.c:658 src/compose.c:660
-#: src/compose.c:664 src/compose.c:671 src/compose.c:678 src/mainwindow.c:634
+#: src/compose.c:660 src/compose.c:665 src/compose.c:667 src/compose.c:671
+#: src/compose.c:678 src/compose.c:685 src/mainwindow.c:634
 #: src/mainwindow.c:644 src/mainwindow.c:647 src/mainwindow.c:652
-#: src/mainwindow.c:661 src/messageview.c:247 src/messageview.c:255
-#: src/messageview.c:260
+#: src/mainwindow.c:661 src/messageview.c:255 src/messageview.c:263
+#: src/messageview.c:268
 msgid "/_Message/---"
 msgstr "/メッセージ(_M)/---"
 
-#: src/compose.c:648
-msgid "/_Message/Save to _draft folder"
-msgstr "/メッセージ(_M)/草稿フォルダに保存(_D)"
-
-#: src/compose.c:650
-msgid "/_Message/Save and _keep editing"
-msgstr "/メッセージ(_M)/保存後に編集を続ける(_k)"
-
-#: src/compose.c:654
+#: src/compose.c:661
 msgid "/_Message/_To"
 msgstr "/メッセージ(_M)/宛先(_T)"
 
-#: src/compose.c:655
+#: src/compose.c:662
 msgid "/_Message/_Cc"
 msgstr "/メッセージ(_M)/_Cc"
 
-#: src/compose.c:656
+#: src/compose.c:663
 msgid "/_Message/_Bcc"
 msgstr "/メッセージ(_M)/_Bcc"
 
-#: src/compose.c:657
+#: src/compose.c:664
 msgid "/_Message/_Reply to"
 msgstr "/メッセージ(_M)/返信先を指定(_R)"
 
-#: src/compose.c:659
+#: src/compose.c:666
 msgid "/_Message/_Followup to"
 msgstr "/メッセージ(_M)/フォロー先を指定(_F)"
 
-#: src/compose.c:661
+#: src/compose.c:668
 msgid "/_Message/_Attach"
 msgstr "/メッセージ(_M)/添付(_A)"
 
-#: src/compose.c:665
+#: src/compose.c:672
 msgid "/_Message/Si_gn"
 msgstr "/メッセージ(_M)/署名(_G)"
 
-#: src/compose.c:666
+#: src/compose.c:673
 msgid "/_Message/_Encrypt"
 msgstr "/メッセージ(_M)/暗号化(_E)"
 
-#: src/compose.c:667
+#: src/compose.c:674
 msgid "/_Message/Mode"
 msgstr "/メッセージ(_M)/モード"
 
-#: src/compose.c:668
+#: src/compose.c:675
 msgid "/_Message/Mode/MIME"
 msgstr "/メッセージ(_M)/モード/MIME"
 
-#: src/compose.c:669
+#: src/compose.c:676
 msgid "/_Message/Mode/Inline"
 msgstr "/メッセージ(_M)/モード/インライン"
 
-#: src/compose.c:672
+#: src/compose.c:679
 msgid "/_Message/_Priority"
 msgstr "/メッセージ(_M)/重要度(_P)"
 
-#: src/compose.c:673
+#: src/compose.c:680
 msgid "/_Message/Priority/_Highest"
 msgstr "/メッセージ(_M)/重要度(_P)/最高(_H)"
 
-#: src/compose.c:674
+#: src/compose.c:681
 msgid "/_Message/Priority/Hi_gh"
 msgstr "/メッセージ(_M)/重要度(_P)/高(_g)"
 
-#: src/compose.c:675
+#: src/compose.c:682
 msgid "/_Message/Priority/_Normal"
 msgstr "/メッセージ(_M)/重要度(_P)/通常(_N)"
 
-#: src/compose.c:676
+#: src/compose.c:683
 msgid "/_Message/Priority/Lo_w"
 msgstr "/メッセージ(_M)/重要度(_P)/低(_w)"
 
-#: src/compose.c:677
+#: src/compose.c:684
 msgid "/_Message/Priority/_Lowest"
 msgstr "/メッセージ(_M)/重要度(_P)/最低(_L)"
 
-#: src/compose.c:679
+#: src/compose.c:686
 msgid "/_Message/_Request Return Receipt"
 msgstr "/メッセージ(_M)/受取り確認を要求(_R)"
 
-#: src/compose.c:680
+#: src/compose.c:687
 msgid "/_Message/Remo_ve references"
 msgstr "/メッセージ(_M)/リファレンス削除(_v)"
 
-#: src/compose.c:681 src/mainwindow.c:664 src/messageview.c:263
+#: src/compose.c:688 src/mainwindow.c:664 src/messageview.c:271
 msgid "/_Tools"
 msgstr "/ツール(_T)"
 
-#: src/compose.c:682
+#: src/compose.c:689
 msgid "/_Tools/Show _ruler"
 msgstr "/ツール(_T)/ルーラを表示(_r)"
 
-#: src/compose.c:683 src/messageview.c:264
+#: src/compose.c:690 src/messageview.c:272
 msgid "/_Tools/_Address book"
 msgstr "/ツール(_T)/アドレス帳(_A)"
 
-#: src/compose.c:684
+#: src/compose.c:691
 msgid "/_Tools/_Template"
 msgstr "ツール(_T)/テンプレート(_T)"
 
-#: src/compose.c:685 src/mainwindow.c:697 src/messageview.c:289
+#: src/compose.c:692 src/mainwindow.c:697 src/messageview.c:297
 msgid "/_Tools/Actio_ns"
 msgstr "ツール(_T)/アクション(_n)"
 
-#: src/compose.c:1431
+#: src/compose.c:1470
 msgid "Reply-To:"
 msgstr "返信先:"
 
-#: src/compose.c:1434 src/compose.c:4565 src/compose.c:5276
+#: src/compose.c:1473 src/compose.c:4595 src/compose.c:5309
 #: src/headerview.c:54
 msgid "Newsgroups:"
 msgstr "ニュースグループ:"
 
-#: src/compose.c:1437
+#: src/compose.c:1476
 msgid "Followup-To:"
 msgstr "Followup-To:"
 
-#: src/compose.c:1756
+#: src/compose.c:1795
 msgid "Quote mark format error."
 msgstr "引用符号のフォーマットエラーです。"
 
-#: src/compose.c:1772
+#: src/compose.c:1811
 msgid "Message reply/forward format error."
 msgstr "メッセージ返信/転送フォーマットエラーです。"
 
-#: src/compose.c:2115
+#: src/compose.c:2154
 #, c-format
 msgid "File %s is empty."
 msgstr "ファイル %s は空です。"
 
-#: src/compose.c:2119
+#: src/compose.c:2158
 #, c-format
 msgid "Can't read %s."
 msgstr "%s を作成できません。"
 
-#: src/compose.c:2157
+#: src/compose.c:2192
 #, c-format
 msgid "Message: %s"
 msgstr "メッセージ: %s"
 
-#: src/compose.c:2245
+#: src/compose.c:2295
 msgid "Encrypted message"
 msgstr "暗号化されたメッセージ"
 
-#: src/compose.c:2246
+#: src/compose.c:2296
 msgid ""
 "Cannot re-edit an encrypted message. \n"
 "Discard encrypted part?"
@@ -1417,21 +1427,21 @@ msgstr ""
 "暗号化されたメッセージを再編集することはできません。\n"
 "暗号化されたパートを破棄しますか?"
 
-#: src/compose.c:2907
+#: src/compose.c:2957
 msgid " [Edited]"
 msgstr " [更新]"
 
-#: src/compose.c:2909
+#: src/compose.c:2959
 #, c-format
 msgid "%s - Compose message%s"
 msgstr "%s - メッセージの作成%s"
 
-#: src/compose.c:2912
+#: src/compose.c:2962
 #, c-format
 msgid "Compose message%s"
 msgstr "メッセージの作成%s"
 
-#: src/compose.c:2936 src/compose.c:3185
+#: src/compose.c:2986 src/compose.c:3238
 msgid ""
 "Account for sending mail is not specified.\n"
 "Please select a mail account before sending."
@@ -1439,24 +1449,24 @@ msgstr ""
 "メールを送信するためのアカウントが指定されていません。\n"
 "送信する前にメールアカウントを選択してください。"
 
-#: src/compose.c:3083
+#: src/compose.c:3119
 msgid "Recipient is not specified."
 msgstr "宛先が指定されていません。"
 
-#: src/compose.c:3091 src/messageview.c:518 src/prefs_account.c:766
-#: src/prefs_common.c:986 src/toolbar.c:379 src/toolbar.c:426
+#: src/compose.c:3127 src/messageview.c:525 src/prefs_account.c:766
+#: src/prefs_common.c:942 src/toolbar.c:375 src/toolbar.c:422
 msgid "Send"
 msgstr "送信"
 
-#: src/compose.c:3092
+#: src/compose.c:3128
 msgid "Subject is empty. Send it anyway?"
 msgstr "件名が空です。それでも送信しますか?"
 
-#: src/compose.c:3113
+#: src/compose.c:3153
 msgid "Could not queue message for sending"
 msgstr "送信待機中のメッセージの送信に失敗しました。"
 
-#: src/compose.c:3118
+#: src/compose.c:3162
 msgid ""
 "The message was queued but could not be sent.\n"
 "Use \"Send queued messages\" from the main window to retry."
@@ -1465,22 +1475,22 @@ msgstr ""
 "再実行するにはメインウインドウの\"送信待機中のメッセージを送信\"を使用して下"
 "さい。"
 
-#: src/compose.c:3201 src/procmsg.c:1140 src/send_message.c:229
+#: src/compose.c:3254 src/procmsg.c:1165 src/send_message.c:229
 #, c-format
 msgid "Error occurred while posting the message to %s ."
 msgstr "メッセージを %s にポストする途中にエラーが発生しました。"
 
-#: src/compose.c:3221
+#: src/compose.c:3274
 msgid "Can't save the message to Sent."
 msgstr "メッセージを送信控に保存できません。"
 
-#: src/compose.c:3466
+#: src/compose.c:3519
 #, c-format
 msgid "Could not find any key associated with currently selected key id `%s'."
 msgstr ""
 "選択されているキーID `%s' に関するキーを見つけることができませんでした。"
 
-#: src/compose.c:3571
+#: src/compose.c:3629
 #, c-format
 msgid ""
 "Can't convert the character encoding of the message from\n"
@@ -1491,59 +1501,59 @@ msgstr ""
 "%sから%sに変換できません。\n"
 "本当に送信しますか?"
 
-#: src/compose.c:3834
+#: src/compose.c:3910
 msgid "No account for sending mails available!"
 msgstr "利用可能なメール送信用アカウントがありません!"
 
-#: src/compose.c:3844
+#: src/compose.c:3920
 msgid "No account for posting news available!"
 msgstr "利用可能なニュース投稿用アカウントがありません!"
 
-#: src/compose.c:4648 src/headerview.c:52 src/summary_search.c:150
+#: src/compose.c:4678 src/headerview.c:52 src/summary_search.c:150
 msgid "From:"
 msgstr "差出人:"
 
-#: src/compose.c:4752 src/compose.c:4922 src/compose.c:5806
+#: src/compose.c:4782 src/compose.c:4952 src/compose.c:5839
 msgid "MIME type"
 msgstr "MIME タイプ"
 
-#: src/compose.c:4753 src/compose.c:4923 src/mimeview.c:198
-#: src/prefs_summary_column.c:73 src/select-keys.c:299 src/summaryview.c:463
+#: src/compose.c:4783 src/compose.c:4953 src/mimeview.c:197
+#: src/prefs_summary_column.c:73 src/select-keys.c:299 src/summaryview.c:457
 msgid "Size"
 msgstr "サイズ"
 
-#: src/compose.c:4817
+#: src/compose.c:4847
 msgid "Save Message to "
 msgstr "メッセージ保存先 "
 
-#: src/compose.c:4837 src/prefs_filtering_action.c:420
+#: src/compose.c:4867 src/prefs_filtering_action.c:420
 msgid "Select ..."
 msgstr "選択 ..."
 
-#: src/compose.c:4974 src/prefs_account.c:1356 src/prefs_customheader.c:188
-#: src/prefs_matcher.c:146
+#: src/compose.c:5004 src/prefs_account.c:1356 src/prefs_customheader.c:188
+#: src/prefs_matcher.c:148
 msgid "Header"
 msgstr "ヘッダ"
 
-#: src/compose.c:4976
+#: src/compose.c:5006
 msgid "Attachments"
 msgstr "添付"
 
-#: src/compose.c:4978
+#: src/compose.c:5008
 msgid "Others"
 msgstr "その他"
 
-#: src/compose.c:4993 src/headerview.c:55 src/prefs_template.c:177
+#: src/compose.c:5023 src/headerview.c:55 src/prefs_template.c:177
 #: src/summary_search.c:164
 msgid "Subject:"
 msgstr "件名:"
 
-#: src/compose.c:5226 src/exphtmldlg.c:503 src/gtk/colorlabel.c:279
-#: src/gtk/gtkaspell.c:1499 src/gtk/gtkaspell.c:2173 src/summaryview.c:4224
+#: src/compose.c:5258 src/exphtmldlg.c:503 src/gtk/colorlabel.c:279
+#: src/gtk/gtkaspell.c:1499 src/gtk/gtkaspell.c:2173 src/summaryview.c:4066
 msgid "None"
 msgstr "なし"
 
-#: src/compose.c:5235
+#: src/compose.c:5267
 #, c-format
 msgid ""
 "Spell checker could not be started.\n"
@@ -1552,31 +1562,31 @@ msgstr ""
 "スペルチェッカを開始できません。\n"
 "%s"
 
-#: src/compose.c:5701
+#: src/compose.c:5734
 msgid "Invalid MIME type."
 msgstr "無効な MIME タイプです。"
 
-#: src/compose.c:5719
+#: src/compose.c:5752
 msgid "File doesn't exist or is empty."
 msgstr "ファイルが存在しないかまたは空です。"
 
-#: src/compose.c:5788
+#: src/compose.c:5821
 msgid "Properties"
 msgstr "プロパティ"
 
-#: src/compose.c:5833
+#: src/compose.c:5866
 msgid "Encoding"
 msgstr "エンコーディング"
 
-#: src/compose.c:5864
+#: src/compose.c:5897
 msgid "Path"
 msgstr "パス"
 
-#: src/compose.c:5865 src/prefs_toolbar.c:808
+#: src/compose.c:5898 src/prefs_toolbar.c:808
 msgid "File name"
 msgstr "ファイル名"
 
-#: src/compose.c:6042
+#: src/compose.c:6075
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -1587,26 +1597,26 @@ msgstr ""
 "プロセスを強制終了しますか?\n"
 "プロセスグループID: %d"
 
-#: src/compose.c:6365 src/inc.c:180 src/inc.c:268 src/inc.c:294
-#: src/toolbar.c:1887
+#: src/compose.c:6395 src/inc.c:180 src/inc.c:285 src/inc.c:311
+#: src/toolbar.c:1866
 msgid "Offline warning"
 msgstr "オフライン警告"
 
-#: src/compose.c:6366 src/inc.c:181 src/inc.c:269 src/inc.c:295
-#: src/toolbar.c:1888
+#: src/compose.c:6396 src/inc.c:181 src/inc.c:286 src/inc.c:312
+#: src/toolbar.c:1867
 msgid "You're working offline. Override?"
 msgstr "オフラインモードで作業中です。変更しますか?"
 
-#: src/compose.c:6489 src/compose.c:6510
+#: src/compose.c:6517 src/compose.c:6538
 msgid "Select file"
 msgstr "ファイルの選択"
 
-#: src/compose.c:6524
+#: src/compose.c:6552
 #, c-format
 msgid "File '%s' could not be read."
 msgstr "ファイル '%s' を読み込めませんでした。"
 
-#: src/compose.c:6526
+#: src/compose.c:6554
 #, c-format
 msgid ""
 "File '%s' contained invalid characters\n"
@@ -1615,36 +1625,36 @@ msgstr ""
 "ファイル '%s' にはカレントのエンコーディングで\n"
 "無効な文字が含まれており、挿入すると正しい結果が得られないかもしれません。"
 
-#: src/compose.c:6571
+#: src/compose.c:6599
 msgid "Discard message"
 msgstr "メッセージの破棄"
 
-#: src/compose.c:6572
+#: src/compose.c:6600
 msgid "This message has been modified. discard it?"
 msgstr "このメッセージは変更されています。破棄しますか?"
 
-#: src/compose.c:6573
+#: src/compose.c:6601
 msgid "Discard"
 msgstr "破棄"
 
-#: src/compose.c:6573
+#: src/compose.c:6601
 msgid "to Draft"
 msgstr "草稿へ"
 
-#: src/compose.c:6608
+#: src/compose.c:6636
 #, c-format
 msgid "Do you want to apply the template `%s' ?"
 msgstr "テンプレート `%s' を適用しますか ?"
 
-#: src/compose.c:6610
+#: src/compose.c:6638
 msgid "Apply template"
 msgstr "テンプレート適用"
 
-#: src/compose.c:6611
+#: src/compose.c:6639
 msgid "Replace"
 msgstr "置換"
 
-#: src/compose.c:6611 src/toolbar.c:430
+#: src/compose.c:6639 src/toolbar.c:426
 msgid "Insert"
 msgstr "挿入"
 
@@ -1741,13 +1751,13 @@ msgstr "下に移動"
 msgid "Modify"
 msgstr "修正"
 
-#: src/editaddress.c:725 src/editaddress.c:859 src/message_search.c:134
-#: src/summary_search.c:210
+#: src/editaddress.c:725 src/editaddress.c:859 src/gtk/quicksearch.c:296
+#: src/message_search.c:134 src/summary_search.c:210
 msgid "Clear"
 msgstr "クリア"
 
 #: src/editaddress.c:775 src/editaddress.c:832 src/prefs_customheader.c:205
-#: src/prefs_matcher.c:455
+#: src/prefs_matcher.c:457
 msgid "Value"
 msgstr "内容"
 
@@ -1836,11 +1846,11 @@ msgstr "フォルダの編集"
 msgid "Input the new name of folder:"
 msgstr "フォルダの新しい名前を入力してください:"
 
-#: src/editgroup.c:506
+#: src/editgroup.c:506 src/imap_gtk.c:124 src/mh_gtk.c:118
 msgid "New folder"
 msgstr "新規フォルダ"
 
-#: src/editgroup.c:507
+#: src/editgroup.c:507 src/mh_gtk.c:119
 msgid "Input the name of new folder:"
 msgstr "新規フォルダの名前を入力してください:"
 
@@ -2101,7 +2111,7 @@ msgstr "基本"
 msgid "Search"
 msgstr "検索"
 
-#: src/editldap.c:771 src/summaryview.c:639
+#: src/editldap.c:771 src/gtk/quicksearch.c:268
 msgid "Extended"
 msgstr "拡張"
 
@@ -2179,11 +2189,11 @@ msgstr "HTML出力ファイル"
 msgid "Stylesheet"
 msgstr "スタイルシート"
 
-#: src/exphtmldlg.c:509 src/prefs_common.c:3066 src/prefs_common.c:3348
+#: src/exphtmldlg.c:509 src/prefs_common.c:2608 src/prefs_common.c:2890
 msgid "Default"
 msgstr "デフォルト"
 
-#: src/exphtmldlg.c:515 src/sgpgme.c:103
+#: src/exphtmldlg.c:515 src/plugins/pgpmime/sgpgme.c:103
 msgid "Full"
 msgstr "完全"
 
@@ -2244,7 +2254,7 @@ msgid "Prev"
 msgstr "前"
 
 #: src/exphtmldlg.c:724 src/expldifdlg.c:745 src/importldif.c:1033
-#: src/toolbar.c:389 src/toolbar.c:481
+#: src/toolbar.c:385 src/toolbar.c:477
 msgid "Next"
 msgstr "次"
 
@@ -2462,32 +2472,32 @@ msgstr "名前が長過ぎます。"
 msgid "Not specified."
 msgstr "指定されていません。"
 
-#: src/folder.c:1169
+#: src/folder.c:1173
 msgid "Inbox"
 msgstr "受信箱"
 
-#: src/folder.c:1173
+#: src/folder.c:1177
 msgid "Sent"
 msgstr "送信済み"
 
-#: src/folder.c:1177
+#: src/folder.c:1181
 msgid "Queue"
 msgstr "送信待ち"
 
-#: src/folder.c:1181
+#: src/folder.c:1185
 msgid "Trash"
 msgstr "ごみ箱"
 
-#: src/folder.c:1185
+#: src/folder.c:1189
 msgid "Drafts"
 msgstr "草稿"
 
-#: src/folder.c:1437
+#: src/folder.c:1441
 #, c-format
 msgid "Processing (%s)...\n"
 msgstr "処理中 (%s) ...\n"
 
-#: src/folder.c:2329
+#: src/folder.c:2443
 #, c-format
 msgid "Moving %s to %s...\n"
 msgstr "%s を %s に移動しています...\n"
@@ -2524,12 +2534,12 @@ msgstr "#"
 msgid "Setting folder info..."
 msgstr "フォルダ情報を設定中..."
 
-#: src/folderview.c:719 src/mainwindow.c:2976 src/setup.c:80
+#: src/folderview.c:719 src/mainwindow.c:2969 src/setup.c:80
 #, c-format
 msgid "Scanning folder %s%c%s ..."
 msgstr "フォルダをスキャン中 (%s%c%s) ..."
 
-#: src/folderview.c:723 src/mainwindow.c:2981 src/setup.c:85
+#: src/folderview.c:723 src/mainwindow.c:2974 src/setup.c:85
 #, c-format
 msgid "Scanning folder %s ..."
 msgstr "フォルダをスキャン中 (%s)..."
@@ -2572,7 +2582,7 @@ msgstr "異なるメールボックス間でフォルダを移動することは
 msgid "Move failed!"
 msgstr "移動失敗!"
 
-#: src/folderview.c:1777 src/summaryview.c:4027
+#: src/folderview.c:1777 src/summaryview.c:3869
 msgid "Processing configuration"
 msgstr "処理設定"
 
@@ -2624,7 +2634,7 @@ msgstr "不明"
 msgid "Can't retrieve newsgroup list."
 msgstr "ニュースグループのリストを取得できません。"
 
-#: src/grouplistdialog.c:444 src/summaryview.c:1177
+#: src/grouplistdialog.c:444 src/summaryview.c:1011
 msgid "Done."
 msgstr "完了"
 
@@ -2724,6 +2734,26 @@ msgstr "緑"
 #: src/gtk/colorlabel.c:52
 msgid "Brown"
 msgstr "茶"
+
+#: src/gtk/foldersort.c:139
+msgid "Set folder sortorder"
+msgstr "フォルダの並び順を変更"
+
+#: src/gtk/foldersort.c:151
+msgid ""
+"Move folders up or down to change\n"
+"the sort order in the folderview"
+msgstr ""
+"フォルダビューの並び順を変更するには\n"
+"フォルダを上下に移動してください"
+
+#: src/gtk/foldersort.c:171
+msgid "Ok"
+msgstr "Ok"
+
+#: src/gtk/foldersort.c:219
+msgid "Folders"
+msgstr "フォルダ"
 
 #: src/gtk/gtkaspell.c:558
 msgid "No dictionary selected."
@@ -2848,7 +2878,7 @@ msgstr "ロードするプラグインを選択"
 msgid "Plugins"
 msgstr "プラグイン"
 
-#: src/gtk/pluginwindow.c:189 src/prefs_common.c:2605
+#: src/gtk/pluginwindow.c:189 src/prefs_common.c:2475
 msgid "Description"
 msgstr "説明"
 
@@ -2864,7 +2894,7 @@ msgstr "プラグインをアンロード"
 msgid "Page Index"
 msgstr "ページインデックス"
 
-#: src/gtk/prefswindow.c:320 src/prefs_gtk.c:453
+#: src/gtk/prefswindow.c:318 src/prefs_gtk.c:453
 msgid "Apply"
 msgstr "適用"
 
@@ -2876,6 +2906,191 @@ msgstr "アカウント"
 #: src/prefs_summary_column.c:68
 msgid "Status"
 msgstr "状態"
+
+#: src/gtk/quicksearch.c:154
+msgid "all messages"
+msgstr "全てのメッセージ"
+
+#: src/gtk/quicksearch.c:155
+msgid "messages whose age is greater than #"
+msgstr "指定よりも古いメッセージ #"
+
+#: src/gtk/quicksearch.c:156
+msgid "messages whose age is less than #"
+msgstr "指定よりも新しいメッセージ #"
+
+#: src/gtk/quicksearch.c:157
+msgid "messages which contain S in the message body"
+msgstr "メッセージ本文にSを含むメッセージ"
+
+#: src/gtk/quicksearch.c:158
+msgid "messages which contain S in the whole message"
+msgstr "メッセージ全体にSを含むメッセージ"
+
+#: src/gtk/quicksearch.c:159
+msgid "messages carbon-copied to S"
+msgstr "Sへ写しを送信されたメッセージ"
+
+#: src/gtk/quicksearch.c:160
+msgid "message is either to: or cc: to S"
+msgstr "メッセージはSへto:またはcc:されています"
+
+#: src/gtk/quicksearch.c:161
+msgid "deleted messages"
+msgstr "削除済みのメッセージ"
+
+#: src/gtk/quicksearch.c:162
+msgid "messages which contain S in the Sender field"
+msgstr "発信者フィールドにSを含むメッセージ"
+
+#: src/gtk/quicksearch.c:163
+msgid "true if execute \"S\" succeeds"
+msgstr "\"S\"の実行に成功した場合にtrue"
+
+#: src/gtk/quicksearch.c:164
+msgid "messages originating from user S"
+msgstr "ユーザSから発信されたメッセージ"
+
+#: src/gtk/quicksearch.c:165
+msgid "forwarded messages"
+msgstr "転送済みのメッセージ"
+
+#: src/gtk/quicksearch.c:166
+msgid "messages which contain header S"
+msgstr "ヘッダSを含むメッセージ"
+
+#: src/gtk/quicksearch.c:167
+msgid "messages which contain S in Message-ID header"
+msgstr "Message-IdヘッダにSを含むメッセージ"
+
+#: src/gtk/quicksearch.c:168
+msgid "messages which contain S in inreplyto header"
+msgstr "inreplytoヘッダにSを含むメッセージ"
+
+#: src/gtk/quicksearch.c:169
+msgid "locked messages"
+msgstr "ロックされたメッセージ"
+
+#: src/gtk/quicksearch.c:170
+msgid "messages which are in newsgroup S"
+msgstr "ニュースグループSにあるメッセージ"
+
+#: src/gtk/quicksearch.c:171
+msgid "new messages"
+msgstr "新着メッセージ"
+
+#: src/gtk/quicksearch.c:172
+msgid "old messages"
+msgstr "古いメッセージ"
+
+#: src/gtk/quicksearch.c:173
+msgid "incomplete messages (not entirely downloaded)"
+msgstr "(ダウンロードが完了していない)不完全なメッセージ"
+
+#: src/gtk/quicksearch.c:174
+msgid "messages which have been replied to"
+msgstr "返信済みのメッセージ"
+
+#: src/gtk/quicksearch.c:175
+msgid "read messages"
+msgstr "メッセージを読む"
+
+#: src/gtk/quicksearch.c:176
+msgid "messages which contain S in subject"
+msgstr "件名にSを含むメッセージ"
+
+#: src/gtk/quicksearch.c:177
+msgid "messages whose score is equal to #"
+msgstr "スコアが#に等しいメッセージ"
+
+#: src/gtk/quicksearch.c:178
+msgid "messages whose score is greater than #"
+msgstr "スコアが#より大きいメッセージ"
+
+#: src/gtk/quicksearch.c:179
+msgid "messages whose score is lower than #"
+msgstr "スコアが#より小さいメッセージ"
+
+#: src/gtk/quicksearch.c:180
+msgid "messages whose size is equal to #"
+msgstr "サイズが#に等しいメッセージ"
+
+#: src/gtk/quicksearch.c:181
+msgid "messages whose size is greater than #"
+msgstr "サイズが#より大きいメッセージ"
+
+#: src/gtk/quicksearch.c:182
+msgid "messages whose size is smaller than #"
+msgstr "サイズが#より小さいメッセージ"
+
+#: src/gtk/quicksearch.c:183
+msgid "messages which have been sent to S"
+msgstr "S宛へ送信されているメッセージ"
+
+#: src/gtk/quicksearch.c:184
+msgid "marked messages"
+msgstr "マークされたメッセージ"
+
+#: src/gtk/quicksearch.c:185
+msgid "unread messages"
+msgstr "未読メッセージ"
+
+#: src/gtk/quicksearch.c:186
+msgid "messages which contain S in References header"
+msgstr "ReferencesヘッダにSを含むメッセージ"
+
+#: src/gtk/quicksearch.c:187
+msgid "messages returning 0 when passed to command"
+msgstr "コマンドへ渡された際に0を返すメッセージ"
+
+#: src/gtk/quicksearch.c:188
+msgid "messages which contain S in X-Label header"
+msgstr "X-LabelヘッダにSを含むメッセージ"
+
+#: src/gtk/quicksearch.c:190
+msgid "logical AND operator"
+msgstr "論理積演算子"
+
+#: src/gtk/quicksearch.c:191
+msgid "logical OR operator"
+msgstr "論理和演算子"
+
+#: src/gtk/quicksearch.c:192
+msgid "logical NOT operator"
+msgstr "論理否定演算子"
+
+#: src/gtk/quicksearch.c:193
+msgid "case sensitive search"
+msgstr "大文字/小文字を区別して検索"
+
+#: src/gtk/quicksearch.c:195
+msgid "all filtering expressions are allowed"
+msgstr "あらゆるフィルタ式が使用可能です"
+
+#: src/gtk/quicksearch.c:202
+msgid "Extended Search symbols"
+msgstr "拡張検索記号"
+
+#: src/gtk/quicksearch.c:256 src/prefs_filtering_action.c:1113
+#: src/prefs_matcher.c:144 src/prefs_matcher.c:1724
+#: src/prefs_summary_column.c:70 src/quote_fmt.c:47 src/summaryview.c:454
+msgid "Subject"
+msgstr "件名"
+
+#: src/gtk/quicksearch.c:260 src/prefs_filtering_action.c:1114
+#: src/prefs_matcher.c:145 src/prefs_matcher.c:1725
+#: src/prefs_summary_column.c:71 src/quote_fmt.c:42 src/summaryview.c:455
+msgid "From"
+msgstr "差出人"
+
+#: src/gtk/quicksearch.c:264 src/prefs_filtering_action.c:1115
+#: src/prefs_matcher.c:145 src/prefs_matcher.c:1726 src/quote_fmt.c:48
+msgid "To"
+msgstr "宛先:"
+
+#: src/gtk/quicksearch.c:305
+msgid "Extended Symbols"
+msgstr "拡張起動"
 
 #: src/gtk/sslcertwindow.c:114 src/gtk/sslcertwindow.c:268
 #: src/gtk/sslcertwindow.c:321
@@ -2891,7 +3106,7 @@ msgid "Signer"
 msgstr "署名者"
 
 #: src/gtk/sslcertwindow.c:127 src/gtk/sslcertwindow.c:148
-#: src/prefs_themes.c:855
+#: src/prefs_themes.c:858
 msgid "Name: "
 msgstr "名前:"
 
@@ -2963,161 +3178,279 @@ msgstr "証明書を見る。"
 msgid "Changed SSL Certificate"
 msgstr "SSL証明書を変更する"
 
-#: src/headerview.c:181 src/summaryview.c:2413
+#: src/headerview.c:181 src/summaryview.c:2247
 msgid "(No From)"
 msgstr "(差出人不明)"
 
-#: src/headerview.c:202 src/summaryview.c:2458 src/summaryview.c:2461
+#: src/headerview.c:202 src/summaryview.c:2292 src/summaryview.c:2295
 msgid "(No Subject)"
 msgstr "(件名なし)"
 
-#: src/imap.c:668
+#: src/imap.c:667
 #, c-format
 msgid "Connecting to %s failed"
 msgstr "%s への接続に失敗しました"
 
-#: src/imap.c:673
+#: src/imap.c:672
 #, c-format
 msgid "IMAP4 connection to %s has been disconnected. Reconnecting...\n"
 msgstr "%sへのIMAP4接続が切れています。再接続します...\n"
 
-#: src/imap.c:713
+#: src/imap.c:710
 msgid "creating tunneled IMAP4 connection\n"
 msgstr "トンネリングIMAP4接続を確立中...\n"
 
-#: src/imap.c:726
+#: src/imap.c:723
 #, c-format
 msgid "creating IMAP4 connection to %s:%d ...\n"
 msgstr "%s:%d へのIMAP4の接続を確立中...\n"
 
-#: src/imap.c:765
+#: src/imap.c:762
 msgid "Can't start TLS session.\n"
 msgstr "TLSセッションを開始できません。\n"
 
-#: src/imap.c:1099
+#: src/imap.c:1096
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "deleted フラグをセットできません: %d\n"
 
-#: src/imap.c:1113 src/imap.c:1153
+#: src/imap.c:1110 src/imap.c:1150
 msgid "can't expunge\n"
 msgstr "expunge できません\n"
 
-#: src/imap.c:1147
+#: src/imap.c:1144
 msgid "can't set deleted flags: 1:*\n"
 msgstr "deleted フラグをセットできません: 1:*\n"
 
-#: src/imap.c:1189
+#: src/imap.c:1186
 msgid "can't close folder\n"
 msgstr "フォルダを閉じることができません\n"
 
-#: src/imap.c:1241
+#: src/imap.c:1238
 #, c-format
 msgid "root folder %s does not exist\n"
 msgstr "ルートフォルダ %s は存在しません\n"
 
-#: src/imap.c:1420 src/imap.c:1428
+#: src/imap.c:1417 src/imap.c:1425
 msgid "error occurred while getting LIST.\n"
 msgstr "LISTを取得中にエラーが発生しました。\n"
 
-#: src/imap.c:1656
+#: src/imap.c:1653
 msgid "can't create mailbox: LIST failed\n"
 msgstr "メールボックスを作成できません: LISTが失敗しました。\n"
 
-#: src/imap.c:1678
+#: src/imap.c:1675
 msgid "can't create mailbox\n"
 msgstr "メールボックスを作成できません\n"
 
-#: src/imap.c:1721
+#: src/imap.c:1718
 msgid "New folder name must not contain the namespace path separator"
 msgstr "フォルダ名には、名前空間パスの区切り文字を含んではなりません"
 
-#: src/imap.c:1753
+#: src/imap.c:1750
 #, c-format
 msgid "can't rename mailbox: %s to %s\n"
 msgstr "メールボックスの名前を%sから%sに変更できません\n"
 
-#: src/imap.c:1815
+#: src/imap.c:1812
 msgid "can't delete mailbox\n"
 msgstr "メールボックスを削除できません\n"
 
-#: src/imap.c:1853
+#: src/imap.c:1850
 msgid "can't get envelope\n"
 msgstr "エンベロープを取得できません\n"
 
-#: src/imap.c:1861
+#: src/imap.c:1858
 msgid "error occurred while getting envelope.\n"
 msgstr "エンベロープを取得中にエラーが発生しました。\n"
 
-#: src/imap.c:1883
+#: src/imap.c:1880
 #, c-format
 msgid "can't parse envelope: %s\n"
 msgstr "エンベロープを解析できません: %s\n"
 
-#: src/imap.c:1939
+#: src/imap.c:1938
 #, c-format
 msgid "Can't establish IMAP4 session with: %s\n"
 msgstr "%sを指定してIMAPセッションを確立できません。\n"
 
-#: src/imap.c:1961
+#: src/imap.c:1960
 #, c-format
 msgid "Can't connect to IMAP4 server: %s:%d\n"
 msgstr "IMAP4サーバ: %s:%d に接続できません\n"
 
-#: src/imap.c:1968
+#: src/imap.c:1967
 #, c-format
 msgid "Can't establish IMAP4 session with: %s:%d\n"
 msgstr "%s:%dを指定してIMAP4サーバを確立できません\n"
 
-#: src/imap.c:2058
+#: src/imap.c:2057
 msgid "can't get namespace\n"
 msgstr "namespace を取得できません\n"
 
-#: src/imap.c:2492
+#: src/imap.c:2491
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "フォルダ %s を選択できません\n"
 
-#: src/imap.c:2632
+#: src/imap.c:2631
 msgid "IMAP4 authentication failed.\n"
 msgstr "IMAP4認証が失敗しました。\n"
 
-#: src/imap.c:2649
+#: src/imap.c:2648
 msgid "IMAP4 login failed.\n"
 msgstr "IMAP4のログインに失敗しました。\n"
 
-#: src/imap.c:2967
+#: src/imap.c:2966
 #, c-format
 msgid "can't append %s to %s\n"
 msgstr "%s を %s に追加できません\n"
 
-#: src/imap.c:3016
+#: src/imap.c:3015
 #, c-format
 msgid "can't append message to %s\n"
 msgstr "メッセージを %s に追加できません\n"
 
-#: src/imap.c:3098
+#: src/imap.c:3097
 #, c-format
 msgid "can't copy %s to %s\n"
 msgstr "%s を %s にコピーできません\n"
 
-#: src/imap.c:3148
+#: src/imap.c:3147
 #, c-format
 msgid "error while imap command: STORE %s %s\n"
 msgstr "imap コマンド中のエラー: STORE %s %s\n"
 
-#: src/imap.c:3165
+#: src/imap.c:3164
 msgid "error while imap command: EXPUNGE\n"
 msgstr "imap コマンド中のエラー: EXPUNGE\n"
 
-#: src/imap.c:3178
+#: src/imap.c:3177
 msgid "error while imap command: CLOSE\n"
 msgstr "imap コマンド中のエラー: CLOSE\n"
 
-#: src/imap.c:3433
+#: src/imap.c:3434
 #, c-format
 msgid "iconv cannot convert UTF-7 to %s\n"
 msgstr "iconvはUTF-7を%sに変換できません\n"
+
+#: src/imap_gtk.c:52 src/mh_gtk.c:50
+msgid "/Create _new folder..."
+msgstr "/新しいフォルダを作成(_n)..."
+
+#: src/imap_gtk.c:53 src/mh_gtk.c:51
+msgid "/_Rename folder..."
+msgstr "/フォルダ名を変更(_R)..."
+
+#: src/imap_gtk.c:54 src/mh_gtk.c:52
+msgid "/M_ove folder..."
+msgstr "/フォルダを移動(_o)..."
+
+#: src/imap_gtk.c:55 src/mh_gtk.c:53
+msgid "/_Delete folder"
+msgstr "/フォルダを削除(_D)"
+
+#: src/imap_gtk.c:57
+msgid "/Down_load messages"
+msgstr "/メッセージをダウンロード(_l)"
+
+#: src/imap_gtk.c:59 src/mh_gtk.c:55 src/news_gtk.c:54
+msgid "/_Check for new messages"
+msgstr "/新規メッセージを確認(_C)"
+
+#: src/imap_gtk.c:60 src/mh_gtk.c:56
+msgid "/R_ebuild folder tree"
+msgstr "/フォルダツリーを再構築(_e)"
+
+#: src/imap_gtk.c:62
+msgid "/Remove _IMAP4 account"
+msgstr "/_IMAP4アカウントを削除"
+
+#: src/imap_gtk.c:125
+msgid ""
+"Input the name of new folder:\n"
+"(if you want to create a folder to store subfolders,\n"
+" append `/' at the end of the name)"
+msgstr ""
+"新規フォルダの名前を入力して下さい:\n"
+"(サブフォルダに保存するためにフォルダを作成したい場合、\n"
+"名前の後に`/'を付けて下さい)"
+
+#: src/imap_gtk.c:128 src/mh_gtk.c:120
+msgid "NewFolder"
+msgstr "新規フォルダ"
+
+#: src/imap_gtk.c:134 src/mh_gtk.c:126 src/mh_gtk.c:225
+#, c-format
+msgid "`%c' can't be included in folder name."
+msgstr "`%c' はフォルダ名に含めることができません"
+
+#: src/imap_gtk.c:144 src/imap_gtk.c:191 src/mh_gtk.c:136 src/mh_gtk.c:232
+#, c-format
+msgid "The folder `%s' already exists."
+msgstr "フォルダ `%s' はすでに存在します。"
+
+#: src/imap_gtk.c:150 src/mh_gtk.c:142
+#, c-format
+msgid "Can't create the folder `%s'."
+msgstr "フォルダ `%s' を作成できません。"
+
+#: src/imap_gtk.c:173 src/mh_gtk.c:216
+#, c-format
+msgid "Input new name for `%s':"
+msgstr "`%s' の新しい名前を入力してください:"
+
+#: src/imap_gtk.c:174 src/mh_gtk.c:217
+msgid "Rename folder"
+msgstr "フォルダ名を変更"
+
+#: src/imap_gtk.c:201 src/mh_gtk.c:242
+msgid ""
+"The folder could not be renamed.\n"
+"The new folder name is not allowed."
+msgstr ""
+"このフォルダ名は変更できません。\n"
+"新しいフォルダ名は使用できません。"
+
+#: src/imap_gtk.c:251
+#, c-format
+msgid "Really delete IMAP4 account `%s'?"
+msgstr "本当にIMAPアカウント `%s' を削除しますか?"
+
+#: src/imap_gtk.c:252
+msgid "Delete IMAP4 account"
+msgstr "IMAP4アカウントを削除"
+
+#: src/imap_gtk.c:297 src/mh_gtk.c:167
+#, c-format
+msgid ""
+"All folder(s) and message(s) under `%s' will be deleted.\n"
+"Do you really want to delete?"
+msgstr ""
+"`%s'の下の全てのフォルダとメッセージは削除されます。\n"
+"本当に削除しますか?"
+
+#: src/imap_gtk.c:299 src/mh_gtk.c:169
+msgid "Delete folder"
+msgstr "フォルダを削除"
+
+#: src/imap_gtk.c:317 src/mh_gtk.c:187
+#, c-format
+msgid "Can't remove the folder `%s'."
+msgstr "フォルダ `%s' を削除できません。"
+
+#: src/imap_gtk.c:361 src/news_gtk.c:295
+msgid "Offline"
+msgstr "オフライン"
+
+#: src/imap_gtk.c:362 src/news_gtk.c:296
+msgid "You are offline. Go online?"
+msgstr "オフライン状態です。オンラインにしますか?"
+
+#: src/imap_gtk.c:379 src/news_gtk.c:313
+#, c-format
+msgid "Error occurred while downloading messages in `%s'."
+msgstr "メッセージを `%s' をダウンロードする際にエラーが発生しました。"
 
 #: src/import.c:130
 msgid "Import"
@@ -3193,7 +3526,7 @@ msgstr "読み込むLDIFファイルを選択して下さい"
 msgid "R"
 msgstr "R"
 
-#: src/importldif.c:765 src/summaryview.c:458
+#: src/importldif.c:765 src/summaryview.c:452
 msgid "S"
 msgstr "S"
 
@@ -3291,130 +3624,134 @@ msgstr "Pineファイルを選択"
 msgid "Import Pine file into Address Book"
 msgstr "アドレス帳にPineファイルをインポート"
 
-#: src/inc.c:371
+#: src/inc.c:382
 msgid "Retrieving new messages"
 msgstr "新着メッセージを受信中"
 
-#: src/inc.c:418
+#: src/inc.c:429
 msgid "Standby"
 msgstr "待機中"
 
-#: src/inc.c:545 src/inc.c:593
+#: src/inc.c:556 src/inc.c:607
 msgid "Cancelled"
 msgstr "キャンセルされました"
 
-#: src/inc.c:556
+#: src/inc.c:567
 msgid "Retrieving"
 msgstr "受信中"
 
-#: src/inc.c:565
+#: src/inc.c:576
 #, c-format
 msgid "Done (%d message(s) (%s) received)"
 msgstr "完了 (%d メッセージ(s) (%s) 受信)"
 
-#: src/inc.c:569
+#: src/inc.c:580
 msgid "Done (no new messages)"
 msgstr "完了 (新規メッセージなし)"
 
-#: src/inc.c:575
+#: src/inc.c:586
 msgid "Connection failed"
 msgstr "接続に失敗しました。"
 
-#: src/inc.c:579
+#: src/inc.c:590
 msgid "Auth failed"
 msgstr "認証に失敗しました。"
 
-#: src/inc.c:583 src/prefs_summary_column.c:76
+#: src/inc.c:594 src/prefs_summary_column.c:76
 msgid "Locked"
 msgstr "ロック"
 
-#: src/inc.c:667
+#: src/inc.c:604 src/plugins/spamassassin/spamassassin_gtk.c:243
+msgid "Timeout"
+msgstr "有効時間"
+
+#: src/inc.c:681
 #, c-format
 msgid "Finished (%d new message(s))"
 msgstr "終了 (%d 通の新着メッセージ)"
 
-#: src/inc.c:670
+#: src/inc.c:684
 msgid "Finished (no new messages)"
 msgstr "終了 (新規メッセージなし)"
 
-#: src/inc.c:679
+#: src/inc.c:693
 msgid "Some errors occurred while getting mail."
 msgstr "メール取得中に何らかのエラーが発生しました。"
 
-#: src/inc.c:720
+#: src/inc.c:734
 #, c-format
 msgid "%s: Retrieving new messages"
 msgstr "%s: 新着メッセージを受信中"
 
-#: src/inc.c:739
+#: src/inc.c:753
 #, c-format
 msgid "Connecting to POP3 server: %s..."
 msgstr "POP3サーバ: %s に接続中..."
 
-#: src/inc.c:746
+#: src/inc.c:763
 #, c-format
 msgid "Can't connect to POP3 server: %s:%d\n"
 msgstr "POP3サーバ: %s:%d に接続できません\n"
 
-#: src/inc.c:753
+#: src/inc.c:770
 #, c-format
 msgid "Can't connect to POP3 server: %s:%d"
 msgstr "POP3サーバ: %s:%d に接続できません"
 
-#: src/inc.c:825 src/send_message.c:461
+#: src/inc.c:851 src/send_message.c:462
 msgid "Authenticating..."
 msgstr "認証中..."
 
-#: src/inc.c:826
+#: src/inc.c:852
 #, c-format
 msgid "Retrieving messages from %s (%s) ..."
 msgstr "%sからメッセージ(%s)から取り込んでいます..."
 
-#: src/inc.c:832
+#: src/inc.c:858
 msgid "Getting the number of new messages (STAT)..."
 msgstr "新着メッセージの数を取得中 (STAT)..."
 
-#: src/inc.c:836
+#: src/inc.c:862
 msgid "Getting the number of new messages (LAST)..."
 msgstr "新着メッセージの数を取得中 (LAST)..."
 
-#: src/inc.c:840
+#: src/inc.c:866
 msgid "Getting the number of new messages (UIDL)..."
 msgstr "新着メッセージの数を取得中 (UIDL)..."
 
-#: src/inc.c:844
+#: src/inc.c:870
 msgid "Getting the size of messages (LIST)..."
 msgstr "メッセージのサイズを取得中 (LIST)..."
 
-#: src/inc.c:854
+#: src/inc.c:880
 #, c-format
 msgid "Deleting message %d"
 msgstr "メッセージ %d を削除中"
 
-#: src/inc.c:861 src/send_message.c:479
+#: src/inc.c:887 src/send_message.c:480
 msgid "Quitting"
 msgstr "切断中"
 
 # c-format
-#: src/inc.c:886
+#: src/inc.c:912
 #, c-format
 msgid "Retrieving message (%d / %d) (%s / %s)"
 msgstr "メッセージを受信中 (%d / %d) (%s / %s)"
 
-#: src/inc.c:907
+#: src/inc.c:933
 #, c-format
 msgid "Retrieving (%d message(s) (%s) received)"
 msgstr "メッセージを受信中 (%d 件のメッセージ (%s) 受信済み)"
 
-#: src/inc.c:1065
+#: src/inc.c:1086
 msgid "Connection failed."
 msgstr "接続に失敗しました。"
 
-#: src/inc.c:1071
+#: src/inc.c:1092
 msgid "Error occurred while processing mail."
 msgstr "メールの処理中にエラーが発生しました。"
 
-#: src/inc.c:1076
+#: src/inc.c:1097
 #, c-format
 msgid ""
 "Error occurred while processing mail:\n"
@@ -3423,27 +3760,27 @@ msgstr ""
 "メールの処理中にエラーが発生しました:\n"
 "%s"
 
-#: src/inc.c:1082
+#: src/inc.c:1103
 msgid "No disk space left."
 msgstr "ディスクの空き容量がありません。"
 
-#: src/inc.c:1087
+#: src/inc.c:1108
 msgid "Can't write file."
 msgstr "ファイルに書き込めません。"
 
-#: src/inc.c:1092
+#: src/inc.c:1113
 msgid "Socket error."
 msgstr "ソケットエラー"
 
-#: src/inc.c:1098 src/send_message.c:602
+#: src/inc.c:1119 src/send_message.c:605
 msgid "Connection closed by the remote host."
 msgstr "リモートホストにより接続がクローズされました。"
 
-#: src/inc.c:1104
+#: src/inc.c:1125
 msgid "Mailbox is locked."
 msgstr "メールボックスはロックされています。"
 
-#: src/inc.c:1108
+#: src/inc.c:1129
 #, c-format
 msgid ""
 "Mailbox is locked:\n"
@@ -3452,11 +3789,11 @@ msgstr ""
 "メールボックスはロックされています:\n"
 "%s"
 
-#: src/inc.c:1114 src/send_message.c:589
+#: src/inc.c:1135 src/send_message.c:590
 msgid "Authentication failed."
 msgstr "認証に失敗しました。"
 
-#: src/inc.c:1119 src/send_message.c:592
+#: src/inc.c:1140 src/send_message.c:593
 #, c-format
 msgid ""
 "Authentication failed:\n"
@@ -3465,7 +3802,11 @@ msgstr ""
 "認証に失敗:\n"
 "%s"
 
-#: src/inc.c:1154
+#: src/inc.c:1145 src/send_message.c:609
+msgid "Session timed out."
+msgstr "セッションが時間切れです"
+
+#: src/inc.c:1181
 msgid "Incorporation cancelled\n"
 msgstr "取り込みは取り消されました。\n"
 
@@ -3473,7 +3814,7 @@ msgstr "取り込みは取り消されました。\n"
 msgid "Nick Name"
 msgstr "ニックネーム"
 
-#: src/main.c:148 src/main.c:157
+#: src/main.c:158 src/main.c:167
 #, c-format
 msgid ""
 "File `%s' already exists.\n"
@@ -3482,20 +3823,20 @@ msgstr ""
 "ファイル `%s' がすでに存在します。\n"
 "フォルダを作成できません。"
 
-#: src/main.c:217
+#: src/main.c:281
 msgid "g_thread is not supported by glib.\n"
 msgstr "g_thread は glib によってサポートされていません。\n"
 
-#: src/main.c:520
+#: src/main.c:583
 #, c-format
 msgid "Usage: %s [OPTION]...\n"
 msgstr "使用法: %s [オプション]...\n"
 
-#: src/main.c:523
+#: src/main.c:586
 msgid "  --compose [address]    open composition window"
 msgstr "  --compose [address]    メッセージ作成ウィンドウを開く"
 
-#: src/main.c:524
+#: src/main.c:587
 msgid ""
 "  --attach file1 [file2]...\n"
 "                         open composition window with specified files\n"
@@ -3505,23 +3846,23 @@ msgstr ""
 "                         指定した添付ファイルで作成ウインドウを\n"
 "\t\t\t  オープンする"
 
-#: src/main.c:527
+#: src/main.c:590
 msgid "  --receive              receive new messages"
 msgstr "  --receive              新着メッセージを受信する"
 
-#: src/main.c:528
+#: src/main.c:591
 msgid "  --receive-all          receive new messages of all accounts"
 msgstr "  --receive-all          全アカウントの新着メッセージを受信する"
 
-#: src/main.c:529
+#: src/main.c:592
 msgid "  --send                 send all queued messages"
 msgstr "  --send                待機中の全メッセージを送信"
 
-#: src/main.c:530
+#: src/main.c:593
 msgid "  --status [folder]...   show the total number of messages"
 msgstr "  --status [フォルダ]...   全メッセージ数を表示"
 
-#: src/main.c:531
+#: src/main.c:594
 msgid ""
 "  --status-full [folder]...\n"
 "                         show the status of each folder"
@@ -3529,64 +3870,68 @@ msgstr ""
 "  --status-full [フォルダ]...\n"
 "                         各フォルダのステータスを表示"
 
-#: src/main.c:533
+#: src/main.c:596
 msgid "  --online               switch to online mode"
 msgstr "  --online               オンラインモードへ変更"
 
-#: src/main.c:534
+#: src/main.c:597
 msgid "  --offline              switch to offline mode"
 msgstr "  --offline              オフラインモードへ変更"
 
-#: src/main.c:535
+#: src/main.c:598
 msgid "  --debug                debug mode"
 msgstr "  --debug                デバッグモード"
 
-#: src/main.c:536
+#: src/main.c:599
 msgid "  --help                 display this help and exit"
 msgstr "  --help                 このヘルプを表示して終了する"
 
-#: src/main.c:537
+#: src/main.c:600
 msgid "  --version              output version information and exit"
 msgstr "  --version              バージョン情報を出力して終了する"
 
-#: src/main.c:538
+#: src/main.c:601
 msgid "  --config-dir           output configuration directory"
 msgstr "  --config-dir           設定ディレクトリを出力"
 
-#: src/main.c:575 src/summaryview.c:5185
+#: src/main.c:638 src/summaryview.c:4985
 #, c-format
 msgid "Processing (%s)..."
 msgstr "処理中 (%s)..."
 
-#: src/main.c:578
+#: src/main.c:641
 msgid "top level folder"
 msgstr "最上位フォルダ"
 
-#: src/main.c:643
+#: src/main.c:705
+msgid "Really quit?"
+msgstr "本当に終了しますか?"
+
+#: src/main.c:706
 msgid "Composing message exists."
 msgstr "作成中のメッセージが存在します。"
 
-#: src/main.c:644
+#: src/main.c:707
 msgid "Draft them"
 msgstr "草稿フォルダへ"
 
-#: src/main.c:644
+#: src/main.c:707
 msgid "Discard them"
 msgstr "破棄"
 
-#: src/main.c:644
+#: src/main.c:707
 msgid "Don't quit"
 msgstr "終了しない"
 
-#: src/main.c:658
+#: src/main.c:721
 msgid "Queued messages"
 msgstr "送信待機中のメッセージ"
 
-#: src/main.c:659
+#: src/main.c:722
 msgid "Some unsent messages are queued. Exit now?"
 msgstr "送信待機中の未送信メッセージがあります。終了しますか?"
 
-#: src/main.c:904
+#: src/main.c:967
 msgid "Some errors occurred while sending queued messages."
 msgstr "メッセージの送信中にエラーが発生しました。"
 
@@ -3614,11 +3959,11 @@ msgstr "/ファイル(_F)/mboxファイルにエクスポート(_E)..."
 msgid "/_File/Empty _trash"
 msgstr "/ファイル(_F)/ごみ箱を空にする(_T)"
 
-#: src/mainwindow.c:443 src/messageview.c:144
+#: src/mainwindow.c:443 src/messageview.c:152
 msgid "/_File/_Save as..."
 msgstr "/ファイル(_F)/名前を付けて保存(_S)..."
 
-#: src/mainwindow.c:444 src/messageview.c:145
+#: src/mainwindow.c:444 src/messageview.c:153
 msgid "/_File/_Print..."
 msgstr "/ファイル(_F)/印刷(_P)..."
 
@@ -3634,7 +3979,7 @@ msgstr "/ファイル(_F)/終了(_X)"
 msgid "/_Edit/Select _thread"
 msgstr "/編集(_E)/スレッドを選択(_t)"
 
-#: src/mainwindow.c:456 src/messageview.c:153
+#: src/mainwindow.c:456 src/messageview.c:161
 msgid "/_Edit/_Find in current message..."
 msgstr "/編集(_E)/カレントメッセージでサーチ(_F)..."
 
@@ -3831,127 +4176,127 @@ msgstr "/表示(_V)/移動(_G)/次のラベル付きメッセージ(_b)"
 msgid "/_View/_Go to/Other _folder..."
 msgstr "/表示(_V)/移動(_G)/別のフォルダに移動(_f)..."
 
-#: src/mainwindow.c:536 src/mainwindow.c:543 src/messageview.c:159
+#: src/mainwindow.c:536 src/mainwindow.c:543 src/messageview.c:167
 msgid "/_View/_Code set/---"
 msgstr "/表示(_V)/文字コードセット(_C)/---"
 
-#: src/mainwindow.c:540 src/messageview.c:163
+#: src/mainwindow.c:540 src/messageview.c:171
 msgid "/_View/_Code set"
 msgstr "/表示(_V)/文字コードセット(_C)"
 
-#: src/mainwindow.c:541 src/messageview.c:164
+#: src/mainwindow.c:541 src/messageview.c:172
 msgid "/_View/_Code set/_Auto detect"
 msgstr "/表示(_V)/文字コードセット(_C)/自動検出(_A)"
 
-#: src/mainwindow.c:544 src/messageview.c:167
+#: src/mainwindow.c:544 src/messageview.c:175
 msgid "/_View/_Code set/7bit ascii (US-ASC_II)"
 msgstr "/表示(_V)/文字コードセット(_C)/7bit ascii (US-ASC_II)"
 
-#: src/mainwindow.c:548 src/messageview.c:171
+#: src/mainwindow.c:548 src/messageview.c:179
 msgid "/_View/_Code set/Unicode (_UTF-8)"
 msgstr "/表示(_V)/文字コードセット(_C)/Unicode (_UTF-8)"
 
-#: src/mainwindow.c:552 src/messageview.c:175
+#: src/mainwindow.c:552 src/messageview.c:183
 msgid "/_View/_Code set/Western European (ISO-8859-_1)"
 msgstr "/表示(_V)/文字コードセット(_C)/欧米 (ISO-8859-_1)"
 
-#: src/mainwindow.c:554 src/messageview.c:177
+#: src/mainwindow.c:554 src/messageview.c:185
 msgid "/_View/_Code set/Western European (ISO-8859-15)"
 msgstr "/表示(_V)/文字コードセット(_C)/西欧 (ISO-8859-_15)"
 
-#: src/mainwindow.c:558 src/messageview.c:181
+#: src/mainwindow.c:558 src/messageview.c:189
 msgid "/_View/_Code set/Central European (ISO-8859-_2)"
 msgstr "/表示(_V)/文字コードセット(_C)/中欧 (ISO-8859-_2)"
 
-#: src/mainwindow.c:561 src/messageview.c:184
+#: src/mainwindow.c:561 src/messageview.c:192
 msgid "/_View/_Code set/_Baltic (ISO-8859-13)"
 msgstr "/表示(_V)/文字コードセット(_C)/バルト諸国 (ISO-8859-13)"
 
-#: src/mainwindow.c:563 src/messageview.c:186
+#: src/mainwindow.c:563 src/messageview.c:194
 msgid "/_View/_Code set/Baltic (ISO-8859-_4)"
 msgstr "/表示(_V)/文字コードセット(_C)/バルト諸国 (ISO-8859-_4)"
 
-#: src/mainwindow.c:566 src/messageview.c:189
+#: src/mainwindow.c:566 src/messageview.c:197
 msgid "/_View/_Code set/Greek (ISO-8859-_7)"
 msgstr "/表示(_V)/文字コードセット(_C)/ギリシャ語 (ISO-8859-_7)"
 
-#: src/mainwindow.c:569 src/messageview.c:192
+#: src/mainwindow.c:569 src/messageview.c:200
 msgid "/_View/_Code set/Turkish (ISO-8859-_9)"
 msgstr "/表示(_V)/文字コードセット(_C)/トルコ語 (ISO-8859-_9)"
 
-#: src/mainwindow.c:572 src/messageview.c:195
+#: src/mainwindow.c:572 src/messageview.c:203
 msgid "/_View/_Code set/Cyrillic (ISO-8859-_5)"
 msgstr "/表示(_V)/文字コードセット(_C)/キリル文字 (ISO-8859-_5)"
 
-#: src/mainwindow.c:574 src/messageview.c:197
+#: src/mainwindow.c:574 src/messageview.c:205
 msgid "/_View/_Code set/Cyrillic (KOI8-_R)"
 msgstr "/表示(_V)/文字コードセット(_C)/キリル文字 (KOI8-_R)"
 
-#: src/mainwindow.c:576 src/messageview.c:199
+#: src/mainwindow.c:576 src/messageview.c:207
 msgid "/_View/_Code set/Cyrillic (KOI8-U)"
 msgstr "/表示(_V)/文字コードセット(_C)/キリル文字 (KOI8-U)"
 
-#: src/mainwindow.c:578 src/messageview.c:201
+#: src/mainwindow.c:578 src/messageview.c:209
 msgid "/_View/_Code set/Cyrillic (Windows-1251)"
 msgstr "/表示(_V)/文字コードセット(_C)/キリル文字 (Windows-1251)"
 
-#: src/mainwindow.c:582 src/messageview.c:205
+#: src/mainwindow.c:582 src/messageview.c:213
 msgid "/_View/_Code set/Japanese (ISO-2022-_JP)"
 msgstr "/表示(_V)/文字コードセット(_C)/日本語 (ISO-2022-_JP)"
 
-#: src/mainwindow.c:585 src/messageview.c:208
+#: src/mainwindow.c:585 src/messageview.c:216
 msgid "/_View/_Code set/Japanese (ISO-2022-JP-2)"
 msgstr "/表示(_V)/文字コードセット(_C)/日本語 (ISO-2022-JP-2)"
 
-#: src/mainwindow.c:588 src/messageview.c:211
+#: src/mainwindow.c:588 src/messageview.c:219
 msgid "/_View/_Code set/Japanese (_EUC-JP)"
 msgstr "/表示(_V)/文字コードセット(_C)/日本語 (_EUC-JP)"
 
-#: src/mainwindow.c:590 src/messageview.c:213
+#: src/mainwindow.c:590 src/messageview.c:221
 msgid "/_View/_Code set/Japanese (_Shift__JIS)"
 msgstr "/表示(_V)/文字コードセット(_C)/日本語 (_Shift__JIS)"
 
-#: src/mainwindow.c:594 src/messageview.c:217
+#: src/mainwindow.c:594 src/messageview.c:225
 msgid "/_View/_Code set/Simplified Chinese (_GB2312)"
 msgstr "/表示(_V)/文字コードセット(_C)/簡体字中国語 (_GB2312)"
 
-#: src/mainwindow.c:596 src/messageview.c:219
+#: src/mainwindow.c:596 src/messageview.c:227
 msgid "/_View/_Code set/Traditional Chinese (_Big5)"
 msgstr "/表示(_V)/文字コードセット(_C)/繁体字中国語 (_Big5)"
 
-#: src/mainwindow.c:598 src/messageview.c:221
+#: src/mainwindow.c:598 src/messageview.c:229
 msgid "/_View/_Code set/Traditional Chinese (EUC-_TW)"
 msgstr "/表示(_V)/文字コードセット(_C)/繁体字中国語 (EUC-_TW)"
 
-#: src/mainwindow.c:600 src/messageview.c:223
+#: src/mainwindow.c:600 src/messageview.c:231
 msgid "/_View/_Code set/Chinese (ISO-2022-_CN)"
 msgstr "/表示(_V)/文字コードセット(_C)/中国語 (ISO-2022-_CN)"
 
-#: src/mainwindow.c:603 src/messageview.c:226
+#: src/mainwindow.c:603 src/messageview.c:234
 msgid "/_View/_Code set/Korean (EUC-_KR)"
 msgstr "/表示(_V)/文字コードセット(_C)/韓国語 (EUC-_KR)"
 
-#: src/mainwindow.c:605 src/messageview.c:228
+#: src/mainwindow.c:605 src/messageview.c:236
 msgid "/_View/_Code set/Korean (ISO-2022-KR)"
 msgstr "/表示(_V)/文字コードセット(_C)/韓国語 (ISO-2022-KR)"
 
-#: src/mainwindow.c:608 src/messageview.c:231
+#: src/mainwindow.c:608 src/messageview.c:239
 msgid "/_View/_Code set/Thai (TIS-620)"
 msgstr "/表示(_V)/文字コードセット(_C)/タイ (TIS-620)"
 
-#: src/mainwindow.c:610 src/messageview.c:233
+#: src/mainwindow.c:610 src/messageview.c:241
 msgid "/_View/_Code set/Thai (Windows-874)"
 msgstr "/表示(_V)/文字コードセット(_C)/タイ (Windows-874)"
 
-#: src/mainwindow.c:618 src/summaryview.c:450
+#: src/mainwindow.c:618 src/summaryview.c:444
 msgid "/_View/Open in new _window"
 msgstr "/表示(_V)/新しいウィンドウで開く(_w)"
 
-#: src/mainwindow.c:619 src/messageview.c:241
+#: src/mainwindow.c:619 src/messageview.c:249
 msgid "/_View/Mess_age source"
 msgstr "/表示(_V)/メッセージソース(_a)"
 
-#: src/mainwindow.c:620 src/messageview.c:242
+#: src/mainwindow.c:620 src/messageview.c:250
 msgid "/_View/Show all _headers"
 msgstr "/表示(_V)/全てのヘッダを表示(_h)"
 
@@ -3991,7 +4336,7 @@ msgstr "/メッセージ(_M)/メールメッセージを作成(_n)"
 msgid "/_Message/Compose a news message"
 msgstr "/メッセージ(_M)/ニュースメッセージを作成"
 
-#: src/mainwindow.c:637 src/messageview.c:248
+#: src/mainwindow.c:637 src/messageview.c:256
 msgid "/_Message/_Reply"
 msgstr "/メッセージ(_M)/返信(_R)"
 
@@ -3999,15 +4344,15 @@ msgstr "/メッセージ(_M)/返信(_R)"
 msgid "/_Message/Repl_y to"
 msgstr "/メッセージ(_M)/指定先に返信(_y)"
 
-#: src/mainwindow.c:639 src/messageview.c:249
+#: src/mainwindow.c:639 src/messageview.c:257
 msgid "/_Message/Repl_y to/_all"
 msgstr "/メッセージ(_M)/指定先に返信(_y)/全員(_a)"
 
-#: src/mainwindow.c:640 src/messageview.c:251
+#: src/mainwindow.c:640 src/messageview.c:259
 msgid "/_Message/Repl_y to/_sender"
 msgstr "/メッセージ(_M)/指定先に返信(_y)/差出人(_s)"
 
-#: src/mainwindow.c:641 src/messageview.c:253
+#: src/mainwindow.c:641 src/messageview.c:261
 msgid "/_Message/Repl_y to/mailing _list"
 msgstr "/メッセージ(_M)/指定先に返信(_y)/リスト(_l)"
 
@@ -4015,7 +4360,7 @@ msgstr "/メッセージ(_M)/指定先に返信(_y)/リスト(_l)"
 msgid "/_Message/Follow-up and reply to"
 msgstr "/メッセージ(_M)/フォロー先を指定"
 
-#: src/mainwindow.c:645 src/messageview.c:256
+#: src/mainwindow.c:645 src/messageview.c:264
 msgid "/_Message/_Forward"
 msgstr "/メッセージ(_M)/転送(_F)"
 
@@ -4067,7 +4412,7 @@ msgstr "/メッセージ(_M)/マーク(_M)/読んだことにする(_D)"
 msgid "/_Message/_Mark/Mark all _read"
 msgstr "/メッセージ(_M)/マーク(_M)/全て読んだことにする(_r)"
 
-#: src/mainwindow.c:662 src/messageview.c:261
+#: src/mainwindow.c:662 src/messageview.c:269
 msgid "/_Message/Re-_edit"
 msgstr "/メッセージ(_M)/再編集(_E)"
 
@@ -4075,7 +4420,7 @@ msgstr "/メッセージ(_M)/再編集(_E)"
 msgid "/_Tools/_Address book..."
 msgstr "/ツール(_T)/アドレス帳(_A)..."
 
-#: src/mainwindow.c:666 src/messageview.c:265
+#: src/mainwindow.c:666 src/messageview.c:273
 msgid "/_Tools/Add sender to address boo_k"
 msgstr "/ツール(_T)/差出人をアドレス帳へ追加(_k)"
 
@@ -4099,23 +4444,23 @@ msgstr "/ツール(_T)/フォルダ内の全メッセージを振り分ける(_F
 msgid "/_Tools/Filter _selected messages"
 msgstr "/ツール(_T)/選択されたメッセージを振り分ける(_F)"
 
-#: src/mainwindow.c:678 src/messageview.c:268
+#: src/mainwindow.c:678 src/messageview.c:276
 msgid "/_Tools/_Create filter rule"
 msgstr "/ツール(_T)/振り分け規則を作成(_C)"
 
-#: src/mainwindow.c:679 src/messageview.c:270
+#: src/mainwindow.c:679 src/messageview.c:278
 msgid "/_Tools/_Create filter rule/_Automatically"
 msgstr "/ツール(_T)/振り分け規則を作成(_C)/自動(_A)"
 
-#: src/mainwindow.c:681 src/messageview.c:272
+#: src/mainwindow.c:681 src/messageview.c:280
 msgid "/_Tools/_Create filter rule/by _From"
 msgstr "/ツール(_T)/振り分け規則を作成(_C)/_Fromから"
 
-#: src/mainwindow.c:683 src/messageview.c:274
+#: src/mainwindow.c:683 src/messageview.c:282
 msgid "/_Tools/_Create filter rule/by _To"
 msgstr "/ツール(_T)/振り分け規則を作成(_C)/_Toから"
 
-#: src/mainwindow.c:685 src/messageview.c:276
+#: src/mainwindow.c:685 src/messageview.c:284
 msgid "/_Tools/_Create filter rule/by _Subject"
 msgstr "/ツール(_T)/振り分け規則を作成(_C)/_Subjectから"
 
@@ -4247,40 +4592,40 @@ msgstr "/ヘルプ(_H)/Claws FAQ(_C) (Clawsドキュメント)"
 msgid "/_Help/---"
 msgstr "/ヘルプ(_H)/---"
 
-#: src/mainwindow.c:872
+#: src/mainwindow.c:873
 msgid "You are online. Click the icon to go offline"
 msgstr "オンライン状態です。オフラインにするにはアイコンをクリックして下さい。"
 
-#: src/mainwindow.c:876
+#: src/mainwindow.c:877
 msgid "You are offline. Click the icon to go online"
 msgstr "オフライン状態です。オンラインにするにはアイコンをクリックして下さい。"
 
-#: src/mainwindow.c:893
+#: src/mainwindow.c:894
 msgid "Select account"
 msgstr "アカウントの選択"
 
-#: src/mainwindow.c:1233 src/mainwindow.c:1274 src/mainwindow.c:1302
+#: src/mainwindow.c:1230 src/mainwindow.c:1271 src/mainwindow.c:1299
 #: src/prefs_folder_item.c:534
 msgid "Untitled"
 msgstr "名称未設定"
 
-#: src/mainwindow.c:1303
+#: src/mainwindow.c:1300
 msgid "none"
 msgstr "なし"
 
-#: src/mainwindow.c:1570
+#: src/mainwindow.c:1567
 msgid "Empty trash"
 msgstr "ごみ箱を空にする"
 
-#: src/mainwindow.c:1571
+#: src/mainwindow.c:1568
 msgid "Empty all messages in trash?"
 msgstr "ごみ箱の中のメッセージを全て削除しますか?"
 
-#: src/mainwindow.c:1589
+#: src/mainwindow.c:1586
 msgid "Add mailbox"
 msgstr "メールボックスを追加"
 
-#: src/mainwindow.c:1590
+#: src/mainwindow.c:1587
 msgid ""
 "Input the location of mailbox.\n"
 "If the existing mailbox is specified, it will be\n"
@@ -4289,16 +4634,16 @@ msgstr ""
 "メールボックスの位置を入力してください。\n"
 "存在するメールボックスを指定すると自動的にスキャンします。"
 
-#: src/mainwindow.c:1596
+#: src/mainwindow.c:1593
 #, c-format
 msgid "The mailbox `%s' already exists."
 msgstr "メールボックス `%s' はすでに存在します。"
 
-#: src/mainwindow.c:1601 src/setup.c:58
+#: src/mainwindow.c:1598 src/setup.c:58
 msgid "Mailbox"
 msgstr "メール箱"
 
-#: src/mainwindow.c:1606 src/setup.c:62
+#: src/mainwindow.c:1603 src/setup.c:62
 msgid ""
 "Creation of the mailbox failed.\n"
 "Maybe some files already exist, or you don't have the permission to write "
@@ -4307,45 +4652,45 @@ msgstr ""
 "メールボックスの作成に失敗しました。\n"
 "いくつかのファイルがすでに存在するか、あるいは書き込む権限がありません。"
 
-#: src/mainwindow.c:1946
+#: src/mainwindow.c:1943
 msgid "Sylpheed - Folder View"
 msgstr "Sylpheed - フォルダビュー"
 
-#: src/mainwindow.c:1967 src/messageview.c:405
+#: src/mainwindow.c:1964 src/messageview.c:412
 msgid "Sylpheed - Message View"
 msgstr "Sylpheed - メッセージビュー"
 
-#: src/mainwindow.c:2351
+#: src/mainwindow.c:2344 src/plugins/trayicon/trayicon.c:306
 msgid "Exit"
 msgstr "終了"
 
-#: src/mainwindow.c:2351
+#: src/mainwindow.c:2344 src/plugins/trayicon/trayicon.c:306
 msgid "Exit this program?"
 msgstr "このプログラムを終了しますか?"
 
-#: src/mainwindow.c:2706
+#: src/mainwindow.c:2699
 msgid "Deleting duplicated messages..."
 msgstr "重複メッセージを削除しています..."
 
-#: src/mainwindow.c:2740
+#: src/mainwindow.c:2733
 #, c-format
 msgid "Deleted %d duplicate message(s) in %d folders.\n"
 msgstr "%d 件の重複メッセージを %d フォルダ内で削除しました。\n"
 
-#: src/mainwindow.c:2885 src/summaryview.c:4023
+#: src/mainwindow.c:2878 src/summaryview.c:3865
 msgid "Processing rules to apply before folder rules"
 msgstr "フォルダルールの前にルールを処理する"
 
-#: src/mainwindow.c:2893
+#: src/mainwindow.c:2886
 msgid "Processing rules to apply after folder rules"
 msgstr "フォルダルールの後にルールを処理する"
 
-#: src/mainwindow.c:2901 src/summaryview.c:4032
+#: src/mainwindow.c:2894 src/summaryview.c:3874
 msgid "Filtering configuration"
 msgstr "フィルタ設定"
 
-#: src/matcher.c:1223 src/matcher.c:1224 src/matcher.c:1225 src/matcher.c:1226
-#: src/matcher.c:1227 src/matcher.c:1228 src/matcher.c:1229 src/matcher.c:1230
+#: src/matcher.c:1231 src/matcher.c:1232 src/matcher.c:1233 src/matcher.c:1234
+#: src/matcher.c:1235 src/matcher.c:1236 src/matcher.c:1237 src/matcher.c:1238
 msgid "(none)"
 msgstr "(なし)"
 
@@ -4357,7 +4702,7 @@ msgstr "カレントメッセージで検索"
 msgid "Find text:"
 msgstr "検索テキスト:"
 
-#: src/message_search.c:121 src/prefs_matcher.c:539 src/summary_search.c:183
+#: src/message_search.c:121 src/prefs_matcher.c:541 src/summary_search.c:183
 msgid "Case sensitive"
 msgstr "大文字/小文字を区別"
 
@@ -4366,62 +4711,58 @@ msgid "Backward search"
 msgstr "後方検索"
 
 #: src/message_search.c:183 src/summary_search.c:317
-msgid "Search failed"
-msgstr "検索失敗"
-
-#: src/message_search.c:184 src/summary_search.c:318
 msgid "Search string not found."
 msgstr "検索文字列が見つかりません。"
 
-#: src/message_search.c:191
+#: src/message_search.c:190
 msgid "Beginning of message reached; continue from end?"
 msgstr "メッセージの先頭まで達しました。最後から続けますか?"
 
-#: src/message_search.c:194
+#: src/message_search.c:193
 msgid "End of message reached; continue from beginning?"
 msgstr "メッセージの終わりまで達しました。始めから続けますか?"
 
-#: src/message_search.c:197 src/summary_search.c:327
+#: src/message_search.c:196 src/summary_search.c:326
 msgid "Search finished"
 msgstr "検索完了"
 
-#: src/messageview.c:245
+#: src/messageview.c:253
 msgid "/_Message/Compose _new message"
 msgstr "/メッセージ(_M)/新規メッセージを作成(_n)"
 
-#: src/messageview.c:257
+#: src/messageview.c:265
 msgid "/_Message/For_ward as attachment"
 msgstr "/メッセージ(_M)/添付として転送(_w)"
 
-#: src/messageview.c:259
+#: src/messageview.c:267
 msgid "/_Message/Redirec_t"
 msgstr "/メッセージ(_M)/リダイレクト(_t)"
 
-#: src/messageview.c:278
+#: src/messageview.c:286
 msgid "/_Tools/Create processing rule/"
 msgstr "/ツール(_T)/振り分け規則を作成(_p)"
 
-#: src/messageview.c:280
+#: src/messageview.c:288
 msgid "/_Tools/Create processing rule/_Automatically"
 msgstr "/ツール(_T)/振り分け規則を作成(_p)/自動(_A)"
 
-#: src/messageview.c:282
+#: src/messageview.c:290
 msgid "/_Tools/Create processing rule/by _From"
 msgstr "/ツール(_T)/振り分け規則を作成(_p)/_Fromから"
 
-#: src/messageview.c:284
+#: src/messageview.c:292
 msgid "/_Tools/Create processing rule/by _To"
 msgstr "/ツール(_T)/振り分け規則を作成(_p)/_Toから"
 
-#: src/messageview.c:286
+#: src/messageview.c:294
 msgid "/_Tools/Create processing rule/by _Subject"
 msgstr "/ツール(_T)/振り分け規則を作成(_p)/_Subjectから"
 
-#: src/messageview.c:503
+#: src/messageview.c:510
 msgid "<No Return-Path found>"
 msgstr "<Return-Pathがありません>"
 
-#: src/messageview.c:511
+#: src/messageview.c:518
 #, c-format
 msgid ""
 "The notification address to which the return receipt is to be sent\n"
@@ -4435,11 +4776,11 @@ msgstr ""
 "Return path: %s\n"
 "受信通知を送信しないことを推奨します。"
 
-#: src/messageview.c:519
+#: src/messageview.c:526
 msgid "+Don't Send"
 msgstr "+送信しない"
 
-#: src/messageview.c:529
+#: src/messageview.c:536
 msgid ""
 "This message is asking for a return receipt notification\n"
 "but according to its 'To:' and 'CC:' headers it was not\n"
@@ -4451,37 +4792,85 @@ msgstr ""
 "正式にあなた宛となっているわけではありません。\n"
 "受信確認は取り消されました。"
 
-#: src/messageview.c:939 src/mimeview.c:1120 src/summaryview.c:3415
+#: src/messageview.c:948 src/mimeview.c:1128 src/summaryview.c:3257
 msgid "Save as"
 msgstr "名前を付けて保存"
 
-#: src/messageview.c:944 src/mimeview.c:1011 src/summaryview.c:3420
+#: src/messageview.c:953 src/mimeview.c:1019 src/summaryview.c:3262
 msgid "Overwrite"
 msgstr "上書き"
 
-#: src/messageview.c:945
+#: src/messageview.c:954
 msgid "Overwrite existing file?"
 msgstr "既存のファイルを上書きしますか?"
 
-#: src/messageview.c:952 src/summaryview.c:3428 src/summaryview.c:3432
-#: src/summaryview.c:3449
+#: src/messageview.c:961 src/summaryview.c:3270 src/summaryview.c:3274
+#: src/summaryview.c:3291
 #, c-format
 msgid "Can't save the file `%s'."
 msgstr "ファイル `%s' を保存できません。"
 
-#: src/messageview.c:1017
-msgid "This message asks for a return receipt"
+#: src/messageview.c:1026
+msgid "This message asks for a return receipt."
 msgstr "このメッセージは受取り確認を要請しています。"
 
-#: src/messageview.c:1018
+#: src/messageview.c:1027
 msgid "Send receipt"
 msgstr "受取りを送信"
 
-#: src/messageview.c:1071
+#: src/messageview.c:1067
+msgid ""
+"This message has been partially retrieved,\n"
+"and has been deleted from the server."
+msgstr ""
+"このメッセージは部分的に取得されており、\n"
+"サーバーからは削除されています。"
+
+#: src/messageview.c:1073
+#, c-format
+msgid ""
+"This message has been partially retrieved;\n"
+"it is %s."
+msgstr ""
+"このメッセージの一部は取得済みです;\n"
+"それは、 %s です。"
+
+#: src/messageview.c:1077 src/messageview.c:1099
+msgid "Mark for download"
+msgstr "ダウンロードとしてマーク"
+
+#: src/messageview.c:1078 src/messageview.c:1090
+msgid "Mark for deletion"
+msgstr "削除としてマーク"
+
+#: src/messageview.c:1083
+#, c-format
+msgid ""
+"This message has been partially retrieved;\n"
+"it is %s and will be downloaded."
+msgstr ""
+"このメッセージの一部は取得済みです;\n"
+"%s がそれで、ダウンロードされます。"
+
+#: src/messageview.c:1088 src/messageview.c:1101
+#: src/prefs_filtering_action.c:137
+msgid "Unmark"
+msgstr "マークを外す"
+
+#: src/messageview.c:1094
+#, c-format
+msgid ""
+"This message has been partially retrieved;\n"
+"it is %s and will be deleted."
+msgstr ""
+"このメッセージの一部は取得済みです;\n"
+"%s がそれで、削除されます。"
+
+#: src/messageview.c:1168
 msgid "Return Receipt Notification"
 msgstr "受信確認を返す"
 
-#: src/messageview.c:1072
+#: src/messageview.c:1169
 msgid ""
 "The message was sent to several of your accounts.\n"
 "Please choose which account do you want to use for sending the receipt "
@@ -4490,19 +4879,19 @@ msgstr ""
 "このメッセージは複数のあなたのアカウントに送信されました。\n"
 "受信確認を送信するために使用するアカウントを選択して下さい:"
 
-#: src/messageview.c:1076
+#: src/messageview.c:1173
 msgid "Send Notification"
 msgstr "確認を送信"
 
-#: src/messageview.c:1076
+#: src/messageview.c:1173
 msgid "+Cancel"
 msgstr "+キャンセル"
 
-#: src/messageview.c:1130 src/summaryview.c:3467 src/toolbar.c:173
+#: src/messageview.c:1227 src/summaryview.c:3309 src/toolbar.c:169
 msgid "Print"
 msgstr "印刷"
 
-#: src/messageview.c:1131 src/summaryview.c:3468
+#: src/messageview.c:1228 src/summaryview.c:3310
 #, c-format
 msgid ""
 "Enter the print command line:\n"
@@ -4511,7 +4900,7 @@ msgstr ""
 "印刷コマンドを入力してください:\n"
 "(`%s' はファイル名で置き換えられます)"
 
-#: src/messageview.c:1137 src/summaryview.c:3474
+#: src/messageview.c:1234 src/summaryview.c:3316
 #, c-format
 msgid ""
 "Print command line is invalid:\n"
@@ -4525,66 +4914,83 @@ msgstr ""
 msgid "can't copy message %s to %s\n"
 msgstr "メッセージ %s を %s にコピーできません\n"
 
-#: src/mimeview.c:154
+#: src/mh_gtk.c:58
+msgid "/Remove _mailbox"
+msgstr "/メールボックスを削除(_m)"
+
+#: src/mh_gtk.c:308
+#, c-format
+msgid ""
+"Really remove the mailbox `%s' ?\n"
+"(The messages are NOT deleted from the disk)"
+msgstr ""
+"メールボックス `%s' を本当に削除しますか ?\n"
+"(メッセージはディスクから削除されません)"
+
+#: src/mh_gtk.c:310
+msgid "Remove mailbox"
+msgstr "メールボックスを削除"
+
+#: src/mimeview.c:153
 msgid "/_Open"
 msgstr "/開く(_O)"
 
-#: src/mimeview.c:155
+#: src/mimeview.c:154
 msgid "/Open _with..."
 msgstr "/アプリケーションから開く(_W)..."
 
-#: src/mimeview.c:156
+#: src/mimeview.c:155
 msgid "/_Display as text"
 msgstr "/テキストとして表示(_D)"
 
-#: src/mimeview.c:157
+#: src/mimeview.c:156
 msgid "/_Save as..."
 msgstr "/名前を付けて保存(_S)..."
 
-#: src/mimeview.c:158
+#: src/mimeview.c:157
 msgid "/Save _all..."
 msgstr "/全て保存(_a)..."
 
-#: src/mimeview.c:197
+#: src/mimeview.c:196
 msgid "MIME Type"
 msgstr "MIME タイプ"
 
-#: src/mimeview.c:641
+#: src/mimeview.c:640
 msgid "Check"
 msgstr "確認"
 
-#: src/mimeview.c:646 src/mimeview.c:651 src/mimeview.c:656
+#: src/mimeview.c:645 src/mimeview.c:650 src/mimeview.c:655
 msgid "Full info"
 msgstr "完全な情報"
 
-#: src/mimeview.c:661
+#: src/mimeview.c:660
 msgid "Check again"
 msgstr "再検索"
 
-#: src/mimeview.c:953 src/mimeview.c:1019 src/mimeview.c:1180
-#: src/mimeview.c:1210
+#: src/mimeview.c:961 src/mimeview.c:1027 src/mimeview.c:1188
+#: src/mimeview.c:1218
 msgid "Can't save the part of multipart message."
 msgstr "マルチパートメッセージのパートを保存できません。"
 
-#: src/mimeview.c:1009
+#: src/mimeview.c:1017
 #, c-format
 msgid "Overwrite existing file '%s'?"
 msgstr "既存のファイル '%s' を上書きしますか?"
 
-#: src/mimeview.c:1046
+#: src/mimeview.c:1054
 msgid "Select destination folder"
 msgstr "出力フォルダの選択"
 
-#: src/mimeview.c:1053
+#: src/mimeview.c:1061
 #, c-format
 msgid "`%s' is not a directory."
 msgstr "`%s'はディレクトリではありません。"
 
-#: src/mimeview.c:1220
+#: src/mimeview.c:1228
 msgid "Open with"
 msgstr "アプリケーションから開く"
 
-#: src/mimeview.c:1221
+#: src/mimeview.c:1229
 #, c-format
 msgid ""
 "Enter the command line to open file:\n"
@@ -4603,69 +5009,103 @@ msgstr "%s:%d への NNTP の接続を確立中...\n"
 msgid "NNTP connection to %s:%d has been disconnected. Reconnecting...\n"
 msgstr "%s:%dへのNNTP接続が切れています。再接続します...\n"
 
-#: src/news.c:405
+#: src/news.c:406
 msgid "can't retrieve newsgroup list\n"
 msgstr "ニュースグループのリストを取得できません\n"
 
-#: src/news.c:518
+#: src/news.c:519
 msgid "can't post article.\n"
 msgstr "記事を投稿できません。\n"
 
-#: src/news.c:544
+#: src/news.c:545
 #, c-format
 msgid "can't retrieve article %d\n"
 msgstr "記事 %d を取得できません\n"
 
-#: src/news.c:593
+#: src/news.c:594
 #, c-format
 msgid "can't select group: %s\n"
 msgstr "グループ %s を選択できません\n"
 
-#: src/news.c:806
+#: src/news.c:807
 #, c-format
 msgid "can't set group: %s\n"
 msgstr "グループを %s にセットできません\n"
 
-#: src/news.c:814
+#: src/news.c:815
 #, c-format
 msgid "invalid article range: %d - %d\n"
 msgstr "無効な記事の範囲です: %d - %d\n"
 
-#: src/news.c:834
+#: src/news.c:835
 #, c-format
 msgid "error occurred while getting %s.\n"
 msgstr "%s を取得中にエラーが発生しました。\n"
 
-#: src/news.c:852
+#: src/news.c:853
 #, c-format
 msgid "getting xover %d in %s...\n"
 msgstr "xover %d を取得中 (%s)...\n"
 
-#: src/news.c:856 src/news.c:941
+#: src/news.c:857 src/news.c:942
 msgid "can't get xover\n"
 msgstr "xover 情報を取得できません\n"
 
-#: src/news.c:865 src/news.c:951
+#: src/news.c:866 src/news.c:952
 msgid "error occurred while getting xover.\n"
 msgstr "xover 情報を取得中にエラーが発生しました。\n"
 
-#: src/news.c:871 src/news.c:964
+#: src/news.c:872 src/news.c:965
 #, c-format
 msgid "invalid xover line: %s\n"
 msgstr "無効な xover 行です: %s\n"
 
-#: src/news.c:886 src/news.c:905 src/news.c:983 src/news.c:1018
+#: src/news.c:887 src/news.c:906 src/news.c:984 src/news.c:1019
 msgid "can't get xhdr\n"
 msgstr "xhdr 情報を取得できません\n"
 
-#: src/news.c:895 src/news.c:914 src/news.c:995 src/news.c:1030
+#: src/news.c:896 src/news.c:915 src/news.c:996 src/news.c:1031
 msgid "error occurred while getting xhdr.\n"
 msgstr "xhdr 情報を取得中にエラーが発生しました。\n"
 
-#: src/news.c:937
+#: src/news.c:938
 #, c-format
 msgid "getting xover %d - %d in %s...\n"
 msgstr "xover %d - %d を取得中 (%s)...\n"
+
+#: src/news_gtk.c:49
+msgid "/_Subscribe to newsgroup..."
+msgstr "/ニュースグループを購読する(_S)"
+
+#: src/news_gtk.c:50
+msgid "/_Unsubscribe newsgroup"
+msgstr "/ニュースグループの購読を解除する(_U)"
+
+#: src/news_gtk.c:52
+msgid "/Down_load"
+msgstr "/ダウンロード(_l)"
+
+#: src/news_gtk.c:56
+msgid "/Remove _news account"
+msgstr "/ニュースアカウントを削除(_n)"
+
+#: src/news_gtk.c:202
+#, c-format
+msgid "Really unsubscribe newsgroup `%s'?"
+msgstr "本当にニュースグループ `%s' の購読を解除しますか?"
+
+#: src/news_gtk.c:203
+msgid "Unsubscribe newsgroup"
+msgstr "ニュースグループの購読を解除"
+
+#: src/news_gtk.c:240
+#, c-format
+msgid "Really delete news account `%s'?"
+msgstr "本当にニュースアカウント `%s' を削除しますか?"
+
+#: src/news_gtk.c:241
+msgid "Delete news account"
+msgstr "ニュースアカウントを削除"
 
 #: src/passphrase.c:85
 msgid "Passphrase"
@@ -4701,6 +5141,7 @@ msgid "ClamAV: scanning message..."
 msgstr "ClamAV: メッセージを検査中..."
 
 #: src/plugins/clamav/clamav_plugin.c:226
+#: src/plugins/clamav/clamav_plugin_gtk.c:243
 msgid "Clam AntiVirus"
 msgstr "Clam AntiVirus"
 
@@ -4755,15 +5196,16 @@ msgstr "フォルダに保存"
 msgid "Leave empty to use the default trash folder"
 msgstr "デフォルトのごみ箱フォルダを使用するために空のままにする"
 
-#: src/plugins/clamav/clamav_plugin_gtk.c:240
-msgid "Filtering/Clam AntiVirus"
-msgstr "振り分け/Clam AntiVirus"
+#: src/plugins/clamav/clamav_plugin_gtk.c:242
+#: src/plugins/spamassassin/spamassassin_gtk.c:455
+msgid "Filtering"
+msgstr "振り分け"
 
-#: src/plugins/clamav/clamav_plugin_gtk.c:261
+#: src/plugins/clamav/clamav_plugin_gtk.c:267
 msgid "Clam AntiVirus GTK"
 msgstr "Clam AntiVirus GTK"
 
-#: src/plugins/clamav/clamav_plugin_gtk.c:266
+#: src/plugins/clamav/clamav_plugin_gtk.c:272
 msgid ""
 "This plugin provides a Preferences page for the Clam AntiVirus plugin.\n"
 "\n"
@@ -4801,27 +5243,33 @@ msgstr ""
 "\n"
 "このプラグインは実際の役にはたちません"
 
-#: src/plugins/dillo_viewer/dillo_prefs.c:74
-msgid "Message View/Dillo Browser"
-msgstr "メッセージビュー/Dilloブラウザ"
+#: src/plugins/dillo_viewer/dillo_prefs.c:73
+#: src/plugins/image_viewer/viewerprefs.c:152 src/prefs_ext_prog.c:265
+#: src/prefs_msg_colors.c:383
+msgid "Message View"
+msgstr "メッセージビュー"
 
-#: src/plugins/dillo_viewer/dillo_prefs.c:106
+#: src/plugins/dillo_viewer/dillo_prefs.c:74
+msgid "Dillo Browser"
+msgstr "Dilloブラウザ"
+
+#: src/plugins/dillo_viewer/dillo_prefs.c:112
 msgid "Do not load remote links in mails"
 msgstr "メール文書のリモートリンクを読み込まない"
 
-#: src/plugins/dillo_viewer/dillo_prefs.c:112
+#: src/plugins/dillo_viewer/dillo_prefs.c:118
 msgid "Equivalent to Dillo's '--local' option"
 msgstr "Dilloの'--local'オプションと同等"
 
-#: src/plugins/dillo_viewer/dillo_prefs.c:114
+#: src/plugins/dillo_viewer/dillo_prefs.c:120
 msgid "You can still load remote links by reloading the page"
 msgstr "この場合でもページを再ロードすることでリモートリンクを読みこめます。"
 
-#: src/plugins/dillo_viewer/dillo_prefs.c:121
+#: src/plugins/dillo_viewer/dillo_prefs.c:127
 msgid "Full window mode (hide controls)"
 msgstr "ウインドウ全表示モード (コントロールを隠す)"
 
-#: src/plugins/dillo_viewer/dillo_prefs.c:127
+#: src/plugins/dillo_viewer/dillo_prefs.c:133
 msgid "Equivalent to Dillo's '--fullwindow' option"
 msgstr "Dilloの'--fullwindow'オプションと同等"
 
@@ -4835,6 +5283,7 @@ msgstr ""
 "このプラグインはDillo WebブラウザによりHTMLメールをレンダリングします。"
 
 #: src/plugins/image_viewer/plugin.c:58
+#: src/plugins/image_viewer/viewerprefs.c:153
 msgid "Image Viewer"
 msgstr "イメージビュアー"
 
@@ -4872,10 +5321,6 @@ msgstr ""
 "デフォルトで添付イメージの大きさを調整する\n"
 "(イメージをクリックするとサイズ変更を取り消します)"
 
-#: src/plugins/image_viewer/viewerprefs.c:153
-msgid "Message View/Image Viewer"
-msgstr "メッセージビュー/イメージビュアー"
-
 #: src/plugins/mathml_viewer/mathml_viewer.c:163
 msgid "MathML Viewer"
 msgstr "MathMLビューア"
@@ -4888,15 +5333,133 @@ msgstr ""
 "このプラグインは添付されたMathML(Content-Type: text/mathml)を表示するために"
 "GtkMathViewウイジェットを使用します。"
 
+#: src/plugins/pgpmime/plugin.c:58
+msgid "PGP/MIME"
+msgstr "PGP/MIME"
+
+#: src/plugins/pgpmime/plugin.c:63
+msgid ""
+"This plugin enables signature verification of digitally signed messages, and "
+"decryption of encrypted messages. \n"
+"\n"
+"You don't need it to send signed or encrypted emails."
+msgstr ""
+"このプラグインによりデジタル署名付きのメッセージの署名検証や暗号化されたメッセージの復号ができるようになります。\n"
+"\n"
+"署名されたメールや暗号化されたメールを送信する場合にはこのプラグインを使用する必要はありません。"
+
+#: src/plugins/pgpmime/sgpgme.c:97
+msgid "Undefined"
+msgstr "未定義"
+
+#: src/plugins/pgpmime/sgpgme.c:99 src/prefs_common.c:1090
+#: src/prefs_common.c:1209
+msgid "Never"
+msgstr "表示しない"
+
+#: src/plugins/pgpmime/sgpgme.c:101
+msgid "Marginal"
+msgstr "若干"
+
+#: src/plugins/pgpmime/sgpgme.c:105
+msgid "Ultimate"
+msgstr "完全"
+
+#: src/plugins/pgpmime/sgpgme.c:125
+#, c-format
+msgid "Valid signature by %s (Trust: %s)"
+msgstr "%s による有効な署名 (信頼: %s)"
+
+#: src/plugins/pgpmime/sgpgme.c:130
+msgid "The signature has expired"
+msgstr "署名は期限切れです"
+
+#: src/plugins/pgpmime/sgpgme.c:132
+msgid "The key that was used to sign this part has expired"
+msgstr "この部分の署名に使用されているキーは期限切れです"
+
+#: src/plugins/pgpmime/sgpgme.c:134
+msgid "Not all signatures are valid"
+msgstr "全ての署名が有効であるわけではありません"
+
+#: src/plugins/pgpmime/sgpgme.c:136
+msgid "This signature is invalid"
+msgstr "この署名は無効です"
+
+#: src/plugins/pgpmime/sgpgme.c:138
+msgid "You have no key to verify this signature"
+msgstr "この署名を検証するための鍵がありません"
+
+#: src/plugins/pgpmime/sgpgme.c:140 src/privacy.c:150 src/privacy.c:169
+msgid "No signature found"
+msgstr "署名がありません"
+
+#: src/plugins/pgpmime/sgpgme.c:142
+msgid "An error occured"
+msgstr "エラーが発生しました"
+
+#: src/plugins/pgpmime/sgpgme.c:144
+msgid "The signature has not been checked"
+msgstr "この署名は未確認です"
+
+#: src/plugins/pgpmime/sgpgme.c:168
+#, c-format
+msgid "Signature made %s using %s key ID %s\n"
+msgstr "署名は %s であり、%s キーID %s を用いて作成されました。\n"
+
+#: src/plugins/pgpmime/sgpgme.c:177
+#, c-format
+msgid "Good signature from \"%s\"\n"
+msgstr "\"%s\" からの正しい署名\n"
+
+#: src/plugins/pgpmime/sgpgme.c:182
+#, c-format
+msgid "Expired signature from \"%s\"\n"
+msgstr "\"%s\" からの期限切れの署名\n"
+
+#: src/plugins/pgpmime/sgpgme.c:187
+#, c-format
+msgid "BAD signature from \"%s\"\n"
+msgstr "\"%s\" からの不正な署名\n"
+
+#: src/plugins/pgpmime/sgpgme.c:198
+#, c-format
+msgid "                aka \"%s\"\n"
+msgstr "                または \"%s\"\n"
+
+#: src/plugins/pgpmime/sgpgme.c:203
+#, c-format
+msgid "Primary key fingerprint: %s\n"
+msgstr "主キーの指紋: %s\n"
+
+#: src/plugins/pgpmime/sgpgme.c:214
+#, c-format
+msgid "Signature expires %s\n"
+msgstr "署名の有効期限は %s です\n"
+
+#: src/plugins/pgpmime/sgpgme.c:216
+#, c-format
+msgid "Signature expired %s\n"
+msgstr "署名 %s に期限切れとなっています\n"
+
+#: src/plugins/pgpmime/sgpgme.c:289
+msgid ""
+"GnuPG is not installed properly, or needs to be upgraded.\n"
+"OpenPGP support disabled."
+msgstr ""
+"GnuPG が正しくインストールされていないか、更新する必要があります。\n"
+"OpenPGPサポートは無効となっています。"
+
 #: src/plugins/spamassassin/spamassassin.c:181
 msgid "SpamAssassin: filtering message..."
 msgstr "SpamAssassin: メッセージを振り分け中..."
 
-#: src/plugins/spamassassin/spamassassin.c:310
+#: src/plugins/spamassassin/spamassassin.c:316
+#: src/plugins/spamassassin/spamassassin_gtk.c:456
 msgid "SpamAssassin"
 msgstr "SpamAssassin"
 
-#: src/plugins/spamassassin/spamassassin.c:315
+#: src/plugins/spamassassin/spamassassin.c:321
 msgid ""
 "This plugin checks all messages that are received from an IMAP, LOCAL or POP "
 "account for spam using a SpamAssassin server. You will need a SpamAssassin "
@@ -4960,10 +5523,6 @@ msgstr "spamdサーバのポート"
 msgid "Path of Unix socket"
 msgstr "UNIXソケットのパス"
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:243
-msgid "Timeout"
-msgstr "有効時間"
-
 #: src/plugins/spamassassin/spamassassin_gtk.c:263
 msgid ""
 "Time that is allowed for checking. If the check takes longer the check will "
@@ -5012,15 +5571,11 @@ msgstr "..."
 msgid "Maximum Size"
 msgstr "最大サイズ"
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:453
-msgid "Filtering/SpamAssassin"
-msgstr "振り分け/SpamAssassin"
-
-#: src/plugins/spamassassin/spamassassin_gtk.c:474
+#: src/plugins/spamassassin/spamassassin_gtk.c:480
 msgid "SpamAssassin GTK"
 msgstr "SpamAssassin GTK"
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:479
+#: src/plugins/spamassassin/spamassassin_gtk.c:485
 msgid ""
 "This plugin provides a Preferences page for the SpamAssassin plugin.\n"
 "\n"
@@ -5043,11 +5598,31 @@ msgstr ""
 "か(デフォルト: Yes)を指定し、スパムメールが保存されるフォルダを選択して下さ"
 "い。\n"
 
-#: src/plugins/trayicon/trayicon.c:217
+#: src/plugins/trayicon/trayicon.c:78
+msgid "/_Get"
+msgstr "/受信(_G)"
+
+#: src/plugins/trayicon/trayicon.c:79
+msgid "/Get _All"
+msgstr "/全受信(_A)"
+
+#: src/plugins/trayicon/trayicon.c:81
+msgid "/_Email"
+msgstr "/電子メール(_E)"
+
+#: src/plugins/trayicon/trayicon.c:82
+msgid "/Open A_ddressbook"
+msgstr "/アドレス帳を開く(_d)"
+
+#: src/plugins/trayicon/trayicon.c:84
+msgid "/E_xit Sylpheed"
+msgstr "/Sylpheedを終了(_x)"
+
+#: src/plugins/trayicon/trayicon.c:261
 msgid "Trayicon"
 msgstr "トレイアイコン"
 
-#: src/plugins/trayicon/trayicon.c:222
+#: src/plugins/trayicon/trayicon.c:266
 msgid ""
 "This plugin places a mailbox icon in the system tray that indicates if you "
 "have new or unread mail.\n"
@@ -5073,31 +5648,40 @@ msgstr "応答メッセージのタイムスタンプの文法エラー\n"
 msgid "POP3 protocol error\n"
 msgstr "POP3 プロトコルエラー\n"
 
-#: src/pop.c:628
+#: src/pop.c:256
+#, c-format
+msgid "invalid UIDL response: %s\n"
+msgstr "無効なUIDL応答です: %s\n"
+
+#: src/pop.c:753
 #, c-format
 msgid "POP3: Deleting expired message %d\n"
 msgstr "POP3: 期限切れのメッセージ %d を削除しています\n"
 
-#: src/pop.c:636
+#: src/pop.c:768
 #, c-format
 msgid "POP3: Skipping message %d (%d bytes)\n"
 msgstr "POP3: メッセージ %d をスキップ中 (%d バイト)\n"
 
-#: src/pop.c:667
+#: src/pop.c:800
 msgid "mailbox is locked\n"
 msgstr "メールボックスはロックされています\n"
 
-#: src/pop.c:670
-msgid "session timeout\n"
+#: src/pop.c:803
+msgid "Session timeout\n"
 msgstr "セッションが時間切れです\n"
 
-#: src/pop.c:688
+#: src/pop.c:822
 msgid "command not supported\n"
 msgstr "コマンドはサポートされていません。\n"
 
-#: src/pop.c:692
+#: src/pop.c:827
 msgid "error occurred on POP3 session\n"
 msgstr "POP3セッションでエラーが発生しました\n"
+
+#: src/pop.c:1020
+msgid "TOP command unsupported\n"
+msgstr "TOPコマンドはサポートされていません\n"
 
 #: src/prefs_account.c:692
 #, c-format
@@ -5113,15 +5697,16 @@ msgstr "新規アカウントの設定"
 msgid "%s - Account preferences"
 msgstr "アカウント設定 - %s"
 
-#: src/prefs_account.c:764 src/prefs_common.c:984
+#: src/prefs_account.c:764 src/prefs_common.c:940
 msgid "Receive"
 msgstr "受信"
 
-#: src/prefs_account.c:768 src/prefs_common.c:988 src/prefs_folder_item.c:778
+#: src/prefs_account.c:768 src/prefs_common.c:944 src/prefs_folder_item.c:785
+#: src/prefs_spelling.c:361 src/prefs_wrapping.c:169
 msgid "Compose"
 msgstr "作成"
 
-#: src/prefs_account.c:771 src/prefs_common.c:997
+#: src/prefs_account.c:771 src/prefs_common.c:953
 msgid "Privacy"
 msgstr "機密"
 
@@ -5277,7 +5862,7 @@ msgstr "0を指定した場合は無制限"
 msgid "Authentication method"
 msgstr "認証方法"
 
-#: src/prefs_account.c:1293 src/prefs_account.c:1416 src/prefs_common.c:1344
+#: src/prefs_account.c:1293 src/prefs_account.c:1416 src/prefs_common.c:1300
 msgid "Automatic"
 msgstr "自動設定"
 
@@ -5294,14 +5879,14 @@ msgid "Add Date"
 msgstr "日付の追加"
 
 #: src/prefs_account.c:1364
-msgid "Generate Message-Id"
+msgid "Generate Message-ID"
 msgstr "メッセージIDを生成する"
 
 #: src/prefs_account.c:1371
 msgid "Add user-defined header"
 msgstr "ユーザ定義のヘッダを追加する"
 
-#: src/prefs_account.c:1373 src/prefs_common.c:1902 src/prefs_common.c:1927
+#: src/prefs_account.c:1373 src/prefs_common.c:1800
 msgid " Edit... "
 msgstr " 編集... "
 
@@ -5333,7 +5918,7 @@ msgstr "POP認証の制限時間: "
 msgid "minutes"
 msgstr "分ごと"
 
-#: src/prefs_account.c:1546 src/prefs_account.c:1591 src/toolbar.c:432
+#: src/prefs_account.c:1546 src/prefs_account.c:1591 src/toolbar.c:428
 msgid "Signature"
 msgstr "署名"
 
@@ -5354,7 +5939,7 @@ msgid "Automatically set the following addresses"
 msgstr "以下のアドレスを自動指定"
 
 #: src/prefs_account.c:1608 src/prefs_filtering_action.c:1116
-#: src/prefs_matcher.c:143 src/prefs_matcher.c:1714 src/quote_fmt.c:49
+#: src/prefs_matcher.c:145 src/prefs_matcher.c:1727 src/quote_fmt.c:49
 msgid "Cc"
 msgstr "Cc"
 
@@ -5566,8 +6151,8 @@ msgstr "現在のアクション"
 
 #: src/prefs_actions.c:382 src/prefs_filtering_action.c:546
 #: src/prefs_filtering_action.c:619 src/prefs_filtering.c:593
-#: src/prefs_filtering.c:653 src/prefs_filtering.c:672 src/prefs_matcher.c:687
-#: src/prefs_matcher.c:777 src/prefs_template.c:309
+#: src/prefs_filtering.c:653 src/prefs_filtering.c:672 src/prefs_matcher.c:689
+#: src/prefs_matcher.c:779 src/prefs_template.c:309
 msgid "(New)"
 msgstr "(新規)"
 
@@ -5692,91 +6277,87 @@ msgstr "{}の間の振り分け用アクションを選択されたメッセー�
 msgid "Description of symbols"
 msgstr "記号の説明"
 
-#: src/prefs_common.c:967
+#: src/prefs_common.c:923
 msgid "Common Preferences"
 msgstr "全般の設定"
 
-#: src/prefs_common.c:990
+#: src/prefs_common.c:946
 msgid "Quote"
 msgstr "引用"
 
-#: src/prefs_common.c:992
+#: src/prefs_common.c:948 src/prefs_fonts.c:290 src/prefs_themes.c:329
 msgid "Display"
 msgstr "表示"
 
-#: src/prefs_common.c:994 src/prefs_fonts.c:197
+#: src/prefs_common.c:950 src/prefs_fonts.c:197
 msgid "Message"
 msgstr "メッセージ"
 
-#: src/prefs_common.c:1002 src/select-keys.c:333
+#: src/prefs_common.c:958 src/select-keys.c:333
 msgid "Other"
 msgstr "その他"
 
-#: src/prefs_common.c:1048
+#: src/prefs_common.c:1004
 msgid "External program"
 msgstr "外部プログラム"
 
-#: src/prefs_common.c:1057
+#: src/prefs_common.c:1013
 msgid "Use external program for incorporation"
 msgstr "メールの受信に外部プログラムを使用する"
 
-#: src/prefs_common.c:1064
+#: src/prefs_common.c:1020
 msgid "Command"
 msgstr "コマンド"
 
-#: src/prefs_common.c:1088
+#: src/prefs_common.c:1044
 msgid "Auto-check new mail"
 msgstr "新着メールを自動チェックする"
 
-#: src/prefs_common.c:1090
+#: src/prefs_common.c:1046
 msgid "every"
 msgstr "各"
 
-#: src/prefs_common.c:1102
+#: src/prefs_common.c:1058
 msgid "minute(s)"
 msgstr "分ごと"
 
-#: src/prefs_common.c:1111
+#: src/prefs_common.c:1067
 msgid "Check new mail on startup"
 msgstr "起動時に新着メールをチェックする"
 
-#: src/prefs_common.c:1113
+#: src/prefs_common.c:1069
 msgid "Update all local folders after incorporation"
 msgstr "受信後に全てのローカルフォルダを更新する"
 
-#: src/prefs_common.c:1121
+#: src/prefs_common.c:1077
 msgid "Show receive dialog"
 msgstr "受信ダイアログを表示する"
 
-#: src/prefs_common.c:1131 src/prefs_common.c:1252 src/prefs_common.c:2218
+#: src/prefs_common.c:1087 src/prefs_common.c:1208 src/prefs_common.c:2088
 msgid "Always"
 msgstr "常に"
 
-#: src/prefs_common.c:1132
+#: src/prefs_common.c:1088
 msgid "Only on manual receiving"
 msgstr "マニュアル受信時のみ"
 
-#: src/prefs_common.c:1134 src/prefs_common.c:1253 src/sgpgme.c:99
-msgid "Never"
-msgstr "表示しない"
-
-#: src/prefs_common.c:1142
+#: src/prefs_common.c:1098
 msgid "Close receive dialog when finished"
 msgstr "終了時に受信ダイアログを閉じる"
 
-#: src/prefs_common.c:1144
+#: src/prefs_common.c:1100
 msgid "Run command when new mail arrives"
 msgstr "新規メール受信時にコマンドを実行"
 
-#: src/prefs_common.c:1154
+#: src/prefs_common.c:1110
 msgid "after autochecking"
 msgstr "自動確認後"
 
-#: src/prefs_common.c:1156
+#: src/prefs_common.c:1112
 msgid "after manual checking"
 msgstr "手動確認後"
 
-#: src/prefs_common.c:1170
+#: src/prefs_common.c:1126
 #, c-format
 msgid ""
 "Command to execute:\n"
@@ -5785,19 +6366,19 @@ msgstr ""
 "実行するコマンド:\n"
 "(新規メールの番号として %d を使用して下さい)"
 
-#: src/prefs_common.c:1238
+#: src/prefs_common.c:1194
 msgid "Save sent messages to Sent folder"
 msgstr "送信したメッセージを送信控に保存する"
 
-#: src/prefs_common.c:1243
+#: src/prefs_common.c:1199
 msgid "Show send dialog"
 msgstr "送信ダイアログを表示する"
 
-#: src/prefs_common.c:1261
+#: src/prefs_common.c:1217
 msgid "Outgoing codeset"
 msgstr "送信コードセット"
 
-#: src/prefs_common.c:1270
+#: src/prefs_common.c:1226
 msgid ""
 "If `Automatic' is selected, the optimal encoding for the current locale will "
 "be used"
@@ -5805,107 +6386,107 @@ msgstr ""
 "`自動'が選択された場合、現在のロケールで最適なエンコーディングが使用されま"
 "す。"
 
-#: src/prefs_common.c:1282
+#: src/prefs_common.c:1238
 msgid "Automatic (Recommended)"
 msgstr "自動 (推奨)"
 
-#: src/prefs_common.c:1283
+#: src/prefs_common.c:1239
 msgid "7bit ascii (US-ASCII)"
 msgstr "7ビットアスキー (US-ASCII)"
 
-#: src/prefs_common.c:1285
+#: src/prefs_common.c:1241
 msgid "Unicode (UTF-8)"
 msgstr "Unicode (UTF-8)"
 
-#: src/prefs_common.c:1287
+#: src/prefs_common.c:1243
 msgid "Western European (ISO-8859-1)"
 msgstr "欧米 (ISO-8859-1)"
 
-#: src/prefs_common.c:1288
+#: src/prefs_common.c:1244
 msgid "Western European (ISO-8859-15)"
 msgstr "欧米 (ISO-8859-15)"
 
-#: src/prefs_common.c:1289
+#: src/prefs_common.c:1245
 msgid "Central European (ISO-8859-2)"
 msgstr "中欧 (ISO-8859-2)"
 
-#: src/prefs_common.c:1290
+#: src/prefs_common.c:1246
 msgid "Baltic (ISO-8859-13)"
 msgstr "バルト諸国 (ISO-8859-13)"
 
-#: src/prefs_common.c:1291
+#: src/prefs_common.c:1247
 msgid "Baltic (ISO-8859-4)"
 msgstr "バルト諸国 (ISO-8859-4)"
 
-#: src/prefs_common.c:1292
+#: src/prefs_common.c:1248
 msgid "Greek (ISO-8859-7)"
 msgstr "ギリシャ語 (ISO-8859-7)"
 
-#: src/prefs_common.c:1293
+#: src/prefs_common.c:1249
 msgid "Turkish (ISO-8859-9)"
 msgstr "トルコ語 (ISO-8859-9)"
 
-#: src/prefs_common.c:1295
+#: src/prefs_common.c:1251
 msgid "Cyrillic (ISO-8859-5)"
 msgstr "キリル文字 (ISO-8859-5)"
 
-#: src/prefs_common.c:1297
+#: src/prefs_common.c:1253
 msgid "Cyrillic (KOI8-R)"
 msgstr "キリル文字 (KOI8-R)"
 
-#: src/prefs_common.c:1299
+#: src/prefs_common.c:1255
 msgid "Cyrillic (Windows-1251)"
 msgstr "キリル文字 (Windows-1251)"
 
-#: src/prefs_common.c:1300
+#: src/prefs_common.c:1256
 msgid "Cyrillic (KOI8-U)"
 msgstr "キリル文字 (KOI8-U)"
 
-#: src/prefs_common.c:1302
+#: src/prefs_common.c:1258
 msgid "Japanese (ISO-2022-JP)"
 msgstr "日本語 (ISO-2022-JP)"
 
-#: src/prefs_common.c:1304
+#: src/prefs_common.c:1260
 msgid "Japanese (EUC-JP)"
 msgstr "日本語 (EUC-JP)"
 
-#: src/prefs_common.c:1305
+#: src/prefs_common.c:1261
 msgid "Japanese (Shift_JIS)"
 msgstr "日本語 (Shift_JIS)"
 
-#: src/prefs_common.c:1307
+#: src/prefs_common.c:1263
 msgid "Simplified Chinese (GB2312)"
 msgstr "簡体字中国語 (GB2312)"
 
-#: src/prefs_common.c:1308
+#: src/prefs_common.c:1264
 msgid "Traditional Chinese (Big5)"
 msgstr "繁体字中国語 (Big5)"
 
-#: src/prefs_common.c:1310
+#: src/prefs_common.c:1266
 msgid "Traditional Chinese (EUC-TW)"
 msgstr "繁体字中国語 (EUC-TW)"
 
-#: src/prefs_common.c:1311
+#: src/prefs_common.c:1267
 msgid "Chinese (ISO-2022-CN)"
 msgstr "中国語 (ISO-2022-CN)"
 
-#: src/prefs_common.c:1313
+#: src/prefs_common.c:1269
 msgid "Korean (EUC-KR)"
 msgstr "韓国語 (EUC-KR)"
 
-#: src/prefs_common.c:1314
+#: src/prefs_common.c:1270
 msgid "Thai (TIS-620)"
 msgstr "タイ (TIS-620)"
 
-#: src/prefs_common.c:1315
+#: src/prefs_common.c:1271
 msgid "Thai (Windows-874)"
 msgstr "タイ (Windows-874)"
 
-#: src/prefs_common.c:1328
+#: src/prefs_common.c:1284
 msgid "Transfer encoding"
 msgstr "伝送エンコーディング"
 
-#: src/prefs_common.c:1337
+#: src/prefs_common.c:1293
 msgid ""
 "Specify Content-Transfer-Encoding used when message body contains non-ASCII "
 "characters"
@@ -5913,151 +6494,123 @@ msgstr ""
 "メッセージ本文に非ASCII文字を含む場合に使用するContent-Transfer-Encodingを指"
 "定"
 
-#: src/prefs_common.c:1423
+#: src/prefs_common.c:1367
 msgid "Automatic account selection"
 msgstr "アカウント自動選択"
 
-#: src/prefs_common.c:1431
+#: src/prefs_common.c:1375
 msgid "when replying"
 msgstr "返信時"
 
-#: src/prefs_common.c:1433
+#: src/prefs_common.c:1377
 msgid "when forwarding"
 msgstr "転送時"
 
-#: src/prefs_common.c:1435
+#: src/prefs_common.c:1379
 msgid "when re-editing"
 msgstr "再編集時"
 
-#: src/prefs_common.c:1442
+#: src/prefs_common.c:1386
 msgid "Reply button invokes mailing list reply"
 msgstr "返信ボタンによりメーリングリストへ返信する"
 
-#: src/prefs_common.c:1445
+#: src/prefs_common.c:1389
 msgid "Automatically launch the external editor"
 msgstr "外部エディタを自動的に起動する"
 
-#: src/prefs_common.c:1452 src/prefs_filtering_action.c:143
+#: src/prefs_common.c:1396 src/prefs_filtering_action.c:143
 msgid "Forward as attachment"
 msgstr "添付として転送"
 
-#: src/prefs_common.c:1455
+#: src/prefs_common.c:1399
 msgid "Block cursor"
 msgstr "ブロックカーソル"
 
-#: src/prefs_common.c:1458
+#: src/prefs_common.c:1402
 msgid "Keep the original 'From' header when redirecting"
 msgstr "転送時に元の'From'ヘッダを保持する"
 
-#: src/prefs_common.c:1466
+#: src/prefs_common.c:1410
 msgid "Autosave to Drafts folder every "
 msgstr "草稿フォルダに自動保存する間隔 "
 
-#: src/prefs_common.c:1473 src/prefs_common.c:1518
+#: src/prefs_common.c:1417 src/prefs_wrapping.c:117
 msgid "characters"
 msgstr "文字で改行"
 
-#: src/prefs_common.c:1481
+#: src/prefs_common.c:1425
 msgid "Undo level"
 msgstr "アンドウレベル"
 
-#: src/prefs_common.c:1494
-msgid "Message wrapping"
-msgstr "メッセージの自動改行"
-
-#: src/prefs_common.c:1506
-msgid "Wrap messages at"
-msgstr "自動改行幅 "
-
-#: src/prefs_common.c:1526
-msgid "Wrap quotation"
-msgstr "引用部を自動改行する"
-
-#: src/prefs_common.c:1528
-msgid "Wrap on input"
-msgstr "入力時に自動改行する"
-
-#: src/prefs_common.c:1531
-msgid "Wrap before sending"
-msgstr "送信時に自動改行する"
-
-#: src/prefs_common.c:1534
-msgid "Smart wrapping (EXPERIMENTAL)"
-msgstr "スマート自動改行 (実験版)"
-
-#: src/prefs_common.c:1600
+#: src/prefs_common.c:1493
 msgid "Reply will quote by default"
 msgstr "返信時にデフォルトで引用を行う"
 
-#: src/prefs_common.c:1602
+#: src/prefs_common.c:1495
 msgid "Reply format"
 msgstr "返信用フォーマット"
 
-#: src/prefs_common.c:1617 src/prefs_common.c:1656
+#: src/prefs_common.c:1510 src/prefs_common.c:1549
 msgid "Quotation mark"
 msgstr "引用符"
 
-#: src/prefs_common.c:1641
+#: src/prefs_common.c:1534
 msgid "Forward format"
 msgstr "転送用フォーマット"
 
-#: src/prefs_common.c:1685
+#: src/prefs_common.c:1578
 msgid " Description of symbols "
 msgstr " 記号の説明 "
 
-#: src/prefs_common.c:1693
+#: src/prefs_common.c:1586
 msgid "Quotation characters"
 msgstr "引用文字"
 
-#: src/prefs_common.c:1708
+#: src/prefs_common.c:1601
 msgid "Treat these characters as quotation marks: "
 msgstr "引用符として扱う文字: "
 
-#: src/prefs_common.c:1758
+#: src/prefs_common.c:1651
 msgid "Translate header name (such as `From:', `Subject:')"
 msgstr "ヘッダの項目を翻訳する (例えば `From:', `Subject:' 等)"
 
-#: src/prefs_common.c:1761
+#: src/prefs_common.c:1654
 msgid "Display unread number next to folder name"
 msgstr "フォルダ名の横に未読数を表示する"
 
-#: src/prefs_common.c:1770
+#: src/prefs_common.c:1663
 msgid "Abbreviate newsgroup names longer than"
 msgstr "ニュースグループ名省略を行う文字数 "
 
-#: src/prefs_common.c:1785
+#: src/prefs_common.c:1678
 msgid "letters"
 msgstr "文字"
 
-#: src/prefs_common.c:1791
+#: src/prefs_common.c:1684
 msgid "Summary View"
 msgstr "サマリビュー"
 
-#: src/prefs_common.c:1800
+#: src/prefs_common.c:1693
 msgid "Display recipient in `From' column if sender is yourself"
 msgstr "差出人が自分の場合は `差出人' カラムに宛先を表示する"
 
-#: src/prefs_common.c:1803
+#: src/prefs_common.c:1696
 msgid "Display sender using address book"
 msgstr "アドレス帳を使用して宛先を表示"
 
-#: src/prefs_common.c:1806
+#: src/prefs_common.c:1699
 msgid "Thread using subject in addition to standard headers"
 msgstr "標準ヘッダに加えて件名によりスレッドを生成"
 
-#: src/prefs_common.c:1814 src/prefs_common.c:2589 src/prefs_common.c:2627
+#: src/prefs_common.c:1707 src/prefs_common.c:2459 src/prefs_common.c:2497
 msgid "Date format"
 msgstr "日付の書式"
 
-#: src/prefs_common.c:1836
+#: src/prefs_common.c:1729
 msgid " Set displayed items in summary... "
 msgstr " サマリの表示項目を設定... "
 
-#: src/prefs_common.c:1897
-msgid "Enable coloration of message"
-msgstr "メッセージの色を有効にする"
-
-#: src/prefs_common.c:1912
+#: src/prefs_common.c:1785
 msgid ""
 "Display multi-byte alphanumeric as\n"
 "ASCII character (Japanese only)"
@@ -6065,328 +6618,268 @@ msgstr ""
 "マルチバイト英数字を1バイト文字で表示する\n"
 "(日本語のみ)"
 
-#: src/prefs_common.c:1918
+#: src/prefs_common.c:1791
 msgid "Display header pane above message view"
 msgstr "メッセージビューの上部にヘッダペインを表示する"
 
-#: src/prefs_common.c:1925
+#: src/prefs_common.c:1798
 msgid "Display short headers on message view"
 msgstr "メッセージビューに簡略ヘッダを表示する"
 
-#: src/prefs_common.c:1947
+#: src/prefs_common.c:1820
 msgid "Line space"
 msgstr "行間を空ける"
 
-#: src/prefs_common.c:1961 src/prefs_common.c:2001
+#: src/prefs_common.c:1834 src/prefs_common.c:1874
 msgid "pixel(s)"
 msgstr "ピクセル"
 
-#: src/prefs_common.c:1966
+#: src/prefs_common.c:1839
 msgid "Indent text"
 msgstr "テキストをインデント"
 
-#: src/prefs_common.c:1968
+#: src/prefs_common.c:1841
 msgid "Scroll"
 msgstr "スクロール"
 
-#: src/prefs_common.c:1975
+#: src/prefs_common.c:1848
 msgid "Half page"
 msgstr "半ページ単位"
 
-#: src/prefs_common.c:1981
+#: src/prefs_common.c:1854
 msgid "Smooth scroll"
 msgstr "スムーズスクロール"
 
-#: src/prefs_common.c:1987
+#: src/prefs_common.c:1860
 msgid "Step"
 msgstr "間隔"
 
-#: src/prefs_common.c:2012
+#: src/prefs_common.c:1885
 msgid "Show attachment descriptions (rather than names)"
 msgstr "添付ファイルの(名前ではなく)説明を表示"
 
-#: src/prefs_common.c:2058
+#: src/prefs_common.c:1928
 msgid "Automatically check signatures"
 msgstr "署名を自動的に検証する"
 
-#: src/prefs_common.c:2061
+#: src/prefs_common.c:1931
 msgid "Store passphrase in memory temporarily"
 msgstr "メモリ上に一時的にパスワードを保存"
 
-#: src/prefs_common.c:2076
+#: src/prefs_common.c:1946
 msgid "Expire after"
 msgstr "有効期限 "
 
-#: src/prefs_common.c:2087
+#: src/prefs_common.c:1957
 msgid "Setting to '0' will store the passphrase for the whole session"
 msgstr "'0'を指定するとセッション中パスワードを保存します"
 
-#: src/prefs_common.c:2095
+#: src/prefs_common.c:1965
 msgid "minute(s) "
 msgstr "分 "
 
-#: src/prefs_common.c:2112
+#: src/prefs_common.c:1982
 msgid "Grab input while entering a passphrase"
 msgstr "パスフレーズの入力時に入力を捕捉する"
 
-#: src/prefs_common.c:2117
+#: src/prefs_common.c:1987
 msgid "Display warning on startup if GnuPG doesn't work"
 msgstr "GnuPGが動作しない場合起動時に警告を表示する"
 
-#: src/prefs_common.c:2172
+#: src/prefs_common.c:2042
 msgid "Always open messages in summary when selected"
 msgstr "選択時に常にサマリのメッセージを開く"
 
-#: src/prefs_common.c:2176
+#: src/prefs_common.c:2046
 msgid "Open first unread message when entering a folder"
 msgstr "フォルダに入ったときに最初の未読メッセージを開く"
 
-#: src/prefs_common.c:2180
+#: src/prefs_common.c:2050
 msgid "Only mark message as read when opened in new window"
 msgstr "新規ウインドウにオープンされた時にのみ既読としてマーク"
 
-#: src/prefs_common.c:2184
+#: src/prefs_common.c:2054
 msgid "Go to inbox after receiving new mail"
 msgstr "新着メールを受信した後受信箱に移動する"
 
-#: src/prefs_common.c:2194
+#: src/prefs_common.c:2064
 msgid "Execute immediately when moving or deleting messages"
 msgstr "メッセージを移動または削除したら即座に実行する"
 
-#: src/prefs_common.c:2196
+#: src/prefs_common.c:2066
 msgid "Messages will be marked until execution if this is turned off"
 msgstr ""
 "これを無効にすると、メッセージは実行されるまでマークされた状態になります"
 
-#: src/prefs_common.c:2209
+#: src/prefs_common.c:2079
 msgid "Show no-unread-message dialog"
 msgstr "未読メッセージがないというダイアログを表示"
 
-#: src/prefs_common.c:2219
+#: src/prefs_common.c:2089
 msgid "Assume 'Yes'"
 msgstr "'はい'を前提する"
 
-#: src/prefs_common.c:2221
+#: src/prefs_common.c:2091
 msgid "Assume 'No'"
 msgstr "'いいえ'を前提する"
 
-#: src/prefs_common.c:2230
+#: src/prefs_common.c:2100
 msgid " Set key bindings... "
 msgstr " キー割り付けを設定... "
 
-#: src/prefs_common.c:2296
+#: src/prefs_common.c:2166
 msgid "Add address to destination when double-clicked"
 msgstr "ダブルクリックしたときにアドレスを宛先に追加する"
 
-#: src/prefs_common.c:2299
+#: src/prefs_common.c:2169
 msgid "Log Size"
 msgstr "ログの大きさ"
 
-#: src/prefs_common.c:2306
+#: src/prefs_common.c:2176
 msgid "Clip the log size"
 msgstr "ログの大きさに上限を設定する"
 
-#: src/prefs_common.c:2311
+#: src/prefs_common.c:2181
 msgid "Log window length"
 msgstr "ログウインドウの長さ"
 
-#: src/prefs_common.c:2324
+#: src/prefs_common.c:2194
 msgid "0 to stop logging in the log window"
 msgstr "ログウインドウでのログ記録を停止する場合は0"
 
-#: src/prefs_common.c:2333
+#: src/prefs_common.c:2203
 msgid "Security"
 msgstr "セキュリティ"
 
-#: src/prefs_common.c:2340
+#: src/prefs_common.c:2210
 msgid "Ask before accepting SSL certificates"
 msgstr "SSL証明書を受け入れる前に尋ねる"
 
-#: src/prefs_common.c:2348
+#: src/prefs_common.c:2218
 msgid "On exit"
 msgstr "終了時"
 
-#: src/prefs_common.c:2356
+#: src/prefs_common.c:2226
 msgid "Confirm on exit"
 msgstr "終了時に確認する"
 
-#: src/prefs_common.c:2363
+#: src/prefs_common.c:2233
 msgid "Empty trash on exit"
 msgstr "終了時にごみ箱を空にする"
 
-#: src/prefs_common.c:2365
+#: src/prefs_common.c:2235
 msgid "Ask before emptying"
 msgstr "空にする前に尋ねる"
 
-#: src/prefs_common.c:2369
+#: src/prefs_common.c:2239
 msgid "Warn if there are queued messages"
 msgstr "送信待機中のメッセージがあれば警告する"
 
-#: src/prefs_common.c:2375
+#: src/prefs_common.c:2245
 msgid "Socket I/O timeout:"
 msgstr "ソケット入出力有効時間:"
 
-#: src/prefs_common.c:2388
+#: src/prefs_common.c:2258
 msgid "seconds"
 msgstr "秒"
 
-#: src/prefs_common.c:2565
+#: src/prefs_common.c:2435
 msgid "the full abbreviated weekday name"
 msgstr "曜日を省略表示"
 
-#: src/prefs_common.c:2566
+#: src/prefs_common.c:2436
 msgid "the full weekday name"
 msgstr "曜日を詳細表示"
 
-#: src/prefs_common.c:2567
+#: src/prefs_common.c:2437
 msgid "the abbreviated month name"
 msgstr "月を省略表示"
 
-#: src/prefs_common.c:2568
+#: src/prefs_common.c:2438
 msgid "the full month name"
 msgstr "月を詳細表示"
 
-#: src/prefs_common.c:2569
+#: src/prefs_common.c:2439
 msgid "the preferred date and time for the current locale"
 msgstr "現在のロケールに適した日付と時間"
 
-#: src/prefs_common.c:2570
+#: src/prefs_common.c:2440
 msgid "the century number (year/100)"
 msgstr "世紀番号 (年/100)"
 
-#: src/prefs_common.c:2571
+#: src/prefs_common.c:2441
 msgid "the day of the month as a decimal number"
 msgstr "10進数で月単位の日付を表示"
 
-#: src/prefs_common.c:2572
+#: src/prefs_common.c:2442
 msgid "the hour as a decimal number using a 24-hour clock"
 msgstr "24時間単位の10進数で時間を表示"
 
-#: src/prefs_common.c:2573
+#: src/prefs_common.c:2443
 msgid "the hour as a decimal number using a 12-hour clock"
 msgstr "12時間単位の10進数で時間を表示"
 
-#: src/prefs_common.c:2574
+#: src/prefs_common.c:2444
 msgid "the day of the year as a decimal number"
 msgstr "年単位の日付を10進数で表示"
 
-#: src/prefs_common.c:2575
+#: src/prefs_common.c:2445
 msgid "the month as a decimal number"
 msgstr "月を10進数で表示"
 
-#: src/prefs_common.c:2576
+#: src/prefs_common.c:2446
 msgid "the minute as a decimal number"
 msgstr "分を10進数で表示"
 
-#: src/prefs_common.c:2577
+#: src/prefs_common.c:2447
 msgid "either AM or PM"
 msgstr "AMまたはPM"
 
-#: src/prefs_common.c:2578
+#: src/prefs_common.c:2448
 msgid "the second as a decimal number"
 msgstr "秒を10進数で表示"
 
-#: src/prefs_common.c:2579
+#: src/prefs_common.c:2449
 msgid "the day of the week as a decimal number"
 msgstr "曜日を10進数で表示"
 
-#: src/prefs_common.c:2580
+#: src/prefs_common.c:2450
 msgid "the preferred date for the current locale"
 msgstr "現在のロケールに適した日付"
 
-#: src/prefs_common.c:2581
+#: src/prefs_common.c:2451
 msgid "the last two digits of a year"
 msgstr "年の下二桁"
 
-#: src/prefs_common.c:2582
+#: src/prefs_common.c:2452
 msgid "the year as a decimal number"
 msgstr "10進数で年を表示"
 
-#: src/prefs_common.c:2583
+#: src/prefs_common.c:2453
 msgid "the time zone or name or abbreviation"
 msgstr "タイムゾーンまたは名前または短縮形"
 
-#: src/prefs_common.c:2604
+#: src/prefs_common.c:2474
 msgid "Specifier"
 msgstr "選択"
 
-#: src/prefs_common.c:2644
+#: src/prefs_common.c:2514
 msgid "Example"
 msgstr "例"
 
-#: src/prefs_common.c:2733
-msgid "Set message colors"
-msgstr "メッセージの色を指定"
-
-#: src/prefs_common.c:2741
-msgid "Colors"
-msgstr "色"
-
-#: src/prefs_common.c:2788
-msgid "Quoted Text - First Level"
-msgstr "引用文 - 1段階"
-
-#: src/prefs_common.c:2794
-msgid "Quoted Text - Second Level"
-msgstr "引用文 - 2段階"
-
-#: src/prefs_common.c:2800
-msgid "Quoted Text - Third Level"
-msgstr "引用文 - 3段階"
-
-#: src/prefs_common.c:2806
-msgid "URI link"
-msgstr "URI リンク"
-
-#: src/prefs_common.c:2812
-msgid "Target folder"
-msgstr "ターゲットフォルダ"
-
-#: src/prefs_common.c:2818
-msgid "Signatures"
-msgstr "署名"
-
-#: src/prefs_common.c:2825
-msgid "Recycle quote colors"
-msgstr "引用色を循環"
-
-#: src/prefs_common.c:2892
-msgid "Pick color for quotation level 1"
-msgstr "引用レベル1の色を選択"
-
-#: src/prefs_common.c:2895
-msgid "Pick color for quotation level 2"
-msgstr "引用レベル2の色を選択"
-
-#: src/prefs_common.c:2898
-msgid "Pick color for quotation level 3"
-msgstr "引用レベル3の色を選択"
-
-#: src/prefs_common.c:2901
-msgid "Pick color for URI"
-msgstr "URI の色を選択"
-
-#: src/prefs_common.c:2904
-msgid "Pick color for target folder"
-msgstr "ターゲットフォルダ用の色を選択"
-
-#: src/prefs_common.c:2907
-msgid "Pick color for signatures"
-msgstr "署名用の色を選択"
-
-#: src/prefs_common.c:3042
+#: src/prefs_common.c:2584
 msgid "Key bindings"
 msgstr "キーバインディング"
 
-#: src/prefs_common.c:3056
+#: src/prefs_common.c:2598
 msgid "Select preset:"
 msgstr "プリセットを選択:"
 
-#: src/prefs_common.c:3069 src/prefs_common.c:3354
+#: src/prefs_common.c:2611 src/prefs_common.c:2896
 msgid "Old Sylpheed"
 msgstr "以前のSylpheed"
 
-#: src/prefs_common.c:3077
+#: src/prefs_common.c:2619
 msgid ""
 "You can also modify each menu shortcut by pressing\n"
 "any key(s) when placing the mouse pointer on the item."
@@ -6403,7 +6896,7 @@ msgid "Current custom headers"
 msgstr "現在のカスタムヘッダ"
 
 #: src/prefs_customheader.c:483 src/prefs_display_header.c:530
-#: src/prefs_matcher.c:1175
+#: src/prefs_matcher.c:1186
 msgid "Header name is not set."
 msgstr "ヘッダ名が指定されていません。"
 
@@ -6423,7 +6916,7 @@ msgstr "本当にこのヘッダを削除してもいいですか?"
 msgid "Displayed header configuration"
 msgstr "ヘッダ設定を表示しました。"
 
-#: src/prefs_display_header.c:225 src/prefs_matcher.c:434
+#: src/prefs_display_header.c:225 src/prefs_matcher.c:436
 msgid "Header name"
 msgstr "ヘッダ名"
 
@@ -6468,9 +6961,9 @@ msgstr "イメージビュアー"
 msgid "Audio player"
 msgstr "オーディオプレイヤー"
 
-#: src/prefs_ext_prog.c:265
-msgid "Message View/External Programs"
-msgstr "メッセージビュー/外部プログラム"
+#: src/prefs_ext_prog.c:266
+msgid "External Programs"
+msgstr "外部プログラム"
 
 #: src/prefs_filtering_action.c:133
 msgid "Move"
@@ -6483,10 +6976,6 @@ msgstr "コピー"
 #: src/prefs_filtering_action.c:136 src/prefs_summary_column.c:67
 msgid "Mark"
 msgstr "マーク"
-
-#: src/prefs_filtering_action.c:137
-msgid "Unmark"
-msgstr "マークを外す"
 
 #: src/prefs_filtering_action.c:138
 msgid "Lock"
@@ -6504,7 +6993,7 @@ msgstr "既読としてマーク"
 msgid "Mark as unread"
 msgstr "未読としてマーク"
 
-#: src/prefs_filtering_action.c:142 src/toolbar.c:385 src/toolbar.c:478
+#: src/prefs_filtering_action.c:142 src/toolbar.c:381 src/toolbar.c:474
 msgid "Forward"
 msgstr "転送"
 
@@ -6513,7 +7002,7 @@ msgid "Redirect"
 msgstr "リダイレクト転送"
 
 #: src/prefs_filtering_action.c:145 src/prefs_filtering_action.c:395
-#: src/toolbar.c:170 src/toolbar.c:388 src/toolbar.c:1491
+#: src/toolbar.c:166 src/toolbar.c:384 src/toolbar.c:1461
 msgid "Execute"
 msgstr "実行"
 
@@ -6554,16 +7043,16 @@ msgid "Recipient"
 msgstr "受取人"
 
 #: src/prefs_filtering_action.c:405 src/prefs_summary_column.c:75
-#: src/summaryview.c:465
+#: src/summaryview.c:459
 msgid "Score"
 msgstr "スコア"
 
-#: src/prefs_filtering_action.c:427 src/prefs_matcher.c:467
+#: src/prefs_filtering_action.c:427 src/prefs_matcher.c:469
 msgid "Info ..."
 msgstr "情報 ..."
 
 #: src/prefs_filtering_action.c:455 src/prefs_filtering.c:286
-#: src/prefs_matcher.c:563 src/prefs_template.c:222 src/prefs_toolbar.c:775
+#: src/prefs_matcher.c:565 src/prefs_template.c:222 src/prefs_toolbar.c:775
 msgid "  Replace  "
 msgstr "  置換  "
 
@@ -6591,56 +7080,39 @@ msgstr "スコアが指定されていません。"
 msgid "No action was defined."
 msgstr "アクションが定義されていませんでした。"
 
-#: src/prefs_filtering_action.c:1113 src/prefs_matcher.c:142
-#: src/prefs_matcher.c:1711 src/prefs_summary_column.c:70 src/quote_fmt.c:47
-#: src/summaryview.c:460 src/summaryview.c:627
-msgid "Subject"
-msgstr "件名"
-
-#: src/prefs_filtering_action.c:1114 src/prefs_matcher.c:143
-#: src/prefs_matcher.c:1712 src/prefs_summary_column.c:71 src/quote_fmt.c:42
-#: src/summaryview.c:461 src/summaryview.c:631
-msgid "From"
-msgstr "差出人"
-
-#: src/prefs_filtering_action.c:1115 src/prefs_matcher.c:143
-#: src/prefs_matcher.c:1713 src/quote_fmt.c:48 src/summaryview.c:635
-msgid "To"
-msgstr "宛先:"
-
-#: src/prefs_filtering_action.c:1117 src/prefs_matcher.c:1715
-#: src/prefs_summary_column.c:72 src/quote_fmt.c:41 src/summaryview.c:462
+#: src/prefs_filtering_action.c:1117 src/prefs_matcher.c:1728
+#: src/prefs_summary_column.c:72 src/quote_fmt.c:41 src/summaryview.c:456
 msgid "Date"
 msgstr "日付"
 
-#: src/prefs_filtering_action.c:1118 src/prefs_matcher.c:1716
+#: src/prefs_filtering_action.c:1118 src/prefs_matcher.c:1729
 #: src/quote_fmt.c:52
 msgid "Message-ID"
 msgstr "メッセージID"
 
-#: src/prefs_filtering_action.c:1119 src/prefs_matcher.c:144
-#: src/prefs_matcher.c:1717 src/quote_fmt.c:50
+#: src/prefs_filtering_action.c:1119 src/prefs_matcher.c:146
+#: src/prefs_matcher.c:1730 src/quote_fmt.c:50
 msgid "Newsgroups"
 msgstr "ニュースグループ"
 
-#: src/prefs_filtering_action.c:1120 src/prefs_matcher.c:144
-#: src/prefs_matcher.c:1718 src/quote_fmt.c:51
+#: src/prefs_filtering_action.c:1120 src/prefs_matcher.c:146
+#: src/prefs_matcher.c:1731 src/quote_fmt.c:51
 msgid "References"
 msgstr "全般の設定"
 
-#: src/prefs_filtering_action.c:1121 src/prefs_matcher.c:1719
+#: src/prefs_filtering_action.c:1121 src/prefs_matcher.c:1732
 msgid "Filename - should not be modified"
 msgstr "ファイル名 - は修正できません"
 
-#: src/prefs_filtering_action.c:1122 src/prefs_matcher.c:1720
+#: src/prefs_filtering_action.c:1122 src/prefs_matcher.c:1733
 msgid "new line"
 msgstr "改行"
 
-#: src/prefs_filtering_action.c:1123 src/prefs_matcher.c:1721
+#: src/prefs_filtering_action.c:1123 src/prefs_matcher.c:1734
 msgid "escape character for quotes"
 msgstr "引用符用のエスケープ文字"
 
-#: src/prefs_filtering_action.c:1124 src/prefs_matcher.c:1722
+#: src/prefs_filtering_action.c:1124 src/prefs_matcher.c:1735
 msgid "quote character"
 msgstr "引用文字"
 
@@ -6692,7 +7164,7 @@ msgstr "ルールの削除"
 msgid "Do you really want to delete this rule?"
 msgstr "本当にこのルールを削除してもいいですか?"
 
-#: src/prefs_filtering.c:999 src/prefs_matcher.c:1665
+#: src/prefs_filtering.c:999 src/prefs_matcher.c:1678
 msgid "Entry not saved"
 msgstr "エントリが保存されていません"
 
@@ -6757,11 +7229,11 @@ msgstr "デフォルトの辞書: "
 msgid "Pick color for folder"
 msgstr "フォルダの色を選択"
 
-#: src/prefs_folder_item.c:766
+#: src/prefs_folder_item.c:768
 msgid "General"
 msgstr "一般"
 
-#: src/prefs_folder_item.c:798
+#: src/prefs_folder_item.c:808
 #, c-format
 msgid "%s - Settings for folder"
 msgstr "フォルダ設定 - %s"
@@ -6786,163 +7258,163 @@ msgstr "強調"
 msgid "You will need to restart for the changes to take effect"
 msgstr "この変更を有効にするには再起動する必要があります"
 
-#: src/prefs_fonts.c:290
-msgid "Display/Fonts"
-msgstr "表示/フォント"
+#: src/prefs_fonts.c:291
+msgid "Fonts"
+msgstr "フォント"
 
 #: src/prefs_gtk.c:777
 msgid "Preferences"
 msgstr "全般の設定"
 
-#: src/prefs_matcher.c:142
+#: src/prefs_matcher.c:144
 msgid "All messages"
 msgstr "全てのメッセージ"
 
-#: src/prefs_matcher.c:143
+#: src/prefs_matcher.c:145
 msgid "To or Cc"
 msgstr "ToまたはCc"
 
-#: src/prefs_matcher.c:144
+#: src/prefs_matcher.c:146
 msgid "In reply to"
 msgstr "返信先"
 
-#: src/prefs_matcher.c:145
+#: src/prefs_matcher.c:147
 msgid "Age greater than"
 msgstr "より大きい"
 
-#: src/prefs_matcher.c:145
+#: src/prefs_matcher.c:147
 msgid "Age lower than"
 msgstr "より小さい"
 
-#: src/prefs_matcher.c:146
+#: src/prefs_matcher.c:148
 msgid "Headers part"
 msgstr "ヘッダ部"
 
-#: src/prefs_matcher.c:147
+#: src/prefs_matcher.c:149
 msgid "Body part"
 msgstr "ボディー部"
 
-#: src/prefs_matcher.c:147
+#: src/prefs_matcher.c:149
 msgid "Whole message"
 msgstr "メッセージ全体"
 
-#: src/prefs_matcher.c:148
+#: src/prefs_matcher.c:150
 msgid "Unread flag"
 msgstr "未読フラグ"
 
-#: src/prefs_matcher.c:148
+#: src/prefs_matcher.c:150
 msgid "New flag"
 msgstr "新規フラグ"
 
-#: src/prefs_matcher.c:149
+#: src/prefs_matcher.c:151
 msgid "Marked flag"
 msgstr "マーク付加"
 
-#: src/prefs_matcher.c:149
+#: src/prefs_matcher.c:151
 msgid "Deleted flag"
 msgstr "削除済みフラグ"
 
-#: src/prefs_matcher.c:150
+#: src/prefs_matcher.c:152
 msgid "Replied flag"
 msgstr "返信済みフラグ"
 
-#: src/prefs_matcher.c:150
+#: src/prefs_matcher.c:152
 msgid "Forwarded flag"
 msgstr "転送済みフラグ"
 
-#: src/prefs_matcher.c:151
+#: src/prefs_matcher.c:153
 msgid "Locked flag"
 msgstr "ロックフラグ"
 
-#: src/prefs_matcher.c:152
+#: src/prefs_matcher.c:154
 msgid "Color label"
 msgstr "色ラベル"
 
-#: src/prefs_matcher.c:153 src/toolbar.c:172
+#: src/prefs_matcher.c:155 src/toolbar.c:168
 msgid "Ignore thread"
 msgstr "スレッドを無視"
 
-#: src/prefs_matcher.c:154
+#: src/prefs_matcher.c:156
 msgid "Score greater than"
 msgstr "より大きいスコア"
 
-#: src/prefs_matcher.c:154
+#: src/prefs_matcher.c:156
 msgid "Score lower than"
 msgstr "より小さいスコア"
 
-#: src/prefs_matcher.c:155
+#: src/prefs_matcher.c:157
 msgid "Score equal to"
 msgstr "等しいスコア"
 
-#: src/prefs_matcher.c:156
+#: src/prefs_matcher.c:158
 msgid "Test"
 msgstr "テスト"
 
-#: src/prefs_matcher.c:157
+#: src/prefs_matcher.c:159
 msgid "Size greater than"
 msgstr "より大きいサイズ"
 
-#: src/prefs_matcher.c:158
+#: src/prefs_matcher.c:160
 msgid "Size smaller than"
 msgstr "より小さいサイズ"
 
-#: src/prefs_matcher.c:159
+#: src/prefs_matcher.c:161
 msgid "Size exactly"
 msgstr "等しいサイズ"
 
-#: src/prefs_matcher.c:176
+#: src/prefs_matcher.c:178
 msgid "or"
 msgstr "または"
 
-#: src/prefs_matcher.c:176
+#: src/prefs_matcher.c:178
 msgid "and"
 msgstr "かつ"
 
-#: src/prefs_matcher.c:193
+#: src/prefs_matcher.c:195
 msgid "contains"
 msgstr "含む"
 
-#: src/prefs_matcher.c:193
+#: src/prefs_matcher.c:195
 msgid "does not contain"
 msgstr "含まない"
 
-#: src/prefs_matcher.c:210
+#: src/prefs_matcher.c:212
 msgid "yes"
 msgstr "はい"
 
-#: src/prefs_matcher.c:210
+#: src/prefs_matcher.c:212
 msgid "no"
 msgstr "いいえ"
 
-#: src/prefs_matcher.c:377
+#: src/prefs_matcher.c:379
 msgid "Condition configuration"
 msgstr "条件設定"
 
-#: src/prefs_matcher.c:402
+#: src/prefs_matcher.c:404
 msgid "Match type"
 msgstr "検索方法"
 
-#: src/prefs_matcher.c:489
+#: src/prefs_matcher.c:491
 msgid "Predicate"
 msgstr "述語"
 
-#: src/prefs_matcher.c:540
+#: src/prefs_matcher.c:542
 msgid "Use regexp"
 msgstr "正規表現を使用"
 
-#: src/prefs_matcher.c:578
+#: src/prefs_matcher.c:580
 msgid "Boolean Op"
 msgstr "論理演算"
 
-#: src/prefs_matcher.c:617
+#: src/prefs_matcher.c:619
 msgid "Current condition rules"
 msgstr "現在の条件"
 
-#: src/prefs_matcher.c:1155
+#: src/prefs_matcher.c:1166
 msgid "Value is not set."
 msgstr "値が指定されていません。"
 
-#: src/prefs_matcher.c:1666
+#: src/prefs_matcher.c:1679
 msgid ""
 "The entry was not saved\n"
 "Have you really finished?"
@@ -6950,25 +7422,85 @@ msgstr ""
 "このエントリは保存されていません\n"
 "本当に終了しますか?"
 
-#: src/prefs_matcher.c:1706
+#: src/prefs_matcher.c:1719
 msgid "'Test' allows you to test a message or message element"
 msgstr "'テスト'によりメッセージまたはメッセージ要素をテストできます"
 
-#: src/prefs_matcher.c:1707
+#: src/prefs_matcher.c:1720
 msgid "using an external program or script. The program will"
 msgstr "外部プログラムまたはスクリプトを使用する"
 
-#: src/prefs_matcher.c:1708
+#: src/prefs_matcher.c:1721
 msgid "return either 0 or 1"
 msgstr "0または1を返す"
 
-#: src/prefs_matcher.c:1709
+#: src/prefs_matcher.c:1722
 msgid "The following symbols can be used:"
 msgstr "以下の記号が使用可能です:"
 
-#: src/prefs_matcher.c:1729
+#: src/prefs_matcher.c:1742
 msgid "Match Type: 'Test'"
 msgstr "検索方法: 'テスト'"
+
+#: src/prefs_msg_colors.c:101
+msgid "Enable coloration of message"
+msgstr "メッセージの色を有効にする"
+
+#: src/prefs_msg_colors.c:115
+msgid "Quoted Text - First Level"
+msgstr "引用文 - 1段階"
+
+#: src/prefs_msg_colors.c:128
+msgid "Quoted Text - Second Level"
+msgstr "引用文 - 2段階"
+
+#: src/prefs_msg_colors.c:141
+msgid "Quoted Text - Third Level"
+msgstr "引用文 - 3段階"
+
+#: src/prefs_msg_colors.c:154
+msgid "URI link"
+msgstr "URI リンク"
+
+#: src/prefs_msg_colors.c:166
+msgid "Target folder"
+msgstr "ターゲットフォルダ"
+
+#: src/prefs_msg_colors.c:178
+msgid "Signatures"
+msgstr "署名"
+
+#: src/prefs_msg_colors.c:182
+msgid "Recycle quote colors"
+msgstr "引用色を循環"
+
+#: src/prefs_msg_colors.c:243
+msgid "Pick color for quotation level 1"
+msgstr "引用レベル1の色を選択"
+
+#: src/prefs_msg_colors.c:246
+msgid "Pick color for quotation level 2"
+msgstr "引用レベル2の色を選択"
+
+#: src/prefs_msg_colors.c:249
+msgid "Pick color for quotation level 3"
+msgstr "引用レベル3の色を選択"
+
+#: src/prefs_msg_colors.c:252
+msgid "Pick color for URI"
+msgstr "URI の色を選択"
+
+#: src/prefs_msg_colors.c:255
+msgid "Pick color for target folder"
+msgstr "ターゲットフォルダ用の色を選択"
+
+#: src/prefs_msg_colors.c:258
+msgid "Pick color for signatures"
+msgstr "署名用の色を選択"
+
+#: src/prefs_msg_colors.c:384
+msgid "Colors"
+msgstr "色"
 
 #: src/prefs_spelling.c:95
 msgid "Select dictionaries location"
@@ -7006,9 +7538,9 @@ msgstr "標準の修正候補モード:"
 msgid "Misspelled word color:"
 msgstr "スペル間違いの単語の色:"
 
-#: src/prefs_spelling.c:361
-msgid "Compose/Spell Checker"
-msgstr "作成/スペルチェッカ"
+#: src/prefs_spelling.c:362
+msgid "Spell Checker"
+msgstr "スペルチェッカ"
 
 #: src/prefs_summary_column.c:69
 msgid "Attachment"
@@ -7082,33 +7614,33 @@ msgstr "テンプレートを削除する"
 msgid "Do you really want to delete this template?"
 msgstr "本当にこのテンプレートを削除してもいいですか?"
 
-#: src/prefs_themes.c:312 src/prefs_themes.c:646
+#: src/prefs_themes.c:312 src/prefs_themes.c:649
 msgid "Default internal theme"
 msgstr "デフォルトの内部テーマ"
 
-#: src/prefs_themes.c:337
-msgid "Display/Themes"
-msgstr "表示/テーマ"
+#: src/prefs_themes.c:330
+msgid "Themes"
+msgstr "テーマ"
 
-#: src/prefs_themes.c:410
+#: src/prefs_themes.c:414
 msgid "Only root can remove system themes"
 msgstr "システムテーマを削除できるのはルートだけです"
 
-#: src/prefs_themes.c:413
+#: src/prefs_themes.c:417
 #, c-format
 msgid "Remove system theme '%s'"
 msgstr "システムテーマ '%s' を削除する"
 
-#: src/prefs_themes.c:417
+#: src/prefs_themes.c:421
 #, c-format
 msgid "Remove theme '%s'"
 msgstr "テーマ '%s'を削除する "
 
-#: src/prefs_themes.c:421
+#: src/prefs_themes.c:425
 msgid "Are you sure you want to remove this theme?"
 msgstr "本当にこのテーマを削除してもいいですか?"
 
-#: src/prefs_themes.c:430
+#: src/prefs_themes.c:434
 #, c-format
 msgid ""
 "File %s failed\n"
@@ -7117,24 +7649,24 @@ msgstr ""
 "テーマを削除する際に\n"
 "ファイル %s の処理に失敗しました"
 
-#: src/prefs_themes.c:434
+#: src/prefs_themes.c:438
 msgid "Removing theme directory failed."
 msgstr "テーマディレクトリの削除に失敗しました"
 
-#: src/prefs_themes.c:437
+#: src/prefs_themes.c:441
 msgid "Theme removed succesfully"
 msgstr "テーマの削除に成功しました。"
 
-#: src/prefs_themes.c:458
+#: src/prefs_themes.c:461
 msgid "Select theme folder"
 msgstr "テーマフォルダを選択"
 
-#: src/prefs_themes.c:468
+#: src/prefs_themes.c:471
 #, c-format
 msgid "Install theme '%s'"
 msgstr "テーマ '%s' をインストール"
 
-#: src/prefs_themes.c:471
+#: src/prefs_themes.c:474
 msgid ""
 "This folder doesn't seem to be a theme folder.\n"
 "Install anyway?"
@@ -7142,11 +7674,11 @@ msgstr ""
 "このフォルダはテーマフォルダではないようです。\n"
 "それでもインストールしますか?"
 
-#: src/prefs_themes.c:478
+#: src/prefs_themes.c:481
 msgid "Do you want to install theme for all users?"
 msgstr "システムの全てのユーザ用にテーマをインストールしますか?"
 
-#: src/prefs_themes.c:499
+#: src/prefs_themes.c:502
 msgid ""
 "A theme with the same name is\n"
 "already installed in this location"
@@ -7154,19 +7686,19 @@ msgstr ""
 "すでに同じ名前のテーマがこの場所に\n"
 "インストールされています"
 
-#: src/prefs_themes.c:503
+#: src/prefs_themes.c:506
 msgid "Couldn't create destination directory"
 msgstr "出力ディレクトリを作成できません"
 
-#: src/prefs_themes.c:516
+#: src/prefs_themes.c:519
 msgid "Theme installed succesfully"
 msgstr "テーマのインストールに成功しました。"
 
-#: src/prefs_themes.c:523
+#: src/prefs_themes.c:526
 msgid "Failed installing theme"
 msgstr "テーマのインストールに失敗しました"
 
-#: src/prefs_themes.c:526
+#: src/prefs_themes.c:529
 #, c-format
 msgid ""
 "File %s failed\n"
@@ -7175,74 +7707,74 @@ msgstr ""
 "テーマをインストールする際に\n"
 "ファイル %s の処理に失敗しました"
 
-#: src/prefs_themes.c:609
+#: src/prefs_themes.c:612
 #, c-format
 msgid "%d themes available (%d user, %d system, 1 internal)"
 msgstr "%d 個のテーマが利用可能です (ユーザ:%d個, システム:%d個, 内部:1個)"
 
-#: src/prefs_themes.c:647
+#: src/prefs_themes.c:650
 msgid "The Sylpheed Claws Team"
 msgstr "Sylpheed Clawsチーム"
 
-#: src/prefs_themes.c:649
+#: src/prefs_themes.c:652
 #, c-format
 msgid "Internal theme has %d icons"
 msgstr "内部テーマには %d 個のアイコンがあります"
 
-#: src/prefs_themes.c:655
+#: src/prefs_themes.c:658
 msgid "No info file available for this theme"
 msgstr "このテーマではinfoファイルが利用できません"
 
-#: src/prefs_themes.c:673
+#: src/prefs_themes.c:676
 msgid "Error: can't get theme status"
 msgstr "エラー: テーマステータスを取得できません"
 
-#: src/prefs_themes.c:697
+#: src/prefs_themes.c:700
 #, c-format
 msgid "%d files (%d icons), size: %s"
 msgstr "%d 個のファイル (%d 個のアイコン) サイズは (%s)"
 
-#: src/prefs_themes.c:788
+#: src/prefs_themes.c:791
 msgid "Selector"
 msgstr "セレクタ"
 
-#: src/prefs_themes.c:810
+#: src/prefs_themes.c:813
 msgid "Install new..."
 msgstr "新規インストール..."
 
-#: src/prefs_themes.c:815
+#: src/prefs_themes.c:818
 msgid "Get more..."
 msgstr "別のテーマ..."
 
-#: src/prefs_themes.c:847
+#: src/prefs_themes.c:850
 msgid "Information"
 msgstr "情報"
 
-#: src/prefs_themes.c:863
+#: src/prefs_themes.c:866
 msgid "Author: "
 msgstr "作者: "
 
-#: src/prefs_themes.c:871
+#: src/prefs_themes.c:874
 msgid "URL:"
 msgstr "URL:"
 
-#: src/prefs_themes.c:899
+#: src/prefs_themes.c:902
 msgid "Status:"
 msgstr "状態:"
 
-#: src/prefs_themes.c:913
+#: src/prefs_themes.c:916
 msgid "Preview"
 msgstr "プレビュー"
 
-#: src/prefs_themes.c:956
+#: src/prefs_themes.c:959
 msgid "Actions"
 msgstr "アクション"
 
-#: src/prefs_themes.c:968
+#: src/prefs_themes.c:971
 msgid "Use this"
 msgstr "このテーマを使用"
 
-#: src/prefs_themes.c:973
+#: src/prefs_themes.c:976
 msgid "Remove"
 msgstr "削除"
 
@@ -7302,31 +7834,55 @@ msgstr "アイコンテキスト"
 msgid "Mapped event"
 msgstr "マップ済みのイベント"
 
-#: src/prefs_toolbar.c:875
-msgid "Customize Toolbars/Main Window"
-msgstr "ツールバーのカスタマイズ/メインウインドウ"
+#: src/prefs_toolbar.c:875 src/prefs_toolbar.c:888 src/prefs_toolbar.c:901
+msgid "Customize Toolbars"
+msgstr "ツールバーのカスタマイズ"
 
-#: src/prefs_toolbar.c:884
-msgid "Customize Toolbars/Message Window"
-msgstr "ツールバーのカスタマイズ/メッセージウインドウ"
+#: src/prefs_toolbar.c:876
+msgid "Main Window"
+msgstr "メインウインドウ"
 
-#: src/prefs_toolbar.c:893
-msgid "Customize Toolbars/Compose Window"
-msgstr "ツールバーのカスタマイズ/作成ウインドウ"
+#: src/prefs_toolbar.c:889
+msgid "Message Window"
+msgstr "メッセージウインドウ"
 
-#: src/privacy.c:150 src/privacy.c:169 src/sgpgme.c:140
-msgid "No signature found"
-msgstr "署名がありません"
+#: src/prefs_toolbar.c:902
+msgid "Compose Window"
+msgstr "ウインドウを作成"
+
+#: src/prefs_wrapping.c:76
+msgid "Wrap on input"
+msgstr "入力時に自動改行する"
+
+#: src/prefs_wrapping.c:82
+msgid "Wrap before sending"
+msgstr "送信時に自動改行する"
+
+#: src/prefs_wrapping.c:88
+msgid "Wrap quotation"
+msgstr "引用部を自動改行する"
+
+#: src/prefs_wrapping.c:95
+msgid "Smart wrapping (EXPERIMENTAL)"
+msgstr "スマート自動改行 (実験版)"
+
+#: src/prefs_wrapping.c:107
+msgid "Wrap messages at"
+msgstr "自動改行幅 "
+
+#: src/prefs_wrapping.c:170
+msgid "Message Wrapping"
+msgstr "メッセージの改行"
 
 #: src/privacy.c:154 src/privacy.c:173
 msgid "No information available"
 msgstr "情報が取得できません"
 
-#: src/procmsg.c:1117
+#: src/procmsg.c:1142
 msgid "Could not create temporary file for news sending."
 msgstr "ニュース送信用のテンポラリファイルを作成できませんでした。"
 
-#: src/procmsg.c:1128
+#: src/procmsg.c:1153
 msgid "Error when writing temporary file for news sending."
 msgstr "ニュース送信用のテンポラリファイルを書き込む際にエラーが発生しました。"
 
@@ -7465,56 +8021,56 @@ msgstr "SMTPの前にPOPを行う"
 msgid "Connecting to SMTP server: %s ..."
 msgstr "SMTPサーバ: %s に接続中..."
 
-#: src/send_message.c:451
+#: src/send_message.c:452
 msgid "Sending HELO..."
 msgstr "HELO を送信中..."
 
-#: src/send_message.c:452 src/send_message.c:457 src/send_message.c:462
+#: src/send_message.c:453 src/send_message.c:458 src/send_message.c:463
 msgid "Authenticating"
 msgstr "認証実行中"
 
-#: src/send_message.c:453 src/send_message.c:458
+#: src/send_message.c:454 src/send_message.c:459
 msgid "Sending message..."
 msgstr "メッセージを送信中..."
 
-#: src/send_message.c:456
+#: src/send_message.c:457
 msgid "Sending EHLO..."
 msgstr "HELO を送信中..."
 
-#: src/send_message.c:465
+#: src/send_message.c:466
 msgid "Sending MAIL FROM..."
 msgstr "MAIL FROM を送信中..."
 
-#: src/send_message.c:466 src/send_message.c:470 src/send_message.c:475
+#: src/send_message.c:467 src/send_message.c:471 src/send_message.c:476
 msgid "Sending"
 msgstr "送信中"
 
-#: src/send_message.c:469
+#: src/send_message.c:470
 msgid "Sending RCPT TO..."
 msgstr "RCPT TO を送信中..."
 
-#: src/send_message.c:474
+#: src/send_message.c:475
 msgid "Sending DATA..."
 msgstr "DATA を送信中..."
 
-#: src/send_message.c:478
+#: src/send_message.c:479
 msgid "Quitting..."
 msgstr "切断中..."
 
-#: src/send_message.c:506
+#: src/send_message.c:507
 #, c-format
 msgid "Sending message (%d / %d bytes)"
 msgstr "メッセージを送信中 (%d / %d bytes)"
 
-#: src/send_message.c:534
+#: src/send_message.c:535
 msgid "Sending message"
 msgstr "メッセージを送信中"
 
-#: src/send_message.c:580 src/send_message.c:599
+#: src/send_message.c:581 src/send_message.c:601
 msgid "Error occurred while sending the message."
 msgstr "メッセージの送信中にエラーが発生しました。"
 
-#: src/send_message.c:583
+#: src/send_message.c:584
 #, c-format
 msgid ""
 "Error occurred while sending the message:\n"
@@ -7538,99 +8094,6 @@ msgstr ""
 "MHフォーマットのメールボックスが既にある場合は、\n"
 "それを使用することが出来ます。\n"
 "よく分からない場合は、そのままOKを選択してください。"
-
-#: src/sgpgme.c:97
-msgid "Undefined"
-msgstr "未定義"
-
-#: src/sgpgme.c:101
-msgid "Marginal"
-msgstr "若干"
-
-#: src/sgpgme.c:105
-msgid "Ultimate"
-msgstr "完全"
-
-#: src/sgpgme.c:125
-#, c-format
-msgid "Valid signature by %s (Trust: %s)"
-msgstr "%s による有効な署名 (信頼: %s)"
-
-#: src/sgpgme.c:130
-msgid "The signature has expired"
-msgstr "署名は期限切れです"
-
-#: src/sgpgme.c:132
-msgid "The key that was used to sign this part has expired"
-msgstr "この部分の署名に使用されているキーは期限切れです"
-
-#: src/sgpgme.c:134
-msgid "Not all signatures are valid"
-msgstr "全ての署名が有効であるわけではありません"
-
-#: src/sgpgme.c:136
-msgid "This signature is invalid"
-msgstr "この署名は無効です"
-
-#: src/sgpgme.c:138
-msgid "You have no key to verify this signature"
-msgstr "この署名を検証するための鍵がありません"
-
-#: src/sgpgme.c:142
-msgid "An error occured"
-msgstr "エラーが発生しました"
-
-#: src/sgpgme.c:144
-msgid "The signature has not been checked"
-msgstr "この署名は未確認です"
-
-#: src/sgpgme.c:168
-#, c-format
-msgid "Signature made %s using %s key ID %s\n"
-msgstr "署名は %s であり、%s キーID %s を用いて作成されました。\n"
-
-#: src/sgpgme.c:177
-#, c-format
-msgid "Good signature from \"%s\"\n"
-msgstr "\"%s\" からの正しい署名\n"
-
-#: src/sgpgme.c:182
-#, c-format
-msgid "Expired signature from \"%s\"\n"
-msgstr "\"%s\" からの期限切れの署名\n"
-
-#: src/sgpgme.c:187
-#, c-format
-msgid "BAD signature from \"%s\"\n"
-msgstr "\"%s\" からの不正な署名\n"
-
-#: src/sgpgme.c:198
-#, c-format
-msgid "                aka \"%s\"\n"
-msgstr "                または \"%s\"\n"
-
-#: src/sgpgme.c:203
-#, c-format
-msgid "Primary key fingerprint: %s\n"
-msgstr "主キーの指紋: %s\n"
-
-#: src/sgpgme.c:214
-#, c-format
-msgid "Signature expires %s\n"
-msgstr "署名の有効期限は %s です\n"
-
-#: src/sgpgme.c:216
-#, c-format
-msgid "Signature expired %s\n"
-msgstr "署名 %s に期限切れとなっています\n"
-
-#: src/sgpgme.c:289
-msgid ""
-"GnuPG is not installed properly, or needs to be upgraded.\n"
-"OpenPGP support disabled."
-msgstr ""
-"GnuPG が正しくインストールされていないか、更新する必要があります。\n"
-"OpenPGPサポートは無効となっています。"
 
 #: src/sourcewindow.c:66
 msgid "Source of the message"
@@ -7673,525 +8136,365 @@ msgstr "一括検索"
 msgid "AND search"
 msgstr "AND検索"
 
-#: src/summary_search.c:323
+#: src/summary_search.c:322
 msgid "Beginning of list reached; continue from end?"
 msgstr "リストの先頭まで検索しました。最後から検索しますか?"
 
-#: src/summary_search.c:325
+#: src/summary_search.c:324
 msgid "End of list reached; continue from beginning?"
 msgstr "リストの終わりまで検索しました。始めから検索しますか?"
 
-#: src/summaryview.c:396
+#: src/summaryview.c:390
 msgid "/_Reply"
 msgstr "/返信(_R)"
 
-#: src/summaryview.c:397
+#: src/summaryview.c:391
 msgid "/Repl_y to"
 msgstr "/返信(_y)"
 
-#: src/summaryview.c:398
+#: src/summaryview.c:392
 msgid "/Repl_y to/_all"
 msgstr "/返信(_y)/全員に返信(_a)"
 
-#: src/summaryview.c:399
+#: src/summaryview.c:393
 msgid "/Repl_y to/_sender"
 msgstr "/返信(_y)/差出人に返信(_s)"
 
-#: src/summaryview.c:400
+#: src/summaryview.c:394
 msgid "/Repl_y to/mailing _list"
 msgstr "/返信(_y)/メーリングリストに返信(_l)"
 
-#: src/summaryview.c:402
+#: src/summaryview.c:396
 msgid "/Follow-up and reply to"
 msgstr "/追記して返信"
 
-#: src/summaryview.c:404 src/toolbar.c:228
+#: src/summaryview.c:398 src/toolbar.c:224
 msgid "/_Forward"
 msgstr "/転送(_F)"
 
-#: src/summaryview.c:405
+#: src/summaryview.c:399 src/toolbar.c:1686
 msgid "/Redirect"
 msgstr "/転送"
 
-#: src/summaryview.c:407
+#: src/summaryview.c:401
 msgid "/M_ove..."
 msgstr "/移動(_o)..."
 
-#: src/summaryview.c:408
+#: src/summaryview.c:402
 msgid "/_Copy..."
 msgstr "/コピー(_C)..."
 
-#: src/summaryview.c:410
+#: src/summaryview.c:404
 msgid "/Cancel a news message"
 msgstr "ニュースメッセージを取り消す"
 
-#: src/summaryview.c:412
+#: src/summaryview.c:406
 msgid "/_Mark"
 msgstr "/マーク(_M)"
 
-#: src/summaryview.c:413
+#: src/summaryview.c:407
 msgid "/_Mark/_Mark"
 msgstr "/マーク(_M)/マーク(_M)"
 
-#: src/summaryview.c:414
+#: src/summaryview.c:408
 msgid "/_Mark/_Unmark"
 msgstr "/マーク(_M)/マーク解除(_U)"
 
-#: src/summaryview.c:415
+#: src/summaryview.c:409
 msgid "/_Mark/---"
 msgstr "/マーク(_M)/---"
 
-#: src/summaryview.c:416
+#: src/summaryview.c:410
 msgid "/_Mark/Mark as unr_ead"
 msgstr "/マーク(_M)/未読としてマーク(_E)"
 
-#: src/summaryview.c:417
+#: src/summaryview.c:411
 msgid "/_Mark/Mark as rea_d"
 msgstr "/マーク(_M)/読んだことにする(_D)"
 
-#: src/summaryview.c:418
+#: src/summaryview.c:412
 msgid "/_Mark/Mark all read"
 msgstr "/マーク(_M)/全て既読にする"
 
-#: src/summaryview.c:419
+#: src/summaryview.c:413
 msgid "/_Mark/Ignore thread"
 msgstr "/マーク(_M)/スレッドを無視する"
 
-#: src/summaryview.c:420
+#: src/summaryview.c:414
 msgid "/_Mark/Unignore thread"
 msgstr "/マーク(_M)/スレッドの無視を解除する"
 
-#: src/summaryview.c:421
+#: src/summaryview.c:415
 msgid "/_Mark/Lock"
 msgstr "/マーク(_M)/ロック"
 
-#: src/summaryview.c:422
+#: src/summaryview.c:416
 msgid "/_Mark/Unlock"
 msgstr "/マーク(_M)/ロック解除"
 
-#: src/summaryview.c:423
+#: src/summaryview.c:417
 msgid "/Color la_bel"
 msgstr "/色ラベル(_b)"
 
-#: src/summaryview.c:426
+#: src/summaryview.c:420
 msgid "/Re-_edit"
 msgstr "/再編集(_e)"
 
-#: src/summaryview.c:428
+#: src/summaryview.c:422
 msgid "/Add sender to address boo_k"
 msgstr "/差出人のアドレス帳に追加する(_k)"
 
-#: src/summaryview.c:430
+#: src/summaryview.c:424
 msgid "/Create f_ilter rule"
 msgstr "/フィルタ規則を作成(_i)"
 
-#: src/summaryview.c:431
+#: src/summaryview.c:425
 msgid "/Create f_ilter rule/_Automatically"
 msgstr "/フィルタ規則を作成(_i)/自動生成(_A)"
 
-#: src/summaryview.c:433
+#: src/summaryview.c:427
 msgid "/Create f_ilter rule/by _From"
 msgstr "/フィルタ規則を作成(_i)/Fromから(_F)"
 
-#: src/summaryview.c:435
+#: src/summaryview.c:429
 msgid "/Create f_ilter rule/by _To"
 msgstr "/フィルタ規則を作成(_i)/Toから(_T)"
 
-#: src/summaryview.c:437
+#: src/summaryview.c:431
 msgid "/Create f_ilter rule/by _Subject"
 msgstr "/フィルタ規則を作成(_i)/件名から(_S)"
 
-#: src/summaryview.c:439
+#: src/summaryview.c:433
 msgid "/Create processing rule"
 msgstr "/処理規則を作成"
 
-#: src/summaryview.c:440
+#: src/summaryview.c:434
 msgid "/Create processing rule/_Automatically"
 msgstr "/処理規則を作成/自動生成(_A)"
 
-#: src/summaryview.c:442
+#: src/summaryview.c:436
 msgid "/Create processing rule/by _From"
 msgstr "/処理規則を作成/Fromから(_F)"
 
-#: src/summaryview.c:444
+#: src/summaryview.c:438
 msgid "/Create processing rule/by _To"
 msgstr "/処理規則を作成/Toから(_T)"
 
-#: src/summaryview.c:446
+#: src/summaryview.c:440
 msgid "/Create processing rule/by _Subject"
 msgstr "/処理規則を作成/件名から(_S)"
 
-#: src/summaryview.c:452
+#: src/summaryview.c:446
 msgid "/_View/_Source"
 msgstr "/表示(_V)/ソースを表示(_S)"
 
-#: src/summaryview.c:453
+#: src/summaryview.c:447
 msgid "/_View/All _header"
 msgstr "/表示(_V)/ヘッダを表示(_h)"
 
-#: src/summaryview.c:457
+#: src/summaryview.c:451
 msgid "M"
 msgstr "M"
 
-#: src/summaryview.c:464
+#: src/summaryview.c:458
 msgid "No."
 msgstr "番号"
 
-#: src/summaryview.c:466
+#: src/summaryview.c:460
 msgid "L"
 msgstr "L"
 
-#: src/summaryview.c:475
-msgid "all messages"
-msgstr "全てのメッセージ"
-
-#: src/summaryview.c:476
-msgid "messages whose age is greater than #"
-msgstr "指定よりも古いメッセージ #"
-
-#: src/summaryview.c:477
-msgid "messages whose age is less than #"
-msgstr "指定よりも新しいメッセージ #"
-
-#: src/summaryview.c:478
-msgid "messages which contain S in the message body"
-msgstr "メッセージ本文にSを含むメッセージ"
-
-#: src/summaryview.c:479
-msgid "messages which contain S in the whole message"
-msgstr "メッセージ全体にSを含むメッセージ"
-
-#: src/summaryview.c:480
-msgid "messages carbon-copied to S"
-msgstr "Sへ写しを送信されたメッセージ"
-
-#: src/summaryview.c:481
-msgid "message is either to: or cc: to S"
-msgstr "メッセージはSへto:またはcc:されています"
-
-#: src/summaryview.c:482
-msgid "deleted messages"
-msgstr "削除済みのメッセージ"
-
-#: src/summaryview.c:483
-msgid "messages which contain S in the Sender field"
-msgstr "発信者フィールドにSを含むメッセージ"
-
-#: src/summaryview.c:484
-msgid "true if execute \"S\" succeeds"
-msgstr "\"S\"の実行に成功した場合にtrue"
-
-#: src/summaryview.c:485
-msgid "messages originating from user S"
-msgstr "ユーザSから発信されたメッセージ"
-
-#: src/summaryview.c:486
-msgid "forwarded messages"
-msgstr "転送済みのメッセージ"
-
-#: src/summaryview.c:487
-msgid "messages which contain header S"
-msgstr "ヘッダSを含むメッセージ"
-
-#: src/summaryview.c:488
-msgid "messages which contain S in Message-Id header"
-msgstr "Message-IdヘッダにSを含むメッセージ"
-
-#: src/summaryview.c:489
-msgid "messages which contain S in inreplyto header"
-msgstr "inreplytoヘッダにSを含むメッセージ"
-
-#: src/summaryview.c:490
-msgid "locked messages"
-msgstr "ロックされたメッセージ"
-
-#: src/summaryview.c:491
-msgid "messages which are in newsgroup S"
-msgstr "ニュースグループSにあるメッセージ"
-
-#: src/summaryview.c:492
-msgid "new messages"
-msgstr "新着メッセージ"
-
-#: src/summaryview.c:493
-msgid "old messages"
-msgstr "古いメッセージ"
-
-#: src/summaryview.c:494
-msgid "messages which have been replied to"
-msgstr "返信済みのメッセージ"
-
-#: src/summaryview.c:495
-msgid "read messages"
-msgstr "メッセージを読む"
-
-#: src/summaryview.c:496
-msgid "messages which contain S in subject"
-msgstr "件名にSを含むメッセージ"
-
-#: src/summaryview.c:497
-msgid "messages whose score is equal to #"
-msgstr "スコアが#に等しいメッセージ"
-
-#: src/summaryview.c:498
-msgid "messages whose score is greater than #"
-msgstr "スコアが#より大きいメッセージ"
-
-#: src/summaryview.c:499
-msgid "messages whose score is lower than #"
-msgstr "スコアが#より小さいメッセージ"
-
-#: src/summaryview.c:500
-msgid "messages whose size is equal to #"
-msgstr "サイズが#に等しいメッセージ"
-
-#: src/summaryview.c:501
-msgid "messages whose size is greater than #"
-msgstr "サイズが#より大きいメッセージ"
-
 #: src/summaryview.c:502
-msgid "messages whose size is smaller than #"
-msgstr "サイズが#より小さいメッセージ"
-
-#: src/summaryview.c:503
-msgid "messages which have been sent to S"
-msgstr "S宛へ送信されているメッセージ"
-
-#: src/summaryview.c:504
-msgid "marked messages"
-msgstr "マークされたメッセージ"
-
-#: src/summaryview.c:505
-msgid "unread messages"
-msgstr "未読メッセージ"
-
-#: src/summaryview.c:506
-msgid "messages which contain S in References header"
-msgstr "ReferencesヘッダにSを含むメッセージ"
-
-#: src/summaryview.c:507
-msgid "messages returning 0 when passed to command"
-msgstr "コマンドへ渡された際に0を返すメッセージ"
-
-#: src/summaryview.c:508
-msgid "messages which contain S in X-Label header"
-msgstr "X-LabelヘッダにSを含むメッセージ"
-
-#: src/summaryview.c:510
-msgid "logical AND operator"
-msgstr "論理積演算子"
-
-#: src/summaryview.c:511
-msgid "logical OR operator"
-msgstr "論理和演算子"
-
-#: src/summaryview.c:512
-msgid "logical NOT operator"
-msgstr "論理否定演算子"
-
-#: src/summaryview.c:513
-msgid "case sensitive search"
-msgstr "大文字/小文字を区別して検索"
-
-#: src/summaryview.c:520
-msgid "Extended Search symbols"
-msgstr "拡張検索記号"
-
-#: src/summaryview.c:570
 msgid "Toggle quick-search bar"
 msgstr "クイック検索バーをトグル"
 
-#: src/summaryview.c:660
-msgid "Extended Symbols"
-msgstr "拡張起動"
-
-#: src/summaryview.c:932
+#: src/summaryview.c:811
 msgid "Process mark"
 msgstr "マークの処理"
 
-#: src/summaryview.c:933
+#: src/summaryview.c:812
 msgid "Some marks are left. Process it?"
 msgstr "マークが残っています。処理しますか?"
 
-#: src/summaryview.c:976
+#: src/summaryview.c:855
 #, c-format
 msgid "Scanning folder (%s)..."
 msgstr "フォルダをスキャン中 (%s)..."
 
-#: src/summaryview.c:1414 src/summaryview.c:1458
+#: src/summaryview.c:1248 src/summaryview.c:1292
 msgid "No more unread messages"
 msgstr "未読メッセージなし"
 
-#: src/summaryview.c:1415
+#: src/summaryview.c:1249
 msgid "No unread message found. Search from the end?"
 msgstr "未読メッセージがありません。次のフォルダに移動しますか?"
 
-#: src/summaryview.c:1427 src/summaryview.c:1471
+#: src/summaryview.c:1261 src/summaryview.c:1305
 msgid ""
 "Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"
 msgstr "内部エラー: prefs_common.next_unread_msg_dialogで予期しない値\n"
 
-#: src/summaryview.c:1435
+#: src/summaryview.c:1269
 msgid "No unread messages."
 msgstr "未読メッセージなし"
 
-#: src/summaryview.c:1459
+#: src/summaryview.c:1293
 msgid "No unread message found. Go to next folder?"
 msgstr "未読メッセージがありません。次のフォルダに移動しますか?"
 
-#: src/summaryview.c:1501 src/summaryview.c:1525
+#: src/summaryview.c:1335 src/summaryview.c:1359
 msgid "No more new messages"
 msgstr "新規メッセージなし"
 
-#: src/summaryview.c:1502
+#: src/summaryview.c:1336
 msgid "No new message found. Search from the end?"
 msgstr "新規メッセージがありません。末尾から検索しますか?"
 
-#: src/summaryview.c:1511
+#: src/summaryview.c:1345
 msgid "No new messages."
 msgstr "新規メッセージなし"
 
-#: src/summaryview.c:1526
+#: src/summaryview.c:1360
 msgid "No new message found. Go to next folder?"
 msgstr "新規メッセージがありません。次のフォルダに移動しますか?"
 
-#: src/summaryview.c:1528
+#: src/summaryview.c:1362
 msgid "Search again"
 msgstr "再検索"
 
-#: src/summaryview.c:1557 src/summaryview.c:1582
+#: src/summaryview.c:1391 src/summaryview.c:1416
 msgid "No more marked messages"
 msgstr "マーク済みのメッセージがありません"
 
-#: src/summaryview.c:1558
+#: src/summaryview.c:1392
 msgid "No marked message found. Search from the end?"
 msgstr "マーク済みメッセージがありません。末尾から検索しますか?"
 
-#: src/summaryview.c:1567 src/summaryview.c:1592
+#: src/summaryview.c:1401 src/summaryview.c:1426
 msgid "No marked messages."
 msgstr "マーク済みメッセージがありません。"
 
-#: src/summaryview.c:1583
+#: src/summaryview.c:1417
 msgid "No marked message found. Search from the beginning?"
 msgstr "マーク済みメッセージがありません。最初から検索しますか?"
 
-#: src/summaryview.c:1607 src/summaryview.c:1632
+#: src/summaryview.c:1441 src/summaryview.c:1466
 msgid "No more labeled messages"
 msgstr "ラベル付きのメッセージがありません。"
 
-#: src/summaryview.c:1608
+#: src/summaryview.c:1442
 msgid "No labeled message found. Search from the end?"
 msgstr "ラベル付きのメッセージがありません。末尾から検索しますか?"
 
-#: src/summaryview.c:1617 src/summaryview.c:1642
+#: src/summaryview.c:1451 src/summaryview.c:1476
 msgid "No labeled messages."
 msgstr "ラベル付きのメッセージがありません。"
 
-#: src/summaryview.c:1633
+#: src/summaryview.c:1467
 msgid "No labeled message found. Search from the beginning?"
 msgstr "ラベル付きのメッセージがありません。最初から検索しますか?"
 
-#: src/summaryview.c:1846
+#: src/summaryview.c:1680
 msgid "Attracting messages by subject..."
 msgstr "メッセージを件名で寄せています..."
 
-#: src/summaryview.c:1993
+#: src/summaryview.c:1827
 #, c-format
 msgid "%d deleted"
 msgstr "%d 通削除"
 
-#: src/summaryview.c:1997
+#: src/summaryview.c:1831
 #, c-format
 msgid "%s%d moved"
 msgstr "%s%d 通移動"
 
-#: src/summaryview.c:1998 src/summaryview.c:2005
+#: src/summaryview.c:1832 src/summaryview.c:1839
 msgid ", "
 msgstr ", "
 
-#: src/summaryview.c:2003
+#: src/summaryview.c:1837
 #, c-format
 msgid "%s%d copied"
 msgstr "%s%d 通コピー"
 
-#: src/summaryview.c:2018
+#: src/summaryview.c:1852
 msgid " item selected"
 msgstr " 通のメッセージを選択"
 
-#: src/summaryview.c:2020
+#: src/summaryview.c:1854
 msgid " items selected"
 msgstr " 通のメッセージを選択"
 
-#: src/summaryview.c:2036
+#: src/summaryview.c:1870
 #, c-format
 msgid "%d new, %d unread, %d total (%s)"
 msgstr "新着 %d 通, 未読 %d 通, 総数 %d 通 (%s)"
 
-#: src/summaryview.c:2210
+#: src/summaryview.c:2044
 msgid "Sorting summary..."
 msgstr "サマリをソート中..."
 
-#: src/summaryview.c:2280
+#: src/summaryview.c:2114
 msgid "Setting summary from message data..."
 msgstr "メッセージデータからサマリを設定中..."
 
-#: src/summaryview.c:2410
+#: src/summaryview.c:2244
 msgid "(No Date)"
 msgstr "(日付なし)"
 
-#: src/summaryview.c:3040
+#: src/summaryview.c:2874
 msgid "You're not the author of the article\n"
 msgstr "あなたはこの記事の作者ではありません\n"
 
-#: src/summaryview.c:3127
+#: src/summaryview.c:2962
 msgid "Delete message(s)"
 msgstr "メッセージを削除する"
 
-#: src/summaryview.c:3128
+#: src/summaryview.c:2963
 msgid "Do you really want to delete message(s) from the trash?"
 msgstr "本当にメッセージをごみ箱から削除してもいいですか?"
 
-#: src/summaryview.c:3233
+#: src/summaryview.c:3075
 msgid "Destination is same as current folder."
 msgstr "移動先が現在のフォルダと同じです。"
 
-#: src/summaryview.c:3310
+#: src/summaryview.c:3152
 msgid "Destination to copy is same as current folder."
 msgstr "コピー先が現在のフォルダと同じです。"
 
-#: src/summaryview.c:3360
+#: src/summaryview.c:3202
 msgid "Selecting all messages..."
 msgstr "全てのメッセージを選択中..."
 
-#: src/summaryview.c:3418
+#: src/summaryview.c:3260
 msgid "Append or Overwrite"
 msgstr "追記または上書き"
 
-#: src/summaryview.c:3419
+#: src/summaryview.c:3261
 msgid "Append or overwrite existing file?"
 msgstr "既存のファイルに追記または上書きしますか?"
 
-#: src/summaryview.c:3420
+#: src/summaryview.c:3262
 msgid "Append"
 msgstr "追記"
 
-#: src/summaryview.c:3711
+#: src/summaryview.c:3553
 msgid "Building threads..."
 msgstr "スレッドを構築中..."
 
-#: src/summaryview.c:3809
+#: src/summaryview.c:3651
 msgid "Unthreading..."
 msgstr "スレッドを解除中..."
 
-#: src/summaryview.c:3942
+#: src/summaryview.c:3784
 msgid "No filter rules defined."
 msgstr "フィルターの規則が定義されていません。"
 
-#: src/summaryview.c:3951
+#: src/summaryview.c:3793
 msgid "Filtering..."
 msgstr "振り分け中..."
 
-#: src/summaryview.c:5318
+#: src/summaryview.c:5118
 #, c-format
 msgid ""
 "Regular expression (regexp) error:\n"
@@ -8245,7 +8548,7 @@ msgstr "クリック),\n"
 msgid "    or 'Open with...' (Shortcut key: 'o')\n"
 msgstr "    または '指定プログラムで開く...' (ショートカットキー: 'o')を選択\n"
 
-#: src/textview.c:1946
+#: src/textview.c:1951
 #, c-format
 msgid ""
 "The real URL (%s) is different from\n"
@@ -8256,187 +8559,192 @@ msgstr ""
 "異なっています。  \n"
 "それでもオープンしますか?"
 
-#: src/toolbar.c:159 src/toolbar.c:1365
+#: src/toolbar.c:155 src/toolbar.c:1335
 msgid "Receive Mail on all Accounts"
 msgstr "全アカウントの新着メールの取込"
 
-#: src/toolbar.c:160 src/toolbar.c:1371
+#: src/toolbar.c:156 src/toolbar.c:1341
 msgid "Receive Mail on current Account"
 msgstr "「全受信」でこのアカウントの新着メールをチェックする"
 
-#: src/toolbar.c:161 src/toolbar.c:1377
+#: src/toolbar.c:157 src/toolbar.c:1347
 msgid "Send Queued Message(s)"
 msgstr "送信待機中のメッセージを送信する"
 
-#: src/toolbar.c:162 src/toolbar.c:1390
+#: src/toolbar.c:158 src/toolbar.c:1360
 msgid "Compose Email"
 msgstr "メールを作成"
 
-#: src/toolbar.c:163 src/toolbar.c:1394
+#: src/toolbar.c:159 src/toolbar.c:1364
 msgid "Compose News"
 msgstr "ニュースを作成"
 
-#: src/toolbar.c:164 src/toolbar.c:1400 src/toolbar.c:1410
+#: src/toolbar.c:160 src/toolbar.c:1370 src/toolbar.c:1380
 msgid "Reply to Message"
 msgstr "メッセージに返信する"
 
-#: src/toolbar.c:165 src/toolbar.c:1417 src/toolbar.c:1427
+#: src/toolbar.c:161 src/toolbar.c:1387 src/toolbar.c:1397
 msgid "Reply to Sender"
 msgstr "差出人に返信"
 
-#: src/toolbar.c:166 src/toolbar.c:1434 src/toolbar.c:1444
+#: src/toolbar.c:162 src/toolbar.c:1404 src/toolbar.c:1414
 msgid "Reply to All"
 msgstr "全員に返信"
 
-#: src/toolbar.c:167 src/toolbar.c:1451 src/toolbar.c:1461
+#: src/toolbar.c:163 src/toolbar.c:1421 src/toolbar.c:1431
 msgid "Reply to Mailing-list"
 msgstr "メーリングリストに返信"
 
-#: src/toolbar.c:168 src/toolbar.c:1468 src/toolbar.c:1478
+#: src/toolbar.c:164 src/toolbar.c:1438 src/toolbar.c:1448
 msgid "Forward Message"
 msgstr "メッセージを転送する"
 
-#: src/toolbar.c:169 src/toolbar.c:1485
+#: src/toolbar.c:165 src/toolbar.c:1455
 msgid "Delete Message"
 msgstr "メッセージを削除する"
 
-#: src/toolbar.c:171 src/toolbar.c:1497
+#: src/toolbar.c:167 src/toolbar.c:1467
 msgid "Goto Next Message"
 msgstr "次のメッセージ"
 
-#: src/toolbar.c:175 src/toolbar.c:1505
+#: src/toolbar.c:171 src/toolbar.c:1475
 msgid "Send Message"
 msgstr "メッセージを送信"
 
-#: src/toolbar.c:176 src/toolbar.c:1511
+#: src/toolbar.c:172 src/toolbar.c:1481
 msgid "Put into queue folder and send later"
 msgstr "送信待ちフォルダに入れて後で送信"
 
-#: src/toolbar.c:177 src/toolbar.c:1517
+#: src/toolbar.c:173 src/toolbar.c:1487
 msgid "Save to draft folder"
 msgstr "草稿フォルダに保存"
 
-#: src/toolbar.c:178 src/toolbar.c:1523
+#: src/toolbar.c:174 src/toolbar.c:1493
 msgid "Insert file"
 msgstr "ファイルを挿入"
 
-#: src/toolbar.c:179 src/toolbar.c:1529
+#: src/toolbar.c:175 src/toolbar.c:1499
 msgid "Attach file"
 msgstr "ファイルを添付"
 
-#: src/toolbar.c:180 src/toolbar.c:1535
+#: src/toolbar.c:176 src/toolbar.c:1505
 msgid "Insert signature"
 msgstr "署名を挿入"
 
-#: src/toolbar.c:181 src/toolbar.c:1541
+#: src/toolbar.c:177 src/toolbar.c:1511
 msgid "Edit with external editor"
 msgstr "外部エディタで編集"
 
-#: src/toolbar.c:182 src/toolbar.c:1547
+#: src/toolbar.c:178 src/toolbar.c:1517
 msgid "Wrap long lines of current paragraph"
 msgstr "現在のパラグラフの長い行を折り返す"
 
-#: src/toolbar.c:183 src/toolbar.c:1553
+#: src/toolbar.c:179 src/toolbar.c:1523
 msgid "Wrap all long lines"
 msgstr "長い行を折り返す"
 
-#: src/toolbar.c:186 src/toolbar.c:1566
+#: src/toolbar.c:182 src/toolbar.c:1536
 msgid "Check spelling"
 msgstr "スペルチェック"
 
-#: src/toolbar.c:188
+#: src/toolbar.c:184
 msgid "Sylpheed Actions Feature"
 msgstr "Sylpheedアクション機能"
 
-#: src/toolbar.c:208
+#: src/toolbar.c:204
 msgid "/Reply with _quote"
 msgstr "/引用付きで返信(_q)"
 
-#: src/toolbar.c:209
+#: src/toolbar.c:205
 msgid "/_Reply without quote"
 msgstr "引用無しで返信(_R)"
 
-#: src/toolbar.c:213
+#: src/toolbar.c:209
 msgid "/Reply to all with _quote"
 msgstr "/引用付きで全員に返信(_q)"
 
-#: src/toolbar.c:214
+#: src/toolbar.c:210
 msgid "/_Reply to all without quote"
 msgstr "/引用無しで全員に返信(_R)"
 
-#: src/toolbar.c:218
+#: src/toolbar.c:214
 msgid "/Reply to list with _quote"
 msgstr "/引用付きでリストに返信(_q)"
 
-#: src/toolbar.c:219
+#: src/toolbar.c:215
 msgid "/_Reply to list without quote"
 msgstr "/引用無しでリストに返信(_R)"
 
-#: src/toolbar.c:223
+#: src/toolbar.c:219
 msgid "/Reply to sender with _quote"
 msgstr "/引用付きで差出人に返信(_q)"
 
-#: src/toolbar.c:224
+#: src/toolbar.c:220
 msgid "/_Reply to sender without quote"
 msgstr "/引用無しで差出人に返信(_R)"
 
-#: src/toolbar.c:229
+#: src/toolbar.c:225
 msgid "/For_ward as attachment"
 msgstr "/添付として転送(_w)"
 
-#: src/toolbar.c:230
+#: src/toolbar.c:226
 msgid "/Redirec_t"
 msgstr "/リダイレクト転送(_t)"
 
-#: src/toolbar.c:376
+#: src/toolbar.c:372
 msgid "Get"
 msgstr "受信"
 
-#: src/toolbar.c:377
+#: src/toolbar.c:373
 msgid "Get All"
 msgstr "全受信"
 
-#: src/toolbar.c:380
+#: src/toolbar.c:376
 msgid "Email"
 msgstr "作成"
 
-#: src/toolbar.c:382 src/toolbar.c:475
+#: src/toolbar.c:378 src/toolbar.c:471
 msgid "Reply"
 msgstr "返信"
 
-#: src/toolbar.c:383 src/toolbar.c:476
+#: src/toolbar.c:379 src/toolbar.c:472
 msgid "All"
 msgstr "全て"
 
-#: src/toolbar.c:384 src/toolbar.c:477
+#: src/toolbar.c:380 src/toolbar.c:473
 msgid "Sender"
 msgstr "返信"
 
-#: src/toolbar.c:427
+#: src/toolbar.c:423
 msgid "Send later"
 msgstr "後で送信"
 
-#: src/toolbar.c:428
+#: src/toolbar.c:424
 msgid "Draft"
 msgstr "草稿"
 
-#: src/toolbar.c:431
+#: src/toolbar.c:427
 msgid "Attach"
 msgstr "添付"
 
-#: src/toolbar.c:434
+#: src/toolbar.c:430
 msgid "Editor"
 msgstr "エディタ"
 
-#: src/toolbar.c:435
+#: src/toolbar.c:431
 msgid "Wrap paragraph"
 msgstr "パラグラフを折り返す"
 
-#: src/toolbar.c:436
+#: src/toolbar.c:432
 msgid "Wrap all"
 msgstr "全て折り返す"
 
-#: src/toolbar.c:1382
+#: src/toolbar.c:1352
 msgid "News"
 msgstr "ニュース"
 
+#~ msgid "/_Message/Save to _draft folder"
+#~ msgstr "/メッセージ(_M)/草稿フォルダに保存(_D)"
+
+#~ msgid "/_Message/Save and _keep editing"
+#~ msgstr "/メッセージ(_M)/保存後に編集を続ける(_k)"
