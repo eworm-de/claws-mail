@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws51
+EXTRA_VERSION=claws52
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -78,9 +78,11 @@ case "$target" in
 	;;
 esac
 
+AM_ICONV
+
 dnl for gettext
 ALL_LINGUAS="bg cs de el en_GB es fr hr hu it ja ko nl pl pt_BR ru sr sv zh_TW.Big5"
-AM_GNU_GETTEXT
+AM_GNU_GETTEXT([external])
 dnl AC_CHECK_FUNC(gettext, AC_CHECK_LIB(intl, gettext))
 localedir='${prefix}/${DATADIRNAME}/locale'
 AC_SUBST(localedir)
@@ -128,7 +130,7 @@ AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS(fcntl.h sys/file.h unistd.h paths.h \
 		 sys/param.h sys/utsname.h sys/select.h \
-		 wchar.h wctype.h)
+		 wchar.h wctype.h locale.h)
 
 dnl alf - Check for apache installation f*ck up. apache may also install an 
 dnl fnmatch, which includes their own regex stuff if USE_HSREGEX is defined

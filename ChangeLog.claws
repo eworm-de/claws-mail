@@ -1,4 +1,8 @@
-2003-06-19 [alfons] 0.9.0claws51
+2003-06-21 [christoph]	0.9.0.claws52
+
+	update gettext stuff to version 0.12
+
+2003-06-19 [alfons]	0.9.0claws51
 
 	* src/common/log.c
 	* src/common/plugin.c

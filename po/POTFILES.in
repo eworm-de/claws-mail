@@ -80,7 +80,6 @@ src/summaryview.c
 src/toolbar.c
 src/plugins/demo/demo.c
 src/plugins/trayicon/trayicon.c
-src/plugins/trayicon/eggtrayicon.c
 src/plugins/mathml_viewer/mathml_viewer.c
 src/plugins/image_viewer/viewerprefs.c
 src/plugins/image_viewer/viewer.c
