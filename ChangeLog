@@ -1,3 +1,21 @@
+2003-04-11
+
+	* src/compose.[ch]: implemented auto signature replacement on
+	  changing accounts.
+	  compose_insert_sig(): added a flag to replace current signature.
+	  compose_get_signature_str(): new. It returns signature string.
+	  compose_insert_command_output(): removed.
+	  compose_select_account(): call compose_insert_sig() on account
+	  change.
+	  compose_destroy(): fixed a memory leak of UndoMain object.
+	  Compose::sig_str: new. It stores current signature string.
+	* src/gtkutils.[ch]: gtkut_stext_find(): new.
+	  Renamed gtk_stext_clear() to gtkut_stext_clear().
+	* src/utils.[ch]: get_wcs_len(): returns wide-character length of
+	  multibyte string.
+	  normalize_newlines(): converts CR+LF and CR into LF.
+	  get_command_output(): returns command output.
+
 2003-04-08
 
 	* src/procmsg.[ch]: procmsg_get_filter_keyword(): new. It returns

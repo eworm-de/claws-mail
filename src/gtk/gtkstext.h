@@ -289,11 +289,14 @@ guint gtk_stext_str_compare		(GtkSText	*text,
 					 guint		 start_pos,
 					 guint		 text_len,
 					 const gchar	*str);
+gint gtkut_stext_find			(GtkSText	*text,
+					 guint		 start_pos,
+					 const gchar	*str,
+					 gboolean	 case_sens);
 gboolean gtk_stext_is_uri_string	(GtkSText	*text,
 					 guint		 start_pos,
 					 guint		 text_len);
-void gtk_stext_clear			(GtkSText	*text);
-
+void gtkut_stext_clear			(GtkSText	*text);
 
 
 #define GTK_STEXT_INDEX(t, index)	(((t)->use_wchar) \

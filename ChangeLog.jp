@@ -1,3 +1,20 @@
+2003-04-11
+
+	* src/compose.[ch]: アカウント変更時の自動署名切り替えを実装。
+	  compose_insert_sig(): 現在の署名を置換するフラグを追加。
+	  compose_get_signature_str(): 新規。署名の文字列を返す。
+	  compose_insert_command_output(): 削除。
+	  compose_select_account(): アカウント変更時に compose_insert_sig()
+	  を呼ぶようにした。
+	  compose_destroy(): UndoMain オブジェクトのメモリリークを修正。
+	  Compose::sig_str: 新規。現在の署名の文字列を保持する。
+	* src/gtkutils.[ch]: gtkut_stext_find(): 新規。
+	  gtk_stext_clear() を gtkut_stext_clear() に改名。
+	* src/utils.[ch]: get_wcs_len(): マルチバイト文字列のワイドキャラクタ
+	  長を返す。
+	  normalize_newlines(): CR+LF と CR を LF に変換する。
+	  get_command_output(): コマンドの出力を返す。
+
 2003-04-08
 
 	* src/procmsg.[ch]: procmsg_get_filter_keyword(): 新規。メッセージの

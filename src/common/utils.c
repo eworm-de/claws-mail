@@ -469,6 +469,30 @@ wchar_t *wcscasestr(const wchar_t *haystack, const wchar_t *needle)
 	return NULL;
 }
 
+gint get_wcs_len(const gchar *s)
+{
+	const gchar *p = s;
+	gint mb_len;
+	gint len = 0;
+
+	if (!p)
+		return -1;
+
+	while (*p != '\0') {
+		mb_len = mblen(p, MB_LEN_MAX);
+		if (mb_len == 0)
+			break;
+		else if (mb_len < 0)
+			return -1;
+		else
+			len++;
+
+		p += mb_len;
+	}
+
+	return len;
+}
+
 /* Examine if next block is non-ASCII string */
 gboolean is_next_nonascii(const guchar *s)
 {
@@ -2604,6 +2628,25 @@ gint uncanonicalize_file_replace(const gchar *file)
 	return 0;
 }
 
+gchar *normalize_newlines(const gchar *str)
+{
+	const gchar *p = str;
+	gchar *out, *outp;
+
+	out = outp = g_malloc(strlen(str) + 1);
+	for (p = str; *p != '\0'; ++p) {
+		if (*p == '\r') {
+			if (*(p + 1) != '\n')
+				*outp++ = '\n';
+		} else
+			*outp++ = *p;
+	}
+
+	*outp = '\0';
+
+	return out;
+}
+
 gchar *get_outgoing_rfc2822_str(FILE *fp)
 {
 	gchar buf[BUFFSIZE];
@@ -2877,6 +2920,33 @@ gint execute_command_line(const gchar *cmdline, gboolean async)
 	else
 		ret = execute_sync(argv);
 	g_strfreev(argv);
+
+	return ret;
+}
+
+gchar *get_command_output(const gchar *cmdline)
+{
+	gchar buf[BUFFSIZE];
+	FILE *fp;
+	GString *str;
+	gchar *ret;
+
+	g_return_val_if_fail(cmdline != NULL, NULL);
+
+	if ((fp = popen(cmdline, "r")) == NULL) {
+		FILE_OP_ERROR(cmdline, "popen");
+		return NULL;
+	}
+
+	str = g_string_new("");
+
+	while (fgets(buf, sizeof(buf), fp) != NULL)
+		g_string_append(str, buf);
+
+	pclose(fp);
+
+	ret = str->str;
+	g_string_free(str, FALSE);
 
 	return ret;
 }

@@ -212,6 +212,7 @@ gint wcsncasecmp		(const wchar_t *s1,
 				 size_t		n);
 wchar_t *wcscasestr		(const wchar_t *haystack,
 				 const wchar_t *needle);
+gint get_wcs_len		(const gchar	*s);
 
 gboolean is_next_nonascii	(const guchar *s);
 gint get_next_word_len		(const gchar *s);
@@ -371,6 +372,8 @@ gint uncanonicalize_file	(const gchar	*src,
 				 const gchar	*dest);
 gint uncanonicalize_file_replace(const gchar	*file);
 
+gchar *normalize_newlines	(const gchar	*str);
+
 gchar *get_outgoing_rfc2822_str	(FILE		*fp);
 
 gint change_file_mode_rw	(FILE		*fp,
@@ -387,6 +390,7 @@ gint execute_async		(gchar *const	 argv[]);
 gint execute_sync		(gchar *const	 argv[]);
 gint execute_command_line	(const gchar	*cmdline,
 				 gboolean	 async);
+gchar *get_command_output	(const gchar	*cmdline);
 
 /* open URI with external browser */
 gint open_uri(const gchar *uri, const gchar *cmdline);
