@@ -1,3 +1,9 @@
+2002-10-12 [colin]	0.8.5claws25
+
+	* src/compose.c
+		Save account address when saving as draft.
+		(closes bug 621838)
+
 2002-10-12 [colin]	0.8.5claws24
 
 	* src/summaryview.c

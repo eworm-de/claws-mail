@@ -1148,7 +1148,7 @@ void compose_reedit(MsgInfo *msginfo)
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(msginfo->folder != NULL);
 
-        if (msginfo->folder->stype == F_QUEUE) {
+        if (msginfo->folder->stype == F_QUEUE || msginfo->folder->stype == F_DRAFT) {
 		gchar queueheader_buf[BUFFSIZE];
 		gint id;
 
@@ -3901,17 +3901,17 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	g_return_val_if_fail(compose->account != NULL, -1);
 	g_return_val_if_fail(compose->account->address != NULL, -1);
 
-	/* Save copy folder */
+	/* Save draft infos */
 	if (is_draft) {
+		fprintf(fp, "S:%s\n", compose->account->address);
 		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
 			gchar *savefolderid;
 
 			savefolderid = gtk_editable_get_chars(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
-			fprintf(fp, "SCF:%s\n\n", savefolderid);
+			fprintf(fp, "SCF:%s\n", savefolderid);
 			g_free(savefolderid);
-		} else {
-			fprintf(fp, " \n\n");
 		}
+		fprintf(fp, "\n");
 	}
 
 	/* Date */
