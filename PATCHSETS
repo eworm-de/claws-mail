@@ -193,3 +193,4 @@
 ( cvs diff -u -r 1.124 -r 1.125 AUTHORS; cvs diff -u -r 1.451 -r 1.452 ChangeLog; cvs diff -u -r 1.446 -r 1.447 ChangeLog.jp; cvs diff -u -r 1.19 -r 1.20 src/action.c; ) > 0.9.13cvs21.patchset
 ( cvs diff -u -r 1.452 -r 1.453 ChangeLog; cvs diff -u -r 1.447 -r 1.448 ChangeLog.jp; cvs diff -u -r 1.54 -r 1.55 NEWS; cvs diff -u -r 1.76 -r 1.77 src/account.c; ) > 0.9.13cvs22.patchset
 ( cvs diff -u -r 1.77 -r 1.78 src/account.c; ) > 0.9.13cvs23.patchset
+( cvs diff -u -r 1.101 -r 1.102 src/procmime.c; ) > 0.9.13cvs24.patchset

@@ -1,3 +1,9 @@
+2005-01-01 [colin]	0.9.13cvs24
+
+	* src/procmime.c
+		Fix possible memleak in corner case - found by
+		Martin Kluge, patch by Alfons
+
 2004-12-30 [colin]	0.9.13cvs23
 
 	* src/account.c
