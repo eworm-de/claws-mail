@@ -1999,6 +1999,16 @@ void close_log_file(void)
 	}
 }
 
+static guint log_verbosity_count = 0;
+
+void log_verbosity_set(gboolean verbose)
+{
+	if (verbose)
+		log_verbosity_count++;
+	else if (log_verbosity_count > 0)
+		log_verbosity_count--;
+}
+
 void debug_print(const gchar *format, ...)
 {
 	va_list args;
@@ -2035,8 +2045,8 @@ void log_print(const gchar *format, ...)
 		fputs(logbuf, log_fp);
 		fflush(log_fp);
 	}
-	statusbar_puts_all(buf);
-	
+	if (log_verbosity_count)
+		statusbar_puts_all(buf);
 	g_free(logbuf);
 }
 
@@ -2056,6 +2066,7 @@ void log_message(const gchar *format, ...)
 		fputs(buf, log_fp);
 		fflush(log_fp);
 	}
+	statusbar_puts_all(buf);
 }
 
 void log_warning(const gchar *format, ...)

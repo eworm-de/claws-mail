@@ -1,7 +1,34 @@
-2001-08-22
+2001-08-24
+
+	* src/main.c: アカウントが設定されていなければ新規アカウント
+	  ダイアログを開くようにした。
+	* src/utils.[ch]: log_verbosity_set(): 新規。 verbosity count を
+	  増加/減少させる。
+	  log_print(): log_verbosity_count > 0 の場合のみステータスバーに
+	  出力。
+	  log_message(): ステータスバーに出力。
+	* src/inc.c: inc_pop3_session_do(): ログの verbosity を指定。
+	* src/mainwindow.c: main_window_set_menu_sensitive(): 「新規
+	  メッセージを作成」項目を追加。
+	  main_window_show_cur_accoun(): 「現在のアカウント: 」の文字列を
+	  削除。
+	* src/summaryview.c: summary_show(): メインウィンドウがロックされ
+	  ていれば現在のマークを無視するようにした。
+	* src/compose.c: compose_attach_property(): segmentation fault
+	  を起こすバグを修正。
+
+2001-08-23
+
+	* src/mainwindow.c: main_window_get_current_state(): 新規。 UI の
+	  sensitivity のための、現在の状態を返す。
+	  main_window_set_toolbar_sensitive():
+	  main_window_set_menu_sensitive() のようにテーブルを使用。
+
+2001-08-23
 
 	* src/mainwindow.[ch]: ステータスバーにプログレスバーとステータス
 	  ラベルを追加。
+	  main_window_close_cb(): ロックされていれば終了しないようにした。
 	* src/inc.c: メインウィンドウのプログレスバーも更新するようにした。
 
 2001-08-22

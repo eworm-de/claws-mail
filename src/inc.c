@@ -623,6 +623,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	progress_dialog_set_label(inc_dialog->dialog, buf);
 	g_free(buf);
 	GTK_EVENTS_FLUSH();
+	statusbar_pop_all();
 
 #if USE_THREADS
 	if ((sockinfo = sock_connect_with_thread(server, port)) == NULL) {
@@ -664,7 +665,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	}
 #endif
 
-
+	log_verbosity_set(TRUE);
 	recv_set_ui_func(inc_pop3_recv_func, session);
 
 #if USE_THREADS
@@ -678,6 +679,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 
 	gtk_main();
 
+	log_verbosity_set(FALSE);
 	recv_set_ui_func(NULL, NULL);
 
 #if USE_THREADS

@@ -659,7 +659,7 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_box_pack_start(GTK_BOX(hbox_stat), statusbar, TRUE, TRUE, 0);
 
 	progressbar = gtk_progress_bar_new();
-	gtk_widget_set_usize(progressbar, 120, -1);
+	gtk_widget_set_usize(progressbar, 120, 1);
 	gtk_box_pack_start(GTK_BOX(hbox_stat), progressbar, FALSE, FALSE, 0);
 
 	statuslabel = gtk_label_new("");
@@ -864,14 +864,13 @@ void main_window_cursor_normal(MainWindow *mainwin)
 /* lock / unlock the user-interface */
 void main_window_lock(MainWindow *mainwin)
 {
-	if (mainwin->lock_count == 0) {
-		gtk_widget_set_sensitive(mainwin->toolbar, FALSE);
+	if (mainwin->lock_count == 0)
 		gtk_widget_set_sensitive(mainwin->ac_button, FALSE);
-	}
 
 	mainwin->lock_count++;
 
 	main_window_set_menu_sensitive(mainwin);
+	main_window_set_toolbar_sensitive(mainwin);
 }
 
 void main_window_unlock(MainWindow *mainwin)
@@ -880,11 +879,10 @@ void main_window_unlock(MainWindow *mainwin)
 		mainwin->lock_count--;
 
 	main_window_set_menu_sensitive(mainwin);
+	main_window_set_toolbar_sensitive(mainwin);
 
-	if (mainwin->lock_count == 0) {
-		gtk_widget_set_sensitive(mainwin->toolbar, TRUE);
+	if (mainwin->lock_count == 0)
 		gtk_widget_set_sensitive(mainwin->ac_button, TRUE);
-	}
 }
 
 void main_window_reflect_prefs_all(void)
@@ -896,13 +894,8 @@ void main_window_reflect_prefs_all(void)
 		mainwin = (MainWindow *)cur->data;
 
 		main_window_show_cur_account(mainwin);
-		if (cur_account) {
-			gtk_widget_set_sensitive(mainwin->get_btn,    TRUE);
-			gtk_widget_set_sensitive(mainwin->getall_btn, TRUE);
-		} else {
-			gtk_widget_set_sensitive(mainwin->get_btn,    FALSE);
-			gtk_widget_set_sensitive(mainwin->getall_btn, FALSE);
-		}
+		main_window_set_menu_sensitive(mainwin);
+		main_window_set_toolbar_sensitive(mainwin);
 
 		if (prefs_common.immediate_exec)
 			gtk_widget_hide(mainwin->exec_btn);
@@ -967,10 +960,11 @@ static void main_window_show_cur_account(MainWindow *mainwin)
 	gtk_window_set_title(GTK_WINDOW(mainwin->window), buf);
 	g_free(buf);
 
-	buf = g_strdup_printf(_("Current account: %s"), ac_name);
-	gtk_label_set_text(GTK_LABEL(mainwin->ac_label), buf);
+	/* buf = g_strdup_printf(_("Current account: %s"), ac_name);
+	gtk_label_set_text(GTK_LABEL(mainwin->ac_label), buf);   */
+	gtk_label_set_text(GTK_LABEL(mainwin->ac_label), ac_name);
 	gtk_widget_queue_resize(mainwin->ac_button);
-	g_free(buf);
+	/* g_free(buf); */
 
 	g_free(ac_name);
 }
@@ -1175,92 +1169,22 @@ void main_window_add_mbox(MainWindow *mainwin)
 	folderview_set(mainwin->folderview);
 }
 
-void main_window_set_toolbar_sensitive(MainWindow *mainwin)
-{
-	gboolean sensitive;
-
-	if (GTK_CLIST(mainwin->summaryview->ctree)->row_list)
-		sensitive = TRUE;
-	else
-		sensitive = FALSE;
-
-	gtk_widget_set_sensitive(mainwin->reply_btn,       sensitive);
-	gtk_widget_set_sensitive(mainwin->replyall_btn,    sensitive);
-	gtk_widget_set_sensitive(mainwin->replysender_btn, sensitive);
-	gtk_widget_set_sensitive(mainwin->fwd_btn,         sensitive);
-	gtk_widget_set_sensitive(mainwin->exec_btn,        sensitive);
-	gtk_widget_set_sensitive(mainwin->next_btn,        sensitive);
-
-	if (!mainwin->summaryview->folder_item ||
-	    mainwin->summaryview->folder_item->folder->type == F_NEWS)
-		gtk_widget_set_sensitive(mainwin->delete_btn, FALSE);
-	else
-		gtk_widget_set_sensitive(mainwin->delete_btn, sensitive);
-}
-
 typedef enum
 {
-	M_UNLOCKED             = 1 << 0,
-	M_MSG_EXIST            = 1 << 1,
-	M_TARGET_EXIST         = 1 << 2,
-	M_SINGLE_TARGET_EXIST  = 1 << 3,
-	M_EXEC                 = 1 << 4,
-	M_ALLOW_REEDIT         = 1 << 5
-} MenuItemSensitiveCond;
+	M_UNLOCKED            = 1 << 0,
+	M_MSG_EXIST           = 1 << 1,
+	M_TARGET_EXIST        = 1 << 2,
+	M_SINGLE_TARGET_EXIST = 1 << 3,
+	M_EXEC                = 1 << 4,
+	M_ALLOW_REEDIT        = 1 << 5,
+	M_HAVE_ACCOUNT        = 1 << 6
+} SensitiveCond;
 
-void main_window_set_menu_sensitive(MainWindow *mainwin)
+static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 {
-	GtkItemFactory *ifactory;
+	SensitiveCond state = 0;
 	SummarySelection selection;
-	MenuItemSensitiveCond state = 0;
-	gboolean sensitive;
-	gint i;
 
-	static const struct {
-		gchar *const entry;
-		MenuItemSensitiveCond cond;
-	} entry[] = {
-		{"/File/Add mailbox..."        , M_UNLOCKED},
-		{"/File/Update folder tree"    , M_UNLOCKED},
-		{"/File/Folder"                , M_UNLOCKED},
-		{"/File/Import mbox file..."   , M_UNLOCKED},
-		{"/File/Export to mbox file...", M_UNLOCKED},
-		{"/File/Empty trash"           , M_UNLOCKED},
-		{"/File/Save as...", M_SINGLE_TARGET_EXIST|M_UNLOCKED},
-		{"/File/Print..."  , M_TARGET_EXIST|M_UNLOCKED},
-		{"/File/Close", M_UNLOCKED},
-		{"/File/Exit" , M_UNLOCKED},
-
-		{"/Message/Get new mail"         , M_UNLOCKED},
-		{"/Message/Get from all accounts", M_UNLOCKED},
-		{"/Message/Reply"                , M_SINGLE_TARGET_EXIST},
-		{"/Message/Reply to sender"      , M_SINGLE_TARGET_EXIST},
-		{"/Message/Reply to all"         , M_SINGLE_TARGET_EXIST},
-		{"/Message/Forward"              , M_SINGLE_TARGET_EXIST},
-		{"/Message/Forward as attachment", M_SINGLE_TARGET_EXIST},
-		{"/Message/Open in new window"   , M_SINGLE_TARGET_EXIST},
-		{"/Message/Show all header"      , M_SINGLE_TARGET_EXIST},
-		{"/Message/View source"          , M_SINGLE_TARGET_EXIST},
-		{"/Message/Move...", M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Message/Copy...", M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Message/Delete" , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Message/Mark"   , M_TARGET_EXIST},
-		{"/Message/Re-edit", M_ALLOW_REEDIT},
-
-		{"/Summary/Delete duplicated messages", M_MSG_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Summary/Filter messages", M_MSG_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Summary/Execute"            , M_MSG_EXIST|M_UNLOCKED},
-		{"/Summary/Prev message"       , M_MSG_EXIST},
-		{"/Summary/Next message"       , M_MSG_EXIST},
-		{"/Summary/Next unread message", M_MSG_EXIST},
-		{"/Summary/Sort"               , M_MSG_EXIST},
-
-		{"/Configuration", M_UNLOCKED},
-
-		{NULL, 0}
-	};
-
-	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
 	selection = summary_get_selection_type(mainwin->summaryview);
 
 	if (mainwin->lock_count == 0)
@@ -1279,6 +1203,103 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	    (mainwin->summaryview->folder_item &&
 	     mainwin->summaryview->folder_item->stype == F_DRAFT))
 		state |= M_ALLOW_REEDIT;
+	if (cur_account)
+		state |= M_HAVE_ACCOUNT;
+
+	return state;
+}
+
+void main_window_set_toolbar_sensitive(MainWindow *mainwin)
+{
+	SensitiveCond state;
+        gboolean sensitive;
+	gint i;
+
+	const struct {
+		GtkWidget *widget;
+		SensitiveCond cond;
+	} entry[] = {
+		{mainwin->get_btn         , M_HAVE_ACCOUNT|M_UNLOCKED},
+		{mainwin->getall_btn      , M_HAVE_ACCOUNT|M_UNLOCKED},
+		{mainwin->compose_mail_btn, M_HAVE_ACCOUNT},
+		{mainwin->compose_news_btn, M_HAVE_ACCOUNT},
+		{mainwin->reply_btn       , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{mainwin->replyall_btn    , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{mainwin->replysender_btn , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{mainwin->fwd_btn         , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		/* {mainwin->prefs_btn      , M_UNLOCKED},
+		{mainwin->account_btn    , M_UNLOCKED}, */
+		{mainwin->next_btn        , M_MSG_EXIST},
+		{mainwin->delete_btn      , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
+		{mainwin->exec_btn        , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
+		{NULL, 0}
+	};
+
+	state = main_window_get_current_state(mainwin);
+
+	for (i = 0; entry[i].widget != NULL; i++) {
+		sensitive = ((entry[i].cond & state) == entry[i].cond);
+		gtk_widget_set_sensitive(entry[i].widget, sensitive);
+	}
+}
+
+void main_window_set_menu_sensitive(MainWindow *mainwin)
+{
+	GtkItemFactory *ifactory;
+	SensitiveCond state;
+	gboolean sensitive;
+	gint i;
+
+	static const struct {
+		gchar *const entry;
+		SensitiveCond cond;
+	} entry[] = {
+		{"/File/Add mailbox..."        , M_UNLOCKED},
+                {"/File/Add mbox mailbox..."   , M_UNLOCKED},
+		{"/File/Update folder tree"    , M_UNLOCKED},
+		{"/File/Folder"                , M_UNLOCKED},
+		{"/File/Import mbox file..."   , M_UNLOCKED},
+		{"/File/Export to mbox file...", M_UNLOCKED},
+		{"/File/Empty trash"           , M_UNLOCKED},
+		{"/File/Save as...", M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+		{"/File/Print..."  , M_TARGET_EXIST|M_UNLOCKED},
+		{"/File/Close", M_UNLOCKED},
+		{"/File/Exit" , M_UNLOCKED},
+
+		{"/Message/Get new mail"         , M_UNLOCKED},
+		{"/Message/Get from all accounts", M_UNLOCKED},
+		{"/Message/Reply"                , M_SINGLE_TARGET_EXIST},
+		{"/Message/Reply to sender"      , M_SINGLE_TARGET_EXIST},
+                {"/Message/Folllow-up and reply to", M_SINGLE_TARGET_EXIST},
+		{"/Message/Reply to all"         , M_SINGLE_TARGET_EXIST},
+		{"/Message/Forward"              , M_SINGLE_TARGET_EXIST},
+		{"/Message/Forward as attachment", M_SINGLE_TARGET_EXIST},
+		{"/Message/Open in new window"   , M_SINGLE_TARGET_EXIST},
+		{"/Message/Show all header"      , M_SINGLE_TARGET_EXIST},
+		{"/Message/View source"          , M_SINGLE_TARGET_EXIST},
+		{"/Message/Move...", M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Message/Copy...", M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Message/Delete" , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Message/Mark"   , M_TARGET_EXIST},
+		{"/Message/Re-edit", M_ALLOW_REEDIT},
+
+		{"/Summary/Delete duplicated messages", M_MSG_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Summary/Filter messages"    , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Summary/Execute"            , M_MSG_EXIST|M_UNLOCKED},
+		{"/Summary/Prev message"       , M_MSG_EXIST},
+		{"/Summary/Next message"       , M_MSG_EXIST},
+		{"/Summary/Prev marked message", M_MSG_EXIST},
+		{"/Summary/Next marked message", M_MSG_EXIST},
+		{"/Summary/Next unread message", M_MSG_EXIST},
+		{"/Summary/Sort"               , M_MSG_EXIST},
+
+		{"/Configuration", M_UNLOCKED},
+
+		{NULL, 0}
+	};
+
+	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
+        state = main_window_get_current_state(mainwin);
 
 	for (i = 0; entry[i].entry != NULL; i++) {
 		sensitive = ((entry[i].cond & state) == entry[i].cond);

@@ -267,6 +267,11 @@ int main(int argc, char *argv[])
 		setup(mainwin);
 		folder_write_list();
 	}
+	if (!account_get_list()) {
+		account_edit_open();
+		account_add();
+	}
+
 	account_set_missing_folder();
 	folderview_set(folderview);
 

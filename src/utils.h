@@ -295,6 +295,7 @@ void get_rfc822_date		(gchar		*buf,
 /* logging */
 void set_log_file	(const gchar *filename);
 void close_log_file	(void);
+void log_verbosity_set	(gboolean verbose);
 void debug_print	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
 void log_print		(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
 void log_message	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);

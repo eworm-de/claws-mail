@@ -126,7 +126,7 @@ gint recv_write(SockInfo *sock, FILE *fp)
 		if (recv_ui_func) {
 			gettimeofday(&tv_cur, NULL);
 			/* if elapsed time from previous update is greater
-			   than 10msec, update UI */
+			   than 50msec, update UI */
 			if (tv_cur.tv_sec - tv_prev.tv_sec > 0 ||
 			    tv_cur.tv_usec - tv_prev.tv_usec > UI_REFRESH_INTERVAL) {
 				recv_ui_func(sock, count, bytes,

@@ -3603,8 +3603,8 @@ static void compose_attach_property(Compose *compose)
 	GtkCList *clist = GTK_CLIST(compose->attach_clist);
 	AttachInfo *ainfo;
 	gint row;
-	gboolean cancelled;
 	GtkOptionMenu *optmenu;
+	static gboolean cancelled;
 
 	if (!clist->selection) return;
 	row = GPOINTER_TO_INT(clist->selection->data);
@@ -3639,7 +3639,8 @@ static void compose_attach_property(Compose *compose)
 		GtkWidget *menu;
 		GtkWidget *menuitem;
 
-		gtk_main();
+		cancelled = FALSE;
+                gtk_main();
 
 		if (cancelled == TRUE) {
 			gtk_widget_hide(attach_prop.window);
