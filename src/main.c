@@ -131,12 +131,8 @@ _("File `%s' already exists.\n"
 				 dir); \
 			return 1; \
 		} \
-		if (mkdir(dir, S_IRWXU) < 0) { \
-			FILE_OP_ERROR(dir, "mkdir"); \
+		if (make_dir(dir) < 0) \
 			return 1; \
-		} \
-		if (chmod(dir, S_IRWXU) < 0) \
-			FILE_OP_ERROR(dir, "chmod"); \
 	} \
 }
 

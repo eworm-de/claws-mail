@@ -793,12 +793,8 @@ void mh_scan_tree(Folder *folder)
 				    "Can't create folder."), dir); \
 			return -1; \
 		} \
-		if (mkdir(dir, S_IRWXU) < 0) { \
-			FILE_OP_ERROR(dir, "mkdir"); \
+		if (make_dir(dir) < 0) \
 			return -1; \
-		} \
-		if (chmod(dir, S_IRWXU) < 0) \
-			FILE_OP_ERROR(dir, "chmod"); \
 	} \
 }
 
@@ -841,13 +837,10 @@ FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
 	fullpath = g_strconcat(path, G_DIR_SEPARATOR_S, name, NULL);
 	g_free(path);
 
-	if (mkdir(fullpath, S_IRWXU) < 0) {
-		FILE_OP_ERROR(fullpath, "mkdir");
+	if (make_dir(fullpath) < 0) {
 		g_free(fullpath);
 		return NULL;
 	}
-	if (chmod(fullpath, S_IRWXU) < 0)
-		FILE_OP_ERROR(fullpath, "chmod");
 
 	g_free(fullpath);
 

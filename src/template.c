@@ -118,10 +118,8 @@ GSList *template_read_config(void)
 	debug_print(_("%s:%d reading templates dir %s\n"), __FILE__, __LINE__, path);
 
 	if (!is_dir_exist(path)) {
-		if (mkdir(path, S_IRWXU) < 0) {
-			FILE_OP_ERROR(path, "mkdir");
+		if (make_dir(path) < 0)
 			return NULL;
-		}
 	}
 
 	if ((dp = opendir(path)) == NULL) {
@@ -167,10 +165,8 @@ void template_write_config(GSList *tmpl_list)
 			g_warning(_("file %s already exists\n"), path);
 			return;
 		}
-		if (mkdir(path, S_IRWXU) < 0) {
-			FILE_OP_ERROR(path, "mkdir");
+		if (make_dir(path) < 0)
 			return;
-		}
 	}
 
 	remove_all_files(path);

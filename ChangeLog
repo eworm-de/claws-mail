@@ -1,3 +1,8 @@
+2002-05-28
+
+	* src/utils.[ch]: make_dir(): wrapper for mkdir() and chmod().
+	* src/compose.c: compose_create(): removed unrequired lines.
+
 2002-05-27
 
 	* src/news.c: news_scan_group(): fixed a bug that set the wrong

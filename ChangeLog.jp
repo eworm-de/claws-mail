@@ -1,3 +1,8 @@
+2002-05-28
+
+	* src/utils.[ch]: make_dir(): mkdir() と chmod() のラッパー。
+	* src/compose.c: compose_create(): 不要な行を削除。
+
 2002-05-27
 
 	* src/news.c: news_scan_group(): 特定の場合に誤った値をセットする
