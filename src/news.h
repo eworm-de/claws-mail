@@ -52,8 +52,8 @@ struct _NNTPSession
 struct _NewsGroupInfo
 {
 	gchar *name;
-	gchar first;
-	gchar last;
+	guint first;
+	guint last;
 	gchar type;
 };
 

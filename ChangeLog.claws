@@ -1,3 +1,8 @@
+2003-02-06 [thorsten]	0.8.9claws43
+
+	* src/news.h
+		use guint for message numbers (fix count in grouplist dialog)
+
 2003-02-05 [paul]	0.8.9claws42
 
 	* sync with 0.8.10cvs2
