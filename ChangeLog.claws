@@ -1,3 +1,16 @@
+2003-08-04 [christoph]	0.9.4claws1
+
+	* .cvsignore
+	* Makefile.am
+	* configure.ac
+	* sylpheed-claws.pc.in			** NEW **
+	* src/Makefile.am
+	* src/common/Makefile.am
+	* src/gtk/Makefile.am
+		install sylpheed header files in $(pkgincludedir) and create a
+		pkg-config file to allow building a plugin without the source
+		package
+
 2003-08-04 [paul]	0.9.4claws
 
 	* version 0.9.4claws

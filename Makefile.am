@@ -1,19 +1,20 @@
 SUBDIRS = ac po intl src man manual faq tools config
 
 EXTRA_DIST = \
-	ChangeLog.jp \
-	README.jp \
 	ChangeLog.claws \
+	ChangeLog.jp \
 	README.claws \
+	README.jp \
+	sylpheed-128x128.png \
+	sylpheed-64x64.png \
+	sylpheed-claws.pc.in \
+	sylpheed.desktop \
+	sylpheed.png \
+	sylpheed.spec \
+	sylpheed.spec.in \
 	TODO \
 	TODO.claws \
 	TODO.jp \
-	sylpheed.desktop \
-	sylpheed.spec \
-	sylpheed.spec.in \
-	sylpheed.png \
-	sylpheed-128x128.png \
-	sylpheed-64x64.png \
 	autogen.sh 
 
 if SYLPHEED_GNOME
@@ -38,3 +39,10 @@ release: distdir
 	  > $(distdir)/sylpheed.spec
 	BZIP2=$(BZIP2_ENV) $(AMTAR)$(TAR) --bzip2 -chof $(distdir).tar.bz2 $(distdir)
 	-rm -rf $(distdir)
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = sylpheed-claws.pc
+
+sylpheedincludedir = $(pkgincludedir)
+sylpheedinclude_HEADERS = \
+	config.h

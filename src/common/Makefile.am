@@ -1,32 +1,58 @@
 noinst_LTLIBRARIES = libsylpheedcommon.la
 
 libsylpheedcommon_la_SOURCES = \
-	base64.c base64.h \
+	base64.c \
+	hooks.c \
+	log.c \
+	md5.c \
+	mgutils.c \
+	nntp.c \
+	passcrypt.c \
+	plugin.c \
+	prefs.c \
+	progressindicator.c \
+	quoted-printable.c \
+	session.c \
+	smtp.c \
+	socket.c \
+	ssl.c \
+	ssl_certificate.c \
+	stringtable.c \
+	sylpheed.c \
+	template.c \
+	utils.c \
+	uuencode.c \
+	xml.c \
+	xmlprops.c
+
+sylpheedcommonincludedir = $(pkgincludedir)/common
+sylpheedcommoninclude_HEADERS = \
+	base64.h \
 	defs.h \
-	hooks.c hooks.h \
+	hooks.h \
 	intl.h \
-	log.c log.h \
-	md5.c md5.h \
-	mgutils.c mgutils.h \
-	nntp.c nntp.h \
-	passcrypt.c passcrypt.h \
-	plugin.c plugin.h \
-	prefs.c prefs.h \
-	progressindicator.c progressindicator.h \
-	quoted-printable.c quoted-printable.h \
-	session.c session.h \
-	smtp.c smtp.h \
-	socket.c socket.h \
-	ssl_certificate.c ssl_certificate.h \
-	ssl.c ssl.h \
-	stringtable.c stringtable.h \
-	sylpheed.c sylpheed.h \
-	template.c template.h \
-	utils.c utils.h \
-	uuencode.c uuencode.h \
+	log.h \
+	md5.h \
+	mgutils.h \
+	nntp.h \
+	passcrypt.h \
+	plugin.h \
+	prefs.h \
+	progressindicator.h \
+	quoted-printable.h \
+	session.h \
+	smtp.h \
+	socket.h \
+	ssl_certificate.h \
+	ssl.h \
+	stringtable.h \
+	sylpheed.h \
+	template.h \
+	utils.h \
+	uuencode.h \
 	version.h \
-	xml.c xml.h \
-	xmlprops.c xmlprops.h
+	xml.h \
+	xmlprops.h
 
 AM_CPPFLAGS = \
 	$(GLIB_CFLAGS) \

@@ -3,119 +3,233 @@ SUBDIRS = common gtk plugins
 bin_PROGRAMS = sylpheed
 
 sylpheed_SOURCES = \
-	main.c main.h \
-	mainwindow.c mainwindow.h \
-	folderview.c folderview.h \
-	summaryview.c summaryview.h \
-	messageview.c messageview.h \
-	headerview.c headerview.h \
-	textview.c textview.h \
-	mimeview.c mimeview.h \
-	summary_search.c summary_search.h \
-	message_search.c message_search.h \
-	folder.c folder.h \
-	procmsg.c procmsg.h \
-	procheader.c procheader.h \
-	action.c action.h \
-	compose.c compose.h \
-	stock_pixmap.c stock_pixmap.h \
-	prefs_gtk.c prefs_gtk.h \
-	prefs_common.c prefs_common.h \
-	prefs_account.c prefs_account.h \
-	prefs_folder_item.c prefs_folder_item.h \
-	prefs_display_header.c prefs_display_header.h \
-	prefs_customheader.c prefs_customheader.h \
-	prefs_summary_column.c prefs_summary_column.h \
-	prefs_template.c prefs_template.h \
-	prefs_actions.c prefs_actions.h \
-	account.c account.h \
-	displayheader.c displayheader.h \
-	customheader.c customheader.h \
-	addressbook.c addressbook.h \
-	addr_compl.c addr_compl.h \
-	addressitem.h \
-	addrquery.h \
-	adbookbase.h \
-	addritem.c addritem.h \
-	addrcache.c addrcache.h \
-	addrclip.c addrclip.h \
-	addrselect.c addrselect.h \
-	addrbook.c addrbook.h \
-	addrindex.c addrindex.h \
-	vcard.c vcard.h \
-	ldif.c ldif.h \
-	importldif.c importldif.h \
-	mutt.c mutt.h \
-	importmutt.c importmutt.h \
-	pine.c pine.h \
-	importpine.c importpine.h \
-	jpilot.c jpilot.h \
-	ldapctrl.c ldapctrl.h \
-	ldapquery.c ldapquery.h \
-	ldapserver.c ldapserver.h \
-	ldaputil.c ldaputil.h \
-	editbook.c editbook.h \
-	editgroup.c editgroup.h \
-	editaddress.c editaddress.h \
-	editvcard.c editvcard.h \
-	editjpilot.c editjpilot.h \
-	editldap.c editldap.h \
-	editldap_basedn.c editldap_basedn.h \
-	addressadd.c addressadd.h \
-	addrharvest.c addrharvest.h \
-	addrgather.c addrgather.h \
-	exporthtml.c exporthtml.h \
-	exphtmldlg.c exphtmldlg.h \
-	foldersel.c foldersel.h \
-	statusbar.c statusbar.h \
-	logwindow.c logwindow.h \
-	sourcewindow.c sourcewindow.h \
-	undo.c undo.h \
-	alertpanel.c alertpanel.h \
-	inputdialog.c inputdialog.h \
-	progressdialog.c progressdialog.h \
-	grouplistdialog.c grouplistdialog.h \
-	setup.c setup.h \
-	codeconv.c codeconv.h \
-	unmime.c unmime.h \
-	ssl_manager.c ssl_manager.h \
-	pop.c pop.h \
-	mh.c mh.h \
-	mbox.c mbox.h \
-	send_message.c send_message.h \
-	recv.c recv.h \
-	inc.c inc.h \
-	import.c import.h \
-	export.c export.h \
-	news.c news.h \
-	imap.c imap.h \
-	html.c html.h \
-	enriched.c enriched.h \
-	procmime.c procmime.h \
-	rfc2015.c rfc2015.h \
-	passphrase.c passphrase.h \
-	select-keys.c select-keys.h \
-	sigstatus.c sigstatus.h \
+	account.c \
+	action.c \
+	addrbook.c \
+	addrcache.c \
+	addrclip.c \
+	addr_compl.c \
+	addressadd.c \
+	addressbook.c \
+	addrgather.c \
+	addrharvest.c \
+	addrindex.c \
+	addritem.c \
+	addrselect.c \
+	alertpanel.c \
+	codeconv.c \
+	compose.c \
+	crash.c \
+	customheader.c \
+	displayheader.c \
+	editaddress.c \
+	editbook.c \
+	editgroup.c \
+	editjpilot.c \
+	editldap_basedn.c \
+	editldap.c \
+	editvcard.c \
+	enriched.c \
+	exphtmldlg.c \
+	export.c \
+	exporthtml.c \
+	filtering.c \
+	folder.c \
+	folder_item_prefs.c \
+	foldersel.c \
+	folderview.c \
+	grouplistdialog.c \
+	headerview.c \
+	html.c \
+	imap.c \
+	import.c \
+	importldif.c \
+	importmutt.c \
+	importpine.c \
+	inc.c \
+	inputdialog.c \
+	jpilot.c \
+	ldapctrl.c \
+	ldapquery.c \
+	ldapserver.c \
+	ldaputil.c \
+	ldif.c \
+	logwindow.c \
+	main.c \
+	mainwindow.c \
+	manual.c \
+	matcher.c \
+	matcher_parser_lex.l \
+	matcher_parser_parse.y \
+	mbox.c \
+	mbox_folder.c \
+	message_search.c \
+	messageview.c \
+	mh.c \
+	mimeview.c \
+	msgcache.c \
+	mutt.c \
+	news.c \
+	noticeview.c \
+	passphrase.c \
+	pine.c \
+	pop.c \
+	prefs_account.c \
+	prefs_actions.c \
+	prefs_common.c \
+	prefs_customheader.c \
+	prefs_display_header.c \
+	prefs_filtering.c \
+	prefs_folder_item.c \
+	prefs_gtk.c \
+	prefs_matcher.c \
+	prefs_scoring.c \
+	prefs_summary_column.c \
+	prefs_template.c \
+	prefs_toolbar.c \
+	procheader.c \
+	procmime.c \
+	procmsg.c \
+	progressdialog.c \
+	quote_fmt_lex.l \
+	quote_fmt_parse.y quote_fmt.c \
+	recv.c \
+	rfc2015.c \
+	scoring.c \
+	select-keys.c \
+	send_message.c \
+	setup.c \
+	sigstatus.c \
 	simple-gettext.c \
-	manual.c manual.h \
-	scoring.c scoring.h \
-	matcher.c matcher.h \
-	prefs_matcher.c prefs_matcher.h \
-	prefs_scoring.c prefs_scoring.h \
-	filtering.c filtering.h \
-	prefs_filtering.c prefs_filtering.h \
-	mbox_folder.c mbox_folder.h \
+	sourcewindow.c \
+	ssl_manager.c \
+	statusbar.c \
+	stock_pixmap.c \
+	string_match.c \
+	summary_search.c \
+	summaryview.c \
+	textview.c \
+	toolbar.c \
+	undo.c \
+	unmime.c \
+	vcard.c
+
+sylpheedincludedir = $(pkgincludedir)
+sylpheedinclude_HEADERS = \
+	account.h \
+	action.h \
+	adbookbase.h \
+	addrbook.h \
+	addrcache.h \
+	addrclip.h \
+	addr_compl.h \
+	addressadd.h \
+	addressbook.h \
+	addressitem.h \
+	addrgather.h \
+	addrharvest.h \
+	addrindex.h \
+	addritem.h \
+	addrquery.h \
+	addrselect.h \
+	alertpanel.h \
+	codeconv.h \
+	compose.h \
+	crash.h \
+	customheader.h \
+	displayheader.h \
+	editaddress.h \
+	editbook.h \
+	editgroup.h \
+	editjpilot.h \
+	editldap_basedn.h \
+	editldap.h \
+	editvcard.h \
+	enriched.h \
+	exphtmldlg.h \
+	export.h \
+	exporthtml.h \
+	filtering.h \
+	folder.h \
+	folder_item_prefs.h \
+	foldersel.h \
+	folderview.h \
+	grouplistdialog.h \
+	headerview.h \
+	html.h \
+	imap.h \
+	import.h \
+	importldif.h \
+	importmutt.h \
+	importpine.h \
+	inc.h \
+	inputdialog.h \
+	jpilot.h \
+	ldapctrl.h \
+	ldapquery.h \
+	ldapserver.h \
+	ldaputil.h \
+	ldif.h \
+	logwindow.h \
+	main.h \
+	mainwindow.h \
+	manual.h \
+	matcher.h \
+	matcher_parser_lex.h \
+	matcher_parser_parse.y \
+	matcher_parser.h \
+	matcher_parser_parse.h \
+	mbox_folder.h \
+	mbox.h \
+	message_search.h \
+	messageview.h \
+	mh.h \
+	mimeview.h \
+	msgcache.h \
+	mutt.h \
+	news.h \
+	noticeview.h \
+	passphrase.h \
+	pine.h \
+	pop.h \
+	prefs_account.h \
+	prefs_actions.h \
+	prefs_common.h \
+	prefs_customheader.h \
+	prefs_display_header.h \
+	prefs_filtering.h \
+	prefs_folder_item.h \
+	prefs_gtk.h \
+	prefs_matcher.h \
+	prefs_scoring.h \
+	prefs_summary_column.h \
+	prefs_template.h \
+	prefs_toolbar.h \
+	procheader.h \
+	procmime.h \
+	procmsg.h \
+	progressdialog.h \
 	quote_fmt_lex.l quote_fmt_lex.h \
-	quote_fmt_parse.y quote_fmt.c quote_fmt.h \
-	matcher_parser_lex.l matcher_parser_lex.h \
-	matcher_parser_parse.y matcher_parser.h matcher_parser_parse.h \
-	string_match.h string_match.c \
-	msgcache.h msgcache.c \
-	noticeview.h noticeview.c \
-	toolbar.c toolbar.h \
-	prefs_toolbar.c prefs_toolbar.h \
-	crash.c crash.h \
-	folder_item_prefs.c folder_item_prefs.h
+	quote_fmt_parse.y quote_fmt.h \
+	recv.h \
+	rfc2015.h \
+	scoring.h \
+	select-keys.h \
+	send_message.h \
+	setup.h \
+	sigstatus.h \
+	sourcewindow.h \
+	ssl_manager.h \
+	statusbar.h \
+	stock_pixmap.h \
+	string_match.h \
+	summary_search.h \
+	summaryview.h \
+	textview.h \
+	toolbar.h \
+	undo.h \
+	unmime.h \
+	vcard.h
 
 BUILT_SOURCES = \
 	quote_fmt_lex.c \
