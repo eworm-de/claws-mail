@@ -659,7 +659,7 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Message/Priority/_Lowest"),  NULL, compose_set_priority_cb, PRIORITY_LOWEST, "/Message/Priority/Highest"},
 	{N_("/_Message/---"),		NULL,		NULL,	0, "<Separator>"},
 	{N_("/_Message/_Request Return Receipt"),	NULL, compose_toggle_return_receipt_cb, 0, "<ToggleItem>"},
-	{N_("/_Message/_Create new thread"),	NULL, compose_toggle_new_thread_cb, 0, "<ToggleItem>"},
+	{N_("/_Message/_Remove references"),	NULL, compose_toggle_new_thread_cb, 0, "<ToggleItem>"},
 	{N_("/_Tools"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/Show _ruler"),	NULL, compose_toggle_ruler_cb, 0, "<ToggleItem>"},
 	{N_("/_Tools/_Address book"),	"<shift><control>A", compose_address_cb , 0, NULL},
@@ -929,7 +929,8 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 	compose = compose_create(account, COMPOSE_REPLY);
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
-	menu_set_toggle(ifactory, "/Message/Create new thread", TRUE);
+
+	menu_set_toggle(ifactory, "/Message/Remove references", FALSE);
 
 	compose->replyinfo = procmsg_msginfo_get_full_info(msginfo);
 	if (!compose->replyinfo)
@@ -937,7 +938,6 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
     	if (msginfo->folder && msginfo->folder->ret_rcpt)
 		menu_set_toggle(ifactory, "/Message/Request Return Receipt", TRUE);
-
 
 	/* Set save folder */
 	if (msginfo->folder && msginfo->folder->prefs && msginfo->folder->prefs->save_copy_to_folder) {
@@ -984,8 +984,6 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
-
-
 }
 
 #define INSERT_FW_HEADER(var, hdr) \
@@ -1300,15 +1298,9 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	
 	compose_attach_parts(compose, msginfo);
 
-	if (msginfo->subject) {
-		if (compose->original_subject)
-			g_free(compose->original_subject);
-	
-		compose->original_subject = g_strdup(msginfo->subject);
-
+	if (msginfo->subject)
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry),
 				   msginfo->subject);
-	}
 	gtk_editable_set_editable(GTK_EDITABLE(compose->subject_entry), FALSE);
 
 	gtk_stext_freeze(GTK_STEXT(compose->text));
@@ -1480,14 +1472,8 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 		compose_entry_append(compose, cc, COMPOSE_CC);
 	if (bcc)
 		compose_entry_append(compose, bcc, COMPOSE_BCC);
-	if (subject) {
-		if (compose->original_subject)
-			g_free(compose->original_subject);
-			
-		compose->original_subject = g_strdup(subject);
-		
+	if (subject)
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), subject);
-	}
 	if (body) {
 		gtk_stext_insert(GTK_STEXT(compose->text),
 				NULL, NULL, NULL, body, -1);
@@ -1809,11 +1795,6 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 
 		buf2 = g_strdup_printf("Re: %s", buf);
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), buf2);
-
-		if (compose->original_subject)
-			g_free(compose->original_subject);
-			
-		compose->original_subject = g_strdup(buf2);
 
 		g_free(buf2);
 		g_free(buf);
@@ -4161,28 +4142,15 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		compose->msgid = g_strdup(buf);
 	}
 
-	if (compose->remove_references == TRUE) {
-		gchar *subj;
-		
-		subj = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
-
-		if (compose->original_subject != NULL &&
-			strcmp(subj, compose->original_subject)) {
-				g_free(compose->inreplyto);
-				g_free(compose->references);
-		
-				compose->inreplyto = NULL;
-				compose->references = NULL;
-		}
-	}
-		
-	/* In-Reply-To */
-	if (compose->inreplyto && compose->to_list)
-		fprintf(fp, "In-Reply-To: <%s>\n", compose->inreplyto);
+	if (compose->remove_references == FALSE) {
+		/* In-Reply-To */
+		if (compose->inreplyto && compose->to_list)
+			fprintf(fp, "In-Reply-To: <%s>\n", compose->inreplyto);
 	
-	/* References */
-	if (compose->references)
-		fprintf(fp, "References: %s\n", compose->references);
+		/* References */
+		if (compose->references)
+			fprintf(fp, "References: %s\n", compose->references);
+	}
 
 	/* Followup-To */
 	compose_write_headers_from_headerlist(compose, fp, "Followup-To");
@@ -5440,8 +5408,6 @@ static void compose_destroy(Compose *compose)
 	procmsg_msginfo_free(compose->targetinfo);
 	procmsg_msginfo_free(compose->replyinfo);
 	procmsg_msginfo_free(compose->fwdinfo);
-
-	g_free(compose->original_subject);
 
 	g_free(compose->replyto);
 	g_free(compose->cc);

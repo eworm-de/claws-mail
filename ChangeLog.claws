@@ -1,3 +1,11 @@
+2003-06-24 [leandro]	0.9.0claws59
+
+	* src/compose.[ch]
+		o removed "Message/Create new thread" menu item
+		o added "Message/Remove references" menu item
+		  (it's off by default and will not check anymore
+		   if the subject changed)
+
 2003-06-23 [alfons]	0.9.0claws58
 
 	* src/procmsg.c

@@ -207,7 +207,6 @@ struct _Compose
 	gchar *redirect_filename;
 	
 	gboolean remove_references;
-	gchar *original_subject;
 };
 
 struct _AttachInfo
