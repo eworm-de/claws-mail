@@ -160,6 +160,9 @@ static void import_mbox_cb	 (MainWindow	*mainwin,
 static void export_mbox_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void export_list_mbox_cb  (MainWindow 	*mainwin, 
+				  guint 	 action,
+				  GtkWidget 	*widget);
 static void empty_trash_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -444,6 +447,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Import mbox file..."),	NULL, import_mbox_cb, 0, NULL},
 	{N_("/_File/_Export to mbox file..."),	NULL, export_mbox_cb, 0, NULL},
+	{N_("/_File/_Export selected to mbox file..."),	
+						NULL, export_list_mbox_cb, 0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/Empty all _Trash folders"),	"<shift>D", empty_trash_cb, 0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
@@ -1996,6 +2001,7 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		if (prefs_common.folderview_visible)
 			gtk_widget_show(folderwin);
 	}
+
 	if (type & SEPARATE_MESSAGE) {
 		messagewin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title(GTK_WINDOW(messagewin),
@@ -2369,6 +2375,12 @@ static void export_mbox_cb(MainWindow *mainwin, guint action,
 			   GtkWidget *widget)
 {
 	export_mbox(mainwin->summaryview->folder_item);
+}
+
+static void export_list_mbox_cb(MainWindow *mainwin, guint action,
+				GtkWidget *widget)
+{
+	summaryview_export_mbox_list(mainwin->summaryview);
 }
 
 static void empty_trash_cb(MainWindow *mainwin, guint action,

@@ -1,3 +1,12 @@
+2005-01-19 [colin]	1.0.0cvs2.1
+
+	* src/mbox.c
+	* src/mbox.h
+	* src/mainwindow.c
+	* src/summaryview.c
+	* src/summaryview.h
+		Sync with HEAD
+
 2005-01-19 [paul]	1.0.0cvs1.1
 
 	* configure.ac
