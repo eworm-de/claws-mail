@@ -2952,11 +2952,11 @@ void summary_delete(SummaryView *summaryview)
 			summary_step(summaryview, GTK_SCROLL_STEP_FORWARD);
 		else if (sel_last && node == GTK_CTREE_NODE_PREV(sel_last))
 			summary_step(summaryview, GTK_SCROLL_STEP_BACKWARD);
-		else
-			summary_select_node
-				(summaryview, node,
-				 messageview_is_visible(summaryview->messageview),
-				 FALSE);
+		
+		summary_select_node
+			(summaryview, node,
+			 messageview_is_visible(summaryview->messageview),
+			 FALSE);
 	}
 
 	if (prefs_common.immediate_exec || item->stype == F_TRASH)
