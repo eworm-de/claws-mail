@@ -1,3 +1,8 @@
+2003-09-22 [paul]	0.9.5claws25
+
+	* src/plugins/clamav/clamav_plugin.c
+		don't skip MULTIPART parts
+
 2003-09-21 [christoph]	0.9.5claws24
 
 	* src/alertpanel.c
