@@ -548,7 +548,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		}
 
 		if (pop3_state->error_val == PS_AUTHFAIL) {
-			if(!prefs_common.noerrorpanel) {
+			if(!prefs_common.no_recv_err_panel) {
 				if((prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS) ||
 				    ((prefs_common.recv_dialog_mode == RECV_DIALOG_ACTIVE) && focus_window)) {
 					manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
@@ -630,7 +630,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		num++;
 	}
 
-	if (error_num && !prefs_common.noerrorpanel) {
+	if (error_num && !prefs_common.no_recv_err_panel) {
 		if (inc_dialog->show_dialog)
 			manage_window_focus_in(inc_dialog->dialog->window,
 					       NULL, NULL);
@@ -726,7 +726,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	if ((sockinfo = sock_connect(server, port)) == NULL) {
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
 			    server, port);
-		if(!prefs_common.noerrorpanel) {
+		if(!prefs_common.no_recv_err_panel) {
 			if((prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS) ||
 			    ((prefs_common.recv_dialog_mode == RECV_DIALOG_ACTIVE) && focus_window)) {
 				manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
@@ -1049,9 +1049,9 @@ static void inc_put_error(IncState istate)
 {
 	switch (istate) {
 	case INC_ERROR:
-		if(!prefs_common.noerrorpanel) {
-			alertpanel_error(_("Error occurred while processing mail."));
-		}
+		if (!prefs_common.no_recv_err_panel)
+			alertpanel_error
+				(_("Error occurred while processing mail."));
 		break;
 	case INC_NOSPACE:
 		alertpanel_error(_("No disk space left."));

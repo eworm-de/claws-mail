@@ -1,3 +1,8 @@
+2002-07-02 [paul]	0.7.8claws42
+
+	* sync with 0.7.8cvs13
+		see ChangeLog 2002-07-01 and 2002-07-02
+
 2002-07-01 [christoph]	0.7.8claws41
 
 	* src/summaryview.c

@@ -78,7 +78,6 @@ static struct Receive {
 	GtkObject *spinbtn_autochk_adj;
 
 	GtkWidget *checkbtn_chkonstartup;
-	GtkWidget *checkbtn_noerrorpanel;
 	GtkWidget *checkbtn_scan_after_inc;
 
 
@@ -216,6 +215,7 @@ static struct Interface {
 	GtkWidget *checkbtn_immedexec;
 	GtkWidget *checkbtn_addaddrbyclick;
 	GtkWidget *optmenu_recvdialog;
+	GtkWidget *checkbtn_no_recv_err_panel;
  	GtkWidget *optmenu_nextunreadmsgdialog;
 	GtkWidget *entry_pixmap_theme;
 	GtkWidget *combo_pixmap_theme;
@@ -310,9 +310,6 @@ static PrefParam param[] = {
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 	{"check_on_startup", "FALSE", &prefs_common.chk_on_startup, P_BOOL,
 	 &receive.checkbtn_chkonstartup,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"noerrorpanel", "FALSE", &prefs_common.noerrorpanel, P_BOOL,
-	 &receive.checkbtn_noerrorpanel,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"scan_all_after_inc", "FALSE", &prefs_common.scan_all_after_inc,
 	 P_BOOL, &receive.checkbtn_scan_after_inc,
@@ -741,6 +738,9 @@ static PrefParam param[] = {
 	 &interface.optmenu_recvdialog,
 	 prefs_common_recv_dialog_set_data_from_optmenu,
 	 prefs_common_recv_dialog_set_optmenu},
+	{"no_receive_error_panel", "FALSE", &prefs_common.no_recv_err_panel,
+	 P_BOOL, &interface.checkbtn_no_recv_err_panel,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"nextunreadmsg_dialog", NULL, &prefs_common.next_unread_msg_dialog, P_ENUM,
 	 &interface.optmenu_nextunreadmsgdialog,
 	 prefs_nextunreadmsgdialog_set_data_from_optmenu,
@@ -1036,7 +1036,6 @@ static void prefs_receive_create(void)
 	GtkWidget *spinbtn_autochk;
 	GtkWidget *label_autochk2;
 	GtkWidget *checkbtn_chkonstartup;
-	GtkWidget *checkbtn_noerrorpanel;
 	GtkWidget *checkbtn_scan_after_inc;
 
 
@@ -1150,9 +1149,6 @@ static void prefs_receive_create(void)
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_chkonstartup,
 			   _("Check new mail on startup"));
-
-	PACK_CHECK_BUTTON (vbox2, checkbtn_noerrorpanel,
-			   _("No error popup on receive error"));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_scan_after_inc,
 			   _("Update all local folders after incorporation"));
 
@@ -1239,7 +1235,6 @@ static void prefs_receive_create(void)
 	receive.spinbtn_autochk_adj = spinbtn_autochk_adj;
 
 	receive.checkbtn_chkonstartup = checkbtn_chkonstartup;
-	receive.checkbtn_noerrorpanel = checkbtn_noerrorpanel;
 	receive.checkbtn_scan_after_inc = checkbtn_scan_after_inc;
 
 
@@ -2627,6 +2622,7 @@ static void prefs_interface_create(void)
 	GtkWidget *optmenu_recvdialog;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
+	GtkWidget *checkbtn_no_recv_err_panel;
 
 	GtkWidget *frame_addr;
 	GtkWidget *vbox_addr;
@@ -2692,6 +2688,9 @@ static void prefs_interface_create(void)
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 
 	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW);
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_no_recv_err_panel,
+			   _("No popup error dialog on receive error"));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -2806,6 +2805,7 @@ static void prefs_interface_create(void)
 	interface.checkbtn_openinbox          = checkbtn_openinbox;
 	interface.checkbtn_immedexec          = checkbtn_immedexec;
 	interface.optmenu_recvdialog	      = optmenu_recvdialog;
+	interface.checkbtn_no_recv_err_panel  = checkbtn_no_recv_err_panel;
 	interface.checkbtn_addaddrbyclick     = checkbtn_addaddrbyclick;
 	interface.optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
 	interface.combo_pixmap_theme	      = combo_pixmap_theme;

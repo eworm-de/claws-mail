@@ -1,3 +1,13 @@
+2002-07-02
+
+	* src/prefs_common.[ch]
+	  src/inc.c: 受信エラーダイアログを抑制するオプションを追加。
+
+2002-07-01
+
+	* src/account.c: account_find_from_address(): ヘッダの複数のアドレス
+	  に対応。
+
 2002-06-28
 
 	* src/gtksctree.[ch]: 行の移動後に無効にならないように

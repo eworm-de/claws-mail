@@ -206,7 +206,7 @@ PrefsAccount *account_find_from_address(const gchar *address)
 	for (cur = account_list; cur != NULL; cur = cur->next) {
 		ac = (PrefsAccount *)cur->data;
 		if (ac->protocol != A_NNTP && ac->address &&
-		    strcasestr(address, ac->address))
+		    strcasestr(address, ac->address) != NULL)
 			return ac;
 	}
 
