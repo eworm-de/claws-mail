@@ -992,6 +992,7 @@ void folder_item_close(FolderItem *item)
 	g_return_if_fail(item != NULL);
 
 	if (item->new_msgs) {
+		folder_item_update_freeze();
 		mlist = folder_item_get_msg_list(item);
 		for (cur = mlist ; cur != NULL ; cur = cur->next) {
 			MsgInfo * msginfo;
@@ -1002,6 +1003,7 @@ void folder_item_close(FolderItem *item)
 			procmsg_msginfo_free(msginfo);
 		}
 		g_slist_free(mlist);
+		folder_item_update_thaw();
 	}		
 
 	folder_item_write_cache(item);
