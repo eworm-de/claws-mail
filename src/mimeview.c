@@ -825,12 +825,14 @@ static void part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 		else
 			menu_set_sensitive(mimeview->popupfactory,
 					   "/Display as text", TRUE);
+#ifndef WIN32
 		if (partinfo &&
 		    partinfo->type == MIMETYPE_APPLICATION &&
 		    !g_strcasecmp(partinfo->subtype, "octet-stream"))
 			menu_set_sensitive(mimeview->popupfactory,
 					   "/Open", FALSE);
 		else
+#endif
 			menu_set_sensitive(mimeview->popupfactory,
 					   "/Open", TRUE);
 
@@ -1141,9 +1143,6 @@ static void mimeview_launch(MimeView *mimeview)
 {
 	MimeInfo *partinfo;
 	gchar *filename;
-#ifdef WIN32
-	gchar *open_cmd;
-#endif
 
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
@@ -1167,8 +1166,11 @@ static void mimeview_launch(MimeView *mimeview)
 #ifdef WIN32
 	{
 		gchar *new_name = g_strdup(w32_move_to_exec_dir(filename));
+		gchar *open_cmd = w32_get_open_cmd(filename);
 		g_free(filename);
 		filename = new_name;
+		mimeview_view_file(filename, partinfo, open_cmd);
+		g_free(open_cmd);
 	}
 #else
 		mimeview_view_file(filename, partinfo, NULL);

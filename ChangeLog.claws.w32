@@ -1,3 +1,8 @@
+2004-01-14 [thorsten]	0.9.8claws30-1
+
+	* src/mimeview.c
+		fix: "open" attachment didn't work
+
 2003-12-21 [thorsten]	0.9.8claws6-1
 
 	* src/prefs_filtering
