@@ -1,3 +1,8 @@
+2001-10-05 [paul]	0.6.2claws19
+
+	* src/mainwindow.c, src/summaryview.c
+		fix 'Message/Reply to all', broken in last commit
+
 2001-10-04 [paul] 	0.6.2claws18
 
 	* src/compose.[ch], src/mainwindow.c

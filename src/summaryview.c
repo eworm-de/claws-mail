@@ -4117,7 +4117,7 @@ static void summary_reply_cb(SummaryView *summaryview, guint action,
 		break;
 	case COMPOSE_REPLY_TO_ALL:
 		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      TRUE, FALSE);
+			      TRUE, TRUE);
 		break;
 	case COMPOSE_REPLY_TO_ALL_WITH_QUOTE:
 		compose_reply(msginfo, TRUE, TRUE, FALSE);

@@ -2441,7 +2441,7 @@ static void reply_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 		break;
 	case COMPOSE_REPLY_TO_ALL:
 		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      TRUE, FALSE);
+			      TRUE, TRUE);
 		break;
 	case COMPOSE_FORWARD:
 		if (!sel->next) {
