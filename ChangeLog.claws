@@ -1,3 +1,11 @@
+2001-08-24 [christoph]
+
+	* src/filesel.c
+		keep filename when browsing directories
+		(not working for user entered filename, but
+		 for default name and selected filename from
+		 file list)
+
 2001-08-24 [paul]
 
 	* configure.in
