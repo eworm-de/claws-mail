@@ -1,3 +1,8 @@
+2002-09-03 [colin]	0.8.2claws25
+
+	* src/textview.[ch]
+		Grey the signature
+
 2002-09-03 [paul]	0.8.2claws24
 
 	* sync with 0.8.2cvs8

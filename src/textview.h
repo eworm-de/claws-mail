@@ -47,7 +47,8 @@ struct _TextView
 
 	gboolean text_is_mb;
 	gboolean default_text;
-
+	gboolean is_in_signature;
+	
 	GSList *uri_list;
 	gint body_pos;
 	gint cur_pos;
