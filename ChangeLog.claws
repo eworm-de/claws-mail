@@ -25,7 +25,6 @@
 	* src/scoring.c
 		bugfix of the config file parser
 
->>>>>>> 1.205
 2001-07-08 [alfons]
 
 	* src/Makefile.am
