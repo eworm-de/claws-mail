@@ -195,7 +195,7 @@ static void prefs_toolbar_set_displayed(void)
 
 		} else {
 			activ[0] = g_strdup(SEPARATOR_PIXMAP);
-			activ[1] = g_strdup(item->file);
+			activ[1] = g_strdup(toolbar_ret_descr_from_val(A_SEPARATOR));
 			activ[2] = g_strdup("");
 			activ[3] = g_strdup(toolbar_ret_descr_from_val(A_SEPARATOR));
 			gtk_clist_append(clist_set, activ);

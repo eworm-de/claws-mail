@@ -1,3 +1,10 @@
+2003-01-10 [alfons]	0.8.8claws80
+
+	* src/prefs_toolbar.c
+	* src/toolbar.c
+		use the translatable string for "Separator" as file name for
+		separator toolbar items (probably make this uppercase?)
+	
 2003-01-10 [alfons]	0.8.8claws79
 
 	* src/prefs_toolbar.c
