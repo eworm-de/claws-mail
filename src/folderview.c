@@ -1702,6 +1702,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	}
 		
 	/* Show messages */
+	summary_set_prefs_from_folderitem(folderview->summaryview, item);
 	opened = summary_show(folderview->summaryview, item);
 
 	folder_clean_cache_memory();

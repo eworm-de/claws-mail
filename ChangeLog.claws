@@ -1,3 +1,14 @@
+2002-08-19 [christoph]	0.8.1claws78
+
+	* src/folderview.c
+	* src/prefs_folder_item.h
+	* src/summaryview.[ch]
+		o add summary_set_prefs_from_folderitem to set
+		  summaryview prefs (first step to remove all
+		  references to the folderitem in summaryview)
+		o moved compiled regex stuff from folderitem prefs
+		  to summaryview code
+
 2002-08-19 [paul]	0.8.1claws77
 
 	* src/compose.c

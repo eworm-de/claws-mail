@@ -180,7 +180,6 @@ static void summary_display_msg_full	(SummaryView		*summaryview,
 					 gboolean		 all_headers);
 static void summary_set_row_marks	(SummaryView		*summaryview,
 					 GtkCTreeNode		*row);
-static void summaryview_subject_filter_init (PrefsFolderItem    *prefs);
 
 /* message handling */
 static void summary_mark_row		(SummaryView		*summaryview,
@@ -603,6 +602,9 @@ void summary_init(SummaryView *summaryview)
 	gtk_box_reorder_child(GTK_BOX(summaryview->hbox_l), pixmap, 0);
 	gtk_widget_show(pixmap);
 	summaryview->folder_pixmap = pixmap;
+
+	/* Init Summaryview prefs */
+	summaryview->simplify_subject_preg = NULL;
 
 	summary_clear_list(summaryview);
 	summary_set_column_titles(summaryview);
@@ -1830,7 +1832,7 @@ void summary_sort(SummaryView *summaryview,
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
-	GtkCListCompareFunc cmp_func;
+	GtkCListCompareFunc cmp_func = NULL;
 	FolderItem *item = summaryview->folder_item;
 
 	if (!item || !item->path || !item->parent || item->no_select) return;
@@ -1858,15 +1860,10 @@ void summary_sort(SummaryView *summaryview,
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_from;
 		break;
 	case SORT_BY_SUBJECT:
-		{
-			PrefsFolderItem *prefs = summaryview->folder_item->prefs;
-
-			if (prefs && prefs->enable_simplify_subject
-			&&  prefs->simplify_subject_regexp && prefs->simplify_subject_regexp[0])
-				cmp_func = (GtkCListCompareFunc)summary_cmp_by_simplified_subject;
-			else
-				cmp_func = (GtkCListCompareFunc)summary_cmp_by_subject;
-		}				
+		if (summaryview->simplify_subject_preg)
+			cmp_func = (GtkCListCompareFunc)summary_cmp_by_simplified_subject;
+		else
+			cmp_func = (GtkCListCompareFunc)summary_cmp_by_subject;
 		break;
 	case SORT_BY_SCORE:
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_score;
@@ -1878,37 +1875,36 @@ void summary_sort(SummaryView *summaryview,
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_label;
 		break;
 	case SORT_BY_NONE:
-		item->sort_key = sort_key;
-		item->sort_type = SORT_ASCENDING;
-		summary_set_column_titles(summaryview);
-		summary_set_menu_sensitive(summaryview);
+		cmp_func = NULL;
 		return;
 	default:
 		return;
 	}
 
-	debug_print("Sorting summary...");
-	STATUSBAR_PUSH(summaryview->mainwin, _("Sorting summary..."));
-
-	main_window_cursor_wait(summaryview->mainwin);
-
-	gtk_clist_set_compare_func(clist, cmp_func);
-
-	gtk_clist_set_sort_type(clist, (GtkSortType)sort_type);
 	item->sort_key = sort_key;
 	item->sort_type = sort_type;
 
 	summary_set_column_titles(summaryview);
 	summary_set_menu_sensitive(summaryview);
+	if(cmp_func != NULL) {
+		debug_print("Sorting summary...");
+		STATUSBAR_PUSH(summaryview->mainwin, _("Sorting summary..."));
 
-	gtk_sctree_sort_recursive(ctree, NULL);
+		main_window_cursor_wait(summaryview->mainwin);
 
-	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
+		gtk_clist_set_compare_func(clist, cmp_func);
 
-	debug_print("done.\n");
-	STATUSBAR_POP(summaryview->mainwin);
+		gtk_clist_set_sort_type(clist, (GtkSortType)sort_type);
 
-	main_window_cursor_normal(summaryview->mainwin);
+		gtk_sctree_sort_recursive(ctree, NULL);
+
+		gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
+
+		main_window_cursor_normal(summaryview->mainwin);
+
+		debug_print("done.\n");
+		STATUSBAR_POP(summaryview->mainwin);
+	}
 }
 
 gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
@@ -1986,8 +1982,6 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 				summaryview->folder_item->prefs->important_score;
 	}
 
-	summaryview_subject_filter_init(summaryview->folder_item->prefs);
-	
 	if (summaryview->folder_item->threaded) {
 		GNode *root, *gnode;
 
@@ -2082,7 +2076,6 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	static gchar *to = NULL;
 	static gchar col_score[11];
 	static gchar buf[BUFFSIZE];
-	PrefsFolderItem *prefs = summaryview->folder_item->prefs;
 	gint *col_pos = summaryview->col_pos;
 
 	text[col_pos[S_COL_MARK]]   = NULL;
@@ -2146,12 +2139,10 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 		}	
 	}
 
-	if (prefs->enable_simplify_subject 
-	    && prefs->simplify_subject_preg != NULL )
+	if (summaryview->simplify_subject_preg != NULL)
 		text[col_pos[S_COL_SUBJECT]] = msginfo->subject ? 
 			string_remove_match(buf, BUFFSIZE, msginfo->subject, 
-					prefs->simplify_subject_preg) : 
-			
+					summaryview->simplify_subject_preg) : 
 			_("(No Subject)");
 	else 
 		text[col_pos[S_COL_SUBJECT]] = msginfo->subject ? msginfo->subject :
@@ -4981,36 +4972,6 @@ static void summary_set_hide_read_msgs_menu (SummaryView *summaryview,
  	gtk_object_set_data(GTK_OBJECT(widget), "dont_toggle",
  			    GINT_TO_POINTER(0));
 }
-static void summaryview_subject_filter_init(PrefsFolderItem *prefs)
-{
-	int err;
-	gchar buf[BUFFSIZE];
-	if (prefs->enable_simplify_subject) {
-		if (prefs->simplify_subject_regexp && 
-				*prefs->simplify_subject_regexp != 0x00) {
-
-			if (!prefs->simplify_subject_preg) 
-				prefs->simplify_subject_preg = g_new(regex_t, 1);
-			else
-				regfree(prefs->simplify_subject_preg);
-
-			err = string_match_precompile(prefs->simplify_subject_regexp, 
-					prefs->simplify_subject_preg, REG_EXTENDED);
-			if (err) {
-				regerror(err, prefs->simplify_subject_preg, buf, BUFFSIZE);
-				alertpanel_error(_("Regular expression (regexp) error:\n%s"), buf);
-				g_free(prefs->simplify_subject_preg);
-				prefs->simplify_subject_preg = NULL;
-			}
-		} else {
-			if (prefs->simplify_subject_preg) {
-				regfree(prefs->simplify_subject_preg);
-				g_free(prefs->simplify_subject_preg);
-				prefs->simplify_subject_preg = NULL;
-			}
-		}
-	}
-}
 
 void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 {
@@ -5044,7 +5005,8 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 /*
  * Harvest addresses for selected messages in summary view.
  */
-void summary_harvest_address( SummaryView *summaryview ) {
+void summary_harvest_address(SummaryView *summaryview)
+{
 	GtkCTree *ctree = GTK_CTREE( summaryview->ctree );
 	GList *cur;
 	GList *msgList;
@@ -5059,7 +5021,42 @@ void summary_harvest_address( SummaryView *summaryview ) {
 	g_list_free( msgList );
 }
 
+static regex_t *summary_compile_simplify_regexp(gchar *simplify_subject_regexp)
+{
+	int err;
+	gchar buf[BUFFSIZE];
+	regex_t *preg = NULL;
+	
+	preg = g_new0(regex_t, 1);
+
+	err = string_match_precompile(simplify_subject_regexp, 
+				      preg, REG_EXTENDED);
+	if (err) {
+		regerror(err, preg, buf, BUFFSIZE);
+		alertpanel_error(_("Regular expression (regexp) error:\n%s"), buf);
+		g_free(preg);
+		preg = NULL;
+	}
+	
+	return preg;
+}
+
+void summary_set_prefs_from_folderitem(SummaryView *summaryview, FolderItem *item)
+{
+	g_return_if_fail(summaryview != NULL);
+	g_return_if_fail(item != NULL);
+
+	/* Subject simplification */
+	if(summaryview->simplify_subject_preg) {
+		regfree(summaryview->simplify_subject_preg);
+		g_free(summaryview->simplify_subject_preg);
+		summaryview->simplify_subject_preg = NULL;
+	}
+	if(item->prefs && item->prefs->simplify_subject_regexp && 
+	   item->prefs->simplify_subject_regexp[0] && item->prefs->enable_simplify_subject)
+		summaryview->simplify_subject_preg = summary_compile_simplify_regexp(item->prefs->simplify_subject_regexp);
+}
+
 /*
  * End of Source.
  */
-

@@ -20,6 +20,8 @@
 #ifndef __SUMMARY_H__
 #define __SUMMARY_H__
 
+#include <regex.h>
+
 #include <glib.h>
 #include <gdk/gdk.h>
 #include <gtk/gtkwidget.h>
@@ -118,7 +120,11 @@ struct _SummaryView
 
 	FolderItem *folder_item;
 
+	/* summaryview prefs */
 	gint important_score;
+
+	/* Extra data for summaryview */
+	regex_t *simplify_subject_preg;
 
 	/* current message status */
 	gint   newmsgs;
@@ -248,6 +254,7 @@ void summary_toggle_view_real	(SummaryView	*summaryview);
 
 void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview);
 
-void summary_harvest_address	( SummaryView *summaryview );
+void summary_harvest_address(SummaryView *summaryview);
+void summary_set_prefs_from_folderitem(SummaryView *summaryview, FolderItem *item);
 
 #endif /* __SUMMARY_H__ */
