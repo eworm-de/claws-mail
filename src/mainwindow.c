@@ -1397,7 +1397,13 @@ void main_window_add_mailbox(MainWindow *mainwin)
 			      "scanned automatically."),
 			    "Mail");
 	if (!path) return;
+#ifdef WIN32
+	locale_from_utf8(&path);
+#endif
 	if (folder_find_from_path(path)) {
+#ifdef WIN32
+		locale_to_utf8(&path);
+#endif
 		alertpanel_error(_("The mailbox `%s' already exists."), path);
 		g_free(path);
 		return;
@@ -2657,6 +2663,9 @@ static void scan_tree_func(Folder *folder, FolderItem *item, gpointer data)
 		str = g_strdup_printf(_("Scanning folder %s ..."),
 				      LOCAL_FOLDER(folder)->rootpath);
 
+#ifdef WIN32
+	locale_to_utf8(&str);
+#endif
 	STATUSBAR_PUSH(mainwin, str);
 	STATUSBAR_POP(mainwin);
 	g_free(str);

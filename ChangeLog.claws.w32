@@ -1,3 +1,10 @@
+2003-02-23 [thorsten]	0.8.10claws43-5
+
+	* mainwindow.c
+		fix: utf8 conv.: avoid mh duplicates
+	* alertpanel.c
+		fix: utf8 validate final message
+
 2003-02-23 [thorsten]	0.8.10claws43-4
 
 	* src/matcher.c

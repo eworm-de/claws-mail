@@ -160,35 +160,6 @@ void alertpanel_warning(const gchar *format, ...)
 
 void alertpanel_error(const gchar *format, ...)
 {
-#if 0
-/* ifdef WIN32
-/* strings already seem to be utf8... any conversion leads to errors:
- * If no conversion is done, messages with german umlauts in args 
- * are displayed correctly. So disabled again.
-*/
-	va_list args;
-	gchar *buf;
-	gint buflen;
-	gchar *p_format;
-
-	buflen = BUFFSIZE;
-	buf = g_malloc(buflen);
-
-	p_format = g_strdup(format);
-	locale_from_utf8(&p_format);
-
-	va_start(args, p_format);
-	g_vsnprintf(buf, buflen, p_format, args);
-	va_end(args);
-
-	locale_to_utf8(&buf);
-
-	strretchomp(buf);
-	alertpanel_message(_("Error"), buf);
-
-	g_free(buf);
-	g_free(p_format);
-#else
 	va_list args;
 	gchar buf[256];
 
@@ -198,7 +169,6 @@ void alertpanel_error(const gchar *format, ...)
 
 	strretchomp(buf);
 	alertpanel_message(_("Error"), buf);
-#endif
 }
 
 /*!
@@ -320,6 +290,14 @@ static void alertpanel_create(const gchar *title,
 	gtk_box_pack_start(GTK_BOX(msg_vbox), hbox, FALSE, FALSE, 0);
 
 	/* message label */
+#ifdef WIN32
+	if (!g_utf8_validate(message, -1, NULL)) {
+		gchar *p_message = g_strdup(message);
+		locale_to_utf8(&p_message);
+		label = gtk_label_new(p_message);
+		g_free(p_message);
+	} else
+#endif
 	label = gtk_label_new(message);
 	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 24);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
