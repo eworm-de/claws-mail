@@ -322,7 +322,6 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 {
 	GtkCTree *ctree = GTK_CTREE(mimeview->ctree);
 	GtkCTreeNode *node;
-	FILE *fp;
 
 	mimeview_clear(mimeview);
 
@@ -342,20 +341,7 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 	gtk_signal_handler_unblock_by_func(GTK_OBJECT(ctree),
 					   mimeview_selected, mimeview);
 
-	/* search first text part */
-	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
-	     node != NULL; node = GTK_CTREE_NODE_NEXT(node)) {
-		MimeInfo *partinfo;
-
-		partinfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (partinfo &&
-		    (partinfo->type == MIMETYPE_TEXT))
-			break;
-	}
-
-	if (!node)
-		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
-
+	node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 	if (node) {
 		gtk_ctree_select(ctree, node);
 		icon_list_toggle_by_mime_info
@@ -650,6 +636,13 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 	}
 	
 	mimeview->textview->default_text = FALSE;
+
+	if (privacy_mimeinfo_is_signed(partinfo)) {
+		noticeview_set_text(mimeview->siginfoview, "Signed Part");
+		noticeview_show(mimeview->siginfoview);
+	} else {
+		noticeview_hide(mimeview->siginfoview);
+	}
 
 	if (!mimeview_show_part(mimeview, partinfo)) {
 		switch (partinfo->type) {
@@ -1316,7 +1309,7 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 			stockp = STOCK_PIXMAP_MIME_TEXT_PLAIN;
 		break;
 	case MIMETYPE_MESSAGE:
-		stockp = STOCK_PIXMAP_MIME_TEXT_PLAIN;
+		stockp = STOCK_PIXMAP_MIME_MESSAGE;
 		break;
 	case MIMETYPE_APPLICATION:
 		if (mimeinfo->subtype && !g_strcasecmp(mimeinfo->subtype, "octet-stream"))
@@ -1460,14 +1453,11 @@ static void icon_list_create(MimeView *mimeview, MimeInfo *mimeinfo)
 	gint           width;
 	g_return_if_fail(mimeinfo != NULL);
 
-	if (mimeinfo->children)
-		mimeinfo = mimeinfo->children;
-
 	while (mimeinfo != NULL) {
-		if (mimeinfo->children)
-			icon_list_create(mimeview, mimeinfo);
-		else 
+		if (mimeinfo->type != MIMETYPE_MULTIPART)
 			icon_list_append_icon(mimeview, mimeinfo);
+		if (mimeinfo->children != NULL)
+			icon_list_create(mimeview, mimeinfo->children);
 		mimeinfo = mimeinfo->next;
 	}
 	gtk_widget_size_request(mimeview->icon_vbox, &size);

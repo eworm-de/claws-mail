@@ -1,3 +1,17 @@
+2003-10-10 [christoph]	0.9.6claws12
+
+	* src/stock_pixmap.[ch]
+	* src/pixmaps/mime_message.xpm			** NEW **
+		add a new icon for mime type "message"
+
+	* src/privacy.[ch]
+	* src/procmime.[ch]
+		add crypto api
+
+	* src/mimeview.c
+		o use crypto api
+		o add icons for message type mime parts
+
 2003-10-10 [christoph]	0.9.6claws11
 
 	* src/mainwindow.c

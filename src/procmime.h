@@ -58,6 +58,7 @@ typedef enum
 #include <stdio.h>
 
 #include "procmsg.h"
+#include "privacy.h"
 
 struct _MimeType
 {
@@ -126,6 +127,9 @@ struct _MimeInfo
 
 	guint		 offset;
 	guint		 length;
+
+	/* Privacy */
+	PrivacyData	*privacy;
 };
 
 #define IS_BOUNDARY(s, bnd, len) \

@@ -84,13 +84,17 @@ void procmime_mimeinfo_free_all(MimeInfo *mimeinfo)
 		unlink(mimeinfo->filename);
 	g_free(mimeinfo->filename);
 
-	procmime_mimeinfo_free_all(mimeinfo->children);
+	if (mimeinfo->children != NULL)
+		procmime_mimeinfo_free_all(mimeinfo->children);
 	g_free(mimeinfo->subtype);
 	g_free(mimeinfo->description);
 	g_free(mimeinfo->id);
 
 	g_hash_table_foreach_remove(mimeinfo->parameters, procmime_mimeinfo_parameters_destroy, NULL);
 	g_hash_table_destroy(mimeinfo->parameters);
+
+	if (mimeinfo->privacy)
+		privacy_free_privacydata(mimeinfo->privacy);
 
 	next = mimeinfo->next;
 	g_free(mimeinfo);
