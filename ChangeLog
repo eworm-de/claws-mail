@@ -1,3 +1,15 @@
+2003-05-09
+
+	* src/prefs_common.[ch]: changed the description of "Open message when
+	  cursor keys are pressed on summary".
+	* src/summaryview.c: summary_show(): open message when always_show_msg
+	  is TRUE.
+
+2003-05-09
+
+	* src/logwindow.[ch]: restrict the maximum lines of the log messages
+	  to reduce the memory usage.
+
 2003-05-07
 
 	* src/compose.c: compose_insert_sig(): fixed a crash when signature

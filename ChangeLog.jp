@@ -1,3 +1,15 @@
+2003-05-09
+
+	* src/prefs_common.[ch]: 「サマリでカーソルキーを押したとき
+	  メッセージを開く」の説明を変更。
+	* src/summaryview.c: summary_show(): always_show_msg が TRUE の場合
+	  メッセージを開くようにした。
+
+2003-05-09
+
+	* src/logwindow.[ch]: メモリ消費量を削減するため、ログメッセージの
+	  最大行数を制限するようにした。
+
 2003-05-07
 
 	* src/compose.c: compose_insert_sig(): 署名文字列に不正なシーケンス
