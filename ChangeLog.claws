@@ -1,12 +1,16 @@
-2003-07-12 [paul]	9.9.0claws100
+2003-07-12 [paul]	0.9.0claws101
+
+	* man.sylpheed.1
+		updated
+
+2003-07-12 [paul]	0.9.0claws100
 
 	* po/es.po
 	  po/hr.po
 	  po/pl.po
 	  po/sr.po
 	  	update Spanish, Croatian, Polish, Serbian translations.
-		submitted by Ricardo Mones Lastra, Dragan, Witold
-		Wladyslaw Wojciech Wilk, Urke MMI
+		submitted by
 
 2003-07-12 [melvin]	0.9.0claws99
 
