@@ -1,3 +1,12 @@
+2005-01-04 [christoph]	0.9.13cvs27
+
+	* src/folderview.c
+	* src/imap_gtk.c
+	* src/news_gtk.c
+		Create extra popup menu entries for account settings
+
+	(Closes Bug 663 segfault choosing "Properties" for root MH mailbox)
+
 2005-01-03 [colin]	0.9.13cvs26
 
 	* src/main.c

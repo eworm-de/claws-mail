@@ -1422,7 +1422,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	SET_SENS("/Mark all read", item->unread_msgs >= 1);
 	SET_SENS("/Search folder...", item->total_msgs >= 1 && 
 		 folderview->selected == folderview->opened);
-	SET_SENS("/Properties...", TRUE);
+	SET_SENS("/Properties...", item->node->parent != NULL);
 	SET_SENS("/Processing...", item->node->parent != NULL);
 	if (item == folder->trash)
 		SET_SENS("/Empty trash...", folder_item_get_msg_list(item) != NULL);
@@ -1732,11 +1732,10 @@ static void folderview_property_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 
-	if (folder_item_parent(item) == NULL && item->folder->account)
-		account_open(item->folder->account);
-	else {
-		prefs_folder_item_open(item);
-	}
+	if (folder_item_parent(item) == NULL)
+		return;
+
+	prefs_folder_item_open(item);
 }
 
 static void folderview_recollapse_nodes(FolderView *folderview, GtkCTreeNode *node)
