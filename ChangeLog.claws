@@ -1,3 +1,8 @@
+2001-04-30 [sergey]
+
+	* src/news.c: reverted my previous changes (need to to NNTP
+	authentication in a cleaner way).
+	
 2001-04-29 [sergey]
 
 	* src/news.c (news_nntp_group, news_nntp_list, news_nntp_xover,
