@@ -1,3 +1,26 @@
+2002-07-21 [thorsten]	0.7.8claws89
+
+	* src/mimeview.c
+		Included save_all patch from Xaview FACQ
+		added support for pathnames
+
+	
+2002-07-21 [alfons]	0.7.8claws88
+
+	* po/POTFILES.in
+	* src/Makefile.am
+	* src/mainwindow.c
+	* src/messageview.[ch]
+	* src/noticeview.c	** NEW FILE **
+	* src/noticeview.h	** NEW FILE **
+		make return receipts work again
+		(UI idea by Leandro Pereira)
+
+2002-07-21 [paul]	0.7.8claws87
+
+	* src/summaryview.c
+		fix sensitivity of 'Select thread'
+
 2002-07-21 [paul]	0.7.8claws86
 
 	* src/prefs_common.c

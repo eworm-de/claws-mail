@@ -1086,7 +1086,6 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 		menu_set_sensitive(ifactory, "/Move...", FALSE);
 
 	menu_set_sensitive(ifactory, "/Delete", TRUE);
-	menu_set_sensitive(ifactory, "/Select thread", TRUE);
 	menu_set_sensitive(ifactory, "/Select all", TRUE);
 	menu_set_sensitive(ifactory, "/Copy...", TRUE);
 	menu_set_sensitive(ifactory, "/Execute", TRUE);
@@ -1124,6 +1123,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	else
 		menu_set_sensitive(ifactory, "/Re-edit", FALSE);
 
+	menu_set_sensitive(ifactory, "/Select thread", sens);
 	menu_set_sensitive(ifactory, "/Save as...", sens);
 	menu_set_sensitive(ifactory, "/Print...",   TRUE);
 

@@ -107,6 +107,7 @@ static void mimeview_drag_data_get      (GtkWidget	  *widget,
 static void mimeview_display_as_text	(MimeView	*mimeview);
 static void mimeview_show_image		(MimeView	*mimeview);
 static void mimeview_save_as		(MimeView	*mimeview);
+static void mimeview_save_all		(MimeView	*mimeview);
 static void mimeview_launch		(MimeView	*mimeview);
 static void mimeview_open_with		(MimeView	*mimeview);
 static void mimeview_view_file		(const gchar	*filename,
@@ -122,7 +123,8 @@ static GtkItemFactoryEntry mimeview_popup_entries[] =
 	{N_("/Open _with..."),	  NULL, mimeview_open_with,	  0, NULL},
 	{N_("/_Display as text"), NULL, mimeview_display_as_text, 0, NULL},
 	{N_("/_Display image"),   NULL, mimeview_show_image,      0, NULL},
-	{N_("/_Save as..."),	  NULL, mimeview_save_as,	  0, NULL}
+	{N_("/_Save as..."),	  NULL, mimeview_save_as,	  0, NULL},
+	{N_("/Save _all..."),	  NULL, mimeview_save_all,	  0, NULL}
 #if USE_GPGME
         ,
         {N_("/_Check signature"), NULL, mimeview_check_signature, 0, NULL}
@@ -808,6 +810,66 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 
 	g_free(uriname);
 	g_free(filename);
+}
+
+static void mimeview_save_all(MimeView *mimeview)
+{
+	gchar *dirname;
+	gchar *defname = NULL;
+	MimeInfo *partinfo;
+	MimeInfo *attachment;
+	gchar buf[1024];
+
+	if (!mimeview->opened) return;
+	if (!mimeview->file) return;
+
+	partinfo = gtk_ctree_node_get_row_data
+		(GTK_CTREE(mimeview->ctree), mimeview->opened);
+
+	g_return_if_fail(partinfo != NULL);
+
+	dirname = filesel_select_file(_("Save as"), defname);
+
+	if (!dirname) return;
+
+	/* return to first children */
+	attachment = partinfo->parent->children->next;
+
+	/* for each attachment, extract it in the selected dir. */
+	while(attachment != NULL)
+	{
+		if(attachment->filename)
+		{
+			gchar *attachname = g_strdup(attachment->filename);
+
+			subst_chars(attachname, "/\\", G_DIR_SEPARATOR);
+			subst_chars(attachname, ":?*&|<>\t\r\n", '_');
+			g_snprintf(buf, sizeof(buf), "%s%s",
+					dirname,
+					(attachname[0] == G_DIR_SEPARATOR)
+					? &attachname[1]
+					: attachname );
+			g_free(attachname);
+			make_dir_hier(g_dirname(buf));
+
+			if (is_file_exist(buf))
+			{
+				AlertValue aval;
+
+				aval = alertpanel(_("Overwrite"),
+						_("Overwrite existing file?"),
+						_("OK"), _("Cancel"), NULL);
+
+				if (G_ALERTDEFAULT != aval) return;
+			}
+
+			if (procmime_get_part(buf, mimeview->file, attachment) < 0)
+				alertpanel_error
+					(_("Can't save the part of multipart message."));
+		}
+
+		attachment = attachment->next;
+	}
 }
 
 static void mimeview_display_as_text(MimeView *mimeview)

@@ -1941,6 +1941,11 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 				     prefs_common.mainwin_height);
 		gtk_widget_show_all(vpaned);
 
+		/* CLAWS: previous "gtk_widget_show_all" makes noticeview
+		 * lose track of its visibility state */
+		if (!noticeview_is_visible(mainwin->messageview->noticeview)) 
+			gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->noticeview));
+
 		mainwin->win.sep_none.hpaned = hpaned;
 		mainwin->win.sep_none.vpaned = vpaned;
 		break;
@@ -2000,6 +2005,11 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		mainwin->win.sep_message.hpaned     = hpaned;
 
 		gtk_widget_show_all(messagewin);
+		
+		/* CLAWS: previous "gtk_widget_show_all" makes noticeview
+		 * lose track of its visibility state */
+		if (!noticeview_is_visible(mainwin->messageview->noticeview)) 
+			gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->noticeview));
 		break;
 	case SEPARATE_BOTH:
 		gtk_box_pack_start(GTK_BOX(vbox_body),
@@ -2021,6 +2031,11 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 
 		gtk_widget_show_all(folderwin);
 		gtk_widget_show_all(messagewin);
+		
+		/* CLAWS: previous "gtk_widget_show_all" makes noticeview
+		 * lose track of its visibility state */
+		if (!noticeview_is_visible(mainwin->messageview->noticeview)) 
+			gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->noticeview));
 		break;
 	}
 

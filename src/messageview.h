@@ -30,6 +30,7 @@ typedef struct _MessageView	MessageView;
 #include "textview.h"
 #include "imageview.h"
 #include "mimeview.h"
+#include "noticeview.h"
 #include "procmsg.h"
 
 typedef enum
@@ -50,6 +51,7 @@ struct _MessageView
 	TextView *textview;
 	ImageView *imageview;
 	MimeView *mimeview;
+	NoticeView *noticeview;
 
 	MainWindow *mainwin;
 

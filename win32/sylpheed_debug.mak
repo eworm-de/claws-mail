@@ -116,6 +116,7 @@ CLEAN :
 	-@erase "$(INTDIR)\mutt.obj"
 	-@erase "$(INTDIR)\news.obj"
 	-@erase "$(INTDIR)\nntp.obj"
+	-@erase "$(INTDIR)\noticeview.obj"
 	-@erase "$(INTDIR)\passphrase.obj"
 	-@erase "$(INTDIR)\pine.obj"
 	-@erase "$(INTDIR)\pop.obj"
@@ -366,7 +367,8 @@ LINK32_OBJS= \
 	"..\..\regex\regex_d.lib" \
 	"..\..\fnmatch\fnmatch_d.lib" \
 	"..\..\..\lib\libeay32.lib" \
-	"..\..\..\lib\ssleay32.lib"
+	"..\..\..\lib\ssleay32.lib" \
+	"$(INTDIR)\noticeview.obj"
 
 "$(OUTDIR)\sylpheed.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -543,6 +545,8 @@ CLEAN :
 	-@erase "$(INTDIR)\news.sbr"
 	-@erase "$(INTDIR)\nntp.obj"
 	-@erase "$(INTDIR)\nntp.sbr"
+	-@erase "$(INTDIR)\noticeview.obj"
+	-@erase "$(INTDIR)\noticeview.sbr"
 	-@erase "$(INTDIR)\passphrase.obj"
 	-@erase "$(INTDIR)\passphrase.sbr"
 	-@erase "$(INTDIR)\pine.obj"
@@ -834,7 +838,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\vcard.sbr" \
 	"$(INTDIR)\w32_mailcap.sbr" \
 	"$(INTDIR)\xml.sbr" \
-	"$(INTDIR)\xmlprops.sbr"
+	"$(INTDIR)\xmlprops.sbr" \
+	"$(INTDIR)\noticeview.sbr"
 
 "$(OUTDIR)\sylpheed_debug.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -989,7 +994,8 @@ LINK32_OBJS= \
 	"..\..\regex\regex_d.lib" \
 	"..\..\fnmatch\fnmatch_d.lib" \
 	"..\..\..\lib\libeay32.lib" \
-	"..\..\..\lib\ssleay32.lib"
+	"..\..\..\lib\ssleay32.lib" \
+	"$(INTDIR)\noticeview.obj"
 
 "$(OUTDIR)\sylpheed_d.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -2426,6 +2432,24 @@ SOURCE=..\src\nntp.c
 
 
 "$(INTDIR)\nntp.obj"	"$(INTDIR)\nntp.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=..\src\noticeview.c
+
+!IF  "$(CFG)" == "sylpheed - Win32 Release"
+
+
+"$(INTDIR)\noticeview.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
+
+
+"$(INTDIR)\noticeview.obj"	"$(INTDIR)\noticeview.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
