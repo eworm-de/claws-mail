@@ -49,6 +49,10 @@
 #  include <gpgme.h>
 #endif
 
+#if USE_SSL
+#  include "ssl.h"
+#endif
+
 #include "intl.h"
 #include "main.h"
 #include "mainwindow.h"
@@ -82,10 +86,6 @@ gboolean debug_mode = FALSE;
 
 static gint lock_socket = -1;
 static gint lock_socket_tag = 0;
-
-#if USE_SSL
-SSL_CTX *ssl_ctx;
-#endif
 
 static struct Cmd {
 	gboolean receive;
@@ -238,19 +238,7 @@ int main(int argc, char *argv[])
 #endif
 
 #if USE_SSL
-	{
-		SSL_METHOD *meth;
-		
-		SSLeay_add_ssl_algorithms();
-		meth = SSLv2_client_method();
-		SSL_load_error_strings();
-		ssl_ctx = SSL_CTX_new(meth);
-		if(ssl_ctx == NULL) {
-			debug_print(_("SSL disabled\n"));
-		} else {
-			debug_print(_("SSL loaded: \n"));
-		}
-	}
+	ssl_init();
 #endif
 
 	prefs_common_save_config();
@@ -299,9 +287,7 @@ int main(int argc, char *argv[])
 	gtk_main();
 
 #if USE_SSL
-	if(ssl_ctx) {
-		SSL_CTX_free(ssl_ctx);
-	}
+	ssl_done();
 #endif
 
 	return 0;

@@ -31,15 +31,11 @@
 #  include <pthread.h>
 #endif
 
-#if USE_SSL
-#  include <openssl/crypto.h>
-#  include <openssl/x509.h>
-#  include <openssl/pem.h>
-#  include <openssl/ssl.h>
-#  include <openssl/err.h>
-#endif
-
 typedef struct _SockInfo	SockInfo;
+
+#if USE_SSL
+#  include "ssl.h"
+#endif
 
 typedef enum
 {

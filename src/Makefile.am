@@ -97,7 +97,8 @@ sylpheed_SOURCES = \
 	editvcard.c editvcard.h \
 	editjpilot.c editjpilot.h \
 	editldap.c editldap.h \
-	editldap_basedn.c editldap_basedn.h
+	editldap_basedn.c editldap_basedn.h \
+	ssl.c ssl.h
 
 EXTRA_DIST = \
 	quote_fmt_parse.h \

@@ -581,58 +581,11 @@ static IncState inc_pop3_session_do(IncSession *session)
 
 #ifdef USE_SSL
 	if(pop3_state->ac_prefs->pop_ssl) {
-		X509 *server_cert;
-
-		if(ssl_ctx == NULL) {
-			log_warning(_("SSL not available\n"));
-
+		if(!ssl_init_socket(sockinfo)) {
 			pop3_automaton_terminate(NULL, atm);
 			automaton_destroy(atm);
 
 			return INC_ERROR;
-		}
-
-		sockinfo->ssl = SSL_new(ssl_ctx);
-		if(sockinfo->ssl == NULL) {
-			log_warning(_("Error creating ssl context\n"));
-
-			pop3_automaton_terminate(NULL, atm);
-			automaton_destroy(atm);
-
-			return INC_ERROR;
-		}
-		SSL_set_fd(sockinfo->ssl, sockinfo->sock);
-		if(SSL_connect(sockinfo->ssl) == -1) {
-			log_warning(_("SSL connect failed\n"));
-
-			pop3_automaton_terminate(NULL, atm);
-			automaton_destroy(atm);
-
-			return INC_ERROR;
-		}
-		
-		/* Get the cipher */
-
-		log_print(_("SSL connection using %s\n"), SSL_get_cipher(sockinfo->ssl));
-  
-		/* Get server's certificate (note: beware of dynamic allocation) */
-
-		if((server_cert = SSL_get_peer_certificate(sockinfo->ssl)) != NULL) {
-			char *str;
-			
-			log_print(_("Server certificate:\n"));
-  
-			if((str = X509_NAME_oneline(X509_get_subject_name (server_cert),0,0)) != NULL) {
-				log_print(_("  Subject: %s\n"), str);
-				free(str);
-			}
-			
-			if((str = X509_NAME_oneline(X509_get_issuer_name  (server_cert),0,0)) != NULL) {
-				log_print(_("  Issuer: %s\n"), str);
-				free(str);
-			}
-
-			X509_free(server_cert);
 		}
 	} else {
 		sockinfo->ssl = NULL;
@@ -661,9 +614,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 #endif
 
 #if USE_SSL
-	if(sockinfo->ssl) {
-		SSL_free(sockinfo->ssl);
-	}
+	ssl_done_socket(sockinfo);
 #endif
 	automaton_destroy(atm);
 

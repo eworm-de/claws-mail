@@ -1,3 +1,12 @@
+2001-07-20 [christoph]
+
+	* src/Makefile.am
+	* src/inc.c
+	* src/main.[ch]
+	* src/socket.h
+	* src/ssl.[ch] (new)
+		moved ssl stuff to a seperate file
+
 2001-07-20 [darko]
 
 	* src/summaryview.c

@@ -17,16 +17,24 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __MAIN_H__
-#define __MAIN_H__
+#if USE_SSL
 
-#include <glib.h>
-#include <gtk/gtkwidget.h>
+#ifndef __SSL_H__
+#define __SSL_H__
 
-extern gchar *prog_version;
-extern gchar *startup_dir;
-extern gboolean debug_mode;
+#include <openssl/crypto.h>
+#include <openssl/x509.h>
+#include <openssl/pem.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
 
-void app_will_exit	(GtkWidget *widget, gpointer data);
+#include "socket.h"
 
-#endif /* __MAIN_H__ */
+void ssl_init();
+void ssl_done();
+gboolean ssl_init_socket(SockInfo *sockinfo);
+void ssl_done_socket(SockInfo *sockinfo);
+
+#endif /* __SSL_H__ */
+
+#endif /* USE_SSL */
