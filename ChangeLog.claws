@@ -1,3 +1,10 @@
+2002-09-23 [melvin]	0.8.3claws13
+
+	* src/mainwindow.c
+		Made custom toolbar menu labels more consistent
+	* src/prefs_toolbar.c
+		Made custom toolbar window title more consistent
+
 2002-09-22 [colin]	0.8.3claws12
 
 	* src/inc.c
