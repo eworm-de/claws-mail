@@ -11,6 +11,7 @@ Changes of Sylpheed
     * The password for SMTP AUTH is asked now when not specified.
     * The mime.types file is searched from several directories now.
     * The preferences dialogs have been sorted out a bit.
+    * A freeze bug on using SSL has been fixed.
     * Some bugs have been fixed.
 
 * 0.6.4

@@ -29,6 +29,6 @@ BZIP2_ENV =
 
 release: distdir
 	-chmod -R a+r $(distdir)
-	GZIP=$(GZIP_ENV) $(AMTAR) chozf $(distdir).tar.gz $(distdir)
-	BZIP2=$(BZIP2_ENV) $(AMTAR) chojf $(distdir).tar.bz2 $(distdir)
+	GZIP=$(GZIP_ENV) $(TAR) chozf $(distdir).tar.gz $(distdir)
+	BZIP2=$(BZIP2_ENV) $(TAR) chojf $(distdir).tar.bz2 $(distdir)
 	-rm -rf $(distdir)

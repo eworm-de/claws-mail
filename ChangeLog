@@ -1,3 +1,13 @@
+2001-11-07
+
+	* version 0.6.5
+
+2001-11-07
+
+	* src/socket.c: ssl_gets(): use SSL_peek.
+	* updated NEWS and AUTHORS.
+	* Makefile.am: fixed release target.
+
 2001-11-06
 
 	* src/template.c: changed the format of template file to

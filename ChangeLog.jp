@@ -1,3 +1,13 @@
+2001-11-07
+
+	* version 0.6.5
+
+2001-11-07
+
+	* src/socket.c: ssl_gets(): SSL_peek を使用。
+	* NEWS と AUTHORS を更新。
+	* Makefile.am: release ターゲットを修正。
+
 2001-11-06
 
 	* src/template.c: テンプレートファイルのフォーマットを RFC2822
