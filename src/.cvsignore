@@ -3,3 +3,4 @@ Makefile
 .libs
 sylpheed
 Makefile.in
+tags
