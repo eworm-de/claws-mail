@@ -3291,82 +3291,24 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	return nummsgs;
 }
 
-MsgInfo *imap_get_msginfo(Folder *_folder, FolderItem *item, gint num)
+MsgInfo *imap_get_msginfo(Folder *folder, FolderItem *item, gint uid)
 {
-	IMAPFolder *folder = (IMAPFolder *)_folder;
-	gchar *tmp;
 	IMAPSession *session;
-	GString *str;
-	MsgInfo *msginfo;
-	int same_folder;
-	
+	GSList *list;
+	MsgInfo *msginfo = NULL;
+
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(item->folder != NULL, NULL);
-	g_return_val_if_fail(item->folder->type == F_IMAP, NULL);
 
-	session = imap_session_get(_folder);
+	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, NULL);
 
-	same_folder = FALSE;
-	if (folder->selected_folder != NULL)
-		if (strcmp(folder->selected_folder, item->path) == 0)
-			same_folder = TRUE;
-	
-	if (!same_folder) {
-		gint ok, exists = 0, recent = 0, unseen = 0;
-		guint32 uid_validity = 0;
-
-		ok = imap_select(session, IMAP_FOLDER(folder), item->path,
-				 &exists, &recent, &unseen, &uid_validity);
-		if (ok != IMAP_SUCCESS)
-			return NULL;
+	list = imap_get_uncached_messages(session, item, uid, uid);
+	if (list) {
+		msginfo = (MsgInfo *)list->data;
+		list->data = NULL;
 	}
-	
-	if (imap_cmd_envelope(SESSION(session)->sock, num, num)
-	    != IMAP_SUCCESS) {
-		log_warning(_("can't get envelope\n"));
-		return NULL;
-	}
-
-	str = g_string_new(NULL);
-
-	if ((tmp = sock_getline(SESSION(session)->sock)) == NULL) {
-		log_warning(_("error occurred while getting envelope.\n"));
-		g_string_free(str, TRUE);
-		return NULL;
-	}
-	strretchomp(tmp);
-	log_print("IMAP4< %s\n", tmp);
-	g_string_assign(str, tmp);
-	g_free(tmp);
-
-	/* if the server did not return a envelope */
-	if (str->str[0] != '*') {
-		g_string_free(str, TRUE);
-		return NULL;
-	}
-
-	msginfo = imap_parse_envelope(SESSION(session)->sock,
-				      item, str);
-
-	/* Read all data on the socket until the server is read for a new command */
-	tmp = NULL;
-	do {
-		g_free(tmp);
-		tmp = sock_getline(SESSION(session)->sock);
-	} while (!(tmp == NULL || tmp[0] != '*' || tmp[1] != ' '));
-	g_free(tmp);
-
-	/* if message header could not be parsed */
-	if (!msginfo) {
-		log_warning(_("can't parse envelope: %s\n"), str->str);
-		return NULL;
-	}
-
-	g_string_free(str, TRUE);
-
-	msginfo->folder = item;
+	procmsg_msg_list_free(list);
 
 	return msginfo;
 }

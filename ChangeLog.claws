@@ -1,3 +1,8 @@
+2002-11-15 [christoph]	0.8.5claws161
+
+	* src/imap.c
+		use main's implementation of imap_get_msginfo
+
 2002-11-15 [christoph]	0.8.5claws160
 
 	* src/compose.c
