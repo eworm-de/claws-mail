@@ -1572,8 +1572,25 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 		Xalloca(buf, buflen, return);
 		conv_anytodisp(buf, buflen, str);
 		unmime_header(outbuf, buf);
-	} else
+	} else {
+		gchar *tmp = NULL;
 		unmime_header(outbuf, str);
+
+		if (outbuf && !g_utf8_validate(outbuf, -1, NULL)) {
+			if (conv_get_locale_charset() != C_INTERNAL)
+				tmp = conv_codeset_strdup(outbuf,
+					conv_get_locale_charset_str(),
+					CS_INTERNAL);
+
+			if (tmp) {
+				strncpy(outbuf, tmp, outlen-1);
+				g_free(tmp);
+			} else {
+				conv_unreadable_8bit(outbuf);
+			}
+		}
+	}
+
 }
 
 #define MAX_LINELEN		76

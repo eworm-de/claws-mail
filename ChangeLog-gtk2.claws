@@ -1,3 +1,11 @@
+2005-02-09 [colin]	1.0.1cvs1.2
+
+	* src/codeconv.c
+		Fix converting from broken headers and 
+		put back the _ in missing places
+		(feature broke with cvs24.2 sync, main 
+		 possibly affected?)
+
 2005-02-09 [colin]	1.0.1cvs1.1
 
 	* src/messageview.c
