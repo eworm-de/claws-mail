@@ -32,7 +32,7 @@ src/gtk/gtkutils.c
 src/gtk/pluginwindow.c
 src/gtk/prefswindow.c
 src/gtk/sslcertwindow.c
-src/gtkaspell.c
+src/gtk/gtkaspell.c
 src/headerview.c
 src/imap.c
 src/import.c
