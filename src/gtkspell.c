@@ -178,6 +178,7 @@ GtkPspell *gtkpspell_new_with_config(GtkPspellConfig *gtkpspellconfig,
   if(!set_path_and_dict(gtkpspell, gtkpspell->config, path, dict)){
     debug_print(_("Pspell could not be configured."));
     gtkpspell=gtkpspell_delete(gtkpspell);
+    return gtkpspell;
   }
   if(encoding)
     pspell_config_replace(gtkpspell->config,"encoding",encoding);
@@ -621,6 +622,9 @@ static gboolean check_at(GtkPspell * gtkpspell, int from_pos)
     if (!get_word_from_pos(gtkpspell, from_pos, buf, &start, &end)) {
         return FALSE;
     };
+    strncpy(gtkpspell->theword,buf,BUFSIZE-1);
+    gtkpspell->theword[BUFSIZE-1]=0x00;
+
     if (misspelled_test(gtkpspell, buf)) {
         if (highlight.pixel == 0) {
             /* add an entry for the highlight in the color map. */
@@ -678,21 +682,7 @@ static void entry_insert_cb(GtkXText *gtktext,
                             gchar *newtext, guint len, guint *ppos, 
                             GtkPspell * gtkpspell) 
 {
-    int origpos;
     if (!gtkpspell_running(gtkpspell)) return ;
-
-    gtk_signal_handler_block_by_func(GTK_OBJECT(gtktext),
-                                     GTK_SIGNAL_FUNC(entry_insert_cb),
-                                     gtkpspell);
-    gtk_xtext_insert(GTK_XTEXT(gtktext), NULL,
-                    &(GTK_WIDGET(gtktext)->style->fg[0]), NULL, newtext, len);
-
-    gtk_signal_handler_unblock_by_func(GTK_OBJECT(gtktext),
-                                       GTK_SIGNAL_FUNC(entry_insert_cb),
-                                       gtkpspell);
-    gtk_signal_emit_stop_by_name(GTK_OBJECT(gtktext), "insert-text");
-    *ppos += len;
-    origpos = gtk_editable_get_position(GTK_EDITABLE(gtktext));
 
     if (iswordsep(newtext[0])) {
         /* did we just end a word? */
@@ -710,7 +700,6 @@ static void entry_insert_cb(GtkXText *gtktext,
             check_at(gtkpspell, *ppos - 1);
     }
 
-    gtk_editable_set_position(GTK_EDITABLE(gtktext), origpos);
 }
 
 static void entry_delete_cb(GtkXText *gtktext,
@@ -729,7 +718,8 @@ static void entry_delete_cb(GtkXText *gtktext,
 
 static void replace_word(GtkWidget *w, GtkPspell * gtkpspell) 
 {
-    int start, end;
+    int start, end,oldlen, newlen;
+    guint origpos;
     unsigned char *newword;
     unsigned char buf[BUFSIZE];
     guint pos;
@@ -737,31 +727,57 @@ static void replace_word(GtkWidget *w, GtkPspell * gtkpspell)
     gtktext=gtkpspell->gtktext;
 
     gtk_xtext_freeze(GTK_XTEXT(gtktext));
-	pos = gtk_editable_get_position(GTK_EDITABLE(gtktext));
+    origpos = gtkpspell->orig_pos;
+    pos     = origpos;
 
     gtk_label_get(GTK_LABEL(GTK_BIN(w)->child), (gchar**) &newword);
+    newlen = strlen(newword);
+
     get_curword(gtkpspell, buf, &start, &end);
+    oldlen=end-start;
 
     gtk_xtext_set_point(GTK_XTEXT(gtktext), end);
     gtk_xtext_backward_delete(GTK_XTEXT(gtktext), end - start);
     gtk_xtext_insert(GTK_XTEXT(gtktext), NULL, NULL, NULL, newword, strlen(newword));
-
-    if(end-start>0){ /* Just be sure the buffer is correct... */
-            buf[end-start]=0x00;
-            /* Learn from common misspellings */
-//            pspell_manager_store_replacement(gtkpspell->checker,buf,end-start,newword,strlen(newword));
+    
+#if 0
+    if(end-start>0 /*&& gtkpspell->learn*/){ 
+      buf[end-start]=0x00; /* Just be sure the buffer is correct... */
+      /* Learn from common misspellings */
+      pspell_manager_store_replacement(gtkpspell->checker,buf,end-start,
+				       newword,strlen(newword));
     }
+#endif
     /* Put the point and the position where we clicked with the mouse */
     /* It seems to be a hack, as I must thaw,freeze,thaw the widget   */
     /* to let it update correctly the word insertion and then the     */
     /* point & position position. If not, SEGV after the first replacement */
-    /* If the new inserted word is smaller, put the point at its end*/
-    if(pos-start>strlen(newword)) pos=start+strlen(newword);
-	gtk_xtext_thaw(GTK_XTEXT(gtktext));
-	gtk_xtext_freeze(GTK_XTEXT(gtktext));
-    gtk_editable_set_position(GTK_EDITABLE(gtktext),pos);
-    gtk_xtext_set_point(GTK_XTEXT(gtktext), gtk_editable_get_position(GTK_EDITABLE(gtktext)));
-	gtk_xtext_thaw(GTK_XTEXT(gtktext));
+    /* If the new word ends before point, put the point at its end*/
+    
+    if(origpos-start<=oldlen && origpos-start>=0) {
+      /* Original point was in the word. */
+      /* Put the insertion point in the same location */
+      /* with respect to the new length */
+      /* If the original position is still within the word, */
+      /* then keep the original position. If not, move to the */
+      /* end of the word */
+      if(origpos-start>newlen)
+	pos=start+newlen;
+    }
+    else
+      if (origpos>end) {
+	/* move the position according to the change of length */
+      pos=origpos+newlen-oldlen;
+      }
+    gtk_xtext_thaw(GTK_XTEXT(gtktext));
+    gtk_xtext_freeze(GTK_XTEXT(gtktext));
+    if(GTK_XTEXT(gtktext)->text_len<pos)
+      pos=gtk_xtext_get_length(GTK_XTEXT(gtktext));
+    gtkpspell->orig_pos=pos;
+    gtk_editable_set_position(GTK_EDITABLE(gtktext),gtkpspell->orig_pos);
+    gtk_xtext_set_point(GTK_XTEXT(gtktext), 
+			gtk_editable_get_position(GTK_EDITABLE(gtktext)));
+    gtk_xtext_thaw(GTK_XTEXT(gtktext));
 }
 
 /* Accept this word for this session */
@@ -987,6 +1003,7 @@ static void popup_menu(GtkPspell * gtkpspell, GdkEventButton *eb)
     GList *list, *l;
     GtkXText * gtktext;
     gtktext=gtkpspell->gtktext;
+    gtkpspell->orig_pos=gtk_editable_get_position(GTK_EDITABLE(gtktext));
 
     if( !(eb->state & GDK_SHIFT_MASK) )
       if (get_curword(gtkpspell, buf, NULL, NULL)){

@@ -61,16 +61,17 @@ typedef struct _Dictionary {
 
 typedef struct _GtkPspell 
 {
-     PspellConfig * config;
-     PspellCanHaveError * possible_err ;
-     PspellManager * checker;
-     gchar theword[1111];
-     gchar *path;
-     gchar *dict;
-     guint mode;
-     
-     GSList * dictionary_list;
-     GtkXText * gtktext;
+	PspellConfig * config;
+	PspellCanHaveError * possible_err ;
+	PspellManager * checker;
+	gchar theword[1111];
+	gchar *path;
+	gchar *dict;
+	guint mode;
+        guint orig_pos;
+	     
+	GSList * dictionary_list;
+	GtkXText * gtktext;
 
 } GtkPspell;
 
