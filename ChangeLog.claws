@@ -1,3 +1,9 @@
+2004-08-07 [colin]	0.9.12cvs50
+
+	* src/pop.c
+	* src/common/partial_download.c
+		fix warnings
+
 2004-08-07 [colin]	0.9.12cvs49
 
 	* src/Makefile.am
