@@ -3061,6 +3061,8 @@ void summary_delete(SummaryView *summaryview)
 		if (aval != G_ALERTDEFAULT) return;
 	}
 
+	main_window_cursor_wait(summaryview->mainwin);
+
 	/* next code sets current row focus right. We need to find a row
 	 * that is not deleted. */
 	folder_item_update_freeze();	 
@@ -3093,6 +3095,8 @@ void summary_delete(SummaryView *summaryview)
 		gtk_sctree_set_anchor_row(GTK_SCTREE(ctree), node);
 	} else
 		summary_status_show(summaryview);
+		
+	main_window_cursor_normal(summaryview->mainwin);
 }
 
 void summary_delete_duplicated(SummaryView *summaryview)
