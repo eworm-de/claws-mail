@@ -129,6 +129,7 @@ FilteringProp * filteringprop_copy(FilteringProp *src)
 
 void filteringprop_free(FilteringProp * prop)
 {
+	g_return_if_fail(prop);
 	matcherlist_free(prop->matchers);
 	filteringaction_free(prop->action);
 	g_free(prop);
@@ -429,8 +430,8 @@ static gboolean prefs_filtering_free_func(GNode *node, gpointer data)
 {
 	FolderItem *item = node->data;
 
-	if(!item->prefs)
-		return FALSE;
+	g_return_val_if_fail(item, FALSE);
+	g_return_val_if_fail(item->prefs, FALSE);
 
 	prefs_filtering_free(item->prefs->processing);
 	item->prefs->processing = NULL;
@@ -453,3 +454,14 @@ void prefs_filtering_clear(void)
 	prefs_filtering_free(global_processing);
 	global_processing = NULL;
 }
+
+void prefs_filtering_clear_folder(Folder *folder)
+{
+	g_return_if_fail(folder);
+	g_return_if_fail(folder->node);
+
+	g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+			prefs_filtering_free_func, NULL);
+	/* FIXME: Note folder settings were changed, where the updates? */
+}
+

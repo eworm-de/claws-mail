@@ -46,6 +46,7 @@ ScoringProp * scoringprop_copy(ScoringProp *src)
 
 void scoringprop_free(ScoringProp * prop)
 {
+	g_return_if_fail(prop);
 	matcherlist_free(prop->matchers);
 	g_free(prop);
 }
@@ -145,4 +146,15 @@ void prefs_scoring_clear(void)
 
 	prefs_scoring_free(global_scoring);
 	global_scoring = NULL;
+}
+
+/*!
+ *\brief	Clear up scoring for folder
+ */
+void prefs_scoring_clear_folder(Folder *folder)
+{
+	g_return_if_fail(folder);
+	g_return_if_fail(folder->node);
+	g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+			prefs_scoring_free_func, NULL);
 }

@@ -302,8 +302,8 @@ void folder_tree_destroy(Folder *folder)
 	g_return_if_fail(folder != NULL);
 	g_return_if_fail(folder->node != NULL);
 	
-	prefs_scoring_clear();
-	prefs_filtering_clear();
+	prefs_scoring_clear_folder(folder);
+	prefs_filtering_clear_folder(folder);
 
 	g_node_traverse(folder->node, G_POST_ORDER, G_TRAVERSE_ALL, -1, folder_tree_destroy_func, NULL);
 	if (folder->node)
