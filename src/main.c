@@ -88,6 +88,7 @@
 
 gchar *prog_version;
 gchar *startup_dir;
+gchar *argv0;
 gboolean debug_mode = FALSE;
 
 static gint lock_socket = -1;
@@ -156,6 +157,7 @@ int main(int argc, char *argv[])
 
 	prog_version = PROG_VERSION;
 	startup_dir = g_get_current_dir();
+	argv0 = g_strdup(argv[0]);
 
 	parse_cmd_opt(argc, argv);
 

@@ -42,7 +42,6 @@
 #include "intl.h"
 #include "crash.h"
 #include "utils.h"
-#include "prefs.h"
 #include "filesel.h"
 #include "version.h"
 
@@ -60,7 +59,9 @@
 
 static void		 crash_handler			(int sig);
 static gboolean		 is_crash_dialog_allowed	(void);
-static void		 crash_debug			(unsigned long crash_pid, GString *string);
+static void		 crash_debug			(unsigned long crash_pid, 
+							 gchar   *exe_image,
+							 GString *debug_output);
 static gboolean		 crash_create_debugger_file	(void);
 static void		 crash_save_crash_log		(GtkButton *, const gchar *);
 
@@ -122,7 +123,7 @@ static GtkWidget *crash_dialog_new(const gchar *text, const gchar *debug_output)
 #endif	
 
 	label1 = gtk_label_new
-	    (g_strdup_printf(_("%s.\n Please file a bug report and include the information below."), text));
+	    (g_strdup_printf(_("%s.\nPlease file a bug report and include the information below."), text));
 	gtk_widget_show(label1);
 	gtk_box_pack_start(GTK_BOX(hbox1), label1, TRUE, TRUE, 0);
 	gtk_misc_set_alignment(GTK_MISC(label1), 7.45058e-09, 0.5);
@@ -241,6 +242,7 @@ void crash_main(const char *arg)
 	gchar **tokens;
 	unsigned long pid;
 	GString *output;
+	extern gchar *startup_dir;
 
 	crash_create_debugger_file();
 	tokens = g_strsplit(arg, ",", 0);
@@ -250,7 +252,7 @@ void crash_main(const char *arg)
 			       pid, atol(tokens[1]));
 
 	output = g_string_new("");     
-	crash_debug(pid, output);
+	crash_debug(pid, tokens[2], output);
 	crash_dialog_new(text, output->str);
 	g_string_free(output, TRUE);
 	g_free(text);
@@ -265,14 +267,10 @@ void crash_main(const char *arg)
  */
 static gboolean crash_create_debugger_file(void)
 {
-	PrefFile *pf;
 	gchar *filespec = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, DEBUGGERRC, NULL);
-
-	pf = prefs_write_open(filespec);
+	
+	str_write_to_file(DEBUG_SCRIPT, filespec);
 	g_free(filespec);
-	if (pf) 
-		fprintf(pf->fp, DEBUG_SCRIPT);
-	prefs_write_close(pf);	
 }
 
 /*
@@ -297,7 +295,9 @@ static void crash_save_crash_log(GtkButton *button, const gchar *text)
 /*
  *\brief	launches debugger and attaches it to crashed sylpheed
  */
-static void crash_debug(unsigned long crash_pid, GString *string)
+static void crash_debug(unsigned long crash_pid, 
+			gchar *exe_image,
+			GString *debug_output)
 {
 	int choutput[2];
 	pid_t pid;
@@ -319,9 +319,9 @@ static void crash_debug(unsigned long crash_pid, GString *string)
 		*argptr++ = "--nx";
 		*argptr++ = "--quiet";
 		*argptr++ = "--batch";
-		*argptr++ = "--command";
-		*argptr++ = g_strdup_printf("%s", filespec);
-		*argptr++ = "sylpheed"; /* program file name */
+		*argptr++ = "-x";
+		*argptr++ = filespec;
+		*argptr++ = exe_image;
 		*argptr++ = g_strdup_printf("%d", crash_pid);
 		*argptr   = NULL;
 
@@ -352,7 +352,7 @@ static void crash_debug(unsigned long crash_pid, GString *string)
 			r = read(choutput[0], buf, sizeof buf - 1);
 			if (r > 0) {
 				buf[r] = 0;
-				g_string_append(string, buf);
+				g_string_append(debug_output, buf);
 			}
 		} while (r > 0);
 		
@@ -447,8 +447,7 @@ static const gchar *get_operating_system(void)
 /***/
 
 /*
- *\brief	checks KDE, GNOME and Sylpheed specific variables
- *		to see if the crash dialog is allowed (because some
+ *\brief	see if the crash dialog is allowed (because some
  *		developers may prefer to run sylpheed under gdb...)
  */
 static gboolean is_crash_dialog_allowed(void)
@@ -466,11 +465,18 @@ static void crash_handler(int sig)
 	static volatile unsigned long crashed_ = 0;
 
 	/*
+	 * let's hope startup_dir and argv0 aren't trashed.
+	 * both are defined in main.c.
+	 */
+	extern gchar *startup_dir;
+	extern gchar *argv0;
+
+
+	/*
 	 * besides guarding entrancy it's probably also better 
 	 * to mask off signals
 	 */
-	if (crashed_) 
-		return;
+	if (crashed_) return;
 
 	crashed_++;
 
@@ -480,27 +486,27 @@ static void crash_handler(int sig)
 	gdk_pointer_ungrab(GDK_CURRENT_TIME);
 	gdk_keyboard_ungrab(GDK_CURRENT_TIME);
 	gdk_flush();
-	 
+
+
 	if (0 == (pid = fork())) {
 		char buf[50];
 		char *args[4];
 	
 		/*
 		 * probably also some other parameters (like GTK+ ones).
+		 * also we pass the full startup dir and the real command
+		 * line typed in (argv0)
 		 */
 		args[0] = "--debug";
 		args[1] = "--crash";
-		sprintf(buf, "%ld,%d", getppid(), sig);
+		sprintf(buf, "%ld,%d,%s", getppid(), sig, argv0);
 		args[2] = buf;
 		args[3] = NULL;
 
+		chdir(startup_dir);
 		setgid(getgid());
 		setuid(getuid());
-#if 0 
-		execvp("/alfons/Projects/sylpheed-claws/src/sylpheed", args);
-#else
-		execvp("sylpheed", args);
-#endif
+		execvp(argv0, args);
 	} else {
 		waitpid(pid, NULL, 0);
 		_exit(253);

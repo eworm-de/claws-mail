@@ -1,3 +1,12 @@
+2002-08-14 [alfons]	0.8.1claws62
+
+	* src/main.c
+		add global var that has the full argv[0]
+	* src/crash.c
+		o execvp the correct sylpheed by using argv0
+		  and setting the correct work dir
+		o other tweaks  
+
 2002-08-14 [oliver]	0.8.1claws61
 	
 	* enable/disable Toolbar Action Buttons 
