@@ -37,7 +37,11 @@
 #define QUEUE_DIR		"queue"
 #define DRAFT_DIR		"draft"
 #define TRASH_DIR		"trash"
+#ifndef CLAWS /* easier to sync */
 #define RC_DIR			".sylpheed"
+#else
+#define RC_DIR			CFG_RC_DIR	
+#endif /* CLAWS */
 #define NEWS_CACHE_DIR		"newscache"
 #define IMAP_CACHE_DIR		"imapcache"
 #define MBOX_CACHE_DIR		"mboxcache"

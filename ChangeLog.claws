@@ -1,3 +1,9 @@
+2003-07-09 [alfons]	0.9.0claws93
+
+	* configure.ac
+	* src/common/defs.h
+		--with-config-dir (default .sylpheed)
+
 2003-07-09 [christoph]	0.9.0claws92
 
 	* configure.ac

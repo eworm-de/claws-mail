@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws92
+EXTRA_VERSION=claws93
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -218,6 +218,14 @@ dnl Key for password encryption
 AC_ARG_WITH(passcrypt-key, [  --with-passcrypt-key=KEY     Key used to encode passwords (8 byte string)],
 	    with_passcrypt_key="$withval", with_passcrypt_key="passkey0")
 AC_SUBST(PASSCRYPT_KEY, $with_passcrypt_key)
+
+dnl RC dir (will be default at a certain point in time)
+AC_ARG_WITH(config-dir,    [  --with-config-dir=RCDIR      Local configuration dir (default: .sylpheed)],
+	      ac_cv_with_config_dir="$withval", ac_cv_with_config_dir=".sylpheed")
+if test x"$ac_cv_with_config_dir" = x""; then
+	ac_cv_with_config_dir=".sylpheed"
+fi 
+AC_DEFINE_UNQUOTED(CFG_RC_DIR, "$ac_cv_with_config_dir", Configuration directory)
 
 dnl ************************
 dnl ** GTK user interface **
@@ -519,6 +527,7 @@ echo "IPv6          : $ac_cv_enable_ipv6"
 echo "GNU/aspell    : $ac_cv_enable_aspell"
 echo "Crash dialog  : $ac_cv_enable_crash_dialog"
 echo "Plugins       : $PLUGINS"
+echo "Config dir    : $ac_cv_with_config_dir"
 echo ""
 echo "The binary will be installed in $prefix/bin"
 echo ""
