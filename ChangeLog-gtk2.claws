@@ -1,3 +1,10 @@
+2004-07-13 [colin]	0.9.12cvs18.6
+
+	* src/procmsg.c
+	* src/summaryview.c
+		Mark messages for deletion when they are about to
+		be removed from trash
+
 2004-07-13 [colin]	0.9.12cvs18.5
 
 	* src/matcher.c

@@ -41,6 +41,7 @@
 #include "news.h"
 #include "hooks.h"
 #include "msgcache.h"
+#include "pop.h"
 
 GHashTable *procmsg_msg_hash_table_create(GSList *mlist)
 {
@@ -606,8 +607,17 @@ void procmsg_empty_trash(void)
 
 	for (cur = folder_get_list(); cur != NULL; cur = cur->next) {
 		trash = FOLDER(cur->data)->trash;
-		if (trash && trash->total_msgs > 0)
+		if (trash && trash->total_msgs > 0) {
+			GSList *mlist = folder_item_get_msg_list(trash);
+			GSList *cur;
+			for (cur = mlist ; cur != NULL ; cur = cur->next) {
+				MsgInfo * msginfo = (MsgInfo *) cur->data;
+				pop3_mark_for_delete(msginfo);
+				procmsg_msginfo_free(msginfo);
+			}
+
 			folder_item_remove_all_msg(trash);
+		}
 	}
 }
 
