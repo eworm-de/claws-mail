@@ -288,6 +288,7 @@ gchar *get_address_from_edit(GtkEntry *entry, gint *start_pos)
 void replace_address_in_edit(GtkEntry *entry, const gchar *newtext,
 			     gint start_pos)
 {
+	if (!newtext) return;
 	gtk_editable_delete_text(GTK_EDITABLE(entry), start_pos, -1);
 	gtk_editable_insert_text(GTK_EDITABLE(entry), newtext, strlen(newtext),
 				 &start_pos);
@@ -869,6 +870,7 @@ static gboolean completion_window_button_press(GtkWidget *widget,
 		prefix = get_complete_address(0);
 		g_free(get_address_from_edit(GTK_ENTRY(entry), &cursor_pos));
 		replace_address_in_edit(GTK_ENTRY(entry), prefix, cursor_pos);
+		g_free(prefix);
 	}
 
 	clear_completion_cache();

@@ -1,3 +1,14 @@
+2002-09-20 [alfons]	0.8.2claws62
+
+	* src/addr_compl.c
+		replace_address_in_edit(): strict check for NULL address to
+		fix "[ 607348 ] Segfault in address completion". My guess is
+		that this happens with an empty address book, but it's good
+		to have this check here anyway
+		
+		completion_window_button_press(): free string returned 
+		from the internal cache
+
 2002-09-20 [christoph]	0.8.2claws61
 
 	* src/procmime.h
