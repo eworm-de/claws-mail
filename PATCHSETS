@@ -7,4 +7,4 @@
 ( cvs diff -u -r 1.395.2.15 -r 1.395.2.16 src/summaryview.c; cvs diff -u -r 1.204.2.11 -r 1.204.2.12 src/prefs_common.c; cvs diff -u -r 1.103.2.5 -r 1.103.2.6 src/prefs_common.h; cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/gtk/quicksearch.c; cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/gtk/quicksearch.h; ) > 0.9.11cvs17.11.patchset
 ( cvs diff -u -r 1.11.2.1 -r 1.11.2.2 src/common/smtp.c; cvs diff -u -r 1.6 -r 1.7 src/common/smtp.h; ) > 0.9.11cvs17.12.patchset
 ( cvs diff -u -r 1.149.2.7 -r 1.149.2.8 src/inc.c; cvs diff -u -r 1.94.2.8 -r 1.94.2.9 src/messageview.c; cvs diff -u -r 1.56.2.4 -r 1.56.2.5 src/pop.c; cvs diff -u -r 1.17.2.3 -r 1.17.2.4 src/pop.h; cvs diff -u -r 1.150.2.4 -r 1.150.2.5 src/procmsg.c; ) > 0.9.11cvs17.13.patchset
-( cvs diff -u -r 1.94.2.9 -r 1.94.2.10 src/messageview.c; cvs diff -u -r 1.11.2.2 -r 1.11.2.3 src/common/smtp.c; ) > 0.9.11cvs17.14.patchset
+( cvs diff -u -r 1.94.2.9 -r 1.94.2.11 src/messageview.c; cvs diff -u -r 1.11.2.2 -r 1.11.2.4 src/common/smtp.c; ) > 0.9.11cvs17.14.patchset
