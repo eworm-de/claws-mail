@@ -47,6 +47,8 @@ static gint send_message_smtp	(GSList *to_list, const gchar *from,
 				 FILE *fp);
 static SockInfo *send_smtp_open	(const gchar *server, gushort port,
 				 const gchar *domain, gboolean use_smtp_auth);
+static gint send_message_with_command(GSList *to_list, gchar * mailcmd,
+				      FILE * fp);
 
 #define SEND_EXIT_IF_ERROR(f, s) \
 { \
@@ -86,13 +88,25 @@ gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 		return -1;
 	}
 
-	port = ac_prefs->set_smtpport ? ac_prefs->smtpport : SMTP_PORT;
-	domain = ac_prefs->set_domain ? ac_prefs->domain : NULL;
-
-	val = send_message_smtp(to_list, ac_prefs->address,
-				ac_prefs->smtp_server, port, domain,
-				ac_prefs->userid, ac_prefs->passwd,
-				ac_prefs->use_smtp_auth, fp);
+	if (ac_prefs->protocol == A_LOCAL_CMD)
+		{
+			val = send_message_with_command(to_list,
+							ac_prefs->mail_command,
+							fp);
+		}
+	else
+		{
+			port = ac_prefs->set_smtpport
+				? ac_prefs->smtpport : SMTP_PORT;
+			domain = ac_prefs->set_domain
+				? ac_prefs->domain : NULL;
+			
+			val = send_message_smtp(to_list, ac_prefs->address,
+						ac_prefs->smtp_server, port,
+						domain, ac_prefs->userid,
+						ac_prefs->passwd,
+						ac_prefs->use_smtp_auth, fp);
+		}
 
 	fclose(fp);
 	return val;
@@ -104,6 +118,51 @@ enum
 	Q_SMTPSERVER = 1,
 	Q_RECIPIENTS = 2
 };
+
+static gint send_message_with_command(GSList *to_list, gchar * mailcmd,
+				      FILE * fp)
+{
+	FILE * p;
+	int len;
+	gchar * cmdline;
+	GSList *cur;
+	gchar buf[BUFFSIZE];
+
+	len = strlen(mailcmd);
+	for (cur = to_list; cur != NULL; cur = cur->next)
+		len += strlen((gchar *)cur->data) + 1;
+
+	cmdline = g_new(gchar, len + 1);
+	strcpy(cmdline, mailcmd);
+
+	for (cur = to_list; cur != NULL; cur = cur->next)
+		{
+			cmdline = strncat(cmdline, " ", len);
+			cmdline = strncat(cmdline, (gchar *)cur->data, len);
+		}
+
+	log_message(_("Using command to send mail: %s ...\n"), cmdline);
+
+	p = popen(cmdline, "w");
+	if (p != NULL)
+		{
+			while (fgets(buf, sizeof(buf), fp) != NULL) {
+				strretchomp(buf);
+				
+				/* escape when a dot appears on the top */
+				if (buf[0] == '.')
+					fputs(".", p);
+				
+				fputs(buf, p);
+				fputs("\n", p);
+			}
+		}
+	pclose(p);
+
+	log_message(_("Mail sent successfully ...\n"));
+
+	return 0;
+}
 
 gint send_message_queue(const gchar *file)
 {

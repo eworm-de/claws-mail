@@ -110,6 +110,7 @@ static gint inc_spool			(void);
 static gint get_spool			(FolderItem	*dest,
 					 const gchar	*mbox);
 
+static void inc_all_spool(void);
 
 static void inc_finished(MainWindow *mainwin)
 {
@@ -155,8 +156,10 @@ void inc_mail(MainWindow *mainwin)
 		waitpid(pid, NULL, 0);
 
 		if (prefs_common.inc_local) inc_spool();
+		inc_all_spool();
 	} else {
 		if (prefs_common.inc_local) inc_spool();
+		inc_all_spool();
 
 		inc_account_mail(cur_account, mainwin);
 	}
@@ -829,11 +832,45 @@ static gint inc_spool(void)
 	return msgs;
 }
 
+static void inc_spool_account(PrefsAccount *account)
+{
+	FolderItem *inbox;
+	FolderItem *dropfolder;
+	gint val;
+
+	if (account->inbox) {
+		inbox = folder_find_item_from_path(account->inbox);
+		if (!inbox)
+			inbox = folder_get_default_inbox();
+	} else
+		inbox = folder_get_default_inbox();
+
+	get_spool(inbox, account->local_mbox);
+}
+
+static void inc_all_spool(void)
+{
+	GList *list = NULL;
+
+	list = account_get_list();
+	if (!list) return;
+
+	for (; list != NULL; list = list->next) {
+		IncSession *session;
+		PrefsAccount *account = list->data;
+
+		if ((account->protocol == A_LOCAL)
+		    || (account->protocol == A_LOCAL_CMD)) {
+			inc_spool_account(account);
+		}
+	}
+}
+
 static gint get_spool(FolderItem *dest, const gchar *mbox)
 {
 	gint msgs, size;
 	gint lockfd;
-	gchar *tmp_mbox = "/tmp/tmpmbox";
+	gchar tmp_mbox[256] = "/tmp/tmpmboxXXXXXX";
 	GHashTable *folder_table = NULL;
 
 	g_return_val_if_fail(dest != NULL, -1);
@@ -846,6 +883,9 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 		return -1;
 
 	if ((lockfd = lock_mbox(mbox, LOCK_FLOCK)) < 0)
+		return -1;
+
+	if (mktemp(tmp_mbox) == NULL)
 		return -1;
 
 	if (copy_mbox(mbox, tmp_mbox) < 0)

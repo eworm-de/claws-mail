@@ -53,6 +53,7 @@
 #include "prefs_account.h"
 #include "account.h"
 #include "folder.h"
+#include "grouplist_dialog.h"
 
 #include "pixmaps/inbox.xpm"
 #include "pixmaps/outbox.xpm"
