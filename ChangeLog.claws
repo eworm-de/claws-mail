@@ -1,3 +1,8 @@
+2003-03-21 [colin]	0.8.11claws37
+
+	* src/send_message.c
+		Fix USE_SSL => USE_OPENSSL
+
 2003-03-21 [colin]	0.8.11claws36
 
 	* src/folderview.c

@@ -352,7 +352,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 	smtp_session->send_data = get_outgoing_rfc2822_str(fp);
 	smtp_session->send_data_len = strlen(smtp_session->send_data);
 
-#if USE_SSL
+#if USE_OPENSSL
 	port = ac_prefs->set_smtpport ? ac_prefs->smtpport :
 		ac_prefs->ssl_smtp == SSL_TUNNEL ? SSMTP_PORT : SMTP_PORT;
 	session->ssl_type = ac_prefs->ssl_smtp;
