@@ -1876,7 +1876,8 @@ static void summary_set_marks_func(GtkCTree *ctree, GtkCTreeNode *node,
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, node);
 
- 	if (MSG_IS_NEWS(msginfo->flags))
+ 	if (msginfo->folder && msginfo->folder->folder &&
+	    msginfo->folder->folder->klass->type == F_NEWS)
  		news_flag_crosspost(msginfo);
 
 	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)
@@ -5005,9 +5006,15 @@ static void news_flag_crosspost(MsgInfo *msginfo)
 	GString *line;
 	gpointer key;
 	gpointer value;
-	Folder *mff = msginfo->folder->folder;
+	Folder *mff;
 
-	if (mff->account->mark_crosspost_read && MSG_IS_NEWS(msginfo->flags)) {
+	g_return_if_fail(msginfo != NULL);
+	g_return_if_fail(msginfo->folder != NULL);
+	g_return_if_fail(msginfo->folder->folder != NULL);
+	mff = msginfo->folder->folder;
+	g_return_if_fail(mff->klass->type != F_NEWS);
+
+	if (mff->account->mark_crosspost_read) {
 		line = g_string_sized_new(128);
 		g_string_sprintf(line, "%s:%d", msginfo->folder->path, msginfo->msgnum);
 		debug_print("nfcp: checking <%s>", line->str);

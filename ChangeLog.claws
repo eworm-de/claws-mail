@@ -1,3 +1,11 @@
+2003-10-05 [christoph]	0.9.6claws7
+
+	* src/summaryview.c
+		don't use flags to check if a message is in a news folder
+
+	(closes Bug 282 clicking on folder with copied Messages from News
+	 immediately after having copied them crashes Sylpheed-Claws)
+
 2003-10-05 [christoph]	0.9.6claws6
 
 	* src/Makefile.am
