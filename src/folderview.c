@@ -328,12 +328,10 @@ FolderView *folderview_create(void)
 	
 	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
 	gtk_clist_set_selection_mode(GTK_CLIST(ctree), GTK_SELECTION_BROWSE);
-#ifndef CLAWS /* text instead of pixmaps */
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), COL_NEW,
 					   GTK_JUSTIFY_RIGHT);
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), COL_UNREAD,
 					   GTK_JUSTIFY_RIGHT);
-#endif					   
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), COL_TOTAL,
 					   GTK_JUSTIFY_RIGHT);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), COL_FOLDER,
@@ -467,8 +465,10 @@ void folderview_init(FolderView *folderview)
 	hbox_unread = gtk_hbox_new(FALSE, 4);
 
 	/* left justified */
-	gtk_box_pack_start(GTK_BOX(hbox_new),label_new,FALSE,FALSE,0);
-	gtk_box_pack_start(GTK_BOX(hbox_unread),label_unread,FALSE,FALSE,0);
+	gtk_box_pack_start(GTK_BOX(hbox_new), label_new, TRUE, TRUE, 0);
+	gtk_misc_set_alignment (GTK_MISC (label_new), 1, 0.5);
+	gtk_box_pack_start(GTK_BOX(hbox_unread), label_unread, TRUE, TRUE, 0);
+	gtk_misc_set_alignment (GTK_MISC (label_unread), 1, 0.5);
 
 	gtk_widget_show_all(hbox_new);
 	gtk_widget_show_all(hbox_unread);

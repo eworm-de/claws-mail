@@ -1,3 +1,8 @@
+2004-09-27 [colin]	0.9.12cvs105.1
+
+	* src/folderview.c
+		Sync with HEAD (right-align new and unread column)
+
 2004-09-27 [colin]	0.9.12cvs104.1
 
 	* src/main.c
