@@ -1,3 +1,20 @@
+2002-03-19
+
+	* src/mainwindow.c: modified some menu items.
+
+2002-03-19
+
+	* src/defs.h: changed OUTBOX_DIR from "outbox" to "sent"
+	  (current "outbox" will be kept until rescan).
+	* src/folder.c: folder_set_missing_folders(): create the missing
+	  folders.
+	* src/foldersel.c
+	  src/folderview.c: changed 'Outbox' to 'Sent'.
+	* src/main.c: call folder_set_missing_folders().
+	* src/mh.c: mh_scan_tree(): create missing folders.
+	* src/summaryview.c: summary_set_menu_sensitive(): fixed a bug that
+	  didn't set the menu sensitivity correctly.
+
 2002-03-18
 
 	* src/folderview.c

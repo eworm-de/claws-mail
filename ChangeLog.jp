@@ -1,3 +1,20 @@
+2002-03-19
+
+	* src/mainwindow.c: いくつかのメニュー項目を修正。
+
+2002-03-19
+
+	* src/defs.h: OUTBOX_DIR を "outbox" から "sent" に変更
+	  (現在の "outbox" は再スキャンまで保持されます)。
+	* src/folder.c: folder_set_missing_folders(): 足りないフォルダを
+	  生成。
+	* src/foldersel.c
+	  src/folderview.c: 'Outbox' を 'Sent' に変更。
+	* src/main.c: folder_set_missing_folders() を呼ぶようにした。
+	* src/mh.c: mh_scan_tree(): 足りないフォルダを生成。
+	* src/summaryview.c: summary_set_menu_sensitive(): メニューの
+	  センシティビティを正しくセットしないバグを修正。
+
 2002-03-18
 
 	* src/folderview.c

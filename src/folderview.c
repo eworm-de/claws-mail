@@ -1002,7 +1002,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 			openxpm = outboxopenxpm;
 			openmask = outboxopenxpmmask;
 		}
-		name = g_strdup(_("Outbox"));
+		name = g_strdup(_("Sent"));
 		break;
 	case F_QUEUE:
 		if (item->hide_read_msgs) {

@@ -294,6 +294,7 @@ int main(int argc, char *argv[])
 	}
 
 	account_set_missing_folder();
+	folder_set_missing_folders();
 	folderview_set(folderview);
 
 	/* prefs_scoring_read_config(); */

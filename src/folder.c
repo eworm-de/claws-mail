@@ -520,6 +520,50 @@ FolderItem *folder_get_default_trash(void)
 	return folder->trash;
 }
 
+#define CREATE_FOLDER_IF_NOT_EXIST(member, dir, type)	\
+{							\
+	if (!folder->member) {				\
+		item = folder_item_new(dir, dir);	\
+		item->stype = type;			\
+		folder_item_append(rootitem, item);	\
+		folder->member = item;			\
+	}						\
+}
+
+void folder_set_missing_folders(void)
+{
+	Folder *folder;
+	FolderItem *rootitem;
+	FolderItem *item;
+	GList *list;
+
+	for (list = folder_list; list != NULL; list = list->next) {
+		folder = list->data;
+		if (folder->type != F_MH) continue;
+		rootitem = FOLDER_ITEM(folder->node->data);
+		g_return_if_fail(rootitem != NULL);
+
+		if (folder->inbox && folder->outbox && folder->draft &&
+		    folder->queue && folder->trash)
+			continue;
+
+		if (folder->create_tree(folder) < 0) {
+			g_warning("%s: can't create the folder tree.\n",
+				  LOCAL_FOLDER(folder)->rootpath);
+			continue;
+		}
+
+		CREATE_FOLDER_IF_NOT_EXIST(inbox,  INBOX_DIR,  F_INBOX);
+		CREATE_FOLDER_IF_NOT_EXIST(outbox, OUTBOX_DIR, F_INBOX);
+		CREATE_FOLDER_IF_NOT_EXIST(draft,  DRAFT_DIR,  F_INBOX);
+		CREATE_FOLDER_IF_NOT_EXIST(queue,  QUEUE_DIR,  F_INBOX);
+		CREATE_FOLDER_IF_NOT_EXIST(trash,  TRASH_DIR,  F_INBOX);
+	}
+
+}
+
+#undef CREATE_FOLDER_IF_NOT_EXIST
+
 gchar *folder_item_get_path(FolderItem *item)
 {
 	gchar *folder_path;

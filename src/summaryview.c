@@ -1048,9 +1048,11 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 		return;
 	}
 
-	if (summaryview->folder_item->folder->type != F_NEWS) {
+	if (summaryview->folder_item->folder->type != F_NEWS)
 		menu_set_sensitive(ifactory, "/Move...", TRUE);
-	}
+	else
+		menu_set_sensitive(ifactory, "/Move...", FALSE);
+
 	menu_set_sensitive(ifactory, "/Delete", TRUE);
 	menu_set_sensitive(ifactory, "/Select thread", TRUE);
 	menu_set_sensitive(ifactory, "/Select all", TRUE);
@@ -1086,6 +1088,8 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	    summaryview->folder_item->stype == F_DRAFT  ||
 	    summaryview->folder_item->stype == F_QUEUE)
 		menu_set_sensitive(ifactory, "/Re-edit", sens);
+	else
+		menu_set_sensitive(ifactory, "/Re-edit", FALSE);
 
 	menu_set_sensitive(ifactory, "/Save as...", sens);
 	menu_set_sensitive(ifactory, "/Print...",   TRUE);

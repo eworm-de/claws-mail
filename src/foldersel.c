@@ -218,7 +218,7 @@ static gboolean foldersel_gnode_func(GtkCTree *ctree, guint depth,
 		name = _("Inbox");
 		break;
 	case F_OUTBOX:
-		name = _("Outbox");
+		name = _("Sent");
 		break;
 	case F_QUEUE:
 		name = _("Queue");

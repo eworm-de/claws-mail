@@ -788,6 +788,7 @@ void mh_scan_tree(Folder *folder)
 	}
 	g_free(rootpath);
 
+	mh_create_tree(folder);
 	mh_scan_tree_recursive(item, pptable);
 	
 	folder_persist_prefs_free(pptable);

@@ -627,7 +627,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/_Go to/Other _folder..."),	"G", goto_folder_cb, 0, NULL},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Open in new _window"),	"<control><alt>N", open_msg_cb, 0, NULL},
-	{N_("/_View/_View source"),		"<control>U", view_source_cb, 0, NULL},
+	{N_("/_View/Mess_age source"),		"<control>U", view_source_cb, 0, NULL},
 	{N_("/_View/Show all _header"),		"<control>H", show_all_header_cb, 0, "<ToggleItem>"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Update"),			"<control><alt>U", update_summary_cb,  0, NULL},
@@ -1572,7 +1572,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/View/Go to/Next labeled message", M_MSG_EXIST},
 		{"/View/Open in new window"        , M_SINGLE_TARGET_EXIST},
 		{"/View/Show all header"           , M_SINGLE_TARGET_EXIST},
-		{"/View/View source"               , M_SINGLE_TARGET_EXIST},
+		{"/View/Message source"            , M_SINGLE_TARGET_EXIST},
 
 		{"/Message/Get new mail"          , M_HAVE_ACCOUNT|M_UNLOCKED},
 		{"/Message/Get from all accounts" , M_HAVE_ACCOUNT|M_UNLOCKED},
