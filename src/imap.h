@@ -133,6 +133,9 @@ gint imap_create_tree			(Folder		*folder);
 FolderItem *imap_create_folder		(Folder		*folder,
 					 FolderItem	*parent,
 					 const gchar	*name);
+gint imap_rename_folder			(Folder		*folder,
+					 FolderItem	*item,
+					 const gchar	*name);
 gint imap_remove_folder			(Folder		*folder,
 					 FolderItem	*item);
 

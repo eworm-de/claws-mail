@@ -203,6 +203,9 @@ static gint imap_cmd_examine	(SockInfo	*sock,
 				 guint32	*uid_validity);
 static gint imap_cmd_create	(SockInfo	*sock,
 				 const gchar	*folder);
+static gint imap_cmd_rename	(SockInfo	*sock,
+				 const gchar	*oldfolder,
+				 const gchar	*newfolder);
 static gint imap_cmd_delete	(SockInfo	*sock,
 				 const gchar	*folder);
 static gint imap_cmd_envelope	(SockInfo	*sock,
@@ -256,6 +259,9 @@ static void imap_path_separator_subst		(gchar		*str,
 static gchar *imap_modified_utf7_to_locale	(const gchar	*mutf7_str);
 static gchar *imap_locale_to_modified_utf7	(const gchar	*from);
 
+static gboolean imap_rename_folder_func		(GNode		*node,
+						 gpointer	 data);
+
 Folder *imap_folder_new(const gchar *name, const gchar *path)
 {
 	Folder *folder;
@@ -291,6 +297,7 @@ static void imap_folder_init(Folder *folder, const gchar *name,
 	folder->scan_tree           = imap_scan_tree;
 	folder->create_tree         = imap_create_tree;
 	folder->create_folder       = imap_create_folder;
+	folder->rename_folder       = imap_rename_folder;
 	folder->remove_folder       = imap_remove_folder;
 }
 
@@ -1286,11 +1293,98 @@ FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	return new_item;
 }
 
+gint imap_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
+{
+	gchar *dirpath;
+	gchar *newpath;
+	gchar *real_oldpath;
+	gchar *real_newpath;
+	GNode *node;
+	gchar *paths[2];
+	gchar *old_cache_dir;
+	gchar *new_cache_dir;
+	IMAPSession *session;
+	IMAPNameSpace *namespace;
+	gint ok;
+	gint exists, recent, unseen;
+	guint32 uid_validity;
+
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(item != NULL, -1);
+	g_return_val_if_fail(item->path != NULL, -1);
+	g_return_val_if_fail(name != NULL, -1);
+
+	session = imap_session_get(folder);
+	if (!session) return -1;
+
+	real_oldpath = imap_get_real_path(IMAP_FOLDER(folder), item->path);
+
+	ok = imap_cmd_examine(SESSION(session)->sock, "INBOX",
+			      &exists, &recent, &unseen, &uid_validity);
+	statusbar_pop_all();
+	if (ok != IMAP_SUCCESS) {
+		g_free(real_oldpath);
+		return -1;
+	}
+
+	namespace = imap_find_namespace(IMAP_FOLDER(folder), item->path);
+	if (strchr(item->path, G_DIR_SEPARATOR)) {
+		dirpath = g_dirname(item->path);
+		newpath = g_strconcat(dirpath, G_DIR_SEPARATOR_S, name, NULL);
+		g_free(dirpath);
+	} else
+		newpath = g_strdup(name);
+
+	real_newpath = imap_locale_to_modified_utf7(newpath);
+	if (namespace && namespace->separator)
+		imap_path_separator_subst(real_newpath, namespace->separator);
+
+	ok = imap_cmd_rename(SESSION(session)->sock, real_oldpath, real_newpath);
+	statusbar_pop_all();
+	if (ok != IMAP_SUCCESS) {
+		log_warning(_("can't rename mailbox: %s to %s\n"),
+			    real_oldpath, real_newpath);
+		g_free(real_oldpath);
+		g_free(newpath);
+		g_free(real_newpath);
+		return -1;
+	}
+
+	g_free(item->name);
+	item->name = g_strdup(name);
+
+	old_cache_dir = folder_item_get_path(item);
+
+	node = g_node_find(item->folder->node, G_PRE_ORDER, G_TRAVERSE_ALL,
+			   item);
+	paths[0] = g_strdup(item->path);
+	paths[1] = newpath;
+	g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+			imap_rename_folder_func, paths);
+
+	if (is_dir_exist(old_cache_dir)) {
+		new_cache_dir = folder_item_get_path(item);
+		if (rename(old_cache_dir, new_cache_dir) < 0) {
+			FILE_OP_ERROR(old_cache_dir, "rename");
+		}
+		g_free(new_cache_dir);
+	}
+
+	g_free(old_cache_dir);
+	g_free(paths[0]);
+	g_free(newpath);
+	g_free(real_oldpath);
+	g_free(real_newpath);
+
+	return 0;
+}
+
 gint imap_remove_folder(Folder *folder, FolderItem *item)
 {
 	gint ok;
 	IMAPSession *session;
 	gchar *path;
+	gchar *cache_dir;
 	gint exists, recent, unseen;
 	guint32 uid_validity;
 
@@ -1320,6 +1414,10 @@ gint imap_remove_folder(Folder *folder, FolderItem *item)
 	}
 
 	g_free(path);
+	cache_dir = folder_item_get_path(item);
+	if (is_dir_exist(cache_dir) && remove_dir_recursive(cache_dir) < 0)
+		g_warning("can't remove directory '%s'\n", cache_dir);
+	g_free(cache_dir);
 	folder_item_remove(item);
 
 	return 0;
@@ -2304,6 +2402,18 @@ static gint imap_cmd_create(SockInfo *sock, const gchar *folder)
 	return imap_cmd_ok(sock, NULL);
 }
 
+static gint imap_cmd_rename(SockInfo *sock, const gchar *old_folder,
+			    const gchar *new_folder)
+{
+	gchar *old_folder_, *new_folder_;
+
+	QUOTE_IF_REQUIRED(old_folder_, old_folder);
+	QUOTE_IF_REQUIRED(new_folder_, new_folder);
+	imap_cmd_gen_send(sock, "RENAME %s %s", old_folder_, new_folder_);
+
+	return imap_cmd_ok(sock, NULL);
+}
+
 static gint imap_cmd_delete(SockInfo *sock, const gchar *folder)
 {
 	gchar *folder_;
@@ -2802,4 +2912,33 @@ static gchar *imap_locale_to_modified_utf7(const gchar *from)
 
 	return to;
 #endif
+}
+
+static gboolean imap_rename_folder_func(GNode *node, gpointer data)
+{
+	FolderItem *item = node->data;
+	gchar **paths = data;
+	const gchar *oldpath = paths[0];
+	const gchar *newpath = paths[1];
+	gchar *base;
+	gchar *new_itempath;
+	gint oldpathlen;
+
+	oldpathlen = strlen(oldpath);
+	if (strncmp(oldpath, item->path, oldpathlen) != 0) {
+		g_warning("path doesn't match: %s, %s\n", oldpath, item->path);
+		return TRUE;
+	}
+
+	base = item->path + oldpathlen;
+	while (*base == G_DIR_SEPARATOR) base++;
+	if (*base == '\0')
+		new_itempath = g_strdup(newpath);
+	else
+		new_itempath = g_strconcat(newpath, G_DIR_SEPARATOR_S, base,
+					   NULL);
+	g_free(item->path);
+	item->path = new_itempath;
+
+	return FALSE;
 }

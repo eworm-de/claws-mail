@@ -1,3 +1,14 @@
+2002-03-18
+
+	* src/folderview.c
+	  src/imap.[ch]: implemented folder renaming on IMAP (thanks to Mio).
+	  folderview_rename_folder_cb(): reopen the current folder when
+	  the ancestor is renamed.
+	  imap_rename_folder(): new method implementation.
+	  imap_cmd_rename()
+	  imap_rename_folder_func(): new.
+	  imap_remove_folder(): remove also the cache directory.
+
 2002-03-17
 
 	* src/imap.c: implemented locale encoding <-> modified utf-7

@@ -1,3 +1,14 @@
+2002-03-18
+
+	* src/folderview.c
+	  src/imap.[ch]: IMAP でのフォルダ名変更を実装(Mio さん thanks)。
+	  folderview_rename_folder_cb(): 親フォルダが名称変更された場合
+	  現在のフォルダを再オープンするようにした。
+	  imap_rename_folder(): 新規メソッドの実装。
+	  imap_cmd_rename()
+	  imap_rename_folder_func(): 新規。
+	  imap_remove_folder(): キャッシュディレクトリも削除。
+
 2002-03-17
 
 	* src/imap.c: locale エンコーディング <-> 修正 utf-7 の変換を実装し、
