@@ -12,6 +12,7 @@
 "%f" /* from */ return SHOW_FROM;
 "%N" /* full name */ return SHOW_FULLNAME;
 "%F" /* first name */ return SHOW_FIRST_NAME;
+"%L" /* last name */ return SHOW_LAST_NAME;
 "%I" /* initial of sender */ return SHOW_SENDER_INITIAL;
 "%s" /* subject */ return SHOW_SUBJECT;
 "%t" /* to */ return SHOW_TO;

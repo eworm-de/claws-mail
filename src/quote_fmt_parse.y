@@ -131,7 +131,7 @@ static int isseparator(char ch)
 }
 
 %token SHOW_NEWSGROUPS
-%token SHOW_DATE SHOW_FROM SHOW_FULLNAME SHOW_FIRST_NAME
+%token SHOW_DATE SHOW_FROM SHOW_FULLNAME SHOW_FIRST_NAME SHOW_LAST_NAME
 %token SHOW_SENDER_INITIAL SHOW_SUBJECT SHOW_TO SHOW_MESSAGEID
 %token SHOW_PERCENT SHOW_CC SHOW_REFERENCES SHOW_MESSAGE
 %token SHOW_QUOTED_MESSAGE SHOW_BACKSLASH SHOW_TAB
@@ -219,6 +219,37 @@ special:
 				while (*p && !isspace(*p)) p++;
 				*p = '\0';
 				INSERT(str);
+			}
+		}
+	}
+	| SHOW_LAST_NAME
+        {
+                /* This probably won't work together very well with Middle
+                 names and the like - thth */
+		if (msginfo->fromname) {
+			gchar *p;
+			gchar *str;
+
+			str = alloca(strlen(msginfo->fromname) + 1);
+			if (str != NULL) {
+				strcpy(str, msginfo->fromname);
+                                p = str;
+                                while (*p && !isspace(*p)) p++;
+                                if (*p) {
+				    /* We found a space. Get first none-space char and
+				     insert rest of string from there. */
+				    while (*p && isspace(*p)) p++;
+                                    if (*p) {
+	                    		INSERT(p);
+				    } else {
+    					/* If there is no none-space char, just insert
+					 whole fromname. */
+					INSERT(str);
+				    }
+				} else {
+				    /* If there is no space, just insert whole fromname. */
+				    INSERT(str);
+				}
 			}
 		}
 	}

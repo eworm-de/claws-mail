@@ -40,6 +40,7 @@ static gchar *symbol_table[][2] =
 	{"%f",		N_("From")}, /* from */
 	{"%N",		N_("Full Name of Sender")}, /* full name */
 	{"%F",		N_("First Name of Sender")}, /* first name */
+	{"%L",		N_("Last Name of Sender")}, /* last name */
 	{"%I",		N_("Initials of Sender")}, /* initial of sender */
 	{"%s",		N_("Subject")}, /* subject */ 
 	{"%t",		N_("To")}, /* to */ 

@@ -1,3 +1,12 @@
+2002-03-25 [paul]	0.7.4claws42
+
+	* src/quote_fmt.c
+	  src/quote_fmt_lex.l
+	  src/quote_fmt_parse.y
+		add Last name (%L) placeholder for quoting. 
+		patch submitted by Thorsten Thielen 
+		<thth@user.sourceforge.net>
+
 2002-03-25 [paul]	0.7.4claws41
 
 	* src/utils.c
