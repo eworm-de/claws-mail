@@ -99,6 +99,7 @@ typedef enum
 #define IMAP_IS_DELETED(flags)	((flags & IMAP_FLAG_DELETED) != 0)
 #define IMAP_IS_DRAFT(flags)	((flags & IMAP_FLAG_DRAFT) != 0)
 
+FolderClass *imap_get_class		();
 Folder	*imap_folder_new		(const gchar	*name,
 					 const gchar	*path);
 void	 imap_folder_destroy		(Folder		*folder);

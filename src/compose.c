@@ -1728,7 +1728,8 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	gchar *buf;
 	gchar *p, *lastp;
 	gint len;
-
+	gchar *trimmed_body = body;
+	
 	if (!msginfo)
 		msginfo = &dummyinfo;
 
@@ -1745,7 +1746,11 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	}
 
 	if (fmt && *fmt != '\0') {
-		quote_fmt_init(msginfo, quote_str, body);
+		while (trimmed_body && strlen(trimmed_body) > 1
+			&& trimmed_body[0]=='\n')
+			*trimmed_body++;
+
+		quote_fmt_init(msginfo, quote_str, trimmed_body);
 		quote_fmt_scan_string(fmt);
 		quote_fmt_parse();
 
@@ -2294,6 +2299,10 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 	}								     \
 }
 
+#define DISP_WIDTH(len) \
+	((len > 2 && conv_get_current_charset() == C_UTF_8) ? 2 : \
+	 (len == 2 && conv_get_current_charset() == C_UTF_8) ? 1 : len)
+
 #define INDENT_CHARS	">|#"
 #define SPACE_CHARS	" \t"
 
@@ -2421,7 +2430,7 @@ static void compose_wrap_line(Compose *compose)
 			line_len = cur_len + ch_len;
 		}
 
-		if (cur_len + ch_len > prefs_common.linewrap_len &&
+		if (cur_len + DISP_WIDTH(ch_len) > prefs_common.linewrap_len &&
 		    line_len > 0) {
 			gint tlen = ch_len;
 
@@ -2442,16 +2451,16 @@ static void compose_wrap_line(Compose *compose)
 			p_end++;
 			cur_pos++;
 			line_pos++;
-			cur_len = cur_len - line_len + ch_len;
+			cur_len = cur_len - line_len + DISP_WIDTH(ch_len);
 			line_len = 0;
 			continue;
 		}
 
 		if (ch_len > 1) {
 			line_pos = cur_pos + 1;
-			line_len = cur_len + ch_len;
+			line_len = cur_len + DISP_WIDTH(ch_len);
 		}
-		cur_len += ch_len;
+		cur_len += DISP_WIDTH(ch_len);
 	}
 
 compose_end:
@@ -2764,7 +2773,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 		}
 
 		/* are we over wrapping length set in preferences ? */
-		if (cur_len + ch_len > linewrap_len) {
+		if (cur_len + DISP_WIDTH(ch_len) > linewrap_len) {
 			gint clen;
 
 #ifdef WRAP_DEBUG
@@ -2862,10 +2871,10 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 
 		if (ch_len > 1) {
 			line_pos = cur_pos + 1;
-			line_len = cur_len + ch_len;
+			line_len = cur_len + DISP_WIDTH(ch_len);
 		}
 		/* advance to next character in buffer */
-		cur_len += ch_len;
+		cur_len += DISP_WIDTH(ch_len);
 	}
 
 	if (frozen)

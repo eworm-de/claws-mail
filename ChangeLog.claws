@@ -1,3 +1,71 @@
+2003-03-13 [paul]	0.8.11claws10
+
+	* tools/Makefile.am
+	  tools/README
+	  tools/multiwebsearch.conf	** NEW FILE **
+	  tools/multiwebsearch.pl	** NEW FILE **
+	  	add multiwebsearch Actions script
+
+2003-03-13 [colin]	0.8.11claws9
+
+	* src/compose.c
+		Remove leading emtpy lines from quoted text
+		before quoting it
+
+2003-03-13 [melvin]	0.8.11claws8
+
+	* src/prefs_actions.c
+		Fixed a memory leak
+		Code clean ups
+		Added Cancel and OK buttons
+		Corrected help text
+
+2003-03-13 [christoph]	0.8.11claws7
+
+	* src/account.c
+	* src/folder.[ch]
+	* src/imap.c
+	* src/mainwindow.c
+	* src/mbox_folder.c
+	* src/mh.c
+	* src/news.c
+	* src/setup.c
+		replace more folder type stuff with folder class stuff
+
+2003-03-13 [melvin]	0.8.11claws6
+
+	* src/prefs_actions.c
+		Added new tokens:
+		%u: user provided argument
+		%h: user provided argument (hidden on input)
+		%s: current text selection in the message view 
+
+2003-03-13 [paul]	0.8.11claws5
+
+	* sync with 0.8.11cvs5
+		see ChangeLog 2003-03-11, 2003-03-12
+
+2003-03-12 [christoph]	0.8.11claws4
+
+	* src/folder.c
+		use folder class idstr when writing folderlist.xml
+
+	* src/folder.h
+	* src/imap.c
+	* src/news.c
+		replace folder type checks with folder class checks
+
+2003-03-12 [christoph]	0.8.11claws3
+
+	* src/folder.[ch]
+	* src/imap.[ch]
+	* src/main.c
+	* src/mbox_folder.[ch]
+	* src/mh.[ch]
+	* src/news.[ch]
+		o create a list of known folder classes in the folder system
+		o use folder class id strings for folder item identifiers
+
 2003-03-12 [christoph]	0.8.11claws2
 
 	* src/imap.c

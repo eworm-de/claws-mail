@@ -1,3 +1,31 @@
+2003-03-12
+
+	* src/textview.c: textview_button_pressed(): URI のリンクの範囲を
+	  訂正。
+	* src/compose.c: compose_wrap_line_all_full(): 折り返しの問題への
+	  対処のため、 UTF-8 の3バイト以上で表現される文字を2文字幅、2
+	  バイト文字を1文字幅として扱うようにした。
+
+2003-03-12
+
+	* src/utils.c: subject_compare_for_sort(): ヌル文字列を許可(サマリの
+	  ソートを修正)。
+
+2003-03-11
+
+	* HTML リンクを正しく実装。
+	* src/html.[ch]: HTMLAttr, HTMLTag: 属性 / タグのための新規構造体。
+	  html_get_tag(): 新規。タグを解析して HTMLTag オブジェクトを返す。
+	  html_parse_tag(): <a> タグと 'href' 属性もパース。
+	* src/textview.c: textview_write_link(): 新規。リンク文字列を作成。
+
+2003-03-10
+
+	* src/compose.c: compose_wrap_line_all_full(): 無限ループ /
+	  クラッシュバグを修正(Darko Koruga さん thanks)。
+	  compose_write_to_file(): 変換に失敗したがとにかく送信したいとき
+	  に正しい charset 要素を出力するようにした。
+
 2003-03-10
 
 	* src/headerview.c: headerview_show()

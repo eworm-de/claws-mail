@@ -40,6 +40,7 @@ struct _MBOXFolder
 	LocalFolder lfolder;
 };
 
+FolderClass *mbox_get_class	();
 Folder	*mbox_folder_new	(const gchar	*name,
 				 const gchar	*path);
 void     mbox_folder_destroy	(Folder		*folder);

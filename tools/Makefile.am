@@ -11,6 +11,7 @@ EXTRA_TOOLS = \
 	kmail2sylpheed.pl \
 	kmail2sylpheed_v2.pl \
 	launch_phoenix \
+	multiwebsearch.pl \
 	newscache_clean.pl \
 	outlook2sylpheed.pl \
 	sylpheed-switcher \
@@ -23,6 +24,7 @@ EXTRA_TOOLS = \
 EXTRA_DIST = \
 	README \
 	README.sylprint \
+	multiwebsearch.conf \
 	$(EXTRA_TOOLS)
 
 MAKE_EXE = chmod u+x $(EXTRA_TOOLS)

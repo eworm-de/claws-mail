@@ -341,10 +341,10 @@ void account_add(void)
 		Folder *folder;
 
 		if (ac_prefs->protocol == A_IMAP4) {
-			folder = folder_new(F_IMAP, ac_prefs->account_name,
+			folder = folder_new(folder_get_class_from_string("imap"), ac_prefs->account_name,
 					    ac_prefs->recv_server);
 		} else {
-			folder = folder_new(F_NEWS, ac_prefs->account_name,
+			folder = folder_new(folder_get_class_from_string("news"), ac_prefs->account_name,
 					    ac_prefs->nntp_server);
 		}
 
@@ -424,10 +424,10 @@ void account_set_missing_folder(void)
 			Folder *folder;
 
 			if (ap->protocol == A_IMAP4) {
-				folder = folder_new(F_IMAP, ap->account_name,
+				folder = folder_new(folder_get_class_from_string("imap"), ap->account_name,
 						    ap->recv_server);
 			} else {
-				folder = folder_new(F_NEWS, ap->account_name,
+				folder = folder_new(folder_get_class_from_string("news"), ap->account_name,
 						    ap->nntp_server);
 			}
 

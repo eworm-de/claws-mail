@@ -29,6 +29,7 @@
 #include "alertpanel.h"
 #include "mainwindow.h"
 #include "gtkutils.h"
+#include "mh.h"
 
 #define SETUP_DIALOG_WIDTH	540
 
@@ -53,10 +54,7 @@ void setup(MainWindow *mainwin)
 		return;
 	}
 
-	if (!strcmp(path, "Mail"))
-		folder = folder_new(F_MH, _("Mailbox"), path);
-	else
-		folder = folder_new(F_MH, g_basename(path), path);
+	folder = folder_new(mh_get_class(), !strcmp(path, "Mail") ? _("Mailbox") : g_basename(path), path);
 	g_free(path);
 
 	if (folder->class->create_tree(folder) < 0) {

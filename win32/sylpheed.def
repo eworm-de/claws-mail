@@ -633,6 +633,8 @@ EXPORTS
 	folder_find_item_from_identifier 
 	folder_find_item_from_path 
 	folder_func_to_all_folders 
+	folder_get_class_from_string 
+	folder_get_class_list 
 	folder_get_default_draft 
 	folder_get_default_folder 
 	folder_get_default_inbox 
@@ -687,6 +689,7 @@ EXPORTS
 	folder_persist_prefs_free 
 	folder_persist_prefs_new 
 	folder_read_list 
+	folder_register_class 
 	folder_remote_folder_destroy 
 	folder_remote_folder_init 
 	folder_scan_tree 
@@ -694,6 +697,7 @@ EXPORTS
 	folder_set_missing_folders 
 	folder_set_name 
 	folder_set_ui_func 
+	folder_system_init 
 	folder_tree_destroy 
 	folder_tree_destroy_func 
 	folder_unref_account_all 
@@ -896,6 +900,7 @@ EXPORTS
 	imap_fetch_msg 
 	imap_folder_destroy 
 	imap_folder_new 
+	imap_get_class 
 	imap_get_msginfo 
 	imap_get_msginfos 
 	imap_get_num_list 
@@ -1072,6 +1077,7 @@ EXPORTS
 	mbox_finished_copy 
 	mbox_folder_destroy 
 	mbox_folder_new 
+	mbox_get_class 
 	mbox_get_msg_list 
 	mbox_get_msginfo 
 	mbox_get_num_list 
@@ -1146,6 +1152,7 @@ EXPORTS
 	mh_fetch_msg 
 	mh_folder_destroy 
 	mh_folder_new 
+	mh_get_class 
 	mh_get_last_num 
 	mh_get_msginfo 
 	mh_get_new_msg_filename 
@@ -1203,6 +1210,7 @@ EXPORTS
 	news_fetch_msgnum_sort 
 	news_folder_destroy 
 	news_folder_new 
+	news_get_class 
 	news_get_group_list 
 	news_get_msginfo 
 	news_get_msginfos 

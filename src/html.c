@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -338,6 +338,8 @@ HTMLParser *html_parser_new(FILE *fp, CodeConverter *conv)
 	parser->str = g_string_new(NULL);
 	parser->buf = g_string_new(NULL);
 	parser->bufp = parser->buf->str;
+	parser->state = HTML_NORMAL;
+	parser->href = NULL;
 	parser->newline = TRUE;
 	parser->empty_line = TRUE;
 	parser->space = FALSE;
@@ -395,6 +397,7 @@ void html_parser_destroy(HTMLParser *parser)
 {
 	g_string_free(parser->str, TRUE);
 	g_string_free(parser->buf, TRUE);
+	g_free(parser->href);
 	g_free(parser);
 }
 
@@ -526,59 +529,128 @@ static void html_append_str(HTMLParser *parser, const gchar *str, gint len)
 		parser->newline = FALSE;
 }
 
+static HTMLTag *html_get_tag(const gchar *str)
+{
+	HTMLTag *tag;
+	gchar *tmp;
+	gchar *tmpp;
+
+	g_return_val_if_fail(str != NULL, NULL);
+
+	if (*str == '\0' || *str == '!') return NULL;
+
+	Xstrdup_a(tmp, str, return NULL);
+
+	tag = g_new0(HTMLTag, 1);
+
+	for (tmpp = tmp; *tmpp != '\0' && !isspace(*tmpp); tmpp++)
+		;
+
+	if (*tmpp == '\0') {
+		g_strdown(tmp);
+		tag->name = g_strdup(tmp);
+		return tag;
+	} else {
+		*tmpp++ = '\0';
+		g_strdown(tmp);
+		tag->name = g_strdup(tmp);
+	}
+
+	while (*tmpp != '\0') {
+		HTMLAttr *attr;
+		gchar *attr_name;
+		gchar *attr_value;
+		gchar *p;
+		gchar quote;
+
+		while (isspace(*tmpp)) tmpp++;
+		attr_name = tmpp;
+		if ((p = strchr(attr_name, '=')) == NULL) {
+			g_warning("html_get_tag(): syntax error in tag: '%s'\n", str);
+			return tag;
+		}
+		tmpp = p;
+		*tmpp++ = '\0';
+		while (isspace(*tmpp)) tmpp++;
+
+		if (*tmpp == '\0') {
+			g_warning("html_get_tag(): syntax error in tag: '%s'\n", str);
+			return tag;
+		} else if (*tmpp == '"' || *tmpp == '\'') {
+			/* name="value" */
+			quote = *tmpp;
+			tmpp++;
+			attr_value = tmpp;
+			if ((p = strchr(attr_value, quote)) == NULL) {
+				g_warning("html_get_tag(): syntax error in tag: '%s'\n", str);
+				return tag;
+			}
+			tmpp = p;
+			*tmpp++ = '\0';
+			while (isspace(*tmpp)) tmpp++;
+		} else {
+			/* name=value */
+			attr_value = tmpp;
+			while (*tmpp != '\0' && !isspace(*tmpp)) tmpp++;
+			if (*tmpp != '\0')
+				*tmpp++ = '\0';
+		}
+
+		g_strchomp(attr_name);
+		g_strdown(attr_name);
+		attr = g_new(HTMLAttr, 1);
+		attr->name = g_strdup(attr_name);
+		attr->value = g_strdup(attr_value);
+		tag->attr = g_list_append(tag->attr, attr);
+	}
+
+	return tag;
+}
+
+static void html_free_tag(HTMLTag *tag)
+{
+	if (!tag) return;
+
+	g_free(tag->name);
+	while (tag->attr != NULL) {
+		HTMLAttr *attr = (HTMLAttr *)tag->attr->data;
+		g_free(attr->name);
+		g_free(attr->value);
+		g_free(attr);
+		tag->attr = g_list_remove(tag->attr, tag->attr->data);
+	}
+	g_free(tag);
+}
+
 static HTMLState html_parse_tag(HTMLParser *parser)
 {
 	gchar buf[HTMLBUFSIZE];
-	gchar *p;
-	static gboolean is_in_href = FALSE;
+	HTMLTag *tag;
 
 	html_get_parenthesis(parser, buf, sizeof(buf));
 
-	for (p = buf; *p != '\0'; p++) {
-		if (isspace(*p)) {
-			*p = '\0';
-			break;
-		}
-	}
+	tag = html_get_tag(buf);
 
 	parser->state = HTML_UNKNOWN;
-	if (buf[0] == '\0') return parser->state;
+	if (!tag) return HTML_UNKNOWN;
 
-	g_strdown(buf);
-
-	if (!strcmp(buf, "br")) {
+	if (!strcmp(tag->name, "br")) {
 		parser->space = FALSE;
 		html_append_char(parser, '\n');
 		parser->state = HTML_BR;
-	} else if (!strcmp(buf, "a")) {
-	        /* look for tokens separated by space or = */
-	        char* href_token = strtok(++p, " =");
-		parser->state = HTML_NORMAL;
-		while (href_token != NULL) {
-		        /* look for href */
-		        if (!strcmp(href_token, "href")) {
-			        /* the next token is the url, between double
-					 * quotes */
-			        char* url = strtok(NULL, "\"");
-					if (url && url[0] == '\'')
-					  url = strtok(url,"\'");
-
-				if (!url) break;
-				html_append_str(parser, url, strlen(url));
-				html_append_char(parser, ' ');
-				/* start enforcing html link */
-				parser->state = HTML_HREF;
-				is_in_href = TRUE;
-				break;
-			}
-			/* or get next token */
-			href_token = strtok(NULL, " =");
+	} else if (!strcmp(tag->name, "a")) {
+		if (tag->attr && tag->attr->data &&
+		    !strcmp(((HTMLAttr *)tag->attr->data)->name, "href")) {
+			g_free(parser->href);
+			parser->href =
+				g_strdup(((HTMLAttr *)tag->attr->data)->value);
+			parser->state = HTML_HREF;
 		}
-	} else if (!strcmp(buf, "/a")) {
-	        /* stop enforcing html link */
-	        parser->state = HTML_NORMAL;
-	        is_in_href = FALSE;
-	} else if (!strcmp(buf, "p")) {
+	} else if (!strcmp(tag->name, "/a")) {
+		g_free(parser->href);
+		parser->href = NULL;
+		parser->state = HTML_NORMAL;
+	} else if (!strcmp(tag->name, "p")) {
 		parser->space = FALSE;
 		if (!parser->empty_line) {
 			parser->space = FALSE;
@@ -586,53 +658,51 @@ static HTMLState html_parse_tag(HTMLParser *parser)
 			html_append_char(parser, '\n');
 		}
 		parser->state = HTML_PAR;
-	} else if (!strcmp(buf, "pre")) {
+	} else if (!strcmp(tag->name, "pre")) {
 		parser->pre = TRUE;
 		parser->state = HTML_PRE;
-	} else if (!strcmp(buf, "/pre")) {
+	} else if (!strcmp(tag->name, "/pre")) {
 		parser->pre = FALSE;
 		parser->state = HTML_NORMAL;
-	} else if (!strcmp(buf, "hr")) {
+	} else if (!strcmp(tag->name, "hr")) {
 		if (!parser->newline) {
 			parser->space = FALSE;
 			html_append_char(parser, '\n');
 		}
 		html_append_str(parser, HR_STR "\n", -1);
 		parser->state = HTML_HR;
-	} else if (!strcmp(buf, "div")    ||
-		   !strcmp(buf, "ul")     ||
-		   !strcmp(buf, "li")     ||
-		   !strcmp(buf, "table")  ||
-		   !strcmp(buf, "tr")     ||
-		   (buf[0] == 'h' && isdigit(buf[1]))) {
+	} else if (!strcmp(tag->name, "div")    ||
+		   !strcmp(tag->name, "ul")     ||
+		   !strcmp(tag->name, "li")     ||
+		   !strcmp(tag->name, "table")  ||
+		   !strcmp(tag->name, "tr")     ||
+		   (tag->name[0] == 'h' && isdigit(tag->name[1]))) {
 		if (!parser->newline) {
 			parser->space = FALSE;
 			html_append_char(parser, '\n');
 		}
 		parser->state = HTML_NORMAL;
-	} else if (!strcmp(buf, "/table") ||
-		   (buf[0] == '/' && buf[1] == 'h' && isdigit(buf[1]))) {
+	} else if (!strcmp(tag->name, "/table") ||
+		   (tag->name[0] == '/' &&
+		    tag->name[1] == 'h' &&
+		    isdigit(tag->name[1]))) {
 		if (!parser->empty_line) {
 			parser->space = FALSE;
 			if (!parser->newline) html_append_char(parser, '\n');
 			html_append_char(parser, '\n');
 		}
 		parser->state = HTML_NORMAL;
-	} else if (!strcmp(buf, "/div")   ||
-		   !strcmp(buf, "/ul")    ||
-		   !strcmp(buf, "/li")) {
+	} else if (!strcmp(tag->name, "/div")   ||
+		   !strcmp(tag->name, "/ul")    ||
+		   !strcmp(tag->name, "/li")) {
 		if (!parser->newline) {
 			parser->space = FALSE;
 			html_append_char(parser, '\n');
 		}
 		parser->state = HTML_NORMAL;
-	}
-	
-	if (is_in_href == TRUE) {
-	        /* when inside a link, everything will be written as
-		 * clickable (see textview_show_thml in textview.c) */
-	        parser->state = HTML_HREF;
-	}
+			}
+
+	html_free_tag(tag);
 
 	return parser->state;
 }
@@ -714,6 +784,7 @@ static void html_get_parenthesis(HTMLParser *parser, gchar *buf, gint len)
 		if (html_read_line(parser) == HTML_EOF) return;
 
 	strncpy2(buf, parser->bufp, MIN(p - parser->bufp + 1, len));
+	g_strstrip(buf);
 	parser->bufp = p + 1;
 }
 

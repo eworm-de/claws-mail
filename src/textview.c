@@ -148,9 +148,9 @@ static void textview_show_html		(TextView	*textview,
 static void textview_write_line		(TextView	*textview,
 					 const gchar	*str,
 					 CodeConverter	*conv);
-static void textview_write_link         (TextView	*textview,
-                                         const gchar    *url,
+static void textview_write_link		(TextView	*textview,
 					 const gchar	*str,
+					 const gchar	*uri,
 					 CodeConverter	*conv);
 static GPtrArray *textview_scan_header	(TextView	*textview,
 					 FILE		*fp);
@@ -523,7 +523,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		textview->msgfont = NULL;
 
 		tmp = g_strconcat("pgp: ", _("Check signature"), NULL);
-		textview_write_link(textview, tmp, buf, NULL);
+		textview_write_link(textview, buf, tmp, NULL);
 		
 		/* put things back */
 		textview->msgfont = (GdkFont *)oldfont;
@@ -557,7 +557,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 			charset = mimeinfo->charset;
 		textview_write_body(textview, mimeinfo, fp, charset);
 	}
-	
+
 	gtk_stext_thaw(text);
 }
 
@@ -605,7 +605,7 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	textview_set_font(textview, NULL);
 	text = GTK_STEXT(textview->text);
 	textview_clear(textview);
-	
+
 	gtk_stext_freeze(text);
 
 	TEXT_INSERT(_("To save this part, pop up the context menu with "));
@@ -646,7 +646,7 @@ void textview_show_signature_part(TextView *textview, MimeInfo *partinfo)
 	} else {
 		TEXT_INSERT(partinfo->sigstatus_full);
 	}
-		
+
 	gtk_stext_thaw(text);
 }
 #endif /* USE_GPGME */
@@ -667,7 +667,6 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo,
 	textview->is_in_signature = FALSE;
 
 	if (tmpfp) {
-		
 		if (mimeinfo->mime_type == MIME_TEXT_HTML)
 			textview_show_html(textview, tmpfp, conv);
 		else if (mimeinfo->mime_type == MIME_TEXT_ENRICHED)
@@ -686,7 +685,6 @@ static void textview_show_html(TextView *textview, FILE *fp,
 {
 	HTMLParser *parser;
 	gchar *str;
-	gchar* url = NULL;
 
 	parser = html_parser_new(fp, conv);
 	g_return_if_fail(parser != NULL);
@@ -694,29 +692,22 @@ static void textview_show_html(TextView *textview, FILE *fp,
 	while ((str = html_parse(parser)) != NULL) {
 	        if (parser->state == HTML_HREF) {
 		        /* first time : get and copy the URL */
-		        if (url == NULL) {
+		        if (parser->href == NULL) {
 				/* ALF - the sylpheed html parser returns an empty string,
 				 * if still inside an <a>, but already parsed past HREF */
 				str = strtok(str, " ");
 				if (str) { 
-					url = strdup(str);
+					parser->href = strdup(str);
 					/* the URL may (or not) be followed by the
 					 * referenced text */
 					str = strtok(NULL, "");
 				}	
 		        }
-		        if (str != NULL) {
-			        textview_write_link(textview, url, str, NULL);
-		        }
-	        } else {
-		        if (url != NULL) {
-		                free(url);
-				url = NULL;
-			}
+		        if (str != NULL)
+			        textview_write_link(textview, str, parser->href, NULL);
+	        } else
 		        textview_write_line(textview, str, NULL);
-	        }
 	}
-	
 	html_parser_destroy(parser);
 }
 
@@ -1137,49 +1128,6 @@ static void textview_make_clickable_parts(TextView *textview,
 
 #undef ADD_TXT_POS
 
-/* This function writes str as a double-clickable link with the given url. */ 
-static void textview_write_link(TextView *textview, const gchar *url,
-                                const gchar *str, CodeConverter *conv)
-{
-    GdkColor *link_color = NULL;
-    RemoteURI* uri;
-    GtkSText *text = GTK_STEXT(textview->text);
-    gchar buf[BUFFSIZE];
-
-    /* this part is taken from textview_write_line. Right now the only place
-     * that calls this function passes NULL for conv, but you never know. */
-#if 0
-    if (!conv)
-	    strncpy2(buf, str, sizeof(buf));
-    else if (conv_convert(conv, buf, sizeof(buf), str) < 0) {
-       	    gtk_stext_insert(text, textview->msgfont,
-		            prefs_common.enable_color
-		            ? &error_color : NULL, NULL,
-		            "*** Warning: code conversion failed ***\n",
-		            -1);
-	    return;
-    }
-#endif
-
-    if (!conv || conv_convert(conv, buf, sizeof(buf), str) < 0)
-	strncpy2(buf, str, sizeof(buf));
-
-    strcrchomp(buf);
-    gtk_stext_insert(text, textview->msgfont, NULL, NULL, " ", 1);
- 
-    /* this part is based on the code in make_clickable_parts */
-    if (prefs_common.enable_color) {
-	link_color = &uri_color;
-    }
-    uri = g_new(RemoteURI, 1);
-    uri->uri = g_strdup(url);
-    uri->start = gtk_stext_get_point(text);
-    gtk_stext_insert(text, textview->msgfont, link_color, NULL, str,
-	            strlen(str));
-    uri->end = gtk_stext_get_point(text);
-    textview->uri_list = g_slist_append(textview->uri_list, uri);
-}
-
 static void textview_write_line(TextView *textview, const gchar *str,
 				CodeConverter *conv)
 {
@@ -1239,6 +1187,44 @@ static void textview_write_line(TextView *textview, const gchar *str,
 	else
 		textview_make_clickable_parts(textview, textview->msgfont,
 					      fg_color, NULL, buf);
+}
+
+void textview_write_link(TextView *textview, const gchar *str,
+			 const gchar *uri, CodeConverter *conv)
+{
+    	GdkColor *link_color = NULL;
+	GtkSText *text = GTK_STEXT(textview->text);
+	gchar buf[BUFFSIZE];
+	gchar *bufp;
+	RemoteURI *r_uri;
+
+	if (*str == '\0')
+		return;
+
+	if (!conv) {
+		if (textview->text_is_mb)
+			conv_localetodisp(buf, sizeof(buf), str);
+		else
+			strncpy2(buf, str, sizeof(buf));
+	} else if (conv_convert(conv, buf, sizeof(buf), str) < 0)
+		conv_localetodisp(buf, sizeof(buf), str);
+	else if (textview->text_is_mb)
+		conv_unreadable_locale(buf);
+
+	strcrchomp(buf);
+
+	for (bufp = buf; isspace(*bufp); bufp++)
+		gtk_stext_insert(text, textview->msgfont, NULL, NULL, bufp, 1);
+
+    	if (prefs_common.enable_color) {
+		link_color = &uri_color;
+    	}
+	r_uri = g_new(RemoteURI, 1);
+	r_uri->uri = g_strdup(uri);
+	r_uri->start = gtk_stext_get_point(text);
+	gtk_stext_insert(text, textview->msgfont, link_color, NULL, bufp, -1);
+	r_uri->end = gtk_stext_get_point(text);
+	textview->uri_list = g_slist_append(textview->uri_list, r_uri);
 }
 
 void textview_clear(TextView *textview)
@@ -1468,6 +1454,7 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 	} else
 		procheader_header_array_destroy(headers);
 
+
 	return sorted_headers;
 }
 
@@ -1571,6 +1558,7 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 		}
 		if (text_len - pos == len) break;
 	}
+
 	g_free(wcs);
 	return found;
 }
@@ -1913,7 +1901,7 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 			RemoteURI *uri = (RemoteURI *)cur->data;
 
 			if (textview->cur_pos >= uri->start &&
-			    textview->cur_pos <  uri->end) {
+			    textview->cur_pos <= uri->end) {
 				/* single click: display url in statusbar */
 #ifdef WIN32
 				if (event->button == 1 && textview->last_buttonpress != GDK_2BUTTON_PRESS

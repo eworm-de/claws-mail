@@ -308,11 +308,11 @@ int main(int argc, char *argv[])
 	set_log_file(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log");
 
 #ifdef WIN32
-	/*XXX:tm */
 	prefs_common_init_config();
 	start_mswin_helper();
 	w32_mailcap_create();
 #endif
+	folder_system_init();
 	prefs_common_init();
 	prefs_common_read_config();
 
