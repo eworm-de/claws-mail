@@ -1,3 +1,10 @@
+2001-12-07 [melvin]	0.6.5claws56
+
+	* src/messageview.c
+		hack to fix bug that prevented to make/paste selections
+		after switching between MVIEW_TEXT and MVIEW_MIME views
+		without deselecting the selection first.
+
 2001-12-06 [alfons]	0.6.5claws55
 
 	* src/filtering.[ch]
