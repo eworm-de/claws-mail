@@ -379,3 +379,4 @@
 ( cvs diff -u -r 1.382.2.99 -r 1.382.2.100 src/compose.c; ) > 1.0.1cvs5.3.patchset
 ( cvs diff -u -r 1.382.2.100 -r 1.382.2.101 src/compose.c; cvs diff -u -r 1.49.2.32 -r 1.49.2.33 src/procmime.c; ) > 1.0.1cvs6.1.patchset
 ( cvs diff -u -r 1.382.2.101 -r 1.382.2.102 src/compose.c; cvs diff -u -r 1.49.2.33 -r 1.49.2.34 src/procmime.c; ) > 1.0.1cvs7.1.patchset
+( cvs diff -u -r 1.83.2.29 -r 1.83.2.30 src/mimeview.c; ) > 1.0.1cvs7.2.patchset

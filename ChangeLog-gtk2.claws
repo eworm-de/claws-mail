@@ -1,3 +1,9 @@
+2005-02-15 [colin]	1.0.1cvs7.2
+
+	* src/mimeview.c
+		Fix mime icons not reset across message when
+		scrolled down
+
 2005-02-15 [colin]	1.0.1cvs7.1
 
 	* src/compose.c
