@@ -1,3 +1,30 @@
+2003-11-29 [luke]	0.9.7claws6
+
+        * src/procmime.[ch]
+                re-added parsing of Content-Disposition header
+                        - removes the old  'gchar* content_disposition'
+                        - adds a new field 'DispositionType disposition'
+                        - adds parameters to MimeInfo::parameters
+
+        * src/mimeview.c
+                use the "filename" parameter for saving, and the new
+                MimeInfo::disposition for save all.
+
+        * src/compose.c
+        * src/toolbar.[ch]
+                add a 'check spelling' button as a possibility for 
+		the compose toolbar
+
+        * src/stockpixmap.[ch]
+        * src/pixmaps/check_spelling.xpm        ** NEW **
+        * src/Makefile.am
+                add a pixmap for use with 'check spelling' button or
+                a user defined action
+
+        * src/textview.c
+                re-apply fixed (I hope) patch for bug 57
+                "Hidden URL in HTML Mails"
+
 2003-11-28 [christoph]	0.9.7claws5
 
 	* src/procmime.c
