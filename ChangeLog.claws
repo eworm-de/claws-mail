@@ -1,3 +1,8 @@
+2003-07-20 [paul]	0.9.3claws35
+
+	* src/mimeview.c
+		redraw icon list on signature check
+
 2003-07-20 [christoph]	0.9.3claws34
 
 	* src/Makefile.am

@@ -1238,6 +1238,9 @@ void mimeview_check_signature(MimeView *mimeview)
 
 	textview_show_message(mimeview->messageview->textview, mimeinfo,
 			      mimeview->file);
+			      
+	icon_list_clear(mimeview);
+	icon_list_create(mimeview, mimeview->mimeinfo);
 }
 #endif /* USE_GPGME */
 
