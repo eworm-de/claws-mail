@@ -1,3 +1,8 @@
+2002-10-11 [colin]	0.8.5claws12
+
+	* src/imageview.c
+		Resize images to fit
+
 2002-10-11 [paul]	0.8.5claws11
 
 	* po/es.po
