@@ -1,3 +1,48 @@
+2003-07-22
+
+	* src/session.[ch]:
+	  session_read_msg_cb()
+	  session_read_data_cb(): リモートホストによって接続を切断された場合
+	  に無限ループに陥るバグを修正(今井さん thanks)。
+	  SessionState に SESSION_EOF を追加。
+	  session_is_connected(): 新規。
+	* src/inc.[ch]: inc_put_error()
+	  src/send_message.c: send_put_error(): ログメッセージも共に出力。
+
+2003-07-18
+
+	* IMAP4 のさらなる最適化。
+	* src/folder.[ch]: 複数のファイルをフォルダに追加するメソッド
+	  add_msgs() を追加。
+	  FolderItem 操作の冗長な scan() を削除。
+	* src/imap.[ch]: Folder::add_msgs() を実装し、他の Folder
+	  インスタンスからの移動・コピーを最適化。
+	* src/mh.[ch]: Folder::add_msgs() を実装し、コードを整理。
+	  mh_fetch_msg(): 必要であればフォルダをスキャン。
+	* src/procmsg.[ch]: procmsg_get_message_file_list(): メッセージリスト
+	  からファイルのリストを返す。
+	* src/summaryview.c: 削除・移動・コピー操作で MSG_MARKED フラグを
+	  削除しないようにした。
+	  summary_display_msg_full(): 冗長なメッセージの取得を削除。
+
+2003-07-17
+
+	* コマンドを発行するときにシーケンスセットを使用して IMAP4 の
+	  移動/コピー/削除/マーク操作を最適化(claws の実装を整理して適用)。
+	* src/imap.[ch]:
+	  imap_set_message_flags()
+	  imap_cmd_envelope()
+	  imap_cmd_copy()
+	  imap_cmd_store(): UID 番号の代わりにシーケンスセット文字列を
+	  受け取るようにした。
+	  imap_do_copy_msgs_with_dest(): シーケンスセットを使用して最適化。
+	  imap_cmd_fetch(): BODY の代わりに BODY.PEEK を使用。
+	  imap_remove_all_msg()
+	  imap_set_message_flags(): FLAGS の代わりに FLAGS.SILENT を使用。
+	* src/compose.c
+	  src/summaryview.c: 各メッセージ毎にコマンドを発行するのではなく
+	  imap_msg_list_{set,unset}_perm_flags() を使用するようにした。
+
 2003-07-15
 
 	* src/inc.c

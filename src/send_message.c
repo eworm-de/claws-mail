@@ -409,9 +409,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 
 	debug_print("send_message_smtp(): begin event loop\n");
 
-	while (session->state != SESSION_DISCONNECTED &&
-	       session->state != SESSION_ERROR &&
-	       dialog->cancelled == FALSE)
+	while (session_is_connected(session) && dialog->cancelled == FALSE)
 		gtk_main_iteration();
 
 	if (SMTP_SESSION(session)->error_val == SM_AUTHFAIL) {
@@ -421,6 +419,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 		}
 		ret = -1;
 	} else if (session->state == SESSION_ERROR ||
+		   session->state == SESSION_EOF ||
 		   SMTP_SESSION(session)->state == SMTP_ERROR ||
 		   SMTP_SESSION(session)->error_val != SM_OK)
 		ret = -1;
@@ -576,32 +575,47 @@ static void send_cancel_button_cb(GtkWidget *widget, gpointer data)
 static void send_put_error(Session *session)
 {
 	gchar *msg;
+	gchar *log_msg = NULL;
+	gchar *err_msg = NULL;
 
 	msg = SMTP_SESSION(session)->error_msg;
 
 	switch (SMTP_SESSION(session)->error_val) {
 	case SM_ERROR:
 	case SM_UNRECOVERABLE:
+		log_msg = _("Error occurred while sending the message.");
 		if (msg)
-			alertpanel_error_log
+			err_msg = g_strdup_printf
 				(_("Error occurred while sending the message:\n%s"),
 				 msg);
 		else
-			alertpanel_error_log
-				(_("Error occurred while sending the message."));
+			err_msg = g_strdup(log_msg);
 		break;
 	case SM_AUTHFAIL:
+		log_msg = _("Authentication failed.");
 		if (msg)
-			alertpanel_error_log
+			err_msg = g_strdup_printf
 				(_("Authentication failed:\n%s"), msg);
 		else
-			alertpanel_error_log
-				(_("Authentication failed."));
-	default:
-		if (session->state == SESSION_ERROR)
-			alertpanel_error_log
-				(_("Error occurred while sending the message."));
+			err_msg = g_strdup(log_msg);
 		break;
+	default:
+		if (session->state == SESSION_ERROR) {
+			log_msg =
+				_("Error occurred while sending the message.");
+			err_msg = g_strdup(log_msg);
+		} else if (session->state == SESSION_EOF) {
+			log_msg = _("Connection closed by the remote host.");
+			err_msg = g_strdup(log_msg);
+		}
+		break;
+	}
+
+	if (log_msg)
+		log_warning("%s\n", log_msg);
+	if (err_msg) {
+		alertpanel_error_log(err_msg);
+		g_free(err_msg);
 	}
 }
 

@@ -1,3 +1,48 @@
+2003-07-22
+
+	* src/session.[ch]:
+	  session_read_msg_cb()
+	  session_read_data_cb(): fixed a bug that ran into infinite loop
+	  if connection was closed by remote host (thanks to Yoichi Imai).
+	  Added SESSION_EOF state to SessionState.
+	  session_is_connected(): new.
+	* src/inc.[ch]: inc_put_error()
+	  src/send_message.c: send_put_error(): also put log messages.
+
+2003-07-18
+
+	* more optimization of IMAP4.
+	* src/folder.[ch]: added a method add_msgs() that adds multiple files
+	  to a folder.
+	  Removed redundant scan() for the operations of FolderItem.
+	* src/imap.[ch]: implemented Folder::add_msgs() and optimized move
+	  and copy from other Folder instances.
+	* src/mh.[ch]: implemented Folder::add_msgs() and cleaned up the code.
+	  mh_fetch_msg(): scan folder if required.
+	* src/procmsg.[ch]: procmsg_get_message_file_list(): returns file
+	  list from message list.
+	* src/summaryview.c: don't remove MSG_MARKED flags on
+	  delete/move/copy operation.
+	  summary_display_msg_full(): removed redundant message fetching.
+
+2003-07-17
+
+	* optimized move/copy/delete/mark operations of IMAP4 by using
+	  sequence set when issuing commands (adopted claws' implementation
+	  with cleaning it up).
+	* src/imap.[ch]:
+	  imap_set_message_flags()
+	  imap_cmd_envelope()
+	  imap_cmd_copy()
+	  imap_cmd_store(): take sequence set string instead of UID number.
+	  imap_do_copy_msgs_with_dest(): optimized by using sequence set.
+	  imap_cmd_fetch(): use BODY.PEEK instead of BODY.
+	  imap_remove_all_msg()
+	  imap_set_message_flags(): use FLAGS.SILENT instead of FLAGS.
+	* src/compose.c
+	  src/summaryview.c: use imap_msg_list_{set,unset}_perm_flags()
+	  instead of issuing commands for each message.
+
 2003-07-15
 
 	* src/inc.c
