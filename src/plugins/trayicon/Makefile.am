@@ -20,7 +20,7 @@ INCLUDES = \
 	-I../../gtk \
 	-Ilibeggtrayicon
 
-CPPFLAGS = \
+AM_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(ASPELL_CFLAGS)

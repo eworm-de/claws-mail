@@ -1,3 +1,23 @@
+2003-08-03 [melvin]	0.9.3claws93
+
+	* src/Makefile.am
+		Fixed typo introduced after 0.9.3claws92 
+		that prevented compilation
+		Updated to use AM_CPPFLAGS and AM_YFLAGS instead of
+		CPPFLAGS and YFLAGS to allow user setting these.
+	* src/common/Makefile.am
+	* src/gtk/Makefile.am
+	* src/plugins/clamav/Makefile.am
+	* src/plugins/demo/Makefile.am
+	* src/plugins/dillo_viewer/Makefile.am
+	* src/plugins/image_viewer/Makefile.am
+	* src/plugins/mathml_viewer/Makefile.am
+	* src/plugins/spamassassin/Makefile.am
+	* src/plugins/trayicon/Makefile.am
+	* src/plugins/trayicon/libeggtrayicon/Makefile.am
+		Updated to use AM_CPPFLAGS and AM_YFLAGS instead of
+		CPPFLAGS and YFLAGS to allow user setting these.
+
 2003-08-02 [christoph]	0.9.3claws92
 
 	* configure.ac

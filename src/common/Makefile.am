@@ -28,7 +28,7 @@ libsylpheedcommon_la_SOURCES = \
 	xml.c xml.h \
 	xmlprops.c xmlprops.h
 
-CPPFLAGS = \
+AM_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(OPENSSL_CFLAGS) \
 	-DLOCALEDIR=\""$(localedir)"\"

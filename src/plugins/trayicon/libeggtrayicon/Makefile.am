@@ -6,7 +6,7 @@ libeggtrayicon_la_SOURCES = \
 	gtkplugxembed.c gtkplugxembed.h \
 	xembed.h
 
-CPPFLAGS = \
+AM_CPPFLAGS = \
 	$(GTK_CFLAGS)
 
 libeggtrayicon_la_LIBADD = \

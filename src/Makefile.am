@@ -229,16 +229,16 @@ sylpheed_LDADD = \
 	$(OPENSSL_LIBS) \
 	$(LIBICONV)
 
-CPPFLAGS = \
+AM_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"Sylpheed\" \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DMANUALDIR=\""$(manualdir)"\" \
 	-DFAQDIR=\""$(faqdir)"\" \
 	-DTARGET_ALIAS=\""$(target_triplet)"\" \
-	-DSYSCONFDIR=\""$(sysconfdir)"\"
+	-DSYSCONFDIR=\""$(sysconfdir)"\" \
 	$(ASPELL_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(GPGME_CFLAGS) \
 	$(OPENSSL_CFLAGS)
 
-YFLAGS = -d
+AM_YFLAGS = -d

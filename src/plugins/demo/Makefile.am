@@ -11,5 +11,5 @@ demo_la_LDFLAGS = \
 INCLUDES = \
 	-I../../common
 
-CPPFLAGS = \
+AM_CPPFLAGS = \
 	$(GLIB_CFLAGS)

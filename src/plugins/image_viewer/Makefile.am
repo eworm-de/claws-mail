@@ -18,7 +18,7 @@ INCLUDES = \
 	-I../../common \
 	-I../../gtk
 
-CPPFLAGS = \
+AM_CPPFLAGS = \
 	$(ASPELL_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
