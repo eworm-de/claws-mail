@@ -72,7 +72,11 @@ fd_timeout_read (int fd, void *buf, size_t nbytes)
   }
 #endif
   do {
+#ifdef WIN32
+    nred = recv(fd, buf, nbytes, 0);
+#else
     nred = read (fd, buf, nbytes);
+#endif
   } while(nred < 0 && errno == EAGAIN);
 
   if(nred < 0 && errno == EINTR)
@@ -137,7 +141,11 @@ full_read (int fd, unsigned char *buf, int min, int len)
   int thistime;
 
   for (total = 0; total < min; ) {
+#ifdef WIN32
+    thistime = read (fd, buf+total, len-total);
+#else
     thistime = fd_timeout_read (fd, buf+total, len-total);
+#endif
 
     if (thistime < 0) {
       return -1;

@@ -54,7 +54,7 @@ typedef int	SSL_CTX;
 typedef int	SSL_METHOD;
 #endif
 #ifdef WIN32 /* somewhere ssl.h gets included -> conflicting typedef's */
-# undef SPAMC_SSL 1
+# undef SPAMC_SSL
 #endif
 
 ssize_t fd_timeout_read (int fd, void *, size_t );  

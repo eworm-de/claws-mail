@@ -1,3 +1,8 @@
+2003-04-18 [thorsten]	0.8.11claws102-2
+
+	* src/plugins/spamassassin/utils.[ch]
+		fixes: status not received, typo
+
 2003-04-18 [thorsten]	0.8.11claws102-1
 
 	* src/actions.c
