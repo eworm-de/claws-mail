@@ -2100,7 +2100,7 @@ void send_queue_cb(gpointer data, guint action, GtkWidget *widget)
 		if (folder->queue) {
 			if (procmsg_send_queue
 				(folder->queue, prefs_common.savemsg) < 0)
-				alertpanel_error_log(_("Some errors occurred while sending queued messages."));
+				alertpanel_error(_("Some errors occurred while sending queued messages."));
 			folder_item_scan(folder->queue);
 		}
 	}

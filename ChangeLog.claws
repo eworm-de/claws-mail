@@ -1,3 +1,9 @@
+2003-01-11 [colin]	0.8.8claws82
+
+	* src/main.c
+	  src/toolbar.c
+	  	Two useless changes reversed
+
 2003-01-11 [colin]	0.8.8claws81
 
 	* src/mainwindow.c

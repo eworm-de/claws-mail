@@ -783,7 +783,7 @@ static void send_queue(void)
 		if (folder->queue) {
 			if (procmsg_send_queue
 				(folder->queue, prefs_common.savemsg) < 0)
-				alertpanel_error_log(_("Some errors occurred while sending queued messages."));
+				alertpanel_error(_("Some errors occurred while sending queued messages."));
 			folder_item_scan(folder->queue);
 			if (prefs_common.savemsg && folder->outbox) {
 				if (folder->outbox == def_outbox)
