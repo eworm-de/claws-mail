@@ -487,9 +487,6 @@ static void online_switch_clicked(GtkButton     *btn,
 static void manual_open_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
-static void faq_open_cb		 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
 
 static void scan_tree_func	 (Folder	*folder,
 				  FolderItem	*item,
@@ -805,18 +802,12 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, NULL, 0, "<Branch>"},
 
 	{N_("/_Help"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_Help/_Manual"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Help/_Manual/_English"),		NULL, manual_open_cb, MANUAL_LANG_EN, NULL},
-	{N_("/_Help/_Manual/_German"),		NULL, manual_open_cb, MANUAL_LANG_DE, NULL},
-	{N_("/_Help/_Manual/_Spanish"),		NULL, manual_open_cb, MANUAL_LANG_ES, NULL},
-	{N_("/_Help/_Manual/_French"),		NULL, manual_open_cb, MANUAL_LANG_FR, NULL},
-	{N_("/_Help/_Manual/_Japanese"),	NULL, manual_open_cb, MANUAL_LANG_JA, NULL},
-	{N_("/_Help/_FAQ"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Help/_FAQ/_English"),		NULL, faq_open_cb, MANUAL_LANG_EN, NULL},
-	{N_("/_Help/_FAQ/_German"),		NULL, faq_open_cb, MANUAL_LANG_DE, NULL},
-	{N_("/_Help/_FAQ/_Spanish"),		NULL, faq_open_cb, MANUAL_LANG_ES, NULL},
-	{N_("/_Help/_FAQ/_French"),		NULL, faq_open_cb, MANUAL_LANG_FR, NULL},
-	{N_("/_Help/_FAQ/_Italian"),		NULL, faq_open_cb, MANUAL_LANG_IT, NULL},
+	{N_("/_Help/_Manual (Local)"),		NULL, manual_open_cb, MANUAL_MANUAL_LOCAL, NULL},
+	{N_("/_Help/_Manual (Sylpheed Doc Homepage)"),
+						NULL, manual_open_cb, MANUAL_MANUAL_SYLDOC, NULL},
+	{N_("/_Help/_FAQ (Local)"),		NULL, manual_open_cb, MANUAL_FAQ_LOCAL, NULL},
+	{N_("/_Help/_FAQ (Sylpheed Doc Homepage)"),
+						NULL, manual_open_cb, MANUAL_FAQ_SYLDOC, NULL},
 	{N_("/_Help/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Help/_About"),			NULL, about_show, 0, NULL}
 };
@@ -921,6 +912,9 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_widget_show(menubar);
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 	ifactory = gtk_item_factory_from_widget(menubar);
+
+	menu_set_sensitive(ifactory, "/Help/Manual (Local)", manual_available(MANUAL_MANUAL_LOCAL));
+	menu_set_sensitive(ifactory, "/Help/FAQ (Local)", manual_available(MANUAL_FAQ_LOCAL));
 
 	handlebox = gtk_handle_box_new();
 	gtk_widget_show(handlebox);
@@ -3534,12 +3528,7 @@ static void account_menu_cb(GtkMenuItem	*menuitem, gpointer data)
 static void manual_open_cb(MainWindow *mainwin, guint action,
 			   GtkWidget *widget)
 {
-	manual_open((ManualLang)action);
-}
-
-static void faq_open_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
-{
-	faq_open((ManualLang)action);
+	manual_open((ManualType)action);
 }
 
 static void scan_tree_func(Folder *folder, FolderItem *item, gpointer data)

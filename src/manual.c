@@ -25,77 +25,153 @@
 
 #include <glib.h>
 #include <string.h>
+#include <locale.h>
 
 #include "prefs_common.h"
 #include "manual.h"
 #include "utils.h"
 
-static gchar *get_lang_str(ManualLang lang);
-
-static gchar *get_lang_str(ManualLang lang)
+static gchar *sylpheeddoc_manuals[] =
 {
-	switch (lang) {
-	case MANUAL_LANG_DE:
-		return "de";
-	case MANUAL_LANG_EN:
-		return "en";
-	case MANUAL_LANG_ES:
-		return "es";
-	case MANUAL_LANG_FR:
-		return "fr";
-	case MANUAL_LANG_IT:
-		return "it";
-	case MANUAL_LANG_JA:
-		return "ja";
-	default:
-		return NULL;
+    "en",
+    "es", 
+    "fr", 
+    "de",
+};
+
+static gchar *get_language()
+{
+	gchar *language;
+	gchar *c;
+
+#ifdef WIN32
+	language = g_strdup(gtk_set_locale());
+#else
+	language = g_strdup(setlocale(LC_ALL, NULL));
+#endif
+	if((c = strchr(language, ',')) != NULL)
+		*c = '\0';
+	if((c = strchr(language, '_')) != NULL)
+		*c = '\0';
+
+	return language;
+}
+
+static gchar *get_local_path_with_locale(gchar *rootpath)
+{
+	gchar *lang_str, *dir;
+
+	lang_str = get_language();
+#ifdef WIN32
+	dir = g_strconcat(get_installed_dir(), G_DIR_SEPARATOR_S,
+			  rootpath, G_DIR_SEPARATOR_S,
+#else
+	dir = g_strconcat(rootpath, G_DIR_SEPARATOR_S, 
+#endif
+			  lang_str, NULL);
+	g_free(lang_str);
+	if(!is_dir_exist(dir)) {
+		g_free(dir);
+#ifdef WIN32
+		dir = g_strconcat(get_installed_dir(), G_DIR_SEPARATOR_S,
+				  rootpath, G_DIR_SEPARATOR_S,
+#else
+		dir = g_strconcat(rootpath, G_DIR_SEPARATOR_S,
+#endif
+				  "en", NULL);
+		if(!is_dir_exist(dir)) {
+			g_free(dir);
+			dir = NULL;
+		}
 	}
+
+	return dir;
 }
 
-void manual_open(ManualLang lang)
+gboolean manual_available(ManualType type)
 {
-	gchar *lang_str;
-	gchar *file_uri;
+	gboolean ret = FALSE;
+    	gchar *dir = NULL;
+	
+	switch (type) {
+		case MANUAL_MANUAL_LOCAL:
+			dir = get_local_path_with_locale(MANUALDIR);
+			if (dir != NULL) {
+				g_free(dir);
+				ret = TRUE;
+			}
+			break;
+		case MANUAL_FAQ_LOCAL:
+			dir = get_local_path_with_locale(FAQDIR);
+			if (dir != NULL) {
+				g_free(dir);
+				ret = TRUE;
+			}
+			break;
+		default:
+			ret = FALSE;
+	}
 
-	lang_str = get_lang_str(lang);
-	if (!lang_str) return;
-
-#ifdef WIN32
-	file_uri = g_strconcat("file://", get_installed_dir(),
-			       G_DIR_SEPARATOR_S, MANUALDIR,
-#else
-	file_uri = g_strconcat("file://", MANUALDIR,
-#endif
-			       G_DIR_SEPARATOR_S, lang_str, G_DIR_SEPARATOR_S,
-			       MANUAL_HTML_INDEX, NULL);
-#ifdef WIN32
-	translate_strs(file_uri, G_DIR_SEPARATOR_S, "/");
-#endif
-	debug_print("Opening manual: %s\n", file_uri);
-	open_uri(file_uri, prefs_common.uri_cmd);
-	g_free(file_uri);
+	return ret;
 }
 
-void faq_open(ManualLang lang)
+static gchar *get_syldoc_language()
 {
+	gchar *language;
+	int i;
+	
+	language = get_language();
+	for (i = 0; i < sizeof(sylpheeddoc_manuals) / sizeof(sylpheeddoc_manuals[0]); i++) {
+		if (strcmp(language, sylpheeddoc_manuals[i]) == 0) {
+			return language;
+		}
+	}
+	g_free(language);
+	
+	return g_strdup("en");
+}
+
+void manual_open(ManualType type)
+{
+	gchar *uri = NULL;
+	gchar *dir;
 	gchar *lang_str;
-	gchar *file_uri;
 
-	lang_str = get_lang_str(lang);
-	if (!lang_str) return;
+	switch (type) {
+		case MANUAL_MANUAL_LOCAL:
+			dir = get_local_path_with_locale(MANUALDIR);
+			if (dir != NULL) {
+				uri = g_strconcat("file://", dir, G_DIR_SEPARATOR_S, MANUAL_HTML_INDEX, NULL);
+				g_free(dir);
+			}
+			break;
 
+		case MANUAL_FAQ_LOCAL:
+			dir = get_local_path_with_locale(FAQDIR);
+			if (dir != NULL) {
+				uri = g_strconcat("file://", dir, G_DIR_SEPARATOR_S, FAQ_HTML_INDEX, NULL);
+				g_free(dir);
+			}
+			break;
+
+		case MANUAL_MANUAL_SYLDOC:
+			lang_str = get_syldoc_language();
+			uri = g_strconcat("http://sylpheeddoc.sourceforge.net/", lang_str, "/manual/manual.html", NULL);
+			g_free(lang_str);
+			break;
+
+		case MANUAL_FAQ_SYLDOC:
+			lang_str = get_syldoc_language();
+			uri = g_strconcat("http://sylpheeddoc.sourceforge.net/", lang_str, "/faq/faq.html", NULL);
+			g_free(lang_str);
+			break;
+
+		default:
+			break;
+	}
 #ifdef WIN32
-	file_uri = g_strconcat("file://", get_installed_dir(),
-			       G_DIR_SEPARATOR_S, FAQDIR,
-#else
-	file_uri = g_strconcat("file://", FAQDIR,
+	translate_strs(uri, G_DIR_SEPARATOR_S, "/");
 #endif
-			       G_DIR_SEPARATOR_S, lang_str, G_DIR_SEPARATOR_S,
-			       FAQ_HTML_INDEX, NULL);
-#ifdef WIN32
-	translate_strs(file_uri, G_DIR_SEPARATOR_S, "/");
-#endif
-	debug_print("Opening FAQ: %s\n", file_uri);
-	open_uri(file_uri, prefs_common.uri_cmd);
-	g_free(file_uri);
+	open_uri(uri, prefs_common.uri_cmd);
+	g_free(uri);
 }

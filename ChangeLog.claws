@@ -1,3 +1,41 @@
+2002-10-24 [christoph]	0.8.5claws52
+
+	* src/mainwindow.c
+	* src/manual.[ch]
+		o use manual of current locale or english if current
+		  locale is not available (and english is available)
+		o also link to sylpheed doc project manuals
+
+2002-10-23 [paul]	0.8.5claws51
+
+	* tools/README
+	  tools/kmail2sylpheed_v2.pl
+	  	add new version of kmail addressbook importer script.
+		works with newer versions of Kmail/KAddressBook which
+		have new and rearranged data.
+
+2002-10-23 [martin]	0.8.5claws50
+
+	* src/folderview.c
+	* src/summaryview.c
+	* src/utils.h
+	* src/utils.c
+		added length parameter to get_abbrev_newsgroup_name()
+		changed this function so that it abbreviates the newsgroup
+		names only so long it is smaller than the length parameter
+		(for better reading of some newsgroup names and space efficiency)
+
+2002-10-22 [colin]	0.8.5claws49
+
+	*src/foldersel.c
+		Revert Alfons' last modification (after voting ;-))
+
+2002-10-21 [alfons]	0.8.5claws48
+
+	* src/foldersel.c
+		folder view in folder selection dialog reflects state of
+		folder view in main window
+
 2002-10-18 [alfons]	0.8.5claws47
 
 	* src/mbox.c

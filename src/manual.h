@@ -22,15 +22,13 @@
 
 typedef enum
 {
-	MANUAL_LANG_DE,
-	MANUAL_LANG_EN,
-	MANUAL_LANG_ES,
-	MANUAL_LANG_FR,
-	MANUAL_LANG_IT,
-	MANUAL_LANG_JA,
-} ManualLang;
+	MANUAL_MANUAL_LOCAL,
+	MANUAL_MANUAL_SYLDOC,
+	MANUAL_FAQ_LOCAL,
+	MANUAL_FAQ_SYLDOC,
+} ManualType;
 
-void manual_open(ManualLang lang);
-void faq_open	(ManualLang lang);
+gboolean manual_available	(ManualType type);
+void	 manual_open		(ManualType type);
 
 #endif /* __MANUAL_H__ */
