@@ -140,7 +140,8 @@ static gchar *compose_quote_parse_fmt		(Compose	*compose,
 						 const gchar	*fmt);
 static void compose_reply_set_entry		(Compose	*compose,
 						 MsgInfo	*msginfo,
-						 gboolean	 to_all);
+						 gboolean	 to_all,
+						 gboolean	 to_author);
 static void compose_reedit_set_entry		(Compose	*compose,
 						 MsgInfo	*msginfo);
 static void compose_insert_sig			(Compose	*compose);
@@ -462,7 +463,8 @@ Compose * compose_new_with_recipient(PrefsAccount *account, const gchar *to)
 	return compose;
 }
 
-void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all)
+void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
+		   gboolean to_author)
 {
 	Compose *compose;
 	PrefsAccount *account;
@@ -482,7 +484,7 @@ void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all)
 	compose->mode = COMPOSE_REPLY;
 
 	if (compose_parse_header(compose, msginfo) < 0) return;
-	compose_reply_set_entry(compose, msginfo, to_all);
+	compose_reply_set_entry(compose, msginfo, to_all, to_author);
 
 	text = GTK_STEXT(compose->text);
 	gtk_stext_freeze(text);
@@ -1068,7 +1070,7 @@ static gchar *compose_quote_parse_fmt(Compose *compose, MsgInfo *msginfo,
 }
 
 static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
-				    gboolean to_all)
+				    gboolean to_all, gboolean to_author)
 {
 	GSList *cc_list;
 	GSList *cur;
@@ -1080,8 +1082,9 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 
 	if (compose->account->protocol != A_NNTP)
 		gtk_entry_set_text(GTK_ENTRY(compose->to_entry),
-				   compose->replyto ? compose->replyto
-				   : msginfo->from ? msginfo->from : "");
+				   ( (compose->replyto && !to_author) 
+				     ? compose->replyto
+				     : msginfo->from ? msginfo->from : ""));
 	if (compose->account->protocol == A_NNTP)
 		gtk_entry_set_text(GTK_ENTRY(compose->newsgroups_entry),
 				   compose->followup_to ? compose->followup_to

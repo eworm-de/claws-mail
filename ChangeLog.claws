@@ -1,3 +1,22 @@
+2001-05-19 [sergey]
+
+	* src/compose.h (ComposeReplyMode): new modes
+	COMPOSE_REPLY_TO_AUTHOR, COMPOSE_REPLY_TO_AUTHOR_WITH_QUOTE,
+	COMPOSE_REPLY_TO_AUTHOR_WITHOUT_QUOTE.
+
+	* src/compose.c (compose_reply): new argument to_author; all
+	callers changed.
+	(compose_reply_set_entry): new argument to_author; ignore
+	compose->replyto if to_author==TRUE.
+
+	* src/mainwindow.c: new command "Message/Reply to author".
+	(main_window_set_menu_sensitive): enable/disable it.
+	(reply_cb): handle it.
+
+	* src/summaryview.c: new command "Reply to author".
+	(summary_set_menu_sensitive): enable/disable it.
+	(summary_reply_cb): handle it.
+
 2001-05-18 [paul]
 
         0.4.99claws1
