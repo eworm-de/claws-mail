@@ -1,3 +1,12 @@
+2005-03-11 [paul]	1.0.3cvs2.1
+
+	* ChangeLog.claws
+	* configure.ac
+	* po/POTFILES.in
+	* src/plugins/trayicon/trayicon.c
+		sync with HEAD
+		add src/wizard.c to POTFILES.in
+
 2005-03-11 [paul]	1.0.3cvs1.1
 
 	* ChangeLog

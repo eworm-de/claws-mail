@@ -142,7 +142,7 @@ static void update(void)
 	TrayIconType icontype = TRAYICON_NOTHING;
 
 	folder_count_total_msgs(&new, &unread, &unreadmarked, &total);
-	buf = g_strdup_printf("New %d, Unread: %d, Total: %d", new, unread, total);
+	buf = g_strdup_printf(_("New %d, Unread: %d, Total: %d"), new, unread, total);
 
         gtk_tooltips_set_tip(tooltips, eventbox, buf, "");
 	g_free(buf);

@@ -1,3 +1,8 @@
+2005-03-11 [paul]	1.0.3cvs2
+
+	* src/plugins/trayicon/trayicon.c
+		make a string translatable
+
 2005-03-11 [paul]	1.0.3cvs1
 
 	* po/ru.po
