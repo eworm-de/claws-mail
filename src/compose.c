@@ -693,6 +693,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
 	compose->replyinfo = NULL;
+	compose->fwdinfo   = NULL;
 
 	text = GTK_STEXT(compose->text);
 	gtk_stext_freeze(text);
@@ -935,12 +936,11 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	}
 	g_return_val_if_fail(account != NULL, NULL);
 
-	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_REPLIED);
-	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_FORWARDED);
-	if (MSG_IS_IMAP(msginfo->flags))
-		imap_msg_unset_perm_flags(msginfo, MSG_REPLIED);
-
 	compose = compose_create(account, COMPOSE_FORWARD);
+
+	compose->fwdinfo = procmsg_msginfo_get_full_info(msginfo);
+	if (!compose->fwdinfo)
+		compose->fwdinfo = procmsg_msginfo_copy(msginfo);
 
 	if (msginfo->subject && *msginfo->subject) {
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), "Fw: ");
@@ -1192,6 +1192,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
 	compose->replyinfo = NULL;
+	compose->fwdinfo = NULL;
 
 	compose_show_first_last_header(compose, TRUE);
 
@@ -3648,6 +3649,14 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		fprintf(fp, "RMID:%s\x7f%d\x7f%s\n", folderid, compose->replyinfo->msgnum, compose->replyinfo->msgid);
 		g_free(folderid);
 	}
+	/* Message-ID of message forwarding to */
+	if ((compose->fwdinfo != NULL) && (compose->fwdinfo->msgid != NULL)) {
+		gchar *folderid;
+		
+		folderid = folder_item_get_identifier(compose->fwdinfo->folder);
+		fprintf(fp, "FMID:%s\x7f%d\x7f%s\n", folderid, compose->fwdinfo->msgnum, compose->fwdinfo->msgid);
+		g_free(folderid);
+	}
 	fprintf(fp, "\n");
 
 	while (fgets(buf, sizeof(buf), src_fp) != NULL) {
@@ -4871,6 +4880,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	compose->targetinfo = NULL;
 	compose->replyinfo  = NULL;
+	compose->fwdinfo    = NULL;
 
 	compose->replyto     = NULL;
 	compose->cc	     = NULL;
@@ -5222,6 +5232,7 @@ static void compose_destroy(Compose *compose)
 
 	procmsg_msginfo_free(compose->targetinfo);
 	procmsg_msginfo_free(compose->replyinfo);
+	procmsg_msginfo_free(compose->fwdinfo);
 
 	g_free(compose->replyto);
 	g_free(compose->cc);

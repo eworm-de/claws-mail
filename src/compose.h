@@ -140,6 +140,7 @@ struct _Compose
 
 	MsgInfo *targetinfo;
 	MsgInfo *replyinfo;
+	MsgInfo *fwdinfo;
 
 	GtkWidget *header_table;
 	GSList    *header_list;
