@@ -788,7 +788,7 @@ static gint mimeview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 	}
 	part_button_pressed(mimeview, event, mimeview_get_selected_part(mimeview));
 
-	return TRUE;
+	return FALSE;
 }
 
 static gboolean part_button_pressed(MimeView *mimeview, GdkEventButton *event, 

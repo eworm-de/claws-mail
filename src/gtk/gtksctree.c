@@ -561,7 +561,7 @@ GtkWidget *gtk_sctree_new_with_titles (gint columns, gint tree_column,
 	GtkWidget *widget;
                                                                                                             
 	g_return_val_if_fail (columns > 0, NULL);
-	g_return_val_if_fail (tree_column >= 0 && tree_column < columns, NULL);
+	g_return_val_if_fail (tree_column >= 0, NULL);
                                                                                                             
 	widget = gtk_widget_new (TYPE_GTK_SCTREE,
 				 "n_columns", columns,

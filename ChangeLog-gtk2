@@ -1,4 +1,10 @@
 2004-01-27 Thorsten Maerz <torte@netztorte.de>
+	* src/gtk/gtksctree.c
+		Fix SSL certificate list not shown
+	* src/mimeview.c
+		Fix clicks in mime tree
+
+2004-01-27 Thorsten Maerz <torte@netztorte.de>
 	* src/common/socket.c
 		Fix SSL receive
 	* src/compose.c
