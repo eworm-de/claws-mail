@@ -1,3 +1,10 @@
+2001-12-21 [carsten]	0.6.6claws5
+	* src/folderview.c
+	* src/summaryview.c
+		pressing CTRL while DND does now the expected thing and
+		copies the mail (moving is still the default, as this
+		seam more appropriate for handling mails by DND)
+
 2001-12-18 [paul]	0.6.6claws4
 
 	* sync with sylpheed 0.6.6cvs3

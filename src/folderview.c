@@ -422,7 +422,7 @@ FolderView *folderview_create(void)
 	gtk_drag_dest_set(ctree, GTK_DEST_DEFAULT_ALL &
 			  ~GTK_DEST_DEFAULT_HIGHLIGHT,
 			  summary_drag_types, 1,
-			  GDK_ACTION_MOVE);
+			  GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT);
 	gtk_signal_connect(GTK_OBJECT(ctree), "drag_motion",
 			   GTK_SIGNAL_FUNC(folderview_drag_motion_cb),
 			   folderview);
@@ -2269,7 +2269,9 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 		gtk_signal_handler_block_by_func(GTK_OBJECT(widget),GTK_SIGNAL_FUNC(folderview_selected), folderview);
 		gtk_ctree_select(GTK_CTREE(widget), node);
 		gtk_signal_handler_unblock_by_func(GTK_OBJECT(widget),GTK_SIGNAL_FUNC(folderview_selected), folderview);
-		gdk_drag_status(context, context->suggested_action, time);
+		gdk_drag_status(context, 
+					(context->actions == GDK_ACTION_COPY ?
+					GDK_ACTION_COPY : GDK_ACTION_MOVE) , time);
 	} else {
 		gtk_ctree_select(GTK_CTREE(widget), folderview->opened);
 		gdk_drag_status(context, 0, time);
@@ -2306,8 +2308,18 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 	node = gtk_ctree_node_nth(GTK_CTREE(widget), row);
 	item = gtk_ctree_node_get_row_data(GTK_CTREE(widget), node);
 	if (item != NULL) {
-		summary_move_selected_to(folderview->summaryview, item);
-		gtk_drag_finish(drag_context, TRUE, TRUE, time);
+		switch (drag_context->action) {
+			case GDK_ACTION_COPY:
+				summary_copy_selected_to(folderview->summaryview, item);
+				gtk_drag_finish(drag_context, TRUE, FALSE, time);
+				break;
+			case GDK_ACTION_MOVE:
+			case GDK_ACTION_DEFAULT:
+			default:
+				summary_move_selected_to(folderview->summaryview, item);
+				gtk_drag_finish(drag_context, TRUE, TRUE, time);
+				break;
+		}
 	} else
 		gtk_drag_finish(drag_context, FALSE, FALSE, time);
 }

@@ -4596,7 +4596,7 @@ static void summary_start_drag(GtkWidget *widget, gint button, GdkEvent *event,
 	list = gtk_target_list_new(summary_drag_types, 1);
 
 	context = gtk_drag_begin(widget, list,
-				 GDK_ACTION_MOVE, button, event);
+				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event);
 	gtk_drag_set_icon_default(context);
 }
 
