@@ -1,3 +1,9 @@
+2002-11-29 [oliver]	0.8.6claws37
+	
+	* src/toolbar.c 
+		disable compose button (messageview toolbar) by default
+		deleted msgs are moved to trash
+	
 2002-11-29 [melvin]	0.8.6claws36
 
 	* configure.in
