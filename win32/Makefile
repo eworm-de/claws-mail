@@ -16,6 +16,7 @@
 # EXAMPLE :
 #   nmake DEBUG=1 sylpheed
 
+PATH=\dev\proj\sylpheed-claws\win32\utils\apps;$(PATH)
 
 !IF "$(DEBUG)" == ""
 CFG=sylpheed - Win32 Release

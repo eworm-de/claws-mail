@@ -1,3 +1,30 @@
+2002-05-27 [thorsten]	0.7.6claws22 
+
+	* faq/it/sylpheed-faq-1.html
+	  faq/it/sylpheed-faq-2.html
+	  faq/it/sylpheed-faq-3.html
+	  faq/it/sylpheed-faq.html
+		corrected DOS lineendings
+	* faq/de/sylpheed-faq-1.html
+	  faq/de/sylpheed-faq-2.html
+	  faq/en/sylpheed-faq-1.html
+	  faq/en/sylpheed-faq-2.html
+	  faq/en/sylpheed-faq-3.html
+	  faq/es/sylpheed-faq-1.html
+	  faq/es/sylpheed-faq-2.html
+	  faq/es/sylpheed-faq-3.html
+	  faq/fr/sylpheed-faq-1.html
+	  faq/it/sylpheed-faq-1.html
+	  faq/it/sylpheed-faq-2.html
+	  faq/it/sylpheed-faq-3.html
+	  faq/it/sylpheed-faq.html
+		changed ">" to &quot;
+
+2002-05-27 [paul]	0.7.6claws21
+	
+	* sync with 0.7.6cvs15
+		see ChangeLog 2002-05-27
+
 2002-05-27 [paul]	0.7.6claws20
 
 	* src/prefs_account.c
