@@ -477,7 +477,7 @@ static GHashTable *procmsg_read_mark_file(const gchar *folder)
 		flags = g_new0(MsgFlags, 1);
 		flags->perm_flags = perm_flags;
     
-		if(!MSG_IS_REALLY_DELETED(*flags)) {
+		if (!MSG_IS_REALLY_DELETED(*flags)) {
 			g_hash_table_insert(mark_table, GUINT_TO_POINTER(num), flags);
 		} else {
 			g_hash_table_remove(mark_table, GUINT_TO_POINTER(num));
@@ -564,7 +564,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			if (parent == NULL) {
 				parent = root;
 			} else {
-				if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
+				if (MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 					procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 				}
 			}
@@ -605,7 +605,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			g_node_insert_before
 				(parent, parent->children, node);
 			/* CLAWS: ignore thread */
-			if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
+			if (MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 				g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
 			}
 		}
@@ -636,7 +636,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 				g_node_unlink(node);
 				g_node_append(parent, node);
 				/* CLAWS: ignore thread */
-				if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
+				if (MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 					g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
 				}
 			}
@@ -870,7 +870,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 	list = folder_item_get_msg_list(queue);
 
 
-	for(elem = list; elem != NULL; elem = elem->next) {
+	for (elem = list; elem != NULL; elem = elem->next) {
 		gchar *file;
 		MsgInfo *msginfo;
 		
@@ -1090,7 +1090,7 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	if (msginfo == NULL) return;
 
 	msginfo->refcnt--;
-	if(msginfo->refcnt > 0)
+	if (msginfo->refcnt > 0)
 		return;
 
 	g_free(msginfo->fromspace);
@@ -1119,33 +1119,33 @@ guint procmsg_msginfo_memusage(MsgInfo *msginfo)
 	guint memusage = 0;
 	
 	memusage += sizeof(MsgInfo);
-	if(msginfo->fromname)
+	if (msginfo->fromname)
 		memusage += strlen(msginfo->fromname);
-	if(msginfo->date)
+	if (msginfo->date)
 		memusage += strlen(msginfo->date);
-	if(msginfo->from)
+	if (msginfo->from)
 		memusage += strlen(msginfo->from);
-	if(msginfo->to)
+	if (msginfo->to)
 		memusage += strlen(msginfo->to);
-	if(msginfo->cc)
+	if (msginfo->cc)
 		memusage += strlen(msginfo->cc);
-	if(msginfo->newsgroups)
+	if (msginfo->newsgroups)
 		memusage += strlen(msginfo->newsgroups);
-	if(msginfo->subject)
+	if (msginfo->subject)
 		memusage += strlen(msginfo->subject);
-	if(msginfo->msgid)
+	if (msginfo->msgid)
 		memusage += strlen(msginfo->msgid);
-	if(msginfo->inreplyto)
+	if (msginfo->inreplyto)
 		memusage += strlen(msginfo->inreplyto);
-	if(msginfo->xface)
+	if (msginfo->xface)
 		memusage += strlen(msginfo->xface);
-	if(msginfo->dispositionnotificationto)
+	if (msginfo->dispositionnotificationto)
 		memusage += strlen(msginfo->dispositionnotificationto);
-	if(msginfo->returnreceiptto)
+	if (msginfo->returnreceiptto)
 		memusage += strlen(msginfo->returnreceiptto);
-	if(msginfo->references)
+	if (msginfo->references)
 		memusage += strlen(msginfo->references);
-	if(msginfo->fromspace)
+	if (msginfo->fromspace)
 		memusage += strlen(msginfo->fromspace);
 
 	return memusage;
@@ -1243,7 +1243,7 @@ gint procmsg_send_message_queue(const gchar *file)
 
 	if (to_list) {
 		debug_print("Sending message by mail\n");
-		if(!from) {
+		if (!from) {
 			g_warning(_("Queued message header is broken.\n"));
 			mailval = -1;
 		} else if (mailac && mailac->use_mail_command &&
@@ -1292,7 +1292,7 @@ gint procmsg_send_message_queue(const gchar *file)
 	}
 
 	fseek(fp, filepos, SEEK_SET);
-	if(newsgroup_list && (newsval == 0)) {
+	if (newsgroup_list && (newsval == 0)) {
 		Folder *folder;
 		gchar *tmp = NULL;
 		FILE *tmpfp;
@@ -1319,7 +1319,7 @@ gint procmsg_send_message_queue(const gchar *file)
 			}
 			fclose(tmpfp);
 
-			if(newsval == 0) {
+			if (newsval == 0) {
 				debug_print("Sending message by news\n");
 
 				folder = FOLDER(newsac->folder);
@@ -1350,32 +1350,32 @@ gint procmsg_send_message_queue(const gchar *file)
 		debug_print("saving sent message...\n");
 
 		outbox = folder_find_item_from_identifier(savecopyfolder);
-		if(!outbox)
+		if (!outbox)
 			outbox = folder_get_default_outbox();
 
 		procmsg_save_to_outbox(outbox, file, TRUE);
 	}
 
-	if(replymessageid != NULL) {
+	if (replymessageid != NULL) {
 		gchar **tokens;
 		FolderItem *item;
 		
 		tokens = g_strsplit(replymessageid, "\x7f", 0);
 		item = folder_find_item_from_identifier(tokens[0]);
-		if(item != NULL) {
+		if (item != NULL) {
 			MsgInfo *msginfo;
 			
 			msginfo = folder_item_fetch_msginfo(item, atoi(tokens[1]));
-			if((msginfo != NULL) && (strcmp(msginfo->msgid, tokens[2]) != 0)) {
+			if ((msginfo != NULL) && (strcmp(msginfo->msgid, tokens[2]) != 0)) {
 				procmsg_msginfo_free(msginfo);
 				msginfo = NULL;
 			}
 			
-			if(msginfo == NULL) {
+			if (msginfo == NULL) {
 				msginfo = folder_item_fetch_msginfo_by_id(item, tokens[2]);
 			}
 			
-			if(msginfo != NULL) {
+			if (msginfo != NULL) {
 				procmsg_msginfo_unset_flags(msginfo, MSG_FORWARDED, 0);
 				procmsg_msginfo_set_flags(msginfo, MSG_REPLIED, 0);
 
@@ -1407,26 +1407,26 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 	debug_print("Setting flags for message %d in folder %s\n", msginfo->msgnum, item->path);
 
 	/* if new flag is set */
-	if((perm_flags & MSG_NEW) && !MSG_IS_NEW(msginfo->flags) &&
+	if ((perm_flags & MSG_NEW) && !MSG_IS_NEW(msginfo->flags) &&
 	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 		item->new++;
 		changed = TRUE;
 	}
 
 	/* if unread flag is set */
-	if((perm_flags & MSG_UNREAD) && !MSG_IS_UNREAD(msginfo->flags) &&
+	if ((perm_flags & MSG_UNREAD) && !MSG_IS_UNREAD(msginfo->flags) &&
 	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 		item->unread++;
 		changed = TRUE;
 	}
 
 	/* if ignore thread flag is set */
-	if((perm_flags & MSG_IGNORE_THREAD) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-		if(MSG_IS_NEW(msginfo->flags) || (perm_flags & MSG_NEW)) {
+	if ((perm_flags & MSG_IGNORE_THREAD) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
+		if (MSG_IS_NEW(msginfo->flags) || (perm_flags & MSG_NEW)) {
 			item->new--;
 			changed = TRUE;
 		}
-		if(MSG_IS_UNREAD(msginfo->flags) || (perm_flags & MSG_UNREAD)) {
+		if (MSG_IS_UNREAD(msginfo->flags) || (perm_flags & MSG_UNREAD)) {
 			item->unread--;
 			changed = TRUE;
 		}
@@ -1438,7 +1438,7 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 	msginfo->flags.perm_flags |= perm_flags;
 	msginfo->flags.tmp_flags |= tmp_flags;
 
-	if(changed) {
+	if (changed) {
 		folderview_update_item(item, FALSE);
 	}
 	CHANGE_FLAGS(msginfo);
@@ -1453,26 +1453,26 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 	debug_print("Unsetting flags for message %d in folder %s\n", msginfo->msgnum, item->path);
 
 	/* if new flag is unset */
-	if((perm_flags & MSG_NEW) && MSG_IS_NEW(msginfo->flags) &&
+	if ((perm_flags & MSG_NEW) && MSG_IS_NEW(msginfo->flags) &&
 	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 		item->new--;
 		changed = TRUE;
 	}
 
 	/* if unread flag is unset */
-	if((perm_flags & MSG_UNREAD) && MSG_IS_UNREAD(msginfo->flags) &&
+	if ((perm_flags & MSG_UNREAD) && MSG_IS_UNREAD(msginfo->flags) &&
 	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 		item->unread--;
 		changed = TRUE;
 	}
 
 	/* if ignore thread flag is unset */
-	if((perm_flags & MSG_IGNORE_THREAD) && MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-		if(MSG_IS_NEW(msginfo->flags) && !(perm_flags & MSG_NEW)) {
+	if ((perm_flags & MSG_IGNORE_THREAD) && MSG_IS_IGNORE_THREAD(msginfo->flags)) {
+		if (MSG_IS_NEW(msginfo->flags) && !(perm_flags & MSG_NEW)) {
 			item->new++;
 			changed = TRUE;
 		}
-		if(MSG_IS_UNREAD(msginfo->flags) && !(perm_flags & MSG_UNREAD)) {
+		if (MSG_IS_UNREAD(msginfo->flags) && !(perm_flags & MSG_UNREAD)) {
 			item->unread++;
 			changed = TRUE;
 		}
@@ -1484,9 +1484,8 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 	msginfo->flags.perm_flags &= ~perm_flags;
 	msginfo->flags.tmp_flags &= ~tmp_flags;
 
-	if(changed) {
+	if (changed) 
 		folderview_update_item(item, FALSE);
-	}
 	CHANGE_FLAGS(msginfo);
 	procmsg_msginfo_write_flags(msginfo);
 }

@@ -1,3 +1,10 @@
+2002-09-22 [alfons]	0.8.3claws3
+
+	* src/procmsg.c
+		:%sno/if(/if (/gc
+		:%sno/for(/for (/gc
+		(beautify)
+
 2002-09-22 [alfons]	0.8.3claws2
 	
 	* src/procmsg.c
