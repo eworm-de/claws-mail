@@ -375,6 +375,9 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 
 	g_return_if_fail(msginfo != NULL);
 
+	gtk_statusbar_pop(GTK_STATUSBAR(messageview->mainwin->statusbar),
+			  messageview->mainwin->folderview_cid);
+
 #if USE_GPGME
 	if ((fp = procmsg_open_message_decrypted(msginfo, &mimeinfo)) == NULL)
 		return;

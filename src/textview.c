@@ -984,8 +984,8 @@ static void textview_write_link(TextView *textview, const gchar *url,
     uri = g_new(RemoteURI, 1);
     uri->uri = g_strdup(url);
     uri->start = gtk_stext_get_point(text);
-    gtk_stext_insert(text, textview->msgfont, link_color, NULL, buf,
-	            strlen(buf));
+    gtk_stext_insert(text, textview->msgfont, link_color, NULL, str,
+	            strlen(str));
     uri->end = gtk_stext_get_point(text);
     textview->uri_list = g_slist_append(textview->uri_list, uri);
 }
@@ -1656,7 +1656,7 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 		gtk_editable_get_position(GTK_EDITABLE(textview->text));
 
 	if (event && 
-	    ((event->button == 1 && textview->last_buttonpress == GDK_2BUTTON_PRESS)
+	    ((event->button == 1)
 	     || event->button == 2 || event->button == 3)) {
 		GSList *cur;
 
@@ -1667,11 +1667,22 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 		        textview->cur_pos--;
 		}
 
+		gtk_statusbar_pop(GTK_STATUSBAR(textview->messageview->mainwin->statusbar),
+			  	  textview->messageview->mainwin->folderview_cid);
+
 		for (cur = textview->uri_list; cur != NULL; cur = cur->next) {
 			RemoteURI *uri = (RemoteURI *)cur->data;
 
 			if (textview->cur_pos >= uri->start &&
 			    textview->cur_pos <  uri->end) {
+				/* single click: display url in statusbar */
+				if (event->button == 1 
+				    && (textview->last_buttonpress != GDK_2BUTTON_PRESS)) {
+					gtk_statusbar_push(
+					    	GTK_STATUSBAR(textview->messageview->mainwin->statusbar),
+						textview->messageview->mainwin->folderview_cid, uri->uri);
+					gtkut_widget_wait_for_draw(textview->messageview->mainwin->hbox_stat);
+				} else
 				if (!g_strncasecmp(uri->uri, "mailto:", 7)) {
 					if (event->button == 3) {
 						gchar *fromname, *fromaddress;
