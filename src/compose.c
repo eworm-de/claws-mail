@@ -6649,20 +6649,23 @@ static gboolean compose_send_control_enter(Compose *compose)
 	GtkAccelEntry *accel;
 	GtkWidget *send_menu;
 	GSList *list;
-	gint ignored_mods = (GDK_LOCK_MASK | GDK_MOD2_MASK | GDK_MOD3_MASK 
-			   | GDK_MOD4_MASK | GDK_MOD5_MASK);
+	GdkModifierType ignored_mods =
+		(GDK_LOCK_MASK | GDK_MOD2_MASK | GDK_MOD3_MASK |
+		 GDK_MOD4_MASK | GDK_MOD5_MASK);
 
 	ev = gtk_get_current_event();
 	if (ev->type != GDK_KEY_PRESS) return FALSE;
 
 	kev = (GdkEventKey *)ev;
+	if (!(kev->keyval == GDK_Return && (kev->state & GDK_CONTROL_MASK)))
+		return FALSE;
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	send_menu = gtk_item_factory_get_widget(ifactory, "/Message/Send");
 	list = gtk_accel_group_entries_from_object(GTK_OBJECT(send_menu));
 	accel = (GtkAccelEntry *)list->data;
 	if (accel->accelerator_key == kev->keyval &&
-	    (accel->accelerator_mods & ~ignored_mods) == 
+	    (accel->accelerator_mods & ~ignored_mods) ==
 	    (kev->state & ~ignored_mods)) {
 		compose_send_cb(compose, 0, NULL);
 		return TRUE;

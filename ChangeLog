@@ -1,3 +1,10 @@
+2002-04-12
+
+	* src/mainwindow.c: reorderd the menu a bit.
+	* src/compose.c: made 'Ctrl-Enter' ignore some modifiers.
+	  compose_reply_set_entry(): made 'Reply to sender' work for
+	  newsgroups.
+
 2002-04-11
 
 	* src/compose.c: compose_create(): set geometry hints to restrict

@@ -1,3 +1,11 @@
+2002-04-12
+
+	* src/mainwindow.c: メニューの順序を少し変更。
+	* src/compose.c: 'Ctrl-Enter' でいくつかの修飾キーを無視するように
+	  した。
+	  compose_reply_set_entry(): 「差出人に返信」がニュースグループで
+	  使えるようにした。
+
 2002-04-11
 
 	* src/compose.c: compose_create(): ジオメトリヒントを設定して
