@@ -125,3 +125,4 @@
 ( cvs diff -u -r 1.452 -r 1.453 src/compose.c; ) > 0.9.12cvs140.patchset
 ( cvs diff -u -r 1.126 -r 1.127 src/textview.c; ) > 0.9.12cvs141.patchset
 ( cvs diff -u -r 1.127 -r 1.128 src/textview.c; ) > 0.9.12cvs142.patchset
+( cvs diff -u -r 1.449 -r 1.450 src/summaryview.c; ) > 0.9.12cvs143.patchset

@@ -807,6 +807,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	if (summaryview->mainwin->lock_count == 0 &&
 	    (summaryview->moved > 0 || summaryview->copied > 0)) {
 		AlertValue val;
+		gboolean changed = FALSE;
 
 		val = alertpanel(_("Process mark"),
 				 _("Some marks are left. Process it?"),
@@ -815,6 +816,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			summary_unlock(summaryview);
 			summary_execute(summaryview);
 			summary_lock(summaryview);
+			changed = TRUE;
 		} else if (G_ALERTALTERNATE == val) {
 			/* DO NOTHING */
 		} else {
@@ -822,7 +824,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			inc_unlock();
 			return FALSE;
 		}
-   		folder_update_op_count();
+		if (changed || !quicksearch_is_active(summaryview->quicksearch))
+			folder_update_op_count();
 	}
 	
 	gtk_clist_freeze(GTK_CLIST(ctree));

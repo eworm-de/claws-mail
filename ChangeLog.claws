@@ -1,3 +1,11 @@
+2004-11-08 [colin]	0.9.12cvs143
+
+	* src/summaryview.c
+		Prevent useless folder count updates while 
+		quicksearch is running. It is really annoying 
+		while quicksearch is running a full-mail
+		scan, like 'b foo', in a big folder.
+
 2004-11-08 [colin]	0.9.12cvs142
 
 	* src/textview.c
