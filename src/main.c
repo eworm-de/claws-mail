@@ -111,6 +111,7 @@ static struct RemoteCmd {
 	gboolean crash;
 	int online_mode;
 	gchar   *crash_params;
+	gboolean config_dir;
 } cmd;
 
 static void parse_cmd_opt(int argc, char *argv[]);
@@ -194,6 +195,11 @@ int main(int argc, char *argv[])
 	if (cmd.status || cmd.status_full) {
 		puts("0 Sylpheed not running.");
 		lock_socket_remove();
+		return 0;
+	}
+
+	if (cmd.config_dir) {
+		puts(RC_DIR);
 		return 0;
 	}
 
@@ -474,12 +480,15 @@ static void parse_cmd_opt(int argc, char *argv[])
 			puts(_("  --debug                debug mode"));
 			puts(_("  --help                 display this help and exit"));
 			puts(_("  --version              output version information and exit"));
+			puts(_("  --config-dir           output configuration directory"));
 
 			exit(1);
 		} else if (!strncmp(argv[i], "--crash", 7)) {
 			cmd.crash = TRUE;
 			cmd.crash_params = g_strdup(argv[i + 1]);
 			i++;
+		} else if (!strncmp(argv[i], "--config-dir", sizeof "--config-dir" - 1)) {
+			cmd.config_dir = TRUE;
 		}
 		
 	}

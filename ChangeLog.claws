@@ -1,3 +1,8 @@
+2003-07-13 [alfons]	0.9.3claws2
+	
+	* src/main.c
+		add command line option "--config-dir" to get the current 
+		configuration dir
 
 2003-07-12 [alfons]	0.9.3claws1
 
