@@ -1,3 +1,24 @@
+2002-05-13
+
+	* src/compose.c: compose_account_option_menu_create(): ac->name が
+	  NULL かどうかをチェック。
+
+2002-05-12
+
+	* version 0.7.6
+
+2002-05-12
+
+	* manual/ja/*: 日本語マニュアルを更新(今井さん thanks)。
+	  manual/en/*: 英語マニュアルを更新。
+	* faq/de/*
+	  faq/it/*: ドイツ語とイタリア語マニュアルを追加。
+	  faq/en/*
+	  faq/es/*
+	  faq/fr/*: FAQ を更新。
+	* src/manual.[ch]
+	  src/mainwindow.c: ドイツ語とイタリア語を追加。
+
 2002-05-11
 
 	* src/prefs_account.c: IMAP または News アカウントを作成するときに

@@ -1,3 +1,24 @@
+2002-05-13
+
+	* src/compose.c: compose_account_option_menu_create(): check if
+	  ac->name is NULL.
+
+2002-05-12
+
+	* version 0.7.6
+
+2002-05-12
+
+	* manual/ja/*: updated the Japanese manual (thanks to Yoichi Imai).
+	  manual/en/*: updated the English manual.
+	* faq/de/*
+	  faq/it/*: added German and Italian FAQ.
+	  faq/en/*
+	  faq/es/*
+	  faq/fr/*: updated FAQs.
+	* src/manual.[ch]
+	  src/mainwindow.c: added German and Italian language.
+
 2002-05-11
 
 	* src/prefs_account.c: turn off "receive at get all" option by default
