@@ -134,6 +134,7 @@ EXPORTS
 	plugin_done 
 	plugin_init 
 	plugin_name 
+	plugin_type 
 	process_message 
 	socketread 
 	spamassassin_get_config 

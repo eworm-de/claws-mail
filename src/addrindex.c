@@ -675,6 +675,22 @@ GList *addrindex_get_interface_list( AddressIndex *addrIndex ) {
 }
 
 /**
+ * Perform any other initialization of address index.
+ * \param addrIndex Address index.
+ */
+void addrindex_initialize( AddressIndex *addrIndex ) {
+	addrcompl_initialize();
+}
+
+/**
+ * Perform any other teardown of address index.
+ * \param addrIndex Address index.
+ */
+void addrindex_teardown( AddressIndex *addrIndex ) {
+	addrcompl_teardown();
+}
+
+/**
  * Free up address index.
  * \param addrIndex Address index.
  */

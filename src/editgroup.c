@@ -518,7 +518,7 @@ ItemFolder *addressbook_edit_folder( AddressBookFile *abf, ItemFolder *parent, I
 		return NULL;
 	}
 	if( folder ) {
-		if( strcasecmp( name, ADDRITEM_NAME(folder) ) == 0 ) {
+		if( strcmp( name, ADDRITEM_NAME(folder) ) == 0 ) {
 			g_free( name );
 			return NULL;
 		}

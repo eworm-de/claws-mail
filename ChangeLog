@@ -1,3 +1,80 @@
+2003-03-26
+
+	* src/pop.[ch]
+	  src/session.c: fixed breakage of POP3 retrieval.
+	  session_recv_data_from_sock_unescape(): read until terminator
+	  appears and also return the actual size.
+
+2003-03-25
+
+	* src/automaton.[ch]: removed.
+	* src/session.c: removed some of the debug output.
+	* src/smtp.c: smtp_session_recv_msg(): workaround in case server
+	  returns EHLO-style response to HELO command.
+	  Ignore all multiline responses except for EHLO since they are
+	  allowed for any command.
+
+2003-03-25
+
+	* src/session.[ch]
+	  src/pop.c: fixed retrieval of messages which contain dot-escaped
+	  lines.
+	  session_recv_data(): added a flag for unescape.
+	  session_recv_data_from_sock_unescape(): new. It receives message
+	  for each line and unescapes dot-escaped lines.
+	  Removed the previous workaround.
+	* src/defs.h: decreased UI_REFRESH_INTERVAL to 40 msec.
+
+2003-03-25
+
+	* src/pop.[ch]: workaround for brekage of retrieval when given size
+	  and actual one is different.
+
+2003-03-24
+
+	* src/pop.c: pop3_retr_eom_recv(): ignore invalid end of message
+	  since some servers sometimes return incorrect message size.
+	* src/news.c: news_session_new(): zero clear NNTPSession object.
+	  Don't initialize Session::sock with nntp_sock->sock to prevent
+	  double-free of SockInfo.
+	* src/imap.c: zero clear IMAPSession object.
+	  imap_cmd_append(): don't close SockInfo.
+
+2003-03-22
+
+	* src/pop.c: pop3_session_recv_msg(): fixed STLS.
+
+2003-03-22
+
+	* src/inc.[ch]
+	  src/pop.[ch]: reimplemented using new I/O system.
+	* src/session.[ch]: session_recv_data(): new.
+	  session_send_data_to_sock()
+	  session_recv_data_from_sock(): decreased the frequency of progress
+	  notification.
+
+2003-03-22
+
+	* src/smtp.c: smtp_auth_recv(): fixed CRAM-MD5 authentication.
+
+2003-03-20
+
+	* src/session.[ch]: session_start_tls(): new.
+	  session_recv_msg(): made it static.
+
+2003-03-20
+
+	* implemented asynchronous network I/O.
+	* src/session.[ch]: the interface to communicate with servers through
+	  child process.
+	* src/smtp.[ch]
+	  src/send_message.[ch]: rewrote using new I/O system.
+	* src/socket.[ch]: renamed *_write() to *_write_all(), and made
+	  *_write() as just a simple wrapper for write().
+	* src/utils.c: get_outgoing_rfc2822_str(): new. It modifies the
+	  message to send with SMTP or NNTP.
+	  file_read_stream_to_str(): new.
+
 2003-03-12
 
 	* src/textview.c: textview_button_pressed(): corrected the range of

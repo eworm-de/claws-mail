@@ -28,7 +28,7 @@
 #include "utils.h"
 #include "procmsg.h"
 #include "procheader.h"
-#include "send.h"
+#include "send_message.h"
 #include "procmime.h"
 #include "statusbar.h"
 #include "folder.h"
@@ -39,7 +39,6 @@
 #endif
 #include "alertpanel.h"
 #include "news.h"
-#include "imap.h"
 #include "hooks.h"
 #include "msgcache.h"
 
@@ -137,6 +136,7 @@ static gboolean procmsg_ignore_node(GNode *node, gpointer data)
 {
 	MsgInfo *msginfo = (MsgInfo *)node->data;
 	
+	procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
 	procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 
 	return FALSE;
@@ -167,6 +167,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 				parent = root;
 			} else {
 				if (MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
+					procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
 					procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 				}
 			}
@@ -463,9 +464,18 @@ void procmsg_empty_trash(void)
 	}
 }
 
+/*!
+ *\brief	Send messages in queue
+ *
+ *\param	queue Queue folder to process
+ *\param	save_msgs Unused
+ *
+ *\return	Number of messages sent, negative if an error occurred
+ *		positive if no error occurred
+ */
 gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 {
-	gint ret = 0;
+	gint ret = 1, count = 0;
 	GSList *list, *elem;
 
 	if (!queue)
@@ -475,37 +485,42 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 	folder_item_scan(queue);
 	list = folder_item_get_msg_list(queue);
 
-
 	for (elem = list; elem != NULL; elem = elem->next) {
 		gchar *file;
 		MsgInfo *msginfo;
 		
 		msginfo = (MsgInfo *)(elem->data);
-
-		file = folder_item_fetch_msg(queue, msginfo->msgnum);
-		if (file) {
-			if (procmsg_send_message_queue(file) < 0) {
-				g_warning("Sending queued message %d failed.\n", msginfo->msgnum);
-				ret = -1;
-			} else {
-			/* CLAWS: 
-			 * We save in procmsg_send_message_queue because
-			 * we need the destination folder from the queue
-			 * header
-			 			
-				if (save_msgs)
-					procmsg_save_to_outbox
-						(queue->folder->outbox,
-						 file, TRUE);
-*/
-				folder_item_remove_msg(queue, msginfo->msgnum);
+		if (!MSG_IS_LOCKED(msginfo->flags)) {
+			file = folder_item_fetch_msg(queue, msginfo->msgnum);
+			if (file) {
+				if (procmsg_send_message_queue(file) < 0) {
+					g_warning("Sending queued message %d failed.\n", 
+						  msginfo->msgnum);
+					ret = -1;
+				} else {
+					/* CLAWS: 
+					 * We save in procmsg_send_message_queue because
+					 * we need the destination folder from the queue
+					 * header
+							
+					if (save_msgs)
+						procmsg_save_to_outbox
+							(queue->folder->outbox,
+							 file, TRUE);
+					 */
+					count++; 
+					folder_item_remove_msg(queue, msginfo->msgnum);
+				}
+				g_free(file);
 			}
-			g_free(file);
 		}
+		/* FIXME: supposedly if only one message is locked, and queue
+		 * is being flushed, the following free says something like 
+		 * "freeing msg ## in folder (nil)". */
 		procmsg_msginfo_free(msginfo);
 	}
 
-	return ret;
+	return ret * count;
 }
 
 gint procmsg_remove_special_headers(const gchar *in, const gchar *out)
@@ -740,7 +755,7 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	if (msginfo->refcnt > 0)
 		return;
 
-	debug_print("freeing msginfo %d is %s\n", msginfo->msgnum, msginfo->folder ? msginfo->folder->path : "(nil)");
+	debug_print("freeing msginfo %d in %s\n", msginfo->msgnum, msginfo->folder ? msginfo->folder->path : "(nil)");
 
 	if (msginfo->to_folder) {
 		msginfo->to_folder->op_count--;
@@ -1060,18 +1075,47 @@ gint procmsg_send_message_queue(const gchar *file)
 	return (newsval != 0 ? newsval : mailval);
 }
 
-#define CHANGE_FLAGS(msginfo) \
-{ \
-if (msginfo->folder->folder->class->change_flags != NULL) \
-msginfo->folder->folder->class->change_flags(msginfo->folder->folder, \
-				             msginfo->folder, \
-				             msginfo); \
+static void update_folder_msg_counts(FolderItem *item, MsgInfo *msginfo, MsgPermFlags old)
+{
+	MsgPermFlags new = msginfo->flags.perm_flags;
+
+	/* NEW flag */
+	if (!(old & MSG_NEW) && (new & MSG_NEW)) {
+		item->new++;
+	}
+
+	if ((old & MSG_NEW) && !(new & MSG_NEW)) {
+		item->new--;
+	}
+
+	/* UNREAD flag */
+	if (!(old & MSG_UNREAD) && (new & MSG_UNREAD)) {
+		item->unread++;
+		if (procmsg_msg_has_marked_parent(msginfo))
+			item->unreadmarked++;
+	}
+
+	if ((old & MSG_UNREAD) && !(new & MSG_UNREAD)) {
+		item->unread--;
+		if (procmsg_msg_has_marked_parent(msginfo))
+			item->unreadmarked--;
+	}
+	
+	/* MARK flag */
+	if (!(old & MSG_MARKED) && (new & MSG_MARKED)) {
+		procmsg_update_unread_children(msginfo, TRUE);
+	}
+
+	if ((old & MSG_MARKED) && !(new & MSG_MARKED)) {
+		procmsg_update_unread_children(msginfo, FALSE);
+	}
 }
 
 void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
 {
 	FolderItem *item;
 	MsgInfoUpdate msginfo_update;
+	MsgPermFlags perm_flags_new, perm_flags_old;
 
 	g_return_if_fail(msginfo != NULL);
 	item = msginfo->folder;
@@ -1079,123 +1123,55 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 	
 	debug_print("Setting flags for message %d in folder %s\n", msginfo->msgnum, item->path);
 
-	/* if new flag is set */
-	if ((perm_flags & MSG_NEW) && !MSG_IS_NEW(msginfo->flags) &&
-	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-		item->new++;
+	/* Perm Flags handling */
+	perm_flags_old = msginfo->flags.perm_flags;
+	perm_flags_new = msginfo->flags.perm_flags | perm_flags;
+	if ((perm_flags & MSG_IGNORE_THREAD) || (perm_flags_old & MSG_IGNORE_THREAD)) {
+		perm_flags_new &= ~(MSG_NEW | MSG_UNREAD);
 	}
 
-	/* if unread flag is set */
-	if ((perm_flags & MSG_UNREAD) && !MSG_IS_UNREAD(msginfo->flags) &&
-	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-		item->unread++;
+	if (perm_flags_old != perm_flags_new) {
+		folder_item_change_msg_flags(msginfo->folder, msginfo, perm_flags_new);
+
+		update_folder_msg_counts(item, msginfo, perm_flags_old);
+
+		msginfo_update.msginfo = msginfo;
+		hooks_invoke(MSGINFO_UPDATE_HOOKLIST, &msginfo_update);
+		folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT);
 	}
 
-	if (!MSG_IS_UNREAD(msginfo->flags) &&(perm_flags & MSG_UNREAD)
-	&& procmsg_msg_has_marked_parent(msginfo)) {
-		item->unreadmarked++;
-	}
-	
-	if (!MSG_IS_MARKED(msginfo->flags) && (perm_flags & MSG_MARKED)) {
-		procmsg_update_unread_children(msginfo, TRUE);
-	}
-
-
-	/* if ignore thread flag is set */
-	if ((perm_flags & MSG_IGNORE_THREAD) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-		if (MSG_IS_NEW(msginfo->flags) || (perm_flags & MSG_NEW)) {
-			item->new--;
-		}
-		if (MSG_IS_UNREAD(msginfo->flags) || (perm_flags & MSG_UNREAD)) {
-			item->unread--;
-		}
-		if ((perm_flags & MSG_UNREAD) || (MSG_IS_UNREAD(msginfo->flags)
-		&& procmsg_msg_has_marked_parent(msginfo))) {
-			item->unreadmarked--;
-		}
-		if ((perm_flags & MSG_MARKED) || (MSG_IS_MARKED(msginfo->flags)
-		&& !MSG_IS_IGNORE_THREAD(msginfo->flags))) {
-			procmsg_update_unread_children(msginfo, FALSE);
-		}
-
-	}
-
-	if (FOLDER_TYPE(msginfo->folder->folder) == F_IMAP)
-		imap_msg_set_perm_flags(msginfo, perm_flags);
-
-	msginfo->flags.perm_flags |= perm_flags;
+	/* Tmp flags hanlding */
 	msginfo->flags.tmp_flags |= tmp_flags;
-
-	msginfo_update.msginfo = msginfo;
-	hooks_invoke(MSGINFO_UPDATE_HOOKLIST, &msginfo_update);
-	folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT);
-
-	CHANGE_FLAGS(msginfo);
 }
 
 void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
 {
 	FolderItem *item;
 	MsgInfoUpdate msginfo_update;
+	MsgPermFlags perm_flags_new, perm_flags_old;
 
 	g_return_if_fail(msginfo != NULL);
 	item = msginfo->folder;
-	g_return_if_fail(item != NULL);	
+	g_return_if_fail(item != NULL);
 	
 	debug_print("Unsetting flags for message %d in folder %s\n", msginfo->msgnum, item->path);
 
-	/* if new flag is unset */
-	if ((perm_flags & MSG_NEW) && MSG_IS_NEW(msginfo->flags) &&
-	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-		item->new--;
-	}
-
-	/* if unread flag is unset */
-	if ((perm_flags & MSG_UNREAD) && MSG_IS_UNREAD(msginfo->flags) &&
-	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-		item->unread--;
-	}
+	/* Perm Flags handling */
+	perm_flags_old = msginfo->flags.perm_flags;
+	perm_flags_new = msginfo->flags.perm_flags & ~perm_flags;
 	
-	if (MSG_IS_UNREAD(msginfo->flags) && (perm_flags & MSG_UNREAD)
-	&& !MSG_IS_IGNORE_THREAD(msginfo->flags)
-	&& procmsg_msg_has_marked_parent(msginfo)) {
-		item->unreadmarked--;
+	if (perm_flags_old != perm_flags_new) {
+		folder_item_change_msg_flags(msginfo->folder, msginfo, perm_flags_new);
+
+		update_folder_msg_counts(item, msginfo, perm_flags_old);
+
+		msginfo_update.msginfo = msginfo;
+		hooks_invoke(MSGINFO_UPDATE_HOOKLIST, &msginfo_update);
+		folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT);
 	}
 
-	if (MSG_IS_MARKED(msginfo->flags) && (perm_flags & MSG_MARKED)
-	&& !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-		procmsg_update_unread_children(msginfo, FALSE);
-	}
-
-	/* if ignore thread flag is unset */
-	if ((perm_flags & MSG_IGNORE_THREAD) && MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-		if (MSG_IS_NEW(msginfo->flags) && !(perm_flags & MSG_NEW)) {
-			item->new++;
-		}
-		if (MSG_IS_UNREAD(msginfo->flags) && !(perm_flags & MSG_UNREAD)) {
-			item->unread++;
-		}
-		if (MSG_IS_UNREAD(msginfo->flags) && !(perm_flags & MSG_UNREAD)
-		&& procmsg_msg_has_marked_parent(msginfo)) {
-			item->unreadmarked++;
-		}
-		if (MSG_IS_MARKED(msginfo->flags) && !(perm_flags & MSG_MARKED)) {
-			procmsg_update_unread_children(msginfo, TRUE);
-		}
-
-	}
-
-	if (FOLDER_TYPE(msginfo->folder->folder) == F_IMAP)
-		imap_msg_unset_perm_flags(msginfo, perm_flags);
-
-	msginfo->flags.perm_flags &= ~perm_flags;
+	/* Tmp flags hanlding */
 	msginfo->flags.tmp_flags &= ~tmp_flags;
-
-	msginfo_update.msginfo = msginfo;
-	hooks_invoke(MSGINFO_UPDATE_HOOKLIST, &msginfo_update);
-	folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT);
-
-	CHANGE_FLAGS(msginfo);
 }
 
 /*!

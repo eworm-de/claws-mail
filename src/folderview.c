@@ -2654,16 +2654,21 @@ static void folderview_move_to(FolderView *folderview, FolderItem *from_folder,
 	inc_lock();
 	main_window_cursor_wait(folderview->mainwin);
 	statusbar_verbosity_set(TRUE);
+	folder_item_update_freeze();
 	if ((status = folder_item_move_to(from_folder, to_folder, &new_folder)) == F_MOVE_OK) {
 		statusbar_verbosity_set(FALSE);
 		main_window_cursor_normal(folderview->mainwin);
 		STATUSBAR_POP(folderview->mainwin);
+		folder_item_update_thaw();
 		if (src_node)
 			gtk_ctree_remove_node(GTK_CTREE(folderview->ctree), src_node);
 		else 
 			debug_print("can't remove src node: is null\n");
 
 		folderview_create_folder_node_recursive(folderview, new_folder);
+
+		folder_item_update_recursive(new_folder, F_ITEM_UPDATE_MSGCNT);
+
 		folderview_sort_folders(folderview, 
 			gtk_ctree_find_by_row_data(GTK_CTREE(folderview->ctree), 
 				NULL, new_folder->parent), new_folder->folder);
@@ -2672,6 +2677,7 @@ static void folderview_move_to(FolderView *folderview, FolderItem *from_folder,
 		statusbar_verbosity_set(FALSE);		
 		main_window_cursor_normal(folderview->mainwin);
 		STATUSBAR_POP(folderview->mainwin);
+		folder_item_update_thaw();
 		switch (status) {
 		case F_MOVE_FAILED_DEST_IS_PARENT:
 			alertpanel_error(_("Source and destination are the same."));

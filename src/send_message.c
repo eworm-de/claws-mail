@@ -245,7 +245,9 @@ gint send_message_local(const gchar *command, FILE *fp)
 	FILE *pipefp;
 	gchar buf[BUFFSIZE];
 	int r;
+#ifndef WIN32
 	sigset_t osig, mask;
+#endif
 
 	g_return_val_if_fail(command != NULL, -1);
 	g_return_val_if_fail(fp != NULL, -1);
@@ -261,7 +263,7 @@ gint send_message_local(const gchar *command, FILE *fp)
 		fputs(buf, pipefp);
 		fputc('\n', pipefp);
 	}
-
+#ifndef WIN32
 	/* we need to block SIGCHLD, otherwise pspell's handler will wait()
 	 * the pipecommand away and pclose will return -1 because of its
 	 * failed wait4().
@@ -269,14 +271,16 @@ gint send_message_local(const gchar *command, FILE *fp)
 	sigemptyset(&mask);
 	sigaddset(&mask, SIGCHLD);
 	sigprocmask(SIG_BLOCK, &mask, &osig);
-	
+#endif	
 	r = pclose(pipefp);
 
+#ifndef WIN32
 	sigprocmask(SIG_SETMASK, &osig, NULL);
 	if (r != 0) {
 		g_warning("external command `%s' failed with code `%i'\n", command, r);
 		return -1;
 	}
+#endif
 
 	return 0;
 }
@@ -347,6 +351,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 	}
 
 	smtp_session->from = g_strdup(ac_prefs->address);
+smtp_session->from = g_strdup_printf("%s", ac_prefs->address);
 	smtp_session->to_list = to_list;
 	smtp_session->cur_to = to_list;
 	smtp_session->send_data = get_outgoing_rfc2822_str(fp);
@@ -402,12 +407,8 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 	       session->state != SESSION_ERROR)
 		gtk_main_iteration();
 
-	if (SMTP_SESSION(session)->state == SMTP_AUTH_FAILED) {
-		g_free(ac_prefs->tmp_smtp_pass);
-		ac_prefs->tmp_smtp_pass = NULL;
-		ret = -1;
-	} else if ((session->state == SESSION_ERROR) ||
-		   (SMTP_SESSION(session)->state == SMTP_ERROR))
+	if (session->state == SESSION_ERROR ||
+	    SMTP_SESSION(session)->state == SMTP_ERROR)
 		ret = -1;
 	else if (dialog->cancelled == TRUE)
 		ret = -1;
@@ -460,7 +461,6 @@ static gint send_recv_message(Session *session, const gchar *msg, gpointer data)
 		state_str = _("Quitting");
 		break;
 	case SMTP_ERROR:
-	case SMTP_AUTH_FAILED:
 		g_warning("send: error: %s\n", msg);
 		return 0;
 	default:
@@ -491,6 +491,7 @@ static gint send_send_data_progressive(Session *session, guint cur_len,
 static gint send_send_data_finished(Session *session, guint len, gpointer data)
 {
 	send_send_data_progressive(session, len, len, data);
+
 	return 0;
 }
 

@@ -34,43 +34,55 @@ struct _Plugin
 	GModule	*module;
 	gchar	*(*name) ();
 	gchar	*(*desc) ();
+	gchar	*(*type) ();
 };
 
 /**
  * List of all loaded plugins
  */
 GSList *plugins = NULL;
+GSList *plugin_types = NULL;
+
+static gint list_find_by_string(gconstpointer data, gconstpointer str)
+{
+	return strcmp((gchar *)data, (gchar *)str) ? TRUE : FALSE;
+}
 
 void plugin_save_list()
 {
-	gchar *rcpath;
+	gchar *rcpath, *block;
 	PrefFile *pfile;
-	GSList *cur;
+	GSList *type_cur, *plugin_cur;
 	Plugin *plugin;
 
-	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
-	if ((pfile = prefs_write_open(rcpath)) == NULL ||
-#if defined(WIN32) & defined(_DEBUG)
-	    (prefs_set_block_label(pfile, "DebugPlugins") < 0)) {
+	for (type_cur = plugin_types; type_cur != NULL; type_cur = g_slist_next(type_cur)) {
+		rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
+#if defined(WIN32) && defined(_DEBUG)
+		block = g_strconcat("DebugPlugins_", type_cur->data, NULL);
 #else
-	    (prefs_set_block_label(pfile, "Plugins") < 0)) {
+		block = g_strconcat("Plugins_", type_cur->data, NULL);
 #endif
-		g_warning("failed to write plugin list\n");
-		g_free(rcpath);
-		return;
-	}
+		if ((pfile = prefs_write_open(rcpath)) == NULL ||
+		    (prefs_set_block_label(pfile, block) < 0)) {
+			g_warning("failed to write plugin list\n");
+			g_free(rcpath);
+			return;
+		}
+		g_free(block);
 
-	for (cur = plugins; cur != NULL; cur = g_slist_next(cur)) {
-		plugin = (Plugin *)cur->data;
+		for (plugin_cur = plugins; plugin_cur != NULL; plugin_cur = g_slist_next(plugin_cur)) {
+			plugin = (Plugin *) plugin_cur->data;
 			
-		fprintf(pfile->fp, "%s\n", plugin->filename);
+			if (!strcmp(plugin->type(), type_cur->data))
+				fprintf(pfile->fp, "%s\n", plugin->filename);
+		}
+		fprintf(pfile->fp, "\n");
+
+		if (prefs_file_close(pfile) < 0)
+			g_warning("failed to write plugin list\n");
+
+		g_free(rcpath);	
 	}
-	fprintf(pfile->fp, "\n");
-
-	if (prefs_file_close(pfile) < 0)
-		g_warning("failed to write plugin list\n");
-
-	g_free(rcpath);	
 }
 
 /**
@@ -84,7 +96,7 @@ gint plugin_load(const gchar *filename, gchar **error)
 {
 	Plugin *plugin;
 	gint (*plugin_init) (gchar **error);
-	gchar *plugin_name, *plugin_desc;
+	gchar *plugin_name, *plugin_desc, *plugin_type;
 	gint ok;
 
 	g_return_val_if_fail(filename != NULL, -1);
@@ -105,6 +117,7 @@ gint plugin_load(const gchar *filename, gchar **error)
 
 	if (!g_module_symbol(plugin->module, "plugin_name", (gpointer *)&plugin_name) ||
 	    !g_module_symbol(plugin->module, "plugin_desc", (gpointer *)&plugin_desc) ||
+	    !g_module_symbol(plugin->module, "plugin_type", (gpointer *)&plugin_type) ||
 	    !g_module_symbol(plugin->module, "plugin_init", (gpointer *)&plugin_init)) {
 		*error = g_strdup(g_module_error());
 		g_module_close(plugin->module);
@@ -120,6 +133,7 @@ gint plugin_load(const gchar *filename, gchar **error)
 
 	plugin->name = plugin_name;
 	plugin->desc = plugin_desc;
+	plugin->type = plugin_type;
 	plugin->filename = g_strdup(filename);
 
 	plugins = g_slist_append(plugins, plugin);
@@ -142,23 +156,27 @@ void plugin_unload(Plugin *plugin)
 	g_free(plugin);
 }
 
-void plugin_load_all()
+void plugin_load_all(gchar *type)
 {
 	gchar *rcpath;
 	gchar buf[BUFFSIZE];
 	PrefFile *pfile;
-	gchar *error;
+	gchar *error, *block;
+
+	plugin_types = g_slist_append(plugin_types, g_strdup(type));
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);	
-	if ((pfile = prefs_read_open(rcpath)) == NULL ||
-#if defined(WIN32) & defined(_DEBUG)
-	    (prefs_set_block_label(pfile, "DebugPlugins") < 0)) {
+#if defined(WIN32) && defined(_DEBUG)
+	block = g_strconcat("DebugPlugins_", type, NULL);
 #else
-	    (prefs_set_block_label(pfile, "Plugins") < 0)) {
+	block = g_strconcat("Plugins_", type, NULL);
 #endif
+	if ((pfile = prefs_read_open(rcpath)) == NULL ||
+	    (prefs_set_block_label(pfile, block) < 0)) {
 		g_free(rcpath);
 		return;
 	}
+	g_free(block);
 
 	while (fgets(buf, sizeof(buf), pfile->fp) != NULL) {
 		if (buf[0] == '[')
@@ -170,13 +188,12 @@ void plugin_load_all()
 			g_free(error);
 		}							
 	}
-//fclose(pfile->fp);
 	prefs_file_close(pfile);
 
 	g_free(rcpath);
 }
 
-void plugin_unload_all()
+void plugin_unload_all(gchar *type)
 {
 	GSList *list, *cur;
 
@@ -186,9 +203,16 @@ void plugin_unload_all()
 	for(cur = list; cur != NULL; cur = g_slist_next(cur)) {
 		Plugin *plugin = (Plugin *) cur->data;
 		
-		plugin_unload(plugin);
+		if (!strcmp(type, plugin->type()))
+			plugin_unload(plugin);
 	}
 	g_slist_free(list);
+
+	cur = g_slist_find_custom(plugin_types, type, list_find_by_string);
+	if (cur) {
+		g_free(cur->data);
+		g_slist_remove(plugin_types, cur);
+	}
 }
 
 GSList *plugin_get_list()

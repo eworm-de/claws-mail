@@ -107,7 +107,7 @@
 #define FOLDER_SPACING			4
 #define MAX_ENTRY_LENGTH		8191
 #define COLOR_DIM			35000
-#define UI_REFRESH_INTERVAL		50000	/* usec */
+#define UI_REFRESH_INTERVAL		40000	/* usec */
 #define SESSION_TIMEOUT			60	/* sec */
 #define MAX_HISTORY_SIZE		16
 

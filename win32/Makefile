@@ -206,7 +206,6 @@ OBJECTS= \
 	addritem.o \
 	addrselect.o \
 	alertpanel.o \
-	automaton.o \
 	base64.o \
 	codeconv.o \
 	colorlabel.o \
@@ -315,7 +314,7 @@ OBJECTS= \
 	scoring.o \
 	select-keys.o \
 	selective_download.o \
-	send.o \
+	send_message.o \
 	session.o \
 	setup.o \
 	sigstatus.o \
@@ -519,7 +518,6 @@ addrindex.o: 	addrindex.c addrindex.h
 addritem.o: 	addritem.c addritem.h
 addrselect.o: 	addrselect.c addrselect.h
 alertpanel.o: 	alertpanel.c alertpanel.h
-automaton.o: 	automaton.c automaton.h
 base64.o: 	base64.c base64.h
 codeconv.o: 	codeconv.c codeconv.h
 colorlabel.o: 	colorlabel.c colorlabel.h
@@ -620,7 +618,7 @@ rfc2015.o: 	rfc2015.c rfc2015.h
 scoring.o: 	scoring.c scoring.h
 select-keys.o: 	select-keys.c select-keys.h
 selective_download.o: 	selective_download.c selective_download.h
-send.o: 	send.c send.h
+send_message.o:	send_message.c send_message.h
 session.o: 	session.c session.h
 setup.o: 	setup.c setup.h
 sigstatus.o: 	sigstatus.c sigstatus.h

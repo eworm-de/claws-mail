@@ -86,7 +86,7 @@
 #include "procmsg.h"
 #include "menu.h"
 #include "stock_pixmap.h"
-#include "send.h"
+#include "send_message.h"
 #include "imap.h"
 #include "news.h"
 #include "customheader.h"
@@ -6079,20 +6079,20 @@ static void compose_exec_ext_editor(Compose *compose)
 		pid_ed = compose_exec_ext_editor_real(tmp,compose);
 #else
 		if (compose_write_body_to_file(compose, tmp) < 0) {
-			fd_write(pipe_fds[1], "2\n", 2);
+			fd_write_all(pipe_fds[1], "2\n", 2);
 			_exit(1);
 		}
 
 		pid_ed = compose_exec_ext_editor_real(tmp);
 		if (pid_ed < 0) {
-			fd_write(pipe_fds[1], "1\n", 2);
+			fd_write_all(pipe_fds[1], "1\n", 2);
 			_exit(1);
 		}
 
 		/* wait until editor is terminated */
 		waitpid(pid_ed, NULL, 0);
 
-		fd_write(pipe_fds[1], "0\n", 2);
+		fd_write_all(pipe_fds[1], "0\n", 2);
 
 		close(pipe_fds[1]);
 #endif

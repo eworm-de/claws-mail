@@ -201,6 +201,7 @@ EXPORTS
 	addressbook_imp_ldif 
 	addressbook_imp_mutt 
 	addressbook_imp_pine 
+	addressbook_lookup_name 
 	addressbook_open 
 	addressbook_quick_search_list 
 	addressbook_quick_search_single 
@@ -250,6 +251,7 @@ EXPORTS
 	addrindex_get_loaded 
 	addrindex_index_add_datasource 
 	addrindex_index_remove_datasource 
+	addrindex_initialize 
 	addrindex_print_index 
 	addrindex_quick_search_list 
 	addrindex_quick_search_single 
@@ -263,6 +265,7 @@ EXPORTS
 	addrindex_setup_search 
 	addrindex_start_search 
 	addrindex_stop_search 
+	addrindex_teardown 
 	addrindex_write_to 
 	addritem_attrib_set_id 
 	addritem_attrib_set_name 
@@ -292,6 +295,7 @@ EXPORTS
 	addritem_folder_set_id 
 	addritem_folder_set_name 
 	addritem_folder_set_remarks 
+	addritem_format_email 
 	addritem_free_attribute 
 	addritem_free_item_email 
 	addritem_free_item_folder 
@@ -454,9 +458,6 @@ EXPORTS
 	aspell_word_list_elements 
 	aspell_word_list_empty 
 	aspell_word_list_size 
-	automaton_create 
-	automaton_destroy 
-	automaton_input_cb 
 	base64_decode 
 	base64_decoder_decode 
 	base64_decoder_free 
@@ -478,7 +479,6 @@ EXPORTS
 	colorlabel_get_color_count 
 	colorlabel_get_color_menu_active_item 
 	colorlabel_get_color_text 
-	complete_address 
 	compose_create_attach 
 	compose_draft 
 	compose_entry_append 
@@ -633,7 +633,9 @@ EXPORTS
 	fd_read 
 	fd_recv 
 	fd_write 
+	fd_write_all 
 	file_exist 
+	file_read_stream_to_str 
 	file_read_to_str 
 	filesel_select_file 
 	filesel_select_multiple_files 
@@ -677,6 +679,7 @@ EXPORTS
 	folder_item_add_msg 
 	folder_item_append 
 	folder_item_apply_processing 
+	folder_item_change_msg_flags 
 	folder_item_close 
 	folder_item_copy_msg 
 	folder_item_copy_msgs_with_dest 
@@ -760,7 +763,6 @@ EXPORTS
 	get_abbrev_newsgroup_name 
 	get_aspell_dict_info_list 
 	get_aspell_module_info_list 
-	get_complete_address 
 	get_domain_name 
 	get_file_size 
 	get_file_size_as_crlf 
@@ -776,6 +778,7 @@ EXPORTS
 	get_mime_tmp_dir 
 	get_news_cache_dir 
 	get_next_word_len 
+	get_outgoing_rfc2822_str 
 	get_quote_level 
 	get_rc_dir 
 	get_rfc822_date 
@@ -918,6 +921,7 @@ EXPORTS
 	imageview_init 
 	imageview_show_image 
 	imap_add_msg 
+	imap_change_flags 
 	imap_check_msgnum_validity 
 	imap_class 
 	imap_copy_msg 
@@ -960,7 +964,6 @@ EXPORTS
 	inc_mail 
 	inc_mail_cb 
 	inc_pop_before_smtp 
-	inc_progress_update 
 	inc_selective_download 
 	inc_unlock 
 	input_dialog 
@@ -1303,39 +1306,13 @@ EXPORTS
 	plugin_load 
 	plugin_load_all 
 	plugin_save_list 
+	plugin_types 
 	plugin_unload 
 	plugin_unload_all 
 	plugins 
 	pluginwindow_create 
-	pop3_delete_recv 
-	pop3_delete_send 
 	pop3_get_uidl_table 
-	pop3_getauth_apop_recv 
-	pop3_getauth_apop_send 
-	pop3_getauth_pass_recv 
-	pop3_getauth_pass_send 
-	pop3_getauth_user_recv 
-	pop3_getauth_user_send 
-	pop3_getrange_last_recv 
-	pop3_getrange_last_send 
-	pop3_getrange_stat_recv 
-	pop3_getrange_stat_send 
-	pop3_getrange_uidl_recv 
-	pop3_getrange_uidl_send 
-	pop3_getsize_list_recv 
-	pop3_getsize_list_send 
-	pop3_greeting_recv 
-	pop3_logout_recv 
-	pop3_logout_send 
-	pop3_retr_recv 
-	pop3_retr_send 
-	pop3_sd_state 
-	pop3_state_destroy 
-	pop3_state_new 
-	pop3_stls_recv 
-	pop3_stls_send 
-	pop3_top_recv 
-	pop3_top_send 
+	pop3_session_new 
 	pop3_write_uidl_list 
 	popupmenu_create 
 	prefs_account_free 
@@ -1593,22 +1570,26 @@ EXPORTS
 	send_message_local 
 	send_message_smtp 
 	send_queue_cb 
+	session_child_input 
+	session_child_thread 
+	session_connect 
 	session_destroy 
+	session_disconnect 
+	session_init 
+	session_parent_input_cb 
+	session_recv_data 
+	session_send_data 
+	session_send_msg 
+	session_set_recv_data_notify 
+	session_set_recv_data_progressive_notify 
+	session_set_recv_message_notify 
+	session_set_send_data_notify 
+	session_set_send_data_progressive_notify 
+	session_start_tls 
 	set_log_file 
 	setup 
 	slist_concat_unique 
 	slist_free_strings 
-	smtp_auth 
-	smtp_connect 
-	smtp_data 
-	smtp_ehlo 
-	smtp_eom 
-	smtp_from 
-	smtp_helo 
-	smtp_quit 
-	smtp_rcpt 
-	smtp_rset 
-	smtp_session_destroy 
 	smtp_session_new 
 	sock_close 
 	sock_connect 
@@ -1623,6 +1604,7 @@ EXPORTS
 	sock_read 
 	sock_set_nonblocking_mode 
 	sock_write 
+	sock_write_all 
 	source_window_append 
 	source_window_create 
 	source_window_destroy 
@@ -1648,6 +1630,7 @@ EXPORTS
 	ssl_manager_open 
 	ssl_read 
 	ssl_write 
+	ssl_write_all 
 	sslcertwindow_ask_changed_cert 
 	sslcertwindow_ask_new_cert 
 	sslcertwindow_register_hook 

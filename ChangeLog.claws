@@ -1,3 +1,185 @@
+2003-03-25 [paul]	0.8.11claws45
+
+	* sync with 0.8.11cvs12
+		see ChangeLog 2003-03-26
+
+2003-03-25 [paul]	0.8.11claws44
+
+	* sync with 0.8.11cvs11
+		see ChangeLog 2003-03-22, 2003-03-24 and 2003-03-25
+		
+	Note: Selective Download is broken.
+		
+2003-03-22 [christoph]	0.8.11claws43
+
+	* src/folder.c
+		code cleanup for flags copying
+
+2003-03-22 [christoph]	0.8.11claws42
+
+	* src/plugins/trayicon/trayicon.c
+		fix setting the transparent area when the window size
+		is forced by the system tray
+
+2003-03-22 [christoph]	0.8.11claws41
+
+	* src/plugins/trayicon/gnome-mail.xpm		** REMOVE **
+	* src/plugins/trayicon/gnome-nomail.xpm		** REMOVE **
+	* src/plugins/trayicon/newmail.xpm		** NEW **
+	* src/plugins/trayicon/nomail.xpm		** NEW **
+	* src/plugins/trayicon/trayicon.c
+	* src/plugins/trayicon/unreadmail.xpm		** NEW **
+		o replace GBiff icons with KBiff icons resized to 16x16 pixel
+		o add icon for unread mails
+		o set transparency for window
+
+2003-03-22 [christoph]	0.8.11claws40
+
+	* src/news.c
+		init news session to prevent crash when session is closed
+
+2003-03-22 [christoph]	0.8.11claws39
+
+	* src/imap.c
+	* src/common/session.[ch]
+		Init session data to make sure we don't have invalid pointers
+		for read_ch and write_ch when new multi process sessions are
+		not used
+
+	* src/main.c
+	* src/common/plugin.c
+	* src/common/sylpheed.c
+	* src/plugins/demo/demo.c
+	* src/plugins/dillo_viewer/dillo_viewer.c
+	* src/plugins/mathml_viewer/mathml_viewer.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		add plugin types to allow loading plugins at different times
+		(and maybe for different frontends), because it's not good to
+		load GTK-Plugins gefore gtk_init was called
+
+	* configure.ac
+	* src/plugins/Makefile.am
+	* src/plugins/trayicon/.cvsignore		** NEW **
+	* src/plugins/trayicon/Makefile.am		** NEW **
+	* src/plugins/trayicon/eggtrayicon.c		** NEW **
+	* src/plugins/trayicon/eggtrayicon.h		** NEW **
+	* src/plugins/trayicon/gnome-mail.xpm		** NEW **
+	* src/plugins/trayicon/gnome-nomail.xpm		** NEW **
+	* src/plugins/trayicon/trayicon.c		** NEW **
+		New Trayicon plugin that shows an icon in a systray that uses
+		XEMBED protocol like Gnome's systray. Icon shows if there
+		are new mails and a tooltip shows information about new,
+		unread and total messages.
+
+2003-03-22 [paul]	0.8.11claws38
+
+	* src/common/smtp.c
+		fix ESMTP AUTH CRAM-MD5
+		[sync with main (still version 0.8.11cvs6), see
+		 ChangeLog 2003-03-22]
+
+2003-03-21 [colin]	0.8.11claws37
+
+	* src/send_message.c
+		Fix USE_SSL => USE_OPENSSL
+
+2003-03-21 [colin]	0.8.11claws36
+
+	* src/folderview.c
+		Fix counts in drag and dropped subfolders
+
+2003-03-21 [colin]	0.8.11claws35
+
+	* src/folder.c 
+	* src/folderview.c
+		speed up a bit folder dnd
+
+2003-03-20 [alfons]	0.8.11claws34
+
+	* src/main.c
+	* src/toolbar.c
+	* src/procmsg.c
+		don't send locked queue messages
+		(feature request "[ 705245 ] Locking message in outbox 
+		 should prevent sending")
+
+2003-03-20 [christoph]	0.8.11claws33
+
+	* src/folder.c
+		remove NEW and UNREAD flag in special folders when scanning
+		
+	* src/common/smtp.c
+		fix ESMTP AUTH CRAM-MD5
+
+2003-03-20 [paul]	0.8.11claws32
+
+	* src/prefs_account.c
+		Re-write 'Tunnel command to open connection' as
+		'Use command to communicate with server', and disable
+		it for all except IMAP accounts
+
+2003-03-20 [paul]	0.8.11claws31
+
+	* sync with 0.8.11cvs6
+		see ChangeLog 2003-03-20
+
+2003-03-19 [match]	0.8.11claws30
+
+	* src/addritem.[ch]
+		include documentation. minor refactoring.
+	* src/addr_compl.[ch]
+	* src/addrindex.[ch]
+	* src/addresbook.[ch]
+	* src/summaryview.c
+		re-enable address lookup (was disabled in
+		0.8.11claws20).
+
+2003-03-19 [christoph]	0.8.11claws29
+
+	* src/procmsg.c
+		add temp flag handling, will make moving and copying
+		messages possible again
+
+	* src/folder.c
+		correct calulation of folder stats
+
+2003-03-18 [match]	0.8.11claws28
+
+	* src/editgroup.h
+		remove case sensitive comparison (closes bug 80).
+
+2003-03-18 [christoph]	0.8.11claws27
+
+	* src/imap.c
+		fix imap using a tunnel command
+
+	(closes bug 87)
+
+2003-03-18 [christoph]	0.8.11claws26
+
+	* src/folder.[ch]
+	* src/imap.c
+	* src/procmsg.[ch]
+		rewrite flag handling for folders
+
+2003-03-18 [christoph]	0.8.11claws25
+
+	* src/folder.c
+	* src/procmsg.c
+	* src/summaryview.c
+		unset NEW and UNREAD flags when message is ignored, to make
+		sure messages don't show up as unread on other IMAP clients,
+		because the IGNORE_THREAD flag can not be syncronized through
+		the IMAP folder
+
+2003-03-17 [christoph]	0.8.11claws24
+
+	* src/imap.c
+		don't use recursion to fetch uids when the number of messages
+		does not match. Moved code into subfunction that is used
+		again when needed, to prevent an endless loop.
+
 2003-03-17 [thorsten]	0.8.11claws23
 
 	* src/imageview.[ch]

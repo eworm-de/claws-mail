@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,421 +36,278 @@
 
 #include "intl.h"
 #include "pop.h"
-#include "socket.h"
 #include "md5.h"
 #include "prefs_account.h"
 #include "utils.h"
 #include "inc.h"
 #include "recv.h"
+/* disable sd
 #include "selective_download.h"
+*/
 #include "log.h"
+
+static gint pop3_greeting_recv		(Pop3Session *session,
+					 const gchar *msg);
+static gint pop3_getauth_user_send	(Pop3Session *session);
+static gint pop3_getauth_pass_send	(Pop3Session *session);
+static gint pop3_getauth_apop_send	(Pop3Session *session);
 #if USE_OPENSSL
-#  include "ssl.h"
+static gint pop3_stls_send		(Pop3Session *session);
+static gint pop3_stls_recv		(Pop3Session *session);
 #endif
+static gint pop3_getrange_stat_send	(Pop3Session *session);
+static gint pop3_getrange_stat_recv	(Pop3Session *session,
+					 const gchar *msg);
+static gint pop3_getrange_last_send	(Pop3Session *session);
+static gint pop3_getrange_last_recv	(Pop3Session *session,
+					 const gchar *msg);
+static gint pop3_getrange_uidl_send	(Pop3Session *session);
+static gint pop3_getrange_uidl_recv	(Pop3Session *session,
+					 const gchar *msg);
+static gint pop3_getsize_list_send	(Pop3Session *session);
+static gint pop3_getsize_list_recv	(Pop3Session *session,
+					 const gchar *msg);
+static gint pop3_retr_send		(Pop3Session *session);
+static gint pop3_retr_recv		(Pop3Session *session,
+					 const gchar *data,
+					 guint        len);
+static gint pop3_delete_send		(Pop3Session *session);
+static gint pop3_delete_recv		(Pop3Session *session);
+static gint pop3_logout_send		(Pop3Session *session);
 
-#define LOOKUP_NEXT_MSG()							\
-{										\
-	Pop3MsgInfo *msg;							\
-	PrefsAccount *ac = state->ac_prefs;					\
-	gint size;								\
-	gboolean size_limit_over;						\
-										\
-	for (;;) {								\
-		msg = &state->msg[state->cur_msg];				\
-		size = msg->size;						\
-		size_limit_over =						\
-		    (ac->enable_size_limit &&					\
-		     ac->size_limit > 0 &&					\
-		     size > ac->size_limit * 1024);				\
-										\
-		if (ac->rmmail &&						\
-		    msg->recv_time != RECV_TIME_NONE &&				\
-		    msg->recv_time != RECV_TIME_KEEP &&				\
-		    state->current_time - msg->recv_time >=			\
-		    ac->msg_leave_time * 24 * 60 * 60) {			\
-			log_print(_("POP3: Deleting expired message %d\n"),	\
-				  state->cur_msg);				\
-			return POP3_DELETE_SEND;				\
-		}								\
-										\
-		if (size_limit_over)						\
-			log_print(_("POP3: Skipping message %d (%d bytes)\n"),	\
-				  state->cur_msg, size);			\
-										\
-		if (size == 0 || msg->received || size_limit_over) {		\
-			state->cur_total_bytes += size;				\
-			if (state->cur_msg == state->count)			\
-				return POP3_LOGOUT_SEND;			\
-			else							\
-				state->cur_msg++;				\
-		} else								\
-			break;							\
-	}									\
-}
+static void pop3_gen_send		(Pop3Session	*session,
+					 const gchar	*format, ...);
 
-static gint pop3_ok(SockInfo *sock, gchar *argbuf);
-static void pop3_gen_send(SockInfo *sock, const gchar *format, ...);
-static gint pop3_gen_recv(SockInfo *sock, gchar *buf, gint size);
+static void pop3_session_destroy	(Session	*session);
+
+static gint pop3_write_msg_to_file	(const gchar	*file,
+					 const gchar	*data,
+					 guint		 len);
+
+static Pop3State pop3_lookup_next	(Pop3Session	*session);
+static gint pop3_ok			(Pop3Session	*session,
+					 const gchar	*msg);
+
+static gint pop3_session_recv_msg		(Session	*session,
+						 const gchar	*msg);
+static gint pop3_session_recv_data_finished	(Session	*session,
+						 guchar		*data,
+						 guint		 len);
+/* disable sd
 static gboolean pop3_sd_get_next (Pop3State *state);
 static void pop3_sd_new_header(Pop3State *state);
 gboolean pop3_sd_state(Pop3State *state, gint cur_state, guint *next_state);
-
-gint pop3_greeting_recv(SockInfo *sock, gpointer data)
+*/
+static gint pop3_greeting_recv(Pop3Session *session, const gchar *msg)
 {
-	Pop3State *state = (Pop3State *)data;
-	gchar buf[POPBUFSIZE];
-	gint ok;
+	session->state = POP3_GREETING;
 
-	if ((ok = pop3_ok(sock, buf)) == PS_SUCCESS) {
-		state->greeting = g_strdup(buf);
-#if USE_OPENSSL
-		if (state->ac_prefs->ssl_pop == SSL_STARTTLS)
-			return POP3_STLS_SEND;
-#endif
-		if (state->ac_prefs->protocol == A_APOP)
-			return POP3_GETAUTH_APOP_SEND;
-		else
-			return POP3_GETAUTH_USER_SEND;
-	} else {
-		state->error_val = ok;
-		return -1;
-	}
+	session->greeting = g_strdup(msg);
+	return PS_SUCCESS;
 }
 
 #if USE_OPENSSL
-gint pop3_stls_send(SockInfo *sock, gpointer data)
+static gint pop3_stls_send(Pop3Session *session)
 {
-	pop3_gen_send(sock, "STLS");
-
-	return POP3_STLS_RECV;
+	session->state = POP3_STLS;
+	pop3_gen_send(session, "STLS");
+	return PS_SUCCESS;
 }
 
-gint pop3_stls_recv(SockInfo *sock, gpointer data)
+static gint pop3_stls_recv(Pop3Session *session)
 {
-	Pop3State *state = (Pop3State *)data;
-	gint ok;
-
-	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
-		if (!ssl_init_socket_with_method(sock, SSL_METHOD_TLSv1)) {
-			state->error_val = PS_SOCKET;
-			return -1;
-		}
-		if (state->ac_prefs->protocol == A_APOP)
-			return POP3_GETAUTH_APOP_SEND;
-		else
-			return POP3_GETAUTH_USER_SEND;
-	} else if (ok == PS_PROTOCOL) {
-		log_warning(_("can't start TLS session\n"));
-		state->error_val = ok;
-		return POP3_LOGOUT_SEND;
-	} else {
-		state->error_val = ok;
+	if (session_start_tls(SESSION(session)) < 0) {
+		session->error_val = PS_SOCKET;
 		return -1;
 	}
+	return PS_SUCCESS;
 }
 #endif /* USE_OPENSSL */
 
-gint pop3_getauth_user_send(SockInfo *sock, gpointer data)
+static gint pop3_getauth_user_send(Pop3Session *session)
 {
-	Pop3State *state = (Pop3State *)data;
+	g_return_val_if_fail(session->user != NULL, -1);
 
-	g_return_val_if_fail(state->user != NULL, -1);
-
-	pop3_gen_send(sock, "USER %s", state->user);
-
-	return POP3_GETAUTH_USER_RECV;
+	session->state = POP3_GETAUTH_USER;
+	pop3_gen_send(session, "USER %s", session->user);
+	return PS_SUCCESS;
 }
 
-gint pop3_getauth_user_recv(SockInfo *sock, gpointer data)
+static gint pop3_getauth_pass_send(Pop3Session *session)
 {
-	Pop3State *state = (Pop3State *)data;
+	g_return_val_if_fail(session->pass != NULL, -1);
 
-	if (pop3_ok(sock, NULL) == PS_SUCCESS)
-		return POP3_GETAUTH_PASS_SEND;
-	else {
-		log_warning(_("error occurred on authentication\n"));
-		state->error_val = PS_AUTHFAIL;
-		return -1;
-	}
+	session->state = POP3_GETAUTH_PASS;
+	pop3_gen_send(session, "PASS %s", session->pass);
+	return PS_SUCCESS;
 }
 
-gint pop3_getauth_pass_send(SockInfo *sock, gpointer data)
+static gint pop3_getauth_apop_send(Pop3Session *session)
 {
-	Pop3State *state = (Pop3State *)data;
-
-	g_return_val_if_fail(state->pass != NULL, -1);
-
-	pop3_gen_send(sock, "PASS %s", state->pass);
-
-	return POP3_GETAUTH_PASS_RECV;
-}
-
-gint pop3_getauth_pass_recv(SockInfo *sock, gpointer data)
-{
-	Pop3State *state = (Pop3State *)data;
-	gint ok;
-
-	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS)
-		return POP3_GETRANGE_STAT_SEND;
-	else if (ok == PS_LOCKBUSY) {
-		log_warning(_("mailbox is locked\n"));
-		state->error_val = ok;
-		return -1;
-	} else {
-		log_warning(_("error occurred on authentication\n"));
-		state->error_val = PS_AUTHFAIL;
-		return -1;
-	}
-}
-
-gint pop3_getauth_apop_send(SockInfo *sock, gpointer data)
-{
-	Pop3State *state = (Pop3State *)data;
 	gchar *start, *end;
 	gchar *apop_str;
 	gchar md5sum[33];
 
-	g_return_val_if_fail(state->user != NULL, -1);
-	g_return_val_if_fail(state->pass != NULL, -1);
+	g_return_val_if_fail(session->user != NULL, -1);
+	g_return_val_if_fail(session->pass != NULL, -1);
 
-	if ((start = strchr(state->greeting, '<')) == NULL) {
+	session->state = POP3_GETAUTH_APOP;
+
+	if ((start = strchr(session->greeting, '<')) == NULL) {
 		log_warning(_("Required APOP timestamp not found "
 			      "in greeting\n"));
-		state->error_val = PS_PROTOCOL;
+		session->error_val = PS_PROTOCOL;
 		return -1;
 	}
 
 	if ((end = strchr(start, '>')) == NULL || end == start + 1) {
 		log_warning(_("Timestamp syntax error in greeting\n"));
-		state->error_val = PS_PROTOCOL;
+		session->error_val = PS_PROTOCOL;
 		return -1;
 	}
 
 	*(end + 1) = '\0';
 
-	apop_str = g_strconcat(start, state->pass, NULL);
+	apop_str = g_strconcat(start, session->pass, NULL);
 	md5_hex_digest(md5sum, apop_str);
 	g_free(apop_str);
 
-	pop3_gen_send(sock, "APOP %s %s", state->user, md5sum);
+	pop3_gen_send(session, "APOP %s %s", session->user, md5sum);
 
-	return POP3_GETAUTH_APOP_RECV;
+	return PS_SUCCESS;
 }
 
-gint pop3_getauth_apop_recv(SockInfo *sock, gpointer data)
+static gint pop3_getrange_stat_send(Pop3Session *session)
 {
-	Pop3State *state = (Pop3State *)data;
-	gint ok;
+	session->state = POP3_GETRANGE_STAT;
+	pop3_gen_send(session, "STAT");
+	return PS_SUCCESS;
+}
 
-	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS)
-		return POP3_GETRANGE_STAT_SEND;
-	else if (ok == PS_LOCKBUSY) {
-		log_warning(_("mailbox is locked\n"));
-		state->error_val = ok;
+static gint pop3_getrange_stat_recv(Pop3Session *session, const gchar *msg)
+{
+	if (sscanf(msg, "%d %d", &session->count, &session->total_bytes) != 2) {
+		log_warning(_("POP3 protocol error\n"));
+		session->error_val = PS_PROTOCOL;
 		return -1;
 	} else {
-		log_warning(_("error occurred on authentication\n"));
-		state->error_val = PS_AUTHFAIL;
-		return -1;
-	}
-}
-
-gint pop3_getrange_stat_send(SockInfo *sock, gpointer data)
-{
-	pop3_gen_send(sock, "STAT");
-
-	return POP3_GETRANGE_STAT_RECV;
-}
-
-gint pop3_getrange_stat_recv(SockInfo *sock, gpointer data)
-{
-	Pop3State *state = (Pop3State *)data;
-	gchar buf[POPBUFSIZE + 1];
-	gint ok;
-
-	if ((ok = pop3_ok(sock, buf)) == PS_SUCCESS) {
-		if (sscanf(buf, "%d %d", &state->count, &state->total_bytes)
-		    != 2) {
-			log_warning(_("POP3 protocol error\n"));
-			state->error_val = PS_PROTOCOL;
-			return -1;
+		if (session->count == 0) {
+			session->uidl_is_valid = TRUE;
 		} else {
-			if (state->count == 0) {
-				state->uidl_is_valid = TRUE;
-				return POP3_LOGOUT_SEND;
-			} else {
-				state->msg = g_new0
-					(Pop3MsgInfo, state->count + 1);
-				state->cur_msg = 1;
-				return POP3_GETRANGE_UIDL_SEND;
-			}
+			session->msg = g_new0(Pop3MsgInfo, session->count + 1);
+			session->cur_msg = 1;
 		}
-	} else if (ok == PS_PROTOCOL) {
-		state->error_val = ok;
-		return POP3_LOGOUT_SEND;
+	}
+
+	return PS_SUCCESS;
+}
+
+static gint pop3_getrange_last_send(Pop3Session *session)
+{
+	session->state = POP3_GETRANGE_LAST;
+	pop3_gen_send(session, "LAST");
+	return PS_SUCCESS;
+}
+
+static gint pop3_getrange_last_recv(Pop3Session *session, const gchar *msg)
+{
+	gint last;
+
+	if (sscanf(msg, "%d", &last) == 0) {
+		log_warning(_("POP3 protocol error\n"));
+		session->error_val = PS_PROTOCOL;
+		return -1;
 	} else {
-		state->error_val = ok;
-		return -1;
+		if (session->count > last)
+			session->cur_msg = last + 1;
+		else
+			session->cur_msg = 0;
 	}
+
+	return PS_SUCCESS;
 }
 
-gint pop3_getrange_last_send(SockInfo *sock, gpointer data)
+static gint pop3_getrange_uidl_send(Pop3Session *session)
 {
-	pop3_gen_send(sock, "LAST");
-
-	return POP3_GETRANGE_LAST_RECV;
+	session->state = POP3_GETRANGE_UIDL;
+	pop3_gen_send(session, "UIDL");
+	return PS_SUCCESS;
 }
 
-gint pop3_getrange_last_recv(SockInfo *sock, gpointer data)
+static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *msg)
 {
-	Pop3State *state = (Pop3State *)data;
-	gchar buf[POPBUFSIZE + 1];
-
-	if (pop3_ok(sock, buf) == PS_SUCCESS) {
-		gint last;
-
-		if (sscanf(buf, "%d", &last) == 0) {
-			log_warning(_("POP3 protocol error\n"));
-			state->error_val = PS_PROTOCOL;
-			return -1;
-		} else {
-			if (state->count == last)
-				return POP3_LOGOUT_SEND;
-			else {
-				state->cur_msg = last + 1;
-				return POP3_GETSIZE_LIST_SEND;
-			}
-		}
-	} else
-		return POP3_GETSIZE_LIST_SEND;
-}
-
-gint pop3_getrange_uidl_send(SockInfo *sock, gpointer data)
-{
-	pop3_gen_send(sock, "UIDL");
-
-	return POP3_GETRANGE_UIDL_RECV;
-}
-
-gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
-{
-	Pop3State *state = (Pop3State *)data;
-	gboolean new = FALSE;
-	gboolean get_all = FALSE;
-	gchar buf[POPBUFSIZE];
 	gchar id[IDLEN + 1];
-	gint len;
+	gint num;
+	time_t recv_time;
 	gint next_state;
 
-	if (!state->uidl_table) new = TRUE;
-#if 0
-	if (state->ac_prefs->getall ||
-	    (state->ac_prefs->rmmail && state->ac_prefs->msg_leave_time == 0))
-#endif
-	if (state->ac_prefs->getall)
-		get_all = TRUE;
-
-	if (pop3_ok(sock, NULL) != PS_SUCCESS) {
-		/* UIDL is not supported */
-		if (pop3_sd_state(state, POP3_GETRANGE_UIDL_RECV, &next_state))
-			return next_state;
-
-		if (!get_all)
-			return POP3_GETRANGE_LAST_SEND;
-		else
-			return POP3_GETSIZE_LIST_SEND;
+	if (msg[0] == '.') {
+		session->uidl_is_valid = TRUE;
+		return PS_SUCCESS;
 	}
 
-	while ((len = sock_gets(sock, buf, sizeof(buf))) > 0) {
-		gint num;
-		time_t recv_time;
-
-		if (buf[0] == '.') break;
-		if (sscanf(buf, "%d %" Xstr(IDLEN) "s", &num, id) != 2)
-			continue;
-		if (num <= 0 || num > state->count) continue;
-
-		state->msg[num].uidl = g_strdup(id);
-
-		if (!state->uidl_table) continue;
-
-		recv_time = (time_t)g_hash_table_lookup(state->uidl_table, id);
-		state->msg[num].recv_time = recv_time;
-
-		if (!get_all && recv_time != RECV_TIME_NONE)
-			state->msg[num].received = TRUE;
-
-		if (new == FALSE &&
-		    (get_all || recv_time == RECV_TIME_NONE ||
-		     state->ac_prefs->rmmail)) {
-			state->cur_msg = num;
-			new = TRUE;
-		}
-	}
-
-	if (len < 0) {
-		log_error(_("Socket error\n"));
-		state->error_val = PS_SOCKET;
+	if (sscanf(msg, "%d %" Xstr(IDLEN) "s", &num, id) != 2)
 		return -1;
+	if (num <= 0 || num > session->count)
+		return -1;
+
+	session->msg[num].uidl = g_strdup(id);
+
+	if (!session->uidl_table)
+		return PS_CONTINUE;
+
+	recv_time = (time_t)g_hash_table_lookup(session->uidl_table, id);
+	session->msg[num].recv_time = recv_time;
+
+	if (!session->ac_prefs->getall && recv_time != RECV_TIME_NONE)
+		session->msg[num].received = TRUE;
+
+	if (!session->new_msg_exist &&
+	    (session->ac_prefs->getall || recv_time == RECV_TIME_NONE ||
+	     session->ac_prefs->rmmail)) {
+		session->cur_msg = num;
+		session->new_msg_exist = TRUE;
 	}
 
-	state->uidl_is_valid = TRUE;
+/* disable sd
 	if (pop3_sd_state(state, POP3_GETRANGE_UIDL_RECV, &next_state))
 		return next_state;
-
-	if (new == TRUE)
-		return POP3_GETSIZE_LIST_SEND;
-	else
-		return POP3_LOGOUT_SEND;
+*/
+	return PS_CONTINUE;
 }
 
-gint pop3_getsize_list_send(SockInfo *sock, gpointer data)
+static gint pop3_getsize_list_send(Pop3Session *session)
 {
-	pop3_gen_send(sock, "LIST");
-
-	return POP3_GETSIZE_LIST_RECV;
+	session->state = POP3_GETSIZE_LIST;
+	pop3_gen_send(session, "LIST");
+	return PS_SUCCESS;
 }
 
-gint pop3_getsize_list_recv(SockInfo *sock, gpointer data)
+static gint pop3_getsize_list_recv(Pop3Session *session, const gchar *msg)
 {
-	Pop3State *state = (Pop3State *)data;
-	gchar buf[POPBUFSIZE];
-	gint len;
+	guint num, size;
 	gint next_state;
 
-	if (pop3_ok(sock, NULL) != PS_SUCCESS) return POP3_LOGOUT_SEND;
+	if (msg[0] == '.')
+		return PS_SUCCESS;
 
-	state->cur_total_bytes = 0;
-	state->cur_total_recv_bytes = 0;
-
-	while ((len = sock_gets(sock, buf, sizeof(buf))) > 0) {
-		guint num, size;
-
-		if (buf[0] == '.') break;
-		if (sscanf(buf, "%u %u", &num, &size) != 2) {
-			state->error_val = PS_PROTOCOL;
-			return -1;
-		}
-
-		if (num > 0 && num <= state->count)
-			state->msg[num].size = size;
-		if (num > 0 && num < state->cur_msg)
-			state->cur_total_bytes += size;
-	}
-
-	if (len < 0) {
-		log_error(_("Socket error\n"));
-		state->error_val = PS_SOCKET;
+	if (sscanf(msg, "%u %u", &num, &size) != 2) {
+		session->error_val = PS_PROTOCOL;
 		return -1;
 	}
 
+	if (num > 0 && num <= session->count)
+		session->msg[num].size = size;
+	if (num > 0 && num < session->cur_msg)
+		session->cur_total_bytes += size;
+
+/* disable sd
 	if (pop3_sd_state(state, POP3_GETSIZE_LIST_RECV, &next_state))
 		return next_state;
-
-	LOOKUP_NEXT_MSG();
-	return POP3_RETR_SEND;
+*/
+	return PS_CONTINUE;
 }
- 
+/* disable sd 
 gint pop3_top_send(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
@@ -496,168 +353,70 @@ gint pop3_top_recv(SockInfo *sock, gpointer data)
 	} else
 		return POP3_LOGOUT_SEND;
 }
-
-gint pop3_retr_send(SockInfo *sock, gpointer data)
+*/
+static gint pop3_retr_send(Pop3Session *session)
 {
-	Pop3State *state = (Pop3State *)data;
-
-	pop3_gen_send(sock, "RETR %d", state->cur_msg);
-
-	return POP3_RETR_RECV;
+	session->state = POP3_RETR;
+	pop3_gen_send(session, "RETR %d", session->cur_msg);
+	return PS_SUCCESS;
 }
 
-gint pop3_retr_recv(SockInfo *sock, gpointer data)
+static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 {
-	Pop3State *state = (Pop3State *)data;
 	gchar *file;
-	gint ok, drop_ok;
+	gint drop_ok;
 	gint next_state;
-	gint write_val;
-	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
-		file = get_tmp_file();
-		if ((write_val = recv_write_to_file(sock, file)) < 0) {
-			g_free(file);
-			if (!state->cancelled)
-				state->error_val = 
-					(write_val == -1 ? PS_IOERR : PS_SOCKET);
-			return -1;
-		}
 
-		/* drop_ok: 0: success 1: don't receive -1: error */
-		drop_ok = inc_drop_message(file, state);
+	file = get_tmp_file();
+	if (pop3_write_msg_to_file(file, data, len) < 0) {
 		g_free(file);
-		if (drop_ok < 0) {
-			state->error_val = PS_ERROR;
-			return -1;
-		}
-
-		if (pop3_sd_state(state, POP3_RETR_RECV, &next_state))
-			return next_state;
-	
-		state->cur_total_bytes += state->msg[state->cur_msg].size;
-		state->cur_total_recv_bytes += state->msg[state->cur_msg].size;
-		state->cur_total_num++;
-
-		state->msg[state->cur_msg].received = TRUE;
-		state->msg[state->cur_msg].recv_time =
-			drop_ok == 1 ? RECV_TIME_KEEP : state->current_time;
-
-		if (drop_ok == 0 && state->ac_prefs->rmmail &&
-		    state->ac_prefs->msg_leave_time == 0)
-			return POP3_DELETE_SEND;
-
-		if (state->cur_msg < state->count) {
-			state->cur_msg++;
-			LOOKUP_NEXT_MSG();
-			return POP3_RETR_SEND;
-		} else
-			return POP3_LOGOUT_SEND;
-	} else if (ok == PS_PROTOCOL) {
-		state->error_val = ok;
-		return POP3_LOGOUT_SEND;
-	} else {
-		state->error_val = ok;
+		session->error_val = PS_IOERR;
 		return -1;
 	}
-}
 
-gint pop3_delete_send(SockInfo *sock, gpointer data)
-{
-	Pop3State *state = (Pop3State *)data;
-
-	pop3_gen_send(sock, "DELE %d", state->cur_msg);
-
-	return POP3_DELETE_RECV;
-}
-
-gint pop3_delete_recv(SockInfo *sock, gpointer data)
-{
-	Pop3State *state = (Pop3State *)data;
-	gint next_state;
-	gint ok;
-
-	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
-		state->msg[state->cur_msg].deleted = TRUE;
-		
-		if (pop3_sd_state(state, POP3_DELETE_RECV, &next_state))
-			return next_state;	
-
-		if (state->cur_msg < state->count) {
-			state->cur_msg++;
-			LOOKUP_NEXT_MSG();
-			return POP3_RETR_SEND;
-		} else
-			return POP3_LOGOUT_SEND;
-	} else if (ok == PS_PROTOCOL) {
-		state->error_val = ok;
-		return POP3_LOGOUT_SEND;
-	} else {
-		state->error_val = ok;
+	/* drop_ok: 0: success 1: don't receive -1: error */
+	drop_ok = inc_drop_message(file, session);
+	g_free(file);
+	if (drop_ok < 0) {
+		session->error_val = PS_ERROR;
 		return -1;
 	}
+/* disable sd
+	if (pop3_sd_state(state, POP3_RETR_RECV, &next_state))
+		return next_state;
+*/	
+	session->cur_total_bytes += session->msg[session->cur_msg].size;
+	session->cur_total_recv_bytes += session->msg[session->cur_msg].size;
+	session->cur_total_num++;
+
+	session->msg[session->cur_msg].received = TRUE;
+	session->msg[session->cur_msg].recv_time =
+		drop_ok == 1 ? RECV_TIME_KEEP : session->current_time;
+
+	return PS_SUCCESS;
 }
 
-gint pop3_logout_send(SockInfo *sock, gpointer data)
+static gint pop3_delete_send(Pop3Session *session)
 {
-	pop3_gen_send(sock, "QUIT");
-
-	return POP3_LOGOUT_RECV;
+	session->state = POP3_DELETE;
+	pop3_gen_send(session, "DELE %d", session->cur_msg);
+	return PS_SUCCESS;
 }
 
-gint pop3_logout_recv(SockInfo *sock, gpointer data)
+static gint pop3_delete_recv(Pop3Session *session)
 {
-	Pop3State *state = (Pop3State *)data;
-	gint ok;
-
-	if ((ok = pop3_ok(sock, NULL)) != PS_SUCCESS)
-		state->error_val = ok;
-
-	return -1;
+	session->msg[session->cur_msg].deleted = TRUE;
+	return PS_SUCCESS;
 }
 
-static gint pop3_ok(SockInfo *sock, gchar *argbuf)
+static gint pop3_logout_send(Pop3Session *session)
 {
-	gint ok;
-	gchar buf[POPBUFSIZE + 1];
-	gchar *bufp;
-
-	if ((ok = pop3_gen_recv(sock, buf, sizeof(buf))) == PS_SUCCESS) {
-		bufp = buf;
-		if (*bufp == '+' || *bufp == '-')
-			bufp++;
-		else
-			return PS_PROTOCOL;
-
-		while (isalpha(*bufp))
-			bufp++;
-
-		if (*bufp)
-			*(bufp++) = '\0';
-
-		if (!strcmp(buf, "+OK"))
-			ok = PS_SUCCESS;
-		else if (!strncmp(buf, "-ERR", 4)) {
-			if (strstr(bufp, "lock") ||
-				 strstr(bufp, "Lock") ||
-				 strstr(bufp, "LOCK") ||
-				 strstr(bufp, "wait"))
-				ok = PS_LOCKBUSY;
-			else
-				ok = PS_PROTOCOL;
-
-			if (*bufp)
-				fprintf(stderr, "POP3: %s\n", bufp);
-		} else
-			ok = PS_PROTOCOL;
-
-		if (argbuf)
-			strcpy(argbuf, bufp);
-	}
-
-	return ok;
+	session->state = POP3_LOGOUT;
+	pop3_gen_send(session, "QUIT");
+	return PS_SUCCESS;
 }
 
-static void pop3_gen_send(SockInfo *sock, const gchar *format, ...)
+static void pop3_gen_send(Pop3Session *session, const gchar *format, ...)
 {
 	gchar buf[POPBUFSIZE + 1];
 	va_list args;
@@ -671,22 +430,9 @@ static void pop3_gen_send(SockInfo *sock, const gchar *format, ...)
 	else
 		log_print("POP3> %s\n", buf);
 
-	strcat(buf, "\r\n");
-	sock_write(sock, buf, strlen(buf));
+	session_send_msg(SESSION(session), SESSION_MSG_NORMAL, buf);
 }
-
-static gint pop3_gen_recv(SockInfo *sock, gchar *buf, gint size)
-{
-	if (sock_gets(sock, buf, size) < 0) {
-		return PS_SOCKET;
-	} else {
-		strretchomp(buf);
-		log_print("POP3< %s\n", buf);
-
-		return PS_SUCCESS;
-	}
-}
-
+/* disable sd
 static void pop3_sd_new_header(Pop3State *state)
 {
 	HeaderItems *new_msg;
@@ -835,44 +581,56 @@ gboolean pop3_sd_get_next(Pop3State *state)
 		return FALSE;
 	}
 }
-
-Pop3State *pop3_state_new(PrefsAccount *account)
+*/
+Session *pop3_session_new(PrefsAccount *account)
 {
-	Pop3State *state;
+	Pop3Session *session;
 
 	g_return_val_if_fail(account != NULL, NULL);
 
-	state = g_new0(Pop3State, 1);
+	session = g_new0(Pop3Session, 1);
 
-	state->ac_prefs = account;
-	state->uidl_table = pop3_get_uidl_table(account);
-	state->current_time = time(NULL);
-	state->error_val = PS_SUCCESS;
+	SESSION(session)->type = SESSION_POP3;
+	SESSION(session)->server = NULL;
+	SESSION(session)->port = 0;
+	SESSION(session)->sock = NULL;
+	SESSION(session)->state = SESSION_READY;
+	SESSION(session)->data = NULL;
 
-	return state;
+	SESSION(session)->recv_msg = pop3_session_recv_msg;
+	SESSION(session)->recv_data_finished = pop3_session_recv_data_finished;
+	SESSION(session)->send_data_finished = NULL;
+
+	SESSION(session)->destroy = pop3_session_destroy;
+
+	session->state = POP3_READY;
+	session->ac_prefs = account;
+	session->uidl_table = pop3_get_uidl_table(account);
+	session->current_time = time(NULL);
+	session->error_val = PS_SUCCESS;
+
+	return SESSION(session);
 }
 
-void pop3_state_destroy(Pop3State *state)
+static void pop3_session_destroy(Session *session)
 {
+	Pop3Session *pop3_session = POP3_SESSION(session);
 	gint n;
 
-	g_return_if_fail(state != NULL);
+	g_return_if_fail(session != NULL);
 
-	for (n = 1; n <= state->count; n++)
-		g_free(state->msg[n].uidl);
-	g_free(state->msg);
+	for (n = 1; n <= pop3_session->count; n++)
+		g_free(pop3_session->msg[n].uidl);
+	g_free(pop3_session->msg);
 
-	if (state->uidl_table) {
-		hash_free_strings(state->uidl_table);
-		g_hash_table_destroy(state->uidl_table);
+	if (pop3_session->uidl_table) {
+		hash_free_strings(pop3_session->uidl_table);
+		g_hash_table_destroy(pop3_session->uidl_table);
 	}
 
-	g_free(state->greeting);
-	g_free(state->user);
-	g_free(state->pass);
-	g_free(state->prev_folder);
-
-	g_free(state);
+	g_free(pop3_session->greeting);
+	g_free(pop3_session->user);
+	g_free(pop3_session->pass);
 }
 
 GHashTable *pop3_get_uidl_table(PrefsAccount *ac_prefs)
@@ -925,33 +683,324 @@ GHashTable *pop3_get_uidl_table(PrefsAccount *ac_prefs)
 	return table;
 }
 
-gint pop3_write_uidl_list(Pop3State *state)
+gint pop3_write_uidl_list(Pop3Session *session)
 {
 	gchar *path;
 	FILE *fp;
 	Pop3MsgInfo *msg;
 	gint n;
 
-	if (!state->uidl_is_valid) return 0;
+	if (!session->uidl_is_valid) return 0;
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl", G_DIR_SEPARATOR_S,
-			   state->ac_prefs->recv_server,
-			   "-", state->ac_prefs->userid, NULL);
+			   session->ac_prefs->recv_server,
+			   "-", session->ac_prefs->userid, NULL);
 	if ((fp = fopen(path, "wb")) == NULL) {
 		FILE_OP_ERROR(path, "fopen");
 		g_free(path);
 		return -1;
 	}
 
-	for (n = 1; n <= state->count; n++) {
-		msg = &state->msg[n];
+	for (n = 1; n <= session->count; n++) {
+		msg = &session->msg[n];
 		if (msg->uidl && msg->received && !msg->deleted)
 			fprintf(fp, "%s\t%ld\n", msg->uidl, msg->recv_time);
 	}
 
 	if (fclose(fp) == EOF) FILE_OP_ERROR(path, "fclose");
 	g_free(path);
+
+	return 0;
+}
+
+static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
+				   guint len)
+{
+	FILE *fp;
+	const gchar *prev, *cur;
+
+	g_return_val_if_fail(file != NULL, -1);
+
+	if ((fp = fopen(file, "wb")) == NULL) {
+		FILE_OP_ERROR(file, "fopen");
+		return -1;
+	}
+
+	if (change_file_mode_rw(fp, file) < 0)
+		FILE_OP_ERROR(file, "chmod");
+
+	/* +------------------+----------------+--------------------------+ *
+	 * ^data              ^prev            ^cur             data+len-1^ */
+
+	prev = data;
+	while ((cur = memchr(prev, '\r', len - (prev - data))) != NULL) {
+		if ((cur > prev && fwrite(prev, cur - prev, 1, fp) < 1) ||
+		    fputc('\n', fp) == EOF) {
+			FILE_OP_ERROR(file, "fwrite");
+			g_warning("can't write to file: %s\n", file);
+			fclose(fp);
+			unlink(file);
+			return -1;
+		}
+
+		if (cur == data + len - 1) {
+			prev = cur + 1;
+			break;
+		}
+
+		if (*(cur + 1) == '\n')
+			prev = cur + 2;
+		else
+			prev = cur + 1;
+
+		if (prev - data >= len)
+			break;
+	}
+
+	if (prev - data < len &&
+	    fwrite(prev, len - (prev - data), 1, fp) < 1) {
+		FILE_OP_ERROR(file, "fwrite");
+		g_warning("can't write to file: %s\n", file);
+		fclose(fp);
+		unlink(file);
+		return -1;
+	}
+	if (data[len - 1] != '\r' && data[len - 1] != '\n') {
+		if (fputc('\n', fp) == EOF) {
+			FILE_OP_ERROR(file, "fputc");
+			g_warning("can't write to file: %s\n", file);
+			fclose(fp);
+			unlink(file);
+			return -1;
+		}
+	}
+
+	if (fclose(fp) == EOF) {
+		FILE_OP_ERROR(file, "fclose");
+		unlink(file);
+		return -1;
+	}
+
+	return 0;
+}
+
+static Pop3State pop3_lookup_next(Pop3Session *session)
+{
+	Pop3MsgInfo *msg;
+	PrefsAccount *ac = session->ac_prefs;
+	gint size;
+	gboolean size_limit_over;
+
+	for (;;) {
+		msg = &session->msg[session->cur_msg];
+		size = msg->size;
+		size_limit_over =
+		    (ac->enable_size_limit &&
+		     ac->size_limit > 0 &&
+		     size > ac->size_limit * 1024);
+
+		if (ac->rmmail &&
+		    msg->recv_time != RECV_TIME_NONE &&
+		    msg->recv_time != RECV_TIME_KEEP &&
+		    session->current_time - msg->recv_time >=
+		    ac->msg_leave_time * 24 * 60 * 60) {
+			log_print(_("POP3: Deleting expired message %d\n"),
+				  session->cur_msg);
+			pop3_delete_send(session);
+			return POP3_DELETE;
+		}
+
+		if (size_limit_over)
+			log_print
+				(_("POP3: Skipping message %d (%d bytes)\n"),
+				  session->cur_msg, size);
+
+		if (size == 0 || msg->received || size_limit_over) {
+			session->cur_total_bytes += size;
+			if (session->cur_msg == session->count) {
+				pop3_logout_send(session);
+				return POP3_LOGOUT;
+			} else
+				session->cur_msg++;
+		} else
+			break;
+	}
+
+	pop3_retr_send(session);
+	return POP3_RETR;
+}
+
+static gint pop3_ok(Pop3Session *session, const gchar *msg)
+{
+	gint ok;
+
+	if (!strncmp(msg, "+OK", 3))
+		ok = PS_SUCCESS;
+	else if (!strncmp(msg, "-ERR", 4)) {
+		if (strstr(msg + 4, "lock") ||
+		    strstr(msg + 4, "Lock") ||
+		    strstr(msg + 4, "LOCK") ||
+		    strstr(msg + 4, "wait"))
+			ok = PS_LOCKBUSY;
+		else
+			ok = PS_PROTOCOL;
+
+		fprintf(stderr, "POP3: %s\n", msg);
+	} else
+		ok = PS_PROTOCOL;
+
+	return ok;
+}
+
+static gint pop3_session_recv_msg(Session *session, const gchar *msg)
+{
+	Pop3Session *pop3_session = POP3_SESSION(session);
+	gint val;
+	const gchar *body;
+
+	body = msg;
+	if (pop3_session->state != POP3_GETRANGE_UIDL_RECV &&
+	    pop3_session->state != POP3_GETSIZE_LIST_RECV) {
+		log_print("POP3< %s\n", msg);
+		val = pop3_ok(pop3_session, msg);
+		if (val != PS_SUCCESS) {
+			pop3_session->state = POP3_ERROR;
+			pop3_session->error_val = val;
+			return -1;
+		}
+
+		if (*body == '+' || *body == '-')
+			body++;
+		while (isalpha(*body))
+			body++;
+		while (isspace(*body))
+			body++;
+	}
+
+	switch (pop3_session->state) {
+	case POP3_READY:
+	case POP3_GREETING:
+		pop3_greeting_recv(pop3_session, body);
+#if USE_OPENSSL
+		if (pop3_session->ac_prefs->ssl_pop == SSL_STARTTLS)
+			pop3_stls_send(pop3_session);
+		else
+#endif
+		if (pop3_session->ac_prefs->protocol == A_APOP)
+			pop3_getauth_apop_send(pop3_session);
+		else
+			pop3_getauth_user_send(pop3_session);
+		break;
+#if USE_OPENSSL
+	case POP3_STLS:
+		if (pop3_stls_recv(pop3_session) != PS_SUCCESS)
+			return -1;
+		if (pop3_session->ac_prefs->protocol == A_APOP)
+			pop3_getauth_apop_send(pop3_session);
+		else
+			pop3_getauth_user_send(pop3_session);
+		break;
+#endif
+	case POP3_GETAUTH_USER:
+		pop3_getauth_pass_send(pop3_session);
+		break;
+	case POP3_GETAUTH_PASS:
+	case POP3_GETAUTH_APOP:
+		pop3_getrange_stat_send(pop3_session);
+		break;
+	case POP3_GETRANGE_STAT:
+		if (pop3_getrange_stat_recv(pop3_session, body) < 0)
+			return -1;
+		if (pop3_session->count > 0)
+			pop3_getrange_uidl_send(pop3_session);
+		else
+			pop3_logout_send(pop3_session);
+		break;
+	case POP3_GETRANGE_LAST:
+		if (pop3_getrange_last_recv(pop3_session, body) < 0)
+			return -1;
+		if (pop3_session->cur_msg > 0)
+			pop3_getsize_list_send(pop3_session);
+		else
+			pop3_logout_send(pop3_session);
+		break;
+	case POP3_GETRANGE_UIDL:
+		pop3_session->state = POP3_GETRANGE_UIDL_RECV;
+		return 1;
+	case POP3_GETRANGE_UIDL_RECV:
+		val = pop3_getrange_uidl_recv(pop3_session, body);
+		if (val == PS_CONTINUE)
+			return 1;
+		else if (val == PS_SUCCESS) {
+			if (pop3_session->new_msg_exist)
+				pop3_getsize_list_send(pop3_session);
+			else
+				pop3_logout_send(pop3_session);
+		} else
+			return -1;
+		break;
+	case POP3_GETSIZE_LIST:
+		pop3_session->state = POP3_GETSIZE_LIST_RECV;
+		return 1;
+	case POP3_GETSIZE_LIST_RECV:
+		val = pop3_getsize_list_recv(pop3_session, body);
+		if (val == PS_CONTINUE)
+			return 1;
+		else if (val == PS_SUCCESS) {
+			if (pop3_lookup_next(pop3_session) == POP3_ERROR)
+				return -1;
+		} else
+			return -1;
+		break;
+	case POP3_RETR:
+		pop3_session->state = POP3_RETR_RECV;
+		session_recv_data
+			(session,
+			 pop3_session->msg[pop3_session->cur_msg].size, TRUE);
+		break;
+	case POP3_DELETE:
+		pop3_delete_recv(pop3_session);
+		if (pop3_session->cur_msg == pop3_session->count)
+			pop3_logout_send(pop3_session);
+		else {
+			pop3_session->cur_msg++;
+			if (pop3_lookup_next(pop3_session) == POP3_ERROR)
+				return -1;
+		}
+		break;
+	case POP3_LOGOUT:
+		session_disconnect(session);
+		break;
+	case POP3_ERROR:
+	default:
+		return -1;
+	}
+
+	return 0;
+}
+
+static gint pop3_session_recv_data_finished(Session *session, guchar *data,
+					    guint len)
+{
+	Pop3Session *pop3_session = POP3_SESSION(session);
+
+	if (len == 0)
+		return -1;
+
+	if (pop3_retr_recv(pop3_session, data, len) < 0)
+		return -1;
+
+	if (pop3_session->ac_prefs->rmmail &&
+	    pop3_session->ac_prefs->msg_leave_time == 0)
+		pop3_delete_send(pop3_session);
+	else if (pop3_session->cur_msg == pop3_session->count)
+		pop3_logout_send(pop3_session);
+	else {
+		pop3_session->cur_msg++;
+		if (pop3_lookup_next(pop3_session) == POP3_ERROR)
+			return -1;
+	}
 
 	return 0;
 }

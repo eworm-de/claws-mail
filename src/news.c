@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -217,19 +217,17 @@ static Session *news_session_new(const gchar *server, gushort port,
 	if (nntp_sock == NULL)
 		return NULL;
 
-	session = g_new(NNTPSession, 1);
+	session = g_new0(NNTPSession, 1);
+	session_init(SESSION(session));
 	SESSION(session)->type             = SESSION_NEWS;
 	SESSION(session)->server           = g_strdup(server);
-	session->nntp_sock                 = nntp_sock;
-	SESSION(session)->sock             = nntp_sock->sock;
-	SESSION(session)->connected        = TRUE;
-	SESSION(session)->phase            = SESSION_READY;
-	SESSION(session)->last_access_time = time(NULL);
+	SESSION(session)->sock             = NULL;
 	SESSION(session)->data             = NULL;
 
 	SESSION(session)->destroy          = news_session_destroy;
 
-	session->group = NULL;
+	session->nntp_sock                 = nntp_sock;
+	session->group                     = NULL;
 
 	return SESSION(session);
 }
@@ -238,7 +236,6 @@ void news_session_destroy(Session *session)
 {
 	nntp_close(NNTP_SESSION(session)->nntp_sock);
 	NNTP_SESSION(session)->nntp_sock = NULL;
-	session->sock = NULL;
 
 	g_free(NNTP_SESSION(session)->group);
 }
@@ -475,7 +472,8 @@ GSList *news_get_group_list(Folder *folder)
 			g_free(filename);
 			return NULL;
 		}
-		if (recv_write_to_file(SESSION(session)->sock, filename) < 0) {
+		if (recv_write_to_file
+			(session->nntp_sock->sock, filename) < 0) {
 			log_warning("can't retrieve newsgroup list\n");
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(folder)->session = NULL;

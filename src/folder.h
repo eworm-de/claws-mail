@@ -33,13 +33,6 @@ typedef struct _MaildirFolder		MaildirFolder;
 typedef struct _FolderItem		FolderItem;
 typedef struct _FolderItemUpdateData	FolderItemUpdateData;
 
-#include "prefs_folder_item.h"
-
-#include "prefs_account.h"
-#include "session.h"
-#include "procmsg.h"
-#include "msgcache.h"
-
 #define FOLDER(obj)		((Folder *)obj)
 #define FOLDER_TYPE(obj)	(FOLDER(obj)->class->type)
 
@@ -125,6 +118,13 @@ typedef void (*FolderDestroyNotify)	(Folder		*folder,
 					 gpointer	 data);
 typedef void (*FolderItemFunc)		(FolderItem	*item,
 					 gpointer	 data);
+
+#include "prefs_folder_item.h"
+
+#include "prefs_account.h"
+#include "session.h"
+#include "procmsg.h"
+#include "msgcache.h"
 
 struct _Folder
 {
@@ -228,7 +228,8 @@ struct _FolderClass
 						 MsgInfo	*msginfo);
 	void    	(*change_flags)		(Folder		*folder,
 						 FolderItem	*item,
-						 MsgInfo        *info);
+						 MsgInfo        *msginfo,
+						 MsgPermFlags	 newflags);
 };
 
 struct _LocalFolder
@@ -420,6 +421,9 @@ gint   folder_item_remove_msg		(FolderItem	*item,
 gint   folder_item_remove_msgs		(FolderItem	*item,
 					 GSList		*msglist);
 gint   folder_item_remove_all_msg	(FolderItem	*item);
+void 	folder_item_change_msg_flags	(FolderItem 	*item,
+					 MsgInfo 	*msginfo,
+					 MsgPermFlags 	 newflags);
 gboolean folder_item_is_msg_changed	(FolderItem	*item,
 					 MsgInfo	*msginfo);
 gchar *folder_item_get_cache_file	(FolderItem	*item);

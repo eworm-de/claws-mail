@@ -303,3 +303,8 @@ const gchar *plugin_desc()
 	       "(default: Yes) and select the folder where spam mail will be "
 	       "saved.\n";
 }
+
+const gchar *plugin_type()
+{
+	return "GTK";
+}

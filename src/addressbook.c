@@ -526,9 +526,9 @@ void addressbook_destroy() {
 	if( _clipBoard_ != NULL ) {
 		addrclip_free( _clipBoard_ );
 	}
-	addrcompl_teardown();
 	if( _addressIndex_ != NULL ) {
-	       addrindex_free_index( _addressIndex_ );
+		addrindex_teardown( _addressIndex_ );
+		addrindex_free_index( _addressIndex_ );
 	}
 	_addressSelect_ = NULL;
 	_clipBoard_ = NULL;
@@ -2483,9 +2483,11 @@ static void addressbook_load_group( GtkCTree *clist, ItemGroup *itemGroup ) {
 	}
 }
 
-static void addressbook_folder_load_one_person( GtkCTree *clist, ItemPerson *person,  
-						AddressTypeControlItem *atci, AddressTypeControlItem *atciMail) {
-	
+static void addressbook_folder_load_one_person(
+		GtkCTree *clist, ItemPerson *person,
+		AddressTypeControlItem *atci,
+		AddressTypeControlItem *atciMail )
+{
 	GtkCTreeNode *nodePerson = NULL;
 	GtkCTreeNode *nodeEMail = NULL;
 	gchar *text[N_COLS];
@@ -2577,8 +2579,10 @@ static void addressbook_folder_remove_node( GtkCTree *clist, GtkCTreeNode *node 
 	addrbook.listSelected = NULL;
 	gtk_ctree_remove_node( clist, node );
 	addressbook_menubar_set_sensitive( FALSE );
-	addressbook_menuitem_set_sensitive( gtk_ctree_node_get_row_data( 
-						GTK_CTREE(clist), addrbook.treeSelected ), addrbook.treeSelected );
+	addressbook_menuitem_set_sensitive(
+		gtk_ctree_node_get_row_data(
+			GTK_CTREE(clist), addrbook.treeSelected ),
+		addrbook.treeSelected );
 }
 
 static void addressbook_folder_refresh_one_person( GtkCTree *clist, ItemPerson *person ) {
@@ -2788,8 +2792,10 @@ static void addressbook_set_clist( AddressObject *obj ) {
 			/* Load root folder */
 			ItemFolder *rootFolder = NULL;
 			rootFolder = addrindex_ds_get_root_folder( ds );
-			addressbook_folder_load_person( ctreelist, addrindex_ds_get_root_folder( ds ) );
-			addressbook_folder_load_group( ctreelist, addrindex_ds_get_root_folder( ds ) );
+			addressbook_folder_load_person(
+				ctreelist, addrindex_ds_get_root_folder( ds ) );
+			addressbook_folder_load_group(
+				ctreelist, addrindex_ds_get_root_folder( ds ) );
 		}
 	}
 	else {
@@ -2854,7 +2860,8 @@ AdapterDSource *addressbook_create_ds_adapter( AddressDataSource *ds,
 }
 
 void addressbook_ads_set_name( AdapterDSource *adapter, gchar *value ) {
-	ADDRESS_OBJECT_NAME(adapter) = mgu_replace_string( ADDRESS_OBJECT_NAME(adapter), value );
+	ADDRESS_OBJECT_NAME(adapter) =
+		mgu_replace_string( ADDRESS_OBJECT_NAME(adapter), value );
 }
 
 /*
@@ -2885,8 +2892,10 @@ static void addressbook_load_tree( void ) {
 					ds = nodeDS->data;
 					newNode = NULL;
 					name = addrindex_ds_get_name( ds );
-					ads = addressbook_create_ds_adapter( ds, atci->objectType, name );
-					newNode = addressbook_add_object( node, ADDRESS_OBJECT(ads) );
+					ads = addressbook_create_ds_adapter(
+							ds, atci->objectType, name );
+					newNode = addressbook_add_object(
+							node, ADDRESS_OBJECT(ads) );
 					nodeDS = g_list_next( nodeDS );
 				}
 				gtk_ctree_expand( ctree, node );
@@ -2991,7 +3000,7 @@ void addressbook_read_file( void ) {
 	}
 
 	addrIndex = addrindex_create_index();
-	addrcompl_initialize();
+	addrindex_initialize( addrIndex );
 
 	/* Use new address book index. */
 	addrindex_set_file_path( addrIndex, get_rc_dir() );
@@ -4036,7 +4045,7 @@ static void addressbook_export_html_cb( void ) {
  * \param searchTerm Search string.
  * \param target     Target data.
  * \param callBack   Call back function.
- * \return ID allotcated to this query, or 0 if none.
+ * \return ID allocated to this query, or 0 if none.
  */
 gint addressbook_setup_search(
 	const gchar *searchTerm, const gpointer target,
@@ -4089,11 +4098,6 @@ void addressbook_read_all( void ) {
 		/* Read all address books */
 		addrindex_read_all( _addressIndex_ );
 	}
-	/*
-	else {
-		printf( "Address data already loaded!!!!!!!!!!!!!!!\n" );
-	}
-	*/
 }
 
 /**
@@ -4109,7 +4113,6 @@ void addressbook_read_all( void ) {
  */
 ItemEMail *addressbook_quick_search_single( const gchar *searchTerm ) {
 	if( _addressIndex_ == NULL ) {
-		/* printf( "address index not loaded\n" ); */
 		return NULL;
 	}
 	return addrindex_quick_search_single( _addressIndex_, searchTerm );
@@ -4130,11 +4133,34 @@ ItemEMail *addressbook_quick_search_single( const gchar *searchTerm ) {
 GList *addressbook_quick_search_list( const gchar *searchTerm )
 {
 	if( _addressIndex_ == NULL ) {
-		printf( "address index not loaded\n" );
 		return NULL;
 	}
 	return addrindex_quick_search_list( _addressIndex_, searchTerm );
 }
+
+/**
+ * Lookup person's name for specified E-Mail address. This function performs a
+ * simple search of all non-query type data sources for specified address
+ * (see <code>addrindex_quick_search_single()</code>). If several entries are
+ * found, only the first item is returned.
+ *
+ * \param  address E-Mail address to find.
+ * \return Formatted name, or <i>NULL</i> if nothing found. This name should
+ *         be freed when done.
+ */
+gchar *addressbook_lookup_name( const gchar *address ) {
+	gchar *name = NULL;
+	ItemEMail *email = NULL;
+
+	if( address ) {
+		email = addrindex_quick_search_single( _addressIndex_, address );
+		if( email ) {
+			name = addritem_format_email( email );
+		}
+	}
+	return name;
+}
+
 /*
 * End of Source.
 */

@@ -78,6 +78,7 @@
 #include "gtkutils.h"
 #include "log.h"
 #include "prefs_toolbar.h"
+#include "plugin.h"
 
 #if USE_GPGME
 #  include "rfc2015.h"
@@ -433,9 +434,13 @@ int main(int argc, char *argv[])
 		main_window_toggle_work_offline(mainwin, FALSE);
 
 	prefs_toolbar_init();
+
+	plugin_load_all("GTK");
 	
 	static_mainwindow = mainwin;
 	gtk_main();
+
+	plugin_unload_all("GTK");
 
 	prefs_toolbar_done();
 
@@ -742,7 +747,8 @@ static gint prohibit_duplicate_launch(void)
 	SockInfo *lock_sock;
 	gchar *path;
         gchar *portstr;
-	gint lockport;
+	gint lockport = 0;
+	gint uxsock;
 	
 	path = NULL;
 	if (portstr = read_w32_registry_string(NULL,
@@ -756,6 +762,7 @@ static gint prohibit_duplicate_launch(void)
 	if (!lock_sock) {
 		return fd_open_lock_service(lockport);
 	}
+	uxsock = lock_sock->sock;
 #else
 	gint uxsock;
 	gchar *path;
@@ -773,17 +780,9 @@ static gint prohibit_duplicate_launch(void)
 	debug_print("another Sylpheed is already running.\n");
 
 	if (cmd.receive_all)
-#ifdef WIN32
-		sock_write(lock_sock, "receive_all\n", 12);
-#else
-		fd_write(uxsock, "receive_all\n", 12);
-#endif
+		fd_write_all(uxsock, "receive_all\n", 12);
 	else if (cmd.receive)
-#ifdef WIN32
-		sock_write(lock_sock, "receive\n", 8);
-#else
-		fd_write(uxsock, "receive\n", 8);
-#endif
+		fd_write_all(uxsock, "receive\n", 8);
 	else if (cmd.compose && cmd.attach_files) {
 		gchar *str, *compose_str;
 		gint i;
@@ -794,30 +793,16 @@ static gint prohibit_duplicate_launch(void)
 		else
 			compose_str = g_strdup("compose_attach\n");
 
-#ifdef WIN32
-		sock_write(lock_sock, compose_str, strlen(compose_str));
-#else
-		fd_write(uxsock, compose_str, strlen(compose_str));
-
+		fd_write_all(uxsock, compose_str, strlen(compose_str));
 		g_free(compose_str);
-#endif
 
 		for (i = 0; i < cmd.attach_files->len; i++) {
 			str = g_ptr_array_index(cmd.attach_files, i);
-#ifdef WIN32
-			sock_write(lock_sock, str, strlen(str));
-			sock_write(lock_sock, "\n", 1);
-#else
-			fd_write(uxsock, str, strlen(str));
-			fd_write(uxsock, "\n", 1);
-#endif
+			fd_write_all(uxsock, str, strlen(str));
+			fd_write_all(uxsock, "\n", 1);
 		}
 
-#ifdef WIN32
-		sock_write(lock_sock, ".\n", 2);
-#else
-		fd_write(lock_sock, ".\n", 2);
-#endif
+		fd_write_all(uxsock, ".\n", 2);
 	} else if (cmd.compose) {
 		gchar *compose_str;
 
@@ -826,18 +811,10 @@ static gint prohibit_duplicate_launch(void)
 		else
 			compose_str = g_strdup("compose\n");
 
-#ifdef WIN32
-		sock_write(lock_sock, compose_str, strlen(compose_str));
-#else
-		fd_write(uxsock, compose_str, strlen(compose_str));
-#endif
+		fd_write_all(uxsock, compose_str, strlen(compose_str));
 		g_free(compose_str);
 	} else if (cmd.send) {
-#ifdef WIN32
-		sock_write(lock_sock, "send\n", 5);
-#else
-		fd_write(uxsock, "send\n", 5);
-#endif
+		fd_write_all(uxsock, "send\n", 5);
 	} else if (cmd.online_mode == ONLINE_MODE_ONLINE) {
 #ifdef WIN32
 		sock_write(lock_sock, "online\n", 5);
@@ -853,20 +830,15 @@ static gint prohibit_duplicate_launch(void)
 	} else if (cmd.status) {
 		gchar buf[BUFFSIZE];
 
+		fd_write_all(uxsock, "status\n", 7);
 #ifdef WIN32
-		sock_write(lock_sock, "status\n", 7);
 		sock_gets(lock_sock, buf, sizeof(buf));
 #else
-		fd_write(uxsock, "status\n", 7);
 		fd_gets(uxsock, buf, sizeof(buf));
 #endif
 		fputs(buf, stdout);
 	} else
-#ifdef WIN32
-		sock_write(lock_sock, "popup\n", 6);
-#else
-		fd_write(uxsock, "popup\n", 6);
-#endif
+		fd_write_all(uxsock, "popup\n", 6);
 
 #ifdef WIN32
 	sock_close(lock_sock);
@@ -939,7 +911,7 @@ static void lock_socket_input_cb(gpointer data,
 
 		folder_count_total_msgs(&new, &unread, &unreadmarked, &total);
 		g_snprintf(buf, sizeof(buf), "%d %d %d %d\n", new, unread, unreadmarked, total);
-		fd_write(sock, buf, strlen(buf));
+		fd_write_all(sock, buf, strlen(buf));
 	}
 
 	fd_close(sock);
@@ -968,10 +940,13 @@ static void send_queue(void)
 		Folder *folder = list->data;
 
 		if (folder->queue) {
-			if (procmsg_send_queue
-				(folder->queue, prefs_common.savemsg) < 0)
+			gint res = procmsg_send_queue
+				(folder->queue, prefs_common.savemsg);
+
+			if (res < 0)	
 				alertpanel_error(_("Some errors occurred while sending queued messages."));
-			folder_item_scan(folder->queue);
+			if (res) 	
+				folder_item_scan(folder->queue);
 			if (prefs_common.savemsg && folder->outbox) {
 				if (folder->outbox == def_outbox)
 					def_outbox = NULL;

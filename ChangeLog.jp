@@ -1,3 +1,80 @@
+2003-03-26
+
+	* src/pop.[ch]
+	  src/session.c: POP3 の受信が壊れていたのを修正。
+	  session_recv_data_from_sock_unescape(): 終端記号が現れるまで読み
+	  こみ、実際のサイズも返すようにした。
+
+2003-03-25
+
+	* src/automaton.[ch]: 削除。
+	* src/session.c: デバッグ出力をいくらか削除。
+	* src/smtp.c: smtp_session_recv_msg(): サーバが HELO コマンドに対して
+	  EHLO スタイルの応答を返したときのための対処。
+	  EHLO を除いて全ての複数行応答を無視するようにした(あらゆるコマンド
+	  に対して許可されているため)。
+
+2003-03-25
+
+	* src/session.[ch]
+	  src/pop.c: ドットでエスケープされている行をもつメッセージの受信を
+	  修正。
+	  session_recv_data(): エスケープ解除のフラグを追加。
+	  session_recv_data_from_sock_unescape(): 新規。メッセージを行毎に
+	  受信し、ドットでエスケープされている行をエスケープ解除する。
+	  以前の対処を削除。
+	* src/defs.h: UI_REFRESH_INTERVAL を 40 msec に減少。
+
+2003-03-25
+
+	* src/pop.[ch]: 与えられたサイズと実際のサイズが異なる場合に受信に
+	  失敗する問題への対処。
+
+2003-03-24
+
+	* src/pop.c: pop3_retr_eom_recv(): あるサーバは時々正しくない
+	  メッセージサイズを返すため、無効なメッセージ終端を無視するように
+	  した。
+	* src/news.c: news_session_new(): NNTPSession オブジェクトをゼロ
+	  クリアするようにした。 SockInfo の二重開放を防ぐため、
+	  Session::sock を nntp_sock->sock で初期化しないようにした。
+	* src/imap.c: IMAPSession オブジェクトをゼロクリアするようにした。
+	  imap_cmd_append(): SockInfo を閉じないようにした。
+
+2003-03-22
+
+	* src/pop.c: pop3_session_recv_msg(): STLS を修正。
+
+2003-03-22
+
+	* src/inc.[ch]
+	  src/pop.[ch]: 新 I/O システムを使って再実装。
+	* src/session.[ch]: session_recv_msg(): 新規。
+	  session_send_data_to_sock()
+	  session_recv_data_from_sock(): 進捗通知の頻度を下げた。
+
+2003-03-22
+
+	* src/smtp.c: smtp_auth_recv(): CRAM-MD5 認証を修正。
+
+2003-03-20
+
+	* src/session.[ch]: session_start_tls(): 新規。
+	  session_recv_msg(): static にした。
+
+2003-03-20
+
+	* 非同期ネットワーク I/O を実装。
+	* src/session.[ch]: 子プロセスを通してサーバと通信するための
+	  インタフェース。
+	* src/smtp.[ch]
+	  src/send_message.[ch]: 新 I/O システムを使って書き直した。
+	* src/socket.[ch]: *_write() を *_write_all() に名称変更し、
+	  *_write() を単なる write() のラッパーとした。
+	* src/utils.c: get_outgoing_rfc2822_str(): 新規。メッセージを SMTP
+	  または NNTP で送信するために修正する。
+	  file_read_stream_to_str(): 新規。
+
 2003-03-12
 
 	* src/textview.c: textview_button_pressed(): URI のリンクの範囲を

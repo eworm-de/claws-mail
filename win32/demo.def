@@ -5,4 +5,5 @@ EXPORTS
 	plugin_done 
 	plugin_init 
 	plugin_name 
+	plugin_type 
 	mswin_helper_timeout_tag 

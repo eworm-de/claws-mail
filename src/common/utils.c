@@ -2662,6 +2662,54 @@ gint uncanonicalize_file_replace(const gchar *file)
 	return 0;
 }
 
+gchar *get_outgoing_rfc2822_str(FILE *fp)
+{
+	gchar buf[BUFFSIZE];
+	GString *str;
+	gchar *ret;
+
+	str = g_string_new(NULL);
+
+	/* output header part */
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		strretchomp(buf);
+		if (!g_strncasecmp(buf, "Bcc:", 4)) {
+			gint next;
+
+			for (;;) {
+				next = fgetc(fp);
+				if (next == EOF)
+					break;
+				else if (next != ' ' && next != '\t') {
+					ungetc(next, fp);
+					break;
+				}
+				if (fgets(buf, sizeof(buf), fp) == NULL)
+					break;
+			}
+		} else {
+			g_string_append(str, buf);
+			g_string_append(str, "\r\n");
+			if (buf[0] == '\0')
+				break;
+		}
+	}
+
+	/* output body part */
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		strretchomp(buf);
+		if (buf[0] == '.')
+			g_string_append_c(str, '.');
+		g_string_append(str, buf);
+		g_string_append(str, "\r\n");
+	}
+
+	ret = str->str;
+	g_string_free(str, FALSE);
+
+	return ret;
+}
+
 gint change_file_mode_rw(FILE *fp, const gchar *file)
 {
 #if HAVE_FCHMOD
@@ -2793,10 +2841,7 @@ gint str_write_to_file(const gchar *str, const gchar *file)
 
 gchar *file_read_to_str(const gchar *file)
 {
-	GByteArray *array;
 	FILE *fp;
-	gchar buf[BUFSIZ];
-	gint n_read;
 	gchar *str;
 
 	g_return_val_if_fail(file != NULL, NULL);
@@ -2805,6 +2850,22 @@ gchar *file_read_to_str(const gchar *file)
 		FILE_OP_ERROR(file, "fopen");
 		return NULL;
 	}
+
+	str = file_read_stream_to_str(fp);
+
+	fclose(fp);
+
+	return str;
+}
+
+gchar *file_read_stream_to_str(FILE *fp)
+{
+	GByteArray *array;
+	gchar buf[BUFSIZ];
+	gint n_read;
+	gchar *str;
+
+	g_return_val_if_fail(fp != NULL, NULL);
 
 	array = g_byte_array_new();
 
@@ -2815,13 +2876,10 @@ gchar *file_read_to_str(const gchar *file)
 	}
 
 	if (ferror(fp)) {
-		FILE_OP_ERROR(file, "fread");
-		fclose(fp);
+		FILE_OP_ERROR("file stream", "fread");
 		g_byte_array_free(array, TRUE);
 		return NULL;
 	}
-
-	fclose(fp);
 
 	buf[0] = '\0';
 	g_byte_array_append(array, buf, 1);

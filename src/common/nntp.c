@@ -256,27 +256,21 @@ gint nntp_post(NNTPSockInfo *sock, FILE *fp)
 {
 	gint ok;
 	gchar buf[NNTPBUFSIZE];
+	gchar *msg;
 
 	ok = nntp_gen_command(sock, buf, "POST");
 	if (ok != NN_SUCCESS)
 		return ok;
 
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		strretchomp(buf);
-		if (buf[0] == '.') {
-			if (sock_write(sock->sock, ".", 1) < 0) {
-				log_warning(_("Error occurred while posting\n"));
-				return NN_SOCKET;
-			}
-		}
-
-		if (sock_puts(sock->sock, buf) < 0) {
-			log_warning(_("Error occurred while posting\n"));
-			return NN_SOCKET;
-		}
+	msg = get_outgoing_rfc2822_str(fp);
+	if (sock_write_all(sock->sock, msg, strlen(msg)) < 0) {
+		log_warning(_("Error occurred while posting\n"));
+		g_free(msg);
+		return NN_SOCKET;
 	}
+	g_free(msg);
 
-	sock_write(sock->sock, ".\r\n", 3);
+	sock_write_all(sock->sock, ".\r\n", 3);
 	if ((ok = nntp_ok(sock, buf)) != NN_SUCCESS)
 		return ok;
 
@@ -350,7 +344,7 @@ static void nntp_gen_send(NNTPSockInfo *sock, const gchar *format, ...)
 	}
 
 	strcat(buf, "\r\n");
-	sock_write(sock->sock, buf, strlen(buf));
+	sock_write_all(sock->sock, buf, strlen(buf));
 }
 
 static gint nntp_gen_recv(NNTPSockInfo *sock, gchar *buf, gint size)

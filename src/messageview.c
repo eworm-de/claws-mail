@@ -48,7 +48,7 @@
 #include "about.h"
 #include "account.h"
 #include "alertpanel.h"
-#include "send.h"
+#include "send_message.h"
 #include "pgptext.h"
 #include "menu.h"
 #include "stock_pixmap.h"

@@ -152,10 +152,6 @@ SOURCE=..\src\alertpanel.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\automaton.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\common\base64.c
 # End Source File
 # Begin Source File
@@ -588,7 +584,7 @@ SOURCE=..\src\selective_download.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\send.c
+SOURCE=..\src\send_message.c
 # End Source File
 # Begin Source File
 
@@ -777,10 +773,6 @@ SOURCE=..\src\addritem.h
 # Begin Source File
 
 SOURCE=..\src\alertpanel.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\automaton.h
 # End Source File
 # Begin Source File
 
@@ -1160,7 +1152,7 @@ SOURCE="..\src\select-keys.h"
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\send.h
+SOURCE=..\src\send_message.h
 # End Source File
 # Begin Source File
 

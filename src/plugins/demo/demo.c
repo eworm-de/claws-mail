@@ -66,3 +66,8 @@ const gchar *plugin_desc()
 	       "\n\n"
 	       "It is not really usefull";
 }
+
+const gchar *plugin_type()
+{
+	return "Common";
+}

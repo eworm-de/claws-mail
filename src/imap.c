@@ -299,6 +299,10 @@ MsgInfo *imap_get_msginfo 			(Folder 	*folder,
 						 gint 		 num);
 gboolean imap_check_msgnum_validity		(Folder 	*folder,
 						 FolderItem 	*item);
+void imap_change_flags				(Folder 	*folder,
+						 FolderItem 	*item,
+						 MsgInfo 	*msginfo,
+						 MsgPermFlags 	newflags);
 
 FolderClass imap_class =
 {
@@ -337,7 +341,7 @@ FolderClass imap_class =
 	imap_remove_msgs,
 	imap_remove_all_msg,
 	imap_is_msg_changed,
-	NULL,
+	imap_change_flags,
 };
 
 FolderClass *imap_get_class()
@@ -555,14 +559,11 @@ Session *imap_session_new(const PrefsAccount *account)
 	log_message("IMAP connection is %s-authenticated\n",
 		    (is_preauth) ? "pre" : "un");
 
-	session = g_new(IMAPSession, 1);
+	session = g_new0(IMAPSession, 1);
+	session_init(SESSION(session));
 	SESSION(session)->type             = SESSION_IMAP;
 	SESSION(session)->server           = g_strdup(account->recv_server);
 	SESSION(session)->sock             = imap_sock;
-	SESSION(session)->connected        = TRUE;
-	SESSION(session)->phase            = SESSION_READY;
-	SESSION(session)->last_access_time = time(NULL);
-	SESSION(session)->data             = NULL;
 
 	SESSION(session)->destroy          = imap_session_destroy;
 
@@ -1722,10 +1723,11 @@ static SockInfo *imap_open_tunnel(const gchar *server,
 {
 	SockInfo *sock;
 
-	if ((sock = sock_connect_cmd(server, tunnelcmd)) == NULL)
+	if ((sock = sock_connect_cmd(server, tunnelcmd)) == NULL) {
 		log_warning(_("Can't establish IMAP4 session with: %s\n"),
 			    server);
 		return NULL;
+	}
 #if USE_OPENSSL
 	return imap_init_sock(sock, ssl_type);
 #else
@@ -1785,12 +1787,6 @@ static SockInfo *imap_init_sock(SockInfo *sock)
 		}
 	}
 #endif
-
-	if (imap_cmd_noop(sock) != IMAP_SUCCESS) {
-		log_warning(_("Can't establish IMAP4 session.\n"));
-		sock_close(sock);
-		return NULL;
-	}
 
 	return sock;
 }
@@ -2807,7 +2803,6 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 		strretchomp(buf);
 		if (sock_puts(SESSION(session)->sock, buf) < 0) {
 			fclose(fp);
-			sock_close(SESSION(session)->sock);
 			return -1;
 		}
 	}
@@ -2815,7 +2810,6 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 	if (ferror(fp)) {
 		FILE_OP_ERROR(file, "fgets");
 		fclose(fp);
-		sock_close(SESSION(session)->sock);
 		return -1;
 	}
 
@@ -2998,7 +2992,7 @@ static void imap_cmd_gen_send(SockInfo *sock, const gchar *format, ...)
 	} else
 		log_print("IMAP4> %d %s\n", imap_cmd_count, tmp);
 
-	sock_write(sock, buf, strlen(buf));
+	sock_write_all(sock, buf, strlen(buf));
 }
 
 static gint imap_cmd_gen_recv(SockInfo *sock, gchar **buf)
@@ -3304,54 +3298,15 @@ static gboolean imap_rename_folder_func(GNode *node, gpointer data)
 	return FALSE;
 }
 
-gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
+static gint get_list_of_uids(Folder *folder, IMAPFolderItem *item, GSList **msgnum_list)
 {
-	IMAPFolderItem *item = (IMAPFolderItem *)_item;
+	gint ok, nummsgs = 0, lastuid_old;
 	IMAPSession *session;
-	gint ok, lastuid_old, nummsgs = 0, exists, recent, unseen, uid_val, uid_next;
 	GSList *uidlist, *elem;
-	gchar *dir, *cmd_buf;
-
-	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(item != NULL, -1);
-	g_return_val_if_fail(item->item.path != NULL, -1);
-	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, -1);
-	g_return_val_if_fail(folder->account != NULL, -1);
+	gchar *cmd_buf;
 
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, -1);
-
-	ok = imap_status(session, IMAP_FOLDER(folder), item->item.path,
-			 &exists, &recent, &uid_next, &uid_val, &unseen);
-	if (ok != IMAP_SUCCESS)
-		return -1;
-
-	/* If old uid_next matches new uid_next we can be sure no message
-	   was added to the folder */
-	if (uid_next == item->uid_next) {
-		nummsgs = g_slist_length(item->uid_list);
-		
-		/* If number of messages is still the same we
-                   know our caches message numbers are still valid,
-                   otherwise if the number of messages has decrease
-		   we discard our cache to start a new scan to find
-		   out which numbers have been removed */
-		if (exists == nummsgs) {
-			*msgnum_list = g_slist_copy(item->uid_list);
-			return nummsgs;
-		} else if (exists < nummsgs) {
-			debug_print("Freeing imap uid cache");
-			item->lastuid = 0;
-			g_slist_free(item->uid_list);
-			item->uid_list = NULL;
-		}
-	}
-	item->uid_next = uid_next;
-
-	if (exists == 0) {
-		*msgnum_list = NULL;
-		return 0;
-	}
 
 	ok = imap_select(session, IMAP_FOLDER(folder), item->item.path,
 			 NULL, NULL, NULL, NULL);
@@ -3415,6 +3370,60 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	}
 	g_slist_free(uidlist);
 
+	return nummsgs;
+}
+
+gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
+{
+	IMAPFolderItem *item = (IMAPFolderItem *)_item;
+	IMAPSession *session;
+	gint ok, nummsgs = 0, exists, recent, unseen, uid_val, uid_next;
+	GSList *uidlist;
+	gchar *dir;
+
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(item != NULL, -1);
+	g_return_val_if_fail(item->item.path != NULL, -1);
+	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, -1);
+	g_return_val_if_fail(folder->account != NULL, -1);
+
+	session = imap_session_get(folder);
+	g_return_val_if_fail(session != NULL, -1);
+
+	ok = imap_status(session, IMAP_FOLDER(folder), item->item.path,
+			 &exists, &recent, &uid_next, &uid_val, &unseen);
+	if (ok != IMAP_SUCCESS)
+		return -1;
+
+	/* If old uid_next matches new uid_next we can be sure no message
+	   was added to the folder */
+	if (uid_next == item->uid_next) {
+		nummsgs = g_slist_length(item->uid_list);
+		
+		/* If number of messages is still the same we
+                   know our caches message numbers are still valid,
+                   otherwise if the number of messages has decrease
+		   we discard our cache to start a new scan to find
+		   out which numbers have been removed */
+		if (exists == nummsgs) {
+			*msgnum_list = g_slist_copy(item->uid_list);
+			return nummsgs;
+		} else if (exists < nummsgs) {
+			debug_print("Freeing imap uid cache");
+			item->lastuid = 0;
+			g_slist_free(item->uid_list);
+			item->uid_list = NULL;
+		}
+	}
+	item->uid_next = uid_next;
+
+	if (exists == 0) {
+		*msgnum_list = NULL;
+		return 0;
+	}
+
+	nummsgs = get_list_of_uids(folder, item, &uidlist);
+
 	if (nummsgs != exists) {
 		/* Cache contains more messages then folder, we have cached
                    an old UID of a message that was removed and new messages
@@ -3427,8 +3436,10 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 
 		g_slist_free(*msgnum_list);
 
-		return imap_get_num_list(folder, _item, msgnum_list);
+		nummsgs = get_list_of_uids(folder, item, &uidlist);
 	}
+
+	*msgnum_list = uidlist;
 
 	dir = folder_item_get_path((FolderItem *)item);
 	debug_print("removing old messages from %s\n", dir);
@@ -3609,4 +3620,56 @@ gboolean imap_check_msgnum_validity(Folder *folder, FolderItem *_item)
 	imap_delete_all_cached_messages((FolderItem *)item);
 
 	return FALSE;
+}
+
+void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPermFlags newflags)
+{
+	IMAPSession *session;
+	IMAPFlags flags_set = 0, flags_unset = 0;
+	gint ok = IMAP_SUCCESS;
+
+	g_return_if_fail(folder != NULL);
+	g_return_if_fail(folder->class == &imap_class);
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->folder == folder);
+	g_return_if_fail(msginfo != NULL);
+	g_return_if_fail(msginfo->folder == item);
+
+	session = imap_session_get(folder);
+	if (!session) return;
+
+	if ((ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
+	    NULL, NULL, NULL, NULL)) != IMAP_SUCCESS)
+		return;
+
+	if (!MSG_IS_MARKED(msginfo->flags) &&  (newflags & MSG_MARKED))
+		flags_set |= IMAP_FLAG_FLAGGED;
+	if ( MSG_IS_MARKED(msginfo->flags) && !(newflags & MSG_MARKED))
+		flags_unset |= IMAP_FLAG_FLAGGED;
+
+	if (!MSG_IS_UNREAD(msginfo->flags) &&  (newflags & MSG_UNREAD))
+		flags_unset |= IMAP_FLAG_SEEN;
+	if ( MSG_IS_UNREAD(msginfo->flags) && !(newflags & MSG_UNREAD))
+		flags_set |= IMAP_FLAG_SEEN;
+
+	if (!MSG_IS_REPLIED(msginfo->flags) &&  (newflags & MSG_REPLIED))
+		flags_set |= IMAP_FLAG_ANSWERED;
+	if ( MSG_IS_REPLIED(msginfo->flags) && !(newflags & MSG_REPLIED))
+		flags_set |= IMAP_FLAG_ANSWERED;
+
+	if (flags_set) {
+		ok = imap_set_message_flags(session, msginfo->msgnum,
+					    msginfo->msgnum, flags_set, TRUE);
+		if (ok != IMAP_SUCCESS) return;
+	}
+
+	if (flags_unset) {
+		ok = imap_set_message_flags(session, msginfo->msgnum,
+					    msginfo->msgnum, flags_unset, FALSE);
+		if (ok != IMAP_SUCCESS) return;
+	}
+
+	msginfo->flags.perm_flags = newflags;
+
+	return;
 }
