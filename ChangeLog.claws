@@ -1,3 +1,12 @@
+2002-09-22 [colin]	0.8.3claws10
+	
+	* src/prefs_account.[ch]
+		Add an option for the POP before SMTP timeout
+	* src/inc.c
+		Remember time of last POP connection
+	* src/send.c
+		Do POP before SMTP only if timeout reached
+
 2002-09-22 [oliver]	0.8.3claws9
 	
 	* README.claws

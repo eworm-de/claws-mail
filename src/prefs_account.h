@@ -128,6 +128,8 @@ struct _PrefsAccount
 	gchar *tmp_smtp_pass;
 
 	gboolean pop_before_smtp;
+	gint pop_before_smtp_timeout;
+	time_t last_pop_login_time;
 
 	GSList *customhdr_list;
 
