@@ -377,3 +377,4 @@
 ( cvs diff -u -r 1.60.2.4 -r 1.60.2.5 src/filtering.c; ) > 1.0.1cvs5.1.patchset
 ( cvs diff -u -r 1.96.2.46 -r 1.96.2.47 src/textview.c; ) > 1.0.1cvs5.2.patchset
 ( cvs diff -u -r 1.382.2.99 -r 1.382.2.100 src/compose.c; ) > 1.0.1cvs5.3.patchset
+( cvs diff -u -r 1.382.2.100 -r 1.382.2.101 src/compose.c; cvs diff -u -r 1.49.2.32 -r 1.49.2.33 src/procmime.c; ) > 1.0.1cvs6.1.patchset
