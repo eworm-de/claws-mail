@@ -1,3 +1,10 @@
+2002-01-21 [melvin]	0.7.0claws21
+
+	* src/prefs_scoring.c
+	* src/prefs_filtering.c
+		Fixed bug where scoring and filtering windows stopped
+		autochecking.
+
 2002-01-21 [paul]	0.7.0claws20
 
 	* sync with sylpheed 0.7.0cvs12

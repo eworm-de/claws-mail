@@ -212,7 +212,7 @@ static void prefs_matcher_exec_info_create(void);
 
 void prefs_matcher_open(MatcherList * matchers, PrefsMatcherSignal * cb)
 {
-	inc_autocheck_timer_remove();
+	inc_lock();
 
 	if (!matcher.window) {
 		prefs_matcher_create();
@@ -1368,6 +1368,7 @@ static void prefs_matcher_key_pressed(GtkWidget *widget, GdkEventKey *event,
 static void prefs_matcher_cancel(void)
 {
 	gtk_widget_hide(matcher.window);
+	inc_unlock();
 }
 
 static void prefs_matcher_ok(void)
@@ -1375,14 +1376,12 @@ static void prefs_matcher_ok(void)
 	MatcherList * matchers;
 
 	matchers = prefs_matcher_get_list();
+	gtk_widget_hide(matcher.window);
+	inc_unlock();
 	if (matchers != NULL) {
-		gtk_widget_hide(matcher.window);
 		if (matchers_callback != NULL)
 			matchers_callback(matchers);
 		matcherlist_free(matchers);
-	}
-	else {
-		gtk_widget_hide(matcher.window);
 	}
 }
 

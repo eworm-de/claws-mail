@@ -111,7 +111,7 @@ void prefs_scoring_open(FolderItem * item)
 	if (prefs_rc_is_readonly(SCORING_RC))
 		return;
 
-	inc_autocheck_timer_remove();
+	inc_lock();
 
 	if (!scoring.window) {
 		prefs_scoring_create();
@@ -129,7 +129,7 @@ void prefs_scoring_open(FolderItem * item)
 
 void prefs_scoring_open_with_scoring(ScoringProp * prop)
 {
-	inc_autocheck_timer_remove();
+	inc_lock();
 
 	if (!scoring.window) {
 		prefs_scoring_create();
@@ -744,10 +744,12 @@ static void prefs_scoring_ok(void)
 	if (cur_item != NULL)
 		prefs_folder_item_save_config(cur_item);
 	gtk_widget_hide(scoring.window);
+	inc_unlock();
 }
 
 static void prefs_scoring_cancel(void)
 {
 	prefs_matcher_read_config();
 	gtk_widget_hide(scoring.window);
+	inc_unlock();
 }
