@@ -4262,9 +4262,6 @@ static void move_cursor_to_display_row_up(GtkSText *text)
 	int		      col;
 	GtkSPropertyMark  mark;
 	
-	/* make sure the back display lines are in the cache */
-	fetch_lines_backward(text);
-	
 	mark = find_this_line_start_mark(text, text->cursor_mark.index, &text->cursor_mark);
 
 	/* top of buffer */
@@ -4349,7 +4346,6 @@ static void move_cursor_to_display_row_down	(GtkSText *text)
 	GtkSPropertyMark  mark;
 	fdrf			data = { FALSE, FALSE };
 
-	fetch_lines_forward(text, 1);
 	mark = find_this_line_start_mark(text, text->cursor_mark.index, &text->cursor_mark);
 	lp  = CACHE_DATA(text->current_line);
 	col = (text->cursor_mark.index - lp.start.index);
