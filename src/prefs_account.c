@@ -1771,11 +1771,11 @@ static void prefs_account_advanced_create(void)
 	SET_TOGGLE_SENSITIVITY (chkbtn, button);			\
 }
 
-	SET_CHECK_BTN_AND_ENTRY(_("Put sent messages to"),
+	SET_CHECK_BTN_AND_ENTRY(_("Put sent messages in"),
 				sent_folder_chkbtn, sent_folder_entry, 0);
-	SET_CHECK_BTN_AND_ENTRY(_("Put draft messages to"),
+	SET_CHECK_BTN_AND_ENTRY(_("Put draft messages in"),
 				draft_folder_chkbtn, draft_folder_entry, 1);
-	SET_CHECK_BTN_AND_ENTRY(_("Put deleted messages to"),
+	SET_CHECK_BTN_AND_ENTRY(_("Put deleted messages in"),
 				trash_folder_chkbtn, trash_folder_entry, 2);
 
 	advanced.smtpport_chkbtn	= checkbtn_smtpport;
