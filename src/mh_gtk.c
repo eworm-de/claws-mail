@@ -114,8 +114,6 @@ static void new_folder_cb(FolderView *folderview, guint action,
 	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
-	if (FOLDER_TYPE(item->folder) == F_IMAP)
-		g_return_if_fail(item->folder->account != NULL);
 
 	new_folder = input_dialog(_("New folder"),
 				  _("Input the name of new folder:"),

@@ -1,3 +1,14 @@
+2004-04-21 [christoph]	0.9.10claws49
+
+	* src/Makefile.am
+	* src/inputdialog.[ch]			** REMOVED **
+	* src/gtk/Makefile.am
+	* src/gtk/inputdialog.[ch]		** NEW **
+		move inputdialog.[ch] into gtk directory
+
+	* src/mh_gtk.c
+		remove check for missing IMAP folder account
+
 2004-04-20 [christoph]	0.9.10claws48
 
 	* src/mainwindow.c
@@ -19,7 +30,7 @@
 		o dynamically build FolderView popup menus from a folder
 		  specific part, with callbacks to seperated code, and
                   a common part
-		o remove the folder class dependent code from folderview.c
+		o remove the folder class specifiy code from folderview.c
 
 2004-04-15 [luke]	0.9.10claws47
 

@@ -15,6 +15,7 @@ libsylpheedgtk_la_SOURCES = \
 	gtkutils.c \
 	gtkvscrollbutton.c \
 	logwindow.c \
+	inputdialog.c \
 	manage_window.c \
 	menu.c \
 	pluginwindow.c \
@@ -35,6 +36,7 @@ sylpheedgtkinclude_HEADERS = \
 	gtkstext.h \
 	gtkutils.h \
 	gtkvscrollbutton.h \
+	inputdialog.h \
 	logwindow.h \
 	manage_window.h \
 	menu.h \

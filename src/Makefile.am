@@ -53,7 +53,6 @@ sylpheed_SOURCES = \
 	importmutt.c \
 	importpine.c \
 	inc.c \
-	inputdialog.c \
 	jpilot.c \
 	ldapctrl.c \
 	ldaplocate.c \
@@ -182,7 +181,6 @@ sylpheedinclude_HEADERS = \
 	importmutt.h \
 	importpine.h \
 	inc.h \
-	inputdialog.h \
 	jpilot.h \
 	ldapctrl.h \
 	ldaplocate.h \
