@@ -874,6 +874,11 @@ void folderview_rescan_all(void)
 }
 #endif
 
+/** folderview_check_new()
+ *  Count the number of new messages since last check. 
+ *  \param folder the folder to check for new messages
+ *  \return the number of new messages since last check
+ */
 gint folderview_check_new(Folder *folder)
 {
 	GList *list;
@@ -882,6 +887,8 @@ gint folderview_check_new(Folder *folder)
 	GtkCTree *ctree;
 	GtkCTreeNode *node;
 	gint new_msgs = 0;
+	gint former_new_msgs = 0;
+	gint former_new = 0;
 
 	for (list = folderview_list; list != NULL; list = list->next) {
 		folderview = (FolderView *)list->data;
@@ -900,12 +907,14 @@ gint folderview_check_new(Folder *folder)
 			if (!folder && !FOLDER_IS_LOCAL(item->folder)) continue;
 
 			folderview_scan_tree_func(item->folder, item, NULL);
+			former_new = item->new;
 			if (folder_item_scan(item) < 0) {
 				if (folder && !FOLDER_IS_LOCAL(folder))
 					break;
 			}
 			folderview_update_node(folderview, node);
 			new_msgs += item->new;
+			former_new_msgs += former_new;
 		}
 
 		gtk_widget_set_sensitive(folderview->ctree, TRUE);
@@ -914,6 +923,12 @@ gint folderview_check_new(Folder *folder)
 	}
 
 	folder_write_list();
+	/* Number of new messages since last check is the just the difference 
+	 * between former_new_msgs and new_msgs. If new_msgs is less than
+	 * former_new_msgs, that would mean another session accessed the folder
+	 * and the result is not well defined.
+	 */
+	new_msgs = (former_new_msgs < new_msgs ? new_msgs - former_new_msgs : 0);
 	return new_msgs;
 }
 

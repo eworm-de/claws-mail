@@ -246,8 +246,13 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 	switch (account->protocol) {
 	case A_IMAP4:
 	case A_NNTP:
-		return folderview_check_new(FOLDER(account->folder));
-
+		/* Melvin: bug [14]
+		 * FIXME: it should return foldeview_check_new() value.
+		 * TODO: do it when bug [19] is fixed (IMAP folder sets 
+		 * an incorrect new message count)
+		 */
+		folderview_check_new(FOLDER(account->folder));
+		return 0;
 	case A_POP3:
 	case A_APOP:
 		session = inc_session_new(account);
