@@ -1,4 +1,9 @@
-2002-02-12 |melvin]	0.7.0claws71
+2002-02-13 [melvin]	0.7.0claws72
+
+	* po/fr.po
+		Updated French translation.
+
+2002-02-13 [melvin]	0.7.0claws71
 
 	* src/gtkutils.c
 		Made gtkut_editable_get_selection return NULL if selection
