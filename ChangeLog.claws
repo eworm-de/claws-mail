@@ -1,3 +1,9 @@
+2002-11-28 [thorsten]	0.8.6claws26
+
+	* src/imageview.[ch]
+		cleaned up conflicting declarations of
+		imageview_show_image()
+
 2002-11-28 [paul]	0.8.6claws25
 
 	* src/grouplistdialog.c
