@@ -119,7 +119,6 @@ gtk_shruler_draw_ticks(GtkRuler *ruler)
 {
 	GtkWidget *widget;
 	GdkGC *gc, *bg_gc;
-	GdkFont *font;
 	gint i;
 	gint width, height;
 	gint xthickness;
@@ -136,7 +135,6 @@ gtk_shruler_draw_ticks(GtkRuler *ruler)
 	
 	gc = widget->style->fg_gc[GTK_STATE_NORMAL];
 	bg_gc = widget->style->bg_gc[GTK_STATE_NORMAL];
-	font = gtk_style_get_font(widget->style);
 
 	xthickness = widget->style->xthickness;
 	ythickness = widget->style->ythickness;
@@ -159,24 +157,34 @@ gtk_shruler_draw_ticks(GtkRuler *ruler)
 #endif
 
 	/* assume ruler->max_size has the char width */    
-	/* i is increment of char_width,  pos is label number */
+	/* i is increment of char_width,  pos is label number
+	 * y position is based on height of widget itself
+	 */
 	for ( i = 0, pos = 0; i < widget->allocation.width - xthickness; i += ruler->max_size, pos++ ) {	
-		int length = ythickness / 2;
+		int length = height / 4;
 	
-		if ( pos % 10 == 0 ) length = ( 4 * ythickness );
-		else if (pos % 5 == 0 ) length = ( 2 * ythickness );
+		if ( pos % 10 == 0 ) length = ( 3 * height / 4 );
+		else if (pos % 5 == 0 ) length = ( height / 2 );
 		
 		gdk_draw_line(ruler->backing_store, gc,
-			      i, height + ythickness, 
+			      i, height, 
 			      i, height - length);			
 		
 		if ( pos % 10 == 0 ) {
-			char buf[8];
+			gchar buf[8];
+			PangoLayout *layout;
+
 			/* draw label */
-			sprintf(buf, "%d", (int) pos);
-			gdk_draw_string(ruler->backing_store, font, gc,
-					i + 2, ythickness + font->ascent - 1,
-					buf);
+			g_snprintf(buf, sizeof buf, "%d", pos);
+			
+			layout = gtk_widget_create_pango_layout
+					(GTK_WIDGET(ruler), buf);
+			
+			gdk_draw_layout(ruler->backing_store, gc, i + 2,
+					(height / 12),
+					layout);
+			
+			g_object_unref(layout);
 	    }
 	}
 }

@@ -1,3 +1,9 @@
+2005-01-04 [colin]	0.9.13cvs25.6
+
+	* src/gtk/gtkshruler.c
+		Move the ruler to GTK2
+		Patch by Alfons
+
 2005-01-03 [colin]	0.9.13cvs25.5
 
 	* src/compose.c
