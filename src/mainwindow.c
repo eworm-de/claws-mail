@@ -622,7 +622,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 
 	{N_("/_Tools"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/_Selective download..."),	"<alt>S", sel_download_cb, 0, NULL},
-	{N_("/_Tools/_Customize Toolbar"),	         "<alt>C", prefs_toolbar_cb, 0, NULL},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/_Address book..."),	"<shift><control>A", addressbook_open_cb, 0, NULL},
 	{N_("/_Tools/Add sender to address boo_k"),
@@ -656,6 +655,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Configuration"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Configuration/_Common preferences..."),
 						NULL, prefs_common_open_cb, 0, NULL},
+	{N_("/_Configuration/C_ustom Toolbar"),	NULL, prefs_toolbar_cb, 0, NULL},
 	{N_("/_Configuration/_Filter setting..."),
 						NULL, prefs_filter_open_cb, 0, NULL},
 	{N_("/_Configuration/_Scoring..."),
