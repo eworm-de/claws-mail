@@ -1,3 +1,8 @@
+2004-12-13 [colin]	0.9.13cvs14.1
+
+	* src/quote_fmt_parse.y
+		Sync with HEAD
+
 2004-12-10 [colin]	0.9.13cvs12.1
 
 	* src/prefs_themes.c
