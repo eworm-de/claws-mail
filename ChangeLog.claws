@@ -1,3 +1,14 @@
+2003-07-05 [christoph]	0.9.0claws84
+
+	* src/Makefile.am
+	* src/messageview.c
+	* src/mimeview.[ch]
+	* src/stock_pixmap.[ch]
+		move mimeview tabs to the right side and use icons
+		instead of text to save some space
+
+	(patch by Luke Plant <lukeplant@softhome.net>)
+
 2003-07-05 [christoph]	0.9.0claws83
 
 	* src/inc.c

@@ -93,7 +93,8 @@
 #include "pixmaps/gpg_signed.xpm"
 #include "pixmaps/drafts_close.xpm"
 #include "pixmaps/drafts_open.xpm"
-
+#include "pixmaps/messageview_text.xpm"
+                  
 typedef struct _StockPixmapData	StockPixmapData;
 
 struct _StockPixmapData
@@ -187,6 +188,7 @@ static StockPixmapData pixmaps[] =
 	{gpg_signed_xpm				, NULL, NULL, "gpg_signed", "  "},
 	{drafts_close_xpm			, NULL, NULL, "drafts_close", "  "},
 	{drafts_open_xpm			, NULL, NULL, "drafts_open", "  "},
+	{messageview_text_xpm			, NULL, NULL, "messageview_text", "  "},
 	{sylpheed_logo_xpm			, NULL, NULL, "sylpheed_logo", "  "},
 };
 
@@ -350,4 +352,3 @@ StockPixmap stock_pixmap_get_icon (gchar *file)
 	}
 	return -1;
 }
-	

@@ -131,18 +131,18 @@ EXTRA_DIST = \
 	pixmaps/category.xpm \
 	pixmaps/checkbox_off.xpm \
 	pixmaps/checkbox_on.xpm \
-	pixmaps/clip.xpm \
 	pixmaps/clipkey.xpm \
+	pixmaps/clip.xpm \
 	pixmaps/close.xpm \
 	pixmaps/complete.xpm \
 	pixmaps/continue.xpm \
 	pixmaps/deleted.xpm \
 	pixmaps/dir_close.xpm \
-	pixmaps/dir_open.xpm \
 	pixmaps/dir_open_hrm.xpm \
+	pixmaps/dir_open.xpm \
+	pixmaps/down_arrow.xpm \
 	pixmaps/drafts_close.xpm \
 	pixmaps/drafts_open.xpm \
-	pixmaps/down_arrow.xpm \
 	pixmaps/error.xpm \
 	pixmaps/exec.xpm \
 	pixmaps/folder.xpm \
@@ -150,49 +150,50 @@ EXTRA_DIST = \
 	pixmaps/gpg_signed.xpm \
 	pixmaps/group.xpm \
 	pixmaps/ignorethread.xpm \
-	pixmaps/inbox.xpm \
 	pixmaps/inbox_hrm.xpm \
+	pixmaps/inbox.xpm \
 	pixmaps/interface.xpm \
 	pixmaps/jpilot.xpm \
 	pixmaps/key.xpm \
 	pixmaps/ldap.xpm \
 	pixmaps/linewrap.xpm \
 	pixmaps/locked.xpm \
-	pixmaps/mail.xpm \
 	pixmaps/mail_attach.xpm \
 	pixmaps/mail_compose.xpm \
 	pixmaps/mail_forward.xpm \
-	pixmaps/mail_receive.xpm \
 	pixmaps/mail_receive_all.xpm \
-	pixmaps/mail_reply.xpm \
+	pixmaps/mail_receive.xpm \
 	pixmaps/mail_reply_to_all.xpm \
 	pixmaps/mail_reply_to_author.xpm \
-	pixmaps/mail_send.xpm \
+	pixmaps/mail_reply.xpm \
 	pixmaps/mail_send_queue.xpm \
+	pixmaps/mail_send.xpm \
+	pixmaps/mail.xpm \
 	pixmaps/mark.xpm \
-	pixmaps/new.xpm \
+	pixmaps/messageview_text.xpm \
 	pixmaps/news_compose.xpm \
-	pixmaps/outbox.xpm \
+	pixmaps/new.xpm \
+	pixmaps/notice_error.xpm \
+	pixmaps/notice_note.xpm \
+	pixmaps/notice_warn.xpm \
 	pixmaps/outbox_hrm.xpm \
+	pixmaps/outbox.xpm \
 	pixmaps/paste.xpm \
 	pixmaps/preferences.xpm \
 	pixmaps/properties.xpm \
+	pixmaps/quicksearch.xpm \
 	pixmaps/regular.xpm \
 	pixmaps/replied.xpm \
 	pixmaps/search.xpm \
-	pixmaps/sylpheed.xpm \
 	pixmaps/sylpheed_logo.xpm \
-	pixmaps/trash.xpm \
+	pixmaps/sylpheed.xpm \
 	pixmaps/trash_hrm.xpm \
+	pixmaps/trash.xpm \
 	pixmaps/unread.xpm \
 	pixmaps/up_arrow.xpm \
 	pixmaps/vcard.xpm \
 	pixmaps/work_offline.xpm \
-	pixmaps/work_online.xpm \
-	pixmaps/notice_warn.xpm \
-	pixmaps/notice_error.xpm \
-	pixmaps/notice_note.xpm \
-	pixmaps/quicksearch.xpm
+	pixmaps/work_online.xpm
 
 INCLUDES = \
 	-Icommon \

@@ -301,7 +301,7 @@ MessageView *messageview_create(MainWindow *mainwin)
 	textview = textview_create();
 	textview->messageview = messageview;
 
-	mimeview = mimeview_create();
+	mimeview = mimeview_create(mainwin);
 	mimeview->textview = textview_create();
 	mimeview->textview->messageview = messageview;
 	mimeview->messageview = messageview;
