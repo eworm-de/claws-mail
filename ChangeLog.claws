@@ -2,6 +2,8 @@
 
 	* src/inc.c [1.174]
 		fix occasional non-clearance of the statusbar
+		(close Bug 531 'SA plugin: status bar does not 
+		 get cleared in OFFLINE mode')
 
 2004-07-07 [colin]	0.9.12cvs15
 
