@@ -617,17 +617,46 @@ GList *messageview_get_window_list(void)
 	return messageview_list;
 }
 
+static gboolean find_encrypted_func(GNode *node, gpointer data)
+{
+	MimeInfo *mimeinfo = (MimeInfo *) node->data;
+	MimeInfo **encinfo = (MimeInfo **) data;
+	
+	if (privacy_mimeinfo_is_encrypted(mimeinfo)) {
+		*encinfo = mimeinfo;
+		return TRUE;
+	}
+	
+	return FALSE;
+}
+
+static MimeInfo *find_encrypted_part(MimeInfo *rootinfo)
+{
+	MimeInfo *encinfo = NULL;
+
+	g_node_traverse(rootinfo->node, G_IN_ORDER, G_TRAVERSE_ALL, -1,
+		find_encrypted_func, &encinfo);
+	
+	return encinfo;
+}
+
 void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		      gboolean all_headers)
 {
 	gchar *file;
-	MimeInfo *mimeinfo;
+	MimeInfo *mimeinfo, *encinfo;
 
 	g_return_if_fail(msginfo != NULL);
 
 	mimeinfo = procmime_scan_message(msginfo);
 	g_return_if_fail(mimeinfo != NULL);
 
+	while ((encinfo = find_encrypted_part(mimeinfo)) != NULL) {
+		debug_print("decrypting message part\n");
+		if (privacy_mimeinfo_decrypt(encinfo) < 0)
+			break;
+	}
+	
 	file = procmsg_get_message_file_path(msginfo);
 	if (!file) {
 		g_warning("can't get message file path.\n");

@@ -208,6 +208,34 @@ static gchar *pgpmime_get_sig_info_full(MimeInfo *mimeinfo)
 	return sgpgme_sigstat_info_full(data->ctx, data->sigstatus);
 }
 
+static gboolean pgpmime_is_encrypted(MimeInfo *mimeinfo)
+{
+	MimeInfo *tmpinfo;
+	
+	if (mimeinfo->type != MIMETYPE_MULTIPART)
+		return FALSE;
+	if (g_strcasecmp(mimeinfo->subtype, "encrypted"))
+		return FALSE;
+	if (g_strcasecmp(procmime_mimeinfo_get_parameter(mimeinfo, "protocol"), "application/pgp-encrypted"))
+		return FALSE;
+	if (g_node_n_children(mimeinfo->node) != 2)
+		return FALSE;
+	
+	tmpinfo = (MimeInfo *) g_node_nth_child(mimeinfo->node, 0)->data;
+	if (tmpinfo->type != MIMETYPE_APPLICATION)
+		return FALSE;
+	if (g_strcasecmp(tmpinfo->subtype, "pgp-encrypted"))
+		return FALSE;
+	
+	tmpinfo = (MimeInfo *) g_node_nth_child(mimeinfo->node, 1)->data;
+	if (tmpinfo->type != MIMETYPE_APPLICATION)
+		return FALSE;
+	if (g_strcasecmp(tmpinfo->subtype, "octet-stream"))
+		return FALSE;
+	
+	return TRUE;
+}
+
 static PrivacySystem pgpmime_system = {
 	"PGP/Mime",			/* name */
 
@@ -220,7 +248,7 @@ static PrivacySystem pgpmime_system = {
 	pgpmime_get_sig_info_full,	/* get_sig_info_full(MimeInfo *) */
 
 	/* NOT YET */
-	NULL,				/* is_encrypted(MimeInfo *) */
+	pgpmime_is_encrypted,		/* is_encrypted(MimeInfo *) */
 	NULL,				/* decrypt(MimeInfo *) */
 };
 
