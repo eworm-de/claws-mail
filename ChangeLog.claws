@@ -1,3 +1,19 @@
+2004-01-29 [christoph]	0.9.8claws59
+
+	* src/customheader.[ch]
+		add custom_header_is_allowed() to check for disallowed header names
+		that must not be overridden by custom headers
+
+	* src/compose.c
+		always write From: header and use custom_header_is_allowed() to
+		check if custom header should be written
+
+	* src/prefs_customheader.c
+		check if custom header is disallowed using custom_header_is_allowed()
+
+	* src/folderutils.c
+		destroy message id GHashTable before freeing the MsgInfos
+
 2004-01-29 [paul]	0.9.8claws58
 
 	* sync with 0.9.9 release

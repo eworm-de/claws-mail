@@ -4219,17 +4219,15 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	}
 
 	/* From */
-	if (!IS_IN_CUSTOM_HEADER("From")) {
-		if (compose->account->name && *compose->account->name) {
-			compose_convert_header
-				(buf, sizeof(buf), compose->account->name,
-				 strlen("From: "), TRUE);
-			QUOTE_IF_REQUIRED(name, buf);
-			fprintf(fp, "From: %s <%s>\n",
-				name, compose->account->address);
-		} else
-			fprintf(fp, "From: %s\n", compose->account->address);
-	}
+	if (compose->account->name && *compose->account->name) {
+		compose_convert_header
+			(buf, sizeof(buf), compose->account->name,
+			 strlen("From: "), TRUE);
+		QUOTE_IF_REQUIRED(name, buf);
+		fprintf(fp, "From: %s <%s>\n",
+			name, compose->account->address);
+	} else
+		fprintf(fp, "From: %s\n", compose->account->address);
 	
 	/* To */
 	compose_write_headers_from_headerlist(compose, fp, "To", ", ");
@@ -4377,17 +4375,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		     cur = cur->next) {
 			CustomHeader *chdr = (CustomHeader *)cur->data;
 
-			if (strcasecmp(chdr->name, "Date")         != 0 &&
-			    strcasecmp(chdr->name, "From")         != 0 &&
-			    strcasecmp(chdr->name, "To")           != 0 &&
-			 /* strcasecmp(chdr->name, "Sender")       != 0 && */
-			    strcasecmp(chdr->name, "Message-Id")   != 0 &&
-			    strcasecmp(chdr->name, "In-Reply-To")  != 0 &&
-			    strcasecmp(chdr->name, "References")   != 0 &&
-			    strcasecmp(chdr->name, "Mime-Version") != 0 &&
-			    strcasecmp(chdr->name, "Content-Type") != 0 &&
-			    strcasecmp(chdr->name, "Content-Transfer-Encoding")
-			    != 0) {
+			if (custom_header_is_allowed(chdr->name)) {
 				compose_convert_header
 					(buf, sizeof(buf),
 					 chdr->value ? chdr->value : "",

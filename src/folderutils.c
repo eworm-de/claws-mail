@@ -74,6 +74,8 @@ void folderutils_delete_duplicates(FolderItem *item)
 	}
 	g_slist_free(duplist);
 
+	g_hash_table_destroy(table);
+
 	for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
 		MsgInfo *msginfo = (MsgInfo *) cur->data;
 
@@ -81,7 +83,6 @@ void folderutils_delete_duplicates(FolderItem *item)
 	}
 	g_slist_free(msglist);
 
-	g_hash_table_destroy(table);
 
 	debug_print("done.\n");
 }
