@@ -1404,6 +1404,7 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 		        if (MSG_IS_UNREAD(msginfo->flags))
 				dest->unread++;
 			dest->total++;
+			dest->need_update = TRUE;
 
             		msgcache_add_msg(dest->cache, msginfo);
 

@@ -1,3 +1,9 @@
+2002-10-26 [christoph]	0.8.5claws55
+
+	* src/folder.c
+		set need_update folder flag when messages are added
+		(closes bug [ 626922 ] folder not updated after receiving)
+
 2002-10-25 [melvin]	0.8.5claws54
 
 	* src/imageview.c
