@@ -1,3 +1,5 @@
+
+
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
  * Copyright (C) 2003 Hiroyuki Yamamoto & the Sylpheed-Claws team
@@ -160,7 +162,7 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_table_attach (GTK_TABLE (table), label_textfont, 0, 1, 0, 1,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_label_set_justify(GTK_LABEL(tmplabel), GTK_JUSTIFY_RIGHT);
+	gtk_label_set_justify(GTK_LABEL(label_textfont), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC(label_textfont), 1, 0.5);
 
 	entry_textfont = gtk_entry_new ();
@@ -255,7 +257,7 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hint_label);
 	gtk_box_pack_start (GTK_BOX (vbox), 
 			    hint_label, FALSE, FALSE, 0);
-	gtk_misc_set_alignment(GTK_MISC(hint_label), 0, 0.5);
+	gtk_misc_set_alignment(GTK_MISC(hint_label), 0.5, 0.5);
 
 	prefs_fonts->window		= GTK_WIDGET(window);
 	prefs_fonts->entry_textfont	= entry_textfont;

@@ -1,3 +1,11 @@
+2003-10-01 [melvin] 0.9.5claws39
+
+	* src/prefs_fonts.c
+		Fixed a Gtk warning
+
+	* src/plugins/dillo_prefs.c	
+		Quasi unnoticeable UI clean-up.
+
 2003-10-01 [paul]
 
 	* tools/README
