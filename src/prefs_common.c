@@ -206,6 +206,55 @@ static void prefs_common_send_dialog_set_optmenu(PrefParam *pparam);
 static void prefs_nextunreadmsgdialog_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_nextunreadmsgdialog_set_optmenu(PrefParam *pparam);
 
+#ifdef WIN32
+/*
+ * In the Windows version prefs_common contains
+ *   - the non-OS-specific settings from sylpheedrc and
+ *   - the OS-specific settings from sylpheedwinrc
+ * The OS-specific settings from sylpheedrc are not used
+ * but saved in prefs_unix.
+ */
+static PrefsCommon prefs_unix;
+
+static PrefParam param_os_specific[] = {
+	/* Display */
+	{"message_font", DEFAULT_MESSAGE_FONT,
+	 &prefs_common.textfont, P_STRING, NULL, NULL, NULL},
+	{"small_font",   SMALL_FONT,
+	 &prefs_common.smallfont,   P_STRING, NULL, NULL, NULL},
+	{"bold_font",    BOLD_FONT,
+	 &prefs_common.boldfont,    P_STRING, NULL, NULL, NULL},
+	{"normal_font",  NORMAL_FONT,
+	 &prefs_common.normalfont,  P_STRING, NULL, NULL, NULL},
+	{"spacing_font", DEFAULT_SPACING_FONT, 
+	 &prefs_common.spacingfont, P_STRING, NULL, NULL, NULL},
+
+	/* MIME viewer */
+	{"mime_image_viewer", "display '%s'",
+	 &prefs_common.mime_image_viewer, P_STRING, NULL, NULL, NULL},
+	{"mime_audio_player", "play '%s'",
+	 &prefs_common.mime_audio_player, P_STRING, NULL, NULL, NULL},
+	{"mime_open_command", "gedit '%s'",
+	 &prefs_common.mime_open_cmd, P_STRING, NULL, NULL, NULL},
+
+	/* Interface */
+	{"pixmap_theme_path", DEFAULT_PIXMAP_THEME, 
+	 &prefs_common.pixmap_theme_path, P_STRING,
+	 NULL, NULL, NULL},
+
+	/* Other */
+	{"uri_open_command", DEFAULT_BROWSER_CMD,
+	 &prefs_common.uri_cmd, P_STRING, NULL, NULL, NULL},
+	{"print_command", "notepad /p \"%s\"", &prefs_common.print_cmd, P_STRING,
+	 NULL, NULL, NULL},
+	{"ext_editor_command", "notepad \"%s\"",
+	 &prefs_common.ext_editor_cmd, P_STRING, NULL, NULL, NULL},
+
+	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
+};
+
+#endif
+
 /*
    parameter name, default value, pointer to the prefs variable, data type,
    pointer to the widget pointer,
@@ -366,44 +415,33 @@ static PrefParam param[] = {
 	{"quote_chars", ">", &prefs_common.quote_chars, P_STRING,
 	 &quote.entry_quote_chars, prefs_set_data_from_entry, prefs_set_entry},
 
-/*
-   parameter name, default value, pointer to the prefs variable, data type,
-   pointer to the widget pointer,
-   pointer to the function for data setting,
-   pointer to the function for widget setting
- */
 	/* Display */
 	{"widget_font", NULL, &prefs_common.widgetfont, P_STRING,
 	 NULL, NULL, NULL},
-#ifdef WIN32
-	{"message_font", DEFAULT_MESSAGE_FONT,
-#else
 	{"message_font", "-misc-fixed-medium-r-normal--14-*-*-*-*-*-*-*",
-#endif
+#ifdef WIN32
+	 &prefs_unix.textfont,   P_STRING, NULL, NULL, NULL},
+#else
 	 &prefs_common.textfont, P_STRING, NULL, NULL, NULL},
-#ifdef WIN32
-	{"small_font",   SMALL_FONT,
-#else
+#endif
 	{"small_font",   "-*-helvetica-medium-r-normal--10-*-*-*-*-*-*-*",
-#endif
+#ifdef WIN32
+	 &prefs_unix.smallfont,     P_STRING, NULL, NULL, NULL},
+#else
 	 &prefs_common.smallfont,   P_STRING, NULL, NULL, NULL},
-#ifdef  WIN32
-	 /*XXX:tm */
-	{"spacing_font", DEFAULT_SPACING_FONT, 
-	 &prefs_common.spacingfont, P_STRING, NULL, NULL, NULL},
 #endif
-#ifdef WIN32
-	{"bold_font",    BOLD_FONT,
-#else
 	{"bold_font",    "-*-helvetica-bold-r-normal--12-*-*-*-*-*-*-*",
-#endif
-	 &prefs_common.boldfont,    P_STRING, NULL, NULL, NULL},
 #ifdef WIN32
-	{"normal_font",  NORMAL_FONT,
+	 &prefs_unix.boldfont,      P_STRING, NULL, NULL, NULL},
 #else
-	{"normal_font",  "-*-helvetica-medium-r-normal--12-*-*-*-*-*-*-*",
+	 &prefs_common.boldfont,    P_STRING, NULL, NULL, NULL},
 #endif
+	{"normal_font",  "-*-helvetica-medium-r-normal--12-*-*-*-*-*-*-*",
+#ifdef WIN32
+	 &prefs_unix.normalfont,    P_STRING, NULL, NULL, NULL},
+#else
 	 &prefs_common.normalfont,  P_STRING, NULL, NULL, NULL},
+#endif
 
 
 	{"display_folder_unread_num", "TRUE",
@@ -642,11 +680,23 @@ static PrefParam param[] = {
 
 	/* MIME viewer */
 	{"mime_image_viewer", "display '%s'",
+#ifdef WIN32
+	 &prefs_unix.mime_image_viewer,   P_STRING, NULL, NULL, NULL},
+#else
 	 &prefs_common.mime_image_viewer, P_STRING, NULL, NULL, NULL},
+#endif
 	{"mime_audio_player", "play '%s'",
+#ifdef WIN32
+	 &prefs_unix.mime_audio_player,   P_STRING, NULL, NULL, NULL},
+#else
 	 &prefs_common.mime_audio_player, P_STRING, NULL, NULL, NULL},
+#endif
 	{"mime_open_command", "gedit '%s'",
+#ifdef WIN32
+	 &prefs_unix.mime_open_cmd,   P_STRING, NULL, NULL, NULL},
+#else
 	 &prefs_common.mime_open_cmd, P_STRING, NULL, NULL, NULL},
+#endif
 
 	/* Interface */
 	{"separate_folder", "FALSE", &prefs_common.sep_folder, P_BOOL,
@@ -682,24 +732,33 @@ static PrefParam param[] = {
 	 prefs_nextunreadmsgdialog_set_optmenu},
 
 	{"pixmap_theme_path", DEFAULT_PIXMAP_THEME, 
+#ifdef WIN32
+	 &prefs_unix.pixmap_theme_path,   P_STRING,
+#else
 	 &prefs_common.pixmap_theme_path, P_STRING,
+#endif
 	 NULL, NULL, NULL},
 
 	{"hover_timeout", "500", &prefs_common.hover_timeout, P_INT,
 	 NULL, NULL, NULL},
 	
 	/* Other */
-	{"uri_open_command", DEFAULT_BROWSER_CMD,
-	 &prefs_common.uri_cmd, P_STRING, NULL, NULL, NULL},
+	{"uri_open_command", DEFAULT_BROWSER_CMD_UNX,
 #ifdef WIN32
-	{"print_command", "notepad /p \"%s\"", &prefs_common.print_cmd, P_STRING,
-	 NULL, NULL, NULL},
-	{"ext_editor_command", "notepad \"%s\"",
-	 &prefs_common.ext_editor_cmd, P_STRING, NULL, NULL, NULL},
+	 &prefs_unix.uri_cmd,   P_STRING, NULL, NULL, NULL},
+#else
+	 &prefs_common.uri_cmd, P_STRING, NULL, NULL, NULL},
+#endif
+#ifdef WIN32
+	{"print_command", "lpr %s", &prefs_unix.print_cmd,   P_STRING,
 #else
 	{"print_command", "lpr %s", &prefs_common.print_cmd, P_STRING,
+#endif
 	 NULL, NULL, NULL},
 	{"ext_editor_command", "gedit %s",
+#ifdef WIN32
+	 &prefs_unix.ext_editor_cmd,   P_STRING, NULL, NULL, NULL},
+#else
 	 &prefs_common.ext_editor_cmd, P_STRING, NULL, NULL, NULL},
 #endif
 
@@ -908,6 +967,9 @@ GList *prefs_common_read_history(const gchar *history)
 void prefs_common_read_config(void)
 {
 	prefs_read_config(param, "Common", COMMON_RC);
+#ifdef WIN32
+	prefs_read_config(param_os_specific, "Common", COMMON_WIN_RC);
+#endif
 
 	prefs_common.mime_open_cmd_history =
 		prefs_common_read_history(COMMAND_HISTORY);
@@ -944,6 +1006,9 @@ void prefs_common_save_history(const gchar *history, GList *list)
 void prefs_common_write_config(void)
 {
 	prefs_write_config(param, "Common", COMMON_RC);
+#ifdef WIN32
+	prefs_write_config(param_os_specific, "Common", COMMON_WIN_RC);
+#endif
 
 	prefs_common_save_history(COMMAND_HISTORY, 
 		prefs_common.mime_open_cmd_history);

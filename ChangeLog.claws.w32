@@ -1,3 +1,12 @@
+2004-12-19 [thorsten]	0.9.13cvs20.2
+
+	* src/prefs_common.c
+	* src/common/defs.h
+		Put OS specific settings from sylpheedrc to sylpheedwinrc
+		to share the same config file. Based on
+		SF Patch 974669 [Resolve windows incompatibility]
+		Thanks to Thomas Gilgin for the patch.
+
 2004-12-17 [thorsten]	0.9.13cvs20.1
 
 	* ChangeLog

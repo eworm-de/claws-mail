@@ -88,6 +88,7 @@
 #define DEFAULT_SENDMAIL_CMD	"/usr/sbin/sendmail -t -i"
 #ifdef WIN32
 #define DEFAULT_BROWSER_CMD	"?p\\mozilla.org\\Mozilla\\mozilla.exe -remote openURL \"%s\""
+#define DEFAULT_BROWSER_CMD_UNX	"mozilla-firefox -remote 'openURL(%s,new-window)'"
 #else
 #define DEFAULT_BROWSER_CMD	"mozilla-firefox -remote 'openURL(%s,new-window)'"
 #endif
@@ -181,6 +182,7 @@
 #endif
 
 #ifdef WIN32
+#  define COMMON_WIN_RC		"sylpheedwinrc"
 #  define W32_MAILCAP_NAME	"mailcap.win32"
 #  define W32_PLUGINDIR		"\\bin\\plugins"
 #endif /* WIN32 */
