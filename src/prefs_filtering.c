@@ -1435,8 +1435,8 @@ static void prefs_filtering_ok(void)
 			row++;
 		}
 		if (strcmp(filtering_str, str) != 0) {
-                        val = alertpanel(_("Entry not registered"),
-       	                         _("The entry was not registered\nAre you really finished?"),
+                        val = alertpanel(_("Entry not saved"),
+       	                         _("The entry was not saved\nHave you really finished?"),
                	                 _("Yes"), _("No"), NULL);
                         if (G_ALERTDEFAULT != val) {
 				g_free(str);
