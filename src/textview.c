@@ -1298,14 +1298,10 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 			header = g_ptr_array_index(headers, i);
 			g_ptr_array_add(sorted_headers, header);
 		}
-	} else {
-		for (i = 0; i < headers->len; i++) {
-			header = g_ptr_array_index(headers, i);
-			procheader_header_free(header);
-		}
-	}
+		g_ptr_array_free(headers, TRUE);
+	} else
+		procheader_header_array_destroy(headers);
 
-	g_ptr_array_free(headers, FALSE);
 
 	return sorted_headers;
 }
