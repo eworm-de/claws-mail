@@ -2996,18 +2996,25 @@ static gint compose_bounce_write_to_file(Compose *compose, const gchar *file)
 
 	compose_bounce_write_headers(compose, fdest);
 
-	while ((len = fread(buf, sizeof(gchar), BUFFSIZE, fp)) > 0) {
-		if (fwrite(buf, sizeof(gchar), len, fdest) == -1)
+	while ((len = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
+		if (fwrite(buf, sizeof(gchar), len, fdest) != len) {
+			FILE_OP_ERROR(file, "fwrite");
 			goto error;
+		}
 	}
 
-	fclose(fdest);
 	fclose(fp);
+	if (fclose(fdest) == EOF) {
+		FILE_OP_ERROR(file, "fclose");
+		unlink(file);
+		return -1;
+	}
 
 	return 0;
  error:
-	fclose(fdest);
 	fclose(fp);
+	fclose(fdest);
+	unlink(file);
 
 	return -1;
 }
