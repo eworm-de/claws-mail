@@ -1,3 +1,8 @@
+2002-12-11 [colin]	0.8.6claws97
+
+	* src/folder.c
+		Fix folder dnd statusbar logging
+
 2002-12-10 [christoph]	0.8.6claws96
 
 	* src/compose.c
