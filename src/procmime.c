@@ -487,6 +487,11 @@ MimeInfo *procmime_scan_mime_header(FILE *fp)
 		} else if (H_CONTENT_TYPE == hnum) {
 			procmime_scan_content_type
 				(mimeinfo, buf + strlen(hp->name));
+			if(mimeinfo->name && (mimeinfo->mime_type==MIME_APPLICATION_OCTET_STREAM)) {
+				const gchar *p;
+				p=procmime_get_mime_type(mimeinfo->name);
+				if(p) procmime_scan_content_type(mimeinfo,p);
+			}
 		} else if (H_CONTENT_DISPOSITION == hnum) {
 			procmime_scan_content_disposition
 				(mimeinfo, buf + strlen(hp->name));

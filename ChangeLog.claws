@@ -1,5 +1,12 @@
 2001-07-28 [paul]
 
+	* src/procmime.c
+	* AUTHORS
+		patch to correct bad image mime headers
+		(submitted by Don Quijote <dq@searchlores.org>)
+
+2001-07-28 [paul]
+
 	* tools/gif2xface.pl   **NEW FILE**
 	* tools/README
 		script to convert file.gif to file.xface for
