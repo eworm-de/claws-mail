@@ -397,6 +397,7 @@ GSList *procmsg_get_message_file_list(GSList *mlist)
                         return NULL;
                 }
                 fileinfo = g_new(MsgFileInfo, 1);
+		fileinfo->msginfo = procmsg_msginfo_new_ref(msginfo);
                 fileinfo->file = file;
                 fileinfo->flags = g_new(MsgFlags, 1);
                 *fileinfo->flags = msginfo->flags;
@@ -416,6 +417,7 @@ void procmsg_message_file_list_free(MsgInfoList *file_list)
 
 	for (cur = file_list; cur != NULL; cur = cur->next) {
 		fileinfo = (MsgFileInfo *)cur->data;
+		procmsg_msginfo_free(fileinfo->msginfo);
 		g_free(fileinfo->file);
 		g_free(fileinfo->flags);
 		g_free(fileinfo);

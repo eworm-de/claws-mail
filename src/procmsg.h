@@ -197,6 +197,7 @@ struct _MsgInfo
 
 struct _MsgFileInfo
 {
+	MsgInfo *msginfo;
         gchar *file;
         MsgFlags *flags;
 };

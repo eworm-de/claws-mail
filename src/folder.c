@@ -1670,6 +1670,7 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(file != NULL, -1);
  
+	fileinfo.msginfo = NULL;
         fileinfo.file = (gchar *)file;
         fileinfo.flags = flags;
         file_list.data = &fileinfo;

@@ -319,6 +319,7 @@ gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file, MsgFlags *f
 
 	g_return_val_if_fail(file != NULL, -1);
 
+	fileinfo.msginfo = NULL;
 	fileinfo.file = (gchar *)file;
 	fileinfo.flags = flags;
 	file_list.data = &fileinfo;
@@ -359,7 +360,6 @@ gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		}
 		if (relation != NULL)
 			g_relation_insert(relation, fileinfo, GINT_TO_POINTER(dest->last_num + 1));
-
 		g_free(destfile);
 		dest->last_num++;
 	}

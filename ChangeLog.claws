@@ -1,3 +1,11 @@
+2003-07-28 [christoph]	0.9.3claws68
+
+	* src/folder.c
+	* src/imap.c
+	* src/mh.c
+	* src/procmsg.[ch]
+		fix copy to IMAP folder from other folder
+
 2003-07-28 [christoph]	0.9.3claws67
 
 	* src/procmsg.c
