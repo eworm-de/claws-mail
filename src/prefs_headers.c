@@ -101,6 +101,8 @@ static void prefs_headers_close		(GtkButton	*button);
 */
 static void prefs_headers_ok		(GtkButton	*button);
 static void prefs_headers_cancel	(GtkButton	*button);
+static gint prefs_headers_deleted(GtkWidget *widget, GdkEventAny *event,
+				  gpointer data);
 
 static PrefsAccount * cur_ac = NULL;
 
@@ -187,7 +189,7 @@ static void prefs_headers_create(void)
 	gtk_window_set_title (GTK_WINDOW(window),
 			      _("Headers setting"));
 	gtk_signal_connect (GTK_OBJECT(window), "delete_event",
-			    GTK_SIGNAL_FUNC(gtk_widget_hide_on_delete), NULL);
+			    GTK_SIGNAL_FUNC(prefs_headers_deleted), NULL);
 	gtk_signal_connect (GTK_OBJECT(window), "key_press_event",
 			    GTK_SIGNAL_FUNC(prefs_headers_key_pressed), NULL);
 	gtk_signal_connect (GTK_OBJECT(window), "focus_in_event",
@@ -662,4 +664,11 @@ static void prefs_headers_cancel(GtkButton *button)
 	*/
 	prefs_headers_read_config(cur_ac); 
 	gtk_widget_hide(headers.window);
+}
+
+static gint prefs_headers_deleted(GtkWidget *widget, GdkEventAny *event,
+				  gpointer data)
+{
+	prefs_headers_cancel(widget);
+	return TRUE;
 }

@@ -1,3 +1,39 @@
+2001-05-08 [hoa]
+
+	* src/Makefile.am
+		added prefs_matcher.[ch]
+		compilation with -W -Wall
+	* src/alertpanel.c
+		ungrab the mouse events if grabbed - does it
+		fix the bug for disposition notification ?
+	* src/mainwindow.c
+		added a menu option to open the matching dialog.
+	* src/matcher.[ch]
+		added matcherprop_to_string() and matcherlist_to_string()
+		fixed some bugs, changed the name of some options
+		age_sup and age_inf becomes age_greater and age_lower,
+		body and messageheaders becomes body_part and headers_part,
+		changed the names of constants from SCORING_XXX to MATCHING_XXX
+	* src/prefs_display_header.c
+	* src/prefs_headers.c
+		fixed a bug that accidentally destroyed dialogs
+	  	when closed them with delete_event
+	  	Added *_deleted() which handle delete_event signal correctly.
+	* src/prefs_folder_item.[ch]
+		added "enable_thread" field for future customization
+	* added src/prefs_matcher.[ch]
+		sample of the UI to define matching properties
+	* src/procheader.c
+		using procheader_headername_equal instead of str*cmp functions
+		using procheader_parse_header() function
+	* src/scoring.c
+		using MATCHING_XXX instead of SCORING_XXX
+	* src/summaryview.c
+		display the sender of the news even if this is ourself
+		when this is a news message.
+	* src/textview.c
+		using headername_equal() instead of str*cmp functions
+
 2001-05-08 [alfons]
 
 	0.4.66claws

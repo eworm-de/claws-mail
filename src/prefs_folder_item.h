@@ -17,6 +17,8 @@ struct _PrefsFolderItem {
 
 	gboolean sort_descending;
 
+	gboolean enable_thread;
+
 	GSList * scoring;
 };
 
@@ -28,5 +30,7 @@ void prefs_folder_item_set_config(FolderItem * item,
 				  int sort_type, gint sort_mode);
 PrefsFolderItem * prefs_folder_item_new(void);
 void prefs_folder_item_free(PrefsFolderItem * prefs);
+gint prefs_folder_item_get_sort_type(FolderItem * item);
+gint prefs_folder_item_get_sort_mode(FolderItem * item);
 
 #endif

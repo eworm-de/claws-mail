@@ -74,6 +74,7 @@
 #include "addressbook.h"
 #include "addr_compl.h"
 #include "scoring.h"
+#include "prefs_folder_item.h"
 
 #include "pixmaps/dir-open.xpm"
 #include "pixmaps/mark.xpm"
@@ -1567,7 +1568,8 @@ static void summary_set_header(gchar *text[], MsgInfo *msginfo)
 	text[S_COL_FROM] = msginfo->fromname ? msginfo->fromname :
 		_("(No From)");
 	if (prefs_common.swap_from && msginfo->from && msginfo->to &&
-	    cur_account && cur_account->address) {
+	    cur_account && cur_account->address &&
++	    !MSG_IS_NEWS(msginfo->flags)) {
 		gchar *from;
 
 		Xalloca(from, strlen(msginfo->from) + 1, return);

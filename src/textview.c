@@ -958,7 +958,8 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 		for (i = 0; i < headers->len; i++) {
 			header = g_ptr_array_index(headers, i);
 
-			if (!g_strcasecmp(header->name, dp->name)) {
+			if (procheader_headername_equal(header->name,
+							dp->name)) {
 				if (dp->hidden)
 					procheader_header_free(header);
 				else
@@ -999,15 +1000,16 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 				header->name, -1);
 		gtk_text_insert(text, textview->boldfont, NULL, NULL, ":", 2);
 
-		if (!g_strcasecmp(header->name, "Subject") ||
-		    !g_strcasecmp(header->name, "From")    ||
-		    !g_strcasecmp(header->name, "To")      ||
-		    !g_strcasecmp(header->name, "Cc"))
+		if (procheader_headername_equal(header->name, "Subject") ||
+		    procheader_headername_equal(header->name, "From")    ||
+		    procheader_headername_equal(header->name, "To")      ||
+		    procheader_headername_equal(header->name, "Cc"))
 			unfold_line(header->body);
 
 		if (prefs_common.enable_color &&
-		    (!strncmp(header->name, "X-Mailer", 8) ||
-		     !strncmp(header->name, "X-Newsreader", 12)) &&
+		    (procheader_headername_equal(header->name, "X-Mailer") ||
+		     procheader_headername_equal(header->name,
+						 "X-Newsreader")) &&
 		    strstr(header->body, "Sylpheed") != NULL)
 			gtk_text_insert(text, NULL, &emphasis_color, NULL,
 					header->body, -1);

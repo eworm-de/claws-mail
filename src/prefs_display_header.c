@@ -88,6 +88,8 @@ static void prefs_display_header_key_pressed	(GtkWidget	*widget,
 						 gpointer	 data);
 static void prefs_display_header_ok		(void);
 static void prefs_display_header_cancel		(void);
+static gint prefs_display_header_deleted(GtkWidget *widget, GdkEventAny *event,
+					 gpointer data);
 
 static gchar *defaults[] =
 {
@@ -201,7 +203,8 @@ static void prefs_display_header_create(void)
 	gtk_window_set_title (GTK_WINDOW(window),
 			      _("Display header setting"));
 	gtk_signal_connect (GTK_OBJECT(window), "delete_event",
-			    GTK_SIGNAL_FUNC(gtk_widget_hide_on_delete), NULL);
+			    GTK_SIGNAL_FUNC(prefs_display_header_deleted),
+			    NULL);
 	gtk_signal_connect (GTK_OBJECT(window), "key_press_event",
 			    GTK_SIGNAL_FUNC(prefs_display_header_key_pressed),
 			    NULL);
@@ -628,4 +631,11 @@ static void prefs_display_header_cancel(void)
 {
 	prefs_display_header_read_config();
 	gtk_widget_hide(dispheader.window);
+}
+
+static gint prefs_display_header_deleted(GtkWidget *widget, GdkEventAny *event,
+					 gpointer data)
+{
+	prefs_display_header_cancel();
+	return TRUE;
 }

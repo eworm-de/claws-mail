@@ -81,7 +81,8 @@ sylpheed_SOURCES = \
 	prefs_headers.c prefs_headers.h \
 	scoring.c scoring.h \
 	prefs_folder_item.c prefs_folder_item.h \
-	matcher.c matcher.h
+	matcher.c matcher.h \
+	prefs_matcher.c prefs_matcher.h
 
 EXTRA_DIST = \
 	pixmaps/clip.xpm \
@@ -141,7 +142,7 @@ sylpheed_LDADD = \
 	$(GDK_PIXBUF_LIBS) \
 	$(GPGME_LIBS)
 
-CPPFLAGS = \
+CPPFLAGS = -W -Wall \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DMANUALDIR=\""$(manualdir)"\" \
 	-DHOST_ALIAS=\""$(host_alias)"\"

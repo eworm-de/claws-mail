@@ -16,40 +16,40 @@ typedef struct _MatchParser MatchParser;
 
 MatchParser matchparser_tab[] = {
 	/* msginfo */
-	{SCORING_ALL, "all"},
-	{SCORING_SUBJECT, "subject"},
-	{SCORING_NOT_SUBJECT, "~subject"},
-	{SCORING_FROM, "from"},
-	{SCORING_NOT_FROM, "~from"},
-	{SCORING_TO, "to"},
-	{SCORING_NOT_TO, "~to"},
-	{SCORING_CC, "cc"},
-	{SCORING_NOT_CC, "~cc"},
-	{SCORING_TO_OR_CC, "to_or_cc"},
-	{SCORING_NOT_TO_AND_NOT_CC, "~to_or_cc"},
-	{SCORING_AGE_SUP, "age_sup"},
-	{SCORING_AGE_INF, "age_inf"},
-	{SCORING_NEWSGROUPS, "newsgroups"},
-	{SCORING_NOT_NEWSGROUPS, "~newsgroups"},
+	{MATCHING_ALL, "all"},
+	{MATCHING_SUBJECT, "subject"},
+	{MATCHING_NOT_SUBJECT, "~subject"},
+	{MATCHING_FROM, "from"},
+	{MATCHING_NOT_FROM, "~from"},
+	{MATCHING_TO, "to"},
+	{MATCHING_NOT_TO, "~to"},
+	{MATCHING_CC, "cc"},
+	{MATCHING_NOT_CC, "~cc"},
+	{MATCHING_TO_OR_CC, "to_or_cc"},
+	{MATCHING_NOT_TO_AND_NOT_CC, "~to_or_cc"},
+	{MATCHING_AGE_GREATER, "age_greater"},
+	{MATCHING_AGE_LOWER, "age_lower"},
+	{MATCHING_NEWSGROUPS, "newsgroups"},
+	{MATCHING_NOT_NEWSGROUPS, "~newsgroups"},
 
 	/* content have to be read */
-	{SCORING_HEADER, "header"},
-	{SCORING_NOT_HEADER, "~header"},
-	{SCORING_MESSAGEHEADERS, "messageheaders"},
-	{SCORING_NOT_MESSAGEHEADERS, "~messageheaders"},
-	{SCORING_MESSAGE, "message"},
-	{SCORING_NOT_MESSAGE, "~message"},
-	{SCORING_BODY, "body"},
-	{SCORING_NOT_BODY, "~body"},
+	{MATCHING_HEADER, "header"},
+	{MATCHING_NOT_HEADER, "~header"},
+	{MATCHING_HEADERS_PART, "headers_part"},
+	{MATCHING_NOT_HEADERS_PART, "~headers_part"},
+	{MATCHING_MESSAGE, "message"},
+	{MATCHING_NOT_MESSAGE, "~message"},
+	{MATCHING_BODY_PART, "body_part"},
+	{MATCHING_NOT_BODY_PART, "~body_part"},
 
 	/* match type */
-	{SCORING_MATCHCASE, "matchcase"},
-	{SCORING_MATCH, "match"},
-	{SCORING_REGEXPCASE, "regexpcase"},
-	{SCORING_REGEXP, "regexp"},
+	{MATCHING_MATCHCASE, "matchcase"},
+	{MATCHING_MATCH, "match"},
+	{MATCHING_REGEXPCASE, "regexpcase"},
+	{MATCHING_REGEXP, "regexp"},
 
 	/* actions */
-	{SCORING_SCORE, "score"},
+	{MATCHING_SCORE, "score"},
 };
 
 /*
@@ -89,8 +89,8 @@ MatcherProp * matcherprop_parse(gchar ** str)
 	}
 
 	switch (key) {
-	case SCORING_AGE_INF:
-	case SCORING_AGE_SUP:
+	case MATCHING_AGE_LOWER:
+	case MATCHING_AGE_GREATER:
 		age = matcher_parse_number(&tmp);
 		if (tmp == NULL) {
 			* str = NULL;
@@ -102,33 +102,33 @@ MatcherProp * matcherprop_parse(gchar ** str)
 
 		return prop;
 
-	case SCORING_ALL:
+	case MATCHING_ALL:
 		prop = matcherprop_new(key, NULL, 0, NULL, 0);
 		*str = tmp;
 
 		return prop;
 
-	case SCORING_SUBJECT:
-	case SCORING_NOT_SUBJECT:
-	case SCORING_FROM:
-	case SCORING_NOT_FROM:
-	case SCORING_TO:
-	case SCORING_NOT_TO:
-	case SCORING_CC:
-	case SCORING_NOT_CC:
-	case SCORING_TO_OR_CC:
-	case SCORING_NOT_TO_AND_NOT_CC:
-	case SCORING_NEWSGROUPS:
-	case SCORING_NOT_NEWSGROUPS:
-	case SCORING_MESSAGE:
-	case SCORING_NOT_MESSAGE:
-	case SCORING_MESSAGEHEADERS:
-	case SCORING_NOT_MESSAGEHEADERS:
-	case SCORING_BODY:
-	case SCORING_NOT_BODY:
-	case SCORING_HEADER:
-	case SCORING_NOT_HEADER:
-		if ((key == SCORING_HEADER) || (key == SCORING_NOT_HEADER)) {
+	case MATCHING_SUBJECT:
+	case MATCHING_NOT_SUBJECT:
+	case MATCHING_FROM:
+	case MATCHING_NOT_FROM:
+	case MATCHING_TO:
+	case MATCHING_NOT_TO:
+	case MATCHING_CC:
+	case MATCHING_NOT_CC:
+	case MATCHING_TO_OR_CC:
+	case MATCHING_NOT_TO_AND_NOT_CC:
+	case MATCHING_NEWSGROUPS:
+	case MATCHING_NOT_NEWSGROUPS:
+	case MATCHING_MESSAGE:
+	case MATCHING_NOT_MESSAGE:
+	case MATCHING_HEADERS_PART:
+	case MATCHING_NOT_HEADERS_PART:
+	case MATCHING_BODY_PART:
+	case MATCHING_NOT_BODY_PART:
+	case MATCHING_HEADER:
+	case MATCHING_NOT_HEADER:
+		if ((key == MATCHING_HEADER) || (key == MATCHING_NOT_HEADER)) {
 			header = matcher_parse_str(&tmp);
 			if (tmp == NULL) {
 				* str = NULL;
@@ -145,8 +145,8 @@ MatcherProp * matcherprop_parse(gchar ** str)
 		}
 
 		switch(match) {
-		case SCORING_REGEXP:
-		case SCORING_REGEXPCASE:
+		case MATCHING_REGEXP:
+		case MATCHING_REGEXPCASE:
 			expr = matcher_parse_regexp(&tmp);
 			if (tmp == NULL) {
 				if (header)
@@ -159,8 +159,8 @@ MatcherProp * matcherprop_parse(gchar ** str)
 			g_free(expr);
 
 			return prop;
-		case SCORING_MATCH:
-		case SCORING_MATCHCASE:
+		case MATCHING_MATCH:
+		case MATCHING_MATCHCASE:
 			expr = matcher_parse_str(&tmp);
 			if (tmp == NULL) {
 				if (header)
@@ -397,13 +397,13 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 		str = "";
 
 	switch(prop->matchtype) {
-	case SCORING_REGEXP:
-	case SCORING_REGEXPCASE:
+	case MATCHING_REGEXP:
+	case MATCHING_REGEXPCASE:
 		if (!prop->preg && (prop->error == 0)) {
 			prop->preg = g_new0(regex_t, 1);
 			if (regcomp(prop->preg, prop->expr,
 				    REG_NOSUB | REG_EXTENDED
-				    | ((prop->matchtype == SCORING_REGEXPCASE)
+				    | ((prop->matchtype == MATCHING_REGEXPCASE)
 				    ? REG_ICASE : 0)) != 0) {
 				prop->error = 1;
 				g_free(prop->preg);
@@ -417,10 +417,10 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 		else
 			return 0;
 
-	case SCORING_MATCH:
+	case MATCHING_MATCH:
 		return (strstr(str, prop->expr) != NULL);
 
-	case SCORING_MATCHCASE:
+	case MATCHING_MATCHCASE:
 		g_strup(prop->expr);
 		str1 = alloca(strlen(str) + 1);
 		strcpy(str1, str);
@@ -440,41 +440,41 @@ gboolean matcherprop_match(MatcherProp * prop, MsgInfo * info)
 	time_t t;
 
 	switch(prop->criteria) {
-	case SCORING_ALL:
+	case MATCHING_ALL:
 		return 1;
-	case SCORING_SUBJECT:
+	case MATCHING_SUBJECT:
 		return matcherprop_string_match(prop, info->subject);
-	case SCORING_NOT_SUBJECT:
+	case MATCHING_NOT_SUBJECT:
 		return !matcherprop_string_match(prop, info->subject);
-	case SCORING_FROM:
+	case MATCHING_FROM:
 		return matcherprop_string_match(prop, info->from);
-	case SCORING_NOT_FROM:
+	case MATCHING_NOT_FROM:
 		return !matcherprop_string_match(prop, info->from);
-	case SCORING_TO:
+	case MATCHING_TO:
 		return matcherprop_string_match(prop, info->to);
-	case SCORING_NOT_TO:
+	case MATCHING_NOT_TO:
 		return !matcherprop_string_match(prop, info->to);
-	case SCORING_CC:
+	case MATCHING_CC:
 		return matcherprop_string_match(prop, info->cc);
-	case SCORING_NOT_CC:
+	case MATCHING_NOT_CC:
 		return !matcherprop_string_match(prop, info->cc);
-	case SCORING_TO_OR_CC:
+	case MATCHING_TO_OR_CC:
 		return matcherprop_string_match(prop, info->to)
 			|| matcherprop_string_match(prop, info->cc);
-	case SCORING_NOT_TO_AND_NOT_CC:
+	case MATCHING_NOT_TO_AND_NOT_CC:
 		return !(matcherprop_string_match(prop, info->to)
 		|| matcherprop_string_match(prop, info->cc));
-	case SCORING_AGE_SUP:
+	case MATCHING_AGE_GREATER:
 		t = time(NULL);
 		return ((t - info->date_t) / (60 * 60 * 24)) >= prop->age;
-	case SCORING_AGE_INF:
+	case MATCHING_AGE_LOWER:
 		t = time(NULL);
 		return ((t - info->date_t) / (60 * 60 * 24)) <= prop->age;
-	case SCORING_NEWSGROUPS:
+	case MATCHING_NEWSGROUPS:
 		return matcherprop_string_match(prop, info->newsgroups);
-	case SCORING_NOT_NEWSGROUPS:
+	case MATCHING_NOT_NEWSGROUPS:
 		return !matcherprop_string_match(prop, info->newsgroups);
-	case SCORING_HEADER:
+	case MATCHING_HEADER:
 	default:
 		return 0;
 	}
@@ -493,7 +493,7 @@ MatcherList * matcherlist_parse(gchar ** str)
 	gboolean bool_and = TRUE;
 	gchar * save;
 	MatcherList * cond;
-	gboolean main_bool_and;
+	gboolean main_bool_and = TRUE;
 
 	tmp = * str;
 
@@ -556,7 +556,7 @@ void matcherlist_free(MatcherList * cond)
   skip the headers
  */
 
-static void matcherprop_skip_headers(FILE *fp)
+static void matcherlist_skip_headers(FILE *fp)
 {
 	gchar buf[BUFFSIZE];
 
@@ -576,12 +576,12 @@ static gboolean matcherprop_match_one_header(MatcherProp * matcher,
 	Header *header;
 
 	switch(matcher->criteria) {
-	case SCORING_HEADER:
-	case SCORING_NOT_HEADER:
+	case MATCHING_HEADER:
+	case MATCHING_NOT_HEADER:
 		header = procheader_parse_header(buf);
 		if (procheader_headername_equal(header->name,
 						matcher->header)) {
-			if (matcher->criteria == SCORING_HEADER)
+			if (matcher->criteria == MATCHING_HEADER)
 				result = matcherprop_string_match(matcher, header->body);
 			else
 				result = !matcherprop_string_match(matcher, header->body);
@@ -589,11 +589,11 @@ static gboolean matcherprop_match_one_header(MatcherProp * matcher,
 			return result;
 		}
 		break;
-	case SCORING_MESSAGEHEADERS:
-	case SCORING_MESSAGE:
+	case MATCHING_HEADERS_PART:
+	case MATCHING_MESSAGE:
 		return matcherprop_string_match(matcher, buf);
-	case SCORING_NOT_MESSAGE:
-	case SCORING_NOT_MESSAGEHEADERS:
+	case MATCHING_NOT_MESSAGE:
+	case MATCHING_NOT_HEADERS_PART:
 		return !matcherprop_string_match(matcher, buf);
 	}
 	return FALSE;
@@ -607,12 +607,12 @@ static gboolean matcherprop_match_one_header(MatcherProp * matcher,
 static gboolean matcherprop_criteria_headers(MatcherProp * matcher)
 {
 	switch(matcher->criteria) {
-	case SCORING_HEADER:
-	case SCORING_NOT_HEADER:
-	case SCORING_MESSAGEHEADERS:
-	case SCORING_NOT_MESSAGEHEADERS:
-	case SCORING_MESSAGE:
-	case SCORING_NOT_MESSAGE:
+	case MATCHING_HEADER:
+	case MATCHING_NOT_HEADER:
+	case MATCHING_HEADERS_PART:
+	case MATCHING_NOT_HEADERS_PART:
+	case MATCHING_MESSAGE:
+	case MATCHING_NOT_MESSAGE:
 		return TRUE;
 	default:
 		return FALSE;
@@ -631,8 +631,6 @@ static gboolean matcherlist_match_one_header(MatcherList * matchers,
 	
 	for(l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
 		MatcherProp * matcher = (MatcherProp *) l->data;
-		gboolean matched = FALSE;
-		gboolean partial_result;
 
 		if (matcherprop_criteria_headers(matcher)) {
 			if (matcherprop_match_one_header(matcher, buf)) {
@@ -680,10 +678,10 @@ static gboolean matcherlist_match_headers(MatcherList * matchers, FILE * fp,
 static gboolean matcherprop_criteria_body(MatcherProp * matcher)
 {
 	switch(matcher->criteria) {
-	case SCORING_BODY:
-	case SCORING_NOT_BODY:
-	case SCORING_MESSAGE:
-	case SCORING_NOT_MESSAGE:
+	case MATCHING_BODY_PART:
+	case MATCHING_NOT_BODY_PART:
+	case MATCHING_MESSAGE:
+	case MATCHING_NOT_MESSAGE:
 		return TRUE;
 	default:
 		return FALSE;
@@ -698,13 +696,14 @@ static gboolean matcherprop_criteria_body(MatcherProp * matcher)
 static gboolean matcherprop_match_line(MatcherProp * matcher, gchar * line)
 {
 	switch(matcher->criteria) {
-	case SCORING_BODY:
-	case SCORING_MESSAGE:
+	case MATCHING_BODY_PART:
+	case MATCHING_MESSAGE:
 		return matcherprop_string_match(matcher, line);
-	case SCORING_NOT_BODY:
-	case SCORING_NOT_MESSAGE:
+	case MATCHING_NOT_BODY_PART:
+	case MATCHING_NOT_MESSAGE:
 		return !matcherprop_string_match(matcher, line);
 	}
+	return FALSE;
 }
 
 /*
@@ -783,7 +782,8 @@ gboolean matcherlist_match_file(MatcherList * matchers, MsgInfo * info,
 		return result;
 
 	file = procmsg_get_message_file(info);
-	g_return_if_fail(file != NULL);
+	if (file == NULL)
+		return FALSE;
 
 	if ((fp = fopen(file, "r")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
@@ -802,6 +802,9 @@ gboolean matcherlist_match_file(MatcherList * matchers, MsgInfo * info,
 			if (matchers->bool_and)
 				result = FALSE;
 		}
+	}
+	else {
+		matcherlist_skip_headers(fp);
 	}
 	
 	/* read the body */
@@ -879,16 +882,16 @@ static void matcherprop_print(MatcherProp * matcher)
 	}
 
 	switch (matcher->matchtype) {
-	case SCORING_MATCH:
+	case MATCHING_MATCH:
 		printf("match\n");
 		break;
-	case SCORING_REGEXP:
+	case MATCHING_REGEXP:
 		printf("regexp\n");
 		break;
-	case SCORING_MATCHCASE:
+	case MATCHING_MATCHCASE:
 		printf("matchcase\n");
 		break;
-	case SCORING_REGEXPCASE:
+	case MATCHING_REGEXPCASE:
 		printf("regexpcase\n");
 		break;
 	}
@@ -908,3 +911,125 @@ static void matcherprop_print(MatcherProp * matcher)
 	printf("error: %i\n",  matcher->error);
 }
 #endif
+
+gchar * matcherprop_to_string(MatcherProp * matcher)
+{
+	gchar * matcher_str;
+	gchar * criteria_str;
+	gchar * matchtype_str;
+	int i;
+	gchar * p;
+	gint count;
+	gchar * expr_str;
+	gchar * out;
+
+	criteria_str = NULL;
+	for(i = 0 ; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)) ;
+	    i++) {
+		if (matchparser_tab[i].id == matcher->criteria)
+			criteria_str = matchparser_tab[i].str;
+	}
+	if (criteria_str == NULL)
+		return NULL;
+
+	switch(matcher->criteria) {
+	case MATCHING_AGE_GREATER:
+	case MATCHING_AGE_LOWER:
+		return g_strdup_printf("%s %i", criteria_str, matcher->age);
+		break;
+	case MATCHING_ALL:
+		return g_strdup(criteria_str);
+	}
+
+	matchtype_str = NULL;
+	for(i = 0 ; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)) ;
+	    i++) {
+		if (matchparser_tab[i].id == matcher->matchtype)
+			matchtype_str = matchparser_tab[i].str;
+	}
+
+	if (matchtype_str == NULL)
+		return NULL;
+
+	switch (matcher->matchtype) {
+	case MATCHING_MATCH:
+	case MATCHING_MATCHCASE:
+		count = 0;
+		for(p = matcher->expr; *p != 0 ; p++)
+			if (*p == '\"') count ++;
+		
+		expr_str = g_new(char, strlen(matcher->expr) + count + 1);
+
+		for(p = matcher->expr, out = expr_str ; *p != 0 ; p++, out++) {
+			if (*p == '\"') {
+				*out = '\\'; out++;
+				*out = '\"';
+			}
+			else
+				*out = *p;
+		}
+		* out = '\0';
+
+		if (matcher->header)
+			matcher_str =
+				g_strdup_printf("%s \"%s\" %s \"%s\"",
+					   criteria_str, matcher->header,
+					   matchtype_str, expr_str);
+		else
+			matcher_str =
+				g_strdup_printf("%s %s \"%s\"", criteria_str,
+						matchtype_str, expr_str);
+		
+		g_free(expr_str);
+		
+		break;
+
+	case MATCHING_REGEXP:
+	case MATCHING_REGEXPCASE:
+
+		if (matcher->header)
+			matcher_str =
+				g_strdup_printf("%s \"%s\" %s /%s/",
+						criteria_str, matcher->header,
+						matchtype_str, matcher->expr);
+		else
+			matcher_str =
+				g_strdup_printf("%s %s /%s/", criteria_str,
+						matchtype_str, matcher->expr);
+
+		break;
+	}
+
+	return matcher_str;
+}
+
+gchar * matcherlist_to_string(MatcherList * matchers)
+{
+	gint count;
+	gchar ** vstr;
+	GSList * l;
+	gchar ** cur_str;
+	gchar * result;
+
+	count = g_slist_length(matchers->matchers);
+	vstr = g_new(gchar *, count + 1);
+
+	for (l = matchers->matchers, cur_str = vstr ; l != NULL ;
+	     l = g_slist_next(l), cur_str ++) {
+		*cur_str = matcherprop_to_string((MatcherProp *) l->data);
+		if (*cur_str == NULL)
+			break;
+	}
+	*cur_str = NULL;
+	
+	if (matchers->bool_and)
+		result = g_strjoinv(" & ", vstr);
+	else
+		result = g_strjoinv(" | ", vstr);
+
+	for(cur_str = vstr ; *cur_str != NULL ; cur_str ++)
+		g_free(*cur_str);
+	g_free(vstr);
+
+	return result;
+}

@@ -211,6 +211,9 @@ GSList *procheader_get_header_list(FILE *fp)
 	g_return_val_if_fail(fp != NULL, NULL);
 
 	while (procheader_get_unfolded_line(buf, sizeof(buf), fp) != NULL) {
+		if (header = procheader_parse_header(buf))
+			g_ptr_array_add(headers, header);
+		/*
 		if (*buf == ':') continue;
 		for (p = buf; *p && *p != ' '; p++) {
 			if (*p == ':') {
@@ -225,6 +228,7 @@ GSList *procheader_get_header_list(FILE *fp)
 				break;
 			}
 		}
+		*/
 	}
 
 	return hlist;
@@ -242,6 +246,9 @@ GPtrArray *procheader_get_header_array(FILE *fp)
 	headers = g_ptr_array_new();
 
 	while (procheader_get_unfolded_line(buf, sizeof(buf), fp) != NULL) {
+		if (header = procheader_parse_header(buf))
+			g_ptr_array_add(headers, header);
+		/*
 		if (*buf == ':') continue;
 		for (p = buf; *p && *p != ' '; p++) {
 			if (*p == ':') {
@@ -255,6 +262,7 @@ GPtrArray *procheader_get_header_array(FILE *fp)
 				g_ptr_array_add(headers, header);
 				break;
 			}
+		*/
 		}
 	}
 
@@ -273,6 +281,9 @@ GPtrArray *procheader_get_header_array_asis(FILE *fp)
 	headers = g_ptr_array_new();
 
 	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1) {
+		if (header = procheader_parse_header(buf))
+			g_ptr_array_add(headers, header);
+			/*
 		if (*buf == ':') continue;
 		for (p = buf; *p && *p != ' '; p++) {
 			if (*p == ':') {
@@ -286,6 +297,7 @@ GPtrArray *procheader_get_header_array_asis(FILE *fp)
 				break;
 			}
 		}
+			*/
 	}
 
 	return headers;
@@ -342,7 +354,7 @@ gboolean procheader_headername_equal(char * hdr1, char * hdr2)
 		len2--;
 	if (len1 != len2)
 		return 0;
-	return (strncasecmp(hdr1, hdr2, len1) == 0);
+	return (g_strncasecmp(hdr1, hdr2, len1) == 0);
 }
 
 /*
@@ -393,8 +405,8 @@ void procheader_get_header_fields(FILE *fp, HeaderEntry hentry[])
 
 		if (hp->body == NULL)
 			hp->body = g_strdup(p);
-		else if (!strcasecmp(hp->name, "To:") ||
-			 !strcasecmp(hp->name, "Cc:")) {
+		else if (procheader_headername_equal(hp->name, "To") ||
+			 procheader_headername_equal(hp->name, "Cc")) {
 			gchar *tp = hp->body;
 			hp->body = g_strconcat(tp, ", ", p, NULL);
 			g_free(tp);

@@ -39,7 +39,7 @@ ScoringProp * scoringprop_parse(gchar ** str)
 		return NULL;
 	}
 
-	if (key != SCORING_SCORE) {
+	if (key != MATCHING_SCORE) {
 		matcherlist_free(matchers);
 		* str = NULL;
 		return NULL;

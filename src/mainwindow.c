@@ -318,6 +318,9 @@ static void prefs_common_open_cb (MainWindow	*mainwin,
 static void prefs_filter_open_cb (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void prefs_matcher_open_cb (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
 static void prefs_account_open_cb(MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -518,6 +521,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, prefs_common_open_cb, 0, NULL},
 	{N_("/_Configuration/_Filter setting..."),
 						NULL, prefs_filter_open_cb, 0, NULL},
+	{N_("/_Configuration/_Scoring ..."),
+						NULL, prefs_matcher_open_cb, 0, NULL},
 	{N_("/_Configuration/_Preferences per account..."),
 						NULL, prefs_account_open_cb, 0, NULL},
 	{N_("/_Configuration/---"),		NULL, NULL, 0, "<Separator>"},
@@ -2049,6 +2054,12 @@ static void prefs_filter_open_cb(MainWindow *mainwin, guint action,
 				 GtkWidget *widget)
 {
 	prefs_filter_open();
+}
+
+static void prefs_matcher_open_cb(MainWindow *mainwin, guint action,
+				  GtkWidget *widget)
+{
+	prefs_matcher_open(NULL);
 }
 
 static void prefs_account_open_cb(MainWindow *mainwin, guint action,

@@ -149,6 +149,10 @@ static void alertpanel_show(void)
 	manage_window_set_transient(GTK_WINDOW(dialog));
 	value = G_ALERTWAIT;
 
+	/* ungrab the mouse events ? */
+	if (gdk_pointer_is_grabbed())
+		gdk_pointer_ungrab(GDK_CURRENT_TIME);
+
 	while ((value & G_ALERT_VALUE_MASK) == G_ALERTWAIT)
 		gtk_main_iteration();
 
