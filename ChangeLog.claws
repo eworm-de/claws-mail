@@ -1,3 +1,11 @@
+2001-12-15 [paul]	0.6.5claws92
+
+	* sync with sylpheed 0.6.5cvs28
+		see ChangeLog entry 2001-12-14 (src/prefs_account.c)
+
+	* po/nl.po
+		update to allow for sync
+
 2001-12-15 [alfons]
 	
 	* po/nl.po

@@ -11,6 +11,7 @@ Changes of Sylpheed
     * Check connection between IMAP or NNTP server only if access time
       limit is expired.
     * Thai encodings have been supported.
+    * Hungarian message catalog has been added.
     * Copy and paste problems have been fixed.
     * Some other bugs have been fixed.
 

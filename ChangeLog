@@ -1,5 +1,11 @@
 2001-12-14
 
+	* src/prefs_account.c: prefs_account_save_config_all(): fixed a bug
+	  that didn't update accountrc if account_list == NULL (thanks to
+	  Watanabe).
+
+2001-12-14
+
 	* src/utils.h: added the macro Xstrcat_a() that concatenates
 	  two strings and return alloca'd string.
 	* src/imap.c: imap_scan_tree_recursive(): fixed a bug that didn't

@@ -432,8 +432,6 @@ void prefs_account_save_config_all(GList *account_list)
 	gchar *rcpath;
 	PrefFile *pfile;
 
-	if (!account_list) return;
-
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACCOUNT_RC, NULL);
 	if ((pfile = prefs_write_open(rcpath)) == NULL) {
 		g_free(rcpath);
