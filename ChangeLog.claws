@@ -1,3 +1,13 @@
+2002-05-18 [paul]	0.7.6claws1
+
+	* tools/Makefile.am
+	  tools/gpg-sign	** new file **
+	  tools/uudec		** new file **
+		add Melvin's Actions scripts
+
+	* README.claws
+		add Melvin's descriptions for Actions
+
 2002-05-18 [paul]	0.7.6claws
 
 	* Version 0.7.6claws released

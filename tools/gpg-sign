@@ -1,0 +1,5 @@
+#!/bin/sh
+TMPFILE=`mktemp $HOME/.XXXXXX` || exit 1
+cat - > $TMPFILE
+ssh-askpass | gpg --clearsign --no-tty -o - --passphrase-fd 0 $TMPFILE
+rm $TMPFILE
