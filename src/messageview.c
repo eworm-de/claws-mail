@@ -780,39 +780,47 @@ void messageview_destroy(MessageView *messageview)
 
 void messageview_delete(MessageView *msgview)
 {
-#if 1
-	g_warning("Use summary_delete()\n");
-#else
-	MsgInfo *msginfo = (MsgInfo *) msgview->msginfo;
-	FolderItem *trash = NULL;
-	PrefsAccount *ac = NULL;
+	MsgInfo *msginfo = NULL;
 
-	g_return_if_fail(msginfo != NULL);
+	if (msgview->msginfo && msgview->mainwin && msgview->mainwin->summaryview)
+		msginfo = summary_get_selected_msg(msgview->mainwin->summaryview);
+	
+	/* need a procmsg_msginfo_equal() */
+	if (msginfo && msgview->msginfo && 
+	    msginfo->msgnum == msgview->msginfo->msgnum && 
+	    msginfo->folder == msgview->msginfo->folder) {
+		summary_delete(msgview->mainwin->summaryview);
+	} else {		
+		MsgInfo *msginfo = (MsgInfo *) msgview->msginfo;
+		FolderItem *trash = NULL;
+		PrefsAccount *ac = NULL;
 
-	/* to get the trash folder, we have to choose either
-	 * the folder's or account's trash default - we prefer
-	 * the one in the account prefs */
-	if (msginfo->folder) {
-		if (NULL != (ac = account_find_from_item(msginfo->folder)))
-			trash = account_get_special_folder(ac, F_TRASH);
-		if (!trash && msginfo->folder->folder)	
-			trash = msginfo->folder->folder->trash;
-		/* if still not found, use the default */
-		if (!trash) 
-			trash =	folder_get_default_trash();
-	}	
+		g_return_if_fail(msginfo != NULL);
 
-	g_return_if_fail(trash   != NULL);
+		/* to get the trash folder, we have to choose either
+		 * the folder's or account's trash default - we prefer
+		 * the one in the account prefs */
+		if (msginfo->folder) {
+			if (NULL != (ac = account_find_from_item(msginfo->folder)))
+				trash = account_get_special_folder(ac, F_TRASH);
+			if (!trash && msginfo->folder->folder)	
+				trash = msginfo->folder->folder->trash;
+			/* if still not found, use the default */
+			if (!trash) 
+				trash =	folder_get_default_trash();
+		}	
 
-	if (prefs_common.immediate_exec)
-		/* TODO: Delete from trash */
-		folder_item_move_msg(trash, msginfo);
-	else {
-		procmsg_msginfo_set_to_folder(msginfo, trash);
-		procmsg_msginfo_set_flags(msginfo, MSG_DELETED, 0);
-		/* NOTE: does not update to next message in summaryview */
-	}
-#endif	
+		g_return_if_fail(trash   != NULL);
+
+		if (prefs_common.immediate_exec)
+			/* TODO: Delete from trash */
+			folder_item_move_msg(trash, msginfo);
+		else {
+			procmsg_msginfo_set_to_folder(msginfo, trash);
+			procmsg_msginfo_set_flags(msginfo, MSG_DELETED, 0);
+			/* NOTE: does not update to next message in summaryview */
+		}
+	}		
 }
 
 /* 
