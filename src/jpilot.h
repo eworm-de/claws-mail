@@ -107,7 +107,7 @@ void jpilot_clear_custom_labels		( JPilotFile *pilotFile );
 void jpilot_add_custom_label		( JPilotFile *pilotFile, const gchar *labelName );
 GList *jpilot_get_custom_labels		( JPilotFile *pilotFile );
 gboolean jpilot_test_custom_label	( JPilotFile *pilotFile, const gchar *labelName );
-gboolean jpilot_test_pilot_lib		( void );
+/* gboolean jpilot_test_pilot_lib		( void ); */
 
 gint jpilot_read_modified		( JPilotFile *pilotFile );
 

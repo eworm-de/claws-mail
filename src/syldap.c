@@ -35,7 +35,7 @@
 #include <ldap.h>
 #include <lber.h>
 #include <pthread.h>
-#include <dlfcn.h>
+/* #include <dlfcn.h> */
 
 #include "mgutils.h"
 #include "addritem.h"
@@ -1065,6 +1065,7 @@ gboolean syldap_test_connect( SyldapServer *ldapServer ) {
 * Test whether LDAP libraries installed.
 * Return: TRUE if library available.
 */
+#if 0
 gboolean syldap_test_ldap_lib() {
 	void *handle, *fun;
 	
@@ -1117,6 +1118,7 @@ gboolean syldap_test_ldap_lib() {
 
 	return TRUE;
 }
+#endif /* 0 */
 
 #endif	/* USE_LDAP */
 

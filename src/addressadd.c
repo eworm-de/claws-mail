@@ -39,15 +39,13 @@
 
 #include "intl.h"
 #include "gtkutils.h"
+#include "stock_pixmap.h"
 #include "prefs_common.h"
 #include "addressadd.h"
 #include "addritem.h"
 #include "addrbook.h"
 #include "addrindex.h"
 #include "manage_window.h"
-
-#include "pixmaps/book.xpm"
-#include "pixmaps/dir-open.xpm"
 
 typedef struct {
 	AddressBookFile	*book;
@@ -270,8 +268,9 @@ static void addressadd_create( void ) {
 
 	gtk_widget_show_all( window );
 
-	PIXMAP_CREATE( window, bookXpm, bookXpmMask, book_xpm );
-	PIXMAP_CREATE( window, folderXpm, folderXpmMask, dir_open_xpm );
+	stock_pixmap_gdk( window, STOCK_PIXMAP_BOOK, &bookXpm, &bookXpmMask );
+	stock_pixmap_gdk( window, STOCK_PIXMAP_DIR_OPEN,
+			  &folderXpm, &folderXpmMask );
 }
 
 static void addressadd_load_folder( GtkCTreeNode *parentNode, ItemFolder *parentFolder,

@@ -325,8 +325,8 @@ static PrefParam param[] = {
 	 &compose.spinbtn_undolevel,
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 
-	{"linewrap_length", "74", &prefs_common.linewrap_len, P_INT,
-	&compose.spinbtn_linewrap,
+	{"linewrap_length", "72", &prefs_common.linewrap_len, P_INT,
+	 &compose.spinbtn_linewrap,
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 	{"linewrap_quotation", "FALSE", &prefs_common.linewrap_quote, P_BOOL,
 	 &compose.checkbtn_wrapquote,
@@ -2712,8 +2712,7 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	datefmt_clist = gtk_clist_new_with_titles(2, titles);
 	gtk_widget_show(datefmt_clist);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow1), datefmt_clist);
-/*	gtk_clist_set_column_width(GTK_CLIST(datefmt_clist), 0, 80);   */
-
+	/* gtk_clist_set_column_width(GTK_CLIST(datefmt_clist), 0, 80); */
 	gtk_clist_set_selection_mode(GTK_CLIST(datefmt_clist),
 				     GTK_SELECTION_BROWSE);
 
@@ -2831,7 +2830,6 @@ static void prefs_quote_colors_dialog_create(void)
 	GtkWidget *tgt_folder_label;
 	GtkWidget *hbbox;
 	GtkWidget *ok_btn;
-	//GtkWidget *cancel_btn;
 	GtkWidget *recycle_colors_btn;
 	GtkWidget *frame_colors;
 

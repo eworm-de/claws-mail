@@ -77,6 +77,7 @@
 #include "folderview.h"
 #include "procmsg.h"
 #include "menu.h"
+#include "stock_pixmap.h"
 #include "send.h"
 #include "imap.h"
 #include "news.h"
@@ -229,10 +230,10 @@ static void compose_input_cb			(gpointer	    data,
 static void compose_set_ext_editor_sensitive	(Compose	   *compose,
 						 gboolean	    sensitive);
 
-static void compose_set_undo			(UndoMain	*undostruct,
+static void compose_undo_state_changed		(UndoMain	*undostruct,
 						 gint		 undo_state,
 						 gint		 redo_state,
-						 GtkWidget	*changewidget);
+						 gpointer	 data);
 
 static gint calc_cursor_xpos	(GtkSText	*text,
 				 gint		 extra,
@@ -1809,15 +1810,13 @@ static void compose_insert_file(Compose *compose, const gchar *file)
 	gtk_stext_freeze(text);
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		/* Strip <CR> if DOS/Windoze file, replace <CR> with <LF> if MAC file */
+		/* strip <CR> if DOS/Windows file,
+		   replace <CR> with <LF> if Macintosh file. */
+		strcrchomp(buf);
 		len = strlen(buf);
-		if (len > 1 && buf[len - 2] == '\r' && buf[len - 1] == '\n') {
-			buf[len - 2] = '\n';
-			buf[len - 1] = '\0';
-		} else {
-			while (--len > 0)
-				if (buf[len] == '\r')
-					buf[len] = '\n';
+		if (len > 0 && buf[len - 1] != '\n') {
+			while (--len >= 0)
+				if (buf[len] == '\r') buf[len] = '\n';
 		}
 
  		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
@@ -4361,7 +4360,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	}
 
 	undostruct = undo_init(text);
-	undo_set_undo_change_funct(undostruct, &compose_set_undo, menubar);
+	undo_set_change_state_func(undostruct, &compose_undo_state_changed,
+				   menubar);
 
 	gtk_widget_show(window);
 
@@ -4560,8 +4560,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 static void compose_toolbar_create(Compose *compose, GtkWidget *container)
 {
 	GtkWidget *toolbar;
-	GdkPixmap *icon;
-	GdkBitmap *mask;
 	GtkWidget *icon_wid;
 	GtkWidget *send_btn;
 	GtkWidget *sendl_btn;
@@ -4581,15 +4579,14 @@ static void compose_toolbar_create(Compose *compose, GtkWidget *container)
 	gtk_toolbar_set_space_style(GTK_TOOLBAR(toolbar),
 				    GTK_TOOLBAR_SPACE_LINE);
 
-	CREATE_TOOLBAR_ICON(stock_mail_send_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_MAIL_SEND);
 	send_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					   _("Send"),
 					   _("Send message"),
 					   "Send",
 					   icon_wid, toolbar_send_cb, compose);
 
-	CREATE_TOOLBAR_ICON(stock_mail_send_queue_xpm);
-	/* CREATE_TOOLBAR_ICON(tb_mail_queue_send_xpm); */
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_MAIL_SEND_QUEUE);
 	sendl_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					   _("Send later"),
 					   _("Put into queue folder and send later"),
@@ -4597,7 +4594,7 @@ static void compose_toolbar_create(Compose *compose, GtkWidget *container)
 					   icon_wid, toolbar_send_later_cb,
 					   compose);
 
-	CREATE_TOOLBAR_ICON(stock_mail_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_MAIL);
 	draft_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					    _("Draft"),
 					    _("Save to draft folder"),
@@ -4607,7 +4604,7 @@ static void compose_toolbar_create(Compose *compose, GtkWidget *container)
 
 	gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
 
-	CREATE_TOOLBAR_ICON(stock_paste_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_PASTE);
 	insert_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					     _("Insert"),
 					     _("Insert file"),
@@ -4615,7 +4612,7 @@ static void compose_toolbar_create(Compose *compose, GtkWidget *container)
 					     icon_wid, toolbar_insert_cb,
 					     compose);
 
-	CREATE_TOOLBAR_ICON(stock_mail_attach_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_MAIL_ATTACH);
 	attach_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					     _("Attach"),
 					     _("Attach file"),
@@ -4625,7 +4622,7 @@ static void compose_toolbar_create(Compose *compose, GtkWidget *container)
 
 	gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
 
-	CREATE_TOOLBAR_ICON(stock_mail_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_MAIL);
 	sig_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					  _("Signature"),
 					  _("Insert signature"),
@@ -4634,7 +4631,7 @@ static void compose_toolbar_create(Compose *compose, GtkWidget *container)
 
 	gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
 
-	CREATE_TOOLBAR_ICON(stock_mail_compose_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_MAIL_COMPOSE);
 	exteditor_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 						_("Editor"),
 						_("Edit with external editor"),
@@ -4643,10 +4640,10 @@ static void compose_toolbar_create(Compose *compose, GtkWidget *container)
 						toolbar_ext_editor_cb,
 						compose);
 
-	CREATE_TOOLBAR_ICON(linewrap_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_LINEWRAP);
 	linewrap_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					       _("Linewrap"),
-					       _("Wrap current paragraph"),
+					       _("Wrap all long lines"),
 					       "Linewrap",
 					       icon_wid,
 					       toolbar_linewrap_cb,
@@ -4654,7 +4651,7 @@ static void compose_toolbar_create(Compose *compose, GtkWidget *container)
 
 	gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
 
-	CREATE_TOOLBAR_ICON(tb_address_book_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_ADDRESS_BOOK);
 	addrbook_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					       _("Address"),
 					       _("Address book"),
@@ -4675,8 +4672,6 @@ static void compose_toolbar_create(Compose *compose, GtkWidget *container)
 
 	gtk_widget_show_all(toolbar);
 }
-
-#undef CREATE_TOOLBAR_ICON
 
 static GtkWidget *compose_account_option_menu_create(Compose *compose)
 {
@@ -5383,20 +5378,21 @@ static void compose_set_ext_editor_sensitive(Compose *compose,
 }
 
 /**
- * undo_set_undo:
+ * compose_undo_state_changed:
  *
  * Change the sensivity of the menuentries undo and redo
  **/
-static void compose_set_undo(UndoMain *undostruct, gint undo_state,
-			     gint redo_state, GtkWidget *changewidget)
+static void compose_undo_state_changed(UndoMain *undostruct, gint undo_state,
+				       gint redo_state, gpointer data)
 {
+	GtkWidget *widget = GTK_WIDGET(data);
 	GtkItemFactory *ifactory;
 
-	g_return_if_fail(changewidget != NULL);
+	g_return_if_fail(widget != NULL);
 
 	debug_print("Set_undo.  UNDO:%i  REDO:%i\n", undo_state, redo_state);
 
-	ifactory = gtk_item_factory_from_widget(changewidget);
+	ifactory = gtk_item_factory_from_widget(widget);
 
 	switch (undo_state) {
 	case UNDO_STATE_TRUE:

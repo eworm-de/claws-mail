@@ -1,3 +1,59 @@
+2001-12-21
+
+	* src/template.c: template_write_config(): typo を修正。
+	* src/compose.c: toolbar_linewrap_cb(): compose_wrap_line_all() を
+	  呼ぶようにした。
+	* src/filter.[ch]
+	  src/prefs_filter.c: 正規表現に対応(中井さん thanks)。
+	* src/undo.c: undo_paste_clipboard_cb(): ペーストしたクリップボード
+	  が空のときアンドゥの状態を破壊するバグを修正。
+	  undo_check_size(): g_list_last() を使用。
+	  undo_undo()
+	  undo_redo(): NULL チェックを修正し、少し最適化。
+	  コードの整理。
+	* src/prefs_common.c: 自動改行の行長のデフォルトを72に変更。
+
+2001-12-20
+
+	* pixmap 管理の再構成。
+	* src/stock_pixmap.[ch]: 新規。このモジュールは全ての static な
+	  pixmap を管理する。
+	* pixmap データを直接使う全てのファイルを stock_pixmap_*() を
+	  使用するように修正。
+	* src/undo.[ch]: undo_set_undo_change_funct() を
+	  undo_set_change_state_func() に名称変更し、引数を GtkWidget*
+	  から gpointer に変更。
+	  undo_merge(): コードの整理。
+	* src/compose.c: compose_set_undo() を compose_undo_state_changed()
+	  に名称変更。
+
+2001-12-19
+
+	* src/account.c: account_find_from_address(): 大小文字を区別しない
+	  ようにした。
+	* src/addressbook.c: addressbook_create(): wmclass をセット。
+	* src/compose.c: compose_insert_file(): DOS/Win/Mac の改行に対応。
+	* src/importldif.c
+	  src/ldif.[ch]: claws ブランチからマージ。
+	* src/importldif.c: 警告を除去。
+	  imp_ldif_field_list_toggle(): ボタンのチェックを修正。
+	  imp_ldif_dialog_create(): レイアウトをわずかに修正。
+	* src/ldif.c: 警告を除去。
+	* INSTALL
+	  INSTALL.jp: 動作確認リストを更新。
+	* src/vcard.c:
+	  vcard_read_file()
+	  vcard_test_read_file(): tagtemp のメモリリークを修正。
+	  コードの整理(インデントのレベルを削減)。
+	* src/addrindex.c
+	  src/jpilot.[ch]
+	  src/syldap.[ch]: JPilot と LDAP のライブラリはビルド時にリンクされ、
+	  それらなしでは結局実行できないため、実行時のライブラリチェックを
+	  行わないようにした。
+	* src/addressbook.c
+	  src/addrindex.c: "J-Pilot" を "JPilot" に変更。
+	  atoi() の警告を除去。
+
 2001-12-18
 
 	* src/procmsg.c: procmsg_empty_trash()

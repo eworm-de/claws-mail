@@ -28,6 +28,7 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <stdlib.h>
 
 #include "intl.h"
 #include "mgutils.h"
@@ -180,9 +181,10 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 	addrIndex->interfaceList = g_list_append( addrIndex->interfaceList, iface );
 	ADDRITEM_PARENT(iface) = ADDRITEM_OBJECT(addrIndex);
 
-	iface = addrindex_create_interface( ADDR_IF_JPILOT, "J-Pilot", TAG_IF_JPILOT, TAG_DS_JPILOT );
+	iface = addrindex_create_interface( ADDR_IF_JPILOT, "JPilot", TAG_IF_JPILOT, TAG_DS_JPILOT );
 #ifdef USE_JPILOT
-	iface->haveLibrary = jpilot_test_pilot_lib();
+	/* iface->haveLibrary = jpilot_test_pilot_lib(); */
+	iface->haveLibrary = TRUE;
 	iface->useInterface = iface->haveLibrary;
 	iface->getModifyFlag = ( void * ) jpilot_get_modified;
 	iface->getAccessFlag = ( void * ) jpilot_get_accessed;
@@ -204,7 +206,8 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 
 	iface = addrindex_create_interface( ADDR_IF_LDAP, "LDAP", TAG_IF_LDAP, TAG_DS_LDAP );
 #ifdef USE_LDAP
-	iface->haveLibrary = syldap_test_ldap_lib();
+	/* iface->haveLibrary = syldap_test_ldap_lib(); */
+	iface->haveLibrary = TRUE;
 	iface->useInterface = iface->haveLibrary;
 	iface->getAccessFlag = ( void * ) syldap_get_accessed;
 	/* iface->getModifyFlag = ( void * ) syldap_get_modified; */

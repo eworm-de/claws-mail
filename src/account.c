@@ -40,6 +40,7 @@
 #include "prefs_folder_item.h"
 #include "compose.h"
 #include "manage_window.h"
+#include "stock_pixmap.h"
 #include "inc.h"
 #include "gtkutils.h"
 #include "utils.h"
@@ -175,6 +176,9 @@ PrefsAccount *account_find_from_smtp_server(const gchar *address,
 	GList *cur;
 	PrefsAccount *ac;
 
+	g_return_val_if_fail(address != NULL, NULL);
+	g_return_val_if_fail(smtp_server != NULL, NULL);
+
 	for (cur = account_list; cur != NULL; cur = cur->next) {
 		ac = (PrefsAccount *)cur->data;
 		if (!strcmp2(address, ac->address) &&
@@ -198,9 +202,12 @@ PrefsAccount *account_find_from_address(const gchar *address)
 	GList *cur;
 	PrefsAccount *ac;
 
+	g_return_val_if_fail(address != NULL, NULL);
+
 	for (cur = account_list; cur != NULL; cur = cur->next) {
 		ac = (PrefsAccount *)cur->data;
-		if (ac->protocol != A_NNTP && strcasestr(address, ac->address))
+		if (ac->protocol != A_NNTP && ac->address &&
+		    !g_strcasecmp(address, ac->address))
 			return ac;
 	}
 
@@ -527,10 +534,11 @@ static void account_edit_create(void)
 			    GTK_SIGNAL_FUNC (account_edit_close),
 			    NULL);
 
-	PIXMAP_CREATE(clist, markxpm, markxpmmask, mark_xpm);
-	PIXMAP_CREATE(clist, checkboxonxpm, checkboxonxpmmask, checkbox_on_xpm);
-	PIXMAP_CREATE(clist, checkboxoffxpm, checkboxoffxpmmask,
-		      checkbox_off_xpm);
+	stock_pixmap_gdk(clist, STOCK_PIXMAP_MARK, &markxpm, &markxpmmask);
+	stock_pixmap_gdk(clist, STOCK_PIXMAP_CHECKBOX_ON,
+			 &checkboxonxpm, &checkboxonxpmmask);
+	stock_pixmap_gdk(clist, STOCK_PIXMAP_CHECKBOX_OFF,
+			 &checkboxoffxpm, &checkboxoffxpmmask);
 
 	edit_account.window    = window;
 	edit_account.clist     = clist;

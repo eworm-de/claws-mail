@@ -52,6 +52,7 @@
 #include "alertpanel.h"
 #include "inputdialog.h"
 #include "menu.h"
+#include "stock_pixmap.h"
 #include "xml.h"
 #include "prefs.h"
 #include "procmime.h"
@@ -90,17 +91,6 @@
 
 #define ADDRESSBOOK_LDAP_BUSYMSG "Busy"
 #endif
-
-#include "pixmaps/dir-close.xpm"
-#include "pixmaps/dir-open.xpm"
-#include "pixmaps/group.xpm"
-#include "pixmaps/interface.xpm"
-#include "pixmaps/book.xpm"
-#include "pixmaps/address.xpm"
-#include "pixmaps/vcard.xpm"
-#include "pixmaps/jpilot.xpm"
-#include "pixmaps/category.xpm"
-#include "pixmaps/ldap.xpm"
 
 typedef enum
 {
@@ -339,7 +329,7 @@ static void addressbook_list_select_clear	(void);
 static void addressbook_list_select_add		(AddressObject *obj);
 static void addressbook_list_select_remove	(AddressObject *obj);
 
-static void addressbook_import_ldif_cb		();
+static void addressbook_import_ldif_cb		(void);
 static void addressbook_import_mutt_cb		();
 
 static GtkItemFactoryEntry addressbook_entries[] =
@@ -348,7 +338,7 @@ static GtkItemFactoryEntry addressbook_entries[] =
 	{N_("/_File/New _Book"),	"<alt>B",	addressbook_new_book_cb,        0, NULL},
 	{N_("/_File/New _vCard"),	"<alt>D",	addressbook_new_vcard_cb,       0, NULL},
 #ifdef USE_JPILOT
-	{N_("/_File/New _J-Pilot"),	"<alt>J",	addressbook_new_jpilot_cb,      0, NULL},
+	{N_("/_File/New _JPilot"),	"<alt>J",	addressbook_new_jpilot_cb,      0, NULL},
 #endif
 #ifdef USE_LDAP
 	{N_("/_File/New _Server"),	"<alt>S",	addressbook_new_ldap_cb,        0, NULL},
@@ -367,7 +357,7 @@ static GtkItemFactoryEntry addressbook_entries[] =
 	{N_("/_Address/_Edit"),		"<alt>Return",	addressbook_edit_address_cb,    0, NULL},
 	{N_("/_Address/_Delete"),	NULL,		addressbook_delete_address_cb,  0, NULL},
 	{N_("/_Tools/---"),		NULL,		NULL, 0, "<Separator>"},
-	{N_("/_Tools/Import _LDIF"),	NULL,           addressbook_import_ldif_cb,	0, NULL},
+	{N_("/_Tools/Import _LDIF file"), NULL,		addressbook_import_ldif_cb,	0, NULL},
 	{N_("/_Tools/Import M_utt"),	NULL,           addressbook_import_mutt_cb,	0, NULL},
 	{N_("/_Help"),			NULL,		NULL, 0, "<LastBranch>"},
 	{N_("/_Help/_About"),		NULL,		about_show, 0, NULL}
@@ -383,8 +373,8 @@ static GtkItemFactoryEntry addressbook_entries[] =
 	{N_("/_Tools/Import _Mozilla"),	NULL,           NULL,				0, NULL},
 	{N_("/_Tools/Import _vCard"),	NULL,           NULL,				0, NULL},
 	{N_("/_Tools/---"),		NULL,		NULL, 0, "<Separator>"},
-	{N_("/_Tools/Export _LDIF"),	NULL,           NULL,				0, NULL},
-	{N_("/_Tools/Export V-_Card"),	NULL,           NULL,				0, NULL},
+	{N_("/_Tools/Export _LDIF file"), NULL,		NULL,				0, NULL},
+	{N_("/_Tools/Export v_Card"),	NULL,           NULL,				0, NULL},
 */
 
 static GtkItemFactoryEntry addressbook_tree_popup_entries[] =
@@ -675,7 +665,8 @@ static void addressbook_create(void)
 			   GINT_TO_POINTER(COMPOSE_BCC));
 
 	/* Build icons for interface */
-	PIXMAP_CREATE( window, interfacexpm, interfacexpmmask, interface_xpm );
+	stock_pixmap_gdk( window, STOCK_PIXMAP_INTERFACE,
+			  &interfacexpm, &interfacexpmmask );
 
 	/* Build control tables */
 	addrbookctl_build_map(window);
@@ -1008,7 +999,7 @@ static void addressbook_menubar_set_sensitive( gboolean sensitive ) {
 	menu_set_sensitive( addrbook.menu_factory, "/File/New Book",    sensitive );
 	menu_set_sensitive( addrbook.menu_factory, "/File/New vCard",  sensitive );
 #ifdef USE_JPILOT
-	menu_set_sensitive( addrbook.menu_factory, "/File/New J-Pilot", sensitive );
+	menu_set_sensitive( addrbook.menu_factory, "/File/New JPilot", sensitive );
 #endif
 #ifdef USE_LDAP
 	menu_set_sensitive( addrbook.menu_factory, "/File/New Server",  sensitive );
@@ -1883,7 +1874,7 @@ static void addressbook_edit_address_cb( gpointer data, guint action, GtkWidget 
 		/* Edit person - basic page */
 		ItemPerson *person = ( ItemPerson * ) obj;
 		if( addressbook_edit_person( abf, NULL, person, FALSE ) == NULL ) return;
-		gtk_ctree_select( ctree, addrbook.opened);
+		gtk_ctree_select( ctree, addrbook.opened );
 		invalidate_address_completion();
 		return;
 	}
@@ -3020,15 +3011,15 @@ void addrbookctl_build_map( GtkWidget *window ) {
 	AddressTypeControlItem *atci;
 
 	/* Build icons */
-	PIXMAP_CREATE(window, folderxpm, folderxpmmask, dir_close_xpm);
-	PIXMAP_CREATE(window, folderopenxpm, folderopenxpmmask, dir_open_xpm);
-	PIXMAP_CREATE(window, groupxpm, groupxpmmask, group_xpm);
-	PIXMAP_CREATE(window, vcardxpm, vcardxpmmask, vcard_xpm);
-	PIXMAP_CREATE(window, bookxpm, bookxpmmask, book_xpm);
-	PIXMAP_CREATE(window, addressxpm, addressxpmmask, address_xpm);
-	PIXMAP_CREATE(window, jpilotxpm, jpilotxpmmask, jpilot_xpm);
-	PIXMAP_CREATE(window, categoryxpm, categoryxpmmask, category_xpm);
-	PIXMAP_CREATE(window, ldapxpm, ldapxpmmask, ldap_xpm);
+	stock_pixmap_gdk(window, STOCK_PIXMAP_DIR_CLOSE, &folderxpm, &folderxpmmask);
+	stock_pixmap_gdk(window, STOCK_PIXMAP_DIR_OPEN, &folderopenxpm, &folderopenxpmmask);
+	stock_pixmap_gdk(window, STOCK_PIXMAP_GROUP, &groupxpm, &groupxpmmask);
+	stock_pixmap_gdk(window, STOCK_PIXMAP_VCARD, &vcardxpm, &vcardxpmmask);
+	stock_pixmap_gdk(window, STOCK_PIXMAP_BOOK, &bookxpm, &bookxpmmask);
+	stock_pixmap_gdk(window, STOCK_PIXMAP_ADDRESS, &addressxpm, &addressxpmmask);
+	stock_pixmap_gdk(window, STOCK_PIXMAP_JPILOT, &jpilotxpm, &jpilotxpmmask);
+	stock_pixmap_gdk(window, STOCK_PIXMAP_CATEGORY, &categoryxpm, &categoryxpmmask);
+	stock_pixmap_gdk(window, STOCK_PIXMAP_LDAP, &ldapxpm, &ldapxpmmask);
 
 	_addressBookTypeHash_ = g_hash_table_new( g_int_hash, g_int_equal );
 	_addressBookTypeList_ = NULL;
@@ -3145,19 +3136,19 @@ void addrbookctl_build_map( GtkWidget *window ) {
 	g_hash_table_insert( _addressBookTypeHash_, &atci->objectType, atci );
 	_addressBookTypeList_ = g_list_append( _addressBookTypeList_, atci );
 
-	/* J-Pilot */
+	/* JPilot */
 	atci = g_new0( AddressTypeControlItem, 1 );
 	atci->objectType = ADDR_JPILOT;
 	atci->interfaceType = ADDR_IF_JPILOT;
 	atci->showInTree = TRUE;
 	atci->treeExpand = TRUE;
 	atci->treeLeaf = FALSE;
-	atci->displayName = _( "J-Pilot" );
+	atci->displayName = _( "JPilot" );
 	atci->iconXpm = jpilotxpm;
 	atci->maskXpm = jpilotxpmmask;
 	atci->iconXpmOpen = jpilotxpm;
 	atci->maskXpmOpen = jpilotxpmmask;
-	atci->menuCommand = "/File/New J-Pilot";
+	atci->menuCommand = "/File/New JPilot";
 	g_hash_table_insert( _addressBookTypeHash_, &atci->objectType, atci );
 	_addressBookTypeList_ = g_list_append( _addressBookTypeList_, atci );
 
@@ -3168,7 +3159,7 @@ void addrbookctl_build_map( GtkWidget *window ) {
 	atci->showInTree = TRUE;
 	atci->treeExpand = TRUE;
 	atci->treeLeaf = TRUE;
-	atci->displayName = _( "J-Pilot" );
+	atci->displayName = _( "JPilot" );
 	atci->iconXpm = categoryxpm;
 	atci->maskXpm = categoryxpmmask;
 	atci->iconXpmOpen = categoryxpm;
@@ -3526,4 +3517,3 @@ static void addressbook_import_mutt_cb() {
 /*
 * End of Source.
 */
-

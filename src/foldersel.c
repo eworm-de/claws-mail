@@ -42,13 +42,11 @@
 #include "main.h"
 #include "utils.h"
 #include "gtkutils.h"
+#include "stock_pixmap.h"
 #include "foldersel.h"
 #include "alertpanel.h"
 #include "manage_window.h"
 #include "folder.h"
-
-#include "pixmaps/dir-close.xpm"
-#include "pixmaps/dir-open.xpm"
 
 static GdkPixmap *folderxpm;
 static GdkBitmap *folderxpmmask;
@@ -191,8 +189,10 @@ static void foldersel_create(void)
 
 static void foldersel_init(void)
 {
-	PIXMAP_CREATE(ctree, folderxpm, folderxpmmask, dir_close_xpm);
-	PIXMAP_CREATE(ctree, folderopenxpm, folderopenxpmmask, dir_open_xpm);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DIR_CLOSE,
+			 &folderxpm, &folderxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DIR_OPEN,
+			 &folderopenxpm, &folderopenxpmmask);
 }
 
 static gboolean foldersel_gnode_func(GtkCTree *ctree, guint depth,

@@ -44,30 +44,35 @@ typedef enum
 
 typedef struct _UndoMain UndoMain;
 
-typedef void (*UndoChangeState)	(UndoMain	*undostruct,
-				 gint		 undo_state,
-				 gint		 redo_state,
-				 GtkWidget	*changewidget);
+typedef void (*UndoChangeStateFunc)	(UndoMain	*undostruct,
+					 gint		 undo_state,
+					 gint		 redo_state,
+					 gpointer	 data);
 
 struct _UndoMain 
 {
 	GtkWidget *text;
-	GtkWidget *changewidget;
+
 	GList *undo;
 	GList *redo;
-	UndoChangeState change_func;
+
+	UndoChangeStateFunc change_state_func;
+	gpointer change_state_data;
+
 	gboolean undo_state : 1;
 	gboolean redo_state : 1;
+
 	gint paste;
 };
 
-UndoMain *undo_init		(GtkWidget	*text);
-void undo_destroy		(UndoMain	*undostruct);
-void undo_set_undo_change_funct	(UndoMain	*undostruct,
-				 UndoChangeState func,
-				 GtkWidget	*changewidget);
+UndoMain *undo_init		(GtkWidget		*text);
+void undo_destroy		(UndoMain		*undostruct);
 
-void undo_undo			(UndoMain	*undostruct); 
-void undo_redo			(UndoMain	*undostruct); 
+void undo_set_change_state_func	(UndoMain		*undostruct,
+				 UndoChangeStateFunc	 func,
+				 gpointer		 data);
+
+void undo_undo			(UndoMain		*undostruct); 
+void undo_redo			(UndoMain		*undostruct); 
 
 #endif /* __UNDO_H__ */

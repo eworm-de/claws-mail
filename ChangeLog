@@ -1,3 +1,60 @@
+2001-12-21
+
+	* src/template.c: template_write_config(): fixed a typo.
+	* src/compose.c: toolbar_linewrap_cb(): call compose_wrap_line_all().
+	* src/filter.[ch]
+	  src/prefs_filter.c: supported regular expression (thanks to
+	  Yukihiro Nakai).
+	* src/undo.c: undo_paste_clipboard_cb(): fixed a bug that broke
+	  undo state when pasted clipboard was empty.
+	  undo_check_size(): use g_list_last().
+	  undo_undo()
+	  undo_redo(): fixed NULL checking and made a bit of optimization.
+	  Some code cleanups.
+	* src/prefs_common.c: changed the default value of linewrap length
+	  to 72.
+
+2001-12-20
+
+	* reorganization of pixmap management.
+	* src/stock_pixmap.[ch]: new. This module manages all static pixmaps.
+	* modified every files which directly use pixmaps data to use
+	  stock_pixmap_*().
+	* src/undo.[ch]: renamed undo_set_undo_change_funct() to
+	  undo_set_change_state_func(), and changed its argument from
+	  GtkWidget* to gpointer.
+	  undo_merge(): code cleanup.
+	* src/compose.c: renamed compose_set_undo() to
+	  compose_undo_state_changed().
+
+2001-12-19
+
+	* src/account.c: account_find_from_address(): made it case
+	  insensitive.
+	* src/addressbook.c: addressbook_create(): set wmclass.
+	* src/compose.c: compose_insert_file(): supported DOS/Win/Mac line
+	  break.
+	* src/importldif.c
+	  src/ldif.[ch]: merged from the claws branch.
+	* src/importldif.c: removed some warnings.
+	  imp_ldif_field_list_toggle(): fixed button checking.
+	  imp_ldif_dialog_create(): minor layout fix.
+	* src/ldif.c: removed some warnings.
+	* INSTALL
+	  INSTALL.jp: updated confirmation list.
+	* src/vcard.c:
+	  vcard_read_file()
+	  vcard_test_read_file(): fixed a memory leak of tagtemp.
+	  Some code cleanups (decreasing the indent level).
+	* src/addrindex.c
+	  src/jpilot.[ch]
+	  src/syldap.[ch]: disabled runtime library checking because JPilot
+	  and LDAP libraries are linked on the build time, and the program
+	  doesn't execute without them anyway.
+	* src/addressbook.c
+	  src/addrindex.c: changed "J-Pilot" to "JPilot".
+	  Removed warning for atoi().
+
 2001-12-18
 
 	* src/procmsg.c: procmsg_empty_trash()

@@ -270,10 +270,11 @@ static void vcard_free_lists( GSList *listName, GSList *listAddr, GSList *listRe
 * Param: cardFile - object.
 * Param: tagvalue - will be placed into the linked list.
 */
-static gchar *vcard_read_qp( VCardFile *cardFile, char *tagvalue ) {
+static gchar *vcard_read_qp( VCardFile *cardFile, gchar *tagvalue ) {
 	GSList *listQP = NULL;
 	gint len = 0;
 	gchar *line = tagvalue;
+
 	while( line ) {
 		listQP = g_slist_append( listQP, line );
 		len = strlen( line ) - 1;
@@ -297,10 +298,11 @@ static gchar *vcard_read_qp( VCardFile *cardFile, char *tagvalue ) {
 * Parse tag name from line buffer.
 * Return: Buffer containing the tag name, or NULL if no delimiter char found.
 */
-static gchar *vcard_get_tagname( char* line, gchar dlm ) {
+static gchar *vcard_get_tagname( gchar* line, gchar dlm ) {
 	gint len = 0;
 	gchar *tag = NULL;
 	gchar *lptr = line;
+
 	while( *lptr++ ) {
 		if( *lptr == dlm ) {
 			len = lptr - line;
@@ -467,70 +469,81 @@ static void vcard_read_file( VCardFile *cardFile ) {
 	/* GSList *listQP = NULL; */
 
 	for( ;; ) {
-		gchar *line =  vcard_get_line( cardFile );
+		gchar *line;
+
+		line = vcard_get_line( cardFile );
 		if( line == NULL ) break;
 
 		/* fprintf( stdout, "%s\n", line ); */
 
 		/* Parse line */
 		tagtemp = vcard_get_tagname( line, VCARD_SEP_TAG );
-		if( tagtemp ) {
-			/* fprintf( stdout, "\ttemp:  %s\n", tagtemp ); */
-			tagvalue = vcard_get_tagvalue( line, VCARD_SEP_TAG );
-			tagname = vcard_get_tagname( tagtemp, VCARD_SEP_TYPE );
-			tagtype = vcard_get_tagvalue( tagtemp, VCARD_SEP_TYPE );
-			if( tagname == NULL ) {
-				tagname = tagtemp;
-				tagtemp = NULL;
-			}
-
-			/* fprintf( stdout, "\tname:  %s\n", tagname ); */
-			/* fprintf( stdout, "\ttype:  %s\n", tagtype ); */
-			/* fprintf( stdout, "\tvalue: %s\n", tagvalue ); */
-
-			if( tagvalue ) {
-				if( g_strcasecmp( tagtype, VCARD_TYPE_QP ) == 0 ) {
-					/* Quoted-Printable: could span multiple lines */
-					tagvalue = vcard_read_qp( cardFile, tagvalue );
-					vcard_unescape_qp( tagvalue );
-					/* fprintf( stdout, "QUOTED-PRINTABLE !!! final\n>%s<\n", tagvalue ); */
-				}
-
-				if( g_strcasecmp( tagname, VCARD_TAG_START ) == 0 &&
-					g_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
-					/* fprintf( stdout, "start card\n" ); */
-					vcard_free_lists( listName, listAddress, listRemarks, listID );
-					listName = listAddress = listRemarks = listID = NULL;
-				}
-				if( g_strcasecmp( tagname, VCARD_TAG_FULLNAME ) == 0 ) {
-					/* fprintf( stdout, "- full name: %s\n", tagvalue ); */
-					listName = g_slist_append( listName, g_strdup( tagvalue ) );
-				}
-				if( g_strcasecmp( tagname, VCARD_TAG_EMAIL ) == 0 ) {
-					/* fprintf( stdout, "- address: %s\n", tagvalue ); */
-					listAddress = g_slist_append( listAddress, g_strdup( tagvalue ) );
-					listRemarks = g_slist_append( listRemarks, g_strdup( tagtype ) );
-				}
-				if( g_strcasecmp( tagname, VCARD_TAG_UID ) == 0 ) {
-					/* fprintf( stdout, "- id: %s\n", tagvalue ); */
-					listID = g_slist_append( listID, g_strdup( tagvalue ) );
-				}
-				if( g_strcasecmp( tagname, VCARD_TAG_END ) == 0 &&
-					g_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
-					/* vCard is complete */
-					/* fprintf( stdout, "end card\n--\n" ); */
-					/* vcard_dump_lists( listName, listAddress, listRemarks, listID, stdout ); */
-					vcard_build_items( cardFile, listName, listAddress, listRemarks, listID );
-					vcard_free_lists( listName, listAddress, listRemarks, listID );
-					listName = listAddress = listRemarks = listID = NULL;
-				}
-				g_free( tagvalue );
-			}
-			g_free( tagname );
-			g_free( tagtype );
+		if( tagtemp == NULL ) {
+			g_free( line );
+			continue;
 		}
+
+		/* fprintf( stdout, "\ttemp:  %s\n", tagtemp ); */
+
+		tagvalue = vcard_get_tagvalue( line, VCARD_SEP_TAG );
+		if( tagvalue == NULL ) {
+			g_free( tagtemp );
+			g_free( line );
+			continue;
+		}
+
+		tagname = vcard_get_tagname( tagtemp, VCARD_SEP_TYPE );
+		tagtype = vcard_get_tagvalue( tagtemp, VCARD_SEP_TYPE );
+		if( tagname == NULL ) {
+			tagname = tagtemp;
+			tagtemp = NULL;
+		}
+
+		/* fprintf( stdout, "\tname:  %s\n", tagname ); */
+		/* fprintf( stdout, "\ttype:  %s\n", tagtype ); */
+		/* fprintf( stdout, "\tvalue: %s\n", tagvalue ); */
+
+		if( g_strcasecmp( tagtype, VCARD_TYPE_QP ) == 0 ) {
+			/* Quoted-Printable: could span multiple lines */
+			tagvalue = vcard_read_qp( cardFile, tagvalue );
+			vcard_unescape_qp( tagvalue );
+			/* fprintf( stdout, "QUOTED-PRINTABLE !!! final\n>%s<\n", tagvalue ); */
+		}
+
+		if( g_strcasecmp( tagname, VCARD_TAG_START ) == 0 &&
+			g_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
+			/* fprintf( stdout, "start card\n" ); */
+			vcard_free_lists( listName, listAddress, listRemarks, listID );
+			listName = listAddress = listRemarks = listID = NULL;
+		}
+		if( g_strcasecmp( tagname, VCARD_TAG_FULLNAME ) == 0 ) {
+			/* fprintf( stdout, "- full name: %s\n", tagvalue ); */
+			listName = g_slist_append( listName, g_strdup( tagvalue ) );
+		}
+		if( g_strcasecmp( tagname, VCARD_TAG_EMAIL ) == 0 ) {
+			/* fprintf( stdout, "- address: %s\n", tagvalue ); */
+			listAddress = g_slist_append( listAddress, g_strdup( tagvalue ) );
+			listRemarks = g_slist_append( listRemarks, g_strdup( tagtype ) );
+		}
+		if( g_strcasecmp( tagname, VCARD_TAG_UID ) == 0 ) {
+			/* fprintf( stdout, "- id: %s\n", tagvalue ); */
+			listID = g_slist_append( listID, g_strdup( tagvalue ) );
+		}
+		if( g_strcasecmp( tagname, VCARD_TAG_END ) == 0 &&
+			g_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
+			/* vCard is complete */
+			/* fprintf( stdout, "end card\n--\n" ); */
+			/* vcard_dump_lists( listName, listAddress, listRemarks, listID, stdout ); */
+			vcard_build_items( cardFile, listName, listAddress, listRemarks, listID );
+			vcard_free_lists( listName, listAddress, listRemarks, listID );
+			listName = listAddress = listRemarks = listID = NULL;
+		}
+
+		g_free( tagname );
+		g_free( tagtype );
+		g_free( tagvalue );
+		g_free( tagtemp );
 		g_free( line );
-		line = NULL;
 	}
 
 	/* Free lists */
@@ -709,37 +722,45 @@ gint vcard_test_read_file( const gchar *fileSpec ) {
 
 			/* Parse line */
 			tagtemp = vcard_get_tagname( line, VCARD_SEP_TAG );
-			if( tagtemp ) {
-				tagvalue = vcard_get_tagvalue( line, VCARD_SEP_TAG );
-				tagname = vcard_get_tagname( tagtemp, VCARD_SEP_TYPE );
-				tagtype = vcard_get_tagvalue( tagtemp, VCARD_SEP_TYPE );
-				if( tagname == NULL ) {
-					tagname = tagtemp;
-					tagtemp = NULL;
-				}
-
-				if( tagvalue ) {
-					if( g_strcasecmp( tagtype, VCARD_TYPE_QP ) == 0 ) {
-						/* Quoted-Printable: could span multiple lines */
-						tagvalue = vcard_read_qp( cardFile, tagvalue );
-						vcard_unescape_qp( tagvalue );
-					}
-					if( g_strcasecmp( tagname, VCARD_TAG_START ) == 0 &&
-						g_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
-						haveStart = TRUE;
-					}
-					if( g_strcasecmp( tagname, VCARD_TAG_END ) == 0 &&
-						g_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
-						/* vCard is complete */
-						if( haveStart ) cardFile->retVal = MGU_SUCCESS;
-					}
-					g_free( tagvalue );
-				}
-				g_free( tagname );
-				g_free( tagtype );
+			if( tagtemp == NULL ) {
+				g_free( line );
+				continue;
 			}
+
+			tagvalue = vcard_get_tagvalue( line, VCARD_SEP_TAG );
+			if( tagvalue == NULL ) {
+				g_free( tagtemp );
+				g_free( line );
+				continue;
+			}
+
+			tagname = vcard_get_tagname( tagtemp, VCARD_SEP_TYPE );
+			tagtype = vcard_get_tagvalue( tagtemp, VCARD_SEP_TYPE );
+			if( tagname == NULL ) {
+				tagname = tagtemp;
+				tagtemp = NULL;
+			}
+
+			if( g_strcasecmp( tagtype, VCARD_TYPE_QP ) == 0 ) {
+				/* Quoted-Printable: could span multiple lines */
+				tagvalue = vcard_read_qp( cardFile, tagvalue );
+				vcard_unescape_qp( tagvalue );
+			}
+			if( g_strcasecmp( tagname, VCARD_TAG_START ) == 0 &&
+				g_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
+				haveStart = TRUE;
+			}
+			if( g_strcasecmp( tagname, VCARD_TAG_END ) == 0 &&
+				g_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
+				/* vCard is complete */
+				if( haveStart ) cardFile->retVal = MGU_SUCCESS;
+			}
+
+			g_free( tagname );
+			g_free( tagtype );
+			g_free( tagvalue );
+			g_free( tagtemp );
 			g_free( line );
-			line = NULL;
 		}
 		vcard_close_file( cardFile );
 	}
@@ -752,4 +773,3 @@ gint vcard_test_read_file( const gchar *fileSpec ) {
 /*
 * End of Source.
 */
-

@@ -65,6 +65,7 @@
 #include "compose.h"
 #include "utils.h"
 #include "gtkutils.h"
+#include "stock_pixmap.h"
 #include "filesel.h"
 #include "manage_window.h"
 #include "alertpanel.h"
@@ -80,17 +81,6 @@
 #include "scoring.h"
 #include "prefs_folder_item.h"
 #include "filtering.h"
-
-#include "pixmaps/dir-open.xpm"
-#include "pixmaps/mark.xpm"
-#include "pixmaps/deleted.xpm"
-#include "pixmaps/new.xpm"
-#include "pixmaps/unread.xpm"
-#include "pixmaps/replied.xpm"
-#include "pixmaps/forwarded.xpm"
-#include "pixmaps/clip.xpm"
-#include "pixmaps/ignorethread.xpm"
-#include "pixmaps/locked.xpm"
 
 #define STATUSBAR_PUSH(mainwin, str) \
 { \
@@ -119,9 +109,6 @@ static GtkStyle *bold_deleted_style;
 static GtkStyle *small_style;
 static GtkStyle *small_marked_style;
 static GtkStyle *small_deleted_style;
-
-static GdkPixmap *folderxpm;
-static GdkBitmap *folderxpmmask;
 
 static GdkPixmap *markxpm;
 static GdkBitmap *markxpmmask;
@@ -534,21 +521,20 @@ void summary_init(SummaryView *summaryview)
 	GtkStyle *style;
 	GtkWidget *pixmap;
 
-	PIXMAP_CREATE(summaryview->ctree, markxpm, markxpmmask, mark_xpm);
-	PIXMAP_CREATE(summaryview->ctree, deletedxpm, deletedxpmmask,
-		      deleted_xpm);
-	PIXMAP_CREATE(summaryview->ctree, newxpm, newxpmmask, new_xpm);
-	PIXMAP_CREATE(summaryview->ctree, unreadxpm, unreadxpmmask, unread_xpm);
-	PIXMAP_CREATE(summaryview->ctree, repliedxpm, repliedxpmmask,
-		      replied_xpm);
-	PIXMAP_CREATE(summaryview->ctree, forwardedxpm, forwardedxpmmask,
-		      forwarded_xpm);
-	PIXMAP_CREATE(summaryview->ctree, ignorethreadxpm, ignorethreadxpmmask,
-		      ignorethread_xpm);
-	PIXMAP_CREATE(summaryview->ctree, lockedxpm, lockedxpmmask, locked_xpm);		      
-	PIXMAP_CREATE(summaryview->ctree, clipxpm, clipxpmmask, clip_xpm);
-	PIXMAP_CREATE(summaryview->hbox, folderxpm, folderxpmmask,
-		      dir_open_xpm);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_MARK,
+			 &markxpm, &markxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_DELETED,
+			 &deletedxpm, &deletedxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_NEW,
+			 &newxpm, &newxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_UNREAD,
+			 &unreadxpm, &unreadxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_REPLIED,
+			 &repliedxpm, &repliedxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_FORWARDED,
+			 &forwardedxpm, &forwardedxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP,
+			 &clipxpm, &clipxpmmask);
 
 	if (!small_style) {
 		small_style = gtk_style_copy
@@ -584,7 +570,7 @@ void summary_init(SummaryView *summaryview)
 	gtk_widget_set_style(summaryview->statlabel_select, style);
 	gtk_widget_set_style(summaryview->statlabel_msgs, style);
 
-	pixmap = gtk_pixmap_new(folderxpm, folderxpmmask);
+	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_DIR_OPEN);
 	gtk_box_pack_start(GTK_BOX(summaryview->hbox), pixmap, FALSE, FALSE, 4);
 	gtk_box_reorder_child(GTK_BOX(summaryview->hbox), pixmap, 0);
 	gtk_widget_show(pixmap);

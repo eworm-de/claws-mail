@@ -25,13 +25,13 @@
 #endif
 
 #include <glib.h>
+#include "gtkstext.h"
 
 #include <string.h> /* for strlen */
 #include <stdlib.h> /* for mbstowcs */
 
 #include "undo.h"
 #include "utils.h"
-#include "gtkstext.h"
 #include "prefs_common.h"
 
 typedef struct _UndoInfo UndoInfo;
@@ -42,8 +42,8 @@ struct _UndoInfo
 	gchar *text;
 	gint start_pos;
 	gint end_pos;
-	float window_position;
-	int mergeable;
+	gfloat window_position;
+	gint mergeable;
 };
 
 static void undo_free_list	(GList	       **list_pointer);
@@ -114,10 +114,10 @@ static UndoInfo *undo_object_new(gchar *text, gint start_pos, gint end_pos,
 {
 	UndoInfo *undoinfo;
 	undoinfo = g_new (UndoInfo, 1);
-        undoinfo->text      = text;
-        undoinfo->start_pos = start_pos;
-        undoinfo->end_pos   = end_pos;
-        undoinfo->action    = action;
+	undoinfo->text      = text;
+	undoinfo->start_pos = start_pos;
+	undoinfo->end_pos   = end_pos;
+	undoinfo->action    = action;
 	undoinfo->window_position = window_position;
 	return undoinfo;
 }
@@ -136,29 +136,27 @@ static void undo_object_free(UndoInfo *undo)
  **/
 static void undo_free_list(GList **list_pointer) 
 {
-	UndoInfo *nth_redo;
-        GList *cur, *list = *list_pointer;
+	UndoInfo *undo;
+	GList *cur, *list = *list_pointer;
 
-	if (list == NULL)
-		return;
-
-	debug_print("length of list: %d\n", g_list_length(list));
+	if (list == NULL) return;
 
 	for (cur = list; cur != NULL; cur = cur->next) {
-		nth_redo = cur->data;
-		undo_object_free(nth_redo);
+		undo = (UndoInfo *)cur->data;
+		undo_object_free(undo);
 	}
 
-        g_list_free(list);
+	g_list_free(list);
 	*list_pointer = NULL;
 }
 
-void undo_set_undo_change_funct(UndoMain *undostruct, UndoChangeState func, 
-				GtkWidget *changewidget) 
+void undo_set_change_state_func(UndoMain *undostruct, UndoChangeStateFunc func,
+				gpointer data)
 {
-        g_return_if_fail(undostruct != NULL);
-        undostruct->change_func = func;
-	undostruct->changewidget = changewidget;
+	g_return_if_fail(undostruct != NULL);
+
+	undostruct->change_state_func = func;
+	undostruct->change_state_data = data;
 }
 
 /**
@@ -171,20 +169,20 @@ void undo_set_undo_change_funct(UndoMain *undostruct, UndoChangeState func,
  **/
 static void undo_check_size(UndoMain *undostruct) 
 {
-        UndoInfo *nth_undo;
+	UndoInfo *last_undo;
+	guint length;
 
-        if (prefs_common.undolevels < 1)
-                return;
+	if (prefs_common.undolevels < 1) return;
 
-        /* No need to check for the redo list size since the undo
-           list gets freed on any call to compose_undo_add */
-        if (g_list_length(undostruct->undo) >= prefs_common.undolevels && prefs_common.undolevels > 0) {
-		nth_undo = g_list_nth_data(undostruct->undo, g_list_length(undostruct->undo) - 1);
-		undostruct->undo = g_list_remove(undostruct->undo, nth_undo);
-		g_free (nth_undo->text);
-		g_free (nth_undo);
-        }
-	debug_print("g_list_length (undostruct->undo): %d\n", g_list_length(undostruct->undo));
+	/* No need to check for the redo list size since the undo
+	   list gets freed on any call to compose_undo_add */
+	length = g_list_length(undostruct->undo);
+	if (length >= prefs_common.undolevels && prefs_common.undolevels > 0) {
+		last_undo = (UndoInfo *)g_list_last(undostruct->undo)->data;
+		undostruct->undo = g_list_remove(undostruct->undo, last_undo);
+		undo_object_free(last_undo);
+	}
+	debug_print("g_list_length(undostruct->undo): %d\n", length);
 }
 
 /**
@@ -200,99 +198,90 @@ static void undo_check_size(UndoMain *undostruct)
  *
  * Return Value: TRUE is merge was sucessful, FALSE otherwise
  **/
-static gint undo_merge (GList *list, guint start_pos, guint end_pos, gint action, const guchar* text) 
+static gint undo_merge(GList *list, guint start_pos, guint end_pos,
+		       gint action, const guchar *text) 
 {
-        guchar *temp_string;
-        UndoInfo *last_undo;
-	gboolean checkit = TRUE;
+	guchar *temp_string;
+	UndoInfo *last_undo;
 
-        /* This are the cases in which we will NOT merge :
-           1. if (last_undo->mergeable == FALSE)
-           [mergeable = FALSE when the size of the undo data was not 1.
-           or if the data was size = 1 but = '\n' or if the undo object
-           has been "undone" already ]
-           2. The size of text is not 1
-           3. If the new merging data is a '\n'
-           4. If the last char of the undo_last data is a space/tab
-           and the new char is not a space/tab ( so that we undo
-           words and not chars )
-           5. If the type (action) of undo is different from the last one
-        Chema */
+	/* This are the cases in which we will NOT merge :
+	   1. if (last_undo->mergeable == FALSE)
+	   [mergeable = FALSE when the size of the undo data was not 1.
+	   or if the data was size = 1 but = '\n' or if the undo object
+	   has been "undone" already ]
+	   2. The size of text is not 1
+	   3. If the new merging data is a '\n'
+	   4. If the last char of the undo_last data is a space/tab
+	   and the new char is not a space/tab ( so that we undo
+	   words and not chars )
+	   5. If the type (action) of undo is different from the last one
+	   Chema */
 
-        if (list == NULL)
-                return FALSE;
+	if (list == NULL) return FALSE;
 
-        last_undo = list->data;
+	last_undo = list->data;
 
-        if (!last_undo->mergeable)
-                return FALSE;
+	if (!last_undo->mergeable) return FALSE;
 
-        if (end_pos-start_pos != 1) {
-                last_undo->mergeable = FALSE;
-                return FALSE;
-        }
-
-        if (text[0] == '\n') 
-		checkit = FALSE;
-
-        if (action != last_undo->action) 
-		checkit = FALSE;
-
-        if (action == UNDO_ACTION_REPLACE_INSERT || action == UNDO_ACTION_REPLACE_DELETE)
-                 checkit = FALSE;
-
-	if (action == UNDO_ACTION_DELETE && checkit) {
-                if (last_undo->start_pos!=end_pos && last_undo->start_pos != start_pos && checkit)
-                         checkit = FALSE;
-
-                if (last_undo->start_pos == start_pos && checkit) {
-                        /* Deleted with the delete key */
-                        if ( text[0] != ' ' && text[0] != '\t' && checkit &&
-                             (last_undo->text[last_undo->end_pos-last_undo->start_pos - 1] == ' '
-                              || last_undo->text[last_undo->end_pos-last_undo->start_pos - 1] == '\t'))
-                                 checkit = FALSE;
-
-                        temp_string = g_strdup_printf("%s%s", last_undo->text, text);
-                        g_free(last_undo->text);
-                        last_undo->end_pos += 1;
-                        last_undo->text = temp_string;
-                } else if (checkit) {
-                        /* Deleted with the backspace key */
-                        if ( text[0] != ' ' && text[0] != '\t' && checkit &&
-                             (last_undo->text[0] == ' '
-                              || last_undo->text[0] == '\t'))
-                                 checkit = FALSE;
-
-                        temp_string = g_strdup_printf("%s%s", text, last_undo->text);
-                        g_free(last_undo->text);
-                        last_undo->start_pos = start_pos;
-                        last_undo->text = temp_string;
-		}
-	} else if (action == UNDO_ACTION_INSERT && checkit) {
-                if (last_undo->end_pos != start_pos && checkit)
-                         checkit = FALSE;
-
-/*                if ( text[0]!=' ' && text[0]!='\t' &&
-                     (last_undo->text [last_undo->end_pos-last_undo->start_pos - 1] ==' '
-                      || last_undo->text [last_undo->end_pos-last_undo->start_pos - 1] == '\t'))
-                        goto compose_undo_do_not_merge;
-*/
-                if (checkit) {
-			temp_string = g_strdup_printf("%s%s", last_undo->text, text);
-                	g_free(last_undo->text);
-                	last_undo->end_pos = end_pos;
-                	last_undo->text = temp_string;
-		}
-	} else if (checkit)
-                debug_print("Unknown action [%i] inside undo merge encountered", action);
-
-	if (checkit) {
-		debug_print("Merged: %s\n", text);
-        	return TRUE;
-	} else {
+	if (end_pos - start_pos != 1 ||
+	    text[0] == '\n' ||
+	    action != last_undo->action ||
+	    action == UNDO_ACTION_REPLACE_INSERT ||
+	    action == UNDO_ACTION_REPLACE_DELETE) {
 		last_undo->mergeable = FALSE;
 		return FALSE;
 	}
+
+	if (action == UNDO_ACTION_DELETE) {
+		gboolean checkit = TRUE;
+
+		if (last_undo->start_pos != end_pos &&
+		    last_undo->start_pos != start_pos) {
+			last_undo->mergeable = FALSE;
+			return FALSE;
+		} else if (last_undo->start_pos == start_pos) {
+			/* Deleted with the delete key */
+			if (text[0] != ' ' && text[0] != '\t' &&
+			    (last_undo->text[last_undo->end_pos - last_undo->start_pos - 1] == ' ' ||
+			     last_undo->text[last_undo->end_pos - last_undo->start_pos - 1] == '\t'))
+				checkit = FALSE;
+
+			temp_string = g_strdup_printf("%s%s", last_undo->text, text);
+			last_undo->end_pos++;
+			g_free(last_undo->text);
+			last_undo->text = temp_string;
+		} else {
+			/* Deleted with the backspace key */
+			if (text[0] != ' ' && text[0] != '\t' &&
+			    (last_undo->text[0] == ' ' ||
+			     last_undo->text[0] == '\t'))
+				checkit = FALSE;
+
+			temp_string = g_strdup_printf("%s%s", text, last_undo->text);
+			last_undo->start_pos = start_pos;
+			g_free(last_undo->text);
+			last_undo->text = temp_string;
+		}
+
+		if (!checkit) {
+			last_undo->mergeable = FALSE;
+			return FALSE;
+		}
+	} else if (action == UNDO_ACTION_INSERT) {
+		if (last_undo->end_pos != start_pos) {
+			last_undo->mergeable = FALSE;
+			return FALSE;
+		} else {
+			temp_string = g_strdup_printf("%s%s", last_undo->text, text);
+			g_free(last_undo->text);
+			last_undo->end_pos = end_pos;
+			last_undo->text = temp_string;
+		}
+	} else
+		debug_print("Unknown action [%i] inside undo merge encountered", action);
+
+	debug_print("Merged: %s\n", text);
+	return TRUE;
 }
 
 /**
@@ -312,18 +301,19 @@ static void undo_add(const gchar *text,
 		     gint start_pos, gint end_pos,
 		     UndoAction action, UndoMain *undostruct) 
 {
-        UndoInfo *undoinfo;
+	UndoInfo *undoinfo;
 
-        debug_print("undo_add(%i)*%s*\n", strlen (text), text);
+	debug_print("undo_add(%i)*%s*\n", strlen (text), text);
 
 	g_return_if_fail(text != NULL);
-        g_return_if_fail(end_pos >= start_pos);
+	g_return_if_fail(end_pos >= start_pos);
 
-        undo_free_list(&undostruct->redo);
+	undo_free_list(&undostruct->redo);
 
-        /* Set the redo sensitivity */
-        undostruct->change_func(undostruct, UNDO_STATE_UNCHANGED, UNDO_STATE_FALSE, 
-				undostruct->changewidget);
+	/* Set the redo sensitivity */
+	undostruct->change_state_func(undostruct,
+				      UNDO_STATE_UNCHANGED, UNDO_STATE_FALSE,
+				      undostruct->change_state_data);
 
 	if (undostruct->paste != 0) {
 		if (action == UNDO_ACTION_INSERT) 
@@ -335,8 +325,8 @@ static void undo_add(const gchar *text,
 			undostruct->paste = 0;
 	}
 
-        if (undo_merge(undostruct->undo, start_pos, end_pos, action, text))
-                return;
+	if (undo_merge(undostruct->undo, start_pos, end_pos, action, text))
+		return;
 
 	undo_check_size(undostruct);
 
@@ -345,14 +335,16 @@ static void undo_add(const gchar *text,
 	undoinfo = undo_object_new(g_strdup(text), start_pos, end_pos, action,
 				   GTK_ADJUSTMENT(GTK_STEXT(undostruct->text)->vadj)->value);
 
-	if (end_pos-start_pos != 1 || text[0] == '\n')
-                undoinfo->mergeable = FALSE;
-        else
-                undoinfo->mergeable = TRUE;
+	if (end_pos - start_pos != 1 || text[0] == '\n')
+		undoinfo->mergeable = FALSE;
+	else
+		undoinfo->mergeable = TRUE;
 
 	undostruct->undo = g_list_prepend(undostruct->undo, undoinfo);
 
-        undostruct->change_func(undostruct, UNDO_STATE_TRUE, UNDO_STATE_UNCHANGED, undostruct->changewidget);
+	undostruct->change_state_func(undostruct,
+				      UNDO_STATE_TRUE, UNDO_STATE_UNCHANGED,
+				      undostruct->change_state_data);
 }
 
 /**
@@ -365,30 +357,31 @@ static void undo_add(const gchar *text,
 void undo_undo(UndoMain *undostruct) 
 {
 	UndoInfo *undoinfo;
-        guint start_pos, end_pos;
-
-	if (undostruct->undo == NULL)
-		return;
+	guint start_pos, end_pos;
 
 	g_return_if_fail(undostruct != NULL);
 
+	if (undostruct->undo == NULL) return;
 
 	/* The undo data we need is always at the top op the
 	   stack. So, therefore, the first one */
-	undoinfo = g_list_nth_data(undostruct->undo, 0);
+	undoinfo = (UndoInfo *)undostruct->undo->data;
 	g_return_if_fail(undoinfo != NULL);
 	undoinfo->mergeable = FALSE;
 	undostruct->redo = g_list_prepend(undostruct->redo, undoinfo);
 	undostruct->undo = g_list_remove(undostruct->undo, undoinfo);
 
 	/* Check if there is a selection active */
-        start_pos = GTK_EDITABLE(undostruct->text)->selection_start_pos;
-        end_pos   = GTK_EDITABLE(undostruct->text)->selection_end_pos;
+	start_pos = GTK_EDITABLE(undostruct->text)->selection_start_pos;
+	end_pos   = GTK_EDITABLE(undostruct->text)->selection_end_pos;
 	if ((start_pos > 0 || end_pos > 0) && (start_pos != end_pos))
-		gtk_editable_select_region(GTK_EDITABLE(undostruct->text), 0, 0);
+		gtk_editable_select_region(GTK_EDITABLE(undostruct->text),
+					   0, 0);
 
 	/* Move the view (scrollbars) to the correct position */
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(GTK_STEXT(undostruct->text)->vadj), undoinfo->window_position);
+	gtk_adjustment_set_value
+		(GTK_ADJUSTMENT(GTK_STEXT(undostruct->text)->vadj),
+		 undoinfo->window_position);
 
 	switch (undoinfo->action) {
 	case UNDO_ACTION_DELETE:
@@ -401,35 +394,37 @@ void undo_undo(UndoMain *undostruct)
 		gtk_stext_backward_delete(GTK_STEXT(undostruct->text), undoinfo->end_pos-undoinfo->start_pos);
 		debug_print("UNDO_ACTION_INSERT %d\n", undoinfo->end_pos-undoinfo->start_pos);
 		break;
-        case UNDO_ACTION_REPLACE_INSERT:
+	case UNDO_ACTION_REPLACE_INSERT:
 		gtk_stext_set_point(GTK_STEXT(undostruct->text), undoinfo->end_pos);
 		gtk_stext_backward_delete(GTK_STEXT(undostruct->text), undoinfo->end_pos-undoinfo->start_pos);
 		debug_print("UNDO_ACTION_REPLACE %s\n", undoinfo->text);
-                /* "pull" another data structure from the list */
-                undoinfo = g_list_nth_data(undostruct->undo, 0);
-                g_return_if_fail(undoinfo != NULL);
-                undostruct->redo = g_list_prepend(undostruct->redo, undoinfo);
-                undostruct->undo = g_list_remove(undostruct->undo, undoinfo);
-                g_return_if_fail(undoinfo->action == UNDO_ACTION_REPLACE_DELETE);
+		/* "pull" another data structure from the list */
+		undoinfo = (UndoInfo *)undostruct->undo->data;
+		g_return_if_fail(undoinfo != NULL);
+		undostruct->redo = g_list_prepend(undostruct->redo, undoinfo);
+		undostruct->undo = g_list_remove(undostruct->undo, undoinfo);
+		g_return_if_fail(undoinfo->action == UNDO_ACTION_REPLACE_DELETE);
 		gtk_stext_set_point(GTK_STEXT(undostruct->text), undoinfo->start_pos);
 		gtk_stext_insert(GTK_STEXT(undostruct->text), NULL, NULL, NULL, undoinfo->text, -1);
 		debug_print("UNDO_ACTION_REPLACE %s\n", undoinfo->text);
-                break;
-        case UNDO_ACTION_REPLACE_DELETE:
-                g_warning("This should not happen. UNDO_REPLACE_DELETE");
-                break;
+		break;
+	case UNDO_ACTION_REPLACE_DELETE:
+		g_warning("This should not happen. UNDO_REPLACE_DELETE");
+		break;
 	default:
 		g_assert_not_reached();
 		break;
 	}
 
-        undostruct->change_func(undostruct, UNDO_STATE_UNCHANGED, 
-				UNDO_STATE_TRUE, undostruct->changewidget);
-				
-	if (g_list_length (undostruct->undo) == 0)
-	        undostruct->change_func(undostruct, UNDO_STATE_FALSE, 
-			                UNDO_STATE_UNCHANGED, 
-					undostruct->changewidget);
+	undostruct->change_state_func(undostruct,
+				      UNDO_STATE_UNCHANGED, UNDO_STATE_TRUE,
+				      undostruct->change_state_data);
+
+	if (undostruct->undo == NULL)
+		undostruct->change_state_func(undostruct,
+					      UNDO_STATE_FALSE,
+					      UNDO_STATE_UNCHANGED,
+					      undostruct->change_state_data);
 }
 
 /**
@@ -442,22 +437,20 @@ void undo_undo(UndoMain *undostruct)
 void undo_redo(UndoMain *undostruct) 
 {
 	UndoInfo *redoinfo;
-        guint start_pos, end_pos;
+	guint start_pos, end_pos;
 
-	if (undostruct->redo == NULL)
-		return;
+	g_return_if_fail(undostruct != NULL);
 
-	if (undostruct==NULL)
-		return;
+	if (undostruct->redo == NULL) return;
 
-	redoinfo = g_list_nth_data(undostruct->redo, 0);
-	g_return_if_fail (redoinfo!=NULL);
+	redoinfo = (UndoInfo *)undostruct->redo->data;
+	g_return_if_fail (redoinfo != NULL);
 	undostruct->undo = g_list_prepend(undostruct->undo, redoinfo);
 	undostruct->redo = g_list_remove(undostruct->redo, redoinfo);
 
 	/* Check if there is a selection active */
-        start_pos = GTK_EDITABLE(undostruct->text)->selection_start_pos;
-        end_pos   = GTK_EDITABLE(undostruct->text)->selection_end_pos;
+	start_pos = GTK_EDITABLE(undostruct->text)->selection_start_pos;
+	end_pos   = GTK_EDITABLE(undostruct->text)->selection_end_pos;
 	if ((start_pos > 0 || end_pos > 0) && (start_pos != end_pos))
 		gtk_editable_select_region(GTK_EDITABLE(undostruct->text), 0, 0);
 
@@ -467,46 +460,55 @@ void undo_redo(UndoMain *undostruct)
 
 	switch (redoinfo->action) {
 	case UNDO_ACTION_INSERT:
-		gtk_stext_set_point(GTK_STEXT(undostruct->text), redoinfo->start_pos);
+		gtk_stext_set_point(GTK_STEXT(undostruct->text),
+				   redoinfo->start_pos);
 		gtk_stext_insert(GTK_STEXT(undostruct->text), NULL, NULL, 
-				 NULL, redoinfo->text, -1);
+				NULL, redoinfo->text, -1);
 		debug_print("UNDO_ACTION_DELETE %s\n",redoinfo->text);
 		break;
 	case UNDO_ACTION_DELETE:
-		gtk_stext_set_point(GTK_STEXT(undostruct->text), redoinfo->end_pos);
-		gtk_stext_backward_delete(GTK_STEXT(undostruct->text), 
-					  redoinfo->end_pos-redoinfo->start_pos);
+		gtk_stext_set_point(GTK_STEXT(undostruct->text),
+				   redoinfo->end_pos);
+		gtk_stext_backward_delete
+			(GTK_STEXT(undostruct->text), 
+			 redoinfo->end_pos - redoinfo->start_pos);
 		debug_print("UNDO_ACTION_INSERT %d\n", 
 			    redoinfo->end_pos-redoinfo->start_pos);
 		break;
-        case UNDO_ACTION_REPLACE_DELETE:
-		gtk_stext_set_point(GTK_STEXT(undostruct->text), redoinfo->end_pos);
-		gtk_stext_backward_delete(GTK_STEXT(undostruct->text), 
-					  redoinfo->end_pos-redoinfo->start_pos);
-                /* "pull" another data structure from the list */
-                redoinfo = g_list_nth_data(undostruct->redo, 0);
-                g_return_if_fail(redoinfo != NULL);
-                undostruct->undo = g_list_prepend(undostruct->undo, redoinfo);
-                undostruct->redo = g_list_remove(undostruct->redo, redoinfo);
-                g_return_if_fail(redoinfo->action==UNDO_ACTION_REPLACE_INSERT);
-  		gtk_stext_set_point(GTK_STEXT(undostruct->text), redoinfo->start_pos);
+	case UNDO_ACTION_REPLACE_DELETE:
+		gtk_stext_set_point(GTK_STEXT(undostruct->text),
+				   redoinfo->end_pos);
+		gtk_stext_backward_delete
+			(GTK_STEXT(undostruct->text), 
+			 redoinfo->end_pos - redoinfo->start_pos);
+		/* "pull" another data structure from the list */
+		redoinfo = (UndoInfo *)undostruct->redo->data;
+		g_return_if_fail(redoinfo != NULL);
+		undostruct->undo = g_list_prepend(undostruct->undo, redoinfo);
+		undostruct->redo = g_list_remove(undostruct->redo, redoinfo);
+		g_return_if_fail(redoinfo->action == UNDO_ACTION_REPLACE_INSERT);
+		gtk_stext_set_point(GTK_STEXT(undostruct->text),
+				   redoinfo->start_pos);
 		gtk_stext_insert(GTK_STEXT(undostruct->text), NULL, NULL, 
-				 NULL, redoinfo->text, -1);
-                break;
-        case UNDO_ACTION_REPLACE_INSERT:
-                g_warning("This should not happen. Redo: UNDO_REPLACE_INSERT");
-                break;
+				NULL, redoinfo->text, -1);
+		break;
+	case UNDO_ACTION_REPLACE_INSERT:
+		g_warning("This should not happen. Redo: UNDO_REPLACE_INSERT");
+		break;
 	default:
 		g_assert_not_reached();
 		break;
 	}
 
-        undostruct->change_func(undostruct, UNDO_STATE_TRUE, UNDO_STATE_UNCHANGED, 
-				undostruct->changewidget);
-				
-	if (g_list_length(undostruct->redo) == 0)
-	        undostruct->change_func(undostruct, UNDO_STATE_UNCHANGED, 
-					UNDO_STATE_FALSE, undostruct->changewidget);
+	undostruct->change_state_func(undostruct,
+				      UNDO_STATE_TRUE, UNDO_STATE_UNCHANGED, 
+				      undostruct->change_state_data);
+
+	if (undostruct->redo == NULL)
+		undostruct->change_state_func(undostruct,
+					      UNDO_STATE_UNCHANGED,
+					      UNDO_STATE_FALSE,
+					      undostruct->change_state_data);
 }
 
 void undo_insert_text_cb(GtkEditable *editable, gchar *new_text,
@@ -535,22 +537,24 @@ void undo_insert_text_cb(GtkEditable *editable, gchar *new_text,
 void undo_delete_text_cb(GtkEditable *editable, gint start_pos,
 			 gint end_pos, UndoMain *undostruct) 
 {
-        gchar *text_to_delete;
+	gchar *text_to_delete;
 
 	if (prefs_common.undolevels <= 0) return;
 	if (start_pos == end_pos) return;
 
-       	text_to_delete = gtk_editable_get_chars(GTK_EDITABLE(editable),
+	text_to_delete = gtk_editable_get_chars(GTK_EDITABLE(editable),
 						start_pos, end_pos);
 	undo_add(text_to_delete, start_pos, end_pos, UNDO_ACTION_DELETE,
 		 undostruct);
 	g_free(text_to_delete);
 }
 
-void undo_paste_clipboard_cb (GtkEditable *editable, UndoMain *undostruct) 
+void undo_paste_clipboard_cb(GtkEditable *editable, UndoMain *undostruct)
 {
-	debug_print("befor Paste: %d\n", undostruct->paste);
-        if (prefs_common.undolevels > 0)
+	if (editable->clipboard_text == NULL) return;
+
+	debug_print("before Paste: %d\n", undostruct->paste);
+	if (prefs_common.undolevels > 0)
 		if (undo_get_selection(editable, NULL, NULL))
 			undostruct->paste = TRUE;
 	debug_print("after Paste: %d\n", undostruct->paste);
@@ -568,27 +572,27 @@ void undo_paste_clipboard_cb (GtkEditable *editable, UndoMain *undostruct)
  **/
 static gint undo_get_selection(GtkEditable *text, guint *start, guint *end) 
 {
-        guint start_pos, end_pos;
+	guint start_pos, end_pos;
 
-        start_pos = text->selection_start_pos;
-        end_pos   = text->selection_end_pos;
+	start_pos = text->selection_start_pos;
+	end_pos   = text->selection_end_pos;
 
-        /* The user can select from end to start too. If so, swap it*/
-        if (end_pos < start_pos) {
-                guint swap_pos;
-                swap_pos  = end_pos;
-                end_pos   = start_pos;
-                start_pos = swap_pos;
-        }
+	/* The user can select from end to start too. If so, swap it*/
+	if (end_pos < start_pos) {
+		guint swap_pos;
+		swap_pos  = end_pos;
+		end_pos   = start_pos;
+		start_pos = swap_pos;
+	}
 
-        if (start != NULL)
-                *start = start_pos;
+	if (start != NULL)
+		*start = start_pos;
 		
-        if (end != NULL)
-                *end = end_pos;
+	if (end != NULL)
+		*end = end_pos;
 
-        if ((start_pos > 0 || end_pos > 0) && (start_pos != end_pos))
-                return TRUE;
-        else
-                return FALSE;
+	if ((start_pos > 0 || end_pos > 0) && (start_pos != end_pos))
+		return TRUE;
+	else
+		return FALSE;
 }

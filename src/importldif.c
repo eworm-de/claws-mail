@@ -41,12 +41,11 @@
 #include "addressbook.h"
 #include "addressitem.h"
 #include "gtkutils.h"
+#include "stock_pixmap.h"
 #include "prefs_common.h"
 #include "manage_window.h"
 #include "mgutils.h"
 #include "ldif.h"
-
-#include "pixmaps/mark.xpm"
 
 #define IMPORTLDIF_GUESS_NAME "LDIF Import"
 
@@ -219,7 +218,7 @@ static void imp_ldif_field_list_selected( GtkCList *clist, gint row, gint column
 static void imp_ldif_field_list_toggle( GtkCList *clist, GdkEventButton *event, gpointer data ) {
 	if( ! event ) return;
 	if( impldif_dlg.rowIndSelect < 0 ) return;
-	if( event->button = 1 ) {
+	if( event->button == 1 ) {
 		if( event->type == GDK_2BUTTON_PRESS ) {
 			Ldif_FieldRec *rec = gtk_clist_get_row_data( clist, impldif_dlg.rowIndSelect );
 			if( rec ) {
@@ -325,7 +324,7 @@ static gboolean imp_ldif_file_move() {
 		ldif_set_file( _ldifFile_, sFile );
 		if( ldif_read_tags( _ldifFile_ ) == MGU_SUCCESS ) {
 			/* Load fields */
-			// ldif_print_file( _ldifFile_, stdout );
+			/* ldif_print_file( _ldifFile_, stdout ); */
 			imp_ldif_load_fields( _ldifFile_ );
 			retVal = TRUE;
 		}
@@ -481,10 +480,7 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *label;
 	GtkWidget *file_entry;
 	GtkWidget *name_entry;
-	GtkWidget *hbbox;
-	GtkWidget *hsep;
 	GtkWidget *file_btn;
-	GtkWidget *hsbox;
 	gint top;
 
 	vbox = gtk_vbox_new(FALSE, 8);
@@ -505,7 +501,7 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8 );
 
-	// First row
+	/* First row */
 	top = 0;
 	label = gtk_label_new(_("Address Book"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
@@ -516,7 +512,7 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
-	// Second row
+	/* Second row */
 	top = 1;
 	label = gtk_label_new(_("File Name"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
@@ -658,10 +654,6 @@ static void imp_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *labelBook;
 	GtkWidget *labelFile;
 	GtkWidget *labelRecs;
-	GtkWidget *hbbox;
-	GtkWidget *hsep;
-	GtkWidget *file_btn;
-	GtkWidget *hsbox;
 	gint top;
 
 	vbox = gtk_vbox_new(FALSE, 8);
@@ -721,7 +713,6 @@ static void imp_ldif_dialog_create() {
 	GtkWidget *vnbox;
 	GtkWidget *notebook;
 	GtkWidget *hbbox;
-	GtkWidget *hsep;
 	GtkWidget *btnPrev;
 	GtkWidget *btnNext;
 	GtkWidget *btnCancel;
@@ -764,9 +755,11 @@ static void imp_ldif_dialog_create() {
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
 
 	/* Button panel */
-	gtkut_button_set_create( &hbbox, &btnPrev, _( "Prev" ),
-			&btnNext, _( "Next" ), &btnCancel, _( "Dismiss" ) );
+	gtkut_button_set_create(&hbbox, &btnPrev, _( "Prev" ),
+				&btnNext, _( "Next" ),
+				&btnCancel, _( "Cancel" ) );
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(hbbox), 2);
 	gtk_widget_grab_default(btnNext);
 
 	/* Button handlers */
@@ -817,7 +810,8 @@ AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex ) {
 	gtk_notebook_set_page( GTK_NOTEBOOK(impldif_dlg.notebook), PAGE_FILE_INFO );
 	gtk_widget_set_sensitive( impldif_dlg.btnPrev, FALSE );
 	gtk_widget_set_sensitive( impldif_dlg.btnNext, TRUE );
-	PIXMAP_CREATE( impldif_dlg.window, markxpm, markxpmmask, mark_xpm);
+	stock_pixmap_gdk( impldif_dlg.window, STOCK_PIXMAP_MARK,
+			  &markxpm, &markxpmmask );
 	imp_ldif_message();
 	gtk_widget_grab_focus(impldif_dlg.file_entry);
 

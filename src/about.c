@@ -30,7 +30,6 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkhbox.h>
-#include <gtk/gtkpixmap.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkhseparator.h>
 #include <gtk/gtkscrolledwindow.h>
@@ -43,11 +42,10 @@
 #include "intl.h"
 #include "about.h"
 #include "gtkutils.h"
+#include "stock_pixmap.h"
 #include "prefs_common.h"
 #include "utils.h"
 #include "version.h"
-
-#include "pixmaps/sylpheed-logo.xpm"
 
 static GtkWidget *window;
 
@@ -66,8 +64,6 @@ void about_show(void)
 static void about_create(void)
 {
 	GtkWidget *vbox;
-	GdkPixmap *logoxpm = NULL;
-	GdkBitmap *logoxpmmask;
 	GtkWidget *pixmap;
 	GtkWidget *label;
 	GtkWidget *hbox;
@@ -101,8 +97,7 @@ static void about_create(void)
 	vbox = gtk_vbox_new(FALSE, 6);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
-	PIXMAP_CREATE(window, logoxpm, logoxpmmask, sylpheed_logo_xpm);
-	pixmap = gtk_pixmap_new(logoxpm, logoxpmmask);
+	pixmap = stock_pixmap_widget(window, STOCK_PIXMAP_SYLPHEED_LOGO);
 	gtk_box_pack_start(GTK_BOX(vbox), pixmap, FALSE, FALSE, 0);
 
 	label = gtk_label_new("version "VERSION);

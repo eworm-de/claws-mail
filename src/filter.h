@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,8 @@ typedef struct _Filter	Filter;
 typedef enum
 {
 	FLT_CONTAIN	= 1 << 0,
-	FLT_CASE_SENS	= 1 << 1
+	FLT_CASE_SENS	= 1 << 1,
+	FLT_REGEX	= 1 << 2
 } FilterFlag;
 
 typedef enum
@@ -48,6 +49,7 @@ typedef enum
 
 #define FLT_IS_CONTAIN(flag)	((flag & FLT_CONTAIN) != 0)
 #define FLT_IS_CASE_SENS(flag)	((flag & FLT_CASE_SENS) != 0)
+#define FLT_IS_REGEX(flag)	((flag & FLT_REGEX) != 0)
 
 struct _Filter
 {

@@ -48,6 +48,7 @@
 #include "manage_window.h"
 #include "alertpanel.h"
 #include "menu.h"
+#include "stock_pixmap.h"
 #include "procmsg.h"
 #include "utils.h"
 #include "gtkutils.h"
@@ -56,16 +57,6 @@
 #include "account.h"
 #include "folder.h"
 #include "inc.h"
-
-#include "pixmaps/inbox.xpm"
-#include "pixmaps/inbox-hrm.xpm"
-#include "pixmaps/outbox.xpm"
-#include "pixmaps/outbox-hrm.xpm"
-#include "pixmaps/dir-close.xpm"
-#include "pixmaps/dir-open.xpm"
-#include "pixmaps/dir-open-hrm.xpm"
-#include "pixmaps/trash.xpm"
-#include "pixmaps/trash-hrm.xpm"
 
 typedef enum
 {
@@ -455,16 +446,14 @@ void folderview_init(FolderView *folderview)
 {
 	GtkWidget *ctree = folderview->ctree;
 
-	PIXMAP_CREATE(ctree, inboxxpm, inboxxpmmask, inbox_xpm);
-	PIXMAP_CREATE(ctree, inboxhrmxpm, inboxhrmxpmmask, inbox_hrm_xpm);
-	PIXMAP_CREATE(ctree, outboxxpm, outboxxpmmask, outbox_xpm);
-	PIXMAP_CREATE(ctree, outboxhrmxpm, outboxhrmxpmmask, outbox_hrm_xpm);
-	PIXMAP_CREATE(ctree, folderxpm, folderxpmmask, dir_close_xpm);
-	PIXMAP_CREATE(ctree, folderopenxpm, folderopenxpmmask, dir_open_xpm);
-	PIXMAP_CREATE(ctree, folderopenhrmxpm, folderopenhrmxpmmask,
-		      dir_open_hrm_xpm);
-	PIXMAP_CREATE(ctree, trashxpm, trashxpmmask, trash_xpm);
-	PIXMAP_CREATE(ctree, trashhrmxpm, trashhrmxpmmask, trash_hrm_xpm);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX, &inboxxpm, &inboxxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_OUTBOX,
+			 &outboxxpm, &outboxxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DIR_CLOSE,
+			 &folderxpm, &folderxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DIR_OPEN,
+			 &folderopenxpm, &folderopenxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_TRASH, &trashxpm, &trashxpmmask);
 
 	if (!normalfont)
 		normalfont = gdk_fontset_load(NORMAL_FONT);

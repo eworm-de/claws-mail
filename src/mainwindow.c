@@ -52,6 +52,7 @@
 #include "message_search.h"
 #include "headerview.h"
 #include "menu.h"
+#include "stock_pixmap.h"
 #include "folder.h"
 #include "inc.h"
 #include "compose.h"
@@ -1725,35 +1726,10 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 	debug_print(_("done.\n"));
 }
 
-#include "pixmaps/stock_mail_receive.xpm"
-#include "pixmaps/stock_mail_receive_all.xpm"
-#include "pixmaps/stock_mail_compose.xpm"
-#include "pixmaps/stock_news_compose.xpm"
-#include "pixmaps/stock_mail_reply.xpm"
-#include "pixmaps/stock_mail_reply_to_all.xpm"
-#include "pixmaps/stock_mail_reply_to_author.xpm"
-#include "pixmaps/stock_mail_forward.xpm"
-#include "pixmaps/stock_mail_send.xpm"
-#include "pixmaps/stock_preferences.xpm"
-#include "pixmaps/stock_properties.xpm"
-#include "pixmaps/stock_down_arrow.xpm"
-#include "pixmaps/stock_close.xpm"
-#include "pixmaps/stock_exec.xpm"
-
-#define CREATE_TOOLBAR_ICON(xpm_d) \
-{ \
-	icon = gdk_pixmap_create_from_xpm_d(container->window, &mask, \
-					    &container->style->white, \
-					    xpm_d); \
-	icon_wid = gtk_pixmap_new(icon, mask); \
-}
-
 static void main_window_toolbar_create(MainWindow *mainwin,
 				       GtkWidget *container)
 {
 	GtkWidget *toolbar;
-	GdkPixmap *icon;
-	GdkBitmap *mask;
 	GtkWidget *icon_wid;
 	GtkWidget *get_btn;
 	GtkWidget *getall_btn;
@@ -1782,13 +1758,13 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	gtk_toolbar_set_space_style(GTK_TOOLBAR(toolbar),
 				    GTK_TOOLBAR_SPACE_LINE);
 
-	CREATE_TOOLBAR_ICON(stock_mail_receive_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_MAIL_RECEIVE);
 	get_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					  _("Get"),
 					  _("Get new mail from current account"),
 					  "Get",
 					  icon_wid, toolbar_inc_cb, mainwin);
-	CREATE_TOOLBAR_ICON(stock_mail_receive_all_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_MAIL_RECEIVE_ALL);
 	getall_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					     _("Get all"),
 					     _("Get new mail from all accounts"),
@@ -1799,7 +1775,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 
 	gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
 
-	CREATE_TOOLBAR_ICON(stock_mail_send_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_MAIL_SEND);
 	send_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					   _("Send"),
 					   _("Send queued message(s)"),
@@ -1809,8 +1785,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 					   mainwin);
 
 	/* insert compose mail button widget */					   
-
-	CREATE_TOOLBAR_ICON(stock_mail_compose_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_MAIL_COMPOSE);
 	compose_mail_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					      _("Email"),
 					      _("Compose an email message"),
@@ -1820,8 +1795,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 					      mainwin);
 
 	/* insert compose news button widget */
-
-	CREATE_TOOLBAR_ICON(stock_news_compose_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_NEWS_COMPOSE);
 	compose_news_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					      _("News"),
 					      _("Compose a news message"),
@@ -1834,7 +1808,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	
 	/* reply button */
 	
-	CREATE_TOOLBAR_ICON(stock_mail_reply_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_MAIL_REPLY);
 	reply_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					    _("Reply"),
 					    _("Reply to the message - Right button: more options"),
@@ -1844,8 +1818,8 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 					    mainwin);
 
 	/* replyall button */
-	
-	CREATE_TOOLBAR_ICON(stock_mail_reply_to_all_xpm);
+
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_MAIL_REPLY_TO_ALL);
 	replyall_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					       _("All"),
 					       _("Reply to all - Right button: more options"),
@@ -1855,8 +1829,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 					       mainwin);
 
 	/* reply to sender button */
-	
-	CREATE_TOOLBAR_ICON(stock_mail_reply_to_author_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_MAIL_REPLY_TO_AUTHOR);
 	replysender_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 						  _("Sender"),
 						  _("Reply to sender - Right button: more options"),
@@ -1866,8 +1839,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 						  mainwin);
 
 	/* forward button */
-	
-	CREATE_TOOLBAR_ICON(stock_mail_forward_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_MAIL_FORWARD);
 	fwd_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					  _("Forward"),
 					  _("Forward the message - Right button: more options"),
@@ -1878,7 +1850,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 
 	gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
 
-	CREATE_TOOLBAR_ICON(stock_close_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_CLOSE);
 	delete_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					  _("Delete"),
 					  _("Delete the message"),
@@ -1887,7 +1859,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 					  toolbar_delete_cb,
 					  mainwin);
 
-	CREATE_TOOLBAR_ICON(stock_exec_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_EXEC);
 	exec_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					   _("Execute"),
 					   _("Execute marked process"),
@@ -1896,7 +1868,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 					   toolbar_exec_cb,
 					   mainwin);
 
-	CREATE_TOOLBAR_ICON(stock_down_arrow_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_DOWN_ARROW);
 	next_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					   _("Next"),
 					   _("Next unread message"),
@@ -1908,7 +1880,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	/*
 	gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
 
-	CREATE_TOOLBAR_ICON(stock_preferences_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_PREFERENCES);
 	prefs_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					    _("Prefs"),
 					    _("Common preference"),
@@ -1916,7 +1888,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 					    icon_wid,
 					    toolbar_prefs_cb,
 					    mainwin);
-	CREATE_TOOLBAR_ICON(stock_properties_xpm);
+	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_PROPERTIES);
 	account_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					      _("Account"),
 					      _("Account setting"),

@@ -35,7 +35,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <dlfcn.h>
+/* #include <dlfcn.h> */
 #include <netinet/in.h>
 
 #ifdef HAVE_LIBPISOCK_PI_ARGS_H
@@ -1608,6 +1608,7 @@ gboolean jpilot_test_custom_label( JPilotFile *pilotFile, const gchar *labelName
 * Test whether pilot link library installed.
 * Return: TRUE if library available.
 */
+#if 0
 gboolean jpilot_test_pilot_lib( void ) {
 	void *handle, *fun;
 
@@ -1631,6 +1632,7 @@ gboolean jpilot_test_pilot_lib( void ) {
 	dlclose( handle );
 	return TRUE;
 }
+#endif /* 0 */
 
 #endif	/* USE_JPILOT */
 

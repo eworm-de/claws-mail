@@ -463,7 +463,6 @@ static void ldif_add_user_attr( Ldif_ParsedRec *rec, gchar *tagName, gchar *tagV
 	Ldif_FieldRec *fld = NULL;
 	Ldif_UserAttr *attr = NULL;
 	gchar *name;
-	gchar *value;
 
 	fld = g_hash_table_lookup( hashField, tagName );
 	if( fld ) {
@@ -554,6 +553,7 @@ static void ldif_clear_rec( Ldif_ParsedRec *rec ) {
 /*
 * Print parsed data.
 */
+#if 0
 static void ldif_print_record( Ldif_ParsedRec *rec, FILE *stream ) {
 	GSList *list;
 
@@ -585,6 +585,7 @@ static void ldif_print_record( Ldif_ParsedRec *rec, FILE *stream ) {
 	}
 	list = NULL;
 }
+#endif
 
 static void ldif_dump_b64( gchar *buf ) {
 	Base64Decoder *decoder = NULL;
@@ -766,7 +767,7 @@ static void ldif_hash_add_list( GHashTable *table, GSList *list ) {
 static int ldif_field_compare( gconstpointer ptr1, gconstpointer ptr2 ) {
 	const Ldif_FieldRec *rec1 = ptr1;
 	const Ldif_FieldRec *rec2 = ptr2;
-	return strcasecmp(rec1->tagName, rec2->tagName );
+	return g_strcasecmp( rec1->tagName, rec2->tagName );
 }
 
 /*

@@ -105,6 +105,7 @@ static void prefs_filter_row_move	(GtkCList	*clist,
 
 static void prefs_filter_dest_radio_button_toggled	(void);
 static void prefs_filter_notrecv_radio_button_toggled	(void);
+static void prefs_filter_regex_check_button_toggled	(void);
 
 static gint prefs_filter_deleted	(GtkWidget	*widget,
 					 GdkEventAny	*event,
@@ -367,7 +368,11 @@ static void prefs_filter_create(void)
 			    NULL);
 
 	PACK_CHECK_BUTTON (dest_hbox, regex_chkbtn, _("Use regex"));
-	gtk_widget_set_sensitive(regex_chkbtn, FALSE);
+	//gtk_widget_set_sensitive(regex_chkbtn, FALSE);
+	gtk_signal_connect
+		(GTK_OBJECT (regex_chkbtn), "toggled",
+		 GTK_SIGNAL_FUNC (prefs_filter_regex_check_button_toggled),
+		 NULL);
 
 	notrecv_radiobtn = gtk_radio_button_new_with_label
 		(recv_group, _("Don't receive"));
@@ -646,12 +651,16 @@ static gint prefs_filter_clist_set_row(gint row)
 			flt->body2 = g_strdup(entry_text);
 	}
 
+	if (gtk_toggle_button_get_active
+		(GTK_TOGGLE_BUTTON(filter.regex_chkbtn)))
+		flt->flag1 = flt->flag2 = FLT_REGEX;
+
 	GET_ENTRY(filter.pred_entry1);
 	if (!strcmp(entry_text, _("contains")))
-		flt->flag1 = FLT_CONTAIN;
+		flt->flag1 |= FLT_CONTAIN;
 	GET_ENTRY(filter.pred_entry2);
 	if (!strcmp(entry_text, _("contains")))
-		flt->flag2 = FLT_CONTAIN;
+		flt->flag2 |= FLT_CONTAIN;
 
 	GET_ENTRY(filter.op_entry);
 	if (!strcmp(entry_text, "and"))
@@ -776,6 +785,7 @@ static void prefs_filter_select(GtkCList *clist, gint row, gint column,
 	Filter default_flt = {"Subject", NULL, _("(none)"), NULL,
 			      FLT_CONTAIN, FLT_CONTAIN, FLT_AND,
 			      NULL, FLT_MOVE};
+	gboolean is_regex;
 
 	flt = gtk_clist_get_row_data(clist, row);
 	if (!flt)
@@ -794,6 +804,12 @@ static void prefs_filter_select(GtkCList *clist, gint row, gint column,
 	ENTRY_SET_TEXT(filter.pred_entry2,
 		       FLT_IS_CONTAIN(flt->flag2)
 		       ? _("contains") : _("not contain"));
+
+	is_regex = FLT_IS_REGEX(flt->flag1);
+	gtk_widget_set_sensitive(filter.pred_combo1, !is_regex);
+	gtk_widget_set_sensitive(filter.pred_combo2, !is_regex);
+	gtk_toggle_button_set_active
+		(GTK_TOGGLE_BUTTON(filter.regex_chkbtn), is_regex);
 
 	gtk_entry_set_text(GTK_ENTRY(filter.op_entry),
 			   flt->cond == FLT_OR ? "or" : "and");
@@ -825,6 +841,16 @@ static void prefs_filter_notrecv_radio_button_toggled(void)
 {
 	gtk_widget_set_sensitive(filter.dest_entry, FALSE);
 	gtk_widget_set_sensitive(filter.destsel_btn, FALSE);
+}
+
+static void prefs_filter_regex_check_button_toggled(void)
+{
+	gboolean is_regex;
+
+	is_regex = gtk_toggle_button_get_active
+		(GTK_TOGGLE_BUTTON(filter.regex_chkbtn));
+	gtk_widget_set_sensitive(filter.pred_combo1, !is_regex);
+	gtk_widget_set_sensitive(filter.pred_combo2, !is_regex);
 }
 
 static gint prefs_filter_deleted(GtkWidget *widget, GdkEventAny *event,

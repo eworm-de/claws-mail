@@ -104,7 +104,7 @@ GList *syldap_read_basedn_s	( const gchar *host, const gint port, const gchar *b
 GList *syldap_read_basedn	( SyldapServer *ldapServer );
 gboolean syldap_test_connect_s	( const gchar *host, const gint port );
 gboolean syldap_test_connect	( SyldapServer *ldapServer );
-gboolean syldap_test_ldap_lib	( void );
+/* gboolean syldap_test_ldap_lib	( void ); */
 
 #endif	/* USE_LDAP */
 

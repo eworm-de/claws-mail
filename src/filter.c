@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 #include <string.h>
 #include <strings.h>
 #include <stdlib.h>
+#include <regex.h>
 
 #include "intl.h"
 #include "procheader.h"
@@ -86,6 +87,26 @@ static gboolean strcasenotfind(const gchar *haystack, const gchar *needle)
 	return strcasestr(haystack, needle) != NULL ? FALSE : TRUE;
 }
 
+static gboolean strmatch_regex(const gchar *haystack, const gchar *needle)
+{
+	gint ret = 0;
+	regex_t preg;
+	regmatch_t pmatch[1];
+
+	ret = regcomp(&preg, needle, 0);
+	if (ret != 0) return FALSE;
+
+	ret = regexec(&preg, haystack, 1, pmatch, 0);
+	regfree(&preg);
+
+	if (ret == REG_NOMATCH) return FALSE;
+
+	if (pmatch[0].rm_so != -1)
+		return TRUE;
+	else
+		return FALSE;
+}
+
 gboolean filter_match_condition(Filter *filter, GSList *hlist)
 {
 	Header *header;
@@ -94,13 +115,17 @@ gboolean filter_match_condition(Filter *filter, GSList *hlist)
 
 	g_return_val_if_fail(filter->name1 != NULL, FALSE);
 
-	if (FLT_IS_CASE_SENS(filter->flag1))
+	if (FLT_IS_REGEX(filter->flag1))
+		StrFind1 = strmatch_regex;
+	else if (FLT_IS_CASE_SENS(filter->flag1))
 		StrFind1 = FLT_IS_CONTAIN(filter->flag1)
 			? strfind : strnotfind;
 	else
 		StrFind1 = FLT_IS_CONTAIN(filter->flag1)
 			? strcasefind : strcasenotfind;
 
+	if (FLT_IS_REGEX(filter->flag2))
+		StrFind2 = strmatch_regex;
 	if (FLT_IS_CASE_SENS(filter->flag2))
 		StrFind2 = FLT_IS_CONTAIN(filter->flag2)
 			? strfind : strnotfind;

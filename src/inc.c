@@ -56,6 +56,7 @@
 #include "gtkutils.h"
 #include "statusbar.h"
 #include "manage_window.h"
+#include "stock_pixmap.h"
 #include "progressdialog.h"
 #include "inputdialog.h"
 #include "alertpanel.h"
@@ -63,10 +64,6 @@
 #include "automaton.h"
 #include "folder.h"
 #include "filtering.h"
-
-#include "pixmaps/continue.xpm"
-#include "pixmaps/complete.xpm"
-#include "pixmaps/error.xpm"
 
 static guint inc_lock_count = 0;
 
@@ -287,10 +284,12 @@ static IncProgressDialog *inc_progress_dialog_create(void)
 
 	progress_dialog_set_value(progress, 0.0);
 
-	PIXMAP_CREATE(progress->clist, okxpm, okxpmmask, complete_xpm);
-	PIXMAP_CREATE(progress->clist,
-		      currentxpm, currentxpmmask, continue_xpm);
-	PIXMAP_CREATE(progress->clist, errorxpm, errorxpmmask, error_xpm);
+	stock_pixmap_gdk(progress->clist, STOCK_PIXMAP_COMPLETE,
+			 &okxpm, &okxpmmask);
+	stock_pixmap_gdk(progress->clist, STOCK_PIXMAP_CONTINUE,
+			 &currentxpm, &currentxpmmask);
+	stock_pixmap_gdk(progress->clist, STOCK_PIXMAP_ERROR,
+			 &errorxpm, &errorxpmmask);
 
 	if (prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS ||
 	    (prefs_common.recv_dialog_mode == RECV_DIALOG_ACTIVE &&
