@@ -3082,7 +3082,7 @@ gchar *expand_search_string(const gchar *search_string)
 		{ NULL,	NULL,				0,	FALSE,	FALSE }
 	};
 
-	if (copy_str == NULL)
+	if (search_string == NULL)
 		return NULL;
 
 	copy_str = g_strdup(search_string);

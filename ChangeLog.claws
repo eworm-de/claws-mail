@@ -1,3 +1,8 @@
+2002-12-05 [darko]	0.8.6claws63
+
+	* src/utils.[ch]
+		check proper string for NULL pointer, found by Colin
+
 2002-12-05 [darko]	0.8.6claws62
 
 	* src/utils.[ch]
