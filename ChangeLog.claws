@@ -1,3 +1,8 @@
+2003-05-19 [paul]	0.8.11claws165
+
+	* src/inc.c
+		fix 'pop before smtp' timeout
+
 2003-05-18 [alfons]	0.8.11claws164
 
 	* src/prefs_matcher.c
