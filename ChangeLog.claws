@@ -1,3 +1,8 @@
+2002-10-22 [colin]	0.8.5claws49
+
+	*src/foldersel.c
+		Revert Alfons' last modification (after voting ;-))
+
 2002-10-21 [alfons]	0.8.5claws48
 
 	* src/foldersel.c

@@ -266,10 +266,8 @@ static gboolean foldersel_gnode_func(GtkCTree *ctree, guint depth,
 static void foldersel_expand_func(GtkCTree *ctree, GtkCTreeNode *node,
 				  gpointer data)
 {
-	FolderItem *item = gtk_ctree_node_get_row_data(ctree, node);
-
-	if (item && GTK_CTREE_ROW(node)->children && !item->collapsed) 
-			gtk_ctree_expand(ctree, node);
+	if (GTK_CTREE_ROW(node)->children)
+		gtk_ctree_expand(ctree, node);
 }
 
 #define SET_SPECIAL_FOLDER(item) \
