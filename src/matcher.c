@@ -140,7 +140,7 @@ gchar *matcher_escape_str(const gchar *str)
 		return NULL;
 
 	for (escape = 0, walk = str; *walk; walk++)
-		if (*walk == '\\' || *walk == '\"' || *walk == '\"')
+		if (*walk == '\\' || *walk == '\'' || *walk == '\"')
 			escape++;
 
 	if (!escape)
