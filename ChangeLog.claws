@@ -1,3 +1,10 @@
+2002-08-11 [alfons]	0.8.1claws53
+
+	* po/POTFILES.in
+		add crash.c to translatables
+	* src/crash.c
+		bring in Leandro's crash dialog
+
 2002-08-11 [alfons]	0.8.1claws52
 
 	* src/crash.c

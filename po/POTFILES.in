@@ -111,3 +111,4 @@ src/vcard.c
 src/xml.c
 src/xmlprops.c
 src/noticeview.c
+src/crash.c
