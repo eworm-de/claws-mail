@@ -1902,6 +1902,7 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 {
 	GtkSText *text = GTK_STEXT(compose->text);
 	gint cur_pos;
+	gint len;
 
 	g_return_if_fail(compose->account != NULL);
 
@@ -1909,9 +1910,11 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 
 	gtk_stext_freeze(text);
 
+	len = gtk_stext_get_length(text);
+	gtk_stext_set_point(text, len);
+
 	if (replace && compose->sig_str) {
 		gint pos;
-		gint len;
 
 		if (compose->sig_str[0] == '\0')
 			pos = -1;
@@ -1923,16 +1926,9 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 			if (len >= 0) {
 				gtk_stext_set_point(text, pos);
 				gtk_stext_forward_delete(text, len);
-			} else {
-				len = gtk_stext_get_length(text);
-				gtk_stext_set_point(text, len);
 			}
-		} else {
-			len = gtk_stext_get_length(text);
-			gtk_stext_set_point(text, len);
 		}
-	} else
-		gtk_stext_insert(text, NULL, NULL, NULL, "\n\n", 2);
+	}
 
 	g_free(compose->sig_str);
 	compose->sig_str = compose_get_signature_str(compose);
@@ -1981,7 +1977,7 @@ static gchar *compose_get_signature_str(Compose *compose)
 	}
 
 	if (compose->account->sig_sep) {
-		sig_str = g_strconcat(compose->account->sig_sep, "\n", sig_body,
+		sig_str = g_strconcat("\n\n", compose->account->sig_sep, "\n", sig_body,
 				      NULL);
 		g_free(sig_body);
 	} else

@@ -1,3 +1,13 @@
+2003-07-29 [paul]	0.9.3claws71
+
+	* src/compose.c
+		fix bug where changing to an account without an auto-sig
+		from an initial account without an auto-sig would insert 
+		2 blank lines at the cursor point
+		fix bug where changing to an account with an auto-sig
+		from an initial account without an auto-sig would insert
+		the sig at the cursor point
+
 2003-07-29 [paul]	0.9.3claws70
 
 	* src/folderview.c
