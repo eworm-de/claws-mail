@@ -1,3 +1,23 @@
+2002-07-02 [christoph]	0.7.8claws43
+
+	* major code cleanup (part 1)
+	
+		- unused variables removed
+		- unused functions removed
+		- uninitialized variables checked
+		- missing return statements added
+		- missing function return types added
+		- added parentheses around assignment and
+	          && in || when suggested by gcc
+	      
+	* src/mh.c
+	* src/folder.c
+		replaced direct calls to folder->scan_tree
+		with folder_scan_tree and restore folder
+		prefs in this function. The folder should
+		not have to deal with them.
+		( Should now work for all folder types )
+
 2002-07-02 [paul]	0.7.8claws42
 
 	* sync with 0.7.8cvs13
