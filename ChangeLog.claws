@@ -1,4 +1,9 @@
-2003-10-10 [thorsten]	0.9.6claws14
+2003-10-12 [christoph]	0.9.6claws15
+
+	* src/procmime.c
+		fix crash caused by incorrect headers
+
+2003-10-10 [christoph]	0.9.6claws14
 
 	* src/main.c
 	* src/privacy.[ch]
