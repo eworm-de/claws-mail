@@ -3046,7 +3046,7 @@ GSList *imap_get_num_list(Folder *folder, FolderItem *item)
 	gint ok, exists = 0, recent = 0, unseen = 0;
 	guint32 uid_validity = 0;
 	guint32 uid = 0;
-
+	
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
 	g_return_val_if_fail(item->path != NULL, NULL);

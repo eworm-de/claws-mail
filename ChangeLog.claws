@@ -1,3 +1,9 @@
+2002-07-01 [christoph]	0.7.8claws41
+
+	* src/summaryview.c
+		fix "goto next/prev unread message" with
+		ignored threads
+
 2002-07-01 [paul]	0.7.8claws40
 
 	* po/es.po
@@ -24,19 +30,19 @@
 	* src/mh.c
 	* src/news.c
 	* src/procmsg.c
-	    fix broken folder tree rescaning
-	    and don't use procmsg_get_mark_sum
-	    anymore
+		fix broken folder tree rescaning
+		and don't use procmsg_get_mark_sum
+		anymore
 
 2002-06-30 [christoph]	0.7.8claws36
 
 	* merge new cache branch
 	* src/imap.c
-	    fix new cache imap copy bug
+		fix new cache imap copy bug
 	* src/folder.c
-	    improved folder_item_scan
-	    it should now always set the correct
-	    new, unread and total message counts
+		improved folder_item_scan
+		it should now always set the correct
+		new, unread and total message counts
 
 2002-06-29 [paul]	0.7.8claws35
 
