@@ -1,3 +1,8 @@
+2002-12-23 [paul]	0.8.6claws126
+
+	* po/it.po
+		updated translation, submitted by Alessandro Maestri
+		
 2002-12-23 [paul]	0.8.6claws125
 
 	* src/quote_fmt_parse.y
