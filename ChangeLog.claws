@@ -1,3 +1,9 @@
+2002-12-14 [thorsten]	0.8.6claws112
+
+	* po/hu.po
+		Updated hungarian translation
+		(updated by Gal Zoltan)
+
 2002-12-14 [christoph]	0.8.6claws111
 
 	* src/addr_compl.c
