@@ -1,3 +1,10 @@
+2001-06-30 [alfons]
+
+	* src/filesel.[ch]
+	* src/compose.c
+		allow inserting / attaching multiple files in
+		the composer window
+
 2001-06-30 [paul]
 
 	* src/codeconv.c

@@ -3251,7 +3251,7 @@ static Compose *compose_create(PrefsAccount *account)
 #include "pixmaps/stock_mail_attach.xpm"
 #include "pixmaps/stock_mail_compose.xpm"
 #include "pixmaps/linewrap.xpm"
-//#include "pixmaps/tb_mail_queue_send.xpm"
+/*#include "pixmaps/tb_mail_queue_send.xpm"*/
 #include "pixmaps/tb_address_book.xpm"
 
 #define CREATE_TOOLBAR_ICON(xpm_d) \
@@ -3294,7 +3294,7 @@ static void compose_toolbar_create(Compose *compose, GtkWidget *container)
 					   icon_wid, toolbar_send_cb, compose);
 
 	CREATE_TOOLBAR_ICON(stock_mail_send_xpm);
-	//CREATE_TOOLBAR_ICON(tb_mail_queue_send_xpm);
+	/* CREATE_TOOLBAR_ICON(tb_mail_queue_send_xpm); */
 	sendl_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					   _("Send later"),
 					   _("Put into queue folder and send later"),
@@ -4316,7 +4316,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 
 	g_free(tmp);
 
-	//folderview_scan_folder_a(DRAFT_DIR, TRUE);
+	/* folderview_scan_folder_a(DRAFT_DIR, TRUE); */
 
 	gtk_widget_destroy(compose->window);
 }
@@ -4324,24 +4324,40 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 static void compose_attach_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	Compose *compose = (Compose *)data;
-	gchar *file;
+	GList *file_list;
 
-	file = filesel_select_file(_("Select file"), NULL);
+	file_list = filesel_select_multiple_files(_("Select file"), NULL);
 
-	if (file)
-		compose_attach_append(compose, file, MIME_UNKNOWN);
+	if (file_list) {
+		GList *tmp;
+
+		for ( tmp = file_list; tmp; tmp = tmp->next) {
+			gchar *file = (gchar *) tmp->data;
+			compose_attach_append(compose, file, MIME_UNKNOWN);
+			g_free(file);
+		}
+		g_list_free(file_list);
+	}		
 }
 
 static void compose_insert_file_cb(gpointer data, guint action,
 				   GtkWidget *widget)
 {
 	Compose *compose = (Compose *)data;
-	gchar *file;
+	GList *file_list;
 
-	file = filesel_select_file(_("Select file"), NULL);
+	file_list = filesel_select_multiple_files(_("Select file"), NULL);
 
-	if (file)
-		compose_insert_file(compose, file);
+	if (file_list) {
+		GList *tmp;
+
+		for ( tmp = file_list; tmp; tmp = tmp->next) {
+			gchar *file = (gchar *) tmp->data;
+			compose_insert_file(compose, file);
+			g_free(file);
+		}
+		g_list_free(file_list);
+	}
 }
 
 static gint compose_delete_cb(GtkWidget *widget, GdkEventAny *event,

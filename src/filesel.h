@@ -24,4 +24,6 @@
 
 gchar *filesel_select_file(const gchar *title, const gchar *file);
 
+GList *filesel_select_multiple_files(const gchar *title, const gchar *file);
+
 #endif /* __FILESEL_H__ */
