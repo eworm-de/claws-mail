@@ -2632,7 +2632,7 @@ static void hide_read_messages (MainWindow *mainwin, guint action,
 				GtkWidget *widget)
 {
 	if (!mainwin->summaryview->folder_item
-	    || gtk_object_get_data(GTK_OBJECT(widget), "dont_toggle"))
+	    || g_object_get_data(G_OBJECT(widget), "dont_toggle"))
 		return;
 	summary_toggle_show_read_messages(mainwin->summaryview);
 }

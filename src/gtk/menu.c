@@ -314,12 +314,12 @@ void menu_select_by_data(GtkMenu *menu, gpointer data)
 	
 	g_return_if_fail(menu != NULL);
 
-	children = gtk_container_children(GTK_CONTAINER(menu));
+	children = gtk_container_get_children(GTK_CONTAINER(menu));
 
 	for (cur = children; cur != NULL; cur = g_list_next(cur)) {
-		GtkObject *child = G_OBJECT(cur->data);
+		GObject *child = G_OBJECT(cur->data);
 
-		if (gtk_object_get_user_data(child) == data) {
+		if (g_object_get_data(child, MENU_VAL_ID) == data) {
 			select_item = GTK_WIDGET(child);
 		}
 	}

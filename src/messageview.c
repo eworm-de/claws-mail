@@ -1152,7 +1152,7 @@ static void partial_recv_unmark_clicked(NoticeView *noticeview,
 
 static void select_account_cb(GtkWidget *w, gpointer data)
 {
-	*(gint*)data = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(w)));
+	*(gint*)data = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(w), MENU_VAL_ID));
 }
 	
 static PrefsAccount *select_account_from_list(GList *ac_list)

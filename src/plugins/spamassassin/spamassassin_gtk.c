@@ -36,6 +36,7 @@
 #include "prefs_gtk.h"
 #include "foldersel.h"
 #include "spamassassin.h"
+#include "menu.h"
 
 struct SpamAssassinPage
 {
@@ -119,7 +120,7 @@ static void transport_sel_cb(GtkMenuItem *menuitem, gpointer data)
 	struct SpamAssassinPage *page = (struct SpamAssassinPage *) data;
 	struct Transport *transport;
 
-	transport = (struct Transport *) gtk_object_get_user_data(GTK_OBJECT(menuitem));
+	transport = (struct Transport *) g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID);
 	show_transport(page, transport);
 }
 
@@ -376,9 +377,9 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 		GtkWidget *menuitem;
 
 		menuitem = gtk_menu_item_new_with_label(gettext(transports[i].name));
-		gtk_object_set_user_data(GTK_OBJECT(menuitem), &transports[i]);
-		gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-				   GTK_SIGNAL_FUNC(transport_sel_cb), page);
+		g_object_set_data(G_OBJECT(menuitem), MENU_VAL_ID, &transports[i]);
+		g_signal_connect(G_OBJECT(menuitem), "activate",
+				 G_CALLBACK(transport_sel_cb), page);
 		gtk_widget_show(menuitem);
 		gtk_menu_append(GTK_MENU(transport_menu), menuitem);
 

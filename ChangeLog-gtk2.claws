@@ -1,3 +1,12 @@
+2004-08-21 [paul]	0.9.12cvs66.4
+
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/gtk/menu.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		remove some deprecated gtk1 functions
+
+
 2004-08-21 [colin]	0.9.12cvs66.3
 
 	* src/compose.c
