@@ -2331,6 +2331,11 @@ static void compose_wrap_line_all(Compose *compose)
 					do_delete = FALSE;
 			}
 
+			/* skip delete if it is continuous URL */
+			if (do_delete && (line_pos - p_pos <= i_len) &&
+			    gtkut_stext_is_uri_string(text, line_pos, tlen))
+				do_delete = FALSE;
+
 #ifdef WRAP_DEBUG
 			printf("qlen=%d l_len=%d wrap_len=%d do_del=%d\n",
 				qlen, line_len, linewrap_len, do_delete);

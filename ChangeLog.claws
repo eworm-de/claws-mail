@@ -1,3 +1,8 @@
+2001-01-16 [darko]	0.7.0claws10
+
+	* src/compose.c
+		fix wrapping crash with URL longer than wrapping margin
+
 2001-12-08 [hoa]	0.7.0claws10
 
 	* src/matcher_parser_parse.y
