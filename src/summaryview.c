@@ -386,7 +386,6 @@ static void label_menu_item_activate_cb(GtkWidget *widget, gpointer data)
 		
 	color <<= 7;
 
-	g_print("ACTIVATING!!!\n");
 	summary_set_label(view, color, NULL);
 }
 
