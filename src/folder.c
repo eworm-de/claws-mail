@@ -1357,22 +1357,19 @@ static gint folder_sort_folder_list(gconstpointer a, gconstpointer b)
 
 gint folder_item_open(FolderItem *item)
 {
+	gchar *buf;
 	if((item->folder->klass->scan_required != NULL) && (item->folder->klass->scan_required(item->folder, item))) {
 		folder_item_scan_full(item, TRUE);
 	}
 
 	/* Processing */
-	if(item->prefs->processing != NULL) {
-		gchar *buf;
-		
-		buf = g_strdup_printf(_("Processing (%s)...\n"), item->path);
-		debug_print("%s\n", buf);
-		g_free(buf);
+	buf = g_strdup_printf(_("Processing (%s)...\n"), item->path);
+	debug_print("%s\n", buf);
+	g_free(buf);
 	
-		folder_item_apply_processing(item);
+	folder_item_apply_processing(item);
 
-		debug_print("done.\n");
-	}
+	debug_print("done.\n");
 
 	return 0;
 }
