@@ -191,11 +191,11 @@ GtkPspell *gtkpspell_new_with_config(GtkPspellConfig *gtkpspellconfig,
 	if (encoding) {
 		char *pspell_encoding;
 		pspell_encoding = convert_to_pspell_encoding (encoding);
-		debug_print(_("Pspell encoding: %s\n"), pspell_encoding);
+		debug_print(_("Pspell encoding: asked: %s changed to: %s\n"), encoding, pspell_encoding);
 		pspell_config_replace(gtkpspell->config, "encoding", (const char *)pspell_encoding);
 		if (pspell_config_error_number(gtkpspell->config) !=0 ) {
-			debug_print(_("Pspell encoding: %s\n"), pspell_config_error_message(gtkpspell->config));
-			debug_print(_("Pspell encoding: setting error. Switching to iso8859-1 (sorry)\n"));
+			debug_print(_("Pspell encoding error: %s\nSwitching to iso8859-1 (sorry)\n"), 
+				    pspell_config_error_message(gtkpspell->config));
 			pspell_config_replace(gtkpspell->config, "encoding", "iso8859-1");
 		}
 		g_free(pspell_encoding);
@@ -808,8 +808,11 @@ static void entry_delete_cb(GtkXText *gtktext, gint start, gint end,
 		return;
 
 	origpos = gtk_editable_get_position(GTK_EDITABLE(gtktext));
-	if (start)
+	if (start) {
 		check_at(gtkpspell, start - 1);
+		check_at(gtkpspell, start);
+	}
+
 	gtk_editable_set_position(GTK_EDITABLE(gtktext), origpos);
 	gtk_editable_select_region(GTK_EDITABLE(gtktext), origpos, origpos);
 	/* this is to *UNDO* the selection, in case they were holding shift
@@ -1405,7 +1408,10 @@ guchar *convert_to_pspell_encoding (const guchar *encoding)
 		pspell_encoding = g_strdup_printf("iso8859%s", encoding+8);
 	}
 	else
-		pspell_encoding = g_strdup(encoding);
+		if (!strcmp2(encoding, "US-ASCII"))
+			pspell_encoding = g_strdup("iso8859-1");
+		else
+			pspell_encoding = g_strdup(encoding);
 	return pspell_encoding;
 	
 }
