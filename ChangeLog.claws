@@ -1,3 +1,10 @@
+2002-02-24 [alfons]	0.7.2.claws10
+
+	* AUTHORS
+	* src/summaryview.c
+		fix threading for null message ids, closes patch #521601,
+		submitted by Bob Forsman <hammor@users.sourceforge.net>
+
 2002-02-24 [alfons]	0.7.2claws9
 
 	* src/summaryview.c

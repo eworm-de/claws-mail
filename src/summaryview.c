@@ -1954,7 +1954,7 @@ gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
 	GTKUT_CTREE_NODE_SET_ROW_DATA(cnode, msginfo);
 	summary_set_marks_func(ctree, cnode, summaryview);
 
-	if (msgid)
+	if (msgid && msgid[0] != 0)
 		g_hash_table_insert(msgid_table, (gchar *)msgid, cnode);
 
 	return TRUE;
@@ -2033,7 +2033,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 			GTKUT_CTREE_NODE_SET_ROW_DATA(node, msginfo);
 			summary_set_marks_func(ctree, node, summaryview);
 
-			if (msginfo->msgid)
+			if (msginfo->msgid && msginfo->msgid[0] != 0)
 				g_hash_table_insert(msgid_table,
 						    msginfo->msgid, node);
 
