@@ -136,7 +136,9 @@ sylpheed_SOURCES = \
 	string_match.h string_match.c \
 	selective_download.c selective_download.h \
 	msgcache.h msgcache.c \
-	noticeview.h noticeview.c
+	noticeview.h noticeview.c \
+	toolbar.c toolbar.h \
+	prefs_toolbar.c prefs_toolbar.h
 
 BUILT_SOURCES = \
 	quote_fmt_lex.c \

@@ -1,3 +1,42 @@
+2002-08-06
+
+	* src/prefs_common.[ch]: obsolete なデフォルト署名鍵の設定を削除。
+	* src/utils.c: canonicalize_file(): fwrite() のエラーチェックを
+	  訂正。
+
+2002-08-06
+
+	* src/compose.c: compose_write_to_file():
+	  暗号化/署名の前に行末を正規化するようにした(他の MUA との相互運用
+	  性が修正されるはず)。
+	  不要な strdup を除去。
+	  草稿メッセージを暗号化/署名しないようにした。
+	* src/utils.[ch]:
+	  canonicalize_file(), canonicalize_file_replace(): 新規。
+	* src/passphrase.c
+	  src/select-keys.c: g_message() を debug_print() と g_warning()
+	  に変更。
+	* src/mimeview.c: mimeview_check_signature(): 不要な MIME 構造の
+	  スキャンを削除。
+	* src/textview.c: textview_add_part(): 署名のステータスを TextView
+	  に表示。
+	* src/rfc2015.c
+	  src/sigstatus.c: 翻訳可能な文字列といくつかの MIME ヘッダを修正。
+
+2002-08-06
+
+	* src/procmsg.c: procmsg_save_to_outbox(): 送信待ちから保存する
+	  ときに一時ファイルを消去するのを忘れていたのを修正。
+
+2002-08-05
+
+	* src/compose.c
+	  src/passphrase.[ch]
+	  src/rfc2015.[ch]
+	  src/prefs_account.[ch]
+	  src/prefs_common.[ch]: claws ブランチから GnuPG 関連をマージ。
+	  いくつかのメッセージを修正。
+
 2002-08-05
 
 	* src/textview.c: textview_scan_header(): メモリリークを修正

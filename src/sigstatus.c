@@ -61,37 +61,37 @@ static void do_destroy(GpgmegtkSigStatus hd)
 			gtk_timeout_remove(hd->timeout_id);
 			hd->timeout_id_valid = 0;
 		}
-		if (hd->destroy_pending)
+		if (hd->destroy_pending) 
 		g_free(hd);
 	}
 }
 
 static void okay_cb(GtkWidget *widget, gpointer data)
 {
-        GpgmegtkSigStatus hd = data;
+	GpgmegtkSigStatus hd = data;
 
-        hd->running = 0;
-        do_destroy(hd);
+	hd->running = 0;
+	do_destroy(hd);
 }
 
 static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data)
 {
-        GpgmegtkSigStatus hd = data;
+	GpgmegtkSigStatus hd = data;
 
-        hd->running = 0;
-        do_destroy(hd);
+	hd->running = 0;
+	do_destroy(hd);
 
 	return TRUE;
 }
 
 static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-        GpgmegtkSigStatus hd = data;
+	GpgmegtkSigStatus hd = data;
 
-        if (event && event->keyval == GDK_Escape) {
-                hd->running = 0;
-                do_destroy(hd);
-        }
+	if (event && event->keyval == GDK_Escape) {
+		hd->running = 0;
+		do_destroy(hd);
+	}
 }
 
 GpgmegtkSigStatus gpgmegtk_sig_status_create(void)
@@ -102,21 +102,21 @@ GpgmegtkSigStatus gpgmegtk_sig_status_create(void)
 	GtkWidget *label;
 	GtkWidget *okay_btn;
 	GtkWidget *okay_area;
-        GpgmegtkSigStatus hd;
+	GpgmegtkSigStatus hd;
 
-        hd = g_malloc0(sizeof *hd);
-        hd->running = 1;
+	hd = g_malloc0(sizeof *hd);
+	hd->running = 1;
 
 	window = gtk_window_new(GTK_WINDOW_DIALOG);
-        hd->mainwindow = window;
+	hd->mainwindow = window;
 	gtk_widget_set_usize(window, 400, -1);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
-        gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-                           GTK_SIGNAL_FUNC(delete_event), hd);
-        gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-                           GTK_SIGNAL_FUNC(key_pressed), hd);
+	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, FALSE);
+	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
+			   GTK_SIGNAL_FUNC(delete_event), hd);
+	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
+			   GTK_SIGNAL_FUNC(key_pressed), hd);
 
 	vbox = gtk_vbox_new(FALSE, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
@@ -127,7 +127,7 @@ GpgmegtkSigStatus gpgmegtk_sig_status_create(void)
 	gtk_widget_show(hbox);
 
 	label = gtk_label_new(_("Checking signature"));
-        hd->label = label;
+	hd->label = label;
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 8);
 	gtk_widget_show(label);
 
@@ -135,109 +135,109 @@ GpgmegtkSigStatus gpgmegtk_sig_status_create(void)
 				NULL, NULL, NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), okay_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(okay_btn);
-        gtk_signal_connect(GTK_OBJECT(okay_btn), "clicked",
-                           GTK_SIGNAL_FUNC(okay_cb), hd);
+	gtk_signal_connect(GTK_OBJECT(okay_btn), "clicked",
+			   GTK_SIGNAL_FUNC(okay_cb), hd);
 
 	gtk_widget_show_all(window);
 
-        while (gtk_events_pending())
-            gtk_main_iteration();
+	while (gtk_events_pending())
+		gtk_main_iteration();
 
-        return hd;
+	return hd;
 }
 
 static gint timeout_cb(gpointer data)
 {
-    GpgmegtkSigStatus hd = data;
+	GpgmegtkSigStatus hd = data;
 
-    hd->running = 0;
-    hd->timeout_id_valid = 0;
-    do_destroy(hd);
+	hd->running = 0;
+	hd->timeout_id_valid = 0;
+	do_destroy(hd);
 
-    return FALSE;
+	return FALSE;
 }
 
 void gpgmegtk_sig_status_destroy(GpgmegtkSigStatus hd)
 {
-        if( hd ) {
-                hd->destroy_pending = 1;
-                if (hd->running && !hd->timeout_id_valid) {
-                    hd->timeout_id = gtk_timeout_add(MY_TIMEOUT,
-                                                     timeout_cb, hd);
-                    hd->timeout_id_valid = 1;
-                }
-                do_destroy(hd);
-        }
+	if (hd) {
+		hd->destroy_pending = 1;
+		if (hd->running && !hd->timeout_id_valid) {
+			hd->timeout_id = gtk_timeout_add(MY_TIMEOUT,
+							 timeout_cb, hd);
+			hd->timeout_id_valid = 1;
+		}
+		do_destroy(hd);
+	}
 }
 
 /* Fixme: remove status and get it from the context */
 void gpgmegtk_sig_status_update(GpgmegtkSigStatus hd, GpgmeCtx ctx)
 {
-    gint idx;
-    time_t created;
-    GpgmeSigStat status;
-    gchar *text = NULL;
+	gint idx;
+	time_t created;
+	GpgmeSigStat status;
+	gchar *text = NULL;
 
-    if (!hd || !hd->running || !ctx)
-        return;
+	if (!hd || !hd->running || !ctx)
+		return;
 
 	for (idx = 0; gpgme_get_sig_status(ctx, idx, &status, &created);
 	     idx++) {
-        gchar *tmp;
-        const gchar *userid;
-        GpgmeKey key = NULL;
+		gchar *tmp;
+		const gchar *userid;
+		GpgmeKey key = NULL;
 
-        if ( !gpgme_get_sig_key (ctx, idx, &key) ) {
+		if (!gpgme_get_sig_key (ctx, idx, &key)) {
 			userid = gpgme_key_get_string_attr
 				(key, GPGME_ATTR_USERID, NULL, 0);
-        } else
-            userid = "[?]";
+		} else
+			userid = "[?]";
 
-        tmp = g_strdup_printf ( "%s%s%s from \"%s\"",
-                                text? text:"",
-                                text? "\n":"",
-                                gpgmegtk_sig_status_to_string(status),
-                                userid );
-        g_free (text);
-        text = tmp;
-        gpgme_key_unref (key);
-    }
+		tmp = g_strdup_printf(_("%s%s%s from \"%s\""),
+				      text ? text : "",
+				      text ? "\n" : "",
+				      gpgmegtk_sig_status_to_string(status),
+				      userid);
+		g_free (text);
+		text = tmp;
+		gpgme_key_unref (key);
+	}
 
-    gtk_label_set_text(GTK_LABEL(hd->label), text ); 
-    g_free (text);
+	gtk_label_set_text(GTK_LABEL(hd->label), text); 
+	g_free(text);
 
-    while (gtk_events_pending())
-        gtk_main_iteration();
+	while (gtk_events_pending())
+		gtk_main_iteration();
 }
 
 const char *gpgmegtk_sig_status_to_string(GpgmeSigStat status)
 {
-        const char *result = "?";
+	const char *result = "?";
 
-        switch ( status ) {
-            case GPGME_SIG_STAT_NONE:
-                result = _("Oops: Signature not verified");
-                break;
-            case GPGME_SIG_STAT_NOSIG:
-                result = _("No signature found");
-                break;
-            case GPGME_SIG_STAT_GOOD:
-                result = _("Good signature");
-                break;
-            case GPGME_SIG_STAT_BAD:
-                result = _("BAD signature");
-                break;
-            case GPGME_SIG_STAT_NOKEY:
-                result = _("No public key to verify the signature");
-                break;
-            case GPGME_SIG_STAT_ERROR:
-                result = _("Error verifying the signature");
-                break;
+	switch (status) {
+	case GPGME_SIG_STAT_NONE:
+		result = _("Oops: Signature not verified");
+		break;
+	case GPGME_SIG_STAT_NOSIG:
+		result = _("No signature found");
+		break;
+	case GPGME_SIG_STAT_GOOD:
+		result = _("Good signature");
+		break;
+	case GPGME_SIG_STAT_BAD:
+		result = _("BAD signature");
+		break;
+	case GPGME_SIG_STAT_NOKEY:
+		result = _("No public key to verify the signature");
+		break;
+	case GPGME_SIG_STAT_ERROR:
+		result = _("Error verifying the signature");
+		break;
 	default:
 		break;
-        }
+	}
 
-        return result;
+	return result;
 }
 
 #endif /* USE_GPGME */

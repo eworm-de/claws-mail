@@ -1,3 +1,42 @@
+2002-08-06
+
+	* src/prefs_common.[ch]: removed obsolete default sign key setting.
+	* src/utils.c: canonicalize_file(): correct the error check of
+	  fwrite().
+
+2002-08-06
+
+	* src/compose.c: compose_write_to_file():
+	  canonicalize line endings before encrypting/signing (this will fix
+	  interoperability with other MUAs).
+	  Removed unnecessary strdup.
+	  Don't encrypt/sign draft message.
+	* src/utils.[ch]:
+	  canonicalize_file(), canonicalize_file_replace(): new.
+	* src/passphrase.c
+	  src/select-keys.c: changed g_message() to debug_print() and
+	  g_warning().
+	* src/mimeview.c: mimeview_check_signature(): removed unnecessary
+	  MIME structure scanning.
+	* src/textview.c: textview_add_part(): show signature status in
+	  TextView.
+	* src/rfc2015.c
+	  src/sigstatus.c: modified translatable strings and some MIME
+	  headers.
+
+2002-08-06
+
+	* src/procmsg.c: procmsg_save_to_outbox(): don't forget to remove
+	  the temporary file when saving from queue.
+2002-08-05
+
+	* src/compose.c
+	  src/passphrase.[ch]
+	  src/rfc2015.[ch]
+	  src/prefs_account.[ch]
+	  src/prefs_common.[ch]: merged GnuPG stuff from the claws branch.
+	  Modified some messages.
+
 2002-08-05
 
 	* src/textview.c: textview_scan_header(): fixed a memory leak

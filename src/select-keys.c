@@ -129,11 +129,11 @@ gpgmegtk_recipient_selection (GSList *recp_names)
 
     err = gpgme_recipients_new (&sk.rset);
     if (err) {
-        g_message ("** failed to allocate recipients set: %s",
+        g_warning ("failed to allocate recipients set: %s",
                    gpgme_strerror (err));
         return NULL;
     }
-        
+
     open_dialog (&sk);
 
     do {
@@ -228,8 +228,8 @@ fill_clist (struct select_keys_s *sk, const char *pattern)
 
     err = gpgme_op_keylist_start (ctx, pattern, 0);
     if (err) {
-        g_message ("** gpgme_op_keylist_start(%s) failed: %s",
-                   pattern, gpgme_strerror (err));
+        debug_print ("** gpgme_op_keylist_start(%s) failed: %s",
+                     pattern, gpgme_strerror (err));
         sk->select_ctx = NULL;
         return;
     }
@@ -243,14 +243,12 @@ fill_clist (struct select_keys_s *sk, const char *pattern)
     }
     debug_print ("%% %s:%d:  ready\n", __FILE__ ,__LINE__ );
     if (err != GPGME_EOF)
-        g_message ("** gpgme_op_keylist_next failed: %s",
-                   gpgme_strerror (err));
+        debug_print ("** gpgme_op_keylist_next failed: %s",
+                     gpgme_strerror (err));
     sk->select_ctx = NULL;
     gpgme_release (ctx);
     /*gtk_clist_thaw (select_keys.clist);*/
 }
-
-
 
 
 static void 
@@ -400,7 +398,7 @@ select_btn_cb (GtkWidget *widget, gpointer data)
 
     g_return_if_fail (sk);
     if (!sk->clist->selection) {
-        g_message ("** nothing selected");
+        debug_print ("** nothing selected");
         return;
     }
     row = GPOINTER_TO_INT(sk->clist->selection->data);
@@ -411,7 +409,7 @@ select_btn_cb (GtkWidget *widget, gpointer data)
                                                    NULL, 0 );
         if ( gpgme_key_get_ulong_attr (key, GPGME_ATTR_VALIDITY, NULL, 0 )
              < GPGME_VALIDITY_FULL ) {
-            g_message ("** FIXME: we are faking the trust calculation");
+            debug_print ("** FIXME: we are faking the trust calculation");
         }
         if (!gpgme_recipients_add_name_with_validity (sk->rset, s,
                                                       GPGME_VALIDITY_FULL) ) {
@@ -521,6 +519,5 @@ sort_keys_email (GtkWidget *widget, gpointer data)
 {
     sort_keys ((struct select_keys_s*)data, COL_EMAIL);
 }
-
 
 #endif /*USE_GPGME*/

@@ -30,7 +30,11 @@
 #include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef WIN32
+#include <w32lib.h>
+#else
 #include <dirent.h>
+#endif
 #include <sys/stat.h>
 #include <math.h>
 #include <setjmp.h>
@@ -344,7 +348,11 @@ void toolbar_save_config_file ()
 	if( pfile ) {
 		fp = pfile->fp;
 		fprintf (fp, "<?xml version=\"1.0\" encoding=\"%s\" ?>\n",
+#ifdef WIN32
+				"utf-8");
+#else
 				conv_get_current_charset_str());
+#endif
 
 		fprintf (fp, "<%s>\n", TOOLBAR_TAG_INDEX);
 
@@ -409,7 +417,6 @@ void toolbar_read_config_file ()
 		}
 
 		attr = xml_get_current_tag_attr (file);
-		
 		retVal = TRUE;
 		for (;;) {
 			if (!file->level) 
@@ -428,7 +435,6 @@ void toolbar_read_config_file ()
 				item->action = A_SEPARATOR;
 				toolbar_list = g_slist_append (toolbar_list, item);
 			}
-
 		}
 		xml_close_file(file);
 	}

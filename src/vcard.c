@@ -350,8 +350,9 @@ static gchar *vcard_get_tagvalue( gchar* line, gchar dlm ) {
 /*
 * Build an address list entry and append to list of address items.
 */
-static void vcard_build_items( VCardFile *cardFile, GSList *listName, GSList *listAddr, GSList *listRem,
-				GSList *listID )
+static void vcard_build_items(
+	VCardFile *cardFile, GSList *listName, GSList *listAddr,
+	GSList *listRem, GSList *listID )
 {
 	GSList *nodeName = listName;
 	GSList *nodeID = listID;
@@ -370,7 +371,8 @@ static void vcard_build_items( VCardFile *cardFile, GSList *listName, GSList *li
 				if( nodeRemarks ) {
 					if( str ) {
 						if( g_strcasecmp( str, "internet" ) != 0 ) {
-							if( *str != '\0' ) addritem_email_set_remarks( email, str );
+							if( *str != '\0' )
+								addritem_email_set_remarks( email, str );
 						}
 					}
 				}
@@ -383,13 +385,13 @@ static void vcard_build_items( VCardFile *cardFile, GSList *listName, GSList *li
 		if( person->listEMail ) {
 			addrcache_id_person( cardFile->addressCache, person );
 			addrcache_add_person( cardFile->addressCache, person );
+			if( nodeID ) {
+				str = nodeID->data;
+				addritem_person_set_external_id( person, str );
+			}
 		}
 		else {
 			addritem_free_item_person( person );
-		}
-		if( nodeID ) {
-			str = nodeID->data;
-			addritem_person_set_external_id( person, str );
 		}
 		nodeName = g_slist_next( nodeName );
 		nodeID = g_slist_next( nodeID );

@@ -22,13 +22,32 @@
 
 #include <glib.h>
 
-typedef struct _MainWindow	MainWindow;
+typedef struct _MainWindow  MainWindow;
 
 #include "folderview.h"
 #include "summaryview.h"
 #include "headerview.h"
 #include "messageview.h"
 #include "logwindow.h"
+#include "toolbar.h"
+
+typedef enum
+{
+	M_UNLOCKED            = 1 << 0,
+	M_MSG_EXIST           = 1 << 1,
+	M_TARGET_EXIST        = 1 << 2,
+	M_SINGLE_TARGET_EXIST = 1 << 3,
+	M_EXEC                = 1 << 4,
+	M_ALLOW_REEDIT        = 1 << 5,
+	M_HAVE_ACCOUNT        = 1 << 6,
+	M_THREADED	    = 1 << 7,
+	M_UNTHREADED	    = 1 << 8,
+	M_ALLOW_DELETE	    = 1 << 9,
+	M_INC_ACTIVE	    = 1 << 10,
+	M_NEWS                = 1 << 11,
+	M_HAVE_NEWS_ACCOUNT   = 1 << 12,
+	M_HIDE_READ_MSG	    = 1 << 13
+} SensitiveCond;
 
 typedef enum
 {
@@ -45,12 +64,6 @@ typedef enum
 	TOOLBAR_TEXT	= 2,
 	TOOLBAR_BOTH	= 3
 } ToolbarStyle;
-
-typedef enum 
-{
-	COMPOSEBUTTON_MAIL,
-	COMPOSEBUTTON_NEWS
-} ComposeButtonType;
 
 struct _MainWindow
 {
@@ -81,38 +94,11 @@ struct _MainWindow
 	GtkWidget *menubar;
 
 	GtkItemFactory *menu_factory;
-
-	/* toolbar */
+	
+	/* Toolbar handlebox */
 	GtkWidget *handlebox;
-	GtkWidget *toolbar;
-	GtkWidget *get_btn;
-	GtkWidget *getall_btn;
-
-	/* compose button stuff */
-	GtkWidget *compose_mail_btn;
-	GtkWidget *compose_news_btn;
-	ComposeButtonType compose_btn_type;
 	
-	/* for the reply buttons */
-	GtkWidget *reply_btn;
-	GtkWidget *reply_popup;
-	GtkWidget *replyall_btn;
-	GtkWidget *replyall_popup;
-	GtkWidget *replysender_btn;
-	GtkWidget *replysender_popup;
-	
-	/* the forward button similar to the reply buttons*/
-	GtkWidget *fwd_btn;
-	GtkWidget *fwd_popup;
-	
-	GtkWidget *send_btn;
-	/*
-	GtkWidget *prefs_btn;
-	GtkWidget *account_btn;
-	*/
-	GtkWidget *next_btn;
-	GtkWidget *delete_btn;
-	GtkWidget *exec_btn;
+	MainToolbar *toolbar;
 
 	/* body */
 	GtkWidget *vbox_body;
@@ -167,14 +153,42 @@ void main_window_empty_trash		(MainWindow	*mainwin,
 					 gboolean	 confirm);
 void main_window_add_mailbox		(MainWindow	*mainwin);
 
-void main_window_set_toolbar_sensitive	(MainWindow	*mainwin);
 void main_window_set_menu_sensitive	(MainWindow	*mainwin);
 
 
 void main_window_popup			(MainWindow	*mainwin);
 
-void main_window_toolbar_set_compose_button	
-					(MainWindow *mainwin, 
+void main_window_toolbar_set_compose_button	(MainWindow *mainwin, 
 					 ComposeButtonType compose_btn_type);
+
+SensitiveCond main_window_get_current_state   (MainWindow *mainwin);
+
+void reply_cb			          (MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
+
+void inc_mail_cb			          (MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
+
+void inc_all_account_mail_cb	          (MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
+
+void send_queue_cb		          (MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
+
+void compose_mail_cb                          (MainWindow       *mainwin, 
+					 guint action,
+			                   GtkWidget         *widget);
+
+void compose_news_cb                          (MainWindow       *mainwin, 
+					 guint action,
+			                   GtkWidget         *widget);
+
+void next_unread_cb	                   (MainWindow	*mainwin,
+				          guint		 action,
+				          GtkWidget	*widget);
 
 #endif /* __MAINWINDOW_H__ */

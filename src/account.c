@@ -227,6 +227,33 @@ PrefsAccount *account_find_from_id(gint id)
 	return NULL;
 }
 
+/*
+ * account_find_all_from_address:
+ * @ac_list: initial list of accounts. NULL to create a new one.
+ * Accounts found in the @address will be appended to this list.
+ * @address: Email address string.
+ *
+ * Find all the mail (not news) accounts within the specified address.
+ *
+ * Return value: the original accounts list with the found accounts appended.
+ */
+GList *account_find_all_from_address(GList *ac_list, const gchar *address)
+{
+	GList *cur;
+	PrefsAccount *ac;
+
+	if (address == NULL)
+		return ac_list;
+
+	for (cur = account_list; cur != NULL; cur = cur->next) {
+		ac = (PrefsAccount *)cur->data;
+		if (ac->protocol != A_NNTP && ac->address &&
+		    strcasestr(address, ac->address) != NULL)
+			ac_list = g_list_append(ac_list, ac);
+	}
+	return ac_list;
+}
+	
 void account_set_menu(void)
 {
 	main_window_set_account_menu(account_list);

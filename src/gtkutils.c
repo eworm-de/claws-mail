@@ -45,6 +45,8 @@
 #include "gtksctree.h"
 #include "codeconv.h"
 #include "stock_pixmap.h"
+#include "menu.h"
+#include "prefs_account.h"
 
 gint gtkut_get_font_width(GdkFont *font)
 {
@@ -508,4 +510,40 @@ void gtkut_widget_set_composer_icon(GtkWidget *widget)
 		stock_pixmap_gdk(widget, STOCK_PIXMAP_MAIL_COMPOSE, &xpm, &bmp);
 	}
 	gdk_window_set_icon(widget->window, NULL, xpm, bmp);	
+}
+
+GtkWidget *gtkut_account_menu_new(GList			*ac_list,
+				  GtkSignalFunc		 callback,
+				  gpointer		 data)
+{
+	GList *cur_ac;
+	GtkWidget *menu;
+	
+	g_return_val_if_fail(ac_list != NULL, NULL);
+
+	menu = gtk_menu_new();
+
+	for (cur_ac = ac_list; cur_ac != NULL; cur_ac = cur_ac->next) {
+		gchar *name;
+		GtkWidget *menuitem;
+		PrefsAccount *account;
+		
+		account = (PrefsAccount *) cur_ac->data;
+		if (account->name)
+			name = g_strdup_printf("%s: %s <%s>",
+					       account->account_name,
+					       account->name,
+					       account->address);
+		else
+			name = g_strdup_printf("%s: %s",
+					       account->account_name,
+					       account->address);
+		MENUITEM_ADD(menu, menuitem, name, account->account_id);
+		g_free(name);
+		if (callback != NULL)
+			gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+					   callback,
+					   data);
+	}
+	return menu;
 }

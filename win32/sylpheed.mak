@@ -137,6 +137,7 @@ CLEAN :
 	-@erase "$(INTDIR)\prefs_scoring.obj"
 	-@erase "$(INTDIR)\prefs_summary_column.obj"
 	-@erase "$(INTDIR)\prefs_template.obj"
+	-@erase "$(INTDIR)\prefs_toolbar.obj"
 	-@erase "$(INTDIR)\procheader.obj"
 	-@erase "$(INTDIR)\procmime.obj"
 	-@erase "$(INTDIR)\procmsg.obj"
@@ -168,6 +169,7 @@ CLEAN :
 	-@erase "$(INTDIR)\sylpheed.res"
 	-@erase "$(INTDIR)\template.obj"
 	-@erase "$(INTDIR)\textview.obj"
+	-@erase "$(INTDIR)\toolbar.obj"
 	-@erase "$(INTDIR)\undo.obj"
 	-@erase "$(INTDIR)\unmime.obj"
 	-@erase "$(INTDIR)\utils.obj"
@@ -338,7 +340,9 @@ LINK32_OBJS= \
 	"..\..\regex\regex.lib" \
 	"..\..\fnmatch\fnmatch.lib" \
 	"..\..\..\lib\libeay32.lib" \
-	"..\..\..\lib\ssleay32.lib"
+	"..\..\..\lib\ssleay32.lib" \
+	"$(INTDIR)\toolbar.obj" \
+	"$(INTDIR)\prefs_toolbar.obj"
 
 "$(OUTDIR)\sylpheed.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -549,6 +553,8 @@ CLEAN :
 	-@erase "$(INTDIR)\prefs_summary_column.sbr"
 	-@erase "$(INTDIR)\prefs_template.obj"
 	-@erase "$(INTDIR)\prefs_template.sbr"
+	-@erase "$(INTDIR)\prefs_toolbar.obj"
+	-@erase "$(INTDIR)\prefs_toolbar.sbr"
 	-@erase "$(INTDIR)\procheader.obj"
 	-@erase "$(INTDIR)\procheader.sbr"
 	-@erase "$(INTDIR)\procmime.obj"
@@ -610,6 +616,8 @@ CLEAN :
 	-@erase "$(INTDIR)\template.sbr"
 	-@erase "$(INTDIR)\textview.obj"
 	-@erase "$(INTDIR)\textview.sbr"
+	-@erase "$(INTDIR)\toolbar.obj"
+	-@erase "$(INTDIR)\toolbar.sbr"
 	-@erase "$(INTDIR)\undo.obj"
 	-@erase "$(INTDIR)\undo.sbr"
 	-@erase "$(INTDIR)\unmime.obj"
@@ -775,7 +783,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\vcard.sbr" \
 	"$(INTDIR)\w32_mailcap.sbr" \
 	"$(INTDIR)\xml.sbr" \
-	"$(INTDIR)\xmlprops.sbr"
+	"$(INTDIR)\xmlprops.sbr" \
+	"$(INTDIR)\toolbar.sbr" \
+	"$(INTDIR)\prefs_toolbar.sbr"
 
 "$(OUTDIR)\sylpheed.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -931,7 +941,9 @@ LINK32_OBJS= \
 	"..\..\regex\regex.lib" \
 	"..\..\fnmatch\fnmatch.lib" \
 	"..\..\..\lib\libeay32.lib" \
-	"..\..\..\lib\ssleay32.lib"
+	"..\..\..\lib\ssleay32.lib" \
+	"$(INTDIR)\toolbar.obj" \
+	"$(INTDIR)\prefs_toolbar.obj"
 
 "$(OUTDIR)\sylpheed_d.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -2709,6 +2721,24 @@ SOURCE=..\src\prefs_template.c
 
 !ENDIF 
 
+SOURCE=..\src\prefs_toolbar.c
+
+!IF  "$(CFG)" == "sylpheed - Win32 Release"
+
+
+"$(INTDIR)\prefs_toolbar.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
+
+
+"$(INTDIR)\prefs_toolbar.obj"	"$(INTDIR)\prefs_toolbar.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
 SOURCE=..\src\procheader.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
@@ -3250,6 +3280,24 @@ SOURCE=..\src\textview.c
 
 
 "$(INTDIR)\textview.obj"	"$(INTDIR)\textview.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=..\src\toolbar.c
+
+!IF  "$(CFG)" == "sylpheed - Win32 Release"
+
+
+"$(INTDIR)\toolbar.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
+
+
+"$(INTDIR)\toolbar.obj"	"$(INTDIR)\toolbar.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

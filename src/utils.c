@@ -2117,6 +2117,106 @@ gint move_file(const gchar *src, const gchar *dest)
 	return 0;
 }
 
+/* convert line endings into CRLF. If the last line doesn't end with
+ * linebreak, add it.
+ */
+gint canonicalize_file(const gchar *src, const gchar *dest)
+{
+	FILE *src_fp, *dest_fp;
+	gchar buf[BUFFSIZE];
+	gint len;
+	gboolean err = FALSE;
+	gboolean last_linebreak = FALSE;
+
+	if ((src_fp = fopen(src, "rb")) == NULL) {
+		FILE_OP_ERROR(src, "fopen");
+		return -1;
+	}
+
+	if ((dest_fp = fopen(dest, "wb")) == NULL) {
+		FILE_OP_ERROR(dest, "fopen");
+		fclose(src_fp);
+		return -1;
+	}
+
+	if (change_file_mode_rw(dest_fp, dest) < 0) {
+		FILE_OP_ERROR(dest, "chmod");
+		g_warning("can't change file mode\n");
+	}
+
+	while (fgets(buf, sizeof(buf), src_fp) != NULL) {
+		gint r = 0;
+
+		len = strlen(buf);
+		if (len == 0) break;
+		last_linebreak = FALSE;
+
+		if (buf[len - 1] != '\n') {
+			last_linebreak = TRUE;
+			r = fputs(buf, dest_fp);
+		} else if (len > 1 && buf[len - 1] == '\n' && buf[len - 2] == '\r') {
+			r = fputs(buf, dest_fp);
+		} else {
+			if (len > 1) {
+				r = fwrite(buf, len - 1, 1, dest_fp);
+				if (r != 1)
+					r = EOF;
+			}
+			if (r != EOF)
+				r = fputs("\r\n", dest_fp);
+		}
+
+		if (r == EOF) {
+			g_warning("writing to %s failed.\n", dest);
+			fclose(dest_fp);
+			fclose(src_fp);
+			unlink(dest);
+			return -1;
+		}
+	}
+
+	if (last_linebreak == TRUE) {
+		if (fputs("\r\n", dest_fp) == EOF)
+			err = TRUE;
+	}
+
+	if (ferror(src_fp)) {
+		FILE_OP_ERROR(src, "fread");
+		err = TRUE;
+	}
+	fclose(src_fp);
+	if (fclose(dest_fp) == EOF) {
+		FILE_OP_ERROR(dest, "fclose");
+		err = TRUE;
+	}
+
+	if (err) {
+		unlink(dest);
+		return -1;
+	}
+
+	return 0;
+}
+
+gint canonicalize_file_replace(const gchar *file)
+{
+	gchar *tmp_file;
+
+	tmp_file = get_tmp_file();
+
+	if (canonicalize_file(file, tmp_file) < 0)
+		return -1;
+
+	unlink(file);
+	if (rename(tmp_file, file) < 0) {
+		FILE_OP_ERROR(file, "rename");
+		unlink(tmp_file);
+		return -1;
+	}
+
+	return 0;
+}
+
 gint change_file_mode_rw(FILE *fp, const gchar *file)
 {
 #if HAVE_FCHMOD

@@ -260,7 +260,7 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 		text[2] = _("Standby");
 		gtk_clist_append(GTK_CLIST(inc_dialog->dialog->clist), text);
 		
-		main_window_set_toolbar_sensitive(mainwin);
+		toolbar_set_sensitive(mainwin);
 		main_window_set_menu_sensitive(mainwin);
 		
 		return inc_start(inc_dialog);
@@ -350,7 +350,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 		gtk_clist_append(GTK_CLIST(inc_dialog->dialog->clist), text);
 	}
 
-	main_window_set_toolbar_sensitive(mainwin);
+	toolbar_set_sensitive(mainwin);
 	main_window_set_menu_sensitive(mainwin);
 
 	new_msgs += inc_start(inc_dialog);

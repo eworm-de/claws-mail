@@ -227,16 +227,50 @@ void addritem_person_set_opened( ItemPerson *person, const gboolean value ) {
 }
 
 /*
-* Free linked list of item addresses.
-*/
+ * Test whether person's data is empty.
+ * Enter: person Person to test.
+ * Return: TRUE if empty.
+ */
+gboolean addritem_person_empty( ItemPerson *person ) {
+	gchar *t;
+
+	if( person == NULL ) return FALSE;
+
+	t = ADDRITEM_NAME(person);
+	if( t != NULL && strlen( t ) > 0 ) return FALSE;
+
+	t = person->firstName;
+	if( t != NULL && strlen( t ) > 0 ) return FALSE;
+
+	t = person->lastName;
+	if( t != NULL && strlen( t ) > 0 ) return FALSE;
+
+	t = person->nickName;
+	if( t != NULL && strlen( t ) > 0 ) return FALSE;
+
+	if( person->listEMail  != NULL ) return FALSE;
+	if( person->listAttrib != NULL ) return FALSE;
+
+	return TRUE;
+}
+
+/*
+ * Free linked list of item addresses; both addresses and the list are freed.
+ * It is assumed that addresses are *NOT* contained within some other
+ * container.
+ * Enter: list List of addresses to be freed.
+ */
 void addritem_free_list_email( GList *list ) {
 	GList *node = list;
 	while( node ) {
-		addritem_free_item_email( node->data );
+		ItemEMail *email = node->data;
+
+		addritem_free_item_email( email );
 		node->data = NULL;
 		node = g_list_next( node );
 	}
 	g_list_free( list );
+	list = NULL;
 }
 
 /*
@@ -265,7 +299,7 @@ void addritem_free_item_person( ItemPerson *person ) {
 	g_free( person->lastName );
 	g_free( person->nickName );
 	g_free( person->externalID );
-	addritem_free_list_email( person->listEMail );
+	g_list_free( person->listEMail );
 	addritem_free_list_attribute( person->listAttrib );
 
 	ADDRITEM_OBJECT(person)->type = ITEMTYPE_NONE;
@@ -828,7 +862,7 @@ void addritem_free_item_folder_recurse( ItemFolder *parent ) {
 }
 
 /*
-* Free up list of person in specified folder.
+* Free up list of persons in specified folder.
 */
 void addritem_folder_free_person( ItemFolder *folder ) {
 	GList *node;

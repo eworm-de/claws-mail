@@ -476,6 +476,10 @@ SOURCE=..\src\prefs_template.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\prefs_toolbar.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\procheader.c
 # End Source File
 # Begin Source File
@@ -597,6 +601,10 @@ SOURCE=..\src\template.c
 # Begin Source File
 
 SOURCE=..\src\textview.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\toolbar.c
 # End Source File
 # Begin Source File
 
@@ -956,6 +964,10 @@ SOURCE=..\src\prefs_template.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\prefs_toolbar.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\procheader.h
 # End Source File
 # Begin Source File
@@ -1057,6 +1069,10 @@ SOURCE=..\src\template.h
 # Begin Source File
 
 SOURCE=..\src\textview.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\toolbar.h
 # End Source File
 # Begin Source File
 

@@ -1149,7 +1149,6 @@ static void mimeview_update_signature_info(MimeView *mimeview)
 static void mimeview_check_signature(MimeView *mimeview)
 {
 	MimeInfo *mimeinfo;
-	gchar buf[BUFFSIZE];
 	FILE *fp;
 
 	g_return_if_fail (mimeview_is_signed(mimeview));
@@ -1167,15 +1166,6 @@ static void mimeview_check_signature(MimeView *mimeview)
 		return;
 	}
 
-	/* skip headers */
-	if (mimeinfo->mime_type == MIME_MULTIPART) {
-		if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0)
-		FILE_OP_ERROR(mimeview->file, "fseek");
-		while (fgets(buf, sizeof(buf), fp) != NULL)
-			if (buf[0] == '\r' || buf[0] == '\n') break;
-	}
-
-	procmime_scan_multipart_message(mimeinfo, fp);
 	if (prefs_common.gpg_started)
 		rfc2015_check_signature(mimeinfo, fp);
 	else
@@ -1184,5 +1174,8 @@ static void mimeview_check_signature(MimeView *mimeview)
 
 	mimeview_update_names(mimeview);
 	mimeview_update_signature_info(mimeview);
+
+	textview_show_message(mimeview->messageview->textview, mimeinfo,
+			      mimeview->file);
 }
 #endif /* USE_GPGME */

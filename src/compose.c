@@ -3202,40 +3202,36 @@ static gint compose_redirect_write_to_file(Compose *compose, const gchar *file)
 }
 
 
-#ifdef USE_GPGME
-/*
- * interfaces to rfc2015 to keep out the prefs stuff there.
+#if USE_GPGME
+/* interfaces to rfc2015 to keep out the prefs stuff there.
  * returns 0 on success and -1 on error. */
-static int compose_create_signers_list (Compose *compose, GSList **pkey_list)
+static gint compose_create_signers_list(Compose *compose, GSList **pkey_list)
 {
-	const char *keyid = NULL;
+	const gchar *key_id = NULL;
 	GSList *key_list;
 
 	switch (compose->account->sign_key) {
 	case SIGN_KEY_DEFAULT:
 		*pkey_list = NULL;
-		return 0;		/* nothing to do */
-
+		return 0;
 	case SIGN_KEY_BY_FROM:
-		keyid = compose->account->address;
+		key_id = compose->account->address;
 		break;
-
 	case SIGN_KEY_CUSTOM:
-		keyid = compose->account->sign_key_id;
+		key_id = compose->account->sign_key_id;
 		break;
-
 	default:
-		g_assert_not_reached ();
+		break;
 	}
 
-	key_list = rfc2015_create_signers_list(keyid);
+	key_list = rfc2015_create_signers_list(key_id);
 
 	if (!key_list) {
-	    alertpanel_error("Could not find any key associated with currently "
-				"selected keyid `%s'!", keyid);
-	    return -1;
+		alertpanel_error(_("Could not find any key associated with "
+				   "currently selected key id `%s'."), key_id);
+		return -1;
 	}
-	
+
 	*pkey_list = key_list;
 	return 0;
 }
@@ -3273,7 +3269,8 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 
 	len = strlen(chars);
 	if (is_ascii_str(chars)) {
-		buf = g_strdup(chars);
+		buf = chars;
+		chars = NULL;
 		out_codeset = CS_US_ASCII;
 		encoding = ENC_7BIT;
 	} else {
@@ -3307,7 +3304,8 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 				unlink(file);
 				return -1;
 			} else {
-				buf = g_strdup(chars);
+				buf = chars;
+				chars = NULL;
 			}
 		}
 	}
@@ -3371,18 +3369,28 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	}
 
 #if USE_GPGME
+	if (is_draft)
+		return 0;
+
+	if (compose->use_signing || compose->use_encryption) {
+		if (canonicalize_file_replace(file) < 0) {
+			unlink(file);
+			return -1;
+		}
+	}
+
 	if (compose->use_signing) {
 		GSList *key_list;
-		
-		if (compose_create_signers_list(compose, &key_list) == -1 ||
-			rfc2015_sign(file, key_list) < 0) {
-		    
+
+		if (compose_create_signers_list(compose, &key_list) < 0 ||
+		    rfc2015_sign(file, key_list) < 0) {
 			unlink(file);
 			return -1;
 		}
 	}
 	if (compose->use_encryption) {
-		if (rfc2015_encrypt(file, compose->to_list, compose->account->ascii_armored) < 0) {
+		if (rfc2015_encrypt(file, compose->to_list,
+				    compose->account->ascii_armored) < 0) {
 			unlink(file);
 			return -1;
 		}

@@ -125,6 +125,7 @@ void addritem_person_set_common_name	( ItemPerson *person, const gchar *value );
 void addritem_person_set_external_id	( ItemPerson *person, const gchar *value );
 void addritem_person_set_opened		( ItemPerson *person, const gboolean value );
 void addritem_free_item_person		( ItemPerson *person );
+gboolean addritem_person_empty		( ItemPerson *person );
 void addritem_free_list_email		( GList *list );
 void addritem_free_list_attribute	( GList *list );
 

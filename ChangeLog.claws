@@ -1,4 +1,95 @@
-2002-08-06 [thorsten]	0.8.0claws18
+2002-08-07 [thorsten]	0.8.1claws30
+
+	* src/prefs_toolbar.c
+		fix: crash on replace or add new button
+	* src/toolbar.c
+		fix: close xmlfile after reading
+	* src/utils.c
+		fix: unlink() file before rename()
+
+2002-08-06 [paul]	0.8.1claws29
+
+	* sync with 0.8.cvs15
+		see ChangeLog 2002-08-06
+
+2002-08-06 [oliver]	0.8.1claws28
+
+	* src/toolbar.c
+	* src/prefs_toolbar.c
+		fixed empty toolbar issue
+
+2002-08-06 [oliver]	0.8.1claws27
+
+	* Custom Toolbar Final 
+	* src/folderview.c
+	* src/inc.c
+	* src/summaryview.c
+		o toolbar stuff now lives in src/toolbar.[ch]
+		o main_window_toolbar_* functions are renamed to
+		  toolbar_* reflecting their new source file
+	* src/mainwindow.[ch]
+		o remove toolbar stuff	
+
+2002-08-06 [oliver]	0.8.1claws26
+	
+	* src/Makefile.am
+	* src/prefs_toolbar.[ch] 	**New File**
+	* src/toolbar.[ch]   		**New File**
+		o prefs_toolbar.[ch] custom toolbar frontend
+		o toolbar.[ch]       backend 
+
+2002-08-06 [oliver]	0.8.1claws25
+
+	* src/prefs_actions.[ch]
+		o new exported function actions_execute
+
+2002-08-06 [paul]	0.8.1claws24
+
+	* sync with 0.8.1cvs4
+		see ChangeLog 2002-08-06
+
+2002-08-06 [paul]	0.8.1claws23
+
+	* sync with 0.8.1cvs13
+		see ChangeLog 2002-08-06
+
+2002-08-06 [paul]	0.8.1claws22
+
+	* sync with 0.8.1cvs12
+		see ChangeLog 2002-08-05 and 2002-08-06
+
+2002-08-06 [match]	0.8.1claws21
+
+	* src/addrclip.c
+		improvements to cut/copy/paste address
+
+2002-08-05 [match]	0.8.1claws20
+
+	* src/addritem.[ch]
+	* src/addrcache.c
+	* src/addrbook.c
+	* src/editaddress.c
+	* src/addressbook.c
+		fixes to improve cut/copy/paste
+
+2002-08-06 [melvin]	0.8.1claws19
+
+	* src/account.[ch]
+		account_find_all_from_address(): new function that returns the
+		list of all accounts that are matched in an address.
+	* src/alertpanel.[ch]
+		alertpanel() now accepts a custom widget
+		alertpanel_with_widget(): new function that pops up a panel with
+		a custom widget in it 
+	* src/gtkutils.[ch]
+		gtkut_account_menu_new(): new function that allows the selection
+		of an account from a list of accounts.
+	* src/messageview.c
+		Extended Return Receipt notification to select the correct 
+		account and to make a security test on the Delivery-Notification
+		address which should be the same as the Return-Path.
+
+2002-08-06 [thorsten]	0.8.1claws18
 
 	* src/mimeview.c
 		attach_all: save unnamed as "noname.%d",
