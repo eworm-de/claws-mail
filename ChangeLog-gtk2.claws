@@ -1,3 +1,11 @@
+2004-09-20 [colin]	0.9.12cvs102.2
+
+	* src/plugins/image_viewer/viewer.c
+		Remove imlib stuff
+		use gtk_pixmap_set when clearing
+		(would be better to use gtkImages, but causes size-allocate 
+		signals storm)
+
 2004-09-17 [paul]	0.9.12cvs102.1
 
 	* ChangeLog

@@ -129,57 +129,6 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 
 	g_object_unref(pixbuf);
 }
-#else
-#if HAVE_GDK_IMLIB
-static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfile)
-{
-	GdkImlibImage *im;
-	gint avail_width;
-	gint avail_height;
-	gint new_width;
-	gint new_height;
-
-	debug_print("image_viewer_show_mimepart\n");
-
-	im = gdk_imlib_load_image(imgfile);
-	if (!im) {
-		g_warning("Can't load the image.");	
-		return;
-	}
-
-	if (imageviewer->resize_img) {
-		avail_width = imageviewer->notebook->parent->allocation.width;
-		avail_height = imageviewer->notebook->parent->allocation.height;
-		if (avail_width > 8) avail_width -= 8;
-		if (avail_height > 8) avail_height -= 8;
-
-		image_viewer_get_resized_size(im->rgb_width, im->rgb_height,
-				 avail_width, avail_height,
-				 &new_width, &new_height);
-	} else {
-		new_width = im->rgb_width;
-		new_height = im->rgb_height;
-	}
-
-	gdk_imlib_render(im, new_width, new_height);
-
-	if (!imageviewer->image) {
-		imageviewer->image = gtk_image_new_from_pixmap(gdk_imlib_move_image(im),
-						    	       gdk_imlib_move_mask(im));
-
-		gtk_scrolled_window_add_with_viewport
-			(GTK_SCROLLED_WINDOW(imageviewer->scrolledwin),
-			 imageviewer->image);
-	} else
-		gtk_image_set_from_pixmap(GTK_IMAGE(imageviewer->image),
-			       gdk_imlib_move_image(im),
-			       gdk_imlib_move_mask(im));      
-
-	gtk_widget_show(imageviewer->image);
-
-	gdk_imlib_destroy_image(im);
-}
-#endif /* HAVE_GDK_IMLIB */
 #endif /* HAVE_GDK_PIXBUF */
 
 static void image_viewer_set_notebook_page(MimeViewer *_mimeviewer)
@@ -239,7 +188,7 @@ static void image_viewer_clear_viewer(MimeViewer *_mimeviewer)
 	image_viewer_set_notebook_page(_mimeviewer);
 
 	if (imageviewer->image != NULL)
-		gtk_image_set_from_pixmap(GTK_IMAGE(imageviewer->image), NULL, NULL);
+		gtk_pixmap_set(GTK_PIXMAP(imageviewer->image), NULL, NULL);
 	hadj = gtk_scrolled_window_get_hadjustment
 		(GTK_SCROLLED_WINDOW(imageviewer->scrolledwin));
 	gtk_adjustment_set_value(hadj, 0.0);

@@ -171,3 +171,4 @@
 ( cvs diff -u -r 1.13.2.8 -r 1.13.2.9 src/common/socket.c; cvs diff -u -r 1.100.2.4 -r 1.100.2.5 AUTHORS; ) > 0.9.12cvs99.5.patchset
 ( cvs diff -u -r 1.2504.2.20 -r 1.2504.2.21 ChangeLog.claws; cvs diff -u -r 1.115.2.17 -r 1.115.2.18 src/main.c; ) > 0.9.12cvs101.1.patchset
 ( cvs diff -u -r 1.396.2.9 -r 1.396.2.10 ChangeLog; cvs diff -u -r 1.2504.2.21 -r 1.2504.2.22 ChangeLog.claws; cvs diff -u -r 1.391.2.9 -r 1.391.2.10 ChangeLog.jp; cvs diff -u -r 1.654.2.204 -r 1.654.2.205 configure.ac; cvs diff -u -r 1.149.2.14 -r 1.149.2.15 src/inc.c; ) > 0.9.12cvs102.1.patchset
+( cvs diff -u -r 1.7.2.7 -r 1.7.2.8 src/plugins/image_viewer/viewer.c; ) > 0.9.12cvs102.2.patchset
