@@ -1,4 +1,15 @@
-2001-11-12 [hiro]
+2001-11-12 [mhadasht] 	0.6.5.claws8
+
+	* src/prefs_common.c
+		re-enabled account autoselection feature for forward
+		and reedit lost during the branch point for SYNC-B4-REL
+	* src/gtkspell.c
+		gtkpspell_get_dict(): more readable code (even if function is
+		not used yet)
+	* ChangeLog.claws
+		added version number info to 2001-11-12 [hiro] comment.
+
+2001-11-12 [hiro] 	0.6.5.claws7
 
 	* src/compose.c
 		compose_forward(): fixed a bug that forward quote mark
