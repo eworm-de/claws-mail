@@ -1,3 +1,8 @@
+2004-08-24 [colin]	0.9.12cvs79.3
+
+	* src/matcher_parser_lex.l
+		Fix 8bits strings not in utf8
+
 2004-08-24 [colin]	0.9.12cvs79.2
 
 	* src/compose.c

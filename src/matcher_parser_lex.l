@@ -21,6 +21,7 @@
 #include <string.h>
 #include <glib.h>
 
+#include "codeconv.h"
 #include "matcher.h"
 #include "matcher_parser_lex.h"
 #include "matcher_parser_parse.h"
@@ -80,6 +81,13 @@ void matcher_parser_init(void)
 		/* get out of the state: string ends. */
 		BEGIN(0);
 		*string_buf_ptr = '\0';
+		if (!g_utf8_validate(string_buf, -1, NULL)) {
+			gchar *tmp = conv_codeset_strdup(string_buf, conv_get_current_charset_str(), CS_UTF_8);
+			if (tmp) {
+				strcpy(string_buf, tmp);
+				g_free(tmp);
+			}
+		}
 		yylval.str = string_buf;
 		return MATCHER_STRING;
 		}
