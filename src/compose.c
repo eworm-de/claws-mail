@@ -2303,7 +2303,6 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 	((len > 2 && conv_get_current_charset() == C_UTF_8) ? 2 : \
 	 (len == 2 && conv_get_current_charset() == C_UTF_8) ? 1 : len)
 
-#define INDENT_CHARS	">|#"
 #define SPACE_CHARS	" \t"
 
 static void compose_wrap_line(Compose *compose)
