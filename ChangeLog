@@ -1,3 +1,10 @@
+2002-03-14
+
+	* src/socket.c: implemented timeout for DNS lookup and connect().
+	  sock_connect_by_hostname(): timeout support and code cleanup.
+	  sock_connect_with_timeout(): new.
+	  sock_peek(): implemented SSL peek.
+
 2002-03-13
 
 	* src/messageview.c: messageview_show(): display single-part

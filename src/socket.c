@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,13 +29,14 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <signal.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <signal.h>
+#include <setjmp.h>
 
 #include "socket.h"
 #include "utils.h"
@@ -48,6 +49,11 @@
 #endif
 
 #define BUFFSIZE	8192
+
+static gint sock_connect_with_timeout	(gint			 sock,
+					 const struct sockaddr	*serv_addr,
+					 gint			 addrlen,
+					 guint			 timeout_secs);
 
 #ifndef INET6
 static gint sock_connect_by_hostname	(gint		 sock,
@@ -172,40 +178,95 @@ gboolean sock_is_nonblocking_mode(SockInfo *sock)
 	return is_nonblocking_mode(sock->sock);
 }
 
+static sigjmp_buf jmpenv;
+
+static void timeout_handler(gint sig)
+{
+	siglongjmp(jmpenv, 1);
+}
+
+static gint sock_connect_with_timeout(gint sock,
+				      const struct sockaddr *serv_addr,
+				      gint addrlen,
+				      guint timeout_secs)
+{
+	gint ret;
+	void (*prev_handler)(gint);
+
+	alarm(0);
+	prev_handler = signal(SIGALRM, timeout_handler);
+	if (sigsetjmp(jmpenv, 1)) {
+		alarm(0);
+		signal(SIGALRM, prev_handler);
+		errno = ETIMEDOUT;
+		return -1;
+	}
+	alarm(timeout_secs);
+
+	ret = connect(sock, serv_addr, addrlen);
+
+	alarm(0);
+	signal(SIGALRM, prev_handler);
+
+	return ret;
+}
 
 #ifndef INET6
+static gint my_inet_aton(const gchar *hostname, struct in_addr *inp)
+{
+#if HAVE_INET_ATON
+	return inet_aton(hostname, inp);
+#else
+#if HAVE_INET_ADDR
+	guint32 inaddr;
+
+	inaddr = inet_addr(hostname);
+	if (inaddr != -1) {
+		memcpy(inp, &inaddr, sizeof(inaddr));
+		return 1;
+	} else
+		return 0;
+#else
+	return 0;
+#endif
+#endif /* HAVE_INET_ATON */
+}
+
 static gint sock_connect_by_hostname(gint sock, const gchar *hostname,
 				     gushort port)
 {
 	struct hostent *hp;
 	struct sockaddr_in ad;
-#ifndef HAVE_INET_ATON
-#if HAVE_INET_ADDR
-	guint32 inaddr;
-#endif
-#endif /* HAVE_INET_ATON */
+	guint timeout_secs = 30;
 
 	memset(&ad, 0, sizeof(ad));
 	ad.sin_family = AF_INET;
 	ad.sin_port = htons(port);
 
-#if HAVE_INET_ATON
-	if (!inet_aton(hostname, &ad.sin_addr)) {
-#else
-#if HAVE_INET_ADDR
-	inaddr = inet_addr(hostname);
-	if (inaddr != -1)
-		memcpy(&ad.sin_addr, &inaddr, sizeof(inaddr));
-	else {
-#else
-	{
-#endif
-#endif /* HAVE_INET_ATON */
+	if (!my_inet_aton(hostname, &ad.sin_addr)) {
+		void (*prev_handler)(gint);
+
+		alarm(0);
+		prev_handler = signal(SIGALRM, timeout_handler);
+		if (sigsetjmp(jmpenv, 1)) {
+			alarm(0);
+			signal(SIGALRM, prev_handler);
+			fprintf(stderr, "%s: host lookup timed out.\n", hostname);
+			errno = 0;
+			return -1;
+		}
+		alarm(timeout_secs);
+
 		if ((hp = gethostbyname(hostname)) == NULL) {
+			alarm(0);
+			signal(SIGALRM, prev_handler);
 			fprintf(stderr, "%s: unknown host.\n", hostname);
 			errno = 0;
 			return -1;
 		}
+
+		alarm(0);
+		signal(SIGALRM, prev_handler);
 
 		if (hp->h_length != 4 && hp->h_length != 8) {
 			fprintf(stderr, "illegal address length received for host %s\n", hostname);
@@ -216,7 +277,8 @@ static gint sock_connect_by_hostname(gint sock, const gchar *hostname,
 		memcpy(&ad.sin_addr, hp->h_addr, hp->h_length);
 	}
 
-	return connect(sock, (struct sockaddr *)&ad, sizeof(ad));
+	return sock_connect_with_timeout(sock, (struct sockaddr *)&ad,
+					 sizeof(ad), timeout_secs);
 }
 
 #else /* INET6 */
@@ -224,6 +286,7 @@ static gint sock_connect_by_getaddrinfo(const gchar *hostname, gushort	port)
 {
 	gint sock = -1, gai_error;
 	struct addrinfo hints, *res, *ai;
+	guint timeout_secs = 30;
 	gchar port_str[6];
 
 	memset(&hints, 0, sizeof(hints));
@@ -246,7 +309,8 @@ static gint sock_connect_by_getaddrinfo(const gchar *hostname, gushort	port)
 		if (sock < 0)
 			continue;
 
-		if (connect(sock, ai->ai_addr, ai->ai_addrlen) == 0)
+		if (sock_connect_with_timeout
+			(sock, ai->ai_addr, ai->ai_addrlen, timeout_secs) == 0)
 			break;
 
 		close(sock);
@@ -553,6 +617,14 @@ gint sock_peek(SockInfo *sock)
 
 	g_return_val_if_fail(sock != NULL, -1);
 
+#if USE_SSL
+	if (sock->ssl) {
+		if ((n = SSL_peek(sock->ssl, &ch, 1)) < 0)
+			return -1;
+		else
+			return ch;
+	}
+#endif
 	if ((n = recv(sock->sock, &ch, 1, MSG_PEEK)) < 0)
 		return -1;
 	else
