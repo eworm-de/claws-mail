@@ -1,3 +1,9 @@
+2005-02-18 [colin]	1.0.1cvs14
+
+	* src/quote_fmt_lex.l
+	* src/quote_fmt_parse.y
+		Bugfix: Fix parser init (patch by Ivan)
+
 2005-02-18 [colin]	1.0.1cvs13
 
 	* src/plugins/pgpmime/pgpmime.c

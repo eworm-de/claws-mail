@@ -14,7 +14,7 @@
 /*
  * see notes below.
  */
-static int firsttime = 1;
+int quote_fmt_firsttime = 1;
 %}
 
 %%
@@ -43,9 +43,9 @@ static int firsttime = 1;
 %} 
 
 %{
-	if (firsttime) {
+	if (quote_fmt_firsttime) {
 		BEGIN S_NORMAL;
-		firsttime = 0;
+		quote_fmt_firsttime = 0;
 	}	
 %}
 
