@@ -3743,6 +3743,13 @@ static void compose_add_attachments(Compose *compose, MimeInfo *parent)
 			mimepart->disposition = DISPOSITIONTYPE_ATTACHMENT;
 		}
 
+		if (compose->use_signing) {
+			if (ainfo->encoding == ENC_7BIT)
+				ainfo->encoding = ENC_QUOTED_PRINTABLE;
+			else if (ainfo->encoding == ENC_8BIT)
+				ainfo->encoding = ENC_BASE64;
+		}
+		
 		procmime_encode_content(mimepart, ainfo->encoding);
 
 		g_node_append(parent->node, mimepart->node);

@@ -1,3 +1,8 @@
+2005-02-23 [colin]	1.0.1cvs15.7
+
+	* src/compose.c
+		Encode parts as QP or B64 if signing
+
 2005-02-23 [colin]	1.0.1cvs15.6
 
 	* src/compose.c
