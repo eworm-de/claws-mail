@@ -95,12 +95,17 @@ static gint inc_account_mail		(PrefsAccount		*account,
 					 MainWindow		*mainwin);
 
 static IncProgressDialog *inc_progress_dialog_create	(void);
+static void inc_progress_dialog_set_list(IncProgressDialog	*inc_dialog);
 static void inc_progress_dialog_destroy	(IncProgressDialog	*inc_dialog);
 
 static IncSession *inc_session_new	(PrefsAccount		*account);
 static void inc_session_destroy		(IncSession		*session);
 static gint inc_start			(IncProgressDialog	*inc_dialog);
 static IncState inc_pop3_session_do	(IncSession		*session);
+
+static void inc_progress_dialog_set_label
+					(IncProgressDialog	*inc_dialog,
+					 IncSession		*inc_session);
 
 static gint inc_recv_data_progressive	(Session	*session,
 					 guint		 cur_len,
@@ -225,7 +230,6 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 {
 	IncProgressDialog *inc_dialog;
 	IncSession *session;
-	gchar *text[3];
 	FolderItem *item = NULL;
 	
 	if(mainwin && mainwin->summaryview)
@@ -250,13 +254,8 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 		inc_dialog->queue_list = g_list_append(inc_dialog->queue_list,
 						       session);
 		inc_dialog->mainwin = mainwin;
-		session->data = inc_dialog;
-	
-		text[0] = NULL;
-		text[1] = account->account_name;
-		text[2] = _("Standby");
-		gtk_clist_append(GTK_CLIST(inc_dialog->dialog->clist), text);
-		
+		inc_progress_dialog_set_list(inc_dialog);
+
 		if (mainwin) {
 			toolbar_main_set_sensitive(mainwin);
 			main_window_set_menu_sensitive(mainwin);
@@ -343,18 +342,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 	inc_dialog = inc_progress_dialog_create();
 	inc_dialog->queue_list = queue_list;
 	inc_dialog->mainwin = mainwin;
-	for (list = queue_list; list != NULL; list = list->next) {
-		IncSession *session = list->data;
-		Pop3Session *pop3_session = POP3_SESSION(session->session);
-		gchar *text[3];
-
-		session->data = inc_dialog;
-
-		text[0] = NULL;
-		text[1] = pop3_session->ac_prefs->account_name;
-		text[2] = _("Standby");
-		gtk_clist_append(GTK_CLIST(inc_dialog->dialog->clist), text);
-	}
+	inc_progress_dialog_set_list(inc_dialog);
 
 	toolbar_main_set_sensitive(mainwin);
 	main_window_set_menu_sensitive(mainwin);
@@ -404,6 +392,24 @@ static IncProgressDialog *inc_progress_dialog_create(void)
 	inc_dialog_list = g_list_append(inc_dialog_list, dialog);
 
 	return dialog;
+}
+
+static void inc_progress_dialog_set_list(IncProgressDialog *inc_dialog)
+{
+	GList *list;
+
+	for (list = inc_dialog->queue_list; list != NULL; list = list->next) {
+		IncSession *session = list->data;
+		Pop3Session *pop3_session = POP3_SESSION(session->session);
+		gchar *text[3];
+
+		session->data = inc_dialog;
+
+		text[0] = NULL;
+		text[1] = pop3_session->ac_prefs->account_name;
+		text[2] = _("Standby");
+		gtk_clist_append(GTK_CLIST(inc_dialog->dialog->clist), text);
+	}
 }
 
 static void inc_progress_dialog_clear(IncProgressDialog *inc_dialog)
@@ -458,6 +464,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 {
 	IncSession *session;
 	GtkCList *clist = GTK_CLIST(inc_dialog->dialog->clist);
+	GList *qlist;
 	Pop3Session *pop3_session;
 	IncState inc_state;
 	gint num = 0;
@@ -469,14 +476,12 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 	MsgInfo *msginfo;
 	GSList *msglist, *msglist_element;
 
-	while (inc_dialog->queue_list != NULL) {
-		session = inc_dialog->queue_list->data;
-		pop3_session = POP3_SESSION(session->session);
+	qlist = inc_dialog->queue_list;
+	while (qlist != NULL) {
+		GList *next = qlist->next;
 
-		inc_progress_dialog_clear(inc_dialog);
-
-		gtk_clist_moveto(clist, num, -1, 1.0, 0.0);
-
+		session = qlist->data;
+		pop3_session = POP3_SESSION(session->session); 
 		pop3_session->user = g_strdup(pop3_session->ac_prefs->userid);
 		if (pop3_session->ac_prefs->passwd)
 			pop3_session->pass =
@@ -487,25 +492,45 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		else {
 			gchar *pass;
 
+			if (inc_dialog->show_dialog)
+				manage_window_focus_in
+					(inc_dialog->dialog->window,
+					 NULL, NULL);
+
 			pass = input_dialog_query_password
 				(pop3_session->ac_prefs->recv_server,
 				 pop3_session->user);
 
-			if (inc_dialog->mainwin && inc_dialog->show_dialog)
-				manage_window_focus_in
-					(inc_dialog->mainwin->window,
+			if (inc_dialog->show_dialog)
+				manage_window_focus_out
+					(inc_dialog->dialog->window,
 					 NULL, NULL);
+
 			if (pass) {
 				pop3_session->ac_prefs->tmp_pass =
 					g_strdup(pass);
 				pop3_session->pass = pass;
-			} else {
-				inc_session_destroy(session);
-				inc_dialog->queue_list = g_list_remove
-					(inc_dialog->queue_list, session);
-				continue;
 			}
 		}
+
+		qlist = next;
+	}
+
+	for (; inc_dialog->queue_list != NULL; num++) {
+		session = inc_dialog->queue_list->data;
+		pop3_session = POP3_SESSION(session->session);
+
+		if (pop3_session->pass == NULL) {
+			gtk_clist_set_pixmap(clist, num, 0, okxpm, okxpmmask);
+			gtk_clist_set_text(clist, num, 2, _("Cancelled"));
+			inc_session_destroy(session);
+			inc_dialog->queue_list =
+				g_list_remove(inc_dialog->queue_list, session);
+			continue;
+		}
+
+		inc_progress_dialog_clear(inc_dialog);
+		gtk_clist_moveto(clist, num, -1, 1.0, 0.0);
 
 		gtk_clist_set_pixmap(clist, num, 0, currentxpm, currentxpmmask);
 		gtk_clist_set_text(clist, num, 2, _("Retrieving"));
@@ -631,8 +656,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		inc_session_destroy(session);
 		inc_dialog->queue_list =
 			g_list_remove(inc_dialog->queue_list, session);
-
-		num++;
 	}
 
 	if (new_msgs > 0)
@@ -643,6 +666,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 	progress_dialog_set_label(inc_dialog->dialog, fin_msg);
 
+#if 0
 	if (error_num && !prefs_common.no_recv_err_panel) {
 		if (inc_dialog->show_dialog)
 			manage_window_focus_in(inc_dialog->dialog->window,
@@ -652,6 +676,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			manage_window_focus_out(inc_dialog->dialog->window,
 						NULL, NULL);
 	}
+#endif
 
 	while (inc_dialog->queue_list != NULL) {
 		session = inc_dialog->queue_list->data;
@@ -779,6 +804,63 @@ static IncState inc_pop3_session_do(IncSession *session)
 	return session->inc_state;
 }
 
+static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
+					  IncSession *inc_session)
+{
+	gchar buf[MSGBUFSIZE];
+	ProgressDialog *dialog = inc_dialog->dialog;
+	Pop3Session *session;
+
+	g_return_if_fail(inc_session != NULL);
+
+	session = POP3_SESSION(inc_session->session);
+
+	switch (session->state) {
+	case POP3_GREETING:
+		break;
+	case POP3_GETAUTH_USER:
+	case POP3_GETAUTH_PASS:
+	case POP3_GETAUTH_APOP:
+		progress_dialog_set_label(dialog, _("Authenticating..."));
+		break;
+	case POP3_GETRANGE_STAT:
+		progress_dialog_set_label
+			(dialog, _("Getting the number of new messages (STAT)..."));
+		break;
+	case POP3_GETRANGE_LAST:
+		progress_dialog_set_label
+			(dialog, _("Getting the number of new messages (LAST)..."));
+		break;
+	case POP3_GETRANGE_UIDL:
+		progress_dialog_set_label
+			(dialog, _("Getting the number of new messages (UIDL)..."));
+		break;
+	case POP3_GETSIZE_LIST:
+		progress_dialog_set_label
+			(dialog, _("Getting the size of messages (LIST)..."));
+		break;
+	case POP3_RETR:
+		inc_recv_data_progressive
+			(SESSION(session), 0,
+			 session->msg[session->cur_msg].size,
+			 inc_session);
+		break;
+	case POP3_DELETE:
+		if (session->msg[session->cur_msg].recv_time <
+			session->current_time) {
+			g_snprintf(buf, sizeof(buf), _("Deleting message %d"),
+				   session->cur_msg);
+			progress_dialog_set_label(dialog, buf);
+		}
+		break;
+	case POP3_LOGOUT:
+		progress_dialog_set_label(dialog, _("Quitting"));
+		break;
+	default:
+		break;
+	}
+}
+
 static gint inc_recv_data_progressive(Session *session, guint cur_len,
 				      guint total_len, gpointer data)
 {
@@ -820,69 +902,26 @@ static gint inc_recv_data_progressive(Session *session, guint cur_len,
 static gint inc_recv_data_finished(Session *session, guint len, gpointer data)
 {
 	IncSession *inc_session = (IncSession *)data;
+	IncProgressDialog *inc_dialog;
 
 	g_return_val_if_fail(inc_session != NULL, -1);
 
+	inc_dialog = (IncProgressDialog *)inc_session->data;
 	inc_recv_data_progressive(session, 0, len, inc_session);
+	inc_progress_dialog_set_label(inc_dialog, inc_session);
+
 	return 0;
 }
 
 static gint inc_recv_message(Session *session, const gchar *msg, gpointer data)
 {
-	gchar buf[MSGBUFSIZE];
 	IncSession *inc_session = (IncSession *)data;
-	Pop3Session *pop3_session = POP3_SESSION(session);
 	IncProgressDialog *inc_dialog;
-	ProgressDialog *dialog;
 
 	g_return_val_if_fail(inc_session != NULL, -1);
 
 	inc_dialog = (IncProgressDialog *)inc_session->data;
-	dialog = inc_dialog->dialog;
-
-	switch (pop3_session->state) {
-	case POP3_GREETING:
-		break;
-	case POP3_GETAUTH_USER:
-	case POP3_GETAUTH_PASS:
-	case POP3_GETAUTH_APOP:
-		progress_dialog_set_label(dialog, _("Authenticating..."));
-		break;
-	case POP3_GETRANGE_STAT:
-		progress_dialog_set_label
-			(dialog, _("Getting the number of new messages (STAT)..."));
-		break;
-	case POP3_GETRANGE_LAST:
-		progress_dialog_set_label
-			(dialog, _("Getting the number of new messages (LAST)..."));
-		break;
-	case POP3_GETRANGE_UIDL:
-		progress_dialog_set_label
-			(dialog, _("Getting the number of new messages (UIDL)..."));
-		break;
-	case POP3_GETSIZE_LIST:
-		progress_dialog_set_label
-			(dialog, _("Getting the size of messages (LIST)..."));
-		break;
-	case POP3_RETR:
-		inc_recv_data_progressive
-			(session, 0,
-			 pop3_session->msg[pop3_session->cur_msg].size, data);
-		break;
-	case POP3_DELETE:
-		if (pop3_session->msg[pop3_session->cur_msg].recv_time <
-			pop3_session->current_time) {
-			g_snprintf(buf, sizeof(buf), _("Deleting message %d"),
-				   pop3_session->cur_msg);
-			progress_dialog_set_label(dialog, buf);
-		}
-		break;
-	case POP3_LOGOUT:
-		progress_dialog_set_label(dialog, _("Quitting"));
-		break;
-	default:
-		break;
-	}
+	inc_progress_dialog_set_label(inc_dialog, inc_session);
 
 	return 0;
 }

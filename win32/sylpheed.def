@@ -1,6 +1,6 @@
 
 EXPORTS
-	inc_autocheck_timer_init 
+	Xrename 
 	about_show 
 	account_add 
 	account_destroy 
@@ -911,7 +911,7 @@ EXPORTS
 	import_mbox 
 	inc_all_account_mail 
 	inc_all_account_mail_cb 
-	Xrename 
+	inc_autocheck_timer_init 
 	inc_autocheck_timer_remove 
 	inc_autocheck_timer_set 
 	inc_cancel_all 
@@ -927,6 +927,7 @@ EXPORTS
 	input_dialog_query_password 
 	input_dialog_with_invisible 
 	invalidate_address_completion 
+	io_timeout 
 	is_ascii_str 
 	is_completion_pending 
 	is_dir_exist 
@@ -1507,12 +1508,12 @@ EXPORTS
 	sock_connect_cmd 
 	sock_getline 
 	sock_gets 
-	sock_input_add 
 	sock_is_nonblocking_mode 
 	sock_peek 
 	sock_printf 
 	sock_puts 
 	sock_read 
+	sock_set_io_timeout 
 	sock_set_nonblocking_mode 
 	sock_write 
 	sock_write_all 

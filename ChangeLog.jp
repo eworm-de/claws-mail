@@ -1,3 +1,28 @@
+2003-05-26
+
+	* src/socket.[ch]:
+	  sock_set_io_timeout(): 新規。タイムアウトの間隔を指定する。
+	  sock_gdk_input_add(): 既に使用されていないため削除。
+	* src/prefs_common.[ch]: タイムアウトの値を指定するオプションを追加。
+
+2003-05-26
+
+	* src/action.c: create_io_dialog() でユーザ文字列を隠していなかった
+	  バグを修正(Markus Amersdorfer さん thanks)。
+	  ChildInfo::type を削除し、 Children::action_type を追加。
+
+2003-05-23
+
+	* src/inc.c: inc_start(): 受信前に全てのパスワードを訊くようにした。
+	  余分なエラーダイアログをポップアップしないようにした。
+	  inc_account_mail()
+	  inc_all_account_mail()
+	  inc_progress_dialog_set_list(): アカウントリストの表示を新しい
+	  関数に分離。
+	  inc_progress_dialog_set_label()
+	  inc_recv_data_finished()
+	  inc_recv_message(): RETR が完了したときに正しくダイアログを更新。
+
 2003-05-22
 
 	* src/imap.c:

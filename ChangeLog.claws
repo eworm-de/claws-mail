@@ -1,3 +1,32 @@
+2003-05-28 [christoph]	0.9.0claws5
+
+	* src/imap.c
+		fix truncation of too long commands
+
+	(closes Bug 167 IMAP hangs trying to get envelope
+	 information in imap_get_uncached_messages)
+
+2003-05-27 [paul]	0.9.0claws4
+
+	* tools/Makefile.am
+	  tools/maildir2sylpheed.pl	** NEW FILE **
+		add kmail to sylpheed mailbox conversion script
+
+2003-05-27 [paul]	0.9.0claws3
+
+	* sync with 0.9.0cvs10
+		see ChangeLog 2003-05-26
+
+2003-05-26 [paul]	0.9.0claws2
+
+	* sync with 0.9.0cvs9
+		see ChangeLog 2003-05-26
+
+2003-05-24 [paul]	0.9.0claws1
+
+	* sync with 0.9.0cvs8
+		see ChangeLog 2003-05-23
+
 2003-05-24 [paul]	0.9.0claws
 
 	* version 0.9.0claws released

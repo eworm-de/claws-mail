@@ -1,6 +1,6 @@
 
 EXPORTS
-	message_read 
+	fd_timeout_read 
 	full_read 
 	full_write 
 	gpg_started 
@@ -12,7 +12,7 @@ EXPORTS
 	message_filter 
 	message_filter_with_failover 
 	message_process 
-	fd_timeout_read 
+	message_read 
 	message_write 
 	mswin_helper_timeout_tag 
 	plugin_desc 

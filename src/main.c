@@ -72,6 +72,7 @@
 #include "setup.h"
 #include "utils.h"
 #include "gtkutils.h"
+#include "socket.h"
 #include "log.h"
 #include "prefs_toolbar.h"
 #include "plugin.h"
@@ -342,6 +343,7 @@ int main(int argc, char *argv[])
 	gtkaspellcheckers = gtkaspell_checkers_new();
 #endif
 	
+	sock_set_io_timeout(prefs_common.io_timeout_secs);
 
 	prefs_common_save_config();
 	prefs_actions_read_config();
