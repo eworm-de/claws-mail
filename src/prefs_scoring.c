@@ -332,7 +332,7 @@ static void prefs_scoring_create(void)
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, TRUE, TRUE, 0);
 
-	kill_score_label = gtk_label_new (_("Kill score"));
+	kill_score_label = gtk_label_new (_("Hide score"));
 	gtk_widget_show (kill_score_label);
 	gtk_misc_set_alignment (GTK_MISC (kill_score_label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox1), kill_score_label,

@@ -1,3 +1,11 @@
+2002-09-25 [christoph]	0.8.3claws23
+
+	* src/prefs_common.c
+	* src/prefs_folder_item.c
+	* src/prefs_scoring.c
+		Renamed "kill score" to "hide score" in GUI
+		and prefs files
+
 2002-09-25 [paul]	0.8.3claws22
 
 	* sync with 0.8.3cvs5
