@@ -87,6 +87,7 @@
 #include "matcher_parser.h"
 #include "hooks.h"
 #include "description_window.h"
+#include "folder.h"
 
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_STATUS_WIDTH	13
@@ -2841,10 +2842,12 @@ void summary_mark_as_read(SummaryView *summaryview)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
 
+	folder_item_update_freeze();
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
 		summary_mark_row_as_read(summaryview,
 					 GTK_CTREE_NODE(cur->data));
-
+	folder_item_update_thaw();
+	
 	summary_status_show(summaryview);
 }
 
@@ -2855,6 +2858,7 @@ void summary_mark_all_read(SummaryView *summaryview)
 	GtkCTreeNode *node;
 
 	gtk_clist_freeze(clist);
+	folder_item_update_freeze();
 	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list); node != NULL;
 	     node = gtkut_ctree_node_next(ctree, node))
 		summary_mark_row_as_read(summaryview, node);
@@ -2864,6 +2868,7 @@ void summary_mark_all_read(SummaryView *summaryview)
 			summary_set_row_marks(summaryview, node);
 	}
 	gtk_clist_thaw(clist);
+	folder_item_update_thaw();
 
 	summary_status_show(summaryview);
 }
@@ -2901,10 +2906,12 @@ void summary_mark_as_unread(SummaryView *summaryview)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
 
+	folder_item_update_freeze();
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
 		summary_mark_row_as_unread(summaryview,
 					   GTK_CTREE_NODE(cur->data));
-
+	folder_item_update_thaw();
+	
 	summary_status_show(summaryview);
 }
 
