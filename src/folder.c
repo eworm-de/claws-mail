@@ -2011,17 +2011,18 @@ gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
 	Folder *folder;
 	gint ret = 0;
 
+	folder = item->folder;
+
 	g_return_val_if_fail(item != NULL, -1);
 	
-	folder = item->folder;
+	if (!item->cache) folder_item_read_cache(item);
+
 	if (folder->remove_msgs) {
 		ret = folder->remove_msgs(folder, item, msglist);
 		if (ret == 0)
-			folder->scan(folder);
+			folder_item_scan(item);
 		return ret;
 	}
-
-	if (!item->cache) folder_item_read_cache(item);
 
 	while (msglist != NULL) {
 		MsgInfo *msginfo = (MsgInfo *)msglist->data;

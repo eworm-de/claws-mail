@@ -1,3 +1,9 @@
+2002-11-14 [christoph]	0.8.5claws150
+
+	* src/folder.c
+		fix segfault when deleting messages from IMAP folders
+		(closes bug [ 635641 ] Crash deleting mail in IMAP trash)
+
 2002-11-14 [colin]	0.8.5claws149
 
 	* src/compose.c
