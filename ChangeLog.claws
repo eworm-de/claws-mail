@@ -1,3 +1,9 @@
+2002-11-07 [paul]	0.8.5claws87
+
+	* src/compose.c
+		fix reply-to-list bug. closes bug report
+		"[633382] reply-to-list broken in recent cvs"
+
 2002-11-07 [paul]	0.8.5claws86
 
 	* src/compose.c
