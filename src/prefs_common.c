@@ -991,7 +991,7 @@ void prefs_common_read_config(void)
 {
 	prefs_read_config(param, "Common", COMMON_RC);
 #ifdef WIN32
-	prefs_read_config(param_os_specific, "Common", COMMON_WIN_RC);
+	prefs_read_config(param_os_specific, "CommonWin32", COMMON_RC);
 #endif
 
 	prefs_common.mime_open_cmd_history =
@@ -1030,7 +1030,7 @@ void prefs_common_write_config(void)
 {
 	prefs_write_config(param, "Common", COMMON_RC);
 #ifdef WIN32
-	prefs_write_config(param_os_specific, "Common", COMMON_WIN_RC);
+	prefs_write_config(param_os_specific, "CommonWin32", COMMON_RC);
 #endif
 
 	prefs_common_save_history(COMMAND_HISTORY, 
