@@ -174,7 +174,12 @@ CPPFLAGS = \
 
 YFLAGS = -d
 
+
 BUILT_SOURCES = \
 	quote_fmt_lex.c \
 	quote_fmt_parse.c \
-	quote_fmt_parse.h
+	quote_fmt_parse.h \
+	matcher_parser_lex.c \
+	matcher_parser_parse.c \
+	matcher_parser_parse.h
+	

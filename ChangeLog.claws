@@ -1,3 +1,8 @@
+2001-07-08 [alfons]
+
+	* src/Makefile.am
+		added generated matcher sources to BUILT_SOURCES
+
 2001-07-08 [hoa]
 
 	* src/Makefile.am
