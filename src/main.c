@@ -175,6 +175,15 @@ int main(int argc, char *argv[])
 
 	parse_cmd_opt(argc, argv);
 
+	/* check and create unix domain socket */
+	lock_socket = prohibit_duplicate_launch();
+	if (lock_socket < 0) return 0;
+
+	if (cmd.status) {
+		puts("0 Sylpheed not running.");
+		return 0;
+	}
+
 	gtk_set_locale();
 	gtk_init(&argc, &argv);
 
@@ -224,15 +233,6 @@ int main(int argc, char *argv[])
 	g_free(userrc);
 
 	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), 1);
-
-	/* check and create unix domain socket */
-	lock_socket = prohibit_duplicate_launch();
-	if (lock_socket < 0) return 0;
-
-	if (cmd.status) {
-		puts("0 Sylpheed not running.");
-		return 0;
-	}
 
 	/* backup if old rc file exists */
 	if (is_file_exist(RC_DIR)) {

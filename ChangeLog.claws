@@ -1,3 +1,15 @@
+2002-11-27 [paul]	0.8.6claws19
+
+	* src/main.c
+		apply patch that does command-line processing 
+		BEFORE gtk_init, allowing claws to run from 
+		shell-scripts in non-X environment (e.g. crontab 
+		or ip-up, ip-down scripts). Patch submitted by
+		Ruslan N. Balkin <baron@dartel.ru>
+		
+	* po/it.po
+		updated by Alessandro Maestri
+
 2002-11-27 [paul]	0.8.6claws18
 
 	* sync with 0.8.6cvs12
