@@ -151,7 +151,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_container_set_border_width(GTK_CONTAINER (window), 8);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, TRUE);
+	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_window_set_default_size(GTK_WINDOW(window), 400, -1);
 
 	vbox = gtk_vbox_new(FALSE, 6);

@@ -90,7 +90,7 @@ passphrase_mbox (const gchar *desc)
     gtk_container_set_border_width(GTK_CONTAINER(window), 4);
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
     gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-    gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
+    gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
     g_signal_connect(G_OBJECT(window), "delete_event",
 		     G_CALLBACK(passphrase_deleted), NULL);
     g_signal_connect(G_OBJECT(window), "key_press_event",
@@ -152,7 +152,7 @@ passphrase_mbox (const gchar *desc)
         g_object_set (G_OBJECT(window), "type", GTK_WINDOW_POPUP, NULL);
     gtk_window_set_position (GTK_WINDOW(window), GTK_WIN_POS_CENTER);
     if (grab_all)   
-        gtk_window_set_policy (GTK_WINDOW(window), FALSE, FALSE, TRUE);
+        gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
     
     gtk_widget_show_all(window);
 

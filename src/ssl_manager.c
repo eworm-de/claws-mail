@@ -82,7 +82,7 @@ void ssl_manager_create(void)
 			      _("Saved SSL Certificates"));
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
-	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW (window), TRUE);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(ssl_manager_ok_cb), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);

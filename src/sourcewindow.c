@@ -62,7 +62,7 @@ SourceWindow *source_window_create(void)
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Source of the message"));
 	gtk_window_set_wmclass(GTK_WINDOW(window), "source_window", "Sylpheed");
-	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_widget_set_size_request(window, prefs_common.sourcewin_width,
 				    prefs_common.sourcewin_height);
 	g_signal_connect(G_OBJECT(window), "size_allocate",

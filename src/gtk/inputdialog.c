@@ -165,7 +165,7 @@ static void input_dialog_create(void)
 	GtkWidget *cancel_button;
 
 	dialog = gtk_dialog_new();
-	gtk_window_set_policy(GTK_WINDOW(dialog), FALSE, FALSE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
 	gtk_widget_set_size_request(dialog, INPUT_DIALOG_WIDTH, -1);
 	gtk_container_set_border_width
 		(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 5);

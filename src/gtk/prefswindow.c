@@ -223,7 +223,7 @@ void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data)
 	gtk_window_set_default_size(GTK_WINDOW(prefswindow->window), 600, 340);
 	gtk_window_position (GTK_WINDOW(prefswindow->window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal (GTK_WINDOW (prefswindow->window), TRUE);
-	gtk_window_set_policy (GTK_WINDOW(prefswindow->window), FALSE, TRUE, FALSE);
+	gtk_window_set_resizable (GTK_WINDOW(prefswindow->window), TRUE);
 	gtk_container_set_border_width(GTK_CONTAINER(prefswindow->window), 4);
 
 	prefswindow->table1 = gtk_table_new(2, 2, FALSE);

@@ -1426,7 +1426,7 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 
 	dialog = gtk_dialog_new();
 
-	gtk_window_set_policy(GTK_WINDOW(dialog), FALSE, FALSE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
 	gtk_window_set_title(GTK_WINDOW(dialog),_("Replace unknown word"));
 	gtk_widget_set_uposition(dialog, xx, yy);
 
@@ -2424,7 +2424,7 @@ static void gtkaspell_alert_dialog(gchar *message)
 	GtkWidget *ok_button;
 
 	dialog = gtk_dialog_new();
-	gtk_window_set_policy(GTK_WINDOW(dialog), FALSE, FALSE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_MOUSE);
 	g_signal_connect_swapped(G_OBJECT(dialog), "destroy",
 				 G_CALLBACK(gtk_widget_destroy), 

@@ -65,7 +65,7 @@ static void description_create(DescriptionWindow * dwindow)
 			     gettext(dwindow->title));
 	gtk_container_set_border_width(GTK_CONTAINER(dwindow->window), 8);
 	gtk_window_set_modal(GTK_WINDOW(dwindow->window), TRUE);
-	gtk_window_set_policy(GTK_WINDOW(dwindow->window), FALSE, TRUE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(dwindow->window), TRUE);
 
 	/* Check number of lines to be show */
 	sz = 0;

@@ -173,7 +173,7 @@ static void prefs_summary_column_create(void)
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
 	gtk_window_set_title(GTK_WINDOW(window),
 			     _("Displayed items configuration"));
 	g_signal_connect(G_OBJECT(window), "delete_event",
