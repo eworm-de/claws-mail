@@ -71,6 +71,7 @@ static void from_activated(void);
 static void to_activated(void);
 static void subject_activated(void);
 static void body_activated(void);
+static void all_clicked(GtkButton *button);
 static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
 
 void summary_search(SummaryView *summaryview)
@@ -195,6 +196,8 @@ static void summary_search_create(SummaryView *summaryview)
 	gtk_widget_show (all_checkbtn);
 	gtk_box_pack_start (GTK_BOX (checkbtn_hbox), all_checkbtn,
 			    FALSE, FALSE, 0);
+	gtk_signal_connect(GTK_OBJECT(all_checkbtn), "clicked",
+			   GTK_SIGNAL_FUNC(all_clicked), summaryview);
 
 	and_checkbtn =
 		gtk_check_button_new_with_label (_("AND search"));
@@ -282,6 +285,7 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 		gtk_clist_freeze(GTK_CLIST(ctree));
 		gtk_clist_unselect_all(GTK_CLIST(ctree));
 		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+		backward = FALSE;
 	} else if (!summaryview->selected) {
 		if (backward)
 			node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list_end);
@@ -355,7 +359,7 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 			else
 				all_matched = FALSE;
 			g_free(wcs_hs);
-		}	
+		}
 		if (*towcs && msginfo->to) {
 			wcs_hs = strdup_mbstowcs(msginfo->to);
 			if (wcs_hs && WCSFindFunc(wcs_hs, towcs) != NULL)
@@ -448,6 +452,14 @@ static void subject_activated(void)
 static void body_activated(void)
 {
 	gtk_button_clicked(GTK_BUTTON(search_btn));
+}
+
+static void all_clicked(GtkButton *button)
+{
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button)))
+		gtk_widget_set_sensitive(backward_checkbtn, FALSE);
+	else
+		gtk_widget_set_sensitive(backward_checkbtn, TRUE);
 }
 
 static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)

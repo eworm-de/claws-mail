@@ -47,6 +47,12 @@
 #define LDAPCTL_DFL_ATTR_LIST   "mail, cn, givenName, sn"
 
 /*
+ * Search matching options.
+ */
+#define LDAPCTL_MATCH_BEGINWITH 0
+#define LDAPCTL_MATCH_CONTAINS  1
+
+/*
  * Data structures.
  */
 typedef struct _LdapControl LdapControl;
@@ -59,6 +65,7 @@ struct _LdapControl {
 	gint      maxEntries;
 	gint      timeOut;
 	gint      maxQueryAge;
+	gint      matchingOption;
 	gchar     *attribEMail;
 	gchar     *attribCName;
 	gchar     *attribFName;
@@ -77,6 +84,7 @@ void ldapctl_set_bind_password	( LdapControl* ctl, const gchar *value );
 void ldapctl_set_max_entries	( LdapControl* ctl, const gint value );
 void ldapctl_set_timeout	( LdapControl* ctl, const gint value );
 void ldapctl_set_max_query_age	( LdapControl* ctl, const gint value );
+void ldapctl_set_matching_option( LdapControl* ctl, const gint value );
 void ldapctl_set_criteria_list	( LdapControl* ctl, GList *value );
 GList *ldapctl_get_criteria_list( const LdapControl* ctl );
 void ldapctl_criteria_list_clear( LdapControl *ctl );

@@ -31,6 +31,7 @@ struct _FilteringAction {
 	gchar  *destination;
 	gchar  *unesc_destination;	/* for exec cmd line */
 	gint	labelcolor;
+	gint	score;
 };
 
 typedef struct _FilteringAction FilteringAction;
@@ -46,8 +47,8 @@ typedef struct _FilteringProp FilteringProp;
 
 
 FilteringAction * filteringaction_new(int type, int account_id,
-				      gchar *destination,
-				      gint labelcolor);
+				      gchar * destination,
+                                      gint labelcolor, gint score);
 void filteringaction_free(FilteringAction *action);
 FilteringAction * filteringaction_parse(gchar **str);
 gboolean filteringaction_apply_action_list (GSList *action_list, MsgInfo *info);

@@ -32,154 +32,152 @@
 /**
  * Query list for tracking current queries.
  */
-static GList *_queryList_ = NULL;
+static GList *_requestList_ = NULL;
 
 /**
  * Mutex to protect list from multiple threads.
  */
-static pthread_mutex_t _queryListMutex_ = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t _requestListMutex_ = PTHREAD_MUTEX_INITIALIZER;
+
+/**
+ * Current query ID. This is incremented for each query request created.
+ */
+static gint _currentQueryID_ = 0;
 
 /**
  * Create new address query.
  * \return Initialized address query object.
  */
-AddrQuery *addrqry_create( void ) {
-	AddrQuery *qry;
+QueryRequest *reqreq_create( void ) {
+	QueryRequest *req;
 
-	qry = g_new0( AddrQuery, 1 );
-	qry->queryType = ADDRQUERY_NONE;
-	qry->queryID = 0;
-	qry->idleID = 0;
-	qry->searchTerm = NULL;
-	qry->callBack = NULL;
-	qry->target = NULL;
-	qry->serverObject = NULL;
-	qry->queryObject = NULL;
-	return qry;
+	req = g_new0( QueryRequest, 1 );
+	req->queryID = 0;
+	req->searchType = ADDRSEARCH_NONE;
+	req->searchTerm = NULL;
+	req->callBackEnd = NULL;
+	req->callBackEntry = NULL;
+	req->queryList = NULL;
+	return req;
 }
 
 /**
  * Clear the query.
- * \param qry Address query object.
+ * \param req Request query object.
  */
-void addrqry_clear( AddrQuery *qry ) {
-	g_return_if_fail( qry != NULL );
-	g_free( qry->searchTerm );
-	qry->queryType = ADDRQUERY_NONE;
-	qry->queryID = 0;
-	qry->idleID = 0;
-	qry->searchTerm = NULL;
-	qry->callBack = NULL;
-	qry->target = NULL;
-	qry->serverObject = NULL;
-	qry->queryObject = NULL;
+void qryreq_clear( QueryRequest *req ) {
+	GList *node;
+
+	g_return_if_fail( req != NULL );
+	g_free( req->searchTerm );
+	req->queryID = 0;
+	req->searchType = ADDRSEARCH_NONE;
+	req->searchTerm = NULL;
+	req->callBackEnd = NULL;
+	req->callBackEntry = NULL;
+
+	/* Empty the list */
+	node = req->queryList;
+	while( node ) {
+		node->data = NULL;
+		node = g_list_next( node );
+	}
+	g_list_free( req->queryList );
+	req->queryList = NULL;
 }
 
 /**
  * Free query.
- * \param qry Address query object.
+ * \param req Request query object.
  */
-void addrqry_free( AddrQuery *qry ) {
-	g_return_if_fail( qry != NULL );
-	addrqry_clear( qry );
-	g_free( qry );
+void qryreq_free( QueryRequest *req ) {
+	g_return_if_fail( req != NULL );
+	qryreq_clear( req );
+	g_free( req );
 }
 
 /**
- * Specify query type.
- * \param qry   Address query object.
+ * Specify search type.
+ * \param req   Request query object.
  * \param value Type.
  */
-void addrqry_set_query_type( AddrQuery *qry, const AddrQueryType value ) {
-	g_return_if_fail( qry != NULL );
-	qry->queryType = value;
-}
-
-/**
- * Specify idle ID.
- * \param qry   Address query object.
- * \param value Idle ID.
- */
-void addrqry_set_idle_id( AddrQuery *qry, const guint value ) {
-	g_return_if_fail( qry != NULL );
-	qry->idleID = value;
+void qryreq_set_search_type( QueryRequest *req, const AddrSearchType value ) {
+	g_return_if_fail( req != NULL );
+	req->searchType = value;
 }
 
 /**
  * Specify search term to be used.
- * \param qry   Address query object.
+ * \param req   Request query object.
  * \param value Search term.
  */
-void addrqry_set_search_term( AddrQuery* qry, const gchar *value ) {
-	qry->searchTerm = mgu_replace_string( qry->searchTerm, value );
-	g_return_if_fail( qry != NULL );
-	g_strstrip( qry->searchTerm );
+void qryreq_set_search_term( QueryRequest *req, const gchar *value ) {
+	req->searchTerm = mgu_replace_string( req->searchTerm, value );
+	g_return_if_fail( req != NULL );
+	g_strstrip( req->searchTerm );
 }
 
 /**
- * Specify server object to be used.
- * \param qry   Address query object.
- * \param value Server object that performs the search.
+ * Add address query object to request.
+ * \param req  Request query object.
+ * \param aqo  Address query object that performs the search.
  */
-void addrqry_set_server( AddrQuery* qry, const gpointer value ) {
-	g_return_if_fail( qry != NULL );
-	qry->serverObject = value;
-}
-
-/**
- * Specify query object to be used.
- * \param qry   Address query object.
- * \param value Query object that performs the search.
- */
-void addrqry_set_query( AddrQuery* qry, const gpointer value ) {
-	g_return_if_fail( qry != NULL );
-	qry->queryObject = value;
+void qryreq_add_query( QueryRequest *req, AddrQueryObject *aqo ) {
+	g_return_if_fail( req != NULL );
+	g_return_if_fail( aqo != NULL );
+	req->queryList = g_list_append( req->queryList, aqo );
 }
 
 /**
  * Display object to specified stream.
- * \param qry    Address query object.
+ * \param req    Request query object.
  * \param stream Output stream.
  */
-void addrqry_print( const AddrQuery *qry, FILE *stream ) {
-	g_return_if_fail( qry != NULL );
+void qryreq_print( const QueryRequest *req, FILE *stream ) {
+	GList *node;
+	g_return_if_fail( req != NULL );
 
-	fprintf( stream, "AddressQuery:\n" );
-	fprintf( stream, "     queryID: %d\n",   qry->queryID );
-	fprintf( stream, "      idleID: %d\n",   qry->idleID );
-	fprintf( stream, "  searchTerm: '%s'\n", qry->searchTerm );
+	fprintf( stream, "QueryRequest:\n" );
+	fprintf( stream, "     queryID: %d\n",   req->queryID );
+	fprintf( stream, "  searchType: %d\n",   req->searchType );
+	fprintf( stream, "  searchTerm: '%s'\n", req->searchTerm );
+	node = req->queryList;
+	while( node ) {
+		AddrQueryObject *aqo = node->data;
+		fprintf( stream, "    --- type: %d\n", aqo->queryType );
+		node = g_list_next( node );
+	}
 }
 
 /**
  * Add query to list.
- * \param queryID    ID of query being executed.
- * \param searchTerm Search term. A private copy will be made.
- * \param callBack   Callback function.
- * \param target     Target object to receive data.
+ *
+ * \param searchTerm    Search term. A private copy will be made.
+ * \param callBackEnd   Callback function that will be called when query
+ * 			terminates.
+ * \param callBackEntry Callback function that will be called after each
+ * 			address entry has been read.
+ * \return Initialize query request object. 			
  */
-AddrQuery *qrymgr_add_query(
-	const gint queryID, const gchar *searchTerm, void *callBack,
-	gpointer target )
+QueryRequest *qrymgr_add_request(
+	const gchar *searchTerm, void *callBackEnd, void *callBackEntry )
 {
-	AddrQuery *qry;
+	QueryRequest *req;
 
-	qry = g_new0( AddrQuery, 1 );
-	qry->queryType = ADDRQUERY_NONE;
-	qry->queryID = queryID;
-	qry->idleID = 0;
-	qry->searchTerm = g_strdup( searchTerm );
-	qry->callBack = callBack;
-	qry->target = NULL;
-	qry->timeStart = time( NULL );
-	qry->serverObject = NULL;
-	qry->queryObject = NULL;
+	req = g_new0( QueryRequest, 1 );
+	req->searchTerm = g_strdup( searchTerm );
+	req->callBackEnd = callBackEnd;
+	req->callBackEntry = callBackEntry;
+	req->timeStart = time( NULL );
+	req->queryList = NULL;
 
 	/* Insert in head of list */
-	pthread_mutex_lock( & _queryListMutex_ );
-	_queryList_ = g_list_prepend( _queryList_, qry );
-	pthread_mutex_unlock( & _queryListMutex_ );
+	pthread_mutex_lock( & _requestListMutex_ );
+	req->queryID = ++_currentQueryID_;
+	_requestList_ = g_list_prepend( _requestList_, req );
+	pthread_mutex_unlock( & _requestListMutex_ );
 
-	return qry;
+	return req;
 }
 
 /**
@@ -187,45 +185,45 @@ AddrQuery *qrymgr_add_query(
  * \param  queryID ID of query to find.
  * \return Query object, or <i>NULL</i> if not found.
  */
-AddrQuery *qrymgr_find_query( const gint queryID ) {
-	AddrQuery *qry;
-	AddrQuery *q;
+QueryRequest *qrymgr_find_request( const gint queryID ) {
+	QueryRequest *req;
+	QueryRequest *q;
 	GList *node;
 
-	pthread_mutex_lock( & _queryListMutex_ );
-	qry = NULL;
-	node = _queryList_;
+	pthread_mutex_lock( & _requestListMutex_ );
+	req = NULL;
+	node = _requestList_;
 	while( node ) {
 		q = node->data;
 		if( q->queryID == queryID ) {
-			qry = q;
+			req = q;
 			break;
 		}
 		node = g_list_next( node );
 	}
-	pthread_mutex_unlock( & _queryListMutex_ );
+	pthread_mutex_unlock( & _requestListMutex_ );
 
-	return qry;
+	return req;
 }
 
 /**
  * Delete specified query.
  * \param  queryID ID of query to retire.
  */
-void qrymgr_delete_query( const gint queryID ) {
-	AddrQuery *qry;
+void qrymgr_delete_request( const gint queryID ) {
+	QueryRequest *req;
 	GList *node, *nf;
 
-	pthread_mutex_lock( & _queryListMutex_ );
+	pthread_mutex_lock( & _requestListMutex_ );
 
 	/* Find node */
 	nf = NULL;
-	node = _queryList_;
+	node = _requestList_;
 	while( node ) {
-		qry = node->data;
-		if( qry->queryID == queryID ) {
+		req = node->data;
+		if( req->queryID == queryID ) {
 			nf = node;
-			addrqry_free( qry );
+			qryreq_free( req );
 			break;
 		}
 		node = g_list_next( node );
@@ -233,45 +231,45 @@ void qrymgr_delete_query( const gint queryID ) {
 
 	/* Free link element and associated query */
 	if( nf ) {
-		_queryList_ = g_list_remove_link( _queryList_, nf );
+		_requestList_ = g_list_remove_link( _requestList_, nf );
 		g_list_free_1( nf );
 	}
 
-	pthread_mutex_unlock( & _queryListMutex_ );
+	pthread_mutex_unlock( & _requestListMutex_ );
 }
 
 /**
  * Initialize query manager.
  */
 void qrymgr_initialize( void ) {
-	_queryList_ = NULL;
+	_requestList_ = NULL;
 }
 
 /**
  * Free all queries.
  */
-static void qrymgr_free_all_query( void ) {
-	AddrQuery *qry;
+static void qrymgr_free_all_request( void ) {
+	QueryRequest *req;
 	GList *node;
 
-	pthread_mutex_lock( & _queryListMutex_ );
-	node = _queryList_;
+	pthread_mutex_lock( & _requestListMutex_ );
+	node = _requestList_;
 	while( node ) {
-		qry = node->data;
-		addrqry_free( qry );
+		req = node->data;
+		qryreq_free( req );
 		node->data = NULL;
 		node = g_list_next( node );
 	}
-	g_list_free( _queryList_ );
-	_queryList_ = NULL;
-	pthread_mutex_unlock( & _queryListMutex_ );
+	g_list_free( _requestList_ );
+	_requestList_ = NULL;
+	pthread_mutex_unlock( & _requestListMutex_ );
 }
 
 /**
  * Teardown query manager.
  */
 void qrymgr_teardown( void ) {
-	qrymgr_free_all_query();
+	qrymgr_free_all_request();
 }
 
 /**
@@ -279,19 +277,19 @@ void qrymgr_teardown( void ) {
  * \param stream Output stream.
  */
 void qrymgr_print( FILE *stream ) {
-	AddrQuery *qry;
+	QueryRequest *req;
 	GList *node;
 
-	pthread_mutex_lock( & _queryListMutex_ );
+	pthread_mutex_lock( & _requestListMutex_ );
 	fprintf( stream, "=== Query Manager ===\n" );
-	node = _queryList_;
+	node = _requestList_;
 	while( node ) {
-		qry = node->data;
-		addrqry_print( qry, stream );
+		req = node->data;
+		qryreq_print( req, stream );
 		fprintf( stream, "---\n" );
 		node = g_list_next( node );
 	}
-	pthread_mutex_unlock( & _queryListMutex_ );
+	pthread_mutex_unlock( & _requestListMutex_ );
 }
 
 /*

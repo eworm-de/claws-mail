@@ -66,6 +66,7 @@ struct FolderItemGeneralPage
 	GtkWidget *checkbtn_folder_chmod;
 	GtkWidget *entry_folder_chmod;
 	GtkWidget *folder_color_btn;
+	GtkWidget *checkbtn_enable_processing;
 
 	gint	   folder_color;
 };
@@ -117,11 +118,12 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * _page,
 	GtkWidget *entry_folder_chmod;
 	GtkWidget *folder_color;
 	GtkWidget *folder_color_btn;
+	GtkWidget *checkbtn_enable_processing;
 
 	page->item	   = item;
 
 	/* Table */
-	table = gtk_table_new(3, 2, FALSE);
+	table = gtk_table_new(4, 2, FALSE);
 	gtk_widget_show(table);
 	gtk_table_set_row_spacings(GTK_TABLE(table), -1);
 	rowcount = 0;
@@ -194,12 +196,24 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * _page,
 
 	rowcount++;
 
+	/* Enable processing at startup */
+	checkbtn_enable_processing = gtk_check_button_new_with_label(_("Processing on startup: "));
+	gtk_widget_show(checkbtn_enable_processing);
+	gtk_table_attach(GTK_TABLE(table), checkbtn_enable_processing, 0, 2, 
+			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_processing), 
+				     item->prefs->enable_processing);
+
+	rowcount++;
+
 	page->table = table;
 	page->checkbtn_simplify_subject = checkbtn_simplify_subject;
 	page->entry_simplify_subject = entry_simplify_subject;
 	page->checkbtn_folder_chmod = checkbtn_folder_chmod;
 	page->entry_folder_chmod = entry_folder_chmod;
 	page->folder_color_btn = folder_color_btn;
+	page->checkbtn_enable_processing = checkbtn_enable_processing;
 
 	page->page.widget = table;
 }
@@ -244,6 +258,9 @@ void prefs_folder_item_general_save_func(PrefsPage *_page)
 	/* update folder view */
 	if (prefs->color > 0)
 		folder_item_update(page->item, F_ITEM_UPDATE_MSGCNT);
+
+	prefs->enable_processing = 
+	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_enable_processing));
 
 	folder_item_prefs_save_config(page->item);
 }

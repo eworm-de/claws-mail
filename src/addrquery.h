@@ -29,53 +29,82 @@
 #ifndef WIN32
 #include <sys/time.h>
 #endif
+#include "addritem.h"
 
 /* Query types */
+#define ADDRQUERY_NONE  0
+#define ADDRQUERY_LDAP  1
+
+/* Search type */
 typedef enum {
-	ADDRQUERY_NONE,
-	ADDRQUERY_LDAP
-} AddrQueryType;
-
-/* Address search call back function */
-typedef gint ( AddrSearchCallbackFunc ) ( gint cacheID,
-					  GList *listEMail,
-					  gpointer target );
-
-typedef void ( AddrSearchStaticFunc ) ( gint qid, AddrQueryType qty, gint status );
+	ADDRSEARCH_NONE,
+	ADDRSEARCH_DYNAMIC,
+	ADDRSEARCH_EXPLICIT,
+	ADDRSEARCH_LOCATE
+} AddrSearchType;
 
 /* Data structures */
 typedef struct {
-	AddrQueryType queryType;
-	gint     queryID;
-	gint     idleID;
-	gchar    *searchTerm;
-	time_t   timeStart;
-	AddrSearchStaticFunc *callBack;
-	gpointer target;
-	gpointer serverObject;
-	gpointer queryObject;
+	gint           queryID;
+	AddrSearchType searchType;
+	gchar          *searchTerm;
+	time_t         timeStart;
+	void           ( *callBackEnd ) ( void * );
+	void           ( *callBackEntry ) ( void * );
+	GList          *queryList;
 }
-AddrQuery;
+QueryRequest;
+
+/* Some macros */
+#define ADDRQUERY_OBJECT(obj)		((AddrQueryObject *)obj)
+#define ADDRQUERY_TYPE(obj)		(ADDRQUERY_OBJECT(obj)->queryType)
+#define ADDRQUERY_ID(obj)		(ADDRQUERY_OBJECT(obj)->queryID)
+#define ADDRQUERY_SEARCHTYPE(obj)	(ADDRQUERY_OBJECT(obj)->searchType)
+#define ADDRQUERY_NAME(obj)		(ADDRQUERY_OBJECT(obj)->queryName)
+#define ADDRQUERY_RETVAL(obj)		(ADDRQUERY_OBJECT(obj)->retVal)
+#define ADDRQUERY_FOLDER(obj)		(ADDRQUERY_OBJECT(obj)->folder)
+#define ADDRQUERY_SEARCHVALUE(obj)	(ADDRQUERY_OBJECT(obj)->searchValue)
+
+/* Generic address query (base class) */
+typedef struct _AddrQueryObject AddrQueryObject;
+struct _AddrQueryObject {
+	gint           queryType;
+	gint           queryID;
+	AddrSearchType searchType;
+	gchar          *queryName;
+	gint           retVal;
+	ItemFolder     *folder;		/* Reference to folder in cache */
+	gchar          *searchValue;
+};
+
+/* Address search call back functions */
+typedef gint ( AddrSearchCallbackEntry ) ( gpointer sender,
+				  	   gint queryID,
+					   GList *listEMail,
+					   gpointer data );
+
+typedef void ( AddrSearchCallbackEnd ) ( gpointer sender,
+					 gint queryID,
+					 gint status,
+	       				 gpointer data );
 
 /* Function prototypes */
-AddrQuery *addrqry_create	( void );
-void addrqry_clear		( AddrQuery *qry );
-void addrqry_free		( AddrQuery *qry );
-void addrqry_set_query_type	( AddrQuery *qry, const AddrQueryType value );
-void addrqry_set_idle_id	( AddrQuery *qry, const guint value );
-void addrqry_set_search_term	( AddrQuery* qry, const gchar *value );
-void addrqry_set_server		( AddrQuery* qry, const gpointer server );
-void addrqry_set_query		( AddrQuery* qry, const gpointer query );
-void addrqry_print		( const AddrQuery *qry, FILE *stream );
+QueryRequest *qryreq_create	( void );
+void qryreq_clear		( QueryRequest *req );
+void qryreq_free		( QueryRequest *req );
+void qryreq_set_search_type	( QueryRequest *req, const AddrSearchType value );
+void qryreq_set_search_term	( QueryRequest *req, const gchar *value );
+void qryreq_add_query		( QueryRequest *req, AddrQueryObject *aqo );
+void qryreq_print		( const QueryRequest *req, FILE *stream );
 
 void qrymgr_initialize		( void );
 void qrymgr_teardown		( void );
-AddrQuery *qrymgr_add_query(
-		const gint queryID, const gchar *searchTerm,
-		void *callBack, gpointer target );
+QueryRequest *qrymgr_add_request( const gchar *searchTerm,
+				  void *callBackEnd,
+				  void *callBackEntry );
 
-AddrQuery *qrymgr_find_query	( const gint queryID );
-void qrymgr_delete_query	( const gint queryID );
+QueryRequest *qrymgr_find_request( const gint queryID );
+void qrymgr_delete_request	( const gint queryID );
 void qrymgr_print		( FILE *stream );
 
 #endif /* __ADDRQUERY_H__ */

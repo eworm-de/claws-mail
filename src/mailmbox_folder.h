@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto & The Sylpheed Claws Team
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,30 +17,22 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef MBOX_FOLDER_H
-
-#define MBOX_FOLDER_H
+#ifndef __MAILMBOX_FOLDER_H__
+#define __MAILMBOX_FOLDER_H__
 
 #include <glib.h>
+
 #include "folder.h"
 
-/*
-mailfile mailfile_init(char * filename);
-char * mailfile_readmsg(mailfile f, int index);
-char * mailfile_readheader(mailfile f, int index);
-void mailfile_done(mailfile f);
-int mailfile_count(mailfile f);
-*/
 typedef struct _MBOXFolder	MBOXFolder;
 
-#define MBOX_FOLDER(obj)	((MBOXFolder *)obj)
+#define MBOX_FOLDER(obj)		((MBOXFolder *)obj)
 
 struct _MBOXFolder
 {
 	LocalFolder lfolder;
 };
 
-FolderClass *mbox_get_class	(void);
-gchar * mbox_get_virtual_path(FolderItem * item);
+FolderClass *mailmbox_get_class	(void);
 
-#endif
+#endif /* __MH_H__ */

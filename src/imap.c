@@ -1227,24 +1227,31 @@ static gint imap_scan_tree(Folder *folder)
 
 	if (folder->account->imap_dir && *folder->account->imap_dir) {
 		gchar *real_path;
+		GPtrArray *argbuf;
+		gint ok;
 
 		Xstrdup_a(root_folder, folder->account->imap_dir, return -1);
-		strtailchomp(root_folder, '/');
 		extract_quote(root_folder, '"');
+		subst_char(root_folder,
+			   imap_get_path_separator(IMAP_FOLDER(folder),
+						   root_folder),
+			   '/');
+		strtailchomp(root_folder, '/');
 		real_path = imap_get_real_path
 			(IMAP_FOLDER(folder), root_folder);
 		debug_print("IMAP root directory: %s\n", real_path);
-		if (imap_status(session, IMAP_FOLDER(folder), root_folder,
-				    NULL, NULL, NULL, NULL, NULL)
-		    != IMAP_SUCCESS) {
-			if (imap_cmd_create(session, real_path)
-			    != IMAP_SUCCESS) {
-				log_warning(_("can't create root folder %s\n"),
-					    real_path);
-				g_free(real_path);
-				return -1;
-			}
+
+		/* check if root directory exist */
+		argbuf = g_ptr_array_new();
+		ok = imap_cmd_list(session, NULL, real_path, argbuf);
+		if (ok != IMAP_SUCCESS ||
+		    search_array_str(argbuf, "LIST ") == NULL) {
+			log_warning(_("root folder %s does not exist\n"), real_path);
+			g_ptr_array_free(argbuf, TRUE);
+			g_free(real_path);
+			return -1;
 		}
+		g_ptr_array_free(argbuf, TRUE);
 		g_free(real_path);
 	}
 

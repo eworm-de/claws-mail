@@ -53,6 +53,7 @@ struct _ImageViewer
 
 	gchar	  *file;
 	MimeInfo  *mimeinfo;
+	gboolean   resize_img;
 
 	GtkWidget *scrolledwin;
 	GtkWidget *image;
@@ -91,7 +92,7 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 		return;
 	}
 
-	if (imageviewerprefs.resize_img) {
+	if (imageviewer->resize_img) {
 		avail_width = imageviewer->notebook->parent->allocation.width;
 		avail_height = imageviewer->notebook->parent->allocation.height;
 		if (avail_width > 8) avail_width -= 8;
@@ -141,7 +142,7 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 		return;
 	}
 
-	if (imageviewerprefs.resize_img) {
+	if (imageviewer->resize_img) {
 		avail_width = imageviewer->notebook->parent->allocation.width;
 		avail_height = imageviewer->notebook->parent->allocation.height;
 		if (avail_width > 8) avail_width -= 8;
@@ -240,6 +241,7 @@ static void image_viewer_clear_viewer(MimeViewer *_mimeviewer)
 	g_free(imageviewer->file);
 	imageviewer->file = NULL;
 	imageviewer->mimeinfo = NULL;
+	imageviewer->resize_img   = imageviewerprefs.resize_img;
 }
 
 static void image_viewer_destroy_viewer(MimeViewer *_mimeviewer)
@@ -281,6 +283,24 @@ static void load_cb(GtkButton *button, ImageViewer *imageviewer)
 {
 	gtk_notebook_set_page(GTK_NOTEBOOK(imageviewer->notebook), 1);
 	image_viewer_load_image(imageviewer);
+}
+
+static gboolean scrolledwin_button_cb(GtkWidget *scrolledwin, GdkEventButton *event,
+				      ImageViewer *imageviewer)
+{
+	if (event->button == 1 && imageviewer->image) {
+		imageviewer->resize_img = !imageviewer->resize_img;
+		image_viewer_load_image(imageviewer);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+static void scrolledwin_resize_cb(GtkWidget *scrolledwin, GtkAllocation *alloc,
+				  ImageViewer *imageviewer)
+{
+	if (imageviewer->resize_img)
+		image_viewer_load_image(imageviewer);
 }
 
 MimeViewer *image_viewer_create(void)
@@ -380,6 +400,8 @@ MimeViewer *image_viewer_create(void)
 	imageviewer->mimeviewer.clear_viewer = image_viewer_clear_viewer;
 	imageviewer->mimeviewer.destroy_viewer = image_viewer_destroy_viewer;
 
+	imageviewer->resize_img   = imageviewerprefs.resize_img;
+
 	imageviewer->scrolledwin  = scrolledwin;
 	imageviewer->image        = NULL;
 	imageviewer->notebook	  = notebook;
@@ -391,6 +413,10 @@ MimeViewer *image_viewer_create(void)
 
 	gtk_signal_connect(GTK_OBJECT(load_button), "released",
 			   GTK_SIGNAL_FUNC(load_cb), imageviewer);
+	gtk_signal_connect(GTK_OBJECT(scrolledwin), "button-press-event",
+			   GTK_SIGNAL_FUNC(scrolledwin_button_cb), imageviewer);
+	gtk_signal_connect(GTK_OBJECT(scrolledwin), "size-allocate",
+			   GTK_SIGNAL_FUNC(scrolledwin_resize_cb), imageviewer);
 
 	image_viewer_set_notebook_page((MimeViewer *)imageviewer);
 

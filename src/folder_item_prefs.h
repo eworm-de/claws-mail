@@ -44,6 +44,7 @@ struct _FolderItemPrefs {
 	gint kill_score;
 	gint important_score;
 
+        int enable_processing;
 	GSList * scoring;
 	GSList * processing;
 

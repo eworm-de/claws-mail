@@ -19,6 +19,7 @@
 
 #include <glib.h>
 
+#include "intl.h"
 #include "privacy.h"
 #include "procmime.h"
 
@@ -59,17 +60,67 @@ gboolean privacy_mimeinfo_is_signed(MimeInfo *mimeinfo)
 		PrivacySystem *system = (PrivacySystem *) cur->data;
 
 		if(system->is_signed != NULL && system->is_signed(mimeinfo))
-			return TRUE;			
+			return TRUE;
 	}
 
 	return FALSE;
 }
 
-const gchar *privacy_get_signer(MimeInfo *mimeinfo)
+gint privacy_mimeinfo_check_signature(MimeInfo *mimeinfo)
 {
+	PrivacySystem *system;
+
+	g_return_val_if_fail(mimeinfo != NULL, -1);
+
+	if (mimeinfo->privacy == NULL)
+		privacy_mimeinfo_is_signed(mimeinfo);
+	
+	if (mimeinfo->privacy == NULL)
+		return -1;
+	
+	system = mimeinfo->privacy->system;
+	if (system->check_signature == NULL)
+		return -1;
+	
+	return system->check_signature(mimeinfo);
+}
+
+SignatureStatus privacy_mimeinfo_get_sig_status(MimeInfo *mimeinfo)
+{
+	PrivacySystem *system;
+
+	g_return_val_if_fail(mimeinfo != NULL, -1);
+
+	if (mimeinfo->privacy == NULL)
+		privacy_mimeinfo_is_signed(mimeinfo);
+	
+	if (mimeinfo->privacy == NULL)
+		return SIGNATURE_UNCHECKED;
+	
+	system = mimeinfo->privacy->system;
+	if (system->get_sig_status == NULL)
+		return SIGNATURE_UNCHECKED;
+	
+	return system->get_sig_status(mimeinfo);
+}
+
+gchar *privacy_mimeinfo_sig_info_short(MimeInfo *mimeinfo)
+{
+	PrivacySystem *system;
+
 	g_return_val_if_fail(mimeinfo != NULL, NULL);
 
-	return "Dummy";
+	if (mimeinfo->privacy == NULL)
+		privacy_mimeinfo_is_signed(mimeinfo);
+	
+	if (mimeinfo->privacy == NULL)
+		return g_strdup(_("No signature found"));
+	
+	system = mimeinfo->privacy->system;
+	if (system->get_sig_info_short == NULL)
+		return g_strdup(_("No information available"));
+	
+	return system->get_sig_info_short(mimeinfo);
 }
 
 gboolean privacy_mimeinfo_is_encrypted(MimeInfo *mimeinfo)

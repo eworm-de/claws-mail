@@ -1329,17 +1329,19 @@ ItemFolder *addrcache_remove_folder_delete( AddressCache *cache, ItemFolder *fol
 	return NULL;
 }
 
-/*
-* Add person and address data to cache.
-* Enter: cache     Cache.
-*        folder    Folder where to add person, or NULL for root folder.
-*        name      Common name.
-*        address   EMail address.
-*        remarks   Remarks.
-* Return: Person added. Do not *NOT* to use the addrbook_free_xxx() functions...
-* this will destroy the address book data.
-*/
-ItemPerson *addrcache_add_contact( AddressCache *cache, ItemFolder *folder, const gchar *name,
+/**
+ * Add person and address data to cache.
+ * \param cache     Cache.
+ * \param folder    Folder where to add person, or NULL for root folder.
+ * \param name      Common name.
+ * \param address   EMail address.
+ * \param remarks   Remarks.
+ * \return Person added. Do not *NOT* to use the 
+ *         <code>addrbook_free_xxx()</code> functions...; this will destroy
+ *         the address book data.
+ */
+ItemPerson *addrcache_add_contact(
+		AddressCache *cache, ItemFolder *folder, const gchar *name,
 		const gchar *address, const gchar *remarks )
 {
 	ItemPerson *person = NULL;
@@ -1365,6 +1367,36 @@ ItemPerson *addrcache_add_contact( AddressCache *cache, ItemFolder *folder, cons
 	cache->dirtyFlag = TRUE;
 
 	return person;
+}
+
+/**
+ * Create a new folder and add to address cache.
+ * \param  cache  Address cache.
+ * \param  folder Parent folder where to add folder, or <i>NULL</i> for
+ *                root folder.
+ * \return Folder that was created. This should <b>*NOT*</b> be
+ *         <code>g_free()</code> when done.
+ */
+ItemFolder *addrcache_add_new_folder( AddressCache *cache, ItemFolder *parent )
+{
+	ItemFolder *folder;
+	ItemFolder *p = parent;
+
+	g_return_val_if_fail( cache != NULL, NULL );
+
+	if( !p ) p = cache->rootFolder;
+	folder = addritem_create_item_folder();
+	addrcache_id_folder( cache, folder );
+	if( addrcache_hash_add_folder( cache, folder ) ) {
+		p->listFolder = g_list_append( p->listFolder, folder );
+		ADDRITEM_PARENT(folder) = ADDRITEM_OBJECT(p);
+		addrcache_set_dirty( cache, TRUE );
+	}
+	else {
+		addritem_free_item_folder( folder );
+		folder = NULL;
+	}
+	return folder;
 }
 
 /*

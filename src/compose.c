@@ -70,6 +70,9 @@
 #endif
 #include <signal.h>
 #include <errno.h>
+#ifndef WIN32
+#include <libgen.h>
+#endif
 
 #if (HAVE_WCTYPE_H && HAVE_WCHAR_H)
 #  include <wchar.h>
@@ -160,6 +163,14 @@ typedef enum
 	PRIORITY_LOWEST
 } PriorityLevel;
 
+typedef enum
+{
+	COMPOSE_INSERT_SUCCESS,
+	COMPOSE_INSERT_READ_ERROR,
+	COMPOSE_INSERT_INVALID_CHARACTER,
+	COMPOSE_INSERT_NO_FILE
+} ComposeInsertResult;
+
 #define B64_LINE_SIZE		57
 #define B64_BUFFSIZE		77
 
@@ -210,7 +221,7 @@ static void compose_reedit_set_entry		(Compose	*compose,
 static void compose_insert_sig			(Compose	*compose,
 						 gboolean	 replace);
 static gchar *compose_get_signature_str		(Compose	*compose);
-static void compose_insert_file			(Compose	*compose,
+static ComposeInsertResult compose_insert_file	(Compose	*compose,
 						 const gchar	*file);
 static void compose_attach_append		(Compose	*compose,
 						 const gchar	*file,
@@ -892,7 +903,7 @@ void compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar *body)
 	case COMPOSE_FORWARD_INLINE:
 		/* check if we reply to more than one Message */
 		if (list_len == 1) {
-			compose_forward(NULL, msginfo, FALSE, body);
+			compose_forward(NULL, msginfo, FALSE, body, FALSE);
 			break;
 		} 
 		/* more messages FALL THROUGH */
@@ -1044,7 +1055,8 @@ if (msginfo->var && *msginfo->var) { \
 }
 
 Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
-			 gboolean as_attach, const gchar *body)
+			 gboolean as_attach, const gchar *body,
+			 gboolean no_extedit)
 {
 	Compose *compose;
 	GtkSText *text;
@@ -1065,7 +1077,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 	if (!account && prefs_common.forward_account_autosel) {
 		gchar cc[BUFFSIZE];
-		if (!get_header_from_msginfo(msginfo,cc,sizeof(cc),"CC:")){ /* Found a CC header */
+		if (!procheader_get_header_from_msginfo(msginfo,cc,sizeof(cc),"CC:")){ /* Found a CC header */
 		        extract_address(cc);
 		        account = account_find_from_address(cc);
                 }
@@ -1157,7 +1169,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 #endif
 	gtk_widget_grab_focus(compose->header_last->entry);
 
-	if (prefs_common.auto_exteditor)
+	if (!no_extedit && prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
 	
 	/*save folder*/
@@ -1256,22 +1268,22 @@ void compose_reedit(MsgInfo *msginfo)
 		gint id;
 
 		/* Select Account from queue headers */
-		if (!get_header_from_msginfo(msginfo, queueheader_buf, 
+		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 					     sizeof(queueheader_buf), "X-Sylpheed-Account-Id:")) {
 			id = atoi(&queueheader_buf[22]);
 			account = account_find_from_id(id);
 		}
-		if (!account && !get_header_from_msginfo(msginfo, queueheader_buf, 
+		if (!account && !procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 					     sizeof(queueheader_buf), "NAID:")) {
 			id = atoi(&queueheader_buf[5]);
 			account = account_find_from_id(id);
 		}
-		if (!account && !get_header_from_msginfo(msginfo, queueheader_buf, 
+		if (!account && !procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 		                                    sizeof(queueheader_buf), "MAID:")) {
 			id = atoi(&queueheader_buf[5]);
 			account = account_find_from_id(id);
 		}
-		if (!account && !get_header_from_msginfo(msginfo, queueheader_buf, 
+		if (!account && !procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 		                                                sizeof(queueheader_buf), "S:")) {
 			account = account_find_from_address(queueheader_buf);
 		}
@@ -1280,7 +1292,7 @@ void compose_reedit(MsgInfo *msginfo)
 
 	if (!account && prefs_common.reedit_account_autosel) {
                	gchar from[BUFFSIZE];
-		if (!get_header_from_msginfo(msginfo, from, sizeof(from), "FROM:")){
+		if (!procheader_get_header_from_msginfo(msginfo, from, sizeof(from), "FROM:")){
 		        extract_address(from);
 		        account = account_find_from_address(from);
                 }
@@ -1296,7 +1308,7 @@ void compose_reedit(MsgInfo *msginfo)
 		gchar queueheader_buf[BUFFSIZE];
 
 		/* Set message save folder */
-		if (!get_header_from_msginfo(msginfo, queueheader_buf, sizeof(queueheader_buf), "SCF:")) {
+		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, sizeof(queueheader_buf), "SCF:")) {
 			gint startpos = 0;
 
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), TRUE);
@@ -1932,6 +1944,10 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 
 	if (replyto && from)
 		cc_list = address_list_append_with_comments(cc_list, from);
+	if (to_all && msginfo->folder && 
+	    msginfo->folder->prefs->enable_default_reply_to)
+	    	cc_list = address_list_append_with_comments(cc_list,
+				msginfo->folder->prefs->default_reply_to);
 	cc_list = address_list_append_with_comments(cc_list, msginfo->to);
 	cc_list = address_list_append_with_comments(cc_list, compose->cc);
 
@@ -2128,18 +2144,19 @@ static gchar *compose_get_signature_str(Compose *compose)
 	return sig_str;
 }
 
-static void compose_insert_file(Compose *compose, const gchar *file)
+static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *file)
 {
 	GtkSText *text = GTK_STEXT(compose->text);
 	gchar buf[BUFFSIZE];
 	gint len;
 	FILE *fp;
+	gboolean badtxt = FALSE;
 
-	g_return_if_fail(file != NULL);
+	g_return_val_if_fail(file != NULL, COMPOSE_INSERT_NO_FILE);
 
 	if ((fp = fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
-		return;
+		return COMPOSE_INSERT_READ_ERROR;
 	}
 
 	gtk_stext_freeze(text);
@@ -2153,22 +2170,32 @@ static void compose_insert_file(Compose *compose, const gchar *file)
 			while (--len >= 0)
 				if (buf[len] == '\r') buf[len] = '\n';
 		}
-#ifdef noconvWIN32
-		{
-			gchar *p_buf;
-			p_buf = g_strdup(buf);
-			locale_to_utf8(&p_buf);
-			gtk_stext_insert(text, NULL, NULL, NULL, p_buf, -1);
-			g_free(p_buf);
-		}
-#else
+		if (mbstowcs(NULL, buf, 0) == -1)
+			badtxt = TRUE;
+//<<<<<<< compose.c
+//#ifdef noconvWIN32
+//		{
+//			gchar *p_buf;
+//			p_buf = g_strdup(buf);
+//			locale_to_utf8(&p_buf);
+//			gtk_stext_insert(text, NULL, NULL, NULL, p_buf, -1);
+//			g_free(p_buf);
+//		}
+//#else
+//=======
+//>>>>>>> 1.395
 		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
-#endif
+//#endif
 	}
 
 	gtk_stext_thaw(text);
 
 	fclose(fp);
+
+	if (badtxt)
+		return COMPOSE_INSERT_INVALID_CHARACTER;
+	else 
+		return COMPOSE_INSERT_SUCCESS;
 }
 
 static void compose_attach_append(Compose *compose, const gchar *file,
@@ -2280,8 +2307,8 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 	((info->type == MIMETYPE_TEXT) || \
 	 (info->type == MIMETYPE_MULTIPART && info->subtype && \
 	  !strcasecmp(info->subtype, "alternative") && \
-	  (info->children && \
-	   (info->children->type == MIMETYPE_TEXT))))
+	  (info->node->children && \
+	   (((MimeInfo *) info->node->children->data)->type == MIMETYPE_TEXT))))
 
 static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 {
@@ -2289,30 +2316,31 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 	MimeInfo *child;
 	gchar *infile;
 	gchar *outfile;
+	const gchar *partname = NULL;
 
 	mimeinfo = procmime_scan_message(msginfo);
 	if (!mimeinfo) return;
 
 	/* skip first text (presumably message body) */
-	child = mimeinfo->children;
+	child = (MimeInfo *) mimeinfo->node->children->data;
 	if (!child || IS_FIRST_PART_TEXT(mimeinfo)) {
 		procmime_mimeinfo_free_all(mimeinfo);
 		return;
 	}
 
 	if (IS_FIRST_PART_TEXT(child))
-		child = child->next;
+		child = (MimeInfo *) child->node->next;
 
 	infile = procmsg_get_message_file_path(msginfo);
 
 	while (child != NULL) {
-		if (child->children || child->type == MIMETYPE_MULTIPART) {
+		if (child->node->children || child->type == MIMETYPE_MULTIPART) {
 			child = procmime_mimeinfo_next(child);
 			continue;
 		}
-		if (child->parent && child->parent->parent
-		&& (child->parent->parent->type == MIMETYPE_MULTIPART)
-		&& !strcasecmp(child->parent->parent->subtype, "signed")
+		if (child->node->parent && child->node->parent->parent
+		&& (((MimeInfo *) child->node->parent->parent->data)->type == MIMETYPE_MULTIPART)
+		&& !strcasecmp(((MimeInfo *) child->node->parent->parent->data)->subtype, "signed")
 		&& child->type == MIMETYPE_TEXT) {
 			/* this is the main text part of a signed message */
 			child = procmime_mimeinfo_next(child);
@@ -2326,14 +2354,14 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 			gchar *content_type;
 
 			content_type = g_strdup_printf("%s/%s", procmime_get_type_str(child->type), child->subtype);
-			compose_attach_append
-				(compose, outfile,
-				 child->filename ? child->filename : child->name,
-				 content_type);
+			partname = procmime_mimeinfo_get_parameter(child, "name");
+			
+			compose_attach_append(compose, outfile, 
+					      partname, content_type);
 			g_free(content_type);
 		}
 
-		child = child->next;
+		child = child->node->next != NULL ? (MimeInfo *) child->node->next->data : NULL;
 	}
 
 	g_free(infile);
@@ -3418,7 +3446,7 @@ static gint compose_redirect_write_to_file(Compose *compose, const gchar *file)
 		g_warning("can't change file mode\n");
 	}
 
-	while (procheader_get_unfolded_line(buf, sizeof(buf), fp)) {
+	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1) {
 		/* should filter returnpath, delivered-to */
 		if (g_strncasecmp(buf, "Return-Path:",
 				   strlen("Return-Path:")) == 0 ||
@@ -6832,10 +6860,22 @@ static void compose_insert_file_cb(gpointer data, guint action,
 
 		for ( tmp = file_list; tmp; tmp = tmp->next) {
 			gchar *file = (gchar *) tmp->data;
+			gchar *filedup = g_strdup(file);
+			gchar *shortfile;
+			ComposeInsertResult res;
+
 #ifdef WIN32
 			locale_from_utf8(&file);
 #endif
-			compose_insert_file(compose, file);
+			res = compose_insert_file(compose, file);
+			shortfile = g_basename(filedup);
+			if (res == COMPOSE_INSERT_READ_ERROR) {
+				alertpanel_error(_("File '%s' could not be read."), shortfile);
+			} else if (res == COMPOSE_INSERT_INVALID_CHARACTER) {
+				alertpanel_error(_("File '%s' contained invalid characters\n"
+						   "for the current encoding, insertion may be incorrect."), shortfile);
+			}
+			g_free(filedup);
 			g_free(file);
 		}
 		g_list_free(file_list);

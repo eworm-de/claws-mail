@@ -78,12 +78,12 @@ EXPORTS
 	addrbookctl_build_ifselect 
 	addrbookctl_build_map 
 	addrbookctl_find_interface 
-	addrbookctl_free_selection 
 	addrbookctl_lookup 
 	addrbookctl_lookup_iface 
 	addrcache_add_contact 
 	addrcache_add_folder 
 	addrcache_add_group 
+	addrcache_add_new_folder 
 	addrcache_add_person 
 	addrcache_check_file 
 	addrcache_clear 
@@ -201,7 +201,6 @@ EXPORTS
 	addressbook_imp_ldif 
 	addressbook_imp_mutt 
 	addressbook_imp_pine 
-	addressbook_load_completion 
 	addressbook_open 
 	addressbook_read_file 
 	addressbook_refresh 
@@ -243,22 +242,22 @@ EXPORTS
 	addrindex_get_interface 
 	addrindex_get_interface_list 
 	addrindex_get_loaded 
+	addrindex_get_object 
 	addrindex_index_add_datasource 
 	addrindex_index_remove_datasource 
 	addrindex_initialize 
 	addrindex_load_completion 
 	addrindex_print_index 
-	addrindex_read_all 
 	addrindex_read_data 
+	addrindex_remove_results 
 	addrindex_save_all_books 
 	addrindex_save_data 
 	addrindex_set_dirty 
 	addrindex_set_file_name 
 	addrindex_set_file_path 
+	addrindex_setup_explicit_search 
 	addrindex_setup_search 
-	addrindex_setup_static_search 
 	addrindex_start_search 
-	addrindex_start_static_search 
 	addrindex_stop_search 
 	addrindex_teardown 
 	addrindex_write_to 
@@ -331,15 +330,6 @@ EXPORTS
 	addritem_print_item_folder 
 	addritem_print_item_group 
 	addritem_print_item_person 
-	addrqry_clear 
-	addrqry_create 
-	addrqry_free 
-	addrqry_print 
-	addrqry_set_idle_id 
-	addrqry_set_query 
-	addrqry_set_query_type 
-	addrqry_set_search_term 
-	addrqry_set_server 
 	addrselect_create_item 
 	addrselect_create_node 
 	addrselect_get_list 
@@ -553,12 +543,8 @@ EXPORTS
 	conv_unreadable_latin 
 	conv_unreadable_locale 
 	conv_ustodisp 
-	convert_kanji 
-	convert_kanji_auto 
-	convert_kanji_strict 
 	copy_file 
 	copy_file_part 
-	copy_flags_data 
 	copy_mbox 
 	crypt_cfb_blocksize 
 	crypt_cfb_buf 
@@ -814,7 +800,6 @@ EXPORTS
 	get_file_size 
 	get_file_size_as_crlf 
 	get_header_cache_dir 
-	get_header_from_msginfo 
 	get_home_dir 
 	get_imap_cache_dir 
 	get_installed_dir 
@@ -995,16 +980,6 @@ EXPORTS
 	is_next_nonascii 
 	itos 
 	itos_buf 
-	jconv_alloc_apply_iconv 
-	jconv_alloc_conv 
-	jconv_alloc_conv_autodetect 
-	jconv_info_get_current_codeset 
-	jconv_info_get_pref_codesets 
-	jconv_info_init 
-	jconv_info_maybe_init 
-	jconv_info_set_locale 
-	jconv_strdup_conv_autodetect 
-	jconv_strdup_conv_fullauto 
 	ldif_create 
 	ldif_field_set_name 
 	ldif_field_set_selected 
@@ -1036,7 +1011,6 @@ EXPORTS
 	log_window_show 
 	main_real 
 	main_window_add_mailbox 
-	main_window_add_mbox 
 	main_window_create 
 	main_window_cursor_normal 
 	main_window_cursor_wait 
@@ -1118,12 +1092,6 @@ EXPORTS
 	matcherprop_to_string 
 	matcherprop_unquote_new 
 	matching_build_command 
-	mbox_cache_get_msg 
-	mbox_cache_msg_fetched 
-	mbox_cache_msg_set_fetched 
-	mbox_class 
-	mbox_get_class 
-	mbox_get_virtual_path 
 	mc_entry 
 	md5_final 
 	md5_hex_digest 
@@ -1268,6 +1236,7 @@ EXPORTS
 	noticeview_is_visible 
 	noticeview_set_button_press_callback 
 	noticeview_set_button_text 
+	noticeview_set_icon 
 	noticeview_set_text 
 	noticeview_show 
 	open_uri 
@@ -1275,6 +1244,8 @@ EXPORTS
 	passcrypt_decrypt 
 	passcrypt_encrypt 
 	path_cmp 
+	pgpmime_done 
+	pgpmime_init 
 	pine_create 
 	pine_find_file 
 	pine_free 
@@ -1353,9 +1324,9 @@ EXPORTS
 	prefs_gtk_unregister_page 
 	prefs_init_config 
 	prefs_is_readonly 
-	prefs_matcher_exec_info 
 	prefs_matcher_open 
 	prefs_matcher_read_config 
+	prefs_matcher_test_info 
 	prefs_matcher_write_config 
 	prefs_rc_is_readonly 
 	prefs_read_config 
@@ -1398,9 +1369,11 @@ EXPORTS
 	prefs_write_param 
 	prefswindow_open 
 	privacy_free_privacydata 
-	privacy_get_signer 
+	privacy_mimeinfo_check_signature 
+	privacy_mimeinfo_get_sig_status 
 	privacy_mimeinfo_is_encrypted 
 	privacy_mimeinfo_is_signed 
+	privacy_mimeinfo_sig_info_short 
 	privacy_register_system 
 	privacy_unregister_system 
 	proc_mbox 
@@ -1408,17 +1381,13 @@ EXPORTS
 	procheader_date_parse 
 	procheader_date_parse_to_tm 
 	procheader_get_fromname 
-	procheader_get_header_array 
 	procheader_get_header_array_asis 
 	procheader_get_header_fields 
-	procheader_get_header_list 
-	procheader_get_header_list_from_file 
+	procheader_get_header_from_msginfo 
 	procheader_get_headernames 
 	procheader_get_one_field 
-	procheader_get_unfolded_line 
 	procheader_header_array_destroy 
 	procheader_header_free 
-	procheader_header_list_destroy 
 	procheader_headername_equal 
 	procheader_parse_file 
 	procheader_parse_header 
@@ -1438,15 +1407,14 @@ EXPORTS
 	procmime_get_tmp_file_name 
 	procmime_get_type_str 
 	procmime_mimeinfo_free_all 
-	procmime_mimeinfo_insert 
+	procmime_mimeinfo_get_parameter 
 	procmime_mimeinfo_new 
 	procmime_mimeinfo_next 
-	procmime_mimeinfo_replace 
+	procmime_mimeinfo_parent 
 	procmime_parse_message_rfc822 
 	procmime_parse_mimepart 
 	procmime_parse_multipart 
 	procmime_scan_file 
-	procmime_scan_fp 
 	procmime_scan_message 
 	procmime_scan_queue_file 
 	procmsg_cmp_msgnum_for_sort 
@@ -1502,12 +1470,18 @@ EXPORTS
 	qp_encode_line 
 	qp_get_q_encoding_len 
 	qp_q_encode 
-	qrymgr_add_query 
-	qrymgr_delete_query 
-	qrymgr_find_query 
+	qrymgr_add_request 
+	qrymgr_delete_request 
+	qrymgr_find_request 
 	qrymgr_initialize 
 	qrymgr_print 
 	qrymgr_teardown 
+	qryreq_add_query 
+	qryreq_clear 
+	qryreq_free 
+	qryreq_print 
+	qryreq_set_search_term 
+	qryreq_set_search_type 
 	quote_fmt_create_buffer 
 	quote_fmt_delete_buffer 
 	quote_fmt_flush_buffer 
@@ -1550,16 +1524,11 @@ EXPORTS
 	remove_space 
 	renderer_read_config 
 	renderer_write_config 
-	rfc2015_check_signature 
+	reqreq_create 
 	rfc2015_clearsign 
 	rfc2015_create_signers_list 
 	rfc2015_decrypt_message 
-	rfc2015_disable_all 
-	rfc2015_done 
 	rfc2015_encrypt 
-	rfc2015_find_signature 
-	rfc2015_has_signature 
-	rfc2015_init 
 	rfc2015_is_encrypted 
 	rfc2015_msg_is_encrypted 
 	rfc2015_secure_remove 
@@ -1592,6 +1561,11 @@ EXPORTS
 	session_start_tls 
 	set_log_file 
 	setup 
+	sgpgme_done 
+	sgpgme_init 
+	sgpgme_sigstat_gpgme_to_privacy 
+	sgpgme_sigstat_info_short 
+	sgpgme_verify_signature 
 	slist_concat_unique 
 	slist_free_strings 
 	smtp_session_new 

@@ -60,6 +60,8 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	debug_print("Creating notice view...\n");
 	noticeview = g_new0(NoticeView, 1);
 
+	noticeview->window = mainwin->window;
+	
 	vbox = gtk_vbox_new(FALSE, 4);
 	gtk_widget_show(vbox);
 	hsep = gtk_hseparator_new();
@@ -69,7 +71,7 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
 
-	icon = stock_pixmap_widget(mainwin->window, STOCK_PIXMAP_NOTICE_WARN); 
+	icon = stock_pixmap_widget(noticeview->window, STOCK_PIXMAP_NOTICE_WARN); 
 #if 0
 	/* also possible... */
 	icon = gtk_pixmap_new(NULL, NULL);
@@ -86,7 +88,6 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	gtk_signal_connect(GTK_OBJECT(widget), "clicked", 
 			   GTK_SIGNAL_FUNC(noticeview_button_pressed),
 			   (gpointer) noticeview);
-	gtk_widget_show(widget);
 	gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 4);
 	
 	noticeview->vbox   = vbox;
@@ -114,7 +115,7 @@ gboolean noticeview_is_visible(NoticeView *noticeview)
 void noticeview_show(NoticeView *noticeview)
 {
 	if (!noticeview->visible) {
-		gtk_widget_show_all(GTK_WIDGET_PTR(noticeview));
+		gtk_widget_show(GTK_WIDGET_PTR(noticeview));
 		noticeview->visible = TRUE;
 	}	
 }
@@ -136,8 +137,13 @@ void noticeview_set_text(NoticeView *noticeview, const char *text)
 void noticeview_set_button_text(NoticeView *noticeview, const char *text)
 {
 	g_return_if_fail(noticeview);
-	gtk_label_set_text
-		(GTK_LABEL(GTK_BIN(noticeview->button)->child), text);
+
+	if (text != NULL) {
+		gtk_label_set_text
+			(GTK_LABEL(GTK_BIN(noticeview->button)->child), text);
+		gtk_widget_show(noticeview->button);
+	} else
+		gtk_widget_hide(noticeview->button);
 }
 
 void noticeview_set_button_press_callback(NoticeView	*noticeview,
@@ -155,3 +161,13 @@ static void noticeview_button_pressed(GtkButton *button, NoticeView *noticeview)
 	}
 }
 
+void noticeview_set_icon(NoticeView *noticeview, StockPixmap icon)
+{
+	GdkPixmap *pixmap;
+	GdkBitmap *bitmap;
+	
+	if (stock_pixmap_gdk(noticeview->window, icon, &pixmap, &bitmap) < 0)
+		return;
+	
+	gtk_pixmap_set(GTK_PIXMAP(noticeview->icon), pixmap, bitmap);
+}

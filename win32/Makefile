@@ -272,7 +272,6 @@ OBJECTS= \
 	matcher_parser_lex.o \
 	matcher_parser_parse.o \
 	mbox.o \
-	mbox_folder.o \
 	md5.o \
 	menu.o \
 	message_search.o \
@@ -287,6 +286,7 @@ OBJECTS= \
 	noticeview.o \
 	passcrypt.o \
 	passphrase.o \
+	pgpmime.o \
 	pine.o \
 	plugin.o \
 	pluginwindow.o \
@@ -326,6 +326,7 @@ OBJECTS= \
 	send_message.o \
 	session.o \
 	setup.o \
+	sgpgme.o \
 	sigstatus.o \
 	simple-gettext.o \
 	smtp.o \
@@ -610,7 +611,6 @@ manage_window.o: 	manage_window.c manage_window.h
 manual.o: 	manual.c manual.h
 matcher.o: 	matcher.c matcher.h
 mbox.o: 	mbox.c mbox.h
-mbox_folder.o: 	mbox_folder.c mbox_folder.h
 md5.o: 	md5.c md5.h
 menu.o: 	menu.c menu.h
 message_search.o: 	message_search.c message_search.h
@@ -625,6 +625,7 @@ nntp.o: 	nntp.c nntp.h
 noticeview.o:	noticeview.c noticeview.h 
 passcrypt.o: 	passcrypt.c passcrypt.h
 passphrase.o: 	passphrase.c passphrase.h
+pgpmime.o:	pgpmime.c pgpmime.h
 pine.o: 	pine.c pine.h
 plugin.o: 	plugin.c plugin.h
 pluginwindow.o: 	pluginwindow.c pluginwindow.h
@@ -661,6 +662,7 @@ select-keys.o: 	select-keys.c select-keys.h
 send_message.o:	send_message.c send_message.h
 session.o: 	session.c session.h
 setup.o: 	setup.c setup.h
+sgpgme.o:	sgpgme.c sgpgme.h
 sigstatus.o: 	sigstatus.c sigstatus.h
 simple-gettext.o: 	simple-gettext.c
 smtp.o: 	smtp.c smtp.h

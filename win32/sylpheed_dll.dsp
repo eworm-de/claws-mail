@@ -400,10 +400,6 @@ SOURCE=..\src\mbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\mbox_folder.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\common\md5.c
 # End Source File
 # Begin Source File
@@ -457,6 +453,10 @@ SOURCE=..\src\common\passcrypt.c
 # Begin Source File
 
 SOURCE=..\src\passphrase.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\pgpmime.c
 # End Source File
 # Begin Source File
 
@@ -609,6 +609,10 @@ SOURCE=..\src\send_message.c
 # Begin Source File
 
 SOURCE=..\src\common\session.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\sgpgme.c
 # End Source File
 # Begin Source File
 
@@ -1080,6 +1084,10 @@ SOURCE=..\src\passphrase.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\pgpmime.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\common\plugin.h
 # End Source File
 # Begin Source File
@@ -1209,6 +1217,10 @@ SOURCE=..\src\common\session.h
 # Begin Source File
 
 SOURCE=..\src\setup.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\sgpgme.h
 # End Source File
 # Begin Source File
 

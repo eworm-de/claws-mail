@@ -97,6 +97,7 @@ static struct FilteringAction {
 	GtkWidget *exec_btn;
 	GtkWidget *color_label;
 	GtkWidget *color_optmenu;
+	GtkWidget *score_label;
 
 	gint current_action;
 } filtering_action;
@@ -117,6 +118,9 @@ typedef enum Action_ {
 	ACTION_REDIRECT,
 	ACTION_EXECUTE,
 	ACTION_COLOR,
+	ACTION_ADD_SCORE,
+	ACTION_SET_SCORE,
+	ACTION_STOP,
 	/* add other action constants */
 } Action;
 
@@ -137,7 +141,10 @@ static struct {
 	{ N_("Forward as attachment"),	ACTION_FORWARD_AS_ATTACHMENT },
 	{ N_("Redirect"),		ACTION_REDIRECT },
 	{ N_("Execute"),		ACTION_EXECUTE	},
-	{ N_("Color"),			ACTION_COLOR	}
+	{ N_("Color"),			ACTION_COLOR	},
+	{ N_("(In/de)crease score"),	ACTION_ADD_SCORE},
+	{ N_("Set score"),		ACTION_SET_SCORE},
+	{ N_("Stop filter"),		ACTION_STOP	},
 };
 
 
@@ -220,6 +227,7 @@ static void prefs_filtering_action_create(void)
 	GtkWidget *account_list;
 	GtkWidget *dest_label;
 	GtkWidget *exec_label;
+	GtkWidget *score_label;
 	GtkWidget *color_label;
 	GtkWidget *account_label;
 	GtkWidget *account_combo;
@@ -391,6 +399,11 @@ static void prefs_filtering_action_create(void)
 	gtk_misc_set_alignment(GTK_MISC(color_label), 0, 0.5);
 	gtk_box_pack_start(GTK_BOX(hbox1), color_label, FALSE, FALSE, 0);
 
+	score_label = gtk_label_new (_("Score"));
+	gtk_widget_show (score_label);
+	gtk_misc_set_alignment (GTK_MISC (score_label), 0, 0.5);
+	gtk_box_pack_start (GTK_BOX (hbox1), score_label, FALSE, FALSE, 0);
+
 	dest_entry = gtk_entry_new ();
 	gtk_widget_set_usize (dest_entry, 150, -1);
 	gtk_widget_show (dest_entry);
@@ -506,6 +519,7 @@ static void prefs_filtering_action_create(void)
 	filtering_action.exec_btn = exec_btn;
 	filtering_action.color_label   = color_label;
 	filtering_action.color_optmenu = color_optmenu;
+	filtering_action.score_label = score_label;
 	filtering_action.ok_btn = ok_btn;
 	filtering_action.action_clist = action_clist;
 }
@@ -697,6 +711,12 @@ static gint prefs_filtering_action_get_matching_from_action(Action action_id)
 		return MATCHACTION_EXECUTE;
 	case ACTION_COLOR:
 		return MATCHACTION_COLOR;
+	case ACTION_STOP:
+		return MATCHACTION_STOP;
+	case ACTION_ADD_SCORE:
+		return MATCHACTION_ADD_SCORE;
+	case ACTION_SET_SCORE:
+		return MATCHACTION_SET_SCORE;
 	default:
 		return -1;
 	}
@@ -719,12 +739,16 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 	gchar * destination;
 	gint labelcolor = 0;
         FilteringAction * action;
-
+        gchar * score_str;
+        gint score;
+        
 	action_id = get_sel_from_list(GTK_LIST(filtering_action.action_type_list));
 	action_type = prefs_filtering_action_get_matching_from_action(action_id);
 	list_id = get_sel_from_list(GTK_LIST(filtering_action.account_list));
 	account_id = get_account_id_from_list_id(list_id);
-
+        score = 0;
+        destination = NULL;
+        
 	switch (action_id) {
 	case ACTION_MOVE:
 	case ACTION_COPY:
@@ -753,8 +777,25 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 			gtk_option_menu_get_menu(GTK_OPTION_MENU(filtering_action.color_optmenu)));
 		destination = NULL;	
 		break;
+        case ACTION_ADD_SCORE:
+        case ACTION_SET_SCORE:
+		score_str = gtk_entry_get_text(GTK_ENTRY(filtering_action.dest_entry));
+		if (*score_str == '\0') {
+			if (alert)
+                                alertpanel_error(_("Score is not set"));
+			return NULL;
+		}
+                score = strtol(score_str, NULL, 10);
+                break;
+	case ACTION_STOP:
+        case ACTION_DELETE:
+        case ACTION_MARK:
+        case ACTION_UNMARK:
+        case ACTION_LOCK:
+        case ACTION_UNLOCK:
+        case ACTION_MARK_AS_READ:
+        case ACTION_MARK_AS_UNREAD:
 	default:
-		destination = NULL;
 		break;
 	}
 	
@@ -762,7 +803,8 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 	if (destination)
 		destination = g_locale_from_utf8(destination, -1, NULL, NULL, NULL);
 #endif
-	action = filteringaction_new(action_type, account_id, destination, labelcolor);
+	action = filteringaction_new(action_type, account_id,
+            destination, labelcolor, score);
 #ifdef WIN32
 	if (destination)
 		g_free(destination);
@@ -982,6 +1024,18 @@ static void prefs_filtering_action_select(GtkCList *clist,
 				     ACTION_COLOR);
 		gtk_option_menu_set_history(GTK_OPTION_MENU(filtering_action.color_optmenu), action->labelcolor);     
 		break;
+	case MATCHACTION_ADD_SCORE:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_ADD_SCORE);
+		break;
+	case MATCHACTION_SET_SCORE:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_SET_SCORE);
+		break;
+	case MATCHACTION_STOP:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_STOP);
+		break;
 	}
 }
 
@@ -1150,6 +1204,7 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_hide(filtering_action.exec_btn);
 		gtk_widget_hide(filtering_action.color_optmenu);
 		gtk_widget_hide(filtering_action.color_label);
+		gtk_widget_hide(filtering_action.score_label);
 		break;
 	case ACTION_COPY:
 		gtk_widget_show(filtering_action.account_label);
@@ -1166,6 +1221,7 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_hide(filtering_action.exec_btn);
 		gtk_widget_hide(filtering_action.color_optmenu);
 		gtk_widget_hide(filtering_action.color_label);
+		gtk_widget_hide(filtering_action.score_label);
 		break;
 	case ACTION_DELETE:
 		gtk_widget_show(filtering_action.account_label);
@@ -1182,6 +1238,7 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_hide(filtering_action.exec_btn);
 		gtk_widget_hide(filtering_action.color_optmenu);
 		gtk_widget_hide(filtering_action.color_label);
+		gtk_widget_hide(filtering_action.score_label);
 		break;
 	case ACTION_MARK:
 	case ACTION_UNMARK:
@@ -1189,6 +1246,7 @@ static void prefs_filtering_action_type_select(GtkList *list,
 	case ACTION_UNLOCK:
 	case ACTION_MARK_AS_READ:
 	case ACTION_MARK_AS_UNREAD:
+        case ACTION_STOP:
 		gtk_widget_show(filtering_action.account_label);
 		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
 		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
@@ -1203,6 +1261,7 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_hide(filtering_action.exec_btn);
 		gtk_widget_hide(filtering_action.color_optmenu);
 		gtk_widget_hide(filtering_action.color_label);
+		gtk_widget_hide(filtering_action.score_label);
 		break;
 	case ACTION_FORWARD:
 		gtk_widget_show(filtering_action.account_label);
@@ -1219,6 +1278,7 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_hide(filtering_action.exec_btn);
 		gtk_widget_hide(filtering_action.color_optmenu);
 		gtk_widget_hide(filtering_action.color_label);
+		gtk_widget_hide(filtering_action.score_label);
 		break;
 	case ACTION_FORWARD_AS_ATTACHMENT:
 		gtk_widget_show(filtering_action.account_label);
@@ -1235,6 +1295,7 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_hide(filtering_action.exec_btn);
 		gtk_widget_hide(filtering_action.color_optmenu);
 		gtk_widget_hide(filtering_action.color_label);
+		gtk_widget_hide(filtering_action.score_label);
 		break;
 	case ACTION_REDIRECT:
 		gtk_widget_show(filtering_action.account_label);
@@ -1251,6 +1312,7 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_hide(filtering_action.exec_btn);
 		gtk_widget_hide(filtering_action.color_optmenu);
 		gtk_widget_hide(filtering_action.color_label);
+		gtk_widget_hide(filtering_action.score_label);
 		break;
 	case ACTION_EXECUTE:
 		gtk_widget_show(filtering_action.account_label);
@@ -1266,6 +1328,7 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_show(filtering_action.exec_btn);
 		gtk_widget_hide(filtering_action.color_optmenu);
 		gtk_widget_hide(filtering_action.color_label);
+		gtk_widget_hide(filtering_action.score_label);
 		break;
 	case ACTION_COLOR:
 		gtk_widget_show(filtering_action.account_label);
@@ -1280,6 +1343,24 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering_action.exec_btn, FALSE);
 		gtk_widget_show(filtering_action.color_optmenu);
 		gtk_widget_show(filtering_action.color_label);
+		gtk_widget_hide(filtering_action.score_label);
+		break;
+	case ACTION_ADD_SCORE:
+	case ACTION_SET_SCORE:
+		gtk_widget_show(filtering_action.account_label);
+		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);
+		gtk_widget_set_sensitive(filtering_action.account_combo, FALSE);
+		gtk_widget_show(filtering_action.dest_entry);
+		gtk_widget_set_sensitive(filtering_action.dest_entry, TRUE);
+		gtk_widget_hide(filtering_action.dest_btn);
+		gtk_widget_hide(filtering_action.dest_label);
+		gtk_widget_hide(filtering_action.recip_label);
+		gtk_widget_hide(filtering_action.exec_label);
+		gtk_widget_show(filtering_action.exec_btn);
+		gtk_widget_set_sensitive(filtering_action.exec_btn, FALSE);
+		gtk_widget_hide(filtering_action.color_optmenu);
+		gtk_widget_hide(filtering_action.color_label);
+		gtk_widget_show(filtering_action.score_label);
 		break;
 	}
 }

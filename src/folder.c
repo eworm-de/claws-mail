@@ -39,7 +39,6 @@
 #include "imap.h"
 #include "news.h"
 #include "mh.h"
-#include "mbox_folder.h"
 #include "utils.h"
 #include "xml.h"
 #include "codeconv.h"
@@ -83,7 +82,6 @@ void folder_system_init(void)
 	folder_register_class(mh_get_class());
 	folder_register_class(imap_get_class());
 	folder_register_class(news_get_class());
-	folder_register_class(mbox_get_class());
 }
 
 GSList *folder_get_class_list(void)

@@ -1,4 +1,492 @@
-2003-10-10 [thorsten]	0.9.6claws14
+2003-11-04 [match]	0.9.6claws68
+	* src/ldapctrl.[ch]
+		fix broken LDAP support.
+
+	* src/ldapquery.c
+		remove printf's.
+
+2003-11-04 [luke]	0.9.6claws67
+        * src/mimeview.c
+                o  fixed bug 4 "focus lost on messages with attachments"
+                o  fixed 'Save all' attachments for new mime changes
+                o  right clicking on icons consistent with right clicking on
+                   mime tree
+                  - fixes a bug where wrong part is saved when you
+                    choose 'Save as' from popup menu
+                  - fixes bug 308 "No way to "save all" attachments"
+                o  fixed a compiler warning.
+
+        * src/textview.c
+                o  removed flickering in mime tree when using "n" and "p"
+                   shortcuts
+                o  fixed bug where selecting the textview and pressing e.g.
+		   'y' causes sylpheed to respond twice.
+
+        * src/summaryview.c
+                removed hard coding of * and ! shortcuts (which only served
+                to cause problems if you tried to redefine the shortcuts)
+
+2003-11-04 [luke]	0.9.6claws66
+        * src/plugins/image_viewer/viewer.c
+	* src/plugins/image_viewer/viewerprefs.c
+	* src/plugins/image_viewer/viewerprefs.glade
+                o  allow toggling of image scaling by clicking on image
+                o  respond to image's container widget resize
+
+        * src/procmime.c
+                o  fix bad parsing of message when re-editing/viewing a
+		   message saved to the drafts folder
+
+2003-11-02 [match]	0.9.6claws65
+
+	* src/browseldap.h
+		fix if not building LDAP support.
+	* src/addrindex.c
+	* src/ldapquery.[ch]
+	* src/editldap.h
+		include support for contains query. feature req 529354.
+
+2003-11-02 [alfons]	0.9.6claws64
+
+	* src/browseldap.c
+		fix build bustage if not compiling ldap support
+
+2003-11-01 [match]	0.9.6claws63
+
+	* po/POTFILES.in
+	* src/Makefile.am
+	* src/addr_compl.[ch]
+	* src/addrbook.c
+	* src/addrcache.[ch]
+	* src/addrdefs.h	** NEW **
+	* src/addressbook.c
+	* src/addressitem.h
+	* src/addrindex.[ch]
+	* src/addritem.h
+	* src/addrquery.[ch]
+	* src/ldapquery.[ch]
+	* src/ldapserver.[ch]
+		refactor LDAP query mechanism.
+
+	* src/browseldap.[ch]	** NEW **
+	* src/ldaplocate.[ch]	** NEW **
+		add feature to browse LDAP entry that was retrieved using
+		an explicit LDAP search.
+
+2003-11-01 [alfons]	0.9.6claws62
+
+	* src/prefs_gtk.c
+		prefs_write_param(): fail when we see an invalid type; all the
+		callers seem to handle this gracefully by reverting changes
+
+2003-10-30 [christoph]	0.9.6claws61
+
+	* configure.ac
+	* ac/openssl.m4
+	* ac/spamassassin.m4
+	* src/Makefile.am
+		use extra variables for all libraries to make sure plugins
+		are only linked with libraries they really need. $LIBS is always
+		added to the linking parameters, but we only what the libraries
+		listed in the Makefile
+
+2003-10-29 [paul]	0.9.6claws60
+
+	* src/mimeview.c
+		don't use Subject for unknown part name
+
+2003-10-29 [paul]	0.9.6claws59
+
+	* src/compose.c
+		get name of attachment(s) when re-editing, fwd'ing or
+		redirecting
+		
+	* src/mimeview.c
+		get name of attachment(s) when saving
+
+2003-10-29 [hoa]	0.9.6claws58
+
+	* src/textview.c
+		implemented multipart/alternative in MIME message viewer.
+
+2003-10-28 [christoph]	0.9.6claws57
+
+	* configure.ac
+		make sure MathML-Viewer is not built with the
+		Gtk2 version of GtkMathView
+
+2003-10-28 [paul]	0.9.6claws56
+
+	* sync with 0.9.7cvs1
+		see ChangeLog 2003-10-28
+
+2003-10-27 [alfons]	0.9.6claws55
+
+	* src/matcher_parser_parse.y
+	* src/gtk/colorlabel.c
+		allow setting color label to 0 in filtering/processing rules
+		(should fix bug 368, "Can't create a filter condition "colorlabel 0"") 
+
+2003-10-26 [alfons]	0.9.6claws54
+
+	* src/summary_search.c
+		fix misnomer and correct selecting initial search node  
+
+2003-10-26 [christoph]	0.9.6claws53
+
+	* src/pgpmime.c
+	* src/sgpgme.c
+		change display of signature info to use only name of
+		signer, otherwise the text gets too long.
+
+	* src/procmime.c
+		don't use MimeInfo's filename to generate tmp filename
+
+2003-10-25 [christoph]	0.9.6claws52
+
+	* src/procmime.c
+		fix message body searching
+
+2003-10-25 [paul]	0.9.6claws51
+
+	* src/compose.c
+		use g_basename rather than basename
+
+2003-10-24 [christoph]	0.9.6claws50
+
+	* src/sgpgme.c
+		change fetching of signature key's trust
+
+2003-10-24 [paul]	0.9.6claws49
+
+	* po/sk.po
+	  	update Slovak translation
+		submitted by Andrej Kacian
+		
+	* src/mainwindow.c
+		remove unknown menu entry /File/Add mailbox/mbox...
+
+2003-10-24 [hoa]	0.9.6claws48
+
+	* src/Makefile.am
+		removed all references to mbox folders
+
+	* src/carray.[ch]		* REMOVED *
+	* src/chash.[ch]		* REMOVED *
+	* src/maillock.[ch]		* REMOVED *
+	* src/mailmbox.[ch]		* REMOVED *
+	* src/mailmbox_folder.[ch]	* REMOVED *
+	* src/mailmbox_parse.[ch]	* REMOVED *
+	* src/mailmbox_types.[ch]	* REMOVED *
+	* src/mbox_folder.[ch]		* REMOVED *
+		remove implementation of mbox folders
+		and old mailbox folder.
+		mbox folder implementation will be added
+		as a plugin so that implementation can be entirely
+		synchronized with the files of the project they are
+		extracted from (libEtPan!).
+	
+	* src/mainwindow.c
+	* src/folder.c
+	* src/folderview.[ch]
+	* src/procmsg.h		
+		Disable as much code that references mbox folders
+		as possible.
+		Some UI thing still need to know that folder is mbox
+		(when we have to enter the name of the mailbox and
+		we want to add /var/mail/$USER).
+
+2003-10-23 [christoph]	0.9.6claws47
+
+	* src/noticeview.c
+		don't always display button when noticeview is made visible
+
+	* src/mimeview.c
+	* src/pgpmime.c
+	* src/privacy.[ch]
+	* src/sgpgme.[ch]
+		get signature information from crypto system
+
+2003-10-22 [paul]	0.9.6claws46
+
+	* po/es.po
+		updated by Ricardo Mones Lastra
+
+2003-10-22 [paul]	0.9.6claws45
+
+	* src/Makefile.am
+		update to reflect the changes to the icons that
+		happened in 0.9.6claws35
+
+2003-10-22 [alfons]	0.9.6claws44
+	
+	* src/carray.h
+		inline carray_count() 
+
+2003-10-21 [alfons]	0.9.6claws43
+
+	* src/carray.h
+		glib wrappers
+	* src/carray.c
+		disable
+	* src/mailmbox.[ch]
+	* src/mailmbox_folder.c
+	* src/mailmbox_parse.c
+	* src/mailmbox_types.[ch]
+		%s/uint32_t/guint
+
+2003-10-21 [luke]	0.9.6claws42
+
+	* src/stock_pixmaps.[ch]
+        * src/mimeview.c
+        * src/pixmaps/mime_application_octet_stream.xpm         ** REMOVE **
+        * src/pixmaps/messageview_text.xpm                      ** REMOVE **
+                o remove mime_application_octet_stream.xpm icon (it was never
+                  really needed)
+                o remove redundant icon messageview_text.xpm
+
+        * src/mainwindow.c
+                fix visibility of signature noticeview when toggling 'separate
+                message view'
+
+2003-10-21 [christoph]	0.9.6claws41
+
+	* src/procmime.c
+		decode multipart and rfc822 mime parts to allow further
+		parsing when required
+
+2003-10-21 [christoph]	0.9.6claws40
+
+	* src/procmime.[ch]
+	* src/textview.c
+		remove obsolete charset parameter in MimeInfo and fix
+		TextView to use the charset from the parameter hash table
+
+	* src/plugins/dillo_viewer/Makefile.am
+	* src/plugins/trayicon/Makefile.am
+		add OPENSSL_CFLAGS to fix building with using
+		--with-openssl-* parameters
+
+2003-10-21 [paul]	0.9.6claws39
+
+	* src/prefs_matcher.[ch]
+		replace remnants of the old, renamed 'Execute' matchtype
+		add a brief description to the Info window
+
+2003-10-21 [hoa]	0.9.6claws38
+	
+	* src/Makefile.am
+	* src/carray.[ch]		* NEW *
+	* src/chash.[ch]		* NEW *
+	* src/folder.c
+	* src/maillock.[ch]		* NEW *
+	* src/mailmbox.[ch]		* NEW *
+	* src/mailmbox_folder.[ch]	* NEW *
+	* src/mailmbox_parse.[ch]	* NEW *
+	* src/mailmbox_types.[ch]	* NEW *
+		implementation of mbox folder with unique message numbers
+
+		made use of libEtPan! implementation of mbox for lower-layer.
+
+2003-10-20 [alfons]	0.9.6claws37
+
+	* src/noticeview.c
+		fix invalid argument warning
+	* src/pgpmime.c
+		no in place variable
+
+2003-10-20 [paul]	0.9.6claws36
+
+	* src/compose.[ch]
+	  src/filtering.c
+	  src/messageview.c
+	  	fix crash when using Forward in Filtering when
+		external editor option is set
+		
+		Patch submitted by Simon 'corecode' Schubert
+	        <corecode@corecode.ath.cx> 
+
+2003-10-20 [paul]	0.9.6claws35
+
+	* src/pixmaps/mime_gpg_expired.xpm	** REMOVED **
+	  src/pixmaps/mime_gpg_failed.xpm	** REMOVED **
+	  src/pixmaps/mime_gpg_passed.xpm	** REMOVED **
+	  src/pixmaps/mime_gpg_signed.xpm	** REMOVED **
+	  src/pixmaps/mime_gpg_unknown.xpm	** REMOVED **
+	  src/pixmaps/privacy_expired.xpm	** NEW FILE **
+	  src/pixmaps/privacy_failed.xpm	** NEW FILE **
+	  src/pixmaps/privacy_passed.xpm	** NEW FILE **
+	  src/pixmaps/privacy_signed.xpm	** NEW FILE **
+	  src/pixmaps/privacy_unknown.xpm	** NEW FILE **
+	  src/pixmaps/privacy_warn.xpm		** NEW FILE **
+	  src/mimeview.c
+	  src/stock_pixmap.[ch]
+	  	replace mime_gpg_*.xpm icons with new privacy_*.xpm
+		icons. add privacy_warn.xpm icon
+
+2003-10-20 [hoa]  0.9.6claws34
+
+	* src/folder_item_prefs.[ch]
+	* src/prefs_folder_item.c
+	* src/main.c
+		Added a property per folder to choose whether we 
+		want to apply processing on it on startup or if we
+		prefer to wait the folder selection to apply it.
+	
+	* src/messageview.c
+		fixed C89 compatibility (for old compilers, for
+		example gcc 2.95.x).
+
+2003-10-17 [christoph]  0.9.6claws33
+
+	* src/mimeview.c
+	* src/noticeview.[ch]
+		change noticeview icon to indicate signature status
+
+2003-10-17 [christoph]  0.9.6claws32
+
+	* src/Makefile.am
+	* src/main.c
+	* src/mimeview.c
+	* src/noticeview.c
+	* src/pgpmime.[ch]				** NEW **
+	* src/privacy.[ch]
+	* src/rfc2015.c
+	* src/sgpgme.c					** NEW **
+		reimplement PGP/Mime signature checking (unfinished)
+
+2003-10-15 [christoph]  0.9.6claws31
+
+	* src/procmime.[ch]
+		fix procmime_get_text_content() and
+		procmime_get_first_text_content()
+
+2003-10-15 [christoph]	0.9.6claws30
+
+	* src/plugins/spamassassin/spamassassin_gtk.c
+	* src/plugins/spamassassin/spamassassin_gtk.glade
+		fix timeout tooltip
+
+2003-10-15 [paul]	0.9.6claws29
+
+	* src/messageview.c
+		workaround for buggy smtp servers. on sending a
+		return receipt strip the name part from the address
+		when creating headers
+		
+2003-10-15 [paul]	0.9.6claws28
+
+	* sync with 0.9.7 release
+		see ChangeLog 2003-10-15
+
+2003-10-14 [christoph]	0.9.6claws27
+
+	* src/plugins/clamav/clamav_plugin.c
+		fix clamav plugin
+
+2003-10-14 [christoph]	0.9.6claws26
+
+	* src/compose.c
+	* src/mimeview.c
+	* src/procmime.[ch]
+	* src/rfc2015.c
+	* src/textview.c
+	* src/plugins/clamav/clamav_plugin.c
+		use GNode to create the mime tree (some changes to functions
+		that traverse the tree are just quick and dirty. Maybe we
+		can find better solutions with g_node_*-functions)
+
+2003-10-14 [luke]	0.9.6claws25
+
+	* src/mimeview.c
+		fix a navigation bug (stupid typo of mine)
+
+2003-10-14 [christoph]	0.9.6claws24
+
+	* src/textview.c
+		fix missing last line in plain/text mails
+
+2003-10-13 [luke]	0.9.6claws23
+
+	* src/summaryview.c
+	        fix bug 334 (part 1)
+
+2003-10-13 [kov]	0.9.6claws22
+
+	* src/mimeview.c
+	        error checking when the user enters a non-directory at
+	        the file selection dialog.
+	        work-around for users entering directory location without
+	        adding a leading G_DIR_SEPARATOR.
+
+2003-10-13 [luke]	0.9.6claws21
+
+	* src/compose.c
+	        error reporting for inserting files, including catching
+        	invalid characters for current locale/encoding
+
+2003-10-13 [paul]	0.9.6claws20
+
+	* src/folderview.c
+		fix bug #347 'subscribe newsgroups crashes'
+
+2003-10-13 [paul]	0.9.6claws19
+
+	* src/compose.c
+		when using 'Reply to all' include the 'send replies
+		to' folder property
+		
+	* po/ja.po
+		update Japanese translation. submitted by Rui Hirokawa 
+		<rui_hirokawa@ybb.ne.jp>	
+
+2003-10-13 [hoa]	0.9.6claws18
+
+	* src/account.c
+	* src/compose.c
+	* src/messageview.c
+	* src/procheader.c
+	* src/procheader.h
+		rename get_header_from_msginfo() into
+		procheader_get_header_from_msginfo() so that we have a
+		coherent exported naming.
+		avoid parsing of header contained in a string via
+		a newly written temporary file.
+
+	Patch submitted by Simon 'corecode' Schubert
+	        <corecode@corecode.ath.cx>
+
+2003-10-12 [hoa]	0.9.6claws17
+
+	* src/filtering.c
+	* src/filtering.h
+	* src/matcher.c
+	* src/matcher.h
+	* src/matcher_parser_parse.y
+	* src/prefs_filtering_action.c
+		added "stop" action : stop applying the filtering rules.
+		added "set score" and "increase/decrease score" actions.
+		That two last action replace the "change_score" action
+		introduced by alfons in 0.8.8claws85.
+		"set score" is to set a given score to the message.
+		"increase/decrease score" will increase or decrease the
+		score if the given value is respectively positive or
+		negative. If someone find a some better name for this last
+		rule, it can be modified.
+
+2003-10-12 [paul]	0.9.6claws16
+
+	* AUTHORS
+	  po/ja.po
+		update Japanese translation. submitted by Rui Hirokawa 
+		<rui_hirokawa@ybb.ne.jp>
+
+2003-10-12 [christoph]	0.9.6claws15
+
+	* src/procmime.c
+		fix crash caused by incorrect headers
+
+2003-10-10 [christoph]	0.9.6claws14
 
 	* src/main.c
 	* src/privacy.[ch]

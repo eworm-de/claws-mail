@@ -92,22 +92,15 @@ struct _MimeInfo
 {
 	gchar *encoding;
 
-	gchar *charset;
 	gchar *name;
 
 	gchar *content_disposition;
-
-	MimeInfo *main;
-
-	gint level;
 
 	/* Internal data */
 	gchar *filename;
 	gboolean tmpfile;
 
-	MimeInfo *next;
-	MimeInfo *parent;
-	MimeInfo *children;
+	GNode *node;
 
 	/* --- NEW MIME STUFF --- */
 	/* Content-Type */
@@ -145,11 +138,15 @@ MimeInfo *procmime_mimeinfo_insert	(MimeInfo	*parent,
 void procmime_mimeinfo_replace		(MimeInfo	*old_mimeinfo,
 					 MimeInfo	*new_mimeinfo);
 
+MimeInfo *procmime_mimeinfo_parent	(MimeInfo	*mimeinfo);
 MimeInfo *procmime_mimeinfo_next	(MimeInfo	*mimeinfo);
 
 MimeInfo *procmime_scan_message		(MsgInfo	*msginfo);
 void procmime_scan_multipart_message	(MimeInfo	*mimeinfo,
 					 FILE		*fp);
+const gchar *procmime_mimeinfo_get_parameter
+					(MimeInfo	*mimeinfo,
+					 const gchar	*name);
 
 /* scan headers */
 
@@ -168,8 +165,7 @@ MimeInfo *procmime_scan_mime_header	(FILE		*fp);
 gboolean procmime_decode_content	(MimeInfo	*mimeinfo);
 gint procmime_get_part			(const gchar	*outfile,
 					 MimeInfo	*mimeinfo);
-FILE *procmime_get_text_content		(MimeInfo	*mimeinfo,
-					 FILE		*infp);
+FILE *procmime_get_text_content		(MimeInfo	*mimeinfo);
 FILE *procmime_get_first_text_content	(MsgInfo	*msginfo);
 
 gboolean procmime_find_string_part	(MimeInfo	*mimeinfo,

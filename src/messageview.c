@@ -439,6 +439,8 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	FolderItem *queue, *outbox;
 	gint num;
 	gchar *path;
+        gchar *addr;
+        gchar *addrp;
 
 	if ((!msginfo->returnreceiptto) && 
 	    (!msginfo->dispositionnotificationto)) 
@@ -450,7 +452,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	else
 		to = msginfo->returnreceiptto;
 
-	ok = get_header_from_msginfo(msginfo, buf, sizeof(buf),
+	ok = procheader_get_header_from_msginfo(msginfo, buf, sizeof(buf),
 				"Return-Path:");
 	if (ok == 0) {
 		gchar *to_addr = g_strdup(to);
@@ -517,7 +519,12 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		FILE_OP_ERROR(tmp, "chmod");
 		g_warning("can't change file mode\n");
 	}
-
+	
+	addr = g_strdup(to);
+	
+	extract_address(addr);
+	addrp = addr;
+	
 	/* write queue headers */
 	fprintf(fp, "AF:\n");
 	fprintf(fp, "NF:0\n");
@@ -535,7 +542,9 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	else
 		fprintf(fp, "SSV:\n");
 	fprintf(fp, "SSH:\n");
-	fprintf(fp, "R:<%s>\n", to);
+	fprintf(fp, "R:<%s>\n", addrp);
+	
+	g_free(addrp);
 	
 	/* check whether we need to save the message */
 	outbox = account_get_special_folder(account, F_OUTBOX); 
@@ -1193,7 +1202,7 @@ static void reply_cb(gpointer data, guint action, GtkWidget *widget)
 		}
 		break;
 	case COMPOSE_FORWARD_INLINE:
-		compose_forward(NULL, msginfo, FALSE, text);
+		compose_forward(NULL, msginfo, FALSE, text, FALSE);
 		break;
 	case COMPOSE_FORWARD_AS_ATTACH:
 		compose_forward_multiple(NULL, mlist);

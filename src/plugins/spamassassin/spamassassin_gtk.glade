@@ -282,7 +282,7 @@
 	<class>GtkSpinButton</class>
 	<name>timeout</name>
 	<width>64</width>
-	<tooltip>Maximum size a message is allowed to have to be checked</tooltip>
+	<tooltip>Time that is allowed for checking. If the check takes longer the check will be aborted and the message will be handled as not spam.</tooltip>
 	<can_focus>True</can_focus>
 	<climb_rate>1</climb_rate>
 	<digits>0</digits>

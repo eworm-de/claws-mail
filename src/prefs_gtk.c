@@ -348,7 +348,9 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 			}
 			break;
 		default:
-			buf[0] = '\0';
+			/* unrecognized, fail */
+			debug_print("Unrecognized parameter type\n");
+			return -1;
 		}
 
 		if (buf[0] != '\0') {

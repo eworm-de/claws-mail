@@ -82,7 +82,7 @@ static void imageviewer_create_widget_func(PrefsPage * _page,
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label14), 0, 0.5);
 
-	label15 = gtk_label_new(_("Resize attached images"));
+	label15 = gtk_label_new(_("Resize attached images by default\n(Clicking image toggles scaling)"));
 	gtk_widget_show(label15);
 	gtk_table_attach(GTK_TABLE(table2), label15, 0, 1, 1, 2,
 			 (GtkAttachOptions) (GTK_FILL),
