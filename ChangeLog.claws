@@ -1,9 +1,14 @@
-2002-06-20 [alfons]
+2002-06-22 [alfons]	0.7.8claws12
+
+	* src/selective_download.[ch]
+		fix another unnoticed leak; cleanup code
+
+2002-06-21 [alfons]
 
 	* tools/Makefile.am
 		gpg-sign <-- gpg-sign-syl
 
-2002-06-20 [alfons]	0.7.8claws11
+2002-06-21 [alfons]	0.7.8claws11
 
 	* src/selective_download.c
 	* src/selective_download.h

@@ -170,6 +170,7 @@ static void sd_clear_msglist()
 		acc->msg_list = g_slist_remove(acc->msg_list, item);
 		g_free(item->from);
 		g_free(item->subject);
+		g_free(item->date);
 		g_free(item);
 	}	
 	g_slist_free(acc->msg_list);
@@ -249,21 +250,14 @@ static MsgInfo *sd_get_msginfo_from_file(const gchar *filename)
 {
 	MsgInfo  *msginfo;
 	MsgFlags  msgflags = { 0, 0 };
-	gchar	  date[HEADER_ITEM_MAX_DATE_SIZE];
+	gchar	  date[80];
 
 	msginfo = procheader_parse_file(filename, msgflags, TRUE, FALSE);
 
-	/*
-	 * ALF - we need to make sure we dynamically allocate interesting 
-	 * members, otherwise we can't free the msginfo using 
-	 * procmsg_msginfo_free() later on.
-	 */
-
-	if (msginfo) {
-		if (msginfo->date_t) {
-			procheader_date_get_localtime(date, sizeof date, msginfo->date_t);
-			msginfo->date = g_strdup(date);					
-		}			
+	if (msginfo && msginfo->date_t) {
+		procheader_date_get_localtime(date, sizeof date, msginfo->date_t);
+		if (msginfo->date) g_free(msginfo->date);
+		msginfo->date = g_strdup(date);
 	} else 
 		msginfo = g_new0(MsgInfo, 1);
 
@@ -393,8 +387,7 @@ static void sd_clist_get_items(void)
 		
 		items->from        = g_strdup(msginfo->from);
 		items->subject     = g_strdup(msginfo->subject);
-		
-		strncpy2(items->date, msginfo->date, sizeof items->date);
+		items->date	   = g_strdup(msginfo->date);
 		
 		msginfo->folder = folder_get_default_processing();
 
