@@ -122,7 +122,6 @@ struct _PrefsCommon
 	gchar *boldfont;
 	gchar *smallfont;
 	gboolean display_folder_unread;
-	gboolean display_img;
 	gint ng_abbrev_len;
 	ToolbarStyle toolbar_style;
 	gboolean show_statusbar;
@@ -198,6 +197,9 @@ struct _PrefsCommon
 	gint scroll_step;
 	gboolean scroll_halfpage;
 
+	gboolean display_img;
+	gboolean resize_image;
+
 	gchar *force_charset;
 
 	gboolean show_other_header;
@@ -249,9 +251,7 @@ struct _PrefsCommon
 	gboolean clean_on_exit;
 	gboolean ask_on_clean;
 	gboolean warn_queued_on_exit;
-#ifdef USE_SSL
-	gboolean ssl_ask_unknown_valid;
-#endif
+
 	/* Memory cache*/
 	gint cache_max_mem_usage;
 	gint cache_min_keep_time;
