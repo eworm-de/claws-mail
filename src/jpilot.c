@@ -994,7 +994,9 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 		}
 		r = jpilot_read_next_pc( pc_in, temp_br );
 		if( r != MGU_SUCCESS ) {
-			free( temp_br->buf );
+			if( (r != MGU_EOF) && (r != MGU_ERROR_READ) ) {
+				free( temp_br->buf );
+			}
 			free( temp_br );
 			break;
 		}

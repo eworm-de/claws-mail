@@ -1,3 +1,8 @@
+2003-01-06 [jens]     0.8.8claws54
+
+	* src/jpilot.c
+		fixed a wrong free in jpilot_read_db_files
+
 2003-01-06 [alfons]     0.8.8claws53
 
 	re-organize matcher part 8; more to come
