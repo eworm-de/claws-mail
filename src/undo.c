@@ -42,8 +42,8 @@ struct _UndoInfo
 	gchar *text;
 	gint start_pos;
 	gint end_pos;
-	gfloat window_position;
-	gint mergeable;
+	float window_position;
+	int mergeable;
 };
 
 static void undo_free_list	(GList	       **list_pointer);
@@ -256,8 +256,7 @@ static gint undo_merge (GList *list, guint start_pos, guint end_pos, gint action
                         g_free(last_undo->text);
                         last_undo->end_pos += 1;
                         last_undo->text = temp_string;
-                }
-                else if (checkit) {
+                } else if (checkit) {
                         /* Deleted with the backspace key */
                         if ( text[0] != ' ' && text[0] != '\t' && checkit &&
                              (last_undo->text[0] == ' '
@@ -268,9 +267,8 @@ static gint undo_merge (GList *list, guint start_pos, guint end_pos, gint action
                         g_free(last_undo->text);
                         last_undo->start_pos = start_pos;
                         last_undo->text = temp_string;
-                }
-        }
-        else if (action == UNDO_ACTION_INSERT && checkit) {
+		}
+	} else if (action == UNDO_ACTION_INSERT && checkit) {
                 if (last_undo->end_pos != start_pos && checkit)
                          checkit = FALSE;
 
@@ -285,15 +283,13 @@ static gint undo_merge (GList *list, guint start_pos, guint end_pos, gint action
                 	last_undo->end_pos = end_pos;
                 	last_undo->text = temp_string;
 		}
-        }
-        else if (checkit)
+	} else if (checkit)
                 debug_print("Unknown action [%i] inside undo merge encountered", action);
 
 	if (checkit) {
 		debug_print("Merged: %s\n", text);
         	return TRUE;
-	}
-	else {
+	} else {
 		last_undo->mergeable = FALSE;
 		return FALSE;
 	}
@@ -517,7 +513,7 @@ void undo_insert_text_cb(GtkEditable *editable, gchar *new_text,
 			 gint new_text_length, gint *position, 
 			 UndoMain *undostruct) 
 {
-	guchar *text_to_insert;
+	gchar *text_to_insert;
 	size_t wlen;
 
 	if (prefs_common.undolevels <= 0) return;
@@ -539,7 +535,7 @@ void undo_insert_text_cb(GtkEditable *editable, gchar *new_text,
 void undo_delete_text_cb(GtkEditable *editable, gint start_pos,
 			 gint end_pos, UndoMain *undostruct) 
 {
-        guchar *text_to_delete;
+        gchar *text_to_delete;
 
 	if (prefs_common.undolevels <= 0) return;
 	if (start_pos == end_pos) return;
@@ -548,7 +544,7 @@ void undo_delete_text_cb(GtkEditable *editable, gint start_pos,
 						start_pos, end_pos);
 	undo_add(text_to_delete, start_pos, end_pos, UNDO_ACTION_DELETE,
 		 undostruct);
-	g_free (text_to_delete);
+	g_free(text_to_delete);
 }
 
 void undo_paste_clipboard_cb (GtkEditable *editable, UndoMain *undostruct) 

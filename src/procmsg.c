@@ -750,7 +750,8 @@ void procmsg_empty_trash(void)
 
 	for (cur = folder_get_list(); cur != NULL; cur = cur->next) {
 		trash = FOLDER(cur->data)->trash;
-		if (trash) folder_item_remove_all_msg(trash);
+		if (trash && trash->total > 0)
+			folder_item_remove_all_msg(trash);
 	}
 }
 

@@ -236,6 +236,8 @@ static gchar *get_quoted			(const gchar	*src,
 						 gint		 len);
 static gchar *search_array_contain_str		(GPtrArray	*array,
 						 gchar		*str);
+static gchar *search_array_str			(GPtrArray	*array,
+						 gchar		*str);
 static void imap_path_separator_subst		(gchar		*str,
 						 gchar		 separator);
 
@@ -1938,7 +1940,7 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 	ok = imap_cmd_ok(SESSION(session)->sock, argbuf);
 	if (ok != IMAP_SUCCESS) THROW(ok);
 
-	str = search_array_contain_str(argbuf, "STATUS");
+	str = search_array_str(argbuf, "STATUS");
 	if (!str) THROW(IMAP_ERROR);
 
 	str = strchr(str, '(');
@@ -2020,7 +2022,7 @@ static gint imap_cmd_namespace(SockInfo *sock, gchar **ns_str)
 	imap_cmd_gen_send(sock, "NAMESPACE");
 	if ((ok = imap_cmd_ok(sock, argbuf)) != IMAP_SUCCESS) THROW(ok);
 
-	str = search_array_contain_str(argbuf, "NAMESPACE");
+	str = search_array_str(argbuf, "NAMESPACE");
 	if (!str) THROW(IMAP_ERROR);
 
 	*ns_str = g_strdup(str);
@@ -2388,6 +2390,24 @@ static gchar *search_array_contain_str(GPtrArray *array, gchar *str)
 
 		tmp = g_ptr_array_index(array, i);
 		if (strstr(tmp, str) != NULL)
+			return tmp;
+	}
+
+	return NULL;
+}
+
+static gchar *search_array_str(GPtrArray *array, gchar *str)
+{
+	gint i;
+	gint len;
+
+	len = strlen(str);
+
+	for (i = 0; i < array->len; i++) {
+		gchar *tmp;
+
+		tmp = g_ptr_array_index(array, i);
+		if (!strncmp(tmp, str, len))
 			return tmp;
 	}
 

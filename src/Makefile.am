@@ -66,6 +66,7 @@ sylpheed_SOURCES = \
 	logwindow.c logwindow.h \
 	sourcewindow.c sourcewindow.h \
 	manage_window.c manage_window.h \
+	undo.c undo.h \
 	alertpanel.c alertpanel.h \
 	inputdialog.c inputdialog.h \
 	progressdialog.c progressdialog.h \
@@ -121,7 +122,6 @@ sylpheed_SOURCES = \
 	quote_fmt_lex.l quote_fmt_lex.h \
 	quote_fmt_parse.y quote_fmt.h \
 	gtkspell.c gtkspell.h gtkxtext.h \
-	undo.c undo.h \
 	matcher_parser_lex.l matcher_parser_lex.h \
 	matcher_parser_parse.y matcher_parser.h
 

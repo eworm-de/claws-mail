@@ -126,10 +126,6 @@ static GdkColor quote_color = {0, 0, 0, 0xbfff};
 
 static GList *compose_list = NULL;
 
-static void compose_set_undo			(UndoMain       *undostruct, 
-                                                 gint            undo_state, 
-						 gint            redo_state, 
-						 GtkWidget	*changewidget);
 Compose *compose_generic_new			(PrefsAccount	*account,
 						 const gchar	*to,
 						 FolderItem	*item);
@@ -233,6 +229,11 @@ static void compose_input_cb			(gpointer	    data,
 static void compose_set_ext_editor_sensitive	(Compose	   *compose,
 						 gboolean	    sensitive);
 
+static void compose_set_undo			(UndoMain	*undostruct,
+						 gint		 undo_state,
+						 gint		 redo_state,
+						 GtkWidget	*changewidget);
+
 static gint calc_cursor_xpos	(GtkSText	*text,
 				 gint		 extra,
 				 gint		 char_width);
@@ -321,8 +322,8 @@ static gint compose_delete_cb		(GtkWidget	*widget,
 static void compose_destroy_cb		(GtkWidget	*widget,
 					 Compose	*compose);
 
-static void compose_undo_cb		(Compose *compose);
-static void compose_redo_cb		(Compose *compose);
+static void compose_undo_cb		(Compose	*compose);
+static void compose_redo_cb		(Compose	*compose);
 static void compose_cut_cb		(Compose	*compose);
 static void compose_copy_cb		(Compose	*compose);
 static void compose_paste_cb		(Compose	*compose);
@@ -4334,6 +4335,9 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 		break;
 	}
 
+	undostruct = undo_init(text);
+	undo_set_undo_change_funct(undostruct, &compose_set_undo, menubar);
+
 	gtk_widget_show(window);
 
 	address_completion_start(window);
@@ -4395,6 +4399,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->exteditor_tag     = -1;
 
 	compose->bounce_filename = NULL;
+	compose->undostruct = undostruct;
 
 	compose_set_title(compose);
 
@@ -4407,11 +4412,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 #if USE_PSPELL
         compose->gtkpspell      = gtkpspell;
 #endif
-
-	undostruct = undo_init(text);
-
-	compose->undostruct = undostruct;
-	undo_set_undo_change_funct(undostruct, &compose_set_undo, GTK_WIDGET(compose->menubar));
 
 #if 0 /* NEW COMPOSE GUI */
 	if (account->protocol != A_NNTP) {
@@ -5357,6 +5357,72 @@ static void compose_set_ext_editor_sensitive(Compose *compose,
 	gtk_widget_set_sensitive(compose->linewrap_btn,  sensitive);
 }
 
+/**
+ * undo_set_undo:
+ *
+ * Change the sensivity of the menuentries undo and redo
+ **/
+static void compose_set_undo(UndoMain *undostruct, gint undo_state,
+			     gint redo_state, GtkWidget *changewidget)
+{
+	GtkItemFactory *ifactory;
+
+	g_return_if_fail(changewidget != NULL);
+
+	debug_print("Set_undo.  UNDO:%i  REDO:%i\n", undo_state, redo_state);
+
+	ifactory = gtk_item_factory_from_widget(changewidget);
+
+	switch (undo_state) {
+	case UNDO_STATE_TRUE:
+		if (!undostruct->undo_state) {
+			debug_print ("Set_undo - Testpoint\n");
+			undostruct->undo_state = TRUE;
+			menu_set_sensitive(ifactory, "/Edit/Undo", TRUE);
+		}
+		break;
+	case UNDO_STATE_FALSE:
+		if (undostruct->undo_state) {
+			undostruct->undo_state = FALSE;
+			menu_set_sensitive(ifactory, "/Edit/Undo", FALSE);
+		}
+		break;
+	case UNDO_STATE_UNCHANGED:
+		break;
+	case UNDO_STATE_REFRESH:
+		menu_set_sensitive(ifactory, "/Edit/Undo",
+				   undostruct->undo_state);
+		break;
+	default:
+		g_warning("Undo state not recognized");
+		break;
+	}
+
+	switch (redo_state) {
+	case UNDO_STATE_TRUE:
+		if (!undostruct->redo_state) {
+			undostruct->redo_state = TRUE;
+			menu_set_sensitive(ifactory, "/Edit/Redo", TRUE);
+		}
+		break;
+	case UNDO_STATE_FALSE:
+		if (undostruct->redo_state) {
+			undostruct->redo_state = FALSE;
+			menu_set_sensitive(ifactory, "/Edit/Redo", FALSE);
+		}
+		break;
+	case UNDO_STATE_UNCHANGED:
+		break;
+	case UNDO_STATE_REFRESH:
+		menu_set_sensitive(ifactory, "/Edit/Redo",
+				   undostruct->redo_state);
+		break;
+	default:
+		g_warning("Redo state not recognized");
+		break;
+	}
+}
+
 static gint calc_cursor_xpos(GtkSText *text, gint extra, gint char_width)
 {
 	gint cursor_pos;
@@ -5759,12 +5825,12 @@ static void compose_destroy_cb(GtkWidget *widget, Compose *compose)
 	compose_destroy(compose);
 }
 
-static void compose_undo_cb(Compose *compose) 
+static void compose_undo_cb(Compose *compose)
 {
 	undo_undo(compose->undostruct);
 }
 
-static void compose_redo_cb(Compose *compose) 
+static void compose_redo_cb(Compose *compose)
 {
 	undo_redo(compose->undostruct);
 }
@@ -6161,71 +6227,4 @@ void compose_headerentry_changed_cb(GtkWidget *entry,
 			 GTK_SIGNAL_FUNC(compose_headerentry_changed_cb),
 			 headerentry);
 	}
-}
-
-/**
- * undo_set_undo:
- *
- * Change the sensivity of the menuentries undo and redo
- **/
-static void compose_set_undo(UndoMain *undostruct, gint undo_state, 
-			     gint redo_state, GtkWidget *changewidget) 
-{
-	GtkItemFactory *ifactory;
-        debug_print ("Set_undo.  UNDO:%i  REDO:%i\n",
-                 undo_state,
-                 redo_state);
-
-	g_return_if_fail (changewidget != NULL);
-
-	ifactory = gtk_item_factory_from_widget(changewidget);
-
-	/* Set undo */
-        switch (undo_state) {
-        case UNDO_STATE_TRUE:
-                if (!undostruct->undo_state) {
-		        debug_print ("Set_undo - Testpoint\n");
-                        undostruct->undo_state = TRUE;
-			menu_set_sensitive(ifactory, "/Edit/Undo", TRUE);
-                }
-                break;
-        case UNDO_STATE_FALSE:
-                if (undostruct->undo_state) {
-                        undostruct->undo_state = FALSE;
-			menu_set_sensitive(ifactory, "/Edit/Undo", FALSE);
-                }
-                break;
-        case UNDO_STATE_UNCHANGED:
-                break;
-        case UNDO_STATE_REFRESH:
-		menu_set_sensitive(ifactory, "/Edit/Undo", undostruct->undo_state);
-                break;
-        default:
-                g_warning ("Undo state not recognized");
-		break;
-        }
-
-        /* Set redo*/
-        switch (redo_state) {
-        case UNDO_STATE_TRUE:
-                if (!undostruct->redo_state) {
-                        undostruct->redo_state = TRUE;
-			menu_set_sensitive(ifactory, "/Edit/Redo", TRUE);
-                }
-                break;
-        case UNDO_STATE_FALSE:
-                if (undostruct->redo_state) {
-                        undostruct->redo_state = FALSE;
-			menu_set_sensitive(ifactory, "/Edit/Redo", FALSE);
-                }
-                break;
-        case UNDO_STATE_UNCHANGED:
-                break;
-        case UNDO_STATE_REFRESH:
-		menu_set_sensitive(ifactory, "/Edit/Redo", undostruct->redo_state);
-                break;
-        default:
-                g_warning ("Redo state not recognized");
-		break;
-        }
 }

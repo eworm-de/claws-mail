@@ -183,13 +183,13 @@ struct _Compose
 	PrefsAccount *account;
 	PrefsAccount *orig_account;
 
+	UndoMain *undostruct;
+
 	/* external editor */
 	gchar *exteditor_file;
 	pid_t  exteditor_pid;
 	gint   exteditor_readdes;
 	gint   exteditor_tag;
-
-	UndoMain *undostruct;
 
 #if USE_PSPELL
         /* Pspell spell checker */

@@ -19,8 +19,8 @@
 
 /* code ported from gedit */
 
-#ifndef UNDO_H__
-#define UNDO_H__
+#ifndef __UNDO_H__
+#define __UNDO_H__
 
 #include <glib.h>
 #include <gtk/gtkwidget.h>
@@ -29,23 +29,25 @@
 typedef enum 
 {
 	UNDO_ACTION_INSERT,
-        UNDO_ACTION_DELETE,
+	UNDO_ACTION_DELETE,
 	UNDO_ACTION_REPLACE_INSERT,
 	UNDO_ACTION_REPLACE_DELETE,
 } UndoAction;
 
 typedef enum 
 {
-        UNDO_STATE_TRUE,
-        UNDO_STATE_FALSE,
-        UNDO_STATE_UNCHANGED,
-        UNDO_STATE_REFRESH,
+	UNDO_STATE_TRUE,
+	UNDO_STATE_FALSE,
+	UNDO_STATE_UNCHANGED,
+	UNDO_STATE_REFRESH,
 } UndoState;
 
 typedef struct _UndoMain UndoMain;
 
-typedef void (*UndoChangeState) (UndoMain *undostruct,
-	gint undo_state, gint redo_state, GtkWidget *changewidget);
+typedef void (*UndoChangeState)	(UndoMain	*undostruct,
+				 gint		 undo_state,
+				 gint		 redo_state,
+				 GtkWidget	*changewidget);
 
 struct _UndoMain 
 {
@@ -59,11 +61,13 @@ struct _UndoMain
 	gint paste;
 };
 
-UndoMain *undo_init (GtkWidget *text);
-void undo_destroy (UndoMain *undostruct);
-void undo_set_undo_change_funct (UndoMain *undostruct, UndoChangeState func, GtkWidget *changewidget);
+UndoMain *undo_init		(GtkWidget	*text);
+void undo_destroy		(UndoMain	*undostruct);
+void undo_set_undo_change_funct	(UndoMain	*undostruct,
+				 UndoChangeState func,
+				 GtkWidget	*changewidget);
 
-void undo_undo (UndoMain *undostruct); 
-void undo_redo (UndoMain *undostruct); 
+void undo_undo			(UndoMain	*undostruct); 
+void undo_redo			(UndoMain	*undostruct); 
 
-#endif /* UNDO_H__ */
+#endif /* __UNDO_H__ */

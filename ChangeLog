@@ -1,3 +1,21 @@
+2001-12-18
+
+	* src/procmsg.c: procmsg_empty_trash()
+	  src/mainwindow.c: main_window_empty_trash(): empty trash only if
+	  it contains some messages.
+	* src/imap.c: search_array_str(): new.
+	  imap_status(): fixed a bug that didn't parse the command response
+	  correctly.
+
+2001-12-18
+
+	* merged undo function (by Jens Oberender).
+	* src/undo.[ch]: new.
+	  undo_insert_text_cb(): fix for multibyte characters (obtain the
+	  number of letters instead of bytes).
+	* src/compose.[ch]: added the code for undo.
+	* src/prefs_common.[ch]: added the interface for setting undo level.
+
 2001-12-16
 
 	* src/compose.c: compose_template_apply()

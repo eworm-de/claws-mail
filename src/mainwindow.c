@@ -1229,7 +1229,7 @@ void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 		Folder *folder;
 
 		folder = list->data;
-		if (folder->trash) {
+		if (folder->trash && folder->trash->total != 0) {
 			folder_item_scan(folder->trash);
 			folderview_update_item(folder->trash, TRUE);
 		}

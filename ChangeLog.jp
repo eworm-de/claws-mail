@@ -1,3 +1,20 @@
+2001-12-18
+
+	* src/procmsg.c: procmsg_empty_trash()
+	  src/mainwindow.c: main_window_empty_trash(): ごみ箱がメッセージを
+	  含んでいる場合のみ空にするようにした。
+	* src/imap.c: search_array_str(): 新規。
+	  imap_status(): コマンドの応答を正しくパースしないバグを修正。
+
+2001-12-18
+
+	* undo 機能をマージ (Jens Oberender さん作)。
+	* src/undo.[ch]: 新規。
+	  undo_insert_text_cb(): マルチバイト文字の修正(バイト数の代わりに
+	  文字数を得る)。
+	* src/compose.[ch]: undo のコードを追加。
+	* src/prefs_common.[ch]: アンドゥレベル設定用インタフェースを追加。
+
 2001-12-16
 
 	* src/compose.c: compose_template_apply()
