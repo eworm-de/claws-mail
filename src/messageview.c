@@ -57,7 +57,6 @@
 #include "prefs_account.h"
 #include "gtkutils.h"
 #include "utils.h"
-#include "rfc2015.h"
 #include "send_message.h"
 #include "stock_pixmap.h"
 #include "hooks.h"

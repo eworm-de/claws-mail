@@ -440,6 +440,8 @@ static struct SpamAssassinPage spamassassin_page;
 
 gint plugin_init(gchar **error)
 {
+	static gchar *path[3];
+
 	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
 		*error = g_strdup("Your sylpheed version is newer than the version the plugin was built with");
 		return -1;
@@ -449,8 +451,12 @@ gint plugin_init(gchar **error)
 		*error = g_strdup("Your sylpheed version is too old");
 		return -1;
 	}
+    
+	path[0] = _("Filtering");
+	path[1] = _("SpamAssassin");
+	path[2] = NULL;
 
-	spamassassin_page.page.path = _("Filtering/SpamAssassin");
+	spamassassin_page.page.path = path;
 	spamassassin_page.page.create_widget = spamassassin_create_widget_func;
 	spamassassin_page.page.destroy_widget = spamassassin_destroy_widget_func;
 	spamassassin_page.page.save_page = spamassassin_save_func;

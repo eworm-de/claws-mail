@@ -20,10 +20,6 @@
 #ifndef __PROCMIME_H__
 #define __PROCMIME_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
@@ -131,6 +127,10 @@ struct _MimeInfo
 
 #define IS_BOUNDARY(s, bnd, len) \
 	(bnd && s[0] == '-' && s[1] == '-' && !strncmp(s + 2, bnd, len))
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /* MimeInfo handling */
 

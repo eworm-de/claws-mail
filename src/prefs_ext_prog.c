@@ -260,9 +260,14 @@ ExtProgPage *prefs_ext_prog;
 void prefs_ext_prog_init(void)
 {
 	ExtProgPage *page;
+	static gchar *path[3];
+	
+	path[0] = _("Message View");
+	path[1] = _("External Programs");
+	path[2] = NULL;
 
 	page = g_new0(ExtProgPage, 1);
-	page->page.path = _("Message View/External Programs");
+	page->page.path = path;
 	page->page.create_widget = prefs_ext_prog_create_widget;
 	page->page.destroy_widget = prefs_ext_prog_destroy_widget;
 	page->page.save_page = prefs_ext_prog_save;

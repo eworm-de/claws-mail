@@ -144,6 +144,10 @@
 	perror(func); \
 }
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef gpointer (*GNodeMapFunc)	(gpointer nodedata, gpointer data);
 
 /* debug functions */
@@ -447,5 +451,9 @@ gchar *generate_mime_boundary	(const gchar *prefix);
 gint quote_cmd_argument(gchar * result, guint size,
 			const gchar * path);
 GNode *g_node_map(GNode *node, GNodeMapFunc func, gpointer data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __UTILS_H__ */

@@ -378,9 +378,14 @@ MsgColorsPage *prefs_msg_colors;
 void prefs_msg_colors_init(void)
 {
 	MsgColorsPage *page;
+	static gchar *path[3];
+
+	path[0] = _("Message View");
+	path[1] = _("Colors");
+	path[2] = NULL;
 
 	page = g_new0(MsgColorsPage, 1);
-	page->page.path = _("Message View/Colors");
+	page->page.path = path;
 	page->page.create_widget = prefs_msg_colors_create_widget;
 	page->page.destroy_widget = prefs_msg_colors_destroy_widget;
 	page->page.save_page = prefs_msg_colors_save;

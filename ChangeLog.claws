@@ -1,3 +1,27 @@
+2004-08-05 [christoph]	0.9.12cvs45
+
+	* src/messageview.c
+	* src/mimeview.[ch]
+	* src/procmime.h
+	* src/common/utils.h
+		cleanup (remove unused includes/reorganize)
+
+	* src/prefs_ext_prog.c
+	* src/prefs_folder_item.c
+	* src/prefs_fonts.c
+	* src/prefs_msg_colors.c
+	* src/prefs_spelling.c
+	* src/prefs_themes.c
+	* src/prefs_toolbar.c
+	* src/prefs_wrapping.c
+	* src/gtk/prefswindow.[ch]
+	* src/plugins/clamav/clamav_plugin_gtk.c
+	* src/plugins/dillo_viewer/dillo_prefs.c
+	* src/plugins/image_viewer/viewerprefs.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		change PrefsPage path into an array of strings and don't
+		split a single string into parts (better for translation)
+
 2004-08-05 [christoph]	0.9.12cvs44
 
 	* src/folder.c
