@@ -221,8 +221,10 @@ gint prefs_folder_item_get_sort_type(FolderItem * item)
 
 void prefs_folder_item_create(FolderItem *item) {
 	struct PrefsFolderItemDialog *dialog;
+	guint rowcount;
+
 	GtkWidget *window;
-	GtkWidget *vbox;
+	GtkWidget *table;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 	GtkWidget *confirm_area;
@@ -251,74 +253,72 @@ void prefs_folder_item_create(FolderItem *item) {
 	gtk_signal_connect (GTK_OBJECT(window), "focus_out_event",
 			    GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
 
-	vbox = gtk_vbox_new (FALSE, 6);
-	gtk_widget_show(vbox);
-	gtk_container_add(GTK_CONTAINER (window), vbox);
-
-	/* Ok and Cancle Buttons */
-	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
-				&cancel_btn, _("Cancel"), NULL, NULL);
-	gtk_widget_show(confirm_area);
-	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
-	gtk_widget_grab_default(ok_btn);
-	gtk_signal_connect (GTK_OBJECT(ok_btn), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_folder_item_ok_cb), dialog);
-	gtk_signal_connect (GTK_OBJECT(cancel_btn), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_folder_item_cancel_cb), dialog);
+	/* Table */
+	table = gtk_table_new(4, 2, FALSE);
+	gtk_widget_show(table);
+	gtk_table_set_row_spacings(GTK_TABLE(table), VSPACING_NARROW);
+	gtk_container_add(GTK_CONTAINER (window), table);
+	rowcount = 0;
 
 	/* Request Return Receipt */
-	PACK_CHECK_BUTTON(vbox, checkbtn_request_return_receipt,
-			   _("Request Return Receipt"));
+	checkbtn_request_return_receipt = gtk_check_button_new_with_label(_("Request Return Receipt"));
+	gtk_widget_show(checkbtn_request_return_receipt);
+	gtk_table_attach_defaults(GTK_TABLE(table), checkbtn_request_return_receipt, 0, 2, rowcount, rowcount + 1);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_request_return_receipt),
 				     item->ret_rcpt ? TRUE : FALSE);
 
-	/* Default To */
-	hbox = gtk_hbox_new(FALSE, 8);
-	gtk_widget_show(hbox);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	rowcount++;
 
-	PACK_CHECK_BUTTON(hbox, checkbtn_default_to,
-			   _("Default To: "));
+	/* Default To */
+	checkbtn_default_to = gtk_check_button_new_with_label(_("Default To: "));
+	gtk_widget_show(checkbtn_default_to);
+	gtk_table_attach_defaults(GTK_TABLE(table), checkbtn_default_to, 0, 1, rowcount, rowcount + 1);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_to), item->prefs->enable_default_to);
 	gtk_signal_connect(GTK_OBJECT(checkbtn_default_to), "toggled",
 			    GTK_SIGNAL_FUNC(prefs_folder_item_default_to_cb), dialog);
 
 	entry_default_to = gtk_entry_new();
 	gtk_widget_show(entry_default_to);
-	gtk_box_pack_start(GTK_BOX(hbox), entry_default_to, FALSE, FALSE, 0);
+	gtk_table_attach_defaults(GTK_TABLE(table), entry_default_to, 1, 2, rowcount, rowcount + 1);
 	gtk_editable_set_editable(GTK_EDITABLE(entry_default_to), item->prefs->enable_default_to);
 	gtk_entry_set_text(GTK_ENTRY(entry_default_to), SAFE_STRING(item->prefs->default_to));
+	address_completion_register_entry(GTK_ENTRY(entry_default_to));
+
+	rowcount++;
 
 	/* Folder chmod */
-	hbox = gtk_hbox_new(FALSE, 8);
-	gtk_widget_show(hbox);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	checkbtn_folder_chmod = gtk_check_button_new_with_label(_("Folder chmod: "));
+	gtk_widget_show(checkbtn_folder_chmod);
+	gtk_table_attach_defaults(GTK_TABLE(table), checkbtn_folder_chmod, 0, 1, rowcount, rowcount + 1);
 
-	PACK_CHECK_BUTTON(hbox, checkbtn_folder_chmod,
-			   _("Folder chmod: "));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_folder_chmod), item->prefs->enable_folder_chmod);
 	gtk_signal_connect(GTK_OBJECT(checkbtn_folder_chmod), "toggled",
 			    GTK_SIGNAL_FUNC(prefs_folder_item_folder_chmod_cb), dialog);
 
 	entry_folder_chmod = gtk_entry_new();
 	gtk_widget_show(entry_folder_chmod);
-	gtk_box_pack_start(GTK_BOX(hbox), entry_folder_chmod, FALSE, FALSE, 0);
+	gtk_table_attach_defaults(GTK_TABLE(table), entry_folder_chmod, 1, 2, rowcount, rowcount + 1);
 	gtk_editable_set_editable(GTK_EDITABLE(entry_folder_chmod), item->prefs->enable_folder_chmod);
 	if (item->prefs->folder_chmod) {
-		gint tmp;
-		gint mult;
-		gint count = 0;
-		char buf[64]; /* plenty enough for an integer */
+		gchar *buf;
 
-		tmp = item->prefs->folder_chmod;
-		while (tmp && (count < sizeof(buf) - 1)) {
-			mult = tmp / 8;
-			buf[count++] = '0' + (tmp - mult * 8);
-			tmp /= 8;
-		}
-		buf[count] = '\0';
+		buf = g_strdup_printf("%o", item->prefs->folder_chmod);
 		gtk_entry_set_text(GTK_ENTRY(entry_folder_chmod), buf);
+		g_free(buf);
 	}
+	
+	rowcount++;
+
+	/* Ok and Cancle Buttons */
+	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
+				&cancel_btn, _("Cancel"), NULL, NULL);
+	gtk_widget_show(confirm_area);
+	gtk_table_attach_defaults(GTK_TABLE(table), confirm_area, 0, 2, rowcount, rowcount + 1);
+	gtk_widget_grab_default(ok_btn);
+	gtk_signal_connect (GTK_OBJECT(ok_btn), "clicked",
+			    GTK_SIGNAL_FUNC(prefs_folder_item_ok_cb), dialog);
+	gtk_signal_connect (GTK_OBJECT(cancel_btn), "clicked",
+			    GTK_SIGNAL_FUNC(prefs_folder_item_cancel_cb), dialog);
 
 	dialog->window = window;
 	dialog->checkbtn_request_return_receipt = checkbtn_request_return_receipt;
@@ -344,13 +344,14 @@ void prefs_folder_item_delete_cb(GtkWidget *widget, GdkEventAny *event, struct P
 }
 
 void prefs_folder_item_ok_cb(GtkWidget *widget, struct PrefsFolderItemDialog *dialog) {
+	gchar *buf;
 	PrefsFolderItem *prefs = dialog->item->prefs;
 
 	prefs->request_return_receipt = 
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_request_return_receipt));
 	/* MIGRATION */    
 	dialog->item->ret_rcpt = prefs->request_return_receipt;
-	    
+
 	prefs->enable_default_to = 
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_default_to));
 	g_free(prefs->default_to);
@@ -358,9 +359,9 @@ void prefs_folder_item_ok_cb(GtkWidget *widget, struct PrefsFolderItemDialog *di
 	    gtk_editable_get_chars(GTK_EDITABLE(dialog->entry_default_to), 0, -1);
 	prefs->enable_folder_chmod = 
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_folder_chmod));
-	prefs->folder_chmod = prefs_folder_item_chmod_mode(
-		gtk_editable_get_chars(GTK_EDITABLE(dialog->entry_folder_chmod),
-				       0, -1));
+	buf = gtk_editable_get_chars(GTK_EDITABLE(dialog->entry_folder_chmod), 0, -1);
+	prefs->folder_chmod = prefs_folder_item_chmod_mode(buf);
+	g_free(buf);
 
 	prefs_folder_item_save_config(dialog->item);
 	prefs_folder_item_destroy(dialog);

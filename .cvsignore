@@ -11,7 +11,9 @@ configure
 Makefile.in
 aclocal.m4
 stamp-h
+stamp-h1
 stamp-h.in
 tags
 TAGS
 *.swp
+depcomp
