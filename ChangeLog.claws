@@ -1,3 +1,15 @@
+2001-12-27 [melvin]	0.6.6claws24
+
+	* src/compose.c
+		Changed subject entry widget position. Initial focus is
+		on the To header instead of the subject entry.
+		Creating a new header scrolls the header list to make the
+		created one visible. Nevertheless, when automatically filling
+		headers, the first one is shown.
+		A Tab key press in the last empty header entry zips the 
+		focus to the subject entry.
+		(I did not change the combo boxes, yet)
+
 2001-12-26 [alfons]	0.6.6claws23
 
 	* src/prefs_account.c

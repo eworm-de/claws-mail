@@ -426,6 +426,12 @@ void compose_headerentry_key_press_event_cb(GtkWidget	       *entry,
 					    GdkEventKey        *event,
 					    ComposeHeaderEntry *headerentry);
 
+gint compose_headerentry_key_press_event_tab_cb	(GtkWidget          *entry,
+						 GdkEventKey        *event,
+						 ComposeHeaderEntry *headerentry);
+
+static void compose_show_first_last_header(Compose *compose, gboolean show_first);
+
 static GtkItemFactoryEntry compose_popup_entries[] =
 {
 	{N_("/_Add..."),	NULL, compose_attach_cb, 0, NULL},
@@ -599,6 +605,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			compose_entry_append(compose, mailto, COMPOSE_NEWSGROUPS);
 		}
 	}
+	compose_show_first_last_header(compose, TRUE);
 
 	/* Set save folder */
 	if(item && item->prefs && item->prefs->save_copy_to_folder) {
@@ -610,7 +617,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 		g_free(folderidentifier);
 	}
 
-	gtk_widget_grab_focus(compose->subject_entry);
+	gtk_widget_grab_focus(compose->header_last->entry);
 
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
@@ -758,6 +765,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	if (compose_parse_header(compose, msginfo) < 0) return;
 	compose_reply_set_entry(compose, msginfo, to_all, ignore_replyto,
 				followup_and_reply_to);
+	compose_show_first_last_header(compose, TRUE);
 
 	text = GTK_STEXT(compose->text);
 	gtk_stext_freeze(text);
@@ -1691,6 +1699,8 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 	SET_ADDRESS(COMPOSE_CC, compose->cc);
 	SET_ADDRESS(COMPOSE_BCC, compose->bcc);
 	SET_ADDRESS(COMPOSE_REPLYTO, compose->replyto);
+
+	compose_show_first_last_header(compose, TRUE);
 
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->bcc) {
@@ -3805,6 +3815,7 @@ static void compose_create_header_entry(Compose *compose)
 
 	address_completion_register_entry(GTK_ENTRY(entry));
 
+        gtk_signal_connect(GTK_OBJECT(entry), "key-press-event", GTK_SIGNAL_FUNC(compose_headerentry_key_press_event_tab_cb), headerentry);
         headerentry->compose = compose;
         headerentry->combo = combo;
         headerentry->entry = entry;
@@ -3827,6 +3838,7 @@ static void compose_add_header_entry(Compose *compose, gchar *header, gchar *tex
 static GtkWidget *compose_create_header(Compose *compose) 
 {
 	GtkWidget *label;
+	GtkWidget *hbox;
 	GtkWidget *from_optmenu_hbox;
 #if 0 /* NEW COMPOSE GUI */
 	GtkWidget *to_entry;
@@ -3836,7 +3848,6 @@ static GtkWidget *compose_create_header(Compose *compose)
 #endif
 	GtkWidget *header_scrolledwin;
 	GtkWidget *header_table;
-	GtkWidget *subject_entry;
 #if 0 /* NEW COMPOSE GUI */
 	GtkWidget *cc_entry;
 	GtkWidget *cc_hbox;
@@ -3847,7 +3858,6 @@ static GtkWidget *compose_create_header(Compose *compose)
 	GtkWidget *followup_entry;
 	GtkWidget *followup_hbox;
 #endif
-	GtkWidget *hbox;
 
 	gint count = 0;
 
@@ -3860,6 +3870,7 @@ static GtkWidget *compose_create_header(Compose *compose)
 	gtk_widget_show(header_table);
 	gtk_container_set_border_width(GTK_CONTAINER(header_table), 2);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(header_scrolledwin), header_table);
+	gtk_viewport_set_shadow_type(GTK_VIEWPORT(GTK_BIN(header_scrolledwin)->child), GTK_SHADOW_ETCHED_IN);
 	count = 0;
 
 	/* option menu for selecting accounts */
@@ -3875,10 +3886,6 @@ static GtkWidget *compose_create_header(Compose *compose)
 	gtk_table_set_row_spacing(GTK_TABLE(table), 0, 4);
 #endif
 	count++;
-
-	/* Subject */
-	compose_add_entry_field(header_table, &hbox, &subject_entry, &count,
-				"Subject:", FALSE);
 
 	compose->header_table = header_table;
 	compose->header_list = NULL;
@@ -3950,7 +3957,6 @@ static GtkWidget *compose_create_header(Compose *compose)
 	compose->newsgroups_hbox  = newsgroups_hbox;
 	compose->newsgroups_entry = newsgroups_entry;
 #endif
-	compose->subject_entry    = subject_entry;
 #if 0 /* NEW COMPOSE GUI */
 	compose->cc_hbox          = cc_hbox;
 	compose->cc_entry         = cc_entry;
@@ -4100,8 +4106,11 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	GtkWidget *vbox2;
 
-	GtkWidget *table_vbox;
-
+	GtkWidget *label;
+	GtkWidget *subject_hbox;
+	GtkWidget *subject_frame;
+	GtkWidget *subject_entry;
+	GtkWidget *subject;
 	GtkWidget *paned;
 
 	GtkWidget *edit_vbox;
@@ -4171,15 +4180,10 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	vbox2 = gtk_vbox_new(FALSE, 2);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox2, TRUE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox2), BORDER_WIDTH);
-
-	table_vbox = gtk_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox2), table_vbox, FALSE, TRUE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(table_vbox),
-				       BORDER_WIDTH * 2);
-
+	
 	/* Notebook */
 	notebook = gtk_notebook_new();
-	gtk_widget_set_usize(notebook, -1, 180);
+	gtk_widget_set_usize(notebook, -1, 130);
 	gtk_widget_show(notebook);
 
 	/* header labels and entries */
@@ -4189,10 +4193,35 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	/* Others Tab */
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), compose_create_others(compose), gtk_label_new(_("Others")));
 
+	/* Subject */
+	subject_hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(subject_hbox);
+
+	subject_frame = gtk_frame_new(NULL);
+	gtk_frame_set_shadow_type(GTK_FRAME(subject_frame), GTK_SHADOW_OUT);
+	gtk_box_pack_start(GTK_BOX(subject_hbox), subject_frame, TRUE, TRUE, BORDER_WIDTH+1);
+	gtk_widget_show(subject_frame);
+
+	subject = gtk_hbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(subject), BORDER_WIDTH);
+	gtk_widget_show(subject);
+
+	label = gtk_label_new(_("Subject:"));
+	gtk_box_pack_start(GTK_BOX(subject), label, FALSE, FALSE, 4);
+	gtk_widget_show(label);
+
+	subject_entry = gtk_entry_new();
+	gtk_box_pack_start(GTK_BOX(subject), subject_entry, TRUE, TRUE, 2);
+	gtk_widget_show(subject_entry);
+	compose->subject_entry = subject_entry;
+	gtk_container_add(GTK_CONTAINER(subject_frame), subject);
+	
 	edit_vbox = gtk_vbox_new(FALSE, 0);
 #if 0 /* NEW COMPOSE GUI */
 	gtk_box_pack_start(GTK_BOX(vbox2), edit_vbox, TRUE, TRUE, 0);
 #endif
+
+	gtk_box_pack_start(GTK_BOX(edit_vbox), subject_hbox, FALSE, FALSE, 0);
 
 	/* ruler */
 	ruler_hbox = gtk_hbox_new(FALSE, 0);
@@ -4235,7 +4264,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 			   GTK_SIGNAL_FUNC(compose_grab_focus_cb), compose);
 	gtk_signal_connect_after(GTK_OBJECT(text), "button_press_event",
 				 GTK_SIGNAL_FUNC(compose_button_press_cb),
-				 compose);
+				 edit_vbox);
 #if 0
 	gtk_signal_connect_after(GTK_OBJECT(text), "key_press_event",
 				 GTK_SIGNAL_FUNC(compose_key_press_cb),
@@ -4268,6 +4297,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	/* pane between attach clist and text */
 	paned = gtk_vpaned_new();
+	gtk_paned_set_gutter_size(GTK_PANED(paned), 12);
+	gtk_paned_set_handle_size(GTK_PANED(paned), 12);
 	gtk_container_add(GTK_CONTAINER(vbox2), paned);
 	gtk_paned_add1(GTK_PANED(paned), notebook);
 	gtk_paned_add2(GTK_PANED(paned), edit_vbox);
@@ -4376,8 +4407,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->handlebox     = handlebox;
 
 	compose->vbox2	       = vbox2;
-
-	compose->table_vbox       = table_vbox;
 
 	compose->paned = paned;
 
@@ -6250,5 +6279,37 @@ void compose_headerentry_changed_cb(GtkWidget *entry,
 			(GTK_OBJECT(entry),
 			 GTK_SIGNAL_FUNC(compose_headerentry_changed_cb),
 			 headerentry);
+		/* Automatically scroll down */
+		compose_show_first_last_header(headerentry->compose, FALSE);
+		
 	}
+}
+
+gint compose_headerentry_key_press_event_tab_cb(GtkWidget 	   *entry,
+						GdkEventKey 	   *event,
+						ComposeHeaderEntry *headerentry)
+{
+	if (event->keyval == GDK_Tab) {
+		if (headerentry->compose->header_last == headerentry) {
+			/* Override default next focus, and give it to subject_entry
+			 * instead of notebook tabs
+			 */
+			gtk_signal_emit_stop_by_name(GTK_OBJECT(entry), "key-press-event"); 
+			gtk_widget_grab_focus(headerentry->compose->subject_entry);
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+static void compose_show_first_last_header(Compose *compose, gboolean show_first)
+{
+	GtkAdjustment *vadj;
+
+	g_return_if_fail(compose);
+	g_return_if_fail(GTK_IS_WIDGET(compose->header_table));
+	g_return_if_fail(GTK_IS_VIEWPORT(compose->header_table->parent));
+
+	vadj = gtk_viewport_get_vadjustment(GTK_VIEWPORT(compose->header_table->parent));
+	gtk_adjustment_set_value(vadj, (show_first ? vadj->lower : vadj->upper));
 }
