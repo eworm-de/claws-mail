@@ -81,7 +81,6 @@ struct _PrefsCommon
 
 	gboolean show_mark;
 	gboolean show_unread;
-	gboolean show_retrieve_dialog;
 	gboolean show_mime;
 	gboolean show_number;
 	gboolean show_score;

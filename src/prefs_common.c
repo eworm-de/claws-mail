@@ -149,7 +149,6 @@ static struct Interface {
 	GtkWidget *checkbtn_warnqueued;
 	GtkWidget *checkbtn_returnreceipt;
 	GtkWidget *checkbtn_addaddrbyclick;
-	GtkWidget *checkbtn_retrievedialog;
 } interface;
 
 static struct Other {
@@ -482,9 +481,6 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"open_unread_on_enter", "FALSE", &prefs_common.open_unread_on_enter,
 	 P_BOOL, &interface.checkbtn_openunread,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"show_retrieve_dialog", "FALSE", &prefs_common.show_retrieve_dialog,
-	 P_BOOL, &interface.checkbtn_retrievedialog,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"open_inbox_on_inc", "TRUE", &prefs_common.open_inbox_on_inc,
 	 P_BOOL, &interface.checkbtn_openinbox,
@@ -1797,7 +1793,6 @@ static void prefs_interface_create(void)
 	GtkWidget *checkbtn_cleanonexit;
 	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_warnqueued;
-	GtkWidget *checkbtn_retrievedialog;
 	GtkWidget *checkbtn_returnreceipt;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
@@ -1818,10 +1813,6 @@ static void prefs_interface_create(void)
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_openunread,
 		 _("Open first unread message when entering a folder"));
-
-	PACK_CHECK_BUTTON
-		(vbox2, checkbtn_retrievedialog,
-		 _("Display dialog when retrieving mail"));
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_openinbox,
@@ -1885,7 +1876,6 @@ static void prefs_interface_create(void)
 	interface.checkbtn_askonclean     = checkbtn_askonclean;
 	interface.checkbtn_warnqueued     = checkbtn_warnqueued;
 	interface.checkbtn_returnreceipt  = checkbtn_returnreceipt;
-	interface.checkbtn_retrievedialog = checkbtn_retrievedialog;
 }
 
 static void prefs_other_create(void)

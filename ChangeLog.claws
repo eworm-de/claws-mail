@@ -1,5 +1,7 @@
 2001-05-12 [alfons]
 
+	* reverted previous patch because of potential errors 
+
 	0.4.67claws2
 	
 	* src/inc.c, src/prefs_common.c, src/prefs_common.h: 

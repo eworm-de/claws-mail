@@ -263,20 +263,16 @@ static IncProgressDialog *inc_progress_dialog_create(void)
 			   GTK_SIGNAL_FUNC(gtk_true), NULL);
 	manage_window_set_transient(GTK_WINDOW(progress->window));
 
-
 	progress_dialog_set_value(progress, 0.0);
 
-	if (prefs_common.show_retrieve_dialog)
-        {
-	  gtk_widget_show(progress->window);
+	gtk_widget_show(progress->window);
 
-	  PIXMAP_CREATE(progress->clist, okxpm, okxpmmask, complete_xpm);
-	  PIXMAP_CREATE(progress->clist,
+	PIXMAP_CREATE(progress->clist, okxpm, okxpmmask, complete_xpm);
+	PIXMAP_CREATE(progress->clist,
 		      currentxpm, currentxpmmask, continue_xpm);
-   	  PIXMAP_CREATE(progress->clist, errorxpm, errorxpmmask, error_xpm);
+	PIXMAP_CREATE(progress->clist, errorxpm, errorxpmmask, error_xpm);
 
-	  gtk_widget_show_now(progress->window);
-	}
+	gtk_widget_show_now(progress->window);
 
 	dialog->dialog = progress;
 	dialog->queue_list = NULL;
