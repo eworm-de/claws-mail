@@ -220,13 +220,11 @@ void session_child_thread(void *data)
 	while (session_child_input(session) == TRUE)
 		;
 
-#ifdef WIN32	/* XXX:tm */
-	Sleep(1); /* run other threads (process DISCONNECT message) */
+#ifdef WIN32 /* child: run other threads (process DISCONNECT message) */
+	if (!session->child_pid)
+		Sleep(1000);
 #endif
 	session_close(session);
-#ifdef WIN32
-	Sleep(1); /* run other threads (process DISCONNECT message) */
-#endif
 
 	g_print("child: disconnected\n");
 
@@ -337,10 +335,6 @@ static gint session_close(Session *session)
 	
 	g_print("$$$ %s: closing write channel\n", session->child_pid == 0 ? "child" : "parent");
 	if (session->write_ch) {
-#ifdef WIN32
-		g_io_channel_flush(session->write_ch, NULL);
-		Sleep(1);
-#endif
 		g_io_channel_close(session->write_ch);
 		g_io_channel_unref(session->write_ch);
 		session->write_ch = NULL;
@@ -777,8 +771,6 @@ gboolean session_parent_input_cb(GIOChannel *source, GIOCondition condition,
 	switch (session_get_msg_type(msg)) {
 	case SESSION_MSG_NORMAL:
 		msg_data = msg + strlen("MESSAGE ");
-if (!session->recv_msg)
-return FALSE;
 		ret = session->recv_msg(session, msg_data);
 		g_print("$$$ > session_parent_input_cb(data: %lx)\n", 
 			session->recv_msg_notify_data);
