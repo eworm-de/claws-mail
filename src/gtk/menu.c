@@ -113,10 +113,8 @@ void menu_set_sensitive(GtkItemFactory *ifactory, const gchar *path,
 	g_return_if_fail(ifactory != NULL);
 
 	widget = gtk_item_factory_get_item(ifactory, path);
-	if(widget == NULL) {
-		debug_print("unknown menu entry %s\n", path);
-		return;
-	}
+	g_return_if_fail(widget != NULL);
+
 	gtk_widget_set_sensitive(widget, sensitive);
 }
 
@@ -136,6 +134,8 @@ void menu_set_active(GtkItemFactory *ifactory, const gchar *path,
 	g_return_if_fail(ifactory != NULL);
 
 	widget = gtk_item_factory_get_item(ifactory, path);
+	g_return_if_fail(widget != NULL);
+
 	if (!GTK_IS_CHECK_MENU_ITEM(widget)) {
 		debug_print("%s not check_menu_item\n", path);
 		return;

@@ -1,3 +1,103 @@
+2004-10-19 [christoph]	0.9.12cvs130
+
+	* src/compose.c
+		fix wrong menu entry path
+
+	(Closes Bug 626 crashes after clicking 'reply' or 'reply to all')
+
+	* src/gtk/menu.c
+		add extra check for missing menu entries
+
+2004-10-19 [christoph]	0.9.12cvs129
+
+	* src/compose.c
+	* src/common/utils.c
+		use utils' generate_msgid() in compose.c
+
+2004-10-18 [christoph]	0.9.12cvs128
+
+	* src/plugins/pgpmime/passphrase.c
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/prefs_gpg.[ch]
+	* src/plugins/pgpmime/prefs_gpg.glade
+	* src/plugins/pgpmime/sgpgme.c
+		add GPG prefs
+
+2004-10-18 [christoph]	0.9.12cvs127
+
+	* src/addrbook.c
+	* src/addrcache.c
+	* src/addressbook.c
+	* src/codeconv.c
+	* src/compose.c
+	* src/customheader.c
+	* src/editaddress.c
+	* src/editgroup.c
+	* src/exporthtml.c
+	* src/folder.c
+	* src/folderview.c
+	* src/imap.c
+	* src/jpilot.c
+	* src/main.c
+	* src/matcher_parser_parse.y
+	* src/mbox.c
+	* src/pop.c
+	* src/prefs_account.c
+	* src/prefs_gtk.c
+	* src/prefs_msg_colors.c
+	* src/procheader.c
+	* src/procmime.[ch]
+	* src/procmsg.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/common/base64.c
+	* src/common/partial_download.c
+	* src/common/socket.c
+	* src/common/sylpheed.c
+	* src/common/utils.[ch]
+	* src/gtk/filesel.c
+	* src/gtk/pluginwindow.c
+	* src/gtk/quicksearch.c
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/plugin.c
+	* src/plugins/pgpmime/select-keys.c
+	* src/plugins/pgpmime/sgpgme.c
+	* src/plugins/spamassassin/libspamc.c
+	* src/plugins/trayicon/trayicon.c
+	* src/plugins/trayicon/libeggtrayicon/eggtrayicon.[ch]
+	* src/plugins/trayicon/libeggtrayicon/gtkplugxembed.c
+		o don't use any GNU C extensions
+		o fix warnings
+		o replace some non-POSIX functions
+
+	* src/plugins/spamassassin/spamassassin.[ch]
+	* src/plugins/spamassassin/spamassassin_gtk.c
+	* src/plugins/clamav/clamav_plugin.[ch]
+	* src/plugins/clamav/clamav_plugin_gtk.c
+		replace statusbar_print_all() from common code because it is a
+		GUI function
+
+2004-10-17 [paul]
+
+	* po/es.po
+	* po/ko.po
+	* AUTHORS
+		update Spanish and Korean translations,
+		submitted by Ricardo Mones Lastra and
+		SungHyun Nam
+
+2004-10-13 [colin]	0.9.12cvs126
+
+	* src/compose.c
+		Don't convert message to forced encoding when 
+		drafting, plus minor magic-values cleanup.
+
+2004-10-13 [colin]	0.9.12cvs125
+
+	* po/POTFILES.in
+		Update POTFILES.in to reflect the source
+		place changes
+
 2004-10-08 [christoph]	0.9.12cvs124
 
 	* m4/spamassassin.m4
