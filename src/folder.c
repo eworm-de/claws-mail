@@ -885,7 +885,7 @@ static gint folder_sort_cache_list_by_msgnum(gconstpointer a, gconstpointer b)
 static gint folder_sort_folder_list(gconstpointer a, gconstpointer b)
 {
 	guint gint_a = GPOINTER_TO_INT(a);
-	guint gint_b = GPOINTER_TO_INT(a);
+	guint gint_b = GPOINTER_TO_INT(b);
 	
 	return (gint_a - gint_b);
 }
