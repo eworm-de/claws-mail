@@ -26,5 +26,7 @@ gboolean sylpheed_init			(int *argc, char ***argv);
 void sylpheed_done			(void);
 const gchar *sylpheed_get_startup_dir	(void);
 guint sylpheed_get_version		(void);
+void sylpheed_register_idle_function	(void (*idle_func)(void));
+void sylpheed_do_idle			(void);
 
 #endif /* SYLPHEED_H */
