@@ -1,3 +1,15 @@
+2003-07-19 [luke]	0.9.3claws28
+	* src/messageview.c
+	* src/mimeview.[ch]
+	* src/procmime.h
+	* src/rfc2015.c
+	* src/stock_pixmap.[ch]
+	* src/gtk/Makefile.am
+	* src/Makefile.am
+	* src/gtk/gtkvscrollbutton.[ch]  	** NEW **
+	* src/pixmaps/mime_*.xpm         	** NEW **
+		o mimeview rearrangement with a new icon shortcut bar
+	
 2003-07-19 [alfons]	0.9.3claws27
 
 	* src/folderview.c
