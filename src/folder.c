@@ -1249,8 +1249,6 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 				folder->account->account_id);
 		if (item->collapsed && node->children)
 			fputs(" collapsed=\"1\"", fp);
-		if (item->threaded)
-			fputs(" threaded=\"1\"", fp);
 		if (item->ret_rcpt) 
 			fputs(" reqretrcpt=\"1\"", fp);
 	} else {
@@ -1277,6 +1275,8 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 			fputs(" collapsed=\"1\"", fp);
 		if (item->threaded)
 			fputs(" threaded=\"1\"", fp);
+		else
+			fputs(" threaded=\"0\"", fp);
 		if (item->ret_rcpt)
 			fputs(" reqretrcpt=\"1\"", fp);
 		fprintf(fp,

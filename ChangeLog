@@ -1,3 +1,8 @@
+2001-09-27
+
+	* src/folder.c: folder_write_list_recursive(): preserve unthreaded
+	  state.
+
 2001-09-26
 
 	* src/summaryview.c: modified the layout of popup menu.
