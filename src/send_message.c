@@ -288,8 +288,6 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 	SMTPSession *smtp_session;
 	gushort port;
 	SendProgressDialog *dialog;
-	GtkCList *clist;
-	const gchar *text[3];
 	gchar buf[BUFFSIZE];
 	gint ret = 0;
 
@@ -367,11 +365,9 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 	dialog = send_progress_dialog_create();
 	dialog->session = session;
 
-	text[0] = NULL;
-	text[1] = ac_prefs->smtp_server;
-	text[2] = _("Connecting");
-	clist = GTK_CLIST(dialog->dialog->clist);
-	gtk_clist_append(clist, (gchar **)text);
+	progress_dialog_list_set(dialog->dialog, 0, NULL, 
+				 ac_prefs->smtp_server, 
+				 _("Connecting"));
 
 	if (ac_prefs->pop_before_smtp
 	    && (ac_prefs->protocol == A_APOP || ac_prefs->protocol == A_POP3)
@@ -379,7 +375,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 		g_snprintf(buf, sizeof(buf), _("Doing POP before SMTP..."));
 		log_message(buf);
 		progress_dialog_set_label(dialog->dialog, buf);
-		gtk_clist_set_text(clist, 0, 2, _("POP before SMTP"));
+		progress_dialog_list_set_status(dialog->dialog, 0, _("POP before SMTP"));
 		GTK_EVENTS_FLUSH();
 		inc_pop_before_smtp(ac_prefs);
 	}
@@ -486,7 +482,7 @@ static gint send_recv_message(Session *session, const gchar *msg, gpointer data)
 	}
 
 	progress_dialog_set_label(dialog->dialog, buf);
-	gtk_clist_set_text(GTK_CLIST(dialog->dialog->clist), 0, 2, state_str);
+	progress_dialog_list_set_status(dialog->dialog, 0, state_str);
 
 	return 0;
 }

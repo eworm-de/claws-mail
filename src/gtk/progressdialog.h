@@ -32,6 +32,7 @@ struct _ProgressDialog
 	GtkWidget *cancel_btn;
 	GtkWidget *progressbar;
 	GtkWidget *clist;
+	GtkWidget *list_view;
 };
 
 ProgressDialog *progress_dialog_create	(void);
@@ -41,5 +42,28 @@ void progress_dialog_get_fraction	(ProgressDialog	*progress);
 void progress_dialog_set_fraction	(ProgressDialog	*progress,
 					 gfloat		 percentage);
 void progress_dialog_destroy		(ProgressDialog	*progress);
+
+
+/*
+ * Use these functions to access the dialog list
+ */
+
+gint progress_dialog_list_set_account	(ProgressDialog *progress,
+					 gint		 row,
+					 const gchar	*account_name);
+gint progress_dialog_list_set_image	(ProgressDialog *progress,
+					 gint		 row,
+					 GdkPixbuf	*image);
+gint progress_dialog_list_set_status	(ProgressDialog *progress,
+					 gint		 row,
+					 const gchar    *status);
+gint progress_dialog_list_set		(ProgressDialog *progress,
+					 gint		 row,
+					 GdkPixbuf	*image,
+					 const gchar	*account_name,
+					 const gchar    *status);
+
+gboolean progress_dialog_list_select_row(ProgressDialog *progress,
+					 gint		 row);
 
 #endif /* __PROGRESS_H__ */
