@@ -152,6 +152,8 @@ static void inc_finished(MainWindow *mainwin, gboolean new_messages)
 		item = cur_account && cur_account->inbox
 			? folder_find_item_from_identifier(cur_account->inbox)
 			: folder_get_default_inbox();
+		folderview_unselect(mainwin->folderview);
+		folderview_select(mainwin->folderview, item);
 	}
 }
 

@@ -1,3 +1,10 @@
+2003-04-14 [alfons]	0.9.5claws14
+
+	* src/inc.c
+		make "Go to inbox after receiving new mail" again;
+		regression of a sync, restored to sylpheed main 
+		behaviour. (misses still some bits)
+
 2003-04-14 [alfons]	0.9.5claws13
 
 	* src/prefs_filtering_action.c
