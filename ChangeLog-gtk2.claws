@@ -1,3 +1,8 @@
+2004-10-01 [colin]	0.9.12cvs117.1
+
+	* src/mimeview.c
+		Sync with HEAD (Save All: only attachments)
+
 2004-10-01 [paul]	0.9.12cvs116.1
 
 	* ChangeLog.claws
