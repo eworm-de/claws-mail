@@ -537,8 +537,7 @@ gtk_sctree_collapse (GtkCTree *ctree, GtkCTreeNode *node)
 		gtk_ctree_node_nth(ctree, GTK_CLIST(ctree)->focus_row);
 }
 
-GtkWidget *gtk_sctree_new_with_titles (gint columns, 
-				       gint tree_column, 
+GtkWidget *gtk_sctree_new_with_titles (gint columns, gint tree_column, 
 				       gchar *titles[])
 {
 	GtkSCTree* sctree;
@@ -550,18 +549,22 @@ GtkWidget *gtk_sctree_new_with_titles (gint columns,
 	return GTK_WIDGET (sctree);
 }
 
-void  gtk_sctree_select (GtkSCTree *sctree,
-			 GtkCTreeNode *node)
+void gtk_sctree_select (GtkSCTree *sctree, GtkCTreeNode *node)
 {
 	select_row(sctree, 
 		   g_list_position(GTK_CLIST(sctree)->row_list, (GList *)node),
 		   -1, 0);
 }
 
-void  gtk_sctree_unselect_all (GtkSCTree *sctree)
+void gtk_sctree_unselect_all (GtkSCTree *sctree)
 {
 	gtk_clist_unselect_all(GTK_CLIST(sctree));
 	sctree->anchor_row = NULL;
+}
+
+void gtk_sctree_set_anchor_row (GtkSCTree *sctree, GtkCTreeNode *node)
+{
+	sctree->anchor_row = node;
 }
 
 /***********************************************************

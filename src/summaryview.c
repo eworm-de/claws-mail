@@ -2454,11 +2454,17 @@ void summary_step(SummaryView *summaryview, GtkScrollType type)
 
 	gtk_signal_emit_by_name(GTK_OBJECT(ctree), "scroll_vertical",
 				type, 0.0);
-	
+
+	if (GTK_CLIST(ctree)->selection)
+		gtk_sctree_set_anchor_row
+			(GTK_SCTREE(ctree),
+			 GTK_CTREE_NODE(GTK_CLIST(ctree)->selection->data));
+
+#if 0
 	if(summaryview->selected) {
 		gtk_sctree_reanchor (GTK_SCTREE(ctree), summaryview->selected);
 	}
-
+#endif
 
 }
 
@@ -4551,7 +4557,7 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	if (!summaryview->selected) {
 		node = gtk_ctree_node_nth(ctree, 0);
 		if (node)
-			gtk_ctree_select(ctree, node);
+			gtk_sctree_select(GTK_SCTREE(ctree), node);
 		else
 			return;
 	}

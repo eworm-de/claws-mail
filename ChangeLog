@@ -1,5 +1,27 @@
+2002-10-11
+
+	* src/compose.c: allow dropping files by also "moving" files from a
+	  file manager (thanks to Alfons).
+
+2002-10-10
+
+	* compose_reply_set_entry(): made Reply-To have priority over
+	  List-Post on ML reply.
+
+2002-10-09
+
+	* src/gtksctree.[ch]: gtk_sctree_set_anchor_row(): new.
+	* src/summaryview.c: summary_step(): fixed a bug that lost the
+	  correct selection anchor.
+	  summary_key_pressed(): use gtk_sctree_select() instead of
+	  gtk_ctree_select().
+	* src/inc.[ch]
+	  src/pop.c
+	  src/recv.c: differentiate disk full and socket errors
+	  (thanks to Colin Leroy).
+
 2002-10-08
- 
+
 	* src/account.c: account_edit_prefs(): removed unused variables.
 	* src/compose.[ch]: separated WITH_QUOTE/WITHOUT_QUOTE flags in
 	  ComposeMode.
@@ -8,7 +30,7 @@
 	* src/summaryview.c: summary_reply(): reduced conditional branches.
 
 2002-10-08
- 
+
 	* src/compose.c: compose_redirect(), compose_reedit(): strip CR
 	  from line ends (thanks to Sergey Vlasov).
 	* src/folderview.c: renamed 'Rescan folder tree' to 'Rebuild
@@ -21,7 +43,7 @@
 	  messages all at once.
 
 2002-10-07
- 
+
 	* src/account.[ch]: account_open(): new. It opens account prefs
 	  dialog and reflects to UI when finished.
 	* src/folderview.c:
