@@ -1,3 +1,8 @@
+2001-10-09 [paul]	0.6.3claws3
+
+	* sync with sylpheed 0.6.3cvs1
+		updated some autotool scripts
+
 2001-10-09 [darko]	0.6.3claws2
 
 	* src/gtkstext.[ch]
