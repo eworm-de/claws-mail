@@ -1,3 +1,8 @@
+2003-04-06 [thorsten]	0.8.11claws73
+
+	* src/mh.c
+		corrected implementation of mh_folder_destroy()
+
 2003-04-05 [christoph]	0.8.11claws72
 
 	* src/account.c
