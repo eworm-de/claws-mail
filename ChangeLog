@@ -1,5 +1,9 @@
 2002-03-03
 
+	* version 0.7.3
+
+2002-03-03
+
 	* src/mimeview.c: mimeview_create(): set the initial notebook page
 	  to 0.
 	* src/folderview.c: folderview_selected(): scroll the view if the

@@ -1,5 +1,19 @@
 Changes of Sylpheed
 
+* 0.7.3
+
+    * Attached files will be inherited on forwarding or reediting.
+    * Filter rules will be also updated when renaming or deleting folders.
+    * 'Get all' and 'Check for new messages' now works for IMAP4 and News
+      accounts.
+    * Limit of Receive size for POP3 has been implemented.
+    * The new notebook tab interface for multipart messages has been
+      implemented, and text parts are displayed on the text view all together.
+    * Separate user ID and password can be used for SMTP AUTH.
+    * ISO-8859-15 support has been added.
+    * Cancellation of POP3 session is now handled correctly.
+    * Some bugfixes have been made.
+
 * 0.7.2
 
     * Message moving between different type of folders has been enabled.
