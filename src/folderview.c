@@ -1514,10 +1514,13 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 
 	if (folderview->mainwin->lock_count == 0) {
 		new_folder = TRUE;
-		if (item->parent == NULL)
+		if (item->parent == NULL) {
 			update_tree = remove_tree = TRUE;
-		else
+			if (folder->account)
+				folder_property = TRUE;
+		} else
 			mark_all_read = search_folder = folder_property = TRUE;
+			
 		if (FOLDER_IS_LOCAL(folder) || FOLDER_TYPE(folder) == F_IMAP || FOLDER_TYPE(folder) == F_MBOX) {
 			if (item->parent == NULL)
 				update_tree = rescan_tree = TRUE;
@@ -2290,6 +2293,7 @@ static void folderview_rm_imap_server_cb(FolderView *folderview, guint action,
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	FolderItem *item;
+	PrefsAccount *account;
 	gchar *name, *name_;
 	gchar *message;
 	AlertValue avalue;
@@ -2320,8 +2324,9 @@ static void folderview_rm_imap_server_cb(FolderView *folderview, guint action,
 		folderview->opened = NULL;
 	}
 
-	account_destroy(item->folder->account);
+	account = item->folder->account;
 	folder_destroy(item->folder);
+	account_destroy(account);
 	gtk_ctree_remove_node(ctree, folderview->selected);
 	account_set_menu();
 	main_window_reflect_prefs_all();
@@ -2460,6 +2465,7 @@ static void folderview_rm_news_server_cb(FolderView *folderview, guint action,
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	FolderItem *item;
+	PrefsAccount *account;
 	gchar *name, *name_;
 	gchar *message;
 	AlertValue avalue;
@@ -2490,8 +2496,9 @@ static void folderview_rm_news_server_cb(FolderView *folderview, guint action,
 		folderview->opened = NULL;
 	}
 
-	account_destroy(item->folder->account);
-	folder_destroy(item->folder);
+	account = item->folder->account;
+ 	folder_destroy(item->folder);
+	account_destroy(account);
 	gtk_ctree_remove_node(ctree, folderview->selected);
 	account_set_menu();
 	main_window_reflect_prefs_all();
@@ -2522,7 +2529,10 @@ static void folderview_property_cb(FolderView *folderview, guint action,
 	/*
 	 * CLAWS: wait till Hiro has completed his stuff
 	 */
-	prefs_folder_item_open(item);
+	if (item->parent == NULL && item->folder->account)
+		account_open(item->folder->account);
+	else
+		prefs_folder_item_open(item);
 #endif	
 }
 

@@ -1,3 +1,23 @@
+2002-10-07
+ 
+	* src/account.[ch]: account_open(): 新規。アカウント設定ダイアログ
+	  を開き、終了時に UI に反映させる。
+	* src/folderview.c:
+	  folderview_button_pressed()
+	  folderview_property_cb(): リモートアカウントのルートフォルダの
+	  プロパティを要求されたらアカウント設定ダイアログを開くようにした。
+
+2002-10-07
+
+	* src/account.c: account_destroy(): フォルダ中のアカウント情報への
+	  参照を解除するようにした。
+	* src/folder.[ch]: folder_unref_account_all(): 新規。全フォルダ中
+	  の指定したアカウント情報への参照を解除する。
+	* src/folderview.c:
+	  folderview_rm_imap_server_cb()
+	  folderview_rm_news_server_cb(): folder_destroy() がアカウント情報
+	  を参照しているため Folder を先に削除するようにした。
+
 2002-10-04
 
 	* src/account.c: account_find_from_item(): 正しいアカウントを選択

@@ -1,3 +1,23 @@
+2002-10-07
+ 
+	* src/account.[ch]: account_open(): new. It opens account prefs
+	  dialog and reflects to UI when finished.
+	* src/folderview.c:
+	  folderview_button_pressed()
+	  folderview_property_cb(): open account prefs dialog when the
+	  property of the root folder of remote account is requested.
+
+2002-10-07
+
+	* src/account.c: account_destroy(): unref account information in
+	  folders.
+	* src/folder.[ch]: folder_unref_account_all(): new. It unref the
+	  specified account information in all folders.
+	* src/folderview.c:
+	  folderview_rm_imap_server_cb()
+	  folderview_rm_news_server_cb(): destroy Folder first because
+	  folder_destroy() refers to account information.
+
 2002-10-04
 
 	* src/account.c: account_find_from_item(): fixed a bug which didn't

@@ -50,6 +50,7 @@ GList	     *account_get_list		(void);
 
 void	      account_edit_open		(void);
 void	      account_add		(void);
+void	      account_open		(PrefsAccount	*ac_prefs);
 void	      account_set_as_default	(PrefsAccount	*ac_prefs);
 void	      account_set_as_recv_at_get_all	(PrefsAccount	*ac_prefs);
 PrefsAccount *account_get_default	(void);

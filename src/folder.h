@@ -328,6 +328,7 @@ FolderItem *folder_get_default_queue	(void);
 FolderItem *folder_get_default_trash	(void);
 FolderItem *folder_get_default_processing (void);
 void folder_set_missing_folders		(void);
+void folder_unref_account_all		(PrefsAccount	*account);
 
 gchar *folder_get_path			(Folder		*folder);
 gchar *folder_item_get_path		(FolderItem	*item);

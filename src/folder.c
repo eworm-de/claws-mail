@@ -795,6 +795,33 @@ void folder_set_missing_folders(void)
 	}
 }
 
+static gboolean folder_unref_account_func(GNode *node, gpointer data)
+{
+	FolderItem *item = node->data;
+	PrefsAccount *account = data;
+
+	if (item->account == account)
+		item->account = NULL;
+
+	return FALSE;
+}
+
+void folder_unref_account_all(PrefsAccount *account)
+{
+	Folder *folder;
+	GList *list;
+
+	if (!account) return;
+
+	for (list = folder_list; list != NULL; list = list->next) {
+		folder = list->data;
+		if (folder->account == account)
+			folder->account = NULL;
+		g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+				folder_unref_account_func, account);
+	}
+}
+
 #undef CREATE_FOLDER_IF_NOT_EXIST
 
 gchar *folder_get_path(Folder *folder)

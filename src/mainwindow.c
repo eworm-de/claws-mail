@@ -3501,14 +3501,7 @@ static void prefs_account_open_cb(MainWindow *mainwin, guint action,
 	if (!cur_account) {
 		new_account_cb(mainwin, 0, widget);
 	} else {
-		gboolean prev_default = cur_account->is_default;
-
-		prefs_account_open(cur_account);
-		if (!prev_default && cur_account->is_default)
-			account_set_as_default(cur_account);
-		account_save_config_all();
-		account_set_menu();
-		main_window_reflect_prefs_all();
+		account_open(cur_account);
 	}
 }
 
