@@ -651,6 +651,14 @@ static void html_get_parenthesis(HTMLParser *parser, gchar *buf, gint len)
 		parser->bufp = p + 3;
 		return;
 	}
+	/* ignore css stuff */
+	if (!strncmp(parser->bufp, "<STYLE type=text/css>", 21)) {
+		parser->bufp += 21;
+		while ((p = strstr(parser->bufp, "</STYLE>")) == NULL)
+			if (html_read_line(parser) == HTML_EOF) return;
+		parser->bufp = p + 8;
+		return;
+	}
 
 	parser->bufp++;
 	while ((p = strchr(parser->bufp, '>')) == NULL)

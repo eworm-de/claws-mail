@@ -1,3 +1,8 @@
+2001-10-25 [paul]	0.6.4claws5
+
+	* src/html.c
+		ignore css tags in html mail
+
 2001-10-25 [darko]	0.6.4claws4
 
 	* src/compose.c
