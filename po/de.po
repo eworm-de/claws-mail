@@ -7215,9 +7215,3 @@ msgstr "Speicher Crash-Informationen"
 #: src/crash.c:446 src/crash.c:465
 msgid "Unknown"
 msgstr "Unbekannt"
-
-#~ msgid "a message won't be received\n"
-#~ msgstr "eine Nachricht wurde nicht empfangen\n"
-
-#~ msgid "Customize toolbar"
-#~ msgstr "Toolbar anpassen"
