@@ -1358,7 +1358,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 
 	gtk_widget_grab_focus(compose->header_last->entry);
 
-	filename = procmsg_get_message_file(msginfo);
+	filename = procmsg_get_message_file_path(msginfo);
 	if (filename == NULL)
 		return NULL;
 
@@ -1398,10 +1398,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	menu_set_sensitive(ifactory, "/Message/Attach file", FALSE);
 	menu_set_sensitive(ifactory, "/Message/Insert signature", FALSE);
 	menu_set_sensitive(ifactory, "/Edit", FALSE);
-	menu_set_sensitive(ifactory, "/Options/Sign", FALSE);
-	menu_set_sensitive(ifactory, "/Options/Encrypt", FALSE);
-	menu_set_sensitive(ifactory, "/Options/Priority", FALSE);
-	menu_set_sensitive(ifactory, "/Options/Request Return Receipt", FALSE);
+	menu_set_sensitive(ifactory, "/Options", FALSE);
 	menu_set_sensitive(ifactory, "/Tools/Show ruler", FALSE);
 	menu_set_sensitive(ifactory, "/Tools/Actions", FALSE);
 	
@@ -3035,11 +3032,11 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 
 #endif
 
-	if (account->default_sign)
+	if (account->default_sign && compose->mode != COMPOSE_REDIRECT)
 		menu_set_active(ifactory, "/Options/Sign", TRUE);
 	else
 		menu_set_active(ifactory, "/Options/Sign", FALSE);
-	if (account->default_encrypt)
+	if (account->default_encrypt && compose->mode != COMPOSE_REDIRECT)
 		menu_set_active(ifactory, "/Options/Encrypt", TRUE);
 	else
 		menu_set_active(ifactory, "/Options/Encrypt", FALSE);

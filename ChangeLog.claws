@@ -1,3 +1,9 @@
+2005-02-05 [paul]	1.0.0cvs28
+
+	* src/compose.c
+		fix Bug 682 'redirect is broken'
+
+
 2005-02-05 [thorsten]	1.0.0cvs27
 
 	* src/partial_download.c
