@@ -171,7 +171,6 @@ static gint imap_remove_all_msg(Folder * folder, FolderItem * item);
 static gboolean imap_is_msg_changed(Folder * folder,
 				    FolderItem * item, MsgInfo * msginfo);
 
-static gint imap_scan_folder(Folder * folder, FolderItem * item);
 static void imap_scan_tree(Folder * folder);
 
 static gint imap_create_tree(Folder * folder);
@@ -968,32 +967,6 @@ gboolean imap_is_msg_changed(Folder *folder, FolderItem *item, MsgInfo *msginfo)
 	return FALSE;
 }
 
-gint imap_scan_folder(Folder *folder, FolderItem *item)
-{
-	IMAPSession *session;
-	gint messages, recent, unseen;
-	guint32 uid_next, uid_validity;
-	gint ok;
-
-	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(item != NULL, -1);
-
-	session = imap_session_get(folder);
-	if (!session) return -1;
-
-	ok = imap_status(session, IMAP_FOLDER(folder), item->path,
-			 &messages, &recent, &uid_next, &uid_validity, &unseen);
-	if (ok != IMAP_SUCCESS) return -1;
-
-	item->new_msgs = unseen > 0 ? recent : 0;
-	item->unread_msgs = unseen;
-	item->total_msgs = messages;
-	item->last_num = (messages > 0 && uid_next > 0) ? uid_next - 1 : 0;
-	/* item->mtime = uid_validity; */
-
-	return 0;
-}
-
 void imap_scan_tree(Folder *folder)
 {
 	FolderItem *item;
@@ -1105,8 +1078,6 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 			}
 		}
 		folder_item_append(item, new_item);
-		if (new_item->no_select == FALSE)
-			imap_scan_folder(folder, new_item);
 		if (new_item->no_sub == FALSE)
 			imap_scan_tree_recursive(session, new_item);
 	}
@@ -3428,7 +3399,7 @@ gboolean imap_check_msgnum_validity(Folder *folder, FolderItem *_item)
 	if(item->item.mtime == uid_validity)
 		return TRUE;
 
-	debug_print("Freeing imap uid cache");
+	debug_print("Freeing imap uid cache\n");
 	item->lastuid = 0;
 	g_slist_free(item->uid_list);
 	item->uid_list = NULL;

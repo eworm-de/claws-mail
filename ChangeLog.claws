@@ -1,3 +1,14 @@
+2003-05-17 [christoph]	0.8.11claws161
+
+	* src/folder.c
+	* src/folderview.c
+	* src/imap.c
+		don't use imap_scan_folder anymore. Instead call folder_item_scan
+		for every folder after rebuilding the folder tree.
+
+	(closes Bug 19 imap_scan_folder() computes incorrectly number of new
+	 messages)
+
 2003-05-17 [christoph]	0.8.11claws160
 
 	* src/imap.c
