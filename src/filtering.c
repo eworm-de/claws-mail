@@ -487,7 +487,6 @@ gchar * filteringprop_to_string(FilteringProp * prop)
 	gchar *list_str;
 	gchar *action_list_str;
 	gchar *filtering_str;
-        GSList * tmp;
 
         action_list_str = filteringaction_list_to_string(prop->action_list);
 

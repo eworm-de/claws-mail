@@ -604,7 +604,7 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
 {
 	MsgInfo *msginfo;
 	gchar buf[NNTPBUFSIZE];
-	gchar *subject, *sender, *size, *line, *date, *msgid, *ref, *tmp, *xref;
+	gchar *subject, *sender, *size, *line, *date, *msgid, *ref, *tmp;
 	gchar *p;
 	gint num, size_int, line_int;
 	gchar *xover_buf;

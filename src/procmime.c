@@ -1090,6 +1090,8 @@ static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mim
 	g_return_if_fail(content_type != NULL);
 	g_return_if_fail(mimeinfo != NULL);
 	
+	mimeinfo->type = MIMETYPE_UNKNOWN;
+
 	/* Split content type into parts and remove trailing
 	   and leading whitespaces from all strings */
 	content_type_parts = g_strsplit(content_type, ";", 0);
@@ -1098,7 +1100,6 @@ static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mim
 	}
 
 	/* Get mimeinfo->type and mimeinfo->subtype */
-	mimeinfo->type = MIMETYPE_UNKNOWN;
 	str = content_type_parts[0];
 	if (str == NULL) {
 		g_strfreev(content_type_parts);
@@ -1185,9 +1186,7 @@ void procmime_parse_mimepart(MimeInfo *parent,
 	mimeinfo->offset = offset;
 	mimeinfo->length = length;
 
-	/* RFC 2045, page 13 says that the mime subtype is MANDATORY; if
-	 * it's not available than don't parse */
-	if (content_type != NULL && strchr(content_type, '/')) {
+	if (content_type != NULL) {
 		procmime_parse_content_type(content_type, mimeinfo);
 	} else {
 		mimeinfo->type = MIMETYPE_TEXT;

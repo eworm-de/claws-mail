@@ -40,6 +40,8 @@
 #include "gtk/gtkutils.h"
 #include "gtk/prefswindow.h"
 
+#include "manage_window.h"
+
 typedef struct _FontsPage
 {
 	PrefsPage page;
@@ -139,8 +141,6 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	FontsPage *prefs_fonts = (FontsPage *) _page;
 
 	GtkWidget *table;
-	GtkWidget *frame_font;
-	GtkWidget *table1;
 	GtkWidget *label_textfont;
 	GtkWidget *entry_textfont;
 	GtkWidget *entry_smallfont;

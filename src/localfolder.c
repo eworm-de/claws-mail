@@ -60,7 +60,6 @@ XMLTag *folder_local_get_xml(Folder *_folder)
 {
 	LocalFolder *folder = LOCAL_FOLDER(_folder);
 	XMLTag *tag;
-	XMLAttr *attr;
 
 	tag = folder_get_xml(_folder);
 

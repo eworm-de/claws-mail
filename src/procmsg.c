@@ -124,16 +124,6 @@ struct MarkSum {
 	gint first;
 };
 
-static gboolean procmsg_ignore_node(GNode *node, gpointer data)
-{
-	MsgInfo *msginfo = (MsgInfo *)node->data;
-	
-	procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
-	procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
-
-	return FALSE;
-}
-
 /* CLAWS subject threading:
   
   in the first round it inserts subject lines in a 

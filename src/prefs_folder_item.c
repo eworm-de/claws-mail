@@ -228,8 +228,6 @@ void prefs_folder_item_general_save_func(PrefsPage *_page)
 	gchar *buf;
 	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) _page;
 	FolderItemPrefs *prefs = page->item->prefs;
-	gboolean   old_simplify_val;
-	gchar     *old_simplify_str;
 
 	g_return_if_fail(prefs != NULL);
 
@@ -288,8 +286,6 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * _page,
 #if USE_ASPELL
 	GtkWidget *checkbtn_enable_default_dictionary;
 	GtkWidget *optmenu_default_dictionary;
-	GtkWidget *optmenu_default_dictionary_menu;
-	GtkWidget *opemenu_default_dictionary_menuitem;
 #endif
 	GList *cur_ac;
 	GList *account_list;

@@ -46,6 +46,7 @@
 #include "alertpanel.h"
 #include "folder.h"
 #include "description_window.h"
+#include "addr_compl.h"
 
 #include "matcher_parser.h"
 #include "colorlabel.h"
@@ -605,7 +606,6 @@ static void prefs_filtering_action_set_dialog(GSList *action_list)
 static GSList *prefs_filtering_action_get_list(void)
 {
 	gchar *action_str;
-	FilteringAction *action;
 	gint row = 1;
 	GSList *action_list;
 

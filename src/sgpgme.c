@@ -184,7 +184,7 @@ gchar *sgpgme_sigstat_info_full(GpgmeCtx ctx, GpgmeSigStat status)
 		if (sigstatus != GPGME_SIG_STAT_BAD) {
 			gint j = 1;
 			
-			while (uid = gpgme_key_get_string_attr(key, GPGME_ATTR_USERID, NULL, j)) {
+			while ((uid = gpgme_key_get_string_attr(key, GPGME_ATTR_USERID, NULL, j)) != 0) {
 				g_string_sprintfa(siginfo,
 					_("                aka \"%s\"\n"),
 					uid);

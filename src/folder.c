@@ -2560,7 +2560,6 @@ gint xml_attr_cmp_name(gconstpointer _a, gconstpointer _b)
 {
 	XMLAttr *a = (XMLAttr *) _a;
 	XMLAttr *b = (XMLAttr *) _b;
-	gint ret;
 
 	return g_str_equal(a->name, b->name) ? 0 : 1;
 }

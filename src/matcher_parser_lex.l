@@ -21,6 +21,7 @@
 #include <string.h>
 #include <glib.h>
 
+#include "matcher.h"
 #include "matcher_parser_lex.h"
 #include "matcher_parser_parse.h"
 

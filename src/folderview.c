@@ -2517,18 +2517,6 @@ static void folderview_recollapse_nodes(FolderView *folderview, GtkCTreeNode *no
 	g_slist_free(done);
 }
 
-static void folderview_recollapse_all_nodes(FolderView *folderview)
-{
-	GSList *list = folderview->nodes_to_recollapse;
-	if (!list) return;
-	for (; list != NULL; list = g_slist_next(list))
-		if (list->data) 
-			gtk_ctree_collapse(GTK_CTREE(folderview->ctree), 
-					   GTK_CTREE_NODE(list->data));
-	g_slist_free(folderview->nodes_to_recollapse);	
-	folderview->nodes_to_recollapse = NULL;
-}
-
 static void folderview_move_to_cb(FolderView *folderview) 
 {
 	FolderItem *from_folder = NULL, *to_folder = NULL;

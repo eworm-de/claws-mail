@@ -1016,7 +1016,6 @@ MATCHER_EXECUTE MATCHER_STRING
 }
 | MATCHER_ADD_SCORE MATCHER_INTEGER
 {
-	gint action_type = MATCHACTION_ADD_SCORE;
         gint score = 0;
         
         score = strtol($2, NULL, 10);
@@ -1025,7 +1024,6 @@ MATCHER_EXECUTE MATCHER_STRING
 }
 | MATCHER_SET_SCORE MATCHER_INTEGER
 {
-	gint action_type = MATCHACTION_SET_SCORE;
         gint score = 0;
         
         score = strtol($2, NULL, 10);
