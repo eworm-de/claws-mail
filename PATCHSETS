@@ -50,3 +50,4 @@
 
 ( cvs diff -u -r 1.71 -r 1.72 src/codeconv.c; ) > 0.9.12cvs66.patchset
 ( cvs diff -u -r 1.305 -r 1.306 src/mainwindow.c; ) > 0.9.12cvs67.patchset
+( cvs diff -u -r 1.433 -r 1.434 src/compose.c; ) > 0.9.12cvs68.patchset

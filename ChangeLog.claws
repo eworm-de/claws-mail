@@ -1,3 +1,11 @@
+2004-08-21 [colin]	0.9.12cvs68
+
+	* src/compose.c
+		Remove 'Message/Save to draft folder'
+		and 'Message/Save and keep editing' to 
+		put a single 'File/Save' command.
+		Fixes bug 224
+
 2004-08-21 [colin]	0.9.12cvs67
 
 	* src/mainwindow.c
