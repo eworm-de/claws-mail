@@ -1185,6 +1185,11 @@ void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
 			summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
 		}
 		
+		if (prefs_common.immediate_exec)
+			gtk_widget_hide(mainwin->exec_btn);
+		else
+			gtk_widget_show(mainwin->exec_btn);
+
 		summary_redisplay_msg(mainwin->summaryview);
 		headerview_set_visibility(mainwin->messageview->headerview,
 					  prefs_common.display_header_pane);
@@ -3366,11 +3371,6 @@ static void set_toolbar_style(MainWindow *mainwin)
 	if (prefs_common.toolbar_style != TOOLBAR_NONE) {
 		gtk_widget_show(mainwin->handlebox);
 		gtk_widget_queue_resize(mainwin->handlebox);
-
-		if (prefs_common.immediate_exec)
-			gtk_widget_hide(mainwin->exec_btn);
-		else
-			gtk_widget_show(mainwin->exec_btn);
 	}
 }
 
