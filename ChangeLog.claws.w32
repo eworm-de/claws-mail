@@ -1,3 +1,8 @@
+2002-09-23 [thorsten]	0.8.3claws9-1
+
+	* src/prefs_template.c
+		fix: utf8 conv. / gtk_stext for templates
+
 2002-09-21 [thorsten]	0.8.2claws54-1
 
 	* Readme-w32.txt

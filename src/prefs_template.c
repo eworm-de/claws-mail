@@ -43,6 +43,19 @@
 #include "addr_compl.h"
 #include "quote_fmt.h"
 
+#ifdef WIN32
+# define GTK_TEXT GTK_STEXT
+# define gtk_text_new			gtk_stext_new
+# define gtk_text_set_editable		gtk_stext_set_editable
+# define gtk_text_set_word_wrap		gtk_stext_set_word_wrap
+# define gtk_text_freeze		gtk_stext_freeze
+# define gtk_text_set_point		gtk_stext_set_point
+# define gtk_text_forward_delete	gtk_stext_forward_delete
+# define gtk_text_get_length		gtk_stext_get_length
+# define gtk_text_insert		gtk_stext_insert
+# define gtk_text_thaw			gtk_stext_thaw
+#endif
+
 static struct Templates {
 	GtkWidget *window;
 	GtkWidget *ok_btn;
@@ -427,6 +440,9 @@ static gint prefs_template_clist_set_row(gint row)
 
 	value = gtk_editable_get_chars(GTK_EDITABLE(templates.text_value),
 				       0, -1);
+#ifdef WIN32
+	locale_from_utf8(&value);
+#endif
 
 	if (value && *value != '\0') {
 		gchar *parsed_buf;
