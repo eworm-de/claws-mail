@@ -754,7 +754,8 @@ static gboolean set_dictionary(AspellConfig *config, Dictionary *dict)
 		jargon = NULL;
 
 	debug_print("Aspell: language: %s, jargon: %s, size: %s\n",
-		    language, jargon, size);
+		    language, jargon ? jargon : "",
+                    size ? size : "");
 	
 	if (language)
 		CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("lang", language);

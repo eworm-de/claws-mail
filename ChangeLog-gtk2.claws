@@ -1,3 +1,11 @@
+2005-03-29 [paul]	1.9.6cvs10
+
+	* AUTHORS
+	* ChangeLog.claws
+	* src/compose.c
+	* src/gtk/gtkaspell.c
+		sync with HEAD (don't pass NULL pointers) 
+
 2005-03-24 [paul]
 
 	* tools/Makefile.am
