@@ -55,6 +55,8 @@
 #include "prefs_common.h"
 #include "prefs_account.h"
 #include "prefs_filter.h"
+#include "prefs_filtering.h"
+#include "prefs_scoring.h"
 #include "prefs_folder_item.h"
 #include "account.h"
 #include "folder.h"
@@ -2563,7 +2565,7 @@ static void folderview_processing_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 
-	prefs_filtering_open(item);
+	prefs_filtering_open(item, NULL, NULL);
 }
 
 void folderview_set_target_folder_color(gint color_op) 
