@@ -32,4 +32,3 @@ AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex );
 /*
 * End of Source.
 */
-

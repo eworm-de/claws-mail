@@ -3249,11 +3249,11 @@ static void ldapsearch_callback( SyldapServer *sls ) {
 static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 	GtkCTree *ctree = GTK_CTREE(addrbook.ctree);
 	AddressObject *obj;
-#ifdef USE_LDAP
 	AdapterDSource *ads = NULL;
+#ifdef USE_LDAP
 	AddressDataSource *ds = NULL;
 	AddressInterface *iface = NULL;
-#endif
+#endif /* USE_LDAP */
 	gchar *sLookup;
 
 	if( ! addrbook.treeSelected ) return;
@@ -3261,13 +3261,13 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 
 	obj = gtk_ctree_node_get_row_data( ctree, addrbook.treeSelected );
 	if( obj == NULL ) return;
-		
+
 	sLookup = gtk_editable_get_chars( GTK_EDITABLE(addrbook.entry), 0, -1 );
 	g_strchomp( sLookup );
 
-#ifdef USE_LDAP
 	if( obj->type == ADDR_DATASOURCE ) {
 		ads = ADAPTER_DSOURCE(obj);
+#ifdef USE_LDAP
 		if( ads->subType == ADDR_LDAP ) {
 			SyldapServer *server;
 
@@ -3285,8 +3285,9 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 				addressbook_ldap_show_message( server );
 			}
 		}
+#endif /* USE_LDAP */
 	}
-#endif
+
 	g_free( sLookup );
 }
 

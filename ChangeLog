@@ -1,3 +1,15 @@
+2002-07-24
+
+	* src/addressbook.c
+	  src/editaddress.c
+	  src/editgroup.c
+	  src/editldap_basedn.c
+	  src/importldif.c
+	  src/prefs_common.c: fixed memory leaks which didn't free strings
+	  gtk_editable_get_chars() returned. And minor code cleanups.
+	* src/importldif.h
+	  src/vcard.h: removed C++-style comments.
+
 2002-07-23
 
 	* src/codeconv.c: conv_encode_header(): fixed a problem in encoding
