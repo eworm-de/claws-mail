@@ -241,3 +241,4 @@
 ( cvs diff -u -r 1.133 -r 1.134 src/messageview.c; ) > 1.0.1cvs2.patchset
 ( cvs diff -u -r 1.317 -r 1.318 src/mainwindow.c; ) > 1.0.1cvs3.patchset
 
+( cvs diff -u -r 1.473 -r 1.474 src/compose.c; ) > 1.0.1cvs4.patchset
