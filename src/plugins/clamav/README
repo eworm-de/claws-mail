@@ -2,30 +2,37 @@ Clam AntiVirus Plugin
 ---------------------
 
 This plugin will scan incoming messages for viruses using 
-Clam AntiVirus.
+Clam AntiVirus (libclamav). It can be used with Local, IMAP
+and POP accounts.
 
-To build the plugin run configure with --enable-clamav-plugin
+Messages that have infected attachments can be automatically
+deleted or moved to a folder that can be specified in the 
+configuration, if the folder is not specified or not found 
+the default trash folder will be used.
 
-Messages that have infected attachments can be deleted or moved
-to a folder that can be specified in the configuration, if the
-folder is not specified or not found the default trash folder will
-be used.
+The plugin is built automatically if you have the required
+libraries available. It has two parts and will be installed
+in $PREFIX/lib/sylpheed/plugins/ as clamav_plugin.so and
+clamav_plugin_gtk.so.
 
-Please note that the clamav_plugin.so plugin only provides the
-actual scanning. By default it is not enabled. You probably also 
-want to load the clamav_plugin_gtk.so to get a configuration page
-under "Configuration/Other Preferences..." for the Clam AntiVirus
-plugin.
+The 'clamav_plugin.so' plugin provides only the actual 
+scanning. By default it is not enabled. 
 
-The Clam AntiVirus plugin uses its own block in the sylpheedrc file
-in your ~/.sylpheed directory. If you really want to configure it
-without the GTK plugin you can specify the following options:
+You will probably also want to load the configuration plugin
+'clamav_plugin_gtk.so' to get a configuration page under 
+"Configuration/Other Preferences.../Filtering/Clam AntiVirus" 
+for the Clam AntiVirus plugin.
+
+The Clam AntiVirus plugin uses its own block in the 'sylpheedrc' 
+file in your config directory (default: '~/.sylpheed'). If you 
+really want to configure it without the GTK plugin you can 
+specify the following options:
 
 [ClamAV]
 clamav_enable=1				enable scanning with Clam AntiVirus
 					[default: 0]
 
-clamav_enable_archive=1			enable archive scanning with Clam 
+clamav_enable_arc=1			enable archive scanning with Clam 
 					AntiVirus
 					[default: 0]
 
@@ -34,14 +41,15 @@ clamav_max_size=1			maximum size an attachment can have
 					be scanned
 					[default: 1]
 
-clamav_receive_infected=1		enable to save infected messages to a 
-					mailfolder. If not enabled the mails will 
-					be deleted
+clamav_recv_infected=1			enable to save infected messages to a 
+					mailfolder. If not enabled the mails 
+					will be deleted
 					[default: 1]
+					
 clamav_save_folder=#mh/Mailbox/virus	the folder that should be used to save
 					infected mails, if empty the default 
 					trash folder is used
 					[default: none, use default trash]
 
 Clam AntiVirus is licensed under the GPL and can be downloaded from
-http://clamav.elektrapro.com/
+http://clamav.sourceforge.net/

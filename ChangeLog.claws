@@ -1,3 +1,19 @@
+2004-02-02 [paul]
+
+	* ac/missing/gdk-pixbuf.m4
+	  ac/missing/gpgme.m4
+	  ac/missing/imlib.m4
+	  	prevent 'underquoted definition' warnings
+		patch submitted by David Relson
+		
+	* src/plugins/clamav/README
+		update, improve, correct
+
+2004-01-31 [thorsten]	0.9.8claws60
+
+	* src/news.c
+		'dir' not initialized if group has no messages
+
 2004-01-29 [christoph]	0.9.8claws59
 
 	* src/customheader.[ch]
