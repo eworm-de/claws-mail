@@ -28,8 +28,6 @@ typedef enum {
 	TOOLBAR_COMPOSE,
 } Toolbar;
 
-GSList *toolbar_list;
-
 #define TOOLBAR_DESTROY_ITEMS(t_item_list) \
 { \
         ToolbarItem *t_item; \
