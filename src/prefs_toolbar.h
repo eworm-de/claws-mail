@@ -20,6 +20,6 @@
 #ifndef __PREFS_CUSTOM_TOOLBAR_H__
 #define __PREFS_CUSTOM_TOOLBAR_H__
 
-void prefs_toolbar(void);
+void prefs_toolbar(Toolbar source);
 
 #endif /* __PREFS_CUSTOM_TOOLBAR_H__ */ 

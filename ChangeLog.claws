@@ -1,3 +1,10 @@
+2002-09-22 [oliver]	0.8.3claws7
+	
+	* src/prefs_toolbar.[ch]
+		custom toolbar for compose
+		- generic prefs_toolbar handles both
+		  Mainwin's toolbar as well as Compose toolbar		
+		
 2002-09-22 [oliver]	0.8.3claws6
 	
 	* src/toolbar.[ch]
