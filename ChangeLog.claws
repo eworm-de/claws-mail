@@ -15,7 +15,7 @@
 
 2001-10-02 [alfons]	0.6.2claws14
 
-	* compose.c, prefs_common.[ch]
+	* src/compose.c, src/prefs_common.[ch]
 		add block cursor option
 
 2001-10-02 [paul]	0.6.2claws13
