@@ -17,24 +17,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/*
- * Edit VCard address book data.
- */
-
 #ifndef __EDITLDAP_BASEDN_H__
 #define __EDITLDAP_BASEDN_H__
 
 #ifdef USE_LDAP
 
-// Function prototypes
 gchar *edit_ldap_basedn_selection( const gchar *hostName, const gint port, gchar *baseDN, const gint tov,
 	       const gchar* bindDN, const gchar *bindPW );
 
 #endif /* USE_LDAP */
 
 #endif /* __EDITLDAP_BASEDN_H__ */
-
-/*
-* End of Source.
-*/
-

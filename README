@@ -33,7 +33,8 @@ X Window System, and aiming for
 The appearance and interface are similar to some popular e-mail clients for
 Windows, such as Outlook Express, Becky!, and Datula. The interface is also
 designed to emulate the mailers on Emacsen, and almost all commands are
-accessible with the keyboard.
+accessible with the keyboard. You'll figure out the usage if you have ever
+used some e-mail clients for Windows, or Mew or Wanderlust.
 
 The messages are managed by MH format, and you'll be able to use it together
 with another mailer based on MH format (like Mew). You can also utilize
@@ -42,40 +43,40 @@ imget).
 
 Currently implemented features are:
 
-	o user-friendly and intuitive interface
-	o 3-paned view like many Windoze-based mail client
-	o ability of keyboard-only operation
-	o Mew/Wanderlust-like key bind (most of normally used keys have been
-	  implemented)
+	o POP3 support
 	o IMAP4rev1 support
-	o multipart MIME
+	o integrated NetNews client
+	o unlimited multiple account handling
+	o thread display
+	o filtering
+	o MIME (attachments)
 	o built-in image view
 	o X-Face support
+	o multiple MH folder support
+	o mbox importing / exporting
 	o external editor support
-	o unlimited multiple account handling
 	o message queueing
-	o filtering
+	o automatic mail checking
 	o draft message function
 	o line-wrapping
+	o clickable URI
 	o XML-based address book
-	o APOP support
-	o unread message management
-	o multiple MH folder support
-	o integrated NetNews client
+	o LDAP, vCard, and JPilot support
+	o newly arrived and unread message management
+	o Mew/Wanderlust-like key bind
+	o printing
+	o APOP authentication support
+	o SMTP AUTH support
+	o SSL support (POP3, SMTP, IMAP4rev1)
 	o IPv6 support
-	o GnuPG support (currently implementing)
-	o multithread support (experimental)
-	o mbox importing / exporting
 	o drag & drop (partially implemented)
-	o fast thread display
-	o high-speed message processing
-	o lightweight resource usage
-	o easily customizable configuration
-	o supports automake + autoconf, and internationalization of message
-	  by gettext
+	o GnuPG support (currently implementing)
+	o automake + autoconf support
+	o internationalization of messages by gettext
+	o support of many code sets, including UTF-8 (Unicode) (when using
+	  libjconv)
 
-You'll figure out the usage if you have used a mailer on Windows, or
-Mew or Wanderlust.
+and more.
 
 Installation
 ============

@@ -44,7 +44,6 @@
 #define SYLDAP_ATTR_EMAIL      "mail"
 #define SYLDAP_ATTR_UID        "uid"
 
-// VCard object
 typedef struct _SyldapServer SyldapServer;
 struct _SyldapServer {
 	gchar        *name;
@@ -60,7 +59,7 @@ struct _SyldapServer {
 	gint         timeOut;
 	gboolean     newSearch;
 	AddressCache *addressCache;
-	// ItemFolder   *rootFolder;
+	/* ItemFolder   *rootFolder; */
 	gboolean     accessFlag;
 	gint         retVal;
 	pthread_t    *thread;
@@ -94,7 +93,7 @@ gint syldap_read_data		( SyldapServer *ldapServer );
 gint syldap_read_data_th	( SyldapServer *ldapServer );
 void syldap_cancel_read		( SyldapServer *ldapServer );
 
-// GList *syldap_get_address_list	( const SyldapServer *ldapServer );
+/* GList *syldap_get_address_list	( const SyldapServer *ldapServer ); */
 ItemFolder *syldap_get_root_folder	( SyldapServer *ldapServer );
 GList *syldap_get_list_person	( SyldapServer *ldapServer );
 GList *syldap_get_list_folder	( SyldapServer *ldapServer );

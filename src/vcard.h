@@ -18,7 +18,7 @@
  */
 
 /*
- * Definitions necessary to access VCard files. VCard files are used
+ * Definitions necessary to access vCard files. vCard files are used
  * by GnomeCard for addressbook, and Netscape for sending business
  * card information. Refer to RFC2426 for more information.
  */
@@ -49,7 +49,7 @@
 #define	VCARD_SEP_TYPE     ';'
 
 /*
-// Typical VCard entry:
+// Typical vCard entry:
 //
 // BEGIN:VCARD
 // FN:Axle Rose
@@ -66,7 +66,7 @@
 // END:VCARD
 */
 
-// VCard object
+/* vCard object */
 typedef struct _VCardFile VCardFile;
 struct _VCardFile {
 	gchar        *name;

@@ -528,12 +528,28 @@ void messageview_select_all(MessageView *messageview)
 			(GTK_EDITABLE(messageview->textview->text), 0, -1);
 }
 
+void messageview_set_position(MessageView *messageview, gint pos)
+{
+	if (messageview->type == MVIEW_TEXT)
+		textview_set_position(messageview->textview, pos);
+}
+
 gboolean messageview_search_string(MessageView *messageview, const gchar *str,
 				   gboolean case_sens)
 {
 	if (messageview->type == MVIEW_TEXT)
 		return textview_search_string(messageview->textview,
 					      str, case_sens);
+	return FALSE;
+}
+
+gboolean messageview_search_string_backward(MessageView *messageview,
+					    const gchar *str,
+					    gboolean case_sens)
+{
+	if (messageview->type == MVIEW_TEXT)
+		return textview_search_string_backward(messageview->textview,
+						       str, case_sens);
 	return FALSE;
 }
 

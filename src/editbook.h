@@ -24,12 +24,6 @@
 #ifndef __EDITBOOK_H__
 #define __EDITBOOK_H__
 
-// Function prototypes
 AdapterDSource *addressbook_edit_book( AddressIndex *addrIndex, AdapterDSource *ads );
 
 #endif /* __EDITBOOK_H__ */
-
-/*
-* End of Source.
-*/
-

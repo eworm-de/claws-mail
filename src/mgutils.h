@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <glib.h>
 
-// Error codes
+/* Error codes */
 #define MGU_SUCCESS        0
 #define MGU_BAD_ARGS       -1
 #define MGU_NO_FILE        -2
@@ -47,7 +47,7 @@
 #define MGU_OPEN_DIRECTORY -16
 #define MGU_NO_PATH        -17
 
-// Function prototypes
+/* Function prototypes */
 void mgu_print_list		( GSList *list, FILE *stream );
 void mgu_print_dlist		( GList *list, FILE *stream );
 void mgu_free_list		( GSList *list );

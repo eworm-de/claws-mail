@@ -714,13 +714,13 @@ ItemPerson *addrcache_remove_person_id( AddressCache *cache, const gchar *uid ) 
 	obj = ( AddrItemObject * ) g_hash_table_lookup( cache->itemHash, uid );
 	if( obj ) {
 		if( ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON ) {
-			/* Remove person's email addresses from all groups where
-			   referenced and from hash table. */
+			/* Remove person's email addresses from all groups where */
+			/* referenced and from hash table. */
 			ItemPerson *person = ( ItemPerson * ) obj;
 			ItemFolder *parent = ( ItemFolder * ) ADDRITEM_PARENT(person);
 			if( ! parent ) parent = cache->rootFolder;
-			/* Remove emails from groups, remove from parent's list
-			   and hash table */
+			/* Remove emails from groups, remove from parent's list */
+			/* and hash table */
 			addrcache_foldergrp_rem_person( parent, person );
 			parent->listPerson = g_list_remove( parent->listPerson, person );
 			g_hash_table_remove( cache->itemHash, uid );
@@ -746,8 +746,8 @@ ItemPerson *addrcache_remove_person( AddressCache *cache, ItemPerson *person ) {
 		obj = ( AddrItemObject * ) g_hash_table_lookup( cache->itemHash, uid );
 		if( obj ) {
 			if( ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON ) {
-				/* Remove person's email addresses from all groups where
-				   referenced and from hash table. */
+				/* Remove person's email addresses from all groups where */
+				/* referenced and from hash table. */
 				ItemFolder *parent = ( ItemFolder * ) ADDRITEM_PARENT(person);
 				if( ! parent ) parent = cache->rootFolder;
 				addrcache_foldergrp_rem_person( parent, person );
@@ -1020,7 +1020,7 @@ ItemFolder *addrcache_find_root_folder( ItemFolder *folder ) {
 }
 
 /*
-* Get all persons visitor function.
+* Get all person visitor function.
 */
 static void addrcache_get_all_persons_vis( gpointer key, gpointer value, gpointer data ) {
 	AddrItemObject *obj = ( AddrItemObject * ) value;

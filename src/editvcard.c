@@ -18,7 +18,7 @@
  */
 
 /*
- * Edit VCard address book data.
+ * Edit vCard address book data.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -93,7 +93,7 @@ static void edit_vcard_file_check( void ) {
 		sMsg = "";
 	}
 	else if( t == MGU_BAD_FORMAT ) {
-		sMsg = _("File does not appear to be VCard format.");
+		sMsg = _("File does not appear to be vCard format.");
 	}
 	else {
 		sMsg = _("Could not read file.");
@@ -129,7 +129,7 @@ static void edit_vcard_file_cancel( GtkWidget *widget, gpointer data ) {
 static void edit_vcard_file_select_create( AddressFileSelection *afs ) {
 	GtkWidget *fileSelector;
 
-	fileSelector = gtk_file_selection_new( _("Select VCard File") );
+	fileSelector = gtk_file_selection_new( _("Select vCard File") );
 	gtk_file_selection_hide_fileop_buttons( GTK_FILE_SELECTION(fileSelector) );
 	gtk_signal_connect( GTK_OBJECT (GTK_FILE_SELECTION(fileSelector)->ok_button),
                              "clicked", GTK_SIGNAL_FUNC (edit_vcard_file_ok), ( gpointer ) afs );
@@ -185,7 +185,7 @@ static void addressbook_edit_vcard_create( gboolean *cancelled ) {
 	window = gtk_window_new(GTK_WINDOW_DIALOG);
 	gtk_widget_set_usize(window, 450, -1);
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
-	gtk_window_set_title(GTK_WINDOW(window), _("Edit VCard Entry"));
+	gtk_window_set_title(GTK_WINDOW(window), _("Edit vCard Entry"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
@@ -205,7 +205,7 @@ static void addressbook_edit_vcard_create( gboolean *cancelled ) {
 	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8 );
 
-	// First row
+	/* First row */
 	top = 0;
 	label = gtk_label_new(_("Name"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
@@ -217,7 +217,7 @@ static void addressbook_edit_vcard_create( gboolean *cancelled ) {
 	check_btn = gtk_button_new_with_label( _(" Check File "));
 	gtk_table_attach(GTK_TABLE(table), check_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0);
 
-	// Second row
+	/* Second row */
 	top = 1;
 	label = gtk_label_new(_("File"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
@@ -229,13 +229,13 @@ static void addressbook_edit_vcard_create( gboolean *cancelled ) {
 	file_btn = gtk_button_new_with_label( _(" ... "));
 	gtk_table_attach(GTK_TABLE(table), file_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0);
 
-	// Status line
+	/* Status line */
 	hsbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, BORDER_WIDTH);
 	statusbar = gtk_statusbar_new();
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
 
-	// Button panel
+	/* Button panel */
 	gtkut_button_set_create(&hbbox, &ok_btn, _("OK"),
 				&cancel_btn, _("Cancel"), NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
@@ -262,7 +262,7 @@ static void addressbook_edit_vcard_create( gboolean *cancelled ) {
 	vcardedit.ok_btn     = ok_btn;
 	vcardedit.cancel_btn = cancel_btn;
 	vcardedit.statusbar  = statusbar;
-	vcardedit.status_cid = gtk_statusbar_get_context_id( GTK_STATUSBAR(statusbar), "Edit VCard Dialog" );
+	vcardedit.status_cid = gtk_statusbar_get_context_id( GTK_STATUSBAR(statusbar), "Edit vCard Dialog" );
 }
 
 AdapterDSource *addressbook_edit_vcard( AddressIndex *addrIndex, AdapterDSource *ads ) {
@@ -288,12 +288,12 @@ AdapterDSource *addressbook_edit_vcard( AddressIndex *addrIndex, AdapterDSource 
 			gtk_entry_set_text(GTK_ENTRY(vcardedit.name_entry), vcf->name);
 		if (vcf->path)
 			gtk_entry_set_text(GTK_ENTRY(vcardedit.file_entry), vcf->path);
-		gtk_window_set_title( GTK_WINDOW(vcardedit.window), _("Edit VCard Entry"));
+		gtk_window_set_title( GTK_WINDOW(vcardedit.window), _("Edit vCard Entry"));
 	}
 	else {
 		gtk_entry_set_text(GTK_ENTRY(vcardedit.name_entry), ADDRESSBOOK_GUESS_VCARD );
 		gtk_entry_set_text(GTK_ENTRY(vcardedit.file_entry), vcard_find_gnomecard() );
-		gtk_window_set_title( GTK_WINDOW(vcardedit.window), _("Add New VCard Entry"));
+		gtk_window_set_title( GTK_WINDOW(vcardedit.window), _("Add New vCard Entry"));
 	}
 
 	gtk_main();

@@ -18,18 +18,12 @@
  */
 
 /*
- * Edit VCard address book data.
+ * Edit vCard address book data.
  */
 
 #ifndef __EDITVCARD_H__
 #define __EDITVCARD_H__
 
-// Function prototypes
 AdapterDSource *addressbook_edit_vcard( AddressIndex *addrIndex, AdapterDSource *ads );
 
 #endif /* __EDITVCARD_H__ */
-
-/*
-* End of Source.
-*/
-

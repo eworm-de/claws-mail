@@ -3,7 +3,7 @@ Changes of Sylpheed
 * 0.6.2
 
     * The new addressbook has been implemented (Match Grun).
-    * LDAP, VCard, and JPilot have been supported.
+    * LDAP, vCard, and JPilot have been supported.
     * The option to launch the external editor automatically has been added.
     * Sorting by mark, unread, attachment, and color label has been enabled.
     * Moving to the next or previous flagged messages has been enabled.

@@ -24,11 +24,6 @@
 #ifndef __EDITADDRESS_H__
 #define __EDITADDRESS_H__
 
-// Function prototypes
 ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent, ItemPerson *person, gboolean pgMail );
 
 #endif /* __EDITADDRESS_H__ */
-
-/*
-* End of Source.
-*/

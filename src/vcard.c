@@ -18,7 +18,7 @@
  */
 
 /*
- * Functions necessary to access VCard files. VCard files are used
+ * Functions necessary to access vCard files. vCard files are used
  * by GnomeCard for addressbook, and Netscape for sending business
  * card information. Refer to RFC2426 for more information.
  */
@@ -148,7 +148,7 @@ void vcard_free( VCardFile *cardFile ) {
 	addrcache_clear( cardFile->addressCache );
 	addrcache_free( cardFile->addressCache );
 
-	// Clear pointers
+	/* Clear pointers */
 	cardFile->file = NULL;
 	cardFile->name = NULL;
 	cardFile->path = NULL;
@@ -182,18 +182,18 @@ void vcard_print_file( VCardFile *cardFile, FILE *stream ) {
 static gint vcard_open_file( VCardFile* cardFile ) {
 	g_return_val_if_fail( cardFile != NULL, -1 );
 
-	// fprintf( stdout, "Opening file\n" );
+	/* fprintf( stdout, "Opening file\n" ); */
 	cardFile->addressCache->dataRead = FALSE;
 	if( cardFile->path ) {
 		cardFile->file = fopen( cardFile->path, "r" );
 		if( ! cardFile->file ) {
-			// fprintf( stderr, "can't open %s\n", cardFile->path );
+			/* fprintf( stderr, "can't open %s\n", cardFile->path ); */
 			cardFile->retVal = MGU_OPEN_FILE;
 			return cardFile->retVal;
 		}
 	}
 	else {
-		// fprintf( stderr, "file not specified\n" );
+		/* fprintf( stderr, "file not specified\n" ); */
 		cardFile->retVal = MGU_NO_FILE;
 		return cardFile->retVal;
 	}
@@ -284,10 +284,10 @@ static gchar *vcard_read_qp( VCardFile *cardFile, char *tagvalue ) {
 		line = vcard_get_line( cardFile );
 	}
 
-	// Coalesce linked list into one long buffer.
+	/* Coalesce linked list into one long buffer. */
 	line = mgu_list_coalesce( listQP );
 
-	// Clean up
+	/* Clean up */
 	mgu_free_list( listQP );
 	listQP = NULL;
 	return line;
@@ -335,7 +335,7 @@ static gchar *vcard_get_tagvalue( gchar* line, gchar dlm ) {
 		value = g_strndup( start, len+1 );
 	}
 	else {
-		// Ensure that we get an empty string
+		/* Ensure that we get an empty string */
 		value = g_strndup( "", 1 );
 	}
 	value[ len ] = '\0';
@@ -409,7 +409,7 @@ static void vcard_build_items( VCardFile *cardFile, GSList *listName, GSList *li
 	}
 }
 
-// Unescape characters in quoted-printable string.
+/* Unescape characters in quoted-printable string. */
 static void vcard_unescape_qp( gchar *value ) {
 	gchar *ptr, *src, *dest;
 	gint d, v = 0;
@@ -438,7 +438,7 @@ static void vcard_unescape_qp( gchar *value ) {
 			}
 		}
 		if( gotch ) {
-			// Replace = with char and move down in buffer
+			/* Replace = with char and move down in buffer */
 			*ptr = v;
 			src = ptr + 3;
 			dest = ptr + 1;
@@ -453,29 +453,29 @@ static void vcard_unescape_qp( gchar *value ) {
 
 /*
 * Read file data into root folder.
-* Note that one VCard can have multiple E-Mail addresses (MAIL tags);
+* Note that one vCard can have multiple E-Mail addresses (MAIL tags);
 * these are broken out into separate address items. An address item
 * is generated for the person identified by FN tag and each EMAIL tag.
 * If a sub-type is included in the EMAIL entry, this will be used as
-* the Remarks member. Also note that it is possible for one VCard
+* the Remarks member. Also note that it is possible for one vCard
 * entry to have multiple FN tags; this might not make sense. However,
 * it will generate duplicate address entries for each person listed.
 */
 static void vcard_read_file( VCardFile *cardFile ) {
 	gchar *tagtemp = NULL, *tagname = NULL, *tagvalue = NULL, *tagtype = NULL;
 	GSList *listName = NULL, *listAddress = NULL, *listRemarks = NULL, *listID = NULL;
-	//GSList *listQP = NULL;
+	/* GSList *listQP = NULL; */
 
 	for( ;; ) {
 		gchar *line =  vcard_get_line( cardFile );
 		if( line == NULL ) break;
 
-		// fprintf( stdout, "%s\n", line );
+		/* fprintf( stdout, "%s\n", line ); */
 
 		/* Parse line */
 		tagtemp = vcard_get_tagname( line, VCARD_SEP_TAG );
 		if( tagtemp ) {
-			// fprintf( stdout, "\ttemp:  %s\n", tagtemp );
+			/* fprintf( stdout, "\ttemp:  %s\n", tagtemp ); */
 			tagvalue = vcard_get_tagvalue( line, VCARD_SEP_TAG );
 			tagname = vcard_get_tagname( tagtemp, VCARD_SEP_TYPE );
 			tagtype = vcard_get_tagvalue( tagtemp, VCARD_SEP_TYPE );
@@ -484,42 +484,42 @@ static void vcard_read_file( VCardFile *cardFile ) {
 				tagtemp = NULL;
 			}
 
-			// fprintf( stdout, "\tname:  %s\n", tagname );
-			// fprintf( stdout, "\ttype:  %s\n", tagtype );
-			// fprintf( stdout, "\tvalue: %s\n", tagvalue );
+			/* fprintf( stdout, "\tname:  %s\n", tagname ); */
+			/* fprintf( stdout, "\ttype:  %s\n", tagtype ); */
+			/* fprintf( stdout, "\tvalue: %s\n", tagvalue ); */
 
 			if( tagvalue ) {
 				if( g_strcasecmp( tagtype, VCARD_TYPE_QP ) == 0 ) {
-					// Quoted-Printable: could span multiple lines
+					/* Quoted-Printable: could span multiple lines */
 					tagvalue = vcard_read_qp( cardFile, tagvalue );
 					vcard_unescape_qp( tagvalue );
-					// fprintf( stdout, "QUOTED-PRINTABLE !!! final\n>%s<\n", tagvalue );
+					/* fprintf( stdout, "QUOTED-PRINTABLE !!! final\n>%s<\n", tagvalue ); */
 				}
 
 				if( g_strcasecmp( tagname, VCARD_TAG_START ) == 0 &&
 					g_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
-					// fprintf( stdout, "start card\n" );
+					/* fprintf( stdout, "start card\n" ); */
 					vcard_free_lists( listName, listAddress, listRemarks, listID );
 					listName = listAddress = listRemarks = listID = NULL;
 				}
 				if( g_strcasecmp( tagname, VCARD_TAG_FULLNAME ) == 0 ) {
-					// fprintf( stdout, "- full name: %s\n", tagvalue );
+					/* fprintf( stdout, "- full name: %s\n", tagvalue ); */
 					listName = g_slist_append( listName, g_strdup( tagvalue ) );
 				}
 				if( g_strcasecmp( tagname, VCARD_TAG_EMAIL ) == 0 ) {
-					// fprintf( stdout, "- address: %s\n", tagvalue );
+					/* fprintf( stdout, "- address: %s\n", tagvalue ); */
 					listAddress = g_slist_append( listAddress, g_strdup( tagvalue ) );
 					listRemarks = g_slist_append( listRemarks, g_strdup( tagtype ) );
 				}
 				if( g_strcasecmp( tagname, VCARD_TAG_UID ) == 0 ) {
-					// fprintf( stdout, "- id: %s\n", tagvalue );
+					/* fprintf( stdout, "- id: %s\n", tagvalue ); */
 					listID = g_slist_append( listID, g_strdup( tagvalue ) );
 				}
 				if( g_strcasecmp( tagname, VCARD_TAG_END ) == 0 &&
 					g_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
-					// VCard is complete
-					// fprintf( stdout, "end card\n--\n" );
-					// vcard_dump_lists( listName, listAddress, listRemarks, listID, stdout );
+					/* vCard is complete */
+					/* fprintf( stdout, "end card\n--\n" ); */
+					/* vcard_dump_lists( listName, listAddress, listRemarks, listID, stdout ); */
 					vcard_build_items( cardFile, listName, listAddress, listRemarks, listID );
 					vcard_free_lists( listName, listAddress, listRemarks, listID );
 					listName = listAddress = listRemarks = listID = NULL;
@@ -531,17 +531,17 @@ static void vcard_read_file( VCardFile *cardFile ) {
 		}
 	}
 
-	// Free lists
+	/* Free lists */
 	vcard_free_lists( listName, listAddress, listRemarks, listID );
 	listName = listAddress = listRemarks = listID = NULL;
 }
 
-// ============================================================================================
+/* ============================================================================================ */
 /*
 * Read file into list. Main entry point
 * Return: TRUE if file read successfully.
 */
-// ============================================================================================
+/* ============================================================================================ */
 gint vcard_read_data( VCardFile *cardFile ) {
 	g_return_val_if_fail( cardFile != NULL, -1 );
 
@@ -551,11 +551,11 @@ gint vcard_read_data( VCardFile *cardFile ) {
 		addrcache_clear( cardFile->addressCache );
 		vcard_open_file( cardFile );
 		if( cardFile->retVal == MGU_SUCCESS ) {
-			// Read data into the list
+			/* Read data into the list */
 			vcard_read_file( cardFile );
 			vcard_close_file( cardFile );
 
-			// Mark cache
+			/* Mark cache */
 			addrcache_mark_file( cardFile->addressCache, cardFile->path );
 			cardFile->addressCache->modified = FALSE;
 			cardFile->addressCache->dataRead = TRUE;
@@ -650,7 +650,7 @@ gchar *vcard_find_gnomecard( void ) {
 
 	fileSpec = NULL;
 	if( ( fp = fopen( str, "r" ) ) != NULL ) {
-		// Read configuration file
+		/* Read configuration file */
 		lenlbl = strlen( GNOMECARD_SECTION );
 		while( fgets( buf, sizeof( buf ), fp ) != NULL ) {
 			if( 0 == g_strncasecmp( buf, GNOMECARD_SECTION, lenlbl ) ) {
@@ -674,7 +674,7 @@ gchar *vcard_find_gnomecard( void ) {
 	}
 
 	if( fileSpec == NULL ) {
-		// Use the home directory
+		/* Use the home directory */
 		str[ len ] = '\0';
 		fileSpec = g_strdup( str );
 	}
@@ -683,7 +683,7 @@ gchar *vcard_find_gnomecard( void ) {
 }
 
 /*
-* Attempt to read file, testing for valid VCard format.
+* Attempt to read file, testing for valid vCard format.
 * Return: TRUE if file appears to be valid format.
 */
 gint vcard_test_read_file( const gchar *fileSpec ) {
@@ -718,7 +718,7 @@ gint vcard_test_read_file( const gchar *fileSpec ) {
 
 				if( tagvalue ) {
 					if( g_strcasecmp( tagtype, VCARD_TYPE_QP ) == 0 ) {
-						// Quoted-Printable: could span multiple lines
+						/* Quoted-Printable: could span multiple lines */
 						tagvalue = vcard_read_qp( cardFile, tagvalue );
 						vcard_unescape_qp( tagvalue );
 					}
@@ -728,7 +728,7 @@ gint vcard_test_read_file( const gchar *fileSpec ) {
 					}
 					if( g_strcasecmp( tagname, VCARD_TAG_END ) == 0 &&
 						g_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
-						// VCard is complete
+						/* vCard is complete */
 						if( haveStart ) cardFile->retVal = MGU_SUCCESS;
 					}
 					g_free( tagvalue );

@@ -109,8 +109,6 @@ static void message_search_create(MessageView *messageview)
 	body_label = gtk_label_new (_("Find text:"));
 	gtk_widget_show (body_label);
 	gtk_box_pack_start (GTK_BOX (hbox1), body_label, FALSE, FALSE, 0);
-	//gtk_label_set_justify (GTK_LABEL (body_label), GTK_JUSTIFY_RIGHT);
-	//gtk_misc_set_alignment (GTK_MISC (body_label), 1, 0.5);
 
 	body_entry = gtk_entry_new ();
 	gtk_widget_show (body_entry);
@@ -173,9 +171,15 @@ static void message_search_execute(GtkButton *button, gpointer data)
 		gchar *str;
 		AlertValue val;
 
-		if (messageview_search_string(messageview, body_str, case_sens)
-		    == TRUE)
-			break;
+		if (backward) {
+			if (messageview_search_string_backward
+				(messageview, body_str, case_sens) == TRUE)
+				break;
+		} else {
+			if (messageview_search_string
+				(messageview, body_str, case_sens) == TRUE)
+				break;
+		}
 
 		if (all_searched) {
 			alertpanel_message
@@ -195,9 +199,11 @@ static void message_search_execute(GtkButton *button, gpointer data)
 
 		val = alertpanel(_("Search finished"), str,
 				 _("Yes"), _("No"), NULL);
-		if (G_ALERTDEFAULT == val)
+		if (G_ALERTDEFAULT == val) {
 			manage_window_focus_in(window, NULL, NULL);
-		else
+			messageview_set_position(messageview,
+						 backward ? -1 : 0);
+		} else
 			break;
 	}
 }

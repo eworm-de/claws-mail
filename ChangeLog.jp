@@ -1,3 +1,37 @@
+2001-09-30
+
+	* src/textview.[ch]: textview_set_position() を追加。
+	* src/messageview.[ch]: messageview_set_position() を追加。
+	* src/addrbook.c
+	  src/addrcache.c
+	  src/addressadd.c
+	  src/addressbook.c
+	  src/addrindex.c
+	  src/addritem.c
+	  src/editaddress.c
+	  src/editbook.c
+	  src/editgroup.c
+	  src/editjpilot.c
+	  src/editldap.c
+	  src/editldap_basedn.c
+	  src/editvcard.c
+	  src/jpilot.c
+	  src/mgutils.c
+	  src/syldap.c
+	  src/vcard.c: C++ スタイルのコメントを C スタイルに変換。
+	* src/imap.c: QUOTE_IF_REQUIRED(): 新規マクロ。文字列を新規
+	  バッファにコピーし、必要ならダブルクォートで括る。
+	  imap_status(), imap_cmd_login(), imap_cmd_list(),
+	  imap_cmd_do_select(), imap_cmd_create(), imap_cmd_delete(),
+	  imap_cmd_copy(): QUOTE_IF_REQUIRED() を使用。
+
+2001-09-30
+
+	* src/textview.[ch]: textview_search_string_backward(): 新規。
+	  新規メンバ cur_pos を TextView に追加。
+	  正しい editable の位置を得るために button_press_event を
+	  gtk_signal_connect_after() で接続。
+
 2001-09-27
 
 	* src/folder.c: folder_write_list_recursive(): スレッド解除の状態

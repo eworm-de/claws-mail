@@ -17,20 +17,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/*
- * Edit VCard address book data.
- */
-
 #ifndef __EDITGROUP_H__
 #define __EDITGROUP_H__
 
-// Function prototypes
 ItemGroup *addressbook_edit_group( AddressBookFile *abf, ItemFolder *folder, ItemGroup *group );
 ItemFolder *addressbook_edit_folder( AddressBookFile *abf, ItemFolder *parent, ItemFolder *folder );
 
 #endif /* __EDITGROUP_H__ */
-
-/*
-* End of Source.
-*/
-

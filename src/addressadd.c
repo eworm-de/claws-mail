@@ -132,7 +132,7 @@ static void addressadd_folder_select( GtkCTree *ctree, gint row, gint column,
 static void addressadd_tree_button( GtkCTree *ctree, GdkEventButton *event, gpointer data ) {
 	if( ! event ) return;
 	if( event->button == 1 ) {
-		// Handle double click
+		/* Handle double click */
 		if( event->type == GDK_2BUTTON_PRESS ) {
 			addressadd_cancelled = FALSE;
 			gtk_main_quit();
@@ -180,7 +180,7 @@ static void addressadd_create( void ) {
 	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
-	// First row
+	/* First row */
 	top = 0;
 	label = gtk_label_new(_("Name"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
@@ -190,7 +190,7 @@ static void addressadd_create( void ) {
 	gtk_table_attach(GTK_TABLE(table), label_name, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label_name), 0, 0.5);
 
-	// Second row
+	/* Second row */
 	top = 1;
 	label = gtk_label_new(_("Address"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
@@ -200,7 +200,7 @@ static void addressadd_create( void ) {
 	gtk_table_attach(GTK_TABLE(table), label_addr, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label_addr), 0, 0.5);
 
-	// Third row
+	/* Third row */
 	top = 2;
 	label = gtk_label_new(_("Remarks"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
@@ -210,7 +210,7 @@ static void addressadd_create( void ) {
 	gtk_table_attach(GTK_TABLE(table), label_rems, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label_rems), 0, 0.5);
 
-	// Address book/folder tree
+	/* Address book/folder tree */
 	vlbox = gtk_vbox_new(FALSE, 8);
 	gtk_box_pack_start(GTK_BOX(vbox), vlbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(vlbox), 8 );
@@ -231,13 +231,13 @@ static void addressadd_create( void ) {
 	gtk_ctree_set_indent( GTK_CTREE(tree_folder), CTREE_INDENT );
 	gtk_clist_set_auto_sort( GTK_CLIST(tree_folder), TRUE );
 
-	// Status line
+	/* Status line */
 	hsbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, BORDER_WIDTH);
 	statusbar = gtk_statusbar_new();
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
 
-	// Button panel
+	/* Button panel */
 	gtkut_button_set_create(&hbbox, &ok_btn, _("OK"),
 				&cancel_btn, _("Cancel"), NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
@@ -323,12 +323,12 @@ static void addressadd_load_data( AddressIndex *addrIndex ) {
 				ds = nodeDS->data;
 				dsName = g_strdup( addrindex_ds_get_name( ds ) );
 
-				// Read address book
+				/* Read address book */
 				if( ! addrindex_ds_get_read_flag( ds ) ) {
 					addrindex_ds_read_data( ds );
 				}
 
-				// Add node for address book
+				/* Add node for address book */
 				abf = ds->rawDataSource;
 				name = &dsName;
 				node = gtk_ctree_insert_node( tree, NULL, NULL,

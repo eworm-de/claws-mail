@@ -1,3 +1,37 @@
+2001-09-30
+
+	* src/textview.[ch]: added textview_set_position().
+	* src/messageview.[ch]: added messageview_set_position().
+	* src/addrbook.c
+	  src/addrcache.c
+	  src/addressadd.c
+	  src/addressbook.c
+	  src/addrindex.c
+	  src/addritem.c
+	  src/editaddress.c
+	  src/editbook.c
+	  src/editgroup.c
+	  src/editjpilot.c
+	  src/editldap.c
+	  src/editldap_basedn.c
+	  src/editvcard.c
+	  src/jpilot.c
+	  src/mgutils.c
+	  src/syldap.c
+	  src/vcard.c: converted C++-style comments into C-style one.
+	* src/imap.c: QUOTE_IF_REQUIRED(): new macro. Copy string into
+	  new buffer and quote with double quotes if required.
+	  imap_status(), imap_cmd_login(), imap_cmd_list(),
+	  imap_cmd_do_select(), imap_cmd_create(), imap_cmd_delete(),
+	  imap_cmd_copy(): use QUOTE_IF_REQUIRED().
+
+2001-09-30
+
+	* src/textview.[ch]: textview_search_string_backward(): new.
+	  Add the new member cur_pos to TextView.
+	  Connect button_press_event with gtk_signal_connect_after() to
+	  obtain the correct editable position.
+
 2001-09-27
 
 	* src/folder.c: folder_write_list_recursive(): preserve unthreaded

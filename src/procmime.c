@@ -681,7 +681,8 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 			fputs(buf, outfp);
 		}
 	}
-	if (conv_fail) g_warning(_("Code conversion failed.\n"));
+	if (conv_fail)
+		g_warning(_("procmime_get_text_content(): Code conversion failed.\n"));
 
 	fclose(tmpfp);
 	rewind(outfp);

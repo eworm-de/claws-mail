@@ -56,17 +56,18 @@ struct _JPilotFile {
 	GList                 *customLabels;
 	GList                 *labelInd;
 	gint                  retVal;
-	// ItemFolder            *rootFolder;
+	/* ItemFolder            *rootFolder; */
 	gboolean              accessFlag;
 };
 
-// Limits
-#define JPILOT_NUM_LABELS	22	// Number of labels
-#define JPILOT_NUM_PHONELABELS  8 	// Number of phone number labels
-#define JPILOT_NUM_CATEG	16	// Number of categories
-#define JPILOT_LEN_LABEL	15	// Max length of label
-#define JPILOT_LEN_CATEG	15	// Max length of category
-#define JPILOT_NUM_ADDR_PHONE   5	// Number of phone entries a person can have
+/* Limits */
+#define JPILOT_NUM_LABELS	22	/* Number of labels */
+#define JPILOT_NUM_PHONELABELS  8 	/* Number of phone number labels */
+#define JPILOT_NUM_CATEG	16	/* Number of categories */
+#define JPILOT_LEN_LABEL	15	/* Max length of label */
+#define JPILOT_LEN_CATEG	15	/* Max length of category */
+#define JPILOT_NUM_ADDR_PHONE   5	/* Number of phone entries a person
+					   can have */
 
 /* Function prototypes */
 JPilotFile *jpilot_create		( void );

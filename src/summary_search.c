@@ -75,6 +75,8 @@ void summary_search(SummaryView *summaryview)
 {
 	if (!window)
 		summary_search_create(summaryview);
+	else
+		gtk_widget_hide(window);
 
 	gtk_widget_grab_focus(search_btn);
 	gtk_widget_grab_focus(subject_entry);
@@ -350,11 +352,17 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 			if (search_all)
 				gtk_ctree_select(ctree, node);
 			else {
-				summary_select_node(summaryview, node, TRUE);
-				if (body_matched) {
-					messageview_search_string
-						(summaryview->messageview,
-						 body_str, case_sens);
+				if (summaryview->msg_is_toggled_on) {
+					summary_select_node
+						(summaryview, node, TRUE);
+					if (body_matched) {
+						messageview_search_string
+							(summaryview->messageview,
+							 body_str, case_sens);
+					}
+				} else {
+					summary_select_node
+						(summaryview, node, FALSE);
 				}
 				break;
 			}

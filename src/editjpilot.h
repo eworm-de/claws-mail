@@ -26,14 +26,8 @@
 
 #ifdef USE_JPILOT
 
-// Function prototypes
 AdapterDSource *addressbook_edit_jpilot( AddressIndex *addrIndex, AdapterDSource *ads );
 
 #endif /* USE_JPILOT */
 
 #endif /* __EDITJPILOT_H__ */
-
-/*
-* End of Source.
-*/
-

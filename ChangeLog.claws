@@ -1,3 +1,21 @@
+2001-09-30 [paul] 	0.6.2claws12
+
+	* po/de.po, po/es.po, po/fr.po, po/nl.po, po/pt_BR.po
+		updated translations
+
+	* po/POTFILES.in
+		add 'src/importldif.c'
+
+	* AUTHORS, tools/README, tools/eud2gc.py, tools/Makefile.am
+		added eudora-to-vCard conversion tool
+		submitted by Jeroen Versteeg <j.m.versteeg@student.utwente.nl>
+
+	* sync with sylpheed 0.6.2cvs8
+
+2001-09-30 [paul]
+
+	* sylpheed-0.6.2claws released
+
 2001-09-27 [melvin]	0.6.2claws11
 
 	* src/gtkspell.c

@@ -86,7 +86,7 @@ gchar *mgu_list_coalesce( GSList *list ) {
 
 	if( ! list ) return NULL;
 
-	// Calculate maximum length of text
+	/* Calculate maximum length of text */
 	len = 0;
 	node = list;
 	while( node ) {
@@ -95,7 +95,7 @@ gchar *mgu_list_coalesce( GSList *list ) {
 		node = g_slist_next( node );
 	}
 
-	// Create new buffer.
+	/* Create new buffer. */
 	buf = g_new0( gchar, len+1 );
 	start = buf;
 	node = list;

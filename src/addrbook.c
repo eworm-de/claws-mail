@@ -342,7 +342,7 @@ ItemEMail *addrbook_person_remove_email( AddressBookFile *book, ItemPerson *pers
 #define AB_ELTAG_GROUP           "group"
 #define AB_ELTAG_FOLDER          "folder"
 
-// Attribute tag names
+/* Attribute tag names */
 #define AB_ATTAG_TYPE            "type"
 #define AB_ATTAG_UID             "uid"
 #define AB_ATTAG_NAME            "name"
@@ -2053,6 +2053,9 @@ static gboolean addrbook_chkread_tree( AddressBookFile *book, XMLFile *file ) {
 			longjmp( book->jumper, 1 );
 		}
 		/* Get next tag (person, group or folder) */
+		if( xml_parse_next_tag( file ) ) {
+			longjmp( book->jumper, 1 );
+		}
 		if( xml_compare_tag( file, AB_ELTAG_PERSON ) ) {
 			addrbook_chkparse_person( book, file );
 		}
@@ -2061,6 +2064,10 @@ static gboolean addrbook_chkread_tree( AddressBookFile *book, XMLFile *file ) {
 		}
 		else if( xml_compare_tag( file, AB_ELTAG_FOLDER ) ) {
 			addrbook_chkparse_folder( book, file );
+		}
+		else {
+			/* Item not recognized */
+			retVal = FALSE;
 		}
 	}
 	return retVal;

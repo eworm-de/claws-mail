@@ -375,9 +375,9 @@ unsigned int i, n;
 	return n;
 }
 
-/* Shamelessly copied from JPilot (utils.c)
-   These next 2 functions were copied from pi-file.c in the pilot-link app
-   Exact value of "Jan 1, 1970 0:00:00 GMT" - "Jan 1, 1904 0:00:00 GMT" */
+/* Shamelessly copied from JPilot (utils.c) */
+/*These next 2 functions were copied from pi-file.c in the pilot-link app */
+/* Exact value of "Jan 1, 1970 0:00:00 GMT" - "Jan 1, 1904 0:00:00 GMT" */
 #define PILOT_TIME_DELTA (unsigned)(2082844800)
 
 time_t pilot_time_to_unix_time ( unsigned long raw_time ) {
@@ -474,8 +474,8 @@ static int jpilot_free_db_list( GList **br_list ) {
 	return 0;
 }
 
-/* Shamelessly copied from JPilot (libplugin.c)
-   Read file size. */
+/* Shamelessly copied from JPilot (libplugin.c) */
+/* Read file size. */
 static int jpilot_get_info_size( FILE *in, int *size ) {
 	RawDBHeader rdbh;
 	DBHeader dbh;
@@ -511,8 +511,8 @@ static int jpilot_get_info_size( FILE *in, int *size ) {
 	return MGU_SUCCESS;
 }
 
-/* Read address file into address list. Based on JPilot's
-   libplugin.c (jp_get_app_info) */
+/* Read address file into address list. Based on JPilot's */
+/* libplugin.c (jp_get_app_info) */
 static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, int *buf_size ) {
 	FILE *in;
  	int num;
@@ -586,8 +586,8 @@ static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, in
 
 #define	FULLNAME_BUFSIZE   256
 #define	EMAIL_BUFSIZE      256
-/* Read address file into address cache. Based on JPilot's
-   jp_read_DB_files (from libplugin.c) */
+/* Read address file into address cache. Based on JPilot's */
+/* jp_read_DB_files (from libplugin.c) */
 static gint jpilot_read_file( JPilotFile *pilotFile ) {
 	FILE *in;
 	gchar *buf;
@@ -726,7 +726,7 @@ static gint jpilot_read_file( JPilotFile *pilotFile ) {
 			i++;
 		}
 
-		/* Now go load all records */		
+		/* Now go load all records		 */
 		while(!feof(in)) {
 			/* struct CategoryAppInfo *cat = &ai->category; */
 
@@ -1117,12 +1117,12 @@ static void jpilot_remove_empty( JPilotFile *pilotFile ) {
 	g_list_free( remList );
 }
 
-/* ============================================================================================
-
+/* ============================================================================================ */
+/*
 * Read file into list. Main entry point
 * Return: TRUE if file read successfully.
-
-  ============================================================================================ */
+*/
+/* ============================================================================================ */
 gint jpilot_read_data( JPilotFile *pilotFile ) {
 	g_return_val_if_fail( pilotFile != NULL, -1 );
 

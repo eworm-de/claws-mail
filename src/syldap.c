@@ -219,7 +219,7 @@ void syldap_free( SyldapServer *ldapServer ) {
 
 	ldapServer->callBack = NULL;
 
-	// Free internal stuff
+	/* Free internal stuff */
 	g_free( ldapServer->name );
 	g_free( ldapServer->hostName );
 	g_free( ldapServer->baseDN );
@@ -233,11 +233,11 @@ void syldap_free( SyldapServer *ldapServer ) {
 	ldapServer->maxEntries = 0;
 	ldapServer->newSearch = FALSE;
 
-	// Clear cache
+	/* Clear cache */
 	addrcache_clear( ldapServer->addressCache );
 	addrcache_free( ldapServer->addressCache );
 
-	// Clear pointers
+	/* Clear pointers */
 	ldapServer->name = NULL;
 	ldapServer->hostName = NULL;
 	ldapServer->baseDN = NULL;
@@ -251,7 +251,7 @@ void syldap_free( SyldapServer *ldapServer ) {
 	ldapServer->retVal = MGU_SUCCESS;
 	ldapServer->accessFlag = FALSE;
 
-	// Now release LDAP object
+	/* Now release LDAP object */
 	g_free( ldapServer );
 
 }
@@ -338,7 +338,7 @@ static void syldap_build_items_fl( SyldapServer *ldapServer, GSList *listAddr, G
 	ItemPerson *person;
 	ItemEMail *email;
 
-	// Find longest first name in list
+	/* Find longest first name in list */
 	while( nodeFirst ) {
 		if( firstName == NULL ) {
 			firstName = nodeFirst->data;
@@ -353,7 +353,7 @@ static void syldap_build_items_fl( SyldapServer *ldapServer, GSList *listAddr, G
 		nodeFirst = g_slist_next( nodeFirst );
 	}
 
-	// Format name
+	/* Format name */
 	if( listLast ) {
 		lastName = listLast->data;
 	}
@@ -384,7 +384,7 @@ static void syldap_build_items_fl( SyldapServer *ldapServer, GSList *listAddr, G
 		addrcache_add_person( ldapServer->addressCache, person );
 	}
 
-	// Add address item
+	/* Add address item */
 	while( nodeAddress ) {
 		email = addritem_create_item_email();
 		addritem_email_set_address( email, nodeAddress->data );
@@ -408,7 +408,7 @@ static GSList *syldap_add_list_values( LDAP *ld, LDAPMessage *entry, char *attr 
 
 	if( ( vals = ldap_get_values( ld, entry, attr ) ) != NULL ) {
 		for( i = 0; vals[i] != NULL; i++ ) {
-			// printf( "lv\t%s: %s\n", attr, vals[i] );
+			/* printf( "lv\t%s: %s\n", attr, vals[i] ); */
 			list = g_slist_append( list, g_strdup( vals[i] ) );
 		}
 	}
@@ -425,7 +425,7 @@ static GSList *syldap_add_single_value( LDAP *ld, LDAPMessage *entry, char *attr
 
 	if( ( vals = ldap_get_values( ld, entry, attr ) ) != NULL ) {
 		if( vals[0] != NULL ) {
-			// printf( "sv\t%s: %s\n", attr, vals[0] );
+			/* printf( "sv\t%s: %s\n", attr, vals[0] ); */
 			list = g_slist_append( list, g_strdup( vals[0] ) );
 		}
 	}
@@ -455,7 +455,7 @@ gboolean syldap_check_search( SyldapServer *ldapServer ) {
 
 	ldapServer->retVal = MGU_LDAP_CRITERIA;
 
-	// Test search criteria
+	/* Test search criteria */
 	if( ldapServer->searchCriteria == NULL ) {
 		return FALSE;
 	}
@@ -501,7 +501,7 @@ gint syldap_search( SyldapServer *ldapServer ) {
 		return ldapServer->retVal;
 	}
 
-	// Set timeout
+	/* Set timeout */
 	timeout.tv_sec = ldapServer->timeOut;
 	timeout.tv_usec = 0L;
 
@@ -511,16 +511,16 @@ gint syldap_search( SyldapServer *ldapServer ) {
 		return ldapServer->retVal;
 	}
 
-	// printf( "connected to LDAP host %s on port %d\n", ldapServer->hostName, ldapServer->port );
+	/* printf( "connected to LDAP host %s on port %d\n", ldapServer->hostName, ldapServer->port ); */
 
-	// Bind to the server, if required
+	/* Bind to the server, if required */
 	if( ldapServer->bindDN ) {
 		if( * ldapServer->bindDN != '\0' ) {
-			// printf( "binding...\n" );
+			/* printf( "binding...\n" ); */
 			rc = ldap_simple_bind_s( ld, ldapServer->bindDN, ldapServer->bindPass );
-			// printf( "rc=%d\n", rc );
+			/* printf( "rc=%d\n", rc ); */
 			if( rc != LDAP_SUCCESS ) {
-				// printf( "LDAP Error: ldap_simple_bind_s: %s\n", ldap_err2string( rc ) );
+				/* printf( "LDAP Error: ldap_simple_bind_s: %s\n", ldap_err2string( rc ) ); */
 				ldap_unbind( ld );
 				ldapServer->retVal = MGU_LDAP_BIND;
 				return ldapServer->retVal;
@@ -528,7 +528,7 @@ gint syldap_search( SyldapServer *ldapServer ) {
 		}
 	}
 
-	// Define all attributes we are interested in.
+	/* Define all attributes we are interested in. */
 	attribs[0] = SYLDAP_ATTR_DN;
 	attribs[1] = SYLDAP_ATTR_COMMONNAME;
 	attribs[2] = SYLDAP_ATTR_GIVENNAME;
@@ -537,7 +537,7 @@ gint syldap_search( SyldapServer *ldapServer ) {
 	attribs[5] = SYLDAP_ATTR_UID;
 	attribs[6] = NULL;
 
-	// Create LDAP search string and apply search criteria
+	/* Create LDAP search string and apply search criteria */
 	criteria = g_strdup_printf( ldapServer->searchCriteria, ldapServer->searchValue );
 	rc = ldap_search_ext_s( ld, ldapServer->baseDN, LDAP_SCOPE_SUBTREE, criteria, attribs, 0, NULL, NULL,
 		       &timeout, 0, &result );
@@ -549,27 +549,27 @@ gint syldap_search( SyldapServer *ldapServer ) {
 		return ldapServer->retVal;
 	}
 	if( rc != LDAP_SUCCESS ) {
-		// printf( "LDAP Error: ldap_search_st: %s\n", ldap_err2string( rc ) );
+		/* printf( "LDAP Error: ldap_search_st: %s\n", ldap_err2string( rc ) ); */
 		ldap_unbind( ld );
 		ldapServer->retVal = MGU_LDAP_SEARCH;
 		return ldapServer->retVal;
 	}
 
-	// printf( "Total results are: %d\n", ldap_count_entries( ld, result ) );
+	/* printf( "Total results are: %d\n", ldap_count_entries( ld, result ) ); */
 
-	// Clear the cache if we have new entries, otherwise leave untouched.
+	/* Clear the cache if we have new entries, otherwise leave untouched. */
 	if( ldap_count_entries( ld, result ) > 0 ) {
 		addrcache_clear( ldapServer->addressCache );
 	}
 
-	// Process results
+	/* Process results */
 	ldapServer->entriesRead = 0;
 	for( e = ldap_first_entry( ld, result ); e != NULL; e = ldap_next_entry( ld, e ) ) {
 		entriesFound = TRUE;
 		if( ldapServer->entriesRead >= ldapServer->maxEntries ) break;		
-		// printf( "DN: %s\n", ldap_get_dn( ld, e ) );
+		/* printf( "DN: %s\n", ldap_get_dn( ld, e ) ); */
 
-		// Process all attributes
+		/* Process all attributes */
 		for( attribute = ldap_first_attribute( ld, e, &ber ); attribute != NULL;
 			       attribute = ldap_next_attribute( ld, e, ber ) ) {
 			if( strcasecmp( attribute, SYLDAP_ATTR_COMMONNAME ) == 0 ) {
@@ -592,13 +592,13 @@ gint syldap_search( SyldapServer *ldapServer ) {
 			}
 		}
 
-		// Free memory used to store attribute
+		/* Free memory used to store attribute */
 		ldap_memfree( attribute );
 
-		// Format and add items to cache
+		/* Format and add items to cache */
 		syldap_build_items_fl( ldapServer, listAddress, listFirst, listLast );
 
-		// Free up
+		/* Free up */
 		syldap_free_lists( listName, listAddress, listID, listDN, listFirst, listLast );
 		listName = listAddress = listID = listFirst = listLast = listDN = NULL;
 
@@ -610,7 +610,7 @@ gint syldap_search( SyldapServer *ldapServer ) {
 	syldap_free_lists( listName, listAddress, listID, listDN, listFirst, listLast );
 	listName = listAddress = listID = listFirst = listLast = listDN = NULL;
 	
-	// Free up and disconnect
+	/* Free up and disconnect */
 	ldap_msgfree( result );
 	ldap_unbind( ld );
 	ldapServer->newSearch = FALSE;
@@ -623,28 +623,28 @@ gint syldap_search( SyldapServer *ldapServer ) {
 	return ldapServer->retVal;
 }
 
-// ============================================================================================
+/* ============================================================================================ */
 /*
 * Read data into list. Main entry point
 * Return: TRUE if file read successfully.
 */
-// ============================================================================================
+/* ============================================================================================ */
 gint syldap_read_data( SyldapServer *ldapServer ) {
 	g_return_val_if_fail( ldapServer != NULL, -1 );
 
 	ldapServer->accessFlag = FALSE;
 	pthread_detach( pthread_self() );
 	if( ldapServer->newSearch ) {
-		// Read data into the list
+		/* Read data into the list */
 		syldap_search( ldapServer );
 
-		// Mark cache
+		/* Mark cache */
 		ldapServer->addressCache->modified = FALSE;
 		ldapServer->addressCache->dataRead = TRUE;
 		ldapServer->accessFlag = FALSE;
 	}
 
-	// Callback
+	/* Callback */
 	ldapServer->busyFlag = FALSE;
 	if( ldapServer->callBack ) {
 		sched_yield();
@@ -655,29 +655,29 @@ gint syldap_read_data( SyldapServer *ldapServer ) {
 	return ldapServer->retVal;
 }
 
-// ============================================================================================
+/* ============================================================================================ */
 /*
 * Cancel read with thread.
 */
-// ============================================================================================
+/* ============================================================================================ */
 void syldap_cancel_read( SyldapServer *ldapServer ) {
 	g_return_if_fail( ldapServer != NULL );
 
 	if( ldapServer->thread ) {
-		// printf( "thread cancelled\n" );
+		/* printf( "thread cancelled\n" ); */
 		pthread_cancel( *ldapServer->thread );
 	}
 	ldapServer->thread = NULL;
 	ldapServer->busyFlag = FALSE;
 }
 
-// ============================================================================================
+/* ============================================================================================ */
 /*
 * Read data into list using a background thread.
 * Return: TRUE if file read successfully. Callback function will be
 * notified when search is complete.
 */
-// ============================================================================================
+/* ============================================================================================ */
 gint syldap_read_data_th( SyldapServer *ldapServer ) {
 	pthread_t thread;
 
@@ -742,7 +742,7 @@ GList *syldap_read_basedn_s( const gchar *host, const gint port, const gchar *bi
 	if( host == NULL ) return baseDN;
 	if( port < 1 ) return baseDN;
 
-	// Set timeout
+	/* Set timeout */
 	timeout.tv_usec = 0L;
 	if( tov > 0 ) {
 		timeout.tv_sec = tov;
@@ -751,40 +751,40 @@ GList *syldap_read_basedn_s( const gchar *host, const gint port, const gchar *bi
 		timeout.tv_sec = 30L;
 	}
 
-	// Connect to server.
+	/* Connect to server. */
 	if( ( ld = ldap_init( host, port ) ) == NULL ) {
 		return baseDN;
 	}
 
-	// Bind to the server, if required
+	/* Bind to the server, if required */
 	if( bindDN ) {
 		if( *bindDN != '\0' ) {
 			rc = ldap_simple_bind_s( ld, bindDN, bindPW );
 			if( rc != LDAP_SUCCESS ) {
-				// printf( "LDAP Error: ldap_simple_bind_s: %s\n", ldap_err2string( rc ) );
+				/* printf( "LDAP Error: ldap_simple_bind_s: %s\n", ldap_err2string( rc ) ); */
 				ldap_unbind( ld );
 				return baseDN;
 			}
 		}
 	}
 
-	// Test for LDAP version 3
+	/* Test for LDAP version 3 */
 	attribs[0] = SYLDAP_V3_TEST_ATTR;
 	attribs[1] = NULL;
 	rc = ldap_search_ext_s( ld, SYLDAP_SEARCHBASE_V3, LDAP_SCOPE_BASE, SYLDAP_TEST_FILTER, attribs,
 		       0, NULL, NULL, &timeout, 0, &result );
 	if( rc == LDAP_SUCCESS ) {
-		// Process entries
+		/* Process entries */
 		for( e = ldap_first_entry( ld, result ); e != NULL; e = ldap_next_entry( ld, e ) ) {
-			// printf( "DN: %s\n", ldap_get_dn( ld, e ) );
+			/* printf( "DN: %s\n", ldap_get_dn( ld, e ) ); */
 
-			// Process attributes
+			/* Process attributes */
 			for( attribute = ldap_first_attribute( ld, e, &ber ); attribute != NULL;
 					attribute = ldap_next_attribute( ld, e, ber ) ) {
 				if( strcasecmp( attribute, SYLDAP_V3_TEST_ATTR ) == 0 ) {
 					if( ( vals = ldap_get_values( ld, e, attribute ) ) != NULL ) {
 						for( i = 0; vals[i] != NULL; i++ ) {
-							// printf( "\t%s: %s\n", attribute, vals[i] );
+							/* printf( "\t%s: %s\n", attribute, vals[i] ); */
 							baseDN = g_list_append( baseDN, g_strdup( vals[i] ) );
 						}
 					}
@@ -802,25 +802,25 @@ GList *syldap_read_basedn_s( const gchar *host, const gint port, const gchar *bi
 	}
 
 	if( baseDN == NULL ) {
-		// Test for LDAP version 2
+		/* Test for LDAP version 2 */
 		attribs[0] = NULL;
 		rc = ldap_search_ext_s( ld, SYLDAP_SEARCHBASE_V2, LDAP_SCOPE_BASE, SYLDAP_TEST_FILTER, attribs,
 			       0, NULL, NULL, &timeout, 0, &result );
 		if( rc == LDAP_SUCCESS ) {
-			// Process entries
+			/* Process entries */
 			for( e = ldap_first_entry( ld, result ); e != NULL; e = ldap_next_entry( ld, e ) ) {
-				// if( baseDN ) break;			
-				// printf( "DN: %s\n", ldap_get_dn( ld, e ) );
+				/* if( baseDN ) break;			 */
+				/* printf( "DN: %s\n", ldap_get_dn( ld, e ) ); */
 
-				// Process attributes
+				/* Process attributes */
 				for( attribute = ldap_first_attribute( ld, e, &ber ); attribute != NULL;
 					       attribute = ldap_next_attribute( ld, e, ber ) ) {
-					// if( baseDN ) break;			
+					/* if( baseDN ) break;			 */
 					if( strcasecmp( attribute, SYLDAP_V2_TEST_ATTR ) == 0 ) {
 						if( ( vals = ldap_get_values( ld, e, attribute ) ) != NULL ) {
 							for( i = 0; vals[i] != NULL; i++ ) {
 								char *ch;
-								// Strip the 'ldb:' from the front of the value
+								/* Strip the 'ldb:' from the front of the value */
 								ch = ( char * ) strchr( vals[i], ':' );
 								if( ch ) {
 									gchar *bn = g_strdup( ++ch );
@@ -867,7 +867,7 @@ GList *syldap_read_basedn( SyldapServer *ldapServer ) {
 	if( ldapServer->hostName == NULL ) return baseDN;
 	if( ldapServer->port < 1 ) return baseDN;
 
-	// Set timeout
+	/* Set timeout */
 	timeout.tv_usec = 0L;
 	if( ldapServer->timeOut > 0 ) {
 		timeout.tv_sec = ldapServer->timeOut;
@@ -876,18 +876,18 @@ GList *syldap_read_basedn( SyldapServer *ldapServer ) {
 		timeout.tv_sec = 30L;
 	}
 
-	// Connect to server.
+	/* Connect to server. */
 	if( ( ld = ldap_init( ldapServer->hostName, ldapServer->port ) ) == NULL ) {
 		ldapServer->retVal = MGU_LDAP_INIT;
 		return baseDN;
 	}
 
-	// Bind to the server, if required
+	/* Bind to the server, if required */
 	if( ldapServer->bindDN ) {
 		if( *ldapServer->bindDN != '\0' ) {
 			rc = ldap_simple_bind_s( ld, ldapServer->bindDN, ldapServer->bindPass );
 			if( rc != LDAP_SUCCESS ) {
-				//printf( "LDAP Error: ldap_simple_bind_s: %s\n", ldap_err2string( rc ) );
+				/* printf( "LDAP Error: ldap_simple_bind_s: %s\n", ldap_err2string( rc ) ); */
 				ldap_unbind( ld );
 				ldapServer->retVal = MGU_LDAP_BIND;
 				return baseDN;
@@ -897,23 +897,23 @@ GList *syldap_read_basedn( SyldapServer *ldapServer ) {
 
 	ldapServer->retVal = MGU_LDAP_SEARCH;
 
-	// Test for LDAP version 3
+	/* Test for LDAP version 3 */
 	attribs[0] = SYLDAP_V3_TEST_ATTR;
 	attribs[1] = NULL;
 	rc = ldap_search_ext_s( ld, SYLDAP_SEARCHBASE_V3, LDAP_SCOPE_BASE, SYLDAP_TEST_FILTER, attribs,
 		       0, NULL, NULL, &timeout, 0, &result );
 	if( rc == LDAP_SUCCESS ) {
-		// Process entries
+		/* Process entries */
 		for( e = ldap_first_entry( ld, result ); e != NULL; e = ldap_next_entry( ld, e ) ) {
-			// printf( "DN: %s\n", ldap_get_dn( ld, e ) );
+			/* printf( "DN: %s\n", ldap_get_dn( ld, e ) ); */
 
-			// Process attributes
+			/* Process attributes */
 			for( attribute = ldap_first_attribute( ld, e, &ber ); attribute != NULL;
 					attribute = ldap_next_attribute( ld, e, ber ) ) {
 				if( strcasecmp( attribute, SYLDAP_V3_TEST_ATTR ) == 0 ) {
 					if( ( vals = ldap_get_values( ld, e, attribute ) ) != NULL ) {
 						for( i = 0; vals[i] != NULL; i++ ) {
-							// printf( "\t%s: %s\n", attribute, vals[i] );
+							/* printf( "\t%s: %s\n", attribute, vals[i] ); */
 							baseDN = g_list_append( baseDN, g_strdup( vals[i] ) );
 						}
 					}
@@ -933,25 +933,25 @@ GList *syldap_read_basedn( SyldapServer *ldapServer ) {
 	}
 
 	if( baseDN == NULL ) {
-		// Test for LDAP version 2
+		/* Test for LDAP version 2 */
 		attribs[0] = NULL;
 		rc = ldap_search_ext_s( ld, SYLDAP_SEARCHBASE_V2, LDAP_SCOPE_BASE, SYLDAP_TEST_FILTER, attribs,
 			       0, NULL, NULL, &timeout, 0, &result );
 		if( rc == LDAP_SUCCESS ) {
-			// Process entries
+			/* Process entries */
 			for( e = ldap_first_entry( ld, result ); e != NULL; e = ldap_next_entry( ld, e ) ) {
-				// if( baseDN ) break;			
-				// printf( "DN: %s\n", ldap_get_dn( ld, e ) );
+				/* if( baseDN ) break;			 */
+				/* printf( "DN: %s\n", ldap_get_dn( ld, e ) ); */
 
-				// Process attributes
+				/* Process attributes */
 				for( attribute = ldap_first_attribute( ld, e, &ber ); attribute != NULL;
 					       attribute = ldap_next_attribute( ld, e, ber ) ) {
-					// if( baseDN ) break;			
+					/* if( baseDN ) break;			 */
 					if( strcasecmp( attribute, SYLDAP_V2_TEST_ATTR ) == 0 ) {
 						if( ( vals = ldap_get_values( ld, e, attribute ) ) != NULL ) {
 							for( i = 0; vals[i] != NULL; i++ ) {
 								char *ch;
-								// Strip the 'ldb:' from the front of the value
+								/* Strip the 'ldb:' from the front of the value */
 								ch = ( char * ) strchr( vals[i], ':' );
 								if( ch ) {
 									gchar *bn = g_strdup( ++ch );
@@ -1039,13 +1039,13 @@ gboolean syldap_test_connect( SyldapServer *ldapServer ) {
 gboolean syldap_test_ldap_lib() {
 	void *handle, *fun;
 	
-	// Get library
+	/* Get library */
 	handle = dlopen( LDAP_LINK_LIB_NAME_1, RTLD_LAZY );
 	if( ! handle ) {
 		return FALSE;
 	}
 
-	// Test for symbols we need
+	/* Test for symbols we need */
 	fun = dlsym( handle, "ldap_init" );
 	if( ! fun ) {
 		dlclose( handle );

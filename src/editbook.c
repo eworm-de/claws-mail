@@ -62,7 +62,7 @@ static struct _AddrBookEdit_Dlg {
 	AddressBookFile *bookFile;
 } addrbookedit_dlg;
 
-/* static struct _AddressFileSelection vcard_file_selector;  */
+/* static struct _AddressFileSelection vcard_file_selector; */
 
 /*
 * Edit functions.
@@ -124,7 +124,7 @@ static void edit_book_file_check( void ) {
 
 static void edit_book_enable_buttons( gboolean enable ) {
 	gtk_widget_set_sensitive( addrbookedit_dlg.check_btn, enable );
-	// gtk_widget_set_sensitive( addrbookedit_dlg.file_btn, enable );
+	/* gtk_widget_set_sensitive( addrbookedit_dlg.file_btn, enable ); */
 }
 
 static void edit_book_name_focus( GtkWidget *widget, GdkEventFocus *event, gpointer data) {
@@ -157,7 +157,7 @@ static void addressbook_edit_book_create( gboolean *cancelled ) {
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 	GtkWidget *check_btn;
-	// GtkWidget *file_btn;
+	/* GtkWidget *file_btn; */
 	GtkWidget *statusbar;
 	GtkWidget *hsbox;
 	gint top;
@@ -185,7 +185,7 @@ static void addressbook_edit_book_create( gboolean *cancelled ) {
 	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8 );
 
-	// First row
+	/* First row */
 	top = 0;
 	label = gtk_label_new(_("Name"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
@@ -197,7 +197,7 @@ static void addressbook_edit_book_create( gboolean *cancelled ) {
 	check_btn = gtk_button_new_with_label( _(" Check File "));
 	gtk_table_attach(GTK_TABLE(table), check_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0);
 
-	// Second row
+	/* Second row */
 	top = 1;
 	label = gtk_label_new(_("File"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
@@ -207,16 +207,16 @@ static void addressbook_edit_book_create( gboolean *cancelled ) {
 	gtk_misc_set_alignment(GTK_MISC(file_label), 0, 0.5);
 	gtk_table_attach(GTK_TABLE(table), file_label, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
-	// file_btn = gtk_button_new_with_label( _(" ... "));
-	// gtk_table_attach(GTK_TABLE(table), file_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0);
+	/* file_btn = gtk_button_new_with_label( _(" ... ")); */
+	/* gtk_table_attach(GTK_TABLE(table), file_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0); */
 
-	// Status line
+	/* Status line */
 	hsbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, BORDER_WIDTH);
 	statusbar = gtk_statusbar_new();
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
 
-	// Button panel
+	/* Button panel */
 	gtkut_button_set_create(&hbbox, &ok_btn, _("OK"),
 				&cancel_btn, _("Cancel"), NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
@@ -232,8 +232,8 @@ static void addressbook_edit_book_create( gboolean *cancelled ) {
 			   GTK_SIGNAL_FUNC(edit_book_ok), cancelled);
 	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
 			   GTK_SIGNAL_FUNC(edit_book_cancel), cancelled);
-//	gtk_signal_connect(GTK_OBJECT(file_btn), "clicked",
-//			   GTK_SIGNAL_FUNC(edit_book_file_select), NULL);
+/*	gtk_signal_connect(GTK_OBJECT(file_btn), "clicked", */
+/*			   GTK_SIGNAL_FUNC(edit_book_file_select), NULL); */
 	gtk_signal_connect(GTK_OBJECT(check_btn), "clicked",
 			   GTK_SIGNAL_FUNC(edit_book_file_check), NULL);
 
@@ -245,7 +245,7 @@ static void addressbook_edit_book_create( gboolean *cancelled ) {
 	addrbookedit_dlg.ok_btn     = ok_btn;
 	addrbookedit_dlg.cancel_btn = cancel_btn;
 	addrbookedit_dlg.check_btn  = check_btn;
-	// addrbookedit_dlg.file_btn   = file_btn;
+	/* addrbookedit_dlg.file_btn   = file_btn; */
 	addrbookedit_dlg.statusbar  = statusbar;
 	addrbookedit_dlg.status_cid = gtk_statusbar_get_context_id( GTK_STATUSBAR(statusbar), "Edit Addressbook Dialog" );
 }
@@ -284,7 +284,7 @@ AdapterDSource *addressbook_edit_book( AddressIndex *addrIndex, AdapterDSource *
 		abf = addrbook_create_book();
 		addrbook_set_path( abf, addrIndex->filePath );
 
-		// Take initial guess at file name
+		/* Take initial guess at file name */
 		newFile = edit_book_guess_file( abf );
 		if( newFile ) {
 			tmp = g_strdup_printf( "<%s>", newFile );
@@ -323,7 +323,7 @@ AdapterDSource *addressbook_edit_book( AddressIndex *addrIndex, AdapterDSource *
 	}
 	else {
 		if( newBook ) {
-			// Get final file name in case it changed
+			/* Get final file name in case it changed */
 			newFile = edit_book_guess_file( abf );
 			addrbook_set_file( abf, newFile );
 			g_free( newFile );
@@ -336,7 +336,7 @@ AdapterDSource *addressbook_edit_book( AddressIndex *addrIndex, AdapterDSource *
 	}
 	g_free( sName );
 
-	// Save data
+	/* Save data */
 	if( abf ) addrbook_save_data( abf );
 
 	return ads;

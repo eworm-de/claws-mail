@@ -40,7 +40,7 @@
 What's Sylpheed
 ===============
 
-SylpheedはGTK+を使用した、X Window System上で動作する
+Sylpheed は GTK+ を使用した、 X Window System 上で動作する
 
   * 軽快な動作
   * 美しく、洗練されたインタフェース
@@ -49,49 +49,51 @@ SylpheedはGTK+を使用した、X Window System上で動作する
 
 を目指した電子メールクライアント(& ニュースリーダー)です。
 
-外観やインタフェースはOutlook Express、Becky!、Datulaといった、 Windowsで
-は定番のメーラを参考にしています。また、操作系はMewやWanderlust等の Emacs
-系メーラを参考にしていて、キーボードのみによる操作が可能となっています。
+外観やインタフェースは Outlook Express 、 Becky! 、 Datula といった、
+Windows では定番のメーラを参考にしています。また、操作系は Mew や
+Wanderlust 等の Emacs 系メーラを参考にしており、キーボードのみによる操作
+が可能となっています。 Windows 上のメーラ、あるいは Mew や Wanderlust 等
+の使用経験があればすぐに使い方は分かると思います。
 
-メッセージはMH形式で管理しており、他のMH形式を使用したメーラ(Mew等)と併用
-することが可能です。また、fetchmailやprocmailを利用したり、受信に外部
-プログラム(inc, imget等)を使用することも可能です。
+メッセージは MH 形式で管理しており、他の MH 形式を使用したメーラ(Mew 等)
+と併用することが可能です。また、 fetchmail や procmail を利用したり、受信
+に外部プログラム(inc, imget 等)を使用することも可能です。
 
 現在実装されている機能は
 
-	o ユーザフレンドリで直観的なインタフェース
-	o Windoze 上のメールクライアントによくある3ぺイン表示
-	o キーボードのみによる操作が可能
-	o Mew/Wanderlust ライクなキーバインド (通常使われるキーの大部分は
-	  実装済)
+	o POP3 対応
 	o IMAP4rev1 対応
-	o マルチパート MIME
+	o 統合 NetNews クライアント
+	o 無制限の複数アカウント管理
+	o スレッド表示
+	o 振り分け機能
+	o MIME (添付)
 	o 画像表示機能を内蔵
 	o X-Face 対応
+	o 複数の MH フォルダに対応
+	o mbox ファイルのインポート / エクスポート
 	o 外部エディタ対応
-	o 無制限の複数アカウント管理
-	o メッセージの送信待機機能
-	o 振り分け機能
+	o 送信待機機能
+	o 自動メールチェック機能
 	o 草稿機能
 	o 自動改行機能
+	o クリッカブル URI
 	o XML ベースのアドレス帳
-	o APOP 対応
-	o 未読メッセージ管理
-	o 複数の MH フォルダに対応
-	o 統合 NetNews クライアント
+	o LDAP, vCard, JPilot 対応
+	o 新着・未読管理
+	o Mew/Wanderlust ライクなキーバインド
+	o 印刷機能
+	o APOP 認証対応
+	o SMTP AUTH 対応
+	o SSL 対応 (POP3, SMTP, IMAP4rev1)
 	o IPv6 対応
-	o GnuPG 対応 (現在実装中)
-	o マルチスレッド対応 (実験的)
-	o mbox ファイルのインポート / エクスポート
 	o ドラッグ & ドロップ (一部実装)
-	o 高速なスレッド表示
-	o 高速なメッセージ処理
-	o 低消費リソース
-	o 容易にカスタマイズできる設定
-	o automake + autoconf と gettext によるメッセージの国際化に対応
+	o GnuPG 対応 (現在実装中)
+	o automake + autoconf 対応
+	o gettext によるメッセージの国際化対応
+	o UTF-8 (Unicode) を含む多数のコードセットに対応(libjconv 使用時)
 
-Windows 上のメーラ、あるいは Mew や Wanderlust を使用したことのある人なら
-すぐに使い方は分かると思います。
+等です。
 
 インストール方法
 ================

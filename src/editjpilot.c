@@ -163,11 +163,11 @@ static void edit_jpilot_file_check( void ) {
 	if( sFile ) {
 		g_strchomp( sFile ); g_strchug( sFile );
 		if( *sFile != '\0' ) {
-			// Attempt to read file
+			/* Attempt to read file */
 			JPilotFile *jpf = jpilot_create_path( sFile );
 			t = jpilot_read_data( jpf );
 			if( t == MGU_SUCCESS ) {
-				// Set check boxes
+				/* Set check boxes */
 				edit_jpilot_fill_check_box( jpf );
 				flg = TRUE;
 			}
@@ -176,12 +176,12 @@ static void edit_jpilot_file_check( void ) {
 		}
 	}
 	if( ! flg ) {
-		// Clear all check boxes
+		/* Clear all check boxes */
 		edit_jpilot_fill_check_box_new();
 	}
 	g_free( sFile );
 
-	// Display appropriate message
+	/* Display appropriate message */
 	if( t == MGU_SUCCESS ) {
 		sMsg = "";
 	}
@@ -290,7 +290,7 @@ static void addressbook_edit_jpilot_create( gboolean *cancelled ) {
 	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
-	// First row
+	/* First row */
 	top = 0;
 	label = gtk_label_new(_("Name"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
@@ -302,7 +302,7 @@ static void addressbook_edit_jpilot_create( gboolean *cancelled ) {
 	check_btn = gtk_button_new_with_label( _(" Check File "));
 	gtk_table_attach(GTK_TABLE(table), check_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0);
 
-	// Second row
+	/* Second row */
 	top = 1;
 	label = gtk_label_new(_("File"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
@@ -314,12 +314,12 @@ static void addressbook_edit_jpilot_create( gboolean *cancelled ) {
 	file_btn = gtk_button_new_with_label( _(" ... "));
 	gtk_table_attach(GTK_TABLE(table), file_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0);
 
-	// Third row
+	/* Third row */
 	top = 2;
 	frame_custom = gtk_frame_new(_("Additional e-Mail address item(s)"));
 	gtk_table_attach(GTK_TABLE(table), frame_custom, 1, 2, top, (top + JPILOT_NUM_CUSTOM_LABEL), GTK_FILL, 0, 0, 0);
 
-	// Now do custom labels.
+	/* Now do custom labels. */
 	vbox_custom = gtk_vbox_new (FALSE, 8);
 	for( i = 0; i < JPILOT_NUM_CUSTOM_LABEL; i++ ) {
 		hlbox = gtk_hbox_new( FALSE, 0 );
@@ -334,13 +334,13 @@ static void addressbook_edit_jpilot_create( gboolean *cancelled ) {
 	gtk_container_add (GTK_CONTAINER (frame_custom), vbox_custom);
 	gtk_container_set_border_width( GTK_CONTAINER(vbox_custom), 8 );
 
-	// Status line
+	/* Status line */
 	hsbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, BORDER_WIDTH);
 	statusbar = gtk_statusbar_new();
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
 
-	// Button panel
+	/* Button panel */
 	gtkut_button_set_create(&hbbox, &ok_btn, _("OK"),
 				&cancel_btn, _("Cancel"), NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);

@@ -64,7 +64,7 @@
 #define TAG_DS_JPILOT        "jpilot"
 #define TAG_DS_LDAP          "server"
 
-// XML Attribute names
+/* XML Attribute names */
 #define ATTAG_BOOK_NAME       "name"
 #define ATTAG_BOOK_FILE       "file"
 
@@ -89,15 +89,20 @@
 #define ATTAG_LDAP_MAX_ENTRY  "max-entry"
 #define ATTAG_LDAP_TIMEOUT    "timeout"
 
-#define DISP_NEW_COMMON       "Common Address"
-#define DISP_NEW_PERSONAL     "Personal Address"
+#if 0
+N_("Common address")
+N_("Personal address")
+#endif
 
-// Old address book
+#define DISP_NEW_COMMON       _("Common address")
+#define DISP_NEW_PERSONAL     _("Personal address")
+
+/* Old address book */
 #define TAG_IF_OLD_COMMON     "common_address"
 #define TAG_IF_OLD_PERSONAL   "personal_address"
 
-#define DISP_OLD_COMMON       "Common Address"
-#define DISP_OLD_PERSONAL     "Personal Address"
+#define DISP_OLD_COMMON       _("Common address")
+#define DISP_OLD_PERSONAL     _("Personal address")
 
 typedef struct _AddressIfAttr AddressIfAttrib;
 struct _AddressIfAttr {
@@ -202,8 +207,8 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 	iface->haveLibrary = syldap_test_ldap_lib();
 	iface->useInterface = iface->haveLibrary;
 	iface->getAccessFlag = ( void * ) syldap_get_accessed;
-	// iface->getModifyFlag = ( void * ) syldap_get_modified;
-	// iface->getReadFlag   = ( void * ) syldap_get_read_flag;
+	/* iface->getModifyFlag = ( void * ) syldap_get_modified; */
+	/* iface->getReadFlag   = ( void * ) syldap_get_read_flag; */
 	iface->getStatusCode = ( void * ) syldap_get_status;
 	iface->getReadData   = ( void * ) syldap_read_data;
 	iface->getRootFolder = ( void * ) syldap_get_root_folder;
@@ -218,7 +223,7 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 	addrIndex->interfaceList = g_list_append( addrIndex->interfaceList, iface );
 	ADDRITEM_PARENT(iface) = ADDRITEM_OBJECT(addrIndex);
 
-	// Two old legacy data sources
+	/* Two old legacy data sources */
 	iface = addrindex_create_interface( ADDR_IF_COMMON, "Old Address - common", TAG_IF_OLD_COMMON, NULL );
 	iface->legacyFlag = TRUE;
 	addrIndex->interfaceList = g_list_append( addrIndex->interfaceList, iface );
@@ -821,7 +826,7 @@ static void addrindex_write_jpilot( FILE *fp,AddressDataSource *ds, gint lvl ) {
 	}
 }
 #else
-// Just read/write name-value pairs
+/* Just read/write name-value pairs */
 static AddressDataSource *addrindex_parse_jpilot( XMLFile *file ) {
 	AddressDataSource *ds = g_new0( AddressDataSource, 1 );
 	GList *list = addrindex_read_attributes( file );
@@ -909,7 +914,7 @@ static void addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
 	}
 }
 #else
-// Just read/write name-value pairs
+/* Just read/write name-value pairs */
 static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 	AddressDataSource *ds = g_new0( AddressDataSource, 1 );
 	GList *list = addrindex_read_attributes( file );
@@ -931,8 +936,8 @@ static void addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
 */
 static void addrindex_read_index( AddressIndex *addrIndex, XMLFile *file ) {
 	guint prev_level;
-	//gchar *element;
-	//GList *attr;
+	/* gchar *element; */
+	/* GList *attr; */
 	XMLTag *xtag;
 	AddressInterface *iface = NULL, *dsIFace = NULL;
 	AddressDataSource *ds;
@@ -943,32 +948,32 @@ static void addrindex_read_index( AddressIndex *addrIndex, XMLFile *file ) {
 		if( file->level < prev_level ) return;
 
 		xtag = xml_get_current_tag( file );
-		// printf( "tag : %s\n", xtag->tag );
+		/* printf( "tag : %s\n", xtag->tag ); */
 
 		iface = addrindex_tag_get_interface( addrIndex, xtag->tag, ADDR_IF_NONE );
 		if( iface ) {
 			addrIndex->lastType = iface->type;
 			if( iface->legacyFlag ) addrIndex->needsConversion = TRUE;
-			// printf( "found : %s\n", iface->name );
+			/* printf( "found : %s\n", iface->name ); */
 		}
 		else {
 			dsIFace = addrindex_tag_get_datasource( addrIndex, addrIndex->lastType, xtag->tag );
 			if( dsIFace ) {
-				// Add data source to list
-				// printf( "\tdata source: %s\n", dsIFace->name );
+				/* Add data source to list */
+				/* printf( "\tdata source: %s\n", dsIFace->name ); */
 				ds = NULL;
 				if( addrIndex->lastType == ADDR_IF_BOOK ) {
 					ds = addrindex_parse_book( file );
 					if( ds->rawDataSource ) {
 						addrbook_set_path( ds->rawDataSource, addrIndex->filePath );
-						// addrbook_print_book( ds->rawDataSource, stdout );
+						/* addrbook_print_book( ds->rawDataSource, stdout ); */
 					}
 				}
 				else if( addrIndex->lastType == ADDR_IF_VCARD ) {
 					ds = addrindex_parse_vcard( file );
-					// if( ds->rawDataSource ) {
-					//	vcard_print_file( ds->rawDataSource, stdout );
-					// }
+					/* if( ds->rawDataSource ) { */
+					/*	vcard_print_file( ds->rawDataSource, stdout ); */
+					/* } */
 				}
 				else if( addrIndex->lastType == ADDR_IF_JPILOT ) {
 					ds = addrindex_parse_jpilot( file );
@@ -993,7 +998,7 @@ static void addrindex_read_index( AddressIndex *addrIndex, XMLFile *file ) {
 					ds->interface = dsIFace;
 					dsIFace->listSource = g_list_append( dsIFace->listSource, ds );
 				}
-				// printf( "=============================\n\n" );
+				/* printf( "=============================\n\n" ); */
 			}
 		}
 		/*
@@ -1020,7 +1025,7 @@ static gint addrindex_read_file( AddressIndex *addrIndex ) {
 	g_free( fileSpec );
 
 	if( file == NULL ) {
-		// fprintf( stdout, " file '%s' does not exist.\n", addrIndex->fileName );
+		/* fprintf( stdout, " file '%s' does not exist.\n", addrIndex->fileName ); */
 		return addrIndex->retVal;
 	}
 
@@ -1294,7 +1299,7 @@ static void addrindex_add_obj( XMLFile *file, AddressCvtNode *node ) {
 			node->list = g_list_append( node->list, newNode );
 		}
 		else {
-			// printf( "invalid: !!! \n" );
+			/* printf( "invalid: !!! \n" ); */
 			attr = xml_get_current_tag_attr( file );
 		}
 	}
@@ -1315,11 +1320,11 @@ static void addrindex_consume_tree( XMLFile *file ) {
 		if (file->level < prev_level) return;
 
 		xtag = xml_get_current_tag( file );
-		// printf( "tag : %s\n", xtag->tag );
+		/* printf( "tag : %s\n", xtag->tag ); */
 		element = xml_get_element( file );
 		attr = xml_get_current_tag_attr( file );
-		// show_attribs( attr );
-		// printf( "\ttag  value : %s :\n", element );
+		/* show_attribs( attr ); */
+		/* printf( "\ttag  value : %s :\n", element ); */
 		addrindex_consume_tree( file );
 	}
 }
@@ -1392,7 +1397,7 @@ static void addrindex_process_node(
 		ItemGroup *itemGroup;
 		gchar *fName;
 
-		// Create a folder for group
+		/* Create a folder for group */
 		fName = g_strdup_printf( "Cvt - %s", node->name );
 		itemGFolder = addritem_create_item_folder();
 		addritem_folder_set_name( itemGFolder, fName );
@@ -1400,7 +1405,7 @@ static void addrindex_process_node(
 		addrcache_folder_add_folder( cache, parent, itemGFolder );
 		g_free( fName );
 
-		// Add group into folder
+		/* Add group into folder */
 		itemGroup = addritem_create_item_group();
 		addritem_group_set_name( itemGroup, node->name );
 		addrcache_id_group( cache, itemGroup );
@@ -1411,7 +1416,7 @@ static void addrindex_process_node(
 		ItemPerson *itemPerson;
 		ItemEMail *itemEMail;
 
-		// Create person and email objects
+		/* Create person and email objects */
 		itemPerson = addritem_create_item_person();
 		addritem_person_set_common_name( itemPerson, node->name );
 		addrcache_id_person( cache, itemPerson );
@@ -1421,7 +1426,7 @@ static void addrindex_process_node(
 		addrcache_id_email( cache, itemEMail );
 		addrcache_person_add_email( cache, itemPerson, itemEMail );
 
-		// Add person into appropriate folder
+		/* Add person into appropriate folder */
 		if( itemGFolder ) {
 			addrcache_folder_add_person( cache, itemGFolder, itemPerson );
 		}
@@ -1429,7 +1434,7 @@ static void addrindex_process_node(
 			addrcache_folder_add_person( cache, parent, itemPerson );
 		}
 
-		// Add email address only into group
+		/* Add email address only into group */
 		if( parentGrp ) {
 			addrcache_group_add_email( cache, parentGrp, itemEMail );
 		}
@@ -1454,20 +1459,20 @@ static gboolean addrindex_process_book( AddressIndex *addrIndex, XMLFile *file, 
 	GList *fileList = NULL;
 	gint fileNum  = 0;
 
-	// Setup root node
+	/* Setup root node */
 	rootNode = g_new0( AddressCvtNode, 1 );
 	rootNode->type = TEMPNODE_ROOT;
 	rootNode->name = g_strdup( "root" );
 	rootNode->list = NULL;
 	addrindex_add_obj( file, rootNode );
-	// addrindex_print_node( rootNode, stdout );
+	/* addrindex_print_node( rootNode, stdout ); */
 
-	// Create new address book
+	/* Create new address book */
 	abf = addrbook_create_book();
 	addrbook_set_name( abf, displayName );
 	addrbook_set_path( abf, addrIndex->filePath );
 
-	// Determine next available file number
+	/* Determine next available file number */
 	fileList = addrbook_get_bookfile_list( abf );
 	if( fileList ) {
 		fileNum = 1 + abf->maxValue;
@@ -1482,7 +1487,7 @@ static gboolean addrindex_process_book( AddressIndex *addrIndex, XMLFile *file, 
 
 	addrindex_process_node( abf, rootNode, abf->addressCache->rootFolder, NULL, NULL );
 
-	// addrbook_dump_book( abf, stdout );
+	/* addrbook_dump_book( abf, stdout ); */
 	addrbook_save_data( abf );
 	addrIndex->retVal = abf->retVal;
 	if( abf->retVal == MGU_SUCCESS ) retVal = TRUE;
@@ -1492,7 +1497,7 @@ static gboolean addrindex_process_book( AddressIndex *addrIndex, XMLFile *file, 
 	addrindex_free_node( rootNode );
 	rootNode = NULL;
 
-	// Create entries in address index
+	/* Create entries in address index */
 	if( retVal ) {
 		abf = addrbook_create_book();
 		addrbook_set_name( abf, displayName );
@@ -1513,14 +1518,14 @@ static void addrindex_convert_tree( AddressIndex *addrIndex, XMLFile *file ) {
 	GList *attr;
 	XMLTag *xtag;
 
-	// Process file
+	/* Process file */
 	for (;;) {
 		prev_level = file->level;
 		xml_parse_next_tag( file );
 		if (file->level < prev_level) return;
 
 		xtag = xml_get_current_tag( file );
-		// printf( "tag : %d : %s\n", prev_level, xtag->tag );
+		/* printf( "tag : %d : %s\n", prev_level, xtag->tag ); */
 		if( strcmp( xtag->tag, TAG_IF_OLD_COMMON ) == 0 ) {
 			if( addrindex_process_book( addrIndex, file, DISP_OLD_COMMON ) ) {
 				addrIndex->needsConversion = FALSE;
@@ -1539,8 +1544,8 @@ static void addrindex_convert_tree( AddressIndex *addrIndex, XMLFile *file ) {
 		}
 		element = xml_get_element( file );
 		attr = xml_get_current_tag_attr( file );
-		// show_attribs( attr );
-		// printf( "\ttag  value : %s :\n", element );
+		/* show_attribs( attr ); */
+		/* printf( "\ttag  value : %s :\n", element ); */
 		addrindex_consume_tree( file );
 	}
 }
@@ -1555,7 +1560,7 @@ static gint addrindex_convert_data( AddressIndex *addrIndex ) {
 	g_free( fileSpec );
 
 	if( file == NULL ) {
-		// fprintf( stdout, " file '%s' does not exist.\n", addrIndex->fileName );
+		/* fprintf( stdout, " file '%s' does not exist.\n", addrIndex->fileName ); */
 		return addrIndex->retVal;
 	}
 
@@ -1581,12 +1586,12 @@ static gboolean addrindex_create_new_book( AddressIndex *addrIndex, gchar *displ
 	GList *fileList = NULL;
 	gint fileNum = 0;
 
-	// Create new address book
+	/* Create new address book */
 	abf = addrbook_create_book();
 	addrbook_set_name( abf, displayName );
 	addrbook_set_path( abf, addrIndex->filePath );
 
-	// Determine next available file number
+	/* Determine next available file number */
 	fileList = addrbook_get_bookfile_list( abf );
 	if( fileList ) {
 		fileNum = 1 + abf->maxValue;
@@ -1605,7 +1610,7 @@ static gboolean addrindex_create_new_book( AddressIndex *addrIndex, gchar *displ
 	addrbook_free_book( abf );
 	abf = NULL;
 
-	// Create entries in address index
+	/* Create entries in address index */
 	if( retVal ) {
 		abf = addrbook_create_book();
 		addrbook_set_name( abf, displayName );

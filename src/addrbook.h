@@ -31,8 +31,9 @@
 #include "addritem.h"
 #include "addrcache.h"
 
-// Address book file.
+/* Address book file */
 typedef struct _AddressBookFile AddressBookFile;
+
 struct _AddressBookFile {
 	gchar *name;
 	gchar *path;
@@ -49,7 +50,7 @@ struct _AddressBookFile {
 	jmp_buf jumper;
 };
 
-// Function prototypes
+/* Function prototypes */
 
 AddressBookFile *addrbook_create_book	( void );
 void addrbook_empty_book		( AddressBookFile *book );
@@ -111,9 +112,3 @@ ItemPerson *addrbook_add_contact	( AddressBookFile *book, ItemFolder *folder,
 					  const gchar *remarks );
 
 #endif /* __ADDRBOOK_H__ */
-
-/*
-* End of Source.
-*/
-
-

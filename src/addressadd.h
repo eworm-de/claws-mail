@@ -26,12 +26,6 @@
 
 #include "addrindex.h"
 
-// Function prototypes
 gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name, const gchar *address, const gchar *remarks );
 
 #endif /* __ADDRESS_ADD_H__ */
-
-/*
-* End of Source.
-*/
-

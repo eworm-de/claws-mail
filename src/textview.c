@@ -183,15 +183,15 @@ TextView *textview_create(void)
 	gtk_signal_connect(GTK_OBJECT(text_sb), "key_press_event",
 			   GTK_SIGNAL_FUNC(textview_key_pressed),
 			   textview);
-	gtk_signal_connect(GTK_OBJECT(text_sb), "button_press_event",
-			   GTK_SIGNAL_FUNC(textview_button_pressed),
-			   textview);
+	gtk_signal_connect_after(GTK_OBJECT(text_sb), "button_press_event",
+				 GTK_SIGNAL_FUNC(textview_button_pressed),
+				 textview);
 	gtk_signal_connect(GTK_OBJECT(text_mb), "key_press_event",
 			   GTK_SIGNAL_FUNC(textview_key_pressed),
 			   textview);
-	gtk_signal_connect(GTK_OBJECT(text_mb), "button_press_event",
-			   GTK_SIGNAL_FUNC(textview_button_pressed),
-			   textview);
+	gtk_signal_connect_after(GTK_OBJECT(text_mb), "button_press_event",
+				 GTK_SIGNAL_FUNC(textview_button_pressed),
+				 textview);
 
 	gtk_widget_show(scrolledwin_sb);
 	gtk_widget_show(scrolledwin_mb);
@@ -209,6 +209,7 @@ TextView *textview_create(void)
 	textview->text_is_mb     = FALSE;
 	textview->uri_list       = NULL;
 	textview->body_pos       = 0;
+	textview->cur_pos        = 0;
 
 	return textview;
 }
@@ -335,6 +336,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	gtk_text_freeze(text);
 
 	textview->body_pos = 0;
+	textview->cur_pos  = 0;
 
 	if (headers) {
 		textview_show_header(textview, headers);
@@ -932,6 +934,16 @@ enum
 	H_ORGANIZATION	= 11,
 };
 
+void textview_set_position(TextView *textview, gint pos)
+{
+	if (pos < 0) {
+		textview->cur_pos =
+			gtk_text_get_length(GTK_TEXT(textview->text));
+	} else {
+		textview->cur_pos = pos;
+	}
+}
+
 static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 {
 	gchar buf[BUFFSIZE];
@@ -1050,24 +1062,69 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 	wcs = strdup_mbstowcs(str);
 	g_return_val_if_fail(wcs != NULL, FALSE);
 	len = wcslen(wcs);
-	pos = gtk_editable_get_position(GTK_EDITABLE(text));
+	pos = textview->cur_pos;
 	if (pos < textview->body_pos)
 		pos = textview->body_pos;
 	text_len = gtk_text_get_length(text);
+	if (text_len - pos < len) {
+		g_free(wcs);
+		return FALSE;
+	}
 
 	for (; pos < text_len; pos++) {
 		if (text_len - pos < len) break;
 		if (gtkut_text_match_string(text, pos, wcs, len, case_sens)
 		    == TRUE) {
-			gtk_text_freeze(text);
-			gtk_text_set_point(text, pos + len);
-			gtk_editable_set_position(GTK_EDITABLE(text), pos + len);
+			gtk_editable_set_position(GTK_EDITABLE(text),
+						  pos + len);
 			gtk_editable_select_region(GTK_EDITABLE(text),
 						   pos, pos + len);
-			gtk_text_thaw(text);
+			textview_set_position(textview, pos + len);
 			found = TRUE;
 			break;
 		}
+		if (text_len - pos == len) break;
+	}
+
+	g_free(wcs);
+	return found;
+}
+
+gboolean textview_search_string_backward(TextView *textview, const gchar *str,
+					 gboolean case_sens)
+{
+	GtkText *text = GTK_TEXT(textview->text);
+	gint pos;
+	wchar_t *wcs;
+	gint len;
+	gint text_len;
+	gboolean found = FALSE;
+
+	g_return_val_if_fail(str != NULL, FALSE);
+
+	wcs = strdup_mbstowcs(str);
+	g_return_val_if_fail(wcs != NULL, FALSE);
+	len = wcslen(wcs);
+	pos = textview->cur_pos;
+	text_len = gtk_text_get_length(text);
+	if (text_len - textview->body_pos < len) {
+		g_free(wcs);
+		return FALSE;
+	}
+	if (pos <= textview->body_pos || text_len - pos < len)
+		pos = text_len - len;
+
+	for (; pos >= textview->body_pos; pos--) {
+		if (gtkut_text_match_string(text, pos, wcs, len, case_sens)
+		    == TRUE) {
+			gtk_editable_set_position(GTK_EDITABLE(text), pos);
+			gtk_editable_select_region(GTK_EDITABLE(text),
+						   pos, pos + len);
+			textview_set_position(textview, pos - 1);
+			found = TRUE;
+			break;
+		}
+		if (pos == textview->body_pos) break;
 	}
 
 	g_free(wcs);
@@ -1293,19 +1350,19 @@ static void textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 static void textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 				    TextView *textview)
 {
+	textview->cur_pos = 
+		gtk_editable_get_position(GTK_EDITABLE(textview->text));
+
 	if (event &&
 	    ((event->button == 1 && event->type == GDK_2BUTTON_PRESS)
 	     || event->button == 2 || event->button == 3)) {
 		GSList *cur;
-		guint current_pos;
-
-		current_pos = GTK_EDITABLE(textview->text)->current_pos;
 
 		for (cur = textview->uri_list; cur != NULL; cur = cur->next) {
 			RemoteURI *uri = (RemoteURI *)cur->data;
 
-			if (current_pos >= uri->start &&
-			    current_pos <  uri->end) {
+			if (textview->cur_pos >= uri->start &&
+			    textview->cur_pos <  uri->end) {
 				if (!g_strncasecmp(uri->uri, "mailto:", 7)) {
 					if (event->button == 3) {
 						gchar *fromname, *fromaddress;

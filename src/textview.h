@@ -46,6 +46,7 @@ struct _TextView
 
 	GSList *uri_list;
 	gint body_pos;
+	gint cur_pos;
 
 	GdkFont *msgfont;
 	GdkFont *boldfont;
@@ -73,6 +74,8 @@ void textview_clear		(TextView	*textview);
 void textview_destroy		(TextView	*textview);
 void textview_set_font		(TextView	*textview,
 				 const gchar	*codeset);
+void textview_set_position	(TextView	*textview,
+				 gint		 pos);
 void textview_scroll_one_line	(TextView	*textview,
 				 gboolean	 up);
 gboolean textview_scroll_page	(TextView	*textview,
@@ -80,8 +83,11 @@ gboolean textview_scroll_page	(TextView	*textview,
 
 void textview_update_message_colors	(void);
 
-gboolean textview_search_string	(TextView	*textview,
-				 const gchar	*str,
-				 gboolean	 case_sens);
+gboolean textview_search_string			(TextView	*textview,
+						 const gchar	*str,
+						 gboolean	 case_sens);
+gboolean textview_search_string_backward	(TextView	*textview,
+						 const gchar	*str,
+						 gboolean	 case_sens);
 
 #endif /* __TEXTVIEW_H__ */

@@ -29,8 +29,9 @@
 #include <glib.h>
 #include "addritem.h"
 
-/* Address book file. */
+/* Address cache */
 typedef struct _AddressCache AddressCache;
+
 struct _AddressCache {
 	gint       nextID;
 	gboolean   dataRead;
@@ -120,8 +121,3 @@ ItemPerson *addrcache_add_contact		( AddressCache *cache, ItemFolder *folder,
 						  const gchar *remarks ); 
 
 #endif /* __ADDRCACHE_H__ */
-
-/*
-* End of Source.
-*/
-
