@@ -460,7 +460,7 @@ MsgInfo *procheader_parse(const gchar *file, MsgFlags flags,
  * so we're currently disabling setting any MsgFlags when detecting X-Seen,
  * Seen, X-Status, Status. See macro ALLOW_HEADER_HINT */  
 
-#define ALLOW_HEADER_HINT
+/* #define ALLOW_HEADER_HINT */
 
 MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
 			       gboolean full, gboolean decrypted)

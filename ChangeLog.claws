@@ -1,3 +1,9 @@
+2002-02-26 [alfons]	0.7.2claws17
+
+	* src/procheader.c
+		#undef ALLOW_HEADER_HINT (this was supposed to be undef'ed)
+		(spotted by Chris Hessman <idatech@gmx.net>)
+
 2002-02-26 [paul]	0.7.2claws16
 
 	* src/mimeview.c
