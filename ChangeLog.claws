@@ -1,3 +1,12 @@
+2001-07-31 [paul]
+
+	* po/POTFILES.in
+		removal of 'src/quote_fmt_parse.c'
+	* po/de.po
+		Updated de.po
+		(submitted by Jens Oberender <didge@suse.de>)
+
+
 2001-07-31 [darko]
 
         * src/folder.[ch]

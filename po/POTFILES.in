@@ -55,7 +55,6 @@ src/procheader.c
 src/procmime.c
 src/procmsg.c
 src/progressdialog.c
-src/quote_fmt_parse.c
 src/recv.c
 src/rfc822.c
 src/rfc2015.c
