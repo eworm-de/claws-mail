@@ -423,11 +423,13 @@ static void inc_start(IncProgressDialog *inc_dialog)
 		}
 
 		if (pop3_state->error_val == PS_AUTHFAIL) {
-			manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
-			alertpanel_error
-				(_("Authorization for %s on %s failed"),
-				 pop3_state->user,
-				 pop3_state->ac_prefs->recv_server);
+			if(!prefs_common.noerrorpanel) {
+				manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
+				alertpanel_error
+					(_("Authorization for %s on %s failed"),
+					 pop3_state->user,
+					 pop3_state->ac_prefs->recv_server);
+			}
 		}
 
 		statusbar_pop_all();
@@ -533,10 +535,12 @@ static IncState inc_pop3_session_do(IncSession *session)
 #endif
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
 			    server, port);
-		manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
-		alertpanel_error(_("Can't connect to POP3 server: %s:%d"),
-				 server, port);
-		manage_window_focus_out(inc_dialog->dialog->window, NULL, NULL);
+		if(!prefs_common.noerrorpanel) {
+			manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
+			alertpanel_error(_("Can't connect to POP3 server: %s:%d"),
+					 server, port);
+			manage_window_focus_out(inc_dialog->dialog->window, NULL, NULL);
+		}
 		pop3_automaton_terminate(NULL, atm);
 		automaton_destroy(atm);
 
@@ -666,10 +670,12 @@ static gint connection_check_cb(Automaton *atm)
 		atm->timeout_tag = 0;
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
 			    sockinfo->hostname, sockinfo->port);
-		manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
-		alertpanel_error(_("Can't connect to POP3 server: %s:%d"),
-				 sockinfo->hostname, sockinfo->port);
-		manage_window_focus_out(inc_dialog->dialog->window, NULL, NULL);
+		if(!prefs_common.noerrorpanel) {
+			manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
+			alertpanel_error(_("Can't connect to POP3 server: %s:%d"),
+					 sockinfo->hostname, sockinfo->port);
+			manage_window_focus_out(inc_dialog->dialog->window, NULL, NULL);
+		}
 		pop3_automaton_terminate(sockinfo, atm);
 		return FALSE;
 	} else if (sockinfo->state == CONN_ESTABLISHED) {
@@ -832,7 +838,9 @@ static void inc_put_error(IncState istate)
 {
 	switch (istate) {
 	case INC_ERROR:
-		alertpanel_error(_("Error occurred while processing mail."));
+		if(!prefs_common.noerrorpanel) {
+			alertpanel_error(_("Error occurred while processing mail."));
+		}
 		break;
 	case INC_NOSPACE:
 		alertpanel_error(_("No disk space left."));

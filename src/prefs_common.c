@@ -68,6 +68,7 @@ static struct Receive {
 	GtkObject *spinbtn_autochk_adj;
 
 	GtkWidget *checkbtn_chkonstartup;
+	GtkWidget *checkbtn_noerrorpanel;
 
 	GtkWidget *spinbtn_maxarticle;
 	GtkObject *spinbtn_maxarticle_adj;
@@ -226,6 +227,9 @@ static PrefParam param[] = {
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 	{"check_on_startup", "FALSE", &prefs_common.chk_on_startup, P_BOOL,
 	 &receive.checkbtn_chkonstartup,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"noerrorpanel", "FALSE", &prefs_common.noerrorpanel, P_BOOL,
+	 &receive.checkbtn_noerrorpanel,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"max_news_articles", "300", &prefs_common.max_articles, P_INT,
@@ -739,6 +743,7 @@ static void prefs_receive_create(void)
 	GtkWidget *spinbtn_autochk;
 	GtkWidget *label_autochk2;
 	GtkWidget *checkbtn_chkonstartup;
+	GtkWidget *checkbtn_noerrorpanel;
 
 	GtkWidget *frame_news;
 	GtkWidget *label_maxarticle;
@@ -842,6 +847,9 @@ static void prefs_receive_create(void)
 	PACK_CHECK_BUTTON (vbox2, checkbtn_chkonstartup,
 			   _("Check new mail on startup"));
 
+	PACK_CHECK_BUTTON (vbox2, checkbtn_noerrorpanel,
+			   _("No error popup on receive error"));
+
 	PACK_FRAME(vbox1, frame_news, _("News"));
 
 	hbox = gtk_hbox_new (FALSE, 8);
@@ -880,6 +888,7 @@ static void prefs_receive_create(void)
 	receive.spinbtn_autochk_adj = spinbtn_autochk_adj;
 
 	receive.checkbtn_chkonstartup = checkbtn_chkonstartup;
+	receive.checkbtn_noerrorpanel = checkbtn_noerrorpanel;
 
 	receive.spinbtn_maxarticle     = spinbtn_maxarticle;
 	receive.spinbtn_maxarticle_adj = spinbtn_maxarticle_adj;

@@ -43,6 +43,7 @@ struct _PrefsCommon
 	gboolean autochk_newmail;
 	gint autochk_itv;
 	gboolean chk_on_startup;
+	gboolean noerrorpanel;
 	gint max_articles;
 
 	/* Send */
