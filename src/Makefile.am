@@ -176,9 +176,11 @@ EXTRA_DIST = \
 	pixmaps/mime_application_octect_stream.xpm \
 	pixmaps/mime_application.xpm \
 	pixmaps/mime_audio.xpm \
+	pixmaps/mime_gpg_expired.xpm \
 	pixmaps/mime_gpg_failed.xpm \
 	pixmaps/mime_gpg_passed.xpm \
 	pixmaps/mime_gpg_signed.xpm \
+	pixmaps/mime_gpg_unknown.xpm \
 	pixmaps/mime_image.xpm \
 	pixmaps/mime_text_enriched.xpm \
 	pixmaps/mime_text_html.xpm \

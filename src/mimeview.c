@@ -1344,6 +1344,11 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 				desc = mimeinfo->sigstatus;
 				if (mimeinfo->sig_ok)
 					stockp = STOCK_PIXMAP_MIME_GPG_PASSED;
+				else if (mimeinfo->sig_unknown) 
+					stockp = STOCK_PIXMAP_MIME_GPG_UNKNOWN;
+				else if (mimeinfo->sig_expired 
+				         || mimeinfo->key_expired) 
+					stockp = STOCK_PIXMAP_MIME_GPG_EXPIRED;
 				else
 					stockp = STOCK_PIXMAP_MIME_GPG_FAILED;
 			} else

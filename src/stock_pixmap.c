@@ -104,7 +104,9 @@
 #include "pixmaps/mime_unknown.xpm"
 #include "pixmaps/mime_gpg_signed.xpm"
 #include "pixmaps/mime_gpg_passed.xpm"
-#include "pixmaps/mime_gpg_failed.xpm"                  
+#include "pixmaps/mime_gpg_failed.xpm"
+#include "pixmaps/mime_gpg_unknown.xpm"
+#include "pixmaps/mime_gpg_expired.xpm"                  
 
 typedef struct _StockPixmapData	StockPixmapData;
 
@@ -211,6 +213,8 @@ static StockPixmapData pixmaps[] =
 	{mime_gpg_signed_xpm			, NULL, NULL, "mime_gpg_signed", "  "},
 	{mime_gpg_passed_xpm			, NULL, NULL, "mime_gpg_passed", "  "},
 	{mime_gpg_failed_xpm			, NULL, NULL, "mime_gpg_failed", "  "},	
+	{mime_gpg_unknown_xpm			, NULL, NULL, "mime_gpg_unknown", "  "},
+	{mime_gpg_expired_xpm			, NULL, NULL, "mime_gpg_expired", "  "},
 	{sylpheed_logo_xpm			, NULL, NULL, "sylpheed_logo", "  "},
 };
 

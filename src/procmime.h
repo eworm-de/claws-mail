@@ -119,6 +119,9 @@ struct _MimeInfo
 	gchar *sigstatus;
 	gchar *sigstatus_full;
 	gboolean sig_ok;
+	gboolean sig_unknown;
+	gboolean sig_expired;
+	gboolean key_expired;
 #endif
 
 	gint level;

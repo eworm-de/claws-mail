@@ -1,3 +1,15 @@
+2003-07-23 [paul]	0.9.3claws43
+
+	* src/pixmaps/mime_gpg_expired.xpm	** NEW FILE **
+	  src/pixmaps/mime_gpg_unknown.xpm	** NEW FILE **
+	  src/Makefile.am
+	  src/mimeview.c
+	  src/procmime.h
+	  src/rfc2015.c
+	  src/stock_pixmap.[ch]
+	  	indicate missing keys and expired sigs/keys
+		in mime view column
+
 2003-07-23 [paul]	0.9.3claws42
 
 	* src/compose.c
