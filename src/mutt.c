@@ -30,6 +30,8 @@
 #include "addrcache.h"
 
 #define MUTT_HOME_FILE  ".muttrc"
+#define MUTTBUFSIZE     2048
+#define	MUTT_TAG_ALIAS  "alias"
 
 /*
 * Create new object.
@@ -39,8 +41,8 @@ MuttFile *mutt_create() {
 	muttFile = g_new0( MuttFile, 1 );
 	muttFile->path = NULL;
 	muttFile->file = NULL;
-	muttFile->bufptr = muttFile->buffer;
 	muttFile->retVal = MGU_SUCCESS;
+	muttFile->uniqTable = g_hash_table_new( g_str_hash, g_str_equal );
 	muttFile->cbProgress = NULL;
 	return muttFile;
 }
@@ -67,6 +69,16 @@ void mutt_set_callback( MuttFile *muttFile, void *func ) {
 }
 
 /*
+ * Free key in table.
+ */
+static gint mutt_free_table_vis( gpointer key, gpointer value, gpointer data ) {
+	g_free( key );
+	key = NULL;
+	value = NULL;
+	return TRUE;
+}
+
+/*
 * Free up object by releasing internal memory.
 */
 void mutt_free( MuttFile *muttFile ) {
@@ -78,10 +90,17 @@ void mutt_free( MuttFile *muttFile ) {
 	/* Free internal stuff */
 	g_free( muttFile->path );
 
+	/* Free unique address table */
+	g_hash_table_freeze( muttFile->uniqTable );
+	g_hash_table_foreach_remove( muttFile->uniqTable, mutt_free_table_vis, NULL );
+	g_hash_table_thaw( muttFile->uniqTable );
+	g_hash_table_destroy( muttFile->uniqTable );
+
 	/* Clear pointers */
 	muttFile->file = NULL;
 	muttFile->path = NULL;
 	muttFile->retVal = MGU_SUCCESS;
+	muttFile->uniqTable = NULL;
 	muttFile->cbProgress = NULL;
 
 	/* Now release file object */
@@ -103,11 +122,9 @@ void mutt_print_file( MuttFile *muttFile, FILE *stream ) {
 * return: TRUE if file opened successfully.
 */
 static gint mutt_open_file( MuttFile* muttFile ) {
-	/* printf( "Opening file\n" ); */
 	if( muttFile->path ) {
 		muttFile->file = fopen( muttFile->path, "rb" );
 		if( ! muttFile->file ) {
-			/* printf( "can't open %s\n", muttFile->path ); */
 			muttFile->retVal = MGU_OPEN_FILE;
 			return muttFile->retVal;
 		}
@@ -119,8 +136,6 @@ static gint mutt_open_file( MuttFile* muttFile ) {
 	}
 
 	/* Setup a buffer area */
-	muttFile->buffer[0] = '\0';
-	muttFile->bufptr = muttFile->buffer;
 	muttFile->retVal = MGU_SUCCESS;
 	return muttFile->retVal;
 }
@@ -177,14 +192,18 @@ static gchar *mutt_get_line( MuttFile *muttFile, gboolean *flagCont ) {
 }
 
 /*
-* Parsed address data.
-*/
+ * Parsed address data.
+ */
 typedef struct _Mutt_ParsedRec_ Mutt_ParsedRec;
 struct _Mutt_ParsedRec_ {
 	gchar *address;
 	gchar *name;
 };
 
+/*
+ * Free data record.
+ * Enter: rec Data record.
+ */
 static mutt_free_rec( Mutt_ParsedRec *rec ) {
 	if( rec ) {
 		g_free( rec->address );
@@ -195,7 +214,11 @@ static mutt_free_rec( Mutt_ParsedRec *rec ) {
 	}
 }
 
-void mutt_print_rec( Mutt_ParsedRec *rec, FILE *stream ) {
+/*
+ * Print data record.
+ * Enter: rec    Data record.
+ *        stream File.
+ */void mutt_print_rec( Mutt_ParsedRec *rec, FILE *stream ) {
 	fprintf( stream, "\taddr: %s\tname: %s\n", rec->address, rec->name );
 }
 
@@ -302,7 +325,6 @@ static GSList *mutt_parse_rcplist( gchar *rcpList, gint *addrCount ) {
 		rec->address = address;
 		rec->name = name;
 		list = g_slist_append( list, rec );
-
 		cnt++;
 
 		/* mutt_print_rec( rec, stdout ); */
@@ -312,23 +334,73 @@ static GSList *mutt_parse_rcplist( gchar *rcpList, gint *addrCount ) {
 }
 
 /*
-* Build address book entries.
-* Enter: aliasName Alias,
-*        listAddr  List of address items.
-*        addrCount Address list count.
-*        cache     Cache to update.
-*/
+ * Insert person and address into address cache.
+ * Enter: muttFile MUTT control data.
+ *        cache    Address cache.
+ *        address  E-Mail address.
+ *        name     Name.
+ * Return: E-Mail object, either inserted or found in hash table.
+ */
+static ItemEMail *mutt_insert_table(
+		MuttFile *muttFile, AddressCache *cache, gchar *address,
+		gchar *name )
+{
+	ItemPerson *person;
+	ItemEMail *email;
+	gchar *key;
+
+	/* Test whether address already in hash table */
+	key = g_strdup( address );
+	g_strdown( key );
+	email = g_hash_table_lookup( muttFile->uniqTable, key );
+
+	if( email == NULL ) {
+		/* No - create person */
+		person = addritem_create_item_person();
+		addritem_person_set_common_name( person, name );
+		addrcache_id_person( cache, person );
+		addrcache_add_person( cache, person );
+
+		/* Add email for person */
+		email = addritem_create_item_email();
+		addritem_email_set_address( email, address );
+		addrcache_id_email( cache, email );
+		addrcache_person_add_email( cache, person, email );
+
+		/* Insert entry */
+		g_hash_table_insert( muttFile->uniqTable, key, email );
+	}
+	else {
+		/* Yes - update person with longest name */
+		person = ( ItemPerson * ) ADDRITEM_PARENT(email);
+		if( strlen( name ) > strlen( ADDRITEM_NAME(person) ) ) {
+			addritem_person_set_common_name( person, name );
+		}
+
+		/* Free up */
+		g_free( key );
+	}
+
+	return email;
+}
+
+/*
+ * Build address book entries.
+ * Enter: muttFile  MUTT control data.
+ *        cache     Address cache.
+ *        aliasName Alias,
+ *        listAddr  List of address items.
+ *        addrCount Address list count.
+ */
 static void mutt_build_address(
-		gchar *aliasName, GSList *listAddr, gint addrCount,
-		AddressCache *cache )
+		MuttFile *muttFile, AddressCache *cache,
+		gchar *aliasName, GSList *listAddr, gint addrCount )
 {
 	GSList *node = NULL;
-	ItemPerson *person;
 	ItemEMail *email;
 	ItemGroup *group;
 	Mutt_ParsedRec *rec;
 
-	email = NULL;
 	group = NULL;
 	if( listAddr != NULL && addrCount > 1 ) {
 		group = addritem_create_item_group();
@@ -337,24 +409,14 @@ static void mutt_build_address(
 		addrcache_add_group( cache, group );
 	}
 
+	email = NULL;
 	node = listAddr;
 	while( node ) {
 		rec = node->data;
 
-		/* Create person */
-		person = addritem_create_item_person();
-		addritem_person_set_common_name( person, rec->name );
-		addrcache_id_person( cache, person );
-		addrcache_add_person( cache, person );
-		if( addrCount < 2 ) {
-			addritem_person_set_nick_name( person, aliasName );
-		}
-
-		/* Add email for person */
-		email = addritem_create_item_email();
-		addritem_email_set_address( email, rec->address );
-		addrcache_id_email( cache, email );
-		addrcache_person_add_email( cache, person, email );
+		/* Insert person/email */
+		email = mutt_insert_table(
+				muttFile, cache, rec->address, rec->name );
 
 		/* Add email to group */
 		if( group ) {
@@ -362,18 +424,17 @@ static void mutt_build_address(
 		}
 
 		mutt_free_rec( rec );
-		rec = NULL;
-
 		node = g_slist_next( node );
 	}
 }
 
 /*
-* Parse address line adn build address items.
-* Enter: line  Data record.
-*        cache Address cache.
-*/
-static void mutt_build_items( gchar *line, AddressCache *cache ) {
+ * Parse address line adn build address items.
+ * Enter: muttFile MUTT control data.
+ *        cache    Address cache.
+ *        line     Data record.
+ */
+static void mutt_build_items( MuttFile *muttFile, AddressCache *cache, gchar *line ) {
 	GList *list, *node;
 	gint tCount, aCount;
 	gchar *aliasTag, *aliasName, *recipient;
@@ -396,13 +457,13 @@ static void mutt_build_items( gchar *line, AddressCache *cache ) {
 	recipient = node->data;
 
 	addrList = NULL;
-	if( strcmp( aliasTag, "alias" ) == 0 ) {
+	if( strcmp( aliasTag, MUTT_TAG_ALIAS ) == 0 ) {
 		aCount = 0;
 		/* printf( "aliasName :%s:\n", aliasName ); */
 		/* printf( "recipient :%s:\n", recipient ); */
 		addrList = mutt_parse_rcplist( recipient, &aCount );
 		/* printf( "---\n" ); */
-		mutt_build_address( aliasName, addrList, aCount, cache );
+		mutt_build_address( muttFile, cache, aliasName, addrList, aCount );
 	}
 
 	mgu_free_dlist( list );
@@ -411,8 +472,10 @@ static void mutt_build_items( gchar *line, AddressCache *cache ) {
 }
 
 /*
-* Read file data into address cache.
-*/
+ * Read file data into address cache.
+ * Enter: muttFile MUTT control data.
+ *        cache Address cache.
+ */
 static void mutt_read_file( MuttFile *muttFile, AddressCache *cache ) {
 	GSList *listValue = NULL;
 	gboolean flagEOF = FALSE, flagCont = FALSE, lastCont = FALSE;
@@ -440,7 +503,7 @@ static void mutt_read_file( MuttFile *muttFile, AddressCache *cache ) {
 			/* Save data */
 			lineValue = mgu_list_coalesce( listValue );
 			if( lineValue ) {
-				mutt_build_items( lineValue, cache );
+				mutt_build_items( muttFile, cache, lineValue );
 			}
 			g_free( lineValue );
 			lineValue = NULL;

@@ -58,6 +58,9 @@ gchar *mgu_replace_string	( gchar *str, const gchar *value );
 void mgu_clear_slist		( GSList *list );
 void mgu_clear_list		( GList *list );
 gchar *mgu_email_check_empty	( gchar *address );
-GList *mgu_parse_string		( gchar *line, const gint maxTokens, gint *tokenCnt );
+GList *mgu_parse_string		( gchar *line, const gint maxTokens,
+				  gint *tokenCnt );
+void mgu_str_unescape		( gchar *str );
+void mgu_str_ltc2space		( gchar *str, gchar chlead, gchar chtail );
 
 #endif /* __MGUTILS_H__ */

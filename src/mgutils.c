@@ -278,5 +278,78 @@ GList *mgu_parse_string( gchar *line, const gint maxTokens, gint *tokenCnt ) {
 }
 
 /*
+ * Unescape characters by removing backslash character from input string.
+ * Enter: str String to process.
+ */
+void mgu_str_unescape( gchar *str ) {
+	gchar *p;
+	gint ilen;
+
+	p = str;
+	while( *p ) {
+		if( *p == '\\' ) {
+			ilen = strlen( p + 1 );
+			memmove( p, p + 1, ilen );
+		}
+		p++;
+	}
+}
+
+/*
+ * Replace leading and trailing characters (eg, quotes) in input string
+ * with spaces. Only matching non-blank characters that appear at both
+ * start and end of string are replaces. Control characters are also
+ * replaced with spaces.
+ * Enter: str    String to process.
+ *        chlea  Lead character to remove.
+ *        chtail Matching trailing character.
+ */
+void mgu_str_ltc2space( gchar *str, gchar chlead, gchar chtail ) {
+	gchar *as;
+	gchar *ae;
+
+	/* Search forwards for first non-space match */
+	as = str;
+	ae = -1 + str + strlen( str );
+	while( as < ae ) {
+		if( *as != ' ' ) {
+			if( *as == chlead ) {
+				/* Search backwards from end for match */
+				while( ae > as ) {
+					if( *ae != ' ' ) {
+						if( *ae == chtail ) {
+							*as = ' ';
+							*ae = ' ';
+							return;
+						}
+						if( *ae < 32 ) {
+							*ae = ' ';
+						}
+						else if( *ae == 127 ) {
+							*ae = ' ';
+						}
+						else {
+							return;
+						}
+					}
+					ae--;
+				}
+			}
+			if( *as < 32 ) {
+				*as = ' ';
+			}
+			else if( *as == 127 ) {
+				*as = ' ';
+			}
+			else {
+				return;
+			}
+		}
+		as++;
+	}
+	return;
+}
+
+/*
 * End of Source.
 */

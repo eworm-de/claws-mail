@@ -30,10 +30,6 @@
 
 #include "addrcache.h"
 
-#define MUTTBUFSIZE         2048
-
-#define	MUTT_TAG_ALIAS      "alias"
-
 /*
 * Typical MUTT entry:
 *
@@ -57,9 +53,8 @@ typedef struct _MuttFile MuttFile;
 struct _MuttFile {
 	FILE  *file;
 	gchar *path;
-	gchar *bufptr;
-	gchar buffer[ MUTTBUFSIZE ];
 	gint  retVal;
+	GHashTable *uniqTable;
 	void  (*cbProgress)( void *, void *, void * );
 };
 
