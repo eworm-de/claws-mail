@@ -665,6 +665,29 @@ static GtkTargetEntry compose_mime_types[] =
 	{"text/uri-list", 0, 0}
 };
 
+static gboolean compose_put_existing_to_front(MsgInfo *info)
+{
+	GList *compose_list = compose_get_compose_list();
+	GList *elem = NULL;
+	
+	if (compose_list) {
+		for (elem = compose_list; elem != NULL && elem->data != NULL; 
+		     elem = elem->next) {
+			Compose *c = (Compose*)elem->data;
+
+			if (!c->targetinfo || !c->targetinfo->msgid ||
+			    !info->msgid)
+			    	continue;
+
+			if (!strcmp(c->targetinfo->msgid, info->msgid)) {
+				gtkut_window_popup(c->window);
+				return TRUE;
+			}
+		}
+	}
+	return FALSE;
+}
+
 Compose *compose_new(PrefsAccount *account, const gchar *mailto,
 		     GPtrArray *attach_files)
 {
@@ -1201,6 +1224,9 @@ void compose_reedit(MsgInfo *msginfo)
 
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(msginfo->folder != NULL);
+
+	if (compose_put_existing_to_front(msginfo)) 
+		return;
 
         if (msginfo->folder->stype == F_QUEUE || msginfo->folder->stype == F_DRAFT) {
 		gchar queueheader_buf[BUFFSIZE];

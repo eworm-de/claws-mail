@@ -270,3 +270,4 @@
 ( cvs diff -u -r 1.6.10.1 -r 1.6.10.2 src/addrharvest.c; ) > 0.9.12cvs177.2.patchset
 ( cvs diff -u -r 1.6.10.2 -r 1.6.10.3 src/addrharvest.c; ) > 0.9.12cvs177.3.patchset
 ( cvs diff -u -r 1.382.2.75 -r 1.382.2.76 src/compose.c; ) > 0.9.12cvs178.1.patchset
+( cvs diff -u -r 1.382.2.76 -r 1.382.2.77 src/compose.c; ) > 0.9.12cvs179.1.patchset

@@ -1,3 +1,8 @@
+2004-12-02 [colin]	0.9.12cvs179.1
+
+	* src/compose.c
+		Sync with HEAD (non-duplicated reedition)
+
 2004-12-02 [colin]	0.9.12cvs178.1
 
 	* src/compose.c
