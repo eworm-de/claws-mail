@@ -1457,7 +1457,7 @@ void main_window_set_toolbar_sensitive(MainWindow *mainwin)
 	entry[4].widget  = mainwin->replyall_btn;
 	entry[4].cond    = M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST;
 	entry[5].widget  = mainwin->replysender_btn;
-	entry[5]cond    = M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST;
+	entry[5].cond    = M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST;
 	entry[6].widget  = mainwin->fwd_btn;
 	entry[6].cond    = M_HAVE_ACCOUNT|M_TARGET_EXIST;
 /*	entry[6].widget  = mainwin->prefs_btn;
