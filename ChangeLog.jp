@@ -1,5 +1,10 @@
 2001-11-20
 
+	* src/procheader.c: procheader_date_parse(): RFC 非準拠の Date
+	  ヘッダへの対処。
+
+2001-11-20
+
 	* src/addrbook.c: 余分な関数を削除し、不正なアドレス帳ファイル名
 	  が生成されるのを修正。
 	* src/addrindex.c: V-Card -> vCard。

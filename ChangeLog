@@ -1,5 +1,10 @@
 2001-11-20
 
+	* src/procheader.c: procheader_date_parse(): workaround for
+	  RFC-incompliant Date header.
+
+2001-11-20
+
 	* src/addrbook.c: removed redundant functions, and fixed generation
 	  of spurious address book file names.
 	* src/addrindex.c: V-Card -> vCard.

@@ -688,9 +688,9 @@ gchar *procheader_get_fromname(const gchar *str)
 time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 {
 	static gchar monthstr[] = "JanFebMarAprMayJunJulAugSepOctNovDec";
-	gchar weekday[4];
+	gchar weekday[11];
 	gint day;
-	gchar month[4];
+	gchar month[10];
 	gint year;
 	gint hh, mm, ss;
 	gchar zone[6];
@@ -701,17 +701,17 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 	time_t timer;
 
 	/* parsing date field... */
-	result = sscanf(src, "%3s, %d %3s %d %2d:%2d:%2d %5s",
+	result = sscanf(src, "%10s %d %9s %d %2d:%2d:%2d %5s",
 			weekday, &day, month, &year, &hh, &mm, &ss, zone);
 	if (result != 8) {
-		result = sscanf(src, "%d %3s %d %2d:%2d:%2d %5s",
+		result = sscanf(src, "%d %9s %d %2d:%2d:%2d %5s",
 				&day, month, &year, &hh, &mm, &ss, zone);
 		if (result != 7) {
 			ss = 0;
-			result = sscanf(src, "%3s, %d %3s %d %2d:%2d %5s",
+			result = sscanf(src, "%10s %d %9s %d %2d:%2d %5s",
 					weekday, &day, month, &year, &hh, &mm, zone);
 			if (result != 7) {
-				result = sscanf(src, "%d %3s %d %2d:%2d %5s",
+				result = sscanf(src, "%d %9s %d %2d:%2d %5s",
 						&day, month, &year, &hh, &mm,
 						zone);
 				if (result != 6) {
@@ -732,6 +732,7 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 			year += 1900;
 	}
 
+	month[3] = '\0';
 	if ((p = strstr(monthstr, month)) != NULL)
 		dmonth = (gint)(p - monthstr) / 3 + 1;
 	else {
