@@ -1,3 +1,9 @@
+2002-01-14 [alfons]	0.7.0claws1
+
+	* src/addr_compl.c
+	* src/prefs.c
+		remove debug_print()s for privacy reasons
+
 2002-01-14 [darko]	0.7.0claws
 
 	* README.claws

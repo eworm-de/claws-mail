@@ -155,8 +155,6 @@ static gint add_address(const gchar *name, const gchar *address)
 
 	if (!name || !address) return -1;
 
-	debug_print( "completion: add_address: %s - %s\n", name, address );
-
 	ae = g_new0(address_entry, 1);
 	ce1 = g_new0(completion_entry, 1),
 	ce2 = g_new0(completion_entry, 1);
