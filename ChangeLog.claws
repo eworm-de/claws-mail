@@ -1,3 +1,14 @@
+2004-02-26 [alfons]	0.9.9claws32
+
+	* src/procmime.[ch]
+	  src/compose.c
+	  src/mimeview.c
+	  src/textview.c
+		use/add procmime_get_content_type_str() as a safe wrapper
+		for returning a Content-Type type string; should fix 
+		bug #444, 0.9.7..0.9.9 crashes with "Content-Type: type= 
+		 - attachments."
+
 2004-02-26 [thorsten]	0.9.9claws31
 
 	* src/mimeview.c

@@ -2310,7 +2310,7 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 		else {
 			gchar *content_type;
 
-			content_type = g_strdup_printf("%s/%s", procmime_get_type_str(child->type), child->subtype);
+			content_type = procmime_get_content_type_str(child->type, child->subtype);
 			partname = procmime_mimeinfo_get_parameter(child, "name");
 			if (partname == NULL)
 				partname = "";

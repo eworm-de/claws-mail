@@ -542,7 +542,7 @@ static MimeViewer *get_viewer_for_mimeinfo(MimeView *mimeview, MimeInfo *partinf
 		if (filename != NULL)
 			content_type = procmime_get_mime_type(filename);
 	} else {
-		content_type = g_strdup_printf("%s/%s", procmime_get_type_str(partinfo->type), partinfo->subtype);
+		content_type = procmime_get_content_type_str(partinfo->type, partinfo->subtype);
 	}
 
 	if (content_type != NULL) {
@@ -1228,7 +1228,7 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 	} else {
 		gchar *content_type;
 		
-		content_type = g_strdup_printf("%s/%s", procmime_get_type_str(partinfo->type), partinfo->subtype);
+		content_type = procmime_get_content_type_str(partinfo->type, partinfo->subtype);
 		g_snprintf(m_buf, sizeof(m_buf), mime_cmdline,
 			   content_type, "%s");
 		g_free(content_type);
@@ -1581,7 +1581,8 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	GtkWidget *vbox;
 	GtkWidget *button;
 	gchar *tip;
-	const gchar *desc = NULL;
+	const gchar *desc = NULL; 
+	gchar *content_type;
 	StockPixmap stockp;
 	
 	vbox = mimeview->icon_vbox;
@@ -1631,16 +1632,17 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 			desc = get_part_name(mimeinfo);
 	}
 
+	content_type = procmime_get_content_type_str(mimeinfo->type,
+						     mimeinfo->subtype);
+
 	if (desc && *desc)
-		tip = g_strdup_printf("%s\n%s/%s\n%s", desc,
-				procmime_get_type_str(mimeinfo->type),
-				mimeinfo->subtype, 
-				to_human_readable(mimeinfo->length));
+		tip = g_strdup_printf("%s\n%s\n%s", desc, content_type, 
+				      to_human_readable(mimeinfo->length));
 	else 		
-		tip = g_strdup_printf("%s/%s\n%s",
-				procmime_get_type_str(mimeinfo->type),
-				mimeinfo->subtype, 
-				to_human_readable(mimeinfo->length));
+		tip = g_strdup_printf("%s\n%s", content_type,
+				      to_human_readable(mimeinfo->length));
+	
+	g_free(content_type);
 
 	gtk_tooltips_set_tip(mimeview->tooltips, button, tip, NULL);
 	g_free(tip);

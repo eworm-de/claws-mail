@@ -496,8 +496,8 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 
 	renderer = NULL;
 
-	content_type = g_strdup_printf("%s/%s", procmime_get_type_str(mimeinfo->type),
-		mimeinfo->subtype);
+	content_type = procmime_get_content_type_str(mimeinfo->type,
+						     mimeinfo->subtype);
 	for (cur = renderer_list ; cur != NULL ; cur = cur->next) {
 		struct ContentRenderer * cr;
 
@@ -942,6 +942,21 @@ const gchar *procmime_get_type_str(MimeMediaType type)
 			return type_table->str;
 	}
 	return NULL;
+}
+
+/*!
+ *\brief	Safe wrapper for content type string.
+ *
+ *\return	const gchar * Pointer to content type string. 
+ */
+gchar *procmime_get_content_type_str(MimeMediaType type,
+					   const char *subtype)
+{
+	const gchar *type_str = NULL;
+
+	if (subtype == NULL || !(type_str = procmime_get_type_str(type)))
+		return g_strdup("unknown");
+	return g_strdup_printf("%s/%s", type_str, subtype);
 }
 
 void procmime_parse_mimepart(MimeInfo *parent,
