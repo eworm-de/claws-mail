@@ -1075,7 +1075,7 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 	switch (msginfo->planned_download) {
 	case 0: /* unknown yet */
 		text = g_strdup_printf(_("This message has been partially "
-				"retrieved;\nit is %s large."),
+				"retrieved;\nit is %s."),
 				to_human_readable(
 					(off_t)(msginfo->total_size)));
 		button1 = _("Mark for download");
@@ -1086,7 +1086,7 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 	case 1:
 		text = g_strdup_printf(_("This message has been partially "
 				"retrieved and is planned for "
-				"download;\nit is %s large."),
+				"download;\nit is %s."),
 				to_human_readable(
 					(off_t)(msginfo->total_size)));
 		button1 = _("Mark for deletion");
@@ -1095,7 +1095,7 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 	case -1:
 		text = g_strdup_printf(_("This message has been partially "
 				"retrieved and is planned for "
-				"deletion;\nit is %s large."),
+				"deletion;\nit is %s."),
 				to_human_readable(
 					(off_t)(msginfo->total_size)));
 		button1 = _("Mark for download");

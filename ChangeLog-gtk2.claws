@@ -1,3 +1,8 @@
+2004-07-09 [colin]	0.9.11cvs17.18
+
+	* src/messageview.c
+		Fix Engrish
+
 2004-07-09 [colin]	0.9.11cvs17.17
 
 	* src/pop.c
