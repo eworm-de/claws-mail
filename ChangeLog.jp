@@ -1,3 +1,31 @@
+2004-11-16
+
+	* version 1.0.0beta3
+
+2004-11-16
+
+	* src/pixmaps/error.xpm: CList の行に合うようにより小さなサイズにした。
+
+2004-11-16
+
+	* src/jpilot.c: JPilot アドレス帳の日本語対応パッチを適用
+	  (IWAMOTO, Kouichi さん thanks)。
+
+2004-11-15
+
+	* src/compose.c
+	  src/procmime.[ch]: 添付するテキストファイル中の 8bit 文字の割合が
+	  20% より高ければ BASE64 エンコーディングを使用し、そうでなければ
+	  quoted-printable を使用(全くない場合は 7bit)。
+
+2004-11-12
+
+	* src/compose.c: compose_write_attach()
+	  src/procmime.c: procmime_decode_content():
+	  テキストファイルを BASE64 にエンコードする前に正規化し、デコード
+	  した後に正規化を解除して RFC 2045 に準拠するようにした
+	  (Nicolas Degory さん thanks)。
+
 2004-11-11
 
 	* src/pixmaps/complete.xpm

@@ -1,3 +1,31 @@
+2004-11-16
+
+	* version 1.0.0beta3
+
+2004-11-16
+
+	* src/pixmaps/error.xpm: made them smaller size to fit CList row.
+
+2004-11-16
+
+	* src/jpilot.c: applied the JPilot addressbook Japanese support
+	  patch (thanks to IWAMOTO, Kouichi).
+
+2004-11-15
+
+	* src/compose.c
+	  src/procmime.[ch]: use BASE64 encoding if the ratio of 8bit
+	  characters in attaching text files is greater than 20%, otherwise
+	  use quoted-printable (or 7bit if not at all).
+
+2004-11-12
+
+	* src/compose.c: compose_write_attach()
+	  src/procmime.c: procmime_decode_content():
+	  canonicalize text files before encoding to BASE64, and
+	  uncanonicalize after decoding to conform with RFC 2045
+	  (thanks to Nicolas Degory).
+
 2004-11-11
 
 	* src/pixmaps/complete.xpm

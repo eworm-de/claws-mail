@@ -1873,7 +1873,10 @@ void send_queue_cb(gpointer data, guint action, GtkWidget *widget)
 		Folder *folder = list->data;
 
 		if (folder->queue) {
-			procmsg_send_queue(folder->queue, prefs_common.savemsg);
+			if (procmsg_send_queue(folder->queue, 
+					       prefs_common.savemsg) < 0)
+				alertpanel_error(_("Some errors occurred while "
+						   "sending queued messages."));
 			folder_item_scan(folder->queue);
 		}
 	}

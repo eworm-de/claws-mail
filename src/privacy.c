@@ -322,11 +322,11 @@ gchar *privacy_get_encrypt_data(const gchar *id, GSList *recp_names)
 
 	system = privacy_get_system(id);
 	if (system == NULL)
-		return FALSE;
+		return NULL;
 	if (!system->can_encrypt)
-		return FALSE;
+		return NULL;
 	if (system->get_encrypt_data == NULL)
-		return FALSE;
+		return NULL;
 
 	return system->get_encrypt_data(recp_names);
 }

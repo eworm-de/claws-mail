@@ -1,3 +1,62 @@
+2004-11-17 [colin]	0.9.12cvs155
+
+	* src/compose.c
+	* src/toolbar.c
+		Be verbose when sending fails
+	* src/procmsg.c
+		Fix procmsg_send_queue returning 0 when there's an error
+		Don't send messages to be encrypted to nobody 
+
+
+2004-11-17 [colin]	0.9.12cvs154
+
+	* src/privacy.c
+		Fix more pointer confusion
+
+2004-11-17 [paul]	0.9.12cvs153
+
+	* src/procmime.h
+		forgotten in sync with main 1.0.0beta3
+
+
+2004-11-17 [paul]	0.9.12cvs152
+
+	* ChangeLog
+	* ChangeLog.jp
+	* NEWS
+	* src/compose.c
+	* src/jpilot.c
+	* src/procmime.c
+		sync with main 1.0.0beta3
+		see ChangeLog 2004-11-15 and 2004-11-16
+
+2004-11-17 [colin]	0.9.12cvs151
+
+	* src/plugins/pgpmime/pgpmime.c
+		Remove debug printf
+
+2004-11-17 [colin]	0.9.12cvs150
+
+	* src/plugins/pgpmime/pgpmime.c
+		Fix off-by-one causing segs
+
+2004-11-17 [colin]	0.9.12cvs149
+
+	* src/procmsg.c
+		< Reboot_> don't compare pointers to NULL with !
+		So, use the other form to bring consistency.
+		Also fix coding style.
+
+2004-11-16 [colin]	0.9.12cvs148
+
+	* src/procmsg.c
+		Fix the fix :)
+
+2004-11-16 [colin]	0.9.12cvs147
+
+	* src/procmsg.c
+		Fix leaks in procmsg_send_message_queue
+
 2004-11-12 [paul]	0.9.12cvs146
 
 	* src/prefs_account.c

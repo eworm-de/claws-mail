@@ -2218,7 +2218,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 			MsgInfo *msginfo;
 			MsgFlags flags = {0, 0};
 
-			if (procmime_get_encoding_for_file(file) == ENC_7BIT)
+			if (procmime_get_encoding_for_text_file(file) == ENC_7BIT)
 				ainfo->encoding = ENC_7BIT;
 			else
 				ainfo->encoding = ENC_8BIT;
@@ -2234,8 +2234,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 			procmsg_msginfo_free(msginfo);
 		} else {
 			if (!g_ascii_strncasecmp(content_type, "text", 4))
-				ainfo->encoding =
-					procmime_get_encoding_for_file(file);
+				ainfo->encoding = procmime_get_encoding_for_text_file(file);
 			else
 				ainfo->encoding = ENC_BASE64;
 			name = g_path_get_basename(filename ? filename : file);
@@ -2249,7 +2248,8 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 				g_strdup("application/octet-stream");
 			ainfo->encoding = ENC_BASE64;
 		} else if (!g_ascii_strncasecmp(ainfo->content_type, "text", 4))
-			ainfo->encoding = procmime_get_encoding_for_file(file);
+			ainfo->encoding =
+				procmime_get_encoding_for_text_file(file);
 		else
 			ainfo->encoding = ENC_BASE64;
 		name = g_path_get_basename(filename ? filename : file);
@@ -3320,7 +3320,16 @@ gint compose_send(Compose *compose)
 		folder_item_scan(folder);
 		if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS)
 			gtk_widget_destroy(compose->window);
-	}
+	} else {
+		alertpanel_error(_("The message was queued but could not be "
+				   "sent.\nUse \"Send queued messages\" from "
+				   "the main window to retry."));
+		if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS) {
+			compose_allow_user_actions (compose, TRUE);
+			compose->sending = FALSE;		
+		}
+		return -1;
+ 	}
 
 	return 0;
 
@@ -3852,7 +3861,9 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 			gchar *encdata;
 
 			encdata = privacy_get_encrypt_data(compose->privacy_system, compose->to_list);
-			fprintf(fp, "X-Sylpheed-Encrypt-Data:%s\n", encdata);
+			if (encdata != NULL)
+				fprintf(fp, "X-Sylpheed-Encrypt-Data:%s\n", 
+					encdata);
 			g_free(encdata);
 		}
 	}

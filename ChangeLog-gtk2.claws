@@ -1,3 +1,20 @@
+2004-11-17 [paul]	0.9.12cvs155.1
+
+	* ChangeLog
+	* ChangeLog.claws
+	* ChangeLog.jp
+	* NEWS
+	* configure.ac
+	* src/compose.c
+	* src/jpilot.c
+	* src/privacy.c
+	* src/procmime.c
+	* src/procmime.h
+	* src/procmsg.c
+	* src/toolbar.c
+	* src/pixmaps/error.xpm
+		sync with HEAD
+
 2004-11-17 [colin]	0.9.12cvs151.1
 
 	* src/plugins/pgpmime/pgpmime.c
