@@ -64,6 +64,7 @@ make DESTDIR=$RPM_BUILD_ROOT install
 # Tools
 cp -r tools $RPM_BUILD_ROOT%{prefix}/share/sylpheed
 rm $RPM_BUILD_ROOT%{prefix}/share/sylpheed/tools/Makefile*
+mv $RPM_BUILD_ROOT%{prefix}/share/sylpheed/tools/README ./README.tools
 # fixing permissions
 pushd $RPM_BUILD_ROOT%{prefix}/share/sylpheed
 find . -name "*.xpm" -o -name ".directory" | xargs chmod 644
@@ -79,7 +80,7 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/%{_lib}/sylpheed
 %{prefix}/share/sylpheed
 %_mandir/man1/sylpheed.1.gz
-%doc ABOUT-NLS AUTHORS COPYING ChangeLog ChangeLog.claws ChangeLog.jp README README.claws README.jp INSTALL TODO TODO.jp
+%doc ABOUT-NLS AUTHORS COPYING ChangeLog ChangeLog.claws ChangeLog.jp README README.claws README.tools README.jp INSTALL TODO TODO.jp
 
 %changelog
 * Thu Jul 1 2003 Jens Oberender <j.obi@troja.net>
