@@ -127,6 +127,7 @@ static int isseparator(char ch)
 
 %union {
 	char chr;
+	char str[256];
 }
 
 %token SHOW_NEWSGROUPS
@@ -135,10 +136,11 @@ static int isseparator(char ch)
 %token SHOW_PERCENT SHOW_CC SHOW_REFERENCES SHOW_MESSAGE
 %token SHOW_QUOTED_MESSAGE SHOW_BACKSLASH SHOW_TAB
 %token SHOW_QUOTED_MESSAGE_NO_SIGNATURE SHOW_MESSAGE_NO_SIGNATURE
-%token SHOW_EOL SHOW_QUESTION_MARK SHOW_OPARENT SHOW_CPARENT
+%token SHOW_EOL SHOW_QUESTION_MARK SHOW_PIPE SHOW_OPARENT SHOW_CPARENT
 %token QUERY_DATE QUERY_FROM
 %token QUERY_FULLNAME QUERY_SUBJECT QUERY_TO QUERY_NEWSGROUPS
 %token QUERY_MESSAGEID QUERY_CC QUERY_REFERENCES
+%token INSERT_FILE INSERT_PROGRAMOUTPUT
 %token OPARENT CPARENT
 %token CHARACTER
 
@@ -146,28 +148,42 @@ static int isseparator(char ch)
 
 %token <chr> CHARACTER
 %type <chr> character
+%type <str> string
 
 %%
 
 quote_fmt:
-	character_or_special_or_query_list;
+	character_or_special_or_insert_or_query_list;
 
-character_or_special_or_query_list:
-	character_or_special_or_query character_or_special_or_query_list
-	| character_or_special_or_query ;
+character_or_special_or_insert_or_query_list:
+	character_or_special_or_insert_or_query character_or_special_or_insert_or_query_list
+	| character_or_special_or_insert_or_query ;
 
-character_or_special_or_query:
-	special ;
+character_or_special_or_insert_or_query:
+	special
 	| character
 	{
 		INSERT_CHARACTER($1);
 	}
 	| query ;
-
+	| insert ;
 
 character:
 	CHARACTER
 	;
+
+string:
+	CHARACTER
+	{
+		$$[0] = $1;
+		$$[1] = '\0';
+	}
+	| string CHARACTER
+	{
+		strcpy($$, $1);
+		$$[strlen($$) + 1] = '\0';
+		$$[strlen($$)] = $2;
+	};
 
 special:
 	SHOW_NEWSGROUPS
@@ -374,6 +390,10 @@ special:
 	{
 		INSERT("?");
 	}
+	| SHOW_PIPE
+	{
+		INSERT("|");
+	}
 	| SHOW_OPARENT
 	{
 		INSERT("{");
@@ -455,4 +475,32 @@ query:
 	OPARENT quote_fmt CPARENT
 	{
 		remove_visibility();
+	};
+
+insert:
+	INSERT_FILE OPARENT string CPARENT
+	{
+		{
+			FILE *file;
+			char buffer[256];
+			
+			if(file = fopen($3, "r")) {
+				while(fgets(buffer, sizeof(buffer), file)) {
+					INSERT(buffer);
+				}
+			}
+		}
+	}
+	| INSERT_PROGRAMOUTPUT OPARENT string CPARENT
+	{
+		{
+			FILE *file;
+			char buffer[256];
+
+			if(file = popen($3, "r")) {
+				while(fgets(buffer, sizeof(buffer), file)) {
+					INSERT(buffer);
+				}
+			}
+		}
 	};

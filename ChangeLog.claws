@@ -1,3 +1,29 @@
+2002-02-22 [christoph]	0.7.2claws5
+
+	* src/Makefile.am
+		added quote_fmt.c
+	* src/prefs_common.[ch]
+	* src/prefs_template.c
+	* src/quote_fmt.c		*** NEW FILE ***
+	* src/quote_fmt.h
+		move quote format symbol description code
+		to it's own file because it is used from
+		differnent code parts
+		Rewrote symbol description GUI
+		  + use table
+		  + add separators
+		  + get data from array (no more long constant strings)
+	* src/quote_fmt_lex.l
+	* src/quote_fmt_parse.y
+		Symbol for Literal % changed to \% instead of %%
+		(More logical as \ is used for quoting for other symbols)
+		Add |f and |p to include files and program output
+		Examples:
+		    |f{/home/.../.signature}
+		    |p{date}
+	* po/de.po
+		Correct wrong spelling for "Referenzen"
+
 2002-02-21 [paul]	0.7.2claws4
 
 	* src/procmsg.c

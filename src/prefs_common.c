@@ -54,6 +54,7 @@
 #include "filesel.h"
 #include "folderview.h"
 #include "stock_pixmap.h"
+#include "quote_fmt.h"
 
 #if USE_PSPELL
 #include "gtkspell.h"
@@ -230,7 +231,6 @@ static struct KeybindDialog {
 	GtkWidget *combo;
 } keybind;
 
-static GtkWidget *quote_desc_win;
 static GtkWidget *font_sel_win;
 static guint font_sel_conn_id; 
 static GtkWidget *quote_color_win;
@@ -760,13 +760,8 @@ static void date_format_select_row		(GtkWidget	*date_format_list,
 						 gint		 column,
 						 GdkEventButton	*event,
 						 GtkWidget	*date_format);
-static GtkWidget *date_format_create		(GtkButton	*button,
-						 void		*data);
-
-static void prefs_quote_description_create	(void);
-static void prefs_quote_description_key_pressed	(GtkWidget	*widget,
-						 GdkEventKey	*event,
-						 gpointer	 data);
+static GtkWidget *date_format_create            (GtkButton      *button,
+                                                 void           *data);
 
 static void prefs_quote_colors_dialog		(void);
 static void prefs_quote_colors_dialog_create	(void);
@@ -1886,7 +1881,7 @@ static void prefs_quote_create(void)
 	gtk_widget_show (btn_quotedesc);
 	gtk_box_pack_start (GTK_BOX (hbox1), btn_quotedesc, FALSE, FALSE, 0);
 	gtk_signal_connect(GTK_OBJECT(btn_quotedesc), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_quote_description), NULL);
+			   GTK_SIGNAL_FUNC(quote_fmt_quote_description), NULL);
 
 	compose.checkbtn_reply_with_quote= checkbtn_reply_with_quote;
 	quote.entry_quotemark    = entry_quotemark;
@@ -3296,144 +3291,6 @@ static void prefs_recycle_colors_toggled(GtkWidget *widget)
 	prefs_common.recycle_quote_colors = is_active;
 }
 
-void prefs_quote_description(void)
-{
-	if (!quote_desc_win)
-		prefs_quote_description_create();
-
-	manage_window_set_transient(GTK_WINDOW(quote_desc_win));
-	gtk_widget_show(quote_desc_win);
-	gtk_main();
-	gtk_widget_hide(quote_desc_win);
-}
-
-static void prefs_quote_description_create(void)
-{
-	GtkWidget *vbox;
-	GtkWidget *hbox;
-	GtkWidget *vbox2;
-	GtkWidget *label;
-	GtkWidget *hbbox;
-	GtkWidget *ok_btn;
-
-	quote_desc_win = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_window_set_title(GTK_WINDOW(quote_desc_win),
-			     _("Description of symbols"));
-	gtk_container_set_border_width(GTK_CONTAINER(quote_desc_win), 8);
-	gtk_window_set_position(GTK_WINDOW(quote_desc_win), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(quote_desc_win), TRUE);
-	gtk_window_set_policy(GTK_WINDOW(quote_desc_win), FALSE, FALSE, FALSE);
-
-	vbox = gtk_vbox_new(FALSE, 8);
-	gtk_container_add(GTK_CONTAINER(quote_desc_win), vbox);
-
-	hbox = gtk_hbox_new(FALSE, 8);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
-
-	vbox2 = gtk_vbox_new(FALSE, 8);
-	gtk_box_pack_start(GTK_BOX(hbox), vbox2, TRUE, TRUE, 0);
-
-#define PACK_LABEL() \
-	gtk_box_pack_start(GTK_BOX(vbox2), label, TRUE, TRUE, 0); \
-	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT); \
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-
-	label = gtk_label_new
-		("%d\n"		/* date */
-		 "%f\n"		/* from */
-		 "%N\n"		/* full name of sender */
-		 "%F\n"		/* first name of sender */
-		 "%I\n"		/* initial of sender */
-		 "%s\n"		/* subject */
-		 "%t\n"		/* to */
-		 "%c\n"		/* cc */
-		 "%n\n"		/* newsgroups */
-		 "%r\n"		/* references */
-		 "%i");		/* message id */
-	PACK_LABEL();
-
-	label = gtk_label_new
-		("?x{expr}");	/* condition */
-	PACK_LABEL();
-
-	label = gtk_label_new
-		("%M\n"		/* message body */
-		 "%Q\n"		/* quoted message body */
-		 "%m\n"		/* message body without signature */
-		 "%q\n"		/* quoted message body without signature */
-		 "%%");		/* literal percent */
-	PACK_LABEL();
-
-	label = gtk_label_new
-		("\\\\\n"	/* literal backslash */
-		 "\\?\n"	/* literal question mark */
-		 "\\{\n"	/* literal opening curly brace */
-		 "\\}");	/* literal closing curly brace */
-	PACK_LABEL();
-
-	vbox2 = gtk_vbox_new(FALSE, 8);
-	gtk_box_pack_start(GTK_BOX(hbox), vbox2, TRUE, TRUE, 0);
-
-	label = gtk_label_new
-		(_("Date\n"
-		   "From\n"
-		   "Full Name of Sender\n"
-		   "First Name of Sender\n"
-		   "Initial of Sender\n"
-		   "Subject\n"
-		   "To\n"
-		   "Cc\n"
-		   "Newsgroups\n"
-		   "References\n"
-		   "Message-ID"));
-	PACK_LABEL();
-
-	label = gtk_label_new
-		(_("If x is set, displays expr"));
-	PACK_LABEL();
-
-	label = gtk_label_new
-		(_("Message body\n"
-		   "Quoted message body\n"
-		   "Message body without signature\n"
-		   "Quoted message body without signature\n"
-		   "Literal %"));
-	PACK_LABEL();
-
-	label = gtk_label_new
-		(_("Literal backslash\n"
-		   "Literal question mark\n"
-		   "Literal opening curly brace\n"
-		   "Literal closing curly brace"));
-	PACK_LABEL();
-
-#undef PACK_LABEL
-
-	gtkut_button_set_create(&hbbox, &ok_btn, _("OK"),
-				NULL, NULL, NULL, NULL);
-	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
-
-	gtk_widget_grab_default(ok_btn);
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
-	gtk_signal_connect
-		(GTK_OBJECT(quote_desc_win), "key_press_event",
-		 GTK_SIGNAL_FUNC(prefs_quote_description_key_pressed),
-		 NULL);
-	gtk_signal_connect(GTK_OBJECT(quote_desc_win), "delete_event",
-			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
-
-	gtk_widget_show_all(vbox);
-}
-
-static void prefs_quote_description_key_pressed(GtkWidget *widget,
-						GdkEventKey *event,
-						gpointer data)
-{
-	if (event && event->keyval == GDK_Escape)
-		gtk_main_quit();
-}
-
 static void prefs_font_select(GtkButton *button, GtkEntry *entry)
 {
 	gchar *font_name;
@@ -3980,8 +3837,6 @@ static void prefs_common_ok(void)
 {
 	prefs_common_apply();
 	gtk_widget_hide(dialog.window);
-	if (quote_desc_win && GTK_WIDGET_VISIBLE(quote_desc_win))
-		gtk_widget_hide(quote_desc_win);
 
 	inc_unlock();
 }

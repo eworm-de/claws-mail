@@ -35,7 +35,6 @@
 #include "gtkutils.h"
 #include "alertpanel.h"
 #include "manage_window.h"
-#include "prefs_common.h"
 #include "compose.h"
 #include "addr_compl.h"
 #include "quote_fmt.h"
@@ -231,7 +230,7 @@ static void prefs_template_window_create(void)
 	gtk_widget_show(desc_btn);
 	gtk_box_pack_end(GTK_BOX(hbox2), desc_btn, FALSE, FALSE, 0);
 	gtk_signal_connect(GTK_OBJECT(desc_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_quote_description), NULL);
+			   GTK_SIGNAL_FUNC(quote_fmt_quote_description), NULL);
 
 	/* templates list */
 	scroll1 = gtk_scrolled_window_new(NULL, NULL);

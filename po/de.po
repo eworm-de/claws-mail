@@ -5391,7 +5391,7 @@ msgstr "In Antwort auf"
 
 #: src/prefs_matcher.c:144
 msgid "References"
-msgstr "Referenzrn"
+msgstr "Referenzen"
 
 #: src/prefs_matcher.c:145
 msgid "Age greater than"

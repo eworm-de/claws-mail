@@ -23,11 +23,12 @@
 "%Q" /* quoted message */ return SHOW_QUOTED_MESSAGE;
 "%m" /* message with no signature */ return SHOW_MESSAGE_NO_SIGNATURE;
 "%q" /* quoted message with no signature */ return SHOW_QUOTED_MESSAGE_NO_SIGNATURE;
-"%%" /* % */ return SHOW_PERCENT;
+"\\\%" /* % */ return SHOW_PERCENT;
 "\\\\" /* \ */ return SHOW_BACKSLASH;
 "\\t"|"\t" /* tab */ return SHOW_TAB;
 "\\n"|"\n" /* return */ return SHOW_EOL;
 "\\?" /* ? */ return SHOW_QUESTION_MARK;
+"\\|" return SHOW_PIPE;
 "\\{" return SHOW_OPARENT;
 "\\}" return SHOW_CPARENT;
 "?d" /* query date */ return QUERY_DATE;
@@ -39,6 +40,8 @@
 "?n" /* query newsgroups */ return QUERY_NEWSGROUPS;
 "?i" /* query message-id */ return QUERY_MESSAGEID;
 "?r" /* query references */ return QUERY_REFERENCES;
+"|f" /* insert file */ return INSERT_FILE;
+"|p" /* insert program output */ return INSERT_PROGRAMOUTPUT;
 "{" return OPARENT;
 "}" return CPARENT;
 . { yylval.chr = yytext[0]; return CHARACTER; }
