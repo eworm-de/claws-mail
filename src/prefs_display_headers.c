@@ -53,7 +53,7 @@ static struct Headers {
 
 	GtkWidget *hdr_combo;
 	GtkWidget *hdr_entry;
-	GtkWidget *key_check;
+/*  	GtkWidget *key_check; */
 	GtkWidget *headers_clist;
 	GtkWidget *hidden_headers_clist;
 
@@ -82,7 +82,7 @@ static gint prefs_display_headers_clist_set_row(gboolean hidden);
 /*static gint prefs_display_headers_clist_set_row	(void);*/
 
 /* callback functions */
-static void prefs_display_headers_select_dest_cb(void);
+/*  static void prefs_display_headers_select_dest_cb(void); */
 static void prefs_display_headers_register_cb(GtkButton *btn,
 					      void * hidden_data);
 /*
@@ -173,13 +173,13 @@ static void prefs_display_headers_create(void)
 	GtkWidget *hbox1;
 	GtkWidget *hdr_label;
 	GtkWidget *hdr_combo;
-	GtkWidget *key_check;
+/*  	GtkWidget *key_check; */
 
 	GtkWidget *reg_hbox;
 	GtkWidget *btn_hbox;
 	GtkWidget *arrow;
 	GtkWidget *reg_btn;
-	GtkWidget *subst_btn;
+/*  	GtkWidget *subst_btn; */
 	GtkWidget *del_btn;
 
 	GtkWidget *ch_hbox;
@@ -252,10 +252,10 @@ static void prefs_display_headers_create(void)
 	gtkut_combo_set_items (GTK_COMBO (hdr_combo),
 			       "From", "To", "Subject", "Date", NULL);
 
-	key_check = gtk_check_button_new_with_label(_("Show"));
-	gtk_widget_show (key_check);
-	gtk_box_pack_start (GTK_BOX (hbox1), key_check, FALSE, FALSE, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(key_check), 1);
+/*  	key_check = gtk_check_button_new_with_label(_("Show")); */
+/*  	gtk_widget_show (key_check); */
+/*  	gtk_box_pack_start (GTK_BOX (hbox1), key_check, FALSE, FALSE, 0); */
+/*  	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(key_check), 1); */
 
 	/* register / substitute / delete */
 
@@ -314,6 +314,8 @@ static void prefs_display_headers_create(void)
 	/* gtk_clist_set_column_width (GTK_CLIST (headers_clist), 1, 50); */
 	gtk_clist_set_selection_mode (GTK_CLIST (headers_clist),
 				      GTK_SELECTION_BROWSE);
+	gtk_clist_set_reorderable (GTK_CLIST (headers_clist), TRUE);
+	gtk_clist_set_use_drag_icons (GTK_CLIST (headers_clist), FALSE);
 	GTK_WIDGET_UNSET_FLAGS (GTK_CLIST (headers_clist)->column[0].button,
 				GTK_CAN_FOCUS);
 	gtk_signal_connect (GTK_OBJECT (headers_clist), "select_row",
@@ -415,7 +417,7 @@ static void prefs_display_headers_create(void)
 
 	headers.hdr_combo     = hdr_combo;
 	headers.hdr_entry     = GTK_COMBO (hdr_combo)->entry;
-	headers.key_check     = key_check;
+/*  	headers.key_check     = key_check; */
 	headers.headers_clist = headers_clist;
 	headers.hidden_headers_clist = hidden_headers_clist;
 
@@ -473,9 +475,9 @@ void prefs_display_headers_write_config(void)
 	gchar *rcpath;
 	PrefFile *pfile;
 	GSList *cur;
-	gchar buf[PREFSBUFSIZE];
-	FILE *fp;
-	HeaderDisplayProp *dp;
+/*  	gchar buf[PREFSBUFSIZE]; */
+/*  	FILE *fp; */
+/*  	HeaderDisplayProp *dp; */
 
 	debug_print(_("Writing configuration for displaying of headers...\n"));
 
@@ -536,13 +538,13 @@ static void prefs_display_headers_set_dialog()
 	gtk_clist_freeze(hidden_clist);
 	gtk_clist_clear(hidden_clist);
 
-	dp_str[0] = _("(New)");
+/*  	dp_str[0] = _("(New)"); */
 
-	row = gtk_clist_append(clist, dp_str);
-	gtk_clist_set_row_data(clist, row, NULL);
+/*  	row = gtk_clist_append(clist, dp_str); */
+/*  	gtk_clist_set_row_data(clist, row, NULL); */
 
-	row = gtk_clist_append(hidden_clist, dp_str);
-	gtk_clist_set_row_data(hidden_clist, row, NULL);
+/*  	row = gtk_clist_append(hidden_clist, dp_str); */
+/*  	gtk_clist_set_row_data(hidden_clist, row, NULL); */
 
 	for (cur = prefs_display_headers.headers_list; cur != NULL;
 	     cur = cur->next) {
@@ -575,7 +577,7 @@ static void prefs_display_headers_set_list()
 	g_slist_free(prefs_display_headers.headers_list);
 	prefs_display_headers.headers_list = NULL;
 
-	row = 1;
+	row = 0;
 	while ((dp = gtk_clist_get_row_data(GTK_CLIST(headers.headers_clist),
 		row)) != NULL) {
 		prefs_display_headers.headers_list =
@@ -583,12 +585,36 @@ static void prefs_display_headers_set_list()
 		row++;
 	}
 
-	row = 1;
+	row = 0;
 	while ((dp = gtk_clist_get_row_data(GTK_CLIST(headers.hidden_headers_clist), row)) != NULL) {
 		prefs_display_headers.headers_list =
 			g_slist_append(prefs_display_headers.headers_list, dp);
 		row++;
 	}
+}
+
+/**
+ * prefs_display_headers_find_header:
+ * @clist: List of headers.
+ * @header: Header name.
+ * 
+ * Find row of @clist which contains @header.
+ * 
+ * Return value: Row index, or -1 if not found.
+ **/
+static gint prefs_display_headers_find_header(GtkCList *clist,
+					      const gchar *header)
+{
+	gint row;
+	HeaderDisplayProp *dp;
+
+	row = 0;
+	while ((dp = gtk_clist_get_row_data(clist, row)) != NULL) {
+		if (g_strcasecmp(dp->name, header) == 0)
+			return row;
+		row++;
+	}
+	return -1;
 }
 
 #define GET_ENTRY(entry) \
@@ -608,6 +634,16 @@ static gint prefs_display_headers_clist_set_row(gboolean hidden)
 		return -1;
 	}
 
+	if (hidden)
+		clist = GTK_CLIST(headers.hidden_headers_clist);
+	else
+		clist = GTK_CLIST(headers.headers_clist);
+
+	if (prefs_display_headers_find_header(clist, entry_text) != -1) {
+		alertpanel_error(_("This header is already in the list."));
+		return -1;
+	}
+
 	dp = g_new0(HeaderDisplayProp, 1);
 
 	dp->name = g_strdup(entry_text);
@@ -617,11 +653,6 @@ static gint prefs_display_headers_clist_set_row(gboolean hidden)
 		(GTK_TOGGLE_BUTTON(headers.key_check));
 	*/
 	dp->hidden = hidden;
-
-	if (hidden)
-		clist = GTK_CLIST(headers.hidden_headers_clist);
-	else
-		clist = GTK_CLIST(headers.headers_clist);
 
 	dp_str[0] = dp->name;
 
@@ -670,11 +701,11 @@ static void prefs_display_headers_delete_cb(GtkButton *btn, void * clist_data)
 
 	if (!clist->selection) return;
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row == 0) return;
+/*  	if (row == 0) return; */
 
 	if (alertpanel(_("Delete header"),
 		       _("Do you really want to delete this header?"),
-		       _("Yes"), _("No"), NULL) == G_ALERTALTERNATE)
+		       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
 		return;
 
 	dp = gtk_clist_get_row_data(clist, row);
@@ -692,7 +723,7 @@ static void prefs_display_headers_up(void)
 	if (!clist->selection) return;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row > 1) {
+	if (row > 0) {
 		gtk_clist_row_move(clist, row, row - 1);
 		prefs_display_headers_set_list();
 	}
@@ -706,7 +737,7 @@ static void prefs_display_headers_down(void)
 	if (!clist->selection) return;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row > 0 && row < clist->rows - 1) {
+	if (row >= 0 && row < clist->rows - 1) {
 		gtk_clist_row_move(clist, row, row + 1);
 		prefs_display_headers_set_list();
 	}

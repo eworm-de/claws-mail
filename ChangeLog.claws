@@ -1,5 +1,22 @@
 2001-05-04 [sergey]
 
+	* src/prefs_display_headers.c: user interface changes:
+	(prefs_display_headers_create): remove unused "Show" check button;
+	allow reordering of headers by dragging.
+	(prefs_display_headers_write_config): remove unused variables.
+	(prefs_display_headers_set_dialog): do not insert "(New)" at top
+	of lists (not needed with the new UI).
+	(prefs_display_headers_set_list): scan lists starting from row 0,
+	not 1 (do not skip "(New)").
+	(prefs_display_headers_find_header): new function.
+	(prefs_display_headers_clist_set_row): do not allow duplicates.
+	(prefs_display_headers_delete_cb): do not skip row 0; treat
+	closing the alert window by ESC as "No".
+	(prefs_display_headers_up): do not protect row 0.
+	(prefs_display_headers_down): do not protect row 0.
+
+2001-05-04 [sergey]
+
 	* src/mainwindow.c (next_marked_cb, prev_marked_cb): new
 	functions.  
 
