@@ -2,6 +2,9 @@
 
 	* po/it.po
 		update. submitted by Andrea Spadaccini <lupin85@email.it>
+		
+	* tools/Makefile.am
+		add 'textviewer.sh'
 
 2004-03-12 [alfons]	0.9.10claws7
 

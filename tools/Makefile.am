@@ -20,6 +20,7 @@ EXTRA_TOOLS = \
 	sylprint.pl \
 	sylprint.rc \
 	tb2sylpheed \
+	textviewer.sh \
         update-po \
 	uudec \
 	vcard2xml.py
