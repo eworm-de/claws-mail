@@ -68,23 +68,29 @@ static GSList *news_delete_old_article	 (GSList	*alist,
 static void news_delete_all_article	 (FolderItem	*item);
 
 
-Session *news_session_new(const gchar *server, gushort port)
+static Session *news_session_new(const gchar *server, gushort port,
+				 const gchar *userid, const gchar *passwd)
 {
 	gchar buf[NNTPBUFSIZE];
 	NNTPSession *session;
-	SockInfo *nntp_sock;
+	NNTPSockInfo *nntp_sock;
 
 	g_return_val_if_fail(server != NULL, NULL);
 
 	log_message(_("creating NNTP connection to %s:%d ...\n"), server, port);
 
-	if ((nntp_sock = nntp_open(server, port, buf)) < 0)
+	if (userid && passwd)
+		nntp_sock = nntp_open_auth(server, port, buf, userid, passwd);
+	else
+		nntp_sock = nntp_open(server, port, buf);
+	if (nntp_sock < 0)
 		return NULL;
 
 	session = g_new(NNTPSession, 1);
 	SESSION(session)->type      = SESSION_NEWS;
 	SESSION(session)->server    = g_strdup(server);
-	SESSION(session)->sock      = nntp_sock;
+	session->nntp_sock          = nntp_sock;
+	SESSION(session)->sock      = nntp_sock->sock;
 	SESSION(session)->connected = TRUE;
 	SESSION(session)->phase     = SESSION_READY;
 	SESSION(session)->data      = NULL;
@@ -95,31 +101,72 @@ Session *news_session_new(const gchar *server, gushort port)
 
 void news_session_destroy(NNTPSession *session)
 {
-	sock_close(SESSION(session)->sock);
+	nntp_close(session->nntp_sock);
+	session->nntp_sock = NULL;
 	SESSION(session)->sock = NULL;
 
 	g_free(session->group);
 }
 
+static gchar *news_query_password(const gchar *server,
+				  const gchar *user)
+{
+	gchar *message;
+	gchar *pass;
+
+	message = g_strdup_printf(_("Input password for %s on %s:"),
+				  user, server);
+
+	pass = input_dialog_with_invisible(_("Input password"),
+					   message, NULL);
+	g_free(message);
+/*  	manage_window_focus_in(inc_dialog->mainwin->window, */
+/*  			       NULL, NULL); */
+	return pass;
+}
+
+static Session *news_session_new_for_folder(Folder *folder)
+{
+	Session *session;
+	PrefsAccount *ac;
+	const gchar *userid;
+	gchar *passwd;
+
+	ac = folder->account;
+	if (ac->userid && ac->userid[0]) {
+		userid = ac->userid;
+		if (ac->passwd && ac->passwd[0])
+			passwd = g_strdup(ac->passwd);
+		else
+			passwd = news_query_password(ac->nntp_server, userid);
+	} else {
+		userid = passwd = NULL;
+	}
+	session = news_session_new(ac->nntp_server, 119, userid, passwd);
+	g_free(passwd);
+	return session;
+}
+
 NNTPSession *news_session_get(Folder *folder)
 {
+	NNTPSession *session;
+
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(folder->type == F_NEWS, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
 
 	if (!REMOTE_FOLDER(folder)->session) {
 		REMOTE_FOLDER(folder)->session =
-			news_session_new(folder->account->nntp_server, 119);
+			news_session_new_for_folder(folder);
 	} else {
-		if (nntp_mode(REMOTE_FOLDER(folder)->session->sock, FALSE)
-		    != NN_SUCCESS) {
+		session = NNTP_SESSION(REMOTE_FOLDER(folder)->session);
+		if (nntp_mode(session->nntp_sock, FALSE) != NN_SUCCESS) {
 			log_warning(_("NNTP connection to %s:%d has been"
 				      " disconnected. Reconnecting...\n"),
 				    folder->account->nntp_server, 119);
 			session_destroy(REMOTE_FOLDER(folder)->session);
 			REMOTE_FOLDER(folder)->session =
-				news_session_new(folder->account->nntp_server,
-						 119);
+				news_session_new_for_folder(folder);
 		}
 	}
 
@@ -228,7 +275,7 @@ gint news_post(Folder *folder, const gchar *file)
 		return -1;
 	}
 
-	ok = nntp_post(SESSION(session)->sock, fp);
+	ok = nntp_post(session->nntp_sock, fp);
 	if (ok != NN_SUCCESS) {
 		log_warning(_("can't post article.\n"));
 		return -1;
@@ -246,14 +293,14 @@ static gint news_get_article_cmd(NNTPSession *session, const gchar *cmd,
 {
 	gchar *msgid;
 
-	if (nntp_get_article(SESSION(session)->sock, cmd, num, &msgid)
+	if (nntp_get_article(session->nntp_sock, cmd, num, &msgid)
 	    != NN_SUCCESS)
 		return -1;
 
 	debug_print("Message-Id = %s, num = %d\n", msgid, num);
 	g_free(msgid);
 
-	if (recv_write_to_file(SESSION(session)->sock, filename) < 0) {
+	if (recv_write_to_file(session->nntp_sock->sock, filename) < 0) {
 		log_warning(_("can't retrieve article %d\n"), num);
 		return -1;
 	}
@@ -269,58 +316,6 @@ static gint news_get_article(NNTPSession *session, gint num, gchar *filename)
 static gint news_get_header(NNTPSession *session, gint num, gchar *filename)
 {
 	return news_get_article_cmd(session, "HEAD", num, filename);
-}
-
-static gchar *news_query_password(NNTPSession *session,
-				  const gchar *user)
-{
-	gchar *message;
-	gchar *pass;
-
-	message = g_strdup_printf
-		(_("Input password for %s on %s:"),
-		 user,
-		 SESSION(session)->server);
-
-	pass = input_dialog_with_invisible(_("Input password"),
-					   message, NULL);
-	g_free(message);
-/*  	manage_window_focus_in(inc_dialog->mainwin->window, */
-/*  			       NULL, NULL); */
-	return pass;
-}
-
-static gint news_authenticate(NNTPSession *session,
-			      FolderItem *item)
-{
-	gint ok;
-	const gchar *user;
-	gchar *pass;
-	gboolean need_free_pass = FALSE;
-
-	debug_print(_("news server requested authentication\n"));
-	if (!item || !item->folder || !item->folder->account)
-		return NN_ERROR;
-	user = item->folder->account->userid;
-	if (!user)
-		return NN_ERROR;
-	ok = nntp_authinfo_user(SESSION(session)->sock, user);
-	if (ok == NN_AUTHCONT) {
-		pass = item->folder->account->passwd;
-		if (!pass || !pass[0]) {
-			pass = news_query_password(session, user);
-			need_free_pass = TRUE;
-		}
-		ok = nntp_authinfo_pass(SESSION(session)->sock, pass);
-		if (need_free_pass)
-			g_free(pass);
-	}
-	if (ok != NN_SUCCESS) {
-		log_warning(_("NNTP authentication failed\n"));
-		alertpanel_error(_("Authentication for %s on %s failed."),
-				 user, SESSION(session)->server);
-	}
-	return ok;
 }
 
 static GSList *news_get_uncached_articles(NNTPSession *session,
@@ -342,15 +337,8 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 	g_return_val_if_fail(item->folder != NULL, NULL);
 	g_return_val_if_fail(item->folder->type == F_NEWS, NULL);
 
-	ok = nntp_group(SESSION(session)->sock, item->path,
+	ok = nntp_group(session->nntp_sock, item->path,
 			&num, &first, &last);
-	if (ok == NN_AUTHREQ) {
-		ok = news_authenticate(session, item);
-		if (ok != NN_SUCCESS)
-			return NULL;
-		ok = nntp_group(SESSION(session)->sock, item->path,
-				&num, &first, &last);
-	}
 	if (ok != NN_SUCCESS) {
 		log_warning(_("can't set group: %s\n"), item->path);
 		return NULL;
@@ -379,7 +367,7 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 
 	log_message(_("getting xover %d - %d in %s...\n"),
 		    begin, end, item->path);
-	if (nntp_xover(SESSION(session)->sock, begin, end) != NN_SUCCESS) {
+	if (nntp_xover(session->nntp_sock, begin, end) != NN_SUCCESS) {
 		log_warning(_("can't get xover\n"));
 		return NULL;
 	}
@@ -586,7 +574,7 @@ GSList * news_get_group_list(FolderItem *item)
 		debug_print(_("group list has been already cached.\n"));
 	}
 	else {
-	    ok = nntp_list(SESSION(session)->sock);
+	    ok = nntp_list(session->nntp_sock);
 	    if (ok != NN_SUCCESS)
 	      return NULL;
 	    

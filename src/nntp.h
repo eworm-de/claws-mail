@@ -22,6 +22,8 @@
 
 #include "socket.h"
 
+typedef struct _NNTPSockInfo	NNTPSockInfo;
+
 #define NN_SUCCESS	0
 #define NN_SOCKET	2
 #define NN_AUTHFAIL	3
@@ -30,27 +32,35 @@
 #define NN_IOERR	6
 #define NN_ERROR	7
 #define NN_AUTHREQ	8
-#define NN_AUTHCONT 9
+#define NN_AUTHCONT	9
 
 #define NNTPBUFSIZE	8192
 
-SockInfo *nntp_open(const gchar *server, gushort port, gchar *buf);
-gint nntp_group(SockInfo *sock, const gchar *group,
+struct _NNTPSockInfo
+{
+	SockInfo *sock;
+	gchar *userid;
+	gchar *passwd;
+};
+
+NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf);
+NNTPSockInfo *nntp_open_auth(const gchar *server, gushort port, gchar *buf,
+			     const gchar *userid, const gchar *passwd);
+void nntp_close(NNTPSockInfo *sock);
+gint nntp_group(NNTPSockInfo *sock, const gchar *group,
 		gint *num, gint *first, gint *last);
-gint nntp_get_article(SockInfo *sock, const gchar *cmd, gint num, gchar **msgid);
-gint nntp_article(SockInfo *sock, gint num, gchar **msgid);
-gint nntp_body(SockInfo *sock, gint num, gchar **msgid);
-gint nntp_head(SockInfo *sock, gint num, gchar **msgid);
-gint nntp_stat(SockInfo *sock, gint num, gchar **msgid);
-gint nntp_next(SockInfo *sock, gint *num, gchar **msgid);
-gint nntp_xover(SockInfo *sock, gint first, gint last);
-gint nntp_post(SockInfo *sock, FILE *fp);
-gint nntp_newgroups(SockInfo *sock);
-gint nntp_newnews(SockInfo *sock);
-gint nntp_mode(SockInfo *sock, gboolean stream);
-gint nntp_ok(SockInfo *sock, gchar *argbuf);
-gint nntp_authinfo_user(SockInfo *sock, const gchar *user);
-gint nntp_authinfo_pass(SockInfo *sock, const gchar *pass);
-gint nntp_list(SockInfo *sock);
+gint nntp_get_article(NNTPSockInfo *sock, const gchar *cmd, gint num, gchar **msgid);
+gint nntp_article(NNTPSockInfo *sock, gint num, gchar **msgid);
+gint nntp_body(NNTPSockInfo *sock, gint num, gchar **msgid);
+gint nntp_head(NNTPSockInfo *sock, gint num, gchar **msgid);
+gint nntp_stat(NNTPSockInfo *sock, gint num, gchar **msgid);
+gint nntp_next(NNTPSockInfo *sock, gint *num, gchar **msgid);
+gint nntp_xover(NNTPSockInfo *sock, gint first, gint last);
+gint nntp_post(NNTPSockInfo *sock, FILE *fp);
+gint nntp_newgroups(NNTPSockInfo *sock);
+gint nntp_newnews(NNTPSockInfo *sock);
+gint nntp_mode(NNTPSockInfo *sock, gboolean stream);
+gint nntp_ok(NNTPSockInfo *sock, gchar *argbuf);
+gint nntp_list(NNTPSockInfo *sock);
 
 #endif /* __NNTP_H__ */

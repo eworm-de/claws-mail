@@ -32,37 +32,69 @@
 
 static gint verbose = 1;
 
-static void nntp_gen_send(SockInfo *sock, const gchar *format, ...);
-static gint nntp_gen_recv(SockInfo *sock, gchar *buf, gint size);
+static void nntp_gen_send(NNTPSockInfo *sock, const gchar *format, ...);
+static gint nntp_gen_recv(NNTPSockInfo *sock, gchar *buf, gint size);
+static gint nntp_gen_command(NNTPSockInfo *sock, gchar *argbuf,
+			     const gchar *format, ...);
 
-SockInfo *nntp_open(const gchar *server, gushort port, gchar *buf)
+NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf)
 {
 	SockInfo *sock;
+	NNTPSockInfo *nntp_sock;
 
+	nntp_sock = g_new0(NNTPSockInfo, 1);
 	if ((sock = sock_connect(server, port)) == NULL) {
 		log_warning(_("Can't connect to NNTP server: %s:%d\n"),
 			    server, port);
+		g_free(nntp_sock);
 		return NULL;
 	}
+	nntp_sock->sock = sock;
 
-	if (nntp_ok(sock, buf) == NN_SUCCESS)
-		return sock;
+	if (nntp_ok(nntp_sock, buf) == NN_SUCCESS)
+		return nntp_sock;
 	else {
 		sock_close(sock);
+		g_free(nntp_sock);
 		return NULL;
 	}
 }
 
-gint nntp_group(SockInfo *sock, const gchar *group,
+NNTPSockInfo *nntp_open_auth(const gchar *server, gushort port, gchar *buf,
+			     const gchar *userid, const gchar *passwd)
+{
+	NNTPSockInfo *sock;
+
+	sock = nntp_open(server, port, buf);
+	if (!sock)
+		return NULL;
+	sock->userid = g_strdup(userid);
+	sock->passwd = g_strdup(passwd);
+	return sock;
+}
+
+
+void nntp_close(NNTPSockInfo *sock)
+{
+	if (!sock)
+		return;
+
+	sock_close(sock->sock);
+	g_free(sock->passwd);
+	g_free(sock->userid);
+	g_free(sock);
+}
+
+gint nntp_group(NNTPSockInfo *sock, const gchar *group,
 		gint *num, gint *first, gint *last)
 {
 	gint ok;
 	gint resp;
 	gchar buf[NNTPBUFSIZE];
 
-	nntp_gen_send(sock, "GROUP %s", group);
+	ok = nntp_gen_command(sock, buf, "GROUP %s", group);
 
-	if ((ok = nntp_ok(sock, buf)) != NN_SUCCESS)
+	if (ok != NN_SUCCESS)
 		return ok;
 
 	if (sscanf(buf, "%d %d %d %d", &resp, num, first, last)
@@ -74,17 +106,17 @@ gint nntp_group(SockInfo *sock, const gchar *group,
 	return NN_SUCCESS;
 }
 
-gint nntp_get_article(SockInfo *sock, const gchar *cmd, gint num, gchar **msgid)
+gint nntp_get_article(NNTPSockInfo *sock, const gchar *cmd, gint num, gchar **msgid)
 {
 	gint ok;
 	gchar buf[NNTPBUFSIZE];
 
 	if (num > 0)
-		nntp_gen_send(sock, "%s %d", cmd, num);
+		ok = nntp_gen_command(sock, buf, "%s %d", cmd, num);
 	else
-		nntp_gen_send(sock, cmd);
+		ok = nntp_gen_command(sock, buf, cmd);
 
-	if ((ok = nntp_ok(sock, buf)) != NN_SUCCESS)
+	if (ok != NN_SUCCESS)
 		return ok;
 
 	extract_parenthesis(buf, '<', '>');
@@ -97,35 +129,35 @@ gint nntp_get_article(SockInfo *sock, const gchar *cmd, gint num, gchar **msgid)
 	return NN_SUCCESS;
 }
 
-gint nntp_article(SockInfo *sock, gint num, gchar **msgid)
+gint nntp_article(NNTPSockInfo *sock, gint num, gchar **msgid)
 {
 	return nntp_get_article(sock, "ARTICLE", num, msgid);
 }
 
-gint nntp_body(SockInfo *sock, gint num, gchar **msgid)
+gint nntp_body(NNTPSockInfo *sock, gint num, gchar **msgid)
 {
 	return nntp_get_article(sock, "BODY", num, msgid);
 }
 
-gint nntp_head(SockInfo *sock, gint num, gchar **msgid)
+gint nntp_head(NNTPSockInfo *sock, gint num, gchar **msgid)
 {
 	return nntp_get_article(sock, "HEAD", num, msgid);
 }
 
-gint nntp_stat(SockInfo *sock, gint num, gchar **msgid)
+gint nntp_stat(NNTPSockInfo *sock, gint num, gchar **msgid)
 {
 	return nntp_get_article(sock, "STAT", num, msgid);
 }
 
-gint nntp_next(SockInfo *sock, gint *num, gchar **msgid)
+gint nntp_next(NNTPSockInfo *sock, gint *num, gchar **msgid)
 {
 	gint ok;
 	gint resp;
 	gchar buf[NNTPBUFSIZE];
 
-	nntp_gen_send(sock, "NEXT");
+	ok = nntp_gen_command(sock, buf, "NEXT");
 
-	if ((ok = nntp_ok(sock, buf)) != NN_SUCCESS)
+	if (ok != NN_SUCCESS)
 		return ok;
 
 	if (sscanf(buf, "%d %d", &resp, num) != 2) {
@@ -143,92 +175,70 @@ gint nntp_next(SockInfo *sock, gint *num, gchar **msgid)
 	return NN_SUCCESS;
 }
 
-gint nntp_xover(SockInfo *sock, gint first, gint last)
+gint nntp_xover(NNTPSockInfo *sock, gint first, gint last)
 {
 	gint ok;
 	gchar buf[NNTPBUFSIZE];
 
-	nntp_gen_send(sock, "XOVER %d-%d", first, last);
-	if ((ok = nntp_ok(sock, buf)) != NN_SUCCESS)
+	ok = nntp_gen_command(sock, buf, "XOVER %d-%d", first, last);
+	if (ok != NN_SUCCESS)
 		return ok;
 
 	return NN_SUCCESS;
 }
 
-gint nntp_post(SockInfo *sock, FILE *fp)
+gint nntp_post(NNTPSockInfo *sock, FILE *fp)
 {
 	gint ok;
 	gchar buf[NNTPBUFSIZE];
 
-	nntp_gen_send(sock, "POST");
-	if ((ok = nntp_ok(sock, buf)) != NN_SUCCESS)
+	ok = nntp_gen_command(sock, buf, "POST");
+	if (ok != NN_SUCCESS)
 		return ok;
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		strretchomp(buf);
 		if (buf[0] == '.') {
-			if (sock_write(sock, ".", 1) < 0) {
+			if (sock_write(sock->sock, ".", 1) < 0) {
 				log_warning(_("Error occurred while posting\n"));
 				return NN_SOCKET;
 			}
 		}
 
-		if (sock_puts(sock, buf) < 0) {
+		if (sock_puts(sock->sock, buf) < 0) {
 			log_warning(_("Error occurred while posting\n"));
 			return NN_SOCKET;
 		}
 	}
 
-	sock_write(sock, ".\r\n", 3);
+	sock_write(sock->sock, ".\r\n", 3);
 	if ((ok = nntp_ok(sock, buf)) != NN_SUCCESS)
 		return ok;
 
 	return NN_SUCCESS;
 }
 
-gint nntp_newgroups(SockInfo *sock)
+gint nntp_newgroups(NNTPSockInfo *sock)
 {
 	return NN_SUCCESS;
 }
 
-gint nntp_newnews(SockInfo *sock)
+gint nntp_newnews(NNTPSockInfo *sock)
 {
 	return NN_SUCCESS;
 }
 
-gint nntp_mode(SockInfo *sock, gboolean stream)
+gint nntp_mode(NNTPSockInfo *sock, gboolean stream)
 {
 	gint ok;
 
-	nntp_gen_send(sock, "MODE %s", stream ? "STREAM" : "READER");
-	ok = nntp_ok(sock, NULL);
+	ok = nntp_gen_command(sock, NULL, "MODE %s",
+			      stream ? "STREAM" : "READER");
 
 	return ok;
 }
 
-gint nntp_authinfo_user(SockInfo *sock, const gchar *user)
-{
-	gint ok;
-	gchar buf[NNTPBUFSIZE];
-
-	nntp_gen_send(sock, "AUTHINFO USER %s", user);
-	ok = nntp_ok(sock, buf);
-
-	return ok;
-}
-
-gint nntp_authinfo_pass(SockInfo *sock, const gchar *pass)
-{
-	gint ok;
-	gchar buf[NNTPBUFSIZE];
-
-	nntp_gen_send(sock, "AUTHINFO PASS %s", pass);
-	ok = nntp_ok(sock, buf);
-
-	return ok;
-}
-
-gint nntp_ok(SockInfo *sock, gchar *argbuf)
+gint nntp_ok(NNTPSockInfo *sock, gchar *argbuf)
 {
 	gint ok;
 	gchar buf[NNTPBUFSIZE];
@@ -254,7 +264,7 @@ gint nntp_ok(SockInfo *sock, gchar *argbuf)
 	return ok;
 }
 
-static void nntp_gen_send(SockInfo *sock, const gchar *format, ...)
+static void nntp_gen_send(NNTPSockInfo *sock, const gchar *format, ...)
 {
 	gchar buf[NNTPBUFSIZE];
 	va_list args;
@@ -271,12 +281,12 @@ static void nntp_gen_send(SockInfo *sock, const gchar *format, ...)
 	}
 
 	strcat(buf, "\r\n");
-	sock_write(sock, buf, strlen(buf));
+	sock_write(sock->sock, buf, strlen(buf));
 }
 
-static gint nntp_gen_recv(SockInfo *sock, gchar *buf, gint size)
+static gint nntp_gen_recv(NNTPSockInfo *sock, gchar *buf, gint size)
 {
-	if (sock_read(sock, buf, size) == -1)
+	if (sock_read(sock->sock, buf, size) == -1)
 		return NN_SOCKET;
 
 	strretchomp(buf);
@@ -287,26 +297,40 @@ static gint nntp_gen_recv(SockInfo *sock, gchar *buf, gint size)
 	return NN_SUCCESS;
 }
 
+static gint nntp_gen_command(NNTPSockInfo *sock, gchar *argbuf,
+			     const gchar *format, ...)
+{
+	gchar buf[NNTPBUFSIZE];
+	va_list args;
+	gint ok;
+
+	va_start(args, format);
+	g_vsnprintf(buf, sizeof(buf) - 2, format, args);
+	va_end(args);
+
+	nntp_gen_send(sock, "%s", buf);
+	ok = nntp_ok(sock, argbuf);
+	if (ok == NN_AUTHREQ && sock->userid && sock->passwd) {
+		nntp_gen_send(sock, "AUTHINFO USER %s", sock->userid);
+		ok = nntp_ok(sock, NULL);
+		if (ok == NN_AUTHCONT) {
+			nntp_gen_send(sock, "AUTHINFO PASS %s", sock->passwd);
+			ok = nntp_ok(sock, NULL);
+		}
+		if (ok != NN_SUCCESS)
+			return ok;
+		nntp_gen_send(sock, "%s", buf);
+		ok = nntp_ok(sock, argbuf);
+	}
+	return ok;
+}
+
 /*
   nntp_list sends the command "LIST" to the news server,
   a function is needed to read the newsgroups list.
  */
 
-gint nntp_list(SockInfo *sock)
+gint nntp_list(NNTPSockInfo *sock)
 {
-	GList * result = NULL;
-
-	gint ok;
-	gint resp;
-	gchar buf[NNTPBUFSIZE];
-
-	nntp_gen_send(sock, "LIST");
-
-	if ((ok = nntp_ok(sock, buf)) != NN_SUCCESS)
-		return ok;
-
-	if (verbose)
-		log_print("NNTP< %s\n", buf);
-
-	return NN_SUCCESS;
+	return nntp_gen_command(sock, NULL, "LIST");
 }

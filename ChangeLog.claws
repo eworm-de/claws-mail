@@ -1,6 +1,31 @@
 2001-04-30 [sergey]
 
-	* src/news.c: reverted my previous changes (need to to NNTP
+	* src/nntp.h (NNTPSockInfo): new type.
+
+	* src/nntp.c: all functions updated to use NNTPSockInfo instead of
+	SockInfo.
+	(nntp_open_auth, nntp_close): new functions.
+	(nntp_gen_command): new function to handle authentication; all
+	NNTP command functions updated to use it.
+	(nntp_authinfo_user, nntp_authinfo_pass): deleted.
+	(nntp_list): removed old useless code.
+
+	* src/news.h (NNTPSession): new field nntp_sock.
+
+	* src/news.c: all functions updated to use NNTPSockInfo instead of
+	SockInfo.
+	(news_session_new): new arguments (userid, passwd); made static;
+	use nntp_open_auth() if needed.
+	(news_session_destroy): use nntp_close() instead of sock_close().
+	(news_query_password): changed arguments.
+	(news_session_new_for_folder): new function.
+	(news_session_get): use news_session_new_for_folder().
+	(news_authenticate): deleted.
+	(news_get_uncached_articles): removed old authentication code.
+
+2001-04-30 [sergey]
+
+	* src/news.c: reverted my previous changes (need to do NNTP
 	authentication in a cleaner way).
 	
 2001-04-29 [sergey]

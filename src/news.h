@@ -24,6 +24,7 @@
 
 #include "folder.h"
 #include "session.h"
+#include "nntp.h"
 
 typedef struct _NNTPSession	NNTPSession;
 
@@ -33,12 +34,11 @@ struct _NNTPSession
 {
 	Session session;
 
+	NNTPSockInfo *nntp_sock;
 	gchar *group;
 };
 
 
-Session *news_session_new		(const gchar	*server,
-					 gushort	 port);
 void news_session_destroy		(NNTPSession	*session);
 NNTPSession *news_session_get		(Folder		*folder);
 
