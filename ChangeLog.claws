@@ -1,3 +1,10 @@
+2003-08-30 [paul]	0.9.4claws44
+
+	* src/prefs_common.c
+	  src/prefs_spelling.c
+	  src/prefs_spelling.glade
+	  	reduce GUI clutter by placing hints into tooltips
+
 2003-08-29 [christoph]	0.9.4claws43
 
 	* configure.ac

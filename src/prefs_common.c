@@ -1299,10 +1299,10 @@ static void prefs_send_create(void)
 	GtkWidget *optmenu_charset;
 	GtkWidget *optmenu_menu;
 	GtkWidget *menuitem;
-	GtkWidget *label_charset_desc;
+	GtkTooltips *charset_tooltip;
 	GtkWidget *optmenu_encoding;
 	GtkWidget *label_encoding;
-	GtkWidget *label_encoding_desc;
+	GtkTooltips *encoding_tooltip;
 	GtkWidget *label_senddialog;
 	GtkWidget *menu;
 	GtkWidget *optmenu_senddialog;
@@ -1377,9 +1377,15 @@ static void prefs_send_create(void)
 	gtk_widget_show (label_outcharset);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_outcharset, FALSE, FALSE, 0);
 
+	charset_tooltip = gtk_tooltips_new();
+
 	optmenu_charset = gtk_option_menu_new ();
 	gtk_widget_show (optmenu_charset);
-	gtk_box_pack_start (GTK_BOX (hbox1), optmenu_charset, FALSE, FALSE, 0);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(charset_tooltip), optmenu_charset,
+			     _("If `Automatic' is selected, the optimal encoding"
+		   	       " for the current locale will be used"),
+			     NULL);
+ 	gtk_box_pack_start (GTK_BOX (hbox1), optmenu_charset, FALSE, FALSE, 0);
 
 	optmenu_menu = gtk_menu_new ();
 
@@ -1430,15 +1436,6 @@ static void prefs_send_create(void)
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
-	label_charset_desc = gtk_label_new
-		(_("If `Automatic' is selected, the optimal encoding\n"
-		   "for the current locale will be used."));
-	gtk_widget_show (label_charset_desc);
-	gtk_box_pack_start (GTK_BOX (hbox1), label_charset_desc,
-			    FALSE, FALSE, 0);
-	gtk_label_set_justify (GTK_LABEL (label_charset_desc),
-			       GTK_JUSTIFY_LEFT);
-
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
@@ -1447,9 +1444,15 @@ static void prefs_send_create(void)
 	gtk_widget_show (label_encoding);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_encoding, FALSE, FALSE, 0);
 
+	encoding_tooltip = gtk_tooltips_new();
+
 	optmenu_encoding = gtk_option_menu_new ();
 	gtk_widget_show (optmenu_encoding);
-	gtk_box_pack_start (GTK_BOX (hbox1), optmenu_encoding, FALSE, FALSE, 0);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(encoding_tooltip), optmenu_encoding,
+			     _("Specify Content-Transfer-Encoding used when"
+		   	       " message body contains non-ASCII characters"),
+			     NULL);
+ 	gtk_box_pack_start (GTK_BOX (hbox1), optmenu_encoding, FALSE, FALSE, 0);
 
 	optmenu_menu = gtk_menu_new ();
 
@@ -1464,15 +1467,6 @@ static void prefs_send_create(void)
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-
-	label_encoding_desc = gtk_label_new
-		(_("Specify Content-Transfer-Encoding used when\n"
-		   "message body contains non-ASCII characters."));
-	gtk_widget_show (label_encoding_desc);
-	gtk_box_pack_start (GTK_BOX (hbox1), label_encoding_desc,
-			    FALSE, FALSE, 0);
-	gtk_label_set_justify (GTK_LABEL (label_encoding_desc),
-			       GTK_JUSTIFY_LEFT);
 
 	p_send.checkbtn_extsend = checkbtn_extsend;
 	p_send.entry_extsend    = entry_extsend;
@@ -2263,6 +2257,7 @@ static void prefs_privacy_create(void)
 	GtkWidget *checkbtn_store_passphrase;
 	GtkObject *spinbtn_store_passphrase_adj;
 	GtkWidget *spinbtn_store_passphrase;
+	GtkTooltips *store_tooltip;
 	GtkWidget *checkbtn_passphrase_grab;
 	GtkWidget *checkbtn_gpg_warning;
 
@@ -2301,11 +2296,17 @@ static void prefs_privacy_create(void)
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
 
+	store_tooltip = gtk_tooltips_new();
+
 	spinbtn_store_passphrase_adj = gtk_adjustment_new (0, 0, 1440, 1, 5, 5);
 	spinbtn_store_passphrase = gtk_spin_button_new
 		(GTK_ADJUSTMENT (spinbtn_store_passphrase_adj), 1, 0);
 	gtk_widget_show (spinbtn_store_passphrase);
-	gtk_box_pack_start (GTK_BOX (hbox1), spinbtn_store_passphrase, FALSE, FALSE, 0);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(store_tooltip), spinbtn_store_passphrase,
+			     _("Setting to '0' will store the passphrase"
+			       " for the whole session"),
+			     NULL);
+ 	gtk_box_pack_start (GTK_BOX (hbox1), spinbtn_store_passphrase, FALSE, FALSE, 0);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_store_passphrase),
 				     TRUE);
 	gtk_widget_set_usize (spinbtn_store_passphrase, 64, -1);
@@ -2322,12 +2323,6 @@ static void prefs_privacy_create(void)
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox1), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_usize (hbox_spc, 12, -1);
-
-	label = gtk_label_new (_("(Setting to '0' will store the passphrase\n"
-				 " for the whole session)"));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
-	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 
 	SET_TOGGLE_SENSITIVITY (checkbtn_store_passphrase, vbox3);
 
@@ -2367,6 +2362,7 @@ static void prefs_interface_create(void)
 	GtkWidget *checkbtn_mark_as_read_on_newwin;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
+	GtkTooltips *immedexec_tooltip;
 	GtkWidget *hbox1;
 	GtkWidget *label;
 	GtkWidget *menu;
@@ -2418,20 +2414,19 @@ static void prefs_interface_create(void)
 	gtk_widget_show (vbox3);
 	gtk_box_pack_start (GTK_BOX (vbox2), vbox3, FALSE, FALSE, 0);
 
+	immedexec_tooltip = gtk_tooltips_new();
+
 	PACK_CHECK_BUTTON
 		(vbox3, checkbtn_immedexec,
 		 _("Execute immediately when moving or deleting messages"));
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(immedexec_tooltip), checkbtn_immedexec,
+			     _("Messages will be marked until execution"
+		   	       " if this is turned off"),
+			     NULL);
 
 	hbox1 = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox1, FALSE, FALSE, 0);
-
-	label = gtk_label_new
-		(_("(Messages will be marked until execution\n"
-		   " if this is turned off)"));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 8);
-	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 
  	/* Next Unread Message Dialog */
 	hbox_nextunreadmsgdialog = gtk_hbox_new (FALSE, 8);
@@ -2522,6 +2517,7 @@ static void prefs_other_create(void)
 	GtkWidget *checkbtn_cliplog;
 	GtkWidget *loglength_label;
 	GtkWidget *loglength_entry;
+	GtkTooltips *loglength_tooltip;
 
 	GtkWidget *frame_exit;
 	GtkWidget *vbox_exit;
@@ -2642,12 +2638,17 @@ static void prefs_other_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox_cliplog), loglength_label,
 			    FALSE, TRUE, 0);
 	gtk_widget_show (GTK_WIDGET (loglength_label));
+	
+	loglength_tooltip = gtk_tooltips_new();
+	
 	loglength_entry = gtk_entry_new ();
 	gtk_widget_set_usize (GTK_WIDGET (loglength_entry), 64, -1);
 	gtk_box_pack_start (GTK_BOX (hbox_cliplog), loglength_entry,
 			    FALSE, TRUE, 0);
 	gtk_widget_show (GTK_WIDGET (loglength_entry));
-	loglength_label = gtk_label_new (_("(0 to stop logging in the log window)"));
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(loglength_tooltip), loglength_entry,
+			     _("0 to stop logging in the log window"),
+			     NULL);
 	gtk_box_pack_start (GTK_BOX (hbox_cliplog), loglength_label,
 			    FALSE, TRUE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_cliplog, loglength_entry);
@@ -2710,7 +2711,7 @@ static void prefs_other_create(void)
 	gtk_widget_set_usize (spinbtn_iotimeout, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_iotimeout), TRUE);
 
-	label_iotimeout = gtk_label_new (_("second(s)"));
+	label_iotimeout = gtk_label_new (_("seconds"));
 	gtk_widget_show (label_iotimeout);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_iotimeout, FALSE, FALSE, 0);
 
