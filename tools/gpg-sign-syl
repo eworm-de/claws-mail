@@ -1,8 +1,0 @@
-#!/bin/sh
-TMPFILE=`mktemp $HOME/.iXXXXXX` || exit 1
-TMPFILE2=`mktemp $HOME/.oXXXXXX` || exit 1
-cat - > $TMPFILE
-xterm -T "GnuPG - Message Signing" -geometry 80x8 -e gpg --clearsign --yes -o $TMPFILE2 $TMPFILE
-cat $TMPFILE2
-rm $TMPFILE
-rm $TMPFILE2
