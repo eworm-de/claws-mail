@@ -552,6 +552,7 @@ static HTMLState html_parse_tag(HTMLParser *parser)
 			        /* the next token is the url, between double
 				 * quotes */
 			        char* url = strtok(NULL, "\"");
+				if (!url) break;
 				html_append_str(parser, url, strlen(url));
 				html_append_char(parser, ' ');
 				/* start enforcing html link */
