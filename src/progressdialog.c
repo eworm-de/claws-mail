@@ -22,6 +22,7 @@
 #endif
 
 #include <glib.h>
+#include <gtk/gtk.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkhbox.h>
@@ -44,6 +45,7 @@ ProgressDialog *progress_dialog_create(void)
 	GtkWidget *cancel_btn;
 	GtkWidget *cancel_area;
 	GtkWidget *progressbar;
+	GtkWidget *scrolledwin;
 	GtkWidget *clist;
 	gchar *text[] = {NULL, NULL, NULL};
 
@@ -82,9 +84,16 @@ ProgressDialog *progress_dialog_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox), progressbar, FALSE, FALSE, 0);
 	gtk_widget_show(progressbar);
 
+	scrolledwin = gtk_scrolled_window_new (NULL, NULL);
+	gtk_widget_show (scrolledwin);
+	gtk_box_pack_start (GTK_BOX (vbox), scrolledwin, TRUE, TRUE, 0);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwin),
+					GTK_POLICY_AUTOMATIC,
+					GTK_POLICY_AUTOMATIC);
+
 	clist = gtk_clist_new_with_titles(3, text);
 	gtk_widget_show(clist);
-	gtk_box_pack_start(GTK_BOX(vbox), clist, TRUE, TRUE, 0);
+	gtk_container_add(GTK_CONTAINER(scrolledwin), clist);
 	gtk_widget_set_usize(clist, -1, 120);
 	gtk_clist_set_column_justification(GTK_CLIST(clist), 0,
 					   GTK_JUSTIFY_CENTER);
