@@ -1,5 +1,10 @@
 2002-04-01
 
+	* src/summaryview.[ch]: trim the tail of folder name and selected
+	  number on the status label if the space is not enough.
+
+2002-04-01
+
 	* src/imap.c: imap_create_special_folder(): fixed a bug that didn't
 	  set SpecialFolderItemType when creating special folders under
 	  INBOX.

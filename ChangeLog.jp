@@ -1,5 +1,10 @@
 2002-04-01
 
+	* src/summaryview.[ch]: スペースが十分になければステータスラベルの
+	  フォルダ名と選択数の末尾を削るようにした。
+
+2002-04-01
+
 	* src/imap.c: imap_create_special_folder(): INBOX の下に特別フォルダ
 	  を作成するとき SpecialFolderItemType をセットしていなかったバグを
 	  修正。
