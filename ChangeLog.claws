@@ -1,3 +1,162 @@
+2005-02-05 [thorsten]	1.0.0cvs27
+
+	* src/partial_download.c
+		fix buf overflow
+
+2005-02-03 [colin]	1.0.0cvs26
+
+	* src/common/plugin.c
+		Don't load GTK2 plugins at all. This solves
+		the plugins problem when switching between
+		GTK1 and GTK2 version.
+
+2005-02-02 [colin]	1.0.0cvs25
+
+	* src/messageview.c
+		Fix dangerous typo
+
+2005-01-31 [colin]	1.0.0cvs24
+
+	* src/compose.c
+		Fix MsgInfo reference leak
+
+2005-01-28 [colin]	1.0.0cvs23
+
+	* src/folderview.c
+		Change check - partial_recv is not cached.
+
+2005-01-28 [colin]	1.0.0cvs22
+
+	* src/folderview.c
+		Don't call partial_mark_for_delete() when 
+		it's useless
+
+2005-01-27 [colin]	1.0.0cvs21
+
+	* src/procmsg.c
+	* src/compose.c
+		Fix build - sorry.
+
+2005-01-27 [christoph]	1.0.0cvs20
+
+	* src/folder.c
+		use normal message remove function if a folder has no function
+		to remove all messages
+
+	* src/folderview.c
+		fix memory leak
+
+2005-01-27 [colin]	1.0.0cvs19
+
+	* src/procmime.c
+		Forgot to commit this file with cvs18.
+
+2005-01-27 [colin]	1.0.0cvs18
+
+	* src/compose.c
+		Uhm, better not touch the original msginfo_list.
+
+2005-01-27 [colin]	1.0.0cvs17
+
+	* src/procmsg.c
+	* src/procmsg.h
+		Add a way to dump message/rfc822 MimeInfos to MsgInfos...
+	* src/compose.c
+		... And use it to be able to reply to the currently 
+		selected MimeInfo.
+
+2005-01-27 [colin]	1.0.0cvs16
+
+	* src/messageview.c
+	* src/summaryview.c
+	* src/compose.c
+	* src/compose.h
+	* src/toolbar.c
+	* src/mainwindow.c
+		Factorize this reply mess
+
+2005-01-26 [paul]	1.0.0cvs15
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/common/template.c
+		sync with main, (fix memory leak), see ChangeLog
+		2005-01-25
+
+2005-01-25 [paul]	1.0.0cvs14
+
+	* src/compose.c
+		compose_redirect(): fix sensitivity of attachment 
+		"Properties..." button
+
+2005-01-24 [colin]	1.0.0cvs13
+
+	* src/summaryview.c
+		Freeze clist during operations involving message
+		lists.
+
+2005-01-24 [paul]	1.0.0cvs12
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/messageview.c
+	* src/mh.c
+	* src/common/utils.c
+		sync with main, see ChangeLog 2005-01-19
+
+2005-01-24 [colin]	1.0.0cvs11
+
+	* src/procheader.c
+		Fix build with MIPSpro compiler.
+		Patch by Ivan Rayner <ivanr@sgi.com>
+
+2005-01-24 [colin]	1.0.0cvs10
+
+	* src/folderview.c
+		Use (+) in collapsed folders with quicksearch-
+		matching subfolders
+
+2005-01-23 [holger]	1.0.0cvs9
+
+	* src/crash.c
+		Include missing header file
+
+2005-01-22 [colin]	1.0.0cvs8
+
+	* src/summaryview.c
+	* src/gtk/quicksearch.c
+		Make recursive quicksearch work in
+		root folders (and code fixes)
+
+2005-01-21 [colin]	1.0.0cvs7
+
+	* src/summaryview.c
+		Set cursor to wait while looking in subfolders
+
+2005-01-21 [colin]	1.0.0cvs6
+
+	* src/summaryview.c
+		Don't clear quicksearch if recursion is on,
+		even if !sticky
+
+2005-01-21 [colin]	1.0.0cvs5
+
+	* src/gtk/quicksearch.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+		Add option to recurse or not
+
+2005-01-21 [colin]	1.0.0cvs4
+
+	* src/folder.h
+	* src/folderview.c
+	* src/folderview.h
+	* src/summaryview.c
+	* src/gtk/quicksearch.c
+	* src/gtk/quicksearch.h
+		Make quicksearch recursive - results materialized
+		by search icons in the folderview.
+
 2005-01-20 [holger]	1.0.0cvs3
 
 	* src/addrindex.c

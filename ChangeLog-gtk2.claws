@@ -1,3 +1,10 @@
+2005-02-05 [torte]	1.0.0cvs27.1
+
+	* ChangeLog.claws
+	* configure.ac
+	* src/partial_download.c
+		Sync with HEAD (fix buf overflow)
+
 2005-02-03 [colin]	1.0.0cvs26.1
 
 	* src/common/plugin.c
