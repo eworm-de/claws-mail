@@ -315,7 +315,7 @@ static void sd_clist_set_items()
 		gchar *row[5];
 		gint row_num;
 		
-		row[0] = _("");
+		row[0] = ("");
 		row[1] = items->from;
 		row[2] = items->subject;
 		row[3] = items->date;
