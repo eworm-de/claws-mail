@@ -1,3 +1,8 @@
+2003-02-27 [thorsten]	0.8.10claws95-1
+
+	* src/codeconv.c
+		fix: use iconv rather than conv_latintodisp (fix euro symbol)
+
 2003-02-27 [thorsten]	0.8.10claws53-1
 
 	* src/main.c

@@ -793,7 +793,9 @@ CodeConvFunc conv_get_code_conv_func(const gchar *src_charset_str,
 	case C_ISO_8859_14:
 	case C_ISO_8859_15:
 		if (dest_charset == C_AUTO)
+#ifndef WIN32 /* fall back to iconv */
 			code_conv = conv_latintodisp;
+#endif
 		break;
 	case C_SHIFT_JIS:
 		if (dest_charset == C_AUTO)
