@@ -201,7 +201,6 @@ static struct Privacy {
 	GtkObject *spinbtn_store_passphrase_adj;
 	GtkWidget *checkbtn_passphrase_grab;
 	GtkWidget *checkbtn_gpg_warning;
-	GtkWidget *optmenu_default_signkey;
 } privacy;
 #endif
 
@@ -254,11 +253,6 @@ static GtkWidget *color_dialog;
 
 static void prefs_common_charset_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_common_charset_set_optmenu	      (PrefParam *pparam);
-#if USE_GPGME
-static void prefs_common_default_signkey_set_data_from_optmenu
-							(PrefParam *pparam);
-static void prefs_common_default_signkey_set_optmenu	(PrefParam *pparam);
-#endif
 static void prefs_common_recv_dialog_newmail_notify_toggle_cb	(GtkWidget *w,
 								 gpointer data);
 static void prefs_common_recv_dialog_set_data_from_optmenu(PrefParam *pparam);
@@ -706,10 +700,6 @@ static PrefParam param[] = {
 	{"gpg_warning", "TRUE", &prefs_common.gpg_warning, P_BOOL,
 	 &privacy.checkbtn_gpg_warning,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"default_signkey", CS_AUTO, &prefs_common.default_signkey, P_STRING,
-	 &privacy.optmenu_default_signkey,
-	 prefs_common_default_signkey_set_data_from_optmenu,
-	 prefs_common_default_signkey_set_optmenu},
 #endif /* USE_GPGME */
 
 	/* Interface */
@@ -2434,23 +2424,17 @@ static void prefs_privacy_create(void)
 {
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
+	GtkWidget *vbox3;
 	GtkWidget *hbox1;
+	GtkWidget *hbox_spc;
+	GtkWidget *label;
 	GtkWidget *checkbtn_auto_check_signatures;
 	GtkWidget *checkbtn_gpg_signature_popup;
-	GtkWidget *hbox_stpass;
 	GtkWidget *checkbtn_store_passphrase;
-	GtkWidget *label_stpass1;
 	GtkObject *spinbtn_store_passphrase_adj;
 	GtkWidget *spinbtn_store_passphrase;
-	GtkWidget *label_stpass2;
-	GtkWidget *hbox_stpassinfo;
-	GtkWidget *label_stpassinfo;
 	GtkWidget *checkbtn_passphrase_grab;
 	GtkWidget *checkbtn_gpg_warning;
-	GtkWidget *label;
-	GtkWidget *menuitem;
-	GtkWidget *optmenu;
-	GtkWidget *optmenu_menu;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -2467,42 +2451,55 @@ static void prefs_privacy_create(void)
 	PACK_CHECK_BUTTON (vbox2, checkbtn_gpg_signature_popup,
 			   _("Show signature check result in a popup window"));
 
-	hbox_stpass = gtk_hbox_new(FALSE, 8);
-	gtk_box_pack_start(GTK_BOX(vbox2), hbox_stpass, FALSE, FALSE, 0);
+	PACK_CHECK_BUTTON (vbox2, checkbtn_store_passphrase,
+			   _("Store passphrase in memory temporarily"));
 
-	PACK_CHECK_BUTTON (hbox_stpass, checkbtn_store_passphrase,
-			   _("Store passphrase temporarily"));
+	vbox3 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox3);
+	gtk_box_pack_start (GTK_BOX (vbox2), vbox3, FALSE, FALSE, 0);
 
-	label_stpass1 = gtk_label_new(_("Expire after"));
-	gtk_box_pack_start(GTK_BOX(hbox_stpass), label_stpass1, FALSE, FALSE, 0);
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox3), hbox1, FALSE, FALSE, 0);
 
-	spinbtn_store_passphrase_adj = gtk_adjustment_new(0, 0, 1440, 1, 5, 5);
-	spinbtn_store_passphrase = gtk_spin_button_new(
-			GTK_ADJUSTMENT(spinbtn_store_passphrase_adj), 1, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_stpass), spinbtn_store_passphrase, FALSE, 
-			   FALSE, 0);
-	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spinbtn_store_passphrase), 
-				    TRUE);
-	gtk_widget_set_usize(spinbtn_store_passphrase, 50, -1);
-    
-	label_stpass2 = gtk_label_new(_("minute(s)"));
-	gtk_box_pack_start(GTK_BOX(hbox_stpass), label_stpass2, FALSE, FALSE, 0);
-	gtk_widget_show_all(hbox_stpass);
+	hbox_spc = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox_spc);
+	gtk_box_pack_start (GTK_BOX (hbox1), hbox_spc, FALSE, FALSE, 0);
+	gtk_widget_set_usize (hbox_spc, 12, -1);
 
-	hbox_stpassinfo = gtk_hbox_new(FALSE, 8);
-	gtk_box_pack_start(GTK_BOX(vbox2), hbox_stpassinfo, FALSE, FALSE, 0);
+	label = gtk_label_new (_("Expire after"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
 
-	label_stpassinfo = gtk_label_new
-		(_("(Setting to '0' will store the passphrase"
-		   " for the whole session)"));
-	gtk_box_pack_start (GTK_BOX (hbox_stpassinfo), label_stpassinfo, FALSE, FALSE, 0);
-	gtk_label_set_justify (GTK_LABEL (label_stpassinfo), GTK_JUSTIFY_LEFT);
-	gtk_widget_show_all(hbox_stpassinfo);
+	spinbtn_store_passphrase_adj = gtk_adjustment_new (0, 0, 1440, 1, 5, 5);
+	spinbtn_store_passphrase = gtk_spin_button_new
+		(GTK_ADJUSTMENT (spinbtn_store_passphrase_adj), 1, 0);
+	gtk_widget_show (spinbtn_store_passphrase);
+	gtk_box_pack_start (GTK_BOX (hbox1), spinbtn_store_passphrase, FALSE, FALSE, 0);
+	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_store_passphrase),
+				     TRUE);
+	gtk_widget_set_usize (spinbtn_store_passphrase, 64, -1);
 
-	SET_TOGGLE_SENSITIVITY(checkbtn_store_passphrase, label_stpass1);
-	SET_TOGGLE_SENSITIVITY(checkbtn_store_passphrase, spinbtn_store_passphrase); 
-	SET_TOGGLE_SENSITIVITY(checkbtn_store_passphrase, label_stpass2);
-	SET_TOGGLE_SENSITIVITY(checkbtn_store_passphrase, label_stpassinfo);
+	label = gtk_label_new (_("minute(s) "));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox3), hbox1, FALSE, FALSE, 0);
+
+	hbox_spc = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox_spc);
+	gtk_box_pack_start (GTK_BOX (hbox1), hbox_spc, FALSE, FALSE, 0);
+	gtk_widget_set_usize (hbox_spc, 12, -1);
+
+	label = gtk_label_new (_("(Setting to '0' will store the passphrase\n"
+				 " for the whole session)"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+
+	SET_TOGGLE_SENSITIVITY (checkbtn_store_passphrase, vbox3);
 
 #ifndef __MINGW32__
 	PACK_CHECK_BUTTON (vbox2, checkbtn_passphrase_grab,
@@ -2517,21 +2514,6 @@ static void prefs_privacy_create(void)
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
-	/* create default signkey box */
-	label = gtk_label_new (_("Default Sign Key"));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
-	optmenu = gtk_option_menu_new ();
-	gtk_widget_show (optmenu);
-	gtk_box_pack_start(GTK_BOX (hbox1), optmenu, FALSE, FALSE, 0);
-	optmenu_menu = gtk_menu_new ();
-
-	MENUITEM_ADD(optmenu_menu, menuitem, "Default Key", "def_key");
-	MENUITEM_ADD(optmenu_menu, menuitem, "Second Key", "2nd_key");
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu), optmenu_menu);
-	/* FIXME: disabled because not implemented */
-	gtk_widget_set_sensitive(optmenu, FALSE);
-
 	privacy.checkbtn_auto_check_signatures
 					     = checkbtn_auto_check_signatures;
 	privacy.checkbtn_gpg_signature_popup
@@ -2541,53 +2523,6 @@ static void prefs_privacy_create(void)
 	privacy.spinbtn_store_passphrase_adj = spinbtn_store_passphrase_adj;
 	privacy.checkbtn_passphrase_grab     = checkbtn_passphrase_grab;
 	privacy.checkbtn_gpg_warning         = checkbtn_gpg_warning;
-	privacy.optmenu_default_signkey      = optmenu;
-}
-
-static void
-prefs_common_default_signkey_set_data_from_optmenu(PrefParam *pparam)
-{
-#if 0
-	GtkWidget *menu;
-	GtkWidget *menuitem;
-	gchar *charset;
-
-	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	charset = gtk_object_get_user_data(GTK_OBJECT(menuitem));
-	g_free(*((gchar **)pparam->data));
-	*((gchar **)pparam->data) = g_strdup(charset);
-#endif
-}
-
-static void prefs_common_default_signkey_set_optmenu(PrefParam *pparam)
-{
-#if 0
-	GList *cur;
-	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
-	GtkWidget *menu;
-	GtkWidget *menuitem;
-	gchar *charset;
-	gint n = 0;
-
-	g_return_if_fail(optmenu != NULL);
-	g_return_if_fail(*((gchar **)pparam->data) != NULL);
-
-	menu = gtk_option_menu_get_menu(optmenu);
-	for (cur = GTK_MENU_SHELL(menu)->children;
-	     cur != NULL; cur = cur->next) {
-		menuitem = GTK_WIDGET(cur->data);
-		charset = gtk_object_get_user_data(GTK_OBJECT(menuitem));
-		if (!strcmp(charset, *((gchar **)pparam->data))) {
-			gtk_option_menu_set_history(optmenu, n);
-			return;
-		}
-		n++;
-	}
-
-	gtk_option_menu_set_history(optmenu, 0);
-	prefs_common_charset_set_data_from_optmenu(pparam);
-#endif
 }
 #endif /* USE_GPGME */
 

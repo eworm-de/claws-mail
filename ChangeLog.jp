@@ -1,5 +1,9 @@
 2002-08-06
 
+	* src/prefs_common.[ch]: obsolete なデフォルト署名鍵の設定を削除。
+
+2002-08-06
+
 	* src/compose.c: compose_write_to_file():
 	  暗号化/署名の前に行末を正規化するようにした(他の MUA との相互運用
 	  性が修正されるはず)。

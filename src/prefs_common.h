@@ -207,7 +207,6 @@ struct _PrefsCommon
 	gboolean store_passphrase;
 	gint store_passphrase_timeout;
 	gboolean passphrase_grab;
-	gchar *default_signkey;
 	gboolean gpg_warning;
 #endif /* USE_GPGME */
 
