@@ -1,3 +1,8 @@
+2003-03-26 [oliver]	0.8.11claws51
+	
+	* src/Makefile.am
+	* src/selective_download.[ch]   ** REMOVE **	
+
 2003-03-26 [christoph]	0.8.11claws50
 
 	* src/news.c
