@@ -1,3 +1,12 @@
+2002-02-15
+
+	* src/mainwindow.c: main_window_set_menu_sensitive(): set 'Show
+	  all header' toggle state from the property of the TextView.
+	* src/summaryview.[ch]: made 'All header' toggle switch.
+	  Prohibited unnecessary menu update.
+	  summary_select_node(): added the argument 'do_refresh'.
+	  Some code cleanups.
+
 2002-02-14
 
 	* src/utils.c: strsplit_with_quote(): remove quotation characters

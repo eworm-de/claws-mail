@@ -353,7 +353,7 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 			else {
 				if (summaryview->msg_is_toggled_on) {
 					summary_select_node
-						(summaryview, node, TRUE);
+						(summaryview, node, TRUE, FALSE);
 					if (body_matched) {
 						messageview_search_string
 							(summaryview->messageview,
@@ -361,7 +361,7 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 					}
 				} else {
 					summary_select_node
-						(summaryview, node, FALSE);
+						(summaryview, node, FALSE, FALSE);
 				}
 				break;
 			}

@@ -190,7 +190,8 @@ void summary_select_by_msgnum	  (SummaryView		*summaryview,
 guint summary_get_current_msgnum  (SummaryView		*summaryview);
 void summary_select_node	  (SummaryView		*summaryview,
 				   GtkCTreeNode		*node,
-				   gboolean		 display_msg);
+				   gboolean		 display_msg,
+				   gboolean		 do_refresh);
 
 void summary_thread_build	  (SummaryView		*summaryview);
 void summary_unthread		  (SummaryView		*summaryview);

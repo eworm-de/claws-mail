@@ -1,3 +1,11 @@
+2002-02-15 [paul]	0.7.1claws5
+
+	* sync with sylpheed 0.7.1cvs9
+		see ChangeLog entry 2002-02-15
+
+	* po/POTFILES.in
+		remove unneeded headerwindow.c entry
+
 2002-02-14 [carsten]	0.7.1claws4
 	* src/summaryview.c
 		fixed a bug for "Go to next unread message": there was

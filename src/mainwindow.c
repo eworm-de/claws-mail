@@ -1573,7 +1573,9 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 
 	main_window_menu_callback_block(mainwin);
 	menuitem = gtk_item_factory_get_widget(ifactory, "/View/Show all header");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), FALSE);
+	gtk_check_menu_item_set_active
+		(GTK_CHECK_MENU_ITEM(menuitem),
+		 mainwin->messageview->textview->show_all_headers);
 	menuitem = gtk_item_factory_get_widget(ifactory, "/View/Thread view");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 				       (state & M_THREADED) != 0);
