@@ -781,6 +781,8 @@ void messageview_destroy(MessageView *messageview)
 void messageview_delete(MessageView *msgview)
 {
 	MsgInfo *msginfo = NULL;
+	FolderItem *trash = NULL;
+	PrefsAccount *ac = NULL;
 
 	if (msgview->msginfo && msgview->mainwin && msgview->mainwin->summaryview)
 		msginfo = summary_get_selected_msg(msgview->mainwin->summaryview);
@@ -791,9 +793,7 @@ void messageview_delete(MessageView *msgview)
 	    msginfo->folder == msgview->msginfo->folder) {
 		summary_delete(msgview->mainwin->summaryview);
 	} else {		
-		MsgInfo *msginfo = (MsgInfo *) msgview->msginfo;
-		FolderItem *trash = NULL;
-		PrefsAccount *ac = NULL;
+		msginfo = msgview->msginfo;
 
 		g_return_if_fail(msginfo != NULL);
 
@@ -810,7 +810,7 @@ void messageview_delete(MessageView *msgview)
 				trash =	folder_get_default_trash();
 		}	
 
-		g_return_if_fail(trash   != NULL);
+		g_return_if_fail(trash != NULL);
 
 		if (prefs_common.immediate_exec)
 			/* TODO: Delete from trash */
