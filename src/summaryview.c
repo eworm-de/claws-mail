@@ -320,6 +320,7 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Reply"),			NULL, summary_reply_cb,	COMPOSE_REPLY, NULL},
 	{N_("/Repl_y to sender"),	NULL, summary_reply_cb,	COMPOSE_REPLY_TO_SENDER, NULL},
+	{N_("/Follow-up and reply to"),	NULL, summary_reply_cb,	COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL},
 	{N_("/Reply to a_ll"),		NULL, summary_reply_cb,	COMPOSE_REPLY_TO_ALL, NULL},
 	{N_("/_Forward"),		NULL, summary_reply_cb, COMPOSE_FORWARD, NULL},
 	{N_("/Forward as a_ttachment"),
@@ -867,6 +868,10 @@ void summary_clear_list(SummaryView *summaryview)
 		g_hash_table_destroy(summaryview->msgid_table);
 		summaryview->msgid_table = NULL;
 	}
+	if (summaryview->subject_table) {
+		g_hash_table_destroy(summaryview->subject_table);
+		summaryview->subject_table = NULL;
+	}
 	summaryview->mlist = NULL;
 	if (summaryview->folder_table) {
 		g_hash_table_destroy(summaryview->folder_table);
@@ -954,6 +959,13 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/Mark/Mark as read",          TRUE);
 
 	menu_set_sensitive(ifactory, "/Select all", TRUE);
+
+	if (summaryview->folder_item->folder->account)
+		sens = summaryview->folder_item->folder->account->protocol
+			== A_NNTP;
+	else
+		sens = FALSE;
+	menu_set_sensitive(ifactory, "/Follow-up and reply to",	sens);
 }
 
 void summary_select_next_unread(SummaryView *summaryview)
@@ -1479,6 +1491,24 @@ void summary_sort(SummaryView *summaryview, SummarySortType type)
 	main_window_cursor_normal(summaryview->mainwin);
 }
 
+static GtkCTreeNode * subject_table_lookup(GHashTable *subject_table,
+					   gchar * subject)
+{
+	if (g_strncasecmp(subject, "Re: ", 4) == 0)
+		return g_hash_table_lookup(subject_table, subject + 4);
+	else
+		return g_hash_table_lookup(subject_table, subject);
+}
+
+static void subject_table_insert(GHashTable *subject_table, gchar * subject,
+				 GtkCTreeNode * node)
+{
+	if (g_strncasecmp(subject, "Re: ", 4) == 0)
+		g_hash_table_insert(subject_table, subject + 4, node);
+	else
+		g_hash_table_insert(subject_table, subject, node);
+}
+
 static void summary_set_ctree_from_list(SummaryView *summaryview,
 					GSList *mlist)
 {
@@ -1489,6 +1519,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	GtkCTreeNode *node, *parent;
 	gchar *text[N_SUMMARY_COLS];
 	GHashTable *msgid_table;
+	GHashTable *subject_table;
 	GSList * cur;
 	GtkCTreeNode *cur_parent;
 
@@ -1500,6 +1531,8 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 
 	msgid_table = g_hash_table_new(g_str_hash, g_str_equal);
 	summaryview->msgid_table = msgid_table;
+	subject_table = g_hash_table_new(g_str_hash, g_str_equal);
+	summaryview->subject_table = subject_table;
 
 	if (prefs_common.use_addr_book)
 		start_address_completion();
@@ -1530,6 +1563,10 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 				parent = g_hash_table_lookup
 					(msgid_table, msginfo->inreplyto);
 			}
+			if (msginfo->subject) {
+				parent = subject_table_lookup
+					(subject_table, msginfo->subject);
+			}
 
 			summary_set_header(text, msginfo);
 
@@ -1547,6 +1584,12 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 			    == NULL)
 				g_hash_table_insert(msgid_table,
 						    msginfo->msgid, node);
+			if (msginfo->subject &&
+			    subject_table_lookup(subject_table,
+						 msginfo->subject) == NULL) {
+				subject_table_insert(subject_table,
+						     msginfo->subject, node);
+			}
 
 			cur_parent = parent;
 			cur_msginfo = msginfo;
@@ -1573,6 +1616,9 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 				    *cur_msginfo->inreplyto) {
 					cur_parent = g_hash_table_lookup(msgid_table, cur_msginfo->inreplyto);
 				}
+				if (cur_parent == NULL && cur_msginfo->subject) {
+					cur_parent = subject_table_lookup(subject_table, cur_msginfo->subject);
+				}
 			}
 		}
 
@@ -1595,6 +1641,12 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 			    == NULL)
 				g_hash_table_insert(msgid_table,
 						    msginfo->msgid, node);
+
+			if (msginfo->subject &&
+			    subject_table_lookup(subject_table,
+						 msginfo->subject) == NULL)
+				subject_table_insert(subject_table,
+						     msginfo->subject, node);
 		}
 	}
 
@@ -1612,9 +1664,12 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 
 	debug_print(_("done.\n"));
 	STATUSBAR_POP(summaryview->mainwin);
-	if (debug_mode)
+	if (debug_mode) {
 		debug_print("\tmsgid hash table size = %d\n",
 			    g_hash_table_size(msgid_table));
+		debug_print("\tsubject hash table size = %d\n",
+			    g_hash_table_size(subject_table));
+	}
 }
 
 struct wcachefp
@@ -2690,7 +2745,7 @@ void summary_thread_build(SummaryView *summaryview)
 	gtk_ctree_pre_recursive_to_depth
 		(GTK_CTREE(summaryview->ctree), NULL, 1,
 		 GTK_CTREE_FUNC(summary_thread_func),
-		 summaryview->msgid_table);
+		 summaryview);
 
 	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 
@@ -2746,13 +2801,19 @@ static void summary_thread_func(GtkCTree *ctree, GtkCTreeNode *node,
 {
 	MsgInfo *msginfo;
 	GtkCTreeNode *parent;
-	GHashTable *msgid_table = (GHashTable *)data;
+	
+	SummaryView * summaryview = (SummaryView *) data;
+	GHashTable *msgid_table = summaryview->msgid_table;
+	GHashTable *subject_table = summaryview->subject_table;
 
 	msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 
 	if (!msginfo || !msginfo->inreplyto) return;
 
 	parent = g_hash_table_lookup(msgid_table, msginfo->inreplyto);
+	if (parent == NULL && msginfo->subject) {
+		parent = subject_table_lookup(subject_table, msginfo->subject);
+	}
 
 	if (parent && parent != node) {
 		gtk_ctree_move(ctree, node, parent, NULL);
@@ -3207,6 +3268,11 @@ static void summary_reply_cb(SummaryView *summaryview, guint action,
 	case COMPOSE_REPLY_TO_SENDER:
 		compose_reply(msginfo, prefs_common.reply_with_quote,
 			      FALSE, TRUE);
+		break;
+	case COMPOSE_FOLLOWUP_AND_REPLY_TO:
+		compose_followup_and_reply_to(msginfo,
+					      prefs_common.reply_with_quote,
+					      FALSE, TRUE);
 		break;
 	case COMPOSE_REPLY_TO_SENDER_WITH_QUOTE:
 		compose_reply(msginfo, TRUE, FALSE, TRUE);

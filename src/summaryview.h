@@ -132,6 +132,7 @@ private:
 */
 	/* table for looking up message-id */
 	GHashTable *msgid_table;
+	GHashTable *subject_table;
 
 	/* list for moving/deleting messages */
 	GSList *mlist;

@@ -52,6 +52,7 @@ typedef enum
 	COMPOSE_REPLY_WITH_QUOTE,
 	COMPOSE_REPLY_WITHOUT_QUOTE,
 	COMPOSE_REPLY_TO_SENDER,
+	COMPOSE_FOLLOWUP_AND_REPLY_TO,
 	COMPOSE_REPLY_TO_SENDER_WITH_QUOTE,
 	COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE,
 	COMPOSE_REPLY_TO_ALL,
@@ -173,6 +174,10 @@ Compose * compose_new		(PrefsAccount	*account);
 Compose * compose_new_with_recipient	(PrefsAccount	*account,
 					 const gchar	*to);
 
+void compose_followup_and_reply_to (MsgInfo	*msginfo,
+				    gboolean	 quote,
+				    gboolean	 to_all,
+				    gboolean	 ignore_replyto);
 void compose_reply		(MsgInfo	*msginfo,
 				 gboolean	 quote,
 				 gboolean	 to_all,

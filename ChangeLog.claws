@@ -1,3 +1,12 @@
+2001-06-18 [hoa]
+
+	* src/compose.[ch]
+	* src/mainwindow.c
+		Follow-up and reply to
+
+	* src/summaryview.[ch]
+		Build threads also with subjects
+
 2001-06-17 [hoa]
 
 	* src/compose.c

@@ -143,7 +143,9 @@ static gchar *compose_quote_parse_fmt		(Compose	*compose,
 static void compose_reply_set_entry		(Compose	*compose,
 						 MsgInfo	*msginfo,
 						 gboolean	 to_all,
-						 gboolean	 to_sender);
+						 gboolean	 to_sender,
+						 gboolean
+						 followup_and_reply_to);
 static void compose_reedit_set_entry		(Compose	*compose,
 						 MsgInfo	*msginfo);
 static void compose_insert_sig			(Compose	*compose);
@@ -381,6 +383,11 @@ static gchar *compose_quote_fmt		(Compose	*compose,
 					 const gchar	*fmt,
 					 const gchar    * qmark);
 
+static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
+				  gboolean to_all,
+				  gboolean ignore_replyto,
+				  gboolean followup_and_reply_to);
+
 static GtkItemFactoryEntry compose_popup_entries[] =
 {
 	{N_("/_Add..."),	NULL, compose_attach_cb, 0, NULL},
@@ -491,8 +498,49 @@ msginfo->folder->folder->change_flags(msginfo->folder->folder, \
 				      msginfo); \
 }
 
+/*
+Compose * compose_new_followup_and_replyto(PrefsAccount *account,
+					   const gchar *followupto, gchar * to)
+{
+	Compose *compose;
+
+	if (!account) account = cur_account;
+	g_return_val_if_fail(account != NULL, NULL);
+	g_return_val_if_fail(account->protocol != A_NNTP, NULL);
+
+	compose = compose_create(account);
+	compose->mode = COMPOSE_NEW;
+
+	if (prefs_common.auto_sig)
+		compose_insert_sig(compose);
+	gtk_editable_set_position(GTK_EDITABLE(compose->text), 0);
+	gtk_stext_set_point(GTK_STEXT(compose->text), 0);
+
+	compose_entry_append(compose, to, COMPOSE_TO);
+	compose_entry_append(compose, followupto, COMPOSE_NEWSGROUPS);
+	gtk_widget_grab_focus(compose->subject_entry);
+
+	return compose;
+}
+*/
+
 void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
 		   gboolean ignore_replyto)
+{
+	compose_generic_reply(msginfo, quote, to_all, ignore_replyto, FALSE);
+}
+
+void compose_followup_and_reply_to(MsgInfo *msginfo, gboolean quote,
+				   gboolean to_all,
+				   gboolean ignore_replyto)
+{
+	compose_generic_reply(msginfo, quote, to_all, ignore_replyto, TRUE);
+}
+
+static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
+				  gboolean to_all,
+				  gboolean ignore_replyto,
+				  gboolean followup_and_reply_to)
 {
 	Compose *compose;
 	PrefsAccount *account;
@@ -506,7 +554,8 @@ void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
 	if (!account) account = cur_account;
 	g_return_if_fail(account != NULL);
 
-	if (ignore_replyto && account->protocol == A_NNTP) {
+	if (ignore_replyto && account->protocol == A_NNTP &&
+	    !followup_and_reply_to) {
 		reply_account =
 			account_find_mail_from_address(account->address);
 		if (!reply_account)
@@ -524,8 +573,17 @@ void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
 	compose = compose_create(reply_account);
 	compose->mode = COMPOSE_REPLY;
 
+
+	if (followup_and_reply_to) {
+		gtk_widget_show(compose->to_hbox);
+		gtk_widget_show(compose->to_entry);
+		gtk_table_set_row_spacing(GTK_TABLE(compose->table), 1, 4);
+		compose->use_to = TRUE;
+	}
+
 	if (compose_parse_header(compose, msginfo) < 0) return;
-	compose_reply_set_entry(compose, msginfo, to_all, ignore_replyto);
+	compose_reply_set_entry(compose, msginfo, to_all, ignore_replyto,
+				followup_and_reply_to);
 
 	text = GTK_STEXT(compose->text);
 	gtk_stext_freeze(text);
@@ -1360,7 +1418,8 @@ static gchar *compose_quote_parse_fmt(Compose *compose, MsgInfo *msginfo,
 */
 
 static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
-				    gboolean to_all, gboolean ignore_replyto)
+				    gboolean to_all, gboolean ignore_replyto,
+				    gboolean followup_and_reply_to)
 {
 	GSList *cc_list;
 	GSList *cur;
@@ -1370,7 +1429,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	g_return_if_fail(compose->account != NULL);
 	g_return_if_fail(msginfo != NULL);
 
-	if (compose->account->protocol != A_NNTP)
+	if ((compose->account->protocol != A_NNTP) || followup_and_reply_to)
 		gtk_entry_set_text(GTK_ENTRY(compose->to_entry),
 				   ( (compose->replyto && !ignore_replyto) 
 				     ? compose->replyto

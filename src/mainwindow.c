@@ -484,6 +484,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/Compose a news message"),	NULL,	compose_news_cb, 0, NULL},
 	{N_("/_Message/_Reply"),		"<alt>R", 	reply_cb, COMPOSE_REPLY, NULL},
 	{N_("/_Message/Repl_y to sender"),	"<control><alt>R", reply_cb, COMPOSE_REPLY_TO_SENDER, NULL},
+	{N_("/_Message/Follow-up and reply to"), NULL, reply_cb, COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL},
 	{N_("/_Message/Reply to a_ll"),		"<shift><alt>R", reply_cb, COMPOSE_REPLY_TO_ALL, NULL},
 	{N_("/_Message/_Forward"),		"<control>F", reply_cb, COMPOSE_FORWARD, NULL},
 	{N_("/_Message/Forward as a_ttachment"),
@@ -1191,6 +1192,13 @@ void main_window_set_menu_sensitive(MainWindow *mainwin, gint selection)
 	menu_set_sensitive(ifactory, "/Summary/Next message", sens);
 	menu_set_sensitive(ifactory, "/Summary/Next unread message", sens);
 	menu_set_sensitive(ifactory, "/Summary/Sort", sens);
+
+	if (mainwin->summaryview->folder_item &&
+	    mainwin->summaryview->folder_item->folder->account)
+		sens = mainwin->summaryview->folder_item->folder->account->protocol == A_NNTP;
+	else
+		sens = FALSE;
+	menu_set_sensitive(ifactory, "/Message/Follow-up and reply to", sens);
 }
 
 void main_window_popup(MainWindow *mainwin)
@@ -2062,6 +2070,11 @@ static void reply_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 	case COMPOSE_REPLY_TO_SENDER:
 		compose_reply(msginfo, prefs_common.reply_with_quote,
 			      FALSE, TRUE);
+		break;
+	case COMPOSE_FOLLOWUP_AND_REPLY_TO:
+		compose_followup_and_reply_to(msginfo,
+					      prefs_common.reply_with_quote,
+					      FALSE, TRUE);
 		break;
 	case COMPOSE_REPLY_TO_ALL:
 		compose_reply(msginfo, prefs_common.reply_with_quote,
