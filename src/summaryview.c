@@ -3075,9 +3075,6 @@ void summary_delete(SummaryView *summaryview)
 	GtkCTreeNode *node;
 
 	if (!item) return;
-#if 0
-	if (!item || item->folder->type == F_NEWS) return;
-#endif
 
 	if (summary_is_locked(summaryview)) return;
 

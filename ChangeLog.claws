@@ -1,3 +1,8 @@
+2003-10-08 [paul]	0.9.6claws8
+
+	* sync with 0.9.6cvs2
+		see ChangeLog 2003-10-03
+
 2003-10-05 [christoph]	0.9.6claws7
 
 	* src/summaryview.c

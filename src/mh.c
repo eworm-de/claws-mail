@@ -43,49 +43,68 @@
 #include "procheader.h"
 #include "utils.h"
 
-static void mh_folder_init(Folder * folder,
-			   const gchar * name, const gchar * path);
+static void	mh_folder_init		(Folder		*folder,
+					 const gchar	*name,
+					 const gchar	*path);
 
-static Folder *mh_folder_new(const gchar * name, const gchar * path);
-static void mh_folder_destroy(Folder * folder);
-static gchar *mh_fetch_msg(Folder * folder, FolderItem * item, gint num);
-static MsgInfo *mh_get_msginfo(Folder * folder,
-			       FolderItem * item, gint num);
-static gint mh_add_msg(Folder * folder,
-		       FolderItem * dest,
-		       const gchar * file,
-		       MsgFlags * flags);
-static gint mh_add_msgs(Folder * folder,
-		 FolderItem * dest, GSList * file_list, GRelation *relation);
-static gint mh_copy_msg(Folder * folder,
-			FolderItem * dest, MsgInfo * msginfo);
-static gint mh_remove_msg(Folder * folder, FolderItem * item, gint num);
-static gint mh_remove_all_msg(Folder * folder, FolderItem * item);
-static gboolean mh_is_msg_changed(Folder * folder,
-				  FolderItem * item, MsgInfo * msginfo);
+static Folder	*mh_folder_new		(const gchar	*name,
+					 const gchar	*path);
+static void     mh_folder_destroy	(Folder		*folder);
+static gchar   *mh_fetch_msg		(Folder		*folder,
+					 FolderItem	*item,
+					 gint		 num);
+static MsgInfo *mh_get_msginfo		(Folder		*folder,
+					 FolderItem	*item,
+					 gint		 num);
+static gint     mh_add_msg		(Folder		*folder,
+					 FolderItem	*dest,
+					 const gchar	*file,
+					 MsgFlags	*flags);
+static gint     mh_add_msgs		(Folder		*folder,
+					 FolderItem	*dest,
+					 GSList		*file_list,
+					 GRelation 	*relation);
+static gint     mh_copy_msg		(Folder		*folder,
+					 FolderItem	*dest,
+					 MsgInfo	*msginfo);
+static gint     mh_remove_msg		(Folder		*folder,
+					 FolderItem	*item,
+					 gint 		 num);
+static gint     mh_remove_all_msg	(Folder		*folder,
+					 FolderItem	*item);
+static gboolean mh_is_msg_changed	(Folder		*folder,
+					 FolderItem	*item,
+					 MsgInfo	*msginfo);
 
-static gint mh_get_num_list(Folder * folder,
-			    FolderItem * item, GSList ** list, gboolean *old_uids_valid);
-static gint mh_scan_tree(Folder * folder);
+static gint 	mh_get_num_list		(Folder 	*folder,
+			    		 FolderItem 	*item, 
+					 GSList 	**list, 
+					 gboolean 	*old_uids_valid);
+static gint 	mh_scan_tree		(Folder 	*folder);
 
-static gint mh_create_tree(Folder * folder);
-static FolderItem *mh_create_folder(Folder * folder,
-				    FolderItem * parent,
-				    const gchar * name);
-static gint mh_rename_folder(Folder * folder,
-			     FolderItem * item, const gchar * name);
-static gint mh_remove_folder(Folder * folder, FolderItem * item);
+static gint    mh_create_tree		(Folder		*folder);
+static FolderItem *mh_create_folder	(Folder		*folder,
+					 FolderItem	*parent,
+					 const gchar	*name);
+static gint    mh_rename_folder		(Folder		*folder,
+					 FolderItem	*item,
+					 const gchar	*name);
+static gint    mh_remove_folder		(Folder		*folder,
+					 FolderItem	*item);
 
-static gchar *mh_get_new_msg_filename(FolderItem * dest);
+static gchar   *mh_get_new_msg_filename		(FolderItem	*dest);
 
-static MsgInfo *mh_parse_msg(const gchar * file, FolderItem * item);
+static MsgInfo *mh_parse_msg			(const gchar	*file,
+						 FolderItem	*item);
 static void	mh_remove_missing_folder_items	(Folder		*folder);
-static void mh_scan_tree_recursive(FolderItem * item);
+static void	mh_scan_tree_recursive		(FolderItem	*item);
 
-static gboolean mh_rename_folder_func(GNode * node, gpointer data);
-static gchar *mh_item_get_path(Folder *folder, FolderItem *item);
+static gboolean mh_rename_folder_func		(GNode		*node,
+						 gpointer	 data);
+static gchar   *mh_item_get_path		(Folder *folder, 
+						 FolderItem *item);
 
-FolderClass mh_class =
+static FolderClass mh_class =
 {
 	F_MH,
 	"mh",
@@ -130,7 +149,7 @@ FolderClass *mh_get_class(void)
 	return &mh_class;
 }
 
-Folder *mh_folder_new(const gchar *name, const gchar *path)
+static Folder *mh_folder_new(const gchar *name, const gchar *path)
 {
 	Folder *folder;
 
@@ -233,7 +252,7 @@ gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list, gboolean *
 	return nummsgs;
 }
 
-gchar *mh_fetch_msg(Folder *folder, FolderItem *item, gint num)
+static gchar *mh_fetch_msg(Folder *folder, FolderItem *item, gint num)
 {
 	gchar *path;
 	gchar *file;
@@ -252,7 +271,7 @@ gchar *mh_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	return file;
 }
 
-MsgInfo *mh_get_msginfo(Folder *folder, FolderItem *item, gint num)
+static MsgInfo *mh_get_msginfo(Folder *folder, FolderItem *item, gint num)
 {
 	MsgInfo *msginfo;
 	gchar *file;
@@ -272,7 +291,7 @@ MsgInfo *mh_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	return msginfo;
 }
 
-gchar *mh_get_new_msg_filename(FolderItem *dest)
+static gchar *mh_get_new_msg_filename(FolderItem *dest)
 {
 	gchar *destfile;
 	gchar *destpath;
@@ -298,7 +317,7 @@ gchar *mh_get_new_msg_filename(FolderItem *dest)
 	return destfile;
 }
 
-gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file, MsgFlags *flags)
+static gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file, MsgFlags *flags)
 {
 	gint ret;
 	GSList file_list;
@@ -316,7 +335,7 @@ gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file, MsgFlags *f
 	return ret;
 } 
  
-gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list, 
+static gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list, 
                  GRelation *relation)
 { 
 	gchar *destfile;
@@ -354,7 +373,7 @@ gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 	return dest->last_num;
 }
 
-gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
+static gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 {
 	gchar *srcfile;
 	gchar *destfile;
@@ -420,7 +439,7 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	return dest->last_num;
 }
 
-gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
+static gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
 {
 	gchar *file;
 
@@ -439,7 +458,7 @@ gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
 	return 0;
 }
 
-gint mh_remove_all_msg(Folder *folder, FolderItem *item)
+static gint mh_remove_all_msg(Folder *folder, FolderItem *item)
 {
 	gchar *path;
 	gint val;
@@ -454,7 +473,8 @@ gint mh_remove_all_msg(Folder *folder, FolderItem *item)
 	return val;
 }
 
-gboolean mh_is_msg_changed(Folder *folder, FolderItem *item, MsgInfo *msginfo)
+static gboolean mh_is_msg_changed(Folder *folder, FolderItem *item,
+				  MsgInfo *msginfo)
 {
 	struct stat s;
 
@@ -466,7 +486,7 @@ gboolean mh_is_msg_changed(Folder *folder, FolderItem *item, MsgInfo *msginfo)
 	return FALSE;
 }
 
-gint mh_scan_tree(Folder *folder)
+static gint mh_scan_tree(Folder *folder)
 {
 	FolderItem *item;
 	gchar *rootpath;
@@ -507,7 +527,7 @@ gint mh_scan_tree(Folder *folder)
 	} \
 }
 
-gint mh_create_tree(Folder *folder)
+static gint mh_create_tree(Folder *folder)
 {
 	gchar *rootpath;
 
@@ -528,7 +548,7 @@ gint mh_create_tree(Folder *folder)
 
 #undef MAKE_DIR_IF_NOT_EXIST
 
-gchar *mh_item_get_path(Folder *folder, FolderItem *item)
+static gchar *mh_item_get_path(Folder *folder, FolderItem *item)
 {
 	gchar *folder_path, *path;
 
@@ -558,8 +578,8 @@ gchar *mh_item_get_path(Folder *folder, FolderItem *item)
 	return path;
 }
 
-FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
-			     const gchar *name)
+static FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
+				    const gchar *name)
 {
 	gchar *path;
 	gchar *fullpath;
@@ -608,7 +628,8 @@ FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
 	return new_item;
 }
 
-gint mh_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
+static gint mh_rename_folder(Folder *folder, FolderItem *item,
+			     const gchar *name)
 {
 	gchar *oldpath;
 	gchar *dirname;
@@ -658,7 +679,7 @@ gint mh_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 	return 0;
 }
 
-gint mh_remove_folder(Folder *folder, FolderItem *item)
+static gint mh_remove_folder(Folder *folder, FolderItem *item)
 {
 	gchar *path;
 

@@ -23,22 +23,23 @@
 #include <glib.h>
 #include <time.h>
 
-typedef struct _Folder			Folder;
-typedef struct _FolderClass		FolderClass;
-typedef struct _LocalFolder		LocalFolder;
-typedef struct _RemoteFolder		RemoteFolder;
-#if 0
-typedef struct _MaildirFolder		MaildirFolder;
-#endif
-typedef struct _FolderItem		FolderItem;
+typedef struct _Folder		Folder;
+typedef struct _FolderClass	FolderClass;
 
+typedef struct _LocalFolder	LocalFolder;
+typedef struct _RemoteFolder	RemoteFolder;
+#if 0
+typedef struct _MaildirFolder	MaildirFolder;
+#endif
+
+typedef struct _FolderItem	FolderItem;
 typedef struct _FolderUpdateData	FolderUpdateData;
 typedef struct _FolderItemUpdateData	FolderItemUpdateData;
 
 #define FOLDER(obj)		((Folder *)obj)
+#define FOLDER_CLASS(obj)	(FOLDER(obj)->klass)
 #define FOLDER_TYPE(obj)	(FOLDER(obj)->klass->type)
 
-#define FOLDER_CLASS(obj)	(FOLDER(obj)->klass)
 #define LOCAL_FOLDER(obj)	((LocalFolder *)obj)
 #define REMOTE_FOLDER(obj)	((RemoteFolder *)obj)
 
