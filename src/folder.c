@@ -1256,6 +1256,7 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 		g_slist_free(new_list);
 	}
 
+	folder_item_update_freeze();
 	if (newmsg_list != NULL) {
 		GSList *elem;
 
@@ -1277,7 +1278,6 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 		update_flags |= F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT;
 	}
 
-	folder_item_update_freeze();
 	for (elem = exists_list; elem != NULL; elem = g_slist_next(elem)) {
 		MsgInfo *msginfo;
 
