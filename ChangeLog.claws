@@ -1,3 +1,8 @@
+2003-12-11 [paul]	0.9.7claws37
+
+	* src/compose.c
+		'anonymise' Message-Id: header string
+
 2003-12-11 [paul]	0.9.7claws36
 
 	* src/plugins/clamav/clamav_plugin.c

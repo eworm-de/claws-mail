@@ -258,8 +258,7 @@ static void compose_convert_header		(gchar		*dest,
 						 gchar		*src,
 						 gint		 header_len,
 						 gboolean	 addr_field);
-static void compose_generate_msgid		(Compose	*compose,
-						 gchar		*buf,
+static void compose_generate_msgid		(gchar		*buf,
 						 gint		 len);
 
 static void compose_attach_info_free		(AttachInfo	*ainfo);
@@ -3335,7 +3334,7 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 
 	/* Resent-Message-ID */
 	if (compose->account->gen_msgid) {
-		compose_generate_msgid(compose, buf, sizeof(buf));
+		compose_generate_msgid(buf, sizeof(buf));
 		fprintf(fp, "Resent-Message-Id: <%s>\n", buf);
 		compose->msgid = g_strdup(buf);
 	}
@@ -4292,7 +4291,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 
 	/* Message-ID */
 	if (compose->account->gen_msgid) {
-		compose_generate_msgid(compose, buf, sizeof(buf));
+		compose_generate_msgid(buf, sizeof(buf));
 		fprintf(fp, "Message-Id: <%s>\n", buf);
 		compose->msgid = g_strdup(buf);
 	}
@@ -4516,7 +4515,7 @@ static void compose_convert_header(gchar *dest, gint len, gchar *src,
 	conv_encode_header(dest, len, src, header_len, addr_field);
 }
 
-static void compose_generate_msgid(Compose *compose, gchar *buf, gint len)
+static void compose_generate_msgid(gchar *buf, gint len)
 {
 	struct tm *lt;
 	time_t t;
@@ -4525,18 +4524,9 @@ static void compose_generate_msgid(Compose *compose, gchar *buf, gint len)
 	t = time(NULL);
 	lt = localtime(&t);
 
-	if (compose->account && compose->account->address &&
-	    *compose->account->address) {
-		if (strchr(compose->account->address, '@'))
-			addr = g_strdup(compose->account->address);
-		else
-			addr = g_strconcat(compose->account->address, "@",
-					   get_domain_name(), NULL);
-	} else
-		addr = g_strconcat(g_get_user_name(), "@", get_domain_name(),
-				   NULL);
+	addr = g_strconcat("@", get_domain_name(), NULL);
 
-	g_snprintf(buf, len, "%04d%02d%02d%02d%02d%02d.%08x.%s",
+	g_snprintf(buf, len, "%04d%02d%02d%02d%02d%02d.%08x%s",
 		   lt->tm_year + 1900, lt->tm_mon + 1,
 		   lt->tm_mday, lt->tm_hour,
 		   lt->tm_min, lt->tm_sec,
