@@ -1,5 +1,11 @@
 Changes of Sylpheed
 
+* 0.8.1
+
+    * The regression of Japanese code conversion have been fixed.
+    * The problem in MIME header encoding has been fixed.
+    * Several memory leaks in the address book has been fixed.
+
 * 0.8.0
 
     * The "Paste as quotation" feature has been implemented.
