@@ -98,11 +98,6 @@ static struct Compose {
 	GtkWidget *checkbtn_autoextedit;
 	GtkWidget *spinbtn_undolevel;
 	GtkObject *spinbtn_undolevel_adj;
-	GtkWidget *spinbtn_linewrap;
-	GtkObject *spinbtn_linewrap_adj;
-	GtkWidget *checkbtn_wrapquote;
-	GtkWidget *checkbtn_autowrap;
-	GtkWidget *checkbtn_wrapatsend;
 
 	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *checkbtn_forward_account_autosel;
@@ -111,7 +106,6 @@ static struct Compose {
 	GtkWidget *checkbtn_default_reply_list;
 	GtkWidget *checkbtn_forward_as_attachment;
 	GtkWidget *checkbtn_redirect_keep_from;
-	GtkWidget *checkbtn_smart_wrapping;
 	GtkWidget *checkbtn_reply_with_quote;
 	
 	GtkWidget *checkbtn_autosave;
@@ -143,8 +137,6 @@ static struct Display {
 } display;
 
 static struct Message {
-	GtkWidget *chkbtn_enablecol;
-	GtkWidget *button_edit_col;
 	GtkWidget *chkbtn_mbalnum;
 	GtkWidget *chkbtn_disphdrpane;
 	GtkWidget *chkbtn_disphdr;
@@ -199,22 +191,10 @@ static struct Other {
 	GtkObject *spinbtn_iotimeout_adj;
 } other;
 
-static struct MessageColorButtons {
-	GtkWidget *quote_level1_btn;
-	GtkWidget *quote_level2_btn;
-	GtkWidget *quote_level3_btn;
-	GtkWidget *uri_btn;
-	GtkWidget *tgt_folder_btn;
-	GtkWidget *signature_btn;
-} color_buttons;
-
 static struct KeybindDialog {
 	GtkWidget *window;
 	GtkWidget *combo;
 } keybind;
-
-static GtkWidget *quote_color_win;
-static GtkWidget *color_dialog;
 
 static void prefs_common_charset_set_data_from_optmenu	   (PrefParam *pparam);
 static void prefs_common_charset_set_optmenu		   (PrefParam *pparam);
@@ -316,21 +296,15 @@ static PrefParam param[] = {
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 
 	{"linewrap_length", "72", &prefs_common.linewrap_len, P_INT,
-	 &compose.spinbtn_linewrap,
-	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
+	 NULL, NULL, NULL},
 	{"linewrap_quotation", "FALSE", &prefs_common.linewrap_quote, P_BOOL,
-	 &compose.checkbtn_wrapquote,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
 	{"linewrap_auto", "FALSE", &prefs_common.autowrap, P_BOOL,
-	 &compose.checkbtn_autowrap,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"linewrap_before_sending", "FALSE",
-	 &prefs_common.linewrap_at_send, P_BOOL,
-	 &compose.checkbtn_wrapatsend,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-        {"smart_wrapping", "TRUE", &prefs_common.smart_wrapping,
-	 P_BOOL, &compose.checkbtn_smart_wrapping,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
+	{"linewrap_before_sending", "FALSE", &prefs_common.linewrap_at_send, P_BOOL, 
+	 NULL, NULL, NULL},
+        {"smart_wrapping", "TRUE", &prefs_common.smart_wrapping, P_BOOL, 
+	 NULL, NULL, NULL},
         {"autosave", "FALSE", &prefs_common.autosave,
 	 P_BOOL, &compose.checkbtn_autosave,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -602,8 +576,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	/* Message */
 	{"enable_color", "TRUE", &prefs_common.enable_color, P_BOOL,
-	 &message.chkbtn_enablecol,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
 
 	{"quote_level1_color", "179", &prefs_common.quote_level1_col, P_COLOR,
 	 NULL, NULL, NULL},
@@ -820,25 +793,6 @@ static void date_format_select_row		(GtkWidget	*date_format_list,
 						 GtkWidget	*date_format);
 static GtkWidget *date_format_create            (GtkButton      *button,
                                                  void           *data);
-
-static void prefs_quote_colors_dialog		(void);
-static void prefs_quote_colors_dialog_create	(void);
-static gboolean prefs_quote_colors_key_pressed	(GtkWidget	*widget,
-						 GdkEventKey	*event,
-						 gpointer	 data);
-static void quote_color_set_dialog		(GtkWidget	*widget,
-						 gpointer	 data);
-static void quote_colors_set_dialog_ok		(GtkWidget	*widget,
-						 gpointer	 data);
-static void quote_colors_set_dialog_cancel	(GtkWidget	*widget,
-						 gpointer	 data);
-static gboolean quote_colors_set_dialog_key_pressed	(GtkWidget	*widget,
-							 GdkEventKey	*event,
-							 gpointer	 data);
-static void set_button_bg_color			(GtkWidget	*widget,
-						 gint		 color);
-static void prefs_enable_message_color_toggled	(void);
-static void prefs_recycle_colors_toggled	(GtkWidget	*widget);
 
 static void prefs_keybind_select		(void);
 static gint prefs_keybind_deleted		(GtkWidget	*widget,
@@ -1399,24 +1353,12 @@ static void prefs_compose_create(void)
 	GtkObject *spinbtn_undolevel_adj;
 	GtkWidget *spinbtn_undolevel;
 
-	GtkWidget *vbox_linewrap;
-
- 	GtkWidget *hbox3;
-	GtkWidget *hbox4;
 	GtkWidget *hbox5;
-	GtkWidget *label_linewrap;
-	GtkObject *spinbtn_linewrap_adj;
-	GtkWidget *spinbtn_linewrap;
-	GtkWidget *checkbtn_wrapquote;
-	GtkWidget *checkbtn_autowrap;
-	GtkWidget *checkbtn_wrapatsend;
 
 	GtkWidget *checkbtn_default_reply_list;
 
 	GtkWidget *checkbtn_forward_as_attachment;
 	GtkWidget *checkbtn_redirect_keep_from;
-	GtkWidget *checkbtn_smart_wrapping;
-	GtkWidget *frame_msgwrap;
 
 	GtkWidget *hbox_autosave;
 	GtkWidget *checkbtn_autosave;
@@ -1496,49 +1438,6 @@ static void prefs_compose_create(void)
 	gtk_widget_set_size_request (spinbtn_undolevel, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_undolevel), TRUE);
 
-        /* line-wrapping */
-	PACK_FRAME(vbox1, frame_msgwrap, _("Message wrapping"));
-
-	vbox_linewrap = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox_linewrap);
-	gtk_container_add (GTK_CONTAINER (frame_msgwrap), vbox_linewrap);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_linewrap), 8);
-
-	hbox3 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox3);
-	gtk_box_pack_start (GTK_BOX (vbox_linewrap), hbox3, FALSE, FALSE, 0);
-
-
-	label_linewrap = gtk_label_new (_("Wrap messages at"));
-	gtk_widget_show (label_linewrap);
-	gtk_box_pack_start (GTK_BOX (hbox3), label_linewrap, FALSE, FALSE, 0);
-
-	spinbtn_linewrap_adj = gtk_adjustment_new (72, 20, 1024, 1, 10, 10);
-	spinbtn_linewrap = gtk_spin_button_new
-		(GTK_ADJUSTMENT (spinbtn_linewrap_adj), 1, 0);
-	gtk_widget_show (spinbtn_linewrap);
-	gtk_box_pack_start (GTK_BOX (hbox3), spinbtn_linewrap, FALSE, FALSE, 0);
-	gtk_widget_set_size_request (spinbtn_linewrap, 64, -1);
-	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_linewrap), TRUE);
-
-	label_linewrap = gtk_label_new (_("characters"));
-	gtk_widget_show (label_linewrap);
-	gtk_box_pack_start (GTK_BOX (hbox3), label_linewrap, FALSE, FALSE, 0);
-
-	hbox4 = gtk_hbox_new (FALSE, VSPACING);
-	gtk_widget_show (hbox4);
-	gtk_box_pack_start (GTK_BOX (vbox_linewrap), hbox4, FALSE, FALSE, 0);
-
-	PACK_CHECK_BUTTON (hbox4, checkbtn_wrapquote, _("Wrap quotation"));
-
-	PACK_CHECK_BUTTON (hbox4, checkbtn_autowrap, _("Wrap on input"));
-
-	PACK_CHECK_BUTTON
-		(hbox4, checkbtn_wrapatsend, _("Wrap before sending"));
-
-	PACK_CHECK_BUTTON (vbox_linewrap, checkbtn_smart_wrapping,
-			   _("Smart wrapping (EXPERIMENTAL)"));
-	
        /*
 	compose.checkbtn_quote   = checkbtn_quote;
 	compose.entry_quotemark  = entry_quotemark;
@@ -1554,12 +1453,6 @@ static void prefs_compose_create(void)
 	compose.spinbtn_undolevel     = spinbtn_undolevel;
 	compose.spinbtn_undolevel_adj = spinbtn_undolevel_adj;
 
-	compose.spinbtn_linewrap      = spinbtn_linewrap;
-	compose.spinbtn_linewrap_adj  = spinbtn_linewrap_adj;
-	compose.checkbtn_wrapquote    = checkbtn_wrapquote;
-	compose.checkbtn_autowrap     = checkbtn_autowrap;
-	compose.checkbtn_wrapatsend   = checkbtn_wrapatsend;
-
 	compose.checkbtn_autosave     = checkbtn_autosave;
 	compose.entry_autosave_length = entry_autosave_length;
 	
@@ -1567,8 +1460,6 @@ static void prefs_compose_create(void)
 		checkbtn_forward_as_attachment;
 	compose.checkbtn_redirect_keep_from =
 		checkbtn_redirect_keep_from;
-	compose.checkbtn_smart_wrapping = 
-		checkbtn_smart_wrapping;
 	compose.checkbtn_default_reply_list = checkbtn_default_reply_list;
 }
 
@@ -1861,8 +1752,6 @@ static void prefs_message_create(void)
 	GtkWidget *vbox2;
 	GtkWidget *vbox3;
 	GtkWidget *hbox1;
-	GtkWidget *chkbtn_enablecol;
-	GtkWidget *button_edit_col;
 	GtkWidget *chkbtn_mbalnum;
 	GtkWidget *chkbtn_disphdrpane;
 	GtkWidget *chkbtn_disphdr;
@@ -1892,24 +1781,6 @@ static void prefs_message_create(void)
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
-
-	PACK_CHECK_BUTTON (hbox1, chkbtn_enablecol,
-			   _("Enable coloration of message"));
-	g_signal_connect(G_OBJECT(chkbtn_enablecol), "toggled",
-			 G_CALLBACK(prefs_enable_message_color_toggled),
-			 NULL);
-
-	button_edit_col = gtk_button_new_with_label (_(" Edit... "));
-	gtk_widget_show (button_edit_col);
-	gtk_box_pack_end (GTK_BOX (hbox1), button_edit_col, FALSE, TRUE, 0);
-	g_signal_connect (G_OBJECT (button_edit_col), "clicked",
-			  G_CALLBACK(prefs_quote_colors_dialog), NULL);
-
-	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, button_edit_col);
 
 	PACK_CHECK_BUTTON
 		(vbox2, chkbtn_mbalnum,
@@ -2015,9 +1886,6 @@ static void prefs_message_create(void)
 	PACK_CHECK_BUTTON(vbox3, chkbtn_attach_desc,
 			  _("Show attachment descriptions (rather than names)"));
 
-
-	message.chkbtn_enablecol   = chkbtn_enablecol;
-	message.button_edit_col    = button_edit_col;
 	message.chkbtn_mbalnum     = chkbtn_mbalnum;
 	message.chkbtn_disphdrpane = chkbtn_disphdrpane;
 	message.chkbtn_disphdr     = chkbtn_disphdr;
@@ -2711,336 +2579,6 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	gtk_widget_grab_focus(ok_btn);
 
 	return datefmt_win;
-}
-
-void prefs_quote_colors_dialog(void)
-{
-	if (!quote_color_win)
-		prefs_quote_colors_dialog_create();
-	gtk_widget_show(quote_color_win);
-	manage_window_set_transient(GTK_WINDOW(quote_color_win));
-
-	gtk_main();
-	gtk_widget_hide(quote_color_win);
-
-	textview_update_message_colors();
-	main_window_reflect_prefs_all();
-}
-
-static void prefs_quote_colors_dialog_create(void)
-{
-	GtkWidget *window;
-	GtkWidget *vbox;
-	GtkWidget *table;
-	GtkWidget *quotelevel1_label;
-	GtkWidget *quotelevel2_label;
-	GtkWidget *quotelevel3_label;
-	GtkWidget *uri_label;
-	GtkWidget *signature_label;
-	GtkWidget *tgt_folder_label;
-	GtkWidget *hbbox;
-	GtkWidget *ok_btn;
-	GtkWidget *recycle_colors_btn;
-	GtkWidget *frame_colors;
-
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_container_set_border_width(GTK_CONTAINER(window), 2);
-	gtk_window_set_title(GTK_WINDOW(window), _("Set message colors"));
-	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
-
-	vbox = gtk_vbox_new (FALSE, VSPACING);
-	gtk_container_add (GTK_CONTAINER (window), vbox);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 8);
-	PACK_FRAME(vbox, frame_colors, _("Colors"));
-
-	table = gtk_table_new (5, 2, FALSE);
-	gtk_container_add (GTK_CONTAINER (frame_colors), table);
-	gtk_container_set_border_width (GTK_CONTAINER (table), 8);
-	gtk_table_set_row_spacings (GTK_TABLE (table), 2);
-	gtk_table_set_col_spacings (GTK_TABLE (table), 5);
-
-
-	color_buttons.quote_level1_btn = gtk_button_new();
-	gtk_table_attach (GTK_TABLE (table), color_buttons.quote_level1_btn,
-			  0, 1, 0, 1, 0, 0, 0, 0);
-	gtk_widget_set_size_request (color_buttons.quote_level1_btn, 40, 30);
-	gtk_container_set_border_width
-		(GTK_CONTAINER (color_buttons.quote_level1_btn), 5);
-
-	color_buttons.quote_level2_btn = gtk_button_new();
-	gtk_table_attach (GTK_TABLE (table), color_buttons.quote_level2_btn,
-			  0, 1, 1, 2, 0, 0, 0, 0);
-	gtk_widget_set_size_request (color_buttons.quote_level2_btn, 40, 30);
-	gtk_container_set_border_width (GTK_CONTAINER (color_buttons.quote_level2_btn), 5);
-
-	color_buttons.quote_level3_btn = gtk_button_new_with_label ("");
-	gtk_table_attach (GTK_TABLE (table), color_buttons.quote_level3_btn,
-			  0, 1, 2, 3, 0, 0, 0, 0);
-	gtk_widget_set_size_request (color_buttons.quote_level3_btn, 40, 30);
-	gtk_container_set_border_width
-		(GTK_CONTAINER (color_buttons.quote_level3_btn), 5);
-
-	color_buttons.uri_btn = gtk_button_new_with_label ("");
-	gtk_table_attach (GTK_TABLE (table), color_buttons.uri_btn,
-			  0, 1, 3, 4, 0, 0, 0, 0);
-	gtk_widget_set_size_request (color_buttons.uri_btn, 40, 30);
-	gtk_container_set_border_width (GTK_CONTAINER (color_buttons.uri_btn), 5);
-
-	color_buttons.tgt_folder_btn = gtk_button_new_with_label ("");
-	gtk_table_attach (GTK_TABLE (table), color_buttons.tgt_folder_btn,
-			  0, 1, 4, 5, 0, 0, 0, 0);
-	gtk_widget_set_size_request (color_buttons.tgt_folder_btn, 40, 30);
-	gtk_container_set_border_width (GTK_CONTAINER (color_buttons.tgt_folder_btn), 5);
-
-	color_buttons.signature_btn = gtk_button_new_with_label ("");
-	gtk_table_attach (GTK_TABLE (table), color_buttons.signature_btn,
-			  0, 1, 5, 6, 0, 0, 0, 0);
-	gtk_widget_set_size_request (color_buttons.signature_btn, 40, 30);
-	gtk_container_set_border_width (GTK_CONTAINER (color_buttons.signature_btn), 5);
-
-	quotelevel1_label = gtk_label_new (_("Quoted Text - First Level"));
-	gtk_table_attach (GTK_TABLE (table), quotelevel1_label, 1, 2, 0, 1,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
-	gtk_label_set_justify (GTK_LABEL (quotelevel1_label), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment (GTK_MISC (quotelevel1_label), 0, 0.5);
-
-	quotelevel2_label = gtk_label_new (_("Quoted Text - Second Level"));
-	gtk_table_attach (GTK_TABLE (table), quotelevel2_label, 1, 2, 1, 2,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
-	gtk_label_set_justify (GTK_LABEL (quotelevel2_label), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment (GTK_MISC (quotelevel2_label), 0, 0.5);
-
-	quotelevel3_label = gtk_label_new (_("Quoted Text - Third Level"));
-	gtk_table_attach (GTK_TABLE (table), quotelevel3_label, 1, 2, 2, 3,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
-	gtk_label_set_justify (GTK_LABEL (quotelevel3_label), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment (GTK_MISC (quotelevel3_label), 0, 0.5);
-
-	uri_label = gtk_label_new (_("URI link"));
-	gtk_table_attach (GTK_TABLE (table), uri_label, 1, 2, 3, 4,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
-	gtk_label_set_justify (GTK_LABEL (uri_label), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment (GTK_MISC (uri_label), 0, 0.5);
-
-	tgt_folder_label = gtk_label_new (_("Target folder"));
-	gtk_table_attach (GTK_TABLE (table), tgt_folder_label, 1, 2, 4, 5,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
-	gtk_label_set_justify (GTK_LABEL (tgt_folder_label), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment (GTK_MISC (tgt_folder_label), 0, 0.5);
-
-	signature_label = gtk_label_new (_("Signatures"));
-	gtk_table_attach (GTK_TABLE (table), signature_label, 1, 2, 5, 6,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
-	gtk_label_set_justify (GTK_LABEL (signature_label), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment (GTK_MISC (signature_label), 0, 0.5);
-
-	PACK_CHECK_BUTTON (vbox, recycle_colors_btn,
-			   _("Recycle quote colors"));
-
-	gtkut_button_set_create(&hbbox, &ok_btn, _("OK"),
-				NULL, NULL, NULL, NULL);
-	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
-
-	gtk_widget_grab_default(ok_btn);
-	MANAGE_WINDOW_SIGNALS_CONNECT(window);
-	g_signal_connect(G_OBJECT(window), "delete_event",
-			 G_CALLBACK(gtk_main_quit), NULL);
-	g_signal_connect(G_OBJECT(window), "key_press_event",
-			 G_CALLBACK(prefs_quote_colors_key_pressed),
-			 NULL);
-
-	g_signal_connect(G_OBJECT(color_buttons.quote_level1_btn), "clicked",
-			 G_CALLBACK(quote_color_set_dialog), "LEVEL1");
-	g_signal_connect(G_OBJECT(color_buttons.quote_level2_btn), "clicked",
-			 G_CALLBACK(quote_color_set_dialog), "LEVEL2");
-	g_signal_connect(G_OBJECT(color_buttons.quote_level3_btn), "clicked",
-			 G_CALLBACK(quote_color_set_dialog), "LEVEL3");
-	g_signal_connect(G_OBJECT(color_buttons.uri_btn), "clicked",
-			 G_CALLBACK(quote_color_set_dialog), "URI");
-	g_signal_connect(G_OBJECT(color_buttons.tgt_folder_btn), "clicked",
-			 G_CALLBACK(quote_color_set_dialog), "TGTFLD");
-	g_signal_connect(G_OBJECT(color_buttons.signature_btn), "clicked",
-			 G_CALLBACK(quote_color_set_dialog), "SIGNATURE");
-	g_signal_connect(G_OBJECT(recycle_colors_btn), "toggled",
-			 G_CALLBACK(prefs_recycle_colors_toggled), NULL);
-	g_signal_connect(G_OBJECT(ok_btn), "clicked",
-			 G_CALLBACK(gtk_main_quit), NULL);
-
-	/* show message button colors and recycle options */
-	set_button_bg_color(color_buttons.quote_level1_btn,
-			    prefs_common.quote_level1_col);
-	set_button_bg_color(color_buttons.quote_level2_btn,
-			    prefs_common.quote_level2_col);
-	set_button_bg_color(color_buttons.quote_level3_btn,
-			    prefs_common.quote_level3_col);
-	set_button_bg_color(color_buttons.uri_btn,
-			    prefs_common.uri_col);
-	set_button_bg_color(color_buttons.tgt_folder_btn,
-			    prefs_common.tgt_folder_col);
-	set_button_bg_color(color_buttons.signature_btn,
-			    prefs_common.signature_col);
-	gtk_toggle_button_set_active((GtkToggleButton *)recycle_colors_btn,
-				     prefs_common.recycle_quote_colors);
-
-	gtk_widget_show_all(vbox);
-	quote_color_win = window;
-}
-
-static gboolean prefs_quote_colors_key_pressed(GtkWidget *widget,
-					       GdkEventKey *event, gpointer data)
-{
-	if (event && event->keyval == GDK_Escape)
-		gtk_main_quit();
-	return FALSE;
-}
-
-static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
-{
-	gchar *type = (gchar *)data;
-	gchar *title = NULL;
-	gdouble color[4] = {0.0, 0.0, 0.0, 0.0};
-	gint rgbvalue = 0;
-	GtkColorSelectionDialog *dialog;
-
-	if(g_strcasecmp(type, "LEVEL1") == 0) {
-		title = _("Pick color for quotation level 1");
-		rgbvalue = prefs_common.quote_level1_col;
-	} else if(g_strcasecmp(type, "LEVEL2") == 0) {
-		title = _("Pick color for quotation level 2");
-		rgbvalue = prefs_common.quote_level2_col;
-	} else if(g_strcasecmp(type, "LEVEL3") == 0) {
-		title = _("Pick color for quotation level 3");
-		rgbvalue = prefs_common.quote_level3_col;
-	} else if(g_strcasecmp(type, "URI") == 0) {
-		title = _("Pick color for URI");
-		rgbvalue = prefs_common.uri_col;
-	} else if(g_strcasecmp(type, "TGTFLD") == 0) {
-		title = _("Pick color for target folder");
-		rgbvalue = prefs_common.tgt_folder_col;
-	} else if(g_strcasecmp(type, "SIGNATURE") == 0) {
-		title = _("Pick color for signatures");
-		rgbvalue = prefs_common.signature_col;
-	} else {   /* Should never be called */
-		g_warning("Unrecognized datatype '%s' in quote_color_set_dialog\n", type);
-		return;
-	}
-
-	color_dialog = gtk_color_selection_dialog_new(title);
-	gtk_window_set_position(GTK_WINDOW(color_dialog), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(color_dialog), TRUE);
-	gtk_window_set_policy(GTK_WINDOW(color_dialog), FALSE, FALSE, FALSE);
-	manage_window_set_transient(GTK_WINDOW(color_dialog));
-
-	g_signal_connect(G_OBJECT(GTK_COLOR_SELECTION_DIALOG(color_dialog)->ok_button),
-			 "clicked", G_CALLBACK(quote_colors_set_dialog_ok), data);
-	g_signal_connect(G_OBJECT(GTK_COLOR_SELECTION_DIALOG(color_dialog)->cancel_button),
-			 "clicked", G_CALLBACK(quote_colors_set_dialog_cancel), data);
-	g_signal_connect(G_OBJECT(color_dialog), "key_press_event",
-			 G_CALLBACK(quote_colors_set_dialog_key_pressed),
-			 data);
-
-	/* preselect the previous color in the color selection dialog */
-	color[0] = (gdouble) ((rgbvalue & 0xff0000) >> 16) / 255.0;
-	color[1] = (gdouble) ((rgbvalue & 0x00ff00) >>  8) / 255.0;
-	color[2] = (gdouble)  (rgbvalue & 0x0000ff)        / 255.0;
-	dialog = GTK_COLOR_SELECTION_DIALOG(color_dialog);
-	gtk_color_selection_set_color
-		(GTK_COLOR_SELECTION(dialog->colorsel), color);
-
-	gtk_widget_show(color_dialog);
-}
-
-static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
-{
-	GtkColorSelection *colorsel = (GtkColorSelection *)
-						((GtkColorSelectionDialog *)color_dialog)->colorsel;
-	gdouble color[4];
-	gint red, green, blue, rgbvalue;
-	gchar *type = (gchar *)data;
-
-	gtk_color_selection_get_color(colorsel, color);
-
-	red      = (gint) (color[0] * 255.0);
-	green    = (gint) (color[1] * 255.0);
-	blue     = (gint) (color[2] * 255.0);
-	rgbvalue = (gint) ((red * 0x10000) | (green * 0x100) | blue);
-
-#if 0
-	fprintf(stderr, "redc = %f, greenc = %f, bluec = %f\n", color[0], color[1], color[2]);
-	fprintf(stderr, "red = %d, green = %d, blue = %d\n", red, green, blue);
-	fprintf(stderr, "Color is %x\n", rgbvalue);
-#endif
-
-	if (g_strcasecmp(type, "LEVEL1") == 0) {
-		prefs_common.quote_level1_col = rgbvalue;
-		set_button_bg_color(color_buttons.quote_level1_btn, rgbvalue);
-	} else if (g_strcasecmp(type, "LEVEL2") == 0) {
-		prefs_common.quote_level2_col = rgbvalue;
-		set_button_bg_color(color_buttons.quote_level2_btn, rgbvalue);
-	} else if (g_strcasecmp(type, "LEVEL3") == 0) {
-		prefs_common.quote_level3_col = rgbvalue;
-		set_button_bg_color(color_buttons.quote_level3_btn, rgbvalue);
-	} else if (g_strcasecmp(type, "URI") == 0) {
-		prefs_common.uri_col = rgbvalue;
-		set_button_bg_color(color_buttons.uri_btn, rgbvalue);
-	} else if (g_strcasecmp(type, "TGTFLD") == 0) {
-		prefs_common.tgt_folder_col = rgbvalue;
-		set_button_bg_color(color_buttons.tgt_folder_btn, rgbvalue);
-		folderview_set_target_folder_color(prefs_common.tgt_folder_col);
-	} else if (g_strcasecmp(type, "SIGNATURE") == 0) {
-		prefs_common.signature_col = rgbvalue;
-		set_button_bg_color(color_buttons.signature_btn, rgbvalue);
-	} else
-		fprintf( stderr, "Unrecognized datatype '%s' in quote_color_set_dialog_ok\n", type );
-
-	gtk_widget_destroy(color_dialog);
-}
-
-static void quote_colors_set_dialog_cancel(GtkWidget *widget, gpointer data)
-{
-	gtk_widget_destroy(color_dialog);
-}
-
-static gboolean quote_colors_set_dialog_key_pressed(GtkWidget *widget,
-						    GdkEventKey *event,
-						    gpointer data)
-{
-	gtk_widget_destroy(color_dialog);
-	return FALSE;
-}
-
-static void set_button_bg_color(GtkWidget *widget, gint rgbvalue)
-{
-	GtkStyle *newstyle;
-	GdkColor color;
-
-	gtkut_convert_int_to_gdk_color(rgbvalue, &color);
-	newstyle = gtk_style_copy(gtk_widget_get_default_style());
-	newstyle->bg[GTK_STATE_NORMAL]   = color;
-	newstyle->bg[GTK_STATE_PRELIGHT] = color;
-	newstyle->bg[GTK_STATE_ACTIVE]   = color;
-
-	gtk_widget_set_style(GTK_WIDGET(widget), newstyle);
-}
-
-static void prefs_enable_message_color_toggled(void)
-{
-	gboolean is_active;
-
-	is_active = gtk_toggle_button_get_active
-		(GTK_TOGGLE_BUTTON(message.chkbtn_enablecol));
-	gtk_widget_set_sensitive(message.button_edit_col, is_active);
-	prefs_common.enable_color = is_active;
-}
-
-static void prefs_recycle_colors_toggled(GtkWidget *widget)
-{
-	gboolean is_active;
-
-	is_active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
-	prefs_common.recycle_quote_colors = is_active;
 }
 
 static void prefs_keybind_select(void)

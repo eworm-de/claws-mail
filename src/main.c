@@ -53,8 +53,10 @@
 #include "prefs_actions.h"
 #include "prefs_ext_prog.h"
 #include "prefs_fonts.h"
+#include "prefs_msg_colors.h"
 #include "prefs_spelling.h"
 #include "prefs_themes.h"
+#include "prefs_wrapping.h"
 #include "prefs_display_header.h"
 #include "account.h"
 #include "procmsg.h"
@@ -263,6 +265,8 @@ int main(int argc, char *argv[])
 	prefs_themes_init();
 	prefs_fonts_init();
 	prefs_ext_prog_init();
+	prefs_wrapping_init();
+	prefs_msg_colors_init();
 #ifdef USE_ASPELL
 	gtkaspell_checkers_init();
 	prefs_spelling_init();
@@ -440,6 +444,8 @@ static void exit_sylpheed(MainWindow *mainwin)
 	prefs_themes_done();
 	prefs_fonts_done();
 	prefs_ext_prog_done();
+	prefs_wrapping_done();
+	prefs_msg_colors_done();
 #ifdef USE_ASPELL       
 	prefs_spelling_done();
 	gtkaspell_checkers_quit();
@@ -932,6 +938,9 @@ static void install_basic_sighandlers()
 #ifdef SIGINT
 	sigaddset(&mask, SIGINT);
 #endif
+#ifdef SIGHUP
+	sigaddset(&mask, SIGHUP);
+#endif
 
 	act.sa_handler = quit_signal_handler;
 	act.sa_mask    = mask;
@@ -942,6 +951,9 @@ static void install_basic_sighandlers()
 #endif
 #ifdef SIGINT
 	sigaction(SIGINT, &act, 0);
+#endif	
+#ifdef SIGHUP
+	sigaction(SIGHUP, &act, 0);
 #endif	
 
 	sigprocmask(SIG_UNBLOCK, &mask, 0);

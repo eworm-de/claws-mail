@@ -3110,16 +3110,17 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 					  COMPOSE_ENTRY_REPLY_TO);
 	}
 
-	menuitem = gtk_item_factory_get_item(ifactory, "/View/Ruler");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
-				       prefs_common.show_ruler);
 #endif
 
 #if USE_GPGME
 	if (account->default_sign)
 		menu_set_active(ifactory, "/Message/Sign", TRUE);
+	else
+		menu_set_active(ifactory, "/Message/Sign", FALSE);
 	if (account->default_encrypt)
 		menu_set_active(ifactory, "/Message/Encrypt", TRUE);
+	else
+		menu_set_active(ifactory, "/Message/Encrypt", FALSE);
 				       
 	activate_gnupg_mode(compose, account);		
 #endif /* USE_GPGME */

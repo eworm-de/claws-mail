@@ -94,11 +94,13 @@ sylpheed_SOURCES = \
 	prefs_fonts.c \
 	prefs_gtk.c \
 	prefs_matcher.c \
+	prefs_msg_colors.c \
 	prefs_spelling.c \
 	prefs_summary_column.c \
 	prefs_template.c \
 	prefs_themes.c \
 	prefs_toolbar.c \
+	prefs_wrapping.c \
 	privacy.c \
 	procheader.c \
 	procmime.c \
@@ -223,11 +225,13 @@ sylpheedinclude_HEADERS = \
 	prefs_fonts.h \
 	prefs_gtk.h \
 	prefs_matcher.h \
+	prefs_msg_colors.h \
 	prefs_spelling.h \
 	prefs_summary_column.h \
 	prefs_template.h \
 	prefs_themes.h \
 	prefs_toolbar.h \
+	prefs_wrapping.h \
 	privacy.h \
 	procheader.h \
 	procmime.h \

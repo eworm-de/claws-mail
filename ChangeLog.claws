@@ -1,3 +1,148 @@
+2004-07-08 [colin]	0.9.12cvs18
+
+	* src/common/smtp.h
+		Fix guint vs gint bug
+
+2004-07-08 [colin]	0.9.12cvs17
+
+	* src/common/smtp.c
+		use to_human_readable() for sizes
+
+2004-07-08 [paul]	0.9.12cvs16
+
+	* src/inc.c [1.174]
+		fix occasional non-clearance of the statusbar
+		(close Bug 531 'SA plugin: status bar does not 
+		 get cleared in OFFLINE mode')
+
+2004-07-07 [colin]	0.9.12cvs15
+
+	* src/prefs_common.c [1.225]
+	* src/prefs_common.h [1.112]
+		Add a hidden summary_quicksearch_sticky preference,
+		to allow the quicksearch bar to reset across folders
+	* src/summaryview.c [1.437]
+		Use this preference
+	* src/gtk/quicksearch.c [1.5]
+	* src/gtk/quicksearch.h [1.3]
+		Add this preference, fix focus when hitting Enter,
+		add handling of Esc key to reset
+
+2004-07-06 [colin]	0.9.12cvs14
+
+	* src/gtk/quicksearch.c [1.4]
+		Add Clear button
+
+2004-07-06 [christoph]	0.9.12cvs13
+
+	* src/toolbar.c
+		enable next unread button in empty folders if next folder
+		dialog is not disabled
+
+2004-07-06 [colin]	0.9.12cvs12
+
+	* src/common/smtp.c [1.16]
+		Display maximum message size in the log
+
+2004-07-06 [paul]	0.9.12cvs11
+
+	* src/toolbar.c
+		fix typo. (spotted by Fabien Vantard)
+
+2004-07-06 [paul]	0.9.12cvs10
+
+	* src/main.c
+		terminate cleanly on SIGHUP. Patch submitted by
+		Thomas Gilgin <thg@karate-muellheim.de>
+
+2004-07-05 [christoph]	0.9.12cvs9
+
+	* src/inc.c
+		better replacing of %d in new mail notification command
+
+2004-07-05 [colin]	0.9.12cvs8
+
+	* src/common/smtp.[ch]
+		Take SIZE (returned by EHLO) into account, and
+		avoid sending too big messages
+
+2004-07-04 [paul]	0.9.12cvs7
+
+	* src/account.c
+		fix auto-account selection on imap/news
+
+2004-07-01 [paul]	0.9.12cvs6
+
+	* src/gtk/quicksearch.c
+		reveal hidden string in gui
+		
+	* src/compose.c
+		fix updating of gpg signing setting on 
+		switching accounts
+
+2004-06-30 [darko]	0.9.12cvs5
+
+	* src/common/utils.c
+		remove expand_search_string()
+	* src/gtk/quicksearch.c
+		remove no longer needed for loop (thanks Christoph)
+		add expand_search_string()
+
+2004-06-30 [darko]	0.9.12cvs4
+
+	* src/common/utils.c
+		allow all filtering expressions in quicksearch
+
+	(Closes Bug 519 filtering expr. in quicksearch)
+
+2004-06-30 [christoph]	0.9.12cvs3
+
+	* configure.ac
+		better 'localedir'
+
+	* src/common/intl.h
+		allow plugins to define TEXTDOMAIN for the _(...) macro
+
+2004-06-30 [paul]	0.9.12cvs2
+
+	* po/POTFILES.in
+	  src/Makefile.am
+	  src/main.c
+	  src/prefs_common.c
+	  src/prefs_msg_colors.[ch]	** NEW FILES **
+	  	move message colouring options to
+		'/Other Preferences/Message View/Colors'
+
+2004-06-30 [paul]	0.9.12cvs1
+
+	* po/POTFILES.in
+	  src/Makefile.am
+	  src/main.c
+	  src/prefs_common.c
+	  src/prefs_wrapping.[ch]	** NEW FILES **
+	  	move message wrapping options to
+		/'Other Preferences/Compose/Message Wrapping'
+
+2004-06-28 [paul]	0.9.12
+
+	* Sylpheed-Claws 0.9.12 released
+
+	* po/es.po
+	  po/fr.po
+	  po/sk.po
+	  	updated by Ricardo Mones Lastra, Fabien Vantard,
+		Andrej Kacian
+
+2004-06-27 [paul]	0.9.11cvs19
+
+	* src/common/ssl.c
+		re-enable certificate check
+
+2004-06-25 [christoph]	0.9.11cvs18
+
+	* src/procmsg.h
+		add MSG_HAS_ATTACHMENT to MSG_CACHED_FLAG_MASK
+
 2004-06-25 [paul]	0.9.11cvs17
 
 	* sync with main 0.9.12cvs1
@@ -15,6 +160,8 @@
 		scan the mime structure of multipart mails for correct
 		attachment, encryped and signed (with privacy API) part
 		detection
+
+	(Closes Feature Request [ 961428 ] No paperclip for HTML mails)
 
 2004-06-22 [paul]
 

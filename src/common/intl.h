@@ -7,7 +7,11 @@
 
 #ifdef ENABLE_NLS
 #  include <libintl.h>
-#  define _(String) gettext(String)
+#  ifndef TEXTDOMAIN
+#    define _(String) gettext(String)
+#  else
+#    define _(String) dgettext(TEXTDOMAIN, String)
+#  endif /* TEXTDOMAIN */
 #  ifdef gettext_noop
 #    define N_(String) gettext_noop(String)
 #  else

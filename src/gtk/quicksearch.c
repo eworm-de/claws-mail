@@ -107,13 +107,11 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 			      	  QuickSearch *quicksearch)
 {
 	if (event != NULL && event->keyval == GDK_Escape) {
-		quicksearch_set(quicksearch, 
-			prefs_common.summary_quicksearch_type, "");
-		gtk_widget_grab_focus(GTK_WIDGET(GTK_COMBO(
-			quicksearch->search_string_entry)->entry));
+		quicksearch_set(quicksearch, prefs_common.summary_quicksearch_type, "");
+		gtk_widget_grab_focus(GTK_WIDGET(GTK_COMBO(quicksearch->search_string_entry)->entry));
 		return TRUE;
 	}
-	
+
 	if (event != NULL && event->keyval == GDK_Return) {
 		const gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(quicksearch->search_string_entry)->entry));
 
@@ -153,8 +151,10 @@ static gboolean searchtype_changed(GtkMenuItem *widget, gpointer data)
 
 	prepare_matcher(quicksearch);
 
+	quicksearch_set_running(quicksearch, TRUE);
 	if (quicksearch->callback != NULL)
 		quicksearch->callback(quicksearch, quicksearch->callback_data);
+	quicksearch_set_running(quicksearch, FALSE);
 }
 
 /*
@@ -197,11 +197,13 @@ static gchar *search_descr_strings[] = {
 	"x S",	 N_("messages which contain S in References header"),
 	"X cmd", N_("messages returning 0 when passed to command"),
 	"y S",	 N_("messages which contain S in X-Label header"),
-	 "",	 "" ,
+	"",	 "" ,
 	"&",	 N_("logical AND operator"),
 	"|",	 N_("logical OR operator"),
 	"! or ~",	N_("logical NOT operator"),
 	"%",	 N_("case sensitive search"),
+	"",	 "" ,
+	" ",	 N_("all filtering expressions are allowed"),
 	NULL,	 NULL 
 };
  
@@ -323,6 +325,10 @@ QuickSearch *quicksearch_new()
 
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_hbbox, FALSE, FALSE, 2);				
 	gtk_widget_show(search_hbbox);
+	if (prefs_common.summary_quicksearch_type == QUICK_SEARCH_EXTENDED)
+		gtk_widget_show(search_description);
+	else
+		gtk_widget_hide(search_description);
 	
 	g_signal_connect(G_OBJECT(GTK_COMBO(search_string_entry)->entry), 
 			   "key_press_event",
@@ -384,10 +390,8 @@ void quicksearch_set(QuickSearch *quicksearch, QuickSearchType type,
 
 	prepare_matcher(quicksearch);
 
-	quicksearch_set_running(quicksearch, TRUE);
 	if (quicksearch->callback != NULL)
 		quicksearch->callback(quicksearch, quicksearch->callback_data);	
-	quicksearch_set_running(quicksearch, FALSE);
 }
 
 gboolean quicksearch_is_active(QuickSearch *quicksearch)
@@ -436,6 +440,183 @@ gboolean quicksearch_match(QuickSearch *quicksearch, MsgInfo *msginfo)
 	return FALSE;
 }
 
+/* allow Mutt-like patterns in quick search */
+gchar *expand_search_string(const gchar *search_string)
+{
+	int i = 0;
+	gchar term_char, save_char;
+	gchar *cmd_start, *cmd_end;
+	GString *matcherstr;
+	gchar *returnstr = NULL;
+	gchar *copy_str;
+	gboolean casesens, dontmatch;
+	/* list of allowed pattern abbreviations */
+	struct {
+		gchar		*abbreviated;	/* abbreviation */
+		gchar		*command;	/* actual matcher command */ 
+		gint		numparams;	/* number of params for cmd */
+		gboolean	qualifier;	/* do we append regexpcase */
+		gboolean	quotes;		/* do we need quotes */
+	}
+	cmds[] = {
+		{ "a",	"all",				0,	FALSE,	FALSE },
+		{ "ag",	"age_greater",			1,	FALSE,	FALSE },
+		{ "al",	"age_lower",			1,	FALSE,	FALSE },
+		{ "b",	"body_part",			1,	TRUE,	TRUE  },
+		{ "B",	"message",			1,	TRUE,	TRUE  },
+		{ "c",	"cc",				1,	TRUE,	TRUE  },
+		{ "C",	"to_or_cc",			1,	TRUE,	TRUE  },
+		{ "D",	"deleted",			0,	FALSE,	FALSE },
+		{ "e",	"header \"Sender\"",		1,	TRUE,	TRUE  },
+		{ "E",	"execute",			1,	FALSE,	TRUE  },
+		{ "f",	"from",				1,	TRUE,	TRUE  },
+		{ "F",	"forwarded",			0,	FALSE,	FALSE },
+		{ "h",	"headers_part",			1,	TRUE,	TRUE  },
+		{ "i",	"header \"Message-Id\"",	1,	TRUE,	TRUE  },
+		{ "I",	"inreplyto",			1,	TRUE,	TRUE  },
+		{ "L",	"locked",			0,	FALSE,	FALSE },
+		{ "n",	"newsgroups",			1,	TRUE,	TRUE  },
+		{ "N",	"new",				0,	FALSE,	FALSE },
+		{ "O",	"~new",				0,	FALSE,	FALSE },
+		{ "r",	"replied",			0,	FALSE,	FALSE },
+		{ "R",	"~unread",			0,	FALSE,	FALSE },
+		{ "s",	"subject",			1,	TRUE,	TRUE  },
+		{ "se",	"score_equal",			1,	FALSE,	FALSE },
+		{ "sg",	"score_greater",		1,	FALSE,	FALSE },
+		{ "sl",	"score_lower",			1,	FALSE,	FALSE },
+		{ "Se",	"size_equal",			1,	FALSE,	FALSE },
+		{ "Sg",	"size_greater",			1,	FALSE,	FALSE },
+		{ "Ss",	"size_smaller",			1,	FALSE,	FALSE },
+		{ "t",	"to",				1,	TRUE,	TRUE  },
+		{ "T",	"marked",			0,	FALSE,	FALSE },
+		{ "U",	"unread",			0,	FALSE,	FALSE },
+		{ "x",	"header \"References\"",	1,	TRUE,	TRUE  },
+		{ "X",  "test",				1,	FALSE,  FALSE }, 
+		{ "y",	"header \"X-Label\"",		1,	TRUE,	TRUE  },
+		{ "&",	"&",				0,	FALSE,	FALSE },
+		{ "|",	"|",				0,	FALSE,	FALSE },
+		{ NULL,	NULL,				0,	FALSE,	FALSE }
+	};
+
+	if (search_string == NULL)
+		return NULL;
+
+	copy_str = g_strdup(search_string);
+
+	matcherstr = g_string_sized_new(16);
+	cmd_start = copy_str;
+	while (cmd_start && *cmd_start) {
+		/* skip all white spaces */
+		while (*cmd_start && isspace((guchar)*cmd_start))
+			cmd_start++;
+		cmd_end = cmd_start;
+
+		/* extract a command */
+		while (*cmd_end && !isspace((guchar)*cmd_end))
+			cmd_end++;
+
+		/* save character */
+		save_char = *cmd_end;
+		*cmd_end = '\0';
+
+		dontmatch = FALSE;
+		casesens = FALSE;
+
+		/* ~ and ! mean logical NOT */
+		if (*cmd_start == '~' || *cmd_start == '!')
+		{
+			dontmatch = TRUE;
+			cmd_start++;
+		}
+		/* % means case sensitive match */
+		if (*cmd_start == '%')
+		{
+			casesens = TRUE;
+			cmd_start++;
+		}
+
+		/* find matching abbreviation */
+		for (i = 0; cmds[i].command; i++) {
+			if (!strcmp(cmd_start, cmds[i].abbreviated)) {
+				/* restore character */
+				*cmd_end = save_char;
+
+				/* copy command */
+				if (matcherstr->len > 0) {
+					g_string_append(matcherstr, " ");
+				}
+				if (dontmatch)
+					g_string_append(matcherstr, "~");
+				g_string_append(matcherstr, cmds[i].command);
+				g_string_append(matcherstr, " ");
+
+				/* stop if no params required */
+				if (cmds[i].numparams == 0)
+					break;
+
+				/* extract a parameter, allow quotes */
+				while (*cmd_end && isspace((guchar)*cmd_end))
+					cmd_end++;
+
+				cmd_start = cmd_end;
+				if (*cmd_start == '"') {
+					term_char = '"';
+					cmd_end++;
+				}
+				else
+					term_char = ' ';
+
+				/* extract actual parameter */
+				while ((*cmd_end) && (*cmd_end != term_char))
+					cmd_end++;
+
+				if (*cmd_end == '"')
+					cmd_end++;
+
+				save_char = *cmd_end;
+				*cmd_end = '\0';
+
+				if (cmds[i].qualifier) {
+					if (casesens)
+						g_string_append(matcherstr, "regexp ");
+					else
+						g_string_append(matcherstr, "regexpcase ");
+				}
+
+				/* do we need to add quotes ? */
+				if (cmds[i].quotes && term_char != '"')
+					g_string_append(matcherstr, "\"");
+
+				/* copy actual parameter */
+				g_string_append(matcherstr, cmd_start);
+
+				/* do we need to add quotes ? */
+				if (cmds[i].quotes && term_char != '"')
+					g_string_append(matcherstr, "\"");
+
+				/* restore original character */
+				*cmd_end = save_char;
+
+				break;
+			}
+		}
+
+		if (*cmd_end)
+			cmd_end++;
+		cmd_start = cmd_end;
+	}
+
+	g_free(copy_str);
+
+	/* return search string if no match is found to allow 
+	   all available filtering expressions in quicksearch */
+	if (matcherstr->len > 0) returnstr = matcherstr->str;
+	else returnstr = g_strdup(search_string);
+
+	g_string_free(matcherstr, FALSE);
+	return returnstr;
+}
+
 static void quicksearch_set_running(QuickSearch *quicksearch, gboolean run)
 {
 	quicksearch->running = run;
@@ -445,3 +626,4 @@ gboolean quicksearch_is_running(QuickSearch *quicksearch)
 {
 	return quicksearch->running;
 }
+

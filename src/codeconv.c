@@ -1472,8 +1472,8 @@ const gchar *conv_get_current_locale(void)
 	if (!cur_locale) cur_locale = g_getenv("LANG");
 	if (!cur_locale) cur_locale = setlocale(LC_CTYPE, NULL);
 
-	debug_print("current locale: %s\n",
-		    cur_locale ? cur_locale : "(none)");
+/*	debug_print("current locale: %s\n",
+		    cur_locale ? cur_locale : "(none)"); */
 
 	return cur_locale;
 }
