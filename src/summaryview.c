@@ -1041,8 +1041,8 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 
 	if (summaryview->folder_item->folder->type != F_NEWS) {
 		menu_set_sensitive(ifactory, "/Move...", TRUE);
-		menu_set_sensitive(ifactory, "/Delete", TRUE);
 	}
+	menu_set_sensitive(ifactory, "/Delete", TRUE);
 	menu_set_sensitive(ifactory, "/Select thread", TRUE);
 	menu_set_sensitive(ifactory, "/Select all", TRUE);
 	menu_set_sensitive(ifactory, "/Copy...", TRUE);
@@ -2859,6 +2859,51 @@ void summary_mark_as_unread(SummaryView *summaryview)
 	summary_status_show(summaryview);
 }
 
+static gboolean check_permission(SummaryView *summaryview, MsgInfo * msginfo)
+{
+	GList * cur;
+	gboolean found;
+
+	switch (summaryview->folder_item->folder->type) {
+
+	case F_NEWS:
+
+		/*
+		  security : checks if one the accounts correspond to
+		  the author of the post
+		*/
+
+		found = FALSE;
+		for(cur = account_get_list() ; cur != NULL ; cur = cur->next) {
+			PrefsAccount * account;
+			gchar * from_name;
+			
+			account = cur->data;
+			if (account->name && *account->name)
+				from_name =
+					g_strdup_printf("%s <%s>",
+							account->name,
+							account->address);
+			else
+				from_name =
+					g_strdup_printf("%s",
+							account->address);
+
+		if (g_strcasecmp(from_name, msginfo->from) == 0) {
+			g_free(from_name);
+			found = TRUE;
+			break;
+		}
+		g_free(from_name);
+		}
+		
+		return found;
+
+	default:
+		return TRUE;
+	}
+}
+
 static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 {
 	gboolean changed = FALSE;
@@ -2866,6 +2911,9 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
+
+	if (!check_permission(summaryview, msginfo))
+		return;
 
 	if (MSG_IS_LOCKED(msginfo->flags)) return;
 
@@ -2909,7 +2957,10 @@ void summary_delete(SummaryView *summaryview)
 	GtkCTreeNode *sel_last = NULL;
 	GtkCTreeNode *node;
 
+	if (!item) return;
+#if 0
 	if (!item || item->folder->type == F_NEWS) return;
+#endif
 
 	if (summary_is_locked(summaryview)) return;
 
@@ -3481,6 +3532,7 @@ static void summary_execute_delete(SummaryView *summaryview)
 	GSList *cur;
 
 	trash = summaryview->folder_item->folder->trash;
+
 	if (summaryview->folder_item->folder->type == F_MH) {
 		g_return_if_fail(trash != NULL);
 	}
@@ -3491,10 +3543,11 @@ static void summary_execute_delete(SummaryView *summaryview)
 
 	if (!summaryview->mlist) return;
 
-	if (summaryview->folder_item != trash)
-		folder_item_move_msgs_with_dest(trash, summaryview->mlist);
+	if (trash == NULL || summaryview->folder_item == trash)
+		folder_item_remove_msgs(summaryview->folder_item,
+					summaryview->mlist);
 	else
-		folder_item_remove_msgs(trash, summaryview->mlist);
+		folder_item_move_msgs_with_dest(trash, summaryview->mlist);
 
 	for (cur = summaryview->mlist; cur != NULL; cur = cur->next)
 		procmsg_msginfo_free((MsgInfo *)cur->data);
@@ -3502,7 +3555,7 @@ static void summary_execute_delete(SummaryView *summaryview)
 	g_slist_free(summaryview->mlist);
 	summaryview->mlist = NULL;
 
-	if (summaryview->folder_item != trash) {
+	if ((summaryview->folder_item != trash) && (trash != NULL)) {
 		folder_item_scan(trash);
 		folderview_update_item(trash, FALSE);
 	}

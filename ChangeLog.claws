@@ -1,3 +1,20 @@
+2002-03-01 [hoa]	0.7.2claws23
+
+	* src/mainwindow.c
+		Set sensitivity of delete actions to active
+		even if the folder is a newsgroup.
+
+	* src/summaryview.c
+		- Set sensitivity of delete actions
+		- Added function check_permission() that will check if the
+		  user is authorized to delete a message. For news, it
+		  will check if the author is the same.
+		- Enabled deletion when there is no trash folder.
+
+	* src/news.[ch]
+		- Added news_cancel_article() to cancel articles
+		- Implemented news_remove_message() (public function)
+
 2002-03-01 [paul]	0.7.2claws22
 
 	* src/gtkutils.c

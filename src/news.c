@@ -559,7 +559,24 @@ static gint news_get_article_cmd(NNTPSession *session, const gchar *cmd,
 
 static gint news_remove_msg(Folder *folder, FolderItem *item, gint num)
 {
-	return 0;
+	MsgInfo * msginfo;
+	gchar * filename;
+	MsgFlags msgflags = { 0, 0 };
+	gint r;
+
+	filename = folder_item_fetch_msg(item, num);
+	if (filename == NULL)
+		return -1;
+
+	msginfo = procheader_parse(filename, msgflags, FALSE, FALSE);
+	if (msginfo == NULL)
+		return -1;
+
+	r = news_cancel_article(folder, msginfo);
+
+	procmsg_msginfo_free(msginfo);
+
+	return r;
 }
 
 static gint news_get_article(NNTPSession *session, gint num, gchar *filename)
@@ -886,4 +903,45 @@ static void news_delete_all_articles(FolderItem *item)
 	g_free(dir);
 
 	debug_print(_("done.\n"));
+}
+
+gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
+{
+	gchar * tmp;
+	FILE * tmpfp;
+	gchar buf[BUFFSIZE];
+
+	tmp = g_strdup_printf("%s%ctmp%d", g_get_tmp_dir(),
+			      G_DIR_SEPARATOR, (gint)msginfo);
+	if (tmp == NULL)
+		return -1;
+
+	if ((tmpfp = fopen(tmp, "w")) == NULL) {
+		FILE_OP_ERROR(tmp, "fopen");
+		return -1;
+	}
+	if (change_file_mode_rw(tmpfp, tmp) < 0) {
+		FILE_OP_ERROR(tmp, "chmod");
+		g_warning(_("can't change file mode\n"));
+	}
+	
+	fprintf(tmpfp, "From: %s\r\n", msginfo->from);
+	fprintf(tmpfp, "Newsgroups: %s\r\n", msginfo->newsgroups);
+	fprintf(tmpfp, "Subject: cmsg cancel <%s>\r\n", msginfo->msgid);
+	fprintf(tmpfp, "Control: cancel <%s>\r\n", msginfo->msgid);
+	fprintf(tmpfp, "Approved: %s\r\n", msginfo->from);
+	fprintf(tmpfp, "X-Cancelled-by: %s\r\n", msginfo->from);
+	get_rfc822_date(buf, sizeof(buf));
+	fprintf(tmpfp, "Date: %s\r\n", buf);
+	fprintf(tmpfp, "\r\n");
+	fprintf(tmpfp, "removed with sylpheed\r\n");
+
+	fclose(tmpfp);
+
+	news_post(folder, tmp);
+	remove(tmp);
+
+	g_free(tmp);
+
+	return 0;
 }

@@ -1431,8 +1431,8 @@ static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 			state |= M_THREADED;
 		else
 			state |= M_UNTHREADED;	
-		if (item->folder->type != F_NEWS)
-			state |= M_ALLOW_DELETE;
+		/*		if (item->folder->type != F_NEWS) */
+		state |= M_ALLOW_DELETE;
 
 		if (selection == SUMMARY_NONE && item->hide_read_msgs
 		    || selection != SUMMARY_NONE)

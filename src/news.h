@@ -80,4 +80,6 @@ void news_remove_group_list_cache	(Folder		*folder);
 gint news_post				(Folder		*folder,
 					 const gchar	*file);
 
+gint news_cancel_article(Folder * folder, MsgInfo * msginfo);
+
 #endif /* __NEWS_H__ */
