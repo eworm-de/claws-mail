@@ -85,6 +85,8 @@ static void set_plugin_list(PluginWindow *pluginwindow)
 	gtk_list_store_clear(store);
 	
 	textbuf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(pluginwindow->plugin_desc));
+	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(pluginwindow->plugin_desc), FALSE);
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(pluginwindow->plugin_desc), FALSE);
 	gtk_text_buffer_get_start_iter(textbuf, &start_iter);
 	gtk_text_buffer_get_end_iter(textbuf, &end_iter);
 	gtk_text_buffer_delete(textbuf, &start_iter, &end_iter);

@@ -1,3 +1,8 @@
+2005-03-17 [paul]	1.0.3cvs2.2
+
+	* src/gtk/pluginwindow.c
+		make plugin descriptions uneditable
+
 2005-03-11 [paul]	1.0.3cvs2.1
 
 	* ChangeLog.claws
