@@ -1,3 +1,13 @@
+2003-03-03
+
+	* src/codeconv.c: fixed UTF-8 locale support.
+	  conv_get_code_conv_func(): return conv_noconv if locale encoding
+	  is UTF-8. Return conv_latintodisp on ISO-8859-* to locale encoding
+	  conversion.
+	  conv_convert(): call conv_iconv_strdup() instead of
+	  conv_codeset_strdup().
+	  conv_codeset_strdup(): moved some codes into conv_iconv_strdup().
+
 2003-02-28
 
 	* src/prefs_account.[ch]: added an option to use command output for

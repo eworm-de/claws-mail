@@ -1,3 +1,8 @@
+2003-03-03 [paul]	0.8.10claws72
+
+	* sync with 0.8.10cvs21
+		see ChangeLog 2003-03-03
+
 2003-03-02 [christoph]	0.8.10claws71
 
 	* src/common/passcrypt.c
