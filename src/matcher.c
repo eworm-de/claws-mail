@@ -407,6 +407,10 @@ gchar * matcher_parse_regexp(gchar ** str)
 	return g_strdup(start);
 }
 
+/* matcher_parse_str() - parses a string until it hits a 
+ * terminating \". to unescape characters use \. The string
+ * should not be used directly: matcher_unescape_str() 
+ * returns a string that can be used directly. */
 gchar * matcher_parse_str(gchar ** str)
 {
 	gchar * p;
@@ -429,20 +433,50 @@ gchar * matcher_parse_str(gchar ** str)
 	p ++;
 	start = p;
 	dest = p;
-	while (*p != '"') {
+
+	for ( ; *p && *p != '\"'; p++, dest++) {
 		if (*p == '\\') {
-			p++;
+			*dest++ = *p++;
 			*dest = *p;
 		}
-		else
+		else 
 			*dest = *p;
-		dest++;
-		p++;
 	}
 	*dest = '\0';
-
+	
 	*str += dest - dup + 2;
 	return g_strdup(start);
+}
+
+gchar *matcher_unescape_str(gchar *str)
+{
+	gchar *tmp = alloca(strlen(str) + 1);
+	register gchar *src = tmp;
+	register gchar *dst = str;
+	
+	strcpy(tmp, str);
+
+	for ( ; *src; src++) {
+		if (*src != '\\') 
+			*dst++ = *src;
+		else {
+			src++;
+			if (*src == '\\')
+				*dst++ = '\\';
+			else if (*src == 'n')
+				*dst++ = '\n';
+			else if (*src == 'r') 
+				*dst++ = '\r';
+			else if (*src == '\'' || *src == '\"')
+				*dst++ = *src;
+			else {
+				src--;
+				*dst++ = *src;
+			}				
+		}
+	}
+	*dst = 0;
+	return str;
 }
 
 /* **************** data structure allocation **************** */
@@ -1280,6 +1314,8 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 	gchar * p;
 	gint size;
 
+	matcher_unescape_str(cmd);
+
 	size = strlen(cmd) + 1;
 	while (*s != '\0') {
 		if (*s == '%') {
@@ -1418,6 +1454,8 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 			s++;
 		}
 	}
+
+	debug_print("*** exec string \"%s\"\n", processed_cmd);
 
 	g_free(filename);
 	return processed_cmd;

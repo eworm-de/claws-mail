@@ -1,3 +1,15 @@
+2001-07-19 [alfons]
+
+	* src/matcher.[ch], src/filtering.c, src/prefs_filtering.c
+		fix messy handling of escaping... now at least the
+		execute command is useful. escape char is '\', we
+		accept \n and \r too. 
+
+		Real life example:
+		
+		subject match "GIMME YOUR FILTERS" execute "mail -s \"%f don\'t hurt me, please!\" %f < ~/.sylpheed/filteringrc
+		subject match "GIMME YOUR FILTERS" execute "mail -s \"mommy, mommy, %f is being mean!\" admin < %F
+
 2001-07-18 [alfons]
 
 	0.5.0claws6

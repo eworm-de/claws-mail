@@ -837,10 +837,9 @@ static void prefs_filtering_select_set(FilteringProp * prop)
 	}
 
 	gtk_entry_set_text(GTK_ENTRY(filtering.cond_entry), matcher_str);
-
+	
 	if (action->destination)
-		gtk_entry_set_text(GTK_ENTRY(filtering.dest_entry),
-				   action->destination);
+		gtk_entry_set_text(GTK_ENTRY(filtering.dest_entry), action->destination);
 	else
 		gtk_entry_set_text(GTK_ENTRY(filtering.dest_entry), "");
 

@@ -127,6 +127,7 @@ FilteringAction * filteringaction_parse(gchar ** str)
 	}
 
 	* str = tmp;
+
 	action = filteringaction_new(key, account_id, destination);
 
 	return action;
@@ -239,6 +240,8 @@ static gchar * filteringaction_execute_command(gchar * cmd, MsgInfo * info)
 	gchar * processed_cmd;
 	gchar * p;
 	gint size;
+
+	matcher_unescape_str(cmd);
 
 	size = strlen(cmd) + 1;
 	while (*s != '\0') {
@@ -947,6 +950,7 @@ static gboolean filter_incoming_perform_actions(FolderItem *default_folder,
 			}
 				
 			flags = msginfo->flags.perm_flags | markflags.perm_flags;
+			flags |= MSG_FORWARDED;
 			add_mark(default_folder, msgnum, flags);
 
 			/* grab the dropped message */
@@ -955,9 +959,12 @@ static gboolean filter_incoming_perform_actions(FolderItem *default_folder,
 			tmp.perm_flags = tmp.tmp_flags = 0;
 			fwd_msg = procheader_parse(fwd_msg_name, tmp, TRUE);
 
+			fwd_msg->folder = default_folder;
+			fwd_msg->msgnum = msgnum;
+
 			/* do the compose_XXX stuff */
 			account = account_find_from_id(ma_tail->action->account_id);
-			compose = compose_forward(account, fwd_msg, ma_tail->action->type == ACTION ? FALSE : TRUE);
+			compose = compose_forward(account, fwd_msg, ACTION == MATCHING_ACTION_FORWARD ? FALSE : TRUE);
 			if (compose->account->protocol == A_NNTP)
 				compose_entry_append(compose, ma_tail->action->destination,
 						     COMPOSE_NEWSGROUPS);
