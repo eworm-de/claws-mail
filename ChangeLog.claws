@@ -1,3 +1,22 @@
+2004-08-08 [christoph]	0.9.12cvs52
+
+	* configure.ac
+	* src/Makefile.am
+	* src/main.c
+	* src/pgpmime.c
+	* src/pgpmime.h
+	* src/sgpgme.c
+	* src/sgpgme.h
+	* src/plugins/Makefile.am
+	* src/plugins/pgpmime/.cvsignore
+	* src/plugins/pgpmime/Makefile.am
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/pgpmime.h
+	* src/plugins/pgpmime/plugin.c
+	* src/plugins/pgpmime/sgpgme.c
+	* src/plugins/pgpmime/sgpgme.h
+		new plugin for PGP/MIME
+
 2004-08-07 [christoph]	0.9.12cvs51
 
 	* src/folder.c

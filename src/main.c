@@ -80,10 +80,6 @@
 #include "news_gtk.h"
 #include "matcher.h"
 
-#if USE_GPGME
-#  include "sgpgme.h"
-#  include "pgpmime.h"
-#endif
 #if USE_OPENSSL
 #  include "ssl.h"
 #endif
@@ -254,10 +250,6 @@ int main(int argc, char *argv[])
 	prefs_common_init();
 	prefs_common_read_config();
 
-#if USE_GPGME
-	sgpgme_init();
-	pgpmime_init();
-#endif
 	prefs_themes_init();
 	prefs_fonts_init();
 	prefs_ext_prog_init();
@@ -433,10 +425,6 @@ static void exit_sylpheed(MainWindow *mainwin)
 
 	addressbook_destroy();
 
-#ifdef USE_GPGME
-	pgpmime_done();
-	sgpgme_done();
-#endif
 	prefs_themes_done();
 	prefs_fonts_done();
 	prefs_ext_prog_done();

@@ -79,7 +79,6 @@ sylpheed_SOURCES = \
 	news_gtk.c \
 	noticeview.c \
 	passphrase.c \
-	pgpmime.c \
 	pine.c \
 	pop.c \
 	prefs_account.c \
@@ -114,7 +113,6 @@ sylpheed_SOURCES = \
 	select-keys.c \
 	send_message.c \
 	setup.c \
-	sgpgme.c \
 	simple-gettext.c \
 	sourcewindow.c \
 	ssl_manager.c \
@@ -210,7 +208,6 @@ sylpheedinclude_HEADERS = \
 	news_gtk.h \
 	noticeview.h \
 	passphrase.h \
-	pgpmime.h \
 	pine.h \
 	pop.h \
 	prefs_account.h \
@@ -245,7 +242,6 @@ sylpheedinclude_HEADERS = \
 	select-keys.h \
 	send_message.h \
 	setup.h \
-	sgpgme.h \
 	sourcewindow.h \
 	ssl_manager.h \
 	statusbar.h \
