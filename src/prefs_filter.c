@@ -186,7 +186,7 @@ static void prefs_filter_create(void)
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
 
-	gchar *title[] = {_("Registered rules")};
+	gchar *title[1];
 
 	debug_print(_("Creating filter setting window...\n"));
 
@@ -432,6 +432,7 @@ static void prefs_filter_create(void)
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 
+	title[0] = _("Registered rules");
 	cond_clist = gtk_clist_new_with_titles(1, title);
 	gtk_widget_show (cond_clist);
 	gtk_container_add (GTK_CONTAINER (cond_scrolledwin), cond_clist);
@@ -788,10 +789,12 @@ static void prefs_filter_select(GtkCList *clist, gint row, gint column,
 				GdkEvent *event)
 {
 	Filter *flt;
-	Filter default_flt = {"Subject", NULL, _("(none)"), NULL,
+	Filter default_flt = {"Subject", NULL, NULL, NULL,
 			      FLT_CONTAIN, FLT_CONTAIN, FLT_AND,
 			      NULL, FLT_MOVE};
 	gboolean is_regex;
+
+	default_flt.name2 = _("(none)");
 
 	flt = gtk_clist_get_row_data(clist, row);
 	if (!flt)

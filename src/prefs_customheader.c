@@ -140,7 +140,7 @@ static void prefs_custom_header_create(void)
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
 
-	gchar *title[] = {_("Custom headers")};
+	gchar *title[1];
 
 	debug_print(_("Creating custom header setting window...\n"));
 
@@ -261,6 +261,7 @@ static void prefs_custom_header_create(void)
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 
+	title[0] = _("Custom headers");
 	customhdr_clist = gtk_clist_new_with_titles(1, title);
 	gtk_widget_show (customhdr_clist);
 	gtk_container_add (GTK_CONTAINER (ch_scrolledwin), customhdr_clist);

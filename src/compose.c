@@ -4192,11 +4192,15 @@ static GtkWidget *compose_create_header(Compose *compose)
 
 GtkWidget *compose_create_attach(Compose *compose)
 {
-	gchar *titles[] = {_("MIME type"), _("Size"), _("Name")};
+	gchar *titles[N_ATTACH_COLS];
 	gint i;
 
 	GtkWidget *attach_scrwin;
 	GtkWidget *attach_clist;
+
+	titles[COL_MIMETYPE] = _("MIME type");
+	titles[COL_SIZE]     = _("Size");
+	titles[COL_NAME]     = _("Name");
 
 	/* attachment list */
 	attach_scrwin = gtk_scrolled_window_new(NULL, NULL);
@@ -4342,6 +4346,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	UndoMain *undostruct;
 
+	gchar *titles[N_ATTACH_COLS];
 	guint n_menu_entries;
 	GtkStyle  *style, *new_style;
 	GdkColormap *cmap;
@@ -4363,6 +4368,10 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	debug_print(_("Creating compose window...\n"));
 	compose = g_new0(Compose, 1);
+
+	titles[COL_MIMETYPE] = _("MIME type");
+	titles[COL_SIZE]     = _("Size");
+	titles[COL_NAME]     = _("Name");
 
 	compose->account = account;
 	compose->orig_account = account;

@@ -246,8 +246,12 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	GtkWidget *buttonAvail;
 	gint top;
 
-	gchar *titles[ GROUP_N_COLS ] = { _( "Name" ), _("E-Mail Address"), _("Remarks") };
+	gchar *titles[ GROUP_N_COLS ];
 	gint i;
+
+	titles[ GROUP_COL_NAME    ] = _( "Name" );
+	titles[ GROUP_COL_EMAIL   ] = _("E-Mail Address");
+	titles[ GROUP_COL_REMARKS ] = _("Remarks");
 
 	window = gtk_window_new(GTK_WINDOW_DIALOG);
 	gtk_widget_set_usize(window, EDITGROUP_WIDTH, EDITGROUP_HEIGHT );

@@ -4,6 +4,20 @@
 	  doesn't exist.
 	* src/foldersel.[ch]: foldersel_folder_sel(): added an argument
 	  that specifies the folder selection type.
+	* src/addressbook.c
+	  src/compose.c
+	  src/editaddress.c
+	  src/editgroup.c
+	  src/folderview.c
+	  src/importldif.c
+	  src/mainwindow.c
+	  src/md5.c
+	  src/mimeview.c
+	  src/prefs_common.c
+	  src/prefs_customheader.c
+	  src/prefs_filter.c
+	  src/summaryview.c: made it compile with C compilers other than gcc
+	  (thanks to Shawn Houston).
 
 2002-02-06
 

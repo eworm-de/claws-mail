@@ -153,7 +153,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
 	
-	gchar *title[] = {_("Registered actions")};
+	gchar *title[1];
 
 	debug_print(_("Creating actions setting window...\n"));
 
@@ -274,6 +274,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 
+	title[0] = _("Registered actions");
 	cond_clist = gtk_clist_new_with_titles(1, title);
 	gtk_widget_show (cond_clist);
 	gtk_container_add (GTK_CONTAINER (cond_scrolledwin), cond_clist);

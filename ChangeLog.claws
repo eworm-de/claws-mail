@@ -1,7 +1,18 @@
+2002-02-08 [paul]	0.7.0claws57
+
+	* sync with sylpheed 0.7.0cvs39
+		see ChangeLog entry 2002-02-07 (last entry) 
+
+	* src/prefs_actions.c
+	  src/prefs_filtering.c
+	  src/prefs_matcher.c
+	  src/prefs_scoring.c
+		sync: made it compile with C compilers other than gcc
+
 2002-02-07 [paul]	0.7.0claws56
 
 	* sync with sylpheed 0.7.0cvs38
-		see ChangeLog entries 2002-02-06 {last 2 entries) and
+		see ChangeLog entries 2002-02-06 (last 2 entries) and
 		2002-02-07
 
 2002-02-07 [darko]	0.7.0claws55

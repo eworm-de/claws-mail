@@ -2780,35 +2780,55 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	GtkWidget *cancel_btn;
 	GtkWidget *datefmt_entry;
 
-	const struct {
+	struct {
 		gchar *fmt;
 		gchar *txt;
 	} time_format[] = {
-		{ "%a", _("the full abbreviated weekday name") },
-		{ "%A", _("the full weekday name") },
-		{ "%b", _("the abbreviated month name") },
-		{ "%B", _("the full month name") },
-		{ "%c", _("the preferred date and time for the current locale") },
-		{ "%C", _("the century number (year/100)") },
-		{ "%d", _("the day of the month as a decimal number") },
-		{ "%H", _("the hour as a decimal number using a 24-hour clock") },
-		{ "%I", _("the hour as a decimal number using a 12-hour clock") },
-		{ "%j", _("the day of the year as a decimal number") },
-		{ "%m", _("the month as a decimal number") },
-		{ "%M", _("the minute as a decimal number") },
-		{ "%p", _("either AM or PM") },
-		{ "%S", _("the second as a decimal number") },
-		{ "%w", _("the day of the week as a decimal number") },
-		{ "%x", _("the preferred date for the current locale") },
-		{ "%y", _("the last two digits of a year") },
-		{ "%Y", _("the year as a decimal number") },
-		{ "%Z", _("the time zone or name or abbreviation") }
+		{ "%a", NULL },
+		{ "%A", NULL },
+		{ "%b", NULL },
+		{ "%B", NULL },
+		{ "%c", NULL },
+		{ "%C", NULL },
+		{ "%d", NULL },
+		{ "%H", NULL },
+		{ "%I", NULL },
+		{ "%j", NULL },
+		{ "%m", NULL },
+		{ "%M", NULL },
+		{ "%p", NULL },
+		{ "%S", NULL },
+		{ "%w", NULL },
+		{ "%x", NULL },
+		{ "%y", NULL },
+		{ "%Y", NULL },
+		{ "%Z", NULL }
 	};
 
 	gchar *titles[2];
 	gint i;
 	const gint TIME_FORMAT_ELEMS =
 		sizeof time_format / sizeof time_format[0];
+
+	time_format[0].txt  = _("the full abbreviated weekday name");
+	time_format[1].txt  = _("the full weekday name");
+	time_format[2].txt  = _("the abbreviated month name");
+	time_format[3].txt  = _("the full month name");
+	time_format[4].txt  = _("the preferred date and time for the current locale");
+	time_format[5].txt  = _("the century number (year/100)");
+	time_format[6].txt  = _("the day of the month as a decimal number");
+	time_format[7].txt  = _("the hour as a decimal number using a 24-hour clock");
+	time_format[8].txt  = _("the hour as a decimal number using a 12-hour clock");
+	time_format[9].txt  = _("the day of the year as a decimal number");
+	time_format[10].txt = _("the month as a decimal number");
+	time_format[11].txt = _("the minute as a decimal number");
+	time_format[12].txt = _("either AM or PM");
+	time_format[13].txt = _("the second as a decimal number");
+	time_format[14].txt = _("the day of the week as a decimal number");
+	time_format[15].txt = _("the preferred date for the current locale");
+	time_format[16].txt = _("the last two digits of a year");
+	time_format[17].txt = _("the year as a decimal number");
+	time_format[18].txt = _("the time zone or name or abbreviation");
 
 	if (datefmt_win) return datefmt_win;
 

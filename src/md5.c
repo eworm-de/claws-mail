@@ -96,7 +96,7 @@ transform(MD5_CONTEXT *ctx, const unsigned char *data)
 #ifdef BIG_ENDIAN_HOST
 	{
 		int i;
-		const unsigned char *p2, *p1;
+		unsigned char *p2, *p1;
 
 		for (i = 0, p1 = data, p2 = (unsigned char*)correct_words;
 		     i < 16; i++, p2 += 4) {

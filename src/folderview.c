@@ -311,8 +311,7 @@ FolderView *folderview_create(void)
 	FolderView *folderview;
 	GtkWidget *scrolledwin;
 	GtkWidget *ctree;
-	gchar *titles[N_FOLDER_COLS] = {_("Folder"), _("New"),
-					_("Unread"), _("#")};
+	gchar *titles[N_FOLDER_COLS];
 	GtkWidget *mail_popup;
 	GtkWidget *news_popup;
 	GtkWidget *imap_popup;
@@ -326,6 +325,11 @@ FolderView *folderview_create(void)
 
 	debug_print(_("Creating folder view...\n"));
 	folderview = g_new0(FolderView, 1);
+
+	titles[COL_FOLDER] = _("Folder");
+	titles[COL_NEW]    = _("New");
+	titles[COL_UNREAD] = _("Unread");
+	titles[COL_TOTAL]  = _("#");
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),

@@ -602,8 +602,12 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *entry_remarks;
 	gint top;
 
-	gchar *titles[ EMAIL_N_COLS ] = { _("E-Mail Address"), _("Alias"), _("Remarks") };
+	gchar *titles[ EMAIL_N_COLS ];
 	gint i;
+
+	titles[ EMAIL_COL_EMAIL   ] = _("E-Mail Address");
+	titles[ EMAIL_COL_ALIAS   ] = _("Alias");
+	titles[ EMAIL_COL_REMARKS ] = _("Remarks");
 
 	vbox = gtk_vbox_new( FALSE, 8 );
 	gtk_widget_show( vbox );
@@ -746,8 +750,11 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	GtkWidget *entry_value;
 	gint top;
 
-	gchar *titles[ ATTRIB_N_COLS ] = { _("Name"), _("Value") };
+	gchar *titles[ ATTRIB_N_COLS ];
 	gint i;
+
+	titles[ ATTRIB_COL_NAME  ] = _("Name");
+	titles[ ATTRIB_COL_VALUE ] = _("Value");
 
 	vbox = gtk_vbox_new( FALSE, 8 );
 	gtk_widget_show( vbox );

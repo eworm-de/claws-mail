@@ -4,6 +4,20 @@
 	  場合はメッセージを取得するようにした。
 	* src/foldersel.[ch]: foldersel_folder_sel(): フォルダ選択の
 	  タイプを指定する引数を追加。
+	* src/addressbook.c
+	  src/compose.c
+	  src/editaddress.c
+	  src/editgroup.c
+	  src/folderview.c
+	  src/importldif.c
+	  src/mainwindow.c
+	  src/md5.c
+	  src/mimeview.c
+	  src/prefs_common.c
+	  src/prefs_customheader.c
+	  src/prefs_filter.c
+	  src/summaryview.c: gcc 以外の C コンパイラでもコンパイルできる
+	  ようにした(Shawn Houston さん thanks)。
 
 2002-02-06
 

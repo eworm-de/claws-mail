@@ -2440,6 +2440,8 @@ void summary_step(SummaryView *summaryview, GtkScrollType type)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 
+	if (summary_is_locked(summaryview)) return;
+
 	if (type == GTK_SCROLL_STEP_FORWARD) {
 		GtkCTreeNode *node;
 		node = gtkut_ctree_node_next(ctree, summaryview->selected);

@@ -525,11 +525,15 @@ static void addressbook_create(void)
 	gint n_entries;
 	GList *nodeIf;
 
-	gchar *titles[N_COLS] = {_("Name"), _("E-Mail address"), _("Remarks")};
+	gchar *titles[N_COLS];
 	gchar *text;
 	gint i;
 
 	debug_print("Creating addressbook window...\n");
+
+	titles[COL_NAME]    = _("Name");
+	titles[COL_ADDRESS] = _("E-Mail address");
+	titles[COL_REMARKS] = _("Remarks");
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Address book"));

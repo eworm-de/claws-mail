@@ -136,13 +136,16 @@ MimeView *mimeview_create(void)
 	GtkWidget *vbox;
 	GtkWidget *popupmenu;
 	GtkItemFactory *popupfactory;
-
-	gchar *titles[] = {_("MIME Type"), _("Size"), _("Name")};
+	gchar *titles[N_MIMEVIEW_COLS];
 	gint n_entries;
 	gint i;
 
 	debug_print(_("Creating MIME view...\n"));
 	mimeview = g_new0(MimeView, 1);
+
+	titles[COL_MIMETYPE] = _("MIME Type");
+	titles[COL_SIZE]     = _("Size");
+	titles[COL_NAME]     = _("Name");
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),

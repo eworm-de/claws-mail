@@ -179,7 +179,7 @@ static void prefs_scoring_create(void)
 	GtkWidget *kill_score_entry;
 	GtkWidget *kill_score_label;
 
-	gchar *title[] = {_("Registered rules")};
+	gchar *title[1];
 
 	debug_print(_("Creating scoring setting window...\n"));
 
@@ -303,6 +303,7 @@ static void prefs_scoring_create(void)
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 
+	title[0] = ("Registered rules");
 	cond_clist = gtk_clist_new_with_titles(1, title);
 	gtk_widget_show (cond_clist);
 	gtk_container_add (GTK_CONTAINER (cond_scrolledwin), cond_clist);

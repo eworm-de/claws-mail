@@ -550,9 +550,12 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *check_select;
 	gint top;
 
-	gchar *titles[ FIELDS_N_COLS ] =
-		{ _("S"), _("LDIF Field"), _("Attribute Name") };
+	gchar *titles[ FIELDS_N_COLS ];
 	gint i;
+
+	titles[ FIELD_COL_SELECT ] = _("S");
+	titles[ FIELD_COL_FIELD  ] = _("LDIF Field");
+	titles[ FIELD_COL_ATTRIB ] = _("Attribute Name");
 
 	vbox = gtk_vbox_new(FALSE, 8);
 	gtk_container_add( GTK_CONTAINER( impldif_dlg.notebook ), vbox );
