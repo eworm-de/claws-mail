@@ -3722,7 +3722,7 @@ static void summary_thread_init(SummaryView *summaryview)
 		while (node) {
 			next = GTK_CTREE_ROW(node)->sibling;
 			if (GTK_CTREE_ROW(node)->children)
-				gtk_ctree_expand(ctree, node);
+				gtk_ctree_expand_recursive(ctree, node);
 			node = next;
 		}
 	} else if (prefs_common.bold_unread) {

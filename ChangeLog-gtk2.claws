@@ -1,3 +1,8 @@
+2005-02-23 [colin]	1.0.1cvs15.9
+
+	* src/summaryview.c	
+		Fix expanding
+
 2005-02-23 [colin]	1.0.1cvs15.8
 
 	* src/summaryview.c
