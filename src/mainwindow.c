@@ -84,7 +84,7 @@
 #include "selective_download.h"
 #include "ssl_manager.h"
 #include "sslcertwindow.h"
-#include "prefswindow.h"
+#include "prefs_gtk.h"
 #include "pluginwindow.h"
 
 #define AC_LABEL_WIDTH	240
@@ -2623,7 +2623,7 @@ static void account_menu_cb(GtkMenuItem	*menuitem, gpointer data)
 
 static void prefs_open_cb(GtkMenuItem *menuitem, gpointer data)
 {
-	prefswindow_create();
+	prefs_gtk_open();
 }
 
 static void plugins_open_cb(GtkMenuItem *menuitem, gpointer data)

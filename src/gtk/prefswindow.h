@@ -25,7 +25,7 @@
 
 typedef struct _PrefsPage PrefsPage;
 
-typedef void (*PrefsCreateWidgetFunc) (PrefsPage *);
+typedef void (*PrefsCreateWidgetFunc) (PrefsPage *, gpointer);
 typedef void (*PrefsDestroyWidgetFunc) (PrefsPage *);
 typedef void (*PrefsSavePageFunc) (PrefsPage *);
 typedef void (*PrefsDestroyPageFunc) (PrefsPage *);
@@ -42,9 +42,6 @@ struct _PrefsPage
 	PrefsDestroyPageFunc destroy_page;
 };
 
-void prefswindow_register_page		(PrefsPage *);
-void prefswindow_unregister_page	(PrefsPage *);
-void prefswindow_create			();
-void prefswindow_destroy_all_pages	();
+void prefswindow_open			();
 
 #endif

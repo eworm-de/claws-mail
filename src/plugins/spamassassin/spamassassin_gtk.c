@@ -31,7 +31,7 @@
 #include "common/utils.h"
 #include "prefs.h"
 #include "folder.h"
-#include "prefswindow.h"
+#include "prefs_gtk.h"
 #include "foldersel.h"
 #include "spamassassin.h"
 
@@ -62,7 +62,7 @@ static void foldersel_cb(GtkWidget *widget, gpointer data)
 	}
 }
 
-static void spamassassin_create_widget_func(PrefsPage * _page)
+static void spamassassin_create_widget_func(PrefsPage * _page, gpointer data)
 {
 	struct SpamAssassinPage *page = (struct SpamAssassinPage *) _page;
 
@@ -265,7 +265,7 @@ gint plugin_init(gchar **error)
 	page->page.destroy_widget = spamassassin_destroy_widget_func;
 	page->page.save_page = spamassassin_save_func;
 	page->page.destroy_page = spamassassin_destroy_func;
-	prefswindow_register_page((PrefsPage *) page);
+	prefs_gtk_register_page((PrefsPage *) page);
 
 	spamassassin_page = page;
 
@@ -275,7 +275,7 @@ gint plugin_init(gchar **error)
 
 void plugin_done()
 {
-	prefswindow_unregister_page((PrefsPage *) spamassassin_page);
+	prefs_gtk_unregister_page((PrefsPage *) spamassassin_page);
 	g_free(spamassassin_page);
 
 	debug_print("SpamAssassin GTK plugin unloaded\n");

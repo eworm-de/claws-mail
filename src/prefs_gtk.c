@@ -691,3 +691,31 @@ void prefs_set_spinbtn(PrefParam *pparam)
 			  pparam->type);
 	}
 }
+
+static GSList *prefs_pages = NULL;
+
+void prefs_gtk_open()
+{
+	prefswindow_open(prefs_pages, NULL);
+}
+
+void prefs_gtk_register_page(PrefsPage *page)
+{
+	prefs_pages = g_slist_append(prefs_pages, page);
+}
+
+void prefs_gtk_unregister_page(PrefsPage *page)
+{
+	prefs_pages = g_slist_remove(prefs_pages, page);
+}
+
+void prefs_gtk_destroy_all_pages()
+{
+	GSList *cur;
+
+	for (cur = prefs_pages; cur != NULL; cur = g_slist_next(cur)) {
+		PrefsPage *page = (PrefsPage *) cur->data;
+
+		page->destroy_page(page);
+	}
+}
