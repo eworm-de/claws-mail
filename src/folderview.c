@@ -787,10 +787,10 @@ static void folderview_scan_tree_func(Folder *folder, FolderItem *item,
 
 	if (FOLDER_IS_LOCAL(folder))
 		rootpath = LOCAL_FOLDER(folder)->rootpath;
-	else if (folder->type == F_IMAP && folder->account &&
+	else if (FOLDER_TYPE(folder) == F_IMAP && folder->account &&
 		 folder->account->recv_server)
 		rootpath = folder->account->recv_server;
-	else if (folder->type == F_NEWS && folder->account &&
+	else if (FOLDER_TYPE(folder) == F_NEWS && folder->account &&
 		 folder->account->nntp_server)
 		rootpath = folder->account->nntp_server;
 	else
@@ -844,7 +844,7 @@ void folderview_rescan_tree(Folder *folder)
 
 	g_return_if_fail(folder != NULL);
 
-	if (!folder->scan_tree) return;
+	if (!folder->class->scan_tree) return;
 
 	inc_lock();
 	window = label_window_create(_("Rebuilding folder tree..."));
@@ -1177,7 +1177,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 			openmask = folderopenxpmmask;
 		}
 		if (!item->parent) {
-			switch (item->folder->type) {
+			switch (FOLDER_TYPE(item->folder)) {
 			case F_MH:
 				name = " (MH)"; break;
 			case F_MBOX:
@@ -1191,7 +1191,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 			}
 			name = g_strconcat(item->name, name, NULL);
 		} else {
-			if (item->folder->type == F_NEWS &&
+			if (FOLDER_TYPE(item->folder) == F_NEWS &&
 			    item->path &&
 			    !strcmp2(item->name, item->path))
 				name = get_abbrev_newsgroup_name
@@ -1418,7 +1418,7 @@ void folderview_new_folder(FolderView *folderview)
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 
-	switch (item->folder->type) {
+	switch (FOLDER_TYPE(item->folder)) {
 	case F_MBOX:
 		folderview_new_mbox_folder_cb(folderview, 0, NULL);
 		break;
@@ -1448,7 +1448,7 @@ void folderview_rename_folder(FolderView *folderview)
 	if (!item->path) return;
 	if (item->stype != F_NORMAL) return;
 
-	switch (item->folder->type) {
+	switch (FOLDER_TYPE(item->folder)) {
 	case F_MBOX:
 		folderview_rename_mbox_folder_cb(folderview, 0, NULL);
 	case F_MH:
@@ -1475,7 +1475,7 @@ void folderview_delete_folder(FolderView *folderview)
 	if (!item->path) return;
 	if (item->stype != F_NORMAL) return;
 
-	switch (item->folder->type) {
+	switch (FOLDER_TYPE(item->folder)) {
 	case F_MH:
 	case F_MBOX:
 	case F_MAILDIR:
@@ -1733,7 +1733,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	if (item->folder) 
 		toolbar_set_compose_button
 			(folderview->mainwin->toolbar,
-			 item->folder->type == F_NEWS ? 
+			 FOLDER_TYPE(item->folder) == F_NEWS ? 
 			 COMPOSEBUTTON_NEWS : COMPOSEBUTTON_MAIL);
 
 	if (item->path)
@@ -1953,7 +1953,7 @@ static void folderview_new_folder_cb(FolderView *folderview, guint action,
 				  _("NewFolder"));
 	if (!new_folder) return;
 
-	if (item->folder->type != F_MBOX) {
+	if (FOLDER_TYPE(item->folder) != F_MBOX) {
 		if (strchr(new_folder, G_DIR_SEPARATOR) != NULL) {
 			alertpanel_error(_("`%c' can't be included in folder name."),
 					 G_DIR_SEPARATOR);
@@ -2070,7 +2070,7 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 	Xstrdup_a(old_path, item->path, {g_free(new_folder); return;});
 	old_id = folder_item_get_identifier(item);
 
-	if (item->folder->rename_folder(item->folder, item, new_folder) < 0) {
+	if (item->folder->class->rename_folder(item->folder, item, new_folder) < 0) {
 		g_free(old_id);
 		g_free(new_folder);
 		return;
@@ -2137,7 +2137,7 @@ static void folderview_rename_mbox_folder_cb(FolderView *folderview,
 		return;
 	}
 
-	if (item->folder->rename_folder(item->folder, item, new_folder) < 0) {
+	if (item->folder->class->rename_folder(item->folder, item, new_folder) < 0) {
 		g_free(new_folder);
 		return;
 	}
@@ -2191,7 +2191,7 @@ static void folderview_delete_folder_cb(FolderView *folderview, guint action,
 	Xstrdup_a(old_path, item->path, return);
 	old_id = folder_item_get_identifier(item);
 
-	if (item->folder->remove_folder(item->folder, item) < 0) {
+	if (item->folder->class->remove_folder(item->folder, item) < 0) {
 		alertpanel_error(_("Can't remove the folder `%s'."), name);
 		if (folderview->opened == folderview->selected)
 			summary_show(folderview->summaryview,
@@ -2269,7 +2269,7 @@ static void folderview_new_imap_folder_cb(FolderView *folderview, guint action,
 	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
-	g_return_if_fail(item->folder->type == F_IMAP);
+	g_return_if_fail(FOLDER_TYPE(item->folder) == F_IMAP);
 	g_return_if_fail(item->folder->account != NULL);
 
 	new_folder = input_dialog
@@ -2327,7 +2327,7 @@ static void folderview_rm_imap_server_cb(FolderView *folderview, guint action,
 	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
-	g_return_if_fail(item->folder->type == F_IMAP);
+	g_return_if_fail(FOLDER_TYPE(item->folder) == F_IMAP);
 	g_return_if_fail(item->folder->account != NULL);
 
 	name_ = trim_string(item->folder->name, 32);
@@ -2377,7 +2377,7 @@ static void folderview_new_news_group_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item != NULL);
 	folder = item->folder;
 	g_return_if_fail(folder != NULL);
-	g_return_if_fail(folder->type == F_NEWS);
+	g_return_if_fail(FOLDER_TYPE(folder) == F_NEWS);
 	g_return_if_fail(folder->account != NULL);
 
 	if (GTK_CTREE_ROW(folderview->selected)->parent != NULL)
@@ -2462,7 +2462,7 @@ static void folderview_rm_news_group_cb(FolderView *folderview, guint action,
 	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
-	g_return_if_fail(item->folder->type == F_NEWS);
+	g_return_if_fail(FOLDER_TYPE(item->folder) == F_NEWS);
 	g_return_if_fail(item->folder->account != NULL);
 
 	name_ = trim_string(item->path, 32);
@@ -2501,7 +2501,7 @@ static void folderview_rm_news_server_cb(FolderView *folderview, guint action,
 	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
-	g_return_if_fail(item->folder->type == F_NEWS);
+	g_return_if_fail(FOLDER_TYPE(item->folder) == F_NEWS);
 	g_return_if_fail(item->folder->account != NULL);
 
 	name_ = trim_string(item->folder->name, 32);
@@ -2583,12 +2583,12 @@ static void folderview_move_to_cb(FolderView *folderview)
 
 	if (folderview->selected)
 		from_folder = gtk_ctree_node_get_row_data(GTK_CTREE(folderview->ctree), folderview->selected);
-	if (!from_folder || from_folder->folder->type == F_NEWS)
+	if (!from_folder || FOLDER_TYPE(from_folder->folder) == F_NEWS)
 		return;
 
 	to_folder = foldersel_folder_sel(from_folder->folder, FOLDER_SEL_MOVE, NULL);
 	
-	if (!to_folder || to_folder->folder->type == F_NEWS)
+	if (!to_folder || FOLDER_TYPE(to_folder->folder) == F_NEWS)
 		return;
 
 	folderview_move_to(folderview, from_folder, to_folder);
@@ -2683,7 +2683,7 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 
 		if (item && item->folder && item->path &&
 		    src_item && src_item != item) {
-			switch (item->folder->type) {
+			switch (FOLDER_TYPE(item->folder)) {
 			case F_MH:
 			case F_MBOX:
 			case F_IMAP:
@@ -2695,7 +2695,7 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 		} else if (item && item->folder && folder_item_get_path(item) &&
 			   src_item && src_item != item) {
 			/* a root folder - acceptable only from folderview */
-			if (item->folder->type == F_MH || item->folder->type == F_IMAP)
+			if (FOLDER_TYPE(item->folder) == F_MH || FOLDER_TYPE(item->folder) == F_IMAP)
 				acceptable = TRUE;
 		}
 			
@@ -2764,7 +2764,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		/* re-check (due to acceptable possibly set for folder moves */
 		if (!(item && item->folder && item->path &&
 		      src_item && src_item != item && 
-		      (item->folder->type == F_MH || item->folder->type == F_IMAP))) {
+		      (FOLDER_TYPE(item->folder) == F_MH || FOLDER_TYPE(item->folder) == F_IMAP))) {
 			return;
 		}
 		if (item && src_item) {
@@ -2776,8 +2776,8 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 				case GDK_ACTION_MOVE:
 				case GDK_ACTION_DEFAULT:
 				default:
-			if (src_item->folder->type != item->folder->type ||
-			    (item->folder->type == F_IMAP &&
+			if (FOLDER_TYPE(src_item->folder) != FOLDER_TYPE(item->folder) ||
+			    (FOLDER_TYPE(item->folder) == F_IMAP &&
 			     src_item->folder != item->folder))
 				summary_copy_selected_to(folderview->summaryview, item);
 			else

@@ -24,6 +24,7 @@
 #include <time.h>
 
 typedef struct _Folder			Folder;
+typedef struct _FolderClass		FolderClass;
 typedef struct _LocalFolder		LocalFolder;
 typedef struct _RemoteFolder		RemoteFolder;
 #if 0
@@ -40,7 +41,7 @@ typedef struct _FolderItemUpdateData	FolderItemUpdateData;
 #include "msgcache.h"
 
 #define FOLDER(obj)		((Folder *)obj)
-#define FOLDER_TYPE(obj)	(FOLDER(obj)->type)
+#define FOLDER_TYPE(obj)	(FOLDER(obj)->class->type)
 
 #define LOCAL_FOLDER(obj)	((LocalFolder *)obj)
 #define REMOTE_FOLDER(obj)	((RemoteFolder *)obj)
@@ -126,7 +127,7 @@ typedef void (*FolderItemFunc)		(FolderItem	*item,
 
 struct _Folder
 {
-	FolderType type;
+	FolderClass *class;
 
 	gchar *name;
 	PrefsAccount *account;
@@ -145,6 +146,12 @@ struct _Folder
 	gpointer data;
 
 	GHashTable *newsart;
+};
+
+struct _FolderClass
+{
+	FolderType  type;
+	gchar 	   *idstr;
 
 	/* virtual functions */
 /*

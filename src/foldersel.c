@@ -238,7 +238,7 @@ static gboolean foldersel_gnode_func(GtkCTree *ctree, guint depth,
 		name = item->name;
 
 		if (!item->parent) {
-			switch (item->folder->type) {
+			switch (FOLDER_TYPE(item->folder)) {
 			case F_MBOX:
 				Xstrcat_a(name, name, " (MBOX)", ); break;
 			case F_MH:
@@ -311,7 +311,7 @@ static void foldersel_set_tree(Folder *cur_folder, FolderSelectionType type)
 		g_return_if_fail(folder != NULL);
 
 		if (type != FOLDER_SEL_ALL) {
-			if (folder->type == F_NEWS)
+			if (FOLDER_TYPE(folder) == F_NEWS)
 				continue;
 		}
 

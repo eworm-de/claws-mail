@@ -1058,10 +1058,10 @@ gint procmsg_send_message_queue(const gchar *file)
 
 #define CHANGE_FLAGS(msginfo) \
 { \
-if (msginfo->folder->folder->change_flags != NULL) \
-msginfo->folder->folder->change_flags(msginfo->folder->folder, \
-				      msginfo->folder, \
-				      msginfo); \
+if (msginfo->folder->folder->class->change_flags != NULL) \
+msginfo->folder->folder->class->change_flags(msginfo->folder->folder, \
+				             msginfo->folder, \
+				             msginfo); \
 }
 
 void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
@@ -1116,7 +1116,7 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 
 	}
 
-	if (msginfo->folder->folder->type == F_IMAP)
+	if (FOLDER_TYPE(msginfo->folder->folder) == F_IMAP)
 		imap_msg_set_perm_flags(msginfo, perm_flags);
 
 	msginfo->flags.perm_flags |= perm_flags;
@@ -1181,7 +1181,7 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 
 	}
 
-	if (msginfo->folder->folder->type == F_IMAP)
+	if (FOLDER_TYPE(msginfo->folder->folder) == F_IMAP)
 		imap_msg_unset_perm_flags(msginfo, perm_flags);
 
 	msginfo->flags.perm_flags &= ~perm_flags;
