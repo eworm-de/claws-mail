@@ -131,6 +131,7 @@ void ptr_array_free_strings	(GPtrArray	*array);
 /* number-string conversion */
 gint to_number			(const gchar *nstr);
 gchar *itos			(gint	      n);
+gchar *itos_buf                 (gchar nstr[], gint n);
 gchar *to_human_readable	(off_t	      size);
 
 /* alternative string functions */

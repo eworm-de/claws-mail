@@ -1536,13 +1536,15 @@ static void summary_set_header(gchar *text[], MsgInfo *msginfo)
 {
 	static gchar date_modified[80];
 	static gchar *to = NULL;
+	static gchar col_number[11];
+	static gchar col_score[11];
 
 	text[S_COL_MARK]   = NULL;
 	text[S_COL_UNREAD] = NULL;
 	text[S_COL_MIME] = NULL;
-	text[S_COL_NUMBER] = itos(msginfo->msgnum);
+	text[S_COL_NUMBER] = itos_buf(col_number, msginfo->msgnum);
 	text[S_COL_SIZE]   = to_human_readable(msginfo->size);
-	text[S_COL_SCORE]  = itos(msginfo->score);
+	text[S_COL_SCORE]  = itos_buf(col_score, msginfo->score);
 
 	if (msginfo->date_t) {
 		procheader_date_get_localtime(date_modified,

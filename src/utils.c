@@ -106,13 +106,22 @@ gint to_number(const gchar *nstr)
 	return atoi(nstr);
 }
 
-/* convert integer into string */
+/* convert integer into string
+   nstr must be a 11 characters table
+*/
+gchar *itos_buf(gchar nstr[], gint n)
+{
+	g_snprintf(nstr, 11, "%d", n);
+	return nstr;
+}
+
+/* convert integer into string
+   use an internal static buffer */
 gchar *itos(gint n)
 {
 	static gchar nstr[11];
 
-	g_snprintf(nstr, 11, "%d", n);
-	return nstr;
+	return itos_buf(nstr, n);
 }
 
 gchar *to_human_readable(off_t size)

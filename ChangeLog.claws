@@ -1,3 +1,11 @@
+2001-05-06 [hoa]
+
+	* src/utils.[ch]
+		added function itos_buf() to enable use of several buffers
+	* src/summaryview.c
+		use of itos_buf() instead of itos() in summary list
+		to fix the broken display of message number.
+
 2001-05-06 [alfons]
 
 	* src/gtkstext.c: bug in cursor up navigation fixed,
