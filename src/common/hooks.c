@@ -88,7 +88,7 @@ void hooks_unregister_hook(const gchar *hooklist_name,
 
 	debug_print("unregisted hook %d in '%s'\n", hook->hook_id, hooklist_name);
 
-	g_hook_destroy(hooklist, hook);
+	g_hook_destroy(hooklist, hook_id);
 }
 
 struct MarshalData

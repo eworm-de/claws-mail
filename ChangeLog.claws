@@ -1,3 +1,8 @@
+2003-07-30 [alfons]	0.9.3claws81
+
+	* src/common/hooks.c
+		parameter 2 of g_hook_destroy() should really be a hook id
+
 2003-07-30 [alfons]	0.9.3claws80
 
 	* src/common/plugin.c
