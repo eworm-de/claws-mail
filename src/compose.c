@@ -2173,7 +2173,11 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		const gchar *cur_encoding = conv_get_current_charset_str();
-		gchar *str = conv_codeset_strdup(buf, cur_encoding, CS_UTF_8);
+		gchar *str = NULL;
+		if (!g_utf8_validate(buf, -1, NULL))
+			str = conv_codeset_strdup(buf, cur_encoding, CS_UTF_8);
+		else
+			str = g_strdup(buf);
 
 		if (!str) continue;
 

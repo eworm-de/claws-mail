@@ -1,3 +1,9 @@
+2004-08-31 [colin]	0.9.12cvs84.3
+
+	* src/compose.c
+	* src/textview.c
+		Fix some more encoding/decoding issues
+
 2004-08-30 [colin]	0.9.12cvs84.2
 
 	* src/mimeview.c

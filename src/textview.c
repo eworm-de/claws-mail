@@ -327,22 +327,6 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 	textview_set_font(textview, charset);
 	textview_clear(textview);
 
-
-/*
-	if (fseek(fp, mimeinfo->offset, SEEK_SET) < 0) perror("fseek");
-	headers = textview_scan_header(textview, fp);
-	if (headers) {
-		GtkTextView *text = GTK_TEXT_VIEW(textview->text);
-		GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
-		GtkTextIter iter;
-
-		textview_show_header(textview, headers);
-		procheader_header_array_destroy(headers);
-
-		gtk_text_buffer_get_end_iter(buffer, &iter);
-		textview->body_pos = gtk_text_iter_get_offset(&iter);
-	}
-*/
 	textview_add_parts(textview, mimeinfo);
 
 	fclose(fp);
@@ -367,9 +351,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 
 	if (fseek(fp, mimeinfo->offset, SEEK_SET) < 0)
 		perror("fseek");
-/*
-	headers = textview_scan_header(textview, fp);
-*/
+
 	if (textview->messageview->forced_charset)
 		charset = textview->messageview->forced_charset;
 	else if (prefs_common.force_charset)
@@ -381,22 +363,6 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 
 	textview_clear(textview);
 
-/*
-	if (headers) {
-		GtkTextView *text = GTK_TEXT_VIEW(textview->text);
-		GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
-		GtkTextIter iter;
-
-		textview_show_header(textview, headers);
-		procheader_header_array_destroy(headers);
-
-		gtk_text_buffer_get_end_iter(buffer, &iter);
-		textview->body_pos = gtk_text_iter_get_offset(&iter);
-		if (!mimeinfo->main) {
-			gtk_text_buffer_insert(buffer, &iter, "\n", 1);
-		}
-	}
-*/
 	if (mimeinfo->type == MIMETYPE_MULTIPART)
 		textview_add_parts(textview, mimeinfo);
 	else
@@ -1147,23 +1113,10 @@ static void textview_write_line(TextView *textview, const gchar *str,
 	buffer = gtk_text_view_get_buffer(text);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 
-#warning FIXME_GTK2
-#if 0
-	if (!conv) {
-		if (textview->text_is_mb)
-			conv_localetodisp(buf, sizeof(buf), str);
-		else
-			strncpy2(buf, str, sizeof(buf));
-	} else if (conv_convert(conv, buf, sizeof(buf), str) < 0)
-		conv_localetodisp(buf, sizeof(buf), str);
-	else if (textview->text_is_mb)
-		conv_unreadable_locale(buf);
-#else
 	if (!conv)
 		strncpy2(buf, str, sizeof(buf));
 	else if (conv_convert(conv, buf, sizeof(buf), str) < 0)
-		conv_localetodisp(buf, sizeof(buf), str);
-#endif
+		strncpy2(buf, str, sizeof(buf));
 
 	strcrchomp(buf);
 	if (prefs_common.conv_mb_alnum) conv_mb_alnum(buf);
