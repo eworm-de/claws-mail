@@ -1,3 +1,8 @@
+2002-01-14 [darko]	0.7.0claws
+
+	* README.claws
+		quotation wrapping is now also in the main branch
+
 2002-01-14 [paul]
 
 	* tools/filter_conv.pl

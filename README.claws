@@ -13,7 +13,6 @@ Summary:
    * sharing mail folders
    * default to address for folders
    * threading mode per folder
-   * quotation wrapping
    * spell checking (with installation instructions)
 4. How to contribute
 5. How to request features
@@ -118,12 +117,6 @@ are hardly noticable, but deserve mentioning:
   (NOTE: this is also a shoot-yourself-in-the-foot-setting! If you want
    to send a private mail, don't have a folder selected with this setting
    set.)
-
-* quotation wrapping
-  Quotation is wrapped like VIM would wrap it (at least that was the
-  goal). To enable this feature go to Common preferences->Compose and
-  make sure Wrap quotation is enabled. The text is automatically
-  wrapped when you reply to an e-mail if this feature is enabled.
 
 * Spell checker for Sylpheed-Claws
   
