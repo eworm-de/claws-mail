@@ -1,3 +1,8 @@
+2003-07-07
+
+	* src/compose.c: PGP/MIME 署名を使用するときは text/plain パートに
+	  'Content-Disposition: inline' を付加。
+
 2003-07-04
 
 	* version 0.9.3

@@ -3484,6 +3484,10 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 		fprintf(fp, "\n--%s\n", compose->boundary);
 		fprintf(fp, "Content-Type: text/plain; charset=%s\n",
 			out_codeset);
+#if USE_GPGME
+		if (compose->use_signing && !compose->gnupg_mode)
+			fprintf(fp, "Content-Disposition: inline\n");
+#endif
 		fprintf(fp, "Content-Transfer-Encoding: %s\n",
 			procmime_get_encoding_str(encoding));
 		fputc('\n', fp);
