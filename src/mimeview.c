@@ -1500,9 +1500,11 @@ static GtkWidget* icon_stock_pixmap_with_privacy (GtkWidget *window, StockPixmap
 	while (siginfo != NULL) {
 		if (privacy_mimeinfo_is_signed(siginfo)) {
 			is_signed = TRUE;
+#if USE_GPGME
 			if (prefs_common.auto_check_signatures &&
 			    (privacy_mimeinfo_get_sig_status(siginfo) == SIGNATURE_UNCHECKED))
 				privacy_mimeinfo_check_signature(siginfo);
+#endif
 			break;
 		}
 		siginfo = procmime_mimeinfo_parent(siginfo);
