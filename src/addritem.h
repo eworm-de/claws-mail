@@ -178,6 +178,8 @@ ItemEMail *addritem_group_remove_email	( ItemGroup *group, ItemEMail *email );
 ItemEMail *addritem_group_remove_email_id( ItemGroup *group, const gchar *eid );
 
 gboolean addritem_folder_add_person	( ItemFolder *folder, ItemPerson *item );
+ItemPerson *addritem_folder_remove_person( ItemFolder *group, ItemPerson *person );
+
 gboolean addritem_folder_add_folder	( ItemFolder *folder, ItemFolder *item );
 gboolean addritem_folder_add_group	( ItemFolder *folder, ItemGroup *item );
 void addritem_folder_free_person	( ItemFolder *folder );

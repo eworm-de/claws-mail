@@ -1,3 +1,11 @@
+2004-09-06 [colin]	0.9.12cvs94
+
+	* src/addressbook.c
+	* src/addressitem.h
+	* src/addritem.c
+	* src/addritem.h
+		Add basic drag and drop to addressbook
+
 2004-09-03 [colin]	0.9.12cvs93
 
 	* src/summaryview.c

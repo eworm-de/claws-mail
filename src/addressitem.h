@@ -62,6 +62,7 @@ struct _AddressBook_win
 	GtkWidget *window;
 	GtkWidget *menubar;
 	GtkWidget *ctree;
+	GtkWidget *ctree_swin;
 	GtkWidget *clist;
 	GtkWidget *entry;
 	GtkWidget *statusbar;
