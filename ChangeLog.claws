@@ -1,3 +1,9 @@
+2001-12-11 [carsten]	0.6.5claws78
+	* src/filtering.c
+		fixed two typos returning a wrong FALSE/TRUE
+	* src/mainwindow.[ch]
+		extra menu for email/news button removed
+
 2001-12-11 [alfons]	0.6.5claws77
 	
 	* src/matcher.c			(1.3)
