@@ -1,3 +1,8 @@
+2003-08-01 [christoph]	0.9.3claws88
+
+	* src/importldif.c
+		allow single click field selection. document code.
+
 2003-08-01 [christoph]	0.9.3claws87
 
 	* src/plugins/clamav/clamav_plugin.c

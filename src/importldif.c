@@ -48,7 +48,7 @@
 #include "ldif.h"
 #include "utils.h"
 
-#define IMPORTLDIF_GUESS_NAME "LDIF Import"
+#define IMPORTLDIF_GUESS_NAME      "LDIF Import"
 
 #define PAGE_FILE_INFO             0
 #define PAGE_ATTRIBUTES            1
@@ -68,6 +68,9 @@ typedef enum {
 	FIELD_COL_ATTRIB  = 2
 } ImpLdif_FieldColPos;
 
+/**
+ * LDIF dialog definition.
+ */
 static struct _ImpLdif_Dlg {
 	GtkWidget *window;
 	GtkWidget *notebook;
@@ -155,6 +158,10 @@ static gchar *imp_ldif_err2string( ErrMsgTableEntry lut[], gint code ) {
         return desc;
 }
 
+/**
+ * Display message in status field.
+ * \param msg Message to display.
+ */
 static void imp_ldif_status_show( gchar *msg ) {
 	if( impldif_dlg.statusbar != NULL ) {
 		gtk_statusbar_pop( GTK_STATUSBAR(impldif_dlg.statusbar),
@@ -167,6 +174,9 @@ static void imp_ldif_status_show( gchar *msg ) {
 	}
 }
 
+/**
+ * Select and display status message appropriate for the page being displayed.
+ */
 static void imp_ldif_message( void ) {
 	gchar *sMsg = NULL;
 	gint pageNum;
@@ -184,6 +194,10 @@ static void imp_ldif_message( void ) {
 	imp_ldif_status_show( sMsg );
 }
 
+/**
+ * Update list with data for current row.
+ * \param clist List to update.
+ */
 static void imp_ldif_update_row( GtkCList *clist ) {
 	Ldif_FieldRec *rec;
 	gchar *text[ FIELDS_N_COLS ];
@@ -212,6 +226,10 @@ static void imp_ldif_update_row( GtkCList *clist ) {
 	gtk_clist_thaw( clist );
 }
 
+/**
+ * Load list with LDIF fields read from file.
+ * \param ldf LDIF control data.
+ */
 static void imp_ldif_load_fields( LdifFile *ldf ) {
 	GtkCList *clist = GTK_CLIST(impldif_dlg.clist_field);
 	GList *node, *list;
@@ -266,23 +284,57 @@ static void imp_ldif_field_list_selected(
 	gtk_widget_grab_focus(impldif_dlg.name_attrib);
 }
 
+/**
+ * Callback function to toggle selected LDIF field.
+ * \param clist List to update.
+ * \param event Event object.
+ * \param data  Data.
+ */
 static void imp_ldif_field_list_toggle(
 		GtkCList *clist, GdkEventButton *event, gpointer data )
 {
+	Ldif_FieldRec *rec;
+	gboolean toggle = FALSE;
+
 	if( ! event ) return;
 	if( impldif_dlg.rowIndSelect < 0 ) return;
 	if( event->button == 1 ) {
-		if( event->type == GDK_2BUTTON_PRESS ) {
-			Ldif_FieldRec *rec = gtk_clist_get_row_data(
-				clist, impldif_dlg.rowIndSelect );
-			if( rec ) {
-				rec->selected = ! rec->selected;
-				imp_ldif_update_row( clist );
-			}
+		/* If single click in first column */
+		if( event->type == GDK_BUTTON_PRESS ) {
+			gint x = event->x;
+			gint y = event->y;
+			gint row, col;
+
+			gtk_clist_get_selection_info( clist, x, y, &row, &col );
+			if( col > 0 ) return;
+			if( row > impldif_dlg.rowCount ) return;
+
+			/* Set row */
+			impldif_dlg.rowIndSelect = row;
+			toggle = TRUE;
+		}
+
+		/* If double click anywhere in row */
+		else if( event->type == GDK_2BUTTON_PRESS ) {
+			toggle = TRUE;
+		}
+	}
+	/* Toggle field selection */
+	if( toggle ) {
+		rec = gtk_clist_get_row_data(
+			clist, impldif_dlg.rowIndSelect );
+		if( rec ) {
+			rec->selected = ! rec->selected;
+			imp_ldif_update_row( clist );
 		}
 	}
 }
 
+/**
+ * Callback function to update LDIF field data from input fields.
+ * \param widget Widget (button).
+ * \param data   User data.
+ */
 static void imp_ldif_modify_pressed( GtkWidget *widget, gpointer data ) {
 	GtkCList *clist = GTK_CLIST(impldif_dlg.clist_field);
 	Ldif_FieldRec *rec;
@@ -338,10 +390,10 @@ static gboolean imp_ldif_field_move() {
 	return retVal;
 }
 
-/*
-* Move off fields page.
-* return: TRUE if OK to move off page.
-*/
+/**
+ * Test whether we can move of file page.
+ * \return <i>TRUE</i> if OK to move off page.
+ */
 static gboolean imp_ldif_file_move() {
 	gboolean retVal = FALSE;
 	gchar *sName;
@@ -393,7 +445,7 @@ static gboolean imp_ldif_file_move() {
 	return retVal;
 }
 
-/*
+/**
  * Display finish page.
  */
 static void imp_ldif_finish_show() {
@@ -417,6 +469,10 @@ static void imp_ldif_finish_show() {
 	gtk_widget_grab_focus(impldif_dlg.btnCancel);
 }
 
+/**
+ * Callback function to select previous page.
+ * \param widget Widget (button).
+ */
 static void imp_ldif_prev( GtkWidget *widget ) {
 	gint pageNum;
 
@@ -430,6 +486,10 @@ static void imp_ldif_prev( GtkWidget *widget ) {
 	imp_ldif_message();
 }
 
+/**
+ * Callback function to select next page.
+ * \param widget Widget (button).
+ */
 static void imp_ldif_next( GtkWidget *widget ) {
 	gint pageNum;
 
@@ -456,6 +516,11 @@ static void imp_ldif_next( GtkWidget *widget ) {
 	}
 }
 
+/**
+ * Callback function to cancel and close dialog.
+ * \param widget Widget (button).
+ * \param data   User data.
+ */
 static void imp_ldif_cancel( GtkWidget *widget, gpointer data ) {
 	gint pageNum;
 
@@ -466,6 +531,11 @@ static void imp_ldif_cancel( GtkWidget *widget, gpointer data ) {
 	gtk_main_quit();
 }
 
+/**
+ * Callback function to accept LDIF file selection.
+ * \param widget Widget (button).
+ * \param data   User data.
+ */
 static void imp_ldif_file_ok( GtkWidget *widget, gpointer data ) {
 	gchar *sFile;
 	AddressFileSelection *afs;
@@ -482,6 +552,11 @@ static void imp_ldif_file_ok( GtkWidget *widget, gpointer data ) {
 	gtk_widget_grab_focus( impldif_dlg.file_entry );
 }
 
+/**
+ * Callback function to cancel LDIF file selection dialog.
+ * \param widget Widget (button).
+ * \param data   User data.
+ */
 static void imp_ldif_file_cancel( GtkWidget *widget, gpointer data ) {
 	AddressFileSelection *afs = ( AddressFileSelection * ) data;
 	afs->cancelled = TRUE;
@@ -490,6 +565,10 @@ static void imp_ldif_file_cancel( GtkWidget *widget, gpointer data ) {
 	gtk_widget_grab_focus( impldif_dlg.file_entry );
 }
 
+/**
+ * Create LDIF file selection dialog.
+ * \param afs Address file selection data.
+ */
 static void imp_ldif_file_select_create( AddressFileSelection *afs ) {
 	GtkWidget *fileSelector;
 
@@ -503,6 +582,9 @@ static void imp_ldif_file_select_create( AddressFileSelection *afs ) {
 	afs->cancelled = TRUE;
 }
 
+/**
+ * Callback function to display LDIF file selection dialog.
+ */
 static void imp_ldif_file_select( void ) {
 	gchar *sFile;
 	if( ! _imp_ldif_file_selector_.fileSelector )
@@ -517,17 +599,34 @@ static void imp_ldif_file_select( void ) {
 	gtk_grab_add( _imp_ldif_file_selector_.fileSelector );
 }
 
+/**
+ * Callback function to handle dialog close event.
+ * \param widget Widget (dialog).
+ * \param event  Event object.
+ * \param data   User data.
+ */
 static gint imp_ldif_delete_event( GtkWidget *widget, GdkEventAny *event, gpointer data ) {
 	imp_ldif_cancel( widget, data );
 	return TRUE;
 }
 
+/**
+ * Callback function to respond to dialog key press events.
+ * \param widget Widget.
+ * \param event  Event object.
+ * \param data   User data.
+ */
 static void imp_ldif_key_pressed( GtkWidget *widget, GdkEventKey *event, gpointer data ) {
 	if (event && event->keyval == GDK_Escape) {
 		imp_ldif_cancel( widget, data );
 	}
 }
 
+/**
+ * Format notebook "file" page.
+ * \param pageNum Page (tab) number.
+ * \param pageLbl Page (tab) label.
+ */
 static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *vbox;
 	GtkWidget *table;
@@ -591,6 +690,11 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	impldif_dlg.name_entry = name_entry;
 }
 
+/**
+ * Format notebook fields page.
+ * \param pageNum Page (tab) number.
+ * \param pageLbl Page (tab) label.
+ */
 static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *vbox;
 	GtkWidget *vboxt;
@@ -711,6 +815,11 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	impldif_dlg.check_select = check_select;
 }
 
+/**
+ * Format notebook finish page.
+ * \param pageNum Page (tab) number.
+ * \param pageLbl Page (tab) label.
+ */
 static void imp_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *vbox;
 	GtkWidget *table;
@@ -772,6 +881,9 @@ static void imp_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 	impldif_dlg.labelRecords = labelRecs;
 }
 
+/**
+ * Create main dialog decorations (excluding notebook pages).
+ */
 static void imp_ldif_dialog_create() {
 	GtkWidget *window;
 	GtkWidget *vbox;
@@ -848,6 +960,9 @@ static void imp_ldif_dialog_create() {
 
 }
 
+/**
+ * Create import LDIF dialog.
+ */
 static void imp_ldif_create() {
 	imp_ldif_dialog_create();
 	imp_ldif_page_file( PAGE_FILE_INFO, _( "File Info" ) );
@@ -856,6 +971,12 @@ static void imp_ldif_create() {
 	gtk_widget_show_all( impldif_dlg.window );
 }
 
+/**
+ * Import LDIF file.
+ * \param  addrIndex Address index.
+ * \return Address book file of imported data, or <i>NULL</i> if import
+ *         was cancelled.
+ */
 AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex ) {
 	_importedBook_ = NULL;
 	_imp_addressIndex_ = addrIndex;
