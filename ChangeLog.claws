@@ -1,3 +1,10 @@
+2003-01-19 [christoph]	0.8.8claws118
+
+	* src/procmsg.c
+		fix infinite loop in procmsg_find_children
+
+	Patch submitted by Ivan F. Martinez <ivanfm@users.sourceforge.net>
+
 2003-01-19 [paul]	0.8.8claws117
 
 	* po/pt_BR.po
