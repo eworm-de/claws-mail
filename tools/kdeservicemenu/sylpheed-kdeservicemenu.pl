@@ -18,18 +18,18 @@
 
 unless ($ARGV[0]) { exit; }
 
-my $count = $#ARGV;
+my $sylpheed = "sylpheed --compose --attach";
 my $prefix = "/tmp/archive.";
 my ($suffix,$command) = find_sufncom($ARGV[0]);
 my ($sel,$att) = split_parts();
 
 if ($ARGV[0] eq "gzip" || $ARGV[0] eq "bzip2") {
-	exec "$sel"."sylpheed --compose --attach $att";
+	exec "$sel$sylpheed $att";
 } elsif ($ARGV[0] eq "attachfile") {
-	exec "sylpheed --compose --attach $sel";
+	exec "$sylpheed $sel";
 } else {
 	exec "$command $prefix$suffix $sel;"
-	    ."sylpheed --compose --attach $prefix$suffix";
+	    ."$sylpheed $prefix$suffix";
 }
 
 exit;
@@ -51,7 +51,8 @@ sub find_sufncom {
 sub split_parts {
 	my $selectedParts = "";
 	my $attachedParts = "";
-	while ($count > 0) {
+
+	for (my $count = $#ARGV; $count > 0; $count--) {
 		my @s = split("/", $ARGV[$count]);
 		my $p = pop(@s);
 		if ($ARGV[0] eq "gzip" || $ARGV[0] eq "bzip2") {
@@ -62,7 +63,6 @@ sub split_parts {
 		} else {
 			$selectedParts .= "\"$p\" ";
 		}
-		$count--;
 	}
 	return ($selectedParts,$attachedParts);
 }
