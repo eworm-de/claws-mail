@@ -35,6 +35,14 @@ typedef struct _Pop3Session	Pop3Session;
 
 #define POP3_SESSION(obj)	((Pop3Session *)obj)
 
+#define MAIL_RECEIVE_HOOKLIST	"mail_receive_hooklist"
+struct _MailReceiveData
+{
+	Pop3Session *session;
+	char *data;
+};
+typedef struct _MailReceiveData	MailReceiveData;
+
 typedef enum {
 	POP3_READY,
 	POP3_GREETING,

@@ -39,6 +39,7 @@
 #include "recv.h"
 
 #include "log.h"
+#include "hooks.h"
 
 static gint pop3_greeting_recv		(Pop3Session *session,
 					 const gchar *msg);
@@ -300,13 +301,21 @@ static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 {
 	gchar *file;
 	gint drop_ok;
+	MailReceiveData mail_receive_data;
+
+	mail_receive_data.session = session;
+	mail_receive_data.data = g_strndup(data, len);
+	hooks_invoke(MAIL_RECEIVE_HOOKLIST, &mail_receive_data);
 
 	file = get_tmp_file();
-	if (pop3_write_msg_to_file(file, data, len) < 0) {
+	if (pop3_write_msg_to_file(file, mail_receive_data.data,
+		strlen(mail_receive_data.data)) < 0) {
 		g_free(file);
+		g_free(mail_receive_data.data);
 		session->error_val = PS_IOERR;
 		return -1;
 	}
+	g_free(mail_receive_data.data);
 
 	/* drop_ok: 0: success 1: don't receive -1: error */
 	drop_ok = inc_drop_message(file, session);
