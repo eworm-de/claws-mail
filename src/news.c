@@ -190,50 +190,19 @@ static Session *news_session_new(const gchar *server, gushort port,
 #endif
 {
 	gchar buf[NNTPBUFSIZE];
-	NNTPSession *session;
-	NNTPSockInfo *nntp_sock;
+	Session *session;
 
 	g_return_val_if_fail(server != NULL, NULL);
 
 	log_message(_("creating NNTP connection to %s:%d ...\n"), server, port);
 
 #if USE_OPENSSL
-	if (userid && passwd)
-		nntp_sock = nntp_open_auth(server, port, buf, userid, passwd,
-					   ssl_type);
-	else
-		nntp_sock = nntp_open(server, port, buf, ssl_type);
+	session = nntp_session_new(server, port, buf, userid, passwd, ssl_type);
 #else
-	if (userid && passwd)
-		nntp_sock = nntp_open_auth(server, port, buf, userid, passwd);
-	else
-		nntp_sock = nntp_open(server, port, buf);
+	session = nntp_session_new(server, port, buf, userid, passwd);
 #endif
 
-	if (nntp_sock == NULL)
-		return NULL;
-
-	session = g_new0(NNTPSession, 1);
-	session_init(SESSION(session));
-	SESSION(session)->type             = SESSION_NEWS;
-	SESSION(session)->server           = g_strdup(server);
-	SESSION(session)->sock             = NULL;
-	SESSION(session)->data             = NULL;
-
-	SESSION(session)->destroy          = news_session_destroy;
-
-	session->nntp_sock                 = nntp_sock;
-	session->group                     = NULL;
-
-	return SESSION(session);
-}
-
-void news_session_destroy(Session *session)
-{
-	nntp_close(NNTP_SESSION(session)->nntp_sock);
-	NNTP_SESSION(session)->nntp_sock = NULL;
-
-	g_free(NNTP_SESSION(session)->group);
+	return session;
 }
 
 static Session *news_session_new_for_folder(Folder *folder)
@@ -268,7 +237,7 @@ static Session *news_session_new_for_folder(Folder *folder)
 	session = news_session_new(ac->nntp_server, port, userid, passwd);
 #endif
 	if ((session != NULL) && ac->use_nntp_auth && ac->use_nntp_auth_onconnect)
-		nntp_forceauth(NNTP_SESSION(session)->nntp_sock, buf, userid, passwd);
+		nntp_forceauth(NNTP_SESSION(session), buf, userid, passwd);
 
 	g_free(passwd);
 
@@ -293,7 +262,7 @@ NNTPSession *news_session_get(Folder *folder)
 		return NNTP_SESSION(rfolder->session);
 	}
 
-	if (nntp_mode(NNTP_SESSION(rfolder->session)->nntp_sock, FALSE)
+	if (nntp_mode(NNTP_SESSION(rfolder->session), FALSE)
 	    != NN_SUCCESS) {
 		log_warning("NNTP connection to %s:%d has been"
 			      " disconnected. Reconnecting...\n",
@@ -464,12 +433,11 @@ GSList *news_get_group_list(Folder *folder)
 			return NULL;
 		}
 
-		if (nntp_list(session->nntp_sock) != NN_SUCCESS) {
+		if (nntp_list(session) != NN_SUCCESS) {
 			g_free(filename);
 			return NULL;
 		}
-		if (recv_write_to_file
-			(session->nntp_sock->sock, filename) < 0) {
+		if (recv_write_to_file(SESSION(session)->sock, filename) < 0) {
 			log_warning("can't retrieve newsgroup list\n");
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(folder)->session = NULL;
@@ -581,7 +549,7 @@ gint news_post_stream(Folder *folder, FILE *fp)
 	session = news_session_get(folder);
 	if (!session) return -1;
 
-	ok = nntp_post(session->nntp_sock, fp);
+	ok = nntp_post(session, fp);
 	if (ok != NN_SUCCESS) {
 		log_warning("can't post article.\n");
 		return -1;
@@ -595,14 +563,14 @@ static gint news_get_article_cmd(NNTPSession *session, const gchar *cmd,
 {
 	gchar *msgid;
 
-	if (nntp_get_article(session->nntp_sock, cmd, num, &msgid)
+	if (nntp_get_article(session, cmd, num, &msgid)
 	    != NN_SUCCESS)
 		return -1;
 
 	debug_print("Message-Id = %s, num = %d\n", msgid, num);
 	g_free(msgid);
 
-	if (recv_write_to_file(session->nntp_sock->sock, filename) < 0) {
+	if (recv_write_to_file(SESSION(session)->sock, filename) < 0) {
 		log_warning("can't retrieve article %d\n", num);
 		return -1;
 	}
@@ -658,7 +626,7 @@ static gint news_select_group(NNTPSession *session, const gchar *group,
 	g_free(session->group);
 	session->group = NULL;
 
-	ok = nntp_group(session->nntp_sock, group, num, first, last);
+	ok = nntp_group(session, group, num, first, last);
 	if (ok == NN_SUCCESS)
 		session->group = g_strdup(group);
 
@@ -846,7 +814,7 @@ gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_list)
 
 #define READ_TO_LISTEND(hdr) \
 	while (!(buf[0] == '.' && buf[1] == '\r')) { \
-		if (sock_gets(session->nntp_sock->sock, buf, sizeof(buf)) < 0) { \
+		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) { \
 			log_warning(_("error occurred while getting %s.\n"), hdr); \
 			return msginfo; \
 		} \
@@ -866,12 +834,12 @@ MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 
 	log_message(_("getting xover %d in %s...\n"),
 		    num, item->path);
-	if (nntp_xover(session->nntp_sock, num, num) != NN_SUCCESS) {
+	if (nntp_xover(session, num, num) != NN_SUCCESS) {
 		log_warning(_("can't get xover\n"));
 		return NULL;
 	}
 	
-	if (sock_gets(session->nntp_sock->sock, buf, sizeof(buf)) < 0) {
+	if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
 		log_warning(_("error occurred while getting xover.\n"));
 		return NULL;
 	}
@@ -891,12 +859,12 @@ MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	msginfo->flags.tmp_flags = MSG_NEWS;
 	msginfo->newsgroups = g_strdup(item->path);
 
-	if (nntp_xhdr(session->nntp_sock, "to", num, num) != NN_SUCCESS) {
+	if (nntp_xhdr(session, "to", num, num) != NN_SUCCESS) {
 		log_warning(_("can't get xhdr\n"));
 		return msginfo;
 	}
 
-	if (sock_gets(session->nntp_sock->sock, buf, sizeof(buf)) < 0) {
+	if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
 		log_warning(_("error occurred while getting xhdr.\n"));
 		return msginfo;
 	}
@@ -905,12 +873,12 @@ MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 
 	READ_TO_LISTEND("xhdr (to)");
 
-	if (nntp_xhdr(session->nntp_sock, "cc", num, num) != NN_SUCCESS) {
+	if (nntp_xhdr(session, "cc", num, num) != NN_SUCCESS) {
 		log_warning(_("can't get xhdr\n"));
 		return msginfo;
 	}
 
-	if (sock_gets(session->nntp_sock->sock, buf, sizeof(buf)) < 0) {
+	if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
 		log_warning(_("error occurred while getting xhdr.\n"));
 		return msginfo;
 	}
@@ -935,13 +903,13 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 
 	log_message(_("getting xover %d - %d in %s...\n"),
 		    begin, end, item->path);
-	if (nntp_xover(session->nntp_sock, begin, end) != NN_SUCCESS) {
+	if (nntp_xover(session, begin, end) != NN_SUCCESS) {
 		log_warning(_("can't get xover\n"));
 		return NULL;
 	}
 
 	for (;;) {
-		if (sock_gets(session->nntp_sock->sock, buf, sizeof(buf)) < 0) {
+		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
 			log_warning(_("error occurred while getting xover.\n"));
 			return newlist;
 		}
@@ -972,7 +940,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 		}
 	}
 
-	if (nntp_xhdr(session->nntp_sock, "to", begin, end) != NN_SUCCESS) {
+	if (nntp_xhdr(session, "to", begin, end) != NN_SUCCESS) {
 		log_warning(_("can't get xhdr\n"));
 		return newlist;
 	}
@@ -980,7 +948,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 	llast = newlist;
 
 	for (;;) {
-		if (sock_gets(session->nntp_sock->sock, buf, sizeof(buf)) < 0) {
+		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
 			log_warning(_("error occurred while getting xhdr.\n"));
 			return newlist;
 		}
@@ -1002,7 +970,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 		llast = llast->next;
 	}
 
-	if (nntp_xhdr(session->nntp_sock, "cc", begin, end) != NN_SUCCESS) {
+	if (nntp_xhdr(session, "cc", begin, end) != NN_SUCCESS) {
 		log_warning(_("can't get xhdr\n"));
 		return newlist;
 	}
@@ -1010,7 +978,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 	llast = newlist;
 
 	for (;;) {
-		if (sock_gets(session->nntp_sock->sock, buf, sizeof(buf)) < 0) {
+		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
 			log_warning(_("error occurred while getting xhdr.\n"));
 			return newlist;
 		}

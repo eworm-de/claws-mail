@@ -1,3 +1,11 @@
+2003-03-27 [paul]	0.8.11claws59
+
+	* sync with 0.8.11cvs14
+		see ChangeLog 2003-03-27
+		
+	* src/selective_download.[ch]	** REMOVED **
+		really removed
+
 2003-03-27 [christoph]	0.8.11claws58
 
 	* src/folder.c

@@ -1,5 +1,11 @@
 2003-03-27
 
+	* src/nntp.[ch]
+	  src/news.[ch]: refactored. Remove NNTPSockInfo and use NNTPSession
+	  in nntp.c.
+
+2003-03-27
+
 	* src/inc.c: inc_pop3_session_do(): retrun appropriate error if
 	  Session::state == SESSION_ERROR.
 	* po/POTFILES.in: removed src/automaton.c and src/send.c.

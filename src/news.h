@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,31 +24,17 @@
 #include <stdio.h>
 
 #include "folder.h"
-#include "session.h"
-#include "nntp.h"
 
 typedef struct _NewsFolder	NewsFolder;
-typedef struct _NNTPSession	NNTPSession;
 typedef struct _NewsGroupInfo	NewsGroupInfo;
 
 #define NEWS_FOLDER(obj)	((NewsFolder *)obj)
-#define NNTP_SESSION(obj)	((NNTPSession *)obj)
 
 struct _NewsFolder
 {
 	RemoteFolder rfolder;
 
 	gboolean use_auth;
-};
-
-struct _NNTPSession
-{
-	Session session;
-
-	NNTPSockInfo *nntp_sock;
-	gchar *group;
-	gfloat fetch_base_percentage;
-	gfloat fetch_total_percentage;
 };
 
 struct _NewsGroupInfo
@@ -63,9 +49,6 @@ FolderClass *news_get_class		();
 Folder	*news_folder_new		(const gchar	*name,
 					 const gchar	*folder);
 void	 news_folder_destroy		(Folder		*folder);
-
-void news_session_destroy		(Session	*session);
-NNTPSession *news_session_get		(Folder		*folder);
 
 GSList *news_get_article_list		(Folder		*folder,
 					 FolderItem	*item,
