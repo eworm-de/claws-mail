@@ -1,3 +1,9 @@
+2004-12-04 [colin]	0.9.12cvs183
+
+	* src/compose.c
+		Fix saving of compose window position
+		when sending mail. Patch by Alfons.
+
 2004-12-04 [paul]	0.9.12cvs182
 
 	* ChangeLog
