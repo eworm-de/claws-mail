@@ -1079,7 +1079,7 @@ void subst_chars(gchar *str, gchar *orig, gchar subst)
 
 void subst_for_filename(gchar *str)
 {
-	subst_chars(str, " \t\r\n\"'/\\", '_');
+	subst_chars(str, "\t\r\n\\/*", '_');
 }
 
 void subst_for_shellsafe_filename(gchar *str)

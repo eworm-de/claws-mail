@@ -1,3 +1,9 @@
+2005-02-15 [colin]	1.0.1cvs8.1
+
+	* src/mimeview.c
+	* src/common/utils.c
+		Sync with HEAD
+
 2005-02-15 [colin]	1.0.1cvs7.3
 
 	* src/gtk/pluginwindow.c
