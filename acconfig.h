@@ -15,17 +15,17 @@
 /* Define if you want IPv6 support.  */
 #undef INET6
 
+/* Define if you use GPGME to support OpenPGP */
+#undef USE_GPGME
+
+/* Define if you use OpenSSL to support SSL */
+#undef USE_SSL
+
 /* Define if you want JPilot support in addressbook.  */
 #undef USE_JPILOT
 
 /* Define if you want LDAP support in addressbook.  */
 #undef USE_LDAP
-
-/* Define if we use GPGME to support OpenPGP */
-#undef USE_GPGME
-
-/* Define if you use OpenSSL to support SSL */
-#undef USE_SSL
 
 /* Define to `unsigned int' if <stddef.h> or <wchar.h> doesn't define.  */
 #undef wint_t
@@ -33,9 +33,6 @@
 /* Used to test for a u32 typedef */
 #undef HAVE_U32_TYPEDEF
 
-
-#undef PACKAGE
-#undef VERSION
 
 #undef CLAWS
 

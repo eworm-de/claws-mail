@@ -1,8 +1,12 @@
 src/about.c
 src/account.c
+src/addrbook.c
+src/addrcache.c
+src/address.c
 src/addressadd.c
 src/addressbook.c
-src/addr_compl.c
+src/addrindex.c
+src/addritem.c
 src/alertpanel.c
 src/automaton.c
 src/base64.c
@@ -31,6 +35,7 @@ src/imap.c
 src/import.c
 src/inc.c
 src/inputdialog.c
+src/jpilot.c
 src/logwindow.c
 src/main.c
 src/mainwindow.c
@@ -40,6 +45,7 @@ src/mbox.c
 src/mbox_folder.c
 src/menu.c
 src/messageview.c
+src/mgutils.c
 src/mh.c
 src/mimeview.c
 src/news.c
@@ -72,12 +78,14 @@ src/sigstatus.c
 src/smtp.c
 src/socket.c
 src/sourcewindow.c
+src/ssl.c
 src/statusbar.c
 src/summary_search.c
 src/summaryview.c
+src/syldap.c
 src/textview.c
 src/unmime.c
 src/utils.c
 src/uuencode.c
+src/vcard.c
 src/xml.c
-src/ssl.c

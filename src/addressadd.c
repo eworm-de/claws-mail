@@ -44,6 +44,7 @@
 #include "addritem.h"
 #include "addrbook.h"
 #include "addrindex.h"
+#include "manage_window.h"
 
 #include "pixmaps/book.xpm"
 #include "pixmaps/dir-open.xpm"
@@ -150,13 +151,10 @@ static void addressadd_create( void ) {
 	GtkWidget *tree_folder;
 	GtkWidget *vlbox;
 	GtkWidget *tree_win;
-	GtkWidget *hlbox;
 	GtkWidget *hbbox;
 	GtkWidget *hsep;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
-	GtkWidget *check_btn;
-	GtkWidget *file_btn;
 	GtkWidget *hsbox;
 	GtkWidget *statusbar;
 	gint top;

@@ -1,0 +1,337 @@
+Changes of Sylpheed
+
+* 0.6.1
+
+    * A crash bug caused by the typo of ja.po was fixed.
+    * Some bugs of configure were fixed.
+    * The bug that ignored Bcc: when using external command for sending was
+      fixed.
+    * A bug of auto-checking was fixed.
+    * Readability of the selected color-labelled line has been improved.
+    * Croatian message catalog has been added.
+
+* 0.6.0
+
+    * Some operations are enabled while receiving.
+    * A progress bar has been added to the status bar.
+    * SSL has been supported (POP3, SMTP, IMAP4).
+    * Color label is implemented.
+    * Sending with local sendmail command is enabled.
+    * Queued messages are now re-editable.
+    * Old messages will be removed after re-editing.
+    * Account information is now used when sending from queue.
+    * New account dialog will be displayed on the first run.
+    * Suppressed the output to status bar on IMAP4 and NNTP.
+    * The memory usage of the integrated XML parser has been reduced.
+    * The configure script has been improved.
+    * The bug that tried to fetch a nonexistent message on POP3 has been
+      fixed.
+    * The crash bugs of the summary view and the attachment property dialog
+      of the composition window has been fixed.
+
+* 0.5.3
+
+    * The performance of the summary view has been improved a bit.
+    * The option to expand / collapse message threads has been added.
+    * Unread messages are now displayed with bold font.
+    * The option to update all local folders after getting messages has
+      been added.
+    * "Add sender to address book" has been implemented.
+    * The position of displayed message is now kept after updating the
+      summary view.
+    * A security problem of POP3 has been fixed.
+    * Bold and small fonts are now configurable with ~/.sylpheed/sylpheedrc.
+    * Some other bugs have been fixed.
+
+* 0.5.2
+
+    * The English manual has been added.
+    * Polish message catalog has been added.
+    * Accounts are automatically selected on reply.
+    * Unnecessary return codes in user-defined header are removed.
+    * UI of date format setting has been improved.
+    * The bug that couldn't handle escaped characters on IMAP4 has been fixed.
+    * The bug that suspended the process after opening attached files has
+      been fixed.
+    * Workaround for raw-JIS code in header fields has been done again.
+    * The bug that couldn't handle some responses on NNTP has been fixed.
+    * Some other minor fixes have been done.
+
+* 0.5.1
+
+    * Expand/collapse state of folders is now preserved.
+    * Newsgroups can be selected from the list dialog.
+    * Workaround for raw-JIS code in header fields.
+    * The current read size in some dialogs are displayed with human-readable
+      format.
+    * Cc can be used in the reply format.
+    * Base64 data with unusual line length became decodable.
+
+* 0.5.0
+
+    * A fix for the bug that prevented the removal of selected IMAP4 folder.
+
+* 0.5.0pre4
+
+    * Gettext has been updated to 0.10.38.
+    * Some more outgoing character sets became specifiable without libjconv.
+    * --enable-threads option has been removed temporarily.
+    * IMAP4 mailbox status is now updated while scanning tree.
+    * IMAP4 and NNTP port number is now specifiable.
+    * The Japanese manual has been updated.
+    * Some UI and other fixes have been done.
+
+* 0.5.0pre3
+
+    * Autoscan of IMAP4 directory has been implemented.
+    * IMAP4 server directory prefix became specifiable.
+    * Some other bugfixes have been done.
+
+* 0.5.0pre2
+
+    * Bugfixes for IMAP4. Logs are now also output to file.
+
+* 0.5.0pre1
+
+    * Many bugfixes for IMAP4, and some modifications for user interface.
+
+* 0.4.99
+
+    * Attached files can be opened with arbitrary programs.
+    * The progress dialog is shown when sending a message.
+    * User-defined headers can be added.
+    * On the folder tree, unread mark is added to closed folders which have
+      some unread subfolders.
+    * Command line options such as --help and --version can now be executed
+      without X.
+    * NNTP authentication has been supported.
+    * Summary view shows a dialog to process the unexecuted marks when
+      changing the current folder.
+    * `Reply to sender' has been added.
+    * In IMAP4rev1, move, copy, delete and namespace have been implemented.
+      INBOX and trash folder are automatically added when creating a new
+      IMAP4 account.
+    * Many other bugfixes have been done.
+
+* 0.4.66
+
+    * The bug that didn't calculate MD5 correctly on big endian machines
+      (like PowerPC) has been fixed.
+    * The incorporation dialog has been improved.
+    * Auto mail checking has been implemented.
+    * Headers displayed on the message view are now customizable.
+    * Some other bugfixes have been done.
+
+* 0.4.65
+
+    * The items of preferences dialog have been reorganized.
+    * The header pane can be toggled on and off now.
+    * Page scroll step is now selectable between one page and half page.
+    * Messages can be exported as mbox format.
+    * GnuPG support code has been updated.
+    * The format of date in summary view became freely definable.
+    * The MD5 routine by RSA has been replaced by an FSF implementation.
+    * The progress dialog of POP3 has been considerably improved.
+    * IMAP4 folder creation/deletion is enabled.
+    * A bug in IMAP4 that caused infinite loop and buffer overrun has been
+      fixed.
+    * A socket is now handled with abstraction layer.
+    * Some other bugs have been fixed.
+
+* 0.4.64
+
+    * The built-in XML parser has been modified so that it escapes certain
+      characters, and supports multiple-lined tag.
+    * The bug that caused infinite loop when illegal XML file was given was
+      fixed.
+    * The problem when not moving to inbox after getting new mail was fixed.
+    * The bug that made Sylpheed crash when clicking Cancel button while
+      getting new mail was fixed.
+
+* 0.4.63
+
+    * Some menu items are sorted out.
+    * `Attract by subject' is speeded up.
+    * Smooth scrolling of message text is enabled.
+    * Generic mark and Deleted mark became permanent.
+    * Replied and Forwarded mark are enabled.
+    * The design of New and Unread mark is changed.
+    * Generic mark and Unread mark can be toggled with clicking summary view.
+    * Long References header is truncated now.
+    * Updated the GnuPG support code.
+    * Messages can be moved across file systems.
+    * Message date is converted into local time when displaying.
+    * The colors of quoted part and URI of messages can be specified, and
+      they are specifiable according to quotation level.
+    * It is enabled to keep the current folder after receiving new messages.
+    * The speed of cache reading is improved.
+    * Message copy is implemented.
+    * Many other bugfixes have been done.
+
+* 0.4.62
+
+    * Prohibition of multiple execution and operation by command line
+      options are enabled.
+    * Workaround was done for duplicated From_ line in mbox file.
+    * HTML - > text converter is implemented.
+    * SMTP AUTH is supported.
+    * FIFO is allowed for signature file.
+    * Security probrems related to tmpfile() and chmod() are fixed.
+    * A bug was fixed that couldn't open attached files which include space.
+    * Address completion is enhanced.
+    * Move and remove are enabled in IMAP4.
+    * Message source can be displayed.
+    * Some other bugfixes.
+
+* 0.4.61
+
+    * Bugs in address completion, sending, and folder view have been fixed.
+
+* 0.4.60
+
+    * The horizontal scroll bar is added on the summary view.
+    * Drag and drop from the summary view to the folder view is enabled.
+    * Preliminary support of GnuPG is added (needs GPGME).
+    * `Update folder tree' is performed correctly now.
+    * Receiving dialog is improved.
+    * `Select all matched' is enabled in the summary search.
+    * Some new toolbar icons are added.
+    * Attached files can be opened with metamail command.
+    * Address completion with tab key is enabled in the address entry on
+      the composition window.
+    * Some many other bugfixes.
+
+* 0.4.52
+
+    * News posting feature is implemented.
+    * Number of unread messages is now displayed at the side of folder name.
+    * Accounts are now selectable on the composition window.
+    * Some other bugfixes.
+
+* 0.4.51
+
+    * A bug was fixed that didn't incorporate spool file correctly.
+    * From_ line is now recognized as separator of messages even if the
+      previous line isn't empty.
+    * A bug was fixed that printed warning when sending message from queue.
+
+* 0.4.50
+
+    * The architecture were overhauled, and folders are now managed by
+      object-oriented approach.
+    * The location of mailbox became specifiable, and multiple mailboxes
+      are now manageable simultaneously.
+    * Summary scrolls only on the edge when messages are selected.
+    * News servers are now added using account creation.
+    * In IMAP4, the reading of existing folders is enabled.
+    * Interfaces are modified a bit.
+
+* 0.4.9
+
+    * Fixed some bugs and updated message catalogs.
+
+* 0.4.8
+
+    * Fixed a bug that locked the process if the status bar was hidden.
+    * Fixed a bug that put a garbage to charset if the outgoing character
+      set was specified and non-ascii characters were used in subject.
+    * Added Portuguese message catalog.
+
+* 0.4.7
+
+    * Changed the ruler to the more graphical one.
+    * Made the state of status bar get preserved.
+    * Made it configurable for each accounts whether to receive messages
+      when getting from all accounts.
+    * Updated README.
+
+* 0.4.6
+
+    * Added a ruler to the composition window.
+    * Added the list of the compiled-in features and clickable URI to the
+      official web site to the about dialog.
+    * Added `Show all header' to the right-click menu at the summary.
+    * Fixed a bug on quotation.
+    * Fixed memory leak bugs.
+    * Some other fixes.
+
+* 0.4.5
+
+    * Implemented line-wrapping functions.
+    * Added supports for some codesets.
+    * Added Chinese message catalog.
+    * Extended quotation format.
+    * Made the settings of the menu shortcuts preservable.
+    * Fixed a probrem that caused to show garbage characters if the codeset
+      wasn't set.
+    * Some other bug fixes.
+
+* 0.4.4
+
+    * Enhanced the support for 8bit code (ex. ISO-8859-1). Other bug fixes.
+
+* 0.4.3
+
+    * Implemented the draft message function.
+    * Made the summary get the proper display on the queue folder.
+    * Changed the color of unread mark from green to blue.
+    * Some other bug fixes.
+
+* 0.4.2
+
+    * Added preliminary IMAP4 codes.
+    * Enhanced the MIME message parsing routines.
+    * Changed the display method of HeaderView.
+    * Modified the codeset conversion routines.
+    * Added Spanish message catalog.
+    * Removed `Reply with quote', and added `Reply to all'.
+    * Implemented `Forward as an attachment'.
+    * Some other bug fixes.
+
+* 0.4.1
+
+    * Fixed the probrem of codeconv.c that prevented compiling.
+    * Modified sylpheed.spec.
+
+* 0.4.0
+
+    * Modified the layout of the preferences dialog widgets.
+    * Fixed the probrem of Japanese processing on FreeBSD.
+    * Workaround for the malformed References: header generated by OE5 :(
+
+* 0.3.99
+
+    * Applied Kondara patch and enabled to support many locales, including
+      UTF-8 (Unicode), when using libjconv.
+    * Integrated the manual written by BONAIM.
+    * Added the option that specifies whether to display short headers on
+      message view or not.
+    * Disabled IPv6 support by default.
+    * Added copyright notice to the source files.
+    * Some bug fixes.
+
+* 0.3.29
+
+    * Supported external editor.
+    * Supported Content-Transfer-Encoding: x-uuencode.
+    * Replaced system() with execvp().
+    * Modified the reversed order of `Yes' and `No' at some alert dialogs.
+    * Enabled to open a message with new window.
+    * Made it display the simplified headers if the part of multipart
+      message is text/plain.
+    * Enabled to use font selection dialog on the setting of message font.
+    * Modified so that it processes address correctly if the part of it is
+      quoted.
+    * Added `None (local)' to the menu of protocol on the account setting.
+    * Some other fixes.
+
+* 0.3.28
+
+    * Supported ISO-8859-1.
+    * Fixed the size of the dialogs.
+    * Made it saves the size of widgets and the width of columns.
+    * Added the French message catalog.
+    * Changed the variable name of filtering (check the auto-filtering
+      option again if you've turned it on before).
+    * Fixed some bugs.
+

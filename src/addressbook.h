@@ -28,6 +28,7 @@
 void addressbook_open			(Compose	*target);
 void addressbook_set_target_compose	(Compose	*target);
 Compose *addressbook_get_target_compose	(void);
+void addressbook_read_file		(void);
 void addressbook_export_to_file		(void);
 gint addressbook_obj_name_compare	(gconstpointer	 a,
 					 gconstpointer	 b);

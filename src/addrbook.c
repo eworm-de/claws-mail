@@ -21,8 +21,9 @@
  * General functions for accessing external address book files.
  */
 
-#include <stdio.h>
 #include <glib.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <dirent.h>
 #include <sys/stat.h>
 #include <math.h>
@@ -36,6 +37,7 @@
 
 #ifndef DEV_STANDALONE
 #include "prefs.h"
+#include "codeconv.h"
 #endif
 
 #define ADDRBOOK_MAX_SEARCH_COUNT 1000
@@ -49,7 +51,7 @@
 */
 AddressBookFile *addrbook_create_book() {
 	AddressBookFile *book;
-	gint t;
+
 	book = g_new0( AddressBookFile, 1 );
 	book->name = NULL;
 	book->path = NULL;
@@ -88,40 +90,41 @@ void addrbook_set_accessed( AddressBookFile *book, const gboolean value ) {
 	book->accessFlag = value;
 }
 gboolean addrbook_get_modified( AddressBookFile *book ) {
-	g_return_if_fail( book != NULL );
+	g_return_val_if_fail( book != NULL, FALSE );
 	return book->modifyFlag;
 }
 gboolean addrbook_get_accessed( AddressBookFile *book ) {
-	g_return_if_fail( book != NULL );
+	g_return_val_if_fail( book != NULL, FALSE );
 	return book->accessFlag;
 }
 gboolean addrbook_get_read_flag( AddressBookFile *book ) {
-	g_return_if_fail( book != NULL );
+	g_return_val_if_fail( book != NULL, FALSE );
 	return book->readFlag;
 }
 gint addrbook_get_status( AddressBookFile *book ) {
-	g_return_if_fail( book != NULL );
+	g_return_val_if_fail( book != NULL, -1 );
 	return book->retVal;
 }
 ItemFolder *addrbook_get_root_folder( AddressBookFile *book ) {
-	g_return_if_fail( book != NULL );
+	g_return_val_if_fail( book != NULL, NULL );
 	return addrcache_get_root_folder( book->addressCache );
 }
 GList *addrbook_get_list_folder( AddressBookFile *book ) {
-	g_return_if_fail( book != NULL );
+	g_return_val_if_fail( book != NULL, NULL );
 	return addrcache_get_list_folder( book->addressCache );
 }
 GList *addrbook_get_list_person( AddressBookFile *book ) {
-	g_return_if_fail( book != NULL );
+	g_return_val_if_fail( book != NULL, NULL );
 	return addrcache_get_list_person( book->addressCache );
 }
 gchar *addrbook_get_name( AddressBookFile *book ) {
-	g_return_if_fail( book != NULL );
+	g_return_val_if_fail( book != NULL, NULL );
 	return book->name;
 }
 
 static gint addrcache_free_item_vis( gpointer key, gpointer value, gpointer data ) {
 	AddrItemObject *obj = ( AddrItemObject * ) value;
+
 	if( ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON ) {
 		addritem_free_item_person( ( ItemPerson * ) obj );
 	}
@@ -203,6 +206,7 @@ void addrbook_free_book( AddressBookFile *book ) {
 */
 void addrbook_print_item_list( GList *list, FILE *stream ) {
 	GList *node = list;
+
 	while( node ) {
 		AddrItemObject *obj = node->data;
 		if( ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON ) {
@@ -224,6 +228,7 @@ void addrbook_print_item_list( GList *list, FILE *stream ) {
 */
 void addrbook_print_book( AddressBookFile *book, FILE *stream ) {
 	g_return_if_fail( book != NULL );
+
 	fprintf( stream, "AddressBook:\n" );
 	fprintf( stream, "\tname  : '%s'\n", book->name );
 	fprintf( stream, "\tpath  : '%s'\n", book->path );
@@ -236,9 +241,10 @@ void addrbook_print_book( AddressBookFile *book, FILE *stream ) {
 * Dump entire address book traversing folders.
 */
 void addrbook_dump_book( AddressBookFile *book, FILE *stream ) {
-	GList *node;
 	ItemFolder *folder;
+
 	g_return_if_fail( book != NULL );
+
 	addrbook_print_book( book, stream );
 	folder = book->addressCache->rootFolder;
 	addritem_print_item_folder( folder, stream );
@@ -251,7 +257,9 @@ void addrbook_dump_book( AddressBookFile *book, FILE *stream ) {
 */
 ItemGroup *addrbook_remove_group( AddressBookFile *book, ItemGroup *group ) {
 	ItemGroup *item;
-	g_return_if_fail( book != NULL );
+
+	g_return_val_if_fail( book != NULL, NULL );
+
 	item = addrcache_remove_group( book->addressCache, group );
 	if( item ) book->dirtyFlag = TRUE;
 	return item;
@@ -264,7 +272,9 @@ ItemGroup *addrbook_remove_group( AddressBookFile *book, ItemGroup *group ) {
 */
 ItemPerson *addrbook_remove_person( AddressBookFile *book, ItemPerson *person ) {
 	ItemPerson *item;
-	g_return_if_fail( book != NULL );
+
+	g_return_val_if_fail( book != NULL, NULL );
+
 	item = addrcache_remove_person( book->addressCache, person );
 	if( item ) book->dirtyFlag = TRUE;
 	return item;
@@ -278,7 +288,9 @@ ItemPerson *addrbook_remove_person( AddressBookFile *book, ItemPerson *person ) 
 */
 ItemEMail *addrbook_person_remove_email( AddressBookFile *book, ItemPerson *person, ItemEMail *email ) {
 	ItemEMail *item;
-	g_return_if_fail( book != NULL );
+
+	g_return_val_if_fail( book != NULL, NULL );
+
 	item = addrcache_person_remove_email( book->addressCache, person, email );
 	if( item ); book->dirtyFlag = TRUE;
 	return item;
@@ -552,7 +564,6 @@ static void addrbook_parse_member( AddressBookFile *book, XMLFile *file, ItemGro
 static void addrbook_parse_member_list( AddressBookFile *book, XMLFile *file, ItemGroup *group ){
 	GList *attr;
 	guint prev_level;
-	gchar *element;
 
 	for (;;) {
 		prev_level = file->level;
@@ -636,7 +647,6 @@ static void addrbook_parse_folder_item( AddressBookFile *book, XMLFile *file, It
 static void addrbook_parse_folder_list( AddressBookFile *book, XMLFile *file, ItemFolder *folder ){
 	GList *attr;
 	guint prev_level;
-	gchar *element;
 
 	for (;;) {
 		prev_level = file->level;
@@ -868,7 +878,8 @@ static void addrbook_resolve_folder_items( AddressBookFile *book ) {
 gint addrbook_read_data( AddressBookFile *book ) {
 	XMLFile *file = NULL;
 	gchar *fileSpec = NULL;
-	g_return_if_fail( book != NULL );
+
+	g_return_val_if_fail( book != NULL, -1 );
 
 	fileSpec = g_strconcat( book->path, G_DIR_SEPARATOR_S, book->fileName, NULL );
 	book->retVal = MGU_OPEN_FILE;
@@ -926,6 +937,7 @@ static void addrbook_write_item_person_vis( gpointer key, gpointer value, gpoint
 	AddrItemObject *obj = ( AddrItemObject * ) value;
 	FILE *fp = ( FILE * ) data;
 	GList *node;
+
 	if( ! obj ) return;
 	if( ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON ) {
 		ItemPerson *person = ( ItemPerson * ) value;
@@ -980,6 +992,7 @@ static void addrbook_write_item_person_vis( gpointer key, gpointer value, gpoint
 static void addrbook_write_folder_group( ItemFolder *parent, FILE *fp ) {
 	GList *nodeGrp = parent->listGroup;
 	GList *node;
+
 	while( nodeGrp ) {
 		ItemGroup *group = nodeGrp->data;
 		if( group ) {
@@ -1022,6 +1035,7 @@ static void addrbook_write_item_group_vis( gpointer key, gpointer value, gpointe
 	AddrItemObject *obj = ( AddrItemObject * ) value;
 	FILE *fp = ( FILE * ) data;
 	GList *node;
+
 	if( ! obj ) return;
 	if( ADDRITEM_TYPE(obj) == ITEMTYPE_GROUP ) {
 		ItemGroup *group = ( ItemGroup * ) value;
@@ -1057,6 +1071,7 @@ static void addrbook_write_item_group_vis( gpointer key, gpointer value, gpointe
 static void addrbook_write_folder_folder( ItemFolder *parent, FILE *fp ) {
 	GList *nodeFold = parent->listFolder;
 	GList *node;
+
 	while( nodeFold ) {
 		ItemFolder *folder = nodeFold->data;
 		addrbook_write_folder_folder( folder, fp );
@@ -1115,6 +1130,7 @@ static void addrbook_write_item_folder_vis( gpointer key, gpointer value, gpoint
 	AddrItemObject *obj = ( AddrItemObject * ) value;
 	FILE *fp = ( FILE * ) data;
 	GList *node;
+
 	if( ! obj ) return;
 	if( ADDRITEM_TYPE(obj) == ITEMTYPE_FOLDER ) {
 		ItemFolder *folder = ( ItemFolder * ) value;
@@ -1176,8 +1192,8 @@ gint addrbook_write_to( AddressBookFile *book, gchar *newFile ) {
 	PrefFile *pfile;
 #endif
 
-	g_return_if_fail( book != NULL );
-	g_return_if_fail( newFile != NULL );
+	g_return_val_if_fail( book != NULL, -1 );
+	g_return_val_if_fail( newFile != NULL, -1 );
 
 	fileSpec = g_strconcat( book->path, G_DIR_SEPARATOR_S, newFile, NULL );
 
@@ -1230,7 +1246,7 @@ gint addrbook_write_to( AddressBookFile *book, gchar *newFile ) {
 * return: Status code.
 */
 gint addrbook_save_data( AddressBookFile *book ) {
-	g_return_if_fail( book != NULL );
+	g_return_val_if_fail( book != NULL, -1 );
 
 	book->retVal = MGU_NO_FILE;
 	if( book->fileName == NULL || *book->fileName == '\0' ) return book->retVal;
@@ -1259,7 +1275,9 @@ ItemEMail *addrbook_move_email_before( AddressBookFile *book, ItemPerson *person
 			ItemEMail *itemMove, ItemEMail *itemTarget )
 {
 	ItemEMail *email = NULL;
-	g_return_if_fail( book != NULL );
+
+	g_return_val_if_fail( book != NULL, NULL );
+
 	email = addritem_move_email_before( person, itemMove, itemTarget );
 	if( email ) {
 		book->dirtyFlag = TRUE;
@@ -1278,7 +1296,9 @@ ItemEMail *addrbook_move_email_after( AddressBookFile *book, ItemPerson *person,
 			ItemEMail *itemMove, ItemEMail *itemTarget )
 {
 	ItemEMail *email = NULL;
-	g_return_if_fail( book != NULL );
+
+	g_return_val_if_fail( book != NULL, NULL );
+
 	email = addritem_move_email_after( person, itemMove, itemTarget );
 	if( email ) {
 		book->dirtyFlag = TRUE;
@@ -1422,7 +1442,7 @@ ItemPerson *addrbook_add_address_list( AddressBookFile *book, ItemFolder *folder
 	ItemFolder *f = folder;
 	GList *node;
 
-	g_return_if_fail( book != NULL );
+	g_return_val_if_fail( book != NULL, NULL );
 
 	if( ! f ) f = book->addressCache->rootFolder;
 	person = addritem_create_item_person();
@@ -1447,6 +1467,7 @@ ItemPerson *addrbook_add_address_list( AddressBookFile *book, ItemFolder *folder
 */
 static void addrbook_load_hash_table_email_vis( gpointer key, gpointer value, gpointer data ) {
 	AddrItemObject *obj = ( AddrItemObject * ) value;
+
 	if( ADDRITEM_TYPE(obj) == ITEMTYPE_EMAIL ) {
 		GHashTable *table = ( GHashTable * ) data;
 		gchar *newKey = g_strdup( key );
@@ -1471,13 +1492,15 @@ static void addrbook_load_hash_table_email( AddressBookFile *book, GHashTable *t
 */
 static void addrbook_build_avail_email_vis( gpointer key, gpointer value, gpointer data ) {
 	AddrItemObject *obj = ( AddrItemObject * ) value;
+
 	if( ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON ) {
 		AddressBookFile *book = data;
 		ItemPerson *person = ( ItemPerson * ) obj;
 		GList *node = person->listEMail;
 		while( node ) {
 			ItemEMail *email = node->data;
-			gchar *newKey = g_strdup( ADDRITEM_ID(email) );
+			//gchar *newKey = g_strdup( ADDRITEM_ID(email) );
+
 			if( ! g_hash_table_lookup( book->tempHash, ADDRITEM_ID(email) ) ) {
 				book->tempList = g_list_append( book->tempList, email );
 			}
@@ -1497,7 +1520,7 @@ GList *addrbook_get_available_email_list( AddressBookFile *book, ItemGroup *grou
 	GList *list = NULL;
 	GHashTable *table;
 
-	g_return_if_fail( book != NULL );
+	g_return_val_if_fail( book != NULL, NULL );
 
 	// Load hash table with group email entries
 	table = g_hash_table_new( g_str_hash, g_str_equal );
@@ -1561,7 +1584,8 @@ void addrbook_update_group_list( AddressBookFile *book, ItemGroup *group, GList 
 ItemGroup *addrbook_add_group_list( AddressBookFile *book, ItemFolder *folder, GList *listEMail ) {
 	ItemGroup *group = NULL;
 	ItemFolder *f = folder;
-	g_return_if_fail( book != NULL );
+
+	g_return_val_if_fail( book != NULL, NULL );
 
 	if( ! f ) f = book->addressCache->rootFolder;
 	group = addritem_create_item_group();
@@ -1581,7 +1605,8 @@ ItemGroup *addrbook_add_group_list( AddressBookFile *book, ItemFolder *folder, G
 ItemFolder *addrbook_add_new_folder( AddressBookFile *book, ItemFolder *parent ) {
 	ItemFolder *folder = NULL;
 	ItemFolder *p = parent;
-	g_return_if_fail( book != NULL );
+
+	g_return_val_if_fail( book != NULL, NULL );
 
 	if( ! p ) p = book->addressCache->rootFolder;
 	folder = addritem_create_item_folder();
@@ -1644,6 +1669,7 @@ void addrbook_update_attrib_list( AddressBookFile *book, ItemPerson *person, GLi
 */
 void addrbook_add_attrib_list( AddressBookFile *book, ItemPerson *person, GList *listAttrib ) {
 	GList *node;
+
 	g_return_if_fail( book != NULL );
 	g_return_if_fail( person != NULL );
 
@@ -1666,6 +1692,7 @@ void addrbook_add_attrib_list( AddressBookFile *book, ItemPerson *person, GList 
 */
 AddressBookFile *addrbook_item_get_bookfile( AddrItemObject *aio ) {
 	AddressBookFile *book = NULL;
+
 	if( aio ) {
 		ItemFolder *parent = NULL;
 		ItemFolder *root = NULL;
@@ -1695,7 +1722,9 @@ AddressBookFile *addrbook_item_get_bookfile( AddrItemObject *aio ) {
 */
 ItemFolder *addrbook_remove_folder( AddressBookFile *book, ItemFolder *folder ) {
 	ItemFolder *f;
-	g_return_if_fail( book != NULL );
+
+	g_return_val_if_fail( book != NULL, NULL );
+
 	f = addrcache_remove_folder( book->addressCache, folder );
 	if( f ) book->dirtyFlag = TRUE;
 	return f;
@@ -1708,7 +1737,9 @@ ItemFolder *addrbook_remove_folder( AddressBookFile *book, ItemFolder *folder ) 
 */
 ItemFolder *addrbook_remove_folder_delete( AddressBookFile *book, ItemFolder *folder ) {
 	ItemFolder *f;
-	g_return_if_fail( book != NULL );
+
+	g_return_val_if_fail( book != NULL, NULL );
+
 	f = addrcache_remove_folder_delete( book->addressCache, folder );
 	if( f ) book->dirtyFlag = TRUE;
 	return f;
@@ -1733,7 +1764,7 @@ GList *addrbook_get_bookfile_list( AddressBookFile *book ) {
 	long int val, maxval;
 	GList *fileList = NULL;
 
-	g_return_if_fail( book != NULL );
+	g_return_val_if_fail( book != NULL, NULL );
 
 	if( book->path == NULL || *book->path == '\0' ) {
 		book->retVal = MGU_NO_PATH;
@@ -1764,7 +1795,7 @@ GList *addrbook_get_bookfile_list( AddressBookFile *book ) {
 	maxval = -1;
 
 	while( ( entry = readdir( dp ) ) != NULL ) {
-		gchar **endptr = NULL;
+		gchar *endptr = NULL;
 		gint i;
 		gboolean flg;
 
@@ -1894,7 +1925,6 @@ static void addrbook_chkparse_attr_list( AddressBookFile *book, XMLFile *file ){
 */
 static void addrbook_chkparse_person( AddressBookFile *book, XMLFile *file ) {
 	GList *attr;
-	gchar *name, *value;
 
 	attr = xml_get_current_tag_attr(file);
 	// addrbook_show_attribs( attr );
@@ -1942,7 +1972,6 @@ static void addrbook_chkparse_member_list( AddressBookFile *book, XMLFile *file 
 */
 static void addrbook_chkparse_group( AddressBookFile *book, XMLFile *file ) {
 	GList *attr;
-	gchar *name, *value;
 
 	attr = xml_get_current_tag_attr(file);
 	// addrbook_show_attribs( attr );
@@ -1984,7 +2013,6 @@ static void addrbook_chkparse_folder_list( AddressBookFile *book, XMLFile *file 
 */
 static void addrbook_chkparse_folder( AddressBookFile *book, XMLFile *file ) {
 	GList *attr;
-	gchar *name, *value;
 
 	attr = xml_get_current_tag_attr(file);
 	// addrbook_show_attribs( attr );
@@ -2001,7 +2029,6 @@ static void addrbook_chkparse_folder( AddressBookFile *book, XMLFile *file ) {
 */
 static gboolean addrbook_chkread_tree( AddressBookFile *book, XMLFile *file ) {
 	GList *attr;
-	gchar *name, *value;
 	gboolean retVal;
 
 	if( xml_get_dtd( file ) ) {
@@ -2056,7 +2083,7 @@ gint addrbook_test_read_file( AddressBookFile *book, gchar *fileName ) {
 	XMLFile *file = NULL;
 	gchar *fileSpec = NULL;
 
-	g_return_if_fail( book != NULL );
+	g_return_val_if_fail( book != NULL, -1 );
 
 	fileSpec = g_strconcat( book->path, G_DIR_SEPARATOR_S, fileName, NULL );
 	book->retVal = MGU_OPEN_FILE;
@@ -2084,7 +2111,7 @@ gint addrbook_test_read_file( AddressBookFile *book, gchar *fileName ) {
 * Return: List of items, or NULL if none.
 */
 GList *addrbook_get_all_persons( AddressBookFile *book ) {
-	g_return_if_fail( book != NULL );
+	g_return_val_if_fail( book != NULL, NULL );
 	return addrcache_get_all_persons( book->addressCache );
 }
 
@@ -2102,7 +2129,9 @@ ItemPerson *addrbook_add_contact( AddressBookFile *book, ItemFolder *folder, con
 		const gchar *address, const gchar *remarks )
 {
 	ItemPerson *person = NULL;
-	g_return_if_fail( book != NULL );
+
+	g_return_val_if_fail( book != NULL, NULL );
+
 	person = addrcache_add_contact( book->addressCache, folder, name, address, remarks );
 	if( person ) book->dirtyFlag = TRUE;
 	return person;
@@ -2111,4 +2140,3 @@ ItemPerson *addrbook_add_contact( AddressBookFile *book, ItemFolder *folder, con
 /*
 * End of Source.
 */
-

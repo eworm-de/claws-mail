@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,10 +32,14 @@
 #include "addrbook.h"
 #include "addritem.h"
 
+#include "mgutils.h"
+
 #include "prefs_common.h"
 
 #include "alertpanel.h"
 #include "inputdialog.h"
+#include "manage_window.h"
+#include "gtkutils.h"
 
 #define ADDRESSBOOK_GUESS_FOLDER_NAME	"NewFolder"
 #define ADDRESSBOOK_GUESS_GROUP_NAME	"NewGroup"
@@ -238,14 +242,11 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	GtkWidget *clist_group;
 	GtkWidget *clist_avail;
 
-	GtkWidget *vboxb;
-	GtkWidget *vbuttonbox;
 	GtkWidget *buttonGroup;
 	GtkWidget *buttonAvail;
 	gint top;
 
 	gchar *titles[ GROUP_N_COLS ] = { _( "Name" ), _("E-Mail Address"), _("Remarks") };
-	gchar *text;
 	gint i;
 
 	window = gtk_window_new(GTK_WINDOW_DIALOG);
@@ -405,7 +406,7 @@ static GList *edit_group_build_email_list() {
 	GList *listEMail = NULL;
 	ItemEMail *email;
 	gint row = 0;
-	while( email = gtk_clist_get_row_data( clist, row ) ) {
+	while( (email = gtk_clist_get_row_data( clist, row )) ) {
 		listEMail = g_list_append( listEMail, email );
 		row++;
 	}

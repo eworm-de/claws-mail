@@ -427,6 +427,9 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/Separate f_older tree"),	NULL, NULL, SEPARATE_ACTION + SEPARATE_FOLDER, "<ToggleItem>"},
 	{N_("/_View/Separate m_essage view"),	NULL, NULL, SEPARATE_ACTION + SEPARATE_MESSAGE, "<ToggleItem>"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/View _source"),		"<control>U", view_source_cb, 0, NULL},
+	{N_("/_View/Show all _header"),		"<control>H", header_window_show_cb, 0, NULL},
+	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Code set"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/_Code set/_Auto detect"),
 	 NULL, set_charset_cb, C_AUTO, "<RadioItem>"},
@@ -519,9 +522,12 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/Forward as a_ttachment"),
 						"<shift><control>F", reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/Re-_edit"),		NULL, reedit_cb, 0, NULL},
+	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/M_ove..."),		"<alt>O", move_to_cb, 0, NULL},
 	{N_("/_Message/_Copy..."),		NULL, copy_to_cb, 0, NULL},
 	{N_("/_Message/_Delete"),		"<alt>D", delete_cb,  0, NULL},
+	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_Mark"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Message/_Mark/_Mark"),		NULL, mark_cb,   0, NULL},
 	{N_("/_Message/_Mark/_Unmark"),		NULL, unmark_cb, 0, NULL},
@@ -531,9 +537,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, mark_as_read_cb, 0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Open in new _window"),	"<shift><control>N", open_msg_cb, 0, NULL},
-	{N_("/_Message/View _source"),		"<control>U", view_source_cb, 0, NULL},
-	{N_("/_Message/Show all _header"),	"<control>H", header_window_show_cb, 0, NULL},
-	{N_("/_Message/Re-_edit"),		NULL, reedit_cb, 0, NULL},
 
 	{N_("/_Summary"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Summary/_Delete duplicated messages"),
@@ -1219,7 +1222,8 @@ static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		state |= M_EXEC;
 	if (selection == SUMMARY_SELECTED_SINGLE &&
 	    (mainwin->summaryview->folder_item &&
-	     mainwin->summaryview->folder_item->stype == F_DRAFT))
+	     (mainwin->summaryview->folder_item->stype == F_DRAFT ||
+	      mainwin->summaryview->folder_item->stype == F_QUEUE)))
 		state |= M_ALLOW_REEDIT;
 	if (cur_account)
 		state |= M_HAVE_ACCOUNT;
@@ -1284,34 +1288,32 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/File/Close", M_UNLOCKED},
 		{"/File/Exit" , M_UNLOCKED},
 
-		{"/Message/Get new mail"         , M_UNLOCKED},
-		{"/Message/Get from all accounts", M_UNLOCKED},
-		{"/Message/Reply"                , M_SINGLE_TARGET_EXIST},
-		{"/Message/Reply to sender"      , M_SINGLE_TARGET_EXIST},
-                {"/Message/Follow-up and reply to", M_SINGLE_TARGET_EXIST},
-		{"/Message/Reply to all"         , M_SINGLE_TARGET_EXIST},
-		{"/Message/Forward"              , M_SINGLE_TARGET_EXIST},
-		{"/Message/Forward as attachment", M_SINGLE_TARGET_EXIST},
-		{"/Message/Open in new window"   , M_SINGLE_TARGET_EXIST},
-		{"/Message/Show all header"      , M_SINGLE_TARGET_EXIST},
-		{"/Message/View source"          , M_SINGLE_TARGET_EXIST},
+		{"/View/Show all header"      , M_SINGLE_TARGET_EXIST},
+		{"/View/View source"          , M_SINGLE_TARGET_EXIST},
+
+		{"/Message/Get new mail"          , M_HAVE_ACCOUNT|M_UNLOCKED},
+		{"/Message/Get from all accounts" , M_HAVE_ACCOUNT|M_UNLOCKED},
+		{"/Message/Compose new message"   , M_HAVE_ACCOUNT},
+		{"/Message/Reply"                 , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Message/Reply to sender"       , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Message/Follow-up and reply to", M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Message/Reply to all"          , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Message/Forward"               , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Message/Forward as attachment" , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Message/Open in new window"    , M_SINGLE_TARGET_EXIST},
 		{"/Message/Move...", M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Message/Copy...", M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Message/Delete" , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Message/Mark"   , M_TARGET_EXIST},
-		{"/Message/Re-edit", M_ALLOW_REEDIT},
+		{"/Message/Re-edit", M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 
 		{"/Summary/Delete duplicated messages", M_MSG_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Summary/Filter messages"     , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Summary/Execute"             , M_MSG_EXIST|M_UNLOCKED},
-		{"/Summary/Prev message"        , M_MSG_EXIST},
-		{"/Summary/Next message"        , M_MSG_EXIST},
-		{"/Summary/Prev marked message" , M_MSG_EXIST},
-		{"/Summary/Next marked message" , M_MSG_EXIST},
-		{"/Summary/Prev labeled message", M_MSG_EXIST},
-		{"/Summary/Next labeled message", M_MSG_EXIST},
-		{"/Summary/Next unread message" , M_MSG_EXIST},
-		{"/Summary/Sort"                , M_MSG_EXIST},
+		{"/Summary/Filter messages"    , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Summary/Execute"            , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Summary/Prev message"       , M_MSG_EXIST},
+		{"/Summary/Next message"       , M_MSG_EXIST},
+		{"/Summary/Next unread message", M_MSG_EXIST},
+		{"/Summary/Sort"               , M_MSG_EXIST},
 
 		{"/Configuration", M_UNLOCKED},
 
@@ -2053,12 +2055,16 @@ static void ac_menu_popup_closed(GtkMenuShell *menu_shell, gpointer data)
 	button = gtk_object_get_data(GTK_OBJECT(menu_shell), "menu_button");
 	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
 	gtk_object_remove_data(GTK_OBJECT(mainwin->ac_menu), "menu_button");
+	manage_window_focus_in(mainwin->window, NULL, NULL);
 }
 
 static gint main_window_close_cb(GtkWidget *widget, GdkEventAny *event,
 				 gpointer data)
 {
-	app_exit_cb(data, 0, widget);
+	MainWindow *mainwin = (MainWindow *)data;
+
+	if (mainwin->lock_count == 0)
+		app_exit_cb(data, 0, widget);
 
 	return TRUE;
 }

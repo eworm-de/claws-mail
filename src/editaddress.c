@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,8 @@
 #include "addressitem.h"
 #include "addritem.h"
 #include "addrbook.h"
+#include "manage_window.h"
+#include "gtkutils.h"
 
 #include "prefs_common.h"
 
@@ -757,7 +759,6 @@ void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	gint top;
 
 	gchar *titles[ EMAIL_N_COLS ] = { _("E-Mail Address"), _("Alias"), _("Remarks") };
-	gchar *text;
 	gint i;
 
 	vbox = gtk_vbox_new( FALSE, 8 );
@@ -903,7 +904,6 @@ void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) {
 	gint top;
 
 	gchar *titles[ ATTRIB_N_COLS ] = { _("Name"), _("Value") };
-	gchar *text;
 	gint i;
 
 	vbox = gtk_vbox_new( FALSE, 8 );
@@ -1025,7 +1025,7 @@ static GList *edit_person_build_email_list() {
 	GList *listEMail = NULL;
 	ItemEMail *email;
 	gint row = 0;
-	while( email = gtk_clist_get_row_data( clist, row ) ) {
+	while( (email = gtk_clist_get_row_data( clist, row )) ) {
 		listEMail = g_list_append( listEMail, email );
 		row++;
 	}
@@ -1040,7 +1040,7 @@ static GList *edit_person_build_attrib_list() {
 	GList *listAttrib = NULL;
 	UserAttribute *attrib;
 	gint row = 0;
-	while( attrib = gtk_clist_get_row_data( clist, row ) ) {
+	while( (attrib = gtk_clist_get_row_data( clist, row )) ) {
 		listAttrib = g_list_append( listAttrib, attrib );
 		row++;
 	}

@@ -44,6 +44,8 @@
 #include "addressitem.h"
 #include "addrindex.h"
 #include "addrbook.h"
+#include "manage_window.h"
+#include "gtkutils.h"
 
 #define ADDRESSBOOK_GUESS_BOOK  "MyAddressBook"
 
@@ -54,13 +56,13 @@ static struct _AddrBookEdit_Dlg {
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 	GtkWidget *check_btn;
-	// GtkWidget *file_btn;
+	/* GtkWidget *file_btn; */
 	GtkWidget *statusbar;
 	gint status_cid;
 	AddressBookFile *bookFile;
 } addrbookedit_dlg;
 
-static struct _AddressFileSelection vcard_file_selector;
+/* static struct _AddressFileSelection vcard_file_selector;  */
 
 /*
 * Edit functions.
@@ -256,7 +258,6 @@ AdapterDSource *addressbook_edit_book( AddressIndex *addrIndex, AdapterDSource *
 	gboolean fin;
 	gboolean newBook = FALSE;
 	gchar *newFile = NULL;
-	gint rc;
 
 	if (!addrbookedit_dlg.window)
 		addressbook_edit_book_create(&cancelled);
@@ -344,4 +345,3 @@ AdapterDSource *addressbook_edit_book( AddressIndex *addrIndex, AdapterDSource *
 /*
 * End of Source.
 */
-

@@ -1,3 +1,57 @@
+2001-09-06
+
+	* src/Makefile.am: added extra xpm's.
+
+2001-09-05
+
+	* src/addressbook.c: fixed a compilation problem when enabling
+	  LDAP.
+	  addressbook_open(): fixed a missing 'else'.
+
+2001-09-04
+
+	* src/pixmaps/dir-close.xpm
+	  src/pixmaps/dir-open.xpm
+	  src/pixmaps/trash.xpm: replaced with the new blue icons.
+	* merged Match Grun's new addressbook code.
+	* src/pixmaps/address.xpm
+	  src/pixmaps/book.xpm
+	  src/pixmaps/category.xpm
+	  src/pixmaps/interface.xpm
+	  src/pixmaps/jpilot.xpm
+	  src/pixmaps/ldap.xpm
+	  src/pixmaps/vcard.xpm: new icons.
+	* src/addrbook.[ch]
+	  src/addrcache.[ch]
+	  src/addressadd.[ch]
+	  src/addressitem.[ch]
+	  src/addrindex.[ch]
+	  src/addritem.[ch]
+	  src/editaddress.[ch]
+	  src/editbook.[ch]
+	  src/editgroup.[ch]
+	  src/editjpilot.[ch]
+	  src/editldap.[ch]
+	  src/editldap_basedn.[ch]
+	  src/editvcard.[ch]
+	  src/jpilot.[ch]
+	  src/mgutils.[ch]
+	  src/syldap.[ch]
+	  src/vcard.[ch]: new. Many fixes to remove the huge amount of
+	  warnings.
+	  addrbook_build_avail_email_vis(): fixed a memory leak.
+
+2001-09-04
+
+	* NEWS: brought in the all of the changes previously put on the web.
+
+2001-09-03
+
+	* src/mainwindow.c
+	  src/summaryview.c: modified the layout of menus.
+	* src/mainwindow.c: ac_menu_popup_closed(): fixed a bug that didn't
+	  return a focus to the main window after selecting the account menu.
+
 2001-09-03
 
 	* version 0.6.1

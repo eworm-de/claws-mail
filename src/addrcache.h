@@ -29,7 +29,7 @@
 #include <glib.h>
 #include "addritem.h"
 
-// Address book file.
+/* Address book file. */
 typedef struct _AddressCache AddressCache;
 struct _AddressCache {
 	gint       nextID;
@@ -41,14 +41,15 @@ struct _AddressCache {
 	ItemFolder *rootFolder;
 };
 
-// Function prototypes
+/* Function prototypes */
 AddressCache *addrcache_create();
 ItemFolder *addrcache_get_root_folder	( AddressCache *cache );
 GList *addrcache_get_list_folder	( AddressCache *cache );
 GList *addrcache_get_list_person	( AddressCache *cache );
 
 void addrcache_refresh			( AddressCache *cache );
-void addrcache_empty			( AddressCache *cache );
+/* void addrcache_empty			( AddressCache *cache ); */
+void addrcache_clear			( AddressCache *cache );
 void addrcache_free			( AddressCache *cache );
 gboolean addrcache_check_file		( AddressCache *cache, gchar *path );
 gboolean addrcache_mark_file		( AddressCache *cache, gchar *path );

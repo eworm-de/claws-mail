@@ -42,6 +42,8 @@
 #include "addressitem.h"
 #include "vcard.h"
 #include "mgutils.h"
+#include "gtkutils.h"
+#include "manage_window.h"
 
 #define ADDRESSBOOK_GUESS_VCARD  "MyGnomeCard"
 

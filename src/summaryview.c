@@ -352,10 +352,21 @@ GtkTargetEntry summary_drag_types[1] =
 
 static GtkItemFactoryEntry summary_popup_entries[] =
 {
+	{N_("/_Reply"),			NULL, summary_reply_cb,	COMPOSE_REPLY, NULL},
+	{N_("/Repl_y to sender"),	NULL, summary_reply_cb,	COMPOSE_REPLY_TO_SENDER, NULL},
+	{N_("/Follow-up and reply to"),	NULL, summary_reply_cb,	COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL},
+	{N_("/Reply to a_ll"),		NULL, summary_reply_cb,	COMPOSE_REPLY_TO_ALL, NULL},
+	{N_("/_Forward"),		NULL, summary_reply_cb, COMPOSE_FORWARD, NULL},
+	{N_("/Forward as a_ttachment"),
+					NULL, summary_reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
+	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
+	{N_("/Re-_edit"),		NULL, summary_reedit,   0, NULL},
+	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/M_ove..."),		NULL, summary_move_to,	0, NULL},
 	{N_("/_Copy..."),		NULL, summary_copy_to,	0, NULL},
 	{N_("/_Delete"),		NULL, summary_delete,	0, NULL},
 	{N_("/E_xecute"),		NULL, summary_execute,	0, NULL},
+	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Mark"),			NULL, NULL,		0, "<Branch>"},
 	{N_("/_Mark/_Mark"),		NULL, summary_mark,	0, NULL},
 	{N_("/_Mark/_Unmark"),		NULL, summary_unmark,	0, NULL},
@@ -370,21 +381,12 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/Color la_bel"),		NULL, NULL, 		0, NULL},
 
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
-	{N_("/_Reply"),			NULL, summary_reply_cb,	COMPOSE_REPLY, NULL},
-	{N_("/Repl_y to sender"),	NULL, summary_reply_cb,	COMPOSE_REPLY_TO_SENDER, NULL},
-	{N_("/Follow-up and reply to"),	NULL, summary_reply_cb,	COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL},
-	{N_("/Reply to a_ll"),		NULL, summary_reply_cb,	COMPOSE_REPLY_TO_ALL, NULL},
-	{N_("/_Forward"),		NULL, summary_reply_cb, COMPOSE_FORWARD, NULL},
-	{N_("/Forward as a_ttachment"),
-					NULL, summary_reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
-	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/Add sender to address _book"),
 					NULL, summary_add_address_cb,		0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/Open in new _window"),	NULL, summary_open_msg,	0, NULL},
 	{N_("/View so_urce"),		NULL, summary_view_source, 0, NULL},
 	{N_("/Show all _header"),	NULL, summary_show_all_header_cb, 0, NULL},
-	{N_("/Re-_edit"),		NULL, summary_reedit,   0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Save as..."),		NULL, summary_save_as,	0, NULL},
 	{N_("/_Print..."),		NULL, summary_print,	0, NULL},
@@ -1076,6 +1078,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/Reply to all",		  sens);
 	menu_set_sensitive(ifactory, "/Forward",		  TRUE);
 	menu_set_sensitive(ifactory, "/Forward as attachment",    TRUE);
+
 	menu_set_sensitive(ifactory, "/Add sender to address book", sens);
 	
 	menu_set_sensitive(ifactory, "/Open in new window", sens);
@@ -1098,6 +1101,33 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 		sens = FALSE;
 	menu_set_sensitive(ifactory, "/Follow-up and reply to",	sens);
 }
+
+#if 0
+static void summary_set_add_sender_menu(SummaryView *summaryview)
+{
+	GtkWidget *menu;
+	GtkWidget *submenu;
+	MsgInfo *msginfo;
+	gchar *from;
+
+	menu = gtk_item_factory_get_item(summaryview->popupfactory,
+					 "/Add sender to address book");
+	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
+					      summaryview->selected);
+	if (!msginfo || !msginfo->from) {
+		gtk_widget_set_sensitive(menu, FALSE);
+		submenu = gtk_menu_new();
+		gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu), submenu);
+		return;
+	}
+
+	gtk_widget_set_sensitive(menu, TRUE);
+	Xstrdup_a(from, msginfo->from, return);
+	eliminate_address_comment(from);
+	extract_address(from);
+	addressbook_add_submenu(menu, msginfo->fromname, from, NULL);
+}
+#endif
 
 void summary_select_next_unread(SummaryView *summaryview)
 {
@@ -3631,8 +3661,8 @@ static void summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	if (!event) return;
 
 	if (event->button == 3) {
-		// Right button clicked
-		// summary_set_add_sender_menu(summaryview);
+		/* Right button clicked */
+		/* summary_set_add_sender_menu(summaryview); */
 		gtk_menu_popup(GTK_MENU(summaryview->popupmenu), NULL, NULL,
 			       NULL, NULL, event->button, event->time);
 	} else if (event->button == 2) {
@@ -4029,6 +4059,22 @@ static void summary_show_all_header_cb(SummaryView *summaryview,
 	header_window_show_cb(summaryview->mainwin, action, widget);
 }
 
+static void summary_add_address_cb(SummaryView *summaryview,
+				   guint action, GtkWidget *widget)
+{
+	MsgInfo *msginfo;
+	gchar *from;
+
+	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
+					      summaryview->selected);
+	if (!msginfo) return;
+
+	Xstrdup_a(from, msginfo->from, return);
+	eliminate_address_comment(from);
+	extract_address(from);
+	addressbook_add_contact(msginfo->fromname, from, NULL);
+}
+
 static void summary_num_clicked(GtkWidget *button, SummaryView *summaryview)
 {
 	summary_sort(summaryview, SORT_BY_NUMBER);
@@ -4292,21 +4338,6 @@ static void summary_unignore_thread(SummaryView *summaryview)
 
 	summary_status_show(summaryview);
 }
-
-static void summary_add_address_cb( SummaryView *summaryview, guint action, GtkWidget *widget ) {
-	MsgInfo *msginfo;
-	gchar *from;
-
-	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
-					      summaryview->selected);
-	if (!msginfo) return;
-
-	Xstrdup_a(from, msginfo->from, return);
-	eliminate_address_comment(from);
-	extract_address(from);
-	addressbook_add_contact( msginfo->fromname, from, NULL );
-}
-
 /*
  * End of Source.
  */

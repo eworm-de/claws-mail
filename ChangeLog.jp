@@ -1,3 +1,56 @@
+2001-09-06
+
+	* src/Makefile.am: 残りの xpm を追加。
+
+2001-09-05
+
+	* src/addressbook.c: LDAP を有効にしたときにコンパイルできない問題
+	  を修正。
+	  addressbook_open(): 'else' がないのを修正。
+
+2001-09-04
+
+	* src/pixmaps/dir-close.xpm
+	  src/pixmaps/dir-open.xpm
+	  src/pixmaps/trash.xpm: 新しいブルーのアイコンで置き換えた。
+	* Match Grun さんの新アドレス帳のコードをマージ。
+	* src/pixmaps/address.xpm
+	  src/pixmaps/book.xpm
+	  src/pixmaps/category.xpm
+	  src/pixmaps/interface.xpm
+	  src/pixmaps/jpilot.xpm
+	  src/pixmaps/ldap.xpm
+	  src/pixmaps/vcard.xpm: 新規アイコン。
+	* src/addrbook.[ch]
+	  src/addrcache.[ch]
+	  src/addressadd.[ch]
+	  src/addressitem.[ch]
+	  src/addrindex.[ch]
+	  src/addritem.[ch]
+	  src/editaddress.[ch]
+	  src/editbook.[ch]
+	  src/editgroup.[ch]
+	  src/editjpilot.[ch]
+	  src/editldap.[ch]
+	  src/editldap_basedn.[ch]
+	  src/editvcard.[ch]
+	  src/jpilot.[ch]
+	  src/mgutils.[ch]
+	  src/syldap.[ch]
+	  src/vcard.[ch]: 新規。大量の warning を取り除くために修正。
+	  addrbook_build_avail_email_vis(): メモリリークを修正。
+
+2001-09-04
+
+	* NEWS: 以前に web に置かれた全ての更新履歴を取り込んだ。
+
+2001-09-03
+
+	* src/mainwindow.c
+	  src/summaryview.c: メニューの配置を修正。
+	* src/mainwindow.c: ac_menu_popup_closed(): アカウントメニューを
+	  選択後フォーカスをメインウィンドウに返さなかったバグを修正。
+
 2001-09-03
 
 	* version 0.6.1

@@ -94,6 +94,9 @@ ItemGroup *addrbook_add_group_list	( AddressBookFile *book, ItemFolder *folder,
 					  GList *listEMail );
 ItemFolder *addrbook_add_new_folder	( AddressBookFile *book, ItemFolder *parent );
 
+void addrbook_update_attrib_list	( AddressBookFile *book, ItemPerson *person, GList *listAttrib );
+void addrbook_add_attrib_list		( AddressBookFile *book, ItemPerson *person, GList *listAttrib );
+
 ItemFolder *addrbook_remove_folder	( AddressBookFile *book, ItemFolder *folder );
 ItemFolder *addrbook_remove_folder_delete( AddressBookFile *book, ItemFolder *folder );
 

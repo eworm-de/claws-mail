@@ -32,6 +32,7 @@
 
 #ifndef DEV_STANDALONE
 #include "prefs.h"
+#include "codeconv.h"
 #endif
 
 #include "vcard.h"
@@ -134,7 +135,6 @@ static AddressInterface *addrindex_create_interface( gint type, gchar *name, gch
 */
 static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 	AddressInterface *iface;
-	gint seq = 0;
 
 	iface = addrindex_create_interface( ADDR_IF_BOOK, "Address Book", TAG_IF_ADDRESS_BOOK, TAG_DS_ADDRESS_BOOK );
 	iface->readOnly      = FALSE;
@@ -353,7 +353,7 @@ static void addrindex_free_all_datasources( AddressInterface *iface ) {
 	}
 }
 
-static addrindex_free_interface( AddressInterface *iface ) {
+static void addrindex_free_interface( AddressInterface *iface ) {
 	addrindex_free_all_datasources( iface );
 
 	g_free( ADDRITEM_ID(iface) );
@@ -384,6 +384,7 @@ static addrindex_free_interface( AddressInterface *iface ) {
 */
 AddressIndex *addrindex_create_index() {
 	AddressIndex *addrIndex = g_new0( AddressIndex, 1 );
+
 	ADDRITEM_TYPE(addrIndex) = ITEMTYPE_INDEX;
 	ADDRITEM_ID(addrIndex) = NULL;
 	ADDRITEM_NAME(addrIndex) = g_strdup( "Address Index" );
@@ -422,7 +423,7 @@ void addrindex_set_dirty( AddressIndex *addrIndex, const gboolean value ) {
 * Return list of interfaces.
 */
 GList *addrindex_get_interface_list( AddressIndex *addrIndex ) {
-	g_return_if_fail( addrIndex != NULL );
+	g_return_val_if_fail( addrIndex != NULL, NULL );
 	return addrIndex->interfaceList;
 }
 
@@ -431,6 +432,7 @@ GList *addrindex_get_interface_list( AddressIndex *addrIndex ) {
 */
 void addrindex_free_index( AddressIndex *addrIndex ) {
 	GList *node;
+
 	g_return_if_fail( addrIndex != NULL );
 
 	g_free( ADDRITEM_ID(addrIndex) );
@@ -481,7 +483,9 @@ void addrindex_print_index( AddressIndex *addrIndex, FILE *stream ) {
 AddressInterface *addrindex_get_interface( AddressIndex *addrIndex, AddressIfType ifType ) {
 	AddressInterface *retVal = NULL;
 	GList *node;
-	g_return_if_fail( addrIndex != NULL );
+
+	g_return_val_if_fail( addrIndex != NULL, NULL );
+
 	node = addrIndex->interfaceList;
 	while( node ) {
 		AddressInterface *iface = node->data;
@@ -520,8 +524,9 @@ AddressDataSource *addrindex_create_datasource() {
 AddressDataSource *addrindex_index_add_datasource( AddressIndex *addrIndex, AddressIfType ifType, gpointer dataSource ) {
 	AddressInterface *iface;
 	AddressDataSource *ds = NULL;
-	g_return_if_fail( addrIndex != NULL );
-	g_return_if_fail( dataSource != NULL );
+
+	g_return_val_if_fail( addrIndex != NULL, NULL );
+	g_return_val_if_fail( dataSource != NULL, NULL );
 
 	iface = addrindex_get_interface( addrIndex, ifType );
 	if( iface ) {
@@ -546,8 +551,9 @@ AddressDataSource *addrindex_index_add_datasource( AddressIndex *addrIndex, Addr
 AddressDataSource *addrindex_index_remove_datasource( AddressIndex *addrIndex, AddressDataSource *dataSource ) {
 	AddressDataSource *retVal = FALSE;
 	AddressInterface *iface;
-	g_return_if_fail( addrIndex != NULL );
-	g_return_if_fail( dataSource != NULL );
+
+	g_return_val_if_fail( addrIndex != NULL, NULL );
+	g_return_val_if_fail( dataSource != NULL, NULL );
 
 	iface = addrindex_get_interface( addrIndex, dataSource->type );
 	if( iface ) {
@@ -562,6 +568,7 @@ AddressDataSource *addrindex_index_remove_datasource( AddressIndex *addrIndex, A
 static AddressInterface *addrindex_tag_get_interface( AddressIndex *addrIndex, gchar *tag, AddressIfType ifType ) {
 	AddressInterface *retVal = NULL;
 	GList *node = addrIndex->interfaceList;
+
 	while( node ) {
 		AddressInterface *iface = node->data;
 		node = g_list_next( node );
@@ -584,6 +591,7 @@ static AddressInterface *addrindex_tag_get_interface( AddressIndex *addrIndex, g
 static AddressInterface *addrindex_tag_get_datasource( AddressIndex *addrIndex, AddressIfType ifType, gchar *tag ) {
 	AddressInterface *retVal = NULL;
 	GList *node = addrIndex->interfaceList;
+
 	while( node ) {
 		AddressInterface *iface = node->data;
 		node = g_list_next( node );
@@ -915,8 +923,8 @@ static void addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
 */
 static void addrindex_read_index( AddressIndex *addrIndex, XMLFile *file ) {
 	guint prev_level;
-	gchar *element;
-	GList *attr;
+	//gchar *element;
+	//GList *attr;
 	XMLTag *xtag;
 	AddressInterface *iface = NULL, *dsIFace = NULL;
 	AddressDataSource *ds;
@@ -995,7 +1003,8 @@ static void addrindex_read_index( AddressIndex *addrIndex, XMLFile *file ) {
 static gint addrindex_read_file( AddressIndex *addrIndex ) {
 	XMLFile *file = NULL;
 	gchar *fileSpec = NULL;
-	g_return_if_fail( addrIndex != NULL );
+
+	g_return_val_if_fail( addrIndex != NULL, -1 );
 
 	fileSpec = g_strconcat( addrIndex->filePath, G_DIR_SEPARATOR_S, addrIndex->fileName, NULL );
 	addrIndex->retVal = MGU_NO_FILE;
@@ -1071,7 +1080,7 @@ gint addrindex_write_to( AddressIndex *addrIndex, const gchar *newFile ) {
 	PrefFile *pfile;
 #endif
 
-	g_return_if_fail( addrIndex != NULL );
+	g_return_val_if_fail( addrIndex != NULL, -1 );
 
 	fileSpec = g_strconcat( addrIndex->filePath, G_DIR_SEPARATOR_S, newFile, NULL );
 	addrIndex->retVal = MGU_OPEN_FILE;
@@ -1113,7 +1122,7 @@ gint addrindex_write_to( AddressIndex *addrIndex, const gchar *newFile ) {
 * return: Status code, from addrIndex->retVal.
 */
 gint addrindex_save_data( AddressIndex *addrIndex ) {
-	g_return_if_fail( addrIndex != NULL );
+	g_return_val_if_fail( addrIndex != NULL, -1 );
 
 	addrIndex->retVal = MGU_NO_FILE;
 	if( addrIndex->fileName == NULL || *addrIndex->fileName == '\0' ) return addrIndex->retVal;
@@ -1133,6 +1142,7 @@ gint addrindex_save_data( AddressIndex *addrIndex ) {
 gint addrindex_save_all_books( AddressIndex *addrIndex ) {
 	gint retVal = MGU_SUCCESS;
 	GList *nodeIf, *nodeDS;
+
 	nodeIf = addrIndex->interfaceList;
 	while( nodeIf ) {
 		AddressInterface *iface = nodeIf->data;
@@ -1311,6 +1321,7 @@ static void addrindex_consume_tree( XMLFile *file ) {
 */
 static void addrindex_print_node( AddressCvtNode *node, FILE *stream  ) {
 	GList *list;
+
 	fprintf( stream, "Node:\ttype :%d:\n", node->type );
 	fprintf( stream, "\tname :%s:\n", node->name );
 	fprintf( stream, "\taddr :%s:\n", node->address );
@@ -1332,6 +1343,7 @@ static void addrindex_print_node( AddressCvtNode *node, FILE *stream  ) {
 */
 static void addrindex_free_node( AddressCvtNode *node ) {
 	GList *list = node->list;
+
 	while( list ) {
 		AddressCvtNode *lNode = list->data;
 		list = g_list_next( list );
@@ -1353,7 +1365,7 @@ static void addrindex_process_node(
 		ItemGroup *parentGrp, ItemFolder *folderGrp )
 {
 	GList *list;
-	ItemFolder *itemFolder;
+	ItemFolder *itemFolder = NULL;
 	ItemGroup *itemGParent = parentGrp;
 	ItemFolder *itemGFolder = folderGrp;
 	AddressCache *cache = abf->addressCache;
@@ -1608,7 +1620,7 @@ static gboolean addrindex_create_new_book( AddressIndex *addrIndex, gchar *displ
 *	"Gathered addresses" - a new address book.
 */
 gint addrindex_read_data( AddressIndex *addrIndex ) {
-	g_return_if_fail( addrIndex != NULL );
+	g_return_val_if_fail( addrIndex != NULL, -1 );
 
 	addrIndex->conversionError = FALSE;
 	addrindex_read_file( addrIndex );
@@ -1639,7 +1651,7 @@ gint addrindex_read_data( AddressIndex *addrIndex ) {
 gint addrindex_create_new_books( AddressIndex *addrIndex ) {
 	gboolean flg;
 
-	g_return_if_fail( addrIndex != NULL );
+	g_return_val_if_fail( addrIndex != NULL, -1 );
 
 	flg = addrindex_create_new_book( addrIndex, DISP_NEW_COMMON );
 	if( flg ) {
@@ -1842,5 +1854,3 @@ GList *addrindex_ds_get_all_persons( AddressDataSource *ds ) {
 /*
 * End of Source.
 */
-
-

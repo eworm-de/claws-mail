@@ -1,3 +1,13 @@
+2001-09-06 [paul]
+
+	* po/de.po, po/es.po, po/nl.po, po/pt_BR.po
+		updated translations
+
+	* configure.in
+		change to version 0.6.1claws1
+
+	* sync with sylpheed 0.6.1cvs2
+
 2001-09-03 [paul]
 
 	* po/POTFILES.in
