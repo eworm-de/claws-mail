@@ -2857,7 +2857,7 @@ gboolean addrindex_load_completion(
 					sFriendly = sName;
 					sAddress = email->address;
 					if( sAddress || *sAddress != '\0' ) {
-						sAlias = ADDRITEM_NAME(email);
+						sAlias = person->nickName;
 						// if( sAlias && *sAlias != '\0' ) {
 						if( sFriendly == NULL || *sFriendly == '\0' ) {
 							sFriendly = sAlias;
