@@ -1,3 +1,14 @@
+2003-06-02
+
+	* src/addr_compl.c: invalidate_address_completion(): check if
+	  g_completion_list is NULL (thanks to Kazuhiro NISHIYAMA).
+
+2003-06-02
+
+	* src/pop.c: pop3_session_recv_data_finished(): fixed a bug that
+	  deleted messages that is to be kept on server (thanks to Tristan
+	  Wallis).
+
 2003-05-27
 
 	* version 0.9.1

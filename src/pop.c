@@ -824,7 +824,9 @@ static gint pop3_session_recv_data_finished(Session *session, guchar *data,
 		return -1;
 
 	if (pop3_session->ac_prefs->rmmail &&
-	    pop3_session->ac_prefs->msg_leave_time == 0)
+	    pop3_session->ac_prefs->msg_leave_time == 0 &&
+	    pop3_session->msg[pop3_session->cur_msg].recv_time
+	    != RECV_TIME_KEEP)
 		pop3_delete_send(pop3_session);
 	else if (pop3_session->cur_msg == pop3_session->count)
 		pop3_logout_send(pop3_session);

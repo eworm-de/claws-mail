@@ -288,6 +288,7 @@ void replace_address_in_edit(GtkEntry *entry, const gchar *newtext,
 			     gint start_pos)
 {
 	if (!newtext) return;
+
 	gtk_editable_delete_text(GTK_EDITABLE(entry), start_pos, -1);
 	gtk_editable_insert_text(GTK_EDITABLE(entry), newtext, strlen(newtext),
 				 &start_pos);
@@ -449,7 +450,8 @@ gint invalidate_address_completion(void)
 		free_all();
 		init_all();
 		read_address_book();
-		g_completion_add_items(g_completion, g_completion_list);
+		if (g_completion_list)
+			g_completion_add_items(g_completion, g_completion_list);
 		clear_completion_cache();
 	}
 
