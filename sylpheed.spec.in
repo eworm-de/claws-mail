@@ -61,7 +61,7 @@ make
 
 %install
 [ "$RPM_BUILD_ROOT" != "/" ] && [ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT;
-make prefix=${RPM_BUILD_ROOT}%{prefix} install
+make DESTDIR=${RPM_BUILD_ROOT} install
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}

@@ -1,3 +1,16 @@
+2003-02-12 [paul]	0.8.9claws56
+
+	* po/bg.po
+	  po/it.po
+	  po/ru.po
+	  po/sr.po
+	  	updated translations by George Danchev, Alessandro
+		Maestri, Ruslan N. Balkin and Urke MMI respectively
+		
+	* sylpheed.spec.in
+		Allow the building of RPMs by a regular user. Submitted
+		by Sergei Astanin
+
 2003-02-11 [alfons]	0.8.9claws55
 
 	* src/colorlabel.c
