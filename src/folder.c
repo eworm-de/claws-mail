@@ -1715,9 +1715,9 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 					       msginfo->msgnum);
 			msgcache_remove_msg(msginfo->folder->cache, msginfo->msgnum);
 
-			if (MSG_IS_NEW(msginfo->flags))
+			if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 				msginfo->folder->new--;
-			if (MSG_IS_UNREAD(msginfo->flags))
+			if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 				msginfo->folder->unread--;
 			if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 				msginfo->folder->unreadmarked--;
@@ -1846,9 +1846,9 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 				folder_item_read_cache(item);
 			msgcache_remove_msg(item->cache, msginfo->msgnum);
 
-			if (MSG_IS_NEW(msginfo->flags))
+			if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 				msginfo->folder->new--;
-			if (MSG_IS_UNREAD(msginfo->flags))
+			if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 				msginfo->folder->unread--;
 			if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 				msginfo->folder->unreadmarked--;
@@ -2046,9 +2046,9 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 
 	msginfo = msgcache_get_msg(item->cache, num);
 	if (msginfo != NULL) {
-		if (MSG_IS_NEW(msginfo->flags))
+		if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 			item->new--;
-		if (MSG_IS_UNREAD(msginfo->flags))
+		if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 			item->unread--;
 		if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 			item->unreadmarked--;
