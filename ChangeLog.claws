@@ -1,4 +1,9 @@
 2003-06-14 [alfons]	0.9.0claws37
+	
+	* src/messageview.c
+		remove printf() and make one if..else comply with coding style
+
+2003-06-14 [alfons]	0.9.0claws37
 
 	* AUTHORS
 		add Martin Wicke

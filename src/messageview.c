@@ -1137,8 +1137,7 @@ gchar *messageview_get_selection(MessageView *msgview)
 	if (msgview->type == MVIEW_TEXT) {
 		edit = GTK_EDITABLE(msgview->textview->text);
 		body_pos = msgview->textview->body_pos;
-	}
-	else if (msgview->type == MVIEW_MIME
+	} else if (msgview->type == MVIEW_MIME
 		 && msgview->mimeview->type == MIMEVIEW_TEXT
 		 && msgview->mimeview->textview
 		 && !msgview->mimeview->textview->default_text) {
@@ -1148,8 +1147,6 @@ gchar *messageview_get_selection(MessageView *msgview)
 
 	g_return_val_if_fail(edit != NULL, NULL);
 
-	printf("filtered: %d\n", msgview->filtered);
-	
 	if (edit->has_selection)
 		text = gtkut_editable_get_selection(edit);
 	else if (msgview->filtered) 
