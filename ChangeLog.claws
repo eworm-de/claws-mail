@@ -1,10 +1,16 @@
-2003-01-10 [alfons]	0.9.8claws28
+2004-01-11 [alfons]	0.9.8claws29
+
+	* src/procmsg.c
+		remove unnecessary but still effective check (could possibly
+		lead to some unwanted side effects)
+
+2004-01-11 [alfons]	0.9.8claws28
 
 	* src/procmsg.c
 		we should not prefer lowest message number while threading 
 		(introduced in previous commit)
 
-2003-01-10 [alfons]	0.9.8claws27
+2004-01-11 [alfons]	0.9.8claws27
 
 	* src/procmsg.c
 		subject threading fixes:

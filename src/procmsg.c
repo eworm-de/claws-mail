@@ -223,7 +223,6 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 	GRelation *subject_relation;
 	MsgInfo *msginfo;
 	const gchar *msgid;
-	const gchar *subject;
 
 	root = g_node_new(NULL);
 	msgid_table = g_hash_table_new(g_str_hash, g_str_equal);
@@ -280,11 +279,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			next = node->prev;
 			msginfo = (MsgInfo *) node->data;
 			
-			/* may not parentize if parent was delivered after childs */
-			if (subject != msginfo->subject)
-				parent = subject_relation_lookup(subject_relation, msginfo);
-			else
-				parent = NULL; 
+			parent = subject_relation_lookup(subject_relation, msginfo);
 			
 			/* the node may already be threaded by IN-REPLY-TO, so go up in the tree to 
 			   find the parent node */
