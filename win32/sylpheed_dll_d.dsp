@@ -392,7 +392,7 @@ SOURCE=..\src\messageview.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\mgutils.c
+SOURCE=..\src\common\mgutils.c
 # End Source File
 # Begin Source File
 
@@ -964,7 +964,7 @@ SOURCE=..\src\messageview.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\mgutils.h
+SOURCE=..\src\common\mgutils.h
 # End Source File
 # Begin Source File
 

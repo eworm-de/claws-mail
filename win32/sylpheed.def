@@ -1203,6 +1203,7 @@ EXPORTS
 	nntp_article 
 	nntp_body 
 	nntp_close 
+	nntp_forceauth 
 	nntp_get_article 
 	nntp_group 
 	nntp_head 

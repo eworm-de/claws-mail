@@ -1,3 +1,12 @@
+2003-01-27 [christoph]	0.8.9claws16
+
+	* src/news.c
+	* src/prefs_account.[ch]
+	* src/common/nntp.[ch]
+		allow to force authentication for NNTP servers
+
+	Patch submitted by Florian Mickler <dmk@d-labs.de>
+
 2003-01-26 [paul]	0.8.9claws15
 
 	* src/summaryview.c

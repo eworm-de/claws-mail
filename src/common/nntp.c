@@ -117,6 +117,15 @@ void nntp_close(NNTPSockInfo *sock)
 	g_free(sock);
 }
 
+void nntp_forceauth(NNTPSockInfo *sock, gchar *buf, const gchar *userid, const gchar *passwd)
+
+{
+	if (!sock) return;
+		
+	nntp_gen_command(sock, buf , "AUTHINFO USER %s", userid);
+
+
+}
 gint nntp_group(NNTPSockInfo *sock, const gchar *group,
 		gint *num, gint *first, gint *last)
 {
@@ -389,7 +398,16 @@ static gint nntp_gen_command(NNTPSockInfo *sock, gchar *argbuf,
 
 		nntp_gen_send(sock, "%s", buf);
 		ok = nntp_ok(sock, argbuf);
-	}
+
+	} else if (ok == NN_AUTHCONT) {
+                nntp_gen_send(sock, "AUTHINFO PASS %s", sock->passwd);
+                ok = nntp_ok(sock, NULL);
+
+                if (ok != NN_SUCCESS) {
+			sock->auth_failed = TRUE;
+                        return ok;
+                }
+        }
 
 	return ok;
 }
