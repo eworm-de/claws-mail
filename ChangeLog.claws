@@ -1,8 +1,7 @@
-2002-05-17 [christoph]	0.7.5claws32
+2002-05-17 [paul]	0.7.5claws32
 
-	* src/matcher.c
-		fix execute matcher rule
-		(text string was not correctly created)
+	* po/es.po
+		updated by Ricardo Mones Lastra
 
 2002-05-17 [paul]	0.7.5claws31
 
