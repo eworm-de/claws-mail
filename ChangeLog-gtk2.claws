@@ -1,3 +1,10 @@
+2005-02-23 [colin]	1.0.1cvs15.6
+
+	* src/compose.c
+		Fix Mimeinfo leakage (including tmp files)
+	* src/procmsg.c
+		Fix tmp file leakage (spotted by Ivan Rayner)
+
 2005-02-22 [colin]	1.0.1cvs15.5
 
 	* src/expldifdlg.c
