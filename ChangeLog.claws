@@ -1,3 +1,9 @@
+2005-02-15 [christoph]	1.0.1cvs10
+
+	* src/plugins/pgpmime/pgpmime.cpp
+	* src/plugins/pgpmime/pgpmime.h
+		add sign and encrypt functions
+
 2005-02-15 [christoph]	1.0.1cvs9
 
 	* configure.ac

@@ -362,7 +362,6 @@ MimeInfo *PGPMIME::decrypt(MimeInfo *mimeinfo)
 	return decinfo;
 }
 
-#if 0
 /*
  * Find TAG in XML and return a pointer into xml set just behind the
  * closing angle.  Return NULL if not found. 
@@ -421,6 +420,11 @@ extract_micalg (char *xml)
         }
     }
     return NULL;
+}
+
+gboolean PGPMIME::canSign()
+{
+	return TRUE;
 }
 
 gboolean PGPMIME::sign(MimeInfo *mimeinfo, PrefsAccount *account)
@@ -499,13 +503,18 @@ gboolean PGPMIME::sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	newinfo->type = MIMETYPE_APPLICATION;
 	newinfo->subtype = g_strdup("pgp-signature");
 	newinfo->content = MIMECONTENT_MEM;
-	newinfo->data.mem = g_malloc(len + 1);
+	newinfo->data.mem = (gchar *) g_malloc(len + 1);
 	g_memmove(newinfo->data.mem, sigcontent, len);
 	newinfo->data.mem[len] = '\0';
 	g_node_append(sigmultipart->node, newinfo->node);
 
 	g_free(sigcontent);
 
+	return TRUE;
+}
+
+gboolean PGPMIME::canEncrypt()
+{
 	return TRUE;
 }
 
@@ -592,7 +601,7 @@ gboolean PGPMIME::encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	newinfo->type = MIMETYPE_APPLICATION;
 	newinfo->subtype = g_strdup("octet-stream");
 	newinfo->content = MIMECONTENT_MEM;
-	newinfo->data.mem = g_malloc(len + 1);
+	newinfo->data.mem = (gchar *) g_malloc(len + 1);
 	g_memmove(newinfo->data.mem, enccontent, len);
 	newinfo->data.mem[len] = '\0';
 	g_node_append(encmultipart->node, newinfo->node);
@@ -601,8 +610,6 @@ gboolean PGPMIME::encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 
 	return TRUE;
 }
-
-#endif
 
 void pgpmime_init()
 {

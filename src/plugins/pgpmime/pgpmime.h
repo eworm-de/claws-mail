@@ -47,6 +47,15 @@ class PGPMIME: public PrivacySystem {
 
         virtual gboolean         isEncrypted            (MimeInfo *);
         virtual MimeInfo        *decrypt                (MimeInfo *);
+
+	virtual gboolean 	 canSign		();
+	virtual gboolean	 sign			(MimeInfo *mimeinfo,
+							 PrefsAccount *account);
+
+	virtual gboolean	 canEncrypt		();
+	virtual gchar		*getEncryptData		(GSList *recp_names);
+	virtual gboolean	 encrypt		(MimeInfo *mimeinfo,
+							 const gchar *encrypt_data);
 };
 
 #endif
