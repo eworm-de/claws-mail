@@ -3427,6 +3427,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 
 		if (action == COMPOSE_WRITE_FOR_SEND) {
 			buf = conv_codeset_strdup(chars, src_codeset, out_codeset);
+			
 			if (!buf) {
 				AlertValue aval;
 				gchar *msg;
@@ -3454,6 +3455,13 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
  		}
 	}
 	g_free(chars);
+
+	if (encoding == ENC_8BIT || encoding == ENC_7BIT) {
+		if (!strncmp(buf, "From ", strlen("From ")) ||
+		    strstr(buf, "\nFrom ") != NULL) {
+			encoding = ENC_QUOTED_PRINTABLE;
+		}
+	}
 
 	mimetext = procmime_mimeinfo_new();
 	mimetext->content = MIMECONTENT_MEM;
