@@ -1,5 +1,17 @@
 2001-08-27 [paul]
 
+	* src/mainwindow.c
+		new functions: next_labeled_cb(), prev_labeled_cb()
+
+	* src/summaryview.c
+		new functions: summary_find_next_labeled_msg(), summary_find_prev_labeled_msg(),
+		summary_select_next_labeled(), summary_select_prev_labeled()
+
+	* src/pixmaps/dir-close.xpm, src/pixmaps/dir-open.xpm, src/pixmaps/trash.xpm
+		give claws blue folders and a blue trash can
+
+2001-08-27 [paul]
+
 	* configure.in
 		change to version 0.5.3claws5
 
@@ -2074,7 +2086,7 @@
 2001-05-04 [sergey]
 
 	* src/mainwindow.c (next_marked_cb, prev_marked_cb): new
-	functions.  
+	functions.
 
 	* src/summaryview.c
 	(summary_find_next_marked_msg, summary_find_prev_marked_msg,

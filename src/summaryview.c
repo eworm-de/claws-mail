@@ -166,6 +166,12 @@ static GtkCTreeNode *summary_find_next_marked_msg
 static GtkCTreeNode *summary_find_prev_marked_msg
 					(SummaryView		*summaryview,
 					 GtkCTreeNode		*current_node);
+static GtkCTreeNode *summary_find_next_labeled_msg
+					(SummaryView		*summaryview,
+					 GtkCTreeNode		*current_node);
+static GtkCTreeNode *summary_find_prev_labeled_msg
+					(SummaryView		*summaryview,
+					 GtkCTreeNode		*current_node);
 static GtkCTreeNode *summary_find_msg_by_msgnum
 					(SummaryView		*summaryview,
 					 guint			 msgnum);
@@ -1205,6 +1211,66 @@ void summary_select_prev_marked(SummaryView *summaryview)
 	}
 }
 
+void summary_select_next_labeled(SummaryView *summaryview)
+{
+	GtkCTreeNode *node;
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+
+	node = summary_find_next_labeled_msg(summaryview,
+					    summaryview->selected);
+
+	if (!node) {
+		AlertValue val;
+
+		val = alertpanel(_("No more labeled messages"),
+				 _("No labeled message found. "
+				   "Search from the beginning?"),
+				 _("Yes"), _("No"), NULL);
+		if (val != G_ALERTDEFAULT) return;
+		node = summary_find_next_labeled_msg(summaryview,
+						    NULL);
+	}
+	if (!node) {
+		alertpanel_notice(_("No labeled messages."));
+	} else {
+		gtk_sctree_unselect_all(GTK_SCTREE(ctree));
+		gtk_sctree_select(GTK_SCTREE(ctree), node);
+		if (summaryview->displayed == node)
+			summaryview->displayed = NULL;
+		summary_display_msg(summaryview, node, FALSE);
+	}
+}
+
+void summary_select_prev_labeled(SummaryView *summaryview)
+{
+	GtkCTreeNode *node;
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+
+	node = summary_find_prev_labeled_msg(summaryview,
+					    summaryview->selected);
+
+	if (!node) {
+		AlertValue val;
+
+		val = alertpanel(_("No more labeled messages"),
+				 _("No labeled message found. "
+				   "Search from the end?"),
+				 _("Yes"), _("No"), NULL);
+		if (val != G_ALERTDEFAULT) return;
+		node = summary_find_prev_labeled_msg(summaryview,
+						    NULL);
+	}
+	if (!node) {
+		alertpanel_notice(_("No labeled messages."));
+	} else {
+		gtk_sctree_unselect_all(GTK_SCTREE(ctree));
+		gtk_sctree_select(GTK_SCTREE(ctree), node);
+		if (summaryview->displayed == node)
+			summaryview->displayed = NULL;
+		summary_display_msg(summaryview, node, FALSE);
+	}
+}
+
 void summary_select_by_msgnum(SummaryView *summaryview, guint msgnum)
 {
 	GtkCTreeNode *node;
@@ -1305,6 +1371,46 @@ static GtkCTreeNode *summary_find_prev_marked_msg(SummaryView *summaryview,
 	for (; node != NULL; node = GTK_CTREE_NODE_PREV(node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
 		if (MSG_IS_MARKED(msginfo->flags)) break;
+	}
+
+	return node;
+}
+
+static GtkCTreeNode *summary_find_next_labeled_msg(SummaryView *summaryview,
+						  GtkCTreeNode *current_node)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GtkCTreeNode *node;
+	MsgInfo *msginfo;
+
+	if (current_node)
+		node = GTK_CTREE_NODE_NEXT(current_node);
+	else
+		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+
+	for (; node != NULL; node = GTK_CTREE_NODE_NEXT(node)) {
+		msginfo = gtk_ctree_node_get_row_data(ctree, node);
+                if (MSG_GET_COLORLABEL_VALUE(msginfo->flags) > 0) break;
+	}
+
+	return node;
+}
+
+static GtkCTreeNode *summary_find_prev_labeled_msg(SummaryView *summaryview,
+						  GtkCTreeNode *current_node)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GtkCTreeNode *node;
+	MsgInfo *msginfo;
+
+	if (current_node)
+		node = GTK_CTREE_NODE_PREV(current_node);
+	else
+		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list_end);
+
+	for (; node != NULL; node = GTK_CTREE_NODE_PREV(node)) {
+		msginfo = gtk_ctree_node_get_row_data(ctree, node);
+                 if (MSG_GET_COLORLABEL_VALUE(msginfo->flags) > 0) break;
 	}
 
 	return node;
