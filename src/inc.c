@@ -829,21 +829,6 @@ static gint inc_recv_message(Session *session, const gchar *msg, gpointer data)
 		progress_dialog_set_label
 			(dialog, _("Getting the size of messages (LIST)..."));
 		break;
-	case POP3_TOP:
-		g_snprintf(buf, sizeof(buf),
-			   _("Retrieving header (%d / %d)"),
-			   pop3_session->cur_msg, pop3_session->count);
-		progress_dialog_set_label (dialog, buf);
-		progress_dialog_set_percentage
-			(dialog,
-			 (gfloat)(pop3_session->cur_msg) /
-			 (gfloat)(pop3_session->count));
-		if (inc_dialog->mainwin)
-			gtk_progress_bar_update 
-				(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
-				 (gfloat)(pop3_session->cur_msg) /
-				 (gfloat)(pop3_session->count));
-		break;
 	case POP3_RETR:
 		inc_recv_data_progressive
 			(session, 0,

@@ -1,3 +1,8 @@
+2003-03-26 [oliver]	0.8.11claws55
+	
+	* src/inc.c
+		remove POP3_TOP
+	
 2003-03-26 [oliver]	0.8.11claws54
 
 	*src/pop.h
