@@ -1,3 +1,10 @@
+2001-05-31 [alfons]
+
+	* src/summaryview.c:
+
+		(add_sender_to_cb): don't crash when no or invalid sender; the add 
+		sender to address book menu item is disabled.
+
 2001-05-30 [hoa]
 
 	* src/filtering.[ch]

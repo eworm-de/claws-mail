@@ -3154,15 +3154,19 @@ static void summary_add_sender_to_cb (SummaryView			*summaryview,
 	/* get the address info from the summary view */
 	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
 												   summaryview->selected);
-	g_return_if_fail(msginfo != NULL);
 
-	from_address = g_strdup(msginfo->from);
-	eliminate_address_comment(from_address);
-	extract_address(from_address);
-	log_message("adding %s %s\n", msginfo->fromname, from_address);
-	addressbook_add_contact_by_menu(submenu, msginfo->fromname, from_address, NULL);
-	g_free(from_address);
-	
+	if (msginfo != NULL && msginfo->fromname != NULL && msginfo->from != NULL) {
+		gtk_widget_set_sensitive(GTK_WIDGET(submenu), TRUE);
+		from_address = g_strdup(msginfo->from);
+		eliminate_address_comment(from_address);
+		extract_address(from_address);
+		log_message("adding %s %s\n", msginfo->fromname, from_address);
+		addressbook_add_contact_by_menu(submenu, msginfo->fromname, from_address, NULL);
+		g_free(from_address);
+	}		
+	else {
+		gtk_widget_set_sensitive(GTK_WIDGET(submenu), FALSE);
+	}
 }
 
 static void summary_num_clicked(GtkWidget *button, SummaryView *summaryview)
