@@ -1673,6 +1673,12 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 			conv_unmime_header(hentry[H_REPLY_TO].body, NULL);
 		g_free(hentry[H_REPLY_TO].body);
 		hentry[H_REPLY_TO].body = NULL;
+               /* if empty replyto, let sylpheed figure it out, i.e.
+                 * neglect the reply-to header. */
+                if (*(compose->replyto) == 0) {
+                        g_free(compose->replyto);
+                        compose->replyto = NULL;
+                }
 	}
 	if (hentry[H_CC].body != NULL) {
 		compose->cc = conv_unmime_header(hentry[H_CC].body, NULL);
