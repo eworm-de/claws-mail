@@ -1,3 +1,9 @@
+2003-07-04 [christoph]	0.9.0claws80
+
+	* src/main.c
+		destroy all FolderItems when shutting down to
+		allow folders to clean up
+
 2003-07-04 [melvin]	0.9.0claws79
 
 	* src/gtk/gtkaspell.c
