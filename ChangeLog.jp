@@ -1,3 +1,13 @@
+2003-06-02
+
+	* src/addr_compl.c: invalidate_address_completion(): g_completion_list
+	  が NULL かどうかをチェック(西山 和広さん thanks)。
+
+2003-06-02
+
+	* src/pop.c: pop3_session_recv_data_finished(): サーバに保存される
+	  べきメッセージを削除していたバグを修正(Tristan Wallis さん thanks)。
+
 2003-05-27
 
 	* version 0.9.1

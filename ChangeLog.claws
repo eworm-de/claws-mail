@@ -1,3 +1,11 @@
+2003-06-02 [paul]	0.9.0claws11
+
+	* sync with 0.9.1cvs1
+		see ChangeLog 2003-06-02
+		
+	* po/de.po
+		update by Jens
+
 2003-06-01 [christoph]	0.9.0claws10
 
 	* src/account.c
