@@ -217,13 +217,11 @@ static GNode *subject_relation_lookup(GRelation *relation, MsgInfo *msginfo)
 /* return the reversed thread tree */
 GNode *procmsg_get_thread_tree(GSList *mlist)
 {
-	GNode *root, *parent, *node, *next, *last;
-	GNode *prev; /* CLAWS */
+	GNode *root, *parent, *node, *next;
 	GHashTable *msgid_table;
 	GRelation *subject_relation;
 	MsgInfo *msginfo;
 	const gchar *msgid;
-	const gchar *subject;
 
 	root = g_node_new(NULL);
 	msgid_table = g_hash_table_new(g_str_hash, g_str_equal);
@@ -254,7 +252,6 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 
 	/* complete the unfinished threads */
 	for (node = root->children; node != NULL; ) {
-		prev = node->prev;	/* CLAWS: need the last node */
 		parent = NULL;
 		next = node->next;
 		msginfo = (MsgInfo *)node->data;
@@ -269,22 +266,18 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 					(parent, parent->children, node);
 			}				
 		}
-		last = (next == NULL) ? prev : node;
 		node = next;
 	}
 
 	if (prefs_common.thread_by_subject) {
-		for (node = last; node && node != NULL;) {
-			next = node->prev;
+		for (node = root->children; node && node != NULL;) {
+			next = node->next;
 			msginfo = (MsgInfo *) node->data;
 			
-			/* may not parentize if parent was delivered after childs */
-			if (subject != msginfo->subject)
-				parent = subject_relation_lookup(subject_relation, msginfo);
-			else
-				parent = NULL; 
+			parent = subject_relation_lookup(subject_relation, msginfo);
 			
-			/* the node may already be threaded by IN-REPLY-TO, so go up in the tree to 
+			/* the node may already be threaded by IN-REPLY-TO, so go up 
+			 * in the tree to 
 			   find the parent node */
 			if (parent != NULL) {
 				if (g_node_is_ancestor(node, parent))
@@ -557,7 +550,7 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 			SET_FILTER_KEY("header \"List-Id\"", H_LIST_ID);
 			extract_list_id_str(*key);
 		} else if (hentry[H_X_SEQUENCE].body != NULL) {
-			gchar *p;
+			guchar *p;
 
 			SET_FILTER_KEY("X-Sequence", H_X_SEQUENCE);
 			p = *key;
@@ -914,8 +907,6 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	msginfo->refcnt--;
 	if (msginfo->refcnt > 0)
 		return;
-
-	debug_print("freeing msginfo %d in %s\n", msginfo->msgnum, msginfo->folder ? msginfo->folder->path : "(nil)");
 
 	if (msginfo->to_folder) {
 		msginfo->to_folder->op_count--;

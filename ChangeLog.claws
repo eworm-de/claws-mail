@@ -1,3 +1,518 @@
+2004-02-06 [paul]	0.9.9claws
+
+	0.9.9claws released
+
+2004-02-06 [darko]	0.9.8claws64
+
+	* src/compose.c
+		don't allow Ctrl+Enter while external editor is active
+
+2004-02-06 [paul]	0.9.8claws63
+
+	* po/es.po
+	  po/pl.po
+	  po/sk.po
+	  po/sr.po
+	  	update Spanish, Polish, Slovak, and Serbian translations.
+		submitted by Ricardo Mones Lastra, Emil Nowak, Andrej Kacian,
+		and Urke MMI
+
+2004-02-04 [alfons]	0.9.8claws62
+
+	* src/compose.c
+		grab focus only when lbutton was pressed (bug #430 cont'd; 
+		don't have clue yet why the cursor pos is at the end of the
+		text.)
+
+2004-02-04 [alfons]	0.9.8claws61
+
+	* src/compose.c
+		always grab focus when one of the header entries is clicked 
+		(should fix bug #430, "no focus on pasted addresses 3 & higher")
+
+2004-02-02 [paul]
+
+	* ac/missing/gdk-pixbuf.m4
+	  ac/missing/gpgme.m4
+	  ac/missing/imlib.m4
+	  	prevent 'underquoted definition' warnings
+		patch submitted by David Relson
+		
+	* src/plugins/clamav/README
+		update, improve, correct
+
+2004-01-31 [thorsten]	0.9.8claws60
+
+	* src/news.c
+		'dir' not initialized if group has no messages
+
+2004-01-29 [christoph]	0.9.8claws59
+
+	* src/customheader.[ch]
+		add custom_header_is_allowed() to check for disallowed header names
+		that must not be overridden by custom headers
+
+	* src/compose.c
+		always write From: header and use custom_header_is_allowed() to
+		check if custom header should be written
+
+	* src/prefs_customheader.c
+		check if custom header is disallowed using custom_header_is_allowed()
+
+	* src/folderutils.c
+		destroy message id GHashTable before freeing the MsgInfos
+
+2004-01-29 [paul]	0.9.8claws58
+
+	* sync with 0.9.9 release
+		see ChangeLog 2004-01-29
+
+2004-01-29 [paul]	0.9.8claws57
+
+	* sync with 0.9.8cvs11
+		see ChangeLog 2004-01-29
+
+2004-01-28 [christoph]	0.9.8claws56
+
+	* src/pgpmime.c
+	* src/sgpgme.[ch]
+		return WARN signature status when signature is not trusted
+
+	* src/Makefile.am
+	* src/folder.c
+	* src/folderutils.[ch]			** NEW **
+	* src/summaryview.c
+		implement delete duplicates summaryview independent
+
+2004-01-28 [paul]	0.9.8claws55
+
+	* sync with 0.9.8cvs10
+		see Changelog 2004-01-27 and 2004-01-28
+
+2004-01-26 [christoph]	0.9.8claws54
+
+	* src/imap.c
+		create a root node for the Folder if scan fails because root
+		folder does not exist
+
+2004-01-26 [paul]	0.9.8claws53
+
+	* sync with 0.9.8cvs7
+		see ChangeLog 2004-01-23
+
+2004-01-25 [alfons]	0.9.8claws52
+
+	* src/compose.c
+		remove left-over constant INDENT_CHARS
+
+2004-01-25 [alfons]	0.9.8claws51
+
+	* src/procmime.c
+		add NULL pointer check for mimeinfo->node in
+		procmime_mimeinfo_parent()
+
+2004-01-25 [darko]	0.9.8claws50
+
+	* src/compose.c
+		make "Wrap all long lines" toolbar button wrap all
+		long lines not just the current line
+		patch by I. Oshadi Jayawardena <ioj4 at yahoo.co.uk>
+
+
+2004-01-25 [alfons]	0.9.8claws49
+
+	* src/procmime.c
+		remove g_strstrip(); prevents a NULL pointer deref, and isn't
+		necessary anyway, because *scanf() functions neglect white
+		space in the input. 
+		Fixes bug #425, "sylpheed 0.9.8claws42 crashes on some messages."
+
+2004-01-25 [paul]	0.9.8claws48
+
+	src/prefs_ext_prog.c
+		apply Alfons' patch to check for NULL pointers
+		fixes bug #424
+
+2004-01-25 [paul]	0.9.8claws47
+
+	* sync with 0.9.8cvs8
+		see ChangeLog 2004-01-23
+
+2004-01-25 [thorsten]	0.9.8claws46
+
+	* src/messageview.c
+		remove orphaned mimeview unref()
+
+2004-01-23 [christoph]	0.9.8claws45
+
+	* src/summaryview.c
+		set ctree widget style
+
+2004-01-23 [paul]	0.9.8claws44
+
+	* sync with 0.9.8cvs5
+		see ChangeLog 2004-01-22
+
+2004-01-23 [alfons]	0.9.8claws43
+
+	* src/procmsg.c
+		remove redundant code in procmsg_get_thread_tree()
+
+2004-01-21 [christoph]	0.9.8claws42
+
+	* src/folderview.c
+		set ctree widget style, otherwise GTK does not use the
+		the correct vertical size for the list items
+
+2004-01-21 [alfons]	0.9.8claws41
+
+	* src/summaryview.c
+		GDK_Left should only switch to folderview when
+		when summaryview hscrollbar is at the leftmost
+		position (fixes bug #420, "Focus error")
+
+2004-01-21 [paul]	0.9.8claws40
+
+	* sync with 0.9.8cvs4
+		see ChangeLog 2004-01-20
+
+2004-01-20 [christoph]	0.9.8claws39
+
+	* src/folderview.c
+		remove setting sensitivity for no longer existing
+		/Scoring... popup entry
+
+2004-01-20 [keith]	0.9.8claws38
+
+	* configure.ac
+		Revert AM_CONFIG_HEADER to AC_CONFIG_HEADER
+
+2004-01-20 [paul]	0.9.8claws37
+
+	* src/prefs_fonts.c
+		demystify font settings
+		
+	* src/textview.c
+		use textview->msgfont for header->body in
+		textview_show_header()
+
+2004-01-20 [paul]	0.9.8claws36
+
+	* src/compose.c
+	  src/undo.c
+	  	remove superfluous debug_print's
+		
+	* src/inc.c
+		clear the statusbar after LOCAL incorporation
+
+2004-01-20 [paul]	0.9.8claws35
+
+	* sync with 0.9.8cvs3
+		see ChangeLog 2004-01-20
+
+2004-01-19 [keith]	0.9.8claws34
+
+	* src/folderview.c
+		don't show 'Search folder...' on popup menu
+		if folder has no mails in it
+
+2004-01-17 [keith]	0.9.8claws33
+
+	* src/compose.c
+	  src/prefs_common.c
+	  src/prefs_common.h
+		store position of compose window in prefs
+
+2004-01-17 [thorsten]	0.9.8claws32
+
+	* src/gtk/gtkvscrollbutton.c
+		ensure scrollbutton resize event on different gtk versions
+
+2004-01-15 [alfons]	0.9.8claws31
+	
+	* src/summaryview.c
+		keep MSG_REPLIED and MSG_FORWARDED even when marking a
+		message as read
+
+2004-01-12 [christoph]	0.9.8claws30
+
+	* src/procmime.c
+		better MIME-Version check
+
+2004-01-11 [alfons]	0.9.8claws29
+
+	* src/procmsg.c
+		remove unnecessary but still effective check (could possibly
+		lead to some unwanted side effects)
+
+2004-01-11 [alfons]	0.9.8claws28
+
+	* src/procmsg.c
+		we should not prefer lowest message number while threading 
+		(introduced in previous commit)
+
+2004-01-11 [alfons]	0.9.8claws27
+
+	* src/procmsg.c
+		subject threading fixes:
+		
+			- make message with lowest message number the
+			  thread parent,
+			- refine recording last node when threading. the last node
+			  should be the previous one if a node has a thread parent,
+			  or the current node if not
+		
+		(there's another threading bug fix coming up)
+
+2004-01-10 [paul]	0.9.8claws26
+
+	* src/main.c
+	  src/prefs_ext_prog.c
+	  src/plugins/clamav/clamav_plugin_gtk.c
+	  	minor gui fixes
+
+2004-01-09 [christoph]	0.9.8claws25
+
+	* src/Makefile.am
+	* src/string_match.[ch]			** REMOVE **
+	* src/common/Makefile.am
+	* src/common/string_match.[ch]		** NEW **
+		move string_match.[ch] to common directory
+
+2004-01-09 [christoph]	0.9.8claws24
+
+	* src/pgpmime.c
+		add MIME-Version header for the message parser
+
+2004-01-09 [paul]	0.9.8claws23
+
+	* po/POTFILES.in
+	  src/Makefile.am
+	  src/main.c
+	  src/prefs_common.c
+	  src/prefs_ext_prog.[ch]	** NEW FILES **
+	  	move External Command options from 'Common Prefs/Other' to
+		'Other Prefs/Message View/External Programs', also reveal
+		the hidden options for audio player and image viewer.
+		
+	* src/prefs_common.c
+		fix toggling of header pane
+
+2004-01-09 [paul]	0.9.8claws22
+
+	* src/compose.c
+		when changing account also change the save folder
+
+	* src/textview.c
+		if a text/plain attachment has 'Content-Disposition: attachment'
+		don't display it inline
+
+2004-01-08 [christoph]	0.9.8claws21
+
+	* src/procmime.c
+		check for "MIME-Version: 1.0" in message/rfc882 MIME-parts,
+		otherwise thread the message content as one text part and
+		don't assume charset US-ASCII which is only specified as
+		default for MIME-messages
+
+2004-01-08 [paul]	0.9.8claws20
+
+	* src/plugins/clamav/clamav_plugin.c
+	  src/plugins/spamassassin/spamassassin.c
+	  	inform the user what is happening via the statusbar
+
+2004-01-06 [paul]	0.9.8claws19
+
+	* po/es.po
+		update Spanish translation. submitted by Ricardo
+		Mones Lastra
+
+2004-01-05 [paul]	0.9.8claws18
+
+	* sync with 0.9.8cvs2
+		see ChangeLog 2004-01-05
+
+2004-01-03 [luke]	0.9.8claws17
+
+	* src/procheader.c
+		Clean up:
+		o remove unused functions string_getchar() and file_getchar()
+		o remove the getchar_ parameter from generic_get_one_field()
+		o add an 'unfold' parameter to generic_get_one_field, to
+		  be used if no HeaderEntry is supplied
+		o procheader_get_one_field_asis() uses
+		  generic_get_one_field().
+
+2004-01-01 [christoph]	0.9.8claws16
+
+	* src/common/xml.[ch]
+		o add xml_new_tag() to manage usage counts of strings correctly
+		o correct xml_copy_tree() function name
+
+	* src/folder.c
+	* src/main.c
+		allow registering and unregistering of FolderClasses anytime
+
+2003-12-31 [christoph]	0.9.8claws15
+
+	* src/folder.[ch]
+	* src/common/xml.[ch]
+		keep folderlist.xml data for unloaded FolderClasses
+
+2003-12-30 [luke]	0.9.8claws14
+
+	* src/procheader.[ch]
+		o added procheader_get_one_field_asis() that does not do
+		  unfolding
+		o fix procheader_get_header_array_asis() to use the above,
+		  fixing ugliness of headers in textview
+
+	* src/compose.c
+		o don't unfold headers when redirecting.	
+
+2003-12-30 [paul]	0.9.8claws13
+
+	* po/POTFILES.in
+	  src/common/defs.h
+	  src/Makefile.am
+	  src/main.c
+	  src/prefs_common.c
+	  src/prefs_themes.[ch]	** NEW FILES **
+	  	redesign and move Icon Theme selector to
+		the new prefs window
+	  
+	* src/stock_pixmap.c
+		fix the old bug where icons are not always
+		updated when changing themes
+	
+	* src/summaryview.c
+		fix bug where the icons on the title row
+		of the summary view were not updated
+	
+	all patches submitted by Ricardo Mones Lastra
+
+2003-12-30 [hoa]	0.9.8claws12
+
+	* src/folder.c
+	        run preglobal and postglobal processing rules
+		even if the folder does not have any rules.
+
+2003-12-28 [paul]	0.9.8claws11
+
+	* ac/aspell.m4
+	  ac/check-type.m4
+	  ac/gnupg-check-typedef.m4
+	  ac/openssl.m4
+	  ac/spamassassin.m4
+	  	fix 'underquoted definition' warnings, patch submitted by
+		David Relson <relson@osagesoftware.com>
+		
+	* src/common/utils.c
+		subject_get_prefix_length(): add "Odp\\:" to reply prefixes,
+		patch submitted by Jan Alboszta <J.Alboszta@students.mimuw.edu.pl>
+
+2003-12-28 [paul]	0.9.8claws10
+
+	* sync with 0.9.8cvs1
+		see ChangeLog 2003-12-17
+
+2003-12-27 [christoph]	0.9.8claws9
+
+	* src/common/utils.[ch]
+		add g_node_map() to map a GNode into a new GNode
+		converting all node data's with a function
+
+	* src/account.c
+	* src/folder.[ch]
+	* src/folderview.c
+	* src/imap.c
+	* src/mainwindow.c
+	* src/summaryview.c
+		o use g_node_map() to convert XML <-> Folder
+		o remove redundant FolderItem->parent and
+		  replace it with folder_item_parent()
+
+2003-12-23 [christoph]	0.9.8claws8
+
+	* src/folder.[ch]
+	* src/folderview.c
+	* src/mainwindow.c
+	* src/procmsg.c
+		o use callback for notifications about added and
+		  destroyed folders
+		o rewrite folderlist saving (new functions to create
+		  folder from XML tree, and XML tree from folder)
+
+	* src/common/xml.[ch]
+		add function to save XML trees
+
+	* src/prefs_filtering.c
+		code cleanup
+
+2003-12-22 [christoph]	0.9.8claws7
+
+	* src/prefs_account.[ch]
+		add "SMTP only" accounts
+
+2003-12-20 [melvin]	0.9.8claws6
+
+	* src/action.[ch]
+		Changed the interface for action_update_*_menu() so
+		action.c does not need to know the paths of the different
+		actions menu (mainwindow, message view and compose window). 
+
+	* src/compose.c
+		Tiny code cleanup to merge spell checker related code
+		compose_update_actions_menu(): new function to update
+		the actions menu. Use it in compose_create()
+
+	* src/compose.h
+		compose_update_actions_menu(): new function to update
+		the actions menu. Used also in prefs_actions.c.
+
+	* src/mainwindow.[ch]
+		main_window_update_actions_menu(): new function to update
+		the actions menu. Used in main_window_create() and in
+		prefs_actions.c
+
+	* src/messageview.[ch]
+		messageview_update_actions_menu(): new function to update
+		the actions menu. Used in messageview_add_toolbar() and in
+		prefs_actions.c
+		
+	* src/prefs_actions.c	
+		prefs_actions_ok(): fixed to update the actions menu of
+		the separate message view and the compose windows.
+
+2003-12-20 [luke]	0.9.8claws5
+	* src/procheader.c
+		fix unfolding/newline stripping for multiline fields
+		in generic_get_one_field()
+
+2003-12-19 [christoph]	0.9.8claws4
+
+	* src/summaryview.c
+		o code cleanup
+		o use subject_compare_for_sort() when comparing
+		  simplified subjects
+
+2003-12-19 [christoph]	0.9.8claws3
+
+	* src/msgcache.c
+		more syncing with 0.8.9a
+
+2003-12-19 [christoph]	0.9.8claws2
+
+	* src/folder.c
+		don't write all FolderItem XML attributes for the root node
+
+2003-12-19 [melvin]	0.9.8claws1
+
+	* src/messageview.c
+		Added missing menu branch (Tools/Create processing/rule)
+	* po/fr.po
+		Updated French translation for the added string.
+
 2003-12-19 [paul]	0.9.8claws
 
 	0.9.8claws released

@@ -73,7 +73,9 @@ struct _IncSession
 #define TIMEOUT_ITV	200
 
 void inc_mail			(MainWindow	*mainwin,
-				 gboolean notify);
+				 gboolean	 notify);
+gint inc_account_mail		(MainWindow	*mainwin,
+				 PrefsAccount	*account);
 void inc_all_account_mail	(MainWindow	*mainwin,
 				 gboolean	 autocheck,
 				 gboolean 	 notify);

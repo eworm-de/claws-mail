@@ -93,7 +93,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
   	label1 = gtk_label_new(_("Enable virus scanning"));
   	gtk_widget_show (label1);
   	gtk_table_attach (GTK_TABLE (table), label1, 0, 1, 0, 1,
-                    	  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 2, 4);
 	gtk_label_set_justify(GTK_LABEL(label1), GTK_JUSTIFY_LEFT);
   	gtk_misc_set_alignment (GTK_MISC (label1), 0, 0.5);
@@ -101,7 +101,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
   	enable_clamav = gtk_check_button_new();
 	gtk_widget_show (enable_clamav);
   	gtk_table_attach (GTK_TABLE (table), enable_clamav, 1, 2, 0, 1,
-                    	  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);
 
   	label2 = gtk_label_new(_("Scan archive contents"));

@@ -56,22 +56,20 @@ void folderutils_delete_duplicates(FolderItem *item)
 		}
 	}
 
-	if (duplist) {
-		if (prefs_common.immediate_exec) {
-			FolderItem *trash = item->folder->trash;
+	if (prefs_common.immediate_exec) {
+		FolderItem *trash = item->folder->trash;
 
-			if (item->stype == F_TRASH || trash == NULL)
-				folder_item_remove_msgs(item, duplist);
-			else
-				folder_item_move_msgs(trash, duplist);
-		} else {
-			for (cur = duplist; cur != NULL; cur = g_slist_next(cur)) {
-				MsgInfo *msginfo = (MsgInfo *) cur->data;
+		if (item->stype == F_TRASH || trash == NULL)
+			folder_item_remove_msgs(item, duplist);
+		else
+			folder_item_move_msgs(trash, duplist);
+	} else {
+		for (cur = duplist; cur != NULL; cur = g_slist_next(cur)) {
+			MsgInfo *msginfo = (MsgInfo *) cur->data;
 
-				procmsg_msginfo_set_to_folder(msginfo, NULL);
-				procmsg_msginfo_unset_flags(msginfo, MSG_MARKED, MSG_MOVE | MSG_COPY);
-				procmsg_msginfo_set_flags(msginfo, MSG_DELETED, 0);
-			}
+			procmsg_msginfo_set_to_folder(msginfo, NULL);
+			procmsg_msginfo_unset_flags(msginfo, MSG_MARKED, MSG_MOVE | MSG_COPY);
+			procmsg_msginfo_set_flags(msginfo, MSG_DELETED, 0);
 		}
 	}
 	g_slist_free(duplist);

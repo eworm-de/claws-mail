@@ -98,9 +98,11 @@ typedef enum
 
 typedef enum
 {
-	FOLDER_TREE_CHANGED = 1 << 0,
-	FOLDER_NEW_FOLDERITEM = 1 << 1,
-	FOLDER_REMOVE_FOLDERITEM = 1 << 2,
+	FOLDER_NEW_FOLDER 		= 1 << 0,
+	FOLDER_DESTROY_FOLDER 		= 1 << 1,
+	FOLDER_TREE_CHANGED 		= 1 << 2,
+	FOLDER_NEW_FOLDERITEM 		= 1 << 3,
+	FOLDER_REMOVE_FOLDERITEM 	= 1 << 4,
 } FolderUpdateFlags;
 
 typedef enum
@@ -278,8 +280,6 @@ struct _FolderItem
 
 	GNode *node;
 
-	FolderItem *parent;
-
 	Folder *folder;
 
 	PrefsAccount *account;
@@ -319,6 +319,7 @@ struct _FolderItemUpdateData
 
 void	    folder_system_init		(void);
 void	    folder_register_class	(FolderClass	*klass);
+void	    folder_unregister_class	(FolderClass	*klass);
 Folder     *folder_new			(FolderClass	*type,
 					 const gchar	*name,
 					 const gchar	*path);
@@ -339,6 +340,7 @@ void        folder_item_append		(FolderItem	*parent,
 void        folder_item_remove		(FolderItem	*item);
 void        folder_item_remove_children	(FolderItem	*item);
 void        folder_item_destroy		(FolderItem	*item);
+FolderItem *folder_item_parent		(FolderItem	*item);
 
 void 	    folder_item_set_xml		(Folder		 *folder,
 					 FolderItem	 *item,
@@ -405,6 +407,7 @@ GSList *folder_item_get_msg_list	(FolderItem 	*item);
 /* return value is locale charset */
 gchar *folder_item_fetch_msg		(FolderItem	*item,
 					 gint		 num);
+gint   folder_item_fetch_all_msg	(FolderItem	*item);
 gint   folder_item_add_msg		(FolderItem	*dest,
 					 const gchar	*file,
 					 MsgFlags	*flags,

@@ -38,7 +38,6 @@ void unmime_header(gchar *out, const gchar *str)
 {
 	const gchar *p = str;
 	gchar *outp = out;
-	const gchar *sp;
 	const gchar *eword_begin_p, *encoding_begin_p, *text_begin_p,
 		    *eword_end_p;
 	gchar charset[32];
@@ -76,8 +75,10 @@ void unmime_header(gchar *out, const gchar *str)
 			p = eword_begin_p;
 		} else {
 			/* ignore spaces between encoded words */
+			const gchar *sp;
+
 			for (sp = p; sp < eword_begin_p; sp++) {
-				if (!isspace(*sp)) {
+				if (!isspace(*(const guchar *)sp)) {
 					memcpy(outp, p, eword_begin_p - p);
 					outp += eword_begin_p - p;
 					p = eword_begin_p;

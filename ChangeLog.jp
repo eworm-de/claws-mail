@@ -1,3 +1,115 @@
+2004-01-29
+
+	* version 0.9.9
+
+2004-01-29
+
+	* src/folder.c: folder_item_fetch_all_msg()
+	  src/folderview.c: folderview_download_cb(): 進捗をプログレスバーで
+	  表示。
+	* src/mainwindow.[ch]: 新たにプログレスバー用の関数を追加。
+
+2004-01-29
+
+	* src/summaryview.c: summary_key_pressed(): サマリビューの水平
+	  スクロールバーが左端にあるときのみ GDK_Left でフォルダビューに
+	  切り替えるようにした(Alfons さん thanks)。
+
+2004-01-29
+
+	* src/codeconv.c: conv_euctojis(): JIS X 0201 カナ変換を設定可能に
+	  した。
+	* src/prefs_common.[ch]: PrefsCommon::allow_jisx0201_kana (隠し設定)
+	  を追加。
+
+2004-01-28
+
+	* src/codeconv.c: conv_euctojis(): JIS X 0201 カナから JIS X 0208
+	  へ強制的に変換するようにした。
+
+2004-01-28
+
+	* src/imap.c: imap_get_msginfo(): 間違ってカウントされてしまうのを
+	  修正。
+
+2004-01-28
+
+        * src/base64.c
+	  src/codeconv.c
+	  src/compose.c
+	  src/html.c
+	  src/imap.c
+	  src/pop.c
+	  src/prefs_account.c
+	  src/procmime.c
+	  src/procmsg.c
+	  src/quote_fmt_parse.y
+	  src/quoted-printable.c
+	  src/textview.c
+	  src/unmime.c
+	  src/utils.c
+	  src/utils.h
+	  src/xml.c: ctype 関数に対して引数の型が誤っていたのを修正(unsigned
+	  char でなくて char を渡していた)。
+
+2004-01-27
+
+	* src/mainwindow.[ch]: MainWindow::messageview_cid を追加。
+	  メッセージビューが隠された場合クリアするようにした。
+	* src/textview.c: リンクがクリックされたら URL をステータスバーに
+	  表示するようにした。
+	  textview_uri_security_check(): 実際の URL と表示されている URL を
+	  比較し、偽の URL の可能性があれば警告を出すようにした。
+	* src/utils.[ch]:
+	  is_uri_string(): 文字列が URL であれば TRUE を返す。
+	  get_uri_path(): URL のスキーム部以外の部分を返す。
+
+2004-01-23
+
+	* src/folder.[ch]: folder_item_fetch_all_msg(): 新規。フォルダ中の
+	  全てのメッセージを取得する。
+	* src/folderview.c: 「ダウンロード」機能を実装。
+
+2004-01-23
+
+	* src/gtkutils.[ch]: 矢印メニューボタンをボタンに付加する ComboButton
+	  を実装。
+	* src/mainwindow.[ch]: main_window_toolbar_create(): 返信、転送ボタン
+	  にコンボボタンを追加。
+
+2004-01-22
+
+	* src/mainwindow.c: ツールバーによってウィンドウサイズが自動的に
+	  伸長してしまうのを修正。
+
+2004-01-21
+
+	* src/addr_compl.[ch]
+	  src/gtkshruler.[ch]: 著作権表示を変更。
+
+2004-01-20
+
+	* src/gtkstext.c: find_line_params(): マルチバイトとシングルバイト
+	  文字の間でも改行するようにした。
+
+2004-01-20
+
+	* src/gtkstext.c: find_line_params(): ワードラップモードのとき
+	  マルチバイト文字間でも改行するようにした。
+
+2004-01-05
+
+	* src/codeconv.c: conv_iconv_strdup(): LP64 環境でのクラッシュを修正
+	  (James Noyes さん thanks)。
+	* src/compose.c: compose_select_account(): 自動的に署名/暗号化
+	  オプションをオフにしないようにした。
+
+2003-12-17
+
+	* src/inc.[ch]: inc_account_mail() を public にした。
+	* src/mainwindow.c: 受信メニューをサブメニューにし、各アカウントから
+	  の受信のための動的なメニューを追加。
+
 2003-12-15
 
 	* version 0.9.8a

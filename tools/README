@@ -9,6 +9,7 @@ Action scripts:
   google_msgid.pl               Search groups.google.com for selected message-id
   google_search.pl		Search google.com for selected text
   multiwebsearch.pl		Search any search engine for the selected text
+  textviewer.sh			Attempt to view an attachment as plain text
   uudec                         Decode and display uuencoded images
 
 Addressbook conversion:
@@ -72,6 +73,11 @@ Action scripts
   WORKS ON: current message (or part of multipart message)
   COMMAND: uudec %f&
   Decode and display uuencoded images using uudecode.
+
+* textviewer.sh
+  WORKS ON: current message part
+  COMMAND: textviewer.sh %p |
+  Attempt to view an attachment as plain text
 
 * More action examples can be found at
   http://melvin.hadasht.free.fr/home/sylpheed/actions/
@@ -413,16 +419,27 @@ Other tools
   	as attachments.
 
   HOW TO USE IT
+    OpenOffice.org Version 1.0
+    --------------------------
   	Start up OpenOffice.org.
   	Go to 'Tools/Options/OpenOffice.org/External Programs'
   	Enter the path to OOo2sylpheed.pl in the 'Program' box
   	or select it by clicking on the '...' button.
 
+    OpenOffice.org Version 1.1.0
+    ----------------------------
+  	Start up OpenOffice.org.
+  	Go to 'Tools/Options/OpenOffice.org/External Programs'
+	Select either ''Mozilla 1.x (Option 1)', or 
+	'Netscape 6.x - 7.0 (Option 1)' from the 'Program' selection
+  	Enter the path to OOo2sylpheed.pl in the 'Path' box
+  	or select it by clicking on the '...' button.
+    
   	You can then use 'File/Send/Document as email' to launch sylpheed
   	(if not already launched) and open a new compose window with the
   	document attached.
 
-  	Tested with OpenOffice.org version 1.0
+  	Tested with OpenOffice.org versions 1.0, 1.1.0
   
   Contact: Paul Mangan <claws@thewildbeast.co.uk>
 

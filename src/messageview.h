@@ -99,6 +99,7 @@ gboolean messageview_search_string_backward	(MessageView	*messageview,
 
 gboolean messageview_is_visible			(MessageView	*messageview);
 
+void messageview_update_actions_menu		(MessageView	*msgview);
 void messageview_add_toolbar			(MessageView 	*msgview,
 						 GtkWidget 	*vbox);
 void messageview_reflect_prefs_pixmap_theme	(void);

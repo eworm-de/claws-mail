@@ -183,7 +183,6 @@ static void undo_check_size(UndoMain *undostruct)
 		undostruct->undo = g_list_remove(undostruct->undo, last_undo);
 		undo_object_free(last_undo);
 	}
-	debug_print("g_list_length(undostruct->undo): %d\n", length);
 }
 
 /**
@@ -281,7 +280,6 @@ static gint undo_merge(GList *list, guint start_pos, guint end_pos,
 	} else
 		debug_print("Unknown action [%i] inside undo merge encountered", action);
 
-	debug_print("Merged: %s\n", text);
 	return TRUE;
 }
 
@@ -304,8 +302,6 @@ static void undo_add(const gchar *text,
 {
 	UndoInfo *undoinfo;
 	GtkAdjustment *vadj;
-
-	debug_print("undo_add(%i)*%s*\n", strlen (text), text);
 
 	g_return_if_fail(text != NULL);
 	g_return_if_fail(end_pos >= start_pos);
@@ -331,8 +327,6 @@ static void undo_add(const gchar *text,
 		return;
 
 	undo_check_size(undostruct);
-
-	debug_print("New: %s Action: %d Paste: %d\n", text, action, undostruct->paste);
 
 	vadj = GTK_ADJUSTMENT(GTK_TEXT_VIEW(undostruct->textview)->vadjustment);
 	undoinfo = undo_object_new(g_strdup(text), start_pos, end_pos, action,
@@ -396,19 +390,16 @@ void undo_undo(UndoMain *undostruct)
 	case UNDO_ACTION_DELETE:
 		gtk_text_buffer_get_iter_at_offset(buffer, &iter, undoinfo->start_pos);
 		gtk_text_buffer_insert(buffer, &iter, undoinfo->text, -1);
-		debug_print("UNDO_ACTION_DELETE %s\n", undoinfo->text);
 		break;
 	case UNDO_ACTION_INSERT:
 		gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, undoinfo->start_pos);
 		gtk_text_buffer_get_iter_at_offset(buffer, &end_iter, undoinfo->end_pos);
 		gtk_text_buffer_delete(buffer, &start_iter, &end_iter);
-		debug_print("UNDO_ACTION_INSERT %d\n", undoinfo->end_pos-undoinfo->start_pos);
 		break;
 	case UNDO_ACTION_REPLACE_INSERT:
 		gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, undoinfo->start_pos);
 		gtk_text_buffer_get_iter_at_offset(buffer, &end_iter, undoinfo->end_pos);
 		gtk_text_buffer_delete(buffer, &start_iter, &end_iter);
-		debug_print("UNDO_ACTION_REPLACE %s\n", undoinfo->text);
 		/* "pull" another data structure from the list */
 		undoinfo = (UndoInfo *)undostruct->undo->data;
 		g_return_if_fail(undoinfo != NULL);
@@ -416,7 +407,6 @@ void undo_undo(UndoMain *undostruct)
 		undostruct->undo = g_list_remove(undostruct->undo, undoinfo);
 		g_return_if_fail(undoinfo->action == UNDO_ACTION_REPLACE_DELETE);
 		gtk_text_buffer_insert(buffer, &start_iter, undoinfo->text, -1);
-		debug_print("UNDO_ACTION_REPLACE %s\n", undoinfo->text);
 		break;
 	case UNDO_ACTION_REPLACE_DELETE:
 		g_warning("This should not happen. UNDO_REPLACE_DELETE");
@@ -481,14 +471,11 @@ void undo_redo(UndoMain *undostruct)
 	case UNDO_ACTION_INSERT:
 		gtk_text_buffer_get_iter_at_offset(buffer, &iter, redoinfo->start_pos);
 		gtk_text_buffer_insert(buffer, &iter, redoinfo->text, -1);
-		debug_print("UNDO_ACTION_DELETE %s\n",redoinfo->text);
 		break;
 	case UNDO_ACTION_DELETE:
 		gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, redoinfo->start_pos);
 		gtk_text_buffer_get_iter_at_offset(buffer, &end_iter, redoinfo->end_pos);
 		gtk_text_buffer_delete(buffer, &start_iter, &end_iter);
-		debug_print("UNDO_ACTION_INSERT %d\n", 
-			    redoinfo->end_pos-redoinfo->start_pos);
 		break;
 	case UNDO_ACTION_REPLACE_DELETE:
 		gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, redoinfo->start_pos);
@@ -587,11 +574,14 @@ void undo_delete_text_cb(GtkTextBuffer *textbuf, GtkTextIter *start,
 
 void undo_paste_clipboard_cb(GtkTextView *textview, UndoMain *undostruct)
 {
-	debug_print("before Paste: %d\n", undostruct->paste);
+#warning GTK2 check clipboard content
+#if 0
+	if (editable->clipboard_text == NULL) return;
+#endif
+
 	if (prefs_common.undolevels > 0)
 		if (undo_get_selection(textview, NULL, NULL))
 			undostruct->paste = TRUE;
-	debug_print("after Paste: %d\n", undostruct->paste);
 }
 
 /**

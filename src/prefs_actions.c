@@ -643,13 +643,31 @@ static void prefs_actions_cancel(GtkWidget *w, gpointer data)
 
 static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 {
-	GtkItemFactory *ifactory;
-	MainWindow *mainwin = (MainWindow *)data;
-	GtkItemFactoryEntry ifentry = {NULL, NULL, NULL, 0, "<Branch>"};
+	MainWindow *mainwin = (MainWindow *) data;
+	GList *list;
+	GList *iter;
+	MessageView *msgview;
+	Compose *compose;
 
 	prefs_actions_write_config();
-	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
-	action_update_mainwin_menu(ifactory, mainwin);
+
+	/* Update mainwindow actions menu */
+	main_window_update_actions_menu(mainwin);
+
+	/* Update separated message view actions menu */
+	list = messageview_get_msgview_list();
+	for (iter = list; iter; iter = iter->next) {
+		msgview = (MessageView *) iter->data;
+		messageview_update_actions_menu(msgview);
+	}
+
+	/* Update compose windows actions menu */
+	list = compose_get_compose_list();
+	for (iter = list; iter; iter = iter->next) {
+		compose = (Compose *) iter->data;
+		compose_update_actions_menu(compose);
+	}
+
 	gtk_widget_hide(actions.window);
 	inc_unlock();
 }

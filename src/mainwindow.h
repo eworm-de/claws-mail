@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,6 +119,7 @@ struct _MainWindow
 	gint mainwin_cid;
 	gint folderview_cid;
 	gint summaryview_cid;
+	gint messageview_cid;
 
 	ToolbarStyle toolbar_style;
 
@@ -137,6 +138,8 @@ struct _MainWindow
 MainWindow *main_window_create		(SeparateType	 type);
 
 void main_window_destroy                (MainWindow *mainwin);
+
+void main_window_update_actions_menu	(MainWindow	*mainwin);
 
 void main_window_cursor_wait		(MainWindow	*mainwin);
 void main_window_cursor_normal		(MainWindow	*mainwin);
@@ -159,6 +162,12 @@ void main_window_toggle_message_view	(MainWindow *mainwin);
 
 void main_window_get_size		(MainWindow	*mainwin);
 void main_window_get_position		(MainWindow	*mainwin);
+
+void main_window_progress_on		(MainWindow	*mainwin);
+void main_window_progress_off		(MainWindow	*mainwin);
+void main_window_progress_set		(MainWindow	*mainwin,
+					 gint		 cur,
+					 gint		 total);
 
 void main_window_empty_trash		(MainWindow	*mainwin,
 					 gboolean	 confirm);

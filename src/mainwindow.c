@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,7 +109,15 @@ static gboolean toolbar_account_button_pressed	(GtkWidget	*widget,
 						 GdkEventButton	*event,
 						 gpointer	 data);
 #endif
-static gboolean ac_label_button_pressed		(GtkWidget	*widget,
+
+static void toolbar_child_attached		(GtkWidget	*widget,
+						 GtkWidget	*child,
+						 gpointer	 data);
+static void toolbar_child_detached		(GtkWidget	*widget,
+						 GtkWidget	*child,
+						 gpointer	 data);
+
+static void ac_label_button_pressed		(GtkWidget	*widget,
 						 GdkEventButton	*event,
 						 gpointer	 data);
 static void ac_menu_popup_closed		(GtkMenuShell	*menu_shell,
@@ -381,8 +389,10 @@ static void new_account_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 
-static void account_menu_cb	 (GtkMenuItem	*menuitem,
-				  gpointer	 data);
+static void account_selector_menu_cb	 (GtkMenuItem	*menuitem,
+					  gpointer	 data);
+static void account_receive_menu_cb	 (GtkMenuItem	*menuitem,
+					  gpointer	 data);
 
 static void prefs_open_cb	(GtkMenuItem	*menuitem,
 				 gpointer 	 data);
@@ -617,11 +627,14 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/_Update summary"),		"<control><alt>U", update_summary_cb,  0, NULL},
 
 	{N_("/_Message"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/Get new ma_il"),		"<control>I",	inc_mail_cb, 0, NULL},
-	{N_("/_Message/Get from _all accounts"),
+	{N_("/_Message/Recei_ve"),		NULL, NULL, 0, "<Branch>"},
+	{N_("/_Message/Recei_ve/Get from _current account"),
+						"<control>I",	inc_mail_cb, 0, NULL},
+	{N_("/_Message/Recei_ve/Get from _all accounts"),
 						"<shift><control>I", inc_all_account_mail_cb, 0, NULL},
-	{N_("/_Message/Cancel receivin_g"),	NULL, inc_cancel_cb, 0, NULL},
-	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/Recei_ve/Cancel receivin_g"),
+						NULL, inc_cancel_cb, 0, NULL},
+	{N_("/_Message/Recei_ve/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_Send queued messages"), NULL, send_queue_cb, 0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Compose a_n email message"),	"<control>M", compose_mail_cb, 0, NULL},
@@ -818,6 +831,10 @@ MainWindow *main_window_create(SeparateType type)
 	handlebox = gtk_handle_box_new();
 	gtk_widget_show(handlebox);
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
+	gtk_signal_connect(GTK_OBJECT(handlebox), "child_attached",
+			   GTK_SIGNAL_FUNC(toolbar_child_attached), mainwin);
+	gtk_signal_connect(GTK_OBJECT(handlebox), "child_detached",
+			   GTK_SIGNAL_FUNC(toolbar_child_detached), mainwin);
 
 	/* link window to mainwin->window to avoid gdk warnings */
 	mainwin->window       = window;
@@ -921,6 +938,8 @@ MainWindow *main_window_create(SeparateType type)
 		(GTK_STATUSBAR(statusbar), "Folder View");
 	mainwin->summaryview_cid = gtk_statusbar_get_context_id
 		(GTK_STATUSBAR(statusbar), "Summary View");
+	mainwin->messageview_cid = gtk_statusbar_get_context_id
+		(GTK_STATUSBAR(statusbar), "Message View");
 
 	/* allocate colors for summary view and folder view */
 	summaryview->color_marked.red = summaryview->color_marked.green = 0;
@@ -1009,7 +1028,7 @@ MainWindow *main_window_create(SeparateType type)
 	toolbar_main_set_sensitive(mainwin);
 
 	/* create actions menu */
-	action_update_mainwin_menu(ifactory, mainwin);
+	main_window_update_actions_menu(mainwin);
 
 	/* attach accel groups to main window */
 #define	ADD_MENU_ACCEL_GROUP_TO_WINDOW(menu,win)	\
@@ -1061,6 +1080,14 @@ void main_window_destroy(MainWindow *mainwin)
 {
 	/* TODO : destroy other component */
 	messageview_destroy(mainwin->messageview);
+}
+
+void main_window_update_actions_menu(MainWindow *mainwin)
+{
+	GtkItemFactory *ifactory;
+
+	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
+	action_update_mainwin_menu(ifactory, "/Tools/Actions", mainwin);
 }
 
 void main_window_cursor_wait(MainWindow *mainwin)
@@ -1177,38 +1204,85 @@ void main_window_set_summary_column(void)
 	}
 }
 
+static void main_window_set_account_selector_menu(MainWindow *mainwin,
+						  GList *account_list)
+{
+	GList *cur_ac, *cur_item;
+	GtkWidget *menuitem;
+	PrefsAccount *ac_prefs;
+
+	/* destroy all previous menu item */
+	cur_item = GTK_MENU_SHELL(mainwin->ac_menu)->children;
+	while (cur_item != NULL) {
+		GList *next = cur_item->next;
+		gtk_widget_destroy(GTK_WIDGET(cur_item->data));
+		cur_item = next;
+	}
+
+	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
+		ac_prefs = (PrefsAccount *)cur_ac->data;
+
+		menuitem = gtk_menu_item_new_with_label
+			(ac_prefs->account_name
+			 ? ac_prefs->account_name : _("Untitled"));
+		gtk_widget_show(menuitem);
+		gtk_menu_append(GTK_MENU(mainwin->ac_menu), menuitem);
+		gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+				   GTK_SIGNAL_FUNC(account_selector_menu_cb),
+				   ac_prefs);
+	}
+}
+
+static void main_window_set_account_receive_menu(MainWindow *mainwin,
+						 GList *account_list)
+{
+	GList *cur_ac, *cur_item;
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+	PrefsAccount *ac_prefs;
+
+	menu = gtk_item_factory_get_widget(mainwin->menu_factory,
+					   "/Message/Receive");
+
+	/* search for separator */
+	for (cur_item = GTK_MENU_SHELL(menu)->children; cur_item != NULL;
+	     cur_item = cur_item->next) {
+		if (GTK_BIN(cur_item->data)->child == NULL) {
+			cur_item = cur_item->next;
+			break;
+		}
+	}
+
+	/* destroy all previous menu item */
+	while (cur_item != NULL) {
+		GList *next = cur_item->next;
+		gtk_widget_destroy(GTK_WIDGET(cur_item->data));
+		cur_item = next;
+	}
+
+	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
+		ac_prefs = (PrefsAccount *)cur_ac->data;
+
+		menuitem = gtk_menu_item_new_with_label
+			(ac_prefs->account_name ? ac_prefs->account_name
+			 : _("Untitled"));
+		gtk_widget_show(menuitem);
+		gtk_menu_append(GTK_MENU(menu), menuitem);
+		gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+				   GTK_SIGNAL_FUNC(account_receive_menu_cb),
+				   ac_prefs);
+	}
+}
+
 void main_window_set_account_menu(GList *account_list)
 {
-	GList *cur, *cur_ac, *cur_item;
-	GtkWidget *menuitem;
+	GList *cur;
 	MainWindow *mainwin;
-	PrefsAccount *ac_prefs;
 
 	for (cur = mainwin_list; cur != NULL; cur = cur->next) {
 		mainwin = (MainWindow *)cur->data;
-
-		/* destroy all previous menu item */
-		cur_item = GTK_MENU_SHELL(mainwin->ac_menu)->children;
-		while (cur_item != NULL) {
-			GList *next = cur_item->next;
-			gtk_widget_destroy(GTK_WIDGET(cur_item->data));
-			cur_item = next;
-		}
-
-		for (cur_ac = account_list; cur_ac != NULL;
-		     cur_ac = cur_ac->next) {
-			ac_prefs = (PrefsAccount *)cur_ac->data;
-
-			menuitem = gtk_menu_item_new_with_label
-				(ac_prefs->account_name
-				 ? ac_prefs->account_name : _("Untitled"));
-			gtk_widget_show(menuitem);
-			gtk_menu_shell_append(GTK_MENU_SHELL(mainwin->ac_menu),
-					      menuitem);
-			g_signal_connect(G_OBJECT(menuitem), "activate",
-					 G_CALLBACK(account_menu_cb),
-					 ac_prefs);
-		}
+		main_window_set_account_selector_menu(mainwin, account_list);
+		main_window_set_account_receive_menu(mainwin, account_list);
 	}
 }
 
@@ -1361,6 +1435,9 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 			      GTK_ARROW_DOWN, GTK_SHADOW_OUT);
 	}
 
+	if (mainwin->messageview->visible == FALSE)
+		messageview_clear(mainwin->messageview);
+
 	main_window_set_menu_sensitive(mainwin);
 
 	prefs_common.msgview_visible = mainwin->messageview->visible;
@@ -1445,6 +1522,30 @@ void main_window_get_position(MainWindow *mainwin)
 	}
 }
 
+void main_window_progress_on(MainWindow *mainwin)
+{
+	gtk_progress_set_show_text(GTK_PROGRESS(mainwin->progressbar), TRUE);
+	gtk_progress_set_format_string(GTK_PROGRESS(mainwin->progressbar), "");
+}
+
+void main_window_progress_off(MainWindow *mainwin)
+{
+	gtk_progress_set_show_text(GTK_PROGRESS(mainwin->progressbar), FALSE);
+	gtk_progress_bar_update(GTK_PROGRESS_BAR(mainwin->progressbar), 0.0);
+	gtk_progress_set_format_string(GTK_PROGRESS(mainwin->progressbar), "");
+}
+
+void main_window_progress_set(MainWindow *mainwin, gint cur, gint total)
+{
+	gchar buf[32];
+
+	g_snprintf(buf, sizeof(buf), "%d / %d", cur, total);
+	gtk_progress_set_format_string(GTK_PROGRESS(mainwin->progressbar), buf);
+	gtk_progress_bar_update(GTK_PROGRESS_BAR(mainwin->progressbar),
+				(cur == 0 && total == 0) ? 0 :
+				(gfloat)cur / (gfloat)total);
+}
+
 void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 {
 	GList *list;
@@ -1506,8 +1607,6 @@ void main_window_add_mailbox(MainWindow *mainwin)
 	folder_set_ui_func(folder, scan_tree_func, mainwin);
 	folder_scan_tree(folder);
 	folder_set_ui_func(folder, NULL, NULL);
-
-	folderview_set(mainwin->folderview);
 }
 
 SensitiveCond main_window_get_current_state(MainWindow *mainwin)
@@ -1523,7 +1622,7 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		state |= M_UNLOCKED;
 	if (selection != SUMMARY_NONE)
 		state |= M_MSG_EXIST;
-	if (item && item->path && item->parent && !item->no_select) {
+	if (item && item->path && folder_item_parent(item) && !item->no_select) {
 		state |= M_EXEC;
 		/*		if (item->folder->type != F_NEWS) */
 		state |= M_ALLOW_DELETE;
@@ -1578,10 +1677,12 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	GtkItemFactory *ifactory = mainwin->menu_factory;
 	SensitiveCond state;
 	gboolean sensitive;
+	GtkWidget *menu;
 	GtkWidget *menuitem;
 	SummaryView *summaryview;
 	gchar *menu_path;
 	gint i;
+	GList *cur_item;
 
 	static const struct {
 		gchar *const entry;
@@ -1619,9 +1720,13 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/View/Show all headers"          , M_SINGLE_TARGET_EXIST},
 		{"/View/Message source"            , M_SINGLE_TARGET_EXIST},
 
-		{"/Message/Get new mail"          , M_HAVE_ACCOUNT|M_UNLOCKED},
-		{"/Message/Get from all accounts" , M_HAVE_ACCOUNT|M_UNLOCKED},
-		{"/Message/Cancel receiving"      , M_INC_ACTIVE},
+		{"/Message/Receive/Get from current account"
+						 , M_HAVE_ACCOUNT|M_UNLOCKED},
+		{"/Message/Receive/Get from all accounts"
+						 , M_HAVE_ACCOUNT|M_UNLOCKED},
+		{"/Message/Receive/Cancel receiving"
+						 , M_INC_ACTIVE},
+
 		{"/Message/Compose a news message", M_HAVE_NEWS_ACCOUNT},
 		{"/Message/Reply"                 , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{"/Message/Reply to"             , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
@@ -1653,6 +1758,22 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	for (i = 0; entry[i].entry != NULL; i++) {
 		sensitive = ((entry[i].cond & state) == entry[i].cond);
 		menu_set_sensitive(ifactory, entry[i].entry, sensitive);
+	}
+
+	menu = gtk_item_factory_get_widget(ifactory, "/Message/Receive");
+
+	/* search for separator */
+	for (cur_item = GTK_MENU_SHELL(menu)->children; cur_item != NULL;
+	     cur_item = cur_item->next) {
+		if (GTK_BIN(cur_item->data)->child == NULL) {
+			cur_item = cur_item->next;
+			break;
+		}
+	}
+
+	for (; cur_item != NULL; cur_item = cur_item->next) {
+		gtk_widget_set_sensitive(GTK_WIDGET(cur_item->data),
+					 (M_UNLOCKED & state) != 0);
 	}
 
 	main_window_menu_callback_block(mainwin);
@@ -2068,8 +2189,20 @@ static gboolean toolbar_account_button_pressed(GtkWidget *widget,
 }
 #endif
 
-static gboolean ac_label_button_pressed(GtkWidget *widget, GdkEventButton *event,
-					gpointer data)
+static void toolbar_child_attached(GtkWidget *widget, GtkWidget *child,
+				   gpointer data)
+{
+	gtk_widget_set_usize(child, 1, -1);
+}
+
+static void toolbar_child_detached(GtkWidget *widget, GtkWidget *child,
+				   gpointer data)
+{
+	gtk_widget_set_usize(child, -1, -1);
+}
+
+static void ac_label_button_pressed(GtkWidget *widget, GdkEventButton *event,
+				    gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
 
@@ -2773,10 +2906,18 @@ static void new_account_cb(MainWindow *mainwin, guint action,
 	if (!compose_get_compose_list()) account_add();
 }
 
-static void account_menu_cb(GtkMenuItem	*menuitem, gpointer data)
+static void account_selector_menu_cb(GtkMenuItem *menuitem, gpointer data)
 {
 	cur_account = (PrefsAccount *)data;
 	main_window_reflect_prefs_all();
+}
+
+static void account_receive_menu_cb(GtkMenuItem *menuitem, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)mainwin_list->data;
+	PrefsAccount *account = (PrefsAccount *)data;
+
+	inc_account_mail(mainwin, account);
 }
 
 static void prefs_open_cb(GtkMenuItem *menuitem, gpointer data)

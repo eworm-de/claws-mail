@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto & The Sylpheed-Claws Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 
 #include "defs.h"
 
+#include <stdio.h>
 #include <glib.h>
 #include <stdio.h>
 #include <string.h>
@@ -157,6 +158,7 @@ void procmime_mimeinfo_replace(MimeInfo *old, MimeInfo *new)
 MimeInfo *procmime_mimeinfo_parent(MimeInfo *mimeinfo)
 {
 	g_return_val_if_fail(mimeinfo != NULL, NULL);
+	g_return_val_if_fail(mimeinfo->node != NULL, NULL);
 
 	if (mimeinfo->node->parent == NULL)
 		return NULL;
@@ -794,7 +796,8 @@ GList *procmime_get_mime_type_list(void)
 	GList *list = NULL;
 	FILE *fp;
 	gchar buf[BUFFSIZE];
-	gchar *p, *delim;
+	guchar *p;
+	gchar *delim;
 	MimeType *mime_type;
 
 	if (mime_type_list) 
@@ -964,9 +967,12 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 						   NULL, TRUE},
 				{"Content-Disposition:",
 				                   NULL, TRUE},
+				{"MIME-Version:",
+						   NULL, TRUE},
 				{NULL,		   NULL, FALSE}};
 	guint content_start, i;
 	FILE *fp;
+	gint mime_major, mime_minor, a;
 
 	if(mimeinfo->encoding_type != ENC_BINARY && 
 	   mimeinfo->encoding_type != ENC_7BIT && 
@@ -979,12 +985,28 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 	content_start = ftell(fp);
 	fclose(fp);
 
-	procmime_parse_mimepart(mimeinfo,
-			        hentry[0].body, hentry[1].body,
-				hentry[2].body, hentry[3].body, 
-				hentry[4].body, 
-				mimeinfo->filename, content_start,
-				mimeinfo->length - (content_start - mimeinfo->offset));
+	if ((hentry[5].body != NULL) &&
+	    (sscanf(hentry[5].body, "%d.%d", &mime_major, &mime_minor) == 2) &&
+	    (mime_major == 1) && (mime_minor == 0)) {
+		procmime_parse_mimepart(mimeinfo,
+				        hentry[0].body, hentry[1].body,
+					hentry[2].body, hentry[3].body, 
+					hentry[4].body, 
+					mimeinfo->filename, content_start,
+					mimeinfo->length - (content_start - mimeinfo->offset));
+	} else {
+		MimeInfo *subinfo;
+
+		subinfo = procmime_mimeinfo_new();
+		subinfo->encoding_type = ENC_BINARY;
+		subinfo->type = MIMETYPE_TEXT;
+		subinfo->subtype = g_strdup("plain");
+		subinfo->filename = g_strdup(mimeinfo->filename);
+		subinfo->offset = content_start;
+		subinfo->length = mimeinfo->length - (content_start - mimeinfo->offset);
+
+		g_node_append(mimeinfo->node, subinfo->node);
+	}
 	for (i = 0; i < (sizeof hentry / sizeof hentry[0]); i++) {
 		g_free(hentry[i].body);
 		hentry[i].body = NULL;

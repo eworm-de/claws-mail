@@ -1,8 +1,6 @@
-
-
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003 Hiroyuki Yamamoto & the Sylpheed-Claws team
+ * Copyright (C) 2003-2004 Hiroyuki Yamamoto & The Sylpheed-Claws Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,12 +46,10 @@ typedef struct _FontsPage
 
 	GtkWidget *window;		/* do not modify */
 
-	GtkWidget *label_textfont;
-	GtkWidget *entry_textfont;
-	GtkWidget *entry_smallfont;
-	GtkWidget *entry_normalfont;
+	GtkWidget *entry_folderviewfont;
+	GtkWidget *entry_summaryviewfont;
+	GtkWidget *entry_messageviewfont;
 	GtkWidget *entry_boldfont;
-	GtkWidget *button_textfont;
 } FontsPage;
 
 static GtkWidget *font_sel_win;
@@ -141,12 +137,10 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	FontsPage *prefs_fonts = (FontsPage *) _page;
 
 	GtkWidget *table;
-	GtkWidget *label_textfont;
-	GtkWidget *entry_textfont;
-	GtkWidget *entry_smallfont;
+	GtkWidget *entry_folderviewfont;
+	GtkWidget *entry_summaryviewfont;
+	GtkWidget *entry_messageviewfont;
 	GtkWidget *entry_boldfont;
-	GtkWidget *entry_normalfont;
-	GtkWidget *button_textfont;
 	GtkWidget *tmplabel, *tmpbutton;
 	GtkWidget *vbox;
 	GtkWidget *hint_label;
@@ -157,30 +151,29 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
-	label_textfont = gtk_label_new (_("Text"));
-	gtk_widget_show (label_textfont);
-	gtk_table_attach (GTK_TABLE (table), label_textfont, 0, 1, 0, 1,
-			 (GtkAttachOptions) (GTK_FILL),
+	tmplabel = gtk_label_new (_("Folder View"));
+	gtk_widget_show (tmplabel);
+	gtk_table_attach (GTK_TABLE (table), tmplabel, 0, 1, 0, 1,
+			 (GtkAttachOptions) GTK_FILL,
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_label_set_justify(GTK_LABEL(label_textfont), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(label_textfont), 1, 0.5);
+	gtk_label_set_justify(GTK_LABEL(tmplabel), GTK_JUSTIFY_RIGHT);
+	gtk_misc_set_alignment(GTK_MISC(tmplabel), 1, 0.5);
 
-	entry_textfont = gtk_entry_new ();
-	gtk_widget_show (entry_textfont);
-	gtk_table_attach (GTK_TABLE (table), entry_textfont, 1, 2, 0, 1,
+	entry_folderviewfont = gtk_entry_new ();
+	gtk_widget_show (entry_folderviewfont);
+	gtk_table_attach (GTK_TABLE (table), entry_folderviewfont, 1, 2, 0, 1,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_entry_set_text(GTK_ENTRY(entry_textfont), prefs_common.textfont);
+	gtk_entry_set_text(GTK_ENTRY(entry_folderviewfont), prefs_common.normalfont);
 
-	button_textfont = gtk_button_new_with_label (" ... ");
-
-	gtk_widget_show (button_textfont);
-	gtk_table_attach (GTK_TABLE (table), button_textfont, 2, 3, 0, 1,
+	tmpbutton = gtk_button_new_with_label (" ... ");
+	gtk_widget_show (tmpbutton);
+	gtk_table_attach (GTK_TABLE (table), tmpbutton, 2, 3, 0, 1,
 			  0, 0, 0, 0);
-	gtk_signal_connect (GTK_OBJECT (button_textfont), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_font_select), entry_textfont);
+	gtk_signal_connect (GTK_OBJECT(tmpbutton), "clicked",
+				GTK_SIGNAL_FUNC(prefs_font_select), entry_folderviewfont);
 
-	tmplabel = gtk_label_new (_("Small"));
+	tmplabel = gtk_label_new (_("Summary View"));
 	gtk_widget_show (tmplabel);
 	gtk_table_attach (GTK_TABLE (table), tmplabel, 0, 1, 1, 2,
 			 (GtkAttachOptions) GTK_FILL,
@@ -188,21 +181,21 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_label_set_justify(GTK_LABEL(tmplabel), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC(tmplabel), 1, 0.5);
 
-	entry_smallfont = gtk_entry_new ();
-	gtk_widget_show (entry_smallfont);
-	gtk_table_attach (GTK_TABLE (table), entry_smallfont, 1, 2, 1, 2,
+	entry_summaryviewfont = gtk_entry_new ();
+	gtk_widget_show (entry_summaryviewfont);
+	gtk_table_attach (GTK_TABLE (table), entry_summaryviewfont, 1, 2, 1, 2,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_entry_set_text(GTK_ENTRY(entry_smallfont), prefs_common.smallfont);
+	gtk_entry_set_text(GTK_ENTRY(entry_summaryviewfont), prefs_common.smallfont);
 
 	tmpbutton = gtk_button_new_with_label (" ... ");
 	gtk_widget_show (tmpbutton);
 	gtk_table_attach (GTK_TABLE (table), tmpbutton, 2, 3, 1, 2,
 			  0, 0, 0, 0);
 	gtk_signal_connect (GTK_OBJECT(tmpbutton), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_font_select), entry_smallfont);
+			    GTK_SIGNAL_FUNC(prefs_font_select), entry_summaryviewfont);
 
-	tmplabel = gtk_label_new (_("Normal"));
+	tmplabel = gtk_label_new (_("Message View"));
 	gtk_widget_show (tmplabel);
 	gtk_table_attach (GTK_TABLE (table), tmplabel, 0, 1, 2, 3,
 			 (GtkAttachOptions) GTK_FILL,
@@ -210,19 +203,19 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_label_set_justify(GTK_LABEL(tmplabel), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC(tmplabel), 1, 0.5);
 
-	entry_normalfont = gtk_entry_new ();
-	gtk_widget_show (entry_normalfont);
-	gtk_table_attach (GTK_TABLE (table), entry_normalfont, 1, 2, 2, 3,
+	entry_messageviewfont = gtk_entry_new ();
+	gtk_widget_show (entry_messageviewfont);
+	gtk_table_attach (GTK_TABLE (table), entry_messageviewfont, 1, 2, 2, 3,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_entry_set_text(GTK_ENTRY(entry_normalfont), prefs_common.normalfont);
+	gtk_entry_set_text(GTK_ENTRY(entry_messageviewfont), prefs_common.textfont);
 
 	tmpbutton = gtk_button_new_with_label (" ... ");
 	gtk_widget_show (tmpbutton);
 	gtk_table_attach (GTK_TABLE (table), tmpbutton, 2, 3, 2, 3,
 			  0, 0, 0, 0);
-	gtk_signal_connect (GTK_OBJECT(tmpbutton), "clicked",
-				GTK_SIGNAL_FUNC(prefs_font_select), entry_normalfont);
+	gtk_signal_connect (GTK_OBJECT (tmpbutton), "clicked",
+			    GTK_SIGNAL_FUNC (prefs_font_select), entry_messageviewfont);
 
 	tmplabel = gtk_label_new (_("Bold"));
 	gtk_widget_show (tmplabel);
@@ -249,7 +242,7 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
 	gtk_widget_show(vbox);
 	gtk_table_attach (GTK_TABLE (table), vbox, 0, 4, 4, 5,
-			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) GTK_FILL,
 			 (GtkAttachOptions) (0), 0, 0);
 	
 	hint_label = gtk_label_new (_("You will need to restart for the "
@@ -259,12 +252,11 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 			    hint_label, FALSE, FALSE, 0);
 	gtk_misc_set_alignment(GTK_MISC(hint_label), 0.5, 0.5);
 
-	prefs_fonts->window		= GTK_WIDGET(window);
-	prefs_fonts->entry_textfont	= entry_textfont;
-	prefs_fonts->entry_smallfont	= entry_smallfont;
-	prefs_fonts->entry_normalfont	= entry_normalfont;
-	prefs_fonts->entry_boldfont	= entry_boldfont;
-	prefs_fonts->button_textfont	= button_textfont;
+	prefs_fonts->window		   = GTK_WIDGET(window);
+	prefs_fonts->entry_folderviewfont  = entry_folderviewfont;
+	prefs_fonts->entry_summaryviewfont = entry_summaryviewfont;
+	prefs_fonts->entry_messageviewfont = entry_messageviewfont;
+	prefs_fonts->entry_boldfont	   = entry_boldfont;
 
 	prefs_fonts->page.widget = table;
 }
@@ -273,15 +265,16 @@ void prefs_fonts_save(PrefsPage *_page)
 {
 	FontsPage *fonts = (FontsPage *) _page;
 
-	prefs_common.textfont   = gtk_editable_get_chars
-		(GTK_EDITABLE(fonts->entry_textfont), 0, -1);
+	prefs_common.normalfont = gtk_editable_get_chars
+		(GTK_EDITABLE(fonts->entry_folderviewfont), 0, -1);
 	prefs_common.smallfont  = gtk_editable_get_chars
-		(GTK_EDITABLE(fonts->entry_smallfont), 0, -1);
+		(GTK_EDITABLE(fonts->entry_summaryviewfont), 0, -1);
+	prefs_common.textfont   = gtk_editable_get_chars
+		(GTK_EDITABLE(fonts->entry_messageviewfont), 0, -1);
 	prefs_common.boldfont   = gtk_editable_get_chars
 		(GTK_EDITABLE(fonts->entry_boldfont), 0, -1);
-	prefs_common.normalfont = gtk_editable_get_chars
-		(GTK_EDITABLE(fonts->entry_normalfont), 0, -1);
 }
+
 static void prefs_fonts_destroy_widget(PrefsPage *_page)
 {
 	/* FontsPage *fonts = (FontsPage *) _page; */

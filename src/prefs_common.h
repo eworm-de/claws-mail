@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,6 +81,8 @@ struct _PrefsCommon
 	SendDialogMode send_dialog_mode;
 	gchar *outgoing_charset;
 	TransferEncodingMethod encoding_method;
+
+	gboolean allow_jisx0201_kana;
 
 	/* Compose */
 	gint undolevels;
@@ -209,6 +211,8 @@ struct _PrefsCommon
 
 	gint compose_width;
 	gint compose_height;
+	gint compose_x;
+	gint compose_y;
 
 	/* Message */
 	gboolean enable_color;

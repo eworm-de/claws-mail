@@ -17,6 +17,7 @@ libsylpheedcommon_la_SOURCES = \
 	socket.c \
 	ssl.c \
 	ssl_certificate.c \
+	string_match.c \
 	stringtable.c \
 	sylpheed.c \
 	template.c \
@@ -45,6 +46,7 @@ sylpheedcommoninclude_HEADERS = \
 	socket.h \
 	ssl_certificate.h \
 	ssl.h \
+	string_match.h \
 	stringtable.h \
 	sylpheed.h \
 	template.h \

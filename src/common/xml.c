@@ -180,7 +180,7 @@ gint xml_get_dtd(XMLFile *file)
 gint xml_parse_next_tag(XMLFile *file)
 {
 	gchar buf[XMLBUFSIZE];
-	gchar *bufp = buf;
+	guchar *bufp = buf;
 	XMLTag *tag;
 	gint len;
 
@@ -412,6 +412,17 @@ gboolean xml_compare_tag(XMLFile *file, const gchar *name)
 		return FALSE;
 }
 
+XMLTag *xml_new_tag(const gchar	*tag)
+{
+	XMLTag *new_tag;
+
+	new_tag = g_new(XMLTag, 1);
+	new_tag->tag = XML_STRING_ADD(tag);
+	new_tag->attr = NULL;
+
+	return new_tag;
+}
+
 XMLTag *xml_copy_tag(XMLTag *tag)
 {
 	XMLTag *new_tag;
@@ -605,4 +616,69 @@ void xml_tag_add_attr(XMLTag *tag, const gchar *name, gchar *value)
 	attr->value = value;
 
 	tag->attr = g_list_append(tag->attr, attr);
+}
+
+static void xml_write_tree_recursive(GNode *node, FILE *fp)
+{
+	gint i, depth;
+	XMLTag *tag;
+	GList *cur;
+
+	g_return_if_fail(node != NULL);
+	g_return_if_fail(fp != NULL);
+
+	depth = g_node_depth(node) - 1;
+	for (i = 0; i < depth; i++)
+		fputs("    ", fp);
+	tag = ((XMLNode *) node->data)->tag;
+
+	fprintf(fp, "<%s", tag->tag);
+	for (cur = tag->attr; cur != NULL; cur = g_list_next(cur)) {
+		XMLAttr *attr = (XMLAttr *) cur->data;
+
+		fprintf(fp, " %s=\"", attr->name);
+		xml_file_put_escape_str(fp, attr->value);
+		fputs("\"", fp);
+	}
+
+	if (node->children) {
+		GNode *child;
+		fputs(">\n", fp);
+
+		child = node->children;
+		while (child) {
+			GNode *cur;
+
+			cur = child;
+			child = cur->next;
+			xml_write_tree_recursive(cur, fp);
+		}
+
+		for (i = 0; i < depth; i++)
+			fputs("    ", fp);
+		fprintf(fp, "</%s>\n", tag->tag);
+	} else
+		fputs(" />\n", fp);
+}
+
+void xml_write_tree(GNode *node, FILE *fp)
+{
+	xml_write_tree_recursive(node, fp);
+}
+
+static gpointer copy_node_func(gpointer nodedata, gpointer data)
+{
+	XMLNode *xmlnode = (XMLNode *) nodedata;
+	XMLNode *newxmlnode;
+	
+	newxmlnode = g_new0(XMLNode, 1);
+	newxmlnode->tag = xml_copy_tag(xmlnode->tag);
+	newxmlnode->element = g_strdup(xmlnode->element);
+
+	return newxmlnode;
+}
+
+GNode *xml_copy_tree(GNode *node)
+{
+	return g_node_map(node, copy_node_func, NULL);
 }

@@ -83,6 +83,7 @@
 #include "matcher_parser.h"
 #include "hooks.h"
 #include "description_window.h"
+#include "folderutils.h"
 
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_STATUS_WIDTH	13
@@ -963,7 +964,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	summary_set_column_titles(summaryview);
 
 	buf = NULL;
-	if (!item || !item->path || !item->parent || item->no_select) {
+	if (!item || !item->path || !folder_item_parent(item) || item->no_select) {
 		g_free(buf);
 		debug_print("empty folder\n\n");
 		summary_set_hide_read_msgs_menu(summaryview, FALSE);
@@ -2968,7 +2969,6 @@ static void summary_mark_row_as_unread(SummaryView *summaryview,
 	&& procmsg_msg_has_marked_parent(msginfo))
 		summaryview->unreadmarked++;
 
-	procmsg_msginfo_unset_flags(msginfo, MSG_REPLIED | MSG_FORWARDED, 0);
 	procmsg_msginfo_set_flags(msginfo, MSG_UNREAD, 0);
 	debug_print("Message %d is marked as unread\n",
 		msginfo->msgnum);
@@ -3152,53 +3152,14 @@ void summary_delete(SummaryView *summaryview)
 
 void summary_delete_duplicated(SummaryView *summaryview)
 {
-	if (!summaryview->folder_item ||
-	    FOLDER_TYPE(summaryview->folder_item->folder) == F_NEWS) return;
-	if (summaryview->folder_item->stype == F_TRASH) return;
-
 	main_window_cursor_wait(summaryview->mainwin);
-	debug_print("Deleting duplicated messages...");
 	STATUSBAR_PUSH(summaryview->mainwin,
 		       _("Deleting duplicated messages..."));
 
-	folder_item_update_freeze();
-	
-	gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
-				GTK_CTREE_FUNC(summary_delete_duplicated_func),
-				summaryview);
+	folderutils_delete_duplicates(summaryview->folder_item);
 
-	if (prefs_common.immediate_exec)
-		summary_execute(summaryview);
-	else
-		summary_status_show(summaryview);
-
-	folder_item_update_thaw();
-
-	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
-}
-
-static void summary_delete_duplicated_func(GtkCTree *ctree, GtkCTreeNode *node,
-					   SummaryView *summaryview)
-{
-	GtkCTreeNode *found;
-	MsgInfo *msginfo;
-	MsgInfo *dup_msginfo;
-
-	msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
-	
-	if (!msginfo || !msginfo->msgid || !*msginfo->msgid) return;
-
-	found = g_hash_table_lookup(summaryview->msgid_table, msginfo->msgid);
-	
-	if (found && found != node) {
-		dup_msginfo = gtk_ctree_node_get_row_data(ctree, found);
-		/* prefer to delete the unread one */
-		if ((MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_UNREAD(dup_msginfo->flags))
-		||  (MSG_IS_UNREAD(msginfo->flags) == MSG_IS_UNREAD(dup_msginfo->flags)))
-			summary_delete_row(summaryview, node);
-	}
 }
 
 static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
@@ -4514,12 +4475,18 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	GtkCTreeNode *node;
 	MessageView *messageview;
 	TextView *textview;
+	GtkAdjustment *adj;
 
 	if (summary_is_locked(summaryview)) return TRUE;
 	if (!event) return TRUE;
 
 	switch (event->keyval) {
 	case GDK_Left:		/* Move focus */
+		adj = gtk_scrolled_window_get_hadjustment
+			(GTK_SCROLLED_WINDOW(summaryview->scrolledwin));
+		if (adj->lower != adj->value)
+			break;
+		/* FALLTHROUGH */	
 	case GDK_Escape:
 		gtk_widget_grab_focus(summaryview->folderview->ctree);
 		return TRUE;
@@ -4998,25 +4965,25 @@ CMP_FUNC_DEF(summary_cmp_by_to, to);
 
 #undef CMP_FUNC_DEF
 
-static gint summary_cmp_by_subject(GtkCList *clist,			 \
-				   gconstpointer ptr1,			 \
-				   gconstpointer ptr2)			 \
-{									 \
-	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;		 \
-	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;		 \
-									 \
-	if (!msginfo1->subject)						 \
-		return (msginfo2->subject != NULL);			 \
-	if (!msginfo2->subject)						 \
-		return -1;						 \
-									 \
-	return subject_compare_for_sort					 \
-		(msginfo1->subject, msginfo2->subject);			 \
+static gint summary_cmp_by_subject(GtkCList *clist,
+				   gconstpointer ptr1,
+				   gconstpointer ptr2)
+{
+	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
+	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
+
+	if (!msginfo1->subject)
+		return (msginfo2->subject != NULL);
+	if (!msginfo2->subject)
+		return -1;
+
+	return subject_compare_for_sort
+		(msginfo1->subject, msginfo2->subject);
 }
 
- static gint summary_cmp_by_from(GtkCList *clist, gconstpointer ptr1,
- 				 gconstpointer ptr2)
- {
+static gint summary_cmp_by_from(GtkCList *clist, gconstpointer ptr1,
+				gconstpointer ptr2)
+{
 	const gchar *str1, *str2;
 	const GtkCListRow *r1 = (const GtkCListRow *) ptr1;
 	const GtkCListRow *r2 = (const GtkCListRow *) ptr2;
@@ -5034,9 +5001,9 @@ static gint summary_cmp_by_subject(GtkCList *clist,			 \
  		return -1;
  
 	return strcasecmp(str1, str2);
- }
+}
  
- static gint summary_cmp_by_simplified_subject
+static gint summary_cmp_by_simplified_subject
 	(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
 {
 	const FolderItemPrefs *prefs;
@@ -5065,7 +5032,7 @@ static gint summary_cmp_by_subject(GtkCList *clist,			 \
 	if (!prefs)
 		return -1;
 	
-	return strcasecmp(str1, str2);
+	return subject_compare_for_sort(str1, str2);
 }
 
 static gint summary_cmp_by_score(GtkCList *clist,
@@ -5336,6 +5303,7 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 
 	folderview_unselect(summaryview->folderview);
 	folderview_select(summaryview->folderview, summaryview->folder_item);
+	summary_set_column_titles(summaryview);
 }
 
 /*

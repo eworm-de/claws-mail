@@ -20,6 +20,8 @@
 #ifndef __CUSTOM_TOOLBAR_H__
 #define __CUSTOM_TOOLBAR_H__
 
+#include "gtk/gtkutils.h"
+
 #define SEPARATOR_PIXMAP     "---"
 
 typedef struct _Toolbar Toolbar;
@@ -49,27 +51,24 @@ struct _Toolbar {
 	GtkWidget *compose_news_btn;
 
 	GtkWidget *reply_btn;
+	ComboButton *reply_combo;
 	GtkWidget *replysender_btn;
+	ComboButton *replysender_combo;
 	GtkWidget *replyall_btn;
+	ComboButton *replyall_combo;
 	GtkWidget *replylist_btn;
+	ComboButton *replylist_combo;
 
 	GtkWidget *fwd_btn;
-
+	ComboButton *fwd_combo;
+	
 	GtkWidget *delete_btn;
 	GtkWidget *next_btn;
 	GtkWidget *exec_btn;
 
 	GtkWidget *separator;
 
-	/* for the reply buttons */
-	GtkWidget *reply_popup;
-	GtkWidget *replyall_popup;
-	GtkWidget *replylist_popup;
-	GtkWidget *replysender_popup;
 	
-	/* the forward button similar to the reply buttons*/
-	GtkWidget *fwd_popup;
-
 	ComposeButtonType compose_btn_type;
 
 	/* compose buttons */

@@ -47,16 +47,19 @@ typedef enum
 
 ActionType action_get_type	(const gchar	*action_str);
 
-void actions_execute                    (gpointer       data, 
-					 guint          action_nb,
-					 GtkWidget      *widget,
-					 gint           source);
+void actions_execute		(gpointer	data, 
+				 guint		action_nb,
+				 GtkWidget	*widget,
+				 gint		source);
 
-void action_update_mainwin_menu	(GtkItemFactory	*ifactory, 
+void action_update_mainwin_menu	(GtkItemFactory	*ifactory,
+				 const gchar	*branch_path,
 				 MainWindow	*mainwin);
 void action_update_msgview_menu	(GtkItemFactory	*ifactory,
+				 const gchar	*branch_path,
 				 MessageView	*msgview);
-void action_update_compose_menu	(GtkItemFactory	*ifactory, 
+void action_update_compose_menu	(GtkItemFactory	*ifactory,
+				 const gchar	*branch_path,
 				 Compose	*compose);
 
 #endif /* __ACTION_H__ */

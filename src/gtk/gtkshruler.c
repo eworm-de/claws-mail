@@ -1,6 +1,6 @@
 /* GtkSHRuler
  *
- *  Copyright (C) 2000 Alfons Hoogervorst
+ *  Copyright (C) 2000-2004 Alfons Hoogervorst & The Sylpheed Claws Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -25,7 +25,7 @@
  * last parameter has the distance between two ticks (which is
  * the width of the fixed font character!
  * 
- * -- Alfons (alfons@proteus.demon.nl)
+ * -- Alfons
  */
 
 #include <math.h>

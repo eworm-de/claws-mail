@@ -113,6 +113,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	if (!mimeinfo) return FALSE;
 
 	debug_print("Scanning message %d for viruses\n", msginfo->msgnum);
+	statusbar_print_all(_("ClamAV: scanning message..."));
 
 	params.is_infected = FALSE;
 	params.root = NULL;

@@ -31,7 +31,8 @@ GpgmeSigStat sgpgme_verify_signature	(GpgmeCtx ctx,
 				    	 GpgmeData sig,
 				    	 GpgmeData plain);
 SignatureStatus sgpgme_sigstat_gpgme_to_privacy
-					(GpgmeSigStat status);
+					(GpgmeCtx ctx,
+					 GpgmeSigStat status);
 gchar *sgpgme_sigstat_info_short	(GpgmeCtx ctx,
 					 GpgmeSigStat status);
 gchar *sgpgme_sigstat_info_full		(GpgmeCtx ctx,

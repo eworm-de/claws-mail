@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,22 @@
 #include <gtk/gtkctree.h>
 #include <gtk/gtkcombo.h>
 #include <gtk/gtktextview.h>
+#include <gtk/gtkitemfactory.h>
 #include <stdlib.h>
 #if HAVE_WCHAR_H
 #  include <wchar.h>
 #endif
+
+typedef struct _ComboButton	ComboButton;
+
+struct _ComboButton
+{
+	GtkWidget *arrow;
+	GtkWidget *button;
+	GtkWidget *menu;
+	GtkItemFactory *factory;
+	gpointer data;
+};
 
 #define GTK_EVENTS_FLUSH() \
 { \
@@ -91,6 +103,12 @@ void gtkut_button_set_create		(GtkWidget	**bbox,
 					 const gchar	 *label2,
 					 GtkWidget	**button3,
 					 const gchar	 *label3);
+
+ComboButton *gtkut_combo_button_create	(GtkWidget		*button,
+					 GtkItemFactoryEntry	*entries,
+					 gint			 n_entries,
+					 const gchar		*path,
+					 gpointer		 data);
 
 void gtkut_ctree_node_move_if_on_the_edge
 					(GtkCTree	*ctree,

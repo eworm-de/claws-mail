@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -181,17 +181,9 @@ static struct Interface {
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
  	GtkWidget *optmenu_nextunreadmsgdialog;
-	GtkWidget *entry_pixmap_theme;
-	GtkWidget *combo_pixmap_theme;
 } interface;
 
 static struct Other {
-	GtkWidget *uri_combo;
-	GtkWidget *uri_entry;
-	GtkWidget *printcmd_entry;
-	GtkWidget *exteditor_combo;
-	GtkWidget *exteditor_entry;
-
 	GtkWidget *checkbtn_addaddrbyclick;
 	GtkWidget *checkbtn_confonexit;
 	GtkWidget *checkbtn_cleanonexit;
@@ -309,6 +301,9 @@ static PrefParam param[] = {
 	 &p_send.optmenu_encoding_method,
 	 prefs_common_encoding_set_data_from_optmenu,
 	 prefs_common_encoding_set_optmenu},
+
+	{"allow_jisx0201_kana", "FALSE", &prefs_common.allow_jisx0201_kana,
+	 P_BOOL, NULL, NULL, NULL},
 
 	/* Compose */
 	{"auto_ext_editor", "FALSE", &prefs_common.auto_exteditor, P_BOOL,
@@ -609,7 +604,10 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"compose_height", "560", &prefs_common.compose_height, P_INT,
 	 NULL, NULL, NULL},
-
+	{"compose_x", "0", &prefs_common.compose_x, P_INT,
+	 NULL, NULL, NULL},
+	{"compose_y", "0", &prefs_common.compose_y, P_INT,
+	 NULL, NULL, NULL},
 	/* Message */
 	{"enable_color", "TRUE", &prefs_common.enable_color, P_BOOL,
 	 &message.chkbtn_enablecol,
@@ -727,20 +725,18 @@ static PrefParam param[] = {
 
 	{"pixmap_theme_path", DEFAULT_PIXMAP_THEME, 
 	 &prefs_common.pixmap_theme_path, P_STRING,
-	 &interface.entry_pixmap_theme,	prefs_set_data_from_entry, prefs_set_entry},
+	 NULL, NULL, NULL},
 
 	{"hover_timeout", "500", &prefs_common.hover_timeout, P_INT,
 	 NULL, NULL, NULL},
 	
 	/* Other */
 	{"uri_open_command", DEFAULT_BROWSER_CMD,
-	 &prefs_common.uri_cmd, P_STRING,
-	 &other.uri_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &prefs_common.uri_cmd, P_STRING, NULL, NULL, NULL},
 	{"print_command", "lpr %s", &prefs_common.print_cmd, P_STRING,
-	 &other.printcmd_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 NULL, NULL, NULL},
 	{"ext_editor_command", "gedit %s",
-	 &prefs_common.ext_editor_cmd, P_STRING,
-	 &other.exteditor_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &prefs_common.ext_editor_cmd, P_STRING, NULL, NULL, NULL},
 
 	{"add_address_by_click", "FALSE", &prefs_common.add_address_by_click,
 	 P_BOOL, &other.checkbtn_addaddrbyclick,
@@ -2152,12 +2148,6 @@ static void prefs_interface_create(void)
 	GtkWidget *hbox_nextunreadmsgdialog;
  	GtkWidget *optmenu_nextunreadmsgdialog;
 
-	GtkWidget *frame_pixmap_theme;
-	GtkWidget *vbox_pixmap_theme;
-	GtkWidget *entry_pixmap_theme;
-	GtkWidget *combo_pixmap_theme;
-	GList *avail_pixmap_themes = NULL;
-
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
@@ -2239,23 +2229,6 @@ static void prefs_interface_create(void)
 	g_signal_connect (G_OBJECT (button_keybind), "clicked",
 			  G_CALLBACK (prefs_keybind_select), NULL);
 
- 	PACK_FRAME(vbox1, frame_pixmap_theme, _("Icon theme"));
- 	
- 	vbox_pixmap_theme = gtk_vbox_new(FALSE, 0);
- 	gtk_widget_show(vbox_pixmap_theme);
- 	gtk_container_add(GTK_CONTAINER(frame_pixmap_theme), vbox_pixmap_theme);
- 	gtk_container_set_border_width(GTK_CONTAINER(vbox_pixmap_theme), 8);
- 
-	avail_pixmap_themes = stock_pixmap_themes_list_new(); 
- 
- 	combo_pixmap_theme = gtk_combo_new ();
- 	gtk_widget_show (combo_pixmap_theme);
- 	gtk_box_pack_start (GTK_BOX (vbox_pixmap_theme), combo_pixmap_theme, TRUE, TRUE, 0);
- 	gtk_combo_set_popdown_strings(GTK_COMBO(combo_pixmap_theme), avail_pixmap_themes);
- 	entry_pixmap_theme = GTK_COMBO (combo_pixmap_theme)->entry;
-
-	stock_pixmap_themes_list_free(avail_pixmap_themes);
-
 	/* interface.checkbtn_emacs          = checkbtn_emacs; */
 	interface.checkbtn_always_show_msg    = checkbtn_always_show_msg;
 	interface.checkbtn_openunread         = checkbtn_openunread;
@@ -2264,27 +2237,12 @@ static void prefs_interface_create(void)
 	interface.checkbtn_openinbox          = checkbtn_openinbox;
 	interface.checkbtn_immedexec          = checkbtn_immedexec;
 	interface.optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
-	interface.combo_pixmap_theme	      = combo_pixmap_theme;
- 	interface.entry_pixmap_theme	      = entry_pixmap_theme;
 }
 
 static void prefs_other_create(void)
 {
 	GtkWidget *vbox1;
-	GtkWidget *ext_frame;
-	GtkWidget *ext_table;
 	GtkWidget *hbox1;
-
-	GtkWidget *uri_label;
-	GtkWidget *uri_combo;
-	GtkWidget *uri_entry;
-
-	GtkWidget *printcmd_label;
-	GtkWidget *printcmd_entry;
-
-	GtkWidget *exteditor_label;
-	GtkWidget *exteditor_combo;
-	GtkWidget *exteditor_entry;
 
 	GtkWidget *frame_addr;
 	GtkWidget *vbox_addr;
@@ -2321,73 +2279,6 @@ static void prefs_other_create(void)
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
-
-	PACK_FRAME(vbox1, ext_frame,
-		   _("External commands (%s will be replaced with file name / URI)"));
-
-	ext_table = gtk_table_new (3, 2, FALSE);
-	gtk_widget_show (ext_table);
-	gtk_container_add (GTK_CONTAINER (ext_frame), ext_table);
-	gtk_container_set_border_width (GTK_CONTAINER (ext_table), 8);
-	gtk_table_set_row_spacings (GTK_TABLE (ext_table), VSPACING_NARROW);
-	gtk_table_set_col_spacings (GTK_TABLE (ext_table), 8);
-
-	uri_label = gtk_label_new (_("Web browser"));
-	gtk_widget_show(uri_label);
-	gtk_table_attach (GTK_TABLE (ext_table), uri_label, 0, 1, 0, 1,
-			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (uri_label), 1, 0.5);
-
-	uri_combo = gtk_combo_new ();
-	gtk_widget_show (uri_combo);
-	gtk_table_attach (GTK_TABLE (ext_table), uri_combo, 1, 2, 0, 1,
-			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	gtkut_combo_set_items (GTK_COMBO (uri_combo),
-			       DEFAULT_BROWSER_CMD,
-			       "galeon --new-tab '%s'",
-			       "galeon '%s'",
-			       "mozilla -remote 'openurl(%s,new-window)'",
-			       "netscape -remote 'openURL(%s, new-window)'",
-			       "netscape '%s'",
-			       "gnome-moz-remote --newwin '%s'",
-			       "kfmclient openURL '%s'",
-			       "opera -newwindow '%s'",
-			       "kterm -e w3m '%s'",
-			       "kterm -e lynx '%s'",
-			       NULL);
-	uri_entry = GTK_COMBO (uri_combo)->entry;
-
-	printcmd_label = gtk_label_new (_("Print"));
-	gtk_widget_show (printcmd_label);
-	gtk_table_attach (GTK_TABLE (ext_table), printcmd_label, 0, 1, 1, 2,
-			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (printcmd_label), 1, 0.5);
-
-	printcmd_entry = gtk_entry_new ();
-	gtk_widget_show (printcmd_entry);
-	gtk_table_attach (GTK_TABLE (ext_table), printcmd_entry, 1, 2, 1, 2,
-			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
-
-	exteditor_label = gtk_label_new (_("Editor"));
-	gtk_widget_show (exteditor_label);
-	gtk_table_attach (GTK_TABLE (ext_table), exteditor_label, 0, 1, 2, 3,
-			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (exteditor_label), 1, 0.5);
-
-	exteditor_combo = gtk_combo_new ();
-	gtk_widget_show (exteditor_combo);
-	gtk_table_attach (GTK_TABLE (ext_table), exteditor_combo, 1, 2, 2, 3,
-			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	gtkut_combo_set_items (GTK_COMBO (exteditor_combo),
-			       "gedit %s",
-			       "kedit %s",
-			       "mgedit --no-fork %s",
-			       "emacs %s",
-			       "xemacs %s",
-			       "kterm -e jed %s",
-			       "kterm -e vi %s",
-			       NULL);
-	exteditor_entry = GTK_COMBO (exteditor_combo)->entry;
 
 	PACK_FRAME (vbox1, frame_addr, _("Address book"));
 
@@ -2493,13 +2384,6 @@ static void prefs_other_create(void)
 	label_iotimeout = gtk_label_new (_("seconds"));
 	gtk_widget_show (label_iotimeout);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_iotimeout, FALSE, FALSE, 0);
-
-	other.uri_combo = uri_combo;
-	other.uri_entry = uri_entry;
-	other.printcmd_entry = printcmd_entry;
-
-	other.exteditor_combo = exteditor_combo;
-	other.exteditor_entry = exteditor_entry;
 
 	other.checkbtn_addaddrbyclick = checkbtn_addaddrbyclick;
 	
@@ -3303,8 +3187,8 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/View/Show all headers",		"<control>H"},
 		{"<Main>/View/Update",				"<control><alt>U"},
 
-		{"<Main>/Message/Get new mail",			"<control>I"},
-		{"<Main>/Message/Get from all accounts",	"<shift><control>I"},
+		{"<Main>/Message/Receive/Get new mail",		"<control>I"},
+		{"<Main>/Message/Receive/Get from all accounts",	"<shift><control>I"},
 		{"<Main>/Message/Compose an email message",	"<control>M"},
 		{"<Main>/Message/Reply",			"<control>R"},
 		{"<Main>/Message/Reply to/all",			"<shift><control>R"},
@@ -3357,8 +3241,8 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/View/Show all headers",		"<shift>H"},
 		{"<Main>/View/Update",				"<shift>S"},
 
-		{"<Main>/Message/Get new mail",			"<control>I"},
-		{"<Main>/Message/Get from all accounts",	"<shift><control>I"},
+		{"<Main>/Message/Receive/Get new mail",		"<control>I"},
+		{"<Main>/Message/Receive/Get from all accounts",	"<shift><control>I"},
 		{"<Main>/Message/Compose an email message",	"W"},
 		{"<Main>/Message/Reply",			"<control>R"},
 		{"<Main>/Message/Reply to/all",			"<shift>A"},
@@ -3410,9 +3294,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/View/Show all headers",		"<control>H"},
 		{"<Main>/View/Update",				"<control><alt>U"},
 
-		{"<Main>/Message/Get new mail",			"<control>I"},
-		{"<Main>/Message/Get from all accounts",	"<shift><control>I"},
-		{"<Main>/Message/Compose new message",		"M"},
+		{"<Main>/Message/Receive/Get new mail",			"<control>I"},
+		{"<Main>/Message/Receive/Get from all accounts",	"<shift><control>I"},
+		{"<Main>/Message/Compose an email message",		"M"},
 		{"<Main>/Message/Reply",			"R"},
 		{"<Main>/Message/Reply to/all",			"G"},
 		{"<Main>/Message/Reply to/sender",		""},
@@ -3464,8 +3348,8 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Main>/View/Show all headers",		"<control>H"},
 		{"<Main>/View/Update",				"<alt>U"},
 
-		{"<Main>/Message/Get new mail",			"<alt>I"},
-		{"<Main>/Message/Get from all accounts",	"<shift><alt>I"},
+		{"<Main>/Message/Receive/Get new mail",			"<alt>I"},
+		{"<Main>/Message/Receive/Get from all accounts",	"<shift><alt>I"},
 		{"<Main>/Message/Compose an email message",	"<alt>N"},
 		{"<Main>/Message/Reply",			"<alt>R"},
 		{"<Main>/Message/Reply to/all",			"<shift><alt>R"},
@@ -3673,37 +3557,11 @@ static void prefs_common_ok(void)
 
 static void prefs_common_apply(void)
 {
-	const gchar *entry_pixmap_theme_str;
-	gboolean update_pixmap_theme;
-	gchar *backup_theme_path;
 	MainWindow *mainwindow;
-	
-	entry_pixmap_theme_str = gtk_entry_get_text(GTK_ENTRY(interface.entry_pixmap_theme));
-	if (entry_pixmap_theme_str && 
-		(strcmp(prefs_common.pixmap_theme_path, entry_pixmap_theme_str) != 0) )
-		update_pixmap_theme = TRUE;
-	else
-		update_pixmap_theme = FALSE;
 
-	/*!< FIXME: prefs_set_data_from_dialog() clears and frees all strings, 
-	 * but prefs_common.pixmap_theme_path is stored in the StockPixmapData
-	 * in stock_pixmap.c::pixmaps[].icon_path, and used when reflecting
-	 * the pixmap changes. Work around by saving the old one and freeing 
-	 * it later. */
-	backup_theme_path = prefs_common.pixmap_theme_path;
-	prefs_common.pixmap_theme_path = g_strdup(backup_theme_path);
 	prefs_set_data_from_dialog(param);
 	sock_set_io_timeout(prefs_common.io_timeout_secs);
-	
-	if (update_pixmap_theme) {
-		main_window_reflect_prefs_all_real(TRUE);
-		compose_reflect_prefs_pixmap_theme();
-	} else
-		main_window_reflect_prefs_all_real(FALSE);
-
-	/*!< FIXME: Now it's safe to delete the backup path */
-	g_free(backup_theme_path);
-
+	main_window_reflect_prefs_all_real(FALSE);
 	prefs_common_save_config();
 
 	mainwindow = mainwindow_get_mainwindow();

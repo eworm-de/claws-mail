@@ -81,6 +81,7 @@ void xml_truncate_buf		(XMLFile	*file);
 gboolean  xml_compare_tag	(XMLFile	*file,
 				 const gchar	*name);
 
+XMLTag	*xml_new_tag		(const gchar	*tag);
 XMLTag  *xml_copy_tag		(XMLTag		*tag);
 XMLAttr *xml_copy_attr		(XMLAttr	*attr);
 
@@ -95,5 +96,8 @@ void xml_free_tag		(XMLTag 	*tag);
 void xml_tag_add_attr		(XMLTag 	*tag,
 				 const gchar 	*name, 
 				 gchar 		*value);
+void xml_write_tree		(GNode		*node,
+				 FILE		*fp);
+GNode *xml_copy_tree		(GNode 		*node);
 
 #endif /* __XML_H__ */

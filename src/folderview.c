@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -180,6 +180,10 @@ static void folderview_col_resized	(GtkCList	*clist,
 					 gint		 width,
 					 FolderView	*folderview);
 
+static void folderview_download_cb	(FolderView	*folderview,
+					 guint		 action,
+					 GtkWidget	*widget);
+
 static void folderview_update_tree_cb	(FolderView	*folderview,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -290,7 +294,6 @@ static GtkItemFactoryEntry folderview_mbox_popup_entries[] =
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Properties..."),		NULL, NULL, 0, NULL},
 	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
-	{N_("/_Scoring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
 #endif
 
@@ -323,6 +326,8 @@ static GtkItemFactoryEntry folderview_imap_popup_entries[] =
 	{N_("/M_ove folder..."),	NULL, folderview_move_to_cb, 0, NULL},
 	{N_("/_Delete folder"),		NULL, folderview_delete_folder_cb,   0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/Down_load"),		NULL, folderview_download_cb, 0, NULL},
+	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Check for new messages"),
 					NULL, folderview_update_tree_cb, 0, NULL},
 	{N_("/R_ebuild folder tree"),	NULL, folderview_update_tree_cb, 1, NULL},
@@ -341,6 +346,8 @@ static GtkItemFactoryEntry folderview_news_popup_entries[] =
 	{N_("/_Subscribe to newsgroup..."),
 					NULL, folderview_new_news_group_cb, 0, NULL},
 	{N_("/_Remove newsgroup"),	NULL, folderview_rm_news_group_cb, 0, NULL},
+	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/Down_load"),		NULL, folderview_download_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Check for new messages"),
 					NULL, folderview_update_tree_cb, 0, NULL},
@@ -609,6 +616,8 @@ void folderview_init(FolderView *folderview)
 		}
 		normal_color_style = gtk_style_copy(normal_style);
 		normal_color_style->fg[GTK_STATE_NORMAL] = folderview->color_new;
+
+		gtk_widget_set_style(ctree, normal_style);
 	}
 
 	if (!bold_style) {
@@ -1160,7 +1169,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	}
 	g_free(name);
 
-	if (!item->parent) {
+	if (!folder_item_parent(item)) {
 		gtk_ctree_node_set_text(ctree, node, COL_NEW,    "-");
 		gtk_ctree_node_set_text(ctree, node, COL_UNREAD, "-");
 		gtk_ctree_node_set_text(ctree, node, COL_TOTAL,  "-");
@@ -1449,6 +1458,7 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 	gboolean rename_folder   = FALSE;
 	gboolean move_folder	 = FALSE;
 	gboolean delete_folder   = FALSE;
+	gboolean download_msg    = FALSE;
 	gboolean update_tree     = FALSE;
 	gboolean rescan_tree     = FALSE;
 	gboolean remove_tree     = FALSE;
@@ -1499,7 +1509,7 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 
 	if (folderview->mainwin->lock_count == 0) {
 		new_folder = TRUE;
-		if (item->parent == NULL) {
+		if (folder_item_parent(item) == NULL) {
 			update_tree = remove_tree = TRUE;
 			if (folder->account)
 				folder_property = TRUE;
@@ -1507,7 +1517,7 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 			mark_all_read = search_folder = folder_property = TRUE;
 			
 		if (FOLDER_IS_LOCAL(folder) || FOLDER_TYPE(folder) == F_IMAP /* || FOLDER_TYPE(folder) == F_MBOX */) {
-			if (item->parent == NULL)
+			if (folder_item_parent(item) == NULL)
 				update_tree = rescan_tree = TRUE;
 			else if (item->stype == F_NORMAL)
 				move_folder = rename_folder = delete_folder = folder_scoring = folder_processing = TRUE;
@@ -1517,9 +1527,18 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 				folder_processing = TRUE;
 			else if (item->stype == F_OUTBOX)
 				folder_processing = TRUE;
+			if (0 == item->total_msgs)
+				search_folder = FALSE;
 		} else if (FOLDER_TYPE(folder) == F_NEWS) {
-			if (item->parent != NULL)
+			if (folder_item_parent(item) != NULL)
 				delete_folder = folder_scoring = folder_processing = TRUE;
+		}
+		if (FOLDER_TYPE(folder) == F_IMAP ||
+		    FOLDER_TYPE(folder) == F_NEWS) {
+			if (folder_item_parent(item) != NULL && 
+			    item->no_select == FALSE &&
+			    !prefs_common.work_offline)
+				download_msg = TRUE;
 		}
 		if (item->unread_msgs < 1) 
 			mark_all_read = FALSE;
@@ -1545,7 +1564,6 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 		SET_SENS(mail_factory, "/Search folder...", search_folder);
 		SET_SENS(mail_factory, "/Properties...", folder_property);
 		SET_SENS(mail_factory, "/Processing...", folder_processing);
-		SET_SENS(mail_factory, "/Scoring...", folder_scoring);
 	} else if (FOLDER_TYPE(folder) == F_IMAP) {
 		popup = folderview->imap_popup;
 		menu_set_insensitive_all(GTK_MENU_SHELL(popup));
@@ -1554,25 +1572,25 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 		SET_SENS(imap_factory, "/Rename folder...", rename_folder);
 		SET_SENS(imap_factory, "/Move folder...", move_folder);
 		SET_SENS(imap_factory, "/Delete folder", delete_folder);
+		SET_SENS(imap_factory, "/Download", download_msg);
 		SET_SENS(imap_factory, "/Check for new messages", update_tree);
 		SET_SENS(imap_factory, "/Rebuild folder tree", rescan_tree);
 		SET_SENS(imap_factory, "/Remove IMAP4 account", remove_tree);
 		SET_SENS(imap_factory, "/Search folder...", search_folder);
 		SET_SENS(imap_factory, "/Properties...", folder_property);
 		SET_SENS(imap_factory, "/Processing...", folder_processing);
-		SET_SENS(imap_factory, "/Scoring...", folder_scoring);
 	} else if (FOLDER_TYPE(folder) == F_NEWS) {
 		popup = folderview->news_popup;
 		menu_set_insensitive_all(GTK_MENU_SHELL(popup));
 		SET_SENS(news_factory, "/Mark all read", mark_all_read);
 		SET_SENS(news_factory, "/Subscribe to newsgroup...", new_folder);
 		SET_SENS(news_factory, "/Remove newsgroup", delete_folder);
+		SET_SENS(news_factory, "/Download", download_msg);
 		SET_SENS(news_factory, "/Check for new messages", update_tree);
 		SET_SENS(news_factory, "/Remove news account", remove_tree);
 		SET_SENS(news_factory, "/Search folder...", search_folder);
 		SET_SENS(news_factory, "/Properties...", folder_property);
 		SET_SENS(news_factory, "/Processing...", folder_processing);
-		SET_SENS(news_factory, "/Scoring...", folder_scoring);
 #if 0
 	} else if (FOLDER_TYPE(folder) == F_MBOX) {
 		popup = folderview->mbox_popup;
@@ -1583,7 +1601,6 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 		SET_SENS(mbox_factory, "/Delete folder", delete_folder);
 		SET_SENS(news_factory, "/Properties...", folder_property);
 		SET_SENS(mbox_factory, "/Processing...", folder_processing);
-		SET_SENS(mbox_factory, "/Scoring...", folder_scoring);
 #endif
 	} else
 		return FALSE;
@@ -1824,6 +1841,70 @@ static GtkCTreeNode *folderview_find_by_name(GtkCTree *ctree,
 	return NULL;
 }
 
+static void folderview_download_func(Folder *folder, FolderItem *item,
+				     gpointer data)
+{
+	GList *list;
+
+	for (list = folderview_list; list != NULL; list = list->next) {
+		FolderView *folderview = (FolderView *)list->data;
+		MainWindow *mainwin = folderview->mainwin;
+		gchar *str;
+
+		str = g_strdup_printf
+			(_("Downloading messages in %s ..."), item->path);
+		main_window_progress_set(mainwin,
+					 GPOINTER_TO_INT(data), item->total_msgs);
+		STATUSBAR_PUSH(mainwin, str);
+		STATUSBAR_POP(mainwin);
+		g_free(str);
+	}
+}
+
+static void folderview_download_cb(FolderView *folderview, guint action,
+				   GtkWidget *widget)
+{
+	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	MainWindow *mainwin = folderview->mainwin;
+	FolderItem *item;
+
+	if (!folderview->selected) return;
+
+	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->folder != NULL);
+#if 0
+	if (!prefs_common.online_mode) {
+		if (alertpanel(_("Offline"),
+			       _("You are offline. Go online?"),
+			       _("Yes"), _("No"), NULL) == G_ALERTDEFAULT)
+			main_window_toggle_online(folderview->mainwin, TRUE);
+		else
+			return;
+	}
+#endif
+	main_window_cursor_wait(mainwin);
+	inc_lock();
+	main_window_lock(mainwin);
+	gtk_widget_set_sensitive(folderview->ctree, FALSE);
+	main_window_progress_on(mainwin);
+	GTK_EVENTS_FLUSH();
+	folder_set_ui_func(item->folder, folderview_download_func, NULL);
+	if (folder_item_fetch_all_msg(item) < 0) {
+		gchar *name;
+
+		name = trim_string(item->name, 32);
+		alertpanel_error(_("Error occurred while downloading messages in `%s'."), name);
+		g_free(name);
+	}
+	folder_set_ui_func(item->folder, NULL, NULL);
+	main_window_progress_off(mainwin);
+	gtk_widget_set_sensitive(folderview->ctree, TRUE);
+	main_window_unlock(mainwin);
+	inc_unlock();
+	main_window_cursor_normal(mainwin);
+}
+
 static void folderview_update_tree_cb(FolderView *folderview, guint action,
 				      GtkWidget *widget)
 {
@@ -1868,7 +1949,7 @@ void folderview_create_folder_node(FolderView *folderview, FolderItem *item)
 	gchar *text[N_FOLDER_COLS] = {NULL, "0", "0", "0"};
 	GtkCTreeNode *node, *parent_node;
 	
-	parent_node = gtk_ctree_find_by_row_data(ctree, NULL, item->parent);
+	parent_node = gtk_ctree_find_by_row_data(ctree, NULL, folder_item_parent(item));
 	if (parent_node == NULL)
 		return;
 
@@ -2186,7 +2267,7 @@ static void folderview_remove_mailbox_cb(FolderView *folderview, guint action,
 	item = gtk_ctree_node_get_row_data(ctree, node);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
-	if (item->parent) return;
+	if (folder_item_parent(item)) return;
 
 	name_ = trim_string(item->folder->name, 32);
 	Xstrdup_a(name, name_, return);
@@ -2201,10 +2282,8 @@ static void folderview_remove_mailbox_cb(FolderView *folderview, guint action,
 
 	folderview_unselect(folderview);
 	summary_clear_all(folderview->summaryview);
-	gtk_ctree_remove_node(ctree, node);
 
 	folder_destroy(item->folder);
-	folder_write_list();
 }
 
 static void folderview_new_imap_folder_cb(FolderView *folderview, guint action,
@@ -2499,7 +2578,7 @@ static void folderview_property_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 
-	if (item->parent == NULL && item->folder->account)
+	if (folder_item_parent(item) == NULL && item->folder->account)
 		account_open(item->folder->account);
 	else {
 		prefs_folder_item_open(item);
@@ -2553,7 +2632,7 @@ static void folderview_move_to(FolderView *folderview, FolderItem *from_folder,
 	gint status;
 
 	src_node = gtk_ctree_find_by_row_data(GTK_CTREE(folderview->ctree), NULL, from_folder);
-	from_parent = from_folder->parent;
+	from_parent = folder_item_parent(from_folder);
 	buf = g_strdup_printf(_("Moving %s to %s..."), from_folder->name, to_folder->name);
 	STATUSBAR_PUSH(folderview->mainwin, buf);
 	g_free(buf);
@@ -2574,7 +2653,7 @@ static void folderview_move_to(FolderView *folderview, FolderItem *from_folder,
 
 		folderview_sort_folders(folderview, 
 			gtk_ctree_find_by_row_data(GTK_CTREE(folderview->ctree), 
-				NULL, new_folder->parent), new_folder->folder);
+				NULL, folder_item_parent(new_folder)), new_folder->folder);
 		folderview_select(folderview, new_folder);
 	} else {
 		statusbar_verbosity_set(FALSE);		
@@ -2765,7 +2844,7 @@ gboolean folderview_update_folder(gpointer source, gpointer userdata)
 		node = gtk_ctree_find_by_row_data(GTK_CTREE(ctree), NULL, hookdata->item);
 		if (node != NULL)
 			gtk_ctree_remove_node(GTK_CTREE(ctree), node);
-	} else if (hookdata->update_flags & FOLDER_TREE_CHANGED)
+	} else if (hookdata->update_flags & (FOLDER_TREE_CHANGED | FOLDER_NEW_FOLDER | FOLDER_DESTROY_FOLDER))
 		folderview_set(folderview);
 
 	return FALSE;

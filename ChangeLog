@@ -1,3 +1,114 @@
+2004-01-29
+
+	* version 0.9.9
+
+2004-01-29
+
+	* src/folder.c: folder_item_fetch_all_msg()
+	  src/folderview.c: folderview_download_cb(): show progress with
+	  the progressbar.
+	* src/mainwindow.[ch]: added new functions for progressbar.
+
+2004-01-29
+
+	* src/summaryview.c: summary_key_pressed(): GDK_Left should only
+	  switch to folderview when summaryview hscrollbar is at the leftmost
+	  position (thanks to Alfons).
+
+2004-01-29
+
+	* src/codeconv.c: conv_euctojis(): made JIS X 0201 Kana conversion
+	  configurable.
+	* src/prefs_common.[ch]: added PrefsCommon::allow_jisx0201_kana
+	  (hidden setting).
+
+2004-01-28
+
+	* src/codeconv.c: conv_euctojis(): force JIS X 0201 Kana to JIS X 0208
+	  conversion.
+
+2004-01-28
+
+	* src/imap.c: imap_get_msginfo(): fixed wrong counting.
+
+2004-01-28
+
+	* src/base64.c
+	  src/codeconv.c
+	  src/compose.c
+	  src/html.c
+	  src/imap.c
+	  src/pop.c
+	  src/prefs_account.c
+	  src/procmime.c
+	  src/procmsg.c
+	  src/quote_fmt_parse.y
+	  src/quoted-printable.c
+	  src/textview.c
+	  src/unmime.c
+	  src/utils.c
+	  src/utils.h
+	  src/xml.c: fixed wrong type of argument for ctype functions (char
+	  had been passed instead of unsigned char).
+
+
+2004-01-27
+
+	* src/mainwindow.[ch]: added MainWindow::messageview_cid.
+	  Clear messageview when it is hidden.
+	* src/textview.c: show URL to the statusbar when its link is clicked.
+	  textview_uri_security_check(): compare real URL and apparent one
+	  and show warning if it seems to be a fake URL.
+	* src/utils.[ch]:
+	  is_uri_string(): return TRUE if the string seems like a URL.
+	  get_uri_path(): return URL except for its scheme part.
+
+2004-01-23
+
+	* src/folder.[ch]: folder_item_fetch_all_msg(): new. It fetches all
+	  messages in a folder.
+	* src/folderview.c: implemented 'Download' feature.
+
+2004-01-23
+
+	* src/gtkutils.[ch]: implemented ComboButton which adds an arrow
+	  menu button to a button.
+	* src/mainwindow.[ch]: main_window_toolbar_create(): added combo
+	  button to reply and forward button.
+
+2004-01-22
+
+	* src/mainwindow.c: fixed automatic expansion of window size because
+	  of toolbar.
+
+2004-01-21
+
+	* src/addr_compl.[ch]
+	  src/gtkshruler.[ch]: changed the copyright notice.
+
+2004-01-20
+
+	* src/gtkstext.c: find_line_params(): also break between mutlibyte
+	  and single-byte characters.
+
+2004-01-20
+
+	* src/gtkstext.c: find_line_params(): break lines between multibyte
+	  characters on word wrap mode.
+
+2004-01-05
+
+	* src/codeconv.c: conv_iconv_strdup(): fixed crashes on LP64
+	  environments (thanks to James Noyes).
+	* src/compose.c: compose_select_account(): don't turn off the sign/
+	  encrypt option automatically.
+
+2003-12-17
+
+	* src/inc.[ch]: made inc_account_mail() public.
+	* src/mainwindow.c: moved receive menus into submenu, and added
+	  dynamic menus for receiving from each account.
+
 2003-12-15
 
 	* version 0.9.8a

@@ -100,7 +100,7 @@ struct _ChildInfo
 };
 
 static void action_update_menu		(GtkItemFactory	*ifactory,
-					 gchar		*branch_path,
+					 const gchar	*branch_path,
 					 gpointer	 callback,
 					 gpointer	 data);
 static void compose_actions_execute_cb	(Compose	*compose,
@@ -405,25 +405,32 @@ void actions_execute(gpointer data,
 		msgview_actions_execute_cb((MessageView*)data, action_nb, widget);	
 }
 
-void action_update_mainwin_menu(GtkItemFactory *ifactory, MainWindow *mainwin)
+void action_update_mainwin_menu(GtkItemFactory *ifactory,
+				const gchar *branch_path,
+				MainWindow *mainwin)
 {
-	action_update_menu(ifactory, "/Tools/Actions",
+	action_update_menu(ifactory, branch_path,
 			   mainwin_actions_execute_cb, mainwin);
 }
 
-void action_update_msgview_menu(GtkItemFactory *ifactory, MessageView *msgview)
+void action_update_msgview_menu(GtkItemFactory *ifactory,
+				const gchar *branch_path,
+				MessageView *msgview)
 {
-	action_update_menu(ifactory, "/Tools/Actions",
+	action_update_menu(ifactory, branch_path,
 			   msgview_actions_execute_cb, msgview);
 }
 
-void action_update_compose_menu(GtkItemFactory *ifactory, Compose *compose)
+void action_update_compose_menu(GtkItemFactory *ifactory, 
+				const gchar *branch_path,
+				Compose *compose)
 {
-	action_update_menu(ifactory, "/Tools/Actions",
+	action_update_menu(ifactory, branch_path,
 			   compose_actions_execute_cb, compose);
 }
 
-static void action_update_menu(GtkItemFactory *ifactory, gchar *branch_path,
+static void action_update_menu(GtkItemFactory *ifactory, 
+			       const gchar *branch_path,
 			       gpointer callback, gpointer data)
 {
 	GtkWidget *menuitem;

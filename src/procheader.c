@@ -46,14 +46,12 @@ static gint string_get_one_field(gchar *buf, gint len, char **str,
 
 static char *string_getline(char *buf, int len, char **str);
 static int string_peekchar(char **str);
-static int string_getchar(char **str);
 static int file_peekchar(FILE *fp);
-static int file_getchar(FILE *fp);
 static gint generic_get_one_field(gchar *buf, gint len, void *data,
 				  HeaderEntry hentry[],
 				  getlinefunc getline, 
 				  peekcharfunc peekchar,
-				  getcharfunc getchar);
+				  gboolean unfold);
 static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			     gboolean full, gboolean decrypted);
 
@@ -63,7 +61,7 @@ gint procheader_get_one_field(gchar *buf, gint len, FILE *fp,
 {
 	return generic_get_one_field(buf, len, fp, hentry,
 				     (getlinefunc)fgets, (peekcharfunc)file_peekchar,
-				     (getcharfunc)file_getchar);
+				     TRUE);
 }
 
 static gint string_get_one_field(gchar *buf, gint len, char **str,
@@ -72,7 +70,7 @@ static gint string_get_one_field(gchar *buf, gint len, char **str,
 	return generic_get_one_field(buf, len, str, hentry,
 				     (getlinefunc)string_getline,
 				     (peekcharfunc)string_peekchar,
-				     (getcharfunc)string_getchar);
+				     TRUE);
 }
 
 static char *string_getline(char *buf, int len, char **str)
@@ -93,25 +91,15 @@ static int string_peekchar(char **str)
 	return **str;
 }
 
-static int string_getchar(char **str)
-{
-	return *(*str)++;
-}
-
 static int file_peekchar(FILE *fp)
 {
 	return ungetc(getc(fp), fp);
 }
 
-static int file_getchar(FILE *fp)
-{
-	return getc(fp);
-}
-
 static gint generic_get_one_field(gchar *buf, gint len, void *data,
 			  HeaderEntry *hentry,
 			  getlinefunc getline, peekcharfunc peekchar,
-			  getcharfunc getchar_)
+			  gboolean unfold)
 {
 	gint nexthead;
 	gint hnum = 0;
@@ -139,35 +127,41 @@ static gint generic_get_one_field(gchar *buf, gint len, void *data,
 		if (buf[0] == '\r' || buf[0] == '\n') return -1;
 	}
 
-	/* remove trailing new line */
-	strretchomp(buf);
-
-#define UNFOLD_LINE() \
-	(!hentry || (hp && hp->unfold))
-
 	/* unfold line */
 	while (1) {
 		nexthead = peekchar(data);
 		/* ([*WSP CRLF] 1*WSP) */
 		if (nexthead == ' ' || nexthead == '\t') {
-			size_t buflen = strlen(buf);
+			size_t buflen;
+			/* trim previous trailing \n if requesting one header or
+			 * unfolding was requested */
+			if ((!hentry && unfold) || (hp && hp->unfold))
+				strretchomp(buf);
+
+			buflen = strlen(buf);
 			
 			/* concatenate next line */
 			if ((len - buflen) > 2) {
 				if (getline(buf + buflen, len - buflen, data) == NULL)
 					break;
-				/* trim trailing \n if requesting one header or
-				 * unfolding was requested */
-				if (UNFOLD_LINE())				 
-				    strretchomp(buf);
 			} else
 				break;
-		} else
+		} else {
+			/* remove trailing new line */
+			strretchomp(buf);
 			break;
+		}
 	}
-#undef UNFOLD_LINE	
 
 	return hnum;
+}
+
+gint procheader_get_one_field_asis(gchar *buf, gint len, FILE *fp)
+{
+	return generic_get_one_field(buf, len, fp, NULL,
+				     (getlinefunc)fgets, 
+				     (peekcharfunc)file_peekchar,
+				     FALSE);
 }
 
 #if 0
@@ -328,7 +322,7 @@ GPtrArray *procheader_get_header_array_asis(FILE *fp)
 
 	headers = g_ptr_array_new();
 
-	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1) {
+	while (procheader_get_one_field_asis(buf, sizeof(buf), fp) != -1) {
 		if ((header = procheader_parse_header(buf)) != NULL)
 			g_ptr_array_add(headers, header);
 			/*

@@ -247,7 +247,7 @@ static void image_viewer_clear_viewer(MimeViewer *_mimeviewer)
 	g_free(imageviewer->file);
 	imageviewer->file = NULL;
 	imageviewer->mimeinfo = NULL;
-	imageviewer->resize_img   = imageviewerprefs.resize_img;
+	imageviewer->resize_img = imageviewerprefs.resize_img;
 }
 
 static void image_viewer_destroy_viewer(MimeViewer *_mimeviewer)

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1242,6 +1242,12 @@ static gint imap_scan_tree(Folder *folder)
 			log_warning(_("root folder %s does not exist\n"), real_path);
 			g_ptr_array_free(argbuf, TRUE);
 			g_free(real_path);
+
+			if (!folder->node) {
+				item = folder_item_new(folder, folder->name, NULL);
+				item->folder = folder;
+				folder->node = item->node = g_node_new(item);
+			}
 			return -1;
 		}
 		g_ptr_array_free(argbuf, TRUE);
@@ -1363,8 +1369,8 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 		if (!strcmp(new_item->path, "INBOX")) {
 			new_item->stype = F_INBOX;
 			folder->inbox = new_item;
-		} else if (!item->parent || item->stype == F_INBOX) {
-			const gchar *base;
+		} else if (!folder_item_parent(item) || item->stype == F_INBOX) {
+			gchar *base;
 
 			base = g_basename(new_item->path);
 
@@ -1614,7 +1620,7 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	session = imap_session_get(folder);
 	if (!session) return NULL;
 
-	if (!parent->parent && strcmp(name, "INBOX") == 0)
+	if (!folder_item_parent(parent) && strcmp(name, "INBOX") == 0)
 		dirpath = g_strdup(name);
 	else if (parent->path)
 		dirpath = g_strconcat(parent->path, "/", name, NULL);
@@ -1975,7 +1981,7 @@ static SockInfo *imap_init_sock(SockInfo *sock)
 
 static GList *imap_parse_namespace_str(gchar *str)
 {
-	gchar *p = str;
+	guchar *p = str;
 	gchar *name;
 	gchar *separator;
 	IMAPNameSpace *namespace;
@@ -2167,7 +2173,7 @@ static gchar *imap_parse_atom(SockInfo *sock, gchar *src,
 	g_return_val_if_fail(str != NULL, cur_pos);
 
 	/* read the next line if the current response buffer is empty */
-	while (isspace(*cur_pos)) cur_pos++;
+	while (isspace(*(guchar *)cur_pos)) cur_pos++;
 	while (*cur_pos == '\0') {
 		if ((nextline = sock_getline(sock)) == NULL)
 			return cur_pos;
@@ -2178,7 +2184,7 @@ static gchar *imap_parse_atom(SockInfo *sock, gchar *src,
 		debug_print("IMAP4< %s\n", nextline);
 		g_free(nextline);
 
-		while (isspace(*cur_pos)) cur_pos++;
+		while (isspace(*(guchar *)cur_pos)) cur_pos++;
 	}
 
 	if (!strncmp(cur_pos, "NIL", 3)) {
@@ -2233,7 +2239,7 @@ static gchar *imap_get_header(SockInfo *sock, gchar *cur_pos, gchar **headers,
 
 	g_return_val_if_fail(str != NULL, cur_pos);
 
-	while (isspace(*cur_pos)) cur_pos++;
+	while (isspace(*(guchar *)cur_pos)) cur_pos++;
 
 	g_return_val_if_fail(*cur_pos == '{', cur_pos);
 
@@ -2260,7 +2266,7 @@ static gchar *imap_get_header(SockInfo *sock, gchar *cur_pos, gchar **headers,
 	*headers = g_strndup(cur_pos, len);
 	cur_pos += len;
 
-	while (isspace(*cur_pos)) cur_pos++;
+	while (isspace(*(guchar *)cur_pos)) cur_pos++;
 	while (*cur_pos == '\0') {
 		if ((nextline = sock_getline(sock)) == NULL)
 			return cur_pos;
@@ -2270,7 +2276,7 @@ static gchar *imap_get_header(SockInfo *sock, gchar *cur_pos, gchar **headers,
 		debug_print("IMAP4< %s\n", nextline);
 		g_free(nextline);
 
-		while (isspace(*cur_pos)) cur_pos++;
+		while (isspace(*(guchar *)cur_pos)) cur_pos++;
 	}
 
 	return cur_pos;
@@ -3484,7 +3490,7 @@ static gchar *imap_utf8_to_modified_utf7(const gchar *from)
 			norm_utf7_len -= 2;
 			from_tmp++;
 			from_len--;
-		} else if (IS_PRINT(*from_tmp)) {
+		} else if (IS_PRINT(*(guchar *)from_tmp)) {
 			/* printable ascii char */
 			*norm_utf7_p = *from_tmp;
 			norm_utf7_p++;
@@ -3496,7 +3502,7 @@ static gchar *imap_utf8_to_modified_utf7(const gchar *from)
 
 			/* unprintable char: convert to UTF-7 */
 			p = from_tmp;
-			while (!IS_PRINT(*p) && conv_len < from_len) {
+			while (!IS_PRINT(*(guchar *)p) && conv_len < from_len) {
 				mb_len = mblen(p, MB_LEN_MAX);
 				if (mb_len <= 0) {
 					g_warning("wrong multibyte sequence\n");

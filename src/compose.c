@@ -474,6 +474,9 @@ gboolean compose_headerentry_changed_cb	   (GtkWidget	       *entry,
 gboolean compose_headerentry_key_press_event_cb(GtkWidget	       *entry,
 					    GdkEventKey        *event,
 					    ComposeHeaderEntry *headerentry);
+static gboolean compose_headerentry_button_pressed (GtkWidget *entry, 
+					            GdkEventButton *event,
+						    gpointer data);
 
 static void compose_show_first_last_header (Compose *compose, gboolean show_first);
 
@@ -1493,7 +1496,7 @@ void compose_toolbar_cb(gint action, gpointer data)
 		compose_ext_editor_cb(compose, 0, NULL);
 		break;
 	case A_LINEWRAP:
-		compose_wrap_line(compose);
+		compose_wrap_line_all(compose);
 		break;
 	case A_ADDRBOOK:
 		compose_address_cb(compose, 0, NULL);
@@ -1857,7 +1860,8 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	}
 
 	if (msginfo->subject && *msginfo->subject) {
-		gchar *buf, *buf2, *p;
+		gchar *buf, *buf2;
+		guchar *p;
 
 		buf = p = g_strdup(msginfo->subject);
 		p += subject_get_prefix_length(p);
@@ -2359,7 +2363,10 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 	g_free(tmp);							     \
 }
 
-#define INDENT_CHARS	">|#"
+#define DISP_WIDTH(len) \
+	((len > 2 && conv_get_current_charset() == C_UTF_8) ? 2 : \
+	 (len == 2 && conv_get_current_charset() == C_UTF_8) ? 1 : len)
+
 #define SPACE_CHARS	" \t"
 
 #warning FIXME_GTK2
@@ -2408,9 +2415,9 @@ static void compose_wrap_line(Compose *compose)
 		} else {
 			if (ch_len == 1 
 			    && strchr(prefs_common.quote_chars, *cbuf))
-				quoted = TRUE;
-			else if (ch_len != 1 || !isspace(*cbuf))
-				quoted = FALSE;
+				quoted = 1;
+			else if (ch_len != 1 || !isspace(*(guchar *)cbuf))
+				quoted = 0;
 
 			line_end = FALSE;
 		}
@@ -2460,8 +2467,8 @@ static void compose_wrap_line(Compose *compose)
 			ch_len = 1;
 		}
 
-		if (ch_len == 1 && isspace(*cbuf))
-			space = TRUE;
+		if (ch_len == 1 && isspace(*(guchar *)cbuf))
+			space = 1;
 
 		if (ch_len == 1 && *cbuf == '\n') {
 			gboolean replace = FALSE;
@@ -2469,10 +2476,11 @@ static void compose_wrap_line(Compose *compose)
 
 			gtk_text_iter_forward_char(&next_iter);
 
-			if (last_ch_len == 1 && !isspace(last_ch)) {
+			if (last_ch_len == 1 && !isspace((guchar)last_ch)) {
 				if (cur_pos + 1 < p_end) {
 					GET_CHAR(&next_iter, cbuf, ch_len);
-					if (ch_len == 1 && !isspace(*cbuf))
+					if (ch_len == 1 &&
+					    !isspace(*(guchar *)cbuf))
 						replace = TRUE;
 				}
 			}
@@ -2508,7 +2516,7 @@ static void compose_wrap_line(Compose *compose)
 			gtk_text_iter_backward_char(&prev_iter);
 
 			GET_CHAR(&prev_iter, cbuf, ch_len);
-			if (ch_len == 1 && isspace(*cbuf)) {
+			if (ch_len == 1 && isspace(*(guchar *)cbuf)) {
 				gtk_text_buffer_delete(textbuf, &prev_iter, &iter);
 				iter = prev_iter;
 				p_end--;
@@ -2606,7 +2614,7 @@ static guint get_indent_length(GtkTextBuffer *textbuf, guint start_pos, guint te
 			break;
 		case WAIT_FOR_INDENT_CHAR_OR_SPACE:
 			if (is_indent == FALSE && is_space == FALSE &&
-			    !isupper(cbuf[0]))
+			    !isupper((guchar)cbuf[0]))
 				goto out;
 			if (is_space == TRUE) {
 				alnum_cnt = 0;
@@ -2620,7 +2628,7 @@ static guint get_indent_length(GtkTextBuffer *textbuf, guint start_pos, guint te
 			}
 			break;
 		case WAIT_FOR_INDENT_CHAR:
-			if (is_indent == FALSE && !isupper(cbuf[0]))
+			if (is_indent == FALSE && !isupper((guchar)cbuf[0]))
 				goto out;
 			if (is_indent == TRUE) {
 				if (alnum_cnt > 0 
@@ -2802,7 +2810,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 
 				/* insert space if it's alphanumeric */
 				if ((cur_pos != line_pos) &&
-				    ((clen > 1) || isalnum(cb[0]))) {
+				    ((clen > 1) || isalnum((guchar)cb[0]))) {
 					gtk_text_buffer_insert(textbuf, &iter,
 							       " ", 1);
 					tlen++;
@@ -2843,7 +2851,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 		}
 
 		/* possible line break */
-		if (ch_len == 1 && isspace(*cbuf)) {
+		if (ch_len == 1 && isspace(*(guchar *)cbuf)) {
 			line_pos = cur_pos + 1;
 			line_len = cur_len + ch_len;
 		}
@@ -2869,7 +2877,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 			GET_CHAR(line_pos - 1, cbuf, clen);
 
 			/* if next character is space delete it */
-			if (clen == 1 && isspace(*cbuf)) {
+			if (clen == 1 && isspace(*(guchar *)cbuf)) {
 				if (p_pos + i_len != line_pos ||
                             	    !gtk_stext_is_uri_string
 					(text, line_pos, tlen)) {
@@ -3452,7 +3460,7 @@ static gint compose_redirect_write_to_file(Compose *compose, const gchar *file)
 		g_warning("can't change file mode\n");
 	}
 
-	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1) {
+	while (procheader_get_one_field_asis(buf, sizeof(buf), fp) != -1) {
 		/* should filter returnpath, delivered-to */
 		if (g_strncasecmp(buf, "Return-Path:",
 				   strlen("Return-Path:")) == 0 ||
@@ -4333,17 +4341,15 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	}
 
 	/* From */
-	if (!IS_IN_CUSTOM_HEADER("From")) {
-		if (compose->account->name && *compose->account->name) {
-			compose_convert_header
-				(buf, sizeof(buf), compose->account->name,
-				 strlen("From: "), TRUE);
-			QUOTE_IF_REQUIRED(name, buf);
-			fprintf(fp, "From: %s <%s>\n",
-				name, compose->account->address);
-		} else
-			fprintf(fp, "From: %s\n", compose->account->address);
-	}
+	if (compose->account->name && *compose->account->name) {
+		compose_convert_header
+			(buf, sizeof(buf), compose->account->name,
+			 strlen("From: "), TRUE);
+		QUOTE_IF_REQUIRED(name, buf);
+		fprintf(fp, "From: %s <%s>\n",
+			name, compose->account->address);
+	} else
+		fprintf(fp, "From: %s\n", compose->account->address);
 	
 	/* To */
 	compose_write_headers_from_headerlist(compose, fp, "To", ", ");
@@ -4491,17 +4497,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		     cur = cur->next) {
 			CustomHeader *chdr = (CustomHeader *)cur->data;
 
-			if (strcasecmp(chdr->name, "Date")         != 0 &&
-			    strcasecmp(chdr->name, "From")         != 0 &&
-			    strcasecmp(chdr->name, "To")           != 0 &&
-			 /* strcasecmp(chdr->name, "Sender")       != 0 && */
-			    strcasecmp(chdr->name, "Message-Id")   != 0 &&
-			    strcasecmp(chdr->name, "In-Reply-To")  != 0 &&
-			    strcasecmp(chdr->name, "References")   != 0 &&
-			    strcasecmp(chdr->name, "Mime-Version") != 0 &&
-			    strcasecmp(chdr->name, "Content-Type") != 0 &&
-			    strcasecmp(chdr->name, "Content-Transfer-Encoding")
-			    != 0) {
+			if (custom_header_is_allowed(chdr->name)) {
 				compose_convert_header
 					(buf, sizeof(buf),
 					 chdr->value ? chdr->value : "",
@@ -4725,6 +4721,9 @@ static void compose_create_header_entry(Compose *compose)
     	gtk_signal_connect(GTK_OBJECT(entry), "activate", GTK_SIGNAL_FUNC(text_activated), compose);
 	g_signal_connect(G_OBJECT(entry), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
+	gtk_signal_connect(GTK_OBJECT(entry), "button-press-event", 
+			   GTK_SIGNAL_FUNC(compose_headerentry_button_pressed),
+			   NULL);
 
 	address_completion_register_entry(GTK_ENTRY(entry));
 
@@ -5082,6 +5081,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	}
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL,
 				      &geometry, GDK_HINT_MAX_SIZE);
+	gtk_widget_set_uposition(window, prefs_common.compose_x, 
+				 prefs_common.compose_y);
 
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(compose_delete_cb), compose);
@@ -5311,9 +5312,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	}
 #endif
 
-	action_update_compose_menu(ifactory, compose);
-
-
 	undostruct = undo_init(text);
 	undo_set_change_state_func(undostruct, &compose_undo_state_changed,
 				   menubar);
@@ -5417,13 +5415,10 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 			}
         	}
 	}
+        compose->gtkaspell = gtkaspell;
 #endif
 
 	compose_select_account(compose, account, TRUE);
-
-#if USE_ASPELL
-        compose->gtkaspell      = gtkaspell;
-#endif
 
 	if (account->set_autocc && account->auto_cc && mode != COMPOSE_REEDIT)
 		compose_entry_append(compose, account->auto_cc, COMPOSE_CC);
@@ -5441,7 +5436,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry), prefs_common.trans_hdr ? _("Newsgroups:") : "Newsgroups:");
 
 	addressbook_set_target_compose(compose);
-	action_update_compose_menu(ifactory, compose);
 	
 	if (mode != COMPOSE_REDIRECT)
 		compose_set_template_menu(compose);
@@ -5459,7 +5453,10 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	/* Priority */
 	compose->priority = PRIORITY_NORMAL;
 	compose_update_priority_menu_item(compose);
-	
+
+	/* Actions menu */
+	compose_update_actions_menu(compose);
+
 #if USE_GPGME
 	activate_gnupg_mode(compose, account);
 #endif	
@@ -5611,6 +5608,14 @@ static void compose_set_template_menu(Compose *compose)
 
 	gtk_widget_show(menu);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(compose->tmpl_menu), menu);
+}
+
+void compose_update_actions_menu(Compose *compose)
+{
+	GtkItemFactory *ifactory;
+
+	ifactory = gtk_item_factory_from_widget(compose->menubar);
+	action_update_compose_menu(ifactory, "/Tools/Actions", compose);
 }
 
 void compose_reflect_prefs_all(void)
@@ -6333,14 +6338,11 @@ static void compose_undo_state_changed(UndoMain *undostruct, gint undo_state,
 
 	g_return_if_fail(widget != NULL);
 
-	debug_print("Set_undo.  UNDO:%i  REDO:%i\n", undo_state, redo_state);
-
 	ifactory = gtk_item_factory_from_widget(widget);
 
 	switch (undo_state) {
 	case UNDO_STATE_TRUE:
 		if (!undostruct->undo_state) {
-			debug_print ("Set_undo - Testpoint\n");
 			undostruct->undo_state = TRUE;
 			menu_set_sensitive(ifactory, "/Edit/Undo", TRUE);
 		}
@@ -6429,6 +6431,7 @@ static void account_activated(GtkMenuItem *menuitem, gpointer data)
 	Compose *compose = (Compose *)data;
 
 	PrefsAccount *ac;
+	gchar *folderidentifier;
 
 	ac = account_find_from_id(
 		GPOINTER_TO_INT(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID)));
@@ -6436,6 +6439,21 @@ static void account_activated(GtkMenuItem *menuitem, gpointer data)
 
 	if (ac != compose->account)
 		compose_select_account(compose, ac, FALSE);
+
+	/* Set message save folder */
+	if (account_get_special_folder(compose->account, F_OUTBOX)) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), prefs_common.savemsg);
+	}
+	gtk_signal_connect(GTK_OBJECT(compose->savemsg_checkbtn), "toggled",
+			   GTK_SIGNAL_FUNC(compose_savemsg_checkbtn_cb), compose);
+			   
+	gtk_editable_delete_text(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
+	if (account_get_special_folder(compose->account, F_OUTBOX)) {
+		folderidentifier = folder_item_get_identifier(account_get_special_folder
+				  (compose->account, F_OUTBOX));
+		gtk_entry_set_text(GTK_ENTRY(compose->savemsg_entry), folderidentifier);
+		g_free(folderidentifier);
+	}
 }
 
 static void attach_selected(GtkCList *clist, gint row, gint column,
@@ -6686,7 +6704,13 @@ static void compose_insert_sig_cb(gpointer data, guint action,
 static gint compose_delete_cb(GtkWidget *widget, GdkEventAny *event,
 			      gpointer data)
 {
+	gint x, y;
 	Compose *compose = (Compose *)data;
+
+	gtkut_widget_get_uposition(widget, &x, &y);
+	prefs_common.compose_x = x;
+	prefs_common.compose_y = y;
+
 	if (compose->sending)
 		return TRUE;
 	compose_close_cb(compose, 0, NULL);
@@ -6697,7 +6721,7 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	Compose *compose = (Compose *)data;
 	AlertValue val;
-	
+
 	if (compose->exteditor_tag != -1) {
 		if (!compose_ext_editor_kill(compose))
 			return;
@@ -7549,6 +7573,15 @@ gboolean compose_headerentry_changed_cb(GtkWidget *entry,
 	return FALSE;
 }
 
+static gboolean compose_headerentry_button_pressed
+	(GtkWidget *entry, GdkEventButton *event, gpointer data)
+{
+	/* if this is a lclick, grab the focus */
+	if (event->button == 1)
+		gtk_widget_grab_focus(entry);
+	return FALSE;
+}
+
 static void compose_show_first_last_header(Compose *compose, gboolean show_first)
 {
 	GtkAdjustment *vadj;
@@ -7633,6 +7666,9 @@ static gboolean compose_send_control_enter(Compose *compose)
 
 	kev = (GdkEventKey *)ev;
 	if (!(kev->keyval == GDK_Return && (kev->state & GDK_CONTROL_MASK)))
+		return FALSE;
+
+	if (compose->exteditor_tag != -1)
 		return FALSE;
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);

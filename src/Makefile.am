@@ -55,6 +55,7 @@ sylpheed_SOURCES = \
 	folder.c \
 	folder_item_prefs.c \
 	foldersel.c \
+	folderutils.c \
 	folderview.c \
 	grouplistdialog.c \
 	headerview.c \
@@ -73,6 +74,7 @@ sylpheed_SOURCES = \
 	ldapserver.c \
 	ldaputil.c \
 	ldif.c \
+	localfolder.c \
 	main.c \
 	mainwindow.c \
 	manual.c \
@@ -97,6 +99,7 @@ sylpheed_SOURCES = \
 	prefs_common.c \
 	prefs_customheader.c \
 	prefs_display_header.c \
+	prefs_ext_prog.c \
 	prefs_filtering_action.c \
 	prefs_filtering.c \
 	prefs_folder_item.c \
@@ -106,6 +109,7 @@ sylpheed_SOURCES = \
 	prefs_spelling.c \
 	prefs_summary_column.c \
 	prefs_template.c \
+	prefs_themes.c \
 	prefs_toolbar.c \
 	privacy.c \
 	procheader.c \
@@ -115,6 +119,7 @@ sylpheed_SOURCES = \
 	quote_fmt_lex.l \
 	quote_fmt_parse.y \
 	recv.c \
+	remotefolder.c \
 	rfc2015.c \
 	select-keys.c \
 	send_message.c \
@@ -125,15 +130,12 @@ sylpheed_SOURCES = \
 	ssl_manager.c \
 	statusbar.c \
 	stock_pixmap.c \
-	string_match.c \
 	summary_search.c \
 	summaryview.c \
 	textview.c \
 	toolbar.c \
 	undo.c \
 	unmime.c \
-	localfolder.c \
-	remotefolder.c \
 	vcard.c
 
 sylpheedincludedir = $(pkgincludedir)
@@ -179,6 +181,7 @@ sylpheedinclude_HEADERS = \
 	folder.h \
 	folder_item_prefs.h \
 	foldersel.h \
+	folderutils.h \
 	folderview.h \
 	grouplistdialog.h \
 	headerview.h \
@@ -197,6 +200,7 @@ sylpheedinclude_HEADERS = \
 	ldapserver.h \
 	ldaputil.h \
 	ldif.h \
+	localfolder.h \
 	main.h \
 	mainwindow.h \
 	manual.h \
@@ -222,6 +226,7 @@ sylpheedinclude_HEADERS = \
 	prefs_common.h \
 	prefs_customheader.h \
 	prefs_display_header.h \
+	prefs_ext_prog.h \
 	prefs_filtering_action.h \
 	prefs_filtering.h \
 	prefs_folder_item.h \
@@ -231,6 +236,7 @@ sylpheedinclude_HEADERS = \
 	prefs_spelling.h \
 	prefs_summary_column.h \
 	prefs_template.h \
+	prefs_themes.h \
 	prefs_toolbar.h \
 	privacy.h \
 	procheader.h \
@@ -240,6 +246,7 @@ sylpheedinclude_HEADERS = \
 	quote_fmt_lex.h \
 	quote_fmt_parse.h \
 	recv.h \
+	remotefolder.h \
 	rfc2015.h \
 	select-keys.h \
 	send_message.h \
@@ -249,15 +256,12 @@ sylpheedinclude_HEADERS = \
 	ssl_manager.h \
 	statusbar.h \
 	stock_pixmap.h \
-	string_match.h \
 	summary_search.h \
 	summaryview.h \
 	textview.h \
 	toolbar.h \
 	undo.h \
 	unmime.h \
-	localfolder.h \
-	remotefolder.h \
 	vcard.h
 
 BUILT_SOURCES = \
