@@ -1,3 +1,10 @@
+2001-11-04 [christoph]	0.6.4claws23
+
+	* src/main.c
+	* src/prefs_common.[ch]
+		init some pointers that possibly caused a segfault
+		reported in the claws-users ML
+
 2001-11-04 [hoa]	0.6.4claws22
 
 	* src/grouplistdialog.c

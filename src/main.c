@@ -220,6 +220,7 @@ int main(int argc, char *argv[])
 				      "rename");
 	}
 
+	prefs_common_init();
 	prefs_common_read_config();
 
 #if USE_GPGME

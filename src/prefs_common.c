@@ -757,6 +757,11 @@ static void prefs_common_cancel		(void);
 static void compose_prefs_fmt_open(void);
 static void compose_prefs_fmt_create(void);
 
+void prefs_common_init() {
+	prefs_common.fltlist = NULL;
+	prefs_common.disphdr_list = NULL;
+}
+
 void prefs_common_read_config(void)
 {
 	prefs_read_config(param, "Common", COMMON_RC);
