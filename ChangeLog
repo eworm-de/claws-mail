@@ -1,3 +1,11 @@
+2002-09-25
+
+	* src/account.c: account_read_config_all(): set account information
+	  to default before initializing with configuration file.
+	* src/prefs_account.[ch]: prefs_account_new(): new. It returns a
+	  newly created account information structure initialized by
+	  the default settings.
+
 2002-09-24
 
 	* src/addr_compl.c:

@@ -1,3 +1,10 @@
+2002-09-25
+
+	* src/account.c: account_read_config_all(): アカウント情報を設定
+	  ファイルで初期化する前にデフォルトに設定するようにした。
+	* src/prefs_account.[ch]: prefs_account_new(): 新規。デフォルトの
+	  設定で初期化されたアカウント情報構造体を新規に作成して返す。
+
 2002-09-24
 
 	* src/addr_compl.c:

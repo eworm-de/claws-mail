@@ -141,7 +141,7 @@ void account_read_config_all(void)
 	/* read config data from file */
 	cur_account = NULL;
 	for (cur = ac_label_list; cur != NULL; cur = cur->next) {
-		ac_prefs = g_new0(PrefsAccount, 1);
+		ac_prefs = prefs_account_new();
 		prefs_account_read_config(ac_prefs, (gchar *)cur->data);
 		account_list = g_list_append(account_list, ac_prefs);
 		if (ac_prefs->is_default)

@@ -1,3 +1,8 @@
+2002-09-26 [paul]	0.8.3claws24
+
+	* sync with 0.8.3cvs6
+		see ChangeLog 2002-09-25
+
 2002-09-25 [christoph]	0.8.3claws23
 
 	* src/prefs_common.c
