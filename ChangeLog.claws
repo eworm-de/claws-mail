@@ -1,3 +1,8 @@
+2003-07-17 [alfons]	0.9.3claws17
+
+	* src/inc.c
+		plug memleak
+
 2003-07-17 [paul]	0.9.3claws16
 
 	* src/common/defs.h

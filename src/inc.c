@@ -925,6 +925,7 @@ static gint inc_recv_data_finished(Session *session, guint len, gpointer data)
 				(pop3_session->cur_total_recv_bytes));
 	gtk_clist_set_text(GTK_CLIST(inc_dialog->dialog->clist),
 			   inc_dialog->cur_row, 2, msg);
+	g_free(msg);			   
 
 	return 0;
 }
