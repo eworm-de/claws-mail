@@ -22,6 +22,8 @@
 
 #include <glib.h>
 
+#include "socket.h"
+
 #define	SMTPBUFSIZE		256
 
 #define	SM_OK			0
@@ -32,14 +34,14 @@
 #define	ESMTP_SIZE		0x02
 #define	ESMTP_ETRN		0x04
 
-gint smtp_helo(gint sock, const char *hostname, gboolean use_smtp_auth);
-gint smtp_from(gint sock, const gchar *from, const gchar *userid,
+gint smtp_helo(SockInfo *sock, const char *hostname, gboolean use_smtp_auth);
+gint smtp_from(SockInfo *sock, const gchar *from, const gchar *userid,
 	       const gchar *passwd, gboolean use_smtp_auth);
-gint smtp_rcpt(gint sock, const gchar *to);
-gint smtp_data(gint sock);
-gint smtp_rset(gint sock);
-gint smtp_quit(gint sock);
-gint smtp_eom(gint sock);
-gint smtp_ok(gint sock);
+gint smtp_rcpt(SockInfo *sock, const gchar *to);
+gint smtp_data(SockInfo *sock);
+gint smtp_rset(SockInfo *sock);
+gint smtp_quit(SockInfo *sock);
+gint smtp_eom(SockInfo *sock);
+gint smtp_ok(SockInfo *sock);
 
 #endif /* __SMTP_H__ */

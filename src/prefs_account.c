@@ -823,7 +823,7 @@ static void prefs_account_send_create(void)
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 
-	//	gtk_widget_set_sensitive(hbox, FALSE);
+	/* gtk_widget_set_sensitive(hbox, FALSE); */
 
 	PACK_CHECK_BUTTON (hbox, customhdr_chkbtn,
 			   _("Add user-defined header"));

@@ -1,3 +1,8 @@
+2001-04-27 [alfons]
+
+	* completed sync with 0.4.65cvs10
+	* minor debug things added to gtkstext.c
+
 2001-04-27 [darko]
 
 	* configure.in: remove check for availability of

@@ -44,14 +44,22 @@ void automaton_destroy(Automaton *atm)
 	g_free(atm);
 }
 
-void automaton_input_cb(gpointer data, gint source,
-			GdkInputCondition condition)
+void automaton_input_cb(gpointer data, gint dummy_source,
+				GdkInputCondition condition)
 {
 	Automaton *atm = (Automaton *)data;
+	SockInfo *sock;
 	gint next;
+ 
+	/* We get out sockinfo from the atm context and not from the
+	 * passed file descriptor because we can't map that one back
+	 * to the sockinfo */
+	sock = atm->help_sock;
+	g_assert (sock->sock == dummy_source);
+
 
 	//g_print("atm->num = %d\n", atm->num);
-
+ 
 	if (atm->timeout_tag > 0) {
 		gtk_timeout_remove(atm->timeout_tag);
 		atm->timeout_tag = 0;
@@ -59,19 +67,20 @@ void automaton_input_cb(gpointer data, gint source,
 	}
 	gdk_input_remove(atm->tag);
 	atm->tag = 0;
-
-	next = atm->state[atm->num].handler(source, atm->data);
-
+ 
+	next = atm->state[atm->num].handler(sock, atm->data);
+ 
 	if (atm->terminated)
 		return;
-
+ 
 	if (next >= 0 && next <= atm->max && next != atm->num) {
 		atm->num = next;
-		atm->tag = gdk_input_add(source,
-					 atm->state[atm->num].condition,
+		atm->tag = sock_gdk_input_add(sock,
+					 atm->state[atm->num].condition,       
 					 automaton_input_cb,
-					 data);
+				     data);
 	} else {
-		atm->terminate(source, data);
+		atm->terminate(sock, data);
 	}
 }
+

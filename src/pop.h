@@ -22,6 +22,8 @@
 
 #include <glib.h>
 
+#include "socket.h"
+
 typedef enum {
 	POP3_GREETING_RECV,
 	POP3_GETAUTH_USER_SEND,
@@ -71,24 +73,24 @@ typedef enum {
 #define		PS_RETAINED	26	/* message retained (internal use) */
 #define		PS_TRUNCATED	27	/* headers incomplete (internal use) */
 
-gint pop3_greeting_recv		(gint sock, gpointer data);
-gint pop3_getauth_user_send	(gint sock, gpointer data);
-gint pop3_getauth_user_recv	(gint sock, gpointer data);
-gint pop3_getauth_pass_send	(gint sock, gpointer data);
-gint pop3_getauth_pass_recv	(gint sock, gpointer data);
-gint pop3_getauth_apop_send	(gint sock, gpointer data);
-gint pop3_getauth_apop_recv	(gint sock, gpointer data);
-gint pop3_getrange_stat_send	(gint sock, gpointer data);
-gint pop3_getrange_stat_recv	(gint sock, gpointer data);
-gint pop3_getrange_last_send	(gint sock, gpointer data);
-gint pop3_getrange_last_recv	(gint sock, gpointer data);
-gint pop3_getrange_uidl_send	(gint sock, gpointer data);
-gint pop3_getrange_uidl_recv	(gint sock, gpointer data);
-gint pop3_retr_send		(gint sock, gpointer data);
-gint pop3_retr_recv		(gint sock, gpointer data);
-gint pop3_delete_send		(gint sock, gpointer data);
-gint pop3_delete_recv		(gint sock, gpointer data);
-gint pop3_logout_send		(gint sock, gpointer data);
-gint pop3_logout_recv		(gint sock, gpointer data);
+gint pop3_greeting_recv		(SockInfo *sock, gpointer data);
+gint pop3_getauth_user_send	(SockInfo *sock, gpointer data);
+gint pop3_getauth_user_recv	(SockInfo *sock, gpointer data);
+gint pop3_getauth_pass_send	(SockInfo *sock, gpointer data);
+gint pop3_getauth_pass_recv	(SockInfo *sock, gpointer data);
+gint pop3_getauth_apop_send	(SockInfo *sock, gpointer data);
+gint pop3_getauth_apop_recv	(SockInfo *sock, gpointer data);
+gint pop3_getrange_stat_send	(SockInfo *sock, gpointer data);
+gint pop3_getrange_stat_recv	(SockInfo *sock, gpointer data);
+gint pop3_getrange_last_send	(SockInfo *sock, gpointer data);
+gint pop3_getrange_last_recv	(SockInfo *sock, gpointer data);
+gint pop3_getrange_uidl_send	(SockInfo *sock, gpointer data);
+gint pop3_getrange_uidl_recv	(SockInfo *sock, gpointer data);
+gint pop3_retr_send		(SockInfo *sock, gpointer data);
+gint pop3_retr_recv		(SockInfo *sock, gpointer data);
+gint pop3_delete_send		(SockInfo *sock, gpointer data);
+gint pop3_delete_recv		(SockInfo *sock, gpointer data);
+gint pop3_logout_send		(SockInfo *sock, gpointer data);
+gint pop3_logout_recv		(SockInfo *sock, gpointer data);
 
 #endif /* __POP_H__ */

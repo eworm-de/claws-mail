@@ -38,6 +38,35 @@
 #  include <wchar.h>
 #endif
 
+
+/* The AC_CHECK_SIZEOF() in configure fails for some machines.
+ * we provide some fallback values here */
+#if !SIZEOF_UNSIGNED_SHORT
+  #undef SIZEOF_UNSIGNED_SHORT
+  #define SIZEOF_UNSIGNED_SHORT 2
+#endif
+#if !SIZEOF_UNSIGNED_INT
+  #undef SIZEOF_UNSIGNED_INT
+  #define SIZEOF_UNSIGNED_INT 4
+#endif
+#if !SIZEOF_UNSIGNED_LONG
+  #undef SIZEOF_UNSIGNED_LONG
+  #define SIZEOF_UNSIGNED_LONG 4
+#endif
+
+#ifndef HAVE_U32_TYPEDEF
+  #undef u32	    /* maybe there is a macro with this name */
+  #if SIZEOF_UNSIGNED_INT == 4
+    typedef unsigned int u32;
+  #elif SIZEOF_UNSIGNED_LONG == 4
+    typedef unsigned long u32;
+  #else
+    #error no typedef for u32
+  #endif
+  #define HAVE_U32_TYPEDEF
+#endif
+
+
 #define CHDIR_RETURN_IF_FAIL(dir) \
 { \
 	if (change_dir(dir) < 0) return; \
@@ -205,6 +234,7 @@ gchar **strsplit_with_quote		(const gchar	*str,
 					 gint		 max_tokens);
 
 /* return static strings */
+gchar *get_home_dir		(void);
 gchar *get_rc_dir		(void);
 gchar *get_news_cache_dir	(void);
 gchar *get_imap_cache_dir	(void);

@@ -74,8 +74,8 @@ struct select_keys_s {
 };
 
 
-static void set_row (GtkCList *clist, GpgmeKey key );
-static void fill_clist (struct select_keys_s *sk, const char *pattern );
+static void set_row (GtkCList *clist, GpgmeKey key);
+static void fill_clist (struct select_keys_s *sk, const char *pattern);
 static void create_dialog (struct select_keys_s *sk);
 static void open_dialog (struct select_keys_s *sk);
 static void close_dialog (struct select_keys_s *sk);
@@ -84,7 +84,7 @@ static void key_pressed_cb (GtkWidget *widget,
 static void select_btn_cb (GtkWidget *widget, gpointer data);
 static void cancel_btn_cb (GtkWidget *widget, gpointer data);
 static void other_btn_cb (GtkWidget *widget, gpointer data);
-static void sort_keys ( struct select_keys_s *sk, enum col_titles column);
+static void sort_keys (struct select_keys_s *sk, enum col_titles column);
 static void sort_keys_name (GtkWidget *widget, gpointer data);
 static void sort_keys_email (GtkWidget *widget, gpointer data);
 
@@ -101,8 +101,8 @@ update_progress (struct select_keys_s *sk, int running, const char *pattern)
     else 
         buf = g_strdup_printf (_("Collecting info for `%s' ... %c"), 
                                pattern,
-                               windmill[running%DIM(windmill)] );
-    gtk_label_set_text (sk->toplabel, buf );
+                               windmill[running%DIM(windmill)]);
+    gtk_label_set_text (sk->toplabel, buf);
     g_free (buf);
 }
 
@@ -128,7 +128,7 @@ gpgmegtk_recipient_selection (GSList *recp_names)
     err = gpgme_recipients_new (&sk.rset);
     if (err) {
         g_message ("** failed to allocate recipients set: %s",
-                   gpgme_strerror (err) );
+                   gpgme_strerror (err));
         return NULL;
     }
         
@@ -142,7 +142,7 @@ gpgmegtk_recipient_selection (GSList *recp_names)
         gtk_main ();
         if (recp_names)
             recp_names = recp_names->next;
-    } while (sk.okay && recp_names );
+    } while (sk.okay && recp_names);
 
     close_dialog (&sk);
 
@@ -161,30 +161,35 @@ destroy_key (gpointer data)
 }
 
 static void
-set_row (GtkCList *clist, GpgmeKey key )
+set_row (GtkCList *clist, GpgmeKey key)
 {
     const char *s;
     const char *text[N_COL_TITLES];
     char *algo_buf;
     int row;
+
+    /* first check whether the key is capable of encryption which is not
+     * the case for revoked, expired or sign-only keys */
+    if ( !gpgme_key_get_ulong_attr (key, GPGME_ATTR_CAN_ENCRYPT, NULL, 0 ) )
+        return;
     
     algo_buf = g_strdup_printf ("%lu/%s", 
          gpgme_key_get_ulong_attr (key, GPGME_ATTR_LEN, NULL, 0 ),
          gpgme_key_get_string_attr (key, GPGME_ATTR_ALGO, NULL, 0 ) );
     text[COL_ALGO] = algo_buf;
 
-    s = gpgme_key_get_string_attr (key, GPGME_ATTR_KEYID, NULL, 0 );
-    if ( strlen (s) == 16 )
+    s = gpgme_key_get_string_attr (key, GPGME_ATTR_KEYID, NULL, 0);
+    if (strlen (s) == 16)
         s += 8; /* show only the short keyID */
     text[COL_KEYID] = s;
 
-    s = gpgme_key_get_string_attr (key, GPGME_ATTR_NAME, NULL, 0 );
+    s = gpgme_key_get_string_attr (key, GPGME_ATTR_NAME, NULL, 0);
     text[COL_NAME] = s;
 
-    s = gpgme_key_get_string_attr (key, GPGME_ATTR_EMAIL, NULL, 0 );
+    s = gpgme_key_get_string_attr (key, GPGME_ATTR_EMAIL, NULL, 0);
     text[COL_EMAIL] = s;
 
-    s = gpgme_key_get_string_attr (key, GPGME_ATTR_VALIDITY, NULL, 0 );
+    s = gpgme_key_get_string_attr (key, GPGME_ATTR_VALIDITY, NULL, 0);
     text[COL_VALIDITY] = s;
 
     row = gtk_clist_append (clist, (gchar**)text);
@@ -195,7 +200,7 @@ set_row (GtkCList *clist, GpgmeKey key )
 
 
 static void 
-fill_clist (struct select_keys_s *sk, const char *pattern )
+fill_clist (struct select_keys_s *sk, const char *pattern)
 {
     GtkCList *clist;
     GpgmeCtx ctx;
@@ -207,15 +212,11 @@ fill_clist (struct select_keys_s *sk, const char *pattern )
     clist = sk->clist;
     g_return_if_fail (clist);
 
-    debug_print ("select_keys:fill_clist:  pattern `%s'\n", pattern );
+    debug_print ("select_keys:fill_clist:  pattern `%s'\n", pattern);
 
     /*gtk_clist_freeze (select_keys.clist);*/
     err = gpgme_new (&ctx);
-    if (err) {
-        g_message ("** gpgme_new failed: %s",
-                   gpgme_strerror (err));
-        return;
-    }
+    g_assert (!err);
 
     sk->select_ctx = ctx;
 
@@ -223,12 +224,11 @@ fill_clist (struct select_keys_s *sk, const char *pattern )
     while (gtk_events_pending ())
         gtk_main_iteration ();
 
-    err = gpgme_op_keylist_start (ctx, pattern, 0 );
+    err = gpgme_op_keylist_start (ctx, pattern, 0);
     if (err) {
         g_message ("** gpgme_op_keylist_start(%s) failed: %s",
                    pattern, gpgme_strerror (err));
         sk->select_ctx = NULL;
-	gpgme_release (ctx);
         return;
     }
     update_progress (sk, ++running, pattern);
@@ -240,7 +240,7 @@ fill_clist (struct select_keys_s *sk, const char *pattern )
             gtk_main_iteration ();
     }
     debug_print ("%% %s:%d:  ready\n", __FILE__ ,__LINE__ );
-    if ( err != GPGME_EOF )
+    if (err != GPGME_EOF)
         g_message ("** gpgme_op_keylist_next failed: %s",
                    gpgme_strerror (err));
     sk->select_ctx = NULL;
@@ -499,13 +499,13 @@ sort_keys ( struct select_keys_s *sk, enum col_titles column)
 static void
 sort_keys_name (GtkWidget *widget, gpointer data)
 {
-    sort_keys ( (struct select_keys_s*)data, COL_NAME );
+    sort_keys ((struct select_keys_s*)data, COL_NAME);
 }
 
 static void
 sort_keys_email (GtkWidget *widget, gpointer data)
 {
-    sort_keys ( (struct select_keys_s*)data, COL_EMAIL );
+    sort_keys ((struct select_keys_s*)data, COL_EMAIL);
 }
 
 

@@ -368,7 +368,7 @@ void prefs_set_default(PrefParam *param)
 						g_strdup(g_getenv(param[i].defval + 4));
 				else if (param[i].defval[0] == '~')
 					*((gchar **)param[i].data) =
-						g_strconcat(g_get_home_dir(),
+						g_strconcat(get_home_dir(),
 							    param[i].defval + 1,
 							    NULL);
 				else if (param[i].defval[0] != '\0')
@@ -530,7 +530,7 @@ void prefs_set_dialog_to_default(PrefParam *param)
 					break;
 				} else if (tmpparam.defval[0] == '~') {
 					str_data =
-						g_strconcat(g_get_home_dir(),
+						g_strconcat(get_home_dir(),
 							    param[i].defval + 1,
 							    NULL);
 					tmpparam.data = &str_data;

@@ -21,6 +21,7 @@
 #define __ESMTP_H__
 
 #include <glib.h>
+#include "socket.h"
 
 typedef enum
 {
@@ -29,13 +30,11 @@ typedef enum
 	SMTPAUTH_DIGEST_MD5 = 3
 } SMTPAuthType;
 
-gint esmtp_auth_login(gint sock);
-gint esmtp_auth_cram_md5(gint sock);
-gint esmtp_auth(gint sock, SMTPAuthType authtype,
+gint esmtp_auth_login(SockInfo *sock);
+gint esmtp_auth_cram_md5(SockInfo *sock);
+gint esmtp_auth(SockInfo *sock, SMTPAuthType authtype,
 		const gchar *userid, const gchar *passwd,
 		gboolean use_smtp_auth);
-gint esmtp_ok(gint sock);
-void md5_hex_hmac(gchar *hexdigest, guchar *text, gint text_len,
-		  guchar *key, gint key_len);
+gint esmtp_ok(SockInfo *sock);
 
 #endif /* __ESMTP_H__ */

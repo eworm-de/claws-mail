@@ -477,6 +477,13 @@ static void gtk_stext_show_props (GtkSText* test,
 #define TEXT_SHOW_ADJ(text,adj,msg)
 #endif
 
+#define AHX_DEBUG
+#if defined(AHX_DEBUG)
+#	define XDEBUG(args) g_message args
+#else
+#	define XDEBUG(args)
+#endif /* AHX_DEBUG */
+
 /* Memory Management. */
 static GMemChunk  *params_mem_chunk    = NULL;
 static GMemChunk  *text_property_chunk = NULL;
@@ -2264,15 +2271,19 @@ gtk_stext_key_press (GtkWidget   *widget,
 	    }
 	  break;
 	case GDK_Delete:
-	  if (event->state & GDK_CONTROL_MASK)
-	    gtk_stext_delete_forward_word (text);
-	  else if (event->state & GDK_SHIFT_MASK)
-	    {
-	      extend_selection = FALSE;
-	      gtk_editable_cut_clipboard (editable);
-	    }
-	  else
-	    gtk_stext_delete_forward_character (text);
+		{
+			if (event->state & GDK_CONTROL_MASK) {
+				gtk_stext_delete_forward_word (text);
+			}	
+			else if (event->state & GDK_SHIFT_MASK)
+			{
+				extend_selection = FALSE;
+				gtk_editable_cut_clipboard (editable);
+			}
+			else {
+				gtk_stext_delete_forward_character (text);
+			}	
+		}		
 	  break;
 	case GDK_Tab:
 	  position = text->point.index;
@@ -4215,14 +4226,14 @@ static gint back_display_row_fetcher(GtkSText *text,
 {
 	if (data->start <= params->start.index
 	&&  data->end   >= params->end.index) {
-		TDEBUG( ("%s(%d) - FOUND search (%d, %d), current (%d, %d)", __FILE__, __LINE__, 
+		XDEBUG( ("%s(%d) - FOUND search (%d, %d), current (%d, %d)", __FILE__, __LINE__, 
 		          data->start, data->end,
-				  params->start.index, params->end.index) )
+				  params->start.index, params->end.index) );
 		data->found = TRUE;
 		return TRUE;
 	}
 	else {
-		TDEBUG( ("%s(%d) - NEXT search (%d, %d), current (%d, %d)", __FILE__, __LINE__, 
+		XDEBUG( ("%s(%d) - NEXT search (%d, %d), current (%d, %d)", __FILE__, __LINE__, 
 		          data->start, data->end,
 				  params->start.index, params->end.index) );
 		data->lp = *params;
@@ -4240,7 +4251,7 @@ static void move_cursor_to_display_row_up(GtkSText *text)
 
 	/* top of buffer */
 	if (mark.index == 0) {
-		TDEBUG ( ("%s(%d) top of buffer", __FILE__, __LINE__) );	
+		XDEBUG ( ("%s(%d) top of buffer", __FILE__, __LINE__) );	
 		return;
 	}
 
@@ -4255,30 +4266,30 @@ static void move_cursor_to_display_row_up(GtkSText *text)
 	/* get the previous line */
 	if (mark.index - 1 > 0) {
 		decrement_mark(&mark);
-		TDEBUG( ("%s(%d) mark decrement", __FILE__, __LINE__) );
+		XDEBUG( ("%s(%d) mark decrement", __FILE__, __LINE__) );
 		if (mark.index - 1 > 0) {
 			GtkSPropertyMark smark = mark;
-			TDEBUG( ("%s(%d) finding line start mark", __FILE__, __LINE__) );
+			XDEBUG( ("%s(%d) finding line start mark", __FILE__, __LINE__) );
 			mark = find_this_line_start_mark(text, smark.index -1,  &smark);
 		}			
 	}		
 	
 	/* let's get the previous display line */
-	TDEBUG( ("%s(%d) iterating to get display lines", __FILE__, __LINE__) );
+	XDEBUG( ("%s(%d) iterating to get display lines", __FILE__, __LINE__) );
 	line_params_iterate(text, &mark, NULL, FALSE, &data, 
 						(LineIteratorFunction)back_display_row_fetcher);	
-	TDEBUG( ("%s(%d) done iterating. found = %d", __FILE__, __LINE__, data.found) );					
+	XDEBUG( ("%s(%d) done iterating. found = %d", __FILE__, __LINE__, data.found) );					
 		
 	if (data.found) {
 		if (col < text->persist_column) col = text->persist_column; 
 		else text->persist_column = col;
 		new_index = data.lp.start.index + col;
-		TDEBUG( ("%s(%d) - new index = %d", __FILE__, __LINE__, new_index) );
+		XDEBUG( ("%s(%d) - new index = %d", __FILE__, __LINE__, new_index) );
 		if (new_index > data.lp.end.index) {
 			new_index = data.lp.end.index;
 		}
 		/* and move the cursor */
-		TDEBUG( ("%s(%d) - setting index", __FILE__, __LINE__) );
+		XDEBUG( ("%s(%d) - setting index", __FILE__, __LINE__) );
 		gtk_stext_set_position_X(GTK_EDITABLE(text), new_index);		
 	}
 }
@@ -4577,8 +4588,9 @@ static void
 gtk_stext_kill_word (GtkEditable *editable,
 		    gint         direction)
 {
-  if (editable->selection_start_pos != editable->selection_end_pos)
+  if (editable->selection_start_pos != editable->selection_end_pos) {
     gtk_editable_delete_selection (editable);
+  }	
   else
     {
       gint old_pos = editable->current_pos;

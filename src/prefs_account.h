@@ -20,6 +20,10 @@
 #ifndef __PREFS_ACCOUNT_H__
 #define __PREFS_ACCOUNT_H__
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include <glib.h>
 
 typedef struct _PrefsAccount	PrefsAccount;

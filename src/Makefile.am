@@ -45,8 +45,7 @@ sylpheed_SOURCES = \
 	unmime.c unmime.h \
 	base64.c base64.h \
 	uuencode.c uuencode.h \
-	md5c.c md5.h md5global.h \
-	md5ify.c md5ify.h \
+	md5c.c md5.h \
 	rfc822.c rfc822.h \
 	socket.c socket.h \
 	automaton.c automaton.h \
@@ -60,6 +59,7 @@ sylpheed_SOURCES = \
 	recv.c recv.h \
 	inc.c inc.h \
 	import.c import.h \
+	export.c export.h \
 	nntp.c nntp.h \
 	news.c news.h \
 	imap.c imap.h \
@@ -69,9 +69,10 @@ sylpheed_SOURCES = \
 	rfc2015.c rfc2015.h \
 	passphrase.c passphrase.h \
 	select-keys.c select-keys.h \
+	sigstatus.c sigstatus.h \
+	simple-gettext.c \
 	manual.c manual.h \
 	addr_compl.c addr_compl.h \
-	export.c export.h \
 	gtkstext.c gtkstext.h \
 	grouplist_dialog.c grouplist_dialog.h \
 	headers.c headers.h \

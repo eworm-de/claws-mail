@@ -1,42 +1,51 @@
-/* MD5.H - header file for MD5C.C
+/* md5.h - MD5 Message-Digest Algorithm
+ *	Copyright (C) 1995, 1996, 1998, 1999 Free Software Foundation, Inc.
+ *
+ * according to the definition of MD5 in RFC 1321 from April 1992.
+ * NOTE: This is *not* the same file as the one from glibc
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2, or (at your option) any
+ * later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991. All
-rights reserved.
+#ifndef _MD5_HDR_
+#define _MD5_HDR_
 
-License to copy and use this software is granted provided that it
-is identified as the "RSA Data Security, Inc. MD5 Message-Digest
-Algorithm" in all material mentioning or referencing this software
-or this function.
+#include "utils.h"
 
-License is also granted to make and use derivative works provided
-that such works are identified as "derived from the RSA Data
-Security, Inc. MD5 Message-Digest Algorithm" in all material
-mentioning or referencing the derived work.
+typedef struct {  /* Hmm, should be private */
+    u32 A,B,C,D;
+    u32  nblocks;
+    unsigned char buf[64];
+    int  count;
+    int  finalized;
+} MD5_CONTEXT;
 
-RSA Data Security, Inc. makes no representations concerning either
-the merchantability of this software or the suitability of this
-software for any particular purpose. It is provided "as is"
-without express or implied warranty of any kind.
+typedef MD5_CONTEXT MD5_CTX;
 
-These notices must be retained in any copies of any part of this
-documentation and/or software.
- */
+void md5_init(MD5_CONTEXT *ctx);
+void md5_update(MD5_CONTEXT *hd, const unsigned char *inbuf, size_t inlen);
+void md5_final(unsigned char *digest, MD5_CONTEXT *ctx);
 
-#ifndef MD5_H__
-#define MD5_H__
+void md5_hex_digest(char *hexdigest, const unsigned char *s);
 
-#include "md5global.h"
+void md5_hmac(unsigned char *digest,
+              const unsigned char* text, int text_len,
+              const unsigned char* key, int key_len);
+void md5_hex_hmac(char *hexdigest,
+                  const unsigned char* text, int text_len,
+                  const unsigned char* key, int key_len);
 
-/* MD5 context. */
-typedef struct {
-  UINT4 state[4];                                   /* state (ABCD) */
-  UINT4 count[2];        /* number of bits, modulo 2^64 (lsb first) */
-  unsigned char buffer[64];                         /* input buffer */
-} MD5_CTX;
+#endif /* _MD5_HDR_ */
 
-void MD5Init PROTO_LIST ((MD5_CTX *));
-void MD5Update PROTO_LIST
-  ((MD5_CTX *, unsigned char *, unsigned int));
-void MD5Final PROTO_LIST ((unsigned char [16], MD5_CTX *));
-#endif /* MD5_H__ */

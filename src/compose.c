@@ -1171,7 +1171,7 @@ static void compose_insert_sig(Compose *compose)
 	if (compose->account && compose->account->sig_path)
 		sigfile = g_strdup(compose->account->sig_path);
 	else {
-		sigfile = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S,
+		sigfile = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
 				      DEFAULT_SIGNATURE, NULL);
 	}
 
@@ -3235,20 +3235,20 @@ static void compose_exec_ext_editor(Compose *compose)
 		close(pipe_fds[0]);
 
 		if (compose_write_body_to_file(compose, tmp) < 0) {
-			sock_write(pipe_fds[1], "2\n", 2);
+			fd_write(pipe_fds[1], "2\n", 2);
 			_exit(1);
 		}
 
 		pid_ed = compose_exec_ext_editor_real(tmp);
 		if (pid_ed < 0) {
-			sock_write(pipe_fds[1], "1\n", 2);
+			fd_write(pipe_fds[1], "1\n", 2);
 			_exit(1);
 		}
 
 		/* wait until editor is terminated */
 		waitpid(pid_ed, NULL, 0);
 
-		sock_write(pipe_fds[1], "0\n", 2);
+		fd_write(pipe_fds[1], "0\n", 2);
 
 		close(pipe_fds[1]);
 		_exit(0);

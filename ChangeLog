@@ -1,3 +1,190 @@
+2001-04-26
+
+	* src/mh.c: mh_is_maildir_one(): modified so that it uses
+	  is_dir_exist().
+
+2001-04-25  Werner Koch  <wk@gnupg.org>
+
+	* src/mh.c (mh_is_maildir_one, mh_is_maildir): New.
+	(mh_scan_tree_recursive): Do not include Maildir style directories
+	in the scan.
+
+	Changed the use of integers to describe sockets by an more abstract
+	data structure.
+
+	* src/automaton.h (struct _Automaton): Add help_sock.
+	* src/automaton.c (automaton_input_cb): Changed source to be
+	SockInfo and use wrapper for gdk_input_add.
+
+	* src/send.c (SEND_EXIT_IF_ERROR): Adjusted tests and removed test
+	for invalid socket because this is now done in sock_close. Set
+	sock to NULL.
+	(SEND_EXIT_IF_NOTOK): Set closed sock to NULL.
+	(send_smtp_open): Use only SockInfo.
+
+	* src/news.c (news_session_new): Use SockInfo here.
+	(news_session_destroy): Ditto and set sock to NULL.
+
+	* src/nntp.c: Use SockInfo instead of integers
+	* src/smtp.c: Ditto.
+	* src/pop.c: Ditto.
+	* src/recv.c: Ditto.
+
+	* src/inc.c (inc_pop3_session_do): Removed sock_sockinfo_free. Put
+	gdk_input_add into a wrapper.
+
+	* src/esmtp.c: Changed socket descriptors to use SockInfo.
+	* src/esmtp.h: Ditto, included socket.h.
+	* src/session.h (struct _Session): Likewise.
+	* src/imap.c (imap_open): Return SockInfo ptr and not an integer.
+	Removed access to internal data of SockInfo.  Changed all callers
+	and functions to take SockInfo.
+	(imap_session_new): Use sock_close here.
+	(imap_session_destroy): Ditto.
+
+	* src/compose.c (compose_exec_ext_editor): Replaced sock_write by
+	fd_write.
+
+	* src/main.c (app_will_exit): Close lock socket using fd_close.
+	(prohibit_duplicate_launch): Use fd_xxx functions instead of sock_xxx.
+	(lock_socket_input_cb): Ditto.
+
+	* src/socket.h, src/socket.c: Prepared SockInfo structure to use
+	glib channels. Changed all sock_xxx to use SockInfo instead of an
+	integer.
+	(sock_connect_unix, sock_open_unix, sock_accept): Renamed to ..
+	(fd_connect_unix, fd_open_unix, fd_accept): .. this and changed all
+	callers.
+	(fd_read, fd_write, fd_close): New.
+	(sock_sockinfo_free): Removed.
+	* src/socket.c (sock_connect_nb): Use close instead sock_close here.
+	(sock_connect): Ditto.
+
+2001-04-26
+
+	* config.h.in: removed.
+	* ac/Makefile.am: added gnupg-check-typedef.m4 to MACROS.
+	* .cvsignore: added.
+	* src/inc.c
+	  src/progressdialog.[ch]
+	  src/pixmaps/complete.xpm
+	  src/pixmaps/continue.xpm
+	  src/pixmaps/error.xpm: applied the patch from Leandro Pereira
+	  that displays the state of message incorporation (thanks!).
+	* src/inc.c: made the progress dialog change the text of status.
+
+2001-04-25
+
+	* removed po/*.gmo, configure, stamp-h.in, aclocal.m4, Makefile.in
+	  from the cvs tree.
+	* COPYING: removed RSA copyright notice.
+	* removed po/sylpheed.pot, po/stamp-cat-id, po/cat-id-tbl.c.
+	* configure.in: added the check of sys/utsname.h.
+
+2001-04-24  Werner Koch  <wk@gnupg.org>
+
+	Merged most of the changes from the W32 branch in.
+
+	* configure.in: Require gpgme >= 0.2.1
+
+	* acconfig.h (HAVE_U32_TYPEDEF): New.
+	* ac/gnupg-check-typedef.m4: New.
+	* configure.in: Check for u32 type and the size of some types.
+	* src/utils.h: Define the u32 type and related constants.
+
+	* src/about.c (about_create): Removed the note about MD5.  We are
+	not any longer using the RSA Inc. implementation.
+	* src/md5ify.c, src/md5ify.h, src/md5global.h:  Removed.
+	* src/md5c.c, src/md5c.h: Replaced by an FSF implementation and
+	renamed the function to standard lowercase convention. Changed all
+	callers. 
+	(md5_hex_digest): New.
+	(md5_hmac): Add hmac function by Martin Schaaf with some 
+	modifications.
+	(md5_hex_hmac): New.
+	* src/esmtp.c, src/esmtp.h (md5_hex_hmac): Removed.
+	(hmac_md5): Removed.
+	* src/pop.c (pop3_getauth_apop_send): Replaced the md5_digest by
+	the new md5_hex_digest function.
+
+	* src/about.c: Include utsname.h only if available
+
+	* src/utils.c, src/utils.h (get_home_dir): New to better cope with
+	special Windoze requirements.  Changed all calls to
+	g_get_home_dir() to this function.
+
+	* simple-gettext.c: New.
+
+	* src/main.c (main): Issue a warning if GnuPG is not properly
+	installed.
+
+	* src/sigstatus.c, src/sigstatus.h: New.
+	* src/rfc2015.c (check_signature): Use the sigstatus window and
+	get the status texts from a utility function.
+
+	* src/select-keys.c: Removed the global select_keys var and
+	pass an allocated one along all functions.
+	(set_row): Display only keys capable of encryption.
+	(update_progress): Replaced the progressbar by
+	a windmill and a text showing for which key we are collecting
+	info.  Removed progressbar everywhere else and updated callers.
+
+	* src/prefs_common.c (prefs_privacy_create) [__MINGW32__]: Do not
+	display the grab button. 
+
+2001-04-24
+
+	* src/prefs_common.[ch]
+	  src/procheader.c: applied the patch from Darko Koruga that
+	  allows user to define their own format for displaying date in
+	  summary view using strftime() (thanks!).
+	* src/prefs_common.c: prefs_quote_colors_dialog()
+	  src/mainwindow.c: main_window_reflect_prefs_all(): made it
+	  update message colors if the colors setting is changed.
+	* src/main.[ch]: made it remember the startup directory.
+	* src/export.c: export_mbox(): made it initially chdir to the
+	  startup directory.
+	* src/filesel.c: filesel_select_file(): made it open the startup
+	  directory at first.
+
+2001-04-23
+
+	* added option to warn about queued messages on exit [sergey]:
+
+	  * src/compose.c: compose_queue(): call folder_item_scan()
+	    and folderview_update_item() after queueing.
+	  * src/folderview.c: folderview_update_node(): draw the queue
+	    folder in bold font if there are queued messages.
+	  * src/mainwindow.c: queued_messages(): new function.
+	    app_exit_cb(): display warning if there are queued messages
+	    if warn_queued_on_exit is set.
+	  * prefs_common.[ch]: add warn_queued_on_exit option.
+
+	* src/mainwindow.c: moved queued_messages() to main.c, and renamed
+	  it to get_queued_message_num().
+	* src/main.c: app_will_exit(): moved warning dialog code from
+	  app_exit_cb(), and added manage_window_focus_in().
+
+	* enhanced GnuPG key selection support [sergey]:
+
+	  * src/select-keys.c: updated to newer version from Win32
+	    branch with support for selecting arbitrary keys.
+	  * src/prefs_account.c: added the Privacy tab to the account
+	    options window.
+	    prefs_account_privacy_create(),
+	    prefs_account_sign_key_set_data_from_radiobtn(),
+	    prefs_account_sign_key_set_radiobtn(): new functions.
+	  * src/prefs_account.h: new preferences sign_key_type, sign_key_id.
+	  * src/rfc2015.c: set_signers(): new function.
+	    pgp_sign(): add the account parameter, call set_signers().
+	    rfc2015_sign(): add the account parameter, pass it to pgp_sign().
+	  * src/rfc2015.h: rfc2015_sign(): updated prototype.
+	  * src/compose.c: pass the current account to rfc2015_sign().
+
+2001-04-22
+
+	* src/mbox.c: export_to_mbox(): fixed a memory leak bug.
+
 2001-04-20
 
 	* src/mbox.[ch]: renamed export_mbox() to export_to_mbox().

@@ -20,6 +20,7 @@
 #ifndef __PROGRESS_H__
 #define __PROGRESS_H__
 
+#include <glib.h>
 #include <gtk/gtkwidget.h>
 
 typedef struct _ProgressDialog	ProgressDialog;
@@ -30,6 +31,7 @@ struct _ProgressDialog
 	GtkWidget *label;
 	GtkWidget *cancel_btn;
 	GtkWidget *progressbar;
+	GtkWidget *clist;
 };
 
 ProgressDialog *progress_dialog_create	(void);

@@ -46,6 +46,7 @@
 #include "gtkutils.h"
 #include "manage_window.h"
 #include "folder.h"
+#include "utils.h"
 
 static GtkWidget *window;
 static GtkWidget *src_entry;
@@ -71,6 +72,8 @@ gint export_mbox(FolderItem *default_src)
 		export_create();
 	else
 		gtk_widget_show(window);
+
+	change_dir(startup_dir);
 
 	if (default_src && default_src->path)
 		gtk_entry_set_text(GTK_ENTRY(src_entry), default_src->path);

@@ -442,11 +442,11 @@ gchar *folder_item_get_path(FolderItem *item)
 			path = g_strdup(folder_path);
 	} else {
 		if (item->path)
-			path = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S,
+			path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
 					   folder_path, G_DIR_SEPARATOR_S,
 					   item->path, NULL);
 		else
-			path = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S,
+			path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
 					   folder_path, NULL);
 	}
 

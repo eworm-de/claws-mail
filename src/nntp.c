@@ -32,31 +32,28 @@
 
 static gint verbose = 1;
 
-static void nntp_gen_send(gint sock, const gchar *format, ...);
-static gint nntp_gen_recv(gint sock, gchar *buf, gint size);
+static void nntp_gen_send(SockInfo *sock, const gchar *format, ...);
+static gint nntp_gen_recv(SockInfo *sock, gchar *buf, gint size);
 
-gint nntp_open(const gchar *server, gushort port, gchar *buf)
+SockInfo *nntp_open(const gchar *server, gushort port, gchar *buf)
 {
-	SockInfo *sockinfo;
-	gint sock;
+	SockInfo *sock;
 
-	if ((sockinfo = sock_connect(server, port)) == NULL) {
+	if ((sock = sock_connect(server, port)) == NULL) {
 		log_warning(_("Can't connect to NNTP server: %s:%d\n"),
 			    server, port);
-		return -1;
+		return NULL;
 	}
-	sock = sockinfo->sock;
-	sock_sockinfo_free(sockinfo);
 
 	if (nntp_ok(sock, buf) == NN_SUCCESS)
 		return sock;
 	else {
 		sock_close(sock);
-		return -1;
+		return NULL;
 	}
 }
 
-gint nntp_group(gint sock, const gchar *group,
+gint nntp_group(SockInfo *sock, const gchar *group,
 		gint *num, gint *first, gint *last)
 {
 	gint ok;
@@ -77,7 +74,7 @@ gint nntp_group(gint sock, const gchar *group,
 	return NN_SUCCESS;
 }
 
-gint nntp_get_article(gint sock, const gchar *cmd, gint num, gchar **msgid)
+gint nntp_get_article(SockInfo *sock, const gchar *cmd, gint num, gchar **msgid)
 {
 	gint ok;
 	gchar buf[NNTPBUFSIZE];
@@ -100,27 +97,27 @@ gint nntp_get_article(gint sock, const gchar *cmd, gint num, gchar **msgid)
 	return NN_SUCCESS;
 }
 
-gint nntp_article(gint sock, gint num, gchar **msgid)
+gint nntp_article(SockInfo *sock, gint num, gchar **msgid)
 {
 	return nntp_get_article(sock, "ARTICLE", num, msgid);
 }
 
-gint nntp_body(gint sock, gint num, gchar **msgid)
+gint nntp_body(SockInfo *sock, gint num, gchar **msgid)
 {
 	return nntp_get_article(sock, "BODY", num, msgid);
 }
 
-gint nntp_head(gint sock, gint num, gchar **msgid)
+gint nntp_head(SockInfo *sock, gint num, gchar **msgid)
 {
 	return nntp_get_article(sock, "HEAD", num, msgid);
 }
 
-gint nntp_stat(gint sock, gint num, gchar **msgid)
+gint nntp_stat(SockInfo *sock, gint num, gchar **msgid)
 {
 	return nntp_get_article(sock, "STAT", num, msgid);
 }
 
-gint nntp_next(gint sock, gint *num, gchar **msgid)
+gint nntp_next(SockInfo *sock, gint *num, gchar **msgid)
 {
 	gint ok;
 	gint resp;
@@ -146,7 +143,7 @@ gint nntp_next(gint sock, gint *num, gchar **msgid)
 	return NN_SUCCESS;
 }
 
-gint nntp_xover(gint sock, gint first, gint last)
+gint nntp_xover(SockInfo *sock, gint first, gint last)
 {
 	gint ok;
 	gchar buf[NNTPBUFSIZE];
@@ -158,7 +155,7 @@ gint nntp_xover(gint sock, gint first, gint last)
 	return NN_SUCCESS;
 }
 
-gint nntp_post(gint sock, FILE *fp)
+gint nntp_post(SockInfo *sock, FILE *fp)
 {
 	gint ok;
 	gchar buf[NNTPBUFSIZE];
@@ -189,17 +186,17 @@ gint nntp_post(gint sock, FILE *fp)
 	return NN_SUCCESS;
 }
 
-gint nntp_newgroups(gint sock)
+gint nntp_newgroups(SockInfo *sock)
 {
 	return NN_SUCCESS;
 }
 
-gint nntp_newnews(gint sock)
+gint nntp_newnews(SockInfo *sock)
 {
 	return NN_SUCCESS;
 }
 
-gint nntp_mode(gint sock, gboolean stream)
+gint nntp_mode(SockInfo *sock, gboolean stream)
 {
 	gint ok;
 
@@ -209,7 +206,7 @@ gint nntp_mode(gint sock, gboolean stream)
 	return ok;
 }
 
-gint nntp_authinfo_user(gint sock, const gchar *user)
+gint nntp_authinfo_user(SockInfo *sock, const gchar *user)
 {
 	gint ok;
 	gchar buf[NNTPBUFSIZE];
@@ -220,7 +217,7 @@ gint nntp_authinfo_user(gint sock, const gchar *user)
 	return ok;
 }
 
-gint nntp_authinfo_pass(gint sock, const gchar *pass)
+gint nntp_authinfo_pass(SockInfo *sock, const gchar *pass)
 {
 	gint ok;
 	gchar buf[NNTPBUFSIZE];
@@ -231,7 +228,7 @@ gint nntp_authinfo_pass(gint sock, const gchar *pass)
 	return ok;
 }
 
-gint nntp_ok(gint sock, gchar *argbuf)
+gint nntp_ok(SockInfo *sock, gchar *argbuf)
 {
 	gint ok;
 	gchar buf[NNTPBUFSIZE];
@@ -257,7 +254,7 @@ gint nntp_ok(gint sock, gchar *argbuf)
 	return ok;
 }
 
-static void nntp_gen_send(gint sock, const gchar *format, ...)
+static void nntp_gen_send(SockInfo *sock, const gchar *format, ...)
 {
 	gchar buf[NNTPBUFSIZE];
 	va_list args;
@@ -277,7 +274,7 @@ static void nntp_gen_send(gint sock, const gchar *format, ...)
 	sock_write(sock, buf, strlen(buf));
 }
 
-static gint nntp_gen_recv(gint sock, gchar *buf, gint size)
+static gint nntp_gen_recv(SockInfo *sock, gchar *buf, gint size)
 {
 	if (sock_read(sock, buf, size) == -1)
 		return NN_SOCKET;
@@ -295,7 +292,7 @@ static gint nntp_gen_recv(gint sock, gchar *buf, gint size)
   a function is needed to read the newsgroups list.
  */
 
-gint nntp_list(gint sock)
+gint nntp_list(SockInfo *sock)
 {
 	GList * result = NULL;
 

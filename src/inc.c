@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,6 +61,17 @@
 #include "automaton.h"
 #include "folder.h"
 
+#include "pixmaps/continue.xpm"
+#include "pixmaps/complete.xpm"
+#include "pixmaps/error.xpm"
+
+GdkPixmap *currentxpm;
+GdkBitmap *currentxpmmask;
+GdkPixmap *errorxpm;
+GdkBitmap *errorxpmmask;
+GdkPixmap *okxpm;
+GdkBitmap *okxpmmask;
+
 #define MSGBUFSIZE	8192
 
 static void inc_finished		(MainWindow		*mainwin);
@@ -76,7 +87,7 @@ static Pop3State *inc_pop3_state_new	(PrefsAccount		*account);
 static void inc_pop3_state_destroy	(Pop3State		*state);
 static void inc_start			(IncProgressDialog	*inc_dialog);
 static IncState inc_pop3_session_do	(IncSession		*session);
-static gint pop3_automaton_terminate	(gint			 source,
+static gint pop3_automaton_terminate	(SockInfo		*source,
 					 Automaton		*atm);
 
 static GHashTable *inc_get_uidl_table	(PrefsAccount		*ac_prefs);
@@ -94,6 +105,7 @@ static void inc_cancel			(GtkWidget	*widget,
 static gint inc_spool			(void);
 static gint get_spool			(FolderItem	*dest,
 					 const gchar	*mbox);
+
 
 static void inc_finished(MainWindow *mainwin)
 {
@@ -152,6 +164,7 @@ static void inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 {
 	IncProgressDialog *inc_dialog;
 	IncSession *session;
+	gchar *text[3];
 
 	session = inc_session_new(account);
 	if (!session) return;
@@ -160,6 +173,11 @@ static void inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 	inc_dialog->queue_list = g_list_append(inc_dialog->queue_list, session);
 	inc_dialog->mainwin = mainwin;
 	session->data = inc_dialog;
+
+	text[0] = NULL;
+	text[1] = account->account_name;
+	text[2] = _("Standby");
+	gtk_clist_append(GTK_CLIST(inc_dialog->dialog->clist), text);
 
 	inc_start(inc_dialog);
 }
@@ -194,7 +212,14 @@ void inc_all_account_mail(MainWindow *mainwin)
 	inc_dialog->mainwin = mainwin;
 	for (list = queue_list; list != NULL; list = list->next) {
 		IncSession *session = list->data;
+		gchar *text[3];
+
 		session->data = inc_dialog;
+
+		text[0] = NULL;
+		text[1] = session->pop3_state->ac_prefs->account_name;
+		text[2] = _("Standby");
+		gtk_clist_append(GTK_CLIST(inc_dialog->dialog->clist), text);
 	}
 
 	inc_start(inc_dialog);
@@ -219,6 +244,13 @@ static IncProgressDialog *inc_progress_dialog_create(void)
 	manage_window_set_transient(GTK_WINDOW(progress->window));
 
 	progress_dialog_set_value(progress, 0.0);
+
+	gtk_widget_show(progress->window);
+
+	PIXMAP_CREATE(progress->clist, okxpm, okxpmmask, complete_xpm);
+	PIXMAP_CREATE(progress->clist,
+		      currentxpm, currentxpmmask, continue_xpm);
+	PIXMAP_CREATE(progress->clist, errorxpm, errorxpmmask, error_xpm);
 
 	gtk_widget_show_now(progress->window);
 
@@ -308,8 +340,10 @@ static void inc_pop3_state_destroy(Pop3State *state)
 static void inc_start(IncProgressDialog *inc_dialog)
 {
 	IncSession *session;
+	GtkCList *clist = GTK_CLIST(inc_dialog->dialog->clist);
 	Pop3State *pop3_state;
 	IncState inc_state;
+	gint num = 0;
 
 	while (inc_dialog->queue_list != NULL) {
 		session = inc_dialog->queue_list->data;
@@ -349,8 +383,19 @@ static void inc_start(IncProgressDialog *inc_dialog)
 			}
 		}
 
+		gtk_clist_set_pixmap(clist, num, 0, currentxpm, currentxpmmask);
+		gtk_clist_set_text(clist, num, 2, _("Retrieving"));
+
 		/* begin POP3 session */
 		inc_state = inc_pop3_session_do(session);
+
+		if (inc_state == INC_SUCCESS || inc_state == INC_CANCEL) {
+			gtk_clist_set_pixmap(clist, num, 0, okxpm, okxpmmask);
+			gtk_clist_set_text(clist, num, 2, _("Done"));
+		} else {
+			gtk_clist_set_pixmap(clist, num, 0, errorxpm, errorxpmmask);
+			gtk_clist_set_text(clist, num, 2, _("Error"));
+		}
 
 		if (pop3_state->error_val == PS_AUTHFAIL) {
 			manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
@@ -382,6 +427,8 @@ static void inc_start(IncProgressDialog *inc_dialog)
 		inc_session_destroy(session);
 		inc_dialog->queue_list =
 			g_list_remove(inc_dialog->queue_list, session);
+
+		num++;
 	}
 
 	while (inc_dialog->queue_list != NULL) {
@@ -393,6 +440,7 @@ static void inc_start(IncProgressDialog *inc_dialog)
 
 	inc_progress_dialog_destroy(inc_dialog);
 }
+
 
 static IncState inc_pop3_session_do(IncSession *session)
 {
@@ -463,21 +511,24 @@ static IncState inc_pop3_session_do(IncSession *session)
 		alertpanel_error(_("Can't connect to POP3 server: %s:%d"),
 				 server, port);
 		manage_window_focus_out(inc_dialog->dialog->window, NULL, NULL);
-		pop3_automaton_terminate(-1, atm);
+		pop3_automaton_terminate(NULL, atm);
 		automaton_destroy(atm);
 
-		return pop3_state->inc_state;
+		return INC_ERROR;
 	}
 
+	/* :WK: Hmmm, with the later sock_gdk_input, we have 2 references
+	 * to the sock structure - implement a reference counter?? */
 	pop3_state->sockinfo = sockinfo;
+	atm->help_sock = sockinfo;
 
 #if USE_THREADS
 	atm->timeout_tag = gtk_timeout_add
 		(TIMEOUT_ITV, (GtkFunction)connection_check_cb, atm);
 #else
-	atm->tag = gdk_input_add(sockinfo->sock,
-				 atm->state[atm->num].condition,
-				 automaton_input_cb, atm);
+	atm->tag = sock_gdk_input_add(sockinfo,
+				      atm->state[atm->num].condition,
+				      automaton_input_cb, atm);
 #endif
 
 	gtk_main();
@@ -485,13 +536,12 @@ static IncState inc_pop3_session_do(IncSession *session)
 #if USE_THREADS
 	//pthread_join(sockinfo->connect_thr, NULL);
 #endif
-	sock_sockinfo_free(sockinfo);
 	automaton_destroy(atm);
 
 	return pop3_state->inc_state;
 }
 
-static gint pop3_automaton_terminate(gint source, Automaton *atm)
+static gint pop3_automaton_terminate(SockInfo *source, Automaton *atm)
 {
 	if (atm->tag > 0) {
 		gdk_input_remove(atm->tag);
@@ -501,7 +551,7 @@ static gint pop3_automaton_terminate(gint source, Automaton *atm)
 		gtk_timeout_remove(atm->timeout_tag);
 		atm->timeout_tag = 0;
 	}
-	if (source > 0) {
+	if (source) {
 		sock_close(source);
 		gtk_main_quit();
 	}
@@ -725,7 +775,7 @@ static void inc_cancel(GtkWidget *widget, gpointer data)
 #endif
 
 	session->pop3_state->inc_state = INC_CANCEL;
-	pop3_automaton_terminate(sockinfo->sock, session->atm);
+	pop3_automaton_terminate(sockinfo, session->atm);
 }
 
 static gint inc_spool(void)

@@ -20,6 +20,8 @@
 #ifndef __NNTP_H__
 #define __NNTP_H__
 
+#include "socket.h"
+
 #define NN_SUCCESS	0
 #define NN_SOCKET	2
 #define NN_AUTHFAIL	3
@@ -28,27 +30,27 @@
 #define NN_IOERR	6
 #define NN_ERROR	7
 #define NN_AUTHREQ	8
-#define NN_AUTHCONT	9
+#define NN_AUTHCONT 9
 
 #define NNTPBUFSIZE	8192
 
-gint nntp_open(const gchar *server, gushort port, gchar *buf);
-gint nntp_group(gint sock, const gchar *group,
+SockInfo *nntp_open(const gchar *server, gushort port, gchar *buf);
+gint nntp_group(SockInfo *sock, const gchar *group,
 		gint *num, gint *first, gint *last);
-gint nntp_get_article(gint sock, const gchar *cmd, gint num, gchar **msgid);
-gint nntp_article(gint sock, gint num, gchar **msgid);
-gint nntp_body(gint sock, gint num, gchar **msgid);
-gint nntp_head(gint sock, gint num, gchar **msgid);
-gint nntp_stat(gint sock, gint num, gchar **msgid);
-gint nntp_next(gint sock, gint *num, gchar **msgid);
-gint nntp_xover(gint sock, gint first, gint last);
-gint nntp_authinfo_user(gint sock, const gchar *user);
-gint nntp_authinfo_pass(gint sock, const gchar *pass);
-gint nntp_post(gint sock, FILE *fp);
-gint nntp_newgroups(gint sock);
-gint nntp_newnews(gint sock);
-gint nntp_mode(gint sock, gboolean stream);
-gint nntp_ok(gint sock, gchar *argbuf);
-gint nntp_list(gint sock);
+gint nntp_get_article(SockInfo *sock, const gchar *cmd, gint num, gchar **msgid);
+gint nntp_article(SockInfo *sock, gint num, gchar **msgid);
+gint nntp_body(SockInfo *sock, gint num, gchar **msgid);
+gint nntp_head(SockInfo *sock, gint num, gchar **msgid);
+gint nntp_stat(SockInfo *sock, gint num, gchar **msgid);
+gint nntp_next(SockInfo *sock, gint *num, gchar **msgid);
+gint nntp_xover(SockInfo *sock, gint first, gint last);
+gint nntp_post(SockInfo *sock, FILE *fp);
+gint nntp_newgroups(SockInfo *sock);
+gint nntp_newnews(SockInfo *sock);
+gint nntp_mode(SockInfo *sock, gboolean stream);
+gint nntp_ok(SockInfo *sock, gchar *argbuf);
+gint nntp_authinfo_user(SockInfo *sock, const gchar *user);
+gint nntp_authinfo_pass(SockInfo *sock, const gchar *pass);
+gint nntp_list(SockInfo *sock);
 
 #endif /* __NNTP_H__ */

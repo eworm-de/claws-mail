@@ -72,7 +72,7 @@ Session *news_session_new(const gchar *server, gushort port)
 {
 	gchar buf[NNTPBUFSIZE];
 	NNTPSession *session;
-	gint nntp_sock;
+	SockInfo *nntp_sock;
 
 	g_return_val_if_fail(server != NULL, NULL);
 
@@ -95,7 +95,8 @@ Session *news_session_new(const gchar *server, gushort port)
 
 void news_session_destroy(NNTPSession *session)
 {
-	close(SESSION(session)->sock);
+	sock_close(SESSION(session)->sock);
+	SESSION(session)->sock = NULL;
 
 	g_free(session->group);
 }
@@ -584,22 +585,19 @@ GSList * news_get_group_list(FolderItem *item)
 	if (is_file_exist(filename)) {
 		debug_print(_("group list has been already cached.\n"));
 	}
-	else
-	  {
+	else {
 	    ok = nntp_list(SESSION(session)->sock);
 	    if (ok != NN_SUCCESS)
 	      return NULL;
 	    
-	    if (recv_write_to_file(SESSION(session)->sock, filename)
-		< 0) {
+	    if (recv_write_to_file(SESSION(session)->sock, filename) < 0) {
 	      log_warning(_("can't retrieve group list\n"));
 	      return NULL;
 	    }
-	  }
+	}
 
 	f = fopen(filename, "r");
-	while (fgets(buf, NNTPBUFSIZE, f))
-	  {
+	while (fgets(buf, NNTPBUFSIZE, f)) {
 	    char * s;
 
 	    len = 0;
@@ -609,7 +607,7 @@ GSList * news_get_group_list(FolderItem *item)
 	    s = g_strdup(buf);
 
 	    group_list = g_slist_append(group_list, s);
-	  }
+	}
 	fclose(f);
 	g_free(filename);
 

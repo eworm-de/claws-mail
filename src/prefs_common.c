@@ -102,6 +102,7 @@ static struct Display {
 	GtkWidget *chkbtn_folder_unread;
 
 	GtkWidget *chkbtn_transhdr;
+
 	GtkWidget *chkbtn_swapfrom;
 	GtkWidget *chkbtn_hscrollbar;
 	GtkWidget *entry_datefmt;
@@ -274,10 +275,11 @@ static PrefParam param[] = {
 	 &display.chkbtn_folder_unread,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
-	/* Display: Summary View */
 	{"translate_header", "TRUE", &prefs_common.trans_hdr, P_BOOL,
 	 &display.chkbtn_transhdr,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	/* Display: Summary View */
 	{"enable_swap_from", "TRUE", &prefs_common.swap_from, P_BOOL,
 	 &display.chkbtn_swapfrom,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -433,9 +435,11 @@ static PrefParam param[] = {
 	 &prefs_common.auto_check_signatures, P_BOOL,
 	 &privacy.checkbtn_auto_check_signatures,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+#ifndef __MINGW32__
 	{"passphrase_grab", "FALSE", &prefs_common.passphrase_grab, P_BOOL,
 	 &privacy.checkbtn_passphrase_grab,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+#endif /* __MINGW32__ */
 	{"default_signkey", CS_AUTO, &prefs_common.default_signkey, P_STRING,
 	 &privacy.optmenu_default_signkey,
 	 prefs_common_default_signkey_set_data_from_optmenu,
@@ -1150,6 +1154,10 @@ static void prefs_display_create(void)
 	PACK_CHECK_BUTTON
 		(vbox2, chkbtn_hscrollbar, _("Enable horizontal scroll bar"));
 
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
+
 	label_datefmt = gtk_label_new (_("Date format"));
 	gtk_widget_show (label_datefmt);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_datefmt, FALSE, FALSE, 0);
@@ -1201,8 +1209,8 @@ static void prefs_display_create(void)
 	display.button_textfont	= button_textfont;
 
 	display.chkbtn_folder_unread = chkbtn_folder_unread;
-
 	display.chkbtn_transhdr   = chkbtn_transhdr;
+
 	display.chkbtn_swapfrom   = chkbtn_swapfrom;
 	display.chkbtn_hscrollbar = chkbtn_hscrollbar;
 	display.entry_datefmt     = entry_datefmt;
@@ -1383,8 +1391,10 @@ static void prefs_privacy_create(void)
 	PACK_CHECK_BUTTON (vbox2, checkbtn_auto_check_signatures,
 			   _("Automatically check signatures"));
 
+#ifndef __MINGW32__
 	PACK_CHECK_BUTTON (vbox2, checkbtn_passphrase_grab,
 			   _("Grab input while entering a passphrase"));
+#endif
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -1546,7 +1556,7 @@ static void prefs_interface_create(void)
 	SET_TOGGLE_SENSITIVITY (checkbtn_cleanonexit, checkbtn_askonclean);
 
 	PACK_CHECK_BUTTON (vbox_exit, checkbtn_warnqueued,
-			   _("Warn if there are queued messages on exit"));
+			   _("Warn if there are queued messages"));
 
 	interface.checkbtn_emacs          = checkbtn_emacs;
 	interface.checkbtn_openunread     = checkbtn_openunread;
@@ -1666,6 +1676,7 @@ void prefs_quote_colors_dialog(void)
 	gtk_widget_hide(quote_color_win);
 
 	textview_update_message_colors();
+	main_window_reflect_prefs_all();
 }
 
 static void prefs_quote_colors_dialog_create(void)

@@ -25,6 +25,7 @@
 #endif
 
 #include <glib.h>
+#include <gdk/gdk.h> /* ugly, just needed for the GdkInputCondition et al. */
 
 #if USE_THREADS
 #  include <pthread.h>
@@ -43,7 +44,13 @@ typedef enum
 
 struct _SockInfo
 {
+#if USE_GIO
+	GIOChannel *channel;
+	gchar *buf;
+	gint buflen;
+#else
 	gint sock;
+#endif
 	gchar *hostname;
 	gushort port;
 	ConnectionState state;
@@ -54,27 +61,39 @@ struct _SockInfo
 #endif
 };
 
-gint sock_set_nonblocking_mode		(gint sock, gboolean nonblock);
-gboolean sock_is_nonblocking_mode	(gint sock);
+gint sock_set_nonblocking_mode		(SockInfo *sock, gboolean nonblock);
+gboolean sock_is_nonblocking_mode	(SockInfo *sock);
 
 SockInfo *sock_connect_nb		(const gchar *hostname, gushort port);
 SockInfo *sock_connect			(const gchar *hostname, gushort port);
 
-gint sock_connect_unix	(const gchar *path);
-gint sock_open_unix	(const gchar *path);
-gint sock_accept	(gint sock);
 
 #if USE_THREADS
 SockInfo *sock_connect_with_thread	(const gchar *hostname, gushort port);
 #endif
 
-void sock_sockinfo_free	(SockInfo *sockinfo);
-
-gint sock_printf	(gint sock, const gchar *format, ...)
+gint sock_printf	(SockInfo *sock, const gchar *format, ...)
 			 G_GNUC_PRINTF(2, 3);
-gint sock_write		(gint sock, const gchar *buf, gint len);
-gint sock_read		(gint sock, gchar *buf, gint len);
-gint sock_puts		(gint sock, const gchar *buf);
-gint sock_close		(gint sock);
+gint sock_write		(SockInfo *sock, const gchar *buf, gint len);
+gint sock_read		(SockInfo *sock, gchar *buf, gint len);
+gint sock_puts		(SockInfo *sock, const gchar *buf);
+gint sock_close		(SockInfo *sock);
+
+/* wrapper functions */
+gint sock_gdk_input_add	  (SockInfo		*sock,
+			   GdkInputCondition	 condition,
+			   GdkInputFunction	 function,
+			   gpointer		 data);
+
+
+/* Functions to directly work on FD.  They are needed for pipes */
+gint fd_connect_unix	(const gchar *path);
+gint fd_open_unix	(const gchar *path);
+gint fd_accept		(gint sock);
+
+gint fd_read		(gint sock, gchar *buf, gint len);
+gint fd_write		(gint sock, const gchar *buf, gint len);
+gint fd_close		(gint sock);
 
 #endif /* __SOCKET_H__ */
+

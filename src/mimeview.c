@@ -242,7 +242,7 @@ static void set_unchecked_signature(MimeInfo *mimeinfo)
 	g_free(sig_partinfo->sigstatus_full);
 	sig_partinfo->sigstatus_full = NULL;
 }
-#endif /*USE_GPGME*/
+#endif /* USE_GPGME */
 
 void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 			   const gchar *file)
@@ -855,4 +855,4 @@ static void mimeview_check_signature(MimeView *mimeview)
 	mimeview_update_names(mimeview);
 	mimeview_update_signature_info(mimeview);
 }
-#endif /*USE_GPGME*/
+#endif /* USE_GPGME */

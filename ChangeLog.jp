@@ -1,3 +1,194 @@
+2001-04-26
+
+	* src/mh.c: mh_is_maildir_one(): is_dir_exist() を使用するように
+	  修正。
+
+2001-04-25  Werner Koch  <wk@gnupg.org>
+
+	* src/mh.c (mh_is_maildir_one, mh_is_maildir): 新規。
+	(mh_scan_tree_recursive): スキャンで Maildir 型のディレクトリを
+	含まないようにした。
+
+	整数型で socket を表していたのを、より抽象的なデータ構造に変更。
+
+	* src/automaton.h (struct _Automaton): help_sock を追加。
+	* src/automaton.c (automaton_input_cb): source を SockInfo に追加
+	し、 gdk_input_add のラッパーを使用するようにした。
+
+	* src/send.c (SEND_EXIT_IF_ERROR): テストを修正し、無効な socket
+	のテストを取り除いた(sock_close で行われるため)。 sock を NULL
+	にセットするようにした。
+	(SEND_EXIT_IF_NOTOK): 閉じられた sock を NULL にセットするように
+	した。
+	(send_smtp_open): SockInfo のみを使用するようにした。
+
+	* src/news.c (news_session_new): SockInfo を使用。
+	(news_session_destroy): 同上、 sock を NULL にセット。
+
+	* src/nntp.c: 整数型の代わりに SockInfo を使用。
+	* src/smtp.c: 同上。
+	* src/pop.c: 同上。
+	* src/recv.c: 同上。
+
+	* src/inc.c (inc_pop3_session_do): sock_sockinfo_free を削除。
+	gdk_input_add をラッパーで包んだ。
+
+	* src/esmtp.c: socket 指示子を SockInfo を使うように変更。
+	* src/esmtp.h: 同上、 socket.h を include した。
+	* src/session.h (struct _Session): 同じく。
+	* src/imap.c (imap_open): 整数型でなく SockInfo を返すようにした。
+	SockInfo の内部データへのアクセスを削除。全ての呼び出し側と関数
+	が SockInfo をとるようにした。
+	(imap_session_new): sock_close を使用するようにした。
+	(imap_session_destroy): 同上。
+
+	* src/compose.c (compose_exec_ext_editor): sock_write を fd_write
+	で置き換えた。
+
+	* src/main.c (app_will_exit): lock socket を fd_close で close する
+	ようにした。
+	(prohibit_duplicate_launch): sock_xxx の代わりに fd_xxx を使用。
+	(lock_socket_input_cb): 同上。
+
+	* src/socket.h, src/socket.c: SockInfo 構造体を glib チャネルを
+	使用するように準備。全ての sock_xxx を、整数型の代わりに SockInfo
+	を使用するように変更。
+	(sock_connect_unix, sock_open_unix, sock_accept): 名前を ..
+	(fd_connect_unix, fd_open_unix, fd_accept): .. これに変更し、全ての
+	呼び出し側も変更。
+	(fd_read, fd_write, fd_close): 新規。
+	(sock_sockinfo_free): 削除。
+	* src/socket.c (sock_connect_nb): ここでは sock_close の代わりに
+	close を使用。
+	(sock_connect): 同上。
+
+2001-04-26
+
+	* config.h.in: 削除。
+	* ac/Makefile.am: gnupg-check-typedef.m4 を MACROS に追加。
+	* .cvsignore: 追加。
+	* src/inc.c
+	  src/progressdialog.[ch]
+	  src/pixmaps/complete.xpm
+	  src/pixmaps/continue.xpm
+	  src/pixmaps/error.xpm: メッセージの取り込みの状態を表示する
+	  Leandro Pereira さんのパッチを適用(thanks!)。
+	* src/inc.c: 状態の文字列を切替えるようにした。
+
+2001-04-25
+
+	* cvs ツリーから po/*.gmo, configure, stamp-h.in, aclocal.m4,
+	  Makefile.in を削除。
+	* COPYING: RSA の著作権表示を削除。
+	* po/sylpheed.pot, po/stamp-cat-id, po/cat-id-tbl.c を削除。
+	* configure.in: sys/utsname.h のチェックを追加。
+
+2001-04-24  Werner Koch  <wk@gnupg.org>
+
+	W32 ブランチの大部分をマージ。
+
+	* configure.in: gpgme >= 0.2.1 を要求。
+
+	* acconfig.h (HAVE_U32_TYPEDEF): 新規。
+	* ac/gnupg-check-typedef.m4: 新規。
+	* configure.in: u32 型といくつかの型のサイズをチェック。
+	* src/utils.h: u32 型と関係する定数を定義。
+
+	* src/about.c (about_create): MD5 に関する表示を削除。RSA Inc の
+	実装はもう使用されていません。
+	* src/md5ify.c, src/md5ify.h, src/md5global.h: 削除。
+	* src/md5c.c, src/md5c.h: FSF の実装で置換し、関数名を標準の小文字
+	の命名規則にしたがって変更。全ての呼び出し側を変更。
+	(md5_hex_digest): 新規。
+	(md5_hmac): Martin Schaaf さんによる hmac 関数を少し修正して追加。
+	(md5_hex_hmac): 新規。
+	* src/esmtp.c, src/esmtp.h (md5_hex_hmac): 削除。
+	(hmac_md5): 削除。
+	* src/pop.c (pop3_getauth_apop_send): md5_digest を新しい関数
+	md5_hex_digest で置換。
+
+	* src/about.c: 利用可能な場合のみ utsname.h を include するように
+	した。
+
+	* src/utils.c, src/utils.h (get_home_dir): 特別な Windoze の要求
+	によりよく対応するために追加。全ての g_get_home_dir() の呼び出し
+	をこの関数に変更。
+
+	* simple-gettext.c: 新規。
+
+	* src/main.c (main): GnuPG が正しくインストールされていなければ
+	警告を出すようにした。
+
+	* src/sigstatus.c, src/sigstatus.h: 新規。
+	* src/rfc2015.c (check_signature): sigstatus ウィンドウを使用し、
+	ユーティリティ関数からステータステキストを得るようにした。
+
+	* src/select-keys.c: グローバルの select_keys 変数を削除し、
+	アロケートした変数を全ての関数で渡すようにした。
+	(set_row): 暗号化できる鍵のみを表示。
+	(update_progress): プログレスバーを、風車とどの鍵の情報を収集
+	しているかを示すテキストで置き換えた。他の全てのプログレスバー
+	を削除し、呼び出し側を更新。
+
+	* src/prefs_common.c (prefs_privacy_create) [__MINGW32__]: 捕捉
+	ボタンを表示しないようにした。
+
+2001-04-24
+
+	* src/prefs_common.[ch]
+	  src/procheader.c: strftime() を使い、ユーザがサマリビューで
+	  日付の表示の書式を定義できるようにする Darko Koruga さんのパッチ
+	  を適用(thanks!)。
+	* src/prefs_common.c: prefs_quote_colors_dialog()
+	  src/mainwindow.c: main_window_reflect_prefs_all(): 色の設定が
+	  変更されたらメッセージの色を更新するようにした。
+	* src/main.[ch]: 起動時のディレクトリを記憶するようにした。
+	* src/export.c: export_mbox(): 最初に起動時のディレクトリに chdir
+	  するようにした。
+	* src/filesel.c: filesel_select_file(): 最初に起動時のディレクトリ
+	  を開くようにした。
+
+2001-04-23
+
+	* 終了時に送信待ちのメッセージがあれば警告するオプションを追加
+	  [sergey]:
+
+	  * src/compose.c: compose_queue(): 送信待機後に folder_item_scan()
+	    と folderview_update_item() を呼ぶようにした。
+	  * src/folderview.c: folderview_update_node(): 送信待ちのメッセージ
+	    があれば送信待ちフォルダをボールドフォントで描画するようにした。
+	  * src/mainwindow.c: queued_messages(): 新しい関数。
+	    app_exit_cb(): warn_queued_on_exit がセットされていて、送信待ち
+	    のメッセージがあれば警告を表示するようにした。
+	  * prefs_common.[ch]: warn_queued_on_exit オプションを追加。
+
+	* src/mainwindow.c: queued_messages() を main.c に移動し、
+	  get_queued_message_num() に名称変更。
+	* src/main.c: app_will_exit(): app_exit_cb() から警告ダイアログの
+	  コードを移動し、manage_window_focus_in() を追加。
+
+	* GnuPG 鍵選択対応を拡張 [sergey]:
+
+	  * src/select-keys.c: Win32 ブランチの最新版に更新し、任意の鍵の
+	    選択に対応。
+	  * src/prefs_account.c: アカウントオプションウィンドウに「機密」
+	    タブを追加。
+	    prefs_account_privacy_create(),
+	    prefs_account_sign_key_set_data_from_radiobtn(),
+	    prefs_account_sign_key_set_radiobtn(): 新しい関数。
+	  * src/prefs_account.h: 新しい設定: sign_key_type, sign_key_id.
+	  * src/rfc2015.c: set_signers(): 新しい関数。
+	    pgp_sign(): アカウントパラメータと set_signer() の呼出しを追加。
+	    rfc2015_sign(): アカウントパラメータを追加し、pgp_sign() に
+	    渡すようにした。
+	  * src/rfc2015.h: rfc2015_sign(): プロトタイプを更新。
+	  * src/compose.c: 現在のアカウントを rfc2015_sign() に渡すように
+	    した。
+
+2001-04-22
+
+	* src/mbox.c: export_to_mbox(): メモリリークのバグを修正。
+
 2001-04-20
 
 	* src/mbox.[ch]: export_mbox() を export_to_mbox() に変更。

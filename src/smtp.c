@@ -31,7 +31,7 @@
 static gint verbose = 1;
 static gchar smtp_response[MSGBUFSIZE];
 
-gint smtp_helo(gint sock, const char *hostname, gboolean use_smtp_auth)
+gint smtp_helo(SockInfo *sock, const char *hostname, gboolean use_smtp_auth)
 {
 	if (use_smtp_auth) {
 		sock_printf(sock, "EHLO %s\r\n", hostname);
@@ -48,7 +48,7 @@ gint smtp_helo(gint sock, const char *hostname, gboolean use_smtp_auth)
 	}
 }
 
-gint smtp_from(gint sock, const gchar *from,
+gint smtp_from(SockInfo *sock, const gchar *from,
 	       const gchar *userid, const gchar *passwd,
 	       gboolean use_smtp_auth)
 {
@@ -81,7 +81,7 @@ gint smtp_from(gint sock, const gchar *from,
 	return smtp_ok(sock);
 }
 
-gint smtp_rcpt(gint sock, const gchar *to)
+gint smtp_rcpt(SockInfo *sock, const gchar *to)
 {
 	gchar buf[MSGBUFSIZE];
 
@@ -97,7 +97,7 @@ gint smtp_rcpt(gint sock, const gchar *to)
 	return smtp_ok(sock);
 }
 
-gint smtp_data(gint sock)
+gint smtp_data(SockInfo *sock)
 {
 	sock_printf(sock, "DATA\r\n");
 	if (verbose)
@@ -106,7 +106,7 @@ gint smtp_data(gint sock)
 	return smtp_ok(sock);
 }
 
-gint smtp_rset(gint sock)
+gint smtp_rset(SockInfo *sock)
 {
 	sock_printf(sock, "RSET\r\n");
 	if (verbose)
@@ -115,7 +115,7 @@ gint smtp_rset(gint sock)
 	return smtp_ok(sock);
 }
 
-gint smtp_quit(gint sock)
+gint smtp_quit(SockInfo *sock)
 {
 	sock_printf(sock, "QUIT\r\n");
 	if (verbose)
@@ -124,7 +124,7 @@ gint smtp_quit(gint sock)
 	return smtp_ok(sock);
 }
 
-gint smtp_eom(gint sock)
+gint smtp_eom(SockInfo *sock)
 {
 	sock_printf(sock, ".\r\n");
 	if (verbose)
@@ -133,7 +133,7 @@ gint smtp_eom(gint sock)
 	return smtp_ok(sock);
 }
 
-gint smtp_ok(gint sock)
+gint smtp_ok(SockInfo *sock)
 {
 	while ((sock_read(sock, smtp_response, sizeof(smtp_response) - 1))
 	       != 1) {

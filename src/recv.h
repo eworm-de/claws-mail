@@ -22,9 +22,11 @@
 
 #include <glib.h>
 
-gint recv_write_to_file(gint sock, const gchar *filename);
-gint recv_bytes_write_to_file(gint sock, glong size, const gchar *filename);
-gint recv_write(gint sock, FILE *fp);
-gint recv_bytes_write(gint sock, glong size, FILE *fp);
+#include "socket.h"
+
+gint recv_write_to_file(SockInfo *sock, const gchar *filename);
+gint recv_bytes_write_to_file(SockInfo *sock, glong size, const gchar *filename);
+gint recv_write(SockInfo *sock, FILE *fp);
+gint recv_bytes_write(SockInfo *sock, glong size, FILE *fp);
 
 #endif /* __RECV_H__ */

@@ -42,6 +42,10 @@
 
 #include "socket.h"
 
+#if USE_GIO
+#error USE_GIO is currently not supported
+#endif
+
 #define BUFFSIZE	8192
 
 #ifndef INET6
@@ -53,7 +57,8 @@ static gint sock_connect_by_getaddrinfo	(const gchar	*hostname,
 					 gushort	 port);
 #endif
 
-gint sock_connect_unix(const gchar *path)
+
+gint fd_connect_unix(const gchar *path)
 {
 	gint sock;
 	struct sockaddr_un addr;
@@ -76,7 +81,7 @@ gint sock_connect_unix(const gchar *path)
 	return sock;
 }
 
-gint sock_open_unix(const gchar *path)
+gint fd_open_unix(const gchar *path)
 {
 	gint sock;
 	struct sockaddr_un addr;
@@ -107,7 +112,7 @@ gint sock_open_unix(const gchar *path)
 	return sock;
 }
 
-gint sock_accept(gint sock)
+gint fd_accept(gint sock)
 {
 	struct sockaddr_in caddr;
 	gint caddr_len;
@@ -116,11 +121,12 @@ gint sock_accept(gint sock)
 	return accept(sock, (struct sockaddr *)&caddr, &caddr_len);
 }
 
-gint sock_set_nonblocking_mode(gint sock, gboolean nonblock)
+
+static gint set_nonblocking_mode(gint fd, gboolean nonblock)
 {
 	gint flags;
 
-	flags = fcntl(sock, F_GETFL, 0);
+	flags = fcntl(fd, F_GETFL, 0);
 	if (flags < 0) {
 		perror("fcntl");
 		return -1;
@@ -131,14 +137,22 @@ gint sock_set_nonblocking_mode(gint sock, gboolean nonblock)
 	else
 		flags &= ~O_NONBLOCK;
 
-	return fcntl(sock, F_SETFL, flags);
+	return fcntl(fd, F_SETFL, flags);
 }
 
-gboolean sock_is_nonblocking_mode(gint sock)
+gint sock_set_nonblocking_mode(SockInfo *sock, gboolean nonblock)
+{
+	g_return_val_if_fail(sock != NULL, -1);
+
+	return set_nonblocking_mode(sock->sock, nonblock);
+}
+
+
+static gboolean is_nonblocking_mode(gint fd)
 {
 	gint flags;
 
-	flags = fcntl(sock, F_GETFL, 0);
+	flags = fcntl(fd, F_GETFL, 0);
 	if (flags < 0) {
 		perror("fcntl");
 		return FALSE;
@@ -146,6 +160,14 @@ gboolean sock_is_nonblocking_mode(gint sock)
 
 	return ((flags & O_NONBLOCK) != 0);
 }
+
+gboolean sock_is_nonblocking_mode(SockInfo *sock)
+{
+	g_assert(sock);
+
+	return is_nonblocking_mode(sock->sock);
+}
+
 
 #ifndef INET6
 static gint sock_connect_by_hostname(gint sock, const gchar *hostname,
@@ -245,7 +267,7 @@ SockInfo *sock_connect_nb(const gchar *hostname, gushort port)
 #ifdef INET6
 	if ((sock = sock_connect_by_getaddrinfo(hostname, port)) < 0)
 		return NULL;
-	if (sock_set_nonblocking_mode(sock, TRUE) < 0) return NULL;
+	if (set_nonblocking_mode(sock, TRUE) < 0) return NULL;
 	ret = sock;
 #else
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -253,13 +275,13 @@ SockInfo *sock_connect_nb(const gchar *hostname, gushort port)
 		return NULL;
 	}
 
-	if (sock_set_nonblocking_mode(sock, TRUE) < 0) return NULL;
+	if (set_nonblocking_mode(sock, TRUE) < 0) return NULL;
 
 	ret = sock_connect_by_hostname(sock, hostname, port);
 
 	if (ret < 0 && errno != EINPROGRESS) {
 		if (errno != 0) perror("connect");
-		sock_close(sock);
+		close(sock);
 		return NULL;
 	}
 #endif /* INET6 */
@@ -292,7 +314,7 @@ SockInfo *sock_connect(const gchar *hostname, gushort port)
 
 	if (sock_connect_by_hostname(sock, hostname, port) < 0) {
 		if (errno != 0) perror("connect");
-		sock_close(sock);
+		close(sock);
 		return NULL;
 	}
 #endif /* INET6 */
@@ -356,13 +378,8 @@ SockInfo *sock_connect_with_thread(const gchar *hostname, gushort port)
 }
 #endif
 
-void sock_sockinfo_free(SockInfo *sockinfo)
-{
-	g_free(sockinfo->hostname);
-	g_free(sockinfo);
-}
 
-gint sock_printf(gint sock, const gchar *format, ...)
+gint sock_printf(SockInfo *sock, const gchar *format, ...)
 {
 	va_list args;
 	gchar buf[BUFFSIZE];
@@ -374,12 +391,19 @@ gint sock_printf(gint sock, const gchar *format, ...)
 	return sock_write(sock, buf, strlen(buf));
 }
 
-gint sock_write(gint sock, const gchar *buf, gint len)
+gint sock_write(SockInfo *sock, const gchar *buf, gint len)
+{
+	g_return_val_if_fail(sock != NULL, -1);
+
+	return fd_write(sock->sock, buf, len);
+}
+
+gint fd_write(gint fd, const gchar *buf, gint len)
 {
 	gint n, wrlen = 0;
 
 	while (len) {
-		n = write(sock, buf, len);
+		n = write(fd, buf, len);
 		if (n <= 0)
 			return -1;
 		len -= n;
@@ -390,7 +414,14 @@ gint sock_write(gint sock, const gchar *buf, gint len)
 	return wrlen;
 }
 
-gint sock_read(gint sock, gchar *buf, gint len)
+gint sock_read(SockInfo *sock, gchar *buf, gint len)
+{
+	g_return_val_if_fail(sock != NULL, -1);
+
+	return fd_read(sock->sock, buf, len);
+}
+
+gint fd_read(gint fd, gchar *buf, gint len)
 {
 	gchar *newline, *bp = buf;
 	gint n;
@@ -398,11 +429,11 @@ gint sock_read(gint sock, gchar *buf, gint len)
 	if (--len < 1)
 		return -1;
 	do {
-		if ((n = recv(sock, bp, len, MSG_PEEK)) <= 0)
+		if ((n = recv(fd, bp, len, MSG_PEEK)) <= 0)
 			return -1;
 		if ((newline = memchr(bp, '\n', n)) != NULL)
 			n = newline - bp + 1;
-		if ((n = read(sock, bp, n)) < 0)
+		if ((n = read(fd, bp, n)) < 0)
 			return -1;
 		bp += n;
 		len -= n;
@@ -412,7 +443,7 @@ gint sock_read(gint sock, gchar *buf, gint len)
 	return bp - buf;
 }
 
-gint sock_puts(gint sock, const gchar *buf)
+gint sock_puts(SockInfo *sock, const gchar *buf)
 {
 	gint ret;
 
@@ -422,18 +453,45 @@ gint sock_puts(gint sock, const gchar *buf)
 }
 
 /* peek at the next socket character without actually reading it */
-gint sock_peek(gint sock)
+gint sock_peek(SockInfo *sock)
 {
 	gint n;
 	gchar ch;
 
-	if ((n = recv(sock, &ch, 1, MSG_PEEK)) < 0)
+	g_return_val_if_fail(sock != NULL, -1);
+
+	if ((n = recv(sock->sock, &ch, 1, MSG_PEEK)) < 0)
 		return -1;
 	else
 		return ch;
 }
 
-gint sock_close(gint sock)
+gint sock_close(SockInfo *sock)
 {
-	return close(sock);
+	gint rc;
+
+	if (!sock)
+		return 0;
+
+	rc = fd_close(sock->sock); 
+	g_free(sock->hostname);
+	g_free(sock);
+	return rc;
+}
+
+gint fd_close(gint fd)
+{
+	return close(fd);
+}
+
+gint sock_gdk_input_add(SockInfo *sock,
+			 GdkInputCondition condition,
+			 GdkInputFunction function,
+			 gpointer data)
+{
+	g_return_val_if_fail(sock != NULL, -1);
+
+	/* :WK: We have to change some things here becuse most likey
+	   function() does take SockInfo * and not an gint */
+	return gdk_input_add(sock->sock, condition, function, data);
 }

@@ -44,6 +44,11 @@ ProgressDialog *progress_dialog_create(void)
 	GtkWidget *cancel_btn;
 	GtkWidget *cancel_area;
 	GtkWidget *progressbar;
+	GtkWidget *clist;
+	gchar *text[] = {NULL, NULL, NULL};
+
+	text[1] = _("Account");
+	text[2] = _("Status");
 
 	debug_print(_("Creating progress dialog...\n"));
 	progress = g_new0(ProgressDialog, 1);
@@ -74,13 +79,23 @@ ProgressDialog *progress_dialog_create(void)
 	gtk_widget_show_all(cancel_area);
 
 	progressbar = gtk_progress_bar_new();
-	gtk_box_pack_end(GTK_BOX(vbox), progressbar, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), progressbar, FALSE, FALSE, 0);
 	gtk_widget_show(progressbar);
+
+	clist = gtk_clist_new_with_titles(3, text);
+	gtk_widget_show(clist);
+	gtk_box_pack_start(GTK_BOX(vbox), clist, TRUE, TRUE, 0);
+	gtk_widget_set_usize(clist, -1, 120);
+	gtk_clist_set_column_justification(GTK_CLIST(clist), 0,
+					   GTK_JUSTIFY_CENTER);
+	gtk_clist_set_column_width(GTK_CLIST(clist), 0, 16);
+	gtk_clist_set_column_width(GTK_CLIST(clist), 1, 100);
 
 	progress->window      = window;
 	progress->label       = label;
 	progress->cancel_btn  = cancel_btn;
 	progress->progressbar = progressbar;
+	progress->clist       = clist;
 
 	return progress;
 }

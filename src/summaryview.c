@@ -63,6 +63,7 @@
 #include "utils.h"
 #include "gtkutils.h"
 #include "filesel.h"
+#include "manage_window.h"
 #include "alertpanel.h"
 #include "inputdialog.h"
 #include "statusbar.h"
@@ -2520,6 +2521,9 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 			if (alertpanel(_("Exit"), _("Exit this program?"),
 				       _("OK"), _("Cancel"), NULL)
 				       == G_ALERTDEFAULT) {
+				manage_window_focus_in
+					(summaryview->mainwin->window,
+					 NULL, NULL);
 				app_will_exit(NULL, summaryview->mainwin);
 			}
 		}

@@ -394,7 +394,10 @@ gint export_to_mbox(FolderItem *src, const gchar *mbox)
 		msginfo = (MsgInfo *)cur->data;
 
 		msg_fp = procmsg_open_message(msginfo);
-		if (!msg_fp) continue;
+		if (!msg_fp) {
+			procmsg_msginfo_free(msginfo);
+			continue;
+		}
 
 		strncpy2(buf,
 			 msginfo->from ? msginfo->from :

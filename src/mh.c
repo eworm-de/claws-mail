@@ -632,7 +632,7 @@ gint mh_create_tree(Folder *folder)
 
 	g_return_val_if_fail(folder != NULL, -1);
 
-	CHDIR_RETURN_VAL_IF_FAIL(g_get_home_dir(), -1);
+	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), -1);
 	rootpath = LOCAL_FOLDER(folder)->rootpath;
 	MAKE_DIR_IF_NOT_EXIST(rootpath);
 	CHDIR_RETURN_VAL_IF_FAIL(rootpath, -1);
@@ -885,6 +885,30 @@ static MsgInfo *mh_parse_msg(const gchar *file, FolderItem *item)
 	return msginfo;
 }
 
+static gboolean mh_is_maildir_one(const gchar *path, const gchar *dir)
+{
+	char *entry;
+	gboolean result;
+
+	entry = g_strconcat(path, G_DIR_SEPARATOR_S, dir, NULL);
+	result = is_dir_exist(entry);
+	g_free(entry);
+
+	return result;
+}
+
+/*
+ * check whether PATH is a Maildir style mailbox.
+ * This is the case if the 3 subdir: new, cur, tmp are existing.
+ * This functon assumes that entry is an directory
+ */
+static gboolean mh_is_maildir(const gchar *path)
+{
+	return mh_is_maildir_one(path, "new") &&
+	       mh_is_maildir_one(path, "cur") &&
+	       mh_is_maildir_one(path, "tmp");
+}
+
 static void mh_scan_tree_recursive(FolderItem *item)
 {
 	DIR *dp;
@@ -926,6 +950,11 @@ static void mh_scan_tree_recursive(FolderItem *item)
 
 		if (S_ISDIR(s.st_mode)) {
 			FolderItem *new_item;
+
+			if (mh_is_maildir(entry)) {
+				g_free(entry);
+				continue;
+			}
 
 			new_item = folder_item_new(d->d_name, entry);
 			folder_item_append(item, new_item);

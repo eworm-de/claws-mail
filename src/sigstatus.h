@@ -1,6 +1,5 @@
-/*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+/* sigstatus.h - GTK+ based signature status display
+ *      Copyright (C) 2001 Werner Koch (dd9jn)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,40 +16,18 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __SESSION_H__
-#define __SESSION_H__
+#ifndef GPGMEGTK_SIGSTATUS_H
+#define GPGMEGTK_SIGSTATUS_H
 
-#include <glib.h>
-#include "socket.h"
+#include <gpgme.h>
 
-typedef struct _Session	Session;
+struct gpgmegtk_sig_status_s;
+typedef struct gpgmegtk_sig_status_s *GpgmegtkSigStatus;
 
-#define SESSION(obj)	((Session *)obj)
+GpgmegtkSigStatus gpgmegtk_sig_status_create(void);
+void gpgmegtk_sig_status_destroy(GpgmegtkSigStatus hd);
+void gpgmegtk_sig_status_update(GpgmegtkSigStatus hd, GpgmeCtx ctx);
 
-typedef enum {
-	SESSION_IMAP,
-	SESSION_NEWS
-} SessionType;
+const char *gpgmegtk_sig_status_to_string(GpgmeSigStat status);
 
-typedef enum {
-	SESSION_READY,
-	SESSION_SEND,
-	SESSION_RECV
-} SessionPhase;
-
-struct _Session
-{
-	SessionType type;
-
-	SockInfo *sock;
-	gchar *server;
-
-	gboolean connected;
-	SessionPhase phase;
-
-	gpointer data;
-};
-
-void session_destroy	(Session	*session);
-
-#endif /* __SESSION_H__ */
+#endif /* GPGMEGTK_SIGSTATUS_H */

@@ -22,15 +22,17 @@
 
 #include <glib.h>
 
+#include "socket.h"
+
 typedef struct _AtmState	AtmState;
 typedef struct _Automaton	Automaton;
 
-typedef gint	(*AtmHandler)	(gint source, gpointer data);
+typedef gint	(*AtmHandler)	(SockInfo *source, gpointer data);
 
 struct _AtmState
 {
 	GdkInputCondition condition;
-	gint (*handler)(gint source, gpointer data);
+	gint (*handler)(SockInfo *source, gpointer data);
 };
 
 struct _Automaton
@@ -43,12 +45,13 @@ struct _Automaton
 	gboolean terminated;
 	gpointer data;
 	AtmState *state;
-	gint (*terminate)(gint source, gpointer data);
+	gint (*terminate)(SockInfo *source, gpointer data);
+	SockInfo *help_sock;
 };
 
 Automaton *automaton_create(gint num);
 void automaton_destroy(Automaton *atm);
-void automaton_input_cb(gpointer data, gint source,
+void automaton_input_cb(gpointer data, gint dummy_source,
 			GdkInputCondition condition);
 
 #endif /* __AUTOMATON_H__ */

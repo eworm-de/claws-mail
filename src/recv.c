@@ -33,7 +33,7 @@
 
 #define BUFFSIZE	8192
 
-gint recv_write_to_file(gint sock, const gchar *filename)
+gint recv_write_to_file(SockInfo *sock, const gchar *filename)
 {
 	FILE *fp;
 
@@ -63,7 +63,7 @@ gint recv_write_to_file(gint sock, const gchar *filename)
 	return 0;
 }
 
-gint recv_bytes_write_to_file(gint sock, glong size, const gchar *filename)
+gint recv_bytes_write_to_file(SockInfo *sock, glong size, const gchar *filename)
 {
 	FILE *fp;
 
@@ -93,7 +93,7 @@ gint recv_bytes_write_to_file(gint sock, glong size, const gchar *filename)
 	return 0;
 }
 
-gint recv_write(gint sock, FILE *fp)
+gint recv_write(SockInfo *sock, FILE *fp)
 {
 	gchar buf[BUFFSIZE];
 	gint len;
@@ -137,7 +137,7 @@ gint recv_write(gint sock, FILE *fp)
 	return 0;
 }
 
-gint recv_bytes_write(gint sock, glong size, FILE *fp)
+gint recv_bytes_write(SockInfo *sock, glong size, FILE *fp)
 {
 	gchar *buf;
 	gboolean nb;
@@ -152,7 +152,8 @@ gint recv_bytes_write(gint sock, glong size, FILE *fp)
 	do {
 		size_t read_count;
 
-		read_count = read(sock, buf + count, size - count);
+		/* FIXME: put this into socket.c :WK: */
+		read_count = fd_read(sock->sock, buf + count, size - count);
 		if (read_count < 0) {
 			if (nb) sock_set_nonblocking_mode(sock, TRUE);
 			return -1;

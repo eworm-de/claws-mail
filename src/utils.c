@@ -1028,12 +1028,43 @@ gchar **strsplit_with_quote(const gchar *str, const gchar *delim,
 	return str_array;
 }
 
+/*
+ * We need this wrapper around g_get_home_dir(), so that
+ * we can fix some Windoze things here.  Should be done in glibc of course
+ * but as long as we are not able to do our own extensions to glibc, we do 
+ * it here.
+ */
+gchar *get_home_dir(void)
+{
+#if HAVE_DOSISH_SYSTEM
+    static gchar *home_dir;
+
+    if (!home_dir) {
+        home_dir = read_w32_registry_string(NULL,
+                                            "Software\\Sylpheed", "HomeDir" );
+        if (!home_dir || !*home_dir) {
+            if (getenv ("HOMEDRIVE") && getenv("HOMEPATH")) {
+                const char *s = g_get_home_dir();
+                if (s && *s)
+                    home_dir = g_strdup (s);
+            }
+            if (!home_dir || !*home_dir) 
+                home_dir = g_strdup ("c:\\sylpheed");
+        }
+        debug_print("initialized home_dir to `%s'\n", home_dir);
+    }
+    return home_dir;
+#else /* standard glib */
+    return g_get_home_dir();
+#endif
+}
+
 gchar *get_rc_dir(void)
 {
 	static gchar *rc_dir = NULL;
 
 	if (!rc_dir)
-		rc_dir = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S,
+		rc_dir = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
 				     RC_DIR, NULL);
 
 	return rc_dir;

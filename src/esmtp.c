@@ -33,90 +33,7 @@
 static gint verbose = 1;
 static gchar esmtp_response[MSGBUFSIZE];
 
-/*
-** Function: hmac_md5
-** taken from the file rfc2104.txt
-*/
-void hmac_md5(guchar *text, gint text_len, guchar *key, gint key_len,
-	      guchar *digest)
-{
-	MD5_CTX context;
-	guchar k_ipad[65];	/* inner padding -
-				 * key XORd with ipad
-				 */
-	guchar k_opad[65];	/* outer padding -
-				 * key XORd with opad
-				 */
-	guchar tk[16];
-	gint i;
-
-	/* if key is longer than 64 bytes reset it to key=MD5(key) */
-	if (key_len > 64) {
-		MD5_CTX tctx;
-
-		MD5Init(&tctx);
-		MD5Update(&tctx, key, key_len);
-		MD5Final(tk, &tctx);
-
-		key = tk;
-		key_len = 16;
-	}
-
-	/*
-	 * the HMAC_MD5 transform looks like:
-	 *
-	 * MD5(K XOR opad, MD5(K XOR ipad, text))
-	 *
-	 * where K is an n byte key
-	 * ipad is the byte 0x36 repeated 64 times
-	 * opad is the byte 0x5c repeated 64 times
-	 * and text is the data being protected
-	 */
-
-	/* start out by storing key in pads */
-	bzero(k_ipad, sizeof k_ipad);
-	bzero(k_opad, sizeof k_opad);
-	bcopy(key, k_ipad, key_len);
-	bcopy(key, k_opad, key_len);
-
-	/* XOR key with ipad and opad values */
-	for (i = 0; i < 64; i++) {
-		k_ipad[i] ^= 0x36;
-		k_opad[i] ^= 0x5c;
-	}
-
-	/*
-	 * perform inner MD5
-	 */
-	MD5Init(&context);		     /* init context for 1st
-					      * pass */
-	MD5Update(&context, k_ipad, 64);     /* start with inner pad */
-	MD5Update(&context, text, text_len); /* then text of datagram */
-	MD5Final(digest, &context);          /* finish up 1st pass */
-
-	/*
-	 * perform outer MD5
-	 */
-	MD5Init(&context);		     /* init context for 2nd
-					      * pass */
-	MD5Update(&context, k_opad, 64);     /* start with outer pad */
-	MD5Update(&context, digest, 16);     /* then results of 1st
-					      * hash */
-	MD5Final(digest, &context);	     /* finish up 2nd pass */
-}
-
-void md5_hex_hmac(gchar *hexdigest, guchar *text, gint text_len,
-		  guchar *key, gint key_len)
-{
-	guchar digest[16];
-	gint i;
-
-	hmac_md5(text, text_len, key, key_len, digest);
-	for(i = 0; i < 16; i++)
-		sprintf(hexdigest + 2 * i, "%02x", digest[i]);
-}
-
-gint esmtp_auth_cram_md5(gint sock)
+gint esmtp_auth_cram_md5(SockInfo *sock)
 {
 	gchar buf[MSGBUFSIZE];
 
@@ -129,7 +46,7 @@ gint esmtp_auth_cram_md5(gint sock)
 	return esmtp_ok(sock);
 }
 
-gint esmtp_auth_login(gint sock)
+gint esmtp_auth_login(SockInfo *sock)
 {
 	gchar buf[MSGBUFSIZE];
 
@@ -142,7 +59,7 @@ gint esmtp_auth_login(gint sock)
 	return esmtp_ok(sock);
 }
 
-gint esmtp_auth(gint sock, SMTPAuthType authtype,
+gint esmtp_auth(SockInfo *sock, SMTPAuthType authtype,
 		const gchar *userid, const gchar *passwd,
 		gboolean use_smtp_auth)
 {
@@ -221,7 +138,7 @@ gint esmtp_auth(gint sock, SMTPAuthType authtype,
 	return esmtp_ok(sock);
 }
 
-gint esmtp_ok(gint sock)
+gint esmtp_ok(SockInfo *sock)
 {
 	while (sock_read(sock, esmtp_response, sizeof(esmtp_response) - 1)
 	       != -1) {

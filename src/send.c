@@ -45,14 +45,15 @@ static gint send_message_smtp	(GSList *to_list, const gchar *from,
 				 const gchar *domain, const gchar *userid,
 				 const gchar *passwd, gboolean use_smtp_auth,
 				 FILE *fp);
-static gint send_smtp_open	(const gchar *server, gushort port,
+static SockInfo *send_smtp_open	(const gchar *server, gushort port,
 				 const gchar *domain, gboolean use_smtp_auth);
 
 #define SEND_EXIT_IF_ERROR(f, s) \
 { \
-	if ((f) < 0) { \
+	if (!(f)) { \
 		log_warning("Error occurred while %s\n", s); \
-		if (smtp_sock > 0) sock_close(smtp_sock); \
+		sock_close(smtp_sock); \
+		smtp_sock = NULL; \
 		return -1; \
 	} \
 }
@@ -64,6 +65,7 @@ static gint send_smtp_open	(const gchar *server, gushort port,
 		if (smtp_quit(smtp_sock) != SM_OK) \
 			log_warning("Error occurred while sending QUIT\n"); \
 		sock_close(smtp_sock); \
+		smtp_sock = NULL; \
 		return -1; \
 	} \
 }
@@ -185,7 +187,7 @@ static gint send_message_smtp(GSList *to_list, const gchar *from,
 			      const gchar* passwd, gboolean use_smtp_auth,
 			      FILE *fp)
 {
-	gint smtp_sock;
+	SockInfo *smtp_sock;
 	gchar buf[BUFFSIZE];
 	GSList *cur;
 
@@ -226,22 +228,19 @@ static gint send_message_smtp(GSList *to_list, const gchar *from,
 	return 0;
 }
 
-static gint send_smtp_open(const gchar *server, gushort port,
+static SockInfo *send_smtp_open(const gchar *server, gushort port,
 			   const gchar *domain, gboolean use_smtp_auth)
 {
-	SockInfo *sockinfo;
-	gint sock;
+	SockInfo *sock;
 	gint val;
 
-	g_return_val_if_fail(server != NULL, -1);
+	g_return_val_if_fail(server != NULL, NULL);
 
-	if ((sockinfo = sock_connect(server, port)) == NULL) {
+	if ((sock = sock_connect(server, port)) == NULL) {
 		log_warning(_("Can't connect to SMTP server: %s:%d\n"),
 			    server, port);
-		return -1;
+		return NULL;
 	}
-	sock = sockinfo->sock;
-	sock_sockinfo_free(sockinfo);
 
 	if (smtp_ok(sock) == SM_OK) {
 		val = smtp_helo(sock, domain ? domain : get_domain_name(),
@@ -252,5 +251,5 @@ static gint send_smtp_open(const gchar *server, gushort port,
 	log_warning(_("Error occurred while sending HELO\n"));
 	sock_close(sock);
 
-	return -1;
+	return NULL;
 }

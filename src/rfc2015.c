@@ -43,6 +43,7 @@
 #include "prefs_common.h"
 #include "passphrase.h"
 #include "select-keys.h"
+#include "sigstatus.h"
 #include "rfc2015.h"
 
 #define DIM(v)     (sizeof(v)/sizeof((v)[0]))
@@ -278,7 +279,10 @@ static void check_signature (MimeInfo *mimeinfo, MimeInfo *partinfo, FILE *fp)
     GpgmeError err;
     GpgmeData sig = NULL, text = NULL;
     GpgmeSigStat status = GPGME_SIG_STAT_NONE;
+    GpgmegtkSigStatus statuswindow;
     const char *result = NULL;
+
+    statuswindow = gpgmegtk_sig_status_create ();
 
     err = gpgme_new (&ctx);
     if (err) {
@@ -305,20 +309,24 @@ static void check_signature (MimeInfo *mimeinfo, MimeInfo *partinfo, FILE *fp)
     if (err) 
         g_message ("gpgme_op_verify failed: %s", gpgme_strerror (err));
 
+    /* FIXME: check what the heck this sig_status_full stuff is.
+     * it should better go into sigstatus.c */
     g_free (partinfo->sigstatus_full);
     partinfo->sigstatus_full = sig_status_full (ctx);
 
 leave:
-    result = sig_status_to_string(status);
+    result = gpgmegtk_sig_status_to_string(status);
     debug_print("verification status: %s\n", result);
+    gpgmegtk_sig_status_update(statuswindow,ctx);
 
-    g_assert (!err);
+    g_assert (!err); /* FIXME: Hey: this may indeed happen */
     g_free (partinfo->sigstatus);
     partinfo->sigstatus = g_strdup (result);
 
     gpgme_data_release (sig);
     gpgme_data_release (text);
     gpgme_release (ctx);
+    gpgmegtk_sig_status_destroy(statuswindow);
 }
 
 static const char *
@@ -867,7 +875,7 @@ failure:
     return -1; /* error */
 }
 
-static int
+int
 set_signers (GpgmeCtx ctx, PrefsAccount *ac)
 {
     GSList *key_list = NULL;

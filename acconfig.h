@@ -21,5 +21,8 @@
 /* Define to `unsigned int' if <stddef.h> or <wchar.h> doesn't define.  */
 #undef wint_t
 
+/* Used to test for a u32 typedef */
+#undef HAVE_U32_TYPEDEF
+
 #undef PACKAGE
 #undef VERSION

@@ -36,7 +36,9 @@
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtktext.h>
 #include <gtk/gtkbutton.h>
-#include <sys/utsname.h>
+#if HAVE_SYS_UTSNAME_H
+#  include <sys/utsname.h>
+#endif
 
 #include "intl.h"
 #include "about.h"
@@ -77,8 +79,10 @@ static void about_create(void)
 	GdkColormap *cmap;
 	GdkColor uri_color[2] = {{0, 0, 0, 0xffff}, {0, 0xffff, 0, 0}};
 	gboolean success[2];
-
+	
+#if HAVE_SYS_UTSNAME_H
 	struct utsname utsbuf;
+#endif	
 	gchar buf[1024];
 	gint i;
 
@@ -87,7 +91,7 @@ static void about_create(void)
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_widget_set_usize(window, 518, 358);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	//gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
+	/* gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE); */
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
 			   GTK_SIGNAL_FUNC(gtk_widget_hide_on_delete), NULL);
 	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
@@ -103,13 +107,20 @@ static void about_create(void)
 
 	label = gtk_label_new("version "VERSION);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-
+	
+#if HAVE_SYS_UTSNAME_H
 	uname(&utsbuf);
 	g_snprintf(buf, sizeof(buf),
 		   "GTK+ version %d.%d.%d\n"
 		   "Operating System: %s %s (%s)",
 		   gtk_major_version, gtk_minor_version, gtk_micro_version,
 		   utsbuf.sysname, utsbuf.release, utsbuf.machine);
+#else
+	g_snprintf(buf, sizeof(buf),
+		   "GTK+ version %d.%d.%d\n"
+		   "Operating System: Windoze",
+		   gtk_major_version, gtk_minor_version, gtk_micro_version);
+#endif
 
 	label = gtk_label_new(buf);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
@@ -190,10 +201,6 @@ static void about_create(void)
 		  "Raymond.  Portions of those are also copyrighted by Carl Harris, "
 		  "1993 and 1995.  Copyright retained for the purpose of protecting free "
 		  "redistribution of source.\n\n"), -1);
-
-	gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
-		_("The MD5 support is copyright by RSA Data Security, Inc.  See the "
-		  "header comment of the md5.c module for license terms.\n\n"), -1);
 
 	gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
 		_("Kcc is copyright by Yasuhiro Tonooka <tonooka@msi.co.jp>, "

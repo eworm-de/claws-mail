@@ -31,17 +31,17 @@
 #include "intl.h"
 #include "pop.h"
 #include "socket.h"
-#include "md5ify.h"
+#include "md5.h"
 #include "prefs_account.h"
 #include "utils.h"
 #include "inc.h"
 #include "recv.h"
 
-static gint pop3_ok(gint sock, gchar *argbuf);
-static void pop3_gen_send(gint sock, const gchar *format, ...);
-static gint pop3_gen_recv(gint sock, gchar *buf, gint size);
+static gint pop3_ok(SockInfo *sock, gchar *argbuf);
+static void pop3_gen_send(SockInfo *sock, const gchar *format, ...);
+static gint pop3_gen_recv(SockInfo *sock, gchar *buf, gint size);
 
-gint pop3_greeting_recv(gint sock, gpointer data)
+gint pop3_greeting_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 	gchar buf[POPBUFSIZE];
@@ -56,7 +56,7 @@ gint pop3_greeting_recv(gint sock, gpointer data)
 		return -1;
 }
 
-gint pop3_getauth_user_send(gint sock, gpointer data)
+gint pop3_getauth_user_send(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 
@@ -69,7 +69,7 @@ gint pop3_getauth_user_send(gint sock, gpointer data)
 	return POP3_GETAUTH_USER_RECV;
 }
 
-gint pop3_getauth_user_recv(gint sock, gpointer data)
+gint pop3_getauth_user_recv(SockInfo *sock, gpointer data)
 {
 	if (pop3_ok(sock, NULL) == PS_SUCCESS)
 		return POP3_GETAUTH_PASS_SEND;
@@ -77,7 +77,7 @@ gint pop3_getauth_user_recv(gint sock, gpointer data)
 		return -1;
 }
 
-gint pop3_getauth_pass_send(gint sock, gpointer data)
+gint pop3_getauth_pass_send(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 
@@ -88,7 +88,7 @@ gint pop3_getauth_pass_send(gint sock, gpointer data)
 	return POP3_GETAUTH_PASS_RECV;
 }
 
-gint pop3_getauth_pass_recv(gint sock, gpointer data)
+gint pop3_getauth_pass_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 
@@ -101,11 +101,12 @@ gint pop3_getauth_pass_recv(gint sock, gpointer data)
 	}
 }
 
-gint pop3_getauth_apop_send(gint sock, gpointer data)
+gint pop3_getauth_apop_send(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 	gchar *start, *end;
-	gchar *apop_str, *md5sum;
+	gchar *apop_str;
+	gchar md5sum[33];
 
 	g_return_val_if_fail(state->user != NULL, -1);
 	g_return_val_if_fail(state->pass != NULL, -1);
@@ -126,7 +127,7 @@ gint pop3_getauth_apop_send(gint sock, gpointer data)
 	*(end + 1) = '\0';
 
 	apop_str = g_strconcat(start, state->pass, NULL);
-	md5sum = MD5Digest(apop_str);
+	md5_hex_digest(md5sum, apop_str);
 	g_free(apop_str);
 
 	pop3_gen_send(sock, "APOP %s %s", state->user, md5sum);
@@ -134,7 +135,7 @@ gint pop3_getauth_apop_send(gint sock, gpointer data)
 	return POP3_GETAUTH_APOP_RECV;
 }
 
-gint pop3_getauth_apop_recv(gint sock, gpointer data)
+gint pop3_getauth_apop_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 
@@ -147,7 +148,7 @@ gint pop3_getauth_apop_recv(gint sock, gpointer data)
 	}
 }
 
-gint pop3_getrange_stat_send(gint sock, gpointer data)
+gint pop3_getrange_stat_send(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 
@@ -158,7 +159,7 @@ gint pop3_getrange_stat_send(gint sock, gpointer data)
 	return POP3_GETRANGE_STAT_RECV;
 }
 
-gint pop3_getrange_stat_recv(gint sock, gpointer data)
+gint pop3_getrange_stat_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 	gchar buf[POPBUFSIZE + 1];
@@ -187,14 +188,14 @@ gint pop3_getrange_stat_recv(gint sock, gpointer data)
 		return -1;
 }
 
-gint pop3_getrange_last_send(gint sock, gpointer data)
+gint pop3_getrange_last_send(SockInfo *sock, gpointer data)
 {
 	pop3_gen_send(sock, "LAST");
 
 	return POP3_GETRANGE_LAST_RECV;
 }
 
-gint pop3_getrange_last_recv(gint sock, gpointer data)
+gint pop3_getrange_last_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 	gchar buf[POPBUFSIZE + 1];
@@ -218,14 +219,14 @@ gint pop3_getrange_last_recv(gint sock, gpointer data)
 		return POP3_RETR_SEND;
 }
 
-gint pop3_getrange_uidl_send(gint sock, gpointer data)
+gint pop3_getrange_uidl_send(SockInfo *sock, gpointer data)
 {
 	pop3_gen_send(sock, "UIDL");
 
 	return POP3_GETRANGE_UIDL_RECV;
 }
 
-gint pop3_getrange_uidl_recv(gint sock, gpointer data)
+gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 	gboolean nb;
@@ -270,7 +271,7 @@ gint pop3_getrange_uidl_recv(gint sock, gpointer data)
 		return POP3_LOGOUT_SEND;
 }
 
-gint pop3_retr_send(gint sock, gpointer data)
+gint pop3_retr_send(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 
@@ -281,7 +282,7 @@ gint pop3_retr_send(gint sock, gpointer data)
 	return POP3_RETR_RECV;
 }
 
-gint pop3_retr_recv(gint sock, gpointer data)
+gint pop3_retr_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 	const gchar *file;
@@ -318,7 +319,7 @@ gint pop3_retr_recv(gint sock, gpointer data)
 		return -1;
 }
 
-gint pop3_delete_send(gint sock, gpointer data)
+gint pop3_delete_send(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 
@@ -329,7 +330,7 @@ gint pop3_delete_send(gint sock, gpointer data)
 	return POP3_DELETE_RECV;
 }
 
-gint pop3_delete_recv(gint sock, gpointer data)
+gint pop3_delete_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 	gint ok;
@@ -346,7 +347,7 @@ gint pop3_delete_recv(gint sock, gpointer data)
 		return -1;
 }
 
-gint pop3_logout_send(gint sock, gpointer data)
+gint pop3_logout_send(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 
@@ -357,7 +358,7 @@ gint pop3_logout_send(gint sock, gpointer data)
 	return POP3_LOGOUT_RECV;
 }
 
-gint pop3_logout_recv(gint sock, gpointer data)
+gint pop3_logout_recv(SockInfo *sock, gpointer data)
 {
 	if (pop3_ok(sock, NULL) == PS_SUCCESS)
 		return -1;
@@ -365,7 +366,7 @@ gint pop3_logout_recv(gint sock, gpointer data)
 		return -1;
 }
 
-static gint pop3_ok(gint sock, gchar *argbuf)
+static gint pop3_ok(SockInfo *sock, gchar *argbuf)
 {
 	gint ok;
 	gchar buf[POPBUFSIZE + 1];
@@ -407,7 +408,7 @@ static gint pop3_ok(gint sock, gchar *argbuf)
 	return ok;
 }
 
-static void pop3_gen_send(gint sock, const gchar *format, ...)
+static void pop3_gen_send(SockInfo *sock, const gchar *format, ...)
 {
 	gchar buf[POPBUFSIZE + 1];
 	va_list args;
@@ -425,7 +426,7 @@ static void pop3_gen_send(gint sock, const gchar *format, ...)
 	sock_write(sock, buf, strlen(buf));
 }
 
-static gint pop3_gen_recv(gint sock, gchar *buf, gint size)
+static gint pop3_gen_recv(SockInfo *sock, gchar *buf, gint size)
 {
 	gboolean nb;
 

@@ -61,6 +61,7 @@
 #include "procmsg.h"
 #include "inc.h"
 #include "import.h"
+#include "manage_window.h"
 #include "alertpanel.h"
 #include "addressbook.h"
 #include "compose.h"
@@ -70,6 +71,7 @@
 #include "gtkutils.h"
 
 gchar *prog_version;
+gchar *startup_dir;
 gboolean debug_mode = FALSE;
 
 static gint lock_socket = -1;
@@ -147,11 +149,11 @@ int main(int argc, char *argv[])
 #endif
 
 	/* parse gtkrc files */
-	userrc = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, ".gtkrc",
+	userrc = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S, ".gtkrc",
 			     NULL);
 	gtk_rc_parse(userrc);
 	g_free(userrc);
-	userrc = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, ".gtk",
+	userrc = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S, ".gtk",
 			     G_DIR_SEPARATOR_S, "gtkrc", NULL);
 	gtk_rc_parse(userrc);
 	g_free(userrc);
@@ -166,10 +168,11 @@ int main(int argc, char *argv[])
 	g_free(userrc);
 
 	prog_version = PROG_VERSION;
+	startup_dir = g_get_current_dir();
 
 	parse_cmd_opt(argc, argv);
 
-	CHDIR_RETURN_VAL_IF_FAIL(g_get_home_dir(), 1);
+	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), 1);
 
 	/* check and create unix domain socket */
 	lock_socket = prohibit_duplicate_launch();
@@ -196,6 +199,13 @@ int main(int argc, char *argv[])
 	srandom((gint)time(NULL));
 
 #if USE_GPGME
+	if (gpgme_check_engine()) {  /* Also does some gpgme init */
+		rfc2015_disable_all();
+		debug_print("gpgme_engine_version:\n%s\n",
+			    gpgme_get_engine_info());
+		alertpanel_warning(_("GnuPG is not installed properly.\n"
+				     "OpenPGP support disabled."));
+	}
 	gpgme_register_idle(idle_function_for_gpgme);
 #endif
 
@@ -282,6 +292,17 @@ static void parse_cmd_opt(int argc, char *argv[])
 	}
 }
 
+static gint get_queued_message_num(void)
+{
+	FolderItem *queue;
+
+	queue = folder_get_default_queue();
+	g_return_val_if_fail(queue != NULL, -1);
+
+	folder_item_scan(queue);
+	return queue->total;
+}
+
 void app_will_exit(GtkWidget *widget, gpointer data)
 {
 	MainWindow *mainwin = data;
@@ -292,6 +313,15 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 			       _("Composing message exists. Really quit?"),
 			       _("OK"), _("Cancel"), NULL) != G_ALERTDEFAULT)
 			return;
+		manage_window_focus_in(mainwin->window, NULL, NULL);
+	}
+
+	if (prefs_common.warn_queued_on_exit && get_queued_message_num() > 0) {
+		if (alertpanel(_("Queued messages"),
+			       _("Some unsent messages are queued. Exit now?"),
+			       _("OK"), _("Cancel"), NULL) != G_ALERTDEFAULT)
+			return;
+		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}
 
 	if (prefs_common.clean_on_exit)
@@ -317,7 +347,7 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 
 	/* delete unix domain socket */
 	gdk_input_remove(lock_socket_tag);
-	sock_close(lock_socket);
+	fd_close(lock_socket);
 	filename = get_socket_name();
 	unlink(filename);
 
@@ -351,10 +381,10 @@ static gint prohibit_duplicate_launch(void)
 	gchar *path;
 
 	path = get_socket_name();
-	uxsock = sock_connect_unix(path);
+	uxsock = fd_connect_unix(path);
 	if (uxsock < 0) {
 		unlink(path);
-		return sock_open_unix(path);
+		return fd_open_unix(path);
 	}
 
 	/* remote command mode */
@@ -362,9 +392,9 @@ static gint prohibit_duplicate_launch(void)
 	debug_print(_("another Sylpheed is already running.\n"));
 
 	if (cmd.receive_all)
-		sock_write(uxsock, "receive_all\n", 12);
+		fd_write(uxsock, "receive_all\n", 12);
 	else if (cmd.receive)
-		sock_write(uxsock, "receive\n", 8);
+		fd_write(uxsock, "receive\n", 8);
 	else if (cmd.compose) {
 		gchar *compose_str;
 
@@ -373,12 +403,12 @@ static gint prohibit_duplicate_launch(void)
 		else
 			compose_str = g_strdup("compose\n");
 
-		sock_write(uxsock, compose_str, strlen(compose_str));
+		fd_write(uxsock, compose_str, strlen(compose_str));
 		g_free(compose_str);
 	} else
-		sock_write(uxsock, "popup\n", 6);
+		fd_write(uxsock, "popup\n", 6);
 
-	sock_close(uxsock);
+	fd_close(uxsock);
 	return -1;
 }
 
@@ -390,9 +420,9 @@ static void lock_socket_input_cb(gpointer data,
 	gint sock;
 	gchar buf[BUFFSIZE];
 
-	sock = sock_accept(source);
-	sock_read(sock, buf, sizeof(buf));
-	sock_close(sock);
+	sock = fd_accept(source);
+	fd_read(sock, buf, sizeof(buf));
+	fd_close(sock);
 
 	if (!strncmp(buf, "popup", 5)){
 		main_window_popup(mainwin);
@@ -421,3 +451,4 @@ static void open_compose_new_with_recipient(const gchar *address)
 	else
 		compose_new(NULL);
 }
+

@@ -78,12 +78,12 @@ gchar *imap_fetch_msg			(Folder		*folder,
 					 gint		 num);
 
 gint imap_move_msg			(Folder		*folder,
-					 FolderItem     *dest,
-					 MsgInfo        *msginfo);
+					 FolderItem	*dest,
+					 MsgInfo	*msginfo);
 
-gint imap_move_msgs_with_dest		(Folder         *folder,
-					 FolderItem     *dest,
-					 GSList         *msglist);
+gint imap_move_msgs_with_dest		(Folder		*folder,
+					 FolderItem	*dest,
+					 GSList		*msglist);
 gint imap_remove_msg			(Folder		*folder,
 					 FolderItem	*item,
 					 gint		 num);

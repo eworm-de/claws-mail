@@ -783,6 +783,7 @@ void main_window_reflect_prefs_all(void)
 		}
 
 		summary_change_display_item(mainwin->summaryview);
+		summary_redisplay_msg(mainwin->summaryview);
 		headerview_set_visibility(mainwin->messageview->headerview,
 					  prefs_common.display_header_pane);
 	}
@@ -942,6 +943,7 @@ void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 			       _("Empty all messages in trash?"),
 			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
 			return;
+		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}
 
 	procmsg_empty_trash();
@@ -1646,29 +1648,15 @@ static void print_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 	summary_print(mainwin->summaryview);
 }
 
-static gint queued_messages(void)
-{
-	FolderItem *queue = folder_get_default_queue();
-	folder_item_scan(queue);
-	return queue->total;
-}
-
 static void app_exit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	if (prefs_common.confirm_on_exit) {
 		if (alertpanel(_("Exit"), _("Exit this program?"),
 			       _("OK"), _("Cancel"), NULL) != G_ALERTDEFAULT)
 			return;
+		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}
 
-	if (prefs_common.warn_queued_on_exit && queued_messages() > 0) {
-		if (alertpanel(_("Queued messages"), 
-			       _("Some unsent messages are queued. Exit now?"),
-			       _("OK"), _("Cancel"), NULL) != G_ALERTDEFAULT)
-			return;
-	}
-
-	manage_window_focus_in(mainwin->window, NULL, NULL);
 	app_will_exit(widget, mainwin);
 }
 
