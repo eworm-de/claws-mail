@@ -1,3 +1,9 @@
+2004-05-17 [christoph]	0.9.10claws63
+
+	* src/folder.c
+		search all folders when searching for default folders and
+		not return the special folder of the first folder
+
 2004-05-13 [alfons]	0.9.10claws62
 
 	* src/summaryview.c
