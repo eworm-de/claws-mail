@@ -1,3 +1,10 @@
+2002-11-14 [thorsten]	0.8.5claws151-1
+
+	* src/mimeview.c
+		fix: clickable signature
+	* src/folder.c
+		add: allow absolute paths for mailbox
+
 2002-11-12 [thorsten]	0.8.5claws134-1
 
 	* src/folder.c

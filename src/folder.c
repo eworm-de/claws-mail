@@ -2632,7 +2632,13 @@ static void folder_create_processing_folder(void)
 	tmpparent = folder_get_default_folder();
 	g_assert(tmpparent);
 	debug_print("tmpparentroot %s\n", LOCAL_FOLDER(tmpparent)->rootpath);
+#ifdef WIN32
+	if (LOCAL_FOLDER(tmpparent)->rootpath[0] == '/'
+		|| LOCAL_FOLDER(tmpparent)->rootpath[0] == G_DIR_SEPARATOR
+		|| LOCAL_FOLDER(tmpparent)->rootpath[1] == ':')
+#else
 	if (LOCAL_FOLDER(tmpparent)->rootpath[0] == '/')
+#endif
 		tmpname = g_strconcat(LOCAL_FOLDER(tmpparent)->rootpath,
 				      G_DIR_SEPARATOR_S, PROCESSING_FOLDER,
 				      NULL);

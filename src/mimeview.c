@@ -832,11 +832,11 @@ static void mimeview_save_all(MimeView *mimeview)
 	/* for each attachment, extract it in the selected dir. */
 	while(attachment != NULL)
 	{
-		static guint attach_no = 1;
+		static guint subst_cnt = 1;
 		gchar *attachdir;
 		gchar *attachname = (attachment->filename)
 			? g_strdup(attachment->filename)
-			: g_strdup_printf("noname.%d",attach_no++);
+			: g_strdup_printf("noname.%d",subst_cnt++);
 
 		subst_chars(attachname, "/\\", G_DIR_SEPARATOR);
 		subst_chars(attachname, ":?*&|<>\t\r\n", '_');
@@ -1164,7 +1164,7 @@ void mimeview_check_signature(MimeView *mimeview)
 		return;
 	}
 
-	set_unchecked_signature(mimeinfo);
+	rfc2015_check_signature(mimeinfo, fp);
 	fclose(fp);
 
 	mimeview_update_names(mimeview);
