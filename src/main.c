@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
 	if (lock_socket < 0) return 0;
 
 	if (cmd.status) {
-		puts("0 Sylpheed not running.\n");
+		puts("0 Sylpheed not running.");
 		return 0;
 	}
 

@@ -1,3 +1,10 @@
+2001-12-04
+
+	* src/folder.c:
+	  folder_count_total_msgs()
+	  folder_count_total_msgs_func(): g_node_traverse() を使用して
+	  GNode をトラバースするようにした。
+
 2001-12-03
 
 	* src/compose.c: 空の本文が拒否されるバグを修正。

@@ -1,3 +1,10 @@
+2001-12-04
+
+	* src/folder.c:
+	  folder_count_total_msgs()
+	  folder_count_total_msgs_func(): use g_node_traverse() to traverse
+	  GNode.
+
 2001-12-03
 
 	* src/compose.c: fixed a bug that empty body was refused.

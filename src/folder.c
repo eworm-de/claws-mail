@@ -371,16 +371,15 @@ struct TotalMsgCount
 static gboolean folder_count_total_msgs_func(GNode *node, gpointer data)
 {
 	FolderItem *item;
-	struct TotalMsgCount *totalmsgcount;
+	struct TotalMsgCount *count = (struct TotalMsgCount *)data;
 
 	g_return_val_if_fail(node->data != NULL, FALSE);
 
-	totalmsgcount = (struct TotalMsgCount *)data;
 	item = FOLDER_ITEM(node->data);
-	totalmsgcount->new += item->new;
-	totalmsgcount->unread += item->unread;
-	totalmsgcount->total += item->total;
-	
+	count->new += item->new;
+	count->unread += item->unread;
+	count->total += item->total;
+
 	return FALSE;
 }
 
@@ -388,26 +387,24 @@ void folder_count_total_msgs(guint *new, guint *unread, guint *total)
 {
 	GList *list;
 	Folder *folder;
-	struct TotalMsgCount totalmsgcount;
+	struct TotalMsgCount count;
+
+	count.new = count.unread = count.total = 0;
 
 	debug_print(_("Counting total number of messages...\n"));
 
-	totalmsgcount.new = 0;
-	totalmsgcount.unread = 0;
-	totalmsgcount.total = 0;
-
 	for (list = folder_list; list != NULL; list = list->next) {
 		folder = FOLDER(list->data);
-		if(folder->node)
+		if (folder->node)
 			g_node_traverse(folder->node, G_PRE_ORDER,
-				G_TRAVERSE_ALL, -1,
-				folder_count_total_msgs_func,
-				&totalmsgcount);
+					G_TRAVERSE_ALL, -1,
+					folder_count_total_msgs_func,
+					&count);
 	}
 
-	*new = totalmsgcount.new;
-	*unread = totalmsgcount.unread;
-	*total = totalmsgcount.total;
+	*new = count.new;
+	*unread = count.unread;
+	*total = count.total;
 
 	return;
 }
