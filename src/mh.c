@@ -456,17 +456,13 @@ static gint mh_do_move(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	prefs = dest->prefs;
 
 	destfile = mh_get_new_msg_filename(dest);
-	g_return_val_if_fail(destfile != NULL, -1);
+	if (!destfile) return -1;
 
+	srcfile = procmsg_get_message_file(msginfo);
+	
 	debug_print("Moving message %s%c%d to %s ...\n",
 		    msginfo->folder->path, G_DIR_SEPARATOR,
 		    msginfo->msgnum, dest->path);
-	srcfile = procmsg_get_message_file(msginfo);
-
-	destfile = mh_get_new_msg_filename(dest);
-	if(!destfile) return -1;
-
-	srcfile = procmsg_get_message_file(msginfo);
 
 	if (move_file(srcfile, destfile, FALSE) < 0) {
 		g_free(srcfile);
@@ -560,10 +556,8 @@ static gint mh_do_move_msgs_with_dest(Folder *folder, FolderItem *dest,
 			    msginfo->msgnum, dest->path);
 
 		destfile = mh_get_new_msg_filename(dest);
-		if (!destfile) break;
+		if (!destfile) return -1;
 		srcfile = procmsg_get_message_file(msginfo);
-		destfile = mh_get_new_msg_filename(dest);
-		if(!destfile) return -1;
 
 		if (move_file(srcfile, destfile, FALSE) < 0) {
 			g_free(srcfile);
