@@ -3035,6 +3035,16 @@ gchar *file_read_stream_to_str(FILE *fp)
 	str = (gchar *)array->data;
 	g_byte_array_free(array, FALSE);
 
+	if (!g_utf8_validate(str, -1, NULL)) {
+		const gchar *src_codeset, *dest_codeset;
+		gchar *tmp = NULL;
+		src_codeset = conv_get_current_charset_str();
+		dest_codeset = CS_UTF_8;
+		tmp = conv_codeset_strdup(str, src_codeset, dest_codeset);
+		g_free(str);
+		str = tmp;
+	}
+
 	return str;
 }
 
@@ -3131,6 +3141,16 @@ gchar *get_command_output(const gchar *cmdline)
 	ret = str->str;
 	g_string_free(str, FALSE);
 
+	if (!g_utf8_validate(ret, -1, NULL)) {
+		const gchar *src_codeset, *dest_codeset;
+		gchar *tmp = NULL;
+		src_codeset = conv_get_current_charset_str();
+		dest_codeset = CS_UTF_8;
+		tmp = conv_codeset_strdup(ret, src_codeset, dest_codeset);
+		g_free(ret);
+		ret = tmp;
+	}
+	
 	return ret;
 }
 

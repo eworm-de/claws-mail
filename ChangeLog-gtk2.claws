@@ -1,3 +1,9 @@
+2004-07-18 [colin]	0.9.12cvs31.9
+
+	* src/common/utils.c
+		Fix non-utf8 strings coming from commands
+		and files
+
 2004-07-18 [colin]	0.9.12cvs31.8
 
 	* src/pop.c
