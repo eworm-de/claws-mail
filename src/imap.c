@@ -1497,15 +1497,18 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 			return newlist;
 		}
 		strretchomp(tmp);
-		log_print("IMAP4< %s\n", tmp);
 		if (tmp[0] != '*' || tmp[1] != ' ') {
+			log_print("IMAP4< %s\n", tmp);
 			g_free(tmp);
 			break;
 		}
 		if (strstr(tmp, "FETCH") == NULL) {
+			log_print("IMAP4< %s\n", tmp);
 			g_free(tmp);
 			continue;
 		}
+		/* log_print("IMAP4< %s\n", tmp); */
+		debug_print("IMAP4< %s\n", tmp);
 		g_string_assign(str, tmp);
 		g_free(tmp);
 
@@ -1776,7 +1779,8 @@ static gchar *imap_parse_atom(SockInfo *sock, gchar *src,
 		g_string_assign(str, nextline);
 		cur_pos = str->str;
 		strretchomp(nextline);
-		log_print("IMAP4< %s\n", nextline);
+		/* log_print("IMAP4< %s\n", nextline); */
+		debug_print("IMAP4< %s\n", nextline);
 		g_free(nextline);
 
 		while (isspace(*cur_pos)) cur_pos++;
@@ -1808,7 +1812,8 @@ static gchar *imap_parse_atom(SockInfo *sock, gchar *src,
 			g_string_append(str, nextline);
 			cur_pos = str->str;
 			strretchomp(nextline);
-			log_print("IMAP4< %s\n", nextline);
+			/* log_print("IMAP4< %s\n", nextline); */
+			debug_print("IMAP4< %s\n", nextline);
 			g_free(nextline);
 		} while (line_len < len);
 

@@ -6,6 +6,8 @@
 	  クラッシュバグを修正。
 	* src/prefs_account.c: prefs_account_apply(): アカウント名が空の場合
 	  エラーダイアログを表示。
+	* src/imap.c: ログの量を減らすためにいくつかの log_print() を
+	  debug_print() に変更。
 
 2002-04-21
 

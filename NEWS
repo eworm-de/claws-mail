@@ -1,5 +1,33 @@
 Changes of Sylpheed
 
+* 0.7.5
+
+    * The license has been modified so that it will be compatible with
+      OpenSSL.
+    * Sent / Drafts / Queue folder on IMAP4 has been enabled.
+    * The internationalization of IMAP4 folder name has been implemented.
+    * IMAP4 folder renaming has been implemented.
+    * Some critical bugs in IMAP4 response parser have been fixed.
+    * Non-default mailboxes are now specifiable for inbox, sent, draft,
+      trash folder and the destination of filtering, using folder identifier.
+    * Folder property dialog has been implemented.
+    * Special folders can be specified from the folder property dialog.
+    * 'Outbox' has been changed to 'Sent'.
+    * Queued messages are now saved to Sent folder after they are actually
+      sent.
+    * The auto line-wrapping has been improved.
+    * 'Reply to sender' now works for newsgroups.
+    * The SMTP server response is now referred on SMTP AUTH.
+    * Templates can be inserted into the current cursor position now.
+    * Confirmation dialog is displayed on sending if subject is empty.
+    * Displayed newsgroup names are now abbreviated.
+    * The timeout of DNS lookup has been implemented.
+    * 'Ctrl-Enter' shortcut now works even if Num Lock is on.
+    * New message checking on IMAP or news server will be aborted immediately
+      if some errors occurred.
+    * Some menu items have been modified.
+    * Some other bugfixes have been made.
+
 * 0.7.4
 
     * The bug that lost UIDL information if any error occured before issuing

@@ -6,6 +6,8 @@
 	  name was empty.
 	* src/prefs_account.c: prefs_account_apply(): display error dialog
 	  if account name is empty.
+	* src/imap.c: changed some log_print() to debug_print() to reduce
+	  the amount of log.
 
 2002-04-21
 
