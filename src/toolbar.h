@@ -21,7 +21,7 @@
 #define __CUSTOM_TOOLBAR_H__
 
 #define SEPARATOR        "separator"
-#define TOOLBAR_FILE     "toolbar.xml"
+#define TOOLBAR_FILE     "toolbar_main.xml"
 
 #define SEPARATOR_PIXMAP "---"
 

@@ -1,3 +1,15 @@
+2002-08-21
+
+	* src/compose.c: improved line wrapping.
+	  join_next_line()
+	  compose_wrap_line_all(): also join lines that are not indented.
+	  dump_text(): handle multi-byte strings correctly.
+
+2002-08-21
+
+	* src/compose.c: compose_wrap_line_all(): fix for auto-wrapping
+	  (go to next line when space is entered at line limit).
+
 2002-08-19
 
 	* src/inc.c: inc_get_uidl_table(): fixed a memory leak reported by

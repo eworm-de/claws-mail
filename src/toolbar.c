@@ -361,12 +361,12 @@ void toolbar_save_config_file()
 
 		for (cur = toolbar_list; cur != NULL; cur = cur->next) {
 			ToolbarItem *toolbar_item = (ToolbarItem*) cur->data;
-#ifdef WIN32
-		  	gchar *p_text=g_locale_from_utf8(toolbar_item->text,
-				-1,NULL,NULL,NULL);
-#endif
 			
-			if (g_strcasecmp(toolbar_item->file, SEPARATOR) != 0) 
+			if (g_strcasecmp(toolbar_item->file, SEPARATOR) != 0) {
+#ifdef WIN32
+			  	gchar *p_text=g_locale_from_utf8(toolbar_item->text,
+					-1,NULL,NULL,NULL);
+#endif
 				fprintf(fp, "\t<%s %s=\"%s\" %s=\"%s\" %s=\"%s\"/>\n",
 					TOOLBAR_TAG_ITEM, 
 					TOOLBAR_ICON_FILE, toolbar_item->file,
@@ -377,11 +377,11 @@ void toolbar_save_config_file()
 #endif
 					TOOLBAR_ICON_ACTION, 
 					toolbar_ret_text_from_val(toolbar_item->action));
-			else 
-				fprintf(fp, "\t<%s/>\n", TOOLBAR_TAG_SEPARATOR); 
 #ifdef WIN32
-			g_free(p_text);
+				g_free(p_text);
 #endif
+			} else 
+				fprintf(fp, "\t<%s/>\n", TOOLBAR_TAG_SEPARATOR); 
 		}
 
 		fprintf(fp, "</%s>\n", TOOLBAR_TAG_INDEX);	

@@ -1,3 +1,74 @@
+2002-08-21 [alfons]	0.8.1claws97
+
+	* src/crash.c
+		use bt instead of bt full which seems to work 
+		better, and bt full doesn't give a great deal 
+		of information anyway
+
+2002-08-21 [colin]	0.8.1claws96
+
+	* src/summaryview.c
+		fix summaryview_searchtype_changed prototype
+
+2002-08-21 [christoph]	0.8.1claws95
+
+	* src/mainwindow.c
+		o fix broken menu update for sorting type, we have to
+		  get this info from the summaryview now
+		o removed setting of threaded state in menu callback
+	* src/summaryview.[ch]
+		more summaryview/folderitem seperation for
+		threading option
+	* configure.in
+		removed not required --with-compiler-flags option
+
+2002-08-21 [oliver]	0.8.1claws94
+	
+	* src/toolbar.h 
+		o rename toolbar.xml to toolbar_main.xml
+		  since toolbar_compose.xml might come up 
+		  any time soon
+	* README.claws
+		add custom toolbar		
+
+2002-08-21 [darko]	0.8.1claws93
+
+	* src/procmsg.c
+		don't reset tmp flags for messages copied
+		to sent folder
+
+2002-08-21 [colin]	0.8.1claws92
+	
+	* src/prefs_filtering.c
+		fix renaming rules on folder rename 
+		when folder is not a leaf folder
+
+2002-08-21 [paul]	0.8.1claws91
+
+	* src/prefs_folder_item.c
+		fix alignment of colour selector
+
+2002-08-21 [paul]	0.8.1claws90
+
+	* sync with 0.8.1cvs27
+		see ChangeLog 2002-08-21
+
+2002-08-21 [paul]	0.8.1claws89
+
+	* src/summaryview.c
+		fix crash when changing field type in
+		Quick search bar
+
+2002-08-21 [colin] 	0.8.1claws88
+
+	* src/summaryview.c
+		Made quick search case-insensitive
+
+2002-08-21 [paul]	0.8.1claws87
+
+	* sync with 0.8.1cvs26
+		see ChangeLog 2002-08-21
+
 2002-08-20 [christoph]	0.8.1claws86
 
 	* src/folderview.c
@@ -10,11 +81,11 @@
 
 2002-08-20 [colin]	0.8.1claws85
 
-        * src/summaryview.[ch]
-                Added a quick search box
-        * src/mainwindow.c
-        * src/prefs_common.[ch]
-                Added a show/hide option for the quick search
+	* src/summaryview.[ch]
+		Added a quick search box
+	* src/mainwindow.c
+	* src/prefs_common.[ch]
+		Added a show/hide option for the quick search
 
 2002-08-20 [oliver]	0.8.1claws84
 	

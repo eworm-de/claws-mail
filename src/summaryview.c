@@ -267,9 +267,8 @@ static void summary_key_pressed		(GtkWidget		*ctree,
 static void summary_searchbar_pressed	(GtkWidget		*ctree,
 					 GdkEventKey		*event,
 					 SummaryView		*summaryview);
-static void summary_searchtype_changed	(GtkWidget		*ctree,
-					 GdkEventAny		*event,
-					 SummaryView		*summaryview);
+static void summary_searchtype_changed	(GtkMenuItem 		*widget, 
+					 gpointer 		 data);
 static void summary_open_row		(GtkSCTree		*sctree,
 					 SummaryView		*summaryview);
 static void summary_tree_expanded	(GtkCTree		*ctree,
@@ -906,6 +905,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		gchar *searched_header = NULL;
 		
 		not_killed = NULL;
+		if(search_string)
+			g_strdown(search_string);
+
 		for(cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
 			MsgInfo * msginfo = (MsgInfo *) cur->data;
 			switch (search_type) {
@@ -921,8 +923,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 				default:
 					printf("bug in search_type (=%d)\n",search_type);
 			}
-			
-			if (searched_header != NULL
+			if (searched_header) 
+				g_strdown(searched_header);
+			if (searched_header 
 			    && strstr(searched_header, search_string) != NULL)
 				not_killed = g_slist_append(not_killed, msginfo);
 			else
@@ -2118,7 +2121,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 				summaryview->folder_item->prefs->important_score;
 	}
 
-	if (summaryview->folder_item->threaded) {
+	if (summaryview->threaded) {
 		GNode *root, *gnode;
 
 		root = procmsg_get_thread_tree(mlist);
@@ -3347,7 +3350,7 @@ gboolean summary_execute(SummaryView *summaryview)
 
 	gtk_clist_freeze(clist);
 
-	if (summaryview->folder_item->threaded)
+	if (summaryview->threaded)
 		summary_unthread_for_exec(summaryview);
 
 	summary_execute_move(summaryview);
@@ -3370,7 +3373,7 @@ gboolean summary_execute(SummaryView *summaryview)
 		node = next;
 	}
 
-	if (summaryview->folder_item->threaded)
+	if (summaryview->threaded)
 		summary_thread_build(summaryview);
 
 	summaryview->selected = clist->selection ?
@@ -3623,6 +3626,8 @@ void summary_thread_build(SummaryView *summaryview)
 	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
 
+	summaryview->threaded = TRUE;
+
 	summary_unlock(summaryview);
 }
 
@@ -3689,6 +3694,8 @@ void summary_unthread(SummaryView *summaryview)
 	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
+
+	summaryview->threaded = FALSE;
 
 	summary_unlock(summaryview);
 }
@@ -4547,11 +4554,11 @@ static void summary_searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 	 	summary_show(summaryview, summaryview->folder_item);
 }
 
-static void summary_searchtype_changed(GtkWidget *widget, GdkEventAny *event,
-				SummaryView *summaryview)
+static void summary_searchtype_changed(GtkMenuItem *widget, gpointer data)
 {
-	if (strlen(gtk_entry_get_text(GTK_ENTRY(summaryview->search_string))) > 0)
-	 	summary_show(summaryview, summaryview->folder_item);
+	SummaryView *sw = (SummaryView *)data;
+	if (gtk_entry_get_text(GTK_ENTRY(sw->search_string)))
+	 	summary_show(sw, sw->folder_item);
 }
 
 static void summary_open_row(GtkSCTree *sctree, SummaryView *summaryview)
@@ -5246,12 +5253,19 @@ void summary_set_prefs_from_folderitem(SummaryView *summaryview, FolderItem *ite
 	/* Sorting */
 	summaryview->sort_key = item->sort_key;
 	summaryview->sort_type = item->sort_type;
+
+	/* Threading */
+	summaryview->threaded = item->threaded;
 }
 
 void summary_save_prefs_to_folderitem(SummaryView *summaryview, FolderItem *item)
 {
+	/* Sorting */
 	item->sort_key = summaryview->sort_key;
 	item->sort_type = summaryview->sort_type;
+
+	/* Threading */
+	item->threaded = summaryview->threaded;
 }
 
 /*

@@ -135,6 +135,7 @@ struct _SummaryView
 	gint important_score;
 	FolderSortKey sort_key;
 	FolderSortType sort_type;
+	guint threaded;
 
 	/* Extra data for summaryview */
 	regex_t *simplify_subject_preg;

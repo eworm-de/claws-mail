@@ -1,3 +1,15 @@
+2002-08-21
+
+	* src/compose.c: 行折り返しを改良。
+	  join_next_line()
+	  compose_wrap_line_all(): インデントされていない行も結合。
+	  dump_text(): マルチバイト文字も正しく扱うようにした。
+
+2002-08-21
+
+	* src/compose.c: compose_wrap_line_all(): 自動改行のための修正
+	  (行の上限位置で空白が入力されたら次の行に移動)。
+
 2002-08-19
 
 	* src/inc.c: inc_get_uidl_table(): Martin Kluge さんによって報告
