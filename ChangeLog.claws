@@ -1,3 +1,8 @@
+2001-07-27 [alfons]
+	
+	* configure.in
+		change macros for detecting JPilot and LDAP
+
 2001-07-27 [christoph]
 
 	* src/filtering.c
