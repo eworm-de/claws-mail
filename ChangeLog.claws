@@ -1,3 +1,8 @@
+2003-01-01 [match]	0.8.8claws36
+
+	* src/addrindex.c
+		fixed another memory leak.
+
 2003-01-01 [match]	0.8.8claws35
 
 	* src/jpilot.[ch]

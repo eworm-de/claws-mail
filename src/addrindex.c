@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2002 Match Grun
+ * Copyright (C) 2001-2003 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,6 +115,7 @@ struct _AddressIfAttr {
 */
 static AddressInterface *addrindex_create_interface( gint type, gchar *name, gchar *tagIf, gchar *tagDS ) {
 	AddressInterface *iface = g_new0( AddressInterface, 1 );
+
 	ADDRITEM_TYPE(iface) = ITEMTYPE_INTERFACE;
 	ADDRITEM_ID(iface) = NULL;
 	ADDRITEM_NAME(iface) = g_strdup( name );
@@ -264,7 +265,6 @@ static void addrindex_free_attributes( GList *list ) {
 AddressDataSource *addrindex_create_datasource( AddressIfType ifType ) {
 	AddressDataSource *ds = g_new0( AddressDataSource, 1 );
 
-	ds = g_new0( AddressDataSource, 1 );
 	ADDRITEM_TYPE(ds) = ITEMTYPE_DATASOURCE;
 	ADDRITEM_ID(ds) = NULL;
 	ADDRITEM_NAME(ds) = NULL;
@@ -285,33 +285,36 @@ void addrindex_free_datasource( AddressDataSource *ds ) {
 	g_return_if_fail( ds != NULL );
 
 	iface = ds->interface;
-	if( iface == NULL ) return;
 	if( ds->rawDataSource != NULL ) {
-		if( iface->useInterface ) {
-			if( iface->type == ADDR_IF_BOOK ) {
-				AddressBookFile *abf = ds->rawDataSource;
-				addrbook_free_book( abf );
-			}
-			else if( iface->type == ADDR_IF_VCARD ) {
-				VCardFile *vcf = ds->rawDataSource;
-				vcard_free( vcf );
-			}
+		if( iface != NULL ) {
+			if( iface->useInterface ) {
+				if( iface->type == ADDR_IF_BOOK ) {
+					AddressBookFile *abf = ds->rawDataSource;
+					addrbook_free_book( abf );
+				}
+				else if( iface->type == ADDR_IF_VCARD ) {
+					VCardFile *vcf = ds->rawDataSource;
+					vcard_free( vcf );
+				}
 #ifdef USE_JPILOT
-			else if( iface->type == ADDR_IF_JPILOT ) {
-				JPilotFile *jpf = ds->rawDataSource;
-				jpilot_free( jpf );
-			}
+				else if( iface->type == ADDR_IF_JPILOT ) {
+					JPilotFile *jpf = ds->rawDataSource;
+					jpilot_free( jpf );
+				}
 #endif
 #ifdef USE_LDAP
-			else if( iface->type == ADDR_IF_LDAP ) {
-				SyldapServer *server = ds->rawDataSource;
-				syldap_free( server );
-			}
+				else if( iface->type == ADDR_IF_LDAP ) {
+					SyldapServer *server = ds->rawDataSource;
+					syldap_free( server );
+				}
 #endif
-		}
-		else {
-			GList *list = ds->rawDataSource;
-			addrindex_free_attributes( list );
+				else {
+				}
+			}
+			else {
+				GList *list = ds->rawDataSource;
+				addrindex_free_attributes( list );
+			}
 		}
 	}
 
@@ -337,14 +340,18 @@ static void addrindex_free_all_datasources( AddressInterface *iface ) {
 }
 
 static void addrindex_free_interface( AddressInterface *iface ) {
+	/* Free up data sources */
 	addrindex_free_all_datasources( iface );
+	g_list_free( iface->listSource );
 
+	/* Free internal storage */
 	g_free( ADDRITEM_ID(iface) );
 	g_free( ADDRITEM_NAME(iface) );
 	g_free( iface->name );
 	g_free( iface->listTag );
 	g_free( iface->itemTag );
 
+	/* Clear all pointers */
 	ADDRITEM_TYPE(iface) = ITEMTYPE_NONE;
 	ADDRITEM_ID(iface) = NULL;
 	ADDRITEM_NAME(iface) = NULL;
@@ -357,9 +364,9 @@ static void addrindex_free_interface( AddressInterface *iface ) {
 	iface->legacyFlag = FALSE;
 	iface->useInterface = FALSE;
 	iface->haveLibrary = FALSE;
-
-	g_list_free( iface->listSource );
 	iface->listSource = NULL;
+
+	g_free( iface );
 }
 
 /*
