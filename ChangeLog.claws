@@ -1,3 +1,9 @@
+2002-03-02 [melvin]	0.7.2claws25
+
+	* src/quote_fmt.c
+		Removed unnecessary escape sequences.
+		Changed 'Initial...' to 'Initials of Sender'
+
 2002-03-02 [paul]	0.7.2claws24
 
 	* sync with sylpheed 0.7.2cvs22

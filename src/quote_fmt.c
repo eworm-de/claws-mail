@@ -40,7 +40,7 @@ static gchar *symbol_table[][2] =
 	{"%f",		N_("From")}, /* from */
 	{"%N",		N_("Full Name of Sender")}, /* full name */
 	{"%F",		N_("First Name of Sender")}, /* first name */
-	{"%I",		N_("Initial of Sender")}, /* initial of sender */
+	{"%I",		N_("Initials of Sender")}, /* initial of sender */
 	{"%s",		N_("Subject")}, /* subject */ 
 	{"%t",		N_("To")}, /* to */ 
 	{"%c",		N_("Cc")}, /* cc */ 
@@ -52,9 +52,9 @@ static gchar *symbol_table[][2] =
 	{"%m",		N_("Message body without signature")}, /* message with no signature */ 
 	{"%q",		N_("Quoted message body without signature")}, /* quoted message with no signature */ 
 	{"",		NULL},
-	{"?x{expr}",	N_("Insert expr if x is set\nx is one of the characters above after \%")},
+	{"?x{expr}",	N_("Insert expr if x is set\nx is one of the characters above after %")},
 	{"",		NULL},
-	{"\\%", 	N_("Literal \%")}, /* % */ 
+	{"\\%", 	N_("Literal %")}, /* % */ 
 	{"\\\\",	N_("Literal backslash")}, /* \ */ 
 	{"\\?",		N_("Literal question mark")}, /* ? */ 
 	{"\\|",		N_("Literal pipe")}, /* | */
