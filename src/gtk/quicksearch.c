@@ -85,8 +85,8 @@ static void prepare_matcher(QuickSearch *quicksearch)
 	quicksearch->active = TRUE;
 }
 
-static gint searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
-			      QuickSearch *quicksearch)
+static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
+			      	  QuickSearch *quicksearch)
 {
 	if (event != NULL && event->keyval == GDK_Return) {
 		gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(quicksearch->search_string_entry)->entry));
@@ -103,19 +103,20 @@ static gint searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 
 		if (quicksearch->callback != NULL)
 			quicksearch->callback(quicksearch, quicksearch->callback_data);
-	 	gtk_signal_emit_stop_by_name(GTK_OBJECT(widget), "key_press_event");
+	 	g_signal_stop_emission_by_name(G_OBJECT(widget), "key_press_event");
+		return TRUE;
 	}
 
-	return TRUE; 		
+	return FALSE; 		
 }
 
-static void searchtype_changed(GtkMenuItem *widget, gpointer data)
+static gboolean searchtype_changed(GtkMenuItem *widget, gpointer data)
 {
 	QuickSearch *quicksearch = (QuickSearch *)data;
 
-	prefs_common.summary_quicksearch_type = GPOINTER_TO_INT(gtk_object_get_user_data(
-				   GTK_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
-				   GTK_MENU(quicksearch->search_type))))));
+	prefs_common.summary_quicksearch_type = GPOINTER_TO_INT(g_object_get_data(
+				   G_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
+				   GTK_MENU(quicksearch->search_type)))), MENU_VAL_ID));
 
 	/* Show extended search description button, only when Extended is selected */
 	if (prefs_common.summary_quicksearch_type == QUICK_SEARCH_EXTENDED) {
@@ -229,21 +230,21 @@ QuickSearch *quicksearch_new()
 
 	search_type = gtk_menu_new();
 	MENUITEM_ADD (search_type, menuitem, _("Subject"), QUICK_SEARCH_SUBJECT);
-	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-			   GTK_SIGNAL_FUNC(searchtype_changed),
-			   quicksearch);
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(searchtype_changed),
+			 quicksearch);
 	MENUITEM_ADD (search_type, menuitem, _("From"), QUICK_SEARCH_FROM);
-	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-			   GTK_SIGNAL_FUNC(searchtype_changed),
-			   quicksearch);
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(searchtype_changed),
+			 quicksearch);
 	MENUITEM_ADD (search_type, menuitem, _("To"), QUICK_SEARCH_TO);
-	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-			   GTK_SIGNAL_FUNC(searchtype_changed),
-			   quicksearch);
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(searchtype_changed),
+			 quicksearch);
 	MENUITEM_ADD (search_type, menuitem, _("Extended"), QUICK_SEARCH_EXTENDED);
-	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-			   GTK_SIGNAL_FUNC(searchtype_changed),
-			   quicksearch);
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(searchtype_changed),
+			 quicksearch);
 
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(search_type_opt), search_type);
 	
@@ -263,8 +264,8 @@ QuickSearch *quicksearch_new()
 		
 	gtkut_button_set_create(&search_hbbox, &search_description, _("Extended Symbols"),
 				NULL, NULL, NULL, NULL);
-	gtk_signal_connect(GTK_OBJECT(search_description), "clicked",
-			   GTK_SIGNAL_FUNC(search_description_cb), NULL);
+	g_signal_connect(G_OBJECT(search_description), "clicked",
+			 G_CALLBACK(search_description_cb), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_hbbox, FALSE, FALSE, 2);				
 	gtk_widget_show(search_hbbox);
 	if (prefs_common.summary_quicksearch_type == QUICK_SEARCH_EXTENDED)
