@@ -1721,7 +1721,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	}
 
 	SET_CHECK_MENU_ACTIVE("/View/Show all headers",
-			      mainwin->messageview->textview->show_all_headers);
+			      mainwin->messageview->mimeview->textview->show_all_headers);
 	SET_CHECK_MENU_ACTIVE("/View/Thread view", (state & M_THREADED) != 0);
 
 #undef SET_CHECK_MENU_ACTIVE
@@ -2681,8 +2681,7 @@ static void allsel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 	if (GTK_WIDGET_HAS_FOCUS(mainwin->summaryview->ctree))
 		summary_select_all(mainwin->summaryview);
 	else if (messageview_is_visible(msgview) &&
-		 (GTK_WIDGET_HAS_FOCUS(msgview->textview->text) ||
-		  GTK_WIDGET_HAS_FOCUS(msgview->mimeview->textview->text)))
+		 (GTK_WIDGET_HAS_FOCUS(msgview->mimeview->textview->text)))
 		messageview_select_all(mainwin->messageview);
 }
 

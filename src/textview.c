@@ -98,7 +98,6 @@ static GdkColor error_color = {
 };
 #endif
 
-#if USE_GPGME
 static GdkColor good_sig_color = {
 	(gulong)0,
 	(gushort)0,
@@ -119,7 +118,6 @@ static GdkColor bad_sig_color = {
 	(gushort)0,
 	(gushort)0
 };
-#endif
 
 static GdkFont *text_sb_font;
 static GdkFont *text_mb_font;
@@ -441,13 +439,6 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 
 	gtk_stext_freeze(text);
 
-#if USE_GPGME
-	if (mimeinfo->sigstatus)
-		g_snprintf(buf, sizeof(buf), "\n[%s/%s (%s)]\n",
-			   procmime_get_type_str(mimeinfo->type), 
-			   mimeinfo->subtype, mimeinfo->sigstatus);
-	else
-#endif
 	if (g_hash_table_lookup(mimeinfo->parameters, "name") != NULL)
 		g_snprintf(buf, sizeof(buf), "\n[%s  %s/%s (%d bytes)]\n",
 			   (gchar *) g_hash_table_lookup(mimeinfo->parameters, "name"),
@@ -458,31 +449,6 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 			   procmime_get_type_str(mimeinfo->type),
 			   mimeinfo->subtype, mimeinfo->length);
 
-#if USE_GPGME
-	if (mimeinfo->sigstatus && !mimeinfo->sigstatus_full) {
-		gchar *tmp;
-		/* use standard font */
-		gpointer oldfont = textview->msgfont;
-		textview->msgfont = NULL;
-
-		tmp = g_strconcat("pgp: ", _("Check signature"), NULL);
-		textview_write_link(textview, buf, tmp, NULL);
-		
-		/* put things back */
-		textview->msgfont = (GdkFont *)oldfont;
-		oldfont = NULL;
-		g_free(tmp);
-	} else if (mimeinfo->sigstatus) {
-		GdkColor *color;
-		if (!strcmp(mimeinfo->sigstatus, _("Good signature")))
-			color = &good_sig_color;
-		else if (!strcmp(mimeinfo->sigstatus, _("BAD signature")))
-			color = &bad_sig_color;
-		else
-			color = &nocheck_sig_color; 
-		gtk_stext_insert(text, NULL, color, NULL, buf, -1);
-	} else
-#endif
 	if (mimeinfo->type != MIMETYPE_TEXT) {
 		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
 	} else {
@@ -556,31 +522,6 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 
 	gtk_stext_thaw(text);
 }
-
-#if USE_GPGME
-void textview_show_signature_part(TextView *textview, MimeInfo *partinfo)
-{
-	GtkSText *text;
-
-	if (!partinfo) return;
-
-	textview_set_font(textview, NULL);
-	text = GTK_STEXT(textview->text);
-	textview_clear(textview);
-
-	gtk_stext_freeze(text);
-
-	if (partinfo->sigstatus_full == NULL) {
-		TEXT_INSERT(_("This signature has not been checked yet.\n"));
-		TEXT_INSERT(_("To check it, pop up the context menu with\n"));
-		TEXT_INSERT(_("right click and select `Check signature'.\n"));
-	} else {
-		TEXT_INSERT(partinfo->sigstatus_full);
-	}
-
-	gtk_stext_thaw(text);
-}
-#endif /* USE_GPGME */
 
 #undef TEXT_INSERT
 
@@ -1746,13 +1687,9 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_y:
 	case GDK_t:
 	case GDK_l:
-		if (messageview->type == MVIEW_MIME &&
-		    textview == messageview->mimeview->textview) {
-			KEY_PRESS_EVENT_STOP();
-			mimeview_pass_key_press_event(messageview->mimeview,
-						      event);
-			break;
-		}
+		KEY_PRESS_EVENT_STOP();
+		mimeview_pass_key_press_event(messageview->mimeview,
+					      event);
 		/* fall through */
 	default:
 		if (summaryview &&
@@ -1864,18 +1801,7 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 						}
 						compose_new(account, uri->uri + 7, NULL);
 					}
-				} else 
-#if USE_GPGME
-				if (!g_strncasecmp(uri->uri, "pgp:", 4)) {
-					GtkAdjustment *pos = gtk_scrolled_window_get_vadjustment(
-								GTK_SCROLLED_WINDOW(textview->scrolledwin));
-					gfloat vpos = pos->value;
-					mimeview_check_signature(textview->messageview->mimeview);
-					/* scroll back where we were */
-					gtk_adjustment_set_value(pos, vpos);
-				} else
-#endif
-				{
+				} else {
 					open_uri(uri->uri,
 						 prefs_common.uri_cmd);
 				}

@@ -34,17 +34,10 @@ typedef struct _MessageView		MessageView;
 #include "procmime.h"
 #include "toolbar.h"
 
-typedef enum
-{
-	MVIEW_TEXT,
-	MVIEW_MIME
-} MessageType;
-
 struct _MessageView
 {
 	GtkWidget *vbox;
 
-	MessageType type;
 	gboolean new_window;
 	GtkWidget *window;
 
@@ -54,7 +47,6 @@ struct _MessageView
 	GtkWidget *menubar;
 
 	HeaderView *headerview;
-	TextView *textview;
 	MimeView *mimeview;
 	NoticeView *noticeview;
 

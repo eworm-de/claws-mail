@@ -37,9 +37,6 @@
 #include "folder.h"
 #include "prefs_common.h"
 #include "account.h"
-#if USE_GPGME
-#  include "rfc2015.h"
-#endif
 #include "alertpanel.h"
 #include "news.h"
 #include "hooks.h"
@@ -918,19 +915,6 @@ MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 	procmsg_msginfo_free(full_msginfo);
 
 	return procmsg_msginfo_new_ref(msginfo);
-#if 0
-	full_msginfo->msgnum = msginfo->msgnum;
-	full_msginfo->size = msginfo->size;
-	full_msginfo->mtime = msginfo->mtime;
-	full_msginfo->folder = msginfo->folder;
-#if USE_GPGME
-	full_msginfo->plaintext_file = g_strdup(msginfo->plaintext_file);
-	full_msginfo->decryption_failed = msginfo->decryption_failed;
-#endif
-	procmsg_msginfo_set_to_folder(full_msginfo, msginfo->to_folder);
-
-	return full_msginfo;
-#endif
 }
 
 void procmsg_msginfo_free(MsgInfo *msginfo)

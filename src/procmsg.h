@@ -246,10 +246,6 @@ gchar  *procmsg_get_message_file	(MsgInfo	*msginfo);
 GSList *procmsg_get_message_file_list	(MsgInfoList	*mlist);
 void	procmsg_message_file_list_free	(MsgInfoList	*file_list);
 FILE   *procmsg_open_message		(MsgInfo	*msginfo);
-#if USE_GPGME
-FILE   *procmsg_open_message_decrypted	(MsgInfo	*msginfo,
-					 MimeInfo      **mimeinfo);
-#endif
 gboolean procmsg_msg_exist		(MsgInfo	*msginfo);
 
 void	procmsg_get_filter_keyword	(MsgInfo	  *msginfo,

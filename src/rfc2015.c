@@ -328,6 +328,7 @@ sig_status_full (GpgmeCtx ctx)
 
 static void check_signature (MimeInfo *mimeinfo, MimeInfo *partinfo, FILE *fp)
 {
+#if 0 /* FIXME */
     GpgmeCtx ctx = NULL;
     GpgmeError err;
     GpgmeData sig = NULL, text = NULL;
@@ -425,6 +426,7 @@ leave:
     gpgme_release (ctx);
     if (prefs_common.gpg_signature_popup)
 	gpgmegtk_sig_status_destroy (statuswindow);
+#endif
 }
 
 /*

@@ -28,9 +28,6 @@ extern "C" {
 #  include "config.h"
 #endif
 
-#include <glib.h>
-#include <stdio.h>
-
 typedef struct _MimeType	MimeType;
 typedef struct _MimeInfo	MimeInfo;
 
@@ -45,16 +42,6 @@ typedef enum
 	ENC_UNKNOWN
 } EncodingType;
 
-#include "procmsg.h"
-
-struct _MimeType
-{
-	gchar *type;
-	gchar *sub_type;
-
-	gchar *extension;
-};
-
 typedef enum
 {
 	MIMETYPE_TEXT,
@@ -66,6 +53,19 @@ typedef enum
 	MIMETYPE_MULTIPART,
 	MIMETYPE_UNKNOWN,
 } MimeMediaType;
+
+#include <glib.h>
+#include <stdio.h>
+
+#include "procmsg.h"
+
+struct _MimeType
+{
+	gchar *type;
+	gchar *sub_type;
+
+	gchar *extension;
+};
 
 /*
  * An example of MimeInfo structure:
@@ -126,14 +126,6 @@ struct _MimeInfo
 
 	guint		 offset;
 	guint		 length;
-
-	/* Privacy */
-	gchar *sigstatus;
-	gchar *sigstatus_full;
-	gboolean sig_ok;
-	gboolean sig_unknown;
-	gboolean sig_expired;
-	gboolean key_expired;
 };
 
 #define IS_BOUNDARY(s, bnd, len) \

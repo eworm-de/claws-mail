@@ -74,10 +74,6 @@ void textview_show_part		(TextView	*textview,
 				 FILE		*fp);
 void textview_show_mime_part	(TextView	*textview,
 				 MimeInfo	*partinfo);
-#if USE_GPGME
-void textview_show_signature_part(TextView	*textview,
-				  MimeInfo 	*partinfo);
-#endif
 void textview_clear		(TextView	*textview);
 void textview_destroy		(TextView	*textview);
 void textview_set_all_headers	(TextView	*textview,

@@ -45,10 +45,6 @@
 #include "utils.h"
 #include "prefs_common.h"
 
-#if USE_GPGME
-#  include "rfc2015.h"
-#endif
-
 #include "prefs_gtk.h"
 
 static GHashTable *procmime_get_mime_type_table	(void);
@@ -76,32 +72,29 @@ static gboolean procmime_mimeinfo_parameters_destroy(gpointer key, gpointer valu
 
 void procmime_mimeinfo_free_all(MimeInfo *mimeinfo)
 {
-	while (mimeinfo != NULL) {
-		MimeInfo *next;
+	MimeInfo *next;
 
-		g_free(mimeinfo->encoding);
-		g_free(mimeinfo->charset);
-		g_free(mimeinfo->name);
-		g_free(mimeinfo->content_disposition);
-		if(mimeinfo->tmpfile)
-			unlink(mimeinfo->filename);
-		g_free(mimeinfo->filename);
+	g_return_if_fail(mimeinfo);
 
-		procmime_mimeinfo_free_all(mimeinfo->children);
-		g_free(mimeinfo->subtype);
-		g_free(mimeinfo->description);
-		g_free(mimeinfo->id);
+	g_free(mimeinfo->encoding);
+	g_free(mimeinfo->charset);
+	g_free(mimeinfo->name);
+	g_free(mimeinfo->content_disposition);
+	if(mimeinfo->tmpfile)
+		unlink(mimeinfo->filename);
+	g_free(mimeinfo->filename);
 
-		g_free(mimeinfo->sigstatus);
-		g_free(mimeinfo->sigstatus_full);
+	procmime_mimeinfo_free_all(mimeinfo->children);
+	g_free(mimeinfo->subtype);
+	g_free(mimeinfo->description);
+	g_free(mimeinfo->id);
 
-		g_hash_table_foreach_remove(mimeinfo->parameters, procmime_mimeinfo_parameters_destroy, NULL);
-		g_hash_table_destroy(mimeinfo->parameters);
+	g_hash_table_foreach_remove(mimeinfo->parameters, procmime_mimeinfo_parameters_destroy, NULL);
+	g_hash_table_destroy(mimeinfo->parameters);
 
-		next = mimeinfo->next;
-		g_free(mimeinfo);
-		mimeinfo = next;
-	}
+	next = mimeinfo->next;
+	g_free(mimeinfo);
+	mimeinfo = next;
 }
 
 MimeInfo *procmime_mimeinfo_insert(MimeInfo *parent, MimeInfo *mimeinfo)
