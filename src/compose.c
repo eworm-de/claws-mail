@@ -1864,8 +1864,13 @@ static void compose_insert_file(Compose *compose, const gchar *file)
 
 	gtk_stext_freeze(text);
 
-	while (fgets(buf, sizeof(buf), fp) != NULL)
-		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		if (strlen(buf) > 1 && buf[strlen(buf) - 2] == '\r' && buf[strlen(buf) - 1] == '\n') {
+			buf[strlen(buf) - 2] = '\n';
+			buf[strlen(buf) - 1] = 0;
+		}
+ 		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
+	}
 
 	gtk_stext_thaw(text);
 

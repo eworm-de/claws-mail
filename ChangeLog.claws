@@ -1,4 +1,17 @@
-2001-10-18 [hoa]        0.6.3claws29
+2001-10-21 [paul]	0.6.3claws30
+
+	* src/compose.c
+		insert a DOS text file from the compose window
+		into the composed message text (removes CRs characters)
+		Submitted by Thierry Godefroy <godefroy@imaginet.fr>
+
+	* tools/filter_conv.pl, tools/README
+		automatically use ~/.sylpheed as working directory
+		print out confirmation message on completion
+
+	* correct Hoa's last ChangeLog.claws entry
+
+2001-10-20 [hoa]        0.6.3claws29
 
 	* src/grouplistdialog.c
 		bugfix (another ?) to give the right
