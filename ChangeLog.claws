@@ -1,3 +1,12 @@
+2005-01-27 [colin]	1.0.0cvs17
+
+	* src/procmsg.c
+	* src/procmsg.h
+		Add a way to dump message/rfc822 MimeInfos to MsgInfos...
+	* src/compose.c
+		... And use it to be able to reply to the currently 
+		selected MimeInfo.
+
 2005-01-27 [colin]	1.0.0cvs16
 
 	* src/messageview.c
