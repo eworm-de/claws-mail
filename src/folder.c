@@ -1873,7 +1873,6 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 
 			if (!folderscan && 
 			    ((newmsginfo = folder->klass->get_msginfo(folder, dest, num)) != NULL)) {
-				newmsginfo = folder->klass->get_msginfo(folder, dest, num);
 				add_msginfo_to_cache(dest, newmsginfo, msginfo);
 				procmsg_msginfo_free(newmsginfo);
 			} else if ((newmsginfo = msgcache_get_msg(dest->cache, num)) != NULL) {
