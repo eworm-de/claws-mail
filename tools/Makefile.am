@@ -12,6 +12,7 @@ EXTRA_TOOLS = \
 	kmail2sylpheed.pl \
 	kmail2sylpheed_v2.pl \
 	launch_phoenix \
+	maildir2sylpheed.pl \
 	multiwebsearch.pl \
 	newscache_clean.pl \
 	outlook2sylpheed.pl \
