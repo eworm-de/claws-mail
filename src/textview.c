@@ -569,7 +569,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo,
 		fseek(tmpfp, mimeinfo->offset, SEEK_SET);
 		debug_print("Viewing text content of type: %s (length: %d)\n", mimeinfo->subtype, mimeinfo->length);
 		while ((fgets(buf, sizeof(buf), tmpfp) != NULL) && 
-		       (ftell(tmpfp) < mimeinfo->offset + mimeinfo->length))
+		       (ftell(tmpfp) <= mimeinfo->offset + mimeinfo->length))
 			textview_write_line(textview, buf, conv);
 		fclose(tmpfp);
 	}

@@ -1,8 +1,14 @@
+2003-10-14 [christoph]	0.9.6claws24
+
+	* src/textview.c
+		fix missing last line in plain/text mails
+
 2003-10-13 [luke]	0.9.6claws23
+
 	* src/summaryview.c
 	        fix bug 334 (part 1)
 
-2003-10-13  [kov]	0.9.6claws22
+2003-10-13 [kov]	0.9.6claws22
 
 	* src/mimeview.c
 	        error checking when the user enters a non-directory at
@@ -11,6 +17,7 @@
 	        adding a leading G_DIR_SEPARATOR.
 
 2003-10-13 [luke]	0.9.6claws21
+
 	* src/compose.c
 	        error reporting for inserting files, including catching
         	invalid characters for current locale/encoding
