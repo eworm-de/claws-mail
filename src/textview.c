@@ -954,8 +954,8 @@ static void textview_make_clickable_parts(TextView *textview,
 	static struct table parser[] = {
 		{"http://",  strcasestr, get_uri_part,   make_uri_string},
 		{"https://", strcasestr, get_uri_part,   make_uri_string},
-		{"www.",     strcasestr, get_uri_part,	 make_uri_string},
 		{"ftp://",   strcasestr, get_uri_part,   make_uri_string},
+		{"www.",     strcasestr, get_uri_part,   make_uri_string},
 		{"mailto:",  strcasestr, get_uri_part,   make_uri_string},
 		{"@",        strcasestr, get_email_part, make_email_string}
 	};
@@ -1192,7 +1192,7 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 	/* In multi-byte mode, GtkSText can't display 8bit characters
 	   correctly, so it must be single-byte mode. */
 	if (MB_CUR_MAX > 1) {
-		if (codeset && conv_get_current_charset() != C_UTF_8) {
+		if (codeset) {
 			if (!g_strncasecmp(codeset, "ISO-8859-", 9) ||
 			    !g_strcasecmp(codeset, "BALTIC"))
 				use_fontset = FALSE;
