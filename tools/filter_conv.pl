@@ -37,6 +37,11 @@ open (FILTERRC, "<filterrc") || die("Can't find your old filter rules\n");
 @filterrc = <FILTERRC>;
 close FILTERRC;
 
+if (!@filterrc) {
+	print "\nYou don't have any filter rules\n\n";
+	exit;
+}
+
 $WRITE_THIS = "";
 $COUNT      = "0";
 
@@ -84,7 +89,10 @@ open (MATCHERRC, ">matcherrc");
 print MATCHERRC $WRITE_THIS;
 close MATCHERRC;
 
+rename ("filterrc","filterrc.old");
+
 print "\nYou have sucessfully converted $COUNT filtering rules\n\n";
+print "'filterrc' has been renamed 'filterrc.old'\n\n";
 exit;
 
 sub sort_data {
