@@ -1364,7 +1364,8 @@ typedef enum
 	M_THREADED            = 1 << 7,
 	M_UNTHREADED	      = 1 << 8,
 	M_NEWS                = 1 << 9,
-	M_HAVE_NEWS_ACCOUNT   = 1 << 10
+	M_HAVE_NEWS_ACCOUNT   = 1 << 10,
+	M_HIDE_READ_MSG	      = 1 << 11
 } SensitiveCond;
 
 static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
@@ -1384,7 +1385,11 @@ static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		if (item->threaded)
 			state |= M_THREADED;
 		else
-			state |= M_UNTHREADED;	
+			state |= M_UNTHREADED;
+
+		if (selection == SUMMARY_NONE && item->hide_read_msgs
+		    || selection != SUMMARY_NONE)
+			state |= M_HIDE_READ_MSG;	
 	}		
 	if (selection == SUMMARY_SELECTED_SINGLE ||
 	    selection == SUMMARY_SELECTED_MULTIPLE)
@@ -1478,7 +1483,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/View/Sort"                      , M_MSG_EXIST},
 		{"/View/Thread view"               , M_UNTHREADED},
 		{"/View/Unthread view"             , M_THREADED},
-		{"/View/Hide read messages"	   , M_MSG_EXIST},
+		{"/View/Hide read messages"	   , M_HIDE_READ_MSG},
 		{"/View/Go to"                     , M_MSG_EXIST},
 		{"/View/Go to/Prev message"        , M_MSG_EXIST},
 		{"/View/Go to/Next message"        , M_MSG_EXIST},

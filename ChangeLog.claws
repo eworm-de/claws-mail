@@ -1,3 +1,9 @@
+2002-02-01 [paul]	0.7.0claws44
+
+	* src/mainwindow.c
+		fix '/View/Hide read messages' sensitivity when all
+		messages in a folder are hidden
+
 2002-02-01 [paul]	0.7.0claws43
 
 	* src/main.c
