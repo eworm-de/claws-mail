@@ -142,7 +142,7 @@ static void mutt_close_file( MuttFile *muttFile ) {
 */
 static gchar *mutt_get_line( MuttFile *muttFile, gboolean *flagCont ) {
 	gchar buf[ MUTTBUFSIZE ];
-	gchar ch, lch;
+	int ch, lch;
 	gchar *ptr, *lptr;
 
 	*flagCont = FALSE;

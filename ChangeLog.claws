@@ -1,3 +1,19 @@
+2001-12-31 [alfons]	0.6.6claws34
+	
+	* src/ldif.c
+	* src/mutt.c
+		fgetc() returns a signed integer which doesn't
+		fit in a char. so c truncates this to a char
+		but we may lose significant bits. i.e. we may
+		comparing 0xFF which may not be equal to -1
+		unless properly casted to signed char which
+		we won't do because fgetc() returns a signed
+		integer which doesn't fit in a char. so c 
+		truncates this to a char but we may lose 
+		significat bits. (you got the idea, thanks
+		to Gustavo Noronha Silva <kov@debian.org>
+		and the Debian folks!)
+
 2001-12-30 [alfons]	0.6.6claws33
 
 	* src/prefs_common.c

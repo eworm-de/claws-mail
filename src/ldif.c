@@ -226,7 +226,7 @@ static void ldif_close_file( LdifFile *ldifFile ) {
 */
 static gchar *ldif_get_line( LdifFile *ldifFile ) {
 	gchar buf[ LDIFBUFSIZE ];
-	gchar ch;
+	int ch;
 	gchar *ptr;
 
 	if( feof( ldifFile->file ) ) return NULL;
