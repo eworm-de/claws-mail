@@ -3092,9 +3092,9 @@ gchar *expand_search_string(const gchar *search_string)
 	for (i = 0; cmds[i].command; i++) {
 		cmd_start = cmds[i].command;
 		/* allow logical NOT */
-		if (*cmd_start == '~')
-			cmd_start++;
-		if (!strncmp(copy_str, cmd_start, strlen(cmd_start)))
+		if (*search_string == '~')
+			search_string++;
+		if (!strncmp(search_string, cmd_start, strlen(cmd_start)))
 			break;
 	}
 	if (cmds[i].command)

@@ -1,6 +1,11 @@
+2002-12-05 [darko]	0.8.6claws64
+
+	* src/utils.c
+		proper check for filtering commands, found by Colin
+
 2002-12-05 [darko]	0.8.6claws63
 
-	* src/utils.[ch]
+	* src/utils.c
 		check proper string for NULL pointer, found by Colin
 
 2002-12-05 [darko]	0.8.6claws62
