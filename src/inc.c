@@ -634,12 +634,14 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		msglist = folder_item_get_msg_list(processing);
 
 		/* process messages */
+		folder_item_update_freeze();
 		for(msglist_element = msglist; msglist_element != NULL; msglist_element = msglist_element->next) {
 			msginfo = (MsgInfo *) msglist_element->data;
 			if (!pop3_session->ac_prefs->filter_on_recv || !procmsg_msginfo_filter(msginfo))
 				folder_item_move_msg(inbox, msginfo);
 			procmsg_msginfo_free(msginfo);
 		}
+		folder_item_update_thaw();
 		g_slist_free(msglist);
 
 		statusbar_pop_all();
