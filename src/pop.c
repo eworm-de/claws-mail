@@ -37,6 +37,9 @@
 #include "utils.h"
 #include "recv.h"
 #include "folder.h"
+#include "procmsg.h"
+#include "procheader.h"
+#include "msgcache.h"
 
 #include "log.h"
 #include "hooks.h"
@@ -408,7 +411,8 @@ static gint pop3_top_recv(Pop3Session *session, const gchar *data, guint len)
 	mail_receive_data.data = g_strndup(data, len);
 	hooks_invoke(MAIL_RECEIVE_HOOKLIST, &mail_receive_data);
 
-	partial_notice = g_strdup_printf("SC-Partially-Retrieved: %s\n"
+	partial_notice = g_strdup_printf("SC-Marked-For-Download: 0\n"
+					 "SC-Partially-Retrieved: %s\n"
 					 "SC-Account-Server: %s\n"
 					 "SC-Account-Login: %s\n"
 					 "SC-Message-Size: %d",
@@ -719,10 +723,7 @@ static gchar *pop3_get_filename_for_partial_mail(Pop3Session *session,
 	return result;
 }
 
-static int pop3_uidl_mark_mail(const gchar *server, const gchar *login, 
-			  const gchar *muidl, const gchar *filename, 
-			  const gchar *folder_item_id, guint msgnum, 
-			  int download)
+static int pop3_uidl_mark_mail(MsgInfo *msginfo, int download)
 {
 	gchar *path;
 	gchar *pathnew;
@@ -735,32 +736,42 @@ static int pop3_uidl_mark_mail(const gchar *server, const gchar *login,
 	int len;
 	int start = TRUE;
 	gchar partial_recv[POPBUFSIZE];
-	
+	int err = -1;
+
+	gchar *filename;
+	MsgInfo *tinfo;
+	filename = procmsg_get_message_file_path(msginfo);
+	if (!filename) {
+		g_warning("can't get message file path.\n");
+		return err;
+	}
+	tinfo = procheader_parse_file(filename, msginfo->flags, TRUE, TRUE);
+
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-			   "uidl", G_DIR_SEPARATOR_S, server,
-			   "-", login, NULL);
+			   "uidl", G_DIR_SEPARATOR_S, tinfo->account_server,
+			   "-", tinfo->account_login, NULL);
 	if ((fp = fopen(path, "rb")) == NULL) {
 		perror("fopen1");
 		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 		g_free(path);
 		path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-				   "uidl-", server,
-				   "-", login, NULL);
+				   "uidl-", tinfo->account_server,
+				   "-", tinfo->account_login, NULL);
 		if ((fp = fopen(path, "rb")) == NULL) {
 			if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 			g_free(path);
 		}
-		return -1;
+		goto bail;
 	}
 
 	pathnew = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-			   "uidl", G_DIR_SEPARATOR_S, server,
-			   "-", login, ".new", NULL);
+			   "uidl", G_DIR_SEPARATOR_S, tinfo->account_server,
+			   "-", tinfo->account_login, ".new", NULL);
 	if ((fpnew = fopen(pathnew, "wb")) == NULL) {
 		perror("fopen2");
 		fclose(fp);
 		g_free(pathnew);
-		return -1;	
+		goto bail;
 	}
 	
 	now = time(NULL);
@@ -778,14 +789,17 @@ static int pop3_uidl_mark_mail(const gchar *server, const gchar *login,
 				recv_time = now;
 			}
 		}
-		if (strcmp(muidl, uidl)) {
+		if (strcmp(tinfo->partial_recv, uidl)) {
 			fprintf(fpnew, "%s\t%ld\t%s\n", 
 				uidl, recv_time, partial_recv);
 		} else {
 			gchar *stat = NULL;
 			if (download == POP3_PARTIAL_DLOAD_DLOAD) {
+				gchar *folder_id = folder_item_get_identifier(
+							msginfo->folder);
 				stat = g_strdup_printf("%s:%d",
-					folder_item_id, msgnum);
+					folder_id, msginfo->msgnum);
+				g_free(folder_id);
 			}
 			else if (download == POP3_PARTIAL_DLOAD_UNKN)
 				stat = strdup("1");
@@ -807,22 +821,21 @@ static int pop3_uidl_mark_mail(const gchar *server, const gchar *login,
 	
 	if ((fp = fopen(filename,"rb")) == NULL) {
 		perror("fopen3");
-		return -1;
+		goto bail;
 	}
 	pathnew = g_strdup_printf("%s.new", filename);
 	if ((fpnew = fopen(pathnew, "wb")) == NULL) {
 		perror("fopen4");
 		fclose(fp);
 		g_free(pathnew);
-		return -1;
+		goto bail;
 	}
 	
 	while ((len = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
 		buf[len]='\0';
 		if (start) {
 			start = FALSE;
-			if (download != POP3_PARTIAL_DLOAD_UNKN)
-				fprintf(fpnew, "SC-Marked-For-Download: %d\n", 
+			fprintf(fpnew, "SC-Marked-For-Download: %d\n", 
 					download);
 			
 			if(strlen(buf) > strlen("SC-Marked-For-Download: x\n")
@@ -839,9 +852,15 @@ static int pop3_uidl_mark_mail(const gchar *server, const gchar *login,
 	fclose(fp);
 	unlink(filename);
 	rename(pathnew, filename);
-	
 	g_free(pathnew);
-	return 0;
+	err = 0;
+bail:
+	g_free(filename);
+	procmsg_msginfo_free(tinfo);
+	
+	msginfo->planned_download = download;
+	msgcache_update_msg(msginfo->folder->cache, msginfo);
+	return err;
 }
 
 /* Partial download:
@@ -868,28 +887,19 @@ static int pop3_uidl_mark_mail(const gchar *server, const gchar *login,
  * this mail from the server as soon as the leave_time preference specifies.
  */
  
-int pop3_mark_for_delete(const gchar *server, const gchar *login, 
-			 const gchar *muidl, const gchar *file, 
-			 const gchar *folder_item_id, guint msgnum)
+int pop3_mark_for_delete(MsgInfo *msginfo)
 {
-	return pop3_uidl_mark_mail(server, login, muidl, file, folder_item_id, 
-		msgnum, POP3_PARTIAL_DLOAD_DELE);
+	return pop3_uidl_mark_mail(msginfo, POP3_PARTIAL_DLOAD_DELE);
 }
 
-int pop3_mark_for_download(const gchar *server, const gchar *login, 
-			   const gchar *muidl, const gchar *file, 
-			   const gchar *folder_item_id, guint msgnum)
+int pop3_mark_for_download(MsgInfo *msginfo)
 {
-	return pop3_uidl_mark_mail(server, login, muidl, file, folder_item_id, 
-		msgnum, POP3_PARTIAL_DLOAD_DLOAD);
+	return pop3_uidl_mark_mail(msginfo, POP3_PARTIAL_DLOAD_DLOAD);
 }
 
-int pop3_unmark(const gchar *server, const gchar *login, 
-		const gchar *muidl, const gchar *file, 
-		const gchar *folder_item_id, guint msgnum)
+int pop3_unmark(MsgInfo *msginfo)
 {
-	return pop3_uidl_mark_mail(server, login, muidl, file, folder_item_id, 
-		msgnum, POP3_PARTIAL_DLOAD_UNKN);
+	return pop3_uidl_mark_mail(msginfo, POP3_PARTIAL_DLOAD_UNKN);
 }
 
 static void pop3_delete_old_partial(const gchar *file) 

@@ -1125,88 +1125,25 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 static void partial_recv_dload_clicked(NoticeView *noticeview, 
 				       MsgInfo *msginfo)
 {
-	MsgInfo *tmpmsginfo;
-	gchar *file;
-
-	file = procmsg_get_message_file_path(msginfo);
-	if (!file) {
-		g_warning("can't get message file path.\n");
-		return;
-	}
-
-	tmpmsginfo = procheader_parse_file(file, msginfo->flags, TRUE, TRUE);
-	tmpmsginfo->folder = msginfo->folder;
-	tmpmsginfo->msgnum = msginfo->msgnum;
-
-	if (pop3_mark_for_download(tmpmsginfo->account_server, 
-				   tmpmsginfo->account_login, 
-			   	   tmpmsginfo->partial_recv, file,
-				   folder_item_get_identifier(msginfo->folder), 
-				   msginfo->msgnum) == 0) {
-		msginfo->planned_download = POP3_PARTIAL_DLOAD_DLOAD;
+	if (pop3_mark_for_download(msginfo) == 0) {
 		partial_recv_show(noticeview, msginfo);
 	}
-
-	procmsg_msginfo_free(tmpmsginfo);
-	g_free(file);
 }
 
 static void partial_recv_del_clicked(NoticeView *noticeview, 
 				       MsgInfo *msginfo)
 {
-	MsgInfo *tmpmsginfo;
-	gchar *file;
-
-	file = procmsg_get_message_file_path(msginfo);
-	if (!file) {
-		g_warning("can't get message file path.\n");
-		return;
-	}
-
-	tmpmsginfo = procheader_parse_file(file, msginfo->flags, TRUE, TRUE);
-	tmpmsginfo->folder = msginfo->folder;
-	tmpmsginfo->msgnum = msginfo->msgnum;
-
-	if (pop3_mark_for_delete(tmpmsginfo->account_server, 
-				   tmpmsginfo->account_login, 
-			   	   tmpmsginfo->partial_recv, file,
-				   folder_item_get_identifier(msginfo->folder), 
-				   msginfo->msgnum) == 0) {
-		msginfo->planned_download = POP3_PARTIAL_DLOAD_DELE;
+	if (pop3_mark_for_delete(msginfo) == 0) {
 		partial_recv_show(noticeview, msginfo);
 	}
-
-	procmsg_msginfo_free(tmpmsginfo);
-	g_free(file);
 }
 
 static void partial_recv_unmark_clicked(NoticeView *noticeview, 
 				       MsgInfo *msginfo)
 {
-	MsgInfo *tmpmsginfo;
-	gchar *file;
-
-	file = procmsg_get_message_file_path(msginfo);
-	if (!file) {
-		g_warning("can't get message file path.\n");
-		return;
-	}
-
-	tmpmsginfo = procheader_parse_file(file, msginfo->flags, TRUE, TRUE);
-	tmpmsginfo->folder = msginfo->folder;
-	tmpmsginfo->msgnum = msginfo->msgnum;
-
-	if (pop3_unmark(tmpmsginfo->account_server, 
-			tmpmsginfo->account_login, 
-			tmpmsginfo->partial_recv, file,
-			folder_item_get_identifier(msginfo->folder), 
-			msginfo->msgnum) == 0) {
-		msginfo->planned_download = POP3_PARTIAL_DLOAD_UNKN;
+	if (pop3_unmark(msginfo) == 0) {
 		partial_recv_show(noticeview, msginfo);
 	}
-
-	procmsg_msginfo_free(tmpmsginfo);
-	g_free(file);
 }
 
 static void select_account_cb(GtkWidget *w, gpointer data)

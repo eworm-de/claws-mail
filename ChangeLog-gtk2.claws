@@ -1,3 +1,21 @@
+2004-07-13 [colin]	0.9.12cvs18.3
+
+	* src/pop.c
+	* src/pop.h
+	* src/messageview.c
+		Refactor API (to avoid passing 5+ params and code
+		duplication)
+	* src/folder.c
+	* src/msgcache.c
+	* src/procheader.c
+	* src/common/defs.h
+		Add planned_download to cache
+		Don't mess uidl file when moving partially downloaded
+		mails (they change folder, we should change it in the
+		uidl list too or we'll remove an incorrect message)
+		(this also helps removing hacks when changing 
+		planned_download in messageview.c)
+
 2004-07-12 [colin]	0.9.12cvs18.2
 
 	* src/gtk/quicksearch.c

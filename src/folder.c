@@ -48,6 +48,7 @@
 #include "log.h"
 #include "folder_item_prefs.h"
 #include "remotefolder.h"
+#include "pop.h"
 
 /* Dependecies to be removed ?! */
 #include "prefs_common.h"
@@ -2523,6 +2524,17 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 	g_relation_index(relation, 0, g_direct_hash, g_direct_equal);
 	g_relation_index(relation, 1, g_direct_hash, g_direct_equal);
 
+	for (l = msglist ; l != NULL ; l = g_slist_next(l)) {
+		MsgInfo * msginfo = (MsgInfo *) l->data;
+
+		if (msginfo->planned_download != 0) {
+			int old_planned = msginfo->planned_download;
+			pop3_unmark(msginfo);
+			/* little hack to reenable after */
+			msginfo->planned_download = old_planned;
+		}
+	}
+
 	/* 
 	 * Copy messages to destination folder and 
 	 * store new message numbers in newmsgnums
@@ -2570,16 +2582,25 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 					if (newmsginfo != NULL) {
 						copy_msginfo_flags(msginfo, newmsginfo);
 						num = newmsginfo->msgnum;
-						procmsg_msginfo_free(newmsginfo);
 					}
 				}
 			} else {
 				newmsginfo = get_msginfo(dest, num);
 				if (newmsginfo != NULL) {
 					add_msginfo_to_cache(dest, newmsginfo, msginfo);
-					procmsg_msginfo_free(newmsginfo);
 				}
 			}
+
+			if (msginfo->planned_download 
+			    == POP3_PARTIAL_DLOAD_DELE) {
+				pop3_mark_for_delete(newmsginfo);
+			}
+			if (msginfo->planned_download 
+			    == POP3_PARTIAL_DLOAD_DLOAD) {
+				pop3_mark_for_download(newmsginfo);
+			}
+			procmsg_msginfo_free(newmsginfo);
+
 
 			if (num > lastnum)
 				lastnum = num;

@@ -27,6 +27,7 @@
 #include <glib.h>
 #include <time.h>
 
+#include "procmsg.h"
 #include "session.h"
 #include "prefs_account.h"
 
@@ -170,23 +171,8 @@ gint pop3_write_uidl_list	(Pop3Session	*session);
 gint pop3_msg_in_uidl_list	(const gchar 	*server, 
 				 const gchar 	*login, 
 				 const gchar 	*uidl);
-int pop3_mark_for_download	(const gchar 	*server, 
-				 const gchar 	*login, 
-				 const gchar 	*uidl, 
-				 const gchar 	*filename, 
-				 const gchar 	*folder_item_id,
-				 guint		 msgnum);
-int pop3_mark_for_delete	(const gchar 	*server, 
-				 const gchar 	*login, 
-				 const gchar 	*uidl, 
-				 const gchar 	*filename, 
-				 const gchar 	*folder_item_id,
-				 guint		 msgnum);
-int pop3_unmark			(const gchar 	*server, 
-				 const gchar 	*login, 
-				 const gchar 	*uidl, 
-				 const gchar 	*filename, 
-				 const gchar 	*folder_item_id,
-				 guint		 msgnum);
+int pop3_mark_for_download	(MsgInfo	*msginfo);
+int pop3_mark_for_delete	(MsgInfo	*msginfo);
+int pop3_unmark			(MsgInfo	*msginfo);
 
 #endif /* __POP_H__ */
