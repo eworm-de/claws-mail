@@ -1,3 +1,10 @@
+2003-05-06
+
+	* src/ssl.c: ssl_init_socket_with_method(): log_warning() を
+	  g_warning() で、 log_print() を debug_print() で置き換えた。
+	* src/pop.[ch]: エラーコード PS_NOTSUPPORTED を追加し、 UIDL が
+	  サポートされていなければ LAST で再試行するようにした。
+
 2003-05-01
 
 	* src/codeconv.c: conv_get_code_conv_func(): dest_charset_str が NULL
@@ -7,7 +14,7 @@
 2003-05-01
 
 	* src/action.c: execute_actions(): テキストウィジェットが未選択の
-	  場合クラッシュするのを修正。
+	  場合クラッシュするのを修正(Paul さんと Melvin さん thanks)。
 	* src/action.c
 	  src/prefs_actions.c: 著作権表示に Claws チームの表示がなかったので
 	  追加。

@@ -271,7 +271,6 @@ static gint pop3_getsize_list_send(Pop3Session *session)
 static gint pop3_getsize_list_recv(Pop3Session *session, const gchar *msg)
 {
 	guint num, size;
-	gint next_state;
 
 	if (msg[0] == '.')
 		return PS_SUCCESS;
@@ -644,6 +643,11 @@ static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 				log_warning(_("error occurred on authentication\n"));
 				ok = PS_AUTHFAIL;
 				break;
+			case POP3_GETRANGE_LAST:
+			case POP3_GETRANGE_UIDL:
+				log_warning(_("command not supported\n"));
+				ok = PS_NOTSUPPORTED;
+				break;
 			default:
 				log_warning(_("error occurred on POP3 session\n"));
 				ok = PS_ERROR;
@@ -663,7 +667,7 @@ static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 {
 	Pop3Session *pop3_session = POP3_SESSION(session);
-	Pop3ErrorValue val;
+	Pop3ErrorValue val = PS_SUCCESS;
 	const gchar *body;
 
 	body = msg;
@@ -671,8 +675,10 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 	    pop3_session->state != POP3_GETSIZE_LIST_RECV) {
 		val = pop3_ok(pop3_session, msg);
 		if (val != PS_SUCCESS) {
-			pop3_session->state = POP3_ERROR;
-			return -1;
+			if (val != PS_NOTSUPPORTED) {
+				pop3_session->state = POP3_ERROR;
+				return -1;
+			}
 		}
 
 		if (*body == '+' || *body == '-')
@@ -723,7 +729,9 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 			pop3_logout_send(pop3_session);
 		break;
 	case POP3_GETRANGE_LAST:
-		if (pop3_getrange_last_recv(pop3_session, body) < 0)
+		if (val == PS_NOTSUPPORTED)
+			pop3_session->error_val = PS_SUCCESS;
+		else if (pop3_getrange_last_recv(pop3_session, body) < 0)
 			return -1;
 		if (pop3_session->cur_msg > 0)
 			pop3_getsize_list_send(pop3_session);
@@ -731,8 +739,14 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 			pop3_logout_send(pop3_session);
 		break;
 	case POP3_GETRANGE_UIDL:
-		pop3_session->state = POP3_GETRANGE_UIDL_RECV;
-		return 1;
+		if (val == PS_NOTSUPPORTED) {
+			pop3_session->error_val = PS_SUCCESS;
+			pop3_getrange_last_send(pop3_session);
+		} else {
+			pop3_session->state = POP3_GETRANGE_UIDL_RECV;
+			return 1;
+		}
+		break;
 	case POP3_GETRANGE_UIDL_RECV:
 		val = pop3_getrange_uidl_recv(pop3_session, body);
 		if (val == PS_CONTINUE)

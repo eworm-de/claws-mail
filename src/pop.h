@@ -75,6 +75,8 @@ typedef enum {
 	PS_BSMTP	= 12,	/* output batch could not be opened */
 	PS_MAXFETCH	= 13,	/* poll ended by fetch limit */
 
+	PS_NOTSUPPORTED	= 14,	/* command not supported */
+
 	/* leave space for more codes */
 
 	PS_UNDEFINED	= 23,	/* something I hadn't thought of */

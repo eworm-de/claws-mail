@@ -1,3 +1,10 @@
+2003-05-06
+
+	* src/ssl.c: ssl_init_socket_with_method(): replaced log_warning()
+	  by g_warning(), and log_print() by debug_print().
+	* src/pop.[ch]: added an error code PS_NOTSUPPORTED, and retry with
+	  LAST if UIDL is not supported.
+
 2003-05-01
 
 	* src/codeconv.c: conv_get_code_conv_func(): convert to EUC-JP only
@@ -6,7 +13,7 @@
 2003-05-01
 
 	* src/action.c: execute_actions(): fixed crash when no text widget
-	  is selected.
+	  is selected (thanks to Paul and Melvin).
 	* src/action.c
 	  src/prefs_actions.c: added missing reference to Claws team in the
 	  copyright.
