@@ -5029,7 +5029,6 @@ static void summary_ignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpoin
 	    msginfo->msgnum);
 }
 
-
 static void summary_ignore_thread(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);

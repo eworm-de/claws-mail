@@ -1,3 +1,8 @@
+2002-07-22 [christoph]	0.7.8claws96
+
+	* src/mimeview.c
+		fix memory leak caused by wrong g_dirname usage
+
 2002-07-22 [christoph]	0.7.8claws95
 
 	* src/summaryview.c
