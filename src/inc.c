@@ -216,11 +216,7 @@ static gint inc_account_mail_real(MainWindow *mainwin, PrefsAccount *account)
 {
 	IncProgressDialog *inc_dialog;
 	IncSession *session;
-	FolderItem *item = NULL;
 	
-	if(mainwin && mainwin->summaryview)
-		item = mainwin->summaryview->folder_item;
-
 	switch (account->protocol) {
 	case A_IMAP4:
 	case A_NNTP:

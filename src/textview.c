@@ -1880,12 +1880,12 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 						g_free(fromname);
 					} else {
 						PrefsAccount *account = NULL;
-						FolderItem   *folder_item;
 
-						if (textview->messageview && textview->messageview->mainwin 
-						&&  textview->messageview->mainwin->summaryview 
-						&&  textview->messageview->mainwin->summaryview->folder_item) {
-							folder_item = textview->messageview->mainwin->summaryview->folder_item;
+						if (textview->messageview && textview->messageview->msginfo &&
+						    textview->messageview->msginfo->folder) {
+							FolderItem   *folder_item;
+
+							folder_item = textview->messageview->msginfo->folder;
 							if (folder_item->prefs && folder_item->prefs->enable_default_account)
 								account = account_find_from_id(folder_item->prefs->default_account);
 						}
