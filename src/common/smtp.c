@@ -90,6 +90,8 @@ Session *smtp_session_new(void)
 	session->send_data                 = NULL;
 	session->send_data_len             = 0;
 
+	session->max_message_size          = -1;
+
 	session->avail_auth_type           = 0;
 	session->forced_auth_type          = 0;
 	session->auth_type                 = 0;
@@ -275,6 +277,10 @@ static gint smtp_ehlo_recv(SMTPSession *session, const gchar *msg)
 				session->avail_auth_type |= SMTPAUTH_CRAM_MD5;
 			if (strcasestr(p, "DIGEST-MD5"))
 				session->avail_auth_type |= SMTPAUTH_DIGEST_MD5;
+		}
+		if (g_strncasecmp(p, "SIZE", 4) == 0) {
+			p += 5;
+			session->max_message_size = atoi(p);
 		}
 		return SM_OK;
 	} else if ((msg[0] == '1' || msg[0] == '2' || msg[0] == '3') &&
@@ -492,6 +498,13 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 		smtp_ehlo_recv(smtp_session, msg);
 		if (cont == TRUE)
 			break;
+		if (smtp_session->max_message_size > 0
+		&& smtp_session->max_message_size < smtp_session->send_data_len) {
+			log_warning(_("Message is too big\n"));
+			smtp_session->state = SMTP_ERROR;
+			smtp_session->error_val = SM_ERROR;
+			return -1;
+		}
 #if USE_OPENSSL
 		if (session->ssl_type == SSL_STARTTLS &&
 		    smtp_session->tls_init_done == FALSE) {

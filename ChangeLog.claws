@@ -1,3 +1,9 @@
+2004-07-05 [colin]	0.9.12cvs8
+
+	* src/common/smtp.[ch]
+		Take SIZE (returned by EHLO) into account, and
+		avoid sending too big messages
+
 2004-07-04 [paul]	0.9.12cvs7
 
 	* src/account.c
