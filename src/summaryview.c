@@ -556,8 +556,11 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	STATUSBAR_POP(summaryview->mainwin);
 
 	is_refresh = (item == summaryview->folder_item) ? TRUE : FALSE;
-	if (is_refresh)
+	if (is_refresh) {
 		prev_msgnum = summary_get_current_msgnum(summaryview);
+		if (prev_msgnum < 1)
+			is_refresh = FALSE;
+	}
 
 #if 0
 	/* process the marks if any */

@@ -367,9 +367,9 @@ void empty_mbox(const gchar *mbox)
 }
 
 /* read all messages in SRC, and store them into one MBOX file. */
-gint export_mbox(FolderItem *src, const gchar *mbox)
+gint export_to_mbox(FolderItem *src, const gchar *mbox)
 {
-	GSList *mlist = NULL;
+	GSList *mlist;
 	GSList *cur;
 	MsgInfo *msginfo;
 	FILE *msg_fp;
@@ -383,13 +383,12 @@ gint export_mbox(FolderItem *src, const gchar *mbox)
 	debug_print(_("Exporting messages from %s into %s...\n"),
 		    src->path, mbox);
 
-	mlist = src->folder->get_msg_list(src->folder, src, TRUE);
-	if (!mlist) return 0;
-
 	if ((mbox_fp = fopen(mbox, "w")) == NULL) {
 		FILE_OP_ERROR(mbox, "fopen");
 		return -1;
 	}
+
+	mlist = src->folder->get_msg_list(src->folder, src, TRUE);
 
 	for (cur = mlist; cur != NULL; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;

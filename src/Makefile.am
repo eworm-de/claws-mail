@@ -70,7 +70,8 @@ sylpheed_SOURCES = \
 	passphrase.c passphrase.h \
 	select-keys.c select-keys.h \
 	manual.c manual.h \
-	addr_compl.c addr_compl.h
+	addr_compl.c addr_compl.h \
+	export.c export.h
 
 EXTRA_DIST = \
 	pixmaps/clip.xpm \

@@ -780,7 +780,11 @@ static void addressbook_list_selected(GtkCList *clist, gint row, gint column,
 	GList *cur;
 
 	if (event && event->type == GDK_2BUTTON_PRESS) {
-		addressbook_edit_address_cb(NULL, 0, NULL);
+		if (prefs_common.add_address_by_click &&
+		    addrbook.target_compose)
+			addressbook_to_clicked(NULL, NULL);
+		else
+			addressbook_edit_address_cb(NULL, 0, NULL);
 		return;
 	}
 

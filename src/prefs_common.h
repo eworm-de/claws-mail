@@ -155,6 +155,7 @@ struct _PrefsCommon
 	gboolean open_unread_on_enter;
 	gboolean open_inbox_on_inc;
 	gboolean immediate_exec;
+	gboolean add_address_by_click;
 
 	gboolean confirm_on_exit;
 	gboolean clean_on_exit;

@@ -54,6 +54,7 @@
 #include "compose.h"
 #include "procmsg.h"
 #include "import.h"
+#include "export.h"
 #include "prefs_common.h"
 #include "prefs_filter.h"
 #include "prefs_account.h"
@@ -155,6 +156,9 @@ static void delete_folder_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 static void import_mbox_cb	 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
+static void export_mbox_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 static void empty_trash_cb	 (MainWindow	*mainwin,
@@ -335,6 +339,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File/_Folder/_Rename folder..."),NULL, rename_folder_cb, 0, NULL},
 	{N_("/_File/_Folder/_Delete folder"),	NULL, delete_folder_cb, 0, NULL},
 	{N_("/_File/_Import mbox file..."),	NULL, import_mbox_cb, 0, NULL},
+	{N_("/_File/_Export to mbox file..."),	NULL, export_mbox_cb, 0, NULL},
 	{N_("/_File/Empty _trash"),		NULL, empty_trash_cb, 0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Save as..."),		NULL, save_as_cb, 0, NULL},
@@ -1616,7 +1621,13 @@ static void delete_folder_cb(MainWindow *mainwin, guint action,
 static void import_mbox_cb(MainWindow *mainwin, guint action,
 			   GtkWidget *widget)
 {
-	import_mbox();
+	import_mbox(mainwin->summaryview->folder_item);
+}
+
+static void export_mbox_cb(MainWindow *mainwin, guint action,
+			   GtkWidget *widget)
+{
+	export_mbox(mainwin->summaryview->folder_item);
 }
 
 static void empty_trash_cb(MainWindow *mainwin, guint action,

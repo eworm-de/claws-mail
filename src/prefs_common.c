@@ -140,6 +140,7 @@ static struct Interface {
 	GtkWidget *checkbtn_confonexit;
 	GtkWidget *checkbtn_cleanonexit;
 	GtkWidget *checkbtn_askonclean;
+	GtkWidget *checkbtn_addaddrbyclick;
 } interface;
 
 static struct Other {
@@ -453,6 +454,9 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"immediate_execution", "TRUE", &prefs_common.immediate_exec, P_BOOL,
 	 &interface.checkbtn_immedexec,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"add_address_by_click", "FALSE", &prefs_common.add_address_by_click,
+	 P_BOOL, &interface.checkbtn_addaddrbyclick,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"confirm_on_exit", "TRUE", &prefs_common.confirm_on_exit, P_BOOL,
@@ -1418,6 +1422,7 @@ static void prefs_interface_create(void)
 	GtkWidget *checkbtn_openunread;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
+	GtkWidget *checkbtn_addaddrbyclick;
 	GtkWidget *label;
 
 	GtkWidget *frame_exit;
@@ -1468,6 +1473,10 @@ static void prefs_interface_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 8);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 
+	PACK_CHECK_BUTTON
+		(vbox2, checkbtn_addaddrbyclick,
+		 _("Add address to destination when double-clicked"));
+
 	PACK_FRAME (vbox1, frame_exit, _("On exit"));
 
 	vbox_exit = gtk_vbox_new (FALSE, VSPACING_NARROW);
@@ -1488,13 +1497,14 @@ static void prefs_interface_create(void)
 			   _("Ask before emptying"));
 	SET_TOGGLE_SENSITIVITY (checkbtn_cleanonexit, checkbtn_askonclean);
 
-	interface.checkbtn_emacs         = checkbtn_emacs;
-	interface.checkbtn_openunread    = checkbtn_openunread;
-	interface.checkbtn_openinbox     = checkbtn_openinbox;
-	interface.checkbtn_immedexec     = checkbtn_immedexec;
-	interface.checkbtn_confonexit    = checkbtn_confonexit;
-	interface.checkbtn_cleanonexit   = checkbtn_cleanonexit;
-	interface.checkbtn_askonclean    = checkbtn_askonclean;
+	interface.checkbtn_emacs          = checkbtn_emacs;
+	interface.checkbtn_openunread     = checkbtn_openunread;
+	interface.checkbtn_openinbox      = checkbtn_openinbox;
+	interface.checkbtn_immedexec      = checkbtn_immedexec;
+	interface.checkbtn_addaddrbyclick = checkbtn_addaddrbyclick;
+	interface.checkbtn_confonexit     = checkbtn_confonexit;
+	interface.checkbtn_cleanonexit    = checkbtn_cleanonexit;
+	interface.checkbtn_askonclean     = checkbtn_askonclean;
 }
 
 static void prefs_other_create(void)

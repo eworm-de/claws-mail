@@ -41,7 +41,6 @@
 #include "main.h"
 #include "inc.h"
 #include "mbox.h"
-#include "folderview.h"
 #include "filesel.h"
 #include "foldersel.h"
 #include "gtkutils.h"
@@ -49,60 +48,54 @@
 #include "folder.h"
 
 static GtkWidget *window;
+static GtkWidget *src_entry;
 static GtkWidget *file_entry;
-static GtkWidget *dest_entry;
+static GtkWidget *src_button;
 static GtkWidget *file_button;
-static GtkWidget *dest_button;
 static GtkWidget *ok_button;
 static GtkWidget *cancel_button;
-static gboolean import_ack;
+static gboolean export_ack;
 
-static void import_create(void);
-static void import_ok_cb(GtkWidget *widget, gpointer data);
-static void import_cancel_cb(GtkWidget *widget, gpointer data);
-static void import_filesel_cb(GtkWidget *widget, gpointer data);
-static void import_destsel_cb(GtkWidget *widget, gpointer data);
+static void export_create(void);
+static void export_ok_cb(GtkWidget *widget, gpointer data);
+static void export_cancel_cb(GtkWidget *widget, gpointer data);
+static void export_srcsel_cb(GtkWidget *widget, gpointer data);
+static void export_filesel_cb(GtkWidget *widget, gpointer data);
 static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
 
-gint import_mbox(FolderItem *default_dest)
+gint export_mbox(FolderItem *default_src)
 {
 	gint ok = 0;
 
 	if (!window)
-		import_create();
+		export_create();
 	else
 		gtk_widget_show(window);
 
-	gtk_entry_set_text(GTK_ENTRY(file_entry), "");
-	if (default_dest && default_dest->path)
-		gtk_entry_set_text(GTK_ENTRY(dest_entry), default_dest->path);
+	if (default_src && default_src->path)
+		gtk_entry_set_text(GTK_ENTRY(src_entry), default_src->path);
 	else
-		gtk_entry_set_text(GTK_ENTRY(dest_entry), "");
+		gtk_entry_set_text(GTK_ENTRY(src_entry), "");
+	gtk_entry_set_text(GTK_ENTRY(file_entry), "");
 	gtk_widget_grab_focus(file_entry);
 
 	manage_window_set_transient(GTK_WINDOW(window));
 
 	gtk_main();
 
-	if (import_ack) {
-		gchar *filename, *destdir;
-		FolderItem *dest;
+	if (export_ack) {
+		gchar *srcdir, *mbox;
+		FolderItem *src;
 
-		filename = gtk_entry_get_text(GTK_ENTRY(file_entry));
-		destdir = gtk_entry_get_text(GTK_ENTRY(dest_entry));
-		if (filename && *filename) {
-			if (!destdir || !*destdir) {
-				dest = folder_find_item_from_path(INBOX_DIR);
-			} else
-				dest = folder_find_item_from_path(destdir);
+		srcdir = gtk_entry_get_text(GTK_ENTRY(src_entry));
+		mbox = gtk_entry_get_text(GTK_ENTRY(file_entry));
 
-			if (!dest) {
+		if (mbox && *mbox) {
+			src = folder_find_item_from_path(srcdir);
+			if (!src)
 				g_warning("Can't find the folder.\n");
-			} else {
-				ok = proc_mbox(dest, filename, NULL);
-				folder_item_scan(dest);
-				folderview_update_item(dest, TRUE);
-			}
+			else
+				ok = export_to_mbox(src, mbox);
 		}
 	}
 
@@ -111,24 +104,24 @@ gint import_mbox(FolderItem *default_dest)
 	return ok;
 }
 
-static void import_create(void)
+static void export_create(void)
 {
 	GtkWidget *vbox;
 	GtkWidget *hbox;
 	GtkWidget *desc_label;
 	GtkWidget *table;
 	GtkWidget *file_label;
-	GtkWidget *dest_label;
+	GtkWidget *src_label;
 	GtkWidget *confirm_area;
 
 	window = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_window_set_title(GTK_WINDOW(window), _("Import"));
+	gtk_window_set_title(GTK_WINDOW(window), _("Export"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 5);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, FALSE);
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(import_cancel_cb), NULL);
+			   GTK_SIGNAL_FUNC(export_cancel_cb), NULL);
 	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
 			   GTK_SIGNAL_FUNC(key_pressed), NULL);
 	gtk_signal_connect(GTK_OBJECT(window), "focus_in_event",
@@ -144,7 +137,7 @@ static void import_create(void)
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 4);
 
 	desc_label = gtk_label_new
-		(_("Specify target mbox file and destination folder."));
+		(_("Specify target folder and mbox file."));
 	gtk_box_pack_start(GTK_BOX(hbox), desc_label, FALSE, FALSE, 0);
 
 	table = gtk_table_new(2, 3, FALSE);
@@ -154,35 +147,35 @@ static void import_create(void)
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 	gtk_widget_set_usize(table, 420, -1);
 
-	file_label = gtk_label_new(_("Importing file:"));
-	gtk_table_attach(GTK_TABLE(table), file_label, 0, 1, 0, 1,
+	src_label = gtk_label_new(_("Source dir:"));
+	gtk_table_attach(GTK_TABLE(table), src_label, 0, 1, 0, 1,
+			 GTK_FILL, GTK_EXPAND|GTK_FILL, 0, 0);
+	gtk_misc_set_alignment(GTK_MISC(src_label), 1, 0.5);
+
+	file_label = gtk_label_new(_("Exporting file:"));
+	gtk_table_attach(GTK_TABLE(table), file_label, 0, 1, 1, 2,
 			 GTK_FILL, GTK_EXPAND|GTK_FILL, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(file_label), 1, 0.5);
 
-	dest_label = gtk_label_new(_("Destination dir:"));
-	gtk_table_attach(GTK_TABLE(table), dest_label, 0, 1, 1, 2,
-			 GTK_FILL, GTK_EXPAND|GTK_FILL, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(dest_label), 1, 0.5);
+	src_entry = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), src_entry, 1, 2, 0, 1,
+			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
 	file_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), file_entry, 1, 2, 0, 1,
+	gtk_table_attach(GTK_TABLE(table), file_entry, 1, 2, 1, 2,
 			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
-	dest_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), dest_entry, 1, 2, 1, 2,
-			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	src_button = gtk_button_new_with_label(_(" Select... "));
+	gtk_table_attach(GTK_TABLE(table), src_button, 2, 3, 0, 1,
+			 0, 0, 0, 0);
+	gtk_signal_connect(GTK_OBJECT(src_button), "clicked",
+			   GTK_SIGNAL_FUNC(export_srcsel_cb), NULL);
 
 	file_button = gtk_button_new_with_label(_(" Select... "));
-	gtk_table_attach(GTK_TABLE(table), file_button, 2, 3, 0, 1,
+	gtk_table_attach(GTK_TABLE(table), file_button, 2, 3, 1, 2,
 			 0, 0, 0, 0);
 	gtk_signal_connect(GTK_OBJECT(file_button), "clicked",
-			   GTK_SIGNAL_FUNC(import_filesel_cb), NULL);
-
-	dest_button = gtk_button_new_with_label(_(" Select... "));
-	gtk_table_attach(GTK_TABLE(table), dest_button, 2, 3, 1, 2,
-			 0, 0, 0, 0);
-	gtk_signal_connect(GTK_OBJECT(dest_button), "clicked",
-			   GTK_SIGNAL_FUNC(import_destsel_cb), NULL);
+			   GTK_SIGNAL_FUNC(export_filesel_cb), NULL);
 
 	gtkut_button_set_create(&confirm_area,
 				&ok_button,	_("OK"),
@@ -192,47 +185,47 @@ static void import_create(void)
 	gtk_widget_grab_default(ok_button);
 
 	gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
-			   GTK_SIGNAL_FUNC(import_ok_cb), NULL);
+			   GTK_SIGNAL_FUNC(export_ok_cb), NULL);
 	gtk_signal_connect(GTK_OBJECT(cancel_button), "clicked",
-			   GTK_SIGNAL_FUNC(import_cancel_cb), NULL);
+			   GTK_SIGNAL_FUNC(export_cancel_cb), NULL);
 
 	gtk_widget_show_all(window);
 }
 
-static void import_ok_cb(GtkWidget *widget, gpointer data)
+static void export_ok_cb(GtkWidget *widget, gpointer data)
 {
-	import_ack = TRUE;
+	export_ack = TRUE;
 	if (gtk_main_level() > 1)
 		gtk_main_quit();
 }
 
-static void import_cancel_cb(GtkWidget *widget, gpointer data)
+static void export_cancel_cb(GtkWidget *widget, gpointer data)
 {
-	import_ack = FALSE;
+	export_ack = FALSE;
 	if (gtk_main_level() > 1)
 		gtk_main_quit();
 }
 
-static void import_filesel_cb(GtkWidget *widget, gpointer data)
+static void export_filesel_cb(GtkWidget *widget, gpointer data)
 {
 	gchar *filename;
 
-	filename = filesel_select_file(_("Select importing file"), NULL);
+	filename = filesel_select_file(_("Select exporting file"), NULL);
 	if (filename)
 		gtk_entry_set_text(GTK_ENTRY(file_entry), filename);
 }
 
-static void import_destsel_cb(GtkWidget *widget, gpointer data)
+static void export_srcsel_cb(GtkWidget *widget, gpointer data)
 {
-	FolderItem *dest;
+	FolderItem *src;
 
-	dest = foldersel_folder_sel(NULL);
-	if (dest && dest->path)
-		gtk_entry_set_text(GTK_ENTRY(dest_entry), dest->path);
+	src = foldersel_folder_sel(NULL);
+	if (src && src->path)
+		gtk_entry_set_text(GTK_ENTRY(src_entry), src->path);
 }
 
 static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
-		import_cancel_cb(NULL, NULL);
+		export_cancel_cb(NULL, NULL);
 }

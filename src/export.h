@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,31 +17,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __MBOX_H__
-#define __MBOX_H__
+#ifndef __EXPORT_H__
+#define __EXPORT_H__
 
 #include <glib.h>
 
 #include "folder.h"
 
-typedef enum {
-	LOCK_FILE,
-	LOCK_FLOCK
-} LockType;
+gint export_mbox(FolderItem *default_src);
 
-gint proc_mbox		(FolderItem	*dest,
-			 const gchar	*mbox,
-			 GHashTable	*folder_table);
-gint lock_mbox		(const gchar	*base,
-			 LockType	 type);
-gint unlock_mbox	(const gchar	*base,
-			 gint		 fd,
-			 LockType	 type);
-gint copy_mbox		(const gchar	*src,
-			 const gchar	*dest);
-void empty_mbox		(const gchar	*mbox);
-
-gint export_to_mbox	(FolderItem	*src,
-			 const gchar	*mbox);
-
-#endif /* __MBOX_H__ */
+#endif /* __EXPORT_H__ */
