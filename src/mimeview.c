@@ -243,7 +243,8 @@ static gboolean mimeview_is_signed(MimeView *mimeview)
 
         debug_print("mimeview_is_signed: file\n" );
 
-	partinfo = mimeview_get_selected_part(mimeview);
+	partinfo = gtk_ctree_node_get_row_data
+		(GTK_CTREE(mimeview->ctree), mimeview->opened);
 	g_return_val_if_fail(partinfo != NULL, FALSE);
 
 	/* walk the tree and see whether there is a signature somewhere */
@@ -1119,7 +1120,8 @@ void mimeview_check_signature(MimeView *mimeview)
 	g_return_if_fail (mimeview_is_signed(mimeview));
 	g_return_if_fail (gpg_started);
 
-	mimeinfo = mimeview_get_selected_part(mimeview);
+	mimeinfo = gtk_ctree_node_get_row_data
+		(GTK_CTREE(mimeview->ctree), mimeview->opened);
 	g_return_if_fail(mimeinfo != NULL);
 	g_return_if_fail(mimeview->file != NULL);
 
