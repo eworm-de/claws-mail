@@ -262,6 +262,7 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 				    ? REG_ICASE : 0)) != 0) {
 				prop->error = 1;
 				g_free(prop->preg);
+				prop->preg = NULL;
 			}
 		}
 		if (prop->preg == NULL)

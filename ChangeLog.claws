@@ -1,3 +1,10 @@
+2002-07-22 [christoph]	0.7.8claws93
+
+	* src/matcher.c
+		set prop->preg pointer to NULL or following check
+		will not fail and regexec will be called with
+		invalid pointer
+
 2002-07-21 [alfons]	0.7.8claws92
 	
 	* src/prefs_common.[ch]
