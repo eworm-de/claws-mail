@@ -51,7 +51,6 @@ LIBCOMPFACEDIR	=../../libcompface
 OPENSSLDIR	=../../openssl
 REGEXDIR	=../../regex
 W32LIBDIR	=../../w32lib
-LIBJCONVDIR	=../libjconv
 
 ROOTDIR	=..
 SRCDIR	=$(ROOTDIR)/src
@@ -99,7 +98,7 @@ RM=rm
 
 ###
 
-VPATH=$(SRCDIR):$(SRCDIR)/common:$(SRCDIR)/gtk:$(PODIR):$(LIBJCONVDIR):$(SRCDIR)/plugins/demo:$(SRCDIR)/plugins/spamassassin
+VPATH=$(SRCDIR):$(SRCDIR)/common:$(SRCDIR)/gtk:$(PODIR):$(SRCDIR)/plugins/demo:$(SRCDIR)/plugins/spamassassin
 DEFINES=-DHAVE_CONFIG_H -DHAVE_BYTE_TYPEDEF $(INTLFIX) $(DEBUGDEF)
 EXTRALIBS=-lws2_32
 RESOURCE=appicon
@@ -171,8 +170,7 @@ APP_INCLUDES= \
 	-I$(GPGMEDIR)/gpgme \
 	-I$(LIBCOMPFACEDIR)/src \
 	-I$(OPENSSLDIR)/src \
-	-I$(REGEXDIR)/src \
-	-I$(LIBJCONVDIR)
+	-I$(REGEXDIR)/src
 
 CFLAGS=$(FLAGS) $(DEFINES) $(INCLUDES) $(APP_INCLUDES)
 PLUGIN_CFLAGS=$(FLAGS) $(DEFINES) $(INCLUDES)
@@ -189,6 +187,7 @@ LIBS= \
 	$(LIBDIR)/RSAglue.lib \
 	$(LIBDIR)/libcrypt.lib \
 	$(LIBDIR)/pthreadVC.lib \
+	$(LIBDIR)/libjconv.lib \
 	$(FNMATCHDIR)/fnmatch.lib \
 	$(GPGMEDIR)/gpgme.lib \
 	$(LIBCOMPFACEDIR)/libcompface.lib \
@@ -217,9 +216,7 @@ OBJECTS= \
 	codeconv.o \
 	colorlabel.o \
 	colorsel.o \
-	compat.o \
 	compose.o \
-	conv.o \
 	customheader.o \
 	description_window.o \
 	displayheader.o \
@@ -258,7 +255,6 @@ OBJECTS= \
 	importmutt.o \
 	importpine.o \
 	inc.o \
-	info.o \
 	inputdialog.o \
 	jpilot.o \
 	ldapctrl.o \
@@ -701,7 +697,3 @@ quoted-printable.o:	quoted-printable.c quoted-printable.h
 # win32 additions
 w32_aspell_init.o:	w32_aspell_init.c w32_aspell_init.h
 w32_mailcap.o:	w32_mailcap.c w32_mailcap.h
-# libjconv
-compat.o:	compat.c jconv.h
-conv.o:	conv.c jconv.h
-info.o:	info.c jconv.h
