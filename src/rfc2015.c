@@ -677,13 +677,52 @@ pgp_encrypt ( GpgmeData plain, GpgmeRecipients rset )
     return cipher;
 }
 
+/*
+ * Create and return a list of keys matching a key id
+ */
+
+GSList *rfc2015_create_signers_list (const char *keyid)
+{
+	GSList *key_list = NULL;
+	GpgmeCtx list_ctx = NULL;
+	GSList *p;
+	GpgmeError err;
+	GpgmeKey key;
+
+	err = gpgme_new (&list_ctx);
+	if (err)
+		goto leave;
+	err = gpgme_op_keylist_start (list_ctx, keyid, 1);
+	if (err)
+		goto leave;
+	while ( !(err = gpgme_op_keylist_next (list_ctx, &key)) ) {
+		key_list = g_slist_append (key_list, key);
+	}
+	if (err != GPGME_EOF)
+		goto leave;
+	err = 0;
+	if (key_list == NULL) {
+		debug_print ("no keys found for keyid \"%s\"\n", keyid);
+	}
+
+leave:
+	if (err) {
+		debug_print ("rfc2015_create_signers_list failed: %s\n", gpgme_strerror (err));
+		for (p = key_list; p != NULL; p = p->next)
+			gpgme_key_unref ((GpgmeKey) p->data);
+		g_slist_free (key_list);
+	}
+	if (list_ctx)
+		gpgme_release (list_ctx);
+	return err ? NULL : key_list;
+}
 
 /*
  * Encrypt the file by extracting all recipients and finding the
  * encryption keys for all of them.  The file content is then replaced
  * by the encrypted one.  */
 int
-rfc2015_encrypt (const char *file, GSList *recp_list)
+rfc2015_encrypt (const char *file, GSList *recp_list, gboolean ascii_armored)
 {
     FILE *fp = NULL;
     char buf[BUFFSIZE];
@@ -822,7 +861,7 @@ rfc2015_encrypt (const char *file, GSList *recp_list)
     if (!mime_version_seen) 
         fputs ("MIME-Version: 1\r\n", fp);
 
-    if (prefs_common.ascii_armored) {
+    if (ascii_armored) {
         fprintf(fp, 
             "Content-Type: text/plain; charset=us-ascii\r\n"
             "Content-Transfer-Encoding: 7bit\r\n"  
@@ -861,7 +900,7 @@ rfc2015_encrypt (const char *file, GSList *recp_list)
     }
 
     /* and the final boundary */
-    if (!prefs_common.ascii_armored) {
+    if (!ascii_armored) {
         fprintf (fp,
 	        "\r\n"
 	        "--%s--\r\n"
@@ -888,74 +927,14 @@ failure:
     return -1; /* error */
 }
 
-int
-set_signers (GpgmeCtx ctx, PrefsAccount *ac)
-{
-    GSList *key_list = NULL;
-    GpgmeCtx list_ctx = NULL;
-    const char *keyid = NULL;
-    GSList *p;
-    GpgmeError err;
-    GpgmeKey key;
-
-    if (ac == NULL)
-	return 0;
-
-    switch (ac->sign_key) {
-    case SIGN_KEY_DEFAULT:
-	return 0;		/* nothing to do */
-
-    case SIGN_KEY_BY_FROM:
-	keyid = ac->address;
-	break;
-
-    case SIGN_KEY_CUSTOM:
-	keyid = ac->sign_key_id;
-	break;
-
-    default:
-	g_assert_not_reached ();
-    }
-
-    err = gpgme_new (&list_ctx);
-    if (err)
-	goto leave;
-    err = gpgme_op_keylist_start (list_ctx, keyid, 1);
-    if (err)
-	goto leave;
-    while ( !(err = gpgme_op_keylist_next (list_ctx, &key)) ) {
-	key_list = g_slist_append (key_list, key);
-    }
-    if (err != GPGME_EOF)
-	goto leave;
-    if (key_list == NULL) {
-	debug_print ("no keys found for keyid \"%s\"\n", keyid);
-    }
-    gpgme_signers_clear (ctx);
-    for (p = key_list; p != NULL; p = p->next) {
-	err = gpgme_signers_add (ctx, (GpgmeKey) p->data);
-	if (err)
-	    goto leave;
-    }
-
-leave:
-    if (err)
-        debug_print ("set_signers failed: %s\n", gpgme_strerror (err));
-    for (p = key_list; p != NULL; p = p->next)
-	gpgme_key_unref ((GpgmeKey) p->data);
-    g_slist_free (key_list);
-    if (list_ctx)
-	gpgme_release (list_ctx);
-    return err;
-}
-
 /* 
  * plain contains an entire mime object.  Sign it and return an
  * GpgmeData object with the signature of it or NULL in case of error.
  */
 static GpgmeData
-pgp_sign (GpgmeData plain, PrefsAccount *ac)
+pgp_sign (GpgmeData plain, GSList *key_list)
 {
+    GSList *p;
     GpgmeCtx ctx = NULL;
     GpgmeError err;
     GpgmeData sig = NULL;
@@ -976,7 +955,16 @@ pgp_sign (GpgmeData plain, PrefsAccount *ac)
     }
     gpgme_set_textmode (ctx, 1);
     gpgme_set_armor (ctx, 1);
-    err = set_signers (ctx, ac);
+    gpgme_signers_clear (ctx);
+    for (p = key_list; p != NULL; p = p->next) {
+	err = gpgme_signers_add (ctx, (GpgmeKey) p->data);
+	if (err)
+	    goto leave;
+    }
+    for (p = key_list; p != NULL; p = p->next)
+	gpgme_key_unref ((GpgmeKey) p->data);
+    g_slist_free (key_list);
+
     if (err)
 	goto leave;
     err = gpgme_op_sign (ctx, plain, sig, GPGME_SIG_MODE_DETACH);
@@ -999,7 +987,7 @@ leave:
  * Sign the file and replace its content with the signed one.
  */
 int
-rfc2015_sign (const char *file, PrefsAccount *ac)
+rfc2015_sign (const char *file, GSList *key_list)
 {
     FILE *fp = NULL;
     char buf[BUFFSIZE];
@@ -1081,7 +1069,7 @@ rfc2015_sign (const char *file, PrefsAccount *ac)
         goto failure;
     }
 
-    sigdata = pgp_sign (plain, ac);
+    sigdata = pgp_sign (plain, key_list);
     if (!sigdata) 
         goto failure;
 

@@ -7,7 +7,16 @@
 		bring in Hiro's last 0.7.0 wm class fixes
 
 	* tools/sylprint.pl
-		bring in Ricardo's fix for sylprint script 
+		bring in Ricardo's fix for sylprint script
+
+	* AUTHORS	
+	* src/rfc2015.[ch]
+	* src/prefs_common.[ch]
+	* src/prefs_account.[ch]
+	* src/compose.c
+		clean up account preference poison in rfc2015,
+		and preparation to fix double sign bug 
+		(patch submitted by Simon 'corecode' Schubert) 
 
 2002-01-07 [christoph]	0.6.6claws43
 

@@ -185,15 +185,14 @@ struct _PrefsCommon
 
 	GList *mime_open_cmd_history;
 
+#if USE_GPGME 
 	/* Privacy */
-	gboolean default_encrypt;
-	gboolean ascii_armored;
-	gboolean default_sign;
 	gboolean auto_check_signatures;
 	gboolean gpg_signature_popup;
 	gboolean passphrase_grab;
 	gchar *default_signkey;
 	gboolean gpg_warning;
+#endif /* USE_GPGME */
 
 	/* Interface */
 	gboolean sep_folder;

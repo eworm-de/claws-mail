@@ -121,6 +121,9 @@ static struct Compose {
 
 #if USE_GPGME
 static struct Privacy {
+	GtkWidget *checkbtn_default_encrypt;
+	GtkWidget *checkbtn_ascii_armored;
+	GtkWidget *checkbtn_default_sign;
 	GtkWidget *defaultkey_radiobtn;
 	GtkWidget *emailkey_radiobtn;
 	GtkWidget *customkey_radiobtn;
@@ -167,6 +170,8 @@ static void prefs_account_protocol_activated		(GtkMenuItem *menuitem);
 #if USE_GPGME || USE_SSL
 static void prefs_account_enum_set_data_from_radiobtn	(PrefParam *pparam);
 static void prefs_account_enum_set_radiobtn		(PrefParam *pparam);
+static void prefs_account_ascii_armored_warning(GtkWidget* widget, 
+				               gpointer unused);
 #endif /* USE_GPGME || USE_SSL */
 
 static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
@@ -307,6 +312,15 @@ static PrefParam param[] = {
 
 #if USE_GPGME
 	/* Privacy */
+	{"default_encrypt", "FALSE", &tmp_ac_prefs.default_encrypt, P_BOOL,
+	 &privacy.checkbtn_default_encrypt,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"ascii_armored", "FALSE", &tmp_ac_prefs.ascii_armored, P_BOOL,
+	 &privacy.checkbtn_ascii_armored,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"default_sign", "FALSE", &tmp_ac_prefs.default_sign, P_BOOL,
+	 &privacy.checkbtn_default_sign,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"sign_key", NULL, &tmp_ac_prefs.sign_key, P_ENUM,
 	 &privacy.defaultkey_radiobtn,
 	 prefs_account_enum_set_data_from_radiobtn,
@@ -1244,8 +1258,13 @@ static void prefs_account_privacy_create(void)
 	GtkWidget *vbox1;
 	GtkWidget *frame1;
 	GtkWidget *vbox2;
+	GtkWidget *frame2;
+	GtkWidget *vbox3;
 	GtkWidget *hbox1;
 	GtkWidget *label;
+	GtkWidget *checkbtn_default_encrypt;
+	GtkWidget *checkbtn_ascii_armored;
+	GtkWidget *checkbtn_default_sign;
 	GtkWidget *defaultkey_radiobtn;
 	GtkWidget *emailkey_radiobtn;
 	GtkWidget *customkey_radiobtn;
@@ -1256,17 +1275,35 @@ static void prefs_account_privacy_create(void)
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	PACK_FRAME (vbox1, frame1, _("Sign key"));
+	PACK_FRAME (vbox1, frame1, _("Default Actions"));
 
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_container_add (GTK_CONTAINER (frame1), vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
 
+	PACK_CHECK_BUTTON (vbox2, checkbtn_default_encrypt,
+			   _("Encrypt message by default"));
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_ascii_armored,
+			   _("Plain ASCII armored"));
+	gtk_signal_connect(GTK_OBJECT(checkbtn_ascii_armored), "toggled",
+				prefs_account_ascii_armored_warning, (gpointer)0);
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_default_sign,
+			   _("Sign message by default"));
+
+	PACK_FRAME (vbox1, frame2, _("Sign key"));
+
+	vbox3 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox3);
+	gtk_container_add (GTK_CONTAINER (frame2), vbox3);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox3), 8);
+
 	defaultkey_radiobtn = gtk_radio_button_new_with_label
 		(NULL, _("Use default GnuPG key"));
 	gtk_widget_show (defaultkey_radiobtn);
-	gtk_box_pack_start (GTK_BOX (vbox2), defaultkey_radiobtn,
+	gtk_box_pack_start (GTK_BOX (vbox3), defaultkey_radiobtn,
 			    FALSE, FALSE, 0);
 	gtk_object_set_user_data (GTK_OBJECT (defaultkey_radiobtn),
 				  GINT_TO_POINTER (SIGN_KEY_DEFAULT));
@@ -1275,7 +1312,7 @@ static void prefs_account_privacy_create(void)
 		(GTK_RADIO_BUTTON (defaultkey_radiobtn),
 		 _("Select key by your email address"));
 	gtk_widget_show (emailkey_radiobtn);
-	gtk_box_pack_start (GTK_BOX (vbox2), emailkey_radiobtn,
+	gtk_box_pack_start (GTK_BOX (vbox3), emailkey_radiobtn,
 			    FALSE, FALSE, 0);
 	gtk_object_set_user_data (GTK_OBJECT (emailkey_radiobtn),
 				  GINT_TO_POINTER (SIGN_KEY_BY_FROM));
@@ -1284,14 +1321,14 @@ static void prefs_account_privacy_create(void)
 		(GTK_RADIO_BUTTON (defaultkey_radiobtn),
 		 _("Specify key manually"));
 	gtk_widget_show (customkey_radiobtn);
-	gtk_box_pack_start (GTK_BOX (vbox2), customkey_radiobtn,
+	gtk_box_pack_start (GTK_BOX (vbox3), customkey_radiobtn,
 			    FALSE, FALSE, 0);
 	gtk_object_set_user_data (GTK_OBJECT (customkey_radiobtn),
 				  GINT_TO_POINTER (SIGN_KEY_CUSTOM));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox3), hbox1, FALSE, FALSE, 0);
 
 	label = gtk_label_new ("");
 	gtk_widget_show (label);
@@ -1309,10 +1346,25 @@ static void prefs_account_privacy_create(void)
 
 	SET_TOGGLE_SENSITIVITY (customkey_radiobtn, customkey_entry);
 
+	privacy.checkbtn_default_encrypt = checkbtn_default_encrypt;
+	privacy.checkbtn_ascii_armored   = checkbtn_ascii_armored;
+	privacy.checkbtn_default_sign    = checkbtn_default_sign;
 	privacy.defaultkey_radiobtn = defaultkey_radiobtn;
 	privacy.emailkey_radiobtn = emailkey_radiobtn;
 	privacy.customkey_radiobtn = customkey_radiobtn;
 	privacy.customkey_entry = customkey_entry;
+}
+
+static void prefs_account_ascii_armored_warning(GtkWidget* widget,
+					       gpointer unused)
+{
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget))
+		&& gtk_notebook_get_current_page(GTK_NOTEBOOK(dialog.notebook))) {
+		alertpanel_message(_("Warning - Privacy/Plain ASCII armored"),
+			_("Its not recommend to use the old style plain ASCII\n"
+			"armored mode for encypted messages. It doesn't comply\n"
+			"with the RFC 3156 - MIME security with OpenPGP."));
+	}
 }
 #endif /* USE_GPGME */
 

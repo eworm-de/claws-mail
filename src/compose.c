@@ -2857,6 +2857,46 @@ static gint compose_bounce_write_to_file(Compose *compose, const gchar *file)
 	return -1;
 }
 
+
+#ifdef USE_GPGME
+/*
+ * interfaces to rfc2015 to keep out the prefs stuff there.
+ * returns 0 on success and -1 on error. */
+static int compose_create_signers_list (Compose *compose, GSList **pkey_list)
+{
+	const char *keyid = NULL;
+	GSList *key_list;
+
+	switch (compose->account->sign_key) {
+	case SIGN_KEY_DEFAULT:
+		*pkey_list = NULL;
+		return 0;		/* nothing to do */
+
+	case SIGN_KEY_BY_FROM:
+		keyid = compose->account->address;
+		break;
+
+	case SIGN_KEY_CUSTOM:
+		keyid = compose->account->sign_key_id;
+		break;
+
+	default:
+		g_assert_not_reached ();
+	}
+
+	key_list = rfc2015_create_signers_list(keyid);
+
+	if (!key_list) {
+	    alertpanel_error("Could not find any key associated with currently "
+				"selected keyid `%s'!", keyid);
+	    return -1;
+	}
+	
+	*pkey_list = key_list;
+	return 0;
+}
+#endif /* USE_GPGME */
+
 static gint compose_write_to_file(Compose *compose, const gchar *file,
 				  gboolean is_draft)
 {
@@ -2972,13 +3012,17 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 
 #if USE_GPGME
 	if (compose->use_signing) {
-		if (rfc2015_sign(file, compose->account) < 0) {
+		GSList *key_list;
+		
+		if (compose_create_signers_list(compose, &key_list) == -1 ||
+			rfc2015_sign(file, key_list) < 0) {
+		    
 			unlink(file);
 			return -1;
 		}
 	}
 	if (compose->use_encryption) {
-		if (rfc2015_encrypt(file, compose->to_list) < 0) {
+		if (rfc2015_encrypt(file, compose->to_list, compose->account->ascii_armored) < 0) {
 			unlink(file);
 			return -1;
 		}
@@ -4555,10 +4599,10 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 #if USE_GPGME
 	menuitem = gtk_item_factory_get_item(ifactory, "/Message/Sign");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
-				       prefs_common.default_sign);
+				       account->default_sign);
 	menuitem = gtk_item_factory_get_item(ifactory, "/Message/Encrypt");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
-				       prefs_common.default_encrypt);
+				       account->default_encrypt);
 #endif /* USE_GPGME */
 
 	addressbook_set_target_compose(compose);

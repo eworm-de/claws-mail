@@ -30,6 +30,10 @@ typedef struct _PrefsAccount	PrefsAccount;
 
 #include "folder.h"
 
+#ifdef USE_GPGME
+#  include "rfc2015.h"
+#endif
+
 typedef enum {
 	A_POP3,
 	A_APOP,
@@ -119,6 +123,9 @@ struct _PrefsAccount
 
 #if USE_GPGME
 	/* Privacy */
+	gboolean default_encrypt;
+	gboolean ascii_armored;
+	gboolean default_sign;
 	SignKeyType sign_key;
 	gchar *sign_key_id;
 #endif /* USE_GPGME */
