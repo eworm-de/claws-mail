@@ -163,7 +163,10 @@ static void imap_session_destroy(Session * session);
 static gchar *imap_fetch_msg(Folder * folder, FolderItem * item, gint uid);
 static gint imap_add_msg(Folder * folder,
 			 FolderItem * dest,
-			 const gchar * file);
+			 const gchar * file, MsgFlags * flags);
+static gint imap_add_msgs(Folder * folder, FolderItem * dest,
+			  GSList * file_list,
+			  MsgNumberList **newnum_list);
 
 static gint imap_copy_msg(Folder * folder,
 			  FolderItem * dest, MsgInfo * msginfo);
@@ -245,9 +248,10 @@ static SockInfo *imap_init_sock(SockInfo *sock, SSLType	ssl_type);
 static SockInfo *imap_init_sock(SockInfo *sock);
 #endif
 
+static gchar *imap_get_flag_str		(IMAPFlags	 flags);
 static gint imap_set_message_flags	(IMAPSession	*session,
 					 MsgNumberList	*numlist,
-					 IMAPFlags	 flag,
+					 IMAPFlags	 flags,
 					 gboolean	 is_set);
 static gint imap_select			(IMAPSession	*session,
 					 IMAPFolder	*folder,
@@ -344,6 +348,7 @@ static gint imap_cmd_fetch	(IMAPSession	*sock,
 static gint imap_cmd_append	(IMAPSession	*session,
 				 const gchar	*destfolder,
 				 const gchar	*file,
+				 IMAPFlags	 flags,
 				 gint32		*newuid);
 static gint imap_cmd_copy	(IMAPSession	*session,
 				 gint32		msgnum,
@@ -431,7 +436,7 @@ FolderClass imap_class =
 	imap_get_msginfos,
 	imap_fetch_msg,
 	imap_add_msg,
-	NULL,
+	imap_add_msgs,
 	imap_copy_msg,
 	NULL,
 	imap_remove_msg,
@@ -779,29 +784,80 @@ gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
 	return filename;
 }
 
-gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file)
+gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file, MsgFlags *flags)
+{
+	gint ret;
+	GSList file_list;
+	MsgFileInfo fileinfo;
+	MsgNumberList *msgnum_list = NULL;
+
+	g_return_val_if_fail(file != NULL, -1);
+
+	fileinfo.file = (gchar *)file;
+	fileinfo.flags = flags;
+	file_list.data = &fileinfo;
+	file_list.next = NULL;
+
+	ret = imap_add_msgs(folder, dest, &file_list, &msgnum_list);
+	g_slist_free(msgnum_list);
+	return ret;
+}
+
+gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
+		   MsgNumberList **newnum_list)
 {
 	gchar *destdir;
 	IMAPSession *session;
-	gint ok, newuid;
+	guint32 last_uid = 0;
+	GSList *cur;
+	MsgFileInfo *fileinfo;
+	gint ok, newnum;
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(dest != NULL, -1);
-	g_return_val_if_fail(file != NULL, -1);
+	g_return_val_if_fail(file_list != NULL, -1);
 
 	session = imap_session_get(folder);
 	if (!session) return -1;
 
 	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
-	ok = imap_cmd_append(session, destdir, file, &newuid);
-	g_free(destdir);
 
-	if (ok != IMAP_SUCCESS) {
-		g_warning("can't append message %s\n", file);
-		return -1;
+	for (cur = file_list; cur != NULL; cur = cur->next) {
+		IMAPFlags iflags = 0;
+
+		fileinfo = (MsgFileInfo *)cur->data;
+
+		if (fileinfo->flags) {
+			if (MSG_IS_MARKED(*fileinfo->flags))
+				iflags |= IMAP_FLAG_FLAGGED;
+			if (MSG_IS_REPLIED(*fileinfo->flags))
+				iflags |= IMAP_FLAG_ANSWERED;
+			if (!MSG_IS_UNREAD(*fileinfo->flags))
+				iflags |= IMAP_FLAG_SEEN;
+		}
+
+		if (dest->stype == F_OUTBOX ||
+		    dest->stype == F_QUEUE  ||
+		    dest->stype == F_DRAFT  ||
+		    dest->stype == F_TRASH)
+			iflags |= IMAP_FLAG_SEEN;
+
+		ok = imap_cmd_append(session, destdir, fileinfo->file, iflags, &newnum);
+
+		if (ok != IMAP_SUCCESS) {
+			g_warning("can't append message %s\n", fileinfo->file);
+			g_free(destdir);
+			return -1;
+		}
+
+		*newnum_list = g_slist_append(*newnum_list, GINT_TO_POINTER(newnum));
+		if (newnum > last_uid)
+			last_uid = newnum;
 	}
 
-	return newuid;
+	g_free(destdir);
+
+	return last_uid;
 }
 
 static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
@@ -879,7 +935,7 @@ gint imap_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	srcfile = procmsg_get_message_file(msginfo);
 	if (!srcfile) return -1;
 
-	ret = imap_add_msg(folder, dest, srcfile);
+	ret = imap_add_msg(folder, dest, srcfile, NULL);
 
 	g_free(srcfile);
 
@@ -2101,35 +2157,49 @@ static MsgInfo *imap_parse_envelope(SockInfo *sock, FolderItem *item,
 	return msginfo;
 }
 
+static gchar *imap_get_flag_str(IMAPFlags flags)
+{
+	GString *str;
+	gchar *ret;
+
+	str = g_string_new(NULL);
+
+	if (IMAP_IS_SEEN(flags))	g_string_append(str, "\\Seen ");
+	if (IMAP_IS_ANSWERED(flags))	g_string_append(str, "\\Answered ");
+	if (IMAP_IS_FLAGGED(flags))	g_string_append(str, "\\Flagged ");
+	if (IMAP_IS_DELETED(flags))	g_string_append(str, "\\Deleted ");
+	if (IMAP_IS_DRAFT(flags))	g_string_append(str, "\\Draft");
+
+	if (str->str[str->len - 1] == ' ')
+		g_string_truncate(str, str->len - 1);
+
+	ret = str->str;
+	g_string_free(str, FALSE);
+
+	return ret;
+}
+
 static gint imap_set_message_flags(IMAPSession *session,
 				   MsgNumberList *numlist,
 				   IMAPFlags flags,
 				   gboolean is_set)
 {
-	GString *buf;
+	gchar *cmd;
+	gchar *flag_str;
 	gint ok;
 	IMAPSet imapset;
 
-	buf = g_string_new(is_set ? "+FLAGS (" : "-FLAGS (");
-
-	if (IMAP_IS_SEEN(flags))	g_string_append(buf, "\\Seen ");
-	if (IMAP_IS_ANSWERED(flags))	g_string_append(buf, "\\Answered ");
-	if (IMAP_IS_FLAGGED(flags))	g_string_append(buf, "\\Flagged ");
-	if (IMAP_IS_DELETED(flags))	g_string_append(buf, "\\Deleted ");
-	if (IMAP_IS_DRAFT(flags))	g_string_append(buf, "\\Draft");
-
-	if (buf->str[buf->len - 1] == ' ')
-		g_string_truncate(buf, buf->len - 1);
-
-	g_string_append_c(buf, ')');
+	flag_str = imap_get_flag_str(flags);
+	cmd = g_strconcat(is_set ? "+FLAGS.SILENT (" : "-FLAGS.SILENT (",
+			  flag_str, ")", NULL);
+	g_free(flag_str);
 
 	imapset = numberlist_to_imapset(numlist);
 	while (imapset != NULL) {
-		ok = imap_cmd_store(session, imapset,
-				    buf->str);
+		ok = imap_cmd_store(session, imapset, cmd);
 		imapset = numberlist_to_imapset(NULL);
 	}
-	g_string_free(buf, TRUE);
+	g_free(cmd);
 
 	return ok;
 }
@@ -2695,11 +2765,12 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid, const gchar *filen
 }
 
 static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
-			    const gchar *file, gint32 *new_uid)
+			    const gchar *file, IMAPFlags flags, gint32 *new_uid)
 {
 	gint ok;
 	gint size, newuid;
 	gchar *destfolder_;
+	gchar *flag_str;
 	gchar buf[BUFFSIZE], *imapbuf;
 	FILE *fp;
 	GPtrArray *reply;
@@ -2713,7 +2784,10 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 		return -1;
 	}
 	QUOTE_IF_REQUIRED(destfolder_, destfolder);
-	imap_gen_send(session, "APPEND %s (\\Seen) {%d}", destfolder_, size);
+	flag_str = imap_get_flag_str(flags);
+	imap_gen_send(session, "APPEND %s (%s) {%d}", 
+		      destfolder_, flag_str, size);
+	g_free(flag_str);
 
 	ok = imap_gen_recv(session, &imapbuf);
 	if (ok != IMAP_SUCCESS || imapbuf[0] != '+' || imapbuf[1] != ' ') {

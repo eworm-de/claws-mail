@@ -728,14 +728,14 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 			return -1;
 
 		folder_item_scan(outbox);
-		if ((num = folder_item_add_msg(outbox, tmp, TRUE)) < 0) {
+		if ((num = folder_item_add_msg(outbox, tmp, NULL, TRUE)) < 0) {
 			g_warning("can't save message\n");
 			unlink(tmp);
 			return -1;
 		}
 	} else {
 		folder_item_scan(outbox);
-		if ((num = folder_item_add_msg(outbox, file, FALSE)) < 0) {
+		if ((num = folder_item_add_msg(outbox, file, NULL, FALSE)) < 0) {
 			g_warning("can't save message\n");
 			return -1;
 		}

@@ -216,7 +216,8 @@ struct _FolderClass
 						 gint		 num);
 	gint     	(*add_msg)		(Folder		*folder,
 						 FolderItem	*dest,
-						 const gchar	*file);
+						 const gchar	*file,
+						 MsgFlags	*flags);
 	gint     	(*add_msgs)             (Folder         *folder,
                                     		 FolderItem     *dest,
                                     		 GSList         *file_list,
@@ -420,6 +421,7 @@ gchar *folder_item_fetch_msg		(FolderItem	*item,
 					 gint		 num);
 gint   folder_item_add_msg		(FolderItem	*dest,
 					 const gchar	*file,
+					 MsgFlags	*flags,
 					 gboolean	 remove_source);
 gint   folder_item_add_msgs             (FolderItem     *dest,
                                          GSList         *file_list,

@@ -32,6 +32,7 @@
 
 typedef struct _MsgInfo			MsgInfo;
 typedef struct _MsgFlags		MsgFlags;
+typedef struct _MsgFileInfo     	MsgFileInfo;
 typedef struct _MsgInfoUpdate 		MsgInfoUpdate;
 typedef struct _MailFilteringData	MailFilteringData;
 
@@ -192,6 +193,12 @@ struct _MsgInfo
 	/* used only for encrypted messages */
 	gchar *plaintext_file;
 	guint decryption_failed : 1;
+};
+
+struct _MsgFileInfo
+{
+        gchar *file;
+        MsgFlags *flags;
 };
 
 struct _MsgInfoUpdate {

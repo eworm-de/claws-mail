@@ -517,7 +517,7 @@ static gint disposition_notification_queue(PrefsAccount * account,
 	}
 
 	queue = folder_get_default_queue();
-	if ((num = folder_item_add_msg(queue, tmp, TRUE)) < 0) {
+	if ((num = folder_item_add_msg(queue, tmp, NULL, TRUE)) < 0) {
 		g_warning("can't queue the message\n");
 		unlink(tmp);
 		g_free(tmp);

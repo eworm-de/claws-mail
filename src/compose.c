@@ -3870,7 +3870,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		return -1;
 	}
 	folder_item_scan(queue);
-	if ((num = folder_item_add_msg(queue, tmp, TRUE)) < 0) {
+	if ((num = folder_item_add_msg(queue, tmp, NULL, TRUE)) < 0) {
 		g_warning("can't queue the message\n");
 		unlink(tmp);
 		g_free(tmp);
@@ -6279,7 +6279,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		return;
 	}
 
-	if ((msgnum = folder_item_add_msg(draft, tmp, TRUE)) < 0) {
+	if ((msgnum = folder_item_add_msg(draft, tmp, NULL, TRUE)) < 0) {
 		unlink(tmp);
 		g_free(tmp);
 		lock = FALSE;

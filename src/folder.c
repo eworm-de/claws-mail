@@ -1653,15 +1653,18 @@ static void remove_msginfo_from_cache(FolderItem *item, MsgInfo *msginfo)
 }
 
 gint folder_item_add_msg(FolderItem *dest, const gchar *file,
-			 gboolean remove_source)
+			 MsgFlags *flags, gboolean remove_source)
 {
-	GSList file_list;
+        GSList file_list;
+        MsgFileInfo fileinfo;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(file != NULL, -1);
-
-	file_list.data = (gpointer) file;
-	file_list.next = NULL;
+ 
+        fileinfo.file = (gchar *)file;
+        fileinfo.flags = flags;
+        file_list.data = &fileinfo;
+        file_list.next = NULL;
 
 	return folder_item_add_msgs(dest, &file_list, remove_source);
 }
@@ -1673,7 +1676,7 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
         gint ret, num, lastnum = -1;
 	GSList *file_cur;
 	MsgNumberList *newnum_list = NULL, *newnum_cur = NULL;
-	gchar *file = NULL;
+	MsgFileInfo *fileinfo = NULL;
 	gboolean folderscan = FALSE;
 
         g_return_val_if_fail(dest != NULL, -1);
@@ -1690,9 +1693,9 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
 		}
 	} else {
 		for (file_cur = file_list; file_cur != NULL; file_cur = g_slist_next(file_cur)) {
-			file = (gchar *) file_cur->data;
+			fileinfo = (MsgFileInfo *) file_cur->data;
 
-    			ret = folder->klass->add_msg(folder, dest, file);
+    			ret = folder->klass->add_msg(folder, dest, fileinfo->file, fileinfo->flags);
 			if (ret < 0) {
 				g_slist_free(newnum_list);
 				return ret;
@@ -1706,7 +1709,7 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
 	     newnum_cur = g_slist_next(newnum_cur), file_cur = g_slist_next(file_cur)) {
 
 		num = GPOINTER_TO_INT(newnum_cur->data);
-		file = (gchar *) file_cur->data;
+		fileinfo = (MsgFileInfo *) file_cur->data;
 
 		if (num >= 0) {
 			MsgInfo *newmsginfo;
@@ -1716,15 +1719,15 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
 					folder_item_scan_full(dest, FALSE);
 					folderscan = TRUE;
 				}
-				num = folder_item_get_msg_num_by_file(dest, file);
+				num = folder_item_get_msg_num_by_file(dest, fileinfo->file);
 			}
 
 			if (num > lastnum)
 				lastnum = num;
 
 			if (num >= 0 && remove_source) {
-				if (unlink(file) < 0)
-					FILE_OP_ERROR(file, "unlink");
+				if (unlink(fileinfo->file) < 0)
+					FILE_OP_ERROR(fileinfo->file, "unlink");
 			}
 
 			if (num == 0)
@@ -1952,11 +1955,18 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	 * Copy messages to destination folder and 
 	 * store new message numbers in newmsgnums
 	 */
-	for (l = msglist ; l != NULL ; l = g_slist_next(l)) {
-		MsgInfo * msginfo = (MsgInfo *) l->data;
+	if (folder->klass->copy_msgs != NULL) {
+		if (folder->klass->copy_msgs(folder, dest, msglist, &newmsgnums) < 0) {
+			g_slist_free(newmsgnums);
+			return -1;
+		}
+	} else {
+		for (l = msglist ; l != NULL ; l = g_slist_next(l)) {
+			MsgInfo * msginfo = (MsgInfo *) l->data;
 
-		num = folder->klass->copy_msg(folder, dest, msginfo);
-		newmsgnums = g_slist_append(newmsgnums, GINT_TO_POINTER(num));
+			num = folder->klass->copy_msg(folder, dest, msginfo);
+			newmsgnums = g_slist_append(newmsgnums, GINT_TO_POINTER(num));
+		}
 	}
 
 	/* Read cache for dest folder */
