@@ -1,3 +1,8 @@
+2002-11-08 [colin]	0.8.5claws82
+
+	* src/prefs_filtering.c
+		fix a leak
+
 2002-11-07 [colin]	0.8.5claws81
 
 	* src/folder.[ch]

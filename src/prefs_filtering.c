@@ -672,7 +672,7 @@ void prefs_filtering_rename_path(const gchar *old_path, const gchar *new_path)
 			}
 		}
 	}
-
+	g_free(old_path_with_sep);
 	prefs_matcher_write_config();
 }
 
