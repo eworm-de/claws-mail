@@ -1,0 +1,185 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(src/main.c)
+PACKAGE=sylpheed
+
+dnl version number
+MAJOR_VERSION=0
+MINOR_VERSION=4
+MICRO_VERSION=65
+INTERFACE_AGE=65
+BINARY_AGE=65
+EXTRA_VERSION=cvs3
+VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
+
+dnl
+AM_INIT_AUTOMAKE($PACKAGE, $VERSION, no-define)
+AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
+AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
+
+dnl libtool versioning
+LT_RELEASE=$MAJOR_VERSION.$MINOR_VERSION
+LT_CURRENT=`expr $MICRO_VERSION - $INTERFACE_AGE`
+LT_REVISION=$INTERFACE_AGE
+LT_AGE=`expr $BINARY_AGE - $INTERFACE_AGE`
+AC_SUBST(LT_RELEASE)
+AC_SUBST(LT_CURRENT)
+AC_SUBST(LT_REVISION)
+AC_SUBST(LT_AGE)
+
+dnl Specify a header configuration file
+AM_CONFIG_HEADER(config.h)
+
+AM_PROG_LIBTOOL
+AM_MAINTAINER_MODE
+
+dnl Checks for programs.
+AC_ARG_PROGRAM
+AC_PROG_CC
+AC_ISC_POSIX
+AM_PROG_CC_STDC
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+AC_PROG_CPP
+dnl AC_PROG_RANLIB
+
+SYLPHEED_ACLOCAL_INCLUDE(ac)
+
+dnl for gettext
+ALL_LINGUAS="cs de el es fr it ja ko nl pt_BR ru zh_CN.GB2312 zh_TW.Big5"
+AM_GNU_GETTEXT
+dnl AC_CHECK_FUNC(gettext, AC_CHECK_LIB(intl, gettext))
+localedir='${prefix}/${DATADIRNAME}/locale'
+AC_SUBST(localedir)
+
+manualdir='${prefix}/${DATADIRNAME}/${PACKAGE}/manual'
+AC_SUBST(manualdir)
+
+dnl Checks for libraries.
+AM_PATH_GLIB(1.2.6,,
+	AC_MSG_ERROR(Test for GLIB failed. See the file 'INSTALL' for help.),
+	gthread)
+AM_PATH_GTK(1.2.6,,
+	AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
+
+dnl Check for built-in image view support
+AC_ARG_ENABLE(gdk-pixbuf,
+	[  --disable-gdk-pixbuf    Do not use gdk-pixbuf],
+	[ac_cv_disable_gdk_pixbuf=disable], [ac_cv_disable_gdk_pixbuf=no])
+AC_ARG_ENABLE(imlib,
+	[  --disable-imlib         Do not use imlib],
+	[ac_cv_disable_imlib=disable], [ac_cv_disable_imlib=no])
+
+if test "$ac_cv_disable_gdk_pixbuf" = no; then
+	AM_PATH_GDK_PIXBUF(0.8.0,
+		AC_DEFINE(HAVE_GDK_PIXBUF), [ac_cv_disable_gdk_pixbuf=disable])
+fi
+if test "$ac_cv_disable_gdk_pixbuf" = disable -a "$ac_cv_disable_imlib" = no; then
+	AM_PATH_GDK_IMLIB(1.9,
+		AC_DEFINE(HAVE_GDK_IMLIB), [ac_cv_disable_imlib=disable])
+fi
+if test "$ac_cv_disable_gdk_pixbuf" = disable -a "$ac_cv_disable_imlib" = disable; then
+	AC_MSG_WARN(*** Built-in image view will not be supported ***)
+fi
+
+dnl GPGME is used to support OpenPGP 
+AC_ARG_ENABLE(gpgme,
+	[  --enable-gpgme          Enable GnuPG support using GPGME [default=no]],
+	[ac_cv_enable_gpgme=$enableval], [ac_cv_enable_gpgme=no])
+if test $ac_cv_enable_gpgme = yes; then
+	AM_PATH_GPGME(0.1.4, AC_DEFINE(USE_GPGME), [use_gpgme=no])
+fi
+
+dnl Check for X-Face support
+AC_ARG_ENABLE(compface,
+	[  --disable-compface      Do not use compface (X-Face)],
+	[ac_cv_disable_compface=disable], [ac_cv_disable_compface=no])
+if test "$ac_cv_disable_compface" = no; then
+	AC_CHECK_LIB(compface, uncompface)
+fi
+
+dnl Check for libjconv
+AC_ARG_ENABLE(jconv,
+	[  --disable-jconv         Do not use libjconv],
+	[ac_cv_disable_jconv=disable], [ac_cv_disable_jconv=no])
+if test "$ac_cv_disable_jconv" = no; then
+	AC_CHECK_LIB(jconv, jconv_alloc_conv)
+fi
+
+AC_CHECK_LIB(xpg4, setlocale)
+dnl AC_CHECK_LIB(kcc, KCC_filter)
+
+dnl for GThread support
+AC_ARG_ENABLE(threads,
+	[  --enable-threads        Enable multithread support [default=no]],
+	[use_threads=$enableval], [use_threads=no])
+
+AC_MSG_CHECKING([whether to use threads])
+if test x"$use_threads" = xyes ; then
+	AC_MSG_RESULT(yes)
+	if test ! -z `$GLIB_CONFIG --help 2>&1 |grep 'gthread'` ; then
+		CFLAGS="$CFLAGS `$GLIB_CONFIG --cflags gthread`"
+		LIBS="$LIBS `$GLIB_CONFIG --libs gthread`"
+		AC_DEFINE(USE_THREADS)
+	else
+		AC_MSG_ERROR([Sylpheed requires GThread from GLib to use threading.])
+	fi
+else
+	AC_MSG_RESULT(no)
+fi
+
+dnl check for IPv6 option
+AC_ARG_ENABLE(ipv6,
+	[  --enable-ipv6           Enable IPv6 support [default=no]],
+	[ac_cv_enableipv6=$enableval], [ac_cv_enableipv6=no])
+
+dnl automated checks for IPv6 support.
+if test x"$ac_cv_enableipv6" = xyes; then
+	AC_MSG_CHECKING([for IPv6 support])
+	AC_CACHE_VAL(ac_cv_ipv6,[
+		AC_TRY_COMPILE([#define INET6
+				#include <sys/types.h>
+				#include <netinet/in.h>],
+			[int x = IPPROTO_IPV6; struct in6_addr a;],
+			ac_cv_ipv6=yes, ac_cv_ipv6=no)
+	])
+	AC_MSG_RESULT($ac_cv_ipv6)
+	if test $ac_cv_ipv6 = yes; then
+		AC_DEFINE(INET6)
+	fi
+fi
+
+dnl Checks for header files.
+AC_HEADER_DIRENT
+AC_HEADER_STDC
+AC_HEADER_SYS_WAIT
+AC_CHECK_HEADERS(fcntl.h sys/file.h unistd.h paths.h sys/param.h)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_TYPE_OFF_T
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+AC_STRUCT_TM
+AC_CHECK_TYPE(wint_t, unsigned int)
+
+dnl Checks for library functions.
+AC_FUNC_ALLOCA
+AC_CHECK_HEADERS(wchar.h wctype.h)
+AC_CHECK_FUNCS(gethostname mkdir mktime socket strstr \
+	       wcsstr wcswcs iswalnum iswspace towlower \
+	       wcslen wcscpy wcsncpy \
+	       uname flock lockf inet_aton inet_addr \
+	       fchmod mkstemp)
+
+AC_OUTPUT([
+Makefile
+sylpheed.spec
+intl/Makefile
+ac/Makefile
+po/Makefile.in
+libkcc/Makefile
+src/Makefile
+manual/Makefile
+manual/ja/Makefile
+])

@@ -1,0 +1,3621 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2001-04-19 17:34+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: ENCODING\n"
+
+#: src/about.c:86
+msgid "About"
+msgstr ""
+
+#: src/about.c:189
+msgid ""
+"The portions applied from fetchmail is Copyright 1997 by Eric S. Raymond.  "
+"Portions of those are also copyrighted by Carl Harris, 1993 and 1995.  "
+"Copyright retained for the purpose of protecting free redistribution of "
+"source.\n"
+"\n"
+msgstr ""
+
+#: src/about.c:195
+msgid ""
+"The MD5 support is copyright by RSA Data Security, Inc.  See the header "
+"comment of the md5.c module for license terms.\n"
+"\n"
+msgstr ""
+
+#: src/about.c:199
+msgid ""
+"Kcc is copyright by Yasuhiro Tonooka <tonooka@msi.co.jp>, and libkcc is "
+"copyright by takeshi@SoftAgency.co.jp.\n"
+"\n"
+msgstr ""
+
+#: src/about.c:204
+msgid ""
+"GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>\n"
+"\n"
+msgstr ""
+
+#: src/about.c:208
+msgid ""
+"This program is free software; you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2, or (at your option) any later "
+"version.\n"
+"\n"
+msgstr ""
+
+#: src/about.c:214
+msgid ""
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for "
+"more details.\n"
+"\n"
+msgstr ""
+
+#: src/about.c:220
+msgid ""
+"You should have received a copy of the GNU General Public License along with "
+"this program; if not, write to the Free Software Foundation, Inc., 59 Temple "
+"Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr ""
+
+#: src/about.c:227 src/addressbook.c:1289 src/alertpanel.c:209
+#: src/compose.c:1460 src/compose.c:3068 src/foldersel.c:175 src/import.c:171
+#: src/inputdialog.c:155 src/main.c:293 src/mainwindow.c:1642
+#: src/mimeview.c:705 src/passphrase.c:115 src/prefs.c:467
+#: src/prefs_common.c:1699 src/prefs_common.c:1918 src/prefs_common.c:2034
+#: src/summaryview.c:2012 src/summaryview.c:2518
+msgid "OK"
+msgstr ""
+
+#: src/account.c:97
+msgid "Reading all config for each account...\n"
+msgstr ""
+
+#: src/account.c:112
+#, c-format
+msgid "Found label: %s\n"
+msgstr ""
+
+#: src/account.c:202
+msgid ""
+"Some composing windows are open.\n"
+"Please close all the composing windows before editing the accounts."
+msgstr ""
+
+#: src/account.c:207
+msgid "Opening account edit window...\n"
+msgstr ""
+
+#: src/account.c:347
+msgid "Creating account edit window...\n"
+msgstr ""
+
+#: src/account.c:352
+msgid "Edit accounts"
+msgstr ""
+
+#: src/account.c:380 src/addressbook.c:318 src/addressbook.c:1285
+#: src/compose.c:2185 src/mimeview.c:135 src/select-keys.c:272
+msgid "Name"
+msgstr ""
+
+#: src/account.c:381 src/prefs_account.c:585
+msgid "Protocol"
+msgstr ""
+
+#: src/account.c:382
+msgid "Server"
+msgstr ""
+
+#: src/account.c:401 src/addressbook.c:439
+msgid "Add"
+msgstr ""
+
+#: src/account.c:407
+msgid "Edit"
+msgstr ""
+
+#: src/account.c:413
+msgid " Delete "
+msgstr ""
+
+#: src/account.c:419 src/prefs_filter.c:432
+msgid "Down"
+msgstr ""
+
+#: src/account.c:425 src/prefs_filter.c:426
+msgid "Up"
+msgstr ""
+
+#: src/account.c:439
+msgid " Set as usually used account "
+msgstr ""
+
+#: src/account.c:445 src/prefs_filter.c:192 src/summary_search.c:192
+msgid "Close"
+msgstr ""
+
+#: src/account.c:498
+msgid "Delete account"
+msgstr ""
+
+#: src/account.c:499
+msgid "Do you really want to delete this account?"
+msgstr ""
+
+#: src/account.c:500 src/addressbook.c:579 src/addressbook.c:1220
+#: src/compose.c:3240 src/folderview.c:1263 src/folderview.c:1305
+#: src/folderview.c:1394 src/folderview.c:1427 src/folderview.c:1526
+#: src/folderview.c:1559 src/mainwindow.c:938 src/prefs_filter.c:715
+#: src/summary_search.c:297 src/summaryview.c:569 src/summaryview.c:809
+msgid "Yes"
+msgstr ""
+
+#: src/account.c:500 src/compose.c:3240 src/folderview.c:1263
+#: src/folderview.c:1305 src/folderview.c:1394 src/folderview.c:1427
+#: src/folderview.c:1526 src/folderview.c:1559
+msgid "+No"
+msgstr ""
+
+#: src/addressbook.c:229 src/compose.c:373 src/mainwindow.c:329
+msgid "/_File"
+msgstr ""
+
+#: src/addressbook.c:230
+msgid "/_File/New _address"
+msgstr ""
+
+#: src/addressbook.c:231
+msgid "/_File/New _group"
+msgstr ""
+
+#: src/addressbook.c:232
+msgid "/_File/New _folder"
+msgstr ""
+
+#: src/addressbook.c:233 src/addressbook.c:236 src/compose.c:377
+#: src/mainwindow.c:339 src/mainwindow.c:342
+msgid "/_File/---"
+msgstr ""
+
+#: src/addressbook.c:234
+msgid "/_File/_Edit"
+msgstr ""
+
+#: src/addressbook.c:235
+msgid "/_File/_Delete"
+msgstr ""
+
+#: src/addressbook.c:237 src/compose.c:378 src/mainwindow.c:343
+msgid "/_File/_Close"
+msgstr ""
+
+#: src/addressbook.c:238 src/compose.c:417 src/mainwindow.c:515
+msgid "/_Help"
+msgstr ""
+
+#: src/addressbook.c:239 src/compose.c:418 src/mainwindow.c:520
+msgid "/_Help/_About"
+msgstr ""
+
+#: src/addressbook.c:244 src/addressbook.c:254
+msgid "/New _address"
+msgstr ""
+
+#: src/addressbook.c:245 src/addressbook.c:255
+msgid "/New _group"
+msgstr ""
+
+#: src/addressbook.c:246 src/addressbook.c:256
+msgid "/New _folder"
+msgstr ""
+
+#: src/addressbook.c:247 src/addressbook.c:257 src/compose.c:367
+#: src/folderview.c:200 src/folderview.c:202 src/folderview.c:211
+#: src/folderview.c:213 src/folderview.c:222 src/folderview.c:224
+#: src/summaryview.c:299 src/summaryview.c:305 src/summaryview.c:310
+#: src/summaryview.c:313
+msgid "/---"
+msgstr ""
+
+#: src/addressbook.c:248 src/addressbook.c:258 src/compose.c:380
+#: src/mainwindow.c:346
+msgid "/_Edit"
+msgstr ""
+
+#: src/addressbook.c:249 src/addressbook.c:259 src/summaryview.c:290
+msgid "/_Delete"
+msgstr ""
+
+#: src/addressbook.c:318
+msgid "E-Mail address"
+msgstr ""
+
+#: src/addressbook.c:318 src/addressbook.c:1287
+msgid "Remarks"
+msgstr ""
+
+#: src/addressbook.c:325 src/compose.c:2742
+msgid "Address book"
+msgstr ""
+
+#: src/addressbook.c:413
+msgid "Name:"
+msgstr ""
+
+#: src/addressbook.c:436 src/addressbook.c:1220 src/mainwindow.c:1391
+#: src/prefs_filter.c:392
+msgid "Delete"
+msgstr ""
+
+#: src/addressbook.c:442
+msgid "Lookup"
+msgstr ""
+
+#: src/addressbook.c:452 src/headerview.c:55 src/summary_search.c:152
+msgid "To:"
+msgstr ""
+
+#: src/addressbook.c:456
+msgid "Cc:"
+msgstr ""
+
+#: src/addressbook.c:460
+msgid "Bcc:"
+msgstr ""
+
+#: src/addressbook.c:479
+msgid "Common address"
+msgstr ""
+
+#: src/addressbook.c:486
+msgid "Personal address"
+msgstr ""
+
+#: src/addressbook.c:577
+msgid "Delete address(es)"
+msgstr ""
+
+#: src/addressbook.c:578
+msgid "Really delete the address(es)?"
+msgstr ""
+
+#: src/addressbook.c:579 src/addressbook.c:1220 src/mainwindow.c:938
+#: src/prefs_filter.c:715 src/summary_search.c:297 src/summaryview.c:569
+#: src/summaryview.c:809
+msgid "No"
+msgstr ""
+
+#: src/addressbook.c:996 src/folderview.c:1141 src/folderview.c:1334
+msgid "New folder"
+msgstr ""
+
+#: src/addressbook.c:997 src/folderview.c:1142 src/folderview.c:1335
+msgid "Input the name of new folder:"
+msgstr ""
+
+#: src/addressbook.c:998 src/folderview.c:1143 src/folderview.c:1336
+msgid "NewFolder"
+msgstr ""
+
+#: src/addressbook.c:1009 src/addressbook.c:1054 src/addressbook.c:1131
+#: src/addressbook.c:1183
+msgid "The name already exists."
+msgstr ""
+
+#: src/addressbook.c:1041
+msgid "New group"
+msgstr ""
+
+#: src/addressbook.c:1042
+msgid "Input the name of new group:"
+msgstr ""
+
+#: src/addressbook.c:1043
+msgid "NewGroup"
+msgstr ""
+
+#: src/addressbook.c:1118
+msgid "Edit group"
+msgstr ""
+
+#: src/addressbook.c:1119
+msgid "Input the new name of group:"
+msgstr ""
+
+#: src/addressbook.c:1169
+msgid "Edit folder"
+msgstr ""
+
+#: src/addressbook.c:1170
+msgid "Input the new name of folder:"
+msgstr ""
+
+#: src/addressbook.c:1219
+#, c-format
+msgid "Really delete `%s' ?"
+msgstr ""
+
+#: src/addressbook.c:1267
+msgid "Edit address"
+msgstr ""
+
+#: src/addressbook.c:1286 src/compose.c:2741 src/select-keys.c:273
+msgid "Address"
+msgstr ""
+
+#: src/addressbook.c:1290 src/compose.c:1460 src/compose.c:3069
+#: src/compose.c:3638 src/foldersel.c:176 src/import.c:172
+#: src/inputdialog.c:156 src/main.c:293 src/mainwindow.c:1642
+#: src/mimeview.c:705 src/passphrase.c:119 src/prefs.c:468
+#: src/prefs_common.c:2035 src/progressdialog.c:70 src/select-keys.c:289
+#: src/summaryview.c:569 src/summaryview.c:2012 src/summaryview.c:2518
+msgid "Cancel"
+msgstr ""
+
+#: src/addressbook.c:1520
+msgid "Reading addressbook file..."
+msgstr ""
+
+#: src/addressbook.c:1524
+#, c-format
+msgid "%s doesn't exist.\n"
+msgstr ""
+
+#: src/addressbook.c:1546 src/addressbook.c:1839 src/imap.c:618
+#: src/mainwindow.c:670 src/mainwindow.c:1274 src/mh.c:842 src/mh.c:849
+#: src/news.c:483 src/procmsg.c:257 src/procmsg.c:321 src/summaryview.c:990
+#: src/summaryview.c:1196 src/summaryview.c:1278 src/summaryview.c:1339
+#: src/summaryview.c:1796 src/summaryview.c:2269 src/summaryview.c:2292
+#: src/summaryview.c:2313 src/summaryview.c:2406
+msgid "done.\n"
+msgstr ""
+
+#: src/addressbook.c:1817
+msgid "Exporting addressbook to file..."
+msgstr ""
+
+#: src/addressbook.c:1835
+msgid "failed to write addressbook data.\n"
+msgstr ""
+
+#: src/alertpanel.c:98 src/compose.c:3240 src/main.c:291
+msgid "Notice"
+msgstr ""
+
+#: src/alertpanel.c:111
+msgid "Warning"
+msgstr ""
+
+#: src/alertpanel.c:124
+msgid "Error"
+msgstr ""
+
+#: src/alertpanel.c:160
+msgid "Creating alert panel dialog...\n"
+msgstr ""
+
+#: src/codeconv.c:76 src/codeconv.c:87
+msgid "can't allocate memory\n"
+msgstr ""
+
+#: src/compose.c:365
+msgid "/_Add..."
+msgstr ""
+
+#: src/compose.c:366
+msgid "/_Remove"
+msgstr ""
+
+#: src/compose.c:368 src/folderview.c:203 src/folderview.c:214
+#: src/folderview.c:225
+msgid "/_Property..."
+msgstr ""
+
+#: src/compose.c:374
+msgid "/_File/_Attach file"
+msgstr ""
+
+#: src/compose.c:375
+msgid "/_File/_Insert file"
+msgstr ""
+
+#: src/compose.c:376
+msgid "/_File/Insert si_gnature"
+msgstr ""
+
+#: src/compose.c:381
+msgid "/_Edit/_Undo"
+msgstr ""
+
+#: src/compose.c:382
+msgid "/_Edit/_Redo"
+msgstr ""
+
+#: src/compose.c:383 src/compose.c:388 src/mainwindow.c:349
+msgid "/_Edit/---"
+msgstr ""
+
+#: src/compose.c:384
+msgid "/_Edit/Cu_t"
+msgstr ""
+
+#: src/compose.c:385 src/mainwindow.c:347
+msgid "/_Edit/_Copy"
+msgstr ""
+
+#: src/compose.c:386
+msgid "/_Edit/_Paste"
+msgstr ""
+
+#: src/compose.c:387 src/mainwindow.c:348
+msgid "/_Edit/Select _all"
+msgstr ""
+
+#: src/compose.c:389
+msgid "/_Edit/Wrap long _lines"
+msgstr ""
+
+#: src/compose.c:390
+msgid "/_Edit/Edit with e_xternal editor"
+msgstr ""
+
+#: src/compose.c:393 src/mainwindow.c:439
+msgid "/_Message"
+msgstr ""
+
+#: src/compose.c:394
+msgid "/_Message/_Send"
+msgstr ""
+
+#: src/compose.c:396
+msgid "/_Message/Send _later"
+msgstr ""
+
+#: src/compose.c:398
+msgid "/_Message/Save to _draft folder"
+msgstr ""
+
+#: src/compose.c:400 src/compose.c:405 src/compose.c:407 src/compose.c:410
+#: src/mainwindow.c:443 src/mainwindow.c:446 src/mainwindow.c:453
+#: src/mainwindow.c:464
+msgid "/_Message/---"
+msgstr ""
+
+#: src/compose.c:401
+msgid "/_Message/_To"
+msgstr ""
+
+#: src/compose.c:402
+msgid "/_Message/_Cc"
+msgstr ""
+
+#: src/compose.c:403
+msgid "/_Message/_Bcc"
+msgstr ""
+
+#: src/compose.c:404
+msgid "/_Message/_Reply to"
+msgstr ""
+
+#: src/compose.c:406
+msgid "/_Message/_Followup to"
+msgstr ""
+
+#: src/compose.c:408
+msgid "/_Message/_Attach"
+msgstr ""
+
+#: src/compose.c:411
+msgid "/_Message/Si_gn"
+msgstr ""
+
+#: src/compose.c:412
+msgid "/_Message/_Encrypt"
+msgstr ""
+
+#: src/compose.c:414 src/mainwindow.c:496
+msgid "/_Tool"
+msgstr ""
+
+#: src/compose.c:415
+msgid "/_Tool/Show _ruler"
+msgstr ""
+
+#: src/compose.c:416 src/mainwindow.c:497
+msgid "/_Tool/_Address book"
+msgstr ""
+
+#: src/compose.c:486 src/compose.c:556 src/compose.c:614 src/procmsg.c:675
+msgid "Can't get text part\n"
+msgstr ""
+
+#: src/compose.c:548
+#, c-format
+msgid "%s: file not exist\n"
+msgstr ""
+
+#: src/compose.c:560
+msgid ""
+"\n"
+"\n"
+"Begin forwarded message:\n"
+"\n"
+msgstr ""
+
+#: src/compose.c:1224
+#, c-format
+msgid "File %s doesn't exist\n"
+msgstr ""
+
+#: src/compose.c:1228
+#, c-format
+msgid "Can't get file size of %s\n"
+msgstr ""
+
+#: src/compose.c:1232
+#, c-format
+msgid "File %s is empty\n"
+msgstr ""
+
+#: src/compose.c:1253
+#, c-format
+msgid "Message: %s"
+msgstr ""
+
+#: src/compose.c:1359
+msgid " [Edited]"
+msgstr ""
+
+#: src/compose.c:1361
+#, c-format
+msgid "%s - Compose message%s"
+msgstr ""
+
+#: src/compose.c:1364
+#, c-format
+msgid "Compose message%s"
+msgstr ""
+
+#: src/compose.c:1386 src/compose.c:3530
+msgid "Recipient is not specified."
+msgstr ""
+
+#: src/compose.c:1404
+msgid "can't get recipient list."
+msgstr ""
+
+#: src/compose.c:1422
+msgid ""
+"Account for sending mail is not specified.\n"
+"Please select a mail account before sending."
+msgstr ""
+
+#: src/compose.c:1443
+#, c-format
+msgid "Error occurred while posting the message to %s ."
+msgstr ""
+
+#: src/compose.c:1457
+msgid "Queueing"
+msgstr ""
+
+#: src/compose.c:1458
+msgid ""
+"Error occurred while sending the message.\n"
+"Put this message into queue folder?"
+msgstr ""
+
+#: src/compose.c:1464 src/compose.c:3542
+msgid "Can't queue the message."
+msgstr ""
+
+#: src/compose.c:1467
+msgid "Error occurred while sending the message."
+msgstr ""
+
+#: src/compose.c:1474 src/compose.c:3549
+msgid "Can't save the message to outbox."
+msgstr ""
+
+#: src/compose.c:1500 src/compose.c:1621 src/compose.c:1707 src/utils.c:1446
+msgid "can't change file mode\n"
+msgstr ""
+
+#: src/compose.c:1526
+msgid "Can't convert the codeset of the message."
+msgstr ""
+
+#: src/compose.c:1535
+msgid "can't write headers\n"
+msgstr ""
+
+#: src/compose.c:1653
+msgid "saving sent message...\n"
+msgstr ""
+
+#: src/compose.c:1658
+msgid "can't save message\n"
+msgstr ""
+
+#: src/compose.c:1664 src/compose.c:1772
+msgid "can't open mark file\n"
+msgstr ""
+
+#: src/compose.c:1687
+msgid "queueing message...\n"
+msgstr ""
+
+#: src/compose.c:1762
+msgid "can't queue the message\n"
+msgstr ""
+
+#: src/compose.c:1798
+#, c-format
+msgid "Can't open file %s\n"
+msgstr ""
+
+#: src/compose.c:2111
+#, c-format
+msgid "generated Message-ID: %s\n"
+msgstr ""
+
+#: src/compose.c:2185 src/compose.c:3040
+msgid "MIME type"
+msgstr ""
+
+#: src/compose.c:2185 src/mimeview.c:135 src/prefs_common.c:2029
+#: src/select-keys.c:270 src/summaryview.c:360
+msgid "Size"
+msgstr ""
+
+#: src/compose.c:2202
+msgid "Creating compose window...\n"
+msgstr ""
+
+#: src/compose.c:2248 src/headerview.c:54 src/summary_search.c:145
+msgid "From:"
+msgstr ""
+
+#: src/compose.c:2668 src/mainwindow.c:1345 src/prefs_account.c:459
+#: src/prefs_common.c:595
+msgid "Send"
+msgstr ""
+
+#: src/compose.c:2669
+msgid "Send message"
+msgstr ""
+
+#: src/compose.c:2676
+msgid "Send later"
+msgstr ""
+
+#: src/compose.c:2677
+msgid "Put into queue folder and send later"
+msgstr ""
+
+#: src/compose.c:2684 src/folderview.c:619
+msgid "Draft"
+msgstr ""
+
+#: src/compose.c:2685
+msgid "Save to draft folder"
+msgstr ""
+
+#: src/compose.c:2694
+msgid "Insert"
+msgstr ""
+
+#: src/compose.c:2695
+msgid "Insert file"
+msgstr ""
+
+#: src/compose.c:2702
+msgid "Attach"
+msgstr ""
+
+#: src/compose.c:2703
+msgid "Attach file"
+msgstr ""
+
+#: src/compose.c:2712 src/prefs_common.c:996
+msgid "Signature"
+msgstr ""
+
+#: src/compose.c:2713
+msgid "Insert signature"
+msgstr ""
+
+#: src/compose.c:2721
+msgid "Editor"
+msgstr ""
+
+#: src/compose.c:2722
+msgid "Edit with external editor"
+msgstr ""
+
+#: src/compose.c:2730
+msgid "Linewrap"
+msgstr ""
+
+#: src/compose.c:2731
+msgid "Wrap long lines"
+msgstr ""
+
+#: src/compose.c:2936
+msgid "Invalid MIME type."
+msgstr ""
+
+#: src/compose.c:2954
+msgid "File doesn't exist or is empty."
+msgstr ""
+
+#: src/compose.c:3022
+msgid "Property"
+msgstr ""
+
+#: src/compose.c:3042
+msgid "Encoding"
+msgstr ""
+
+#: src/compose.c:3065
+msgid "Path"
+msgstr ""
+
+#: src/compose.c:3066
+msgid "File name"
+msgstr ""
+
+#: src/compose.c:3211
+#, c-format
+msgid "External editor command line is invalid: `%s'\n"
+msgstr ""
+
+#: src/compose.c:3237
+#, c-format
+msgid ""
+"The external editor is still working.\n"
+"Force terminating the process?\n"
+"process group id: %d"
+msgstr ""
+
+#: src/compose.c:3250
+#, c-format
+msgid "Terminated process group id: %d"
+msgstr ""
+
+#: src/compose.c:3251
+#, c-format
+msgid "Temporary file: %s"
+msgstr ""
+
+#: src/compose.c:3275
+msgid "Compose: input from monitoring process\n"
+msgstr ""
+
+#. failed
+#: src/compose.c:3308
+msgid "Couldn't exec external editor\n"
+msgstr ""
+
+#: src/compose.c:3312
+msgid "Couldn't write to file\n"
+msgstr ""
+
+#: src/compose.c:3314
+msgid "Pipe read failed\n"
+msgstr ""
+
+#: src/compose.c:3571
+msgid "can't remove the old draft message\n"
+msgstr ""
+
+#: src/compose.c:3600 src/compose.c:3612
+msgid "Select file"
+msgstr ""
+
+#: src/compose.c:3636
+msgid "Discard message"
+msgstr ""
+
+#: src/compose.c:3637
+msgid "This message has been modified. discard it?"
+msgstr ""
+
+#: src/compose.c:3638
+msgid "Discard"
+msgstr ""
+
+#: src/compose.c:3638
+msgid "to Draft"
+msgstr ""
+
+#: src/foldersel.c:130
+msgid "Select folder"
+msgstr ""
+
+#: src/folderview.c:197 src/folderview.c:208
+msgid "/Create _new folder..."
+msgstr ""
+
+#: src/folderview.c:198 src/folderview.c:209
+msgid "/_Rename folder..."
+msgstr ""
+
+#: src/folderview.c:199 src/folderview.c:210
+msgid "/_Delete folder"
+msgstr ""
+
+#: src/folderview.c:201
+msgid "/Remove _mailbox"
+msgstr ""
+
+#: src/folderview.c:212
+msgid "/Remove _IMAP4 server"
+msgstr ""
+
+#: src/folderview.c:219
+msgid "/_Subscribe to newsgroup..."
+msgstr ""
+
+#: src/folderview.c:221
+msgid "/_Remove newsgroup"
+msgstr ""
+
+#: src/folderview.c:223
+msgid "/Remove _news server"
+msgstr ""
+
+#: src/folderview.c:234
+msgid "Folder"
+msgstr ""
+
+#: src/folderview.c:234
+msgid "New"
+msgstr ""
+
+#: src/folderview.c:235 src/prefs_common.c:2026
+msgid "Unread"
+msgstr ""
+
+#: src/folderview.c:235
+msgid "#"
+msgstr ""
+
+#: src/folderview.c:245
+msgid "Creating folder view...\n"
+msgstr ""
+
+#: src/folderview.c:382
+msgid "Setting folder info...\n"
+msgstr ""
+
+#: src/folderview.c:383
+msgid "Setting folder info..."
+msgstr ""
+
+#: src/folderview.c:516 src/mainwindow.c:2060 src/setup.c:81
+#, c-format
+msgid "Scanning folder %s%c%s ..."
+msgstr ""
+
+#: src/folderview.c:521 src/mainwindow.c:2065 src/setup.c:86
+#, c-format
+msgid "Scanning folder %s ..."
+msgstr ""
+
+#: src/folderview.c:558
+msgid "Updating all folders..."
+msgstr ""
+
+#: src/folderview.c:597 src/prefs_account.c:608
+msgid "Inbox"
+msgstr ""
+
+#: src/folderview.c:602
+msgid "Outbox"
+msgstr ""
+
+#: src/folderview.c:607
+msgid "Queue"
+msgstr ""
+
+#: src/folderview.c:612
+msgid "Trash"
+msgstr ""
+
+#: src/folderview.c:1057
+#, c-format
+msgid "Folder %s is selected\n"
+msgstr ""
+
+#: src/folderview.c:1147 src/folderview.c:1205 src/folderview.c:1340
+#, c-format
+msgid "`%c' can't be included in folder name."
+msgstr ""
+
+#: src/folderview.c:1155 src/folderview.c:1214 src/folderview.c:1348
+#, c-format
+msgid "The folder `%s' already exists."
+msgstr ""
+
+#: src/folderview.c:1197
+#, c-format
+msgid "Input new name for `%s':"
+msgstr ""
+
+#: src/folderview.c:1199
+msgid "Rename folder"
+msgstr ""
+
+#: src/folderview.c:1259
+#, c-format
+msgid ""
+"All folder(s) and message(s) under `%s' will be deleted.\n"
+"Do you really want to delete?"
+msgstr ""
+
+#: src/folderview.c:1262 src/folderview.c:1393
+msgid "Delete folder"
+msgstr ""
+
+#: src/folderview.c:1268
+#, c-format
+msgid "can't remove folder `%s'\n"
+msgstr ""
+
+#: src/folderview.c:1301
+#, c-format
+msgid ""
+"Really remove the mailbox `%s' ?\n"
+"(The messages are NOT deleted from disk)"
+msgstr ""
+
+#: src/folderview.c:1304
+msgid "Remove folder"
+msgstr ""
+
+#: src/folderview.c:1391
+#, c-format
+msgid "Really delete folder `%s'?"
+msgstr ""
+
+#: src/folderview.c:1424
+#, c-format
+msgid "Really delete IMAP4 server `%s'?"
+msgstr ""
+
+#: src/folderview.c:1426
+msgid "Delete IMAP4 server"
+msgstr ""
+
+#: src/folderview.c:1467
+msgid "Subscribe newsgroup"
+msgstr ""
+
+#: src/folderview.c:1468
+msgid "Input subscribing newsgroup:"
+msgstr ""
+
+#: src/folderview.c:1477
+#, c-format
+msgid "The newsgroup `%s' already exists."
+msgstr ""
+
+#: src/folderview.c:1523
+#, c-format
+msgid "Really delete newsgroup `%s'?"
+msgstr ""
+
+#: src/folderview.c:1525
+msgid "Delete newsgroup"
+msgstr ""
+
+#: src/folderview.c:1556
+#, c-format
+msgid "Really delete news server `%s'?"
+msgstr ""
+
+#: src/folderview.c:1558
+msgid "Delete news server"
+msgstr ""
+
+#: src/gtkutils.c:50 src/gtkutils.c:66
+msgid "Abcdef"
+msgstr ""
+
+#: src/headerview.c:56
+msgid "Newsgroups:"
+msgstr ""
+
+#: src/headerview.c:57 src/summary_search.c:159
+msgid "Subject:"
+msgstr ""
+
+#: src/headerview.c:87
+msgid "Creating header view...\n"
+msgstr ""
+
+#: src/headerview.c:173 src/summaryview.c:1379
+msgid "(No From)"
+msgstr ""
+
+#: src/headerview.c:188 src/summaryview.c:1395
+msgid "(No Subject)"
+msgstr ""
+
+#: src/headerwindow.c:55
+msgid "Creating header window...\n"
+msgstr ""
+
+#: src/headerwindow.c:59
+msgid "All header"
+msgstr ""
+
+#: src/headerwindow.c:113
+#, c-format
+msgid "Displaying the header of %s ...\n"
+msgstr ""
+
+#: src/headerwindow.c:115
+#, c-format
+msgid "%s - All header"
+msgstr ""
+
+#: src/imageview.c:48
+msgid "Creating image view...\n"
+msgstr ""
+
+#: src/imageview.c:80 src/imageview.c:117
+msgid "Can't load the image."
+msgstr ""
+
+#: src/imap.c:141
+#, c-format
+msgid "IMAP4 connection to %s:%d has been disconnected. Reconnecting...\n"
+msgstr ""
+
+#: src/imap.c:164
+#, c-format
+msgid "creating IMAP4 connection to %s:%d ...\n"
+msgstr ""
+
+#: src/imap.c:231 src/imap.c:419 src/imap.c:455
+#, c-format
+msgid "can't select folder: %s\n"
+msgstr ""
+
+#: src/imap.c:304
+#, c-format
+msgid "message %d has been already cached.\n"
+msgstr ""
+
+#: src/imap.c:313
+#, c-format
+msgid "getting message %d...\n"
+msgstr ""
+
+#: src/imap.c:319 src/procmsg.c:575
+#, c-format
+msgid "can't fetch message %d\n"
+msgstr ""
+
+#: src/imap.c:340 src/imap.c:381 src/mh.c:170 src/mh.c:264 src/mh.c:335
+#: src/mh.c:419
+msgid "the src folder is identical to the dest.\n"
+msgstr ""
+
+#: src/imap.c:350 src/imap.c:390 src/mh.c:183 src/mh.c:267
+#, c-format
+msgid "Moving message %s%c%d to %s ...\n"
+msgstr ""
+
+#: src/imap.c:426
+#, c-format
+msgid "can't set deleted flags: %d\n"
+msgstr ""
+
+#: src/imap.c:432 src/imap.c:468
+msgid "can't expunge\n"
+msgstr ""
+
+#: src/imap.c:462
+#, c-format
+msgid "can't set deleted flags: 1:%d\n"
+msgstr ""
+
+#: src/imap.c:521
+msgid "can't get envelope\n"
+msgstr ""
+
+#: src/imap.c:527
+msgid "error occurred while getting envelope.\n"
+msgstr ""
+
+#: src/imap.c:535
+#, c-format
+msgid "can't parse envelope: %s\n"
+msgstr ""
+
+#: src/imap.c:565
+#, c-format
+msgid "deleting message %d...\n"
+msgstr ""
+
+#: src/imap.c:600
+msgid "\tDeleting all cached messages... "
+msgstr ""
+
+#: src/imap.c:628
+#, c-format
+msgid "Can't connect to IMAP4 server: %s:%d\n"
+msgstr ""
+
+#: src/imap.c:653
+msgid "IMAP4 login failed.\n"
+msgstr ""
+
+#: src/imap.c:794
+#, c-format
+msgid "can't copy %d to %s\n"
+msgstr ""
+
+#: src/imap.c:1101
+#, c-format
+msgid "error while imap command: STORE %d:%d %s\n"
+msgstr ""
+
+#: src/imap.c:1149
+msgid "error while imap command: EXPUNGE\n"
+msgstr ""
+
+#: src/import.c:116
+msgid "Import"
+msgstr ""
+
+#: src/import.c:140
+msgid "Importing file:"
+msgstr ""
+
+#: src/import.c:145
+msgid "Destination dir:"
+msgstr ""
+
+#: src/import.c:158 src/import.c:164 src/prefs_filter.c:343
+msgid " Select... "
+msgstr ""
+
+#: src/import.c:201
+msgid "Select importing file"
+msgstr ""
+
+#: src/inc.c:214
+msgid "Retrieving new messages"
+msgstr ""
+
+#: src/inc.c:332
+#, c-format
+msgid "Input password for %s on %s:"
+msgstr ""
+
+#: src/inc.c:336
+msgid "Input password"
+msgstr ""
+
+#: src/inc.c:358
+#, c-format
+msgid "Authorization for %s on %s failed"
+msgstr ""
+
+#: src/inc.c:420
+#, c-format
+msgid "getting new messages of account %s...\n"
+msgstr ""
+
+#: src/inc.c:428
+#, c-format
+msgid "%s: Retrieving new messages"
+msgstr ""
+
+#: src/inc.c:449
+#, c-format
+msgid "Connecting to POP3 server: %s ..."
+msgstr ""
+
+#: src/inc.c:460 src/inc.c:588
+#, c-format
+msgid "Can't connect to POP3 server: %s:%d\n"
+msgstr ""
+
+#: src/inc.c:463 src/inc.c:591
+#, c-format
+msgid "Can't connect to POP3 server: %s:%d"
+msgstr ""
+
+#: src/inc.c:622
+msgid "Authorizing"
+msgstr ""
+
+#: src/inc.c:631
+msgid "Getting number of new messages"
+msgstr ""
+
+#: src/inc.c:636
+#, c-format
+msgid "Retrieving message (%d / %d)"
+msgstr ""
+
+#: src/inc.c:644
+msgid "Deleting message"
+msgstr ""
+
+#: src/inc.c:648
+msgid "Quitting"
+msgstr ""
+
+#: src/inc.c:676
+msgid "a message won't be received\n"
+msgstr ""
+
+#: src/inc.c:703
+msgid "Error occurred while processing mail."
+msgstr ""
+
+#: src/inc.c:706
+msgid "No disk space left."
+msgstr ""
+
+#: src/inc.c:757
+msgid "no messages in local mailbox.\n"
+msgstr ""
+
+#: src/inc.c:768
+#, c-format
+msgid "Getting new messages from %s into %s...\n"
+msgstr ""
+
+#: src/logwindow.c:50
+msgid "Creating log window...\n"
+msgstr ""
+
+#: src/logwindow.c:54
+msgid "Protocol log"
+msgstr ""
+
+#. for gettext
+#: src/main.c:101
+#, c-format
+msgid ""
+"File `%s' already exists.\n"
+"Can't create folder."
+msgstr ""
+
+#: src/main.c:140
+msgid "g_thread is not supported by glib.\n"
+msgstr ""
+
+#: src/main.c:271
+#, c-format
+msgid "Usage: %s [OPTION]...\n"
+msgstr ""
+
+#: src/main.c:273
+msgid "  --compose [address]    open composition window"
+msgstr ""
+
+#: src/main.c:274
+msgid "  --receive              receive new messages"
+msgstr ""
+
+#: src/main.c:275
+msgid "  --receive-all          receive new messages of all accounts"
+msgstr ""
+
+#: src/main.c:276
+msgid "  --debug                debug mode"
+msgstr ""
+
+#: src/main.c:277
+msgid "  --help                 display this help and exit"
+msgstr ""
+
+#: src/main.c:278
+msgid "  --version              output version information and exit"
+msgstr ""
+
+#: src/main.c:292
+msgid "Composing message exists. Really quit?"
+msgstr ""
+
+#. remote command mode
+#: src/main.c:362
+msgid "another Sylpheed is already running.\n"
+msgstr ""
+
+#: src/mainwindow.c:330
+msgid "/_File/_Add mailbox..."
+msgstr ""
+
+#: src/mainwindow.c:331
+msgid "/_File/_Update folder tree"
+msgstr ""
+
+#: src/mainwindow.c:332
+msgid "/_File/_Folder"
+msgstr ""
+
+#: src/mainwindow.c:333
+msgid "/_File/_Folder/Create _new folder..."
+msgstr ""
+
+#: src/mainwindow.c:335
+msgid "/_File/_Folder/_Rename folder..."
+msgstr ""
+
+#: src/mainwindow.c:336
+msgid "/_File/_Folder/_Delete folder"
+msgstr ""
+
+#: src/mainwindow.c:337
+msgid "/_File/_Import mbox file..."
+msgstr ""
+
+#: src/mainwindow.c:338
+msgid "/_File/Empty _trash"
+msgstr ""
+
+#: src/mainwindow.c:340
+msgid "/_File/_Save as..."
+msgstr ""
+
+#: src/mainwindow.c:341
+msgid "/_File/_Print..."
+msgstr ""
+
+#: src/mainwindow.c:344
+msgid "/_File/E_xit"
+msgstr ""
+
+#: src/mainwindow.c:350
+msgid "/_Edit/_Search"
+msgstr ""
+
+#: src/mainwindow.c:352
+msgid "/_View"
+msgstr ""
+
+#: src/mainwindow.c:353
+msgid "/_View/_Folder tree"
+msgstr ""
+
+#: src/mainwindow.c:354
+msgid "/_View/_Message view"
+msgstr ""
+
+#: src/mainwindow.c:355
+msgid "/_View/_Toolbar"
+msgstr ""
+
+#: src/mainwindow.c:356
+msgid "/_View/_Toolbar/Icon _and text"
+msgstr ""
+
+#: src/mainwindow.c:357
+msgid "/_View/_Toolbar/_Icon"
+msgstr ""
+
+#: src/mainwindow.c:358
+msgid "/_View/_Toolbar/_Text"
+msgstr ""
+
+#: src/mainwindow.c:359
+msgid "/_View/_Toolbar/_Non-display"
+msgstr ""
+
+#: src/mainwindow.c:360
+msgid "/_View/_Status bar"
+msgstr ""
+
+#: src/mainwindow.c:361 src/mainwindow.c:364
+msgid "/_View/---"
+msgstr ""
+
+#: src/mainwindow.c:362
+msgid "/_View/Separate f_older tree"
+msgstr ""
+
+#: src/mainwindow.c:363
+msgid "/_View/Separate m_essage view"
+msgstr ""
+
+#: src/mainwindow.c:365
+msgid "/_View/_Code set"
+msgstr ""
+
+#: src/mainwindow.c:366
+msgid "/_View/_Code set/_Auto detect"
+msgstr ""
+
+#: src/mainwindow.c:374
+msgid "/_View/_Code set/---"
+msgstr ""
+
+#: src/mainwindow.c:375
+msgid "/_View/_Code set/7bit ascii (US-ASC_II)"
+msgstr ""
+
+#: src/mainwindow.c:379
+msgid "/_View/_Code set/Unicode (_UTF-8)"
+msgstr ""
+
+#: src/mainwindow.c:383
+msgid "/_View/_Code set/Western European (ISO-8859-_1)"
+msgstr ""
+
+#: src/mainwindow.c:387
+msgid "/_View/_Code set/Central European (ISO-8859-_2)"
+msgstr ""
+
+#: src/mainwindow.c:390
+msgid "/_View/_Code set/_Baltic (ISO-8859-13)"
+msgstr ""
+
+#: src/mainwindow.c:392
+msgid "/_View/_Code set/Baltic (ISO-8859-_4)"
+msgstr ""
+
+#: src/mainwindow.c:395
+msgid "/_View/_Code set/Greek (ISO-8859-_7)"
+msgstr ""
+
+#: src/mainwindow.c:398
+msgid "/_View/_Code set/Turkish (ISO-8859-_9)"
+msgstr ""
+
+#: src/mainwindow.c:401
+msgid "/_View/_Code set/Cyrillic (ISO-8859-_5)"
+msgstr ""
+
+#: src/mainwindow.c:403
+msgid "/_View/_Code set/Cyrillic (KOI8-_R)"
+msgstr ""
+
+#: src/mainwindow.c:405
+msgid "/_View/_Code set/Cyrillic (Windows-1251)"
+msgstr ""
+
+#: src/mainwindow.c:409
+msgid "/_View/_Code set/Japanese (ISO-2022-_JP)"
+msgstr ""
+
+#: src/mainwindow.c:412
+msgid "/_View/_Code set/Japanese (ISO-2022-JP-2)"
+msgstr ""
+
+#: src/mainwindow.c:415
+msgid "/_View/_Code set/Japanese (_EUC-JP)"
+msgstr ""
+
+#: src/mainwindow.c:417
+msgid "/_View/_Code set/Japanese (_Shift__JIS)"
+msgstr ""
+
+#: src/mainwindow.c:421
+msgid "/_View/_Code set/Simplified Chinese (_GB2312)"
+msgstr ""
+
+#: src/mainwindow.c:423
+msgid "/_View/_Code set/Traditional Chinese (_Big5)"
+msgstr ""
+
+#: src/mainwindow.c:425
+msgid "/_View/_Code set/Traditional Chinese (EUC-_TW)"
+msgstr ""
+
+#: src/mainwindow.c:427
+msgid "/_View/_Code set/Chinese (ISO-2022-_CN)"
+msgstr ""
+
+#: src/mainwindow.c:430
+msgid "/_View/_Code set/Korean (EUC-_KR)"
+msgstr ""
+
+#: src/mainwindow.c:432
+msgid "/_View/_Code set/Korean (ISO-2022-KR)"
+msgstr ""
+
+#: src/mainwindow.c:440
+msgid "/_Message/Rece_ive new mail"
+msgstr ""
+
+#: src/mainwindow.c:441
+msgid "/_Message/Receive from _all accounts"
+msgstr ""
+
+#: src/mainwindow.c:444
+msgid "/_Message/Send queued messa_ges"
+msgstr ""
+
+#: src/mainwindow.c:447
+msgid "/_Message/Compose _new message"
+msgstr ""
+
+#: src/mainwindow.c:448
+msgid "/_Message/_Reply"
+msgstr ""
+
+#: src/mainwindow.c:449
+msgid "/_Message/Reply to a_ll"
+msgstr ""
+
+#: src/mainwindow.c:450
+msgid "/_Message/_Forward"
+msgstr ""
+
+#: src/mainwindow.c:451
+msgid "/_Message/Forward as an a_ttachment"
+msgstr ""
+
+#: src/mainwindow.c:454
+msgid "/_Message/M_ove..."
+msgstr ""
+
+#: src/mainwindow.c:455
+msgid "/_Message/_Copy..."
+msgstr ""
+
+#: src/mainwindow.c:456
+msgid "/_Message/_Delete"
+msgstr ""
+
+#: src/mainwindow.c:457
+msgid "/_Message/_Mark"
+msgstr ""
+
+#: src/mainwindow.c:458
+msgid "/_Message/_Mark/_Mark"
+msgstr ""
+
+#: src/mainwindow.c:459
+msgid "/_Message/_Mark/_Unmark"
+msgstr ""
+
+#: src/mainwindow.c:460
+msgid "/_Message/_Mark/---"
+msgstr ""
+
+#: src/mainwindow.c:461
+msgid "/_Message/_Mark/Mark as unr_ead"
+msgstr ""
+
+#: src/mainwindow.c:462
+msgid "/_Message/_Mark/Mark it as _being read"
+msgstr ""
+
+#: src/mainwindow.c:465
+msgid "/_Message/Open in new _window"
+msgstr ""
+
+#: src/mainwindow.c:466
+msgid "/_Message/View _source"
+msgstr ""
+
+#: src/mainwindow.c:467
+msgid "/_Message/Show all _header"
+msgstr ""
+
+#: src/mainwindow.c:468
+msgid "/_Message/Re_edit"
+msgstr ""
+
+#: src/mainwindow.c:470
+msgid "/_Summary"
+msgstr ""
+
+#: src/mainwindow.c:471
+msgid "/_Summary/_Delete duplicated messages"
+msgstr ""
+
+#: src/mainwindow.c:473
+msgid "/_Summary/_Filter messages"
+msgstr ""
+
+#: src/mainwindow.c:474
+msgid "/_Summary/E_xecute"
+msgstr ""
+
+#: src/mainwindow.c:475
+msgid "/_Summary/_Update"
+msgstr ""
+
+#: src/mainwindow.c:476 src/mainwindow.c:480 src/mainwindow.c:482
+msgid "/_Summary/---"
+msgstr ""
+
+#: src/mainwindow.c:477
+msgid "/_Summary/_Prev message"
+msgstr ""
+
+#: src/mainwindow.c:478
+msgid "/_Summary/_Next message"
+msgstr ""
+
+#: src/mainwindow.c:479
+msgid "/_Summary/N_ext unread message"
+msgstr ""
+
+#: src/mainwindow.c:481
+msgid "/_Summary/_Go to other folder"
+msgstr ""
+
+#: src/mainwindow.c:483
+msgid "/_Summary/_Sort"
+msgstr ""
+
+#: src/mainwindow.c:484
+msgid "/_Summary/_Sort/Sort by _number"
+msgstr ""
+
+#: src/mainwindow.c:485
+msgid "/_Summary/_Sort/Sort by s_ize"
+msgstr ""
+
+#: src/mainwindow.c:486
+msgid "/_Summary/_Sort/Sort by _date"
+msgstr ""
+
+#: src/mainwindow.c:487
+msgid "/_Summary/_Sort/Sort by _from"
+msgstr ""
+
+#: src/mainwindow.c:488
+msgid "/_Summary/_Sort/Sort by _subject"
+msgstr ""
+
+#: src/mainwindow.c:489
+msgid "/_Summary/_Sort/---"
+msgstr ""
+
+#: src/mainwindow.c:490
+msgid "/_Summary/_Sort/_Attract by subject"
+msgstr ""
+
+#: src/mainwindow.c:492
+msgid "/_Summary/_Thread view"
+msgstr ""
+
+#: src/mainwindow.c:493
+msgid "/_Summary/Unt_hread view"
+msgstr ""
+
+#: src/mainwindow.c:494
+msgid "/_Summary/Set display _item..."
+msgstr ""
+
+#: src/mainwindow.c:498
+msgid "/_Tool/_Log window"
+msgstr ""
+
+#: src/mainwindow.c:500
+msgid "/_Configuration"
+msgstr ""
+
+#: src/mainwindow.c:501
+msgid "/_Configuration/_Common preferences..."
+msgstr ""
+
+#: src/mainwindow.c:503
+msgid "/_Configuration/_Filter setting..."
+msgstr ""
+
+#: src/mainwindow.c:505
+msgid "/_Configuration/_Preferences per account..."
+msgstr ""
+
+#: src/mainwindow.c:507
+msgid "/_Configuration/---"
+msgstr ""
+
+#: src/mainwindow.c:508
+msgid "/_Configuration/Create _new account..."
+msgstr ""
+
+#: src/mainwindow.c:510
+msgid "/_Configuration/_Edit accounts..."
+msgstr ""
+
+#: src/mainwindow.c:512
+msgid "/_Configuration/C_hange current account"
+msgstr ""
+
+#: src/mainwindow.c:516
+msgid "/_Help/_Manual"
+msgstr ""
+
+#: src/mainwindow.c:517
+msgid "/_Help/_Manual/_English"
+msgstr ""
+
+#: src/mainwindow.c:518
+msgid "/_Help/_Manual/_Japanese"
+msgstr ""
+
+#: src/mainwindow.c:519
+msgid "/_Help/---"
+msgstr ""
+
+#: src/mainwindow.c:548
+msgid "Creating main window...\n"
+msgstr ""
+
+#: src/mainwindow.c:667
+#, c-format
+msgid "MainWindow: color allocation %d failed\n"
+msgstr ""
+
+#: src/mainwindow.c:810 src/mainwindow.c:827
+msgid "Untitled"
+msgstr ""
+
+#: src/mainwindow.c:828
+msgid "none"
+msgstr ""
+
+#: src/mainwindow.c:837
+#, c-format
+msgid "Current account: %s"
+msgstr ""
+
+#: src/mainwindow.c:928
+#, c-format
+msgid "window position: x = %d, y = %d\n"
+msgstr ""
+
+#: src/mainwindow.c:936
+msgid "Empty trash"
+msgstr ""
+
+#: src/mainwindow.c:937
+msgid "Empty all messages in trash?"
+msgstr ""
+
+#: src/mainwindow.c:964
+msgid "Add mailbox"
+msgstr ""
+
+#: src/mainwindow.c:965
+msgid ""
+"Input the location of mailbox.\n"
+"If the existing mailbox is specified, it will be\n"
+"scanned automatically."
+msgstr ""
+
+#: src/mainwindow.c:971
+#, c-format
+msgid "The mailbox `%s' already exists."
+msgstr ""
+
+#: src/mainwindow.c:976 src/setup.c:57
+msgid "Mailbox"
+msgstr ""
+
+#: src/mainwindow.c:982 src/setup.c:63
+msgid ""
+"Creation of the mailbox failed.\n"
+"Maybe some files already exist, or you don't have the permission to write "
+"there."
+msgstr ""
+
+#: src/mainwindow.c:1127
+msgid "Setting widgets..."
+msgstr ""
+
+#: src/mainwindow.c:1328
+msgid "Get"
+msgstr ""
+
+#: src/mainwindow.c:1329
+msgid "Incorporate new mail"
+msgstr ""
+
+#: src/mainwindow.c:1334
+msgid "Get all"
+msgstr ""
+
+#: src/mainwindow.c:1335
+msgid "Incorporate new mail of all accounts"
+msgstr ""
+
+#: src/mainwindow.c:1346
+msgid "Send queued message(s)"
+msgstr ""
+
+#: src/mainwindow.c:1356 src/prefs_account.c:461 src/prefs_common.c:597
+msgid "Compose"
+msgstr ""
+
+#: src/mainwindow.c:1357
+msgid "Compose new message"
+msgstr ""
+
+#: src/mainwindow.c:1364
+msgid "Reply"
+msgstr ""
+
+#: src/mainwindow.c:1365
+msgid "Reply to the message"
+msgstr ""
+
+#: src/mainwindow.c:1372
+msgid "Reply all"
+msgstr ""
+
+#: src/mainwindow.c:1373
+msgid "Reply to all"
+msgstr ""
+
+#: src/mainwindow.c:1380
+msgid "Forward"
+msgstr ""
+
+#: src/mainwindow.c:1381
+msgid "Forward the message"
+msgstr ""
+
+#: src/mainwindow.c:1392
+msgid "Delete the message"
+msgstr ""
+
+#: src/mainwindow.c:1400
+msgid "Execute"
+msgstr ""
+
+#: src/mainwindow.c:1401
+msgid "Execute marked process"
+msgstr ""
+
+#: src/mainwindow.c:1411
+msgid "Next"
+msgstr ""
+
+#: src/mainwindow.c:1412
+msgid "Next unread message"
+msgstr ""
+
+#: src/mainwindow.c:1422
+msgid "Prefs"
+msgstr ""
+
+#: src/mainwindow.c:1423
+msgid "Common preference"
+msgstr ""
+
+#: src/mainwindow.c:1430
+msgid "Account"
+msgstr ""
+
+#: src/mainwindow.c:1431
+msgid "Account setting"
+msgstr ""
+
+#: src/mainwindow.c:1641 src/summaryview.c:2517
+msgid "Exit"
+msgstr ""
+
+#: src/mainwindow.c:1641 src/summaryview.c:2517
+msgid "Exit this program?"
+msgstr ""
+
+#: src/mainwindow.c:1775
+msgid "Sending queued message failed."
+msgstr ""
+
+#: src/mainwindow.c:1892
+#, c-format
+msgid "forced charset: %s\n"
+msgstr ""
+
+#: src/mbox.c:68
+#, c-format
+msgid "Getting messages from %s into %s...\n"
+msgstr ""
+
+#: src/mbox.c:78
+msgid "can't read mbox file.\n"
+msgstr ""
+
+#: src/mbox.c:85
+#, c-format
+msgid "invalid mbox format: %s\n"
+msgstr ""
+
+#: src/mbox.c:92
+#, c-format
+msgid "malformed mbox: %s\n"
+msgstr ""
+
+#: src/mbox.c:109
+msgid "can't open temporary file\n"
+msgstr ""
+
+#: src/mbox.c:159
+#, c-format
+msgid ""
+"unescaped From found:\n"
+"%s"
+msgstr ""
+
+#: src/mbox.c:194
+msgid "can't write to temporary file\n"
+msgstr ""
+
+#: src/mbox.c:226
+#, c-format
+msgid "%d messages found.\n"
+msgstr ""
+
+#: src/mbox.c:243
+#, c-format
+msgid "can't create lock file %s\n"
+msgstr ""
+
+#: src/mbox.c:244
+msgid "use 'flock' instead of 'file' if possible.\n"
+msgstr ""
+
+#: src/mbox.c:256
+#, c-format
+msgid "can't create %s\n"
+msgstr ""
+
+#: src/mbox.c:262
+msgid "mailbox is owned by another process, waiting...\n"
+msgstr ""
+
+#: src/mbox.c:291
+#, c-format
+msgid "can't lock %s\n"
+msgstr ""
+
+#: src/mbox.c:298 src/mbox.c:345
+msgid "invalid lock type\n"
+msgstr ""
+
+#: src/mbox.c:331
+#, c-format
+msgid "can't unlock %s\n"
+msgstr ""
+
+#: src/mbox.c:362
+msgid "can't truncate mailbox to zero.\n"
+msgstr ""
+
+#: src/mbox.c:383
+#, c-format
+msgid "Exporting messages from %s into %s...\n"
+msgstr ""
+
+#: src/messageview.c:67
+msgid "Creating message view...\n"
+msgstr ""
+
+#: src/mh.c:149
+#, c-format
+msgid "can't copy message %s to %s\n"
+msgstr ""
+
+#: src/mh.c:181 src/mh.c:258 src/mh.c:346 src/mh.c:413
+msgid "Can't open mark file.\n"
+msgstr ""
+
+#: src/mh.c:192 src/mh.c:276 src/mh.c:357 src/mh.c:431
+#, c-format
+msgid "%s already exists."
+msgstr ""
+
+#: src/mh.c:348 src/mh.c:422
+#, c-format
+msgid "Copying message %s%c%d to %s ...\n"
+msgstr ""
+
+#: src/mh.c:586
+#, c-format
+msgid "Last number in dir %s = %d\n"
+msgstr ""
+
+#: src/mh.c:785
+msgid "\tSearching uncached messages... "
+msgstr ""
+
+#: src/mh.c:840
+#, c-format
+msgid "%d uncached message(s) found.\n"
+msgstr ""
+
+#: src/mh.c:846
+msgid "\tSorting uncached messages in numerical order... "
+msgstr ""
+
+#: src/mimeview.c:110
+msgid "/_Open"
+msgstr ""
+
+#: src/mimeview.c:111
+msgid "/_Display as text"
+msgstr ""
+
+#: src/mimeview.c:112 src/summaryview.c:311
+msgid "/_Save as..."
+msgstr ""
+
+#: src/mimeview.c:115
+msgid "/_Check signature"
+msgstr ""
+
+#: src/mimeview.c:135
+msgid "MIME Type"
+msgstr ""
+
+#: src/mimeview.c:139
+msgid "Creating MIME view...\n"
+msgstr ""
+
+#: src/mimeview.c:240
+msgid "Select \"Check signature\" to check"
+msgstr ""
+
+#: src/mimeview.c:411
+msgid "Can't get the part of multipart message."
+msgstr ""
+
+#: src/mimeview.c:663 src/mimeview.c:711 src/mimeview.c:730
+msgid "Can't save the part of multipart message."
+msgstr ""
+
+#: src/mimeview.c:697 src/summaryview.c:2005
+msgid "Save as"
+msgstr ""
+
+#: src/mimeview.c:703 src/summaryview.c:2010
+msgid "Overwrite"
+msgstr ""
+
+#: src/mimeview.c:704 src/summaryview.c:2011
+msgid "Overwrite existing file?"
+msgstr ""
+
+#: src/mimeview.c:773
+#, c-format
+msgid "MIME viewer command line is invalid: `%s'"
+msgstr ""
+
+#: src/news.c:75
+#, c-format
+msgid "creating NNTP connection to %s:%d ...\n"
+msgstr ""
+
+#: src/news.c:111
+#, c-format
+msgid "NNTP connection to %s:%d has been disconnected. Reconnecting...\n"
+msgstr ""
+
+#: src/news.c:182
+#, c-format
+msgid "article %d has been already cached.\n"
+msgstr ""
+
+#: src/news.c:191
+#, c-format
+msgid "getting article %d...\n"
+msgstr ""
+
+#: src/news.c:196
+#, c-format
+msgid "can't read article %d\n"
+msgstr ""
+
+#: src/news.c:228
+msgid "can't post article.\n"
+msgstr ""
+
+#: src/news.c:252
+#, c-format
+msgid "can't retrieve article %d\n"
+msgstr ""
+
+#: src/news.c:291
+#, c-format
+msgid "can't set group: %s\n"
+msgstr ""
+
+#: src/news.c:297
+#, c-format
+msgid "invalid article range: %d - %d\n"
+msgstr ""
+
+#: src/news.c:306
+msgid "no new articles.\n"
+msgstr ""
+
+#: src/news.c:316
+#, c-format
+msgid "getting xover %d - %d in %s...\n"
+msgstr ""
+
+#: src/news.c:319
+msgid "can't get xover\n"
+msgstr ""
+
+#: src/news.c:325
+msgid "error occurred while getting xover.\n"
+msgstr ""
+
+#: src/news.c:333
+#, c-format
+msgid "invalid xover line: %s\n"
+msgstr ""
+
+#: src/news.c:434
+#, c-format
+msgid "deleting article %d...\n"
+msgstr ""
+
+#: src/news.c:465
+msgid "\tDeleting all cached articles... "
+msgstr ""
+
+#: src/nntp.c:44
+#, c-format
+msgid "Can't connect to NNTP server: %s:%d\n"
+msgstr ""
+
+#: src/nntp.c:73 src/nntp.c:135
+#, c-format
+msgid "protocol error: %s\n"
+msgstr ""
+
+#: src/nntp.c:95 src/nntp.c:141
+msgid "protocol error\n"
+msgstr ""
+
+#: src/nntp.c:174 src/nntp.c:180
+msgid "Error occurred while posting\n"
+msgstr ""
+
+#: src/passphrase.c:73
+msgid "Passphrase"
+msgstr ""
+
+#: src/passphrase.c:228
+msgid "[no user id]"
+msgstr ""
+
+#: src/passphrase.c:232
+#, c-format
+msgid ""
+"%sPlease enter the passphrase for:\n"
+"\n"
+"  %.*s  \n"
+"(%.*s)\n"
+msgstr ""
+
+#: src/passphrase.c:236
+msgid ""
+"Bad passphrase! Try again...\n"
+"\n"
+msgstr ""
+
+#: src/pop.c:98 src/pop.c:144
+msgid "error occurred on authorization\n"
+msgstr ""
+
+#: src/pop.c:116
+msgid "Required APOP timestamp not found in greeting\n"
+msgstr ""
+
+#: src/pop.c:122
+msgid "Timestamp syntax error in greeting\n"
+msgstr ""
+
+#: src/pop.c:169 src/pop.c:206
+msgid "POP3 protocol error\n"
+msgstr ""
+
+#: src/prefs.c:56
+msgid "Reading configuration...\n"
+msgstr ""
+
+#: src/prefs.c:76 src/prefs.c:183
+#, c-format
+msgid "Found %s\n"
+msgstr ""
+
+#: src/prefs.c:90
+msgid "Finished reading configuration.\n"
+msgstr ""
+
+#: src/prefs.c:168 src/prefs.c:213 src/prefs_account.c:326
+#: src/prefs_account.c:340 src/prefs_filter.c:512 src/prefs_filter.c:536
+msgid "failed to write configuration to file\n"
+msgstr ""
+
+#: src/prefs.c:216
+msgid "Configuration is saved.\n"
+msgstr ""
+
+#: src/prefs.c:469
+msgid "Apply"
+msgstr ""
+
+#: src/prefs_account.c:371
+msgid "Opening account preferences window...\n"
+msgstr ""
+
+#: src/prefs_account.c:396
+#, c-format
+msgid "Account%d"
+msgstr ""
+
+#: src/prefs_account.c:409
+msgid "Preferences for new account"
+msgstr ""
+
+#: src/prefs_account.c:414
+msgid "Preferences for each account"
+msgstr ""
+
+#: src/prefs_account.c:435
+msgid "Creating account preferences window...\n"
+msgstr ""
+
+#: src/prefs_account.c:455
+msgid "Basic"
+msgstr ""
+
+#: src/prefs_account.c:457 src/prefs_common.c:593
+msgid "Receive"
+msgstr ""
+
+#: src/prefs_account.c:463
+msgid "Advanced"
+msgstr ""
+
+#: src/prefs_account.c:516
+msgid "Name of this account"
+msgstr ""
+
+#: src/prefs_account.c:525
+msgid "Usually used"
+msgstr ""
+
+#: src/prefs_account.c:529
+msgid "Personal information"
+msgstr ""
+
+#: src/prefs_account.c:538
+msgid "Full name"
+msgstr ""
+
+#: src/prefs_account.c:544
+msgid "Mail address"
+msgstr ""
+
+#: src/prefs_account.c:550
+msgid "Organization"
+msgstr ""
+
+#: src/prefs_account.c:574
+msgid "Server information"
+msgstr ""
+
+#: src/prefs_account.c:595
+msgid "POP3 (normal)"
+msgstr ""
+
+#: src/prefs_account.c:597
+msgid "POP3 (APOP auth)"
+msgstr ""
+
+#: src/prefs_account.c:599
+msgid "IMAP4"
+msgstr ""
+
+#: src/prefs_account.c:601
+msgid "News (NNTP)"
+msgstr ""
+
+#: src/prefs_account.c:603
+msgid "None (local)"
+msgstr ""
+
+#: src/prefs_account.c:657
+msgid "News server"
+msgstr ""
+
+#: src/prefs_account.c:663
+msgid "Server for receiving"
+msgstr ""
+
+#: src/prefs_account.c:669
+msgid "SMTP server (send)"
+msgstr ""
+
+#: src/prefs_account.c:676
+msgid "User ID"
+msgstr ""
+
+#: src/prefs_account.c:682
+msgid "Password"
+msgstr ""
+
+#: src/prefs_account.c:726
+msgid "POP3"
+msgstr ""
+
+#: src/prefs_account.c:734
+msgid "Remove messages on server when received"
+msgstr ""
+
+#: src/prefs_account.c:736
+msgid "Receive all messages on server"
+msgstr ""
+
+#: src/prefs_account.c:738
+msgid "Receive at getting from all accounts"
+msgstr ""
+
+#: src/prefs_account.c:740
+msgid "Filter messages on receiving"
+msgstr ""
+
+#: src/prefs_account.c:777 src/prefs_filter.c:238
+msgid "Header"
+msgstr ""
+
+#: src/prefs_account.c:784
+msgid "Add Date header field"
+msgstr ""
+
+#: src/prefs_account.c:785
+msgid "Generate Message-ID"
+msgstr ""
+
+#: src/prefs_account.c:794
+msgid "Add user-defined header"
+msgstr ""
+
+#: src/prefs_account.c:796 src/prefs_common.c:1200
+msgid " Edit... "
+msgstr ""
+
+#: src/prefs_account.c:803
+msgid "Automatically set following addresses"
+msgstr ""
+
+#: src/prefs_account.c:812
+msgid "Cc"
+msgstr ""
+
+#: src/prefs_account.c:825
+msgid "Bcc"
+msgstr ""
+
+#: src/prefs_account.c:838
+msgid "Reply-To"
+msgstr ""
+
+#: src/prefs_account.c:851
+msgid "Authentication"
+msgstr ""
+
+#: src/prefs_account.c:859
+msgid "SMTP Authentication (SMTP AUTH)"
+msgstr ""
+
+#: src/prefs_account.c:861
+msgid "Authenticate with POP3 before sending"
+msgstr ""
+
+#: src/prefs_account.c:895
+msgid "Signature file"
+msgstr ""
+
+#: src/prefs_account.c:933
+msgid "Specify SMTP port"
+msgstr ""
+
+#: src/prefs_account.c:945
+msgid "Specify POP3 port"
+msgstr ""
+
+#: src/prefs_account.c:957
+msgid "Specify domain name"
+msgstr ""
+
+#: src/prefs_account.c:997
+msgid "Mail address is not entered."
+msgstr ""
+
+#: src/prefs_account.c:1002
+msgid "SMTP server is not entered."
+msgstr ""
+
+#: src/prefs_account.c:1007
+msgid "User ID is not entered."
+msgstr ""
+
+#: src/prefs_account.c:1012
+msgid "POP3 server is not entered."
+msgstr ""
+
+#: src/prefs_account.c:1017
+msgid "IMAP4 server is not entered."
+msgstr ""
+
+#: src/prefs_account.c:1022
+msgid "NNTP server is not entered."
+msgstr ""
+
+#: src/prefs_common.c:570
+msgid "Creating common preferences window...\n"
+msgstr ""
+
+#: src/prefs_common.c:574
+msgid "Common Preferences"
+msgstr ""
+
+#: src/prefs_common.c:599
+msgid "Display"
+msgstr ""
+
+#: src/prefs_common.c:601
+msgid "Message"
+msgstr ""
+
+#: src/prefs_common.c:604
+msgid "Privacy"
+msgstr ""
+
+#: src/prefs_common.c:607
+msgid "Interface"
+msgstr ""
+
+#: src/prefs_common.c:609
+msgid "Other"
+msgstr ""
+
+#: src/prefs_common.c:649 src/prefs_common.c:809
+msgid "External program"
+msgstr ""
+
+#: src/prefs_common.c:658
+msgid "Use external program for incorporation"
+msgstr ""
+
+#: src/prefs_common.c:665 src/prefs_common.c:826
+msgid "Program path"
+msgstr ""
+
+#: src/prefs_common.c:677
+msgid "Local spool"
+msgstr ""
+
+#: src/prefs_common.c:688
+msgid "Incorporate from spool"
+msgstr ""
+
+#: src/prefs_common.c:690
+msgid "Filter on incorporation"
+msgstr ""
+
+#: src/prefs_common.c:698
+msgid "Spool directory"
+msgstr ""
+
+#: src/prefs_common.c:718
+msgid "Auto-check new mail"
+msgstr ""
+
+#: src/prefs_common.c:720
+msgid "each"
+msgstr ""
+
+#: src/prefs_common.c:732
+msgid "minute(s)"
+msgstr ""
+
+#: src/prefs_common.c:741
+msgid "Check new mail on startup"
+msgstr ""
+
+#: src/prefs_common.c:743
+msgid "News"
+msgstr ""
+
+#: src/prefs_common.c:751
+msgid ""
+"Maximum article number to download\n"
+"(unlimited if 0 is specified)"
+msgstr ""
+
+#: src/prefs_common.c:819
+msgid "Use external program for sending"
+msgstr ""
+
+#: src/prefs_common.c:843
+msgid "Save sent message to outbox"
+msgstr ""
+
+#: src/prefs_common.c:845
+msgid "Queue message that failed to send"
+msgstr ""
+
+#: src/prefs_common.c:851
+msgid "Outgoing codeset"
+msgstr ""
+
+#: src/prefs_common.c:866
+msgid "Automatic"
+msgstr ""
+
+#: src/prefs_common.c:867
+msgid "7bit ascii (US-ASCII)"
+msgstr ""
+
+#: src/prefs_common.c:869
+msgid "Unicode (UTF-8)"
+msgstr ""
+
+#: src/prefs_common.c:871
+msgid "Western European (ISO-8859-1)"
+msgstr ""
+
+#: src/prefs_common.c:873
+msgid "Central European (ISO-8859-2)"
+msgstr ""
+
+#: src/prefs_common.c:874
+msgid "Baltic (ISO-8859-13)"
+msgstr ""
+
+#: src/prefs_common.c:875
+msgid "Baltic (ISO-8859-4)"
+msgstr ""
+
+#: src/prefs_common.c:876
+msgid "Greek (ISO-8859-7)"
+msgstr ""
+
+#: src/prefs_common.c:877
+msgid "Turkish (ISO-8859-9)"
+msgstr ""
+
+#: src/prefs_common.c:878
+msgid "Cyrillic (ISO-8859-5)"
+msgstr ""
+
+#: src/prefs_common.c:879
+msgid "Cyrillic (KOI8-R)"
+msgstr ""
+
+#: src/prefs_common.c:880
+msgid "Cyrillic (Windows-1251)"
+msgstr ""
+
+#: src/prefs_common.c:881
+msgid "Cyrillic (KOI8-U)"
+msgstr ""
+
+#: src/prefs_common.c:883
+msgid "Japanese (ISO-2022-JP)"
+msgstr ""
+
+#: src/prefs_common.c:885
+msgid "Japanese (EUC-JP)"
+msgstr ""
+
+#: src/prefs_common.c:886
+msgid "Japanese (Shift_JIS)"
+msgstr ""
+
+#: src/prefs_common.c:889
+msgid "Simplified Chinese (GB2312)"
+msgstr ""
+
+#: src/prefs_common.c:890
+msgid "Traditional Chinese (Big5)"
+msgstr ""
+
+#: src/prefs_common.c:892
+msgid "Traditional Chinese (EUC-TW)"
+msgstr ""
+
+#: src/prefs_common.c:893
+msgid "Chinese (ISO-2022-CN)"
+msgstr ""
+
+#: src/prefs_common.c:895
+msgid "Korean (EUC-KR)"
+msgstr ""
+
+#: src/prefs_common.c:945
+msgid "Quotation"
+msgstr ""
+
+#: src/prefs_common.c:953
+msgid "Quote message when replying"
+msgstr ""
+
+#: src/prefs_common.c:959
+msgid "Quotation mark"
+msgstr ""
+
+#: src/prefs_common.c:972
+msgid "Quotation format:"
+msgstr ""
+
+#: src/prefs_common.c:977
+msgid " Description of symbols "
+msgstr ""
+
+#: src/prefs_common.c:1004
+msgid "Insert signature automatically"
+msgstr ""
+
+#: src/prefs_common.c:1010
+msgid "Signature separator"
+msgstr ""
+
+#: src/prefs_common.c:1028
+msgid "Wrap messages at"
+msgstr ""
+
+#: src/prefs_common.c:1040
+msgid "characters"
+msgstr ""
+
+#: src/prefs_common.c:1048
+msgid "Wrap quotation"
+msgstr ""
+
+#: src/prefs_common.c:1050
+msgid "Wrap before sending"
+msgstr ""
+
+#: src/prefs_common.c:1086
+msgid "Font"
+msgstr ""
+
+#: src/prefs_common.c:1095
+msgid "Text"
+msgstr ""
+
+#: src/prefs_common.c:1118
+msgid "Translate header name (such as `From:', `Subject:')"
+msgstr ""
+
+#: src/prefs_common.c:1121
+msgid "Display unread number next to folder name"
+msgstr ""
+
+#. ---- Summary ----
+#: src/prefs_common.c:1125
+msgid "Summary View"
+msgstr ""
+
+#: src/prefs_common.c:1134
+msgid "Display recipient on `From' column if sender is yourself"
+msgstr ""
+
+#: src/prefs_common.c:1136
+msgid "Enable horizontal scroll bar"
+msgstr ""
+
+#: src/prefs_common.c:1143
+msgid " Set display item of summary... "
+msgstr ""
+
+#: src/prefs_common.c:1195
+msgid "Enable coloration of message"
+msgstr ""
+
+#: src/prefs_common.c:1214
+msgid "Display 2-byte alphabet and numeric with 1-byte character"
+msgstr ""
+
+#: src/prefs_common.c:1216
+msgid "Display header pane above message view"
+msgstr ""
+
+#: src/prefs_common.c:1218
+msgid "Display short headers on message view"
+msgstr ""
+
+#: src/prefs_common.c:1228
+msgid "Line space"
+msgstr ""
+
+#: src/prefs_common.c:1242 src/prefs_common.c:1282
+msgid "pixel(s)"
+msgstr ""
+
+#: src/prefs_common.c:1247
+msgid "Leave space on head"
+msgstr ""
+
+#: src/prefs_common.c:1249
+msgid "Scroll"
+msgstr ""
+
+#: src/prefs_common.c:1256
+msgid "Half page"
+msgstr ""
+
+#: src/prefs_common.c:1262
+msgid "Smooth scroll"
+msgstr ""
+
+#: src/prefs_common.c:1268
+msgid "Step"
+msgstr ""
+
+#: src/prefs_common.c:1327
+msgid "Encrypt message by default"
+msgstr ""
+
+#: src/prefs_common.c:1330
+msgid "Sign message by default"
+msgstr ""
+
+#: src/prefs_common.c:1333
+msgid "Automatically check signatures"
+msgstr ""
+
+#: src/prefs_common.c:1336
+msgid "Grab input while entering a passphrase"
+msgstr ""
+
+#. create default signkey box
+#: src/prefs_common.c:1343
+msgid "Default Sign Key"
+msgstr ""
+
+#: src/prefs_common.c:1440
+msgid ""
+"Emulate the behavior of mouse operation of\n"
+"Emacs-based mailer"
+msgstr ""
+
+#: src/prefs_common.c:1447
+msgid "Open first unread message when entering a folder"
+msgstr ""
+
+#: src/prefs_common.c:1451
+msgid "Go to inbox after receiving new mail"
+msgstr ""
+
+#: src/prefs_common.c:1459
+msgid "Execute immediately when moving or deleting messages"
+msgstr ""
+
+#: src/prefs_common.c:1466
+msgid ""
+"(Messages will be just marked till execution\n"
+" if this is turned off)"
+msgstr ""
+
+#: src/prefs_common.c:1471
+msgid "On exit"
+msgstr ""
+
+#: src/prefs_common.c:1479
+msgid "Confirm on exit"
+msgstr ""
+
+#: src/prefs_common.c:1486
+msgid "Empty trash on exit"
+msgstr ""
+
+#: src/prefs_common.c:1488
+msgid "Ask before emptying"
+msgstr ""
+
+#: src/prefs_common.c:1525
+#, c-format
+msgid "External Web browser (%s will be replaced with URI)"
+msgstr ""
+
+#: src/prefs_common.c:1532 src/prefs_common.c:1556 src/prefs_common.c:1572
+msgid "Command"
+msgstr ""
+
+#: src/prefs_common.c:1549
+#, c-format
+msgid "Printing (%s will be replaced with file name)"
+msgstr ""
+
+#: src/prefs_common.c:1565
+#, c-format
+msgid "External editor (%s will be replaced with file name)"
+msgstr ""
+
+#: src/prefs_common.c:1626
+msgid "Set message colors"
+msgstr ""
+
+#: src/prefs_common.c:1634
+msgid "Colors"
+msgstr ""
+
+#: src/prefs_common.c:1672
+msgid "Quoted Text - First Level"
+msgstr ""
+
+#: src/prefs_common.c:1678
+msgid "Quoted Text - Second Level"
+msgstr ""
+
+#: src/prefs_common.c:1684
+msgid "Quoted Text - Third Level"
+msgstr ""
+
+#: src/prefs_common.c:1690
+msgid "URI link"
+msgstr ""
+
+#: src/prefs_common.c:1697
+msgid "Recycle quote colors"
+msgstr ""
+
+#: src/prefs_common.c:1745
+msgid "Pick color for quotation level 1"
+msgstr ""
+
+#: src/prefs_common.c:1748
+msgid "Pick color for quotation level 2"
+msgstr ""
+
+#: src/prefs_common.c:1751
+msgid "Pick color for quotation level 3"
+msgstr ""
+
+#: src/prefs_common.c:1754
+msgid "Pick color for URI"
+msgstr ""
+
+#: src/prefs_common.c:1878
+msgid "Description of symbols"
+msgstr ""
+
+#: src/prefs_common.c:1905
+#, c-format
+msgid ""
+"Date\n"
+"From\n"
+"Full Name of Sender\n"
+"First Name of Sender\n"
+"Initial of Sender\n"
+"Subject\n"
+"To\n"
+"Message-ID\n"
+"%"
+msgstr ""
+
+#: src/prefs_common.c:2008
+msgid "Set display item"
+msgstr ""
+
+#: src/prefs_common.c:2025
+msgid "Mark"
+msgstr ""
+
+#: src/prefs_common.c:2027
+msgid "MIME"
+msgstr ""
+
+#: src/prefs_common.c:2028
+msgid "Number"
+msgstr ""
+
+#: src/prefs_common.c:2030 src/summaryview.c:351
+msgid "Date"
+msgstr ""
+
+#: src/prefs_common.c:2031 src/summaryview.c:352
+msgid "From"
+msgstr ""
+
+#: src/prefs_common.c:2032 src/summaryview.c:353
+msgid "Subject"
+msgstr ""
+
+#: src/prefs_common.c:2085
+msgid "Font selection"
+msgstr ""
+
+#: src/prefs_filter.c:178
+msgid "Registered rules"
+msgstr ""
+
+#: src/prefs_filter.c:180
+msgid "Creating filter setting window...\n"
+msgstr ""
+
+#: src/prefs_filter.c:199
+msgid "Filter setting"
+msgstr ""
+
+#: src/prefs_filter.c:222
+msgid "Operator"
+msgstr ""
+
+#: src/prefs_filter.c:260 src/prefs_filter.c:620 src/prefs_filter.c:759
+#: src/prefs_filter.c:771
+msgid "(none)"
+msgstr ""
+
+#: src/prefs_filter.c:266
+msgid "Keyword"
+msgstr ""
+
+#: src/prefs_filter.c:287
+msgid "Predicate"
+msgstr ""
+
+#: src/prefs_filter.c:299 src/prefs_filter.c:310 src/prefs_filter.c:629
+#: src/prefs_filter.c:632 src/prefs_filter.c:776 src/prefs_filter.c:779
+msgid "contains"
+msgstr ""
+
+#: src/prefs_filter.c:299 src/prefs_filter.c:310 src/prefs_filter.c:776
+#: src/prefs_filter.c:779
+msgid "not contain"
+msgstr ""
+
+#: src/prefs_filter.c:326
+msgid "Destination"
+msgstr ""
+
+#: src/prefs_filter.c:350
+msgid "Use regex"
+msgstr ""
+
+#: src/prefs_filter.c:354
+msgid "Don't receive"
+msgstr ""
+
+#: src/prefs_filter.c:379
+msgid "Register"
+msgstr ""
+
+#: src/prefs_filter.c:385
+msgid " Substitute "
+msgstr ""
+
+#: src/prefs_filter.c:472
+msgid "Reading filter configuration...\n"
+msgstr ""
+
+#: src/prefs_filter.c:508
+msgid "Writing filter configuration...\n"
+msgstr ""
+
+#: src/prefs_filter.c:551
+msgid "(New)"
+msgstr ""
+
+#: src/prefs_filter.c:602
+msgid "Destination is not set."
+msgstr ""
+
+#: src/prefs_filter.c:607
+msgid "Header name is not set."
+msgstr ""
+
+#: src/prefs_filter.c:713
+msgid "Delete rule"
+msgstr ""
+
+#: src/prefs_filter.c:714
+msgid "Do you really want to delete this rule?"
+msgstr ""
+
+#: src/procheader.c:526
+msgid "SunMonTueWedThuFriSat"
+msgstr ""
+
+#: src/procmime.c:686
+msgid "Code conversion failed.\n"
+msgstr ""
+
+#: src/procmsg.c:138
+msgid "Cache data is corrupted\n"
+msgstr ""
+
+#: src/procmsg.c:202
+msgid "\tNo cache file\n"
+msgstr ""
+
+#: src/procmsg.c:209
+msgid "\tReading summary cache..."
+msgstr ""
+
+#: src/procmsg.c:214
+msgid "Cache version is different. Discarding it.\n"
+msgstr ""
+
+#: src/procmsg.c:279
+msgid "\tMarking the messages..."
+msgstr ""
+
+#: src/procmsg.c:323
+#, c-format
+msgid "\t%d new message(s)\n"
+msgstr ""
+
+#: src/procmsg.c:445
+msgid "Mark file not found.\n"
+msgstr ""
+
+#: src/procmsg.c:447
+#, c-format
+msgid "Mark version is different (%d != %d). Discarding it.\n"
+msgstr ""
+
+#: src/procmsg.c:463
+msgid "Can't open mark file with append mode.\n"
+msgstr ""
+
+#: src/procmsg.c:468
+msgid "Can't open mark file with write mode.\n"
+msgstr ""
+
+#: src/procmsg.c:651
+msgid "Sending queued message failed.\n"
+msgstr ""
+
+#: src/procmsg.c:708
+#, c-format
+msgid "Print command line is invalid: `%s'\n"
+msgstr ""
+
+#: src/progressdialog.c:48
+msgid "Creating progress dialog...\n"
+msgstr ""
+
+#: src/recv.c:107
+msgid "error occurred while retrieving data.\n"
+msgstr ""
+
+#: src/recv.c:128 src/recv.c:169 src/recv.c:181
+msgid "Can't write to file.\n"
+msgstr ""
+
+#: src/rfc2015.c:135 src/rfc2015.c:170
+msgid "Oops: Signature not verified"
+msgstr ""
+
+#: src/rfc2015.c:138 src/rfc2015.c:173
+msgid "No signature found"
+msgstr ""
+
+#: src/rfc2015.c:141
+msgid "Good signature"
+msgstr ""
+
+#: src/rfc2015.c:144
+msgid "BAD signature"
+msgstr ""
+
+#: src/rfc2015.c:147 src/rfc2015.c:182
+msgid "No public key to verify the signature"
+msgstr ""
+
+#: src/rfc2015.c:150 src/rfc2015.c:185
+msgid "Error verifying the signature"
+msgstr ""
+
+#: src/rfc2015.c:153 src/rfc2015.c:188
+msgid "Different results for signatures"
+msgstr ""
+
+#: src/rfc2015.c:156 src/rfc2015.c:191
+msgid "Error: Unknown status"
+msgstr ""
+
+#: src/rfc2015.c:176
+#, c-format
+msgid "Good signature from \"%s\""
+msgstr ""
+
+#: src/rfc2015.c:179
+#, c-format
+msgid "BAD signature  from \"%s\""
+msgstr ""
+
+#: src/rfc2015.c:211
+msgid "Cannot find user ID for this key."
+msgstr ""
+
+#: src/rfc2015.c:222
+#, c-format
+msgid "                aka \"%s\"\n"
+msgstr ""
+
+#: src/rfc2015.c:250
+#, c-format
+msgid "Signature made %s\n"
+msgstr ""
+
+#: src/rfc2015.c:259
+#, c-format
+msgid "Key fingerprint: %s\n"
+msgstr ""
+
+#: src/select-keys.c:241
+msgid "Select Keys"
+msgstr ""
+
+#: src/select-keys.c:253
+msgid "Select key for: "
+msgstr ""
+
+#: src/select-keys.c:271
+msgid "Key ID"
+msgstr ""
+
+#: src/select-keys.c:274
+msgid "Val"
+msgstr ""
+
+#: src/select-keys.c:288
+msgid "Select"
+msgstr ""
+
+#: src/send.c:146
+msgid "Queued message header is broken.\n"
+msgstr ""
+
+#: src/send.c:155
+msgid "Account not found. Using current account...\n"
+msgstr ""
+
+#: src/send.c:166
+msgid "Account not found.\n"
+msgstr ""
+
+#: src/send.c:197
+#, c-format
+msgid "Connecting to SMTP server: %s ...\n"
+msgstr ""
+
+#: src/send.c:239
+#, c-format
+msgid "Can't connect to SMTP server: %s:%d\n"
+msgstr ""
+
+#: src/send.c:252
+msgid "Error occurred while sending HELO\n"
+msgstr ""
+
+#: src/setup.c:43
+msgid "Mailbox setting"
+msgstr ""
+
+#: src/setup.c:44
+msgid ""
+"First, you have to set the location of mailbox.\n"
+"You can use existing mailbox in MH format\n"
+"if you have the one.\n"
+"If you're not sure, just select OK."
+msgstr ""
+
+#: src/sourcewindow.c:76
+msgid "Creating source window...\n"
+msgstr ""
+
+#: src/sourcewindow.c:80
+msgid "Source of the message"
+msgstr ""
+
+#: src/sourcewindow.c:140
+#, c-format
+msgid "Displaying the source of %s ...\n"
+msgstr ""
+
+#: src/sourcewindow.c:142
+#, c-format
+msgid "%s - Source"
+msgstr ""
+
+#: src/summary_search.c:99 src/summary_search.c:190
+msgid "Search"
+msgstr ""
+
+#: src/summary_search.c:172
+msgid "Case sensitive"
+msgstr ""
+
+#: src/summary_search.c:178
+msgid "Backward search"
+msgstr ""
+
+#: src/summary_search.c:184
+msgid "Select all matched"
+msgstr ""
+
+#: src/summary_search.c:191
+msgid "Clear"
+msgstr ""
+
+#: src/summary_search.c:286
+msgid "Search failed"
+msgstr ""
+
+#: src/summary_search.c:287
+msgid "Search string not found."
+msgstr ""
+
+#: src/summary_search.c:292
+msgid "Beginning of list reached; continue from end?"
+msgstr ""
+
+#: src/summary_search.c:294
+msgid "End of list reached; continue from beginning?"
+msgstr ""
+
+#: src/summary_search.c:296
+msgid "Search finished"
+msgstr ""
+
+#: src/summaryview.c:288
+msgid "/M_ove..."
+msgstr ""
+
+#: src/summaryview.c:289
+msgid "/_Copy..."
+msgstr ""
+
+#: src/summaryview.c:291
+msgid "/E_xecute"
+msgstr ""
+
+#: src/summaryview.c:292
+msgid "/_Mark"
+msgstr ""
+
+#: src/summaryview.c:293
+msgid "/_Mark/_Mark"
+msgstr ""
+
+#: src/summaryview.c:294
+msgid "/_Mark/_Unmark"
+msgstr ""
+
+#: src/summaryview.c:295
+msgid "/_Mark/---"
+msgstr ""
+
+#: src/summaryview.c:296
+msgid "/_Mark/Mark as unr_ead"
+msgstr ""
+
+#: src/summaryview.c:297
+msgid "/_Mark/Make it as _being read"
+msgstr ""
+
+#: src/summaryview.c:300
+msgid "/_Reply"
+msgstr ""
+
+#: src/summaryview.c:301
+msgid "/Reply to a_ll"
+msgstr ""
+
+#: src/summaryview.c:302
+msgid "/_Forward"
+msgstr ""
+
+#: src/summaryview.c:303
+msgid "/Forward as an a_ttachment"
+msgstr ""
+
+#: src/summaryview.c:306
+msgid "/Open in new _window"
+msgstr ""
+
+#: src/summaryview.c:307
+msgid "/View so_urce"
+msgstr ""
+
+#: src/summaryview.c:308
+msgid "/Show all _header"
+msgstr ""
+
+#: src/summaryview.c:309
+msgid "/Re_edit"
+msgstr ""
+
+#: src/summaryview.c:312
+msgid "/_Print..."
+msgstr ""
+
+#: src/summaryview.c:314
+msgid "/Select _all"
+msgstr ""
+
+#: src/summaryview.c:320
+msgid "M"
+msgstr ""
+
+#: src/summaryview.c:320
+msgid "U"
+msgstr ""
+
+#: src/summaryview.c:335
+msgid "Creating summary view...\n"
+msgstr ""
+
+#: src/summaryview.c:350
+msgid "No."
+msgstr ""
+
+#: src/summaryview.c:567
+msgid "Process mark"
+msgstr ""
+
+#: src/summaryview.c:568
+msgid "Some marks are left. Process it?"
+msgstr ""
+
+#: src/summaryview.c:592
+msgid ""
+"empty folder\n"
+"\n"
+msgstr ""
+
+#: src/summaryview.c:604
+#, c-format
+msgid "Scanning folder (%s)..."
+msgstr ""
+
+#: src/summaryview.c:673
+msgid "done."
+msgstr ""
+
+#: src/summaryview.c:807
+msgid "No unread message"
+msgstr ""
+
+#: src/summaryview.c:808
+msgid "No unread message found. Go to next folder?"
+msgstr ""
+
+#: src/summaryview.c:944 src/summaryview.c:946
+msgid "Attracting messages by subject..."
+msgstr ""
+
+#: src/summaryview.c:1089
+#, c-format
+msgid "%d deleted"
+msgstr ""
+
+#: src/summaryview.c:1093
+#, c-format
+msgid "%s%d moved"
+msgstr ""
+
+#: src/summaryview.c:1094 src/summaryview.c:1101
+msgid ", "
+msgstr ""
+
+#: src/summaryview.c:1099
+#, c-format
+msgid "%s%d copied"
+msgstr ""
+
+#: src/summaryview.c:1116
+msgid " item(s) selected"
+msgstr ""
+
+#: src/summaryview.c:1127
+#, c-format
+msgid "%d new, %d unread, %d total (%s)"
+msgstr ""
+
+#: src/summaryview.c:1133
+#, c-format
+msgid "%d new, %d unread, %d total"
+msgstr ""
+
+#: src/summaryview.c:1174 src/summaryview.c:1175
+msgid "Sorting summary..."
+msgstr ""
+
+#: src/summaryview.c:1213
+msgid "\tSetting summary from message data..."
+msgstr ""
+
+#: src/summaryview.c:1215
+msgid "Setting summary from message data..."
+msgstr ""
+
+#: src/summaryview.c:1324
+#, c-format
+msgid "Writing summary cache (%s)..."
+msgstr ""
+
+#: src/summaryview.c:1376
+msgid "(No Date)"
+msgstr ""
+
+#: src/summaryview.c:1641
+#, c-format
+msgid "Message %d is marked\n"
+msgstr ""
+
+#: src/summaryview.c:1670
+#, c-format
+msgid "Message %d is marked as being read\n"
+msgstr ""
+
+#: src/summaryview.c:1705
+#, c-format
+msgid "Message %d is marked as unread\n"
+msgstr ""
+
+#: src/summaryview.c:1747
+#, c-format
+msgid "Message %s/%d is set to delete\n"
+msgstr ""
+
+#: src/summaryview.c:1761
+msgid "Current folder is Trash."
+msgstr ""
+
+#: src/summaryview.c:1783 src/summaryview.c:1785
+msgid "Deleting duplicated messages..."
+msgstr ""
+
+#: src/summaryview.c:1835
+#, c-format
+msgid "Message %s/%d is unmarked\n"
+msgstr ""
+
+#: src/summaryview.c:1872
+#, c-format
+msgid "Message %d is set to move to %s\n"
+msgstr ""
+
+#: src/summaryview.c:1884
+msgid "Destination is same as current folder."
+msgstr ""
+
+#: src/summaryview.c:1933
+#, c-format
+msgid "Message %d is set to copy to %s\n"
+msgstr ""
+
+#: src/summaryview.c:1946
+msgid "Destination to copy is same as current folder."
+msgstr ""
+
+#: src/summaryview.c:1978
+msgid "Selecting all messages..."
+msgstr ""
+
+#: src/summaryview.c:2032
+msgid "Print"
+msgstr ""
+
+#: src/summaryview.c:2033
+#, c-format
+msgid ""
+"Enter the print command line:\n"
+"(`%s' will be replaced with file name)"
+msgstr ""
+
+#: src/summaryview.c:2039
+#, c-format
+msgid ""
+"Print command line is invalid:\n"
+"`%s'"
+msgstr ""
+
+#: src/summaryview.c:2256 src/summaryview.c:2257
+msgid "Building threads..."
+msgstr ""
+
+#: src/summaryview.c:2279 src/summaryview.c:2280
+msgid "Unthreading..."
+msgstr ""
+
+#: src/summaryview.c:2302
+msgid "Unthreading for execution..."
+msgstr ""
+
+#: src/summaryview.c:2389
+msgid "filtering..."
+msgstr ""
+
+#: src/summaryview.c:2390
+msgid "Filtering..."
+msgstr ""
+
+#: src/summaryview.c:2494
+#, c-format
+msgid "Go to %s\n"
+msgstr ""
+
+#: src/textview.c:137
+msgid "Creating text view...\n"
+msgstr ""
+
+#: src/textview.c:372
+msgid "To save this part, pop up the context menu with\n"
+msgstr ""
+
+#: src/textview.c:375
+msgid ""
+"right click and select `Save as...', or press `y' key.\n"
+"\n"
+msgstr ""
+
+#: src/textview.c:379
+msgid "To display this part as a text message, select\n"
+msgstr ""
+
+#: src/textview.c:382
+msgid ""
+"`Display as text', or press `t' key.\n"
+"\n"
+msgstr ""
+
+#: src/textview.c:386
+msgid "To open this part with external program, select `Open',\n"
+msgstr ""
+
+#: src/textview.c:389
+msgid "or double-click, or click the center button, or press `l' key."
+msgstr ""
+
+#: src/textview.c:410
+msgid "This signature has not been checked yet.\n"
+msgstr ""
+
+#: src/textview.c:413
+msgid "To check it, pop up the context menu with\n"
+msgstr ""
+
+#: src/textview.c:416
+msgid "right click and select `Check signature'.\n"
+msgstr ""
+
+#: src/utils.c:1376 src/utils.c:1453
+#, c-format
+msgid "writing to %s failed.\n"
+msgstr ""
+
+#: src/utils.c:1396
+#, c-format
+msgid "File copy from %s to %s failed.\n"
+msgstr ""
+
+#: src/utils.c:1614
+#, c-format
+msgid "Open URI command line is invalid: `%s'"
+msgstr ""
