@@ -509,10 +509,11 @@ gint pop3_retr_recv(SockInfo *sock, gpointer data)
 	gint write_val;
 	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
 		file = get_tmp_file();
-		if ( (write_val = recv_write_to_file(sock, file)) < 0) {
+		if ((write_val = recv_write_to_file(sock, file)) < 0) {
 			g_free(file);
 			if (!state->cancelled)
-				state->error_val = (write_val == -1 ? PS_IOERR : PS_SOCKET);
+				state->error_val = 
+					(write_val == -1 ? PS_IOERR : PS_SOCKET);
 			return -1;
 		}
 

@@ -1,3 +1,8 @@
+2002-10-12 [alfons]	0.8.5claws30
+	
+	* sync with remaining main changes 2002-10-09 - 2002-10-11
+	- drop changes to src/compose.c (requires claws specific changes)
+	
 2002-10-12 [alfons]	0.8.5claws29
 	
 	* sync with main changes of 2002-10-08

@@ -43,7 +43,8 @@ static gpointer		recv_ui_func_data;
 gint recv_write_to_file(SockInfo *sock, const gchar *filename)
 {
 	FILE *fp;
-	int write_val;
+	gint ret;
+	
 	g_return_val_if_fail(filename != NULL, -1);
 
 	if ((fp = fopen(filename, "wb")) == NULL) {
@@ -55,10 +56,10 @@ gint recv_write_to_file(SockInfo *sock, const gchar *filename)
 	if (change_file_mode_rw(fp, filename) < 0)
 		FILE_OP_ERROR(filename, "chmod");
 
-	if ( (write_val = recv_write(sock, fp)) < 0) {
+	if ((ret = recv_write(sock, fp)) < 0) {
 		fclose(fp);
 		unlink(filename);
-		return write_val;
+		return ret;
 	}
 
 	if (fclose(fp) == EOF) {
@@ -73,6 +74,7 @@ gint recv_write_to_file(SockInfo *sock, const gchar *filename)
 gint recv_bytes_write_to_file(SockInfo *sock, glong size, const gchar *filename)
 {
 	FILE *fp;
+	gint ret;
 
 	g_return_val_if_fail(filename != NULL, -1);
 
@@ -85,10 +87,10 @@ gint recv_bytes_write_to_file(SockInfo *sock, glong size, const gchar *filename)
 	if (change_file_mode_rw(fp, filename) < 0)
 		FILE_OP_ERROR(filename, "chmod");
 
-	if (recv_bytes_write(sock, size, fp) < 0) {
+	if ((ret = recv_bytes_write(sock, size, fp)) < 0) {
 		fclose(fp);
 		unlink(filename);
-		return -1;
+		return ret;
 	}
 
 	if (fclose(fp) == EOF) {
@@ -195,7 +197,7 @@ gint recv_bytes_write(SockInfo *sock, glong size, FILE *fp)
 		read_count = sock_read(sock, buf + count, size - count);
 		if (read_count < 0) {
 			g_free(buf);
-			return -1;
+			return -2;
 		}
 		count += read_count;
 	} while (count < size);

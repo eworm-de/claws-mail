@@ -45,7 +45,7 @@ typedef enum
 	INC_LOCKED,
 	INC_ERROR,
 	INC_NOSPACE,
-	INC_SOCKERR,
+	INC_SOCKET_ERROR,
 	INC_CANCEL
 } IncState;
 

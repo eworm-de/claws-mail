@@ -1,5 +1,27 @@
+2002-10-11
+
+	* src/compose.c: ファイルマネージャからファイルを「移動」することで
+	  ファイルをドロップできるようにした(Alfons さん thanks)。
+
+2002-10-10
+
+	* compose_reply_set_entry(): ML 返信のとき Reply-To を List-Post
+	  より優先させるようにした。
+
+2002-10-09
+
+	* src/gtksctree.[ch]: gtk_sctree_set_anchor_row(): 新規。
+	* src/summaryview.c: summary_step(): 正しいセレクションアンカーを
+	  失うバグを修正。
+	  summary_key_pressed(): gtk_ctree_select() の代わりに
+	  gtk_sctree_select() を使用。
+	* src/inc.[ch]
+	  src/pop.c
+	  src/recv.c: ディスクフルとソケットエラーを区別するようにした
+	  (Colin Leroy さん thanks)。
+
 2002-10-08
- 
+
 	* src/account.c: account_edit_prefs(): 未使用の変数を削除。
 	* src/compose.[ch]: ComposeMode の WITH_QUOTE/WITHOUT_QUOTE フラグ
 	  を分離。
@@ -9,9 +31,9 @@
 	* src/summaryview.c: summary_reply(): 条件分岐を削減。
 
 2002-10-08
- 
-	* src/compose.c: compose_redirect(), compose_reedit(): strip CR
-	  from line ends (thanks to Sergey Vlasov).
+
+	* src/compose.c: compose_redirect(), compose_reedit(): 行終端から
+	  CR を取り除くようにした(Sergey Vlasov さん thanks)。
 	* src/folderview.c: 「フォルダツリーを再スキャン」を「フォルダツリー
 	  を再構築」に改名。
 
@@ -22,7 +44,7 @@
 	  を実装。
 
 2002-10-07
- 
+
 	* src/account.[ch]: account_open(): 新規。アカウント設定ダイアログ
 	  を開き、終了時に UI に反映させる。
 	* src/folderview.c:
