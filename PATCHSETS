@@ -182,3 +182,4 @@
 ( cvs diff -u -r 1.100 -r 1.101 src/procmime.c; ) > 0.9.13cvs10.patchset
 ( cvs diff -u -r 1.7 -r 1.8 src/prefs_themes.c; ) > 0.9.13cvs11.patchset
 ( cvs diff -u -r 1.127 -r 1.128 src/messageview.c; cvs diff -u -r 1.314 -r 1.315 src/mainwindow.c; ) > 0.9.13cvs12.patchset
+( cvs diff -u -r 1.27 -r 1.28 src/quote_fmt_parse.y; ) > 0.9.13cvs13.patchset
