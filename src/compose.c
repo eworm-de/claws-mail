@@ -1206,8 +1206,10 @@ void compose_reedit(MsgInfo *msginfo)
 	if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
 		g_warning(_("Can't get text part\n"));
 	else {
-		while (fgets(buf, sizeof(buf), fp) != NULL)
+		while (fgets(buf, sizeof(buf), fp) != NULL) {
+			strcrchomp(buf);
 			gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
+		}
 		fclose(fp);
 	}
 	compose_attach_parts(compose, msginfo);
