@@ -990,18 +990,13 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	if (account->auto_sig)
 		compose_insert_sig(compose, FALSE);
 
-	if (quote && prefs_common.linewrap_quote)
-		compose_wrap_line_all(compose);
-
 	cursor_pos = quote_fmt_get_cursor_pos();
 	gtk_text_buffer_get_start_iter(textbuf, &iter);
 	gtk_text_buffer_get_iter_at_offset(textbuf, &iter, cursor_pos);
 	gtk_text_buffer_place_cursor(textbuf, &iter);
-
-	if (quote && prefs_common.linewrap_quote) {
+	
+	if (quote && prefs_common.linewrap_quote)
 		compose_wrap_line_all(compose);
-		gtk_text_view_set_editable(GTK_TEXT_VIEW(compose->text), TRUE);
-	}
 
 	gtk_widget_grab_focus(compose->text);
 

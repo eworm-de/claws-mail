@@ -1,3 +1,9 @@
+2004-11-22 [colin]	0.9.12cvs158.6
+
+	* src/compose.c
+		Remove unneeded code and duplicated
+		wrapping - patch by Alfons
+
 2004-11-22 [colin]	0.9.12cvs158.5
 
 	* src/prefs_themes.c
