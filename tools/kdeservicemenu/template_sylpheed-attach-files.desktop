@@ -12,9 +12,9 @@ Exec=SCRIPT_PATH attachfile %F
 [Desktop Action GZipAndAttach]
 Name=Attach as GZip File(s)
 Icon=sylpheed
-Exec=SCRIPT_PATH gzip %F
+Exec=SCRIPT_PATH gz %F
 
 [Desktop Action BZipAndAttach]
 Name=Attach as BZip File(s)
 Icon=sylpheed
-Exec=SCRIPT_PATH bzip2 %F
+Exec=SCRIPT_PATH bz2 %F

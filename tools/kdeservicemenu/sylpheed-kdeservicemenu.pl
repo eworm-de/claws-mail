@@ -20,32 +20,32 @@ unless ($ARGV[0]) { exit; }
 
 my $sylpheed = "sylpheed --compose --attach";
 my $prefix = "/tmp/archive.";
-my ($suffix,$command) = find_sufncom($ARGV[0]);
+my $command = find_command($ARGV[0]);
 my ($sel,$att) = split_parts();
 
-if ($ARGV[0] eq "gzip" || $ARGV[0] eq "bzip2") {
+if ($ARGV[0] eq "gz" || $ARGV[0] eq "bz2") {
 	exec "$sel$sylpheed $att";
 } elsif ($ARGV[0] eq "attachfile") {
 	exec "$sylpheed $sel";
 } else {
-	exec "$command $prefix$suffix $sel;"
-	    ."$sylpheed $prefix$suffix";
+	exec "$command $prefix$ARGV[0] $sel;"
+	    ."$sylpheed $prefix$ARGV[0]";
 }
 
 exit;
 
-sub find_sufncom {
+sub find_command {
 	local($s) = @_;
-	my ($suf,$com);
+	my $com;
 	
-	if ($s eq "gzip") { $suf = "gz"; $com = "$s -c"; }
-	elsif ($s eq "bzip2") { $suf = "bz2"; $com = "$s -c"; }
-	elsif ($s eq "zip") { $suf = "zip"; $com = "$s -r"; }
-	elsif ($s eq "tar") { $suf = "tar"; $com = "$s -c -f"; }
-	elsif ($s eq "tarbzip2") { $suf = "tar.bz2"; $com = "tar -cj -f"; }
-	elsif ($s eq "targz") { $suf = "tar.gz"; $com = "tar -cz -f"; }
+	if ($s eq "gz") 	{ $com = "gzip -c"; }
+	elsif ($s eq "bz2") 	{ $com = "bzip2 -c"; }
+	elsif ($s eq "zip") 	{ $com = "$s -r"; }
+	elsif ($s eq "tar") 	{ $com = "$s -c -f"; }
+	elsif ($s eq "tar.bz2") { $com = "tar -cj -f"; }
+	elsif ($s eq "tar.gz") 	{ $com = "tar -cz -f"; }
 	
-	return ($suf,$com);
+	return $com;
 }
 
 sub split_parts {
@@ -55,9 +55,10 @@ sub split_parts {
 	for (my $count = $#ARGV; $count > 0; $count--) {
 		my @s = split("/", $ARGV[$count]);
 		my $p = pop(@s);
-		if ($ARGV[0] eq "gzip" || $ARGV[0] eq "bzip2") {
-			my $psub = substitute($p);
-			my $output = "/tmp/$psub.$suffix";
+		if ($ARGV[0] eq "gz" || $ARGV[0] eq "bz2") {
+			my $psub = $p;
+			$psub =~ s/\s/_/g;
+			my $output = "/tmp/$psub.$ARGV[0]";
 			$selectedParts .= "$command \"$p\" > $output;";
 			$attachedParts .= "$output ";
 		} else {
@@ -65,10 +66,4 @@ sub split_parts {
 		}
 	}
 	return ($selectedParts,$attachedParts);
-}
-
-sub substitute {
-	local($s) = @_;
-	$s =~ s/\s/_/g;
-	return $s;
 }

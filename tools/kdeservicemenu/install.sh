@@ -5,6 +5,7 @@ DESKTOP_TEMPLATE_ONE="template_sylpheed-attach-files.desktop"
 DESKTOP_ONE="sylpheed-attach-files.desktop"
 DESKTOP_TEMPLATE_TWO="template_sylpheed-compress-attach.desktop"
 DESKTOP_TWO="sylpheed-compress-attach.desktop"
+SERVICEMENU_DIR="share/apps/konqueror/servicemenus"
 
 function check_environ {
 #Check to see if we can coax kde-config into the PATH
@@ -33,17 +34,30 @@ function install_all {
 #Go ahead and install
 echo "Generating $DESKTOP_ONE ..."
 SED_PREFIX=${PREFIX//\//\\\/} #Replace forward slashes in $PREFIX with \/ so that sed doesn't freak out
-sed "s/SCRIPT_PATH/$SED_PREFIX\\/bin\\/sylpheed-kdeservicemenu.pl/" $DESKTOP_TEMPLATE_ONE > $DESKTOP_ONE
-cp -f $DESKTOP_ONE $PREFIX/share/apps/konqueror/servicemenus/sylpheed-attach-files.desktop
+sed "s/SCRIPT_PATH/$SED_PREFIX\\/bin\\/$PERL_SCRIPT/" $DESKTOP_TEMPLATE_ONE > $DESKTOP_ONE
+echo "Installing $PREFIX/$SERVICEMENU_DIR/$DESKTOP_ONE"
+mv -f $DESKTOP_ONE $PREFIX/$SERVICEMENU_DIR/$DESKTOP_ONE
 echo "Generating $DESKTOP_TWO ..."
 SED_PREFIX=${PREFIX//\//\\\/} #Replace forward slashes in $PREFIX with \/ so that sed doesn't freak out
-sed "s/SCRIPT_PATH/$SED_PREFIX\\/bin\\/sylpheed-kdeservicemenu.pl/" $DESKTOP_TEMPLATE_TWO > $DESKTOP_TWO
-cp -f $DESKTOP_TWO $PREFIX/share/apps/konqueror/servicemenus/sylpheed-compress-attach.desktop
+sed "s/SCRIPT_PATH/$SED_PREFIX\\/bin\\/$PERL_SCRIPT/" $DESKTOP_TEMPLATE_TWO > $DESKTOP_TWO
+echo "Installing $PREFIX/$SERVICEMENU_DIR/$DESKTOP_TWO"
+mv -f $DESKTOP_TWO $PREFIX/$SERVICEMENU_DIR/$DESKTOP_TWO
+echo "Installing $PREFIX/bin/$PERL_SCRIPT"
 cp -f $PERL_SCRIPT $PREFIX/bin/
 echo "Setting permissions ..."
-chmod 0644 $PREFIX/share/apps/konqueror/servicemenus/sylpheed-attach-files.desktop
-chmod 0644 $PREFIX/share/apps/konqueror/servicemenus/sylpheed-compress-attach.desktop
+chmod 0644 $PREFIX/$SERVICEMENU_DIR/$DESKTOP_ONE
+chmod 0644 $PREFIX/$SERVICEMENU_DIR/$DESKTOP_TWO
 chmod 0755 $PREFIX/bin/$PERL_SCRIPT
+}
+
+function uninstall_all {
+echo "Removing $PREFIX/$SERVICEMENU_DIR/$DESKTOP_ONE"
+rm $PREFIX/$SERVICEMENU_DIR/$DESKTOP_ONE
+echo "Removing $PREFIX/$SERVICEMENU_DIR/$DESKTOP_TWO"
+rm $PREFIX/$SERVICEMENU_DIR/$DESKTOP_TWO
+echo "Removing $PREFIX/bin/$PERL_SCRIPT"
+rm $PREFIX/bin/$PERL_SCRIPT
+echo "Finished uninstall."
 }
 
 case $1 in
@@ -65,16 +79,33 @@ case $1 in
     if [ ! -d $PREFIX/bin ]; then
       mkdir $PREFIX/bin
     fi
-    if [ ! -d $PREFIX/share/apps/konqueror/servicemenus ]; then
-      mkdir $PREFIX/share/apps/konqueror/servicemenus
+    if [ ! -d $PREFIX/$SERVICEMENU_DIR ]; then
+      mkdir $PREFIX/$SERVICEMENU_DIR
     fi
     install_all
     ;;
+  "--uninstall-global" )
+    check_environ
+    PREFIX=$(kde-config --prefix)
+    echo "Uninstalling in $PREFIX ..."
+    if [ "$(id -u)" != "0" ]; then
+      echo "You are not root, if you have any global installs, you will probably not have permission to remove them."
+    fi
+    uninstall_all
+    ;;
+  "--uninstall-local" )
+    check_environ
+    PREFIX=$(kde-config --localprefix)
+    echo "Uninstalling in $PREFIX ..."
+    uninstall_all
+    ;;
   * )
-    echo "Usage: $0 [--global|--local]"
+    echo "Usage: $0 [--global|--local|--uninstall-global|--uninstall-local]"
     echo
-    echo "--global  attempts a system-wide installation."
-    echo "--local   attempts to install in your home directory."
+    echo "    --global            attempts a system-wide installation."
+    echo "    --local             attempts to install in your home directory."
+    echo "    --uninstall-global  attempts a system-wide uninstallation."
+    echo "    --uninstall-local   attempts to uninstall in your home directory."
     echo
     exit 0
     ;;

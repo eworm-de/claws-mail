@@ -12,12 +12,12 @@ Exec=SCRIPT_PATH tar %F
 [Desktop Action TarBzipAndAttach]
 Name=Attach as Bzipped Tar Archive
 Icon=sylpheed
-Exec=SCRIPT_PATH tarbzip2 %F
+Exec=SCRIPT_PATH tar.bz2 %F
 
 [Desktop Action TarGzipAndAttach]
 Name=Attach as Gzipped Tar Archive
 Icon=sylpheed
-Exec=SCRIPT_PATH targz %F
+Exec=SCRIPT_PATH tar.gz %F
 
 [Desktop Action ZipAndAttach]
 Name=Attach as Zip Archive

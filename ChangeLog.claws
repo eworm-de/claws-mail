@@ -1,8 +1,13 @@
 2004-10-27 [paul]
 
+	* tools/kdeservicemenu/README
+	* tools/kdeservicemenu/install.sh
 	* tools/kdeservicemenu/sylpheed-kdeservicemenu.pl
+	* tools/kdeservicemenu/template_sylpheed-attach-files.desktop
+	* tools/kdeservicemenu/template_sylpheed-compress-attach.desktop
 		output files to /tmp instead of littering the
 		current dir
+		add uninstall function
 		refactor
 
 2004-10-26 [christoph]	0.9.12cvs134
