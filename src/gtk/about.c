@@ -108,8 +108,8 @@ static void about_create(void)
 #if HAVE_SYS_UTSNAME_H
 	uname(&utsbuf);
 	g_snprintf(buf, sizeof(buf),
-		   "GTK+ version %d.%d.%d\n"
-		   "Operating System: %s %s (%s)",
+		   _("GTK+ version %d.%d.%d\n"
+		   "Operating System: %s %s (%s)"),
 		   gtk_major_version, gtk_minor_version, gtk_micro_version,
 		   utsbuf.sysname, utsbuf.release, utsbuf.machine);
 #else
@@ -123,7 +123,7 @@ static void about_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
 	g_snprintf(buf, sizeof(buf),
-		   "Compiled-in features:%s",
+		   _("Compiled-in features:%s"),
 #if HAVE_GDK_IMLIB
 		   " gdk_imlib"
 #endif
@@ -163,7 +163,7 @@ static void about_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
 	g_snprintf(buf, sizeof(buf),
-		   "Compiled plugins:%s",
+		   _("Compiled plugins:%s"),
 #if USE_SPAMASSASSIN
 		   " SpamAssassin"
 #endif

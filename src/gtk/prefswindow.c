@@ -170,7 +170,7 @@ static gboolean find_child_by_name(GtkCTree *ctree, GtkCTreeNode *node, struct n
 
 void prefswindow_open(GSList *prefs_pages, gpointer data)
 {
-	static gchar *titles [] = {"Page Index"};
+	static gchar *titles [] = {N_("Page Index")};
 	GSList *cur;
 	gint optsize;
 	PrefsWindow *prefswindow;

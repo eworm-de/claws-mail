@@ -1,3 +1,9 @@
+2003-03-10 [paul]	0.8.10claws106
+
+	* src/gtk/about.c
+	  src/gtk/prefswindow.c
+	  	make some strings translatable
+
 2003-03-10 [darko]	0.8.10claws105
 
 	* src/compose.c
