@@ -309,7 +309,9 @@ static gint summary_cmp_by_label	(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
 
+#if MARK_ALL_READ
 static void summary_mark_all_read (SummaryView *summaryview);					 
+#endif
 
 GtkTargetEntry summary_drag_types[1] =
 {
@@ -328,7 +330,9 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/_Mark/---"),		NULL, NULL,		0, "<Separator>"},
 	{N_("/_Mark/Mark as unr_ead"),	NULL, summary_mark_as_unread, 0, NULL},
 	{N_("/_Mark/Mark as rea_d"),	NULL, summary_mark_as_read, 0, NULL},
+#if MARK_ALL_READ	
 	{N_("/_Mark/Mark all read"),    NULL, summary_mark_all_read, 0, NULL},
+#endif	
 	{N_("/_Mark/Ignore thread"),	NULL, summary_ignore_thread, 0, NULL},
 	{N_("/_Mark/Unignore thread"),	NULL, summary_unignore_thread, 0, NULL},
 
@@ -452,7 +456,7 @@ void summary_set_label(SummaryView *summaryview, guint labelcolor, GtkWidget *wi
 
 /* summary_create_label_pixmaps() - creates label pixmaps. perhaps a little 
  * bit contrived. */
-static gboolean summary_create_label_pixmaps(SummaryView *summaryview)
+static void summary_create_label_pixmaps(SummaryView *summaryview)
 {
 	const char *FMT = "+      c #%2.2X%2.2X%2.2X";
 	char buf[40];
@@ -1262,7 +1266,9 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 
 	menu_set_sensitive(ifactory, "/Mark/Mark as unread", TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Mark as read",   TRUE);
+#if MARK_ALL_READ	
 	menu_set_sensitive(ifactory, "/Mark/Mark all read", TRUE);
+#endif	
 	menu_set_sensitive(ifactory, "/Mark/Ignore thread",   TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Unignore thread", TRUE);
 
@@ -2482,12 +2488,14 @@ void summary_mark_as_read(SummaryView *summaryview)
 	summary_status_show(summaryview);
 }
 
+#if MARK_ALL_READ
 static void summary_mark_all_read(SummaryView *summaryview)
 {
 	summary_select_all(summaryview);
 	summary_mark_as_read(summaryview);
 	summary_unselect_all(summaryview);
 }
+#endif
 
 static void summary_mark_row_as_unread(SummaryView *summaryview,
 				       GtkCTreeNode *row)

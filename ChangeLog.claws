@@ -1,3 +1,18 @@
+2001-07-18 [alfons]
+
+	0.5.0claws6
+
+	* src/summaryview.c
+		clean up
+
+	* src/matcher.c, src/filtering.[ch], src/inc.c, src/mbox.c,
+	  src/procmsg.[ch]
+		revise filtering; currently move, copy, marking have
+		been tested. if you like bleeding edge stuff, you
+		should definitely go for this version :)
+
+	* mark old working stuff as VERSION_0_5_0_CLAWS5	
+
 2001-07-17 [christoph]
 
 	* src/utils.c

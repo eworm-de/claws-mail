@@ -224,21 +224,17 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 		} else
 			dropfolder = dest;
 
-		if ((msgnum = folder_item_add_msg(dropfolder, tmp_file, TRUE)) < 0) {
-			fclose(mbox_fp);
-			unlink(tmp_file);
-			return -1;
-		}
-
-		folder_item_scan(dropfolder);
-		
-		if (prefs_filtering != NULL) {
-			/* new filtering */
-			if (folder_table) {
-				filter_message(prefs_filtering, dropfolder,
-					       msgnum, folder_table);
+		/* old filtering */
+		if (prefs_filtering == NULL || folder_table == NULL) {	
+			if ((msgnum = folder_item_add_msg(dropfolder, tmp_file, TRUE)) < 0) {
+				fclose(mbox_fp);
+				unlink(tmp_file);
+				return -1;
 			}
+			folder_item_scan(dropfolder);
 		}
+		else	
+			filter_incoming_message(dropfolder, tmp_file, folder_table);
 
 		msgs++;
 	} while (from_line[0] != '\0');

@@ -1,3 +1,30 @@
+/*
+ * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto & The Sylpheed Claws Team
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+/* 
+ * initial	Hoa		initial
+ *
+ * 07/18/01	Alfons		when we want a file name from a MsgInfo, get that
+ *				from MsgInfo->folder if the message is being filtered
+ *				from incorporation. also some more safe string checking.
+ */
+
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
@@ -509,12 +536,7 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 
 gboolean matcherprop_match_execute(MatcherProp * prop, MsgInfo * info)
 {
-	gchar * file;
 	gchar * cmd;
-
-	file = procmsg_get_message_file(info);
-	if (file == NULL)
-		return FALSE;
 
 	cmd = matching_build_command(prop->expr, info);
 	if (cmd == NULL)
@@ -903,11 +925,12 @@ gboolean matcherlist_match_file(MatcherList * matchers, MsgInfo * info,
 	GSList * l;
 	FILE * fp;
 	gchar * file;
-
-	/* file need to be read ? */
-
+	gboolean is_incorporating = MSG_IS_FILTERING(info->flags);
+	
+	/* check which things we need to do */
 	read_headers = FALSE;
-	read_body = FALSE;
+	read_body    = FALSE;
+	
 	for(l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
 		MatcherProp * matcher = (MatcherProp *) l->data;
 
@@ -925,7 +948,9 @@ gboolean matcherlist_match_file(MatcherList * matchers, MsgInfo * info,
 	if (!read_headers && !read_body)
 		return result;
 
-	file = procmsg_get_message_file(info);
+	file = is_incorporating ? g_strdup(info->folder) 
+		: procmsg_get_message_file(info);
+		
 	if (file == NULL)
 		return FALSE;
 
@@ -1234,6 +1259,18 @@ gchar * matcherlist_to_string(MatcherList * matchers)
 	return result;
 }
 
+static inline gint strlen_with_check(const gchar *expr, gint fline, const gchar *str)
+{
+	if (str) 
+		return strlen(str);
+	else {
+		debug_print("%s(%d) - invalid string %s\n", __FILE__, fline, expr);
+		return 0;
+	}
+}
+
+#define STRLEN_WITH_CHECK(expr) \
+	strlen_with_check(#expr, __LINE__, expr)
 
 gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 {
@@ -1252,35 +1289,37 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 				size -= 1;
 				break;
 			case 's': /* subject */
-				size += strlen(info->subject) - 2;
+				size += STRLEN_WITH_CHECK(info->subject) - 2;
 				break;
 			case 'f': /* from */
-				size += strlen(info->from) - 2;
+				size += STRLEN_WITH_CHECK(info->from) - 2;
 				break;
 			case 't': /* to */
-				size += strlen(info->to) - 2;
+				size += STRLEN_WITH_CHECK(info->to) - 2;
 				break;
 			case 'c': /* cc */
-				size += strlen(info->cc) - 2;
+				size += STRLEN_WITH_CHECK(info->cc) - 2;
 				break;
 			case 'd': /* date */
-				size += strlen(info->date) - 2;
+				size += STRLEN_WITH_CHECK(info->date) - 2;
 				break;
 			case 'i': /* message-id */
-				size += strlen(info->msgid) - 2;
+				size += STRLEN_WITH_CHECK(info->msgid) - 2;
 				break;
 			case 'n': /* newsgroups */
-				size += strlen(info->newsgroups) - 2;
+				size += STRLEN_WITH_CHECK(info->newsgroups) - 2;
 				break;
 			case 'r': /* references */
-				size += strlen(info->references) - 2;
+				size += STRLEN_WITH_CHECK(info->references) - 2;
 				break;
 			case 'F': /* file */
-				filename = folder_item_fetch_msg(info->folder,
-								 info->msgnum);
+				if (MSG_IS_FILTERING(info->flags))
+					filename = g_strdup(info->folder);
+				else						
+					filename = folder_item_fetch_msg(info->folder, info->msgnum);
 				
 				if (filename == NULL) {
-					g_warning(_("filename is not set"));
+					debug_print(_("%s(%d) - filename is not set"), __FILE__, __LINE__);
 					return NULL;
 				}
 				else
@@ -1291,7 +1330,6 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 		}
 		else s++;
 	}
-
 
 	processed_cmd = g_new0(gchar, size);
 	s = cmd;
@@ -1380,6 +1418,8 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 			s++;
 		}
 	}
+
+	g_free(filename);
 	return processed_cmd;
 }
 

@@ -83,6 +83,8 @@ typedef enum
 	MSG_IMAP	= 1 << 19,
 	MSG_NEWS	= 1 << 20,
 
+	MSG_FILTERING   = 1 << 25,	/* claws: re/set by filtering */
+
 	MSG_MIME	= 1 << 29,
 	MSG_CACHED	= 1 << 31
 } MsgTmpFlags;
@@ -125,6 +127,8 @@ typedef enum
 #define MSG_GET_LABEL_VALUE(msg)	(MSG_GET_LABEL(msg) >> MSG_LABEL_SBIT)
 /* 7 == nr. of colors excl. none */
 #define MSG_SET_LABEL_VALUE(msg, val)	MSG_SET_PERM_FLAGS(msg, ((((int)(val)) & 7) << MSG_LABEL_SBIT))
+#define MSG_IS_FILTERING(msg)		(((msg).tmp_flags  & MSG_FILTERING) != 0)
+
 
 #define WRITE_CACHE_DATA_INT(n, fp) \
 	fwrite(&n, sizeof(n), 1, fp)
