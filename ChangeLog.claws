@@ -1,4 +1,7 @@
 2001-11-12 [alfons]
+
+	* README.claws
+		remove things that are now in main branch
 	
 	* po/nl.po
 		update Dutch translation

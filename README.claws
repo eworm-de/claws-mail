@@ -53,13 +53,6 @@ Sylpheed or Main.
   There are some things that frequently come up when switching to Claws:
 
 
-  * When replying, the original sender's text is not quoted anymore.
-
-    Claws has a different quote format handler. Add either %Q or %q to the
-    quote format text. Also click the button "Description of symbols"
-    for more quotation symbols.
-
-
   * Why does the advanced filtering system not work?
 
     Claws uses the new filtering system as soon as you define a new rule for it.
@@ -125,11 +118,6 @@ are hardly noticable, but deserve mentioning:
   (NOTE: this is also a shoot-yourself-in-the-foot-setting! If you want
    to send a private mail, don't have a folder selected with this setting
    set.)
-
-* threading mode per folder
-  Folders can have their own threading and sorting mode. Just select a 
-  folder, and set their threading and sorting mode.
-
 
 * quotation wrapping
   Quotation is wrapped like VIM would wrap it (at least that was the
