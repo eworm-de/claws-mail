@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003 Hiroyuki Yamamoto & the Sylpheed-Claws team
+ * Copyright (C) 2003-2004 Hiroyuki Yamamoto & the Sylpheed-Claws team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -475,7 +475,7 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 	}
 	if (getuid() == 0) {
 		val = alertpanel(alert_title,
-				 _("Do you want to install theme for system's all users?"),
+				 _("Do you want to install theme for all users?"),
 				 _("Yes"), _("No"), _("Cancel"));
 		switch (val) {
 		case G_ALERTDEFAULT:
@@ -694,7 +694,7 @@ static gchar *prefs_themes_get_theme_stats(const gchar *dirname)
 	dinfo = g_new0(DirInfo, 1);
 	
 	prefs_themes_foreach_file(dirname, prefs_themes_file_stats, dinfo);
-	stats = g_strdup_printf(_("%d files (%d icons), size is %s"), 
+	stats = g_strdup_printf(_("%d files (%d icons), size: %s"), 
 				dinfo->files, dinfo->pixms, to_human_readable(dinfo->bytes));
 	
 	g_free(dinfo);

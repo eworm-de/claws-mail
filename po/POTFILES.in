@@ -38,6 +38,7 @@ src/gtk/colorlabel.c
 src/gtk/description_window.c
 src/gtk/gtkaspell.c
 src/gtk/gtkutils.c
+src/gtk/inputdialog.c
 src/gtk/logwindow.c
 src/gtk/pluginwindow.c
 src/gtk/prefswindow.c
@@ -50,7 +51,6 @@ src/importldif.c
 src/importmutt.c
 src/importpine.c
 src/inc.c
-src/inputdialog.c
 src/ldif.c
 src/main.c
 src/mainwindow.c

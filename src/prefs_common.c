@@ -1971,7 +1971,7 @@ static void prefs_message_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox_linespc), label_linespc,
 			    FALSE, FALSE, 0);
 
-	PACK_CHECK_BUTTON(hbox1, chkbtn_headspc, _("Leave space on head"));
+	PACK_CHECK_BUTTON(hbox1, chkbtn_headspc, _("Indent text"));
 
 	PACK_FRAME(vbox1, frame_scr, _("Scroll"));
 

@@ -1,3 +1,16 @@
+2004-04-23 [paul]	0.9.10claws51
+
+	* po/POTFILES.in
+		update location of inputdialog.c
+		
+	* src/gtk/about.c
+		update Copyright string
+		
+	* src/msgcache.c
+	  src/prefs_common.c
+	  src/prefs_themes.c
+	  	improve the english a little
+
 2004-04-22 [christoph]	0.9.10claws50
 
 	* src/folderutils.[ch]
