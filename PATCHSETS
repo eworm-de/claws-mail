@@ -6,3 +6,4 @@
 ( cvs diff -u -r 1.7 -r 1.8 src/common/smtp.h; ) > 0.9.12cvs18.patchset
 ( cvs diff -u -r 1.5 -r 1.6 src/gtk/quicksearch.c; ) > 0.9.12cvs19.patchset
 ( cvs diff -u -r 1.5 -r 1.6 src/gtk/quicksearch.c; ) > 0.9.12cvs19.patchset
+( cvs diff -u -r 1.119 -r 1.120 src/mimeview.c; ) > 0.9.12cvs20.patchset

@@ -219,7 +219,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 
 	gtk_signal_connect(GTK_OBJECT(ctree), "tree_select_row",
 			   GTK_SIGNAL_FUNC(mimeview_selected), mimeview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "button_press_event",
+	gtk_signal_connect(GTK_OBJECT(ctree), "button_release_event",
 			   GTK_SIGNAL_FUNC(mimeview_button_pressed), mimeview);
 	gtk_signal_connect(GTK_OBJECT(ctree), "key_press_event",
 			   GTK_SIGNAL_FUNC(mimeview_key_pressed), mimeview);
@@ -1330,14 +1330,14 @@ static gboolean icon_clicked_cb (GtkWidget *button, GdkEventButton *event, MimeV
 	partinfo = gtk_object_get_data(GTK_OBJECT(button), "partinfo");
 
 	icon_selected(mimeview, num, partinfo);
-	gtk_widget_grab_focus(button);
+ 	gtk_widget_grab_focus(button);
 	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
 		toggle_icon(GTK_TOGGLE_BUTTON(button), mimeview);
 		if (event->button == 2 || event->button == 3)
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
 						     TRUE);
 	} else {
-		gtk_signal_emit_stop_by_name(GTK_OBJECT(button), "button_press_event");
+		gtk_signal_emit_stop_by_name(GTK_OBJECT(button), "button_release_event");
 	}
 
 	part_button_pressed(mimeview, event, partinfo);
@@ -1592,7 +1592,7 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	gtk_tooltips_set_tip(mimeview->tooltips, button, tip, NULL);
 	g_free(tip);
 	gtk_widget_show_all(button);
-	gtk_signal_connect(GTK_OBJECT(button), "button_press_event", 
+	gtk_signal_connect(GTK_OBJECT(button), "button_release_event", 
 			   GTK_SIGNAL_FUNC(icon_clicked_cb), mimeview);
 	gtk_signal_connect(GTK_OBJECT(button), "key_press_event", 
 			   GTK_SIGNAL_FUNC(icon_key_pressed), mimeview);

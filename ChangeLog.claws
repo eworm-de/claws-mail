@@ -1,3 +1,10 @@
+2004-07-13 [christoph]	0.9.12cvs20
+
+	* src/mimeview.c
+		use "button_release_event" instead of "button_press_event",
+		because executing event callbacks while the button is still
+		pressed is not good and causes problems
+
 2004-07-12 [colin]	0.9.12cvs19
 
 	* src/gtk/quicksearch.c
@@ -43,6 +50,9 @@
 	* src/toolbar.c
 		enable next unread button in empty folders if next folder
 		dialog is not disabled
+
+	(Closes Feature Request [ 755800 ] "next" button enabled in empty
+	 folders)
 
 2004-07-06 [colin]	0.9.12cvs12
 

@@ -30,6 +30,8 @@ name=`whoami`
 #change if your login isn't your name
 if [ "$name" == "claws" ]; then
 	name="paul";
+elif [ "$name" == "reboot" ]; then
+	name="christoph";
 fi;
 log="`date +%Y-%m-%d` [$name]\t$nextsversion\n\n"
 for line in $files; do
