@@ -1,3 +1,12 @@
+2003-08-24 [christoph]	0.9.4claws36
+
+	* src/prefs_filtering.c
+		shouldn't remove items from a GSList while iterating over the
+		list (makes cur invalid and cur->next not accessable)
+
+	(closes Bug 272 i deleted an folder and some seconds later sylpheed
+	 crashed)
+
 2003-08-23 [christoph]	0.9.4claws35
 
 	* src/news.c

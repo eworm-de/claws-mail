@@ -52,6 +52,7 @@
 
 #include "matcher_parser.h"
 #include "matcher.h"
+#include "prefs_filtering_action.h"
 
 static struct Filtering {
 	GtkWidget *window;
@@ -93,13 +94,6 @@ static void prefs_filtering_ok		(void);
 static void prefs_filtering_condition_define	(void);
 static void prefs_filtering_action_define(void);
 static gint prefs_filtering_clist_set_row	(gint row, FilteringProp * prop);
-static void prefs_filtering_select_dest		(void);
-static void prefs_filtering_action_select	(GtkList *list,
-						 GtkWidget *widget, 
-						 gpointer user_data);
-
-static void prefs_filtering_action_selection_changed(GtkList *list,
-						     gpointer user_data);
 					  
 static void prefs_filtering_reset_dialog	(void);
 static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data);
@@ -124,122 +118,6 @@ typedef enum Action_ {
 	ACTION_COLOR,
 	/* add other action constants */
 } Action;
-
-static struct {
-	gchar *text;
-	Action action;
-} action_text [] = {
-	{ N_("Move"),			ACTION_MOVE	}, 	
-	{ N_("Copy"),			ACTION_COPY	},
-	{ N_("Delete"),			ACTION_DELETE	},
-	{ N_("Mark"),			ACTION_MARK	},
-	{ N_("Unmark"),			ACTION_UNMARK   },
-	{ N_("Lock"),			ACTION_LOCK	},
-	{ N_("Unlock"),			ACTION_UNLOCK	},
-	{ N_("Mark as read"),		ACTION_MARK_AS_READ },
-	{ N_("Mark as unread"),		ACTION_MARK_AS_UNREAD },
-	{ N_("Forward"),		ACTION_FORWARD  },
-	{ N_("Forward as attachment"),	ACTION_FORWARD_AS_ATTACHMENT },
-	{ N_("Redirect"),		ACTION_REDIRECT },
-	{ N_("Execute"),		ACTION_EXECUTE	},
-	{ N_("Color"),			ACTION_COLOR	}
-};
-
-static const gchar *get_action_text(Action action)
-{
-	int n;
-	for (n = 0; n < sizeof action_text / sizeof action_text[0]; n++)
-		if (action_text[n].action == action)
-			return action_text[n].text;
-	return "";			
-}
-
-static gint get_sel_from_list(GtkList * list)
-{
-	gint row = 0;
-	void * sel;
-	GList * child;
-
-	if (list->selection == NULL)
-		return -1;
-
-	sel = list->selection->data;
-	for(child = list->children ; child != NULL ;
-	    child = g_list_next(child)) {
-		if (child->data == sel)
-			return row;
-		row ++;
-	}
-	
-	return row;
-}
-
-static gint get_account_id_from_list_id(gint list_id)
-{
-	GList * accounts;
-
-	for (accounts = account_get_list() ; accounts != NULL;
-	     accounts = accounts->next) {
-		PrefsAccount *ac = (PrefsAccount *)accounts->data;
-
-		if (list_id == 0)
-			return ac->account_id;
-		list_id--;
-	}
-	return 0;
-}
-
-static gint get_list_id_from_account_id(gint account_id)
-{
-	GList * accounts;
-	gint list_id = 0;
-
-	for (accounts = account_get_list() ; accounts != NULL;
-	     accounts = accounts->next) {
-		PrefsAccount *ac = (PrefsAccount *)accounts->data;
-
-		if (account_id == ac->account_id)
-			return list_id;
-		list_id++;
-	}
-	return 0;
-}
-
-static gint prefs_filtering_get_matching_from_action(Action action_id)
-{
-	switch (action_id) {
-	case ACTION_MOVE:
-		return MATCHACTION_MOVE;
-	case ACTION_COPY:
-		return MATCHACTION_COPY;
-	case ACTION_DELETE:
-		return MATCHACTION_DELETE;
-	case ACTION_MARK:
-		return MATCHACTION_MARK;
-	case ACTION_UNMARK:
-		return MATCHACTION_UNMARK;
-	case ACTION_LOCK:
-		return MATCHACTION_LOCK;
-	case ACTION_UNLOCK:
-		return MATCHACTION_UNLOCK;
-	case ACTION_MARK_AS_READ:
-		return MATCHACTION_MARK_AS_READ;
-	case ACTION_MARK_AS_UNREAD:
-		return MATCHACTION_MARK_AS_UNREAD;
-	case ACTION_FORWARD:
-		return MATCHACTION_FORWARD;
-	case ACTION_FORWARD_AS_ATTACHMENT:
-		return MATCHACTION_FORWARD_AS_ATTACHMENT;
-	case ACTION_REDIRECT:
-		return MATCHACTION_REDIRECT;
-	case ACTION_EXECUTE:
-		return MATCHACTION_EXECUTE;
-	case ACTION_COLOR:
-		return MATCHACTION_COLOR;
-	default:
-		return -1;
-	}
-}
 
 void prefs_filtering_open(FolderItem * item,
 			  const gchar *header,
@@ -311,13 +189,6 @@ static void prefs_filtering_create(void)
 	GtkWidget *btn_vbox;
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
-
-
-	GList *combo_items;
-	gint i;
-
-	GList *accounts;
-	GList * cur;
 
 	gchar *title[1];
 
@@ -619,8 +490,8 @@ void prefs_filtering_delete_path(const gchar *path)
 
 static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data)
 {
-	GSList *cur, *orig;
-	gchar *path = (gchar *)data;
+	GSList *cur, *filters, *duplist;
+	gchar *path = (gchar *) data;
 	gchar *suffix;
 	gint destlen;
 	gint prefixlen;
@@ -632,17 +503,17 @@ static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data)
 
 	pathlen = strlen(path);
 	if (node == NULL)
-		cur = global_processing;
+		filters = global_processing;
 	else {
 		item = node->data;
 		if (!item || !item->prefs)
 			return FALSE;
-		cur = item->prefs->processing;
+		filters = item->prefs->processing;
 	}
-	orig = cur;
-	
-	for (; cur != NULL; cur = cur->next) {
-		FilteringProp *filtering = (FilteringProp *)cur->data;
+
+	duplist = g_slist_copy(filters);
+	for (cur = duplist ; cur != NULL; cur = g_slist_next(cur)) {
+		FilteringProp *filtering = (FilteringProp *) cur->data;
                 
                 for(action_cur = filtering->action_list ; action_cur != NULL ;
                     action_cur = action_cur->next) {
@@ -661,23 +532,23 @@ static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data)
                                 
                                 if (suffix && !strncmp(path, suffix, pathlen)) {
                                         filteringprop_free(filtering);
-                                        orig = g_slist_remove(orig, filtering);
+                                        filters = g_slist_remove(filters, filtering);
                                 }
                         } else if (strcmp(action->destination, path) == 0) {
                                 filteringprop_free(filtering);
-                                orig = g_slist_remove(orig, filtering);
-                                
+                                filters = g_slist_remove(filters, filtering);
                         }
                 }
         }                
-        
+	g_slist_free(duplist);
+
         if (node == NULL)
-                global_processing = orig;
+                global_processing = filters;
         else {
                 item = node->data;
                 if (!item || !item->prefs)
 			return FALSE;
-                item->prefs->processing = orig;
+                item->prefs->processing = filters;
         }
         
 	prefs_matcher_write_config();
@@ -880,13 +751,6 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(gboolean alert)
 	gchar * cond_str;
 	gchar * action_str;
 	FilteringProp * prop;
-	FilteringAction * action;
-	gint list_id;
-	Action action_id;
-	gint action_type;
-	gint account_id;
-	gchar * destination;
-	gint labelcolor = 0;
 	GSList * action_list;
 
 	cond_str = gtk_entry_get_text(GTK_ENTRY(filtering.cond_entry));
@@ -1010,9 +874,7 @@ static void prefs_filtering_down(void)
 
 static void prefs_filtering_select_set(FilteringProp *prop)
 {
-	FilteringAction *action;
 	gchar *matcher_str;
-	gint list_id;
         gchar *action_str;
 
 	prefs_filtering_reset_dialog();
