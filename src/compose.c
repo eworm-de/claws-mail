@@ -4241,7 +4241,7 @@ static GtkWidget *compose_create_others(Compose *compose)
 	savemsg_checkbtn = gtk_check_button_new_with_label(_("Save Message to "));
 	gtk_widget_show(savemsg_checkbtn);
 	gtk_table_attach(GTK_TABLE(table), savemsg_checkbtn, 0, 1, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
-	if(folder_get_default_outbox()) {
+	if(account_get_special_folder(compose->account, F_OUTBOX)) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(savemsg_checkbtn), prefs_common.savemsg);
 	}
 	gtk_signal_connect(GTK_OBJECT(savemsg_checkbtn), "toggled",
@@ -4251,8 +4251,9 @@ static GtkWidget *compose_create_others(Compose *compose)
 	gtk_widget_show(savemsg_entry);
 	gtk_table_attach_defaults(GTK_TABLE(table), savemsg_entry, 1, 2, rowcount, rowcount + 1);
 	gtk_editable_set_editable(GTK_EDITABLE(savemsg_entry), prefs_common.savemsg);
-	if(folder_get_default_outbox()) {
-		folderidentifier = folder_item_get_identifier(folder_get_default_outbox());
+	if(account_get_special_folder(compose->account, F_OUTBOX)) {
+		folderidentifier = folder_item_get_identifier(account_get_special_folder
+				  (compose->account, F_OUTBOX));
 		gtk_entry_set_text(GTK_ENTRY(savemsg_entry), folderidentifier);
 		g_free(folderidentifier);
 	}

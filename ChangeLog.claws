@@ -1,3 +1,14 @@
+2002-05-17 [paul]	0.7.5claws31
+
+	* src/compose.c
+		fix Account prefs default folder for sent/draft/deleted
+		messages bug
+
+	* po/it.po
+	  po/nl.po
+		updated translation by Alessandro Maestri and
+		Wilbert Berendsen
+
 2002-05-17 [melvin]	0.7.5claws30
 
 	* src/prefs_actions.c
