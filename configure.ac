@@ -507,8 +507,17 @@ dnl --- PGP/MIME ---
 AC_ARG_ENABLE(pgpmime-plugin,
 	[  --disable-pgpmime-plugin           Do not build PGP/MIME plugin],
 	[ac_cv_enable_pgpmime_plugin=$enableval], [ac_cv_enable_pgpmime_plugin=yes])
-if test x"$ac_cv_enable_gpgme" = xyes -a x"$ac_cv_enable_pgpmime_plugin" = xyes; then
-	PLUGINS="pgpmime $PLUGINS"
+if test x"$ac_cv_enable_pgpmime_plugin" = xyes; then
+	echo $ac_cv_enable_gpgme
+	echo $ac_cv_enable_pgpmime_plugin
+	if test x"$ac_cv_enable_gpgme" != xyes; then
+		ac_cv_enable_pgpmime_plugin=no
+	fi
+
+	echo $ac_cv_enable_pgpmime_plugin
+	if test x"$ac_cv_enable_pgpmime_plugin" = xyes; then
+		PLUGINS="pgpmime $PLUGINS"
+	fi
 fi
 AM_CONDITIONAL(BUILD_PGPMIME_PLUGIN, test x"$ac_cv_enable_pgpmime_plugin" = xyes)
 
