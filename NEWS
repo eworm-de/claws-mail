@@ -1,5 +1,17 @@
 Changes of Sylpheed
 
+* 0.8.4
+
+    * The 'Select thread' function is added.
+    * The 'Reply to mailing list' function is added.
+    * The 'Reply' button invokes 'Reply to list' by default (configurable).
+    * More fix for GnuPG signing and verification has been made.
+    * The bug that deleted messages that are not received by filter has
+      been fixed.
+    * The bug that couldn't exit normally after opening composition window
+      has been fixed.
+    * The LDAP library detection of configure script has been fixed.
+
 * 0.8.3
 
     * The state of compose window is now changed automatically when the

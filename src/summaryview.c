@@ -4042,14 +4042,24 @@ void summary_reply(SummaryView *summaryview, ComposeMode mode)
 	
 	switch (mode) {
 	case COMPOSE_REPLY:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, FALSE, FALSE, text);
+		if (prefs_common.default_reply_list)
+			compose_reply(msginfo, prefs_common.reply_with_quote,
+			    	      FALSE, TRUE, FALSE, text);
+		else
+			compose_reply(msginfo, prefs_common.reply_with_quote,
+				      FALSE, FALSE, FALSE, text);
 		break;
 	case COMPOSE_REPLY_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, FALSE, FALSE, text);
+		if (prefs_common.default_reply_list)
+			compose_reply(msginfo, TRUE, FALSE, TRUE, FALSE, text);
+		else
+			compose_reply(msginfo, TRUE, FALSE, FALSE, FALSE, text);
 		break;
 	case COMPOSE_REPLY_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, FALSE, FALSE, NULL);
+		if (prefs_common.default_reply_list)
+			compose_reply(msginfo, FALSE, FALSE, TRUE, FALSE, NULL);
+		else
+			compose_reply(msginfo, FALSE, FALSE, FALSE, FALSE, NULL);
 		break;
 	case COMPOSE_REPLY_TO_SENDER:
 		compose_reply(msginfo, prefs_common.reply_with_quote,

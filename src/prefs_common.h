@@ -86,6 +86,7 @@ struct _PrefsCommon
 	gboolean linewrap_at_send;
 	gboolean auto_exteditor;
 	gboolean reply_account_autosel;
+	gboolean default_reply_list;
 	gboolean forward_account_autosel;
 	gboolean reedit_account_autosel;
 	gboolean show_ruler;

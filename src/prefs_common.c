@@ -121,6 +121,7 @@ static struct Compose {
 	GtkWidget *checkbtn_forward_account_autosel;
 	GtkWidget *checkbtn_reedit_account_autosel;
 	GtkWidget *checkbtn_quote;
+	GtkWidget *checkbtn_default_reply_list;
 	GtkWidget *checkbtn_forward_as_attachment;
 	GtkWidget *checkbtn_redirect_keep_from;
 	GtkWidget *checkbtn_smart_wrapping;
@@ -431,6 +432,10 @@ static PrefParam param[] = {
 	{"reedit_account_autoselect", "TRUE",
 	 &prefs_common.reedit_account_autosel, P_BOOL,
 	 &compose.checkbtn_reedit_account_autosel,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"default_reply_list", "TRUE", &prefs_common.default_reply_list, P_BOOL,
+	 &compose.checkbtn_default_reply_list,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"show_ruler", "TRUE", &prefs_common.show_ruler, P_BOOL,
@@ -1732,6 +1737,8 @@ static void prefs_compose_create(void)
 	GtkWidget *checkbtn_autowrap;
 	GtkWidget *checkbtn_wrapatsend;
 
+	GtkWidget *checkbtn_default_reply_list;
+
 	GtkWidget *checkbtn_forward_as_attachment;
 	GtkWidget *checkbtn_redirect_keep_from;
 	GtkWidget *checkbtn_smart_wrapping;
@@ -1789,6 +1796,9 @@ static void prefs_compose_create(void)
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_default_reply_list,
+			   _("Reply button invokes mailing list reply"));
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_autoextedit,
 			   _("Automatically launch the external editor"));
@@ -1916,7 +1926,7 @@ static void prefs_compose_create(void)
 		checkbtn_smart_wrapping;
 	compose.checkbtn_block_cursor   =
 		checkbtn_block_cursor;
-
+	compose.checkbtn_default_reply_list = checkbtn_default_reply_list;
 }
 
 static void prefs_quote_create(void)

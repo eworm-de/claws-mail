@@ -2328,10 +2328,16 @@ static void toolbar_reply_cb(GtkWidget   *widget,
 {
 	MainWindow *mainwin = (MainWindow *)data;
 
-	reply_cb(mainwin, 
-		 prefs_common.reply_with_quote ? COMPOSE_REPLY_WITH_QUOTE 
-		 : COMPOSE_REPLY_WITHOUT_QUOTE,
-		 NULL);
+	if (prefs_common.default_reply_list)
+		reply_cb(mainwin, 
+		 	 prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_LIST_WITH_QUOTE 
+		 	 : COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE, 
+			 NULL);
+	else
+		reply_cb(mainwin, 
+		 	 prefs_common.reply_with_quote ? COMPOSE_REPLY_WITH_QUOTE 
+			 : COMPOSE_REPLY_WITHOUT_QUOTE,
+			 NULL);
 }
 
 static void toolbar_reply_to_all_cb(GtkWidget   *widget, 

@@ -1,3 +1,32 @@
+2002-10-02
+
+	* src/inc.c: inc_account_mail(), inc_all_account_mail(): IMAP4 と
+	  NNTP のアカウントをチェックした後それらのフォルダのサマリを更新
+	  するようにした。
+
+2002-10-01
+
+	* version 0.8.4
+
+2002-10-01
+
+	* src/prefs_common.c: prefs_compose_create(): 返信ボタンのオプション
+	  のラベルを修正。
+	* configure.in: LDAP ライブラリ検出の AC_CHECK_LIB() の5番目の引数
+	  に -lldap と -llber を追加。
+
+2002-09-30
+
+	* INSTALL
+	  INSTALL.jp: 更新。
+
+2002-09-30
+
+	* src/mainwindow.c: 返信ボタンの挙動を通常の返信と ML への返信
+	  とで切り替えるようにした。
+	* src/prefs_common.[ch]: 返信ボタンの機能を切り替えるオプション
+	  を追加。
+
 2002-09-27
 
 	* src/compose.c: compose_new(): 効果が無く、ハングを引き起こすだけ
