@@ -1,3 +1,9 @@
+2004-10-13 [colin]	0.9.12cvs126
+
+	* src/compose.c
+		Don't convert message to forced encoding when 
+		drafting, plus minor magic-values cleanup.
+
 2004-10-13 [colin]	0.9.12cvs125
 
 	* po/POTFILES.in
