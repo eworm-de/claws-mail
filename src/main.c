@@ -51,6 +51,7 @@
 #include "prefs_common.h"
 #include "prefs_account.h"
 #include "prefs_actions.h"
+#include "prefs_fonts.h"
 #include "prefs_spelling.h"
 #include "scoring.h"
 #include "prefs_display_header.h"
@@ -272,6 +273,7 @@ int main(int argc, char *argv[])
 	gpgme_register_idle(idle_function_for_gpgme);
 #endif
 
+	prefs_fonts_init();
 #ifdef USE_ASPELL
 	gtkaspell_checkers_init();
 	prefs_spelling_init();
@@ -380,6 +382,7 @@ int main(int argc, char *argv[])
 
 	addressbook_destroy();
 
+	prefs_fonts_done();
 #ifdef USE_ASPELL       
 	prefs_spelling_done();
 	gtkaspell_checkers_quit();

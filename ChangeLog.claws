@@ -1,3 +1,13 @@
+2003-09-29 [paul]	0.9.5claws37
+
+	* po/POTFILES.in
+	  src/Makefile.am
+	  src/main.c
+	  src/prefs_common.[ch]
+	  src/prefs_fonts.[ch]	** NEW FILES **
+	  	move Font config options to Other Prefs/Display/Fonts
+		(user's current configuration is preserved)
+
 2003-09-29 [paul]	0.9.5claws36
 
 	* src/inc.c
