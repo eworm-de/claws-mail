@@ -599,14 +599,14 @@ static void change_color(GtkPspell * gtkpspell, int start, int end,
     gtk_xtext_freeze(gtktext);
     newtext = gtk_editable_get_chars(GTK_EDITABLE(gtktext), start, end);
     if(newtext){
-/*        gtk_signal_handler_block_by_func(GTK_OBJECT(gtktext),
-                                         GTK_SIGNAL_FUNC(entry_insert_cb), gtkpspell);*/
+        gtk_signal_handler_block_by_func(GTK_OBJECT(gtktext),
+                                         GTK_SIGNAL_FUNC(entry_insert_cb), gtkpspell);
         gtk_xtext_set_point(gtktext, start);
         gtk_xtext_forward_delete(gtktext, end - start);
 
         gtk_xtext_insert(gtktext, NULL, color, NULL, newtext, end - start);
-/*        gtk_signal_handler_unblock_by_func(GTK_OBJECT(gtktext),
-                                           GTK_SIGNAL_FUNC(entry_insert_cb), gtkpspell);*/
+        gtk_signal_handler_unblock_by_func(GTK_OBJECT(gtktext),
+                                           GTK_SIGNAL_FUNC(entry_insert_cb), gtkpspell);
    }
    gtk_xtext_thaw(gtktext);
 }
@@ -617,7 +617,6 @@ static gboolean check_at(GtkPspell * gtkpspell, int from_pos)
     unsigned char buf[BUFSIZE];
     GtkXText * gtktext;
     gtktext=gtkpspell->gtktext;
-
     if (from_pos < 0) return FALSE;
     if (!get_word_from_pos(gtkpspell, from_pos, buf, &start, &end)) {
         return FALSE;
@@ -660,6 +659,7 @@ void gtkpspell_check_all(GtkPspell * gtkpspell)
     adj_value = gtktext->vadj->value;
     gtk_xtext_freeze(gtktext);
     origpos = gtk_editable_get_position(GTK_EDITABLE(gtktext));
+    gtk_editable_set_position(GTK_EDITABLE(gtktext),0);
     while (pos < len) {
         while (pos < len && iswordsep(get_text_index_whar(gtkpspell, pos)))
             pos++;
@@ -988,21 +988,22 @@ static void popup_menu(GtkPspell * gtkpspell, GdkEventButton *eb)
     GtkXText * gtktext;
     gtktext=gtkpspell->gtktext;
 
-    if (get_curword(gtkpspell, buf, NULL, NULL)){
-      if (buf != NULL) {
-	strncpy(gtkpspell->theword,buf,BUFSIZE-1);
-	gtkpspell->theword[BUFSIZE-1]=0x00;
-        list = misspelled_suggest(gtkpspell, buf);
-        if (list != NULL) {
+    if( !(eb->state & GDK_SHIFT_MASK) )
+      if (get_curword(gtkpspell, buf, NULL, NULL)){
+	if (buf != NULL) {
+	  strncpy(gtkpspell->theword,buf,BUFSIZE-1);
+	  gtkpspell->theword[BUFSIZE-1]=0x00;
+	  list = misspelled_suggest(gtkpspell, buf);
+	  if (list != NULL) {
             gtk_menu_popup(make_menu(list, gtkpspell), NULL, NULL, NULL, NULL,
                            eb->button, eb->time);
             for (l = list; l != NULL; l = l->next)
-                g_free(l->data);
+	      g_free(l->data);
             g_list_free(list);
             return;
-        }
+	  }
+	}
       }
-    }
     gtk_menu_popup(make_menu_config(gtkpspell),NULL,NULL,NULL,NULL,
           eb->button,eb->time);
 
@@ -1042,6 +1043,7 @@ static gint button_press_intercept_cb(GtkXText *gtktext, GdkEvent *e, GtkPspell 
     
     /* now do the menu wackiness */
     popup_menu(gtkpspell, eb);
+    gtk_grab_remove(GTK_WIDGET(gtktext));
     return TRUE;
 }
 
