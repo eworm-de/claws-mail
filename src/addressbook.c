@@ -42,6 +42,7 @@
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkitemfactory.h>
 #include <string.h>
+#include <setjmp.h>
 
 #include "intl.h"
 #include "main.h"
@@ -98,7 +99,7 @@ static struct _AddressEdit
 	GtkWidget *cancel_btn;
 } addredit;
 
-static void addressbook_create			(void);
+static void addressbook_create			(gboolean show);
 static gint addressbook_close			(void);
 static void addressbook_button_set_sensitive	(void);
 
@@ -262,16 +263,15 @@ static GtkItemFactoryEntry addressbook_list_popup_entries[] =
 void addressbook_open(Compose *target)
 {
 	if (!addrbook.window) {
-		addressbook_create();
+		addressbook_create(TRUE);
 		addressbook_read_file();
 		addrbook.open_folder = TRUE;
 		gtk_ctree_select(GTK_CTREE(addrbook.ctree),
 				 GTK_CTREE_NODE(GTK_CLIST(addrbook.ctree)->row_list));
 	} else
 		gtk_widget_hide(addrbook.window);
-
-	gtk_widget_show(addrbook.window);
-
+	
+	gtk_widget_show_all(addrbook.window);
 	addressbook_set_target_compose(target);
 }
 
@@ -287,7 +287,7 @@ Compose *addressbook_get_target_compose(void)
 	return addrbook.target_compose;
 }
 
-static void addressbook_create(void)
+static void addressbook_create(gboolean show)
 {
 	GtkWidget *window;
 	GtkWidget *vbox;
@@ -526,7 +526,8 @@ static void addressbook_create(void)
 
 	address_completion_start(window);
 
-	gtk_widget_show_all(window);
+	if (show) 
+		gtk_widget_show_all(window);
 }
 
 static gint addressbook_close(void)
@@ -2037,4 +2038,449 @@ static gint addressbook_obj_name_compare(gconstpointer a, gconstpointer b)
 			return strcasecmp(item->name, name);
 	} else
 		return -1;
+}
+
+/***/
+
+typedef struct {
+	gboolean		init;			/* if FALSE should init jump buffer */
+	GtkCTreeNode   *node_found;		/* match (can be used to backtrack folders)  */
+	AddressObject  *addr_found;		/* match */
+	int				level;			/* current recursion level (0 is root level) */
+	jmp_buf			jumper;			/* jump buffer */
+} FindObject;
+
+typedef struct {
+	FindObject		ancestor;
+	const gchar	   *groupname;
+} FindGroup;
+
+typedef struct {
+	FindObject		ancestor;
+	const gchar    *name;
+	const gchar    *address;
+} FindAddress;
+
+typedef struct {
+	FindObject		ancestor;
+	GList		   *grouplist;
+} FindAllGroups;
+
+typedef gboolean (*ADDRESSBOOK_TRAVERSE_FUNC)(AddressObject *node, gpointer data);
+
+/***/
+
+static gboolean traverse_find_group_by_name(AddressObject *ao, FindGroup *find)
+{
+	AddressFolder *folder;
+	AddressGroup  *group;
+
+	/* a group or folder: both are groups */
+	if (ADDRESS_OBJECT_TYPE(ao) == ADDR_GROUP) {
+		group = ADDRESS_GROUP(ao);
+		if (0 == g_strcasecmp(group->name, find->groupname)) {
+			return TRUE;
+		}
+	}
+	else if (ADDRESS_OBJECT_TYPE(ao) == ADDR_FOLDER) {
+		folder = ADDRESS_FOLDER(ao);
+		if (0 == g_strcasecmp(folder->name, find->groupname)) {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+static gboolean traverse_find_name_email(AddressObject *ao, FindAddress *find)
+{
+	AddressItem *item;
+	if (ADDRESS_OBJECT_TYPE(ao) == ADDR_ITEM) {
+		gboolean nmatch = FALSE, amatch = FALSE;
+		item = ADDRESS_ITEM(ao);
+		/* conditions:
+		 * o only match at the first characters in item strings 
+		 * o match either name or address */
+		if (find->name && item->name) {
+			nmatch = item->name == strcasestr(item->name, find->name);
+		}
+		if (find->address && item->address) {
+			amatch = item->address == strcasestr(item->address, find->address);
+		}
+		return nmatch || amatch;
+	}
+	return FALSE;
+}
+
+static gboolean traverse_find_all_groups(AddressObject *ao, FindAllGroups *find)
+{
+	/* NOTE: added strings come from the address book. should perhaps 
+	 * strdup() them, especially if the address book is invalidated */
+	if (ADDRESS_OBJECT_TYPE(ao) == ADDR_FOLDER) {
+		AddressFolder *folder = ADDRESS_FOLDER(ao);
+		find->grouplist = g_list_insert_sorted(find->grouplist, (gpointer) folder->name, (GCompareFunc) g_strcasecmp);
+	}
+	else if (ADDRESS_OBJECT_TYPE(ao) == ADDR_GROUP) {
+		AddressGroup *group = ADDRESS_GROUP(ao);
+		find->grouplist = g_list_insert_sorted(find->grouplist, (gpointer) group->name, (GCompareFunc) g_strcasecmp);
+	}
+	return FALSE;
+}
+
+/* addressbook_traverse() - traverses all address objects stored in the address book. 
+ * for some reason gtkctree's recursive tree functions don't allow a premature return, 
+ * which is what we need if we need to enumerate the tree and check for a condition 
+ * and then skipping other nodes. */ 
+static AddressObject *addressbook_traverse(GtkCTreeNode *node, ADDRESSBOOK_TRAVERSE_FUNC func, FindObject *data, int level)
+{
+	GtkCTreeNode  *current, *tmp;
+	AddressObject *ao;
+
+	if (data->init == FALSE) {
+		/* initialize non-local exit */
+		data->init  = TRUE;
+		data->level = 0;
+		/* HANDLE NON-LOCAL EXIT */
+		if (setjmp(data->jumper)) {
+			return data->addr_found;
+		}
+	}
+
+	/* actual recursive code */
+	if (!node) {
+		current = GTK_CTREE_NODE(GTK_CLIST(addrbook.ctree)->row_list);
+	}
+	else {
+		current = node;
+	}
+
+	while (current) {
+		tmp = GTK_CTREE_ROW(current)->sibling;
+		ao = (AddressObject *) gtk_ctree_node_get_row_data(GTK_CTREE(addrbook.ctree), current);
+		if (ao) {
+			GList *next;
+
+			next = (ADDRESS_OBJECT_TYPE(ao) == ADDR_FOLDER) ? 
+				   g_list_first(((ADDRESS_FOLDER(ao))->items)) :
+				   (ADDRESS_OBJECT_TYPE(ao)  == ADDR_GROUP) ?
+				   g_list_first(((ADDRESS_GROUP(ao))->items))  : NULL;
+
+			while (ao) {
+				/* NOTE: first iteration of the root calls callback for the tree 
+				 * node, other iterations call callback for the address book items */
+				if (func(ao, data)) {
+					/* unwind */
+					data->node_found = current;
+					data->addr_found = ao;
+					longjmp(data->jumper, 1);
+				}
+				/* ctree node only stores folders and groups. now descend into
+				 * address object data, searching for address items. */
+				for ( ; next && ADDRESS_OBJECT_TYPE((next->data)) != ADDR_ITEM
+					  ; next = g_list_next(next))
+					;			
+				ao   = next ? (AddressObject *) next->data : NULL;
+				next = next ? g_list_next(next) : NULL;
+			}				
+		}
+		/* check the children (if level permits) */
+		if (level == -1 || data->level < level) {
+			current = GTK_CTREE_ROW(current)->children;
+			if (current) {
+				data->level++;
+				addressbook_traverse(current, func, data, level);
+				data->level--;
+			}			
+		}			
+		/* check the siblings */
+		current = tmp;
+	}
+	return NULL;
+}
+
+static GtkCTreeNode *addressbook_get_group_node(const gchar *name)
+{
+	FindGroup fg = { { FALSE, NULL, NULL }, NULL };
+	fg.groupname = name;
+	addressbook_traverse(NULL, (void *)traverse_find_group_by_name, (FindObject *)&fg, -1);
+	return fg.ancestor.node_found;
+}
+
+static void addressbook_free_item(AddressItem *item)
+{
+	if (item) {
+		if (item->name) g_free(item->name);
+		if (item->address) g_free(item->address);
+		if (item->remarks) g_free(item->remarks);
+		g_free(item);
+	}
+}
+
+static AddressItem *addressbook_alloc_item(const gchar *name, const gchar *address, const gchar *remarks)
+{
+	AddressItem *item = g_new0(AddressItem, 1);
+	
+	if (item) {
+		item->obj.type = ADDR_ITEM;
+		if (item->name = g_strdup(name))
+			if (item->address = g_strdup(address)) {
+				if (remarks) {
+					item->remarks = g_strdup(remarks);
+				}
+				return item;
+			}
+	}
+	addressbook_free_item(item);
+	return NULL;
+}
+
+/***/
+
+/* public provisional API */
+
+/* addressbook_access() - should be called before using any of the following apis. it
+ * reloads the address book. */
+void addressbook_access(void)
+{
+	log_message("accessing address book\n");
+	if (!addrbook.window) {
+		addressbook_create(FALSE);
+		addressbook_read_file();
+		addrbook.open_folder = TRUE;
+		gtk_ctree_select(GTK_CTREE(addrbook.ctree), GTK_CTREE_NODE(GTK_CLIST(addrbook.ctree)->row_list));
+	} 
+}
+
+/* addressbook_unaccess() - should only be called after changing the address book's
+ * contents */
+void addressbook_unaccess(void)
+{
+	log_message("unaccessing address book\n");
+	addressbook_export_to_file();
+	invalidate_address_completion();
+}
+
+const gchar *addressbook_get_personal_folder_name(void)
+{
+	return _("Personal addresses"); /* human readable */
+}
+
+const gchar *addressbook_get_common_folder_name(void)
+{
+	return _("Common addresses"); /* human readable */
+}
+
+/* addressbook_find_group_by_name() - finds a group (folder or group) by
+ * its name */
+AddressObject *addressbook_find_group_by_name(const gchar *name)
+{
+	FindGroup	   fg = { { FALSE, NULL, NULL } };
+	AddressObject *ao;
+
+	/* initialize obj members */
+	fg.groupname = name;
+	ao = addressbook_traverse(NULL, 
+							  (ADDRESSBOOK_TRAVERSE_FUNC)traverse_find_group_by_name, 
+							  (FindObject *)&fg, -1);
+	return ao;
+}
+
+/* addressbook_find_contact() - finds an address item by either name or address
+ * or both. the comparison is done on the first few characters of the strings */
+AddressObject *addressbook_find_contact(const gchar *name, const gchar *address)
+{
+	FindAddress   fa = { { FALSE, NULL, NULL } };
+	AddressObject *ao;
+
+	fa.name = name;
+	fa.address = address;
+	ao = addressbook_traverse(NULL, (ADDRESSBOOK_TRAVERSE_FUNC)traverse_find_name_email,
+							  (FindObject *)&fa, -1);
+	return ao;							  
+}
+
+/* addressbook_get_group_list() - returns a list of strings with group names (both
+ * groups and folders). free the list using g_list_free(). note that another
+ * call may invalidate the returned list */
+GList *addressbook_get_group_list(void)
+{
+	FindAllGroups fag = { { FALSE, NULL, NULL }, NULL };
+	addressbook_traverse(NULL, (ADDRESSBOOK_TRAVERSE_FUNC)traverse_find_all_groups,
+						 (FindObject *)&fag, -1);
+	return fag.grouplist;
+}
+
+/* addressbook_add_contact() - adds a contact to the address book. returns 1
+ * if succesful else error */
+gint addressbook_add_contact(const gchar *group, const gchar *name, const gchar *address,
+							 const gchar *remarks) 
+{
+	GtkCTreeNode *node;
+	AddressItem *item;
+	FindAddress  fa = { { FALSE, NULL, NULL } };
+
+	/* a healthy mix of hiro's and my code */
+	if (name == NULL || strlen(name) == 0
+	||  address == NULL || strlen(address) == 0
+	||  group == NULL || strlen(group) == 0) {
+		return __LINE__;
+	}
+	node = addressbook_get_group_node(group);
+	if (!node) {
+		return __LINE__;
+	}
+
+	/* check if it's already in this group */
+	fa.name = name;
+	fa.address = address;
+
+	if (addressbook_traverse(node, (gpointer)traverse_find_name_email, (gpointer)&fa, 0)) {
+		log_message("address <%s> already in %s\n", address, group);
+		return __LINE__;
+	}
+
+	item = addressbook_alloc_item(name, address, remarks);
+	if (!item) {
+		return __LINE__;
+	}
+
+	if (!addressbook_add_object(node, (AddressObject *)item)) {
+		addressbook_free_item(item);
+		return __LINE__;
+	}
+
+	/* make sure it's updated if selected */
+	log_message("updating addressbook widgets\n");
+	addrbook.open_folder = TRUE;
+	gtk_ctree_select(GTK_CTREE(addrbook.ctree), addrbook.opened);
+
+	/* not saved yet. only after unaccessing the address book */
+	return 0;
+}
+
+static void group_object_data_destroy(gchar *group)
+{
+	if (group) {
+		g_free(group);
+	}		
+}
+
+/***/
+
+typedef struct {
+	gchar *name;
+	gchar *address;
+	gchar *remarks;
+} ContactInfo;
+
+static void addressbook_destroy_contact(ContactInfo *ci)
+{
+	g_return_if_fail(ci != NULL);
+	if (ci->name) g_free(ci->name);
+	if (ci->address) g_free(ci->address);
+	if (ci->remarks) g_free(ci->remarks);
+	g_free(ci);
+}
+
+static ContactInfo *addressbook_new_contact(const gchar *name, const gchar *address, const gchar *remarks)
+{
+	ContactInfo *ci = g_new0(ContactInfo, 1);
+	
+	g_return_val_if_fail(ci != NULL, NULL);
+	g_return_val_if_fail(address != NULL, NULL); /* address should be valid */
+	ci->name    = name ? g_strdup(name) : NULL;
+	ci->address = g_strdup(address);
+	ci->remarks = remarks ? g_strdup(remarks) : NULL;
+	if (NULL == ci->address) {
+		addressbook_destroy_contact(ci);
+		ci = NULL;
+	}
+	return ci;
+}
+
+static void addressbook_group_menu_selected(GtkMenuItem *menuitem,
+											ContactInfo *data)
+{
+	const gchar *group_name = (const gchar *) gtk_object_get_data(GTK_OBJECT(menuitem),
+																  "group_name");
+													   
+	if (!group_name) {
+		g_warning("%s(%d) - invalid group name\n", __FILE__, __LINE__);
+		return ;
+	}
+	g_return_if_fail(group_name != NULL); 
+
+	g_message("selected group %s from menu\n", group_name);
+	g_message("selected %s <%s>\n", data->name ? data->name : data->address, data->address);
+
+	addressbook_access();
+	addressbook_add_contact(group_name, data->name ? data->name : data->address, 
+							data->address, data->remarks ? data->remarks : data->address);
+	addressbook_unaccess();
+
+	g_free(data);
+}
+
+/* addressbook_add_contact_by_meny() - launches menu with group items. submenu may be
+ * the menu item in the parent menu, or NULL for a normal right-click context menu */
+gboolean addressbook_add_contact_by_menu(GtkWidget   *submenu,
+										 const gchar *name, 
+										 const gchar *address, 
+										 const gchar *remarks)
+{
+	GtkWidget	*menu, *menuitem;
+	GList		*groups, *tmp;
+	ContactInfo *ci;
+
+	ci = addressbook_new_contact(name, address, remarks);
+	g_return_val_if_fail(ci != NULL, FALSE);
+
+	addressbook_access();
+	groups = addressbook_get_group_list();
+	g_return_val_if_fail(groups != NULL, (addressbook_destroy_contact(ci), FALSE));
+	
+	menu = gtk_menu_new();
+	g_return_val_if_fail(menu != NULL, (g_list_free(groups), addressbook_destroy_contact(ci), FALSE));
+
+	/* add groups to menu */
+	for (tmp = g_list_first(groups); tmp != NULL; tmp = g_list_next(tmp)) {
+		const gchar *display_name;
+		gchar		*original_name = (gchar *) tmp->data;
+		
+		if (!g_strcasecmp(original_name, "personal_address")) {
+			display_name = addressbook_get_personal_folder_name();
+		}
+		else if (!g_strcasecmp(original_name, "common_address")) {
+			display_name = addressbook_get_common_folder_name();
+		}
+		else {
+			display_name = original_name;
+		}
+
+		original_name = g_strdup(original_name);
+		menuitem = gtk_menu_item_new_with_label(display_name);
+		/* register the duplicated string pointer as object data,
+		 * so we get the opportunity to free it */
+		gtk_object_set_data_full(GTK_OBJECT(menuitem), "group_name", 
+								 original_name, 
+								 (GtkDestroyNotify) group_object_data_destroy);
+		gtk_signal_connect(GTK_OBJECT(menuitem), "activate", 
+						   GTK_SIGNAL_FUNC(addressbook_group_menu_selected),
+						   (gpointer)(ci));
+		gtk_menu_append(GTK_MENU(menu), menuitem);
+		gtk_widget_show(menuitem);
+	}
+
+	gtk_widget_show(menu);
+
+	if (submenu) {
+		gtk_menu_item_set_submenu(GTK_MENU_ITEM(submenu), menu);
+		gtk_widget_set_sensitive(GTK_WIDGET(submenu), TRUE);
+	} 
+	else {
+		gtk_widget_grab_focus(GTK_WIDGET(menu));
+		gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 1, GDK_CURRENT_TIME);
+	}
+
+	if (groups) g_list_free(groups);
+	return TRUE;
 }

@@ -21,6 +21,7 @@
 
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
+#include <gtk/gtkbindings.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkpixmap.h>
@@ -38,6 +39,7 @@
 #include <gtk/gtkarrow.h>
 #include <gtk/gtkeventbox.h>
 #include <gtk/gtkstatusbar.h>
+#include <gtk/gtkmenuitem.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -69,6 +71,7 @@
 #include "statusbar.h"
 #include "filter.h"
 #include "folder.h"
+#include "addressbook.h"
 
 #include "pixmaps/dir-open.xpm"
 #include "pixmaps/mark.xpm"
@@ -238,6 +241,9 @@ static void summary_reply_cb		(SummaryView		*summaryview,
 static void summary_show_all_header_cb	(SummaryView		*summaryview,
 					 guint			 action,
 					 GtkWidget		*widget);
+static void summary_add_sender_to_cb (SummaryView			*summaryview,
+					 guint			 action,
+					 GtkWidget		*widget);
 
 static void summary_num_clicked		(GtkWidget		*button,
 					 SummaryView		*summaryview);
@@ -330,6 +336,7 @@ SummaryView *summary_create(void)
 	GtkWidget *toggle_arrow;
 	GtkWidget *popupmenu;
 	GtkItemFactory *popupfactory;
+	GtkBindingSet *binding_set;
 	gint n_entries;
 	gint i;
 
@@ -460,6 +467,20 @@ SummaryView *summary_create(void)
 	popupmenu = menu_create_items(summary_popup_entries, n_entries,
 				      "<SummaryView>", &popupfactory,
 				      summaryview);
+
+	/* bind keys */
+	binding_set = gtk_binding_set_by_class
+		(GTK_CLIST_CLASS(GTK_OBJECT(ctree)->klass));
+
+	gtk_binding_entry_add_signal(binding_set, GDK_n, GDK_CONTROL_MASK,
+				     "scroll_vertical", 2,
+				     GTK_TYPE_ENUM, GTK_SCROLL_STEP_FORWARD,
+				     GTK_TYPE_FLOAT, 0.0);
+	gtk_binding_entry_add_signal(binding_set, GDK_p, GDK_CONTROL_MASK,
+				     "scroll_vertical", 2,
+				     GTK_TYPE_ENUM, GTK_SCROLL_STEP_BACKWARD,
+				     GTK_TYPE_FLOAT, 0.0);
+	gtk_binding_entry_clear(binding_set, GDK_space, 0);
 
 	/* connect signals */
 	gtk_signal_connect(GTK_OBJECT(ctree), "tree_select_row",
@@ -2452,6 +2473,7 @@ static void summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 
 	if (event->button == 3) {
 		/* right clicked */
+		summary_add_sender_to_cb(summaryview, 0, 0); 	
 		gtk_menu_popup(GTK_MENU(summaryview->popupmenu), NULL, NULL,
 			       NULL, NULL, event->button, event->time);
 	} else if (event->button == 2) {
@@ -2775,6 +2797,58 @@ static void summary_show_all_header_cb(SummaryView *summaryview,
 				       guint action, GtkWidget *widget)
 {
 	header_window_show_cb(summaryview->mainwin, action, widget);
+}
+
+static void summary_add_sender_to_cb (SummaryView			*summaryview,
+					 guint			 action,
+					 GtkWidget		*widget_)
+{
+	GtkWidget		*submenu;						
+	GList			*groups, *tmp;
+	GtkMenuShell	*menushell;
+	GtkWidget		*menu;
+	GtkWidget		*menuitem;
+	GList			*child = menushell->children;
+	gboolean		found = FALSE;
+	MsgInfo			*msginfo;
+	gchar			*from_address;
+
+	menushell = GTK_MENU_SHELL(summaryview->popupmenu);
+	g_return_if_fail(GTK_MENU_SHELL(summaryview->popupmenu));
+
+	/* we're iterating each menu item searching for the one with 
+	 * a "contacts" object data. if not found add the menu,
+	 * else update it */
+	for (child = g_list_first(menushell->children); child; child = g_list_next(child)) {
+		if (gtk_object_get_data(GTK_OBJECT(child->data), "contacts")) {
+			found = TRUE;
+			break;
+		}
+	}
+
+	/* add item to default context menu if not present */
+	if (!found) {
+		submenu = gtk_menu_item_new_with_label(_("Add sender to address book"));
+		gtk_object_set_data(GTK_OBJECT(submenu), "contacts", (gpointer)1);
+		gtk_menu_insert(GTK_MENU(summaryview->popupmenu), submenu, 12);
+		gtk_widget_show(submenu);
+	}
+	else {
+		submenu = (GtkWidget *) child->data;
+	}
+
+	/* get the address info from the summary view */
+	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
+												   summaryview->selected);
+	g_return_if_fail(msginfo != NULL);
+
+	from_address = g_strdup(msginfo->from);
+	eliminate_address_comment(from_address);
+	extract_address(from_address);
+	log_message("adding %s %s\n", msginfo->fromname, from_address);
+	addressbook_add_contact_by_menu(submenu, msginfo->fromname, from_address, NULL);
+	g_free(from_address);
+	
 }
 
 static void summary_num_clicked(GtkWidget *button, SummaryView *summaryview)

@@ -25,11 +25,11 @@
 #include <gtk/gtkitemfactory.h>
 #include <gtk/gtkctree.h>
 
-#define ADDRESS_OBJECT(obj)		((AddressObject *)obj)
-#define ADDRESS_OBJECT_TYPE(obj)	(ADDRESS_OBJECT(obj)->type)
-#define ADDRESS_ITEM(obj)		((AddressItem *)obj)
-#define ADDRESS_GROUP(obj)		((AddressGroup *)obj)
-#define ADDRESS_FOLDER(obj)		((AddressFolder *)obj)
+#define ADDRESS_OBJECT(obj)		((AddressObject *)(obj))
+#define ADDRESS_OBJECT_TYPE(obj)	(ADDRESS_OBJECT((obj))->type)
+#define ADDRESS_ITEM(obj)		((AddressItem *)(obj))
+#define ADDRESS_GROUP(obj)		((AddressGroup *)(obj))
+#define ADDRESS_FOLDER(obj)		((AddressFolder *)(obj))
 
 typedef struct _AddressBook	AddressBook;
 typedef struct _AddressObject	AddressObject;
@@ -113,5 +113,24 @@ void addressbook_open			(Compose	*target);
 void addressbook_set_target_compose	(Compose	*target);
 Compose *addressbook_get_target_compose	(void);
 void addressbook_export_to_file		(void);
+
+/* provisional API for accessing the address book */
+
+void addressbook_access (void);
+void addressbook_unaccess (void);
+
+const gchar *addressbook_get_personal_folder_name (void);
+const gchar *addressbook_get_common_folder_name (void);
+
+AddressObject *addressbook_find_group_by_name (const gchar *name);
+AddressObject *addressbook_find_contact (const gchar *name, const gchar *address);
+GList *addressbook_get_group_list (void);
+gint addressbook_add_contact  (const gchar *group, const gchar *name, 
+                               const gchar *address, const gchar *remarks); 
+
+gboolean addressbook_add_contact_by_menu(GtkWidget   *submenu,
+										 const gchar *name, 
+										 const gchar *address, 
+										 const gchar *remarks);
 
 #endif /* __ADDRESSBOOK_H__ */

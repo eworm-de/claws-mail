@@ -1,3 +1,11 @@
+2001-05-02 [paul]
+
+        added add-sender-to-addressbook patch
+
+        * src/addressbook.c
+        * src/addressbook.h
+        * src/summaryview.c
+
 2001-05-02 [sergey]
 
 	* src/alertpanel.h (AlertValue): added G_ALERT_VALUE_MASK,
