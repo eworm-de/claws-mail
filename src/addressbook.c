@@ -803,10 +803,12 @@ static void addressbook_ds_status_message( AddressDataSource *ds, gchar *msg ) {
 		gchar *name;
 
 		name = addrindex_ds_get_name( ds );
-		sprintf( addressbook_msgbuf, "%s: %s", name, msg );
+		g_snprintf( addressbook_msgbuf, sizeof(addressbook_msgbuf),
+			    "%s: %s", name, msg );
 	}
 	else {
-		sprintf( addressbook_msgbuf, "%s", msg );
+		g_snprintf( addressbook_msgbuf, sizeof(addressbook_msgbuf),
+			    "%s", msg );
 	}
 	addressbook_status_show( addressbook_msgbuf );
 }
@@ -819,11 +821,13 @@ static void addressbook_ds_show_message( AddressDataSource *ds ) {
 		name = addrindex_ds_get_name( ds );
 		retVal = addrindex_ds_get_status_code( ds );
 		if( retVal == MGU_SUCCESS ) {
-			sprintf( addressbook_msgbuf, "%s", name );
+			g_snprintf( addressbook_msgbuf,
+				    sizeof(addressbook_msgbuf), "%s", name );
 		}
 		else {
-			sprintf( addressbook_msgbuf, "%s: %s", name,
-				mgu_error2string( retVal ) );
+			g_snprintf( addressbook_msgbuf, 
+				    sizeof(addressbook_msgbuf), "%s: %s", name,
+				    mgu_error2string( retVal ) );
 		}
 	}
 	addressbook_status_show( addressbook_msgbuf );
@@ -3182,14 +3186,21 @@ static void addressbook_ldap_show_message( SyldapServer *svr ) {
 	if( svr ) {
 		name = syldap_get_name( svr );
 		if( svr->busyFlag ) {
-			sprintf( addressbook_msgbuf, "%s: %s", name, ADDRESSBOOK_LDAP_BUSYMSG );
+			g_snprintf( addressbook_msgbuf,
+				    sizeof(addressbook_msgbuf), "%s: %s", name,
+				    ADDRESSBOOK_LDAP_BUSYMSG );
 		}
 		else {
 			if( svr->retVal == MGU_SUCCESS ) {
-				sprintf( addressbook_msgbuf, "%s", name );
+				g_snprintf( addressbook_msgbuf,
+					    sizeof(addressbook_msgbuf), "%s",
+					    name );
 			}
 			else {
-				sprintf( addressbook_msgbuf, "%s: %s", name, mgu_error2string( svr->retVal ) );
+				g_snprintf( addressbook_msgbuf,
+					    sizeof(addressbook_msgbuf),
+					    "%s: %s", name,
+					    mgu_error2string( svr->retVal ) );
 			}
 		}
 	}

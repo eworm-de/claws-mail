@@ -927,7 +927,8 @@ static void addrindex_write_jpilot( FILE *fp,AddressDataSource *ds, gint lvl ) {
 		ind = 1;
 		while( node ) {
 			gchar name[256];
-			sprintf( name, "%s%d", ATTAG_JPILOT_CUSTOM, ind );
+			g_snprintf( name, sizeof(name), "%s%d",
+				    ATTAG_JPILOT_CUSTOM, ind );
 			addrindex_write_attr( fp, name, node->data );
 			ind++;
 			node = g_list_next( node );

@@ -1781,8 +1781,8 @@ gchar *addrbook_gen_new_file_name( gint fileNum ) {
 	if( n < 1 ) n = 1;
 	nmax = -1 + (long int) pow( 10, FILE_NUMDIGITS );
 	if( fileNum > nmax ) return NULL;
-	sprintf( fmt, "%%s%%0%dd%%s", FILE_NUMDIGITS );
-	sprintf( buf, fmt, ADDRBOOK_PREFIX, n, ADDRBOOK_SUFFIX );
+	g_snprintf( fmt, sizeof(fmt), "%%s%%0%dd%%s", FILE_NUMDIGITS );
+	g_snprintf( buf, sizeof(buf), fmt, ADDRBOOK_PREFIX, n, ADDRBOOK_SUFFIX );
 	return g_strdup( buf );
 }
 

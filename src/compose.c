@@ -667,12 +667,12 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Message/_Encrypt"),	NULL, compose_toggle_encrypt_cb, 0, "<ToggleItem>"},
 #endif /* USE_GPGME */
 	{N_("/_Message/---"),		NULL,		NULL,	0, "<Separator>"},
-	{N_("/_Message/Priority"),	NULL,		NULL,   0, "<Branch>"},
-	{N_("/_Message/Priority/Highest"), NULL, compose_set_priority_cb, PRIORITY_HIGHEST, "<RadioItem>"},
-	{N_("/_Message/Priority/High"),    NULL, compose_set_priority_cb, PRIORITY_HIGH, "/Message/Priority/Highest"},
-	{N_("/_Message/Priority/Normal"),  NULL, compose_set_priority_cb, PRIORITY_NORMAL, "/Message/Priority/Highest"},
-	{N_("/_Message/Priority/Low"),	   NULL, compose_set_priority_cb, PRIORITY_LOW, "/Message/Priority/Highest"},
-	{N_("/_Message/Priority/Lowest"),  NULL, compose_set_priority_cb, PRIORITY_LOWEST, "/Message/Priority/Highest"},
+	{N_("/_Message/_Priority"),	NULL,		NULL,   0, "<Branch>"},
+	{N_("/_Message/Priority/_Highest"), NULL, compose_set_priority_cb, PRIORITY_HIGHEST, "<RadioItem>"},
+	{N_("/_Message/Priority/Hi_gh"),    NULL, compose_set_priority_cb, PRIORITY_HIGH, "/Message/Priority/Highest"},
+	{N_("/_Message/Priority/_Normal"),  NULL, compose_set_priority_cb, PRIORITY_NORMAL, "/Message/Priority/Highest"},
+	{N_("/_Message/Priority/Lo_w"),	   NULL, compose_set_priority_cb, PRIORITY_LOW, "/Message/Priority/Highest"},
+	{N_("/_Message/Priority/_Lowest"),  NULL, compose_set_priority_cb, PRIORITY_LOWEST, "/Message/Priority/Highest"},
 	{N_("/_Message/---"),		NULL,		NULL,	0, "<Separator>"},
 	{N_("/_Message/_Request Return Receipt"),	NULL, compose_toggle_return_receipt_cb, 0, "<ToggleItem>"},
 	{N_("/_Tools"),			NULL, NULL, 0, "<Branch>"},
@@ -4917,7 +4917,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 			GtkWidget *menuitem;
 
 			if (!gtkpspell_set_sug_mode(gtkpspell, prefs_common.pspell_sugmode)) {
-				debug_print(_("Pspell: could not set suggestion mode %s"),
+				debug_print(_("Pspell: could not set suggestion mode %s\n"),
 				    gtkpspellcheckers->error_message);
 				gtkpspell_checkers_reset_error();
 			}

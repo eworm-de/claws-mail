@@ -434,7 +434,7 @@ leave:
         plain = NULL;
     }
     else
-        debug_print ("** decryption succeeded");
+        debug_print ("** decryption succeeded\n");
 
     gpgme_release (ctx);
     return plain;
@@ -450,7 +450,7 @@ MimeInfo * rfc2015_find_signature (MimeInfo *mimeinfo)
     if (g_strcasecmp (mimeinfo->content_type, "multipart/signed"))
         return NULL;
 
-    debug_print ("** multipart/signed encountered");
+    debug_print ("** multipart/signed encountered\n");
 
     /* check that we have at least 2 parts of the correct type */
     for (partinfo = mimeinfo->children;
@@ -583,7 +583,7 @@ void rfc2015_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
     g_return_if_fail ((mimeinfo->mime_type == MIME_MULTIPART) || 
                       (mimeinfo->mime_type == MIME_APPLICATION_PGP));
 
-    debug_print ("** decrypting multipart/encrypted or application/pgp message\n");
+    debug_print ("** decrypting multipart/encrypted message\n");
 
     /* skip headers */
     if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0)
@@ -634,7 +634,7 @@ void rfc2015_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
 	debug_print("incorrect version\n");
         DECRYPTION_ABORT();
     }
-    
+
     debug_print ("** yep, it is pgp encrypted\n");
 
     plain = pgp_decrypt (partinfo, fp);
@@ -711,7 +711,7 @@ pgp_encrypt ( GpgmeData plain, GpgmeRecipients rset )
         cipher = NULL;
     }
     else {
-        debug_print ("** encryption succeeded");
+        debug_print ("** encryption succeeded\n");
     }
 
     gpgme_release (ctx);

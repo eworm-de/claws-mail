@@ -1543,7 +1543,7 @@ GSList *gtkpspell_get_dictionary_list(const gchar *pspell_path, gint refresh)
 	}
         if(list==NULL){
 		
-		debug_print(_("Pspell: error when searching for dictionaries.\nNo dictionary found."));
+		debug_print(_("Pspell: error when searching for dictionaries.\nNo dictionary found.\n"));
 		list = create_empty_dictionary_list();
 	}
 
