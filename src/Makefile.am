@@ -78,7 +78,6 @@ sylpheed_SOURCES = \
 	news.c \
 	news_gtk.c \
 	noticeview.c \
-	passphrase.c \
 	pine.c \
 	pop.c \
 	prefs_account.c \
@@ -109,8 +108,6 @@ sylpheed_SOURCES = \
 	quote_fmt_parse.y \
 	recv.c \
 	remotefolder.c \
-	rfc2015.c \
-	select-keys.c \
 	send_message.c \
 	setup.c \
 	simple-gettext.c \
@@ -208,7 +205,6 @@ sylpheedinclude_HEADERS = \
 	news.h \
 	news_gtk.h \
 	noticeview.h \
-	passphrase.h \
 	pine.h \
 	pop.h \
 	prefs_account.h \
@@ -239,8 +235,6 @@ sylpheedinclude_HEADERS = \
 	quote_fmt_parse.h \
 	recv.h \
 	remotefolder.h \
-	rfc2015.h \
-	select-keys.h \
 	send_message.h \
 	setup.h \
 	sourcewindow.h \

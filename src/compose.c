@@ -109,10 +109,6 @@
 #include "foldersel.h"
 #include "toolbar.h"
 
-#if USE_GPGME
-#  include "rfc2015.h"
-#endif
-
 typedef enum
 {
 	COL_MIMETYPE = 0,
@@ -233,8 +229,7 @@ static gboolean compose_check_for_valid_recipient
 static gboolean compose_check_entries		(Compose	*compose,
 						 gboolean 	check_subject);
 static gint compose_write_to_file		(Compose	*compose,
-						 const gchar	*file,
-						 gboolean	 is_draft);
+						 FILE		*fp);
 static gint compose_write_body_to_file		(Compose	*compose,
 						 const gchar	*file);
 static gint compose_remove_reedit_target	(Compose	*compose);
@@ -246,12 +241,9 @@ static gint compose_queue_sub			(Compose	*compose,
 						 gint		*msgnum,
 						 FolderItem	**item,
 						 gboolean	check_subject);
-static void compose_write_attach		(Compose	*compose,
-						 FILE		*fp);
-static gchar *compose_get_header		(Compose	*compose,
-						 const gchar	*charset,
-						 EncodingType	 encoding,
-						 gboolean	 is_draft);
+static void compose_add_attachments		(Compose	*compose,
+						 MimeInfo	*parent);
+static gchar *compose_get_header		(Compose	*compose);
 
 static void compose_convert_header		(gchar		*dest,
 						 gint		 len,
@@ -408,22 +400,20 @@ static void compose_toggle_attach_cb	(gpointer	 data,
 static void compose_toggle_ruler_cb	(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
-#if USE_GPGME
 static void compose_toggle_sign_cb	(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
 static void compose_toggle_encrypt_cb	(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
-static void compose_set_gnupg_mode_cb	(gpointer 	 data,
-					 guint 		 action,
-					 GtkWidget 	*widget);
-static void compose_update_gnupg_mode_menu_item(Compose * compose);
-static void activate_gnupg_mode 	(Compose *compose, 
-					 PrefsAccount *account);
+static void compose_set_privacy_system_cb(gpointer        data,
+                                        guint           action,
+                                        GtkWidget      *widget);
+static void compose_update_privacy_system_menu_item(Compose * compose);
+static void activate_privacy_system     (Compose *compose, 
+                                         PrefsAccount *account);
 static void compose_use_signing(Compose *compose, gboolean use_signing);
 static void compose_use_encryption(Compose *compose, gboolean use_encryption);
-#endif
 static void compose_toggle_return_receipt_cb(gpointer data, guint action,
 					     GtkWidget *widget);
 static void compose_toggle_remove_refs_cb(gpointer data, guint action,
@@ -510,15 +500,20 @@ static GtkItemFactoryEntry compose_popup_entries[] =
 
 static GtkItemFactoryEntry compose_entries[] =
 {
-	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_File/_Save"),
+	{N_("/_Message"),				NULL, NULL, 0, "<Branch>"},
+	{N_("/_Message/_Send"),		"<control>Return",
+					compose_send_cb, 0, NULL},
+	{N_("/_Message/Send _later"),	"<shift><control>S",
+					compose_send_later_cb,  0, NULL},
+	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/_Attach file"),		"<control>M", compose_attach_cb,      0, NULL},
+	{N_("/_Message/_Insert file"),		"<control>I", compose_insert_file_cb, 0, NULL},
+	{N_("/_Message/Insert si_gnature"),	"<control>G", compose_insert_sig_cb,  0, NULL},
+	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/_Save"),
 						"<control>S", compose_draft_cb, 1, NULL},
-	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_File/_Attach file"),		"<control>M", compose_attach_cb,      0, NULL},
-	{N_("/_File/_Insert file"),		"<control>I", compose_insert_file_cb, 0, NULL},
-	{N_("/_File/Insert si_gnature"),	"<control>G", compose_insert_sig_cb,  0, NULL},
-	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_File/_Close"),			"<control>W", compose_close_cb, 0, NULL},
+	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/_Close"),			"<control>W", compose_close_cb, 0, NULL},
 
 	{N_("/_Edit"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Edit/_Undo"),		"<control>Z", compose_undo_cb, 0, NULL},
@@ -629,53 +624,22 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Spelling/_Spelling Configuration"),
 					NULL, NULL, 0, "<Branch>"},
 #endif
-#if 0 /* NEW COMPOSE GUI */
-	{N_("/_View"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/_To"),		NULL, compose_toggle_to_cb     , 0, "<ToggleItem>"},
-	{N_("/_View/_Cc"),		NULL, compose_toggle_cc_cb     , 0, "<ToggleItem>"},
-	{N_("/_View/_Bcc"),		NULL, compose_toggle_bcc_cb    , 0, "<ToggleItem>"},
-	{N_("/_View/_Reply to"),	NULL, compose_toggle_replyto_cb, 0, "<ToggleItem>"},
-	{N_("/_View/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Followup to"),	NULL, compose_toggle_followupto_cb, 0, "<ToggleItem>"},
-	{N_("/_View/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/R_uler"),		NULL, compose_toggle_ruler_cb, 0, "<ToggleItem>"},
-	{N_("/_View/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Attachment"),	NULL, compose_toggle_attach_cb, 0, "<ToggleItem>"},
-#endif
-	{N_("/_Message"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/_Send"),		"<control>Return",
-					compose_send_cb, 0, NULL},
-	{N_("/_Message/Send _later"),	"<shift><control>S",
-					compose_send_later_cb,  0, NULL},
-#if 0 /* NEW COMPOSE GUI */
-	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_To"),		NULL, compose_toggle_to_cb     , 0, "<ToggleItem>"},
-	{N_("/_Message/_Cc"),		NULL, compose_toggle_cc_cb     , 0, "<ToggleItem>"},
-	{N_("/_Message/_Bcc"),		NULL, compose_toggle_bcc_cb    , 0, "<ToggleItem>"},
-	{N_("/_Message/_Reply to"),	NULL, compose_toggle_replyto_cb, 0, "<ToggleItem>"},
-	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Followup to"),	NULL, compose_toggle_followupto_cb, 0, "<ToggleItem>"},
-	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Attach"),	NULL, compose_toggle_attach_cb, 0, "<ToggleItem>"},
-#endif
-#if USE_GPGME
-	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/Si_gn"),   	NULL, compose_toggle_sign_cb   , 0, "<ToggleItem>"},
-	{N_("/_Message/_Encrypt"),	NULL, compose_toggle_encrypt_cb, 0, "<ToggleItem>"},
-	{N_("/_Message/Mode"),		NULL, NULL,   0, "<Branch>"},
-	{N_("/_Message/Mode/MIME"), 	NULL, compose_set_gnupg_mode_cb,   GNUPG_MODE_DETACH, "<RadioItem>"},	
-	{N_("/_Message/Mode/Inline"),	NULL, compose_set_gnupg_mode_cb,   GNUPG_MODE_INLINE, "/Message/Mode/MIME"},	
-#endif /* USE_GPGME */
-	{N_("/_Message/---"),		NULL,		NULL,	0, "<Separator>"},
-	{N_("/_Message/_Priority"),	NULL,		NULL,   0, "<Branch>"},
-	{N_("/_Message/Priority/_Highest"), NULL, compose_set_priority_cb, PRIORITY_HIGHEST, "<RadioItem>"},
-	{N_("/_Message/Priority/Hi_gh"),    NULL, compose_set_priority_cb, PRIORITY_HIGH, "/Message/Priority/Highest"},
-	{N_("/_Message/Priority/_Normal"),  NULL, compose_set_priority_cb, PRIORITY_NORMAL, "/Message/Priority/Highest"},
-	{N_("/_Message/Priority/Lo_w"),	   NULL, compose_set_priority_cb, PRIORITY_LOW, "/Message/Priority/Highest"},
-	{N_("/_Message/Priority/_Lowest"),  NULL, compose_set_priority_cb, PRIORITY_LOWEST, "/Message/Priority/Highest"},
-	{N_("/_Message/---"),		NULL,		NULL,	0, "<Separator>"},
-	{N_("/_Message/_Request Return Receipt"),	NULL, compose_toggle_return_receipt_cb, 0, "<ToggleItem>"},
-	{N_("/_Message/Remo_ve references"),	NULL, compose_toggle_remove_refs_cb, 0, "<ToggleItem>"},
+	{N_("/_Options"),		NULL, NULL, 0, "<Branch>"},
+	{N_("/_Options/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Options/Privacy System"),		NULL, NULL,   0, "<Branch>"},
+	{N_("/_Options/Privacy System/None"),	NULL, compose_set_privacy_system_cb,   0, "<RadioItem>"},
+	{N_("/_Options/Si_gn"),   	NULL, compose_toggle_sign_cb   , 0, "<ToggleItem>"},
+	{N_("/_Options/_Encrypt"),	NULL, compose_toggle_encrypt_cb, 0, "<ToggleItem>"},
+	{N_("/_Options/---"),		NULL,		NULL,	0, "<Separator>"},
+	{N_("/_Options/_Priority"),	NULL,		NULL,   0, "<Branch>"},
+	{N_("/_Options/Priority/_Highest"), NULL, compose_set_priority_cb, PRIORITY_HIGHEST, "<RadioItem>"},
+	{N_("/_Options/Priority/Hi_gh"),    NULL, compose_set_priority_cb, PRIORITY_HIGH, "/Options/Priority/Highest"},
+	{N_("/_Options/Priority/_Normal"),  NULL, compose_set_priority_cb, PRIORITY_NORMAL, "/Options/Priority/Highest"},
+	{N_("/_Options/Priority/Lo_w"),	   NULL, compose_set_priority_cb, PRIORITY_LOW, "/Options/Priority/Highest"},
+	{N_("/_Options/Priority/_Lowest"),  NULL, compose_set_priority_cb, PRIORITY_LOWEST, "/Options/Priority/Highest"},
+	{N_("/_Options/---"),		NULL,		NULL,	0, "<Separator>"},
+	{N_("/_Options/_Request Return Receipt"),	NULL, compose_toggle_return_receipt_cb, 0, "<ToggleItem>"},
+	{N_("/_Options/Remo_ve references"),	NULL, compose_toggle_remove_refs_cb, 0, "<ToggleItem>"},
 	{N_("/_Tools"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/Show _ruler"),	NULL, compose_toggle_ruler_cb, 0, "<ToggleItem>"},
 	{N_("/_Tools/_Address book"),	"<shift><control>A", compose_address_cb , 0, NULL},
@@ -1225,11 +1189,9 @@ void compose_reedit(MsgInfo *msginfo)
 	GtkTextIter iter;
 	FILE *fp;
 	gchar buf[BUFFSIZE];
-#ifdef USE_GPGME
 	gboolean use_signing = FALSE;
 	gboolean use_encryption = FALSE;
-	gboolean gnupg_mode = FALSE;
-#endif
+	gchar *privacy_system = NULL;
 
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(msginfo->folder != NULL);
@@ -1258,7 +1220,6 @@ void compose_reedit(MsgInfo *msginfo)
 		                                                sizeof(queueheader_buf), "S:")) {
 			account = account_find_from_address(queueheader_buf);
 		}
-#ifdef USE_GPGME		
 		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 					     sizeof(queueheader_buf), "X-Sylpheed-Sign:")) {
 			param = atoi(&queueheader_buf[strlen("X-Sylpheed-Sign:")]);
@@ -1270,12 +1231,10 @@ void compose_reedit(MsgInfo *msginfo)
 			param = atoi(&queueheader_buf[strlen("X-Sylpheed-Encrypt:")]);
 			use_encryption = param;
 		}
-		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
-					     sizeof(queueheader_buf), "X-Sylpheed-Gnupg-Mode:")) {
-			param = atoi(&queueheader_buf[strlen("X-Sylpheed-Gnupg-Mode:")]);
-			gnupg_mode = param;
-		}
-#endif		
+                if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
+                                            sizeof(queueheader_buf), "X-Sylpheed-Privacy-System:")) {
+                        privacy_system = g_strdup(&queueheader_buf[strlen("X-Sylpheed-Privacy-System:")]);
+                }
 		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 					     sizeof(queueheader_buf), "X-Priority: ")) {
 			param = atoi(&queueheader_buf[strlen("X-Priority: ")]); /* mind the space */
@@ -1295,11 +1254,9 @@ void compose_reedit(MsgInfo *msginfo)
 	g_return_if_fail(account != NULL);
 
 	compose = compose_create(account, COMPOSE_REEDIT);
-#ifdef USE_GPGME
-	compose->gnupg_mode = gnupg_mode;
+	compose->privacy_system = privacy_system;
 	compose_use_signing(compose, use_signing);
 	compose_use_encryption(compose, use_encryption);
-#endif
 	compose->targetinfo = procmsg_msginfo_copy(msginfo);
 
         if (msginfo->folder->stype == F_QUEUE
@@ -1407,19 +1364,15 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	menu_set_sensitive(ifactory, "/Property...", FALSE);
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
-	menu_set_sensitive(ifactory, "/File/Save", FALSE);
-	menu_set_sensitive(ifactory, "/File/Insert file", FALSE);
-	menu_set_sensitive(ifactory, "/File/Attach file", FALSE);
-	menu_set_sensitive(ifactory, "/File/Insert signature", FALSE);
+	menu_set_sensitive(ifactory, "/Message/Save", FALSE);
+	menu_set_sensitive(ifactory, "/Message/Insert file", FALSE);
+	menu_set_sensitive(ifactory, "/Message/Attach file", FALSE);
+	menu_set_sensitive(ifactory, "/Message/Insert signature", FALSE);
 	menu_set_sensitive(ifactory, "/Edit", FALSE);
-#if USE_GPGME
-	menu_set_sensitive(ifactory, "/Message/Sign", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Encrypt", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Mode/MIME", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Mode/Inline", FALSE);
-#endif
-	menu_set_sensitive(ifactory, "/Message/Priority", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Request Return Receipt", FALSE);
+	menu_set_sensitive(ifactory, "/Options/Sign", FALSE);
+	menu_set_sensitive(ifactory, "/Options/Encrypt", FALSE);
+	menu_set_sensitive(ifactory, "/Options/Priority", FALSE);
+	menu_set_sensitive(ifactory, "/Options/Request Return Receipt", FALSE);
 	menu_set_sensitive(ifactory, "/Tools/Show ruler", FALSE);
 	menu_set_sensitive(ifactory, "/Tools/Actions", FALSE);
 	
@@ -2029,11 +1982,8 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 	SET_ADDRESS(COMPOSE_FOLLOWUPTO, compose->followup_to);
 
 	compose_update_priority_menu_item(compose);
-#if USE_GPGME	
-	compose_update_gnupg_mode_menu_item(compose);
-#endif
+	compose_update_privacy_system_menu_item(compose);
 	compose_show_first_last_header(compose, TRUE);
-
 }
 
 #undef SET_ENTRY
@@ -2294,7 +2244,6 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 	gtk_clist_set_row_data(GTK_CLIST(compose->attach_clist), row, ainfo);
 }
 
-#ifdef USE_GPGME
 static void compose_use_signing(Compose *compose, gboolean use_signing)
 {
 	GtkItemFactory *ifactory;
@@ -2303,11 +2252,9 @@ static void compose_use_signing(Compose *compose, gboolean use_signing)
 	compose->use_signing = use_signing;
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	menuitem = gtk_item_factory_get_item
-		(ifactory, "/Message/Sign");
-
+		(ifactory, "/Options/Sign");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), 
 				       use_signing);
-	compose_update_gnupg_mode_menu_item(compose);
 }
 
 static void compose_use_encryption(Compose *compose, gboolean use_encryption)
@@ -2318,13 +2265,11 @@ static void compose_use_encryption(Compose *compose, gboolean use_encryption)
 	compose->use_encryption = use_encryption;
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	menuitem = gtk_item_factory_get_item
-		(ifactory, "/Message/Encrypt");
+		(ifactory, "/Options/Encrypt");
 
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), 
 				       use_encryption);
-	compose_update_gnupg_mode_menu_item(compose);
 }
-#endif /* USE_GPGME */
 
 #define NEXT_PART_NOT_CHILD(info)  \
 {  \
@@ -2391,27 +2336,13 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 			continue;
 		}
 
-		if ((compose->mode == COMPOSE_REEDIT || 
-		     compose->mode == COMPOSE_FORWARD_INLINE ||
-		     compose->mode == COMPOSE_FORWARD )  &&
-		    (child->type == MIMETYPE_APPLICATION) && 
-		    !strcmp(child->subtype, "pgp-signature")) {
-#ifdef USE_GPGME
-			if (compose->mode == COMPOSE_REEDIT) {
-				compose->gnupg_mode  = GNUPG_MODE_DETACH;
-				compose_use_signing(compose, TRUE);
-			}
-#endif
-			child = procmime_mimeinfo_next(child);
-			continue;
-		}
 		outfile = procmime_get_tmp_file_name(child);
 		if (procmime_get_part(outfile, child) < 0)
 			g_warning("Can't get the part of multipart message.");
 		else {
 			gchar *content_type;
 
-			content_type = g_strdup_printf("%s/%s", procmime_get_type_str(child->type), child->subtype);
+			content_type = procmime_get_content_type_str(child->type, child->subtype);
 			partname = procmime_mimeinfo_get_parameter(child, "name");
 			if (partname == NULL)
 				partname = "";
@@ -3223,18 +3154,16 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 
 #endif
 
-#if USE_GPGME
 	if (account->default_sign)
-		menu_set_active(ifactory, "/Message/Sign", TRUE);
+		menu_set_active(ifactory, "/Options/Sign", TRUE);
 	else
-		menu_set_active(ifactory, "/Message/Sign", FALSE);
+		menu_set_active(ifactory, "/Options/Sign", FALSE);
 	if (account->default_encrypt)
-		menu_set_active(ifactory, "/Message/Encrypt", TRUE);
+		menu_set_active(ifactory, "/Options/Encrypt", TRUE);
 	else
-		menu_set_active(ifactory, "/Message/Encrypt", FALSE);
+		menu_set_active(ifactory, "/Options/Encrypt", FALSE);
 				       
-	activate_gnupg_mode(compose, account);		
-#endif /* USE_GPGME */
+	activate_privacy_system(compose, account);
 
 	if (!init && compose->mode != COMPOSE_REDIRECT)
 		compose_insert_sig(compose, TRUE);
@@ -3374,104 +3303,6 @@ bail:
 	return -1;
 }
 
-#if 0 /* compose restructure */
-gint compose_send(Compose *compose)
-{
-	gchar tmp[MAXPATHLEN + 1];
-	gint ok = 0;
-	static gboolean lock = FALSE;
-
-	if (lock) return 1;
-
-	g_return_val_if_fail(compose->account != NULL, -1);
-
-	lock = TRUE;
-
-	if (compose_check_entries(compose, TRUE) == FALSE) {
-		lock = FALSE;
-		return 1;
-	}
-
-	/* write to temporary file */
-	g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg.%p",
-		   get_tmp_dir(), G_DIR_SEPARATOR, compose);
-
-	if (prefs_common.linewrap_at_send)
-		compose_wrap_line_all(compose);
-
-	if (compose_write_to_file(compose, tmp, FALSE) < 0) {
-		lock = FALSE;
-		return -1;
-	}
-
-	if (!compose->to_list && !compose->newsgroup_list) {
-		g_warning("can't get recipient list.");
-		unlink(tmp);
-		lock = FALSE;
-		return -1;
-	}
-
-	if (compose->to_list) {
-		PrefsAccount *ac;
-
-#if 0 /* NEW COMPOSE GUI */
-		if (compose->account->protocol != A_NNTP)
-			ac = compose->account;
-		else {
-			ac = account_find_from_address(compose->account->address);
-			if (!ac) {
-				if (cur_account && cur_account->protocol != A_NNTP)
-					ac = cur_account;
-				else
-					ac = account_get_default();
-			}
-			if (!ac || ac->protocol == A_NNTP) {
-				alertpanel_error(_("Account for sending mail is not specified.\n"
-						   "Please select a mail account before sending."));
-				unlink(tmp);
-				lock = FALSE;
-				return -1;
-			}
-		}
-#endif
-		ac = compose->account;
-
-		ok = send_message(tmp, ac, compose->to_list);
-	}
-
-	if (ok == 0 && compose->newsgroup_list) {
-		ok = news_post(FOLDER(compose->account->folder), tmp);
-		if (ok < 0) {
-			alertpanel_error(_("Error occurred while posting the message to %s ."),
-					 compose->account->nntp_server);
-			unlink(tmp);
-			lock = FALSE;
-			return -1;
-		}
-	}
-
-	if (ok == 0) {
-		if (compose->mode == COMPOSE_REEDIT) {
-			compose_remove_reedit_target(compose);
-		}
-		/* save message to outbox */
-		if (prefs_common.savemsg) {
-			FolderItem *outbox;
-
-			outbox = account_get_special_folder
-				(compose->account, F_OUTBOX);
-			if (procmsg_save_to_outbox(outbox, tmp, FALSE) < 0)
-				alertpanel_error
-					(_("Can't save the message to Sent."));
-		}
-	}
-
-	unlink(tmp);
-	lock = FALSE;
-	return ok;
-}
-#endif
-
 static gboolean compose_use_attach(Compose *compose) 
 {
 	return gtk_clist_get_row_data(GTK_CLIST(compose->attach_clist), 0) != NULL;
@@ -3591,29 +3422,15 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 	return 0;
 }
 
-static gint compose_redirect_write_to_file(Compose *compose, const gchar *file)
+static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 {
 	FILE *fp;
-	FILE *fdest;
 	size_t len;
 	gchar buf[BUFFSIZE];
-	gchar *header;
 
 	if ((fp = fopen(compose->redirect_filename, "rb")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
+		FILE_OP_ERROR(compose->redirect_filename, "fopen");
 		return -1;
-	}
-
-	if ((fdest = fopen(file, "wb")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
-		fclose(fp);
-		return -1;
-	}
-
-	/* chmod for security */
-	if (change_file_mode_rw(fdest, file) < 0) {
-		FILE_OP_ERROR(file, "chmod");
-		g_warning("can't change file mode\n");
 	}
 
 	while (procheader_get_one_field_asis(buf, sizeof(buf), fp) != -1) {
@@ -3661,119 +3478,37 @@ static gint compose_redirect_write_to_file(Compose *compose, const gchar *file)
 	compose_redirect_write_headers(compose, fdest);
 
 	while ((len = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
-		if (fwrite(buf, sizeof(gchar), len, fdest) != len) {
-			FILE_OP_ERROR(file, "fwrite");
+		if (fwrite(buf, sizeof(gchar), len, fdest) != len)
 			goto error;
-		}
 	}
 
 	fclose(fp);
-	if (fclose(fdest) == EOF) {
-		FILE_OP_ERROR(file, "fclose");
-		unlink(file);
-		return -1;
-	}
 
 	return 0;
- error:
+error:
 	fclose(fp);
-	fclose(fdest);
-	unlink(file);
 
 	return -1;
 }
 
-
-#if USE_GPGME
-/* interfaces to rfc2015 to keep out the prefs stuff there.
- * returns 0 on success and -1 on error. */
-static gint compose_create_signers_list(Compose *compose, GSList **pkey_list)
-{
-	const gchar *key_id = NULL;
-	GSList *key_list;
-
-	switch (compose->account->sign_key) {
-	case SIGN_KEY_DEFAULT:
-		*pkey_list = NULL;
-		return 0;
-	case SIGN_KEY_BY_FROM:
-		key_id = compose->account->address;
-		break;
-	case SIGN_KEY_CUSTOM:
-		key_id = compose->account->sign_key_id;
-		break;
-	default:
-		break;
-	}
-
-	key_list = rfc2015_create_signers_list(key_id);
-
-	if (!key_list) {
-		alertpanel_error(_("Could not find any key associated with "
-				   "currently selected key id `%s'."), key_id);
-		return -1;
-	}
-
-	*pkey_list = key_list;
-	return 0;
-}
-
-/* clearsign message body text */
-static gint compose_clearsign_text(Compose *compose, gchar **text)
-{
-	GSList *key_list;
-	gchar *tmp_file;
-
-	tmp_file = get_tmp_file();
-	if (str_write_to_file(*text, tmp_file) < 0) {
-		g_free(tmp_file);
-		return -1;
-	}
-
-	if (compose_create_signers_list(compose, &key_list) < 0 ||
-	    rfc2015_clearsign(tmp_file, key_list) < 0) {
-		unlink(tmp_file);
-		g_free(tmp_file);
-		return -1;
-	}
-
-	g_free(*text);
-	*text = file_read_to_str(tmp_file);
-	unlink(tmp_file);
-	g_free(tmp_file);
-	if (*text == NULL)
-		return -1;
-
-	return 0;
-}
-#endif /* USE_GPGME */
-
-static gint compose_write_to_file(Compose *compose, const gchar *file,
-				  gboolean is_draft)
+static gint compose_write_to_file(Compose *compose, FILE *fp)
 {
 	GtkTextBuffer *buffer;
 	GtkTextIter start, end;
-	FILE *fp;
-	size_t len;
 	gchar *chars;
 	gchar *buf;
-	gchar *canon_buf;
 	const gchar *out_codeset;
 	EncodingType encoding;
-	gboolean already_encoded = FALSE;
-	gchar *header;
+	MimeInfo *mimemsg, *mimetext;
 
-	if ((fp = fopen(file, "wb")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
-		return -1;
-	}
+	/* create message MimeInfo */
+	mimemsg = procmime_mimeinfo_new();
+        mimemsg->type = MIMETYPE_MESSAGE;
+        mimemsg->subtype = g_strdup("rfc822");
+	mimemsg->content = MIMECONTENT_MEM;
+	mimemsg->data = compose_get_header(compose);
 
-	/* chmod for security */
-	if (change_file_mode_rw(fp, file) < 0) {
-		FILE_OP_ERROR(file, "chmod");
-		g_warning("can't change file mode\n");
-	}
-
+	/* Create text part MimeInfo */
 	/* get all composed text */
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(compose->text));
 	gtk_text_buffer_get_start_iter(buffer, &start);
@@ -3800,39 +3535,29 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 		else
 			encoding = procmime_get_encoding_for_charset(out_codeset);
 
-#if USE_GPGME
-		if (!is_draft &&
-		    compose->use_signing && !compose->gnupg_mode &&
-		    encoding == ENC_8BIT)
-			encoding = ENC_BASE64;
-		
-		if (compose->use_encryption && compose->gnupg_mode)
-			encoding = ENC_8BIT; /* this will be encrypted to a 7bit string */
-#endif
-
-		src_codeset = CS_UTF_8;
+		src_codeset = conv_get_current_charset_str();
+		/* if current encoding is US-ASCII, set it the same as
+		   outgoing one to prevent code conversion failure */
+		if (!strcasecmp(src_codeset, CS_US_ASCII))
+			src_codeset = out_codeset;
 
 		debug_print("src encoding = %s, out encoding = %s, transfer encoding = %s\n",
 			    src_codeset, out_codeset, procmime_get_encoding_str(encoding));
 
 		buf = conv_codeset_strdup(chars, src_codeset, out_codeset);
 		if (!buf) {
-			AlertValue aval = G_ALERTDEFAULT;
+			AlertValue aval;
 			gchar *msg;
 
-			if (!is_draft) {
-				msg = g_strdup_printf(_("Can't convert the character encoding of the message from\n"
+			msg = g_strdup_printf(_("Can't convert the character encoding of the message from\n"
 						"%s to %s.\n"
 						"Send it anyway?"), src_codeset, out_codeset);
-				aval = alertpanel_with_type
-					(_("Error"), msg, _("Yes"), _("+No"), NULL, NULL, ALERT_ERROR);
-				g_free(msg);
-			}
-			
+			aval = alertpanel_with_type
+				(_("Error"), msg, _("Yes"), _("+No"), NULL, NULL, ALERT_ERROR);
+			g_free(msg);
+
 			if (aval != G_ALERTDEFAULT) {
 				g_free(chars);
-				fclose(fp);
-				unlink(file);
 				return -1;
 			} else {
 				buf = chars;
@@ -3843,146 +3568,41 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	}
 	g_free(chars);
 
-	canon_buf = canonicalize_str(buf);
-	g_free(buf);
-	buf = canon_buf;
+	mimetext = procmime_mimeinfo_new();
+	mimetext->content = MIMECONTENT_MEM;
+	mimetext->data = buf;
+	mimetext->type = MIMETYPE_TEXT;
+	mimetext->subtype = g_strdup("plain");
+	g_hash_table_insert(mimetext->typeparameters, g_strdup("charset"),
+			    g_strdup(out_codeset));
+	/* procmime_encode_content(mimetext, encoding); */
 
-#if USE_GPGME
-	if (!is_draft && compose->use_signing && compose->gnupg_mode) {
-		gchar *tmpbuf;
-
-		if (compose_clearsign_text(compose, &buf) < 0) {
-			g_warning("clearsign failed\n");
-			fclose(fp);
-			unlink(file);
-			g_free(buf);
-			return -1;
-		}
-		tmpbuf = conv_codeset_strdup(buf, CS_UTF_8, out_codeset);
-		if (tmpbuf) {
-			g_free(buf);
-			buf = tmpbuf;
-		}
-	}
-#endif
-
-	/* write headers */
-	header = compose_get_header(compose, out_codeset, encoding, is_draft);
-	if (header == NULL || fwrite(header, sizeof(gchar), strlen(header), fp) < strlen(header)) {
-		g_warning("can't write headers\n");
-		fclose(fp);
-		/* unlink(file); */
-		g_free(header);
-		g_free(buf);
-		return -1;
-	}
-	g_free(header);
-
+	/* append attachment parts */
 	if (compose_use_attach(compose)) {
-#if USE_GPGME
-            /* This prolog message is ignored by mime software and
-             * because it would make our signing/encryption task
-             * tougher, we don't emit it in that case */
-            if (!compose->use_signing && !compose->use_encryption)
-#endif
-		fputs("This is a multi-part message in MIME format.\n", fp);
+		MimeInfo *mimempart;
 
-		fprintf(fp, "\n--%s\n", compose->boundary);
-		fprintf(fp, "Content-Type: text/plain; charset=%s\n",
-			out_codeset);
-#if USE_GPGME
-		if (compose->use_signing && !compose->gnupg_mode)
-			fprintf(fp, "Content-Disposition: inline\n");
-#endif
-		fprintf(fp, "Content-Transfer-Encoding: %s\n",
-			procmime_get_encoding_str(encoding));
-		fputc('\n', fp);
-	}
+		mimempart = procmime_mimeinfo_new();
+    		mimempart->content = MIMECONTENT_EMPTY;
+    		mimempart->type = MIMETYPE_MULTIPART;
+	        mimempart->subtype = g_strdup("mixed");
+    		g_hash_table_insert(mimempart->typeparameters, g_strdup("boundary"),
+				    generate_mime_boundary(NULL));
 
-	/* write body */
-	len = strlen(buf);
-	if (encoding == ENC_BASE64) {
-		gchar outbuf[B64_BUFFSIZE];
-		gint i, l;
+		mimetext->disposition = DISPOSITIONTYPE_INLINE;
 
-		for (i = 0; i < len; i += B64_LINE_SIZE) {
-			l = MIN(B64_LINE_SIZE, len - i);
-			base64_encode(outbuf, buf + i, l);
-			fputs(outbuf, fp);
-			fputc('\n', fp);
-		}
-	} else if (encoding == ENC_QUOTED_PRINTABLE) {
-		gchar *outbuf;
-		size_t outlen;
-		if (!already_encoded) {
-			outbuf = g_malloc(len * 4);
-			qp_encode_line(outbuf, buf);
-			outlen = strlen(outbuf);
-		} else {
-			outbuf = g_strdup(buf);
-			outlen = len;
-		}
-		if (fwrite(outbuf, sizeof(gchar), outlen, fp) != outlen) {
-			FILE_OP_ERROR(file, "fwrite");
-			fclose(fp);
-			unlink(file);
-			g_free(outbuf);
-			g_free(buf);
+		g_node_append(mimempart->node, mimetext->node);
+		g_node_append(mimemsg->node, mimempart->node);
+
+		compose_add_attachments(compose, mimempart);
+	} else
+		g_node_append(mimemsg->node, mimetext->node);
+
+	/* sign message */
+	if (compose->use_signing && privacy_system_can_sign(compose->privacy_system))
+		if (!privacy_sign(compose->privacy_system, mimemsg))
 			return -1;
-		}
-		g_free(outbuf);
-	} else if (fwrite(buf, sizeof(gchar), len, fp) != len) {
-		FILE_OP_ERROR(file, "fwrite");
-		fclose(fp);
-		unlink(file);
-		g_free(buf);
-		return -1;
-	}
-	g_free(buf);
 
-	if (compose_use_attach(compose))
-		compose_write_attach(compose, fp);
-
-	if (fclose(fp) == EOF) {
-		FILE_OP_ERROR(file, "fclose");
-		unlink(file);
-		return -1;
-	}
-
-#if USE_GPGME
-	if (is_draft) {
-		uncanonicalize_file_replace(file);
-		return 0;
-	}
-
-	if ((compose->use_signing && !compose->gnupg_mode) ||
-	    compose->use_encryption) {
-		if (canonicalize_file_replace(file) < 0) {
-			unlink(file);
-			return -1;
-		}
-	}
-
-	if (compose->use_signing && !compose->gnupg_mode) {
-		GSList *key_list;
-
-		if (compose_create_signers_list(compose, &key_list) < 0 ||
-		    rfc2015_sign(file, key_list) < 0) {
-			unlink(file);
-			return -1;
-		}
-	}
-	if (compose->use_encryption) {
-		if (rfc2015_encrypt(file, compose->to_list,
-				    compose->gnupg_mode,
-				    out_codeset) < 0) {
-			unlink(file);
-			return -1;
-		}
-	}
-#endif /* USE_GPGME */
-
-	uncanonicalize_file_replace(file);
+	procmime_write_mimeinfo(mimemsg, fp);
 
 	return 0;
 }
@@ -4080,10 +3700,9 @@ static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
 static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item, gboolean check_subject)
 {
 	FolderItem *queue;
-	gchar *tmp, *tmp2;
-	FILE *fp, *src_fp;
+	gchar *tmp;
+	FILE *fp;
 	GSList *cur;
-	gchar buf[BUFFSIZE];
 	gint num;
         static gboolean lock = FALSE;
 	PrefsAccount *mailac = NULL, *newsac = NULL;
@@ -4128,27 +3747,8 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 
         if (prefs_common.linewrap_at_send)
     		compose_wrap_line_all(compose);
-			
-	/* write to temporary file */
-	tmp2 = g_strdup_printf("%s%ctmp%d", g_get_tmp_dir(),
-				      G_DIR_SEPARATOR, (gint)compose);
 
-	if (compose->redirect_filename != NULL) {
-		if (compose_redirect_write_to_file(compose, tmp2) < 0) {
-			unlink(tmp2);
-			lock = FALSE;
-			return -1;
-		}
-	}
-	else {
-		if (compose_write_to_file(compose, tmp2, FALSE) < 0) {
-			unlink(tmp2);
-			lock = FALSE;
-			return -1;
-		}
-	}
-
-	/* add queue header */
+	/* write queue header */
 	tmp = g_strdup_printf("%s%cqueue.%p", get_tmp_dir(),
 			      G_DIR_SEPARATOR, compose);
 	if ((fp = fopen(tmp, "wb")) == NULL) {
@@ -4156,15 +3756,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		g_free(tmp);
 		return -1;
 	}
-	if ((src_fp = fopen(tmp2, "rb")) == NULL) {
-		FILE_OP_ERROR(tmp2, "fopen");
-		fclose(fp);
-		unlink(tmp);
-		g_free(tmp);
-		unlink(tmp2);
-		g_free(tmp2);
-		return -1;
-	}
+
 	if (change_file_mode_rw(fp, tmp) < 0) {
 		FILE_OP_ERROR(tmp, "chmod");
 		g_warning("can't change file mode\n");
@@ -4211,17 +3803,23 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		fprintf(fp, "\n");
 	}
 	/* Sylpheed account IDs */
-	if (mailac) {
+	if (mailac)
 		fprintf(fp, "MAID:%d\n", mailac->account_id);
-	}
-	if (newsac) {
+	if (newsac)
 		fprintf(fp, "NAID:%d\n", newsac->account_id);
+
+	if (compose->privacy_system != NULL) {
+		fprintf(fp, "X-Sylpheed-Privacy-System:%s\n", compose->privacy_system);
+		fprintf(fp, "X-Sylpheed-Sign:%d\n", compose->use_signing);
+		fprintf(fp, "X-Sylpheed-Encrypt:%d\n", compose->use_encryption);
+		if (compose->use_encryption) {
+			gchar *encdata;
+
+			encdata = privacy_get_encrypt_data(compose->privacy_system, compose->to_list);
+			fprintf(fp, "X-Sylpheed-Encrypt-Data:%s\n", encdata);
+			g_free(encdata);
+		}
 	}
-#ifdef USE_GPGME
-	fprintf(fp, "X-Sylpheed-Sign:%d\n", compose->use_signing);
-	fprintf(fp, "X-Sylpheed-Encrypt:%d\n", compose->use_encryption);
-	fprintf(fp, "X-Sylpheed-Gnupg-Mode:%d\n", compose->gnupg_mode);
-#endif
 
 	/* Save copy folder */
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
@@ -4249,25 +3847,28 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	}
 	fprintf(fp, "\n");
 
-	while (fgets(buf, sizeof(buf), src_fp) != NULL) {
-		if (fputs(buf, fp) == EOF) {
-			FILE_OP_ERROR(tmp, "fputs");
+	if (compose->redirect_filename != NULL) {
+		if (compose_redirect_write_to_file(compose, fp) < 0) {
+			lock = FALSE;
 			fclose(fp);
-			fclose(src_fp);
 			unlink(tmp);
 			g_free(tmp);
-			unlink(tmp2);
-			g_free(tmp2);
+			return -1;
+		}
+	} else {
+		if (compose_write_to_file(compose, fp) < 0) {
+			lock = FALSE;
+			fclose(fp);
+			unlink(tmp);
+			g_free(tmp);
 			return -1;
 		}
 	}
-	fclose(src_fp);
+
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmp, "fclose");
 		unlink(tmp);
 		g_free(tmp);
-		unlink(tmp2);
-		g_free(tmp2);
 		return -1;
 	}
 
@@ -4287,8 +3888,6 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	}
 	unlink(tmp);
 	g_free(tmp);
-	unlink(tmp2);
-	g_free(tmp2);
 
 	if (compose->mode == COMPOSE_REEDIT) {
 		compose_remove_reedit_target(compose);
@@ -4302,75 +3901,47 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	return 0;
 }
 
-static void compose_write_attach(Compose *compose, FILE *fp)
+static void compose_add_attachments(Compose *compose, MimeInfo *parent)
 {
 	AttachInfo *ainfo;
 	GtkCList *clist = GTK_CLIST(compose->attach_clist);
 	gint row;
-	FILE *attach_fp;
-	gchar filename[BUFFSIZE];
-	gint len;
+	MimeInfo *mimepart;
+	struct stat statbuf;
+	gchar *type, *subtype;
 
 	for (row = 0; (ainfo = gtk_clist_get_row_data(clist, row)) != NULL;
 	     row++) {
-		if ((attach_fp = fopen(ainfo->file, "rb")) == NULL) {
-			g_warning("Can't open file %s\n", ainfo->file);
-			continue;
-		}
+		mimepart = procmime_mimeinfo_new();
+		mimepart->content = MIMECONTENT_FILE;
+		mimepart->filename = g_strdup(ainfo->file);
+		mimepart->offset = 0;
 
-		fprintf(fp, "\n--%s\n", compose->boundary);
+		stat(ainfo->file, &statbuf);
+		mimepart->length = statbuf.st_size;
 
-		if (!strcmp2(ainfo->content_type, "message/rfc822")) {
-			fprintf(fp, "Content-Type: %s\n", ainfo->content_type);
-			fprintf(fp, "Content-Disposition: inline\n");
+    		type = g_strdup(ainfo->content_type);
+    		subtype = strchr(type, '/') + 1;
+	        *(subtype - 1) = '\0';
+    		mimepart->type = procmime_get_media_type(type);
+    		mimepart->subtype = g_strdup(subtype);
+    		g_free(type);
+
+		if (mimepart->type == MIMETYPE_MESSAGE && 
+		    !g_strcasecmp(mimepart->subtype, "rfc822")) {
+			mimepart->disposition = DISPOSITIONTYPE_INLINE;
 		} else {
-			compose_convert_header(filename, sizeof(filename),
-					       ainfo->name, 12, FALSE);
-			fprintf(fp, "Content-Type: %s;\n"
-				    " name=\"%s\"\n",
-				ainfo->content_type, filename);
-			fprintf(fp, "Content-Disposition: attachment;\n"
-				    " filename=\"%s\"\n", filename);
+			g_hash_table_insert(mimepart->typeparameters,
+					    g_strdup("name"), g_strdup(ainfo->name));
+			g_hash_table_insert(mimepart->dispositionparameters,
+					    g_strdup("filename"), g_strdup(ainfo->name));
+			mimepart->disposition = DISPOSITIONTYPE_ATTACHMENT;
 		}
 
-		fprintf(fp, "Content-Transfer-Encoding: %s\n\n",
-			procmime_get_encoding_str(ainfo->encoding));
+		procmime_encode_content(mimepart, ainfo->encoding);
 
-		if (ainfo->encoding == ENC_BASE64) {
-			gchar inbuf[B64_LINE_SIZE], outbuf[B64_BUFFSIZE];
-
-			while ((len = fread(inbuf, sizeof(gchar),
-					    B64_LINE_SIZE, attach_fp))
-			       == B64_LINE_SIZE) {
-				base64_encode(outbuf, inbuf, B64_LINE_SIZE);
-				fputs(outbuf, fp);
-				fputc('\n', fp);
-			}
-			if (len > 0 && feof(attach_fp)) {
-				base64_encode(outbuf, inbuf, len);
-				fputs(outbuf, fp);
-				fputc('\n', fp);
-			}
-		} else if (ainfo->encoding == ENC_QUOTED_PRINTABLE) {
-			gchar inbuf[BUFFSIZE], outbuf[BUFFSIZE * 4];
-
-			while (fgets(inbuf, sizeof(inbuf), attach_fp) != NULL) {
-				qp_encode_line(outbuf, inbuf);
-				fputs(outbuf, fp);
-			}
-		} else {
-			gchar buf[BUFFSIZE];
-
-			while (fgets(buf, sizeof(buf), attach_fp) != NULL) {
-				strcrchomp(buf);
-				fputs(buf, fp);
-			}
-		}
-
-		fclose(attach_fp);
+		g_node_append(parent->node, mimepart->node);
 	}
-
-	fprintf(fp, "\n--%s--\n", compose->boundary);
 }
 
 #define QUOTE_IF_REQUIRED(out, str)					\
@@ -4440,6 +4011,7 @@ static void compose_add_headerfield_from_headerlist(Compose *compose,
 				g_string_append(fieldstr, str);
 				add_field = TRUE;
 			}
+			g_free(str);
 		}
 	}
 	if (add_field) {
@@ -4459,8 +4031,7 @@ static void compose_add_headerfield_from_headerlist(Compose *compose,
 	return;
 }
 
-static gchar *compose_get_header(Compose *compose, const gchar *charset,
-				 EncodingType encoding, gboolean is_draft)
+static gchar *compose_get_header(Compose *compose)
 {
 	gchar buf[BUFFSIZE];
 	const gchar *entry_str;
@@ -4472,30 +4043,10 @@ static gchar *compose_get_header(Compose *compose, const gchar *charset,
 
 	/* struct utsname utsbuf; */
 
-	g_return_val_if_fail(charset != NULL, NULL);
 	g_return_val_if_fail(compose->account != NULL, NULL);
 	g_return_val_if_fail(compose->account->address != NULL, NULL);
 
 	header = g_string_sized_new(64);
-
-	/* Save draft infos */
-	if (is_draft) {
-		g_string_sprintfa(header, "X-Sylpheed-Account-Id:%d\n", compose->account->account_id);
-		g_string_sprintfa(header, "S:%s\n", compose->account->address);
-		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
-			gchar *savefolderid;
-
-			savefolderid = gtk_editable_get_chars(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
-			g_string_sprintfa(header, "SCF:%s\n", savefolderid);
-			g_free(savefolderid);
-		}
-#ifdef USE_GPGME
-		g_string_sprintfa(header, "X-Sylpheed-Sign:%d\n", compose->use_signing);
-		g_string_sprintfa(header, "X-Sylpheed-Encrypt:%d\n", compose->use_encryption);
-		g_string_sprintfa(header, "X-Sylpheed-Gnupg-Mode:%d\n", compose->gnupg_mode);
-#endif
-		g_string_sprintfa(header, "\n");
-	}
 
 	/* Date */
 	if (compose->account->add_date) {
@@ -4542,6 +4093,7 @@ static gchar *compose_get_header(Compose *compose, const gchar *charset,
 					       strlen("Subject: "), FALSE);
 			g_string_sprintfa(header, "Subject: %s\n", buf);
 		}
+		g_free(tmpstr);
 	}
 
 	/* Message-ID */
@@ -4611,23 +4163,6 @@ static gchar *compose_get_header(Compose *compose, const gchar *charset,
 				g_string_sprintfa(header, "%s: %s\n", chdr->name, buf);
 			}
 		}
-	}
-
-	/* MIME */
-	g_string_sprintfa(header, "Mime-Version: 1.0\n");
-	if (compose_use_attach(compose)) {
-		compose->boundary = generate_mime_boundary(NULL);
-		g_string_sprintfa(header,
-			"Content-Type: multipart/mixed;\n"
-			" boundary=\"%s\"\n", compose->boundary);
-	} else {
-		g_string_sprintfa(header, "Content-Type: text/plain; charset=%s\n", charset);
-#if USE_GPGME
-		if (compose->use_signing && !compose->gnupg_mode)
-			g_string_sprintfa(header, "Content-Disposition: inline\n");
-#endif
-		g_string_sprintfa(header, "Content-Transfer-Encoding: %s\n",
-			procmime_get_encoding_str(encoding));
 	}
 
 	/* PRIORITY */
@@ -4709,9 +4244,6 @@ static gchar *compose_get_header(Compose *compose, const gchar *charset,
 		g_free(headername);
 		g_free(headername_wcolon);		
 	}
-
-	/* separator between header and body */
-	g_string_sprintfa(header, "\n");
 
 	str = header->str;
 	g_string_free(header, FALSE);
@@ -5266,9 +4798,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	gtk_container_add(GTK_CONTAINER(subject_frame), subject);
 	
 	edit_vbox = gtk_vbox_new(FALSE, 0);
-#if 0 /* NEW COMPOSE GUI */
-	gtk_box_pack_start(GTK_BOX(vbox2), edit_vbox, TRUE, TRUE, 0);
-#endif
 
 	gtk_box_pack_start(GTK_BOX(edit_vbox), subject_hbox, FALSE, FALSE, 0);
 
@@ -5360,34 +4889,9 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	ifactory = gtk_item_factory_from_widget(menubar);
 	menu_set_sensitive(ifactory, "/Edit/Undo", FALSE);
 	menu_set_sensitive(ifactory, "/Edit/Redo", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Remove references", FALSE);
+	menu_set_sensitive(ifactory, "/Options/Remove references", FALSE);
 
 	tmpl_menu = gtk_item_factory_get_item(ifactory, "/Tools/Template");
-#if 0 /* NEW COMPOSE GUI */
-	gtk_widget_hide(bcc_hbox);
-	gtk_widget_hide(bcc_entry);
-	gtk_widget_hide(reply_hbox);
-	gtk_widget_hide(reply_entry);
-	gtk_widget_hide(followup_hbox);
-	gtk_widget_hide(followup_entry);
-	gtk_widget_hide(ruler_hbox);
-	gtk_table_set_row_spacing(GTK_TABLE(table), 4, 0);
-	gtk_table_set_row_spacing(GTK_TABLE(table), 5, 0);
-	gtk_table_set_row_spacing(GTK_TABLE(table), 6, 0);
-
-	if (account->protocol == A_NNTP) {
-		gtk_widget_hide(to_hbox);
-		gtk_widget_hide(to_entry);
-		gtk_widget_hide(cc_hbox);
-		gtk_widget_hide(cc_entry);
-		gtk_table_set_row_spacing(GTK_TABLE(table), 1, 0);
-		gtk_table_set_row_spacing(GTK_TABLE(table), 3, 0);
-	} else {
-		gtk_widget_hide(newsgroups_hbox);
-		gtk_widget_hide(newsgroups_entry);
-		gtk_table_set_row_spacing(GTK_TABLE(table), 2, 0);
-	}
-#endif
 
 	undostruct = undo_init(text);
 	undo_set_change_state_func(undostruct, &compose_undo_state_changed,
@@ -5437,10 +4941,9 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	compose->autowrap       = prefs_common.autowrap;
 
-#if USE_GPGME
 	compose->use_signing    = FALSE;
 	compose->use_encryption = FALSE;
-#endif /* USE_GPGME */
+	compose->privacy_system = NULL;
 
 	compose->modified = FALSE;
 
@@ -5502,7 +5005,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose_select_account(compose, account, TRUE);
 
 	menu_set_active(ifactory, "/Edit/Auto wrapping", prefs_common.autowrap);
-	menu_set_active(ifactory, "/View/Ruler", prefs_common.show_ruler);
 	if (account->set_autocc && account->auto_cc && mode != COMPOSE_REEDIT)
 		compose_entry_append(compose, account->auto_cc, COMPOSE_CC);
 
@@ -5540,9 +5042,10 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	/* Actions menu */
 	compose_update_actions_menu(compose);
 
-#if USE_GPGME
-	activate_gnupg_mode(compose, account);
-#endif	
+	/* Privacy Systems menu */
+	compose_update_privacy_systems_menu(compose);
+
+	activate_privacy_system(compose, account);
 	toolbar_set_style(compose->toolbar->toolbar, compose->handlebox, prefs_common.toolbar_style);
 	gtk_widget_show(window);
 	
@@ -5610,62 +5113,93 @@ static void compose_update_priority_menu_item(Compose * compose)
 	switch (compose->priority) {
 		case PRIORITY_HIGHEST:
 			menuitem = gtk_item_factory_get_item
-				(ifactory, "/Message/Priority/Highest");
+				(ifactory, "/Options/Priority/Highest");
 			break;
 		case PRIORITY_HIGH:
 			menuitem = gtk_item_factory_get_item
-				(ifactory, "/Message/Priority/High");
+				(ifactory, "/Options/Priority/High");
 			break;
 		case PRIORITY_NORMAL:
 			menuitem = gtk_item_factory_get_item
-				(ifactory, "/Message/Priority/Normal");
+				(ifactory, "/Options/Priority/Normal");
 			break;
 		case PRIORITY_LOW:
 			menuitem = gtk_item_factory_get_item
-				(ifactory, "/Message/Priority/Low");
+				(ifactory, "/Options/Priority/Low");
 			break;
 		case PRIORITY_LOWEST:
 			menuitem = gtk_item_factory_get_item
-				(ifactory, "/Message/Priority/Lowest");
+				(ifactory, "/Options/Priority/Lowest");
 			break;
 	}
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 }	
 
-#if USE_GPGME 
-static void compose_set_gnupg_mode_cb(gpointer data,
-				    guint action,
-				    GtkWidget *widget)
+static void compose_set_privacy_system_cb(gpointer data,
+				          guint action,
+				          GtkWidget *widget)
 {
 	Compose *compose = (Compose *) data;
-	compose->gnupg_mode = action;
-}
-
-static void compose_update_gnupg_mode_menu_item(Compose * compose)
-{
+	gchar *systemid;
 	GtkItemFactory *ifactory;
-	GtkWidget *menuitem = NULL;
+	gboolean can_sign = FALSE, can_encrypt = FALSE;
+
+	systemid = gtk_object_get_data(GTK_OBJECT(widget), "privacy_system");
+	g_free(compose->privacy_system);
+	compose->privacy_system = NULL;
+	if (systemid != NULL) {
+		compose->privacy_system = g_strdup(systemid);
+
+		can_sign = privacy_system_can_sign(systemid);
+		can_encrypt = privacy_system_can_encrypt(systemid);
+	}
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
-	
-	switch (compose->gnupg_mode) {
-		case GNUPG_MODE_DETACH:
-			menuitem = gtk_item_factory_get_item
-				(ifactory, "/Message/Mode/MIME");
-			break;
-		case GNUPG_MODE_INLINE:
-			menuitem = gtk_item_factory_get_item
-				(ifactory, "/Message/Mode/Inline");
-			break;
+	menu_set_sensitive(ifactory, "/Options/Sign", can_sign);
+	menu_set_sensitive(ifactory, "/Options/Encrypt", can_encrypt);
+}
+
+static void compose_update_privacy_system_menu_item(Compose * compose)
+{
+	static gchar *branch_path = "/Options/Privacy System";
+	GtkItemFactory *ifactory;
+	GtkWidget *menuitem = NULL;
+	GList *amenu;
+	gboolean can_sign = FALSE, can_encrypt = FALSE;
+
+	ifactory = gtk_item_factory_from_widget(compose->menubar);
+
+	if (compose->privacy_system != NULL) {
+		gchar *systemid;
+
+		menuitem = gtk_item_factory_get_widget(ifactory, branch_path);
+		g_return_if_fail(menuitem != NULL);
+
+		amenu = GTK_MENU_SHELL(menuitem)->children;
+		menuitem = NULL;
+		while (amenu != NULL) {
+		        GList *alist = amenu->next;
+
+			systemid = gtk_object_get_data(GTK_OBJECT(amenu->data), "privacy_system");
+			if (systemid != NULL)
+				if (strcmp(systemid, compose->privacy_system) == 0) {
+					menuitem = GTK_WIDGET(amenu->data);
+
+					can_sign = privacy_system_can_sign(systemid);
+					can_encrypt = privacy_system_can_encrypt(systemid);
+
+					break;
+				}
+
+			amenu = alist;
+		}
+		if (menuitem != NULL)
+			gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 	}
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-	
-	if (compose->use_encryption == TRUE || compose->use_signing == TRUE)
-		menu_set_sensitive(ifactory, "/Message/Mode", TRUE);
-	else 
-		menu_set_sensitive(ifactory, "/Message/Mode", FALSE);
+
+	menu_set_sensitive(ifactory, "/Options/Sign", can_sign);
+	menu_set_sensitive(ifactory, "/Options/Encrypt", can_encrypt);
 }	
-#endif
  
 static void compose_set_template_menu(Compose *compose)
 {
@@ -5699,6 +5233,55 @@ void compose_update_actions_menu(Compose *compose)
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	action_update_compose_menu(ifactory, "/Tools/Actions", compose);
+}
+
+void compose_update_privacy_systems_menu(Compose *compose)
+{
+	static gchar *branch_path = "/Options/Privacy System";
+	GtkItemFactory *ifactory;
+	GtkWidget *menuitem;
+	gchar *menu_path;
+	GSList *systems, *cur;
+	GList *amenu;
+	GtkItemFactoryEntry ifentry = {NULL, NULL, NULL, 0, "<Branch>"};
+	GtkWidget *widget;
+
+	ifactory = gtk_item_factory_from_widget(compose->menubar);
+
+	/* remove old entries */
+	ifentry.path = branch_path;
+	menuitem = gtk_item_factory_get_widget(ifactory, branch_path);
+	g_return_if_fail(menuitem != NULL);
+
+	amenu = GTK_MENU_SHELL(menuitem)->children->next;
+	while (amenu != NULL) {
+		GList *alist = amenu->next;
+		gtk_widget_destroy(GTK_WIDGET(amenu->data));
+		amenu = alist;
+	}
+
+	ifentry.accelerator     = NULL;
+	ifentry.callback_action = 0;
+	ifentry.callback        = compose_set_privacy_system_cb;
+	ifentry.item_type       = "/Options/Privacy System/None";
+
+	systems = privacy_get_system_ids();
+	for (cur = systems; cur != NULL; cur = g_slist_next(cur)) {
+		gchar *systemid = cur->data;
+
+		menu_path = g_strdup_printf("%s/%s", branch_path,
+					    privacy_system_get_name(systemid));
+		ifentry.path = menu_path;
+		gtk_item_factory_create_item(ifactory, &ifentry, compose, 1);
+		widget = gtk_item_factory_get_widget(ifactory, menu_path);
+
+		g_object_set_data_full(G_OBJECT(widget), "privacy_system",
+				       g_strdup(systemid), g_free);
+
+		g_free(systemid);
+		g_free(menu_path);
+	}
+	g_slist_free(systems);
 }
 
 void compose_reflect_prefs_all(void)
@@ -6389,8 +5972,8 @@ static void compose_set_ext_editor_sensitive(Compose *compose,
 
 	menu_set_sensitive(ifactory, "/Message/Send", sensitive);
 	menu_set_sensitive(ifactory, "/Message/Send later", sensitive);
-	menu_set_sensitive(ifactory, "/File/Insert file", sensitive);
-	menu_set_sensitive(ifactory, "/File/Insert signature", sensitive);
+	menu_set_sensitive(ifactory, "/Message/Insert file", sensitive);
+	menu_set_sensitive(ifactory, "/Message/Insert signature", sensitive);
 	menu_set_sensitive(ifactory, "/Edit/Wrap current paragraph", sensitive);
 	menu_set_sensitive(ifactory, "/Edit/Wrap all long lines", sensitive);
 	menu_set_sensitive(ifactory, "/Edit/Edit with external editor",
@@ -6593,12 +6176,12 @@ static void compose_allow_user_actions (Compose *compose, gboolean allow)
 {
 	GtkItemFactory *ifactory = gtk_item_factory_from_widget(compose->menubar);
 	toolbar_comp_set_sensitive(compose, allow);
-	menu_set_sensitive(ifactory, "/File", allow);
+	menu_set_sensitive(ifactory, "/Message", allow);
 	menu_set_sensitive(ifactory, "/Edit", allow);
 #if USE_ASPELL
 	menu_set_sensitive(ifactory, "/Spelling", allow);
 #endif	
-	menu_set_sensitive(ifactory, "/Message", allow);
+	menu_set_sensitive(ifactory, "/Options", allow);
 	menu_set_sensitive(ifactory, "/Tools", allow);
 	menu_set_sensitive(ifactory, "/Help", allow);
 }
@@ -6645,6 +6228,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	MsgFlags flag = {0, 0};
 	static gboolean lock = FALSE;
 	MsgInfo *newmsginfo;
+	FILE *fp;
 	
 	if (lock) return;
 
@@ -6655,12 +6239,40 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 
 	tmp = g_strdup_printf("%s%cdraft.%p", get_tmp_dir(),
 			      G_DIR_SEPARATOR, compose);
+	if ((fp = fopen(tmp, "wb")) == NULL) {
+		FILE_OP_ERROR(tmp, "fopen");
+		return;
+	}
 
-	if (compose_write_to_file(compose, tmp, TRUE) < 0) {
+	/* chmod for security */
+	if (change_file_mode_rw(fp, tmp) < 0) {
+		FILE_OP_ERROR(tmp, "chmod");
+		g_warning("can't change file mode\n");
+	}
+
+	/* Save draft infos */
+	fprintf(fp, "X-Sylpheed-Account-Id:%d\n", compose->account->account_id);
+	fprintf(fp, "S:%s\n", compose->account->address);
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
+		gchar *savefolderid;
+
+		savefolderid = gtk_editable_get_chars(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
+		fprintf(fp, "SCF:%s\n", savefolderid);
+		g_free(savefolderid);
+	}
+	fprintf(fp, "X-Sylpheed-Sign:%d\n", compose->use_signing);
+	fprintf(fp, "X-Sylpheed-Encrypt:%d\n", compose->use_encryption);
+	fprintf(fp, "X-Sylpheed-Gnupg-Mode:%s\n", compose->privacy_system);
+	fprintf(fp, "\n");
+
+	if (compose_write_to_file(compose, fp) < 0) {
+		fclose(fp);
+		unlink(tmp);
 		g_free(tmp);
 		lock = FALSE;
 		return;
 	}
+	fclose(fp);
 
 	folder_item_scan(draft);
 	if ((msgnum = folder_item_add_msg(draft, tmp, &flag, TRUE)) < 0) {
@@ -6681,7 +6293,9 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		procmsg_msginfo_unset_flags(newmsginfo, ~0, ~0);
 		procmsg_msginfo_set_flags(newmsginfo, 0, MSG_DRAFT);
 		if (compose_use_attach(compose))
-			procmsg_msginfo_set_flags(newmsginfo, 0, MSG_HAS_ATTACHMENT);
+			procmsg_msginfo_set_flags(newmsginfo, 0,
+						  MSG_HAS_ATTACHMENT);
+
 		procmsg_msginfo_free(newmsginfo);
 	}
 	
@@ -7318,149 +6932,6 @@ static void compose_toggle_autowrap_cb(gpointer data, guint action,
 		compose_wrap_line_all_full(compose, TRUE);
 }
 
-#if 0 /* NEW COMPOSE GUI */
-static void compose_toggle_to_cb(gpointer data, guint action,
-				 GtkWidget *widget)
-{
-	Compose *compose = (Compose *)data;
-
-	if (GTK_CHECK_MENU_ITEM(widget)->active) {
-		gtk_widget_show(compose->to_hbox);
-		gtk_widget_show(compose->to_entry);
-		gtk_table_set_row_spacing(GTK_TABLE(compose->table), 1, 4);
-		compose->use_to = TRUE;
-	} else {
-		gtk_widget_hide(compose->to_hbox);
-		gtk_widget_hide(compose->to_entry);
-		gtk_table_set_row_spacing(GTK_TABLE(compose->table), 1, 0);
-		gtk_widget_queue_resize(compose->table_vbox);
-		compose->use_to = FALSE;
-	}
-
-	if (addressbook_get_target_compose() == compose)
-		addressbook_set_target_compose(compose);
-}
-
-static void compose_toggle_cc_cb(gpointer data, guint action,
-				 GtkWidget *widget)
-{
-	Compose *compose = (Compose *)data;
-
-	if (GTK_CHECK_MENU_ITEM(widget)->active) {
-		gtk_widget_show(compose->cc_hbox);
-		gtk_widget_show(compose->cc_entry);
-		gtk_table_set_row_spacing(GTK_TABLE(compose->table), 3, 4);
-		compose->use_cc = TRUE;
-	} else {
-		gtk_widget_hide(compose->cc_hbox);
-		gtk_widget_hide(compose->cc_entry);
-		gtk_table_set_row_spacing(GTK_TABLE(compose->table), 3, 0);
-		gtk_widget_queue_resize(compose->table_vbox);
-		compose->use_cc = FALSE;
-	}
-
-	if (addressbook_get_target_compose() == compose)
-		addressbook_set_target_compose(compose);
-}
-
-static void compose_toggle_bcc_cb(gpointer data, guint action,
-				  GtkWidget *widget)
-{
-	Compose *compose = (Compose *)data;
-
-	if (GTK_CHECK_MENU_ITEM(widget)->active) {
-		gtk_widget_show(compose->bcc_hbox);
-		gtk_widget_show(compose->bcc_entry);
-		gtk_table_set_row_spacing(GTK_TABLE(compose->table), 4, 4);
-		compose->use_bcc = TRUE;
-	} else {
-		gtk_widget_hide(compose->bcc_hbox);
-		gtk_widget_hide(compose->bcc_entry);
-		gtk_table_set_row_spacing(GTK_TABLE(compose->table), 4, 0);
-		gtk_widget_queue_resize(compose->table_vbox);
-		compose->use_bcc = FALSE;
-	}
-
-	if (addressbook_get_target_compose() == compose)
-		addressbook_set_target_compose(compose);
-}
-
-static void compose_toggle_replyto_cb(gpointer data, guint action,
-				      GtkWidget *widget)
-{
-	Compose *compose = (Compose *)data;
-
-	if (GTK_CHECK_MENU_ITEM(widget)->active) {
-		gtk_widget_show(compose->reply_hbox);
-		gtk_widget_show(compose->reply_entry);
-		gtk_table_set_row_spacing(GTK_TABLE(compose->table), 5, 4);
-		compose->use_replyto = TRUE;
-	} else {
-		gtk_widget_hide(compose->reply_hbox);
-		gtk_widget_hide(compose->reply_entry);
-		gtk_table_set_row_spacing(GTK_TABLE(compose->table), 5, 0);
-		gtk_widget_queue_resize(compose->table_vbox);
-		compose->use_replyto = FALSE;
-	}
-}
-
-static void compose_toggle_followupto_cb(gpointer data, guint action,
-					 GtkWidget *widget)
-{
-	Compose *compose = (Compose *)data;
-
-	if (GTK_CHECK_MENU_ITEM(widget)->active) {
-		gtk_widget_show(compose->followup_hbox);
-		gtk_widget_show(compose->followup_entry);
-		gtk_table_set_row_spacing(GTK_TABLE(compose->table), 6, 4);
-		compose->use_followupto = TRUE;
-	} else {
-		gtk_widget_hide(compose->followup_hbox);
-		gtk_widget_hide(compose->followup_entry);
-		gtk_table_set_row_spacing(GTK_TABLE(compose->table), 6, 0);
-		gtk_widget_queue_resize(compose->table_vbox);
-		compose->use_followupto = FALSE;
-	}
-}
-
-static void compose_toggle_attach_cb(gpointer data, guint action,
-				     GtkWidget *widget)
-{
-	Compose *compose = (Compose *)data;
-
-	if (GTK_CHECK_MENU_ITEM(widget)->active) {
-		gtk_widget_ref(compose->edit_vbox);
-
-		gtkut_container_remove(GTK_CONTAINER(compose->vbox2),
-		 		       compose->edit_vbox);
-		gtk_paned_add2(GTK_PANED(compose->paned), compose->edit_vbox);
-		gtk_box_pack_start(GTK_BOX(compose->vbox2), compose->paned,
-				   TRUE, TRUE, 0);
-		gtk_widget_show(compose->paned);
-
-		gtk_widget_unref(compose->edit_vbox);
-		gtk_widget_unref(compose->paned);
-
-		compose->use_attach = TRUE;
-	} else {
-		gtk_widget_ref(compose->paned);
-		gtk_widget_ref(compose->edit_vbox);
-
-		gtkut_container_remove(GTK_CONTAINER(compose->vbox2),
-		  		       compose->paned);
-		gtkut_container_remove(GTK_CONTAINER(compose->paned),
-		  		       compose->edit_vbox);
-		gtk_box_pack_start(GTK_BOX(compose->vbox2),
-				   compose->edit_vbox, TRUE, TRUE, 0);
-
-		gtk_widget_unref(compose->edit_vbox);
-
-		compose->use_attach = FALSE;
-	}
-}
-#endif
-
-#if USE_GPGME
 static void compose_toggle_sign_cb(gpointer data, guint action,
 				   GtkWidget *widget)
 {
@@ -7470,8 +6941,6 @@ static void compose_toggle_sign_cb(gpointer data, guint action,
 		compose->use_signing = TRUE;
 	else
 		compose->use_signing = FALSE;
-
-	compose_update_gnupg_mode_menu_item(compose);
 }
 
 static void compose_toggle_encrypt_cb(gpointer data, guint action,
@@ -7483,20 +6952,18 @@ static void compose_toggle_encrypt_cb(gpointer data, guint action,
 		compose->use_encryption = TRUE;
 	else
 		compose->use_encryption = FALSE;
-		
-	compose_update_gnupg_mode_menu_item(compose);
 }
 
-static void activate_gnupg_mode (Compose *compose, PrefsAccount *account) 
+static void activate_privacy_system(Compose *compose, PrefsAccount *account) 
 {
+	/* TODO
 	if (account->default_gnupg_mode)
 		compose->gnupg_mode = GNUPG_MODE_INLINE;
 	else
 		compose->gnupg_mode = GNUPG_MODE_DETACH;
-		
-	compose_update_gnupg_mode_menu_item(compose);
+	*/		
+	compose_update_privacy_system_menu_item(compose);
 }
-#endif /* USE_GPGME */
 
 static void compose_toggle_ruler_cb(gpointer data, guint action,
 				    GtkWidget *widget)

@@ -40,5 +40,6 @@ gchar *sgpgme_sigstat_info_full		(GpgmeCtx ctx,
 GpgmeData sgpgme_data_from_mimeinfo	(MimeInfo *mimeinfo);
 GpgmeData sgpgme_decrypt_verify		(GpgmeData cipher, GpgmeSigStat *status,
 					 GpgmeCtx ctx);
+gchar *sgpgme_get_encrypt_data		(GSList *recp_names);
 
 #endif /* SGPGME_H */

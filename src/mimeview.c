@@ -429,7 +429,7 @@ static GtkCTreeNode *mimeview_append_part(MimeView *mimeview,
 	gchar *str[N_MIMEVIEW_COLS];
 
 	if (partinfo->type != MIMETYPE_UNKNOWN && partinfo->subtype) {
-		g_snprintf(content_type, 64, "%s/%s", procmime_get_type_str(partinfo->type), partinfo->subtype);
+		g_snprintf(content_type, 64, "%s/%s", procmime_get_media_type_str(partinfo->type), partinfo->subtype);
 	} else {
 		g_snprintf(content_type, 64, "UNKNOWN");
 	}

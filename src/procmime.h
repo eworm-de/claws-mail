@@ -54,8 +54,15 @@ typedef enum
 {
 	DISPOSITIONTYPE_INLINE,
 	DISPOSITIONTYPE_ATTACHMENT,
-	DISPOSITIONTYPE_UNKNOWN
+	DISPOSITIONTYPE_UNKNOWN,
 } DispositionType;
+
+typedef enum
+{
+	MIMECONTENT_EMPTY,
+	MIMECONTENT_FILE,		/* the file contains all content including sub parts */
+	MIMECONTENT_MEM,
+} MimeContent;
 
 #include <glib.h>
 #include <stdio.h>
@@ -94,8 +101,13 @@ struct _MimeType
 struct _MimeInfo
 {
 	/* Internal data */
-	gchar *filename;
-	gboolean tmpfile;
+	MimeContent content;
+	union
+	{
+		gchar *filename;
+		gchar *data;
+	};
+	gboolean tmp;
 
 	GNode *node;
 
@@ -104,7 +116,7 @@ struct _MimeInfo
 	MimeMediaType 	 type;
 	gchar		*subtype;
 
-	GHashTable	*parameters;
+	GHashTable	*typeparameters;
 
 	/* Content-Transfer-Encoding */
 	EncodingType	 encoding_type;
@@ -120,6 +132,7 @@ struct _MimeInfo
 
 	/* Content-Disposition */
 	DispositionType	 disposition;
+	GHashTable	*dispositionparameters;
 
 	/* Privacy */
 	PrivacyData	*privacy;
@@ -167,6 +180,7 @@ void procmime_scan_subject              (MimeInfo       *mimeinfo,
 MimeInfo *procmime_scan_mime_header	(FILE		*fp);
 
 gboolean procmime_decode_content	(MimeInfo	*mimeinfo);
+gboolean procmime_encode_content	(MimeInfo	*mimeinfo, EncodingType encoding);
 gint procmime_get_part			(const gchar	*outfile,
 					 MimeInfo	*mimeinfo);
 FILE *procmime_get_text_content		(MimeInfo	*mimeinfo);
@@ -189,15 +203,19 @@ GList *procmime_get_mime_type_list	(void);
 EncodingType procmime_get_encoding_for_charset	(const gchar	*charset);
 EncodingType procmime_get_encoding_for_file	(const gchar	*file);
 const gchar *procmime_get_encoding_str		(EncodingType	 encoding);
-MimeInfo *procmime_scan_file			(gchar		*filename);
-MimeInfo *procmime_scan_queue_file		(gchar 		*filename);
-const gchar *procmime_get_type_str		(MimeMediaType 	 type);
-gchar *procmime_get_content_type_str		(MimeMediaType 	 type,
-						 const char 	*subtype);
+MimeInfo *procmime_scan_file			(const gchar	*filename);
+MimeInfo *procmime_scan_queue_file		(const gchar 	*filename);
+const gchar *procmime_get_media_type_str	(MimeMediaType 	 type);
+MimeMediaType procmime_get_media_type		(const gchar 	*str);
+gchar *procmime_get_content_type_str		(MimeMediaType   type,
+						 const gchar	*subtype);
 void procmime_force_charset			(const gchar 	*str);
 void procmime_force_encoding			(EncodingType	 encoding);
+
 void renderer_read_config(void);
 void renderer_write_config(void);
+
+gint procmime_write_mimeinfo(MimeInfo *mimeinfo, FILE *fp);
 
 #ifdef __cplusplus
 }

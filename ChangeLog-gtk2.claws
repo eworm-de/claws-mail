@@ -1,3 +1,44 @@
+2004-10-12 [paul]	0.9.12cvs124.1
+
+	* ChangeLog.claws
+	* configure.ac
+	* m4/spamassassin.m4
+	* src/Makefile.am
+	* src/account.c
+	* src/compose.c
+	* src/compose.h
+	* src/crash.c
+	* src/main.c
+	* src/mimeview.c
+	* src/passphrase.c
+	* src/passphrase.h
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/prefs_common.c
+	* src/privacy.c
+	* src/privacy.h
+	* src/procmime.c
+	* src/procmime.h
+	* src/procmsg.c
+	* src/rfc2015.c
+	* src/rfc2015.h
+	* src/select-keys.c
+	* src/select-keys.h
+	* src/textview.c
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/gtk/about.c
+	* src/plugins/pgpmime/Makefile.am
+	* src/plugins/pgpmime/passphrase.c
+	* src/plugins/pgpmime/passphrase.h
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/plugin.c
+	* src/plugins/pgpmime/select-keys.c
+	* src/plugins/pgpmime/select-keys.h
+	* src/plugins/pgpmime/sgpgme.c
+	* src/plugins/pgpmime/sgpgme.h
+		sync with HEAD
+
 2004-10-04 [colin]	0.9.12cvs122.1
 
 	* src/mainwindow.c

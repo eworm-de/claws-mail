@@ -1023,7 +1023,10 @@ enum
 	Q_NEWS_ACCOUNT_ID  = 5,
 	Q_SAVE_COPY_FOLDER = 6,
 	Q_REPLY_MESSAGE_ID = 7,
-	Q_FWD_MESSAGE_ID   = 8
+	Q_FWD_MESSAGE_ID   = 8,
+	Q_PRIVACY_SYSTEM   = 9,
+	Q_ENCRYPT 	   = 10,
+	Q_ENCRYPT_DATA	   = 11,
 };
 
 gint procmsg_send_message_queue(const gchar *file)
@@ -1037,6 +1040,9 @@ gint procmsg_send_message_queue(const gchar *file)
 				       {"SCF:",  NULL, FALSE},
 				       {"RMID:", NULL, FALSE},
 				       {"FMID:", NULL, FALSE},
+				       {"X-Sylpheed-Privacy-System:", NULL, FALSE},
+				       {"X-Sylpheed-Encrypt:", NULL, FALSE},
+				       {"X-Sylpheed-Encrypt-Data:", NULL, FALSE},
 				       {NULL,    NULL, FALSE}};
 	FILE *fp;
 	gint filepos;
@@ -1048,6 +1054,9 @@ gint procmsg_send_message_queue(const gchar *file)
 	gchar *savecopyfolder = NULL;
 	gchar *replymessageid = NULL;
 	gchar *fwdmessageid = NULL;
+	gchar *privacy_system = NULL;
+	gboolean encrypt = FALSE;
+	gchar *encrypt_data = NULL;
 	gchar buf[BUFFSIZE];
 	gint hnum;
 	PrefsAccount *mailac = NULL, *newsac = NULL;
@@ -1092,9 +1101,39 @@ gint procmsg_send_message_queue(const gchar *file)
 		case Q_FWD_MESSAGE_ID:
 			if (!fwdmessageid) fwdmessageid = g_strdup(p);
 			break;
+		case Q_PRIVACY_SYSTEM:
+			if (privacy_system == NULL) privacy_system = g_strdup(p);
+			break;
+		case Q_ENCRYPT:
+			if (p[0] == '1') encrypt = TRUE;
+			break;
+		case Q_ENCRYPT_DATA:
+			if (encrypt_data == NULL) encrypt_data = g_strdup(p);
+			break;
 		}
 	}
 	filepos = ftell(fp);
+
+	if (encrypt) {
+		/* FIXME: memory leaks, in case of errors */
+		MimeInfo *mimeinfo;
+
+		fclose(fp);
+
+		mimeinfo = procmime_scan_queue_file(file);
+		if (!privacy_encrypt(privacy_system, mimeinfo, encrypt_data))
+			return -1;
+
+		fp = my_tmpfile();
+		if (procmime_write_mimeinfo(mimeinfo, fp) < 0) {
+			fclose(fp);
+			return -1;
+		}
+		procmime_mimeinfo_free_all(mimeinfo);
+			
+		rewind(fp);
+		filepos = 0;
+    	}
 
 	if (to_list) {
 		debug_print("Sending message by mail\n");
@@ -1132,7 +1171,7 @@ gint procmsg_send_message_queue(const gchar *file)
 	}
 
 	fseek(fp, filepos, SEEK_SET);
-	if (newsgroup_list && (newsval == 0)) {
+	if (newsgroup_list && (mailval == 0)) {
 		Folder *folder;
 		gchar *tmp = NULL;
 		FILE *tmpfp;

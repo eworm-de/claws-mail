@@ -135,18 +135,10 @@ static struct Compose {
 	GtkWidget *autoreplyto_entry;
 } compose;
 
-#if USE_GPGME
 static struct Privacy {
 	GtkWidget *default_encrypt_chkbtn;
 	GtkWidget *default_sign_chkbtn;
-	GtkWidget *gnupg_mime_radiobtn;
-	GtkWidget *gnupg_inline_radiobtn;
-	GtkWidget *defaultkey_radiobtn;
-	GtkWidget *emailkey_radiobtn;
-	GtkWidget *customkey_radiobtn;
-	GtkWidget *customkey_entry;
 } privacy;
-#endif /* USE_GPGME */
 
 #if USE_OPENSSL
 static struct SSLPrefs {
@@ -218,10 +210,6 @@ static void prefs_account_smtp_auth_type_set_optmenu	(PrefParam *pparam);
 
 static void prefs_account_enum_set_data_from_radiobtn	(PrefParam *pparam);
 static void prefs_account_enum_set_radiobtn		(PrefParam *pparam);
-
-#if USE_GPGME
-static void prefs_account_gnupg_inline_warning		(GtkWidget *widget);
-#endif /* USE_GPGME */
 
 static void prefs_account_crosspost_set_data_from_colormenu(PrefParam *pparam);
 static void prefs_account_crosspost_set_colormenu(PrefParam *pparam);
@@ -402,7 +390,6 @@ static PrefParam param[] = {
 	 &compose.autoreplyto_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
-#if USE_GPGME
 	/* Privacy */
 	{"default_encrypt", "FALSE", &tmp_ac_prefs.default_encrypt, P_BOOL,
 	 &privacy.default_encrypt_chkbtn,
@@ -410,18 +397,6 @@ static PrefParam param[] = {
 	{"default_sign", "FALSE", &tmp_ac_prefs.default_sign, P_BOOL,
 	 &privacy.default_sign_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"default_gnupg_mode", NULL, &tmp_ac_prefs.default_gnupg_mode, P_ENUM,
-	 &privacy.gnupg_mime_radiobtn,
-	 prefs_account_enum_set_data_from_radiobtn,
-	 prefs_account_enum_set_radiobtn},
-	{"sign_key", NULL, &tmp_ac_prefs.sign_key, P_ENUM,
-	 &privacy.defaultkey_radiobtn,
-	 prefs_account_enum_set_data_from_radiobtn,
-	 prefs_account_enum_set_radiobtn},
-	{"sign_key_id", NULL, &tmp_ac_prefs.sign_key_id, P_STRING,
-	 &privacy.customkey_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
-#endif /* USE_GPGME */
 
 #if USE_OPENSSL
 	/* SSL */
@@ -539,9 +514,7 @@ static void prefs_account_basic_create		(void);
 static void prefs_account_receive_create	(void);
 static void prefs_account_send_create		(void);
 static void prefs_account_compose_create	(void);
-#if USE_GPGME
 static void prefs_account_privacy_create	(void);
-#endif /* USE_GPGME */
 #if USE_OPENSSL
 static void prefs_account_ssl_create		(void);
 #endif /* USE_OPENSSL */
@@ -766,10 +739,8 @@ static void prefs_account_create(void)
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Send"), page++);
 	prefs_account_compose_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Compose"), page++);
-#if USE_GPGME
 	prefs_account_privacy_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Privacy"), page++);
-#endif /* USE_GPGME */
 #if USE_OPENSSL
 	prefs_account_ssl_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("SSL"), page++);
@@ -1659,7 +1630,6 @@ static void prefs_account_compose_create(void)
 	compose.autoreplyto_entry  = autoreplyto_entry;
 }
 
-#if USE_GPGME
 static void prefs_account_privacy_create(void)
 {
 	GtkWidget *vbox1;
@@ -1692,102 +1662,9 @@ static void prefs_account_privacy_create(void)
 	PACK_CHECK_BUTTON (vbox2, default_sign_chkbtn,
 			   _("Sign message by default"));
 			    
-	PACK_FRAME (vbox1, frame_mode, _("Default mode"));
-	
-	vbox_mode = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox_mode);
-	gtk_container_add (GTK_CONTAINER (frame_mode), vbox_mode);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_mode), 8);
-
-	gnupg_mime_radiobtn = gtk_radio_button_new_with_label
-		(NULL, _("Use PGP/MIME"));
-	gtk_widget_show (gnupg_mime_radiobtn);
-	gtk_box_pack_start (GTK_BOX (vbox_mode), gnupg_mime_radiobtn,
-			    FALSE, FALSE, 0);
-	g_object_set_data (G_OBJECT (gnupg_mime_radiobtn), 
-			   MENU_VAL_ID,
-			   GINT_TO_POINTER (GNUPG_MODE_DETACH));
-
-	gnupg_inline_radiobtn = gtk_radio_button_new_with_label_from_widget
-		(GTK_RADIO_BUTTON (gnupg_mime_radiobtn),
-		 _("Use Inline"));
-	gtk_widget_show (gnupg_inline_radiobtn);
-	gtk_box_pack_start (GTK_BOX (vbox_mode), gnupg_inline_radiobtn,
-			    FALSE, FALSE, 0);
-	g_object_set_data(G_OBJECT (gnupg_inline_radiobtn), 
-			  MENU_VAL_ID,
-			  GINT_TO_POINTER (GNUPG_MODE_INLINE));
-	g_signal_connect (G_OBJECT (gnupg_inline_radiobtn), "clicked",
-			  G_CALLBACK(prefs_account_gnupg_inline_warning), 
-			  NULL);
-
-
-	PACK_FRAME (vbox1, frame1, _("Sign key"));
-
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame1), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
-
-	defaultkey_radiobtn = gtk_radio_button_new_with_label
-		(NULL, _("Use default GnuPG key"));
-	gtk_widget_show (defaultkey_radiobtn);
-	gtk_box_pack_start (GTK_BOX (vbox2), defaultkey_radiobtn,
-			    FALSE, FALSE, 0);
-	g_object_set_data (G_OBJECT (defaultkey_radiobtn),
-			   MENU_VAL_ID,
-			   GINT_TO_POINTER (SIGN_KEY_DEFAULT));
-
-	emailkey_radiobtn = gtk_radio_button_new_with_label_from_widget
-		(GTK_RADIO_BUTTON (defaultkey_radiobtn),
-		 _("Select key by your email address"));
-	gtk_widget_show (emailkey_radiobtn);
-	gtk_box_pack_start (GTK_BOX (vbox2), emailkey_radiobtn,
-			    FALSE, FALSE, 0);
-	g_object_set_data (G_OBJECT (emailkey_radiobtn),
-			   MENU_VAL_ID,
-			   GINT_TO_POINTER (SIGN_KEY_BY_FROM));
-
-	customkey_radiobtn = gtk_radio_button_new_with_label_from_widget
-		(GTK_RADIO_BUTTON (defaultkey_radiobtn),
-		 _("Specify key manually"));
-	gtk_widget_show (customkey_radiobtn);
-	gtk_box_pack_start (GTK_BOX (vbox2), customkey_radiobtn,
-			    FALSE, FALSE, 0);
-	g_object_set_data (G_OBJECT (customkey_radiobtn),
-			   MENU_VAL_ID,
-			   GINT_TO_POINTER (SIGN_KEY_CUSTOM));
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
-
-	label = gtk_label_new ("");
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
-	gtk_widget_set_size_request (label, 16, -1);
-
-	label = gtk_label_new (_("User or key ID:"));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
-
-	customkey_entry = gtk_entry_new ();
-	gtk_widget_show (customkey_entry);
-	gtk_box_pack_start (GTK_BOX (hbox1), customkey_entry,
-			    TRUE, TRUE, 0);
-
-	SET_TOGGLE_SENSITIVITY (customkey_radiobtn, customkey_entry);
-
 	privacy.default_encrypt_chkbtn = default_encrypt_chkbtn;
 	privacy.default_sign_chkbtn    = default_sign_chkbtn;
-	privacy.gnupg_mime_radiobtn    = gnupg_mime_radiobtn;
-	privacy.gnupg_inline_radiobtn  = gnupg_inline_radiobtn;
-	privacy.defaultkey_radiobtn    = defaultkey_radiobtn;
-	privacy.emailkey_radiobtn      = emailkey_radiobtn;
-	privacy.customkey_radiobtn     = customkey_radiobtn;
-	privacy.customkey_entry        = customkey_entry;
 }
-#endif /* USE_GPGME */
 
 #if USE_OPENSSL
 
@@ -2366,18 +2243,6 @@ static void prefs_account_enum_set_radiobtn(PrefParam *pparam)
 		group = group->next;
 	}
 }
-
-#if USE_GPGME
-static void prefs_account_gnupg_inline_warning(GtkWidget *widget)
-{
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)) &&
-	    gtk_notebook_get_current_page(GTK_NOTEBOOK(dialog.notebook)) > 0)
-		alertpanel_warning
-			(_("Its not recommended to use the old style Inline\n"
-			   "mode for GnuPG messages. It doesn't comply with\n"
-			   "RFC 3156 - MIME Security with OpenPGP."));
-}
-#endif /* USE_GPGME */
 
 static void prefs_account_protocol_set_data_from_optmenu(PrefParam *pparam)
 {
