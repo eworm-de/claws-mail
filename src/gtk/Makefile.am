@@ -1,3 +1,5 @@
+PLUGINDIR = $(pkglibdir)/plugins/
+
 noinst_LTLIBRARIES = libsylpheedgtk.la
 
 libsylpheedgtk_la_SOURCES = \
@@ -46,7 +48,8 @@ AM_CPPFLAGS = \
 	-I.. \
 	$(GTK_CFLAGS) \
 	$(OPENSSL_CFLAGS) \
-	$(ASPELL_CFLAGS)
+	$(ASPELL_CFLAGS) \
+	-DPLUGINDIR=\"$(PLUGINDIR)\"
 
 libsylpheedgtk_la_LIBADD = \
 	../common/libsylpheedcommon.la \

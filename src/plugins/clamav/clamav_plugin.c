@@ -74,7 +74,7 @@ static gboolean scan_func(GNode *node, gpointer data)
 	gchar *outfile;
 	int ret;
 	unsigned long int size;
-	char *virname;
+	const char *virname;
 
 	outfile = procmime_get_tmp_file_name(mimeinfo);
 	if (procmime_get_part(outfile, mimeinfo) < 0)

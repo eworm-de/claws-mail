@@ -1,3 +1,12 @@
+2004-04-14 [darko]	0.9.10claws46
+
+	* src/gtk/Makefile.am
+	* src/gtk/pluginwindow.c
+		load plugins from to $(prefix)/lib/sylpheed/plugins
+		in file selection dialog
+	* src/plugins/clamav/clamav_plugin.c
+		const correctness
+
 2004-04-14 [christoph]	0.9.10claws45
 
 	* src/folder.c
