@@ -522,7 +522,7 @@ static void prefs_actions_delete_cb(GtkWidget *w, gpointer data)
 
 	if (alertpanel(_("Delete action"),
 		       _("Do you really want to delete this action?"),
-		       _("Yes"), _("No"), NULL) == G_ALERTALTERNATE)
+		       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
 		return;
 
 	action = gtk_clist_get_row_data(clist, row);

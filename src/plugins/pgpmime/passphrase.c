@@ -24,10 +24,14 @@
 
 #include <string.h>
 #include <sys/types.h>
+#ifndef WIN32
 #include <sys/mman.h>
+#endif
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
+#ifndef WIN32
 #include <gdk/gdkx.h>  /* GDK_DISPLAY() */
+#endif
 #include <gtk/gtkmain.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkwindow.h>
@@ -157,6 +161,7 @@ passphrase_mbox (const gchar *desc)
     /* don't use XIM on entering passphrase */
     gtkut_editable_disable_im(GTK_EDITABLE(pass_entry));
 
+#ifndef WIN32
     if (grab_all) {
         XGrabServer(GDK_DISPLAY());
         if ( gdk_pointer_grab ( window->window, TRUE, 0,
@@ -174,15 +179,18 @@ passphrase_mbox (const gchar *desc)
             return NULL;
         }
     }
+#endif
 
     gtk_main();
 
+#ifndef WIN32
     if (grab_all) {
         XUngrabServer (GDK_DISPLAY());
         gdk_pointer_ungrab (GDK_CURRENT_TIME);
         gdk_keyboard_ungrab (GDK_CURRENT_TIME);
         gdk_flush();
     }
+#endif
 
     manage_window_focus_out(window, NULL, NULL);
 
@@ -274,7 +282,9 @@ create_description (const gchar *desc)
 static int free_passphrase(gpointer _unused)
 {
     if (last_pass != NULL) {
+#ifndef WIN32
         munlock(last_pass, strlen(last_pass));
+#endif
         g_free(last_pass);
         last_pass = NULL;
         debug_print("%% passphrase removed");
@@ -309,8 +319,10 @@ gpgmegtk_passphrase_cb (void *opaque, const char *desc, void **r_hd)
     else {
         if (prefs_gpg_get_config()->store_passphrase) {
             last_pass = g_strdup(pass);
+#ifndef WIN32
             if (mlock(last_pass, strlen(last_pass)) == -1)
                 debug_print("%% locking passphrase failed");
+#endif
 
             if (prefs_gpg_get_config()->store_passphrase_timeout > 0) {
                 gtk_timeout_add(prefs_gpg_get_config()->store_passphrase_timeout*60*1000,

@@ -374,15 +374,35 @@ SpellingPage *prefs_spelling;
 void prefs_spelling_init(void)
 {
 	SpellingPage *page;
+	static gchar *path[3];
+
+	path[0] = _("Compose");
+	path[1] = _("Spell Checker");
+	path[2] = NULL;
 
 	page = g_new0(SpellingPage, 1);
-	page->page.path = _("Compose/Spell Checker");
+	page->page.path = path;
 	page->page.create_widget = prefs_spelling_create_widget;
 	page->page.destroy_widget = prefs_spelling_destroy_widget;
 	page->page.save_page = prefs_spelling_save;
 	page->page.weight = 50.0;
+
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_spelling = page;
+
+	if (!prefs_common.dictionary)
+		prefs_common.dictionary = g_strdup_printf("%s%s",
+						prefs_common.aspell_path,
+						g_getenv("LANG"));
+	if (!strlen(prefs_common.dictionary)
+	||  !strcmp(prefs_common.dictionary,"(None"))
+		prefs_common.dictionary = g_strdup_printf("%s%s",
+						prefs_common.aspell_path,
+						g_getenv("LANG"));
+	if (strcasestr(prefs_common.dictionary,".utf"))
+		*(strcasestr(prefs_common.dictionary,".utf")) = '\0';
+	if (strstr(prefs_common.dictionary,"@"))
+		*(strstr(prefs_common.dictionary,"@")) = '\0';
 }
 
 void prefs_spelling_done(void)

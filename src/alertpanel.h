@@ -33,6 +33,13 @@ typedef enum
 	G_ALERTDISABLE	= 1 << 16
 } AlertValue;
 
+typedef enum
+{
+	ALERT_NOTICE,
+	ALERT_QUESTION,
+	ALERT_WARNING,
+	ALERT_ERROR
+} AlertType;
 #define G_ALERT_VALUE_MASK	0x0000ffff
 
 AlertValue alertpanel	(const gchar	*title,
@@ -48,11 +55,17 @@ AlertValue alertpanel_with_widget	(const gchar *title,
 				  	 const gchar *button3_label,
 				  	 GtkWidget *widget);
 
-void alertpanel_message	(const gchar	*title,
-			 const gchar	*message);
+AlertValue alertpanel_with_type	(const gchar *title,
+				 const gchar *message,
+				 const gchar *button1_label,
+				 const gchar *button2_label,
+				 const gchar *button3_label,
+				 GtkWidget   *widget,
+				 gint         alert_type);
 
 AlertValue alertpanel_message_with_disable	(const gchar	*title,
-						 const gchar	*message);
+						 const gchar	*message,
+						 gint		 alert_type);
 
 void alertpanel_notice	(const gchar	*format,
 			 ...) G_GNUC_PRINTF(1, 2);

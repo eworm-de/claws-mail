@@ -37,6 +37,7 @@
 
 static gboolean sylpheed_initialized = FALSE;
 static gchar *startup_dir;
+static void (*sylpheed_idle_function)(void) = NULL;
 
 /**
  * Parse program parameters and remove all parameters
@@ -113,7 +114,7 @@ gboolean sylpheed_init(int *argc, char ***argv)
 		}
 	}
 
-	srandom((gint)time(NULL));
+	srand((gint) time(NULL));
 
 #if USE_OPENSSL
 	ssl_init();
@@ -143,4 +144,15 @@ const gchar *sylpheed_get_startup_dir(void)
 guint sylpheed_get_version(void)
 {
 	return VERSION_NUMERIC;
+}
+
+void sylpheed_register_idle_function	(void (*idle_func)(void))
+{
+	sylpheed_idle_function = idle_func;
+}
+
+void sylpheed_do_idle(void)
+{
+	if (sylpheed_idle_function != NULL)
+		sylpheed_idle_function();
 }

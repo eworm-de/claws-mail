@@ -141,6 +141,7 @@ void gtkut_combo_set_items		(GtkCombo	*combo,
 					 const gchar	*str1, ...);
 
 gchar *gtkut_editable_get_selection	(GtkEditable	*editable);
+void gtkut_editable_disable_im		(GtkEditable	*editable);
 
 void gtkut_container_remove		(GtkContainer	*container,
 					 GtkWidget	*widget);

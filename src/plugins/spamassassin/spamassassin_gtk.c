@@ -36,6 +36,7 @@
 #include "prefs_gtk.h"
 #include "foldersel.h"
 #include "spamassassin.h"
+#include "statusbar.h"
 
 struct SpamAssassinPage
 {
@@ -436,10 +437,17 @@ static void spamassassin_save_func(PrefsPage *_page)
 	spamassassin_save_config();
 }
 
+static void gtk_message_callback(gchar *message)
+{
+	statusbar_print_all(message);
+}
+
 static struct SpamAssassinPage spamassassin_page;
 
 gint plugin_init(gchar **error)
 {
+	static gchar *path[3];
+
 	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
 		*error = g_strdup("Your sylpheed version is newer than the version the plugin was built with");
 		return -1;
@@ -449,14 +457,19 @@ gint plugin_init(gchar **error)
 		*error = g_strdup("Your sylpheed version is too old");
 		return -1;
 	}
+    
+	path[0] = _("Filtering");
+	path[1] = _("SpamAssassin");
+	path[2] = NULL;
 
-	spamassassin_page.page.path = _("Filtering/SpamAssassin");
+	spamassassin_page.page.path = path;
 	spamassassin_page.page.create_widget = spamassassin_create_widget_func;
 	spamassassin_page.page.destroy_widget = spamassassin_destroy_widget_func;
 	spamassassin_page.page.save_page = spamassassin_save_func;
 	spamassassin_page.page.weight = 35.0;
 
 	prefs_gtk_register_page((PrefsPage *) &spamassassin_page);
+	spamassassin_set_message_callback(gtk_message_callback);
 
 	debug_print("SpamAssassin GTK plugin loaded\n");
 	return 0;	
@@ -464,6 +477,7 @@ gint plugin_init(gchar **error)
 
 void plugin_done(void)
 {
+	spamassassin_set_message_callback(NULL);
 	prefs_gtk_unregister_page((PrefsPage *) &spamassassin_page);
 
 	debug_print("SpamAssassin GTK plugin unloaded\n");

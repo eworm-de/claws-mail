@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003 Hiroyuki Yamamoto & the Sylpheed-Claws team
+ * Copyright (C) 2003-2004 Hiroyuki Yamamoto & the Sylpheed-Claws team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -335,9 +335,14 @@ static void prefs_themes_get_themes_and_names(ThemesData *tdata)
 
 void prefs_themes_init(void)
 {
-	ThemesData *tdata;
-	ThemesPage *page;
-	GList      *tpaths;
+	ThemesData   *tdata;
+	ThemesPage   *page;
+	GList        *tpaths;
+	static gchar *path[3];
+
+	path[0] = _("Display");
+	path[1] = _("Themes");
+	path[2] = NULL;
 
 	debug_print("Creating prefereces for themes...\n");
 	
@@ -348,7 +353,7 @@ void prefs_themes_init(void)
 	
 	page = g_new0(ThemesPage, 1);
 	
-	page->page.path = _("Display/Themes");
+	page->page.path = path;
 	page->page.create_widget = prefs_themes_create_widget;
 	page->page.destroy_widget = prefs_themes_destroy_widget;
 	page->page.save_page = prefs_themes_save;
@@ -382,7 +387,6 @@ static void prefs_themes_free_names(ThemesData *tdata)
 void prefs_themes_done(void)
 {
 	ThemesData *tdata = prefs_themes_data;
-	GList      *n;
 
 	debug_print("Finished prefereces for themes.\n");
 	
@@ -461,7 +465,6 @@ static void prefs_themes_btn_remove_clicked_cb(GtkWidget *widget, gpointer data)
 
 static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data)
 {
-	struct stat s;
 	gchar      *filename, *source;
 	gchar      *themeinfo, *themename;
 	gchar      *alert_title = NULL;
@@ -492,7 +495,7 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 	}
 	if (getuid() == 0) {
 		val = alertpanel(alert_title,
-				 _("Do you want to install theme for system's all users?"),
+				 _("Do you want to install theme for all users?"),
 				 _("Yes"), _("No"), _("Cancel"));
 		switch (val) {
 		case G_ALERTDEFAULT:
@@ -741,7 +744,7 @@ static gchar *prefs_themes_get_theme_stats(const gchar *dirname)
 	dinfo = g_new0(DirInfo, 1);
 	
 	prefs_themes_foreach_file(dirname, prefs_themes_file_stats, dinfo);
-	stats = g_strdup_printf(_("%d files (%d icons), size is %s"), 
+	stats = g_strdup_printf(_("%d files (%d icons), size: %s"), 
 				dinfo->files, dinfo->pixms, to_human_readable(dinfo->bytes));
 	
 	g_free(dinfo);
@@ -794,7 +797,6 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	GdkColor uri_color[2] = {{0, 0, 0, 0xffff}, {0, 0xffff, 0, 0}};
 	gboolean success[2];
 
-	/* BEGIN GLADE EDITED CODE */
 	GtkWidget *vbox1;
 	GtkWidget *frame1;
 	GtkWidget *vbox2;
@@ -831,11 +833,9 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 
 	vbox1 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox1);
-
-	frame1 = gtk_frame_new (_("Selector"));
-	gtk_widget_show (frame1);
-	gtk_box_pack_start (GTK_BOX (vbox1), frame1, TRUE, TRUE, 0);
-
+	
+	PACK_FRAME (vbox1, frame1, _("Selector"));
+	
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_container_add (GTK_CONTAINER (frame1), vbox2);
@@ -891,10 +891,8 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	gtk_misc_set_alignment (GTK_MISC (label_global_status), 0, 0.5);
 	gtk_misc_set_padding (GTK_MISC (label_global_status), 6, 0);
 
-	frame_info = gtk_frame_new (_("Information"));
-	gtk_widget_show (frame_info);
-	gtk_box_pack_start (GTK_BOX (vbox1), frame_info, TRUE, TRUE, 0);
-
+	PACK_FRAME (vbox1, frame_info, _("Information"));
+	
 	table1 = gtk_table_new (4, 2, FALSE);
 	gtk_widget_show (table1);
 	gtk_container_add (GTK_CONTAINER (frame_info), table1);
@@ -957,10 +955,8 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 			(GtkAttachOptions) (0), 0, 0);
 	gtk_misc_set_alignment (GTK_MISC (label_status), 0, 0.5);
 
-	frame_preview = gtk_frame_new (_("Preview"));
-	gtk_widget_show (frame_preview);
-	gtk_box_pack_start (GTK_BOX (vbox1), frame_preview, TRUE, TRUE, 0);
-
+	PACK_FRAME (vbox1, frame_preview, _("Preview"));
+	
 	hbox1 = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox1);
 	gtk_container_add (GTK_CONTAINER (frame_preview), hbox1);
@@ -1000,10 +996,8 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	gtk_box_pack_start (GTK_BOX (hbox1), icon_7, TRUE, TRUE, 0);
 	gtk_misc_set_padding (GTK_MISC (icon_7), 0, 5);
 
-	frame_buttons = gtk_frame_new (_("Actions"));
-	gtk_widget_show (frame_buttons);
-	gtk_box_pack_start (GTK_BOX (vbox1), frame_buttons, TRUE, TRUE, 0);
-
+	PACK_FRAME (vbox1, frame_buttons, _("Actions"));
+	
 	hbuttonbox1 = gtk_hbutton_box_new ();
 	gtk_widget_show (hbuttonbox1);
 	gtk_container_add (GTK_CONTAINER (frame_buttons), hbuttonbox1);
@@ -1036,7 +1030,6 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 			NULL);
 
 	gtk_widget_grab_default (btn_use);
-	/* END GLADE EDITED CODE */
 
 	prefs_themes->window = GTK_WIDGET(window);
 	

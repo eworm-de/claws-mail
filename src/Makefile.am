@@ -47,12 +47,12 @@ sylpheed_SOURCES = \
 	headerview.c \
 	html.c \
 	imap.c \
+	imap_gtk.c \
 	import.c \
 	importldif.c \
 	importmutt.c \
 	importpine.c \
 	inc.c \
-	inputdialog.c \
 	jpilot.c \
 	ldapctrl.c \
 	ldaplocate.c \
@@ -71,13 +71,14 @@ sylpheed_SOURCES = \
 	message_search.c \
 	messageview.c \
 	mh.c \
+	mh_gtk.c \
 	mimeview.c \
 	msgcache.c \
 	mutt.c \
 	news.c \
+	news_gtk.c \
 	noticeview.c \
-	passphrase.c \
-	pgpmime.c \
+	partial_download.c \
 	pine.c \
 	pop.c \
 	prefs_account.c \
@@ -92,11 +93,13 @@ sylpheed_SOURCES = \
 	prefs_fonts.c \
 	prefs_gtk.c \
 	prefs_matcher.c \
+	prefs_msg_colors.c \
 	prefs_spelling.c \
 	prefs_summary_column.c \
 	prefs_template.c \
 	prefs_themes.c \
 	prefs_toolbar.c \
+	prefs_wrapping.c \
 	privacy.c \
 	procheader.c \
 	procmime.c \
@@ -106,11 +109,8 @@ sylpheed_SOURCES = \
 	quote_fmt_parse.y \
 	recv.c \
 	remotefolder.c \
-	rfc2015.c \
-	select-keys.c \
 	send_message.c \
 	setup.c \
-	sgpgme.c \
 	simple-gettext.c \
 	sourcewindow.c \
 	ssl_manager.c \
@@ -173,12 +173,12 @@ sylpheedinclude_HEADERS = \
 	headerview.h \
 	html.h \
 	imap.h \
+	imap_gtk.h \
 	import.h \
 	importldif.h \
 	importmutt.h \
 	importpine.h \
 	inc.h \
-	inputdialog.h \
 	jpilot.h \
 	ldapctrl.h \
 	ldaplocate.h \
@@ -198,13 +198,14 @@ sylpheedinclude_HEADERS = \
 	message_search.h \
 	messageview.h \
 	mh.h \
+	mh_gtk.h \
 	mimeview.h \
 	msgcache.h \
 	mutt.h \
 	news.h \
+	news_gtk.h \
 	noticeview.h \
-	passphrase.h \
-	pgpmime.h \
+	partial_download.h \
 	pine.h \
 	pop.h \
 	prefs_account.h \
@@ -219,11 +220,13 @@ sylpheedinclude_HEADERS = \
 	prefs_fonts.h \
 	prefs_gtk.h \
 	prefs_matcher.h \
+	prefs_msg_colors.h \
 	prefs_spelling.h \
 	prefs_summary_column.h \
 	prefs_template.h \
 	prefs_themes.h \
 	prefs_toolbar.h \
+	prefs_wrapping.h \
 	privacy.h \
 	procheader.h \
 	procmime.h \
@@ -233,11 +236,8 @@ sylpheedinclude_HEADERS = \
 	quote_fmt_parse.h \
 	recv.h \
 	remotefolder.h \
-	rfc2015.h \
-	select-keys.h \
 	send_message.h \
 	setup.h \
-	sgpgme.h \
 	sourcewindow.h \
 	ssl_manager.h \
 	statusbar.h \
@@ -328,6 +328,11 @@ EXTRA_DIST = \
 	pixmaps/privacy_signed.xpm \
 	pixmaps/privacy_unknown.xpm \
 	pixmaps/privacy_warn.xpm \
+	pixmaps/privacy_emblem_encrypted.xpm \
+	pixmaps/privacy_emblem_failed.xpm \
+	pixmaps/privacy_emblem_passed.xpm \
+	pixmaps/privacy_emblem_signed.xpm \
+	pixmaps/privacy_emblem_warn.xpm \
 	pixmaps/properties.xpm \
 	pixmaps/quicksearch.xpm \
 	pixmaps/regular.xpm \
@@ -338,8 +343,13 @@ EXTRA_DIST = \
 	pixmaps/trash_hrm.xpm \
 	pixmaps/trash.xpm \
 	pixmaps/unread.xpm \
+	pixmaps/read.xpm \
 	pixmaps/up_arrow.xpm \
-	pixmaps/vcard.xpm
+	pixmaps/vcard.xpm \
+	pixmaps/stock_dialog-error.xpm \
+	pixmaps/stock_dialog-info.xpm \
+	pixmaps/stock_dialog-question.xpm \
+	pixmaps/stock_dialog-warning.xpm 
 
 INCLUDES = \
 	-Icommon \
@@ -359,7 +369,9 @@ sylpheed_LDADD = \
 	$(OPENSSL_LIBS) \
 	$(COMPFACE_LIBS) \
 	$(JPILOT_LIBS) \
-	$(LIBICONV)
+	$(PTHREAD_LIBS) \
+	$(LIBICONV) \
+	$(STARTUP_NOTIFICATION_LIBS)
 
 AM_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"Sylpheed\" \
@@ -371,6 +383,7 @@ AM_CPPFLAGS = \
 	$(ASPELL_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(GPGME_CFLAGS) \
-	$(OPENSSL_CFLAGS)
+	$(OPENSSL_CFLAGS) \
+	$(STARTUP_NOTIFICATION_CFLAGS)
 
 AM_YFLAGS = -d

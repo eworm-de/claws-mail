@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,16 +20,15 @@
 #ifndef __PROCMIME_H__
 #define __PROCMIME_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
 
 typedef struct _MimeType	MimeType;
 typedef struct _MimeInfo	MimeInfo;
+
+#include "procmsg.h"
+#include "utils.h"
 
 typedef enum
 {
@@ -58,8 +57,15 @@ typedef enum
 {
 	DISPOSITIONTYPE_INLINE,
 	DISPOSITIONTYPE_ATTACHMENT,
-	DISPOSITIONTYPE_UNKNOWN
+	DISPOSITIONTYPE_UNKNOWN,
 } DispositionType;
+
+typedef enum
+{
+	MIMECONTENT_EMPTY,
+	MIMECONTENT_FILE,		/* the file contains all content including sub parts */
+	MIMECONTENT_MEM,
+} MimeContent;
 
 #include <glib.h>
 #include <stdio.h>
@@ -98,8 +104,13 @@ struct _MimeType
 struct _MimeInfo
 {
 	/* Internal data */
-	gchar *filename;
-	gboolean tmpfile;
+	MimeContent content;
+	union
+	{
+		gchar *filename;
+		gchar *mem;
+	} data;
+	gboolean tmp;
 
 	GNode *node;
 
@@ -108,7 +119,7 @@ struct _MimeInfo
 	MimeMediaType 	 type;
 	gchar		*subtype;
 
-	GHashTable	*parameters;
+	GHashTable	*typeparameters;
 
 	/* Content-Transfer-Encoding */
 	EncodingType	 encoding_type;
@@ -124,6 +135,7 @@ struct _MimeInfo
 
 	/* Content-Disposition */
 	DispositionType	 disposition;
+	GHashTable	*dispositionparameters;
 
 	/* Privacy */
 	PrivacyData	*privacy;
@@ -131,6 +143,10 @@ struct _MimeInfo
 
 #define IS_BOUNDARY(s, bnd, len) \
 	(bnd && s[0] == '-' && s[1] == '-' && !strncmp(s + 2, bnd, len))
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /* MimeInfo handling */
 
@@ -167,6 +183,7 @@ void procmime_scan_subject              (MimeInfo       *mimeinfo,
 MimeInfo *procmime_scan_mime_header	(FILE		*fp);
 
 gboolean procmime_decode_content	(MimeInfo	*mimeinfo);
+gboolean procmime_encode_content	(MimeInfo	*mimeinfo, EncodingType encoding);
 gint procmime_get_part			(const gchar	*outfile,
 					 MimeInfo	*mimeinfo);
 FILE *procmime_get_text_content		(MimeInfo	*mimeinfo);
@@ -175,10 +192,10 @@ FILE *procmime_get_first_text_content	(MsgInfo	*msginfo);
 gboolean procmime_find_string_part	(MimeInfo	*mimeinfo,
 					 const gchar	*filename,
 					 const gchar	*str,
-					 gboolean	 case_sens);
+					 StrFindFunc	 find_func);
 gboolean procmime_find_string		(MsgInfo	*msginfo,
 					 const gchar	*str,
-					 gboolean	 case_sens);
+					 StrFindFunc	 find_func);
 
 gchar *procmime_get_tmp_file_name	(MimeInfo	*mimeinfo);
 
@@ -187,16 +204,21 @@ gchar *procmime_get_mime_type		(const gchar	*filename);
 GList *procmime_get_mime_type_list	(void);
 
 EncodingType procmime_get_encoding_for_charset	(const gchar	*charset);
-EncodingType procmime_get_encoding_for_file	(const gchar	*file);
+EncodingType procmime_get_encoding_for_text_file(const gchar	*file);
 const gchar *procmime_get_encoding_str		(EncodingType	 encoding);
-MimeInfo *procmime_scan_file			(gchar		*filename);
-MimeInfo *procmime_scan_queue_file		(gchar 		*filename);
-const gchar *procmime_get_type_str		(MimeMediaType 	 type);
+MimeInfo *procmime_scan_file			(const gchar	*filename);
+MimeInfo *procmime_scan_queue_file		(const gchar 	*filename);
+const gchar *procmime_get_media_type_str	(MimeMediaType 	 type);
+MimeMediaType procmime_get_media_type		(const gchar 	*str);
 gchar *procmime_get_content_type_str		(MimeMediaType   type,
 						 const gchar	*subtype);
+void procmime_force_charset			(const gchar 	*str);
+void procmime_force_encoding			(EncodingType	 encoding);
 
 void renderer_read_config(void);
 void renderer_write_config(void);
+
+gint procmime_write_mimeinfo(MimeInfo *mimeinfo, FILE *fp);
 
 #ifdef __cplusplus
 }

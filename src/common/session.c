@@ -63,7 +63,13 @@ static gboolean session_write_msg_cb	(SockInfo	*source,
 static gboolean session_write_data_cb	(SockInfo	*source,
 					 GIOCondition	 condition,
 					 gpointer	 data);
+#ifdef WIN32
+void session_set_access_time(Session *session);
+void session_set_timeout(Session *session, guint interval);
 
+void session_set_access_time(Session *session) {};
+void session_set_timeout(Session *session, guint interval) {};
+#endif
 
 void session_init(Session *session)
 {

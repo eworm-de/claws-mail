@@ -40,6 +40,15 @@
 #
 # Change Log
 #
+# 2003-03-25
+#	- make extension matching case insensitive
+#
+# 2003-03-23
+#	- Support for MS Excel (xlhtml) and Powerpoint (ppthtml)
+#
+# 2004-03-09
+#	- Support for HTML (html2text)
+#
 # 2004-02-13
 #	- added support for perl and shell scripts, and recognize that
 #	  'file' will always return 'text' somewhere in its output for
@@ -103,8 +112,10 @@ FILETYPE=`file --brief "$1"` ||
 	exit 1 
 };
 
-case "$1" in 
+FNAME=`echo "$1" | tr [A-Z] [a-z]`
+case "$FNAME" in 
 	*.doc)	TYPE=MSWORD	;;
+	*.ppt)  TYPE=POWERPOINT ;;
 	*.zip)	TYPE=ZIP	;;
 	*.tar.gz|*.tgz)	TYPE=TARGZ ;;
 	*.tar.bz2|*.tar.bz)	TYPE=TARBZ ;;
@@ -118,12 +129,15 @@ case "$1" in
 	*.pdf)	TYPE=PDF	;;
 	*.sh)	TYPE=TEXT	;;
 	*.pl)	TYPE=TEXT	;;
+        *.html|*.htm) TYPE=HTML ;;
+	*.xls)	TYPE=EXCEL	;;
 esac
 
 if [ "$TYPE" == "" ]	
 then
 	case $FILETYPE in 
-		*"text"*)	TYPE=TEXT	;;
+		*"HTML"*)	TYPE=HTML ;;
+		*"text"*)	TYPE=TEXT ;;
 		gzip*)		TYPE=GZIP ;;
 		bzip2*)		TYPE=BZIP ;;
 		"POSIX tar archive"*)	TYPE=TAR	;;
@@ -176,6 +190,32 @@ case $TYPE in
 		echo -e "Displaying \"$1\" using \"antiword\":\n";
 		antiword -w 72 "$1" 				;;
 
+	POWERPOINT) which ppthtml > /dev/null 2>&1 ||
+		{ 
+			echo "Program 'ppthtml' for displaying Powerpoint files not found" >&2
+			exit 1
+		};
+		which html2text > /dev/null 2>&1 ||                           
+                {                                                               
+                        echo "Program 'html2text' for displaying Powerpoint files not found" >&2
+                        exit 1                                                  
+                };   
+		echo -e "Displaying \"$1\" using \"ppthtml\" and \"html2text\":\n";
+		ppthtml "$1" | html2text			;;
+
+        EXCEL) which xlhtml > /dev/null 2>&1 ||
+                {
+                        echo "Program 'xlhtml' for displaying Excel files not found" >&2
+                        exit 1
+                };
+                which html2text > /dev/null 2>&1 || 
+                {
+                        echo "Program 'html2text' for displaying Excel files not found" >&2
+                        exit 1
+                };
+                echo -e "Displaying \"$1\" using \"xlhtml\" and \"html2text\":\n";
+                xlhtml "$1" | html2text                        ;;
+ 
 	OOWRITER) which ooo2txt > /dev/null 2>&1 ||
 		{
 			echo "Program 'ooo2txt' for converting OpenOffice Writer files not files not found" >&2
@@ -191,6 +231,13 @@ case $TYPE in
 		};
 		echo -e "Displaying \"$1\" using \"pdftotext\":\n";
 		pdftotext "$1"	-				;;
+
+	HTML) which html2text > /dev/null 2>&1 ||
+		{
+			echo "Program 'html2text' for converting HTML files not found" >&2
+			exit 1
+		};
+		html2text -nobs "$1" ;;
 
 	*)	echo "Unsupported file type \"$FILETYPE\", cannot display.";;
 esac

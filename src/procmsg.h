@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,12 +91,13 @@ typedef guint32 MsgPermFlags;
 #define MSG_IMAP		(1U << 19)
 #define MSG_NEWS		(1U << 20)
 #define MSG_SIGNED		(1U << 21)
-#define MSG_MIME		(1U << 29)
-#define MSG_CACHED		(1U << 31)
+#define MSG_MULTIPART		(1U << 29)
+#define MSG_HAS_ATTACHMENT	(1U << 30)
+#define MSG_SCANNED		(1U << 31)
 
 typedef guint32 MsgTmpFlags;
 
-#define MSG_CACHED_FLAG_MASK	(MSG_MIME | MSG_ENCRYPTED | MSG_SIGNED)
+#define MSG_CACHED_FLAG_MASK	(MSG_MULTIPART | MSG_ENCRYPTED | MSG_SIGNED | MSG_HAS_ATTACHMENT | MSG_SCANNED)
 
 #define MSG_SET_FLAGS(msg, flags)	{ (msg) |= (flags); }
 #define MSG_UNSET_FLAGS(msg, flags)	{ (msg) &= ~(flags); }
@@ -134,8 +135,9 @@ typedef guint32 MsgTmpFlags;
 #define MSG_IS_SIGNED(msg)		(((msg).tmp_flags & MSG_SIGNED) != 0)
 #define MSG_IS_IMAP(msg)		(((msg).tmp_flags & MSG_IMAP) != 0)
 #define MSG_IS_NEWS(msg)		(((msg).tmp_flags & MSG_NEWS) != 0)
-#define MSG_IS_MIME(msg)		(((msg).tmp_flags & MSG_MIME) != 0)
-#define MSG_IS_CACHED(msg)		(((msg).tmp_flags & MSG_CACHED) != 0)
+#define MSG_IS_MULTIPART(msg)		(((msg).tmp_flags & MSG_MULTIPART) != 0)
+#define MSG_IS_WITH_ATTACHMENT(msg)	(((msg).tmp_flags & MSG_HAS_ATTACHMENT) != 0)
+#define MSG_IS_SCANNED(msg)		(((msg).tmp_flags & MSG_SCANNED) != 0)
 
 /* Claws related flags */
 #define MSG_IS_REALLY_DELETED(msg)	(((msg).perm_flags & MSG_REALLY_DELETED) != 0)
@@ -201,9 +203,15 @@ struct _MsgInfo
 
 	/* used only for encrypted messages */
 	gchar *plaintext_file;
-	guint decryption_failed : 1;
         
         gint hidden;
+	
+	/* used only for partially received messages */
+	gchar *partial_recv;
+	gint total_size;
+	gchar *account_server;
+	gchar *account_login;
+	gint planned_download;
 };
 
 struct _MsgFileInfo
@@ -257,7 +265,9 @@ void	procmsg_get_filter_keyword	(MsgInfo	  *msginfo,
 					 gchar	         **key,
 					 PrefsFilterType   type);
 
-void	procmsg_empty_trash		(void);
+void	procmsg_empty_trash		(FolderItem	*trash);
+void	procmsg_empty_all_trash		(void);
+
 gint	procmsg_send_queue		(FolderItem	*queue,
 					 gboolean	 save_msgs);
 gint	procmsg_save_to_outbox		(FolderItem	*outbox,
@@ -279,10 +289,10 @@ gint procmsg_send_message_queue		(const gchar *file);
 
 void procmsg_msginfo_set_flags		(MsgInfo *msginfo,
 					 MsgPermFlags perm_flags,
-					  MsgTmpFlags tmp_flags);
+					 MsgTmpFlags tmp_flags);
 void procmsg_msginfo_unset_flags	(MsgInfo *msginfo,
 					 MsgPermFlags perm_flags,
-					  MsgTmpFlags tmp_flags);
+					 MsgTmpFlags tmp_flags);
 gint procmsg_remove_special_headers	(const gchar 	*in, 
 					 const gchar 	*out);
 

@@ -41,6 +41,7 @@
 #include "clamav_plugin.h"
 
 static guint hook_id;
+static MessageCallback message_callback;
 
 static ClamAvConfig config;
 
@@ -74,7 +75,7 @@ static gboolean scan_func(GNode *node, gpointer data)
 	gchar *outfile;
 	int ret;
 	unsigned long int size;
-	char *virname;
+	const char *virname;
 
 	outfile = procmime_get_tmp_file_name(mimeinfo);
 	if (procmime_get_part(outfile, mimeinfo) < 0)
@@ -113,7 +114,8 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	if (!mimeinfo) return FALSE;
 
 	debug_print("Scanning message %d for viruses\n", msginfo->msgnum);
-	statusbar_print_all(_("ClamAV: scanning message..."));
+	if (message_callback != NULL)
+		message_callback(_("ClamAV: scanning message..."));
 
 	params.is_infected = FALSE;
 	params.root = NULL;
@@ -184,6 +186,11 @@ void clamav_save_config(void)
 	fprintf(pfile->fp, "\n");
 
 	prefs_file_close(pfile);
+}
+
+void clamav_set_message_callback(MessageCallback callback)
+{
+	message_callback = callback;
 }
 
 gint plugin_init(gchar **error)

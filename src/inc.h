@@ -26,6 +26,9 @@
 
 #include <glib.h>
 #include <time.h>
+#ifndef WIN32
+#include <sys/time.h>
+#endif WIN32
 
 #include "mainwindow.h"
 #include "progressdialog.h"
@@ -47,6 +50,7 @@ typedef enum
 	INC_IO_ERROR,
 	INC_SOCKET_ERROR,
 	INC_EOF,
+	INC_TIMEOUT,
 	INC_CANCEL
 } IncState;
 
@@ -58,7 +62,8 @@ struct _IncProgressDialog
 
 	gboolean show_dialog;
 
-	guint timer_id;
+	struct timeval progress_tv;
+	struct timeval folder_tv;
 
 	GList *queue_list;	/* list of IncSession */
 	gint cur_row;
@@ -69,8 +74,7 @@ struct _IncSession
 	Session *session;
 	IncState inc_state;
 
-	GHashTable *folder_table;	/* table of destination folders */
-	GHashTable *tmp_folder_table;	/* for progressive update */
+	gint cur_total_bytes;
 
 	gpointer data;
 };

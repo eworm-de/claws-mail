@@ -89,7 +89,6 @@ static void about_create(void)
 	gtk_window_set_title(GTK_WINDOW(window), _("About"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_widget_set_usize(window, 518, 358);
-	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
 			   GTK_SIGNAL_FUNC(gtk_widget_hide_on_delete), NULL);
 	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
@@ -142,9 +141,6 @@ static void about_create(void)
 #if HAVE_LIBCOMPFACE
 		   " compface"
 #endif
-#if USE_GPGME
-		   " GnuPG"
-#endif
 #if USE_OPENSSL
 		   " OpenSSL"
 #endif
@@ -163,7 +159,7 @@ static void about_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
 	label = gtk_label_new
-		("Copyright (C) 1999-2003 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>");
+		("Copyright (C) 1999-2004 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>");
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
 	hbox = gtk_hbox_new(FALSE, 0);
@@ -204,11 +200,6 @@ static void about_create(void)
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 
 	gtk_text_freeze(GTK_TEXT(text));
-
-#if USE_GPGME
-	gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
-		_("GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>\n\n"), -1);
-#endif /* USE_GPGME */
 
 	gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
 		_("This program is free software; you can redistribute it and/or modify "

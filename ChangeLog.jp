@@ -1,3 +1,624 @@
+2004-11-16
+
+	* version 1.0.0beta3
+
+2004-11-16
+
+	* src/pixmaps/error.xpm: CList の行に合うようにより小さなサイズにした。
+
+2004-11-16
+
+	* src/jpilot.c: JPilot アドレス帳の日本語対応パッチを適用
+	  (IWAMOTO, Kouichi さん thanks)。
+
+2004-11-15
+
+	* src/compose.c
+	  src/procmime.[ch]: 添付するテキストファイル中の 8bit 文字の割合が
+	  20% より高ければ BASE64 エンコーディングを使用し、そうでなければ
+	  quoted-printable を使用(全くない場合は 7bit)。
+
+2004-11-12
+
+	* src/compose.c: compose_write_attach()
+	  src/procmime.c: procmime_decode_content():
+	  テキストファイルを BASE64 にエンコードする前に正規化し、デコード
+	  した後に正規化を解除して RFC 2045 に準拠するようにした
+	  (Nicolas Degory さん thanks)。
+
+2004-11-11
+
+	* src/pixmaps/complete.xpm
+	  src/pixmaps/continue.xpm: CList の行に合うようにより小さなサイズ
+	  にした。
+
+2004-11-11
+
+	* src/statusbar.c: statusbar_create(): 自動的に伸長しないように
+	  ウィジェットの幅を1に指定。
+	* src/utils.[ch]: trim_string_before(): 指定した長さを超える先頭の
+	  文字を切り詰め、 "..." を追加。
+	* src/folderview.c
+	  src/summaryview.c: trim_string_before() を使ってフォルダ名を表示
+	  するようにした。
+
+2004-11-10
+
+	* src/defs.h
+	  src/prefs_common.c: mozilla-firefox をデフォルトのブラウザにした。
+
+2004-11-09
+
+	* src/summaryview.c: summary_key_pressed()
+	  src/textview.c: textview_key_pressed(): Shift または Alt とスペース
+	  キーが押された場合バックスクロールするようにした。 Shift と Enter
+	  キーが押された場合もバックスクロールするようにした。
+
+2004-11-09
+
+	* src/foldersel.c: foldersel_new_folder(): 新規に作成されたフォルダを
+	  選択するようにした。
+
+2004-11-08
+
+	* version 1.0.0beta2
+
+2004-11-08
+
+	* src/account.c
+	  src/imap.c
+	  src/inc.c
+	  src/pop.c
+	  src/prefs_account.[ch]: RecvProtocol::A_APOP を廃止し、 APOP の
+	  オプションを追加。
+	  prefs_account_protocol_set_optmenu(): リファクタリング。
+
+2004-11-07
+
+	* src/folderview.c: folderview_empty_trash_cb(): 未使用の変数を削除。
+
+2004-11-05
+
+	* src/summary_search.c: ワイドキャラクタ文字列の代わりに C 文字列
+	  を使用。 AND/OR マッチができるようにした。
+
+2004-11-05
+
+	* src/folderview.[ch]
+	  src/mainwindow.c: 選択フォルダに応じてファイル/フォルダ と
+	  ファイル/メールボックス のメニューのセンシティビティを変更する
+	  ようにした。
+	  「ファイル/フォルダ/新規フォルダを作成」からニュースグループの
+	  購読が行えるようにした。
+
+2004-11-04
+
+	* src/folderview.[ch]
+	  src/mainwindow.c: フォルダ/メールボックスのメニューを再構成。
+	  メインメニューで「メールボックスを削除」、「新着メッセージを
+	  チェック」、「フォルダツリーを再構築」を有効にした。
+	  フォルダのコンテキストメニューから「メールボックスを削除」を
+	  削除。
+
+2004-11-04
+
+	* src/folderview.c
+	  src/mainwindow.c
+	  src/procmsg.[ch]: フォルダのコンテキストメニューに「ごみ箱を
+	  空にする」を追加。
+
+2004-11-01
+
+	* src/filter.[ch]
+	  src/summaryview.c: immediate_execution が off の場合は即座に移動
+	  または削除しないようにした。
+
+2004-10-29
+
+	* version 1.0.0beta1
+
+2004-10-29
+
+	* gettext-0.14.1 に更新。
+
+2004-10-28
+
+	* src/compose.c: メニューを再構成。
+	* src/mh.c: デバッグ用の g_print() を削除。
+
+2004-10-27
+
+	* src/compose.c
+	  src/prefs_template.c
+	  src/template.[ch]: テンプレートのパラメータに Cc: を追加。
+
+2004-10-26
+
+	* src/prefs_filter_edit.c: 既存のルールの編集中の条件メニュー切替え
+	  の問題を修正。
+
+2004-10-25
+
+	* src/filter.c: filter_action_exec(): ローカルフィルタリング時
+	  FolderItem のカウンタを更新するようにした(フォルダビューの
+	  メッセージカウントがおかしくなるのを修正)。
+
+2004-10-25
+
+	* src/mbox.c: proc_mbox(): folder_table が NULL かどうかをチェック
+	  (警告を修正)。
+
+2004-10-21
+
+	* src/pixmaps/stock_add_16.xpm
+	  src/pixmaps/stock_remove_16.xpm: gtk-2.4 のストックアイコンから変換。
+	* src/prefs_filter_edit.c: 追加/削除ボタンにアイコンを使用。
+	* src/stock_pixmap.[ch]: 追加/削除のアイコンを追加。
+
+2004-10-21
+
+	* src/pixmaps/stock_dialog_error_48.xpm
+	  src/pixmaps/stock_dialog_info_48.xpm
+	  src/pixmaps/stock_dialog_question_48.xpm
+	  src/pixmaps/stock_dialog_warning_48.xpm: gtk-2.4 のストックアイコン
+	  からダイアログアイコンを変換。
+	* src/alertpanel.[ch]: 警告ダイアログにアイコンを追加。
+	  alertpanel_message(): AlertType を追加。
+	* src/stock_pixmaps.[ch]: ダイアログアイコンを追加。
+
+2004-10-08
+
+	* src/procmsg.c: 冗長なデバッグ出力を削除。
+
+2004-10-07
+
+	* version 0.9.99
+
+2004-10-07
+
+	* src/procmsg.c: procmsg_send_queue()
+	  src/send_message.c: send_queue_info_free(): 不正なキューメッセージ
+	  を送信しようとしたときに segmentation fault になるバグを修正。
+
+2004-10-06
+
+	* src/mainwindow.c: ファイルメニューにセパレータを追加。
+	* src/prefs_filter_edit.c: いくつかのデバッグ出力を削除。
+
+2004-10-05
+
+	* src/inputdialog.c: input_dialog_open(): 入力ダイアログが開いている
+	  間はメールの自動チェックを開始しないようにした。
+
+2004-10-04
+
+	* src/mh.c: mh_remove_all_msg()
+	  src/procmsg.c: procmsg_empty_trash(): ごみ箱を空にした後メッセージ
+	  数のカウントがおかしくなるのを修正。
+
+2004-10-01
+
+	* src/prefs_filter.c: 自動作成されたルールを追加できないバグを修正。
+	* src/prefs_filter_edit.c: prefs_filter_edit_dialog_to_rule(): ルール
+	  名が存在するかどうかをチェック。
+
+2004-09-30
+
+	* src/filter.c: filter_apply_msginfo(): FilterRule::enabled == FALSE
+	  の場合フィルタを適用しないようにした。
+	* src/prefs_filter.c: 「有効」カラムを実装。
+	* src/account.c: account_selected(): ダブルクリックの挙動を修正。
+
+2004-09-30
+
+	* src/colorlabel.c: メニューラベルサイズを調整。カラーメニューから
+	  「なし」を削除。
+	* src/filter.[ch]
+	  src/prefs_filter_edit.c: カラーラベルアクションを実装。
+	* src/summaryview.c: summary_filter_func(): フラグアクションが実行
+	  されたときにサマリのフラグを更新するようにした。
+
+2004-09-29
+
+	* src/prefs_filter_edit.c: カラーラベルを追加。
+	* src/colorlabel.c: メニューのラベルのサイズと輪郭線を修正。
+
+2004-09-28
+
+	* src/filter.[ch]
+	  src/prefs_filter_edit.c: ルール作成時のエラー処理を改良。
+
+2004-09-28
+
+	* src/prefs_common.c: ビューのデフォルトのサイズを調整。
+
+2004-09-27
+
+	* src/filter.c
+	  src/prefs_filter_edit.c: サイズ/経過日数条件を実装。
+	* src/menu.[ch]: menu_get_option_menu_active_user_data(): 新規。
+
+2004-09-22
+
+	* src/prefs_filter_edit.c: ヘッダの編集が完了したら以前の項目を
+	  選択するようにした。
+
+2004-09-22
+
+	* src/prefs_filter.[ch]
+	  src/prefs_filter_edit.c
+	  src/procheader.[ch]: ユーザ定義ヘッダのダイアログを実装。
+
+2004-09-17
+
+	* src/filter.c:
+	  filter_action_exec(): ローカルフィルタリングを修正。
+	  strmatch_regex(): 大小文字無視の正規表現を使用。
+	* src/summaryview.[ch]: フィルタ結果をステータスバーに表示。
+
+2004-09-14
+
+	* src/filter.[ch]: フィルタルール適用タイミングを実装。
+	* src/prefs_fil_er_edit.c: prefs_filter_edit_action_hbox_set():
+	  PF_ACTION_EXEC のパラメータを表示していなかったバグを修正。
+
+2004-09-10
+
+	* src/prefs_filter.c: prefs_filter_write_user_header_list(): fopen()
+	  の代わりに prefs_file_open() を使用。
+
+2004-09-10
+
+	* src/defs.h
+	  src/prefs_filter.c: ユーザ定義ヘッダリストのロード/セーブを
+	  実装。
+
+2004-09-09
+
+	* src/inc.c: inc_spool()
+	  src/prefs_common.c: ファイルとディレクトリの両方を指定できるように
+	  スプールパスの設定を修正。
+
+2004-09-09
+
+	* src/prefs_filter.[ch]
+	  src/prefs_filter_edit.[ch]: メッセージからのフィルタルールの作成
+	  を実装。
+
+2004-09-07
+
+	* src/mimeview.c: mimeview_drag_data_get()
+	  src/summaryview.c: summary_drag_data_get(): DnD の不正な URI
+	  を修正。
+
+2004-09-06
+
+	* src/filter.[ch]
+	  src/summaryview.c: ローカルフィルタを修正。
+	* src/mh.c: mh_copy_msgs(): 'else' が抜けていたのを修正。
+
+2004-09-06
+
+	* src/foldersel.c: foldersel_new_folder(): 潜在的なメモリ破壊を修正
+	  し、追加後にフォルダリストを書き出すようにした。
+	* src/summaryview.c: summary_show(): メッセージリストを読み込んだ
+	  後に FolderItem::opened フラグを立てるようにした。
+
+2004-09-03
+
+	* src/filter.c
+	  src/inc.c
+	  src/mbox.c
+	  src/mh.c
+	  src/procmsg.[ch]
+	  src/summaryview.c: FolderItem::mark_queue を使用して新着フラグを
+	  正しく扱うようにした。
+
+2004-08-31
+
+	* src/filter.c
+	  src/inc.c: 新着フラグ管理の修正。
+
+2004-08-31
+
+	* src/prefs_filter.c: ダイアログを開いた時に最後の行に移動しない
+	  ようにした。閉じる時に CList をクリアするようにした。
+
+2004-08-27
+
+	* src/filter.c
+	  src/inc.c
+	  src/pop.[ch]
+	  src/prefs_filter_edit.c
+	  src/summaryview.c: FLT_ACTION_EXEC と FLT_ACTION_DELETE を実装。
+
+2004-08-27
+
+	* src/prefs_filter.c: 新規ルールが追加されたら自動スクロールする
+	  ようにした。
+	  ルールがダブルクリックされたら編集ダイアログを開くようにした。
+	  prefs_filter_copy_cb(): 実装。
+	* src/prefs_filter_edit.c: アクション「ルールの評価を停止」を実装。
+
+2004-08-26
+
+	* src/filter.[ch]
+	  src/inc.c
+	  src/mbox.c
+	  src/prefs_filter_edit.c
+	  src/summaryview.c: FilterResult を FilterInfo に改名し、メンバに
+	  account を追加。
+	  command test, size, age, account, on-receive 条件を実装。
+	* src/mh.c
+	  src/procheader.c: procheader_parse_file(): ファイルサイズと
+	  タイムスタンプも得るようにした。
+	* src/utils.c:
+	  execute_async()
+	  execute_sync()
+	  execute_command_line(): 終了ステータスを返すようにした。
+
+2004-08-26
+
+	* src/filter.[ch]
+	  src/inc.c: 実行した全てのアクションタイプを保存。
+	  filter_rule_rename_dest_path(): 新システムに合わせて修正。
+	  filter_rule_delete_action_by_dest_path(): パスにマッチする
+	  アクションを削除。
+	* src/mbox.c: proc_mbox(): FLT_ACTION_NOT_RECEIVE を無視するように
+	  した。
+	* src/prefs_filter.c: prefs_filter_delete_path(): 新システムに
+	  合わせて修正。
+	* src/summaryview.c:
+	  summary_filter()
+	  summary_filter_func(): 新システムに合わせて修正。
+
+2004-08-25
+
+	* src/filter.[ch]: メッセージ本文へのマッチを実装。
+	* src/procmime.[ch]:
+	  procmime_find_string_part()
+	  procmime_find_string(): マッチング関数ポインタを受け取るようにした。
+	* src/procmsg.[ch]: file_path (一時メッセージのみに使用)を MsgInfo
+	  に追加。
+	  procmsg_msginfo_copy()
+	  procmsg_msginfo_free(): 残りのメンバを扱うようにした。
+	* src/summary_search.c: procmime_find_string() のための修正。
+	* src/summaryview.c: filter_apply_local() -> filter_apply_msginfo().
+	* src/utils.[ch]: 文字列マッチ用関数を追加。
+	* src/compose.c
+	  src/undo.c: 余分なデバッグメッセージを削除。
+
+2004-08-24
+
+	* 新フィルタリングシステムを実装(現在進行中)。
+	* src/defs.h
+	  src/filter.[ch]: フィルタリングの XML データの読み書きを実装。
+	* src/prefs_filter.[ch]
+	  src/prefs_filter_edit.[ch]: 新フィルタリングシステムの UI を実装。
+	* src/inc.c
+	  src/main.c
+	  src/mbox.c
+	  src/pop.c
+	  src/summaryview.c: 新フィルタリングシステムに合わせて修正。
+	* src/menu.h: MENUITEM_ADD(): label が NULL の場合セパレータを作成
+	  するようにした。
+	* src/procheader.[ch]: ユーティリティ関数を追加。
+	* src/utils.c: open_uri(): 警告メッセージを修正。
+
+2004-08-09
+
+	* src/main.c: "./gtkrc" をパースしないようにした。
+
+2004-08-04
+
+	* src/socket.c:
+	  ssl_read()
+	  ssl_peek(): データの読み込みの前に SSL をチェックするようにした
+	  (ソケットが破壊されたときのフリーズを修正)。
+	* src/session.[ch]: session_set_access_time(): 新規。
+	* src/imap.c
+	  src/news.c
+	  src/nntp.c: サーバの応答の受信に成功したときのみ last_access_time
+	  を更新するようにした。
+	* 上記について Cedric Pradalier さん thanks。
+
+2004-07-23
+
+	* src/xml.[ch]: コードの整理といくつかの関数の追加。
+
+2004-07-16
+
+	* src/pop.[ch]: pop3_getrange_uidl_recv(): 無効な UIDL のチェックを
+	  緩めた。
+
+2004-07-16
+
+	* src/account.[ch]
+	  src/main.c
+	  src/prefs.[ch]
+	  src/prefs_account.[ch]
+	  src/prefs_common.[ch]: *_{save,write}_config() を *_write_config()
+	  に統一。
+
+2004-06-30
+
+	* src/procheader.c:
+	  procheader_get_one_field()
+	  procheader_get_unfolded_line(): シーケンス 'SP CR LF' が出現
+	  したときに折り返し解除処理が正しく動作しないバグを修正
+	  (NOGUCHI, Takuya さん thanks)。
+
+2004-06-23
+
+	* src/prefs_common.c: confirm_on_exit のデフォルトを FALSE にした。
+
+2004-06-23
+
+	* src/menu.[ch]: menu_set_active() を追加。
+	* src/compose.c: アカウントを選択するときに「表示/自動整形」モードを
+	  切り替えないようにした。
+
+2004-06-23
+
+	* src/compose.[ch]: メッセージ作成ウィンドウから自動整形を切り替え
+	  られるようにした。
+
+2004-06-17
+
+	* version 0.9.12
+
+2004-06-17
+
+	* src/session.c: session_set_timeout(): interval が 0 のとき
+	  timeout_tag をリセットしていなかったバグを修正。
+
+2004-06-16
+
+	* src/gtkstext.c: gtk_stext_update_text(): cache の null チェックを
+	  追加(Jim Hranicky さん thanks)。
+
+2004-06-15
+
+	* src/defs.h: 特定のプラットフォーム(例: FreeBSD)におけるキャッシュ
+	  の非互換性問題に対処するために CACHE_VERSION を増加。
+	* src/procmsg.c: procmsg_read_cache(): エラーが発生したら読み込んだ
+	  キャッシュデータを全て破棄するようにした。
+
+2004-06-10
+
+	* src/summaryview.[ch]: 使用不可能なときは「再編集」メニューを隠す
+	  ようにした。
+
+2004-06-08
+
+	* src/inc.[ch]
+	  src/send_message.c
+	  src/session.[ch]: セッションのタイムアウトを実装。
+	* src/pop.h: Pop3ErrorValue から未使用の値を削除。
+
+2004-06-07
+
+	* src/inc.c: inc_all_account_mail(): コードの整理。
+
+2004-06-03
+
+	* src/procmsg.c: procmsg_read_cache_data_str(): いくつかの環境のため
+	  に gint32 を guint32 に変更。
+	* src/summaryview.c: 「印刷」メニューを復活し、「振り分けルールを
+	  作成」メニューを削除。
+
+2004-06-01
+
+	* src/about.c: 著作権の年を修正。
+
+2004-05-28
+
+	* version 0.9.11
+
+2004-05-21
+
+	* src/smtp.c: RFC 2821 に準拠(Alfons さん thanks)。
+
+2004-05-20
+
+	* src/folderview.[ch]: スプリングローデッドフォルダを実装。
+
+2004-05-20
+
+	* src/folderview.c: folderview_button_pressed(): 開いているフォルダ
+	  が選択されたときのみ「メッセージを検索...」メニュー項目を有効に
+	  するようにした。
+
+2004-05-19
+
+	* src/compose.c
+	  src/prefs_common.[ch]: 「送信に失敗したメッセージを送信待ちに
+	  入れる」オプションを削除。
+
+2004-05-18
+
+	* src/summaryview.c: コンテキストメニューを整理。
+	* src/mainwindow.c: メニュー項目 '/メッセージ/再編集' の位置を変更。
+
+2004-05-12
+
+	* src/procmsg.[ch]: キャッシュデータの整数値の型を g(u)int32 に
+	  固定。
+
+2004-05-11
+
+	* src/nntp.c: nntp_get_article(): broken なニュースサーバのために
+	  応答のプロトコルエラーを無視するようにした(Davide Scola さん
+	  thanks)。
+
+2004-05-11
+
+	* src/gtkutils.[ch]: gtkut_editable_disable_im() を追加。
+	* src/passphrase.c: パスフレーズの入力時に XIM を無効にした。
+
+2004-05-11
+
+	* src/compose.c
+	  src/folderview.c
+	  src/inc.c
+	  src/prefs_display_header.c
+	  src/procmsg.h: AMD64 (とその他64-bitプラットフォーム)　のための
+	  修正(Hiroyuki Ikezoe さん thanks)。
+
+2004-05-10
+
+	* src/inc.[ch]: gtk_timeout_add() を使用せず、代わりに
+	  gettimeofday() を使用(稀にロックアップするのを防ぐため)。
+
+2004-03-19
+
+	* src/defs.h
+	  src/inc.[ch]: 進捗ダイアログの更新方法を変更し、高速なネットワーク
+	  におけるオーバーヘッドを軽減。
+
+2004-03-16
+
+	* src/nntp.c: nntp_session_new(): セッションの開始時に認証を試みる
+	  ようにした(Shiino Yuki さん、 IWAMOTO, Kouichi さん thanks)。
+	* src/news.c
+	  src/nntp.c: ソケットエラーが発生したときはセッションを破棄する
+	  ようにした。
+
+2004-03-12
+
+	* src/mainwindow.c
+	  src/summaryview.[ch]: 選択中のメッセージを振り分ける機能を追加。
+
+2004-03-12
+
+	* src/filter.[ch]
+	  src/prefs_filter.c: フィルタシステムを再実装(UI は未実装)。
+
+2004-03-09
+
+	* src/filter.c: 「含まない」フラグのマッチングアルゴリズムを修正
+	  (ヘッダが存在しない場合でもマッチし、複数の同一ヘッダを正しく扱う
+	  ようにした)。
+	* src/imageview.c: get_resized_size(): リサイズの問題を起こしていた
+	  typo を修正。
+
+2004-03-02
+
+	* src/folder.c
+	  src/mh.c: MH フォルダの最後の番号のメッセージを削除したとき
+	  FolderItem::last_num のみを更新し、その他の場合はスキャンしない
+	  ようにした(移動時にメッセージ数の計算を誤るバグを修正)。
+
+2004-03-02
+
+	* src/folderview.c
+	  src/summaryview.c: DnD 使用時は常にデフォルトでメッセージを移動する
+	  ようにした(ニュースフォルダを除く)。 Ctrl キーが押された場合は
+	  メッセージをコピーするようにした。
+	* src/mainwindow.c: main_window_empty_trash()
+	  src/summaryview.c: summary_execute(): 不足していた
+	  statusbar_pop_all() を追加。
+
 2004-02-29
 
 	* version 0.9.10
@@ -9,13 +630,14 @@
 2004-02-26
 
 	* src/account.c
-	  src/folderview.c: IMAP4 アカウントをチェックするときはオンラインモードに
-	  切り替えるようにした。その後ステータスバーを pop するようにした。
+	  src/folderview.c: IMAP4 アカウントをチェックするときはオンライン
+	  モードに切り替えるようにした。その後ステータスバーを pop するように
+	  した。
 	* src/inc.c: コードの整理。
 	* src/mainwindow.[ch]: main_window_get() と
 	  main_window_toggle_online_if_offline() を追加。
-	* src/prefs_common.c: prefs_common_read_config(): 初回起動時にオフライン
-	  モードにしてしまっていたバグを修正。
+	* src/prefs_common.c: prefs_common_read_config(): 初回起動時に
+	  オフラインモードにしてしまっていたバグを修正。
 
 2004-02-25
 

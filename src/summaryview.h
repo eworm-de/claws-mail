@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 #ifndef __SUMMARY_H__
 #define __SUMMARY_H__
 
+#include <sys/types.h>
 #include <regex.h>
 
 #include <glib.h>
@@ -62,14 +63,6 @@ typedef enum
 	TARGET_DUMMY
 } TargetInfo;
 
-typedef enum
-{
-	S_SEARCH_SUBJECT,
-	S_SEARCH_FROM,
-	S_SEARCH_TO,
-	S_SEARCH_EXTENDED
-} SummarySearchType;
-
 #include "mainwindow.h"
 #include "folderview.h"
 #include "headerview.h"
@@ -78,6 +71,7 @@ typedef enum
 #include "folder.h"
 #include "gtksctree.h"
 #include "prefs_filtering.h"
+#include "quicksearch.h"
 
 extern GtkTargetEntry summary_drag_types[1];
 
@@ -94,7 +88,6 @@ struct _SummaryView
 	GtkWidget *ctree;
 	GtkWidget *hbox;
 	GtkWidget *hbox_l;
-	GtkWidget *hbox_search;
 	GtkWidget *folder_pixmap;
 	GtkWidget *statlabel_folder;
 	GtkWidget *statlabel_select;
@@ -105,10 +98,6 @@ struct _SummaryView
 	GtkWidget *quick_search_pixmap;
 	GtkWidget *popupmenu;
 	GtkWidget *colorlabel_menu;
-	GtkWidget *search_type_opt;
-	GtkWidget *search_type;
-	GtkWidget *search_string;
-	GtkWidget *search_description;
 
 	GtkItemFactory *popupfactory;
 
@@ -132,6 +121,7 @@ struct _SummaryView
 	FolderView   *folderview;
 	HeaderView   *headerview;
 	MessageView  *messageview;
+	QuickSearch  *quicksearch;
 
 	FolderItem *folder_item;
 
@@ -179,6 +169,7 @@ void summary_unlock		  (SummaryView		*summaryview);
 gboolean summary_is_locked	  (SummaryView		*summaryview);
 
 SummarySelection summary_get_selection_type	(SummaryView	*summaryview);
+MsgInfo *summary_get_selected_msg		(SummaryView *summaryview);
 GSList *summary_get_selected_msg_list		(SummaryView	*summaryview);
 
 void summary_select_prev_unread	  (SummaryView		*summaryview);
@@ -204,7 +195,8 @@ void summary_expand_threads	  (SummaryView		*summaryview);
 void summary_collapse_threads	  (SummaryView		*summaryview);
 void summary_toggle_ignore_thread (SummaryView		*summaryview);
 
-void summary_filter		  (SummaryView		*summaryview);
+void summary_filter		  (SummaryView		*summaryview,
+				   gboolean		 selected_only);
 void summary_filter_open          (SummaryView *summaryview,
 				   PrefsFilterType type,
 				   gint processing_rule);

@@ -88,6 +88,8 @@
 #include "progressindicator.h"
 #include "localfolder.h"
 #include "filtering.h"
+#include "folderutils.h"
+#include "foldersort.h"
 
 #define AC_LABEL_WIDTH	240
 
@@ -143,21 +145,15 @@ static void message_window_size_allocate_cb	(GtkWidget	*widget,
 						 GtkAllocation	*allocation,
 						 gpointer	 data);
 
-static void new_folder_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void rename_folder_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void delete_folder_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
 static void update_folderview_cb (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 static void add_mailbox_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void foldersort_cb	 (MainWindow 	*mainwin,
+				  guint		 action,
+                        	  GtkWidget 	*widget);
 static void import_mbox_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -221,10 +217,6 @@ static void show_all_header_cb		(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
 
-static void reedit_cb			(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
-
 static void move_to_cb			(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -255,11 +247,20 @@ static void mark_as_read_cb		(MainWindow	*mainwin,
 static void mark_all_read_cb		(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
+
+static void reedit_cb			(MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
+
 static void add_address_cb		(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
 
 static void set_charset_cb		(MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
+
+static void set_decode_cb		(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
 
@@ -291,6 +292,9 @@ static void attract_by_subject_cb(MainWindow	*mainwin,
 				  GtkWidget	*widget);
 
 static void delete_duplicated_cb (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
+static void delete_duplicated_all_cb (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 static void filter_cb		 (MainWindow	*mainwin,
@@ -433,19 +437,15 @@ gboolean mainwindow_progressindicator_hook	(gpointer 	 source,
 static GtkItemFactoryEntry mainwin_entries[] =
 {
 	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_File/_Folder"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_File/_Folder/Create _new folder..."),
-						NULL, new_folder_cb, 0, NULL},
-	{N_("/_File/_Folder/_Rename folder..."),NULL, rename_folder_cb, 0, NULL},
-	{N_("/_File/_Folder/_Delete folder"),	NULL, delete_folder_cb, 0, NULL},
-	{N_("/_File/_Folder/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_File/_Folder/_Check for new messages in all folders"),
-						NULL, update_folderview_cb, 0, NULL},
 	{N_("/_File/_Add mailbox"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Add mailbox/MH..."),	NULL, add_mailbox_cb, 0, NULL},
+	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_File/Change folder order"),	NULL, foldersort_cb,  0, NULL},
+	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Import mbox file..."),	NULL, import_mbox_cb, 0, NULL},
 	{N_("/_File/_Export to mbox file..."),	NULL, export_mbox_cb, 0, NULL},
-	{N_("/_File/Empty _trash"),		"<shift>D", empty_trash_cb, 0, NULL},
+	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_File/Empty all _Trash folders"),	"<shift>D", empty_trash_cb, 0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Save as..."),		"<control>S", save_as_cb, 0, NULL},
 	{N_("/_File/_Print..."),		NULL, print_cb, 0, NULL},
@@ -640,6 +640,22 @@ static GtkItemFactoryEntry mainwin_entries[] =
 #undef CODESET_SEPARATOR
 #undef CODESET_ACTION
 
+#define DECODE_SEPARATOR \
+	{N_("/_View/Decode/---"),		NULL, NULL, 0, "<Separator>"}
+#define DECODE_ACTION(action) \
+	 NULL, set_decode_cb, action, "/View/Decode/Auto detect"
+	{N_("/_View/Decode"),		NULL, NULL, 0, "<Branch>"},
+	{N_("/_View/Decode/_Auto detect"),
+	 NULL, set_decode_cb, 0, "<RadioItem>"},
+	{N_("/_View/Decode/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/Decode/_8bit"), 		DECODE_ACTION(ENC_8BIT)},
+	{N_("/_View/Decode/_Quoted printable"),	DECODE_ACTION(ENC_QUOTED_PRINTABLE)},
+	{N_("/_View/Decode/_Base64"), 		DECODE_ACTION(ENC_BASE64)},
+	{N_("/_View/Decode/_Uuencode"),		DECODE_ACTION(ENC_X_UUENCODE)},
+
+#undef DECODE_SEPARATOR
+#undef DECODE_ACTION
+
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Open in new _window"),	"<control><alt>N", open_msg_cb, 0, NULL},
 	{N_("/_View/Mess_age source"),		"<control>U", view_source_cb, 0, NULL},
@@ -671,8 +687,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/_Forward"),		"<control><alt>F", main_window_reply_cb, COMPOSE_FORWARD, NULL},
 	{N_("/_Message/Redirect"),		NULL, main_window_reply_cb, COMPOSE_REDIRECT, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/Re-_edit"),		NULL, reedit_cb, 0, NULL},
-	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/M_ove..."),		"<control>O", move_to_cb, 0, NULL},
 	{N_("/_Message/_Copy..."),		"<shift><control>O", copy_to_cb, 0, NULL},
 	{N_("/_Message/_Delete"),		"<control>D", delete_cb,  0, NULL},
@@ -686,6 +700,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/_Mark/Mark as rea_d"),
 						NULL, mark_as_read_cb, 0, NULL},
 	{N_("/_Message/_Mark/Mark all _read"),	NULL, mark_all_read_cb, 0, NULL},
+	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/Re-_edit"),		NULL, reedit_cb, 0, NULL},
 
 	{N_("/_Tools"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/_Address book..."),	"<shift><control>A", addressbook_open_cb, 0, NULL},
@@ -697,7 +713,10 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Tools/_Harvest addresses/from _Messages..."),
 						NULL, addr_harvest_msg_cb, 0, NULL},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Tools/_Filter messages"),		NULL, filter_cb, 0, NULL},
+	{N_("/_Tools/_Filter all messages in folder"),
+						NULL, filter_cb, 0, NULL},
+	{N_("/_Tools/Filter _selected messages"),
+						NULL, filter_cb, 1, NULL},
 	{N_("/_Tools/_Create filter rule"),	NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/_Create filter rule/_Automatically"),
 						NULL, create_filter_cb, FILTER_BY_AUTO, NULL},
@@ -719,8 +738,14 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/Actio_ns"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Tools/_Check for new messages in all folders"),
+						NULL, update_folderview_cb, 0, NULL},
 	{N_("/_Tools/Delete du_plicated messages"),
+						NULL, NULL, 0, "<Branch>"},
+	{N_("/_Tools/Delete du_plicated messages/In selected folder"),
 						NULL, delete_duplicated_cb,   0, NULL},
+	{N_("/_Tools/Delete du_plicated messages/In all folders"),
+						NULL, delete_duplicated_all_cb,   0, NULL},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/E_xecute"),		"X", execute_summary_cb, 0, NULL},
 #ifdef USE_OPENSSL
@@ -741,8 +766,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Configuration/_Edit accounts..."),
 						NULL, account_edit_open, 0, NULL},
 	{N_("/_Configuration/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Configuration/_Common preferences..."),
-						NULL, prefs_common_open_cb, 0, NULL},
+	{N_("/_Configuration/_Preferences..."),
+						NULL, prefs_open_cb, 0, NULL},
 	{N_("/_Configuration/Pre-processing..."),
 						NULL, prefs_pre_processing_open_cb, 0, NULL},
 	{N_("/_Configuration/Post-processing..."),
@@ -751,7 +776,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, prefs_filtering_open_cb, 0, NULL},
 	{N_("/_Configuration/_Templates..."),	NULL, prefs_template_open_cb, 0, NULL},
 	{N_("/_Configuration/_Actions..."),	NULL, prefs_actions_open_cb, 0, NULL},
-	{N_("/_Configuration/_Other Preferences..."),  NULL, prefs_open_cb, 0, NULL},
 	{N_("/_Configuration/Plugins..."),  	NULL, plugins_open_cb, 0, NULL},
 
 	{N_("/_Help"),				NULL, NULL, 0, "<Branch>"},
@@ -800,6 +824,7 @@ MainWindow *main_window_create(SeparateType type)
 	GtkWidget *menuitem;
 	gint i;
 	guint n_menu_entries;
+	gboolean hide_messageview = FALSE;
 
 	static GdkGeometry geometry;
 
@@ -999,7 +1024,8 @@ MainWindow *main_window_create(SeparateType type)
 	debug_print("done.\n");
 
 	messageview->visible = prefs_common.msgview_visible;
-
+	hide_messageview = !messageview->visible;
+	
 	main_window_set_widgets(mainwin, type);
 
 	gtk_signal_connect(GTK_OBJECT(window), "size_allocate",
@@ -1036,14 +1062,6 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 				       prefs_common.show_statusbar);
 	
-	gtk_widget_hide(GTK_WIDGET(mainwin->summaryview->hbox_search));
-	
-	if (prefs_common.show_searchbar) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mainwin->summaryview->toggle_search), TRUE);
-		if (prefs_common.summary_quicksearch_type != S_SEARCH_EXTENDED)
-			gtk_widget_hide(summaryview->search_description);
-	}
-
 	/* set account selection menu */
 	ac_menu = gtk_item_factory_get_widget
 		(ifactory, "/Configuration/Change current account");
@@ -1062,7 +1080,7 @@ MainWindow *main_window_create(SeparateType type)
 		(GTK_WINDOW(win), 			\
 		 gtk_item_factory_from_widget(menu)->accel_group)		 
 	
-	ADD_MENU_ACCEL_GROUP_TO_WINDOW(summaryview->popupmenu,mainwin->window);
+	ADD_MENU_ACCEL_GROUP_TO_WINDOW(summaryview->popupmenu, mainwin->window);
 	
 	/* connect the accelerators for equivalent 
 	   menu items in different menus             */
@@ -1098,6 +1116,9 @@ MainWindow *main_window_create(SeparateType type)
 	/* init work_offline */
 	if (prefs_common.work_offline)
 		online_switch_clicked (GTK_BUTTON(online_switch), mainwin);
+
+	if (mainwin->type == SEPARATE_NONE && hide_messageview)
+		main_window_toggle_message_view(mainwin);
 
 	return mainwin;
 }
@@ -1594,7 +1615,7 @@ void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}
 
-	procmsg_empty_trash();
+	procmsg_empty_all_trash();
 
 	if (mainwin->summaryview->folder_item &&
 	    mainwin->summaryview->folder_item->stype == F_TRASH)
@@ -1731,12 +1752,12 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		gchar *const entry;
 		SensitiveCond cond;
 	} entry[] = {
-		{"/File/Folder"                               , M_UNLOCKED},
 		{"/File/Add mailbox"                          , M_UNLOCKED},
 
                 {"/File/Add mailbox/MH..."   		      , M_UNLOCKED},
+		{"/File/Change folder order"	      	      , M_UNLOCKED},
 		{"/File/Export to mbox file..."               , M_UNLOCKED},
-		{"/File/Empty trash"                          , M_UNLOCKED},
+		{"/File/Empty all Trash folders"              , M_UNLOCKED},
 		{"/File/Work offline"	       		      , M_UNLOCKED},
 
 		{"/File/Save as...", M_TARGET_EXIST|M_UNLOCKED},
@@ -1776,20 +1797,21 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Follow-up and reply to", M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST|M_NEWS},
 		{"/Message/Forward"               , M_HAVE_ACCOUNT|M_TARGET_EXIST},
         	{"/Message/Redirect"		  , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Message/Re-edit"		  , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 		{"/Message/Move..."		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 		{"/Message/Copy..."		  , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Message/Delete" 		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
 		{"/Message/Cancel a news message" , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NEWS},
 		{"/Message/Mark"   		  , M_TARGET_EXIST},
+		{"/Message/Re-edit"              , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 
-		{"/Tools/Add sender to address book", M_SINGLE_TARGET_EXIST},
-		{"/Tools/Harvest addresses"	    , M_UNLOCKED},
-		{"/Tools/Filter messages"           , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Tools/Create filter rule"        , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
-		{"/Tools/Actions"                   , M_TARGET_EXIST|M_UNLOCKED},
-		{"/Tools/Execute"                   , M_DELAY_EXEC},
-		{"/Tools/Delete duplicated messages", M_MSG_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
+		{"/Tools/Add sender to address book"   , M_SINGLE_TARGET_EXIST},
+		{"/Tools/Harvest addresses"	       , M_UNLOCKED},
+		{"/Tools/Filter all messages in folder", M_MSG_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Tools/Filter selected messages"     , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Tools/Create filter rule"           , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+		{"/Tools/Actions"                      , M_TARGET_EXIST|M_UNLOCKED},
+		{"/Tools/Execute"                      , M_DELAY_EXEC},
+		{"/Tools/Delete duplicated messages/In selected folder"   , M_MSG_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 
 		{"/Configuration", M_UNLOCKED},
 
@@ -2147,10 +2169,6 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 	else 
 		gtk_widget_hide(mainwin->messageview->mimeview->ctree_mainbox);
 
-	/* rehide quick search if necessary */
-	if (!prefs_common.show_searchbar)
-		gtk_widget_hide(mainwin->summaryview->hbox_search);
-	
 	mainwin->type = type;
 
 
@@ -2347,22 +2365,10 @@ static void update_folderview_cb(MainWindow *mainwin, guint action,
 	folderview_check_new_all();
 }
 
-static void new_folder_cb(MainWindow *mainwin, guint action,
-			  GtkWidget *widget)
+static void foldersort_cb(MainWindow *mainwin, guint action,
+                           GtkWidget *widget)
 {
-	folderview_new_folder(mainwin->folderview);
-}
-
-static void rename_folder_cb(MainWindow *mainwin, guint action,
-			     GtkWidget *widget)
-{
-	folderview_rename_folder(mainwin->folderview);
-}
-
-static void delete_folder_cb(MainWindow *mainwin, guint action,
-			     GtkWidget *widget)
-{
-	folderview_delete_folder(mainwin->folderview);
+	foldersort_open();
 }
 
 static void import_mbox_cb(MainWindow *mainwin, guint action,
@@ -2612,11 +2618,6 @@ static void show_all_header_cb(MainWindow *mainwin, guint action,
 				     GTK_CHECK_MENU_ITEM(widget)->active);
 }
 
-static void reedit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
-{
-	summary_reedit(mainwin->summaryview);
-}
-
 static void mark_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	summary_mark(mainwin->summaryview);
@@ -2645,6 +2646,11 @@ static void mark_all_read_cb(MainWindow *mainwin, guint action,
 	summary_mark_all_read(mainwin->summaryview);
 }
 
+static void reedit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+{
+	summary_reedit(mainwin->summaryview);
+}
+
 static void add_address_cb(MainWindow *mainwin, guint action,
 			   GtkWidget *widget)
 {
@@ -2658,12 +2664,26 @@ static void set_charset_cb(MainWindow *mainwin, guint action,
 
 	if (GTK_CHECK_MENU_ITEM(widget)->active) {
 		str = conv_get_charset_str((CharSet)action);
-		g_free(prefs_common.force_charset);
-		prefs_common.force_charset = str ? g_strdup(str) : NULL;
-
+		
+		g_free(mainwin->messageview->forced_charset);
+		mainwin->messageview->forced_charset = str ? g_strdup(str) : NULL;
+		procmime_force_charset(str);
+		
 		summary_redisplay_msg(mainwin->summaryview);
 		
 		debug_print("forced charset: %s\n", str ? str : "Auto-Detect");
+	}
+}
+
+static void set_decode_cb(MainWindow *mainwin, guint action,
+			   GtkWidget *widget)
+{
+	if (GTK_CHECK_MENU_ITEM(widget)->active) {
+		mainwin->messageview->forced_encoding = (EncodingType)action;
+		
+		summary_redisplay_msg(mainwin->summaryview);
+		
+		debug_print("forced encoding: %d\n", action);
 	}
 }
 
@@ -2748,21 +2768,50 @@ static void delete_duplicated_cb(MainWindow *mainwin, guint action,
 {
 	FolderItem *item;
 
-	item = folderview_get_selected(mainwin->folderview);
+	item = folderview_get_selected_item(mainwin->folderview);
 	if (item) {
 		main_window_cursor_wait(mainwin);
 		STATUSBAR_PUSH(mainwin, _("Deleting duplicated messages..."));
 
-		folderutils_delete_duplicates(item);
+		folderutils_delete_duplicates(item, prefs_common.immediate_exec ?
+					      DELETE_DUPLICATES_REMOVE : DELETE_DUPLICATES_SETFLAG);
 
 		STATUSBAR_POP(mainwin);
 		main_window_cursor_normal(mainwin);
 	}
 }
 
+struct DelDupsData
+{
+	guint	dups;
+	guint	folders;
+};
+
+static void deldup_all(FolderItem *item, gpointer _data)
+{
+	struct DelDupsData *data = _data;
+	gint result;
+	
+	result = folderutils_delete_duplicates(item, DELETE_DUPLICATES_REMOVE);
+	if (result >= 0) {
+		data->dups += result;
+		data->folders += 1;
+	}
+}
+
+static void delete_duplicated_all_cb(MainWindow *mainwin, guint action,
+				 GtkWidget *widget)
+{
+	struct DelDupsData data = {0, 0};
+
+	folder_func_to_all_folders(deldup_all, &data);
+	alertpanel_notice(_("Deleted %d duplicate message(s) in %d folders.\n"),
+			  data.dups, data.folders);
+}
+
 static void filter_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
-	summary_filter(mainwin->summaryview);
+	summary_filter(mainwin->summaryview, (gboolean)action);
 }
 
 static void execute_summary_cb(MainWindow *mainwin, guint action,
@@ -2894,7 +2943,7 @@ static void create_processing_cb(MainWindow *mainwin, guint action,
 static void prefs_common_open_cb(MainWindow *mainwin, guint action,
 				 GtkWidget *widget)
 {
-	prefs_common_open();
+	/* prefs_common_open(); */
 }
 
 static void prefs_pre_processing_open_cb(MainWindow *mainwin, guint action,
@@ -3112,4 +3161,3 @@ gboolean mainwindow_progressindicator_hook(gpointer source, gpointer userdata)
 /*
 * End of Source.
 */
-

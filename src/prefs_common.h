@@ -30,6 +30,7 @@
 #include "summaryview.h"
 #include "codeconv.h"
 #include "textview.h"
+#include "procmime.h"
 
 typedef struct _PrefsCommon	PrefsCommon;
 
@@ -77,7 +78,6 @@ struct _PrefsCommon
 
 	/* Send */
 	gboolean savemsg;
-	gboolean queue_msg;
 	SendDialogMode send_dialog_mode;
 	gchar *outgoing_charset;
 	TransferEncodingMethod encoding_method;
@@ -107,7 +107,6 @@ struct _PrefsCommon
 	gchar *fw_quotefmt;
 	gboolean forward_as_attachment;
 	gboolean redirect_keep_from;
-	gboolean smart_wrapping;
 	gboolean block_cursor;
 	gchar *quote_chars;
 	
@@ -226,8 +225,6 @@ struct _PrefsCommon
 	gint scroll_step;
 	gboolean scroll_halfpage;
 
-	gchar *force_charset;
-
 	gboolean show_other_header;
 	GSList *disphdr_list;
 
@@ -237,18 +234,9 @@ struct _PrefsCommon
 	gchar *mime_image_viewer;
 	gchar *mime_audio_player;
 	gchar *mime_open_cmd;
+	gchar *attach_save_dir;
 
 	GList *mime_open_cmd_history;
-
-#if USE_GPGME
-	/* Privacy */
-	gboolean auto_check_signatures;
-	gboolean gpg_signature_popup;
-	gboolean store_passphrase;
-	gint store_passphrase_timeout;
-	gboolean passphrase_grab;
-	gboolean gpg_warning;
-#endif /* USE_GPGME */
 
 	/* Interface */
 	gboolean sep_folder;
@@ -257,6 +245,7 @@ struct _PrefsCommon
 	gboolean always_show_msg;
 	gboolean open_unread_on_enter;
 	gboolean mark_as_read_on_new_window;
+	gboolean mark_as_read_delay;
 	gboolean open_inbox_on_inc;
 	gboolean immediate_exec;
 	NextUnreadMsgDialogShow next_unread_msg_dialog;
@@ -294,14 +283,17 @@ struct _PrefsCommon
 	gboolean work_offline;
 	
 	gint summary_quicksearch_type;
+	gint summary_quicksearch_sticky;
 	gulong color_new;
+	
+	GList *summary_quicksearch_history;
 };
 
 extern PrefsCommon prefs_common;
 
 void prefs_common_init		(void);
 void prefs_common_read_config	(void);
-void prefs_common_save_config	(void);
+void prefs_common_write_config	(void);
 void prefs_common_open		(void);
 PrefsCommon *prefs_common_get	(void);
 

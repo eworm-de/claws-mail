@@ -1,3 +1,2196 @@
+2004-11-23 [thorsten]	0.9.12cvs168
+
+	* src/plugins/pgpmime/plugin.c
+		typo: plugin_init instead of plugin_done
+
+2004-11-23 [thorsten]	0.9.12cvs167
+
+	* commitHelper
+		o add me
+	* src/partial_download.c
+	* src/partial_download.h
+		o fix path for includes
+
+2004-11-23 [colin]	0.9.12cvs166
+
+	* src/procmime.c
+		Uh, changed API.
+
+2004-11-23 [colin]	0.9.12cvs165
+
+	* src/procmime.c
+		Fix mime headers wrapping
+
+2004-11-23 [christoph]	0.9.12cvs164
+
+	* src/common/Makefile.am
+	* src/common/partial_download.[ch]
+	* src/Makefile.am
+	* src/partial_download.[ch]
+	* src/folderview.c
+		move to src because it depends on src stuff
+
+	* src/codeconv.c
+	* src/common/base64.h
+		move B64LEN macro to base64.h
+
+	* src/compose.c
+	* src/privacy.[ch]
+		add PrefsAccount to sign-function parameters
+
+	* src/main.c
+	* src/prefs_account.[ch]
+	* src/gtk/prefswindow.[ch]
+		o use new prefswindow for account prefs
+		o add possibility to add new pages to account prefs
+
+	* src/plugins/pgpmime/prefs_gpg.[ch]
+	* src/plugins/pgpmime/prefs_gpg.glade
+		add account prefs for GPG
+
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/sgpgme.[ch]
+		create signers list based on the GPG account prefs
+
+2004-11-23 [colin]	0.9.12cvs163
+
+	* src/main.c
+		Fix cursor going from normal to wait
+		as many times as there are folders
+		(very noticeable on exported displays)
+
+2004-11-23 [colin]	0.9.12cvs162
+
+	* src/msgcache.c
+		HEAD needs this leak fix too
+
+2004-11-22 [luke]	0.9.12cvs161
+
+	* src/gtk/gtkstext.c
+		'Up' key moves one line (not one paragraph) like 'Down'
+
+2004-11-22 [paul]	0.9.12cvs160
+
+	* src/prefs_themes.c
+		fix oversized GtkFrames
+
+2004-11-19 [paul]	0.9.12cvs159
+
+	* src/prefs_common.c
+		update prefs_keybind_apply_clicked()
+
+2004-11-18 [paul]	0.9.12cvs158
+
+	* src/compose.c
+	* src/messageview.c
+	* src/common/utils.c
+	* src/common/utils.h
+		use Message-ID format like that previously
+		used in compose_generate_msgid()
+
+2004-11-17 [christoph]	0.9.12cvs157
+
+	* src/mainwindow.c
+	* src/prefs_common.c
+		integrate "Common preferences" into new preferences dialog
+
+2004-11-17 [colin]	0.9.12cvs156
+
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/procmsg.c
+		Add an option to let the user choose to store encrypted
+		mail as clear text or encrypted.
+
+2004-11-17 [colin]	0.9.12cvs155
+
+	* src/compose.c
+	* src/toolbar.c
+		Be verbose when sending fails
+	* src/procmsg.c
+		Fix procmsg_send_queue returning 0 when there's an error
+		Don't send messages to be encrypted to nobody 
+
+
+2004-11-17 [colin]	0.9.12cvs154
+
+	* src/privacy.c
+		Fix more pointer confusion
+
+2004-11-17 [paul]	0.9.12cvs153
+
+	* src/procmime.h
+		forgotten in sync with main 1.0.0beta3
+
+
+2004-11-17 [paul]	0.9.12cvs152
+
+	* ChangeLog
+	* ChangeLog.jp
+	* NEWS
+	* src/compose.c
+	* src/jpilot.c
+	* src/procmime.c
+		sync with main 1.0.0beta3
+		see ChangeLog 2004-11-15 and 2004-11-16
+
+2004-11-17 [colin]	0.9.12cvs151
+
+	* src/plugins/pgpmime/pgpmime.c
+		Remove debug printf
+
+2004-11-17 [colin]	0.9.12cvs150
+
+	* src/plugins/pgpmime/pgpmime.c
+		Fix off-by-one causing segs
+
+2004-11-17 [colin]	0.9.12cvs149
+
+	* src/procmsg.c
+		< Reboot_> don't compare pointers to NULL with !
+		So, use the other form to bring consistency.
+		Also fix coding style.
+
+2004-11-16 [colin]	0.9.12cvs148
+
+	* src/procmsg.c
+		Fix the fix :)
+
+2004-11-16 [colin]	0.9.12cvs147
+
+	* src/procmsg.c
+		Fix leaks in procmsg_send_message_queue
+
+2004-11-12 [paul]	0.9.12cvs146
+
+	* src/prefs_account.c
+	* src/procmime.c
+	* src/procmime.h
+		fix sync breakage 
+
+2004-11-12 [paul]
+
+	* src/pixmaps/complete.xpm
+	* src/pixmaps/continue.xpm
+		small sync with main, see ChangeLog 2004-11-11
+
+2004-11-11 [paul]	0.9.12cvs145
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/account.c
+	* src/folderview.c
+	* src/folderview.h
+	* src/imap.c
+	* src/imap_gtk.c
+	* src/inc.c
+	* src/mainwindow.c
+	* src/mh_gtk.c
+	* src/news_gtk.c
+	* src/pop.c
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/prefs_ext_prog.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/common/defs.h
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/gtk/menu.c
+	* src/gtk/menu.h
+		sync with main 1.0.0beta2 (plus 4)
+
+2004-11-09 [christoph]	0.9.12cvs144
+
+	* src/compose.c
+	* src/prefs_account.[ch]
+		add option menu to select default privacy system
+
+	* src/plugins/pgpmime/pgpmime.c
+		better memory allocation
+
+	* src/folder.c
+		syncronize flags when scanning a folder
+
+2004-11-08 [colin]	0.9.12cvs143
+
+	* src/summaryview.c
+		Prevent useless folder count updates while 
+		quicksearch is running. It is really annoying 
+		while quicksearch is running a full-mail
+		scan, like 'b foo', in a big folder.
+
+2004-11-08 [colin]	0.9.12cvs142
+
+	* src/textview.c
+		Really fix these mail URIs
+
+2004-11-08 [colin]	0.9.12cvs141
+
+	* src/textview.c
+		fix "colin@colino.net" <colin@colino.net> 
+		types of URIs
+
+2004-11-06 [colin]	0.9.12cvs140
+
+	* src/compose.c
+		Don't ask for passphrase if not sending
+
+2004-11-05 [christoph]	0.9.12cvs139
+
+	* src/compose.c
+		o encode text content of composed mails
+	* src/procmime.c
+		o allow encoding of MimeInfos that are stored in memory buffers
+		
+
+2004-11-03 [paul]	0.9.12cvs138
+
+	* po/POTFILES.in
+		add 'src/plugins/pgpmime/prefs_gpg.c'.
+		Patch submitted by Fabien Vantard
+
+	* src/prefs_ext_prog.c
+		fix typos. Patch submitted by Fabien Vantard
+
+	* tools/kdeservicemenu/template_sylpheed-attach-files.desktop
+	* tools/kdeservicemenu/template_sylpheed-compress-attach.desktop
+		add German, Spanish, Italian, Brazilian Portuguese,
+		and Slovak translations. Submitted by Thomas Gilgin,
+		J. José del Río 'partymola', Andrea Spadaccini,
+		Frederico Goncalves Guimaraes, and Andrej Kacian
+
+2004-11-01 [christoph]	0.9.12cvs137
+
+	* src/procmime.c
+		implement RFC2231's parameter encoding
+
+2004-10-29 [colin]	0.9.12cvs136
+
+	* src/common/utils.c
+		Fix boundary delimiter (a Pine user gets this:
+		> Malformed message: Unexpected characters at end of parameters:
+		> =_Thu__28_Oct_2)
+
+2004-10-29 [paul]
+
+	* tools/textviewer.sh
+		fix typo. patch submitted by Johann Koenig 
+		<explosive@hvc.rr.com>
+
+2004-10-29 [paul]
+
+	* tools/kdeservicemenu/template_sylpheed-attach-files.desktop
+	* tools/kdeservicemenu/template_sylpheed-compress-attach.desktop
+		add French translations, submitted by Fabien Vantard
+
+2004-10-28 [christoph]	0.9.12cvs135
+
+	* doc/src/rfc2231.txt				** NEW **
+	* src/procmime.c
+	* src/common/quoted-printable.c
+	* src/common/utils.[ch]
+		implement RFC2231's parameter decoding
+
+2004-10-27 [paul]
+
+	* tools/kdeservicemenu/README
+	* tools/kdeservicemenu/install.sh
+	* tools/kdeservicemenu/sylpheed-kdeservicemenu.pl
+	* tools/kdeservicemenu/template_sylpheed-attach-files.desktop
+	* tools/kdeservicemenu/template_sylpheed-compress-attach.desktop
+		output files to /tmp instead of littering the
+		current dir
+		add uninstall function
+		refactor
+
+2004-10-26 [christoph]	0.9.12cvs134
+
+	* src/procmime.c
+		better check if parameters have to be in quoted string
+
+2004-10-25 [paul]
+
+	* tools/kdeservicemenu/README
+	* tools/kdeservicemenu/install.sh
+	* tools/kdeservicemenu/sylpheed-kdeservicemenu.pl
+	* tools/kdeservicemenu/template_sylpheed-attach-files.desktop
+	* tools/kdeservicemenu/template_sylpheed-compress-attach.desktop
+		add files for Sylpheed Service Menu in Konqueror
+
+2004-10-22 [paul]	0.9.12cvs133
+
+	* src/compose.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_wrapping.c
+		remove 'smart wrapping'
+
+2004-10-21 [colin]	0.9.12cvs132
+
+	* src/compose.c
+		Remove extraneous separator in Options
+
+2004-10-21 [colin]	0.9.12cvs131
+
+	* src/compose.c
+		Replace "unknown" attachments by "application/octet-stream"
+		Be a bit more defensive when using strchr
+
+2004-10-20 [paul]
+
+	* po/ru.po
+		updated by Pavlo Bohmat
+
+2004-10-19 [christoph]	0.9.12cvs130
+
+	* src/compose.c
+		fix wrong menu entry path
+
+	(Closes Bug 626 crashes after clicking 'reply' or 'reply to all')
+
+	* src/gtk/menu.c
+		add extra check for missing menu entries
+
+2004-10-19 [christoph]	0.9.12cvs129
+
+	* src/compose.c
+	* src/common/utils.c
+		use utils' generate_msgid() in compose.c
+
+2004-10-18 [christoph]	0.9.12cvs128
+
+	* src/plugins/pgpmime/passphrase.c
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/prefs_gpg.[ch]
+	* src/plugins/pgpmime/prefs_gpg.glade
+	* src/plugins/pgpmime/sgpgme.c
+		add GPG prefs
+
+2004-10-18 [christoph]	0.9.12cvs127
+
+	* src/addrbook.c
+	* src/addrcache.c
+	* src/addressbook.c
+	* src/codeconv.c
+	* src/compose.c
+	* src/customheader.c
+	* src/editaddress.c
+	* src/editgroup.c
+	* src/exporthtml.c
+	* src/folder.c
+	* src/folderview.c
+	* src/imap.c
+	* src/jpilot.c
+	* src/main.c
+	* src/matcher_parser_parse.y
+	* src/mbox.c
+	* src/pop.c
+	* src/prefs_account.c
+	* src/prefs_gtk.c
+	* src/prefs_msg_colors.c
+	* src/procheader.c
+	* src/procmime.[ch]
+	* src/procmsg.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/common/base64.c
+	* src/common/partial_download.c
+	* src/common/socket.c
+	* src/common/sylpheed.c
+	* src/common/utils.[ch]
+	* src/gtk/filesel.c
+	* src/gtk/pluginwindow.c
+	* src/gtk/quicksearch.c
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/plugin.c
+	* src/plugins/pgpmime/select-keys.c
+	* src/plugins/pgpmime/sgpgme.c
+	* src/plugins/spamassassin/libspamc.c
+	* src/plugins/trayicon/trayicon.c
+	* src/plugins/trayicon/libeggtrayicon/eggtrayicon.[ch]
+	* src/plugins/trayicon/libeggtrayicon/gtkplugxembed.c
+		o don't use any GNU C extensions
+		o fix warnings
+		o replace some non-POSIX functions
+
+	* src/plugins/spamassassin/spamassassin.[ch]
+	* src/plugins/spamassassin/spamassassin_gtk.c
+	* src/plugins/clamav/clamav_plugin.[ch]
+	* src/plugins/clamav/clamav_plugin_gtk.c
+		replace statusbar_print_all() from common code because it is a
+		GUI function
+
+2004-10-17 [paul]
+
+	* po/es.po
+	* po/ko.po
+	* AUTHORS
+		update Spanish and Korean translations,
+		submitted by Ricardo Mones Lastra and
+		SungHyun Nam
+
+2004-10-13 [colin]	0.9.12cvs126
+
+	* src/compose.c
+		Don't convert message to forced encoding when 
+		drafting, plus minor magic-values cleanup.
+
+2004-10-13 [colin]	0.9.12cvs125
+
+	* po/POTFILES.in
+		Update POTFILES.in to reflect the source
+		place changes
+
+2004-10-08 [christoph]	0.9.12cvs124
+
+	* m4/spamassassin.m4
+		fix libspamc OpenSSL
+
+	* src/compose.c
+		rearrange the compose menu
+
+2004-10-08 [christoph]	0.9.12cvs123
+
+	* src/Makefile.am
+	* src/account.c
+	* src/compose.[ch]
+	* src/crash.c
+	* src/main.c
+	* src/mimeview.c
+	* src/passphrase.[ch]				** REMOVE **
+	* src/prefs_account.[ch]
+	* src/prefs_common.[ch]
+	* src/privacy.[ch]
+	* src/procmime.[ch]
+	* src/procmsg.c
+	* src/rfc2015.[ch]				** REMOVE **
+	* src/select-keys.[ch]				** REMOVE **
+	* src/common/utils.[ch]
+	* src/gtk/about.c
+	* src/plugins/pgpmime/Makefile.am
+	* src/plugins/pgpmime/passphrase.[ch]		** NEW **
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/plugin.c
+	* src/plugins/pgpmime/prefs_gpg.[ch]
+	* src/plugins/pgpmime/select-keys.[ch]		** NEW **
+	* src/plugins/pgpmime/sgpgme.[ch]
+		o Add new MIME-Writer
+		o extend PrivacySystem with sign and encrypt functions
+		o extend PGP/MIME plugin with sign and encrypt functions
+		o integrate extended Privacy API in Compose and Sending process
+
+2004-10-04 [colin]	0.9.12cvs122
+
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/messageview.h
+	* src/textview.c
+		Make forced encoding limited to messageview and
+		apply only to parts displayed using textview
+
+2004-10-04 [colin]	0.9.12cvs121
+
+	* src/summaryview.c
+		Fix bug #605 (collapsed threads re-expand when moving or
+		deleting mails)
+
+2004-10-03 [colin]	0.9.12cvs120
+
+	* src/summaryview.c
+		Fix bug #602
+
+2004-10-02 [colin]	0.9.12cvs119
+
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/prefs_common.h
+	* src/procmime.c
+	* src/procmime.h
+	* src/textview.c
+		Clean up forced charset feature
+		Add forced decode
+
+2004-10-01 [colin]	0.9.12cvs118
+
+	* src/mimeview.c
+		Better fix for Save all: skip multipart mails' first 
+		text part
+
+2004-10-01 [colin]	0.9.12cvs117
+
+	* src/mimeview.c
+		Only save attachments in Save All
+
+2004-10-01 [paul]	0.9.12cvs116
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/account.c
+	* src/prefs_common.c
+	* src/gtk/colorlabel.c
+		sync with main 0.9.12cvs17
+
+2004-09-30 [colin]	0.9.12cvs115
+
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/folderview.c
+	* src/Makefile.am
+	* src/pixmaps/read.xpm
+		Add icon for total # column
+
+2004-09-29 [colin]	0.9.12cvs114
+
+	* src/compose.c
+		Don't close compose until message is sent if 
+		Show Send Dialog is Always
+
+2004-09-29 [paul]	0.9.12cvs113
+
+	* src/quote_fmt_parse.y
+		In the quotation templates recognise sender's first and last 
+		names (%F %L) when the name is in the format "Duck, Donald".
+		Patch submitted by Thomas Gilgin, <thomas_gilgin@users.sourceforge.net>
+
+
+2004-09-28 [colin]	0.9.12cvs112
+
+	* src/mainwindow.c
+		Put back mnemonic
+	* src/folderview.c
+		Fix Empty trash being visible-invisible-visible...
+
+2004-09-28 [colin]	0.9.12cvs111
+
+	* src/mainwindow.c
+		Relabel Empty all Trash folders
+
+2004-09-28 [colin]	0.9.12cvs110
+
+	* src/folderview.c
+		Add contextual Empty trash menu
+	* src/mainwindow.c
+		Revert cvs109 which was useless
+
+2004-09-28 [colin]	0.9.12cvs109
+
+	* src/mainwindow.c
+		Fix uninialized var
+
+2004-09-28 [colin]	0.9.12cvs108
+
+	* src/addressbook.c
+		Fix triple-click
+
+2004-09-28 [colin]	0.9.12cvs107
+
+	* src/addressbook.c
+		Fix double-click on entries
+
+2004-09-28 [colin]	0.9.12cvs106
+
+	* src/inc.c
+		Reintroduce folder_item update freeze on incorporation
+
+2004-09-27 [christoph]	0.9.12cvs105
+
+	* src/folderview.c
+		right-align new and unread column
+
+2004-09-27 [paul]
+
+	* 0.9.12b released
+
+2004-09-27 [paul]	0.9.12cvs104
+
+	* src/main.c
+		revert 0.9.12cvs101, it causes another segfault
+
+2004-09-23 [christoph]	0.9.12cvs103
+
+	* src/plugins/spamassassin/libspamc.[ch]
+	* src/plugins/spamassassin/utils.[ch]
+		update libspamc to SpamAssassin 3.0.0
+
+2004-09-17 [paul]	0.9.12cvs102
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/inc.c
+		sync with main 0.9.12cvs14, see ChangeLog 2004-09-09
+ 
+
+2004-09-17 [colin]	0.9.12cvs101
+
+	* src/main.c
+		Fix segfaults when quitting. valgrind says:
+			==12144== Invalid read of size 4
+			==12144==    at 0x80D7DDA: messageview_is_visible (messageview.c:938)
+			[...]
+			==12144==  Address 0x1BF1BD30 is 56 bytes inside a block of size 72 free'd
+			[...]
+			==12144==    by 0x80CC671: exit_sylpheed (main.c:498)
+
+
+2004-09-13 [christoph]	0.9.12cvs100
+
+	* src/folder.c
+		add NULL pointer checks to fix segfault when messages can
+		not be fetched
+
+2004-09-08 [colin]	0.9.12cvs99
+
+	* src/account.c
+		Remove a debug printf
+
+2004-09-08 [christoph]	0.9.12cvs98
+
+	* src/procmsg.[ch]
+		change MSG_CACHED (unused in claws) to MSG_SCANNED to remember
+		if the message structure has been scanned
+
+	* src/folder.c
+		o scan structure when the mail is fetched for the first time
+		  to prevent unnecessary fetching of messages while scanning
+		  the folder for messages
+		o revert 0.9.12cvs24
+
+	* src/plugins/pgpmime/pgpmime.c
+		check signature if auto signature checking is enabled when the
+		signature status is requested for first time and not when
+		checking if a part has a signature
+
+2004-09-07 [colin]	0.9.12cvs97
+
+	* src/inc.c
+		Change session error messages so that they
+		are a bit more helpful (the origin of the
+		error is not apparent if one isn't in 
+		front of Sylpheed when it happens).
+
+2004-09-06 [colin]	0.9.12cvs96
+
+	* src/toolbar.c
+		Fix graying out Redirect in non english languages
+		Patch by Fabien Vantard
+
+2004-09-06 [colin]	0.9.12cvs95
+
+	* src/summaryview.c
+	* src/mimeview.c
+		Fix dropped URIs
+
+2004-09-06 [colin]	0.9.12cvs94
+
+	* src/addressbook.c
+	* src/addressitem.h
+	* src/addritem.c
+	* src/addritem.h
+		Add basic drag and drop to addressbook
+
+2004-09-03 [colin]	0.9.12cvs93
+
+	* src/summaryview.c
+		Next/Prev unread message should start
+		from next/prev node (especially if 
+		mark_as_read_delay != 0)
+
+2004-09-03 [colin]	0.9.12cvs92
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/summaryview.c
+		Add an hidden 'mark_as_read_delay' pref 
+
+2004-09-02 [colin]	0.9.12cvs91
+
+	* src/gtk/menu.c
+		Add unduplicated menu entries (fixes bug 532)
+		Patch by Fabien Vantard
+
+2004-09-02 [colin]	0.9.12cvs90
+
+	* src/account.c
+		Fix bug 582 (broken auto account selection)
+
+2004-09-02 [colin]	0.9.12cvs89
+
+	* src/addrindex.c
+		Free deleted queries too
+
+2004-09-02 [colin]	0.9.12cvs88
+
+	* src/ldapquery.c
+		Fix freezes in LDAP, due to memory corruption
+		after deletion of a query (and not removing it
+		from the corresponding list of queries).
+		Very probably fixes bug 567 and bug 569
+
+2004-09-02 [colin]	0.9.12cvs87
+
+	* src/prefs_spelling.c
+		Fix bug with aspell prefs init, where spell checking
+		is enabled at first but dictionary not specified. Use
+		LANG's dictionary by default.
+
+2004-09-01 [colin]	0.9.12cvs86
+
+	* src/filtering.c
+	* src/imap.c
+	* src/prefs_matcher.c
+	* src/stock_pixmap.c
+		Fix more nasty uninitialized variables
+
+2004-08-31 [colin]	0.9.12cvs85
+
+	* src/folder.c
+		Fix memory corruption when entering procmsg_msginfo_free()
+		with unitialized msginfo. Thanks Valgrind.
+
+2004-08-29 [colin]	0.9.12cvs84
+
+	* src/mimeview.c
+		Don't escape filenames before saving - that's 
+		not dangerous. By the way, fix the leak.
+
+2004-08-27 [paul]	0.9.12cvs83
+
+	* src/mh.c
+	* src/procheader.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/common/utils.c
+	* src/gtk/menu.h
+		sync with main 0.9.12cvs6, see ChangeLog
+		2004-08-24, 2004-08-25, 2004-08-26
+
+
+2004-08-26 [paul]
+
+	* po/ja.po
+		updated by Rui Hirokawa
+
+2004-08-25 [colin]	0.9.12cvs82
+
+	* src/plugins/pgpmime/pgpmime.c
+		Fix leak on non-combined encrypted messages
+
+2004-08-25 [colin]	0.9.12cvs81
+
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/sgpgme.c
+	* src/plugins/pgpmime/sgpgme.h
+		Handle combined encryption/signature
+
+2004-08-24 [colin]	0.9.12cvs80
+
+	* src/folder.c
+		Set mime flags on non multipart messages too
+
+2004-08-23 [christoph]	0.9.12cvs79
+
+	* src/compose.c
+		create message header in memory as GString before writing it
+		to the message file
+
+2004-08-23 [colin]	0.9.12cvs78
+
+	* src/rfc2015.c
+	* src/rfc2015.h
+	* src/compose.c
+		Fix (again) bug 197: inline encryption broken
+
+2004-08-23 [paul]
+
+	* po/zh_CN.po
+		updated by Hansom Young
+
+2004-08-23 [paul]
+
+	* 0.9.12a released
+
+2004-08-23 [colin]	0.9.12cvs77
+
+	* src/imap.c
+		Try and fix bug 577 (session->last_access_time is broken since 
+		sync with main 0.9.12cvs2). 
+		Patch by Stephan Sachse <whiteman@teg-clan.de>
+
+2004-08-23 [paul]
+
+	* po/es.po
+	* po/fr.po
+	* po/pl.po
+	* po/pt_BR.po
+	* po/sk.po
+	* po/sr.po
+		update translations. submitted by Ricardo
+		Mones Lastra, Fabien Vantard, Emilian Nowak,
+		Frederico Goncalves Guimaraes, Andrej Kacian,
+		Urke MMI
+
+2004-08-22 [paul]	0.9.12cvs76
+
+	* src/plugins/trayicon/trayicon.c
+		fix formatting bug in trayicon_popup_menu_entries[]
+
+
+2004-08-22 [paul]	0.9.12cvs75
+
+	* m4/Makefile.am
+		remove reference to openssl.m4
+
+
+2004-08-21 [colin]	0.9.12cvs74
+
+	* src/compose.c
+		Fix bug 576 (Duplicate auto-bcc on reedit)
+
+2004-08-21 [colin]	0.9.12cvs73
+
+	* src/toolbar.c
+		Grey out Redirect in the toolbar when selection is
+		multiple. Fixes bug 520
+
+2004-08-21 [colin]	0.9.12cvs72
+
+	* src/compose.c
+		Save Sign, Encrypt and Mode status when drafting or queuing
+		Fixes bug 502 (drafted message does not keep sign / encrypt 
+		state)
+
+2004-08-21 [colin]	0.9.12cvs71
+
+	* src/summaryview.c
+		Fix bug 494 (Messages are always opened in summary 
+		view when right clicked.) Also fixes bug 508.
+
+2004-08-21 [colin]	0.9.12cvs70
+
+	* src/compose.c
+		When using inline encryption, don't use QP or Base64:
+		the mail will be encrypted to a 7bit string.
+		Fixes bug 197
+
+2004-08-21 [colin]	0.9.12cvs69
+
+	* src/compose.c
+		Fix inline-signing with 8bit chars: data must be 
+		converted to Quoted-printable before signing.
+
+2004-08-21 [colin]	0.9.12cvs68
+
+	* src/compose.c
+		Remove 'Message/Save to draft folder'
+		and 'Message/Save and keep editing' to 
+		put a single 'File/Save' command.
+		Fixes bug 224
+
+2004-08-21 [colin]	0.9.12cvs67
+
+	* src/mainwindow.c
+		Fix bug 222 (Summary view state not retained between sessions)
+
+2004-08-20 [colin]	0.9.12cvs66
+
+	* src/codeconv.c
+		Fix bug 574 (empty cur_locale is not enough)
+
+2004-08-20 [paul]
+
+        * src/plugins/pgpmime/plugin.c
+                modify PGP/MIME plugin's description
+
+2004-08-16 [colin]	0.9.12cvs65
+
+	* src/common/ssl.c
+		Fix version comparison
+
+2004-08-16 [colin]	0.9.12cvs64
+
+	* src/common/ssl.c
+		I meant 2.2.
+
+2004-08-16 [colin]	0.9.12cvs63
+
+	* src/common/ssl.c
+		People with glibc 2.1 have had problems with non-blocking
+		SSL_connect. Disable it for glibc < 2.2.
+
+2004-08-16 [colin]	0.9.12cvs62
+
+	* src/common/ssl.c
+		Fix format error
+
+2004-08-13 [colin]	0.9.12cvs61
+
+	* src/plugins/pgpmime/plugin.c
+		Add plugin's description
+
+2004-08-12 [christoph]	0.9.12cvs60
+
+	* src/folderutils.c
+		fix bug that did not thaw folder updates when deleting
+		duplicates in empty folders
+
+2004-08-12 [colin]	0.9.12cvs59
+
+	* src/plugins/trayicon/trayicon.c
+		Add a context menu with most common operations
+
+2004-08-12 [colin]	0.9.12cvs58
+
+	* configure.ac
+	* sylpheed.desktop
+	* src/Makefile.am
+	* src/main.c
+		Add support for Freedesktop.org's startup notification
+
+2004-08-10 [colin]	0.9.12cvs57
+
+	* src/main.c
+	* src/common/socket.c
+	* src/common/ssl.c
+	* src/common/sylpheed.c
+	* src/common/sylpheed.h
+		Put back the ssl connect nonblocking...
+		without the race condition
+
+2004-08-09 [colin]	0.9.12cvs56
+
+	* src/main.c
+	* src/common/ssl.c
+	* src/common/sylpheed.c
+	* src/common/sylpheed.h
+		Reverting previous commit, doesn't work 
+
+2004-08-09 [colin]	0.9.12cvs55
+
+	* src/main.c
+	* src/common/ssl.c
+	* src/common/sylpheed.c
+	* src/common/sylpheed.h
+		Make SSL_connect nonblocking, using a thread
+
+2004-08-09 [paul]       0.9.12cvs54
+
+	* po/POTFILES.in
+		reflect new location of sgpgme.c
+	* src/main.c
+		sync with main, see ChangeLog 2004-08-09
+
+2004-08-08 [christoph]	0.9.12cvs53
+
+	* src/folderutils.c
+		freeze FolderItem updates while deleting duplicate messages
+
+2004-08-08 [christoph]	0.9.12cvs52
+
+	* configure.ac
+	* src/Makefile.am
+	* src/main.c
+	* src/pgpmime.c
+	* src/pgpmime.h
+	* src/sgpgme.c
+	* src/sgpgme.h
+	* src/plugins/Makefile.am
+	* src/plugins/pgpmime/.cvsignore
+	* src/plugins/pgpmime/Makefile.am
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/pgpmime.h
+	* src/plugins/pgpmime/plugin.c
+	* src/plugins/pgpmime/sgpgme.c
+	* src/plugins/pgpmime/sgpgme.h
+		new plugin for PGP/MIME
+
+2004-08-07 [christoph]	0.9.12cvs51
+
+	* src/folder.c
+		disable immediate folder change notification on opened folders
+		until SummaryView can handle it quickly
+
+2004-08-07 [colin]	0.9.12cvs50
+
+	* src/pop.c
+	* src/common/partial_download.c
+		fix warnings
+
+2004-08-07 [colin]	0.9.12cvs49
+
+	* src/Makefile.am
+	* src/account.c
+	* src/addressbook.c
+	* src/alertpanel.c
+	* src/alertpanel.h
+	* src/compose.c
+	* src/exphtmldlg.c
+	* src/expldifdlg.c
+	* src/main.c
+	* src/message_search.c
+	* src/messageview.c
+	* src/pop.c
+	* src/sgpgme.c
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/gtk/sslcertwindow.c
+	* src/pixmaps/stock_dialog-error.xpm
+	* src/pixmaps/stock_dialog-info.xpm
+	* src/pixmaps/stock_dialog-question.xpm
+	* src/pixmaps/stock_dialog-warning.xpm
+		sync new alertpanel from gtk2
+
+2004-08-07 [colin]	0.9.12cvs48
+
+	* src/prefs_folder_item.c
+		fix memory corruption in folderitem's prefs
+
+2004-08-06 [colin]	0.9.12cvs47
+
+	* src/compose.c
+		close compose window after queuing, before 
+		sending when user presses Send
+
+2004-08-05 [christoph]	0.9.12cvs46
+
+	* src/msgcache.c
+	* src/common/defs.h
+		add charset to cache file and convert charset when reading the
+		cache if different from internal used charset
+
+2004-08-05 [christoph]	0.9.12cvs45
+
+	* src/messageview.c
+	* src/mimeview.[ch]
+	* src/procmime.h
+	* src/common/utils.h
+		cleanup (remove unused includes/reorganize)
+
+	* src/prefs_ext_prog.c
+	* src/prefs_folder_item.c
+	* src/prefs_fonts.c
+	* src/prefs_msg_colors.c
+	* src/prefs_spelling.c
+	* src/prefs_themes.c
+	* src/prefs_toolbar.c
+	* src/prefs_wrapping.c
+	* src/gtk/prefswindow.[ch]
+	* src/plugins/clamav/clamav_plugin_gtk.c
+	* src/plugins/dillo_viewer/dillo_prefs.c
+	* src/plugins/image_viewer/viewerprefs.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		change PrefsPage path into an array of strings and don't
+		split a single string into parts (better for translation)
+
+2004-08-05 [christoph]	0.9.12cvs44
+
+	* src/folder.c
+		fix FolderItem's message counts after rebuilding a cache
+
+2004-08-05 [paul]	0.9.12cvs43
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/imap.c
+	* src/news.c
+	* src/common/nntp.c
+	* src/common/session.c
+	* src/common/session.h
+	* src/common/socket.c
+		sync with main 0.9.12cvs2
+		see ChangeLog 2004-08-04
+
+2004-08-04 [christoph]	0.9.12cvs42
+
+	* configure.ac
+		add missing AC_DEFINE(USE_OPENSSL, ...)
+	* src/folder.c
+		use new xml_node_new() function
+
+2004-08-03 [christoph]	0.9.12cvs41
+
+	* src/folder.c
+	* src/localfolder.c
+	* src/common/xml.[ch]
+		sync with main 0.9.12cvs1
+		see ChangeLog 2004-07-23
+
+2004-08-03 [christoph]
+
+	* configure.ac
+	* m4/openssl.m4			** REMOVE **
+		use pkg-config to get OpenSSL CFLAGS and LIBS
+		(OpenSSL 0.9.7 is required now)
+
+2004-08-02 [paul]	0.9.12cvs40
+
+	* AUTHORS
+		update translation team section
+	* po/pt_BR.po
+		updated by Frederico Goncalves Guimaraes
+		<fggdebian@yahoo.com.br>
+
+2004-07-29 [colin]	0.9.12cvs39
+
+	* src/messageview.c
+		Inform the user when a partially 
+		downloaded mail isn't on the server
+		anymore (due to Mark for deletion)
+
+2004-07-29 [colin]	0.9.12cvs38
+
+	* src/messageview.c
+		Hide noticeview if necessary
+
+2004-07-27 [colin]	0.9.12cvs37
+
+	* src/msgcache.c
+		More fixes (i overlook a bit, thanks
+		Christoph for spotting it)
+
+2004-07-27 [colin]	0.9.12cvs36
+
+	* src/msgcache.c
+		Fix wrong test 
+
+2004-07-26 [colin]	0.9.12cvs35
+
+	* src/pop.c
+		Fix uidl-file parsing when not in new
+		format
+
+2004-07-19 [colin]	0.9.12cvs34
+
+	* src/compose.c
+		Save attachment status when drafting
+
+2004-07-19 [colin]	0.9.12cvs33
+
+	* src/folder.h
+	* src/folderview.c
+	* src/summaryview.c
+		Reverse 0.9.12cvs29 to 31 (folder icon update
+		when quicksearch is active)
+
+2004-07-18 [colin]	0.9.12cvs32
+
+	* src/pop.c
+		Fix partial download bug with "Download all
+		messages" option
+
+2004-07-18 [colin]	0.9.12cvs31
+
+	* src/folderview.c
+		Fix crash
+
+2004-07-17 [colin]	0.9.12cvs30
+
+	* src/summaryview.c
+		Same, when sticky search is off
+
+2004-07-17 [colin]	0.9.12cvs29
+
+	* src/folder.h
+	* src/folderview.c
+	* src/summaryview.c
+		Update FolderItem icon whenever its summaryview is 
+		filtered
+
+2004-07-16 [christoph]	0.9.12cvs28
+
+	* src/mimeview.c
+		make doubleclick work again
+
+2004-07-16 [christoph]	0.9.12cvs27
+
+	* src/mimeview.c
+		fix freeze on mime icon doubleclick (opening doesn't work yet)
+
+2004-07-16 [paul]	0.9.12cvs26
+	
+	* src/gtk/quicksearch.c
+	* src/compose.c
+	* src/customheader.c
+	* src/messageview.c
+	* src/news.c
+	* src/prefs_account.c
+	* src/prefs_display_header.c
+	* src/procheader.c
+		replace "Message-Id" with "Message-ID"
+
+2004-07-16 [paul]	0.9.12cvs25
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/account.c
+	* src/account.h
+	* src/folder_item_prefs.c
+	* src/main.c
+	* src/pop.c
+	* src/pop.h
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_gtk.c
+	* src/prefs_gtk.h
+		sync with main 0.9.12cvs1
+
+2004-07-15 [colin]	0.9.12cvs24
+
+	* src/folder.c
+		Disable GPG signature check during
+		folder move and scan 
+	(Closes Bug 521 Signature checking slows down Folder-Move)
+
+2004-07-14 [christoph]	0.9.12cvs23
+
+	* src/pgpmime.c
+		add missing fclose
+
+	* src/procmime.c
+		add checks if fopen really worked
+
+2004-07-14 [colin]	0.9.12cvs22
+
+	* src/pop.c
+	* src/common/partial_download.c
+		Update includes
+
+2004-07-14 [colin]	0.9.12cvs21
+
+	* src/folder.c
+	* src/inc.c
+	* src/matcher.c
+	* src/matcher.h
+	* src/matcher_parser_parse.y
+	* src/messageview.c
+	* src/msgcache.c
+	* src/noticeview.c
+	* src/noticeview.h
+	* src/pop.c
+	* src/pop.h
+	* src/prefs_matcher.c
+	* src/procheader.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/summaryview.c
+	* src/common/Makefile.am
+	* src/common/defs.h
+	* src/gtk/quicksearch.c
+	* src/common/partial_download.c ** NEW FILES **
+	* src/common/partial_download.h ** NEW FILES **
+		Partial downloading of pop3 mails
+
+2004-07-13 [christoph]	0.9.12cvs20
+
+	* src/mimeview.c
+		use "button_release_event" instead of "button_press_event",
+		because executing event callbacks while the button is still
+		pressed is not good and causes problems
+
+2004-07-12 [colin]	0.9.12cvs19
+
+	* src/gtk/quicksearch.c
+		Fix a missing status update in quicksearch
+
+2004-07-08 [colin]	0.9.12cvs18
+
+	* src/common/smtp.h
+		Fix guint vs gint bug
+
+2004-07-08 [colin]	0.9.12cvs17
+
+	* src/common/smtp.c
+		use to_human_readable() for sizes
+
+2004-07-08 [paul]	0.9.12cvs16
+
+	* src/inc.c [1.174]
+		fix occasional non-clearance of the statusbar
+		(close Bug 531 'SA plugin: status bar does not 
+		 get cleared in OFFLINE mode')
+
+2004-07-07 [colin]	0.9.12cvs15
+
+	* src/prefs_common.c [1.225]
+	* src/prefs_common.h [1.112]
+		Add a hidden summary_quicksearch_sticky preference,
+		to allow the quicksearch bar to reset across folders
+	* src/summaryview.c [1.437]
+		Use this preference
+	* src/gtk/quicksearch.c [1.5]
+	* src/gtk/quicksearch.h [1.3]
+		Add this preference, fix focus when hitting Enter,
+		add handling of Esc key to reset
+
+2004-07-06 [colin]	0.9.12cvs14
+
+	* src/gtk/quicksearch.c [1.4]
+		Add Clear button
+
+2004-07-06 [christoph]	0.9.12cvs13
+
+	* src/toolbar.c
+		enable next unread button in empty folders if next folder
+		dialog is not disabled
+
+	(Closes Feature Request [ 755800 ] "next" button enabled in empty
+	 folders)
+
+2004-07-06 [colin]	0.9.12cvs12
+
+	* src/common/smtp.c [1.16]
+		Display maximum message size in the log
+
+2004-07-06 [paul]	0.9.12cvs11
+
+	* src/toolbar.c
+		fix typo. (spotted by Fabien Vantard)
+
+2004-07-06 [paul]	0.9.12cvs10
+
+	* src/main.c
+		terminate cleanly on SIGHUP. Patch submitted by
+		Thomas Gilgin <thg@karate-muellheim.de>
+
+2004-07-05 [christoph]	0.9.12cvs9
+
+	* src/inc.c
+		better replacing of %d in new mail notification command
+
+2004-07-05 [colin]	0.9.12cvs8
+
+	* src/common/smtp.[ch]
+		Take SIZE (returned by EHLO) into account, and
+		avoid sending too big messages
+
+2004-07-04 [paul]	0.9.12cvs7
+
+	* src/account.c
+		fix auto-account selection on imap/news
+
+2004-07-01 [paul]	0.9.12cvs6
+
+	* src/gtk/quicksearch.c
+		reveal hidden string in gui
+		
+	* src/compose.c
+		fix updating of gpg signing setting on 
+		switching accounts
+
+2004-06-30 [darko]	0.9.12cvs5
+
+	* src/common/utils.c
+		remove expand_search_string()
+	* src/gtk/quicksearch.c
+		remove no longer needed for loop (thanks Christoph)
+		add expand_search_string()
+
+2004-06-30 [darko]	0.9.12cvs4
+
+	* src/common/utils.c
+		allow all filtering expressions in quicksearch
+
+	(Closes Bug 519 filtering expr. in quicksearch)
+
+2004-06-30 [christoph]	0.9.12cvs3
+
+	* configure.ac
+		better 'localedir'
+
+	* src/common/intl.h
+		allow plugins to define TEXTDOMAIN for the _(...) macro
+
+2004-06-30 [paul]	0.9.12cvs2
+
+	* po/POTFILES.in
+	  src/Makefile.am
+	  src/main.c
+	  src/prefs_common.c
+	  src/prefs_msg_colors.[ch]	** NEW FILES **
+	  	move message colouring options to
+		'/Other Preferences/Message View/Colors'
+
+2004-06-30 [paul]	0.9.12cvs1
+
+	* po/POTFILES.in
+	  src/Makefile.am
+	  src/main.c
+	  src/prefs_common.c
+	  src/prefs_wrapping.[ch]	** NEW FILES **
+	  	move message wrapping options to
+		/'Other Preferences/Compose/Message Wrapping'
+
+2004-06-28 [paul]	0.9.12
+
+	* Sylpheed-Claws 0.9.12 released
+
+	* po/es.po
+	  po/fr.po
+	  po/sk.po
+	  	updated by Ricardo Mones Lastra, Fabien Vantard,
+		Andrej Kacian
+
+2004-06-27 [paul]	0.9.11cvs19
+
+	* src/common/ssl.c
+		re-enable certificate check
+
+2004-06-25 [christoph]	0.9.11cvs18
+
+	* src/procmsg.h
+		add MSG_HAS_ATTACHMENT to MSG_CACHED_FLAG_MASK
+
+2004-06-25 [paul]	0.9.11cvs17
+
+	* sync with main 0.9.12cvs1
+		see ChangeLog 2004-06-23
+		
+	* src/gtk/menu.c
+		remove unused menu_toggle_toggle()
+
+2004-06-23 [christoph]	0.9.11cvs16
+
+	* src/folder.c
+	* src/procheader.c
+	* src/procmsg.h
+	* src/summaryview.c
+		scan the mime structure of multipart mails for correct
+		attachment, encryped and signed (with privacy API) part
+		detection
+
+	(Closes Feature Request [ 961428 ] No paperclip for HTML mails)
+
+2004-06-22 [paul]
+
+	* po/ru.po
+		updated by Pavlo Bohmat
+
+2004-06-20 [christoph]	0.9.11cvs15
+
+	* src/inc.c
+	* src/pop.[ch]
+		disconnect after authentication when doing POP before SMTP
+
+	(Closes Bug 393 Bad inerpretation of "Pop Before SMTP")
+
+2004-06-19 [christoph]	0.9.11cvs14
+
+	* src/folder.c
+		fix FolderItem name update
+
+	(Closes Bug 511 Folder-Renaming not reflected immediately)
+
+2004-06-17 [paul]	0.9.11cvs13
+	
+	* sync with main 0.9.12 release
+	  src/session.c
+		session_set_timeout(): fixed a bug that didn't
+	  	reset timeout_tag when interval is 0.
+
+2004-06-16 [christoph]	0.9.11cvs12
+
+	* src/textview.c
+		correctly clear the URL in the status bar
+
+2004-06-15 [christoph]	0.9.11cvs11
+
+	* src/summaryview.c
+		add missing gtk_widget_show()
+
+2004-06-11 [christoph]	0.9.11cvs10
+
+	* src/plugins/spamassassin/spamassassin.c
+		correctly check waitpid return code
+
+	(Closes Bug 396 Zombie process when spamassassin is called)
+
+2004-06-10 [christoph]	0.9.11cvs9
+
+	* src/mainwindow.c
+	* src/summaryview.[ch]
+	* src/gtk/Makefile.am
+	* src/gtk/quicksearch.c				** NEW **
+		separate quick search from summaryview
+
+2004-06-09 [christoph]	0.9.11cvs8
+
+	* src/inc.c
+		remove unused code
+
+	* src/textview.c
+		get folder for compose default account from MsgInfo and not
+		from SummaryView
+
+2004-06-09 [christoph]	0.9.11cvs7
+
+	* src/folder.[ch]
+		add information about added or removed messages to
+		FOLDER_ITEM_UPDATE hook
+
+	* src/imap_gtk.c
+	* src/mh_gtk.c
+		scan folder when removing a folder failed instead of
+		updating the summaryview
+
+2004-06-08 [paul]	0.9.11cvs6
+
+	* sync with main 0.9.11cvs2
+		see ChangeLog 2004-06-08
+
+2004-06-07 [christoph]	0.9.11cvs5
+
+	* configure.ac
+	* src/common/Makefile.am
+        	detect library providing 'encrypt' function
+
+2004-06-07 [paul]	0.9.11cvs4
+
+	* src/inc.c
+		sync with main, 'code cleanup'
+		
+	* tools/nautilus2sylpheed.sh
+		fix whitespace limitation. patch submitted by
+		Stephan Sachse <white@teg-clan.de>
+
+2004-06-04 [christoph]	0.9.11cvs3
+
+	* src/account.c
+	* src/action.[ch]
+	* src/addressbook.c
+	* src/addrindex.h
+	* src/folder.h
+	* src/folder_item_prefs.c
+	* src/inc.c
+	* src/main.c
+	* src/messageview.c
+	* src/mh_gtk.c
+	* src/prefs_themes.c
+	* src/procmime.c
+	* src/quote_fmt.h
+	* src/stock_pixmap.c
+	* src/toolbar.c
+		fix compiler warnings
+
+2004-06-03 [paul]	0.9.11cvs2
+
+	* src/msgcache.c
+		sync with main 0.9.11cvs1: "changed gint32 to
+	  	guint32 for some platforms"
+
+2004-06-02 [christoph]	0.9.11cvs1
+
+	* src/common/ssl.c
+		fix SSL_CTX variable name for older OpenSSL versions
+
+	(Closes Bug 503 fix compilation with older OpenSSL)
+
+2004-05-31 [paul]	0.9.11claws
+
+	* 0.9.11claws released
+
+2004-05-31 [paul]	0.9.10claws72
+
+	* po/es.po
+	  po/it.po
+	  po/ja.po
+	  po/pl.po
+	  po/sk.po
+	  po/sr.po
+	  po/zh_CN.po
+	  	update translations, submitted by Ricardo Mones Lastra,
+		Andrea Spadaccini, Rui Hirokawa, Emil, Andrej Kacian,
+		Urke MMI, and Hansom Young
+
+2004-05-25 [luke]	0.9.10claws71
+
+	* AUTHORS
+	* src/mimeview.c
+	* src/stockpixmap.[ch]
+	* src/Makefile.am
+	* src/pixmaps/privacy_emblem_encrypted.xpm	** NEW **
+	* src/pixmaps/privacy_emblem_failed.xpm		** NEW **
+	* src/pixmaps/privacy_emblem_passed.xpm		** NEW **
+	* src/pixmaps/privacy_emblem_signed.xpm		** NEW **
+	* src/pixmaps/privacy_emblem_warn.xpm		** NEW **
+
+		o Added privacy emblems from Jesper Shultz 
+		  <jesper@schultz-net.dk>
+		o Overlay emblems onto mimeview icons to indicate
+	          status of signature and if a message is encrypted
+	
+	* src/textview.c
+		remove unused color definitions (were used to 
+		indicate sig status)
+
+2004-05-25 [paul]	0.9.10claws70
+
+	* AUTHORS
+	  tools/Makefile.am
+	  tools/README
+	  tools/nautilus2sylpheed.sh		** NEW FILE **
+		add script to enable sending files from
+		nautilus.
+		Submitted by Reza Pakdel <hrpakdel@cpsc.ucalgary.ca>
+		
+	* tools/launch_firebird			** REMOVED **
+		removed as the standard "firefox '%s'" now functions
+		correctly
+
+2004-05-23 [paul]	0.9.10claws69
+
+	* src/compose.c
+		fix %X cursor point segfault
+		patch by Christoph
+
+2004-05-23 [christoph]	0.9.10claws68
+
+	* src/folder.c
+		fix folder moving
+
+2004-05-21 [paul]	0.9.10claws67
+
+	* sync with 0.9.10cvs17
+		see ChangeLog 2004-05-21
+
+2004-05-20 [paul]	0.9.10claws66
+
+	* sync with 0.9.10cvs16
+		see ChangeLog 2004-05-19 and 2004-05-20
+
+2004-05-19 [alfons]	0.9.10claws65
+
+	* src/summaryview.h
+		on some platforms regoff_t is defined as off_t, so 
+		pull in sys/types.h
+
+2004-05-19 [paul]	0.9.10claws64
+
+	* sync with 0.9.10cvs13
+		see ChangeLog 2004-05-18
+
+2004-05-17 [christoph]	0.9.10claws63
+
+	* src/folder.c
+		search all folders when searching for default folders and
+		not return the special folder of the first folder
+
+2004-05-13 [alfons]	0.9.10claws62
+
+	* src/summaryview.c
+		add a better check to see if a message is a news message
+		(replaces the MSG_IS_NEWS() check removed in 0.9.9claws19)
+
+2004-05-13 [paul]	0.9.10claws61
+
+	* src/msgcache.c
+		sync with 0.9.10cvs12
+		see ChangeLog 2004-05-12
+
+2004-05-12 [alfons]	0.9.10claws60
+
+	* src/folderview.c
+		release lock in case of folder could not be opened 
+
+2004-05-11 [christoph]	0.9.10claws59
+
+	* src/inc.[ch]
+		remove unused folderview update stuff from inc.[ch]
+
+2004-05-11 [paul]	0.9.10claws58
+
+	* sync with 0.9.10cvs11
+		see ChangeLog 2004-05-10 and 2004-05-11
+
+2004-05-09 [christoph]	0.9.10claws57
+
+	* src/folderview.c
+		check for folder class functions and not folder type to detect
+		valid drag targets
+
+2004-05-08 [christoph]	0.9.10claws56
+
+	* src/sgpgme.c
+		fix date output for signature expire times
+
+	(Patch by Edgar Toernig <froese@gmx.de>)
+
+2004-05-06 [christoph]	0.9.10claws55
+
+	* src/gtk/prefswindow.c
+		change window type to DIALOG
+
+	* src/folder.[ch]
+	* src/folderview.c
+	* src/news_gtk.c
+		o add folder_remove()
+		o change FolderUpdate hook flag names (NEW -> ADD, DESTROY -> REMOVE)
+		o add new "sort" field to Folder, no longer sort folders by type
+		  higher sort values will be first in the folder list, new folders get 0
+		  and will be added to the end
+
+	* src/mainwindow.c
+	* src/gtk/Makefile.am
+	* src/gtk/foldersort.(c|h|glade)			** NEW **
+		add dialog to allow users to change the folder order
+
+2004-05-04 [paul]	0.9.10claws54
+
+	* src/inc.c
+		Display account_name in statusbar when retrieving
+		messages from a pop account
+	* src/prefs_account.c
+		display account name in title of prefs_account
+		window
+	* src/prefs_folder_item.c
+		display folder name in title of prefs_folder window
+
+	all 3 patches submitted by Fabien Vantard
+
+	* AUTHORS
+		add Fabien Vantard
+
+2004-05-04 [paul]	0.9.10claws53
+
+	* src/prefs_actions.c
+	  src/prefs_template.c
+	  	'Esc' Key exits alertpanel
+		Patch submitted by Fabien Vantard <fzz@ifrance.com>
+
+2004-04-26 [christoph]	0.9.10claws52
+
+	* src/gtk/about.c
+	* src/gtk/colorsel.c
+	* src/gtk/description_window.c
+	* src/gtk/filesel.c
+	* src/gtk/gtkaspell.c
+	* src/gtk/inputdialog.c
+	* src/gtk/pluginwindow.c
+	* src/gtk/progressdialog.c
+		o remove gtk_window_set_position(..., GTK_WIN_POS_CENTER) because
+		  it does not work correctly with xinerama
+		o lock incorporation while the plugin window is open
+
+2004-04-23 [paul]	0.9.10claws51
+
+	* po/POTFILES.in
+		update location of inputdialog.c
+		
+	* src/gtk/about.c
+		update Copyright string
+		
+	* src/msgcache.c
+	  src/prefs_common.c
+	  src/prefs_themes.c
+	  	improve the english a little
+
+2004-04-22 [christoph]	0.9.10claws50
+
+	* src/folderutils.[ch]
+		add folderutils_mark_all_read()
+
+	* src/folderview.c
+		readd "mark all read" from popup menu, now works
+		in all folders and not only the opened folder
+
+2004-04-21 [christoph]	0.9.10claws49
+
+	* src/Makefile.am
+	* src/inputdialog.[ch]			** REMOVED **
+	* src/gtk/Makefile.am
+	* src/gtk/inputdialog.[ch]		** NEW **
+		move inputdialog.[ch] into gtk directory
+
+	* src/mh_gtk.c
+		remove check for missing IMAP folder account
+
+2004-04-20 [christoph]	0.9.10claws48
+
+	* src/mainwindow.c
+	* src/foldersel.c
+		remove new/rename/delete folder GUI functions because
+		they are always active, even for news folders, and can
+		not be easily made folder class dependent
+
+	* src/gtk/menu.[ch]
+		make menu_translate() public
+
+	* src/Makefile.am
+	* src/folder.[ch]
+	* src/folderview.[ch]
+	* src/imap_gtk.[ch]			** NEW **
+	* src/main.c
+	* src/mh_gtk.[ch]			** NEW **
+	* src/news_gtk.[ch]			** NEW **
+		o dynamically build FolderView popup menus from a folder
+		  specific part, with callbacks to seperated code, and
+                  a common part
+		o remove the folder class specifiy code from folderview.c
+
+2004-04-15 [luke]	0.9.10claws47
+
+	* src/prefs_folder_item.c
+		o remove buttons for applying 'scan for new mail'
+		  and 'process at startup' to sub folders
+		o add 'apply to sub folder' check buttons for all
+		  properties and set folder prefs accordingly
+		o replace multiple gtk_widget_show() with one
+		  gtk_widget_show_all() on container
+
+2004-04-14 [darko]	0.9.10claws46
+
+	* src/gtk/Makefile.am
+	* src/gtk/pluginwindow.c
+		load plugins from to $(prefix)/lib/sylpheed/plugins
+		in file selection dialog
+	* src/plugins/clamav/clamav_plugin.c
+		const correctness
+
+2004-04-14 [christoph]	0.9.10claws45
+
+	* src/folder.c
+	* src/plugins/image_viewer/viewer.c
+		fix g_warnings
+
+2004-04-10 [alfons]	0.9.10claws44
+	
+	* src/compose.c
+		appropriate auto account selection when forwarding
+		(fixes bug #476, "forward as attachment does not listen
+		to account rules")
+
+2004-04-09 [alfons]	0.9.10claws43
+
+	* src/summaryview.c
+		make quick search combo matching case sensitive
+
+2004-04-06 [alfons]	0.9.10claws42
+
+	* src/addr_compl.c
+		use cursor position to prevent clearing the entire entry
+
+2004-04-06 [alfons]	0.9.10claws41
+
+	* src/folderview.c
+		fix bug #472, "filter not updated when renaming folder" 
+
+2004-04-06 [alfons]	0.9.10claws40
+
+	* src/messageview.[ch]
+	  src/summaryview.c
+		reflect changes to Show all headers to main view
+		and message view (only affects detached message
+		view). see also bug #473, 'Show All Headers 
+		"problem"'.
+
+2004-04-03 [alfons]	0.9.10claws39
+
+	* src/matcher.c
+		free address list
+
+2004-04-03 [alfons]	0.9.10claws38
+
+	* src/matcher_parser_parse.y
+	  src/matcher.[ch]
+		prepare address look up matcher type; marginally
+		tested, and not hooked into the UI yet.
+
+		basically it accepts the result of the left hand
+		side of the matcher (the "criteria"):
+
+			from all_in_addressbook ""
+			~to_or_cc any_in_addressbook ""
+		
+		the first case matches all addresses found in the
+		from header, and the second case matches if any
+		(at least one) of the addresses in to or cc headers 
+		are not in the address book.
+
+		the string argument is not used yet, but is intended
+		to match a group of addresses 
+
+2004-04-02 [luke] 	0.9.10claws37
+
+	* src/prefs_folder_item.c
+		Add two buttons to apply 'scan for new mail'
+		and 'process at startup' to sub folders
+
+2004-04-02 [luke]
+	* tools/textviewer.sh
+		better filename extension matching plus some support for
+		MS Excel, MS Powerpoint and HTML
+
+2004-03-29 [christoph]	0.9.10claws36
+
+	* src/folder.h
+	* src/folderutils.[ch]
+	* src/mainwindow.c
+		add delete duplicates for all folders
+
+2004-03-29 [alfons]	0.9.10claws35
+
+	* src/folder.c
+		don't pass NULL to XXXprintf(); fixes Solaris crashes
+		when selecting top-level folder node (thanks to 
+		Alex S. Moore)
+
+2004-03-28 [keith]	0.9.10claws34
+
+	* src/textview.c
+		prepend "http://" to URIs of the form "www.example.com"
+
+2004-03-28 [paul]	0.9.10claws33
+
+	* src/common/nntp.c
+	  src/common/smtp.c
+	  src/folder.c
+	  src/imap.c
+	  src/inc.c
+	  src/news.c
+	  src/pop.c
+	  	revise 'translatable string' policy:
+	  	don't translate debug_print() or log_print(),
+		translate log_message() and log_warning()
+	
+	* po/zh_CN.po
+		update submitted by Hansom Young
+
+2004-03-25 [alfons]	0.9.10claws32
+
+	* src/prefs_common.c
+		I mean this one: Return the GList...
+
+2004-03-25 [alfons]	0.9.10claws31
+
+	* src/prefs_common.h
+		add new members at the end of prefs_common, so
+		they get properly initialized
+
+2004-03-24 [christoph]	0.9.10claws30
+
+	* src/imap.c
+		o NULL is a valid GSList
+
+2004-03-24 [alfons]	0.9.10claws29
+
+	* src/prefs_common.[ch]
+	  src/summaryview.c
+	  src/common/defs.h
+		add history to quick search (patch submitted by 
+		Ivan Francolin Martinez - thanks!)
+
+2004-03-24 [alfons]	0.9.10claws28
+
+	* src/imap.c
+		NULL output pointer parameter
+
+2004-03-21 [alfons]	0.9.10claws27
+
+	* src/addrindex.[ch]
+	  src/addr_compl.c
+		complete addresses on nicks and aliases
+
+2004-03-21 [alfons]	0.9.10claws26
+
+	* src/import.c
+	  src/inc.c
+	  src/mbox.[ch]
+		disable filters on import mbox (patch submitted
+		by Edgar Toernig)
+
+2004-03-21 [darko]	0.9.10claws25
+
+	* src/addr_compl.c
+		select the address when only one match is found while
+		doing address completion with tab key (feature
+		request #914720)
+
+2004-03-21 [alfons]	0.9.10claws24
+
+	* src/messageview.c
+	  src/toolbar.c
+		don't `navigate-delete` when a summary view's selection does not 
+		match the accompanying message view's message
+
+2004-03-20 [alfons]	0.9.10claws23
+
+	* src/summaryview.c
+		hide ext search button on initial display (should fix bug #459,
+		"Toggling quick-search at 1st time: minor UI inconsistency")
+
+2004-03-20 [alfons]	0.9.10claws22
+
+	* src/summaryview.[ch]
+		add function to get selected msginfo, if there's
+		only one selected
+
+2004-03-20 [paul]	0.9.10claws21
+
+	* sync with 0.9.10cvs7
+		see ChangeLog 2004-03-19
+
+2004-03-19 [paul]	0.9.10claws20
+
+	* src/common/nntp.c
+	  src/common/smtp.c
+	  src/common/ssl.c
+	  src/folder.c
+	  src/imap.c
+	  src/inc.c
+	  src/news.c
+	  src/pop.c
+	  	don't translate strings in debug_print(), log_print(),
+		log_message(),  and log_warning()
+
+2004-03-19 [alfons]	0.9.10claws19
+
+	better next/previous/delete/focus navigation with separate 
+	message view 
+	
+	* src/toolbar.c
+		call summaryview_delete() instead of messageview_delete()
+	* src/messageview.c
+		disable messageview_delete()
+
+2004-03-18 [paul]	0.9.10claws18
+
+	* sync with 0.9.10cvs6
+		see ChangeLog 2004-03-16
+
+2004-03-17 [alfons]	0.9.10claws17
+
+	* src/gtk/filesel.c
+		remove bogus semicolon after if() (sometimes it pays to
+		read LKML :)
+
+2004-03-15 [darko]	0.9.10claws16
+
+	* src/gtk/filesel.c
+		support full path in place of a filename
+	* src/mimeview.c
+		store directory attachments were saved to and
+		use it when saving attachments
+	* src/prefs_common.[hc]
+		store directory attachments were last saved to
+
+2004-03-15 [paul]	0.9.10claws15
+
+	* src/folderview.c
+		fix bug where unsubscribing a newsgroup would destroy
+		(most of the) filtering rules
+
+2004-03-15 [paul]	0.9.10claws14
+
+	* src/folderview.c
+		fix Bug 458, 'Folder View remaining empty after 
+		removing a NEWS account' (was also true of IMAP
+		accounts)
+
+2004-03-15 [paul]	0.9.10claws13
+
+	* src/folderview.c
+		fix folderview invisibility of newly subscribed
+		newsgroups
+
+2004-03-13 [paul]	0.9.10claws12
+
+	* src/compose.c
+	  src/plugins/dillo_viewer/dillo_prefs.c
+	  src/plugins/image_viewer/viewerprefs.c
+	  	gettextise some forgotten parts
+
+2004-03-13 [alfons]	0.9.10claws11
+
+	* src/imap.c
+		make sure the correct type is passed to sscanf()
+
+2004-03-13 [paul]	0.9.10claws10
+
+	* sync with 0.9.10cvs5
+		see ChangeLog 2004-03-02 and 2004-03-12, 
+		specifically:
+		'always move messages by default when using DnD (except 
+		for News folder). Copy messages if Ctrl-key is pressed.'
+		and 'added a function to filter selected messages'
+
+2004-03-12 [christoph]	0.9.10claws9
+
+	* src/codeconv.c
+		add parameter check to conv_unmime_header_overwrite()
+
+	* src/imap.c
+		o fix spelling
+		o fix removing of NEW flag when UNREAD is unset
+
+	* src/procmime.c
+		decode MIME-headers
+
+	(Closes 437 i18n attachment display error.)
+
+2004-03-12 [paul]	0.9.10claws8
+
+	* po/it.po
+		update. submitted by Andrea Spadaccini <lupin85@email.it>
+		
+	* tools/Makefile.am
+		add 'textviewer.sh'
+
+2004-03-12 [alfons]	0.9.10claws7
+
+	* src/imap.c
+		o quiet compiler and typecast Folder * to IMAP Folder *
+		o wake up and fix my previous incompatible type assignment bug
+
+2004-03-12 [alfons]	0.9.10claws6
+
+	* src/imap.c
+		don't mix up pointers to int, guint32 _and_ 
+		unsigned int 
+
+2004-03-12 [christoph]	0.9.10claws5
+
+	* src/folderview.c
+		Add error requester when renaming a folder failed
+
+	* src/imap.c
+		Check new FolderItem name for namespace seperator
+		before renaming
+
+	(Closes Bug 443 Bad named IMAP folders won't be displayed)
+
+2004-03-11 [christoph]	0.9.10claws4
+
+	* src/folder.[ch]
+	* src/imap.c
+	* src/procmsg.h
+		syncronize flags in cache with IMAP folder flags
+
+	Adapted a patch submitted by Simon 'corecode' Schubert
+	<corecode@corecode.ath.cx> 
+
+
+2004-03-11 [alfons]	0.9.10claws3
+
+	* src/textview.[ch]
+		remove dead code that at one time controlled display of
+		URIs in status bar
+
+2004-03-10 [paul]	0.9.10claws2
+
+	* po/it.po
+		updated by Lupino <lupin85@email.it>
+
+2004-03-09 [alfons]	0.9.10claws1
+
+	* src/matcher.c
+		we're not using yywrap, but we may, so close yyin instead
+		of initial FILE *
+
 2004-03-08 [paul]	0.9.10claws
 
 	* 0.9.10claws released

@@ -1371,25 +1371,16 @@ gint ldapqry_perform_locate( LdapQuery *qry ) {
 gboolean ldapquery_remove_results( LdapQuery *qry ) {
 	gboolean retVal = FALSE;
 
-	/* Set query as aged - will be retired on a later call */
 	ldapqry_set_aged_flag( qry, TRUE );
-	/*
-	printf( "ldapquery_remove_results...\n" );
-	printf( "testing busy flag...\n" );
-	*/
-	if( ldapqry_get_busy_flag( qry ) ) {
-		/* Query is still busy - cancel query */
-		/* printf( "\tquery is still busy running...\n" ); */
-		ldapqry_set_stop_flag( qry, TRUE );
 
-		/* ldapqry_cancel( qry ); */
+	if( ldapqry_get_busy_flag( qry ) ) {
+		ldapqry_set_stop_flag( qry, TRUE );
 	}
 	else {
-		/* Delete folder */
-		/* printf( "\tquery can be deleted!\n" ); */
-		/* ldapqry_delete_folder( qry ); */
+		LdapServer *server = qry->server;
+		server->listQuery = g_list_remove(server->listQuery, qry);
+
 		retVal = TRUE;
-		/* printf( "\tquery deleted!\n" ); */
 	}
 	return retVal;
 }

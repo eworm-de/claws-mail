@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@
 #include "news.h"
 #include "hooks.h"
 #include "msgcache.h"
+#include "partial_download.h"
 
 GHashTable *procmsg_msg_hash_table_create(GSList *mlist)
 {
@@ -599,15 +600,31 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 	}
 }
 
-void procmsg_empty_trash(void)
+void procmsg_empty_trash(FolderItem *trash)
+{
+	FILE *fp;
+
+	if (trash && trash->total_msgs > 0) {
+		GSList *mlist = folder_item_get_msg_list(trash);
+		GSList *cur;
+		for (cur = mlist ; cur != NULL ; cur = cur->next) {
+			MsgInfo * msginfo = (MsgInfo *) cur->data;
+			partial_mark_for_delete(msginfo);
+			procmsg_msginfo_free(msginfo);
+		}
+
+		folder_item_remove_all_msg(trash);
+	}
+}
+
+void procmsg_empty_all_trash(void)
 {
 	FolderItem *trash;
 	GList *cur;
 
 	for (cur = folder_get_list(); cur != NULL; cur = cur->next) {
 		trash = FOLDER(cur->data)->trash;
-		if (trash && trash->total_msgs > 0)
-			folder_item_remove_all_msg(trash);
+		procmsg_empty_trash(trash);
 	}
 }
 
@@ -622,7 +639,7 @@ void procmsg_empty_trash(void)
  */
 gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 {
-	gint ret = 1, count = 0;
+	gint sent = 0, err = 0;
 	GSList *list, *elem;
 
 	if (!queue)
@@ -643,7 +660,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 				if (procmsg_send_message_queue(file) < 0) {
 					g_warning("Sending queued message %d failed.\n", 
 						  msginfo->msgnum);
-					ret = -1;
+					err++;
 				} else {
 					/* CLAWS: 
 					 * We save in procmsg_send_message_queue because
@@ -655,7 +672,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 							(queue->folder->outbox,
 							 file, TRUE);
 					 */
-					count++; 
+					sent++; 
 					folder_item_remove_msg(queue, msginfo->msgnum);
 				}
 				g_free(file);
@@ -667,7 +684,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 		procmsg_msginfo_free(msginfo);
 	}
 
-	return ret * count;
+	return (err != 0 ? -err : sent);
 }
 
 gint procmsg_remove_special_headers(const gchar *in, const gchar *out)
@@ -711,7 +728,7 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 		gchar tmp[MAXPATHLEN + 1];
 
 		g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg.out.%08x",
-			   get_rc_dir(), G_DIR_SEPARATOR, (guint)random());
+			   get_rc_dir(), G_DIR_SEPARATOR, (guint) rand());
 		
 		if (procmsg_remove_special_headers(file, tmp) !=0)
 			return -1;
@@ -846,6 +863,7 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 	MEMBCOPY(size);
 	MEMBCOPY(mtime);
 	MEMBCOPY(date_t);
+
 	MEMBCOPY(flags);
 
 	MEMBDUP(fromname);
@@ -870,6 +888,7 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 
 	MEMBCOPY(score);
 	MEMBCOPY(threadscore);
+	MEMBDUP(plaintext_file);
 
 	return newmsginfo;
 }
@@ -901,6 +920,17 @@ MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 	if (!msginfo->returnreceiptto)
 		msginfo->returnreceiptto = g_strdup
 			(full_msginfo->returnreceiptto);
+	if (!msginfo->partial_recv && full_msginfo->partial_recv)
+		msginfo->partial_recv = g_strdup
+			(full_msginfo->partial_recv);
+	msginfo->total_size = full_msginfo->total_size;
+	if (!msginfo->account_server && full_msginfo->account_server)
+		msginfo->account_server = g_strdup
+			(full_msginfo->account_server);
+	if (!msginfo->account_login && full_msginfo->account_login)
+		msginfo->account_login = g_strdup
+			(full_msginfo->account_login);
+	msginfo->planned_download = full_msginfo->planned_download;
 	procmsg_msginfo_free(full_msginfo);
 
 	return procmsg_msginfo_new_ref(msginfo);
@@ -936,6 +966,12 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	g_free(msginfo->msgid);
 	g_free(msginfo->inreplyto);
 	g_free(msginfo->xref);
+
+	g_free(msginfo->partial_recv);
+	g_free(msginfo->account_server);
+	g_free(msginfo->account_login);
+	
+	g_free(msginfo->plaintext_file);
 
 	g_free(msginfo);
 }
@@ -1000,7 +1036,10 @@ enum
 	Q_NEWS_ACCOUNT_ID  = 5,
 	Q_SAVE_COPY_FOLDER = 6,
 	Q_REPLY_MESSAGE_ID = 7,
-	Q_FWD_MESSAGE_ID   = 8
+	Q_FWD_MESSAGE_ID   = 8,
+	Q_PRIVACY_SYSTEM   = 9,
+	Q_ENCRYPT 	   = 10,
+	Q_ENCRYPT_DATA	   = 11,
 };
 
 gint procmsg_send_message_queue(const gchar *file)
@@ -1014,6 +1053,9 @@ gint procmsg_send_message_queue(const gchar *file)
 				       {"SCF:",  NULL, FALSE},
 				       {"RMID:", NULL, FALSE},
 				       {"FMID:", NULL, FALSE},
+				       {"X-Sylpheed-Privacy-System:", NULL, FALSE},
+				       {"X-Sylpheed-Encrypt:", NULL, FALSE},
+				       {"X-Sylpheed-Encrypt-Data:", NULL, FALSE},
 				       {NULL,    NULL, FALSE}};
 	FILE *fp;
 	gint filepos;
@@ -1025,9 +1067,15 @@ gint procmsg_send_message_queue(const gchar *file)
 	gchar *savecopyfolder = NULL;
 	gchar *replymessageid = NULL;
 	gchar *fwdmessageid = NULL;
+	gchar *privacy_system = NULL;
+	gboolean encrypt = FALSE;
+	gchar *encrypt_data = NULL;
 	gchar buf[BUFFSIZE];
 	gint hnum;
 	PrefsAccount *mailac = NULL, *newsac = NULL;
+	gboolean save_clear_text = TRUE;
+	gchar *tmp_enc_file = NULL;
+
 	int local = 0;
 
 	g_return_val_if_fail(file != NULL, -1);
@@ -1043,10 +1091,12 @@ gint procmsg_send_message_queue(const gchar *file)
 
 		switch (hnum) {
 		case Q_SENDER:
-			if (!from) from = g_strdup(p);
+			if (from == NULL) 
+				from = g_strdup(p);
 			break;
 		case Q_SMTPSERVER:
-			if (!smtpserver) smtpserver = g_strdup(p);
+			if (smtpserver == NULL) 
+				smtpserver = g_strdup(p);
 			break;
 		case Q_RECIPIENTS:
 			to_list = address_list_append(to_list, p);
@@ -1061,17 +1111,84 @@ gint procmsg_send_message_queue(const gchar *file)
 			newsac = account_find_from_id(atoi(p));
 			break;
 		case Q_SAVE_COPY_FOLDER:
-			if (!savecopyfolder) savecopyfolder = g_strdup(p);
+			if (savecopyfolder == NULL) 
+				savecopyfolder = g_strdup(p);
 			break;
 		case Q_REPLY_MESSAGE_ID:
-			if (!replymessageid) replymessageid = g_strdup(p);
+			if (replymessageid == NULL) 
+				replymessageid = g_strdup(p);
 			break;
 		case Q_FWD_MESSAGE_ID:
-			if (!fwdmessageid) fwdmessageid = g_strdup(p);
+			if (fwdmessageid == NULL) 
+				fwdmessageid = g_strdup(p);
+			break;
+		case Q_PRIVACY_SYSTEM:
+			if (privacy_system == NULL) 
+				privacy_system = g_strdup(p);
+			break;
+		case Q_ENCRYPT:
+			if (p[0] == '1') 
+				encrypt = TRUE;
+			break;
+		case Q_ENCRYPT_DATA:
+			if (encrypt_data == NULL) 
+				encrypt_data = g_strdup(p);
 			break;
 		}
 	}
 	filepos = ftell(fp);
+
+	if (encrypt) {
+		MimeInfo *mimeinfo;
+
+		save_clear_text = (mailac != NULL && mailac->save_encrypted_as_clear_text);
+
+		fclose(fp);
+		fp = NULL;
+
+		mimeinfo = procmime_scan_queue_file(file);
+		if (!privacy_encrypt(privacy_system, mimeinfo, encrypt_data)
+		|| (fp = my_tmpfile()) == NULL
+		||  procmime_write_mimeinfo(mimeinfo, fp) < 0) {
+			if (fp)
+				fclose(fp);
+			procmime_mimeinfo_free_all(mimeinfo);
+			g_free(from);
+			g_free(smtpserver);
+			slist_free_strings(to_list);
+			g_slist_free(to_list);
+			slist_free_strings(newsgroup_list);
+			g_slist_free(newsgroup_list);
+			g_free(savecopyfolder);
+			g_free(replymessageid);
+			g_free(fwdmessageid);
+			g_free(privacy_system);
+			g_free(encrypt_data);
+			return -1;
+		}
+		
+		rewind(fp);
+		if (!save_clear_text) {
+			gchar *content = NULL;
+			FILE *tmpfp = get_tmpfile_in_dir(get_mime_tmp_dir(), &tmp_enc_file);
+			if (tmpfp) {
+				fclose(tmpfp);
+
+				content = file_read_stream_to_str(fp);
+				rewind(fp);
+
+				get_tmpfile_in_dir(get_mime_tmp_dir(), &tmp_enc_file);
+				str_write_to_file(content, tmp_enc_file);
+				g_free(content);
+			} else {
+				g_warning("couldn't get tempfile\n");
+			}
+		} 
+		
+		procmime_mimeinfo_free_all(mimeinfo);
+		
+		filepos = 0;
+    	}
 
 	if (to_list) {
 		debug_print("Sending message by mail\n");
@@ -1109,7 +1226,7 @@ gint procmsg_send_message_queue(const gchar *file)
 	}
 
 	fseek(fp, filepos, SEEK_SET);
-	if (newsgroup_list && (newsval == 0)) {
+	if (newsgroup_list && (mailval == 0)) {
 		Folder *folder;
 		gchar *tmp = NULL;
 		FILE *tmpfp;
@@ -1152,12 +1269,6 @@ gint procmsg_send_message_queue(const gchar *file)
 		g_free(tmp);
 	}
 
-	slist_free_strings(to_list);
-	g_slist_free(to_list);
-	slist_free_strings(newsgroup_list);
-	g_slist_free(newsgroup_list);
-	g_free(from);
-	g_free(smtpserver);
 	fclose(fp);
 
 	/* save message to outbox */
@@ -1169,8 +1280,14 @@ gint procmsg_send_message_queue(const gchar *file)
 		outbox = folder_find_item_from_identifier(savecopyfolder);
 		if (!outbox)
 			outbox = folder_get_default_outbox();
-
-		procmsg_save_to_outbox(outbox, file, TRUE);
+			
+		if (save_clear_text || tmp_enc_file == NULL) {
+			procmsg_save_to_outbox(outbox, file, TRUE);
+		} else {
+			procmsg_save_to_outbox(outbox, tmp_enc_file, FALSE);
+			unlink(tmp_enc_file);
+			free(tmp_enc_file);
+		}
 	}
 
 	if (replymessageid != NULL || fwdmessageid != NULL) {
@@ -1205,8 +1322,7 @@ gint procmsg_send_message_queue(const gchar *file)
 				if (replymessageid != NULL) {
 					procmsg_msginfo_unset_flags(msginfo, MSG_FORWARDED, 0);
 					procmsg_msginfo_set_flags(msginfo, MSG_REPLIED, 0);
-				} 
-				else {
+				}  else {
 					procmsg_msginfo_unset_flags(msginfo, MSG_REPLIED, 0);
 					procmsg_msginfo_set_flags(msginfo, MSG_FORWARDED, 0);
 				}
@@ -1216,10 +1332,18 @@ gint procmsg_send_message_queue(const gchar *file)
 		g_strfreev(tokens);
 	}
 
+	g_free(from);
+	g_free(smtpserver);
+	slist_free_strings(to_list);
+	g_slist_free(to_list);
+	slist_free_strings(newsgroup_list);
+	g_slist_free(newsgroup_list);
 	g_free(savecopyfolder);
 	g_free(replymessageid);
 	g_free(fwdmessageid);
-	
+	g_free(privacy_system);
+	g_free(encrypt_data);
+
 	return (newsval != 0 ? newsval : mailval);
 }
 
@@ -1264,6 +1388,7 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 	FolderItem *item;
 	MsgInfoUpdate msginfo_update;
 	MsgPermFlags perm_flags_new, perm_flags_old;
+	MsgTmpFlags tmp_flags_old;
 
 	g_return_if_fail(msginfo != NULL);
 	item = msginfo->folder;
@@ -1283,14 +1408,19 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 
 		update_folder_msg_counts(item, msginfo, perm_flags_old);
 
+	}
+
+	/* Tmp flags handling */
+	tmp_flags_old = msginfo->flags.tmp_flags;
+	msginfo->flags.tmp_flags |= tmp_flags;
+
+	/* update notification */
+	if ((perm_flags_old != perm_flags_new) || (tmp_flags_old != msginfo->flags.tmp_flags)) {
 		msginfo_update.msginfo = msginfo;
 		msginfo_update.flags = MSGINFO_UPDATE_FLAGS;
 		hooks_invoke(MSGINFO_UPDATE_HOOKLIST, &msginfo_update);
 		folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT);
 	}
-
-	/* Tmp flags hanlding */
-	msginfo->flags.tmp_flags |= tmp_flags;
 }
 
 void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
@@ -1298,6 +1428,7 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 	FolderItem *item;
 	MsgInfoUpdate msginfo_update;
 	MsgPermFlags perm_flags_new, perm_flags_old;
+	MsgTmpFlags tmp_flags_old;
 
 	g_return_if_fail(msginfo != NULL);
 	item = msginfo->folder;
@@ -1321,7 +1452,16 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 	}
 
 	/* Tmp flags hanlding */
+	tmp_flags_old = msginfo->flags.tmp_flags;
 	msginfo->flags.tmp_flags &= ~tmp_flags;
+
+	/* update notification */
+	if ((perm_flags_old != perm_flags_new) || (tmp_flags_old != msginfo->flags.tmp_flags)) {
+		msginfo_update.msginfo = msginfo;
+		msginfo_update.flags = MSGINFO_UPDATE_FLAGS;
+		hooks_invoke(MSGINFO_UPDATE_HOOKLIST, &msginfo_update);
+		folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT);
+	}
 }
 
 /*!

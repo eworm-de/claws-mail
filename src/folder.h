@@ -100,10 +100,10 @@ typedef enum
 
 typedef enum
 {
-	FOLDER_NEW_FOLDER 		= 1 << 0,
-	FOLDER_DESTROY_FOLDER 		= 1 << 1,
+	FOLDER_ADD_FOLDER 		= 1 << 0,
+	FOLDER_REMOVE_FOLDER 		= 1 << 1,
 	FOLDER_TREE_CHANGED 		= 1 << 2,
-	FOLDER_NEW_FOLDERITEM 		= 1 << 3,
+	FOLDER_ADD_FOLDERITEM 		= 1 << 3,
 	FOLDER_REMOVE_FOLDERITEM 	= 1 << 4,
 } FolderUpdateFlags;
 
@@ -111,6 +111,9 @@ typedef enum
 {
 	F_ITEM_UPDATE_MSGCNT = 1 << 0,
 	F_ITEM_UPDATE_CONTENT = 1 << 1,
+	F_ITEM_UPDATE_ADDMSG = 1 << 2,
+	F_ITEM_UPDATE_REMOVEMSG = 1 << 3,
+	F_ITEM_UPDATE_NAME = 1 << 4,
 } FolderItemUpdateFlags;
 
 typedef void (*FolderUIFunc)		(Folder		*folder,
@@ -119,7 +122,7 @@ typedef void (*FolderUIFunc)		(Folder		*folder,
 typedef void (*FolderDestroyNotify)	(Folder		*folder,
 					 FolderItem	*item,
 					 gpointer	 data);
-typedef void (*FolderItemFunc)		(FolderItem	*item,
+typedef void (*FolderItemFunc)	(FolderItem	*item,
 					 gpointer	 data);
 
 
@@ -136,6 +139,7 @@ struct _Folder
 
 	gchar *name;
 	PrefsAccount *account;
+	guint sort;
 
 	FolderItem *inbox;
 	FolderItem *outbox;
@@ -169,7 +173,7 @@ struct _FolderClass
 	 * user. Can be upper and lowercase unlike the idstr.
 	 */
 	gchar	   *uistr;
-
+	
 	/* virtual functions */
 
 	/* Folder funtions */
@@ -538,6 +542,23 @@ struct _FolderClass
 						 FolderItem	*item,
 						 MsgInfo        *msginfo,
 						 MsgPermFlags	 newflags);
+	/**
+	 * Get the flags for a list of messages. Flags that are not supported
+	 * by the folder should be preserved. They can be copied from
+	 * \c msginfo->flags.perm_flags
+	 *
+	 * \param folder The \c Folder of the messages
+	 * \param item The \c FolderItem of the messages
+	 * \param msglist The list of \c MsgInfos for which the flags should
+	 *                   be returned
+	 * \param msgflags A \c GRelation for tuples of (MsgInfo, new permanent
+         *        flags for MsgInfo). Add tuples for the messages in msglist
+	 * \return 0 on success, a negative number otherwise
+	 */
+	gint		(*get_flags)		(Folder		*folder,
+						 FolderItem	*item,
+						 MsgInfoList	*msglist,
+						 GRelation	*msgflags);
 };
 
 struct _FolderItem
@@ -615,6 +636,7 @@ struct _FolderItemUpdateData
 {
 	FolderItem		*item;
 	FolderItemUpdateFlags	 update_flags;
+	MsgInfo			*msg;
 };
 
 void	    folder_system_init		(void);
@@ -653,15 +675,19 @@ void        folder_set_ui_func	(Folder		*folder,
 				 gpointer	 data);
 void        folder_set_name	(Folder		*folder,
 				 const gchar	*name);
+void	    folder_set_sort	(Folder		*folder,
+				 guint		 sort);
 void        folder_tree_destroy	(Folder		*folder);
 
 void   folder_add		(Folder		*folder);
+void   folder_remove		(Folder 	*folder);
 
 GList *folder_get_list		(void);
 gint   folder_read_list		(void);
 void   folder_write_list	(void);
 void   folder_scan_tree		(Folder *folder);
 FolderItem *folder_create_folder(FolderItem	*parent, const gchar *name);
+gint   folder_item_rename	(FolderItem *item, gchar *newname);
 void   folder_update_op_count		(void);
 void   folder_func_to_all_folders	(FolderItemFunc function,
 					 gpointer data);
@@ -699,6 +725,7 @@ gchar *folder_item_get_path		(FolderItem	*item);
 gint   folder_item_open			(FolderItem	*item);
 gint   folder_item_close		(FolderItem	*item);
 gint   folder_item_scan			(FolderItem	*item);
+gint   folder_item_syncronize_flags	(FolderItem 	*item);
 void   folder_item_scan_foreach		(GHashTable	*table);
 MsgInfo *folder_item_get_msginfo	(FolderItem 	*item,
 					 gint		 num);

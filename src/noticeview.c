@@ -46,6 +46,7 @@
 #include "noticeview.h"
 
 static void noticeview_button_pressed	(GtkButton *button, NoticeView *noticeview);
+static void noticeview_2ndbutton_pressed(GtkButton *button, NoticeView *noticeview);
 
 NoticeView *noticeview_create(MainWindow *mainwin)
 {
@@ -56,6 +57,7 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	GtkWidget  *icon;
 	GtkWidget  *text;
 	GtkWidget  *widget;
+	GtkWidget  *widget2;
 
 	debug_print("Creating notice view...\n");
 	noticeview = g_new0(NoticeView, 1);
@@ -65,11 +67,11 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	vbox = gtk_vbox_new(FALSE, 4);
 	gtk_widget_show(vbox);
 	hsep = gtk_hseparator_new();
-	gtk_box_pack_start(GTK_BOX(vbox), hsep, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hsep, FALSE, TRUE, 1);
 	
 	hbox = gtk_hbox_new(FALSE, 4);
 	gtk_widget_show(hbox);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 1);
 
 	icon = stock_pixmap_widget(noticeview->window, STOCK_PIXMAP_NOTICE_WARN); 
 #if 0
@@ -85,10 +87,18 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	gtk_box_pack_start(GTK_BOX(hbox), text, FALSE, FALSE, 0);
 
 	widget = gtk_button_new_with_label("");
+	gtk_widget_set_usize(widget, 120, -1);
 	gtk_signal_connect(GTK_OBJECT(widget), "clicked", 
 			   GTK_SIGNAL_FUNC(noticeview_button_pressed),
 			   (gpointer) noticeview);
 	gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 4);
+	
+	widget2 = gtk_button_new_with_label("");
+	gtk_widget_set_usize(widget2, 120, -1);
+	gtk_signal_connect(GTK_OBJECT(widget2), "clicked", 
+			   GTK_SIGNAL_FUNC(noticeview_2ndbutton_pressed),
+			   (gpointer) noticeview);
+	gtk_box_pack_start(GTK_BOX(hbox), widget2, FALSE, FALSE, 0);
 	
 	noticeview->vbox   = vbox;
 	noticeview->hsep   = hsep;
@@ -96,6 +106,7 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	noticeview->icon   = icon;
 	noticeview->text   = text;
 	noticeview->button = widget;
+	noticeview->button2 = widget2;
 
 	noticeview->visible = TRUE;
 
@@ -144,6 +155,12 @@ void noticeview_set_button_text(NoticeView *noticeview, const char *text)
 		gtk_widget_show(noticeview->button);
 	} else
 		gtk_widget_hide(noticeview->button);
+	
+	/* Callers defining only one button don't have to mind 
+	 * resetting the second one. Callers defining two have
+	 * to define the second button after the first one. 
+	 */
+	gtk_widget_hide(noticeview->button2);
 }
 
 void noticeview_set_button_press_callback(NoticeView	*noticeview,
@@ -158,6 +175,33 @@ static void noticeview_button_pressed(GtkButton *button, NoticeView *noticeview)
 {
 	if (noticeview->press) {
 		noticeview->press(noticeview, noticeview->user_data);
+	}
+}
+
+void noticeview_set_2ndbutton_text(NoticeView *noticeview, const char *text)
+{
+	g_return_if_fail(noticeview);
+
+	if (text != NULL) {
+		gtk_label_set_text
+			(GTK_LABEL(GTK_BIN(noticeview->button2)->child), text);
+		gtk_widget_show(noticeview->button2);
+	} else
+		gtk_widget_hide(noticeview->button2);
+}
+
+void noticeview_set_2ndbutton_press_callback(NoticeView	*noticeview,
+				          GtkSignalFunc  callback,
+					  gpointer	*user_data)
+{
+	noticeview->press2     = (void (*) (NoticeView *, gpointer)) callback;
+	noticeview->user_data2 = user_data;
+}
+
+static void noticeview_2ndbutton_pressed(GtkButton *button, NoticeView *noticeview)
+{
+	if (noticeview->press2) {
+		noticeview->press2(noticeview, noticeview->user_data2);
 	}
 }
 

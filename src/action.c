@@ -108,7 +108,7 @@ struct _ChildInfo
 };
 
 static void action_update_menu		(GtkItemFactory	*ifactory,
-					 const gchar	*branch_path,
+					 gchar		*branch_path,
 					 gpointer	 callback,
 					 gpointer	 data);
 static void compose_actions_execute_cb	(Compose	*compose,
@@ -427,7 +427,7 @@ void actions_execute(gpointer data,
 }
 
 void action_update_mainwin_menu(GtkItemFactory *ifactory,
-				const gchar *branch_path,
+				gchar *branch_path,
 				MainWindow *mainwin)
 {
 	action_update_menu(ifactory, branch_path,
@@ -435,7 +435,7 @@ void action_update_mainwin_menu(GtkItemFactory *ifactory,
 }
 
 void action_update_msgview_menu(GtkItemFactory *ifactory,
-				const gchar *branch_path,
+				gchar *branch_path,
 				MessageView *msgview)
 {
 	action_update_menu(ifactory, branch_path,
@@ -443,7 +443,7 @@ void action_update_msgview_menu(GtkItemFactory *ifactory,
 }
 
 void action_update_compose_menu(GtkItemFactory *ifactory, 
-				const gchar *branch_path,
+				gchar *branch_path,
 				Compose *compose)
 {
 	action_update_menu(ifactory, branch_path,
@@ -451,7 +451,7 @@ void action_update_compose_menu(GtkItemFactory *ifactory,
 }
 
 static void action_update_menu(GtkItemFactory *ifactory, 
-			       const gchar *branch_path,
+			       gchar *branch_path,
 			       gpointer callback, gpointer data)
 {
 	GtkWidget *menuitem;

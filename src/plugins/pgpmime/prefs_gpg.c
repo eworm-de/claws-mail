@@ -57,7 +57,11 @@ struct GPGPage
         GtkWidget *checkbtn_gpg_warning;
 };
 
+#ifdef WIN32
+void prefs_gpg_create_widget_func(PrefsPage *_page,
+#else
 static void prefs_gpg_create_widget_func(PrefsPage *_page,
+#endif
 					 GtkWindow *window,
 					 gpointer data)
 {
@@ -200,11 +204,19 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	page->page.widget = table;
 }
 
+#ifdef WIN32
+void prefs_gpg_destroy_widget_func(PrefsPage *_page)
+#else
 static void prefs_gpg_destroy_widget_func(PrefsPage *_page)
+#endif
 {
 }
 
+#ifdef WIN32
+void prefs_gpg_save_func(PrefsPage *_page)
+#else
 static void prefs_gpg_save_func(PrefsPage *_page)
+#endif
 {
 	struct GPGPage *page = (struct GPGPage *) _page;
 	GPGConfig *config = prefs_gpg_get_config();

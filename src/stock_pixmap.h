@@ -118,12 +118,31 @@ typedef enum
 	STOCK_PIXMAP_PRIVACY_UNKNOWN,
 	STOCK_PIXMAP_PRIVACY_EXPIRED,
 	STOCK_PIXMAP_PRIVACY_WARN,
+	STOCK_PIXMAP_PRIVACY_EMBLEM_ENCRYPTED,
+	STOCK_PIXMAP_PRIVACY_EMBLEM_SIGNED,
+	STOCK_PIXMAP_PRIVACY_EMBLEM_PASSED,
+	STOCK_PIXMAP_PRIVACY_EMBLEM_FAILED,
+	STOCK_PIXMAP_PRIVACY_EMBLEM_WARN,
 	STOCK_PIXMAP_MIME_MESSAGE,
+	STOCK_PIXMAP_READ,
 	
 	STOCK_PIXMAP_SYLPHEED_LOGO,		/* last entry */
 	
 	N_STOCK_PIXMAPS
 } StockPixmap;
+
+typedef enum {
+	OVERLAY_NONE,
+	OVERLAY_TOP_LEFT,
+	OVERLAY_TOP_CENTER,
+	OVERLAY_TOP_RIGHT,
+	OVERLAY_MID_LEFT,
+	OVERLAY_MID_CENTER,
+	OVERLAY_MID_RIGHT,
+	OVERLAY_BOTTOM_LEFT,
+	OVERLAY_BOTTOM_CENTER,
+	OVERLAY_BOTTOM_RIGHT
+} OverlayPosition;
 
 GtkWidget *stock_pixmap_widget	(GtkWidget	 *window,
 				 StockPixmap	  icon);
@@ -136,5 +155,11 @@ GList *stock_pixmap_themes_list_new	(void);
 void stock_pixmap_themes_list_free	(GList *list);
 gchar *stock_pixmap_get_name         (StockPixmap icon);
 StockPixmap stock_pixmap_get_icon    (gchar *file);
+GtkWidget *stock_pixmap_widget_with_overlay (GtkWidget		*window,
+					     StockPixmap	 icon,
+					     StockPixmap	 overlay,
+					     OverlayPosition	 pos,
+					     gint		 border_x,
+					     gint		 border_y);
 
 #endif /* __STOCK_PIXMAP_H__ */

@@ -179,9 +179,8 @@ static void message_search_execute(GtkButton *button, gpointer data)
 		}
 
 		if (all_searched) {
-			alertpanel_message
-				(_("Search failed"),
-				 _("Search string not found."));
+			alertpanel_notice
+				(_("Search string not found."));
 			break;
 		}
 

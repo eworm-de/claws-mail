@@ -36,6 +36,9 @@
 #endif
 #include <string.h>
 #include <time.h>
+#ifndef WIN32
+#include <sys/time.h>
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 #ifndef WIN32
@@ -104,7 +107,17 @@ static void inc_session_destroy		(IncSession		*session);
 static gint inc_start			(IncProgressDialog	*inc_dialog);
 static IncState inc_pop3_session_do	(IncSession		*session);
 
+static void inc_progress_dialog_update	(IncProgressDialog	*inc_dialog,
+					 IncSession		*inc_session);
+
 static void inc_progress_dialog_set_label
+					(IncProgressDialog	*inc_dialog,
+					 IncSession		*inc_session);
+static void inc_progress_dialog_set_progress
+					(IncProgressDialog	*inc_dialog,
+					 IncSession		*inc_session);
+
+static void inc_progress_dialog_update_periodic
 					(IncProgressDialog	*inc_dialog,
 					 IncSession		*inc_session);
 
@@ -122,7 +135,7 @@ static gint inc_drop_message		(Pop3Session	*session,
 					 const gchar	*file);
 
 static void inc_put_error		(IncState	 istate,
-					 const gchar	*msg);
+					 Pop3Session 	*session);
 
 static void inc_cancel_cb		(GtkWidget	*widget,
 					 gpointer	 data);
@@ -207,19 +220,36 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 
 void inc_pop_before_smtp(PrefsAccount *acc)
 {
+	IncProgressDialog *inc_dialog;
+	IncSession *session;
+	MainWindow *mainwin;
+
+	mainwin = mainwindow_get_mainwindow();
+
+    	session = inc_session_new(acc);
+    	if (!session) return;
+	POP3_SESSION(session->session)->pop_before_smtp = TRUE;
+		
+    	inc_dialog = inc_progress_dialog_create(FALSE);
+    	inc_dialog->queue_list = g_list_append(inc_dialog->queue_list,
+					       session);
 	/* FIXME: assumes to attach to first main window */
-	inc_account_mail(mainwindow_get_mainwindow(), acc);
+	inc_dialog->mainwin = mainwin;
+	inc_progress_dialog_set_list(inc_dialog);
+
+	if (mainwin) {
+		toolbar_main_set_sensitive(mainwin);
+		main_window_set_menu_sensitive(mainwin);
+	}
+			
+	inc_start(inc_dialog);
 }
 
 static gint inc_account_mail_real(MainWindow *mainwin, PrefsAccount *account)
 {
 	IncProgressDialog *inc_dialog;
 	IncSession *session;
-	FolderItem *item = NULL;
 	
-	if(mainwin && mainwin->summaryview)
-		item = mainwin->summaryview->folder_item;
-
 	switch (account->protocol) {
 	case A_IMAP4:
 	case A_NNTP:
@@ -267,7 +297,7 @@ gint inc_account_mail(MainWindow *mainwin, PrefsAccount *account)
 		if (alertpanel(_("Offline warning"), 
 			       _("You're working offline. Override?"),
 			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
-		return;
+			return 0;
 
 	inc_autocheck_timer_remove();
 	main_window_lock(mainwin);
@@ -314,8 +344,8 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 	if (account_new_msgs > 0)
 		new_msgs += account_new_msgs;
 
-	/* check IMAP4 folders */
-	for (; list != NULL; list = list->next) {
+	/* check IMAP4 / News folders */
+	for (list = account_get_list(); list != NULL; list = list->next) {
 		PrefsAccount *account = list->data;
 		if ((account->protocol == A_IMAP4 ||
 		     account->protocol == A_NNTP) && account->recv_at_getall) {
@@ -335,23 +365,17 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 		}
 	}
 
-	if (!queue_list) {
-		inc_finished(mainwin, new_msgs > 0);
-		main_window_unlock(mainwin);
- 		inc_notify_cmd(new_msgs, notify);
-		inc_autocheck_timer_set();
-		return;
+	if (queue_list) {
+		inc_dialog = inc_progress_dialog_create(autocheck);
+		inc_dialog->queue_list = queue_list;
+		inc_dialog->mainwin = mainwin;
+		inc_progress_dialog_set_list(inc_dialog);
+
+		toolbar_main_set_sensitive(mainwin);
+		main_window_set_menu_sensitive(mainwin);
+		new_msgs += inc_start(inc_dialog);
 	}
 
-	inc_dialog = inc_progress_dialog_create(autocheck);
-	inc_dialog->queue_list = queue_list;
-	inc_dialog->mainwin = mainwin;
-	inc_progress_dialog_set_list(inc_dialog);
-
-	toolbar_main_set_sensitive(mainwin);
-	main_window_set_menu_sensitive(mainwin);
-
-	new_msgs += inc_start(inc_dialog);
 	inc_finished(mainwin, new_msgs > 0);
 	main_window_unlock(mainwin);
  	inc_notify_cmd(new_msgs, notify);
@@ -391,7 +415,8 @@ static IncProgressDialog *inc_progress_dialog_create(gboolean autocheck)
 	}
 
 	dialog->dialog = progress;
-	dialog->timer_id = 0;
+	gettimeofday(&dialog->progress_tv, NULL);
+	gettimeofday(&dialog->folder_tv, NULL);
 	dialog->queue_list = NULL;
 	dialog->cur_row = 0;
 
@@ -445,7 +470,7 @@ static IncSession *inc_session_new(PrefsAccount *account)
 
 	g_return_val_if_fail(account != NULL, NULL);
 
-	if (account->protocol != A_POP3 && account->protocol != A_APOP)
+	if (account->protocol != A_POP3)
 		return NULL;
 	if (!account->recv_server || !account->userid)
 		return NULL;
@@ -463,9 +488,6 @@ static IncSession *inc_session_new(PrefsAccount *account)
 	session_set_recv_data_notify(session->session,
 				     inc_recv_data_finished, session);
 
-	session->folder_table = g_hash_table_new(NULL, NULL);
-	session->tmp_folder_table = g_hash_table_new(NULL, NULL);
-
 	return session;
 }
 
@@ -474,8 +496,6 @@ static void inc_session_destroy(IncSession *session)
 	g_return_if_fail(session != NULL);
 
 	session_destroy(session->session);
-	g_hash_table_destroy(session->folder_table);
-	g_hash_table_destroy(session->tmp_folder_table);
 	g_free(session);
 }
 
@@ -592,6 +612,9 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		case INC_EOF:
 			SET_PIXMAP_AND_TEXT(errorxpm, errorxpmmask, _("Error"));
 			break;
+		case INC_TIMEOUT:
+			SET_PIXMAP_AND_TEXT(errorxpm, errorxpmmask, _("Timeout"));
+			break;
 		case INC_CANCEL:
 			SET_PIXMAP_AND_TEXT(okxpm, okxpmmask, _("Cancelled"));
 			break;
@@ -623,12 +646,14 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		msglist = folder_item_get_msg_list(processing);
 
 		/* process messages */
+		folder_item_update_freeze();
 		for(msglist_element = msglist; msglist_element != NULL; msglist_element = msglist_element->next) {
 			msginfo = (MsgInfo *) msglist_element->data;
 			if (!pop3_session->ac_prefs->filter_on_recv || !procmsg_msginfo_filter(msginfo))
 				folder_item_move_msg(inbox, msginfo);
 			procmsg_msginfo_free(msginfo);
 		}
+		folder_item_update_thaw();
 		g_slist_free(msglist);
 
 		statusbar_pop_all();
@@ -649,7 +674,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 				manage_window_focus_in
 					(inc_dialog->dialog->window,
 					 NULL, NULL);
-			inc_put_error(inc_state, pop3_session->error_msg);
+			inc_put_error(inc_state, pop3_session);
 			if (inc_dialog->show_dialog)
 				manage_window_focus_out
 					(inc_dialog->dialog->window,
@@ -693,7 +718,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			g_list_remove(inc_dialog->queue_list, session);
 	}
 
-	if (prefs_common.close_recv_dialog)
+	if (prefs_common.close_recv_dialog || !inc_dialog->show_dialog)
 		inc_progress_dialog_destroy(inc_dialog);
 	else {
 		gtk_window_set_title(GTK_WINDOW(inc_dialog->dialog->window),
@@ -754,6 +779,9 @@ static IncState inc_pop3_session_do(IncSession *session)
 	progress_dialog_set_label(inc_dialog->dialog, buf);
 	g_free(buf);
 
+	session_set_timeout(SESSION(pop3_session),
+			    prefs_common.io_timeout_secs * 1000);
+
 	if (session_connect(SESSION(pop3_session), server, port) < 0) {
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
 			    server, port);
@@ -775,25 +803,26 @@ static IncState inc_pop3_session_do(IncSession *session)
 	       session->inc_state != INC_CANCEL)
 		gtk_main_iteration();
 
-	if (inc_dialog->timer_id) {
-		gtk_timeout_remove(inc_dialog->timer_id);
-		inc_dialog->timer_id = 0;
-	}
-
-	statusbar_pop_all();
-
 	if (session->inc_state == INC_SUCCESS) {
 		switch (pop3_session->error_val) {
 		case PS_SUCCESS:
-			if (SESSION(pop3_session)->state == SESSION_ERROR) {
+			switch (SESSION(pop3_session)->state) {
+			case SESSION_ERROR:
 				if (pop3_session->state == POP3_READY)
 					session->inc_state = INC_CONNECT_ERROR;
 				else
 					session->inc_state = INC_ERROR;
-			} else if (SESSION(pop3_session)->state == SESSION_EOF)
+				break;
+			case SESSION_EOF:
 				session->inc_state = INC_EOF;
-			else
+				break;
+			case SESSION_TIMEOUT:
+				session->inc_state = INC_TIMEOUT;
+				break;
+			default:
 				session->inc_state = INC_SUCCESS;
+				break;
+			}
 			break;
 		case PS_AUTHFAIL:
 			session->inc_state = INC_AUTH_FAILED;
@@ -813,13 +842,22 @@ static IncState inc_pop3_session_do(IncSession *session)
 		}
 	}
 
+	session_disconnect(SESSION(pop3_session));
+	statusbar_pop_all();
+
 	return session->inc_state;
+}
+
+static void inc_progress_dialog_update(IncProgressDialog *inc_dialog,
+				       IncSession *inc_session)
+{
+	inc_progress_dialog_set_label(inc_dialog, inc_session);
+	inc_progress_dialog_set_progress(inc_dialog, inc_session);
 }
 
 static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
 					  IncSession *inc_session)
 {
-	gchar buf[MSGBUFSIZE];
 	ProgressDialog *dialog = inc_dialog->dialog;
 	Pop3Session *session;
 
@@ -834,8 +872,9 @@ static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
 	case POP3_GETAUTH_PASS:
 	case POP3_GETAUTH_APOP:
 		progress_dialog_set_label(dialog, _("Authenticating..."));
-		statusbar_print_all(_("Retrieving messages from %s..."),
-				    SESSION(session)->server);
+		statusbar_print_all(_("Retrieving messages from %s (%s) ..."),
+				    SESSION(session)->server,
+				    session->ac_prefs->account_name);
 		break;
 	case POP3_GETRANGE_STAT:
 		progress_dialog_set_label
@@ -854,24 +893,18 @@ static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
 			(dialog, _("Getting the size of messages (LIST)..."));
 		break;
 	case POP3_RETR:
-		gtk_progress_set_show_text
-			(GTK_PROGRESS(inc_dialog->mainwin->progressbar), TRUE);
-		g_snprintf(buf, sizeof(buf), "%d / %d",
-			   session->cur_msg, session->count);
-		gtk_progress_set_format_string
-			(GTK_PROGRESS(inc_dialog->mainwin->progressbar), buf);
-		inc_recv_data_progressive
-			(SESSION(session), 0,
-			 session->msg[session->cur_msg].size,
-			 inc_session);
+	case POP3_RETR_RECV:
 		break;
 	case POP3_DELETE:
+#if 0
 		if (session->msg[session->cur_msg].recv_time <
 			session->current_time) {
+			gchar buf[MSGBUFSIZE];
 			g_snprintf(buf, sizeof(buf), _("Deleting message %d"),
 				   session->cur_msg);
 			progress_dialog_set_label(dialog, buf);
 		}
+#endif
 		break;
 	case POP3_LOGOUT:
 		progress_dialog_set_label(dialog, _("Quitting"));
@@ -881,40 +914,85 @@ static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
 	}
 }
 
-static gboolean hash_remove_func(gpointer key, gpointer value, gpointer data)
+static void inc_progress_dialog_set_progress(IncProgressDialog *inc_dialog,
+					     IncSession *inc_session)
 {
-	return TRUE;
-}
+	gchar buf[MSGBUFSIZE];
+	Pop3Session *pop3_session = POP3_SESSION(inc_session->session);
+	gchar *total_size_str;
+	gint cur_total;
+	gint total;
 
-static gint inc_timer_func(gpointer data)
-{
-	IncSession *inc_session = (IncSession *)data;
-	IncProgressDialog *inc_dialog;
+	if (!pop3_session->new_msg_exist) return;
 
-	g_return_val_if_fail(inc_session != NULL, -1);
-
-	inc_dialog = (IncProgressDialog *)inc_session->data;
-
-	if (g_hash_table_size(inc_session->tmp_folder_table) > 0) {
-		folderview_update_item_foreach(inc_session->tmp_folder_table,
-					       FALSE);
-		g_hash_table_foreach_remove(inc_session->tmp_folder_table,
-					    hash_remove_func, NULL);
+	cur_total = inc_session->cur_total_bytes;
+	total = pop3_session->total_bytes;
+	if (pop3_session->state == POP3_RETR ||
+	    pop3_session->state == POP3_RETR_RECV ||
+	    pop3_session->state == POP3_DELETE) {
+		Xstrdup_a(total_size_str, to_human_readable(total), return);
+		g_snprintf(buf, sizeof(buf),
+			   _("Retrieving message (%d / %d) (%s / %s)"),
+			   pop3_session->cur_msg, pop3_session->count,
+			   to_human_readable(cur_total), total_size_str);
+		progress_dialog_set_label(inc_dialog->dialog, buf);
 	}
 
-	return TRUE;
+	progress_dialog_set_percentage
+		(inc_dialog->dialog,(gfloat)cur_total / (gfloat)total);
+
+	gtk_progress_set_show_text
+		(GTK_PROGRESS(inc_dialog->mainwin->progressbar), TRUE);
+	g_snprintf(buf, sizeof(buf), "%d / %d",
+		   pop3_session->cur_msg, pop3_session->count);
+	gtk_progress_set_format_string
+		(GTK_PROGRESS(inc_dialog->mainwin->progressbar), buf);
+	gtk_progress_bar_update
+		(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
+		 (gfloat)cur_total / (gfloat)total);
+
+	if (pop3_session->cur_total_num > 0) {
+		g_snprintf(buf, sizeof(buf),
+			   _("Retrieving (%d message(s) (%s) received)"),
+			   pop3_session->cur_total_num,
+			   to_human_readable
+			   (pop3_session->cur_total_recv_bytes));
+		gtk_clist_set_text(GTK_CLIST(inc_dialog->dialog->clist),
+				   inc_dialog->cur_row, 2, buf);
+	}
+}
+
+static void inc_progress_dialog_update_periodic(IncProgressDialog *inc_dialog,
+						IncSession *inc_session)
+{
+	struct timeval tv_cur;
+	struct timeval tv_result;
+	gint msec;
+
+	gettimeofday(&tv_cur, NULL);
+
+	tv_result.tv_sec = tv_cur.tv_sec - inc_dialog->progress_tv.tv_sec;
+	tv_result.tv_usec = tv_cur.tv_usec - inc_dialog->progress_tv.tv_usec;
+	if (tv_result.tv_usec < 0) {
+		tv_result.tv_sec--;
+		tv_result.tv_usec += 1000000;
+	}
+
+	msec = tv_result.tv_sec * 1000 + tv_result.tv_usec / 1000;
+	if (msec > PROGRESS_UPDATE_INTERVAL) {
+		inc_progress_dialog_update(inc_dialog, inc_session);
+		inc_dialog->progress_tv.tv_sec = tv_cur.tv_sec;
+		inc_dialog->progress_tv.tv_usec = tv_cur.tv_usec;
+	}
 }
 
 static gint inc_recv_data_progressive(Session *session, guint cur_len,
 				      guint total_len, gpointer data)
 {
-	gchar buf[MSGBUFSIZE];
 	IncSession *inc_session = (IncSession *)data;
 	Pop3Session *pop3_session = POP3_SESSION(session);
 	IncProgressDialog *inc_dialog;
-	ProgressDialog *dialog;
 	gint cur_total;
-	gchar *total_size;
 
 	g_return_val_if_fail(inc_session != NULL, -1);
 
@@ -925,26 +1003,13 @@ static gint inc_recv_data_progressive(Session *session, guint cur_len,
 
 	if (!pop3_session->new_msg_exist) return 0;
 
-	inc_dialog = (IncProgressDialog *)inc_session->data;
-	dialog = inc_dialog->dialog;
-
 	cur_total = pop3_session->cur_total_bytes + cur_len;
 	if (cur_total > pop3_session->total_bytes)
 		cur_total = pop3_session->total_bytes;
+	inc_session->cur_total_bytes = cur_total;
 
-	Xstrdup_a(total_size, to_human_readable(pop3_session->total_bytes),
-		  return FALSE);
-	g_snprintf(buf, sizeof(buf),
-		   _("Retrieving message (%d / %d) (%s / %s)"),
-		   pop3_session->cur_msg, pop3_session->count,
-		   to_human_readable(cur_total), total_size);
-	progress_dialog_set_label(dialog, buf);
-	progress_dialog_set_percentage
-		(dialog, (gfloat)cur_total / (gfloat)pop3_session->total_bytes);
-	if (inc_dialog->mainwin)
-		gtk_progress_bar_update
-			(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
-			 (gfloat)cur_total / (gfloat)pop3_session->total_bytes);
+	inc_dialog = (IncProgressDialog *)inc_session->data;
+	inc_progress_dialog_update_periodic(inc_dialog, inc_session);
 
 	return 0;
 }
@@ -952,32 +1017,17 @@ static gint inc_recv_data_progressive(Session *session, guint cur_len,
 static gint inc_recv_data_finished(Session *session, guint len, gpointer data)
 {
 	IncSession *inc_session = (IncSession *)data;
-	Pop3Session *pop3_session = POP3_SESSION(session);
 	IncProgressDialog *inc_dialog;
-	gchar *msg;
 
 	g_return_val_if_fail(inc_session != NULL, -1);
 
 	inc_dialog = (IncProgressDialog *)inc_session->data;
-	inc_recv_data_progressive(session, 0, len, inc_session);
-	inc_progress_dialog_set_label(inc_dialog, inc_session);
 
-	if (POP3_SESSION(session)->state == POP3_LOGOUT &&
-	    inc_dialog->timer_id) {
-		inc_timer_func(data);
-		gtk_timeout_remove(inc_dialog->timer_id);
-		inc_dialog->timer_id = 0;
+	inc_recv_data_progressive(session, 0, 0, inc_session);
+
+	if (POP3_SESSION(session)->state == POP3_LOGOUT) {
+		inc_progress_dialog_update(inc_dialog, inc_session);
 	}
-
-	if (pop3_session->cur_total_num == 0) return 0;
-
-	msg = g_strdup_printf(_("Retrieving (%d message(s) (%s) received)"),
-			      pop3_session->cur_total_num,
-			      to_human_readable
-				(pop3_session->cur_total_recv_bytes));
-	gtk_clist_set_text(GTK_CLIST(inc_dialog->dialog->clist),
-			   inc_dialog->cur_row, 2, msg);
-	g_free(msg);			   
 
 	return 0;
 }
@@ -990,13 +1040,25 @@ static gint inc_recv_message(Session *session, const gchar *msg, gpointer data)
 	g_return_val_if_fail(inc_session != NULL, -1);
 
 	inc_dialog = (IncProgressDialog *)inc_session->data;
-	inc_progress_dialog_set_label(inc_dialog, inc_session);
 
-	if (POP3_SESSION(session)->state == POP3_LOGOUT &&
-	    inc_dialog->timer_id) {
-		inc_timer_func(data);
-		gtk_timeout_remove(inc_dialog->timer_id);
-		inc_dialog->timer_id = 0;
+	switch (POP3_SESSION(session)->state) {
+	case POP3_GETAUTH_USER:
+	case POP3_GETAUTH_PASS:
+	case POP3_GETAUTH_APOP:
+	case POP3_GETRANGE_STAT:
+	case POP3_GETRANGE_LAST:
+	case POP3_GETRANGE_UIDL:
+	case POP3_GETSIZE_LIST:
+		inc_progress_dialog_update(inc_dialog, inc_session);
+		break;
+	case POP3_RETR:
+		inc_recv_data_progressive(session, 0, 0, inc_session);
+		break;
+	case POP3_LOGOUT:
+		inc_progress_dialog_update(inc_dialog, inc_session);
+		break;
+	default:
+		break;
 	}
 
 	return 0;
@@ -1007,9 +1069,7 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file)
 	FolderItem *inbox;
 	FolderItem *dropfolder;
 	IncSession *inc_session = (IncSession *)(SESSION(session)->data);
-	IncProgressDialog *inc_dialog;
 	gint msgnum;
-	gint val;
 
 	g_return_val_if_fail(inc_session != NULL, -1);
 
@@ -1029,21 +1089,16 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file)
 	dropfolder = folder_get_default_processing();
 
 	/* add msg file to drop folder */
-	if ((msgnum = folder_item_add_msg(dropfolder, file, NULL, TRUE)) < 0) {
+	if ((msgnum = folder_item_add_msg(
+			dropfolder, file, NULL, TRUE)) < 0) {
 		unlink(file);
 		return -1;
 	}
 
-	inc_dialog = (IncProgressDialog *)inc_session->data;
-	if (inc_dialog->timer_id == 0)
-		inc_dialog->timer_id = gtk_timeout_add(FOLDER_UPDATE_INTERVAL,
-						       inc_timer_func,
-						       inc_session);
-
 	return 0;
 }
 
-static void inc_put_error(IncState istate, const gchar *msg)
+static void inc_put_error(IncState istate, Pop3Session *session)
 {
 	gchar *log_msg = NULL;
 	gchar *err_msg = NULL;
@@ -1054,16 +1109,18 @@ static void inc_put_error(IncState istate, const gchar *msg)
 		log_msg = _("Connection failed.");
 		if (prefs_common.no_recv_err_panel)
 			break;
-		err_msg = g_strdup(log_msg);
+		err_msg = g_strdup_printf(_("Connection to %s:%d failed."),
+					  SESSION(session)->server, 
+					  SESSION(session)->port);
 		break;
 	case INC_ERROR:
 		log_msg = _("Error occurred while processing mail.");
 		if (prefs_common.no_recv_err_panel)
 			break;
-		if (msg)
+		if (session->error_msg)
 			err_msg = g_strdup_printf
 				(_("Error occurred while processing mail:\n%s"),
-				 msg);
+				 session->error_msg);
 		else
 			err_msg = g_strdup(log_msg);
 		break;
@@ -1081,21 +1138,25 @@ static void inc_put_error(IncState istate, const gchar *msg)
 		log_msg = _("Socket error.");
 		if (prefs_common.no_recv_err_panel)
 			break;
-		err_msg = g_strdup(log_msg);
+		err_msg = g_strdup_printf(_("Socket error on connection to %s:%d."),
+					  SESSION(session)->server, 
+					  SESSION(session)->port);
 		break;
 	case INC_EOF:
 		log_msg = _("Connection closed by the remote host.");
 		if (prefs_common.no_recv_err_panel)
 			break;
-		err_msg = g_strdup(log_msg);
+		err_msg = g_strdup_printf(_("Connection to %s:%d closed by the remote host."), 
+					  SESSION(session)->server, 
+					  SESSION(session)->port);
 		break;
 	case INC_LOCKED:
 		log_msg = _("Mailbox is locked.");
 		if (prefs_common.no_recv_err_panel)
 			break;
-		if (msg)
+		if (session->error_msg)
 			err_msg = g_strdup_printf(_("Mailbox is locked:\n%s"),
-						  msg);
+						  session->error_msg);
 		else
 			err_msg = g_strdup(log_msg);
 		break;
@@ -1103,11 +1164,19 @@ static void inc_put_error(IncState istate, const gchar *msg)
 		log_msg = _("Authentication failed.");
 		if (prefs_common.no_recv_err_panel)
 			break;
-		if (msg)
+		if (session->error_msg)
 			err_msg = g_strdup_printf
-				(_("Authentication failed:\n%s"), msg);
+				(_("Authentication failed:\n%s"), session->error_msg);
 		else
 			err_msg = g_strdup(log_msg);
+		break;
+	case INC_TIMEOUT:
+		log_msg = _("Session timed out.");
+		if (prefs_common.no_recv_err_panel)
+			break;
+		err_msg = g_strdup_printf(_("Connection to %s:%d timed out."), 
+					  SESSION(session)->server, 
+					  SESSION(session)->port);
 		break;
 	default:
 		break;
@@ -1175,10 +1244,8 @@ static gint inc_dialog_delete_cb(GtkWidget *widget, GdkEventAny *event,
 static gint inc_spool_account(PrefsAccount *account)
 {
 	FolderItem *inbox;
-	gchar *mbox, *logname;
+	gchar *mbox;
 	gint result;
-
-	logname = g_get_user_name();
 
 	if (account->inbox) {
 		inbox = folder_find_item_from_path(account->inbox);
@@ -1189,9 +1256,14 @@ static gint inc_spool_account(PrefsAccount *account)
 
 	if (is_file_exist(account->local_mbox))
 		mbox = g_strdup(account->local_mbox);
-	else 
-		mbox = g_strconcat(account->local_mbox,
-			   	   G_DIR_SEPARATOR_S, logname, NULL);
+	else if (is_dir_exist(account->local_mbox)) 
+		mbox = g_strconcat(account->local_mbox, G_DIR_SEPARATOR_S,
+				   g_get_user_name(), NULL);
+	else {
+		debug_print("%s: local mailbox not found.\n", 
+			    account->local_mbox);
+		return -1;
+	}
 	
 	result = get_spool(inbox, mbox);
 	g_free(mbox);
@@ -1234,7 +1306,7 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 	g_return_val_if_fail(mbox != NULL, -1);
 
 	if (!is_file_exist(mbox) || (size = get_file_size(mbox)) == 0) {
-		debug_print("no messages in local mailbox.\n");
+		debug_print("%s: no messages in local mailbox.\n", mbox);
 		return 0;
 	} else if (size < 0)
 		return -1;
@@ -1253,7 +1325,7 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 	debug_print("Getting new messages from %s into %s...\n",
 		    mbox, dest->path);
 
-	msgs = proc_mbox(dest, tmp_mbox);
+	msgs = proc_mbox(dest, tmp_mbox, TRUE);
 
 	unlink(tmp_mbox);
 	if (msgs >= 0) empty_mbox(mbox);
@@ -1279,18 +1351,22 @@ static gpointer autocheck_data = NULL;
 static void inc_notify_cmd(gint new_msgs, gboolean notify)
 {
 
-	gchar *buf;
+	gchar *buf, *numpos;
 
 	if (!(new_msgs && notify && prefs_common.newmail_notify_cmd &&
 	    *prefs_common.newmail_notify_cmd))
 		     return;
-	if ((buf = strchr(prefs_common.newmail_notify_cmd, '%')) &&
-		buf[1] == 'd' && !strchr(&buf[1], '%'))
-		buf = g_strdup_printf(prefs_common.newmail_notify_cmd, 
-				      new_msgs);
-	else
-		buf = g_strdup(prefs_common.newmail_notify_cmd);
+	buf = g_strdup(prefs_common.newmail_notify_cmd);
+	if ((numpos = strstr(buf, "%d")) != NULL) {
+		gchar *buf2;
 
+		*numpos = '\0';
+		buf2 = g_strdup_printf("%s%d%s", buf, new_msgs, numpos + 2);
+		g_free(buf);
+		buf = buf2;
+	}
+
+	debug_print("executing new mail notification command: %s\n", buf);
 	execute_command_line(buf, TRUE);
 
 	g_free(buf);

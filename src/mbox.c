@@ -64,7 +64,7 @@
 	} \
 }
 
-gint proc_mbox(FolderItem *dest, const gchar *mbox)
+gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter)
 {
 	FILE *mbox_fp;
 	gchar buf[MSGBUFSIZE], from_line[MSGBUFSIZE];
@@ -222,7 +222,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox)
 		}
 
 		msginfo = folder_item_get_msginfo(dropfolder, msgnum);
-		if (!procmsg_msginfo_filter(msginfo))
+                if (!apply_filter || !procmsg_msginfo_filter(msginfo))
 			folder_item_move_msg(dest, msginfo);
 		procmsg_msginfo_free(msginfo);
 
@@ -363,17 +363,14 @@ gint copy_mbox(const gchar *src, const gchar *dest)
 
 void empty_mbox(const gchar *mbox)
 {
-	if (truncate(mbox, 0) < 0) {
-		FILE *fp;
+	FILE *fp;
 
-		FILE_OP_ERROR(mbox, "truncate");
-		if ((fp = fopen(mbox, "wb")) == NULL) {
-			FILE_OP_ERROR(mbox, "fopen");
-			g_warning("can't truncate mailbox to zero.\n");
-			return;
-		}
-		fclose(fp);
+	if ((fp = fopen(mbox, "wb")) == NULL) {
+		FILE_OP_ERROR(mbox, "fopen");
+		g_warning("can't truncate mailbox to zero.\n");
+		return;
 	}
+	fclose(fp);
 }
 
 /* read all messages in SRC, and store them into one MBOX file. */

@@ -733,7 +733,6 @@ static gint mh_remove_folder(Folder *folder, FolderItem *item)
 
 static MsgInfo *mh_parse_msg(const gchar *file, FolderItem *item)
 {
-	struct stat s;
 	MsgInfo *msginfo;
 	MsgFlags flags;
 
@@ -749,20 +748,11 @@ static MsgInfo *mh_parse_msg(const gchar *file, FolderItem *item)
 		MSG_SET_TMP_FLAGS(flags, MSG_DRAFT);
 	}
 
-	if (stat(file, &s) < 0) {
-		FILE_OP_ERROR(file, "stat");
-		return NULL;
-	}
-	if (!S_ISREG(s.st_mode))
-		return NULL;
-
 	msginfo = procheader_parse_file(file, flags, FALSE, FALSE);
 	if (!msginfo) return NULL;
 
 	msginfo->msgnum = atoi(file);
 	msginfo->folder = item;
-	msginfo->size = s.st_size;
-	msginfo->mtime = s.st_mtime;
 
 	return msginfo;
 }

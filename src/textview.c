@@ -99,27 +99,6 @@ static GdkColor error_color = {
 };
 #endif
 
-static GdkColor good_sig_color = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0xbfff,
-	(gushort)0
-};
-
-static GdkColor nocheck_sig_color = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0,
-	(gushort)0xcfff
-};
-
-static GdkColor bad_sig_color = {
-	(gulong)0,
-	(gushort)0xefff,
-	(gushort)0,
-	(gushort)0
-};
-
 static GdkFont *text_sb_font;
 static GdkFont *text_mb_font;
 static gint text_sb_font_orig_ascent;
@@ -148,8 +127,7 @@ static void textview_add_part		(TextView	*textview,
 static void textview_add_parts		(TextView	*textview,
 					 MimeInfo	*mimeinfo);
 static void textview_write_body		(TextView	*textview,
-					 MimeInfo	*mimeinfo,
-					 const gchar	*charset);
+					 MimeInfo	*mimeinfo);
 static void textview_show_html		(TextView	*textview,
 					 FILE		*fp,
 					 CodeConverter	*conv);
@@ -292,7 +270,6 @@ TextView *textview_create(void)
 	textview->cur_pos          = 0;
 	textview->show_all_headers = FALSE;
 	textview->last_buttonpress = GDK_NOTHING;
-	textview->show_url_msgid   = 0;
 
 	return textview;
 }
@@ -333,21 +310,12 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 {
 	GtkSText *text;
 	FILE *fp;
-	const gchar *charset = NULL;
 
 	if ((fp = fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return;
 	}
 
-	if (textview->messageview->forced_charset)
-		charset = textview->messageview->forced_charset;
-	else if (prefs_common.force_charset)
-		charset = prefs_common.force_charset;
-	else
-		charset = procmime_mimeinfo_get_parameter(mimeinfo, "charset");
-
-	textview_set_font(textview, charset);
 	textview_clear(textview);
 
 	text = GTK_STEXT(textview->text);
@@ -373,7 +341,6 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 {
 	GtkSText *text;
-	const gchar *charset = NULL;
 
 	g_return_if_fail(mimeinfo != NULL);
 	g_return_if_fail(fp != NULL);
@@ -390,14 +357,6 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 /*
 	headers = textview_scan_header(textview, fp);
 */
-	if (textview->messageview->forced_charset)
-		charset = textview->messageview->forced_charset;
-	else if (prefs_common.force_charset)
-		charset = prefs_common.force_charset;
-	else
-		charset = procmime_mimeinfo_get_parameter(mimeinfo, "charset");
-
-	textview_set_font(textview, charset);
 
 	text = GTK_STEXT(textview->text);
 
@@ -416,7 +375,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	if (mimeinfo->type == MIMETYPE_MULTIPART)
 		textview_add_parts(textview, mimeinfo);
 	else
-		textview_write_body(textview, mimeinfo, charset);
+		textview_write_body(textview, mimeinfo);
 
 	gtk_stext_thaw(text);
 }
@@ -425,7 +384,6 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 {
 	GtkSText *text = GTK_STEXT(textview->text);
 	gchar buf[BUFFSIZE];
-	const gchar *charset = NULL;
 	GPtrArray *headers = NULL;
 	const gchar *name;
 	gchar *content_type;
@@ -437,7 +395,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	if ((mimeinfo->type == MIMETYPE_MESSAGE) && !g_strcasecmp(mimeinfo->subtype, "rfc822")) {
 		FILE *fp;
 
-		fp = fopen(mimeinfo->filename, "rb");
+		fp = fopen(mimeinfo->data.filename, "rb");
 		fseek(fp, mimeinfo->offset, SEEK_SET);
 		headers = textview_scan_header(textview, fp);
 		if (headers) {
@@ -473,39 +431,12 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	} else if (mimeinfo->disposition != DISPOSITIONTYPE_ATTACHMENT) {
 		if (prefs_common.display_header && (gtk_stext_get_length(text) > 0))
 			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
-		if (textview->messageview->forced_charset)
-			charset = textview->messageview->forced_charset;
-		else if (prefs_common.force_charset)
-			charset = prefs_common.force_charset;
-		else
-			charset = procmime_mimeinfo_get_parameter(mimeinfo, "charset");
 
-		textview_write_body(textview, mimeinfo, charset);
+		textview_write_body(textview, mimeinfo);
 	}
 
 	gtk_stext_thaw(text);
 }
-
-#if 0
-static gboolean add_parts_func(GNode *node, gpointer data)
-{
-	MimeInfo *mimeinfo = (MimeInfo *) node->data;
-	TextView *textview = (TextView *) data;
-
-	g_return_val_if_fail(mimeinfo != NULL, FALSE);
-
-	textview_add_part(textview, mimeinfo);
-
-	return FALSE;
-}
-
-static void textview_add_parts(TextView *textview, MimeInfo *mimeinfo)
-{
-	g_return_if_fail(mimeinfo != NULL);
-
-	g_node_traverse(mimeinfo->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, add_parts_func, textview);
-}
-#endif
 
 static void recursive_add_parts(TextView *textview, GNode *node)
 {
@@ -520,7 +451,7 @@ static void recursive_add_parts(TextView *textview, GNode *node)
             (mimeinfo->type != MIMETYPE_MESSAGE))
                 return;
         
-        if (strcasecmp(mimeinfo->subtype, "alternative") == 0) {
+        if (g_strcasecmp(mimeinfo->subtype, "alternative") == 0) {
                 GNode * prefered_body;
                 int prefered_score;
                 
@@ -543,7 +474,7 @@ static void recursive_add_parts(TextView *textview, GNode *node)
                                 score = 2;
                         
                         if (submime->subtype != NULL) {
-                                if (strcasecmp(submime->subtype, "plain") == 0)
+                                if (g_strcasecmp(submime->subtype, "plain") == 0)
                                         score = 3;
                         }
                         
@@ -629,21 +560,27 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 
 #undef TEXT_INSERT
 
-static void textview_write_body(TextView *textview, MimeInfo *mimeinfo,
-				const gchar *charset)
+static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 {
 	FILE *tmpfp;
 	gchar buf[BUFFSIZE];
 	CodeConverter *conv;
+	const gchar *charset;
+	
+	if (textview->messageview->forced_charset)
+		charset = textview->messageview->forced_charset;
+	else
+		charset = procmime_mimeinfo_get_parameter(mimeinfo, "charset");
+
+	textview_set_font(textview, charset);
 
 	conv = conv_code_converter_new(charset);
 
+	procmime_force_encoding(textview->messageview->forced_encoding);
+	
 	textview->is_in_signature = FALSE;
 
-	if(mimeinfo->encoding_type != ENC_BINARY && 
-	   mimeinfo->encoding_type != ENC_7BIT && 
-	   mimeinfo->encoding_type != ENC_8BIT)
-		procmime_decode_content(mimeinfo);
+	procmime_decode_content(mimeinfo);
 
 	if (!g_strcasecmp(mimeinfo->subtype, "html")) {
 		gchar *filename;
@@ -668,7 +605,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo,
 		}
 		g_free(filename);
 	} else {
-		tmpfp = fopen(mimeinfo->filename, "rb");
+		tmpfp = fopen(mimeinfo->data.filename, "rb");
 		fseek(tmpfp, mimeinfo->offset, SEEK_SET);
 		debug_print("Viewing text content of type: %s (length: %d)\n", mimeinfo->subtype, mimeinfo->length);
 		while ((fgets(buf, sizeof(buf), tmpfp) != NULL) && 
@@ -678,6 +615,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo,
 	}
 
 	conv_code_converter_destroy(conv);
+	procmime_force_encoding(0);
 }
 
 static void textview_show_html(TextView *textview, FILE *fp,
@@ -697,7 +635,7 @@ static void textview_show_html(TextView *textview, FILE *fp,
 				 * if still inside an <a>, but already parsed past HREF */
 				str = strtok(str, " ");
 				if (str) { 
-					parser->href = strdup(str);
+					parser->href = g_strdup(str);
 					/* the URL may (or not) be followed by the
 					 * referenced text */
 					str = strtok(NULL, "");
@@ -744,7 +682,7 @@ static gboolean get_uri_part(const gchar *start, const gchar *scanpos,
 	/* find end point of URI */
 	for (ep_ = scanpos; *ep_ != '\0'; ep_++) {
 		if (!isgraph(*(const guchar *)ep_) ||
-		    !isascii(*(const guchar *)ep_) ||
+		    !IS_ASCII(*(const guchar *)ep_) ||
 		    strchr("()<>\"", *ep_))
 			break;
 	}
@@ -776,14 +714,14 @@ static gchar *make_uri_string(const gchar *bp, const gchar *ep)
 
 /* valid mail address characters */
 #define IS_RFC822_CHAR(ch) \
-	(isascii(ch) && \
+	(IS_ASCII(ch) && \
 	 (ch) > 32   && \
 	 (ch) != 127 && \
 	 !isspace(ch) && \
 	 !strchr("(),;<>\"", (ch)))
 
 /* alphabet and number within 7bit ASCII */
-#define IS_ASCII_ALNUM(ch)	(isascii(ch) && isalnum(ch))
+#define IS_ASCII_ALNUM(ch)	(IS_ASCII(ch) && isalnum(ch))
 #define IS_QUOTE(ch) ((ch) == '\'' || (ch) == '"')
 
 static GHashTable *create_domain_tab(void)
@@ -860,7 +798,7 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 	const gchar *last_dot = NULL;
 	const gchar *prelast_dot = NULL;
 	const gchar *last_tld_char = NULL;
-
+	
 	/* the informative part of the email address (describing the name
 	 * of the email address owner) may contain quoted parts. the
 	 * closure stack stores the last encountered quotes. */
@@ -928,8 +866,30 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 
 	if (!result) return FALSE;
 
+	if (*(bp_ - 1) == '"' && *(ep_) == '"' 
+	&& *(ep_ + 1) == ' ' && *(ep_ + 2) == '<'
+	&& IS_RFC822_CHAR(*(ep_ + 3))) {
+		/* this informative part with an @ in it is 
+		 * followed by the email address */
+		ep_ += 3;
+		
+		/* go to matching '>' (or next non-rfc822 char, like \n) */
+		for (; *ep_ != '>' && *ep != '\0' && IS_RFC822_CHAR(*ep_); ep_++)
+			;
+			
+		/* include the bracket */
+		if (*ep_ == '>') ep_++;
+		
+		/* include the leading quote */		
+		bp_--;
+
+		*ep = ep_;
+		*bp = bp_;
+		return TRUE;
+	}
+
 	/* skip if it's between quotes "'alfons@proteus.demon.nl'" <alfons@proteus.demon.nl> */
-	if (bp_ - 1 > start && IS_QUOTE(*(bp_ - 1)) && IS_QUOTE(*ep_)) 
+	if (bp_ - 1 > start && IS_QUOTE(*(bp_ - 1)) && IS_QUOTE(*ep_))
 		return FALSE;
 
 	/* see if this is <bracketed>; in this case we also scan for the informative part. */
@@ -996,7 +956,7 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 
 	*ep = ep_;
 	*bp = bp_;
-
+	
 	return result;
 }
 
@@ -1013,6 +973,19 @@ static gchar *make_email_string(const gchar *bp, const gchar *ep)
 
 	tmp = g_strndup(bp, ep - bp);
 	result = g_strconcat("mailto:", tmp, NULL);
+	g_free(tmp);
+
+	return result;
+}
+
+static gchar *make_http_string(const gchar *bp, const gchar *ep)
+{
+	/* returns an http: URI; */
+	gchar *tmp;
+	gchar *result;
+
+	tmp = g_strndup(bp, ep - bp);
+	result = g_strconcat("http://", tmp, NULL);
 	g_free(tmp);
 
 	return result;
@@ -1058,7 +1031,7 @@ static void textview_make_clickable_parts(TextView *textview,
 		{"http://",  strcasestr, get_uri_part,   make_uri_string},
 		{"https://", strcasestr, get_uri_part,   make_uri_string},
 		{"ftp://",   strcasestr, get_uri_part,   make_uri_string},
-		{"www.",     strcasestr, get_uri_part,   make_uri_string},
+		{"www.",     strcasestr, get_uri_part,   make_http_string},
 		{"mailto:",  strcasestr, get_uri_part,   make_uri_string},
 		{"@",        strcasestr, get_email_part, make_email_string}
 	};
@@ -1114,7 +1087,6 @@ static void textview_make_clickable_parts(TextView *textview,
 		for (last = head.next; last != NULL;
 		     normal_text = last->ep, last = last->next) {
 			RemoteURI *uri;
-
 			uri = g_new(RemoteURI, 1);
 			if (last->bp - normal_text > 0)
 				gtk_stext_insert(text, font,
@@ -1827,14 +1799,18 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		if (summaryview)
 			summary_pass_key_press_event(summaryview, event);
 		else
-			textview_scroll_page(textview, FALSE);
+			textview_scroll_page
+				(textview,
+				 (event->state &
+				  (GDK_SHIFT_MASK|GDK_MOD1_MASK)) != 0);
 		break;
 	case GDK_BackSpace:
 		textview_scroll_page(textview, TRUE);
 		break;
 	case GDK_Return:
-		textview_scroll_one_line(textview,
-					 (event->state & GDK_MOD1_MASK) != 0);
+		textview_scroll_one_line
+			(textview, (event->state &
+				    (GDK_SHIFT_MASK|GDK_MOD1_MASK)) != 0);
 		break;
 	case GDK_Delete:
 		if (summaryview)
@@ -1871,6 +1847,7 @@ static gint show_url_timeout_cb(gpointer data)
 	TextView *textview = (TextView *)data;
 	
 	TEXTVIEW_STATUSBAR_POP(textview);
+	textview->show_url_timeout_tag = 0;
 	return FALSE;
 }
 
@@ -1917,15 +1894,15 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 				/* single click: display url in statusbar */
 				if (event->button == 1 && textview->last_buttonpress != GDK_2BUTTON_PRESS) {
 					if (textview->messageview->mainwin) {
-						if (textview->show_url_msgid) {
+						if (textview->show_url_timeout_tag != 0) {
+							gtk_timeout_remove(textview->show_url_timeout_tag);
 							TEXTVIEW_STATUSBAR_POP(textview);
-							textview->show_url_msgid = 0;
 						}
-							TEXTVIEW_STATUSBAR_PUSH(textview, trimmed_uri);
-							textview->show_url_timeout_tag = gtk_timeout_add( 4000, show_url_timeout_cb, textview );
+						TEXTVIEW_STATUSBAR_PUSH(textview, trimmed_uri);
+						textview->show_url_timeout_tag = gtk_timeout_add
+							(4000, show_url_timeout_cb, textview);
 					}
-				} else
-				if (!g_strncasecmp(uri->uri, "mailto:", 7)) {
+				} else if (!g_strncasecmp(uri->uri, "mailto:", 7)) {
 					if (event->button == 3) {
 						gchar *fromname, *fromaddress;
 						
@@ -1946,12 +1923,12 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 						g_free(fromname);
 					} else {
 						PrefsAccount *account = NULL;
-						FolderItem   *folder_item;
 
-						if (textview->messageview && textview->messageview->mainwin 
-						&&  textview->messageview->mainwin->summaryview 
-						&&  textview->messageview->mainwin->summaryview->folder_item) {
-							folder_item = textview->messageview->mainwin->summaryview->folder_item;
+						if (textview->messageview && textview->messageview->msginfo &&
+						    textview->messageview->msginfo->folder) {
+							FolderItem   *folder_item;
+
+							folder_item = textview->messageview->msginfo->folder;
 							if (folder_item->prefs && folder_item->prefs->enable_default_account)
 								account = account_find_from_id(folder_item->prefs->default_account);
 						}
@@ -2013,7 +1990,8 @@ static gboolean textview_uri_security_check(TextView *textview, RemoteURI *uri)
 					"the apparent URL (%s).\n"
 					"Open it anyway?"),
 				      uri->uri, visible_str);
-		aval = alertpanel(_("Warning"), msg, _("Yes"), _("No"), NULL);
+		aval = alertpanel_with_type(_("Warning"), msg, _("Yes"), 
+					    _("No"), NULL, NULL, ALERT_WARNING);
 		g_free(msg);
 		if (aval == G_ALERTDEFAULT)
 			retval = TRUE;

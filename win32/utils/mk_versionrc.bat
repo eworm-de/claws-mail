@@ -36,6 +36,7 @@ rem ---- create version.rc for Sylpheed and plugins ----
 echo call %0 %%MAJOR_VERSION%% %%MINOR_VERSION%% %%MICRO_VERSION%% %%EXTRA_VERSION%% Sylpheed-Claws %BUILD%\version.rc.in %BUILD%\version.rc>> %VERTMP%
 echo call %0 %%MAJOR_VERSION%% %%MINOR_VERSION%% %%MICRO_VERSION%% %%EXTRA_VERSION%% Demo-plugin %BUILD%\version.rc.in %BUILD%\demo_version.rc>> %VERTMP%
 echo call %0 %%MAJOR_VERSION%% %%MINOR_VERSION%% %%MICRO_VERSION%% %%EXTRA_VERSION%% SpamAssassin-plugin %BUILD%\version.rc.in %BUILD%\spamassassin_version.rc>> %VERTMP%
+echo call %0 %%MAJOR_VERSION%% %%MINOR_VERSION%% %%MICRO_VERSION%% %%EXTRA_VERSION%% GnuPG-plugin %BUILD%\version.rc.in %BUILD%\pgpmime_version.rc>> %VERTMP%
 type %VERTMP%
 call %VERTMP% > %BUILD%\version.rc.in
 if EXIST %VERTMP% del %VERTMP%

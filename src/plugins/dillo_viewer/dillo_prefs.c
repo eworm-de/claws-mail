@@ -68,10 +68,16 @@ static void save_dillo_prefs		(PrefsPage *page);
 
 void dillo_prefs_init(void)
 {
+	static gchar *path[3];
+
+	path[0] = _("Message View");
+	path[1] = _("Dillo Browser");
+	path[2] = NULL;
+
         prefs_set_default(param);
         prefs_read_config(param, PREFS_BLOCK_NAME, COMMON_RC);
         
-        prefs_page.page.path = "Message View/Dillo Browser";
+        prefs_page.page.path = path;
         prefs_page.page.create_widget = create_dillo_prefs_page;
         prefs_page.page.destroy_widget = destroy_dillo_prefs_page;
         prefs_page.page.save_page = save_dillo_prefs;

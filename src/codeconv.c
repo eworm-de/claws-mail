@@ -249,7 +249,7 @@ void conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 	JISState state = JIS_ASCII;
 
 	while (*in != '\0') {
-		if (isascii(*in)) {
+		if (IS_ASCII(*in)) {
 			K_OUT();
 			*out++ = *in++;
 		} else if (iseuckanji(*in)) {
@@ -261,7 +261,7 @@ void conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 				K_OUT();
 				*out++ = SUBST_CHAR;
 				in++;
-				if (*in != '\0' && !isascii(*in)) {
+				if (*in != '\0' && !IS_ASCII(*in)) {
 					*out++ = SUBST_CHAR;
 					in++;
 				}
@@ -297,7 +297,7 @@ void conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 			} else {
 				K_OUT();
 				in++;
-				if (*in != '\0' && !isascii(*in)) {
+				if (*in != '\0' && !IS_ASCII(*in)) {
 					*out++ = SUBST_CHAR;
 					in++;
 				}
@@ -310,10 +310,10 @@ void conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 				*out++ = *in++ & 0x7f;
 			} else {
 				K_OUT();
-				if (*in != '\0' && !isascii(*in)) {
+				if (*in != '\0' && !IS_ASCII(*in)) {
 					*out++ = SUBST_CHAR;
 					in++;
-					if (*in != '\0' && !isascii(*in)) {
+					if (*in != '\0' && !IS_ASCII(*in)) {
 						*out++ = SUBST_CHAR;
 						in++;
 					}
@@ -347,7 +347,7 @@ void conv_sjistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 	guchar *out = outbuf;
 
 	while (*in != '\0') {
-		if (isascii(*in)) {
+		if (IS_ASCII(*in)) {
 			*out++ = *in++;
 		} else if (issjiskanji1(*in)) {
 			if (issjiskanji2(*(in + 1))) {
@@ -370,7 +370,7 @@ void conv_sjistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 			} else {
 				*out++ = SUBST_CHAR;
 				in++;
-				if (*in != '\0' && !isascii(*in)) {
+				if (*in != '\0' && !IS_ASCII(*in)) {
 					*out++ = SUBST_CHAR;
 					in++;
 				}
@@ -509,7 +509,7 @@ void conv_unreadable_eucjp(gchar *str)
 	register guchar *p = str;
 
 	while (*p != '\0') {
-		if (isascii(*p)) {
+		if (IS_ASCII(*p)) {
 			/* convert CR+LF -> LF */
 			if (*p == '\r' && *(p + 1) == '\n')
 				memmove(p, p + 1, strlen(p));
@@ -523,7 +523,7 @@ void conv_unreadable_eucjp(gchar *str)
 				/* substitute unprintable code */
 				*p++ = SUBST_CHAR;
 				if (*p != '\0') {
-					if (isascii(*p))
+					if (IS_ASCII(*p))
 						p++;
 					else
 						*p++ = SUBST_CHAR;
@@ -555,7 +555,7 @@ void conv_unreadable_8bit(gchar *str)
 		/* convert CR+LF -> LF */
 		if (*p == '\r' && *(p + 1) == '\n')
 			memmove(p, p + 1, strlen(p));
-		else if (!isascii(*p)) *p = SUBST_CHAR;
+		else if (!IS_ASCII(*p)) *p = SUBST_CHAR;
 		p++;
 	}
 }
@@ -678,7 +678,7 @@ CharSet conv_guess_ja_encoding(const gchar *str)
 			if (guessed == C_US_ASCII)
 				return C_ISO_2022_JP;
 			p += 2;
-		} else if (isascii(*p)) {
+		} else if (IS_ASCII(*p)) {
 			p++;
 		} else if (iseuckanji(*p) && iseuckanji(*(p + 1))) {
 			if (*p >= 0xfd && *p <= 0xfe)
@@ -939,11 +939,11 @@ gchar *conv_iconv_strdup(const gchar *inbuf,
 		dest_code = conv_get_current_charset_str();
 
 	/* don't convert if current codeset is US-ASCII */
-	if (!strcasecmp(dest_code, CS_US_ASCII))
+	if (!g_strcasecmp(dest_code, CS_US_ASCII))
 		return g_strdup(inbuf);
 
 	/* don't convert if src and dest codeset are identical */
-	if (!strcasecmp(src_code, dest_code))
+	if (!g_strcasecmp(src_code, dest_code))
 		return g_strdup(inbuf);
 
 	cd = iconv_open(dest_code, src_code);
@@ -1367,14 +1367,14 @@ CharSet conv_get_current_charset(void)
 
 		/* "ja_JP.EUC" matches with "ja_JP.eucJP", "ja_JP.EUC" and
 		   "ja_JP". "ja_JP" matches with "ja_JP.xxxx" and "ja" */
-		if (!strncasecmp(cur_locale, locale_table[i].locale,
+		if (!g_strncasecmp(cur_locale, locale_table[i].locale,
 				 strlen(locale_table[i].locale))) {
 			cur_charset = locale_table[i].charset;
 			return cur_charset;
 		} else if ((p = strchr(locale_table[i].locale, '_')) &&
 			 !strchr(p + 1, '.')) {
 			if (strlen(cur_locale) == 2 &&
-			    !strncasecmp(cur_locale, locale_table[i].locale, 2)) {
+			    !g_strncasecmp(cur_locale, locale_table[i].locale, 2)) {
 				cur_charset = locale_table[i].charset;
 				return cur_charset;
 			}
@@ -1425,14 +1425,14 @@ CharSet conv_get_outgoing_charset(void)
 	for (i = 0; i < sizeof(locale_table) / sizeof(locale_table[0]); i++) {
 		const gchar *p;
 
-		if (!strncasecmp(cur_locale, locale_table[i].locale,
+		if (!g_strncasecmp(cur_locale, locale_table[i].locale,
 				 strlen(locale_table[i].locale))) {
 			out_charset = locale_table[i].out_charset;
 			break;
 		} else if ((p = strchr(locale_table[i].locale, '_')) &&
 			 !strchr(p + 1, '.')) {
 			if (strlen(cur_locale) == 2 &&
-			    !strncasecmp(cur_locale, locale_table[i].locale, 2)) {
+			    !g_strncasecmp(cur_locale, locale_table[i].locale, 2)) {
 				out_charset = locale_table[i].out_charset;
 				break;
 			}
@@ -1501,16 +1501,19 @@ const gchar *conv_get_current_locale(void)
 #endif
 
 	cur_locale = g_getenv("LC_ALL");
-	if (!cur_locale) cur_locale = g_getenv("LC_CTYPE");
-	if (!cur_locale) cur_locale = g_getenv("LANG");
+	if (!cur_locale || !strlen(cur_locale)) 
+		cur_locale = g_getenv("LC_CTYPE");
+	if (!cur_locale || !strlen(cur_locale)) 
+		cur_locale = g_getenv("LANG");
+	if (!cur_locale || !strlen(cur_locale)) 
+		cur_locale = setlocale(LC_CTYPE, NULL);
 #ifdef WIN32
-	if (!cur_locale) {
+	if (!cur_locale || !strlen(cur_locale)) {
 		if (!gtklocale)
 			gtklocale=g_strdup_printf("%s@windows",gtk_set_locale());
 		cur_locale = gtklocale;
 	}
 #endif
-	if (!cur_locale) cur_locale = setlocale(LC_CTYPE, NULL);
 
 	debug_print("current locale: %s\n",
 		    cur_locale ? cur_locale : "(none)");
@@ -1524,6 +1527,8 @@ void conv_unmime_header_overwrite(gchar *str)
 	gint buflen;
 	CharSet cur_charset;
 
+	g_return_if_fail(str != NULL);
+	
 	cur_charset = conv_get_current_charset();
 
 #ifdef WIN32
@@ -1570,8 +1575,6 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 #define MAX_HARD_LINELEN	996
 #define MIMESEP_BEGIN		"=?"
 #define MIMESEP_END		"?="
-
-#define B64LEN(len)	((len) / 3 * 4 + ((len) % 3 ? 4 : 0))
 
 #define LBREAK_IF_REQUIRED(cond, is_plain_text)				\
 {									\

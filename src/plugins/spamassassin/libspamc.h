@@ -1,28 +1,75 @@
-/*
- * This code is copyright 2001 by Craig Hughes
- * Conversion to a thread-safe shared library copyright 2002 Liam Widdowson
- * Portions copyright 2002 by Brad Jorsch
- * It is licensed under the same license as Perl itself.  The text of this
- * license is included in the SpamAssassin distribution in the file named
- * "License".
+/* <@LICENSE>
+ * Copyright 2004 Apache Software Foundation
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * </@LICENSE>
  */
 #ifndef LIBSPAMC_H
 #define LIBSPAMC_H 1
 
+#include <stdio.h>
+#include <stdarg.h>
 #include <sys/types.h>
-#ifdef WIN32
-# include <w32lib.h>
-# include "log.h"
-# include "utils.h"
-#ifdef __MINGW32__
-# include "libspamc_utils.h"
+#ifdef _WIN32
+#ifdef _MSC_VER
+/* ignore MSVC++ warnings that are annoying and hard to remove:
+ 4115 named type definition in parentheses
+ 4127 conditional expression is constant
+ 4514 unreferenced inline function removed
+ */
+#pragma warning( disable : 4115 4127 4514 )
 #endif
+#include <winsock.h>
 #else
+#include <netdb.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <netdb.h>
 #endif
-#include <stdio.h>
+
+#ifdef _WIN32
+/* FIXME: This stuff has to go somewhere else */
+
+#define EX_OK           0
+#define EX_USAGE        64
+#define EX_DATAERR      65
+#define EX_NOINPUT      66
+#define EX_NOUSER       67
+#define EX_NOHOST       68
+#define EX_UNAVAILABLE  69
+#define EX_SOFTWARE     70
+#define EX_OSERR        71
+#define EX_OSFILE       72
+#define EX_CANTCREAT    73
+#define EX_IOERR        74
+#define EX_TEMPFAIL     75
+#define EX_PROTOCOL     76
+#define EX_NOPERM       77
+#define EX_CONFIG       78
+
+#define STDIN_FILENO 0
+#define STDOUT_FILENO 1
+
+/* FIXME: This doesn't belong here either */
+#define LOG_EMERG       0       /* system is unusable */
+#define LOG_ALERT       1       /* action must be taken immediately */
+#define LOG_CRIT        2       /* critical conditions */
+#define LOG_ERR         3       /* error conditions */
+#define LOG_WARNING     4       /* warning conditions */
+#define LOG_NOTICE      5       /* normal but significant condition */
+#define LOG_INFO        6       /* informational */
+#define LOG_DEBUG       7       /* debug-level messages */
+
+#endif
 
 #define EX_NOTSPAM		  0
 #define EX_ISSPAM		  1
@@ -47,9 +94,12 @@
 /* 2003/04/16 SJF: randomize hostname order (quasi load balancing) */
 #define SPAMC_RANDOMIZE_HOSTS (1<<23)
 
+/* log to stderr */
+#define SPAMC_LOG_TO_STDERR  (1<<22)
 
 /* Aug 14, 2002 bj: A struct for storing a message-in-progress */
-typedef enum {
+typedef enum
+{
     MESSAGE_NONE,
     MESSAGE_ERROR,
     MESSAGE_RAW,
@@ -59,26 +109,32 @@ typedef enum {
 
 struct libspamc_private_message;
 
-struct message {
+struct message
+{
     /* Set before passing the struct on! */
-    int max_len;  /* messages larger than this will return EX_TOOBIG */
-    int timeout;  /* timeout for read() system calls */
+    unsigned int max_len; /* messages larger than this will return EX_TOOBIG */
+    int timeout;		/* timeout for read() system calls */
 
     /* Filled in by message_read */
     message_type_t type;
-    char *raw; int raw_len;   /* Raw message buffer */
-    char *pre; int pre_len;   /* Pre-message data (e.g. SMTP commands) */
-    char *msg; int msg_len;   /* The message */
-    char *post; int post_len; /* Post-message data (e.g. SMTP commands) */
+    char *raw;
+    unsigned int raw_len;		/* Raw message buffer */
+    char *pre;
+    int pre_len;		/* Pre-message data (e.g. SMTP commands) */
+    char *msg;
+    unsigned int msg_len;		/* The message */
+    char *post;
+    int post_len;		/* Post-message data (e.g. SMTP commands) */
     int content_length;
 
     /* Filled in by filter_message */
-    int is_spam;              /* EX_ISSPAM if the message is spam, EX_NOTSPAM
-                                 if not */
-    float score, threshold;   /* score and threshold */
-    char *out; int out_len;   /* Output from spamd. Either the filtered
-                                 message, or the check-only response. Or else,
-                                 a pointer to msg above. */
+    int is_spam;		/* EX_ISSPAM if the message is spam, EX_NOTSPAM
+				   if not */
+    float score, threshold;	/* score and threshold */
+    char *out;
+    int out_len;		/* Output from spamd. Either the filtered
+				   message, or the check-only response. Or else,
+				   a pointer to msg above. */
 
     /* these members added in SpamAssassin version 2.60: */
     struct libspamc_private_message *priv;
@@ -108,25 +164,27 @@ struct message {
  * code just loops over that same address.
  */
 #define TRANSPORT_LOCALHOST 0x01	/* TCP to localhost only */
-#define	TRANSPORT_TCP	    0x02	/* standard TCP socket	 */
-#define TRANSPORT_UNIX	    0x03	/* UNIX domain socket	 */
+#define	TRANSPORT_TCP	    0x02	/* standard TCP socket   */
+#define TRANSPORT_UNIX	    0x03	/* UNIX domain socket    */
 
-#define TRANSPORT_MAX_HOSTS 256		/* max hosts we can failover between */
+#define TRANSPORT_MAX_HOSTS 256	/* max hosts we can failover between */
 
-struct transport {
-	int		type;
+struct transport
+{
+    int type;
 
-	const char	*socketpath;	/* for UNIX dommain socket      */
-	const char	*hostname;	/* for TCP sockets              */
+    const char *socketpath;	/* for UNIX dommain socket      */
+    const char *hostname;	/* for TCP sockets              */
 
-	unsigned short	port;		/* for TCP sockets              */
+    unsigned short port;	/* for TCP sockets              */
 
-	struct in_addr	hosts[TRANSPORT_MAX_HOSTS];
-	int		nhosts;
+    struct in_addr hosts[TRANSPORT_MAX_HOSTS];
+    int nhosts;
+    int flags;
 };
 
 extern void transport_init(struct transport *tp);
-extern int  transport_setup(struct transport *tp, int flags);
+extern int transport_setup(struct transport *tp, int flags);
 
 /* Aug 14, 2002 bj: New interface functions */
 
@@ -147,7 +205,7 @@ long message_write(int out_fd, struct message *m);
  * no failover is done.
  */
 int message_filter(struct transport *tp, const char *username,
-		int flags, struct message *m);
+		   int flags, struct message *m);
 
 /* Dump the message. If there is any data in the message (typically, m->type
  * will be MESSAGE_ERROR) it will be message_writed. Then, fd_in will be piped
@@ -158,16 +216,18 @@ void message_dump(int in_fd, int out_fd, struct message *m);
 /* Do a message_read->message_filter->message_write sequence, handling errors
  * appropriately with dump_message or appropriate CHECK_ONLY output. Returns
  * EX_OK or EX_ISSPAM/EX_NOTSPAM on success, some error EX on error. */
-int message_process(struct transport *trans, char *username, int max_size, int in_fd, int out_fd, const int flags);
+int message_process(struct transport *trans, char *username, int max_size,
+		    int in_fd, int out_fd, const int flags);
 
 /* Cleanup the resources we allocated for storing the message. Call after
  * you're done processing. */
 void message_cleanup(struct message *m);
 
 /* Aug 14, 2002 bj: This is now legacy, don't use it. */
-int process_message(struct transport *tp, char *username, 
-                    int max_size, int in_fd, int out_fd,
-                    const int check_only, const int safe_fallback);
+int process_message(struct transport *tp, char *username,
+		    int max_size, int in_fd, int out_fd,
+		    const int check_only, const int safe_fallback);
+
+void libspamc_log(int flags, int level, char *msg, ...);
 
 #endif
-

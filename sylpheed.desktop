@@ -8,3 +8,4 @@ Icon=sylpheed.png
 Terminal=0
 Type=Application
 Categories=Application;Network;
+StartupNotify=true

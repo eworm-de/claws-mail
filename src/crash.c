@@ -413,9 +413,6 @@ static const gchar *get_compiled_in_features(void)
 #if HAVE_LIBJCONV
 		   " libjconv"
 #endif
-#if USE_GPGME
-		   " GPGME"
-#endif
 #if USE_OPENSSL
 		   " OpenSSL"
 #endif

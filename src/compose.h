@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -161,6 +161,8 @@ struct _Compose
 	gchar	*msgid;
 	gchar	*boundary;
 
+	gboolean autowrap;
+
 	gboolean use_to;
 	gboolean use_cc;
 	gboolean use_bcc;
@@ -172,8 +174,7 @@ struct _Compose
 	/* privacy settings */
 	gboolean use_signing;
 	gboolean use_encryption;
-	
-	gint gnupg_mode;
+	gchar *privacy_system;
 
 	gboolean modified;
 
@@ -270,7 +271,7 @@ void compose_entry_mark_default_to	(Compose	  *compose,
 gint compose_send			(Compose	  *compose);
 
 void compose_update_actions_menu	(Compose	*compose);
-
+void compose_update_privacy_systems_menu(Compose	*compose);
 void compose_reflect_prefs_all			(void);
 void compose_reflect_prefs_pixmap_theme	(void);
 

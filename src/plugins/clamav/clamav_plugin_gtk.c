@@ -36,6 +36,7 @@
 #include "prefs_gtk.h"
 #include "foldersel.h"
 #include "clamav_plugin.h"
+#include "statusbar.h"
 
 struct ClamAvPage
 {
@@ -225,8 +226,15 @@ static void clamav_save_func(PrefsPage *_page)
 
 static struct ClamAvPage clamav_page;
 
+static void gtk_message_callback(gchar *message)
+{
+	statusbar_print_all(message);
+}
+
 gint plugin_init(gchar **error)
 {
+	static gchar *path[3];
+
 	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
 		*error = g_strdup("Your sylpheed version is newer than the version the plugin was built with");
 		return -1;
@@ -237,13 +245,18 @@ gint plugin_init(gchar **error)
 		return -1;
 	}
 
-	clamav_page.page.path = _("Filtering/Clam AntiVirus");
+	path[0] = _("Filtering");
+	path[1] = _("Clam AntiVirus");
+	path[2] = NULL;
+
+	clamav_page.page.path = path;
 	clamav_page.page.create_widget = clamav_create_widget_func;
 	clamav_page.page.destroy_widget = clamav_destroy_widget_func;
 	clamav_page.page.save_page = clamav_save_func;
 	clamav_page.page.weight = 35.0;
 	
 	prefs_gtk_register_page((PrefsPage *) &clamav_page);
+	clamav_set_message_callback(gtk_message_callback);
 
 	debug_print("ClamAV GTK plugin loaded\n");
 	return 0;	
@@ -251,6 +264,7 @@ gint plugin_init(gchar **error)
 
 void plugin_done(void)
 {
+	clamav_set_message_callback(NULL);
 	prefs_gtk_unregister_page((PrefsPage *) &clamav_page);
 
 	debug_print("ClamAV GTK plugin unloaded\n");

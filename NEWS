@@ -1,5 +1,67 @@
 Changes of Sylpheed
 
+* 1.0.0beta3
+
+    * The Japanese JPilot address book has been supported.
+    * Back scrolling on Shift/Alt and Space key press has been enabled.
+    * Attached text files are now canonicalized before encoded to BASE64
+      to conform with RFC 2045.
+    * The optimal Content-Transfer-Encoding will be used when attaching
+      text files.
+    * The icons of the receive dialog have been modified.
+    * Mozilla Firefox has become a default web browser.
+    * The auto-expanding status bar has been fixed.
+
+* 1.0.0beta2
+
+    * don't move or delete immediately at local filtering when immediate
+      execution option is off.
+    * 'Empty trash' has been added to the folder context menu.
+    * 'Remove mailbox' has been removed from the folder context menu.
+    * 'File' menu in the main menu has been reorganized.
+    * AND/OR matching option has been added to the summary search dialog.
+    * APOP setting became a separate option for POP3.
+
+* 1.0.0beta1
+
+    * Icons are added to the alert dialog and filter edit dialog.
+    * Cc is added for the parameter of templates.
+    * The menu of composition window has been reorganized.
+    * Gettext has been upgraded to 0.14.1.
+    * Some minor bugs of filtering have been fixed.
+
+* 0.9.99
+
+    * The new filtering system, which has many new features, has been
+      implemented.
+    * The handling of 'New' flags for messages has been modified.
+    * The spool path setting can now take both file and directory.
+    * Invalid URIs used by DnD has been fixed.
+    * Other bugfixes have been made.
+
+* 0.9.12
+
+    * A session timeout for POP3/SMTP has been implemented.
+    * The 'Print' menu on the context menu has been restored.
+    * the value of CACHE_VERSION has been increased to prevent a cache
+      incompatibility problem on some platforms such as FreeBSD.
+
+* 0.9.11
+
+    * The spring-loaded folder has been implemented for the folder view.
+    * A function to filter selected messages has been added.
+    * Always move messages by default when using DnD (copy if Ctrl key is
+      pressed).
+    * On filtering, the matching algorithm of 'not contain' flag has
+      been fixed.
+    * NNTP servers that require authentication at the beginning of the
+      session has been supported.
+    * The method of updating the progress dialog has been modified.
+    * The context menu on the summary view has been cleaned up.
+    * The image viewer has been fixed.
+    * The cache handling has been fixed for AMD64 and other 64-bit platforms.
+    * The SMTP routine has been fixed to fully comply with RFC 2821.
+
 * 0.9.10
 
     * A new folder can be created on the folder selection dialog now.

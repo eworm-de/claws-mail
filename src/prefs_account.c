@@ -50,12 +50,16 @@
 #include "smtp.h"
 #include "imap.h"
 #include "remotefolder.h"
+#include "base64.h"
 
 static gboolean cancelled;
+static gboolean new_account;
 
 static PrefsAccount tmp_ac_prefs;
 
-static PrefsDialog dialog;
+static GtkWidget *notebook;
+
+static GSList *prefs_pages = NULL;
 
 static struct Basic {
 	GtkWidget *acname_entry;
@@ -89,6 +93,7 @@ static struct Basic {
 
 static struct Receive {
 	GtkWidget *pop3_frame;
+	GtkWidget *use_apop_chkbtn;
 	GtkWidget *rmmail_chkbtn;
 	GtkWidget *leave_time_entry;
 	GtkWidget *getall_chkbtn;
@@ -135,18 +140,12 @@ static struct Compose {
 	GtkWidget *autoreplyto_entry;
 } compose;
 
-#if USE_GPGME
 static struct Privacy {
+	GtkWidget *default_privacy_system;
 	GtkWidget *default_encrypt_chkbtn;
 	GtkWidget *default_sign_chkbtn;
-	GtkWidget *gnupg_mime_radiobtn;
-	GtkWidget *gnupg_inline_radiobtn;
-	GtkWidget *defaultkey_radiobtn;
-	GtkWidget *emailkey_radiobtn;
-	GtkWidget *customkey_radiobtn;
-	GtkWidget *customkey_entry;
+	GtkWidget *save_clear_text_chkbtn;
 } privacy;
-#endif /* USE_GPGME */
 
 #if USE_OPENSSL
 static struct SSLPrefs {
@@ -209,6 +208,9 @@ static void prefs_account_protocol_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_account_protocol_set_optmenu		(PrefParam *pparam);
 static void prefs_account_protocol_activated		(GtkMenuItem *menuitem);
 
+static void prefs_account_set_string_from_optmenu	(PrefParam *pparam);
+static void prefs_account_set_optmenu_from_string	(PrefParam *pparam);
+
 static void prefs_account_imap_auth_type_set_data_from_optmenu
 							(PrefParam *pparam);
 static void prefs_account_imap_auth_type_set_optmenu	(PrefParam *pparam);
@@ -219,10 +221,6 @@ static void prefs_account_smtp_auth_type_set_optmenu	(PrefParam *pparam);
 static void prefs_account_enum_set_data_from_radiobtn	(PrefParam *pparam);
 static void prefs_account_enum_set_radiobtn		(PrefParam *pparam);
 
-#if USE_GPGME
-static void prefs_account_gnupg_inline_warning		(GtkWidget *widget);
-#endif /* USE_GPGME */
-
 static void prefs_account_crosspost_set_data_from_colormenu(PrefParam *pparam);
 static void prefs_account_crosspost_set_colormenu(PrefParam *pparam);
 
@@ -232,6 +230,8 @@ static void prefs_account_mailcmd_toggled(GtkToggleButton *button,
 					  gpointer user_data);
 static void prefs_account_smtp_userid_cb(GtkEditable *editable,
 					 gpointer smtp_passwd);
+
+static gchar *privacy_prefs;
 
 static PrefParam param[] = {
 	/* Basic */
@@ -292,6 +292,10 @@ static PrefParam param[] = {
 	 &receive.inbox_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	/* Receive */
+	{"use_apop_auth", "FALSE", &tmp_ac_prefs.use_apop_auth, P_BOOL,
+	 &receive.use_apop_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
 	{"remove_mail", "TRUE", &tmp_ac_prefs.rmmail, P_BOOL,
 	 &receive.rmmail_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -404,26 +408,21 @@ static PrefParam param[] = {
 	 &compose.autoreplyto_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
-#if USE_GPGME
 	/* Privacy */
+	{"default_privacy_system", "", &tmp_ac_prefs.default_privacy_system, P_STRING,
+	 &privacy.default_privacy_system,
+	 prefs_account_set_string_from_optmenu, prefs_account_set_optmenu_from_string},
 	{"default_encrypt", "FALSE", &tmp_ac_prefs.default_encrypt, P_BOOL,
 	 &privacy.default_encrypt_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"default_sign", "FALSE", &tmp_ac_prefs.default_sign, P_BOOL,
 	 &privacy.default_sign_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"default_gnupg_mode", NULL, &tmp_ac_prefs.default_gnupg_mode, P_ENUM,
-	 &privacy.gnupg_mime_radiobtn,
-	 prefs_account_enum_set_data_from_radiobtn,
-	 prefs_account_enum_set_radiobtn},
-	{"sign_key", NULL, &tmp_ac_prefs.sign_key, P_ENUM,
-	 &privacy.defaultkey_radiobtn,
-	 prefs_account_enum_set_data_from_radiobtn,
-	 prefs_account_enum_set_radiobtn},
-	{"sign_key_id", NULL, &tmp_ac_prefs.sign_key_id, P_STRING,
-	 &privacy.customkey_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
-#endif /* USE_GPGME */
+	{"save_clear_text", "FALSE", &tmp_ac_prefs.save_encrypted_as_clear_text, P_BOOL,
+	 &privacy.save_clear_text_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"privacy_prefs", "", &privacy_prefs, P_STRING,
+	 NULL, NULL, NULL},
 
 #if USE_OPENSSL
 	/* SSL */
@@ -541,9 +540,7 @@ static void prefs_account_basic_create		(void);
 static void prefs_account_receive_create	(void);
 static void prefs_account_send_create		(void);
 static void prefs_account_compose_create	(void);
-#if USE_GPGME
 static void prefs_account_privacy_create	(void);
-#endif /* USE_GPGME */
 #if USE_OPENSSL
 static void prefs_account_ssl_create		(void);
 #endif /* USE_OPENSSL */
@@ -567,122 +564,59 @@ static void prefs_account_ok			(void);
 static gint prefs_account_apply			(void);
 static void prefs_account_cancel		(void);
 
-PrefsAccount *prefs_account_new(void)
+typedef struct AccountPage
 {
-	PrefsAccount *ac_prefs;
+        PrefsPage page;
+ 
+        GtkWidget *vbox;
+} AccountPage;
 
-	ac_prefs = g_new0(PrefsAccount, 1);
-	memset(&tmp_ac_prefs, 0, sizeof(PrefsAccount));
-	prefs_set_default(param);
-	*ac_prefs = tmp_ac_prefs;
-	ac_prefs->account_id = prefs_account_get_new_id();
+static AccountPage account_page;
 
-	return ac_prefs;
-}
+void update_privacy_system_menu() {
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+	GSList *system_ids, *cur;
 
-void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
-{
-	const guchar *p = label;
-	gint id;
+	menu = gtk_menu_new();
 
-	g_return_if_fail(ac_prefs != NULL);
-	g_return_if_fail(label != NULL);
+	menuitem = gtk_menu_item_new_with_label(_("None"));
+	gtk_widget_show(menuitem);
+	gtk_object_set_data(GTK_OBJECT(menuitem), "user_data", "");
+	gtk_menu_append(GTK_MENU(menu), menuitem);
 
-	memset(&tmp_ac_prefs, 0, sizeof(PrefsAccount));
-	prefs_read_config(param, label, ACCOUNT_RC);
-	*ac_prefs = tmp_ac_prefs;
-	while (*p && !isdigit(*p)) p++;
-	id = atoi(p);
-	if (id < 0) g_warning("wrong account id: %d\n", id);
-	ac_prefs->account_id = id;
-
-	prefs_custom_header_read_config(ac_prefs);
-}
-
-void prefs_account_save_config_all(GList *account_list)
-{
-	GList *cur;
-	gchar *rcpath;
-	PrefFile *pfile;
-
-	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACCOUNT_RC, NULL);
-	if ((pfile = prefs_write_open(rcpath)) == NULL) {
-		g_free(rcpath);
-		return;
-	}
-	g_free(rcpath);
-
-	for (cur = account_list; cur != NULL; cur = cur->next) {
-		tmp_ac_prefs = *(PrefsAccount *)cur->data;
-		if (fprintf(pfile->fp, "[Account: %d]\n",
-			    tmp_ac_prefs.account_id) <= 0 ||
-		    prefs_write_param(param, pfile->fp) < 0) {
-			g_warning("failed to write configuration to file\n");
-			prefs_file_close_revert(pfile);
-			return;
-		}
-		if (cur->next) {
-			if (fputc('\n', pfile->fp) == EOF) {
-				FILE_OP_ERROR(rcpath, "fputc");
-				prefs_file_close_revert(pfile);
-				return;
-			}
-		}
+	system_ids = privacy_get_system_ids();
+	for (cur = system_ids; cur != NULL; cur = g_slist_next(cur)) {
+		gchar *id = (gchar *) cur->data;
+		const gchar *name;
+		
+		name = privacy_system_get_name(id);
+		menuitem = gtk_menu_item_new_with_label(name);
+		gtk_widget_show(menuitem);
+		gtk_object_set_data_full(GTK_OBJECT(menuitem), "user_data", id, g_free);
+		gtk_menu_append(GTK_MENU(menu), menuitem);
 	}
 
-	if (prefs_file_close(pfile) < 0)
-		g_warning("failed to write configuration to file\n");
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(privacy.default_privacy_system), menu);
 }
 
-void prefs_account_free(PrefsAccount *ac_prefs)
+static void create_widget_func(PrefsPage * _page,
+                                           GtkWindow * window,
+                                           gpointer data)
 {
-	if (!ac_prefs) return;
+	AccountPage *page = (AccountPage *) _page;
+	PrefsAccount *ac_prefs = (PrefsAccount *) data;
+	GtkWidget *vbox;
 
-	tmp_ac_prefs = *ac_prefs;
-	prefs_free(param);
-}
+	vbox = gtk_vbox_new(FALSE, 6);
+	gtk_widget_show(vbox);
 
-static gint prefs_account_get_new_id(void)
-{
-	GList *ac_list;
-	PrefsAccount *ac;
-	static gint last_id = 0;
-
-	for (ac_list = account_get_list(); ac_list != NULL;
-	     ac_list = ac_list->next) {
-		ac = (PrefsAccount *)ac_list->data;
-		if (last_id < ac->account_id)
-			last_id = ac->account_id;
-	}
-
-	return last_id + 1;
-}
-
-PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
-{
-	gboolean new_account = FALSE;
-
-	if (prefs_rc_is_readonly(ACCOUNT_RC))
-		return ac_prefs;
-
-	debug_print("Opening account preferences window...\n");
-
-	inc_lock();
-
-	cancelled = FALSE;
-
-	if (!ac_prefs) {
-		ac_prefs = prefs_account_new();
-		new_account = TRUE;
-	}
-
-	if (!dialog.window) {
+	if (notebook == NULL)
 		prefs_account_create();
-	}
+	gtk_box_pack_start (GTK_BOX (vbox), notebook, TRUE, TRUE, 0);
+	gtk_notebook_set_page(GTK_NOTEBOOK(notebook), 0);
 
-	manage_window_set_transient(GTK_WINDOW(dialog.window));
-	gtk_notebook_set_page(GTK_NOTEBOOK(dialog.notebook), 0);
-	gtk_widget_grab_focus(dialog.ok_btn);
+	update_privacy_system_menu();
 
 	tmp_ac_prefs = *ac_prefs;
 
@@ -709,31 +643,273 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
 					(GTK_OPTION_MENU
 						(basic.protocol_optmenu))),
 			 TRUE);
-		gtk_window_set_title(GTK_WINDOW(dialog.window),
-				     _("Preferences for new account"));
-		gtk_widget_hide(dialog.apply_btn);
-	} else {
+	} else
 		prefs_set_dialog(param);
-		gtk_window_set_title(GTK_WINDOW(dialog.window),
-				     _("Account preferences"));
-		gtk_widget_show(dialog.apply_btn);
-	}
 
 	pop_bfr_smtp_tm_set_sens (NULL, NULL);
 	
-	gtk_widget_show(dialog.window);
+	page->vbox = vbox;
+
+	page->page.widget = vbox;
+}
+
+static void destroy_widget_func(PrefsPage *_page)
+{
+	AccountPage *page = (AccountPage *) _page;
+
+	gtk_container_remove(GTK_CONTAINER (page->vbox), notebook);
+}
+
+static void save_func(PrefsPage * _page)
+{
+	if (prefs_account_apply() >= 0)
+		cancelled = FALSE;
+}
+
+void prefs_account_init()
+{
+        static gchar *path[2];
+
+        path[0] = _("Account");
+        path[2] = NULL;
+        
+        account_page.page.path = path;
+	account_page.page.weight = 1000.0;
+        account_page.page.create_widget = create_widget_func;
+        account_page.page.destroy_widget = destroy_widget_func;
+        account_page.page.save_page = save_func;
+
+        prefs_account_register_page((PrefsPage *) &account_page);
+}
+
+PrefsAccount *prefs_account_new(void)
+{
+	PrefsAccount *ac_prefs;
+
+	ac_prefs = g_new0(PrefsAccount, 1);
+	memset(&tmp_ac_prefs, 0, sizeof(PrefsAccount));
+	prefs_set_default(param);
+	*ac_prefs = tmp_ac_prefs;
+	ac_prefs->account_id = prefs_account_get_new_id();
+
+	ac_prefs->privacy_prefs = g_hash_table_new(g_str_hash, g_str_equal);
+
+	return ac_prefs;
+}
+
+void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
+{
+	const guchar *p = label;
+	gint id;
+	gchar **strv, **cur;
+
+	g_return_if_fail(ac_prefs != NULL);
+	g_return_if_fail(label != NULL);
+
+	memset(&tmp_ac_prefs, 0, sizeof(PrefsAccount));
+	tmp_ac_prefs.privacy_prefs = ac_prefs->privacy_prefs;
+
+	prefs_read_config(param, label, ACCOUNT_RC);
+	*ac_prefs = tmp_ac_prefs;
+	while (*p && !isdigit(*p)) p++;
+	id = atoi(p);
+	if (id < 0) g_warning("wrong account id: %d\n", id);
+	ac_prefs->account_id = id;
+
+	if (ac_prefs->protocol == A_APOP) {
+		debug_print("converting protocol A_APOP to new prefs.\n");
+		ac_prefs->protocol = A_POP3;
+		ac_prefs->use_apop_auth = TRUE;
+	}
+
+	if (privacy_prefs != NULL) {
+		strv = g_strsplit(privacy_prefs, ",", 0);
+		for (cur = strv; *cur != NULL; cur++) {
+			gchar *encvalue, *value;
+
+			encvalue = strchr(*cur, '=');
+			if (encvalue == NULL)
+				continue;
+			encvalue[0] = '\0';
+			encvalue++;
+
+			value = g_malloc0(strlen(encvalue));
+			if (base64_decode(value, encvalue, strlen(encvalue)) > 0)
+				g_hash_table_insert(ac_prefs->privacy_prefs, g_strdup(*cur), g_strdup(value));
+			g_free(value);
+		}
+		g_strfreev(strv);
+		g_free(privacy_prefs);
+		privacy_prefs = NULL;
+	}
+
+	prefs_custom_header_read_config(ac_prefs);
+}
+
+static void create_privacy_prefs(gpointer key, gpointer _value, gpointer user_data)
+{
+	GString *str = (GString *) user_data;
+	gchar *encvalue;
+	gchar *value = (gchar *) _value;
+
+	if (str->len > 0)
+		g_string_append_c(str, ',');
+
+	encvalue = g_malloc0(B64LEN(strlen(value)) + 1);
+	base64_encode(encvalue, (gchar *) value, strlen(value));
+	g_string_sprintfa(str, "%s=%s", (gchar *) key, encvalue);
+	g_free(encvalue);
+}
+
+void prefs_account_write_config_all(GList *account_list)
+{
+	GList *cur;
+	gchar *rcpath;
+	PrefFile *pfile;
+
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACCOUNT_RC, NULL);
+	if ((pfile = prefs_write_open(rcpath)) == NULL) {
+		g_free(rcpath);
+		return;
+	}
+	g_free(rcpath);
+
+	for (cur = account_list; cur != NULL; cur = cur->next) {
+		GString *str;
+
+		tmp_ac_prefs = *(PrefsAccount *)cur->data;
+		if (fprintf(pfile->fp, "[Account: %d]\n",
+			    tmp_ac_prefs.account_id) <= 0)
+			return;
+
+		str = g_string_sized_new(32);
+		g_hash_table_foreach(tmp_ac_prefs.privacy_prefs, create_privacy_prefs, str);
+		privacy_prefs = str->str;		    
+		g_string_free(str, FALSE);
+
+		if (prefs_write_param(param, pfile->fp) < 0) {
+			g_warning("failed to write configuration to file\n");
+			prefs_file_close_revert(pfile);
+			g_free(privacy_prefs);
+			privacy_prefs = NULL;
+		    	return;
+		}
+		g_free(privacy_prefs);
+		privacy_prefs = NULL;
+
+		if (cur->next) {
+			if (fputc('\n', pfile->fp) == EOF) {
+				FILE_OP_ERROR(rcpath, "fputc");
+				prefs_file_close_revert(pfile);
+				return;
+			}
+		}
+	}
+
+	if (prefs_file_close(pfile) < 0)
+		g_warning("failed to write configuration to file\n");
+}
+
+static gboolean free_privacy_prefs(gpointer key, gpointer value, gpointer user_data)
+{
+	g_free(key);
+	g_free(value);
+
+	return TRUE;
+}
+
+void prefs_account_free(PrefsAccount *ac_prefs)
+{
+	if (!ac_prefs) return;
+
+	g_hash_table_foreach_remove(ac_prefs->privacy_prefs, free_privacy_prefs, NULL);
+
+	tmp_ac_prefs = *ac_prefs;
+	prefs_free(param);
+}
+
+const gchar *prefs_account_get_privacy_prefs(PrefsAccount *account, gchar *id)
+{
+	return g_hash_table_lookup(account->privacy_prefs, id);
+}
+
+void prefs_account_set_privacy_prefs(PrefsAccount *account, gchar *id, gchar *new_value)
+{
+	gchar *orig_key = NULL, *value;
+
+	if (g_hash_table_lookup_extended(account->privacy_prefs, id, (gpointer *) &orig_key, (gpointer *) &value)) {
+		g_hash_table_remove(account->privacy_prefs, id);
+
+		g_free(orig_key);
+		g_free(value);
+	}
+
+	if (new_value != NULL)
+		g_hash_table_insert(account->privacy_prefs, g_strdup(id), g_strdup(new_value));
+}
+
+static gint prefs_account_get_new_id(void)
+{
+	GList *ac_list;
+	PrefsAccount *ac;
+	static gint last_id = 0;
+
+	for (ac_list = account_get_list(); ac_list != NULL;
+	     ac_list = ac_list->next) {
+		ac = (PrefsAccount *)ac_list->data;
+		if (last_id < ac->account_id)
+			last_id = ac->account_id;
+	}
+
+	return last_id + 1;
+}
+
+void destroy_dialog(gpointer data)
+{
+	PrefsAccount *ac_prefs = (PrefsAccount *) data;
+
+	if (!cancelled)
+		*ac_prefs = tmp_ac_prefs;
+
+	gtk_main_quit();
+}
+
+PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
+{
+	gchar *title;
+
+	if (prefs_rc_is_readonly(ACCOUNT_RC))
+		return ac_prefs;
+
+	debug_print("Opening account preferences window...\n");
+
+	inc_lock();
+
+	cancelled = TRUE;
+
+	if (!ac_prefs) {
+		ac_prefs = prefs_account_new();
+		new_account = TRUE;
+	} else
+		new_account = FALSE;
+
+	if (new_account)
+		title = g_strdup (_("Preferences for new account"));
+	else
+		title = g_strdup_printf (_("%s - Account preferences"),
+				ac_prefs->account_name);
+
+	prefswindow_open_full(title, prefs_pages, ac_prefs, destroy_dialog);
+	g_free(title);
 	gtk_main();
-	gtk_widget_hide(dialog.window);
 
 	inc_unlock();
 
 	if (cancelled && new_account) {
-		g_free(ac_prefs);
+		prefs_account_free(ac_prefs);
 		return NULL;
-	} else {
-		*ac_prefs = tmp_ac_prefs;
+	} else
 		return ac_prefs;
-	}
 }
 
 static void prefs_account_create(void)
@@ -742,39 +918,33 @@ static void prefs_account_create(void)
 
 	debug_print("Creating account preferences window...\n");
 
-	/* create dialog */
-	prefs_dialog_create(&dialog);
-	gtk_signal_connect(GTK_OBJECT(dialog.window), "delete_event",
-			   GTK_SIGNAL_FUNC(prefs_account_deleted), NULL);
-	gtk_signal_connect(GTK_OBJECT(dialog.window), "key_press_event",
-			   GTK_SIGNAL_FUNC(prefs_account_key_pressed), NULL);
-	MANAGE_WINDOW_SIGNALS_CONNECT(dialog.window);
+	notebook = gtk_notebook_new ();
+	gtk_widget_show(notebook);
+	gtk_container_set_border_width (GTK_CONTAINER (notebook), 2);
+	/* GTK_WIDGET_UNSET_FLAGS (notebook, GTK_CAN_FOCUS); */
+	gtk_notebook_set_scrollable (GTK_NOTEBOOK (notebook), TRUE);
+	
+	gtk_notebook_popup_enable (GTK_NOTEBOOK (notebook));
 
-	gtk_signal_connect(GTK_OBJECT(dialog.ok_btn), "clicked",
-	 		   GTK_SIGNAL_FUNC(prefs_account_ok), NULL);
-	gtk_signal_connect(GTK_OBJECT(dialog.apply_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_account_apply), NULL);
-	gtk_signal_connect(GTK_OBJECT(dialog.cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_account_cancel), NULL);
+	gtk_widget_ref(notebook);
 
+	/* create all widgets on notebook */
 	prefs_account_basic_create();
-	SET_NOTEBOOK_LABEL(dialog.notebook, _("Basic"), page++);
+	SET_NOTEBOOK_LABEL(notebook, _("Basic"), page++);
 	prefs_account_receive_create();
-	SET_NOTEBOOK_LABEL(dialog.notebook, _("Receive"), page++);
+	SET_NOTEBOOK_LABEL(notebook, _("Receive"), page++);
 	prefs_account_send_create();
-	SET_NOTEBOOK_LABEL(dialog.notebook, _("Send"), page++);
+	SET_NOTEBOOK_LABEL(notebook, _("Send"), page++);
 	prefs_account_compose_create();
-	SET_NOTEBOOK_LABEL(dialog.notebook, _("Compose"), page++);
-#if USE_GPGME
+	SET_NOTEBOOK_LABEL(notebook, _("Compose"), page++);
 	prefs_account_privacy_create();
-	SET_NOTEBOOK_LABEL(dialog.notebook, _("Privacy"), page++);
-#endif /* USE_GPGME */
+	SET_NOTEBOOK_LABEL(notebook, _("Privacy"), page++);
 #if USE_OPENSSL
 	prefs_account_ssl_create();
-	SET_NOTEBOOK_LABEL(dialog.notebook, _("SSL"), page++);
+	SET_NOTEBOOK_LABEL(notebook, _("SSL"), page++);
 #endif /* USE_OPENSSL */
 	prefs_account_advanced_create();
-	SET_NOTEBOOK_LABEL(dialog.notebook, _("Advanced"), page++);
+	SET_NOTEBOOK_LABEL(notebook, _("Advanced"), page++);
 
 	prefs_account_fix_size();
 }
@@ -846,7 +1016,7 @@ static void prefs_account_basic_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
+	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	hbox = gtk_hbox_new (FALSE, 8);
@@ -932,9 +1102,7 @@ static void prefs_account_basic_create(void)
 
 	optmenu_menu = gtk_menu_new ();
 
-	MENUITEM_ADD (optmenu_menu, menuitem, _("POP3 (normal)"),  A_POP3);
-	SET_ACTIVATE (menuitem);
-	MENUITEM_ADD (optmenu_menu, menuitem, _("POP3 (APOP auth)"),  A_APOP);
+	MENUITEM_ADD (optmenu_menu, menuitem, _("POP3"),  A_POP3);
 	SET_ACTIVATE (menuitem);
 	MENUITEM_ADD (optmenu_menu, menuitem, _("IMAP4"), A_IMAP4);
 	SET_ACTIVATE (menuitem);
@@ -1108,6 +1276,7 @@ static void prefs_account_receive_create(void)
 	GtkWidget *vbox1;
 	GtkWidget *frame1;
 	GtkWidget *vbox2;
+	GtkWidget *use_apop_chkbtn;
 	GtkWidget *rmmail_chkbtn;
 	GtkWidget *hbox_spc;
 	GtkWidget *leave_time_label;
@@ -1136,7 +1305,7 @@ static void prefs_account_receive_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
+	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	PACK_FRAME (vbox1, frame1, _("POP3"));
@@ -1145,6 +1314,9 @@ static void prefs_account_receive_create(void)
 	gtk_widget_show (vbox2);
 	gtk_container_add (GTK_CONTAINER (frame1), vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+
+	PACK_CHECK_BUTTON (vbox2, use_apop_chkbtn,
+			   _("Use secure authentication (APOP)"));
 
 	PACK_CHECK_BUTTON (vbox2, rmmail_chkbtn,
 			   _("Remove messages on server when received"));
@@ -1302,6 +1474,7 @@ static void prefs_account_receive_create(void)
 		(vbox1, recvatgetall_chkbtn,
 		 _("`Get all' checks for new messages on this account"));
 
+	receive.use_apop_chkbtn       = use_apop_chkbtn;
 	receive.pop3_frame               = frame1;
 	receive.rmmail_chkbtn            = rmmail_chkbtn;
 	receive.leave_time_entry         = leave_time_entry;
@@ -1349,7 +1522,7 @@ static void prefs_account_send_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
+	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	PACK_FRAME (vbox1, frame, _("Header"));
@@ -1360,7 +1533,7 @@ static void prefs_account_send_create(void)
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
 
 	PACK_CHECK_BUTTON (vbox2, date_chkbtn, _("Add Date"));
-	PACK_CHECK_BUTTON (vbox2, msgid_chkbtn, _("Generate Message-Id"));
+	PACK_CHECK_BUTTON (vbox2, msgid_chkbtn, _("Generate Message-ID"));
 
 	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_widget_show (hbox);
@@ -1539,7 +1712,7 @@ static void prefs_account_compose_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
+	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	PACK_FRAME(vbox1, frame_sig, _("Signature"));
@@ -1656,129 +1829,50 @@ static void prefs_account_compose_create(void)
 	compose.autoreplyto_entry  = autoreplyto_entry;
 }
 
-#if USE_GPGME
 static void prefs_account_privacy_create(void)
 {
 	GtkWidget *vbox1;
-	GtkWidget *frame_mode;
-	GtkWidget *vbox_mode;
-	GtkWidget *frame1;
 	GtkWidget *vbox2;
 	GtkWidget *hbox1;
 	GtkWidget *label;
+	GtkWidget *default_privacy_system;
 	GtkWidget *default_encrypt_chkbtn;
 	GtkWidget *default_sign_chkbtn;
-	GtkWidget *gnupg_mime_radiobtn;
-	GtkWidget *gnupg_inline_radiobtn;
-	GtkWidget *defaultkey_radiobtn;
-	GtkWidget *emailkey_radiobtn;
-	GtkWidget *customkey_radiobtn;
-	GtkWidget *customkey_entry;
+	GtkWidget *save_clear_text_chkbtn;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
+	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
+	hbox1 = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_container_add (GTK_CONTAINER(vbox2), hbox1);
+
+	label = gtk_label_new(_("Default privacy system"));
+	gtk_widget_show(label);
+	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
+
+	default_privacy_system = gtk_option_menu_new();
+	gtk_widget_show (default_privacy_system);
+	gtk_box_pack_start (GTK_BOX(hbox1), default_privacy_system, TRUE, TRUE, 0);
+
 	PACK_CHECK_BUTTON (vbox2, default_encrypt_chkbtn,
 			   _("Encrypt message by default"));
 	PACK_CHECK_BUTTON (vbox2, default_sign_chkbtn,
 			   _("Sign message by default"));
-			    
-	PACK_FRAME (vbox1, frame_mode, _("Default mode"));
-	
-	vbox_mode = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox_mode);
-	gtk_container_add (GTK_CONTAINER (frame_mode), vbox_mode);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_mode), 8);
+	PACK_CHECK_BUTTON (vbox2, save_clear_text_chkbtn,
+			   _("Save sent encrypted messages as clear text"));
 
-	gnupg_mime_radiobtn = gtk_radio_button_new_with_label
-		(NULL, _("Use PGP/MIME"));
-	gtk_widget_show (gnupg_mime_radiobtn);
-	gtk_box_pack_start (GTK_BOX (vbox_mode), gnupg_mime_radiobtn,
-			    FALSE, FALSE, 0);
-	gtk_object_set_user_data (GTK_OBJECT (gnupg_mime_radiobtn),
-				  GINT_TO_POINTER (GNUPG_MODE_DETACH));
-
-	gnupg_inline_radiobtn = gtk_radio_button_new_with_label_from_widget
-		(GTK_RADIO_BUTTON (gnupg_mime_radiobtn),
-		 _("Use Inline"));
-	gtk_widget_show (gnupg_inline_radiobtn);
-	gtk_box_pack_start (GTK_BOX (vbox_mode), gnupg_inline_radiobtn,
-			    FALSE, FALSE, 0);
-	gtk_object_set_user_data (GTK_OBJECT (gnupg_inline_radiobtn),
-				  GINT_TO_POINTER (GNUPG_MODE_INLINE));
-	gtk_signal_connect (GTK_OBJECT (gnupg_inline_radiobtn), "clicked",
-			    prefs_account_gnupg_inline_warning, NULL);
-
-
-	PACK_FRAME (vbox1, frame1, _("Sign key"));
-
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame1), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
-
-	defaultkey_radiobtn = gtk_radio_button_new_with_label
-		(NULL, _("Use default GnuPG key"));
-	gtk_widget_show (defaultkey_radiobtn);
-	gtk_box_pack_start (GTK_BOX (vbox2), defaultkey_radiobtn,
-			    FALSE, FALSE, 0);
-	gtk_object_set_user_data (GTK_OBJECT (defaultkey_radiobtn),
-				  GINT_TO_POINTER (SIGN_KEY_DEFAULT));
-
-	emailkey_radiobtn = gtk_radio_button_new_with_label_from_widget
-		(GTK_RADIO_BUTTON (defaultkey_radiobtn),
-		 _("Select key by your email address"));
-	gtk_widget_show (emailkey_radiobtn);
-	gtk_box_pack_start (GTK_BOX (vbox2), emailkey_radiobtn,
-			    FALSE, FALSE, 0);
-	gtk_object_set_user_data (GTK_OBJECT (emailkey_radiobtn),
-				  GINT_TO_POINTER (SIGN_KEY_BY_FROM));
-
-	customkey_radiobtn = gtk_radio_button_new_with_label_from_widget
-		(GTK_RADIO_BUTTON (defaultkey_radiobtn),
-		 _("Specify key manually"));
-	gtk_widget_show (customkey_radiobtn);
-	gtk_box_pack_start (GTK_BOX (vbox2), customkey_radiobtn,
-			    FALSE, FALSE, 0);
-	gtk_object_set_user_data (GTK_OBJECT (customkey_radiobtn),
-				  GINT_TO_POINTER (SIGN_KEY_CUSTOM));
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
-
-	label = gtk_label_new ("");
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
-	gtk_widget_set_usize (label, 16, -1);
-
-	label = gtk_label_new (_("User or key ID:"));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
-
-	customkey_entry = gtk_entry_new ();
-	gtk_widget_show (customkey_entry);
-	gtk_box_pack_start (GTK_BOX (hbox1), customkey_entry,
-			    TRUE, TRUE, 0);
-
-	SET_TOGGLE_SENSITIVITY (customkey_radiobtn, customkey_entry);
-
+	privacy.default_privacy_system = default_privacy_system;
 	privacy.default_encrypt_chkbtn = default_encrypt_chkbtn;
 	privacy.default_sign_chkbtn    = default_sign_chkbtn;
-	privacy.gnupg_mime_radiobtn    = gnupg_mime_radiobtn;
-	privacy.gnupg_inline_radiobtn  = gnupg_inline_radiobtn;
-	privacy.defaultkey_radiobtn    = defaultkey_radiobtn;
-	privacy.emailkey_radiobtn      = emailkey_radiobtn;
-	privacy.customkey_radiobtn     = customkey_radiobtn;
-	privacy.customkey_entry        = customkey_entry;
+	privacy.save_clear_text_chkbtn = save_clear_text_chkbtn;
 }
-#endif /* USE_GPGME */
 
 #if USE_OPENSSL
 
@@ -1842,7 +1936,7 @@ static void prefs_account_ssl_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
+	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	PACK_FRAME (vbox1, pop_frame, _("POP3"));
@@ -2046,7 +2140,7 @@ static void prefs_account_advanced_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
+	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW_2);
@@ -2239,19 +2333,18 @@ static gint prefs_account_apply(void)
 		return -1;
 	}
 	if (((protocol == A_POP3) || 
-	     (protocol == A_APOP) || 
 	     (protocol == A_LOCAL && !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(basic.mailcmd_chkbtn))) || 
 	     (protocol == A_NONE)) &&
            *gtk_entry_get_text(GTK_ENTRY(basic.smtpserv_entry)) == '\0') {
 		alertpanel_error(_("SMTP server is not entered."));
 		return -1;
 	}
-	if ((protocol == A_POP3 || protocol == A_APOP || protocol == A_IMAP4) &&
+	if ((protocol == A_POP3 || protocol == A_IMAP4) &&
 	    *gtk_entry_get_text(GTK_ENTRY(basic.uid_entry)) == '\0') {
 		alertpanel_error(_("User ID is not entered."));
 		return -1;
 	}
-	if ((protocol == A_POP3 || protocol == A_APOP) &&
+	if (protocol == A_POP3 &&
 	    *gtk_entry_get_text(GTK_ENTRY(basic.recvserv_entry)) == '\0') {
 		alertpanel_error(_("POP3 server is not entered."));
 		return -1;
@@ -2353,18 +2446,6 @@ static void prefs_account_enum_set_radiobtn(PrefParam *pparam)
 	}
 }
 
-#if USE_GPGME
-static void prefs_account_gnupg_inline_warning(GtkWidget *widget)
-{
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)) &&
-	    gtk_notebook_get_current_page(GTK_NOTEBOOK(dialog.notebook)) > 0)
-		alertpanel_warning
-			(_("Its not recommended to use the old style Inline\n"
-			   "mode for GnuPG messages. It doesn't comply with\n"
-			   "RFC 3156 - MIME Security with OpenPGP."));
-}
-#endif /* USE_GPGME */
-
 static void prefs_account_protocol_set_data_from_optmenu(PrefParam *pparam)
 {
 	GtkWidget *menu;
@@ -2382,43 +2463,19 @@ static void prefs_account_protocol_set_optmenu(PrefParam *pparam)
 	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
 	GtkWidget *menu;
 	GtkWidget *menuitem;
-	GList *children;
-	gint list_order[] = {
-		0,  /* A_POP3  */
-		1,  /* A_APOP  */
-		-1, /* A_RPOP  */
-		2,  /* A_IMAP4 */
-		3,  /* A_NNTP  */
-		4,  /* A_LOCAL */
-		5,  /* A_NONE  */
-	};
+	gint index;
 
 	protocol = *((RecvProtocol *)pparam->data);
-	if (protocol < 0 || protocol > A_NONE) return;
-	if (list_order[protocol] < 0) return;
-	gtk_option_menu_set_history(optmenu, list_order[protocol]);
+	index = menu_find_option_menu_index
+		(optmenu, GINT_TO_POINTER(protocol), NULL);
+	if (index < 0) return;
+	gtk_option_menu_set_history(optmenu, index);
 
 	menu = gtk_option_menu_get_menu(optmenu);
 	menu_set_insensitive_all(GTK_MENU_SHELL(menu));
 
-#define SET_NTH_SENSITIVE(proto) \
-{ \
-	menuitem = g_list_nth_data(children, list_order[proto]); \
-	if (menuitem) \
-		gtk_widget_set_sensitive(menuitem, TRUE); \
-}
-
-	children = GTK_MENU_SHELL(menu)->children;
-	SET_NTH_SENSITIVE(protocol);
-	if (protocol == A_POP3) {
-		SET_NTH_SENSITIVE(A_APOP);
-	} else if (protocol == A_APOP) {
-		SET_NTH_SENSITIVE(A_POP3);
-	}
-
-#undef SET_NTH_SENSITIVE
-
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	gtk_widget_set_sensitive(menuitem, TRUE);
 	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
 }
 
@@ -2493,6 +2550,72 @@ static void prefs_account_smtp_auth_type_set_optmenu(PrefParam *pparam)
 	menu = gtk_option_menu_get_menu(optmenu);
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
+}
+
+static void prefs_account_set_string_from_optmenu(PrefParam *pparam)
+{
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+	gchar **str;
+
+	g_return_if_fail(*pparam->widget != NULL);
+
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	if (menuitem == NULL)
+		return;
+
+	str = (gchar **) pparam->data;
+        g_free(*str);
+	*str = g_strdup(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+}
+
+static void prefs_account_set_optmenu_from_string(PrefParam *pparam)
+{
+	GtkWidget *optionmenu;
+	GtkWidget *menu;
+	gboolean found = FALSE;
+	GList *children, *cur;
+	gchar *prefsid;
+	guint i = 0;
+
+	g_return_if_fail(*pparam->widget != NULL);
+
+	prefsid = *((gchar **) pparam->data);
+	if (prefsid == NULL)
+		return;
+
+	optionmenu = *pparam->widget;
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(optionmenu));
+	children = gtk_container_children(GTK_CONTAINER(menu));
+	for (cur = children; cur != NULL; cur = g_list_next(cur)) {
+		GtkWidget *item = (GtkWidget *) cur->data;
+		gchar *id;
+
+		id = gtk_object_get_user_data(GTK_OBJECT(item));
+		if (id != NULL && strcmp(id, prefsid) == 0) {
+			found = TRUE;
+/*			gtk_menu_shell_select_item(GTK_MENU_SHELL(menu), item); */
+			gtk_option_menu_set_history(GTK_OPTION_MENU(optionmenu), i);
+		}
+		i++;
+	}
+
+	if (!found) {
+		gchar *name;
+		GtkWidget *menuitem;
+
+		name = g_strdup_printf(_("Unsupported (%s)"), prefsid);
+		menuitem = gtk_menu_item_new_with_label(name);
+		gtk_widget_show(menuitem);
+		gtk_object_set_data_full(GTK_OBJECT(menuitem), "user_data", g_strdup(prefsid), g_free);
+		gtk_menu_append(GTK_MENU(menu), menuitem);
+		g_free(name);
+
+		gtk_option_menu_set_history(GTK_OPTION_MENU(optionmenu), i);
+	}
+
+	g_list_free(children);
 }
 
 static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
@@ -2932,4 +3055,14 @@ static void prefs_account_mailcmd_toggled(GtkToggleButton *button,
 	gtk_widget_set_sensitive(basic.smtpserv_label, !use_mailcmd);
 	gtk_widget_set_sensitive(basic.uid_entry,  !use_mailcmd);
 	gtk_widget_set_sensitive(basic.pass_entry, !use_mailcmd);
+}
+
+void prefs_account_register_page(PrefsPage *page)
+{
+	prefs_pages = g_slist_append(prefs_pages, page);
+}
+
+void prefs_acount_unregister_page(PrefsPage *page)
+{
+	prefs_pages = g_slist_remove(prefs_pages, page);
 }

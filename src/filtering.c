@@ -336,7 +336,7 @@ static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *inf
 static gboolean filtering_apply_rule(FilteringProp *filtering, MsgInfo *info,
     gboolean * final)
 {
-	gboolean result;
+	gboolean result = TRUE;
 	gchar    buf[50];
         GSList * tmp;
         

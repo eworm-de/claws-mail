@@ -80,6 +80,7 @@ enum {
 static guint hook_id;
 static int flags = SPAMC_RAW_MODE | SPAMC_SAFE_FALLBACK | SPAMC_CHECK_ONLY;
 static gchar *username = NULL;
+static MessageCallback message_callback;
 
 static SpamAssassinConfig config;
 
@@ -203,7 +204,8 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		return FALSE;
 
 	debug_print("Filtering message %d\n", msginfo->msgnum);
-	statusbar_print_all(_("SpamAssassin: filtering message..."));
+	if (message_callback != NULL)
+		message_callback(_("SpamAssassin: filtering message..."));
 
 	if ((fp = procmsg_open_message(msginfo)) == NULL) {
 		debug_print("failed to open message file\n");
@@ -234,10 +236,17 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		running |= TIMEOUT_RUNNING;
 
 		while(running & CHILD_RUNNING) {
-			waitpid(pid, &status, WNOHANG);
-			if (WIFEXITED(status)) {
+			int ret;
+
+			ret = waitpid(pid, &status, WNOHANG);
+			if (ret == pid) {
+				if (WIFEXITED(status)) {
+					running &= ~CHILD_RUNNING;
+    					is_spam = WEXITSTATUS(status) == 1 ? TRUE : FALSE;
+				}
+			} if (ret < 0) {
 				running &= ~CHILD_RUNNING;
-			}
+			} /* ret == 0 continue */
 	    
 			g_main_iteration(TRUE);
     		}
@@ -245,7 +254,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		while (running & TIMEOUT_RUNNING)
 			g_main_iteration(TRUE);
 	}
-        is_spam = WEXITSTATUS(status) == 1 ? TRUE : FALSE;
 #endif
 
 	fclose(fp);
@@ -299,6 +307,11 @@ void spamassassin_save_config(void)
 	fprintf(pfile->fp, "\n");
 
 	prefs_file_close(pfile);
+}
+
+void spamassassin_set_message_callback(MessageCallback callback)
+{
+	message_callback = callback;
 }
 
 gint plugin_init(gchar **error)

@@ -27,6 +27,7 @@ Mailbox conversion:
 
 Other tools:
   filter_conv.pl                Convert old-style filters to new filtering
+  nautilus2sylpheed.sh		Send files from Nautilus
   newscache_clean.pl            Clean up news directory
   OOo2sylpheed.pl               Send documents from OpenOffice.org
   sylpheed-switcher             Run either sylpheed or claws (separate configs)
@@ -35,7 +36,6 @@ Other tools:
 
 Extra tools:
   gif2xface.pl                  Convert a 48x48 GIF file to an X-Face header
-  launch_firebird		Open URLs in mozilla-firebird
 
 --------------------------------------------------------------------------------
 Detailed Descriptions:
@@ -386,6 +386,20 @@ Other tools
   Contact: Paul Mangan <claws@thewildbeast.co.uk>
   
 
+* nautilus2sylpheed.sh
+
+  WHAT IT DOES
+	This script will recursively attach a number of selected 
+	files/directories from Nautilus to a new blank e-mail.
+
+  HOW TO USE IT
+  	Copy the script to $HOME/.gnome2/nautilus-scripts, chmod u+x, 
+	and restart nautilus (killall -9 nautilus). You will now have 
+	a right-click menu item: '/Scripts/nautilus2sylpheed.sh'
+	
+  Contact: Reza Pakdel <hrpakdel@cpsc.ucalgary.ca>
+
+
 * newscache_clean.pl
 
   WHAT IT DOES AND WHY IT DOES IT
@@ -546,21 +560,5 @@ Extra tools
   	they will be lost!).
 
   Contact: Ricardo Mones Lastra <mones@aic.uniovi.es>
-
-
-* launch_firebird
-
-  WHAT IT DOES
-  	Check for a running mozilla-firebird process and and open a new tab 
-	with a given URL, or execute mozilla-firebird with that URL
-  
-  HOW TO USE IT  
-  	In Common Preferences move to the 'Other' tab and enter the
-  	following in the 'Web browser' box
-  
-  	launch_firebird '%s'
-  
-  Contact: Mohammed Sameer <Uniball@linux-egypt.org>
-
 
 --------------------------------------------------------------------------------

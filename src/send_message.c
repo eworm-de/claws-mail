@@ -418,6 +418,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 		ret = -1;
 	} else if (session->state == SESSION_ERROR ||
 		   session->state == SESSION_EOF ||
+		   session->state == SESSION_TIMEOUT ||
 		   SMTP_SESSION(session)->state == SMTP_ERROR ||
 		   SMTP_SESSION(session)->error_val != SM_OK)
 		ret = -1;
@@ -598,13 +599,22 @@ static void send_put_error(Session *session)
 			err_msg = g_strdup(log_msg);
 		break;
 	default:
-		if (session->state == SESSION_ERROR) {
+		switch (session->state) {
+		case SESSION_ERROR:
 			log_msg =
 				_("Error occurred while sending the message.");
 			err_msg = g_strdup(log_msg);
-		} else if (session->state == SESSION_EOF) {
+			break;
+		case SESSION_EOF:
 			log_msg = _("Connection closed by the remote host.");
 			err_msg = g_strdup(log_msg);
+			break;
+		case SESSION_TIMEOUT:
+			log_msg = _("Session timed out.");
+			err_msg = g_strdup(log_msg);
+			break;
+		default:
+			break;
 		}
 		break;
 	}

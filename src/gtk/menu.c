@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,15 +26,13 @@
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenubar.h>
-#include <gtk/gtkitemfactory.h>
 #include <gtk/gtkcheckmenuitem.h>
+#include <gtk/gtkitemfactory.h>
 #include <gtk/gtkbutton.h>
 
 #include "intl.h"
 #include "menu.h"
 #include "utils.h"
-
-static gchar *menu_translate(const gchar *path, gpointer data);
 
 static void menu_item_add_accel( GtkWidget *widget, guint accel_signal_id, GtkAccelGroup *accel_group,
 				 guint accel_key, GdkModifierType accel_mods, GtkAccelFlags accel_flags,
@@ -89,7 +87,7 @@ GtkWidget *popupmenu_create(GtkWidget *window, GtkItemFactoryEntry *entries,
 	return gtk_item_factory_get_widget(factory, path);
 }
 
-static gchar *menu_translate(const gchar *path, gpointer data)
+gchar *menu_translate(const gchar *path, gpointer data)
 {
 	gchar *retval;
 
@@ -187,10 +185,8 @@ void menu_set_sensitive(GtkItemFactory *ifactory, const gchar *path,
 	g_return_if_fail(ifactory != NULL);
 
 	widget = gtk_item_factory_get_item(ifactory, path);
-	if(widget == NULL) {
-		debug_print("unknown menu entry %s\n", path);
-		return;
-	}
+	g_return_if_fail(widget != NULL);
+
 	gtk_widget_set_sensitive(widget, sensitive);
 }
 
@@ -202,25 +198,17 @@ void menu_set_sensitive_all(GtkMenuShell *menu_shell, gboolean sensitive)
 		gtk_widget_set_sensitive(GTK_WIDGET(cur->data), sensitive);
 }
 
-void menu_set_toggle(GtkItemFactory *ifactory, const gchar *path,
-			gboolean active)
+void menu_set_active(GtkItemFactory *ifactory, const gchar *path,
+		     gboolean is_active)
 {
 	GtkWidget *widget;
 
 	g_return_if_fail(ifactory != NULL);
 
 	widget = gtk_item_factory_get_item(ifactory, path);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(widget), active);
-}
+	g_return_if_fail(widget != NULL);
 
-void menu_toggle_toggle(GtkItemFactory *ifactory, const gchar *path)
-{
-	GtkWidget *widget;
-	
-	g_return_if_fail(ifactory != NULL);
-	
-	widget = gtk_item_factory_get_item(ifactory, path);
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), !((GTK_CHECK_MENU_ITEM(widget))->active));
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), is_active);
 }
 
 void menu_button_position(GtkMenu *menu, gint *x, gint *y, gpointer user_data)
@@ -286,6 +274,17 @@ gint menu_find_option_menu_index(GtkOptionMenu *optmenu, gpointer data,
 	return -1;
 }
 
+gpointer menu_get_option_menu_active_user_data(GtkOptionMenu *optmenu)
+{
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	menu = gtk_option_menu_get_menu(optmenu);
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+
+	return gtk_object_get_user_data(GTK_OBJECT(menuitem));
+}
+
 /* call backs for accelerator changes on selected menu items */
 static void menu_item_add_accel( GtkWidget *widget, guint accel_signal_id, GtkAccelGroup *accel_group,
 				 guint accel_key, GdkModifierType accel_mods, GtkAccelFlags accel_flags,
@@ -346,24 +345,26 @@ void menu_connect_identical_items(void)
 		{"<Main>/Message/Copy...",			"<SummaryView>/Copy..."},
 		{"<Main>/Message/Delete",			"<SummaryView>/Delete"},
 		{"<Main>/Message/Cancel a news message",	"<SummaryView>/Cancel a news message"},
-		{"<Main>/Tools/Execute",			"<SummaryView>/Execute"},
 		{"<Main>/Message/Mark/Mark",			"<SummaryView>/Mark/Mark"},
 		{"<Main>/Message/Mark/Unmark",			"<SummaryView>/Mark/Unmark"},
 		{"<Main>/Message/Mark/Mark as unread",		"<SummaryView>/Mark/Mark as unread"},
 		{"<Main>/Message/Mark/Mark as read",		"<SummaryView>/Mark/Mark as read"},
 		{"<Main>/Message/Mark/Mark all read",		"<SummaryView>/Mark/Mark all read"},
 		{"<Main>/Tools/Add sender to address book",	"<SummaryView>/Add sender to address book"},
-		{"<Main>/Tools/Create filter rule/Automatically",	"<SummaryView>/Create filter rule/Automatically"},
+		{"<Main>/Tools/Create filter rule/Automatically",	
+								"<SummaryView>/Create filter rule/Automatically"},
 		{"<Main>/Tools/Create filter rule/by From",	"<SummaryView>/Create filter rule/by From"},
 		{"<Main>/Tools/Create filter rule/by To",	"<SummaryView>/Create filter rule/by To"},
 		{"<Main>/Tools/Create filter rule/by Subject",	"<SummaryView>/Create filter rule/by Subject"},
+		{"<Main>/Tools/Create processing rule/Automatically",
+								"<SummaryView>/Create processing rule/Automatically"},
+		{"<Main>/Tools/Create processing rule/by From",	"<SummaryView>/Create processing rule/by From"},
+		{"<Main>/Tools/Create processing rule/by To",	"<SummaryView>/Create processing rule/by To"},
+		{"<Main>/Tools/Create processing rule/by Subject",
+								"<SummaryView>/Create processing rule/by Subject"},
 		{"<Main>/View/Open in new window",		"<SummaryView>/View/Open in new window"},
 		{"<Main>/View/Message source",			"<SummaryView>/View/Source"},
 		{"<Main>/View/Show all headers",		"<SummaryView>/View/All header"},
-		{"<Main>/File/Save as...",			"<SummaryView>/Save as..."},
-		{"<Main>/File/Print...",			"<SummaryView>/Print..."},
-		{"<Main>/Edit/Select all",			"<SummaryView>/Select all"},
-		{"<Main>/Edit/Select thread",			"<SummaryView>/Select thread"}		 
 	};
 
 	const gint numpairs = sizeof pairs / sizeof pairs[0];

@@ -80,9 +80,9 @@ XMLTag *folder_local_get_xml(Folder *_folder)
 #ifdef WIN32
 	if (path)
 		subst_char(path, G_DIR_SEPARATOR, '/');
-	xml_tag_add_attr(tag, "path", path);
+	xml_tag_add_attr(tag, xml_attr_new("path", path));
 #else
-	xml_tag_add_attr(tag, "path", g_strdup(folder->rootpath));
+	xml_tag_add_attr(tag, xml_attr_new("path", folder->rootpath));
 #endif
 
 	return tag;

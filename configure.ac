@@ -3,19 +3,21 @@ AC_PREREQ(2.50)
 AC_INIT(src/main.c)
 AC_CONFIG_AUX_DIR(config)
 
-PACKAGE=sylpheed
+PACKAGE=sylpheed-claws
 
 dnl version number
 MAJOR_VERSION=0
 MINOR_VERSION=9
-MICRO_VERSION=10
+MICRO_VERSION=12
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=0
-if test $EXTRA_VERSION -eq 0; then
-    VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}claws
+EXTRA_VERSION=168
+EXTRA_RELEASE=
+
+if test \( $EXTRA_VERSION -eq 0 \) -o \( "x$EXTRA_RELEASE" != "x" \); then
+    VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}${EXTRA_RELEASE}
 else
-    VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}claws${EXTRA_VERSION}
+    VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}
 fi
 
 dnl set $target
@@ -92,7 +94,7 @@ ALL_LINGUAS="bg cs de el en_GB es fr hr hu it ja ko nl pl pt_BR ru sk sr sv zh_C
 AM_GNU_GETTEXT([use-libtool])
 AM_GNU_GETTEXT_VERSION(0.12.1)
 dnl AC_CHECK_FUNC(gettext, AC_CHECK_LIB(intl, gettext))
-localedir='${prefix}/${DATADIRNAME}/locale'
+localedir='${datadir}/locale'
 AC_SUBST(localedir)
 
 manualdir='${prefix}/${DATADIRNAME}/${PACKAGE}/manual'
@@ -233,9 +235,26 @@ else
 fi
 
 dnl Check for OpenSSL
-AM_PATH_OPENSSL
+AC_ARG_ENABLE(openssl,
+	[  --enable-openssl    Attempt to use OpenSSL for SSL support.],
+	[ac_cv_enable_openssl=$enableval], [ac_cv_enable_openssl=yes])
+if test x"$ac_cv_enable_openssl" = xyes; then
+	PKG_CHECK_MODULES(OPENSSL, openssl >= 0.9.7, :, ac_cv_enable_openssl=no)
+	if test x$ac_cv_enable_openssl = xyes; then
+		AC_DEFINE(USE_OPENSSL, 1, Define if you want OpenSSL support)
+	fi
+fi
+AC_SUBST(OPENSSL_CFLAGS)
+AC_SUBST(OPENSSL_LIBS)
 
-dnl Key for password encryption
+dnl password encryption
+OLDLIBS=$LIBS
+LIBS=
+AC_SEARCH_LIBS(encrypt, crypt, [], AC_MSG_ERROR(['encrypt'-function not found.]))
+CRYPT_LIBS=$LIBS
+AC_SUBST(CRYPT_LIBS)
+LIBS=$OLDLIBS
+
 AC_ARG_WITH(passcrypt-key, [  --with-passcrypt-key=KEY     Key used to encode passwords (8 byte string)],
 	    with_passcrypt_key="$withval", with_passcrypt_key="passkey0")
 AC_SUBST(PASSCRYPT_KEY, $with_passcrypt_key)
@@ -320,13 +339,40 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+dnl check for pthread support
+AC_ARG_ENABLE(pthread,
+	[  --disable-pthread           Disable pthread support],
+	[ac_cv_enable_pthread=$enableval], [ac_cv_enable_pthread=yes])
+AC_MSG_CHECKING([whether to use pthread])
+if test x$ac_cv_enable_pthread = xno; then
+	AC_MSG_RESULT(no)
+else
+	AC_MSG_RESULT(yes)
+
+	AC_CHECK_LIB(pthread, pthread_create, :, ac_cv_enable_pthread=no)
+	AC_CHECK_HEADERS(pthread.h, :, ac_cv_enable_pthread=no)
+
+	if test x$ac_cv_enable_pthread = xyes; then
+		AC_DEFINE(USE_PTHREAD, 1, Define if you have pthread)
+		PTHREAD_LIBS="-lpthread"
+	fi
+
+fi
+AC_SUBST(PTHREAD_LIBS)
+
 dnl for LDAP support in addressbook
 dnl no check for libraries; dynamically loaded
 AC_ARG_ENABLE(ldap,
 	[  --enable-ldap           Enable LDAP support [default=no]],
 	[ac_cv_enable_ldap=$enableval], [ac_cv_enable_ldap=no])
 AC_MSG_CHECKING([whether to use LDAP])
-if test "$ac_cv_enable_ldap" = yes; then
+if test x"$ac_cv_enable_ldap" = xno; then
+	AC_MSG_RESULT(no)
+elif test x"$ac_cv_enable_ldap" = xyes -a x"$ac_cv_enable_pthread" = xno; then
+	AC_MSG_RESULT(no - LDAP support needs pthread support)
+
+	ac_cv_enable_ldap=no
+else
 	AC_MSG_RESULT(yes)
 
 	dnl check for available libraries, and pull them in
@@ -336,11 +382,7 @@ if test "$ac_cv_enable_ldap" = yes; then
 	AC_CHECK_LIB(lber, ber_get_tag, LDAP_LIBS="$LDAP_LIBS -llber",,
 		     $LDAP_LIBS)
 
-	dnl we need libpthread for sylpheed ldap,  until we find
-	dnl a better way to handle ldap requests asynchronously...
-	AC_CHECK_LIB(pthread, pthread_create, LDAP_LIBS="$LDAP_LIBS -lpthread")
-
-	AC_CHECK_HEADERS(ldap.h lber.h pthread.h,
+	AC_CHECK_HEADERS(ldap.h lber.h,
 			 [ ac_cv_enable_ldap=yes ],
 			 [ ac_cv_enable_ldap=no ])
 
@@ -371,8 +413,6 @@ if test "$ac_cv_enable_ldap" = yes; then
 			AC_DEFINE(USE_LDAP_TLS, 1, Define if you want LDAP TLS support in addressbook.)
 		fi
 	fi
-else
-	AC_MSG_RESULT(no)
 fi
 
 dnl for JPilot support in addressbook
@@ -417,6 +457,27 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+dnl #######################################################################
+dnl # Check for startup notification
+dnl #######################################################################
+AC_ARG_ENABLE(startup-notification, [  --disable-startup-notification    compile without startup notification support],,enable_startup_notification=yes)
+
+if test "x$enable_startup_notification" = "xyes"; then
+	PKG_CHECK_MODULES(STARTUP_NOTIFICATION, libstartup-notification-1.0 >= 0.5,
+	[
+		AC_DEFINE(HAVE_STARTUP_NOTIFICATION, 1, [Define if we're using libstartup-notification.])
+		echo "Building with libstartup-notification"
+		enable_startup_notification=yes
+	],
+	[
+		echo "Building without libstartup-notification"
+		enable_startup_notification=no
+	])
+
+	AC_SUBST(STARTUP_NOTIFICATION_CFLAGS)
+	AC_SUBST(STARTUP_NOTIFICATION_LIBS)
+fi
+
 dnl *************************
 dnl ** section for plugins **
 dnl *************************
@@ -442,6 +503,21 @@ if test x"$ac_cv_enable_spamassassin_plugin" = xyes; then
 fi
 AM_CONDITIONAL(BUILD_SPAMASSASSIN_PLUGIN, test x"$ac_cv_enable_spamassassin_plugin" = xyes)
 
+dnl --- PGP/MIME ---
+AC_ARG_ENABLE(pgpmime-plugin,
+	[  --disable-pgpmime-plugin           Do not build PGP/MIME plugin],
+	[ac_cv_enable_pgpmime_plugin=$enableval], [ac_cv_enable_pgpmime_plugin=yes])
+if test x"$ac_cv_enable_pgpmime_plugin" = xyes; then
+	if test x"$ac_cv_enable_gpgme" != xyes; then
+		ac_cv_enable_pgpmime_plugin=no
+	fi
+
+	if test x"$ac_cv_enable_pgpmime_plugin" = xyes; then
+		PLUGINS="pgpmime $PLUGINS"
+	fi
+fi
+AM_CONDITIONAL(BUILD_PGPMIME_PLUGIN, test x"$ac_cv_enable_pgpmime_plugin" = xyes)
+
 dnl --- MathML Viewer ---
 AC_ARG_ENABLE(mathml-viewer-plugin,
 	[  --disable-mathml-viewer-plugin    Do not build MathML-Viewer plugin],
@@ -450,12 +526,12 @@ if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
 	PKG_CHECK_MODULES(GTK_MATH_VIEW, gtkmathview >= 0.4.2 gtkmathview < 0.5, :, ac_cv_enable_mathml_viewer_plugin=no)
 
 	if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
-		AC_SUBST(GTK_MATH_VIEW_CFLAGS)
-		AC_SUBST(GTK_MATH_VIEW_LIBS)
 
 		PLUGINS="mathml-viewer $PLUGINS"
 	fi
 fi
+AC_SUBST(GTK_MATH_VIEW_CFLAGS)
+AC_SUBST(GTK_MATH_VIEW_LIBS)
 AM_CONDITIONAL(BUILD_MATHML_VIEWER_PLUGIN, test x"$ac_cv_enable_mathml_viewer_plugin" = xyes)
 
 dnl --- Image Viewer ---
@@ -518,13 +594,13 @@ if test x"$ac_cv_enable_clamav_plugin" = xyes; then
 	AC_CHECK_HEADERS(clamav.h, :, ac_cv_enable_clamav_plugin=no)
 	if test x"$ac_cv_enable_clamav_plugin" = xyes; then
 		CLAMAV_LIBS="${clamav_lib}"
-		AC_SUBST(CLAMAV_LIBS)
 
 		PLUGINS="clamav $PLUGINS"
 	else
 		AC_MSG_NOTICE([clamav library not found, will not build clamav plugin])
 	fi
 fi
+AC_SUBST(CLAMAV_LIBS)
 AM_CONDITIONAL(BUILD_CLAMAV_PLUGIN, test x"$ac_cv_enable_clamav_plugin" = xyes)
 
 dnl ****************************
@@ -551,6 +627,7 @@ src/plugins/image_viewer/Makefile
 src/plugins/trayicon/Makefile
 src/plugins/trayicon/libeggtrayicon/Makefile
 src/plugins/clamav/Makefile
+src/plugins/pgpmime/Makefile
 doc/Makefile
 doc/faq/Makefile
 doc/faq/de/Makefile

@@ -170,12 +170,18 @@ gint addrindex_setup_static_search	( AddressDataSource *ds,
 
 gboolean addrindex_start_search		( const gint queryID );
 void addrindex_stop_search		( const gint queryID );
+gint addrindex_setup_explicit_search	( AddressDataSource *ds, 
+					  const gchar *searchTerm, 
+					  ItemFolder *folder,
+					  void *callBackEnd,
+					  void *callBackEntry );
 void addrindex_remove_results		( AddressDataSource *ds,
 					  ItemFolder *folder );
 
 gboolean addrindex_load_completion(
 		gint (*callBackFunc)
-			( const gchar *, const gchar *, const gchar * ) );
+			( const gchar *, const gchar *, 
+			  const gchar *, const gchar * ) );
 
 #endif /* __ADDRINDEX_H__ */
 

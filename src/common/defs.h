@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@
 #define ACTIONS_RC		"actionsrc"
 #define RENDERER_RC		"rendererrc"
 #define COMMAND_HISTORY		"command_history"
+#define QUICKSEARCH_HISTORY	"quicksearch_history"
 #define TEMPLATE_DIR		"templates"
 #define TMP_DIR			"tmp"
 #define NEWSGROUP_LIST		".newsgroup_list"
@@ -76,7 +77,7 @@
 #define FOLDER_LIST		"folderlist.xml"
 #define CACHE_FILE		".sylpheed_cache"
 #define MARK_FILE		".sylpheed_mark"
-#define CACHE_VERSION		20
+#define CACHE_VERSION		22
 #define MARK_VERSION		2
 
 #define DEFAULT_SIGNATURE	".signature"
@@ -88,7 +89,7 @@
 #ifdef WIN32
 #define DEFAULT_BROWSER_CMD	"?p\\mozilla.org\\Mozilla\\mozilla.exe -remote openURL \"%s\""
 #else
-#define DEFAULT_BROWSER_CMD	"mozilla -remote 'openURL(%s, new-window)'"
+#define DEFAULT_BROWSER_CMD	"mozilla-firefox -remote 'openURL(%s,new-window)'"
 #endif
 
 #ifdef _PATH_MAILDIR
@@ -120,7 +121,8 @@
 #define COLOR_DIM			35000
 #define UI_REFRESH_INTERVAL		50000	/* usec */
 #define FOLDER_UPDATE_INTERVAL		1500	/* msec */
-#define SESSION_TIMEOUT			60	/* sec */
+#define PROGRESS_UPDATE_INTERVAL	200	/* msec */
+#define SESSION_TIMEOUT_INTERVAL	60	/* sec */
 #define MAX_HISTORY_SIZE		16
 
 #ifdef WIN32
@@ -179,7 +181,8 @@
 #endif
 
 #ifdef WIN32
-#  define W32_MAILCAP_NAME "mailcap.win32"
+#  define W32_MAILCAP_NAME	"mailcap.win32"
+#  define W32_PLUGINDIR		"\\bin\\plugins"
 #endif /* WIN32 */
 
 

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,9 +92,6 @@ static void account_set_default		(void);
 
 static void account_edit_close		(void);
 
-static gint account_clone_event		(GtkWidget	*widget,
-					 GdkEventAny	*event,
-					 gpointer	 data);
 static gint account_delete_event	(GtkWidget	*widget,
 					 GdkEventAny	*event,
 					 gpointer	 data);
@@ -172,9 +169,9 @@ void account_read_config_all(void)
 	}
 }
 
-void account_save_config_all(void)
+void account_write_config_all(void)
 {
-	prefs_account_save_config_all(account_list);
+	prefs_account_write_config_all(account_list);
 }
 
 /*
@@ -309,8 +306,9 @@ void account_edit_open(void)
 	inc_lock();
 
 	if (compose_get_compose_list()) {
-		alertpanel_notice(_("Some composing windows are open.\n"
-				    "Please close all the composing windows before editing the accounts."));
+		alertpanel_error(_("Some composing windows are open.\n"
+				   "Please close all the composing "
+				   "windows before editing the accounts."));
 		inc_unlock();
 		return;
 	}
@@ -386,7 +384,7 @@ void account_open(PrefsAccount *ac_prefs)
 		folderview_set_all();
 	}
 
-	account_save_config_all();
+	account_write_config_all();
 	account_set_menu();
 	main_window_reflect_prefs_all();
 }
@@ -849,14 +847,9 @@ static void account_clone(void)
         ACP_FASSIGN(set_autoreplyto);
         ACP_FDUP(auto_replyto);
 
-#if USE_GPGME
         /* privacy */
         ACP_FASSIGN(default_encrypt);
         ACP_FASSIGN(default_sign);
-        ACP_FASSIGN(default_gnupg_mode);
-        ACP_FASSIGN(sign_key);
-        ACP_FDUP(sign_key_id);
-#endif /* USE_GPGME */
 	
         /* advanced */
         ACP_FASSIGN(set_smtpport);
@@ -974,7 +967,7 @@ static void account_set_default(void)
 static void account_edit_close(void)
 {
 	account_list_set();
-	account_save_config_all();
+	account_write_config_all();
 
 	if (!cur_account && account_list) {
 		PrefsAccount *ac_prefs = (PrefsAccount *)account_list->data;
@@ -990,13 +983,6 @@ static void account_edit_close(void)
 	inc_unlock();
 }
 
-static gint account_clone_event(GtkWidget *widget, GdkEventAny *event,
-				 gpointer data)
-{
-	account_clone();
-	return TRUE;
-}
-
 static gint account_delete_event(GtkWidget *widget, GdkEventAny *event,
 				 gpointer data)
 {
@@ -1007,16 +993,17 @@ static gint account_delete_event(GtkWidget *widget, GdkEventAny *event,
 static void account_selected(GtkCList *clist, gint row, gint column,
 			     GdkEvent *event, gpointer data)
 {
-	if (event && event->type == GDK_2BUTTON_PRESS)
+	if (event && event->type == GDK_2BUTTON_PRESS) {
 		account_edit_prefs();
+		return;
+	}
 
 	if (column == COL_GETALL) {
 		PrefsAccount *ac;
 
 		ac = gtk_clist_get_row_data(clist, row);
-		if (ac->protocol == A_POP3 || ac->protocol == A_APOP ||
-		    ac->protocol == A_IMAP4 || ac->protocol == A_NNTP ||
-		    ac->protocol == A_LOCAL) {
+		if (ac->protocol == A_POP3 || ac->protocol == A_IMAP4 ||
+		    ac->protocol == A_NNTP || ac->protocol == A_LOCAL) {
 			ac->recv_at_getall ^= TRUE;
 			account_clist_set_row(ac, row);
 		}
@@ -1054,11 +1041,6 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 			      "POP3 (SSL)" :
 			      ac_prefs->ssl_pop == SSL_STARTTLS ?
 			      "POP3 (TLS)" : "POP3") :
-			     ac_prefs->protocol == A_APOP ?
-			     (ac_prefs->ssl_pop == SSL_TUNNEL ?
-			      "POP3 (APOP, SSL)" :
-			      ac_prefs->ssl_pop == SSL_STARTTLS ?
-			      "POP3 (APOP, TLS)" : "POP3 (APOP)") :
 			     ac_prefs->protocol == A_IMAP4 ?
 			     (ac_prefs->ssl_imap == SSL_TUNNEL ?
 			      "IMAP4 (SSL)" :
@@ -1070,7 +1052,6 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 			     "";
 #else
 	text[COL_PROTOCOL] = ac_prefs->protocol == A_POP3  ? "POP3" :
-			     ac_prefs->protocol == A_APOP  ? "POP3 (APOP)" :
 			     ac_prefs->protocol == A_IMAP4 ? "IMAP4" :
 			     ac_prefs->protocol == A_LOCAL ? "Local" :
 			     ac_prefs->protocol == A_NNTP  ? "NNTP" : "";
@@ -1089,7 +1070,6 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 	}
 
 	has_getallbox = (ac_prefs->protocol == A_POP3  ||
-			 ac_prefs->protocol == A_APOP  ||
 			 ac_prefs->protocol == A_IMAP4 ||
 			 ac_prefs->protocol == A_NNTP ||
 			 ac_prefs->protocol == A_LOCAL);
@@ -1174,29 +1154,40 @@ PrefsAccount *account_get_reply_account(MsgInfo *msginfo, gboolean reply_autosel
 	if (msginfo->folder->prefs && msginfo->folder->prefs->enable_default_account)
 		account = account_find_from_id(msginfo->folder->prefs->default_account);
 	
+	/* select account by to: and cc: header if enabled */
+	if (reply_autosel) {
+		gchar * field = NULL;
+		int fieldno = 0;
+		for (field = msginfo->to; fieldno++ < 2; field = msginfo->cc) {
+			if (!account && field) {
+				gchar *to = NULL;
+				if (!strchr(field, ',')) {
+					Xstrdup_a(to, field, return NULL);
+					extract_address(to);
+					account = account_find_from_address(to);
+				} else {
+					gchar **split = g_strsplit(field, ",", -1);
+					int i = -1;
+					do {
+						i++;
+						if (!split[i])
+							break;
+						Xstrdup_a(to, split[i], return NULL);
+						extract_address(to);
+						account = account_find_from_address(to);
+					} while (!account);
+					g_strfreev(split);
+				}
+			}
+		}
+	}
+
 	/* select the account for the whole folder (IMAP / NNTP) */
-	if (!account)
+	if (!account) 
 		/* FIXME: this is not right, because folder may be nested. we should
 		 * ascend the tree until we find a parent with proper account 
 		 * information */
 		account = msginfo->folder->folder->account;
-
-	/* select account by to: and cc: header if enabled */
-	if (reply_autosel) {
-		if (!account && msginfo->to) {
-			gchar *to;
-			Xstrdup_a(to, msginfo->to, return NULL);
-			extract_address(to);
-			account = account_find_from_address(to);
-		}
-		if (!account) {
-			gchar cc[BUFFSIZE];
-			if (!procheader_get_header_from_msginfo(msginfo, cc, sizeof(cc), "CC:")) { /* Found a CC header */
-				extract_address(cc);
-				account = account_find_from_address(cc);
-			}        
-		}
-	}
 
 	/* select current account */
 	if (!account) account = cur_account;

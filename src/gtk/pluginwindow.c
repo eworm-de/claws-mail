@@ -30,6 +30,11 @@
 
 #include "filesel.h"
 #include "alertpanel.h"
+#include "../inc.h"
+
+#ifdef WIN32
+#include "defs.h"
+#endif
 
 typedef struct _PluginWindow
 {
@@ -46,6 +51,7 @@ static void close_cb(GtkButton *button, PluginWindow *pluginwindow)
 	gtk_widget_destroy(pluginwindow->window);
 	g_free(pluginwindow);
 	plugin_save_list();
+	inc_unlock();
 }
 
 static void set_plugin_list(PluginWindow *pluginwindow)
@@ -111,7 +117,16 @@ static void load_cb(GtkButton *button, PluginWindow *pluginwindow)
 {
 	gchar *file, *error = NULL;
 
-	file = filesel_select_file(_("Select Plugin to load"), "");
+#ifdef WIN32
+	{
+		gchar *plugdir = g_strconcat(get_installed_dir(), W32_PLUGINDIR, NULL);
+
+		file = filesel_select_file(_("Select Plugin to load"), plugdir);
+		g_free(plugdir);
+	}
+#else
+	file = filesel_select_file(_("Select Plugin to load"), PLUGINDIR);
+#endif
 	if (file == NULL)
 		return;
 
@@ -144,12 +159,10 @@ void pluginwindow_create()
 	GtkWidget *unload_btn;
 	GtkWidget *close_btn;
 
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	window = gtk_window_new(GTK_WINDOW_DIALOG);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_default_size(GTK_WINDOW(window), 480, 300);
 	gtk_window_set_title(GTK_WINDOW(window), _("Plugins"));
-	gtk_window_set_position(GTK_WINDOW(window),
-				GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 
 	vbox1 = gtk_vbox_new(FALSE, 4);
@@ -251,5 +264,6 @@ void pluginwindow_create()
 
 	set_plugin_list(pluginwindow);
 
+	inc_lock();
 	gtk_widget_show(window);
 }

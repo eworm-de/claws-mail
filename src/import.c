@@ -115,7 +115,7 @@ gint import_mbox(FolderItem *default_dest)
 			if (!dest) {
 				g_warning("Can't find the folder.\n");
 			} else {
-				ok = proc_mbox(dest, filename);
+				ok = proc_mbox(dest, filename, FALSE);
 			}
 		}
 #ifdef WIN32

@@ -2791,6 +2791,9 @@ void addrindex_remove_results( AddressDataSource *ds, ItemFolder *folder ) {
 		queryID = ADDRQUERY_ID(qry);
 		/* printf( "calling ldapquery_remove_results...queryID=%d\n", queryID ); */
 		delFlag = ldapquery_remove_results( qry );
+		if (delFlag) {
+			ldapqry_free( qry );
+		}
 		/* printf( "calling ldapquery_remove_results...done\n" ); */
 		/*
 		if( delFlag ) {
@@ -2825,13 +2828,14 @@ void addrindex_remove_results( AddressDataSource *ds, ItemFolder *folder ) {
  * \return <i>TRUE</i> if data loaded, <i>FALSE</i> if address index not loaded.
  */
 gboolean addrindex_load_completion(
-		gint (*callBackFunc) ( const gchar *, const gchar *, const gchar * ) )
+		gint (*callBackFunc) ( const gchar *, const gchar *, 
+				       const gchar *, const gchar * ) )
 {
 	AddressDataSource *ds;
 	GList *nodeIf, *nodeDS;
 	GList *listP, *nodeP;
 	GList *nodeM;
-	gchar *sName, *sAddress, *sAlias, *sFriendly;
+	gchar *sName;
 
 	nodeIf = addrindex_get_interface_list( _addressIndex_ );
 	while( nodeIf ) {
@@ -2873,18 +2877,10 @@ gboolean addrindex_load_completion(
 				/* Process each E-Mail address */
 				while( nodeM ) {
 					ItemEMail *email = nodeM->data;
-					/* Have mail */
-					sFriendly = sName;
-					sAddress = email->address;
-					if( sAddress || *sAddress != '\0' ) {
-						sAlias = person->nickName;
-						// if( sAlias && *sAlias != '\0' ) {
-						if( sFriendly == NULL || *sFriendly == '\0' ) {
-							sFriendly = sAlias;
-						}
-						( callBackFunc ) ( sFriendly, sAddress, sAlias );
-					}
-
+					
+					callBackFunc( sName, email->address, person->nickName, 
+						      ADDRITEM_NAME(email) );
+					
 					nodeM = g_list_next( nodeM );
 				}
 				nodeP = g_list_next( nodeP );

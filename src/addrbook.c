@@ -2009,7 +2009,7 @@ GList *addrbook_get_bookfile_list(AddressBookFile *book) {
 		strcpy(buf, adbookdir);
 		strcat(buf, entry->d_name);
 		stat(buf, &statbuf);
-		if (S_IFREG & statbuf.st_mode) {
+		if (S_ISREG(statbuf.st_mode)) {
 			if (strncmp(
 				entry->d_name,
 				ADDRBOOK_PREFIX, lenpre) == 0)

@@ -847,6 +847,29 @@ ItemEMail *addritem_group_remove_email( ItemGroup *group, ItemEMail *email ) {
 }
 
 /**
+ * Remove person object for specified group.
+ * \param  group Group from which to remove address.
+ * \param  email EMail to remove
+ * \return EMail object, or <i>NULL if email not found in group. Note that
+ *         this object is referenced (linked) to a group and should *NOT*
+ *         be freed. An E-Mail object object should only be freed after
+ *         removing from a person.
+ */
+ItemPerson *addritem_folder_remove_person( ItemFolder *group, ItemPerson *person ) {
+	if( group && person ) {
+		GList *node = group->listPerson;
+		while( node ) {
+			if( node->data == person ) {
+				group->listPerson = g_list_remove( group->listPerson, person );
+				return person;
+			}
+			node = g_list_next( node );
+		}
+	}
+	return NULL;
+}
+
+/**
  * Remove email address of specified ID for specified group.
  * \param  group Group from which to remove address.
  * \param  eid  EMail ID.

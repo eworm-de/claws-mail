@@ -180,7 +180,8 @@ static void add_address1(const char *str, address_entry *ae)
  * \return <code>0</code> if entry appended successfully, or <code>-1</code>
  *         if failure.
  */
-static gint add_address(const gchar *name, const gchar *address, const gchar *alias)
+static gint add_address(const gchar *name, const gchar *address, 
+			const gchar *nick, const gchar *alias)
 {
 	address_entry    *ae;
 
@@ -197,7 +198,11 @@ static gint add_address(const gchar *name, const gchar *address, const gchar *al
 
 	add_address1(name, ae);
 	add_address1(address, ae);
-	if( alias != NULL ) {
+	
+	if (nick != NULL)
+		add_address1(nick, ae);
+	
+	if ( alias != NULL ) {
 		add_address1(alias, ae);
 	}
 
@@ -1089,8 +1094,21 @@ static gboolean address_completion_complete_address_in_entry(GtkEntry *entry,
 		g_free( new );
 	}
 
+	/* Select the address if there is only one match */
+	if (ncount == 2) {
+		/* Display selected address in entry field */		
+		gchar *addr = get_complete_address(1);
+
+		if (addr) {
+			replace_address_in_edit(entry, addr, cursor_pos);
+			g_free(addr);
+		}
+
+		/* Discard the window */
+		clear_completion_cache();
+	}
 	/* Make sure that drop-down appears uniform! */
-	if( ncount == 0 ) {
+	else if( ncount == 0 ) {
 		addrcompl_add_queue( g_strdup( searchTerm ) );
 	}
 	g_free( searchTerm );

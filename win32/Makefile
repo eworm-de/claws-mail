@@ -32,7 +32,7 @@ CYGWIN=0
 #CROSS=i586-mingw32msvc-
 
 # PLUGINS: Plugins that should be built
-PLUGINS=demo.dll spamassassin.dll spamassassin_gtk.dll
+PLUGINS=demo.dll spamassassin.dll spamassassin_gtk.dll pgpmime.dll
 
 ################################################################################
 # directory strucure as in README-w32.txt
@@ -98,7 +98,7 @@ RM=rm
 
 ###
 
-VPATH=$(SRCDIR):$(SRCDIR)/common:$(SRCDIR)/gtk:$(PODIR):$(SRCDIR)/plugins/demo:$(SRCDIR)/plugins/spamassassin
+VPATH=$(SRCDIR):$(SRCDIR)/common:$(SRCDIR)/gtk:$(PODIR):$(SRCDIR)/plugins/demo:$(SRCDIR)/plugins/spamassassin:$(SRCDIR)/plugins/pgpmime
 DEFINES=-DHAVE_CONFIG_H -DHAVE_BYTE_TYPEDEF $(INTLFIX) $(DEBUGDEF)
 EXTRALIBS=-lws2_32
 RESOURCE=appicon
@@ -238,6 +238,7 @@ OBJECTS= \
 	folder.o \
 	folder_item_prefs.o \
 	foldersel.o \
+	foldersort.o \
 	folderutils.o \
 	folderview.o \
 	grouplistdialog.o \
@@ -251,6 +252,7 @@ OBJECTS= \
 	hooks.o \
 	html.o \
 	imap.o \
+	imap_gtk.o \
 	import.o \
 	importldif.o \
 	importmutt.o \
@@ -280,15 +282,16 @@ OBJECTS= \
 	messageview.o \
 	mgutils.o \
 	mh.o \
+	mh_gtk.o \
 	mimeview.o \
 	msgcache.o \
 	mutt.o \
 	news.o \
+	news_gtk.o \
 	nntp.o \
 	noticeview.o \
+	partial_download.o \
 	passcrypt.o \
-	passphrase.o \
-	pgpmime.o \
 	pine.o \
 	plugin.o \
 	pluginwindow.o \
@@ -307,29 +310,29 @@ OBJECTS= \
 	prefs_fonts.o \
 	prefs_gtk.o \
 	prefs_matcher.o \
+	prefs_msg_colors.o \
 	prefs_spelling.o \
 	prefs_summary_column.o \
 	prefs_template.o \
 	prefs_themes.o \
 	prefs_toolbar.o \
+	prefs_wrapping.o \
 	prefswindow.o \
 	procheader.o \
 	procmime.o \
 	procmsg.o \
 	progressdialog.o \
 	progressindicator.o \
+	quicksearch.o \
 	quote_fmt.o \
 	quote_fmt_lex.o \
 	quote_fmt_parse.o \
 	quoted-printable.o \
 	recv.o \
 	remotefolder.o \
-	rfc2015.o \
-	select-keys.o \
 	send_message.o \
 	session.o \
 	setup.o \
-	sgpgme.o \
 	simple-gettext.o \
 	smtp.o \
 	socket.o \
@@ -367,7 +370,7 @@ compile: $(APPNAME).dll $(APPNAME).exe $(PLUGINS)
 version: $(VERSION_H)
 bisonfiles: $(QUOTE_FMT_TARGETS) $(MATCHER_PARSER_TARGETS)
 translation: $(MOFILES)
-version_rc: version.rc demo_version.rc spamassassin_version.rc
+version_rc: version.rc demo_version.rc spamassassin_version.rc pgpmime_version.rc
 
 ### version resource files
 
@@ -379,9 +382,48 @@ demo_version.rc: version.rc.in
 	$(SED) -e "s/@FILEDESCRIPTION@/Demo-Plugin/;s/@FILE_MAJOR_VERSION@/$(MAJOR_VERSION)/;s/@FILE_MINOR_VERSION@/$(MINOR_VERSION)/;s/@FILE_MICRO_VERSION@/$(MICRO_VERSION)/;s/@FILE_EXTRA_VERSION@/$(EXTRA_VERSION)/"  $< > $@
 spamassassin_version.rc: version.rc.in
 	$(SED) -e "s/@FILEDESCRIPTION@/SpamAssassin-Plugin/;s/@FILE_MAJOR_VERSION@/$(MAJOR_VERSION)/;s/@FILE_MINOR_VERSION@/$(MINOR_VERSION)/;s/@FILE_MICRO_VERSION@/$(MICRO_VERSION)/;s/@FILE_EXTRA_VERSION@/$(EXTRA_VERSION)/"  $< > $@
+pgpmime_version.rc: version.rc.in
+	$(SED) -e "s/@FILEDESCRIPTION@/GnuPG-Plugin/;s/@FILE_MAJOR_VERSION@/$(MAJOR_VERSION)/;s/@FILE_MINOR_VERSION@/$(MINOR_VERSION)/;s/@FILE_MICRO_VERSION@/$(MICRO_VERSION)/;s/@FILE_EXTRA_VERSION@/$(EXTRA_VERSION)/"  $< > $@
 
 version.res: version.rc
 ### plugins
+
+### pgpmime
+
+#plugin.o:	plugin.c
+passphrase.o:	passphrase.c passphrase.h
+pgpmime.o:	pgpmime.c pgpmime.h
+prefs_gpg.o:	prefs_gpg.c prefs_gpg.h
+select-keys.o:	select-keys.c select-keys.h
+sgpgme.o:	sgpgme.c sgpgme.h
+
+pgpmime_plugin.c:
+	cp $(SRCDIR)/plugins/pgpmime/plugin.c $(SRCDIR)/plugins/pgpmime/$@
+pgpmime_plugin.o:	$(SRCDIR)/plugins/pgpmime/pgpmime_plugin.c
+
+pgpmime_version.rc.o:	pgpmime_version.rc
+	$(RESCOMP) -i $< -o $@
+
+pgpmime_LIBS = $(APPNAME).dll $(GPGMEDIR)/gpgme.lib $(EXTRALIBS) $(LIBS)
+
+pgpmime_OBJECTS = \
+	pgpmime_plugin.o \
+	passphrase.o \
+	pgpmime.o \
+	prefs_gpg.o \
+	select-keys.o \
+	sgpgme.o \
+	pgpmime_version.rc.o
+
+pgpmime.dll: $(pgpmime_OBJECTS)
+	dlltool -D $@ -z $@.def --export-all-symbols --exclude-symbols WinMain@16 $(pgpmime_OBJECTS)
+	$(CC) -mdll $(PLUGIN_CFLAGS) -o junk.tmp -Wl,--base-file,$@.base $(pgpmime_OBJECTS) $(pgpmime_LIBS)
+	dlltool --dllname $@ --base-file $@.base --output-exp $@.exp --def $@.def
+	$(CC) -mdll $(PLUGIN_CFLAGS) -o $@ $(pgpmime_OBJECTS) -Wl,$@.exp $(pgpmime_LIBS)
+	-rm $@.base $@.exp $@.lib junk.tmp
+	#$(CC) -shared $? $(APPNAME).dll $(LIBDIR)/intl.lib /dev/lib/libglib-2.0.dll.a /dev/lib/libgtk.dll.a -o $@
+pgpmime_clean:
+	-rm $(pgpmime_OBJECTS)
 
 ### spamassassin
 
@@ -398,7 +440,7 @@ spamassassin_version.rc.o:	spamassassin_version.rc
 	$(RESCOMP) -i $< -o $@
 
 #spamassassin_LIBS = $(APPNAME).dll -lwsock32 $(EXTRALIBS) $(LIBS)
-spamassassin_LIBS =  $(APPNAME).dll -lws2_32 $(windir)/system32/ws2_32.dll $(LIBS)  
+spamassassin_LIBS =  $(APPNAME).dll -lws2_32 $(WINDIR)/system32/ws2_32.dll $(LIBS)  
 spamassassin_OBJECTS = \
 	spamassassin.o \
 	libspamc.o \
@@ -458,8 +500,8 @@ demo_clean:
 
 ### sylpheed.dll (main)
 
-$(APPNAME).dll: $(OBJECTS) $(APPNAME).dll.def $(APPNAME).dll.base $(APPNAME).dll.exp #$(APPNAME).dll.lib
-	$(CC) -mdll $(FLAGS) -o $@ $(OBJECTS) -Wl,$@.exp $(EXTRALIBS) $(LIBS)
+$(APPNAME).dll: $(OBJECTS) version.rc.o $(APPNAME).dll.def $(APPNAME).dll.base $(APPNAME).dll.exp #$(APPNAME).dll.lib
+	$(CC) -mdll $(FLAGS) -o $@ $(OBJECTS) version.rc.o -Wl,$@.exp $(EXTRALIBS) $(LIBS)
 	-rm $@.base $@.exp $@.lib junk.tmp
 $(APPNAME).dll.def:
 	dlltool -D $(APPNAME).dll -z $@ --export-all-symbols --exclude-symbols WinMain@16 $(OBJECTS)
@@ -574,6 +616,7 @@ filtering.o: 	filtering.c filtering.h
 folder.o: 	folder.c folder.h
 folder_item_prefs.o: 	folder_item_prefs.c folder_item_prefs.h
 foldersel.o: 	foldersel.c foldersel.h
+foldersort.o:	foldersort.c foldersort.h
 folderutils.o: 	folderutils.c folderutils.h
 folderview.o: 	folderview.c folderview.h
 grouplistdialog.o: 	grouplistdialog.c grouplistdialog.h
@@ -587,6 +630,7 @@ headerview.o: 	headerview.c headerview.h
 hooks.o:	hooks.c hooks.h
 html.o: 	html.c html.h
 imap.o: 	imap.c imap.h
+imap_gtk.o:	imap_gtk.c imap_gtk.h
 import.o: 	import.c import.h
 importldif.o: 	importldif.c importldif.h
 importmutt.o: 	importmutt.c importmutt.h
@@ -614,14 +658,16 @@ message_search.o: 	message_search.c message_search.h
 messageview.o: 	messageview.c messageview.h
 mgutils.o: 	mgutils.c mgutils.h
 mh.o: 	mh.c mh.h
+mh_gtk.o:	mh_gtk.c mh_gtk.h
 mimeview.o: 	mimeview.c mimeview.h
 msgcache.o:	msgcache.c msgcache.h 
 mutt.o: 	mutt.c mutt.h
 news.o: 	news.c news.h
+news_gtk.o:	news_gtk.c news_gtk.h
 nntp.o: 	nntp.c nntp.h
 noticeview.o:	noticeview.c noticeview.h 
+partial_download.o:	partial_download.c partial_download.h
 passcrypt.o: 	passcrypt.c passcrypt.h
-passphrase.o: 	passphrase.c passphrase.h
 pgpmime.o:	pgpmime.c pgpmime.h
 pine.o: 	pine.c pine.h
 plugin.o: 	plugin.c plugin.h
@@ -641,26 +687,26 @@ prefs_folder_item.o: 	prefs_folder_item.c prefs_folder_item.h
 prefs_fonts.o: 	prefs_fonts.c prefs_fonts.h
 prefs_gtk.o: 	prefs_gtk.c prefs_gtk.h
 prefs_matcher.o: 	prefs_matcher.c prefs_matcher.h
+prefs_msg_colors.o:	prefs_msg_colors.c prefs_msg_colors.h
 prefs_spelling.o:	prefs_spelling.c prefs_spelling.h
 prefs_summary_column.o: 	prefs_summary_column.c prefs_summary_column.h
 prefs_template.o: 	prefs_template.c prefs_template.h
 prefs_themes.o: 	prefs_themes.c prefs_themes.h
 prefs_toolbar.o: 	prefs_toolbar.c prefs_toolbar.h
+prefs_wrapping.o:	prefs_wrapping.c prefs_wrapping.h
 prefswindow.o: 	prefswindow.c prefswindow.h
 procheader.o: 	procheader.c procheader.h
 procmime.o: 	procmime.c procmime.h
 procmsg.o: 	procmsg.c procmsg.h
 progressdialog.o: 	progressdialog.c progressdialog.h
 progressindicator.o: 	progressindicator.c progressindicator.h
+quicksearch.o:	quicksearch.c quicksearch.h
 quote_fmt.o:	quote_fmt.c quote_fmt.h
 recv.o: 	recv.c recv.h
 remotefolder.o: 	remotefolder.c remotefolder.h
-rfc2015.o: 	rfc2015.c rfc2015.h
-select-keys.o: 	select-keys.c select-keys.h
 send_message.o:	send_message.c send_message.h
 session.o: 	session.c session.h
 setup.o: 	setup.c setup.h
-sgpgme.o:	sgpgme.c sgpgme.h
 simple-gettext.o: 	simple-gettext.c
 smtp.o: 	smtp.c smtp.h
 socket.o: 	socket.c socket.h

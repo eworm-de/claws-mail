@@ -303,13 +303,26 @@ special:
 			guchar *p;
 			gchar *str;
 
-			str = alloca(strlen(msginfo->fromname) + 1);
-			if (str != NULL) {
-				strcpy(str, msginfo->fromname);
-				p = str;
-				while (*p && !isspace(*p)) p++;
-				*p = '\0';
-				INSERT(str);
+			p = strchr(msginfo->fromname, ',');
+			if (p != NULL) {
+				/* fromname is like "Duck, Donald" */
+				p++;
+				while (*p && isspace(*p)) p++;
+				str = alloca(strlen(p) + 1);
+				if (str != NULL) {
+					strcpy(str, p);
+					INSERT(str);
+				}
+			} else {
+				/* fromname is like "Donald Duck" */
+				str = alloca(strlen(msginfo->fromname) + 1);
+				if (str != NULL) {
+					strcpy(str, msginfo->fromname);
+					p = str;
+					while (*p && !isspace(*p)) p++;
+					*p = '\0';
+					INSERT(str);
+				}
 			}
 		}
 	}
@@ -324,22 +337,33 @@ special:
 			str = alloca(strlen(msginfo->fromname) + 1);
 			if (str != NULL) {
 				strcpy(str, msginfo->fromname);
-                                p = str;
-                                while (*p && !isspace(*p)) p++;
-                                if (*p) {
-				    /* We found a space. Get first none-space char and
-				     insert rest of string from there. */
-				    while (*p && isspace(*p)) p++;
-                                    if (*p) {
-	                    		INSERT(p);
-				    } else {
-    					/* If there is no none-space char, just insert
-					 whole fromname. */
+				p = strchr(str, ',');
+				if (p != NULL) {
+					/* fromname is like "Duck, Donald" */
+					*p = '\0';
 					INSERT(str);
-				    }
 				} else {
-				    /* If there is no space, just insert whole fromname. */
-				    INSERT(str);
+					/* fromname is like "Donald Duck" */
+					p = str;
+					while (*p && !isspace(*p)) p++;
+					if (*p) {
+					    /* We found a space. Get first 
+					     none-space char and insert
+					     rest of string from there. */
+					    while (*p && isspace(*p)) p++;
+					    if (*p) {
+						INSERT(p);
+					    } else {
+						/* If there is no none-space 
+						 char, just insert whole 
+						 fromname. */
+						INSERT(str);
+					    }
+					} else {
+					    /* If there is no space, just 
+					     insert whole fromname. */
+					    INSERT(str);
+					}
 				}
 			}
 		}

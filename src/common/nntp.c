@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ static void nntp_session_destroy(Session	*session);
 static gint nntp_ok		(SockInfo	*sock,
 				 gchar		*argbuf);
 
-static void nntp_gen_send	(SockInfo	*sock,
+static gint nntp_gen_send	(SockInfo	*sock,
 				 const gchar	*format,
 				 ...);
 static gint nntp_gen_recv	(SockInfo	*sock,
@@ -97,10 +97,36 @@ Session *nntp_session_new(const gchar *server, gushort port, gchar *buf,
 	session->group = NULL;
 
 	if (userid && passwd) {
+		gint ok;
+
 		session->userid = g_strdup(userid);
 		session->passwd = g_strdup(passwd);
+
+		ok = nntp_gen_send(sock, "AUTHINFO USER %s", session->userid);
+		if (ok != NN_SUCCESS) {
+			session_destroy(SESSION(session));
+			return NULL;
+		}
+		ok = nntp_ok(sock, NULL);
+		if (ok == NN_AUTHCONT) {
+			ok = nntp_gen_send(sock, "AUTHINFO PASS %s",
+					   session->passwd);
+			if (ok != NN_SUCCESS) {
+				session_destroy(SESSION(session));
+				return NULL;
+			}
+			ok = nntp_ok(sock, NULL);
+			if (ok != NN_SUCCESS)
+				session->auth_failed = TRUE;
+		}
+		if (ok == NN_SOCKET) {
+			session_destroy(SESSION(session));
+			return NULL;
+		}
 	}
 
+	session_set_access_time(SESSION(session));
+	
 	return SESSION(session);
 }
 
@@ -134,7 +160,7 @@ gint nntp_group(NNTPSession *session, const gchar *group,
 
 	ok = nntp_gen_command(session, buf, "GROUP %s", group);
 
-	if (ok != NN_SUCCESS) {
+	if (ok != NN_SUCCESS && ok != NN_SOCKET && ok != NN_AUTHREQ) {
 		ok = nntp_mode(session, FALSE);
 		if (ok == NN_SUCCESS)
 			ok = nntp_gen_command(session, buf, "GROUP %s", group);
@@ -169,9 +195,9 @@ gint nntp_get_article(NNTPSession *session, const gchar *cmd, gint num,
 	extract_parenthesis(buf, '<', '>');
 	if (buf[0] == '\0') {
 		log_warning(_("protocol error\n"));
-		return NN_PROTOCOL;
-	}
-	*msgid = g_strdup(buf);
+		*msgid = g_strdup("0");
+	} else
+		*msgid = g_strdup(buf);
 
 	return NN_SUCCESS;
 }
@@ -274,6 +300,8 @@ gint nntp_post(NNTPSession *session, FILE *fp)
 	if ((ok = nntp_ok(SESSION(session)->sock, buf)) != NN_SUCCESS)
 		return ok;
 
+	session_set_access_time(SESSION(session));
+
 	return NN_SUCCESS;
 }
 
@@ -290,9 +318,6 @@ gint nntp_newnews(NNTPSession *session)
 gint nntp_mode(NNTPSession *session, gboolean stream)
 {
 	gint ok;
-
-	if (session->auth_failed)
-		return NN_AUTHREQ;
 
 	ok = nntp_gen_command(session, NULL, "MODE %s",
 			      stream ? "STREAM" : "READER");
@@ -327,7 +352,7 @@ static gint nntp_ok(SockInfo *sock, gchar *argbuf)
 	return ok;
 }
 
-static void nntp_gen_send(SockInfo *sock, const gchar *format, ...)
+static gint nntp_gen_send(SockInfo *sock, const gchar *format, ...)
 {
 	gchar buf[NNTPBUFSIZE];
 	va_list args;
@@ -344,7 +369,12 @@ static void nntp_gen_send(SockInfo *sock, const gchar *format, ...)
 	}
 
 	strcat(buf, "\r\n");
-	sock_write_all(sock, buf, strlen(buf));
+	if (sock_write_all(sock, buf, strlen(buf)) < 0) {
+		log_warning(_("Error occurred while sending command\n"));
+		return NN_SOCKET;
+	}
+
+	return NN_SUCCESS;
 }
 
 static gint nntp_gen_recv(SockInfo *sock, gchar *buf, gint size)
@@ -373,7 +403,9 @@ static gint nntp_gen_command(NNTPSession *session, gchar *argbuf,
 	va_end(args);
 
 	sock = SESSION(session)->sock;
-	nntp_gen_send(sock, "%s", buf);
+	ok = nntp_gen_send(sock, "%s", buf);
+	if (ok != NN_SUCCESS)
+		return ok;
 	ok = nntp_ok(sock, argbuf);
 	if (ok == NN_AUTHREQ) {
 		if (!session->userid || !session->passwd) {
@@ -381,11 +413,15 @@ static gint nntp_gen_command(NNTPSession *session, gchar *argbuf,
 			return ok;
 		}
 
-		nntp_gen_send(sock, "AUTHINFO USER %s", session->userid);
+		ok = nntp_gen_send(sock, "AUTHINFO USER %s", session->userid);
+		if (ok != NN_SUCCESS)
+			return ok;
 		ok = nntp_ok(sock, NULL);
 		if (ok == NN_AUTHCONT) {
-			nntp_gen_send(sock, "AUTHINFO PASS %s",
-				      session->passwd);
+			ok = nntp_gen_send(sock, "AUTHINFO PASS %s",
+					   session->passwd);
+			if (ok != NN_SUCCESS)
+				return ok;
 			ok = nntp_ok(sock, NULL);
 		}
 		if (ok != NN_SUCCESS) {
@@ -393,18 +429,22 @@ static gint nntp_gen_command(NNTPSession *session, gchar *argbuf,
 			return ok;
 		}
 
-		nntp_gen_send(sock, "%s", buf);
+		ok = nntp_gen_send(sock, "%s", buf);
+		if (ok != NN_SUCCESS)
+			return ok;
 		ok = nntp_ok(sock, argbuf);
 
 	} else if (ok == NN_AUTHCONT) {
-                nntp_gen_send(sock, "AUTHINFO PASS %s", session->passwd);
-                ok = nntp_ok(sock, NULL);
-
-                if (ok != NN_SUCCESS) {
+                ok = nntp_gen_send(sock, "AUTHINFO PASS %s",
+				   session->passwd);
+		if (ok != NN_SUCCESS)  {
 			session->auth_failed = TRUE;
-                        return ok;
-                }
-        }
-
+			return ok;
+		}
+                ok = nntp_ok(sock, NULL);
+       }
+       
+	session_set_access_time(SESSION(session));
+	
 	return ok;
 }

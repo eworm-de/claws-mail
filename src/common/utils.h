@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -185,6 +185,12 @@
 	perror(func); \
 }
 
+#define IS_ASCII(c) (((guchar) c) <= 0177 ? 1 : 0)
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef gpointer (*GNodeMapFunc)	(gpointer nodedata, gpointer data);
 
 /* debug functions */
@@ -209,6 +215,18 @@ gint str_case_equal		(gconstpointer	 v,
 guint str_case_hash		(gconstpointer	 key);
 
 void ptr_array_free_strings	(GPtrArray	*array);
+
+typedef gboolean (*StrFindFunc) (const gchar	*haystack,
+				 const gchar	*needle);
+
+gboolean str_find		(const gchar	*haystack,
+				 const gchar	*needle);
+gboolean str_case_find		(const gchar	*haystack,
+				 const gchar	*needle);
+gboolean str_find_equal		(const gchar	*haystack,
+				 const gchar	*needle);
+gboolean str_case_find_equal	(const gchar	*haystack,
+				 const gchar	*needle);
 
 /* number-string conversion */
 gint to_number			(const gchar *nstr);
@@ -419,6 +437,10 @@ gint copy_file			(const gchar	*src,
 gint move_file			(const gchar	*src,
 				 const gchar	*dest,
 				 gboolean	 overwrite);
+gint copy_file_part_to_fp	(FILE		*fp,
+				 off_t		 offset,
+				 size_t		 length,
+				 FILE		*dest_fp);
 gint copy_file_part		(FILE		*fp,
 				 off_t		 offset,
 				 size_t		 length,
@@ -480,25 +502,22 @@ const gchar * line_has_quote_char	(const gchar *str,
 const gchar * line_has_quote_char_last	(const gchar *str,
 					 const gchar *quote_chars);
 
-/* used in extended search */
-gchar * expand_search_string	(const gchar *str);
-
 guint g_stricase_hash	(gconstpointer gptr);
 gint g_stricase_equal	(gconstpointer gptr1, gconstpointer gptr2);
 gint g_int_compare	(gconstpointer a, gconstpointer b);
 
-gchar *generate_msgid		(const gchar *address, gchar *buf, gint len);
+gchar *generate_msgid		(gchar *buf, gint len);
 gchar *generate_mime_boundary	(const gchar *prefix);
 
 gint quote_cmd_argument(gchar * result, guint size,
 			const gchar * path);
 GNode *g_node_map(GNode *node, GNodeMapFunc func, gpointer data);
+gboolean get_hex_value(guchar *out, gchar c1, gchar c2);
+void get_hex_str(gchar *out, guchar ch);
 
 #ifdef WIN32
 #undef isspace
 #define isspace iswspace
-#endif
-
 gchar *w32_parse_path(gchar *const);
 gchar *get_installed_dir(void);
 void translate_strs(gchar *str, gchar *str_src, gchar *str_dst);
@@ -508,6 +527,8 @@ void w32_log_handler(const gchar *log_domain, GLogLevelFlags log_level,
 					 const gchar *message, gpointer user_data);
 void locale_to_utf8(gchar **buf);
 void locale_from_utf8(gchar **buf);
+void g_string_locale_from_utf8(GString *str);
+void g_string_locale_to_utf8(GString *str);
 
 void unlink_tempfiles(void);
 
@@ -520,5 +541,10 @@ wchar_t  *gtkwcs2winwcs(wchar_t *gtkwcs);
 
 gchar *w32_get_exec_dir();
 gchar *w32_move_to_exec_dir(const gchar *filename);
+#endif
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __UTILS_H__ */

@@ -123,8 +123,8 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_table_attach(GTK_TABLE (table2), uri_label, 0, 1, 0, 1,
                     	 (GtkAttachOptions) (GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 2);
-	gtk_label_set_justify(GTK_LABEL (hint_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC (hint_label), 1, 0.5);
+	gtk_label_set_justify(GTK_LABEL (uri_label), GTK_JUSTIFY_RIGHT);
+	gtk_misc_set_alignment(GTK_MISC (uri_label), 1, 0.5);
 
 	uri_combo = gtk_combo_new ();
 	gtk_widget_show (uri_combo);
@@ -146,8 +146,8 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 			       "gnome-moz-remote --newwin '%s'",
 			       "kfmclient openURL '%s'",
 			       "opera -newwindow '%s'",
-			       "kterm -e w3m '%s'",
-			       "kterm -e lynx '%s'",
+			       "rxvt -e w3m '%s'",
+			       "rxvt -e lynx '%s'",
 #endif
 			       NULL);
 	uri_entry = GTK_COMBO (uri_combo)->entry;
@@ -159,8 +159,8 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_table_attach(GTK_TABLE (table2), printcmd_label, 0, 1, 1, 2,
                     	 (GtkAttachOptions) (GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 2);
-	gtk_label_set_justify(GTK_LABEL (hint_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC (hint_label), 1, 0.5);
+	gtk_label_set_justify(GTK_LABEL (printcmd_label), GTK_JUSTIFY_RIGHT);
+	gtk_misc_set_alignment(GTK_MISC (printcmd_label), 1, 0.5);
 
 	printcmd_combo = gtk_combo_new ();
 	gtk_widget_show (printcmd_combo);
@@ -285,9 +285,14 @@ ExtProgPage *prefs_ext_prog;
 void prefs_ext_prog_init(void)
 {
 	ExtProgPage *page;
+	static gchar *path[3];
+	
+	path[0] = _("Message View");
+	path[1] = _("External Programs");
+	path[2] = NULL;
 
 	page = g_new0(ExtProgPage, 1);
-	page->page.path = _("Message View/External Programs");
+	page->page.path = path;
 	page->page.create_widget = prefs_ext_prog_create_widget;
 	page->page.destroy_widget = prefs_ext_prog_destroy_widget;
 	page->page.save_page = prefs_ext_prog_save;

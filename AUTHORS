@@ -18,6 +18,7 @@ claws-branch (http://sylpheed-claws.sourceforge.net)
 	Leandro A. F. Pereira 	<leandro@linuxmag.com.br>
 	Luke Plant 		<L.Plant.98@cantab.net>
 	Martin Schaaf		<mascha@ma-scha.de>
+	Jesper Schultz		<jesper@schultz-net.dk>
 	Carsten Schurig		<Carsten.Schurig@web.de>
 	Sergey Vlasov		<vsu@users.sourceforge.net>
 	Hiroyuki Yamamoto	<hiro-y@kcn.ne.jp>
@@ -36,15 +37,19 @@ sylpheed-claws translation team
 	[de]	Jens Oberender		<j.obi@troja.net>
 	[en_GB]	Paul Mangan		<claws@thewildbeast.co.uk>
 	[es]	Ricardo Mones Lastra 	<mones@aic.uniovi.es>
-	[fr]	Melvin Hadasht		<melvin.hadasht@free.fr>
+	[fr]	Fabien Vantard 		<fzz@ifrance.com>
 	[hr]	Dragan 			<drleskov@inet.hr>
+	[it]	Andrea Spadaccini 	<lupin85@email.it>
 	[ja]	Rui Hirokawa 		<rui_hirokawa@ybb.ne.jp>
+	[ko]	SungHyun Nam 		<namsh@kldp.org>
 	[pl]	Emil			<eminowbl@posejdon.wpk.p.lodz.pl>
+	[pt_BR] Frederico Goncalves Guimaraes 
+					<fggdebian@yahoo.com.br>
 	[ru]	Ruslan N. Balkin 	<baron@voices.ru>
 	[ru]	Pavlo Bohmat 		<bohm@ukr.net>
 	[sk]	Andrej Kacian 		<andrej@kacian.sk>
-	[sr]	Urke MMI 		<urke@gmx.net>
-	[zh_CN] Hansom Young 		<hansom_young@yahoo.com>
+	[sr]	Urke MMI 		<urke@users.sourceforge.net>
+	[zh_CN] Hansom Young 		<hyoung@operamail.com>
 	
 sylpheed documentation (http://sylpheeddoc.sourceforge.net)
 
@@ -200,3 +205,8 @@ contributors (beside the above; based on Changelog)
 	Matthias Förste
 	David Chalmers
 	Chad Robinson
+	Edgar Toernig
+	Fabien Vantard
+	Reza Pakdel
+	Stephan Sachse
+	Thomas Gilgin

@@ -191,6 +191,9 @@ static void image_viewer_load_image(ImageViewer *imageviewer)
 {
 	gchar *imgfile;
 
+	if (imageviewer->mimeinfo == NULL)
+		return;
+
 	imgfile = procmime_get_tmp_file_name(imageviewer->mimeinfo);
 	if (procmime_get_part(imgfile, imageviewer->mimeinfo) < 0) {
 		g_warning("Can't get mimepart file");	

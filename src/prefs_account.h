@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __PREFS_ACCOUNT_H__
-#define __PREFS_ACCOUNT_H__
+#ifndef PREFS_ACCOUNT_H
+#define PREFS_ACCOUNT_H
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
@@ -28,8 +28,8 @@ typedef struct _PrefsAccount	PrefsAccount;
 
 typedef enum {
 	A_POP3,
-	A_APOP,
-	A_RPOP,
+	A_APOP,	/* deprecated */
+	A_RPOP,	/* deprecated */
 	A_IMAP4,
 	A_NNTP,
 	A_LOCAL,
@@ -42,28 +42,11 @@ typedef enum {
 	SIG_DIRECT
 } SigType;
 
-#if USE_GPGME
-typedef enum {
-	SIGN_KEY_DEFAULT,
-	SIGN_KEY_BY_FROM,
-	SIGN_KEY_CUSTOM
-} SignKeyType;
-
-typedef enum {
-	GNUPG_MODE_DETACH,
-	GNUPG_MODE_INLINE
-} DefaultGnuPGMode;
-#endif /* USE_GPGME */
-
 #include <glib.h>
 
 #include "smtp.h"
 #include "folder.h"
-
-#ifdef USE_GPGME
-#  include "rfc2015.h"
-#endif
-
+#include "gtk/prefswindow.h"
 
 struct _PrefsAccount
 {
@@ -100,6 +83,7 @@ struct _PrefsAccount
 	gchar *tmp_pass;
 
 	/* Receive */
+	gboolean use_apop_auth;
 	gboolean rmmail;
 	gint msg_leave_time;
 	gboolean getall;
@@ -144,14 +128,11 @@ struct _PrefsAccount
 	gboolean  set_autoreplyto;
 	gchar    *auto_replyto;
 
-#if USE_GPGME
 	/* Privacy */
-	gboolean default_encrypt;
-	gboolean default_sign;
-	gboolean default_gnupg_mode;
-	SignKeyType sign_key;
-	gchar *sign_key_id;
-#endif /* USE_GPGME */
+	gchar	 *default_privacy_system;
+	gboolean  default_encrypt;
+	gboolean  default_sign;
+	gboolean  save_encrypted_as_clear_text;
 
 	/* Advanced */
 	gboolean  set_smtpport;
@@ -193,16 +174,26 @@ struct _PrefsAccount
 	gint account_id;
 
 	Folder *folder;
+
+	GHashTable *privacy_prefs;
 };
+
+void prefs_account_init			(void);
 
 PrefsAccount *prefs_account_new		(void);
 
 void prefs_account_read_config		(PrefsAccount	*ac_prefs,
 					 const gchar	*label);
-void prefs_account_save_config_all	(GList		*account_list);
+void prefs_account_write_config_all	(GList		*account_list);
 
 void prefs_account_free			(PrefsAccount	*ac_prefs);
 
 PrefsAccount *prefs_account_open	(PrefsAccount	*ac_prefs);
 
-#endif /* __PREFS_ACCOUNT_H__ */
+const gchar *prefs_account_get_privacy_prefs(PrefsAccount *account, gchar *id);
+void prefs_account_set_privacy_prefs(PrefsAccount *account, gchar *id, gchar *new_value);
+
+void prefs_account_register_page	(PrefsPage 	*page);
+void prefs_acount_unregister_page	(PrefsPage 	*page);
+
+#endif /* PREFS_ACCOUNT_H */

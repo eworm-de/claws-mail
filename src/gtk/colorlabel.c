@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2003 Hiroyuki Yamamoto & The Sylpheed Claws Team
+ * Copyright (C) 2001-2004 Hiroyuki Yamamoto & The Sylpheed Claws Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,6 +81,9 @@ static struct
 	{ LCCF_ALL, { 0, 0x66 << 8, 0x33 << 8, 0x33 << 8 },	NULL, NULL }
 };
 
+#define LABEL_COLOR_WIDTH	28
+#define LABEL_COLOR_HEIGHT	16
+
 #define LABEL_COLORS_ELEMS (sizeof label_colors / sizeof label_colors[0])
 
 #define G_RETURN_VAL_IF_INVALID_COLOR(color, val) \
@@ -129,11 +132,11 @@ static gboolean colorlabel_drawing_area_expose_event_cb
 
 	gdk_gc_set_foreground(gc, &color);
 	gdk_draw_rectangle(drawable, gc,
-			   TRUE, 0, 0, widget->allocation.width,
-			   widget->allocation.height);
+			   TRUE, 0, 0, widget->allocation.width - 1,
+			   widget->allocation.height - 1);
 	gdk_draw_rectangle(drawable, widget->style->black_gc,
-			   FALSE, 0, 0, widget->allocation.width,
-			   widget->allocation.height);
+			   FALSE, 0, 0, widget->allocation.width - 1,
+			   widget->allocation.height - 1);
 
 	gdk_gc_unref(gc);			   
 
@@ -145,7 +148,8 @@ static GtkWidget *colorlabel_create_color_widget(GdkColor color)
 	GtkWidget *widget;
 
 	widget = gtk_drawing_area_new();
-	gtk_drawing_area_size(GTK_DRAWING_AREA(widget), 16, 16);
+	gtk_drawing_area_size(GTK_DRAWING_AREA(widget),
+			      LABEL_COLOR_WIDTH - 2, LABEL_COLOR_HEIGHT - 4);
 
 #define CL(x)		(((gulong) (x) >> (gulong) 8) & 0xFFUL)	
 #define CR(r, g, b)	((CL(r) << (gulong) 16) | \
@@ -233,7 +237,7 @@ GtkWidget *colorlabel_create_check_color_menu_item(gint color_index)
 
 	G_RETURN_VAL_IF_INVALID_COLOR(color_index, NULL);
 
-	item  = gtk_check_menu_item_new();
+	item = gtk_check_menu_item_new();
 
 	colorlabel_recreate(color_index);
 
@@ -253,7 +257,7 @@ GtkWidget *colorlabel_create_check_color_menu_item(gint color_index)
 
 	gtk_container_add(GTK_CONTAINER(align), label_colors[color_index].widget);
 	gtk_widget_show(label_colors[color_index].widget);
-	gtk_widget_set_usize(align, 16, 16);
+	gtk_widget_set_usize(align, LABEL_COLOR_WIDTH, LABEL_COLOR_HEIGHT);
 
 	gtk_box_pack_start(GTK_BOX(hbox), align, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 4);
@@ -278,11 +282,13 @@ GtkWidget *colorlabel_create_color_menu(void)
 	menu = gtk_menu_new();
 	gtk_object_set_data(GTK_OBJECT(menu), "label_color_menu", menu);
 
+#if 0
 	item = gtk_menu_item_new_with_label(_("None"));
 	gtk_menu_append(GTK_MENU(menu), item);
 	gtk_object_set_data(GTK_OBJECT(item), "color", GUINT_TO_POINTER(0));
 	gtk_widget_show(item);
-	
+#endif
+
 	/* and the color items */
 	for (i = 0; i < LABEL_COLORS_ELEMS; i++) {
 		GtkWidget *widget = colorlabel_create_color_widget(label_colors[i].color);
@@ -304,7 +310,8 @@ GtkWidget *colorlabel_create_color_menu(void)
 
 		gtk_container_add(GTK_CONTAINER(align), widget);
 		gtk_widget_show(widget);
-		gtk_widget_set_usize(align, 16, 16);
+		gtk_widget_set_usize
+			(align, LABEL_COLOR_WIDTH, LABEL_COLOR_HEIGHT);
 
 		gtk_box_pack_start(GTK_BOX(hbox), align, FALSE, FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 4);
@@ -321,7 +328,7 @@ GtkWidget *colorlabel_create_color_menu(void)
 guint colorlabel_get_color_menu_active_item(GtkWidget *menu)
 {
 	GtkWidget *menuitem;
-	guint      color;
+	guint color;
 
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	color = GPOINTER_TO_UINT

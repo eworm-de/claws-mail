@@ -180,11 +180,6 @@ static void addressbook_select_row_tree		(GtkCTree	*ctree,
 						 GtkCTreeNode	*node,
 						 gint		 column,
 						 gpointer	 data);
-static void addressbook_list_selected		(GtkCList	*clist,
-						 gint		 row,
-						 gint		 column,
-						 GdkEvent	*event,
-						 gpointer	 data);
 static void addressbook_list_row_selected	(GtkCTree	*clist,
 						 GtkCTreeNode	*node,
 						 gint		 column,
@@ -360,7 +355,45 @@ static void addressbook_treenode_paste_cb	( void );
 
 static void addressbook_mail_to_cb		( void );
 
+#ifdef USE_LDAP
 static void addressbook_browse_entry_cb		( void );
+#endif
+
+static void addressbook_start_drag(GtkWidget *widget, gint button, 
+				   GdkEvent *event,
+			           void *data);
+static void addressbook_drag_data_get(GtkWidget        *widget,
+				     GdkDragContext   *drag_context,
+				     GtkSelectionData *selection_data,
+				     guint             info,
+				     guint             time,
+				     void	      *data);
+static gboolean addressbook_drag_motion_cb(GtkWidget      *widget,
+					  GdkDragContext *context,
+					  gint            x,
+					  gint            y,
+					  guint           time,
+					  void           *data);
+static void addressbook_drag_leave_cb(GtkWidget      *widget,
+				     GdkDragContext *context,
+				     guint           time,
+				     void           *data);
+static void addressbook_drag_received_cb(GtkWidget        *widget,
+					GdkDragContext   *drag_context,
+					gint              x,
+					gint              y,
+					GtkSelectionData *data,
+					guint             info,
+					guint             time,
+					void             *pdata);
+
+static GtkTargetEntry addressbook_drag_types[] =
+{
+	{"text/plain", GTK_TARGET_SAME_APP, TARGET_DUMMY}
+};
+
+static GtkTargetList *addressbook_target_list = NULL;
+
 
 static GtkItemFactoryEntry addressbook_entries[] =
 {
@@ -433,10 +466,9 @@ static GtkItemFactoryEntry addressbook_list_popup_entries[] =
 	{N_("/_Paste"),		NULL, addressbook_clip_paste_cb,     0, NULL},
 	{N_("/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/Pa_ste Address"),	NULL, addressbook_clip_paste_address_cb, 0, NULL},
-	{N_("/_Mail To"),	NULL, addressbook_mail_to_cb,            0, NULL}
+	{N_("/_Mail To"),	NULL, addressbook_mail_to_cb,            0, NULL},
 #ifdef USE_LDAP
-	,
-	{N_("/_Browse Entry"),  NULL, addressbook_browse_entry_cb,	 0, NULL}
+	{N_("/_Browse Entry"),  NULL, addressbook_browse_entry_cb,	 0, NULL},
 #endif	
 };
 
@@ -634,6 +666,7 @@ static void addressbook_create(void)
 	GList *nodeIf;
 
 	gchar *titles[N_COLS];
+	gchar *dummy_titles[1];
 	gchar *text;
 	gint i;
 
@@ -642,6 +675,7 @@ static void addressbook_create(void)
 	titles[COL_NAME]    = _("Name");
 	titles[COL_ADDRESS] = _("E-Mail address");
 	titles[COL_REMARKS] = _("Remarks");
+	dummy_titles[0]     = "";
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Address book"));
@@ -677,7 +711,7 @@ static void addressbook_create(void)
 	gtk_widget_set_usize(ctree_swin, COL_FOLDER_WIDTH + 40, -1);
 
 	/* Address index */
-	ctree = gtk_ctree_new(1, 0);
+	ctree = gtk_sctree_new_with_titles(1, 0, dummy_titles);
 	gtk_container_add(GTK_CONTAINER(ctree_swin), ctree);
 	gtk_clist_set_selection_mode(GTK_CLIST(ctree), GTK_SELECTION_BROWSE);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), 0, COL_FOLDER_WIDTH);
@@ -700,6 +734,19 @@ static void addressbook_create(void)
 	gtk_signal_connect(GTK_OBJECT(ctree), "select_row",
 			   GTK_SIGNAL_FUNC(addressbook_select_row_tree), NULL);
 
+	gtk_drag_dest_set(ctree, GTK_DEST_DEFAULT_ALL & ~GTK_DEST_DEFAULT_HIGHLIGHT,
+			  addressbook_drag_types, 1,
+			  GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_DEFAULT);
+	gtk_signal_connect(GTK_OBJECT(ctree), "drag_motion",
+			 GTK_SIGNAL_FUNC(addressbook_drag_motion_cb),
+			 ctree);
+	gtk_signal_connect(GTK_OBJECT(ctree), "drag_leave",
+			 GTK_SIGNAL_FUNC(addressbook_drag_leave_cb),
+			 ctree);
+	gtk_signal_connect(GTK_OBJECT(ctree), "drag_data_received",
+			 GTK_SIGNAL_FUNC(addressbook_drag_received_cb),
+			 ctree);
+
 	clist_vbox = gtk_vbox_new(FALSE, 4);
 
 	clist_swin = gtk_scrolled_window_new(NULL, NULL);
@@ -709,7 +756,7 @@ static void addressbook_create(void)
 	gtk_box_pack_start(GTK_BOX(clist_vbox), clist_swin, TRUE, TRUE, 0);
 
 	/* Address list */
-	clist = gtk_ctree_new_with_titles(N_COLS, 0, titles);
+	clist = gtk_sctree_new_with_titles(N_COLS, 0, titles);
 	gtk_container_add(GTK_CONTAINER(clist_swin), clist);
 	gtk_clist_set_selection_mode(GTK_CLIST(clist), GTK_SELECTION_EXTENDED);
 	gtk_ctree_set_line_style(GTK_CTREE(clist), GTK_CTREE_LINES_NONE);
@@ -736,13 +783,14 @@ static void addressbook_create(void)
 	gtk_signal_connect(GTK_OBJECT(clist), "button_release_event",
 			   GTK_SIGNAL_FUNC(addressbook_list_button_released),
 			   NULL);
-	gtk_signal_connect(GTK_OBJECT(clist), "select_row",
-			   GTK_SIGNAL_FUNC(addressbook_list_selected), NULL);
 	gtk_signal_connect(GTK_OBJECT(clist), "tree_expand",
 			   GTK_SIGNAL_FUNC(addressbook_person_expand_node), NULL );
 	gtk_signal_connect(GTK_OBJECT(clist), "tree_collapse",
 			   GTK_SIGNAL_FUNC(addressbook_person_collapse_node), NULL );
-
+ 	gtk_signal_connect(GTK_OBJECT(clist), "start_drag",
+ 			   GTK_SIGNAL_FUNC(addressbook_start_drag), NULL);
+ 	gtk_signal_connect(GTK_OBJECT(clist), "drag_data_get",
+ 			   GTK_SIGNAL_FUNC(addressbook_drag_data_get), NULL);	
 	hbox = gtk_hbox_new(FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(clist_vbox), hbox, FALSE, FALSE, 0);
 
@@ -869,6 +917,8 @@ static void addressbook_create(void)
 	addrbook.window  = window;
 	addrbook.menubar = menubar;
 	addrbook.ctree   = ctree;
+	addrbook.ctree_swin
+			 = ctree_swin;
 	addrbook.clist   = clist;
 	addrbook.entry   = entry;
 	addrbook.statusbar = statusbar;
@@ -1182,7 +1232,7 @@ static void addressbook_to_clicked(GtkButton *button, gpointer data)
 	if( ! compose ) return;
 
 	/* Nothing selected, but maybe there is something in text entry */
-	addr = gtk_entry_get_text( GTK_ENTRY( addrbook.entry) );
+	addr = (char *)gtk_entry_get_text( GTK_ENTRY( addrbook.entry) );
 #ifdef WIN32
 	locale_from_utf8(&addr);
 #endif
@@ -1508,19 +1558,6 @@ static void addressbook_list_menu_setup( void ) {
 #ifdef USE_LDAP
 	menu_set_sensitive( addrbook.list_factory, "/Browse Entry",    canBrowse );
 #endif
-}
-
-static void addressbook_list_selected(GtkCList *clist, gint row, gint column,
-				      GdkEvent *event, gpointer data)
-{
-	if (event && event->type == GDK_2BUTTON_PRESS) {
-		/* Handle double click */
-		if (prefs_common.add_address_by_click &&
-		    addrbook.target_compose)
-			addressbook_to_clicked(NULL, GINT_TO_POINTER(COMPOSE_TO));
-		else
-			addressbook_edit_address_cb(NULL, 0, NULL);
-	}
 }
 
 static void addressbook_select_row_tree	(GtkCTree	*ctree,
@@ -1892,15 +1929,33 @@ static void addressbook_entry_gotfocus( GtkWidget *widget ) {
 	gtk_editable_select_region( GTK_EDITABLE(addrbook.entry), 0, -1 );
 }
 
+/* from gdkevents.c */
+#define DOUBLE_CLICK_TIME 250
+
 static void addressbook_list_button_pressed(GtkWidget *widget,
 					    GdkEventButton *event,
 					    gpointer data)
 {
+	static guint32 lasttime = 0;
+
 	if( ! event ) return;
+	
 	addressbook_list_menu_setup();
 	if( event->button == 3 ) {
 		gtk_menu_popup( GTK_MENU(addrbook.list_popup), NULL, NULL, NULL, NULL,
 		       event->button, event->time );
+	} else if (event->button == 1) {
+		if (event->time - lasttime < DOUBLE_CLICK_TIME) {
+			if (prefs_common.add_address_by_click &&
+			    addrbook.target_compose)
+				addressbook_to_clicked(NULL, GINT_TO_POINTER(COMPOSE_TO));
+			else
+				addressbook_edit_address_cb(NULL, 0, NULL);
+
+			lasttime = 0;
+		} else
+			lasttime = event->time;
+		
 	}
 
 }
@@ -2496,6 +2551,16 @@ static AddressBookFile *addressbook_get_book_file() {
 	AddressDataSource *ds = NULL;
 
 	ds = addressbook_find_datasource( addrbook.treeSelected );
+	if( ds == NULL ) return NULL;
+	if( ds->type == ADDR_IF_BOOK ) abf = ds->rawDataSource;
+	return abf;
+}
+
+static AddressBookFile *addressbook_get_book_file_for_node(GtkCTreeNode *node) {
+	AddressBookFile *abf = NULL;
+	AddressDataSource *ds = NULL;
+
+	ds = addressbook_find_datasource( node );
 	if( ds == NULL ) return NULL;
 	if( ds->type == ADDR_IF_BOOK ) abf = ds->rawDataSource;
 	return abf;
@@ -3172,11 +3237,13 @@ static gboolean addressbook_convert( AddressIndex *addrIndex ) {
 	}
 	if( errFlag ) {
 		debug_print( "Error\n%s\n", msg );
-		alertpanel( _( "Addressbook conversion error" ), msg, _( "Close" ), NULL, NULL );
+		alertpanel_with_type( _( "Addressbook conversion error" ), msg, _( "Close" ), 
+				      NULL, NULL, NULL, ALERT_ERROR );
 	}
 	else if( msg ) {
 		debug_print( "Warning\n%s\n", msg );
-		alertpanel( _( "Addressbook conversion" ), msg, _( "Close" ), NULL, NULL );
+		alertpanel_with_type( _( "Addressbook conversion" ), msg, _( "Close" ), 
+				      NULL, NULL, NULL, ALERT_ERROR );
 	}
 
 	return retVal;
@@ -3212,9 +3279,10 @@ void addressbook_read_file( void ) {
 		/* Error reading address book */
 		debug_print( "Could not read address index.\n" );
 		addrindex_print_index( addrIndex, stdout );
-		alertpanel( _( "Addressbook Error" ),
+		alertpanel_with_type( _( "Addressbook Error" ),
 			    _( "Could not read address index" ),
-			    _( "Close" ), NULL, NULL );
+			    _( "Close" ), NULL, NULL, NULL,
+			    ALERT_ERROR );
 	}
 	debug_print( "done.\n" );
 }
@@ -3413,7 +3481,7 @@ static gint addressbook_treenode_compare_func(
 	if( cell2 ) name2 = cell2->u.text;
 	if( ! name1 ) return ( name2 != NULL );
 	if( ! name2 ) return -1;
-	return strcasecmp( name1, name2 );
+	return g_strcasecmp( name1, name2 );
 }
 
 /*
@@ -3434,7 +3502,7 @@ static gint addressbook_list_compare_func(
 		/* Order by name */
 		if( ! name1 ) return ( name2 != NULL );
 		if( ! name2 ) return -1;
-		return strcasecmp( name1, name2 );
+		return g_strcasecmp( name1, name2 );
 	}
 	else {
 		/* Order groups before person */
@@ -3759,6 +3827,7 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 	g_free( searchTerm );
 }
 
+#ifdef USE_LDAP
 /**
  * Browse address entry for highlighted entry.
  */
@@ -3803,12 +3872,10 @@ static void addressbook_browse_entry_cb(void)
 	}
 
 	if( iface->type == ADDR_IF_LDAP ) {
-#ifdef USE_LDAP
 		browseldap_entry(ds, person->externalID);
-#endif
 	}
 }
-
+#endif
 
 /* **********************************************************************
 * Build lookup tables.
@@ -4423,6 +4490,247 @@ static void addressbook_export_ldif_cb( void ) {
 	adbase = ( AddrBookBase * ) ds->rawDataSource;
 	cache = adbase->addressCache;
 	addressbook_exp_ldif( cache );
+}
+
+static void addressbook_start_drag(GtkWidget *widget, gint button, 
+				   GdkEvent *event,
+			           void *data)
+{
+	GdkDragContext *context;
+	if (addressbook_target_list == NULL)
+		addressbook_target_list = gtk_target_list_new(
+				addressbook_drag_types, 1);
+	context = gtk_drag_begin(widget, addressbook_target_list,
+				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event);
+	gtk_drag_set_icon_default(context);
+}
+
+static ItemPerson *dragged_person = NULL;
+static ItemFolder *dragged_folder = NULL;
+static AddressBookFile *dragged_ab = NULL;
+
+static void addressbook_drag_data_get(GtkWidget        *widget,
+				     GdkDragContext   *drag_context,
+				     GtkSelectionData *selection_data,
+				     guint             info,
+				     guint             time,
+				     void	      *data)
+{
+	AddrItemObject *aio = NULL;
+	AddressObject *pobj = NULL;
+	AdapterDSource *ads = NULL;
+	AddressDataSource *ds = NULL;
+
+	pobj = gtk_ctree_node_get_row_data( GTK_CTREE(addrbook.ctree), addrbook.treeSelected );
+	if( pobj == NULL ) return;
+
+	if( pobj->type == ADDR_DATASOURCE ) {
+		ads = ADAPTER_DSOURCE(pobj);
+		ds = ads->dataSource;
+	} else if (pobj->type == ADDR_ITEM_GROUP) {
+		return;
+	}
+	
+	else if( pobj->type != ADDR_INTERFACE ) {
+		ds = addressbook_find_datasource( addrbook.treeSelected );
+		if (!ds)
+			return;
+	}
+	if (addrbook.listSelected)
+		aio = gtk_ctree_node_get_row_data( GTK_CTREE(addrbook.clist), 
+				addrbook.listSelected );
+	
+	while (aio && aio->type != ADDR_ITEM_PERSON) {
+		aio = aio->parent;
+	}
+
+	if (aio && aio->type == ADDR_ITEM_PERSON) {
+		dragged_person = (ItemPerson *)aio;
+		dragged_folder = (ItemFolder *)ADAPTER_FOLDER(pobj)->itemFolder;
+		dragged_ab = addressbook_get_book_file();
+
+		gtk_selection_data_set(selection_data,
+				       selection_data->target, 8,
+				       "Dummy_addr", 11);
+	       	drag_context->actions = GDK_ACTION_MOVE;
+		
+		if (pobj->type == ADDR_DATASOURCE) {
+			if( ds != NULL) {
+				dragged_folder = addrindex_ds_get_root_folder( ds );
+				if (ds->type != ADDR_IF_JPILOT ||
+				    ds->type != ADDR_IF_LDAP)
+				    drag_context->action = GDK_ACTION_COPY;
+			} else {
+				dragged_folder = NULL;
+				dragged_person = NULL;
+				dragged_ab = NULL;
+			}
+		}
+	} else {
+		dragged_folder = NULL;
+		dragged_person = NULL;
+		dragged_ab = NULL;
+	}
+}
+
+static gboolean addressbook_drag_motion_cb(GtkWidget      *widget,
+					  GdkDragContext *context,
+					  gint            x,
+					  gint            y,
+					  guint           time,
+					  void            *data)
+{
+	gint row, column;
+	GtkCTreeNode *node = NULL;
+	gboolean acceptable = FALSE;
+	gint height = addrbook.ctree->allocation.height;
+	gint total_height = addrbook.ctree->requisition.height;
+	GtkAdjustment *pos = gtk_scrolled_window_get_vadjustment(
+				GTK_SCROLLED_WINDOW(addrbook.ctree_swin));
+	gfloat vpos = pos->value;
+	
+	if (gtk_clist_get_selection_info
+		(GTK_CLIST(widget), x - 24, y - 24, &row, &column)) {
+
+		if (y > height - 24 && height + vpos < total_height)
+			gtk_adjustment_set_value(pos, (vpos+5 > height ? height : vpos+5));
+
+		if (y < 24 && y > 0)
+			gtk_adjustment_set_value(pos, (vpos-5 < 0 ? 0 : vpos-5));
+
+		node = gtk_ctree_node_nth(GTK_CTREE(widget), row);
+
+		if (node != NULL) {
+			AddressObject *obj = gtk_ctree_node_get_row_data(GTK_CTREE(widget), node );
+			if( obj->type == ADDR_ITEM_FOLDER 
+			|| obj->type == ADDR_ITEM_GROUP)
+				acceptable = TRUE;
+			else {
+				AdapterDSource *ads = NULL;
+				AddressDataSource *ds = NULL;
+				ads = ADAPTER_DSOURCE(obj);
+				if (ads == NULL ) return FALSE;
+				ds = ads->dataSource;
+				if (ds == NULL ) return FALSE;
+				if (obj->type == ADDR_DATASOURCE
+				&&  !ds->Xinterface->externalQuery)
+					acceptable = TRUE;
+
+			}
+		}
+	}
+
+	
+	if (acceptable) {
+		gtk_signal_handler_block_by_func
+			(GTK_OBJECT(widget),
+			 GTK_SIGNAL_FUNC(addressbook_tree_selected), NULL);
+		gtk_ctree_select(GTK_CTREE(widget), node);
+		gtk_signal_handler_unblock_by_func
+			(GTK_OBJECT(widget),
+			 GTK_SIGNAL_FUNC(addressbook_tree_selected), NULL);
+		gdk_drag_status(context, 
+					(context->actions == GDK_ACTION_COPY ?
+					GDK_ACTION_COPY : GDK_ACTION_MOVE) , time);
+	} else {
+		gdk_drag_status(context, 0, time);
+	}
+
+	return acceptable;
+}
+
+static void addressbook_drag_leave_cb(GtkWidget      *widget,
+				     GdkDragContext *context,
+				     guint           time,
+				     void           *data)
+{
+	if (addrbook.treeSelected) {
+		gtk_signal_handler_block_by_func
+			(GTK_OBJECT(widget),
+			 GTK_SIGNAL_FUNC(addressbook_tree_selected), NULL);
+		gtk_ctree_select(GTK_CTREE(widget), addrbook.treeSelected);
+		gtk_signal_handler_unblock_by_func
+			(GTK_OBJECT(widget),
+			 GTK_SIGNAL_FUNC(addressbook_tree_selected), NULL);
+	}
+}
+
+static void addressbook_drag_received_cb(GtkWidget        *widget,
+					GdkDragContext   *drag_context,
+					gint              x,
+					gint              y,
+					GtkSelectionData *data,
+					guint             info,
+					guint             time,
+					void             *pdata)
+{
+	gint row, column;
+	GtkCTreeNode *node;
+	ItemFolder *afolder = NULL;
+	ItemFolder *ofolder = NULL;
+	ItemPerson *person = NULL;
+	
+
+	if (!strcmp(data->data, "Dummy_addr")) {
+		AddressObject *obj = NULL;
+		AdapterDSource *ads = NULL;
+		AddressDataSource *ds = NULL;
+		
+		if (gtk_clist_get_selection_info
+			(GTK_CLIST(widget), x - 24, y - 24, &row, &column) == 0) {
+			return;
+		}
+	
+		node = gtk_ctree_node_nth(GTK_CTREE(widget), row);
+		if( node ) 
+			obj = gtk_ctree_node_get_row_data(GTK_CTREE(addrbook.ctree), node );
+		if( obj == NULL ) 
+			return;
+			
+		
+		
+		person = ( ItemPerson * )dragged_person;
+		
+		if (obj->type == ADDR_ITEM_FOLDER) {
+			afolder = ADAPTER_FOLDER(obj)->itemFolder;
+
+		} else if (obj->type == ADDR_DATASOURCE) {
+			ads = ADAPTER_DSOURCE(obj);
+			if( ads == NULL ) 
+				return;
+			ds = ads->dataSource;
+			if( ds == NULL ||
+			    ds->type == ADDR_IF_JPILOT || 
+			    ds->type == ADDR_IF_LDAP) 
+			    	return;		
+			afolder = addrindex_ds_get_root_folder( ds );
+			
+		} else {
+			return;
+		}
+
+		ofolder = dragged_folder;
+		
+		if (afolder && ofolder) {
+			AddressBookFile *obook = dragged_ab;
+			AddressBookFile *abook = addressbook_get_book_file_for_node(node);
+			addritem_folder_remove_person(ofolder, person);
+			addritem_folder_add_person(afolder, person);
+			addressbook_list_select_clear();
+			gtk_ctree_select( GTK_CTREE(addrbook.ctree), addrbook.opened);
+							
+			if (abook) {
+				addrbook_set_dirty(abook, TRUE);
+			}
+			if (obook) {
+				addrbook_set_dirty(obook, TRUE);
+			}
+			
+			addressbook_export_to_file();
+		}
+
+		gtk_drag_finish(drag_context, TRUE, TRUE, time);
+	}
 }
 
 /*

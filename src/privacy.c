@@ -225,3 +225,127 @@ gint privacy_mimeinfo_decrypt(MimeInfo *mimeinfo)
 
 	return -1;
 }
+
+GSList *privacy_get_system_ids()
+{
+	GSList *cur;
+	GSList *ret = NULL;
+
+	for(cur = systems; cur != NULL; cur = g_slist_next(cur)) {
+		PrivacySystem *system = (PrivacySystem *) cur->data;
+
+		ret = g_slist_append(ret, g_strdup(system->id));
+	}
+
+	return ret;
+}
+
+static PrivacySystem *privacy_get_system(const gchar *id)
+{
+	GSList *cur;
+
+	g_return_val_if_fail(id != NULL, NULL);
+
+	for(cur = systems; cur != NULL; cur = g_slist_next(cur)) {
+		PrivacySystem *system = (PrivacySystem *) cur->data;
+
+		if(strcmp(id, system->id) == 0)
+			return system;
+	}
+
+	return NULL;
+}
+
+const gchar *privacy_system_get_name(const gchar *id)
+{
+	PrivacySystem *system;
+
+	g_return_val_if_fail(id != NULL, NULL);
+
+	system = privacy_get_system(id);
+	if (system == NULL)
+		return NULL;
+
+	return system->name;
+}
+
+gboolean privacy_system_can_sign(const gchar *id)
+{
+	PrivacySystem *system;
+
+	g_return_val_if_fail(id != NULL, FALSE);
+
+	system = privacy_get_system(id);
+	if (system == NULL)
+		return FALSE;
+
+	return system->can_sign;
+}
+
+gboolean privacy_system_can_encrypt(const gchar *id)
+{
+	PrivacySystem *system;
+
+	g_return_val_if_fail(id != NULL, FALSE);
+
+	system = privacy_get_system(id);
+	if (system == NULL)
+		return FALSE;
+
+	return system->can_encrypt;
+}
+
+gboolean privacy_sign(const gchar *id, MimeInfo *target, PrefsAccount *account)
+{
+	PrivacySystem *system;
+
+	g_return_val_if_fail(id != NULL, FALSE);
+	g_return_val_if_fail(target != NULL, FALSE);
+
+	system = privacy_get_system(id);
+	if (system == NULL)
+		return FALSE;
+	if (!system->can_sign)
+		return FALSE;
+	if (system->sign == NULL)
+		return FALSE;
+
+	return system->sign(target, account);
+}
+
+gchar *privacy_get_encrypt_data(const gchar *id, GSList *recp_names)
+{
+	PrivacySystem *system;
+
+	g_return_val_if_fail(id != NULL, NULL);
+	g_return_val_if_fail(recp_names != NULL, NULL);
+
+	system = privacy_get_system(id);
+	if (system == NULL)
+		return NULL;
+	if (!system->can_encrypt)
+		return NULL;
+	if (system->get_encrypt_data == NULL)
+		return NULL;
+
+	return system->get_encrypt_data(recp_names);
+}
+
+gboolean privacy_encrypt(const gchar *id, MimeInfo *mimeinfo, const gchar *encdata)
+{
+	PrivacySystem *system;
+
+	g_return_val_if_fail(id != NULL, FALSE);
+	g_return_val_if_fail(mimeinfo != NULL, FALSE);
+	g_return_val_if_fail(encdata != NULL, FALSE);
+
+	system = privacy_get_system(id);
+	if (system == NULL)
+		return FALSE;
+	if (!system->can_encrypt)
+		return FALSE;
+	if (system->encrypt == NULL)
+		return FALSE;
+
+	return system->encrypt(mimeinfo, encdata);
+}

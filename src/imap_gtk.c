@@ -129,6 +129,9 @@ static void new_folder_cb(FolderView *folderview, guint action,
 	if (!new_folder) return;
 	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
 
+#ifdef WIN3
+	locale_from_utf8(&new_folder);
+#endif
 	p = strchr(new_folder, G_DIR_SEPARATOR);
 	if (p && *(p + 1) != '\0') {
 		alertpanel_error(_("`%c' can't be included in folder name."),
@@ -163,6 +166,9 @@ static void rename_folder_cb(FolderView *folderview, guint action,
 	gchar *old_path;
 	gchar *old_id;
 	gchar *new_id;
+#ifdef WIN32
+	gchar *p_path;
+#endif
 
 	item = folderview_get_selected_item(folderview);
 	g_return_if_fail(item != NULL);
@@ -170,14 +176,27 @@ static void rename_folder_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item->folder != NULL);
 
 	name = trim_string(item->name, 32);
+#ifdef WIN32
+	p_path = g_strdup(item->path);
+	subst_char(p_path, '/', G_DIR_SEPARATOR);
+	locale_to_utf8(&p_path);
+#endif
 	message = g_strdup_printf(_("Input new name for `%s':"), name);
 	new_folder = input_dialog(_("Rename folder"), message,
+#ifdef WIN32
+				  g_basename(p_path));
+	g_free(p_path);
+#else
 				  g_basename(item->path));
+#endif
 	g_free(message);
 	g_free(name);
 	if (!new_folder) return;
 	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
 
+#ifdef WIN32
+	locale_from_utf8(&new_folder);
+#endif
 /*
 	TODO: check new name for IMAP namespace separator
 	if (strchr(new_folder, G_DIR_SEPARATOR) != NULL) {

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,6 +90,8 @@ Session *smtp_session_new(void)
 	session->send_data                 = NULL;
 	session->send_data_len             = 0;
 
+	session->max_message_size          = -1;
+
 	session->avail_auth_type           = 0;
 	session->forced_auth_type          = 0;
 	session->auth_type                 = 0;
@@ -123,9 +125,9 @@ static gint smtp_from(SMTPSession *session)
 	session->state = SMTP_FROM;
 
 	if (strchr(session->from, '<'))
-		g_snprintf(buf, sizeof(buf), "MAIL FROM: %s", session->from);
+		g_snprintf(buf, sizeof(buf), "MAIL FROM:%s", session->from);
 	else
-		g_snprintf(buf, sizeof(buf), "MAIL FROM: <%s>", session->from);
+		g_snprintf(buf, sizeof(buf), "MAIL FROM:<%s>", session->from);
 
 	session_send_msg(SESSION(session), SESSION_MSG_NORMAL, buf);
 	log_print("SMTP> %s\n", buf);
@@ -276,6 +278,10 @@ static gint smtp_ehlo_recv(SMTPSession *session, const gchar *msg)
 			if (strcasestr(p, "DIGEST-MD5"))
 				session->avail_auth_type |= SMTPAUTH_DIGEST_MD5;
 		}
+		if (g_strncasecmp(p, "SIZE", 4) == 0) {
+			p += 5;
+			session->max_message_size = atoi(p);
+		}
 		return SM_OK;
 	} else if ((msg[0] == '1' || msg[0] == '2' || msg[0] == '3') &&
 	    (msg[3] == ' ' || msg[3] == '\0'))
@@ -345,9 +351,9 @@ static gint smtp_rcpt(SMTPSession *session)
 	to = (gchar *)session->cur_to->data;
 
 	if (strchr(to, '<'))
-		g_snprintf(buf, sizeof(buf), "RCPT TO: %s", to);
+		g_snprintf(buf, sizeof(buf), "RCPT TO:%s", to);
 	else
-		g_snprintf(buf, sizeof(buf), "RCPT TO: <%s>", to);
+		g_snprintf(buf, sizeof(buf), "RCPT TO:<%s>", to);
 	session_send_msg(SESSION(session), SESSION_MSG_NORMAL, buf);
 	log_print("SMTP> %s\n", buf);
 
@@ -492,6 +498,17 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 		smtp_ehlo_recv(smtp_session, msg);
 		if (cont == TRUE)
 			break;
+		if (smtp_session->max_message_size > 0
+		&& smtp_session->max_message_size < smtp_session->send_data_len) {
+			log_warning(_("Message is too big "
+			      "(Maximum size is %s)\n"), 
+			      to_human_readable(
+			       (off_t)(smtp_session->max_message_size)));
+
+			smtp_session->state = SMTP_ERROR;
+			smtp_session->error_val = SM_ERROR;
+			return -1;
+		}
 #if USE_OPENSSL
 		if (session->ssl_type == SSL_STARTTLS &&
 		    smtp_session->tls_init_done == FALSE) {

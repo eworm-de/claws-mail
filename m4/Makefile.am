@@ -3,7 +3,6 @@ MACROS = \
 	check-type.m4 \
 	gnupg-check-typedef.m4 \
 	aspell.m4 \
-	openssl.m4 \
 	spamassassin.m4
 
 EXTRA_DIST = $(MACROS) \

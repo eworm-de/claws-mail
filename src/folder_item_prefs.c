@@ -142,7 +142,7 @@ void folder_item_prefs_save_config(FolderItem * item)
 
 	id = folder_item_get_identifier(item);
 
-	prefs_save_config(param, id, FOLDERITEM_RC);
+	prefs_write_config(param, id, FOLDERITEM_RC);
 	g_free(id);
 
 	/* MIGRATION: make sure migrated items are not saved
@@ -231,7 +231,7 @@ gint folder_item_prefs_get_sort_type(FolderItem * item)
 
 void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 {
-	GSList *tmp_prop_list = NULL, *tmp_scor_list = NULL, *tmp;
+	GSList *tmp_prop_list = NULL, *tmp;
 	folder_item_prefs_read_config(src);
 
 	tmp_prefs.directory			= g_strdup(src->prefs->directory);

@@ -49,7 +49,6 @@ gint colorsel_select_color_rgb(gchar *title, gint rgbvalue)
 	gint result;
 
 	color_dialog = GTK_COLOR_SELECTION_DIALOG(gtk_color_selection_dialog_new(title));
-	gtk_window_set_position(GTK_WINDOW(color_dialog), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(color_dialog), TRUE);
 	gtk_window_set_policy(GTK_WINDOW(color_dialog), FALSE, FALSE, FALSE);
 	manage_window_set_transient(GTK_WINDOW(color_dialog));

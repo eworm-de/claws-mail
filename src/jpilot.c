@@ -51,6 +51,7 @@
 #include "addritem.h"
 #include "addrcache.h"
 #include "jpilot.h"
+#include "codeconv.h"
 #include "adbookbase.h"
 
 #define JPILOT_DBHOME_DIR   ".jpilot"
@@ -147,7 +148,14 @@ typedef struct {
 	unsigned char attrib;
 } PC3RecordHeader;
 
-/**
+enum {
+	FAMILY_LAST = 0,
+	FAMILY_FIRST = 1
+} name_order;
+
+gboolean convert_charcode;
+
+/*
 * Create new pilot file object.
 * \return Initialized JPilot file object.
 */
@@ -339,7 +347,7 @@ static gboolean jpilot_mark_files( JPilotFile *pilotFile ) {
 	pilotFile->pc3ModifyTime = 0;
 	pcFile = jpilot_get_pc3_file( pilotFile );
 	if( pcFile == NULL ) return retVal;
-	if( 0 == lstat( pcFile, &filestat ) ) {
+	if( 0 == stat( pcFile, &filestat ) ) {
 		pilotFile->havePC3 = TRUE;
 		pilotFile->pc3ModifyTime = filestat.st_mtime;
 		retVal = TRUE;
@@ -368,7 +376,7 @@ static gboolean jpilot_check_files( JPilotFile *pilotFile ) {
 	pcFile = jpilot_get_pc3_file( pilotFile );
 	if( pcFile == NULL ) return FALSE;
 
-	if( 0 == lstat( pcFile, &filestat ) ) {
+	if( 0 == stat( pcFile, &filestat ) ) {
 		if( filestat.st_mtime == pilotFile->pc3ModifyTime ) retVal = FALSE;
 	}
 	g_free( pcFile );
@@ -1087,8 +1095,17 @@ static void jpilot_parse_label( JPilotFile *pilotFile, gchar *labelEntry, ItemPe
 		strcpy( buffer, labelEntry );
 		node = list = jpilot_parse_email( buffer );
 		while( node ) {
+			gchar convertBuff[JPILOT_LEN_LABEL];
 			email = addritem_create_item_email();
 			addritem_email_set_address( email, node->data );
+			if (convert_charcode) {
+				conv_sjistoeuc(convertBuff, JPILOT_LEN_LABEL, buffer);
+				addritem_email_set_remarks(email, convertBuff);
+			}
+			else {
+				addritem_email_set_remarks(email, buffer);
+			}
+
 			addrcache_id_email( pilotFile->addressCache, email );
 			addrcache_person_add_email( pilotFile->addressCache, person, email );
 			node = g_list_next( node );
@@ -1120,6 +1137,8 @@ static void jpilot_load_address(
 	GList *node;
 	gchar* extID;
 	struct AddressAppInfo *ai;
+	gchar **firstName = NULL;
+	gchar **lastName = NULL;
 
 	/* Retrieve address */
 	num = unpack_Address( & addr, buf->buf, buf->size );
@@ -1130,16 +1149,41 @@ static void jpilot_load_address(
 		cat_id = attrib & 0x0F;
 
 		*fullName = '\0';
+
 		if( addrEnt[ IND_LABEL_FIRSTNAME ] ) {
-			strcat( fullName, addrEnt[ IND_LABEL_FIRSTNAME ] );
+			firstName = g_strsplit( addrEnt[ IND_LABEL_FIRSTNAME ], "\01", 2 );
 		}
 
 		if( addrEnt[ IND_LABEL_LASTNAME ] ) {
-			strcat( fullName, " " );
-			strcat( fullName, addrEnt[ IND_LABEL_LASTNAME ] );
+			lastName = g_strsplit( addrEnt[ IND_LABEL_LASTNAME ], "\01", 2 );
 		}
-		g_strchug( fullName );
-		g_strchomp( fullName );
+
+		if( name_order == FAMILY_LAST ) {
+			g_snprintf( fullName, FULLNAME_BUFSIZE, "%s %s",
+				    firstName ? firstName[0] : "",
+				    lastName ? lastName[0] : "" );
+		}
+		else {
+			g_snprintf( fullName, FULLNAME_BUFSIZE, "%s %s",
+				    lastName ? lastName[0] : "",
+				    firstName ? firstName[0] : "" );
+		}
+
+		if( firstName ) {
+			g_strfreev( firstName );
+		}
+		if( lastName ) {
+			g_strfreev( lastName );
+		}
+
+		g_strstrip( fullName );
+
+		if( convert_charcode ) {
+			gchar *nameConv;
+			nameConv = g_strdup( fullName );
+			conv_sjistoeuc( fullName, FULLNAME_BUFSIZE, nameConv );
+			g_free( nameConv );
+		}
 
 		person = addritem_create_item_person();
 		addritem_person_set_common_name( person, fullName );
@@ -1159,6 +1203,7 @@ static void jpilot_load_address(
 		indPhoneLbl = addr.phoneLabel;
 		for( k = 0; k < JPILOT_NUM_ADDR_PHONE; k++ ) {
 			gint ind;
+
 			ind = indPhoneLbl[k];
 			/*
 			* fprintf( stdout, "%d : %d : %20s : %s\n", k, ind,
@@ -1173,7 +1218,9 @@ static void jpilot_load_address(
 		/* Add entry for each custom label */
 		node = pilotFile->labelInd;
 		while( node ) {
+			gchar convertBuff[JPILOT_LEN_LABEL];
 			gint ind;
+
 			ind = GPOINTER_TO_INT( node->data );
 			if( ind > -1 ) {
 				/*
@@ -1298,6 +1345,13 @@ static gboolean jpilot_setup_labels( JPilotFile *pilotFile ) {
 			gint i;
 			for( i = 0; i < JPILOT_NUM_LABELS; i++ ) {
 				gchar *labelName = ai->labels[i];
+				gchar convertBuff[ JPILOT_LEN_LABEL ];
+
+				if( convert_charcode ) {
+					conv_sjistoeuc( convertBuff, JPILOT_LEN_LABEL, labelName );
+					labelName = convertBuff;
+				}
+
 				if( g_strcasecmp( labelName, lbl ) == 0 ) {
 					ind = i;
 					break;
@@ -1327,9 +1381,14 @@ GList *jpilot_load_label( JPilotFile *pilotFile, GList *labelList ) {
 		struct AddressAppInfo *ai = & pilotFile->addrInfo;
 		for( i = 0; i < JPILOT_NUM_LABELS; i++ ) {
 			gchar *labelName = ai->labels[i];
+			gchar convertBuff[JPILOT_LEN_LABEL];
+
 			if( labelName ) {
-				labelList = g_list_append(
-					labelList, g_strdup( labelName ) );
+				if( convert_charcode ) {
+					conv_sjistoeuc( convertBuff, JPILOT_LEN_LABEL, labelName );
+					labelName = convertBuff;
+				}
+				labelList = g_list_append( labelList, g_strdup( labelName ) );
 			}
 			else {
 				labelList = g_list_append(
@@ -1402,6 +1461,7 @@ GList *jpilot_load_phone_label( JPilotFile *pilotFile, GList *labelList ) {
  */
 GList *jpilot_load_custom_label( JPilotFile *pilotFile, GList *labelList ) {
 	gint i;
+	char convertBuff[JPILOT_LEN_LABEL];
 
 	g_return_val_if_fail( pilotFile != NULL, NULL );
 
@@ -1413,8 +1473,11 @@ GList *jpilot_load_custom_label( JPilotFile *pilotFile, GList *labelList ) {
 				g_strchomp( labelName );
 				g_strchug( labelName );
 				if( *labelName != '\0' ) {
-					labelList = g_list_append( labelList,
-						g_strdup( labelName ) );
+					if( convert_charcode ) {
+						conv_sjistoeuc( convertBuff, JPILOT_LEN_LABEL, labelName );
+						labelName = convertBuff;
+					}
+					labelList = g_list_append( labelList, g_strdup( labelName ) );
 				}
 			}
 		}
@@ -1462,7 +1525,16 @@ static void jpilot_build_category_list( JPilotFile *pilotFile ) {
 
 	for( i = 0; i < JPILOT_NUM_CATEG; i++ ) {
 		ItemFolder *folder = addritem_create_item_folder();
-		addritem_folder_set_name( folder, cat->name[i] );
+
+		if( convert_charcode ) {
+			gchar catName[ JPILOT_LEN_CATEG ];
+			conv_sjistoeuc( catName, JPILOT_LEN_CATEG, cat->name[i] );
+			addritem_folder_set_name( folder, catName );
+		}
+		else {
+			addritem_folder_set_name( folder, cat->name[i] );
+		}
+
 		addrcache_id_folder( pilotFile->addressCache, folder );
 		addrcache_add_folder( pilotFile->addressCache, folder );
 	}
@@ -1575,6 +1647,21 @@ static gint jpilot_read_file( JPilotFile *pilotFile ) {
  *         successfully.
  */
 gint jpilot_read_data( JPilotFile *pilotFile ) {
+	const gchar *cur_locale;
+
+	name_order = FAMILY_LAST;
+	convert_charcode = FALSE;
+
+	cur_locale = conv_get_current_locale();
+
+	if( g_strncasecmp( cur_locale, "ja", 2 ) == 0 ) {
+		name_order = FAMILY_FIRST;
+	}
+
+	if( conv_get_current_charset() == C_EUC_JP ) {
+		convert_charcode = TRUE;
+	}
+
 	g_return_val_if_fail( pilotFile != NULL, -1 );
 
 	pilotFile->retVal = MGU_SUCCESS;

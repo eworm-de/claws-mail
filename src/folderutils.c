@@ -23,18 +23,25 @@
 #include "prefs_common.h"
 #include "folderutils.h"
 
-void folderutils_delete_duplicates(FolderItem *item)
+gint folderutils_delete_duplicates(FolderItem *item,
+				   DeleteDuplicatesMode mode)
 {
 	GHashTable *table;
 	GSList *msglist, *cur, *duplist = NULL;
-
+	guint dups;
+	
+	if (item->folder->klass->remove_msg == NULL)
+		return -1;
+	
 	debug_print("Deleting duplicated messages...\n");
+
 
 	msglist = folder_item_get_msg_list(item);
 	if (msglist == NULL)
-		return;
+		return 0;
 	table = g_hash_table_new(g_str_hash, g_str_equal);
 
+	folder_item_update_freeze();
 	for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
 		MsgInfo *msginfo = (MsgInfo *) cur->data;
 		MsgInfo *msginfo_dup = NULL;
@@ -57,14 +64,17 @@ void folderutils_delete_duplicates(FolderItem *item)
 	}
 
 	if (duplist) {
-		if (prefs_common.immediate_exec) {
+		switch (mode) {
+		case DELETE_DUPLICATES_REMOVE: {
 			FolderItem *trash = item->folder->trash;
 
 			if (item->stype == F_TRASH || trash == NULL)
 				folder_item_remove_msgs(item, duplist);
-			else
+			else 			
 				folder_item_move_msgs(trash, duplist);
-		} else {
+			break;
+		}
+		case DELETE_DUPLICATES_SETFLAG:
 			for (cur = duplist; cur != NULL; cur = g_slist_next(cur)) {
 				MsgInfo *msginfo = (MsgInfo *) cur->data;
 
@@ -72,8 +82,12 @@ void folderutils_delete_duplicates(FolderItem *item)
 				procmsg_msginfo_unset_flags(msginfo, MSG_MARKED, MSG_MOVE | MSG_COPY);
 				procmsg_msginfo_set_flags(msginfo, MSG_DELETED, 0);
 			}
+			break;
+		default:
+			break;
 		}
 	}
+	dups = g_slist_length(duplist);
 	g_slist_free(duplist);
 
 	g_hash_table_destroy(table);
@@ -85,6 +99,32 @@ void folderutils_delete_duplicates(FolderItem *item)
 	}
 	g_slist_free(msglist);
 
+	folder_item_update_thaw();
 
 	debug_print("done.\n");
+
+	return dups;	
+}
+
+void folderutils_mark_all_read(FolderItem *item)
+{
+	MsgInfoList *msglist, *cur;
+
+	g_return_if_fail(item != NULL);
+
+	msglist = folder_item_get_msg_list(item);
+	if (msglist == NULL)
+		return;
+
+	folder_item_update_freeze();
+	for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
+		MsgInfo *msginfo = cur->data;
+
+		if (msginfo->flags.perm_flags & (MSG_NEW | MSG_UNREAD))
+			procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
+		procmsg_msginfo_free(msginfo);
+	}
+	folder_item_update_thaw();
+
+	g_slist_free(msglist);
 }

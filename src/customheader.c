@@ -83,7 +83,7 @@ CustomHeader *custom_header_find(GSList *header_list, const gchar *header)
 
 	for (cur = header_list; cur != NULL; cur = cur->next) {
 		chdr = (CustomHeader *)cur->data;
-		if (!strcasecmp(chdr->name, header))
+		if (!g_strcasecmp(chdr->name, header))
 			return chdr;
 	}
 
@@ -103,16 +103,16 @@ gboolean custom_header_is_allowed(const gchar *header)
 {
 	g_return_val_if_fail(header != NULL, FALSE);
 
-	if (strcasecmp(header, "Date")         != 0 &&
-	    strcasecmp(header, "From")         != 0 &&
-	    strcasecmp(header, "To")           != 0 &&
-	 /* strcasecmp(header, "Sender")       != 0 && */
-	    strcasecmp(header, "Message-Id")   != 0 &&
-	    strcasecmp(header, "In-Reply-To")  != 0 &&
-	    strcasecmp(header, "References")   != 0 &&
-	    strcasecmp(header, "Mime-Version") != 0 &&
-	    strcasecmp(header, "Content-Type") != 0 &&
-	    strcasecmp(header, "Content-Transfer-Encoding")
+	if (g_strcasecmp(header, "Date")         != 0 &&
+	    g_strcasecmp(header, "From")         != 0 &&
+	    g_strcasecmp(header, "To")           != 0 &&
+	 /* g_strcasecmp(header, "Sender")       != 0 && */
+	    g_strcasecmp(header, "Message-ID")   != 0 &&
+	    g_strcasecmp(header, "In-Reply-To")  != 0 &&
+	    g_strcasecmp(header, "References")   != 0 &&
+	    g_strcasecmp(header, "Mime-Version") != 0 &&
+	    g_strcasecmp(header, "Content-Type") != 0 &&
+	    g_strcasecmp(header, "Content-Transfer-Encoding")
 	    != 0)
 		return TRUE;
 
