@@ -1,3 +1,10 @@
+2003-01-13 [alfons]	0.8.8claws95
+
+	* src/textview.c
+		tune email address validation (c. 0.8.8claws89): if . is 
+		just one char away from @, the address is invalid too 
+		(correctly rejects addresses like foo@.com)
+
 2003-01-13 [paul]	0.8.8claws94
 
 	* src/messageview.c

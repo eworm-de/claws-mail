@@ -896,10 +896,9 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 
 		if (last_dot == NULL)
 			return FALSE;
-
 		if (last_dot >= ep_)
 			last_dot = prelast_dot;
-		if (last_dot == NULL)
+		if (last_dot == NULL || (scanpos + 1 >= last_dot))
 			return FALSE;
 		last_dot++;
 	
