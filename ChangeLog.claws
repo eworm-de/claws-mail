@@ -1,4 +1,71 @@
+2003-09-10 [paul]	0.9.5claws
+
+	* 0.9.5claws released
+
+2003-09-10 [paul]	0.9.4claws78
+
+	* src/Makefile.am
+		add missing files
+
+2003-09-10 [melvin]	0.9.4claws77
+
+	* po/fr.po
+		Updated French translations
+
+2003-09-10 [paul]	0.9.4claws76
+
+	* po/es.po
+	  po/sk.po
+	  po/sr.po
+	  	update Spanish, Slovak, and Serbian translations.
+		submitted by Ricardo Mones Lastra, Andrej Kacian,
+		and Urke MMI
+		
+	* AUTHORS
+		add translation team section
+
+2003-09-09 [christoph]	0.9.4claws75
+
+	* src/folder.c
+		free item->prefs in folder_item_destroy
+
+2003-09-09 [alfons]	0.9.4claws74
+
+	* src/folderview.c
+		o proper check for root node sorting
+		o remove unnecessary gtk_ctree_remove_node 
+
+	(should fix bug #300, "crash while moving folder")	
+
+2003-09-08 [christoph]	0.9.4claws73
+
+	* src/folderview.c
+		o fix double adding of IMAP FolderItems to GtkCTree
+		o fix crash then mbox folder is removed
+
+2003-09-08 [christoph]	0.9.4claws72
+
+	* src/folder.c
+	* src/folderview.c
+	* src/mainwindow.c
+		fix new folder notification
+
+	* src/mbox_folder.c
+		fix cache path
+
+2003-09-08 [christoph]	0.9.4claws71
+
+	* src/compose.c
+		replace '\n' and '\r' before removing trailing spaces
+
+	* src/folder.[ch]
+	* src/folderview.c
+		add information about new or removed items in folder tree change
+		notification and use this in folderview to add and remove only
+		the appected items and not refresh the whole tree
+
 2003-09-07 [match]	0.9.4claws70
+
 	* src/Makefile.am
 	* src/addr_compl.c
 	* src/addressbook.c

@@ -1345,7 +1345,7 @@ static void folderview_sort_folders(FolderView *folderview, GtkCTreeNode *root,
 
 	gtk_sctree_sort_recursive(ctree, root);
 
-	if (GTK_CTREE_ROW(root)->parent) return;
+	if (root && GTK_CTREE_ROW(root)->parent) return;
 
 	SET_SPECIAL_FOLDER(ctree, folder->inbox);
 	SET_SPECIAL_FOLDER(ctree, folder->outbox);
@@ -1887,6 +1887,8 @@ void folderview_create_folder_node(FolderView *folderview, FolderItem *item)
 	GtkCTreeNode *node, *parent_node;
 	
 	parent_node = gtk_ctree_find_by_row_data(ctree, NULL, item->parent);
+	if (parent_node == NULL)
+		return;
 
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
@@ -1989,8 +1991,6 @@ static void folderview_new_mbox_folder_cb(FolderView *folderview, guint action,
 	new_item = folder_create_folder(item, new_folder);
 	g_free(new_folder);
 	if (!new_item) return;
-
-	folderview_create_folder_node(folderview, new_item);
 
 	folder_write_list();
 }
@@ -2254,10 +2254,11 @@ static void folderview_remove_mailbox_cb(FolderView *folderview, guint action,
 	g_free(message);
 	if (avalue != G_ALERTDEFAULT) return;
 
-	folder_destroy(item->folder);
-	summary_clear_all(folderview->summaryview);
 	folderview_unselect(folderview);
+	summary_clear_all(folderview->summaryview);
 	gtk_ctree_remove_node(ctree, node);
+
+	folder_destroy(item->folder);
 	folder_write_list();
 }
 
@@ -2313,8 +2314,6 @@ static void folderview_new_imap_folder_cb(FolderView *folderview, guint action,
 		return;
 	}
 	g_free(new_folder);
-
-	folderview_create_folder_node(folderview, new_item);
 
 	folder_write_list();
 }
@@ -2639,11 +2638,6 @@ static void folderview_move_to(FolderView *folderview, FolderItem *from_folder,
 		main_window_cursor_normal(folderview->mainwin);
 		STATUSBAR_POP(folderview->mainwin);
 		folder_item_update_thaw();
-		if (src_node)
-			gtk_ctree_remove_node(GTK_CTREE(folderview->ctree), src_node);
-		else 
-			debug_print("can't remove src node: is null\n");
-
 		folder_item_update_recursive(new_folder, F_ITEM_UPDATE_MSGCNT);
 
 		folderview_sort_folders(folderview, 
@@ -2845,9 +2839,16 @@ gboolean folderview_update_folder(gpointer source, gpointer userdata)
 	ctree = folderview->ctree;
 	g_return_val_if_fail(ctree != NULL, FALSE);
 
-	if (hookdata->update_flags & FOLDER_TREE_CHANGED) {
+	if (hookdata->update_flags & FOLDER_NEW_FOLDERITEM)
+		folderview_create_folder_node(folderview, hookdata->item);
+	else if (hookdata->update_flags & FOLDER_REMOVE_FOLDERITEM) {
+		GtkCTreeNode *node;
+
+		node = gtk_ctree_find_by_row_data(GTK_CTREE(ctree), NULL, hookdata->item);
+		if (node != NULL)
+			gtk_ctree_remove_node(GTK_CTREE(ctree), node);
+	} else if (hookdata->update_flags & FOLDER_TREE_CHANGED)
 		folderview_set(folderview);
-	}
 
 	return FALSE;
 }
@@ -3021,4 +3022,3 @@ static void folderview_drag_end_cb(GtkWidget	    *widget,
 	g_slist_free(folderview->nodes_to_recollapse);
 	folderview->nodes_to_recollapse = NULL;
 }
-

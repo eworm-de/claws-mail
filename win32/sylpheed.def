@@ -331,6 +331,15 @@ EXPORTS
 	addritem_print_item_folder 
 	addritem_print_item_group 
 	addritem_print_item_person 
+	addrqry_clear 
+	addrqry_create 
+	addrqry_free 
+	addrqry_print 
+	addrqry_set_idle_id 
+	addrqry_set_query 
+	addrqry_set_query_type 
+	addrqry_set_search_term 
+	addrqry_set_server 
 	addrselect_create_item 
 	addrselect_create_node 
 	addrselect_get_list 
@@ -1487,6 +1496,12 @@ EXPORTS
 	qp_encode_line 
 	qp_get_q_encoding_len 
 	qp_q_encode 
+	qrymgr_add_query 
+	qrymgr_delete_query 
+	qrymgr_find_query 
+	qrymgr_initialize 
+	qrymgr_print 
+	qrymgr_teardown 
 	quote_fmt_create_buffer 
 	quote_fmt_delete_buffer 
 	quote_fmt_flush_buffer 

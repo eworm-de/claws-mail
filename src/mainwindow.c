@@ -1550,16 +1550,6 @@ void main_window_add_mbox(MainWindow *mainwin)
 
 	folder_add(folder);
 
-	item = folder_item_new(folder, folder->name, NULL);
-	item->folder = folder;
-	folder->node = g_node_new(item);
-
-	folder_create_folder(item, "inbox");
-	folder_create_folder(item, "outbox");
-	folder_create_folder(item, "queue");
-	folder_create_folder(item, "draft");
-	folder_create_folder(item, "trash");
-
 	folderview_set(mainwin->folderview);
 }
 
