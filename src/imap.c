@@ -3692,7 +3692,6 @@ static gint get_list_of_uids(Folder *folder, IMAPFolderItem *item, GSList **msgn
 	GSList *uidlist, *elem;
 	gchar *cmd_buf;
 
-	*msgnum_list = NULL;
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, -1);
 
@@ -3766,7 +3765,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
 	IMAPSession *session;
 	gint ok, nummsgs = 0, exists, recent, uid_val, uid_next, unseen;
-	GSList *uidlist;
+	GSList *uidlist = NULL;
 	gchar *dir;
 	gboolean selected_folder;
 
@@ -4118,7 +4117,8 @@ static gint imap_get_flags(Folder *folder, FolderItem *item,
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(item != NULL, -1);
-	g_return_val_if_fail(msginfo_list != NULL, -1);
+	if (msginfo_list == NULL)
+		return 0;
 
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, -1);
