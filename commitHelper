@@ -53,6 +53,9 @@ fi;
 if [ "$name" == "reboot" ]; then
 	name="christoph";
 fi;
+if [ "$name" == "leroyc" ]; then
+	name="colin";
+fi;
 
 log="`date --utc +%Y-%m-%d` [$name]\t$nextsversion\n\n"
 for line in $files; do
