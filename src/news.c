@@ -751,9 +751,9 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 		begin = cache_last + 1;
 	end = last;
 
-	if (prefs_common.max_articles > 0 &&
-	    end - begin + 1 > prefs_common.max_articles)
-		begin = end - prefs_common.max_articles + 1;
+	if (item->account->max_articles > 0 &&
+	    end - begin + 1 > item->account->max_articles)
+		begin = end - item->account->max_articles + 1;
 
 	log_message(_("getting xover %d - %d in %s...\n"),
 		    begin, end, item->path);

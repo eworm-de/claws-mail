@@ -89,9 +89,6 @@ static struct Receive {
 	GtkWidget *checkbtn_newmail_manu;
 	GtkWidget *entry_newmail_notify_cmd;
 	GtkWidget *hbox_newmail_notify;
-
-	GtkWidget *spinbtn_maxarticle;
-	GtkObject *spinbtn_maxarticle_adj;
 } receive;
 
 static struct Send {
@@ -341,10 +338,6 @@ static PrefParam param[] = {
  	 &receive.entry_newmail_notify_cmd,
  	 prefs_set_data_from_entry, prefs_set_entry},
  
-	{"max_news_articles", "300", &prefs_common.max_articles, P_INT,
-	 &receive.spinbtn_maxarticle,
-	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
-
 	/* Send */
 	{"use_ext_sendmail", "FALSE", &prefs_common.use_extsend, P_BOOL,
 	 &p_send.checkbtn_extsend,
@@ -427,7 +420,7 @@ static PrefParam param[] = {
 	{"check_while_typing", "TRUE", &prefs_common.check_while_typing,
 	 P_BOOL, &spelling.checkbtn_check_while_typing,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"misspelled_color", "16711680", &prefs_common.misspelled_col, P_INT,
+	{"misspelled_color", "16711680", &prefs_common.misspelled_col, P_COLOR,
 	 NULL, NULL, NULL},
 #endif
 	{"reply_with_quote", "TRUE", &prefs_common.reply_with_quote, P_BOOL,
@@ -693,17 +686,17 @@ static PrefParam param[] = {
 	 &message.chkbtn_enablecol,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
-	{"quote_level1_color", "179", &prefs_common.quote_level1_col, P_INT,
+	{"quote_level1_color", "179", &prefs_common.quote_level1_col, P_COLOR,
 	 NULL, NULL, NULL},
-	{"quote_level2_color", "179", &prefs_common.quote_level2_col, P_INT,
+	{"quote_level2_color", "179", &prefs_common.quote_level2_col, P_COLOR,
 	 NULL, NULL, NULL},
-	{"quote_level3_color", "179", &prefs_common.quote_level3_col, P_INT,
+	{"quote_level3_color", "179", &prefs_common.quote_level3_col, P_COLOR,
 	 NULL, NULL, NULL},
-	{"uri_color", "32512", &prefs_common.uri_col, P_INT,
+	{"uri_color", "32512", &prefs_common.uri_col, P_COLOR,
 	 NULL, NULL, NULL},
-	{"target_folder_color", "14294218", &prefs_common.tgt_folder_col, P_INT,
+	{"target_folder_color", "14294218", &prefs_common.tgt_folder_col, P_COLOR,
 	 NULL, NULL, NULL},
-	{"signature_color", "7960953", &prefs_common.signature_col, P_INT,
+	{"signature_color", "7960953", &prefs_common.signature_col, P_COLOR,
 	 NULL, NULL, NULL},
 	{"recycle_quote_colors", "FALSE", &prefs_common.recycle_quote_colors,
 	 P_BOOL, NULL, NULL, NULL},
@@ -890,7 +883,7 @@ static PrefParam param[] = {
 	{"cache_min_keep_time", "15", &prefs_common.cache_min_keep_time, P_INT,
 	 NULL, NULL, NULL},
 
-	{"color_new", "179", &prefs_common.color_new, P_INT,
+	{"color_new", "179", &prefs_common.color_new, P_COLOR,
 	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
@@ -1151,11 +1144,6 @@ static void prefs_receive_create(void)
 	GtkWidget *entry_newmail_notify_cmd;
 	GtkWidget *label_newmail_notify_cmd;
 
-	GtkWidget *frame_news;
-	GtkWidget *label_maxarticle;
-	GtkWidget *spinbtn_maxarticle;
-	GtkObject *spinbtn_maxarticle_adj;
-
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
@@ -1302,31 +1290,6 @@ static void prefs_receive_create(void)
 				 prefs_common.newmail_notify_auto || 
 				 prefs_common.newmail_notify_manu);
 
-	PACK_FRAME(vbox1, frame_news, _("News"));
-
-	hbox = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox);
-	gtk_container_add (GTK_CONTAINER (frame_news), hbox);
-	gtk_container_set_border_width (GTK_CONTAINER (hbox), 8);
-
-	label_maxarticle = gtk_label_new
-		(_("Maximum number of articles to download\n"
-		   "(unlimited if 0 is specified)"));
-	gtk_widget_show (label_maxarticle);
-	gtk_box_pack_start (GTK_BOX (hbox), label_maxarticle, FALSE, FALSE, 0);
-	gtk_label_set_justify (GTK_LABEL (label_maxarticle), GTK_JUSTIFY_LEFT);
-
-	spinbtn_maxarticle_adj =
-		gtk_adjustment_new (300, 0, 10000, 10, 100, 100);
-	spinbtn_maxarticle = gtk_spin_button_new
-		(GTK_ADJUSTMENT (spinbtn_maxarticle_adj), 10, 0);
-	gtk_widget_show (spinbtn_maxarticle);
-	gtk_box_pack_start (GTK_BOX (hbox), spinbtn_maxarticle,
-			    FALSE, FALSE, 0);
-	gtk_widget_set_usize (spinbtn_maxarticle, 64, -1);
-	gtk_spin_button_set_numeric
-		(GTK_SPIN_BUTTON (spinbtn_maxarticle), TRUE);
-
 	receive.checkbtn_incext = checkbtn_incext;
 	receive.entry_incext    = entry_incext;
 	/* receive.button_incext   = button_incext; */
@@ -1347,9 +1310,6 @@ static void prefs_receive_create(void)
 	receive.checkbtn_newmail_manu  = checkbtn_newmail_manu;
 	receive.hbox_newmail_notify    = hbox_newmail_notify;
 	receive.entry_newmail_notify_cmd = entry_newmail_notify_cmd;
-
-	receive.spinbtn_maxarticle     = spinbtn_maxarticle;
-	receive.spinbtn_maxarticle_adj = spinbtn_maxarticle_adj;
 }
 
 static void prefs_send_create(void)

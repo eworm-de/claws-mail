@@ -37,6 +37,12 @@
 #include "utils.h"
 #include "gtkutils.h"
 
+#define CL(x)	(((gulong) (x) >> (gulong) 8) & 0xFFUL)
+#define RGB_FROM_GDK_COLOR(c) \
+	((CL(c.red)   << (gulong) 16) | \
+	 (CL(c.green) << (gulong)  8) | \
+	 (CL(c.blue)))
+
 typedef enum
 {
 	DUMMY_PARAM
@@ -122,6 +128,7 @@ void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 	gint i;
 	gint name_len;
 	const gchar *value;
+	GdkColor color;
 
 	for (i = 0; param[i].name != NULL; i++) {
 		name_len = strlen(param[i].name);
@@ -165,6 +172,13 @@ void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 		case P_USHORT:
 			*((gushort *)param[i].data) =
 				(gushort)atoi(value);
+			break;
+		case P_COLOR:
+			if (gdk_color_parse(value, &color)) 
+				*((gulong *)param[i].data) = RGB_FROM_GDK_COLOR(color); 
+			else 
+				/* be compatible and accept ints */
+				*((gulong *)param[i].data) = strtoul(value, 0, 10); 
 			break;
 		default:
 			break;
@@ -291,6 +305,10 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 			g_snprintf(buf, sizeof(buf), "%s=%d\n", param[i].name,
 				   *((gushort *)param[i].data));
 			break;
+		case P_COLOR:
+			g_snprintf(buf, sizeof buf,  "%s=#%6.6lx\n", param[i].name,
+				   *((gulong *) param[i].data));
+			break;
 		default:
 			buf[0] = '\0';
 		}
@@ -309,6 +327,7 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 void prefs_set_default(PrefParam *param)
 {
 	gint i;
+	GdkColor color;
 
 	g_return_if_fail(param != NULL);
 
@@ -364,6 +383,16 @@ void prefs_set_default(PrefParam *param)
 					(gushort)atoi(param[i].defval);
 			else
 				*((gushort *)param[i].data) = 0;
+			break;
+		case P_COLOR:
+			if (param[i].defval != NULL && gdk_color_parse(param[i].defval, &color))
+				*((gulong *)param[i].data) =
+					RGB_FROM_GDK_COLOR(color);
+			else if (param[i].defval)
+				/* be compatible and accept ints */
+				*((gulong *)param[i].data) = strtoul(param[i].defval, 0, 10); 
+			else
+				*((gulong *)param[i].data) = 0; 
 			break;
 		default:
 			break;
@@ -541,6 +570,7 @@ void prefs_set_dialog_to_default(PrefParam *param)
 			tmpparam.data = &enum_data;
 			break;
 		case P_OTHER:
+		default:
 			break;
 		}
 		tmpparam.widget_set_func(&tmpparam);
@@ -552,6 +582,7 @@ void prefs_set_dialog_to_default(PrefParam *param)
 void prefs_set_data_from_entry(PrefParam *pparam)
 {
 	gchar **str, *entry_str;
+	GdkColor color;
 
 	g_return_if_fail(*pparam->widget != NULL);
 

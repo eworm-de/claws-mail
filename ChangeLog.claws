@@ -1,3 +1,59 @@
+2003-02-20 [colin]	0.8.10claws33
+	
+	* src/prefs_account.c
+		Better wording
+
+2003-02-20 [colin]	0.8.10claws32
+
+	* src/compose.c
+		Remove useless '&& !to_sender' 
+
+2003-02-20 [darko]
+
+	* AUTHORS
+		change my e-mail address
+
+2003-02-19 [colin]	0.8.10claws31
+
+	* src/prefs_common.c
+		X11 style colors for every configurable color
+
+2003-02-19 [alfons]	0.8.10claws30
+
+	* src/prefs_gtk.[ch]
+	* src/prefs_common.c
+		for color_new accept both plain integers and X11 style color
+		names (as found in /usr/lib/X11/rgb.txt)
+
+2003-02-19 [paul]	0.8.10claws29
+
+	* src/mainwindow.c
+		add tooltips to online/offline button and account selector
+		button
+
+2003-02-19 [paul]	0.8.10claws28
+
+	* src/folder.c
+	  src/news.c
+	  src/prefs_account.[ch]
+	  src/prefs_common.[ch]
+	  	move 'Maximum number of articles to download' to
+		account prefs.
+		clean up account prefs gui a little by hiding entries
+		rather then greying out entries
+
+2003-02-19 [hiro]	0.8.10claws27
+
+	* src/common/utils.c
+		fix bug #54 'yesterdays date is displayed in the message 
+		summary window'
+
+2003-02-19 [paul]	0.8.10claws26
+
+	* src/compose.c
+		fix bug reported in Feature Request [688596] 
+		'Reply-to header in news'
+
 2003-02-18 [paul]	0.8.10claws25
 
 	* src/select-keys.c

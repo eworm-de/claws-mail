@@ -737,6 +737,9 @@ MainWindow *main_window_create(SeparateType type)
 	GtkWidget *offline_pixmap;
 	GtkWidget *online_switch;
 	GtkWidget *offline_switch;
+	GtkTooltips *offline_tip;
+	GtkTooltips *online_tip;
+	GtkTooltips *sel_ac_tip;
 
 	FolderView *folderview;
 	SummaryView *summaryview;
@@ -828,8 +831,14 @@ MainWindow *main_window_create(SeparateType type)
 
 	online_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_WORK_ONLINE);
 	offline_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_WORK_OFFLINE);
+	online_tip = gtk_tooltips_new();
 	online_switch = gtk_button_new ();
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(online_tip),
+			     online_switch, _("Go offline"), NULL);
+	offline_tip = gtk_tooltips_new();
 	offline_switch = gtk_button_new ();
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(offline_tip),
+			     offline_switch, _("Go online"), NULL);
 	gtk_container_add (GTK_CONTAINER(online_switch), online_pixmap);
 	gtk_button_set_relief (GTK_BUTTON(online_switch), GTK_RELIEF_NONE);
 	gtk_signal_connect (GTK_OBJECT(online_switch), "clicked", (GtkSignalFunc)online_switch_clicked, mainwin);
@@ -842,7 +851,10 @@ MainWindow *main_window_create(SeparateType type)
 	statuslabel = gtk_label_new("");
 	gtk_box_pack_start(GTK_BOX(hbox_stat), statuslabel, FALSE, FALSE, 0);
 
+	sel_ac_tip = gtk_tooltips_new();
 	ac_button = gtk_button_new();
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(sel_ac_tip),
+			     ac_button, _("Select account"), NULL);
 	gtk_button_set_relief(GTK_BUTTON(ac_button), GTK_RELIEF_NONE);
 	GTK_WIDGET_UNSET_FLAGS(ac_button, GTK_CAN_FOCUS);
 	gtk_widget_set_usize(ac_button, -1, 1);
