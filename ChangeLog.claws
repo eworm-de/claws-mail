@@ -1,3 +1,8 @@
+2002-04-14 [alfons]	0.7.4claws81
+
+	* src/passphrase.c
+		add #include <sys/types.h> for mode_t and off_t 
+
 2002-04-13 [paul]	0.7.4claws80
 	
 	* src/main.c
