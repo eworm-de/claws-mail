@@ -3229,15 +3229,17 @@ static void compose_create_header_entry(Compose *compose) {
 	gtk_editable_set_editable(GTK_EDITABLE(GTK_COMBO(combo)->entry), FALSE);
 	gtk_widget_show(combo);
 	gtk_table_attach(GTK_TABLE(compose->header_table), combo, 0, 1, compose->header_nextrow, compose->header_nextrow+1, GTK_SHRINK, GTK_FILL, 0, 0);
-
-	/* Set Type of new Entry */
-	switch(compose->account->protocol) {
-		case A_NNTP:
-			header = _("Newsgroups:");
-			break;
-		default:
-			header = _("To:");
-			break;
+	if(compose->header_last) {	
+		header = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry));
+	} else {
+		switch(compose->account->protocol) {
+			case A_NNTP:
+				header = _("Newsgroups:");
+				break;
+			default:
+				header = _("To:");
+				break;
+		}								    
 	}
 	gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo)->entry), header);
 
@@ -3264,7 +3266,7 @@ static void compose_add_header_entry(Compose *compose, gchar *header, gchar *tex
 	compose_headerentry *last_header;
 	
 	last_header = compose->header_last;
-
+	
 	gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(last_header->combo)->entry), header);
 	gtk_entry_set_text(GTK_ENTRY(last_header->entry), text);
 }
@@ -3400,6 +3402,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	header_table = gtk_table_new(2, 2, FALSE);
 	gtk_widget_show(header_table);
+	gtk_container_set_border_width(GTK_CONTAINER(header_table), 2);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(header_scrolledwin), header_table);
 	count = 0;
 
