@@ -1,3 +1,11 @@
+2003-01-10
+
+	* src/compose.c
+	  src/folderview.c
+	  src/prefs_folder_item.c: English fix (property -> properties).
+	* src/prefs_filter.c: alert if entry is not saved.
+	  prefs_filter_dialog_to_filter(): new.
+
 2003-01-09
 
 	* src/codeconv.c: conv_encode_header(): fixed a bug which output raw

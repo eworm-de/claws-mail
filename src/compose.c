@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -480,7 +480,7 @@ static GtkItemFactoryEntry compose_popup_entries[] =
 	{N_("/_Add..."),	NULL, compose_attach_cb, 0, NULL},
 	{N_("/_Remove"),	NULL, compose_attach_remove_selected, 0, NULL},
 	{N_("/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Property..."),	NULL, compose_attach_property, 0, NULL}
+	{N_("/_Properties..."),	NULL, compose_attach_property, 0, NULL}
 };
 
 static GtkItemFactoryEntry compose_entries[] =
@@ -5430,7 +5430,7 @@ static void compose_attach_property_create(gboolean *cancelled)
 	window = gtk_window_new(GTK_WINDOW_DIALOG);
 	gtk_widget_set_usize(window, 480, -1);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
-	gtk_window_set_title(GTK_WINDOW(window), _("Property"));
+	gtk_window_set_title(GTK_WINDOW(window), _("Properties"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",

@@ -1,3 +1,12 @@
+2003-01-10
+
+	* src/compose.c
+	  src/folderview.c
+	  src/prefs_folder_item.c: 英語の修正(property -> properties)。
+	* src/prefs_filter.c: エントリが保存されていなければ警告するように
+	  した。
+	  prefs_filter_dialog_to_filter(): 新規。
+
 2003-01-09
 
 	* src/codeconv.c: conv_encode_header(): 改行の後に生の文字列を出力
