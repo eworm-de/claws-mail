@@ -1,3 +1,10 @@
+2003-10-20 [alfons]	0.9.6claws37
+
+	* src/noticeview.c
+		fix invalid argument warning
+	* src/pgpmime.c
+		no in place variable
+
 2003-10-20 [paul]	0.9.6claws36
 
 	* src/compose.[ch]

@@ -23,10 +23,10 @@
 
 #ifdef USE_GPGME
 
+#include "defs.h"
 #include <glib.h>
 #include <gpgme.h>
 
-#include "defs.h"
 #include "utils.h"
 #include "privacy.h"
 #include "procmime.h"
@@ -145,9 +145,10 @@ static gint pgpmime_check_signature(MimeInfo *mimeinfo)
 
 	textstr = g_string_new("");
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		gchar *buf2;
+
 		if (IS_BOUNDARY(buf, boundary, boundary_len))
 			break;
-		gchar *buf2;
 		
 		buf2 = canonicalize_str(buf);
 		g_string_append(textstr, buf2);
