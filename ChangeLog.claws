@@ -19,7 +19,7 @@
 		Fix memory corruption when entering procmsg_msginfo_free()
 		with unitialized msginfo. Thanks Valgrind.
 
-2004-08-29 [colin]	0.9.12cvs79
+2004-08-29 [colin]	0.9.12cvs84
 
 	* src/mimeview.c
 		Don't escape filenames before saving - that's 
