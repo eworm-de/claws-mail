@@ -42,7 +42,7 @@ struct _MBOXFolder
 
 Folder	*mbox_folder_new	(const gchar	*name,
 				 const gchar	*path);
-void     mbox_folder_destroy	(MBOXFolder	*folder);
+void     mbox_folder_destroy	(Folder		*folder);
 
 
 GSList *mbox_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache);

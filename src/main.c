@@ -230,12 +230,11 @@ int main(int argc, char *argv[])
 	gtk_set_locale();
 	gtk_init(&argc, &argv);
 
-#ifndef WIN32
+#ifdef CRASH_DIALOG
 	if (cmd.crash) {
 		crash_main(cmd.crash_params);
 		return 0;
 	}
-
 	crash_install_handlers();
 #endif
 
@@ -329,21 +328,12 @@ int main(int argc, char *argv[])
 	}
 	set_log_file(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log");
 
-	if (is_file_exist(RC_DIR G_DIR_SEPARATOR_S "assortrc") &&
-	    !is_file_exist(RC_DIR G_DIR_SEPARATOR_S "filterrc")) {
-		if (Xrename(RC_DIR G_DIR_SEPARATOR_S "assortrc",
-			   RC_DIR G_DIR_SEPARATOR_S "filterrc") < 0)
-			FILE_OP_ERROR(RC_DIR G_DIR_SEPARATOR_S "assortrc",
-				      "rename");
-	}
-
 #ifdef WIN32
 	/*XXX:tm */
 	prefs_common_init_config();
 	start_mswin_helper();
 	w32_mailcap_create();
 #endif
- 
 	prefs_common_init();
 	prefs_common_read_config();
 

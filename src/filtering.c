@@ -316,7 +316,6 @@ static void filter_msginfo(GSList * filtering_list, FolderItem *inbox,
 	GSList	*l;
 	gboolean final;
 	gboolean applied;
-	gint val;
 	
 	if (info == NULL) {
 		g_warning(_("msginfo is not set"));

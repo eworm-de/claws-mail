@@ -111,10 +111,10 @@ static gint news_remove_msg		 (Folder	*folder,
 gint news_get_num_list		 	 (Folder 	*folder, 
 					  FolderItem 	*item,
 					  GSList       **list);
-MsgInfo *news_fetch_msginfo		 (Folder 	*folder, 
+MsgInfo *news_get_msginfo		 (Folder 	*folder, 
 					  FolderItem 	*item,
 					  gint 		 num);
-GSList *news_fetch_msginfos		 (Folder 	*folder,
+GSList *news_get_msginfos		 (Folder 	*folder,
 					  FolderItem 	*item,
 					  GSList 	*msgnum_list);
 
@@ -160,8 +160,8 @@ static void news_folder_init(Folder *folder, const gchar *name,
 	folder->destroy      = news_folder_destroy;
 	folder->remove_msg   = news_remove_msg;
 	folder->get_num_list = news_get_num_list;
-	folder->fetch_msginfo = news_fetch_msginfo;
-	folder->fetch_msginfos = news_fetch_msginfos;
+	folder->get_msginfo  = news_get_msginfo;
+	folder->get_msginfos = news_get_msginfos;
 }
 
 #if USE_SSL
@@ -1098,7 +1098,7 @@ gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_list)
 		} \
 	}
 
-MsgInfo *news_fetch_msginfo(Folder *folder, FolderItem *item, gint num)
+MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 {
 	NNTPSession *session;
 	MsgInfo *msginfo = NULL;
@@ -1168,7 +1168,7 @@ MsgInfo *news_fetch_msginfo(Folder *folder, FolderItem *item, gint num)
 	return msginfo;
 }
 
-static GSList *news_fetch_msginfo_from_to(NNTPSession *session, FolderItem *item, guint begin, guint end)
+static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *item, guint begin, guint end)
 {
 	gchar buf[NNTPBUFSIZE];
 	GSList *newlist = NULL;
@@ -1270,7 +1270,7 @@ gint news_fetch_msgnum_sort(gconstpointer a, gconstpointer b)
 	return (GPOINTER_TO_INT(a) - GPOINTER_TO_INT(b));
 }
 
-GSList *news_fetch_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
+GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 {
 	NNTPSession *session;
 	GSList *elem, *msginfo_list = NULL, *tmp_msgnum_list, *tmp_msginfo_list;
@@ -1292,13 +1292,13 @@ GSList *news_fetch_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_lis
 	for(elem = g_slist_next(tmp_msgnum_list); elem != NULL; elem = g_slist_next(elem)) {
 		next = GPOINTER_TO_INT(elem->data);
 		if(next != (last + 1)) {
-			tmp_msginfo_list = news_fetch_msginfo_from_to(session, item, first, last);
+			tmp_msginfo_list = news_get_msginfos_for_range(session, item, first, last);
 			msginfo_list = g_slist_concat(msginfo_list, tmp_msginfo_list);
 			first = next;
 		}
 		last = next;
 	}
-	tmp_msginfo_list = news_fetch_msginfo_from_to(session, item, first, last);
+	tmp_msginfo_list = news_get_msginfos_for_range(session, item, first, last);
 	msginfo_list = g_slist_concat(msginfo_list, tmp_msginfo_list);
 
 	g_slist_free(tmp_msgnum_list);

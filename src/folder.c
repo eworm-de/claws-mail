@@ -176,8 +176,8 @@ static void folder_init(Folder *folder, const gchar *name)
 	folder->item_new = NULL;
 	folder->item_destroy = NULL;
 	folder->fetch_msg = NULL;
-	folder->fetch_msginfo = NULL;
-	folder->fetch_msginfos = NULL;
+	folder->get_msginfo = NULL;
+	folder->get_msginfos = NULL;
 	folder->get_num_list = NULL;
 	folder->ui_func = NULL;
 	folder->ui_func_data = NULL;
@@ -1222,7 +1222,7 @@ gint folder_item_scan(FolderItem *item)
 
 				msgcache_remove_msg(item->cache, msginfo->msgnum);
 
-				if (NULL != (newmsginfo = folder->fetch_msginfo(folder, item, folder_cur_num))) {
+				if (NULL != (newmsginfo = folder->get_msginfo(folder, item, folder_cur_num))) {
 					msgcache_add_msg(item->cache, newmsginfo);
 					if (MSG_IS_NEW(newmsginfo->flags) && !MSG_IS_IGNORE_THREAD(newmsginfo->flags))
 						newcnt++;
@@ -1268,13 +1268,13 @@ gint folder_item_scan(FolderItem *item)
 	g_slist_free(cache_list);
 	g_slist_free(folder_list);
 
-	if (folder->fetch_msginfos) {
+	if (folder->get_msginfos) {
 		GSList *elem;
 		GSList *newmsg_list;
 		MsgInfo *msginfo;
 		
 		if (new_list) {
-			newmsg_list = folder->fetch_msginfos(folder, item, new_list);
+			newmsg_list = folder->get_msginfos(folder, item, new_list);
 			for (elem = newmsg_list; elem != NULL; elem = g_slist_next(elem)) {
 				msginfo = (MsgInfo *) elem->data;
 				msgcache_add_msg(item->cache, msginfo);
@@ -1287,7 +1287,7 @@ gint folder_item_scan(FolderItem *item)
 			}
 			g_slist_free(newmsg_list);
 		}
-	} else if (folder->fetch_msginfo) {
+	} else if (folder->get_msginfo) {
 		GSList *elem;
 	
 		for (elem = new_list; elem != NULL; elem = g_slist_next(elem)) {
@@ -1295,7 +1295,7 @@ gint folder_item_scan(FolderItem *item)
 			guint num;
 
 			num = GPOINTER_TO_INT(elem->data);
-			msginfo = folder->fetch_msginfo(folder, item, num);
+			msginfo = folder->get_msginfo(folder, item, num);
 			if (msginfo != NULL) {
 				msgcache_add_msg(item->cache, msginfo);
 				if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
@@ -1463,7 +1463,7 @@ void folder_item_write_cache(FolderItem *item)
 	g_free(mark_file);
 }
 
-MsgInfo *folder_item_fetch_msginfo(FolderItem *item, gint num)
+MsgInfo *folder_item_get_msginfo(FolderItem *item, gint num)
 {
 	Folder *folder;
 	MsgInfo *msginfo;
@@ -1477,8 +1477,8 @@ MsgInfo *folder_item_fetch_msginfo(FolderItem *item, gint num)
 	if ((msginfo = msgcache_get_msg(item->cache, num)) != NULL)
 		return msginfo;
 	
-	g_return_val_if_fail(folder->fetch_msginfo, NULL);
-	if ((msginfo = folder->fetch_msginfo(folder, item, num)) != NULL) {
+	g_return_val_if_fail(folder->get_msginfo, NULL);
+	if ((msginfo = folder->get_msginfo(folder, item, num)) != NULL) {
 		msgcache_add_msg(item->cache, msginfo);
 		return msginfo;
 	}
@@ -1486,7 +1486,7 @@ MsgInfo *folder_item_fetch_msginfo(FolderItem *item, gint num)
 	return NULL;
 }
 
-MsgInfo *folder_item_fetch_msginfo_by_id(FolderItem *item, const gchar *msgid)
+MsgInfo *folder_item_get_msginfo_by_msgid(FolderItem *item, const gchar *msgid)
 {
 	Folder *folder;
 	MsgInfo *msginfo;
@@ -1548,7 +1548,7 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 	num = folder->add_msg(folder, dest, file, remove_source);
 
         if (num > 0) {
-    		msginfo = folder->fetch_msginfo(folder, dest, num);
+    		msginfo = folder->get_msginfo(folder, dest, num);
 
 		if (msginfo != NULL) {
 			if (MSG_IS_NEW(msginfo->flags))
@@ -1744,7 +1744,7 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 		MsgInfo *newmsginfo;
     
 		/* Add new msginfo to dest folder */
-		if (NULL != (newmsginfo = folder->fetch_msginfo(folder, dest, num))) {
+		if (NULL != (newmsginfo = folder->get_msginfo(folder, dest, num))) {
 			newmsginfo->flags.perm_flags = msginfo->flags.perm_flags;
 			
 			if (dest->stype == F_OUTBOX || dest->stype == F_QUEUE  ||
@@ -1851,7 +1851,7 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 		if (num != -1) {
 			MsgInfo *newmsginfo;
 
-			newmsginfo = folder->fetch_msginfo(folder, dest, num);
+			newmsginfo = folder->get_msginfo(folder, dest, num);
 			if (newmsginfo) {
 				newmsginfo->flags.perm_flags = msginfo->flags.perm_flags;
 				if (dest->stype == F_OUTBOX ||
@@ -1950,7 +1950,7 @@ gint folder_item_copy_msg(FolderItem *dest, MsgInfo *msginfo)
 	if (num != -1) {
 		MsgInfo *newmsginfo;
 
-		if (NULL != (newmsginfo = folder->fetch_msginfo(folder, dest, num))) {
+		if (NULL != (newmsginfo = folder->get_msginfo(folder, dest, num))) {
 			newmsginfo->flags.perm_flags = msginfo->flags.perm_flags;
 			if (dest->stype == F_OUTBOX ||
 			    dest->stype == F_QUEUE  ||
@@ -2038,7 +2038,7 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 		if (num != -1) {
 			MsgInfo *newmsginfo;
 
-			newmsginfo = folder->fetch_msginfo(folder, dest, num);
+			newmsginfo = folder->get_msginfo(folder, dest, num);
 			if (newmsginfo) {
 				newmsginfo->flags.perm_flags = msginfo->flags.perm_flags;
 				if (dest->stype == F_OUTBOX ||

@@ -101,13 +101,6 @@ enum {
 	N_ACTION_VAL
 };
 
-typedef struct _ToolbarText ToolbarText;
-struct _ToolbarText 
-{
-	gchar *index_str;
-	gchar *descr;
-};
-
 typedef struct _ToolbarItem ToolbarItem;
 struct _ToolbarItem 
 {

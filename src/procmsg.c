@@ -903,12 +903,33 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 
 	return ret;
 }
+gint procmsg_remove_special_headers(const gchar *in, const gchar *out)
+{
+	FILE *fp, *outfp;
+	gchar buf[BUFFSIZE];
+	
+	if ((fp = fopen(in, "rb")) == NULL) {
+		FILE_OP_ERROR(in, "fopen");
+		return -1;
+	}
+	if ((outfp = fopen(out, "wb")) == NULL) {
+		FILE_OP_ERROR(out, "fopen");
+		fclose(fp);
+		return -1;
+	}
+	while (fgets(buf, sizeof(buf), fp) != NULL)
+		if (buf[0] == '\r' || buf[0] == '\n') break;
+	while (fgets(buf, sizeof(buf), fp) != NULL)
+		fputs(buf, outfp);
+	fclose(outfp);
+	fclose(fp);
+	return 0;
 
+}
 gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 			    gboolean is_queued)
 {
 	gint num;
-	FILE *fp;
 	MsgInfo *msginfo;
 
 	debug_print("saving sent message...\n");
@@ -920,26 +941,12 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 	/* remove queueing headers */
 	if (is_queued) {
 		gchar tmp[MAXPATHLEN + 1];
-		gchar buf[BUFFSIZE];
-		FILE *outfp;
 
 		g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg.out.%08x",
 			   get_rc_dir(), G_DIR_SEPARATOR, (guint)random());
-		if ((fp = fopen(file, "rb")) == NULL) {
-			FILE_OP_ERROR(file, "fopen");
+		
+		if (procmsg_remove_special_headers(file, tmp) !=0)
 			return -1;
-		}
-		if ((outfp = fopen(tmp, "wb")) == NULL) {
-			FILE_OP_ERROR(tmp, "fopen");
-			fclose(fp);
-			return -1;
-		}
-		while (fgets(buf, sizeof(buf), fp) != NULL)
-			if (buf[0] == '\r' || buf[0] == '\n') break;
-		while (fgets(buf, sizeof(buf), fp) != NULL)
-			fputs(buf, outfp);
-		fclose(outfp);
-		fclose(fp);
 
 		folder_item_scan(outbox);
 		if ((num = folder_item_add_msg(outbox, tmp, TRUE)) < 0) {
@@ -955,7 +962,7 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 		}
 		return -1;
 	}
-	msginfo = folder_item_fetch_msginfo(outbox, num);
+	msginfo = folder_item_get_msginfo(outbox, num);
 	if (msginfo != NULL) {
 	    procmsg_msginfo_unset_flags(msginfo, ~0, 0);
 	    procmsg_msginfo_free(msginfo);
@@ -1399,14 +1406,14 @@ gint procmsg_send_message_queue(const gchar *file)
 		if (item != NULL) {
 			MsgInfo *msginfo;
 			
-			msginfo = folder_item_fetch_msginfo(item, atoi(tokens[1]));
+			msginfo = folder_item_get_msginfo(item, atoi(tokens[1]));
 			if ((msginfo != NULL) && (strcmp(msginfo->msgid, tokens[2]) != 0)) {
 				procmsg_msginfo_free(msginfo);
 				msginfo = NULL;
 			}
 			
 			if (msginfo == NULL) {
-				msginfo = folder_item_fetch_msginfo_by_id(item, tokens[2]);
+				msginfo = folder_item_get_msginfo_by_msgid(item, tokens[2]);
 			}
 			
 			if (msginfo != NULL) {
@@ -1436,8 +1443,12 @@ msginfo->folder->folder->change_flags(msginfo->folder->folder, \
 
 void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
 {
-	FolderItem *item = msginfo->folder;
+	FolderItem *item;
 
+	g_return_if_fail(msginfo != NULL);
+	item = msginfo->folder;
+	g_return_if_fail(item != NULL);
+	
 	debug_print("Setting flags for message %d in folder %s\n", msginfo->msgnum, item->path);
 
 	/* if new flag is set */
@@ -1478,7 +1489,11 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 
 void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
 {
-	FolderItem *item = msginfo->folder;
+	FolderItem *item;
+
+	g_return_if_fail(msginfo != NULL);
+	item = msginfo->folder;
+	g_return_if_fail(item != NULL);	
 	
 	debug_print("Unsetting flags for message %d in folder %s\n", msginfo->msgnum, item->path);
 

@@ -60,7 +60,7 @@ GSList  *mh_get_msg_list	(Folder		*folder,
 gchar   *mh_fetch_msg		(Folder		*folder,
 				 FolderItem	*item,
 				 gint		 num);
-MsgInfo   *mh_fetch_msginfo	(Folder		*folder,
+MsgInfo   *mh_get_msginfo	(Folder		*folder,
 				 FolderItem	*item,
 				 gint		 num);
 gint     mh_add_msg		(Folder		*folder,
@@ -140,7 +140,7 @@ static void mh_folder_init(Folder *folder, const gchar *name, const gchar *path)
 
 /*	folder->get_msg_list        = mh_get_msg_list; */
 	folder->fetch_msg           = mh_fetch_msg;
-	folder->fetch_msginfo       = mh_fetch_msginfo;
+	folder->get_msginfo         = mh_get_msginfo;
 	folder->add_msg             = mh_add_msg;
 	folder->move_msg            = mh_move_msg;
 	folder->move_msgs_with_dest = mh_move_msgs_with_dest;
@@ -335,43 +335,19 @@ gchar *mh_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	return file;
 }
 
-MsgInfo *mh_fetch_msginfo(Folder *folder, FolderItem *item, gint num)
+MsgInfo *mh_get_msginfo(Folder *folder, FolderItem *item, gint num)
 {
-	gchar *path;
-	gchar *file;
-	MsgFlags flags;
 	MsgInfo *msginfo;
-	struct stat s;
+	gchar *file;
 
 	g_return_val_if_fail(item != NULL, NULL);
 	g_return_val_if_fail(num > 0, NULL);
 
-	path = folder_item_get_path(item);
-	file = g_strconcat(path, G_DIR_SEPARATOR_S, itos(num), NULL);
-	g_free(path);
-	if (!is_file_exist(file)) {
-		g_free(file);
-		return NULL;
-	}
+	file = mh_fetch_msg(folder, item, num);
+	if (!file) return NULL;
 
-	folder_item_set_default_flags(item, &flags);
-	msginfo = procheader_parse_file(file, flags, TRUE, FALSE);
-	if(!msginfo) {
-		g_free(file);
-		return NULL;
-	}
-
+	msginfo = mh_parse_msg(file, item);
 	msginfo->msgnum = num;
-	msginfo->folder = item;
-
-	if (stat(file, &s) < 0) {
-		FILE_OP_ERROR(file, "stat");
-		msginfo->size = 0;
-		msginfo->mtime = 0;
-	} else {
-		msginfo->size = s.st_size;
-		msginfo->mtime = s.st_mtime;
-	}
 
 	g_free(file);
 
@@ -655,12 +631,20 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 		    msginfo->msgnum, dest->path);
 	
 
-	if (copy_file(srcfile, destfile, TRUE) < 0) {
+	if ((MSG_IS_QUEUED(msginfo->flags) || MSG_IS_DRAFT(msginfo->flags))
+	&&  dest->stype != F_QUEUE && dest->stype != F_DRAFT) {
+		if (procmsg_remove_special_headers(srcfile, destfile) !=0) {
+			g_free(srcfile);
+			g_free(destfile);
+			return -1;
+		}
+	} else if (copy_file(srcfile, destfile, TRUE) < 0) {
 		FILE_OP_ERROR(srcfile, "copy");
 		g_free(srcfile);
 		g_free(destfile);
 		return -1;
 	}
+
 
 	if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
 		if (chmod(destfile, prefs->folder_chmod) < 0)

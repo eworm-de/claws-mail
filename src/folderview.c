@@ -2703,7 +2703,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		item = gtk_ctree_node_get_row_data(GTK_CTREE(widget), node);
 		src_item = folder_find_item_from_path(source);
 
-		if (!src_item || src_item->stype != F_NORMAL) {
+		if (!item || !src_item || src_item->stype != F_NORMAL) {
 			gtk_drag_finish(drag_context, FALSE, FALSE, time);			
 			return;
 		}

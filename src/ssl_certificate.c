@@ -121,33 +121,53 @@ char* ssl_certificate_to_string(SSLCertificate *cert)
 	unsigned char md[EVP_MAX_MD_SIZE];	
 	
 	/* issuer */	
-	 X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
-					NID_commonName, buf, 100);
-	 issuer_commonname = g_strdup(buf);
-	 X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
-					NID_localityName, buf, 100);
-	 issuer_location = g_strdup(buf);
-	 X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
-					NID_countryName, buf, 100);
-	 issuer_location = g_strconcat(issuer_location,", ",buf, NULL);
-	 X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
-					NID_organizationName, buf, 100);
-	 issuer_organization = g_strdup(buf);
+	if (X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
+				       NID_commonName, buf, 100) >= 0)
+		issuer_commonname = g_strdup(buf);
+	else
+		issuer_commonname = g_strdup(_("<not in certificate>"));
+	if (X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
+				       NID_localityName, buf, 100) >= 0) {
+		issuer_location = g_strdup(buf);
+		if (X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
+				       NID_countryName, buf, 100) >= 0)
+			issuer_location = g_strconcat(issuer_location,", ",buf, NULL);
+	} else if (X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
+				       NID_countryName, buf, 100) >= 0)
+		issuer_location = g_strdup(buf);
+	else
+		issuer_location = g_strdup(_("<not in certificate>"));
 
-	/* issuer */	
-	 X509_NAME_get_text_by_NID(X509_get_subject_name(cert->x509_cert), 
-					NID_commonName, buf, 100);
-	 subject_commonname = g_strdup(buf);
-	 X509_NAME_get_text_by_NID(X509_get_subject_name(cert->x509_cert), 
-					NID_localityName, buf, 100);
-	 subject_location = g_strdup(buf);
-	 X509_NAME_get_text_by_NID(X509_get_subject_name(cert->x509_cert), 
-					NID_countryName, buf, 100);
-	 subject_location = g_strconcat(subject_location,", ",buf, NULL);
-	 X509_NAME_get_text_by_NID(X509_get_subject_name(cert->x509_cert), 
-					NID_organizationName, buf, 100);
-	 subject_organization = g_strdup(buf);
-	 	 
+	if (X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
+				       NID_organizationName, buf, 100) >= 0)
+		issuer_organization = g_strdup(buf);
+	else 
+		issuer_organization = g_strdup(_("<not in certificate>"));
+	 
+	/* subject */	
+	if (X509_NAME_get_text_by_NID(X509_get_subject_name(cert->x509_cert), 
+				       NID_commonName, buf, 100) >= 0)
+		subject_commonname = g_strdup(buf);
+	else
+		subject_commonname = g_strdup(_("<not in certificate>"));
+	if (X509_NAME_get_text_by_NID(X509_get_subject_name(cert->x509_cert), 
+				       NID_localityName, buf, 100) >= 0) {
+		subject_location = g_strdup(buf);
+		if (X509_NAME_get_text_by_NID(X509_get_subject_name(cert->x509_cert), 
+				       NID_countryName, buf, 100) >= 0)
+			subject_location = g_strconcat(subject_location,", ",buf, NULL);
+	} else if (X509_NAME_get_text_by_NID(X509_get_subject_name(cert->x509_cert), 
+				       NID_countryName, buf, 100) >= 0)
+		subject_location = g_strdup(buf);
+	else
+		subject_location = g_strdup(_("<not in certificate>"));
+
+	if (X509_NAME_get_text_by_NID(X509_get_subject_name(cert->x509_cert), 
+				       NID_organizationName, buf, 100) >= 0)
+		subject_organization = g_strdup(buf);
+	else 
+		subject_organization = g_strdup(_("<not in certificate>"));
+	 
 	/* fingerprint */
 	X509_digest(cert->x509_cert, EVP_md5(), md, &n);
 	fingerprint = readable_fingerprint(md, (int)n);

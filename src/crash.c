@@ -21,6 +21,8 @@
 #	include <config.h>
 #endif
 
+#ifdef CRASH_DIALOG
+
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
@@ -134,7 +136,6 @@ void crash_main(const char *arg)
 	gchar **tokens;
 	unsigned long pid;
 	GString *output;
-	extern gchar *startup_dir;
 
 	crash_create_debugger_file();
 	tokens = g_strsplit(arg, ",", 0);
@@ -294,7 +295,7 @@ static void crash_save_crash_log(GtkButton *button, const gchar *text)
 
 	timer = time(NULL);
 	lt = localtime(&timer);
-	strftime(buf, sizeof buf, "sylpheed-crash-log-%y-%m-%d-%H-%M-%S.txt", lt);
+	strftime(buf, sizeof buf, "sylpheed-crash-log-%Y-%m-%d-%H-%M-%S.txt", lt);
 	if (NULL != (filename = filesel_select_file(_("Save crash information"), buf))
 	&&  *filename)
 		str_write_to_file(text, filename);
@@ -341,7 +342,7 @@ static void crash_debug(unsigned long crash_pid,
 		*argptr++ = "-x";
 		*argptr++ = filespec;
 		*argptr++ = exe_image;
-		*argptr++ = g_strdup_printf("%d", crash_pid);
+		*argptr++ = g_strdup_printf("%ld", crash_pid);
 		*argptr   = NULL;
 
 		/*
@@ -523,7 +524,7 @@ static void crash_handler(int sig)
 		args[0] = argv0; 
 		args[1] = "--debug";
 		args[2] = "--crash";
-		sprintf(buf, "%ld,%d,%s", getppid(), sig, argv0);
+		sprintf(buf, "%d,%d,%s", getppid(), sig, argv0);
 		args[3] = buf;
 		args[4] = NULL;
 
@@ -551,3 +552,4 @@ static void crash_cleanup_exit(void)
 	unlink(filename);
 }
 
+#endif

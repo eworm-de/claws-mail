@@ -193,7 +193,6 @@ void log_window_clear(GtkWidget *textw)
 	debug_print("Log window length: %u\n", length);
 	
 	if (length > prefs_common.loglength) {
-		gchar *lf;
 	        /* find the end of the first line after the cut off
 		 * point */
        	        point = length - prefs_common.loglength;

@@ -1297,6 +1297,8 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 		return NULL;
 
 	compose->redirect_filename = filename;
+	
+	compose_attach_parts(compose, msginfo);
 
 	if (msginfo->subject)
 #ifdef WIN32
@@ -1329,20 +1331,21 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	menu_set_sensitive(ifactory, "/File/Insert file", FALSE);
 	menu_set_sensitive(ifactory, "/File/Attach file", FALSE);
 	menu_set_sensitive(ifactory, "/File/Insert signature", FALSE);
-	menu_set_sensitive(ifactory, "/Edit/Paste", FALSE);
-	menu_set_sensitive(ifactory, "/Edit/Wrap current paragraph", FALSE);
-	menu_set_sensitive(ifactory, "/Edit/Wrap all long lines", FALSE);
-	menu_set_sensitive(ifactory, "/Edit/Edit with external editor", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Attach", FALSE);
+	menu_set_sensitive(ifactory, "/Edit", FALSE);
+	menu_set_sensitive(ifactory, "/Message/Save to draft folder", FALSE);
+	menu_set_sensitive(ifactory, "/Message/Save and keep editing", FALSE);
 #if USE_GPGME
 	menu_set_sensitive(ifactory, "/Message/Sign", FALSE);
 	menu_set_sensitive(ifactory, "/Message/Encrypt", FALSE);
 	menu_set_sensitive(ifactory, "/Message/Mode/MIME", FALSE);
 	menu_set_sensitive(ifactory, "/Message/Mode/Inline", FALSE);
 #endif
+	menu_set_sensitive(ifactory, "/Message/Priority", FALSE);
 	menu_set_sensitive(ifactory, "/Message/Request Return Receipt", FALSE);
-	menu_set_sensitive(ifactory, "/Tools/Template", FALSE);
+	menu_set_sensitive(ifactory, "/Tools/Show ruler", FALSE);
+	menu_set_sensitive(ifactory, "/Tools/Actions", FALSE);
 	
+	gtk_widget_set_sensitive(compose->toolbar->draft_btn, FALSE);
 	gtk_widget_set_sensitive(compose->toolbar->insert_btn, FALSE);
 	gtk_widget_set_sensitive(compose->toolbar->attach_btn, FALSE);
 	gtk_widget_set_sensitive(compose->toolbar->sig_btn, FALSE);
@@ -5225,34 +5228,35 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->redirect_filename = NULL;
 	compose->undostruct = undostruct;
 #if USE_ASPELL
-	
 	menu_set_sensitive(ifactory, "/Spelling", FALSE);
-        if (prefs_common.enable_aspell && prefs_common.dictionary &&
-	    strcmp(prefs_common.dictionary, _("None"))) {
-		gtkaspell = gtkaspell_new((const gchar*)prefs_common.dictionary,
-					  conv_get_current_charset_str(),
-					  prefs_common.misspelled_col,
-					  prefs_common.check_while_typing,
-					  prefs_common.use_alternate,
-					  GTK_STEXT(text));
-		if (!gtkaspell) {
-			alertpanel_error(_("Spell checker could not be started.\n%s"), gtkaspellcheckers->error_message);
-			gtkaspell_checkers_reset_error();
-		} else {
-
-			GtkWidget *menuitem;
-
-			if (!gtkaspell_set_sug_mode(gtkaspell, prefs_common.aspell_sugmode)) {
-				debug_print("Aspell: could not set suggestion mode %s\n",
-				    gtkaspellcheckers->error_message);
+	if (mode != COMPOSE_REDIRECT) {
+        	if (prefs_common.enable_aspell && prefs_common.dictionary &&
+	    	    strcmp(prefs_common.dictionary, _("None"))) {
+			gtkaspell = gtkaspell_new((const gchar*)prefs_common.dictionary,
+						  conv_get_current_charset_str(),
+						  prefs_common.misspelled_col,
+						  prefs_common.check_while_typing,
+						  prefs_common.use_alternate,
+						  GTK_STEXT(text));
+			if (!gtkaspell) {
+				alertpanel_error(_("Spell checker could not be started.\n%s"), gtkaspellcheckers->error_message);
 				gtkaspell_checkers_reset_error();
-			}
+			} else {
 
-			menuitem = gtk_item_factory_get_item(ifactory, "/Spelling/Spelling Configuration");
-			gtkaspell_populate_submenu(gtkaspell, menuitem);
-			menu_set_sensitive(ifactory, "/Spelling", TRUE);
-			}
-        }
+				GtkWidget *menuitem;
+
+				if (!gtkaspell_set_sug_mode(gtkaspell, prefs_common.aspell_sugmode)) {
+					debug_print("Aspell: could not set suggestion mode %s\n",
+				    	gtkaspellcheckers->error_message);
+					gtkaspell_checkers_reset_error();
+				}
+
+				menuitem = gtk_item_factory_get_item(ifactory, "/Spelling/Spelling Configuration");
+				gtkaspell_populate_submenu(gtkaspell, menuitem);
+				menu_set_sensitive(ifactory, "/Spelling", TRUE);
+				}
+        	}
+	}
 #endif
 
 	compose_select_account(compose, account);
@@ -5278,7 +5282,14 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	addressbook_set_target_compose(compose);
 	update_compose_actions_menu(ifactory, "/Tools/Actions", compose);
-	compose_set_template_menu(compose);
+	
+	if (mode != COMPOSE_REDIRECT)
+		compose_set_template_menu(compose);
+	else {
+		GtkWidget *menuitem;
+		menuitem = gtk_item_factory_get_item(ifactory, "/Tools/Template");
+		menu_set_sensitive(ifactory, "/Tools/Template", FALSE);
+	}
 
 	compose_list = g_list_append(compose_list, compose);
 
@@ -6810,11 +6821,13 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 					       TRUE);
 	}
 
-	newmsginfo = folder_item_fetch_msginfo(draft, msgnum);
-	procmsg_msginfo_unset_flags(newmsginfo, ~0, ~0);
-	MSG_SET_TMP_FLAGS(newmsginfo->flags, MSG_DRAFT);
-	folder_update_item(draft, TRUE);
-	procmsg_msginfo_free(newmsginfo);
+	newmsginfo = folder_item_get_msginfo(draft, msgnum);
+	if (newmsginfo) {
+		procmsg_msginfo_unset_flags(newmsginfo, ~0, ~0);
+		procmsg_msginfo_set_flags(newmsginfo, 0, MSG_DRAFT);
+		folder_update_item(draft, TRUE);
+		procmsg_msginfo_free(newmsginfo);
+	}
 	
 	lock = FALSE;
 
