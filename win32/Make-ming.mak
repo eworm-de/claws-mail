@@ -30,6 +30,9 @@ GCCVERSION=3
 # CYGWIN: set to 1 if building from cygwin shell (-mno-cygwin)
 CYGWIN=0
 
+# CROSS: Cross comilation prefix
+#CROSS=i586-mingw32msvc-
+
 ################################################################################
 # directory strucure as in README-w32.txt
 
@@ -78,12 +81,12 @@ endif
 
 ################################################################################
 
-CC=gcc
+CC=$(CROSS)gcc
 VPATH=../src:../libjconv
 DEFINES=-DHAVE_CONFIG_H -DHAVE_BYTE_TYPEDEF $(DEBUGDEF)
 EXTRALIBS=-lwsock32
 RESOURCE=appicon
-RESCOMP=windres
+RESCOMP=$(CROSS)windres
 
 FLAGS=$(DEBUGFLAG) $(BITFIELD) $(NOCYGWIN) $(OPTIMIZATION)
 
