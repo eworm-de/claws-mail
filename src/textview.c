@@ -292,7 +292,6 @@ TextView *textview_create(void)
 	textview->cur_pos          = 0;
 	textview->show_all_headers = FALSE;
 	textview->last_buttonpress = GDK_NOTHING;
-	textview->show_url_msgid   = 0;
 
 	return textview;
 }
@@ -1868,15 +1867,11 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 				/* single click: display url in statusbar */
 				if (event->button == 1 && textview->last_buttonpress != GDK_2BUTTON_PRESS) {
 					if (textview->messageview->mainwin) {
-						if (textview->show_url_msgid) {
-							TEXTVIEW_STATUSBAR_POP(textview);
-							textview->show_url_msgid = 0;
-						}
-							TEXTVIEW_STATUSBAR_PUSH(textview, trimmed_uri);
-							textview->show_url_timeout_tag = gtk_timeout_add( 4000, show_url_timeout_cb, textview );
+						TEXTVIEW_STATUSBAR_PUSH(textview, trimmed_uri);
+						textview->show_url_timeout_tag = gtk_timeout_add
+							(4000, show_url_timeout_cb, textview);
 					}
-				} else
-				if (!g_strncasecmp(uri->uri, "mailto:", 7)) {
+				} else if (!g_strncasecmp(uri->uri, "mailto:", 7)) {
 					if (event->button == 3) {
 						gchar *fromname, *fromaddress;
 						

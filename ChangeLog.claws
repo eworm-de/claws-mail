@@ -1,3 +1,9 @@
+2004-03-11 [alfons]	0.9.10claws3
+
+	* src/textview.[ch]
+		remove dead code that at one time controlled display of
+		URIs in status bar
+
 2004-03-10 [paul]	0.9.10claws2
 
 	* po/it.po
