@@ -117,6 +117,8 @@
 	perror(func); \
 }
 
+#define debug_print(format, data...) debug_print_real(__FILE__, __LINE__, format , ##data)
+
 /* for macro expansion */
 #define Str(x)	#x
 #define Xstr(x)	Str(x)
@@ -300,7 +302,7 @@ void get_rfc822_date		(gchar		*buf,
 void set_log_file	(const gchar *filename);
 void close_log_file	(void);
 void log_verbosity_set	(gboolean verbose);
-void debug_print	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
+void debug_print_real	(const gchar *file, const guint line, const gchar *format, ...) G_GNUC_PRINTF(3, 4);
 void log_print		(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
 void log_message	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
 void log_warning	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);

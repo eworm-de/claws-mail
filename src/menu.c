@@ -29,9 +29,9 @@
 #include <gtk/gtkcheckmenuitem.h>
 #include <gtk/gtkbutton.h>
 
-
 #include "intl.h"
 #include "menu.h"
+#include "utils.h"
 
 static gchar *menu_translate(const gchar *path, gpointer data);
 
@@ -80,6 +80,10 @@ void menu_set_sensitive(GtkItemFactory *ifactory, const gchar *path,
 	g_return_if_fail(ifactory != NULL);
 
 	widget = gtk_item_factory_get_item(ifactory, path);
+	if(widget == NULL) {
+		debug_print(_("unknown menu entry %s"), path);
+		return;
+	}
 	gtk_widget_set_sensitive(widget, sensitive);
 }
 

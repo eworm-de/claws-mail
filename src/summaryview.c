@@ -1333,7 +1333,7 @@ static GtkCTreeNode *summary_find_prev_unread_msg(SummaryView *summaryview,
 
 	for (; node != NULL; node = GTK_CTREE_NODE_PREV(node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (MSG_IS_UNREAD(msginfo->flags)) break;
+		if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) break;
 	}
 
 	return node;
@@ -1353,7 +1353,7 @@ static GtkCTreeNode *summary_find_next_unread_msg(SummaryView *summaryview,
 
 	for (; node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (MSG_IS_UNREAD(msginfo->flags)) break;
+		if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) break;
 	}
 
 	return node;

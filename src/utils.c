@@ -2033,12 +2033,14 @@ void log_verbosity_set(gboolean verbose)
 		log_verbosity_count--;
 }
 
-void debug_print(const gchar *format, ...)
+void debug_print_real(const gchar *file, const guint line, const gchar *format, ...)
 {
 	va_list args;
 	gchar buf[BUFFSIZE];
 
 	if (!debug_mode) return;
+
+	printf("%s:%d:", file, line);
 
 	va_start(args, format);
 	g_vsnprintf(buf, sizeof(buf), format, args);

@@ -1310,7 +1310,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 
 		{"/Message/Get new mail"         , M_HAVE_ACCOUNT|M_UNLOCKED},
 		{"/Message/Get from all accounts", M_HAVE_ACCOUNT|M_UNLOCKED},
-		{"/Message/Compose new message"  , M_HAVE_ACCOUNT},
+/*		{"/Message/Compose new message"  , M_HAVE_ACCOUNT}, */
 		{"/Message/Reply"                , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{"/Message/Reply to sender"      , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{"/Message/Reply to all"         , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},

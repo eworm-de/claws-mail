@@ -1,3 +1,16 @@
+2001-09-15 [christoph]
+
+	* src/mainwindow.c
+		comment out menu entry not existing in claws
+	* src/menu.c
+		add debug output for non existing menu entries
+	* src/summaryview.c
+		fix next/prev unread message for ignored threads
+	* src/utils.[ch]
+		add sourcefile and line number to debug output
+		otherwise it is sometimes hard to find the
+		source code part if debug messages are translated
+
 2001-09-14 [darko]
 	
 	* src/folderview.c
