@@ -13,7 +13,7 @@ INTERFACE_AGE=0
 BINARY_AGE=0
 EXTRA_VERSION=57
 EXTRA_RELEASE=
-EXTRA_GTK2_VERSION=.4
+EXTRA_GTK2_VERSION=.5
 
 if test \( $EXTRA_VERSION -eq 0 \) -o \( "x$EXTRA_RELEASE" != "x" \); then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}${EXTRA_RELEASE}${EXTRA_GTK2_VERSION}
@@ -596,6 +596,27 @@ if test x"$ac_cv_enable_clamav_plugin" = xyes; then
 fi
 AC_SUBST(CLAMAV_LIBS)
 AM_CONDITIONAL(BUILD_CLAMAV_PLUGIN, test x"$ac_cv_enable_clamav_plugin" = xyes)
+
+dnl #######################################################################
+dnl # Check for startup notification
+dnl #######################################################################
+AC_ARG_ENABLE(startup-notification, [  --disable-startup-notification    compile without startup notification support],,enable_startup_notification=yes)
+
+if test "x$enable_startup_notification" = "xyes"; then
+	PKG_CHECK_MODULES(STARTUP_NOTIFICATION, libstartup-notification-1.0 >= 0.5,
+	[
+		AC_DEFINE(HAVE_STARTUP_NOTIFICATION, 1, [Define if we're using libstartup-notification.])
+		echo "Building with libstartup-notification"
+		enable_startup_notification=yes
+	],
+	[
+		echo "Building without libstartup-notification"
+		enable_startup_notification=no
+	])
+
+	AC_SUBST(STARTUP_NOTIFICATION_CFLAGS)
+	AC_SUBST(STARTUP_NOTIFICATION_LIBS)
+fi
 
 dnl ****************************
 dnl ** Final configure output **

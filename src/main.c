@@ -37,6 +37,12 @@
 #include <sys/types.h>
 #include <signal.h>
 
+#ifdef HAVE_STARTUP_NOTIFICATION
+# define SN_API_NOT_YET_FROZEN
+# include <libsn/sn-launchee.h>
+# include <gdk/gdkx.h>
+#endif
+
 #if USE_GPGME
 #  include <gpgme.h>
 #  include "passphrase.h"
@@ -91,6 +97,11 @@
 gchar *prog_version;
 #ifdef CRASH_DIALOG
 gchar *argv0;
+#endif
+
+#ifdef HAVE_STARTUP_NOTIFICATION
+static SnLauncheeContext *sn_context = NULL;
+static SnDisplay *sn_display = NULL;
 #endif
 
 static gint lock_socket = -1;
@@ -165,6 +176,48 @@ _("File `%s' already exists.\n"
 
 static MainWindow *static_mainwindow;
 
+#ifdef HAVE_STARTUP_NOTIFICATION
+static void sn_error_trap_push(SnDisplay *display, Display *xdisplay)
+{
+	gdk_error_trap_push();
+}
+
+static void sn_error_trap_pop(SnDisplay *display, Display *xdisplay)
+{
+	gdk_error_trap_pop();
+}
+
+static void startup_notification_complete(gboolean with_window)
+{
+	Display *xdisplay;
+	GtkWidget *hack = NULL;
+
+	if (with_window) {
+		/* this is needed to make the startup notification leave,
+		 * if we have been launched from a menu.
+		 * We have to display a window, so let it be very little */
+		hack = gtk_window_new(GTK_WINDOW_POPUP);
+		gtk_widget_set_uposition(hack, 0, 0);
+		gtk_widget_set_usize(hack, 1, 1);
+		gtk_widget_show(hack);
+	}
+
+	xdisplay = GDK_DISPLAY();
+	sn_display = sn_display_new(xdisplay,
+				sn_error_trap_push,
+				sn_error_trap_pop);
+	sn_context = sn_launchee_context_new_from_environment(sn_display,
+						 DefaultScreen(xdisplay));
+
+	if (sn_context != NULL)
+	{
+		sn_launchee_context_complete(sn_context);
+		sn_launchee_context_unref(sn_context);
+		sn_display_unref(sn_display);
+	}
+}
+#endif /* HAVE_STARTUP_NOTIFICATION */
+
 void sylpheed_gtk_idle(void) 
 {
 	while(gtk_events_pending())
@@ -201,8 +254,13 @@ int main(int argc, char *argv[])
 
 	/* check and create unix domain socket */
 	lock_socket = prohibit_duplicate_launch();
-	if (lock_socket < 0) return 0;
-
+	if (lock_socket < 0) {
+#ifdef HAVE_STARTUP_NOTIFICATION
+		if(gtk_init_check(&argc, &argv))
+			startup_notification_complete(TRUE);
+#endif
+		return 0;
+	}
 	if (cmd.status || cmd.status_full) {
 		puts("0 Sylpheed not running.");
 		lock_socket_remove();
@@ -282,6 +340,7 @@ int main(int argc, char *argv[])
 	mh_gtk_init();
 	imap_gtk_init();
 	news_gtk_init();
+		
 	mainwin = main_window_create
 		(prefs_common.sep_folder | prefs_common.sep_msg << 1);
 	folderview = mainwin->folderview;
@@ -368,6 +427,10 @@ int main(int argc, char *argv[])
 	plugin_load_all("GTK2");
 	
 	static_mainwindow = mainwin;
+
+#ifdef HAVE_STARTUP_NOTIFICATION
+	startup_notification_complete(FALSE);
+#endif
 	gtk_main();
 
 	exit_sylpheed(mainwin);
