@@ -1,3 +1,27 @@
+2002-04-05
+
+	* src/filter.c
+	  src/inc.c: folder_find_item_from_path() を
+	  folder_find_item_from_identifier() に変更。
+	  src/prefs_account.c
+	  src/prefs_filter.c: フォルダパスを指定するのに
+	  folder_item_get_identifier() を使用。
+
+2002-04-05
+
+	* src/folder.[ch]: 「フォルダ識別子」を実装(そして claws の実装に
+	  存在したバグを修正)。
+	  folder_find_from_name(): 名前とタイプから Folder を検索。
+	  folder_get_identifier(): Folder の id を返す。
+	  folder_item_get_identifier(): FolderItem の id を返す。
+	  folder_find_item_from_identifier(): id から FolderItem を返す。
+	  folder_get_type_string(): フォルダタイプ文字列を返す。
+	  folder_get_type_from_string(): 文字列から FolderType を返す。
+	  (そして誤った g_strcasecmp() の用法を修正)。
+	* src/export.c
+	  src/import.c: folder_item_get_identifier() と
+	  folder_find_item_from_identifier() を使用。
+
 2002-04-03
 
 	* src/imap.c: imap_parse_atom(): 継続行を読んだ後に cur_pos が正しい

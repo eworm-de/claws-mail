@@ -1,3 +1,27 @@
+2002-04-05
+
+	* src/filter.c
+	  src/inc.c: changed folder_find_item_from_path() to
+	  folder_find_item_from_identifier().
+	  src/prefs_account.c
+	  src/prefs_filter.c: use folder_item_get_identifier() to specify
+	  folder path.
+
+2002-04-05
+
+	* src/folder.[ch]: implemented "folder identifier" (and fixed a bug
+	  existed in claws' implementation).
+	  folder_find_from_name(): find Folder from name and type.
+	  folder_get_identifier(): return Folder id.
+	  folder_item_get_identifier(): return FolderItem id.
+	  folder_find_item_from_identifier(): find FolderItem from id.
+	  folder_get_type_string(): return folder type string.
+	  folder_get_type_from_string(): return FolderType from string
+	  (and fixed the wrong g_strcasecmp() usage).
+	* src/export.c
+	  src/import.c: use folder_item_get_identifier() and
+	  folder_find_item_from_identifier().
+
 2002-04-03
 
 	* src/imap.c: imap_parse_atom(): fixed a bug that cur_pos didn't

@@ -259,8 +259,14 @@ void   folder_count_total_msgs	(guint		*new,
 				 guint		*unread,
 				 guint		*total);
 
-Folder     *folder_find_from_path	(const gchar	*path);
-FolderItem *folder_find_item_from_path	(const gchar	*path);
+Folder     *folder_find_from_path		(const gchar	*path);
+Folder     *folder_find_from_name		(const gchar	*name,
+						 FolderType	 type);
+FolderItem *folder_find_item_from_path		(const gchar	*path);
+gchar      *folder_get_identifier		(Folder		*folder);
+gchar      *folder_item_get_identifier		(FolderItem	*item);
+FolderItem *folder_find_item_from_identifier	(const gchar	*identifier);
+
 Folder     *folder_get_default_folder	(void);
 FolderItem *folder_get_default_inbox	(void);
 FolderItem *folder_get_default_outbox	(void);

@@ -757,11 +757,16 @@ static gint prefs_filter_clist_set_row(gint row)
 static void prefs_filter_select_dest_cb(void)
 {
 	FolderItem *dest;
+	gchar *id;
 
 	dest = foldersel_folder_sel(NULL, FOLDER_SEL_COPY, NULL);
-	if (!dest) return;
+	if (!dest || !dest->path) return;
 
-	gtk_entry_set_text(GTK_ENTRY(filter.dest_entry), dest->path);
+	id = folder_item_get_identifier(dest);
+	if (id) {
+		gtk_entry_set_text(GTK_ENTRY(filter.dest_entry), id);
+		g_free(id);
+	}
 }
 
 static void prefs_filter_register_cb(void)

@@ -68,6 +68,7 @@ static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
 gint export_mbox(FolderItem *default_src)
 {
 	gint ok = 0;
+	gchar *src_id = NULL;
 
 	if (!window)
 		export_create();
@@ -77,8 +78,12 @@ gint export_mbox(FolderItem *default_src)
 	change_dir(startup_dir);
 
 	if (default_src && default_src->path)
-		gtk_entry_set_text(GTK_ENTRY(src_entry), default_src->path);
-	else
+		src_id = folder_item_get_identifier(default_src);
+
+	if (src_id) {
+		gtk_entry_set_text(GTK_ENTRY(src_entry), src_id);
+		g_free(src_id);
+	} else
 		gtk_entry_set_text(GTK_ENTRY(src_entry), "");
 	gtk_entry_set_text(GTK_ENTRY(file_entry), "");
 	gtk_widget_grab_focus(file_entry);
@@ -95,7 +100,7 @@ gint export_mbox(FolderItem *default_src)
 		mbox = gtk_entry_get_text(GTK_ENTRY(file_entry));
 
 		if (mbox && *mbox) {
-			src = folder_find_item_from_path(srcdir);
+			src = folder_find_item_from_identifier(srcdir);
 			if (!src)
 				g_warning("Can't find the folder.\n");
 			else

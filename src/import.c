@@ -68,7 +68,7 @@ static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
 gint import_mbox(FolderItem *default_dest)
 {
 	gint ok = 0;
-	gchar *path;
+	gchar *dest_id = NULL;
 
 	if (!window)
 		import_create();
@@ -76,13 +76,13 @@ gint import_mbox(FolderItem *default_dest)
 		gtk_widget_show(window);
 
 	gtk_entry_set_text(GTK_ENTRY(file_entry), "");
+	if (default_dest && default_dest->path)
+		dest_id = folder_item_get_identifier(default_dest);
 
-	if (default_dest) { 
-		path = folder_item_get_identifier(default_dest);
-		gtk_entry_set_text(GTK_ENTRY(dest_entry), path);
-		g_free(path);
-	}	
-	else
+	if (dest_id) {
+		gtk_entry_set_text(GTK_ENTRY(dest_entry), dest_id);
+		g_free(dest_id);
+	} else
 		gtk_entry_set_text(GTK_ENTRY(dest_entry), "");
 	gtk_widget_grab_focus(file_entry);
 
@@ -100,7 +100,8 @@ gint import_mbox(FolderItem *default_dest)
 			if (!destdir || !*destdir) {
 				dest = folder_find_item_from_path(INBOX_DIR);
 			} else
-				dest = folder_find_item_from_identifier(destdir);
+				dest = folder_find_item_from_identifier
+					(destdir);
 
 			if (!dest) {
 				g_warning("Can't find the folder.\n");

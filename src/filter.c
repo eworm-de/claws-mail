@@ -57,7 +57,7 @@ FolderItem *filter_get_dest_folder(GSList *fltlist, const gchar *file)
 				}
 				dest_folder = dummy;
 			} else
-				dest_folder = folder_find_item_from_path
+				dest_folder = folder_find_item_from_identifier
 					(filter->dest);
 			break;
 		}

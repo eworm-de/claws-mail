@@ -145,7 +145,7 @@ static void inc_finished(MainWindow *mainwin, gboolean new_messages)
 
 	if (prefs_common.open_inbox_on_inc) {
 		item = cur_account && cur_account->inbox
-			? folder_find_item_from_path(cur_account->inbox)
+			? folder_find_item_from_identifier(cur_account->inbox)
 			: folder_get_default_inbox();
 		if (FOLDER_SUMMARY_MISMATCH(item, mainwin->summaryview)) {	
 			folderview_unselect(mainwin->folderview);
@@ -1016,7 +1016,8 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 	/* CLAWS: get default inbox (perhaps per account) */
 	if (state->ac_prefs->inbox) {
 		/* CLAWS: get destination folder / mailbox */
-		inbox = folder_find_item_from_identifier(state->ac_prefs->inbox);
+		inbox = folder_find_item_from_identifier
+			(state->ac_prefs->inbox);
 		if (!inbox)
 			inbox = folder_get_default_inbox();
 	} else
