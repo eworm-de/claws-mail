@@ -1,3 +1,10 @@
+2003-09-11 [christoph]	0.9.5claws6
+
+	* src/folderview.c
+		fix double deleting of newsgroup folders
+
+	(closes Bug 305 crash after deleting of a newsgroup)
+
 2003-09-11 [paul]	0.9.5claws5
 
 	* src/rfc2015.c

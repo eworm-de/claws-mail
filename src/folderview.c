@@ -2410,7 +2410,6 @@ static void folderview_rm_news_group_cb(FolderView *folderview, guint action,
 	}
 
 	folder_item_remove(item);
-	gtk_ctree_remove_node(ctree, folderview->selected);
 	folder_write_list();
 	
 	prefs_filtering_delete_path(name);
