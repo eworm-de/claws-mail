@@ -1,3 +1,8 @@
+2003-09-03 [thorsten]	0.9.4claws59
+
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		fix compile error
+
 2003-09-03 [christoph]	0.9.4claws58
 
 	* src/plugins/spamassassin/spamassassin.[ch]

@@ -47,7 +47,7 @@ struct SpamAssassinPage
 	GtkWidget *receive_spam;
 	GtkWidget *save_folder;
 	GtkWidget *max_size;
-	GtkWidget *timeout
+	GtkWidget *timeout;
 };
 
 static void foldersel_cb(GtkWidget *widget, gpointer data)
