@@ -840,6 +840,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 				mbl = wctomb(tmpp, *wtmpp);
 				if (mbl == -1) {
 					g_warning("invalid wide character\n");
+					wtmpp++;
 					continue;
 				}
 				/* g_free(raw); */

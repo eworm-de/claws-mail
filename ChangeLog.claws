@@ -9,6 +9,9 @@
 	* src/textview.c: now also possible to add mail addresses by right
 	  clicking in the text view
 
+	* src/codeconv.c: merged patch which fixes endless loop when encountering
+	  invalid wide characters; from Alte <010@imis.ru>  
+
 2001-05-20 [alfons]
 
 	Added installation of gnome specific things:

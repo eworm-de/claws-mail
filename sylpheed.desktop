@@ -2,6 +2,6 @@
 Name=Sylpheed
 Comment=Sylpheed Mail
 Exec=sylpheed
-Icon=sylpheed.png
+Icon=sylpheed.xpm
 Terminal=0
 Type=Application
