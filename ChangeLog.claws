@@ -1,3 +1,8 @@
+2002-06-20 [alfons]
+
+	* tools/Makefile.am
+		gpg-sign <-- gpg-sign-syl
+
 2002-06-20 [alfons]	0.7.8claws11
 
 	* src/selective_download.c
