@@ -26,16 +26,21 @@ patchset="("
 log=""
 files=`cvs diff -u $@ 2>/dev/null |grep ^Index`
 echo "--8<----------"
-log="`date +%Y-%m-%d` [`whoami`]\t$nextsversion\n\n"
+name=`whoami`
+#change if your login isn't your name
+if [ "$name" == "claws" ]; then
+	name="paul";
+fi;
+log="`date +%Y-%m-%d` [$name]\t$nextsversion\n\n"
 for line in $files; do
 	file=`echo $line | cut -d' ' -f2`
 	dir=`dirname $file`
 	filename=`basename $file`
 	cvsfile="$dir/CVS/Entries"
-	version=`grep $filename $cvsfile | cut -d'/' -f3`
+	version=`grep "\/$filename\/" $cvsfile | cut -d'/' -f3`
 	nextversion=`echo $version | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
 	
-	log="$log\t* $file [$nextversion]\n"
+	log="$log\t* $file\n"
 	patchset="$patchset cvs diff -u -r $version -r $nextversion $file;\
 "
 done;
@@ -56,4 +61,8 @@ if [ "$ans" == "y" ]; then
 	cat $chlog.old >> $chlog
 	rm $chlog.old
 	echo "$patchset" >> PATCHSETS
+	echo "editing $chlog configure.ac..."
+	$EDITOR $chlog configure.ac
+	echo running cvs commit $@ PATCHSETS $chlog configure.ac
+	cvs commit $@ PATCHSETS $chlog configure.ac
 fi
