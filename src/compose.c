@@ -1161,11 +1161,17 @@ void compose_reedit(MsgInfo *msginfo)
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(msginfo->folder != NULL);
 
-        account = msginfo->folder->folder->account;
+        if (msginfo->folder->stype == F_QUEUE) {
+		gchar account_address[BUFFSIZE];
+		if (!get_header_from_msginfo(msginfo, account_address, sizeof(account_address), "S:")) {
+			account = account_find_from_address(account_address);
+		}
+	} else 
+		account = msginfo->folder->folder->account;
 
-        if(!account&& prefs_common.reedit_account_autosel) {
+	if (!account && prefs_common.reedit_account_autosel) {
                	gchar from[BUFFSIZE];
-		if(!get_header_from_msginfo(msginfo,from,sizeof(from),"FROM:")){ /* Found a FROM header */
+		if (!get_header_from_msginfo(msginfo, from, sizeof(from), "FROM:")){
 		        extract_address(from);
 		        account = account_find_from_address(from);
                 }
