@@ -1,3 +1,9 @@
+2005-03-31 [colin]	1.9.6cvs17
+
+	* src/compose.c
+		Fix joining of signature separator again. 
+		Maybe Hiro could put it in main too...
+
 2005-03-31 [colin]	1.9.6cvs16
 
 	* src/Makefile.am

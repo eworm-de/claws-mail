@@ -2714,7 +2714,7 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 	return do_break;
 }
 
-static gboolean is_sig_separator(Compose *compose, GtkTextBuffer *textbuf, GtkTextIter *iter) 
+static gboolean compose_is_sig_separator(Compose *compose, GtkTextBuffer *textbuf, GtkTextIter *iter) 
 {
 	char *text = NULL;
 	GtkTextIter start = *iter;
@@ -2780,6 +2780,10 @@ static gboolean compose_join_next_line(Compose *compose,
 
 	/* don't join itemized lines */
 	if (compose_is_itemized(buffer, &end))
+		return FALSE;
+
+	/* don't join signature separator */
+	if (compose_is_sig_separator(compose, buffer, &iter_))
 		return FALSE;
 
 	/* delete quote str */
