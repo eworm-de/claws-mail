@@ -389,9 +389,11 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/Add sender to address _book"),
 					NULL, summary_add_address_cb,		0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
-	{N_("/Open in new _window"),	NULL, summary_open_msg,	0, NULL},
-	{N_("/View so_urce"),		NULL, summary_view_source, 0, NULL},
-	{N_("/Show all _header"),	NULL, summary_show_all_header_cb, 0, NULL},
+	{N_("/_View"),			NULL, NULL,		0, "<Branch>"},
+	{N_("/_View/Open in new _window"),
+					NULL, summary_open_msg,	0, NULL},
+	{N_("/_View/_Source"),		NULL, summary_view_source, 0, NULL},
+	{N_("/_View/All _header"),	NULL, summary_show_all_header_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Save as..."),		NULL, summary_save_as,	0, NULL},
 	{N_("/_Print..."),		NULL, summary_print,	0, NULL},
@@ -1067,9 +1069,10 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 
 	menu_set_sensitive(ifactory, "/Add sender to address book", sens);
 
-	menu_set_sensitive(ifactory, "/Open in new window", sens);
-	menu_set_sensitive(ifactory, "/View source", sens);
-	menu_set_sensitive(ifactory, "/Show all header", sens);
+	menu_set_sensitive(ifactory, "/View", sens);
+	menu_set_sensitive(ifactory, "/View/Open in new window", sens);
+	menu_set_sensitive(ifactory, "/View/Source", sens);
+	menu_set_sensitive(ifactory, "/View/All header", sens);
 	if ((summaryview->folder_item->stype == F_DRAFT) ||
 	    (summaryview->folder_item->stype == F_OUTBOX) ||
 	    (summaryview->folder_item->stype == F_QUEUE))
