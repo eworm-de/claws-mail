@@ -6,6 +6,7 @@
 #include "utils.h"
 #include "procheader.h"
 #include "matcher.h"
+#include "intl.h"
 
 struct _MatchParser {
 	gint id;
@@ -61,6 +62,8 @@ static MatchParser matchparser_tab[] = {
 	{MATCHING_NOT_MESSAGE, "~message"},
 	{MATCHING_BODY_PART, "body_part"},
 	{MATCHING_NOT_BODY_PART, "~body_part"},
+	{MATCHING_EXECUTE, "execute"},
+	{MATCHING_NOT_EXECUTE, "~execute"},
 
 	/* match type */
 	{MATCHING_MATCHCASE, "matchcase"},
@@ -81,6 +84,7 @@ static MatchParser matchparser_tab[] = {
 	{MATCHING_ACTION_MARK_AS_UNREAD, "mark_as_unread"},
 	{MATCHING_ACTION_FORWARD, "forward"},
 	{MATCHING_ACTION_FORWARD_AS_ATTACHMENT, "forward_as_attachment"},
+	{MATCHING_ACTION_EXECUTE, "execute"},
 };
 
 gchar * get_matchparser_tab_str(gint id)
@@ -185,6 +189,8 @@ MatcherProp * matcherprop_parse(gchar ** str)
 	case MATCHING_NOT_INREPLYTO:
 	case MATCHING_MESSAGE:
 	case MATCHING_NOT_MESSAGE:
+	case MATCHING_EXECUTE:
+	case MATCHING_NOT_EXECUTE:
 	case MATCHING_HEADERS_PART:
 	case MATCHING_NOT_HEADERS_PART:
 	case MATCHING_BODY_PART:
@@ -501,6 +507,22 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 	}
 }
 
+gboolean matcherprop_match_execute(MatcherProp * prop, MsgInfo * info)
+{
+	gchar * file;
+	gchar * cmd;
+
+	file = procmsg_get_message_file(info);
+	if (file == NULL)
+		return FALSE;
+
+	cmd = matching_build_command(prop->expr, info);
+	if (cmd == NULL)
+		return FALSE;
+
+	return (system(cmd) == 0);
+}
+
 /* match a message and his headers, hlist can be NULL if you don't
    want to use headers */
 
@@ -579,7 +601,10 @@ gboolean matcherprop_match(MatcherProp * prop, MsgInfo * info)
 		return matcherprop_string_match(prop, info->references);
 	case MATCHING_NOT_REFERENCES:
 		return !matcherprop_string_match(prop, info->references);
-	case MATCHING_HEADER:
+	case MATCHING_EXECUTE:
+		return matcherprop_match_execute(prop, info);
+	case MATCHING_NOT_EXECUTE:
+		return !matcherprop_match_execute(prop, info);
 	default:
 		return 0;
 	}
@@ -726,6 +751,15 @@ static gboolean matcherprop_criteria_headers(MatcherProp * matcher)
 	case MATCHING_NOT_HEADER:
 	case MATCHING_HEADERS_PART:
 	case MATCHING_NOT_HEADERS_PART:
+		return TRUE;
+	default:
+		return FALSE;
+	}
+}
+
+static gboolean matcherprop_criteria_message(MatcherProp * matcher)
+{
+	switch(matcher->criteria) {
 	case MATCHING_MESSAGE:
 	case MATCHING_NOT_MESSAGE:
 		return TRUE;
@@ -736,36 +770,33 @@ static gboolean matcherprop_criteria_headers(MatcherProp * matcher)
 
 /*
   matcherlist_match_one_header
-  returns TRUE if buf matchs the MatchersList criteria
+  returns TRUE if match should stop
  */
 
 static gboolean matcherlist_match_one_header(MatcherList * matchers,
-					     gchar * buf)
+					 gchar * buf)
 {
 	GSList * l;
-	gboolean result;
 
-	if (matchers->bool_and)
-		result = TRUE;
-	else
-		result = FALSE;
-	
 	for(l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
 		MatcherProp * matcher = (MatcherProp *) l->data;
 
-		if (matcherprop_criteria_headers(matcher)) {
+		if (matcherprop_criteria_headers(matcher) ||
+		    matcherprop_criteria_message(matcher)) {
 			if (matcherprop_match_one_header(matcher, buf)) {
+				matcher->result = TRUE;
+			}
+		}
+
+		if (matcherprop_criteria_headers(matcher)) {
+			if (matcher->result) {
 				if (!matchers->bool_and)
 					return TRUE;
-			}
-			else {
-				if (matchers->bool_and)
-					return FALSE;
 			}
 		}
 	}
 
-	return result;
+	return FALSE;
 }
 
 /*
@@ -794,8 +825,6 @@ static gboolean matcherprop_criteria_body(MatcherProp * matcher)
 	switch(matcher->criteria) {
 	case MATCHING_BODY_PART:
 	case MATCHING_NOT_BODY_PART:
-	case MATCHING_MESSAGE:
-	case MATCHING_NOT_MESSAGE:
 		return TRUE;
 	default:
 		return FALSE;
@@ -828,28 +857,23 @@ static gboolean matcherprop_match_line(MatcherProp * matcher, gchar * line)
 static gboolean matcherlist_match_line(MatcherList * matchers, gchar * line)
 {
 	GSList * l;
-	gboolean result;
-
-	if (matchers->bool_and)
-		result = TRUE;
-	else
-		result = FALSE;
 
 	for(l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
 		MatcherProp * matcher = (MatcherProp *) l->data;
 
-		if (matcherprop_criteria_body(matcher)) {
+		if (matcherprop_criteria_body(matcher) ||
+		    matcherprop_criteria_message(matcher)) {
 			if (matcherprop_match_line(matcher, line)) {
-				if (!matchers->bool_and)
-					return TRUE;
-			}
-			else {
-				if (matchers->bool_and)
-					return FALSE;
+				matcher->result = TRUE;
 			}
 		}
+			
+		if (matcher->result) {
+			if (!matchers->bool_and)
+				return TRUE;
+		}
 	}
-	return result;
+	return FALSE;
 }
 
 /*
@@ -888,6 +912,11 @@ gboolean matcherlist_match_file(MatcherList * matchers, MsgInfo * info,
 			read_headers = TRUE;
 		if (matcherprop_criteria_body(matcher))
 			read_body = TRUE;
+		if (matcherprop_criteria_message(matcher)) {
+			read_headers = TRUE;
+			read_body = TRUE;
+		}
+		matcher->result = FALSE;
 	}
 
 	if (!read_headers && !read_body)
@@ -906,14 +935,8 @@ gboolean matcherlist_match_file(MatcherList * matchers, MsgInfo * info,
 	/* read the headers */
 
 	if (read_headers) {
-		if (matcherlist_match_headers(matchers, fp)) {
-			if (!matchers->bool_and)
-				result = TRUE;
-		}
-		else {
-			if (matchers->bool_and)
-				result = FALSE;
-		}
+		if (matcherlist_match_headers(matchers, fp))
+			read_body = FALSE;
 	}
 	else {
 		matcherlist_skip_headers(fp);
@@ -921,13 +944,26 @@ gboolean matcherlist_match_file(MatcherList * matchers, MsgInfo * info,
 
 	/* read the body */
 	if (read_body) {
-		if (matcherlist_match_body(matchers, fp)) {
-			if (!matchers->bool_and)
-				result = TRUE;
-		}
-		else {
-			if (matchers->bool_and)
-				result = FALSE;
+		matcherlist_match_body(matchers, fp);
+	}
+	
+	for(l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
+		MatcherProp * matcher = (MatcherProp *) l->data;
+
+		if (matcherprop_criteria_headers(matcher) ||
+		    matcherprop_criteria_body(matcher) ||
+		    matcherprop_criteria_message(matcher))
+			if (matcher->result) {
+				if (!matchers->bool_and) {
+					result = TRUE;
+					break;
+				}
+			}
+			else {
+				if (matchers->bool_and) {
+					result = FALSE;
+					break;
+				}
 		}
 	}
 
@@ -949,17 +985,6 @@ gboolean matcherlist_match(MatcherList * matchers, MsgInfo * info)
 		result = TRUE;
 	else
 		result = FALSE;
-
-	/* test the condition on the file */
-
-	if (matcherlist_match_file(matchers, info, result)) {
-		if (!matchers->bool_and)
-			return TRUE;
-	}
-	else {
-		if (matchers->bool_and)
-			return FALSE;
-	}
 
 	/* test the cached elements */
 
@@ -1000,19 +1025,30 @@ gboolean matcherlist_match(MatcherList * matchers, MsgInfo * info)
 		case MATCHING_NOT_REFERENCES:
 		case MATCHING_SCORE_GREATER:
 		case MATCHING_SCORE_LOWER:
+		case MATCHING_EXECUTE:
+		case MATCHING_NOT_EXECUTE:
 			if (matcherprop_match(matcher, info)) {
 				if (!matchers->bool_and) {
-					result = TRUE;
-					break;
+					return TRUE;
 				}
 			}
 			else {
 				if (matchers->bool_and) {
-					result = FALSE;
-					break;
+					return FALSE;
 				}
 			}
 		}
+	}
+
+	/* test the condition on the file */
+
+	if (matcherlist_match_file(matchers, info, result)) {
+		if (!matchers->bool_and)
+			return TRUE;
+	}
+	else {
+		if (matchers->bool_and)
+			return FALSE;
 	}
 
 	return result;
@@ -1193,4 +1229,153 @@ gchar * matcherlist_to_string(MatcherList * matchers)
 	g_free(vstr);
 
 	return result;
+}
+
+
+gchar * matching_build_command(gchar * cmd, MsgInfo * info)
+{
+	gchar * s = cmd;
+	gchar * filename = NULL;
+	gchar * processed_cmd;
+	gchar * p;
+	gint size;
+
+	size = strlen(cmd) + 1;
+	while (*s != '\0') {
+		if (*s == '%') {
+			s++;
+			switch (*s) {
+			case '%':
+				size -= 1;
+				break;
+			case 's': /* subject */
+				size += strlen(info->subject) - 2;
+				break;
+			case 'f': /* from */
+				size += strlen(info->from) - 2;
+				break;
+			case 't': /* to */
+				size += strlen(info->to) - 2;
+				break;
+			case 'c': /* cc */
+				size += strlen(info->cc) - 2;
+				break;
+			case 'd': /* date */
+				size += strlen(info->date) - 2;
+				break;
+			case 'i': /* message-id */
+				size += strlen(info->msgid) - 2;
+				break;
+			case 'n': /* newsgroups */
+				size += strlen(info->newsgroups) - 2;
+				break;
+			case 'r': /* references */
+				size += strlen(info->references) - 2;
+				break;
+			case 'F': /* file */
+				filename = folder_item_fetch_msg(info->folder,
+								 info->msgnum);
+				
+				if (filename == NULL) {
+					g_warning(_("filename is not set"));
+					return NULL;
+				}
+				else
+					size += strlen(filename) - 2;
+				break;
+			}
+			s++;
+		}
+		else s++;
+	}
+
+
+	processed_cmd = g_new0(gchar, size);
+	s = cmd;
+	p = processed_cmd;
+
+	while (*s != '\0') {
+		if (*s == '%') {
+			s++;
+			switch (*s) {
+			case '%':
+				*p = '%';
+				p++;
+				break;
+			case 's': /* subject */
+				if (info->subject != NULL)
+					strcpy(p, info->subject);
+				else
+					strcpy(p, "(none)");
+				p += strlen(p);
+				break;
+			case 'f': /* from */
+				if (info->from != NULL)
+					strcpy(p, info->from);
+				else
+					strcpy(p, "(none)");
+				p += strlen(p);
+				break;
+			case 't': /* to */
+				if (info->to != NULL)
+					strcpy(p, info->to);
+				else
+					strcpy(p, "(none)");
+				p += strlen(p);
+				break;
+			case 'c': /* cc */
+				if (info->cc != NULL)
+					strcpy(p, info->cc);
+				else
+					strcpy(p, "(none)");
+				p += strlen(p);
+				break;
+			case 'd': /* date */
+				if (info->date != NULL)
+					strcpy(p, info->date);
+				else
+					strcpy(p, "(none)");
+				p += strlen(p);
+				break;
+			case 'i': /* message-id */
+				if (info->msgid != NULL)
+					strcpy(p, info->msgid);
+				else
+					strcpy(p, "(none)");
+				p += strlen(p);
+				break;
+			case 'n': /* newsgroups */
+				if (info->newsgroups != NULL)
+					strcpy(p, info->newsgroups);
+				else
+					strcpy(p, "(none)");
+				p += strlen(p);
+				break;
+			case 'r': /* references */
+				if (info->references != NULL)
+					strcpy(p, info->references);
+				else
+					strcpy(p, "(none)");
+				p += strlen(p);
+				break;
+			case 'F': /* file */
+				strcpy(p, filename);
+				p += strlen(p);
+				break;
+			default:
+				*p = '%';
+				p++;
+				*p = *s;
+				p++;
+				break;
+			}
+			s++;
+		}
+		else {
+			*p = *s;
+			p++;
+			s++;
+		}
+	}
+	return processed_cmd;
 }

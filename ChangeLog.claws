@@ -1,3 +1,30 @@
+2001-06-04 [hoa]
+
+	* src/filtering.c
+	* src/matcher.c
+	* src/matcher.h
+	* src/prefs_filtering.c
+	* src/prefs_matcher.c
+	* src/prefs_matcher.h
+		action "run a command" for filtering
+		and matching with a command.
+		fixed the "whole message" matching
+
+	* src/mbox_folder.c
+		changed temporary filename for security
+
+	* src/messageview.c
+		queue the notification if it fails to send.
+
+	* src/prefs_common.c
+	* src/prefs_folder_item.c
+		changed the default important score		
+
+	* src/prefs_scoring.c
+	* src/scoring.c
+		hide kill score input when the folder is not
+		a newsgroup
+
 2001-06-03 [alfons]
 
 	* src/prefs_common.c:

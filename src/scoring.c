@@ -16,10 +16,6 @@
 
 
 GSList * global_scoring;
-/*
-gint global_kill_score = MIN_SCORE;
-gint global_important_score = MAX_SCORE;
-*/
 
 ScoringProp * scoringprop_parse(gchar ** str)
 {

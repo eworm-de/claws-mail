@@ -167,13 +167,122 @@ static void notification_convert_header(gchar *dest, gint len, gchar *src,
 		conv_encode_header(dest, len, src, header_len);
 }
 
-static gint dispotition_notification_send(MsgInfo * msginfo)
+static gint disposition_notification_queue(PrefsAccount * account,
+					   gchar * to, const gchar *file)
+{
+	FolderItem *queue;
+	gchar *tmp, *queue_path;
+	FILE *fp, *src_fp;
+	GSList *cur;
+	gchar buf[BUFFSIZE];
+	gint num;
+
+	debug_print(_("queueing message...\n"));
+	g_return_val_if_fail(account != NULL, -1);
+
+	tmp = g_strdup_printf("%s%cqueue.%d", g_get_tmp_dir(),
+			      G_DIR_SEPARATOR, (gint)file);
+	if ((fp = fopen(tmp, "w")) == NULL) {
+		FILE_OP_ERROR(tmp, "fopen");
+		g_free(tmp);
+		return -1;
+	}
+	if ((src_fp = fopen(file, "r")) == NULL) {
+		FILE_OP_ERROR(file, "fopen");
+		fclose(fp);
+		unlink(tmp);
+		g_free(tmp);
+		return -1;
+	}
+	if (change_file_mode_rw(fp, tmp) < 0) {
+		FILE_OP_ERROR(tmp, "chmod");
+		g_warning(_("can't change file mode\n"));
+	}
+
+	/* queueing variables */
+	fprintf(fp, "AF:\n");
+	fprintf(fp, "NF:0\n");
+	fprintf(fp, "PS:10\n");
+	fprintf(fp, "SRH:1\n");
+	fprintf(fp, "SFN:\n");
+	fprintf(fp, "DSR:\n");
+	fprintf(fp, "MID:\n");
+	fprintf(fp, "CFG:\n");
+	fprintf(fp, "PT:0\n");
+	fprintf(fp, "S:%s\n", account->address);
+	fprintf(fp, "RQ:\n");
+	if (account->smtp_server)
+		fprintf(fp, "SSV:%s\n", account->smtp_server);
+	else
+		fprintf(fp, "SSV:\n");
+	if (account->nntp_server)
+		fprintf(fp, "NSV:%s\n", account->nntp_server);
+	else
+		fprintf(fp, "NSV:\n");
+	fprintf(fp, "SSH:\n");
+	fprintf(fp, "R:<%s>", to);
+	fprintf(fp, "\n");
+	fprintf(fp, "\n");
+
+	while (fgets(buf, sizeof(buf), src_fp) != NULL) {
+		if (fputs(buf, fp) == EOF) {
+			FILE_OP_ERROR(tmp, "fputs");
+			fclose(fp);
+			fclose(src_fp);
+			unlink(tmp);
+			g_free(tmp);
+			return -1;
+		}
+	}
+
+	fclose(src_fp);
+	if (fclose(fp) == EOF) {
+		FILE_OP_ERROR(tmp, "fclose");
+		unlink(tmp);
+		g_free(tmp);
+		return -1;
+	}
+
+	queue = folder_get_default_queue();
+	folder_item_scan(queue);
+	queue_path = folder_item_get_path(queue);
+	if (!is_dir_exist(queue_path))
+		make_dir_hier(queue_path);
+	if ((num = folder_item_add_msg(queue, tmp, TRUE)) < 0) {
+		g_warning(_("can't queue the message\n"));
+		unlink(tmp);
+		g_free(tmp);
+		g_free(queue_path);
+		return -1;
+	}
+	g_free(tmp);
+
+	if ((fp = procmsg_open_mark_file(queue_path, TRUE)) == NULL)
+		g_warning(_("can't open mark file\n"));
+	else {
+		MsgInfo newmsginfo;
+
+		newmsginfo.msgnum = num;
+		newmsginfo.flags = 0;
+		procmsg_write_flags(&newmsginfo, fp);
+		fclose(fp);
+	}
+	g_free(queue_path);
+
+	folder_item_scan(queue);
+	folderview_update_item(queue, TRUE);
+
+	return 0;
+}
+
+static gint disposition_notification_send(MsgInfo * msginfo)
 {
 	gchar buf[BUFFSIZE];
 	gchar tmp[MAXPATHLEN + 1];
 	FILE *fp;
 	GSList * to_list;
 	gint ok;
+	gchar * to;
 
 	if ((!msginfo->returnreceiptto) && 
 	    (!msginfo->dispositionnotificationto))
@@ -209,9 +318,10 @@ static gint dispotition_notification_send(MsgInfo * msginfo)
 
 	/* To */
 	if (msginfo->dispositionnotificationto)
-		fprintf(fp, "To: %s\n", msginfo->dispositionnotificationto);
+		to = msginfo->dispositionnotificationto;
 	else
-		fprintf(fp, "To: %s\n", msginfo->returnreceiptto);
+		to = msginfo->returnreceiptto;
+	fprintf(fp, "To: %s\n", to);
 
 	/* Subject */
 	notification_convert_header(buf, sizeof(buf), msginfo->subject,
@@ -226,6 +336,24 @@ static gint dispotition_notification_send(MsgInfo * msginfo)
 
 	to_list = address_list_append(NULL, msginfo->dispositionnotificationto);
 	ok = send_message(tmp, cur_account, to_list);
+	
+	if (ok < 0) {
+		if (prefs_common.queue_msg) {
+			AlertValue val;
+			
+			val = alertpanel
+				(_("Queueing"),
+				 _("Error occurred while sending the notification.\n"
+				   "Put this notification into queue folder?"),
+				 _("OK"), _("Cancel"), NULL);
+			if (G_ALERTDEFAULT == val) {
+				ok = disposition_notification_queue(cur_account, to, tmp);
+				if (ok < 0)
+					alertpanel_error(_("Can't queue the notification."));
+			}
+		} else
+			alertpanel_error(_("Error occurred while sending the notification."));
+	}
 
 	if (unlink(tmp) < 0) FILE_OP_ERROR(tmp, "unlink");
 
@@ -287,7 +415,7 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo)
 		
 		if (alertpanel(_("Return Receipt"), _("Send return receipt ?"),
 			       _("Yes"), _("No"), NULL) == G_ALERTDEFAULT) {
-			ok = dispotition_notification_send(tmpmsginfo);
+			ok = disposition_notification_send(tmpmsginfo);
 			if (ok < 0)
 				alertpanel_error(_("Error occurred while sending notification."));
 		}

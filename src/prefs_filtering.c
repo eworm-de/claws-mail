@@ -58,6 +58,9 @@ static struct Filtering {
 	GtkWidget *account_combo;
 	GtkWidget *dest_entry;
 	GtkWidget *dest_btn;
+	GtkWidget *dest_label;
+	GtkWidget *exec_label;
+	GtkWidget *exec_btn;
 
 	GtkWidget *cond_clist;
 } filtering;
@@ -111,7 +114,8 @@ enum {
 	ACTION_MARK_AS_READ = 5,
 	ACTION_MARK_AS_UNREAD = 6,
 	ACTION_FORWARD = 7,
-	ACTION_FORWARD_AS_ATTACHMENT =8
+	ACTION_FORWARD_AS_ATTACHMENT = 8,
+	ACTION_EXECUTE = 9
 };
 
 static gint get_sel_from_list(GtkList * list)
@@ -183,6 +187,8 @@ static gint prefs_filtering_get_matching_from_action(gint action_id)
 		return MATCHING_ACTION_FORWARD;
 	case ACTION_FORWARD_AS_ATTACHMENT:
 		return MATCHING_ACTION_FORWARD_AS_ATTACHMENT;
+	case ACTION_EXECUTE:
+		return MATCHING_ACTION_EXECUTE;
 	default:
 		return -1;
 	}
@@ -191,7 +197,7 @@ static gint prefs_filtering_get_matching_from_action(gint action_id)
 gchar * action_text [] = {
 	"Move",	"Copy", "Delete",
 	"Mark", "Unmark", "Mark as read", "Mark as unread",
-	"Forward", "Forward as attachment"
+	"Forward", "Forward as attachment", "Execute"
 };
 
 void prefs_filtering_open(void)
@@ -234,8 +240,10 @@ static void prefs_filtering_create(void)
 	GtkWidget *account_list;
 	GtkWidget *account_combo;
 	GtkWidget *dest_label;
+	GtkWidget *exec_label;
 	GtkWidget *dest_entry;
 	GtkWidget *dest_btn;
+	GtkWidget *exec_btn;
 
 	GtkWidget *reg_btn;
 	GtkWidget *subst_btn;
@@ -403,6 +411,11 @@ static void prefs_filtering_create(void)
 	gtk_misc_set_alignment (GTK_MISC (dest_label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox1), dest_label, FALSE, FALSE, 0);
 
+	exec_label = gtk_label_new (_("Execute"));
+	gtk_widget_show (exec_label);
+	gtk_misc_set_alignment (GTK_MISC (exec_label), 0, 0.5);
+	gtk_box_pack_start (GTK_BOX (hbox1), exec_label, FALSE, FALSE, 0);
+
 	dest_entry = gtk_entry_new ();
 	gtk_widget_show (dest_entry);
 	gtk_widget_set_usize (dest_entry, 300, -1);
@@ -413,6 +426,13 @@ static void prefs_filtering_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), dest_btn, FALSE, FALSE, 0);
 	gtk_signal_connect (GTK_OBJECT (dest_btn), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_filtering_select_dest),
+			    NULL);
+
+	exec_btn = gtk_button_new_with_label (_("Info ..."));
+	gtk_widget_show (exec_btn);
+	gtk_box_pack_start (GTK_BOX (hbox1), exec_btn, FALSE, FALSE, 0);
+	gtk_signal_connect (GTK_OBJECT (exec_btn), "clicked",
+			    GTK_SIGNAL_FUNC (prefs_matcher_exec_info),
 			    NULL);
 
 	/* register / substitute / delete */
@@ -501,6 +521,9 @@ static void prefs_filtering_create(void)
 	filtering.account_combo = account_combo;
 	filtering.dest_entry = dest_entry;
 	filtering.dest_btn = dest_btn;
+	filtering.dest_label = dest_label;
+	filtering.exec_label = exec_label;
+	filtering.exec_btn = exec_btn;
 
 	filtering.cond_clist   = cond_clist;
 }
@@ -662,6 +685,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(void)
 	case ACTION_COPY:
 	case ACTION_FORWARD:
 	case ACTION_FORWARD_AS_ATTACHMENT:
+	case ACTION_EXECUTE:
 		destination = gtk_entry_get_text(GTK_ENTRY(filtering.dest_entry));
 		if (*destination == '\0') {
 			alertpanel_error(_("Destination is not set."));
@@ -836,6 +860,10 @@ static void prefs_filtering_select_set(FilteringProp * prop)
 		gtk_list_select_item(GTK_LIST(filtering.account_list),
 				     list_id);
 		break;
+	case MATCHING_ACTION_EXECUTE:
+		gtk_list_select_item(GTK_LIST(filtering.action_list),
+				     ACTION_EXECUTE);
+		break;
 	}
 
 	g_free(matcher_str);
@@ -894,46 +922,81 @@ static void prefs_filtering_action_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering.account_combo, FALSE);
 		gtk_widget_set_sensitive(filtering.dest_entry, TRUE);
 		gtk_widget_show(filtering.dest_btn);
+		gtk_widget_show(filtering.dest_label);
+		gtk_widget_hide(filtering.exec_label);
+		gtk_widget_hide(filtering.exec_btn);
 		break;
 	case ACTION_COPY:
 		gtk_widget_set_sensitive(filtering.account_combo, FALSE);
 		gtk_widget_set_sensitive(filtering.dest_entry, TRUE);
 		gtk_widget_show(filtering.dest_btn);
+		gtk_widget_show(filtering.dest_label);
+		gtk_widget_hide(filtering.exec_label);
+		gtk_widget_hide(filtering.exec_btn);
 		break;
 	case ACTION_DELETE:
 		gtk_widget_set_sensitive(filtering.account_combo, FALSE);
 		gtk_widget_set_sensitive(filtering.dest_entry, FALSE);
 		gtk_widget_hide(filtering.dest_btn);
+		gtk_widget_show(filtering.dest_label);
+		gtk_widget_hide(filtering.exec_label);
+		gtk_widget_hide(filtering.exec_btn);
 		break;
 	case ACTION_MARK:
 		gtk_widget_set_sensitive(filtering.account_combo, FALSE);
 		gtk_widget_set_sensitive(filtering.dest_entry, FALSE);
 		gtk_widget_hide(filtering.dest_btn);
+		gtk_widget_show(filtering.dest_label);
+		gtk_widget_hide(filtering.exec_label);
+		gtk_widget_hide(filtering.exec_btn);
 		break;
 	case ACTION_UNMARK:
 		gtk_widget_set_sensitive(filtering.account_combo, FALSE);
 		gtk_widget_set_sensitive(filtering.dest_entry, FALSE);
 		gtk_widget_hide(filtering.dest_btn);
+		gtk_widget_show(filtering.dest_label);
+		gtk_widget_hide(filtering.exec_label);
+		gtk_widget_hide(filtering.exec_btn);
 		break;
 	case ACTION_MARK_AS_READ:
 		gtk_widget_set_sensitive(filtering.account_combo, FALSE);
 		gtk_widget_set_sensitive(filtering.dest_entry, FALSE);
 		gtk_widget_hide(filtering.dest_btn);
+		gtk_widget_show(filtering.dest_label);
+		gtk_widget_hide(filtering.exec_label);
+		gtk_widget_hide(filtering.exec_btn);
 		break;
 	case ACTION_MARK_AS_UNREAD:
 		gtk_widget_set_sensitive(filtering.account_combo, FALSE);
 		gtk_widget_set_sensitive(filtering.dest_entry, FALSE);
 		gtk_widget_hide(filtering.dest_btn);
+		gtk_widget_show(filtering.dest_label);
+		gtk_widget_hide(filtering.exec_label);
+		gtk_widget_hide(filtering.exec_btn);
 		break;
 	case ACTION_FORWARD:
 		gtk_widget_set_sensitive(filtering.account_combo, TRUE);
 		gtk_widget_set_sensitive(filtering.dest_entry, TRUE);
 		gtk_widget_hide(filtering.dest_btn);
+		gtk_widget_show(filtering.dest_label);
+		gtk_widget_hide(filtering.exec_label);
+		gtk_widget_hide(filtering.exec_btn);
 		break;
 	case ACTION_FORWARD_AS_ATTACHMENT:
 		gtk_widget_set_sensitive(filtering.account_combo, TRUE);
 		gtk_widget_set_sensitive(filtering.dest_entry, TRUE);
 		gtk_widget_hide(filtering.dest_btn);
+		gtk_widget_show(filtering.dest_label);
+		gtk_widget_hide(filtering.exec_label);
+		gtk_widget_hide(filtering.exec_btn);
+		break;
+	case ACTION_EXECUTE:
+		gtk_widget_set_sensitive(filtering.account_combo, FALSE);
+		gtk_widget_set_sensitive(filtering.dest_entry, TRUE);
+		gtk_widget_hide(filtering.dest_btn);
+		gtk_widget_hide(filtering.dest_label);
+		gtk_widget_show(filtering.exec_label);
+		gtk_widget_show(filtering.exec_btn);
 		break;
 	}
 }

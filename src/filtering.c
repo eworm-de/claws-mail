@@ -53,13 +53,8 @@ FilteringAction * filteringaction_parse(gchar ** str)
 
 	switch (key) {
 	case MATCHING_ACTION_MOVE:
-		destination = matcher_parse_str(&tmp);
-		if (tmp == NULL) {
-			* str = NULL;
-			return NULL;
-		}
-		break;
 	case MATCHING_ACTION_COPY:
+	case MATCHING_ACTION_EXECUTE:
 		destination = matcher_parse_str(&tmp);
 		if (tmp == NULL) {
 			* str = NULL;
@@ -77,19 +72,6 @@ FilteringAction * filteringaction_parse(gchar ** str)
 	case MATCHING_ACTION_MARK_AS_UNREAD:
 		break;
 	case MATCHING_ACTION_FORWARD:
-		account_id = matcher_parse_number(&tmp);
-		if (tmp == NULL) {
-			* str = NULL;
-			return NULL;
-		}
-
-		destination = matcher_parse_str(&tmp);
-		if (tmp == NULL) {
-			* str = NULL;
-			return NULL;
-		}
-
-		break;
 	case MATCHING_ACTION_FORWARD_AS_ATTACHMENT:
 		account_id = matcher_parse_number(&tmp);
 		if (tmp == NULL) {
@@ -198,6 +180,154 @@ static gboolean filteringaction_update_mark(MsgInfo * info)
 	return FALSE;
 }
 
+static gchar * filteringaction_execute_command(gchar * cmd, MsgInfo * info)
+{
+	gchar * s = cmd;
+	gchar * filename = NULL;
+	gchar * processed_cmd;
+	gchar * p;
+	gint size;
+
+	size = strlen(cmd) + 1;
+	while (*s != '\0') {
+		if (*s == '%') {
+			s++;
+			switch (*s) {
+			case '%':
+				size -= 1;
+				break;
+			case 's': /* subject */
+				size += strlen(info->subject) - 2;
+				break;
+			case 'f': /* from */
+				size += strlen(info->from) - 2;
+				break;
+			case 't': /* to */
+				size += strlen(info->to) - 2;
+				break;
+			case 'c': /* cc */
+				size += strlen(info->cc) - 2;
+				break;
+			case 'd': /* date */
+				size += strlen(info->date) - 2;
+				break;
+			case 'i': /* message-id */
+				size += strlen(info->msgid) - 2;
+				break;
+			case 'n': /* newsgroups */
+				size += strlen(info->newsgroups) - 2;
+				break;
+			case 'r': /* references */
+				size += strlen(info->references) - 2;
+				break;
+			case 'F': /* file */
+				filename = folder_item_fetch_msg(info->folder,
+								 info->msgnum);
+				
+				if (filename == NULL) {
+					g_warning(_("filename is not set"));
+					return NULL;
+				}
+				else
+					size += strlen(filename) - 2;
+				break;
+			}
+			s++;
+		}
+		else s++;
+	}
+
+
+	processed_cmd = g_new0(gchar, size);
+	s = cmd;
+	p = processed_cmd;
+
+	while (*s != '\0') {
+		if (*s == '%') {
+			s++;
+			switch (*s) {
+			case '%':
+				*p = '%';
+				p++;
+				break;
+			case 's': /* subject */
+				if (info->subject != NULL)
+					strcpy(p, info->subject);
+				else
+					strcpy(p, "(none)");
+				p += strlen(p);
+				break;
+			case 'f': /* from */
+				if (info->from != NULL)
+					strcpy(p, info->from);
+				else
+					strcpy(p, "(none)");
+				p += strlen(p);
+				break;
+			case 't': /* to */
+				if (info->to != NULL)
+					strcpy(p, info->to);
+				else
+					strcpy(p, "(none)");
+				p += strlen(p);
+				break;
+			case 'c': /* cc */
+				if (info->cc != NULL)
+					strcpy(p, info->cc);
+				else
+					strcpy(p, "(none)");
+				p += strlen(p);
+				break;
+			case 'd': /* date */
+				if (info->date != NULL)
+					strcpy(p, info->date);
+				else
+					strcpy(p, "(none)");
+				p += strlen(p);
+				break;
+			case 'i': /* message-id */
+				if (info->msgid != NULL)
+					strcpy(p, info->msgid);
+				else
+					strcpy(p, "(none)");
+				p += strlen(p);
+				break;
+			case 'n': /* newsgroups */
+				if (info->newsgroups != NULL)
+					strcpy(p, info->newsgroups);
+				else
+					strcpy(p, "(none)");
+				p += strlen(p);
+				break;
+			case 'r': /* references */
+				if (info->references != NULL)
+					strcpy(p, info->references);
+				else
+					strcpy(p, "(none)");
+				p += strlen(p);
+				break;
+			case 'F': /* file */
+				strcpy(p, filename);
+				p += strlen(p);
+				break;
+			default:
+				*p = '%';
+				p++;
+				*p = *s;
+				p++;
+				break;
+			}
+			s++;
+		}
+		else {
+			*p = *s;
+			p++;
+			s++;
+		}
+	}
+	return processed_cmd;
+}
+
 /*
   fitleringaction_apply
   runs the action on one MsgInfo
@@ -219,6 +349,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 	gint val;
 	Compose * compose;
 	PrefsAccount * account;
+	gchar * cmd;
 
 	switch(action->type) {
 	case MATCHING_ACTION_MOVE:
@@ -353,6 +484,18 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 
 		gtk_widget_destroy(compose->window);
 		return FALSE;
+
+	case MATCHING_ACTION_EXECUTE:
+
+		cmd = matching_build_command(action->destination, info);
+		if (cmd == NULL)
+			return TRUE;
+		else {
+			system(cmd);
+			g_free(cmd);
+		}
+
+		return TRUE;
 
 	default:
 		return FALSE;
@@ -547,6 +690,7 @@ gchar * filteringaction_to_string(FilteringAction * action)
 	switch(action->type) {
 	case MATCHING_ACTION_MOVE:
 	case MATCHING_ACTION_COPY:
+	case MATCHING_ACTION_EXECUTE:
 		return g_strconcat(command_str, " \"", action->destination,
 				   "\"", NULL);
 

@@ -539,7 +539,7 @@ static PrefParam param[] = {
 
 	{"kill_score", "-9999", &prefs_common.kill_score, P_INT,
 	 NULL, NULL, NULL},
-	{"important_score", "9999", &prefs_common.important_score, P_INT,
+	{"important_score", "1", &prefs_common.important_score, P_INT,
 	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}

@@ -70,6 +70,8 @@ static struct Matcher {
 	GtkWidget *case_chkbtn;
 	GtkWidget *regexp_chkbtn;
 
+	GtkWidget *exec_btn;
+
 	GtkWidget *cond_clist;
 } matcher;
 
@@ -101,7 +103,9 @@ enum {
 	CRITERIA_FORWARDED = 20,
 
 	CRITERIA_SCORE_GREATER = 21,
-	CRITERIA_SCORE_LOWER = 22
+	CRITERIA_SCORE_LOWER = 22,
+
+	CRITERIA_EXECUTE = 23
 };
 
 enum {
@@ -128,7 +132,7 @@ enum {
 };
 
 gchar * predicate_flag_text [] = {
-	"flag enabled", "flag disabled"
+	"yes", "no"
 };
 
 gchar * criteria_text [] = {
@@ -141,7 +145,8 @@ gchar * criteria_text [] = {
 	"Unread flag", "New flag",
 	"Marked flag", "Deleted flag",
 	"Replied flag", "Forwarded flag",
-	"Score greater than", "Score lower than"
+	"Score greater than", "Score lower than",
+	"Execute"
 };
 
 static gint get_sel_from_list(GtkList * list)
@@ -204,6 +209,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 					  GtkWidget *widget,
 					  gpointer user_data);
 static MatcherList * prefs_matcher_get_list(void);
+static void prefs_matcher_exec_info_create(void);
 
 void prefs_matcher_open(MatcherList * matchers, PrefsMatcherSignal * cb)
 {
@@ -273,6 +279,8 @@ static void prefs_matcher_create(void)
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
 
+	GtkWidget *exec_btn;
+
 	GList *combo_items;
 	gint i;
 
@@ -316,7 +324,7 @@ static void prefs_matcher_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox), vbox1, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
-	table1 = gtk_table_new (2, 3, FALSE);
+	table1 = gtk_table_new (2, 4, FALSE);
 	gtk_widget_show (table1);
 
 	gtk_box_pack_start (GTK_BOX (vbox1), table1, FALSE, FALSE, 0);
@@ -391,6 +399,13 @@ static void prefs_matcher_create(void)
 	gtk_table_attach (GTK_TABLE (table1), value_entry, 2, 3, 1, 2,
 			  GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
 
+	exec_btn = gtk_button_new_with_label (_("Info ..."));
+	gtk_widget_show (exec_btn);
+	gtk_table_attach (GTK_TABLE (table1), exec_btn, 3, 4, 1, 2,
+			  GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
+	gtk_signal_connect (GTK_OBJECT (exec_btn), "clicked",
+			    GTK_SIGNAL_FUNC (prefs_matcher_exec_info),
+			    NULL);
 
 	/* predicate */
 
@@ -580,6 +595,7 @@ static void prefs_matcher_create(void)
 	matcher.case_chkbtn = case_chkbtn;
 	matcher.regexp_chkbtn = regexp_chkbtn;
 	matcher.bool_op_list = bool_op_list;
+	matcher.exec_btn = exec_btn;
 
 	matcher.cond_clist   = cond_clist;
 }
@@ -753,6 +769,10 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 		return CRITERIA_SCORE_GREATER;
 	case MATCHING_SCORE_LOWER:
 		return CRITERIA_SCORE_LOWER;
+	case MATCHING_NOT_EXECUTE:
+	case MATCHING_EXECUTE:
+		return CRITERIA_EXECUTE;
+		break;
 	default:
 		return -1;
 	}
@@ -807,6 +827,8 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHING_BODY_PART;
 	case CRITERIA_MESSAGE:
 		return MATCHING_MESSAGE;
+	case CRITERIA_EXECUTE:
+		return MATCHING_EXECUTE;
 	default:
 		return -1;
 	}
@@ -849,6 +871,8 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 		return MATCHING_NOT_HEADERS_PART;
 	case MATCHING_MESSAGE:
 		return MATCHING_NOT_MESSAGE;
+	case MATCHING_EXECUTE:
+		return MATCHING_NOT_EXECUTE;
 	case MATCHING_BODY_PART:
 		return MATCHING_NOT_BODY_PART;
 	default:
@@ -902,6 +926,7 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 	case CRITERIA_HEADERS_PART:
 	case CRITERIA_BODY_PART:
 	case CRITERIA_MESSAGE:
+	case CRITERIA_EXECUTE:
 	case CRITERIA_AGE_GREATER:
 	case CRITERIA_AGE_LOWER:
 	case CRITERIA_HEADER:
@@ -948,6 +973,7 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 	case CRITERIA_HEADERS_PART:
 	case CRITERIA_BODY_PART:
 	case CRITERIA_MESSAGE:
+	case CRITERIA_EXECUTE:
 		expr = gtk_entry_get_text(GTK_ENTRY(matcher.value_entry));
 
 		/*
@@ -1220,6 +1246,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		gtk_widget_show(matcher.predicate_flag_combo);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
+		gtk_widget_set_sensitive(matcher.exec_btn, FALSE);
 		break;
 
 	case CRITERIA_UNREAD:
@@ -1239,6 +1266,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		gtk_widget_show(matcher.predicate_flag_combo);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
+		gtk_widget_set_sensitive(matcher.exec_btn, FALSE);
 		break;
 
 	case CRITERIA_SUBJECT:
@@ -1263,6 +1291,22 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		gtk_widget_hide(matcher.predicate_flag_combo);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, TRUE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, TRUE);
+		gtk_widget_set_sensitive(matcher.exec_btn, FALSE);
+		break;
+
+	case CRITERIA_EXECUTE:
+		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
+		gtk_widget_set_sensitive(matcher.header_label, FALSE);
+		gtk_widget_set_sensitive(matcher.value_label, TRUE);
+		gtk_widget_set_sensitive(matcher.value_entry, TRUE);
+		gtk_widget_set_sensitive(matcher.predicate_label, TRUE);
+		gtk_widget_set_sensitive(matcher.predicate_combo, FALSE);
+		gtk_widget_set_sensitive(matcher.predicate_flag_combo, TRUE);
+		gtk_widget_hide(matcher.predicate_combo);
+		gtk_widget_show(matcher.predicate_flag_combo);
+		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
+		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
+		gtk_widget_set_sensitive(matcher.exec_btn, TRUE);
 		break;
 
 	case CRITERIA_AGE_GREATER:
@@ -1280,6 +1324,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		gtk_widget_hide(matcher.predicate_flag_combo);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
+		gtk_widget_set_sensitive(matcher.exec_btn, FALSE);
 		break;
 
 	case CRITERIA_HEADER:
@@ -1294,6 +1339,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		gtk_widget_hide(matcher.predicate_flag_combo);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, TRUE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, TRUE);
+		gtk_widget_set_sensitive(matcher.exec_btn, FALSE);
 		break;
 	}
 }
@@ -1331,4 +1377,84 @@ static gint prefs_matcher_deleted(GtkWidget *widget, GdkEventAny *event,
 {
 	prefs_matcher_cancel();
 	return TRUE;
+}
+
+static GtkWidget * exec_info_win;
+
+void prefs_matcher_exec_info(void)
+{
+	if (!exec_info_win)
+		prefs_matcher_exec_info_create();
+
+	gtk_widget_show(exec_info_win);
+	gtk_main();
+	gtk_widget_hide(exec_info_win);
+}
+
+static void prefs_matcher_exec_info_create(void)
+{
+	GtkWidget *vbox;
+	GtkWidget *hbox;
+	GtkWidget *hbbox;
+	GtkWidget *label;
+	GtkWidget *ok_btn;
+
+	exec_info_win = gtk_window_new(GTK_WINDOW_DIALOG);
+	gtk_window_set_title(GTK_WINDOW(exec_info_win),
+			     _("Description of symbols"));
+	gtk_container_set_border_width(GTK_CONTAINER(exec_info_win), 8);
+	gtk_window_set_position(GTK_WINDOW(exec_info_win), GTK_WIN_POS_CENTER);
+	gtk_window_set_modal(GTK_WINDOW(exec_info_win), TRUE);
+	gtk_window_set_policy(GTK_WINDOW(exec_info_win), FALSE, TRUE, FALSE);
+
+	vbox = gtk_vbox_new(FALSE, 8);
+	gtk_container_add(GTK_CONTAINER(exec_info_win), vbox);
+
+	hbox = gtk_hbox_new(FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
+
+	label = gtk_label_new
+		("%%:\n"
+		 "%s:\n"
+		 "%f:\n"
+		 "%t:\n"
+		 "%c:\n"
+		 "%d:\n"
+		 "%i:\n"
+		 "%n:\n"
+		 "%r:\n"
+		 "%F:\n"
+		 "%%:");
+
+	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
+	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
+
+	label = gtk_label_new
+		(_("%\n"
+		   "Subject\n"
+		   "From\n"
+		   "To\n"
+		   "Cc\n"
+		   "Date\n"
+		   "Message-ID\n"
+		   "Newsgroups\n"
+		   "References\n"
+		   "Filename - should not be modified\n"
+		   "%"));
+
+	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
+	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
+
+	gtkut_button_set_create(&hbbox, &ok_btn, _("OK"),
+				NULL, NULL, NULL, NULL);
+	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
+
+	gtk_widget_grab_default(ok_btn);
+	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
+				  GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
+
+	gtk_signal_connect(GTK_OBJECT(exec_info_win), "delete_event",
+					  GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
+
+	gtk_widget_show_all(vbox);
 }

@@ -54,6 +54,8 @@ enum {
 	MATCHING_NOT_HEADERS_PART,
 	MATCHING_BODY_PART,
 	MATCHING_NOT_BODY_PART,
+	MATCHING_EXECUTE,
+	MATCHING_NOT_EXECUTE,
 
 	/* scoring */
 	MATCHING_SCORE,
@@ -68,6 +70,7 @@ enum {
 	MATCHING_ACTION_MARK_AS_UNREAD,
 	MATCHING_ACTION_FORWARD,
 	MATCHING_ACTION_FORWARD_AS_ATTACHMENT,
+	MATCHING_ACTION_EXECUTE,
 
 	MATCHING_MATCH,
 	MATCHING_REGEXP,
@@ -83,6 +86,7 @@ struct _MatcherProp {
 	int value;
 	regex_t * preg;
 	int error;
+	gboolean result;
 };
 
 typedef struct _MatcherProp MatcherProp;
@@ -116,5 +120,6 @@ gchar * matcher_parse_regexp(gchar ** str);
 gchar * matcher_parse_str(gchar ** str);
 gchar * matcherprop_to_string(MatcherProp * matcher);
 gchar * matcherlist_to_string(MatcherList * matchers);
+gchar * matching_build_command(gchar * cmd, MsgInfo * info);
 
 #endif

@@ -53,6 +53,7 @@ static struct Scoring {
 	GtkWidget *ok_btn;
 	GtkWidget *cond_entry;
 	GtkWidget *score_entry;
+	GtkWidget *kill_score_label;
 	GtkWidget *kill_score_entry;
 	GtkWidget *important_score_entry;
 
@@ -176,6 +177,7 @@ static void prefs_scoring_create(void)
 
 	GtkWidget *important_score_entry;
 	GtkWidget *kill_score_entry;
+	GtkWidget *kill_score_label;
 
 	gchar *title[] = {_("Registered rules")};
 
@@ -332,10 +334,11 @@ static void prefs_scoring_create(void)
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, TRUE, TRUE, 0);
 
-	score_label = gtk_label_new (_("Kill score"));
-	gtk_widget_show (score_label);
-	gtk_misc_set_alignment (GTK_MISC (score_label), 0, 0.5);
-	gtk_box_pack_start (GTK_BOX (hbox1), score_label, FALSE, FALSE, 0);
+	kill_score_label = gtk_label_new (_("Kill score"));
+	gtk_widget_show (kill_score_label);
+	gtk_misc_set_alignment (GTK_MISC (kill_score_label), 0, 0.5);
+	gtk_box_pack_start (GTK_BOX (hbox1), kill_score_label,
+			    FALSE, FALSE, 0);
 
 	kill_score_entry = gtk_entry_new ();
 	gtk_widget_show (kill_score_entry);
@@ -362,6 +365,7 @@ static void prefs_scoring_create(void)
 	scoring.cond_entry = cond_entry;
 	scoring.score_entry = score_entry;
 	scoring.kill_score_entry = kill_score_entry;
+	scoring.kill_score_label = kill_score_label;
 	scoring.important_score_entry = important_score_entry;
 
 	scoring.cond_clist   = cond_clist;
@@ -387,11 +391,21 @@ static void prefs_scoring_set_dialog(ScoringProp * cond)
 		prefs_scoring = global_scoring;
 		cur_kill_score = prefs_common.kill_score;
 		cur_important_score = prefs_common.important_score;
+		gtk_widget_show(scoring.kill_score_label);
+		gtk_widget_show(scoring.kill_score_entry);
 	}
 	else {
 		prefs_scoring = cur_item->prefs->scoring;
 		cur_kill_score = cur_item->prefs->kill_score;
 		cur_important_score = cur_item->prefs->important_score;
+		if (cur_item->folder->type != F_NEWS) {
+			gtk_widget_hide(scoring.kill_score_label);
+			gtk_widget_hide(scoring.kill_score_entry);
+		}
+		else {
+			gtk_widget_show(scoring.kill_score_label);
+			gtk_widget_show(scoring.kill_score_entry);
+		}
 	}
 
 	for(cur = prefs_scoring ; cur != NULL ;
