@@ -2270,7 +2270,7 @@ static void prefs_display_create(void)
 
 	PACK_CHECK_BUTTON
 		(vbox2, chkbtn_swapfrom,
-		 _("Display recipient on `From' column if sender is yourself"));
+		 _("Display recipient in `From' column if sender is yourself"));
 	PACK_CHECK_BUTTON
 		(vbox2, chkbtn_useaddrbook,
 		 _("Display sender using address book"));
