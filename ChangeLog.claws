@@ -1,3 +1,9 @@
+2003-11-01 [alfons]	0.9.6claws62
+
+	* src/prefs_gtk.c
+		prefs_write_param(): fail when we see an invalid type; all the
+		callers seem to handle this gracefully by reverting changes
+
 2003-10-30 [christoph]	0.9.6claws61
 
 	* configure.ac
