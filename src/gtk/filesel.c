@@ -60,7 +60,7 @@ gchar *filesel_select_file(const gchar *title, const gchar *file)
 	static gchar *filename = NULL;
 	static gchar *cwd = NULL;
 	gchar *startdir = NULL;
-	gchar *realfile = NULL;
+	const gchar *realfile = NULL;
 
 	filesel_create(title, FALSE);
 

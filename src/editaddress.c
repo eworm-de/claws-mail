@@ -344,7 +344,7 @@ static gint edit_person_attrib_compare_func(
 	if( cell2 ) name2 = cell2->u.text;
 	if( ! name1 ) return ( name2 != NULL );
 	if( ! name2 ) return -1;
-	return strcasecmp( name1, name2 );
+	return g_strcasecmp( name1, name2 );
 }
 
 /*

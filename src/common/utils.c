@@ -42,6 +42,7 @@
 #include <dirent.h>
 #include <time.h>
 #include <regex.h>
+#include <sys/utsname.h>
 
 #include "intl.h"
 #include "utils.h"
@@ -112,7 +113,7 @@ void hash_free_value_mem(GHashTable *table)
 
 gint str_case_equal(gconstpointer v, gconstpointer v2)
 {
-	return strcasecmp((const gchar *)v, (const gchar *)v2) == 0;
+	return g_strcasecmp((const gchar *)v, (const gchar *)v2) == 0;
 }
 
 guint str_case_hash(gconstpointer key)
@@ -276,7 +277,7 @@ gchar *strcasestr(const gchar *haystack, const gchar *needle)
 		return NULL;
 
 	while (haystack_len >= needle_len) {
-		if (!strncasecmp(haystack, needle, needle_len))
+		if (!g_strncasecmp(haystack, needle, needle_len))
 			return (gchar *)haystack;
 		else {
 			haystack++;
@@ -570,7 +571,7 @@ gint subject_compare_for_sort(const gchar *s1, const gchar *s2)
 	trim_subject_for_sort(str1);
 	trim_subject_for_sort(str2);
 
-	return strcasecmp(str1, str2);
+	return g_strcasecmp(str1, str2);
 }
 
 void trim_subject_for_compare(gchar *str)
@@ -1717,17 +1718,16 @@ gchar *get_domain_name(void)
 	static gchar *domain_name = NULL;
 
 	if (!domain_name) {
-		gchar buf[128] = "";
 		struct hostent *hp;
+		struct utsname uts;
 
-		if (gethostname(buf, sizeof(buf)) < 0) {
+		if (uname(&uts) < 0) {
 			perror("gethostname");
 			domain_name = "unknown";
 		} else {
-			buf[sizeof(buf) - 1] = '\0';
-			if ((hp = my_gethostbyname(buf)) == NULL) {
+			if ((hp = my_gethostbyname(uts.nodename)) == NULL) {
 				perror("gethostbyname");
-				domain_name = g_strdup(buf);
+				domain_name = g_strdup(uts.nodename);
 			} else {
 				domain_name = g_strdup(hp->h_name);
 			}
@@ -2526,6 +2526,8 @@ gint copy_file_part(FILE *fp, off_t offset, size_t length, const gchar *dest)
 		unlink(dest);
 		return -1;
 	}
+
+	return 0;
 }
 
 /* convert line endings into CRLF. If the last line doesn't end with
@@ -2841,7 +2843,7 @@ gchar *generate_mime_boundary(const gchar *prefix)
 	 * doesn't do any harm.
 	 */
 	for (i = 0; i < sizeof(buf_uniq) - 1; i++)
-		buf_uniq[i] = tbl[(random() ^ pid) % (sizeof(tbl) - 1)];
+		buf_uniq[i] = tbl[(rand() ^ pid) % (sizeof(tbl) - 1)];
 	buf_uniq[i] = '\0';
 
 	get_rfc822_date(buf_date, sizeof(buf_date));
@@ -3221,7 +3223,7 @@ time_t remote_tzoffset_sec(const gchar *zone)
 		remoteoffset = 0;
 	} else if (strlen(zone3) == 3) {
 		for (p = ustzstr; *p != '\0'; p += 3) {
-			if (!strncasecmp(p, zone3, 3)) {
+			if (!g_strncasecmp(p, zone3, 3)) {
 				iustz = ((gint)(p - ustzstr) / 3 + 1) / 2 - 8;
 				remoteoffset = iustz * 3600;
 				break;
@@ -3483,7 +3485,7 @@ gint g_stricase_equal(gconstpointer gptr1, gconstpointer gptr2)
 	const char *str1 = gptr1;
 	const char *str2 = gptr2;
 
-	return !strcasecmp(str1, str2);
+	return !g_strcasecmp(str1, str2);
 }
 
 gint g_int_compare(gconstpointer a, gconstpointer b)
@@ -3514,7 +3516,7 @@ gchar *generate_msgid(const gchar *address, gchar *buf, gint len)
 		   lt->tm_year + 1900, lt->tm_mon + 1,
 		   lt->tm_mday, lt->tm_hour,
 		   lt->tm_min, lt->tm_sec,
-		   (guint)random(), addr);
+		   (guint) rand(), addr);
 
 	g_free(addr);
 	return buf;

@@ -36,6 +36,7 @@
 #include "prefs_gtk.h"
 #include "foldersel.h"
 #include "clamav_plugin.h"
+#include "statusbar.h"
 
 struct ClamAvPage
 {
@@ -225,6 +226,11 @@ static void clamav_save_func(PrefsPage *_page)
 
 static struct ClamAvPage clamav_page;
 
+static void gtk_message_callback(gchar *message)
+{
+	statusbar_print_all(message);
+}
+
 gint plugin_init(gchar **error)
 {
 	static gchar *path[3];
@@ -250,6 +256,7 @@ gint plugin_init(gchar **error)
 	clamav_page.page.weight = 35.0;
 	
 	prefs_gtk_register_page((PrefsPage *) &clamav_page);
+	clamav_set_message_callback(gtk_message_callback);
 
 	debug_print("ClamAV GTK plugin loaded\n");
 	return 0;	
@@ -257,6 +264,7 @@ gint plugin_init(gchar **error)
 
 void plugin_done(void)
 {
+	clamav_set_message_callback(NULL);
 	prefs_gtk_unregister_page((PrefsPage *) &clamav_page);
 
 	debug_print("ClamAV GTK plugin unloaded\n");

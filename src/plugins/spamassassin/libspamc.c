@@ -1182,7 +1182,7 @@ int transport_setup(struct transport *tp, int flags)
     char **addrp;
 
 #ifdef _WIN32
-    // Start Winsock up
+    /* Start Winsock up */
     WSADATA wsaData;
     int nCode;
     if ((nCode = WSAStartup(MAKEWORD(1, 1), &wsaData)) != 0) {
@@ -1300,11 +1300,11 @@ libspamc_log (int flags, int level, char *msg, ...)
     va_start(ap, msg);
 
     if ((flags & SPAMC_LOG_TO_STDERR) != 0) {
-        // create a log-line buffer
+        /* create a log-line buffer */
         len = snprintf(buf, LOG_BUFSIZ, "spamc: ");
         len += vsnprintf(buf+len, LOG_BUFSIZ-len, msg, ap);
 
-        // avoid buffer overflow
+        /* avoid buffer overflow */
         if (len > (LOG_BUFSIZ-2)) { len = (LOG_BUFSIZ-3); }
 
         len += snprintf(buf+len, LOG_BUFSIZ-len, "\n");

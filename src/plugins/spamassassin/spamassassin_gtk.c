@@ -36,6 +36,7 @@
 #include "prefs_gtk.h"
 #include "foldersel.h"
 #include "spamassassin.h"
+#include "statusbar.h"
 
 struct SpamAssassinPage
 {
@@ -436,6 +437,11 @@ static void spamassassin_save_func(PrefsPage *_page)
 	spamassassin_save_config();
 }
 
+static void gtk_message_callback(gchar *message)
+{
+	statusbar_print_all(message);
+}
+
 static struct SpamAssassinPage spamassassin_page;
 
 gint plugin_init(gchar **error)
@@ -463,6 +469,7 @@ gint plugin_init(gchar **error)
 	spamassassin_page.page.weight = 35.0;
 
 	prefs_gtk_register_page((PrefsPage *) &spamassassin_page);
+	spamassassin_set_message_callback(gtk_message_callback);
 
 	debug_print("SpamAssassin GTK plugin loaded\n");
 	return 0;	
@@ -470,6 +477,7 @@ gint plugin_init(gchar **error)
 
 void plugin_done(void)
 {
+	spamassassin_set_message_callback(NULL);
 	prefs_gtk_unregister_page((PrefsPage *) &spamassassin_page);
 
 	debug_print("SpamAssassin GTK plugin unloaded\n");

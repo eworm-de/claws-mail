@@ -486,7 +486,7 @@ cmp_attr (gconstpointer pa, gconstpointer pb, GpgmeAttr attr)
         return !!sb;
     if (!sb)
         return -1;
-    return strcasecmp(sa, sb);
+    return g_strcasecmp(sa, sb);
 }
 
 static gint 

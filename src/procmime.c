@@ -56,7 +56,7 @@ MimeInfo *procmime_mimeinfo_new(void)
 
 	mimeinfo = g_new0(MimeInfo, 1);
 	mimeinfo->content	 = MIMECONTENT_EMPTY;
-	mimeinfo->filename	 = NULL;
+	mimeinfo->data.filename	 = NULL;
 
 	mimeinfo->type     	 = MIMETYPE_UNKNOWN;
 	mimeinfo->encoding_type  = ENC_UNKNOWN;
@@ -103,13 +103,13 @@ static gboolean free_func(GNode *node, gpointer data)
 	switch (mimeinfo->content) {
 	case MIMECONTENT_FILE:
 		if (mimeinfo->tmp)
-			unlink(mimeinfo->filename);
-		g_free(mimeinfo->filename);
+			unlink(mimeinfo->data.filename);
+		g_free(mimeinfo->data.filename);
 		break;
 
 	case MIMECONTENT_MEM:
 		if (mimeinfo->tmp)
-			g_free(mimeinfo->data);
+			g_free(mimeinfo->data.mem);
 	default:
 		break;
 	}
@@ -284,7 +284,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	    encoding == ENC_BINARY)
 		return TRUE;
 
-	infp = fopen(mimeinfo->filename, "rb");
+	infp = fopen(mimeinfo->data.filename, "rb");
 	if (!infp) {
 		perror("fopen");
 		return FALSE;
@@ -350,11 +350,11 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	fclose(infp);
 
 	stat(tmpfilename, &statbuf);
-	if (mimeinfo->tmp && (mimeinfo->filename != NULL))
-		unlink(mimeinfo->filename);
-	if (mimeinfo->filename != NULL)
-		g_free(mimeinfo->filename);
-	mimeinfo->filename = tmpfilename;
+	if (mimeinfo->tmp && (mimeinfo->data.filename != NULL))
+		unlink(mimeinfo->data.filename);
+	if (mimeinfo->data.filename != NULL)
+		g_free(mimeinfo->data.filename);
+	mimeinfo->data.filename = tmpfilename;
 	mimeinfo->tmp = TRUE;
 	mimeinfo->offset = 0;
 	mimeinfo->length = statbuf.st_size;
@@ -388,8 +388,8 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 		return FALSE;
 	}
 
-	if ((infp = fopen(mimeinfo->filename, "rb")) == NULL) {
-		g_warning("Can't open file %s\n", mimeinfo->filename);
+	if ((infp = fopen(mimeinfo->data.filename, "rb")) == NULL) {
+		g_warning("Can't open file %s\n", mimeinfo->data.filename);
 		return FALSE;
 	}
 
@@ -428,10 +428,10 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 	fclose(infp);
 
 	stat(tmpfilename, &statbuf);
-	if (mimeinfo->tmp && (mimeinfo->filename != NULL))
-		unlink(mimeinfo->filename);
-	g_free(mimeinfo->filename);
-	mimeinfo->filename = tmpfilename;
+	if (mimeinfo->tmp && (mimeinfo->data.filename != NULL))
+		unlink(mimeinfo->data.filename);
+	g_free(mimeinfo->data.filename);
+	mimeinfo->data.filename = tmpfilename;
 	mimeinfo->tmp = TRUE;
 	mimeinfo->offset = 0;
 	mimeinfo->length = statbuf.st_size;
@@ -452,12 +452,12 @@ gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
 	if (mimeinfo->encoding_type != ENC_BINARY && !procmime_decode_content(mimeinfo))
 		return -1;
 
-	if ((infp = fopen(mimeinfo->filename, "rb")) == NULL) {
-		FILE_OP_ERROR(mimeinfo->filename, "fopen");
+	if ((infp = fopen(mimeinfo->data.filename, "rb")) == NULL) {
+		FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 		return -1;
 	}
 	if (fseek(infp, mimeinfo->offset, SEEK_SET) < 0) {
-		FILE_OP_ERROR(mimeinfo->filename, "fseek");
+		FILE_OP_ERROR(mimeinfo->data.filename, "fseek");
 		fclose(infp);
 		return -1;
 	}
@@ -873,7 +873,7 @@ static gint procmime_str_equal(gconstpointer gptr1, gconstpointer gptr2)
 	const char *str1 = gptr1;
 	const char *str2 = gptr2;
 
-	return !strcasecmp(str1, str2);
+	return !g_strcasecmp(str1, str2);
 }
 
 static GHashTable *procmime_get_mime_type_table(void)
@@ -974,14 +974,14 @@ EncodingType procmime_get_encoding_for_charset(const gchar *charset)
 {
 	if (!charset)
 		return ENC_8BIT;
-	else if (!strncasecmp(charset, "ISO-2022-", 9) ||
-		 !strcasecmp(charset, "US-ASCII"))
+	else if (!g_strncasecmp(charset, "ISO-2022-", 9) ||
+		 !g_strcasecmp(charset, "US-ASCII"))
 		return ENC_7BIT;
-	else if (!strcasecmp(charset, "ISO-8859-5") ||
-		 !strncasecmp(charset, "KOI8-", 5) ||
-		 !strcasecmp(charset, "Windows-1251"))
+	else if (!g_strcasecmp(charset, "ISO-8859-5") ||
+		 !g_strncasecmp(charset, "KOI8-", 5) ||
+		 !g_strcasecmp(charset, "Windows-1251"))
 		return ENC_8BIT;
-	else if (!strncasecmp(charset, "ISO-8859-", 9))
+	else if (!g_strncasecmp(charset, "ISO-8859-", 9))
 		return ENC_QUOTED_PRINTABLE;
 	else
 		return ENC_8BIT;
@@ -1126,9 +1126,9 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 
 	procmime_decode_content(mimeinfo);
 
-	fp = fopen(mimeinfo->filename, "rb");
+	fp = fopen(mimeinfo->data.filename, "rb");
 	if (fp == NULL) {
-		FILE_OP_ERROR(mimeinfo->filename, "fopen");
+		FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 		return;
 	}
 	fseek(fp, mimeinfo->offset, SEEK_SET);
@@ -1149,7 +1149,7 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 				        hentry[0].body, hentry[1].body,
 					hentry[2].body, hentry[3].body, 
 					hentry[4].body, 
-					mimeinfo->filename, content_start,
+					mimeinfo->data.filename, content_start,
 					mimeinfo->length - (content_start - mimeinfo->offset));
 	} else {
 		MimeInfo *subinfo;
@@ -1158,7 +1158,7 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 		subinfo->encoding_type = ENC_UNKNOWN;
 		subinfo->type = MIMETYPE_TEXT;
 		subinfo->subtype = g_strdup("plain");
-		subinfo->filename = g_strdup(mimeinfo->filename);
+		subinfo->data.filename = g_strdup(mimeinfo->data.filename);
 		subinfo->offset = content_start;
 		subinfo->length = mimeinfo->length - (content_start - mimeinfo->offset);
 
@@ -1195,9 +1195,9 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 
 	procmime_decode_content(mimeinfo);
 
-	fp = fopen(mimeinfo->filename, "rb");
+	fp = fopen(mimeinfo->data.filename, "rb");
 	if (fp == NULL) {
-		FILE_OP_ERROR(mimeinfo->filename, "fopen");
+		FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 		return;
 	}
 	fseek(fp, mimeinfo->offset, SEEK_SET);
@@ -1211,7 +1211,7 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 				                        hentry[0].body, hentry[1].body,
 							hentry[2].body, hentry[3].body, 
 							hentry[4].body, 
-							mimeinfo->filename, lastoffset,
+							mimeinfo->data.filename, lastoffset,
 							(ftell(fp) - strlen(buf)) - lastoffset - 1);
 			}
 			
@@ -1378,7 +1378,7 @@ void procmime_parse_mimepart(MimeInfo *parent,
 	mimeinfo->content = MIMECONTENT_FILE;
 	if (parent != NULL)
 		g_node_append(parent->node, mimeinfo->node);
-	mimeinfo->filename = g_strdup(filename);
+	mimeinfo->data.filename = g_strdup(filename);
 	mimeinfo->offset = offset;
 	mimeinfo->length = length;
 
@@ -1471,7 +1471,7 @@ MimeInfo *procmime_scan_file_with_offset(const gchar *filename, int offset)
 	mimeinfo->encoding_type = ENC_UNKNOWN;
 	mimeinfo->type = MIMETYPE_MESSAGE;
 	mimeinfo->subtype = g_strdup("rfc822");
-	mimeinfo->filename = g_strdup(filename);
+	mimeinfo->data.filename = g_strdup(filename);
 	mimeinfo->offset = offset;
 	mimeinfo->length = buf.st_size - offset;
 
@@ -1583,8 +1583,8 @@ gint procmime_write_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
 	/* write header */
 	switch (mimeinfo->content) {
 	case MIMECONTENT_FILE:
-		if ((infp = fopen(mimeinfo->filename, "rb")) == NULL) {
-			FILE_OP_ERROR(mimeinfo->filename, "fopen");
+		if ((infp = fopen(mimeinfo->data.filename, "rb")) == NULL) {
+			FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 			return -1;
 		}
 		fseek(infp, mimeinfo->offset, SEEK_SET);
@@ -1609,7 +1609,7 @@ gint procmime_write_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
 		break;
 
 	case MIMECONTENT_MEM:
-		fwrite(mimeinfo->data, strlen(mimeinfo->data), sizeof(gchar), fp);
+		fwrite(mimeinfo->data.mem, strlen(mimeinfo->data.mem), sizeof(gchar), fp);
 		break;
 
 	default:
@@ -1640,8 +1640,8 @@ gint procmime_write_multipart(MimeInfo *mimeinfo, FILE *fp)
 
 	switch (mimeinfo->content) {
 	case MIMECONTENT_FILE:
-		if ((infp = fopen(mimeinfo->filename, "rb")) == NULL) {
-			FILE_OP_ERROR(mimeinfo->filename, "fopen");
+		if ((infp = fopen(mimeinfo->data.filename, "rb")) == NULL) {
+			FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 			return -1;
 		}
 		fseek(infp, mimeinfo->offset, SEEK_SET);
@@ -1654,7 +1654,7 @@ gint procmime_write_multipart(MimeInfo *mimeinfo, FILE *fp)
 		break;
 
 	case MIMECONTENT_MEM:
-		str = g_strdup(mimeinfo->data);
+		str = g_strdup(mimeinfo->data.mem);
 		if (((str2 = strstr(str, boundary)) != NULL) && ((str2 - str) >= 2) &&
 		    (*(str2 - 1) == '-') && (*(str2 - 2) == '-'))
 			*(str2 - 2) = '\0';
@@ -1697,8 +1697,8 @@ gint procmime_write_mimeinfo(MimeInfo *mimeinfo, FILE *fp)
 	if (G_NODE_IS_LEAF(mimeinfo->node)) {
 		switch (mimeinfo->content) {
 		case MIMECONTENT_FILE:
-			if ((infp = fopen(mimeinfo->filename, "rb")) == NULL) {
-				FILE_OP_ERROR(mimeinfo->filename, "fopen");
+			if ((infp = fopen(mimeinfo->data.filename, "rb")) == NULL) {
+				FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 				return -1;
 			}
 			copy_file_part_to_fp(infp, mimeinfo->offset, mimeinfo->length, fp);
@@ -1706,7 +1706,7 @@ gint procmime_write_mimeinfo(MimeInfo *mimeinfo, FILE *fp)
 			return 0;
 
 		case MIMECONTENT_MEM:
-			fwrite(mimeinfo->data, strlen(mimeinfo->data), sizeof(gchar), fp);
+			fwrite(mimeinfo->data.mem, strlen(mimeinfo->data.mem), sizeof(gchar), fp);
 			return 0;
 
 		default:

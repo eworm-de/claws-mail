@@ -30,6 +30,7 @@
 
 #include "filesel.h"
 #include "alertpanel.h"
+#include "../inc.h"
 
 typedef struct _PluginWindow
 {

@@ -105,8 +105,8 @@ struct _MimeInfo
 	union
 	{
 		gchar *filename;
-		gchar *data;
-	};
+		gchar *mem;
+	} data;
 	gboolean tmp;
 
 	GNode *node;

@@ -144,6 +144,8 @@
 	perror(func); \
 }
 
+#define IS_ASCII(c) (((guchar) c) <= 0177 ? 1 : 0)
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -721,7 +721,7 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 		gchar tmp[MAXPATHLEN + 1];
 
 		g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg.out.%08x",
-			   get_rc_dir(), G_DIR_SEPARATOR, (guint)random());
+			   get_rc_dir(), G_DIR_SEPARATOR, (guint) rand());
 		
 		if (procmsg_remove_special_headers(file, tmp) !=0)
 			return -1;

@@ -60,9 +60,6 @@ typedef struct _MsgColorsPage
 
 static GtkWidget *color_dialog;
 
-static void prefs_quote_colors_key_pressed	(GtkWidget	*widget,
-						 GdkEventKey	*event,
-						 gpointer	 data);
 static void quote_color_set_dialog		(GtkWidget	*widget,
 						 gpointer	 data);
 static void quote_colors_set_dialog_ok		(GtkWidget	*widget,
@@ -222,13 +219,6 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_msg_colors->chkbtn_recycle_colors	= chkbtn_recycle_colors;
 
 	prefs_msg_colors->page.widget = table;
-}
-
-static void prefs_quote_colors_key_pressed(GtkWidget *widget,
-					   GdkEventKey *event, gpointer data)
-{
-	if (event && event->keyval == GDK_Escape)
-		gtk_main_quit();
 }
 
 static void quote_color_set_dialog(GtkWidget *widget, gpointer data)

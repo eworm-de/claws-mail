@@ -24,6 +24,8 @@
 
 typedef struct _SpamAssassinConfig SpamAssassinConfig;
 
+typedef void (*MessageCallback) (gchar *);
+
 typedef enum {
 	SPAMASSASSIN_DISABLED            = 0,
 	SPAMASSASSIN_TRANSPORT_LOCALHOST = 1,
@@ -43,7 +45,8 @@ struct _SpamAssassinConfig
 	guint 			 timeout;
 };
 
-SpamAssassinConfig *spamassassin_get_config	(void);
-void		    spamassassin_save_config	(void);
+SpamAssassinConfig *spamassassin_get_config	      (void);
+void		    spamassassin_save_config	      (void);
+void 	            spamassassin_set_message_callback (MessageCallback callback);
 
 #endif

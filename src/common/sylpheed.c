@@ -104,7 +104,7 @@ gboolean sylpheed_init(int *argc, char ***argv)
 		}
 	}
 
-	srandom((gint)time(NULL));
+	srand((gint) time(NULL));
 
 #if USE_OPENSSL
 	ssl_init();

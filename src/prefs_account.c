@@ -1631,20 +1631,9 @@ static void prefs_account_compose_create(void)
 static void prefs_account_privacy_create(void)
 {
 	GtkWidget *vbox1;
-	GtkWidget *frame_mode;
-	GtkWidget *vbox_mode;
-	GtkWidget *frame1;
 	GtkWidget *vbox2;
-	GtkWidget *hbox1;
-	GtkWidget *label;
 	GtkWidget *default_encrypt_chkbtn;
 	GtkWidget *default_sign_chkbtn;
-	GtkWidget *gnupg_mime_radiobtn;
-	GtkWidget *gnupg_inline_radiobtn;
-	GtkWidget *defaultkey_radiobtn;
-	GtkWidget *emailkey_radiobtn;
-	GtkWidget *customkey_radiobtn;
-	GtkWidget *customkey_entry;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);

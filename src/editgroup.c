@@ -223,7 +223,7 @@ static gint edit_group_list_compare_func( GtkCList *clist, gconstpointer ptr1, g
 	if( cell2 ) name2 = cell2->u.text;
 	if( ! name1 ) return ( name2 != NULL );
 	if( ! name2 ) return -1;
-	return strcasecmp( name1, name2 );
+	return g_strcasecmp( name1, name2 );
 }
 
 static void addressbook_edit_group_create( gboolean *cancelled ) {

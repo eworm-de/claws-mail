@@ -279,8 +279,6 @@ static void addressbook_treenode_remove_item	( void );
 
 static AddressDataSource *addressbook_find_datasource
 						(GtkCTreeNode	*node );
-static AddressDataSource *addressbook_find_datasource_for_object
-						( AddrItemObject *ao );
 
 static AddressBookFile *addressbook_get_book_file(void);
 
@@ -3474,7 +3472,7 @@ static gint addressbook_treenode_compare_func(
 	if( cell2 ) name2 = cell2->u.text;
 	if( ! name1 ) return ( name2 != NULL );
 	if( ! name2 ) return -1;
-	return strcasecmp( name1, name2 );
+	return g_strcasecmp( name1, name2 );
 }
 
 /*
@@ -3495,7 +3493,7 @@ static gint addressbook_list_compare_func(
 		/* Order by name */
 		if( ! name1 ) return ( name2 != NULL );
 		if( ! name2 ) return -1;
-		return strcasecmp( name1, name2 );
+		return g_strcasecmp( name1, name2 );
 	}
 	else {
 		/* Order groups before person */
@@ -4648,18 +4646,6 @@ static void addressbook_drag_leave_cb(GtkWidget      *widget,
 	}
 }
 
-static AddressBookFile *get_rawDataSource(ItemFolder *item)
-{
-	AdapterDSource *ads = NULL;
-	AddressDataSource *ds = NULL;
-	ads = ADAPTER_DSOURCE(item);
-	if (ads == NULL ) return NULL;
-	ds = ads->dataSource;
-	if (ds == NULL ) return NULL;
-
-	return ds->rawDataSource;
-}
-
 static void addressbook_drag_received_cb(GtkWidget        *widget,
 					GdkDragContext   *drag_context,
 					gint              x,
@@ -4680,9 +4666,6 @@ static void addressbook_drag_received_cb(GtkWidget        *widget,
 		AddressObject *obj = NULL;
 		AdapterDSource *ads = NULL;
 		AddressDataSource *ds = NULL;
-		AddrBookBase *adbase = NULL;
-		AddressCache *cache = NULL;
-
 		
 		if (gtk_clist_get_selection_info
 			(GTK_CLIST(widget), x - 24, y - 24, &row, &column) == 0) {

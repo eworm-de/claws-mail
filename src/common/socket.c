@@ -994,8 +994,6 @@ static SockInfo *sockinfo_from_fd(const gchar *hostname,
 	sockinfo->port = port;
 	sockinfo->state = CONN_ESTABLISHED;
 
-	usleep(100000);
-
 	return sockinfo;
 }
 

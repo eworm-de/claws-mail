@@ -24,6 +24,8 @@
 
 typedef struct _ClamAvConfig ClamAvConfig;
 
+typedef void (*MessageCallback) (gchar *);
+
 struct _ClamAvConfig
 {
 	gboolean	 clamav_enable;
@@ -33,7 +35,8 @@ struct _ClamAvConfig
 	gchar 		*clamav_save_folder;
 };
 
-ClamAvConfig *clamav_get_config		(void);
-void	      clamav_save_config	(void);
+ClamAvConfig *clamav_get_config		  (void);
+void	      clamav_save_config	  (void);
+void 	      clamav_set_message_callback (MessageCallback callback);
 
 #endif

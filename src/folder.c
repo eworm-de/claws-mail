@@ -413,17 +413,17 @@ void folder_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 
 		if (!attr || !attr->name || !attr->value) continue;
 		if (!strcmp(attr->name, "type")) {
-			if (!strcasecmp(attr->value, "normal"))
+			if (!g_strcasecmp(attr->value, "normal"))
 				item->stype = F_NORMAL;
-			else if (!strcasecmp(attr->value, "inbox"))
+			else if (!g_strcasecmp(attr->value, "inbox"))
 				item->stype = F_INBOX;
-			else if (!strcasecmp(attr->value, "outbox"))
+			else if (!g_strcasecmp(attr->value, "outbox"))
 				item->stype = F_OUTBOX;
-			else if (!strcasecmp(attr->value, "draft"))
+			else if (!g_strcasecmp(attr->value, "draft"))
 				item->stype = F_DRAFT;
-			else if (!strcasecmp(attr->value, "queue"))
+			else if (!g_strcasecmp(attr->value, "queue"))
 				item->stype = F_QUEUE;
-			else if (!strcasecmp(attr->value, "trash"))
+			else if (!g_strcasecmp(attr->value, "trash"))
 				item->stype = F_TRASH;
 		} else if (!strcmp(attr->name, "name")) {
 			if (item->name != NULL)

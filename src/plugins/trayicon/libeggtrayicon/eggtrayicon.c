@@ -67,7 +67,7 @@ egg_tray_icon_init (EggTrayIcon *icon)
 static void
 egg_tray_icon_class_init (EggTrayIconClass *klass)
 {
-	//parent_class = g_type_class_peek_parent (klass);
+	/* parent_class = g_type_class_peek_parent (klass); */
 	parent_class = gtk_type_class(gtk_plug_xembed_get_type());
 }
 
@@ -114,7 +114,7 @@ egg_tray_icon_send_manager_message (EggTrayIcon *icon,
   ev.window = window;
   ev.message_type = icon->system_tray_opcode_atom;
   ev.format = 32;
-  ev.data.l[0] = GDK_CURRENT_TIME; //gdk_x11_get_server_time (GTK_WIDGET (icon)->window);
+  ev.data.l[0] = GDK_CURRENT_TIME; /* gdk_x11_get_server_time (GTK_WIDGET (icon)->window); */
   ev.data.l[1] = message;
   ev.data.l[2] = data1;
   ev.data.l[3] = data2;
@@ -238,7 +238,7 @@ egg_tray_icon_new_for_xscreen (Screen *xscreen, const char *name)
 #if HAVE_GTK_MULTIHEAD
   root_window = gdk_screen_get_root_window (screen);
 #else
-  root_window = GDK_ROOT_PARENT(); //gdk_window_lookup (gdk_x11_get_default_root_xwindow ());
+  root_window = GDK_ROOT_PARENT(); /* gdk_window_lookup (gdk_x11_get_default_root_xwindow ()); */
 #endif
   
   /* Add a root window filter so that we get changes on MANAGER */
