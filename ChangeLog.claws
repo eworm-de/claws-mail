@@ -1,3 +1,12 @@
+2004-10-04 [colin]	0.9.12cvs122
+
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/messageview.h
+	* src/textview.c
+		Make forced encoding limited to messageview and
+		apply only to parts displayed using textview
+
 2004-10-04 [colin]	0.9.12cvs121
 
 	* src/summaryview.c

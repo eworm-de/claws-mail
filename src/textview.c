@@ -566,6 +566,8 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 
 	conv = conv_code_converter_new(charset);
 
+	procmime_force_encoding(textview->messageview->forced_encoding);
+	
 	textview->is_in_signature = FALSE;
 
 	procmime_decode_content(mimeinfo);
@@ -603,6 +605,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 	}
 
 	conv_code_converter_destroy(conv);
+	procmime_force_encoding(0);
 }
 
 static void textview_show_html(TextView *textview, FILE *fp,

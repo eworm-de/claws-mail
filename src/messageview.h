@@ -57,6 +57,7 @@ struct _MessageView
 	MsgInfo *msginfo;
 
 	gchar *forced_charset;
+	EncodingType forced_encoding;
 
 	gboolean visible;
 

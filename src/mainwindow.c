@@ -2637,11 +2637,9 @@ static void set_charset_cb(MainWindow *mainwin, guint action,
 static void set_decode_cb(MainWindow *mainwin, guint action,
 			   GtkWidget *widget)
 {
-	const gchar *str;
-
 	if (GTK_CHECK_MENU_ITEM(widget)->active) {
-		procmime_force_encoding((EncodingType)action);
-
+		mainwin->messageview->forced_encoding = (EncodingType)action;
+		
 		summary_redisplay_msg(mainwin->summaryview);
 		
 		debug_print("forced encoding: %d\n", action);

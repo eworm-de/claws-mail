@@ -107,6 +107,9 @@ static void search_cb			(gpointer	 data,
 static void set_charset_cb		(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
+static void set_decode_cb		(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
 static void view_source_cb		(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -244,6 +247,22 @@ static GtkItemFactoryEntry msgview_entries[] =
 
 #undef CODESET_SEPARATOR
 #undef CODESET_ACTION
+
+#define DECODE_SEPARATOR \
+	{N_("/_View/Decode/---"),		NULL, NULL, 0, "<Separator>"}
+#define DECODE_ACTION(action) \
+	 NULL, set_decode_cb, action, "/View/Decode/Auto detect"
+	{N_("/_View/Decode"),		NULL, NULL, 0, "<Branch>"},
+	{N_("/_View/Decode/_Auto detect"),
+	 NULL, set_decode_cb, 0, "<RadioItem>"},
+	{N_("/_View/Decode/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/Decode/_8bit"), 		DECODE_ACTION(ENC_8BIT)},
+	{N_("/_View/Decode/_Quoted printable"),	DECODE_ACTION(ENC_QUOTED_PRINTABLE)},
+	{N_("/_View/Decode/_Base64"), 		DECODE_ACTION(ENC_BASE64)},
+	{N_("/_View/Decode/_Uuencode"),		DECODE_ACTION(ENC_X_UUENCODE)},
+
+#undef DECODE_SEPARATOR
+#undef DECODE_ACTION
 
 	{N_("/_View/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Mess_age source"),	NULL, view_source_cb, 0, NULL},
@@ -1279,6 +1298,19 @@ static void set_charset_cb(gpointer data, guint action, GtkWidget *widget)
 		messageview_show(messageview, messageview->msginfo, FALSE);
 	}
 }
+
+static void set_decode_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	if (GTK_CHECK_MENU_ITEM(widget)->active) {
+		messageview->forced_encoding = (EncodingType)action;
+
+		messageview_show(messageview, messageview->msginfo, FALSE);
+		
+		debug_print("forced encoding: %d\n", action);
+	}
+}
+
 
 static void view_source_cb(gpointer data, guint action, GtkWidget *widget)
 {
