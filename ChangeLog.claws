@@ -1,5 +1,11 @@
 2004-10-29 [paul]
 
+	* tools/textviewer.sh
+		fix typo. patch submitted by Johann Koenig 
+		<explosive@hvc.rr.com>
+
+2004-10-29 [paul]
+
 	* tools/kdeservicemenu/template_sylpheed-attach-files.desktop
 	* tools/kdeservicemenu/template_sylpheed-compress-attach.desktop
 		add French translations, submitted by Fabien Vantard
