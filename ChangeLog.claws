@@ -1,3 +1,9 @@
+2005-01-20 [holger]	1.0.0cvs3
+
+	* src/addrindex.c
+	* src/addrindex.h
+		Add addrindex_load_person_attribute() (for plugins)
+
 2005-01-19 [colin]	1.0.0cvs2
 
 	* src/mbox.c

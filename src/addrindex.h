@@ -183,6 +183,10 @@ gboolean addrindex_load_completion(
 			( const gchar *, const gchar *, 
 			  const gchar *, const gchar * ) );
 
+gboolean addrindex_load_person_attribute( const gchar *attr,
+		gint (*callBackFunc)
+			( ItemPerson *, const gchar * ) );
+
 #endif /* __ADDRINDEX_H__ */
 
 /*
