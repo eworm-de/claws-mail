@@ -1,3 +1,8 @@
+2004-06-27 [paul]	0.0.11cvs19
+
+	* src/common/ssl.c
+		re-enable certificate check
+
 2004-06-25 [christoph]	0.9.11cvs18
 
 	* src/procmsg.h
