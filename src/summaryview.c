@@ -2111,7 +2111,7 @@ gint summary_write_cache(SummaryView *summaryview)
 	gint ver = CACHE_VERSION;
 	gchar *buf;
 	gchar *cachefile, *markfile;
-	GSList * cur;
+	GSList *cur;
 	gint filemode = 0;
 	PrefsFolderItem *prefs;
 
@@ -2176,6 +2176,12 @@ gint summary_write_cache(SummaryView *summaryview)
 	WRITE_CACHE_DATA_INT(ver, fps.mark_fp);
 
 	gtk_ctree_pre_recursive(ctree, NULL, summary_write_cache_func, &fps);
+
+	for (cur = summaryview->killed_messages; cur != NULL; cur = cur->next) {
+		MsgInfo *msginfo = (MsgInfo *)cur->data;
+		procmsg_write_cache(msginfo, fps.cache_fp);
+		procmsg_write_flags(msginfo, fps.mark_fp);
+	}
 
 	procmsg_flush_mark_queue(summaryview->folder_item, fps.mark_fp);
 
