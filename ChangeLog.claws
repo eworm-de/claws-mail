@@ -1,3 +1,13 @@
+2001-09-26 [christoph]	0.6.2claws7
+
+	* src/compose.c
+		replace comments for old code with #if 0
+		readded auto cc, bcc and reply-to
+	* src/prefs_matcher.c
+	* src/prefs_scoring.c
+		removed some definition (was moved to
+		prefs.h)
+
 2001-09-26 [paul]	0.6.2claws6
 
 	* src/mainwindow.c

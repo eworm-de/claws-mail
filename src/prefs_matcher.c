@@ -170,11 +170,6 @@ static gint get_sel_from_list(GtkList * list)
 
 static PrefsMatcherSignal * matchers_callback;
 
-#define VSPACING		12
-#define VSPACING_NARROW		4
-#define DEFAULT_ENTRY_WIDTH	80
-#define PREFSBUFSIZE		1024
-
 /* widget creating functions */
 static void prefs_matcher_create	(void);
 
