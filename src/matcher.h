@@ -104,6 +104,8 @@ enum {
 	MT_(MATCH),
 	MT_(REGEXPCASE),
 	MT_(REGEXP),
+	MT_(ANY_IN_ADDRESSBOOK),
+	MT_(ALL_IN_ADDRESSBOOK),
 	/* actions */
 	MA_(SCORE),
 	MA_(EXECUTE),

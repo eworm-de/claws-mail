@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002 by the Sylpheed Claws Team and Hiroyuki Yamamoto
+ * Copyright (C) 2002-2004 by the Sylpheed Claws Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 #include "intl.h"
 #include "matcher_parser.h"
 #include "prefs_gtk.h"
+#include "addr_compl.h"
 #include <ctype.h>
 
 /*!
@@ -109,6 +110,8 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHTYPE_MATCH, "match"},
 	{MATCHTYPE_REGEXPCASE, "regexpcase"},
 	{MATCHTYPE_REGEXP, "regexp"},
+	{MATCHTYPE_ANY_IN_ADDRESSBOOK, "any_in_addressbook"},
+	{MATCHTYPE_ALL_IN_ADDRESSBOOK, "all_in_addressbook"},
 
 	/* actions */
 	{MATCHACTION_SCORE, "score"},    /* for backward compatibility */
@@ -262,6 +265,36 @@ MatcherProp *matcherprop_copy(const MatcherProp *src)
 
 /* ************** match ******************************/
 
+static gboolean match_with_addresses_in_addressbook
+	(MatcherProp *prop, const gchar *str, gint type)
+{
+	GSList *address_list = NULL;
+	GSList *walk;
+	gboolean res = FALSE;
+
+	if (str == NULL || *str == 0) 
+		return FALSE;
+	
+	/* XXX: perhaps complete with comments too */
+	address_list = address_list_append(address_list, str);
+	if (!address_list) 
+		return FALSE;
+
+	start_address_completion();		
+	res = FALSE;
+	for (walk = address_list; walk != NULL; walk = walk->next) {
+		gboolean found = complete_address(walk->data) ? TRUE : FALSE;
+		if (!found && type == MATCHTYPE_ALL_IN_ADDRESSBOOK) {
+			res = FALSE;
+			break;
+		} else if (found) 
+			res = TRUE;
+	}
+
+	end_address_completion();
+	return res;
+}
+
 /*!
  *\brief	Find out if a string matches a condition
  *
@@ -301,6 +334,11 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str)
 			return TRUE;
 		else
 			return FALSE;
+			
+	case MATCHTYPE_ALL_IN_ADDRESSBOOK:	
+	case MATCHTYPE_ANY_IN_ADDRESSBOOK:
+		return match_with_addresses_in_addressbook
+			(prop, str, prop->matchtype);
 
 	case MATCHTYPE_MATCH:
 		return (strstr(str, prop->expr) != NULL);
@@ -1077,6 +1115,8 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 	case MATCHTYPE_MATCHCASE:
 	case MATCHTYPE_REGEXP:
 	case MATCHTYPE_REGEXPCASE:
+	case MATCHTYPE_ALL_IN_ADDRESSBOOK:
+	case MATCHTYPE_ANY_IN_ADDRESSBOOK:
 		quoted_expr = matcher_quote_str(matcher->expr);
 		if (matcher->header) {
 			gchar * quoted_header;

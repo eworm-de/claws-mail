@@ -1,3 +1,24 @@
+2004-04-03 [alfons]	0.9.10claws38
+
+	* src/matcher_parser_parse.y
+	  src/matcher.[ch]
+		prepare address look up matcher type; marginally
+		tested, and not hooked into the UI yet.
+
+		basically it accepts the result of the left hand
+		side of the matcher (the "criteria"):
+
+			from all_in_addressbook ""
+			~to_or_cc any_in_addressbook ""
+		
+		the first case matches all addresses found in the
+		from header, and the second case matches if any
+		(at least one) of the addresses in to or cc headers 
+		are not in the address book.
+
+		the string argument is not used yet, but is intended
+		to match a group of addresses 
+
 2004-04-02 [luke] 	0.9.10claws37
 
 	* src/prefs_folder_item.c
