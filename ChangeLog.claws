@@ -1,3 +1,8 @@
+2003-08-21 [paul]	0.9.4claws32
+
+	* sync with 0.9.4cvs7
+		see ChangeLog 2003-08-20
+
 2003-08-19 [paul]	0.9.4claws31
 
 	* src/common/defs.h

@@ -725,6 +725,7 @@ void summary_init(SummaryView *summaryview)
 	GtkStyle *style;
 	GtkWidget *pixmap;
 
+	gtk_widget_realize(summaryview->ctree);
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_MARK,
 			 &markxpm, &markxpmmask);
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_DELETED,

@@ -1,3 +1,12 @@
+2003-08-20
+
+	* src/mainwindow.c: ウィンドウサイズの変更を常に反映。
+	* src/folderview.c: folderview_init()
+	  src/summaryview.c: summary_init(): pixmap を作成する前にウィジェット
+	  を realize するようにした。
+	* src/prefs_common.[ch]: フォルダとメッセージビューの可視状態を
+	  記憶するようにした。
+
 2003-08-07
 
 	* src/mainwindow.c

@@ -167,11 +167,12 @@ struct _PrefsCommon
 	gint summary_col_pos[N_SUMMARY_COLS];
 	gint summary_col_size[N_SUMMARY_COLS];
 
-	/* Widget size */
+	/* Widget visibility, position and size */
 	gint folderwin_x;
 	gint folderwin_y;
 	gint folderview_width;
 	gint folderview_height;
+	gboolean folderview_visible;
 
 	gint folder_col_folder;
 	gint folder_col_new;
@@ -185,6 +186,7 @@ struct _PrefsCommon
 	gint main_msgwin_y;
 	gint msgview_width;
 	gint msgview_height;
+	gboolean msgview_visible;
 
 	gint mainview_x;
 	gint mainview_y;

@@ -540,7 +540,8 @@ void folderview_init(FolderView *folderview)
 	GtkWidget *label_unread;
 	GtkWidget *hbox_new;
 	GtkWidget *hbox_unread;
-
+	
+	gtk_widget_realize(ctree);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE, &inboxxpm, &inboxxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE_HRM, &inboxhrmxpm, &inboxhrmxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_OPEN, &inboxopenxpm, &inboxopenxpmmask);

@@ -1,3 +1,12 @@
+2003-08-20
+
+	* src/mainwindow.c: always reflect window size changes.
+	* src/folderview.c: folderview_init()
+	  src/summaryview.c: summary_init(): realize the widget before
+	  creating pixmaps.
+	* src/prefs_common.[ch]: remember the folder and mesage view's
+	  visibility.
+
 2003-08-07
 
 	* src/mainwindow.c
