@@ -65,7 +65,7 @@ const gchar *plugin_desc(void)
 	return _("This Plugin is only a demo of how to write plugins for Sylpheed. "
 	         "It installs a hook for new log output and writes it to stdout."
 	         "\n\n"
-	         "It is not really usefull");
+	         "It is not really useful");
 }
 
 const gchar *plugin_type(void)

@@ -1,3 +1,38 @@
+2003-05-17 [christoph]
+
+	* README.claws
+		o remove dynamic signatures that was syned with main
+		o add infos about no longer "build in" image viewer
+		o update bugtracker URL
+
+2003-05-17 [christoph]	0.8.11claws161
+
+	* src/folder.c
+	* src/folderview.c
+	* src/imap.c
+		don't use imap_scan_folder anymore. Instead call folder_item_scan
+		for every folder after rebuilding the folder tree.
+
+	(closes Bug 19 imap_scan_folder() computes incorrectly number of new
+	 messages)
+
+2003-05-17 [christoph]	0.8.11claws160
+
+	* src/imap.c
+		don't use STATUS command on current folder to check for
+		content changes. imap_cmd_ok() now tracks changes to
+		folder and number of existing messages.
+
+2003-05-17 [paul]	0.8.11claws159
+
+	* src/plugins/clamav/clamav_plugin.c
+		remove unnecessary debug_print
+
+2003-05-16 [thorsten]	0.8.11claws158
+
+	* src/plugins/demo.c
+		included missing intl.h
+
 2003-05-16 [paul]	0.8.11claws157
 
 	* po/POTFILES.in

@@ -856,45 +856,9 @@ void folderview_rescan_tree(Folder *folder)
 
 	folderview_set_all();
 
-	folderview_check_new(folder);
-	
 	gtk_widget_destroy(window);
 	inc_unlock();
 }
-
-#if 0
-void folderview_rescan_all(void)
-{
-	GList *list;
-	GtkWidget *window;
-
-	inc_lock();
-	window = label_window_create(_("Rescanning all folder trees..."));
-
-	list = folder_get_list();
-	for (; list != NULL; list = list->next) {
-		Folder *folder = list->data;
-
-		if (!folder->scan_tree) continue;
-		folder_set_ui_func(folder, folderview_scan_tree_func, NULL);
-		folder_scan_tree(folder);
-		folder_set_ui_func(folder, NULL, NULL);
-	}
-
-	folder_write_list();
-	folderview_set_all();
-
-	list = folder_get_list();
-	for (; list != NULL; list = list->next) {
-		Folder *folder = list->data;
-
-		folderview_check_new(folder);
-	}
-
-	gtk_widget_destroy(window);
-	inc_unlock();
-}
-#endif
 
 /** folderview_check_new()
  *  Scan and update the folder and return the 

@@ -445,6 +445,7 @@ gboolean folder_scan_tree_func(GNode *node, gpointer data)
 	FolderItem *item = (FolderItem *)node->data;
 	
 	folder_item_restore_persist_prefs(item, pptable);
+	folder_item_scan(item);
 
 	return FALSE;
 }
@@ -457,8 +458,12 @@ void folder_scan_tree(Folder *folder)
 		return;
 	
 	pptable = folder_persist_prefs_new(folder);
-	folder_tree_destroy(folder);
 
+	/*
+	 * should be changed and tree update should be done without 
+	 * destroying the tree first
+	 */
+	folder_tree_destroy(folder);
 	folder->klass->scan_tree(folder);
 
 	g_node_traverse(folder->node, G_POST_ORDER, G_TRAVERSE_ALL, -1, folder_scan_tree_func, pptable);
