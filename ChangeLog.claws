@@ -1,3 +1,10 @@
+2001-10-06 [match]
+	* src/jpilot.[ch]
+		enable jpilot to read unsynch'ed addresses.
+
+	* src/editldap_basedn.c
+		fix segfault when opening dialog.
+
 2001-10-06 [alfons]	0.6.2.claws22
 
 	* src/summaryview.c
