@@ -133,14 +133,8 @@ void procmime_mimeinfo_replace(MimeInfo *old, MimeInfo *new)
 	MimeInfo *parent = old->parent;
 	MimeInfo *child;
 
-	if (!parent) {
-		g_warning("oops: Not top message");
-		return;
-	}
-	if (new->next) {
-		g_message("oops: new child should not have a sibling");
-		return;
-	}
+	g_return_if_fail(parent != NULL);
+	g_return_if_fail(new->next == NULL);
 
 	for (child = parent->children; child && child != old;
 	     child = child->next)
@@ -294,7 +288,6 @@ void procmime_scan_multipart_message(MimeInfo *mimeinfo, FILE *fp)
 
 		if (eom) break;
 	}
-	/*g_message ("** at " __PRETTY_FUNCTION__ ":%d:", __LINE__);*/
 }
 
 void procmime_scan_encoding(MimeInfo *mimeinfo, const gchar *encoding)

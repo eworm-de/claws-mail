@@ -101,7 +101,7 @@ void addrindex_print_index		( AddressIndex *addrIndex, FILE *stream );
 AddressInterface *addrindex_get_interface		( AddressIndex *addrIndex, AddressIfType ifType );
 AddressDataSource *addrindex_index_add_datasource	( AddressIndex *addrIndex, AddressIfType ifType, gpointer dataSource );
 AddressDataSource *addrindex_index_remove_datasource	( AddressIndex *addrIndex, AddressDataSource *dataSource );
-void addrindex_free_datasource		( AddressIndex *addrIndex, AddressDataSource *ds );
+void addrindex_free_datasource				( AddressIndex *addrIndex, AddressDataSource *ds );
 
 gint addrindex_read_data		( AddressIndex *addrIndex );
 gint addrindex_write_to			( AddressIndex *addrIndex, const gchar *newFile );
@@ -128,5 +128,3 @@ GList *addrindex_ds_get_all_groups	( AddressDataSource *ds );
 /*
 * End of Source.
 */
-
-

@@ -1004,11 +1004,8 @@ static void main_window_show_cur_account(MainWindow *mainwin)
 	gtk_window_set_title(GTK_WINDOW(mainwin->window), buf);
 	g_free(buf);
 
-	/* buf = g_strdup_printf(_("Current account: %s"), ac_name);
-	gtk_label_set_text(GTK_LABEL(mainwin->ac_label), buf);   */
 	gtk_label_set_text(GTK_LABEL(mainwin->ac_label), ac_name);
 	gtk_widget_queue_resize(mainwin->ac_button);
-	/* g_free(buf); */
 
 	g_free(ac_name);
 }

@@ -414,9 +414,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 	gint error_num = 0;
 	gint new_msgs = 0;
 
-	/* gtk_label_set_text(GTK_LABEL(inc_dialog->mainwin->statuslabel),
-			   _("Receiving"));  */
-
 	while (inc_dialog->queue_list != NULL) {
 		session = inc_dialog->queue_list->data;
 		pop3_state = session->pop3_state;
@@ -528,8 +525,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 		num++;
 	}
-
-	/* gtk_label_set_text(GTK_LABEL(inc_dialog->mainwin->statuslabel), "");  */
 
 	if (error_num && !prefs_common.noerrorpanel) {
 		if (inc_dialog->show_dialog)
@@ -672,7 +667,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	recv_set_ui_func(NULL, NULL);
 
 #if USE_THREADS
-	//pthread_join(sockinfo->connect_thr, NULL);
+	/* pthread_join(sockinfo->connect_thr, NULL); */
 #endif
 	automaton_destroy(atm);
 

@@ -1,3 +1,18 @@
+2001-10-19
+
+	* src/smtp.[ch]: smtp_from(): 認証に失敗した場合中断するようにした。
+	* C++ スタイルのコメントを C スタイルに変更し、不要なコメントアウト
+	  されたコードを削除。
+
+2001-10-18
+
+	* src/about.c: コンパイル済機能にいくつかの項目を追加。
+	* src/addr_compl.c: LOG_MESSAGE を debug_print に変更。
+	* src/addressbook.c: "V-Card" を "vCard" に変更。
+	  addressbook_edit_address_cb(): invalidate_address_completion()
+	  をアドレスが変更された箇所に追加。
+	* src/codeconv.c: C++ スタイルのコメントを C スタイルに変更。
+
 2001-10-17
 
 	* src/compose.c: 「送信」ショートカットを Ctrl+Enter に変更。

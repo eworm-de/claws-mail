@@ -34,10 +34,10 @@
 #include "main.h"
 #include "headerwindow.h"
 #include "mainwindow.h"
-#include "prefs_common.h"
 #include "procheader.h"
 #include "procmsg.h"
 #include "codeconv.h"
+#include "prefs_common.h"
 #include "utils.h"
 
 static GdkFont *normalfont;
@@ -88,10 +88,8 @@ HeaderWindow *header_window_create(void)
 
 void header_window_init(HeaderWindow *headerwin)
 {
-	/*
-	if (!normalfont)
-		normalfont = gdk_fontset_load(NORMAL_FONT);
-	*/	
+	/* if (!normalfont)
+		normalfont = gdk_fontset_load(prefs_common.normalfont); */
 	if (!boldfont)
 		boldfont = gdk_fontset_load(BOLD_FONT);
 }

@@ -812,7 +812,6 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 		strlen(mimehdr_charset) + strlen(mimehdr_enctype);
 	mimehdr_begin_len = strlen(mimehdr_init) +
 		strlen(mimehdr_charset) + strlen(mimehdr_enctype);
-	/* line_len = 1; */
 	line_len = header_len;
 	destp = dest;
 	*dest = '\0';
@@ -934,10 +933,8 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 
 				wtmpp++;
 			}
-			/*
-			  g_print("tmp = %s, tlen = %d, mb_seqlen = %d\n",
-			        tmp, tlen, mb_seqlen);
-			*/				
+			/* g_print("tmp = %s, tlen = %d, mb_seqlen = %d\n",
+				tmp, tlen, mb_seqlen); */
 
 			if (tlen == 0 || raw_len == 0) {
 				g_free(tmp);
@@ -1025,7 +1022,6 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 		      strlen(mimehdr_charset) + strlen(mimehdr_enctype);
 	mimehdr_begin_len = strlen(mimehdr_init) +
 			    strlen(mimehdr_charset) + strlen(mimehdr_enctype);
-	/* line_len = 1; */
 	line_len = header_len;
 	destp = dest;
 	*dest = '\0';
@@ -1125,8 +1121,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 				wtmpp++;
 			}
 			/* g_print("tmp = %s, tlen = %d, mb_seqlen = %d\n",
-				tmp, tlen, mb_seqlen);
-			*/				
+				tmp, tlen, mb_seqlen); */
 
 			if (tlen == 0) {
 				g_free(tmp);

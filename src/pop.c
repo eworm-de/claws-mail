@@ -389,7 +389,7 @@ gint pop3_delete_send(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 
-	/*inc_progress_update(state, POP3_DELETE_SEND);*/
+	/* inc_progress_update(state, POP3_DELETE_SEND); */
 
 	pop3_gen_send(sock, "DELE %d", state->cur_msg);
 

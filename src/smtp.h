@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #define	SM_OK			0
 #define	SM_ERROR		128
 #define	SM_UNRECOVERABLE	129
-#define	SM_AUTHFAIL		130
+#define SM_AUTHFAIL		130
 
 #define	ESMTP_8BITMIME		0x01
 #define	ESMTP_SIZE		0x02

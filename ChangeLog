@@ -1,3 +1,18 @@
+2001-10-19
+
+	* src/smtp.[ch]: smtp_from(): abort if auth failed.
+	* changed C++-style comments into C-style in some files, and
+	  removed unnecessary commented out codes.
+
+2001-10-18
+
+	* src/about.c: added some items to compiled-in features.
+	* src/addr_compl.c: changed LOG_MESSAGE to debug_print.
+	* src/addressbook.c: changed "V-Card" to "vCard".
+	  addressbook_edit_address_cb(): added
+	  invalidate_address_completion() to the point address is changed.
+	* src/codeconv.c: changed C++-style comments into C-style.
+
 2001-10-17
 
 	* src/compose.c: changed "Send" shortcut to Ctrl+Enter.

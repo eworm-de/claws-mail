@@ -128,8 +128,6 @@ void log_window_append(const gchar *str, LogType type)
 
 	text = GTK_TEXT(logwindow->text);
 
-	/*gtk_text_freeze(text);*/
-
 	switch (type) {
 	case LOG_WARN:
 		color = &logwindow->warn_color;
@@ -147,8 +145,6 @@ void log_window_append(const gchar *str, LogType type)
 
 	if (head) gtk_text_insert(text, NULL, color, NULL, head, -1);
 	gtk_text_insert(text, NULL, color, NULL, str, -1);
-
-	/*gtk_text_thaw(text);*/
 }
 
 static void key_pressed(GtkWidget *widget, GdkEventKey *event,
