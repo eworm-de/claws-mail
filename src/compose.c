@@ -2036,7 +2036,7 @@ static void compose_wrap_line(Compose *compose)
 			}
 			line_end = 1;
 		} else {
-			if (ch_len == 1 && strchr(">:#", *cbuf))
+			if (ch_len == 1 && strchr(">|:#", *cbuf))
 				quoted = 1;
 			else if (ch_len != 1 || !isspace(*cbuf))
 				quoted = 0;
@@ -2058,7 +2058,7 @@ static void compose_wrap_line(Compose *compose)
 			}
 			line_end = 1;
 		} else {
-			if (line_end && ch_len == 1 && strchr(">:#", *cbuf))
+			if (line_end && ch_len == 1 && strchr(">|:#", *cbuf))
 				goto compose_end; /* quoted part */
 
 			line_end = 0;
@@ -2166,9 +2166,8 @@ static guint get_indent_length(GtkSText *text, guint start_pos, guint text_len)
 		GET_CHAR(i, cbuf, ch_len);
 		if (ch_len > 1)
 			break;
-		/* allow space, tab, > or | */
-		if (cbuf[0] != ' ' && cbuf[0] != '\t' &&
-		    cbuf[0] != '>' && cbuf[0] != '|')
+		/* allow space, tab, >, |, : or # */
+		if (!strchr(" \t>|:#", *cbuf))
 			break;
 		indent_len++;
 	}

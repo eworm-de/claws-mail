@@ -1,3 +1,10 @@
+2002-03-20
+
+	* src/compose.c: compose_wrap_line(): '|' も引用文字として扱う
+	  ようにした。
+	  get_indent_length(): ':' と '#' も引用文字として扱うようにし、
+	  strchr() を使って整理。
+
 2002-03-19
 
 	* src/mainwindow.c: いくつかのメニュー項目を修正。

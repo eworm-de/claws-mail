@@ -1,3 +1,9 @@
+2002-03-20
+
+	* src/compose.c: compose_wrap_line(): treat '|' also as quote char.
+	  get_indent_length(): treat ':' and '#' also as quote char, and
+	  cleaned up using strchr().
+
 2002-03-19
 
 	* src/mainwindow.c: modified some menu items.

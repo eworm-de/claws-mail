@@ -1,3 +1,8 @@
+2002-03-20 [paul]	0.7.4claws27
+
+	* sync with sylpheed 0.7.4cvs9
+		see ChangeLog entry 2002-03-20
+
 2002-03-19 [christoph]	0.7.4claws26
 
 	* src/mh.c
