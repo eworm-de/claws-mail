@@ -636,9 +636,13 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
 			icon = STOCK_PIXMAP_PRIVACY_PASSED;
 			break;
 		case SIGNATURE_WARN:
+			button_text = _("Full info");
+			func = display_full_info_cb;
 			icon = STOCK_PIXMAP_PRIVACY_WARN;
 			break;
 		case SIGNATURE_INVALID:
+			button_text = _("Full info");
+			func = display_full_info_cb;
 			icon = STOCK_PIXMAP_PRIVACY_FAILED;
 			break;
 		case SIGNATURE_CHECK_FAILED:

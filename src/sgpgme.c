@@ -23,6 +23,7 @@
  
 #ifdef USE_GPGME
 
+#include <time.h>
 #include <gtk/gtk.h>
 #include <gpgme.h>
 
@@ -138,7 +139,73 @@ gchar *sgpgme_sigstat_info_short(GpgmeCtx ctx, GpgmeSigStat status)
 
 gchar *sgpgme_sigstat_info_full(GpgmeCtx ctx, GpgmeSigStat status)
 {
-	return g_strdup(_("Todo"));
+	gint i = 0;
+	gchar *ret;
+	GString *siginfo;
+	GpgmeKey key;
+	
+	siginfo = g_string_sized_new(64);
+	while (gpgme_get_sig_key(ctx, i, &key) != GPGME_EOF) {
+		time_t sigtime, expiretime;
+		GpgmeSigStat sigstatus;
+		gchar time[64];
+		const gchar *keytype, *keyid;
+		
+		sigtime = gpgme_get_sig_ulong_attr(ctx, i, GPGME_ATTR_CREATED, 0);
+		strftime(time, 64, "%c", gmtime(&sigtime));
+		keytype = gpgme_key_get_string_attr(key, GPGME_ATTR_ALGO, NULL, 0);
+		keyid = gpgme_key_get_string_attr(key, GPGME_ATTR_KEYID, NULL, 0);
+		g_string_sprintfa(siginfo,
+			_("Signature made %s using %s key ID %s\n"),
+			time, keytype, keyid);
+		
+		sigstatus = gpgme_get_sig_ulong_attr(ctx, i, GPGME_ATTR_SIG_STATUS, 0);	
+		switch (sigstatus) {
+		case GPGME_SIG_STAT_GOOD:
+		case GPGME_SIG_STAT_GOOD_EXP:
+		case GPGME_SIG_STAT_GOOD_EXPKEY:
+		{
+			gint j = 1;
+			const gchar *uid;
+			
+			g_string_sprintfa(siginfo,
+				_("Good signature from \"%s\"\n"),
+				gpgme_key_get_string_attr(key, GPGME_ATTR_USERID, NULL, 0));
+			while (uid = gpgme_key_get_string_attr(key, GPGME_ATTR_USERID, NULL, j)) {
+				g_string_sprintfa(siginfo,
+					_("                aka \"%s\"\n"),
+					uid);
+				j++;
+			}
+			g_string_sprintfa(siginfo,
+				_("Primary key fingerprint: %s\n"), 
+				gpgme_key_get_string_attr(key, GPGME_ATTR_FPR, NULL, 0));
+			break;
+		}
+		case GPGME_SIG_STAT_BAD:
+			g_string_sprintfa(siginfo,
+				_("BAD signature from \"%s\"\n"),
+				gpgme_key_get_string_attr(key, GPGME_ATTR_USERID, NULL, 0));
+			break;
+		default:
+			break;
+		}
+		
+		expiretime = gpgme_get_sig_ulong_attr(ctx, i, GPGME_ATTR_EXPIRE, 0);
+		if (expiretime > 0) {
+			strftime(time, 64, "%c", gmtime(&expiretime));
+			g_string_sprintfa(siginfo,
+				_("Signature expires %s\n"),
+				time);
+		}
+		
+		g_string_append(siginfo, "\n");
+		i++;
+	}
+
+	ret = siginfo->str;
+	g_string_free(siginfo, FALSE);
+	return ret;
 }
 
 void sgpgme_init()

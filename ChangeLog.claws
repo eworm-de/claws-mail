@@ -1,3 +1,12 @@
+2003-11-10 [christoph]	0.9.6claws73
+
+	* src/mimeview.c
+		add "Full info" button for bad and warn signature status
+
+	* src/sgpgme.c
+		generate full signature info like gpg's output
+		(gpg -v --with-fingerprint --verify)
+
 2003-11-10 [christoph]	0.9.6claws72
 
 	* src/mimeview.c
