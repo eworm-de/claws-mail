@@ -987,16 +987,15 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 		}
 
 		if (size_limit_over) {
-			log_message
-				(_("POP3: Skipping message %d (%d bytes)\n"),
-				   session->cur_msg, size);
-
 			if (!msg->received && msg->partial_recv != 2) {
 				pop3_top_send(session, ac->size_limit);
 				return POP3_TOP;
 			} else if (msg->partial_recv == 2) {
 				break;
 			}
+			log_message
+				(_("POP3: Skipping message %d (%d bytes)\n"),
+				   session->cur_msg, size);
 		}
 		
 		if (size == 0 || msg->received || size_limit_over) {
