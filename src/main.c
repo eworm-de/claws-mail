@@ -104,6 +104,9 @@ static struct RemoteCmd {
 	const gchar *compose_mailto;
 	GPtrArray *attach_files;
 	gboolean status;
+	gboolean status_full;
+	GPtrArray *status_folders;
+	GPtrArray *status_full_folders;
 	gboolean send;
 	gboolean crash;
 	int online_mode;
@@ -188,7 +191,7 @@ int main(int argc, char *argv[])
 	lock_socket = prohibit_duplicate_launch();
 	if (lock_socket < 0) return 0;
 
-	if (cmd.status) {
+	if (cmd.status || cmd.status_full) {
 		puts("0 Sylpheed not running.");
 		lock_socket_remove();
 		return 0;
@@ -345,6 +348,14 @@ int main(int argc, char *argv[])
 	}
 	if (cmd.send)
 		send_queue();
+	if (cmd.status_folders) {
+		g_ptr_array_free(cmd.status_folders, TRUE);
+		cmd.status_folders = NULL;
+	}
+	if (cmd.status_full_folders) {
+		g_ptr_array_free(cmd.status_full_folders, TRUE);
+		cmd.status_full_folders = NULL;
+	}
 
 	if (cmd.online_mode == ONLINE_MODE_OFFLINE)
 		main_window_toggle_work_offline(mainwin, TRUE);
@@ -415,8 +426,31 @@ static void parse_cmd_opt(int argc, char *argv[])
 		} else if (!strncmp(argv[i], "--version", 9)) {
 			puts("Sylpheed version " VERSION);
 			exit(0);
-		} else if (!strncmp(argv[i], "--status", 8)) {
-			cmd.status = TRUE;
+ 		} else if (!strncmp(argv[i], "--status-full", 13)) {
+ 			const gchar *p = argv[i + 1];
+ 
+ 			cmd.status_full = TRUE;
+ 			while (p && *p != '\0' && *p != '-') {
+ 				if (!cmd.status_full_folders)
+ 					cmd.status_full_folders =
+ 						g_ptr_array_new();
+ 				g_ptr_array_add(cmd.status_full_folders,
+ 						g_strdup(p));
+ 				i++;
+ 				p = argv[i + 1];
+ 			}
+  		} else if (!strncmp(argv[i], "--status", 8)) {
+ 			const gchar *p = argv[i + 1];
+ 
+  			cmd.status = TRUE;
+ 			while (p && *p != '\0' && *p != '-') {
+ 				if (!cmd.status_folders)
+ 					cmd.status_folders = g_ptr_array_new();
+ 				g_ptr_array_add(cmd.status_folders,
+ 						g_strdup(p));
+ 				i++;
+ 				p = argv[i + 1];
+ 			}
 		} else if (!strncmp(argv[i], "--online", 8)) {
 			cmd.online_mode = ONLINE_MODE_ONLINE;
 		} else if (!strncmp(argv[i], "--offline", 9)) {
@@ -432,7 +466,9 @@ static void parse_cmd_opt(int argc, char *argv[])
 			puts(_("  --receive              receive new messages"));
 			puts(_("  --receive-all          receive new messages of all accounts"));
 			puts(_("  --send                 send all queued messages"));
-			puts(_("  --status               show the total number of messages"));
+ 			puts(_("  --status [folder]...   show the total number of messages"));
+ 			puts(_("  --status-full [folder]...\n"
+ 			       "                         show the status of each folder"));
 			puts(_("  --online               switch to online mode"));
 			puts(_("  --offline              switch to offline mode"));
 			puts(_("  --debug                debug mode"));
@@ -698,7 +734,8 @@ static gint prohibit_duplicate_launch(void)
 		gchar *compose_str;
 
 		if (cmd.compose_mailto)
-			compose_str = g_strdup_printf("compose %s\n", cmd.compose_mailto);
+			compose_str = g_strdup_printf
+				("compose %s\n", cmd.compose_mailto);
 		else
 			compose_str = g_strdup("compose\n");
 
@@ -710,12 +747,29 @@ static gint prohibit_duplicate_launch(void)
 		fd_write(uxsock, "online\n", 6);
 	} else if (cmd.online_mode == ONLINE_MODE_OFFLINE) {
 		fd_write(uxsock, "offline\n", 7);
-	} else if (cmd.status) {
-		gchar buf[BUFFSIZE];
-
-		fd_write_all(uxsock, "status\n", 7);
-		fd_gets(uxsock, buf, sizeof(buf));
-		fputs(buf, stdout);
+ 	} else if (cmd.status || cmd.status_full) {
+  		gchar buf[BUFFSIZE];
+ 		gint i;
+ 		const gchar *command;
+ 		GPtrArray *folders;
+ 		gchar *folder;
+ 
+ 		command = cmd.status_full ? "status-full\n" : "status\n";
+ 		folders = cmd.status_full ? cmd.status_full_folders :
+ 			cmd.status_folders;
+ 
+ 		fd_write_all(uxsock, command, strlen(command));
+ 		for (i = 0; folders && i < folders->len; ++i) {
+ 			folder = g_ptr_array_index(folders, i);
+ 			fd_write_all(uxsock, folder, strlen(folder));
+ 			fd_write_all(uxsock, "\n", 1);
+ 		}
+ 		fd_write_all(uxsock, ".\n", 2);
+ 		for (;;) {
+ 			fd_gets(uxsock, buf, sizeof(buf));
+ 			if (!strncmp(buf, ".\n", 2)) break;
+ 			fputs(buf, stdout);
+ 		}
 	} else
 		fd_write_all(uxsock, "popup\n", 6);
 
@@ -736,6 +790,27 @@ static gint lock_socket_remove(void)
 	unlink(filename);
 
 	return 0;
+}
+
+static GPtrArray *get_folder_item_list(gint sock)
+{
+	gchar buf[BUFFSIZE];
+	FolderItem *item;
+	GPtrArray *folders = NULL;
+
+	for (;;) {
+		fd_gets(sock, buf, sizeof(buf));
+		if (!strncmp(buf, ".\n", 2)) break;
+		strretchomp(buf);
+		if (!folders) folders = g_ptr_array_new();
+		item = folder_find_item_from_identifier(buf);
+		if (item)
+			g_ptr_array_add(folders, item);
+		else
+			g_warning("no such folder: %s\n", buf);
+	}
+
+	return folders;
 }
 
 static void lock_socket_input_cb(gpointer data,
@@ -778,12 +853,18 @@ static void lock_socket_input_cb(gpointer data,
 		main_window_toggle_work_offline(mainwin, FALSE);
 	} else if (!strncmp(buf, "offline", 7)) {
 		main_window_toggle_work_offline(mainwin, TRUE);
-	} else if (!strncmp(buf, "status", 6)) {
-		guint new, unread, unreadmarked, total;
-
-		folder_count_total_msgs(&new, &unread, &unreadmarked, &total);
-		g_snprintf(buf, sizeof(buf), "%d %d %d %d\n", new, unread, unreadmarked, total);
-		fd_write_all(sock, buf, strlen(buf));
+ 	} else if (!strncmp(buf, "status-full", 11) ||
+ 		   !strncmp(buf, "status", 6)) {
+ 		gchar *status;
+ 		GPtrArray *folders;
+ 
+ 		folders = get_folder_item_list(sock);
+ 		status = folder_get_status
+ 			(folders, !strncmp(buf, "status-full", 11));
+ 		fd_write_all(sock, status, strlen(status));
+ 		fd_write_all(sock, ".\n", 2);
+ 		g_free(status);
+ 		if (folders) g_ptr_array_free(folders, TRUE);
 	}
 
 	fd_close(sock);

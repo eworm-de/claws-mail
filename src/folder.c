@@ -515,6 +515,113 @@ static void folder_count_total_msgs_func(FolderItem *item, gpointer data)
 	count->total_msgs += item->total_msgs;
 }
 
+struct TotalMsgStatus
+{
+        guint new;
+        guint unread;
+	guint total;
+	GString *str;
+};
+
+static gboolean folder_get_status_full_all_func(GNode *node, gpointer data)
+{
+	FolderItem *item;
+	struct TotalMsgStatus *status = (struct TotalMsgStatus *)data;
+	gchar *id;
+ 
+ 	g_return_val_if_fail(node->data != NULL, FALSE);
+ 
+ 	item = FOLDER_ITEM(node->data);
+
+	if (!item->path) return FALSE;
+
+	status->new += item->new_msgs;
+	status->unread += item->unread_msgs;
+	status->total += item->total_msgs;
+
+	if (status->str) {
+		id = folder_item_get_identifier(item);
+		g_string_sprintfa(status->str, "%5d %5d %5d %s\n",
+				  item->new_msgs, item->unread_msgs,
+				  item->total_msgs, id);
+		g_free(id);
+	}
+ 
+ 	return FALSE;
+ }
+ 
+static void folder_get_status_full_all(GString *str, guint *new, guint *unread,
+				       guint *total)
+{
+ 	GList *list;
+ 	Folder *folder;
+	struct TotalMsgStatus status;
+ 
+	status.new = status.unread = status.total = 0;
+	status.str = str;
+ 
+	debug_print("Counting total number of messages...\n");
+ 
+ 	for (list = folder_list; list != NULL; list = list->next) {
+ 		folder = FOLDER(list->data);
+ 		if (folder->node)
+ 			g_node_traverse(folder->node, G_PRE_ORDER,
+ 					G_TRAVERSE_ALL, -1,
+					folder_get_status_full_all_func,
+					&status);
+ 	}
+ 
+	*new = status.new;
+	*unread = status.unread;
+	*total = status.total;
+}
+
+gchar *folder_get_status(GPtrArray *folders, gboolean full)
+{
+	guint new, unread, total;
+	GString *str;
+	gint i;
+	gchar *ret;
+
+	new = unread = total = 0;
+
+	str = g_string_new(NULL);
+
+	if (folders) {
+		for (i = 0; i < folders->len; i++) {
+			FolderItem *item;
+
+			item = g_ptr_array_index(folders, i);
+			new += item->new_msgs;
+			unread += item->unread_msgs;
+			total += item->total_msgs;
+
+			if (full) {
+				gchar *id;
+
+				id = folder_item_get_identifier(item);
+				g_string_sprintfa(str, "%5d %5d %5d %s\n",
+						  item->new_msgs, item->unread_msgs,
+						  item->total_msgs, id);
+				g_free(id);
+			}
+		}
+	} else {
+		folder_get_status_full_all(full ? str : NULL,
+					   &new, &unread, &total);
+	}
+
+	if (full)
+		g_string_sprintfa(str, "%5d %5d %5d\n", new, unread, total);
+	else
+		g_string_sprintfa(str, "%d %d %d\n", new, unread, total);
+
+	ret = str->str;
+	g_string_free(str, FALSE);
+ 
+	return ret;
+}
+
 void folder_count_total_msgs(guint *new_msgs, guint *unread_msgs, guint *unreadmarked_msgs, guint *total_msgs)
 {
 	struct TotalMsgCount count;
