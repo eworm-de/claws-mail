@@ -1,3 +1,53 @@
+2004-11-23 [colin]	0.9.12cvs163
+
+	* src/main.c
+		Fix cursor going from normal to wait
+		as many times as there are folders
+		(very noticeable on exported displays)
+
+2004-11-23 [colin]	0.9.12cvs162
+
+	* src/msgcache.c
+		HEAD needs this leak fix too
+
+2004-11-22 [luke]	0.9.12cvs161
+
+	* src/gtk/gtkstext.c
+		'Up' key moves one line (not one paragraph) like 'Down'
+
+2004-11-22 [paul]	0.9.12cvs160
+
+	* src/prefs_themes.c
+		fix oversized GtkFrames
+
+2004-11-19 [paul]	0.9.12cvs159
+
+	* src/prefs_common.c
+		update prefs_keybind_apply_clicked()
+
+2004-11-18 [paul]	0.9.12cvs158
+
+	* src/compose.c
+	* src/messageview.c
+	* src/common/utils.c
+	* src/common/utils.h
+		use Message-ID format like that previously
+		used in compose_generate_msgid()
+
+2004-11-17 [christoph]	0.9.12cvs157
+
+	* src/mainwindow.c
+	* src/prefs_common.c
+		integrate "Common preferences" into new preferences dialog
+
+2004-11-17 [colin]	0.9.12cvs156
+
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/procmsg.c
+		Add an option to let the user choose to store encrypted
+		mail as clear text or encrypted.
+
 2004-11-17 [colin]	0.9.12cvs155
 
 	* src/compose.c
