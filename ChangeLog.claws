@@ -1,3 +1,7 @@
+2003-11-19 [luke]	0.9.6claws80
+	* src/textview.c
+		revert my last commit until I get time to fix it
+
 2003-11-18 [christoph]	0.9.6claws79
 
 	* src/mimeview.[ch]
