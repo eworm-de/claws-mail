@@ -1,3 +1,9 @@
+2004-09-24 [colin]	0.9.12cvs103.2
+
+	* src/wizard.c
+		Fix gtk warnings and use domain part of the email address 
+		when domain detection fails (no dot in domain name)
+
 2004-09-23 [colin]	0.9.12cvs103.1
 
 	* src/plugins/spamassassin/libspamc.c

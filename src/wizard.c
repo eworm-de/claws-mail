@@ -199,7 +199,8 @@ create_page_with_text (WizardWindow *wizard, const char * title,
 	GtkWidget *label = gtk_label_new(text);				      \
 	gtk_table_attach(GTK_TABLE(table), label, 			      \
 			 0,1,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);	      \
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);		      \
+	if (GTK_IS_MISC(label))						      \
+		gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);	      \
 	gtk_table_attach(GTK_TABLE(table), entry, 			      \
 			 1,2,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);	      \
 }
@@ -219,6 +220,56 @@ static gchar *get_default_email_addr(void)
 				domain_name);
 	g_free(domain_name);
 	return result;
+}
+
+static gchar *get_default_server(WizardWindow * wizard, const gchar *type)
+{
+	gchar *domain_name = g_strdup(get_domain_name());
+	gchar *result;
+	
+	if (strchr(domain_name, '.') != strrchr(domain_name, '.')
+	&& strlen(strchr(domain_name, '.')) > 6) {
+		gchar *tmp = g_strdup(strchr(domain_name, '.')+1);
+		g_free(domain_name);
+		domain_name = tmp;
+	} else if (strchr(domain_name, '.') == NULL) {
+		/* only hostname found, use email suffix */
+		gchar *mail;
+		mail = gtk_editable_get_chars(GTK_EDITABLE(wizard->email), 0, -1);
+
+		if (strlen (mail) && strstr(mail, "@")) {
+			g_free(domain_name);
+			domain_name = g_strdup(strstr(mail, "@")+1);
+		}
+		g_free(mail);
+	}
+	result = g_strdup_printf("%s.%s",
+				type, domain_name);
+	g_free(domain_name);
+	return result;
+}
+
+static void wizard_email_changed(GtkWidget *widget, gpointer data)
+{
+	WizardWindow *wizard = (WizardWindow *)data;
+	RecvProtocol protocol;
+	gchar *text;
+	protocol = GPOINTER_TO_INT
+		(g_object_get_data(G_OBJECT(wizard->recv_type), MENU_VAL_ID));
+	
+	text = get_default_server(wizard, "smtp");
+	gtk_entry_set_text(GTK_ENTRY(wizard->smtp_server), text);
+	g_free(text);
+
+	if (protocol == A_POP3) {
+		text = get_default_server(wizard, "pop");
+		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), text);
+		g_free(text);
+	} else {
+		text = get_default_server(wizard, "imap");
+		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), text);
+		g_free(text);
+	}
 }
 
 static GtkWidget* user_page (WizardWindow * wizard)
@@ -246,6 +297,9 @@ static GtkWidget* user_page (WizardWindow * wizard)
 	GTK_TABLE_ADD_ROW_AT(table, _("Your organization:"), 
 			     wizard->organization, i); i++;
 	
+	g_signal_connect(G_OBJECT(wizard->email), "changed",
+			 G_CALLBACK(wizard_email_changed),
+			 wizard);
 	return table;
 }
 
@@ -265,22 +319,6 @@ static GtkWidget* mailbox_page (WizardWindow * wizard)
 	return table;
 }
 
-static gchar *get_default_server(const gchar *type)
-{
-	gchar *domain_name = g_strdup(get_domain_name());
-	gchar *result;
-	if (strchr(domain_name, '.') != strrchr(domain_name, '.')
-	&& strlen(strchr(domain_name, '.')) > 6) {
-		gchar *tmp = g_strdup(strchr(domain_name, '.')+1);
-		g_free(domain_name);
-		domain_name = tmp;
-	}
-	result = g_strdup_printf("%s.%s",
-				type, domain_name);
-	g_free(domain_name);
-	return result;
-}
-
 static GtkWidget* smtp_page (WizardWindow * wizard)
 {
 	GtkWidget *table = gtk_table_new(1,2, FALSE);
@@ -291,7 +329,7 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
 	wizard->smtp_server = gtk_entry_new();
-	text = get_default_server("smtp");
+	text = get_default_server(wizard, "smtp");
 	gtk_entry_set_text(GTK_ENTRY(wizard->smtp_server), text);
 	g_free(text);
 	GTK_TABLE_ADD_ROW_AT(table, _("SMTP server address:"), 
@@ -308,11 +346,11 @@ static void wizard_protocol_changed(GtkMenuItem *menuitem, gpointer data)
 		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 	
 	if (protocol == A_POP3) {
-		text = get_default_server("pop");
+		text = get_default_server(wizard, "pop");
 		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), text);
 		g_free(text);
 	} else {
-		text = get_default_server("imap");
+		text = get_default_server(wizard, "imap");
 		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), text);
 		g_free(text);
 	}
@@ -344,7 +382,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 			     wizard->recv_type, i); i++;
 
 	wizard->recv_server = gtk_entry_new();
-	text = get_default_server("pop");
+	text = get_default_server(wizard, "pop");
 	gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), text);
 	g_free(text);
 	GTK_TABLE_ADD_ROW_AT(table, _("Server address:"), 
@@ -376,13 +414,11 @@ static GtkWidget* ssl_page (WizardWindow * wizard)
 					_("Use SSL to connect to SMTP server"));
 	gtk_table_attach(GTK_TABLE(table), wizard->smtp_use_ssl,      
 			 0,1,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0); i++;
-	gtk_misc_set_alignment(GTK_MISC(wizard->smtp_use_ssl), 0, 0.5);
 	
 	wizard->recv_use_ssl = gtk_check_button_new_with_label(
 					_("Use SSL to connect to receiving server"));
 	gtk_table_attach(GTK_TABLE(table), wizard->recv_use_ssl,      
 			 0,1,i,i+1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(wizard->recv_use_ssl), 0, 0.5);
 	
 	return table;
 }

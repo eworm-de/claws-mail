@@ -174,3 +174,4 @@
 ( cvs diff -u -r 1.7.2.7 -r 1.7.2.8 src/plugins/image_viewer/viewer.c; ) > 0.9.12cvs102.2.patchset
 ( cvs diff -u -r 1.12.2.12 -r 1.12.2.13 src/action.c; ) > 0.9.12cvs102.3.patchset
 ( cvs diff -u -r 1.4.2.1 -r 1.4.2.2 src/plugins/spamassassin/libspamc.c; cvs diff -u -r 1.4.2.1 -r 1.4.2.2 src/plugins/spamassassin/libspamc.h; cvs diff -u -r 1.3.2.1 -r 1.3.2.2 src/plugins/spamassassin/utils.c; cvs diff -u -r 1.3.2.1 -r 1.3.2.2 src/plugins/spamassassin/utils.h; ) > 0.9.12cvs103.1.patchset
+( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/wizard.c; ) > 0.9.12cvs103.2.patchset
