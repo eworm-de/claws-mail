@@ -1,3 +1,12 @@
+2003-01-05 [paul]	0.8.8claws48
+
+	* src/prefs_common.c
+		small change to English
+		
+	* src/prefs_filtering.c
+		prefs_filtering_action_select(): improve logic and uniformity
+		of gui
+
 2003-01-05 [alfons]	0.8.8claws47
 
 	fine tune solution to focus problems (bug #7)
