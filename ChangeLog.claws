@@ -1,3 +1,35 @@
+2002-10-14 [melvin]	0.8.5claws35
+
+	* src/compose.c
+		Added a test to not run the spell checker if no default
+		dictionary is available. No dialog is displayed though.
+
+2002-10-14 [melvin]	0.8.5claws34
+
+	* src/gtkaspell.c
+		Fixed bug in dictionary list context menu where
+		"More..." pointed to an emtpy submenu if the
+		number of dictionaries is a multiple of 15
+		Removed unneeded code in suggestions list creation
+
+2002-10-14 [paul]	0.8.5claws33
+
+	* po/bg.po
+		updated by George Danchev
+
+2002-10-13 [hoa]	0.8.5claws32
+
+	* src/matcher.[ch]
+	  src/matcher_parser_parser.y
+	  	removed the escaped string from internal structure
+		of matcher.
+
+2002-10-12 [colin]	0.8.5claws31
+
+	* src/gtksctree.[ch]
+	  src/summaryview.c
+	  	Removed useless function gtksctree_reanchor
+
 2002-10-12 [alfons]	0.8.5claws30
 	
 	* sync with remaining main changes 2002-10-09 - 2002-10-11

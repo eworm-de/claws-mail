@@ -30,9 +30,7 @@ struct _MatcherProp {
 	int matchtype;
 	int criteria;
 	gchar * header;
-	gchar * unesc_header;		/* cache unescaped header... */
 	gchar * expr;
-	gchar * unesc_expr;		/* cache unescaped expression... */
 	int value;
 	regex_t * preg;
 	int error;
@@ -106,6 +104,11 @@ gchar * get_matchparser_tab_str(gint id);
 MatcherProp * matcherprop_new(gint criteria, gchar * header,
 			      gint matchtype, gchar * expr,
 			      int age);
+
+MatcherProp * matcherprop_unquote_new(gint criteria, gchar * header,
+    gint matchtype, gchar * expr,
+    int value);
+
 void matcherprop_free(MatcherProp * prop);
 MatcherProp * matcherprop_parse(gchar ** str);
 

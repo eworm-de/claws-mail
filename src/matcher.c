@@ -213,19 +213,15 @@ MatcherProp * matcherprop_new(gint criteria, gchar * header,
 	prop->criteria = criteria;
 	if (header != NULL) {
 		prop->header	   = g_strdup(header);
-		prop->unesc_header = matcher_unescape_str(g_strdup(header)); 
 	}	
 	else {
 		prop->header       = NULL;
-		prop->unesc_header = NULL;
 	}	
 	if (expr != NULL) {
 		prop->expr	 = g_strdup(expr);
-		prop->unesc_expr = matcher_unescape_str(g_strdup(expr));
 	}	
 	else {
 		prop->expr	 = NULL;
-		prop->unesc_expr = NULL;
 	}	
 	prop->matchtype = matchtype;
 	prop->preg = NULL;
@@ -241,17 +237,41 @@ void matcherprop_free(MatcherProp * prop)
 {
 	if (prop->expr) 
 		g_free(prop->expr);
-	if (prop->unesc_expr) 
-		g_free(prop->unesc_expr);
 	if (prop->header)
 		g_free(prop->header);
-	if (prop->unesc_header) 
-		g_free(prop->unesc_header);
 	if (prop->preg != NULL) {
 		regfree(prop->preg);
 		g_free(prop->preg);
 	}
 	g_free(prop);
+}
+
+
+/* ****************** wrapper for file reading ************** */
+
+MatcherProp * matcherprop_unquote_new(gint criteria, gchar * header,
+    gint matchtype, gchar * expr,
+    int value)
+{
+        MatcherProp * prop;
+
+        if (expr != NULL)
+                expr = matcher_unescape_str(g_strdup(expr));
+        else
+                expr = NULL;
+
+        if (header != NULL)
+                header = matcher_unescape_str(g_strdup(header));
+        else
+                header = NULL;
+        
+        prop = matcherprop_new(criteria, header,
+            matchtype, expr, value);
+
+        g_free(header);
+        g_free(expr);
+
+	return prop;
 }
 
 
@@ -277,13 +297,12 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 		if (!prop->preg && (prop->error == 0)) {
 			prop->preg = g_new0(regex_t, 1);
 			/* if regexp then don't use the escaped string */
-                        printf("%s\n", prop->expr);
 #ifdef WIN32
-			str1 = g_strdup(prop->unesc_expr);
+			str1 = g_strdup(prop->expr);
 			locale_from_utf8(&str1);
 			if (regcomp(prop->preg, str1,
 #else
-			if (regcomp(prop->preg, prop->unesc_expr,
+			if (regcomp(prop->preg, prop->expr,
 #endif
 				    REG_NOSUB | REG_EXTENDED
 				    | ((prop->matchtype == MATCHTYPE_REGEXPCASE)
@@ -306,19 +325,19 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 
 	case MATCHTYPE_MATCH:
 #ifdef WIN32
-		str2 = g_strdup(prop->unesc_expr);
+		str2 = g_strdup(prop->expr);
 		locale_from_utf8(&str2);
 		result = (strstr(str, str2) != NULL);
 		g_free(str2);
 		return result;
 #else
-		return (strstr(str, prop->unesc_expr) != NULL);
+		return (strstr(str, prop->expr) != NULL);
 #endif
 
 	/* FIXME: put upper in unesc_str */
 	case MATCHTYPE_MATCHCASE:
 #ifdef WIN32
-		str2 = g_strdup(prop->unesc_expr);
+		str2 = g_strdup(prop->expr);
 		locale_from_utf8(&str2);
 		g_strup(str2);
 		str1 = g_strdup(str);
@@ -328,8 +347,8 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 		g_free(str2);
 		return result;
 #else
-		str2 = alloca(strlen(prop->unesc_expr) + 1);
-		strcpy(str2, prop->unesc_expr);
+		str2 = alloca(strlen(prop->expr) + 1);
+		strcpy(str2, prop->expr);
 		g_strup(str2);
 		str1 = alloca(strlen(str) + 1);
 		strcpy(str1, str);
@@ -353,7 +372,7 @@ gboolean matcherprop_match_execute(MatcherProp * prop, MsgInfo * info)
 		return FALSE;
 	g_free(file);		
 
-	cmd = matching_build_command(prop->unesc_expr, info);
+	cmd = matching_build_command(prop->expr, info);
 	if (cmd == NULL)
 		return FALSE;
 
@@ -866,10 +885,8 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 	gchar * criteria_str;
 	gchar * matchtype_str;
 	int i;
-	gchar * p;
-	gint count;
-	gchar * expr_str;
-	gchar * out;
+        char * expr;
+        char * header;
 
 	criteria_str = NULL;
 	for(i = 0 ; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)) ;
@@ -906,7 +923,10 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 		return g_strdup(criteria_str);
 	case MATCHCRITERIA_EXECUTE:
 	case MATCHCRITERIA_NOT_EXECUTE:
-		return g_strdup_printf("%s \"%s\"", criteria_str, matcher->expr);
+                expr = matcher_escape_str(matcher->expr);
+		matcher_str = g_strdup_printf("%s \"%s\"", criteria_str, expr);
+                g_free(expr);
+                return matcher_str;
 	}
 
 	matchtype_str = NULL;
@@ -924,16 +944,20 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 	case MATCHTYPE_MATCHCASE:
 	case MATCHTYPE_REGEXP:
 	case MATCHTYPE_REGEXPCASE:
+                expr = matcher_escape_str(matcher->expr);
+                header = matcher_escape_str(matcher->header);
 		if (matcher->header)
 			matcher_str =
 				g_strdup_printf("%s \"%s\" %s \"%s\"",
 					   criteria_str, matcher->header,
-					   matchtype_str, matcher->expr);
+					   matchtype_str, expr);
 		else
 			matcher_str =
 				g_strdup_printf("%s %s \"%s\"", criteria_str,
-						matchtype_str, matcher->expr);
+						matchtype_str, expr);
 		break;
+                g_free(header);
+                g_free(expr);
 	}
 
 	return matcher_str;
@@ -1240,8 +1264,6 @@ void prefs_matcher_write_config(void)
 {
 	gchar *rcpath;
 	PrefFile *pfile;
-	GSList *cur;
-	ScoringProp * prop;
 
 	debug_print("Writing matcher configuration...\n");
 
