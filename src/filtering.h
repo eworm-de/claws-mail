@@ -41,7 +41,7 @@ struct _FilteringProp {
 
 typedef struct _FilteringProp FilteringProp;
 
-extern GSList * prefs_filtering;
+/* extern GSList * prefs_filtering; */
 
 
 FilteringAction * filteringaction_new(int type, int account_id,
@@ -70,5 +70,10 @@ gchar * filteringaction_to_string(FilteringAction * action);
 void prefs_filtering_write_config(void);
 void prefs_filtering_read_config(void);
 gchar * filteringprop_to_string(FilteringProp * prop);
+
+void prefs_filtering_clear();
+void prefs_filtering_free(GSList * prefs_filtering);
+
+extern GSList * global_processing;
 
 #endif

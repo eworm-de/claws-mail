@@ -202,7 +202,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 		}
 
 		if (folder_table) {
-			if (prefs_filtering == NULL) {
+			if (global_processing == NULL) {
 				/* old filtering */
 				dropfolder = filter_get_dest_folder
 					(prefs_common.fltlist, tmp_file);
@@ -225,7 +225,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 			dropfolder = dest;
 
 		/* old filtering */
-		if (prefs_filtering == NULL || folder_table == NULL) {	
+		if (global_processing == NULL || folder_table == NULL) {
 			if ((msgnum = folder_item_add_msg(dropfolder, tmp_file, TRUE)) < 0) {
 				fclose(mbox_fp);
 				unlink(tmp_file);

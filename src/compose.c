@@ -2772,6 +2772,12 @@ static gint compose_bounce_write_to_file(Compose *compose, const gchar *file)
 	}
 
 	while (procheader_get_unfolded_line(buf, sizeof(buf), fp)) {
+		/* should filter returnpath, delivered-to */
+		if ((g_strncasecmp(buf, "Return-Path:",
+				   strlen("Return-Path:")) == 0)
+		    || (g_strncasecmp(buf, "Delivered-To:",
+				      strlen("Delivered-To:")) == 0))
+			continue;
 		if (fputs(buf, fdest) == -1)
 			goto error;
 		if (fputs("\n", fdest) == -1)

@@ -2219,13 +2219,6 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 		summaryview->newmsgs--;
 	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->unread--;
-	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
-		MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
-		CHANGE_FLAGS(msginfo);
-		summary_set_row_marks(summaryview, row);
-		gtk_clist_thaw(GTK_CLIST(ctree));
-		summary_status_show(summaryview);
-	}
 
 	if (new_window) {
 		MessageView *msgview;
@@ -2247,6 +2240,14 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 			gtk_widget_grab_focus(summaryview->ctree);
 		GTK_EVENTS_FLUSH();
 		gtkut_ctree_node_move_if_on_the_edge(ctree, row);
+	}
+
+	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
+		MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
+		CHANGE_FLAGS(msginfo);
+		summary_set_row_marks(summaryview, row);
+		gtk_clist_thaw(GTK_CLIST(ctree));
+		summary_status_show(summaryview);
 	}
 
 	if (GTK_WIDGET_VISIBLE(summaryview->headerwin->window))
@@ -3499,7 +3500,7 @@ static void summary_unthread_for_exec_func(GtkCTree *ctree, GtkCTreeNode *node,
 
 void summary_filter(SummaryView *summaryview)
 {
-	if (!prefs_common.fltlist && !prefs_filtering) {
+	if (!prefs_common.fltlist && !global_processing) {
 		alertpanel_error(_("No filter rules defined."));
 		return;
 	}
@@ -3512,7 +3513,7 @@ void summary_filter(SummaryView *summaryview)
 
 	gtk_clist_freeze(GTK_CLIST(summaryview->ctree));
 
-	if (prefs_filtering == NULL) {
+	if (global_processing == NULL) {
 		gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
 					GTK_CTREE_FUNC(summary_filter_func),
 					summaryview);
@@ -3559,7 +3560,7 @@ static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
 	gchar *file;
 	FolderItem *dest;
 
-	if (prefs_filtering == NULL) {
+	if (global_processing == NULL) {
 		/* old filtering */
 		file = procmsg_get_message_file_path(msginfo);
 		dest = filter_get_dest_folder(prefs_common.fltlist, file);
@@ -3570,7 +3571,7 @@ static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
 			summary_move_row_to(summaryview, node, dest);
 	}
 	else
-		filter_msginfo_move_or_delete(prefs_filtering, msginfo,
+		filter_msginfo_move_or_delete(global_processing, msginfo,
 					      summaryview->folder_table);
 }
 

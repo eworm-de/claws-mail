@@ -15,8 +15,9 @@
 #define PREFSBUFSIZE		1024
 
 
-GSList * global_scoring;
+GSList * global_scoring = NULL;
 
+#if 0
 ScoringProp * scoringprop_parse(gchar ** str)
 {
 	gchar * tmp;
@@ -41,7 +42,7 @@ ScoringProp * scoringprop_parse(gchar ** str)
 		return NULL;
 	}
 
-	if (key != MATCHING_SCORE) {
+	if (key != MATCHACTION_SCORE) {
 		matcherlist_free(matchers);
 		* str = NULL;
 		return NULL;
@@ -60,7 +61,7 @@ ScoringProp * scoringprop_parse(gchar ** str)
 	* str = tmp;
 	return scoring;
 }
-
+#endif
 
 ScoringProp * scoringprop_new(MatcherList * matchers, int score)
 {
@@ -138,52 +139,6 @@ static void scoringprop_print(ScoringProp * prop)
   if score is = MAX_SCORE (-999), no more match is done in the list
  */
 
-/*
-void prefs_scoring_read_config(void)
-{
-	gchar *rcpath;
-	FILE *fp;
-	gchar buf[PREFSBUFSIZE];
-
-	debug_print(_("Reading headers configuration...\n"));
-
-	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, SCORING_RC, NULL);
-	if ((fp = fopen(rcpath, "r")) == NULL) {
-		if (ENOENT != errno) FILE_OP_ERROR(rcpath, "fopen");
-		g_free(rcpath);
-		prefs_scoring = NULL;
-		return;
-	}
-	g_free(rcpath);
-
- 	while (prefs_scoring != NULL) {
- 		ScoringProp * scoring = (ScoringProp *) prefs_scoring->data;
- 		scoringprop_free(scoring);
- 		prefs_scoring = g_slist_remove(prefs_scoring, scoring);
- 	}
-
- 	while (fgets(buf, sizeof(buf), fp) != NULL) {
- 		ScoringProp * scoring;
-		gchar * tmp;
-
- 		g_strchomp(buf);
-
-		if ((*buf != '#') && (*buf != '\0')) {
-			tmp = buf;
-			scoring = scoringprop_parse(&tmp);
-			if (tmp != NULL) {
-				prefs_scoring = g_slist_append(prefs_scoring,
-							       scoring);
-			}
-			else {
-				g_warning(_("syntax error : %s\n"), buf);
-			}
-		}
- 	}
-
- 	fclose(fp);
-}
-*/
 
 gchar * scoringprop_to_string(ScoringProp * prop)
 {
@@ -203,89 +158,10 @@ gchar * scoringprop_to_string(ScoringProp * prop)
 	return scoring_str;
 }
 
-/*
-void prefs_scoring_write_config(void)
-{
-	gchar *rcpath;
-	PrefFile *pfile;
-	GSList *cur;
-	ScoringProp * prop;
-
-	debug_print(_("Writing scoring configuration...\n"));
-
-	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, SCORING_RC, NULL);
-
-	if ((pfile = prefs_write_open(rcpath)) == NULL) {
-		g_warning(_("failed to write configuration to file\n"));
-		g_free(rcpath);
-		return;
-	}
-
-	for (cur = prefs_scoring; cur != NULL; cur = cur->next) {
-		gchar *scoring_str;
-
-		prop = (ScoringProp *) cur->data;
-		scoring_str = scoringprop_to_string(prop);
-		if (fputs(scoring_str, pfile->fp) == EOF ||
-		    fputc('\n', pfile->fp) == EOF) {
-			FILE_OP_ERROR(rcpath, "fputs || fputc");
-			prefs_write_close_revert(pfile);
-			g_free(rcpath);
-			g_free(scoring_str);
-			return;
-		}
-		g_free(scoring_str);
-	}
-
-	g_free(rcpath);
-
-	if (prefs_write_close(pfile) < 0) {
-		g_warning(_("failed to write configuration to file\n"));
-		return;
-	}
-}
-*/
-
-void prefs_scoring_free(GSList * prefs_scoring)
-{
- 	while (prefs_scoring != NULL) {
- 		ScoringProp * scoring = (ScoringProp *) prefs_scoring->data;
- 		scoringprop_free(scoring);
- 		prefs_scoring = g_slist_remove(prefs_scoring, scoring);
- 	}
-}
-
-static gboolean prefs_scoring_free_func(GNode *node, gpointer data)
-{
-	FolderItem *item = node->data;
-
-	if(!item->prefs)
-		return FALSE;
-
-	prefs_scoring_free(item->prefs->scoring);
-	item->prefs->scoring = NULL;
-
-	return FALSE;
-}
-
-static void prefs_scoring_clear()
-{
-	GList * cur;
-
-	for (cur = folder_get_list() ; cur != NULL ; cur = g_list_next(cur)) {
-		Folder *folder;
-
-		folder = (Folder *) cur->data;
-		g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
-				prefs_scoring_free_func, NULL);
-	}
-
-	prefs_scoring_free(global_scoring);
-	global_scoring = NULL;
-}
 
 void prefs_scoring_read_config(void)
 {
+	/*
 	gchar *rcpath;
 	FILE *fp;
 	gchar buf[PREFSBUFSIZE];
@@ -343,7 +219,6 @@ void prefs_scoring_read_config(void)
 							       scoring);
 			}
 			else {
-				/* debug */
 				g_warning(_("syntax error : %s\n"), buf);
 			}
 		}
@@ -355,8 +230,10 @@ void prefs_scoring_read_config(void)
 		item->prefs->scoring = prefs_scoring;
 
  	fclose(fp);
+	*/
 }
 
+/*
 static void prefs_scoring_write(FILE * fp, GSList * prefs_scoring)
 {
 	GSList * cur;
@@ -412,7 +289,9 @@ static void prefs_scoring_save(FILE * fp)
 				prefs_scoring_write_func, fp);
 	}
 }
+*/
 
+/*
 void prefs_scoring_write_config(void)
 {
 	gchar *rcpath;
@@ -439,4 +318,44 @@ void prefs_scoring_write_config(void)
 		g_warning(_("failed to write configuration to file\n"));
 		return;
 	}
+}
+*/
+
+
+void prefs_scoring_free(GSList * prefs_scoring)
+{
+ 	while (prefs_scoring != NULL) {
+ 		ScoringProp * scoring = (ScoringProp *) prefs_scoring->data;
+ 		scoringprop_free(scoring);
+ 		prefs_scoring = g_slist_remove(prefs_scoring, scoring);
+ 	}
+}
+
+static gboolean prefs_scoring_free_func(GNode *node, gpointer data)
+{
+	FolderItem *item = node->data;
+
+	if(!item->prefs)
+		return FALSE;
+
+	prefs_scoring_free(item->prefs->scoring);
+	item->prefs->scoring = NULL;
+
+	return FALSE;
+}
+
+void prefs_scoring_clear()
+{
+	GList * cur;
+
+	for (cur = folder_get_list() ; cur != NULL ; cur = g_list_next(cur)) {
+		Folder *folder;
+
+		folder = (Folder *) cur->data;
+		g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+				prefs_scoring_free_func, NULL);
+	}
+
+	prefs_scoring_free(global_scoring);
+	global_scoring = NULL;
 }

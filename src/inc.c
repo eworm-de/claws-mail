@@ -910,7 +910,7 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 		return -1;
 	}
 
-	if (prefs_filtering == NULL) {
+	if (global_processing == NULL) {
 		/* old filtering */
 		if (state->ac_prefs->filter_on_recv) {
 			dropfolder =
@@ -935,7 +935,7 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 				    GINT_TO_POINTER(1));
 	}
 
-	if (prefs_filtering == NULL || !state->ac_prefs->filter_on_recv) {
+	if (global_processing == NULL || !state->ac_prefs->filter_on_recv) {
 		if ((msgnum = folder_item_add_msg(dropfolder, file, TRUE)) < 0) {
 			unlink(file);
 			return -1;

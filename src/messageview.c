@@ -436,7 +436,7 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo)
 	if (prefs_common.return_receipt
 	    && (tmpmsginfo->dispositionnotificationto
 		|| tmpmsginfo->returnreceiptto)
-	    && (MSG_IS_UNREAD(tmpmsginfo->flags))) {
+	    && (MSG_IS_UNREAD(msginfo->flags))) {
 		gint ok;
 		
 		if (alertpanel(_("Return Receipt"), _("Send return receipt ?"),

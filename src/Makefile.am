@@ -119,12 +119,17 @@ sylpheed_SOURCES = \
 	mbox_folder.c mbox_folder.h \
 	quote_fmt_lex.l quote_fmt_lex.h \
 	quote_fmt_parse.y quote_fmt.h \
-	gtkspell.c gtkspell.h gtkxtext.h
+	gtkspell.c gtkspell.h gtkxtext.h \
+	matcher_parser_lex.l matcher_parser_lex.h \
+	matcher_parser_parse.y matcher_parser.h
 
 BUILT_SOURCES = \
 	quote_fmt_lex.c \
 	quote_fmt_parse.c \
-	quote_fmt_parse.h
+	quote_fmt_parse.h \
+	matcher_parser_lex.c \
+	matcher_parser_parse.c \
+	matcher_parser_parse.h
 
 EXTRA_DIST = \
 	quote_fmt_parse.h \

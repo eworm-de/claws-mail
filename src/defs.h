@@ -50,6 +50,7 @@
 #define FOLDERITEM_RC           "folderitemrc"
 #define SCORING_RC              "scoringrc"
 #define FILTERING_RC		"filteringrc"
+#define MATCHER_RC		"matcherrc"
 #define MENU_RC			"menurc"
 #define COMMAND_HISTORY		"command_history"
 #define TEMPLATE_DIR		"templates"

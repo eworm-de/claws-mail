@@ -6,6 +6,8 @@
 #include "matcher_parser_lex.h"
 #include "intl.h"
 #include <glib.h>
+#include "defs.h"
+#include "utils.h"
 
 static gint error = 0;
 static gint bool_op = 0;
@@ -28,14 +30,28 @@ static GSList ** prefs_filtering = NULL;
 
 static int matcher_parser_dialog = 0;
 
+
+/* ******************************************************************** */
+
+
+
+void matcher_parser_start_parsing(FILE * f)
+{
+	matcher_parserrestart(f);
+	matcher_parserparse();
+}
+ 
 FilteringProp * matcher_parser_get_filtering(gchar * str)
 {
 	void * bufstate;
 
+	/* bad coding to enable the sub-grammar matching
+	   in yacc */
 	matcher_parserlineno = 1;
 	matcher_parser_dialog = 1;
 	bufstate = matcher_parser_scan_string(str);
-	matcher_parserparse();
+	if (matcher_parserparse() != 0)
+		filtering = NULL;
 	matcher_parser_dialog = 0;
 	matcher_parser_delete_buffer(bufstate);
 	return filtering;
@@ -45,10 +61,13 @@ ScoringProp * matcher_parser_get_scoring(gchar * str)
 {
 	void * bufstate;
 
+	/* bad coding to enable the sub-grammar matching
+	   in yacc */
 	matcher_parserlineno = 1;
 	matcher_parser_dialog = 1;
 	bufstate = matcher_parser_scan_string(str);
-	matcher_parserparse();
+	if (matcher_parserparse() != 0)
+		scoring = NULL;
 	matcher_parser_dialog = 0;
 	matcher_parser_delete_buffer(bufstate);
 	return scoring;
@@ -58,6 +77,8 @@ MatcherList * matcher_parser_get_cond(gchar * str)
 {
 	void * bufstate;
 
+	/* bad coding to enable the sub-grammar matching
+	   in yacc */
 	matcher_parserlineno = 1;
 	matcher_parser_dialog = 1;
 	bufstate = matcher_parser_scan_string(str);
@@ -87,6 +108,8 @@ MatcherProp * matcher_parser_get_prop(gchar * str)
 
 	g_slist_free(list->matchers);
 	g_free(list);
+
+	return prop;
 }
 
 void matcher_parsererror(char * str)
@@ -137,6 +160,7 @@ int matcher_parserwrap(void)
 %token MATCHER_MARK_AS_READ  MATCHER_MARK_AS_UNREAD  MATCHER_FORWARD
 %token MATCHER_FORWARD_AS_ATTACHMENT  MATCHER_EOL  MATCHER_STRING  
 %token MATCHER_OR MATCHER_AND  
+%token MATCHER_COLOR MATCHER_SCORE_EQUAL MATCHER_BOUNCE
 
 %start file
 
@@ -150,7 +174,7 @@ file:
 {
 	if (!matcher_parser_dialog) {
 		prefs_scoring = &global_scoring;
-		prefs_filtering = &global_filtering;
+		prefs_filtering = &global_processing;
 	}
 }
 file_line_list;
@@ -164,7 +188,10 @@ file_line_list
 file_line:
 section_notification
 | instruction
-;
+| error MATCHER_EOL
+{
+	yyerrok;
+};
 
 section_notification:
 MATCHER_SECTION MATCHER_EOL
@@ -176,7 +203,7 @@ MATCHER_SECTION MATCHER_EOL
 		item = folder_find_item_from_identifier(folder);
 		if (item == NULL) {
 			prefs_scoring = &global_scoring;
-			prefs_filtering = &global_scoring;
+			prefs_filtering = &global_processing;
 		}
 		else {
 			prefs_scoring = &item->prefs->scoring;
@@ -192,12 +219,27 @@ condition end_instr_opt
 ;
 
 end_instr_opt:
-filtering_or_scoring MATCHER_EOL
+filtering_or_scoring end_action
 |
 {
-	if (!matcher_parser_dialog) {
-		yyerror("parse error");
-		return 1;
+	if (matcher_parser_dialog)
+		YYACCEPT;
+	else {
+		matcher_parsererror("parse error");
+		YYERROR;
+	}
+}
+;
+
+end_action:
+MATCHER_EOL
+|
+{
+	if (matcher_parser_dialog)
+		YYACCEPT;
+	else {
+		matcher_parsererror("parse error");
+		YYERROR;
 	}
 }
 ;
@@ -548,6 +590,15 @@ MATCHER_ALL
 	value = atoi($2);
 	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
 }
+| MATCHER_SCORE_EQUAL MATCHER_INTEGER
+{
+	gint criteria = 0;
+	gint value = 0;
+
+	criteria = MATCHCRITERIA_SCORE_EQUAL;
+	value = atoi($2);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
+}
 | MATCHER_HEADER MATCHER_STRING
 {
 	header = g_strdup($2);
@@ -656,7 +707,7 @@ MATCHER_EXECUTE MATCHER_STRING
 
 	action_type = MATCHACTION_EXECUTE;
 	cmd = $2;
-	action = filteringaction_new(action_type, 0, cmd);
+	action = filteringaction_new(action_type, 0, cmd, 0);
 }
 | MATCHER_MOVE MATCHER_STRING
 {
@@ -665,7 +716,7 @@ MATCHER_EXECUTE MATCHER_STRING
 
 	action_type = MATCHACTION_MOVE;
 	destination = $2;
-	action = filteringaction_new(action_type, 0, destination);
+	action = filteringaction_new(action_type, 0, destination, 0);
 }
 | MATCHER_COPY MATCHER_STRING
 {
@@ -674,42 +725,42 @@ MATCHER_EXECUTE MATCHER_STRING
 
 	action_type = MATCHACTION_COPY;
 	destination = $2;
-	action = filteringaction_new(action_type, 0, destination);
+	action = filteringaction_new(action_type, 0, destination, 0);
 }
 | MATCHER_DELETE
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_DELETE;
-	action = filteringaction_new(action_type, 0, NULL);
+	action = filteringaction_new(action_type, 0, NULL, 0);
 }
 | MATCHER_MARK
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_MARK;
-	action = filteringaction_new(action_type, 0, NULL);
+	action = filteringaction_new(action_type, 0, NULL, 0);
 }
 | MATCHER_UNMARK
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_UNMARK;
-	action = filteringaction_new(action_type, 0, NULL);
+	action = filteringaction_new(action_type, 0, NULL, 0);
 }
 | MATCHER_MARK_AS_READ
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_MARK_AS_READ;
-	action = filteringaction_new(action_type, 0, NULL);
+	action = filteringaction_new(action_type, 0, NULL, 0);
 }
 | MATCHER_MARK_AS_UNREAD
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_MARK_AS_UNREAD;
-	action = filteringaction_new(action_type, 0, NULL);
+	action = filteringaction_new(action_type, 0, NULL, 0);
 }
 | MATCHER_FORWARD MATCHER_INTEGER MATCHER_STRING
 {
@@ -720,7 +771,7 @@ MATCHER_EXECUTE MATCHER_STRING
 	action_type = MATCHACTION_FORWARD;
 	account_id = $2;
 	destination = $3;
-	action = filteringaction_new(action_type, account_id, destination);
+	action = filteringaction_new(action_type, account_id, destination, 0);
 }
 | MATCHER_FORWARD_AS_ATTACHMENT MATCHER_INTEGER MATCHER_STRING
 {
@@ -731,7 +782,16 @@ MATCHER_EXECUTE MATCHER_STRING
 	action_type = MATCHACTION_FORWARD_AS_ATTACHMENT;
 	account_id = $2;
 	destination = $3;
-	action = filteringaction_new(action_type, account_id, destination);
+	action = filteringaction_new(action_type, account_id, destination, 0);
+}
+| MATCHER_COLOR MATCHER_INTEGER
+{
+	gint action_type = 0;
+	gint color = 0;
+
+	action_type = MATCHACTION_COLOR;
+	color = atoi($2);
+	action = filteringaction_new(action_type, 0, NULL, color);
 }
 ;
 

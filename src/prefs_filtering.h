@@ -24,6 +24,6 @@
 void prefs_scoring_read_config	(void);
 void prefs_scoring_write_config	(void);
 */
-void prefs_filtering_open		(void);
+void prefs_filtering_open(FolderItem * item);
 
 #endif /* __PREFS_FILTERING_H__ */

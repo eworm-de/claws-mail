@@ -47,6 +47,8 @@
 #include "folder.h"
 #include "scoring.h"
 
+#include "matcher_parser.h"
+
 static struct Scoring {
 	GtkWidget *window;
 
@@ -452,8 +454,8 @@ static void prefs_scoring_set_list(void)
 	while (gtk_clist_get_text(GTK_CLIST(scoring.cond_clist),
 				  row, 0, &scoring_str)) {
 		if (strcmp(scoring_str, _("(New)")) != 0) {
-			tmp = scoring_str;
-			prop = scoringprop_parse(&tmp);
+			/* tmp = scoring_str; */
+			prop = matcher_parser_get_scoring(scoring_str);
 			if (prop != NULL)
 				prefs_scoring = g_slist_append(prefs_scoring,
 							       prop);
@@ -527,9 +529,9 @@ static void prefs_scoring_condition_define(void)
 	if (*cond_str != '\0') {
 		gchar * tmp;
 		
-		tmp = cond_str;
-		matchers = matcherlist_parse(&tmp);
-		if (tmp == NULL)
+		/* tmp = cond_str; */
+		matchers = matcher_parser_get_cond(cond_str);
+		if (matchers == NULL)
 			alertpanel_error(_("Match string is not valid."));
 	}
 
@@ -564,10 +566,10 @@ static void prefs_scoring_register_cb(void)
 	}
 
 	score = atoi(score_str);
-	tmp = cond_str;
-	cond = matcherlist_parse(&tmp);
+	/* tmp = cond_str; */
+	cond = matcher_parser_get_cond(cond_str);
 
-	if (tmp == NULL) {
+	if (cond == NULL) {
 		alertpanel_error(_("Match string is not valid."));
 		return;
 	}
@@ -610,10 +612,10 @@ static void prefs_scoring_substitute_cb(void)
 	}
 
 	score = atoi(score_str);
-	tmp = cond_str;
-	cond = matcherlist_parse(&tmp);
+	/* tmp = cond_str; */
+	cond = matcher_parser_get_cond(cond_str);
 
-	if (tmp == NULL) {
+	if (cond == NULL) {
 		alertpanel_error(_("Match string is not valid."));
 		return;
 	}
@@ -715,9 +717,9 @@ static void prefs_scoring_select(GtkCList *clist, gint row, gint column,
 				row, 0, &scoring_str))
 		return;
 
-	tmp = scoring_str;
-	prop = scoringprop_parse(&tmp);
-	if (tmp == NULL)
+	/* tmp = scoring_str; */
+	prop = matcher_parser_get_scoring(scoring_str);
+	if (prop == NULL)
 		return;
 
 	prefs_scoring_select_set_dialog(prop);
@@ -741,8 +743,9 @@ static void prefs_scoring_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 static void prefs_scoring_ok(void)
 {
+	prefs_common_save_config();
 	prefs_scoring_set_list();
-	prefs_scoring_write_config();
+	prefs_matcher_write_config();
 	if (cur_item != NULL)
 		prefs_folder_item_save_config(cur_item);
 	gtk_widget_hide(scoring.window);
@@ -750,6 +753,6 @@ static void prefs_scoring_ok(void)
 
 static void prefs_scoring_cancel(void)
 {
-	prefs_scoring_read_config();
+	prefs_matcher_read_config();
 	gtk_widget_hide(scoring.window);
 }

@@ -50,7 +50,7 @@
 
 #define PREFSBUFSIZE		1024
 
-GSList * prefs_filtering = NULL;
+GSList * global_processing = NULL;
 
 FilteringAction * filteringaction_new(int type, int account_id,
 				      gchar * destination,
@@ -75,6 +75,7 @@ void filteringaction_free(FilteringAction * action)
 	g_free(action);
 }
 
+/*
 FilteringAction * filteringaction_parse(gchar ** str)
 {
 	FilteringAction * action;
@@ -89,27 +90,27 @@ FilteringAction * filteringaction_parse(gchar ** str)
 	key = matcher_parse_keyword(&tmp);
 
 	switch (key) {
-	case MATCHING_ACTION_MOVE:
-	case MATCHING_ACTION_COPY:
-	case MATCHING_EXECUTE:
+	case MATCHACTION_MOVE:
+	case MATCHACTION_COPY:
+	case MATCHACTION_EXECUTE:
 		destination = matcher_parse_str(&tmp);
 		if (tmp == NULL) {
 			* str = NULL;
 			return NULL;
 		}
 		break;
-	case MATCHING_ACTION_DELETE:
+	case MATCHACTION_DELETE:
 		break;
-	case MATCHING_ACTION_MARK:
+	case MATCHACTION_MARK:
 		break;
-	case MATCHING_ACTION_MARK_AS_READ:
+	case MATCHACTION_MARK_AS_READ:
 		break;
-	case MATCHING_ACTION_UNMARK:
+	case MATCHACTION_UNMARK:
 		break;
-	case MATCHING_ACTION_MARK_AS_UNREAD:
+	case MATCHACTION_MARK_AS_UNREAD:
 		break;
-	case MATCHING_ACTION_FORWARD:
-	case MATCHING_ACTION_FORWARD_AS_ATTACHMENT:
+	case MATCHACTION_FORWARD:
+	case MATCHACTION_FORWARD_AS_ATTACHMENT:
 		account_id = matcher_parse_number(&tmp);
 		if (tmp == NULL) {
 			* str = NULL;
@@ -123,7 +124,7 @@ FilteringAction * filteringaction_parse(gchar ** str)
 		}
 
 		break;
-	case MATCHING_ACTION_COLOR:
+	case MATCHACTION_COLOR:
 		labelcolor = matcher_parse_number(&tmp);
 		if (tmp == NULL) {
 			*str = NULL;
@@ -177,7 +178,7 @@ FilteringProp * filteringprop_parse(gchar ** str)
 	* str = tmp;
 	return filtering;
 }
-
+*/
 
 FilteringProp * filteringprop_new(MatcherList * matchers,
 				  FilteringAction * action)
@@ -421,7 +422,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 	gchar * cmd;
 
 	switch(action->type) {
-	case MATCHING_ACTION_MOVE:
+	case MATCHACTION_MOVE:
 		dest_folder =
 			folder_find_item_from_identifier(action->destination);
 		if (!dest_folder)
@@ -455,7 +456,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		}
 		return TRUE;
 
-	case MATCHING_ACTION_COPY:
+	case MATCHACTION_COPY:
 		dest_folder =
 			folder_find_item_from_identifier(action->destination);
 
@@ -481,7 +482,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 			
 		return TRUE;
 
-	case MATCHING_ACTION_DELETE:
+	case MATCHACTION_DELETE:
 		if (folder_item_remove_msg(info->folder, info->msgnum) == -1)
 			return FALSE;
 
@@ -494,7 +495,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 
 		return TRUE;
 
-	case MATCHING_ACTION_MARK:
+	case MATCHACTION_MARK:
 		MSG_SET_PERM_FLAGS(info->flags, MSG_MARKED);
 		debug_print("*** MARKING message %d, in folder %s, \"%s\"\n",
 			    info->msgnum, info->folder->name,
@@ -505,7 +506,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 
 		return TRUE;
 
-	case MATCHING_ACTION_UNMARK:
+	case MATCHACTION_UNMARK:
 		MSG_UNSET_PERM_FLAGS(info->flags, MSG_MARKED);
 		filteringaction_update_mark(info);
 
@@ -513,7 +514,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 
 		return TRUE;
 		
-	case MATCHING_ACTION_MARK_AS_READ:
+	case MATCHACTION_MARK_AS_READ:
 		MSG_UNSET_PERM_FLAGS(info->flags, MSG_UNREAD | MSG_NEW);
 		filteringaction_update_mark(info);
 
@@ -521,7 +522,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 
 		return TRUE;
 
-	case MATCHING_ACTION_MARK_AS_UNREAD:
+	case MATCHACTION_MARK_AS_UNREAD:
 		MSG_SET_PERM_FLAGS(info->flags, MSG_UNREAD | MSG_NEW);
 		filteringaction_update_mark(info);
 
@@ -529,7 +530,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		
 		return TRUE;
 
-	case MATCHING_ACTION_FORWARD:
+	case MATCHACTION_FORWARD:
 
 		account = account_find_from_id(action->account_id);
 		compose = compose_forward(account, info, FALSE);
@@ -549,7 +550,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		gtk_widget_destroy(compose->window);
 		return FALSE;
 
-	case MATCHING_ACTION_FORWARD_AS_ATTACHMENT:
+	case MATCHACTION_FORWARD_AS_ATTACHMENT:
 
 		account = account_find_from_id(action->account_id);
 		compose = compose_forward(account, info, TRUE);
@@ -569,7 +570,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		gtk_widget_destroy(compose->window);
 		return FALSE;
 
-	case MATCHING_EXECUTE:
+	case MATCHACTION_EXECUTE:
 
 		cmd = matching_build_command(action->destination, info);
 		if (cmd == NULL)
@@ -622,17 +623,17 @@ static gboolean filteringprop_apply(FilteringProp * filtering, MsgInfo * info,
 		g_free(action_str);
 
 		switch(filtering->action->type) {
-		case MATCHING_ACTION_MOVE:
-		case MATCHING_ACTION_DELETE:
+		case MATCHACTION_MOVE:
+		case MATCHACTION_DELETE:
 			return TRUE; /* MsgInfo invalid for message */
-		case MATCHING_EXECUTE:
-		case MATCHING_ACTION_COPY:
-		case MATCHING_ACTION_MARK:
-		case MATCHING_ACTION_MARK_AS_READ:
-		case MATCHING_ACTION_UNMARK:
-		case MATCHING_ACTION_MARK_AS_UNREAD:
-		case MATCHING_ACTION_FORWARD:
-		case MATCHING_ACTION_FORWARD_AS_ATTACHMENT:
+		case MATCHACTION_EXECUTE:
+		case MATCHACTION_COPY:
+		case MATCHACTION_MARK:
+		case MATCHACTION_MARK_AS_READ:
+		case MATCHACTION_UNMARK:
+		case MATCHACTION_MARK_AS_UNREAD:
+		case MATCHACTION_FORWARD:
+		case MATCHACTION_FORWARD_AS_ATTACHMENT:
 			return FALSE; /* MsgInfo still valid for message */
 		default:
 			return FALSE;
@@ -674,8 +675,8 @@ void filter_msginfo_move_or_delete(GSList * filtering_list, MsgInfo * info,
 		FilteringProp * filtering = (FilteringProp *) l->data;
 
 		switch (filtering->action->type) {
-		case MATCHING_ACTION_MOVE:
-		case MATCHING_ACTION_DELETE:
+		case MATCHACTION_MOVE:
+		case MATCHACTION_DELETE:
 			if (filteringprop_apply(filtering, info, folder_table))
 				return;
 		}
@@ -820,7 +821,7 @@ static gboolean filter_incoming_perform_actions(FolderItem *default_folder,
 	MsgFlags     markflags = { 0, 0 };
 
 	/* use the global prefs_filtering list */
-	GSList *     list = prefs_filtering;
+	GSList *     list = global_processing;
 
 	/* things we get after having added a message to a folder */
 	FolderItem  *dest_folder;
@@ -863,31 +864,31 @@ static gboolean filter_incoming_perform_actions(FolderItem *default_folder,
 	for (ma_tail = &ma_head, stop = FALSE; ma_tail->action && !stop; ma_tail = ma_tail->next) {
 		switch (ma_tail->action->type) {
 		
-		case MATCHING_ACTION_MARK:
+		case MATCHACTION_MARK:
 			MSG_SET_PERM_FLAGS(markflags, MSG_MARKED);
 			break;
 			
-		case MATCHING_ACTION_UNMARK:
+		case MATCHACTION_UNMARK:
 			MSG_UNSET_PERM_FLAGS(markflags, MSG_MARKED);
 			break;
 		
-		case MATCHING_ACTION_MARK_AS_READ:
+		case MATCHACTION_MARK_AS_READ:
 			MSG_UNSET_PERM_FLAGS(markflags, MSG_UNREAD);
 			break;
 
-		case MATCHING_ACTION_MARK_AS_UNREAD:			
+		case MATCHACTION_MARK_AS_UNREAD:			
 			MSG_SET_PERM_FLAGS(markflags, MSG_UNREAD);
 			break;
 
-		case MATCHING_ACTION_COLOR:
+		case MATCHACTION_COLOR:
 			MSG_SET_COLORLABEL_VALUE(markflags, ma_tail->action->labelcolor);
 			break;
 
 		/* UNCONTINUABLE */
-		case MATCHING_ACTION_FORWARD:
-		case MATCHING_ACTION_FORWARD_AS_ATTACHMENT:
-		case MATCHING_ACTION_MOVE:
-		case MATCHING_ACTION_DELETE:
+		case MATCHACTION_FORWARD:
+		case MATCHACTION_FORWARD_AS_ATTACHMENT:
+		case MATCHACTION_MOVE:
+		case MATCHACTION_DELETE:
 			stop = TRUE;
 			break;
 		
@@ -918,7 +919,7 @@ static gboolean filter_incoming_perform_actions(FolderItem *default_folder,
 
 		/* C O N T I N U A B L E */
 
-		if (MATCHING_ACTION_COPY == ACTION) {
+		if (MATCHACTION_COPY == ACTION) {
 			debug_print("*** performing copy\n");
 			copy_to_inbox_too = TRUE;
 			if (!prepare_destination(ma_tail->action->destination, &dest_folder, folder_table)) {
@@ -933,7 +934,7 @@ static gboolean filter_incoming_perform_actions(FolderItem *default_folder,
 			flags = msginfo->flags.perm_flags | markflags.perm_flags;
 			add_mark(dest_folder, msgnum, flags);
 		}		
-		else if (MATCHING_EXECUTE == ACTION) {
+		else if (MATCHACTION_EXECUTE == ACTION) {
 			debug_print("*** performing exec\n");
 			copy_to_inbox_too = TRUE;
 			
@@ -949,8 +950,8 @@ static gboolean filter_incoming_perform_actions(FolderItem *default_folder,
 
 		/* U N C O N T I N U A B L E */
 		
-		else if (MATCHING_ACTION_FORWARD == ACTION
-		||       MATCHING_ACTION_FORWARD_AS_ATTACHMENT == ACTION) {
+		else if (MATCHACTION_FORWARD == ACTION
+		||       MATCHACTION_FORWARD_AS_ATTACHMENT == ACTION) {
 			debug_print("*** performing forward\n");
 
 			/* forwarding messages is complicated because there's currently no 
@@ -978,7 +979,7 @@ static gboolean filter_incoming_perform_actions(FolderItem *default_folder,
 
 			/* do the compose_XXX stuff */
 			account = account_find_from_id(ma_tail->action->account_id);
-			compose = compose_forward(account, fwd_msg, ACTION == MATCHING_ACTION_FORWARD ? FALSE : TRUE);
+			compose = compose_forward(account, fwd_msg, ACTION == MATCHACTION_FORWARD ? FALSE : TRUE);
 			if (compose->account->protocol == A_NNTP)
 				compose_entry_append(compose, ma_tail->action->destination,
 						     COMPOSE_NEWSGROUPS);
@@ -993,7 +994,7 @@ static gboolean filter_incoming_perform_actions(FolderItem *default_folder,
 			gtk_widget_destroy(compose->window);
 			break;
 		}			
-		else if (MATCHING_ACTION_DELETE == ACTION) {
+		else if (MATCHACTION_DELETE == ACTION) {
 			debug_print("*** performing delete\n");
 			copy_to_inbox_too = FALSE;
 
@@ -1010,7 +1011,7 @@ static gboolean filter_incoming_perform_actions(FolderItem *default_folder,
 			}
 			break;				
 		}
-		else if (MATCHING_ACTION_MOVE == ACTION) {
+		else if (MATCHACTION_MOVE == ACTION) {
 			debug_print("*** performing move\n");
 			copy_to_inbox_too = FALSE;
 			
@@ -1090,10 +1091,14 @@ void filter_incoming_message(FolderItem *default_folder, const gchar *file_name,
 	procmsg_msginfo_free(msginfo);
 }
 
-/******************************************************************************/
+/****************************************************************************/
 
+
+
+/*
 void prefs_filtering_read_config(void)
 {
+
 	gchar *rcpath;
 	FILE *fp;
 	gchar buf[PREFSBUFSIZE];
@@ -1109,8 +1114,9 @@ void prefs_filtering_read_config(void)
 		return;
 	}
 	g_free(rcpath);
-
+	*/
  	/* remove all filtering */
+	/*
  	while (prefs_filtering != NULL) {
  		FilteringProp * filtering =
 			(FilteringProp *) prefs_filtering->data;
@@ -1133,7 +1139,9 @@ void prefs_filtering_read_config(void)
 						       filtering);
 			}
 			else {
+	*/
 				/* debug */
+	/*
 				g_warning(_("syntax error : %s\n"), buf);
 			}
 		}
@@ -1141,6 +1149,7 @@ void prefs_filtering_read_config(void)
 
  	fclose(fp);
 }
+*/
 
 gchar * filteringaction_to_string(FilteringAction * action)
 {
@@ -1158,27 +1167,27 @@ gchar * filteringaction_to_string(FilteringAction * action)
 		return NULL;
 
 	switch(action->type) {
-	case MATCHING_ACTION_MOVE:
-	case MATCHING_ACTION_COPY:
-	case MATCHING_EXECUTE:
+	case MATCHACTION_MOVE:
+	case MATCHACTION_COPY:
+	case MATCHACTION_EXECUTE:
 		return g_strconcat(command_str, " \"", action->destination,
 				   "\"", NULL);
 
-	case MATCHING_ACTION_DELETE:
-	case MATCHING_ACTION_MARK:
-	case MATCHING_ACTION_UNMARK:
-	case MATCHING_ACTION_MARK_AS_READ:
-	case MATCHING_ACTION_MARK_AS_UNREAD:
+	case MATCHACTION_DELETE:
+	case MATCHACTION_MARK:
+	case MATCHACTION_UNMARK:
+	case MATCHACTION_MARK_AS_READ:
+	case MATCHACTION_MARK_AS_UNREAD:
 		return g_strdup(command_str);
 		break;
 
-	case MATCHING_ACTION_FORWARD:
-	case MATCHING_ACTION_FORWARD_AS_ATTACHMENT:
+	case MATCHACTION_FORWARD:
+	case MATCHACTION_FORWARD_AS_ATTACHMENT:
 		account_id_str = itos(action->account_id);
 		return g_strconcat(command_str, " ", account_id_str,
 				   " \"", action->destination, "\"", NULL);
 
-	case MATCHING_ACTION_COLOR:
+	case MATCHACTION_COLOR:
 		labelcolor_str = itos(action->labelcolor);
 		return g_strconcat(command_str, " ", labelcolor_str, NULL);  
 
@@ -1214,6 +1223,7 @@ gchar * filteringprop_to_string(FilteringProp * prop)
 
 void prefs_filtering_write_config(void)
 {
+	/*
 	gchar *rcpath;
 	PrefFile *pfile;
 	GSList *cur;
@@ -1229,7 +1239,7 @@ void prefs_filtering_write_config(void)
 		return;
 	}
 
-	for (cur = prefs_filtering; cur != NULL; cur = cur->next) {
+	for (cur = global_processing; cur != NULL; cur = cur->next) {
 		gchar *filtering_str;
 
 		prop = (FilteringProp *) cur->data;
@@ -1252,4 +1262,44 @@ void prefs_filtering_write_config(void)
 		g_warning(_("failed to write configuration to file\n"));
 		return;
 	}
+	*/
+}
+
+void prefs_filtering_free(GSList * prefs_filtering)
+{
+ 	while (prefs_filtering != NULL) {
+ 		FilteringProp * filtering = (FilteringProp *)
+			prefs_filtering->data;
+ 		filteringprop_free(filtering);
+ 		prefs_filtering = g_slist_remove(prefs_filtering, filtering);
+ 	}
+}
+
+static gboolean prefs_filtering_free_func(GNode *node, gpointer data)
+{
+	FolderItem *item = node->data;
+
+	if(!item->prefs)
+		return FALSE;
+
+	prefs_filtering_free(item->prefs->processing);
+	item->prefs->processing = NULL;
+
+	return FALSE;
+}
+
+void prefs_filtering_clear()
+{
+	GList * cur;
+
+	for (cur = folder_get_list() ; cur != NULL ; cur = g_list_next(cur)) {
+		Folder *folder;
+
+		folder = (Folder *) cur->data;
+		g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+				prefs_filtering_free_func, NULL);
+	}
+
+	prefs_filtering_free(global_processing);
+	global_processing = NULL;
 }
