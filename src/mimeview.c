@@ -290,6 +290,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	mimeview->mainwin       = mainwin;
 	mimeview->tooltips      = tooltips;
 	mimeview->oldsize       = 160;
+	mimeview->mime_toggle   = mime_toggle;
 
 	mimeview->target_list	= gtk_target_list_new(mimeview_mime_types, 1); 
 	
@@ -700,7 +701,8 @@ static void mimeview_clear(MimeView *mimeview)
 	mimeview->file = NULL;
 	icon_list_clear(mimeview);
 
-	/* gtk_notebook_set_page(GTK_NOTEBOOK(mimeview->notebook), 0); */
+	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(mimeview->mime_toggle)))
+		gtk_notebook_set_page(GTK_NOTEBOOK(mimeview->notebook), 0);
 }
 
 static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
@@ -1299,10 +1301,8 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 {
 	GtkWidget *pixmap;
 	GtkWidget *vbox;
-	GtkWidget *icon_scroll = mimeview->icon_scroll;
 	GtkWidget *button;
 	GtkWidget *sep;
-	GtkTooltips *tooltips = mimeview->tooltips;
 	gchar *tip;
 	gchar *desc = NULL;
 	gint width;
@@ -1381,10 +1381,10 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	}
 	if (desc && *desc)
 		tip = g_strdup_printf("%s\n%s\n%s", desc, mimeinfo->content_type, 
-				to_human_readable(mimeinfo->size), NULL);
+				to_human_readable(mimeinfo->size));
 	else 		
 		tip = g_strdup_printf("%s\n%s",	mimeinfo->content_type, 
-				to_human_readable(mimeinfo->size), NULL);
+				to_human_readable(mimeinfo->size));
 
 	gtk_tooltips_set_tip(mimeview->tooltips, button, tip, NULL);
 	g_free(tip);
@@ -1397,7 +1397,6 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 
 static void icon_list_clear (MimeView *mimeview)
 {
-	GtkWidget *wid;
 	GList     *child;
 	GtkAdjustment *adj;
 	
@@ -1425,7 +1424,6 @@ static void icon_scroll_size_allocate_cb(GtkWidget *widget,
 	GtkAllocation *vbox_size;
 	GtkAllocation *layout_size;
 	GtkAdjustment *adj;
-	GtkWidget     *wid;
 	
 	adj = gtk_layout_get_vadjustment(GTK_LAYOUT(mimeview->icon_scroll));
 

@@ -56,6 +56,7 @@ struct _MimeView
 	GtkWidget *icon_scroll;
 	GtkWidget *icon_vbox;
 	GtkWidget *icon_mainbox;
+	GtkWidget *mime_toggle;
 
 	MimeViewType type;
 

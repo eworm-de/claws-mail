@@ -805,7 +805,6 @@ void messageview_destroy(MessageView *messageview)
 void messageview_delete(MessageView *msgview)
 {
 	MsgInfo *msginfo = (MsgInfo*)msgview->msginfo;
-	SummaryView *summaryview = (SummaryView*)msgview->mainwin->summaryview;
 	FolderItem *trash = folder_get_default_trash();
 	GSList *msg_list;
 

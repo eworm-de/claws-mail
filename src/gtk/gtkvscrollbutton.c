@@ -263,6 +263,10 @@ static gint gtk_vscrollbutton_scroll(GtkVScrollbutton *scrollbutton)
 	    scrollbutton->timer = 0;
 	}
 	break;
+    
+    default:
+	break;
+    
     }
 
     if (new_value != scrollbutton->adjustment->value) {
