@@ -185,7 +185,8 @@ gboolean mh_scan_required(Folder *folder, FolderItem *item)
 		return FALSE;
 	}
 
-	if (s.st_mtime > item->mtime) {
+	if ((s.st_mtime > item->mtime) &&
+		(s.st_mtime - 3600 != item->mtime)) {
 		debug_print("MH scan required, folder updated: %s (%ld > %ld)\n",
 			    path,
 			    s.st_mtime,
@@ -518,7 +519,9 @@ static gboolean mh_is_msg_changed(Folder *folder, FolderItem *item,
 
 	if (stat(itos(msginfo->msgnum), &s) < 0 ||
 	    msginfo->size  != s.st_size ||
-	    msginfo->mtime != s.st_mtime)
+		(msginfo->mtime - s.st_mtime != 0) &&
+		(msginfo->mtime - s.st_mtime != 3600) &&
+		(msginfo->mtime - s.st_mtime != -3600))
 		return TRUE;
 
 	return FALSE;

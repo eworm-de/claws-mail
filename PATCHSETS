@@ -440,3 +440,4 @@
 ( cvs diff -u -r 1.155.2.20 -r 1.155.2.21 src/Makefile.am; cvs diff -u -r 1.25.2.10 -r 1.25.2.11 src/stock_pixmap.c; cvs diff -u -r -1.1.2.1 -r -1.1.2.2 src/pixmaps/dir-noselect.xpm; cvs diff -u -r 0 -r 1 src/pixmaps/dir_noselect.xpm; ) > 1.9.6cvs21.patchset
 ( cvs diff -u -r 1.395.2.63 -r 1.395.2.64 src/summaryview.c; ) > 1.9.6cvs22.patchset
 ( cvs diff -u -r 1.395.2.64 -r 1.395.2.65 src/summaryview.c; ) > 1.9.6cvs23.patchset
+( cvs diff -u -r 1.79.2.9 -r 1.79.2.10 src/mh.c; ) > 1.9.6cvs24.patchset
