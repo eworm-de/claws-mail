@@ -1,3 +1,10 @@
+2001-07-01 [christoph]
+
+	* src/folderview.c
+		fixed font for trash
+	* src/summaryview.c
+		move ctree to unread message
+
 2001-07-01 [paul]
 
 	* sync with sylpheed 0.5.0pre3 release
