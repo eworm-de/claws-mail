@@ -86,7 +86,7 @@ static MsgInfo *mh_parse_msg(const gchar * file, FolderItem * item);
 static void mh_scan_tree_recursive(FolderItem * item);
 
 static gboolean mh_rename_folder_func(GNode * node, gpointer data);
-
+static gchar *mh_item_get_path(Folder *folder, FolderItem *item);
 
 FolderClass mh_class =
 {
@@ -103,6 +103,7 @@ FolderClass mh_class =
 	/* FolderItem functions */
 	NULL,
 	NULL,
+	mh_item_get_path,
 	mh_create_folder,
 	mh_rename_folder,
 	mh_remove_folder,
@@ -530,6 +531,43 @@ gint mh_create_tree(Folder *folder)
 }
 
 #undef MAKE_DIR_IF_NOT_EXIST
+
+gchar *mh_item_get_path(Folder *folder, FolderItem *item)
+{
+	gchar *folder_path, *path;
+
+	g_return_val_if_fail(folder != NULL, NULL);
+	g_return_val_if_fail(item != NULL, NULL);
+
+	folder_path = g_strdup(LOCAL_FOLDER(folder)->rootpath);
+	g_return_val_if_fail(folder_path != NULL, NULL);
+
+#ifdef WIN32
+	if (folder_path[0] == G_DIR_SEPARATOR || folder_path[1] == ':') {
+#else
+        if (folder_path[0] == G_DIR_SEPARATOR) {
+#endif
+                if (item->path)
+                        path = g_strconcat(folder_path, G_DIR_SEPARATOR_S,
+                                           item->path, NULL);
+                else
+                        path = g_strdup(folder_path);
+        } else {
+                if (item->path)
+                        path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
+                                           folder_path, G_DIR_SEPARATOR_S,
+                                           item->path, NULL);
+                else
+                        path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
+                                           folder_path, NULL);
+        }
+	g_free(folder_path);
+
+#ifdef WIN32
+	subst_char(path, '/', G_DIR_SEPARATOR);
+#endif
+	return path;
+}
 
 FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
 			     const gchar *name)

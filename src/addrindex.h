@@ -99,6 +99,9 @@ struct _AddressDataSource {
 	gpointer rawDataSource;
 };
 
+void addrindex_initialize		( AddressIndex *addrIndex );
+void addrindex_teardown			( AddressIndex *addrIndex );
+
 AddressIndex *addrindex_create_index	( void );
 void addrindex_set_file_path		( AddressIndex *addrIndex,
 					  const gchar *value );

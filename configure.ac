@@ -8,10 +8,10 @@ PACKAGE=sylpheed
 dnl version number
 MAJOR_VERSION=0
 MINOR_VERSION=9
-MICRO_VERSION=0
+MICRO_VERSION=3
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws57
+EXTRA_VERSION=claws
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -82,7 +82,7 @@ AM_ICONV
 
 dnl for gettext
 ALL_LINGUAS="bg cs de el en_GB es fr hr hu it ja ko nl pl pt_BR ru sr sv zh_TW.Big5"
-AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT([use-libtool])
 dnl AC_CHECK_FUNC(gettext, AC_CHECK_LIB(intl, gettext))
 localedir='${prefix}/${DATADIRNAME}/locale'
 AC_SUBST(localedir)
@@ -218,6 +218,14 @@ dnl Key for password encryption
 AC_ARG_WITH(passcrypt-key, [  --with-passcrypt-key=KEY     Key used to encode passwords (8 byte string)],
 	    with_passcrypt_key="$withval", with_passcrypt_key="passkey0")
 AC_SUBST(PASSCRYPT_KEY, $with_passcrypt_key)
+
+dnl RC dir (will be default at a certain point in time)
+AC_ARG_WITH(config-dir,    [  --with-config-dir=RCDIR      Local configuration dir (default: .sylpheed)],
+	      ac_cv_with_config_dir="$withval", ac_cv_with_config_dir=".sylpheed")
+if test x"$ac_cv_with_config_dir" = x""; then
+	ac_cv_with_config_dir=".sylpheed"
+fi 
+AC_DEFINE_UNQUOTED(CFG_RC_DIR, "$ac_cv_with_config_dir", Configuration directory)
 
 dnl ************************
 dnl ** GTK user interface **
@@ -391,8 +399,7 @@ AC_ARG_ENABLE(mathml-viewer-plugin,
 	[ac_cv_enable_mathml_viewer_plugin=$enableval], [ac_cv_enable_mathml_viewer_plugin=no])
 AM_CONDITIONAL(BUILD_MATHML_VIEWER_PLUGIN, test x"$ac_cv_enable_mathml_viewer_plugin" = xyes)
 if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
-	GTK_MATH_VIEW_CFLAGS=$( gtkmathview-config --cflags )
-	GTK_MATH_VIEW_LIBS=$( gtkmathview-config --libs )
+	PKG_CHECK_MODULES(GTK_MATH_VIEW, gtkmathview >= 0.4.2)
 	AC_SUBST(GTK_MATH_VIEW_CFLAGS)
 	AC_SUBST(GTK_MATH_VIEW_LIBS)
 
@@ -420,7 +427,7 @@ if test x"$ac_cv_enable_image_viewer_plugin" = xyes; then
 			AC_DEFINE(HAVE_GDK_IMLIB, 1, Define if you use gdk_imlib to support image viewer),
 			[ac_cv_enable_imlib=no])
 	fi
-	if test "$ac_cv_enable_gdk_pixbuf" = no -a "$ac_cv_enable_imlib" = no; then
+	if test x"$ac_cv_enable_gdk_pixbuf" = xno -a x"$ac_cv_enable_imlib" = xno; then
 		$ac_cv_enable_image_viewer_plugin = no
 	fi
 fi
@@ -520,6 +527,7 @@ echo "IPv6          : $ac_cv_enable_ipv6"
 echo "GNU/aspell    : $ac_cv_enable_aspell"
 echo "Crash dialog  : $ac_cv_enable_crash_dialog"
 echo "Plugins       : $PLUGINS"
+echo "Config dir    : $ac_cv_with_config_dir"
 echo ""
 echo "The binary will be installed in $prefix/bin"
 echo ""

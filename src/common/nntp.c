@@ -83,6 +83,9 @@ Session *nntp_session_new(const gchar *server, gushort port, gchar *buf,
 	}
 
 	session = g_new0(NNTPSession, 1);
+
+	session_init(SESSION(session));
+
 	SESSION(session)->type			= SESSION_NEWS;
 	SESSION(session)->server		= g_strdup(server);
 	SESSION(session)->sock			= sock;

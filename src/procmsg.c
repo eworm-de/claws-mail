@@ -140,7 +140,7 @@ static gboolean procmsg_ignore_node(GNode *node, gpointer data)
 /* return the reversed thread tree */
 GNode *procmsg_get_thread_tree(GSList *mlist)
 {
-	GNode *root, *parent, *node, *next;
+	GNode *root, *parent, *node, *next, *last;
 	GHashTable *msgid_table;
 	GHashTable *subject_table;
 	MsgInfo *msginfo;
@@ -185,11 +185,11 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			else {
 				/* replace if msg in table is older than current one 
 				 * can add here more stuff. */
-				if ( ((MsgInfo*)(found_subject->data))->date_t >
-				     ((MsgInfo*)(node->data))->date_t )  {
+                                if ( ((MsgInfo*)(found_subject->data))->date_t > 
+                                     ((MsgInfo*)(node->data))->date_t )  {
 					subject_table_remove_clean(subject_table, (gchar *) subject);
 					subject_table_insert_clean(subject_table, (gchar *) subject, node);
-				}	
+				} 
 			}
 		}
 	}
@@ -213,6 +213,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 				g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
 			}
 		}
+		last = node; /* CLAWS: need to have the last one for subject threading */
 		node = next;
 	}
 
@@ -221,10 +222,12 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 	 * circular reference from a node that has already been threaded by IN-REPLY-TO
 	 * but is also in the subject line hash table */
 	if (prefs_common.thread_by_subject) {
-		for (node = root->children; node != NULL; ) {
-			next = node->next;
+		for (node = last; node && node != NULL;) {
+			next = node->prev;
 			msginfo = (MsgInfo *) node->data;
-			parent = subject_table_lookup(subject_table, msginfo->subject);
+			subject = msginfo->subject + subject_get_reply_prefix_length(msginfo->subject);
+			parent = subject_table_lookup_clean(subject_table, (gchar *) subject);
+			
 			/* the node may already be threaded by IN-REPLY-TO,
 			   so go up in the tree to find the parent node */
 			if (parent != NULL) {
@@ -232,10 +235,15 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 					parent = NULL;
 				if (parent == node)
 					parent = NULL;
-				/* check if the message should be added to this thread */
-				if (parent && abs(((MsgInfo *)parent->data)->date_t - msginfo->date_t) > 
-						prefs_common.thread_by_subject_max_age * 3600 * 24)
+				/* Make new thread parent if too old compared to previous one; probably
+				 * breaks ignoring threads for subject threading. This still isn't
+				 * accurate because the tree isn't sorted by date. */	
+				if (parent && abs(difftime(msginfo->date_t, ((MsgInfo *)parent->data)->date_t)) >
+						prefs_common.thread_by_subject_max_age * 3600 * 24) {
+					subject_table_remove_clean(subject_table, (gchar *) subject);
+					subject_table_insert_clean(subject_table, (gchar *) subject, node);
 					parent = NULL;
+				}
 			}
 
 			if (parent) {
@@ -328,17 +336,14 @@ void procmsg_copy_messages(GSList *mlist)
 
 gchar *procmsg_get_message_file_path(MsgInfo *msginfo)
 {
-	gchar *path, *file;
+	gchar *file;
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
 
 	if (msginfo->plaintext_file)
 		file = g_strdup(msginfo->plaintext_file);
 	else {
-		path = folder_item_get_path(msginfo->folder);
-		file = g_strconcat(path, G_DIR_SEPARATOR_S,
-				   itos(msginfo->msgnum), NULL);
-		g_free(path);
+		file = folder_item_fetch_msg(msginfo->folder, msginfo->msgnum);
 	}
 
 	return file;
@@ -1141,13 +1146,14 @@ gint procmsg_send_message_queue(const gchar *file)
 		else
 			tokens = g_strsplit(fwdmessageid, "\x7f", 0);
 		item = folder_find_item_from_identifier(tokens[0]);
-		if (item != NULL) {
+
+		/* check if queued message has valid folder and message id */
+		if (item != NULL && tokens[2] != NULL) {
 			MsgInfo *msginfo;
 			
 			msginfo = folder_item_get_msginfo(item, atoi(tokens[1]));
-			
-			/*!< note that if the message has no msgid (maybe it was invalid), 
-			* we also refuse to do something with the reply to flag */
+		
+			/* check if referring message exists and has a message id */
 			if ((msginfo != NULL) && 
 			    (msginfo->msgid != NULL) &&
 			    (strcmp(msginfo->msgid, tokens[2]) != 0)) {

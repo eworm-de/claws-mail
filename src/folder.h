@@ -182,6 +182,8 @@ struct _FolderClass
 	FolderItem	*(*item_new)		(Folder		*folder);
 	void	 	(*item_destroy)		(Folder		*folder,
 						 FolderItem	*item);
+	gchar		*(*item_get_path)	(Folder		*folder,
+						 FolderItem	*item);
 	FolderItem 	*(*create_folder)	(Folder		*folder,
 						 FolderItem	*parent,
 						 const gchar	*name);
@@ -377,6 +379,8 @@ void   folder_count_total_msgs	(guint		*new_msgs,
 				 guint		*unread_msgs,
 				 guint		*unreadmarked_msgs,
 				 guint		*total_msgs);
+gchar *folder_get_status	(GPtrArray	*folders,
+				 gboolean	 full);
 
 Folder     *folder_find_from_path		(const gchar	*path);
 Folder     *folder_find_from_name		(const gchar	*name,
@@ -398,7 +402,6 @@ FolderItem *folder_get_default_processing (void);
 void folder_set_missing_folders		(void);
 void folder_unref_account_all		(PrefsAccount	*account);
 
-gchar *folder_get_path			(Folder		*folder);
 gchar *folder_item_get_path		(FolderItem	*item);
 
 gint   folder_item_open			(FolderItem	*item);

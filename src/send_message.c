@@ -42,12 +42,12 @@
 #include "procheader.h"
 #include "account.h"
 #include "progressdialog.h"
+#include "statusbar.h"
 #include "inputdialog.h"
 #include "alertpanel.h"
 #include "manage_window.h"
 #include "utils.h"
 #include "gtkutils.h"
-#include "statusbar.h"
 #include "inc.h"
 #include "log.h"
 
@@ -438,6 +438,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 	session_destroy(session);
 	send_progress_dialog_destroy(dialog);
 
+	statusbar_pop_all();
 	statusbar_verbosity_set(FALSE);
 	return ret;
 }
@@ -458,10 +459,12 @@ static gint send_recv_message(Session *session, const gchar *msg, gpointer data)
 	case SMTP_HELO:
 		g_snprintf(buf, sizeof(buf), _("Sending HELO..."));
 		state_str = _("Authenticating");
+		statusbar_print_all(_("Sending message..."));
 		break;
 	case SMTP_EHLO:
 		g_snprintf(buf, sizeof(buf), _("Sending EHLO..."));
 		state_str = _("Authenticating");
+		statusbar_print_all(_("Sending message..."));
 		break;
 	case SMTP_AUTH:
 		g_snprintf(buf, sizeof(buf), _("Authenticating..."));
@@ -504,6 +507,10 @@ static gint send_send_data_progressive(Session *session, guint cur_len,
 	SendProgressDialog *dialog = (SendProgressDialog *)data;
 
 	g_return_val_if_fail(dialog != NULL, -1);
+
+	if (SMTP_SESSION(session)->state != SMTP_SEND_DATA &&
+	    SMTP_SESSION(session)->state != SMTP_EOM)
+		return 0;
 
 	g_snprintf(buf, sizeof(buf), _("Sending message (%d / %d bytes)"),
 		   cur_len, total_len);

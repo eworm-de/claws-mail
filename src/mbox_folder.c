@@ -74,6 +74,7 @@ static gchar * mbox_get_folderitem_name(gchar * name);
 static MsgInfo *mbox_get_msginfo(Folder *folder, FolderItem *item, gint num);
 static gint mbox_get_num_list(Folder *folder, FolderItem *item, GSList **list);
 static gboolean mbox_check_msgnum_validity(Folder *folder, FolderItem *item);
+static gchar *mbox_folder_get_path(Folder *folder, FolderItem *item);
 
 FolderClass mbox_class =
 {
@@ -90,6 +91,7 @@ FolderClass mbox_class =
 	/* FolderItem functions */
 	NULL,
 	NULL,
+	mbox_folder_get_path,
 	mbox_create_folder,
 	mbox_rename_folder,
 	mbox_remove_folder,
@@ -154,7 +156,7 @@ static gchar * mbox_folder_create_parent(const gchar * path)
 }
 
 
-static gchar *mbox_folder_get_path(FolderItem *item)
+gchar *mbox_folder_get_path(Folder *folder, FolderItem *item)
 {
 	gchar *folder_path;
 	gchar *path;
@@ -1236,7 +1238,7 @@ static gboolean mbox_extract_msg(FolderItem * item, gint msgnum,
 	gboolean already_fetched;
 	gchar * mbox_path;
 
-	mbox_path = mbox_folder_get_path(item);
+	mbox_path = mbox_folder_get_path(item->folder, item);
 
 	if (mbox_path == NULL)
 		return FALSE;
@@ -1374,7 +1376,7 @@ gint mbox_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 		return -1;
 	}
 
-	mbox_path = mbox_folder_get_path(dest);
+	mbox_path = mbox_folder_get_path(folder, dest);
 	if (mbox_path == NULL)
 		return -1;
 
@@ -1480,7 +1482,7 @@ gint mbox_remove_msg(Folder *folder, FolderItem *item, gint num)
 	struct _message * msg;
 	gchar * mbox_path;
 
-	mbox_path = mbox_folder_get_path(item);
+	mbox_path = mbox_folder_get_path(folder, item);
 	if (mbox_path == NULL)
 		return -1;
 
@@ -1501,7 +1503,7 @@ gint mbox_remove_all_msg(Folder *folder, FolderItem *item)
 	FILE * fp;
 	gchar * mbox_path;
 
-	mbox_path = mbox_folder_get_path(item);
+	mbox_path = mbox_folder_get_path(folder, item);
 	if (mbox_path == NULL)
 		return -1;
 
@@ -1668,7 +1670,7 @@ void mbox_scan_folder(Folder *folder, FolderItem *item)
 	mboxcache * cached;
 	GList * l;
 
-	mbox_path = mbox_folder_get_path(item);
+	mbox_path = mbox_folder_get_path(folder, item);
 	if (mbox_path == NULL)
 		return;
 
@@ -1855,7 +1857,7 @@ void mbox_change_flags(Folder * folder, FolderItem * item, MsgInfo * info, MsgPe
 	mboxcache * cache;
 	gchar * mbox_path;
 
-	mbox_path = mbox_folder_get_path(item);
+	mbox_path = mbox_folder_get_path(folder, item);
 	if (mbox_path == NULL)
 		return;
 
@@ -2114,7 +2116,7 @@ gint mbox_get_num_list(Folder *folder, FolderItem *item, GSList **mlist)
 	gchar * mbox_path;
 	gint nummsgs = 0;
 
-	mbox_path = mbox_folder_get_path(item);
+	mbox_path = mbox_folder_get_path(folder, item);
 
 	if (mbox_path == NULL)
 		return -1;
@@ -2167,7 +2169,7 @@ MsgInfo *mbox_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
 
-	mbox_path = mbox_folder_get_path(item);
+	mbox_path = mbox_folder_get_path(folder, item);
 
 	g_return_val_if_fail(mbox_path != NULL, NULL);
 	
@@ -2204,7 +2206,7 @@ gboolean mbox_check_msgnum_validity(Folder *folder, FolderItem *item)
 	struct stat s;
 	gchar *filename;
 
-	filename = mbox_folder_get_path(item);
+	filename = mbox_folder_get_path(folder, item);
 	
 	old_cache = mbox_cache_get_mbox(filename);
 

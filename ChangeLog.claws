@@ -1,3 +1,289 @@
+2003-07-12 [paul]	0.9.3claws
+
+	* 0.9.3claws released
+
+2003-07-12 [melvin]	0.9.0claws102
+
+	* src/messageview.c
+		Fixed bug #215: Show MIME tab for single text/html messages. 
+		
+2003-07-12 [paul]	0.9.0claws101
+
+	* man/sylpheed.1
+		updated
+
+2003-07-12 [paul]	0.9.0claws100
+
+	* po/es.po
+	  po/hr.po
+	  po/pl.po
+	  po/sr.po
+	  	update Spanish, Croatian, Polish, Serbian translations.
+		submitted by Ricardo Mones Lastra, Dragan, Witold
+		Wladyslaw Wojciech Wilk, Urke MMI
+
+2003-07-12 [melvin]	0.9.0claws99
+
+	* po/fr.po
+		Updated French translations.
+
+2003-07-12 [paul]	0.9.0claws98
+
+	* src/addressbook.c
+		disable 'Lookup' button as it has no effect
+
+2003-07-11 [alfons]	0.9.0claws97
+	
+	* src/summaryview.c
+		summary_searchbar_pressed() should return TRUE to signal that
+		event was handled. when returning void, the return value passed
+		to GTK is actually random, but maybe FALSE, in which case the
+		event is handled by parent
+		
+2003-07-10 [paul]	0.9.0claws96
+
+	* ac/missing/gettext.m4
+		update to version 0.12
+
+2003-07-10 [paul]	0.9.0claws95
+
+	* src/plugins/clamav/clamav_plugin.c
+		fix bug where multipart/alternative messages
+		would slip through without being scanned
+
+2003-07-10 [christoph]	0.9.0claws94
+
+	* src/folder.c
+		correct check if folder supports removing when a message is
+		moved. if not the message is only copied.
+
+	(closes Bug 132 crash on startup in newsgroups folders)
+
+2003-07-09 [alfons]	0.9.0claws93
+
+	* configure.ac
+	* src/common/defs.h
+		--with-config-dir (default .sylpheed)
+
+2003-07-09 [christoph]	0.9.0claws92
+
+	* configure.ac
+		use PKG_CHECK_MODULES to check for gtkmathview
+		(version 0.4.2 now required)
+
+2003-07-08 [melvin]	0.9.0claws91
+
+	* src/action.c
+		Implemented a progress bar that counts the number of completed
+		tasks when the action runs more than one command.
+
+2003-07-08 [alfons]	0.9.0claws90
+
+	* src/procmsg.c
+		if queued message has an invalid Message-Id, don't try to
+		find message it refers to (fixes #209 "crash when processing 
+		in folder")
+
+2003-07-08 [paul]	0.9.0claws89
+
+	* sync with 0.9.3cvs2
+		see ChangeLog 2003-07-08
+
+2003-07-08 [match]	0.9.0claws88
+
+	* src/ldapctrl.c
+		extend LDAP search for first/last name by parsing search term.
+
+2003-07-08 [alfons]	0.9.0claws87
+
+	* src/send_message.c
+		fix bug #208 "Status message stuck when sending on POP3 account"
+
+2003-07-07 [paul]	0.9.0claws86
+
+	* po/hr.po
+		new Croatian translation, submitted by
+		Dragan <drleskov@inet.hr>
+
+2003-07-07 [paul]	0.9.0claws85
+
+	* sync with 0.9.3cvs1
+		see ChangeLog 2003-07-07
+
+2003-07-05 [christoph]	0.9.0claws84
+
+	* src/Makefile.am
+	* src/messageview.c
+	* src/mimeview.[ch]
+	* src/stock_pixmap.[ch]
+	* src/pixmaps/messageview_text.xpm		** NEW **
+		move mimeview tabs to the right side and use icons
+		instead of text to save some space
+
+	(patch by Luke Plant <lukeplant@softhome.net>)
+
+2003-07-05 [christoph]	0.9.0claws83
+
+	* src/inc.c
+		add NULL pointer checks
+
+	(patch by Luke Plant <lukeplant@softhome.net>)
+	(closes Bug 204 0.9.0 quits on authentication error?!)
+
+2003-07-05 [alfons]	0.9.0claws82
+
+	* configure.ac
+		take the clue in bug #202 "./configure script - 
+		'if test' comparison failure" reported by John Kristoff. 
+
+2003-07-04 [christoph]	0.9.0claws81
+
+	* src/plugins/spamassassin/spamassassin.c
+		set timeout for spam check
+
+2003-07-04 [christoph]	0.9.0claws80
+
+	* src/main.c
+		destroy all FolderItems when shutting down to
+		allow folders to clean up
+
+2003-07-04 [melvin]	0.9.0claws79
+
+	* src/gtk/gtkaspell.c
+		Fixed bug #184 "Entering non-ascii character deletes
+		previous char if spell checking enabled": this makes
+		the spell checking in multibytes (e.g. UTF-8)locales work.
+		(Patch by Luke Plant).
+		
+2003-07-04 [christoph]	0.9.0claws78
+
+	* sync with 0.9.2cvs1
+		see ChangeLog 2003-06-10
+
+2003-07-04 [paul]	0.9.0claws77
+
+	* sync with 0.9.3 release
+		see ChangeLog 2003-07-04
+
+2003-07-03 [christoph]	0.9.0claws76
+
+	* src/folder.[ch]
+	* src/imap.c
+	* src/mbox_folder.c
+	* src/mh.c
+	* src/news.c
+		move folder_item_get_path() stuff into a folder virtual function
+
+	* src/procmsg.c
+		use folder_item_fetch_msg() to get message and do not contruct
+		the filename from path and number
+
+2003-07-03 [paul]	0.9.0claws75
+
+	* sync with 0.9.2cvs12
+		see ChangeLog 2003-07-03
+
+2003-07-02 [paul]	0.9.0claws74
+
+	* src/messageview.c
+		fix text-selection for replying
+
+2003-07-02 [paul]	0.9.0claws73
+
+	* sync with 0.9.2cvs11
+		see ChangeLog 2003-07-02
+
+2003-07-02 [paul]	0.9.0claws72
+
+	* src/procmsg.c
+		revert last commit because it breaks more
+		than it fixes
+
+2003-07-02 [paul]	0.9.0claws71
+
+	* src/procmsg.c
+		fix thread by subject/sort by date
+
+2003-07-01 [paul]	0.9.0claws70
+
+	* sync with 0.9.2cvs10
+		see ChangeLog 2003-07-01
+
+2003-06-30 [paul]	0.9.0claws69
+
+	* sync with 0.9.2cvs9
+		see ChangeLog 2003-06-30
+
+2003-06-28 [match]	0.9.0claws68
+
+	* src/addressbook.c
+		fix null ptr.
+
+2003-06-27 [paul]	0.9.0claws67
+
+	* sync with 0.9.2cvs7
+		see ChangeLog 2003-06-27
+
+2003-06-26 [christoph]	0.9.0claws66
+
+	* src/folder.c
+		freeze folder updates while a folder is scanned
+
+	(closes Bug 185 New message counter)
+
+2003-06-26 [darko]	0.9.0claws65
+
+	* src/ldapserver.c
+		fix infinite loop when adding a new LDAP server
+
+2003-06-26 [paul]	0.9.0claws64
+
+	* sync with 0.9.2cvs6
+		see ChangeLog 2003-06-26
+
+2003-06-26 [paul]	0.9.0claws63
+
+	* sync with 0.9.2cvs5
+		see ChangeLog 2003-06-25 and 2003-06-26
+
+2003-06-25 [match]	0.9.0claws62
+
+	* src/addr_compl.c
+		Fixed tab/backtab for dropped-down completion list to
+		move next/previous field. (close bug 147)
+
+2003-06-25 [christoph]	0.9.0claws61
+
+	* src/addr_compl.[ch]
+	* src/addrindex.[ch]
+	* src/folderview.c
+	* src/inc.c
+	* src/news.c
+	* src/summaryview.c
+	* src/toolbar.c
+		fix warnings
+
+2003-06-25 [leandro]	0.9.0claws60
+
+	* src/compose.c
+		o cleanups
+		o gray out "Message/Remove references" menu item if not
+		  replying to a message
+
+2003-06-24 [leandro]	0.9.0claws59
+
+	* src/compose.[ch]
+		o removed "Message/Create new thread" menu item
+		o added "Message/Remove references" menu item
+		  (it's off by default and will not check anymore
+		   if the subject changed)
+
+2003-06-23 [alfons]	0.9.0claws58
+
+	* src/procmsg.c
+		try better grouping messages threaded by subject based on their age.
+		still not perfect - because the message tree is not sorted by date.  
+
 2003-06-23 [thorsten]	0.9.0claws57
 
 	* src/pop.[ch]

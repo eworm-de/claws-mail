@@ -21,11 +21,14 @@
 #ifndef __ADDR_COMPL_H__
 #define __ADDR_COMPL_H__
 
+#include <gtk/gtk.h>
+
 #include "addrindex.h"
 
 gint start_address_completion		(void);
 guint complete_address			(const gchar *str);
 gchar *get_complete_address		(gint        index);
+gint invalidate_address_completion	(void);
 gint end_address_completion		(void);
 
 /* ui functions */

@@ -665,8 +665,8 @@ EXPORTS
 	folder_get_default_trash 
 	folder_get_identifier 
 	folder_get_list 
-	folder_get_path 
 	folder_get_persist_prefs 
+	folder_get_status 
 	folder_item_add_msg 
 	folder_item_append 
 	folder_item_apply_processing 
@@ -757,6 +757,7 @@ EXPORTS
 ;	gai_strerrorA@4 
 ;	gai_strerrorW@4 
 	get_abbrev_newsgroup_name 
+	get_address_info_async_thread 
 	get_aspell_dict_info_list 
 	get_aspell_module_info_list 
 	get_command_output 
@@ -938,7 +939,6 @@ EXPORTS
 	input_dialog_query_password 
 	input_dialog_with_invisible 
 	invalidate_address_completion 
-	io_timeout 
 	is_ascii_str 
 	is_dir_exist 
 	is_file_entry_exist 
@@ -1182,6 +1182,7 @@ EXPORTS
 	news_get_msginfos 
 	news_get_num_list 
 	news_group_list_free 
+	news_item_get_path 
 	news_post 
 	news_post_stream 
 	news_remove_group_list_cache 
@@ -1495,14 +1496,12 @@ EXPORTS
 	send_message_local 
 	send_message_smtp 
 	send_queue_cb 
-	session_child_input 
-	session_child_thread 
 	session_connect 
 	session_destroy 
 	session_disconnect 
 	session_init 
-	session_parent_input_cb 
 	session_recv_data 
+	session_recv_msg 
 	session_send_data 
 	session_send_msg 
 	session_set_recv_data_notify 
@@ -1516,8 +1515,11 @@ EXPORTS
 	slist_concat_unique 
 	slist_free_strings 
 	smtp_session_new 
+	sock_add_watch 
 	sock_close 
 	sock_connect 
+	sock_connect_async 
+	sock_connect_async_cancel 
 	sock_connect_cmd 
 	sock_getline 
 	sock_gets 
@@ -1528,6 +1530,7 @@ EXPORTS
 	sock_read 
 	sock_set_io_timeout 
 	sock_set_nonblocking_mode 
+	sock_watch_funcs 
 	sock_write 
 	sock_write_all 
 	source_window_append 
@@ -1553,6 +1556,7 @@ EXPORTS
 	ssl_manager_close 
 	ssl_manager_create 
 	ssl_manager_open 
+	ssl_peek 
 	ssl_read 
 	ssl_write 
 	ssl_write_all 

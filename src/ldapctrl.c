@@ -384,6 +384,55 @@ void ldapctl_copy( const LdapControl *ctlFrom, LdapControl *ctlTo ) {
 }
 
 /**
+ * Create an LDAP search criteria by parsing specified search term. The search
+ * term may contain two names separated by the first embedded space found in
+ * the search term. It is assumed that the two tokens are first name and last
+ * name, or vice versa. An appropriate search criteria will be constructed.
+ *
+ * \param  searchTerm Reference to search term to process.
+ * \return Formatted search criteria, or <code>NULL</code> if there is no
+ *         embedded spaces. The search term should be g_free() when no
+ *         longer required.
+ */
+static gchar *ldapctl_build_ldap_criteria( gchar *searchTerm ) {
+	gchar *p;
+	gchar *t1;
+	gchar *t2 = NULL;
+	gchar *term;
+	gchar *crit = NULL;
+
+	term = g_strdup( searchTerm );
+	g_strstrip( term );
+
+	/* Find first space character */	
+	t1 = p = term;
+	while( *p ) {
+		if( *p == ' ' ) {
+			*p = '\0';
+			t2 = g_strdup( 1 + p );
+			break;
+		}
+		p++;
+	}
+
+	if( t2 ) {
+		/* Format search criteria */
+		gchar *p1, *p2;
+
+		g_strstrip( t2 );
+		p1 = g_strdup_printf( "(&(givenName=%s*)(sn=%s*))", t1, t2 );
+		p2 = g_strdup_printf( "(&(givenName=%s*)(sn=%s*))", t2, t1 );
+		crit = g_strdup_printf( "(&(|%s%s)(mail=*))", p1, p2 );
+
+		g_free( t2 );
+		g_free( p1 );
+		g_free( p2 );
+	}
+	g_free( term );
+	return crit;
+}
+
+/**
  * Build a formatted LDAP search criteria string from criteria list.
  * \param ctl  Control object to process.
  * \param searchVal Value to search for.
@@ -394,7 +443,13 @@ gchar *ldapctl_format_criteria( LdapControl *ctl, const gchar *searchVal ) {
 	gchar *p1, *p2, *retVal;
 
 	g_return_val_if_fail( ctl != NULL, NULL );
+	g_return_val_if_fail( searchVal != NULL, NULL );
 
+	/* Test whether there are more that one search terms */
+	retVal = ldapctl_build_ldap_criteria( searchVal );
+	if( retVal ) return retVal;
+
+	/* No - just a simple search */
 	/* p1 contains previous formatted criteria */
 	/* p2 contains next formatted criteria */
 	retVal = p1 = p2 = NULL;

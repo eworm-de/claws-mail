@@ -549,6 +549,113 @@ static void folder_count_total_msgs_func(FolderItem *item, gpointer data)
 	count->total_msgs += item->total_msgs;
 }
 
+struct TotalMsgStatus
+{
+        guint new;
+        guint unread;
+	guint total;
+	GString *str;
+};
+
+static gboolean folder_get_status_full_all_func(GNode *node, gpointer data)
+{
+	FolderItem *item;
+	struct TotalMsgStatus *status = (struct TotalMsgStatus *)data;
+	gchar *id;
+ 
+ 	g_return_val_if_fail(node->data != NULL, FALSE);
+ 
+ 	item = FOLDER_ITEM(node->data);
+
+	if (!item->path) return FALSE;
+
+	status->new += item->new_msgs;
+	status->unread += item->unread_msgs;
+	status->total += item->total_msgs;
+
+	if (status->str) {
+		id = folder_item_get_identifier(item);
+		g_string_sprintfa(status->str, "%5d %5d %5d %s\n",
+				  item->new_msgs, item->unread_msgs,
+				  item->total_msgs, id);
+		g_free(id);
+	}
+ 
+ 	return FALSE;
+ }
+ 
+static void folder_get_status_full_all(GString *str, guint *new, guint *unread,
+				       guint *total)
+{
+ 	GList *list;
+ 	Folder *folder;
+	struct TotalMsgStatus status;
+ 
+	status.new = status.unread = status.total = 0;
+	status.str = str;
+ 
+	debug_print("Counting total number of messages...\n");
+ 
+ 	for (list = folder_list; list != NULL; list = list->next) {
+ 		folder = FOLDER(list->data);
+ 		if (folder->node)
+ 			g_node_traverse(folder->node, G_PRE_ORDER,
+ 					G_TRAVERSE_ALL, -1,
+					folder_get_status_full_all_func,
+					&status);
+ 	}
+ 
+	*new = status.new;
+	*unread = status.unread;
+	*total = status.total;
+}
+
+gchar *folder_get_status(GPtrArray *folders, gboolean full)
+{
+	guint new, unread, total;
+	GString *str;
+	gint i;
+	gchar *ret;
+
+	new = unread = total = 0;
+
+	str = g_string_new(NULL);
+
+	if (folders) {
+		for (i = 0; i < folders->len; i++) {
+			FolderItem *item;
+
+			item = g_ptr_array_index(folders, i);
+			new += item->new_msgs;
+			unread += item->unread_msgs;
+			total += item->total_msgs;
+
+			if (full) {
+				gchar *id;
+
+				id = folder_item_get_identifier(item);
+				g_string_sprintfa(str, "%5d %5d %5d %s\n",
+						  item->new_msgs, item->unread_msgs,
+						  item->total_msgs, id);
+				g_free(id);
+			}
+		}
+	} else {
+		folder_get_status_full_all(full ? str : NULL,
+					   &new, &unread, &total);
+	}
+
+	if (full)
+		g_string_sprintfa(str, "%5d %5d %5d\n", new, unread, total);
+	else
+		g_string_sprintfa(str, "%d %d %d\n", new, unread, total);
+
+	ret = str->str;
+	g_string_free(str, FALSE);
+ 
+	return ret;
+}
+
 void folder_count_total_msgs(guint *new_msgs, guint *unread_msgs, guint *unreadmarked_msgs, guint *total_msgs)
 {
 	struct TotalMsgCount count;
@@ -910,96 +1017,15 @@ void folder_unref_account_all(PrefsAccount *account)
 
 #undef CREATE_FOLDER_IF_NOT_EXIST
 
-gchar *folder_get_path(Folder *folder)
-{
-	gchar *path;
-
-	g_return_val_if_fail(folder != NULL, NULL);
-
-	switch(FOLDER_TYPE(folder)) {
-
-		case F_MH:
-			path = g_strdup(LOCAL_FOLDER(folder)->rootpath);
-			break;
-
-		case F_IMAP:
-			g_return_val_if_fail(folder->account != NULL, NULL);
-			path = g_strconcat(get_imap_cache_dir(),
-					   G_DIR_SEPARATOR_S,
-					   folder->account->recv_server,
-					   G_DIR_SEPARATOR_S,
-					   folder->account->userid,
-					   NULL);
-#ifdef WIN32 /* replace ':' in IPv6 Adress (but after drive separator) */
-			subst_char(path+2, ':', '$');
-#endif
-			break;
-
-		case F_NEWS:
-			g_return_val_if_fail(folder->account != NULL, NULL);
-			path = g_strconcat(get_news_cache_dir(),
-					   G_DIR_SEPARATOR_S,
-					   folder->account->nntp_server,
-					   NULL);
-#ifdef WIN32 /* replace ':' in IPv6 Adress (but after drive separator) */
-			subst_char(path+2, ':', '$');
-#endif
-			break;
-
-		default:
-			path = NULL;
-			break;
-	}
-	
-	return path;
-}
-
 gchar *folder_item_get_path(FolderItem *item)
 {
-	gchar *folder_path;
-	gchar *path;
+	Folder *folder;
 
 	g_return_val_if_fail(item != NULL, NULL);
+	folder = item->folder;
+	g_return_val_if_fail(folder != NULL, NULL);
 
-	if(FOLDER_TYPE(item->folder) != F_MBOX) {
-		folder_path = folder_get_path(item->folder);
-		g_return_val_if_fail(folder_path != NULL, NULL);
-
-#ifdef WIN32
-		if (folder_path[0] == G_DIR_SEPARATOR || folder_path[1] == ':') {
-#else
-		if (folder_path[0] == G_DIR_SEPARATOR) {
-#endif
-			if (item->path)
-				path = g_strconcat(folder_path, G_DIR_SEPARATOR_S,
-						   item->path, NULL);
-			else
-				path = g_strdup(folder_path);
-		} else {
-			if (item->path)
-				path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
-						   folder_path, G_DIR_SEPARATOR_S,
-						   item->path, NULL);
-			else
-				path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
-						   folder_path, NULL);
-		}
-
-		g_free(folder_path);
-	} else {
-		gchar *itempath;
-
-		itempath = mbox_get_virtual_path(item);
-		if (itempath == NULL)
-			return NULL;
-		path = g_strconcat(get_mbox_cache_dir(),
-					  G_DIR_SEPARATOR_S, itempath, NULL);
-		g_free(itempath);
-	}
-#ifdef WIN32
-	subst_char(path, '/', G_DIR_SEPARATOR);
-#endif
-	return path;
+	return folder->klass->item_get_path(folder, item);
 }
 
 void folder_item_set_default_flags(FolderItem *dest, MsgFlags *flags)
@@ -1302,6 +1328,7 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 		update_flags |= F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT;
 	}
 
+	folder_item_update_freeze();
 	for (elem = exists_list; elem != NULL; elem = g_slist_next(elem)) {
 		MsgInfo *msginfo;
 
@@ -1338,6 +1365,7 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	update_flags |= F_ITEM_UPDATE_MSGCNT;
 
 	folder_item_update(item, update_flags);
+	folder_item_update_thaw();
 
 	return 0;
 }
@@ -1921,12 +1949,15 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 }
 */
 
-
-
+/**
+ * Copy a list of messages to a new folder.
+ *
+ * \param dest Destination folder
+ * \param msglist List of messages
+ */
 gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 {
 	Folder *folder;
-	FolderItem *item;
 	GSList *newmsgnums = NULL;
 	GSList *l, *l2;
 	gint num, lastnum = -1;
@@ -1938,18 +1969,13 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	folder = dest->folder;
 
 	g_return_val_if_fail(folder->klass->copy_msg != NULL, -1);
-	g_return_val_if_fail(folder->klass->remove_msg != NULL, -1);
 
 	/* 
 	 * Copy messages to destination folder and 
 	 * store new message numbers in newmsgnums
 	 */
-	item = NULL;
 	for (l = msglist ; l != NULL ; l = g_slist_next(l)) {
 		MsgInfo * msginfo = (MsgInfo *) l->data;
-
-		if (!item && msginfo->folder != NULL)
-			item = msginfo->folder;
 
 		num = folder->klass->copy_msg(folder, dest, msginfo);
 		newmsgnums = g_slist_append(newmsgnums, GINT_TO_POINTER(num));
@@ -2009,11 +2035,12 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	l2 = newmsgnums;
 	for (l = msglist; l != NULL; l = g_slist_next(l)) {
 		MsgInfo *msginfo = (MsgInfo *) l->data;
+		FolderItem *item = msginfo->folder;
 
 		num = GPOINTER_TO_INT(l2->data);
 		l2 = g_slist_next(l2);
 		
-		if (num >= 0) {
+		if ((num >= 0) && (item->folder->klass->remove_msg != NULL)) {
 			item->folder->klass->remove_msg(item->folder,
 					    	        msginfo->folder,
 						        msginfo->msgnum);
@@ -2574,7 +2601,7 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 		fprintf(fp, "<folder type=\"%s\"", folder->klass->idstr);
 		if (folder->name)
 			PUT_ESCAPE_STR(fp, "name", folder->name);
-		if (FOLDER_TYPE(folder) == F_MH || FOLDER_TYPE(folder) == F_MBOX)
+		if (FOLDER_TYPE(folder) == F_MH || FOLDER_TYPE(folder) == F_MBOX || FOLDER_TYPE(folder) == F_MAILDIR)
 			PUT_ESCAPE_STR(fp, "path",
 				       LOCAL_FOLDER(folder)->rootpath);
 		if (item->collapsed && node->children)

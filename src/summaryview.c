@@ -266,7 +266,7 @@ static void summary_button_released	(GtkWidget		*ctree,
 static void summary_key_pressed		(GtkWidget		*ctree,
 					 GdkEventKey		*event,
 					 SummaryView		*summaryview);
-static void summary_searchbar_pressed	(GtkWidget		*ctree,
+static gint summary_searchbar_pressed	(GtkWidget		*ctree,
 					 GdkEventKey		*event,
 					 SummaryView		*summaryview);
 static void summary_searchbar_focus_evt	(GtkWidget		*ctree,
@@ -2928,7 +2928,6 @@ static void summary_lock_row(SummaryView *summaryview, GtkCTreeNode *row)
 
 static void summary_unlock_row(SummaryView *summaryview, GtkCTreeNode *row)
 {
-	gboolean changed = FALSE;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 
@@ -4634,11 +4633,12 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	}
 }
 
-static void summary_searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
+static gint summary_searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 				SummaryView *summaryview)
 {
 	if (event != NULL && event->keyval == GDK_Return)
 	 	summary_show(summaryview, summaryview->folder_item);
+	return TRUE; 		
 }
 
 static void summary_searchbar_focus_evt(GtkWidget *widget, GdkEventFocus *event,

@@ -61,6 +61,7 @@
 #include "gtkutils.h"
 #include "prefs_common.h"
 #include "rfc2015.h"
+#include "stock_pixmap.h"
 
 typedef enum
 {
@@ -135,7 +136,7 @@ static GtkTargetEntry mimeview_mime_types[] =
 GSList *mimeviewer_factories;
 GSList *mimeviews;
 
-MimeView *mimeview_create(void)
+MimeView *mimeview_create(MainWindow *mainwin)
 {
 	MimeView *mimeview;
 
@@ -146,6 +147,7 @@ MimeView *mimeview_create(void)
 	GtkWidget *ctree;
 	GtkWidget *mime_vbox;
 	GtkWidget *popupmenu;
+	GtkWidget *icon;
 	GtkItemFactory *popupfactory;
 	gchar *titles[N_MIMEVIEW_COLS];
 	gint n_entries;
@@ -163,9 +165,10 @@ MimeView *mimeview_create(void)
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(notebook), vbox);
-	gtk_notebook_set_tab_label_text(GTK_NOTEBOOK(notebook), vbox,
-					_("Text"));
-
+	icon = stock_pixmap_widget(mainwin->window, STOCK_PIXMAP_MESSAGEVIEW_TEXT); 
+	gtk_widget_show(icon);
+	gtk_notebook_set_tab_label(GTK_NOTEBOOK(notebook), vbox, icon);
+	
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_AUTOMATIC,
@@ -201,8 +204,10 @@ MimeView *mimeview_create(void)
 	gtk_paned_add1(GTK_PANED(paned), scrolledwin);
 	gtk_paned_add2(GTK_PANED(paned), mime_vbox);
 	gtk_container_add(GTK_CONTAINER(notebook), paned);
-	gtk_notebook_set_tab_label_text(GTK_NOTEBOOK(notebook), paned,
-					_("Attachments"));
+	icon = stock_pixmap_widget(mainwin->window, STOCK_PIXMAP_CLIP); 
+	gtk_widget_show(icon);
+	gtk_notebook_set_tab_label(GTK_NOTEBOOK(notebook), paned, icon);
+	gtk_notebook_set_tab_pos(GTK_NOTEBOOK(notebook), GTK_POS_RIGHT);
 
 	gtk_widget_show_all(notebook);
 
@@ -230,6 +235,7 @@ MimeView *mimeview_create(void)
 
 void mimeview_init(MimeView *mimeview)
 {
+	textview_init(mimeview->textview);
 }
 
 /* 

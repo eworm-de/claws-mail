@@ -1,3 +1,92 @@
+2003-07-08
+
+	* src/rfc2015.c: rfc2015_is_encrypted(): check MimeInfo::mime_type
+	  to suppress some warnings.
+
+2003-07-07
+
+	* src/compose.c: add 'Content-Disposition: inline' to a text/plain
+	  part when using PGP/MIME signing.
+
+2003-07-04
+
+	* version 0.9.3
+
+2003-07-04
+
+	* src/defs.h: changed UI_REFRESH_INTERVAL from 40msec to 50msec.
+	* src/session.c: session_read_msg_cb(): make it always fail if
+	  sock_read() returns by error.
+	* src/socket.[ch]: sock_check(): handle exceptional SSL condition.
+	  sock_has_pending_data(): removed.
+	  Removed debug output.
+	* src/send_message.c: send_recv_message(): display messages to
+	  statusbar.
+
+2003-07-03
+
+	* src/inc.[ch]: update received message number on CList while
+	  retrieving.
+	* src/session.c: session_read_data_cb(): optimized by removing
+	  g_malloc() and memcpy().
+
+2003-07-02
+
+	* src/socket.[ch]: sock_add_watch(): new. It monitors SSL by original
+	  watch functions (otherwise uses g_io_add_watch()).
+	* src/session.[ch]: removed previous workarounds, and replaced
+	  g_io_add_watch() with sock_add_watch().
+
+2003-07-01
+
+	* src/socket.[ch]: added sock_has_pending_data() which returns TRUE
+	  if socket has pending data.
+	* src/session.c: session_recv_msg(), session_recv_data(): check if
+	  socket has pending data and call the callbacks immediately in that
+	  case (fixes the hang at ESMTP EHLO on SSL).
+
+2003-06-30
+
+	* src/socket.c: check return value in SSL functions.
+
+2003-06-30
+
+	* src/mimeview.c: mimeview_init(): initialize TextView to prevent
+	  slowdown caused by GTK+ themes (thanks to Yuri Arapov).
+
+2003-06-27
+
+	* src/session.c: session_read_data_cb(): clear Session::read_data_buf
+	  before calling callbacks.
+
+2003-06-26
+
+	* src/socket.c: made socket connection protocol independent.
+	* src/session.c: removed debug g_print().
+	* src/inc.c: made status bar output less verbose, and show counter
+	  on main window's progressbar.
+
+2003-06-26
+
+	* src/session.c: added missing #include <errno.h>.
+
+2003-06-25
+
+	* src/session.[ch]: reimplemented the Session system with non-blocking
+	  I/O to solve the performance and the code design issue.
+	* src/socket.[ch]: added sock_connect_async() and
+	  sock_connect_async_cancel() to enable asynchronous connection.
+	  sock_peek(): modified the implementation.
+	* src/pop.c: optimized the receiving of the responses of
+	  UIDL/LIST/RETR.
+
+2003-06-18
+
+	* src/procmsg.c: procmsg_get_thread_tree(): prevent threading problems
+	  when a node is an ancestor (parent / great parent), which mostly
+	  happens with circular references (thanks to Phillipe Gramoulle
+	  for finding an sample set of messages, and Alfons for the patch).
+
 2003-06-16
 
 	* src/pop3.c: pop3_get_uidl_table(): return empty hash table even if
@@ -11,6 +100,10 @@
 	* src/folder.[ch]: folder_get_status(): new. it takes the array of
 	  folders as the argument and returns their status.
 	  folder_count_total_msgs(): removed.
+
+2003-06-06
+
+	* version 0.9.2
 
 2003-06-06
 

@@ -467,27 +467,6 @@ static gchar *get_next_complete_address(void)
 }
 
 /**
- * Return the previous complete address match from the completion index.
- * \return Completed address string; this should be freed when done.
- */
-static gchar *get_prev_complete_address(void)
-{
-	if (is_completion_pending()) {
-		int n = g_completion_next - 2;
-
-		/* real previous */
-		n = (n + (g_completion_count * 5)) % g_completion_count;
-
-		/* real next */
-		g_completion_next = n + 1;
-		if (g_completion_next >=  g_completion_count)
-			g_completion_next = 0;
-		return get_complete_address(n);
-	} else
-		return NULL;
-}
-
-/**
  * Return a count of the completed matches in the completion index.
  * \return Number of matched entries.
  */
@@ -672,17 +651,6 @@ static void addrcompl_free_window( CompletionWindow *cw ) {
 }
 
 /**
- * Select specified row in list.
- * \param clist List to process.
- * \param row   Row to select.
- */
-static void completion_window_advance_to_row(GtkCList *clist, gint row)
-{
-	g_return_if_fail(row < g_completion_count);
-	gtk_clist_select_row(clist, row, 0);
-}
-
-/**
  * Advance selection to previous/next item in list.
  * \param clist   List to process.
  * \param forward Set to <i>TRUE</i> to select next or <i>FALSE</i> for
@@ -848,6 +816,8 @@ static gint addrcompl_callback(
 	}
 	pthread_mutex_unlock( & _completionMutex_ );
 	/* printf( "addrcompl_callback...done\n" ); */
+
+	return 0;
 }
 
 /**
@@ -1293,6 +1263,7 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 	gchar *searchTerm;
 	gint cursor_pos;
 	GtkWidget *clist;
+	GtkWidget *parent;
 
 	g_return_val_if_fail(compWin != NULL, FALSE);
 
@@ -1310,6 +1281,7 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 		return FALSE;
 	}		
 
+#if 0	
 	/* also make tab / shift tab go to next previous completion entry. we're
 	 * changing the key value */
 	if (event->keyval == GDK_Tab || event->keyval == GDK_ISO_Left_Tab) {
@@ -1320,6 +1292,39 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 			event->state &= ~GDK_SHIFT_MASK;
 		completion_window_advance_selection(GTK_CLIST(clist), 
 			event->keyval == GDK_Down ? TRUE : FALSE);
+		return FALSE;
+	}
+#endif
+
+	/* make tab move to next field */
+	if( event->keyval == GDK_Tab ) {
+		/* Reference to parent */
+		parent = GTK_WIDGET(entry)->parent;
+
+		/* Discard the window */
+		clear_completion_cache();
+		addrcompl_destroy_window( _compWindow_ );
+
+		/* Move focus to next widget */
+		if( parent ) {
+			gtk_container_focus( GTK_CONTAINER(parent), GTK_DIR_TAB_FORWARD );
+		}
+		return FALSE;
+	}
+
+	/* make backtab move to previous field */
+	if( event->keyval == GDK_ISO_Left_Tab ) {
+		/* Reference to parent */
+		parent = GTK_WIDGET(entry)->parent;
+
+		/* Discard the window */
+		clear_completion_cache();
+		addrcompl_destroy_window( _compWindow_ );
+
+		/* Move focus to previous widget */
+		if( parent ) {
+			gtk_container_focus( GTK_CONTAINER(parent), GTK_DIR_TAB_BACKWARD );
+		}
 		return FALSE;
 	}
 

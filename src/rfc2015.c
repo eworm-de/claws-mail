@@ -579,7 +579,7 @@ void rfc2015_check_signature (MimeInfo *mimeinfo, FILE *fp)
 
 int rfc2015_is_encrypted (MimeInfo *mimeinfo)
 {
-    if (!mimeinfo)
+    if (!mimeinfo || mimeinfo->mime_type != MIME_MULTIPART)
         return 0;
     if (g_strcasecmp (mimeinfo->content_type, "multipart/encrypted"))
         return 0;

@@ -45,22 +45,27 @@ typedef enum
 	CONN_DISCONNECTED,
 } ConnectionState;
 
+typedef gint (*SockConnectFunc)		(SockInfo	*sock,
+					 gpointer	 data);
+typedef gboolean (*SockFunc)		(SockInfo	*sock,
+					 GIOCondition	 condition,
+					 gpointer	 data);
+
 struct _SockInfo
 {
-#if USE_GIO
-	GIOChannel *channel;
-	gchar *buf;
-	gint buflen;
-#else
 	gint sock;
+#if USE_OPENSSL
+	SSL *ssl;
 #endif
+	GIOChannel *sock_ch;
+
 	gchar *hostname;
 	gushort port;
 	ConnectionState state;
 	gpointer data;
-#if USE_OPENSSL
-	SSL *ssl;
-#endif
+
+	SockFunc callback;
+	GIOCondition condition;
 };
 
 gint sock_set_io_timeout		(guint sec);
@@ -68,11 +73,18 @@ gint sock_set_io_timeout		(guint sec);
 gint sock_set_nonblocking_mode		(SockInfo *sock, gboolean nonblock);
 gboolean sock_is_nonblocking_mode	(SockInfo *sock);
 
+guint sock_add_watch			(SockInfo *sock, GIOCondition condition,
+					 SockFunc func, gpointer data);
+
 struct hostent *my_gethostbyname	(const gchar *hostname);
 
 SockInfo *sock_connect			(const gchar *hostname, gushort port);
 SockInfo *sock_connect_cmd		(const gchar *hostname, const gchar *tunnelcmd);
+gint sock_connect_async			(const gchar *hostname, gushort port,
+					 SockConnectFunc func, gpointer data);
+gint sock_connect_async_cancel		(gint id);
 
+/* Basic I/O functions */
 gint sock_printf	(SockInfo *sock, const gchar *format, ...)
 			 G_GNUC_PRINTF(2, 3);
 gint sock_read		(SockInfo *sock, gchar *buf, gint len);
@@ -81,6 +93,7 @@ gint sock_write_all	(SockInfo *sock, const gchar *buf, gint len);
 gint sock_gets		(SockInfo *sock, gchar *buf, gint len);
 gchar *sock_getline	(SockInfo *sock);
 gint sock_puts		(SockInfo *sock, const gchar *buf);
+gint sock_peek		(SockInfo *sock, gchar *buf, gint len);
 gint sock_close		(SockInfo *sock);
 
 /* Functions to directly work on FD.  They are needed for pipes */
@@ -102,6 +115,7 @@ gint ssl_write		(SSL *ssl, const gchar *buf, gint len);
 gint ssl_write_all	(SSL *ssl, const gchar *buf, gint len);
 gint ssl_gets		(SSL *ssl, gchar *buf, gint len);
 gint ssl_getline	(SSL *ssl, gchar **str);
+gint ssl_peek		(SSL *ssl, gchar *buf, gint len);
 #endif
 
 #ifdef WIN32

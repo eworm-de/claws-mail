@@ -37,7 +37,11 @@
 #define QUEUE_DIR		"queue"
 #define DRAFT_DIR		"draft"
 #define TRASH_DIR		"trash"
-#define RC_DIR			".sylpheed" /**/
+#ifndef CLAWS /* easier to sync */
+#define RC_DIR			".sylpheed"
+#else
+#define RC_DIR			CFG_RC_DIR	
+#endif /* CLAWS */
 #define NEWS_CACHE_DIR		"newscache"
 #define IMAP_CACHE_DIR		"imapcache"
 #define MBOX_CACHE_DIR		"mboxcache"
@@ -107,7 +111,7 @@
 #define FOLDER_SPACING			4
 #define MAX_ENTRY_LENGTH		8191
 #define COLOR_DIM			35000
-#define UI_REFRESH_INTERVAL		40000	/* usec */
+#define UI_REFRESH_INTERVAL		50000	/* usec */
 #define SESSION_TIMEOUT			60	/* sec */
 #define MAX_HISTORY_SIZE		16
 

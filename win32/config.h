@@ -392,3 +392,4 @@
 #define SYSCONFDIR			"etc"
 #define LOCALEDIR			"locale"
 #define FAQDIR				"doc\\faq"
+#define CFG_RC_DIR			".sylpheed"

@@ -1,3 +1,90 @@
+2003-07-08
+
+	* src/rfc2015.c: rfc2015_is_encrypted(): 警告を抑えるために
+	  MimeInfo::mime_type をチェック。
+
+2003-07-07
+
+	* src/compose.c: PGP/MIME 署名を使用するときは text/plain パートに
+	  'Content-Disposition: inline' を付加。
+
+2003-07-04
+
+	* version 0.9.3
+
+2003-07-04
+
+	* src/defs.h: UI_REFRESH_INTERVAL を 40msec から 50msec に変更。
+	* src/session.c: session_read_msg_cb(): sock_read() がエラーで
+	  返るときは常に失敗するようにした。
+	* src/socket.[ch]: sock_check(): 例外的な SSL の状態に対応。
+	  sock_has_pending_data(): 削除。
+	  デバッグ出力を削除。
+	* src/send_message.c: send_recv_message(): メッセージをステータスバー
+	  に表示。
+
+2003-07-03
+
+	* src/inc.[ch]: 受信中に CList の受信済メッセージ数を更新。
+	* src/session.c: session_read_data_cb(): g_malloc() と memcpy() を
+	  取り除いて最適化。
+
+2003-07-02
+
+	* src/socket.[ch]: sock_add_watch(): 新規。 SSL をオリジナルの watch
+	  関数で監視する(SSL でない場合は g_io_add_watch() を使用)。
+	* src/session.[ch]: 以前の対処を削除し、 g_io_add_watch() を
+	  sock_add_watch() で置き換えた。
+
+2003-07-01
+
+	* src/socket.[ch]: ソケットに未処理のデータが存在する場合 TRUE を
+	  返す sock_has_pending_data() を追加。
+	* src/session.c: session_recv_msg(), session_recv_data(): ソケットに
+	  未処理のデータがあるかどうかを調べ、ある場合はコールバックをすぐに
+	  呼ぶようにした(SSL での ESMTP EHLO 時に固まるのを修正)。
+
+2003-06-30
+
+	* src/socket.c: SSL 関数で戻り値をチェック。
+
+2003-06-30
+
+	* src/mimeview.c: mimeview_init(): GTK+ テーマによる速度低下を防ぐ
+	  ために TextView を初期化(Yuri Arapov さん thanks)。
+
+2003-06-27
+
+	* src/session.c: session_read_data_cb(): コールバックを呼ぶ前に
+	  Session::read_data_buf をクリアするようにした。
+
+2003-06-26
+
+	* src/socket.c: ソケット接続をプロトコル独立にした。
+	* src/session.c: デバッグ用 g_print() を削除。
+	* src/inc.c: ステータスバーの出力の冗長度を減らし、メインウィンドウ
+	  のプログレスバーにカウンタを表示。
+
+2003-06-26
+
+	* src/session.c: #include <errno.h> が足りなかったので追加。
+
+2003-06-25
+
+	* src/session.[ch]: 性能とコードデザインの問題を解決するために
+	  Session システムを非ブロッキング I/O で再実装。
+	* src/socket.[ch]: sock_connect_async() と sock_connect_async_cancel()
+	  を追加し、非同期接続を可能にした。
+	  sock_peek(): 実装を変更。
+	* src/pop.c: UIDL/LIST/RETR の応答の受信を最適化。
+
+2003-06-18
+
+	* src/procmsg.c: procmsg_get_thread_tree(): ノードが祖先(parent /
+	  great parent)の場合(主に循環参照の場合に起こる) (メッセージ群の
+	  サンプルを発見した Phillipe Gramoulle さんとパッチを提供した
+	  Alfons さん thanks)。
+
 2003-06-16
 
 	* src/pop.c: pop3_get_uidl_table(): UIDL リストが見つからなかった場合
@@ -12,6 +99,10 @@
 	* src/folder.[ch]: folder_get_status(): 新規。フォルダの配列を引数
 	  として受け取り、それらのステータスを返す。
 	  folder_count_total_msgs(): 削除。
+
+2003-06-06
+
+	* version 0.9.2
 
 2003-06-06
 

@@ -94,7 +94,7 @@ struct _MimeViewer
 	void		(*destroy_viewer)	(MimeViewer *);
 };
 
-MimeView *mimeview_create	(void);
+MimeView *mimeview_create	(MainWindow	*mainwin);
 void mimeview_init		(MimeView	*mimeview);
 void mimeview_show_message	(MimeView	*mimeview,
 				 MimeInfo	*mimeinfo,

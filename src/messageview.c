@@ -301,7 +301,7 @@ MessageView *messageview_create(MainWindow *mainwin)
 	textview = textview_create();
 	textview->messageview = messageview;
 
-	mimeview = mimeview_create();
+	mimeview = mimeview_create(mainwin);
 	mimeview->textview = textview_create();
 	mimeview->textview->messageview = messageview;
 	mimeview->messageview = messageview;
@@ -701,8 +701,7 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	textview_set_all_headers(messageview->textview, all_headers);
 	textview_set_all_headers(messageview->mimeview->textview, all_headers);
 
-	if (mimeinfo->mime_type != MIME_TEXT &&
-	    mimeinfo->mime_type != MIME_TEXT_HTML) {
+	if (mimeinfo->mime_type != MIME_TEXT) {
 		messageview_change_view_type(messageview, MVIEW_MIME);
 		mimeview_show_message(messageview->mimeview, mimeinfo, file);
 	} else {
@@ -1128,19 +1127,18 @@ static PrefsAccount *select_account_from_list(GList *ac_list)
  */
 gchar *messageview_get_selection(MessageView *msgview)
 {
+	TextView *textview;
 	gchar *text = NULL;
 	GtkEditable *edit = NULL;
 	gint body_pos = 0;
 	
 	g_return_val_if_fail(msgview != NULL, NULL);
 
-	if (msgview->type == MVIEW_TEXT) {
-		edit = GTK_EDITABLE(msgview->textview->text);
-		body_pos = msgview->textview->body_pos;
-	} else if (msgview->type == MVIEW_MIME
-		 && msgview->mimeview->type == MIMEVIEW_TEXT
-		 && msgview->mimeview->textview
-		 && !msgview->mimeview->textview->default_text) {
+	textview = messageview_get_current_textview(msgview);
+	if (textview) {
+		edit = GTK_EDITABLE(textview->text);
+		body_pos = textview->body_pos;
+	} else {
 		edit = GTK_EDITABLE(msgview->mimeview->textview->text);
 		body_pos = msgview->mimeview->textview->body_pos;
 	}

@@ -95,6 +95,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	struct message m;
 	gchar *oldlocale = NULL;
 	struct sockaddr addr;
+	int ret;
 
 	if (!config.enable)
 		return FALSE;
@@ -106,26 +107,34 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	setlocale(LC_ALL, "C");
 
 	if (lookup_host(config.hostname, config.port, &addr) != EX_OK) {
-		debug_print("failed to look up spamd host");
+		debug_print("failed to look up spamd host\n");
 		return FALSE;
 	}
 
 	m.type = MESSAGE_NONE;
 	m.max_len = config.max_size * 1024;
+	m.timeout = 30;
 
 	if ((fp = procmsg_open_message(msginfo)) == NULL) {
-		debug_print("failed to open message file");
+		debug_print("failed to open message file\n");
 		return FALSE;
 	}
 
 	if (message_read(fileno(fp), flags, &m) != EX_OK) {
-		debug_print("failed to read message");
+		debug_print("failed to read message\n");
 		fclose(fp);
 		message_cleanup(&m);
 		return FALSE;
 	}
 
-	if ((message_filter(&addr, username, flags, &m) == EX_OK) && (m.is_spam == EX_ISSPAM))
+	if ((ret = message_filter(&addr, username, flags, &m)) != EX_OK) {
+		debug_print("filtering the message failed\n");
+		fclose(fp);
+		message_cleanup(&m);
+		return FALSE;
+	}
+
+	if (m.is_spam == EX_ISSPAM)
 		is_spam = TRUE;
 
 	message_cleanup(&m);
@@ -133,11 +142,11 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	setlocale(LC_ALL, oldlocale);
 
 	if (is_spam) {
+		debug_print("message is spam\n");
+			    
 		if (config.receive_spam) {
 			FolderItem *save_folder;
 
-			debug_print("message is spam\n");
-			    
 			if ((!config.save_folder) ||
 			    (config.save_folder[0] == '\0') ||
 			    ((save_folder = folder_find_item_from_identifier(config.save_folder)) == NULL))

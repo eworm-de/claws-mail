@@ -28,18 +28,22 @@
 
 #include <time.h>
 #ifdef WIN32
-#include <windows.h>
+# include "w32lib.h"
 #else
+#include <sys/time.h>
 #include <unistd.h>
 #endif
 
 #include "socket.h"
+
+#define SESSION_BUFFSIZE	4096
 
 typedef struct _Session	Session;
 
 #define SESSION(obj)	((Session *)obj)
 
 typedef enum {
+	SESSION_UNKNOWN,
 	SESSION_IMAP,
 	SESSION_NEWS,
 	SESSION_SMTP,
@@ -98,14 +102,19 @@ struct _Session
 	SessionState state;
 
 	time_t last_access_time;
+	struct timeval tv_prev;
 
-	pid_t child_pid;
+	gint conn_id;
 
-	/* pipe I/O */
-	GIOChannel *read_ch;
-	GIOChannel *write_ch;
+	gint io_tag;
 
-	gint read_tag;
+	GString *read_buf;
+	GByteArray *read_data_buf;
+	gchar *read_data_terminator;
+
+	gchar *write_buf;
+	gchar *write_buf_p;
+	gint write_buf_len;
 
 	gpointer data;
 
@@ -113,10 +122,10 @@ struct _Session
 	gint (*recv_msg)		(Session	*session,
 					 const gchar	*msg);
 
+	gint (*send_data_finished)	(Session	*session,
+					 guint		 len);
 	gint (*recv_data_finished)	(Session	*session,
 					 guchar		*data,
-					 guint		 len);
-	gint (*send_data_finished)	(Session	*session,
 					 guint		 len);
 
 	void (*destroy)			(Session	*session);
@@ -160,18 +169,19 @@ void session_set_send_data_notify	(Session	*session,
 					 SendDataNotify	 notify_func,
 					 gpointer	 data);
 
+#if USE_OPENSSL
+gint session_start_tls	(Session	*session);
+#endif
+
 gint session_send_msg	(Session	*session,
 			 SessionMsgType	 type,
 			 const gchar	*msg);
+gint session_recv_msg	(Session	*session);
 gint session_send_data	(Session	*session,
 			 const guchar	*data,
 			 guint		 size);
 gint session_recv_data	(Session	*session,
 			 guint		 size,
-			 gboolean	 unescape_dot);
-
-#if USE_OPENSSL
-gint session_start_tls	(Session	*session);
-#endif
+			 const gchar	*terminator);
 
 #endif /* __SESSION_H__ */

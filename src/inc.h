@@ -35,6 +35,7 @@
 
 typedef struct _IncProgressDialog	IncProgressDialog;
 typedef struct _IncSession		IncSession;
+
 typedef enum
 {
 	INC_SUCCESS,
@@ -57,6 +58,7 @@ struct _IncProgressDialog
 	gboolean show_dialog;
 
 	GList *queue_list;	/* list of IncSession */
+	gint cur_row;
 };
 
 struct _IncSession
