@@ -2705,7 +2705,18 @@ static void attract_by_subject_cb(MainWindow *mainwin, guint action,
 static void delete_duplicated_cb(MainWindow *mainwin, guint action,
 				 GtkWidget *widget)
 {
-	summary_delete_duplicated(mainwin->summaryview);
+	FolderItem *item;
+
+	item = folderview_get_selected(mainwin->folderview);
+	if (item) {
+		main_window_cursor_wait(mainwin);
+		STATUSBAR_PUSH(mainwin, _("Deleting duplicated messages..."));
+
+		folderutils_delete_duplicates(item);
+
+		STATUSBAR_POP(mainwin);
+		main_window_cursor_normal(mainwin);
+	}
 }
 
 static void filter_cb(MainWindow *mainwin, guint action, GtkWidget *widget)

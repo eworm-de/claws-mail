@@ -203,11 +203,6 @@ static void summary_copy_row_to		(SummaryView		*summaryview,
 					 GtkCTreeNode		*row,
 					 FolderItem		*to_folder);
 
-static void summary_delete_duplicated_func
-					(GtkCTree		*ctree,
-					 GtkCTreeNode		*node,
-					 SummaryView		*summaryview);
-
 static void summary_execute_move	(SummaryView		*summaryview);
 static void summary_execute_move_func	(GtkCTree		*ctree,
 					 GtkCTreeNode		*node,
@@ -3139,18 +3134,6 @@ void summary_delete(SummaryView *summaryview)
 	} else
 		summary_status_show(summaryview);
 		
-	main_window_cursor_normal(summaryview->mainwin);
-}
-
-void summary_delete_duplicated(SummaryView *summaryview)
-{
-	main_window_cursor_wait(summaryview->mainwin);
-	STATUSBAR_PUSH(summaryview->mainwin,
-		       _("Deleting duplicated messages..."));
-
-	folderutils_delete_duplicates(summaryview->folder_item);
-
-	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
 }
 

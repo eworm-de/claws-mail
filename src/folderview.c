@@ -2847,3 +2847,8 @@ static void folderview_drag_end_cb(GtkWidget	    *widget,
 	g_slist_free(folderview->nodes_to_recollapse);
 	folderview->nodes_to_recollapse = NULL;
 }
+
+FolderItem *folderview_get_selected(FolderView *folderview)
+{
+	return (FolderItem *) gtk_ctree_node_get_row_data(folderview->ctree, folderview->opened);
+}

@@ -216,7 +216,6 @@ void summary_sort		  (SummaryView		*summaryview,
 				   FolderSortType	 sort_type);
 
 void summary_delete		  (SummaryView		*summaryview);
-void summary_delete_duplicated	  (SummaryView		*summaryview);
 
 void summary_cancel               (SummaryView          *summaryview);
 
