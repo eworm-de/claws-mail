@@ -32,9 +32,7 @@
 
 typedef struct _MsgInfo		MsgInfo;
 typedef struct _MsgFlags	MsgFlags;
-
-#include "folder.h"
-#include "procmime.h"
+typedef struct _MsgInfoUpdate 	MsgInfoUpdate;
 
 typedef enum
 {
@@ -143,6 +141,11 @@ typedef enum
 #define MSG_IS_IGNORE_THREAD(msg)	(((msg).perm_flags & MSG_IGNORE_THREAD) != 0)
 #define MSG_IS_RETRCPT_PENDING(msg)	(((msg).perm_flags & MSG_RETRCPT_PENDING) != 0)
 
+#define MSGINFO_UPDATE_HOOKLIST "msginfo_update"
+
+#include "folder.h"
+#include "procmime.h"
+
 struct _MsgFlags
 {
 	MsgPermFlags perm_flags;
@@ -190,10 +193,6 @@ struct _MsgInfo
 	gchar *plaintext_file;
 	guint decryption_failed : 1;
 };
-
-#define MSGINFO_UPDATE_HOOKLIST "msginfo_update"
-
-typedef struct _MsgInfoUpdate MsgInfoUpdate;
 
 struct _MsgInfoUpdate {
 	MsgInfo	*msginfo;

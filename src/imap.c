@@ -295,6 +295,10 @@ MsgInfo *imap_get_msginfo 			(Folder 	*folder,
 						 gint 		 num);
 gboolean imap_check_msgnum_validity		(Folder 	*folder,
 						 FolderItem 	*item);
+void imap_change_flags				(Folder 	*folder,
+						 FolderItem 	*item,
+						 MsgInfo 	*msginfo,
+						 MsgPermFlags 	newflags);
 
 FolderClass imap_class =
 {
@@ -333,7 +337,7 @@ FolderClass imap_class =
 	imap_remove_msgs,
 	imap_remove_all_msg,
 	imap_is_msg_changed,
-	NULL,
+	imap_change_flags,
 };
 
 FolderClass *imap_get_class()
@@ -3596,4 +3600,56 @@ gboolean imap_check_msgnum_validity(Folder *folder, FolderItem *_item)
 	imap_delete_all_cached_messages((FolderItem *)item);
 
 	return FALSE;
+}
+
+void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPermFlags newflags)
+{
+	IMAPSession *session;
+	IMAPFlags flags_set = 0, flags_unset = 0;
+	gint ok = IMAP_SUCCESS;
+
+	g_return_if_fail(folder != NULL);
+	g_return_if_fail(folder->class == &imap_class);
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->folder == folder);
+	g_return_if_fail(msginfo != NULL);
+	g_return_if_fail(msginfo->folder == item);
+
+	session = imap_session_get(folder);
+	if (!session) return;
+
+	if ((ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
+	    NULL, NULL, NULL, NULL)) != IMAP_SUCCESS)
+		return;
+
+	if (!MSG_IS_MARKED(msginfo->flags) &&  (newflags & MSG_MARKED))
+		flags_set |= IMAP_FLAG_FLAGGED;
+	if ( MSG_IS_MARKED(msginfo->flags) && !(newflags & MSG_MARKED))
+		flags_unset |= IMAP_FLAG_FLAGGED;
+
+	if (!MSG_IS_UNREAD(msginfo->flags) &&  (newflags & MSG_UNREAD))
+		flags_unset |= IMAP_FLAG_SEEN;
+	if ( MSG_IS_UNREAD(msginfo->flags) && !(newflags & MSG_UNREAD))
+		flags_set |= IMAP_FLAG_SEEN;
+
+	if (!MSG_IS_REPLIED(msginfo->flags) &&  (newflags & MSG_REPLIED))
+		flags_set |= IMAP_FLAG_ANSWERED;
+	if ( MSG_IS_REPLIED(msginfo->flags) && !(newflags & MSG_REPLIED))
+		flags_set |= IMAP_FLAG_ANSWERED;
+
+	if (flags_set) {
+		ok = imap_set_message_flags(session, msginfo->msgnum,
+					    msginfo->msgnum, flags_set, TRUE);
+		if (ok != IMAP_SUCCESS) return;
+	}
+
+	if (flags_unset) {
+		ok = imap_set_message_flags(session, msginfo->msgnum,
+					    msginfo->msgnum, flags_unset, FALSE);
+		if (ok != IMAP_SUCCESS) return;
+	}
+
+	msginfo->flags.perm_flags = newflags;
+
+	return;
 }

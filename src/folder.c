@@ -1223,13 +1223,15 @@ gint folder_item_scan(FolderItem *item)
 		MsgInfo *msginfo;
 
 		msginfo = elem->data;
-		if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
+		if (MSG_IS_NEW(msginfo->flags))
 			newcnt++;
-		if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
+		if (MSG_IS_UNREAD(msginfo->flags))
 			unreadcnt++;
 		if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 			unreadmarkedcnt++;
-		if (!MSG_IS_IGNORE_THREAD(msginfo->flags) && procmsg_msg_has_flagged_parent(msginfo, MSG_IGNORE_THREAD)) {
+		if (MSG_IS_IGNORE_THREAD(msginfo->flags) && (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)))
+			procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
+		if (procmsg_msg_has_flagged_parent(msginfo, MSG_IGNORE_THREAD)) {
 			procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
 			procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 		}
@@ -2115,6 +2117,18 @@ gint folder_item_remove_all_msg(FolderItem *item)
 	}
 
 	return result;
+}
+
+void folder_item_change_msg_flags(FolderItem *item, MsgInfo *msginfo, MsgPermFlags newflags)
+{
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(msginfo != NULL);
+	
+	if (item->folder->class->change_flags != NULL) {
+		item->folder->class->change_flags(item->folder, item, msginfo, newflags);
+	} else {
+		msginfo->flags.perm_flags = newflags;
+	}
 }
 
 gboolean folder_item_is_msg_changed(FolderItem *item, MsgInfo *msginfo)
