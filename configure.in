@@ -8,7 +8,7 @@ MINOR_VERSION=8
 MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws94
+EXTRA_VERSION=claws95
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -68,11 +68,6 @@ case "$target" in
 	CFLAGS="$CFLAGS -traditional-cpp -fno-common"
 	;;
 esac
-
-dnl add additional parameters
-AC_ARG_WITH(compiler-flags,
-    [  --with-compiler-flags=FLAGS  add parameters to the compiler command],
-    CFLAGS="$CFLAGS $withval")
 
 dnl for gettext
 ALL_LINGUAS="cs de el en_GB es fr hr it ja ko nl pl pt_BR ru sr sv"

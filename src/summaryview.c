@@ -2078,7 +2078,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 				summaryview->folder_item->prefs->important_score;
 	}
 
-	if (summaryview->folder_item->threaded) {
+	if (summaryview->threaded) {
 		GNode *root, *gnode;
 
 		root = procmsg_get_thread_tree(mlist);
@@ -3261,7 +3261,7 @@ gboolean summary_execute(SummaryView *summaryview)
 
 	gtk_clist_freeze(clist);
 
-	if (summaryview->folder_item->threaded)
+	if (summaryview->threaded)
 		summary_unthread_for_exec(summaryview);
 
 	summary_execute_move(summaryview);
@@ -3284,7 +3284,7 @@ gboolean summary_execute(SummaryView *summaryview)
 		node = next;
 	}
 
-	if (summaryview->folder_item->threaded)
+	if (summaryview->threaded)
 		summary_thread_build(summaryview);
 
 	summaryview->selected = clist->selection ?
@@ -3537,6 +3537,8 @@ void summary_thread_build(SummaryView *summaryview)
 	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
 
+	summaryview->threaded = TRUE;
+
 	summary_unlock(summaryview);
 }
 
@@ -3603,6 +3605,8 @@ void summary_unthread(SummaryView *summaryview)
 	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
+
+	summaryview->threaded = FALSE;
 
 	summary_unlock(summaryview);
 }
@@ -5160,12 +5164,19 @@ void summary_set_prefs_from_folderitem(SummaryView *summaryview, FolderItem *ite
 	/* Sorting */
 	summaryview->sort_key = item->sort_key;
 	summaryview->sort_type = item->sort_type;
+
+	/* Threading */
+	summaryview->threaded = item->threaded;
 }
 
 void summary_save_prefs_to_folderitem(SummaryView *summaryview, FolderItem *item)
 {
+	/* Sorting */
 	item->sort_key = summaryview->sort_key;
 	item->sort_type = summaryview->sort_type;
+
+	/* Threading */
+	item->threaded = summaryview->threaded;
 }
 
 /*
