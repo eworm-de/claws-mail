@@ -1,3 +1,11 @@
+2003-03-13 [paul]	0.8.11claws10
+
+	* tools/Makefile.am
+	  tools/README
+	  tools/multiwebsearch.conf	** NEW FILE **
+	  tools/multiwebsearch.pl	** NEW FILE **
+	  	add multiwebsearch Actions script
+
 2003-03-13 [colin]	0.8.11claws9
 
 	* src/compose.c

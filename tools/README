@@ -8,6 +8,7 @@ Action scripts:
   gpg-sign-syl                  Clear-sign current selection
   google_msgid.pl               Search groups.google.com for selected message-id
   google_search.pl		Search google.com for selected text
+  multiwebsearch.pl		Search any search engine for the selected text
   uudec                         Decode and display uuencoded images
 
 Addressbook conversion:
@@ -60,6 +61,10 @@ Action scripts
   COMMAND: |gpg-sign-syl|
   Clear-sign current selection using gpg.
 
+* multiwebsearch.pl
+  WORKS ON: selection
+  see further down for details
+
 * uudec
   WORKS ON: current message (or part of multipart message)
   COMMAND: uudec %f&
@@ -68,6 +73,44 @@ Action scripts
 * More action examples can be found at
   http://melvin.hadasht.free.fr/home/sylpheed/actions/
 
+** multiwebsearch.pl **
+
+  WHAT IT DOES
+	This is an Actions script that allows you to search
+	websites for the selected text. It uses the default
+	Sylpheed browser as configured through Sylpheed's
+	GUI and specified in ~/.sylpheed/sylpheedrc, and a
+	configuration file called multiwebsearch.conf.
+	
+  CONFIGURATION
+  	The configuration file takes the following format:
+	
+	ALIAS|URL PART|URL PART
+	
+	ALIAS is a user-defined name; the first URL PART is the
+	url before the search term; the second URL PART is
+	optional and contains the remaining part of the url which
+	comes after the search term. A sample configuration file
+	is included.
+	
+  HOW TO USE IT
+	Copy 'multiwebsearch.conf' to ~/.sylpheed/
+	
+	Configure an Action:
+	a) pre-configured website 
+	   Command: multiwebsearch.pl --where="google" --what="%s"
+	b) dynamic
+	   Command: multiwebsearch.pl --where="%u" --what="%s"
+	   
+	In type a) "google" refers to one of the configured aliases,
+	this Action will always search the website referred to by
+	the alias "google".
+	
+	In type b) you will be presented with a dialog box into
+	which you type one of your configured aliases
+
+  
+  Contact: Paul Mangan <claws@thewildbeast.co.uk>
 --------------------------------------------------------------------------------
 
 Address book conversion
