@@ -1,3 +1,12 @@
+2002-09-04
+
+	* src/folder.c:
+	  folder_tree_destroy()
+	  folder_write_list_recursive(): added sanity check.
+	* src/imap.c: imap_scan_tree(): if folder->node is NULL and
+	  can't get session, create empty folder node (based on the
+	  Alfons' suggestion).
+
 2002-09-03
 
 	* src/textview.c: textview_key_pressed(): pass GDK_Delete event to

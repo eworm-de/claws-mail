@@ -1,3 +1,12 @@
+2002-09-04
+
+	* src/folder.c:
+	  folder_tree_destroy()
+	  folder_write_list_recursive(): 整合性チェックを追加。
+	* src/imap.c: imap_scan_tree(): folder->node が NULL で session
+	  を取得できない場合、空のフォルダノードを作成するようにした
+	  (Alfons さんの提案に基づく)。
+
 2002-09-03
 
 	* src/textview.c: textview_key_pressed(): GDK_Delete イベントを

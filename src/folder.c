@@ -324,7 +324,8 @@ void folder_tree_destroy(Folder *folder)
 	prefs_filtering_clear();
 
 	g_node_traverse(folder->node, G_POST_ORDER, G_TRAVERSE_ALL, -1, folder_tree_destroy_func, NULL);
-	g_node_destroy(folder->node);
+	if (folder->node)
+		g_node_destroy(folder->node);
 
 	folder->inbox = NULL;
 	folder->outbox = NULL;
@@ -2027,7 +2028,7 @@ static gchar *folder_get_list_path(void)
 static void folder_write_list_recursive(GNode *node, gpointer data)
 {
 	FILE *fp = (FILE *)data;
-	FolderItem *item = FOLDER_ITEM(node->data);
+	FolderItem *item;
 	gint i, depth;
 	static gchar *folder_type_str[] = {"mh", "mbox", "maildir", "imap",
 					   "news", "unknown"};
@@ -2036,7 +2037,10 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 	static gchar *sort_key_str[] = {"none", "number", "size", "date",
 					"from", "subject", "score", "label",
 					"mark", "unread", "mime", "locked" };
+	g_return_if_fail(node != NULL);
+	g_return_if_fail(fp != NULL);
 
+	item = FOLDER_ITEM(node->data);
 	g_return_if_fail(item != NULL);
 
 	depth = g_node_depth(node);
