@@ -401,7 +401,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 	    && (ac_prefs->protocol == A_APOP || ac_prefs->protocol == A_POP3)
 	    && (time(NULL) - ac_prefs->last_pop_login_time) > (60 * ac_prefs->pop_before_smtp_timeout)) {
 		g_snprintf(buf, sizeof(buf), _("Doing POP before SMTP..."));
-		statusbar_puts_all(buf);
+		log_message(buf);
 		progress_dialog_set_label(dialog->dialog, buf);
 		gtk_clist_set_text(clist, 0, 2, _("POP before SMTP"));
 		GTK_EVENTS_FLUSH();
@@ -447,13 +447,11 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 		 "sending data");
 
 	progress_dialog_set_label(dialog->dialog, _("Quitting..."));
-	statusbar_puts_all(_("Quitting..."));
+	log_message(_("Quitting..."));
 	GTK_EVENTS_FLUSH();
 
 	SEND_EXIT_IF_NOTOK(smtp_eom(SMTP_SESSION(session)), "terminating data");
 	SEND_EXIT_IF_NOTOK(smtp_quit(SMTP_SESSION(session)), "sending QUIT");
-
-	statusbar_pop_all();
 
 	session_destroy(session);
 	send_progress_dialog_destroy(dialog);
@@ -485,7 +483,6 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 			   _("Sending message (%d / %d bytes)"), \
 			   bytes, size); \
 		progress_dialog_set_label(dialog->dialog, str); \
-		statusbar_puts_all(str); \
 		progress_dialog_set_percentage \
 			(dialog->dialog, (gfloat)bytes / (gfloat)size); \
 		GTK_EVENTS_FLUSH(); \

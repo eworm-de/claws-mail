@@ -2901,7 +2901,6 @@ gint compose_send(Compose *compose)
 		ac = compose->account;
 
 		ok = send_message(tmp, ac, compose->to_list);
-		statusbar_pop_all();
 	}
 
 	if (ok == 0 && compose->newsgroup_list) {

@@ -59,30 +59,18 @@ void close_log_file(void)
 	}
 }
 
-static guint log_verbosity_count = 0;
-
-void log_verbosity_set(gboolean verbose)
-{
-	if (verbose)
-		log_verbosity_count++;
-	else if (log_verbosity_count > 0)
-		log_verbosity_count--;
-}
-
-#define TIME_LEN	11
-
 void log_print(const gchar *format, ...)
 {
 	va_list args;
-	gchar buf[BUFFSIZE + TIME_LEN];
+	gchar buf[BUFFSIZE + LOG_TIME_LEN];
 	time_t t;
 	LogText logtext;
 
 	time(&t);
-	strftime(buf, TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
+	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
 
 	va_start(args, format);
-	g_vsnprintf(buf + TIME_LEN, BUFFSIZE, format, args);
+	g_vsnprintf(buf + LOG_TIME_LEN, BUFFSIZE, format, args);
 	va_end(args);
 
 	if (debug_get_mode()) fputs(buf, stdout);
@@ -93,63 +81,56 @@ void log_print(const gchar *format, ...)
 		fputs(buf, log_fp);
 		fflush(log_fp);
 	}
-
-	logtext.text = buf + TIME_LEN;
-	if (log_verbosity_count)
-		hooks_invoke(STATUSBAR_PUTS_ALL_HOOKLIST, &logtext);
 }
 
 void log_message(const gchar *format, ...)
 {
 	va_list args;
-	gchar buf[BUFFSIZE + TIME_LEN];
+	gchar buf[BUFFSIZE + LOG_TIME_LEN];
 	time_t t;
 	LogText logtext;
 
 	time(&t);
-	strftime(buf, TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
+	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
 
 	va_start(args, format);
-	g_vsnprintf(buf + TIME_LEN, BUFFSIZE, format, args);
+	g_vsnprintf(buf + LOG_TIME_LEN, BUFFSIZE, format, args);
 	va_end(args);
 
-	if (debug_get_mode()) g_message("%s", buf + TIME_LEN);
-	logtext.text = buf + TIME_LEN;
+	if (debug_get_mode()) g_message("%s", buf + LOG_TIME_LEN);
+	logtext.text = buf + LOG_TIME_LEN;
 	logtext.type = LOG_MSG;
 	hooks_invoke(LOG_APPEND_TEXT_HOOKLIST, &logtext);
 	if (log_fp) {
-		fwrite(buf, TIME_LEN, 1, log_fp);
+		fwrite(buf, LOG_TIME_LEN, 1, log_fp);
 		fputs("* message: ", log_fp);
-		fputs(buf + TIME_LEN, log_fp);
+		fputs(buf + LOG_TIME_LEN, log_fp);
 		fflush(log_fp);
 	}
-
-	logtext.text = buf + TIME_LEN;
-	hooks_invoke(STATUSBAR_PUTS_ALL_HOOKLIST, &logtext);
 }
 
 void log_warning(const gchar *format, ...)
 {
 	va_list args;
-	gchar buf[BUFFSIZE + TIME_LEN];
+	gchar buf[BUFFSIZE + LOG_TIME_LEN];
 	time_t t;
 	LogText logtext;
 
 	time(&t);
-	strftime(buf, TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
+	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
 
 	va_start(args, format);
-	g_vsnprintf(buf + TIME_LEN, BUFFSIZE, format, args);
+	g_vsnprintf(buf + LOG_TIME_LEN, BUFFSIZE, format, args);
 	va_end(args);
 
 	g_warning("%s", buf);
-	logtext.text = buf + TIME_LEN;
+	logtext.text = buf + LOG_TIME_LEN;
 	logtext.type = LOG_WARN;
 	hooks_invoke(LOG_APPEND_TEXT_HOOKLIST, &logtext);
 	if (log_fp) {
-		fwrite(buf, TIME_LEN, 1, log_fp);
+		fwrite(buf, LOG_TIME_LEN, 1, log_fp);
 		fputs("** warning: ", log_fp);
-		fputs(buf + TIME_LEN, log_fp);
+		fputs(buf + LOG_TIME_LEN, log_fp);
 		fflush(log_fp);
 	}
 }
@@ -157,25 +138,25 @@ void log_warning(const gchar *format, ...)
 void log_error(const gchar *format, ...)
 {
 	va_list args;
-	gchar buf[BUFFSIZE + TIME_LEN];
+	gchar buf[BUFFSIZE + LOG_TIME_LEN];
 	time_t t;
 	LogText logtext;
 
 	time(&t);
-	strftime(buf, TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
+	strftime(buf, LOG_TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
 
 	va_start(args, format);
-	g_vsnprintf(buf + TIME_LEN, BUFFSIZE, format, args);
+	g_vsnprintf(buf + LOG_TIME_LEN, BUFFSIZE, format, args);
 	va_end(args);
 
 	g_warning("%s", buf);
-	logtext.text = buf + TIME_LEN;
+	logtext.text = buf + LOG_TIME_LEN;
 	logtext.type = LOG_ERROR;
 	hooks_invoke(LOG_APPEND_TEXT_HOOKLIST, &logtext);
 	if (log_fp) {
-		fwrite(buf, TIME_LEN, 1, log_fp);
+		fwrite(buf, LOG_TIME_LEN, 1, log_fp);
 		fputs("*** error: ", log_fp);
-		fputs(buf + TIME_LEN, log_fp);
+		fputs(buf + LOG_TIME_LEN, log_fp);
 		fflush(log_fp);
 	}
 }

@@ -580,8 +580,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			}
 		}
 
-		statusbar_pop_all();
-
 		/* CLAWS: perform filtering actions on dropped message */
 		/* CLAWS: get default inbox (perhaps per account) */
 		if (pop3_state->ac_prefs->inbox) {
@@ -754,7 +752,6 @@ static IncState inc_pop3_session_do(IncSession *session)
 	progress_dialog_set_label(inc_dialog->dialog, buf);
 	g_free(buf);
 	GTK_EVENTS_FLUSH();
-	statusbar_pop_all();
 
 	if ((sockinfo = sock_connect(server, port)) == NULL) {
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
@@ -789,7 +786,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	pop3_state->sockinfo = sockinfo;
 	atm->help_sock = sockinfo;
 
-	log_verbosity_set(TRUE);
+	statusbar_verbosity_set(TRUE);
 	/* oha: this messes up inc_progress update:
 	   disabling this would avoid the label "Retrieve Header"
 	   being overwritten by "Retrieve Message"
@@ -809,7 +806,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	if (!atm->terminated)
 		pop3_automaton_terminate(sockinfo, atm);
 
-	log_verbosity_set(FALSE);
+	statusbar_verbosity_set(FALSE);
 	/* oha: see above */
 	recv_set_ui_func(NULL, NULL);
 

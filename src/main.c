@@ -787,7 +787,6 @@ static void send_queue(void)
 			if (procmsg_send_queue
 				(folder->queue, prefs_common.savemsg) < 0)
 				alertpanel_error(_("Some errors occurred while sending queued messages."));
-			statusbar_pop_all();
 			folder_item_scan(folder->queue);
 			if (prefs_common.savemsg && folder->outbox) {
 				folder_update_item(folder->outbox, TRUE);

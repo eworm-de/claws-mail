@@ -35,32 +35,17 @@
 #define BUFFSIZE 1024
 
 static GList *statusbar_list = NULL;
-gboolean statusbar_puts_all_hook (gpointer source, gpointer data);
+gint statusbar_puts_all_hook_id = -1;
 
 GtkWidget *statusbar_create(void)
 {
 	GtkWidget *statusbar;
 
 	statusbar = gtk_statusbar_new();
-	
-	if(statusbar_list == NULL)
-		hooks_register_hook(STATUSBAR_PUTS_ALL_HOOKLIST, statusbar_puts_all_hook, NULL);
 
 	statusbar_list = g_list_append(statusbar_list, statusbar);
 
 	return statusbar;
-}
-
-gboolean statusbar_puts_all_hook (gpointer source, gpointer data)
-{
-	LogText *logtext = (LogText *) source;
-
-	g_return_val_if_fail(logtext != NULL, TRUE);
-	g_return_val_if_fail(logtext->text != NULL, TRUE);
-
-	statusbar_puts_all(logtext->text);
-
-	return FALSE;
 }
 
 void statusbar_puts(GtkStatusbar *statusbar, const gchar *str)
@@ -139,5 +124,34 @@ void statusbar_pop_all(void)
 		cid = gtk_statusbar_get_context_id(GTK_STATUSBAR(cur->data),
 						   "Standard Output");
 		gtk_statusbar_pop(GTK_STATUSBAR(cur->data), cid);
+	}
+}
+
+gboolean statusbar_puts_all_hook (gpointer source, gpointer data)
+{
+	LogText *logtext = (LogText *) source;
+
+	g_return_val_if_fail(logtext != NULL, TRUE);
+	g_return_val_if_fail(logtext->text != NULL, TRUE);
+
+	statusbar_pop_all();
+	if (logtext->type == LOG_NORMAL) {
+		statusbar_puts_all(logtext->text + LOG_TIME_LEN);
+	} else if (logtext->type == LOG_MSG) {
+		statusbar_puts_all(logtext->text);
+	}
+
+	return FALSE;
+}
+
+void statusbar_verbosity_set(gboolean verbose)
+{
+	if (verbose && (statusbar_puts_all_hook_id == -1)) {
+		statusbar_puts_all_hook_id =
+			hooks_register_hook(LOG_APPEND_TEXT_HOOKLIST, statusbar_puts_all_hook, NULL);
+	} else if (!verbose && (statusbar_puts_all_hook_id != -1)) {
+		hooks_unregister_hook(LOG_APPEND_TEXT_HOOKLIST, statusbar_puts_all_hook_id);
+		statusbar_puts_all_hook_id = -1;
+		statusbar_pop_all();
 	}
 }

@@ -72,6 +72,18 @@ gint hooks_register_hook(gchar *hooklist_name,
 void hooks_unregister_hook(gchar *hooklist_name,
 			   guint hook_id)
 {
+	GHookList *hooklist;
+	GHook *hook;
+
+	g_return_if_fail(hooklist_name != NULL);
+
+	hooklist = hooks_get_hooklist(hooklist_name);
+	g_return_if_fail(hooklist != NULL);
+
+	hook = g_hook_get(hooklist, hook_id);
+	g_return_if_fail(hook != NULL);
+
+	g_hook_destroy_link(hooklist, hook);
 }
 
 struct MarshalData

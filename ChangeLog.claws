@@ -1,3 +1,20 @@
+2002-12-10 [christoph]	0.8.6claws96
+
+	* src/compose.c
+	* src/folder.c
+	* src/imap.c
+	* src/inc.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/news.c
+	* src/send.c
+	* src/statusbar.[ch]
+	* src/common/hooks.c
+	* src/common/log.[ch]
+		o handle verbose logging in statusbar directly in statusbar code
+		  and common code does not need any knowledge about a statusbar
+		o remove direct calls to statusbar_(puts|pop)_all functions
+
 2002-12-10 [jens]	0.8.6claws95
 
 	* src/*.c

@@ -1544,8 +1544,6 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 					100*cnt/g_slist_length(mlist));
 		msginfo = (MsgInfo *) cur->data;
 		folder_item_move_msg(new_item, msginfo);
-		if (cnt%500)
-			statusbar_pop_all();
 
 		procmsg_msginfo_free(msginfo);
 	}

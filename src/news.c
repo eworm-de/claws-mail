@@ -266,13 +266,11 @@ NNTPSession *news_session_get(Folder *folder)
 
 	if (!rfolder->session) {
 		rfolder->session = news_session_new_for_folder(folder);
-		statusbar_pop_all();
 		return NNTP_SESSION(rfolder->session);
 	}
 
 	if (time(NULL) - rfolder->session->last_access_time < SESSION_TIMEOUT) {
 		rfolder->session->last_access_time = time(NULL);
-		statusbar_pop_all();
 		return NNTP_SESSION(rfolder->session);
 	}
 
@@ -289,7 +287,6 @@ NNTPSession *news_session_get(Folder *folder)
 
 	if (rfolder->session)
 		rfolder->session->last_access_time = time(NULL);
-	statusbar_pop_all();
 	return NNTP_SESSION(rfolder->session);
 }
 
@@ -341,8 +338,6 @@ GSList *news_get_article_list(Folder *folder, FolderItem *item,
 
 	procmsg_set_flags(alist, item);
 
-	statusbar_pop_all();
-
 	return alist;
 }
 
@@ -373,7 +368,6 @@ gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	}
 
 	ok = news_select_group(session, item->path, NULL, NULL, NULL);
-	statusbar_pop_all();
 	if (ok != NN_SUCCESS) {
 		g_warning("can't select group %s\n", item->path);
 		g_free(filename);
@@ -383,7 +377,6 @@ gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	debug_print("getting article %d...\n", num);
 	ok = news_get_article(NNTP_SESSION(REMOTE_FOLDER(folder)->session),
 			      num, filename);
-	statusbar_pop_all();
 	if (ok < 0) {
 		g_warning("can't read article %d\n", num);
 		g_free(filename);
@@ -503,10 +496,8 @@ GSList *news_get_group_list(Folder *folder)
 
 		if (nntp_list(session->nntp_sock) != NN_SUCCESS) {
 			g_free(filename);
-			statusbar_pop_all();
 			return NULL;
 		}
-		statusbar_pop_all();
 		if (recv_write_to_file(SESSION(session)->sock, filename) < 0) {
 			log_warning("can't retrieve newsgroup list\n");
 			session_destroy(SESSION(session));
@@ -553,8 +544,6 @@ GSList *news_get_group_list(Folder *folder)
 	g_free(filename);
 
 	list = g_slist_sort(list, (GCompareFunc)news_group_info_compare);
-
-	statusbar_pop_all();
 
 	return list;
 }
@@ -605,8 +594,6 @@ gint news_post(Folder *folder, const gchar *file)
 	ok = news_post_stream(folder, fp);
 
 	fclose(fp);
-
-	statusbar_pop_all();
 
 	return ok;
 }

@@ -43,7 +43,6 @@
 #include "procmsg.h"
 #include "procheader.h"
 #include "folder.h"
-#include "statusbar.h"
 #include "prefs_account.h"
 #include "codeconv.h"
 #include "utils.h"
@@ -427,7 +426,6 @@ static IMAPSession *imap_session_get(Folder *folder)
 				rfolder->session = NULL;
 			}
 		}
-		statusbar_pop_all();
 		return IMAP_SESSION(rfolder->session);
 	}
 
@@ -441,7 +439,6 @@ static IMAPSession *imap_session_get(Folder *folder)
 	 * successfully sent. -- mbp */
 	if (time(NULL) - rfolder->session->last_access_time < SESSION_TIMEOUT) {
 		rfolder->session->last_access_time = time(NULL);
-		statusbar_pop_all();
 		return IMAP_SESSION(rfolder->session);
 	}
 
@@ -469,7 +466,6 @@ static IMAPSession *imap_session_get(Folder *folder)
 
 	if (rfolder->session)
 		rfolder->session->last_access_time = time(NULL);
-	statusbar_pop_all();
 	return IMAP_SESSION(rfolder->session);
 }
 
@@ -608,7 +604,6 @@ GSList *imap_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 		mlist = procmsg_read_cache(item, FALSE);
 		item->last_num = procmsg_get_last_num_in_msg_list(mlist);
 		procmsg_set_flags(mlist, item);
-		statusbar_pop_all();
 		return mlist;
 	}
 
@@ -625,7 +620,6 @@ GSList *imap_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 			last_uid = first_uid;
 	} else {
 		imap_delete_all_cached_messages(item);
-		statusbar_pop_all();
 		return NULL;
 	}
 
@@ -677,7 +671,6 @@ GSList *imap_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 	item->last_num = last_uid;
 
 catch:
-	statusbar_pop_all();
 	return mlist;
 }
 
@@ -711,7 +704,6 @@ gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
 
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
 			 NULL, NULL, NULL, NULL);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		g_warning("can't select mailbox %s\n", item->path);
 		g_free(filename);
@@ -720,8 +712,6 @@ gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
 
 	debug_print("getting message %d...\n", uid);
 	ok = imap_cmd_fetch(SESSION(session)->sock, (guint32)uid, filename);
-
-	statusbar_pop_all();
 
 	if (ok != IMAP_SUCCESS) {
 		g_warning("can't fetch message %d\n", uid);
@@ -750,7 +740,6 @@ gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 
 	ok = imap_status(session, IMAP_FOLDER(folder), dest->path,
 			 &messages, &recent, &uid_next, &uid_validity, &unseen);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		g_warning("can't append message %s\n", file);
 		return -1;
@@ -797,7 +786,6 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 
 	ok = imap_status(session, IMAP_FOLDER(folder), dest->path,
 			 &messages, &recent, &uid_next, &uid_validity, &unseen);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		g_warning("can't copy message\n");
 		return -1;
@@ -808,7 +796,6 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 	/* ensure source folder selected */
 	ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
 			 NULL, NULL, NULL, NULL);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS)
 	        return -1;
         
@@ -830,7 +817,6 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 	}
 
 	g_free(destdir);
-	statusbar_pop_all();
 
 	if (ok == IMAP_SUCCESS)
 		return uid_next;
@@ -868,7 +854,6 @@ static gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
     		/* ensure source folder selected */
     		ok = imap_select(session, IMAP_FOLDER(folder), 
         		         msginfo->folder->path, NULL, NULL, NULL, NULL);
-	        statusbar_pop_all();
         
 		if (remove_source)
 			debug_print("Moving message %s%c%d to %s ...\n",
@@ -893,7 +878,6 @@ static gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
 		ok = imap_cmd_expunge(SESSION(session)->sock);
 
 	g_free(destdir);
-	statusbar_pop_all();
 
 	if (ok == IMAP_SUCCESS)
 		return 0;
@@ -1016,21 +1000,18 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
 			 NULL, NULL, NULL, NULL);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS)
 		return ok;
 
 	ok = imap_set_message_flags
 		(IMAP_SESSION(REMOTE_FOLDER(folder)->session),
 		 (guint32)uid, (guint32)uid, IMAP_FLAG_DELETED, TRUE);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't set deleted flags: %d\n"), uid);
 		return ok;
 	}
 
 	ok = imap_cmd_expunge(SESSION(session)->sock);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't expunge\n"));
 		return ok;
@@ -1063,7 +1044,6 @@ gint imap_remove_msgs(Folder *folder, FolderItem *item, GSList *msglist)
 
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
 			 NULL, NULL, NULL, NULL);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS)
 		return ok;
 
@@ -1073,7 +1053,6 @@ gint imap_remove_msgs(Folder *folder, FolderItem *item, GSList *msglist)
 		ok = imap_set_message_flags
 			(IMAP_SESSION(REMOTE_FOLDER(folder)->session),
 			 uid, uid, IMAP_FLAG_DELETED, TRUE);
-		statusbar_pop_all();
 		if (ok != IMAP_SUCCESS) {
 			log_warning(_("can't set deleted flags: %d\n"), uid);
 			return ok;
@@ -1081,7 +1060,6 @@ gint imap_remove_msgs(Folder *folder, FolderItem *item, GSList *msglist)
 	}
 
 	ok = imap_cmd_expunge(SESSION(session)->sock);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't expunge\n"));
 		return ok;
@@ -1116,7 +1094,6 @@ gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
 			 &exists, &recent, &unseen, &uid_validity);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS)
 		return ok;
 	if (exists == 0)
@@ -1125,14 +1102,12 @@ gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 	imap_cmd_gen_send(SESSION(session)->sock,
 			  "STORE 1:%d +FLAGS (\\Deleted)", exists);
 	ok = imap_cmd_ok(SESSION(session)->sock, NULL);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't set deleted flags: 1:%d\n"), exists);
 		return ok;
 	}
 
 	ok = imap_cmd_expunge(SESSION(session)->sock);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't expunge\n"));
 		return ok;
@@ -1167,7 +1142,6 @@ gint imap_scan_folder(Folder *folder, FolderItem *item)
 
 	ok = imap_status(session, IMAP_FOLDER(folder), item->path,
 			 &messages, &recent, &uid_next, &uid_validity, &unseen);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) return -1;
 
 	item->new = unseen > 0 ? recent : 0;
@@ -1378,7 +1352,6 @@ static GSList *imap_parse_list(Folder *folder, IMAPSession *session, const gchar
 	}
 
 	g_string_free(str, TRUE);
-	statusbar_pop_all();
 
 	return item_list;
 }
@@ -1502,7 +1475,6 @@ FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 		argbuf = g_ptr_array_new();
 		ok = imap_cmd_list(SESSION(session)->sock, NULL, imap_path,
 				   argbuf);
-		statusbar_pop_all();
 		if (ok != IMAP_SUCCESS) {
 			log_warning(_("can't create mailbox: LIST failed\n"));
 			g_free(imap_path);
@@ -1523,7 +1495,6 @@ FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 
 		if (!exist) {
 			ok = imap_cmd_create(SESSION(session)->sock, imap_path);
-			statusbar_pop_all();
 			if (ok != IMAP_SUCCESS) {
 				log_warning(_("can't create mailbox\n"));
 				g_free(imap_path);
@@ -1576,7 +1547,6 @@ gint imap_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 	session->mbox = NULL;
 	ok = imap_cmd_examine(SESSION(session)->sock, "INBOX",
 			      &exists, &recent, &unseen, &uid_validity);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		g_free(real_oldpath);
 		return -1;
@@ -1594,7 +1564,6 @@ gint imap_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 	imap_path_separator_subst(real_newpath, separator);
 
 	ok = imap_cmd_rename(SESSION(session)->sock, real_oldpath, real_newpath);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't rename mailbox: %s to %s\n"),
 			    real_oldpath, real_newpath);
@@ -1653,14 +1622,12 @@ gint imap_remove_folder(Folder *folder, FolderItem *item)
 
 	ok = imap_cmd_examine(SESSION(session)->sock, "INBOX",
 			      &exists, &recent, &unseen, &uid_validity);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		g_free(path);
 		return -1;
 	}
 
 	ok = imap_cmd_delete(SESSION(session)->sock, path);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't delete mailbox\n"));
 		g_free(path);
