@@ -42,7 +42,8 @@ void rfc2015_decrypt_message		(MsgInfo	*msginfo,
 GSList *rfc2015_create_signers_list	(const gchar	*keyid);
 gint rfc2015_encrypt			(const gchar	*file,
 					 GSList		*recp_list,
-					 gboolean	 ascii_armored);
+					 gboolean	 ascii_armored,
+					 const gchar 	*out_codeset);
 gint rfc2015_sign			(const gchar	*file,
 					 GSList		*key_list);
 gint rfc2015_clearsign			(const gchar	*file,

@@ -233,7 +233,8 @@ leave:
  * encryption keys for all of them.  The file content is then replaced
  * by the encrypted one.  */
 int
-rfc2015_encrypt (const char *file, GSList *recp_list, gboolean ascii_armored)
+rfc2015_encrypt (const char *file, GSList *recp_list, gboolean ascii_armored,
+		 const gchar *out_codeset)
 {
     FILE *fp = NULL;
     char buf[BUFFSIZE];
@@ -285,6 +286,7 @@ rfc2015_encrypt (const char *file, GSList *recp_list, gboolean ascii_armored)
             saved_last = 1;
             continue;
         }
+
         if (saved_last) {
             if (*buf == ' ' || *buf == '\t') {
                 char *last = clines[clineidx - 1];
@@ -300,7 +302,8 @@ rfc2015_encrypt (const char *file, GSList *recp_list, gboolean ascii_armored)
 
         if (buf[0] == '\r' || buf[0] == '\n')
             break;
-        err = gpgme_data_write (header, buf, strlen (buf));
+	
+       err = gpgme_data_write (header, buf, strlen (buf));
     }
     if (ferror (fp)) {
         FILE_OP_ERROR (file, "fgets");
@@ -310,10 +313,12 @@ rfc2015_encrypt (const char *file, GSList *recp_list, gboolean ascii_armored)
     /* write them to the temp data and add the rest of the message */
     for (i = 0; !err && i < clineidx; i++) {
         debug_print ("%% %s:%d: cline=`%s'", __FILE__ ,__LINE__, clines[i]);
-        err = gpgme_data_write (plain, clines[i], strlen (clines[i]));
+	if (!ascii_armored)
+	        err = gpgme_data_write (plain, clines[i], strlen (clines[i]));
     }
-    if (!err)
+    if (!err && !ascii_armored)
         err = gpgme_data_write (plain, "\r\n", 2);
+
     while (!err && fgets(buf, sizeof(buf), fp)) {
         err = gpgme_data_write (plain, buf, strlen (buf));
     }
@@ -376,9 +381,10 @@ rfc2015_encrypt (const char *file, GSList *recp_list, gboolean ascii_armored)
 
     if (ascii_armored) {
         fprintf(fp, 
-            "Content-Type: text/plain; charset=US-ASCII\r\n"
-            "Content-Transfer-Encoding: 7bit\r\n"  
-            "\r\n");
+            "Content-Type: text/plain; charset=%s\r\n"
+            "Content-Disposition: inline\r\n"  
+            "Content-Transfer-Encoding: 8bit\r\n"  
+            "\r\n", out_codeset ? out_codeset : CS_US_ASCII);
     } else {
         fprintf (fp,
 	        "Content-Type: multipart/encrypted;"
