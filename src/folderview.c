@@ -61,6 +61,7 @@
 #include "pixmaps/outbox.xpm"
 #include "pixmaps/dir-close.xpm"
 #include "pixmaps/dir-open.xpm"
+#include "pixmaps/dir-open-hrm.xpm"
 #include "pixmaps/trash.xpm"
 
 typedef enum
@@ -107,6 +108,8 @@ static GdkPixmap *folderxpm;
 static GdkBitmap *folderxpmmask;
 static GdkPixmap *folderopenxpm;
 static GdkBitmap *folderopenxpmmask;
+static GdkPixmap *folderopenhrmxpm;
+static GdkBitmap *folderopenhrmxpmmask;
 static GdkPixmap *trashxpm;
 static GdkBitmap *trashxpmmask;
 
@@ -250,7 +253,7 @@ static GtkItemFactoryEntry folderview_mail_popup_entries[] =
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/Remove _mailbox"),	NULL, folderview_remove_mailbox_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Search messages..."),	NULL, folderview_search_cb, 0, NULL},
+	{N_("/_Search folder..."),	NULL, folderview_search_cb, 0, NULL},
 	{N_("/_Property..."),		NULL, folderview_property_cb, 0, NULL},
 	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
 	{N_("/S_coring..."),		NULL, folderview_scoring_cb, 0, NULL}
@@ -267,7 +270,7 @@ static GtkItemFactoryEntry folderview_imap_popup_entries[] =
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/Remove _IMAP4 account"),	NULL, folderview_rm_imap_server_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Search messages..."),	NULL, folderview_search_cb, 0, NULL},
+	{N_("/_Search folder..."),	NULL, folderview_search_cb, 0, NULL},
 	{N_("/_Property..."),		NULL, NULL, 0, NULL},
 	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
 	{N_("/S_coring..."),		NULL, folderview_scoring_cb, 0, NULL}
@@ -281,9 +284,9 @@ static GtkItemFactoryEntry folderview_news_popup_entries[] =
 	{N_("/---"),			 NULL, NULL, 0, "<Separator>"},
 	{N_("/Remove _news account"),	 NULL, folderview_rm_news_server_cb, 0, NULL},
 	{N_("/---"),			 NULL, NULL, 0, "<Separator>"},
-	{N_("/_Search messages..."),	NULL, folderview_search_cb, 0, NULL},
+	{N_("/_Search folder..."),	 NULL, folderview_search_cb, 0, NULL},
 	{N_("/_Property..."),		 NULL, NULL, 0, NULL},
-	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
+	{N_("/_Processing..."),		 NULL, folderview_processing_cb, 0, NULL},
 	{N_("/S_coring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
 
@@ -447,6 +450,8 @@ void folderview_init(FolderView *folderview)
 	PIXMAP_CREATE(ctree, outboxxpm, outboxxpmmask, outbox_xpm);
 	PIXMAP_CREATE(ctree, folderxpm, folderxpmmask, dir_close_xpm);
 	PIXMAP_CREATE(ctree, folderopenxpm, folderopenxpmmask, dir_open_xpm);
+	PIXMAP_CREATE(ctree, folderopenhrmxpm, folderopenhrmxpmmask,
+		      dir_open_hrm_xpm);
 	PIXMAP_CREATE(ctree, trashxpm, trashxpmmask, trash_xpm);
 
 	if (!normalfont)
@@ -902,8 +907,13 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	default:
 		xpm = folderxpm;
 		mask = folderxpmmask;
-		openxpm = folderopenxpm;
-		openmask = folderopenxpmmask;
+		if (item->hide_read_msgs) {
+			openxpm = folderopenhrmxpm;
+			openmask = folderopenhrmxpmmask;
+		} else {
+			openxpm = folderopenxpm;
+			openmask = folderopenxpmmask;
+		}
 		if (!item->parent) {
 			switch (item->folder->type) {
 			case F_MH:

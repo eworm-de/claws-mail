@@ -246,4 +246,6 @@ void summary_set_column_order	  (SummaryView		*summaryview);
 
 void processing_apply();
 
+void summary_toggle_show_read_messages (SummaryView *summaryview);
+
 #endif /* __SUMMARY_H__ */

@@ -1110,7 +1110,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	const gchar *path = NULL;
 	PrefsAccount *account = NULL;
 	gboolean no_sub = FALSE, no_select = FALSE, collapsed = FALSE, 
-		 threaded = TRUE, ret_rcpt = FALSE;
+		 threaded = TRUE, ret_rcpt = FALSE, hidereadmsgs = FALSE;
 	gint mtime = 0, new = 0, unread = 0, total = 0;
 
 	g_return_val_if_fail(node->data != NULL, FALSE);
@@ -1164,6 +1164,8 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 			collapsed = *attr->value == '1' ? TRUE : FALSE;
 		else if (!strcmp(attr->name, "threaded"))
 			threaded =  *attr->value == '1' ? TRUE : FALSE;
+		else if (!strcmp(attr->name, "hidereadmsgs"))
+			hidereadmsgs =  *attr->value == '1' ? TRUE : FALSE;
 		else if (!strcmp(attr->name, "reqretrcpt"))
 			ret_rcpt =  *attr->value == '1' ? TRUE : FALSE;
 	}
@@ -1179,6 +1181,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	item->no_select = no_select;
 	item->collapsed = collapsed;
 	item->threaded  = threaded;
+	item->hide_read_msgs  = hidereadmsgs;
 	item->ret_rcpt  = ret_rcpt;
 	item->parent = FOLDER_ITEM(node->parent->data);
 	item->folder = folder;
@@ -1345,6 +1348,10 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 			fputs(" threaded=\"1\"", fp);
 		else
 			fputs(" threaded=\"0\"", fp);
+		if (item->hide_read_msgs)
+			fputs(" hidereadmsgs=\"1\"", fp);
+		else
+			fputs(" hidereadmsgs=\"0\"", fp);
 		if (item->ret_rcpt)
 			fputs(" reqretrcpt=\"1\"", fp);
 		fprintf(fp,

@@ -1,3 +1,27 @@
+2001-12-11 [paul]	0.6.5claws75
+
+	* src/folder.[ch]
+	* src/folderview.c
+	* src/mainwindow.c
+	* src/summaryview.[ch]
+	* src/pixmaps/open-dir-hrm.xpm	** NEW FILE **
+		enable ability to hide read messages on per folder basis via 
+		'/Summary/Hide read messages'; when selected, a folder will 
+		have a red open folder icon, instead of a blue icon, if the 
+		folder contains hidden messges
+		submitted by Thomas Link <t.link.tmp200101.gmx.net> 
+
+	* src/mainwindow.c
+        	remove '/Message/Forward as attachment' from 
+                main_window_set_menu_sensitive() to prevent debug warning
+
+	* src/folderview.c
+	* src/mainwindow.c
+		Clean up some of the English
+
+	* tools/newscache_clean.pl
+		allow for new 'hidereadmsgs' entry in folderlist.xml
+
 2001-12-11 [paul]	0.6.5claws74
 
 	* sync with sylpheed 0.6.5cvs25

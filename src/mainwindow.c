@@ -305,6 +305,10 @@ static void set_charset_cb		(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
 
+static void hide_read_messages   (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
+
 static void thread_cb		 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -433,7 +437,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Edit/Select _all"),		"<control>A", allsel_cb, 0, NULL},
 	{N_("/_Edit/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Edit/_Find in current message"),	"<control>F", search_cb, 0, NULL},
-	{N_("/_Edit/_Search folder"),		"<control>S", search_cb, 1, NULL},
+	{N_("/_Edit/_Search folder..."),	"<control>S", search_cb, 1, NULL},
 
 	{N_("/_View"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/_Folder tree"),		NULL, toggle_folder_cb, 0, "<ToggleItem>"},
@@ -565,6 +569,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/Open in new _window"),	"<shift><control>N", open_msg_cb, 0, NULL},
 
 	{N_("/_Summary"),			NULL, NULL, 0, "<Branch>"},
+	{N_("/_Summary/_Hide read messages"), 	NULL, hide_read_messages, 0, "<ToggleItem>"},
 	{N_("/_Summary/_Delete duplicated messages"),
 						NULL, delete_duplicated_cb,   0, NULL},
 	{N_("/_Summary/_Filter messages"),	NULL, filter_cb, 0, NULL},
@@ -648,23 +653,23 @@ static GtkItemFactoryEntry compose_popup_entries[] =
 };
 static GtkItemFactoryEntry reply_popup_entries[] =
 {
-	{N_("/Reply to message with _quoting it"), NULL, reply_cb, COMPOSE_REPLY_WITH_QUOTE, NULL},
-	{N_("/_Reply to message without quoting it"), NULL, reply_cb, COMPOSE_REPLY_WITHOUT_QUOTE, NULL}
+	{N_("/Reply with _quote"), NULL, reply_cb, COMPOSE_REPLY_WITH_QUOTE, NULL},
+	{N_("/_Reply"), NULL, reply_cb, COMPOSE_REPLY_WITHOUT_QUOTE, NULL}
 };
 static GtkItemFactoryEntry replyall_popup_entries[] =
 {
-	{N_("/Reply to all with _quoting the message"), NULL, reply_cb, COMPOSE_REPLY_TO_ALL_WITH_QUOTE, NULL},
-	{N_("/_Reply to all without quoting the message"), NULL, reply_cb, COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE, NULL}
+	{N_("/Reply to all with _quote"), NULL, reply_cb, COMPOSE_REPLY_TO_ALL_WITH_QUOTE, NULL},
+	{N_("/_Reply to all"), NULL, reply_cb, COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE, NULL}
 };
 static GtkItemFactoryEntry replysender_popup_entries[] =
 {
-	{N_("/Reply to sender with _quoting the message"), NULL, reply_cb, COMPOSE_REPLY_TO_SENDER_WITH_QUOTE, NULL},
-	{N_("/_Reply to sender without quoting the message"), NULL, reply_cb, COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE, NULL}
+	{N_("/Reply to sender with _quote"), NULL, reply_cb, COMPOSE_REPLY_TO_SENDER_WITH_QUOTE, NULL},
+	{N_("/_Reply to sender"), NULL, reply_cb, COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE, NULL}
 };
 static GtkItemFactoryEntry fwd_popup_entries[] =
 {
 	{N_("/_Forward message (inline style)"), NULL, reply_cb, COMPOSE_FORWARD_INLINE, NULL},
-	{N_("/Forward message as _attachement"), NULL, reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL}
+	{N_("/Forward message as _attachment"), NULL, reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL}
 };
 
 
@@ -1446,8 +1451,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Reply to all"          , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{"/Message/Follow-up and reply to", M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST|M_NEWS},
 		{"/Message/Forward"               , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Message/Forward as attachment" , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-        {"/Message/Bounce"		  , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+        	{"/Message/Bounce"		  , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{"/Message/Open in new window"    , M_SINGLE_TARGET_EXIST},
 		{"/Message/Re-edit", M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 		{"/Message/Move...", M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
@@ -2668,6 +2672,15 @@ static void set_charset_cb(MainWindow *mainwin, guint action,
 	summary_redisplay_msg(mainwin->summaryview);
 
 	debug_print(_("forced charset: %s\n"), str ? str : "Auto-Detect");
+}
+
+static void hide_read_messages (MainWindow *mainwin, guint action,
+				GtkWidget *widget)
+{
+	if (!mainwin->summaryview->folder_item
+	    || gtk_object_get_data(GTK_OBJECT(widget), "dont_toggle"))
+		return;
+	summary_toggle_show_read_messages(mainwin->summaryview);
 }
 
 static void thread_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
