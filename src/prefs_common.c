@@ -3945,7 +3945,7 @@ static void prefs_common_send_dialog_set_data_from_optmenu(PrefParam *pparam)
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	*((SendDialogMode *)pparam->data) = GPOINTER_TO_INT
-		(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 }
 
 static void prefs_common_send_dialog_set_optmenu(PrefParam *pparam)
@@ -4040,7 +4040,7 @@ static void prefs_nextunreadmsgdialog_set_data_from_optmenu(PrefParam *pparam)
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	*((NextUnreadMsgDialogShow *)pparam->data) = GPOINTER_TO_INT
-		(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 }
 
 static void prefs_nextunreadmsgdialog_set_optmenu(PrefParam *pparam)

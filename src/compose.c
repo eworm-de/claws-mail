@@ -6288,7 +6288,7 @@ static void account_activated(GtkMenuItem *menuitem, gpointer data)
 	PrefsAccount *ac;
 
 	ac = account_find_from_id(
-		GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(menuitem))));
+		GPOINTER_TO_INT(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID)));
 	g_return_if_fail(ac != NULL);
 
 	if (ac != compose->account)

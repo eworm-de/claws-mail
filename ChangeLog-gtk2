@@ -1,5 +1,11 @@
 2003-12-04 Colin Leroy <colin@colino.net>
 	* src/compose.c
+	  src/prefs_account.c
+	  src/prefs_common.c
+	  	Fix some dropdown menus
+
+2003-12-04 Colin Leroy <colin@colino.net>
+	* src/compose.c
 		Fix event handlers on header fields
 	* src/common/socket.c
 	  src/common/session.c
