@@ -123,7 +123,8 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHACTION_EXECUTE, "execute"},
 	{MATCHACTION_COLOR, "color"},
 	{MATCHACTION_REDIRECT, "redirect"},
-	{MATCHACTION_DELETE_ON_SERVER, "delete_on_server"}
+	{MATCHACTION_DELETE_ON_SERVER, "delete_on_server"},
+	{MATCHACTION_CHANGE_SCORE, "change_score"}
 };
 
 /*!
@@ -161,7 +162,7 @@ static void create_matchparser_hashtab(void)
 	for (i = 0; i < sizeof matchparser_tab / sizeof matchparser_tab[0]; i++)
 		g_hash_table_insert(matchparser_hashtab,
 				    matchparser_tab[i].str,
-				    &matchparser_tab[i]);
+				    (gpointer) &matchparser_tab[i]);
 }
 
 /*!
@@ -370,8 +371,8 @@ MatcherProp *matcherprop_unquote_new(gint criteria, const gchar *header,
         
         prop = matcherprop_new(criteria, header, matchtype, expr, value);
 
-        g_free(header);
-        g_free(expr);
+        g_free((gpointer) header);
+        g_free((gpointer) expr);
 
 	return prop;
 }
@@ -388,7 +389,7 @@ MatcherProp *matcherprop_unquote_new(gint criteria, const gchar *header,
  *\return	gboolean TRUE if str matches the condition in the 
  *		matcher structure
  */
-static gboolean matcherprop_string_match(const MatcherProp *prop, const gchar *str)
+static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str)
 {
 	gchar *str1;
 	gchar *str2;
@@ -446,7 +447,7 @@ static gboolean matcherprop_string_match(const MatcherProp *prop, const gchar *s
  *\return	gboolean TRUE if command was executed succesfully
  */
 static gboolean matcherprop_match_execute(const MatcherProp *prop, 
-					  const MsgInfo *info)
+					  MsgInfo *info)
 {
 	gchar *file;
 	gchar *cmd;
@@ -477,8 +478,8 @@ static gboolean matcherprop_match_execute(const MatcherProp *prop,
  *
  *\return	gboolean TRUE if a match
  */
-gboolean matcherprop_match(const MatcherProp *prop, 
-			   const MsgInfo *info)
+gboolean matcherprop_match(MatcherProp *prop, 
+			   MsgInfo *info)
 {
 	time_t t;
 
@@ -643,8 +644,8 @@ static void matcherlist_skip_headers(FILE *fp)
  *
  *\return	boolean TRUE if matching header
  */
-static gboolean matcherprop_match_one_header(const MatcherProp *matcher,
-					     const gchar *buf)
+static gboolean matcherprop_match_one_header(MatcherProp *matcher,
+					     gchar *buf)
 {
 	gboolean result;
 	Header *header;
@@ -730,7 +731,7 @@ static gboolean matcherprop_criteria_message(MatcherProp *matcher)
  *\return	gboolean TRUE if matching should stop
  */
 static gboolean matcherlist_match_one_header(MatcherList *matchers,
-					     const gchar *buf)
+					     gchar *buf)
 {
 	GSList *l;
 
@@ -1062,13 +1063,13 @@ gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
  *
  *\return	gchar * Newly allocated string
  */
-gchar *matcherprop_to_string(const MatcherProp *matcher)
+gchar *matcherprop_to_string(MatcherProp *matcher)
 {
 	gchar *matcher_str = NULL;
 	const gchar *criteria_str;
 	const gchar *matchtype_str;
 	int i;
-        char *expr;
+        const char *expr;
         char *header;
 
 	criteria_str = NULL;
@@ -1113,7 +1114,7 @@ gchar *matcherprop_to_string(const MatcherProp *matcher)
 	case MATCHCRITERIA_NOT_EXECUTE:
                 expr = matcher_escape_str(matcher->expr);
 		matcher_str = g_strdup_printf("%s \"%s\"", criteria_str, expr);
-                g_free(expr);
+                g_free((gpointer) expr);
                 return matcher_str;
 	}
 
@@ -1132,7 +1133,6 @@ gchar *matcherprop_to_string(const MatcherProp *matcher)
 	case MATCHTYPE_REGEXP:
 	case MATCHTYPE_REGEXPCASE:
                 expr = matcher_escape_str(matcher->expr);
-                header = matcher_escape_str(matcher->header);
 		if (matcher->header)
 			matcher_str = g_strdup_printf
 					("%s \"%s\" %s \"%s\"",
@@ -1142,8 +1142,7 @@ gchar *matcherprop_to_string(const MatcherProp *matcher)
 			matcher_str = g_strdup_printf
 					("%s %s \"%s\"", criteria_str,
 					 matchtype_str, expr);
-                g_free(header);
-                g_free(expr);
+                g_free((gpointer) expr);
 		break;
 	}
 

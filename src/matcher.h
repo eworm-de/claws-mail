@@ -118,6 +118,7 @@ enum {
 	MA_(COLOR),
 	MA_(REDIRECT),
 	MA_(DELETE_ON_SERVER),
+	MA_(CHANGE_SCORE),
 	/* boolean operations */
 	MB_(OR),
 	MB_(AND)
@@ -142,8 +143,8 @@ MatcherProp *matcherprop_parse		(gchar	**str);
 
 MatcherProp *matcherprop_copy		(const MatcherProp *src);
 
-gboolean matcherprop_match		(const MatcherProp	*prop, 
-					 const MsgInfo		*info);
+gboolean matcherprop_match		(MatcherProp	*prop, 
+					 MsgInfo	*info);
 
 MatcherList * matcherlist_new		(GSList		*matchers, 
 					 gboolean	bool_and);
@@ -161,7 +162,7 @@ gchar *matcher_parse_regexp		(gchar		**str);
 gchar *matcher_parse_str		(gchar		**str);
 const gchar *matcher_escape_str		(const gchar	*str);
 gchar *matcher_unescape_str		(gchar		*str);
-gchar *matcherprop_to_string		(const MatcherProp	*matcher);
+gchar *matcherprop_to_string		(MatcherProp	*matcher);
 gchar *matcherlist_to_string		(const MatcherList	*matchers);
 gchar *matching_build_command		(const gchar	*cmd, 
 					 MsgInfo	*info);
