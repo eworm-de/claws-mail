@@ -43,11 +43,13 @@ static gint smtp_ok(SockInfo *sock, gchar *buf, gint len);
 Session *smtp_session_new(const gchar *server, gushort port,
 			  const gchar *domain,
 			  const gchar *user, const gchar *pass,
-			  SSLType ssl_type)
+			  SSLType ssl_type,
+			  SMTPAuthType enable_auth_type)
 #else
 Session *smtp_session_new(const gchar *server, gushort port,
 			  const gchar *domain,
-			  const gchar *user, const gchar *pass)
+			  const gchar *user, const gchar *pass,
+			  SMTPAuthType enable_auth_type)
 #endif
 {
 	SMTPSession *session;
@@ -89,7 +91,7 @@ Session *smtp_session_new(const gchar *server, gushort port,
 		domain = get_domain_name();
 
 	if (use_esmtp)
-		val = smtp_ehlo(sock, domain, &avail_auth_type);
+		val = smtp_ehlo(sock, domain, &avail_auth_type, enable_auth_type);
 	else
 		val = smtp_helo(sock, domain);
 	if (val != SM_OK) {
@@ -110,7 +112,7 @@ Session *smtp_session_new(const gchar *server, gushort port,
 			sock_close(sock);
 			return NULL;
 		}
-		val = smtp_ehlo(sock, domain, &avail_auth_type);
+		val = smtp_ehlo(sock, domain, &avail_auth_type, enable_auth_type);
 		if (val != SM_OK) {
 			log_warning(_("Error occurred while sending EHLO\n"));
 			sock_close(sock);
@@ -261,7 +263,8 @@ gint smtp_auth(SMTPSession *session)
 }
 
 gint smtp_ehlo(SockInfo *sock, const gchar *hostname,
-	       SMTPAuthType *avail_auth_type)
+	       SMTPAuthType *avail_auth_type,
+	       SMTPAuthType  enable_auth_type)
 {
 	gchar buf[MSGBUFSIZE];
 
@@ -282,13 +285,15 @@ gint smtp_ehlo(SockInfo *sock, const gchar *hostname,
 		if (strncmp(buf, "250-", 4) == 0) {
 			gchar *p = buf;
 			p += 4;
-			if (g_strncasecmp(p, "AUTH ", 5) == 0) {
+			
+			if (g_strncasecmp(p, "AUTH ", 5) == 0 ||
+			   (g_strncasecmp(p, "AUTH=", 5) == 0)) {	/* CLAWS: qmail */
 				p += 5;
-				if (strcasestr(p, "LOGIN"))
+				if (strcasestr(p, "LOGIN") && (enable_auth_type & SMTPAUTH_LOGIN))
 					*avail_auth_type |= SMTPAUTH_LOGIN;
-				if (strcasestr(p, "CRAM-MD5"))
+				if (strcasestr(p, "CRAM-MD5") && (enable_auth_type & SMTPAUTH_CRAM_MD5))
 					*avail_auth_type |= SMTPAUTH_CRAM_MD5;
-				if (strcasestr(p, "DIGEST-MD5"))
+				if (strcasestr(p, "DIGEST-MD5") && (enable_auth_type & SMTPAUTH_DIGEST_MD5))
 					*avail_auth_type |= SMTPAUTH_DIGEST_MD5;
 			}
 		} else if ((buf[0] == '1' || buf[0] == '2' || buf[0] == '3') &&
