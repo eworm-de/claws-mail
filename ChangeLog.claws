@@ -1,4 +1,4 @@
-2003-02-17 [martin]	0.9.9claws17
+2004-02-17 [martin]	0.9.9claws17
 
 	* src/prefs_themes.c
 		fix crash when installing wrong theme and output an
