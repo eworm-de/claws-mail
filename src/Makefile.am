@@ -210,6 +210,9 @@ INCLUDES = \
 	$(OPENSSL_CFLAGS) \
 	-I$(includedir)
 
+sylpheed_LDFLAGS = \
+	-export-dynamic
+
 sylpheed_LDADD = \
 	$(ASPELL_LIBS) \
 	gtk/libsylpheedgtk.la \
