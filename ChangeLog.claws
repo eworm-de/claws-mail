@@ -1,3 +1,8 @@
+2002-02-21 [paul]	0.7.2claws4
+
+	* src/procmsg.c
+		forgotten during sync
+
 2002-02-21 [paul]	0.7.2claws3
 
 	* sync with sylpheed 0.7.2cvs11
