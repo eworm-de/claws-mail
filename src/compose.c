@@ -1014,9 +1014,11 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	 * when positioning cursor */
 	gtk_stext_thaw(text);
 
-	gtk_editable_set_position
-		(GTK_EDITABLE(text), quote_fmt_get_cursor_pos());
-	gtk_stext_set_point(text, quote_fmt_get_cursor_pos());
+	if (quote) {
+		gtk_editable_set_position
+			(GTK_EDITABLE(text), quote_fmt_get_cursor_pos());
+		gtk_stext_set_point(text, quote_fmt_get_cursor_pos());
+	}
 
 	if (quote && prefs_common.linewrap_quote) {
 		gtk_stext_freeze(text);

@@ -1,3 +1,9 @@
+2004-05-23 [paul]	0.9.10claws69
+
+	* src/compose.c
+		fix %X cursor point segfault
+		patch by Christoph
+
 2004-05-23 [christoph]	0.9.10claws68
 
 	* src/folder.c
