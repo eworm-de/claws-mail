@@ -118,9 +118,11 @@ static MatchParser matchparser_tab[] = {
 	{MATCHACTION_DELETE_ON_SERVER, "delete_on_server"}
 };
 
+static GHashTable *matchparser_hashtab;
+
 /* get_matchparser_tab_str() - used by filtering.c to translate 
  * actions to debug strings */
-gchar * get_matchparser_tab_str(gint id)
+gchar *get_matchparser_tab_str(gint id)
 {
 	gint i;
 
@@ -131,18 +133,27 @@ gchar * get_matchparser_tab_str(gint id)
 	return NULL;
 }
 
+static void create_matchparser_hashtab(void)
+{
+	int i;
+	
+	if (matchparser_hashtab) return;
+	matchparser_hashtab = g_hash_table_new(g_str_hash, g_str_equal);
+	for (i = 0; i < sizeof matchparser_tab / sizeof matchparser_tab[0]; i++)
+		g_hash_table_insert(matchparser_hashtab,
+				    matchparser_tab[i].str,
+				    &matchparser_tab[i]);
+}
+
 gint get_matchparser_tab_id(const gchar *str)
 {
 	gint i;
+	MatchParser *res;
 
-	/*
-	 * begs for a hash table
-	 */
-	for (i = 0; i < sizeof matchparser_tab / sizeof matchparser_tab[0]; i++) {
-		if (g_strcasecmp(matchparser_tab[i].str, str) == 0)
-			return matchparser_tab[i].id;
-	}
-	return -1;
+	if (NULL != (res = g_hash_table_lookup(matchparser_hashtab, str))) {
+		return res->id;
+	} else
+		return -1;
 }
 
 /* matcher_escape_str() - escapes a string returns newly allocated escaped string */
@@ -1290,6 +1301,7 @@ void prefs_matcher_read_config(void)
 	gchar *rcpath;
 	FILE *f;
 
+	create_matchparser_hashtab();
 	prefs_scoring_clear();
 	prefs_filtering_clear();
 

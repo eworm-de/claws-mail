@@ -1,3 +1,10 @@
+2002-12-27 [alfons]	0.8.8claws17
+
+	re-organize matcher part 5; more to come
+
+	* src/matcher.c
+		hash keywords in matchparser_tab 
+
 2002-12-27 [alfons]	0.8.8claws16
 
 	re-organize matcher part 4; more to come
