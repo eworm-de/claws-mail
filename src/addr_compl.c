@@ -158,6 +158,8 @@ static gint add_address(const gchar *name, const gchar *address)
 
 	if (!name || !address) return -1;
 
+	debug_print( "completion: add_address: %s - %s\n", name, address );
+
 	ae = g_new0(address_entry, 1);
 	ce1 = g_new0(completion_entry, 1),
 	ce2 = g_new0(completion_entry, 1);
@@ -182,64 +184,10 @@ static gint add_address(const gchar *name, const gchar *address)
 	return 0;
 }
 
-static gboolean get_all_addresses(GNode *node, gpointer ae)
-{
-	XMLNode *xmlnode = (XMLNode *)node->data;
-	address_entry *addr = (address_entry *)ae;
-
-	/* this simply checks if tag is "item". in that case, it
-	 * verifies it has already seen an item. if it did, an
-	 * address retrieval was complete */
-	if (!strcmp(xmlnode->tag->tag, "item")) {
-		/* see if a previous item was complete */
-		/* TODO: does sylpheed address book allow empty names to be entered?
-		 * if so, addr->name *AND* addr->address should be checked. */
-		/* add address to our database */
-		add_address(addr->name, addr->address);
-		g_free(addr->name);
-		g_free(addr->address);
-		addr->name = NULL;
-		addr->address = NULL;
-	} else if (!strcmp(xmlnode->tag->tag, "name"))
-		addr->name = g_strdup(xmlnode->element);
-	else if (!strcmp(xmlnode->tag->tag, "address"))
-		addr->address = g_strdup(xmlnode->element);
-
-	return FALSE;
-}
-
 /* read_address_book()
  */ 
-static void read_address_book(void)
-{	
-	gchar *path;
-	GNode *tree; 
-	address_entry ad = {NULL, NULL};
-
-	LOG_MESSAGE( _("%s%d entering read_address_book\n"), __FILE__, __LINE__);
-	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ADDRESS_BOOK, NULL);
-	tree = xml_parse_file(path);
-	g_free(path);
-	if (!tree) {
-		LOG_MESSAGE( _("%s(%d) no addressbook\n"), __FILE__, __LINE__);
-		return;
-	}
-
-	/* retrieve all addresses */
-	g_node_traverse(tree, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
-			(GNodeTraverseFunc) get_all_addresses, &ad);
-	/* still one pending? */
-	if (ad.name) {
-		add_address(ad.name, ad.address);
-		if (ad.name)
-			g_free(ad.name);
-		if (ad.address)
-			g_free(ad.address);
-	}
-
-	xml_free_tree(tree);
-
-	LOG_MESSAGE(_("%s(%d) leaving read_address_book - OK\n"), __FILE__, __LINE__);
+static void read_address_book(void) {	
+	addressbook_load_completion( add_address );
 }
 
 /* start_address_completion() - returns the number of addresses 
