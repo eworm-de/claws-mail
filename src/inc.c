@@ -802,7 +802,7 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 		return -1;
 	}
 
-	if (prefs_filtering == NULL) {
+	if (global_filtering == NULL) {
 		/* old filtering */
 		if (state->ac_prefs->filter_on_recv) {
 			dropfolder =
@@ -832,10 +832,10 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 		return -1;
 	}
 
-	if (prefs_filtering != NULL) {
+	if (global_filtering != NULL) {
 		/* new filtering */
 		if (state->ac_prefs->filter_on_recv) {
-			filter_message(prefs_filtering, dropfolder, msgnum,
+			filter_message(global_filtering, dropfolder, msgnum,
 				       state->folder_table);
 		}
 	}

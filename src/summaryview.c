@@ -1698,7 +1698,8 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 				parent = g_hash_table_lookup
 					(msgid_table, msginfo->inreplyto);
 			}
-			if (parent == NULL && msginfo->subject) {
+			if (parent == NULL && msginfo->subject &&
+			    g_strncasecmp(msginfo->subject, "Re: ", 4) == 0) {
 				parent = subject_table_lookup
 					(subject_table, msginfo->subject);
 			}
@@ -1764,7 +1765,10 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 				    *cur_msginfo->inreplyto) {
 					cur_parent = g_hash_table_lookup(msgid_table, cur_msginfo->inreplyto);
 				}
-				if (cur_parent == NULL && cur_msginfo->subject) {
+				if (cur_parent == NULL &&
+				    cur_msginfo->subject &&
+				    g_strncasecmp(cur_msginfo->subject,
+						  "Re: ", 4) == 0) {
 					cur_parent = subject_table_lookup(subject_table, cur_msginfo->subject);
 				}
 			}
@@ -2972,7 +2976,8 @@ static void summary_thread_func(GtkCTree *ctree, GtkCTreeNode *node,
 	if(msginfo->inreplyto) {
 	    parent = g_hash_table_lookup(msgid_table, msginfo->inreplyto);
 	}
-	if (parent == NULL && msginfo->subject) {
+	if (parent == NULL && msginfo->subject &&
+	    g_strncasecmp(msginfo->subject, "Re: ", 4) == 0) {
 		parent = subject_table_lookup(subject_table, msginfo->subject);
 	}
 
@@ -3042,7 +3047,7 @@ void summary_filter(SummaryView *summaryview)
 
 	gtk_clist_freeze(GTK_CLIST(summaryview->ctree));
 
-	if (prefs_filtering == NULL) {
+	if (global_filtering == NULL) {
 		gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
 					GTK_CTREE_FUNC(summary_filter_func),
 					summaryview);
@@ -3085,7 +3090,7 @@ static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
 	gchar *file;
 	FolderItem *dest;
 
-	if (prefs_filtering == NULL) {
+	if (global_filtering == NULL) {
 		/* old filtering */
 		file = procmsg_get_message_file_path(msginfo);
 		dest = filter_get_dest_folder(prefs_common.fltlist, file);
@@ -3096,7 +3101,7 @@ static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
 			summary_move_row_to(summaryview, node, dest);
 	}
 	else
-		filter_msginfo_move_or_delete(prefs_filtering, msginfo,
+		filter_msginfo_move_or_delete(global_filtering, msginfo,
 					      summaryview->folder_table);
 }
 

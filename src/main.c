@@ -238,7 +238,6 @@ int main(int argc, char *argv[])
 	prefs_filter_write_config();
 	prefs_display_header_read_config();
 	prefs_display_header_write_config();
-	prefs_filtering_read_config();
 
 	gtkut_widget_init();
 
@@ -259,6 +258,7 @@ int main(int argc, char *argv[])
 	account_set_missing_folder();
 	folderview_set(folderview);
 
+	prefs_filtering_read_config();
 	prefs_scoring_read_config();
 
 	inc_autocheck_timer_init(mainwin);

@@ -89,6 +89,8 @@ sylpheed_SOURCES = \
 	mbox_folder.c mbox_folder.h \
 	quote_fmt_lex.l quote_fmt_lex.h \
 	quote_fmt_parse.y quote_fmt.h \
+	matcher_parser_lex.l matcher_parser_lex.h \
+	matcher_parser_parse.y matcher_parser.h \
 	addressitem.h \
 	mgutils.c mgutils.h \
 	vcard.c vcard.h \

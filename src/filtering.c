@@ -12,10 +12,12 @@
 #include "filtering.h"
 #include "prefs.h"
 #include "compose.h"
+#include "matcher_parser.h"
 
 #define PREFSBUFSIZE		1024
 
-GSList * prefs_filtering = NULL;
+/* GSList * prefs_filtering = NULL; */
+GSList * global_filtering = NULL;
 
 FilteringAction * filteringaction_new(int type, int account_id,
 				      gchar * destination)
@@ -39,6 +41,7 @@ void filteringaction_free(FilteringAction * action)
 	g_free(action);
 }
 
+/*
 FilteringAction * filteringaction_parse(gchar ** str)
 {
 	FilteringAction * action;
@@ -131,7 +134,7 @@ FilteringProp * filteringprop_parse(gchar ** str)
 	* str = tmp;
 	return filtering;
 }
-
+*/
 
 FilteringProp * filteringprop_new(MatcherList * matchers,
 				  FilteringAction * action)
@@ -352,7 +355,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 	gchar * cmd;
 
 	switch(action->type) {
-	case MATCHING_ACTION_MOVE:
+	case MATCHACTION_MOVE:
 		dest_folder =
 			folder_find_item_from_identifier(action->destination);
 		if (!dest_folder)
@@ -383,7 +386,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 
 		return TRUE;
 
-	case MATCHING_ACTION_COPY:
+	case MATCHACTION_COPY:
 		dest_folder =
 			folder_find_item_from_identifier(action->destination);
 		if (!dest_folder)
@@ -404,7 +407,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 			
 		return TRUE;
 
-	case MATCHING_ACTION_DELETE:
+	case MATCHACTION_DELETE:
 		if (folder_item_remove_msg(info->folder, info->msgnum) == -1)
 			return FALSE;
 
@@ -413,7 +416,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 
 		return TRUE;
 
-	case MATCHING_ACTION_MARK:
+	case MATCHACTION_MARK:
 		MSG_SET_FLAGS(info->flags, MSG_MARKED);
 		filteringaction_update_mark(info);
 
@@ -421,7 +424,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 
 		return TRUE;
 
-	case MATCHING_ACTION_UNMARK:
+	case MATCHACTION_UNMARK:
 		MSG_UNSET_FLAGS(info->flags, MSG_MARKED);
 		filteringaction_update_mark(info);
 
@@ -429,7 +432,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 
 		return TRUE;
 		
-	case MATCHING_ACTION_MARK_AS_READ:
+	case MATCHACTION_MARK_AS_READ:
 		MSG_UNSET_FLAGS(info->flags, MSG_UNREAD | MSG_NEW);
 		filteringaction_update_mark(info);
 
@@ -437,7 +440,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 
 		return TRUE;
 
-	case MATCHING_ACTION_MARK_AS_UNREAD:
+	case MATCHACTION_MARK_AS_UNREAD:
 		MSG_SET_FLAGS(info->flags, MSG_UNREAD | MSG_NEW);
 		filteringaction_update_mark(info);
 
@@ -445,7 +448,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		
 		return TRUE;
 
-	case MATCHING_ACTION_FORWARD:
+	case MATCHACTION_FORWARD:
 
 		account = account_find_from_id(action->account_id);
 		compose = compose_forward(account, info, FALSE);
@@ -465,7 +468,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		gtk_widget_destroy(compose->window);
 		return FALSE;
 
-	case MATCHING_ACTION_FORWARD_AS_ATTACHMENT:
+	case MATCHACTION_FORWARD_AS_ATTACHMENT:
 
 		account = account_find_from_id(action->account_id);
 		compose = compose_forward(account, info, TRUE);
@@ -485,7 +488,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		gtk_widget_destroy(compose->window);
 		return FALSE;
 
-	case MATCHING_EXECUTE:
+	case MATCHACTION_EXECUTE:
 
 		cmd = matching_build_command(action->destination, info);
 		if (cmd == NULL)
@@ -533,17 +536,17 @@ static gboolean filteringprop_apply(FilteringProp * filtering, MsgInfo * info,
 		g_free(action_str);
 
 		switch(filtering->action->type) {
-		case MATCHING_ACTION_MOVE:
-		case MATCHING_ACTION_DELETE:
+		case MATCHACTION_MOVE:
+		case MATCHACTION_DELETE:
 			return TRUE;
-		case MATCHING_EXECUTE:
-		case MATCHING_ACTION_COPY:
-		case MATCHING_ACTION_MARK:
-		case MATCHING_ACTION_MARK_AS_READ:
-		case MATCHING_ACTION_UNMARK:
-		case MATCHING_ACTION_MARK_AS_UNREAD:
-		case MATCHING_ACTION_FORWARD:
-		case MATCHING_ACTION_FORWARD_AS_ATTACHMENT:
+		case MATCHACTION_EXECUTE:
+		case MATCHACTION_COPY:
+		case MATCHACTION_MARK:
+		case MATCHACTION_MARK_AS_READ:
+		case MATCHACTION_UNMARK:
+		case MATCHACTION_MARK_AS_UNREAD:
+		case MATCHACTION_FORWARD:
+		case MATCHACTION_FORWARD_AS_ATTACHMENT:
 			return FALSE;
 		default:
 			return FALSE;
@@ -585,8 +588,8 @@ void filter_msginfo_move_or_delete(GSList * filtering_list, MsgInfo * info,
 		FilteringProp * filtering = (FilteringProp *) l->data;
 
 		switch (filtering->action->type) {
-		case MATCHING_ACTION_MOVE:
-		case MATCHING_ACTION_DELETE:
+		case MATCHACTION_MOVE:
+		case MATCHACTION_DELETE:
 			if (filteringprop_apply(filtering, info, folder_table))
 				return;
 		}
@@ -630,6 +633,34 @@ void prefs_filtering_read_config(void)
 {
 	gchar *rcpath;
 	FILE *fp;
+
+	prefs_filtering_clear();
+
+	debug_print(_("Reading filtering configuration...\n"));
+
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+			     FILTERING_RC, NULL);
+	if ((fp = fopen(rcpath, "r")) == NULL) {
+		if (ENOENT != errno) FILE_OP_ERROR(rcpath, "fopen");
+		g_free(rcpath);
+		return;
+	}
+
+	matcher_parserlineno = 1;
+	matcher_parserin = fp;
+	if (matcher_parserparse() != 0) {
+		printf("%s\n", rcpath);
+		prefs_filtering_clear();
+	}
+	g_free(rcpath);
+	fclose(fp);
+}
+
+/*
+void prefs_filtering_read_config(void)
+{
+	gchar *rcpath;
+	FILE *fp;
 	gchar buf[PREFSBUFSIZE];
 
 	debug_print(_("Reading filtering configuration...\n"));
@@ -643,8 +674,10 @@ void prefs_filtering_read_config(void)
 		return;
 	}
 	g_free(rcpath);
+*/
 
  	/* remove all filtering */
+/*
  	while (prefs_filtering != NULL) {
  		FilteringProp * filtering =
 			(FilteringProp *) prefs_filtering->data;
@@ -659,6 +692,8 @@ void prefs_filtering_read_config(void)
  		g_strchomp(buf);
 
 		if ((*buf != '#') && (*buf != '\0')) {
+			matcher_parse(buf);
+
 			tmp = buf;
 			filtering = filteringprop_parse(&tmp);
 			if (tmp != NULL) {
@@ -667,7 +702,9 @@ void prefs_filtering_read_config(void)
 						       filtering);
 			}
 			else {
+*/
 				/* debug */
+/*
 				g_warning(_("syntax error : %s\n"), buf);
 			}
 		}
@@ -675,6 +712,7 @@ void prefs_filtering_read_config(void)
 
  	fclose(fp);
 }
+*/
 
 gchar * filteringaction_to_string(FilteringAction * action)
 {
@@ -683,28 +721,28 @@ gchar * filteringaction_to_string(FilteringAction * action)
 	gchar * account_id_str;
 
 	command_str = NULL;
-	command_str = get_matchparser_tab_str(action->type);
+	command_str = get_matchaction_str(action->type);
 
 	if (command_str == NULL)
 		return NULL;
 
 	switch(action->type) {
-	case MATCHING_ACTION_MOVE:
-	case MATCHING_ACTION_COPY:
-	case MATCHING_EXECUTE:
+	case MATCHACTION_MOVE:
+	case MATCHACTION_COPY:
+	case MATCHACTION_EXECUTE:
 		return g_strconcat(command_str, " \"", action->destination,
 				   "\"", NULL);
 
-	case MATCHING_ACTION_DELETE:
-	case MATCHING_ACTION_MARK:
-	case MATCHING_ACTION_UNMARK:
-	case MATCHING_ACTION_MARK_AS_READ:
-	case MATCHING_ACTION_MARK_AS_UNREAD:
+	case MATCHACTION_DELETE:
+	case MATCHACTION_MARK:
+	case MATCHACTION_UNMARK:
+	case MATCHACTION_MARK_AS_READ:
+	case MATCHACTION_MARK_AS_UNREAD:
 		return g_strdup(command_str);
 		break;
 
-	case MATCHING_ACTION_FORWARD:
-	case MATCHING_ACTION_FORWARD_AS_ATTACHMENT:
+	case MATCHACTION_FORWARD:
+	case MATCHACTION_FORWARD_AS_ATTACHMENT:
 		account_id_str = itos(action->account_id);
 		return g_strconcat(command_str, " ", account_id_str,
 				   " \"", action->destination, "\"", NULL);
@@ -732,7 +770,7 @@ gchar * filteringprop_to_string(FilteringProp * prop)
 		return NULL;
 	}
 
-	filtering_str = g_strconcat(list_str, " ", action_str, NULL);
+	filtering_str = g_strconcat(list_str, " ", action_str, "\n", NULL);
 	g_free(list_str);
 	g_free(action_str);
 
@@ -756,14 +794,13 @@ void prefs_filtering_write_config(void)
 		return;
 	}
 
-	for (cur = prefs_filtering; cur != NULL; cur = cur->next) {
+	for (cur = global_filtering; cur != NULL; cur = cur->next) {
 		gchar *filtering_str;
 
 		prop = (FilteringProp *) cur->data;
 		filtering_str = filteringprop_to_string(prop);
-		if (fputs(filtering_str, pfile->fp) == EOF ||
-		    fputc('\n', pfile->fp) == EOF) {
-			FILE_OP_ERROR(rcpath, "fputs || fputc");
+		if (fputs(filtering_str, pfile->fp) == EOF) {
+			FILE_OP_ERROR(rcpath, "fputs");
 			prefs_write_close_revert(pfile);
 			g_free(rcpath);
 			g_free(filtering_str);
@@ -778,4 +815,41 @@ void prefs_filtering_write_config(void)
 		g_warning(_("failed to write configuration to file\n"));
 		return;
 	}
+}
+
+void prefs_filtering_free(GSList * prefs_filtering)
+{
+ 	while (prefs_filtering != NULL) {
+ 		FilteringProp * filtering =
+			(FilteringProp *) prefs_filtering->data;
+ 		filteringprop_free(filtering);
+ 		prefs_filtering = g_slist_remove(prefs_filtering, filtering);
+ 	}
+}
+
+static gboolean prefs_filtering_free_func(GNode *node, gpointer data)
+{
+	FolderItem *item = node->data;
+
+	prefs_filtering_free(item->prefs->processing);
+	item->prefs->processing = NULL;
+
+	return FALSE;
+}
+
+
+void prefs_filtering_clear()
+{
+	GList * cur;
+
+	for (cur = folder_get_list() ; cur != NULL ; cur = g_list_next(cur)) {
+		Folder *folder;
+
+		folder = (Folder *) cur->data;
+		g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+				prefs_filtering_free_func, NULL);
+	}
+
+	prefs_filtering_free(global_filtering);
+	global_filtering = NULL;
 }
