@@ -22,7 +22,7 @@
 
 2002-04-02 [darko]	0.7.4claws59
 
-	* src/compoce.c
+	* src/compose.c
 		wrap on send improvements, it now recognizes quoted
 		initials as part of the quotation string, and it
 		does not join lines separated by CR
