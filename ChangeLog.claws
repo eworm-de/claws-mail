@@ -1,3 +1,10 @@
+2002-03-12 [darko]	0.7.4claws1
+
+	* src/mainwindow.c
+		fix what seems to be a copy and paste error
+		when setting color for important messages
+		(reported by wwp)
+
 2002-03-11 [paul]	version 0.7.4claws released
 
 2002-03-11 [paul]	0.7.4claws

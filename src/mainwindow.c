@@ -924,7 +924,7 @@ MainWindow *main_window_create(SeparateType type)
 				       &folderview->color_op);
 
 	summaryview->color_important.red = 0;
-	summaryview->color_marked.green = 0;
+	summaryview->color_important.green = 0;
 	summaryview->color_important.blue = (guint16)65535;
 
 	color[0] = summaryview->color_marked;
