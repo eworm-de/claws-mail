@@ -1,3 +1,19 @@
+2003-04-08
+
+	* src/procmsg.[ch]: procmsg_get_filter_keyword(): 新規。メッセージの
+	  フィルタ用キーワードを返す。
+	* src/summaryview.c: summary_filter_open():
+	  procmsg_get_filter_keyword() を使用。
+	* src/messageview.c: create_filter_cb(): 実装。
+
+2003-04-07
+
+	* src/inc.c:
+	  inc_start()
+	  inc_put_error(): エラー時にサーバの応答を表示するようにした。
+	* src/pop.[ch]: Pop3Session::error_msg を追加し、エラー時に
+	  サーバの応答をセットするようにした。
+
 2003-04-04
 
 	* src/messageview.[ch]: 別ウィンドウのメッセージビューの文字コード

@@ -1397,6 +1397,18 @@ static void add_address_cb(gpointer data, guint action, GtkWidget *widget)
 
 static void create_filter_cb(gpointer data, guint action, GtkWidget *widget)
 {
+	MessageView *messageview = (MessageView *)data;
+	gchar *header = NULL;
+	gchar *key = NULL;
+
+	if (!messageview->msginfo) return;
+
+	procmsg_get_filter_keyword(messageview->msginfo, &header, &key,
+				   (PrefsFilterType)action);
+	prefs_filtering_open(NULL, header, key);
+
+	g_free(header);
+	g_free(key);
 }
 
 static void about_cb(gpointer data, guint action, GtkWidget *widget)

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -157,6 +157,8 @@ struct _MsgFlags
 	MsgTmpFlags  tmp_flags;
 };
 
+#include "prefs_filtering.h"
+
 struct _MsgInfo
 {
 	guint refcnt;
@@ -238,6 +240,11 @@ FILE   *procmsg_open_message_decrypted	(MsgInfo	*msginfo,
 					 MimeInfo      **mimeinfo);
 #endif
 gboolean procmsg_msg_exist		(MsgInfo	*msginfo);
+
+void	procmsg_get_filter_keyword	(MsgInfo	  *msginfo,
+					 gchar	         **header,
+					 gchar	         **key,
+					 PrefsFilterType   type);
 
 void	procmsg_empty_trash		(void);
 gint	procmsg_send_queue		(FolderItem	*queue,

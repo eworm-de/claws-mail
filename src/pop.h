@@ -130,6 +130,7 @@ struct _Pop3Session
 	time_t current_time;
 
 	Pop3ErrorValue error_val;
+	gchar *error_msg;
 
 	gpointer data;
 };

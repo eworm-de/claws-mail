@@ -390,6 +390,7 @@ Session *pop3_session_new(PrefsAccount *account)
 	session->uidl_table = pop3_get_uidl_table(account);
 	session->current_time = time(NULL);
 	session->error_val = PS_SUCCESS;
+	session->error_msg = NULL;
 
 	return SESSION(session);
 }
@@ -413,6 +414,7 @@ static void pop3_session_destroy(Session *session)
 	g_free(pop3_session->greeting);
 	g_free(pop3_session->user);
 	g_free(pop3_session->pass);
+	g_free(pop3_session->error_msg);
 }
 
 GHashTable *pop3_get_uidl_table(PrefsAccount *ac_prefs)
@@ -648,6 +650,8 @@ static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 			}
 		}
 
+		g_free(session->error_msg);
+		session->error_msg = g_strdup(msg);
 		fprintf(stderr, "POP3: %s\n", msg);
 	} else
 		ok = PS_PROTOCOL;

@@ -1,3 +1,19 @@
+2003-04-08
+
+	* src/procmsg.[ch]: procmsg_get_filter_keyword(): new. It returns
+	  filter keyword for messages.
+	* src/summaryview.c: summary_filter_open(): use
+	  procmsg_get_filter_keyword().
+	* src/messageview.c: create_filter_cb(): implemented.
+
+2003-04-07
+
+	* src/inc.c:
+	  inc_start()
+	  inc_put_error(): display server responses on error.
+	* src/pop.[ch]: added Pop3Session::error_msg, and set server responses
+	  on error.
+
 2003-04-04
 
 	* src/messageview.[ch]: separated the forced charset of message view
