@@ -1,3 +1,12 @@
+2003-01-23 [paul]	0.8.8claws128
+
+	* po/es.po
+	  po/it.po
+	  po/ru.po
+	  po/sr.po
+	  	updated translations. submitted by Ricardo Mones Lastra,
+		Alessandro Maestri, Ruslan N. Balkin and Urke MMI respectively.
+
 2003-01-23 [colin]	0.8.8claws127
 
 	* src/compose.c
