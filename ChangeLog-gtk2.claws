@@ -1,3 +1,13 @@
+2005-02-05 [paul]	1.0.0cvs28.1
+
+	* ChangeLog
+	* ChangeLog.claws
+	* ChangeLog.jp
+	* configure.ac
+	* src/compose.c
+		sync with HEAD
+		(fix bug 682 'redirect is broken'
+
 2005-02-05 [torte]	1.0.0cvs27.1
 
 	* ChangeLog.claws
