@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=6
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=8
+EXTRA_VERSION=9
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -564,33 +564,6 @@ AC_SUBST(GTK_MATH_VIEW_CFLAGS)
 AC_SUBST(GTK_MATH_VIEW_LIBS)
 AM_CONDITIONAL(BUILD_MATHML_VIEWER_PLUGIN, test x"$ac_cv_enable_mathml_viewer_plugin" = xyes)
 
-dnl --- Image Viewer ---
-AC_ARG_ENABLE(image-viewer-plugin,
-	[  --disable-image-viewer-plugin     Do not build image viewer plugin],
-	[ac_cv_enable_image_viewer_plugin=$enableval], [ac_cv_enable_image_viewer_plugin=yes])
-if test x"$ac_cv_enable_image_viewer_plugin" = xyes; then
-	AC_ARG_ENABLE(gdk-pixbuf,
-		[  --disable-gdk-pixbuf              Do not use gdk-pixbuf],
-		[ac_cv_enable_gdk_pixbuf=$enableval], [ac_cv_enable_gdk_pixbuf=yes])
-	AC_ARG_ENABLE(imlib,
-		[  --disable-imlib                   Do not use imlib],
-		[ac_cv_enable_imlib=$enableval], [ac_cv_enable_imlib=yes])
-
-	if test "$ac_cv_enable_gdk_pixbuf" = yes; then
-		PKG_CHECK_MODULES(GDK_PIXBUF, \
-			[ gdk-pixbuf-2.0 ],
-			[ AC_DEFINE(HAVE_GDK_PIXBUF, 1, Define if you use gdk-pixbuf to support image viewer) ],
-			[ ac_cv_enable_gdk_pixbuf=no ])
-	fi
-
-	if test "$ac_cv_enable_gdk_pixbuf" = yes; then
-		PLUGINS="image-viewer(gdk-pixbuf) $PLUGINS"
-	else
-		ac_cv_enable_image_viewer_plugin=no
-	fi
-fi
-AM_CONDITIONAL(BUILD_IMAGE_VIEWER_PLUGIN, test x"$ac_cv_enable_image_viewer_plugin" = xyes)
-
 dnl --- Dillo Viewer ---
 AC_ARG_ENABLE(dillo-viewer-plugin,
 	[  --disable-dillo-viewer-plugin     Do not build Dillo plugin for html mail rendering],
@@ -646,7 +619,6 @@ src/plugins/demo/Makefile
 src/plugins/spamassassin/Makefile
 src/plugins/mathml_viewer/Makefile
 src/plugins/dillo_viewer/Makefile
-src/plugins/image_viewer/Makefile
 src/plugins/trayicon/Makefile
 src/plugins/trayicon/libeggtrayicon/Makefile
 src/plugins/clamav/Makefile

@@ -136,6 +136,11 @@ struct _PrefsCommon
 	gchar *smallfont;
 	gchar *titlefont;
 
+	/* image viewer */
+	gboolean display_img;
+	gboolean resize_img;
+	gboolean inline_img;
+
 	gboolean trans_hdr;
 	gboolean display_folder_unread;
 	gint ng_abbrev_len;

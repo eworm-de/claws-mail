@@ -388,6 +388,14 @@ static PrefParam param[] = {
 	{"normal_font_gtk2",	"Sans 9", 
 	  &prefs_common.normalfont,		P_STRING, NULL, NULL, NULL},
 
+	/* image viewer */
+	{"display_image", "TRUE", &prefs_common.display_img, P_BOOL,
+	 NULL, NULL, NULL},
+	{"resize_image", "TRUE", &prefs_common.resize_img, P_BOOL,
+	 NULL, NULL, NULL},
+	{"inline_image", "TRUE", &prefs_common.inline_img, P_BOOL,
+	 NULL, NULL, NULL},
+
 	{"display_folder_unread_num", "TRUE",
 	 &prefs_common.display_folder_unread, P_BOOL,
 	 &display.chkbtn_folder_unread,

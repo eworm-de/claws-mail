@@ -14,10 +14,6 @@ if BUILD_DILLO_VIEWER_PLUGIN
 dillo_viewer_dir = dillo_viewer
 endif
 
-if BUILD_IMAGE_VIEWER_PLUGIN
-image_viewer_dir = image_viewer
-endif
-
 if BUILD_TRAYICON_PLUGIN
 trayicon_dir = trayicon
 endif
@@ -34,7 +30,6 @@ SUBDIRS = $(demo_dir) \
 	$(spamassasssin_dir) \
 	$(mathml_viewer_dir) \
 	$(dillo_viewer_dir) \
-	$(image_viewer_dir) \
 	$(trayicon_dir) \
 	$(clamav_dir) \
 	$(pgpmime_dir)

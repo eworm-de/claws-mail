@@ -26,19 +26,11 @@
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkpixmap.h>
 
-#if HAVE_GDK_PIXBUF
-#  include <gdk-pixbuf/gdk-pixbuf.h>
-#else
-#if HAVE_GDK_IMLIB
-#  include <gdk_imlib.h>
-#endif
-#endif /* HAVE_GDK_PIXBUF */
-
 #include "procmime.h"
 #include "utils.h"
 #include "mimeview.h"
 
-#include "viewerprefs.h"
+#include "prefs_common.h"
 
 typedef struct _ImageViewer ImageViewer;
 
@@ -72,7 +64,6 @@ static GtkWidget *image_viewer_get_widget(MimeViewer *_mimeviewer)
 	return imageviewer->notebook;
 }
 
-#if HAVE_GDK_PIXBUF
 static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfile)
 {
 	GdkPixbuf *pixbuf;
@@ -129,13 +120,12 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 
 	g_object_unref(pixbuf);
 }
-#endif /* HAVE_GDK_PIXBUF */
 
 static void image_viewer_set_notebook_page(MimeViewer *_mimeviewer)
 {
 	ImageViewer *imageviewer = (ImageViewer *) _mimeviewer;
 
-	if (!imageviewerprefs.display_img)
+	if (!prefs_common.display_img)
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(imageviewer->notebook), 0);
 	else
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(imageviewer->notebook), 1);
@@ -168,7 +158,7 @@ static void image_viewer_show_mimepart(MimeViewer *_mimeviewer, const gchar *fil
 	imageviewer->file = g_strdup(file);
 	imageviewer->mimeinfo = mimeinfo;
 
-	if (imageviewerprefs.display_img)
+	if (prefs_common.display_img)
 		image_viewer_load_image(imageviewer);
 	else {
 		gtk_label_set_text(GTK_LABEL(imageviewer->filename),
@@ -199,7 +189,7 @@ static void image_viewer_clear_viewer(MimeViewer *_mimeviewer)
 	g_free(imageviewer->file);
 	imageviewer->file = NULL;
 	imageviewer->mimeinfo = NULL;
-	imageviewer->resize_img = imageviewerprefs.resize_img;
+	imageviewer->resize_img = prefs_common.resize_img;
 }
 
 static void image_viewer_destroy_viewer(MimeViewer *_mimeviewer)
@@ -358,7 +348,7 @@ MimeViewer *image_viewer_create(void)
 	imageviewer->mimeviewer.clear_viewer = image_viewer_clear_viewer;
 	imageviewer->mimeviewer.destroy_viewer = image_viewer_destroy_viewer;
 
-	imageviewer->resize_img   = imageviewerprefs.resize_img;
+	imageviewer->resize_img   = prefs_common.resize_img;
 
 	imageviewer->scrolledwin  = scrolledwin;
 	imageviewer->image        = NULL;
@@ -394,12 +384,6 @@ MimeViewerFactory image_viewer_factory =
 
 void image_viewer_init(void)
 {
-#if HAVE_GDK_IMLIB
-	gdk_imlib_init();
-	gtk_widget_push_visual(gdk_imlib_get_visual());
-	gtk_widget_push_colormap(gdk_imlib_get_colormap());
-#endif
-
 	mimeview_register_viewer_factory(&image_viewer_factory);
 }
 

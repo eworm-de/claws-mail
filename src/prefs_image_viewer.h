@@ -17,22 +17,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef VIEWERPREFS_H
-#define VIEWERPREFS_H
+#ifndef PREFS_IMAGE_VIEWER_H
+#define PREFS_IMAGE_VIEWER_H
 
 #include <glib.h>
 
-typedef struct _ImageViewerPrefs ImageViewerPrefs;
-
-struct _ImageViewerPrefs
-{
-	gboolean	display_img;
-	gboolean	resize_img;
-};
-
-extern ImageViewerPrefs imageviewerprefs;
-
-void image_viewer_prefs_init	(void);
-void image_viewer_prefs_done	(void);
+void prefs_image_viewer_init	(void);
+void prefs_image_viewer_done	(void);
 
 #endif

@@ -394,12 +394,6 @@ static void crash_debug(unsigned long crash_pid,
 static const gchar *get_compiled_in_features(void)
 {
 	return g_strdup_printf("%s",
-#if HAVE_GDK_IMLIB
-		   " gdk_imlib"
-#endif
-#if HAVE_GDK_PIXBUF
-		   " gdk-pixbuf"
-#endif
 #if USE_THREADS
 		   " gthread"
 #endif

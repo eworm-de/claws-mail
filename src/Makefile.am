@@ -46,6 +46,7 @@ sylpheed_SOURCES = \
 	grouplistdialog.c \
 	headerview.c \
 	html.c \
+	image_viewer.c \
 	imap.c \
 	imap_gtk.c \
 	import.c \
@@ -92,6 +93,7 @@ sylpheed_SOURCES = \
 	prefs_folder_item.c \
 	prefs_fonts.c \
 	prefs_gtk.c \
+	prefs_image_viewer.c \
 	prefs_matcher.c \
 	prefs_msg_colors.c \
 	prefs_spelling.c \
@@ -173,6 +175,7 @@ sylpheedinclude_HEADERS = \
 	grouplistdialog.h \
 	headerview.h \
 	html.h \
+	image_viewer.h \
 	imap.h \
 	imap_gtk.h \
 	import.h \
@@ -220,6 +223,7 @@ sylpheedinclude_HEADERS = \
 	prefs_folder_item.h \
 	prefs_fonts.h \
 	prefs_gtk.h \
+	prefs_image_viewer.h \
 	prefs_matcher.h \
 	prefs_msg_colors.h \
 	prefs_spelling.h \

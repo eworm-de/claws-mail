@@ -46,6 +46,7 @@ src/gtk/progressdialog.c
 src/gtk/quicksearch.c
 src/gtk/sslcertwindow.c
 src/headerview.c
+src/image_viewer.c
 src/imap.c
 src/imap_gtk.c
 src/import.c
@@ -69,9 +70,6 @@ src/plugins/clamav/clamav_plugin_gtk.c
 src/plugins/demo/demo.c
 src/plugins/dillo_viewer/dillo_prefs.c
 src/plugins/dillo_viewer/dillo_viewer.c
-src/plugins/image_viewer/plugin.c
-src/plugins/image_viewer/viewer.c
-src/plugins/image_viewer/viewerprefs.c
 src/plugins/mathml_viewer/mathml_viewer.c
 src/plugins/pgpmime/passphrase.c
 src/plugins/pgpmime/plugin.c
@@ -93,6 +91,7 @@ src/prefs_filtering.c
 src/prefs_folder_item.c
 src/prefs_fonts.c
 src/prefs_gtk.c
+src/prefs_image_viewer.c
 src/prefs_matcher.c
 src/prefs_msg_colors.c
 src/prefs_spelling.c

@@ -492,6 +492,62 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 
 	if (mimeinfo->type != MIMETYPE_TEXT) {
 		gtk_text_buffer_insert(buffer, &iter, buf, -1);
+		if (mimeinfo->type == MIMETYPE_IMAGE  &&
+		    prefs_common.inline_img ) {
+			GdkPixbuf *pixbuf;
+			GError *error = NULL;
+			gchar *filename;
+			RemoteURI *uri;
+			gchar *uri_str;
+			FILE *fp;
+
+			fp = fopen(mimeinfo->data.filename, "rb");
+			fseek(fp, mimeinfo->offset, SEEK_SET);
+
+			filename = procmime_get_tmp_file_name(mimeinfo);
+			if (procmime_get_part(filename, mimeinfo) < 0) {
+				g_warning("Can't get the image file.");
+				g_free(filename);
+				return;
+			}
+
+			pixbuf = gdk_pixbuf_new_from_file(filename, &error);
+			if (error != NULL) {
+				g_warning("%s\n", error->message);
+				g_error_free(error);
+			}
+			if (!pixbuf) {
+				g_warning("Can't load the image.");
+				g_free(filename);
+				return;
+			}
+
+			/* if (prefs_common.resize_img) {
+				GdkPixbuf *scaled;
+
+				scaled = imageview_get_resized_pixbuf
+					(pixbuf, textview->text, 8);
+				g_object_unref(pixbuf);
+				pixbuf = scaled;
+			} */
+
+			/* uri_str = g_filename_to_uri(filename, NULL, NULL);
+			if (uri_str) {
+				uri = g_new(RemoteURI, 1);
+				uri->uri = uri_str;
+				uri->filename =
+					procmime_get_part_file_name(mimeinfo);
+				uri->start = gtk_text_iter_get_offset(&iter);
+				uri->end = uri->start + 1;
+				textview->uri_list =
+					g_slist_append(textview->uri_list, uri);
+			} */
+			gtk_text_buffer_insert_pixbuf(buffer, &iter, pixbuf);
+			gtk_text_buffer_insert(buffer, &iter, "\n", 1);
+
+			g_object_unref(pixbuf);
+			g_free(filename);
+		}
 	} else if (mimeinfo->disposition != DISPOSITIONTYPE_ATTACHMENT) {
 		if (prefs_common.display_header && (charcount > 0))
 			gtk_text_buffer_insert(buffer, &iter, "\n", 1);

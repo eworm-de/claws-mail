@@ -1,3 +1,36 @@
+2005-03-21 [paul]	1.9.6cvs9
+
+	* configure.ac
+	* po/POTFILES.in
+	* src/Makefile.am
+	* src/crash.c
+	* src/image_viewer.c ** ADDED **
+	* src/image_viewer.h ** ADDED **
+	* src/main.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_image_viewer.c ** ADDED **
+	* src/prefs_image_viewer.h ** ADDED **
+	* src/textview.c
+	* src/gtk/about.c
+	* src/pixmaps/sylpheed_logo.xpm
+	* src/plugins/Makefile.am
+	* src/plugins/image_viewer/.cvsignore ** REMOVED **
+	* src/plugins/image_viewer/Makefile.am ** REMOVED **
+	* src/plugins/image_viewer/plugin.c ** REMOVED **
+	* src/plugins/image_viewer/viewer.c ** REMOVED **
+	* src/plugins/image_viewer/viewer.glade ** REMOVED **
+	* src/plugins/image_viewer/viewer.h ** REMOVED ** 
+	* src/plugins/image_viewer/viewerprefs.c ** REMOVED **
+	* src/plugins/image_viewer/viewerprefs.glade ** REMOVED **
+	* src/plugins/image_viewer/viewerprefs.h ** REMOVED **
+		as gdk-pixbuf is now built-in
+		remove image_viewer plugin and put code back into
+		main codebase
+		implement inline image display (sync with main)
+
+	 	replace logo with newer, nicer, larger version	
+
 2005-03-21 [paul]	1.9.6cvs8
 
 	* src/gtk/about.c

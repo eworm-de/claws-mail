@@ -17,14 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef VIEWER_H
-#define VIEWER_H
-
-#ifdef HAVE_CONFIG_H
-#  include "config.h"
-#endif
-
-#include "mimeview.h"
+#ifndef IMAGE_VIEWER_H
+#define IMAGE_VIEWER_H
 
 void image_viewer_init	(void);
 void image_viewer_done	(void);

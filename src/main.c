@@ -48,12 +48,14 @@
 #include "main.h"
 #include "mainwindow.h"
 #include "folderview.h"
+#include "image_viewer.h"
 #include "summaryview.h"
 #include "prefs_common.h"
 #include "prefs_account.h"
 #include "prefs_actions.h"
 #include "prefs_ext_prog.h"
 #include "prefs_fonts.h"
+#include "prefs_image_viewer.h"
 #include "prefs_msg_colors.h"
 #include "prefs_spelling.h"
 #include "prefs_themes.h"
@@ -317,6 +319,8 @@ int main(int argc, char *argv[])
 	prefs_ext_prog_init();
 	prefs_wrapping_init();
 	prefs_msg_colors_init();
+	image_viewer_init();
+	prefs_image_viewer_init();
 #ifdef USE_ASPELL
 	gtkaspell_checkers_init();
 	prefs_spelling_init();
@@ -509,6 +513,8 @@ static void exit_sylpheed(MainWindow *mainwin)
 	prefs_ext_prog_done();
 	prefs_wrapping_done();
 	prefs_msg_colors_done();
+	prefs_image_viewer_done();
+	image_viewer_done();
 #ifdef USE_ASPELL       
 	prefs_spelling_done();
 	gtkaspell_checkers_quit();
