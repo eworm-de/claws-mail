@@ -1,5 +1,20 @@
 2002-08-08
 
+	* src/procmsg.c: procmsg_read_mark_file(): check key duplication
+	  to avoid memory leak.
+
+2002-08-08
+
+	* src/base64.c: include string.h for memcpy().
+	* src/gtksctree.c: use macro ABS() instead of function abs().
+	* src/prefs_account.c
+	  src/prefs_common.c: renamed 'send' to 'p_send' so as not to
+	  conflict with the function send() in sys/socket.h.
+	* src/mainwindow.c: commented out the unnecessary functions.
+	* src/utils.c: canonicalize_file_replace(): correct warning message.
+
+2002-08-08
+
 	* src/utils.[ch]: get_tmp_file(): new. Returns the directory for
 	  temporary files in ~/.sylpheed/.
 	* src/main.c: create temporary directory in ~/.sylpheed/.

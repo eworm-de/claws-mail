@@ -111,7 +111,7 @@ static struct Send {
 	GtkWidget *smtp_uid_entry;
 	GtkWidget *smtp_pass_entry;
 	GtkWidget *pop_bfr_smtp_chkbtn;
-} send;
+} p_send;
 
 static struct Compose {
 	GtkWidget *sigpath_entry;
@@ -310,33 +310,33 @@ static PrefParam param[] = {
 
 	/* Send */
 	{"add_date", "TRUE", &tmp_ac_prefs.add_date, P_BOOL,
-	 &send.date_chkbtn,
+	 &p_send.date_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"generate_msgid", "TRUE", &tmp_ac_prefs.gen_msgid, P_BOOL,
-	 &send.msgid_chkbtn,
+	 &p_send.msgid_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"add_custom_header", "FALSE", &tmp_ac_prefs.add_customhdr, P_BOOL,
-	 &send.customhdr_chkbtn,
+	 &p_send.customhdr_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"use_smtp_auth", "FALSE", &tmp_ac_prefs.use_smtp_auth, P_BOOL,
-	 &send.smtp_auth_chkbtn,
+	 &p_send.smtp_auth_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"smtp_auth_method", "0", &tmp_ac_prefs.smtp_auth_type, P_ENUM,
-	 &send.smtp_auth_type_optmenu,
+	 &p_send.smtp_auth_type_optmenu,
 	 prefs_account_smtp_auth_type_set_data_from_optmenu,
 	 prefs_account_smtp_auth_type_set_optmenu},
 
 	{"smtp_user_id", NULL, &tmp_ac_prefs.smtp_userid, P_STRING,
-	 &send.smtp_uid_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &p_send.smtp_uid_entry, prefs_set_data_from_entry, prefs_set_entry},
 	{"smtp_password", NULL, &tmp_ac_prefs.smtp_passwd, P_STRING,
-	 &send.smtp_pass_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &p_send.smtp_pass_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"pop_before_smtp", "FALSE", &tmp_ac_prefs.pop_before_smtp, P_BOOL,
-	 &send.pop_bfr_smtp_chkbtn,
+	 &p_send.pop_bfr_smtp_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	/* Compose */
@@ -1358,15 +1358,15 @@ static void prefs_account_send_create(void)
 		_("Authenticate with POP3 before sending"));
 	gtk_widget_set_sensitive(pop_bfr_smtp_chkbtn, FALSE);
 
-	send.date_chkbtn      = date_chkbtn;
-	send.msgid_chkbtn     = msgid_chkbtn;
-	send.customhdr_chkbtn = customhdr_chkbtn;
+	p_send.date_chkbtn      = date_chkbtn;
+	p_send.msgid_chkbtn     = msgid_chkbtn;
+	p_send.customhdr_chkbtn = customhdr_chkbtn;
 
-	send.smtp_auth_chkbtn       = smtp_auth_chkbtn;
-	send.smtp_auth_type_optmenu = optmenu;
-	send.smtp_uid_entry         = smtp_uid_entry;
-	send.smtp_pass_entry        = smtp_pass_entry;
-	send.pop_bfr_smtp_chkbtn    = pop_bfr_smtp_chkbtn;
+	p_send.smtp_auth_chkbtn       = smtp_auth_chkbtn;
+	p_send.smtp_auth_type_optmenu = optmenu;
+	p_send.smtp_uid_entry         = smtp_uid_entry;
+	p_send.smtp_pass_entry        = smtp_pass_entry;
+	p_send.pop_bfr_smtp_chkbtn    = pop_bfr_smtp_chkbtn;
 }
 
 static void prefs_account_compose_create(void)

@@ -2071,7 +2071,7 @@ gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 gint move_file(const gchar *src, const gchar *dest, gboolean overwrite)
 {
 	if (overwrite == FALSE && is_file_exist(dest)) {
-		g_warning(_("move_file(): file %s already exists."), dest);
+		g_warning("move_file(): file %s already exists.", dest);
 		return -1;
 	}
 
@@ -2180,7 +2180,7 @@ gint canonicalize_file_replace(const gchar *file)
 		return -1;
 
 	if (move_file(tmp_file, file, TRUE) < 0) {
-		FILE_OP_ERROR(file, "rename");
+		g_warning("can't replace %s .\n", file);
 		unlink(tmp_file);
 		return -1;
 	}

@@ -99,7 +99,7 @@ static struct Send {
 	GtkWidget *checkbtn_queuemsg;
 
 	GtkWidget *optmenu_charset;
-} send;
+} p_send;
 
 static struct Compose {
 	GtkWidget *checkbtn_autosig;
@@ -322,20 +322,20 @@ static PrefParam param[] = {
 
 	/* Send */
 	{"use_ext_sendmail", "FALSE", &prefs_common.use_extsend, P_BOOL,
-	 &send.checkbtn_extsend,
+	 &p_send.checkbtn_extsend,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"ext_sendmail_cmd", DEFAULT_SENDMAIL_CMD,
 	 &prefs_common.extsend_cmd, P_STRING,
-	 &send.entry_extsend, prefs_set_data_from_entry, prefs_set_entry},
+	 &p_send.entry_extsend, prefs_set_data_from_entry, prefs_set_entry},
 	{"save_message", "TRUE", &prefs_common.savemsg, P_BOOL,
-	 &send.checkbtn_savemsg,
+	 &p_send.checkbtn_savemsg,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"queue_message", "FALSE", &prefs_common.queue_msg, P_BOOL,
-	 &send.checkbtn_queuemsg,
+	 &p_send.checkbtn_queuemsg,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"outgoing_charset", CS_AUTO, &prefs_common.outgoing_charset, P_STRING,
-	 &send.optmenu_charset,
+	 &p_send.optmenu_charset,
 	 prefs_common_charset_set_data_from_optmenu,
 	 prefs_common_charset_set_optmenu},
 
@@ -1363,14 +1363,14 @@ static void prefs_send_create(void)
 			    FALSE, FALSE, 0);
 	gtk_label_set_justify(GTK_LABEL (label_charset_desc), GTK_JUSTIFY_LEFT);
 
-	send.checkbtn_extsend = checkbtn_extsend;
-	send.entry_extsend    = entry_extsend;
-	/* send.button_extsend   = button_extsend; */
+	p_send.checkbtn_extsend = checkbtn_extsend;
+	p_send.entry_extsend    = entry_extsend;
+	/* p_send.button_extsend   = button_extsend; */
 
-	send.checkbtn_savemsg  = checkbtn_savemsg;
-	send.checkbtn_queuemsg = checkbtn_queuemsg;
+	p_send.checkbtn_savemsg  = checkbtn_savemsg;
+	p_send.checkbtn_queuemsg = checkbtn_queuemsg;
 
-	send.optmenu_charset = optmenu;
+	p_send.optmenu_charset = optmenu;
 }
 
 static void prefs_common_recv_dialog_newmail_notify_toggle_cb(GtkWidget *w, gpointer data)

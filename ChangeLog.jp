@@ -1,5 +1,20 @@
 2002-08-08
 
+	* src/procmsg.c: procmsg_read_mark_file(): メモリリークを避ける
+	  ためキーの重複をチェック。
+
+2002-08-08
+
+	* src/base64.c: memcpy() のために string.h を include した。
+	* src/gtksctree.c: 関数 abs() の代わりにマクロ ABS() を使用。
+	* src/prefs_account.c
+	  src/prefs_common.c: sys/socket.h 中の関数 send() と衝突しないように
+	  'send' を 'p_send' に名称変更した。
+	* src/mainwindow.c: 不要な関数をコメントアウトした。
+	* src/utils.c: canonicalize_file_replace(): 警告メッセージを訂正。
+
+2002-08-08
+
 	* src/utils.[ch]: get_tmp_file(): 新規。 ~/.sylpheed/ 中のテンポラリ
 	  ファイル用のディレクトリを返す。
 	* src/main.c: ~/.sylpheed/ 中にテンポラリディレクトリを作成。

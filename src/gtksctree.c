@@ -6,6 +6,7 @@
 
 #include "gtksctree.h"
 
+
 enum {
 	ROW_POPUP_MENU,
 	EMPTY_POPUP_MENU,
@@ -219,8 +220,8 @@ select_row (GtkSCTree *sctree, gint row, gint col, guint state)
 	g_return_if_fail (GTK_IS_SCTREE (sctree));
     
 	range = ((state & GDK_SHIFT_MASK) != 0) &&
-		(GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_SINGLE) &&
-		(GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_BROWSE);
+	        (GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_SINGLE) &&
+	        (GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_BROWSE);
 	additive = ((state & GDK_CONTROL_MASK) != 0) &&
 		   (GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_SINGLE) &&
 		   (GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_BROWSE);
@@ -426,8 +427,8 @@ gtk_sctree_motion (GtkWidget *widget, GdkEventMotion *event)
 
 	/* This is the same threshold value that is used in gtkdnd.c */
 
-	if (MAX (abs (sctree->dnd_press_x - event->x),
-		 abs (sctree->dnd_press_y - event->y)) <= 3)
+	if (MAX (ABS (sctree->dnd_press_x - event->x),
+		 ABS (sctree->dnd_press_y - event->y)) <= 3)
 		return FALSE;
 
 	/* Handle any pending selections */
