@@ -285,7 +285,9 @@ gchar **strsplit_with_quote		(const gchar	*str,
 					 const gchar	*delim,
 					 gint		 max_tokens);
 
-gchar *get_abbrev_newsgroup_name	(const gchar	*group);
+gchar *get_abbrev_newsgroup_name	(const gchar	*group,
+					 gint            len);
+
 gchar *trim_string			(const gchar	*str,
 					 gint		 len);
 

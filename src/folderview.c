@@ -1126,7 +1126,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 			    item->path &&
 			    !strcmp2(item->name, item->path) &&
 			    prefs_common.ng_abbrev_len < strlen(item->path))
-				name = get_abbrev_newsgroup_name(item->path);
+				name = get_abbrev_newsgroup_name(item->path, prefs_common.ng_abbrev_len);
 			else
 				name = g_strdup(item->name);
 		}

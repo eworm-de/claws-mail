@@ -1249,24 +1249,27 @@ gchar **strsplit_with_quote(const gchar *str, const gchar *delim,
 	return str_array;
 }
 
-gchar *get_abbrev_newsgroup_name(const gchar *group)
+gchar *get_abbrev_newsgroup_name(const gchar *group, gint len)
 {
 	gchar *abbrev_group;
 	gchar *ap;
 	const gchar *p = group;
+	gint  count = 0;
 
 	abbrev_group = ap = g_malloc(strlen(group) + 1);
 
 	while (*p) {
 		while (*p == '.')
 			*ap++ = *p++;
-		if (strchr(p, '.')) {
+
+		if ((strlen( p) + count) > len && strchr(p, '.')) {
 			*ap++ = *p++;
 			while (*p != '.') p++;
 		} else {
-			strcpy(ap, p);
+			strcpy( ap, p);
 			return abbrev_group;
 		}
+		count = count + 2;
 	}
 
 	*ap = '\0';

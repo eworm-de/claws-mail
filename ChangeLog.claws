@@ -1,3 +1,14 @@
+2002-10-23 [martin]	0.8.5claws50
+
+	* src/folderview.c
+	* src/summaryview.c
+	* src/utils.h
+	* src/utils.c
+		added length parameter to get_abbrev_newsgroup_name()
+		changed this function so that it abbreviates the newsgroup
+		names only so long it is smaller than the length parameter
+		(for better reading of some newsgroup names and space efficiency)
+
 2002-10-22 [colin]	0.8.5claws49
 
 	*src/foldersel.c
