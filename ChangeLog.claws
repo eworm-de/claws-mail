@@ -1,3 +1,8 @@
+2003-02-21 [paul]	0.8.10claws36
+
+	* sync with 0.8.10cvs17
+		see ChangeLog 2003-02-21
+
 2003-02-20 [christoph]	0.8.10claws35
 
 	* src/imap.c

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -4835,12 +4835,15 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	if (summaryview->display_msg ||
 	    (prefs_common.show_msg_with_cursor_key &&
 	     messageview_is_visible(summaryview->messageview))) {
-		summary_display_msg(summaryview, row);
 		summaryview->display_msg = FALSE;
-	} else {
-		summary_set_menu_sensitive(summaryview);
-		toolbar_main_set_sensitive(summaryview->mainwin);
+		if (summaryview->displayed != row) {
+			summary_display_msg(summaryview, row);
+			return;
+		}
 	}
+
+	summary_set_menu_sensitive(summaryview);
+	toolbar_main_set_sensitive(summaryview->mainwin);
 }
 
 static void summary_col_resized(GtkCList *clist, gint column, gint width,

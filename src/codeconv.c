@@ -820,12 +820,12 @@ gchar *conv_iconv_strdup(const gchar *inbuf,
 	while ((n_conv = iconv(cd, (ICONV_CONST gchar **)&inbuf_p, &in_left,
 			       &outbuf_p, &out_left)) < 0) {
 		if (EILSEQ == errno) {
-			g_free(outbuf);
-			outbuf = NULL;
-			break;
+			inbuf_p++;
+			in_left--;
+			*outbuf_p++ = SUBST_CHAR;
+			out_left--;
 		} else if (EINVAL == errno) {
-			g_free(outbuf);
-			outbuf = NULL;
+			*outbuf_p = '\0';
 			break;
 		} else if (E2BIG == errno) {
 			out_size *= 2;
@@ -842,10 +842,8 @@ gchar *conv_iconv_strdup(const gchar *inbuf,
 		}
 	}
 
-	if (outbuf) {
-		iconv(cd, NULL, NULL, &outbuf_p, &out_left);
-		outbuf = g_realloc(outbuf, strlen(outbuf) + 1);
-	}
+	iconv(cd, NULL, NULL, &outbuf_p, &out_left);
+	outbuf = g_realloc(outbuf, strlen(outbuf) + 1);
 
 	iconv_close(cd);
 
