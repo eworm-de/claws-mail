@@ -629,7 +629,7 @@ MsgInfo *procheader_parse_stream(FILE *fp, MsgFlags flags, gboolean full,
 				if (!strncasecmp(hp, "multipart", 9) &&
 				    strncasecmp(hp, "multipart/signed", 16)) {
 					MSG_SET_TMP_FLAGS(msginfo->flags,
-							  MSG_MIME);
+							  MSG_SIGNED);
 				}
 			}
 			else if (!strncasecmp(hp, "multipart/encrypted", 19)) {
