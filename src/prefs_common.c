@@ -523,16 +523,16 @@ static PrefParam param[] = {
 	 &prefs_common.smallfont,   P_STRING,
 	 &display.entry_smallfont,
 	 prefs_set_data_from_entry, prefs_set_entry},
- #ifdef  WIN32
+#ifdef  WIN32
 	 /*XXX:tm */
- 	{"spacing_font", DEFAULT_SPACING_FONT, 
+	{"spacing_font", DEFAULT_SPACING_FONT, 
 	 &prefs_common.spacingfont, P_STRING,
 	 NULL, NULL, NULL},
 /* 	 
- 	 &display.entry_spacingfont,
+	 &display.entry_spacingfont,
 	 prefs_set_data_from_entry, prefs_set_entry},
 */
- #endif
+#endif
 #ifdef WIN32
 	{"bold_font",    BOLD_FONT,
 #else

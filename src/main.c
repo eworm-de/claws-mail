@@ -338,7 +338,7 @@ int main(int argc, char *argv[])
 
 #ifdef WIN32
 	/*XXX:tm */
- 	prefs_common_init_config();
+	prefs_common_init_config();
 	start_mswin_helper();
 	w32_mailcap_create();
 #endif

@@ -23,16 +23,16 @@
 
 #include <glib.h>
 #ifdef WIN32
- #include <w32lib.h>
- #include <sys/stat.h>
+# include <w32lib.h>
+# include <sys/stat.h>
 #else
- #include <sys/time.h>
- #include <sys/socket.h>
- #include <sys/un.h>
- #include <netinet/in.h>
- #include <arpa/inet.h>
- #include <netdb.h>
- #include <unistd.h>
+# include <sys/time.h>
+# include <sys/socket.h>
+# include <sys/un.h>
+# include <netinet/in.h>
+# include <arpa/inet.h>
+# include <netdb.h>
+# include <unistd.h>
 #endif
 #include <sys/types.h>
 #include <stdio.h>
@@ -61,7 +61,7 @@
 # define SD_SEND         0x01
 # define SD_BOTH         0x02
 #endif
- 
+
 #define BUFFSIZE	8192
 #define IO_TIMEOUT	60
 
@@ -453,7 +453,7 @@ SockInfo *sock_connect_cmd(const gchar *hostname, const gchar *tunnelcmd)
 {
 	gint fd[2];
 	int r;
-#ifdef WIN32		     
+#ifdef WIN32
 	perror("socketpair not under WIN32");
 	return NULL;
 #else

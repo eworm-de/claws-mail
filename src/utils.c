@@ -49,7 +49,7 @@
 #include "statusbar.h"
 #include "logwindow.h"
 #ifdef WIN32
- #include "codeconv.h"
+# include "codeconv.h"
 #endif
 
 #define BUFFSIZE	8192
@@ -2890,20 +2890,20 @@ gint open_uri(const gchar *uri, const gchar *cmdline)
 	gchar buf[BUFFSIZE];
 	gchar *p;
 	gchar encoded_uri[BUFFSIZE];
- #ifdef WIN32
+#ifdef WIN32
 	/*XXX:tm */
- 	gchar *enc_encoded_uri;
- 	gint uri_len;
- #endif
+	gchar *enc_encoded_uri;
+	gint uri_len;
+#endif
 	
 	g_return_val_if_fail(uri != NULL, -1);
- 
- #ifdef WIN32
- 	uri_len = strlen(uri) * 2;
- 	enc_encoded_uri = g_malloc(uri_len);
- 	strncpy2(enc_encoded_uri, uri, uri_len);
- 	escape_not_printable_chars(enc_encoded_uri, uri_len);
- #endif
+
+#ifdef WIN32
+	uri_len = strlen(uri) * 2;
+	enc_encoded_uri = g_malloc(uri_len);
+	strncpy2(enc_encoded_uri, uri, uri_len);
+	escape_not_printable_chars(enc_encoded_uri, uri_len);
+#endif
 
 	/* an option to choose whether to use encode_uri or not ? */
 	encode_uri(encoded_uri, BUFFSIZE, uri);
@@ -2911,20 +2911,20 @@ gint open_uri(const gchar *uri, const gchar *cmdline)
 	if (cmdline &&
 	    (p = strchr(cmdline, '%')) && *(p + 1) == 's' &&
 	    !strchr(p + 2, '%'))
- #ifdef WIN32
- 		g_snprintf(buf, sizeof(buf), cmdline, enc_encoded_uri);
- #else
+#ifdef WIN32
+		g_snprintf(buf, sizeof(buf), cmdline, enc_encoded_uri);
+#else
 		g_snprintf(buf, sizeof(buf), cmdline, encoded_uri);
- #endif
+#endif
 	else {
 		if (cmdline)
 			g_warning(_("Open URI command line is invalid: `%s'"),
 				  cmdline);
- #ifdef WIN32
- 		g_snprintf(buf, sizeof(buf), default_cmdline, enc_encoded_uri);
- #else
+#ifdef WIN32
+		g_snprintf(buf, sizeof(buf), default_cmdline, enc_encoded_uri);
+#else
 		g_snprintf(buf, sizeof(buf), default_cmdline, encoded_uri);
- #endif
+#endif
 	}
 	
 	execute_command_line(buf, TRUE);

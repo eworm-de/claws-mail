@@ -1,3 +1,8 @@
+2002-10-24 [thorsten]	0.8.5claws47-1
+
+	* src/*.c
+		comments cleaned up
+
 2002-10-14 [thorsten]	0.8.5claws30-2
 
 	* src/gtkstext.c

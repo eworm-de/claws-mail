@@ -25,10 +25,10 @@
 
 #include <glib.h>
 #ifdef WIN32
- #include <w32lib.h>
+# include <w32lib.h>
 #else
- #include <dirent.h>
- #include <unistd.h>
+# include <dirent.h>
+# include <unistd.h>
 #endif
 #include <sys/stat.h>
 #include <string.h>
@@ -884,7 +884,6 @@ void mh_scan_tree(Folder *folder)
 
 	g_return_if_fail(folder != NULL);
 
-//XXX:tm
 #ifdef WIN32
 	{
 		gchar *p_name;

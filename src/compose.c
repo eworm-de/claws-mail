@@ -939,7 +939,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 #ifdef WIN32
 	{
-	  	gchar *p_body = g_strdup(body);
+		gchar *p_body = g_strdup(body);
 		locale_from_utf8(&p_body);
 		
 		quote_str = compose_quote_fmt(compose, compose->replyinfo,
@@ -1837,7 +1837,7 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 {
 	g_return_if_fail(msginfo != NULL);
 
-#ifdef WIN32 
+#ifdef WIN32
 	{
 		gchar *p_subject, *p_to, *p_cc, *p_bcc, *p_replyto;
 		p_subject = g_strdup(msginfo->subject);
@@ -1911,11 +1911,11 @@ static void compose_exec_sig(Compose *compose, gchar *sigfile)
 	gint retval;
 	gchar *tmp;
 	gchar *cmd;
-#endif			
- 
+#endif
+
 	if (strlen(sigfile) < 2)
 	  return;
- 
+
 #ifdef WIN32
 	tmp = get_tmp_file();
 	cmd = g_strdup_printf("%s > %s",sigfile+1,tmp);
@@ -2126,7 +2126,6 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 	text[COL_MIMETYPE] = ainfo->content_type;
 	text[COL_SIZE] = to_human_readable(size);
 #ifdef WIN32
-/*XXX:075 */
 	{
 		gchar *p_name;
 		p_name = g_strdup(ainfo->name);
@@ -4107,20 +4106,20 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	/* From */
 	if (!IS_IN_CUSTOM_HEADER("From")) {
 		if (compose->account->name && *compose->account->name) {
- #ifdef WIN32
- 		gchar *p_name;
- 
- 		p_name = g_strdup(compose->account->name);
- 		locale_from_utf8(&p_name);
- 		compose_convert_header
- 			(buf, sizeof(buf), p_name,
- 			 strlen("From: "));
- 		g_free(p_name);
- #else
+#ifdef WIN32
+		gchar *p_name;
+
+		p_name = g_strdup(compose->account->name);
+		locale_from_utf8(&p_name);
+		compose_convert_header
+			(buf, sizeof(buf), p_name,
+			 strlen("From: "));
+		g_free(p_name);
+#else
 			compose_convert_header
 				(buf, sizeof(buf), compose->account->name,
 				 strlen("From: "));
- #endif
+#endif
 			QUOTE_IF_REQUIRED(name, buf);
 			fprintf(fp, "From: %s <%s>\n",
 				name, compose->account->address);
@@ -4133,14 +4132,14 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->use_to) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->to_entry));
- #ifdef WIN32
- 				str = g_strdup(str);
- 				locale_from_utf8(&str);
- #endif
-		PUT_RECIPIENT_HEADER("To", str);
- #ifdef WIN32
- 				g_free(str);
- #endif
+#ifdef WIN32
+				str = g_strdup(str);
+				locale_from_utf8(&str);
+#endif
+       	PUT_RECIPIENT_HEADER("To", str);
+#ifdef WIN32
+				g_free(str);
+#endif
 	}
 #endif
 
@@ -4150,33 +4149,24 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	if (compose->use_newsgroups) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->newsgroups_entry));
 		if (*str != '\0') {
-<<<<<<< compose.c
-#ifdef WIN32
-			str = g_strdup(str);
-			locale_from_utf8(&str);
-#endif
-			compose->newsgroup_list =
-				newsgroup_list_append(compose->newsgroup_list,
-						      str);
-			compose_convert_header(buf, sizeof(buf), str,
-					       strlen("Newsgroups: "));
-			fprintf(fp, "Newsgroups: %s\n", buf);
-#ifdef WIN32
-			g_free(str);
-#endif
-=======
 			Xstrdup_a(str, str, return -1);
 			g_strstrip(str);
 			remove_space(str);
 			if (*str != '\0') {
+#ifdef WIN32
+				str = g_strdup(str);
+				locale_from_utf8(&str);
+#endif
 				compose->newsgroup_list =
 					newsgroup_list_append
 						(compose->newsgroup_list, str);
 				compose_convert_header(buf, sizeof(buf), str,
 						       strlen("Newsgroups: "));
 				fprintf(fp, "Newsgroups: %s\n", buf);
+#ifdef WIN32
+				g_free(str);
+#endif
 			}
->>>>>>> 1.259
 		}
 	}
 #endif
@@ -6102,10 +6092,7 @@ static void compose_exec_ext_editor(Compose *compose)
 	tmp = g_strdup_printf("%s%ctmpmsg.%08x", get_tmp_dir(),
 			      G_DIR_SEPARATOR, (gint)compose);
 
-#ifdef WIN32
-/*XXX:tm ed1
-  instead of forking, create a gtk_timeout object for each external application
-*/
+#ifdef WIN32 /* instead of forking, create a gtk_timeout object for each external application */
 	{
 #else
 	if (pipe(pipe_fds) < 0) {
@@ -6135,7 +6122,6 @@ static void compose_exec_ext_editor(Compose *compose)
 			gdk_input_add(pipe_fds[0], GDK_INPUT_READ,
 				      compose_input_cb, compose);
 #ifdef WIN32
-/*XXX:tm ed2 */
 	}	{
 #else
 	} else {	/* process-monitoring process */
@@ -6143,9 +6129,7 @@ static void compose_exec_ext_editor(Compose *compose)
 
 		pid_t pid_ed;
 
-#ifdef WIN32
-/*XXX:tm ed3 */
-#else
+#ifndef WIN32
 		if (setpgid(0, 0))
 			perror("setpgid");
 
@@ -6154,7 +6138,6 @@ static void compose_exec_ext_editor(Compose *compose)
 #endif
 
 #ifdef WIN32
-/*XXX:tm ed4 */
 		if (compose_write_body_to_file(compose, tmp) < 0) {
 			gchar *p_tmp = g_strdup_printf(_("Cannot write\n%s"),&tmp);
 			locale_from_utf8(&p_tmp);
@@ -6185,9 +6168,7 @@ static void compose_exec_ext_editor(Compose *compose)
 		close(pipe_fds[1]);
 #endif
 
-#ifdef WIN32
-/*XXX:tm ed5 */
-#else
+#ifndef WIN32
 		_exit(0);
 #endif
 	}
@@ -6220,7 +6201,6 @@ static gint ext_editor_timeout_cb(Compose *compose) {
 #endif
 
 #ifdef WIN32
-/*XXX:tm ed6a */
 static gint compose_exec_ext_editor_real(const gchar *file, Compose *compose)
 #else
 static gint compose_exec_ext_editor_real(const gchar *file)
@@ -6234,9 +6214,7 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 
 	g_return_val_if_fail(file != NULL, -1);
 
-#ifdef WIN32
-/*XXX:tm ed6 */
-#else
+#ifndef WIN32
 	if ((pid = fork()) < 0) {
 		perror("fork");
 		return -1;
@@ -6261,7 +6239,6 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 	}
 
 #ifdef WIN32
-/*XXX:tm ed7 */
 	{
 		gint hEditor=0;
 		gint n,len=0;
@@ -6307,7 +6284,6 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 	g_strfreev(cmdline);
 
 #ifdef WIN32
-/*XXX:tm ed8 */
 	return(1);
 #else
 	_exit(1);
@@ -6377,7 +6353,6 @@ static void compose_input_cb(gpointer data, gint source,
 	gdk_input_remove(compose->exteditor_tag);
 
 #ifdef WIN32
-/*XXX:tm ed9 */
 	buf[0]='0';
 	buf[1]='0';
 	buf[2]=0;
@@ -6894,7 +6869,6 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 
 #ifdef WIN32
-/*XXX:075 */
 	if (compose->window)
 #endif
 	gtk_widget_destroy(compose->window);

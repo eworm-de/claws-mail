@@ -32,8 +32,8 @@
 #include <string.h>
 #ifdef WIN32
 #else
- #include <sys/time.h>
- #include <unistd.h>
+# include <sys/time.h>
+# include <unistd.h>
 #endif
 #include <signal.h>
 #include "intl.h"

@@ -1087,7 +1087,7 @@ gtk_stext_insert (GtkSText    *text,
 	  chars_nt[length] = 0;
 	}
 #ifdef WIN32
-	{ 
+	{
 		int nWritten;
 		int maxlen = (length+1)*2 ;
 		gchar *p_chars = g_malloc0(maxlen);
@@ -1099,7 +1099,7 @@ gtk_stext_insert (GtkSText    *text,
 	}
 #else
       numwcs = gdk_mbstowcs (text->text.wc + text->gap_position, chars_nt,
- 			     length);
+			     length);
 #endif
       if (chars_nt != chars)
 	g_free(chars_nt);
@@ -2116,7 +2116,7 @@ gtk_stext_insert_text    (GtkEditable       *editable,
 	g_free(p_new_text);
   }
 #else
-  
+
   gtk_stext_insert (text, font, fore, back, new_text, new_text_length);
 
 #endif

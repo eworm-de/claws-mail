@@ -18,10 +18,10 @@
  */
 
 #ifdef WIN32
- #include <w32lib.h>
- #include <process.h>
+# include <w32lib.h>
+# include <process.h>
 #else
- #include <unistd.h>
+# include <unistd.h>
 #endif
 #include <fcntl.h>
 #include <glib.h>
@@ -203,8 +203,7 @@ static gboolean mbox_file_lock_file(gchar * base)
 
 static gboolean mbox_fcntl_lockwrite_file(FILE * fp)
 {
-#ifdef WIN32
-#else
+#ifndef WIN32
 	struct flock lck;
 
 	lck.l_type = F_WRLCK;
@@ -221,8 +220,7 @@ static gboolean mbox_fcntl_lockwrite_file(FILE * fp)
 
 static gboolean mbox_fcntl_lockread_file(FILE * fp)
 {
-#ifdef WIN32
-#else
+#ifndef WIN32
 	struct flock lck;
 
 	lck.l_type = F_RDLCK;
@@ -239,8 +237,7 @@ static gboolean mbox_fcntl_lockread_file(FILE * fp)
 
 static gboolean mbox_fcntl_unlock_file(FILE * fp)
 {
-#ifdef WIN32
-#else
+#ifndef WIN32
 	struct flock lck;
 
 	lck.l_type = F_UNLCK;

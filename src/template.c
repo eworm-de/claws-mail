@@ -23,9 +23,9 @@
 #include <glib.h>
 #include <stdio.h>
 #ifdef WIN32
- #include <w32lib.h>
+# include <w32lib.h>
 #else
- #include <dirent.h>
+# include <dirent.h>
 #endif
 #include <sys/stat.h>
 #include <ctype.h>

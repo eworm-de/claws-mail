@@ -28,8 +28,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef WIN32
-#else
+#ifndef WIN32
 # include <unistd.h>
 #endif
 #include <stdlib.h>
@@ -77,55 +76,54 @@ Folder *folder_new(FolderType type, const gchar *name, const gchar *path)
 {
 	Folder *folder = NULL;
 	FolderItem *item;
- #ifdef WIN32
- 	gchar *Xname, *Xpath;
- #endif
+#ifdef WIN32
+	gchar *Xname, *Xpath;
+#endif
 
 	name = name ? name : path;
- 
- #ifdef WIN32
- 	Xname = NULL;
- 	if (name){
- 		Xname = g_strdup(name);
- 		locale_from_utf8(&Xname);
- 	}
- 
- 	Xpath = NULL;
- 	if (path){
- 		Xpath = g_strdup(path);
-/*XXX:075 */
- 		/* locale_from_utf8(&Xpath); */
- 	}
- #endif
- 
+
+#ifdef WIN32
+	Xname = NULL;
+	if (name){
+		Xname = g_strdup(name);
+		locale_from_utf8(&Xname);
+	}
+
+	Xpath = NULL;
+	if (path){
+		Xpath = g_strdup(path);
+		/* locale_from_utf8(&Xpath); */
+	}
+#endif
+
 	switch (type) {
 	case F_MBOX:
- #ifdef WIN32
- 		folder = mbox_folder_new(Xname, Xpath);
- #else
+#ifdef WIN32
+		folder = mbox_folder_new(Xname, Xpath);
+#else
 		folder = mbox_folder_new(name, path);
- #endif
+#endif
 		break;
 	case F_MH:
- #ifdef WIN32
- 		folder = mh_folder_new(Xname, Xpath);
- #else
+#ifdef WIN32
+		folder = mh_folder_new(Xname, Xpath);
+#else
 		folder = mh_folder_new(name, path);
- #endif
+#endif
 		break;
 	case F_IMAP:
- #ifdef WIN32
- 		folder = imap_folder_new(Xname, Xpath);
- #else
+#ifdef WIN32
+		folder = imap_folder_new(Xname, Xpath);
+#else
 		folder = imap_folder_new(name, path);
- #endif
+#endif
 		break;
 	case F_NEWS:
- #ifdef WIN32
- 		folder = news_folder_new(Xname, Xpath);
- #else
+#ifdef WIN32
+		folder = news_folder_new(Xname, Xpath);
+#else
 		folder = news_folder_new(name, path);
- #endif
+#endif
 		break;
 	default:
 		return NULL;
@@ -137,12 +135,12 @@ Folder *folder_new(FolderType type, const gchar *name, const gchar *path)
 	folder->node = g_node_new(item);
 	folder->data = NULL;
 
- #ifdef WIN32
- 	if (Xname)
- 		g_free(Xname);
- 	if (Xpath)
- 		g_free(Xpath);
- #endif
+#ifdef WIN32
+	if (Xname)
+		g_free(Xname);
+	if (Xpath)
+		g_free(Xpath);
+#endif
 
 	return folder;
 }
@@ -255,7 +253,6 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 	}
 	if (path){
 		Xpath = g_strdup(path);
-/*XXX:075 */
 		/* locale_to_utf8(&Xpath); */
 	}
 #endif
@@ -2266,33 +2263,33 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 		fprintf(fp, "<folder type=\"%s\"", folder_type_str[folder->type]);
 		if (folder->name) {
 			fputs(" name=\"", fp);
- #ifdef WIN32
- 			{
- 				gchar *p_name;
- 				p_name = g_strdup(folder->name);
- 				locale_from_utf8(&p_name);
- 				xml_file_put_escape_str(fp, p_name);
- 				g_free(p_name);
- 			}
- #else
+#ifdef WIN32
+			{
+				gchar *p_name;
+				p_name = g_strdup(folder->name);
+				locale_from_utf8(&p_name);
+				xml_file_put_escape_str(fp, p_name);
+				g_free(p_name);
+			}
+#else
 			xml_file_put_escape_str(fp, folder->name);
- #endif
+#endif
 			fputs("\"", fp);
 		}
 		if ((folder->type == F_MH) || (folder->type == F_MBOX)) {
 			fputs(" path=\"", fp);
- #ifdef WIN32
- 			{
- 				gchar *p_rootpath;
- 				p_rootpath = g_strdup(LOCAL_FOLDER(folder)->rootpath);
- 				locale_from_utf8(&p_rootpath);
- 				xml_file_put_escape_str(fp, p_rootpath);
- 				g_free(p_rootpath);
- 			}
- #else
+#ifdef WIN32
+			{
+				gchar *p_rootpath;
+				p_rootpath = g_strdup(LOCAL_FOLDER(folder)->rootpath);
+				locale_from_utf8(&p_rootpath);
+				xml_file_put_escape_str(fp, p_rootpath);
+				g_free(p_rootpath);
+			}
+#else
 			xml_file_put_escape_str
 				(fp, LOCAL_FOLDER(folder)->rootpath);
- #endif
+#endif
 			fputs("\"", fp);
 		}
 		if (item->collapsed && node->children)

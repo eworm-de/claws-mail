@@ -241,7 +241,7 @@ void conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 	*out = '\0';
 }
 
-#ifdef WIN32	/* tm:sjis */
+#ifdef WIN32	/* XXX:tm:sjis */
 void conv_euctosjis(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	/*
@@ -298,7 +298,7 @@ void conv_sjistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 	*out = '\0';
 }
 
-#ifdef WIN32	/* tm:sjis */
+#ifdef WIN32	/* XXX:tm:sjis */
 void conv_sjistojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	/* KCC_filter(outbuf, "JISBB", (gchar *)inbuf, "SJIS", 0, 0, 0); */

@@ -418,26 +418,26 @@ void procmime_scan_content_type(MimeInfo *mimeinfo, const gchar *content_type)
 			else if (!strcasecmp(attr, "name")) {
 				gchar *tmp;
 				size_t len;
- #ifdef WIN32
- 				len = strlen(value) * 2;
- 				tmp = g_malloc(len);
- #else
+#ifdef WIN32
+				len = strlen(value) * 2;
+				tmp = g_malloc(len);
+#else
 
 				len = strlen(value) + 1;
 				Xalloca(tmp, len, return);
- #endif
- #ifdef WIN32
- 				conv_euctojis(tmp, len, value);
- 				/* g_free(value); */
- 				value = g_strdup(tmp);
- #endif
+#endif
+#ifdef WIN32
+				conv_euctojis(tmp, len, value);
+				/* g_free(value); */
+				value = g_strdup(tmp);
+#endif
 				conv_unmime_header(tmp, len, value, NULL);
- 				g_free(mimeinfo->filename);
- #if 0
- #ifdef WIN32 /* // MARK!!!! */
- 				locale_from_utf8(&tmp);
- #endif
- #endif
+				g_free(mimeinfo->filename);
+#if 0
+#ifdef WIN32 /* // MARK!!!! */
+				locale_from_utf8(&tmp);
+#endif
+#endif
 				g_free(mimeinfo->name);
 				/*pgp signatures should NOT have a name */
 				if (mimeinfo->content_type 
@@ -1307,18 +1307,18 @@ GList *procmime_get_mime_type_list(void)
 	if (mime_type_list) 
 		return mime_type_list;
 
- #ifdef WIN32
- 		mimetypes_filename = g_strconcat(get_installed_dir(), G_DIR_SEPARATOR_S,
- 						SYSCONFDIR "/mime.types", NULL);
- #endif
- 
+#ifdef WIN32
+		mimetypes_filename = g_strconcat(get_installed_dir(), G_DIR_SEPARATOR_S,
+						SYSCONFDIR "/mime.types", NULL);
+#endif
+
 	if ((fp = fopen("/etc/mime.types", "rb")) == NULL) {
- #ifdef WIN32
+#ifdef WIN32
 		if ((fp = fopen(mimetypes_filename, "rb")) == NULL) {
 	 		g_free(mimetypes_filename);
- #else
+#else
 		if ((fp = fopen(SYSCONFDIR "/mime.types", "rb")) == NULL) {
- #endif
+#endif
 			FILE_OP_ERROR(SYSCONFDIR "/mime.types", "fopen");
 			return NULL;
 		}

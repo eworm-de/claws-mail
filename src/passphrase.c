@@ -25,8 +25,8 @@
 #include <string.h>
 #include <sys/types.h>
 #ifndef WIN32
- #include <sys/mman.h>
- #include <gdk/gdkx.h>  /* GDK_DISPLAY() */
+# include <sys/mman.h>
+# include <gdk/gdkx.h>  /* GDK_DISPLAY() */
 #endif
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>

@@ -198,7 +198,7 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	MsgTmpFlags tmp_flags = 0;
 	gchar file_buf[BUFFSIZE];
 	gint ver;
-	guint num;	/* XXX:tm initialized ? */
+	guint num;
 	gboolean error = FALSE;
 
 	g_return_val_if_fail(cache_file != NULL, NULL);

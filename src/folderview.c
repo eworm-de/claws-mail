@@ -2130,31 +2130,31 @@ static void folderview_rename_mbox_folder_cb(FolderView *folderview,
 	g_return_if_fail(item->path != NULL);
 	g_return_if_fail(item->folder != NULL);
 
- #ifdef WIN32
- 	{
- 		gchar *p_path;
- 		p_path = g_strdup(item->path);
- 		locale_to_utf8(&p_path);
- 
- 		message = g_strdup_printf(_("Input new name for `%s':"),
- 					  g_basename(p_path));
- 		new_folder = input_dialog(_("Rename folder"), message,
- 					  g_basename(p_path));
- 	}
- #else
+#ifdef WIN32
+	{
+		gchar *p_path;
+		p_path = g_strdup(item->path);
+		locale_to_utf8(&p_path);
+
+		message = g_strdup_printf(_("Input new name for `%s':"),
+					  g_basename(p_path));
+		new_folder = input_dialog(_("Rename folder"), message,
+					  g_basename(p_path));
+	}
+#else
 	message = g_strdup_printf(_("Input new name for `%s':"),
 				  g_basename(item->path));
 	new_folder = input_dialog(_("Rename folder"), message,
 				  g_basename(item->path));
- #endif
+#endif
 	g_free(message);
 	if (!new_folder) return;
 
- #ifdef WIN32
- 	new_folder = g_strdup(new_folder);
- 	locale_from_utf8(&new_folder);
- #endif
- 
+#ifdef WIN32
+	new_folder = g_strdup(new_folder);
+	locale_from_utf8(&new_folder);
+#endif
+
 	if (folderview_find_by_name
 		(ctree, GTK_CTREE_ROW(folderview->selected)->parent,
 		 new_folder)) {

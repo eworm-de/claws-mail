@@ -307,16 +307,16 @@ GPtrArray *procheader_get_header_array_asis(FILE *fp)
 				header = g_new(Header, 1);
 				header->name = g_strndup(buf, p - buf);
 				p++;
-+ #ifdef WIN32
-+ 				{
-+ 					gchar *hdr = g_strdup("X-Face");
-+ 					if (strcasecmp(header->name, hdr))
-+ 						conv_unmime_header(tmp, sizeof(tmp), p, NULL);
-+ 					g_free(hdr);
-+ 				}
-+ #else
+#ifdef WIN32
+				{
+					gchar *hdr = g_strdup("X-Face");
+					if (strcasecmp(header->name, hdr))
+						conv_unmime_header(tmp, sizeof(tmp), p, NULL);
+					g_free(hdr);
+				}
+#else
 				conv_unmime_header(tmp, sizeof(tmp), p, NULL);
-+ #endif
+#endif
 				header->body = g_strdup(tmp);
 
 				g_ptr_array_add(headers, header);

@@ -27,10 +27,10 @@
 #include <stdio.h>
 #include <string.h>
 #ifdef WIN32
- #include "w32lib.h"
+# include "w32lib.h"
 #else
- #include <unistd.h>
- #include <sys/time.h>
+# include <unistd.h>
+# include <sys/time.h>
 #endif
 #include "intl.h"
 #include "recv.h"

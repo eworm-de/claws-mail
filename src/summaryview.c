@@ -46,7 +46,7 @@
 #include <ctype.h>
 #ifdef WIN32
 #else
- #include <unistd.h>
+# include <unistd.h>
 #endif
 #include <sys/stat.h>
 #include <regex.h>

@@ -22,9 +22,8 @@
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkpixmap.h>
 #include <string.h>
-#ifdef WIN32
-#else
- #include <dirent.h>
+#ifndef WIN32
+# include <dirent.h>
 #endif
 #include "stock_pixmap.h"
 #include "gtkutils.h"

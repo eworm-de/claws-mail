@@ -27,7 +27,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #ifndef WIN32
- #include <gdk/gdkx.h>
+# include <gdk/gdkx.h>
 #endif
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,11 +35,11 @@
 #include <errno.h>
 #include <sys/types.h>
 #ifdef WIN32
- #include <w32lib.h>
- #include <fcntl.h>
+# include <w32lib.h>
+# include <fcntl.h>
 #else
- #include <sys/wait.h>
- #include <unistd.h>
+# include <sys/wait.h>
+# include <unistd.h>
 #endif
 #include <signal.h>
 
