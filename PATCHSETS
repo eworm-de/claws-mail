@@ -84,3 +84,4 @@
 ( cvs diff -u -r 1.72 -r 1.73 src/account.c; ) > 0.9.12cvs99.patchset
 ( cvs diff -u -r 1.259 -r 1.260 src/folder.c; ) > 0.9.12cvs100.patchset
 ( cvs diff -u -r 1.143 -r 1.144 src/main.c; ) > 0.9.12cvs101.patchset
+( cvs diff -u -r 1.442 -r 1.443 ChangeLog; cvs diff -u -r 1.437 -r 1.438 ChangeLog.jp; cvs diff -u -r 1.176 -r 1.177 src/inc.c; ) > 0.9.12cvs102.patchset

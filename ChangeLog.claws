@@ -1,3 +1,11 @@
+2004-09-17 [paul]	0.9.12cvs102
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/inc.c
+		sync with main 0.9.12cvs14, see ChangeLog 2004-09-09
+ 
+
 2004-09-17 [colin]	0.9.12cvs101
 
 	* src/main.c

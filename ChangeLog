@@ -1,3 +1,86 @@
+2004-09-17
+
+	* src/filter.c:
+	  filter_action_exec(): modified local filtering.
+	  strmatch_regex(): use case-insensitive regex.
+	* src/summaryview.[ch]: display filtering result to the status bar.
+
+2004-09-14
+
+	* src/filter.[ch]: implemented filter rule application timing.
+	* src/prefs_fil_er_edit.c: prefs_filter_edit_action_hbox_set():
+	  fixed a bug that didn't display parameter of PF_ACTION_EXEC.
+
+2004-09-10
+
+	* src/prefs_filter.c: prefs_filter_write_user_header_list(): use
+	  prefs_file_open() instead of fopen().
+
+2004-09-10
+
+	* src/defs.h
+	  src/prefs_filter.c: implemented load/save of user-defined
+	  header list.
+
+2004-09-09
+
+	* src/inc.c: inc_spool()
+	  src/prefs_common.c: modified spool path config so that users can
+	  specify both file and directory.
+
+2004-09-09
+
+	* src/prefs_filter.[ch]
+	  src/prefs_filter_edit.[ch]: implemented creating filter rule by
+	  message.
+
+2004-09-07
+
+	* src/mimeview.c: mimeview_drag_data_get()
+	  src/summaryview.c: summary_drag_data_get(): fixed broken URI in
+	  DnD.
+
+2004-09-06
+
+	* src/filter.[ch]
+	  src/summaryview.c: fixed local filtering.
+	* src/mh.c: mh_copy_msgs(): restored missing 'else'.
+
+2004-09-06
+
+	* src/foldersel.c: foldersel_new_folder(): fixed possible memory
+	  corruption, and write folder list data after appending.
+	* src/summaryview.c: summary_show(): up FolderItem::opened flag
+	  after reading message list.
+
+2004-09-03
+
+	* src/filter.c
+	  src/inc.c
+	  src/mbox.c
+	  src/mh.c
+	  src/procmsg.[ch]
+	  src/summaryview.c: properly handle 'new' flags by using
+	  FolderItem::mark_queue.
+
+2004-08-31
+
+	* src/filter.c
+	  src/inc.c: modified 'new' flags management.
+
+2004-08-31
+
+	* src/prefs_filter.c: don't move to the last row when opening the
+	  dialog. Clear CList when closing.
+
+2004-08-27
+
+	* src/filter.c
+	  src/inc.c
+	  src/pop.[ch]
+	  src/prefs_filter_edit.c
+	  src/summaryview.c: implemented FLT_ACTION_EXEC and FLT_ACTION_DELETE.
+
 2004-08-27
 
 	* src/prefs_filter.c: auto-scroll when a new rule is added.

@@ -1221,10 +1221,8 @@ static gint inc_dialog_delete_cb(GtkWidget *widget, GdkEventAny *event,
 static gint inc_spool_account(PrefsAccount *account)
 {
 	FolderItem *inbox;
-	gchar *mbox, *logname;
+	gchar *mbox;
 	gint result;
-
-	logname = g_get_user_name();
 
 	if (account->inbox) {
 		inbox = folder_find_item_from_path(account->inbox);
@@ -1235,9 +1233,14 @@ static gint inc_spool_account(PrefsAccount *account)
 
 	if (is_file_exist(account->local_mbox))
 		mbox = g_strdup(account->local_mbox);
-	else 
-		mbox = g_strconcat(account->local_mbox,
-			   	   G_DIR_SEPARATOR_S, logname, NULL);
+	else if (is_dir_exist(account->local_mbox)) 
+		mbox = g_strconcat(account->local_mbox, G_DIR_SEPARATOR_S,
+				   g_get_user_name(), NULL);
+	else {
+		debug_print("%s: local mailbox not found.\n", 
+			    account->local_mbox);
+		return -1;
+	}
 	
 	result = get_spool(inbox, mbox);
 	g_free(mbox);
@@ -1280,7 +1283,7 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 	g_return_val_if_fail(mbox != NULL, -1);
 
 	if (!is_file_exist(mbox) || (size = get_file_size(mbox)) == 0) {
-		debug_print("no messages in local mailbox.\n");
+		debug_print("%s: no messages in local mailbox.\n", mbox);
 		return 0;
 	} else if (size < 0)
 		return -1;

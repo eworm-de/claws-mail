@@ -1,3 +1,86 @@
+2004-09-17
+
+	* src/filter.c:
+	  filter_action_exec(): ローカルフィルタリングを修正。
+	  strmatch_regex(): 大小文字無視の正規表現を使用。
+	* src/summaryview.[ch]: フィルタ結果をステータスバーに表示。
+
+2004-09-14
+
+	* src/filter.[ch]: フィルタルール適用タイミングを実装。
+	* src/prefs_fil_er_edit.c: prefs_filter_edit_action_hbox_set():
+	  PF_ACTION_EXEC のパラメータを表示していなかったバグを修正。
+
+2004-09-10
+
+	* src/prefs_filter.c: prefs_filter_write_user_header_list(): fopen()
+	  の代わりに prefs_file_open() を使用。
+
+2004-09-10
+
+	* src/defs.h
+	  src/prefs_filter.c: ユーザ定義ヘッダリストのロード/セーブを
+	  実装。
+
+2004-09-09
+
+	* src/inc.c: inc_spool()
+	  src/prefs_common.c: ファイルとディレクトリの両方を指定できるように
+	  スプールパスの設定を修正。
+
+2004-09-09
+
+	* src/prefs_filter.[ch]
+	  src/prefs_filter_edit.[ch]: メッセージからのフィルタルールの作成
+	  を実装。
+
+2004-09-07
+
+	* src/mimeview.c: mimeview_drag_data_get()
+	  src/summaryview.c: summary_drag_data_get(): DnD の不正な URI
+	  を修正。
+
+2004-09-06
+
+	* src/filter.[ch]
+	  src/summaryview.c: ローカルフィルタを修正。
+	* src/mh.c: mh_copy_msgs(): 'else' が抜けていたのを修正。
+
+2004-09-06
+
+	* src/foldersel.c: foldersel_new_folder(): 潜在的なメモリ破壊を修正
+	  し、追加後にフォルダリストを書き出すようにした。
+	* src/summaryview.c: summary_show(): メッセージリストを読み込んだ
+	  後に FolderItem::opened フラグを立てるようにした。
+
+2004-09-03
+
+	* src/filter.c
+	  src/inc.c
+	  src/mbox.c
+	  src/mh.c
+	  src/procmsg.[ch]
+	  src/summaryview.c: FolderItem::mark_queue を使用して新着フラグを
+	  正しく扱うようにした。
+
+2004-08-31
+
+	* src/filter.c
+	  src/inc.c: 新着フラグ管理の修正。
+
+2004-08-31
+
+	* src/prefs_filter.c: ダイアログを開いた時に最後の行に移動しない
+	  ようにした。閉じる時に CList をクリアするようにした。
+
+2004-08-27
+
+	* src/filter.c
+	  src/inc.c
+	  src/pop.[ch]
+	  src/prefs_filter_edit.c
+	  src/summaryview.c: FLT_ACTION_EXEC と FLT_ACTION_DELETE を実装。
+
 2004-08-27
 
 	* src/prefs_filter.c: 新規ルールが追加されたら自動スクロールする
