@@ -1,3 +1,18 @@
+2001-05-30 [hoa]
+
+	* src/filtering.[ch]
+	* src/summaryview.c
+		handling summary menu / filter messages
+
+	* src/folder.[ch]
+		add some stuff
+
+	* src/foldersel.c
+		imap folders now appears in list
+
+	* src/mbox_folder.c
+		doesn't crash if destination mail is not writeable
+
 2001-05-29 [hoa]
 
 	* src/compose.c

@@ -149,6 +149,7 @@ struct _Folder
 					 FolderItem	*item,
 					 MsgInfo        *info);
 	void     (*finished_copy)       (Folder * folder, FolderItem * item);
+	void     (*finished_remove)       (Folder * folder, FolderItem * item);
 };
 
 struct _LocalFolder

@@ -38,6 +38,8 @@ FilteringProp * filteringprop_parse(gchar ** str);
 
 void filter_msginfo(GSList * filtering_list, MsgInfo * info,
 		    GHashTable *folder_table);
+void filter_msginfo_move_or_delete(GSList * filtering_list, MsgInfo * info,
+				   GHashTable *folder_table);
 void filter_message(GSList * filtering_list, FolderItem * item,
 		    gint msgnum, GHashTable *folder_table);
 

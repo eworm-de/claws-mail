@@ -233,19 +233,21 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		info->flags = 0;
 		filteringaction_update_mark(info);
 		
-		val = GPOINTER_TO_INT(g_hash_table_lookup
-				      (folder_table, dest_folder));
-		if (val == 0) {
-			folder_item_scan(dest_folder);
-			g_hash_table_insert(folder_table, dest_folder,
-					    GINT_TO_POINTER(1));
-		}
-		val = GPOINTER_TO_INT(g_hash_table_lookup
-				      (folder_table, info->folder));
-		if (val == 0) {
-			folder_item_scan(info->folder);
-			g_hash_table_insert(folder_table, info->folder,
-					    GINT_TO_POINTER(1));
+		if (folder_table) {
+			val = GPOINTER_TO_INT(g_hash_table_lookup
+					      (folder_table, dest_folder));
+			if (val == 0) {
+				folder_item_scan(dest_folder);
+				g_hash_table_insert(folder_table, dest_folder,
+						    GINT_TO_POINTER(1));
+			}
+			val = GPOINTER_TO_INT(g_hash_table_lookup
+					      (folder_table, info->folder));
+			if (val == 0) {
+				folder_item_scan(info->folder);
+				g_hash_table_insert(folder_table, info->folder,
+						    GINT_TO_POINTER(1));
+			}
 		}
 
 		return TRUE;
@@ -259,14 +261,16 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		if (folder_item_copy_msg(dest_folder, info) == -1)
 			return FALSE;
 
-		val = GPOINTER_TO_INT(g_hash_table_lookup
-				      (folder_table, dest_folder));
-		if (val == 0) {
-			folder_item_scan(dest_folder);
-			g_hash_table_insert(folder_table, dest_folder,
-					    GINT_TO_POINTER(1));
+		if (folder_table) {
+			val = GPOINTER_TO_INT(g_hash_table_lookup
+					      (folder_table, dest_folder));
+			if (val == 0) {
+				folder_item_scan(dest_folder);
+				g_hash_table_insert(folder_table, dest_folder,
+						    GINT_TO_POINTER(1));
+			}
 		}
-
+			
 		return TRUE;
 
 	case MATCHING_ACTION_DELETE:
@@ -420,6 +424,28 @@ void filter_msginfo(GSList * filtering_list, MsgInfo * info,
 		
 		if (filteringprop_apply(filtering, info, folder_table))
 			break;
+	}
+}
+
+void filter_msginfo_move_or_delete(GSList * filtering_list, MsgInfo * info,
+				   GHashTable *folder_table)
+{
+	GSList * l;
+
+	if (info == NULL) {
+		g_warning(_("msginfo is not set"));
+		return;
+	}
+	
+	for(l = filtering_list ; l != NULL ; l = g_slist_next(l)) {
+		FilteringProp * filtering = (FilteringProp *) l->data;
+
+		switch (filtering->action->type) {
+		case MATCHING_ACTION_MOVE:
+		case MATCHING_ACTION_DELETE:
+			if (filteringprop_apply(filtering, info, folder_table))
+				return;
+		}
 	}
 }
 

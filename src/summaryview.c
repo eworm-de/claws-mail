@@ -74,6 +74,7 @@
 #include "addr_compl.h"
 #include "scoring.h"
 #include "prefs_folder_item.h"
+#include "filtering.h"
 
 #include "pixmaps/dir-open.xpm"
 #include "pixmaps/mark.xpm"
@@ -2686,16 +2687,35 @@ void summary_filter(SummaryView *summaryview)
 
 	gtk_clist_freeze(GTK_CLIST(summaryview->ctree));
 
-	gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
-				GTK_CTREE_FUNC(summary_filter_func),
-				summaryview);
+	if (prefs_filtering == NULL) {
+		gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
+					GTK_CTREE_FUNC(summary_filter_func),
+					summaryview);
+		
+		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 
-	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
+		if (prefs_common.immediate_exec)
+			summary_execute(summaryview);
+		else
+			summary_status_show(summaryview);
+	}
+	else {
+		summaryview->folder_table = g_hash_table_new(NULL, NULL);
 
-	if (prefs_common.immediate_exec)
-		summary_execute(summaryview);
-	else
-		summary_status_show(summaryview);
+		gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
+					GTK_CTREE_FUNC(summary_filter_func),
+					summaryview);
+
+		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
+
+		folder_item_scan_foreach(summaryview->folder_table);
+		folderview_update_item_foreach(summaryview->folder_table);
+
+		g_hash_table_destroy(summaryview->folder_table);
+		summaryview->folder_table = NULL;
+
+		summary_show(summaryview, summaryview->folder_item, FALSE);
+	}
 
 	debug_print(_("done.\n"));
 	STATUSBAR_POP(summaryview->mainwin);
@@ -2710,13 +2730,19 @@ static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
 	gchar *file;
 	FolderItem *dest;
 
-	file = procmsg_get_message_file_path(msginfo);
-	dest = filter_get_dest_folder(prefs_common.fltlist, file);
-	g_free(file);
+	if (prefs_filtering == NULL) {
+		/* old filtering */
+		file = procmsg_get_message_file_path(msginfo);
+		dest = filter_get_dest_folder(prefs_common.fltlist, file);
+		g_free(file);
 
-	if (dest && strcmp2(dest->path, FILTER_NOT_RECEIVE) != 0 &&
-	    summaryview->folder_item != dest)
-		summary_move_row_to(summaryview, node, dest);
+		if (dest && strcmp2(dest->path, FILTER_NOT_RECEIVE) != 0 &&
+		    summaryview->folder_item != dest)
+			summary_move_row_to(summaryview, node, dest);
+	}
+	else
+		filter_msginfo_move_or_delete(prefs_filtering, msginfo,
+					      summaryview->folder_table);
 }
 
 /* callback functions */

@@ -780,6 +780,7 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 gint folder_item_remove_msg(FolderItem *item, gint num)
 {
 	Folder *folder;
+	gint result;
 
 	g_return_val_if_fail(item != NULL, -1);
 
@@ -788,14 +789,25 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 	g_return_val_if_fail(folder->scan != NULL, -1);
 	g_return_val_if_fail(folder->remove_msg != NULL, -1);
 
+	if (folder->finished_remove)
+		folder->finished_remove(folder, item);
+
+	result = folder->remove_msg(folder, item, num);
+
 	if (item->last_num < 0) folder->scan(folder, item);
 
-	return folder->remove_msg(folder, item, num);
+	if (result == 0){
+		if (folder->finished_remove)
+			folder->finished_remove(folder, item);
+	}
+
+	return result;
 }
 
 gint folder_item_remove_all_msg(FolderItem *item)
 {
 	Folder *folder;
+	gint result;
 
 	g_return_val_if_fail(item != NULL, -1);
 
@@ -806,7 +818,14 @@ gint folder_item_remove_all_msg(FolderItem *item)
 
 	if (item->last_num < 0) folder->scan(folder, item);
 
-	return folder->remove_all_msg(folder, item);
+	result = folder->remove_all_msg(folder, item);
+
+	if (result == 0){
+		if (folder->finished_remove)
+			folder->finished_remove(folder, item);
+	}
+
+	return result;
 }
 
 gboolean folder_item_is_msg_changed(FolderItem *item, MsgInfo *msginfo)
@@ -913,7 +932,11 @@ static void folder_init(Folder *folder, FolderType type, const gchar *name)
 		folder->remove_all_msg      = imap_remove_all_msg;
 		folder->scan                = imap_scan_folder;
 		folder->create_folder       = imap_create_folder;
-		folder->remove_folder       = imap_remove_folder;		
+		folder->remove_folder       = imap_remove_folder;
+		/*
+		folder->copy_msg            = imap_copy_msg;
+		folder->finished_remove     = imap_finished_remove;
+		*/
 		break;
 	case F_NEWS:
 		folder->get_msg_list        = news_get_article_list;

@@ -1608,6 +1608,9 @@ gint mbox_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	g_free(mbox_path);
 	*/
 
+	if (num == -1)
+		return -1;
+
 	flags_info = g_new0(CopyFlagsInfo, 1);
 	flags_info->num = num;
 	flags_info->flags = msginfo->flags;
