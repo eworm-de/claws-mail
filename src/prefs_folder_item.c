@@ -124,8 +124,27 @@ void prefs_folder_item_read_config(FolderItem * item)
 
 	*item->prefs = tmp_prefs;
 
-	/* MIGRATION */
-	item->ret_rcpt = tmp_prefs.request_return_receipt ? TRUE : FALSE; 
+	/*
+	 * MIGRATION: next lines are migration code. the idea is that
+	 *            if used regularly, claws folder config ends up
+	 *            in the same file as sylpheed-main
+	 */
+
+	item->ret_rcpt = tmp_prefs.request_return_receipt ? TRUE : FALSE;
+
+	/* MIGRATION: 0.7.8main+ has persistent sort order. claws had the sort
+	 *	      order in different members, which is ofcourse a little
+	 *	      bit phoney. */
+	if (item->sort_key == SORT_BY_NONE) {
+		item->sort_key  = (tmp_prefs.sort_by_number  ? SORT_BY_NUMBER  :
+				   tmp_prefs.sort_by_size    ? SORT_BY_SIZE    :
+				   tmp_prefs.sort_by_date    ? SORT_BY_DATE    :
+				   tmp_prefs.sort_by_from    ? SORT_BY_FROM    :
+				   tmp_prefs.sort_by_subject ? SORT_BY_SUBJECT :
+				   tmp_prefs.sort_by_score   ? SORT_BY_SCORE   :
+								 SORT_BY_NONE);
+		item->sort_type = tmp_prefs.sort_descending ? SORT_DESCENDING : SORT_ASCENDING;
+	}								
 }
 
 void prefs_folder_item_save_config(FolderItem * item)
@@ -146,38 +165,10 @@ void prefs_folder_item_save_config(FolderItem * item)
 void prefs_folder_item_set_config(FolderItem * item,
 				  int sort_type, gint sort_mode)
 {
-	tmp_prefs = * item->prefs;
-
-	tmp_prefs.sort_by_number = FALSE;
-	tmp_prefs.sort_by_size = FALSE;
-	tmp_prefs.sort_by_date = FALSE;
-	tmp_prefs.sort_by_from = FALSE;
-	tmp_prefs.sort_by_subject = FALSE;
-	tmp_prefs.sort_by_score = FALSE;
-
-	switch (sort_mode) {
-	case SORT_BY_NUMBER:
-		tmp_prefs.sort_by_number = TRUE;
-		break;
-	case SORT_BY_SIZE:
-		tmp_prefs.sort_by_size = TRUE;
-		break;
-	case SORT_BY_DATE:
-		tmp_prefs.sort_by_date = TRUE;
-		break;
-	case SORT_BY_FROM:
-		tmp_prefs.sort_by_from = TRUE;
-		break;
-	case SORT_BY_SUBJECT:
-		tmp_prefs.sort_by_subject = TRUE;
-		break;
-	case SORT_BY_SCORE:
-		tmp_prefs.sort_by_score = TRUE;
-		break;
-	}
-	tmp_prefs.sort_descending = (sort_type == GTK_SORT_DESCENDING);
-
-	* item->prefs = tmp_prefs;
+	g_assert(item);
+	g_warning("prefs_folder_item_set_config() should never be called\n");
+	item->sort_key  = sort_type;
+	item->sort_type = sort_mode;
 }
 
 PrefsFolderItem * prefs_folder_item_new(void)
@@ -226,31 +217,16 @@ void prefs_folder_item_free(PrefsFolderItem * prefs)
 
 gint prefs_folder_item_get_sort_mode(FolderItem * item)
 {
-	tmp_prefs = * item->prefs;
-
-	if (tmp_prefs.sort_by_number)
-		return SORT_BY_NUMBER;
-	if (tmp_prefs.sort_by_size)
-		return SORT_BY_SIZE;
-	if (tmp_prefs.sort_by_date)
-		return SORT_BY_DATE;
-	if (tmp_prefs.sort_by_from)
-		return SORT_BY_FROM;
-	if (tmp_prefs.sort_by_subject)
-		return SORT_BY_SUBJECT;
-	if (tmp_prefs.sort_by_score)
-		return SORT_BY_SCORE;
-	return SORT_BY_NONE;
+	g_assert(item != NULL);
+	g_warning("prefs_folder_item_get_sort_mode() should never be called\n");
+	return item->sort_key;
 }
 
 gint prefs_folder_item_get_sort_type(FolderItem * item)
 {
-	tmp_prefs = * item->prefs;
-
-	if (tmp_prefs.sort_descending)
-		return GTK_SORT_DESCENDING;
-	else
-		return GTK_SORT_ASCENDING;
+	g_assert(item != NULL);
+	g_warning("prefs_folder_item_get_sort_type() should never be called\n");
+	return item->sort_type;
 }
 
 #define SAFE_STRING(str) \

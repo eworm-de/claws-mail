@@ -244,10 +244,12 @@ struct _FolderItem
 };
 
 typedef struct {
-	guint	collapsed	: 1;
-	guint	threaded	: 1;
-	guint   hide_read_msgs	: 1; /* CLAWS */
-	guint	ret_rcpt	: 1; /* CLAWS */
+	FolderSortKey	sort_key;
+	FolderSortType	sort_type;
+	guint		collapsed	: 1;
+	guint		threaded	: 1;
+	guint		hide_read_msgs	: 1; /* CLAWS */
+	guint		ret_rcpt	: 1; /* CLAWS */
 } PersistPrefs;
 
 Folder     *folder_new			(FolderType	 type,

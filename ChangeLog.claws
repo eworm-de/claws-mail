@@ -1,3 +1,10 @@
+2002-06-16 [alfons]	0.7.8claws2
+
+	* src/prefs_folder_item.c
+	* src/folder.[ch]
+		fix persistence of folder sort mode (broken
+		by adapting Hiro's new folder persistence code)
+
 2002-06-16 [alfons]	0.7.8claws1
 
 	* AUTHORS
