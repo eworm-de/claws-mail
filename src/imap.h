@@ -105,13 +105,13 @@ typedef enum
 
 Folder	*imap_folder_new		(const gchar	*name,
 					 const gchar	*path);
-void	 imap_folder_destroy		(IMAPFolder	*folder);
+void	 imap_folder_destroy		(Folder		*folder);
 
 FolderItem *imap_folder_item_new	();
 void imap_folder_item_destroy		(FolderItem *item);
 
 Session *imap_session_new		(const PrefsAccount *account);
-void imap_session_destroy		(IMAPSession	*session);
+void imap_session_destroy		(Session	*session);
 void imap_session_destroy_all		(void);
 
 GSList *imap_get_msg_list		(Folder		*folder,

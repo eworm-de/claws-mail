@@ -264,7 +264,7 @@ int main(int argc, char *argv[])
 
 			val = alertpanel_message_with_disable
 				(_("Warning"),
-				 _("GnuPG is not installed properly.\n"
+				 _("GnuPG is not installed properly, or needs to be upgraded.\n"
 				   "OpenPGP support disabled."));
 			if (val & G_ALERTDISABLE)
 				prefs_common.gpg_warning = FALSE;

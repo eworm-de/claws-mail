@@ -123,8 +123,15 @@ Folder *news_folder_new(const gchar *name, const gchar *path)
 	return folder;
 }
 
-void news_folder_destroy(NewsFolder *folder)
+void news_folder_destroy(Folder *folder)
 {
+	gchar *dir;
+
+	dir = folder_get_path(folder);
+	if (is_dir_exist(dir))
+		remove_dir_recursive(dir);
+	g_free(dir);
+
 	folder_remote_folder_destroy(REMOTE_FOLDER(folder));
 }
 
@@ -142,6 +149,7 @@ static void news_folder_init(Folder *folder, const gchar *name,
 /*
 	folder->scan         = news_scan_group;
 */
+	folder->destroy      = news_folder_destroy;
 	folder->remove_msg   = news_remove_msg;
 	folder->get_num_list = news_get_num_list;
 	folder->fetch_msginfo = news_fetch_msginfo;
@@ -190,18 +198,21 @@ static Session *news_session_new(const gchar *server, gushort port,
 	SESSION(session)->phase            = SESSION_READY;
 	SESSION(session)->last_access_time = time(NULL);
 	SESSION(session)->data             = NULL;
+
+	SESSION(session)->destroy          = news_session_destroy;
+
 	session->group = NULL;
 
 	return SESSION(session);
 }
 
-void news_session_destroy(NNTPSession *session)
+void news_session_destroy(Session *session)
 {
-	nntp_close(session->nntp_sock);
-	session->nntp_sock = NULL;
-	SESSION(session)->sock = NULL;
+	nntp_close(NNTP_SESSION(session)->nntp_sock);
+	NNTP_SESSION(session)->nntp_sock = NULL;
+	session->sock = NULL;
 
-	g_free(session->group);
+	g_free(NNTP_SESSION(session)->group);
 }
 
 static Session *news_session_new_for_folder(Folder *folder)

@@ -205,6 +205,8 @@ static void compose_attach_parts		(Compose	*compose,
 						 MsgInfo	*msginfo);
 static void compose_wrap_line			(Compose	*compose);
 static void compose_wrap_line_all		(Compose	*compose);
+static void compose_wrap_line_all_full		(Compose	*compose,
+						 gboolean	 autowrap);
 static void compose_set_title			(Compose	*compose);
 
 static PrefsAccount *compose_current_mail_account(void);
@@ -2328,7 +2330,7 @@ static guint ins_quote(GtkSText *text, guint indent_len,
 
 /* check if we should join the next line */
 static gboolean join_next_line(GtkSText *text, guint start_pos, guint tlen,
-			       guint prev_ilen)
+			       guint prev_ilen, gboolean autowrap)
 {
 	guint indent_len, ch_len;
 	gboolean do_join = FALSE;
@@ -2336,7 +2338,7 @@ static gboolean join_next_line(GtkSText *text, guint start_pos, guint tlen,
 
 	indent_len = get_indent_length(text, start_pos, tlen);
 
-	if (indent_len > 0 && indent_len == prev_ilen) {
+	if ((autowrap || indent_len > 0) && indent_len == prev_ilen) {
 		GET_CHAR(start_pos + indent_len, cbuf, ch_len);
 		if (ch_len > 0 && (cbuf[0] != '\n'))
 			do_join = TRUE;
@@ -2345,10 +2347,15 @@ static gboolean join_next_line(GtkSText *text, guint start_pos, guint tlen,
 	return do_join;
 }
 
+static void compose_wrap_line_all(Compose *compose)
+{
+	compose_wrap_line_all_full(compose, FALSE);
+}
+
 #define STEXT_FREEZE() \
 	if (!frozen) { gtk_stext_freeze(text); frozen = TRUE; }
 
-static void compose_wrap_line_all(Compose *compose)
+static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 {
 	GtkSText *text = GTK_STEXT(compose->text);
 	guint tlen;
@@ -2407,8 +2414,9 @@ static void compose_wrap_line_all(Compose *compose)
 			gchar cb[MB_LEN_MAX];
 
 			/* should we join the next line */
-			if (i_len != cur_len && do_delete &&
-			    join_next_line(text, cur_pos + 1, tlen, i_len))
+			if ((autowrap || i_len != cur_len) && do_delete &&
+			    join_next_line
+				(text, cur_pos + 1, tlen, i_len, autowrap))
 				do_delete = TRUE;
 			else
 				do_delete = FALSE;
@@ -2557,7 +2565,7 @@ static void compose_wrap_line_all(Compose *compose)
 			/* start over with current line */
 			is_new_line = TRUE;
 			line_len = cur_len = 0;
-			if (i_len)
+			if (autowrap || i_len > 0)
 				do_delete = TRUE;
 			else
 				do_delete = FALSE;
@@ -6278,6 +6286,7 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 			return;
 		}
 	}
+
 	gtk_widget_destroy(compose->window);
 }
 
@@ -6376,60 +6385,35 @@ static void compose_allsel_cb(Compose *compose)
 			(GTK_EDITABLE(compose->focused_editable), 0, -1);
 }
 
-static void compose_gtk_stext_action_cb(Compose *compose, ComposeCallGtkSTextAction action)
+static void compose_gtk_stext_action_cb(Compose *compose,
+					ComposeCallGtkSTextAction action)
 {
-	if (!(compose->focused_editable && GTK_WIDGET_HAS_FOCUS(compose->focused_editable))) return;
-		
-	switch (action) {
-		case COMPOSE_CALL_GTK_STEXT_MOVE_BEGINNING_OF_LINE:
-			gtk_stext_move_beginning_of_line(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_MOVE_FORWARD_CHARACTER:
-			gtk_stext_move_forward_character(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_MOVE_BACKWARD_CHARACTER:
-			gtk_stext_move_backward_character(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_MOVE_FORWARD_WORD:
-			gtk_stext_move_forward_word(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_MOVE_BACKWARD_WORD:
-			gtk_stext_move_backward_word(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_MOVE_END_OF_LINE:
-			gtk_stext_move_end_of_line(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_MOVE_NEXT_LINE:
-			gtk_stext_move_next_line(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_MOVE_PREVIOUS_LINE:
-			gtk_stext_move_previous_line(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_DELETE_FORWARD_CHARACTER:
-			gtk_stext_delete_forward_character(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_DELETE_BACKWARD_CHARACTER:
-			gtk_stext_delete_backward_character(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_DELETE_FORWARD_WORD:
-			gtk_stext_delete_forward_word(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_DELETE_BACKWARD_WORD:
-			gtk_stext_delete_backward_word(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_DELETE_LINE:
-			gtk_stext_delete_line(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_DELETE_LINE_N:
-			gtk_stext_delete_line(GTK_STEXT(compose->focused_editable));
-			gtk_stext_delete_forward_character(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_DELETE_TO_LINE_END:
-			gtk_stext_delete_to_line_end(GTK_STEXT(compose->focused_editable));
-			break;
-		default:
-			break;
-	}
+	GtkSText *text = GTK_STEXT(compose->text);
+	static struct {
+		void (*do_action) (GtkSText *text);
+	} action_table[] = {
+		{gtk_stext_move_beginning_of_line},
+		{gtk_stext_move_forward_character},
+		{gtk_stext_move_backward_character},
+		{gtk_stext_move_forward_word},
+		{gtk_stext_move_backward_word},
+		{gtk_stext_move_end_of_line},
+		{gtk_stext_move_next_line},
+		{gtk_stext_move_previous_line},
+		{gtk_stext_delete_forward_character},
+		{gtk_stext_delete_backward_character},
+		{gtk_stext_delete_forward_word},
+		{gtk_stext_delete_backward_word},
+		{gtk_stext_delete_line},
+		{gtk_stext_delete_line}, /* gtk_stext_delete_line_n */
+		{gtk_stext_delete_to_line_end}
+	};
+
+	if (!GTK_WIDGET_HAS_FOCUS(text)) return;
+
+	if (action >= COMPOSE_CALL_GTK_STEXT_MOVE_BEGINNING_OF_LINE &&
+	    action <= COMPOSE_CALL_GTK_STEXT_DELETE_TO_LINE_END)
+		action_table[action].do_action(text);
 }
 
 static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
@@ -6853,7 +6837,7 @@ static void text_inserted(GtkWidget *widget, const gchar *text,
 		gtk_editable_insert_text(editable, text, length, position);
 
 	if (prefs_common.autowrap)
-		compose_wrap_line_all(compose);
+		compose_wrap_line_all_full(compose, TRUE);
 
 	gtk_signal_handler_unblock_by_func(GTK_OBJECT(widget),
 					   GTK_SIGNAL_FUNC(text_inserted),

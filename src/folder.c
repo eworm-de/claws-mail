@@ -144,22 +144,9 @@ void folder_remote_folder_init(Folder *folder, const gchar *name,
 void folder_destroy(Folder *folder)
 {
 	g_return_if_fail(folder != NULL);
+	g_return_if_fail(folder->destroy != NULL);
 
-	switch (folder->type) {
-	case F_MBOX:
-		mbox_folder_destroy(MBOX_FOLDER(folder));
-	case F_MH:
-		mh_folder_destroy(MH_FOLDER(folder));
-		break;
-	case F_IMAP:
-		imap_folder_destroy(IMAP_FOLDER(folder));
-		break;
-	case F_NEWS:
-		news_folder_destroy(NEWS_FOLDER(folder));
-		break;
-	default:
-		break;
-	}
+	folder->destroy(folder);
 
 	folder_list = g_list_remove(folder_list, folder);
 
@@ -796,6 +783,42 @@ void folder_set_missing_folders(void)
 
 #undef CREATE_FOLDER_IF_NOT_EXIST
 
+gchar *folder_get_path(Folder *folder)
+{
+	gchar *path;
+
+	g_return_val_if_fail(folder != NULL, NULL);
+
+	if (FOLDER_TYPE(folder) == F_MH)
+		path = g_strdup(LOCAL_FOLDER(folder)->rootpath);
+	else if (FOLDER_TYPE(folder) == F_MBOX) {
+		path = mbox_get_virtual_path(folder);
+		if (path == NULL)
+			return NULL;
+		path = g_strconcat(get_mbox_cache_dir(),
+					  G_DIR_SEPARATOR_S, path, NULL);
+		return path;
+	}
+	else if (FOLDER_TYPE(folder) == F_IMAP) {
+		g_return_val_if_fail(folder->account != NULL, NULL);
+		path = g_strconcat(get_imap_cache_dir(),
+				   G_DIR_SEPARATOR_S,
+				   folder->account->recv_server,
+				   G_DIR_SEPARATOR_S,
+				   folder->account->userid,
+				   NULL);
+	} else if (FOLDER_TYPE(folder) == F_NEWS) {
+		g_return_val_if_fail(folder->account != NULL, NULL);
+		path = g_strconcat(get_news_cache_dir(),
+				   G_DIR_SEPARATOR_S,
+				   folder->account->nntp_server,
+				   NULL);
+	} else
+		path = NULL;
+
+	return path;
+}
+
 gchar *folder_item_get_path(FolderItem *item)
 {
 	gchar *folder_path;
@@ -803,35 +826,7 @@ gchar *folder_item_get_path(FolderItem *item)
 
 	g_return_val_if_fail(item != NULL, NULL);
 
-	if (FOLDER_TYPE(item->folder) == F_MH)
-		folder_path = g_strdup(LOCAL_FOLDER(item->folder)->rootpath);
-	else if (FOLDER_TYPE(item->folder) == F_MBOX) {
-		path = mbox_get_virtual_path(item);
-		if (path == NULL)
-			return NULL;
-		folder_path = g_strconcat(get_mbox_cache_dir(),
-					  G_DIR_SEPARATOR_S, path, NULL);
-		g_free(path);
-
-		return folder_path;
-	}
-	else if (FOLDER_TYPE(item->folder) == F_IMAP) {
-		g_return_val_if_fail(item->folder->account != NULL, NULL);
-		folder_path = g_strconcat(get_imap_cache_dir(),
-					  G_DIR_SEPARATOR_S,
-					  item->folder->account->recv_server,
-					  G_DIR_SEPARATOR_S,
-					  item->folder->account->userid,
-					  NULL);
-	} else if (FOLDER_TYPE(item->folder) == F_NEWS) {
-		g_return_val_if_fail(item->folder->account != NULL, NULL);
-		folder_path = g_strconcat(get_news_cache_dir(),
-					  G_DIR_SEPARATOR_S,
-					  item->folder->account->nntp_server,
-					  NULL);
-	} else
-		return NULL;
-
+	folder_path = folder_get_path(item->folder);
 	g_return_val_if_fail(folder_path != NULL, NULL);
 
 	if (folder_path[0] == G_DIR_SEPARATOR) {

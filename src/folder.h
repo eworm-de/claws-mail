@@ -180,6 +180,8 @@ struct _Folder
 					 const gchar	*name);
 	gint     (*remove_folder)	(Folder		*folder,
 					 FolderItem	*item);
+
+	void     (*destroy)		(Folder		*folder);
 	void     (*update_mark)		(Folder		*folder,
 					 FolderItem	*item);
 	void     (*change_flags)	(Folder		*folder,
@@ -322,7 +324,9 @@ FolderItem *folder_get_default_trash	(void);
 FolderItem *folder_get_default_processing (void);
 void folder_set_missing_folders		(void);
 
+gchar *folder_get_path			(Folder		*folder);
 gchar *folder_item_get_path		(FolderItem	*item);
+
 gint   folder_item_scan			(FolderItem	*item);
 void   folder_item_scan_foreach		(GHashTable	*table);
 MsgInfo *folder_item_fetch_msginfo	(FolderItem 	*item,
