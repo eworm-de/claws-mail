@@ -3051,7 +3051,7 @@ void summary_filter(SummaryView *summaryview)
 
 	gtk_clist_freeze(GTK_CLIST(summaryview->ctree));
 
-	if (global_filtering == NULL) {
+	if (prefs_filtering == NULL) {
 		gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
 					GTK_CTREE_FUNC(summary_filter_func),
 					summaryview);
@@ -3094,7 +3094,7 @@ static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
 	gchar *file;
 	FolderItem *dest;
 
-	if (global_filtering == NULL) {
+	if (prefs_filtering == NULL) {
 		/* old filtering */
 		file = procmsg_get_message_file_path(msginfo);
 		dest = filter_get_dest_folder(prefs_common.fltlist, file);
@@ -3105,7 +3105,7 @@ static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
 			summary_move_row_to(summaryview, node, dest);
 	}
 	else
-		filter_msginfo_move_or_delete(global_filtering, msginfo,
+		filter_msginfo_move_or_delete(prefs_filtering, msginfo,
 					      summaryview->folder_table);
 }
 

@@ -1,3 +1,16 @@
+2001-07-11 [alfons]
+
+	Prerelease before 0.5.0claws. Please test.
+	This version is temporarily tagged as VERSION_0_5_0_TEST
+
+	* src/matcher.[ch], src/summaryview.c, src/scoring.[ch]
+	  src/prefs_scoring.c, src/prefs_matcher.c, 
+	  src/prefs_filtering.c, src/mbox.c, 
+	  src/main.c, src/inc.c, src/filtering.[ch]
+		revert new Hoa's new matcher (does not work yet)
+
+	* src/Makefile.am
+		clean up
 
 2001-07-10
 

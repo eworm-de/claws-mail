@@ -89,8 +89,6 @@ sylpheed_SOURCES = \
 	mbox_folder.c mbox_folder.h \
 	quote_fmt_lex.l quote_fmt_lex.h \
 	quote_fmt_parse.y quote_fmt.h \
-	matcher_parser_lex.l matcher_parser_lex.h \
-	matcher_parser_parse.y matcher_parser.h \
 	addressitem.h \
 	mgutils.c mgutils.h \
 	vcard.c vcard.h \
@@ -103,7 +101,6 @@ sylpheed_SOURCES = \
 
 EXTRA_DIST = \
 	quote_fmt_parse.h \
-	matcher_parser_parse.h \
 	pixmaps/clip.xpm \
 	pixmaps/deleted.xpm \
 	pixmaps/dir-close.xpm \
@@ -180,8 +177,5 @@ YFLAGS = -d
 BUILT_SOURCES = \
 	quote_fmt_lex.c \
 	quote_fmt_parse.c \
-	quote_fmt_parse.h \
-	matcher_parser_lex.c \
-	matcher_parser_parse.c \
-	matcher_parser_parse.h
+	quote_fmt_parse.h
 	
