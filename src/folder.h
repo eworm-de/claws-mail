@@ -358,7 +358,8 @@ gint   folder_item_add_msg		(FolderItem	*dest,
 					 const gchar	*file,
 					 gboolean	 remove_source);
 FolderItem   *folder_item_move_to	(FolderItem	*src,
-					 FolderItem	*dest);
+					 FolderItem	*dest,
+					 char		*error);
 gint   folder_item_move_msg		(FolderItem	*dest,
 					 MsgInfo	*msginfo);
 gint   folder_item_move_msgs_with_dest	(FolderItem	*dest,

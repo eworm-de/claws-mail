@@ -2620,6 +2620,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		/* comes from folderview */
 		char *source;
 		char *buf;
+		char *error_msg = NULL;
 		GtkCTreeNode *src_node;
 		FolderItem *new_item, *src_parent;
 		
@@ -2650,7 +2651,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		gtk_widget_set_sensitive(folderview->ctree, FALSE);
 		inc_lock();
 		main_window_cursor_wait(folderview->mainwin);
-		if ((new_item = folder_item_move_to(src_item, item)) != NULL) {
+		if ((new_item = folder_item_move_to(src_item, item, &error_msg)) != NULL) {
 			main_window_cursor_normal(folderview->mainwin);
 			gtk_drag_finish(drag_context, TRUE, TRUE, time);
 		
@@ -2671,6 +2672,10 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 			main_window_cursor_normal(folderview->mainwin);
 			gtk_drag_finish(drag_context, FALSE, FALSE, time);
 			STATUSBAR_POP(folderview->mainwin);
+			if (error_msg != NULL) {
+				alertpanel_error(error_msg);
+				g_free(error_msg);
+			}
 		}	
 		inc_unlock();		
 		gtk_widget_set_sensitive(folderview->ctree, TRUE);
