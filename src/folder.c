@@ -894,9 +894,8 @@ gint folder_item_scan(FolderItem *item)
 {
 	Folder *folder;
 	GSList *folder_list, *cache_list, *folder_list_cur, *cache_list_cur, *new_list = NULL;
-	guint max = 0;
 	guint newcnt = 0, unreadcnt = 0, totalcnt = 0;
-	guint cache_max_num, cache_cur_num, folder_cur_num, cache_max;
+	guint cache_max_num, folder_max_num, cache_cur_num, folder_cur_num;
 
 	g_return_val_if_fail(item != NULL, -1);
 	if (item->path == NULL) return -1;
@@ -938,9 +937,13 @@ gint folder_item_scan(FolderItem *item)
 	} else
 		cache_cur_num = G_MAXINT;
 
-	if (folder_list_cur != NULL)
+	if (folder_list_cur != NULL) {
+		GSList *folder_list_last;
+	
 		folder_cur_num = GPOINTER_TO_INT(folder_list_cur->data);
-	else
+		folder_list_last = g_slist_last(folder_list);
+		folder_max_num = GPOINTER_TO_INT(folder_list_last->data);
+	} else
 		folder_cur_num = G_MAXINT;
 
 	while ((cache_cur_num != G_MAXINT) || (folder_cur_num != G_MAXINT)) {
@@ -954,10 +957,16 @@ gint folder_item_scan(FolderItem *item)
 
 			switch(folder->type) {
 				case F_NEWS:
-					if ((folder_cur_num > cache_max) && 
-					   ((prefs_common.max_articles == 0) ||
-					    (max < prefs_common.max_articles) ||
-					    (folder_cur_num > (max - prefs_common.max_articles)))) {
+					if (folder_cur_num < cache_max_num)
+						break;
+					
+					if (prefs_common.max_articles == 0) {
+						add = TRUE;
+					}
+
+					if (folder_max_num <= prefs_common.max_articles) {
+						add = TRUE;
+					} else if (folder_cur_num > (folder_max_num - prefs_common.max_articles)) {
 						add = TRUE;
 					}
 					break;
