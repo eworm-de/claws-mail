@@ -1,3 +1,10 @@
+2004-08-05 [christoph]	0.9.12cvs46
+
+	* src/msgcache.c
+	* src/common/defs.h
+		add charset to cache file and convert charset when reading the
+		cache if different from internal used charset
+
 2004-08-05 [christoph]	0.9.12cvs45
 
 	* src/messageview.c

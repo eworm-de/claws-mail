@@ -27,6 +27,7 @@
 #include "msgcache.h"
 #include "utils.h"
 #include "procmsg.h"
+#include "codeconv.h"
 
 typedef enum
 {
@@ -40,6 +41,25 @@ struct _MsgCache {
 	GHashTable	*msgid_table;
 	guint		 memusage;
 	time_t		 last_access;
+};
+
+typedef struct _StringConverter StringConverter;
+struct _StringConverter {
+	gchar *(*convert) (StringConverter *converter, gchar *srcstr);
+	void   (*free)    (StringConverter *converter);
+};
+
+typedef struct _StrdupConverter StrdupConverter;
+struct _StrdupConverter {
+	StringConverter converter;
+};
+
+typedef struct _CharsetConverter CharsetConverter;
+struct _CharsetConverter {
+	StringConverter converter;
+
+	gchar *srccharset;
+	gchar *dstcharset;
 };
 
 MsgCache *msgcache_new(void)
@@ -116,15 +136,12 @@ void msgcache_update_msg(MsgCache *cache, MsgInfo *msginfo)
 	g_return_if_fail(msginfo != NULL);
 
 	oldmsginfo = g_hash_table_lookup(cache->msgnum_table, &msginfo->msgnum);
-
-	if(oldmsginfo && oldmsginfo->msgid) {
+	if (oldmsginfo && oldmsginfo->msgid)
 		g_hash_table_remove(cache->msgid_table, oldmsginfo->msgid);
-	}
-
 	if (oldmsginfo) {
 		g_hash_table_remove(cache->msgnum_table, &oldmsginfo->msgnum);
-		procmsg_msginfo_free(oldmsginfo);
 		cache->memusage -= procmsg_msginfo_memusage(oldmsginfo);
+		procmsg_msginfo_free(oldmsginfo);
 	}
 
 	newmsginfo = procmsg_msginfo_new_ref(msginfo);
@@ -210,7 +227,7 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 
 #define READ_CACHE_DATA(data, fp) \
 { \
-	if (msgcache_read_cache_data_str(fp, &data) < 0) { \
+	if (msgcache_read_cache_data_str(fp, &data, conv) < 0) { \
 		procmsg_msginfo_free(msginfo); \
 		error = TRUE; \
 		break; \
@@ -305,9 +322,9 @@ static FILE *msgcache_open_data_file(const gchar *file, gint version,
 	return fp;
 }
 
-static gint msgcache_read_cache_data_str(FILE *fp, gchar **str)
+static gint msgcache_read_cache_data_str(FILE *fp, gchar **str, StringConverter *conv)
 {
-	gchar buf[BUFFSIZE];
+	gchar buf[BUFFSIZE], *tmpstr = NULL;
 	gint ret = 0;
 	guint32 len;
 
@@ -323,7 +340,7 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str)
 				if (fread(buf, size, 1, fp) != 1) {
 					ret = -1;
 					if (tmp) g_free(tmp);
-					*str = NULL;
+					tmpstr = NULL;
 					break;
 				}
 
@@ -331,9 +348,9 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str)
 				if (tmp) {
 					*str = g_strconcat(tmp, buf, NULL);
 					g_free(tmp);
-					tmp = *str;
+					tmp = tmpstr;
 				} else
-					tmp = *str = g_strdup(buf);
+					tmp = tmpstr = g_strdup(buf);
 
 				len -= size;
 			}
@@ -344,7 +361,36 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str)
 	if (ret < 0)
 		g_warning("Cache data is corrupted\n");
 
+	if (tmpstr != NULL && conv != NULL) {
+		*str = conv->convert(conv, tmpstr);
+		g_free(tmpstr);
+	} else if (tmpstr != NULL) {
+		*str = g_strdup(tmpstr);
+		g_free(tmpstr);
+	} else
+		*str = NULL;
+
 	return ret;
+}
+
+gchar *strconv_strdup_convert(StringConverter *conv, gchar *srcstr)
+{
+	return g_strdup(srcstr);
+}
+
+gchar *strconv_charset_convert(StringConverter *conv, gchar *srcstr)
+{
+	CharsetConverter *charsetconv = (CharsetConverter *) conv;
+
+	return conv_codeset_strdup(srcstr, charsetconv->srccharset, charsetconv->dstcharset);
+}
+
+void strconv_charset_free(StringConverter *conv)
+{
+	CharsetConverter *charsetconv = (CharsetConverter *) conv;
+
+	g_free(charsetconv->srccharset);
+	g_free(charsetconv->dstcharset);
 }
 
 MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
@@ -356,6 +402,9 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	gchar file_buf[BUFFSIZE];
 	guint num;
 	gboolean error = FALSE;
+	StringConverter *conv = NULL;
+	gchar *srccharset = NULL;
+	const gchar *dstcharset = NULL;
 
 	g_return_val_if_fail(cache_file != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
@@ -372,8 +421,37 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 		tmp_flags |= MSG_DRAFT;
 	}
 
-	cache = msgcache_new();
+	if (msgcache_read_cache_data_str(fp, &srccharset, NULL) < 0)
+		return NULL;
+	dstcharset = conv_get_current_charset_str();
+	if (srccharset == NULL || dstcharset == NULL) {
+		conv = NULL;
+	} else if (strcmp(srccharset, dstcharset) == 0) {
+		StrdupConverter *strdupconv;
 
+		debug_print("using StrdupConverter\n");
+
+		strdupconv = g_new0(StrdupConverter, 1);
+		strdupconv->converter.convert = strconv_strdup_convert;
+		strdupconv->converter.free = NULL;
+
+		conv = (StringConverter *) strdupconv;
+	} else {
+		CharsetConverter *charsetconv;
+
+		debug_print("using CharsetConverter\n");
+
+		charsetconv = g_new0(CharsetConverter, 1);
+		charsetconv->converter.convert = strconv_charset_convert;
+		charsetconv->converter.free = strconv_charset_free;
+		charsetconv->srccharset = g_strdup(srccharset);
+		charsetconv->dstcharset = g_strdup(dstcharset);
+
+		conv = (StringConverter *) charsetconv;
+	}
+	g_free(srccharset);
+
+	cache = msgcache_new();
 	g_hash_table_freeze(cache->msgnum_table);
 
 	while (fread(&num, sizeof(num), 1, fp) == 1) {
@@ -412,6 +490,12 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	if(error) {
 		msgcache_destroy(cache);
 		return NULL;
+	}
+
+	if (conv != NULL) {
+		if (conv->free != NULL)
+			conv->free(conv);
+		g_free(conv);
 	}
 
 	cache->last_access = time(NULL);
@@ -508,6 +592,8 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *c
 		DATA_WRITE, NULL, 0);
 	if (write_fps.cache_fp == NULL)
 		return -1;
+
+	WRITE_CACHE_DATA(conv_get_current_charset_str(), write_fps.cache_fp);
 
 	write_fps.mark_fp = msgcache_open_data_file(mark_file, MARK_VERSION,
 		DATA_WRITE, NULL, 0);
