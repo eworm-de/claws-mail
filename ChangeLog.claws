@@ -1,3 +1,8 @@
+2002-08-10 [paul]	0.8.1claws43
+
+	* po/POTFILES.in
+		add custom toolbar files
+
 2002-08-10 [paul]	0.8.1claws42
 
 	* sync with 0.8.1cvs22
