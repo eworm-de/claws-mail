@@ -55,10 +55,13 @@ void plugin_done()
 
 const gchar *plugin_name()
 {
-	return "Dummy plugin";
+	return "Demo";
 }
 
 const gchar *plugin_desc()
 {
-	return "Plugin that does nothing and never loads";
+	return "This Plugin is only a demo of how to write plugins for Sylpheed. "
+	       "It installs a hook for new log output and writes it to stdout."
+	       "\n\n"
+	       "It is not really usefull";
 }

@@ -282,5 +282,16 @@ const gchar *plugin_name()
 
 const gchar *plugin_desc()
 {
-	return "";
+	return "This plugin provides a Preferences page for the SpamAssassin "
+	       "plugin.\n"
+	       "\n"
+	       "You will find the options in the Preferences window under "
+	       "Filtering/SpamAssassin.\n"
+	       "\n"
+	       "With this plugin you can enable the filtering, change the "
+	       "SpamAssassin server's host  and port, the maximum size that "
+	       "a message is allowed to have (if the message is larger it "
+	       "will not be checked), set the option if spam mails "
+	       "should be received at all (default) and select the folder "
+	       "where spam mails will be saved.\n";
 }

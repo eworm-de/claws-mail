@@ -232,6 +232,15 @@ const gchar *plugin_name()
 
 const gchar *plugin_desc()
 {
-	return "Check incoming mails for spam with SpamAssassin";
+	return "This plugin checks all messages that are received from a POP "
+	       "account for spam using a SpamAssassin server. You will need "
+	       "a SpamAssassin Server (spamd) running somewhere.\n"
+	       "\n"
+	       "When a message is identified as spam it can be deleted or "
+	       "saved into a special folder.\n"
+	       "\n"
+	       "This plugin only contains the actual function for filtering "
+	       "and deleting or moving the message. You probably want to load "
+	       "a User Interface plugin too. Otherwise you would have to "
+	       "manually write the plugin configuration.\n";
 }
-

@@ -1,4 +1,17 @@
-2001-12-31 [christoph]	0.8.8claws32
+2003-01-01 [christoph]	0.8.8claws33
+
+	* src/mainwindow.c
+	* src/gtk/Makefile.am
+	* src/gtk/pluginwindow.c		** NEW **
+	* src/gtk/pluginwindow.h		** NEW **
+		add plugin window
+
+	* src/plugins/demo/demo.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		write better plugin descriptions
+
+2002-12-31 [christoph]	0.8.8claws32
 
 	* src/gtk/prefswindow.c
 	* src/plugins/spamassassin/spamassassin_gtk.c

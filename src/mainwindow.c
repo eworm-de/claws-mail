@@ -85,6 +85,7 @@
 #include "ssl_manager.h"
 #include "sslcertwindow.h"
 #include "prefswindow.h"
+#include "pluginwindow.h"
 
 #define AC_LABEL_WIDTH	240
 
@@ -373,6 +374,8 @@ static void account_menu_cb	 (GtkMenuItem	*menuitem,
 				  gpointer	 data);
 
 static void prefs_open_cb	(GtkMenuItem	*menuitem,
+				 gpointer 	 data);
+static void plugins_open_cb	(GtkMenuItem	*menuitem,
 				 gpointer 	 data);
 
 static void online_switch_clicked(GtkButton     *btn, 
@@ -698,6 +701,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, NULL, 0, "<Branch>"},
 	{N_("/_Configuration/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Configuration/Preferences..."),  NULL, prefs_open_cb, 0, NULL},
+	{N_("/_Configuration/Plugins..."),  	NULL, plugins_open_cb, 0, NULL},
 
 	{N_("/_Help"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_Help/_Manual (Local)"),		NULL, manual_open_cb, MANUAL_MANUAL_LOCAL, NULL},
@@ -2606,6 +2610,11 @@ static void account_menu_cb(GtkMenuItem	*menuitem, gpointer data)
 static void prefs_open_cb(GtkMenuItem *menuitem, gpointer data)
 {
 	prefswindow_create();
+}
+
+static void plugins_open_cb(GtkMenuItem *menuitem, gpointer data)
+{
+	pluginwindow_create();
 }
 
 static void manual_open_cb(MainWindow *mainwin, guint action,
