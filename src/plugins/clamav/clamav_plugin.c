@@ -57,16 +57,6 @@ static PrefParam param[] = {
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
-#define IS_FIRST_PART_TEXT(info) \
-	((info->mime_type == MIME_TEXT || info->mime_type == MIME_TEXT_HTML || \
-	  info->mime_type == MIME_TEXT_ENRICHED) || \
-	 (info->mime_type == MIME_MULTIPART && info->content_type && \
-	  !strcasecmp(info->content_type, "multipart/alternative") && \
-	  (info->children && \
-	   (info->children->mime_type == MIME_TEXT || \
-	    info->children->mime_type == MIME_TEXT_HTML || \
-	    info->children->mime_type == MIME_TEXT_ENRICHED))))
-
 static gboolean mail_filtering_hook(gpointer source, gpointer data)
 {
 	MailFilteringData *mail_filtering_data = (MailFilteringData *) source;
@@ -97,15 +87,12 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	if (!mimeinfo) return FALSE;
 
 	child = mimeinfo->children;
-	if (!child || IS_FIRST_PART_TEXT(mimeinfo)) {
+	if (!child) {
 		procmime_mimeinfo_free_all(mimeinfo);
 		return FALSE;
 	}
 
 	debug_print("Scanning message %d for viruses\n", msginfo->msgnum);
-
-	if (IS_FIRST_PART_TEXT(child))
-		child = child->next;
 
 	infile = procmsg_get_message_file_path(msginfo);
 
@@ -182,8 +169,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	
 	return is_infected;
 }
-
-#undef IS_FIRST_PART_TEXT
 
 ClamAvConfig *clamav_get_config(void)
 {
