@@ -151,10 +151,11 @@ void folder_destroy(Folder *folder)
 	folder_list = g_list_remove(folder_list, folder);
 
 	folder_tree_destroy(folder);
-	g_free(folder->name);
-	g_free(folder);
 
 	folder->klass->destroy_folder(folder);
+
+	g_free(folder->name);
+	g_free(folder);
 }
 
 void folder_local_folder_destroy(LocalFolder *lfolder)

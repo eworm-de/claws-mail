@@ -1,3 +1,10 @@
+2003-04-09 [oliver]	0.8.11claws81
+	
+	* src/folder.c
+		fix crash in folder_destroy
+	* README.claws
+		remove selective download
+
 2003-04-09 [christoph]	0.8.11claws80
 
 	* src/imap.c
