@@ -1,3 +1,10 @@
+2002-11-19 [christoph]	0.8.5claws170
+
+	* src/procmsg.c
+		add parameter check for flag setting function
+		(closes bug [ 640619 ] Claws169: crash
+		 - drafting a mail (IMAP))
+
 2002-11-18 [paul]	0.8.5claws169
 
 	* src/compose.c

@@ -1432,8 +1432,12 @@ msginfo->folder->folder->change_flags(msginfo->folder->folder, \
 
 void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
 {
-	FolderItem *item = msginfo->folder;
+	FolderItem *item;
 
+	g_return_if_fail(msginfo != NULL);
+	item = msginfo->folder;
+	g_return_if_fail(item != NULL);
+	
 	debug_print("Setting flags for message %d in folder %s\n", msginfo->msgnum, item->path);
 
 	/* if new flag is set */
@@ -1474,7 +1478,11 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 
 void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
 {
-	FolderItem *item = msginfo->folder;
+	FolderItem *item;
+
+	g_return_if_fail(msginfo != NULL);
+	item = msginfo->folder;
+	g_return_if_fail(item != NULL);	
 	
 	debug_print("Unsetting flags for message %d in folder %s\n", msginfo->msgnum, item->path);
 
