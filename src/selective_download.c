@@ -315,7 +315,7 @@ static void sd_clist_set_items()
 		gchar *row[5];
 		gint row_num;
 		
-		row[0] = _("");
+		row[0] = ("");
 #ifdef WIN32
 		{
 			gchar *p_from, *p_subject;

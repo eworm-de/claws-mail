@@ -1,3 +1,15 @@
+2002-06-26 [paul]	0.7.8claws29
+
+	* src/addrgather.c
+	  src/selective_download.c
+		don't gettextise empty strings.
+		reserved by gettext. gettext("") returns 
+		the header entry with meta information, 
+		not the empty string
+
+	* po/en_GB.po
+		updated
+
 2002-06-26 [paul]	0.7.8claws28
 
 	* sync with 0.7.8cvs7

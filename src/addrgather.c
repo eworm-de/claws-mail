@@ -275,7 +275,7 @@ static void addrgather_page_warning( gint pageNum, gchar *pageLbl ) {
 
 	/* First row */
 	top = 0;
-	label = gtk_label_new(_(""));
+	label = gtk_label_new("");
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
