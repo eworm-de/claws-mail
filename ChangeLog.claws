@@ -1,3 +1,10 @@
+2001-10-10 [darko]	0.6.3.claws5
+
+	* src/gtkstext.c
+		proper calculation of right margin if smart wrapping is enabled
+	* src/compose.c
+		automatically wrap long lines if wrap quotation is enabled
+
 2001-10-09 [alfons]	0.6.3.claws4
 
 	* src/summaryview.c

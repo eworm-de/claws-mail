@@ -5107,7 +5107,10 @@ find_line_params (GtkSText* text,
 	max_display_pixels = text->wrap_rmargin * ch_width; 
   }	
   
-  if (GTK_EDITABLE (text)->editable || !text->word_wrap)
+  /* SYLPHEED - we don't draw ugly word wrapping thing 
+   * if our wrap margin is set */
+  if (!text->wrap_rmargin &&
+      ((GTK_EDITABLE (text)->editable || !text->word_wrap)))
     max_display_pixels -= LINE_WRAP_ROOM;
   
   lp.wraps             = 0;

@@ -694,6 +694,10 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	gtk_editable_set_position(GTK_EDITABLE(text), 0);
 	gtk_stext_set_point(text, 0);
 
+	if (quote && prefs_common.linewrap_quote) {
+		compose_wrap_line_all(compose);
+	}
+
 	gtk_stext_thaw(text);
 	gtk_widget_grab_focus(compose->text);
 
