@@ -1,3 +1,11 @@
+2001-09-03 [paul]
+
+	* po/POTFILES.in
+		add Match's new addressbook
+
+        * po/de.po
+		updated translation submitted by Jens Oberender
+
 2001-09-02 [paul]
 
 	* configure.in
