@@ -537,30 +537,64 @@ void messageview_set_font(MessageView *messageview)
 
 void messageview_copy_clipboard(MessageView *messageview)
 {
-	if (messageview->type == MVIEW_TEXT)
-		gtk_editable_copy_clipboard
-			(GTK_EDITABLE(messageview->textview->text));
+	switch (messageview->type) {
+	case MVIEW_TEXT:
+		gtk_editable_copy_clipboard(GTK_EDITABLE(messageview->textview->text));
+		break;
+	case MVIEW_MIME:
+		if (messageview->mimeview->type == MIMEVIEW_TEXT)
+			gtk_editable_copy_clipboard(GTK_EDITABLE(messageview->mimeview->textview->text));
+	default:
+		break;
+	}
 }
 
 void messageview_select_all(MessageView *messageview)
 {
-	if (messageview->type == MVIEW_TEXT)
-		gtk_editable_select_region
-			(GTK_EDITABLE(messageview->textview->text), 0, -1);
+	switch (messageview->type) {
+	case MVIEW_TEXT:
+		gtk_editable_select_region(GTK_EDITABLE(messageview->textview->text), 0, -1);
+		break;
+	case MVIEW_MIME:
+		if (messageview->mimeview->type == MIMEVIEW_TEXT)
+			gtk_editable_select_region(GTK_EDITABLE(messageview->mimeview->textview->text), 0, -1);
+	default:
+		break;
+	}
 }
 
 void messageview_set_position(MessageView *messageview, gint pos)
 {
-	if (messageview->type == MVIEW_TEXT)
+	switch (messageview->type) {
+	case MVIEW_TEXT:
 		textview_set_position(messageview->textview, pos);
+		break;
+	case MVIEW_MIME:
+		if (messageview->mimeview->type == MIMEVIEW_TEXT)
+			textview_set_position(messageview->mimeview->textview, pos);
+		break;
+	default:
+		break;
+	}
 }
 
 gboolean messageview_search_string(MessageView *messageview, const gchar *str,
 				   gboolean case_sens)
 {
-	if (messageview->type == MVIEW_TEXT)
+	switch (messageview->type) {
+	case MVIEW_TEXT:
 		return textview_search_string(messageview->textview,
-					      str, case_sens);
+					str, case_sens);
+	case MVIEW_MIME:
+		if (messageview->mimeview->type == MIMEVIEW_TEXT)
+			return textview_search_string(messageview->mimeview->textview,
+						str, case_sens);
+		else
+			return FALSE;
+	default:
+		return FALSE;
+	}
+		
 	return FALSE;
 }
 
@@ -568,10 +602,22 @@ gboolean messageview_search_string_backward(MessageView *messageview,
 					    const gchar *str,
 					    gboolean case_sens)
 {
-	if (messageview->type == MVIEW_TEXT)
+	switch (messageview->type) {
+	case MVIEW_TEXT:
 		return textview_search_string_backward(messageview->textview,
-						       str, case_sens);
+					str, case_sens);
+	case MVIEW_MIME:
+		if (messageview->mimeview->type == MIMEVIEW_TEXT)
+			return textview_search_string_backward(messageview->mimeview->textview,
+						str, case_sens);
+		else
+			return FALSE;
+	default:
+		return FALSE;
+	}
+		
 	return FALSE;
+
 }
 
 GtkWidget *messageview_get_text_widget(MessageView *messageview)

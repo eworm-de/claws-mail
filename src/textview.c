@@ -1171,7 +1171,7 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 
 	for (; pos < text_len; pos++) {
 		if (text_len - pos < len) break;
-		if (gtkut_text_match_string(GTK_STEXT(text), pos, wcs, len, case_sens)
+		if (gtkut_text_match_string(GTK_TEXT(text), pos, wcs, len, case_sens)
 		    == TRUE) {
 			gtk_editable_set_position(GTK_EDITABLE(text),
 						  pos + len);
@@ -1213,7 +1213,7 @@ gboolean textview_search_string_backward(TextView *textview, const gchar *str,
 		pos = text_len - len;
 
 	for (; pos >= textview->body_pos; pos--) {
-		if (gtkut_text_match_string(GTK_STEXT(text), pos, wcs, len, case_sens)
+		if (gtkut_text_match_string(GTK_TEXT(text), pos, wcs, len, case_sens)
 		    == TRUE) {
 			gtk_editable_set_position(GTK_EDITABLE(text), pos);
 			gtk_editable_select_region(GTK_EDITABLE(text),

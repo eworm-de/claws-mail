@@ -392,8 +392,6 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/Follow-up and reply to"),	NULL, summary_reply_cb,	COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL},
 	{N_("/Reply to a_ll"),		NULL, summary_reply_cb,	COMPOSE_REPLY_TO_ALL, NULL},
 	{N_("/_Forward"),		NULL, summary_reply_cb, COMPOSE_FORWARD, NULL},
-	{N_("/Forward as a_ttachment"),
-					NULL, summary_reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
 	{N_("/Bounce"),	                NULL, summary_reply_cb, COMPOSE_BOUNCE, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/Re-_edit"),		NULL, summary_reedit,   0, NULL},
@@ -1653,6 +1651,7 @@ static void summary_status_show(SummaryView *summaryview)
 	gchar *del, *mv, *cp;
 	gchar *sel;
 	gchar *spc;
+	gchar *itstr;
 	GList *rowlist, *cur;
 	guint n_selected = 0;
 	off_t sel_size = 0;
@@ -1703,19 +1702,26 @@ static void summary_status_show(SummaryView *summaryview)
 	else
 		spc = "";
 
-	if (n_selected)
+	if (n_selected) {
 		sel = g_strdup_printf(" (%s)", to_human_readable(sel_size));
-	else
+		if (n_selected == 1)
+			itstr = g_strdup(_(" item selected"));
+		else
+			itstr = g_strdup(_(" items selected"));
+	} else {
 		sel = g_strdup("");
+		itstr = g_strdup("");
+	}
+		
 	str = g_strconcat(n_selected ? itos(n_selected) : "",
-			  n_selected ? _(" item(s) selected") : "",
-			  sel, spc, del, mv, cp, NULL);
+					itstr, sel, spc, del, mv, cp, NULL);
 	gtk_label_set(GTK_LABEL(summaryview->statlabel_select), str);
 	g_free(str);
 	g_free(sel);
 	g_free(del);
 	g_free(mv);
 	g_free(cp);
+	g_free(itstr);
 
 	if (summaryview->folder_item &&
 	    FOLDER_IS_LOCAL(summaryview->folder_item->folder)) {
@@ -4427,7 +4433,16 @@ static void summary_reply_cb(SummaryView *summaryview, guint action,
 		compose_reply(msginfo, FALSE, TRUE, FALSE);
 		break;
 	case COMPOSE_FORWARD:
-		if (!sel->next)	{
+		if (prefs_common.forward_as_attachment) {
+			summary_reply_cb(summaryview, COMPOSE_FORWARD_AS_ATTACH, widget);
+			return;
+		} else {
+			summary_reply_cb(summaryview, COMPOSE_FORWARD_INLINE, widget);
+			return;
+		}
+		break;
+	case COMPOSE_FORWARD_INLINE:
+		if (!sel->next) {
 			compose_forward(NULL, msginfo, FALSE);
 			break;
 		}

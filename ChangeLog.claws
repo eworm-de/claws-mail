@@ -1,3 +1,38 @@
+2001-12-12 [carsten]	0.6.5claws80
+
+	* src/summaryview.c
+	* po/de.po
+		"item(s) selected" is now sensitive to 1 or more
+		than one selected (nice for language where simple
+		adding of a "s" is not possible as German (Eintrag
+		->Eintr"age)
+		
+		the "forward as attachment" entry from the right
+		click menu removed, "forward" acts following the
+		prefs
+	
+	* src/textview.c
+		reverted my former changes; so compiler warning again
+		but there's more GTK_TEXT/GTK_STEXT mixing on other places
+		nevertheless
+
+	* src/messageview.c
+		"search in message" does now *not* only work in MVIEW_TEXT
+		messages, but also in a MIMEVIEW_TEXT part of MVIEW_MIME
+		message
+
+	* src/mainwindow.c
+		removed "/File/_Close" as it was the same as "/File/E_xit"
+		and we don't need it two times
+
+		the separate folder view and message view now get a distinct
+		WMCLASS, just in case someone is using sawfish ;-)
+
+		as the menu entries "/View/Message view" and "/View/Folder tree"
+		are only doing something when SEPARATE_MESSAGE or SEPARATE_FOLDER
+		make them sensitive accordingly and as these two are "shown"
+		after startup anytime check this menuitem at startup
+
 2001-12-12 [paul]	0.6.5claws79
 
 	* src/folderview.c

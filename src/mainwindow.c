@@ -426,7 +426,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File/_Save as..."),		NULL, save_as_cb, 0, NULL},
 	{N_("/_File/_Print..."),		"<alt>P", print_cb, 0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_File/_Close"),			"<alt>W", app_exit_cb, 0, NULL},
+/*	{N_("/_File/_Close"),			"<alt>W", app_exit_cb, 0, NULL},*/
 	{N_("/_File/E_xit"),			"<alt>Q", app_exit_cb, 0, NULL},
 
 	{N_("/_Edit"),				NULL, NULL, 0, "<Branch>"},
@@ -889,6 +889,13 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 				       prefs_common.show_statusbar);
 
+	/* Message view and Folder tree are always shown at startup
+	 * make that in the menu visible */
+	menuitem = gtk_item_factory_get_item(ifactory, "/View/Message view");
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
+	menuitem = gtk_item_factory_get_item(ifactory, "/View/Folder tree");
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
+	
 	/* set the check of the SEPARATE_xxx menu items. we also need the main window
 	 * as a property and pass the action type to the callback */
 	menuitem = gtk_item_factory_get_widget_by_action(ifactory, SEPARATE_ACTION + SEPARATE_FOLDER);
@@ -1422,7 +1429,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/File/Empty trash"           , M_UNLOCKED},
 		{"/File/Save as...", M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/File/Print..."  , M_TARGET_EXIST|M_UNLOCKED},
-		{"/File/Close", M_UNLOCKED},
+/*		{"/File/Close", M_UNLOCKED},*/
 		{"/File/Exit" , M_UNLOCKED},
 
 		{"/View/Show all header"      , M_SINGLE_TARGET_EXIST},
@@ -1534,12 +1541,15 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 	GtkWidget *hpaned;
 	GtkWidget *vpaned;
 	GtkWidget *vbox_body = mainwin->vbox_body;
+	GtkItemFactory *ifactory=gtk_item_factory_from_widget(mainwin->menubar);
 
 	debug_print(_("Setting widgets..."));
 
 	/* create separated window(s) if needed */
 	if (type & SEPARATE_FOLDER) {
 		folderwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+		gtk_window_set_title(GTK_WINDOW(folderwin), _("Sylpheed - folder view"));
+		gtk_window_set_wmclass(GTK_WINDOW(folderwin), "separate folderview", "Sylpheed");
 		gtk_window_set_policy(GTK_WINDOW(folderwin),
 				      TRUE, TRUE, FALSE);
 		gtk_widget_set_usize(folderwin, -1,
@@ -1552,6 +1562,8 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 	}
 	if (type & SEPARATE_MESSAGE) {
 		messagewin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+		gtk_window_set_title(GTK_WINDOW(messagewin), _("Sylpheed - message view"));
+		gtk_window_set_wmclass(GTK_WINDOW(messagewin), "separate messageview", "Sylpheed");
 		gtk_window_set_policy(GTK_WINDOW(messagewin),
 				      TRUE, TRUE, FALSE);
 		gtk_widget_set_usize
@@ -1597,6 +1609,9 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 				     prefs_common.mainwin_height);
 		gtk_widget_show_all(vpaned);
 
+		menu_set_sensitive(ifactory, "/View/Message view", FALSE);
+		menu_set_sensitive(ifactory, "/View/Folder tree", FALSE);
+		
 		mainwin->win.sep_none.hpaned = hpaned;
 		mainwin->win.sep_none.vpaned = vpaned;
 		break;
@@ -1628,6 +1643,9 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		gtk_container_add(GTK_CONTAINER(folderwin),
 				  GTK_WIDGET_PTR(mainwin->folderview));
 
+		menu_set_sensitive(ifactory, "/View/Message view", FALSE);
+		menu_set_sensitive(ifactory, "/View/Folder tree", TRUE);
+		
 		mainwin->win.sep_folder.folderwin = folderwin;
 		mainwin->win.sep_folder.vpaned    = vpaned;
 
@@ -1651,6 +1669,9 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		gtk_widget_show_all(hpaned);
 		gtk_container_add(GTK_CONTAINER(messagewin),
 				  GTK_WIDGET_PTR(mainwin->messageview));
+	
+		menu_set_sensitive(ifactory, "/View/Message view", TRUE);
+		menu_set_sensitive(ifactory, "/View/Folder tree", FALSE);
 
 		mainwin->win.sep_message.messagewin = messagewin;
 		mainwin->win.sep_message.hpaned     = hpaned;
@@ -1672,6 +1693,9 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		gtk_container_add(GTK_CONTAINER(messagewin),
 				  GTK_WIDGET_PTR(mainwin->messageview));
 
+		menu_set_sensitive(ifactory, "/View/Message view", TRUE);
+		menu_set_sensitive(ifactory, "/View/Folder tree", TRUE);
+	
 		mainwin->win.sep_both.folderwin = folderwin;
 		mainwin->win.sep_both.messagewin = messagewin;
 
