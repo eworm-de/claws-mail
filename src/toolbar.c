@@ -1684,7 +1684,7 @@ void toolbar_main_set_sensitive(gpointer data)
 		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->fwd_combo),
 			M_HAVE_ACCOUNT|M_TARGET_EXIST); 
 	if (toolbar->fwd_combo) {
-		GtkWidget *submenu = gtk_item_factory_get_widget(toolbar->fwd_combo->factory, _("/Redirect"));
+		GtkWidget *submenu = gtk_item_factory_get_widget(toolbar->fwd_combo->factory, "/Redirect");
 		SET_WIDGET_COND(submenu, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST); 
 	}
 

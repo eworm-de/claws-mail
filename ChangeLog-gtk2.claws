@@ -1,3 +1,8 @@
+2004-09-06 [colin]	0.9.12cvs96.1
+
+	* src/toolbar.c
+		Sync with HEAD (fix Redirect graying out)
+
 2004-09-06 [colin]	0.9.12cvs95.1
 
 	* src/summaryview.c

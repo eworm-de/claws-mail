@@ -161,3 +161,4 @@
 ( cvs diff -u -r 1.395.2.30 -r 1.395.2.31 src/summaryview.c; ) > 0.9.12cvs93.1.patchset
 ( cvs diff -u -r 1.60.2.9 -r 1.60.2.10 src/addressbook.c; cvs diff -u -r 1.5 -r 1.6 src/addressitem.h; cvs diff -u -r 1.13.2.1 -r 1.13.2.2 src/addritem.c; cvs diff -u -r 1.12.2.1 -r 1.12.2.2 src/addritem.h; ) > 0.9.12cvs94.1.patchset
 ( cvs diff -u -r 1.395.2.31 -r 1.395.2.32 src/summaryview.c; cvs diff -u -r 1.83.2.18 -r 1.83.2.19 src/mimeview.c; ) > 0.9.12cvs95.1.patchset
+( cvs diff -u -r 1.43.2.9 -r 1.43.2.10 src/toolbar.c; ) > 0.9.12cvs96.1.patchset
