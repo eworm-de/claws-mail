@@ -156,6 +156,7 @@ FolderItem *folder_item_new(const gchar *name, const gchar *path)
 	item->no_sub = FALSE;
 	item->no_select = FALSE;
 	item->collapsed = FALSE;
+	item->threaded  = FALSE;
 	item->parent = NULL;
 	item->folder = NULL;
 	item->data = NULL;
@@ -1039,7 +1040,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	const gchar *name = NULL;
 	const gchar *path = NULL;
 	PrefsAccount *account = NULL;
-	gboolean no_sub = FALSE, no_select = FALSE, collapsed = FALSE;
+	gboolean no_sub = FALSE, no_select = FALSE, collapsed = FALSE, threaded = FALSE;
 	gint mtime = 0, new = 0, unread = 0, total = 0;
 
 	g_return_val_if_fail(node->data != NULL, FALSE);
@@ -1091,6 +1092,8 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 			no_select = *attr->value == '1' ? TRUE : FALSE;
 		else if (!strcmp(attr->name, "collapsed"))
 			collapsed = *attr->value == '1' ? TRUE : FALSE;
+		else if (!strcmp(attr->name, "threaded"))
+			threaded =  *attr->value == '1' ? TRUE : FALSE;
 	}
 
 	item = folder_item_new(name, path);
@@ -1103,6 +1106,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	item->no_sub = no_sub;
 	item->no_select = no_select;
 	item->collapsed = collapsed;
+	item->threaded  = threaded;
 	item->parent = FOLDER_ITEM(node->parent->data);
 	item->folder = folder;
 	switch (stype) {
@@ -1132,7 +1136,7 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 	const gchar *name = NULL;
 	const gchar *path = NULL;
 	PrefsAccount *account = NULL;
-	gboolean collapsed = FALSE;
+	gboolean collapsed = FALSE, threaded = FALSE;
 
 	if (g_node_depth(node) != 2) return FALSE;
 	g_return_val_if_fail(node->data != NULL, FALSE);
@@ -1169,6 +1173,8 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 						attr->value);
 		} else if (!strcmp(attr->name, "collapsed"))
 			collapsed = *attr->value == '1' ? TRUE : FALSE;
+		else if (!strcmp(attr->name, "threaded"))
+			threaded = *attr->value == '1' ? TRUE : FALSE;
 	}
 
 	folder = folder_new(type, name, path);
@@ -1181,6 +1187,7 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 	folder->node = node;
 	folder_add(folder);
 	FOLDER_ITEM(node->data)->collapsed = collapsed;
+	FOLDER_ITEM(node->data)->threaded  = threaded;
 
 	g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
 			folder_build_tree, folder);
@@ -1234,6 +1241,8 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 				folder->account->account_id);
 		if (item->collapsed && node->children)
 			fputs(" collapsed=\"1\"", fp);
+		if (item->threaded)
+			fputs(" threaded=\"1\"", fp);
 	} else {
 		fprintf(fp, "<folderitem type=\"%s\"",
 			folder_item_stype_str[item->stype]);
@@ -1256,6 +1265,8 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 			fputs(" no_select=\"1\"", fp);
 		if (item->collapsed && node->children)
 			fputs(" collapsed=\"1\"", fp);
+		if (item->threaded)
+			fputs(" threaded=\"1\"", fp);
 		fprintf(fp,
 			" mtime=\"%ld\" new=\"%d\" unread=\"%d\" total=\"%d\"",
 			item->mtime, item->new, item->unread, item->total);

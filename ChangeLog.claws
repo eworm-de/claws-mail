@@ -1,3 +1,13 @@
+2001-09-22 [alfons]
+
+	* README.claws **NEW**
+		(add things of interest for users of main branch 
+		and claws here)
+
+	* src/folder.[ch], src/mainwindow.c, src/summaryview.c
+		re-implement threading per folder option, but store 
+		the setting in folderlist.xml (where it belongs)
+
 2001-09-21 [melvin]
 
 	* src/gtkspell.[ch]
@@ -9,6 +19,7 @@
 		dropped PSPELL_PATH macro
 	* po/fr.po
 		updated translations
+
 2001-09-21 [christoph]
 
 	* src/compose.c

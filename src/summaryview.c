@@ -1819,8 +1819,6 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	if (prefs_common.use_addr_book)
 		start_address_completion();
 	
-	/*main_window_set_thread_option(summaryview->mainwin)*/;
-
 	for (cur = mlist ; cur != NULL; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;
 		msginfo->threadscore = msginfo->score;
@@ -1834,8 +1832,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 				summaryview->folder_item->prefs->important_score;
 	}
 	
-		if (prefs_common.enable_thread) {
-	/*if (summaryview->folder_item->prefs->enable_thread) { */
+	if (summaryview->folder_item->threaded) {
 		for (; mlist != NULL; mlist = mlist->next) {
 			msginfo = (MsgInfo *)mlist->data;
 			parent = NULL;
@@ -3032,8 +3029,7 @@ void summary_execute(SummaryView *summaryview)
 
 	gtk_clist_freeze(clist);
 
-	/*if (summaryview->folder_item->prefs->enable_thread) */
-			if (prefs_common.enable_thread)
+	if (summaryview->folder_item->threaded)
 		summary_unthread_for_exec(summaryview);
 
 	summary_execute_move(summaryview);
@@ -3056,8 +3052,7 @@ void summary_execute(SummaryView *summaryview)
 		node = next;
 	}
 
-	/*if (summaryview->folder_item->prefs->enable_thread) */
-	if (prefs_common.enable_thread) 
+	if (summaryview->folder_item->threaded)
 		summary_thread_build(summaryview, FALSE);
 
 	summaryview->selected = clist->selection ?
@@ -3261,9 +3256,21 @@ void summary_thread_build(SummaryView *summaryview, gboolean init)
 		next = GTK_CTREE_ROW(node)->sibling;
 
 		msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
+
+		/* alfons - claws seems to prefer subject threading before
+		 * inreplyto threading. we should look more deeply in this,
+		 * because inreplyto should have precedence... */
 		if (msginfo && msginfo->inreplyto) {
 			parent = g_hash_table_lookup(summaryview->msgid_table,
 						     msginfo->inreplyto);
+			if (parent && parent != node) {
+				gtk_ctree_move(ctree, node, parent, NULL);
+				gtk_ctree_expand(ctree, node);
+			}
+		}
+		else if (msginfo && msginfo->subject) {
+			parent = g_hash_table_lookup
+					(summaryview->subject_table, msginfo->subject);
 			if (parent && parent != node) {
 				gtk_ctree_move(ctree, node, parent, NULL);
 				gtk_ctree_expand(ctree, node);

@@ -219,6 +219,7 @@ struct _FolderItem
 	guint no_sub    : 1; /* no child allowed? */
 	guint no_select : 1; /* not selectable?   */
 	guint collapsed : 1; /* collapsed item    */
+	guint threaded  : 1; /* threaded folder view */
 
 	gint op_count;
 

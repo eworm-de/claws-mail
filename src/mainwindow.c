@@ -1215,7 +1215,9 @@ typedef enum
 	M_SINGLE_TARGET_EXIST = 1 << 3,
 	M_EXEC                = 1 << 4,
 	M_ALLOW_REEDIT        = 1 << 5,
-	M_HAVE_ACCOUNT        = 1 << 6
+	M_HAVE_ACCOUNT        = 1 << 6,
+	M_THREADED	      = 1 << 7,
+	M_UNTHREADED	      = 1 << 8
 } SensitiveCond;
 
 static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
@@ -1229,6 +1231,11 @@ static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		state |= M_UNLOCKED;
 	if (selection != SUMMARY_NONE)
 		state |= M_MSG_EXIST;
+	if (mainwin->summaryview->folder_item) {
+		if (mainwin->summaryview->folder_item->threaded)
+			state |= M_THREADED;
+		else state |= M_UNTHREADED;	
+	}		
 	if (selection == SUMMARY_SELECTED_SINGLE ||
 	    selection == SUMMARY_SELECTED_MULTIPLE)
 		state |= M_TARGET_EXIST;
@@ -1336,6 +1343,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Summary/Go to/Prev labeled message", M_MSG_EXIST},
 		{"/Summary/Go to/Next labeled message", M_MSG_EXIST},
 		{"/Summary/Sort"                      , M_MSG_EXIST},
+		{"/Summary/Thread view"               ,	M_UNTHREADED | M_UNLOCKED},
+		{"/Summary/Unthread view"             , M_THREADED | M_UNLOCKED},
 
 		{"/Configuration", M_UNLOCKED},
 
@@ -2517,63 +2526,25 @@ static void set_charset_cb(MainWindow *mainwin, guint action,
 	debug_print(_("forced charset: %s\n"), str ? str : "Auto-Detect");
 }
 
-/*void main_window_set_thread_option(MainWindow *mainwin)
-{
-	GtkItemFactory *ifactory;
-	gboolean no_item = FALSE;
-
-	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
-
-	if (mainwin->summaryview == NULL)
-		no_item = TRUE;
-	else if (mainwin->summaryview->folder_item == NULL)
-		no_item = TRUE;
-
-	if (no_item) {
-		menu_set_sensitive(ifactory, "/Summary/Thread view",   FALSE);
-		menu_set_sensitive(ifactory, "/Summary/Unthread view", FALSE);
-	}
-	else {
-		if (mainwin->summaryview->folder_item->prefs->enable_thread) {
-			menu_set_sensitive(ifactory,
-					   "/Summary/Thread view",   FALSE);
-			menu_set_sensitive(ifactory,
-					   "/Summary/Unthread view", TRUE);
-			summary_thread_build(mainwin->summaryview, TRUE);
-		}
-		else {
-			menu_set_sensitive(ifactory,
-					   "/Summary/Thread view",   TRUE);
-			menu_set_sensitive(ifactory,
-					   "/Summary/Unthread view", FALSE);
-			summary_unthread(mainwin->summaryview);
-		}
-		prefs_folder_item_save_config(mainwin->summaryview->folder_item);
-	}
-}*/
-
 static void thread_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
-	/*mainwin->summaryview->folder_item->prefs->enable_thread =
-		!mainwin->summaryview->folder_item->prefs->enable_thread;
-	main_window_set_thread_option(mainwin);
-        */
-
-        GtkItemFactory *ifactory;
+	GtkItemFactory *ifactory;
 
 	ifactory = gtk_item_factory_from_widget(widget);
 
-	if (0 == action) {
-		summary_thread_build(mainwin->summaryview, FALSE);
-		prefs_common.enable_thread = TRUE;
-		menu_set_sensitive(ifactory, "/Summary/Thread view",   FALSE);
-		menu_set_sensitive(ifactory, "/Summary/Unthread view", TRUE);
-	} else {
-		summary_unthread(mainwin->summaryview);
-		prefs_common.enable_thread = FALSE;
-		menu_set_sensitive(ifactory, "/Summary/Thread view",   TRUE);
-		menu_set_sensitive(ifactory, "/Summary/Unthread view", FALSE);
-	}
+	if (mainwin->summaryview->folder_item) {
+		if (0 == action) {
+			summary_thread_build(mainwin->summaryview, FALSE);
+			mainwin->summaryview->folder_item->threaded = TRUE;
+			menu_set_sensitive(ifactory, "/Summary/Thread view",   FALSE);
+			menu_set_sensitive(ifactory, "/Summary/Unthread view", TRUE);
+		} else {
+			summary_unthread(mainwin->summaryview);
+			mainwin->summaryview->folder_item->threaded = FALSE;
+			menu_set_sensitive(ifactory, "/Summary/Thread view",   TRUE);
+			menu_set_sensitive(ifactory, "/Summary/Unthread view", FALSE);
+		}
+	}		
 }
 
 static void set_display_item_cb(MainWindow *mainwin, guint action,
