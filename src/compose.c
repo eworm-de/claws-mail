@@ -315,11 +315,9 @@ static void toolbar_linewrap_cb		(GtkWidget	*widget,
 					 gpointer	 data);
 static void toolbar_address_cb		(GtkWidget	*widget,
 					 gpointer	 data);
-static void toolbar_actions_execute_cb  (GtkWidget      *widget,
-					 gpointer        data);
 static void toolbar_compose_buttons_cb  (GtkWidget      *widget, 
 
-					 ToolbarItem    *t_item);
+					 ToolbarItem    *item);
 static void account_activated		(GtkMenuItem	*menuitem,
 					 gpointer	 data);
 
@@ -948,8 +946,6 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
 }
-
-static void set_toolbar_style(Compose *compose);
 
 #define INSERT_FW_HEADER(var, hdr) \
 if (msginfo->var && *msginfo->var) { \
@@ -5007,7 +5003,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	activate_gnupg_mode(compose, account);
 #endif	
 
-	set_toolbar_style(compose);
+	common_toolbar_set_style(compose, TOOLBAR_COMPOSE);
 
 	gtk_widget_show(window);
 	
@@ -5015,32 +5011,33 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 }
 
 static void toolbar_compose_buttons_cb(GtkWidget   *widget, 
-				       ToolbarItem *t_item)
+				       ToolbarItem *item)
 {
 	struct {
 		gint   index;
 		void (*func)(GtkWidget *widget, gpointer data);
 	} compose_action[] = {
-		{ A_SEND,        toolbar_send_cb            },
-		{ A_SENDL,       toolbar_send_later_cb      },
-		{ A_DRAFT,       toolbar_draft_cb           },
-		{ A_INSERT,      toolbar_insert_cb          },
-		{ A_ATTACH,      toolbar_attach_cb          },
-		{ A_SIG,         toolbar_sig_cb             },
-		{ A_EXTEDITOR,   toolbar_ext_editor_cb      },
-		{ A_LINEWRAP,    toolbar_linewrap_cb	    },
-		{ A_ADDRBOOK,    toolbar_address_cb         },
-		{ A_SYL_ACTIONS, toolbar_actions_execute_cb }};
+		{ A_SEND,        toolbar_send_cb			},
+		{ A_SENDL,       toolbar_send_later_cb			},
+		{ A_DRAFT,       toolbar_draft_cb			},
+		{ A_INSERT,      toolbar_insert_cb			},
+		{ A_ATTACH,      toolbar_attach_cb			},
+		{ A_SIG,         toolbar_sig_cb				},
+		{ A_EXTEDITOR,   toolbar_ext_editor_cb			},
+		{ A_LINEWRAP,    toolbar_linewrap_cb			},
+		{ A_ADDRBOOK,    toolbar_address_cb		        },
+		{ A_SYL_ACTIONS, common_toolbar_actions_execute_cb	}};
 
 
 	gint num_items = sizeof(compose_action)/sizeof(compose_action[0]);
 	gint i;
-	debug_print("_buttons: index: %i \n", t_item->index);
 	for (i = 0; i < num_items; i++) {
 		
-		if (compose_action[i].index == t_item->index) {
-			Compose *compose = (Compose*)t_item->parent;
-			debug_print("_buttons: compose: %p toolbar: %p\n", compose, compose->toolbar);			compose_action[i].func(widget, compose);
+		if (compose_action[i].index == item->index) {
+			if (item->index == A_SYL_ACTIONS)
+				compose_action[i].func(widget, (gpointer)item->parent);
+			else /* this won`t be necessary if everything is moved to toolbar.c */
+				compose_action[i].func(widget, (gpointer)item->parent->data);
 			break;
 		}
 	}
@@ -5062,8 +5059,8 @@ static void compose_toolbar_update(Compose *compose)
 	compose->toolbar->linewrap_btn  = NULL;	
 	compose->toolbar->addrbook_btn  = NULL;	
 
-	TOOLBAR_DESTROY_ITEMS(compose->toolbar->t_item_list);	
-	TOOLBAR_DESTROY_ACTIONS(compose->toolbar->t_action_list);
+	TOOLBAR_DESTROY_ITEMS(compose->toolbar->item_list);	
+	TOOLBAR_DESTROY_ACTIONS(compose->toolbar->action_list);
 	compose_toolbar_create(compose, compose->handlebox);	
 }
 
@@ -5076,7 +5073,7 @@ static void compose_toolbar_create(Compose   *compose,
 	GtkWidget *icon_wid  = NULL;
 	GtkWidget *item;
 	GtkTooltips *toolbar_tips;
-	ToolbarSylpheedActions *t_action_item;
+	ToolbarSylpheedActions *action_item;
 	GSList *cur;
 	GSList *toolbar_list;
 	GList *elem;
@@ -5085,13 +5082,7 @@ static void compose_toolbar_create(Compose   *compose,
 	toolbar_read_config_file(TOOLBAR_COMPOSE);
 	toolbar_list = toolbar_get_list(TOOLBAR_COMPOSE);
 
-	compose->toolbar = g_new0(ComposeToolbar, 1); 
-	
-	for (elem = compose_list; elem != NULL; elem = elem->next) {
-		Compose *c = (Compose*)elem->data;
-		debug_print("toolbar_create: compose: %p toolbar: %p\n", 
-			    c, c->toolbar);
-	}
+	compose->toolbar = g_new0(Toolbar, 1); 
 	
 	toolbar = gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL,
 				  GTK_TOOLBAR_BOTH);
@@ -5113,11 +5104,13 @@ static void compose_toolbar_create(Compose   *compose,
 		toolbar_item->text = g_strdup(((ToolbarItem*)cur->data)->text);
 		toolbar_item->index = ((ToolbarItem*)cur->data)->index;
 
-		toolbar_item->parent = (gpointer)compose;
+		toolbar_item->parent = g_new0(ToolbarParent, 1);
+		toolbar_item->parent->data = (gpointer)compose;
+		toolbar_item->parent->type = TOOLBAR_COMPOSE;
 
 		/* collect toolbar items in list to keep track */
-		compose->toolbar->t_item_list = g_slist_append(compose->toolbar->t_item_list, 
-							      toolbar_item);
+		compose->toolbar->item_list = g_slist_append(compose->toolbar->item_list, 
+							     toolbar_item);
 
 		icon_wid = stock_pixmap_widget(container, stock_pixmap_get_icon(toolbar_item->file));
 		item  = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
@@ -5183,17 +5176,17 @@ static void compose_toolbar_create(Compose   *compose,
 					     _("Address book"), NULL);
 			break;
 		case A_SYL_ACTIONS:
-			t_action_item = g_new0(ToolbarSylpheedActions, 1);
-			t_action_item->widget = item;
-			t_action_item->name   = g_strdup(toolbar_item->text);
+			action_item = g_new0(ToolbarSylpheedActions, 1);
+			action_item->widget = item;
+			action_item->name   = g_strdup(toolbar_item->text);
 
-			compose->toolbar->t_action_list = 
-				g_slist_append(compose->toolbar->t_action_list,
-					       t_action_item);
+			compose->toolbar->action_list = 
+				g_slist_append(compose->toolbar->action_list,
+					       action_item);
 
 			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
 					     item,
-					     t_action_item->name, NULL);
+					     action_item->name, NULL);
 
 			gtk_widget_show(item);
 			break;
@@ -5209,7 +5202,7 @@ static void compose_toolbar_create(Compose   *compose,
 
 static void compose_toolbar_set_sensitive (Compose * compose, gboolean sensitive)
 {
-	GSList *items = compose->toolbar->t_action_list;
+	GSList *items = compose->toolbar->action_list;
 	if (compose->toolbar->send_btn)
 		gtk_widget_set_sensitive(compose->toolbar->send_btn, sensitive);
 	if (compose->toolbar->sendl_btn)
@@ -5397,7 +5390,7 @@ void compose_reflect_prefs_pixmap_theme(void)
 	for (cur = compose_list; cur != NULL; cur = cur->next) {
 		compose = (Compose *)cur->data;
 		compose_toolbar_update(compose);
-		set_toolbar_style(compose);
+		common_toolbar_set_style(compose, TOOLBAR_COMPOSE);
 	}
 }
 
@@ -5508,8 +5501,8 @@ static void compose_destroy(Compose *compose)
 
 	gtk_widget_destroy(compose->paned);
 
-	TOOLBAR_DESTROY_ITEMS(compose->toolbar->t_item_list);
-	TOOLBAR_DESTROY_ACTIONS(compose->toolbar->t_action_list);
+	TOOLBAR_DESTROY_ITEMS(compose->toolbar->item_list);
+	TOOLBAR_DESTROY_ACTIONS(compose->toolbar->action_list);
 	g_free(compose->toolbar);
 	g_free(compose);
 
@@ -6222,14 +6215,6 @@ static void toolbar_linewrap_cb(GtkWidget *widget, gpointer data)
 static void toolbar_address_cb(GtkWidget *widget, gpointer data)
 {
 	compose_address_cb(data, 0, NULL);
-}
-
-static void toolbar_actions_execute_cb(GtkWidget *widget,
-				       gpointer   data)
-{
-	Compose *compose = (Compose*)data;
-
-	toolbar_action_execute(widget, compose->toolbar->t_action_list, data, TOOLBAR_COMPOSE);
 }
 
 static void account_activated(GtkMenuItem *menuitem, gpointer data)
@@ -7149,28 +7134,3 @@ static void compose_check_forwards_go(Compose *compose)
 }
 #endif
 
-static void set_toolbar_style(Compose *compose)
-{
-	switch (prefs_common.toolbar_style) {
-	case TOOLBAR_NONE:
-		gtk_widget_hide(compose->handlebox);
-		break;
-	case TOOLBAR_ICON:
-		gtk_toolbar_set_style(GTK_TOOLBAR(compose->toolbar->toolbar),
-				      GTK_TOOLBAR_ICONS);
-		break;
-	case TOOLBAR_TEXT:
-		gtk_toolbar_set_style(GTK_TOOLBAR(compose->toolbar->toolbar),
-				      GTK_TOOLBAR_TEXT);
-		break;
-	case TOOLBAR_BOTH:
-		gtk_toolbar_set_style(GTK_TOOLBAR(compose->toolbar->toolbar),
-				      GTK_TOOLBAR_BOTH);
-		break;
-	}
-	
-	if (prefs_common.toolbar_style != TOOLBAR_NONE) {
-		gtk_widget_show(compose->handlebox);
-		gtk_widget_queue_resize(compose->handlebox);
-	}
-}
