@@ -958,15 +958,25 @@ static gint io_dialog_key_pressed_cb(GtkWidget *widget, GdkEventKey *event,
 
 static void childinfo_close_pipes(ChildInfo *child_info)
 {
+	/* stdout and stderr pipes are guaranteed to be removed by
+	 * their handler, but in case where we receive child exit notification
+	 * before grand-child's pipes closing signals, we check them and close
+	 * them if necessary
+	 */
 	if (child_info->tag_in > 0)
 		gdk_input_remove(child_info->tag_in);
-	gdk_input_remove(child_info->tag_out);
-	gdk_input_remove(child_info->tag_err);
+	if (child_info->tag_out > 0)
+		gdk_input_remove(child_info->tag_out);
+	if (child_info->tag_err > 0)
+		gdk_input_remove(child_info->tag_err);
 
 	if (child_info->chld_in >= 0)
 		close(child_info->chld_in);
-	close(child_info->chld_out);
-	close(child_info->chld_err);
+	if (child_info->chld_out >= 0)
+		close(child_info->chld_out);
+	if (child_info->chld_err >= 0)
+		close(child_info->chld_err);
+
 	close(child_info->chld_status);
 }
 
@@ -1260,6 +1270,20 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 		if (c > 0)
 			child_info->new_out = TRUE;
 	}
+	if (c == 0) {
+		if (source == child_info->chld_out) {
+			gdk_input_remove(child_info->tag_out);
+			child_info->tag_out = -1;
+			close(child_info->chld_out);
+			child_info->chld_out = -1;
+		} else {
+			gdk_input_remove(child_info->tag_err);
+			child_info->tag_err = -1;
+			close(child_info->chld_err);
+			child_info->chld_err = -1;
+		}
+	}
+	
 	wait_for_children(child_info->children);
 }
 

@@ -1,3 +1,9 @@
+2003-09-03 [melvin]	0.9.4claws61
+
+	* src/action.c
+		Improve synchronous action exit code (fixes 
+		a ~5 seconds delay after action exit on RedHat 9)
+
 2003-09-03 [christoph]	0.9.4claws61
 
 	* src/compose.c
