@@ -1,3 +1,11 @@
+2003-03-13 [melvin]	0.8.11claws6
+
+	* src/prefs_actions.c
+		Added new tokens:
+		%u: user provided argument
+		%h: user provided argument (hidden on input)
+		%s: current text selection in the message view 
+
 2003-03-13 [paul]	0.8.11claws5
 
 	* sync with 0.8.11cvs5
