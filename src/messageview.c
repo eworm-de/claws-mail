@@ -1380,94 +1380,14 @@ static void compose_cb(gpointer data, guint action, GtkWidget *widget)
 static void reply_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	MessageView *messageview = (MessageView *)data;
-	GSList *mlist = NULL;
+	GSList *msginfo_list = NULL;
 	MsgInfo *msginfo;
-	gchar *text = NULL;
-	ComposeMode mode = (ComposeMode)action;
-	TextView *textview;
 
-	msginfo = messageview->msginfo;
-	mlist = g_slist_append(NULL, msginfo);
+	g_return_if_fail(messageview->msginfo);
 
-	textview = messageview_get_current_textview(messageview);
-	text = gtkut_editable_get_selection
-		(GTK_EDITABLE(textview->text));
-	if (text && *text == '\0') {
-		g_free(text);
-		text = NULL;
-	}
-
-	switch (mode) {
-	case COMPOSE_REPLY:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-		    	      FALSE, prefs_common.default_reply_list, FALSE, text);
-		break;
-	case COMPOSE_REPLY_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, prefs_common.default_reply_list, FALSE, text);
-		break;
-	case COMPOSE_REPLY_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, prefs_common.default_reply_list, FALSE, NULL);
-		break;
-	case COMPOSE_REPLY_TO_SENDER:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, FALSE, TRUE, text);
-		break;
-	case COMPOSE_FOLLOWUP_AND_REPLY_TO:
-		compose_followup_and_reply_to(msginfo,
-					      prefs_common.reply_with_quote,
-					      FALSE, FALSE, text);
-		break;
-	case COMPOSE_REPLY_TO_SENDER_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, FALSE, TRUE, text);
-		break;
-	case COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, FALSE, TRUE, NULL);
-		break;
-	case COMPOSE_REPLY_TO_ALL:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      TRUE, FALSE, FALSE, text);
-		break;
-	case COMPOSE_REPLY_TO_ALL_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, TRUE, FALSE, FALSE, text);
-		break;
-	case COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, TRUE, FALSE, FALSE, NULL);
-		break;
-	case COMPOSE_REPLY_TO_LIST:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, TRUE, FALSE, text);
-		break;
-	case COMPOSE_REPLY_TO_LIST_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, TRUE, FALSE, text);
-		break;
-	case COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, TRUE, FALSE, NULL);
-		break;
-	case COMPOSE_FORWARD:
-		if (prefs_common.forward_as_attachment) {
-			compose_reply_mode(COMPOSE_FORWARD_AS_ATTACH, mlist, text);
-			return;
-		} else {
-			compose_reply_mode(COMPOSE_FORWARD_INLINE, mlist, text);
-			return;
-		}
-		break;
-	case COMPOSE_FORWARD_INLINE:
-		compose_forward(NULL, msginfo, FALSE, text, FALSE);
-		break;
-	case COMPOSE_FORWARD_AS_ATTACH:
-		compose_forward_multiple(NULL, mlist);
-		break;
-	case COMPOSE_REDIRECT:
-		compose_redirect(NULL, msginfo);
-		break;
-	default:
-		g_warning("compose_reply(): invalid Compose Mode: %d\n", mode);
-	}
-
-	/* summary_set_marks_selected(summaryview); */
-	g_free(text);
-	g_slist_free(mlist);
+	msginfo_list = g_slist_append(msginfo_list, messageview->msginfo);
+	compose_reply_from_messageview(messageview, msginfo_list, action);
+	g_list_free(msginfo_list);
 }
 
 static void reedit_cb(gpointer data, guint action, GtkWidget *widget)

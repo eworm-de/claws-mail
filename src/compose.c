@@ -7619,3 +7619,38 @@ static void compose_add_field_list( Compose *compose, GList *listAddress ) {
  * End of Source.
  */
 
+void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list, 
+				    guint action)
+{
+	gchar *body;
+	GSList *new_msglist = NULL;
+
+	g_return_if_fail(msgview != NULL);
+
+	g_return_if_fail(msginfo_list != NULL);
+
+	if (g_slist_length(msginfo_list) == 1) {
+		MimeInfo *mimeinfo = messageview_get_selected_mime_part(msgview);
+		MsgInfo *orig_msginfo = (MsgInfo *)msginfo_list->data;
+		
+		if (mimeinfo != NULL && mimeinfo->type == MIMETYPE_MESSAGE && 
+		    !g_ascii_strcasecmp(mimeinfo->subtype, "rfc822")) {
+	    		
+			MsgInfo *tmp_msginfo = procmsg_msginfo_new_from_mimeinfo(
+						orig_msginfo, mimeinfo);
+			if (tmp_msginfo != NULL) {
+				new_msglist = g_slist_append(NULL, tmp_msginfo);
+			} 
+		}
+	}
+
+	body = messageview_get_selection(msgview);
+
+	if (new_msglist) {
+		compose_reply_mode((ComposeMode)action, new_msglist, body);
+		g_slist_free(new_msglist);
+	} else
+		compose_reply_mode((ComposeMode)action, msginfo_list, body);
+
+	g_free(body);
+}

@@ -1,3 +1,15 @@
+2005-01-27 [colin]	1.0.0cvs18.1
+
+	* src/messageview.c
+	* src/summaryview.c
+	* src/mainwindow.c
+	* src/compose.c
+	* src/compose.h
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/toolbar.c
+		Sync with HEAD
+
 2005-01-26 [paul]	1.0.0cvs15.2
 
 	* src/compose.c
