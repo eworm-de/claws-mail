@@ -1,3 +1,10 @@
+2005-03-30 [colin]	1.9.6cvs11
+
+	* src/msgcache.c
+	* src/msgcache.h
+		Read/write 32bit ints from cache & marks
+		From main.
+
 2005-03-29 [paul]	1.9.6cvs10
 
 	* AUTHORS

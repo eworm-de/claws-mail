@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto & The Sylpheed Claws Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -275,7 +275,7 @@ static FILE *msgcache_open_data_file(const gchar *file, gint version,
 				     gchar *buf, size_t buf_size)
 {
 	FILE *fp;
-	gint data_ver;
+	gint32 data_ver;
 
 	g_return_val_if_fail(file != NULL, NULL);
 
@@ -390,7 +390,7 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	MsgInfo *msginfo;
 	MsgTmpFlags tmp_flags = 0;
 	gchar file_buf[BUFFSIZE];
-	guint num;
+	guint32 num;
 	gboolean error = FALSE;
 	StringConverter *conv = NULL;
 	gchar *srccharset = NULL;
@@ -502,7 +502,7 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 	FILE *fp;
 	MsgInfo *msginfo;
 	MsgPermFlags perm_flags;
-	guint num;
+	guint32 num;
 
 	if ((fp = msgcache_open_data_file(mark_file, MARK_VERSION, DATA_READ, NULL, 0)) == NULL)
 		return;
