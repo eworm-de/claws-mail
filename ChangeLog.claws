@@ -1,3 +1,8 @@
+2003-07-27 [alfons]	0.9.3claws62
+
+	* src/mimeview.c
+		tweak it more to make icon list act like a check button group
+
 2003-07-27 [christoph]	0.9.3claws61
 
 	* sync with 0.9.3cvs20
