@@ -1,3 +1,14 @@
+2003-12-14 [luke]	0.9.7claws41
+	* src/textview.c
+	* src/mimeview.c
+		o use parameter "filename" instead of "name" in a couple of 
+		  places for correctness
+
+	* src/procmime.c
+	* src/common/utils.[ch]
+		o make temporary filename for attachments safe for %p 
+		  substitutions in actions.
+
 2003-12-13 [christoph]	0.9.7claws40
 
 	* src/main.c
