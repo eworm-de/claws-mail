@@ -1,3 +1,8 @@
+2005-02-16 [colin]	1.0.1cvs11.1
+
+	* src/mh.c
+		Sync with HEAD (MH scan required function)
+
 2005-02-15 [colin]	1.0.1cvs8.1
 
 	* src/mimeview.c
