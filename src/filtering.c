@@ -416,7 +416,7 @@ void filter_message(GSList *filtering_list, FolderItem *inbox,
 
 gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *action)
 {
-	gchar *command_str;
+	const gchar *command_str;
 
 	command_str = get_matchparser_tab_str(action->type);
 

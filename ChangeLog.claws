@@ -1,3 +1,13 @@
+2003-01-05 [alfons]	0.8.8claws50
+
+	re-organize matcher part 5; more to come
+	
+	* src/matcher.[ch]
+		fixes for constant correctness;
+		more documentation;
+	* src/filtering.c
+		fix for constant correctness
+
 2003-01-05 [colin]	0.8.8claws49
 
 	* src/account.[ch]

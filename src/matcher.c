@@ -29,14 +29,20 @@
 #include "matcher_parser.h"
 #include "prefs_gtk.h"
 
+/*!
+ *\brief	Keyword lookup element
+ */
 struct _MatchParser {
-	gint id;
-	gchar *str;
+	gint id;		/*!< keyword id */ 
+	gchar *str;		/*!< keyword */
 };
-
 typedef struct _MatchParser MatchParser;
 
-static MatchParser matchparser_tab[] = {
+/*!
+ *\brief	Table with strings and ids used by the lexer and
+ *		the parser. New keywords can be added here.
+ */
+static const MatchParser matchparser_tab[] = {
 	/* msginfo flags */
 	{MATCHCRITERIA_ALL, "all"},
 	{MATCHCRITERIA_UNREAD, "unread"},
@@ -120,11 +126,19 @@ static MatchParser matchparser_tab[] = {
 	{MATCHACTION_DELETE_ON_SERVER, "delete_on_server"}
 };
 
+/*!
+ *\brief	Look up table with keywords defined in \sa matchparser_tab
+ */
 static GHashTable *matchparser_hashtab;
 
-/* get_matchparser_tab_str() - used by filtering.c to translate 
- * actions to debug strings */
-gchar *get_matchparser_tab_str(gint id)
+/*!
+ *\brief	Translate keyword id to keyword string
+ *
+ *\param	id Id of keyword
+ *
+ *\return	const gchar * Keyword
+ */
+const gchar *get_matchparser_tab_str(gint id)
 {
 	gint i;
 
@@ -135,6 +149,9 @@ gchar *get_matchparser_tab_str(gint id)
 	return NULL;
 }
 
+/*!
+ *\brief	Create keyword lookup table
+ */
 static void create_matchparser_hashtab(void)
 {
 	int i;
@@ -147,6 +164,13 @@ static void create_matchparser_hashtab(void)
 				    &matchparser_tab[i]);
 }
 
+/*!
+ *\brief	Return a keyword id from a keyword string
+ *
+ *\param	str Keyword string
+ *
+ *\return	gint Keyword id
+ */
 gint get_matchparser_tab_id(const gchar *str)
 {
 	gint i;
@@ -158,8 +182,14 @@ gint get_matchparser_tab_id(const gchar *str)
 		return -1;
 }
 
-/* matcher_escape_str() - escapes a string returns newly allocated escaped string */
-gchar *matcher_escape_str(const gchar *str)
+/*!
+ *\brief	Escape characters in a string by inserting '\' characters
+ *
+ *\param	str String with characters to be escaped
+ *
+ *\return	gchar * Newly allocated string with escaped characters
+ */
+const gchar *matcher_escape_str(const gchar *str)
 {
 	register const gchar *walk;
 	register int escape;
@@ -187,9 +217,18 @@ gchar *matcher_escape_str(const gchar *str)
 	return res;
 }
 
-/* matcher_unescape_str() - assumes that unescaping frees up room
- * in the string, so it returns the unescaped string in the 
- * source */
+/*!
+ *\brief	Unescape string by replacing escaped char sequences
+ *		(\b, \n, etc) by their actual char. Note that this
+ *		function changes the contents of the buffer pointed
+ *		to by \a str.
+ *
+ *\param	str Buffer containing string that needs to be escaped.
+ *		Note that this function changes the contents of the
+ *		buffer
+ *
+ *\return	gchar * Pointer to changed buffer
+ */
 gchar *matcher_unescape_str(gchar *str)
 {
 	gchar *tmp = alloca(strlen(str) + 1);
@@ -231,10 +270,20 @@ gchar *matcher_unescape_str(gchar *str)
 
 /* **************** data structure allocation **************** */
 
-/* matcherprop_new() - allocates a structure for one condition
+/*!
+ *\brief	Allocate a structure for a filtering / scoring
+ *		"condition" (a matcher structure)
+ *
+ *\param	criteria Criteria ID (MATCHCRITERIA_XXXX)
+ *\param	header Header string (if criteria is MATCHCRITERIA_HEADER)
+ *\param	matchtype Type of action (MATCHTYPE_XXX)
+ *\param	expr String value or expression to check
+ *\param	value Integer value to check
+ *
+ *\return	MatcherProp * Pointer to newly allocated structure
  */
-MatcherProp *matcherprop_new(gint criteria, gchar *header,
-			      gint matchtype, gchar *expr,
+MatcherProp *matcherprop_new(gint criteria, const gchar *header,
+			      gint matchtype, const gchar *expr,
 			      int value)
 {
 	MatcherProp *prop;
@@ -251,7 +300,11 @@ MatcherProp *matcherprop_new(gint criteria, gchar *header,
 	return prop;
 }
 
-/* matcherprop_free()
+/*!
+ *\brief	Free a matcher structure
+ *
+ *\param	prop Pointer to matcher structure allocated with
+ *		#matcherprop_new
  */
 void matcherprop_free(MatcherProp *prop)
 {
@@ -266,7 +319,14 @@ void matcherprop_free(MatcherProp *prop)
 	g_free(prop);
 }
 
-MatcherProp *matcherprop_copy(MatcherProp *src)
+/*!
+ *\brief	Copy a matcher structure
+ *
+ *\param	src Matcher structure to copy
+ *
+ *\return	MatcherProp * Pointer to newly allocated matcher structure
+ */
+MatcherProp *matcherprop_copy(const MatcherProp *src)
 {
 	MatcherProp *prop = g_new0(MatcherProp, 1);
 	
@@ -283,8 +343,21 @@ MatcherProp *matcherprop_copy(MatcherProp *src)
 
 /* ****************** wrapper for file reading ************** */
 
-MatcherProp *matcherprop_unquote_new(gint criteria, gchar *header,
-				     gint matchtype, gchar *expr,
+/*!
+ *\brief	Allocate a matcher structure where all strings
+ *		are unescaped ("unquoted")
+ *
+ *\param	criteria One of the MATCHCRITERIA_XXX constants
+ *\param	header A header string
+ *\param	matchtype Type of matcher (MATCHTYPE_XXX)
+ *\param	expr Matcher string expression
+ *\param	value Matcher integer value
+ *
+ *\return	MatcherProp * Pointer to newly allocated matcher
+ *		structure
+ */
+MatcherProp *matcherprop_unquote_new(gint criteria, const gchar *header,
+				     gint matchtype, const gchar *expr,
 				     int value)
 {
         MatcherProp *prop;
@@ -306,10 +379,16 @@ MatcherProp *matcherprop_unquote_new(gint criteria, gchar *header,
 
 /* ************** match ******************************/
 
-
-/* matcherprop_string_match() - finds out if a string matches
- * with a criterium */
-static gboolean matcherprop_string_match(MatcherProp *prop, gchar *str)
+/*!
+ *\brief	Find out if a string matches a condition
+ *
+ *\param	prop Matcher structure
+ *\param	str String to check 
+ *
+ *\return	gboolean TRUE if str matches the condition in the 
+ *		matcher structure
+ */
+static gboolean matcherprop_string_match(const MatcherProp *prop, const gchar *str)
 {
 	gchar *str1;
 	gchar *str2;
@@ -358,7 +437,16 @@ static gboolean matcherprop_string_match(MatcherProp *prop, gchar *str)
 	}
 }
 
-gboolean matcherprop_match_execute(MatcherProp *prop, MsgInfo *info)
+/*!
+ *\brief	Execute a command defined in the matcher structure
+ *
+ *\param	prop Pointer to matcher structure
+ *\param	info Pointer to message info structure
+ *
+ *\return	gboolean TRUE if command was executed succesfully
+ */
+static gboolean matcherprop_match_execute(const MatcherProp *prop, 
+					  const MsgInfo *info)
 {
 	gchar *file;
 	gchar *cmd;
@@ -380,10 +468,17 @@ gboolean matcherprop_match_execute(MatcherProp *prop, MsgInfo *info)
 	return (retval == 0);
 }
 
-/* match a message and his headers, hlist can be NULL if you don't
-   want to use headers */
-
-gboolean matcherprop_match(MatcherProp *prop, MsgInfo *info)
+/*!
+ *\brief	Check if a message matches the condition in a matcher
+ *		structure.
+ *
+ *\param	prop Pointer to matcher structure
+ *\param	info Pointer to message info
+ *
+ *\return	gboolean TRUE if a match
+ */
+gboolean matcherprop_match(const MatcherProp *prop, 
+			   const MsgInfo *info)
 {
 	time_t t;
 

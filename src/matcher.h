@@ -123,27 +123,27 @@ enum {
 	MB_(AND)
 };
 
-gchar *get_matchparser_tab_str		(gint id);
+const gchar *get_matchparser_tab_str	(gint id);
 gint get_matchparser_tab_id		(const gchar *str); 
 
-MatcherProp *matcherprop_new		(gint	 criteria, 
-					 gchar	*header,
-					 gint	 matchtype, 
-					 gchar	*expr,
-					 int	 age);
-MatcherProp *matcherprop_unquote_new	(gint	 criteria, 
-					 gchar	*header,
-					 gint	 matchtype, 
-					 gchar	*expr,
-					 int	 value);
+MatcherProp *matcherprop_new		(gint		 criteria, 
+					 const gchar	*header,
+					 gint		 matchtype, 
+					 const gchar	*expr,
+					 int	         value);
+MatcherProp *matcherprop_unquote_new	(gint		 criteria, 
+					 const gchar	*header,
+					 gint		 matchtype, 
+					 const gchar	*expr,
+					 int		 value);
 void matcherprop_free			(MatcherProp *prop);
 
 MatcherProp *matcherprop_parse		(gchar	**str);
 
-MatcherProp *matcherprop_copy		(MatcherProp *src);
+MatcherProp *matcherprop_copy		(const MatcherProp *src);
 
-gboolean matcherprop_match		(MatcherProp	*prop, 
-					 MsgInfo	*info);
+gboolean matcherprop_match		(const MatcherProp	*prop, 
+					 const MsgInfo		*info);
 
 MatcherList * matcherlist_new		(GSList		*matchers, 
 					 gboolean	bool_and);
@@ -159,7 +159,7 @@ gint matcher_parse_number		(gchar		**str);
 gboolean matcher_parse_boolean_op	(gchar		**str);
 gchar *matcher_parse_regexp		(gchar		**str);
 gchar *matcher_parse_str		(gchar		**str);
-gchar *matcher_escape_str		(const gchar	*str);
+const gchar *matcher_escape_str		(const gchar	*str);
 gchar *matcher_unescape_str		(gchar		*str);
 gchar *matcherprop_to_string		(MatcherProp	*matcher);
 gchar *matcherlist_to_string		(MatcherList	*matchers);
