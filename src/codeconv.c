@@ -1505,9 +1505,10 @@ const gchar *conv_get_current_locale(void)
 		cur_locale = g_getenv("LC_CTYPE");
 	if (!cur_locale || !strlen(cur_locale)) 
 		cur_locale = g_getenv("LANG");
+#ifndef WIN32
 	if (!cur_locale || !strlen(cur_locale)) 
 		cur_locale = setlocale(LC_CTYPE, NULL);
-#ifdef WIN32
+#else
 	if (!cur_locale || !strlen(cur_locale)) {
 		if (!gtklocale)
 			gtklocale=g_strdup_printf("%s@windows",gtk_set_locale());
