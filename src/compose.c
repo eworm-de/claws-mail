@@ -4545,7 +4545,7 @@ static void compose_create_header_entry(Compose *compose)
 	GtkWidget *combo;
 	GtkWidget *entry;
 	GList *combo_list = NULL;
-	gchar **string, *header;
+	gchar **string, *header = NULL;
 	ComposeHeaderEntry *headerentry;
 	gboolean standard_header = FALSE;
 
@@ -4555,8 +4555,8 @@ static void compose_create_header_entry(Compose *compose)
 	combo = gtk_combo_new();
 	string = headers; 
 	while(*string != NULL) {
-	    combo_list = g_list_append(combo_list, (prefs_common.trans_hdr ? gettext(*string) : *string));
-	    string++;
+		combo_list = g_list_append(combo_list, (prefs_common.trans_hdr ? gettext(*string) : *string));
+	        string++;
 	}
 	gtk_combo_set_popdown_strings(GTK_COMBO(combo), combo_list);
 	g_list_free(combo_list);
@@ -4584,7 +4584,8 @@ static void compose_create_header_entry(Compose *compose)
 				break;
 		}								    
 	}
-	gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo)->entry), header);
+	if (header)
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo)->entry), header);
 
 	/* Entry field */
 	entry = gtk_entry_new(); 
