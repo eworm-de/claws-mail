@@ -46,7 +46,6 @@
 #include "alertpanel.h"
 #include "folder.h"
 #include "filtering.h"
-#include "matcher_parser.h"
 
 static struct Filtering {
 	GtkWidget *window;
@@ -171,25 +170,25 @@ static gint prefs_filtering_get_matching_from_action(gint action_id)
 {
 	switch(action_id) {
 	case ACTION_MOVE:
-		return MATCHACTION_MOVE;
+		return MATCHING_ACTION_MOVE;
 	case ACTION_COPY:
-		return MATCHACTION_COPY;
+		return MATCHING_ACTION_COPY;
 	case ACTION_DELETE:
-		return MATCHACTION_DELETE;
+		return MATCHING_ACTION_DELETE;
 	case ACTION_MARK:
-		return MATCHACTION_MARK;
+		return MATCHING_ACTION_MARK;
 	case ACTION_UNMARK:
-		return MATCHACTION_UNMARK;
+		return MATCHING_ACTION_UNMARK;
 	case ACTION_MARK_AS_READ:
-		return MATCHACTION_MARK_AS_READ;
+		return MATCHING_ACTION_MARK_AS_READ;
 	case ACTION_MARK_AS_UNREAD:
-		return MATCHACTION_MARK_AS_UNREAD;
+		return MATCHING_ACTION_MARK_AS_UNREAD;
 	case ACTION_FORWARD:
-		return MATCHACTION_FORWARD;
+		return MATCHING_ACTION_FORWARD;
 	case ACTION_FORWARD_AS_ATTACHMENT:
-		return MATCHACTION_FORWARD_AS_ATTACHMENT;
+		return MATCHING_ACTION_FORWARD_AS_ATTACHMENT;
 	case ACTION_EXECUTE:
-		return MATCHACTION_EXECUTE;
+		return MATCHING_EXECUTE;
 	default:
 		return -1;
 	}
@@ -547,7 +546,7 @@ static void prefs_filtering_set_dialog(void)
 	gtk_clist_clear(clist);
 
 	prefs_filtering_clist_set_row(-1, NULL);
-	for(cur = global_filtering ; cur != NULL ; cur = g_slist_next(cur)) {
+	for(cur = prefs_filtering ; cur != NULL ; cur = g_slist_next(cur)) {
 		FilteringProp * prop = (FilteringProp *) cur->data;
 
 		prefs_filtering_clist_set_row(-1, prop);
@@ -573,19 +572,21 @@ static void prefs_filtering_set_list(void)
 	FilteringProp *prop;
 	GSList * cur;
 	gchar * filtering_str;
+	gchar * tmp;
 
-	for(cur = global_filtering ; cur != NULL ; cur = g_slist_next(cur))
+	for(cur = prefs_filtering ; cur != NULL ; cur = g_slist_next(cur))
 		filteringprop_free((FilteringProp *) cur->data);
-	g_slist_free(global_filtering);
-	global_filtering = NULL;
+	g_slist_free(prefs_filtering);
+	prefs_filtering = NULL;
 
 	while (gtk_clist_get_text(GTK_CLIST(filtering.cond_clist),
 				  row, 0, &filtering_str)) {
 		if (strcmp(filtering_str, _("(New)")) != 0) {
-			prop = matcher_parser_get_filtering(filtering_str);
+			tmp = filtering_str;
+			prop = filteringprop_parse(&tmp);
 			if (prop != NULL)
-				global_filtering =
-					g_slist_append(global_filtering, prop);
+				prefs_filtering = g_slist_append(prefs_filtering,
+							       prop);
 		}
 		row++;
 	}
@@ -640,9 +641,11 @@ static void prefs_filtering_condition_define(void)
 	cond_str = gtk_entry_get_text(GTK_ENTRY(filtering.cond_entry));
 
 	if (*cond_str != '\0') {
-		matchers = matcher_parser_get_cond(cond_str);
-
-		if (matchers == NULL)
+		gchar * tmp;
+		
+		tmp = cond_str;
+		matchers = matcherlist_parse(&tmp);
+		if (tmp == NULL)
 			alertpanel_error(_("Match string is not valid."));
 	}
 
@@ -662,6 +665,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(void)
 	gchar * cond_str;
 	FilteringProp * prop;
 	FilteringAction * action;
+	gchar * tmp;
 	gint list_id;
 	gint action_id;
 	gint action_type;
@@ -698,9 +702,10 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(void)
 	
 	action = filteringaction_new(action_type, account_id, destination);
 
-	cond = matcher_parser_get_cond(cond_str);
+	tmp = cond_str;
+	cond = matcherlist_parse(&tmp);
 
-	if (cond == NULL) {
+	if (tmp == NULL) {
 		alertpanel_error(_("Match string is not valid."));
 		filteringaction_free(action);
 		return NULL;
@@ -816,49 +821,49 @@ static void prefs_filtering_select_set(FilteringProp * prop)
 		gtk_entry_set_text(GTK_ENTRY(filtering.dest_entry), "");
 
 	switch(action->type) {
-	case MATCHACTION_MOVE:
+	case MATCHING_ACTION_MOVE:
 		gtk_list_select_item(GTK_LIST(filtering.action_list),
 				     ACTION_MOVE);
 		break;
-	case MATCHACTION_COPY:
+	case MATCHING_ACTION_COPY:
 		gtk_list_select_item(GTK_LIST(filtering.action_list),
 				     ACTION_COPY);
 		break;
-	case MATCHACTION_DELETE:
+	case MATCHING_ACTION_DELETE:
 		gtk_list_select_item(GTK_LIST(filtering.action_list),
 				     ACTION_DELETE);
 		break;
-	case MATCHACTION_MARK:
+	case MATCHING_ACTION_MARK:
 		gtk_list_select_item(GTK_LIST(filtering.action_list),
 				     ACTION_MARK);
 		break;
-	case MATCHACTION_UNMARK:
+	case MATCHING_ACTION_UNMARK:
 		gtk_list_select_item(GTK_LIST(filtering.action_list),
 				     ACTION_UNMARK);
 		break;
-	case MATCHACTION_MARK_AS_READ:
+	case MATCHING_ACTION_MARK_AS_READ:
 		gtk_list_select_item(GTK_LIST(filtering.action_list),
 				     ACTION_MARK_AS_READ);
 		break;
-	case MATCHACTION_MARK_AS_UNREAD:
+	case MATCHING_ACTION_MARK_AS_UNREAD:
 		gtk_list_select_item(GTK_LIST(filtering.action_list),
 				     ACTION_MARK_AS_UNREAD);
 		break;
-	case MATCHACTION_FORWARD:
+	case MATCHING_ACTION_FORWARD:
 		gtk_list_select_item(GTK_LIST(filtering.action_list),
 				     ACTION_FORWARD);
 		list_id = get_list_id_from_account_id(action->account_id);
 		gtk_list_select_item(GTK_LIST(filtering.account_list),
 				     list_id);
 		break;
-	case MATCHACTION_FORWARD_AS_ATTACHMENT:
+	case MATCHING_ACTION_FORWARD_AS_ATTACHMENT:
 		list_id = get_list_id_from_account_id(action->account_id);
 		gtk_list_select_item(GTK_LIST(filtering.action_list),
 				     ACTION_FORWARD_AS_ATTACHMENT);
 		gtk_list_select_item(GTK_LIST(filtering.account_list),
 				     list_id);
 		break;
-	case MATCHACTION_EXECUTE:
+	case MATCHING_EXECUTE:
 		gtk_list_select_item(GTK_LIST(filtering.action_list),
 				     ACTION_EXECUTE);
 		break;
@@ -871,6 +876,7 @@ static void prefs_filtering_select(GtkCList *clist, gint row, gint column,
 				GdkEvent *event)
 {
 	FilteringProp * prop;
+	gchar * tmp;
 	gchar * filtering_str;
 
 	if (row == 0) {
@@ -882,8 +888,9 @@ static void prefs_filtering_select(GtkCList *clist, gint row, gint column,
 				row, 0, &filtering_str))
 		return;
 	
-	prop = matcher_parser_get_filtering(filtering_str);
-	if (prop == NULL)
+	tmp = filtering_str;
+	prop = filteringprop_parse(&tmp);
+	if (tmp == NULL)
 		return;
 
 	prefs_filtering_select_set(prop);
