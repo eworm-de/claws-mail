@@ -1,6 +1,11 @@
 2003-07-12 [paul]	0.9.3claws
 
 	* 0.9.3claws released
+	
+2003-07-12 [paul]	0.9.0claws103
+
+	* src/Makefile.am
+		add addrquery.h
 
 2003-07-12 [melvin]	0.9.0claws102
 
