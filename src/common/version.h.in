@@ -20,8 +20,12 @@
 #ifndef __VERSION_H__
 #define __VERSION_H__
 
+#define MAKE_NUMERIC_VERSION(a, b, c, d) ((a << 24) | (b << 16) | (c << 8) | d)
+
 #define PACKAGE			"@PACKAGE@"
 #define VERSION			"@VERSION@"
 #define PROG_VERSION		"Sylpheed version "VERSION
+#define VERSION_NUMERIC		MAKE_NUMERIC_VERSION(@MAJOR_VERSION@, @MINOR_VERSION@, \
+						     @MICRO_VERSION@, @EXTRA_VERSION@)
 
 #endif /* __VERSION_H__ */

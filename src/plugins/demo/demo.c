@@ -18,6 +18,8 @@
  */
 
 #include "intl.h"
+#include "version.h"
+#include "sylpheed.h"
 #include "plugin.h"
 #include "utils.h"
 #include "hooks.h"
@@ -36,6 +38,16 @@ static guint hook_id;
 
 gint plugin_init(gchar **error)
 {
+	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
+		*error = g_strdup("Your sylpheed version is never then the version the plugin was build with");
+		return -1;
+	}
+
+	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 8, 11, 39))) {
+		*error = g_strdup("Your sylpheed version is too old");
+		return -1;
+	}
+
 	hook_id = hooks_register_hook(LOG_APPEND_TEXT_HOOKLIST, my_log_hook, NULL);
 	if (hook_id == -1) {
 		*error = g_strdup("Failed to register log text hook");

@@ -1,3 +1,17 @@
+2003-07-18 [christoph]	0.9.3claws25
+
+	* configure.ac
+	* src/common/sylpheed.[ch]
+	* src/common/version.h.in
+		add version in numeric form to allow easy comparison
+
+	* src/plugins/demo/demo.c
+		add version check
+		- sylpheed version > plugin version => never allowed, sylpheed
+		  could contain unknown API changes
+		- sylpheed version < minimum version required => don't load,
+		  API required not available (if linking does not fail)
+
 2003-07-18 [alfons]	0.9.3claws24
 	
 	* src/common/plugin.[ch]
