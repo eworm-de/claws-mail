@@ -1,0 +1,12 @@
+EXPORTS
+;  SpamAssassinPage
+;  spamassassin_page
+;  foldersel_cb
+;  spamassassin_create_widget_func
+;  spamassassin_destroy_widget_func
+;  spamassassin_save_func
+;  spamassassin_destroy_func
+  plugin_init
+  plugin_done
+  plugin_name
+  plugin_desc

@@ -5,7 +5,11 @@
  * The text of this license is included in the SpamAssassin distribution in the file named "License"
  */
 
+#ifdef _MSC_VER
+# include <w32lib.h>
+#else
 #include <unistd.h>
+#endif
 #include <errno.h>
 
 #include "utils.h"

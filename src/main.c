@@ -170,15 +170,10 @@ _("File `%s' already exists.\n"
 static MainWindow *static_mainwindow;
 
 #ifdef WIN32
-int APIENTRY WinMain(HINSTANCE hInstance,
-		     HINSTANCE hPrevInstance,
-		     LPSTR     lpCmdLine,
-		     int       nCmdShow ) {
-	return main(__argc, __argv);
-}
-#endif
-
+int main_real(int argc, char *argv[])
+#else
 int main(int argc, char *argv[])
+#endif
 {
 	gchar *userrc;
 	MainWindow *mainwin;

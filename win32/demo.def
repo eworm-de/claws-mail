@@ -1,0 +1,12 @@
+EXPORTS
+;    hooklist_table                 @1   
+    hooks_get_hooklist             @2   
+    hooks_invoke                   @3   
+    hooks_register_hook            @4   
+    hooks_unregister_hook          @5   
+    mswin_helper_timeout_tag       @6   
+    my_log_hook                    @7   
+    plugin_desc                    @8   
+    plugin_done                    @9   
+    plugin_init                    @10  
+    plugin_name                    @11  

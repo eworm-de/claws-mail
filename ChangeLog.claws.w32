@@ -1,3 +1,44 @@
+2003-01-13 [thorsten]	0.8.8claws66-2
+
+	* win32/Makefile
+		make: renamed Make-ming.mak
+	* win32/Make-ming.mak			*** DELETED ***
+	  	make: Continued as Makefile
+	* win32/sylpheed_debug.ds[pw]		*** DELETED ***
+	  win32/sylpheed_debug.ds[pw]		*** DELETED ***
+	  win32/sylpheed.ds[pw]			*** DELETED ***
+	  win32/sylpheed_debug.mak		*** DELETED ***
+	  win32/sylpheed.mak			*** DELETED ***
+	  	make: obsolete
+	* win32/demo[_d].dsp			*** NEW FILE ***
+	  win32/sylpheed_dll[_d].dsp		*** NEW FILE ***
+	  win32/sylpheed_exe[_d].dsp		*** NEW FILE ***
+	  win32/spamassassin[_d].dsp		*** NEW FILE ***
+	  win32/spamassassin_gtk[_d].dsp	*** NEW FILE ***
+	  win32/sylpheed-claws[_d].dsw		*** NEW FILE ***
+	  	make: msvc project files for sylpheed and plugins
+	* win32/mk_ALL.bat			*** NEW FILE ***
+		make: commandline build for msvc projects
+	* win32/demo.def			*** NEW FILE ***
+	  win32/sylpheed.dll.def		*** NEW FILE ***
+	  win32/spamassassin.def		*** NEW FILE ***
+	  win32/spamassassin_gtk.def		*** NEW FILE ***
+	  	plugins: msvc library definitions
+	* src/w32loader.c			*** NEW FILE ***
+		plugins: starter for sylpheed.dll
+	* src/main.c
+		plugins: removed main()
+	* src/plugins/spamassassin_gtk.c
+	  src/plugins/spamassassin.[ch]
+	  src/plugins/libspamc.[ch]
+	  src/plugins/utils.c
+		plugins: adjustments for win32
+	  
+2003-01-13 [thorsten]	0.8.8claws66-1
+
+	* win32/Make-ming.mak
+		add: plugin support
+
 2002-12-22 [thorsten]	0.8.5claws121-1
 
 	* src/gtkaspell.c

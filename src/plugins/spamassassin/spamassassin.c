@@ -200,6 +200,20 @@ void spamassassin_save_config()
 	prefs_file_close(pfile);
 }
 
+#ifdef WIN32
+/* cfg to client*/
+void spamassassin_getconf(_spamassassin_cfg * const spamassassin_cfg)
+{
+	TO_SPAMCFG_STRUCT(spamassassin_cfg);
+}
+
+/* cfg from client*/
+void spamassassin_setconf(const _spamassassin_cfg * const spamassassin_cfg)
+{
+	FROM_SPAMCFG_STRUCT(spamassassin_cfg);
+}
+#endif
+
 gint plugin_init(gchar **error)
 {
 	hook_id = hooks_register_hook(MAIL_FILTERING_HOOKLIST, mail_filtering_hook, NULL);

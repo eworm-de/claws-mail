@@ -22,6 +22,42 @@
 
 #include <glib.h>
 
+#ifdef WIN32
+#define extern
+
+typedef struct {
+	gboolean spamassassin_enable;
+	gchar *spamassassin_hostname;
+	int spamassassin_port;
+	int spamassassin_max_size;
+	gboolean spamassassin_receive_spam;
+	gchar *spamassassin_save_folder;
+} _spamassassin_cfg;
+_spamassassin_cfg spamassassin_cfg;
+
+#define FROM_SPAMCFG_STRUCT(cfg) \
+{ \
+	spamassassin_enable	  = cfg->spamassassin_enable		; \
+	spamassassin_hostname	  = cfg->spamassassin_hostname		; \
+	spamassassin_port	  = cfg->spamassassin_port		; \
+	spamassassin_max_size	  = cfg->spamassassin_max_size		; \
+	spamassassin_receive_spam = cfg->spamassassin_receive_spam	; \
+	spamassassin_save_folder  = cfg->spamassassin_save_folder	; \
+}
+
+#define TO_SPAMCFG_STRUCT(cfg) \
+{ \
+	cfg->spamassassin_enable	= spamassassin_enable		; \
+	cfg->spamassassin_hostname	= spamassassin_hostname		; \
+	cfg->spamassassin_port		= spamassassin_port		; \
+	cfg->spamassassin_max_size	= spamassassin_max_size		; \
+	cfg->spamassassin_receive_spam	= spamassassin_receive_spam	; \
+	cfg->spamassassin_save_folder	= spamassassin_save_folder	; \
+}
+void spamassassin_getconf(_spamassassin_cfg * const spamassassin_cfg);
+void spamassassin_setconf(const _spamassassin_cfg * const spamassassin_cfg);
+#endif /* WIN32 */
+
 extern gboolean spamassassin_enable;
 extern gchar *spamassassin_hostname;
 extern int spamassassin_port;

@@ -224,6 +224,22 @@ static void spamassassin_destroy_widget_func(PrefsPage *_page)
 	debug_print("Destroying SpamAssassin widget\n");
 }
 
+#ifdef WIN32
+void getconf()
+{
+	_spamassassin_cfg * p_spamassassin_cfg = &spamassassin_cfg;
+	spamassassin_getconf(p_spamassassin_cfg);
+	FROM_SPAMCFG_STRUCT(p_spamassassin_cfg);
+}
+
+void setconf()
+{
+	_spamassassin_cfg * p_spamassassin_cfg = &spamassassin_cfg;
+	TO_SPAMCFG_STRUCT(p_spamassassin_cfg);
+	spamassassin_setconf(p_spamassassin_cfg);
+}
+#endif
+
 static void spamassassin_save_func(PrefsPage *_page)
 {
 	struct SpamAssassinPage *page = (struct SpamAssassinPage *) _page;
@@ -244,6 +260,9 @@ static void spamassassin_save_func(PrefsPage *_page)
 		g_free(spamassassin_save_folder);
 	spamassassin_save_folder = gtk_editable_get_chars(GTK_EDITABLE(page->save_folder), 0, -1);
 
+#ifdef WIN32
+	setconf();
+#endif
 	spamassassin_save_config();
 }
 
@@ -259,6 +278,9 @@ gint plugin_init(gchar **error)
 {
 	struct SpamAssassinPage *page;
 
+#ifdef WIN32
+	getconf();
+#endif
 	page = g_new0(struct SpamAssassinPage, 1);
 	page->page.path = _("Filtering/SpamAssassin");
 	page->page.create_widget = spamassassin_create_widget_func;

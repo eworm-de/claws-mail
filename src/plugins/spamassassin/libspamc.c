@@ -7,17 +7,27 @@
 
 #include "libspamc.h"
 #include "utils.h"
+#ifndef _MSC_VER
 #include <unistd.h>
+#endif
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <syslog.h>
 #include <sys/types.h>
+#ifdef WIN32
+# include <w32lib.h>
+# include <errno.h>
+# ifndef _MSC_VER
+#  include <winsock2.h>
+# endif
+#else
+#include <syslog.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <netdb.h>
 #include <arpa/inet.h>
+#endif
 
 #ifdef HAVE_SYSEXITS_H
 #include <sysexits.h>
@@ -33,6 +43,10 @@
 #endif
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
+#endif
+
+#ifdef WIN32
+#define in_addr_t ulong
 #endif
 
 #define MAX_CONNECT_RETRIES 3
