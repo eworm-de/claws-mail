@@ -460,6 +460,8 @@ static gboolean session_read_data_cb(GIOChannel	*source, GIOCondition condition,
 	gint terminator_len;
 	gboolean complete = FALSE;
 	gint ret;
+	gchar *ret_data;
+	gint data_len;
 
 	g_return_val_if_fail(condition == G_IO_IN, FALSE);
 
@@ -518,12 +520,16 @@ static gboolean session_read_data_cb(GIOChannel	*source, GIOCondition condition,
 	}
 
 	/* callback */
-	ret = session->recv_data_finished(session, data_buf->data,
-					  data_buf->len - terminator_len);
-	session->recv_data_notify(session, data_buf->len - terminator_len,
+	ret_data = g_malloc(data_buf->len);
+	memcpy(ret_data, data_buf->data, data_buf->len);
+	data_len = data_buf->len - terminator_len;
+	g_byte_array_set_size(data_buf, 0);
+
+	ret = session->recv_data_finished(session, ret_data, data_len);
+	session->recv_data_notify(session, data_len,
 				  session->recv_data_notify_data);
 
-	g_byte_array_set_size(data_buf, 0);
+	g_free(ret_data);
 
 	if (ret < 0)
 		session->state = SESSION_ERROR;

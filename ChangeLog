@@ -1,3 +1,8 @@
+2003-06-27
+
+	* src/session.c: session_read_data_cb(): clear Session::read_data_buf
+	  before calling callbacks.
+
 2003-06-26
 
 	* src/socket.c: made socket connection protocol independent.

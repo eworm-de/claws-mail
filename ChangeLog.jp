@@ -1,3 +1,8 @@
+2003-06-27
+
+	* src/session.c: session_read_data_cb(): コールバックを呼ぶ前に
+	  Session::read_data_buf をクリアするようにした。
+
 2003-06-26
 
 	* src/socket.c: ソケット接続をプロトコル独立にした。
