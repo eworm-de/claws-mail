@@ -40,7 +40,7 @@
 
 #include <gtk/gtkoptionmenu.h>
 
-#include "gtkstext.h"
+#include "gtk/gtktext.h"
 
 typedef struct _GtkAspell GtkAspell; /* Defined in gtkaspell.c */
 
@@ -58,7 +58,7 @@ GtkAspell*	gtkaspell_new			(const gchar *dictionary_path,
 						 gint  misspelled_color,
 						 gboolean check_while_typing,  
 						 gboolean use_alternate,  
-						 GtkSText *gtktext);
+						 GtkTextView *gtktext);
 
 void 		gtkaspell_delete		(GtkAspell *gtkaspell); 
 

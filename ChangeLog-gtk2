@@ -1,4 +1,9 @@
 2004-01-25 Thorsten Maerz <torte@netztorte.de>
+	* src/gtk/gtkaspell.[ch]
+	  src/compose.c
+		reimplement spellchecker
+
+2004-01-25 Thorsten Maerz <torte@netztorte.de>
 	* src/gtk/filesel.c
 		crash when inserting file in compose window
 		(TODO: keep old selection on clicks)
