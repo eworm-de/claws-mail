@@ -1,5 +1,14 @@
 2003-05-20
 
+	* src/imap.c: imap_locale_to_modified_utf7(): locale 文字列が '+'
+	  を含む場合のエンコードのバグを修正。
+	  imap_modified_utf7_to_locale()
+	  imap_locale_to_modified_utf7(): たとえ iconv() がサポートされて
+	  いなかったとしても少なくとも '&' をエスケープ/エスケープ解除する
+	  ようにした。
+
+2003-05-20
+
 	* src/compose.c:
 	  compose_insert_sig()
 	  compose_get_signature_str(): 署名文字列に区切りも含むようにした。

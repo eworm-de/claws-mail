@@ -1,5 +1,13 @@
 2003-05-20
 
+	* src/imap.c: imap_locale_to_modified_utf7(): fixed the encoding bug
+	  when locale strings include '+'.
+	  imap_modified_utf7_to_locale()
+	  imap_locale_to_modified_utf7(): at least escape/unescape '&' even
+	  if iconv() is not supported.
+
+2003-05-20
+
 	* src/compose.c:
 	  compose_insert_sig()
 	  compose_get_signature_str(): include separator in signature string.

@@ -1,3 +1,9 @@
+2003-05-20 [paul]	0.8.11claws169
+
+	* sync with 0.9.0cvs4
+		see ChangeLog 2003-05-20
+		fixes bug #152, 'encoding of IMAP folders names'
+
 2003-05-20 [paul]	0.8.11claws168
 
 	* sync with 0.9.0cvs3
