@@ -1470,6 +1470,7 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 		hentry[H_LIST_POST].body = NULL;
 	}
 
+	/* CLAWS - X-Priority */
 	if (compose->mode == COMPOSE_REEDIT)
 		if (hentry[H_X_PRIORITY].body != NULL) {
 			gint priority;
@@ -1628,29 +1629,24 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	g_return_if_fail(compose->account != NULL);
 	g_return_if_fail(msginfo != NULL);
 
-	if (to_ml && compose->ml_post) {
-		compose_entry_append(compose, compose->ml_post,
-				     COMPOSE_TO);
-	} else if ((compose->account->protocol != A_NNTP) || followup_and_reply_to) {
-		if (!(to_all || ignore_replyto)
-		    && msginfo->folder
-		    && msginfo->folder->prefs->enable_default_reply_to) {
+	if (compose->account->protocol != A_NNTP || followup_and_reply_to) {
+		if (!compose->replyto && to_ml && compose->ml_post)
 			compose_entry_append(compose,
-			    msginfo->folder->prefs->default_reply_to,
-			    COMPOSE_TO);
-		} else
+					   compose->ml_post,
+					   COMPOSE_TO);
+		else
 			compose_entry_append(compose,
-				    ((compose->replyto && !ignore_replyto)
-				     ? compose->replyto
-				     : msginfo->from ? msginfo->from : ""),
-				     COMPOSE_TO);
+				 (compose->replyto && !ignore_replyto)
+				 ? compose->replyto
+				 : msginfo->from ? msginfo->from : "",
+				 COMPOSE_TO);
 	} else {
 		if (ignore_replyto)
 			compose_entry_append
 				(compose, msginfo->from ? msginfo->from : "",
 				 COMPOSE_TO);
 		else {
-			if (compose->followup_to && !strncmp(compose->followup_to,"poster",6)) {
+			if (compose->followup_to && !strncmp(compose->followup_to, "poster", 6)) {
 				compose_entry_append
 					(compose,
 					((compose->replyto && !ignore_replyto)

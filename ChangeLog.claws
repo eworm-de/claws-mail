@@ -1,3 +1,10 @@
+2002-10-18 [alfons]	0.8.5claws46
+
+	* src/compose.c
+		make automagic reply work correctly for email accounts 
+		(whether it's viable to do a full sync with Hiro's 
+		compose.c is still under discussion)
+
 2002-10-18 [melvin]	0.8.5claws45
 
 	* src/prefs_actions.c
