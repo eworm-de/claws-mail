@@ -1,3 +1,7 @@
+2003-10-13 [luke]	0.9.6claws23
+	* src/summaryview.c
+	        fix bug 334 (part 1)
+
 2003-10-13  [kov]	0.9.6claws22
 
 	* src/mimeview.c

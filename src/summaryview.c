@@ -1144,7 +1144,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		if (prefs_common.open_unread_on_enter ||
 		    prefs_common.always_show_msg) {
 			summary_unlock(summaryview);
-			summary_select_node(summaryview, node, TRUE, TRUE);
+			summary_select_node(summaryview, node, 
+					    messageview_is_visible(summaryview->messageview), 
+					    TRUE);
 			summary_lock(summaryview);
 		} else
 			summary_select_node(summaryview, node, FALSE, TRUE);
