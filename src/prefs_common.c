@@ -58,6 +58,12 @@
 #include "quote_fmt.h"
 #include "prefswindow.h"
 
+enum {
+	DATEFMT_FMT,
+	DATEFMT_TXT,
+	N_DATEFMT_COLUMNS
+};
+
 PrefsCommon prefs_common;
 
 GtkWidget *notebook;
@@ -751,11 +757,10 @@ static gboolean date_format_on_delete		(GtkWidget	*dialogwidget,
 						 GtkWidget     **widget);
 static void date_format_entry_on_change		(GtkEditable	*editable,
 						 GtkLabel	*example);
-static void date_format_select_row		(GtkWidget	*date_format_list,
-						 gint		 row,
-						 gint		 column,
-						 GdkEventButton	*event,
-						 GtkWidget	*date_format);
+static void date_format_select_row	        (GtkTreeView *list_view,
+						 GtkTreePath *path,
+						 GtkTreeViewColumn *column,
+						 GtkWidget *date_format);
 static GtkWidget *date_format_create            (GtkButton      *button,
                                                  void           *data);
 
@@ -2236,8 +2241,9 @@ static void date_format_entry_on_change(GtkEditable *editable,
 	g_free(text);
 }
 
-static void date_format_select_row(GtkWidget *date_format_list, gint row,
-				   gint column, GdkEventButton *event,
+static void date_format_select_row(GtkTreeView *list_view,
+				   GtkTreePath *path,
+				   GtkTreeViewColumn *column,
 				   GtkWidget *date_format)
 {
 	gint cur_pos;
@@ -2245,21 +2251,25 @@ static void date_format_select_row(GtkWidget *date_format_list, gint row,
 	const gchar *old_format;
 	gchar *new_format;
 	GtkWidget *datefmt_sample;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	
+	g_return_if_fail(date_format != NULL);
 
 	/* only on double click */
-	if (!event || event->type != GDK_2BUTTON_PRESS) return;
-
-
 	datefmt_sample = GTK_WIDGET(g_object_get_data(G_OBJECT(date_format), 
 						      "datefmt_sample"));
 
-	g_return_if_fail(date_format_list != NULL);
-	g_return_if_fail(date_format != NULL);
 	g_return_if_fail(datefmt_sample != NULL);
 
-	/* get format from clist */
-	gtk_clist_get_text(GTK_CLIST(date_format_list), row, 0, &format);
+	model = gtk_tree_view_get_model(list_view);
 
+	/* get format from list */
+	if (!gtk_tree_model_get_iter(model, &iter, path))
+		return;
+
+	gtk_tree_model_get(model, &iter, DATEFMT_FMT, &format, -1);		
+	
 	cur_pos = gtk_editable_get_position(GTK_EDITABLE(datefmt_sample));
 	old_format = gtk_entry_get_text(GTK_ENTRY(datefmt_sample));
 
@@ -2280,9 +2290,10 @@ static void date_format_select_row(GtkWidget *date_format_list, gint row,
 static GtkWidget *date_format_create(GtkButton *button, void *data)
 {
 	static GtkWidget *datefmt_win = NULL;
+
 	GtkWidget *vbox1;
 	GtkWidget *scrolledwindow1;
-	GtkWidget *datefmt_clist;
+	GtkWidget *datefmt_list_view;
 	GtkWidget *table;
 	GtkWidget *label1;
 	GtkWidget *label2;
@@ -2291,6 +2302,7 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 	GtkWidget *datefmt_entry;
+	GtkListStore *store;
 
 	struct {
 		gchar *fmt;
@@ -2322,6 +2334,10 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	const gint TIME_FORMAT_ELEMS =
 		sizeof time_format / sizeof time_format[0];
 
+	GtkCellRenderer *renderer;
+	GtkTreeViewColumn *column;
+	GtkTreeSelection *selection;
+
 	time_format[0].txt  = _("the full abbreviated weekday name");
 	time_format[1].txt  = _("the full weekday name");
 	time_format[2].txt  = _("the abbreviated month name");
@@ -2344,6 +2360,21 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 
 	if (datefmt_win) return datefmt_win;
 
+	store = gtk_list_store_new(N_DATEFMT_COLUMNS,
+				   G_TYPE_STRING,
+				   G_TYPE_STRING,
+				   -1);
+
+	for (i = 0; i < TIME_FORMAT_ELEMS; i++) {
+		GtkTreeIter iter;
+
+		gtk_list_store_append(store, &iter);
+		gtk_list_store_set(store, &iter,
+				   DATEFMT_FMT, time_format[i].fmt,
+				   DATEFMT_TXT, time_format[i].txt,
+				   -1);
+	}
+
 	datefmt_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width(GTK_CONTAINER(datefmt_win), 8);
 	gtk_window_set_title(GTK_WINDOW(datefmt_win), _("Date format"));
@@ -2361,23 +2392,32 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	gtk_widget_show(scrolledwindow1);
 	gtk_box_pack_start(GTK_BOX(vbox1), scrolledwindow1, TRUE, TRUE, 0);
 
-	titles[0] = _("Specifier");
-	titles[1] = _("Description");
-	datefmt_clist = gtk_clist_new_with_titles(2, titles);
-	gtk_widget_show(datefmt_clist);
-	gtk_container_add(GTK_CONTAINER(scrolledwindow1), datefmt_clist);
+	datefmt_list_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_unref(G_OBJECT(store));
+	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(datefmt_list_view), TRUE);
+	gtk_widget_show(datefmt_list_view);
+	gtk_container_add(GTK_CONTAINER(scrolledwindow1), datefmt_list_view);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes
+			(_("Specifier"), renderer, "text", DATEFMT_FMT,
+			 NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(datefmt_list_view), column);
+	
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes
+			(_("Description"), renderer, "text", DATEFMT_TXT,
+			 NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(datefmt_list_view), column);
+	
 	/* gtk_clist_set_column_width(GTK_CLIST(datefmt_clist), 0, 80); */
-	gtk_clist_set_selection_mode(GTK_CLIST(datefmt_clist),
-				     GTK_SELECTION_BROWSE);
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(datefmt_list_view));
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_BROWSE);
 
-	for (i = 0; i < TIME_FORMAT_ELEMS; i++) {
-		gchar *text[2];
-		/* phoney casting necessary because of gtk... */
-		text[0] = (gchar *)time_format[i].fmt;
-		text[1] = (gchar *)time_format[i].txt;
-		gtk_clist_append(GTK_CLIST(datefmt_clist), text);
-	}
-
+	g_signal_connect(G_OBJECT(datefmt_list_view), "row_activated", 
+			 G_CALLBACK(date_format_select_row),
+			 datefmt_win);
+	
 	table = gtk_table_new(2, 2, FALSE);
 	gtk_widget_show(table);
 	gtk_box_pack_start(GTK_BOX(vbox1), table, FALSE, FALSE, 0);
@@ -2416,8 +2456,8 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	gtk_label_set_justify(GTK_LABEL(label3), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment(GTK_MISC(label3), 0, 0.5);
 
-	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
-				&cancel_btn, _("Cancel"), NULL, NULL);
+	gtkut_button_set_create_stock(&confirm_area, &ok_btn, GTK_STOCK_OK,
+				      &cancel_btn, GTK_STOCK_CANCEL, NULL, NULL);
 	gtk_widget_grab_default(ok_btn);
 	gtk_widget_show(confirm_area);
 
@@ -2443,10 +2483,6 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	g_signal_connect(G_OBJECT(datefmt_entry), "changed",
 			 G_CALLBACK(date_format_entry_on_change),
 			 label3);
-
-	g_signal_connect(G_OBJECT(datefmt_clist), "select_row",
-			 G_CALLBACK(date_format_select_row),
-			 datefmt_win);
 
 	gtk_window_set_position(GTK_WINDOW(datefmt_win), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(datefmt_win), TRUE);
