@@ -877,7 +877,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 			node = summary_find_next_unread_msg(summaryview, NULL);
 			if (node == NULL && GTK_CLIST(ctree)->row_list != NULL)
 				node = gtk_ctree_node_nth
-					(ctree, GTK_CLIST(ctree)->rows - 1);
+					(ctree, sort_type == 
+					 GTK_SORT_DESCENDING ? 0 : 
+					 GTK_CLIST(ctree)->rows - 1);
 			summary_select_node(summaryview, node, FALSE, TRUE);
 		}
 	} else {
@@ -891,7 +893,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 		if (node == NULL && GTK_CLIST(ctree)->row_list != NULL) {
 			/* Get the last visible node on screen */
 			/* FIXME: huh, what happens if node is null? that allowed?? */
-			node = gtk_ctree_node_nth(ctree, GTK_CLIST(ctree)->rows - 1);
+			node = gtk_ctree_node_nth(ctree, sort_type == 
+						  GTK_SORT_DESCENDING ? 0 : 
+						  GTK_CLIST(ctree)->rows - 1);
 		}	
 		if (prefs_common.open_unread_on_enter) {
 			summary_unlock(summaryview);

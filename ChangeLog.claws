@@ -1,3 +1,9 @@
+2002-02-17 [melvin]	0.7.1claws11
+
+	* src/summaryview.c
+		Fixed bug where descending sort order did not select top
+		message.
+
 2002-02-17 [melvin]	0.7.1claws10
 
 	* acconfig.h
