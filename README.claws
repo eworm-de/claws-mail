@@ -585,12 +585,12 @@ sourceforge project page.
   To download the latest cvs cd to the directory where you wish to download
   to and type the following information:
 
-  cvs -d:pserver:anonymous@cvs.sylpheed-claws.sourceforge.net:/cvsroot/sylpheed-claws login
+  cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/sylpheed-claws login
 
   When prompted for a password press the RETURN key.
   After anonymously logging in:
 
-  cvs -z3 -d:pserver:anonymous@cvs.sylpheed-claws.sourceforge.net:/cvsroot/sylpheed-claws co sylpheed-claws 
+  cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/sylpheed-claws co sylpheed-claws 
 
 
   b. Installing
