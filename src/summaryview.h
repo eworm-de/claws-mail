@@ -278,5 +278,5 @@ void summary_set_prefs_from_folderitem
                                   (SummaryView *summaryview, FolderItem *item);
 void summary_save_prefs_to_folderitem
                                   (SummaryView *summaryview, FolderItem *item);
-
+void summaryview_export_mbox_list (SummaryView *summaryview);
 #endif /* __SUMMARY_H__ */

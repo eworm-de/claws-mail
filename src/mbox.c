@@ -373,29 +373,18 @@ void empty_mbox(const gchar *mbox)
 	fclose(fp);
 }
 
-/* read all messages in SRC, and store them into one MBOX file. */
-gint export_to_mbox(FolderItem *src, const gchar *mbox)
+gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 {
-	GSList *mlist;
 	GSList *cur;
 	MsgInfo *msginfo;
 	FILE *msg_fp;
 	FILE *mbox_fp;
 	gchar buf[BUFFSIZE];
 
-	g_return_val_if_fail(src != NULL, -1);
-	g_return_val_if_fail(src->folder != NULL, -1);
-	g_return_val_if_fail(mbox != NULL, -1);
-
-	debug_print("Exporting messages from %s into %s...\n",
-		    src->path, mbox);
-
 	if ((mbox_fp = fopen(mbox, "wb")) == NULL) {
 		FILE_OP_ERROR(mbox, "fopen");
 		return -1;
 	}
-
-	mlist = folder_item_get_msg_list(src);
 
 	for (cur = mlist; cur != NULL; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;
@@ -426,10 +415,30 @@ gint export_to_mbox(FolderItem *src, const gchar *mbox)
 		fclose(msg_fp);
 		procmsg_msginfo_free(msginfo);
 	}
+	
+	fclose(mbox_fp);
+
+	return 0;
+}
+
+/* read all messages in SRC, and store them into one MBOX file. */
+gint export_to_mbox(FolderItem *src, const gchar *mbox)
+{
+	GSList *mlist;
+	int res = 0;
+	
+	g_return_val_if_fail(src != NULL, -1);
+	g_return_val_if_fail(src->folder != NULL, -1);
+	g_return_val_if_fail(mbox != NULL, -1);
+
+	debug_print("Exporting messages from %s into %s...\n",
+		    src->path, mbox);
+
+	mlist = folder_item_get_msg_list(src);
+
+	export_list_to_mbox(mlist, mbox);
 
 	g_slist_free(mlist);
-
-	fclose(mbox_fp);
 
 	return 0;
 }

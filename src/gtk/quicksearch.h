@@ -45,5 +45,8 @@ void quicksearch_set_execute_callback(QuickSearch *quicksearch,
 gboolean quicksearch_match(QuickSearch *quicksearch, MsgInfo *msginfo);
 gchar *expand_search_string(const gchar *str);
 gboolean quicksearch_is_running(QuickSearch *quicksearch);
-
+void quicksearch_reset_cur_folder_item(QuickSearch *quicksearch);
+void quicksearch_search_subfolders(QuickSearch *quicksearch, 
+				   FolderView  *folderview,
+				   FolderItem  *folder_item);
 #endif /* QUICKSEARCH_H */

@@ -34,6 +34,8 @@
 #include "matcher.h"
 #include "matcher_parser.h"
 #include "quicksearch.h"
+#include "folderview.h"
+#include "folder.h"
 
 struct _QuickSearch
 {
@@ -50,21 +52,30 @@ struct _QuickSearch
 	QuickSearchExecuteCallback	 callback;
 	gpointer			 callback_data;
 	gboolean			 running;
+	FolderItem			*root_folder_item;
 };
 
 void quicksearch_set_running(QuickSearch *quicksearch, gboolean run);
+static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active);
+static void quicksearch_reset_folder_items(QuickSearch *quicksearch, FolderItem *folder_item);
 
 static void prepare_matcher(QuickSearch *quicksearch)
 {
 	gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(quicksearch->search_string_entry)->entry));
 
+#ifdef WIN32
+	search_string = g_locale_from_utf8(search_string, -1, NULL, NULL, NULL);
+#endif
 	if (quicksearch->matcher_list != NULL) {
 		matcherlist_free(quicksearch->matcher_list);
 		quicksearch->matcher_list = NULL;
 	}
 
 	if (search_string == NULL || search_string[0] == '\0') {
-		quicksearch->active = FALSE;
+		quicksearch_set_active(quicksearch, FALSE);
+#ifdef WIN32
+		g_free(search_string);
+#endif
 		return;
 	}
 
@@ -77,8 +88,11 @@ static void prepare_matcher(QuickSearch *quicksearch)
 			g_free(newstr);
 		} else {
 			quicksearch->matcher_list = NULL;
-			quicksearch->active = FALSE;
+			quicksearch_set_active(quicksearch, FALSE);
 
+#ifdef WIN32
+			g_free(search_string);
+#endif
 			return;
 		}
 	} else {
@@ -87,7 +101,10 @@ static void prepare_matcher(QuickSearch *quicksearch)
 		quicksearch->search_string = g_strdup(search_string);
 	}
 
-	quicksearch->active = TRUE;
+	quicksearch_set_active(quicksearch, TRUE);
+#ifdef WIN32
+	g_free(search_string);
+#endif
 }
 
 static gint searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
@@ -101,11 +118,19 @@ static gint searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 
 	if (event != NULL && event->keyval == GDK_Return) {
 		gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(quicksearch->search_string_entry)->entry));
+#ifdef WIN32
+		gchar *search_string_utf8 = search_string;
 
+		search_string = g_locale_from_utf8(search_string, -1, NULL, NULL, NULL);
+#endif
 		if (search_string && strlen(search_string) != 0) {
 			prefs_common.summary_quicksearch_history =
 				add_history(prefs_common.summary_quicksearch_history,
+#ifdef WIN32
+					    search_string_utf8);
+#else
 					    search_string);
+#endif
 			gtk_combo_set_popdown_strings(GTK_COMBO(quicksearch->search_string_entry), 
 				prefs_common.summary_quicksearch_history);			
 		}
@@ -118,12 +143,15 @@ static gint searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 		quicksearch_set_running(quicksearch, FALSE);
 	 	gtk_signal_emit_stop_by_name(GTK_OBJECT(widget), "key_press_event");
 		gtk_widget_grab_focus(GTK_WIDGET(GTK_COMBO(quicksearch->search_string_entry)->entry));
+#ifdef WIN32
+		g_free(search_string);
+#endif
 	}
 
 	return TRUE; 		
 }
 
-static void searchtype_changed(GtkMenuItem *widget, gpointer data)
+static gboolean searchtype_changed(GtkMenuItem *widget, gpointer data)
 {
 	QuickSearch *quicksearch = (QuickSearch *)data;
 
@@ -145,6 +173,27 @@ static void searchtype_changed(GtkMenuItem *widget, gpointer data)
 	if (quicksearch->callback != NULL)
 		quicksearch->callback(quicksearch, quicksearch->callback_data);
 	quicksearch_set_running(quicksearch, FALSE);
+	return TRUE;
+}
+
+static gboolean searchtype_recursive_changed(GtkMenuItem *widget, gpointer data)
+{
+	QuickSearch *quicksearch = (QuickSearch *)data;
+	gboolean checked = GTK_CHECK_MENU_ITEM(widget)->active;
+	
+	prefs_common.summary_quicksearch_recurse = checked; 
+
+	/* reselect the search type */
+	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt), 
+				    prefs_common.summary_quicksearch_type);
+
+	prepare_matcher(quicksearch);
+
+	quicksearch_set_running(quicksearch, TRUE);
+	if (quicksearch->callback != NULL)
+		quicksearch->callback(quicksearch, quicksearch->callback_data);
+	quicksearch_set_running(quicksearch, FALSE);
+	return TRUE;
 }
 
 /*
@@ -272,6 +321,19 @@ QuickSearch *quicksearch_new()
 			   GTK_SIGNAL_FUNC(searchtype_changed),
 			   quicksearch);
 
+	MENUITEM_ADD (search_type, menuitem, NULL, NULL);
+	
+	menuitem = gtk_check_menu_item_new_with_label(_("Recursive"));
+	gtk_widget_show(menuitem);
+	gtk_menu_shell_append(GTK_MENU_SHELL(search_type), menuitem);
+	
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
+					prefs_common.summary_quicksearch_recurse);
+	
+	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+			 GTK_SIGNAL_FUNC(searchtype_recursive_changed),
+			 quicksearch);
+
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(search_type_opt), search_type);
 	
 	gtk_option_menu_set_history(GTK_OPTION_MENU(search_type_opt), prefs_common.summary_quicksearch_type);
@@ -361,7 +423,7 @@ void quicksearch_show(QuickSearch *quicksearch)
 
 void quicksearch_hide(QuickSearch *quicksearch)
 {
-	quicksearch->active = FALSE;
+	quicksearch_set_active(quicksearch, FALSE);
 	gtk_widget_hide(quicksearch->hbox_search);
 }
 
@@ -385,6 +447,14 @@ void quicksearch_set(QuickSearch *quicksearch, QuickSearchType type,
 gboolean quicksearch_is_active(QuickSearch *quicksearch)
 {
 	return quicksearch->active;
+}
+
+static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active)
+{
+	quicksearch->active = active;
+	if (!active) {
+		quicksearch_reset_cur_folder_item(quicksearch);
+	}
 }
 
 void quicksearch_set_execute_callback(QuickSearch *quicksearch,
@@ -419,10 +489,12 @@ gboolean quicksearch_match(QuickSearch *quicksearch, MsgInfo *msginfo)
 		break;
 	}
 
-	if (prefs_common.summary_quicksearch_type != QUICK_SEARCH_EXTENDED && quicksearch->search_string &&
+	if (prefs_common.summary_quicksearch_type != QUICK_SEARCH_EXTENDED && 
+	    quicksearch->search_string &&
             searched_header && strcasestr(searched_header, quicksearch->search_string) != NULL)
 		return TRUE;
-	else if ((quicksearch->matcher_list != NULL) && matcherlist_match(quicksearch->matcher_list, msginfo))
+	else if ((quicksearch->matcher_list != NULL) && 
+	         matcherlist_match(quicksearch->matcher_list, msginfo))
 		return TRUE;
 
 	return FALSE;
@@ -616,3 +688,73 @@ gboolean quicksearch_is_running(QuickSearch *quicksearch)
 	return quicksearch->running;
 }
 
+
+static gboolean quicksearch_match_subfolder(QuickSearch *quicksearch, 
+				 FolderItem *src)
+{
+	GSList *msglist = folder_item_get_msg_list(src);
+	GSList *cur;
+	gboolean result = FALSE;
+	
+	for (cur = msglist; cur != NULL; cur = cur->next) {
+		MsgInfo *msg = (MsgInfo *)cur->data;
+		if (quicksearch_match(quicksearch, msg)) {
+			procmsg_msginfo_free(msg);
+			result = TRUE;
+			break;
+		}
+		procmsg_msginfo_free(msg);
+	}
+
+	g_slist_free(msglist);
+	return result;
+}
+
+void quicksearch_search_subfolders(QuickSearch *quicksearch, 
+				   FolderView *folderview,
+				   FolderItem *folder_item)
+{
+	FolderItem *cur = NULL;
+	GNode *node = folder_item->node->children;
+	
+	if (!prefs_common.summary_quicksearch_recurse)
+		return;
+
+	for (; node != NULL; node = node->next) {
+		cur = FOLDER_ITEM(node->data);
+		if (quicksearch_match_subfolder(quicksearch, cur)) {
+			folderview_update_search_icon(cur, TRUE);
+		} else {
+			folderview_update_search_icon(cur, FALSE);
+		}
+		if (cur->node->children)
+			quicksearch_search_subfolders(quicksearch,
+						      folderview,
+						      cur);
+	}
+	quicksearch->root_folder_item = folder_item;
+}
+
+static void quicksearch_reset_folder_items(QuickSearch *quicksearch,
+				    FolderItem *folder_item)
+{
+	FolderItem *cur = NULL;
+	GNode *node = folder_item->node->children;
+	
+	for (; node != NULL; node = node->next) {
+		cur = FOLDER_ITEM(node->data);
+		folderview_update_search_icon(cur, FALSE);
+		if (cur->node->children)
+			quicksearch_reset_folder_items(quicksearch,
+						       cur);
+	}
+}
+
+void quicksearch_reset_cur_folder_item(QuickSearch *quicksearch)
+{
+	if (quicksearch->root_folder_item)
+		quicksearch_reset_folder_items(quicksearch, 
+					       quicksearch->root_folder_item);
+	
+	quicksearch->root_folder_item = NULL;
+}

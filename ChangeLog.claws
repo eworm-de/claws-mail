@@ -1,4 +1,68 @@
-2005-01-17 [paul]	1.0.0
+2005-01-23 [holger]	1.0.0cvs9
+
+	* src/crash.c
+		Include missing header file
+
+2005-01-22 [colin]	1.0.0cvs8
+
+	* src/summaryview.c
+	* src/gtk/quicksearch.c
+		Make recursive quicksearch work in
+		root folders (and code fixes)
+
+2005-01-21 [colin]	1.0.0cvs7
+
+	* src/summaryview.c
+		Set cursor to wait while looking in subfolders
+
+2005-01-21 [colin]	1.0.0cvs6
+
+	* src/summaryview.c
+		Don't clear quicksearch if recursion is on,
+		even if !sticky
+
+2005-01-21 [colin]	1.0.0cvs5
+
+	* src/gtk/quicksearch.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+		Add option to recurse or not
+
+2005-01-21 [colin]	1.0.0cvs4
+
+	* src/folder.h
+	* src/folderview.c
+	* src/folderview.h
+	* src/summaryview.c
+	* src/gtk/quicksearch.c
+	* src/gtk/quicksearch.h
+		Make quicksearch recursive - results materialized
+		by search icons in the folderview.
+
+2005-01-20 [holger]	1.0.0cvs3
+
+	* src/addrindex.c
+	* src/addrindex.h
+		Add addrindex_load_person_attribute() (for plugins)
+
+2005-01-19 [colin]	1.0.0cvs2
+
+	* src/mbox.c
+	* src/mbox.h
+	* src/mainwindow.c
+	* src/summaryview.c
+	* src/summaryview.h
+		Add an easy way to export specific messages
+		to an mbox file.
+
+2005-01-19 [paul]	1.0.0cvs1
+
+	* po/ja.po
+	* po/ko.po
+		updated by  Rui Hirokawa and
+		SungHyun Nam
+
+2005-01-18 [paul]	1.0.0
 
 	* version 1.0.0 released
 

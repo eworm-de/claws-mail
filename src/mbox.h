@@ -43,5 +43,7 @@ void empty_mbox		(const gchar	*mbox);
 
 gint export_to_mbox	(FolderItem	*src,
 			 const gchar	*mbox);
+gint export_list_to_mbox(GSList 	*mlist, 
+			 const gchar 	*mbox);
 
 #endif /* __MBOX_H__ */

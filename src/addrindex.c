@@ -2895,8 +2895,86 @@ gboolean addrindex_load_completion(
 	return TRUE;
 }
 
+/**
+ * This function can be used to collect information about
+ * addressbook entries that contain a specific attribute.
+ *
+ * \param attr         Name of attribute to look for
+ * \param callBackFunc Function to be called when a matching attribute was found
+ * \return <i>TRUE</i>
+ */
+gboolean addrindex_load_person_attribute(
+		const gchar *attr,
+		gint (*callBackFunc) ( ItemPerson *, const gchar * ) )
+{
+	AddressDataSource *ds;
+	GList *nodeIf, *nodeDS;
+	GList *listP, *nodeP;
+	GList *nodeA;
+
+	nodeIf = addrindex_get_interface_list( _addressIndex_ );
+	while( nodeIf ) {
+	        gchar *cur_bname;
+		AddressInterface *iface = nodeIf->data;
+
+		nodeIf = g_list_next( nodeIf );
+		if( ! iface->useInterface ) {
+			continue;
+		}
+		if( iface->externalQuery ) {
+			continue;
+		}
+		nodeDS = iface->listSource;
+		while( nodeDS ) {
+			ds = nodeDS->data;
+
+			/* Read address book */
+			if( addrindex_ds_get_modify_flag( ds ) ) {
+				addrindex_ds_read_data( ds );
+			}
+
+			if( ! addrindex_ds_get_read_flag( ds ) ) {
+				addrindex_ds_read_data( ds );
+			}
+
+			/* Check addressbook name */
+			cur_bname = addrindex_ds_get_name( ds );
+
+			/* Get all persons */
+			listP = addrindex_ds_get_all_persons( ds );
+			nodeP = listP;
+			while( nodeP ) {
+				ItemPerson *person = nodeP->data;
+
+				/* Return all ItemPerson's if attr is NULL */
+				if( attr == NULL ) {
+					callBackFunc(person, cur_bname);
+				}
+
+				/* Return ItemPerson's with specific attribute */
+				else {
+					nodeA = person->listAttrib;
+					/* Process each User Attribute */
+				        while( nodeA ) {
+						UserAttribute *attrib = nodeA->data;
+						if( attrib->name && 
+						    !strcmp( attrib->name,attr ) ) {
+							callBackFunc(person, cur_bname);
+						}
+						nodeA = g_list_next( nodeA );
+					}
+				}
+				nodeP = g_list_next( nodeP );
+			}
+			/* Free up the list */
+			g_list_free( listP );
+
+			nodeDS = g_list_next( nodeDS );
+		}
+	}
+	return TRUE;
+}
+
 /*
  * End of Source.
  */
-
-

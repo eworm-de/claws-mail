@@ -799,6 +799,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	summary_lock(summaryview);
 
 	if (!prefs_common.summary_quicksearch_sticky
+	 && !prefs_common.summary_quicksearch_recurse
 	 && !quicksearch_is_running(summaryview->quicksearch)) {
 		quicksearch_set(summaryview->quicksearch, prefs_common.summary_quicksearch_type, "");
 	}
@@ -853,6 +854,15 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		gtk_clist_thaw(GTK_CLIST(ctree));
 		summary_unlock(summaryview);
 		inc_unlock();
+		if (item && quicksearch_is_running(summaryview->quicksearch)) {
+			main_window_cursor_wait(summaryview->mainwin);
+			quicksearch_reset_cur_folder_item(summaryview->quicksearch);
+			if (quicksearch_is_active(summaryview->quicksearch))
+				quicksearch_search_subfolders(summaryview->quicksearch, 
+					      summaryview->folderview,
+					      summaryview->folder_item);
+			main_window_cursor_normal(summaryview->mainwin);
+		}			
 		return TRUE;
 	}
 	g_free(buf);
@@ -931,7 +941,18 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			else
 				procmsg_msginfo_free(msginfo);
 		}
-
+		
+		if (quicksearch_is_running(summaryview->quicksearch)) {
+			/* only scan subfolders when quicksearch changed,
+			 * not when search is the same and folder changed */
+			main_window_cursor_wait(summaryview->mainwin);
+			quicksearch_reset_cur_folder_item(summaryview->quicksearch);
+			quicksearch_search_subfolders(summaryview->quicksearch, 
+					      summaryview->folderview,
+					      summaryview->folder_item);
+			main_window_cursor_normal(summaryview->mainwin);
+		}
+		
 		g_slist_free(mlist);
 		mlist = not_killed;
 	}
@@ -5386,4 +5407,19 @@ static void summary_find_answers (SummaryView *summaryview, MsgInfo *msg)
 	node = gtk_ctree_node_nth(GTK_CTREE(summaryview->ctree), 0);
 	if (node)
 		summary_select_node(summaryview, node, TRUE, TRUE);
+}
+
+void summaryview_export_mbox_list(SummaryView *summaryview)
+{
+	GSList *list = summary_get_selected_msg_list(summaryview);
+	gchar *mbox = filesel_select_file(_("Export to mbox file"), NULL);
+	
+	if (mbox == NULL || list == NULL)
+		return;
+		
+	export_list_to_mbox(list, mbox);
+	
+	g_slist_free(list);
+	g_free(mbox);
+	
 }

@@ -1,3 +1,27 @@
+2005-01-23 [thorsten]	1.0.0cvs9.1
+
+	* ChangeLog.claws
+	* PATCHSETS
+	* configure.ac
+	* po/ja.po
+	* po/ko.po
+	* src/addrindex.c
+	* src/addrindex.h
+	* src/crash.c
+	* src/folder.h
+	* src/folderview.c
+	* src/folderview.h
+	* src/mainwindow.c
+	* src/mbox.c
+	* src/mbox.h
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/gtk/quicksearch.c
+	* src/gtk/quicksearch.h
+		sync 1.0.0cvs9
+
 2005-01-23 [thorsten]	1.0.0cvs0.2
 
 	* src/codeconv.c

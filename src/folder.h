@@ -587,6 +587,7 @@ struct _FolderItem
 	guint threaded       : 1; /* threaded folder view */
 	guint hide_read_msgs : 1; /* hide read messages   */
 	guint ret_rcpt       : 1; /* return receipt       */
+	guint search_match   : 1;
 
 	gint op_count;
 	guint opened         : 1; /* opened by summary view */
