@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=6
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws33
+EXTRA_VERSION=claws34
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -308,8 +308,8 @@ dnl check if gdk / gtk was compiled with USE_XIM
 AC_MSG_CHECKING([whether GTK was compiled with XIM support])
 CFLAGS_SAVE="$CFLAGS"
 LDFLAGS_SAVE="$LDFLAGS"
-CFLAGS="$CFLAGS `$GLIB_CONFIG --cflags` `gtk-config --cflags`"
-LDFLAGS="$LIBS `$GLIB_CONFIG --libs` `gtk-config --libs`"
+CFLAGS="$CFLAGS `$GLIB_CONFIG --cflags` `$GTK_CONFIG --cflags`"
+LDFLAGS="$LIBS `$GLIB_CONFIG --libs` `$GTK_CONFIG --libs`"
 AC_CACHE_VAL(ac_cv_use_gtkgdk_xim, [
 	AC_TRY_LINK_FUNC([ gdk_ic_attr_new ],
 			 ac_cv_use_gtkgdk_xim=yes, ac_cv_use_gtkgdk_xim=no)

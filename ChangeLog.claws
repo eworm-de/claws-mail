@@ -1,3 +1,10 @@
+2002-11-28 [paul]	0.8.6claws34
+
+	* configure.in
+		apply patch that fixes the checking of GTK with XIM 
+		support on different OSs, such as FreeBSD. Patch 
+		submitted by Topia <topia@users.sourceforge.net>
+		
 2002-11-28 [paul]	0.8.6claws33
 
 	* src/mainwindow.c
