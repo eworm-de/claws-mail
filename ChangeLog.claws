@@ -1,3 +1,10 @@
+2002-09-17 [alfons]	0.8.2claws56
+	
+	* src/summaryview.c
+		summary_sort(): check non-NULL summaryview->folder_item when no 
+		folder is selected at all
+		(closes "[ 610344 ] sort label make syl Crash")
+
 2002-09-17 [alfons]	0.8.2claws55
 	
 	* src/compose.c

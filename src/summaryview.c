@@ -1978,9 +1978,10 @@ void summary_sort(SummaryView *summaryview,
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_date;
 		break;
 	case SORT_BY_FROM:
-		cmp_func = summaryview->folder_item->stype != F_OUTBOX ? 
-			(GtkCListCompareFunc) summary_cmp_by_from :
-			(GtkCListCompareFunc) summary_cmp_by_to;
+		if (summaryview->folder_item && summaryview->folder_item->stype != F_OUTBOX)
+			cmp_func = (GtkCListCompareFunc) summary_cmp_by_from;
+		else			
+			cmp_func = (GtkCListCompareFunc) summary_cmp_by_to;
 		break;
 	case SORT_BY_SUBJECT:
 		if (summaryview->simplify_subject_preg)
