@@ -95,7 +95,8 @@ void xml_free_tag		(XMLTag 	*tag);
 void xml_tag_add_attr		(XMLTag 	*tag,
 				 const gchar 	*name, 
 				 gchar 		*value);
-void xml_write_node		(GNode		*node,
+void xml_write_tree		(GNode		*node,
 				 FILE		*fp);
+GNode *xml_copy_tree		(GNode 		*node);
 
 #endif /* __XML_H__ */

@@ -54,6 +54,8 @@
 #include "prefs_account.h"
 
 static GList *folder_list = NULL;
+static GSList *class_list = NULL;
+static GSList *folder_unloaded_list = NULL;
 
 void folder_init		(Folder		*folder,
 				 const gchar	*name);
@@ -71,8 +73,6 @@ void folder_item_read_cache		(FolderItem *item);
 void folder_item_free_cache		(FolderItem *item);
 gint folder_item_scan_full		(FolderItem *item, gboolean filtering);
 
-static GSList *classlist;
-
 void folder_system_init(void)
 {
 	folder_register_class(mh_get_class());
@@ -82,13 +82,31 @@ void folder_system_init(void)
 
 GSList *folder_get_class_list(void)
 {
-	return classlist;
+	return class_list;
 }
 
 void folder_register_class(FolderClass *klass)
 {
 	debug_print("registering folder class %s\n", klass->idstr);
-	classlist = g_slist_append(classlist, klass);
+	class_list = g_slist_append(class_list, klass);
+}
+
+void folder_unregister_class(FolderClass *klass)
+{
+/*
+	GList *folderlist, *cur;
+*/
+	debug_print("unregistering folder class %s\n", klass->idstr);
+/*
+	folderlist = g_list_copy(folder_get_list());
+	for (cur = folderlist; cur != NULL; cur = g_list_next(cur)) {
+		Folder *folder = (Folder *) cur->data;
+
+		if (folder->klass == klass) {
+			GNode *xmlnode = folder_
+		}
+	}
+*/
 }
 
 Folder *folder_new(FolderClass *klass, const gchar *name, const gchar *path)
@@ -618,6 +636,9 @@ gint folder_read_list(void)
 		folder = folder_get_from_xml(cur);
 		if (folder != NULL)
 			folder_add(folder);
+		else
+			folder_unloaded_list = g_slist_append(folder_unloaded_list,
+				(gpointer) xml_tree_copy(cur));
 		cur = cur->next;
 	}
 
@@ -631,6 +652,7 @@ gint folder_read_list(void)
 void folder_write_list(void)
 {
 	GList *list;
+	GSList *slist;
 	Folder *folder;
 	gchar *path;
 	PrefFile *pfile;
@@ -662,7 +684,13 @@ void folder_write_list(void)
 			g_node_append(rootnode, node);
 	}
 
-	xml_write_node(rootnode, pfile->fp);
+	for (slist = folder_unloaded_list; slist != NULL; slist = g_slist_next(slist)) {
+		GNode *node = (GNode *) slist->data;
+
+		g_node_append(rootnode, xml_tree_copy(node));
+	}
+
+	xml_write_tree(rootnode, pfile->fp);
 
 	if (prefs_file_close(pfile) < 0)
 		g_warning("failed to write folder list.\n");
@@ -2573,6 +2601,8 @@ static Folder *folder_get_from_xml(GNode *node)
 		if (!strcmp(attr->name, "type"))
 			klass = folder_get_class_from_string(attr->value);
 	}
+	if (klass == NULL)
+		return NULL;
 
 	folder = folder_new(klass, "", "");
 	g_return_val_if_fail(folder != NULL, NULL);

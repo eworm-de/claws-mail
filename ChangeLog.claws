@@ -1,4 +1,11 @@
+2003-12-31 [christoph]	0.9.8claws15
+
+	* src/folder.[ch]
+	* src/common/xml.[ch]
+		keep folderlist.xml data for unloaded FolderClasses
+
 2003-12-30 [luke]	0.9.8claws14
+
 	* src/procheader.[ch]
 		o added procheader_get_one_field_asis() that does not do
 		  unfolding
