@@ -197,9 +197,8 @@ static void crash_debug(unsigned long crash_pid, GString *string)
 	pipe(choutput);
 
 	if (0 == (pid = fork())) {
-		const char *argp[9];
-		const char **argptr = argp;
-		const gchar *cmdline;
+		char *argp[9];
+		char **argptr = argp;
 		gchar *filespec = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, DEBUGGERRC, NULL);
 
 		setgid(getgid());
@@ -298,7 +297,7 @@ static void crash_handler(int sig)
 	 
 	if (0 == (pid = fork())) {
 		char buf[50];
-		const char *args[4];
+		char *args[4];
 	
 		/*
 		 * probably also some other parameters (like GTK+ ones).
