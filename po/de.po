@@ -2485,7 +2485,7 @@ msgstr "iconv kann UTF-7 nicht konvertieren in %s\n"
 #: src/imap.c:2950 src/imap.c:2983
 #, c-format
 msgid "iconv cannot convert %s to UTF-7\n"
-msgstr "iconv kann %s nicht in UTF-7 konvertieren"
+msgstr "iconv kann %s nicht in UTF-7 konvertieren\n"
 
 #: src/import.c:132
 msgid "Import"
