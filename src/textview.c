@@ -992,7 +992,7 @@ static void textview_make_clickable_parts(TextView *textview,
 
 		if (scanpos) {
 			/* check if URI can be parsed */
-			if (parser[last_index].parse(linebuf, scanpos, &bp, &ep)
+			if (parser[last_index].parse(walk, scanpos, &bp, &ep)
 			    && (size_t) (ep - bp - 1) > strlen(parser[last_index].needle)) {
 					ADD_TXT_POS(bp, ep, last_index);
 					walk = ep;
