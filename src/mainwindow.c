@@ -1149,7 +1149,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin, gint selection)
 	menu_set_sensitive(ifactory, "/Message/Reply to sender", sens);
 	menu_set_sensitive(ifactory, "/Message/Reply to all", sens);
 	menu_set_sensitive(ifactory, "/Message/Forward", sens);
-	menu_set_sensitive(ifactory, "/Message/Forward an attachment", sens);
+	menu_set_sensitive(ifactory, "/Message/Forward as attachment", sens);
 	menu_set_sensitive(ifactory, "/Message/Open in new window", sens);
 	menu_set_sensitive(ifactory, "/Message/Show all header", sens);
 	menu_set_sensitive(ifactory, "/Message/View source", sens);
