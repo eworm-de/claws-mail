@@ -88,6 +88,7 @@ static void mbox_folder_init(Folder *folder, const gchar *name, const gchar *pat
 	folder->create_folder       = mbox_create_folder;
 	folder->rename_folder       = mbox_rename_folder;
 	folder->remove_folder       = mbox_remove_folder;
+	folder->destroy		    = mbox_folder_destroy;
 	folder->check_msgnum_validity
 				    = mbox_check_msgnum_validity;
 }

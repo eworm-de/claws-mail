@@ -1,3 +1,8 @@
+2002-11-09 [colin]	0.8.5claws114
+
+	* src/mbox_folder.c
+		Added missing initialisation of folder->destroy()
+
 2002-11-09 [colin]	0.8.5claws113
 
 	* src/folder.c
