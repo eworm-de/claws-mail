@@ -555,6 +555,7 @@ static void addrharvest_parse_address(
 			}
 			else {
 				name = buffer;
+				conv_unmime_header_overwrite(name);
 			}
 
 			/* Insert into address book */

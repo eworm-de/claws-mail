@@ -1,3 +1,8 @@
+2004-12-04 [paul]	0.9.12cvs184
+
+	* src/addrharvest.c
+		conv_unmime_header_overwrite(name)
+
 2004-12-04 [colin]	0.9.12cvs183
 
 	* src/compose.c
