@@ -63,3 +63,4 @@
 ( cvs diff -u -r 1.41 -r 1.42 src/rfc2015.c; cvs diff -u -r 1.8 -r 1.9 src/rfc2015.h; cvs diff -u -r 1.438 -r 1.439 src/compose.c; ) > 0.9.12cvs78.patchset
 ( cvs diff -u -r 1.439 -r 1.441 src/compose.c; ) > 0.9.12cvs79.patchset
 ( cvs diff -u -r 1.256 -r 1.257 src/folder.c; ) > 0.9.12cvs80.patchset
+( cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/pgpmime.c; cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/sgpgme.c; cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/sgpgme.h; ) > 0.9.12cvs81.patchset

@@ -38,6 +38,7 @@ gchar *sgpgme_sigstat_info_short	(GpgmeCtx ctx,
 gchar *sgpgme_sigstat_info_full		(GpgmeCtx ctx,
 					 GpgmeSigStat status);
 GpgmeData sgpgme_data_from_mimeinfo	(MimeInfo *mimeinfo);
-GpgmeData sgpgme_decrypt		(GpgmeData cipher);
+GpgmeData sgpgme_decrypt_verify		(GpgmeData cipher, GpgmeSigStat *status,
+					 GpgmeCtx ctx);
 
 #endif /* SGPGME_H */
