@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -319,19 +319,22 @@ MessageView *messageview_create(MainWindow *mainwin)
                            GTK_WIDGET_PTR(mimeview), TRUE, TRUE, 0);
 	gtk_widget_show(vbox);
 
-	messageview->vbox       = vbox;
-	messageview->new_window = FALSE;
-	messageview->window     = NULL;
-	messageview->headerview = headerview;
-	messageview->mimeview   = mimeview;
+	messageview->vbox        = vbox;
+	messageview->new_window  = FALSE;
+	messageview->window      = NULL;
+	messageview->headerview  = headerview;
+	messageview->mimeview    = mimeview;
 	messageview->noticeview = noticeview;
 	messageview->mainwin    = mainwin;
+
+	messageview->statusbar     = NULL;
+	messageview->statusbar_cid = 0;
+
 	messageview->msginfo_update_callback_id =
 		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, messageview_update_msg, (gpointer) messageview);
 
 	return messageview;
 }
-
 
 GList *messageview_get_msgview_list(void)
 {
@@ -354,22 +357,32 @@ void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
  	GtkWidget *handlebox;
 	GtkWidget *vbox;
 	GtkWidget *menubar;
+	GtkWidget *statusbar;
 	GtkItemFactory *ifactory;
 	guint n_menu_entries;
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);	
-	
+
 	n_menu_entries = sizeof(msgview_entries) / sizeof(msgview_entries[0]);
 	menubar = menubar_create(window, msgview_entries,
 				 n_menu_entries, "<MessageView>", msgview);
+	gtk_widget_show(menubar);
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 
 	handlebox = gtk_handle_box_new();
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 	msgview->toolbar = toolbar_create(TOOLBAR_MSGVIEW, handlebox,
 					  (gpointer)msgview);
+
+	statusbar = gtk_statusbar_new();
+	gtk_widget_show(statusbar);
+	gtk_box_pack_end(GTK_BOX(vbox), statusbar, FALSE, FALSE, 0);
+	msgview->statusbar = statusbar;
+	msgview->statusbar_cid = gtk_statusbar_get_context_id
+		(GTK_STATUSBAR(statusbar), "Message View");
+
 	msgview->handlebox = handlebox;
 	msgview->menubar   = menubar;
 
@@ -383,8 +396,8 @@ void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 
 MessageView *messageview_create_with_new_window(MainWindow *mainwin)
 {
-	GtkWidget *window;
 	MessageView *msgview;
+	GtkWidget *window;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Sylpheed - Message View"));

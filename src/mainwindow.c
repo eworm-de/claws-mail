@@ -914,22 +914,22 @@ MainWindow *main_window_create(SeparateType type)
 	summaryview->messageview = messageview;
 	summaryview->window      = window;
 
-	mainwin->vbox         = vbox;
-	mainwin->menubar      = menubar;
-	mainwin->menu_factory = ifactory;
-	mainwin->handlebox    = handlebox;
-	mainwin->vbox_body    = vbox_body;
-	mainwin->hbox_stat    = hbox_stat;
-	mainwin->statusbar    = statusbar;
-	mainwin->progressbar  = progressbar;
-	mainwin->statuslabel  = statuslabel;
-	mainwin->ac_button    = ac_button;
-	mainwin->ac_label     = ac_label;
-	
-	mainwin->online_switch     = online_switch;
+	messageview->statusbar   = statusbar;
+	mainwin->vbox           = vbox;
+	mainwin->menubar        = menubar;
+	mainwin->menu_factory   = ifactory;
+	mainwin->handlebox      = handlebox;
+	mainwin->vbox_body      = vbox_body;
+	mainwin->hbox_stat      = hbox_stat;
+	mainwin->statusbar      = statusbar;
+	mainwin->progressbar    = progressbar;
+	mainwin->statuslabel    = statuslabel;
+	mainwin->online_switch  = online_switch;
+	mainwin->online_pixmap  = online_pixmap;
+	mainwin->offline_pixmap = offline_pixmap;
+	mainwin->ac_button      = ac_button;
+	mainwin->ac_label       = ac_label;
 	mainwin->offline_switch    = offline_switch;
-	mainwin->online_pixmap	   = online_pixmap;
-	mainwin->offline_pixmap    = offline_pixmap;
 	
 	/* set context IDs for status bar */
 	mainwin->mainwin_cid = gtk_statusbar_get_context_id
@@ -940,6 +940,8 @@ MainWindow *main_window_create(SeparateType type)
 		(GTK_STATUSBAR(statusbar), "Summary View");
 	mainwin->messageview_cid = gtk_statusbar_get_context_id
 		(GTK_STATUSBAR(statusbar), "Message View");
+
+	messageview->statusbar_cid = mainwin->messageview_cid;
 
 	/* allocate colors for summary view and folder view */
 	summaryview->color_marked.red = summaryview->color_marked.green = 0;

@@ -323,9 +323,12 @@ static void foldersel_selected(GtkCList *clist, gint row, gint column,
 	GdkEventButton *ev = (GdkEventButton *)event;
 
 	selected_item = gtk_clist_get_row_data(clist, row);
-	if (selected_item && selected_item->path)
-		gtk_entry_set_text(GTK_ENTRY(entry), selected_item->path);
-	else
+	if (selected_item && selected_item->path) {
+		gchar *id;
+		id = folder_item_get_identifier(selected_item);
+		gtk_entry_set_text(GTK_ENTRY(entry), id);
+		g_free(id);
+	} else
 		gtk_entry_set_text(GTK_ENTRY(entry), "");
 
 	if (ev && GDK_2BUTTON_PRESS == ev->type)

@@ -1284,6 +1284,18 @@ gboolean folderview_update_item(gpointer source, gpointer data)
 	return FALSE;
 }
 
+static void folderview_update_item_foreach_func(gpointer key, gpointer val,
+						gpointer data)
+{
+	folderview_update_item((FolderItem *)key, (gboolean)data);
+}
+
+void folderview_update_item_foreach(GHashTable *table, gboolean update_summary)
+{
+	g_hash_table_foreach(table, folderview_update_item_foreach_func,
+			     (gpointer)update_summary);
+}
+
 static gboolean folderview_gnode_func(GtkCTree *ctree, guint depth,
 				      GNode *gnode, GtkCTreeNode *cnode,
 				      gpointer data)

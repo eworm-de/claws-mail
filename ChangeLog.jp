@@ -1,3 +1,31 @@
+2004-02-12
+
+	* src/inc.[ch]
+	  src/pop.[ch]: inc_drop_message() を Pop3Session の仮想関数にし、
+	  pop3.c の inc.h への依存を除去。
+
+2004-02-12
+
+	* src/mainwindow.c
+	  src/messageview.[ch]
+	  src/textview.c: 新規ウィンドウのメッセージビューにステータスバーを
+	  追加。
+
+2004-02-10
+
+	* src/inc.[ch]: 逐次更新にハッシュテーブルを使用。
+	  更新間隔を2秒に変更。
+	* src/folder.[ch]
+	  src/mh.c
+	  src/procmsg.c
+	  src/summaryview.c: フォルダのメッセージ数の集計を補正するために
+	  FolderItem::unmarked_num を追加。
+
+2004-02-09
+
+	* src/inc.[ch]: フォルダビューを逐次更新するようにした。
+	* src/foldersel.c: 選択項目の完全な ID を表示。
+
 2004-02-06
 
 	* src/folderview.[ch]: コードの整理。

@@ -1,3 +1,30 @@
+2004-02-12
+
+	* src/inc.[ch]
+	  src/pop.[ch]: made inc_drop_message() the virtual function of
+	  Pop3Session and removed the dependency of pop.c on inc.h.
+
+2004-02-12
+
+	* src/mainwindow.c
+	  src/messageview.[ch]
+	  src/textview.c: added statusbar to the message view with new window.
+
+2004-02-10
+
+	* src/inc.[ch]: use hash table for progressive update.
+	  changed update interval to 2 sec.
+	* src/folder.[ch]
+	  src/mh.c
+	  src/procmsg.c
+	  src/summaryview.c: added FolderItem::unmarked_num to correct the
+	  folder message counting.
+
+2004-02-09
+
+	* src/inc.[ch]: update folderview progressively.
+	* src/foldersel.c: display full id for selected item.
+
 2004-02-06
 
 	* src/folderview.[ch]: code cleanup.

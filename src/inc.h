@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,6 +58,8 @@ struct _IncProgressDialog
 
 	gboolean show_dialog;
 
+	guint timer_id;
+
 	GList *queue_list;	/* list of IncSession */
 	gint cur_row;
 };
@@ -66,6 +68,9 @@ struct _IncSession
 {
 	Session *session;
 	IncState inc_state;
+
+	GHashTable *folder_table;	/* table of destination folders */
+	GHashTable *tmp_folder_table;	/* for progressive update */
 
 	gpointer data;
 };
@@ -80,8 +85,6 @@ void inc_all_account_mail	(MainWindow	*mainwin,
 				 gboolean	 autocheck,
 				 gboolean 	 notify);
 void inc_progress_update	(Pop3Session	*session);
-gint inc_drop_message		(const gchar	*file,
-				 Pop3Session	*session);
 
 void inc_pop_before_smtp	(PrefsAccount 	*acc);
 
