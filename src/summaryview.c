@@ -951,7 +951,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/Mark/Unmark", TRUE);
 
 	menu_set_sensitive(ifactory, "/Mark/Mark as unread",        TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Make as read",          TRUE);
+	menu_set_sensitive(ifactory, "/Mark/Mark as read",          TRUE);
 
 	menu_set_sensitive(ifactory, "/Select all", TRUE);
 }
