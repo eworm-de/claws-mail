@@ -1,3 +1,10 @@
+2003-02-17
+
+	* src/procheader.c: procheader_date_parse(): made month string case
+	  insensitive.
+	* src/prefs_filter.c: prefs_filter_close(): fixed the crash when the
+	  selection list is empty.
+
 2003-02-14
 
 	* src/quote_fmt_parse.y: removed gettext translatable strings.

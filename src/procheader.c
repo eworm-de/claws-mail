@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -831,7 +831,7 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 	gint year;
 	gint hh, mm, ss;
 	gchar zone[6];
-	GDateMonth dmonth;
+	GDateMonth dmonth = G_DATE_BAD_MONTH;
 	struct tm t;
 	gchar *p;
 	time_t timer;
@@ -853,12 +853,14 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 	}
 
 	month[3] = '\0';
-	if ((p = strstr(monthstr, month)) != NULL)
-		dmonth = (gint)(p - monthstr) / 3 + 1;
-	else {
-		g_warning("Invalid month: %s\n", month);
-		dmonth = G_DATE_BAD_MONTH;
+	for (p = monthstr; *p != '\0'; p += 3) {
+		if (!strncasecmp(p, month, 3)) {
+			dmonth = (gint)(p - monthstr) / 3 + 1;
+			break;
+		}
 	}
+	if (*p == '\0')
+		g_warning("Invalid month: %s\n", month);
 
 	t.tm_sec = ss;
 	t.tm_min = mm;

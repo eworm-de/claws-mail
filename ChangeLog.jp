@@ -1,3 +1,10 @@
+2003-02-17
+
+	* src/procheader.c: procheader_date_parse(): 月の文字列を大小文字を
+	  区別しないようにした。
+	* src/prefs_filter.c: prefs_filter_close(): セレクションリストが
+	  空の場合のクラッシュを修正。
+
 2003-02-14
 
 	* src/quote_fmt_parse.y: gettext 翻訳可能な文字列を削除。
