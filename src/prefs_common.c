@@ -2378,7 +2378,7 @@ static void prefs_message_create(void)
 
 	PACK_CHECK_BUTTON
 		(vbox2, chkbtn_mbalnum,
-		 _("Display multi-byte alphabet and numeric as\n"
+		 _("Display multi-byte alphanumeric as\n"
 		   "ASCII character (Japanese only)"));
 	gtk_label_set_justify (GTK_LABEL (GTK_BIN(chkbtn_mbalnum)->child),
 			       GTK_JUSTIFY_LEFT);

@@ -1,3 +1,10 @@
+2002-11-28 [paul]	0.8.6claws33
+
+	* src/mainwindow.c
+	  src/prefs_common.c
+	  src/prefs_toolbar.c
+		more changes to the English
+
 2002-11-28 [paul]	0.8.6claws32
 
 	* sync with 0.8.6cvs13

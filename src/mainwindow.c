@@ -782,7 +782,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, prefs_toolbar_cb, TOOLBAR_MAIN, NULL},
 	{N_("/_Configuration/C_ustomize toolbars/_Compose window..."),
 						NULL, prefs_toolbar_cb, TOOLBAR_COMPOSE, NULL},
-	{N_("/_Configuration/C_ustomize toolbars/M_essageView ..."),
+	{N_("/_Configuration/C_ustomize toolbars/M_essage view..."),
 						NULL, prefs_toolbar_cb, TOOLBAR_MSGVIEW, NULL},
 	{N_("/_Configuration/_Scoring..."),
 						NULL, prefs_scoring_open_cb, 0, NULL},
