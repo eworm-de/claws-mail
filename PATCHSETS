@@ -261,3 +261,4 @@
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/partial_download.c; cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/partial_download.h; cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/plugins/pgpmime/plugin.c; ) > 0.9.12cvs168.1.patchset
 ( cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/plugins/pgpmime/plugin.c; cvs diff -u -r 1.4.2.1 -r 1.4.2.2 src/plugins/trayicon/Makefile.am; cvs diff -u -r 0 -r 1 src/plugins/trayicon/newmarkedmail.xpm; cvs diff -u -r 1.14.2.12 -r 1.14.2.13 src/plugins/trayicon/trayicon.c; cvs diff -u -r 0 -r 1 src/plugins/trayicon/unreadmarkedmail.xpm; ) > 0.9.12cvs169.1.patchset
 ( cvs diff -u -r 1.1.2.12 -r 1.1.2.13 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs171.1.patchset
+( cvs diff -u -r 1.1.2.13 -r 1.1.2.14 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs172.1.patchset

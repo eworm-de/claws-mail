@@ -453,8 +453,10 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	gpgme_new(&ctx);
 	gpgme_set_textmode(ctx, 1);
 	gpgme_set_armor(ctx, 1);
-	if (!sgpgme_setup_signers(ctx, account))
+	if (!sgpgme_setup_signers(ctx, account)) {
+		gpgme_release(ctx);
 		return FALSE;
+	}
 
 	if (!getenv("GPG_AGENT_INFO")) {
     		info.c = ctx;
