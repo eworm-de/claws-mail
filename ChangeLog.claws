@@ -1,3 +1,11 @@
+2004-01-08 [christoph]	0.9.8claws21
+
+	* src/procmime.c
+		check for "MIME-Version: 1.0" in message/rfc882 MIME-parts,
+		otherwise thread the message content as one text part and
+		don't assume charset US-ASCII which is only specified as
+		default for MIME-messages
+
 2004-01-08 [paul]	0.9.8claws20
 
 	* src/plugins/clamav/clamav_plugin.c
