@@ -27,7 +27,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include "../common/intl.h"
-#include "../ssl_certificate.h"
+#include "../common/ssl_certificate.h"
 #include "../common/utils.h"
 #include "../alertpanel.h"
 

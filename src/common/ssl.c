@@ -31,7 +31,7 @@
 #include "utils.h"
 #include "ssl.h"
 #include "log.h"
-/* #include "ssl_certificate.h" */
+#include "ssl_certificate.h"
 
 static SSL_CTX *ssl_ctx;
 

@@ -30,7 +30,7 @@
 #include <openssl/objects.h>
 #include <glib.h>
 #include <gtk/gtk.h>
-#include "../ssl_certificate.h"
+#include "../common/ssl_certificate.h"
 
 GtkWidget *cert_presenter(SSLCertificate *cert);
 void sslcertwindow_show_cert(SSLCertificate *cert);

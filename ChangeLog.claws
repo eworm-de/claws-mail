@@ -1,3 +1,15 @@
+2002-12-09 [colin]	0.8.6claws84
+
+	* src/ssl_certificate.[ch] ** REMOVED **
+	* src/common/ssl_certificate.[ch] ** NEW **
+	* src/Makefile.am
+	* src/common/Makefile.am
+		Moved ssl_certificate.[ch] to common
+	* src/common/ssl.c 
+		Put back needed include
+	* src/gtk/sslcertwindow.[ch]
+		Changed ssl_certificate.h include
+	
 2002-12-09 [colin]	0.8.6claws83
 
 	* src/gtk/sslcertwindow.[ch]
