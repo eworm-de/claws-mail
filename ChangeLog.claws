@@ -1,3 +1,10 @@
+2003-03-18 [christoph]	0.8.11claws27
+
+	* src/imap.c
+		fix imap using a tunnel command
+
+	(closes bug 87)
+
 2003-03-18 [christoph]	0.8.11claws26
 
 	* src/folder.[ch]

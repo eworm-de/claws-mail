@@ -1700,10 +1700,11 @@ static SockInfo *imap_open_tunnel(const gchar *server,
 {
 	SockInfo *sock;
 
-	if ((sock = sock_connect_cmd(server, tunnelcmd)) == NULL)
+	if ((sock = sock_connect_cmd(server, tunnelcmd)) == NULL) {
 		log_warning(_("Can't establish IMAP4 session with: %s\n"),
 			    server);
 		return NULL;
+	}
 #if USE_OPENSSL
 	return imap_init_sock(sock, ssl_type);
 #else
@@ -1763,12 +1764,6 @@ static SockInfo *imap_init_sock(SockInfo *sock)
 		}
 	}
 #endif
-
-	if (imap_cmd_noop(sock) != IMAP_SUCCESS) {
-		log_warning(_("Can't establish IMAP4 session.\n"));
-		sock_close(sock);
-		return NULL;
-	}
 
 	return sock;
 }
