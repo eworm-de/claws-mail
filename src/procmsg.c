@@ -172,13 +172,17 @@ static GNode *subject_relation_lookup(GRelation *relation, MsgInfo *msginfo)
 	gchar *subject;
 	GTuples *tuples;
 	GNode *node = NULL;
+	gint prefix_length;
     
 	g_return_val_if_fail(relation != NULL, NULL);
 
 	subject = msginfo->subject;
 	if (subject == NULL)
 		return NULL;
-	subject += subject_get_prefix_length(subject);
+	prefix_length = subject_get_prefix_length(subject);
+	if (prefix_length <= 0)
+		return NULL;
+	subject += prefix_length;
 	
 	tuples = g_relation_select(relation, subject, 0);
 	if (tuples == NULL)

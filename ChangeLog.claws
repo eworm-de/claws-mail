@@ -1,3 +1,8 @@
+2003-08-17 [christoph]	0.9.4claws28
+
+	* src/procmsg.c
+		no subject threading when the subject has no reply prefix
+
 2003-08-16 [christoph]	0.9.4claws27
 
 	* src/mainwindow.c
