@@ -1,3 +1,11 @@
+2004-07-19 [colin]	0.9.12cvs33
+
+	* src/folder.h
+	* src/folderview.c
+	* src/summaryview.c
+		Reverse 0.9.12cvs29 to 31 (folder icon update
+		when quicksearch is active)
+
 2004-07-18 [colin]	0.9.12cvs32
 
 	* src/pop.c

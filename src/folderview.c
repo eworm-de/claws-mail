@@ -62,7 +62,6 @@
 #include "statusbar.h"
 #include "hooks.h"
 #include "folderutils.h"
-#include "quicksearch.h"
 
 typedef enum
 {
@@ -966,15 +965,10 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	gchar *str;
 	gboolean add_unread_mark;
 	gboolean use_bold, use_color;
-	gboolean hide_read_msgs = FALSE;
-	
+
 	item = gtk_ctree_node_get_row_data(ctree, node);
 	g_return_if_fail(item != NULL);
 
-	hide_read_msgs = item->hide_read_msgs;
-
-	item->hide_read_msgs |= quicksearch_is_active(folderview->summaryview->quicksearch);
-	
 	switch (item->stype) {
 	case F_INBOX:
 		if (item->hide_read_msgs) {
@@ -1047,9 +1041,6 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 			openmask = folderopenxpmmask;
 		}
 	}
-	
-	item->hide_read_msgs = hide_read_msgs;
-	
 	name = folder_item_get_name(item);
 
 	if (!GTK_CTREE_ROW(node)->expanded &&
@@ -1196,7 +1187,7 @@ gboolean folderview_update_item_claws(gpointer source, gpointer data)
 
 	node = gtk_ctree_find_by_row_data(ctree, NULL, update_info->item);
 	if (node) {
-		if (update_info->update_flags & (F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_NAME | F_ITEM_UPDATE_ICON))
+		if (update_info->update_flags & (F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_NAME))
 			folderview_update_node(folderview, node);
 		if ((update_info->update_flags & F_ITEM_UPDATE_CONTENT) && (folderview->opened == node))
 			summary_show(folderview->summaryview, update_info->item);
