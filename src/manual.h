@@ -26,6 +26,7 @@ typedef enum
 	MANUAL_MANUAL_SYLDOC,
 	MANUAL_FAQ_LOCAL,
 	MANUAL_FAQ_SYLDOC,
+	MANUAL_FAQ_CLAWS,
 } ManualType;
 
 gboolean manual_available	(ManualType type);

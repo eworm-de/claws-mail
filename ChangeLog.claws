@@ -1,3 +1,15 @@
+2003-07-17 [paul]	0.9.3claws16
+
+	* src/common/defs.h
+	  src/mainwindow.c
+	  src/manual.[ch]
+	  	add link to the Claws site's FAQ page, after the suggestion
+		and patch by Fred Marton <Fred.Marton@uni-bayreuth.de>
+		Move url strings to defs.h
+		
+	* src/mainwindow.c
+		fix typo to prevent "unknown menu entry" warnings
+
 2003-07-17 [alfons]	0.9.3claws15
 
 	* src/folderview.[ch]

@@ -699,6 +699,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Help/_FAQ (Local)"),		NULL, manual_open_cb, MANUAL_FAQ_LOCAL, NULL},
 	{N_("/_Help/_FAQ (Sylpheed Doc Homepage)"),
 						NULL, manual_open_cb, MANUAL_FAQ_SYLDOC, NULL},
+	{N_("/_Help/_Claws FAQ (Claws Documentation)"),
+						NULL, manual_open_cb, MANUAL_FAQ_CLAWS, NULL},
 	{N_("/_Help/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Help/_About"),			NULL, about_show, 0, NULL}
 };
@@ -1530,7 +1532,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		SensitiveCond cond;
 	} entry[] = {
 		{"/File/Folder"                               , M_UNLOCKED},
-		{"/File/Add mailbox..."                       , M_UNLOCKED},
+		{"/File/Add mailbox"                          , M_UNLOCKED},
 
                 {"/File/Add mailbox/MH..."   		      , M_UNLOCKED},
 		{"/File/Add mailbox/mbox..."                  , M_UNLOCKED},
