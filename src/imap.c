@@ -299,11 +299,28 @@ FolderClass imap_class =
 	F_IMAP,
 	"imap",
 
+	/* Folder functions */
+	imap_folder_new,
+	imap_folder_destroy,
+	imap_scan_tree,
+	imap_create_tree,
+
+	/* FolderItem functions */
 	imap_folder_item_new,
 	imap_folder_item_destroy,
-	imap_fetch_msg,
+	imap_create_folder,
+	imap_rename_folder,
+	imap_remove_folder,
+	imap_get_num_list,
+	NULL,
+	NULL,
+	NULL,
+	imap_check_msgnum_validity,
+
+	/* Message functions */
 	imap_get_msginfo,
 	imap_get_msginfos,
+	imap_fetch_msg,
 	imap_add_msg,
 	imap_move_msg,
 	NULL,
@@ -314,18 +331,6 @@ FolderClass imap_class =
 	imap_remove_all_msg,
 	imap_is_msg_changed,
 	NULL,
-	imap_get_num_list,
-	imap_scan_tree,
-	imap_create_tree,
-	imap_create_folder,
-	imap_rename_folder,
-	imap_remove_folder,
-	imap_folder_destroy,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	imap_check_msgnum_validity,
 };
 
 FolderClass *imap_get_class()

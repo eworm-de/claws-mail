@@ -113,11 +113,28 @@ FolderClass mh_class =
 	F_MH,
 	"mh",
 
+	/* Folder functions */
+	mh_folder_new,
+	mh_folder_destroy,
+	mh_scan_tree,
+	mh_create_tree,
+
+	/* FolderItem functions */
 	NULL,
 	NULL,
-	mh_fetch_msg,
+	mh_create_folder,
+	mh_rename_folder,
+	mh_remove_folder,
+	mh_get_num_list,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	
+	/* Message functions */
 	mh_get_msginfo,
 	NULL,
+	mh_fetch_msg,
 	mh_add_msg,
 	mh_move_msg,
 	mh_move_msgs_with_dest,
@@ -127,18 +144,6 @@ FolderClass mh_class =
 	NULL,
 	mh_remove_all_msg,
 	mh_is_msg_changed,
-	NULL,
-	mh_get_num_list,
-	mh_scan_tree,
-	mh_create_tree,
-	mh_create_folder,
-	mh_rename_folder,
-	mh_remove_folder,
-	mh_folder_destroy,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
 	NULL,
 };
 

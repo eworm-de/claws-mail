@@ -1392,10 +1392,9 @@ void main_window_add_mailbox(MainWindow *mainwin)
 		g_free(path);
 		return;
 	}
-	if (!strcmp(path, "Mail"))
-		folder = folder_new(F_MH, _("Mailbox"), path);
-	else
-		folder = folder_new(F_MH, g_basename(path), path);
+	folder = folder_new(folder_get_class_from_string("mh"), 
+			    !strcmp(path, "Mail") ? _("Mailbox") : g_basename(path),
+			    path);
 	g_free(path);
 
 	if (folder->class->create_tree(folder) < 0) {
@@ -1431,13 +1430,8 @@ void main_window_add_mbox(MainWindow *mainwin)
 		return;
 	}
 
-	/*
-	if (!strcmp(path, "Mail"))
-		folder = folder_new(F_MBOX, _("Mailbox"), path);
-		else
-	*/
-
-	folder = folder_new(F_MBOX, g_basename(path), path);
+	folder = folder_new(folder_get_class_from_string("mbox"), 
+			    g_basename(path), path);
 	g_free(path);
 
 	if (folder->class->create_tree(folder) < 0) {

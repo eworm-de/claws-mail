@@ -155,75 +155,79 @@ struct _FolderClass
 	gchar 	   *idstr;
 
 	/* virtual functions */
-/*
-	GSList * (*get_msg_list)	(Folder		*folder,
-					 FolderItem	*item,
-					 gboolean	 use_cache);
-*/
-	FolderItem *(*item_new)		(Folder		*folder);
-	void	 (*item_destroy)	(Folder		*folder,
-					 FolderItem	*item);
-	gchar *  (*fetch_msg)		(Folder		*folder,
-					 FolderItem	*item,
-					 gint		 num);
-	MsgInfo * (*get_msginfo)	(Folder		*folder,
-					 FolderItem	*item,
-					 gint		 num);
-	GSList  * (*get_msginfos)	(Folder		*folder,
-					 FolderItem	*item,
-					 GSList		*msgnum_list);
-	gint     (*add_msg)		(Folder		*folder,
-					 FolderItem	*dest,
-					 const gchar	*file,
-					 gboolean	 remove_source);
-	gint     (*move_msg)		(Folder		*folder,
-					 FolderItem	*dest,
-					 MsgInfo	*msginfo);
-	gint     (*move_msgs_with_dest)	(Folder		*folder,
-					 FolderItem	*dest,
-					 GSList		*msglist);
-	gint     (*copy_msg)		(Folder		*folder,
-					 FolderItem	*dest,
-					 MsgInfo	*msginfo);
-	gint     (*copy_msgs_with_dest)	(Folder		*folder,
-					 FolderItem	*dest,
-					 GSList		*msglist);
-	gint     (*remove_msg)		(Folder		*folder,
-					 FolderItem	*item,
-					 gint		 num);
-	gint     (*remove_msgs)		(Folder		*folder,
-					 FolderItem	*item,
-					 GSList		*msglist);
-	gint     (*remove_all_msg)	(Folder		*folder,
-					 FolderItem	*item);
-	gboolean (*is_msg_changed)	(Folder		*folder,
-					 FolderItem	*item,
-					 MsgInfo	*msginfo);
-	gint     (*scan)		(Folder		*folder);
-	gint	 (*get_num_list)	(Folder		*folder,
-					 FolderItem	*item,
-					 GSList	       **list);
-	void     (*scan_tree)		(Folder		*folder);
 
-	gint     (*create_tree)		(Folder		*folder);
-	FolderItem * (*create_folder)	(Folder		*folder,
-					 FolderItem	*parent,
-					 const gchar	*name);
-	gint     (*rename_folder)	(Folder		*folder,
-					 FolderItem	*item,
-					 const gchar	*name);
-	gint     (*remove_folder)	(Folder		*folder,
-					 FolderItem	*item);
+	/* Folder funtions */
+	Folder 		*(*new)			(const gchar	*name,
+						 const gchar	*path);
+	void     	(*destroy)		(Folder		*folder);
+	void     	(*scan_tree)		(Folder		*folder);
 
-	void     (*destroy)		(Folder		*folder);
-	void     (*update_mark)		(Folder		*folder,
-					 FolderItem	*item);
-	void     (*change_flags)	(Folder		*folder,
-					 FolderItem	*item,
-					 MsgInfo        *info);
-	void     (*finished_copy)       (Folder * folder, FolderItem * item);
-	void     (*finished_remove)     (Folder * folder, FolderItem * item);
-	gboolean (*check_msgnum_validity) (Folder * folder, FolderItem * item);
+	gint     	(*create_tree)		(Folder		*folder);
+
+	/* FolderItem functions */
+	FolderItem	*(*item_new)		(Folder		*folder);
+	void	 	(*item_destroy)		(Folder		*folder,
+						 FolderItem	*item);
+	FolderItem 	*(*create_folder)	(Folder		*folder,
+						 FolderItem	*parent,
+						 const gchar	*name);
+	gint     	(*rename_folder)	(Folder		*folder,
+						 FolderItem	*item,
+						 const gchar	*name);
+	gint     	(*remove_folder)	(Folder		*folder,
+						 FolderItem	*item);
+	gint	 	(*get_num_list)		(Folder		*folder,
+						 FolderItem	*item,
+						 GSList	       **list);
+	void     	(*update_mark)		(Folder		*folder,
+						 FolderItem	*item);
+	void    	(*finished_copy)        (Folder 	*folder,
+						 FolderItem 	*item);
+	void    	(*finished_remove)      (Folder 	*folder,
+						 FolderItem * item);
+	gboolean	(*check_msgnum_validity)(Folder 	*folder,
+						 FolderItem * item);
+
+	/* Message functions */
+	MsgInfo 	*(*get_msginfo)		(Folder		*folder,
+						 FolderItem	*item,
+						 gint		 num);
+	GSList  	*(*get_msginfos)	(Folder		*folder,
+						 FolderItem	*item,
+						 GSList		*msgnum_list);
+	gchar 		*(*fetch_msg)		(Folder		*folder,
+						 FolderItem	*item,
+						 gint		 num);
+	gint     	(*add_msg)		(Folder		*folder,
+						 FolderItem	*dest,
+						 const gchar	*file,
+						gboolean	 remove_source);
+	gint    	(*move_msg)		(Folder		*folder,
+						 FolderItem	*dest,
+						 MsgInfo	*msginfo);
+	gint    	(*move_msgs_with_dest)	(Folder		*folder,
+						 FolderItem	*dest,
+						 GSList		*msglist);
+	gint    	(*copy_msg)		(Folder		*folder,
+						 FolderItem	*dest,
+						 MsgInfo	*msginfo);
+	gint    	(*copy_msgs_with_dest)	(Folder		*folder,
+						 FolderItem	*dest,
+						 GSList		*msglist);
+	gint    	(*remove_msg)		(Folder		*folder,
+						 FolderItem	*item,
+						 gint		 num);
+	gint    	(*remove_msgs)		(Folder		*folder,
+						 FolderItem	*item,
+						 GSList		*msglist);
+	gint    	(*remove_all_msg)	(Folder		*folder,
+						 FolderItem	*item);
+	gboolean	(*is_msg_changed)	(Folder		*folder,
+						 FolderItem	*item,
+						 MsgInfo	*msginfo);
+	void    	(*change_flags)		(Folder		*folder,
+						 FolderItem	*item,
+						 MsgInfo        *info);
 };
 
 struct _LocalFolder
@@ -314,7 +318,7 @@ struct _FolderItemUpdateData
 
 void	    folder_system_init		();
 void	    folder_register_class	(FolderClass	*class);
-Folder     *folder_new			(FolderType	 type,
+Folder     *folder_new			(FolderClass	*type,
 					 const gchar	*name,
 					 const gchar	*path);
 void        folder_local_folder_init	(Folder		*folder,
@@ -362,6 +366,7 @@ Folder     *folder_find_from_path		(const gchar	*path);
 Folder     *folder_find_from_name		(const gchar	*name,
 						 FolderClass	*class);
 FolderItem *folder_find_item_from_path		(const gchar	*path);
+FolderClass *folder_get_class_from_string	(const gchar 	*str);
 gchar      *folder_get_identifier		(Folder		*folder);
 gchar      *folder_item_get_identifier		(FolderItem	*item);
 FolderItem *folder_find_item_from_identifier	(const gchar	*identifier);

@@ -95,28 +95,15 @@ void folder_register_class(FolderClass *class)
 	classlist = g_slist_append(classlist, class);
 }
 
-Folder *folder_new(FolderType type, const gchar *name, const gchar *path)
+Folder *folder_new(FolderClass *class, const gchar *name, const gchar *path)
 {
 	Folder *folder = NULL;
 	FolderItem *item;
 
+	g_return_val_if_fail(class != NULL, NULL);
+
 	name = name ? name : path;
-	switch (type) {
-	case F_MBOX:
-		folder = mbox_folder_new(name, path);
-		break;
-	case F_MH:
-		folder = mh_folder_new(name, path);
-		break;
-	case F_IMAP:
-		folder = imap_folder_new(name, path);
-		break;
-	case F_NEWS:
-		folder = news_folder_new(name, path);
-		break;
-	default:
-		return NULL;
-	}
+	folder = class->new(name, path);
 
 	/* Create root folder item */
 	item = folder_item_new(folder, name, NULL);
@@ -184,20 +171,6 @@ void folder_remote_folder_destroy(RemoteFolder *rfolder)
 	if (rfolder->session)
 		session_destroy(rfolder->session);
 }
-
-#if 0
-Folder *mbox_folder_new(const gchar *name, const gchar *path)
-{
-	/* not yet implemented */
-	return NULL;
-}
-
-Folder *maildir_folder_new(const gchar *name, const gchar *path)
-{
-	/* not yet implemented */
-	return NULL;
-}
-#endif
 
 FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path)
 {
@@ -604,14 +577,14 @@ FolderItem *folder_find_item_from_path(const gchar *path)
 	return d[1];
 }
 
-static FolderClass *folder_get_class_from_string(const gchar *str)
+FolderClass *folder_get_class_from_string(const gchar *str)
 {
 	GSList *classlist;
 
 	classlist = folder_get_class_list();
 	for (; classlist != NULL; classlist = g_slist_next(classlist)) {
 		FolderClass *class = (FolderClass *) classlist->data;
-		if (g_strcasecmp(class->idstr, &str[1]) == 0)
+		if (g_strcasecmp(class->idstr, str) == 0)
 			return class;
 	}
 
@@ -665,7 +638,7 @@ FolderItem *folder_find_item_from_identifier(const gchar *identifier)
 		return folder_find_item_from_path(identifier);
 	*p = '\0';
 	p++;
-	class = folder_get_class_from_string(str);
+	class = folder_get_class_from_string(&str[1]);
 	if (class == NULL)
 		return folder_find_item_from_path(identifier);
 
@@ -2281,7 +2254,7 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 	Folder *folder;
 	XMLNode *xmlnode;
 	GList *list;
-	FolderType type = F_UNKNOWN;
+	FolderClass *class = NULL;
 	const gchar *name = NULL;
 	const gchar *path = NULL;
 	PrefsAccount *account = NULL;
@@ -2302,18 +2275,9 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 		XMLAttr *attr = list->data;
 
 		if (!attr || !attr->name || !attr->value) continue;
-		if (!strcmp(attr->name, "type")) {
-			if (!strcasecmp(attr->value, "mh"))
-				type = F_MH;
-			else if (!strcasecmp(attr->value, "mbox"))
-				type = F_MBOX;
-			else if (!strcasecmp(attr->value, "maildir"))
-				type = F_MAILDIR;
-			else if (!strcasecmp(attr->value, "imap"))
-				type = F_IMAP;
-			else if (!strcasecmp(attr->value, "news"))
-				type = F_NEWS;
-		} else if (!strcmp(attr->name, "name"))
+		if (!strcmp(attr->name, "type"))
+			class = folder_get_class_from_string(attr->value);
+		else if (!strcmp(attr->name, "name"))
 			name = attr->value;
 		else if (!strcmp(attr->name, "path"))
 			path = attr->value;
@@ -2333,10 +2297,10 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 			ret_rcpt = *attr->value == '1' ? TRUE : FALSE;
 	}
 
-	folder = folder_new(type, name, path);
+	folder = folder_new(class, name, path);
 	g_return_val_if_fail(folder != NULL, FALSE);
 	folder->account = account;
-	if (account && (type == F_IMAP || type == F_NEWS))
+	if (account != NULL)
 		account->folder = REMOTE_FOLDER(folder);
 	node->data = folder->node->data;
 	g_node_destroy(folder->node);
@@ -2567,7 +2531,7 @@ static void folder_create_processing_folder(void)
 				      G_DIR_SEPARATOR_S, PROCESSING_FOLDER,
 				      NULL);
 
-	processing_folder = folder_new(F_MH, "PROCESSING", LOCAL_FOLDER(tmpparent)->rootpath);
+	processing_folder = folder_new(mh_get_class(), "PROCESSING", LOCAL_FOLDER(tmpparent)->rootpath);
 	g_assert(processing_folder);
 
 	if (!is_dir_exist(tmpname)) {

@@ -55,11 +55,28 @@ FolderClass mbox_class =
 	F_MBOX,
 	"mbox",
 
+	/* Folder functions */
+	mbox_folder_new,
+	mbox_folder_destroy,
+	NULL,
+	mbox_create_tree,
+
+	/* FolderItem functions */
 	NULL,
 	NULL,
-	mbox_fetch_msg,
+	mbox_create_folder,
+	mbox_rename_folder,
+	mbox_remove_folder,
+	mbox_get_num_list,
+	NULL,
+	NULL,
+	NULL,
+	mbox_check_msgnum_validity,
+
+	/* Message functions */
 	mbox_get_msginfo,
 	NULL,
+	mbox_fetch_msg,
 	mbox_add_msg,
 	NULL,
 	NULL,
@@ -70,18 +87,6 @@ FolderClass mbox_class =
 	mbox_remove_all_msg,
 	NULL,
 	NULL,
-	mbox_get_num_list,
-	NULL,
-	mbox_create_tree,
-	mbox_create_folder,
-	mbox_rename_folder,
-	mbox_remove_folder,
-	mbox_folder_destroy,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	mbox_check_msgnum_validity,
 };
 
 FolderClass *mbox_get_class()

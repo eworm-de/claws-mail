@@ -1,3 +1,15 @@
+2003-03-13 [christoph]	0.8.11claws7
+
+	* src/account.c
+	* src/folder.[ch]
+	* src/imap.c
+	* src/mainwindow.c
+	* src/mbox_folder.c
+	* src/mh.c
+	* src/news.c
+	* src/setup.c
+		replace more folder type stuff with folder class stuff
+
 2003-03-13 [melvin]	0.8.11claws6
 
 	* src/prefs_actions.c

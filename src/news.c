@@ -111,17 +111,14 @@ FolderClass news_class =
 	F_NEWS,
 	"news",
 
+	/* Folder functions */
+	news_folder_new,
+	news_folder_destroy,
 	NULL,
 	NULL,
-	news_fetch_msg,
-	news_get_msginfo,
-	news_get_msginfos,
+
+	/* FolderItem functions */
 	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	news_remove_msg,
 	NULL,
 	NULL,
 	NULL,
@@ -131,9 +128,17 @@ FolderClass news_class =
 	NULL,
 	NULL,
 	NULL,
+
+	/* Message functions */
+	news_get_msginfo,
+	news_get_msginfos,
+	news_fetch_msg,
 	NULL,
-	news_folder_destroy,
 	NULL,
+	NULL,
+	NULL,
+	NULL,
+	news_remove_msg,
 	NULL,
 	NULL,
 	NULL,
