@@ -300,3 +300,4 @@
 ( cvs diff -u -r 1.49.2.28 -r 1.49.2.29 src/procmime.c; ) > 0.9.13cvs24.1.patchset
 ( cvs diff -u -r 1.60.2.7 -r 1.60.2.8 src/prefs_actions.c; ) > 0.9.13cvs24.2.patchset
 ( cvs diff -u -r 1.61.2.18 -r 1.61.2.19 src/account.c; ) > 0.9.13cvs24.3.patchset
+( cvs diff -u -r 1.56.2.30 -r 1.56.2.31 src/pop.c; cvs diff -u -r 1.17.2.12 -r 1.17.2.13 src/pop.h; ) > 0.9.13cvs25.1.patchset
