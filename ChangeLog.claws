@@ -1,3 +1,8 @@
+2002-11-13 [colin]	0.8.5claws142
+
+	* src/matcher_parser_parse.y
+		Fix rule problem when " don't match
+
 2002-11-13 [christoph]	0.8.5claws141
 
 	* src/folder.c
