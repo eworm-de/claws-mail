@@ -86,14 +86,6 @@ static const int EXPANSION_ALLOWANCE = 16384;
 /* Set the protocol version that this spamc speaks */
 static const char *PROTOCOL_VERSION="SPAMC/1.3";
 
-/* "private" part of struct message.
- * we use this instead of the struct message directly, so that we
- * can add new members without affecting the ABI.
- */
-struct libspamc_private_message {
-  int flags;	/* copied from "flags" arg to message_read() */
-};
-
 int libspamc_timeout = 0;
 
 static int
@@ -424,14 +416,6 @@ static int message_read_bsmtp(int fd, struct message *m){
 int message_read(int fd, int flags, struct message *m){
     libspamc_timeout = 0;
 
-    /* create the "private" part of the struct message */
-    m->priv = malloc (sizeof (struct libspamc_private_message));
-    if (m->priv == NULL) {
-        syslog(LOG_ERR, "message_read: malloc failed");
-        return EX_OSERR;
-    }
-    m->priv->flags = flags;
-
     switch(flags&SPAMC_MODE_MASK){
       case SPAMC_RAW_MODE:
         return message_read_raw(fd, m);
@@ -451,17 +435,17 @@ long message_write(int fd, struct message *m){
     off_t jlimit;
     char buffer[1024];
 
-    if (m->priv->flags&SPAMC_CHECK_ONLY) {
-	if(m->is_spam==EX_ISSPAM || m->is_spam==EX_NOTSPAM){
-	    return full_write(fd, (unsigned char *) m->out, m->out_len);
-
-	} else {
-	    syslog(LOG_ERR, "oops! SPAMC_CHECK_ONLY is_spam: %d\n", m->is_spam);
-	    return -1;
-	}
+    /* if we're to output a message, m->is_spam will be EX_OUTPUTMESSAGE */
+    if(m->is_spam==EX_ISSPAM || m->is_spam==EX_NOTSPAM){
+	return full_write(fd, (unsigned char *) m->out, m->out_len);
     }
 
-    /* else we're not in CHECK_ONLY mode */
+    if (m->is_spam != EX_OUTPUTMESSAGE && m->is_spam != EX_TOOBIG) {
+      syslog(LOG_ERR,
+	    "Cannot write this message, is_spam = %d!\n", m->is_spam);
+      return -1;
+    }
+
     switch(m->type){
       case MESSAGE_NONE:
         syslog(LOG_ERR, "Cannot write this message, it's MESSAGE_NONE!\n");
@@ -553,18 +537,77 @@ failure:
     return failureval;
 }
 
+/*
+ * May  7 2003 jm: using %f is bad where LC_NUMERIC is "," in the locale.
+ * work around using our own locale-independent float-parser code.
+ */
+static float
+_locale_safe_string_to_float (char *buf, int siz)
+{
+  int is_neg;
+  char *cp, *dot;
+  int divider;
+  float ret, postdot;
+
+  buf[siz-1] = '\0';	/* ensure termination */
+
+  /* ok, let's illustrate using "100.033" as an example... */
+  
+  is_neg = 0;
+  if (*buf == '-') { is_neg = 1; }
+
+  ret = (float) (strtol (buf, &dot, 10));
+  if (dot == NULL) { return 0.0; }
+  if (dot != NULL && *dot != '.') { return ret; }
+
+  /* ex: ret == 100.0 */
+
+  cp = (dot + 1);
+  postdot = (float) (strtol (cp, NULL, 10));
+  if (postdot == 0.0) { return ret; }
+
+  /* ex: postdot == 33.0, cp="033" */
+
+  /* now count the number of decimal places and figure out what power of 10 to use */
+  divider = 1;
+  while (*cp != '\0') {
+    divider *= 10; cp++;
+  }
+
+  /* ex:
+   * cp="033", divider=1
+   * cp="33", divider=10
+   * cp="3", divider=100
+   * cp="", divider=1000
+   */
+
+  if (is_neg) {
+    ret -= (postdot / ((float) divider));
+  } else {
+    ret += (postdot / ((float) divider));
+  }
+  /* ex: ret == 100.033, tada! ... hopefully */
+
+  return ret;
+}
+
 static int
 _handle_spamd_header (struct message *m, int flags, char *buf, int len)
 {
     char is_spam[6];
+    char s_str[20], t_str[20];
 
     /* Feb 12 2003 jm: actually, I think sccanf is working fine here ;)
      * let's stick with it for this parser.
+     * May  7 2003 jm: using %f is bad where LC_NUMERIC is "," in the locale.
+     * work around using our own locale-independent float-parser code.
      */
-    if (sscanf(buf, "Spam: %5s ; %f / %f", is_spam, &m->score, &m->threshold) == 3)
+    if (sscanf(buf, "Spam: %5s ; %20s / %20s", is_spam, s_str, t_str) == 3)
     {
+	m->score = _locale_safe_string_to_float (s_str, 20);
+	m->threshold = _locale_safe_string_to_float (t_str, 20);
+
 	/* Format is "Spam: x; y / x" */
-       /* Feb 14 2004 ym: apparently, it is really easy to screw up with sscanf() parsing */
 	m->is_spam=strcasecmp("true", is_spam) == 0 ? EX_ISSPAM: EX_NOTSPAM;
 
 	if(flags&SPAMC_CHECK_ONLY) {
@@ -592,7 +635,8 @@ static int _message_filter(const struct sockaddr *addr,
     char buf[8192];
     int bufsiz = (sizeof(buf) / sizeof(*buf)) - 4; /* bit of breathing room */
     int len, i;
-    int sock;
+    int sock = -1;
+    char versbuf[20];
     float version;
     int response;
     int failureval;
@@ -675,8 +719,14 @@ static int _message_filter(const struct sockaddr *addr,
     failureval = _spamc_read_full_line (m, flags, ssl, sock, buf, &len, bufsiz);
     if (failureval != EX_OK) { goto failure; }
 
-    if(sscanf(buf, "SPAMD/%f %d %*s", &version, &response)!=2) {
+    if(sscanf(buf, "SPAMD/%s %d %*s", versbuf, &response)!=2) {
 	syslog(LOG_ERR, "spamd responded with bad string '%s'", buf);
+	failureval = EX_PROTOCOL; goto failure;
+    }
+
+    version = _locale_safe_string_to_float (versbuf, 20);
+    if (version < 1.0) {
+	syslog(LOG_ERR, "spamd responded with bad version string '%s'", versbuf);
 	failureval = EX_PROTOCOL; goto failure;
     }
 
@@ -699,14 +749,15 @@ static int _message_filter(const struct sockaddr *addr,
     len = 0;		/* overwrite those headers */
 
     if (flags&SPAMC_CHECK_ONLY) {
-	close(sock);
-	if (m->is_spam == EX_TOOBIG) {
-	      /* We should have gotten headers back... Damnit. */
-	      failureval = EX_PROTOCOL; goto failure;
-	}
-	return EX_OK;
+      close(sock); sock = -1;
+      if (m->is_spam == EX_TOOBIG) {
+	    /* We should have gotten headers back... Damnit. */
+	    failureval = EX_PROTOCOL; goto failure;
+      }
+      return EX_OK;
     }
     else {
+	m->is_spam=EX_OUTPUTMESSAGE;
 	if (m->content_length < 0) {
 	    /* should have got a length too. */
 	    failureval = EX_PROTOCOL; goto failure;
@@ -728,7 +779,7 @@ static int _message_filter(const struct sockaddr *addr,
 	m->out_len+=len;
 
 	shutdown(sock, SHUT_RD);
-	close(sock);
+	close(sock); sock = -1;
     }
     libspamc_timeout = 0;
 
@@ -742,7 +793,9 @@ static int _message_filter(const struct sockaddr *addr,
 
 failure:
     free(m->out); m->out=m->msg; m->out_len=m->msg_len;
-    close(sock);
+    if (sock != -1) {
+      close(sock);
+    }
     libspamc_timeout = 0;
 
     if(flags&SPAMC_USE_SSL) {
@@ -821,7 +874,6 @@ FAIL:
 void message_cleanup(struct message *m) {
    if (m->out != NULL && m->out != m->raw) free(m->out);
    if (m->raw != NULL) free(m->raw);
-   if (m->priv != NULL) free(m->priv);
    clear_message(m);
 }
 
@@ -864,3 +916,4 @@ int message_filter(const struct sockaddr *addr, char *username, int flags,
 int message_filter_with_failover (const struct hostent *hent, int port,
                 char *username, int flags, struct message *m)
 { return _message_filter (NULL, hent, port, username, flags, m); }
+
