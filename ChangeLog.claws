@@ -1,4 +1,14 @@
-2002-05-18 [alfons]	0.7.6claws6
+2002-05-20 [paul]	0.7.6claws7
+
+	* src/html.c
+		fix broken parsing of urls
+	* src/textview.c
+		fix displaying of urls
+
+		both fixes from the patch [547855] by Eugene 
+		Brevdo (zonem)
+
+2002-05-19 [alfons]	0.7.6claws6
 
 	* configure.in
 		make sylpheed configure correctly with the latest
