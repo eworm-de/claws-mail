@@ -1,3 +1,10 @@
+2003-03-17 [thorsten]	0.8.11claws23
+
+	* src/imageview.[ch]
+		export imageview_get_resized_size() (for plugins)
+	* src/prefs_common.[ch]
+		added prefs_common_get() (for plugins)
+
 2003-03-17 [christoph]	0.8.11claws22
 
 	* src/imap.c

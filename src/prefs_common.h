@@ -290,5 +290,6 @@ void prefs_common_init		();
 void prefs_common_read_config	(void);
 void prefs_common_save_config	(void);
 void prefs_common_open		(void);
+PrefsCommon *prefs_common_get	(void);
 
 #endif /* __PREFS_COMMON_H__ */

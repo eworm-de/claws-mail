@@ -44,5 +44,7 @@ void imageview_show_image	(ImageView	*imageview,
 				 gboolean	 resize);
 void imageview_clear		(ImageView	*imageview);
 void imageview_destroy		(ImageView	*imageview);
+void imageview_get_resized_size	(gint w, gint h, gint aw, gint ah,
+				 gint *sw, gint *sh);
 
 #endif /* __IMAGEVIEW_H__ */

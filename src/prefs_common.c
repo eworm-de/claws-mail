@@ -928,6 +928,11 @@ void prefs_common_init() {
 	prefs_common.disphdr_list = NULL;
 }
 
+PrefsCommon *prefs_common_get(void)
+{
+	return &prefs_common;
+}
+
 void prefs_common_read_config(void)
 {
 	FILE *fp;
