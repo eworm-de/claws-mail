@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed    \n"
-"POT-Creation-Date: 2001-09-03 11:24+0200\n"
+"POT-Creation-Date: 2001-09-04 11:56+0200\n"
 "PO-Revision-Date: 2001-05-11 21:16+0200\n"
 "Last-Translator: Jens Oberender <j.obi@troja.net>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -87,18 +87,19 @@ msgstr ""
 "Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #. Button panel
-#: src/about.c:243 src/alertpanel.c:239 src/compose.c:2107 src/compose.c:3891
-#: src/editjpilot.c:342 src/editldap.c:240 src/editldap_basedn.c:212
-#: src/editvcard.c:237 src/export.c:185 src/foldersel.c:179
-#: src/grouplistdialog.c:204 src/import.c:189 src/inputdialog.c:160
-#: src/main.c:363 src/main.c:371 src/mainwindow.c:2135 src/messageview.c:348
-#: src/mimeview.c:724 src/passphrase.c:119 src/prefs.c:475
-#: src/prefs_common.c:2459 src/prefs_common.c:2616 src/prefs_common.c:2895
-#: src/prefs_common.c:3014 src/prefs_customheader.c:162
-#: src/prefs_display_header.c:206 src/prefs_filter.c:203
-#: src/prefs_filtering.c:323 src/prefs_matcher.c:301 src/prefs_matcher.c:1462
-#: src/prefs_scoring.c:199 src/prefs_templates.c:211 src/sigstatus.c:134
-#: src/summaryview.c:2937 src/summaryview.c:3716
+#: src/about.c:243 src/addressadd.c:243 src/alertpanel.c:239
+#: src/compose.c:2107 src/compose.c:3891 src/editaddress.c:643
+#: src/editbook.c:218 src/editgroup.c:359 src/editjpilot.c:342
+#: src/editldap.c:240 src/editldap_basedn.c:212 src/editvcard.c:237
+#: src/export.c:185 src/foldersel.c:179 src/grouplistdialog.c:204
+#: src/import.c:189 src/inputdialog.c:160 src/main.c:363 src/main.c:371
+#: src/mainwindow.c:2135 src/messageview.c:348 src/mimeview.c:724
+#: src/passphrase.c:119 src/prefs.c:475 src/prefs_common.c:2459
+#: src/prefs_common.c:2616 src/prefs_common.c:2895 src/prefs_common.c:3014
+#: src/prefs_customheader.c:162 src/prefs_display_header.c:206
+#: src/prefs_filter.c:203 src/prefs_filtering.c:323 src/prefs_matcher.c:301
+#: src/prefs_matcher.c:1462 src/prefs_scoring.c:199 src/prefs_templates.c:211
+#: src/sigstatus.c:134 src/summaryview.c:2937 src/summaryview.c:3716
 msgid "OK"
 msgstr "OK"
 
@@ -131,9 +132,11 @@ msgstr "Erstelle Accountbearbeitungsfenster...\n"
 msgid "Edit accounts"
 msgstr "Bearbeite Accounts"
 
-#: src/account.c:453 src/addressbook.c:488 src/compose.c:2938
-#: src/editjpilot.c:293 src/editldap.c:295 src/editvcard.c:208
-#: src/mimeview.c:139 src/select-keys.c:301
+#: src/account.c:453 src/addressadd.c:187 src/addressbook.c:488
+#: src/compose.c:2938 src/editaddress.c:905 src/editaddress.c:954
+#: src/editbook.c:188 src/editgroup.c:247 src/editjpilot.c:293
+#: src/editldap.c:295 src/editvcard.c:208 src/mimeview.c:139
+#: src/select-keys.c:301
 msgid "Name"
 msgstr "Name"
 
@@ -145,7 +148,8 @@ msgstr "Protokoll"
 msgid "Server"
 msgstr "Server"
 
-#: src/account.c:478 src/addressbook.c:632 src/prefs_customheader.c:242
+#: src/account.c:478 src/addressbook.c:632 src/editaddress.c:856
+#: src/editaddress.c:987 src/prefs_customheader.c:242
 #: src/prefs_display_header.c:290 src/prefs_display_header.c:345
 msgid "Add"
 msgstr "Hinzufügen"
@@ -209,6 +213,39 @@ msgstr "Ja"
 #: src/folderview.c:2041 src/folderview.c:2074
 msgid "+No"
 msgstr "+No"
+
+#: src/addressadd.c:167
+msgid "Add Address to Book"
+msgstr "Adresse dem Adressbuch hinzufügen"
+
+#: src/addressadd.c:197 src/compose.c:3535 src/select-keys.c:302
+msgid "Address"
+msgstr "Adresse"
+
+#: src/addressadd.c:207 src/addressbook.c:488 src/editaddress.c:759
+#: src/editaddress.c:826 src/editgroup.c:247
+msgid "Remarks"
+msgstr "Kommentar"
+
+#: src/addressadd.c:229
+msgid "Select Address Book Folder"
+msgstr "Wähle Adressbuchablage"
+
+#: src/addressadd.c:244 src/addressbook.c:1660 src/compose.c:2107
+#: src/compose.c:3892 src/compose.c:4557 src/editaddress.c:644
+#: src/editbook.c:219 src/editgroup.c:360 src/editjpilot.c:343
+#: src/editldap.c:241 src/editldap_basedn.c:213 src/editvcard.c:238
+#: src/export.c:186 src/foldersel.c:180 src/grouplistdialog.c:205
+#: src/import.c:190 src/inputdialog.c:161 src/main.c:363 src/main.c:371
+#: src/mainwindow.c:2135 src/messageview.c:348 src/mimeview.c:724
+#: src/passphrase.c:123 src/prefs.c:476 src/prefs_common.c:2460
+#: src/prefs_common.c:3015 src/prefs_customheader.c:163
+#: src/prefs_display_header.c:207 src/prefs_filter.c:204
+#: src/prefs_filtering.c:324 src/prefs_matcher.c:302 src/prefs_scoring.c:200
+#: src/prefs_templates.c:212 src/progressdialog.c:77 src/select-keys.c:326
+#: src/summaryview.c:785 src/summaryview.c:2937 src/summaryview.c:3716
+msgid "Cancel"
+msgstr "Abbrechen"
 
 #: src/addressbook.c:339 src/compose.c:411 src/mainwindow.c:392
 msgid "/_File"
@@ -321,10 +358,6 @@ msgstr "/_Löschen"
 msgid "E-Mail address"
 msgstr "E-Mail Adresse"
 
-#: src/addressbook.c:488
-msgid "Remarks"
-msgstr "Kommentar"
-
 #: src/addressbook.c:495 src/compose.c:3536 src/prefs_common.c:2067
 msgid "Address book"
 msgstr "Adreßbuch"
@@ -333,11 +366,12 @@ msgstr "Adreßbuch"
 msgid "Name:"
 msgstr "Name:"
 
+#. Buttons
 #: src/addressbook.c:629 src/addressbook.c:1660 src/addressbook.c:1666
-#: src/mainwindow.c:1759 src/prefs_display_header.c:296
-#: src/prefs_display_header.c:352 src/prefs_filter.c:413
-#: src/prefs_filtering.c:218 src/prefs_filtering.c:529 src/prefs_matcher.c:503
-#: src/prefs_scoring.c:290 src/prefs_templates.c:185
+#: src/editaddress.c:850 src/editaddress.c:981 src/mainwindow.c:1759
+#: src/prefs_display_header.c:296 src/prefs_display_header.c:352
+#: src/prefs_filter.c:413 src/prefs_filtering.c:218 src/prefs_filtering.c:529
+#: src/prefs_matcher.c:503 src/prefs_scoring.c:290 src/prefs_templates.c:185
 msgid "Delete"
 msgstr "Löschen"
 
@@ -382,7 +416,8 @@ msgid ""
 "If deleting the folder only, addresses will be moved into parent folder."
 msgstr ""
 "Ablage und alles Adressen in '%s' löschen?\n"
-"Wenn nur die Ablage gelöscht wird, werden die Adressen in die darüberliegende Ablage verschoben"
+"Wenn nur die Ablage gelöscht wird, werden die Adressen in die "
+"darüberliegende Ablage verschoben"
 
 #: src/addressbook.c:1660
 msgid "Folder only"
@@ -391,21 +426,6 @@ msgstr "Nur Ablage"
 #: src/addressbook.c:1660
 msgid "Folder and Addresses"
 msgstr "Ablage und Adressen"
-
-#: src/addressbook.c:1660 src/compose.c:2107 src/compose.c:3892
-#: src/compose.c:4557 src/editjpilot.c:343 src/editldap.c:241
-#: src/editldap_basedn.c:213 src/editvcard.c:238 src/export.c:186
-#: src/foldersel.c:180 src/grouplistdialog.c:205 src/import.c:190
-#: src/inputdialog.c:161 src/main.c:363 src/main.c:371 src/mainwindow.c:2135
-#: src/messageview.c:348 src/mimeview.c:724 src/passphrase.c:123
-#: src/prefs.c:476 src/prefs_common.c:2460 src/prefs_common.c:3015
-#: src/prefs_customheader.c:163 src/prefs_display_header.c:207
-#: src/prefs_filter.c:204 src/prefs_filtering.c:324 src/prefs_matcher.c:302
-#: src/prefs_scoring.c:200 src/prefs_templates.c:212 src/progressdialog.c:77
-#: src/select-keys.c:326 src/summaryview.c:785 src/summaryview.c:2937
-#: src/summaryview.c:3716
-msgid "Cancel"
-msgstr "Abbrechen"
 
 #: src/addressbook.c:1665
 #, c-format
@@ -426,25 +446,30 @@ msgstr "Altes Adressesbuch erfolgreich konvertiert."
 
 #: src/addressbook.c:2358 src/addressbook.c:2496
 msgid "Old address book converted, could not save new address index file"
-msgstr "Altes Adressbuch konvertiert, konnte Indexdatei des neuen Adressbuches nicht speichern."
+msgstr ""
+"Altes Adressbuch konvertiert, konnte Indexdatei des neuen Adressbuches nicht "
+"speichern."
 
 #: src/addressbook.c:2372 src/addressbook.c:2510
 msgid ""
 "Could not convert address book, but created empty new address book files."
 msgstr ""
-"Konnte Adressbuch nicht konvertieren, aber eine leere, neue Adressbuchdatei wurde erstellt."
+"Konnte Adressbuch nicht konvertieren, aber eine leere, neue Adressbuchdatei "
+"wurde erstellt."
 
 #: src/addressbook.c:2379 src/addressbook.c:2516
 msgid ""
 "Could not convert address book, could not create new address book files."
 msgstr ""
-"Konnte Adressbuch nicht konvertieren, konnte keine neue Adressbuchdatei erstellen."
+"Konnte Adressbuch nicht konvertieren, konnte keine neue Adressbuchdatei "
+"erstellen."
 
 #: src/addressbook.c:2385 src/addressbook.c:2522
 msgid ""
 "Could not convert address book and could not create new address book files."
 msgstr ""
-"Konnte Adressbuch nicht konvertieren und konnte keine neue Adressbuchdatei erstellen."
+"Konnte Adressbuch nicht konvertieren und konnte keine neue Adressbuchdatei "
+"erstellen."
 
 #: src/addressbook.c:2392 src/addressbook.c:2540
 msgid "Sylpheed Addressbook Conversion Error"
@@ -916,10 +941,6 @@ msgstr "Zeilenumbruch"
 msgid "Wrap long lines"
 msgstr "Umbrechen langer Zeilen"
 
-#: src/compose.c:3535 src/select-keys.c:302
-msgid "Address"
-msgstr "Adresse"
-
 #: src/compose.c:3733
 msgid "Invalid MIME type."
 msgstr "Ungültiger MIME Typ"
@@ -1015,13 +1036,170 @@ msgstr "Zitatzeichen Formatfehler."
 msgid "Message reply/forward format error."
 msgstr "Nachrichten Antwort-/Weiterleitungs-Formatfehler."
 
+#: src/editaddress.c:315
+msgid "Add New Person"
+msgstr "Füge neue Person hinzu"
+
+#: src/editaddress.c:316
+msgid "Edit Person Details"
+msgstr "Bearbeite Personendetails"
+
+#: src/editaddress.c:452
+msgid "An E-Mail address must be supplied."
+msgstr "Eine E-Mail-Adresse muß angegeben werden."
+
+#: src/editaddress.c:562
+msgid "A Name and Value must be supplied."
+msgstr "Ein Name und Wert müssen angegeben werden."
+
+#: src/editaddress.c:615
+msgid "Edit Person Data"
+msgstr "Bearbeite Personendaten"
+
+#: src/editaddress.c:695
+msgid "Display Name"
+msgstr "Anzeigename"
+
+#: src/editaddress.c:704
+msgid "First Name"
+msgstr "Vorname"
+
+#: src/editaddress.c:713
+msgid "Last Name"
+msgstr "Nachname"
+
+#: src/editaddress.c:722
+msgid "Nick Name"
+msgstr "Spitzname"
+
+#: src/editaddress.c:759 src/editaddress.c:808 src/editaddress.c:1015
+#: src/editgroup.c:247
+msgid "E-Mail Address"
+msgstr "EMail Adresse"
+
+#: src/editaddress.c:759 src/editaddress.c:817
+msgid "Alias"
+msgstr "Alias"
+
+#. Buttons
+#: src/editaddress.c:844
+msgid "Move Up"
+msgstr "Nach oben verschieben"
+
+#: src/editaddress.c:847
+msgid "Move Down"
+msgstr "Nach unten verschieben"
+
+#: src/editaddress.c:853 src/editaddress.c:984
+msgid "Modify"
+msgstr "Modifiziere"
+
+#: src/editaddress.c:859 src/editaddress.c:990 src/summary_search.c:191
+msgid "Clear"
+msgstr "Leeren"
+
+#. value
+#: src/editaddress.c:905 src/editaddress.c:963 src/prefs_customheader.c:213
+#: src/prefs_matcher.c:390
+msgid "Value"
+msgstr "Wert"
+
+#: src/editaddress.c:1014
+msgid "Basic Data"
+msgstr "Grunddaten"
+
+#: src/editaddress.c:1016
+msgid "User Attributes"
+msgstr "Benutzerattribute"
+
+#: src/editbook.c:112
+msgid "File appears to be Ok."
+msgstr "Datei scheint OK zu sein."
+
+#: src/editbook.c:115
+msgid "File does not appear to be a valid address book format."
+msgstr "Datei scheint nicht im einem gültigen Adressbuchformat zu sein."
+
+#: src/editbook.c:118 src/editjpilot.c:190 src/editvcard.c:97
+msgid "Could not read file."
+msgstr "Kann Datei nicht lesen."
+
+#: src/editbook.c:166 src/editbook.c:277
+msgid "Edit Addressbook"
+msgstr "Bearbeite Adressbuch"
+
+#: src/editbook.c:195 src/editjpilot.c:300 src/editvcard.c:215
+msgid " Check File "
+msgstr " Überprüfe Datei "
+
+#: src/editbook.c:200 src/editjpilot.c:305 src/editvcard.c:220
+msgid "File"
+msgstr "Datei"
+
+#: src/editbook.c:296
+msgid "Add New Addressbook"
+msgstr "Neues Adressbuch hinzufügen"
+
+#: src/editgroup.c:99
+msgid "A Group Name must be supplied."
+msgstr "Ein Gruppenname muß angegeben werden."
+
+#: src/editgroup.c:254
+msgid "Edit Group Data"
+msgstr "Bearbeite Gruppendaten"
+
+#: src/editgroup.c:282
+msgid "Group Name"
+msgstr "Gruppenname"
+
+#: src/editgroup.c:301
+msgid "Addresses in Group"
+msgstr "Adressen in Gruppe"
+
+#: src/editgroup.c:303
+msgid " -> "
+msgstr " -> "
+
+#: src/editgroup.c:330
+msgid " <- "
+msgstr " <- "
+
+#: src/editgroup.c:332
+msgid "Available Addresses"
+msgstr "Verfügbare Adressen"
+
+#: src/editgroup.c:396
+msgid "Move E-Mail Addresses to or from Group with arrow buttons"
+msgstr "Bewege Emailadresse zu oder von einer Gruppe mit den Pfeiltasten"
+
+#: src/editgroup.c:445
+msgid "Edit Group Details"
+msgstr "Bearbeite Gruppendetails"
+
+#: src/editgroup.c:448
+msgid "Add New Group"
+msgstr "Neue Gruppe hinzufügen"
+
+#: src/editgroup.c:496
+msgid "Edit folder"
+msgstr "Bearbeite Ablage"
+
+#: src/editgroup.c:496
+msgid "Input the new name of folder:"
+msgstr "Geben Sie den neuen Namen der Ablage ein:"
+
+#: src/editgroup.c:499 src/folderview.c:1529 src/folderview.c:1586
+#: src/folderview.c:1830
+msgid "New folder"
+msgstr "Neue Ablage"
+
+#: src/editgroup.c:500 src/folderview.c:1530 src/folderview.c:1587
+msgid "Input the name of new folder:"
+msgstr "Geben Sie den Namen der neuen Ablage ein:"
+
 #: src/editjpilot.c:187
 msgid "File does not appear to be JPilot format."
 msgstr "Datei scheint nicht im JPilot format zu sein."
-
-#: src/editjpilot.c:190 src/editvcard.c:97
-msgid "Could not read file."
-msgstr "Kann Datei nicht lesen."
 
 #: src/editjpilot.c:223
 msgid "Select JPilot File"
@@ -1030,14 +1208,6 @@ msgstr "Wähle JPilot Datei"
 #: src/editjpilot.c:271 src/editjpilot.c:398
 msgid "Edit JPilot Entry"
 msgstr "Bearbeite JPilot Eintrag"
-
-#: src/editjpilot.c:300 src/editvcard.c:215
-msgid " Check File "
-msgstr " Überprüfe Datei "
-
-#: src/editjpilot.c:305 src/editvcard.c:220
-msgid "File"
-msgstr "Datei"
 
 #: src/editjpilot.c:312 src/editldap.c:337 src/editvcard.c:227
 msgid " ... "
@@ -1275,14 +1445,6 @@ msgstr "Trash"
 #, c-format
 msgid "Folder %s is selected\n"
 msgstr "Ablage %s ist gewählt\n"
-
-#: src/folderview.c:1529 src/folderview.c:1586 src/folderview.c:1830
-msgid "New folder"
-msgstr "Neue Ablage"
-
-#: src/folderview.c:1530 src/folderview.c:1587
-msgid "Input the name of new folder:"
-msgstr "Geben Sie den Namen der neuen Ablage ein:"
 
 #: src/folderview.c:1531 src/folderview.c:1588 src/folderview.c:1834
 msgid "NewFolder"
@@ -4049,11 +4211,6 @@ msgstr "Erstelle Benutzerdefinierte-Kopfzeilen-Fenster...\n"
 msgid "Custom header setting"
 msgstr "Benutzerdefinierte Kopfzeileneinstellungen"
 
-#. value
-#: src/prefs_customheader.c:213 src/prefs_matcher.c:390
-msgid "Value"
-msgstr "Wert"
-
 #: src/prefs_customheader.c:322
 msgid "Reading custom header configuration...\n"
 msgstr "Lese Benutzerdefinierte Kopfzeileneinstellungen...\n"
@@ -4784,10 +4941,6 @@ msgstr "Rückwärts suchen"
 #: src/summary_search.c:184
 msgid "Select all matched"
 msgstr "Alle Treffer auswählen"
-
-#: src/summary_search.c:191
-msgid "Clear"
-msgstr "Leeren"
 
 #: src/summary_search.c:286
 msgid "Search failed"
