@@ -1,3 +1,9 @@
+2003-02-13 [paul]	0.8.10claws5
+
+	* configure.ac
+		show which plugins are configured in the configure
+		output.
+
 2003-02-12 [thorsten]	0.8.10claws4
 
 	* src/news.c
