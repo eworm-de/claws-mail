@@ -1212,7 +1212,10 @@ void prefs_matcher_read_config(void)
 	g_free(rcpath);
 
 	if (f != NULL)
+	{
 		matcher_parser_start_parsing(f);
+		fclose(f);
+	}
 	else {
 		/* previous version compatibily */
 
