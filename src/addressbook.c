@@ -128,16 +128,12 @@ static GdkPixmap *addressxpm;
 static GdkBitmap *addressxpmmask;
 static GdkPixmap *vcardxpm;
 static GdkBitmap *vcardxpmmask;
-#ifdef USE_JPILOT
 static GdkPixmap *jpilotxpm;
 static GdkBitmap *jpilotxpmmask;
 static GdkPixmap *categoryxpm;
 static GdkBitmap *categoryxpmmask;
-#endif
-#ifdef USE_LDAP
 static GdkPixmap *ldapxpm;
 static GdkBitmap *ldapxpmmask;
-#endif
 
 // Message buffer
 static gchar addressbook_msgbuf[ ADDRESSBOOK_MSGBUF_SIZE ];
@@ -487,6 +483,7 @@ static void addressbook_create( void ) {
 	GList *nodeIf;
 	AdapterInterface *adapter;
 	AddressTypeControlItem *atci;
+	AddressInterface *iface;
 
 	gchar *titles[N_COLS] = {_("Name"), _("E-Mail address"), _("Remarks")};
 	gchar *text;
@@ -682,16 +679,19 @@ static void addressbook_create( void ) {
 	while( nodeIf ) {
 		adapter = nodeIf->data;
 		nodeIf = g_list_next( nodeIf );
-		atci = adapter->atci;
-		text = atci->displayName;
-		adapter->treeNode =
-			gtk_ctree_insert_node( GTK_CTREE(ctree),
-				NULL, NULL, &text, FOLDER_SPACING,
-				interfacexpm, interfacexpmmask,
-				interfacexpm, interfacexpmmask,
-				FALSE, FALSE );
-		menu_set_sensitive( menu_factory, atci->menuCommand, adapter->haveLibrary );
-		gtk_ctree_node_set_row_data( GTK_CTREE(ctree), adapter->treeNode, adapter );
+		iface = adapter->interface;
+		if( iface->useInterface ) {
+			atci = adapter->atci;
+			text = atci->displayName;
+			adapter->treeNode =
+				gtk_ctree_insert_node( GTK_CTREE(ctree),
+					NULL, NULL, &text, FOLDER_SPACING,
+					interfacexpm, interfacexpmmask,
+					interfacexpm, interfacexpmmask,
+					FALSE, FALSE );
+			menu_set_sensitive( menu_factory, atci->menuCommand, adapter->haveLibrary );
+			gtk_ctree_node_set_row_data( GTK_CTREE(ctree), adapter->treeNode, adapter );
+		}
 	}
 
 	// Popup menu
@@ -2292,18 +2292,20 @@ static void addressbook_load_tree( void ) {
 		iface = adapter->interface;
 		atci = adapter->atci;
 		if( iface ) {
-			// Load data sources below interface node
-			nodeDS = iface->listSource;
-			while( nodeDS ) {
-				ds = nodeDS->data;
-				newNode = NULL;
-				name = addrindex_ds_get_name( ds );
-				ads = addressbook_create_ds_adapter( ds, atci->objectType, name );
-				newNode = addressbook_add_object( node, ADDRESS_OBJECT(ads) );
-				nodeDS = g_list_next( nodeDS );
+			if( iface->useInterface ) {
+				// Load data sources below interface node
+				nodeDS = iface->listSource;
+				while( nodeDS ) {
+					ds = nodeDS->data;
+					newNode = NULL;
+					name = addrindex_ds_get_name( ds );
+					ads = addressbook_create_ds_adapter( ds, atci->objectType, name );
+					newNode = addressbook_add_object( node, ADDRESS_OBJECT(ads) );
+					nodeDS = g_list_next( nodeDS );
+				}
+				gtk_ctree_expand( ctree, node );
 			}
 		}
-		gtk_ctree_expand( ctree, node );
 		nodeIf = g_list_next( nodeIf );
 	}
 }

@@ -169,8 +169,8 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 
 	iface = addrindex_create_interface( ADDR_IF_JPILOT, "J-Pilot", TAG_IF_JPILOT, TAG_DS_JPILOT );
 #ifdef USE_JPILOT
-	iface->useInterface = TRUE;
 	iface->haveLibrary = jpilot_test_pilot_lib();
+	iface->useInterface = iface->haveLibrary;
 	iface->getModifyFlag = ( void * ) jpilot_get_modified;
 	iface->getAccessFlag = ( void * ) jpilot_get_accessed;
 	iface->getReadFlag   = ( void * ) jpilot_get_read_flag;
@@ -192,6 +192,7 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 	iface = addrindex_create_interface( ADDR_IF_LDAP, "LDAP", TAG_IF_LDAP, TAG_DS_LDAP );
 #ifdef USE_LDAP
 	iface->haveLibrary = syldap_test_ldap_lib();
+	iface->useInterface = iface->haveLibrary;
 	iface->getAccessFlag = ( void * ) syldap_get_accessed;
 	// iface->getModifyFlag = ( void * ) syldap_get_modified;
 	// iface->getReadFlag   = ( void * ) syldap_get_read_flag;
@@ -896,7 +897,7 @@ static void addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
 static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 	AddressDataSource *ds = g_new0( AddressDataSource, 1 );
 	GList *list = addrindex_read_attributes( file );
-	ds->data = list;
+	ds->rawDataSource = list;
 	return ds;
 }
 

@@ -1026,7 +1026,7 @@ gboolean syldap_test_connect( SyldapServer *ldapServer ) {
 */
 gboolean syldap_test_ldap_lib() {
 	void *handle, *fun;
-
+	
 	// Get library
 	handle = dlopen( LDAP_LINK_LIB_NAME_1, RTLD_LAZY );
 	if( ! handle ) {
