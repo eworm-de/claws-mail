@@ -1089,8 +1089,6 @@ static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mim
 	
 	g_return_if_fail(content_type != NULL);
 	g_return_if_fail(mimeinfo != NULL);
-	
-	mimeinfo->type = MIMETYPE_UNKNOWN;
 
 	/* Split content type into parts and remove trailing
 	   and leading whitespaces from all strings */
@@ -1101,21 +1099,33 @@ static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mim
 
 	/* Get mimeinfo->type and mimeinfo->subtype */
 	str = content_type_parts[0];
-	if (str == NULL) {
+	/* RFC 2045, page 13 says that the mime subtype is MANDATORY;
+	 * if it's not available we use the default Content-Type */
+	if ((str == NULL) || (str[0] == '\0') || (strchr(str, '/') == NULL)) {
+		mimeinfo->type = MIMETYPE_TEXT;
+		mimeinfo->subtype = g_strdup("plain");
+		if(g_hash_table_lookup(mimeinfo->parameters,
+				       "charset") == NULL)
+			g_hash_table_insert(mimeinfo->parameters,
+					    g_strdup("charset"),
+					    g_strdup("us-ascii"));
 		g_strfreev(content_type_parts);
 		return;
-	}
-	for (typetablearray = mime_type_table; typetablearray->str != NULL; typetablearray++) {
-		if (g_strncasecmp(str, typetablearray->str, strlen(typetablearray->str)) == 0 &&
-		    str[strlen(typetablearray->str)] == '/') {
-			mimeinfo->type = typetablearray->type;
-			mimeinfo->subtype = g_strdup(str + strlen(typetablearray->str) + 1);
-			break;
+	} else {
+		mimeinfo->type = MIMETYPE_UNKNOWN;
+		for (typetablearray = mime_type_table; typetablearray->str != NULL; typetablearray++) {
+			if (g_strncasecmp(str, typetablearray->str, strlen(typetablearray->str)) == 0 &&
+			    str[strlen(typetablearray->str)] == '/') {
+				mimeinfo->type = typetablearray->type;
+				mimeinfo->subtype = g_strdup(str + strlen(typetablearray->str) + 1);
+				break;
+			}
 		}
+
+		/* Get mimeinfo->parmeters */
+		add_to_mimeinfo_parameters(&content_type_parts[1], mimeinfo);
 	}
 
-	/* Get mimeinfo->parmeters */
-	add_to_mimeinfo_parameters(&content_type_parts[1], mimeinfo);
 	g_strfreev(content_type_parts);
 }
 
@@ -1191,7 +1201,9 @@ void procmime_parse_mimepart(MimeInfo *parent,
 	} else {
 		mimeinfo->type = MIMETYPE_TEXT;
 		mimeinfo->subtype = g_strdup("plain");
-		g_hash_table_insert(mimeinfo->parameters, g_strdup("charset"), g_strdup("us-ascii"));
+		if(g_hash_table_lookup(mimeinfo->parameters,
+				       "charset") == NULL)
+			g_hash_table_insert(mimeinfo->parameters, g_strdup("charset"), g_strdup("us-ascii"));
 	}
 
 	if (content_encoding != NULL) {

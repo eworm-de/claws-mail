@@ -1,3 +1,9 @@
+2003-12-03 [christoph]	0.9.7claws16
+
+	* src/procmime.c
+		use default Content-Type as specified in RFC2045 if
+		Content-Type header is syntactically incorrect
+
 2003-12-03 [christoph]	0.9.7claws15
 
 	* src/addressbook.c
