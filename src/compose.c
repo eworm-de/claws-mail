@@ -1257,6 +1257,8 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 		return NULL;
 
 	compose->redirect_filename = filename;
+	
+	compose_attach_parts(compose, msginfo);
 
 	if (msginfo->subject)
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry),
