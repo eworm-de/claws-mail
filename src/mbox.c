@@ -62,6 +62,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 	gchar buf[MSGBUFSIZE], from_line[MSGBUFSIZE];
 	gchar *tmp_file;
 	gint msgs = 0;
+	FolderItem *inbox;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(mbox != NULL, -1);
@@ -96,6 +97,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 	}
 
 	tmp_file = get_tmp_file();
+	inbox    = folder_get_default_inbox();
 
 	do {
 		FILE *tmp_fp;
@@ -218,8 +220,8 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 				}
 			}
 			else {
-				/* new filtering */
-				dropfolder = dest;
+				/* CLAWS: new filtering */
+				dropfolder = folder_get_default_processing();
 			}
 		} else
 			dropfolder = dest;
@@ -233,9 +235,9 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 		folder_item_scan(dropfolder);
 
 		if (global_processing) {
-			/* new filtering */
+			/* CLAWS: new filtering */
 			if (folder_table) {
-				filter_message(global_processing, dropfolder,
+				filter_message(global_processing, inbox,
 					       msgnum, folder_table);
 			}
 		}
