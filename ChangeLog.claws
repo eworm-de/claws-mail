@@ -1,3 +1,20 @@
+2003-12-05 [hoa]	0.9.7claws21
+
+	* src/filtering.[ch]
+	* src/matcher.[ch]
+	* src/matcher_parser_lex.l
+	* src/matcher_parser_parse.y
+	* src/prefs_actions.c
+	* src/prefs_filtering.c
+	* src/common/utils.[ch]
+	        quote arguments before giving them to command line.
+		fixed quote of string in matcher/processing/filtering rules.
+
+	* src/messageview.c
+	* src/privacy.[ch]
+	        allows decryption to return a new whole 
+		MIME message structure.
+
 2003-12-04 [hoa]	0.9.7claws20
 
 	* src/filtering.[ch]
