@@ -1436,7 +1436,8 @@ static gint folder_sort_folder_list(gconstpointer a, gconstpointer b)
 gint folder_item_open(FolderItem *item)
 {
 	gchar *buf;
-	if((item->folder->klass->scan_required != NULL) && (item->folder->klass->scan_required(item->folder, item))) {
+	if((item->folder->klass->scan_required != NULL) &&
+	   (item->folder->klass->scan_required(item->folder, item))) {
 		folder_item_scan_full(item, TRUE);
 	}
 	folder_item_syncronize_flags(item);
@@ -2813,14 +2814,22 @@ gint folder_item_remove_all_msg(FolderItem *item)
 
 	folder = item->folder;
 
-	g_return_val_if_fail(folder->klass->remove_all_msg != NULL, -1);
+	if (folder->klass->remove_all_msg != NULL) {
+		result = folder->klass->remove_all_msg(folder, item);
 
-	result = folder->klass->remove_all_msg(folder, item);
+		if (result == 0) {
+			folder_item_free_cache(item);
+			item->cache = msgcache_new();
+		}
+	} else {
+		MsgInfoList *msglist;
+
+		msglist = folder_item_get_msg_list(item);
+		result = folder_item_remove_msgs(item, msglist);
+		procmsg_msg_list_free(msglist);
+	}
 
 	if (result == 0) {
-		folder_item_free_cache(item);
-		item->cache = msgcache_new();
-
 		item->new_msgs = 0;
 		item->unread_msgs = 0;
 		item->unreadmarked_msgs = 0;
