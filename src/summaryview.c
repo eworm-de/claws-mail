@@ -1291,85 +1291,68 @@ GSList *summary_get_msg_list(SummaryView *summaryview)
 static void summary_set_menu_sensitive(SummaryView *summaryview)
 {
 	GtkItemFactory *ifactory = summaryview->popupfactory;
-	SummarySelection selection;
+	SensitiveCond state;
+	gboolean sensitive;
 	GtkWidget *menuitem;
-	gboolean sens;
+	gint i;
 
-	selection = summary_get_selection_type(summaryview);
 	main_window_set_menu_sensitive(summaryview->mainwin);
 
-	if (selection == SUMMARY_NONE) {
-		GtkWidget *submenu;
+	static const struct {
+		gchar *const entry;
+		SensitiveCond cond;
+	} entry[] = {
+		{"/Reply"			, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Reply to"			, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Reply to/all"		, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Reply to/sender"             , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Reply to/mailing list"       , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Follow-up and reply to"	, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST|M_NEWS},
 
-		submenu = gtk_item_factory_get_widget
-			(summaryview->popupfactory, "/Mark");
-		menu_set_insensitive_all(GTK_MENU_SHELL(submenu));
-		menu_set_insensitive_all
-			(GTK_MENU_SHELL(summaryview->popupmenu));
-		return;
+		{"/Forward"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
+        	{"/Redirect"			, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+
+		{"/Re-edit"			, M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
+
+		{"/Move..."			, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
+		{"/Copy..."			, M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Delete"			, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
+		{"/Cancel a news message"	, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NEWS},
+		{"/Execute"			, M_DELAY_EXEC},
+
+		{"/Mark"			, M_TARGET_EXIST},
+		{"/Mark/Mark"   		, M_TARGET_EXIST},
+		{"/Mark/Unmark"   		, M_TARGET_EXIST},
+		{"/Mark/Mark as unread"   	, M_TARGET_EXIST},
+		{"/Mark/Mark all read"   	, M_TARGET_EXIST},
+		{"/Mark/Ignore thread"   	, M_TARGET_EXIST},
+		{"/Mark/Lock"   		, M_TARGET_EXIST},
+		{"/Mark/Unlock"   		, M_TARGET_EXIST},
+		{"/Color label"			, M_TARGET_EXIST},
+
+		{"/Add sender to address book"	, M_SINGLE_TARGET_EXIST},
+		{"/Create filter rule"		, M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+
+		{"/View"			, M_SINGLE_TARGET_EXIST},
+		{"/View/Open in new window"     , M_SINGLE_TARGET_EXIST},
+		{"/View/Source"			, M_SINGLE_TARGET_EXIST},
+		{"/View/All header"		, M_SINGLE_TARGET_EXIST},
+
+		{"/Save as..."			, M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+		{"/Print..."			, M_TARGET_EXIST|M_UNLOCKED},
+
+		{"/Select thread"		, M_SINGLE_TARGET_EXIST},
+
+		{NULL, 0}
+	};
+
+	state = main_window_get_current_state(summaryview->mainwin);
+
+	for (i = 0; entry[i].entry != NULL; i++) {
+		sensitive = ((entry[i].cond & state) == entry[i].cond);
+		menu_set_sensitive(ifactory, entry[i].entry, sensitive);
 	}
 
-	if (FOLDER_TYPE(summaryview->folder_item->folder) != F_NEWS)
-		menu_set_sensitive(ifactory, "/Move...", TRUE);
-	else
-		menu_set_sensitive(ifactory, "/Move...", FALSE);
-
-#if 0
-	menu_set_sensitive(ifactory, "/Delete", TRUE);
-#endif
-	menu_set_sensitive(ifactory, "/Copy...", TRUE);
-	menu_set_sensitive(ifactory, "/Execute", TRUE);
-
-	menu_set_sensitive(ifactory, "/Mark", TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Mark",   TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Unmark", TRUE);
-
-	menu_set_sensitive(ifactory, "/Mark/Mark as unread", TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Mark as read",   TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Mark all read", TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Ignore thread",   TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Unignore thread", TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Lock", TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Unlock", TRUE);
-
-	menu_set_sensitive(ifactory, "/Color label", TRUE);
-
-	sens = (selection == SUMMARY_SELECTED_MULTIPLE) ? FALSE : TRUE;
-	menu_set_sensitive(ifactory, "/Reply",			  sens);
-	menu_set_sensitive(ifactory, "/Reply to",		  sens);
-	menu_set_sensitive(ifactory, "/Reply to/all",		  sens);
-	menu_set_sensitive(ifactory, "/Reply to/sender",	  sens);
-	menu_set_sensitive(ifactory, "/Reply to/mailing list",	  sens);
-	menu_set_sensitive(ifactory, "/Forward",		  TRUE);
-	menu_set_sensitive(ifactory, "/Redirect",		  sens);
-
-	menu_set_sensitive(ifactory, "/Add sender to address book", sens);
-	menu_set_sensitive(ifactory, "/Create filter rule",         sens);
-
-	menu_set_sensitive(ifactory, "/View", sens);
-	menu_set_sensitive(ifactory, "/View/Open in new window", sens);
-	menu_set_sensitive(ifactory, "/View/Source", sens);
-	menu_set_sensitive(ifactory, "/View/All header", sens);
-	if (summaryview->folder_item->stype == F_OUTBOX ||
-	    summaryview->folder_item->stype == F_DRAFT  ||
-	    summaryview->folder_item->stype == F_QUEUE)
-		menu_set_sensitive(ifactory, "/Re-edit", sens);
-	else
-		menu_set_sensitive(ifactory, "/Re-edit", FALSE);
-
-	menu_set_sensitive(ifactory, "/Save as...", TRUE);
-	menu_set_sensitive(ifactory, "/Print...",   TRUE);
-
-	menu_set_sensitive(ifactory, "/Select all", TRUE);
-	menu_set_sensitive(ifactory, "/Select thread", sens);
-	if (summaryview->folder_item->folder->account)
-		sens = summaryview->folder_item->folder->account->protocol
-			== A_NNTP;
-	else
-		sens = FALSE;
-	menu_set_sensitive(ifactory, "/Follow-up and reply to",	sens);
-	menu_set_sensitive(ifactory, "/Cancel a news message", sens);
-	menu_set_sensitive(ifactory, "/Delete", !sens);
 
 	summary_lock(summaryview);
 	menuitem = gtk_item_factory_get_widget(ifactory, "/View/All header");
