@@ -43,7 +43,6 @@ dnl
     PSPELL_CFLAGS="-I$pspell_includes"
     PSPELL_LIBS="-L$pspell_libs -lpspell"
     pspell_config_version=`$PSPELL_CONFIG version`
-    PSPELL_PATH=`$PSPELL_CONFIG pkgdatadir`
     if test "x$enable_pspelltest" = "xyes" ; then
       ac_save_CFLAGS="$CFLAGS"
       ac_save_LIBS="$LIBS"
@@ -131,7 +130,6 @@ echo "*** pspell-config script: $PSPELL_CONFIG"
   fi
   AC_SUBST(PSPELL_CFLAGS)
   AC_SUBST(PSPELL_LIBS)
-  AC_SUBST(PSPELL_PATH)
   rm -f conf.pspelltest
 ])
 

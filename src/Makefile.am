@@ -192,8 +192,7 @@ CPPFLAGS = \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DMANUALDIR=\""$(manualdir)"\" \
 	-DHOST_ALIAS=\""$(host_alias)"\" \
-	-DSYSCONFDIR=\""$(sysconfdir)"\" \
-        -DPSPELL_PATH=\""$(PSPELL_PATH)"\"
+	-DSYSCONFDIR=\""$(sysconfdir)"\"
 
 YFLAGS = -d
 
