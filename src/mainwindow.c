@@ -1659,7 +1659,7 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		gtk_container_add(GTK_CONTAINER(folderwin),
 				  GTK_WIDGET_PTR(mainwin->folderview));
 
-		menu_set_sensitive(ifactory, "/View/Message view", FALSE);
+		menu_set_sensitive(ifactory, "/View/Message view", TRUE);
 		menu_set_sensitive(ifactory, "/View/Folder tree", TRUE);
 		
 		mainwin->win.sep_folder.folderwin = folderwin;
@@ -1687,7 +1687,7 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 				  GTK_WIDGET_PTR(mainwin->messageview));
 	
 		menu_set_sensitive(ifactory, "/View/Message view", TRUE);
-		menu_set_sensitive(ifactory, "/View/Folder tree", FALSE);
+		menu_set_sensitive(ifactory, "/View/Folder tree", TRUE);
 
 		mainwin->win.sep_message.messagewin = messagewin;
 		mainwin->win.sep_message.hpaned     = hpaned;
