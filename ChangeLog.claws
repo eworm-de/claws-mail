@@ -1,4 +1,10 @@
-2002-11-08 [colin]	0.8.5claws82
+2002-11-07 [colin]	0.8.5claws83
+
+	* src/prefs_filtering.c
+		Fix rule rewriting when moving a leaf folder to a 
+		shorter path
+
+2002-11-07 [colin]	0.8.5claws82
 
 	* src/prefs_filtering.c
 		fix a leak
