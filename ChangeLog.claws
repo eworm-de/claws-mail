@@ -1,3 +1,8 @@
+2003-09-23 [christoph]	0.9.5claws28
+
+	* src/compose.c
+		fix generating of headers
+
 2003-09-23 [paul]	0.9.5claws27
 
 	* po/zh_CN.po
@@ -13,6 +18,7 @@
 		sylpheed's xml format
 		submitted by Bogdan Sumanariu <bsumanariu@one5.ro>
 
+>>>>>>> 1.2533
 2003-09-22 [paul]	0.9.5claws25
 
 	* src/plugins/clamav/clamav_plugin.c

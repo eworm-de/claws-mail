@@ -4062,9 +4062,9 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 			Xstrdup_a(str, str, return -1);
 			g_strstrip(str);
 			if (str[0] != '\0') {
-				g_string_append(headerstr, str);
 				if (write_header)
 					g_string_append(headerstr, seperator);
+				g_string_append(headerstr, str);
 				write_header = TRUE;
 			}
 		}
