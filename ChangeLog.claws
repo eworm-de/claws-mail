@@ -1,3 +1,8 @@
+2004-08-08 [christoph]	0.9.12cvs53
+
+	* src/folderutils.c
+		freeze FolderItem updates while deleting duplicate messages
+
 2004-08-08 [christoph]	0.9.12cvs52
 
 	* configure.ac
