@@ -1262,10 +1262,6 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 		      Children *children)
 {
-#if 0 /* XXX:tm ifdef WIN32 */
-	return NULL;
-#else
-
 	gint chld_in[2], chld_out[2], chld_err[2], chld_status[2];
 	gchar *cmdline[4];
 	gint start, end, is_selection;
@@ -1322,22 +1318,26 @@ ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 		si.hStdInput	= hIn;
 		si.hStdOutput	= hOut;
 		si.hStdError	= hErr;
-		si.dwFlags		= STARTF_USESTDHANDLES ;
-		si.cb			= sizeof(si);
+		si.cb		= sizeof(si);
 
-		if (! CreateProcess(
-			NULL,		/* pointer to name of executable module */
-			cmd,		/* pointer to command line string       */
-			&sa,		/* process security attributes          */
-			&sa,		/* thread security attributes           */
-			TRUE,		/* handle inheritance flag              */
-			0,		/* creation flags                       */
-			NULL,		/* pointer to new environment block     */
-			NULL,		/* pointer to current directory name    */
-			&si,		/* pointer to STARTUPINFO               */
-			&pi		/* pointer to PROCESS_INFORMATION       */
-			))
-		{ perror("CreateProcess"); }
+		si.dwFlags = (action_type & (ACTION_PIPE_IN |
+					     ACTION_OPEN_IN |
+					     ACTION_HIDE_IN))
+		  		? STARTF_USESTDHANDLES : 0;
+
+		if (!CreateProcess(NULL,	/* pointer to name of executable module */
+				   cmd,		/* pointer to command line string       */
+				   &sa,		/* process security attributes          */
+				   &sa,		/* thread security attributes           */
+				   TRUE,	/* handle inheritance flag              */
+				   0,		/* creation flags                       */
+				   NULL,	/* pointer to new environment block     */
+				   NULL,	/* pointer to current directory name    */
+				   &si,		/* pointer to STARTUPINFO               */
+				   &pi)) {	/* pointer to PROCESS_INFORMATION       */
+			perror("CreateProcess");
+			return NULL;
+		}
 
 		pid = pi.dwProcessId;
 		write(chld_status[1], "0\n", 2);
