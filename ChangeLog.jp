@@ -1,3 +1,12 @@
+2002-05-23
+
+	* src/textview.c: textview_show_message(), textview_show_part():
+	  GtkSText *text が正しくないオブジェクトを指していたバグを修正。
+	  textview_add_part(): RFC822 ヘッダを追加するときに GtkSText を
+	  フリーズするようにした。
+	  textview_show_part(): シングルパート MIME メッセージをテキストと
+	  して表示できないバグを修正。
+
 2002-05-22
 
 	* src/compose.c: compose_redirect_write_to_file():

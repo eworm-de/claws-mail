@@ -297,7 +297,7 @@ void textview_update_message_colors(void)
 void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 			   const gchar *file)
 {
-	GtkSText *text = GTK_STEXT(textview->text);
+	GtkSText *text;
 	FILE *fp;
 	const gchar *charset = NULL;
 	GPtrArray *headers = NULL;
@@ -313,6 +313,8 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 		charset = mimeinfo->charset;
 	textview_set_font(textview, charset);
 	textview_clear(textview);
+
+	text = GTK_STEXT(textview->text);
 
 	gtk_stext_freeze(text);
 
@@ -333,12 +335,13 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 
 void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 {
-	GtkSText *text = GTK_STEXT(textview->text);
+	GtkSText *text;
 	gchar buf[BUFFSIZE];
 	const gchar *boundary = NULL;
 	gint boundary_len = 0;
 	const gchar *charset = NULL;
 	GPtrArray *headers = NULL;
+	gboolean is_rfc822_part = FALSE;
 
 	g_return_if_fail(mimeinfo != NULL);
 	g_return_if_fail(fp != NULL);
@@ -398,6 +401,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		}
 		headers = textview_scan_header(textview, fp);
 		mimeinfo = mimeinfo->sub;
+		is_rfc822_part = TRUE;
 	}
 
 	if (prefs_common.force_charset)
@@ -406,8 +410,10 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		charset = mimeinfo->charset;
 	textview_set_font(textview, charset);
 
-	textview_clear(textview);
+	text = GTK_STEXT(textview->text);
+
 	gtk_stext_freeze(text);
+	textview_clear(textview);
 
 	if (headers) {
 		textview_show_header(textview, headers);
@@ -417,7 +423,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
 	}
 
-	if (mimeinfo->mime_type == MIME_MULTIPART || mimeinfo->main)
+	if (mimeinfo->mime_type == MIME_MULTIPART || is_rfc822_part)
 		textview_add_parts(textview, mimeinfo, fp);
 	else
 		textview_write_body(textview, mimeinfo, fp, charset);
@@ -461,9 +467,11 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	if (mimeinfo->mime_type == MIME_MESSAGE_RFC822) {
 		headers = textview_scan_header(textview, fp);
 		if (headers) {
+			gtk_stext_freeze(text);
 			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
 			textview_show_header(textview, headers);
 			procheader_header_array_destroy(headers);
+			gtk_stext_thaw(text);
 		}
 		return;
 	}
