@@ -374,9 +374,9 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 	gchar *mimetmpdir;
 	struct stat statbuf;
 
-	if (mimeinfo->encoding_type != ENC_UNKNOWN ||
-	    mimeinfo->encoding_type != ENC_BINARY ||
-	    mimeinfo->encoding_type != ENC_7BIT ||
+	if (mimeinfo->encoding_type != ENC_UNKNOWN &&
+	    mimeinfo->encoding_type != ENC_BINARY &&
+	    mimeinfo->encoding_type != ENC_7BIT &&
 	    mimeinfo->encoding_type != ENC_8BIT)
 		if(!procmime_decode_content(mimeinfo))
 			return FALSE;
@@ -388,9 +388,15 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 		return FALSE;
 	}
 
-	if ((infp = fopen(mimeinfo->data.filename, "rb")) == NULL) {
-		g_warning("Can't open file %s\n", mimeinfo->data.filename);
-		return FALSE;
+	if (mimeinfo->content == MIMECONTENT_FILE) {
+		if ((infp = fopen(mimeinfo->data.filename, "rb")) == NULL) {
+			g_warning("Can't open file %s\n", mimeinfo->data.filename);
+			return FALSE;
+		}
+	} else if (mimeinfo->content == MIMECONTENT_MEM) {
+		infp = str_open_as_stream(mimeinfo->data.mem);
+		if (infp == NULL)
+			return FALSE;
 	}
 
 	if (encoding == ENC_BASE64) {
@@ -427,10 +433,17 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 	fclose(outfp);
 	fclose(infp);
 
+	if (mimeinfo->content == MIMECONTENT_FILE) {
+		if (mimeinfo->tmp && (mimeinfo->data.filename != NULL))
+			unlink(mimeinfo->data.filename);
+		g_free(mimeinfo->data.filename);
+	} else if (mimeinfo->content == MIMECONTENT_MEM) {
+		if (mimeinfo->tmp && (mimeinfo->data.mem != NULL))
+			g_free(mimeinfo->data.mem);
+	}
+
 	stat(tmpfilename, &statbuf);
-	if (mimeinfo->tmp && (mimeinfo->data.filename != NULL))
-		unlink(mimeinfo->data.filename);
-	g_free(mimeinfo->data.filename);
+	mimeinfo->content = MIMECONTENT_FILE;
 	mimeinfo->data.filename = tmpfilename;
 	mimeinfo->tmp = TRUE;
 	mimeinfo->offset = 0;

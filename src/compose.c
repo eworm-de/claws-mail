@@ -3421,6 +3421,8 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 	mimetext->subtype = g_strdup("plain");
 	g_hash_table_insert(mimetext->typeparameters, g_strdup("charset"),
 			    g_strdup(out_codeset));
+	if (encoding != ENC_UNKNOWN)
+		procmime_encode_content(mimetext, encoding);
 
 	/* append attachment parts */
 	if (compose_use_attach(compose)) {
