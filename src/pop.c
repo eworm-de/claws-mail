@@ -191,6 +191,10 @@ gint pop3_getrange_stat_recv(SockInfo *sock, gpointer data)
 
 gint pop3_getrange_last_send(SockInfo *sock, gpointer data)
 {
+	Pop3State *state = (Pop3State *)data;
+
+	inc_progress_update(state, POP3_GETRANGE_LAST_SEND);
+
 	pop3_gen_send(sock, "LAST");
 
 	return POP3_GETRANGE_LAST_RECV;
@@ -222,6 +226,10 @@ gint pop3_getrange_last_recv(SockInfo *sock, gpointer data)
 
 gint pop3_getrange_uidl_send(SockInfo *sock, gpointer data)
 {
+	Pop3State *state = (Pop3State *)data;
+
+	inc_progress_update(state, POP3_GETRANGE_UIDL_SEND);
+
 	pop3_gen_send(sock, "UIDL");
 
 	return POP3_GETRANGE_UIDL_RECV;
@@ -268,6 +276,10 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 
 gint pop3_getsize_list_send(SockInfo *sock, gpointer data)
 {
+	Pop3State *state = (Pop3State *)data;
+
+	inc_progress_update(state, POP3_GETSIZE_LIST_SEND);
+
 	pop3_gen_send(sock, "LIST");
 
 	return POP3_GETSIZE_LIST_RECV;

@@ -23,6 +23,7 @@
 
 2001-05-03 [alfons]
 
+	* completed sync of sylpheed cvs2
 	* src/gtkstext.c: updated row up / down cursor navigation
 	* src/textview.c: re-edited, prepared for fixing the email address
 		scanner.

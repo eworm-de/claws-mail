@@ -4,6 +4,8 @@
 	  src/pop.c
 	  src/recv.c: removed non-blocking socket mode support since it
 	  does nothing.
+	* src/pop.c
+	  src/inc.c: modified the messages of incorporation dialog.
 
 2001-05-02
 

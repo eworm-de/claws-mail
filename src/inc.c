@@ -708,16 +708,27 @@ void inc_progress_update(Pop3State *state, Pop3Phase phase)
 	case POP3_GETAUTH_PASS_RECV:
 	case POP3_GETAUTH_APOP_SEND:
 	case POP3_GETAUTH_APOP_RECV:
-		progress_dialog_set_label(dialog, _("Authorizing"));
+		progress_dialog_set_label(dialog, _("Authorizing..."));		
 		break;
 	case POP3_GETRANGE_STAT_SEND:
 	case POP3_GETRANGE_STAT_RECV:
+		progress_dialog_set_label
+			(dialog, _("Getting the number of new messages (STAT)..."));
+		break;
 	case POP3_GETRANGE_LAST_SEND:
 	case POP3_GETRANGE_LAST_RECV:
+		progress_dialog_set_label
+			(dialog, _("Getting the number of new messages (LAST)..."));
+		break;
 	case POP3_GETRANGE_UIDL_SEND:
 	case POP3_GETRANGE_UIDL_RECV:
-		progress_dialog_set_label(dialog,
-					  _("Getting number of new messages"));
+		progress_dialog_set_label
+			(dialog, _("Getting the number of new messages (UIDL)..."));
+		break;
+	case POP3_GETSIZE_LIST_SEND:
+	case POP3_GETSIZE_LIST_RECV:
+		progress_dialog_set_label
+			(dialog, _("Getting the size of messages (LIST)..."));
 		break;
 	case POP3_RETR_SEND:
 	case POP3_RETR_RECV:

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed\n"
-"POT-Creation-Date: 2001-05-01 18:07+0900\n"
+"POT-Creation-Date: 2001-05-03 13:29+0900\n"
 "PO-Revision-Date: 1999-10-12\n"
 "Last-Translator: Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -1323,44 +1323,56 @@ msgstr "POP3サーバ: %s:%d に接続できません\n"
 msgid "Can't connect to POP3 server: %s:%d"
 msgstr "POP3サーバ: %s:%d に接続できません"
 
-#: src/inc.c:683 src/inc.c:722
+#: src/inc.c:683 src/inc.c:733
 #, c-format
 msgid "Retrieving message (%d / %d) (%d / %d bytes)"
 msgstr "メッセージを受信中 (%d / %d) (%d / %d bytes)"
 
 #: src/inc.c:708
-msgid "Authorizing"
-msgstr "認証中"
+msgid "Authorizing..."
+msgstr "認証中..."
 
-#: src/inc.c:717
-msgid "Getting number of new messages"
-msgstr "新着メッセージの数を取得中"
+#: src/inc.c:713
+msgid "Getting the number of new messages (STAT)..."
+msgstr "新着メッセージの数を取得中 (STAT)..."
 
-#: src/inc.c:733
+#: src/inc.c:718
+msgid "Getting the number of new messages (LAST)..."
+msgstr "新着メッセージの数を取得中 (LAST)..."
+
+#: src/inc.c:723
+msgid "Getting the number of new messages (UIDL)..."
+msgstr "新着メッセージの数を取得中 (UIDL)..."
+
+#: src/inc.c:728
+msgid "Getting the size of messages (LIST)..."
+msgstr "メッセージのサイズを取得中 (LIST)..."
+
+#: src/inc.c:744
 msgid "Deleting message"
 msgstr "メッセージを削除中"
 
-#: src/inc.c:737
+#: src/inc.c:748
 msgid "Quitting"
 msgstr "切断中"
 
-#: src/inc.c:765
+#: src/inc.c:776
 msgid "a message won't be received\n"
 msgstr "メッセージは受信されません\n"
 
-#: src/inc.c:792
+#: src/inc.c:803
 msgid "Error occurred while processing mail."
 msgstr "メールの処理中にエラーが発生しました。"
 
-#: src/inc.c:795
+#: src/inc.c:806
 msgid "No disk space left."
 msgstr "ディスクの空き容量がありません。"
 
-#: src/inc.c:846
+#: src/inc.c:857
 msgid "no messages in local mailbox.\n"
 msgstr "ローカルのメールボックスにはメッセージがありません。\n"
 
-#: src/inc.c:857
+#: src/inc.c:868
 #, c-format
 msgid "Getting new messages from %s into %s...\n"
 msgstr "新しいメッセージを %s から %s に取り込んでいます...\n"
@@ -2342,7 +2354,7 @@ msgstr "必要なAPOPタイムスタンプが応答メッセージにありません\n"
 msgid "Timestamp syntax error in greeting\n"
 msgstr "応答メッセージのタイムスタンプの文法エラー\n"
 
-#: src/pop.c:171 src/pop.c:208
+#: src/pop.c:171 src/pop.c:212
 msgid "POP3 protocol error\n"
 msgstr "POP3 プロトコルエラー\n"
 
@@ -3302,11 +3314,11 @@ msgstr "状態"
 msgid "Creating progress dialog...\n"
 msgstr "進行状況ダイアログを作成中...\n"
 
-#: src/recv.c:110
+#: src/recv.c:106
 msgid "error occurred while retrieving data.\n"
 msgstr "データの取得中にエラーが発生しました。\n"
 
-#: src/recv.c:135 src/recv.c:180 src/recv.c:196
+#: src/recv.c:130 src/recv.c:167 src/recv.c:182
 msgid "Can't write to file.\n"
 msgstr "ファイルに書き込めません。\n"
 
