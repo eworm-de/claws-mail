@@ -1,3 +1,8 @@
+2003-01-18 [christoph]	0.8.8claws113
+
+	* src/mainwindow.c
+		reorder Configuration menu
+
 2003-01-18 [christoph]	0.8.8claws112
 
 	* src/compose.c
