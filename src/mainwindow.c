@@ -2556,7 +2556,7 @@ static void add_mbox_cb(MainWindow *mainwin, guint action,
 static void update_folderview_cb(MainWindow *mainwin, guint action,
 				 GtkWidget *widget)
 {
-	summary_show(mainwin->summaryview, NULL, FALSE);
+	summary_show(mainwin->summaryview, NULL);
 	folderview_rescan_all();
 }
 
@@ -3080,7 +3080,7 @@ static void update_summary_cb(MainWindow *mainwin, guint action,
 	if (!fitem) return;
 
 	folder_item_scan(fitem);
-	summary_show(mainwin->summaryview, fitem, TRUE);
+	summary_show(mainwin->summaryview, fitem);
 }
 
 static void prev_cb(MainWindow *mainwin, guint action, GtkWidget *widget)

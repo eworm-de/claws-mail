@@ -1,3 +1,12 @@
+2002-07-25 [christoph]	0.8.0claws10
+
+	* src/folderview.c
+	* src/mainwindow.c
+	* src/prefs_folder_item.c
+	* src/summaryview.[ch]
+		remove no longer required parameter update_cache from
+		summary_show
+
 2002-07-25 [paul]	0.8.0claws9
 
 	* sync with 0.8.1

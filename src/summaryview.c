@@ -672,8 +672,7 @@ GtkCTreeNode * summary_find_prev_important_score(SummaryView *summaryview,
 		return best_node;
 }
 
-gboolean summary_show(SummaryView *summaryview, FolderItem *item,
-		      gboolean update_cache)
+gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCTreeNode *node;
@@ -682,7 +681,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	gboolean is_refresh;
 	guint selected_msgnum = 0;
 	guint displayed_msgnum = 0;
-	GtkCTreeNode *selected_node = summaryview->folderview->selected;
 	GSList *cur;
 
 	if (summary_is_locked(summaryview)) return FALSE;
@@ -693,8 +691,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	STATUSBAR_POP(summaryview->mainwin);
 
 	is_refresh = (!prefs_common.open_inbox_on_inc &&
-		      item == summaryview->folder_item &&
-		      update_cache == FALSE) ? TRUE : FALSE;
+		      item == summaryview->folder_item) ? TRUE : FALSE;
 	if (is_refresh) {
 		selected_msgnum = summary_get_msgnum(summaryview,
 						     summaryview->selected);
@@ -724,8 +721,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
    		folder_update_op_count();
 	}
 	
-	summaryview->folderview->opened = selected_node;
-
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
 	summary_clear_list(summaryview);
@@ -3672,7 +3667,7 @@ void summary_filter(SummaryView *summaryview)
 	 * we want the lock to be context aware...  
 	 */
 	if (global_processing) {
-		summary_show(summaryview, summaryview->folder_item, TRUE);		
+		summary_show(summaryview, summaryview->folder_item);
 	}		
 }
 
@@ -4252,7 +4247,7 @@ void summary_set_column_order(SummaryView *summaryview)
 	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
 	gtk_widget_show(ctree);
 
-	summary_show(summaryview, item, FALSE);
+	summary_show(summaryview, item);
 
 	summary_select_by_msgnum(summaryview, selected_msgnum);
 	summaryview->displayed = summary_find_msg_by_msgnum(summaryview, displayed_msgnum);
@@ -4965,7 +4960,7 @@ void summary_toggle_show_read_messages(SummaryView *summaryview)
  		summaryview->folder_item->hide_read_msgs = 0;
  	else
  		summaryview->folder_item->hide_read_msgs = 1;
- 	summary_show(summaryview, summaryview->folder_item, FALSE);
+ 	summary_show(summaryview, summaryview->folder_item);
 }
  
 static void summary_set_hide_read_msgs_menu (SummaryView *summaryview,

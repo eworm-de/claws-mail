@@ -146,8 +146,7 @@ SummaryView	*summary_create(void);
 
 void summary_init		  (SummaryView		*summaryview);
 gboolean summary_show		  (SummaryView		*summaryview,
-				   FolderItem		*fitem,
-				   gboolean		 update_cache);
+				   FolderItem		*fitem);
 void summary_clear_list		  (SummaryView		*summaryview);
 void summary_clear_all		  (SummaryView		*summaryview);
 

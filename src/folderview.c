@@ -1203,8 +1203,7 @@ void folderview_update_item(FolderItem *item, gboolean update_summary)
 		if (node) {
 			folderview_update_node(folderview, node);
 			if (update_summary && folderview->opened == node)
-				summary_show(folderview->summaryview,
-					     item, FALSE);
+				summary_show(folderview->summaryview, item);
 		}
 	}
 }
@@ -1615,7 +1614,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		olditem = gtk_ctree_node_get_row_data(ctree, folderview->opened);
 		folder_item_write_cache(olditem);
 	}
-	
+
 	/* CLAWS: set compose button type: news folder items 
 	 * always have a news folder as parent */
 	if (item->folder) 
@@ -1663,7 +1662,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	}
 		
 	/* Show messages */
-	opened = summary_show(folderview->summaryview, item, FALSE);
+	opened = summary_show(folderview->summaryview, item);
 
 	folder_clean_cache_memory();
 
@@ -1765,7 +1764,7 @@ static void folderview_update_tree_cb(FolderView *folderview, guint action,
 
 	if (!folderview->selected) return;
 
-	summary_show(folderview->summaryview, NULL, FALSE);
+	summary_show(folderview->summaryview, NULL);
 
 	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
 	g_return_if_fail(item != NULL);
@@ -2030,7 +2029,7 @@ static void folderview_rename_mbox_folder_cb(FolderView *folderview,
 	if (folderview->opened == folderview->selected) {
 		if (!GTK_CTREE_ROW(folderview->opened)->children)
 			gtk_ctree_expand(ctree, folderview->opened);
-		summary_show(folderview->summaryview, item, FALSE);
+		summary_show(folderview->summaryview, item);
 	}
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
@@ -2073,8 +2072,7 @@ static void folderview_delete_folder_cb(FolderView *folderview, guint action,
 		alertpanel_error(_("Can't remove the folder `%s'."), name);
 		if (folderview->opened == folderview->selected)
 			summary_show(folderview->summaryview,
-				     folderview->summaryview->folder_item,
-				     FALSE);
+				     folderview->summaryview->folder_item);
 		g_free(old_id);
 		return;
 	}
