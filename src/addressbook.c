@@ -3484,7 +3484,7 @@ static gint addressbook_treenode_compare_func(
 	if( cell2 ) name2 = cell2->u.text;
 	if( ! name1 ) return ( name2 != NULL );
 	if( ! name2 ) return -1;
-	return g_strcasecmp( name1, name2 );
+	return g_utf8_collate( name1, name2 );
 }
 
 /*
@@ -3505,7 +3505,7 @@ static gint addressbook_list_compare_func(
 		/* Order by name */
 		if( ! name1 ) return ( name2 != NULL );
 		if( ! name2 ) return -1;
-		return g_strcasecmp( name1, name2 );
+		return g_utf8_collate( name1, name2 );
 	}
 	else {
 		/* Order groups before person */

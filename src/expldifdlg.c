@@ -105,7 +105,7 @@ static void export_ldif_message( void ) {
 	gchar *sMsg = NULL;
 	gint pageNum;
 
-	pageNum = gtk_notebook_current_page( GTK_NOTEBOOK(expldif_dlg.notebook) );
+	pageNum = gtk_notebook_get_current_page( GTK_NOTEBOOK(expldif_dlg.notebook) );
 	if( pageNum == PAGE_FILE_INFO ) {
 		sMsg = _( "Please specify output directory and LDIF filename to create." );
 	}
@@ -126,7 +126,7 @@ static void export_ldif_message( void ) {
 static void export_ldif_cancel( GtkWidget *widget, gpointer data ) {
 	gint pageNum;
 
-	pageNum = gtk_notebook_current_page( GTK_NOTEBOOK(expldif_dlg.notebook) );
+	pageNum = gtk_notebook_get_current_page( GTK_NOTEBOOK(expldif_dlg.notebook) );
 	if( pageNum != PAGE_FINISH ) {
 		expldif_dlg.cancelled = TRUE;
 	}
@@ -284,7 +284,7 @@ static void exp_ldif_finish_show( void ) {
 static void export_ldif_prev( GtkWidget *widget ) {
 	gint pageNum;
 
-	pageNum = gtk_notebook_current_page( GTK_NOTEBOOK(expldif_dlg.notebook) );
+	pageNum = gtk_notebook_get_current_page( GTK_NOTEBOOK(expldif_dlg.notebook) );
 	if( pageNum == PAGE_DN ) {
 		/* Goto file page stuff */
 		gtk_notebook_set_page(
@@ -307,7 +307,7 @@ static void export_ldif_prev( GtkWidget *widget ) {
 static void export_ldif_next( GtkWidget *widget ) {
 	gint pageNum;
 
-	pageNum = gtk_notebook_current_page( GTK_NOTEBOOK(expldif_dlg.notebook) );
+	pageNum = gtk_notebook_get_current_page( GTK_NOTEBOOK(expldif_dlg.notebook) );
 	if( pageNum == PAGE_FILE_INFO ) {
 		/* Goto distinguished name page */
 		if( exp_ldif_move_file() ) {

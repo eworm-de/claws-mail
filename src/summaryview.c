@@ -778,7 +778,7 @@ GtkCTreeNode * summary_find_prev_important_score(SummaryView *summaryview,
 
 #define CURRENTLY_DISPLAYED(m) \
 ( (m->msgnum == displayed_msgnum) \
-  && (!g_strcasecmp(m->folder->name,item->name)) )
+  && (!g_ascii_strcasecmp(m->folder->name,item->name)) )
 
 gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 {
@@ -2911,7 +2911,7 @@ static gboolean check_permission(SummaryView *summaryview, MsgInfo * msginfo)
 					g_strdup_printf("%s",
 							account->address);
 			
-			if (g_strcasecmp(from_name, msginfo->from) == 0) {
+			if (g_utf8_collate(from_name, msginfo->from) == 0) {
 				g_free(from_name);
 				found = TRUE;
 				break;
@@ -4844,7 +4844,7 @@ static gint func_name(GtkCList *clist,					 \
 	if (!msginfo2->var_name)					 \
 		return -1;						 \
 									 \
-	return g_strcasecmp(msginfo1->var_name, msginfo2->var_name);	 \
+	return g_utf8_collate(msginfo1->var_name, msginfo2->var_name);	 \
 }
 
 CMP_FUNC_DEF(summary_cmp_by_to, to);
@@ -4886,7 +4886,7 @@ static gint summary_cmp_by_from(GtkCList *clist, gconstpointer ptr1,
 	if (!str2)
  		return -1;
  
-	return g_strcasecmp(str1, str2);
+	return g_utf8_collate(str1, str2);
 }
  
 static gint summary_cmp_by_simplified_subject

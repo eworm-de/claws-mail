@@ -937,11 +937,11 @@ gchar *conv_iconv_strdup(const gchar *inbuf,
 		dest_code = (char *)idest_code;
 
 	/* don't convert if current codeset is US-ASCII */
-	if (!g_strcasecmp(dest_code, CS_US_ASCII))
+	if (!g_ascii_strcasecmp(dest_code, CS_US_ASCII))
 		return g_strdup(inbuf);
 
 	/* don't convert if src and dest codeset are identical */
-	if (!g_strcasecmp(src_code, dest_code))
+	if (!g_ascii_strcasecmp(src_code, dest_code))
 		return g_strdup(inbuf);
 
 	/* FIXME: unchecked inbuf? Can't see at this level. */
@@ -1291,14 +1291,14 @@ CharSet conv_get_current_charset(void)
 
 		/* "ja_JP.EUC" matches with "ja_JP.eucJP", "ja_JP.EUC" and
 		   "ja_JP". "ja_JP" matches with "ja_JP.xxxx" and "ja" */
-		if (!g_strncasecmp(cur_locale, locale_table[i].locale,
+		if (!g_ascii_strncasecmp(cur_locale, locale_table[i].locale,
 				 strlen(locale_table[i].locale))) {
 			cur_charset = locale_table[i].charset;
 			return cur_charset;
 		} else if ((p = strchr(locale_table[i].locale, '_')) &&
 			 !strchr(p + 1, '.')) {
 			if (strlen(cur_locale) == 2 &&
-			    !g_strncasecmp(cur_locale, locale_table[i].locale, 2)) {
+			    !g_ascii_strncasecmp(cur_locale, locale_table[i].locale, 2)) {
 				cur_charset = locale_table[i].charset;
 				return cur_charset;
 			}
@@ -1343,14 +1343,14 @@ CharSet conv_get_outgoing_charset(void)
 	for (i = 0; i < sizeof(locale_table) / sizeof(locale_table[0]); i++) {
 		const gchar *p;
 
-		if (!g_strncasecmp(cur_locale, locale_table[i].locale,
+		if (!g_ascii_strncasecmp(cur_locale, locale_table[i].locale,
 				 strlen(locale_table[i].locale))) {
 			out_charset = locale_table[i].out_charset;
 			break;
 		} else if ((p = strchr(locale_table[i].locale, '_')) &&
 			 !strchr(p + 1, '.')) {
 			if (strlen(cur_locale) == 2 &&
-			    !g_strncasecmp(cur_locale, locale_table[i].locale, 2)) {
+			    !g_ascii_strncasecmp(cur_locale, locale_table[i].locale, 2)) {
 				out_charset = locale_table[i].out_charset;
 				break;
 			}

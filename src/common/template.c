@@ -61,27 +61,27 @@ static Template *template_load(gchar *filename)
 
 		if (buf[0] == '\n')
 			break;
-		else if (!g_strncasecmp(buf, "Name:", 5)) {
+		else if (!g_ascii_strncasecmp(buf, "Name:", 5)) {
 			tmp = conv_codeset_strdup(buf + 5,
 						  src_codeset,
 						  dest_codeset);
 			tmpl->name = tmp ? g_strstrip(tmp) : g_strdup(buf + 5);
-		} else if (!g_strncasecmp(buf, "Subject:", 8)) {
+		} else if (!g_ascii_strncasecmp(buf, "Subject:", 8)) {
 			tmp = conv_codeset_strdup(buf + 8,
 						  src_codeset,
 						  dest_codeset);
 			tmpl->subject = tmp ? g_strstrip(tmp) : g_strdup(buf + 8);
-		} else if (!g_strncasecmp(buf, "To:", 3)) {
+		} else if (!g_ascii_strncasecmp(buf, "To:", 3)) {
 			tmp = conv_codeset_strdup(buf + 3,
 						  src_codeset,
 						  dest_codeset);
 			tmpl->to = tmp ? g_strstrip(tmp) : g_strdup(buf + 3);
-		} else if (!g_strncasecmp(buf, "Cc:", 3)) {
+		} else if (!g_ascii_strncasecmp(buf, "Cc:", 3)) {
 			tmp = conv_codeset_strdup(buf + 3,
 						  src_codeset,
 						  dest_codeset);
 			tmpl->cc = tmp ? g_strstrip(tmp) : g_strdup(buf + 3);
-		} else if (!g_strncasecmp(buf, "Bcc:", 4)) {
+		} else if (!g_ascii_strncasecmp(buf, "Bcc:", 4)) {
 			tmp = conv_codeset_strdup(buf + 4,
 						  src_codeset,
 						  dest_codeset);

@@ -571,7 +571,7 @@ AddressBookFile *addrgather_dlg_execute(
 			gtk_toggle_button_set_active(
 				GTK_TOGGLE_BUTTON(addrgather_dlg.checkHeader[i]),
 				FALSE );
-			if( g_strcasecmp( _harv_headerNames_[i], HEADER_FROM ) == 0 ) {
+			if( g_utf8_collate( _harv_headerNames_[i], HEADER_FROM ) == 0 ) {
 				gtk_toggle_button_set_active(
 					GTK_TOGGLE_BUTTON(addrgather_dlg.checkHeader[i]),
 					TRUE );

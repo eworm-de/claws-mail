@@ -416,7 +416,7 @@ gboolean xmlprops_get_property_b( XmlProperty *props, const gchar *name ) {
 	g_return_val_if_fail( props != NULL, value );
 	val = g_hash_table_lookup( props->propertyTable, name );
 	if( val ) {
-		value = ( g_strcasecmp( val, "y" ) == 0 );
+		value = ( g_ascii_strcasecmp( val, "y" ) == 0 );
 	}
 	return value;
 }

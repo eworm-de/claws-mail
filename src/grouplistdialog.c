@@ -424,7 +424,7 @@ static void grouplist_dialog_set_list(const gchar *pattern, gboolean refresh)
 		if (fnmatch(pattern, ginfo->name, 0) == 0) {
 			node = grouplist_create_branch(ginfo, pattern);
 			if (g_slist_find_custom(subscribed, ginfo->name,
-						(GCompareFunc)g_strcasecmp)
+						(GCompareFunc)g_ascii_strcasecmp)
 						!= NULL) {
 				gtk_ctree_select(GTK_CTREE(ctree), node);
 			}
@@ -551,7 +551,7 @@ static gboolean button_press_cb(GtkCTree *ctree, GdkEventButton *button,
 	if (!ginfo) return TRUE;
 
 	list = g_slist_find_custom(subscribed, ginfo->name,
-				   (GCompareFunc)g_strcasecmp);
+				   (GCompareFunc)g_ascii_strcasecmp);
 	if (list) {
 		g_free(list->data);
 		subscribed = g_slist_remove(subscribed, list->data);

@@ -201,7 +201,7 @@ static void ertf_get_parenthesis(ERTFParser *parser, gchar *buf, gint len)
 	g_return_if_fail(*parser->bufp == '<');
 
 	/* ignore params */
-	if (!g_strncasecmp(parser->bufp, "<param>", 4)) {
+	if (!g_ascii_strncasecmp(parser->bufp, "<param>", 4)) {
 		parser->bufp += 7;
 		while ((p = strstr(parser->bufp, "</param>")) == NULL)
 			if (ertf_read_line(parser) == ERTF_EOF) return;

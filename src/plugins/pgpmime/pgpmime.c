@@ -93,10 +93,10 @@ static gboolean pgpmime_is_signed(MimeInfo *mimeinfo)
 	if (parent == NULL)
 		return FALSE;
 	if ((parent->type != MIMETYPE_MULTIPART) ||
-	    g_strcasecmp(parent->subtype, "signed"))
+	    g_ascii_strcasecmp(parent->subtype, "signed"))
 		return FALSE;
 	protocol = procmime_mimeinfo_get_parameter(parent, "protocol");
-	if ((protocol == NULL) || g_strcasecmp(protocol, "application/pgp-signature"))
+	if ((protocol == NULL) || g_ascii_strcasecmp(protocol, "application/pgp-signature"))
 		return FALSE;
 
 	/* check if mimeinfo is the first child */
@@ -109,7 +109,7 @@ static gboolean pgpmime_is_signed(MimeInfo *mimeinfo)
 	if (signature == NULL)
 		return FALSE;
 	if ((signature->type != MIMETYPE_APPLICATION) ||
-	    g_strcasecmp(signature->subtype, "pgp-signature"))
+	    g_ascii_strcasecmp(signature->subtype, "pgp-signature"))
 		return FALSE;
 
 	if (data == NULL) {
@@ -239,10 +239,10 @@ static gboolean pgpmime_is_encrypted(MimeInfo *mimeinfo)
 	
 	if (mimeinfo->type != MIMETYPE_MULTIPART)
 		return FALSE;
-	if (g_strcasecmp(mimeinfo->subtype, "encrypted"))
+	if (g_ascii_strcasecmp(mimeinfo->subtype, "encrypted"))
 		return FALSE;
 	tmpstr = procmime_mimeinfo_get_parameter(mimeinfo, "protocol");
-	if ((tmpstr == NULL) || g_strcasecmp(tmpstr, "application/pgp-encrypted"))
+	if ((tmpstr == NULL) || g_ascii_strcasecmp(tmpstr, "application/pgp-encrypted"))
 		return FALSE;
 	if (g_node_n_children(mimeinfo->node) != 2)
 		return FALSE;
@@ -250,13 +250,13 @@ static gboolean pgpmime_is_encrypted(MimeInfo *mimeinfo)
 	tmpinfo = (MimeInfo *) g_node_nth_child(mimeinfo->node, 0)->data;
 	if (tmpinfo->type != MIMETYPE_APPLICATION)
 		return FALSE;
-	if (g_strcasecmp(tmpinfo->subtype, "pgp-encrypted"))
+	if (g_ascii_strcasecmp(tmpinfo->subtype, "pgp-encrypted"))
 		return FALSE;
 	
 	tmpinfo = (MimeInfo *) g_node_nth_child(mimeinfo->node, 1)->data;
 	if (tmpinfo->type != MIMETYPE_APPLICATION)
 		return FALSE;
-	if (g_strcasecmp(tmpinfo->subtype, "octet-stream"))
+	if (g_ascii_strcasecmp(tmpinfo->subtype, "octet-stream"))
 		return FALSE;
 	
 	return TRUE;

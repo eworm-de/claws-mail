@@ -1,3 +1,53 @@
+2004-10-26 [paul]	0.9.12cvs132.3
+
+	* src/account.c
+	* src/addressbook.c
+	* src/addrgather.c
+	* src/addrharvest.c
+	* src/codeconv.c
+	* src/compose.c
+	* src/customheader.c
+	* src/editaddress.c
+	* src/editgroup.c
+	* src/enriched.c
+	* src/expldifdlg.c
+	* src/exporthtml.c
+	* src/exportldif.c
+	* src/folder.c
+	* src/foldersel.c
+	* src/folderview.c
+	* src/grouplistdialog.c
+	* src/html.c
+	* src/imap.c
+	* src/jpilot.c
+	* src/ldapserver.c
+	* src/ldif.c
+	* src/mimeview.c
+	* src/news.c
+	* src/news_gtk.c
+	* src/pop.c
+	* src/prefs_display_header.c
+	* src/prefs_gtk.c
+	* src/prefs_msg_colors.c
+	* src/prefs_toolbar.c
+	* src/procheader.c
+	* src/procmime.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/toolbar.c
+	* src/vcard.c
+	* src/common/mgutils.c
+	* src/common/nntp.c
+	* src/common/smtp.c
+	* src/common/template.c
+	* src/common/utils.c
+	* src/common/xmlprops.c
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/select-keys.c
+	* src/plugins/pgpmime/sgpgme.c
+		replace deprecated g_strcasecmp(), g_strncasecmp(),
+		g_string_sprintfa(), gtk_notebook_current_page()
+
 2004-10-26 [colin]	0.9.12cvs132.2
 
 	* src/prefs_folder_item.c

@@ -625,7 +625,7 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 		struct ContentRenderer * cr;
 
 		cr = cur->data;
-		if (g_strcasecmp(cr->content_type, content_type) == 0) {
+		if (g_ascii_strcasecmp(cr->content_type, content_type) == 0) {
 			renderer = cr;
 			break;
 		}
@@ -654,7 +654,7 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 		dup2(oldout, 1);
 #warning FIXME_GTK2 HTML/RTF not yet utf8
 /* CodeConverter seems to have no effect here */
-	} else if (mimeinfo->type == MIMETYPE_TEXT && !g_strcasecmp(mimeinfo->subtype, "html")) {
+	} else if (mimeinfo->type == MIMETYPE_TEXT && !g_ascii_strcasecmp(mimeinfo->subtype, "html")) {
 		HTMLParser *parser;
 		CodeConverter *conv;
 
@@ -665,7 +665,7 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 		}
 		html_parser_destroy(parser);
 		conv_code_converter_destroy(conv);
-	} else if (mimeinfo->type == MIMETYPE_TEXT && !g_strcasecmp(mimeinfo->subtype, "enriched")) {
+	} else if (mimeinfo->type == MIMETYPE_TEXT && !g_ascii_strcasecmp(mimeinfo->subtype, "enriched")) {
 		ERTFParser *parser;
 		CodeConverter *conv;
 
@@ -800,7 +800,7 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 
 	g_snprintf(f_prefix, sizeof(f_prefix), "%08x.", id++);
 
-	if ((mimeinfo->type == MIMETYPE_TEXT) && !g_strcasecmp(mimeinfo->subtype, "html"))
+	if ((mimeinfo->type == MIMETYPE_TEXT) && !g_ascii_strcasecmp(mimeinfo->subtype, "html"))
 		base = "mimetmp.html";
 	else {
 		const gchar *basetmp;
@@ -872,7 +872,7 @@ static gint procmime_str_equal(gconstpointer gptr1, gconstpointer gptr2)
 	const char *str1 = gptr1;
 	const char *str2 = gptr2;
 
-	return !g_strcasecmp(str1, str2);
+	return !g_utf8_collate(str1, str2);
 }
 
 static GHashTable *procmime_get_mime_type_table(void)
@@ -973,14 +973,14 @@ EncodingType procmime_get_encoding_for_charset(const gchar *charset)
 {
 	if (!charset)
 		return ENC_8BIT;
-	else if (!g_strncasecmp(charset, "ISO-2022-", 9) ||
-		 !g_strcasecmp(charset, "US-ASCII"))
+	else if (!g_ascii_strncasecmp(charset, "ISO-2022-", 9) ||
+		 !g_ascii_strcasecmp(charset, "US-ASCII"))
 		return ENC_7BIT;
-	else if (!g_strcasecmp(charset, "ISO-8859-5") ||
-		 !g_strncasecmp(charset, "KOI8-", 5) ||
-		 !g_strcasecmp(charset, "Windows-1251"))
+	else if (!g_ascii_strcasecmp(charset, "ISO-8859-5") ||
+		 !g_ascii_strncasecmp(charset, "KOI8-", 5) ||
+		 !g_ascii_strcasecmp(charset, "Windows-1251"))
 		return ENC_8BIT;
-	else if (!g_strncasecmp(charset, "ISO-8859-", 9))
+	else if (!g_ascii_strncasecmp(charset, "ISO-8859-", 9))
 		return ENC_QUOTED_PRINTABLE;
 	else
 		return ENC_8BIT;
@@ -1074,7 +1074,7 @@ MimeMediaType procmime_get_media_type(const gchar *str)
 	struct TypeTable *typetablearray;
 
 	for (typetablearray = mime_type_table; typetablearray->str != NULL; typetablearray++)
-		if (g_strncasecmp(str, typetablearray->str, strlen(typetablearray->str)) == 0)
+		if (g_ascii_strncasecmp(str, typetablearray->str, strlen(typetablearray->str)) == 0)
 			return typetablearray->type;
 
 	return MIMETYPE_UNKNOWN;
@@ -1334,9 +1334,9 @@ static void procmime_parse_content_disposition(const gchar *content_disposition,
 		g_strfreev(content_disp_parts);
 		return;
 	}
-	if (!g_strcasecmp(str, "inline")) 
+	if (!g_ascii_strcasecmp(str, "inline")) 
 		mimeinfo->disposition = DISPOSITIONTYPE_INLINE;
-	else if (!g_strcasecmp(str, "attachment"))
+	else if (!g_ascii_strcasecmp(str, "attachment"))
 		mimeinfo->disposition = DISPOSITIONTYPE_ATTACHMENT;
 	else
 		mimeinfo->disposition = DISPOSITIONTYPE_ATTACHMENT;
@@ -1351,7 +1351,7 @@ static void procmime_parse_content_encoding(const gchar *content_encoding, MimeI
 	struct EncodingTable *enc_table;
 	
 	for (enc_table = encoding_table; enc_table->str != NULL; enc_table++) {
-		if (g_strcasecmp(enc_table->str, content_encoding) == 0) {
+		if (g_ascii_strcasecmp(enc_table->str, content_encoding) == 0) {
 			mimeinfo->encoding_type = enc_table->enc_type;
 			return;
 		}
@@ -1415,7 +1415,7 @@ void procmime_parse_mimepart(MimeInfo *parent,
 	/* Call parser for mime type */
 	switch (mimeinfo->type) {
 		case MIMETYPE_MESSAGE:
-			if (g_strcasecmp(mimeinfo->subtype, "rfc822") == 0) {
+			if (g_ascii_strcasecmp(mimeinfo->subtype, "rfc822") == 0) {
 				procmime_parse_message_rfc822(mimeinfo);
 			}
 			break;
@@ -1592,12 +1592,12 @@ gint procmime_write_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
 				break;
 			if (skip && (buf[0] == ' ' || buf[0] == '\t'))
 				continue;
-			if (g_strncasecmp(buf, "Mime-Version:", 13) == 0 ||
-			    g_strncasecmp(buf, "Content-Type:", 13) == 0 ||
-			    g_strncasecmp(buf, "Content-Transfer-Encoding:", 26) == 0 ||
-			    g_strncasecmp(buf, "Content-Description:", 20) == 0 ||
-			    g_strncasecmp(buf, "Content-ID:", 11) == 0 ||
-			    g_strncasecmp(buf, "Content-Disposition:", 20) == 0) {
+			if (g_ascii_strncasecmp(buf, "Mime-Version:", 13) == 0 ||
+			    g_ascii_strncasecmp(buf, "Content-Type:", 13) == 0 ||
+			    g_ascii_strncasecmp(buf, "Content-Transfer-Encoding:", 26) == 0 ||
+			    g_ascii_strncasecmp(buf, "Content-Description:", 20) == 0 ||
+			    g_ascii_strncasecmp(buf, "Content-ID:", 11) == 0 ||
+			    g_ascii_strncasecmp(buf, "Content-Disposition:", 20) == 0) {
 				skip = TRUE;
 				continue;
 			}
@@ -1715,7 +1715,7 @@ gint procmime_write_mimeinfo(MimeInfo *mimeinfo, FILE *fp)
 		/* Call writer for mime type */
 		switch (mimeinfo->type) {
 		case MIMETYPE_MESSAGE:
-			if (g_strcasecmp(mimeinfo->subtype, "rfc822") == 0)
+			if (g_ascii_strcasecmp(mimeinfo->subtype, "rfc822") == 0)
 				return procmime_write_message_rfc822(mimeinfo, fp);
 			break;
 			

@@ -576,19 +576,19 @@ static void ldif_add_value(
 	}
 	g_strstrip( val );
 
-	if( g_strcasecmp( nm, LDIF_TAG_COMMONNAME ) == 0 ) {
+	if( g_utf8_collate( nm, LDIF_TAG_COMMONNAME ) == 0 ) {
 		rec->listCName = g_slist_append( rec->listCName, val );
 	}
-	else if( g_strcasecmp( nm, LDIF_TAG_FIRSTNAME ) == 0 ) {
+	else if( g_utf8_collate( nm, LDIF_TAG_FIRSTNAME ) == 0 ) {
 		rec->listFName = g_slist_append( rec->listFName, val );
 	}
-	else if( g_strcasecmp( nm, LDIF_TAG_LASTNAME ) == 0 ) {
+	else if( g_utf8_collate( nm, LDIF_TAG_LASTNAME ) == 0 ) {
 		rec->listLName = g_slist_append( rec->listLName, val );
 	}
-	else if( g_strcasecmp( nm, LDIF_TAG_NICKNAME ) == 0 ) {
+	else if( g_utf8_collate( nm, LDIF_TAG_NICKNAME ) == 0 ) {
 		rec->listNName = g_slist_append( rec->listNName, val );
 	}
-	else if( g_strcasecmp( nm, LDIF_TAG_EMAIL ) == 0 ) {
+	else if( g_utf8_collate( nm, LDIF_TAG_EMAIL ) == 0 ) {
 		rec->listAddress = g_slist_append( rec->listAddress, val );
 	}
 	else {
@@ -817,27 +817,27 @@ static void ldif_hash_add_list( GHashTable *table, GSList *list ) {
 			gchar *key = g_strdup( tag );
 
 			rec = ldif_create_fieldrec( tag );
-			if( g_strcasecmp( tag, LDIF_TAG_DN ) == 0 ) {
+			if( g_utf8_collate( tag, LDIF_TAG_DN ) == 0 ) {
 				rec->reserved = rec->selected = TRUE;
 				rec->userName = g_strdup( "dn" );
 			}
-			else if( g_strcasecmp( tag, LDIF_TAG_COMMONNAME ) == 0 ) {
+			else if( g_utf8_collate( tag, LDIF_TAG_COMMONNAME ) == 0 ) {
 				rec->reserved = rec->selected = TRUE;
 				rec->userName = g_strdup( _( "Display Name" ) );
 			}
-			else if( g_strcasecmp( tag, LDIF_TAG_FIRSTNAME ) == 0 ) {
+			else if( g_utf8_collate( tag, LDIF_TAG_FIRSTNAME ) == 0 ) {
 				rec->reserved = rec->selected = TRUE;
 				rec->userName = g_strdup( _( "First Name" ) );
 			}
-			else if( g_strcasecmp( tag, LDIF_TAG_LASTNAME ) == 0 ) {
+			else if( g_utf8_collate( tag, LDIF_TAG_LASTNAME ) == 0 ) {
 				rec->reserved = rec->selected = TRUE;
 				rec->userName = g_strdup( _( "Last Name" ) );
 			}
-			else if( g_strcasecmp( tag, LDIF_TAG_NICKNAME ) == 0 ) {
+			else if( g_utf8_collate( tag, LDIF_TAG_NICKNAME ) == 0 ) {
 				rec->reserved = rec->selected = TRUE;
 				rec->userName = g_strdup( _( "Nick Name" ) );
 			}
-			else if( g_strcasecmp( tag, LDIF_TAG_EMAIL ) == 0 ) {
+			else if( g_utf8_collate( tag, LDIF_TAG_EMAIL ) == 0 ) {
 				rec->reserved = rec->selected = TRUE;
 				rec->userName = g_strdup( _( "E-Mail Address" ) );
 			}
@@ -868,7 +868,7 @@ static gint ldif_field_compare( gconstpointer ptr1, gconstpointer ptr2 ) {
 			return -1;
 		}
 	}
-	return g_strcasecmp( rec1->tagName, rec2->tagName );
+	return g_utf8_collate( rec1->tagName, rec2->tagName );
 }
 
 /*
@@ -947,7 +947,7 @@ static void ldif_read_tag_list( LdifFile *ldifFile ) {
 				if( tagName ) {
 					/* Add tag to list */
 					listTags = g_slist_append( listTags, tagName );
-					if( g_strcasecmp(
+					if( g_utf8_collate(
 						tagName, LDIF_TAG_EMAIL ) == 0 )
 					{
 						flagMail = TRUE;

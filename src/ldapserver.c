@@ -444,7 +444,7 @@ static LdapQuery *ldapsvr_locate_query(
 	/* Search backwards for query */
 	while( node ) {
 		LdapQuery *qry = node->data;
-		if( g_strcasecmp( ADDRQUERY_SEARCHVALUE(qry), searchTerm ) == 0 ) {
+		if( g_utf8_collate( ADDRQUERY_SEARCHVALUE(qry), searchTerm ) == 0 ) {
 			if( qry->agedFlag ) continue;
 			if( qry->completed ) {
 				/* Found */

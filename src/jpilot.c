@@ -1298,7 +1298,7 @@ static gboolean jpilot_setup_labels( JPilotFile *pilotFile ) {
 			gint i;
 			for( i = 0; i < JPILOT_NUM_LABELS; i++ ) {
 				gchar *labelName = ai->labels[i];
-				if( g_strcasecmp( labelName, lbl ) == 0 ) {
+				if( g_utf8_collate( labelName, lbl ) == 0 ) {
 					ind = i;
 					break;
 				}
@@ -1738,7 +1738,7 @@ gboolean jpilot_test_custom_label( JPilotFile *pilotFile, const gchar *labelName
 	if( labelName ) {
 		node = pilotFile->customLabels;
 		while( node ) {
-			if( g_strcasecmp( labelName, ( gchar * ) node->data ) == 0 ) {
+			if( g_utf8_collate( labelName, ( gchar * ) node->data ) == 0 ) {
 				retVal = TRUE;
 				break;
 			}

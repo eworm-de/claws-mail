@@ -332,7 +332,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	g_return_if_fail(fp != NULL);
 
 	if ((mimeinfo->type == MIMETYPE_MULTIPART) ||
-	    ((mimeinfo->type == MIMETYPE_MESSAGE) && !g_strcasecmp(mimeinfo->subtype, "rfc822"))) {
+	    ((mimeinfo->type == MIMETYPE_MESSAGE) && !g_ascii_strcasecmp(mimeinfo->subtype, "rfc822"))) {
 		textview_clear(textview);
 		textview_add_parts(textview, mimeinfo);
 		return;
@@ -369,7 +369,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 
 	if (mimeinfo->type == MIMETYPE_MULTIPART) return;
 
-	if ((mimeinfo->type == MIMETYPE_MESSAGE) && !g_strcasecmp(mimeinfo->subtype, "rfc822")) {
+	if ((mimeinfo->type == MIMETYPE_MESSAGE) && !g_ascii_strcasecmp(mimeinfo->subtype, "rfc822")) {
 		FILE *fp;
 
 		fp = fopen(mimeinfo->data.filename, "rb");
@@ -422,7 +422,7 @@ static void recursive_add_parts(TextView *textview, GNode *node)
             (mimeinfo->type != MIMETYPE_MESSAGE))
                 return;
         
-        if (g_strcasecmp(mimeinfo->subtype, "alternative") == 0) {
+        if (g_ascii_strcasecmp(mimeinfo->subtype, "alternative") == 0) {
                 GNode * prefered_body;
                 int prefered_score;
                 
@@ -445,7 +445,7 @@ static void recursive_add_parts(TextView *textview, GNode *node)
                                 score = 2;
                         
                         if (submime->subtype != NULL) {
-                                if (g_strcasecmp(submime->subtype, "plain") == 0)
+                                if (g_ascii_strcasecmp(submime->subtype, "plain") == 0)
                                         score = 3;
                         }
                         
@@ -547,7 +547,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 
 	procmime_decode_content(mimeinfo);
 
-	if (!g_strcasecmp(mimeinfo->subtype, "html")) {
+	if (!g_ascii_strcasecmp(mimeinfo->subtype, "html")) {
 		gchar *filename;
 		
 		filename = procmime_get_tmp_file_name(mimeinfo);
@@ -558,7 +558,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 			unlink(filename);
 		}
 		g_free(filename);
-	} else if (!g_strcasecmp(mimeinfo->subtype, "enriched")) {
+	} else if (!g_ascii_strcasecmp(mimeinfo->subtype, "enriched")) {
 		gchar *filename;
 		
 		filename = procmime_get_tmp_file_name(mimeinfo);
@@ -1778,9 +1778,9 @@ static gboolean uri_security_check(RemoteURI *uri, TextView *textview)
 	gchar *clicked_str;
 	gboolean retval = TRUE;
 
-	if (g_strncasecmp(uri->uri, "http:", 5) &&
-	    g_strncasecmp(uri->uri, "https:", 6) &&
-	    g_strncasecmp(uri->uri, "www.", 4)) 
+	if (g_ascii_strncasecmp(uri->uri, "http:", 5) &&
+	    g_ascii_strncasecmp(uri->uri, "https:", 6) &&
+	    g_ascii_strncasecmp(uri->uri, "www.", 4)) 
 		return retval;
 
 	clicked_str = gtk_editable_get_chars(GTK_EDITABLE(textview->text),
@@ -1790,9 +1790,9 @@ static gboolean uri_security_check(RemoteURI *uri, TextView *textview)
 		return TRUE;
 
 	if (strcmp(clicked_str, uri->uri) &&
-	    (!g_strncasecmp(clicked_str, "http:",  5) ||
-	     !g_strncasecmp(clicked_str, "https:", 6) ||
-	     !g_strncasecmp(clicked_str, "www.",   4))) {
+	    (!g_ascii_strncasecmp(clicked_str, "http:",  5) ||
+	     !g_ascii_strncasecmp(clicked_str, "https:", 6) ||
+	     !g_ascii_strncasecmp(clicked_str, "www.",   4))) {
 		gchar *str;
 		retval = FALSE;
 
@@ -1800,7 +1800,7 @@ static gboolean uri_security_check(RemoteURI *uri, TextView *textview)
 		   and   clicked_str ==        somewhere.com */
 		str = g_strconcat("http://", clicked_str, NULL);
 
-		if (!g_strcasecmp(str, uri->uri))
+		if (!g_ascii_strcasecmp(str, uri->uri))
 			retval = TRUE;
 		g_free(str);
 	}
@@ -1835,6 +1835,7 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 	GdkEventButton *bevent;
 	GSList *cur;
 	gchar *trimmed_uri;
+	
 	if (event->type != GDK_BUTTON_PRESS && event->type != GDK_2BUTTON_PRESS
 		&& event->type != GDK_MOTION_NOTIFY)
 		return FALSE;
@@ -1865,7 +1866,7 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 
 		trimmed_uri = trim_string(uri->uri, 60);
 		/* hover or single click: display url in statusbar */
-
+		
 		if (event->type == GDK_MOTION_NOTIFY
 		    || (event->type == GDK_BUTTON_PRESS && bevent->button == 1)) {
 			if (textview->messageview->mainwin) {
@@ -1878,7 +1879,7 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 		/* doubleclick: open compose / add address / browser */
 		if ((event->type == GDK_2BUTTON_PRESS && bevent->button == 1) ||
 			bevent->button == 2 || bevent->button == 3) {
-			if (!g_strncasecmp(uri->uri, "mailto:", 7)) {
+			if (!g_ascii_strncasecmp(uri->uri, "mailto:", 7)) {
 				if (bevent->button == 3) {
 					gchar *fromname, *fromaddress;
 						

@@ -413,17 +413,17 @@ void folder_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 
 		if (!attr || !attr->name || !attr->value) continue;
 		if (!strcmp(attr->name, "type")) {
-			if (!g_strcasecmp(attr->value, "normal"))
+			if (!g_ascii_strcasecmp(attr->value, "normal"))
 				item->stype = F_NORMAL;
-			else if (!g_strcasecmp(attr->value, "inbox"))
+			else if (!g_ascii_strcasecmp(attr->value, "inbox"))
 				item->stype = F_INBOX;
-			else if (!g_strcasecmp(attr->value, "outbox"))
+			else if (!g_ascii_strcasecmp(attr->value, "outbox"))
 				item->stype = F_OUTBOX;
-			else if (!g_strcasecmp(attr->value, "draft"))
+			else if (!g_ascii_strcasecmp(attr->value, "draft"))
 				item->stype = F_DRAFT;
-			else if (!g_strcasecmp(attr->value, "queue"))
+			else if (!g_ascii_strcasecmp(attr->value, "queue"))
 				item->stype = F_QUEUE;
-			else if (!g_strcasecmp(attr->value, "trash"))
+			else if (!g_ascii_strcasecmp(attr->value, "trash"))
 				item->stype = F_TRASH;
 		} else if (!strcmp(attr->name, "name")) {
 			if (item->name != NULL)
@@ -899,7 +899,7 @@ static gboolean folder_get_status_full_all_func(GNode *node, gpointer data)
 
 	if (status->str) {
 		id = folder_item_get_identifier(item);
-		g_string_sprintfa(status->str, "%5d %5d %5d %s\n",
+		g_string_append_printf(status->str, "%5d %5d %5d %s\n",
 				  item->new_msgs, item->unread_msgs,
 				  item->total_msgs, id);
 		g_free(id);
@@ -958,7 +958,7 @@ gchar *folder_get_status(GPtrArray *folders, gboolean full)
 				gchar *id;
 
 				id = folder_item_get_identifier(item);
-				g_string_sprintfa(str, "%5d %5d %5d %s\n",
+				g_string_append_printf(str, "%5d %5d %5d %s\n",
 						  item->new_msgs, item->unread_msgs,
 						  item->total_msgs, id);
 				g_free(id);
@@ -970,9 +970,9 @@ gchar *folder_get_status(GPtrArray *folders, gboolean full)
 	}
 
 	if (full)
-		g_string_sprintfa(str, "%5d %5d %5d\n", new, unread, total);
+		g_string_append_printf(str, "%5d %5d %5d\n", new, unread, total);
 	else
-		g_string_sprintfa(str, "%d %d %d\n", new, unread, total);
+		g_string_append_printf(str, "%d %d %d\n", new, unread, total);
 
 	ret = str->str;
 	g_string_free(str, FALSE);
@@ -1077,7 +1077,7 @@ FolderClass *folder_get_class_from_string(const gchar *str)
 	classlist = folder_get_class_list();
 	for (; classlist != NULL; classlist = g_slist_next(classlist)) {
 		FolderClass *class = (FolderClass *) classlist->data;
-		if (g_strcasecmp(class->idstr, str) == 0)
+		if (g_ascii_strcasecmp(class->idstr, str) == 0)
 			return class;
 	}
 

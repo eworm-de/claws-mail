@@ -532,7 +532,7 @@ static MimeViewer *get_viewer_for_mimeinfo(MimeView *mimeview, MimeInfo *partinf
 	MimeViewer *viewer = NULL;
 
 	if ((partinfo->type == MIMETYPE_APPLICATION) &&
-            (!g_strcasecmp(partinfo->subtype, "octet-stream"))) {
+            (!g_ascii_strcasecmp(partinfo->subtype, "octet-stream"))) {
 		const gchar *filename;
 
 		filename = procmime_mimeinfo_get_parameter(partinfo, "filename");
@@ -823,7 +823,7 @@ static gboolean part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 					   "/Display as text", TRUE);
 		if (partinfo &&
 		    partinfo->type == MIMETYPE_APPLICATION &&
-		    !g_strcasecmp(partinfo->subtype, "octet-stream"))
+		    !g_ascii_strcasecmp(partinfo->subtype, "octet-stream"))
 			menu_set_sensitive(mimeview->popupfactory,
 					   "/Open", FALSE);
 		else
@@ -1273,7 +1273,7 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 		cmd = cmdline;
 		def_cmd = NULL;
 	} else if (MIMETYPE_APPLICATION == partinfo->type &&
-		   !g_strcasecmp(partinfo->subtype, "octet-stream")) {
+		   !g_ascii_strcasecmp(partinfo->subtype, "octet-stream")) {
 		return;
 	} else if (MIMETYPE_IMAGE == partinfo->type) {
 		cmd = prefs_common.mime_image_viewer;
@@ -1515,9 +1515,9 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	switch (mimeinfo->type) {
 		
 	case MIMETYPE_TEXT:
-		if (mimeinfo->subtype && !g_strcasecmp(mimeinfo->subtype, "html"))
+		if (mimeinfo->subtype && !g_ascii_strcasecmp(mimeinfo->subtype, "html"))
 			stockp = STOCK_PIXMAP_MIME_TEXT_HTML;
-		else if  (mimeinfo->subtype && !g_strcasecmp(mimeinfo->subtype, "enriched"))
+		else if  (mimeinfo->subtype && !g_ascii_strcasecmp(mimeinfo->subtype, "enriched"))
 			stockp = STOCK_PIXMAP_MIME_TEXT_ENRICHED;
 		else
 			stockp = STOCK_PIXMAP_MIME_TEXT_PLAIN;

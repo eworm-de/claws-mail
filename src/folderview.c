@@ -1839,7 +1839,7 @@ static gint folderview_clist_compare(GtkCList *clist,
 	if (!item2->name)
 		return -1;
 
-	return g_strcasecmp(item1->name, item2->name);
+	return g_utf8_collate(item1->name, item2->name);
 }
 
 static void folderview_processing_cb(FolderView *folderview, guint action,

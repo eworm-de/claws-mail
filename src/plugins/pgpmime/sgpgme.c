@@ -166,7 +166,7 @@ gchar *sgpgme_sigstat_info_full(GpgmeCtx ctx, GpgmeSigStat status)
 		strftime(timestr, 64, "%c", gmtime(&sigtime));
 		keytype = gpgme_key_get_string_attr(key, GPGME_ATTR_ALGO, NULL, 0);
 		keyid = gpgme_key_get_string_attr(key, GPGME_ATTR_KEYID, NULL, 0);
-		g_string_sprintfa(siginfo,
+		g_string_append_printf(siginfo,
 			_("Signature made %s using %s key ID %s\n"),
 			timestr, keytype, keyid);
 		
@@ -175,17 +175,17 @@ gchar *sgpgme_sigstat_info_full(GpgmeCtx ctx, GpgmeSigStat status)
 		switch (sigstatus) {
 		case GPGME_SIG_STAT_GOOD:
 		case GPGME_SIG_STAT_GOOD_EXPKEY:
-			g_string_sprintfa(siginfo,
+			g_string_append_printf(siginfo,
 				_("Good signature from \"%s\"\n"),
 				uid);
 			break;
 		case GPGME_SIG_STAT_GOOD_EXP:
-			g_string_sprintfa(siginfo,
+			g_string_append_printf(siginfo,
 				_("Expired signature from \"%s\"\n"),
 				uid);
 			break;
 		case GPGME_SIG_STAT_BAD:
-			g_string_sprintfa(siginfo,
+			g_string_append_printf(siginfo,
 				_("BAD signature from \"%s\"\n"),
 				uid);
 			break;
@@ -196,12 +196,12 @@ gchar *sgpgme_sigstat_info_full(GpgmeCtx ctx, GpgmeSigStat status)
 			gint j = 1;
 			
 			while ((uid = gpgme_key_get_string_attr(key, GPGME_ATTR_USERID, NULL, j)) != 0) {
-				g_string_sprintfa(siginfo,
+				g_string_append_printf(siginfo,
 					_("                aka \"%s\"\n"),
 					uid);
 				j++;
 			}
-			g_string_sprintfa(siginfo,
+			g_string_append_printf(siginfo,
 				_("Primary key fingerprint: %s\n"), 
 				gpgme_key_get_string_attr(key, GPGME_ATTR_FPR, NULL, 0));
 		}
@@ -216,7 +216,7 @@ gchar *sgpgme_sigstat_info_full(GpgmeCtx ctx, GpgmeSigStat status)
 				format = _("Signature expires %s\n");
 			else
 				format = _("Signature expired %s\n");
-			g_string_sprintfa(siginfo, format, timestr);
+			g_string_append_printf(siginfo, format, timestr);
 		}
 		
 		g_string_append(siginfo, "\n");

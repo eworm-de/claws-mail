@@ -316,7 +316,7 @@ static gchar *exportldif_find_dn(
 		UserAttribute *attrib = node->data;
 
 		node = g_list_next( node );
-		if( g_strcasecmp( attrib->name, LDIF_TAG_DN ) == 0 ) {
+		if( g_utf8_collate( attrib->name, LDIF_TAG_DN ) == 0 ) {
 			retVal = g_strdup( attrib->value );
 			break;
 		}

@@ -345,7 +345,7 @@ static gint edit_person_attrib_compare_func(
 	if( cell2 ) name2 = cell2->u.text;
 	if( ! name1 ) return ( name2 != NULL );
 	if( ! name2 ) return -1;
-	return g_strcasecmp( name1, name2 );
+	return g_utf8_collate( name1, name2 );
 }
 
 /*
@@ -578,9 +578,9 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	ATTACH_ROW(_("Display Name"), entry_name);
 	locale = conv_get_current_locale();
 	if (locale &&
-	    (!g_strncasecmp(locale, "ja", 2) ||
-	     !g_strncasecmp(locale, "ko", 2) ||
-	     !g_strncasecmp(locale, "zh", 2))) {
+	    (!g_ascii_strncasecmp(locale, "ja", 2) ||
+	     !g_ascii_strncasecmp(locale, "ko", 2) ||
+	     !g_ascii_strncasecmp(locale, "zh", 2))) {
 		ATTACH_ROW(_("Last Name"), entry_ln);
 		ATTACH_ROW(_("First Name"), entry_fn);
 	} else {

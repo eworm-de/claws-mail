@@ -438,7 +438,7 @@ static gint exporthtml_compare_name(
 	if( item2 ) name2 = ADDRITEM_NAME( item2 );
 	if( ! name1 ) return ( name2 != NULL );
 	if( ! name2 ) return -1;
-	return g_strcasecmp( name1, name2 );
+	return g_utf8_collate( name1, name2 );
 }
 
 /*
@@ -454,7 +454,7 @@ static gint exporthtml_compare_email(
 	if( email2 ) name2 = email2->address;
 	if( ! name1 ) return ( name2 != NULL );
 	if( ! name2 ) return -1;
-	return g_strcasecmp( name1, name2 );
+	return g_utf8_collate( name1, name2 );
 }
 
 /*
@@ -470,7 +470,7 @@ static gint exporthtml_compare_attrib(
 	if( attr2 ) name2 = attr2->name;
 	if( ! name1 ) return ( name2 != NULL );
 	if( ! name2 ) return -1;
-	return g_strcasecmp( name1, name2 );
+	return g_utf8_collate( name1, name2 );
 }
 
 /*

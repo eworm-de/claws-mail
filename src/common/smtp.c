@@ -269,7 +269,7 @@ static gint smtp_ehlo_recv(SMTPSession *session, const gchar *msg)
 		const gchar *p = msg;
 		p += 3;
 		if (*p == '-' || *p == ' ') p++;
-		if (g_strncasecmp(p, "AUTH", 4) == 0) {
+		if (g_ascii_strncasecmp(p, "AUTH", 4) == 0) {
 			p += 5;
 			if (strcasestr(p, "LOGIN"))
 				session->avail_auth_type |= SMTPAUTH_LOGIN;
@@ -278,7 +278,7 @@ static gint smtp_ehlo_recv(SMTPSession *session, const gchar *msg)
 			if (strcasestr(p, "DIGEST-MD5"))
 				session->avail_auth_type |= SMTPAUTH_DIGEST_MD5;
 		}
-		if (g_strncasecmp(p, "SIZE", 4) == 0) {
+		if (g_ascii_strncasecmp(p, "SIZE", 4) == 0) {
 			p += 5;
 			session->max_message_size = atoi(p);
 		}

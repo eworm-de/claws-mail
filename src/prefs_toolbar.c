@@ -319,12 +319,12 @@ static gboolean is_duplicate(ToolbarPage *prefs_toolbar, gchar *chosen_action)
 		return FALSE;
 	
 	/* allow duplicate entries (A_SYL_ACTIONS) */
-	if (g_strcasecmp(syl_act, chosen_action) == 0)
+	if (g_utf8_collate(syl_act, chosen_action) == 0)
 		return FALSE;
 
 	do {
 		gtk_clist_get_text(clist, row, 3, &entry);
-		if ( g_strcasecmp(chosen_action, entry) == 0)
+		if ( g_utf8_collate(chosen_action, entry) == 0)
 			return TRUE;
 		row++;
 	} while ((gtk_clist_get_text(clist, row, 3, &entry)) && (row <= clist->rows));
@@ -377,7 +377,7 @@ static void prefs_toolbar_register(GtkButton *button, ToolbarPage *prefs_toolbar
 	item[3] = g_strdup(gtk_entry_get_text(GTK_ENTRY(prefs_toolbar->combo_entry)));
 	
 	/* SEPARATOR or other ? */
-	if (g_strcasecmp(item[1], toolbar_ret_descr_from_val(A_SEPARATOR)) == 0) {
+	if (g_utf8_collate(item[1], toolbar_ret_descr_from_val(A_SEPARATOR)) == 0) {
 		item[0] = g_strdup(SEPARATOR_PIXMAP);
 		item[2] = g_strdup("");
 		item[3] = g_strdup(toolbar_ret_descr_from_val(A_SEPARATOR));
@@ -396,7 +396,7 @@ static void prefs_toolbar_register(GtkButton *button, ToolbarPage *prefs_toolbar
 		stock_pixmap_gdk(prefs_toolbar->window, stock_pixmap_get_icon(item[1]),
 				  &xpm, &xpmmask);
 
-		if (g_strcasecmp(item[3], syl_act) == 0) {
+		if (g_utf8_collate(item[3], syl_act) == 0) {
 
 			const gchar *entry = gtk_entry_get_text(GTK_ENTRY(prefs_toolbar->combo_syl_entry));
 			get_action_name(entry, &item[2]);
@@ -447,7 +447,7 @@ static void prefs_toolbar_substitute(GtkButton *button, ToolbarPage *prefs_toolb
 	gtk_clist_get_text(clist_set, row_set, 3, &ac_set);
 	item[3] = g_strdup(gtk_entry_get_text(GTK_ENTRY(prefs_toolbar->combo_entry)));
 
-	if (g_strcasecmp(item[1], toolbar_ret_descr_from_val(A_SEPARATOR)) == 0) {
+	if (g_utf8_collate(item[1], toolbar_ret_descr_from_val(A_SEPARATOR)) == 0) {
 		item[0] = g_strdup(SEPARATOR_PIXMAP);
 		item[2] = g_strdup("");
 		item[3] = g_strdup(toolbar_ret_descr_from_val(A_SEPARATOR));
@@ -458,7 +458,7 @@ static void prefs_toolbar_substitute(GtkButton *button, ToolbarPage *prefs_toolb
 		g_free(item[0]);
 	} else {
 
-		if ((is_duplicate(prefs_toolbar, item[3])) && (g_strcasecmp(item[3], ac_set) != 0)){
+		if ((is_duplicate(prefs_toolbar, item[3])) && (g_utf8_collate(item[3], ac_set) != 0)){
 			alertpanel_error(ERROR_MSG);
 			g_free(item[3]);
 			return;
@@ -467,7 +467,7 @@ static void prefs_toolbar_substitute(GtkButton *button, ToolbarPage *prefs_toolb
 		stock_pixmap_gdk(prefs_toolbar->window, stock_pixmap_get_icon(item[1]),
 				  &xpm, &xpmmask);
 
-		if (g_strcasecmp(item[3], syl_act) == 0) {
+		if (g_utf8_collate(item[3], syl_act) == 0) {
 
 			const gchar *entry = gtk_entry_get_text(GTK_ENTRY(prefs_toolbar->combo_syl_entry));
 			get_action_name(entry, &item[2]);
@@ -562,13 +562,13 @@ static void prefs_toolbar_select_row_set(GtkCList *clist, gint row, gint column,
 	gtk_clist_get_text(clist, row_set, 2, &icon_text);
 	gtk_clist_get_text(clist, row_set, 3, &descr);
 
-	if (g_strcasecmp(descr, syl_act) != 0)
+	if (g_utf8_collate(descr, syl_act) != 0)
 		gtk_entry_set_text(GTK_ENTRY(prefs_toolbar->entry_icon_text), icon_text);
 	
 	/* scan combo list for selected description an set combo item accordingly */
 	for (cur = prefs_toolbar->combo_action_list; cur != NULL; cur = cur->next) {
 		gchar *item_str = (gchar*)cur->data;
-		if (g_strcasecmp(item_str, descr) == 0) {
+		if (g_utf8_collate(item_str, descr) == 0) {
 			gtk_list_select_item(GTK_LIST(prefs_toolbar->combo_list), item_num);
 			break;
 		}
@@ -579,7 +579,7 @@ static void prefs_toolbar_select_row_set(GtkCList *clist, gint row, gint column,
 	do {
 		gtk_clist_get_text(clist_ico, row_ico, 1, &entry);
 		row_ico++;
-	} while(g_strcasecmp(entry, file) != 0);
+	} while(g_utf8_collate(entry, file) != 0);
 	
 	gtk_clist_select_row(clist_ico, row_ico - 1, 0);
 	gtk_clist_moveto(clist_ico, row_ico - 1, 0, row_ico/clist_ico->rows, 0);
@@ -595,7 +595,7 @@ static void prefs_toolbar_select_row_icons(GtkCList *clist, gint row, gint colum
 
 	if (!text) return;
 
-	if (g_strcasecmp(toolbar_ret_descr_from_val(A_SEPARATOR), text) == 0) {
+	if (g_utf8_collate(toolbar_ret_descr_from_val(A_SEPARATOR), text) == 0) {
 		gtk_widget_set_sensitive(prefs_toolbar->combo_action,     FALSE);
 		gtk_widget_set_sensitive(prefs_toolbar->entry_icon_text,  FALSE);
 		gtk_widget_set_sensitive(prefs_toolbar->combo_syl_action, FALSE);
@@ -614,7 +614,7 @@ static void prefs_toolbar_selection_changed(GtkList *list,
 
 	gtk_widget_set_sensitive(prefs_toolbar->combo_syl_action, TRUE);
 
-	if (g_strcasecmp(cur_entry, actions_entry) == 0) {
+	if (g_utf8_collate(cur_entry, actions_entry) == 0) {
 		gtk_widget_hide(prefs_toolbar->entry_icon_text);
 		gtk_widget_show(prefs_toolbar->combo_syl_action);
 		gtk_label_set_text(GTK_LABEL(prefs_toolbar->label_icon_text), _("Sylpheed Action"));

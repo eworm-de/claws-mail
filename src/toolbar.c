@@ -232,7 +232,7 @@ gint toolbar_ret_val_from_descr(const gchar *descr)
 	gint i;
 
 	for (i = 0; i < N_ACTION_VAL; i++) {
-		if (g_strcasecmp(gettext(toolbar_text[i].descr), descr) == 0)
+		if (g_utf8_collate(gettext(toolbar_text[i].descr), descr) == 0)
 				return i;
 	}
 	
@@ -251,7 +251,7 @@ static gint toolbar_ret_val_from_text(const gchar *text)
 	gint i;
 	
 	for (i = 0; i < N_ACTION_VAL; i++) {
-		if (g_strcasecmp(toolbar_text[i].index_str, text) == 0)
+		if (g_utf8_collate(toolbar_text[i].index_str, text) == 0)
 				return i;
 	}
 	
@@ -345,11 +345,11 @@ static void toolbar_parse_item(XMLFile *file, ToolbarType source)
 		name = ((XMLAttr *)attr->data)->name;
 		value = ((XMLAttr *)attr->data)->value;
 		
-		if (g_strcasecmp(name, TOOLBAR_ICON_FILE) == 0) 
+		if (g_utf8_collate(name, TOOLBAR_ICON_FILE) == 0) 
 			item->file = g_strdup (value);
-		else if (g_strcasecmp(name, TOOLBAR_ICON_TEXT) == 0)
+		else if (g_utf8_collate(name, TOOLBAR_ICON_TEXT) == 0)
 			item->text = g_strdup (value);
-		else if (g_strcasecmp(name, TOOLBAR_ICON_ACTION) == 0)
+		else if (g_utf8_collate(name, TOOLBAR_ICON_ACTION) == 0)
 			item->index = toolbar_ret_val_from_text(value);
 
 		attr = g_list_next(attr);
@@ -693,7 +693,7 @@ void toolbar_action_execute(GtkWidget    *widget,
 
 				action_p = strstr(action, ": ");
 				action_p[0] = 0x00;
-				if (g_strcasecmp(act->name, action) == 0) {
+				if (g_utf8_collate(act->name, action) == 0) {
 					found = TRUE;
 					g_free(action);
 					break;
@@ -1302,7 +1302,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 	
 	for (cur = toolbar_list; cur != NULL; cur = cur->next) {
 
-		if (g_strcasecmp(((ToolbarItem*)cur->data)->file, TOOLBAR_TAG_SEPARATOR) == 0) {
+		if (g_ascii_strcasecmp(((ToolbarItem*)cur->data)->file, TOOLBAR_TAG_SEPARATOR) == 0) {
 			gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
 			continue;
 		}
