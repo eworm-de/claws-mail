@@ -1,3 +1,15 @@
+2003-09-10 [paul]	0.9.4claws76
+
+	* po/es.po
+	  po/sk.po
+	  po/sr.po
+	  	update Spanish, Slovak, and Serbian translations.
+		submitted by Ricardo Mones Lastra, Andrej Kacian,
+		and Urke MMI
+		
+	* AUTHORS
+		add translation team section
+
 2003-09-09 [christoph]	0.9.4claws75
 
 	* src/folder.c
