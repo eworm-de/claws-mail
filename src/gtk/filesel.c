@@ -58,8 +58,6 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 	
 	manage_window_set_transient (GTK_WINDOW(chooser));
 	gtk_window_set_modal(GTK_WINDOW(chooser), TRUE);
-	gtk_window_set_wmclass
-		(GTK_WINDOW(chooser), "file_selection", "Sylpheed");
 
 	gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER(chooser), multiple_files);
 

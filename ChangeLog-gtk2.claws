@@ -1,3 +1,7 @@
+2004-07-28 [paul]	0.9.12cvs37.5
+
+	* src/gtk/filesel.c
+		remove gtk_window_set_wmclass()
 2004-07-28 [paul]	0.9.12cvs37.4
 
 	* src/addressbook.c
