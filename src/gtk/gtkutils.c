@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 #include <gtk/gtkcombo.h>
 #include <gtk/gtkthemes.h>
 #include <gtk/gtkbindings.h>
+#include <gtk/gtkitemfactory.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <sys/stat.h>
@@ -156,6 +157,105 @@ void gtkut_button_set_create(GtkWidget **bbox,
 		gtk_box_pack_start(GTK_BOX(*bbox), *button3, TRUE, TRUE, 0);
 		gtk_widget_show(*button3);
 	}
+}
+
+static void combo_button_size_request(GtkWidget *widget,
+				      GtkRequisition *requisition,
+				      gpointer data)
+{
+	ComboButton *combo = (ComboButton *)data;
+
+	if (combo->arrow->allocation.height != requisition->height)
+		gtk_widget_set_usize(combo->arrow, -1, requisition->height);
+}
+
+static void combo_button_enter(GtkWidget *widget, gpointer data)
+{
+	ComboButton *combo = (ComboButton *)data;
+
+	if (GTK_WIDGET_STATE(combo->arrow) != GTK_STATE_PRELIGHT) {
+		gtk_widget_set_state(combo->arrow, GTK_STATE_PRELIGHT);
+		gtk_widget_queue_draw(combo->arrow);
+	}
+	if (GTK_WIDGET_STATE(combo->button) != GTK_STATE_PRELIGHT) {
+		gtk_widget_set_state(combo->button, GTK_STATE_PRELIGHT);
+		gtk_widget_queue_draw(combo->button);
+	}
+}
+
+static void combo_button_leave(GtkWidget *widget, gpointer data)
+{
+	ComboButton *combo = (ComboButton *)data;
+
+	if (GTK_WIDGET_STATE(combo->arrow) != GTK_STATE_NORMAL) {
+		gtk_widget_set_state(combo->arrow, GTK_STATE_NORMAL);
+		gtk_widget_queue_draw(combo->arrow);
+	}
+	if (GTK_WIDGET_STATE(combo->button) != GTK_STATE_NORMAL) {
+		gtk_widget_set_state(combo->button, GTK_STATE_NORMAL);
+		gtk_widget_queue_draw(combo->button);
+	}
+}
+
+static gint combo_button_arrow_pressed(GtkWidget *widget, GdkEventButton *event,
+				       gpointer data)
+{
+	ComboButton *combo = (ComboButton *)data;
+
+	if (!event) return FALSE;
+
+	gtk_menu_popup(GTK_MENU(combo->menu), NULL, NULL,
+		       menu_button_position, combo->button,
+		       event->button, event->time);
+
+	return FALSE;
+}
+
+static void combo_button_destroy(GtkWidget *widget, gpointer data)
+{
+	ComboButton *combo = (ComboButton *)data;
+
+	gtk_object_destroy(GTK_OBJECT(combo->factory));
+	g_free(combo);
+}
+
+ComboButton *gtkut_combo_button_create(GtkWidget *button,
+				       GtkItemFactoryEntry *entries,
+				       gint n_entries, const gchar *path,
+				       gpointer data)
+{
+	ComboButton *combo;
+	GtkWidget *arrow;
+
+	combo = g_new0(ComboButton, 1);
+
+	combo->arrow = gtk_button_new();
+	arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
+	gtk_container_add(GTK_CONTAINER(combo->arrow), arrow);
+	GTK_WIDGET_UNSET_FLAGS(combo->arrow, GTK_CAN_FOCUS);
+	gtk_widget_show_all(combo->arrow);
+
+	combo->button = button;
+	combo->menu = menu_create_items(entries, n_entries, path,
+					&combo->factory, data);
+	combo->data = data;
+
+	gtk_signal_connect(GTK_OBJECT(combo->button), "size_request",
+			   GTK_SIGNAL_FUNC(combo_button_size_request), combo);
+	gtk_signal_connect(GTK_OBJECT(combo->button), "enter",
+			   GTK_SIGNAL_FUNC(combo_button_enter), combo);
+	gtk_signal_connect(GTK_OBJECT(combo->button), "leave",
+			   GTK_SIGNAL_FUNC(combo_button_leave), combo);
+	gtk_signal_connect(GTK_OBJECT(combo->arrow), "enter",
+			   GTK_SIGNAL_FUNC(combo_button_enter), combo);
+	gtk_signal_connect(GTK_OBJECT(combo->arrow), "leave",
+			   GTK_SIGNAL_FUNC(combo_button_leave), combo);
+	gtk_signal_connect(GTK_OBJECT(combo->arrow), "button_press_event",
+			   GTK_SIGNAL_FUNC(combo_button_arrow_pressed), combo);
+	gtk_signal_connect(GTK_OBJECT(combo->arrow), "destroy",
+			   GTK_SIGNAL_FUNC(combo_button_destroy), combo);
+
+	return combo;
 }
 
 #define CELL_SPACING 1

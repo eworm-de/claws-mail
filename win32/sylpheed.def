@@ -703,6 +703,7 @@ EXPORTS
 	folder_item_copy_msg 
 	folder_item_copy_msgs 
 	folder_item_destroy 
+	folder_item_fetch_all_msg 
 	folder_item_fetch_msg 
 	folder_item_free_cache 
 	folder_item_general_page 
@@ -914,6 +915,7 @@ EXPORTS
 	gtkut_account_menu_new 
 	gtkut_button_set_create 
 	gtkut_clist_set_focus_row 
+	gtkut_combo_button_create 
 	gtkut_combo_set_items 
 	gtkut_container_remove 
 	gtkut_convert_int_to_gdk_color 

@@ -1,3 +1,46 @@
+2004-01-26 [paul]	0.9.8claws53
+
+	* sync with 0.9.8cvs7
+		see ChangeLog 2004-01-23
+
+2004-01-25 [alfons]	0.9.8claws52
+
+	* src/compose.c
+		remove left-over constant INDENT_CHARS
+
+2004-01-25 [alfons]	0.9.8claws51
+
+	* src/procmime.c
+		add NULL pointer check for mimeinfo->node in
+		procmime_mimeinfo_parent()
+
+2004-01-25 [darko]	0.9.8claws50
+
+	* src/compose.c
+		make "Wrap all long lines" toolbar button wrap all
+		long lines not just the current line
+		patch by I. Oshadi Jayawardena <ioj4 at yahoo.co.uk>
+
+
+2004-01-25 [alfons]	0.9.8claws49
+
+	* src/procmime.c
+		remove g_strstrip(); prevents a NULL pointer deref, and isn't
+		necessary anyway, because *scanf() functions neglect white
+		space in the input. 
+		Fixes bug #425, "sylpheed 0.9.8claws42 crashes on some messages."
+
+2004-01-25 [paul]	0.9.8claws48
+
+	src/prefs_ext_prog.c
+		apply Alfons' patch to check for NULL pointers
+		fixes bug #424
+
+2004-01-25 [paul]	0.9.8claws47
+
+	* sync with 0.9.8cvs8
+		see ChangeLog 2004-01-23
+
 2004-01-25 [thorsten]	0.9.8claws46
 
 	* src/messageview.c

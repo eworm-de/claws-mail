@@ -160,6 +160,7 @@ void procmime_mimeinfo_replace(MimeInfo *old, MimeInfo *new)
 MimeInfo *procmime_mimeinfo_parent(MimeInfo *mimeinfo)
 {
 	g_return_val_if_fail(mimeinfo != NULL, NULL);
+	g_return_val_if_fail(mimeinfo->node != NULL, NULL);
 
 	if (mimeinfo->node->parent == NULL)
 		return NULL;
@@ -1034,7 +1035,6 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 	content_start = ftell(fp);
 	fclose(fp);
 
-	g_strstrip(hentry[5].body);
 	if ((hentry[5].body != NULL) &&
 	    (sscanf(hentry[5].body, "%d.%d", &mime_major, &mime_minor) == 2) &&
 	    (mime_major == 1) && (mime_minor == 0)) {

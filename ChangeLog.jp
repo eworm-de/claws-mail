@@ -1,3 +1,16 @@
+2004-01-23
+
+	* src/folder.[ch]: folder_item_fetch_all_msg(): 新規。フォルダ中の
+	  全てのメッセージを取得する。
+	* src/folderview.c: 「ダウンロード」機能を実装。
+
+2004-01-23
+
+	* src/gtkutils.[ch]: 矢印メニューボタンをボタンに付加する ComboButton
+	  を実装。
+	* src/mainwindow.[ch]: main_window_toolbar_create(): 返信、転送ボタン
+	  にコンボボタンを追加。
+
 2004-01-22
 
 	* src/mainwindow.c: ツールバーによってウィンドウサイズが自動的に

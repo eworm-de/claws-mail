@@ -1946,6 +1946,37 @@ gchar *folder_item_fetch_msg(FolderItem *item, gint num)
 	return folder->klass->fetch_msg(folder, item, num);
 }
 
+gint folder_item_fetch_all_msg(FolderItem *item)
+{
+	GSList *mlist;
+	GSList *cur;
+	gint ret = 0;
+
+	g_return_val_if_fail(item != NULL, -1);
+
+	debug_print("fetching all messages in %s ...\n", item->path);
+
+	mlist = folder_item_get_msg_list(item);
+
+	for (cur = mlist; cur != NULL; cur = cur->next) {
+		MsgInfo *msginfo = (MsgInfo *)cur->data;
+		gchar *msg;
+
+		msg = folder_item_fetch_msg(item, msginfo->msgnum);
+		if (!msg) {
+			g_warning("Can't fetch message %d. Aborting.\n",
+				  msginfo->msgnum);
+			ret = -1;
+			break;
+		}
+		g_free(msg);
+	}
+
+	procmsg_msg_list_free(mlist);
+
+	return ret;
+}
+
 static gint folder_item_get_msg_num_by_file(FolderItem *dest, const gchar *file)
 {
 	static HeaderEntry hentry[] = {{"Message-ID:",  NULL, TRUE},

@@ -408,6 +408,7 @@ MsgInfo *folder_item_get_msginfo_by_msgid(FolderItem 	*item,
 GSList *folder_item_get_msg_list	(FolderItem 	*item);
 gchar *folder_item_fetch_msg		(FolderItem	*item,
 					 gint		 num);
+gint   folder_item_fetch_all_msg	(FolderItem	*item);
 gint   folder_item_add_msg		(FolderItem	*dest,
 					 const gchar	*file,
 					 MsgFlags	*flags,
