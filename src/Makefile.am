@@ -169,7 +169,7 @@ EXTRA_DIST = \
 	pixmaps/folder.xpm \
 	pixmaps/forwarded.xpm \
 	pixmaps/group.xpm \
-	pixmap/ignorethread.xpm \
+	pixmaps/ignorethread.xpm \
 	pixmaps/inbox.xpm \
 	pixmaps/inbox_hrm.xpm \
 	pixmaps/interface.xpm \
@@ -200,7 +200,7 @@ EXTRA_DIST = \
 	pixmaps/regular.xpm \
 	pixmaps/replied.xpm \
 	pixmaps/search.xpm \
-	pixmaps/sylpheed.xpm
+	pixmaps/sylpheed.xpm \
 	pixmaps/sylpheed-logo.xpm \
 	pixmaps/trash.xpm \
 	pixmaps/trash_hrm.xpm \

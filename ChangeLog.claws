@@ -4,6 +4,9 @@
 		fix indentation of some code
 	* tools/Makefile.am
 		fix spaces after \
+	* src/Makefile.am
+		add missing \
+		correct path for ignorethread.xpm
 
 2002-05-18 [paul]	0.7.6claws3
 
