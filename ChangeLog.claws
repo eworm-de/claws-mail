@@ -1,4 +1,10 @@
-2003-03-06 [christoph]	0.8.10claws98
+2003-03-07 [paul]	0.8.10claws99
+
+	* po/es.po
+		updated Spanish translation, submitted by
+		Ricardo Mones Lastra
+
+2003-03-07 [christoph]	0.8.10claws98
 
 	* src/send.c
 		fix in 0.8.10claws94 was wrong
