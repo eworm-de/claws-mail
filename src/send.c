@@ -62,14 +62,26 @@ struct _SendProgressDialog
 	GList *queue_list;
 	gboolean cancelled;
 };
+#if 0
+static gint send_message_local		(const gchar		*command,
+					 FILE			*fp);
 
+static gint send_message_smtp		(PrefsAccount		*ac_prefs,
+					 GSList			*to_list,
+					 FILE			*fp);
+#endif
+static gint send_message_data		(SendProgressDialog	*dialog,
+					 SockInfo		*sock,
+					 FILE			*fp,
+					 gint			 size);
 
-static gint send_message_data	(SendProgressDialog *dialog, SockInfo *sock,
-				 FILE *fp, gint size);
+static SendProgressDialog *send_progress_dialog_create (void);
+static void send_progress_dialog_destroy	(SendProgressDialog *dialog);
+static void send_cancel				(GtkWidget	    *widget,
+						 gpointer	     data);
 
-static SendProgressDialog *send_progress_dialog_create(void);
-static void send_progress_dialog_destroy(SendProgressDialog *dialog);
-static void send_cancel(GtkWidget *widget, gpointer data);
+static void send_progress_dialog_update		(Session	    *session,
+						 SMTPPhase	     phase);
 
 
 gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
@@ -276,9 +288,9 @@ gint send_message_local(const gchar *command, FILE *fp)
 
 #define EXIT_IF_CANCELLED() \
 { \
+	GTK_EVENTS_FLUSH(); \
 	if (dialog->cancelled) { \
-		if (session) \
-			session_destroy(session); \
+		session_destroy(session); \
 		send_progress_dialog_destroy(dialog); \
 		return -1; \
 	} \
@@ -289,8 +301,7 @@ gint send_message_local(const gchar *command, FILE *fp)
 	EXIT_IF_CANCELLED(); \
 	if (!(f)) { \
 		log_warning("Error occurred while %s\n", s); \
-		if (session) \
-			session_destroy(session); \
+		session_destroy(session); \
 		send_progress_dialog_destroy(dialog); \
 		return -1; \
 	} \
@@ -314,7 +325,8 @@ gint send_message_local(const gchar *command, FILE *fp)
 				ac_prefs->tmp_smtp_pass = NULL; \
 			} \
 		} \
-		if (smtp_quit(session->sock) != SM_OK) \
+		if (session->sock && \
+		    smtp_quit(SMTP_SESSION(session)) != SM_OK) \
 			log_warning(_("Error occurred while sending QUIT\n")); \
 		session_destroy(session); \
 		send_progress_dialog_destroy(dialog); \
@@ -401,48 +413,38 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 		inc_pop_before_smtp(ac_prefs);
 	}
 	
-	g_snprintf(buf, sizeof(buf), _("Connecting to SMTP server: %s ..."),
-		   ac_prefs->smtp_server);
-	log_message("%s\n", buf);
-	progress_dialog_set_label(dialog->dialog, buf);
-	gtk_clist_set_text(clist, 0, 2, _("Connecting"));
-	GTK_EVENTS_FLUSH();
+	session = smtp_session_new();
+	session->data = dialog;
+	session->ui_func = (SessionUIFunc)send_progress_dialog_update;
 
 #if USE_SSL
-	SEND_EXIT_IF_ERROR((session = smtp_session_new
-				(ac_prefs->smtp_server, port, domain,
-				 user, pass, ac_prefs->ssl_smtp)),
-			   "connecting to server");
+	SEND_EXIT_IF_NOTOK
+		(smtp_connect(SMTP_SESSION(session), ac_prefs->smtp_server,
+			      port, domain, user, pass, ac_prefs->ssl_smtp),
+		 "connecting to server");
 #else
-	SEND_EXIT_IF_ERROR((session = smtp_session_new
-				(ac_prefs->smtp_server, port, domain,
-				 user, pass)),
-			   "connecting to server");
+	SEND_EXIT_IF_NOTOK
+		(smtp_connect(SMTP_SESSION(session), ac_prefs->smtp_server,
+			      port, domain, user, pass),
+		 "connecting to server");
 #endif
 
-	progress_dialog_set_label(dialog->dialog, _("Sending MAIL FROM..."));
-	statusbar_puts_all(_("Sending MAIL FROM..."));
-	gtk_clist_set_text(clist, 0, 2, _("Sending"));
-	GTK_EVENTS_FLUSH();
+	if (user) {
+		SEND_EXIT_IF_NOTOK(smtp_auth(SMTP_SESSION(session),
+					     ac_prefs->smtp_auth_type),
+				   "authenticating");
+	}
 
 	SEND_EXIT_IF_NOTOK
-		(smtp_from(SMTP_SESSION(session), ac_prefs->address,
-			   ac_prefs->smtp_auth_type),
+		(smtp_from(SMTP_SESSION(session), ac_prefs->address),
 		 "sending MAIL FROM");
 
-	progress_dialog_set_label(dialog->dialog, _("Sending RCPT TO..."));
-	statusbar_puts_all(_("Sending RCPT TO..."));
-	GTK_EVENTS_FLUSH();
-
 	for (cur = to_list; cur != NULL; cur = cur->next)
-		SEND_EXIT_IF_NOTOK(smtp_rcpt(session->sock, (gchar *)cur->data),
+		SEND_EXIT_IF_NOTOK(smtp_rcpt(SMTP_SESSION(session),
+				   (gchar *)cur->data),
 				   "sending RCPT TO");
 
-	progress_dialog_set_label(dialog->dialog, _("Sending DATA..."));
-	statusbar_puts_all(_("Sending DATA..."));
-	GTK_EVENTS_FLUSH();
-
-	SEND_EXIT_IF_NOTOK(smtp_data(session->sock), "sending DATA");
+	SEND_EXIT_IF_NOTOK(smtp_data(SMTP_SESSION(session)), "sending DATA");
 
 	/* send main part */
 	SEND_EXIT_IF_ERROR
@@ -453,8 +455,8 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 	statusbar_puts_all(_("Quitting..."));
 	GTK_EVENTS_FLUSH();
 
-	SEND_EXIT_IF_NOTOK(smtp_eom(session->sock), "terminating data");
-	SEND_EXIT_IF_NOTOK(smtp_quit(session->sock), "sending QUIT");
+	SEND_EXIT_IF_NOTOK(smtp_eom(SMTP_SESSION(session)), "terminating data");
+	SEND_EXIT_IF_NOTOK(smtp_quit(SMTP_SESSION(session)), "sending QUIT");
 
 	statusbar_pop_all();
 
@@ -608,4 +610,56 @@ static void send_cancel(GtkWidget *widget, gpointer data)
 	SendProgressDialog *dialog = data;
 
 	dialog->cancelled = TRUE;
+}
+
+static void send_progress_dialog_update(Session *session, SMTPPhase phase)
+{
+	gchar buf[BUFFSIZE];
+	gchar *state_str = NULL;
+	SendProgressDialog *dialog = (SendProgressDialog *)session->data;
+
+	switch (phase) {
+	case SMTP_CONNECT:
+		g_snprintf(buf, sizeof(buf),
+			   _("Connecting to SMTP server: %s ..."),
+			   session->server);
+		state_str = _("Connecting");
+		log_message("%s\n", buf);
+		break;
+	case SMTP_HELO:
+		g_snprintf(buf, sizeof(buf), _("Sending HELO..."));
+		state_str = _("Authenticating");
+		break;
+	case SMTP_EHLO:
+		g_snprintf(buf, sizeof(buf), _("Sending EHLO..."));
+		state_str = _("Authenticating");
+		break;
+	case SMTP_AUTH:
+		g_snprintf(buf, sizeof(buf), _("Authenticating..."));
+		state_str = _("Authenticating");
+		break;
+	case SMTP_FROM:
+		g_snprintf(buf, sizeof(buf), _("Sending MAIL FROM..."));
+		state_str = _("Sending");
+		break;
+	case SMTP_RCPT:
+		g_snprintf(buf, sizeof(buf), _("Sending RCPT TO..."));
+		state_str = _("Sending");
+		break;
+	case SMTP_DATA:
+	case SMTP_EOM:
+		g_snprintf(buf, sizeof(buf), _("Sending DATA..."));
+		state_str = _("Sending");
+		break;
+	case SMTP_QUIT:
+		g_snprintf(buf, sizeof(buf), _("Quitting..."));
+		state_str = _("Quitting");
+		break;
+	default:
+		return;
+	}
+
+	progress_dialog_set_label(dialog->dialog, buf);
+	gtk_clist_set_text(GTK_CLIST(dialog->dialog->clist), 0, 2, state_str);
+	GTK_EVENTS_FLUSH();
 }

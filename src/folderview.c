@@ -1200,18 +1200,24 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		 prefs_common.display_folder_unread) {
 
 		if (item->unread > 0)
-			str = g_strdup_printf("%s (%d%s)", name, item->unread,
-					      add_unread_mark ? "+" : "");
+			str = g_strdup_printf("%s (%d%s%s)", name, item->unread,
+					      add_unread_mark ? "+" : "", 
+				              item->unreadmarked > 0 ? "!":"");
 		else
 			str = g_strdup_printf("%s (+)", name);
 		gtk_ctree_set_node_info(ctree, node, str, FOLDER_SPACING,
 					xpm, mask, openxpm, openmask,
 					FALSE, GTK_CTREE_ROW(node)->expanded);
 		g_free(str);
-	} else
-		gtk_ctree_set_node_info(ctree, node, name, FOLDER_SPACING,
+	} else {
+		str = g_strdup_printf("%s%s", name, 
+			              item->unreadmarked > 0 ? " (!)":"");
+	
+		gtk_ctree_set_node_info(ctree, node, str, FOLDER_SPACING,
 					xpm, mask, openxpm, openmask,
 					FALSE, GTK_CTREE_ROW(node)->expanded);
+		g_free(str);
+	}
 	g_free(name);
 
 	if (!item->parent) {
@@ -1237,7 +1243,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		use_color =
 			(item->new > 0) ||
 			(add_unread_mark &&
-			 folderview_have_new_children(folderview, node));
+			 folderview_have_new_children(folderview, node));	
 	}
 
 	gtk_ctree_node_set_foreground(ctree, node, NULL);
@@ -2572,6 +2578,26 @@ static void folderview_property_cb(FolderView *folderview, guint action,
 #endif	
 }
 
+static void folderview_recollapse_nodes(FolderView *folderview, GtkCTreeNode *node)
+{
+	GSList *list = NULL;
+	GSList *done = NULL;
+	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	
+	for (list = folderview->nodes_to_recollapse; list != NULL; list = g_slist_next(list)) {
+		if (!gtkut_ctree_node_is_parent(GTK_CTREE_NODE(list->data), node)
+		&&  list->data != node) {
+			gtk_ctree_collapse(ctree, GTK_CTREE_NODE(list->data));
+			done = g_slist_append(done, GTK_CTREE_NODE(list->data));
+		}
+	}
+	for (list = done; list != NULL; list = g_slist_next(list)) {
+		folderview->nodes_to_recollapse = g_slist_remove(folderview->nodes_to_recollapse, 
+								 list->data);
+	}
+	g_slist_free(done);
+}
+
 static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 					  GdkDragContext *context,
 					  gint            x,
@@ -2609,6 +2635,16 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 			
 	}
 
+	if (acceptable || (src_item && src_item == item)) {
+		folderview_recollapse_nodes(folderview, node);
+		if (item->collapsed) {
+			gtk_ctree_expand(GTK_CTREE(widget), node);
+			folderview->nodes_to_recollapse = g_slist_append(
+								folderview->nodes_to_recollapse,
+					 			node);
+		}
+	}
+		
 	if (acceptable) {
 		gtk_signal_handler_block_by_func
 			(GTK_OBJECT(widget),
@@ -2755,6 +2791,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		inc_unlock();		
 		gtk_widget_set_sensitive(folderview->ctree, TRUE);
 	}
+	folderview->nodes_to_recollapse = NULL;
 }
 
 static gint folderview_clist_compare(GtkCList *clist,
@@ -2850,6 +2887,8 @@ static void folderview_start_drag(GtkWidget *widget, gint button, GdkEvent *even
 
 	list = gtk_target_list_new(folderview_drag_types, 1);
 
+	folderview->nodes_to_recollapse = NULL; /* in case the last drag has been cancelled */
+	
 	context = gtk_drag_begin(widget, list,
 				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event);
 	gtk_drag_set_icon_default(context);

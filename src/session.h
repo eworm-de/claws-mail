@@ -41,6 +41,9 @@ typedef enum {
 	SESSION_RECV
 } SessionPhase;
 
+typedef void (*SessionUIFunc)	(gpointer	 data,
+				 gint		 state);
+
 struct _Session
 {
 	SessionType type;
@@ -56,6 +59,8 @@ struct _Session
 	gpointer data;
 
 	void (*destroy)		(Session	*session);
+
+	SessionUIFunc ui_func;
 };
 
 void session_destroy	(Session	*session);

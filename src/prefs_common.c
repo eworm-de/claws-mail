@@ -182,7 +182,6 @@ GtkWidget *entry_spacingfont;
 #endif
 
 	GtkWidget *chkbtn_folder_unread;
-	GtkWidget *chkbtn_display_img;
 	GtkWidget *entry_ng_abbrev_len;
 	GtkWidget *spinbtn_ng_abbrev_len;
 	GtkObject *spinbtn_ng_abbrev_len_adj;
@@ -211,6 +210,9 @@ static struct Message {
 	GtkWidget *spinbtn_scrollstep;
 	GtkObject *spinbtn_scrollstep_adj;
 	GtkWidget *chkbtn_halfpage;
+
+	GtkWidget *chkbtn_display_img;
+	GtkWidget *chkbtn_resize_image;
 } message;
 
 #if USE_GPGME
@@ -255,7 +257,9 @@ static struct Other {
 	GtkWidget *checkbtn_warnqueued;
         GtkWidget *checkbtn_cliplog;
         GtkWidget *loglength_entry;
-
+#ifdef USE_SSL
+	GtkWidget *checkbtn_ssl_ask_unknown_valid;
+#endif
 } other;
 
 static struct MessageColorButtons {
@@ -556,10 +560,6 @@ static PrefParam param[] = {
 	 &display.chkbtn_folder_unread,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
-	{"display_img", "TRUE",
-	 &prefs_common.display_img, P_BOOL,
-	 &display.chkbtn_display_img,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"newsgroup_abbrev_len", "16",
 	 &prefs_common.ng_abbrev_len, P_INT,
 	 &display.spinbtn_ng_abbrev_len,
@@ -756,6 +756,13 @@ static PrefParam param[] = {
 	 &message.chkbtn_halfpage,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
+	{"display_img", "TRUE", &prefs_common.display_img, P_BOOL,
+	 &message.chkbtn_display_img,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"resize_image", "TRUE", &prefs_common.resize_image, P_BOOL,
+	 &message.chkbtn_resize_image,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
 	{"show_other_header", "FALSE", &prefs_common.show_other_header, P_BOOL,
 	 NULL, NULL, NULL},
 
@@ -878,6 +885,11 @@ static PrefParam param[] = {
 	{"warn_queued_on_exit", "TRUE", &prefs_common.warn_queued_on_exit,
 	 P_BOOL, &other.checkbtn_warnqueued,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+#ifdef USE_SSL
+	{"ssl_ask_unknown_valid", "TRUE", &prefs_common.ssl_ask_unknown_valid,
+	 P_BOOL, &other.checkbtn_ssl_ask_unknown_valid,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+#endif
 	{"work_offline", "FALSE", &prefs_common.work_offline, P_BOOL,
 	 NULL, NULL, NULL},
 
@@ -2507,7 +2519,6 @@ static void prefs_display_create(void)
 	GtkWidget *label_textfont;
 	GtkWidget *entry_textfont;
 	GtkWidget *button_textfont;
-	GtkWidget *chkbtn_display_img;
 	GtkWidget *chkbtn_transhdr;
 	GtkWidget *chkbtn_folder_unread;
 	GtkWidget *hbox1;
@@ -2630,9 +2641,6 @@ static void prefs_display_create(void)
 	PACK_CHECK_BUTTON (vbox2, chkbtn_folder_unread,
 			   _("Display unread number next to folder name"));
 
-	PACK_CHECK_BUTTON (vbox2, chkbtn_display_img,
-			   _("Automatically display images"));
-
 	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
@@ -2720,7 +2728,6 @@ static void prefs_display_create(void)
 	display.entry_textfont	= entry_textfont;
 	display.button_textfont	= button_textfont;
 
-	display.chkbtn_display_img   = chkbtn_display_img;
 	display.chkbtn_transhdr           = chkbtn_transhdr;
 	display.chkbtn_folder_unread      = chkbtn_folder_unread;
 	display.spinbtn_ng_abbrev_len     = spinbtn_ng_abbrev_len;
@@ -2760,6 +2767,9 @@ static void prefs_message_create(void)
 	GtkObject *spinbtn_scrollstep_adj;
 	GtkWidget *spinbtn_scrollstep;
 	GtkWidget *chkbtn_halfpage;
+
+	GtkWidget *chkbtn_display_img;
+	GtkWidget *chkbtn_resize_image;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -2881,6 +2891,16 @@ static void prefs_message_create(void)
 
 	SET_TOGGLE_SENSITIVITY (chkbtn_smoothscroll, hbox_scr)
 
+	vbox3 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox3);
+	gtk_box_pack_start (GTK_BOX (vbox1), vbox3, FALSE, FALSE, 0);
+
+	PACK_CHECK_BUTTON(vbox3, chkbtn_display_img,
+			   _("Automatically display attached images"));
+
+	PACK_CHECK_BUTTON(vbox3, chkbtn_resize_image,
+			  _("Resize attached images"));
+
 	message.chkbtn_enablecol   = chkbtn_enablecol;
 	message.button_edit_col    = button_edit_col;
 	message.chkbtn_mbalnum     = chkbtn_mbalnum;
@@ -2893,6 +2913,9 @@ static void prefs_message_create(void)
 	message.spinbtn_scrollstep     = spinbtn_scrollstep;
 	message.spinbtn_scrollstep_adj = spinbtn_scrollstep_adj;
 	message.chkbtn_halfpage        = chkbtn_halfpage;
+
+	message.chkbtn_display_img  = chkbtn_display_img;
+	message.chkbtn_resize_image = chkbtn_resize_image;
 }
 
 #if USE_GPGME
@@ -3277,7 +3300,12 @@ static void prefs_other_create(void)
 	GtkWidget *checkbtn_cleanonexit;
 	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_warnqueued;
-
+#ifdef USE_SSL	
+	GtkWidget *frame_ssl;
+	GtkWidget *vbox_ssl;
+	GtkWidget *hbox_ssl;
+	GtkWidget *checkbtn_ssl_ask_unknown_valid;
+#endif
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
@@ -3400,6 +3428,21 @@ static void prefs_other_create(void)
 			    FALSE, TRUE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_cliplog, loglength_entry);
 
+#ifdef USE_SSL
+	/* SSL */
+	PACK_FRAME (vbox1, frame_ssl, _("Security"));
+
+	vbox_ssl = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox_ssl);
+	gtk_container_add (GTK_CONTAINER (frame_ssl), vbox_ssl);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_ssl), 8);
+	PACK_CHECK_BUTTON (vbox_ssl, checkbtn_ssl_ask_unknown_valid, 
+			   _("Confirm acception of all SSL certificates"));
+	hbox_ssl = gtk_hbox_new (FALSE, 3);
+	gtk_container_add (GTK_CONTAINER (vbox_ssl), hbox_ssl);
+	gtk_widget_show (hbox_ssl);
+#endif
+	
 	/* On Exit */
 	PACK_FRAME (vbox1, frame_exit, _("On exit"));
 
@@ -3439,6 +3482,10 @@ static void prefs_other_create(void)
 	other.checkbtn_cleanonexit = checkbtn_cleanonexit;
 	other.checkbtn_askonclean  = checkbtn_askonclean;
 	other.checkbtn_warnqueued  = checkbtn_warnqueued;
+	
+#ifdef USE_SSL
+	other.checkbtn_ssl_ask_unknown_valid = checkbtn_ssl_ask_unknown_valid;
+#endif
 }
 
 static void date_format_ok_btn_clicked(GtkButton *button, GtkWidget **widget)

@@ -75,7 +75,8 @@ typedef enum
 {
 	S_SEARCH_SUBJECT,
 	S_SEARCH_FROM,
-	S_SEARCH_TO
+	S_SEARCH_TO,
+	S_SEARCH_EXTENDED
 } SummarySearchType;
 
 extern GtkTargetEntry summary_drag_types[1];
@@ -145,6 +146,7 @@ struct _SummaryView
 	/* current message status */
 	gint   newmsgs;
 	gint   unread;
+	gint   unreadmarked;
 	gint   messages;
 	off_t  total_size;
 	gint   deleted;

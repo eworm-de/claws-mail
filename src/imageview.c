@@ -40,7 +40,9 @@
 #include "imageview.h"
 #include "utils.h"
 
-void get_resized_size (int w, int h, int aw, int ah, int *sw, int *sh);
+static void get_resized_size(gint w, gint h, gint aw, gint ah,
+			     gint *sw, gint *sh);
+
 
 ImageView *imageview_create(void)
 {
@@ -70,17 +72,19 @@ void imageview_init(ImageView *imageview)
 
 #if HAVE_GDK_PIXBUF
 void imageview_show_image(ImageView *imageview, MimeInfo *mimeinfo,
-			  const gchar *file)
+			  const gchar *file, gboolean resize)
 {
 	GdkPixbuf *pixbuf;
 	GdkPixbuf *pixbuf_scaled;
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
-	int avail_height = imageview->scrolledwin->parent->allocation.height - 10;
-	int avail_width  = imageview->scrolledwin->parent->allocation.width - 10;
-	int sized_height = -1;
-	int sized_width  = -1;
-	
+	gint avail_width;
+	gint avail_height;
+	gint new_width;
+	gint new_height;
+
+	g_return_if_fail(imageview != NULL);
+
 	imageview_clear(imageview);
 
 	pixbuf = gdk_pixbuf_new_from_file(file);
@@ -92,13 +96,25 @@ void imageview_show_image(ImageView *imageview, MimeInfo *mimeinfo,
 
 	if (imageview->messageview->mainwin)
 		main_window_cursor_wait(imageview->messageview->mainwin);
-	
-	get_resized_size (gdk_pixbuf_get_width(pixbuf), gdk_pixbuf_get_height(pixbuf), 
-			  avail_width, avail_height, &sized_width, &sized_height);
-	
-	pixbuf_scaled = gdk_pixbuf_scale_simple (pixbuf, sized_width, sized_height, 0);
-	
-	gdk_pixbuf_render_pixmap_and_mask(pixbuf_scaled, &pixmap, &mask, 0);
+
+	if (resize) {
+		avail_width = imageview->scrolledwin->parent->allocation.width;
+		avail_height = imageview->scrolledwin->parent->allocation.height;
+		if (avail_width > 8) avail_width -= 8;
+		if (avail_height > 8) avail_height -= 8;
+
+		get_resized_size(gdk_pixbuf_get_width(pixbuf),
+				 gdk_pixbuf_get_height(pixbuf),
+				 avail_width, avail_height,
+				 &new_width, &new_height);
+
+		pixbuf_scaled = gdk_pixbuf_scale_simple
+			(pixbuf, new_width, new_height, GDK_INTERP_BILINEAR);
+		gdk_pixbuf_unref(pixbuf);
+		pixbuf = pixbuf_scaled;
+	}
+
+	gdk_pixbuf_render_pixmap_and_mask(pixbuf, &pixmap, &mask, 0);
 
 	if (!imageview->image) {
 		imageview->image = gtk_pixmap_new(pixmap, mask);
@@ -112,7 +128,6 @@ void imageview_show_image(ImageView *imageview, MimeInfo *mimeinfo,
 	gtk_widget_show(imageview->image);
 
 	gdk_pixbuf_unref(pixbuf);
-	gdk_pixbuf_unref(pixbuf_scaled);
 
 	if (imageview->messageview->mainwin)
 		main_window_cursor_normal(imageview->messageview->mainwin);
@@ -120,13 +135,15 @@ void imageview_show_image(ImageView *imageview, MimeInfo *mimeinfo,
 #else
 #if HAVE_GDK_IMLIB
 void imageview_show_image(ImageView *imageview, MimeInfo *mimeinfo,
-			  const gchar *file)
+			  const gchar *file, gboolean resize)
 {
 	GdkImlibImage *im;
-	int avail_height = imageview->scrolledwin->parent->allocation.height - 10;
-	int avail_width  = imageview->scrolledwin->parent->allocation.width - 10;
-	int sized_height = -1;
-	int sized_width  = -1;
+	gint avail_width;
+	gint avail_height;
+	gint new_width;
+	gint new_height;
+
+	g_return_if_fail(imageview != NULL);
 
 	imageview_clear(imageview);
 
@@ -140,10 +157,21 @@ void imageview_show_image(ImageView *imageview, MimeInfo *mimeinfo,
 	if (imageview->messageview->mainwin)
 		main_window_cursor_wait(imageview->messageview->mainwin);
 
-	get_resized_size (im->rgb_width, im->rgb_height, 
-			  avail_width, avail_height, &sized_width, &sized_height);
+	if (resize) {
+		avail_width = imageview->scrolledwin->parent->allocation.width;
+		avail_height = imageview->scrolledwin->parent->allocation.height;
+		if (avail_width > 8) avail_width -= 8;
+		if (avail_height > 8) avail_height -= 8;
 
-	gdk_imlib_render(im, sized_width, sized_height);
+		get_resized_size(im->rgb_width, im->rgb_height,
+				 avail_width, avail_height,
+				 &new_width, &new_height);
+	} else {
+		new_width = im->rgb_width;
+		new_height = im->rgb_height;
+	}
+
+	gdk_imlib_render(im, new_width, new_height);
 
 	if (!imageview->image) {
 		imageview->image = gtk_pixmap_new(gdk_imlib_move_image(im),
@@ -191,22 +219,23 @@ void imageview_destroy(ImageView *imageview)
 	g_free(imageview);
 }
 
-void get_resized_size (int w, int h, int aw, int ah, int *sw, int *sh) {
-	
-	float wratio = 1.0;
-	float hratio = 1.0;
-	float ratio  = 1.0;
+static void get_resized_size(gint w, gint h, gint aw, gint ah,
+			     gint *sw, gint *sh)
+{
+	gfloat wratio = 1.0;
+	gfloat hratio = 1.0;
+	gfloat ratio  = 1.0;
 
 	if (w > aw)
-		wratio = (float)((float)aw/(float)w);
+		wratio = (gfloat)aw / (gfloat)w;
 	if (h > ah)
-		hratio = (float)((float)ah/(float)h);
-	
+		hratio = (gfloat)ah / (gfloat)h;
+
 	ratio = (wratio > hratio) ? hratio : wratio;
 
-	*sw = (int)(w * ratio);
-	*sh = (int)(h * ratio);
-	
+	*sw = (gint)(w * ratio);
+	*sh = (gint)(h * ratio);
+
 	/* be paranoid */
 	if (*sw <= 0 || *sh <= 0) {
 		*sw = w;

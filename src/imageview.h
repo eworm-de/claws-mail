@@ -40,7 +40,8 @@ ImageView *imageview_create	(void);
 void imageview_init		(ImageView	*imageview);
 void imageview_show_image	(ImageView	*imageview,
 				 MimeInfo	*mimeinfo,
-				 const gchar	*file);
+				 const gchar	*file,
+				 gboolean	 render);
 void imageview_clear		(ImageView	*imageview);
 void imageview_destroy		(ImageView	*imageview);
 

@@ -159,6 +159,7 @@ CLEAN :
 	-@erase "$(INTDIR)\sourcewindow.obj"
 	-@erase "$(INTDIR)\ssl.obj"
 	-@erase "$(INTDIR)\ssl_certificate.obj"
+	-@erase "$(INTDIR)\ssl_manager.obj"
 	-@erase "$(INTDIR)\statusbar.obj"
 	-@erase "$(INTDIR)\stock_pixmap.obj"
 	-@erase "$(INTDIR)\string_match.obj"
@@ -312,6 +313,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\socket.obj" \
 	"$(INTDIR)\sourcewindow.obj" \
 	"$(INTDIR)\ssl.obj" \
+	"$(INTDIR)\ssl_certificate.obj" \
 	"$(INTDIR)\statusbar.obj" \
 	"$(INTDIR)\stock_pixmap.obj" \
 	"$(INTDIR)\string_match.obj" \
@@ -344,7 +346,7 @@ LINK32_OBJS= \
 	"..\..\fnmatch\fnmatch.lib" \
 	"..\..\..\lib\libeay32.lib" \
 	"..\..\..\lib\ssleay32.lib" \
-	"$(INTDIR)\ssl_certificate.obj"
+	"$(INTDIR)\ssl_manager.obj"
 
 "$(OUTDIR)\sylpheed.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -599,6 +601,8 @@ CLEAN :
 	-@erase "$(INTDIR)\ssl.sbr"
 	-@erase "$(INTDIR)\ssl_certificate.obj"
 	-@erase "$(INTDIR)\ssl_certificate.sbr"
+	-@erase "$(INTDIR)\ssl_manager.obj"
+	-@erase "$(INTDIR)\ssl_manager.sbr"
 	-@erase "$(INTDIR)\statusbar.obj"
 	-@erase "$(INTDIR)\statusbar.sbr"
 	-@erase "$(INTDIR)\stock_pixmap.obj"
@@ -771,6 +775,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\socket.sbr" \
 	"$(INTDIR)\sourcewindow.sbr" \
 	"$(INTDIR)\ssl.sbr" \
+	"$(INTDIR)\ssl_certificate.sbr" \
 	"$(INTDIR)\statusbar.sbr" \
 	"$(INTDIR)\stock_pixmap.sbr" \
 	"$(INTDIR)\string_match.sbr" \
@@ -790,7 +795,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\w32_mailcap.sbr" \
 	"$(INTDIR)\xml.sbr" \
 	"$(INTDIR)\xmlprops.sbr" \
-	"$(INTDIR)\ssl_certificate.sbr"
+	"$(INTDIR)\ssl_manager.sbr"
 
 "$(OUTDIR)\sylpheed.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -917,6 +922,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\socket.obj" \
 	"$(INTDIR)\sourcewindow.obj" \
 	"$(INTDIR)\ssl.obj" \
+	"$(INTDIR)\ssl_certificate.obj" \
 	"$(INTDIR)\statusbar.obj" \
 	"$(INTDIR)\stock_pixmap.obj" \
 	"$(INTDIR)\string_match.obj" \
@@ -949,7 +955,7 @@ LINK32_OBJS= \
 	"..\..\fnmatch\fnmatch.lib" \
 	"..\..\..\lib\libeay32.lib" \
 	"..\..\..\lib\ssleay32.lib" \
-	"$(INTDIR)\ssl_certificate.obj"
+	"$(INTDIR)\ssl_manager.obj"
 
 "$(OUTDIR)\sylpheed_d.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -3118,6 +3124,24 @@ SOURCE=..\src\ssl_certificate.c
 
 
 "$(INTDIR)\ssl_certificate.obj"	"$(INTDIR)\ssl_certificate.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=..\src\ssl_manager.c
+
+!IF  "$(CFG)" == "sylpheed - Win32 Release"
+
+
+"$(INTDIR)\ssl_manager.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
+
+
+"$(INTDIR)\ssl_manager.obj"	"$(INTDIR)\ssl_manager.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

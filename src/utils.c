@@ -101,6 +101,24 @@ void slist_free_strings(GSList *list)
 	}
 }
 
+GSList *slist_concat_unique (GSList *first, GSList *second)
+{
+	GSList *tmp, *ret;
+	if (first == NULL) {
+		if (second == NULL)
+			return NULL;
+		else 
+			return second;
+	} else if (second == NULL)
+		return first;
+	ret = first;
+	for (tmp = second; tmp != NULL; tmp = g_slist_next(tmp)) {
+		if (g_slist_find(ret, tmp->data) == NULL)
+			ret = g_slist_prepend(ret, tmp->data);
+	}
+	return ret;
+}
+ 
 static void hash_free_strings_func(gpointer key, gpointer value, gpointer data)
 {
 	g_free(key);

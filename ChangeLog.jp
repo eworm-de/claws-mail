@@ -1,3 +1,43 @@
+2002-11-21
+
+	* src/imageview.[ch]: imageview_show_image(): 指定されればウィンドウ
+	  サイズに合うように画像をリサイズするようにした。
+	* src/prefs_common.[ch]: 「添付画像をリサイズする」オプションを追加。
+
+2002-11-20
+
+	* SMTP の実装をリファクタリング。
+	* src/session.h: Session に ui_func を追加。
+	* src/smtp.[ch]: 接続ルーチンを smtp_session_new() から smtp_connect()
+	  に分離。
+	  smtp_ok() 以外の全ての関数の引数を SockInfo から SMTPSession
+	  に変更。
+	  各関数から UI コールバックを呼ぶようにした。
+	* src/send.c: send_message_smtp(): UI 更新のコードを
+	  send_progress_dialog_update() に分離。
+
+2002-11-18
+
+	* src/smtp.[ch]: smtp_from() から smtp_auth() を分離。
+	* src/send.c: send_message_smtp(): smtp_auth() を呼び出し、その状態
+	  をダイアログに表示。
+
+2002-11-18
+
+	* src/filter.c: strmatch_regex(): 拡張正規表現を使用(Fabien Devaux
+	  さん thanks)。
+	* src/main.c: main(): assortrc -> filterrc 移行のためのコードを
+	  削除。
+	* src/gtkutils.c: gtkut_font_load(): 現在の locale が C または
+	  POSIX の場合のみ gdk_font_load() を使用。
+	  gtkut_stext_is_uri_string(): URI 文字列に "www." を含むようにした。
+	* src/textview.c: textview_make_clickable_parts(): URI 文字列に
+	  "www." を含むようにした。
+
+2002-11-15
+
+	* version 0.8.6
+
 2002-11-13
 
 	* src/textview.c: textview_add_part(): 署名の状態を異なる色で表示。

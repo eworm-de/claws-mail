@@ -565,6 +565,10 @@ SOURCE=..\src\ssl_certificate.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\ssl_manager.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\statusbar.c
 # End Source File
 # Begin Source File
@@ -1042,6 +1046,10 @@ SOURCE=..\src\ssl.h
 # Begin Source File
 
 SOURCE=..\src\ssl_certificate.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\ssl_manager.h
 # End Source File
 # Begin Source File
 

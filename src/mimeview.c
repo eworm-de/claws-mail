@@ -485,7 +485,8 @@ static void mimeview_show_image_part(MimeView *mimeview, MimeInfo *partinfo)
 		/* Workaround for the GTK+ bug with handling scroll adjustments
 		 * in GtkViewport */
 		imageview_clear(mimeview->imageview);
-		imageview_show_image(mimeview->imageview, partinfo, filename);
+		imageview_show_image(mimeview->imageview, partinfo, filename,
+				     prefs_common.resize_image);
 		unlink(filename);
 	}
 

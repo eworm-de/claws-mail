@@ -1,11 +1,99 @@
+2002-11-26 [colin]	0.8.6claws11
+
+	* src/folderview.c
+		Fix collapsed folder not auto-expanding during
+		mail dnd, if it was the source folder.
+
+2002-11-25 [colin]	0.8.6claws10
+
+	* src/folderview.[ch]
+		Variable renaming and cleaning (slist of nodes 
+		to be re-collapsed is stored in FolderView)
+
+2002-11-25 [paul]	0.8.6claws9
+
+	* src/prefs_common.[ch]
+		fix breakage caused by last commit
+
+2002-11-25 [paul]	0.8.6claws8
+
+	* sync with 0.8.6cvs4
+		see ChangeLog 2002-11-21
+
+2002-11-25 [paul]	0.8.6claws7
+
+	* sync with 0.8.6cvs4
+		see ChangeLog 2002-11-20
+
+2002-11-25 [paul]	0.8.6claws6
+
+	* sync with 0.8.6cvs3
+		see ChangeLog 2002-11-18
+
+2002-11-25 [colin]	0.8.6claws5
+
+	* src/gtkutils.[ch]
+		Add gtkut_ctree_node_is_parent()
+	* src/folderview.c
+		Spring-loaded folders
+
+2002-11-25 [colin]	0.8.6claws4
+
+	* src/utils.[ch]
+		Add slist_concat_unique(), function to merge
+		two GSList filtering dups
+	* src/folder.[ch]
+	* src/summaryview.[ch]
+	* src/folderview.c
+	* src/main.c
+		Add detection/update/display of unread answers
+		to marked mails
+	* src/procmsg.[ch]
+		Add procmsg_find_children()
+		Add procmsg_msg_has_marked_parent()
+
+2002-11-25 [colin]	0.8.6claws3
+
+	* src/ssl_certificate.[ch]
+		Allow checking a certificate without a DNS
+		lookup
+		Allow to forget a cert (by deleting it)
+		Make ssl_certificate_destroy_public
+	* src/ssl_manager.[ch] ** NEW FILES **
+		Gui to manage (display/remove) certificates
+	* src/prefs_common.[ch]
+		Add a pref to allow silent acceptation of
+		trusted certificates or not (based on the
+		"I want to know what's going on" principle)
+	* src/mainwindow.c
+		Add SSL manager in Tools menu
+	* src/Makefile.am
+		Add the new files to the build
+	* po/POTFILES.in
+		Add ssl_manager.c to translations
+
+2002-11-25 [colin]	0.8.6claws2
+
+	* src/summaryview.[ch]
+		Add S_SEARCH_EXTENDED to the quick search, which 
+		allows to search using filtering syntax.
+
+2002-11-25 [colin]	0.8.6claws1
+
+	* src/summaryview.c
+		Deletion of duplicates now prefer deleting
+		the unread dup (fixes feature-request 638989).
+
 2002-11-24 [paul]	0.8.6claws
 
 	* po/es.po
 	  po/pl.po
 	  po/ru.po
+	  po/sr.po
 	  	updated by Ricardo Mones Lastra,
-		Witold Wladyslaw Wojciech Wilk and
-		Ruslan N. Balkin respectively
+		Witold Wladyslaw Wojciech Wilk,
+		Ruslan N. Balkin, and  Urke MMI 
+		respectively
 
 2002-11-24 [paul]	0.8.5claws182
 

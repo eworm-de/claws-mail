@@ -24,7 +24,9 @@
 #include <gtk/gtkwidget.h>
 #include <glib.h>
 #include <sys/types.h>
+#ifndef WIN32
 #include <dirent.h>
+#endif
 
 #include "ssl_manager.h"
 #include "ssl_certificate.h"

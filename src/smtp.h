@@ -58,6 +58,23 @@ typedef enum
 	SMTPAUTH_DIGEST_MD5 = 1 << 2
 } SMTPAuthType;
 
+typedef enum
+{
+	SMTP_CONNECT,
+	SMTP_HELO,
+	SMTP_EHLO,
+	SMTP_STARTTLS,
+	SMTP_FROM,
+	SMTP_AUTH,
+	SMTP_RCPT,
+	SMTP_DATA,
+	SMTP_RSET,
+	SMTP_QUIT,
+	SMTP_EOM,
+
+	N_SMTP_PHASE
+} SMTPPhase;
+
 struct _SMTPSession
 {
 	Session session;
@@ -67,39 +84,42 @@ struct _SMTPSession
 	gchar *pass;
 };
 
+Session *smtp_session_new	(void);
+void smtp_session_destroy	(Session	*session);
+
 #if USE_SSL
-Session *smtp_session_new	(const gchar	*server,
+gint smtp_connect		(SMTPSession	*session,
+				 const gchar	*server,
 				 gushort	 port,
 				 const gchar	*domain,
 				 const gchar	*user,
 				 const gchar	*pass,
 				 SSLType	 ssl_type);
 #else
-Session *smtp_session_new	(const gchar	*server,
+gint smtp_connect		(SMTPSession	*session,
+				 const gchar	*server,
 				 gushort	 port,
 				 const gchar	*domain,
 				 const gchar	*user,
 				 const gchar	*pass);
 #endif
-void smtp_session_destroy	(Session	*session);
 
 gint smtp_from			(SMTPSession	*session,
-				 const gchar	*from,
-				 SMTPAuthType	 forced_auth_type);
+				 const gchar	*from);
 gint smtp_auth			(SMTPSession	*session,
 				 SMTPAuthType	 forced_auth_type);
 
-gint smtp_ehlo			(SockInfo	*sock,
+gint smtp_ehlo			(SMTPSession	*session,
 				 const gchar	*hostname,
 				 SMTPAuthType	*avail_auth_type);
 
-gint smtp_helo			(SockInfo	*sock,
+gint smtp_helo			(SMTPSession	*session,
 				 const gchar	*hostname);
-gint smtp_rcpt			(SockInfo	*sock,
+gint smtp_rcpt			(SMTPSession	*session,
 				 const gchar	*to);
-gint smtp_data			(SockInfo	*sock);
-gint smtp_rset			(SockInfo	*sock);
-gint smtp_quit			(SockInfo	*sock);
-gint smtp_eom			(SockInfo	*sock);
+gint smtp_data			(SMTPSession	*session);
+gint smtp_rset			(SMTPSession	*session);
+gint smtp_quit			(SMTPSession	*session);
+gint smtp_eom			(SMTPSession	*session);
 
 #endif /* __SMTP_H__ */

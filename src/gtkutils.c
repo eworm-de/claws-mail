@@ -86,7 +86,7 @@ GdkFont *gtkut_font_load(const gchar *fontset_name)
 
 	g_return_val_if_fail(fontset_name != NULL, NULL);
 
-	if (MB_CUR_MAX == 1)
+	if (conv_get_current_charset() == C_US_ASCII)
 		font = gtkut_font_load_from_fontset(fontset_name);
 	else
 		font = gdk_fontset_load(fontset_name);
@@ -255,6 +255,22 @@ void gtkut_ctree_expand_parent_all(GtkCTree *ctree, GtkCTreeNode *node)
 		gtk_ctree_expand(ctree, node);
 }
 
+gboolean gtkut_ctree_node_is_parent(GtkCTreeNode *parent, GtkCTreeNode *node)
+{
+	GtkCTreeNode *tmp;
+	g_return_val_if_fail(node != NULL, FALSE);
+	g_return_val_if_fail(parent != NULL, FALSE);
+	tmp = node;
+	
+	while (tmp) {
+		if(GTK_CTREE_ROW(tmp)->parent && GTK_CTREE_ROW(tmp)->parent == parent)
+			return TRUE;
+		tmp = GTK_CTREE_ROW(tmp)->parent;
+	}
+	
+	return FALSE;
+}
+
 void gtkut_ctree_set_focus_row(GtkCTree *ctree, GtkCTreeNode *node)
 {
 	gtkut_clist_set_focus_row(GTK_CLIST(ctree),
@@ -416,9 +432,9 @@ guint gtkut_stext_str_compare(GtkSText *text, guint start_pos, guint text_len,
 gboolean gtkut_stext_is_uri_string(GtkSText *text,
 				   guint start_pos, guint text_len)
 {
-	if (gtkut_stext_str_compare(text, start_pos, text_len, "http://") ||
-	    gtkut_stext_str_compare(text, start_pos, text_len, "ftp://")  ||
-	    gtkut_stext_str_compare(text, start_pos, text_len, "https://")||
+	if (gtkut_stext_str_compare(text, start_pos, text_len, "http://")  ||
+	    gtkut_stext_str_compare(text, start_pos, text_len, "ftp://")   ||
+	    gtkut_stext_str_compare(text, start_pos, text_len, "https://") ||
 	    gtkut_stext_str_compare(text, start_pos, text_len, "www."))
 		return TRUE;
 

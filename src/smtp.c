@@ -34,106 +34,37 @@
 
 static gint verbose = 1;
 
-static gint smtp_starttls(SockInfo *sock);
-static gint smtp_auth_cram_md5(SockInfo *sock, gchar *buf, gint len);
-static gint smtp_auth_login(SockInfo *sock, gchar *buf, gint len);
+#define UI_UPDATE(session, phase) \
+{ \
+	if (SESSION(session)->ui_func) \
+		SESSION(session)->ui_func(SESSION(session), phase); \
+}
+
+static gint smtp_starttls(SMTPSession *session);
+static gint smtp_auth_cram_md5(SMTPSession *session, gchar *buf, gint len);
+static gint smtp_auth_login(SMTPSession *session, gchar *buf, gint len);
+
 static gint smtp_ok(SockInfo *sock, gchar *buf, gint len);
 
-#if USE_SSL
-Session *smtp_session_new(const gchar *server, gushort port,
-			  const gchar *domain,
-			  const gchar *user, const gchar *pass,
-			  SSLType ssl_type)
-#else
-Session *smtp_session_new(const gchar *server, gushort port,
-			  const gchar *domain,
-			  const gchar *user, const gchar *pass)
-#endif
+Session *smtp_session_new(void)
 {
 	SMTPSession *session;
-	SockInfo *sock;
-	gboolean use_esmtp;
-	SMTPAuthType avail_auth_type = 0;
-	gint val;
 
-	g_return_val_if_fail(server != NULL, NULL);
-
-#if USE_SSL
-	use_esmtp = user != NULL || ssl_type == SSL_STARTTLS;
-#else
-	use_esmtp = user != NULL;
-#endif
-
-	if ((sock = sock_connect(server, port)) == NULL) {
-		log_warning(_("Can't connect to SMTP server: %s:%d\n"),
-			    server, port);
-		return NULL;
-	}
-
-#if USE_SSL
-	if (ssl_type == SSL_TUNNEL && !ssl_init_socket(sock)) {
-		log_warning(_("SSL connection failed"));
-		sock_close(sock);
-		return NULL;
-	}
-#endif
-
-	if (smtp_ok(sock, NULL, 0) != SM_OK) {
-		log_warning(_("Error occurred while connecting to %s:%d\n"),
-			    server, port);
-		sock_close(sock);
-		return NULL;
-	}
-
-	if (!domain)
-		domain = get_domain_name();
-
-	if (use_esmtp)
-		val = smtp_ehlo(sock, domain, &avail_auth_type);
-	else
-		val = smtp_helo(sock, domain);
-	if (val != SM_OK) {
-		log_warning(_("Error occurred while sending HELO\n"));
-		sock_close(sock);
-		return NULL;
-	}
-
-#if USE_SSL
-	if (ssl_type == SSL_STARTTLS) {
-		val = smtp_starttls(sock);
-		if (val != SM_OK) {
-			log_warning(_("Error occurred while sending STARTTLS\n"));
-			sock_close(sock);
-			return NULL;
-		}
-		if (!ssl_init_socket_with_method(sock, SSL_METHOD_TLSv1)) {
-			sock_close(sock);
-			return NULL;
-		}
-		val = smtp_ehlo(sock, domain, &avail_auth_type);
-		if (val != SM_OK) {
-			log_warning(_("Error occurred while sending EHLO\n"));
-			sock_close(sock);
-			return NULL;
-		}
-	}
-#endif
-
-	session = g_new(SMTPSession, 1);
+	session = g_new0(SMTPSession, 1);
 	SESSION(session)->type             = SESSION_SMTP;
-	SESSION(session)->server           = g_strdup(server);
-	SESSION(session)->sock             = sock;
-	SESSION(session)->connected        = TRUE;
+	SESSION(session)->server           = NULL;
+	SESSION(session)->sock             = NULL;
+	SESSION(session)->connected        = FALSE;
 	SESSION(session)->phase            = SESSION_READY;
 	SESSION(session)->last_access_time = 0;
 	SESSION(session)->data             = NULL;
 
 	SESSION(session)->destroy          = smtp_session_destroy;
+	SESSION(session)->ui_func          = NULL;
 
-	session->avail_auth_type           = avail_auth_type;
-	session->user                      = user ? g_strdup(user) : NULL;
-	session->pass                      = pass ? g_strdup(pass) :
-					     user ? g_strdup("") : NULL;
+	session->avail_auth_type           = 0;
+	session->user                      = NULL;
+	session->pass                      = NULL;
 
 	return SESSION(session);
 }
@@ -147,18 +78,102 @@ void smtp_session_destroy(Session *session)
 	g_free(SMTP_SESSION(session)->pass);
 }
 
-gint smtp_from(SMTPSession *session, const gchar *from,
-	       SMTPAuthType forced_auth_type)
+#if USE_SSL
+gint smtp_connect(SMTPSession *session, const gchar *server, gushort port,
+		  const gchar *domain, const gchar *user, const gchar *pass,
+		  SSLType ssl_type)
+#else
+gint smtp_connect(SMTPSession *session, const gchar *server, gushort port,
+		  const gchar *domain, const gchar *user, const gchar *pass)
+#endif
+{
+	SockInfo *sock;
+	gboolean use_esmtp;
+	SMTPAuthType avail_auth_type = 0;
+	gint val;
+
+	g_return_val_if_fail(session != NULL, SM_ERROR);
+	g_return_val_if_fail(server != NULL, SM_ERROR);
+
+#if USE_SSL
+	use_esmtp = user != NULL || ssl_type == SSL_STARTTLS;
+#else
+	use_esmtp = user != NULL;
+#endif
+
+	SESSION(session)->server = g_strdup(server);
+	session->user = user ? g_strdup(user) : NULL;
+	session->pass = pass ? g_strdup(pass) : user ? g_strdup("") : NULL;
+
+	UI_UPDATE(session, SMTP_CONNECT);
+
+	if ((sock = sock_connect(server, port)) == NULL) {
+		log_warning(_("Can't connect to SMTP server: %s:%d\n"),
+			    server, port);
+		return SM_ERROR;
+	}
+
+#if USE_SSL
+	if (ssl_type == SSL_TUNNEL && !ssl_init_socket(sock)) {
+		log_warning(_("SSL connection failed"));
+		sock_close(sock);
+		return SM_ERROR;
+	}
+#endif
+
+	if (smtp_ok(sock, NULL, 0) != SM_OK) {
+		log_warning(_("Error occurred while connecting to %s:%d\n"),
+			    server, port);
+		sock_close(sock);
+		return SM_ERROR;
+	}
+
+	SESSION(session)->sock = sock;
+	SESSION(session)->connected = TRUE;
+
+	if (!domain)
+		domain = get_domain_name();
+
+	if (use_esmtp)
+		val = smtp_ehlo(session, domain, &avail_auth_type);
+	else
+		val = smtp_helo(session, domain);
+	if (val != SM_OK) {
+		log_warning(_("Error occurred while sending HELO\n"));
+		return val;
+	}
+
+#if USE_SSL
+	if (ssl_type == SSL_STARTTLS) {
+		val = smtp_starttls(session);
+		if (val != SM_OK) {
+			log_warning(_("Error occurred while sending STARTTLS\n"));
+			return val;
+		}
+		if (!ssl_init_socket_with_method(sock, SSL_METHOD_TLSv1)) {
+			return SM_ERROR;
+		}
+		val = smtp_ehlo(session, domain, &avail_auth_type);
+		if (val != SM_OK) {
+			log_warning(_("Error occurred while sending EHLO\n"));
+			return val;
+		}
+	}
+#endif
+
+	session->avail_auth_type = avail_auth_type;
+
+	return 0;
+}
+
+gint smtp_from(SMTPSession *session, const gchar *from)
 {
 	gchar buf[MSGBUFSIZE];
 
 	g_return_val_if_fail(session != NULL, SM_ERROR);
 	g_return_val_if_fail(from != NULL, SM_ERROR);
 
-	if (session->user) {
-		if (smtp_auth(session, forced_auth_type) != SM_OK)
-			return SM_AUTHFAIL;
-	}
+	UI_UPDATE(session, SMTP_FROM);
 
 	if (strchr(from, '<'))
 		g_snprintf(buf, sizeof(buf), "MAIL FROM: %s", from);
@@ -184,17 +199,19 @@ gint smtp_auth(SMTPSession *session, SMTPAuthType forced_auth_type)
 	g_return_val_if_fail(session != NULL, SM_ERROR);
 	g_return_val_if_fail(session->user != NULL, SM_ERROR);
 
+	UI_UPDATE(session, SMTP_AUTH);
+
 	sock = SESSION(session)->sock;
 
 	if ((forced_auth_type == SMTPAUTH_CRAM_MD5 ||
 	     (forced_auth_type == 0 &&
 	      (session->avail_auth_type & SMTPAUTH_CRAM_MD5) != 0)) &&
-	    smtp_auth_cram_md5(sock, buf, sizeof(buf)) == SM_OK)
+	    smtp_auth_cram_md5(session, buf, sizeof(buf)) == SM_OK)
 		authtype = SMTPAUTH_CRAM_MD5;
 	else if ((forced_auth_type == SMTPAUTH_LOGIN ||
 		  (forced_auth_type == 0 &&
 		   (session->avail_auth_type & SMTPAUTH_LOGIN) != 0)) &&
-		 smtp_auth_login(sock, buf, sizeof(buf)) == SM_OK)
+		 smtp_auth_login(session, buf, sizeof(buf)) == SM_OK)
 		authtype = SMTPAUTH_LOGIN;
 	else {
 		log_warning(_("SMTP AUTH not available\n"));
@@ -268,10 +285,15 @@ gint smtp_auth(SMTPSession *session, SMTPAuthType forced_auth_type)
 	return smtp_ok(sock, NULL, 0);
 }
 
-gint smtp_ehlo(SockInfo *sock, const gchar *hostname,
+gint smtp_ehlo(SMTPSession *session, const gchar *hostname,
 	       SMTPAuthType *avail_auth_type)
 {
+	SockInfo *sock;
 	gchar buf[MSGBUFSIZE];
+
+	UI_UPDATE(session, SMTP_EHLO);
+
+	sock = SESSION(session)->sock;
 
 	*avail_auth_type = 0;
 
@@ -312,8 +334,14 @@ gint smtp_ehlo(SockInfo *sock, const gchar *hostname,
 	return SM_UNRECOVERABLE;
 }
 
-static gint smtp_starttls(SockInfo *sock)
+static gint smtp_starttls(SMTPSession *session)
 {
+	SockInfo *sock;
+
+	UI_UPDATE(session, SMTP_STARTTLS);
+
+	sock = SESSION(session)->sock;
+
 	sock_printf(sock, "STARTTLS\r\n");
 	if (verbose)
 		log_print("ESMTP> STARTTLS\n");
@@ -321,8 +349,14 @@ static gint smtp_starttls(SockInfo *sock)
 	return smtp_ok(sock, NULL, 0);
 }
 
-static gint smtp_auth_cram_md5(SockInfo *sock, gchar *buf, gint len)
+static gint smtp_auth_cram_md5(SMTPSession *session, gchar *buf, gint len)
 {
+	SockInfo *sock;
+
+	UI_UPDATE(session, SMTP_AUTH);
+
+	sock = SESSION(session)->sock;
+
 	sock_printf(sock, "AUTH CRAM-MD5\r\n");
 	if (verbose)
 		log_print("ESMTP> AUTH CRAM-MD5\n");
@@ -330,8 +364,14 @@ static gint smtp_auth_cram_md5(SockInfo *sock, gchar *buf, gint len)
 	return smtp_ok(sock, buf, len);
 }
 
-static gint smtp_auth_login(SockInfo *sock, gchar *buf, gint len)
+static gint smtp_auth_login(SMTPSession *session, gchar *buf, gint len)
 {
+	SockInfo *sock;
+
+	UI_UPDATE(session, SMTP_AUTH);
+
+	sock = SESSION(session)->sock;
+
 	sock_printf(sock, "AUTH LOGIN\r\n");
 	if (verbose)
 		log_print("ESMTP> AUTH LOGIN\n");
@@ -339,8 +379,14 @@ static gint smtp_auth_login(SockInfo *sock, gchar *buf, gint len)
 	return smtp_ok(sock, buf, len);
 }
 
-gint smtp_helo(SockInfo *sock, const gchar *hostname)
+gint smtp_helo(SMTPSession *session, const gchar *hostname)
 {
+	SockInfo *sock;
+
+	UI_UPDATE(session, SMTP_HELO);
+
+	sock = SESSION(session)->sock;
+
 	sock_printf(sock, "HELO %s\r\n", hostname);
 	if (verbose)
 		log_print("SMTP> HELO %s\n", hostname);
@@ -348,9 +394,14 @@ gint smtp_helo(SockInfo *sock, const gchar *hostname)
 	return smtp_ok(sock, NULL, 0);
 }
 
-gint smtp_rcpt(SockInfo *sock, const gchar *to)
+gint smtp_rcpt(SMTPSession *session, const gchar *to)
 {
+	SockInfo *sock;
 	gchar buf[MSGBUFSIZE];
+
+	UI_UPDATE(session, SMTP_RCPT);
+
+	sock = SESSION(session)->sock;
 
 	if (strchr(to, '<'))
 		g_snprintf(buf, sizeof(buf), "RCPT TO: %s", to);
@@ -364,8 +415,14 @@ gint smtp_rcpt(SockInfo *sock, const gchar *to)
 	return smtp_ok(sock, NULL, 0);
 }
 
-gint smtp_data(SockInfo *sock)
+gint smtp_data(SMTPSession *session)
 {
+	SockInfo *sock;
+
+	UI_UPDATE(session, SMTP_DATA);
+
+	sock = SESSION(session)->sock;
+
 	sock_printf(sock, "DATA\r\n");
 	if (verbose)
 		log_print("SMTP> DATA\n");
@@ -373,8 +430,14 @@ gint smtp_data(SockInfo *sock)
 	return smtp_ok(sock, NULL, 0);
 }
 
-gint smtp_rset(SockInfo *sock)
+gint smtp_rset(SMTPSession *session)
 {
+	SockInfo *sock;
+
+	UI_UPDATE(session, SMTP_RSET);
+
+	sock = SESSION(session)->sock;
+
 	sock_printf(sock, "RSET\r\n");
 	if (verbose)
 		log_print("SMTP> RSET\n");
@@ -382,8 +445,14 @@ gint smtp_rset(SockInfo *sock)
 	return smtp_ok(sock, NULL, 0);
 }
 
-gint smtp_quit(SockInfo *sock)
+gint smtp_quit(SMTPSession *session)
 {
+	SockInfo *sock;
+
+	UI_UPDATE(session, SMTP_QUIT);
+
+	sock = SESSION(session)->sock;
+
 	sock_printf(sock, "QUIT\r\n");
 	if (verbose)
 		log_print("SMTP> QUIT\n");
@@ -391,8 +460,14 @@ gint smtp_quit(SockInfo *sock)
 	return smtp_ok(sock, NULL, 0);
 }
 
-gint smtp_eom(SockInfo *sock)
+gint smtp_eom(SMTPSession *session)
 {
+	SockInfo *sock;
+
+	UI_UPDATE(session, SMTP_EOM);
+
+	sock = SESSION(session)->sock;
+
 	sock_printf(sock, ".\r\n");
 	if (verbose)
 		log_print("SMTP> . (EOM)\n");

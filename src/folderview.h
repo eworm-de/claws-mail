@@ -57,6 +57,9 @@ struct _FolderView
 	SummaryView  *summaryview;
 
 	gint folder_item_update_callback_id;
+	
+	/* for drag and drop */
+	GSList *nodes_to_recollapse;
 };
 
 FolderView *folderview_create		(void);
