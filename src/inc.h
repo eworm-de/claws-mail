@@ -86,6 +86,7 @@ struct _Pop3State
 	gint cur_msg;
 	gint cur_total_num;
 	gint cur_total_bytes;
+	gint cur_total_recv_bytes;
 
 	Pop3MsgInfo *msg;
 

@@ -213,6 +213,7 @@ static struct Interface {
 	GtkWidget *checkbtn_addaddrbyclick;
 	GtkWidget *optmenu_recvdialog;
 	GtkWidget *checkbtn_no_recv_err_panel;
+	GtkWidget *checkbtn_close_recv_dialog;
  	GtkWidget *optmenu_nextunreadmsgdialog;
 	GtkWidget *entry_pixmap_theme;
 	GtkWidget *combo_pixmap_theme;
@@ -731,6 +732,9 @@ static PrefParam param[] = {
 	 prefs_common_recv_dialog_set_optmenu},
 	{"no_receive_error_panel", "FALSE", &prefs_common.no_recv_err_panel,
 	 P_BOOL, &interface.checkbtn_no_recv_err_panel,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"close_receive_dialog", "TRUE", &prefs_common.close_recv_dialog,
+	 P_BOOL, &interface.checkbtn_close_recv_dialog,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"nextunreadmsg_dialog", NULL, &prefs_common.next_unread_msg_dialog, P_ENUM,
 	 &interface.optmenu_nextunreadmsgdialog,
@@ -2544,6 +2548,7 @@ static void prefs_interface_create(void)
 	GtkWidget *menu;
 	GtkWidget *menuitem;
 	GtkWidget *checkbtn_no_recv_err_panel;
+	GtkWidget *checkbtn_close_recv_dialog;
 
 	GtkWidget *frame_addr;
 	GtkWidget *vbox_addr;
@@ -2610,9 +2615,6 @@ static void prefs_interface_create(void)
 
 	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW);
 
-	PACK_CHECK_BUTTON (vbox2, checkbtn_no_recv_err_panel,
-			   _("No popup error dialog on receive error"));
-
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
@@ -2633,6 +2635,12 @@ static void prefs_interface_create(void)
 	MENUITEM_ADD (menu, menuitem, _("Never"), RECV_DIALOG_NEVER);
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_recvdialog), menu);
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_no_recv_err_panel,
+			   _("Don't popup error dialog on receive error"));
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_close_recv_dialog,
+			   _("Close receive dialog when finished"));
 
 	PACK_FRAME (vbox1, frame_addr, _("Address book"));
 
@@ -2727,6 +2735,7 @@ static void prefs_interface_create(void)
 	interface.checkbtn_immedexec          = checkbtn_immedexec;
 	interface.optmenu_recvdialog	      = optmenu_recvdialog;
 	interface.checkbtn_no_recv_err_panel  = checkbtn_no_recv_err_panel;
+	interface.checkbtn_close_recv_dialog  = checkbtn_close_recv_dialog;
 	interface.checkbtn_addaddrbyclick     = checkbtn_addaddrbyclick;
 	interface.optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
 	interface.combo_pixmap_theme	      = combo_pixmap_theme;

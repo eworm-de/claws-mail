@@ -109,6 +109,9 @@ static void inc_put_error		(IncState	 istate);
 
 static void inc_cancel_cb		(GtkWidget	*widget,
 					 gpointer	 data);
+static gint inc_dialog_delete_cb	(GtkWidget	*widget,
+					 GdkEventAny	*event,
+					 gpointer	 data);
 
 static gint inc_spool			(void);
 static gint get_spool			(FolderItem	*dest,
@@ -367,7 +370,7 @@ static IncProgressDialog *inc_progress_dialog_create(void)
 	gtk_signal_connect(GTK_OBJECT(progress->cancel_btn), "clicked",
 			   GTK_SIGNAL_FUNC(inc_cancel_cb), dialog);
 	gtk_signal_connect(GTK_OBJECT(progress->window), "delete_event",
-			   GTK_SIGNAL_FUNC(gtk_true), NULL);
+			   GTK_SIGNAL_FUNC(inc_dialog_delete_cb), dialog);
 	/* manage_window_set_transient(GTK_WINDOW(progress->window)); */
 
 	progress_dialog_set_value(progress, 0.0);
@@ -489,6 +492,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 	gint num = 0;
 	gint error_num = 0;
 	gint new_msgs = 0;
+	gchar *fin_msg;
 
 	while (inc_dialog->queue_list != NULL) {
 		session = inc_dialog->queue_list->data;
@@ -534,8 +538,18 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		inc_state = inc_pop3_session_do(session);
 
 		if (inc_state == INC_SUCCESS) {
+			gchar *msg;
+
+			if (pop3_state->cur_total_num > 0)
+				msg = g_strdup_printf
+					(_("Done (%d message(s) (%s) received)"),
+					 pop3_state->cur_total_num,
+					 to_human_readable(pop3_state->cur_total_recv_bytes));
+			else
+				msg = g_strdup_printf(_("Done (no new messages)"));
 			gtk_clist_set_pixmap(clist, num, 0, okxpm, okxpmmask);
-			gtk_clist_set_text(clist, num, 2, _("Done"));
+			gtk_clist_set_text(clist, num, 2, msg);
+			g_free(msg);
 		} else if (inc_state == INC_CANCEL) {
 			gtk_clist_set_pixmap(clist, num, 0, okxpm, okxpmmask);
 			gtk_clist_set_text(clist, num, 2, _("Cancelled"));
@@ -633,11 +647,19 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		num++;
 	}
 
+	if (new_msgs > 0)
+		fin_msg = g_strdup_printf(_("Finished (%d new message(s))"),
+					  new_msgs);
+	else
+		fin_msg = g_strdup_printf(_("Finished (no new messages)"));
+
+	progress_dialog_set_label(inc_dialog->dialog, fin_msg);
+
 	if (error_num && !prefs_common.no_recv_err_panel) {
 		if (inc_dialog->show_dialog)
 			manage_window_focus_in(inc_dialog->dialog->window,
 					       NULL, NULL);
-		alertpanel_error(_("Some errors occured while getting mail."));
+		alertpanel_error(_("Some errors occurred while getting mail."));
 		if (inc_dialog->show_dialog)
 			manage_window_focus_out(inc_dialog->dialog->window,
 						NULL, NULL);
@@ -650,7 +672,16 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			g_list_remove(inc_dialog->queue_list, session);
 	}
 
-	inc_progress_dialog_destroy(inc_dialog);
+	if (prefs_common.close_recv_dialog)
+		inc_progress_dialog_destroy(inc_dialog);
+	else {
+		gtk_window_set_title(GTK_WINDOW(inc_dialog->dialog->window),
+				     fin_msg);
+		gtk_label_set_text(GTK_LABEL(GTK_BIN(inc_dialog->dialog->cancel_btn)->child),
+				   _("Close"));
+	}
+
+	g_free(fin_msg);
 
 	return new_msgs;
 }
@@ -1075,6 +1106,11 @@ static void inc_cancel(IncProgressDialog *dialog)
 
 	g_return_if_fail(dialog != NULL);
 
+	if (dialog->queue_list == NULL) {
+		inc_progress_dialog_destroy(dialog);
+		return;
+	}
+
 	session = dialog->queue_list->data;
 	sockinfo = session->pop3_state->sockinfo;
 
@@ -1101,6 +1137,17 @@ void inc_cancel_all(void)
 static void inc_cancel_cb(GtkWidget *widget, gpointer data)
 {
 	inc_cancel((IncProgressDialog *)data);
+}
+
+static gint inc_dialog_delete_cb(GtkWidget *widget, GdkEventAny *event,
+				 gpointer data)
+{
+	IncProgressDialog *dialog = (IncProgressDialog *)data;
+
+	if (dialog->queue_list == NULL)
+		inc_progress_dialog_destroy(dialog);
+
+	return TRUE;
 }
 
 static gint inc_spool(void)

@@ -1,3 +1,13 @@
+2002-08-29
+
+	* src/inc.[ch]
+	  src/pop.c
+	  src/progressdialog.c: show detailed information to the status
+	  column.
+	  Added cur_total_recv_bytes to Pop3State.
+	* src/prefs_common.[ch]: added an option to specify whether to
+	  close receive dialog when finished.
+
 2002-08-28
 
 	* src/folder.[ch]: folder_get_path(): new. It returns the root path

@@ -220,6 +220,7 @@ struct _PrefsCommon
 	gboolean open_inbox_on_inc;
 	gboolean immediate_exec;
 	RecvDialogMode recv_dialog_mode;
+	gboolean close_recv_dialog;
 	gboolean no_recv_err_panel;
 	NextUnreadMsgDialogShow next_unread_msg_dialog;
 	gboolean add_address_by_click;
