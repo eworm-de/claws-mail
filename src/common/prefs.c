@@ -38,13 +38,12 @@
 PrefFile *prefs_read_open(const gchar *path)
 {
 	PrefFile *pfile;
-	gchar *tmppath;
 	FILE *fp;
 
 	g_return_val_if_fail(path != NULL, NULL);
 
 	if ((fp = fopen(path, "rb")) == NULL) {
-		FILE_OP_ERROR(tmppath, "fopen");
+		FILE_OP_ERROR(path, "fopen");
 		return NULL;
 	}
 

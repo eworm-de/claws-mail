@@ -1,3 +1,8 @@
+2003-01-02 [thorsten]	0.8.8claws39
+
+	* src/prefs.c
+		fixed printing wrong variable
+
 2003-01-02 [thorsten]	0.8.8claws38
 
 	* src/prefs.c
