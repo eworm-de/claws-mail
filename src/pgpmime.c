@@ -75,7 +75,7 @@ static gboolean pgpmime_is_signed(MimeInfo *mimeinfo)
 {
 	MimeInfo *parent;
 	MimeInfo *signature;
-	gchar *protocol;
+	const gchar *protocol;
 	PrivacyDataPGP *data = NULL;
 	
 	g_return_val_if_fail(mimeinfo != NULL, FALSE);
@@ -92,7 +92,7 @@ static gboolean pgpmime_is_signed(MimeInfo *mimeinfo)
 	if ((parent->type != MIMETYPE_MULTIPART) ||
 	    g_strcasecmp(parent->subtype, "signed"))
 		return FALSE;
-	protocol = g_hash_table_lookup(parent->parameters, "protocol");
+	protocol = procmime_mimeinfo_get_parameter(parent, "protocol");
 	if ((protocol == NULL) || g_strcasecmp(protocol, "application/pgp-signature"))
 		return FALSE;
 
@@ -206,12 +206,14 @@ static gchar *pgpmime_get_sig_info_full(MimeInfo *mimeinfo)
 static gboolean pgpmime_is_encrypted(MimeInfo *mimeinfo)
 {
 	MimeInfo *tmpinfo;
+	const gchar *tmpstr;
 	
 	if (mimeinfo->type != MIMETYPE_MULTIPART)
 		return FALSE;
 	if (g_strcasecmp(mimeinfo->subtype, "encrypted"))
 		return FALSE;
-	if (g_strcasecmp(procmime_mimeinfo_get_parameter(mimeinfo, "protocol"), "application/pgp-encrypted"))
+	tmpstr = procmime_mimeinfo_get_parameter(mimeinfo, "protocol");
+	if ((tmpstr == NULL) || g_strcasecmp(tmpstr, "application/pgp-encrypted"))
 		return FALSE;
 	if (g_node_n_children(mimeinfo->node) != 2)
 		return FALSE;

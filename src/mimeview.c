@@ -619,52 +619,50 @@ static void display_full_info_cb(GtkWidget *widget, gpointer user_data);
 
 static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
 {
-	if (privacy_mimeinfo_is_signed(mimeinfo)) {
-		gchar *text = NULL, *button_text = NULL;
-		GtkSignalFunc func = NULL;
-		StockPixmap icon = STOCK_PIXMAP_PRIVACY_SIGNED;
-		
-		switch (privacy_mimeinfo_get_sig_status(mimeinfo)) {
-		case SIGNATURE_UNCHECKED:
-			button_text = _("Check");
-			func = check_signature_cb;
-			icon = STOCK_PIXMAP_PRIVACY_SIGNED;
-			break;
-		case SIGNATURE_OK:
-			button_text = _("Full info");
-			func = display_full_info_cb;
-			icon = STOCK_PIXMAP_PRIVACY_PASSED;
-			break;
-		case SIGNATURE_WARN:
-			button_text = _("Full info");
-			func = display_full_info_cb;
-			icon = STOCK_PIXMAP_PRIVACY_WARN;
-			break;
-		case SIGNATURE_INVALID:
-			button_text = _("Full info");
-			func = display_full_info_cb;
-			icon = STOCK_PIXMAP_PRIVACY_FAILED;
-			break;
-		case SIGNATURE_CHECK_FAILED:
-			button_text = _("Check again");
-			func = check_signature_cb;
-			icon = STOCK_PIXMAP_PRIVACY_UNKNOWN;
-		default:
-			break;
-		}
-		text = privacy_mimeinfo_sig_info_short(mimeinfo);
-		noticeview_set_text(mimeview->siginfoview, text);
-		g_free(text);
-		noticeview_set_button_text(mimeview->siginfoview, button_text);
-		noticeview_set_button_press_callback(
-			mimeview->siginfoview,
-			func,
-			(gpointer) mimeview);
-		noticeview_set_icon(mimeview->siginfoview, icon);
-		noticeview_show(mimeview->siginfoview);
-	} else {
-		noticeview_hide(mimeview->siginfoview);
+	gchar *text = NULL, *button_text = NULL;
+	GtkSignalFunc func = NULL;
+	StockPixmap icon = STOCK_PIXMAP_PRIVACY_SIGNED;
+
+	g_return_if_fail(mimeview != NULL);
+	g_return_if_fail(mimeinfo != NULL);
+	
+	switch (privacy_mimeinfo_get_sig_status(mimeinfo)) {
+	case SIGNATURE_UNCHECKED:
+		button_text = _("Check");
+		func = check_signature_cb;
+		icon = STOCK_PIXMAP_PRIVACY_SIGNED;
+		break;
+	case SIGNATURE_OK:
+		button_text = _("Full info");
+		func = display_full_info_cb;
+		icon = STOCK_PIXMAP_PRIVACY_PASSED;
+		break;
+	case SIGNATURE_WARN:
+		button_text = _("Full info");
+		func = display_full_info_cb;
+		icon = STOCK_PIXMAP_PRIVACY_WARN;
+		break;
+	case SIGNATURE_INVALID:
+		button_text = _("Full info");
+		func = display_full_info_cb;
+		icon = STOCK_PIXMAP_PRIVACY_FAILED;
+		break;
+	case SIGNATURE_CHECK_FAILED:
+		button_text = _("Check again");
+		func = check_signature_cb;
+		icon = STOCK_PIXMAP_PRIVACY_UNKNOWN;
+	default:
+		break;
 	}
+	text = privacy_mimeinfo_sig_info_short(mimeinfo);
+	noticeview_set_text(mimeview->siginfoview, text);
+	g_free(text);
+	noticeview_set_button_text(mimeview->siginfoview, button_text);
+	noticeview_set_button_press_callback(
+		mimeview->siginfoview,
+		func,
+		(gpointer) mimeview);
+	noticeview_set_icon(mimeview->siginfoview, icon);
 }
 
 static void check_signature_cb(GtkWidget *widget, gpointer user_data)
@@ -673,7 +671,7 @@ static void check_signature_cb(GtkWidget *widget, gpointer user_data)
 	MimeInfo *mimeinfo = mimeview_get_selected_part(mimeview);
 	
 	privacy_mimeinfo_check_signature(mimeinfo);
-	update_signature_noticeview(mimeview, mimeinfo);
+	update_signature_noticeview(mimeview, mimeview->siginfo);
 }
 
 static void display_full_info_cb(GtkWidget *widget, gpointer user_data)
@@ -681,10 +679,35 @@ static void display_full_info_cb(GtkWidget *widget, gpointer user_data)
 	MimeView *mimeview = (MimeView *) user_data;
 	MimeInfo *mimeinfo = mimeview_get_selected_part(mimeview);
 	gchar *siginfo;
-	
-	siginfo = privacy_mimeinfo_sig_info_full(mimeinfo);
+
+	siginfo = privacy_mimeinfo_sig_info_full(mimeview->siginfo);
 	textview_set_text(mimeview->textview, siginfo);
 	g_free(siginfo);
+	noticeview_set_button_text(mimeview->siginfoview, NULL);
+}
+
+static void update_signature_info(MimeView *mimeview, MimeInfo *selected)
+{
+	MimeInfo *siginfo;
+
+	g_return_if_fail(mimeview != NULL);
+	g_return_if_fail(selected != NULL);
+	
+	siginfo = selected;
+	while (siginfo != NULL) {
+		if (privacy_mimeinfo_is_signed(siginfo))
+			break;
+		siginfo = procmime_mimeinfo_parent(siginfo);
+	}
+	mimeview->siginfo = siginfo;
+	
+	if (siginfo == NULL) {
+		noticeview_hide(mimeview->siginfoview);
+		return;
+	}
+	
+	update_signature_noticeview(mimeview, siginfo);
+	noticeview_show(mimeview->siginfoview);
 }
 
 static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
@@ -708,7 +731,7 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 	
 	mimeview->textview->default_text = FALSE;
 
-	update_signature_noticeview(mimeview, partinfo);
+	update_signature_info(mimeview, partinfo);
 
 	if (!mimeview_show_part(mimeview, partinfo)) {
 		switch (partinfo->type) {
@@ -1038,7 +1061,7 @@ static void mimeview_save_as(MimeView *mimeview)
 	}			 
 	g_return_if_fail(partinfo != NULL);
 	
-	if (partname = procmime_mimeinfo_get_parameter(partinfo, "name")) {
+	if ((partname = procmime_mimeinfo_get_parameter(partinfo, "name")) != NULL) {
 		Xstrdup_a(defname, partname, return);
 		subst_for_filename(defname);
 	}

@@ -84,6 +84,7 @@ struct _MimeView
 	gint oldsize;
 
 	NoticeView *siginfoview;
+	MimeInfo *siginfo;
 };
 
 struct _MimeViewerFactory

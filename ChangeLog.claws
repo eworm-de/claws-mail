@@ -1,4 +1,18 @@
+2003-11-18 [christoph]	0.9.6claws79
+
+	* src/mimeview.[ch]
+		check parent MimeInfos for signatures and display the
+		result of the parent when found
+
+	* src/pgpmime.c
+		o avoid NULL pointer warnings
+		o use procmime_mimeinfo_get_parameter()
+
+	* src/sgpgme.c
+		small text changes
+
 2003-11-17 [luke]	0.9.6claws78
+
         * src/textview.c
                 add check for disguised URLs, fixing bug 57
                 "Hidden URL in HTML Mails"

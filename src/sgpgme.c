@@ -118,7 +118,7 @@ gchar *sgpgme_sigstat_info_short(GpgmeCtx ctx, GpgmeSigStat status)
 			get_validity_str(validity));
 	}
 	case GPGME_SIG_STAT_GOOD_EXP:
-		return g_strdup(_("The signature of this part has expired"));
+		return g_strdup(_("The signature has expired"));
 	case GPGME_SIG_STAT_GOOD_EXPKEY:
 		return g_strdup(_("The key that was used to sign this part has expired"));
 	case GPGME_SIG_STAT_DIFF:
@@ -132,7 +132,7 @@ gchar *sgpgme_sigstat_info_short(GpgmeCtx ctx, GpgmeSigStat status)
 	case GPGME_SIG_STAT_ERROR:
 		return g_strdup(_("An error occured"));
 	case GPGME_SIG_STAT_NONE:
-		return g_strdup(_("The signature of this part has not been checked"));
+		return g_strdup(_("The signature has not been checked"));
 	}
 	return g_strdup(_("Error"));
 }
