@@ -5462,7 +5462,10 @@ static void summary_find_answers (SummaryView *summaryview, MsgInfo *msg)
 		folderview_select(summaryview->mainwin->folderview, sent_folder);
 	}
 	
+	gtk_option_menu_set_history(GTK_OPTION_MENU(summaryview->search_type_opt),
+				    S_SEARCH_EXTENDED);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(summaryview->toggle_search), TRUE);
+
 	gtk_entry_set_text(GTK_ENTRY(summaryview->search_string), buf);
 	g_free(buf);
 	summary_show(summaryview, summaryview->folder_item);
