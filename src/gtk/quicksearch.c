@@ -175,6 +175,27 @@ static gboolean searchtype_changed(GtkMenuItem *widget, gpointer data)
 	if (quicksearch->callback != NULL)
 		quicksearch->callback(quicksearch, quicksearch->callback_data);
 	quicksearch_set_running(quicksearch, FALSE);
+	return TRUE;
+}
+
+static gboolean searchtype_recursive_changed(GtkMenuItem *widget, gpointer data)
+{
+	QuickSearch *quicksearch = (QuickSearch *)data;
+	gboolean checked = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
+	
+	prefs_common.summary_quicksearch_recurse = checked; 
+
+	/* reselect the search type */
+	gtk_option_menu_set_history(GTK_OPTION_MENU(quicksearch->search_type_opt), 
+				    prefs_common.summary_quicksearch_type);
+
+	prepare_matcher(quicksearch);
+
+	quicksearch_set_running(quicksearch, TRUE);
+	if (quicksearch->callback != NULL)
+		quicksearch->callback(quicksearch, quicksearch->callback_data);
+	quicksearch_set_running(quicksearch, FALSE);
+	return TRUE;
 }
 
 /*
@@ -287,6 +308,18 @@ QuickSearch *quicksearch_new()
 	MENUITEM_ADD (search_type, menuitem, _("Extended"), QUICK_SEARCH_EXTENDED);
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 			 G_CALLBACK(searchtype_changed),
+			 quicksearch);
+
+	gtk_menu_shell_append(GTK_MENU_SHELL(search_type), gtk_separator_menu_item_new());
+	
+	menuitem = gtk_check_menu_item_new_with_label(_("Recursive"));
+	gtk_menu_shell_append(GTK_MENU_SHELL(search_type), menuitem);
+	
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
+					prefs_common.summary_quicksearch_recurse);
+	
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(searchtype_recursive_changed),
 			 quicksearch);
 
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(search_type_opt), search_type);
@@ -702,6 +735,9 @@ void quicksearch_search_subfolders(QuickSearch *quicksearch,
 	FolderItem *cur = NULL;
 	GNode *node = folder_item->node->children;
 	
+	if (!prefs_common.summary_quicksearch_recurse)
+		return;
+
 	for (; node != NULL; node = node->next) {
 		cur = FOLDER_ITEM(node->data);
 		if (quicksearch_match_subfolder(quicksearch, cur)) {
