@@ -967,6 +967,8 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	g_return_val_if_fail(msginfo != NULL, NULL);
 	g_return_val_if_fail(msginfo->folder != NULL, NULL);
 
+	if (msginfo->folder->prefs->enable_default_account)
+		account = account_find_from_id(msginfo->folder->prefs->default_account);
 	if (!account) 
 		account = msginfo->folder->folder->account;
 	if (!account && msginfo->to && prefs_common.forward_account_autosel) {

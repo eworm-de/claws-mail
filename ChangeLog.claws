@@ -1,3 +1,8 @@
+2002-11-14 [colin]	0.8.5claws149
+
+	* src/compose.c
+		Forwarding was also ignoring the folder's default account.
+
 2002-11-14 [colin]	0.8.5claws148
 
 	* src/compose.c
