@@ -1,3 +1,15 @@
+2002-04-01
+
+	* src/imap.c: imap_create_special_folder(): fixed a bug that didn't
+	  set SpecialFolderItemType when creating special folders under
+	  INBOX.
+	* ac/gpgme.m4: removed.
+	* ac/README: added.
+	* ac/missing/gdk-pixbuf.m4
+	  ac/missing/gettext.m4
+	  ac/missing/gpgme.m4
+	  ac/missing/imlib.m4: added for convenience.
+
 2002-03-29
 
 	* src/esmtp.c: esmtp_auth(): fixed a bug that some garbages are

@@ -1216,6 +1216,8 @@ static FolderItem *imap_create_special_folder(Folder *folder,
 		new_item = imap_create_folder(folder, folder->inbox, name);
 		if (!new_item)
 			g_warning(_("Can't create '%s' under INBOX\n"), name);
+		else
+			new_item->stype = stype;
 	} else
 		new_item->stype = stype;
 
