@@ -3,6 +3,10 @@
 	* merge new cache branch
 	* src/imap.c
 	    fix new cache imap copy bug
+	* src/folder.c
+	    improved folder_item_scan
+	    it should now always set the correct
+	    new, unread and total message counts
 
 2002-06-29 [paul]	0.7.8claws35
 

@@ -825,7 +825,8 @@ gint folder_item_scan(FolderItem *item)
 	gint i;
 	guint min = 0xffffffff, max = 0, cache_max = 0, maxgetcount = 0;
 	FolderScanInfo *folderscaninfo;
-
+	guint newcnt = 0, unreadcnt = 0, totalcnt = 0;
+	
 	g_return_val_if_fail(item != NULL, -1);
 	if(item->path == NULL) return -1;
 
@@ -927,10 +928,20 @@ gint folder_item_scan(FolderItem *item)
 
 				newmsginfo = folder->fetch_msginfo(folder, item, num);
 				msgcache_add_msg(item->cache, newmsginfo);
+				if(MSG_IS_NEW(newmsginfo->flags) && !MSG_IS_IGNORE_THREAD(newmsginfo->flags))
+					newcnt++;
+				if(MSG_IS_UNREAD(newmsginfo->flags) && !MSG_IS_IGNORE_THREAD(newmsginfo->flags))
+					unreadcnt++;
 				procmsg_msginfo_free(newmsginfo);
 
 				debug_print(_("Updated msginfo for message %d.\n"), num);
+			} else {
+				if(MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
+					newcnt++;
+				if(MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
+					unreadcnt++;
 			}
+			totalcnt++;
 			procmsg_msginfo_free(msginfo);
 		}
 	}
@@ -944,11 +955,11 @@ gint folder_item_scan(FolderItem *item)
 			for(elem = newmsg_list; elem != NULL; elem = g_slist_next(elem)) {
 				msginfo = (MsgInfo *) elem->data;
 				msgcache_add_msg(item->cache, msginfo);
-				if(MSG_IS_NEW(msginfo->flags))
-					item->new++;
-				if(MSG_IS_UNREAD(msginfo->flags))
-					item->unread++;
-				item->total++;
+				if(MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
+					newcnt++;
+				if(MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
+					unreadcnt++;
+				totalcnt++;
 				procmsg_msginfo_free(msginfo);
 			}
 			g_slist_free(newmsg_list);
@@ -964,11 +975,11 @@ gint folder_item_scan(FolderItem *item)
 			msginfo = folder->fetch_msginfo(folder, item, num);
 			if(msginfo != NULL) {
 				msgcache_add_msg(item->cache, msginfo);
-				if(MSG_IS_NEW(msginfo->flags))
-				    item->new++;
-				if(MSG_IS_UNREAD(msginfo->flags))
-				    item->unread++;
-				item->total++;
+				if(MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
+				    newcnt++;
+				if(MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
+				    unreadcnt++;
+				totalcnt++;
 				procmsg_msginfo_free(msginfo);
 				debug_print(_("Added newly found message %d to cache.\n"), num);
 			}
@@ -976,6 +987,10 @@ gint folder_item_scan(FolderItem *item)
 		folderview_update_item(item, FALSE);
 	}
 
+	item->new = newcnt;
+	item->unread = unreadcnt;
+	item->total = totalcnt;
+	
 	g_slist_free(folder_list);
 	g_slist_free(cache_list);
 	g_slist_free(new_list);
