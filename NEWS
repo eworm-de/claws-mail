@@ -1,5 +1,19 @@
 Changes of Sylpheed
 
+* 0.8.11
+
+    * The folder option to remove parentheses and brackets at the beginning
+      of subject has been added.
+    * The option to use command output for signature has been added.
+    * The backward search in summary now also looks for collapsed nodes.
+    * The size of the source window is now remembered.
+    * Euro locales (ISO-8859-15) have been supported.
+    * Support for Latin locales (ISO-8859) has been fixed.
+    * UTF-8 locale support has been fixed.
+    * The folding problem of headers has been fixed.
+    * The more workaround for abort problem in Japanese locale has been made.
+    * Other bugfixes have been made.
+
 * 0.8.10
 
     * The validity check of EUC-JP code became more strict.

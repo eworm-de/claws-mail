@@ -1,3 +1,29 @@
+2003-03-06
+
+	* src/codeconv.[ch]: 足りない文字エンコーディングと locale を追加。
+
+2003-03-06
+
+	* src/procmsg.[ch]:
+	  procmsg_get_mark_sum()
+	  procmsg_open_mark_file()
+	  procmsg_read_mark_file(): ディレクトリパスの代わりに FolderItem
+	  を受け取るようにした。
+
+2003-03-05
+
+	* src/codeconv.c: conv_encode_header(): 長い非 ASCII 文字列を
+	  エンコードするときに折り返し境界にある空白が失われるバグを修正
+	  (Sergey Vlasov さん thanks)。
+	  ハード行長制限(998文字)にかかるまで長い単語中で強制的に折り返
+	  さないようにした(空白のない長いアドレスリストが壊れる問題への
+	  対処)。
+
+2003-03-03
+
+	* src/prefs_account.c: gpg も ssl も使用しない場合にコンパイルに失敗
+	  するのを修正。
+
 2003-03-03
 
 	* src/codeconv.c: UTF-8 locale 対応を修正。

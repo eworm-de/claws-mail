@@ -1,6 +1,132 @@
-2003-03-03 [christoph]	0.8.10claws79
+2003-03-06 [paul]	0.8.10claws95
+
+	* src/folderview.c
+		fix (solaris) bug 73, 'Crash when selecting top-level folder'
+
+	* src/gtkaspell.c
+		fix bug 74, 'Crash opening editor window with pseudo-color
+		display'
+		
+	Patches submitted by Kevin Vigor <kevin@vigor.nu>
+
+2003-03-06 [christoph]	0.8.10claws94
+
+	* src/send.c
+		fix rfc2821 (4.5.2) violation in SMTP data sending,
+		all lines starting with a period get an extra period
+		inserted
+		(found by Simon 'corecode' Schubert)
+
+2003-03-06 [paul]	0.8.10claws93
+
+	* src/folderview.c
+		if configured font can't be loaded fall back to gtk
+		default. (with thanks to Christoph)
+		
+		closes long-standing bug 15 'Crashes on startup'
+
+2003-03-06 [paul]	0.8.10claws92
+
+	* src/compose.c
+		freeze text before autosave and thaw afterwards
+		fixes bug 67 'autosave make re-rediting message crazy'
+
+2003-03-06 [christoph]	0.8.10claws91
+
+	* src/compose.c
+		ignore address comment in dupe check for Cc-list
+
+	(closes reopened bug 47 Replying to message strips name part of
+	 e-mail addresses of Cc: lines)
+
+2003-03-06 [paul]	0.8.10claws90
+
+	* src/Makefile.am
+		remove reference to gtkxtext.h as its no longer in
+		the repository
+
+2003-03-06 [paul]	0.8.10claws89
+
+	* sync with 0.8.10cvs25
+		see ChangeLog 2003-03-06
+
+2003-03-06 [oliver]	0.8.10claws88
+	
+	* src/messageview.c
+		remove include
+
+2003-03-06 [oliver]	0.8.10claws87
+	
+	* src/folderview.c 
+		remove changes introduced inclaws74
+	* src/messageview.c
+		another attempt to sanely delete and update
+		messages deleted in separate messageview
+
+2003-03-05 [christoph]	0.8.10claws86
+
+	* src/summaryview.c
+		check if "From" matches any account's address if
+		addressbook completion of addresses is disabled too
+
+	(closes Bug 70 "Display recipient in from" doesn't check
+	 folder's default account)
+
+2003-03-05 [christoph]	0.8.10claws85
+
+	* src/compose.c
+	* src/common/utils.[ch]
+		don't strip address comments when building Cc lists
+
+	(closes Bug 47 Replying to message strips name part of e-mail addresses
+	 of Cc: lines)
+
+	* src/folder.c
+		fix return value of copy function
+
+2003-03-05 [christoph]	0.8.10claws84
+
+	* src/imap.c
+		don't ask imap server for non rfc822 headers
+
+	(closes bug 71 IMAP FETCH asks for FROM header field twice)
+
+	* src/imap.c
+		destroy session on socket error to allow reconnecting
+
+2003-03-05 [christoph]	0.8.10claws83
+
+	* configure.ac
+		fix building with gnome when no prefix is set
+
+	(closes bug 66 Gnome directory is set to NONE)
+
+2003-03-05 [paul]	0.8.10claws82
+
+	* sync with 0.8.10cvs23
+		see ChangeLog 2003-03-05
+
+2003-03-04 [christoph]	0.8.10claws81
+
+	* src/folder.c
+		o fix moving and copying when folder returns 0 for new
+		  message number
+		o remove some code for single message copy and move
+		  operations and use functions for multiple messages
+
+	(closes bug 63 Strange behaviour MOVING messages from MH to IMAP)
 
 	* src/news.c
+		remove unused include
+
+2003-03-04 [paul]	0.8.10claws80
+
+	* src/gtk/about.c
+		list 'Compiled plugins'
+
+2003-03-03 [christoph]	0.8.10claws79
+
+	* src/news.[ch]
 		have to multiply the percentage of the current fetch with
 		the percentage that it has of the total fetch operation
 		for correct values

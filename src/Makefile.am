@@ -106,7 +106,7 @@ sylpheed_SOURCES = \
 	mbox_folder.c mbox_folder.h \
 	quote_fmt_lex.l quote_fmt_lex.h \
 	quote_fmt_parse.y quote_fmt.c quote_fmt.h \
-	gtkaspell.c gtkaspell.h gtkxtext.h \
+	gtkaspell.c gtkaspell.h \
 	matcher_parser_lex.l matcher_parser_lex.h \
 	matcher_parser_parse.y matcher_parser.h matcher_parser_parse.h \
 	string_match.h string_match.c \

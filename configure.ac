@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=10
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws79
+EXTRA_VERSION=claws95
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -29,7 +29,11 @@ AC_PATH_PROG(GNOME_CONFIG, gnome-config, no)
 if test "$GNOME_CONFIG" != no; then
 	gnomedatadir="`gnome-config --datadir`"
 	gnomeprefix="`gnome-config --prefix`"
-	gnomedatadir="${prefix}/${gnomedatadir#${gnomeprefix}}"
+	if test "${prefix}" = "NONE"; then
+		gnomedatadir="${ac_default_prefix}/${gnomedatadir#${gnomeprefix}}"
+	else
+		gnomedatadir="${prefix}/${gnomedatadir#${gnomeprefix}}"
+	fi
 	AC_SUBST(gnomedatadir)
 fi
 AM_CONDITIONAL(SYLPHEED_GNOME, test -n "$gnomedatadir")
@@ -388,6 +392,7 @@ AM_CONDITIONAL(BUILD_SPAMASSASSIN_PLUGIN, test x"$ac_cv_enable_spamassassin_plug
 if test x"$ac_cv_enable_spamassassin_plugin" = xyes; then
 	AC_SPAMASSASSIN
 	PLUGINS="spamassassin $PLUGINS"
+	AC_DEFINE(USE_SPAMASSASSIN, 1, Define if you use the SpamAssassin plugin)
 fi
 
 dnl ****************************

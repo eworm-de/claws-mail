@@ -573,23 +573,38 @@ void folderview_init(FolderView *folderview)
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),COL_NEW,hbox_new);
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),COL_UNREAD,hbox_unread);
 			
-
-
-	if (!normalfont)
+	if (!normalfont) {
+		if (gtkut_font_load(NORMAL_FONT) == NULL) {
+			GtkStyle *style = gtk_style_new();
+			normalfont = style->font;
+			gdk_font_ref(normalfont);
+			gtk_style_unref(style);
+		} 
+		else 
 #ifdef WIN32
 		if (prefs_common.smallfont)
 			normalfont = gtkut_font_load(prefs_common.normalfont);
 		else
 #endif
-		normalfont = gtkut_font_load(NORMAL_FONT);
-	if (!boldfont)
+			normalfont = gtkut_font_load(NORMAL_FONT);
+	}
+	
+	if (!boldfont) {
+		if (gtkut_font_load(BOLD_FONT) == NULL) {
+			GtkStyle *style = gtk_style_new();
+			boldfont = style->font;
+			gdk_font_ref(boldfont);
+			gtk_style_unref(style);
+		}
+		else
 #ifdef WIN32
-	if (prefs_common.smallfont)
-		boldfont = gtkut_font_load(prefs_common.boldfont);
-	else
+		if (prefs_common.boldfont)
+			boldfont = gtkut_font_load(prefs_common.boldfont);
+		else
 #endif
-		boldfont = gtkut_font_load(BOLD_FONT);
-
+			boldfont = gtkut_font_load(BOLD_FONT);
+	}
+	
 	if (!bold_style) {
 		bold_style = gtk_style_copy(gtk_widget_get_style(ctree));
 		bold_style->font = boldfont;
@@ -1768,7 +1783,8 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	}
 
 	/* Open Folder */
-	buf = g_strdup_printf(_("Opening Folder %s..."), item->path);
+    	buf = g_strdup_printf(_("Opening Folder %s..."), item->path ? 
+					item->path : "(null)");
 	debug_print("%s\n", buf);
 #ifdef WIN32
 	locale_to_utf8(&buf);
@@ -1793,10 +1809,6 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	summary_set_prefs_from_folderitem(folderview->summaryview, item);
 	opened = summary_show(folderview->summaryview, item);
 	
-	/* messageview could have deleted messages in this folder */
-	if (prefs_common.immediate_exec)
-		summary_execute(folderview->summaryview);
-
 	folder_clean_cache_memory();
 
 	if (!opened) {

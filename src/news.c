@@ -50,7 +50,6 @@
 #include "prefs_common.h"
 #include "prefs_account.h"
 #include "inputdialog.h"
-#include "alertpanel.h"
 #include "log.h"
 #include "progressindicator.h"
 #if USE_OPENSSL

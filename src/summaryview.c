@@ -2473,7 +2473,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 				g_free(addr);
 			}
 		} else {
-			if (cur_account && cur_account->address && !strcmp( addr, cur_account->address)) {
+			if (account_find_from_address(addr)) {
 				g_free(to);
 				to = g_strconcat("-->", msginfo->to, NULL);
 				text[col_pos[S_COL_FROM]] = to;
