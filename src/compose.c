@@ -2742,10 +2742,9 @@ gint compose_send(Compose *compose)
 	}
 	
 	val = procmsg_send_message_queue(folder_item_fetch_msg(folder, msgnum));
-	if(!val) {
-		folder_item_remove_msg(folder, msgnum);
-		folderview_update_item(folder, TRUE);
-	}
+
+	folder_item_remove_msg(folder, msgnum);
+	folderview_update_item(folder, TRUE);
 
 	return val;
 }

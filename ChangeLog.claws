@@ -1,3 +1,9 @@
+2002-02-12 [christoph]	0.7.0claws63
+
+	* src/compose.c
+		always delete message from queue after sending/send error
+		(closes bug #509601)
+
 2002-02-12 [melvin]	0.7.0claws62
 
 	* src/prefs_actions.c
