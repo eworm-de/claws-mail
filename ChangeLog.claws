@@ -1,3 +1,8 @@
+2001-10-18 [christoph]	0.6.3claws24
+
+	* src/procmsg.c
+		reimplement ignore thread
+	
 2001-10-18 [hoa]        0.6.3claws23
 	* src/folderview.c
 	* src/grouplistdialog.[ch]

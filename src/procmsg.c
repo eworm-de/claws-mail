@@ -513,8 +513,13 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 
 		if (msginfo->inreplyto) {
 			parent = g_hash_table_lookup(table, msginfo->inreplyto);
-			if (parent == NULL)
+			if (parent == NULL) {
 				parent = root;
+			} else {
+				if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags)) {
+					MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
+				}
+			}
 		}
 		node = g_node_insert_data_before
 			(parent, parent == root ? parent->children : NULL,
@@ -534,6 +539,9 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 				g_node_unlink(node);
 				g_node_insert_before
 					(parent, parent->children, node);
+				if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags)) {
+					MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
+				}
 			}
 		}
 		node = next;
