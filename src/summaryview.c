@@ -1089,6 +1089,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	/* set ctree and hash table from the msginfo list
 	   creating thread, and count the number of messages */
+	
 	summary_set_ctree_from_list(summaryview, mlist);
 
 	g_slist_free(mlist);
@@ -2263,7 +2264,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		summary_thread_init(summaryview);
 	} else {
 		gchar *text[N_SUMMARY_COLS];
-
+		cur = mlist;
 		for (; mlist != NULL; mlist = mlist->next) {
 			msginfo = (MsgInfo *)mlist->data;
 
@@ -2283,6 +2284,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 					     msginfo->subject,
 					     node);
 		}
+		mlist = cur;
 	}
 
 	if (prefs_common.enable_hscrollbar &&
