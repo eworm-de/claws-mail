@@ -889,6 +889,7 @@ EXPORTS
 	imageview_show_image 
 	imap_add_msg 
 	imap_check_msgnum_validity 
+	imap_class 
 	imap_copy_msg 
 	imap_create_folder 
 	imap_create_tree 
@@ -1063,6 +1064,7 @@ EXPORTS
 	mbox_cache_msg_set_fetched 
 	mbox_change_flags 
 	mbox_check_msgnum_validity 
+	mbox_class 
 	mbox_copy_msg 
 	mbox_create_folder 
 	mbox_create_tree 
@@ -1136,6 +1138,7 @@ EXPORTS
 	mgu_str_ltc2space 
 	mgu_str_unescape 
 	mh_add_msg 
+	mh_class 
 	mh_copy_msg 
 	mh_copy_msgs_with_dest 
 	mh_create_folder 
@@ -1195,6 +1198,7 @@ EXPORTS
 	new_aspell_string_list 
 	new_aspell_string_map 
 	news_cancel_article 
+	news_class 
 	news_fetch_msg 
 	news_fetch_msgnum_sort 
 	news_folder_destroy 

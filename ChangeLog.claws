@@ -1,3 +1,49 @@
+2003-03-12 [christoph]	0.8.11claws2
+
+	* src/imap.c
+		fix imap uid validity check
+
+2003-03-12 [christoph]	0.8.11claws1
+
+	* src/account.c
+	* src/folder.[ch]
+	* src/foldersel.c
+	* src/folderview.c
+	* src/imap.c
+	* src/mainwindow.c
+	* src/mbox_folder.c
+	* src/mh.c
+	* src/news.c
+	* src/prefs_scoring.c
+	* src/procmsg.c
+	* src/setup.c
+	* src/summaryview.c
+		initial restructuring of folder system, seperating
+		folders and folder classes
+
+2003-03-12 [paul]	0.8.11claws
+
+	0.8.11claws release
+
+2003-03-12 [christoph]
+
+	* src/gtk/prefswindow.c
+		fix translation of "Page Index"
+
+2003-03-12 [paul]	0.8.10claws110
+
+	a sync from 0.8.11cvs4 before the release
+
+	* src/common/utils.c
+		subject_compare_for_sort(): allow null strings (fixes
+	  	summary sorting).
+
+2003-03-11 [paul]	0.8.10claws109
+
+	* po/es.po
+		update Spanish translation, submitted by
+		Ricardo Mones Lastra
+
 2003-03-11 [melvin]	0.8.10claws108
 
 	* po/fr.po

@@ -115,11 +115,46 @@ static gboolean mh_rename_folder_func		(GNode		*node,
 						 gpointer	 data);
 
 
+FolderClass mh_class =
+{
+	F_MH,
+	"mh",
+
+	NULL,
+	NULL,
+	mh_fetch_msg,
+	mh_get_msginfo,
+	NULL,
+	mh_add_msg,
+	mh_move_msg,
+	mh_move_msgs_with_dest,
+	mh_copy_msg,
+	mh_copy_msgs_with_dest,
+	mh_remove_msg,
+	NULL,
+	mh_remove_all_msg,
+	mh_is_msg_changed,
+	NULL,
+	mh_get_num_list,
+	mh_scan_tree,
+	mh_create_tree,
+	mh_create_folder,
+	mh_rename_folder,
+	mh_remove_folder,
+	mh_folder_destroy,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+};
+
 Folder *mh_folder_new(const gchar *name, const gchar *path)
 {
 	Folder *folder;
 
 	folder = (Folder *)g_new0(MHFolder, 1);
+	folder->class = &mh_class;
 	mh_folder_init(folder, name, path);
 
 	return folder;
@@ -132,29 +167,8 @@ void mh_folder_destroy(MHFolder *folder)
 
 static void mh_folder_init(Folder *folder, const gchar *name, const gchar *path)
 {
-	folder->type = F_MH;
-
 	folder_local_folder_init(folder, name, path);
 
-/*	folder->get_msg_list        = mh_get_msg_list; */
-	folder->fetch_msg           = mh_fetch_msg;
-	folder->get_msginfo         = mh_get_msginfo;
-	folder->add_msg             = mh_add_msg;
-	folder->move_msg            = mh_move_msg;
-	folder->move_msgs_with_dest = mh_move_msgs_with_dest;
-	folder->copy_msg            = mh_copy_msg;
-	folder->copy_msgs_with_dest = mh_copy_msgs_with_dest;
-	folder->remove_msg          = mh_remove_msg;
-	folder->remove_all_msg      = mh_remove_all_msg;
-	folder->is_msg_changed      = mh_is_msg_changed;
-/*	folder->scan                = mh_scan_folder; */
-	folder->get_num_list	    = mh_get_num_list;
-	folder->scan_tree           = mh_scan_tree;
-	folder->create_tree         = mh_create_tree;
-	folder->create_folder       = mh_create_folder;
-	folder->rename_folder       = mh_rename_folder;
-	folder->remove_folder       = mh_remove_folder;
-	folder->destroy             = mh_folder_destroy;
 }
 
 void mh_get_last_num(Folder *folder, FolderItem *item)

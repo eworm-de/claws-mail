@@ -59,7 +59,7 @@ void setup(MainWindow *mainwin)
 		folder = folder_new(F_MH, g_basename(path), path);
 	g_free(path);
 
-	if (folder->create_tree(folder) < 0) {
+	if (folder->class->create_tree(folder) < 0) {
 		alertpanel_error(_("Creation of the mailbox failed.\n"
 				   "Maybe some files already exist, or you don't have the permission to write there."));
 		folder_destroy(folder);

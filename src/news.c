@@ -110,11 +110,46 @@ GSList *news_get_msginfos		 (Folder 	*folder,
 gint news_post_stream			 (Folder 	*folder, 
 					  FILE 		*fp);
 
+FolderClass news_class =
+{
+	F_NEWS,
+	"news",
+
+	NULL,
+	NULL,
+	news_fetch_msg,
+	news_get_msginfo,
+	news_get_msginfos,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	news_remove_msg,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	news_get_num_list,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	news_folder_destroy,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+};
+
 Folder *news_folder_new(const gchar *name, const gchar *path)
 {
 	Folder *folder;
 
 	folder = (Folder *)g_new0(NewsFolder, 1);
+	folder->class = &news_class;
 	news_folder_init(folder, name, path);
 
 	return folder;
@@ -135,22 +170,7 @@ void news_folder_destroy(Folder *folder)
 static void news_folder_init(Folder *folder, const gchar *name,
 			     const gchar *path)
 {
-	folder->type = F_NEWS;
-
 	folder_remote_folder_init(folder, name, path);
-
-/*
-	folder->get_msg_list = news_get_article_list;
-*/
-	folder->fetch_msg    = news_fetch_msg;
-/*
-	folder->scan         = news_scan_group;
-*/
-	folder->destroy      = news_folder_destroy;
-	folder->remove_msg   = news_remove_msg;
-	folder->get_num_list = news_get_num_list;
-	folder->get_msginfo  = news_get_msginfo;
-	folder->get_msginfos = news_get_msginfos;
 }
 
 #if USE_OPENSSL
@@ -256,7 +276,7 @@ NNTPSession *news_session_get(Folder *folder)
 	RemoteFolder *rfolder = REMOTE_FOLDER(folder);
 
 	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(folder->type == F_NEWS, NULL);
+	g_return_val_if_fail(FOLDER_TYPE(folder) == F_NEWS, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
 
 	if (!rfolder->session) {
@@ -423,7 +443,7 @@ GSList *news_get_group_list(Folder *folder)
 	gchar buf[NNTPBUFSIZE];
 
 	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(folder->type == F_NEWS, NULL);
+	g_return_val_if_fail(FOLDER_TYPE(folder) == F_NEWS, NULL);
 
 	path = folder_item_get_path(FOLDER_ITEM(folder->node->data));
 	if (!is_dir_exist(path))
@@ -510,7 +530,7 @@ void news_remove_group_list_cache(Folder *folder)
 	gchar *path, *filename;
 
 	g_return_if_fail(folder != NULL);
-	g_return_if_fail(folder->type == F_NEWS);
+	g_return_if_fail(FOLDER_TYPE(folder) == F_NEWS);
 
 	path = folder_item_get_path(FOLDER_ITEM(folder->node->data));
 	filename = g_strconcat(path, G_DIR_SEPARATOR_S, NEWSGROUP_LIST, NULL);
@@ -529,7 +549,7 @@ gint news_post(Folder *folder, const gchar *file)
 	gint ok;
 
 	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(folder->type == F_NEWS, -1);
+	g_return_val_if_fail(FOLDER_TYPE(folder) == F_NEWS, -1);
 	g_return_val_if_fail(file != NULL, -1);
 
 	if ((fp = fopen(file, "rb")) == NULL) {
@@ -550,7 +570,7 @@ gint news_post_stream(Folder *folder, FILE *fp)
 	gint ok;
 
 	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(folder->type == F_NEWS, -1);
+	g_return_val_if_fail(FOLDER_TYPE(folder) == F_NEWS, -1);
 	g_return_val_if_fail(fp != NULL, -1);
 
 	session = news_session_get(folder);
@@ -789,7 +809,7 @@ gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_list)
 
 	g_return_val_if_fail(item != NULL, -1);
 	g_return_val_if_fail(item->folder != NULL, -1);
-	g_return_val_if_fail(item->folder->type == F_NEWS, -1);
+	g_return_val_if_fail(FOLDER_TYPE(folder) == F_NEWS, -1);
 
 	session = news_session_get(folder);
 	g_return_val_if_fail(session != NULL, -1);
@@ -837,7 +857,7 @@ MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	g_return_val_if_fail(session != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
 	g_return_val_if_fail(item->folder != NULL, NULL);
-	g_return_val_if_fail(item->folder->type == F_NEWS, NULL);
+	g_return_val_if_fail(FOLDER_TYPE(item->folder) == F_NEWS, NULL);
 
 	log_message(_("getting xover %d in %s...\n"),
 		    num, item->path);
@@ -1023,7 +1043,7 @@ GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 	guint tofetch, fetched;
 	
 	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(folder->type == F_NEWS, NULL);
+	g_return_val_if_fail(FOLDER_TYPE(folder) == F_NEWS, NULL);
 	g_return_val_if_fail(msgnum_list != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
 	

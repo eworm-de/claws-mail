@@ -946,7 +946,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	buf = NULL;
 	if (!item || !item->path || !item->parent || item->no_select ||
-	    (item->folder->type == F_MH &&
+	    (FOLDER_TYPE(item->folder) == F_MH &&
 	     ((buf = folder_item_get_path(item)) == NULL ||
 	      change_dir(buf) < 0))) {
 		g_free(buf);
@@ -1298,7 +1298,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 		return;
 	}
 
-	if (summaryview->folder_item->folder->type != F_NEWS)
+	if (FOLDER_TYPE(summaryview->folder_item->folder) != F_NEWS)
 		menu_set_sensitive(ifactory, "/Move...", TRUE);
 	else
 		menu_set_sensitive(ifactory, "/Move...", FALSE);
@@ -1962,7 +1962,7 @@ static void summary_status_show(SummaryView *summaryview)
 		}
 	}
 
-	if (summaryview->folder_item->folder->type == F_NEWS) {
+	if (FOLDER_TYPE(summaryview->folder_item->folder) == F_NEWS) {
 		if (summaryview->folder_item->path != NULL) {
 			gchar *group;
 			group = get_abbrev_newsgroup_name
@@ -2944,7 +2944,7 @@ static void summary_mark_row_as_read(SummaryView *summaryview,
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 
-	if(!MSG_IS_NEW(msginfo->flags) && !MSG_IS_UNREAD(msginfo->flags))
+	if(!(MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)))
 		return;
 
 	if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
@@ -2986,11 +2986,6 @@ void summary_mark_all_read(SummaryView *summaryview)
 	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list); node != NULL;
 	     node = gtkut_ctree_node_next(ctree, node))
 		summary_mark_row_as_read(summaryview, node);
-	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list); node != NULL;
-	     node = gtkut_ctree_node_next(ctree, node)) {
-		if (!GTK_CTREE_ROW(node)->expanded)
-			summary_set_row_marks(summaryview, node);
-	}
 	gtk_clist_thaw(clist);
 	folder_item_update_thaw();
 
@@ -3044,7 +3039,7 @@ static gboolean check_permission(SummaryView *summaryview, MsgInfo * msginfo)
 	GList * cur;
 	gboolean found;
 
-	switch (summaryview->folder_item->folder->type) {
+	switch (FOLDER_TYPE(summaryview->folder_item->folder)) {
 
 	case F_NEWS:
 
@@ -3215,7 +3210,7 @@ void summary_delete(SummaryView *summaryview)
 void summary_delete_duplicated(SummaryView *summaryview)
 {
 	if (!summaryview->folder_item ||
-	    summaryview->folder_item->folder->type == F_NEWS) return;
+	    FOLDER_TYPE(summaryview->folder_item->folder) == F_NEWS) return;
 	if (summaryview->folder_item->stype == F_TRASH) return;
 
 	main_window_cursor_wait(summaryview->mainwin);
@@ -3328,7 +3323,7 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 
 	if (!to_folder) return;
 	if (!summaryview->folder_item ||
-	    summaryview->folder_item->folder->type == F_NEWS) return;
+	    FOLDER_TYPE(summaryview->folder_item->folder) == F_NEWS) return;
 
 	if (summary_is_locked(summaryview)) return;
 
@@ -3364,7 +3359,7 @@ void summary_move_to(SummaryView *summaryview)
 	FolderItem *to_folder;
 
 	if (!summaryview->folder_item ||
-	    summaryview->folder_item->folder->type == F_NEWS) return;
+	    FOLDER_TYPE(summaryview->folder_item->folder) == F_NEWS) return;
 
 	to_folder = foldersel_folder_sel(summaryview->folder_item->folder,
 					 FOLDER_SEL_MOVE, NULL);
@@ -3752,7 +3747,7 @@ static void summary_execute_delete(SummaryView *summaryview)
 	GSList *cur;
 
 	trash = summaryview->folder_item->folder->trash;
-	if (summaryview->folder_item->folder->type == F_MH) {
+	if (FOLDER_TYPE(summaryview->folder_item->folder) == F_MH) {
 		g_return_if_fail(trash != NULL);
 	}
 

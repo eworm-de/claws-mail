@@ -54,11 +54,46 @@ MsgInfo *mbox_get_msginfo(Folder *folder, FolderItem *item, gint num);
 gint mbox_get_num_list(Folder *folder, FolderItem *item, GSList **list);
 gboolean mbox_check_msgnum_validity(Folder *folder, FolderItem *item);
 
+FolderClass mbox_class =
+{
+	F_MBOX,
+	"mbox",
+
+	NULL,
+	NULL,
+	mbox_fetch_msg,
+	mbox_get_msginfo,
+	NULL,
+	mbox_add_msg,
+	NULL,
+	NULL,
+	mbox_copy_msg,
+	NULL,
+	mbox_remove_msg,
+	NULL,
+	mbox_remove_all_msg,
+	NULL,
+	NULL,
+	mbox_get_num_list,
+	NULL,
+	mbox_create_tree,
+	mbox_create_folder,
+	mbox_rename_folder,
+	mbox_remove_folder,
+	mbox_folder_destroy,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	mbox_check_msgnum_validity,
+};
+
 Folder *mbox_folder_new(const gchar *name, const gchar *path)
 {
 	Folder *folder;
 
 	folder = (Folder *)g_new0(MBOXFolder, 1);
+	folder->class = &mbox_class;
 	mbox_folder_init(folder, name, path);
 
 	return folder;
@@ -71,30 +106,7 @@ void mbox_folder_destroy(Folder *folder)
 
 static void mbox_folder_init(Folder *folder, const gchar *name, const gchar *path)
 {
-	folder->type = F_MBOX;
-
 	folder_local_folder_init(folder, name, path);
-
-/*
-	folder->get_msg_list        = mbox_get_msg_list;
-*/
-	folder->fetch_msg           = mbox_fetch_msg;
-	folder->get_msginfo	    = mbox_get_msginfo;
-	folder->add_msg             = mbox_add_msg;
-	folder->copy_msg            = mbox_copy_msg;
-	folder->remove_msg          = mbox_remove_msg;
-	folder->remove_all_msg      = mbox_remove_all_msg;
-/*
-	folder->scan                = mbox_scan_folder;
-*/
-	folder->get_num_list	    = mbox_get_num_list;
-	folder->create_tree         = mbox_create_tree;
-	folder->create_folder       = mbox_create_folder;
-	folder->rename_folder       = mbox_rename_folder;
-	folder->remove_folder       = mbox_remove_folder;
-	folder->destroy		    = mbox_folder_destroy;
-	folder->check_msgnum_validity
-				    = mbox_check_msgnum_validity;
 }
 
 static gchar * mbox_folder_create_parent(const gchar * path)
@@ -1668,21 +1680,18 @@ gint mbox_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 
 	src_folder = msginfo->folder->folder;
 	
-	g_return_val_if_fail(src_folder->fetch_msg != NULL, -1);
-	
 	/*
 	mbox_path = mbox_folder_get_path(msginfo->folder);
 	mbox_rewrite(mbox_path);
 	g_free(mbox_path);
 	*/
 
-	filename = src_folder->fetch_msg(src_folder,
-					 msginfo->folder,
+	filename = folder_item_fetch_msg(msginfo->folder,
 					 msginfo->msgnum);
 	if (filename == NULL)
 		return -1;
 
-	num = folder->add_msg(folder, dest, filename, FALSE);
+	num = mbox_add_msg(folder, dest, filename, FALSE);
 
 	/*
 	mbox_path = mbox_folder_get_path(dest);
