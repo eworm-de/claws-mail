@@ -1,3 +1,10 @@
+2002-12-29 [match]	0.8.8claws22
+
+	* src/addressbook.c
+	* src/syldap.c
+		moved UI specific code out of LDAP code into addressbook
+		UI code. fixed memory leak.
+
 2002-12-29 [christoph]	0.8.8claws21
 
 	* src/folder.c
