@@ -1,3 +1,8 @@
+2003-02-15 [alfons]	0.9.9claws14
+
+	* src/folderview.c
+		fix sync breakage so we don't pass invalid pointer types
+
 2003-02-15 [match]	0.9.9claws13
 
 	* src/ldapquery.[ch]

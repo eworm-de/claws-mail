@@ -264,9 +264,8 @@ void folderview_create_folder_node       (FolderView       *folderview,
 					  FolderItem       *item);
 gboolean folderview_update_folder	 (gpointer 	    source,
 					  gpointer 	    userdata);
-gboolean folderview_update_item		 (gpointer 	    source,
+gboolean folderview_update_item_claws	 (gpointer 	    source,
 					  gpointer	    data);
-
 static void folderview_processing_cb(FolderView *folderview, guint action,
 				     GtkWidget *widget);
 static void folderview_move_to(FolderView *folderview, FolderItem *from_folder,
@@ -528,7 +527,7 @@ FolderView *folderview_create(void)
 	folderview->folder_update_callback_id =
 		hooks_register_hook(FOLDER_UPDATE_HOOKLIST, folderview_update_folder, (gpointer) folderview);
 	folderview->folder_item_update_callback_id =
-		hooks_register_hook(FOLDER_ITEM_UPDATE_HOOKLIST, folderview_update_item, (gpointer) folderview);
+		hooks_register_hook(FOLDER_ITEM_UPDATE_HOOKLIST, folderview_update_item_claws, (gpointer) folderview);
 
 	gtk_widget_show_all(scrolledwin);
 
@@ -1260,7 +1259,32 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		folderview_update_node(folderview, node);
 }
 
-gboolean folderview_update_item(gpointer source, gpointer data)
+#if !CLAWS
+void folderview_update_item(FolderItem *item, gboolean update_summary)
+{
+	GList *list;
+	FolderView *folderview;
+	GtkCTree *ctree;
+	GtkCTreeNode *node;
+
+	g_return_if_fail(item != NULL);
+
+	for (list = folderview_list; list != NULL; list = list->next) {
+		folderview = (FolderView *)list->data;
+		ctree = GTK_CTREE(folderview->ctree);
+
+		node = gtk_ctree_find_by_row_data(ctree, NULL, item);
+		if (node) {
+			folderview_update_node(folderview, node);
+			if (update_summary && folderview->opened == node)
+				summary_show(folderview->summaryview,
+					     item, FALSE);
+		}
+	}
+}
+#endif
+
+gboolean folderview_update_item_claws(gpointer source, gpointer data)
 {
 	FolderItemUpdateData *update_info = (FolderItemUpdateData *)source;
 	FolderView *folderview = (FolderView *)data;
@@ -1284,16 +1308,34 @@ gboolean folderview_update_item(gpointer source, gpointer data)
 	return FALSE;
 }
 
+typedef struct FolderItemUpdateParams {
+	FolderView	    *folderview;
+	FolderItemUpdateData data;
+} FolderItemUpdateParams;
+
 static void folderview_update_item_foreach_func(gpointer key, gpointer val,
 						gpointer data)
 {
-	folderview_update_item((FolderItem *)key, (gboolean)data);
+	FolderItemUpdateParams *fum = (FolderItemUpdateParams *)data;
+	fum->data.item = (FolderItem *)key; 
+	folderview_update_item_claws(&fum->data, fum->folderview);
 }
 
 void folderview_update_item_foreach(GHashTable *table, gboolean update_summary)
 {
-	g_hash_table_foreach(table, folderview_update_item_foreach_func,
-			     (gpointer)update_summary);
+	GList *list;
+
+	for (list = folderview_list; list != NULL; list = list->next) {
+		FolderItemUpdateParams data;
+		
+		data.folderview = (FolderView *)list->data;
+		/* FIXME: update_summary means update everything here? */
+		data.data.item = NULL;
+		data.data.update_flags = (update_summary 
+			? F_ITEM_UPDATE_CONTENT | F_ITEM_UPDATE_MSGCNT 
+			: 0);
+		g_hash_table_foreach(table, folderview_update_item_foreach_func, &data);
+	}
 }
 
 static gboolean folderview_gnode_func(GtkCTree *ctree, guint depth,
