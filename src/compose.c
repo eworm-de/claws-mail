@@ -7219,6 +7219,9 @@ static gboolean compose_send_control_enter(Compose *compose)
 	if (!(kev->keyval == GDK_Return && (kev->state & GDK_CONTROL_MASK)))
 		return FALSE;
 
+	if (compose->exteditor_tag != -1)
+		return FALSE;
+
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	send_menu = gtk_item_factory_get_widget(ifactory, "/Message/Send");
 	list = gtk_accel_group_entries_from_object(GTK_OBJECT(send_menu));
