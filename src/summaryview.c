@@ -2400,6 +2400,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	static gchar col_score[11];
 	static gchar buf[BUFFSIZE];
 	gint *col_pos = summaryview->col_pos;
+	FolderType ftype = F_UNKNOWN;
 
 	text[col_pos[S_COL_MARK]]   = NULL;
 	text[col_pos[S_COL_STATUS]] = NULL;
@@ -2421,7 +2422,11 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 
 	text[col_pos[S_COL_FROM]] = msginfo->fromname ? msginfo->fromname :
 		_("(No From)");
-	if (prefs_common.swap_from && msginfo->from && msginfo->to) {
+	
+	if (msginfo->folder && msginfo->folder->folder)
+		ftype = msginfo->folder->folder->klass->type; 
+		
+	if (ftype != F_NEWS && prefs_common.swap_from && msginfo->from && msginfo->to) {
 		gchar *addr = NULL;
 
 		Xstrdup_a(addr, msginfo->from, return);

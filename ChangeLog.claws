@@ -1,3 +1,9 @@
+2004-05-13 [alfons]	0.9.10claws62
+
+	* src/summaryview.c
+		add a better check to see if a message is a news message
+		(replaces the MSG_IS_NEWS() check removed in 0.9.9claws19)
+
 2004-05-13 [paul]	0.9.10claws61
 
 	* src/msgcache.c
