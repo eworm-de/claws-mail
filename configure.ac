@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=12
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=54
+EXTRA_VERSION=55
 EXTRA_RELEASE=
 
 if test \( $EXTRA_VERSION -eq 0 \) -o \( "x$EXTRA_RELEASE" != "x" \); then
@@ -554,6 +554,9 @@ if test x"$ac_cv_enable_clamav_plugin" = xyes; then
 fi
 AC_SUBST(CLAMAV_LIBS)
 AM_CONDITIONAL(BUILD_CLAMAV_PLUGIN, test x"$ac_cv_enable_clamav_plugin" = xyes)
+
+AC_CHECK_LIB(pthread, pthread_create,
+	[ OPENSSL_LIBS="$OPENSSL_LIBS -lpthread" AC_DEFINE(USE_PTHREAD, 1, Define if you have lpthread) ])
 
 dnl ****************************
 dnl ** Final configure output **
