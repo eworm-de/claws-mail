@@ -1,3 +1,10 @@
+2003-11-01 [alfons]	0.9.6claws71
+
+	* src/summaryview.c
+		don't crash when gtkut_font_load() returns invalid font (has
+		something to do with locale settings)
+		Patch submitted by David Chalmers <davidc|AT|ccmi.salk.edu>.
+
 2003-11-09 [alfons]	0.9.6claws70
 
 	* src/procmime.c

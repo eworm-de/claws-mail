@@ -771,7 +771,8 @@ void summary_init(SummaryView *summaryview)
 			(gtk_widget_get_style(summaryview->ctree));
 		if (!smallfont)
 			smallfont = gtkut_font_load(SMALL_FONT);
-		small_style->font = smallfont;
+		if (smallfont)
+			small_style->font = smallfont;
 		small_marked_style = gtk_style_copy(small_style);
 		small_marked_style->fg[GTK_STATE_NORMAL] =
 			summaryview->color_marked;
@@ -2746,7 +2747,7 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 	} else {
 		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_MIME], NULL);
 	}
-        if (!style)
+	if (!style)
 		style = small_style;
 
 	gtk_ctree_node_set_row_style(ctree, row, style);
