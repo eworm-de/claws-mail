@@ -1,4 +1,10 @@
-2002-09-21 [alfons]	0.8.2claws63
+22002-09-20 [paul]	0.8.2claws64
+
+	* sync with 0.8.3cvs4
+		'Select thread' re-implemented 
+		see ChangeLog 2002-09-20
+
+002-09-21 [alfons]	0.8.2claws63
 
 	* src/compose.c
 		compose_send(): plug unnoticed memleak

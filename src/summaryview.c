@@ -395,9 +395,6 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/Re-_edit"),		NULL, summary_reedit,   0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
-	{N_("/Select _thread"),		NULL, summary_select_thread, 0, NULL},
-	{N_("/Select _all"),		NULL, summary_select_all, 0, NULL},
-	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/M_ove..."),		NULL, summary_move_to,	0, NULL},
 	{N_("/_Copy..."),		NULL, summary_copy_to,	0, NULL},
 	{N_("/_Delete"),		NULL, summary_delete,	0, NULL},
@@ -436,6 +433,9 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Save as..."),		NULL, summary_save_as,	0, NULL},
 	{N_("/_Print..."),		NULL, summary_print,	0, NULL},
+	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
+	{N_("/Select _all"),		NULL, summary_select_all, 0, NULL},
+	{N_("/Select t_hread"),		NULL, summary_select_thread, 0, NULL}
 };
 
 static const gchar *const col_label[N_SUMMARY_COLS] = {
@@ -1138,7 +1138,6 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 #if 0
 	menu_set_sensitive(ifactory, "/Delete", TRUE);
 #endif
-	menu_set_sensitive(ifactory, "/Select all", TRUE);
 	menu_set_sensitive(ifactory, "/Copy...", TRUE);
 	menu_set_sensitive(ifactory, "/Execute", TRUE);
 
@@ -1175,10 +1174,11 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	else
 		menu_set_sensitive(ifactory, "/Re-edit", FALSE);
 
-	menu_set_sensitive(ifactory, "/Select thread", sens);
 	menu_set_sensitive(ifactory, "/Save as...", sens);
 	menu_set_sensitive(ifactory, "/Print...",   TRUE);
 
+	menu_set_sensitive(ifactory, "/Select all", TRUE);
+	menu_set_sensitive(ifactory, "/Select thread", sens);
 	if (summaryview->folder_item->folder->account)
 		sens = summaryview->folder_item->folder->account->protocol
 			== A_NNTP;
@@ -3243,6 +3243,27 @@ void summary_unselect_all(SummaryView *summaryview)
 	gtk_sctree_unselect_all(GTK_SCTREE(summaryview->ctree));
 }
 
+void summary_select_thread(SummaryView *summaryview)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GtkCTreeNode *node = summaryview->selected;
+
+	if (!node) return;
+
+	while (GTK_CTREE_ROW(node)->parent != NULL)
+		node = GTK_CTREE_ROW(node)->parent;
+
+	if (node != summaryview->selected)
+		summary_select_node
+			(summaryview, node,
+			 messageview_is_visible(summaryview->messageview),
+			 FALSE);
+
+	gtk_ctree_select_recursive(ctree, node);
+
+	summary_status_show(summaryview);
+}
+
 void summary_save_as(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
@@ -5008,37 +5029,6 @@ static gint summary_cmp_by_locked(GtkCList *clist,
 	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
 
 	return MSG_IS_LOCKED(msginfo1->flags) - MSG_IS_LOCKED(msginfo2->flags);
-}
-
-static void summary_select_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpointer data)
-{
-	MsgInfo *msginfo;
-
-	msginfo = gtk_ctree_node_get_row_data(ctree, row);
-	gtk_ctree_select(GTK_CTREE(ctree), row);	
-	debug_print("Message %d selected\n", msginfo->msgnum);
-}
-
-/* select current thread */
-void summary_select_thread(SummaryView *summaryview)
-{
-	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-	GtkCTreeNode *node = summaryview->selected;
-	GList *cur;
-
-	g_return_if_fail(node != NULL);
-	
-	while (GTK_CTREE_ROW(node)->parent != NULL)
-		node = GTK_CTREE_ROW(node)->parent;
-
-	if (node && node != summaryview->selected)
-		summary_select_node(summaryview, node, TRUE, FALSE);
-
-	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next) {
-		gtk_ctree_pre_recursive(ctree, GTK_CTREE_NODE(cur->data), GTK_CTREE_FUNC(summary_select_thread_func), summaryview);
-	}
-	
-	summary_status_show(summaryview);
 }
 
 static void summary_ignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpointer data)
