@@ -1,3 +1,9 @@
+2003-09-20 [christoph]	0.9.5claws22
+
+	* src/compose.c
+		add extra space for address code conversion
+		(4 * unconvered size could be too small for short headers)
+
 2003-09-20 [christoph]	0.9.5claws21
 
 	* src/compose.c
