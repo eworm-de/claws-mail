@@ -1,3 +1,10 @@
+2002-12-27 [alfons]	0.8.8claws15
+
+	re-organize matcher part 3; more to come
+
+	* src/matcher.[ch]
+		cleanup
+
 2002-12-27 [alfons]	0.8.8claws14
 
 	re-organize matcher part 2; more to come but this should

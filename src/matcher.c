@@ -31,7 +31,7 @@
 
 struct _MatchParser {
 	gint id;
-	gchar * str;
+	gchar *str;
 };
 
 typedef struct _MatchParser MatchParser;
@@ -124,8 +124,7 @@ gchar * get_matchparser_tab_str(gint id)
 {
 	gint i;
 
-	for(i = 0 ; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)) ;
-	    i++) {
+	for (i = 0; i < sizeof matchparser_tab / sizeof matchparser_tab[0]; i++) {
 		if (matchparser_tab[i].id == id)
 			return matchparser_tab[i].str;
 	}
@@ -221,26 +220,16 @@ gchar *matcher_unescape_str(gchar *str)
 
 /* matcherprop_new() - allocates a structure for one condition
  */
-MatcherProp * matcherprop_new(gint criteria, gchar * header,
-			      gint matchtype, gchar * expr,
+MatcherProp *matcherprop_new(gint criteria, gchar *header,
+			      gint matchtype, gchar *expr,
 			      int value)
 {
-	MatcherProp * prop;
+	MatcherProp *prop;
 
  	prop = g_new0(MatcherProp, 1);
 	prop->criteria = criteria;
-	if (header != NULL) {
-		prop->header	   = g_strdup(header);
-	}	
-	else {
-		prop->header       = NULL;
-	}	
-	if (expr != NULL) {
-		prop->expr	 = g_strdup(expr);
-	}	
-	else {
-		prop->expr	 = NULL;
-	}	
+	prop->header = header != NULL ? g_strdup(header) : NULL;
+	prop->expr = expr != NULL ? g_strdup(expr) : NULL;
 	prop->matchtype = matchtype;
 	prop->preg = NULL;
 	prop->value = value;
@@ -251,7 +240,7 @@ MatcherProp * matcherprop_new(gint criteria, gchar * header,
 
 /* matcherprop_free()
  */
-void matcherprop_free(MatcherProp * prop)
+void matcherprop_free(MatcherProp *prop)
 {
 	if (prop->expr) 
 		g_free(prop->expr);
@@ -267,43 +256,33 @@ void matcherprop_free(MatcherProp * prop)
 MatcherProp *matcherprop_copy(MatcherProp *src)
 {
 	MatcherProp *prop = g_new0(MatcherProp, 1);
-	prop->criteria 	  = src->criteria;
-	if (src->header)
-		prop->header = g_strdup(src->header);
-	else	
-		prop->header = NULL;
-	if (src->expr)
-		prop->expr	  = g_strdup(src->expr);
-	else
-		prop->expr = NULL;
-	prop->matchtype   = src->matchtype;
+	
+	prop->criteria = src->criteria;
+	prop->header = src->header ? g_strdup(src->header) : NULL;
+	prop->expr = src->expr ? g_strdup(src->expr) : NULL;
+	prop->matchtype = src->matchtype;
 	
 	prop->preg = NULL; /* will be re-evaluated */
-	prop->value       = src->value;
-	prop->error       = src->error;	
+	prop->value = src->value;
+	prop->error = src->error;	
 	return prop;		
 }
 
 /* ****************** wrapper for file reading ************** */
 
-MatcherProp * matcherprop_unquote_new(gint criteria, gchar * header,
-    gint matchtype, gchar * expr,
-    int value)
+MatcherProp *matcherprop_unquote_new(gint criteria, gchar *header,
+				     gint matchtype, gchar *expr,
+				     int value)
 {
-        MatcherProp * prop;
+        MatcherProp *prop;
 
         if (expr != NULL)
                 expr = matcher_unescape_str(g_strdup(expr));
-        else
-                expr = NULL;
 
         if (header != NULL)
                 header = matcher_unescape_str(g_strdup(header));
-        else
-                header = NULL;
         
-        prop = matcherprop_new(criteria, header,
-            matchtype, expr, value);
+        prop = matcherprop_new(criteria, header, matchtype, expr, value);
 
         g_free(header);
         g_free(expr);
@@ -317,15 +296,15 @@ MatcherProp * matcherprop_unquote_new(gint criteria, gchar * header,
 
 /* matcherprop_string_match() - finds out if a string matches
  * with a criterium */
-static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
+static gboolean matcherprop_string_match(MatcherProp *prop, gchar *str)
 {
-	gchar * str1;
-	gchar * str2;
+	gchar *str1;
+	gchar *str2;
 
 	if (str == NULL)
 		return FALSE;
 
-	switch(prop->matchtype) {
+	switch (prop->matchtype) {
 	case MATCHTYPE_REGEXPCASE:
 	case MATCHTYPE_REGEXP:
 		if (!prop->preg && (prop->error == 0)) {
@@ -366,10 +345,10 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 	}
 }
 
-gboolean matcherprop_match_execute(MatcherProp * prop, MsgInfo * info)
+gboolean matcherprop_match_execute(MatcherProp *prop, MsgInfo *info)
 {
-	gchar * file;
-	gchar * cmd;
+	gchar *file;
+	gchar *cmd;
 	gint retval;
 
 	file = procmsg_get_message_file(info);
@@ -391,7 +370,7 @@ gboolean matcherprop_match_execute(MatcherProp * prop, MsgInfo * info)
 /* match a message and his headers, hlist can be NULL if you don't
    want to use headers */
 
-gboolean matcherprop_match(MatcherProp * prop, MsgInfo * info)
+gboolean matcherprop_match(MatcherProp *prop, MsgInfo *info)
 {
 	time_t t;
 
@@ -497,9 +476,9 @@ gboolean matcherprop_match(MatcherProp * prop, MsgInfo * info)
 /* ********************* MatcherList *************************** */
 
 
-MatcherList * matcherlist_new(GSList * matchers, gboolean bool_and)
+MatcherList *matcherlist_new(GSList *matchers, gboolean bool_and)
 {
-	MatcherList * cond;
+	MatcherList *cond;
 
 	cond = g_new0(MatcherList, 1);
 
@@ -509,11 +488,11 @@ MatcherList * matcherlist_new(GSList * matchers, gboolean bool_and)
 	return cond;
 }
 
-void matcherlist_free(MatcherList * cond)
+void matcherlist_free(MatcherList *cond)
 {
-	GSList * l;
+	GSList *l;
 
-	for(l = cond->matchers ; l != NULL ; l = g_slist_next(l)) {
+	for (l = cond->matchers ; l != NULL ; l = g_slist_next(l)) {
 		matcherprop_free((MatcherProp *) l->data);
 	}
 	g_free(cond);
@@ -527,8 +506,8 @@ static void matcherlist_skip_headers(FILE *fp)
 {
 	gchar buf[BUFFSIZE];
 
-	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1) {
-	}
+	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1)
+		;
 }
 
 /*
@@ -536,13 +515,13 @@ static void matcherlist_skip_headers(FILE *fp)
   returns TRUE if buf matchs the MatchersProp criteria
  */
 
-static gboolean matcherprop_match_one_header(MatcherProp * matcher,
-					     gchar * buf)
+static gboolean matcherprop_match_one_header(MatcherProp *matcher,
+					     gchar *buf)
 {
 	gboolean result;
 	Header *header;
 
-	switch(matcher->criteria) {
+	switch (matcher->criteria) {
 	case MATCHCRITERIA_HEADER:
 	case MATCHCRITERIA_NOT_HEADER:
 		header = procheader_parse_header(buf);
@@ -576,9 +555,9 @@ static gboolean matcherprop_match_one_header(MatcherProp * matcher,
   returns TRUE if the headers must be matched
  */
 
-static gboolean matcherprop_criteria_headers(MatcherProp * matcher)
+static gboolean matcherprop_criteria_headers(MatcherProp *matcher)
 {
-	switch(matcher->criteria) {
+	switch (matcher->criteria) {
 	case MATCHCRITERIA_HEADER:
 	case MATCHCRITERIA_NOT_HEADER:
 	case MATCHCRITERIA_HEADERS_PART:
@@ -589,9 +568,9 @@ static gboolean matcherprop_criteria_headers(MatcherProp * matcher)
 	}
 }
 
-static gboolean matcherprop_criteria_message(MatcherProp * matcher)
+static gboolean matcherprop_criteria_message(MatcherProp *matcher)
 {
-	switch(matcher->criteria) {
+	switch (matcher->criteria) {
 	case MATCHCRITERIA_MESSAGE:
 	case MATCHCRITERIA_NOT_MESSAGE:
 		return TRUE;
@@ -605,13 +584,13 @@ static gboolean matcherprop_criteria_message(MatcherProp * matcher)
   returns TRUE if match should stop
  */
 
-static gboolean matcherlist_match_one_header(MatcherList * matchers,
-					 gchar * buf)
+static gboolean matcherlist_match_one_header(MatcherList *matchers,
+					     gchar *buf)
 {
-	GSList * l;
+	GSList *l;
 
-	for(l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
-		MatcherProp * matcher = (MatcherProp *) l->data;
+	for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
+		MatcherProp *matcher = (MatcherProp *) l->data;
 
 		if (matcherprop_criteria_headers(matcher) ||
 		    matcherprop_criteria_message(matcher)) {
@@ -636,7 +615,7 @@ static gboolean matcherlist_match_one_header(MatcherList * matchers,
   returns TRUE if one of the headers matchs the MatcherList criteria
  */
 
-static gboolean matcherlist_match_headers(MatcherList * matchers, FILE * fp)
+static gboolean matcherlist_match_headers(MatcherList *matchers, FILE *fp)
 {
 	gchar buf[BUFFSIZE];
 
@@ -652,9 +631,9 @@ static gboolean matcherlist_match_headers(MatcherList * matchers, FILE * fp)
   returns TRUE if the body must be matched
  */
 
-static gboolean matcherprop_criteria_body(MatcherProp * matcher)
+static gboolean matcherprop_criteria_body(MatcherProp *matcher)
 {
-	switch(matcher->criteria) {
+	switch (matcher->criteria) {
 	case MATCHCRITERIA_BODY_PART:
 	case MATCHCRITERIA_NOT_BODY_PART:
 		return TRUE;
@@ -668,9 +647,9 @@ static gboolean matcherprop_criteria_body(MatcherProp * matcher)
   returns TRUE if the string matchs the MatcherProp criteria
  */
 
-static gboolean matcherprop_match_line(MatcherProp * matcher, gchar * line)
+static gboolean matcherprop_match_line(MatcherProp *matcher, gchar *line)
 {
-	switch(matcher->criteria) {
+	switch (matcher->criteria) {
 	case MATCHCRITERIA_BODY_PART:
 	case MATCHCRITERIA_MESSAGE:
 		return matcherprop_string_match(matcher, line);
@@ -686,12 +665,12 @@ static gboolean matcherprop_match_line(MatcherProp * matcher, gchar * line)
   returns TRUE if the string matchs the MatcherList criteria
  */
 
-static gboolean matcherlist_match_line(MatcherList * matchers, gchar * line)
+static gboolean matcherlist_match_line(MatcherList *matchers, gchar *line)
 {
-	GSList * l;
+	GSList *l;
 
-	for(l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
-		MatcherProp * matcher = (MatcherProp *) l->data;
+	for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
+		MatcherProp *matcher = (MatcherProp *) l->data;
 
 		if (matcherprop_criteria_body(matcher) ||
 		    matcherprop_criteria_message(matcher)) {
@@ -713,7 +692,7 @@ static gboolean matcherlist_match_line(MatcherList * matchers, gchar * line)
   returns TRUE if one line of the body matchs the MatcherList criteria
  */
 
-static gboolean matcherlist_match_body(MatcherList * matchers, FILE * fp)
+static gboolean matcherlist_match_body(MatcherList *matchers, FILE *fp)
 {
 	gchar buf[BUFFSIZE];
 
@@ -724,21 +703,21 @@ static gboolean matcherlist_match_body(MatcherList * matchers, FILE * fp)
 	return FALSE;
 }
 
-gboolean matcherlist_match_file(MatcherList * matchers, MsgInfo * info,
+gboolean matcherlist_match_file(MatcherList *matchers, MsgInfo *info,
 				gboolean result)
 {
 	gboolean read_headers;
 	gboolean read_body;
-	GSList * l;
-	FILE * fp;
-	gchar * file;
+	GSList *l;
+	FILE *fp;
+	gchar *file;
 
 	/* file need to be read ? */
 
 	read_headers = FALSE;
 	read_body = FALSE;
-	for(l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
-		MatcherProp * matcher = (MatcherProp *) l->data;
+	for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
+		MatcherProp *matcher = (MatcherProp *) l->data;
 
 		if (matcherprop_criteria_headers(matcher))
 			read_headers = TRUE;
@@ -779,8 +758,8 @@ gboolean matcherlist_match_file(MatcherList * matchers, MsgInfo * info,
 		matcherlist_match_body(matchers, fp);
 	}
 	
-	for(l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
-		MatcherProp * matcher = (MatcherProp *) l->data;
+	for (l = matchers->matchers; l != NULL; l = g_slist_next(l)) {
+		MatcherProp *matcher = (MatcherProp *) l->data;
 
 		if (matcherprop_criteria_headers(matcher) ||
 		    matcherprop_criteria_body(matcher)	  ||
@@ -809,9 +788,9 @@ gboolean matcherlist_match_file(MatcherList * matchers, MsgInfo * info,
 
 /* test a list of condition */
 
-gboolean matcherlist_match(MatcherList * matchers, MsgInfo * info)
+gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 {
-	GSList * l;
+	GSList *l;
 	gboolean result;
 
 	if (matchers->bool_and)
@@ -821,8 +800,8 @@ gboolean matcherlist_match(MatcherList * matchers, MsgInfo * info)
 
 	/* test the cached elements */
 
-	for(l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
-		MatcherProp * matcher = (MatcherProp *) l->data;
+	for (l = matchers->matchers; l != NULL ;l = g_slist_next(l)) {
+		MatcherProp *matcher = (MatcherProp *) l->data;
 
 		switch(matcher->criteria) {
 		case MATCHCRITERIA_ALL:
@@ -896,25 +875,24 @@ gboolean matcherlist_match(MatcherList * matchers, MsgInfo * info)
 }
 
 
-gchar * matcherprop_to_string(MatcherProp * matcher)
+gchar *matcherprop_to_string(MatcherProp *matcher)
 {
-	gchar * matcher_str = NULL;
-	gchar * criteria_str;
-	gchar * matchtype_str;
+	gchar *matcher_str = NULL;
+	gchar *criteria_str;
+	gchar *matchtype_str;
 	int i;
-        char * expr;
-        char * header;
+        char *expr;
+        char *header;
 
 	criteria_str = NULL;
-	for(i = 0 ; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)) ;
-	    i++) {
+	for (i = 0; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)); i++) {
 		if (matchparser_tab[i].id == matcher->criteria)
 			criteria_str = matchparser_tab[i].str;
 	}
 	if (criteria_str == NULL)
 		return NULL;
 
-	switch(matcher->criteria) {
+	switch (matcher->criteria) {
 	case MATCHCRITERIA_AGE_GREATER:
 	case MATCHCRITERIA_AGE_LOWER:
 	case MATCHCRITERIA_SCORE_GREATER:
@@ -951,8 +929,7 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 	}
 
 	matchtype_str = NULL;
-	for(i = 0 ; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)) ;
-	    i++) {
+	for (i = 0; i < sizeof matchparser_tab / sizeof matchparser_tab[0]; i++) {
 		if (matchparser_tab[i].id == matcher->matchtype)
 			matchtype_str = matchparser_tab[i].str;
 	}
@@ -968,14 +945,14 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
                 expr = matcher_escape_str(matcher->expr);
                 header = matcher_escape_str(matcher->header);
 		if (matcher->header)
-			matcher_str =
-				g_strdup_printf("%s \"%s\" %s \"%s\"",
-					   criteria_str, matcher->header,
-					   matchtype_str, expr);
+			matcher_str = g_strdup_printf
+					("%s \"%s\" %s \"%s\"",
+					 criteria_str, matcher->header,
+					 matchtype_str, expr);
 		else
-			matcher_str =
-				g_strdup_printf("%s %s \"%s\"", criteria_str,
-						matchtype_str, expr);
+			matcher_str = g_strdup_printf
+					("%s %s \"%s\"", criteria_str,
+					 matchtype_str, expr);
 		break;
                 g_free(header);
                 g_free(expr);
@@ -984,18 +961,18 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 	return matcher_str;
 }
 
-gchar * matcherlist_to_string(MatcherList * matchers)
+gchar *matcherlist_to_string(MatcherList *matchers)
 {
 	gint count;
-	gchar ** vstr;
-	GSList * l;
-	gchar ** cur_str;
-	gchar * result = NULL;
+	gchar **vstr;
+	GSList *l;
+	gchar **cur_str;
+	gchar *result = NULL;
 
 	count = g_slist_length(matchers->matchers);
 	vstr = g_new(gchar *, count + 1);
 
-	for (l = matchers->matchers, cur_str = vstr ; l != NULL ;
+	for (l = matchers->matchers, cur_str = vstr; l != NULL;
 	     l = g_slist_next(l), cur_str ++) {
 		*cur_str = matcherprop_to_string((MatcherProp *) l->data);
 		if (*cur_str == NULL)
@@ -1008,7 +985,7 @@ gchar * matcherlist_to_string(MatcherList * matchers)
 	else
 		result = g_strjoinv(" | ", vstr);
 
-	for(cur_str = vstr ; *cur_str != NULL ; cur_str ++)
+	for (cur_str = vstr ; *cur_str != NULL ; cur_str ++)
 		g_free(*cur_str);
 	g_free(vstr);
 
@@ -1018,12 +995,12 @@ gchar * matcherlist_to_string(MatcherList * matchers)
 #define STRLEN_ZERO(s) ((s) ? strlen(s) : 0)
 #define STRLEN_DEFAULT(s,d) ((s) ? strlen(s) : STRLEN_ZERO(d))
 /* matching_build_command() - preferably cmd should be unescaped */
-gchar * matching_build_command(gchar * cmd, MsgInfo * info)
+gchar *matching_build_command(gchar *cmd, MsgInfo *info)
 {
-	gchar * s = cmd;
-	gchar * filename = NULL;
-	gchar * processed_cmd;
-	gchar * p;
+	gchar *s = cmd;
+	gchar *filename = NULL;
+	gchar *processed_cmd;
+	gchar *p;
 	gint size;
 
 	const gchar *const no_subject    = _("(none)") ;
@@ -1083,7 +1060,6 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 		}
 		else s++;
 	}
-
 
 	processed_cmd = g_new0(gchar, size);
 	s = cmd;
@@ -1174,7 +1150,6 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 		}
 	}
 
-	debug_print("*** exec string \"%s\"\n", processed_cmd);
 	return processed_cmd;
 }
 #undef STRLEN_DEFAULT
@@ -1182,13 +1157,13 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 
 /* ************************************************************ */
 
-static void prefs_scoring_write(FILE * fp, GSList * prefs_scoring)
+static void prefs_scoring_write(FILE *fp, GSList *prefs_scoring)
 {
-	GSList * cur;
+	GSList *cur;
 
 	for (cur = prefs_scoring; cur != NULL; cur = cur->next) {
 		gchar *scoring_str;
-		ScoringProp * prop;
+		ScoringProp *prop;
 
 		prop = (ScoringProp *) cur->data;
 		scoring_str = scoringprop_to_string(prop);
@@ -1202,13 +1177,13 @@ static void prefs_scoring_write(FILE * fp, GSList * prefs_scoring)
 	}
 }
 
-static void prefs_filtering_write(FILE * fp, GSList * prefs_scoring)
+static void prefs_filtering_write(FILE *fp, GSList *prefs_scoring)
 {
-	GSList * cur;
+	GSList *cur;
 
 	for (cur = prefs_scoring; cur != NULL; cur = cur->next) {
 		gchar *filtering_str;
-		FilteringProp * prop;
+		FilteringProp *prop;
 
 		if (NULL == (prop = (FilteringProp *) cur->data))
 			continue;
@@ -1229,14 +1204,14 @@ static void prefs_filtering_write(FILE * fp, GSList * prefs_scoring)
 static gboolean prefs_matcher_write_func(GNode *node, gpointer data)
 {
 	FolderItem *item;
-	FILE * fp = data;
-	gchar * id;
-	GSList * prefs_scoring;
-	GSList * prefs_filtering;
+	FILE *fp = data;
+	gchar *id;
+	GSList *prefs_scoring;
+	GSList *prefs_filtering;
 
 	if (node != NULL) {
 		item = node->data;
-		/* prevent from the warning */
+		/* prevent warning */
 		if (item->path == NULL)
 			return FALSE;
 		id = folder_item_get_identifier(item);
@@ -1266,9 +1241,9 @@ static gboolean prefs_matcher_write_func(GNode *node, gpointer data)
 	return FALSE;
 }
 
-static void prefs_matcher_save(FILE * fp)
+static void prefs_matcher_save(FILE *fp)
 {
-	GList * cur;
+	GList *cur;
 
 	for (cur = folder_get_list() ; cur != NULL ; cur = g_list_next(cur)) {
 		Folder *folder;
@@ -1312,8 +1287,8 @@ void prefs_matcher_write_config(void)
 
 void prefs_matcher_read_config(void)
 {
-	gchar * rcpath;
-	FILE * f;
+	gchar *rcpath;
+	FILE *f;
 
 	prefs_scoring_clear();
 	prefs_filtering_clear();

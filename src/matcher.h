@@ -18,7 +18,6 @@
  */
 
 #ifndef MATCHER_H
-
 #define MATCHER_H
 
 #include <sys/types.h>
@@ -123,43 +122,50 @@ enum {
 	MB_(AND)
 };
 
-gchar * get_matchparser_tab_str(gint id);
-gint get_matchparser_tab_id(const gchar *str); 
-MatcherProp * matcherprop_new(gint criteria, gchar * header,
-			      gint matchtype, gchar * expr,
-			      int age);
+gchar *get_matchparser_tab_str		(gint id);
+gint get_matchparser_tab_id		(const gchar *str); 
 
-MatcherProp * matcherprop_unquote_new(gint criteria, gchar * header,
-    gint matchtype, gchar * expr,
-    int value);
+MatcherProp *matcherprop_new		(gint	 criteria, 
+					 gchar	*header,
+					 gint	 matchtype, 
+					 gchar	*expr,
+					 int	 age);
+MatcherProp *matcherprop_unquote_new	(gint	 criteria, 
+					 gchar	*header,
+					 gint	 matchtype, 
+					 gchar	*expr,
+					 int	 value);
+void matcherprop_free			(MatcherProp *prop);
 
-void matcherprop_free(MatcherProp * prop);
-MatcherProp * matcherprop_parse(gchar ** str);
+MatcherProp *matcherprop_parse		(gchar	**str);
 
-MatcherProp * matcherprop_copy(MatcherProp *src);
+MatcherProp *matcherprop_copy		(MatcherProp *src);
 
-gboolean matcherprop_match(MatcherProp * prop, MsgInfo * info);
+gboolean matcherprop_match		(MatcherProp	*prop, 
+					 MsgInfo	*info);
 
-MatcherList * matcherlist_new(GSList * matchers, gboolean bool_and);
-void matcherlist_free(MatcherList * cond);
-MatcherList * matcherlist_parse(gchar ** str);
+MatcherList * matcherlist_new		(GSList		*matchers, 
+					 gboolean	bool_and);
+void matcherlist_free			(MatcherList	*cond);
 
-gboolean matcherlist_match(MatcherList * cond, MsgInfo * info);
+MatcherList *matcherlist_parse		(gchar		**str);
 
-gint matcher_parse_keyword(gchar ** str);
-gint matcher_parse_number(gchar ** str);
-gboolean matcher_parse_boolean_op(gchar ** str);
-gchar * matcher_parse_regexp(gchar ** str);
-gchar * matcher_parse_str(gchar ** str);
-gchar * matcher_escape_str(const gchar *str);
-gchar * matcher_unescape_str(gchar *str);
-gchar * matcherprop_to_string(MatcherProp * matcher);
-gchar * matcherlist_to_string(MatcherList * matchers);
-gchar * matching_build_command(gchar * cmd, MsgInfo * info);
+gboolean matcherlist_match		(MatcherList	*cond, 
+					 MsgInfo	*info);
 
+gint matcher_parse_keyword		(gchar		**str);
+gint matcher_parse_number		(gchar		**str);
+gboolean matcher_parse_boolean_op	(gchar		**str);
+gchar *matcher_parse_regexp		(gchar		**str);
+gchar *matcher_parse_str		(gchar		**str);
+gchar *matcher_escape_str		(const gchar	*str);
+gchar *matcher_unescape_str		(gchar		*str);
+gchar *matcherprop_to_string		(MatcherProp	*matcher);
+gchar *matcherlist_to_string		(MatcherList	*matchers);
+gchar *matching_build_command		(gchar		*cmd, 
+					 MsgInfo	*info);
 
-void prefs_matcher_read_config(void);
-void prefs_matcher_write_config(void);
-
+void prefs_matcher_read_config		(void);
+void prefs_matcher_write_config		(void);
 
 #endif
