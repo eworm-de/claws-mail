@@ -1,3 +1,8 @@
+2004-07-17 [colin]	0.9.12cvs30
+
+	* src/summaryview.c
+		Same, when sticky search is off
+
 2004-07-17 [colin]	0.9.12cvs29
 
 	* src/folder.h

@@ -790,7 +790,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	if (!prefs_common.summary_quicksearch_sticky
 	 && !quicksearch_is_running(summaryview->quicksearch)) {
+		FolderItemUpdateData source;
 		quicksearch_set(summaryview->quicksearch, prefs_common.summary_quicksearch_type, "");
+
+		source.item = item;
+		source.update_flags = F_ITEM_UPDATE_ICON;
+		hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);				
 	}
 
 	/* STATUSBAR_POP(summaryview->mainwin); */
