@@ -1,3 +1,10 @@
+2005-01-03 [colin]	0.9.13cvs25
+
+	* src/pop.c
+	* src/pop.h
+		Add data_len member, because we can get NULs from network
+		Patch by Alfons
+
 2005-01-01 [colin]	0.9.13cvs24
 
 	* src/procmime.c

@@ -40,6 +40,7 @@ struct _MailReceiveData
 {
 	Pop3Session *session;
 	char *data;
+	guint data_len;
 };
 typedef struct _MailReceiveData	MailReceiveData;
 
