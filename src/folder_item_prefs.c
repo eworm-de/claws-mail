@@ -90,7 +90,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"folder_color", "", &tmp_prefs.color, P_INT,
 	 NULL, NULL, NULL},
-	{"enable processing at startup", "TRUE", &tmp_prefs.enable_processing, P_BOOL,
+	{"enable_processing", "TRUE", &tmp_prefs.enable_processing, P_BOOL,
 	 NULL, NULL, NULL},
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
