@@ -13,7 +13,7 @@
 
   			eud2gc.py <Eudora-addressbook-file> <Gnomecard-file>
 
-  Be carefull not to overwrite your original GnomeCard.gcrd!
+  Be careful not to overwrite your original GnomeCard.gcrd!
   (But of course you might want to add the converted stuff to it)
 
   Copyleft some time long ago (around 1999?) by Jeroen Versteeg
@@ -31,8 +31,7 @@
 
   HOW TO USE IT
 
-  Move 'filter_conv.pl' to the $HOME/.sylpheed directory.
-  From the $HOME/.sylpheed directory, issue the command:
+  Issue the following command:
 
         perl filter_conv.pl
 

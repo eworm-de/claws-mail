@@ -17,13 +17,18 @@
 #  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #  *
 
+chdir;
+chdir '.sylpheed' || die("You don't appear to have Sylpheed installed");
 
-$INPUT = open (FILTERRC, "<filterrc");
+$INPUT = open (FILTERRC, "<filterrc") || die("Can't find your old filter rules");
 @input_file = <FILTERRC>;
-$WRITE_THIS = "";
 close FILTERRC;
 
+$WRITE_THIS = "";
+$COUNT      = "0";
+
 foreach $input_file (@input_file) {
+$COUNT++;
 @split_lines = split("\t", $input_file);
 if (($split_lines[3]) && ($split_lines[0] eq "To")) {
 $WRITE_THIS .= "to_or_cc match \"$split_lines[1]\"";
@@ -47,9 +52,9 @@ $WRITE_THIS .= "\n";
 }
 
 open (FILTERINGRC, ">filteringrc");
-
 print FILTERINGRC $WRITE_THIS;
 close FILTERINGRC;
 
+print "\nYou have sucessfully converted $COUNT filtering rules\n\n";
 exit;
 
