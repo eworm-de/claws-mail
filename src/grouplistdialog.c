@@ -52,7 +52,7 @@
 #include "recv.h"
 #include "socket.h"
 
-#define GROUPLIST_DIALOG_WIDTH		480
+#define GROUPLIST_DIALOG_WIDTH		450
 #define GROUPLIST_DIALOG_HEIGHT		400
 #define GROUPLIST_COL_NAME_WIDTH	250
 
@@ -70,7 +70,9 @@ static Folder *news_folder;
 static GSList *subscribed;
 
 static void grouplist_dialog_create	(void);
-static void grouplist_dialog_set_list	(gchar		*pattern);
+static void grouplist_dialog_set_list	(gchar		*pattern,
+					 gboolean	 refresh);
+static void grouplist_search		(void);
 static void grouplist_clear		(void);
 static void grouplist_recv_func		(SockInfo	*sock,
 					 gint		 count,
@@ -95,6 +97,8 @@ static void ctree_unselected	(GtkCTree	*ctree,
 				 gint		 column,
 				 gpointer	 data);
 static void entry_activated	(GtkEditable	*editable);
+static void search_clicked	(GtkWidget	*widget,
+				 gpointer	 data);
 
 GSList *grouplist_dialog(Folder *folder)
 {
@@ -121,7 +125,7 @@ GSList *grouplist_dialog(Folder *folder)
 		subscribed = g_slist_append(subscribed, g_strdup(item->name));
 	}
 
-	grouplist_dialog_set_list(NULL);
+	grouplist_dialog_set_list(NULL, TRUE);
 
 	gtk_main();
 
@@ -151,6 +155,7 @@ static void grouplist_dialog_create(void)
 	GtkWidget *vbox;
 	GtkWidget *hbox;
 	GtkWidget *msg_label;
+	GtkWidget *search_button;
 	GtkWidget *confirm_area;
 	GtkWidget *cancel_button;	
 	GtkWidget *refresh_button;	
@@ -184,13 +189,25 @@ static void grouplist_dialog_create(void)
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
-	msg_label = gtk_label_new(_("Input subscribing newsgroup:"));
+	msg_label = gtk_label_new(_("Select newsgroups to subscribe."));
+	gtk_box_pack_start(GTK_BOX(hbox), msg_label, FALSE, FALSE, 0);
+
+	hbox = gtk_hbox_new(FALSE, 8);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+
+	msg_label = gtk_label_new(_("Find groups:"));
 	gtk_box_pack_start(GTK_BOX(hbox), msg_label, FALSE, FALSE, 0);
 
 	entry = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
 	gtk_signal_connect(GTK_OBJECT(entry), "activate",
 			   GTK_SIGNAL_FUNC(entry_activated), NULL);
+
+	search_button = gtk_button_new_with_label(_(" Search "));
+	gtk_box_pack_start(GTK_BOX(hbox), search_button, FALSE, FALSE, 0);
+
+	gtk_signal_connect(GTK_OBJECT(search_button), "clicked",
+			   GTK_SIGNAL_FUNC(search_clicked), NULL);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_box_pack_start(GTK_BOX (vbox), scrolledwin, TRUE, TRUE, 0);
@@ -381,7 +398,7 @@ static GtkCTreeNode *grouplist_create_branch(NewsGroupInfo *ginfo)
 	return node;
 }
 
-static void grouplist_dialog_set_list(gchar *pattern)
+static void grouplist_dialog_set_list(gchar *pattern, gboolean refresh)
 {
 	GSList *cur;
 	GtkCTreeNode *node;
@@ -392,17 +409,27 @@ static void grouplist_dialog_set_list(gchar *pattern)
 	if (!pattern || *pattern == '\0')
 		pattern = "*";
 
-	grouplist_clear();
-
-	recv_set_ui_func(grouplist_recv_func, NULL);
-	group_list = news_get_group_list(news_folder);
-	group_list = g_slist_reverse(group_list);
-	recv_set_ui_func(NULL, NULL);
-	if (group_list == NULL) {
-		alertpanel_error(_("Can't retrieve newsgroup list."));
-		locked = FALSE;
-		return;
+	if (refresh) {
+		grouplist_clear();
+		recv_set_ui_func(grouplist_recv_func, NULL);
+		group_list = news_get_group_list(news_folder);
+		group_list = g_slist_reverse(group_list);
+		recv_set_ui_func(NULL, NULL);
+		if (group_list == NULL) {
+			alertpanel_error(_("Can't retrieve newsgroup list."));
+			locked = FALSE;
+			return;
+		}
+	} else {
+		gtk_signal_handler_block_by_func
+			(GTK_OBJECT(ctree), GTK_SIGNAL_FUNC(ctree_unselected),
+			 NULL);
+		gtk_clist_clear(GTK_CLIST(ctree));
+		gtk_signal_handler_unblock_by_func
+			(GTK_OBJECT(ctree), GTK_SIGNAL_FUNC(ctree_unselected),
+			 NULL);
 	}
+	gtk_entry_set_text(GTK_ENTRY(entry), pattern);
 
 	grouplist_hash_init();
 
@@ -437,6 +464,17 @@ static void grouplist_dialog_set_list(gchar *pattern)
 	locked = FALSE;
 }
 
+static void grouplist_search(void)
+{
+	gchar *str;
+
+	if (locked) return;
+
+	str = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
+	grouplist_dialog_set_list(str, FALSE);
+	g_free(str);
+}
+
 static void grouplist_clear(void)
 {
 	gtk_signal_handler_block_by_func(GTK_OBJECT(ctree),
@@ -465,19 +503,9 @@ static void grouplist_recv_func(SockInfo *sock, gint count, gint read_bytes,
 
 static void ok_clicked(GtkWidget *widget, gpointer data)
 {
-	gchar *str;
-
-	str = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
-
-	if (strchr(str, '*') != NULL)
-		grouplist_dialog_set_list(str);
-	else {
-		ack = TRUE;
-		if (gtk_main_level() > 1)
-			gtk_main_quit();
-	}
-
-	g_free(str);
+	ack = TRUE;
+	if (gtk_main_level() > 1)
+		gtk_main_quit();
 }
 
 static void cancel_clicked(GtkWidget *widget, gpointer data)
@@ -496,7 +524,7 @@ static void refresh_clicked(GtkWidget *widget, gpointer data)
 	news_remove_group_list_cache(news_folder);
 
 	str = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
-	grouplist_dialog_set_list(str);
+	grouplist_dialog_set_list(str, TRUE);
 	g_free(str);
 }
 
@@ -536,22 +564,10 @@ static void ctree_unselected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 
 static void entry_activated(GtkEditable *editable)
 {
-	gchar * str;
-	gboolean update_list;
+	grouplist_search();
+}
 
-	str = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
-
-	update_list = FALSE;
-
-	if (strchr(str, '*') != NULL)
-	  update_list = TRUE;
-
-	if (update_list) {
-		grouplist_dialog_set_list(str);
-		g_free(str);
-	}
-	else {
-		g_free(str);
-		ok_clicked(NULL, NULL);
-	}
+static void search_clicked(GtkWidget *widget, gpointer data)
+{
+	grouplist_search();
 }
