@@ -390,11 +390,6 @@ static gchar *session_recv_msg(Session *session)
 		}
 		if (str[size - 2] == '\n') {
 			str[size - 2] = '\0';
-
-			debug_print("session: %s: received message: %s\n",
-				    session->child_pid == 0 ?
-				    "child" : "parent", str);
-
 			break;
 		}
 	}
