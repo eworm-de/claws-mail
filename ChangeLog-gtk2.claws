@@ -1,3 +1,9 @@
+2004-11-16 [colin]	0.9.12cvs146.14
+
+	* src/compose.c
+		Remove useless chunk of code
+		Patch by Alfons
+
 2004-11-15 [colin]	0.9.12cvs146.13
 
 	* src/compose.c

@@ -4122,20 +4122,12 @@ static gchar *compose_get_header(Compose *compose)
 	/* Subject */
 	str = gtk_editable_get_chars(GTK_EDITABLE(compose->subject_entry), 0, -1);
 	if (*str != '\0' && !IS_IN_CUSTOM_HEADER("Subject")) {
-		gchar *tmpstr;
-
-		tmpstr = g_strdup(str);
-		if (tmpstr == NULL) {
-			g_string_free(header, TRUE);
-			return NULL;
-		}
 		g_strstrip(str);
 		if (*str != '\0') {
 			compose_convert_header(buf, sizeof(buf), str,
 					       strlen("Subject: "), FALSE);
 			g_string_append_printf(header, "Subject: %s\n", buf);
 		}
-		g_free(tmpstr);
 	}
 	g_free(str);
 
