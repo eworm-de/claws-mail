@@ -51,6 +51,7 @@
 #include "colorlabel.h"
 
 #include "matcher_parser.h"
+#include "matcher.h"
 
 static struct Filtering {
 	GtkWidget *window;
@@ -238,6 +239,8 @@ void prefs_filtering_open(FolderItem * item,
 			  const gchar *header,
 			  const gchar *key)
 {
+	gchar *esckey;
+
 	if (prefs_rc_is_readonly(FILTERING_RC))
 		return;
 
@@ -252,7 +255,9 @@ void prefs_filtering_open(FolderItem * item,
 
 	cur_item = item;
 
-	prefs_filtering_set_dialog(header, key);
+	esckey = matcher_escape_str(key);
+	prefs_filtering_set_dialog(header, esckey);
+	g_free(esckey);
 
 	gtk_widget_show(filtering.window);
 

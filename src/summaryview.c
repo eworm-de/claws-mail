@@ -4075,6 +4075,12 @@ void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
 		break;
 	}
 
+	/*
+	 * NOTE: key may be allocated on the stack, so 
+	 * prefs_filter[ing]_open() should have completed 
+	 * and have set entries. Otherwise we're hosed.  
+	 */
+
 	if (global_processing)
 		prefs_filtering_open(NULL, header, key);
 	else

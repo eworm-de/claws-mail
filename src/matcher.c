@@ -109,6 +109,35 @@ gchar * get_matchparser_tab_str(gint id)
 	return NULL;
 }
 
+/* matcher_escape_str() - escapes a string returns newly allocated escaped string */
+gchar *matcher_escape_str(const gchar *str)
+{
+	register const gchar *walk;
+	register int escape;
+	gchar *res;
+	register char *reswalk;
+
+	if (str == NULL)
+		return NULL;
+
+	for (escape = 0, walk = str; *walk; walk++)
+		if (*walk == '\'' || *walk == '\"')
+			escape++;
+
+	if (!escape)
+		return g_strdup(str);
+	
+	reswalk = res = g_new0(gchar, (walk - str) + escape + 1);
+	for (walk = str; *walk; walk++, reswalk++) {
+		if (*walk == '\'' || *walk == '\"')
+			*reswalk++ = '\\';
+		*reswalk = *walk;
+	}
+
+	*reswalk = 0;
+	return res;
+}
+
 /* matcher_unescape_str() - assumes that unescaping frees up room
  * in the string, so it returns the unescaped string in the 
  * source */

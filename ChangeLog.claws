@@ -1,3 +1,11 @@
+2002-04-07 [alfons]	0.7.4claws69
+
+	* src/matcher.[ch]
+	* src/prefs_filtering.c
+	* src/summaryview.c
+		escape \' and \" in strings passed as filtering strings; bug report by Alex Evseev.
+		(see http://www.geocrawler.com/lists/3/SourceForge/11619/25/8279435/)
+
 2002-04-07 [paul]	0.7.4claws68
 
 	* sync with 0.7.4cvs32

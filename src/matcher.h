@@ -103,6 +103,7 @@ gint matcher_parse_number(gchar ** str);
 gboolean matcher_parse_boolean_op(gchar ** str);
 gchar * matcher_parse_regexp(gchar ** str);
 gchar * matcher_parse_str(gchar ** str);
+gchar * matcher_escape_str(const gchar *str);
 gchar * matcher_unescape_str(gchar *str);
 gchar * matcherprop_to_string(MatcherProp * matcher);
 gchar * matcherlist_to_string(MatcherList * matchers);
