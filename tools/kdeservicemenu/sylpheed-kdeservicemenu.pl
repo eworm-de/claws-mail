@@ -18,46 +18,57 @@
 
 unless ($ARGV[0]) { exit; }
 
-$count = $#ARGV;
+my $count = $#ARGV;
+my $prefix = "/tmp/archive.";
+my ($suffix,$command) = find_sufncom($ARGV[0]);
+my ($sel,$att) = split_parts();
 
-($str,$strpt) = split_parts();
-
-if ($ARGV[0] eq "zip") {
-	exec "zip -r archive.zip $str;"
-	    ."sylpheed --compose --attach \"archive.zip\"";
-} elsif ($ARGV[0] eq "tar") {
-	exec "tar -c -f archive.tar $str;"
-	    ."sylpheed --compose --attach \"archive.tar\"";
-} elsif ($ARGV[0] eq "tarbzip2") {
-	exec "tar -cj -f archive.tar.bz2 $str;"
-	    ."sylpheed --compose --attach \"archive.tar.bz2\"";
-} elsif ($ARGV[0] eq "targz") {
-	exec "tar -cz -f archive.tar.gz $str;"
-	    ."sylpheed --compose --attach \"archive.tar.gz\"";
-} elsif ($ARGV[0] eq "gzip") {
-	exec "gzip  $str;"
-	    ."sylpheed --compose --attach $strpt";
-} elsif ($ARGV[0] eq "bzip2") {
-	exec "bzip2  $str;"
-	    ."sylpheed --compose --attach $strpt";
+if ($ARGV[0] eq "gzip" || $ARGV[0] eq "bzip2") {
+	exec "$sel"."sylpheed --compose --attach $att";
 } elsif ($ARGV[0] eq "attachfile") {
-	exec "sylpheed --compose --attach $str";
+	exec "sylpheed --compose --attach $sel";
+} else {
+	exec "$command $prefix$suffix $sel;"
+	    ."sylpheed --compose --attach $prefix$suffix";
 }
+
 exit;
 
+sub find_sufncom {
+	local($s) = @_;
+	my ($suf,$com);
+	
+	if ($s eq "gzip") { $suf = "gz"; $com = "$s -c"; }
+	elsif ($s eq "bzip2") { $suf = "bz2"; $com = "$s -c"; }
+	elsif ($s eq "zip") { $suf = "zip"; $com = "$s -r"; }
+	elsif ($s eq "tar") { $suf = "tar"; $com = "$s -c -f"; }
+	elsif ($s eq "tarbzip2") { $suf = "tar.bz2"; $com = "tar -cj -f"; }
+	elsif ($s eq "targz") { $suf = "tar.gz"; $com = "tar -cz -f"; }
+	
+	return ($suf,$com);
+}
+
 sub split_parts {
-	local $selectedParts = "";
-	local $sParts = "";
+	my $selectedParts = "";
+	my $attachedParts = "";
 	while ($count > 0) {
-		@s = split("/", $ARGV[$count]);
-		$count--;
-		$p = pop(@s);
-		$selectedParts .= "\"$p\" ";
-		if ($ARGV[0] eq "gzip") {
-			$sParts .= "\"$p.gz\" ";
-		} elsif ($ARGV[0] eq "bzip2") {
-			$sParts .= "\"$p.bz2\" ";
+		my @s = split("/", $ARGV[$count]);
+		my $p = pop(@s);
+		if ($ARGV[0] eq "gzip" || $ARGV[0] eq "bzip2") {
+			my $psub = substitute($p);
+			my $output = "/tmp/$psub.$suffix";
+			$selectedParts .= "$command \"$p\" > $output;";
+			$attachedParts .= "$output ";
+		} else {
+			$selectedParts .= "\"$p\" ";
 		}
+		$count--;
 	}
-	return ($selectedParts,$sParts);
+	return ($selectedParts,$attachedParts);
+}
+
+sub substitute {
+	local($s) = @_;
+	$s =~ s/\s/_/g;
+	return $s;
 }
