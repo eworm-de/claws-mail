@@ -1,3 +1,14 @@
+2002-07-04 [paul]	0.7.8claws47
+
+	* sync with 0.7.8cvs14
+		see  ChangeLog 2002-07-04
+
+2002-07-03 [alfons]	0.7.8claws46
+
+	* src/folder.c
+		dupe folder item's path because it's being reallocated
+		by new folder scanning code
+
 2002-07-03 [christoph]	0.7.8claws45
 
 	* src/imap.c
