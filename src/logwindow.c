@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,8 +38,11 @@
 
 static LogWindow *logwindow;
 
-static void key_pressed(GtkWidget *widget, GdkEventKey *event,
-			LogWindow *logwin);
+static void hide_cb	(GtkWidget	*widget,
+			 LogWindow	*logwin);
+static void key_pressed	(GtkWidget	*widget,
+			 GdkEventKey	*event,
+			 LogWindow	*logwin);
 void log_window_clear(GtkWidget *text);
 
 LogWindow *log_window_create(void)
@@ -49,7 +52,7 @@ LogWindow *log_window_create(void)
 	GtkWidget *scrolledwin;
 	GtkWidget *text;
 
-	debug_print(_("Creating log window...\n"));
+	debug_print("Creating log window...\n");
 	logwin = g_new0(LogWindow, 1);
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -61,6 +64,8 @@ LogWindow *log_window_create(void)
 			   GTK_SIGNAL_FUNC(gtk_widget_hide_on_delete), NULL);
 	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
 			   GTK_SIGNAL_FUNC(key_pressed), logwin);
+	gtk_signal_connect(GTK_OBJECT(window), "hide",
+			   GTK_SIGNAL_FUNC(hide_cb), logwin);
 	gtk_widget_realize(window);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
@@ -75,6 +80,7 @@ LogWindow *log_window_create(void)
 			    (GTK_SCROLLED_WINDOW(scrolledwin)));
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 	gtk_widget_show(text);
+	gtk_text_freeze(GTK_TEXT(text));
 
 	logwin->window = window;
 	logwin->scrolledwin = scrolledwin;
@@ -117,7 +123,14 @@ void log_window_init(LogWindow *logwin)
 
 void log_window_show(LogWindow *logwin)
 {
+	GtkText *text = GTK_TEXT(logwin->text);
+
 	gtk_widget_hide(logwin->window);
+
+	gtk_text_thaw(text);
+	text->vadj->value = text->vadj->upper - text->vadj->page_size;
+	gtk_signal_emit_by_name(GTK_OBJECT(text->vadj), "value_changed");
+
 	gtk_widget_show(logwin->window);
 }
 
@@ -132,16 +145,17 @@ void log_window_append(const gchar *str, LogType type)
 	text = GTK_TEXT(logwindow->text);
 
 	switch (type) {
+	case LOG_MSG:
+		color = &logwindow->msg_color;
+		head = "* ";
+		break;
 	case LOG_WARN:
 		color = &logwindow->warn_color;
-		head = "*** ";
+		head = "** ";
 		break;
 	case LOG_ERROR:
 		color = &logwindow->error_color;
 		head = "*** ";
-		break;
-	case LOG_MSG:
-		color = &logwindow->msg_color;
 		break;
 	default:
 		break;
@@ -151,6 +165,12 @@ void log_window_append(const gchar *str, LogType type)
 	gtk_text_insert(text, NULL, color, NULL, str, -1);
 	if (prefs_common.cliplog)
 	       log_window_clear (GTK_WIDGET (text));
+}
+
+static void hide_cb(GtkWidget *widget, LogWindow *logwin)
+{
+	if (GTK_TEXT(logwin->text)->freeze_count == 0)
+		gtk_text_freeze(GTK_TEXT(logwin->text));
 }
 
 static void key_pressed(GtkWidget *widget, GdkEventKey *event,
