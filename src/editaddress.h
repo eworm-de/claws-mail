@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Match Grun
+ * Copyright (C) 1999,2000 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,22 +18,17 @@
  */
 
 /*
- * Edit JPilot address book data.
+ * Edit address item data.
  */
 
-#ifndef __EDITJPILOT_H__
-#define __EDITJPILOT_H__
-
-#ifdef USE_JPILOT
+#ifndef __EDITADDRESS_H__
+#define __EDITADDRESS_H__
 
 // Function prototypes
-AdapterDSource *addressbook_edit_jpilot( AddressIndex *addrIndex, AdapterDSource *ads );
+ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent, ItemPerson *person, gboolean pgMail );
 
-#endif /* USE_JPILOT */
-
-#endif /* __EDITJPILOT_H__ */
+#endif /* __EDITADDRESS_H__ */
 
 /*
 * End of Source.
 */
-

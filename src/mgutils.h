@@ -24,11 +24,8 @@
 #ifndef __MGUTILS_H__
 #define __MGUTILS_H__
 
-#include <time.h>
 #include <stdio.h>
 #include <glib.h>
-
-#include "addressitem.h"
 
 // Error codes
 #define MGU_SUCCESS        0
@@ -46,38 +43,20 @@
 #define MGU_LDAP_TIMEOUT   -12
 #define MGU_LDAP_CRITERIA  -13
 #define MGU_LDAP_NOENTRIES -14
-
-// Address cache
-typedef struct _AddressCache AddressCache;
-struct _AddressCache {
-	GList    *addressList;
-	gboolean dataRead;
-	gboolean modified;
-	time_t   modifyTime;
-};
+#define MGU_ERROR_WRITE    -15
+#define MGU_OPEN_DIRECTORY -16
+#define MGU_NO_PATH        -17
 
 // Function prototypes
-AddressItem *mgu_create_address_item( AddressObjectType type );
-AddressItem *mgu_create_address( void );
-AddressItem *mgu_copy_address_item( AddressItem *item );
-void mgu_free_address( AddressItem *item );
-void mgu_free_address_list( GList *addrList );
-void mgu_refresh_cache( AddressCache *cache );
-void mgu_clear_cache( AddressCache *cache );
-void mgu_clear_cache_null( AddressCache *cache );
-AddressCache *mgu_create_cache( void );
-void mgu_free_cache( AddressCache *cache );
-void mgu_print_address( AddressItem *item, FILE *stream );
-void mgu_print_address_list( GList *addrList, FILE *stream );
-void mgu_print_cache( AddressCache *cache, FILE *stream );
-void mgu_print_list( GSList *list, FILE *stream );
-void mgu_print_dlist( GList *list, FILE *stream );
-gboolean mgu_check_file( AddressCache *cache, gchar *path );
-gboolean mgu_mark_cache( AddressCache *cache, gchar *path );
-void mgu_free_list( GSList *list );
-void mgu_free_dlist( GList *list );
-gchar *mgu_list_coalesce( GSList *list );
-void mgu_add_cache( AddressCache *cache, AddressItem *addrItem );
-gchar *mgu_error2string( gint err );
+void mgu_print_list		( GSList *list, FILE *stream );
+void mgu_print_dlist		( GList *list, FILE *stream );
+void mgu_free_list		( GSList *list );
+void mgu_free_dlist		( GList *list );
+gchar *mgu_list_coalesce	( GSList *list );
+gchar *mgu_error2string		( gint err );
+gchar *mgu_replace_string	( gchar *str, const gchar *value );
+void mgu_clear_slist		( GSList *list );
+void mgu_clear_list		( GList *list );
+gchar *mgu_email_check_empty	( gchar *address );
 
 #endif /* __MGUTILS_H__ */

@@ -18,20 +18,18 @@
  */
 
 /*
- * Edit JPilot address book data.
+ * Add address to address book dialog.
  */
 
-#ifndef __EDITJPILOT_H__
-#define __EDITJPILOT_H__
+#ifndef __ADDRESS_ADD_H__
+#define __ADDRESS_ADD_H__
 
-#ifdef USE_JPILOT
+#include "addrindex.h"
 
 // Function prototypes
-AdapterDSource *addressbook_edit_jpilot( AddressIndex *addrIndex, AdapterDSource *ads );
+gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name, const gchar *address, const gchar *remarks );
 
-#endif /* USE_JPILOT */
-
-#endif /* __EDITJPILOT_H__ */
+#endif /* __ADDRESS_ADD_H__ */
 
 /*
 * End of Source.

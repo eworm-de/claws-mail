@@ -148,7 +148,6 @@ static void summary_write_cache_func	(GtkCTree		*ctree,
 					 gpointer		 data);
 
 static void summary_set_menu_sensitive	(SummaryView		*summaryview);
-static void summary_set_add_sender_menu	(SummaryView		*summaryview);
 
 static void summary_select_node		(SummaryView		*summaryview,
 					 GtkCTreeNode		*node,
@@ -313,6 +312,10 @@ static void summary_drag_data_get       (GtkWidget        *widget,
 					 guint             time,
 					 SummaryView      *summaryview);
 
+static void summary_add_address_cb	(SummaryView		*summaryview,
+					 guint			 action,
+					 GtkWidget		*widget);
+
 /* custom compare functions for sorting */
 
 static gint summary_cmp_by_num		(GtkCList		*clist,
@@ -375,7 +378,7 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 					NULL, summary_reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/Add sender to address _book"),
-					NULL, NULL,		0, NULL},
+					NULL, summary_add_address_cb,		0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/Open in new _window"),	NULL, summary_open_msg,	0, NULL},
 	{N_("/View so_urce"),		NULL, summary_view_source, 0, NULL},
@@ -1067,6 +1070,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/Reply to all",		  sens);
 	menu_set_sensitive(ifactory, "/Forward",		  TRUE);
 	menu_set_sensitive(ifactory, "/Forward as attachment",    TRUE);
+	menu_set_sensitive(ifactory, "/Add sender to address book", sens);
 	
 	menu_set_sensitive(ifactory, "/Open in new window", sens);
 	menu_set_sensitive(ifactory, "/View source", sens);
@@ -1087,32 +1091,6 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	else
 		sens = FALSE;
 	menu_set_sensitive(ifactory, "/Follow-up and reply to",	sens);
-}
-
-static void summary_set_add_sender_menu(SummaryView *summaryview)
-{
-	GtkWidget *menu;
-	GtkWidget *submenu;
-	MsgInfo *msginfo;
-	gchar *from;
-
-	menu = gtk_item_factory_get_item(summaryview->popupfactory,
-					 "/Add sender to address book");
-	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
-					      summaryview->selected);
-	if (!msginfo || !msginfo->from) {
-		gtk_widget_set_sensitive(menu, FALSE);
-		submenu = gtk_menu_new();
-		gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu), submenu);
-		return;
-	}
-
-	gtk_widget_set_sensitive(menu, TRUE);
-	Xstrdup_a(from, msginfo->from, return);
-	eliminate_address_comment(from);
-	extract_address(from);
-	addressbook_add_submenu(menu, msginfo->fromname, from, NULL);
-
 }
 
 void summary_select_next_unread(SummaryView *summaryview)
@@ -3643,8 +3621,8 @@ static void summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	if (!event) return;
 
 	if (event->button == 3) {
-		/* right clicked */
-		summary_set_add_sender_menu(summaryview);
+		// Right button clicked
+		// summary_set_add_sender_menu(summaryview);
 		gtk_menu_popup(GTK_MENU(summaryview->popupmenu), NULL, NULL,
 			       NULL, NULL, event->button, event->time);
 	} else if (event->button == 2) {
@@ -4304,4 +4282,22 @@ static void summary_unignore_thread(SummaryView *summaryview)
 
 	summary_status_show(summaryview);
 }
+
+static void summary_add_address_cb( SummaryView *summaryview, guint action, GtkWidget *widget ) {
+	MsgInfo *msginfo;
+	gchar *from;
+
+	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
+					      summaryview->selected);
+	if (!msginfo) return;
+
+	Xstrdup_a(from, msginfo->from, return);
+	eliminate_address_comment(from);
+	extract_address(from);
+	addressbook_add_contact( msginfo->fromname, from, NULL );
+}
+
+/*
+ * End of Source.
+ */
 

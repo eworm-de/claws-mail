@@ -29,7 +29,8 @@
 #include <glib.h>
 #include <pthread.h>
 
-#include "mgutils.h"
+#include "addritem.h"
+#include "addrcache.h"
 
 #define SYLDAP_DFL_PORT        389
 #define SYLDAP_MAX_ENTRIES     20
@@ -46,51 +47,64 @@
 // VCard object
 typedef struct _SyldapServer SyldapServer;
 struct _SyldapServer {
-	gchar *name;
-	gchar *hostName;
-	gint  port;
-	gchar *baseDN;
-	gchar *bindDN;
-	gchar *bindPass;
-	gchar *searchCriteria;
-	gchar *searchValue;
-	gint  entriesRead;
-	gint  maxEntries;
-	gint  timeOut;
-	gboolean newSearch;
+	gchar        *name;
+	gchar        *hostName;
+	gint         port;
+	gchar        *baseDN;
+	gchar        *bindDN;
+	gchar        *bindPass;
+	gchar        *searchCriteria;
+	gchar        *searchValue;
+	gint         entriesRead;
+	gint         maxEntries;
+	gint         timeOut;
+	gboolean     newSearch;
 	AddressCache *addressCache;
-	gint  retVal;
-	pthread_t *thread;
-	gboolean busyFlag;
-	void (*callBack)( void * );
+	// ItemFolder   *rootFolder;
+	gboolean     accessFlag;
+	gint         retVal;
+	pthread_t    *thread;
+	gboolean     busyFlag;
+	void         (*callBack)( void * );
 };
 
 /* Function prototypes */
-void syldap_set_name( SyldapServer* ldapServer, const gchar *value );
-void syldap_set_host( SyldapServer* ldapServer, const gchar *value );
-void syldap_set_port( SyldapServer* ldapServer, const gint value );
-void syldap_set_base_dn( SyldapServer* ldapServer, const gchar *value );
-void syldap_set_bind_dn( SyldapServer* ldapServer, const gchar *value );
-void syldap_set_bind_password( SyldapServer* ldapServer, const gchar *value );
-void syldap_set_search_criteria( SyldapServer* ldapServer, const gchar *value );
-void syldap_set_search_value( SyldapServer* ldapServer, const gchar *value );
-void syldap_set_max_entries( SyldapServer* ldapServer, const gint value );
-void syldap_set_timeout( SyldapServer* ldapServer, const gint value );
-void syldap_set_callback( SyldapServer *ldapServer, void *func );
-void syldap_force_refresh( SyldapServer *ldapServer );
-SyldapServer *syldap_create();
-void syldap_free( SyldapServer *ldapServer );
-void syldap_print_data( SyldapServer *ldapServer, FILE *stream );
-gboolean syldap_check_search( SyldapServer *ldapServer );
-gint syldap_read_data( SyldapServer *ldapServer );
-gint syldap_read_data_th( SyldapServer *ldapServer );
-void syldap_cancel_read( SyldapServer *ldapServer );
-GList *syldap_get_address_list( const SyldapServer *ldapServer );
-GList *syldap_read_basedn_s( const gchar *host, const gint port, const gchar *bindDN, const gchar *bindPW, const gint tov );
-GList *syldap_read_basedn( SyldapServer *ldapServer );
-gboolean syldap_test_connect_s( const gchar *host, const gint port );
-gboolean syldap_test_connect( SyldapServer *ldapServer );
-gboolean syldap_test_ldap_lib();
+SyldapServer *syldap_create	( void );
+void syldap_set_name		( SyldapServer* ldapServer, const gchar *value );
+void syldap_set_host		( SyldapServer* ldapServer, const gchar *value );
+void syldap_set_port		( SyldapServer* ldapServer, const gint value );
+void syldap_set_base_dn		( SyldapServer* ldapServer, const gchar *value );
+void syldap_set_bind_dn		( SyldapServer* ldapServer, const gchar *value );
+void syldap_set_bind_password	( SyldapServer* ldapServer, const gchar *value );
+void syldap_set_search_criteria	( SyldapServer* ldapServer, const gchar *value );
+void syldap_set_search_value	( SyldapServer* ldapServer, const gchar *value );
+void syldap_set_max_entries	( SyldapServer* ldapServer, const gint value );
+void syldap_set_timeout		( SyldapServer* ldapServer, const gint value );
+void syldap_set_callback	( SyldapServer *ldapServer, void *func );
+void syldap_set_accessed	( SyldapServer *ldapServer, const gboolean value );
+void syldap_force_refresh	( SyldapServer *ldapServer );
+void syldap_free		( SyldapServer *ldapServer );
+gint syldap_get_status		( SyldapServer *ldapServer );
+gboolean syldap_get_accessed	( SyldapServer *ldapServer );
+gchar *syldap_get_name		( SyldapServer *ldapServer );
+
+void syldap_print_data		( SyldapServer *ldapServer, FILE *stream );
+gboolean syldap_check_search	( SyldapServer *ldapServer );
+gint syldap_read_data		( SyldapServer *ldapServer );
+gint syldap_read_data_th	( SyldapServer *ldapServer );
+void syldap_cancel_read		( SyldapServer *ldapServer );
+
+// GList *syldap_get_address_list	( const SyldapServer *ldapServer );
+ItemFolder *syldap_get_root_folder	( SyldapServer *ldapServer );
+GList *syldap_get_list_person	( SyldapServer *ldapServer );
+GList *syldap_get_list_folder	( SyldapServer *ldapServer );
+
+GList *syldap_read_basedn_s	( const gchar *host, const gint port, const gchar *bindDN,
+				  const gchar *bindPW, const gint tov );
+GList *syldap_read_basedn	( SyldapServer *ldapServer );
+gboolean syldap_test_connect_s	( const gchar *host, const gint port );
+gboolean syldap_test_connect	( SyldapServer *ldapServer );
+gboolean syldap_test_ldap_lib	( void );
 
 #endif	/* USE_LDAP */
 

@@ -41,7 +41,6 @@
 #include "intl.h"
 #include "addressbook.h"
 #include "prefs_common.h"
-#include "menu.h"
 #include "addressitem.h"
 #include "syldap.h"
 #include "editldap_basedn.h"
@@ -73,7 +72,7 @@ static struct _LDAPEdit {
 /*
 * Edit functions.
 */
-void edit_ldap_status_show( gchar *msg ) {
+static void edit_ldap_status_show( gchar *msg ) {
 	if( ldapedit.statusbar != NULL ) {
 		gtk_statusbar_pop( GTK_STATUSBAR(ldapedit.statusbar), ldapedit.status_cid );
 		if( msg ) {
@@ -492,11 +491,12 @@ gint edit_ldap_get_optmenu( GtkOptionMenu *optmenu ) {
 	return GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
 }
 
-AddressLDAP *addressbook_edit_ldap( AddressLDAP *ldapi ) {
+AdapterDSource *addressbook_edit_ldap( AddressIndex *addrIndex, AdapterDSource *ads ) {
 	static gboolean cancelled;
 	gchar *sName, *sHost, *sBase, *sBind, *sPass, *sCrit;
 	gint iPort, iMaxE, iTime, iMail, iName;
-	SyldapServer *server;
+	AddressDataSource *ds = NULL;
+	SyldapServer *server = NULL;
 	gboolean fin;
 
 	if (!ldapedit.window)
@@ -508,8 +508,9 @@ AddressLDAP *addressbook_edit_ldap( AddressLDAP *ldapi ) {
 	manage_window_set_transient(GTK_WINDOW(ldapedit.window));
 
 	edit_ldap_status_show( "" );
-	if( ldapi ) {
-		server = ldapi->ldapServer;
+	if( ads ) {
+		ds = ads->dataSource;
+		server = ds->rawDataSource;
 		if (server->name)
 			gtk_entry_set_text(GTK_ENTRY(ldapedit.entry_name), server->name);
 		if (server->hostName)
@@ -560,14 +561,12 @@ AddressLDAP *addressbook_edit_ldap( AddressLDAP *ldapi ) {
 	if( *sBase == '\0' ) fin = TRUE;
 
 	if( ! fin ) {
-		if( ! ldapi ) {
-			ldapi = g_new0(AddressLDAP, 1);
-			ADDRESS_OBJECT_TYPE(ldapi) = ADDR_LDAP;
+		if( ! ads ) {
 			server = syldap_create();
-			ldapi->ldapServer = server;
+			ds = addrindex_index_add_datasource( addrIndex, ADDR_IF_LDAP, server );
+			ads = addressbook_create_ds_adapter( ds, ADDR_LDAP, NULL );
 		}
-		g_free( ldapi->name );
-		ldapi->name = g_strdup( sName );
+		addressbook_ads_set_name( ads, sName );
 		syldap_set_name( server, sName );
 		syldap_set_host( server, sHost );
 		syldap_set_port( server, iPort );
@@ -585,7 +584,7 @@ AddressLDAP *addressbook_edit_ldap( AddressLDAP *ldapi ) {
 	g_free( sPass );
 	g_free( sCrit );
 
-	return ldapi;
+	return ads;
 }
 
 #endif /* USE_LDAP */

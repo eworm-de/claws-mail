@@ -28,6 +28,8 @@
 
 #include "mgutils.h"
 #include "vcard.h"
+#include "addritem.h"
+#include "addrcache.h"
 
 #define GNOMECARD_DIR     ".gnome"
 #define GNOMECARD_FILE    "GnomeCard"
@@ -37,47 +39,85 @@
 #define VCARD_TEST_LINES  200
 
 /*
-* Specify name to be used.
-*/
-void vcard_set_name( VCardFile* cardFile, const gchar *name ) {
-	/* Copy file name */
-	if( cardFile->name ) g_free( cardFile->name );
-	if( name ) cardFile->name = g_strdup( name );
-	g_strstrip( cardFile->name );
-}
-
-/*
-* Specify file to be used.
-*/
-void vcard_set_file( VCardFile* cardFile, const gchar *path ) {
-	mgu_refresh_cache( cardFile->addressCache );
-
-	/* Copy file path */
-	if( cardFile->path ) g_free( cardFile->path );
-	if( path ) cardFile->path = g_strdup( path );
-	g_strstrip( cardFile->path );
-}
-
-/*
 * Create new cardfile object.
 */
 VCardFile *vcard_create() {
 	VCardFile *cardFile;
-	cardFile = g_new( VCardFile, 1 );
+	cardFile = g_new0( VCardFile, 1 );
 	cardFile->name = NULL;
 	cardFile->path = NULL;
 	cardFile->file = NULL;
 	cardFile->bufptr = cardFile->buffer;
-	cardFile->addressCache = mgu_create_cache();
+	cardFile->addressCache = addrcache_create();
 	cardFile->retVal = MGU_SUCCESS;
+	cardFile->accessFlag = FALSE;
 	return cardFile;
+}
+
+/*
+* Properties...
+*/
+void vcard_set_name( VCardFile* cardFile, const gchar *value ) {
+	g_return_if_fail( cardFile != NULL );
+	cardFile->name = mgu_replace_string( cardFile->name, value );
+	g_strstrip( cardFile->name );
+}
+void vcard_set_file( VCardFile* cardFile, const gchar *value ) {
+	g_return_if_fail( cardFile != NULL );
+	addrcache_refresh( cardFile->addressCache );
+	cardFile->path = mgu_replace_string( cardFile->path, value );
+	g_strstrip( cardFile->path );
+}
+void vcard_set_accessed( VCardFile *cardFile, const gboolean value ) {
+	g_return_if_fail( cardFile != NULL );
+	cardFile->accessFlag = value;
+}
+
+/*
+* Test whether file was modified since last access.
+* Return: TRUE if file was modified.
+*/
+gboolean vcard_get_modified( VCardFile *vcardFile ) {
+	g_return_if_fail( vcardFile != NULL );
+	return addrcache_check_file( vcardFile->addressCache, vcardFile->path );
+}
+gboolean vcard_get_accessed( VCardFile *vcardFile ) {
+	g_return_if_fail( vcardFile != NULL );
+	return addrcache_check_file( vcardFile->addressCache, vcardFile->path );
+}
+
+/*
+* Test whether file was read.
+* Return: TRUE if file was read.
+*/
+gboolean vcard_get_read_flag( VCardFile *vcardFile ) {
+	g_return_if_fail( vcardFile != NULL );
+	return vcardFile->addressCache->dataRead;
+}
+
+/*
+* Return status code from last file operation.
+* Return: Status code.
+*/
+gint vcard_get_status( VCardFile *cardFile ) {
+	g_return_if_fail( cardFile != NULL );
+	return cardFile->retVal;
+}
+
+ItemFolder *vcard_get_root_folder( VCardFile *cardFile ) {
+	g_return_if_fail( cardFile != NULL );
+	return addrcache_get_root_folder( cardFile->addressCache );
+}
+gchar *vcard_get_name( VCardFile *cardFile ) {
+	g_return_if_fail( cardFile != NULL );
+	return cardFile->name;
 }
 
 /*
 * Refresh internal variables to force a file read.
 */
 void vcard_force_refresh( VCardFile *cardFile ) {
-	mgu_refresh_cache( cardFile->addressCache );
+	addrcache_refresh( cardFile->addressCache );
 }
 
 /*
@@ -96,8 +136,6 @@ VCardFile *vcard_create_path( const gchar *path ) {
 void vcard_free( VCardFile *cardFile ) {
 	g_return_if_fail( cardFile != NULL );
 
-	// fprintf( stdout, "freeing... VCardFile\n" );
-
 	/* Close file */
 	if( cardFile->file ) fclose( cardFile->file );
 
@@ -106,8 +144,8 @@ void vcard_free( VCardFile *cardFile ) {
 	g_free( cardFile->path );
 
 	/* Clear cache */
-	mgu_clear_cache( cardFile->addressCache );
-	mgu_free_cache( cardFile->addressCache );
+	addrcache_clear( cardFile->addressCache );
+	addrcache_free( cardFile->addressCache );
 
 	// Clear pointers
 	cardFile->file = NULL;
@@ -115,11 +153,10 @@ void vcard_free( VCardFile *cardFile ) {
 	cardFile->path = NULL;
 	cardFile->addressCache = NULL;
 	cardFile->retVal = MGU_SUCCESS;
+	cardFile->accessFlag = FALSE;
 
 	/* Now release file object */
 	g_free( cardFile );
-
-	// fprintf( stdout, "freeing... VCardFile done\n" );
 
 }
 
@@ -133,14 +170,15 @@ void vcard_print_file( VCardFile *cardFile, FILE *stream ) {
 	fprintf( stream, "     name: '%s'\n", cardFile->name );
 	fprintf( stream, "file spec: '%s'\n", cardFile->path );
 	fprintf( stream, "  ret val: %d\n",   cardFile->retVal );
-	mgu_print_cache( cardFile->addressCache, stream );
+	addrcache_print( cardFile->addressCache, stream );
+	addritem_print_item_folder( cardFile->addressCache->rootFolder, stream );
 }
 
 /*
 * Open file for read.
 * return: TRUE if file opened successfully.
 */
-gint vcard_open_file( VCardFile* cardFile ) {
+static gint vcard_open_file( VCardFile* cardFile ) {
 	g_return_if_fail( cardFile != NULL );
 
 	// fprintf( stdout, "Opening file\n" );
@@ -169,7 +207,7 @@ gint vcard_open_file( VCardFile* cardFile ) {
 /*
 * Close file.
 */
-void vcard_close_file( VCardFile *cardFile ) {
+static void vcard_close_file( VCardFile *cardFile ) {
 	g_return_if_fail( cardFile != NULL );
 	if( cardFile->file ) fclose( cardFile->file );
 	cardFile->file = NULL;
@@ -179,7 +217,7 @@ void vcard_close_file( VCardFile *cardFile ) {
 * Read line of text from file.
 * Return: ptr to buffer where line starts.
 */
-gchar *vcard_read_line( VCardFile *cardFile ) {
+static gchar *vcard_read_line( VCardFile *cardFile ) {
 	while( *cardFile->bufptr == '\n' || *cardFile->bufptr == '\0' ) {
 		if( fgets( cardFile->buffer, VCARDBUFSIZE, cardFile->file ) == NULL )
 			return NULL;
@@ -193,7 +231,7 @@ gchar *vcard_read_line( VCardFile *cardFile ) {
 * Read line of text from file.
 * Return: ptr to buffer where line starts.
 */
-gchar *vcard_get_line( VCardFile *cardFile ) {
+static gchar *vcard_get_line( VCardFile *cardFile ) {
 	gchar buf[ VCARDBUFSIZE ];
 	gchar *start, *end;
 	gint len;
@@ -219,7 +257,7 @@ gchar *vcard_get_line( VCardFile *cardFile ) {
 /*
 * Free linked lists of character strings.
 */
-void vcard_free_lists( GSList *listName, GSList *listAddr, GSList *listRem, GSList* listID ) {
+static void vcard_free_lists( GSList *listName, GSList *listAddr, GSList *listRem, GSList* listID ) {
 	mgu_free_list( listName );
 	mgu_free_list( listAddr );
 	mgu_free_list( listRem );
@@ -231,7 +269,7 @@ void vcard_free_lists( GSList *listName, GSList *listAddr, GSList *listRem, GSLi
 * Param: cardFile - object.
 * Param: tagvalue - will be placed into the linked list.
 */
-gchar *vcard_read_qp( VCardFile *cardFile, char *tagvalue ) {
+static gchar *vcard_read_qp( VCardFile *cardFile, char *tagvalue ) {
 	GSList *listQP = NULL;
 	gint len = 0;
 	gchar *line = tagvalue;
@@ -258,7 +296,7 @@ gchar *vcard_read_qp( VCardFile *cardFile, char *tagvalue ) {
 * Parse tag name from line buffer.
 * Return: Buffer containing the tag name, or NULL if no delimiter char found.
 */
-gchar *vcard_get_tagname( char* line, gchar dlm ) {
+static gchar *vcard_get_tagname( char* line, gchar dlm ) {
 	gint len = 0;
 	gchar *tag = NULL;
 	gchar *lptr = line;
@@ -279,7 +317,7 @@ gchar *vcard_get_tagname( char* line, gchar dlm ) {
 * Return: Buffer containing the tag value. Empty string is returned if
 * no delimiter char found.
 */
-gchar *vcard_get_tagvalue( gchar* line, gchar dlm ) {
+static gchar *vcard_get_tagvalue( gchar* line, gchar dlm ) {
 	gchar *value = NULL;
 	gchar *start = NULL;
 	gchar *lptr;
@@ -306,7 +344,7 @@ gchar *vcard_get_tagvalue( gchar* line, gchar dlm ) {
 /*
 * Dump linked lists of character strings (for debug).
 */
-void vcard_dump_lists( GSList *listName, GSList *listAddr, GSList *listRem, GSList *listID, FILE *stream ) {
+static void vcard_dump_lists( GSList *listName, GSList *listAddr, GSList *listRem, GSList *listID, FILE *stream ) {
 	fprintf( stream, "dump name\n" );
 	fprintf( stream, "------------\n" );
 	mgu_print_list( listName, stdout );
@@ -324,60 +362,54 @@ void vcard_dump_lists( GSList *listName, GSList *listAddr, GSList *listRem, GSLi
 /*
 * Build an address list entry and append to list of address items.
 */
-void vcard_build_items( VCardFile *cardFile, GSList *listName, GSList *listAddr, GSList *listRem, GSList *listID ) {
-	AddressItem *addrItem = NULL;
+static void vcard_build_items( VCardFile *cardFile, GSList *listName, GSList *listAddr, GSList *listRem,
+				GSList *listID )
+{
 	GSList *nodeName = listName;
 	GSList *nodeID = listID;
+	gchar *str;
 	while( nodeName ) {
 		GSList *nodeAddress = listAddr;
 		GSList *nodeRemarks = listRem;
+		ItemPerson *person = addritem_create_item_person();
+		addritem_person_set_common_name( person, nodeName->data );
 		while( nodeAddress ) {
-			addrItem = mgu_create_address();
-			addrItem->name = g_strdup( nodeName->data );
-			addrItem->address = g_strdup( nodeAddress->data );
-			if( nodeRemarks ) {
-				if( nodeRemarks->data ) {
-					if( g_strcasecmp( nodeRemarks->data, "internet" ) == 0 ) {
-						// Trivially exclude this one (appears for most records)
-						addrItem->remarks = g_strdup( "" );
+			str = nodeAddress->data;
+			if( *str != '\0' ) {
+				ItemEMail *email = addritem_create_item_email();
+				addritem_email_set_address( email, str );
+				str = nodeRemarks->data;
+				if( nodeRemarks ) {
+					if( str ) {
+						if( g_strcasecmp( str, "internet" ) != 0 ) {
+							if( *str != '\0' ) addritem_email_set_remarks( email, str );
+						}
 					}
-					else {
-						addrItem->remarks = g_strdup( nodeRemarks->data );
-					}
 				}
-				else {
-					addrItem->remarks = g_strdup( "" );
-				}
+				addrcache_id_email( cardFile->addressCache, email );
+				addrcache_person_add_email( cardFile->addressCache, person, email );
 			}
-			else {
-					addrItem->remarks = g_strdup( "" );
-			}
-/*
-			if( nodeID ) {
-				if( nodeID->data ) {
-					addrItem->externalID = g_strdup( nodeID->data );
-				}
-				else {
-					addrItem->externalID = g_strdup( "" );
-				}
-			}
-			else {
-				addrItem->externalID = g_strdup( "" );
-			}
-*/
-			mgu_add_cache( cardFile->addressCache, addrItem );
-
 			nodeAddress = g_slist_next( nodeAddress );
 			nodeRemarks = g_slist_next( nodeRemarks );
+		}
+		if( person->listEMail ) {
+			addrcache_id_person( cardFile->addressCache, person );
+			addrcache_add_person( cardFile->addressCache, person );
+		}
+		else {
+			addritem_free_item_person( person );
+		}
+		if( nodeID ) {
+			str = nodeID->data;
+			addritem_person_set_external_id( person, str );
 		}
 		nodeName = g_slist_next( nodeName );
 		nodeID = g_slist_next( nodeID );
 	}
-	addrItem = NULL;
 }
 
 // Unescape characters in quoted-printable string.
-void vcard_unescape_qp( gchar *value ) {
+static void vcard_unescape_qp( gchar *value ) {
 	gchar *ptr, *src, *dest;
 	int d, v;
 	char ch;
@@ -419,7 +451,7 @@ void vcard_unescape_qp( gchar *value ) {
 }
 
 /*
-* Read file into cache.
+* Read file data into root folder.
 * Note that one VCard can have multiple E-Mail addresses (MAIL tags);
 * these are broken out into separate address items. An address item
 * is generated for the person identified by FN tag and each EMAIL tag.
@@ -428,7 +460,7 @@ void vcard_unescape_qp( gchar *value ) {
 * entry to have multiple FN tags; this might not make sense. However,
 * it will generate duplicate address entries for each person listed.
 */
-void vcard_read_cache( VCardFile *cardFile ) {
+static void vcard_read_file( VCardFile *cardFile ) {
 	gchar *tagtemp = NULL, *tagname = NULL, *tagvalue = NULL, *tagtype = NULL, *tagrest = NULL;
 	GSList *listName = NULL, *listAddress = NULL, *listRemarks = NULL, *listID = NULL;
 	GSList *listQP = NULL;
@@ -463,7 +495,8 @@ void vcard_read_cache( VCardFile *cardFile ) {
 					// fprintf( stdout, "QUOTED-PRINTABLE !!! final\n>%s<\n", tagvalue );
 				}
 
-				if( g_strcasecmp( tagname, VCARD_TAG_START ) == 0 &&  g_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
+				if( g_strcasecmp( tagname, VCARD_TAG_START ) == 0 &&
+					g_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
 					// fprintf( stdout, "start card\n" );
 					vcard_free_lists( listName, listAddress, listRemarks, listID );
 					listName = listAddress = listRemarks = listID = NULL;
@@ -481,7 +514,8 @@ void vcard_read_cache( VCardFile *cardFile ) {
 					// fprintf( stdout, "- id: %s\n", tagvalue );
 					listID = g_slist_append( listID, g_strdup( tagvalue ) );
 				}
-				if( g_strcasecmp( tagname, VCARD_TAG_END ) == 0 && g_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
+				if( g_strcasecmp( tagname, VCARD_TAG_END ) == 0 &&
+					g_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
 					// VCard is complete
 					// fprintf( stdout, "end card\n--\n" );
 					// vcard_dump_lists( listName, listAddress, listRemarks, listID, stdout );
@@ -510,16 +544,17 @@ void vcard_read_cache( VCardFile *cardFile ) {
 gint vcard_read_data( VCardFile *cardFile ) {
 	g_return_if_fail( cardFile != NULL );
 	cardFile->retVal = MGU_SUCCESS;
-	if( mgu_check_file( cardFile->addressCache, cardFile->path ) ) {
-		mgu_clear_cache( cardFile->addressCache );
+	cardFile->accessFlag = FALSE;
+	if( addrcache_check_file( cardFile->addressCache, cardFile->path ) ) {
+		addrcache_clear( cardFile->addressCache );
 		vcard_open_file( cardFile );
 		if( cardFile->retVal == MGU_SUCCESS ) {
 			// Read data into the list
-			vcard_read_cache( cardFile );
+			vcard_read_file( cardFile );
 			vcard_close_file( cardFile );
 
 			// Mark cache
-			mgu_mark_cache( cardFile->addressCache, cardFile->path );
+			addrcache_mark_file( cardFile->addressCache, cardFile->path );
 			cardFile->addressCache->modified = FALSE;
 			cardFile->addressCache->dataRead = TRUE;
 		}
@@ -528,12 +563,32 @@ gint vcard_read_data( VCardFile *cardFile ) {
 }
 
 /*
-* Return link list of address items.
-* Return: TRUE if file read successfully.
+* Return link list of persons.
 */
-GList *vcard_get_address_list( VCardFile *cardFile ) {
+GList *vcard_get_list_person( VCardFile *cardFile ) {
 	g_return_if_fail( cardFile != NULL );
-	return cardFile->addressCache->addressList;
+	return addrcache_get_list_person( cardFile->addressCache );
+}
+
+/*
+* Return link list of folders. This is always NULL since there are
+* no folders in GnomeCard.
+* Return: NULL.
+*/
+GList *vcard_get_list_folder( VCardFile *cardFile ) {
+	g_return_if_fail( cardFile != NULL );
+	return NULL;
+}
+
+/*
+* Return link list of all persons. Note that the list contains references
+* to items. Do *NOT* attempt to use the addrbook_free_xxx() functions...
+* this will destroy the addressbook data!
+* Return: List of items, or NULL if none.
+*/
+GList *vcard_get_all_persons( VCardFile *cardFile ) {
+	g_return_if_fail( cardFile != NULL );
+	return addrcache_get_all_persons( cardFile->addressCache );
 }
 
 /*
@@ -664,11 +719,12 @@ gint vcard_test_read_file( const gchar *fileSpec ) {
 						tagvalue = vcard_read_qp( cardFile, tagvalue );
 						vcard_unescape_qp( tagvalue );
 					}
-
-					if( g_strcasecmp( tagname, VCARD_TAG_START ) == 0 &&  g_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
+					if( g_strcasecmp( tagname, VCARD_TAG_START ) == 0 &&
+						g_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
 						haveStart = TRUE;
 					}
-					if( g_strcasecmp( tagname, VCARD_TAG_END ) == 0 && g_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
+					if( g_strcasecmp( tagname, VCARD_TAG_END ) == 0 &&
+						g_strcasecmp( tagvalue, VCARD_NAME ) == 0 ) {
 						// VCard is complete
 						if( haveStart ) cardFile->retVal = MGU_SUCCESS;
 					}
@@ -689,3 +745,4 @@ gint vcard_test_read_file( const gchar *fileSpec ) {
 /*
 * End of Source.
 */
+

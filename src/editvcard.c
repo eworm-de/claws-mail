@@ -41,6 +41,7 @@
 #include "prefs_common.h"
 #include "addressitem.h"
 #include "vcard.h"
+#include "mgutils.h"
 
 #define ADDRESSBOOK_GUESS_VCARD  "MyGnomeCard"
 
@@ -262,14 +263,15 @@ static void addressbook_edit_vcard_create( gboolean *cancelled ) {
 	vcardedit.status_cid = gtk_statusbar_get_context_id( GTK_STATUSBAR(statusbar), "Edit VCard Dialog" );
 }
 
-AddressVCard *addressbook_edit_vcard( AddressVCard *vcard ) {
+AdapterDSource *addressbook_edit_vcard( AddressIndex *addrIndex, AdapterDSource *ads ) {
 	static gboolean cancelled;
 	gchar *sName;
 	gchar *sFile;
-	VCardFile *vcf;
+	AddressDataSource *ds = NULL;
+	VCardFile *vcf = NULL;
 	gboolean fin;
 
-	if (!vcardedit.window)
+	if( ! vcardedit.window )
 		addressbook_edit_vcard_create(&cancelled);
 	gtk_widget_grab_focus(vcardedit.ok_btn);
 	gtk_widget_grab_focus(vcardedit.name_entry);
@@ -277,8 +279,9 @@ AddressVCard *addressbook_edit_vcard( AddressVCard *vcard ) {
 	manage_window_set_transient(GTK_WINDOW(vcardedit.window));
 
 	edit_vcard_status_show( "" );
-	if( vcard ) {
-		vcf = vcard->cardFile;
+	if( ads ) {
+		ds = ads->dataSource;
+		vcf = ds->rawDataSource;
 		if (vcf->name)
 			gtk_entry_set_text(GTK_ENTRY(vcardedit.name_entry), vcf->name);
 		if (vcf->path)
@@ -302,21 +305,19 @@ AddressVCard *addressbook_edit_vcard( AddressVCard *vcard ) {
 	if( *sFile == '\0' ) fin = TRUE;
 
 	if( ! fin ) {
-		if( ! vcard ) {
-			vcard = g_new0(AddressVCard, 1);
-			ADDRESS_OBJECT_TYPE(vcard) = ADDR_VCARD;
+		if( ! ads ) {
 			vcf = vcard_create();
-			vcard->cardFile = vcf;
+			ds = addrindex_index_add_datasource( addrIndex, ADDR_IF_VCARD, vcf );
+			ads = addressbook_create_ds_adapter( ds, ADDR_VCARD, NULL );
 		}
-		g_free( vcard->name );
-		vcard->name = g_strdup( sName );
+		addressbook_ads_set_name( ads, sName );
 		vcard_set_name( vcf, sName );
 		vcard_set_file( vcf, sFile );
 	}
 	g_free( sName );
 	g_free( sFile );
 
-	return vcard;
+	return ads;
 }
 
 /*

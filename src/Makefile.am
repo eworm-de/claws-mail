@@ -93,14 +93,22 @@ sylpheed_SOURCES = \
 	quote_fmt_lex.l quote_fmt_lex.h \
 	quote_fmt_parse.y quote_fmt.h \
 	addressitem.h \
+	addritem.c addritem.h \
+	addrcache.c addrcache.h \
+	addrbook.c addrbook.h \
+	addrindex.c addrindex.h \
 	mgutils.c mgutils.h \
 	vcard.c vcard.h \
 	jpilot.c jpilot.h \
 	syldap.c syldap.h \
+	editbook.c editbook.h \
+	editgroup.c editgroup.h \
+	editaddress.c editaddress.h \
 	editvcard.c editvcard.h \
 	editjpilot.c editjpilot.h \
 	editldap.c editldap.h \
 	editldap_basedn.c editldap_basedn.h \
+	addressadd.c addressadd.h \
 	gtkspell.c gtkspell.h gtkxtext.h \
 	template.c template.h \
 	prefs_templates.c prefs_templates.h \
@@ -151,6 +159,9 @@ EXTRA_DIST = \
 	pixmaps/stock_paste.xpm \
 	pixmaps/tb_address_book.xpm \
 	pixmaps/sylpheed-logo.xpm \
+	pixmaps/interface.xpm \
+	pixmaps/book.xpm \
+	pixmaps/address.xpm \
 	pixmaps/vcard.xpm \
 	pixmaps/jpilot.xpm \
 	pixmaps/category.xpm \

@@ -35,14 +35,42 @@
 #include <dlfcn.h>
 
 #include "mgutils.h"
+#include "addritem.h"
+#include "addrcache.h"
 #include "syldap.h"
+
+/*
+* Create new LDAP server interface object.
+*/
+SyldapServer *syldap_create() {
+	SyldapServer *ldapServer;
+	ldapServer = g_new0( SyldapServer, 1 );
+	ldapServer->name = NULL;
+	ldapServer->hostName = NULL;
+	ldapServer->port = SYLDAP_DFL_PORT;
+	ldapServer->baseDN = NULL;
+	ldapServer->bindDN = NULL;
+	ldapServer->bindPass = NULL;
+	ldapServer->searchCriteria = NULL;
+	ldapServer->searchValue = NULL;
+	ldapServer->entriesRead = 0;
+	ldapServer->maxEntries = SYLDAP_MAX_ENTRIES;
+	ldapServer->timeOut = SYLDAP_DFL_TIMEOUT;
+	ldapServer->newSearch = TRUE;
+	ldapServer->addressCache = addrcache_create();
+	ldapServer->thread = NULL;
+	ldapServer->busyFlag = FALSE;
+	ldapServer->retVal = MGU_SUCCESS;
+	ldapServer->callBack = NULL;
+	ldapServer->accessFlag = FALSE;
+	return ldapServer;
+}
 
 /*
 * Specify name to be used.
 */
 void syldap_set_name( SyldapServer* ldapServer, const gchar *value ) {
-	if( ldapServer->name ) g_free( ldapServer->name );
-	if( value ) ldapServer->name = g_strdup( value );
+	ldapServer->name = mgu_replace_string( ldapServer->name, value );
 	g_strstrip( ldapServer->name );
 }
 
@@ -50,10 +78,8 @@ void syldap_set_name( SyldapServer* ldapServer, const gchar *value ) {
 * Specify hostname to be used.
 */
 void syldap_set_host( SyldapServer* ldapServer, const gchar *value ) {
-	mgu_refresh_cache( ldapServer->addressCache );
-
-	if( ldapServer->hostName ) g_free( ldapServer->hostName );
-	if( value ) ldapServer->hostName = g_strdup( value );
+	addrcache_refresh( ldapServer->addressCache );
+	ldapServer->hostName = mgu_replace_string( ldapServer->hostName, value );
 	g_strstrip( ldapServer->hostName );
 }
 
@@ -61,8 +87,7 @@ void syldap_set_host( SyldapServer* ldapServer, const gchar *value ) {
 * Specify port to be used.
 */
 void syldap_set_port( SyldapServer* ldapServer, const gint value ) {
-	mgu_refresh_cache( ldapServer->addressCache );
-
+	addrcache_refresh( ldapServer->addressCache );
 	if( value > 0 ) {
 		ldapServer->port = value;
 	}
@@ -75,10 +100,8 @@ void syldap_set_port( SyldapServer* ldapServer, const gint value ) {
 * Specify base DN to be used.
 */
 void syldap_set_base_dn( SyldapServer* ldapServer, const gchar *value ) {
-	mgu_refresh_cache( ldapServer->addressCache );
-
-	if( ldapServer->baseDN ) g_free( ldapServer->baseDN );
-	if( value ) ldapServer->baseDN = g_strdup( value );
+	addrcache_refresh( ldapServer->addressCache );
+	ldapServer->baseDN = mgu_replace_string( ldapServer->baseDN, value );
 	g_strstrip( ldapServer->baseDN );
 }
 
@@ -86,10 +109,8 @@ void syldap_set_base_dn( SyldapServer* ldapServer, const gchar *value ) {
 * Specify bind DN to be used.
 */
 void syldap_set_bind_dn( SyldapServer* ldapServer, const gchar *value ) {
-	mgu_refresh_cache( ldapServer->addressCache );
-
-	if( ldapServer->bindDN ) g_free( ldapServer->bindDN );
-	if( value ) ldapServer->bindDN = g_strdup( value );
+	addrcache_refresh( ldapServer->addressCache );
+	ldapServer->bindDN = mgu_replace_string( ldapServer->bindDN, value );
 	g_strstrip( ldapServer->bindDN );
 }
 
@@ -97,10 +118,8 @@ void syldap_set_bind_dn( SyldapServer* ldapServer, const gchar *value ) {
 * Specify bind password to be used.
 */
 void syldap_set_bind_password( SyldapServer* ldapServer, const gchar *value ) {
-	mgu_refresh_cache( ldapServer->addressCache );
-
-	if( ldapServer->bindPass ) g_free( ldapServer->bindPass );
-	if( value ) ldapServer->bindPass = g_strdup( value );
+	addrcache_refresh( ldapServer->addressCache );
+	ldapServer->bindPass = mgu_replace_string( ldapServer->bindPass, value );
 	g_strstrip( ldapServer->bindPass );
 }
 
@@ -108,10 +127,8 @@ void syldap_set_bind_password( SyldapServer* ldapServer, const gchar *value ) {
 * Specify search criteria to be used.
 */
 void syldap_set_search_criteria( SyldapServer* ldapServer, const gchar *value ) {
-	mgu_refresh_cache( ldapServer->addressCache );
-
-	if( ldapServer->searchCriteria ) g_free( ldapServer->searchCriteria );
-	if( value ) ldapServer->searchCriteria = g_strdup( value );
+	addrcache_refresh( ldapServer->addressCache );
+	ldapServer->searchCriteria = mgu_replace_string( ldapServer->searchCriteria, value );
 	g_strstrip( ldapServer->searchCriteria );
 	ldapServer->newSearch = TRUE;
 }
@@ -120,10 +137,8 @@ void syldap_set_search_criteria( SyldapServer* ldapServer, const gchar *value ) 
 * Specify search value to be searched for.
 */
 void syldap_set_search_value( SyldapServer* ldapServer, const gchar *value ) {
-	mgu_refresh_cache( ldapServer->addressCache );
-
-	if( ldapServer->searchValue ) g_free( ldapServer->searchValue );
-	if( value ) ldapServer->searchValue = g_strdup( value );
+	addrcache_refresh( ldapServer->addressCache );
+	ldapServer->searchValue = mgu_replace_string( ldapServer->searchValue, value );
 	g_strstrip( ldapServer->searchValue );
 	ldapServer->newSearch = TRUE;
 }
@@ -132,7 +147,7 @@ void syldap_set_search_value( SyldapServer* ldapServer, const gchar *value ) {
 * Specify maximum number of entries to retrieve.
 */
 void syldap_set_max_entries( SyldapServer* ldapServer, const gint value ) {
-	mgu_refresh_cache( ldapServer->addressCache );
+	addrcache_refresh( ldapServer->addressCache );
 	if( value > 0 ) {
 		ldapServer->maxEntries = value;
 	}
@@ -145,7 +160,7 @@ void syldap_set_max_entries( SyldapServer* ldapServer, const gint value ) {
 * Specify timeout value for LDAP operation (in seconds).
 */
 void syldap_set_timeout( SyldapServer* ldapServer, const gint value ) {
-	mgu_refresh_cache( ldapServer->addressCache );
+	addrcache_refresh( ldapServer->addressCache );
 	if( value > 0 ) {
 		ldapServer->timeOut = value;
 	}
@@ -162,38 +177,34 @@ void syldap_set_callback( SyldapServer *ldapServer, void *func ) {
 	ldapServer->callBack = func;
 }
 
-/*
-* Create new LDAP server interface object.
-*/
-SyldapServer *syldap_create() {
-	SyldapServer *ldapServer;
-	ldapServer = g_new( SyldapServer, 1 );
-	ldapServer->name = NULL;
-	ldapServer->hostName = NULL;
-	ldapServer->port = SYLDAP_DFL_PORT;
-	ldapServer->baseDN = NULL;
-	ldapServer->bindDN = NULL;
-	ldapServer->bindPass = NULL;
-	ldapServer->searchCriteria = NULL;
-	ldapServer->searchValue = NULL;
-	ldapServer->entriesRead = 0;
-	ldapServer->maxEntries = SYLDAP_MAX_ENTRIES;
-	ldapServer->timeOut = SYLDAP_DFL_TIMEOUT;
-	ldapServer->newSearch = TRUE;
-	ldapServer->addressCache = mgu_create_cache();
-	ldapServer->thread = NULL;
-	ldapServer->busyFlag = FALSE;
-	ldapServer->retVal = MGU_SUCCESS;
-	ldapServer->callBack = NULL;
-	return ldapServer;
+void syldap_set_accessed( SyldapServer *ldapServer, const gboolean value ) {
+	g_return_if_fail( ldapServer != NULL );
+	ldapServer->accessFlag = value;
 }
 
 /*
 * Refresh internal variables to force a file read.
 */
 void syldap_force_refresh( SyldapServer *ldapServer ) {
-	mgu_refresh_cache( ldapServer->addressCache );
+	addrcache_refresh( ldapServer->addressCache );
 	ldapServer->newSearch = TRUE;
+}
+
+gint syldap_get_status( SyldapServer *ldapServer ) {
+	g_return_if_fail( ldapServer != NULL );
+	return ldapServer->retVal;
+}
+ItemFolder *syldap_get_root_folder( SyldapServer *ldapServer ) {
+	g_return_if_fail( ldapServer != NULL );
+	return addrcache_get_root_folder( ldapServer->addressCache );
+}
+gchar *syldap_get_name( SyldapServer *ldapServer ) {
+	g_return_if_fail( ldapServer != NULL );
+	return ldapServer->name;
+}
+gboolean syldap_get_accessed( SyldapServer *ldapServer ) {
+	g_return_if_fail( ldapServer != NULL );
+	return ldapServer->accessFlag;
 }
 
 /*
@@ -203,9 +214,8 @@ void syldap_free( SyldapServer *ldapServer ) {
 	g_return_if_fail( ldapServer != NULL );
 
 	ldapServer->callBack = NULL;
-	// fprintf( stdout, "freeing... SyldapServer\n" );
 
-	/* Free internal stuff */
+	// Free internal stuff
 	g_free( ldapServer->name );
 	g_free( ldapServer->hostName );
 	g_free( ldapServer->baseDN );
@@ -219,9 +229,9 @@ void syldap_free( SyldapServer *ldapServer ) {
 	ldapServer->maxEntries = 0;
 	ldapServer->newSearch = FALSE;
 
-	/* Clear cache */
-	mgu_clear_cache( ldapServer->addressCache );
-	mgu_free_cache( ldapServer->addressCache );
+	// Clear cache
+	addrcache_clear( ldapServer->addressCache );
+	addrcache_free( ldapServer->addressCache );
 
 	// Clear pointers
 	ldapServer->name = NULL;
@@ -235,11 +245,10 @@ void syldap_free( SyldapServer *ldapServer ) {
 	ldapServer->thread = NULL;
 	ldapServer->busyFlag = FALSE;
 	ldapServer->retVal = MGU_SUCCESS;
+	ldapServer->accessFlag = FALSE;
 
-	/* Now release file object */
+	// Now release LDAP object
 	g_free( ldapServer );
-
-	// fprintf( stdout, "freeing... SyldapServer done\n" );
 
 }
 
@@ -261,7 +270,8 @@ void syldap_print_data( SyldapServer *ldapServer, FILE *stream ) {
 	fprintf( stream, "max entry: %d\n",   ldapServer->maxEntries );
 	fprintf( stream, " num read: %d\n",   ldapServer->entriesRead );
 	fprintf( stream, "  ret val: %d\n",   ldapServer->retVal );
-	mgu_print_cache( ldapServer->addressCache, stream );
+	addrcache_print( ldapServer->addressCache, stream );
+	addritem_print_item_folder( ldapServer->addressCache->rootFolder, stream );
 }
 
 /*
@@ -288,35 +298,40 @@ void syldap_print_short( SyldapServer *ldapServer, FILE *stream ) {
 * Build an address list entry and append to list of address items. Name is formatted
 * as it appears in the common name (cn) attribute.
 */
-void syldap_build_items_cn( SyldapServer *ldapServer, GSList *listName, GSList *listAddr ) {
-	AddressItem *addrItem = NULL;
+static void syldap_build_items_cn( SyldapServer *ldapServer, GSList *listName, GSList *listAddr ) {
+	ItemPerson *person;
+	ItemEMail *email;
 	GSList *nodeName = listName;
 	while( nodeName ) {
 		GSList *nodeAddress = listAddr;
+		person = addritem_create_item_person();
+		addritem_person_set_common_name( person, nodeName->data );
+		addrcache_id_person( ldapServer->addressCache, person );
+		addrcache_add_person( ldapServer->addressCache, person );
+
 		while( nodeAddress ) {
-			addrItem = mgu_create_address();
-			addrItem->name = g_strdup( nodeName->data );
-			addrItem->address = g_strdup( nodeAddress->data );
-			addrItem->remarks = g_strdup( "" );
-			mgu_add_cache( ldapServer->addressCache, addrItem );
+			email = addritem_create_item_email();
+			addritem_email_set_address( email, nodeAddress->data );
+			addrcache_id_email( ldapServer->addressCache, email );
+			addrcache_person_add_email( ldapServer->addressCache, person, email );
 			nodeAddress = g_slist_next( nodeAddress );
 			ldapServer->entriesRead++;
 		}
 		nodeName = g_slist_next( nodeName );
 	}
-	addrItem = NULL;
 }
 
 /*
 * Build an address list entry and append to list of address items. Name is formatted
 * as "<first-name> <last-name>".
 */
-void syldap_build_items_fl( SyldapServer *ldapServer, GSList *listAddr, GSList *listFirst, GSList *listLast  ) {
-	AddressItem *addrItem = NULL;
+static void syldap_build_items_fl( SyldapServer *ldapServer, GSList *listAddr, GSList *listFirst, GSList *listLast  ) {
 	GSList *nodeFirst = listFirst;
 	GSList *nodeAddress = listAddr;
 	gchar *firstName = NULL, *lastName = NULL, *fullName = NULL;
 	gint iLen = 0, iLenT = 0;
+	ItemPerson *person;
+	ItemEMail *email;
 
 	// Find longest first name in list
 	while( nodeFirst ) {
@@ -355,31 +370,33 @@ void syldap_build_items_fl( SyldapServer *ldapServer, GSList *listAddr, GSList *
 		g_strchug( fullName ); g_strchomp( fullName );
 	}
 
+	if( nodeAddress ) {
+		person = addritem_create_item_person();
+		addritem_person_set_common_name( person, fullName );
+		addritem_person_set_first_name( person, firstName );
+		addritem_person_set_last_name( person, lastName );
+		addrcache_id_person( ldapServer->addressCache, person );
+		addrcache_add_person( ldapServer->addressCache, person );
+	}
+
 	// Add address item
 	while( nodeAddress ) {
-		addrItem = mgu_create_address();
-		if( fullName ) {
-			addrItem->name = g_strdup( fullName );
-		}
-		else {
-			addrItem->name = g_strdup( "" );
-		}
-		addrItem->address = g_strdup( nodeAddress->data );
-		addrItem->remarks = g_strdup( "" );
-		mgu_add_cache( ldapServer->addressCache, addrItem );
-
+		email = addritem_create_item_email();
+		addritem_email_set_address( email, nodeAddress->data );
+		addrcache_id_email( ldapServer->addressCache, email );
+		addrcache_person_add_email( ldapServer->addressCache, person, email );
 		nodeAddress = g_slist_next( nodeAddress );
 		ldapServer->entriesRead++;
 	}
 	g_free( fullName );
 	fullName = firstName = lastName = NULL;
-	addrItem = NULL;
+
 }
 
 /*
 * Add all attribute values to a list.
 */
-GSList *syldap_add_list_values( LDAP *ld, LDAPMessage *entry, char *attr ) {
+static GSList *syldap_add_list_values( LDAP *ld, LDAPMessage *entry, char *attr ) {
 	GSList *list = NULL;
 	gint i;
 	char **vals;
@@ -396,7 +413,7 @@ GSList *syldap_add_list_values( LDAP *ld, LDAPMessage *entry, char *attr ) {
 /*
 * Add a single attribute value to a list.
 */
-GSList *syldap_add_single_value( LDAP *ld, LDAPMessage *entry, char *attr ) {
+static GSList *syldap_add_single_value( LDAP *ld, LDAPMessage *entry, char *attr ) {
 	GSList *list = NULL;
 	char **vals;
 	if( ( vals = ldap_get_values( ld, entry, attr ) ) != NULL ) {
@@ -412,7 +429,7 @@ GSList *syldap_add_single_value( LDAP *ld, LDAPMessage *entry, char *attr ) {
 /*
 * Free linked lists of character strings.
 */
-void syldap_free_lists( GSList *listName, GSList *listAddr, GSList *listID, GSList *listDN, GSList *listFirst, GSList *listLast ) {
+static void syldap_free_lists( GSList *listName, GSList *listAddr, GSList *listID, GSList *listDN, GSList *listFirst, GSList *listLast ) {
 	mgu_free_list( listName );
 	mgu_free_list( listAddr );
 	mgu_free_list( listID );
@@ -534,7 +551,7 @@ gint syldap_search( SyldapServer *ldapServer ) {
 
 	// Clear the cache if we have new entries, otherwise leave untouched.
 	if( ldap_count_entries( ld, result ) > 0 ) {
-		mgu_clear_cache( ldapServer->addressCache );
+		addrcache_clear( ldapServer->addressCache );
 	}
 
 	// Process results
@@ -607,6 +624,7 @@ gint syldap_search( SyldapServer *ldapServer ) {
 gint syldap_read_data( SyldapServer *ldapServer ) {
 	g_return_if_fail( ldapServer != NULL );
 
+	ldapServer->accessFlag = FALSE;
 	pthread_detach( pthread_self() );
 	if( ldapServer->newSearch ) {
 		// Read data into the list
@@ -615,6 +633,7 @@ gint syldap_read_data( SyldapServer *ldapServer ) {
 		// Mark cache
 		ldapServer->addressCache->modified = FALSE;
 		ldapServer->addressCache->dataRead = TRUE;
+		ldapServer->accessFlag = FALSE;
 	}
 
 	// Callback
@@ -636,7 +655,7 @@ gint syldap_read_data( SyldapServer *ldapServer ) {
 void syldap_cancel_read( SyldapServer *ldapServer ) {
 	g_return_if_fail( ldapServer != NULL );
 	if( ldapServer->thread ) {
-printf( "thread cancelled\n" );
+		// printf( "thread cancelled\n" );
 		pthread_cancel( *ldapServer->thread );
 	}
 	ldapServer->thread = NULL;
@@ -665,12 +684,21 @@ gint syldap_read_data_th( SyldapServer *ldapServer ) {
 }
 
 /*
-* Return link list of address items.
-* Return: TRUE if file read successfully.
+* Return link list of persons.
 */
-GList *syldap_get_address_list( const SyldapServer *ldapServer ) {
+GList *syldap_get_list_person( SyldapServer *ldapServer ) {
 	g_return_if_fail( ldapServer != NULL );
-	return ldapServer->addressCache->addressList;
+	return addrcache_get_list_person( ldapServer->addressCache );
+}
+
+/*
+* Return link list of folders. This is always NULL since there are
+* no folders in GnomeCard.
+* Return: NULL.
+*/
+GList *syldap_get_list_folder( SyldapServer *ldapServer ) {
+	g_return_if_fail( ldapServer != NULL );
+	return NULL;
 }
 
 #define SYLDAP_TEST_FILTER   "(objectclass=*)"

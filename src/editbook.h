@@ -18,20 +18,16 @@
  */
 
 /*
- * Edit JPilot address book data.
+ * Edit new address book data.
  */
 
-#ifndef __EDITJPILOT_H__
-#define __EDITJPILOT_H__
-
-#ifdef USE_JPILOT
+#ifndef __EDITBOOK_H__
+#define __EDITBOOK_H__
 
 // Function prototypes
-AdapterDSource *addressbook_edit_jpilot( AddressIndex *addrIndex, AdapterDSource *ads );
+AdapterDSource *addressbook_edit_book( AddressIndex *addrIndex, AdapterDSource *ads );
 
-#endif /* USE_JPILOT */
-
-#endif /* __EDITJPILOT_H__ */
+#endif /* __EDITBOOK_H__ */
 
 /*
 * End of Source.

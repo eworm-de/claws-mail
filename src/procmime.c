@@ -842,9 +842,11 @@ GList *procmime_get_mime_type_list(void)
 	if (mime_type_list) 
 		return mime_type_list;
 
-	if ((fp = fopen(SYSCONFDIR "/mime.types", "r")) == NULL) {
-		FILE_OP_ERROR(SYSCONFDIR "/mime.types", "fopen");
-		return NULL;
+	if ((fp = fopen("/etc/mime.types", "r")) == NULL) {
+		if ((fp = fopen(SYSCONFDIR "/mime.types", "r")) == NULL) {
+			FILE_OP_ERROR(SYSCONFDIR "/mime.types", "fopen");
+			return NULL;
+		}
 	}
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {

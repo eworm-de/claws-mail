@@ -61,7 +61,7 @@ static gboolean ldapedit_basedn_bad_server;
 /*
 * Edit functions.
 */
-void edit_ldap_bdn_status_show( gchar *msg ) {
+static void edit_ldap_bdn_status_show( gchar *msg ) {
 	if( ldapedit_basedn.statusbar != NULL ) {
 		gtk_statusbar_pop( GTK_STATUSBAR(ldapedit_basedn.statusbar), ldapedit_basedn.status_cid );
 		if( msg ) {
@@ -248,7 +248,7 @@ void edit_ldap_bdn_load_data( const gchar *hostName, const gint iPort, const gin
 	gboolean flgConn;
 	gboolean flgDN;
 
-	edit_ldap_status_show( "" );
+	edit_ldap_bdn_status_show( "" );
 	gtk_clist_clear(GTK_CLIST(ldapedit_basedn.basedn_list));
 	ldapedit_basedn_bad_server = TRUE;
 	flgConn = flgDN = FALSE;

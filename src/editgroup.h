@@ -18,20 +18,17 @@
  */
 
 /*
- * Edit JPilot address book data.
+ * Edit VCard address book data.
  */
 
-#ifndef __EDITJPILOT_H__
-#define __EDITJPILOT_H__
-
-#ifdef USE_JPILOT
+#ifndef __EDITGROUP_H__
+#define __EDITGROUP_H__
 
 // Function prototypes
-AdapterDSource *addressbook_edit_jpilot( AddressIndex *addrIndex, AdapterDSource *ads );
+ItemGroup *addressbook_edit_group( AddressBookFile *abf, ItemFolder *folder, ItemGroup *group );
+ItemFolder *addressbook_edit_folder( AddressBookFile *abf, ItemFolder *parent, ItemFolder *folder );
 
-#endif /* USE_JPILOT */
-
-#endif /* __EDITJPILOT_H__ */
+#endif /* __EDITGROUP_H__ */
 
 /*
 * End of Source.

@@ -28,28 +28,27 @@
 
 #ifdef USE_JPILOT
 
-#include <pi-address.h>
-
-#include <time.h>
 #include <stdio.h>
 #include <glib.h>
+#include <pi-address.h>
 
-#include "mgutils.h"
+#include "addritem.h"
+#include "addrcache.h"
 
 typedef struct _JPilotFile JPilotFile;
 
 struct _JPilotFile {
-	gchar        *name;
-	FILE         *file;
-	gchar        *path;
-	AddressCache *addressCache;
+	gchar                 *name;
+	FILE                  *file;
+	gchar                 *path;
+	AddressCache          *addressCache;
 	struct AddressAppInfo addrInfo;
-	gboolean     readMetadata;
-	GSList       *customLabels;
-	GSList       *labelInd;
-	gint         retVal;
-	GList        *categoryList;
-	GList        *catAddrList;
+	gboolean              readMetadata;
+	GList                 *customLabels;
+	GList                 *labelInd;
+	gint                  retVal;
+	// ItemFolder            *rootFolder;
+	gboolean              accessFlag;
 };
 
 // Limits
@@ -60,110 +59,44 @@ struct _JPilotFile {
 #define JPILOT_LEN_CATEG	15	// Max length of category
 #define JPILOT_NUM_ADDR_PHONE   5	// Number of phone entries a person can have
 
-// Shamelessly copied from JPilot (libplugin.h)
-typedef struct {
-	unsigned char db_name[32];
-	unsigned char flags[2];
-	unsigned char version[2];
-	unsigned char creation_time[4];
-	unsigned char modification_time[4];
-	unsigned char backup_time[4];
-	unsigned char modification_number[4];
-	unsigned char app_info_offset[4];
-	unsigned char sort_info_offset[4];
-	unsigned char type[4];/*Database ID */
-	unsigned char creator_id[4];/*Application ID */
-	unsigned char unique_id_seed[4];
-	unsigned char next_record_list_id[4];
-	unsigned char number_of_records[2];
-} RawDBHeader;
-
-// Shamelessly copied from JPilot (libplugin.h)
-typedef struct {
-	char db_name[32];
-	unsigned int flags;
-	unsigned int version;
-	time_t creation_time;
-	time_t modification_time;
-	time_t backup_time;
-	unsigned int modification_number;
-	unsigned int app_info_offset;
-	unsigned int sort_info_offset;
-	char type[5];/*Database ID */
-	char creator_id[5];/*Application ID */
-	char unique_id_seed[5];
-	unsigned int next_record_list_id;
-	unsigned int number_of_records;
-} DBHeader;
-
-// Shamelessly copied from JPilot (libplugin.h)
-typedef struct {
-	unsigned char Offset[4];  /*4 bytes offset from BOF to record */
-	unsigned char attrib;
-	unsigned char unique_ID[3];
-} record_header;
-
-// Shamelessly copied from JPilot (libplugin.h)
-typedef struct mem_rec_header_s {
-	unsigned int rec_num;
-	unsigned int offset;
-	unsigned int unique_id;
-	unsigned char attrib;
-	struct mem_rec_header_s *next;
-} mem_rec_header;
-
-// Shamelessly copied from JPilot (libplugin.h)
-#define SPENT_PC_RECORD_BIT	256
-
-typedef enum {
-	PALM_REC = 100L,
-	MODIFIED_PALM_REC = 101L,
-	DELETED_PALM_REC = 102L,
-	NEW_PC_REC = 103L,
-	DELETED_PC_REC = SPENT_PC_RECORD_BIT + 104L,
-	DELETED_DELETED_PALM_REC = SPENT_PC_RECORD_BIT + 105L
-} PCRecType;
-
-// Shamelessly copied from JPilot (libplugin.h)
-typedef struct {
-	PCRecType rt;
-	unsigned int unique_id;
-	unsigned char attrib;
-	void *buf;
-	int size;
-} buf_rec;
-
 /* Function prototypes */
-JPilotFile *jpilot_create();
-JPilotFile *jpilot_create_path( const gchar *path );
-void jpilot_free( JPilotFile *pilotFile );
-void jpilot_force_refresh( JPilotFile *pilotFile );
-gboolean jpilot_get_modified( JPilotFile *pilotFile );
-void jpilot_print_file( JPilotFile *jpilotFile, FILE *stream );
-void jpilot_print_list( GSList *list, FILE *stream );
-gint jpilot_read_file( JPilotFile *pilotFile );
+JPilotFile *jpilot_create		( void );
+JPilotFile *jpilot_create_path		( const gchar *path );
+void jpilot_set_name			( JPilotFile* pilotFile, const gchar *value );
+void jpilot_set_file			( JPilotFile* pilotFile, const gchar *value );
+void jpilot_free			( JPilotFile *pilotFile );
+gint jpilot_get_status			( JPilotFile *pilotFile );
+gboolean jpilot_get_modified		( JPilotFile *pilotFile );
+gboolean jpilot_get_accessed		( JPilotFile *pilotFile );
+void jpilot_set_accessed		( JPilotFile *pilotFile, const gboolean value );
+gboolean jpilot_get_read_flag		( JPilotFile *pilotFile );
+ItemFolder *jpilot_get_root_folder	( JPilotFile *pilotFile );
+gchar *jpilot_get_name			( JPilotFile *pilotFile );
 
-GList *jpilot_get_address_list( JPilotFile *pilotFile );
-GSList *jpilot_load_label( JPilotFile *pilotFile, GSList *labelList );
-GSList *jpilot_get_category_list( JPilotFile *pilotFile );
-gchar *jpilot_get_category_name( JPilotFile *pilotFile, gint catID );
-GSList *jpilot_load_phone_label( JPilotFile *pilotFile, GSList *labelList );
-GList *jpilot_load_custom_label( JPilotFile *pilotFile, GList *labelList );
+void jpilot_force_refresh		( JPilotFile *pilotFile );
+void jpilot_print_file			( JPilotFile *jpilotFile, FILE *stream );
+void jpilot_print_short			( JPilotFile *pilotFile, FILE *stream );
+gint jpilot_read_data			( JPilotFile *pilotFile );
+GList *jpilot_get_list_person		( JPilotFile *pilotFile );
+GList *jpilot_get_list_folder		( JPilotFile *pilotFile );
+GList *jpilot_get_all_persons		( JPilotFile *pilotFile );
 
-GList *jpilot_get_category_items( JPilotFile *pilotFile );
-GList *jpilot_get_address_list_cat( JPilotFile *pilotFile, const gint catID );
+GList *jpilot_load_label		( JPilotFile *pilotFile, GList *labelList );
+GList *jpilot_get_category_list		( JPilotFile *pilotFile );
+gchar *jpilot_get_category_name		( JPilotFile *pilotFile, gint catID );
+GList *jpilot_load_phone_label		( JPilotFile *pilotFile, GList *labelList );
+GList *jpilot_load_custom_label		( JPilotFile *pilotFile, GList *labelList );
 
-void jpilot_set_file( JPilotFile* pilotFile, const gchar *path );
-gboolean jpilot_validate( const JPilotFile *pilotFile );
-gchar *jpilot_find_pilotdb( void );
-gint jpilot_test_read_data( const gchar *fileSpec );
+gboolean jpilot_validate		( const JPilotFile *pilotFile );
+gchar *jpilot_find_pilotdb		( void );
 
-void jpilot_clear_custom_labels( JPilotFile *pilotFile );
-void jpilot_add_custom_label( JPilotFile *pilotFile, const gchar *labelName );
-GList *jpilot_get_custom_labels( JPilotFile *pilotFile );
-gboolean jpilot_test_custom_label( JPilotFile *pilotFile, const gchar *labelName );
-gboolean jpilot_setup_labels( JPilotFile *pilotFile );
-gboolean jpilot_test_pilot_lib();
+gint jpilot_test_read_file		( const gchar *fileSpec );
+
+void jpilot_clear_custom_labels		( JPilotFile *pilotFile );
+void jpilot_add_custom_label		( JPilotFile *pilotFile, const gchar *labelName );
+GList *jpilot_get_custom_labels		( JPilotFile *pilotFile );
+gboolean jpilot_test_custom_label	( JPilotFile *pilotFile, const gchar *labelName );
+gboolean jpilot_test_pilot_lib		( void );
 
 #endif /* USE_JPILOT */
 

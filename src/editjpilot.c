@@ -44,6 +44,7 @@
 #include "prefs_common.h"
 #include "addressitem.h"
 #include "jpilot.h"
+#include "mgutils.h"
 
 #define ADDRESSBOOK_GUESS_JPILOT "MyJPilot"
 #define JPILOT_NUM_CUSTOM_LABEL	4
@@ -143,7 +144,7 @@ static void edit_jpilot_read_check_box( JPilotFile *pilotFile ) {
 	jpilot_clear_custom_labels( pilotFile );
 	for( i = 0; i < JPILOT_NUM_CUSTOM_LABEL; i++ ) {
 		if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON(jpilotedit.custom_check[i]) ) ) {
-			labelName = g_strdup( GTK_LABEL(jpilotedit.custom_label[i])->label );
+			labelName = GTK_LABEL(jpilotedit.custom_label[i])->label;
 			jpilot_add_custom_label( pilotFile, labelName );
 		}
 	}
@@ -169,6 +170,7 @@ static void edit_jpilot_file_check( void ) {
 				flg = TRUE;
 			}
 			jpilot_free( jpf );
+			jpf = NULL;
 		}
 	}
 	if( ! flg ) {
@@ -370,14 +372,15 @@ static void addressbook_edit_jpilot_create( gboolean *cancelled ) {
 	}
 }
 
-AddressJPilot *addressbook_edit_jpilot( AddressJPilot *jpilot ) {
+AdapterDSource *addressbook_edit_jpilot( AddressIndex *addrIndex, AdapterDSource *ads ) {
 	static gboolean cancelled;
 	gchar *sName;
 	gchar *sFile;
-	JPilotFile *jpf;
+	AddressDataSource *ds = NULL;
+	JPilotFile *jpf = NULL;
 	gboolean fin;
 
-	if (!jpilotedit.window)
+	if( ! jpilotedit.window )
 		addressbook_edit_jpilot_create(&cancelled);
 	gtk_widget_grab_focus(jpilotedit.ok_btn);
 	gtk_widget_grab_focus(jpilotedit.name_entry);
@@ -385,8 +388,9 @@ AddressJPilot *addressbook_edit_jpilot( AddressJPilot *jpilot ) {
 	manage_window_set_transient(GTK_WINDOW(jpilotedit.window));
 
 	edit_jpilot_status_show( "" );
-	if( jpilot ) {
-		jpf = jpilot->pilotFile;
+	if( ads ) {
+		ds = ads->dataSource;
+		jpf = ds->rawDataSource;
 		if (jpf->name)
 			gtk_entry_set_text(GTK_ENTRY(jpilotedit.name_entry), jpf->name);
 		if (jpf->path)
@@ -400,7 +404,6 @@ AddressJPilot *addressbook_edit_jpilot( AddressJPilot *jpilot ) {
 		gtk_entry_set_text(GTK_ENTRY(jpilotedit.file_entry), guessFile );
 		gtk_window_set_title( GTK_WINDOW(jpilotedit.window), _("Add New JPilot Entry"));
 		edit_jpilot_fill_check_box_new();
-		// Attempt to load labels
 		if( *guessFile != '\0' ) {
 			edit_jpilot_file_check();
 		}
@@ -417,14 +420,12 @@ AddressJPilot *addressbook_edit_jpilot( AddressJPilot *jpilot ) {
 	if( *sFile == '\0' ) fin = TRUE;
 
 	if( ! fin ) {
-		if( ! jpilot ) {
-			jpilot = g_new0(AddressJPilot, 1);
-			ADDRESS_OBJECT_TYPE(jpilot) = ADDR_JPILOT;
+		if( ! ads ) {
 			jpf = jpilot_create();
-			jpilot->pilotFile = jpf;
+			ds = addrindex_index_add_datasource( addrIndex, ADDR_IF_JPILOT, jpf );
+			ads = addressbook_create_ds_adapter( ds, ADDR_JPILOT, NULL );
 		}
-		g_free( jpilot->name );
-		jpilot->name = g_strdup( sName );
+		addressbook_ads_set_name( ads, sName );
 		jpilot_set_name( jpf, sName );
 		jpilot_set_file( jpf, sFile );
 		edit_jpilot_read_check_box( jpf );
@@ -432,7 +433,7 @@ AddressJPilot *addressbook_edit_jpilot( AddressJPilot *jpilot ) {
 	g_free( sName );
 	g_free( sFile );
 
-	return jpilot;
+	return ads;
 }
 
 #endif /* USE_JPILOT */

@@ -26,11 +26,11 @@
 #ifndef __VCARD_H__
 #define __VCARD_H__
 
-#include <time.h>
 #include <stdio.h>
 #include <glib.h>
 
-#include "mgutils.h"
+#include "addritem.h"
+#include "addrcache.h"
 
 #define VCARDBUFSIZE       1024
 
@@ -45,8 +45,8 @@
 
 #define VCARD_TYPE_QP      "quoted-printable"
 
-#define	VCARD_SEP_TAG	':'
-#define	VCARD_SEP_TYPE	';'
+#define	VCARD_SEP_TAG      ':'
+#define	VCARD_SEP_TYPE     ';'
 
 /*
 // Typical VCard entry:
@@ -72,21 +72,35 @@ struct _VCardFile {
 	gchar        *name;
 	FILE         *file;
 	gchar        *path;
-	AddressCache *addressCache;
 	gchar        buffer[ VCARDBUFSIZE ];
 	gchar        *bufptr;
+	AddressCache *addressCache;
 	gint         retVal;
+	gboolean     accessFlag;
 };
 
-/* Function prototypes */
-VCardFile *vcard_create();
-VCardFile *vcard_create_path( const gchar *path );
-void vcard_force_refresh( VCardFile *cardFile );
-void vcard_free( VCardFile *cardFile );
-gint vcard_read_data( VCardFile *cardFile );
-GList *vcard_get_address_list( VCardFile *cardFile );
-gboolean vcard_validate( const VCardFile *cardFile );
-gchar *vcard_find_gnomecard( void );
-gint vcard_test_read_file( const gchar *fileSpec );
+// Function prototypes
+VCardFile *vcard_create			( void );
+VCardFile *vcard_create_path		( const gchar *path );
+void vcard_set_name			( VCardFile* cardFile, const gchar *value );
+void vcard_set_file			( VCardFile* cardFile, const gchar *value );
+void vcard_set_modified			( VCardFile *vcardFile, const gboolean value );
+void vcard_set_accessed			( VCardFile *vcardFile, const gboolean value );
+gboolean vcard_get_modified		( VCardFile *vcardFile );
+gboolean vcard_get_accessed		( VCardFile *vcardFile );
+gboolean vcard_get_read_flag		( VCardFile *vcardFile );
+gint vcard_get_status			( VCardFile *cardFile );
+ItemFolder *vcard_get_root_folder	( VCardFile *cardFile );
+gchar *vcard_get_name			( VCardFile *cardFile );
+void vcard_free				( VCardFile *cardFile );
+void vcard_force_refresh		( VCardFile *cardFile );
+gint vcard_read_data			( VCardFile *cardFile );
+GList *vcard_get_list_person		( VCardFile *cardFile );
+GList *vcard_get_list_folder		( VCardFile *cardFile );
+GList *vcard_get_all_persons		( VCardFile *cardFile );
+gboolean vcard_validate			( const VCardFile *cardFile );
+gchar *vcard_find_gnomecard		( void );
+gint vcard_test_read_file		( const gchar *fileSpec );
 
 #endif /* __VCARD_H__ */
+

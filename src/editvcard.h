@@ -25,7 +25,7 @@
 #define __EDITVCARD_H__
 
 // Function prototypes
-AddressVCard *addressbook_edit_vcard( AddressVCard *vcard );
+AdapterDSource *addressbook_edit_vcard( AddressIndex *addrIndex, AdapterDSource *ads );
 
 #endif /* __EDITVCARD_H__ */
 

@@ -27,7 +27,7 @@
 #ifdef USE_LDAP
 
 // Function prototypes
-AddressLDAP *addressbook_edit_ldap( AddressLDAP *ldapi );
+AdapterDSource *addressbook_edit_ldap( AddressIndex *addrIndex, AdapterDSource *ads );
 
 #endif /* USE_LDAP */
 
