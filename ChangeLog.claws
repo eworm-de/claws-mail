@@ -1,3 +1,8 @@
+2002-04-05 [paul]	0.7.4claws65
+
+	* tools/filter_conv.pl
+		allow for collapsed folder trees
+
 2002-04-05 [paul]	0.7.4claws64
 
 	* sync with 0.7.4cvs31
