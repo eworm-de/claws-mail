@@ -1,4 +1,9 @@
-2002-11-30 [colin]	0.8.6claws46
+2002-11-30 [colin]	0.8.6claws48
+
+	* src/folderview.c
+		Scroll folderview if necessary during dnd
+
+2002-11-30 [colin]	0.8.6claws47
 
 	* src/folder.[ch]
 		Add check to verify a move is within a single mailbox

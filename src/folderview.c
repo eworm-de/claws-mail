@@ -2628,9 +2628,20 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 	FolderItem *item, *src_item;
 	GtkCTreeNode *node = NULL;
 	gboolean acceptable = FALSE;
-
+	gint height = folderview->ctree->allocation.height;
+	gint total_height = folderview->ctree->requisition.height;
+	GtkAdjustment *pos = gtk_scrolled_window_get_vadjustment(
+				GTK_SCROLLED_WINDOW(folderview->scrolledwin));
+	gfloat vpos = pos->value;
+	
 	if (gtk_clist_get_selection_info
 		(GTK_CLIST(widget), x - 24, y - 24, &row, &column)) {
+		if (y > height - 24 && height + vpos < total_height) {
+			gtk_adjustment_set_value(pos, (vpos+5 > height ? height : vpos+5));
+		}
+		if (y < 24 && y > 0)
+			gtk_adjustment_set_value(pos, (vpos-5 < 0 ? 0 : vpos-5));
+
 		node = gtk_ctree_node_nth(GTK_CTREE(widget), row);
 		item = gtk_ctree_node_get_row_data(GTK_CTREE(widget), node);
 		src_item = folderview->summaryview->folder_item;
