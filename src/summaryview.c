@@ -817,26 +817,8 @@ void summary_init(SummaryView *summaryview)
 			summaryview->color_dim;
 	}
 
-	/* if (!smallfont)
-		smallfont = gdk_fontset_load(SMALL_FONT);*/
-
-	if (!small_style) {
-		small_style = gtk_style_copy
-			(gtk_widget_get_style(summaryview->ctree));
-		if (!smallfont)
-			smallfont = gdk_fontset_load(SMALL_FONT);
-		small_style->font = smallfont;
-		small_marked_style = gtk_style_copy(small_style);
-		small_marked_style->fg[GTK_STATE_NORMAL] =
-			summaryview->color_marked;
-		small_deleted_style = gtk_style_copy(small_style);
-		small_deleted_style->fg[GTK_STATE_NORMAL] =
-			summaryview->color_dim;
-	}
-
 	style = gtk_style_copy(gtk_widget_get_style
 				(summaryview->statlabel_folder));
-	/* if (smallfont) style->font = smallfont;*/
 
 	gtk_widget_set_style(summaryview->statlabel_folder, style);
 	gtk_widget_set_style(summaryview->statlabel_select, style);
