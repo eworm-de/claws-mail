@@ -1,3 +1,9 @@
+2002-07-31
+
+	* src/prefs_actions.c: made the action's input/output dialog display
+	  without delay. Made the dialog modal instead of making window
+	  insensitive. Also cleaned up its UI.
+
 2002-07-29
 
 	* implemented --attach command line option.
