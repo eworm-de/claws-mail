@@ -1,3 +1,9 @@
+2003-02-22 [alfons]	0.8.10claws42
+
+	* src/summaryview.c
+		freeze/thaw folder item updates when changing color labels,
+		and put a wait cursors on
+
 2003-02-22 [thorsten]	0.8.10claws41
 
 	* src/mimeview.c

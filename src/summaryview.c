@@ -4290,9 +4290,13 @@ void summary_set_colorlabel(SummaryView *summaryview, guint labelcolor,
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
 
+	main_window_cursor_wait(summaryview->mainwin);
+	folder_item_update_freeze();
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
 		summary_set_row_colorlable(summaryview,
 					   GTK_CTREE_NODE(cur->data), labelcolor);
+	folder_item_update_thaw();
+	main_window_cursor_normal(summaryview->mainwin);
 }
 
 static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_item,
