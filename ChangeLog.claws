@@ -1,3 +1,7 @@
+2001-06-03 [sergey]
+
+	* src/smtp.c (smtp_ok): fixed sock_gets() error handling.
+
 2001-06-03 [paul]
 
         * sync with sylpheed 0.4.99cvs4
