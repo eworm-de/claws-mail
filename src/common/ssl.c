@@ -87,7 +87,7 @@ void *SSL_connect_thread(void *data)
 
 gint SSL_connect_nb(SSL *ssl)
 {
-#ifdef USE_PTHREAD
+#if (defined USE_PTHREAD && defined __GLIBC__ && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)))
 	thread_data *td = g_new0(thread_data, 1);
 	pthread_t pt;
 	void *res = NULL;
