@@ -1238,8 +1238,11 @@ EncodingType procmime_get_encoding_for_charset(const gchar *charset)
 	else if (!strncasecmp(charset, "ISO-2022-", 9) ||
 		 !strcasecmp(charset, "US-ASCII"))
 		return ENC_7BIT;
-	else if (!strncasecmp(charset, "ISO-8859-", 9) ||
-		 !strncasecmp(charset, "CP125", 5))
+	else if (!strcasecmp(charset, "ISO-8859-5") ||
+		 !strncasecmp(charset, "KOI8-", 5) ||
+		 !strcasecmp(charset, "Windows-1251"))
+		return ENC_BASE64;
+	else if (!strncasecmp(charset, "ISO-8859-", 9))
 		return ENC_QUOTED_PRINTABLE;
 	else
 		return ENC_8BIT;

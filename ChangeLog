@@ -1,3 +1,21 @@
+2003-01-16
+
+	* src/prefs_common.c: prefs_send_create(): added a description for
+	  the setting of Content-Transfer-Encoding.
+
+2003-01-16
+
+	* src/codeconv.c: fixed locale_table for Russian locales (thanks to
+	  Sergey Vlasov).
+	* src/procmime.c: procmime_get_encoding_for_charset(): return
+	  ENC_BASE64 for ISO-8859-5, KOI8-* and Windows-1251.
+	* src/compose.c: compose_attach_append(): set correct Content-
+	  Transfer-Encoding for message/rfc822.
+	  compose_write_to_file(): enabled user-definable Content-Transfer-
+	  Encoding.
+	* src/prefs_common.[ch]: added an option for user-defined Content-
+	  Transfer-Encoding.
+
 2003-01-15
 
 	* src/quoted-printable.[ch]: qp_encode_line(): fixed a bug if the

@@ -1,3 +1,21 @@
+2003-01-16
+
+	* src/prefs_common.c: prefs_send_create(): Content-Transfer-Encoding
+	  の設定の説明を追加。
+
+2003-01-16
+
+	* src/codeconv.c: ロシア語 locale のための locale_table の修正
+	  (Sergey Vlasov さん thanks)。
+	* src/procmime.c: procmime_get_encoding_for_charset(): ISO-8859-5,
+	  KOI8-*, Windows-1251 に対して ENC_BASE64 を返すようにした。
+	* src/compose.c: compose_attach_append(): message/rfc822 に対して
+	  正しい Content-Transfer-Encoding をセットするようにした。
+	  compose_write_to_file(): ユーザ定義の Content-Transfer-Encoding
+	  を有効にした。
+	* src/prefs_common.[ch]: ユーザ定義の Content-Transfer-Encoding
+	  のオプションを追加。
+
 2003-01-15
 
 	* src/quoted-printable.[ch]: qp_encode_line(): 行が改行で終わらない

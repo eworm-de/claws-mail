@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,6 +99,7 @@ static struct Send {
 	GtkWidget *checkbtn_queuemsg;
 
 	GtkWidget *optmenu_charset;
+	GtkWidget *optmenu_encoding_method;
 } p_send;
 
 static struct Compose {
@@ -264,8 +265,12 @@ static guint font_sel_conn_id;
 static GtkWidget *quote_color_win;
 static GtkWidget *color_dialog;
 
-static void prefs_common_charset_set_data_from_optmenu(PrefParam *pparam);
-static void prefs_common_charset_set_optmenu	      (PrefParam *pparam);
+static void prefs_common_charset_set_data_from_optmenu	   (PrefParam *pparam);
+static void prefs_common_charset_set_optmenu		   (PrefParam *pparam);
+static void prefs_common_encoding_set_data_from_optmenu    (PrefParam *pparam);
+static void prefs_common_encoding_set_optmenu		   (PrefParam *pparam);
+static void prefs_common_recv_dialog_set_data_from_optmenu (PrefParam *pparam);
+static void prefs_common_recv_dialog_set_optmenu	   (PrefParam *pparam);
 static void prefs_common_recv_dialog_newmail_notify_toggle_cb	(GtkWidget *w,
 								 gpointer data);
 static void prefs_common_recv_dialog_set_data_from_optmenu(PrefParam *pparam);
@@ -353,6 +358,10 @@ static PrefParam param[] = {
 	 &p_send.optmenu_charset,
 	 prefs_common_charset_set_data_from_optmenu,
 	 prefs_common_charset_set_optmenu},
+	{"encoding_method", "0", &prefs_common.encoding_method, P_ENUM,
+	 &p_send.optmenu_encoding_method,
+	 prefs_common_encoding_set_data_from_optmenu,
+	 prefs_common_encoding_set_optmenu},
 
 	/* Compose */
 	{"auto_signature", "TRUE", &prefs_common.auto_sig, P_BOOL,
@@ -1297,10 +1306,13 @@ static void prefs_send_create(void)
 	GtkWidget *checkbtn_savemsg;
 	GtkWidget *checkbtn_queuemsg;
 	GtkWidget *label_outcharset;
-	GtkWidget *optmenu;
+	GtkWidget *optmenu_charset;
 	GtkWidget *optmenu_menu;
 	GtkWidget *menuitem;
 	GtkWidget *label_charset_desc;
+	GtkWidget *optmenu_encoding;
+	GtkWidget *label_encoding;
+	GtkWidget *label_encoding_desc;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1353,15 +1365,15 @@ static void prefs_send_create(void)
 	gtk_widget_show (label_outcharset);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_outcharset, FALSE, FALSE, 0);
 
-	optmenu = gtk_option_menu_new ();
-	gtk_widget_show (optmenu);
-	gtk_box_pack_start (GTK_BOX (hbox1), optmenu, FALSE, FALSE, 0);
+	optmenu_charset = gtk_option_menu_new ();
+	gtk_widget_show (optmenu_charset);
+	gtk_box_pack_start (GTK_BOX (hbox1), optmenu_charset, FALSE, FALSE, 0);
 
 	optmenu_menu = gtk_menu_new ();
 
-#define SET_MENUITEM(str, charset) \
+#define SET_MENUITEM(str, data) \
 { \
-	MENUITEM_ADD(optmenu_menu, menuitem, str, charset); \
+	MENUITEM_ADD(optmenu_menu, menuitem, str, data); \
 }
 
 	SET_MENUITEM(_("Automatic (Recommended)"),	 CS_AUTO);
@@ -1399,7 +1411,8 @@ static void prefs_send_create(void)
 	SET_MENUITEM(_("Thai (TIS-620)"),		 CS_TIS_620);
 	SET_MENUITEM(_("Thai (Windows-874)"),		 CS_WINDOWS_874);
 
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu), optmenu_menu);
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_charset),
+				  optmenu_menu);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -1411,7 +1424,43 @@ static void prefs_send_create(void)
 	gtk_widget_show (label_charset_desc);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_charset_desc,
 			    FALSE, FALSE, 0);
-	gtk_label_set_justify(GTK_LABEL (label_charset_desc), GTK_JUSTIFY_LEFT);
+	gtk_label_set_justify (GTK_LABEL (label_charset_desc),
+			       GTK_JUSTIFY_LEFT);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+
+	label_encoding = gtk_label_new (_("Transfer encoding"));
+	gtk_widget_show (label_encoding);
+	gtk_box_pack_start (GTK_BOX (hbox1), label_encoding, FALSE, FALSE, 0);
+
+	optmenu_encoding = gtk_option_menu_new ();
+	gtk_widget_show (optmenu_encoding);
+	gtk_box_pack_start (GTK_BOX (hbox1), optmenu_encoding, FALSE, FALSE, 0);
+
+	optmenu_menu = gtk_menu_new ();
+
+	SET_MENUITEM(_("Automatic"),	 CTE_AUTO);
+	SET_MENUITEM("base64",		 CTE_BASE64);
+	SET_MENUITEM("quoted-printable", CTE_QUOTED_PRINTABLE);
+	SET_MENUITEM("8bit",		 CTE_8BIT);
+
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_encoding),
+				  optmenu_menu);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+
+	label_encoding_desc = gtk_label_new
+		(_("Specify Content-Transfer-Encoding used when\n"
+		   "message body contains non-ASCII characters."));
+	gtk_widget_show (label_encoding_desc);
+	gtk_box_pack_start (GTK_BOX (hbox1), label_encoding_desc,
+			    FALSE, FALSE, 0);
+	gtk_label_set_justify (GTK_LABEL (label_encoding_desc),
+			       GTK_JUSTIFY_LEFT);
 
 	p_send.checkbtn_extsend = checkbtn_extsend;
 	p_send.entry_extsend    = entry_extsend;
@@ -1420,7 +1469,8 @@ static void prefs_send_create(void)
 	p_send.checkbtn_savemsg  = checkbtn_savemsg;
 	p_send.checkbtn_queuemsg = checkbtn_queuemsg;
 
-	p_send.optmenu_charset = optmenu;
+	p_send.optmenu_charset = optmenu_charset;
+	p_send.optmenu_encoding_method = optmenu_encoding;
 }
 
 static void prefs_common_recv_dialog_newmail_notify_toggle_cb(GtkWidget *w, gpointer data)
@@ -4157,6 +4207,36 @@ static void prefs_common_charset_set_optmenu(PrefParam *pparam)
 	}
 }
 
+static void prefs_common_encoding_set_data_from_optmenu(PrefParam *pparam)
+{
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	*((TransferEncodingMethod *)pparam->data) = GPOINTER_TO_INT
+		(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+}
+
+static void prefs_common_encoding_set_optmenu(PrefParam *pparam)
+{
+	TransferEncodingMethod method =
+		*((TransferEncodingMethod *)pparam->data);
+	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
+	gint index;
+
+	g_return_if_fail(optmenu != NULL);
+
+	index = menu_find_option_menu_index(optmenu, GINT_TO_POINTER(method),
+					    NULL);
+	if (index >= 0)
+		gtk_option_menu_set_history(optmenu, index);
+	else {
+		gtk_option_menu_set_history(optmenu, 0);
+		prefs_common_encoding_set_data_from_optmenu(pparam);
+	}
+}
+
 static void prefs_common_recv_dialog_set_data_from_optmenu(PrefParam *pparam)
 {
 	GtkWidget *menu;
@@ -4174,19 +4254,15 @@ static void prefs_common_recv_dialog_set_optmenu(PrefParam *pparam)
 	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
 	GtkWidget *menu;
 	GtkWidget *menuitem;
+	gint index;
 
-	switch (mode) {
-	case RECV_DIALOG_ALWAYS:
+	index = menu_find_option_menu_index(optmenu, GINT_TO_POINTER(mode),
+					    NULL);
+	if (index >= 0)
+		gtk_option_menu_set_history(optmenu, index);
+	else {
 		gtk_option_menu_set_history(optmenu, 0);
-		break;
-	case RECV_DIALOG_ACTIVE:
-		gtk_option_menu_set_history(optmenu, 1);
-		break;
-	case RECV_DIALOG_NEVER:
-		gtk_option_menu_set_history(optmenu, 2);
-		break;
-	default:
-		break;
+		prefs_common_recv_dialog_set_data_from_optmenu(pparam);
 	}
 
 	menu = gtk_option_menu_get_menu(optmenu);

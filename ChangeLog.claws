@@ -1,3 +1,8 @@
+2003-01-16 [paul]	0.8.8claws105
+
+	* sync with 0.8.8cvs9
+		see ChangeLog 2002-01-16
+
 2003-01-16 [colin]	0.8.8claws104
 
 	* src/compose.[ch]

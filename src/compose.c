@@ -1927,7 +1927,10 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 	if (content_type) {
 		ainfo->content_type = g_strdup(content_type);
 		if (!strcasecmp(content_type, "message/rfc822")) {
-			ainfo->encoding = ENC_7BIT;
+			if (procmime_get_encoding_for_file(file) == ENC_7BIT)
+				ainfo->encoding = ENC_7BIT;
+			else
+				ainfo->encoding = ENC_8BIT;
 			ainfo->name = g_strdup_printf
 				(_("Message: %s"),
 				 g_basename(filename ? filename : file));
@@ -3231,7 +3234,15 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 		out_codeset = conv_get_outgoing_charset_str();
 		if (!strcasecmp(out_codeset, CS_US_ASCII))
 			out_codeset = CS_ISO_8859_1;
-		encoding = procmime_get_encoding_for_charset(out_codeset);
+
+		if (prefs_common.encoding_method == CTE_BASE64)
+			encoding = ENC_BASE64;
+		else if (prefs_common.encoding_method == CTE_QUOTED_PRINTABLE)
+			encoding = ENC_QUOTED_PRINTABLE;
+		else if (prefs_common.encoding_method == CTE_8BIT)
+			encoding = ENC_8BIT;
+		else
+			encoding = procmime_get_encoding_for_charset(out_codeset);
 
 #if USE_GPGME
 		if (!is_draft &&
