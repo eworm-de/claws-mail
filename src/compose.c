@@ -366,6 +366,8 @@ static void replyto_activated		(GtkWidget	*widget,
 					 Compose	*compose);
 static void followupto_activated	(GtkWidget	*widget,
 					 Compose	*compose);
+static void compose_attach_parts(Compose * compose,
+				 MsgInfo * msginfo);
 
 static GtkItemFactoryEntry compose_popup_entries[] =
 {
@@ -536,6 +538,206 @@ void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
 	gtk_widget_grab_focus(compose->text);
 }
 
+
+static gchar *procmime_get_file_name(MimeInfo *mimeinfo)
+{
+	gchar *base;
+	gchar *filename;
+
+	g_return_val_if_fail(mimeinfo != NULL, NULL);
+
+	base = mimeinfo->filename ? mimeinfo->filename
+		: mimeinfo->name ? mimeinfo->name : NULL;
+
+	if (MIME_TEXT_HTML == mimeinfo->mime_type && base == NULL)
+		base = "mimetmp.html";
+	else {
+		base = base ? base : "mimetmp";
+		base = g_basename(base);
+		if (*base == '\0') base = "mimetmp";
+	}
+
+	filename = g_strconcat(get_mime_tmp_dir(), G_DIR_SEPARATOR_S,
+			       base, NULL);
+
+	return filename;
+}
+
+static gchar * mime_extract_file(gchar * source, MimeInfo *partinfo)
+{
+	gchar *filename;
+
+	if (!partinfo) return;
+
+	filename = procmime_get_file_name(partinfo);
+
+	if (procmime_get_part(filename, source, partinfo) < 0)
+		alertpanel_error
+			(_("Can't get the part of multipart message."));
+
+	return filename;
+}
+
+static void compose_attach_parts(Compose * compose,
+				 MsgInfo * msginfo)
+{
+
+	FILE *fp;
+	gchar *file;
+	MimeInfo *mimeinfo;
+	MsgInfo *tmpmsginfo;
+	gchar *p;
+	gchar *boundary;
+	gint boundary_len = 0;
+	gchar buf[BUFFSIZE];
+	glong fpos, prev_fpos;
+	gint npart;
+	gchar * source;
+	gchar * filename;
+
+	g_return_if_fail(msginfo != NULL);
+	
+#if USE_GPGME
+	for (;;) {
+		if ((fp = procmsg_open_message(msginfo)) == NULL) return;
+		mimeinfo = procmime_scan_mime_header(fp);
+		if (!mimeinfo) break;
+
+		if (!MSG_IS_ENCRYPTED(msginfo->flags) &&
+		    rfc2015_is_encrypted(mimeinfo)) {
+			MSG_SET_FLAGS(msginfo->flags, MSG_ENCRYPTED);
+		}
+		if (MSG_IS_ENCRYPTED(msginfo->flags) &&
+		    !msginfo->plaintext_file  &&
+		    !msginfo->decryption_failed) {
+			rfc2015_decrypt_message(msginfo, mimeinfo, fp);
+			if (msginfo->plaintext_file &&
+			    !msginfo->decryption_failed) {
+				fclose(fp);
+				continue;
+			}
+		}
+		
+		break;
+	}
+#else /* !USE_GPGME */
+	if ((fp = procmsg_open_message(msginfo)) == NULL) return;
+	mimeinfo = procmime_scan_mime_header(fp);
+#endif /* USE_GPGME */
+
+	fclose(fp);
+	if (!mimeinfo) return;
+
+	if ((fp = procmsg_open_message(msginfo)) == NULL) return;
+
+	g_return_if_fail(mimeinfo != NULL);
+	g_return_if_fail(mimeinfo->mime_type != MIME_TEXT);
+
+	if (mimeinfo->mime_type == MIME_MULTIPART) {
+		g_return_if_fail(mimeinfo->boundary != NULL);
+		g_return_if_fail(mimeinfo->sub == NULL);
+	}
+	g_return_if_fail(fp != NULL);
+
+	boundary = mimeinfo->boundary;
+
+	if (boundary) {
+		boundary_len = strlen(boundary);
+
+		/* look for first boundary */
+		while ((p = fgets(buf, sizeof(buf), fp)) != NULL)
+			if (IS_BOUNDARY(buf, boundary, boundary_len)) break;
+		if (!p) {
+			fclose(fp);
+			return;
+		}
+	}
+
+	if ((fpos = ftell(fp)) < 0) {
+		perror("ftell");
+		fclose(fp);
+		return;
+	}
+
+	for (npart = 0;; npart++) {
+		MimeInfo *partinfo;
+		gboolean eom = FALSE;
+
+		prev_fpos = fpos;
+
+		partinfo = procmime_scan_mime_header(fp);
+		if (!partinfo) break;
+
+		if (npart != 0)
+			procmime_mimeinfo_insert(mimeinfo, partinfo);
+		else
+			procmime_mimeinfo_free(partinfo);
+
+		/* look for next boundary */
+		buf[0] = '\0';
+		while ((p = fgets(buf, sizeof(buf), fp)) != NULL) {
+			if (IS_BOUNDARY(buf, boundary, boundary_len)) {
+				if (buf[2 + boundary_len]     == '-' &&
+				    buf[2 + boundary_len + 1] == '-')
+					eom = TRUE;
+				break;
+			}
+		}
+		if (p == NULL)
+			eom = TRUE;	/* broken MIME message */
+		fpos = ftell(fp);
+
+		partinfo->size = fpos - prev_fpos - strlen(buf);
+
+		if (eom) break;
+	}
+
+	source = procmsg_get_message_file_path(msginfo);
+
+	g_return_if_fail(mimeinfo != NULL);
+
+	if (!mimeinfo->main && mimeinfo->parent)
+		{
+			filename = mime_extract_file(source, mimeinfo);
+
+			compose_attach_append(compose, filename,
+					      mimeinfo->mime_type);
+
+			g_free(filename);
+		}
+
+	if (mimeinfo->sub && mimeinfo->sub->children)
+		{
+			filename = mime_extract_file(source, mimeinfo->sub);
+
+			compose_attach_append(compose, filename,
+					      mimeinfo->sub->mime_type);
+
+			g_free(filename);
+		}
+
+	if (mimeinfo->children) {
+		MimeInfo *child;
+
+		child = mimeinfo->children;
+		while (child) {
+			filename = mime_extract_file(source, child);
+
+			compose_attach_append(compose, filename,
+					      child->mime_type);
+
+			g_free(filename);
+
+			child = child->next;
+		}
+	}
+
+	fclose(fp);
+
+	procmime_mimeinfo_free_all(mimeinfo);
+}
+
+
 #define INSERT_FW_HEADER(var, hdr) \
 if (msginfo->var && *msginfo->var) { \
 	gtk_stext_insert(text, NULL, NULL, NULL, hdr, -1); \
@@ -609,6 +811,7 @@ Compose * compose_forward(PrefsAccount * account, MsgInfo *msginfo,
 						buf, -1);
 			fclose(fp);
 		}
+		compose_attach_parts(compose, msginfo);
 	}
 
 	if (prefs_common.auto_sig)
@@ -659,6 +862,7 @@ void compose_reedit(MsgInfo *msginfo)
 			gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
 		fclose(fp);
 	}
+	compose_attach_parts(compose, msginfo);
 
 	gtk_stext_thaw(text);
 	gtk_widget_grab_focus(compose->text);
