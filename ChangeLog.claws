@@ -1,3 +1,10 @@
+2004-06-02 [christoph]	0.9.11cvs1
+
+	* src/common/ssl.c
+		fix SSL_CTX variable name for older OpenSSL versions
+
+	(Closes Bug 503 fix compilation with older OpenSSL)
+
 2004-05-31 [paul]	0.9.11claws
 
 	* 0.9.11claws released

@@ -50,7 +50,7 @@ void ssl_init(void)
 	SSL_CTX_set_default_verify_paths(ssl_ctx);
 	
 #if (OPENSSL_VERSION_NUMBER < 0x0090600fL)
-	SSL_CTX_set_verify_depth(ctx,1);
+	SSL_CTX_set_verify_depth(ssl_ctx,1);
 #endif
 }
 
