@@ -50,6 +50,7 @@
 #include "prefs_folder_item.h"
 #include "procheader.h"
 #include "statusbar.h"
+#include "hooks.h"
 
 /* Dependecies to be removed ?! */
 #include "prefs_common.h"
@@ -2840,74 +2841,24 @@ void folder_item_apply_processing(FolderItem *item)
 /*
  *  Callback handling for FolderItem content changes
  */
-GSList *folder_item_update_callbacks_list = NULL;
-gint	folder_item_update_callbacks_nextid = 0;
-
-struct FolderItemUpdateCallback
-{
-	gint			id;
-	FolderItemUpdateFunc	func;
-	gpointer		data;
-};
-
-gint folder_item_update_callback_register(FolderItemUpdateFunc func, gpointer data)
-{
-	struct FolderItemUpdateCallback *callback;
-
-	g_return_val_if_fail(func != NULL, -1);
-
-	folder_item_update_callbacks_nextid++;
-
-	callback = g_new0(struct FolderItemUpdateCallback, 1);
-	callback->id = folder_item_update_callbacks_nextid;
-	callback->func = func;
-	callback->data = data;
-
-	folder_item_update_callbacks_list =
-		g_slist_append(folder_item_update_callbacks_list, callback);
-
-	return folder_item_update_callbacks_nextid;
-}
-
-void folder_item_update_callback_unregister(gint id)
-{
-	GSList *list, *next;
-
-	for (list = folder_item_update_callbacks_list; list != NULL; list = next) {
-    		struct FolderItemUpdateCallback *callback;
-
-		next = list->next;
-
-		callback = list->data;
-		if (callback->id == id) {
-			folder_item_update_callbacks_list =
-				g_slist_remove(folder_item_update_callbacks_list, callback);
-			g_free(callback);
-		}
-	}
-}
-
-static void folder_item_update_callback_execute(FolderItem *item, gboolean contentchange)
-{
-	GSList *list;
-
-	for (list = folder_item_update_callbacks_list; list != NULL; list = list->next) {
-    		struct FolderItemUpdateCallback *callback;
-
-		callback = list->data;
-		callback->func(item, contentchange, callback->data);
-	}
-}
-
 void folder_update_item(FolderItem *item, gboolean contentchange)
 {
-	folder_item_update_callback_execute(item, contentchange);
+	FolderItemUpdateData source;
+	
+	source.item = item;
+	source.content_change = contentchange;
+	hooks_invoke("folder_item_update", &source);
 }
 
 static void folder_update_item_func(FolderItem *item, gpointer contentchange)
 {
+	FolderItemUpdateData source;
+
 	if (item->need_update) {
-		folder_item_update_callback_execute(item, GPOINTER_TO_INT(contentchange));
+		source.item = item;
+		source.content_change = GPOINTER_TO_INT(contentchange);
+		hooks_invoke("folder_item_update", &source);
+
 		item->need_update = FALSE;
 	}
 }
@@ -2920,13 +2871,21 @@ void folder_update_items_when_required(gboolean contentchange)
 void folder_update_item_recursive(FolderItem *item, gboolean update_summary)
 {
 	GNode *node = item->folder->node;	
+	FolderItemUpdateData source;
+
 	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
 	node = node->children;
-	folder_item_update_callback_execute(item, update_summary);
+
+	source.item = item;
+	source.content_change = update_summary;	
+	hooks_invoke("folder_item_update", &source);
 	while (node != NULL) {
 		if (node && node->data) {
 			FolderItem *next_item = (FolderItem*) node->data;
-			folder_item_update_callback_execute(next_item, update_summary);
+
+			source.item = next_item;
+			source.content_change = update_summary;	
+			hooks_invoke("folder_item_update", &source);
 		}
 		node = node->next;
 	}

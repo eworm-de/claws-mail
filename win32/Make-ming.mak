@@ -223,6 +223,7 @@ OBJECTS= \
 	gtkstext.o \
 	gtkutils.o \
 	headerview.o \
+	hooks.o \
 	html.o \
 	imageview.o \
 	imap.o \
@@ -409,6 +410,7 @@ gtkshruler.o: 	gtkshruler.c gtkshruler.h
 gtkstext.o: 	gtkstext.c gtkstext.h
 gtkutils.o: 	gtkutils.c gtkutils.h
 headerview.o: 	headerview.c headerview.h
+hooks.o:	hooks.c hooks.h
 html.o: 	html.c html.h
 imageview.o: 	imageview.c imageview.h
 imap.o: 	imap.c imap.h

@@ -1,3 +1,15 @@
+2002-11-30 [christoph]	0.8.6claws50
+
+	* src/common/Makefile.am
+		add src/common/hooks.[ch]
+
+	* src/common/hooks.[ch]
+		implement a simple hook system using glib's hook functions
+
+	* src/folder.[ch]
+	* src/folderview.c
+		use new hook system for folder item updates
+
 2002-11-30 [christoph]	0.8.6claws49
 
 	* doc-src/ui_seperation.txt	** NEW **
@@ -47,7 +59,7 @@
 	* src/common/utils.c
 	* src/summaryview.c
 	* src/xml.c
-		o move debug_mode to commno/utils.c
+		o move debug_mode to common/utils.c
 		o add functions to set and get debug_mode
 
 	* src/defs.h			** REMOVE **

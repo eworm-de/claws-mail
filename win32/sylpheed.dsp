@@ -276,6 +276,10 @@ SOURCE=..\src\headerview.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\common\hooks.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\html.c
 # End Source File
 # Begin Source File
@@ -817,6 +821,10 @@ SOURCE=..\src\gtkutils.h
 # Begin Source File
 
 SOURCE=..\src\headerview.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\common\hooks.h
 # End Source File
 # Begin Source File
 

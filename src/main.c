@@ -190,6 +190,11 @@ int main(int argc, char *argv[])
 #endif
 
 #ifdef WIN32
+#ifdef _DEBUG
+	debug_set_mode(TRUE) ;
+#else
+	debug_set_mode(FALSE) ;
+#endif
 	log_hid = g_log_set_handler(NULL, 
 		G_LOG_LEVEL_MASK |
 		G_LOG_FLAG_FATAL |
