@@ -1,3 +1,18 @@
+2002-03-16 [christoph]	0.7.4claws15
+
+	* configure.in
+		add --with-compiler-flags option
+		(only for developer hacking)
+	* src/mh.c
+	* src/procmsg.[ch]
+	* src/summaryview.c
+		try to make folder-stats and flag handling more
+		independent from the summaryview. msgcounts
+		are only set when the folder is opened and
+		procmsg_msginfo_(un)set_flags will handle it
+		later and summaryview will get the values
+		from the folder.
+
 2002-03-16 [paul]	0.7.4claws14
 
 	* src/messageview.c

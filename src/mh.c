@@ -652,6 +652,7 @@ gint mh_copy_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
 {
 	gchar *file;
+	MsgInfo *msginfo;
 
 	g_return_val_if_fail(item != NULL, -1);
 
@@ -664,6 +665,15 @@ gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
 		return -1;
 	}
 
+	if(msginfo = g_new0(MsgInfo, 1)) {
+		msginfo->msgnum = num;
+		msginfo->flags.perm_flags = MSG_REALLY_DELETED;
+		msginfo->folder = item;
+
+		procmsg_msginfo_write_flags(msginfo);
+		g_free(msginfo);
+	}
+	
 	g_free(file);
 	return 0;
 }

@@ -69,6 +69,11 @@ case "$target" in
 	;;
 esac
 
+dnl add additional parameters
+AC_ARG_WITH(compiler-flags,
+    [  --with-compiler-flags=FLAGS  add parameters to the compiler command],
+    CFLAGS="$CFLAGS $withval")
+
 dnl for gettext
 ALL_LINGUAS="cs de el es fr hr it ja ko nl pl pt_BR ru sv"
 AM_GNU_GETTEXT
