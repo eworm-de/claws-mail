@@ -27,6 +27,8 @@
 #include "common/utils.h"
 #include "mimeview.h"
 
+#include "dillo_prefs.h"
+
 typedef struct _dilloViewer dilloViewer;
 
 struct _dilloViewer
@@ -34,7 +36,7 @@ struct _dilloViewer
 	MimeViewer	 mimeviewer;
 	GtkWidget	*widget;	
 	GtkWidget	*socket;
-	gchar 		*filename;
+	gchar		*filename;
 };
 
 static MimeViewerFactory dillo_viewer_factory;
@@ -56,7 +58,9 @@ static gboolean socket_destroy_cb(GtkObject *object, gpointer data)
 	return FALSE;
 }
 
-static void dillo_show_mimepart(MimeViewer *_viewer, const gchar *infile, MimeInfo *partinfo)
+static void dillo_show_mimepart(MimeViewer *_viewer,
+				const gchar *infile,
+				MimeInfo *partinfo)
 {
 	dilloViewer *viewer = (dilloViewer *) _viewer;
 
@@ -71,6 +75,7 @@ static void dillo_show_mimepart(MimeViewer *_viewer, const gchar *infile, MimeIn
 	
 	if (!(procmime_get_part(viewer->filename, infile, partinfo) < 0)) {
 		gchar *cmd;
+
 		if (viewer->socket)
 			gtk_widget_destroy(viewer->socket);
 		viewer->socket = gtk_socket_new();
@@ -83,9 +88,13 @@ static void dillo_show_mimepart(MimeViewer *_viewer, const gchar *infile, MimeIn
 				   "destroy", 
 				   GTK_SIGNAL_FUNC(socket_destroy_cb),
 				   viewer);
-		cmd = g_strdup_printf("dillo -f -l -x %d \"%s\"", 
-				(gint) GDK_WINDOW_XWINDOW(viewer->socket->window),
-				viewer->filename);
+
+		cmd = g_strdup_printf("dillo %s%s-x %d \"%s\"",
+				      (dillo_prefs.local ? "-l " : ""),
+				      (dillo_prefs.full ? "-f " : ""),
+				      (gint) GDK_WINDOW_XWINDOW(viewer->socket->window),
+				      viewer->filename);
+
 		execute_command_line(cmd, TRUE);
 		g_free(cmd);
 	}
@@ -94,12 +103,13 @@ static void dillo_show_mimepart(MimeViewer *_viewer, const gchar *infile, MimeIn
 static void dillo_clear_viewer(MimeViewer *_viewer)
 {
 	dilloViewer *viewer = (dilloViewer *) _viewer;
+
 	debug_print("dillo_clear_viewer\n");
 	debug_print("Removing dillo socket %p\n", viewer->socket);
+
 	if (viewer->socket) {
 		gtk_widget_destroy(viewer->socket);
 	}
-		
 }
 
 static void dillo_destroy_viewer(MimeViewer *_viewer)
@@ -114,7 +124,7 @@ static void dillo_destroy_viewer(MimeViewer *_viewer)
     	g_free(viewer);
 }
 
-static MimeViewer *dillo_viewer_create()
+static MimeViewer *dillo_viewer_create(void)
 {
 	dilloViewer *viewer;
 
@@ -122,13 +132,12 @@ static MimeViewer *dillo_viewer_create()
 	
 	viewer = g_new0(dilloViewer, 1);
 	viewer->mimeviewer.factory = &dillo_viewer_factory;
-
 	viewer->mimeviewer.get_widget = dillo_get_widget;
 	viewer->mimeviewer.show_mimepart = dillo_show_mimepart;
 	viewer->mimeviewer.clear_viewer = dillo_clear_viewer;
 	viewer->mimeviewer.destroy_viewer = dillo_destroy_viewer;	
-
 	viewer->widget = gtk_event_box_new();
+
 	gtk_widget_show(viewer->widget);
 	gtk_widget_ref(viewer->widget);
 
@@ -141,19 +150,24 @@ static MimeViewerFactory dillo_viewer_factory =
 {
 	"text/html",
 	0,
-	
-	dillo_viewer_create,
+
+	dillo_viewer_create
 };
 
 gint plugin_init(gchar **error)
 {
+        dillo_prefs_init();
+
 	mimeview_register_viewer_factory(&dillo_viewer_factory);
+
 	return 0;	
 }
 
 void plugin_done(void)
 {
 	mimeview_unregister_viewer_factory(&dillo_viewer_factory);
+
+        dillo_prefs_done();
 }
 
 const gchar *plugin_name(void)

@@ -1,3 +1,14 @@
+2003-04-30 [melvin]	0.8.11claws132
+
+	New: Dillo plugin preferences (patch by Dimitar Haralanov)
+
+	* src/plugins/dillo_viewer/dillo_prefs.[ch]	*** NEW ***
+		Preferences for the dillo plugin
+	* src/plugins/dillo_viewer/dillo_viewer.c
+		Support for preferences
+	* src/plugins/dillo_viewer/Makefile.am
+		Added dillo_prefs.[ch]
+
 2003-04-30 [alfons]	0.8.11claws131
 
 	* src/common/plugin.[ch]
