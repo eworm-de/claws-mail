@@ -960,7 +960,7 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 		alertpanel_error
 			(_("Can't save the part of multipart message."));
 
-	uriname = g_strconcat("file:/", filename, NULL);
+	uriname = g_strconcat("file://", filename, NULL);
 	gtk_selection_data_set(selection_data, selection_data->target, 8,
 			       uriname, strlen(uriname));
 

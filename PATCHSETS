@@ -77,3 +77,4 @@
 ( cvs diff -u -r 1.226 -r 1.227 src/prefs_common.c; cvs diff -u -r 1.113 -r 1.114 src/prefs_common.h; cvs diff -u -r 1.443 -r 1.444 src/summaryview.c; ) > 0.9.12cvs92.patchset
 ( cvs diff -u -r 1.444 -r 1.445 src/summaryview.c; ) > 0.9.12cvs93.patchset
 ( cvs diff -u -r 1.70 -r 1.71 src/addressbook.c; cvs diff -u -r 1.5 -r 1.6 src/addressitem.h; cvs diff -u -r 1.14 -r 1.15 src/addritem.c; cvs diff -u -r 1.13 -r 1.14 src/addritem.h; ) > 0.9.12cvs94.patchset
+( cvs diff -u -r 1.445 -r 1.446 src/summaryview.c; cvs diff -u -r 1.125 -r 1.126 src/mimeview.c; ) > 0.9.12cvs95.patchset
