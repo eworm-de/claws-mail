@@ -1,3 +1,8 @@
+2002-05-12 [netztorte]	0.7.5claws23
+
+	* src/summaryview.c
+		dont parse empty addressbook (checked in before claws20)
+
 2002-05-12 [melvin]	0.7.5claws22
 
 	* src/procmsg.[ch]
