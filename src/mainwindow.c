@@ -187,9 +187,6 @@ static void addressbook_open_cb	(MainWindow	*mainwin,
 static void log_window_show_cb	(MainWindow	*mainwin,
 				 guint		 action,
 				 GtkWidget	*widget);
-static void sel_download_cb          (MainWindow *mainwin, 
-				 guint action,
-				 GtkWidget *widget);
 
 static void inc_cancel_cb		(MainWindow	*mainwin,
 					 guint		 action,
