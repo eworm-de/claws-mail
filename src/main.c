@@ -116,7 +116,11 @@ static gint prohibit_duplicate_launch	(void);
 static void lock_socket_input_cb	(gpointer	   data,
 					 gint		   source,
 					 GdkInputCondition condition);
-static gchar *get_socket_name		(void);
+#ifndef CLAWS					 
+static 
+#endif
+gchar *get_socket_name		(void);
+
 
 static void open_compose_new		(const gchar	*address,
 					 GPtrArray	*attach_files);
@@ -553,7 +557,14 @@ static void idle_function_for_gpgme(void)
 }
 #endif /* USE_GPGME */
 
-static gchar *get_socket_name(void)
+/*
+ * CLAWS: want this public so crash dialog can delete the
+ * lock file too
+ */
+#ifndef CLAWS
+static
+#endif
+gchar *get_socket_name(void)
 {
 	static gchar *filename = NULL;
 

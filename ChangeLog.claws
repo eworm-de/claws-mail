@@ -1,3 +1,14 @@
+2002-08-24 [alfons]	0.8.1claws111
+
+	* src/main.c
+		make get_socket_name() public for crash.c
+	* src/crash.c
+		o make report bug button work (goes to claws' 
+		  bug tracker at sf.net)
+		o introduce function for doing important stuff just
+		  before claws goes down
+		o clean up code 
+
 2002-08-24 [alfons]	0.8.1claws110
 
 	* src/compose.c
