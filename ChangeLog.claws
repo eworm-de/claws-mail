@@ -1,3 +1,9 @@
+2003-05-17 [christoph]
+
+	* README.claws
+		o remove dynamic signatures that was syned with main
+		o add infos about no longer "build in" image viewer
+
 2003-05-17 [christoph]	0.8.11claws161
 
 	* src/folder.c

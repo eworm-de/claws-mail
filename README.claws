@@ -521,14 +521,15 @@ mention it.
     %f "John Beavis"   messages from John Beavis (case sensitive)
     ~s foo             messages which do not have foo in the subject
     f foo & ~s bar     messages from foo that do not have bar in thesubject
-    
-* 'dynamic' signatures
-----------------------
-    To use program output, e.g. fortune, as a message signature
-    use a | (pipe) symbol. For example, in the Account Preferences
-    'Compose' tab, enter the following in the Signature File box:
 
-    | /usr/games/fortune 
+* (build in) image viewer
+-----------------------
+    Claws allows to load viewers for mime parts with plugins. To keep
+    the main programs code small and easier to maintain by defining an
+    API for viewers and not having to include every viewer in the code
+    the build in image viewer was removed and put into a plugin. If you
+    wonder why image viewing is not working anymore you probably have
+    to load the plugin.
 
 
 4. How to contribute
