@@ -213,7 +213,8 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 
 void inc_pop_before_smtp(PrefsAccount *acc)
 {
-	inc_account_mail(acc, NULL);
+	/* FIXME: assumes to attach to first main window */
+	inc_account_mail(acc, mainwindow_get_mainwindow());
 }
 
 static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)

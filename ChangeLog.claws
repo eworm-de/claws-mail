@@ -1,3 +1,10 @@
+2003-07-23 [alfons]	0.9.3claws40
+
+	* src/inc.c
+		give progress dialog a main window, and give it the first 
+		one (presumably the only one). fixes bug #247, "segfault on 
+		pop-before-smtp" 
+
 2003-07-22 [alfons]	0.9.3claws39
 
 	* src/summaryview.c
