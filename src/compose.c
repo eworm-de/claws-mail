@@ -4287,12 +4287,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	/* MIME */
 	fprintf(fp, "Mime-Version: 1.0\n");
 	if (compose_use_attach(compose)) {
-		get_rfc822_date(buf, sizeof(buf));
-		subst_char(buf, ' ', '_');
-		subst_char(buf, ',', '_');
-		subst_char(buf, ':', '_');
-		compose->boundary = g_strdup_printf("Multipart_%s_%08x",
-						    buf, (guint)compose);
+		compose->boundary = generate_mime_boundary();
 		fprintf(fp,
 			"Content-Type: multipart/mixed;\n"
 			" boundary=\"%s\"\n", compose->boundary);

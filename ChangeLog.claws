@@ -1,3 +1,11 @@
+2003-09-03 [christoph]	0.9.4claws61
+
+	* src/compose.c
+	* src/rfc2015.c
+	* src/common/utils.[ch]
+		add util function to create mime boundary and use it
+		in compose and gpg code
+
 2003-09-03 [alfons]	0.9.4claws60
 
 	* src/folder.c
