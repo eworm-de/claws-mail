@@ -2633,7 +2633,7 @@ static void prefs_interface_create(void)
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_mark_as_read_on_newwin,
-		 _("Mark message as read only when opened in new window"));
+		 _("Only mark message as read when opened in new window"));
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_openinbox,

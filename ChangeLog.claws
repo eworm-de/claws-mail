@@ -1,3 +1,13 @@
+2002-09-06 [paul]	0.8.2claws30
+
+	* src/prefs_common.c
+		sync with 0.8.2cvs11, see ChangeLog 2002-09-06
+		
+	* tools/Makefile.am
+	  tools/README
+	  tools/ldif-to-xml.py	** REMOVED **
+		remove obsolete python script
+
 2002-09-06 [paul]	0.8.2claws29
 
 	* sync with 0.8.2cvs10
