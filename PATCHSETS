@@ -47,3 +47,4 @@
 ( cvs diff -u -r 1.16 -r 1.17 src/common/ssl.c; ) > 0.9.12cvs62.patchset
 ( cvs diff -u -r 1.17 -r 1.18 src/common/ssl.c; ) > 0.9.12cvs63.patchset
 ( cvs diff -u -r 1.18 -r 1.19 src/common/ssl.c; ) > 0.9.12cvs64.patchset
+( cvs diff -u -r 1.19 -r 1.20 src/common/ssl.c; ) > 0.9.12cvs65.patchset
