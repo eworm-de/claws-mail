@@ -248,12 +248,12 @@ void plugin_done()
 	debug_print("ClamAV GTK plugin unloaded\n");
 }
 
-const gchar *plugin_name()
+const gchar *plugin_name(void)
 {
 	return "Clam AntiVirus GTK";
 }
 
-const gchar *plugin_desc()
+const gchar *plugin_desc(void)
 {
 	return "This plugin provides a Preferences page for the Clam AntiVirus "
 	       "plugin.\n"
@@ -268,7 +268,7 @@ const gchar *plugin_desc()
 	       "and select the folder where infected mail will be saved.\n";
 }
 
-const gchar *plugin_type()
+const gchar *plugin_type(void)
 {
 	return "GTK";
 }

@@ -138,18 +138,18 @@ void plugin_done()
 	mimeview_unregister_viewer_factory(&mathml_viewer_factory);
 }
 
-const gchar *plugin_name()
+const gchar *plugin_name(void)
 {
 	return "MathML Viewer";
 }
 
-const gchar *plugin_desc()
+const gchar *plugin_desc(void)
 {
 	return "This plugin uses the GtkMathView widget to render "
 	       "MathML attachments (Content-Type: text/mathml)";
 }
 
-const gchar *plugin_type()
+const gchar *plugin_type(void)
 {
 	return "GTK";
 }

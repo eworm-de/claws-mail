@@ -214,12 +214,12 @@ void plugin_done()
 	debug_print("Spamassassin plugin unloaded\n");
 }
 
-const gchar *plugin_name()
+const gchar *plugin_name(void)
 {
 	return "SpamAssassin";
 }
 
-const gchar *plugin_desc()
+const gchar *plugin_desc(void)
 {
 	return "This plugin checks all messages that are received from a POP "
 	       "account for spam using a SpamAssassin server. You will need "
@@ -234,7 +234,7 @@ const gchar *plugin_desc()
 	       "manually write the plugin configuration.\n";
 }
 
-const gchar *plugin_type()
+const gchar *plugin_type(void)
 {
 	return "Common";
 }

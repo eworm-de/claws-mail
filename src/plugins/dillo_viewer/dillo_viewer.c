@@ -156,18 +156,18 @@ void plugin_done()
 	mimeview_unregister_viewer_factory(&dillo_viewer_factory);
 }
 
-const gchar *plugin_name()
+const gchar *plugin_name(void)
 {
 	return "Dillo HTML Viewer";
 }
 
-const gchar *plugin_desc()
+const gchar *plugin_desc(void)
 {
 	return "This plugin renders HTML mail using the Dillo "
 		"web browser.";
 }
 
-const gchar *plugin_type()
+const gchar *plugin_type(void)
 {
 	return "GTK";
 }

@@ -53,12 +53,12 @@ void plugin_done()
 	printf("Demo plugin unloaded\n");
 }
 
-const gchar *plugin_name()
+const gchar *plugin_name(void)
 {
 	return "Demo";
 }
 
-const gchar *plugin_desc()
+const gchar *plugin_desc(void)
 {
 	return "This Plugin is only a demo of how to write plugins for Sylpheed. "
 	       "It installs a hook for new log output and writes it to stdout."
@@ -66,7 +66,7 @@ const gchar *plugin_desc()
 	       "It is not really usefull";
 }
 
-const gchar *plugin_type()
+const gchar *plugin_type(void)
 {
 	return "Common";
 }

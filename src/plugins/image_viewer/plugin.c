@@ -35,18 +35,18 @@ void plugin_done()
 	image_viewer_prefs_done();
 }
 
-const gchar *plugin_name()
+const gchar *plugin_name(void)
 {
 	return "Image Viewer";
 }
 
-const gchar *plugin_desc()
+const gchar *plugin_desc(void)
 {
 	return "This plugin uses either gdk-pixbuf or imlib to display "
 	       "attached images.";
 }
 
-const gchar *plugin_type()
+const gchar *plugin_type(void)
 {
 	return "GTK";
 }

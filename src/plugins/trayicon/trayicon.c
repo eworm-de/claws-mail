@@ -135,7 +135,7 @@ int plugin_init(gchar **error)
 	}
 
         trayicon = egg_tray_icon_new("Sylpheed-Claws");
-//        trayicon = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+/*        trayicon = gtk_window_new(GTK_WINDOW_TOPLEVEL); */
 	gtk_window_set_default_size(GTK_WINDOW(trayicon), 16, 16);
         gtk_container_set_border_width(GTK_CONTAINER(trayicon), 0);
 
@@ -174,12 +174,12 @@ void plugin_done()
 	hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, hook_id);
 }
 
-const gchar *plugin_name()
+const gchar *plugin_name(void)
 {
 	return "Trayicon";
 }
 
-const gchar *plugin_desc()
+const gchar *plugin_desc(void)
 {
 	return "This plugin places a mailbox icon in the system tray that "
 	       "indicates if you have new or unread mail.\n"
@@ -189,7 +189,7 @@ const gchar *plugin_desc()
 	       "number of messages.";
 }
 
-const gchar *plugin_type()
+const gchar *plugin_type(void)
 {
 	return "GTK";
 }

@@ -242,12 +242,12 @@ void plugin_done()
 	debug_print("ClamAV plugin unloaded\n");
 }
 
-const gchar *plugin_name()
+const gchar *plugin_name(void)
 {
 	return "Clam AntiVirus";
 }
 
-const gchar *plugin_desc()
+const gchar *plugin_desc(void)
 {
 	return "This plugin uses Clam AntiVirus to scan all message attachments "
 	       "that are received from a POP account.\n"
@@ -261,7 +261,7 @@ const gchar *plugin_desc()
 	       "manually write the plugin configuration.\n";
 }
 
-const gchar *plugin_type()
+const gchar *plugin_type(void)
 {
 	return "Common";
 }

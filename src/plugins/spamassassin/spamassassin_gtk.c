@@ -285,12 +285,12 @@ void plugin_done()
 	debug_print("SpamAssassin GTK plugin unloaded\n");
 }
 
-const gchar *plugin_name()
+const gchar *plugin_name(void)
 {
 	return "SpamAssassin GTK";
 }
 
-const gchar *plugin_desc()
+const gchar *plugin_desc(void)
 {
 	return "This plugin provides a Preferences page for the SpamAssassin "
 	       "plugin.\n"
@@ -306,7 +306,7 @@ const gchar *plugin_desc()
 	       "saved.\n";
 }
 
-const gchar *plugin_type()
+const gchar *plugin_type(void)
 {
 	return "GTK";
 }
