@@ -956,13 +956,9 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 		return -1;
 	}
 	msginfo = folder_item_fetch_msginfo(outbox, num);
-	if(msginfo != NULL) {
+	if (msginfo != NULL) {
 	    procmsg_msginfo_unset_flags(msginfo, ~0, 0);
 	    procmsg_msginfo_free(msginfo);
-	}
-
-	if(is_queued) {
-		unlink(file);
 	}
 
 	return 0;

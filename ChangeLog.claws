@@ -1,3 +1,9 @@
+2002-09-22 [alfons]	0.8.3claws2
+	
+	* src/procmsg.c
+		procmsg_save_to_outbox(): don't unlink message file from queue;
+		callers should do it using folder_item_remove_msg()
+
 2002-09-22 [colin]	0.8.3claws1
 
 	* src/mimeview.[ch]
