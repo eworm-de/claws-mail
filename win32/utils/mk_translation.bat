@@ -19,8 +19,12 @@ SET CONTENTTYPE=^.Content-Type: text\/plain; charset=
 copy ..\..\po\%1.po
 echo @echo off > mk_%1.bat
 echo set PATH=apps;%%PATH%% >> mk_%1.bat
+rem *** extract orig. encoding ***
 sed -n -e "/%CONTENTTYPE%/ {s/.*=/iconv -f /;s/\\\\.*/ -t utf-8 %1.po/;p;} " %1.po >> mk_%1.bat
-call mk_%1.bat > %1-utf8.po
+rem *** modifiy "charset=XXX" line in *.po ***
+call mk_%1.bat > %1-utf8.po.in
+sed -e "/%CONTENTTYPE%/ { s#=.*#=utf-8\\\\n""#; }" %1-utf8.po.in > %1-utf8.po
+del %1-utf8.po.in
 rem *** make .mo ***
 apps\msgfmt -o locale\%1\LC_MESSAGES\sylpheed.mo %1-utf8.po
 del %1.po %1-utf8.po mk_%1.bat
