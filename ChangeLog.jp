@@ -1,3 +1,16 @@
+2005-01-06
+
+	* src/pop.[ch]: Pop3State に POP3_DONE を追加(ログアウトが完了した
+	  ときにセットされる)。
+	  pop3_write_uidl_list(): POP3 セッションが中断された場合は削除
+	  されたメッセージの UIDL を強制的に出力するようにした
+	  (とみたまさひろさん thanks)。
+
+2005-01-06
+
+	* src/Makefile.am: CPPFLAGS と YFLAGS の代わりに AM_CPPFLAGS と
+	  AM_YFLAGS を使用(ユーザ用に予約されているため)。
+
 2004-12-24
 
 	* version 1.0.0

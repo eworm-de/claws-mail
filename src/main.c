@@ -474,6 +474,27 @@ int main(int argc, char *argv[])
 	if (cmd.online_mode == ONLINE_MODE_ONLINE)
 		main_window_toggle_work_offline(mainwin, FALSE);
 
+	if (cmd.status_folders) {
+		g_ptr_array_free(cmd.status_folders, TRUE);
+		cmd.status_folders = NULL;
+	}
+	if (cmd.status_full_folders) {
+		g_ptr_array_free(cmd.status_full_folders, TRUE);
+		cmd.status_full_folders = NULL;
+	}
+
+	sylpheed_register_idle_function(sylpheed_gtk_idle);
+
+	prefs_toolbar_init();
+
+	plugin_load_all("GTK");
+	
+	static_mainwindow = mainwin;
+
+#ifdef HAVE_STARTUP_NOTIFICATION
+	startup_notification_complete(FALSE);
+#endif
+
 	if (cmd.receive_all)
 		inc_all_account_mail(mainwin, FALSE, 
 				     prefs_common.newmail_notify_manu);
@@ -494,26 +515,7 @@ int main(int argc, char *argv[])
 	}
 	if (cmd.send)
 		send_queue();
-	if (cmd.status_folders) {
-		g_ptr_array_free(cmd.status_folders, TRUE);
-		cmd.status_folders = NULL;
-	}
-	if (cmd.status_full_folders) {
-		g_ptr_array_free(cmd.status_full_folders, TRUE);
-		cmd.status_full_folders = NULL;
-	}
 
-	sylpheed_register_idle_function(sylpheed_gtk_idle);
-
-	prefs_toolbar_init();
-
-	plugin_load_all("GTK");
-	
-	static_mainwindow = mainwin;
-
-#ifdef HAVE_STARTUP_NOTIFICATION
-	startup_notification_complete(FALSE);
-#endif	
 	gtk_main();
 
 	exit_sylpheed(mainwin);

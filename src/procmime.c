@@ -1295,6 +1295,7 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 		MimeInfo *subinfo;
 
 		subinfo = procmime_mimeinfo_new();
+		subinfo->content = MIMECONTENT_FILE;
 		subinfo->encoding_type = ENC_UNKNOWN;
 		subinfo->type = MIMETYPE_TEXT;
 		subinfo->subtype = g_strdup("plain");

@@ -1,3 +1,24 @@
+2005-01-09 [thorsten]	0.9.13cvs31.1
+
+	* AUTHORS
+	* ChangeLog
+	* ChangeLog.claws
+	* ChangeLog.jp
+	* PATCHSETS
+	* configure.ac
+	* po/de.po
+	* src/folderview.c
+	* src/imap_gtk.c
+	* src/main.c
+	* src/news_gtk.c
+	* src/pop.c
+	* src/pop.h
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+	* src/procmime.c
+	* tools/calypso_convert.pl
+		sync 0.9.13cvs31
+
 2004-12-30 [thorsten]	0.9.13cvs23.1
 
 	* AUTHORS

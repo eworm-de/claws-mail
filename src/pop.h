@@ -40,6 +40,7 @@ struct _MailReceiveData
 {
 	Pop3Session *session;
 	char *data;
+	guint data_len;
 };
 typedef struct _MailReceiveData	MailReceiveData;
 
@@ -64,6 +65,7 @@ typedef enum {
 	POP3_TOP_RECV,
 	POP3_DELETE,
 	POP3_LOGOUT,
+	POP3_DONE,
 	POP3_ERROR,
 
 	N_POP3_STATE

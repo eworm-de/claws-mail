@@ -40,6 +40,7 @@
 
 static void subscribe_newsgroup_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void unsubscribe_newsgroup_cb(FolderView *folderview, guint action, GtkWidget *widget);
+static void news_settings_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void remove_news_server_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void update_tree_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void download_cb(FolderView *folderview, guint action, GtkWidget *widget);
@@ -53,6 +54,7 @@ static GtkItemFactoryEntry news_popup_entries[] =
 	{N_("/---"),				NULL, NULL,                      0, "<Separator>"},
 	{N_("/_Check for new messages"),	NULL, update_tree_cb,            0, NULL},
 	{N_("/---"),				NULL, NULL,                      0, "<Separator>"},
+	{N_("/News _account settings"),		NULL, news_settings_cb,     	 0, NULL},
 	{N_("/Remove _news account"),		NULL, remove_news_server_cb,     0, NULL},
 	{N_("/---"),				NULL, NULL, 		         0, "<Separator>"},
 };
@@ -216,6 +218,17 @@ static void unsubscribe_newsgroup_cb(FolderView *folderview, guint action,
 	
 	prefs_filtering_delete_path(old_id);
 	g_free(old_id);
+}
+
+static void news_settings_cb(FolderView *folderview, guint action, GtkWidget *widget)
+{
+	FolderItem *item;
+
+	item = folderview_get_selected_item(folderview);
+	if (item == NULL)
+		return;
+
+	account_open(item->folder->account);
 }
 
 static void remove_news_server_cb(FolderView *folderview, guint action,
