@@ -2257,6 +2257,24 @@ static gint gtkstext_strncmp(GtkSText *text, guint pos1, guint pos2, guint len,
 	return i;
 }
 
+/* return true if text at pos is URL */
+static guint is_url_string(GtkSText *text, guint start_pos, guint text_len)
+{
+	guint len;
+
+	len = gtkstext_str_strcmp(text, start_pos, text_len, "ftp://");
+	if (len == 6)
+		return 1;
+	len = gtkstext_str_strcmp(text, start_pos, text_len, "http://");
+	if (len == 7)
+		return 1;
+	len = gtkstext_str_strcmp(text, start_pos, text_len, "https://");
+	if (len == 8)
+		return 1;
+
+	return 0;
+}
+
 static void compose_wrap_line_all(Compose *compose)
 {
 	GtkSText *text = GTK_STEXT(compose->text);
@@ -2409,8 +2427,16 @@ static void compose_wrap_line_all(Compose *compose)
 			line_len = cur_len + ch_len;
 		}
 
-		if (cur_len + ch_len > linewrap_len && line_len > 0) {
+		if (cur_len + ch_len > linewrap_len) {
 			gint tlen;
+
+			if (line_len == 0) {
+				/* don't wrap URLs */
+				if (is_url_string(text, line_pos, text_len))
+					continue;
+				line_len = cur_pos - line_pos;
+				line_pos = cur_pos;
+			}
 
 			if (text->use_wchar)
 				tlen = wctomb(cbuf, (wchar_t)GTK_STEXT_INDEX(text, line_pos - 1));
