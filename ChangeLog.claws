@@ -1,3 +1,8 @@
+2003-10-28 [paul]	0.9.6claws56
+
+	* sync with 0.9.7cvs1
+		see ChangeLog 2003-10-28
+
 2003-10-27 [alfons]	0.9.6claws55
 
 	* src/matcher_parser_parse.y

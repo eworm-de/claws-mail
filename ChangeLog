@@ -1,3 +1,10 @@
+2003-10-28
+
+	* src/summary_search.c: summary_search_execute(): fixed 'Select all
+	  matched' when backward search is enabled.
+	  Made the backward search button insensitive when 'select all
+	  matched' is enabled.
+
 2003-10-15
 
 	* version 0.9.7
