@@ -1022,7 +1022,7 @@ find_xml_tag (const char *xml, const char *tag)
 /*
  * Extract the micalg from an GnupgOperationInfo XML container.
  */
-const char *
+static char *
 extract_micalg (char *xml)
 {
     const char *s;

@@ -141,8 +141,8 @@ struct _PrefsAccount
 #if USE_GPGME
 	/* Privacy */
 	gboolean default_encrypt;
-	gboolean ascii_armored;
 	gboolean default_sign;
+	gboolean ascii_armored;
 	SignKeyType sign_key;
 	gchar *sign_key_id;
 #endif /* USE_GPGME */

@@ -1,3 +1,17 @@
+2002-08-06
+
+	* src/procmsg.c: procmsg_save_to_outbox(): 送信待ちから保存する
+	  ときに一時ファイルを消去するのを忘れていたのを修正。
+
+2002-08-05
+
+	* src/compose.c
+	  src/passphrase.[ch]
+	  src/rfc2015.[ch]
+	  src/prefs_account.[ch]
+	  src/prefs_common.[ch]: claws ブランチから GnuPG 関連をマージ。
+	  いくつかのメッセージを修正。
+
 2002-08-05
 
 	* src/textview.c: textview_scan_header(): メモリリークを修正

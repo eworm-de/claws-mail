@@ -694,8 +694,9 @@ static PrefParam param[] = {
 	{"store_passphrase", "FALSE", &prefs_common.store_passphrase, P_BOOL,
 	 &privacy.checkbtn_store_passphrase,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"store_passphrase_timeout", "0", &prefs_common.store_passphrase_timeout,
-	 P_INT, &privacy.spinbtn_store_passphrase, 
+	{"store_passphrase_timeout", "0",
+	 &prefs_common.store_passphrase_timeout, P_INT,
+	 &privacy.spinbtn_store_passphrase,
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 #ifndef __MINGW32__
 	{"passphrase_grab", "FALSE", &prefs_common.passphrase_grab, P_BOOL,
@@ -2472,7 +2473,7 @@ static void prefs_privacy_create(void)
 	PACK_CHECK_BUTTON (hbox_stpass, checkbtn_store_passphrase,
 			   _("Store passphrase temporarily"));
 
-	label_stpass1 = gtk_label_new(_("- remove after"));
+	label_stpass1 = gtk_label_new(_("Expire after"));
 	gtk_box_pack_start(GTK_BOX(hbox_stpass), label_stpass1, FALSE, FALSE, 0);
 
 	spinbtn_store_passphrase_adj = gtk_adjustment_new(0, 0, 1440, 1, 5, 5);
@@ -2492,7 +2493,7 @@ static void prefs_privacy_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox2), hbox_stpassinfo, FALSE, FALSE, 0);
 
 	label_stpassinfo = gtk_label_new
-		(_("(A setting of '0' will store the passphrase\n"
+		(_("(Setting to '0' will store the passphrase"
 		   " for the whole session)"));
 	gtk_box_pack_start (GTK_BOX (hbox_stpassinfo), label_stpassinfo, FALSE, FALSE, 0);
 	gtk_label_set_justify (GTK_LABEL (label_stpassinfo), GTK_JUSTIFY_LEFT);
@@ -2532,15 +2533,15 @@ static void prefs_privacy_create(void)
 	gtk_widget_set_sensitive(optmenu, FALSE);
 
 	privacy.checkbtn_auto_check_signatures
-					 = checkbtn_auto_check_signatures;
+					     = checkbtn_auto_check_signatures;
 	privacy.checkbtn_gpg_signature_popup
-					 = checkbtn_gpg_signature_popup;
+					     = checkbtn_gpg_signature_popup;
 	privacy.checkbtn_store_passphrase    = checkbtn_store_passphrase;
 	privacy.spinbtn_store_passphrase     = spinbtn_store_passphrase;
 	privacy.spinbtn_store_passphrase_adj = spinbtn_store_passphrase_adj;
-	privacy.checkbtn_passphrase_grab = checkbtn_passphrase_grab;
-	privacy.checkbtn_gpg_warning     = checkbtn_gpg_warning;
-	privacy.optmenu_default_signkey  = optmenu;
+	privacy.checkbtn_passphrase_grab     = checkbtn_passphrase_grab;
+	privacy.checkbtn_gpg_warning         = checkbtn_gpg_warning;
+	privacy.optmenu_default_signkey      = optmenu;
 }
 
 static void

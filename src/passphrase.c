@@ -49,7 +49,7 @@
 static int grab_all = 0;
 
 static gboolean pass_ack;
-static gchar* lastPass = NULL;
+static gchar *last_pass = NULL;
 
 static void passphrase_ok_cb(GtkWidget *widget, gpointer data);
 static void passphrase_cancel_cb(GtkWidget *widget, gpointer data);
@@ -269,10 +269,10 @@ create_description (const gchar *desc)
 
 static int free_passphrase(gpointer _unused)
 {
-    if (lastPass != NULL) {
-        munlock(lastPass, strlen(lastPass));
-        g_free(lastPass);
-        lastPass = NULL; // necessary?
+    if (last_pass != NULL) {
+        munlock(last_pass, strlen(last_pass));
+        g_free(last_pass);
+        last_pass = NULL;
         g_message("%% passphrase removed");
     }
     
@@ -290,9 +290,9 @@ gpgmegtk_passphrase_cb (void *opaque, const char *desc, void **r_hd)
         /* FIXME: cleanup by looking at *r_hd */
         return NULL;
     }
-    if (prefs_common.store_passphrase
-        && strncmp(desc, "TRY_AGAIN", 9) && (lastPass != NULL))
-        return g_strdup(lastPass);
+    if (prefs_common.store_passphrase && last_pass != NULL &&
+        strncmp(desc, "TRY_AGAIN", 9) != 0)
+        return g_strdup(last_pass);
 
     gpgmegtk_set_passphrase_grab (prefs_common.passphrase_grab);
     g_message ("%% requesting passphrase for `%s': ", desc );
@@ -304,8 +304,8 @@ gpgmegtk_passphrase_cb (void *opaque, const char *desc, void **r_hd)
     }
     else {
         if (prefs_common.store_passphrase) {
-            lastPass = g_strdup(pass);
-            if (mlock(lastPass, strlen(lastPass)) == -1)
+            last_pass = g_strdup(pass);
+            if (mlock(last_pass, strlen(last_pass)) == -1)
                 g_message("%% locking passphrase failed");
 
             if (prefs_common.store_passphrase_timeout > 0) {

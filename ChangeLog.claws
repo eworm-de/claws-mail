@@ -1,9 +1,14 @@
-2002-08-06 [match]	0.8.0claws21
+2002-08-06 [paul]	0.8.1claws22
+
+	* sync with 0.8.1cvs12
+		see ChangeLog 2002-08-05 and 2002-08-06
+
+2002-08-06 [match]	0.8.1claws21
 
 	* src/addrclip.c
 		improvements to cut/copy/paste address
 
-2002-08-05 [match]	0.8.0claws20
+2002-08-05 [match]	0.8.1claws20
 
 	* src/addritem.[ch]
 	* src/addrcache.c
@@ -12,7 +17,7 @@
 	* src/addressbook.c
 		fixes to improve cut/copy/paste
 
-2002-08-06 [melvin]	0.8.0claws19
+2002-08-06 [melvin]	0.8.1claws19
 
 	* src/account.[ch]
 		account_find_all_from_address(): new function that returns the
@@ -29,7 +34,7 @@
 		account and to make a security test on the Delivery-Notification
 		address which should be the same as the Return-Path.
 
-2002-08-06 [thorsten]	0.8.0claws18
+2002-08-06 [thorsten]	0.8.1claws18
 
 	* src/mimeview.c
 		attach_all: save unnamed as "noname.%d",

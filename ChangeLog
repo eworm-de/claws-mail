@@ -1,3 +1,17 @@
+2002-08-06
+
+	* src/procmsg.c: procmsg_save_to_outbox(): don't forget to remove
+	  the temporary file when saving from queue.
+
+2002-08-05
+
+	* src/compose.c
+	  src/passphrase.[ch]
+	  src/rfc2015.[ch]
+	  src/prefs_account.[ch]
+	  src/prefs_common.[ch]: merged GnuPG stuff from the claws branch.
+	  Modified some messages.
+
 2002-08-05
 
 	* src/textview.c: textview_scan_header(): fixed a memory leak

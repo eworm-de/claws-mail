@@ -898,7 +898,7 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 	FILE *fp;
 	MsgInfo *msginfo;
 
-	debug_print(_("saving sent message...\n"));
+	debug_print("saving sent message...\n");
 
 	if (!outbox)
 		outbox = folder_get_default_outbox();
@@ -927,13 +927,18 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 			fputs(buf, outfp);
 		fclose(outfp);
 		fclose(fp);
-		Xstrdup_a(file, tmp, return -1);
-	}
 
-	if ((num = folder_item_add_msg(outbox, file, FALSE)) < 0) {
-		g_warning(_("can't save message\n"));
-		if(is_queued) {
-			unlink(file);
+		folder_item_scan(outbox);
+		if ((num = folder_item_add_msg(outbox, tmp, TRUE)) < 0) {
+			g_warning("can't save message\n");
+			unlink(tmp);
+			return -1;
+		}
+	} else {
+		folder_item_scan(outbox);
+		if ((num = folder_item_add_msg(outbox, file, FALSE)) < 0) {
+			g_warning("can't save message\n");
+			return -1;
 		}
 		return -1;
 	}
