@@ -56,7 +56,7 @@ static void prefs_filtering_action_delete_cb(void);
 static void prefs_filtering_action_substitute_cb(void);
 static void prefs_filtering_action_register_cb(void);
 static void prefs_filtering_action_reset_dialog(void);
-static void prefs_filtering_action_key_pressed(GtkWidget *widget,
+static gboolean prefs_filtering_action_key_pressed(GtkWidget *widget,
     GdkEventKey *event, gpointer data);
 static void prefs_filtering_action_cancel(void);
 static void prefs_filtering_action_ok(void);
@@ -974,11 +974,12 @@ static void prefs_filtering_action_select(GtkCList *clist,
  *\param	event Key event
  *\param	data User data
  */
-static void prefs_filtering_action_key_pressed(GtkWidget *widget,
+static gboolean prefs_filtering_action_key_pressed(GtkWidget *widget,
     GdkEventKey *event, gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		prefs_filtering_action_cancel();
+	return TRUE;		
 }
 
 /*!

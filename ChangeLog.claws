@@ -1,3 +1,10 @@
+2003-04-14 [alfons]	0.9.5claws12
+
+	* src/prefs_filtering.c
+	* src/prefs_filtering_action.c
+	* src/prefs_matcher.c
+		fix function signature for key_pressed_event signal handlers
+
 2003-04-14 [alfons]	0.9.5claws11
 
 	* src/mainwindow.c

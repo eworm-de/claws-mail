@@ -232,7 +232,7 @@ static void prefs_matcher_select	(GtkCList	*clist,
 					 gint		 row,
 					 gint		 column,
 					 GdkEvent	*event);
-static void prefs_matcher_key_pressed	(GtkWidget	*widget,
+static gboolean prefs_matcher_key_pressed(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
 static void prefs_matcher_ok		(void);
@@ -1619,11 +1619,12 @@ static void prefs_matcher_criteria_select(GtkList *list,
  *\param	event Key event
  *\param	data User data
  */
-static void prefs_matcher_key_pressed(GtkWidget *widget, GdkEventKey *event,
+static gboolean prefs_matcher_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				     gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		prefs_matcher_cancel();
+	return TRUE;		
 }
 
 /*!
