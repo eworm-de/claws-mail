@@ -1,3 +1,8 @@
+2004-09-28 [colin]	0.9.12cvs108.1
+
+	* src/addressbook.c
+		Sync with HEAD (addressbook edit on double-click)
+
 2004-09-28 [colin]	0.9.12cvs106.1
 
 	* src/inc.c

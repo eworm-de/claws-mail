@@ -180,11 +180,6 @@ static void addressbook_select_row_tree		(GtkCTree	*ctree,
 						 GtkCTreeNode	*node,
 						 gint		 column,
 						 gpointer	 data);
-static void addressbook_list_selected		(GtkCList	*clist,
-						 gint		 row,
-						 gint		 column,
-						 GdkEvent	*event,
-						 gpointer	 data);
 static void addressbook_list_row_selected	(GtkCTree	*clist,
 						 GtkCTreeNode	*node,
 						 gint		 column,
@@ -789,8 +784,6 @@ static void addressbook_create(void)
 	g_signal_connect(G_OBJECT(clist), "button_release_event",
 			 G_CALLBACK(addressbook_list_button_released),
 			 NULL);
-	g_signal_connect(G_OBJECT(clist), "select_row",
-			 G_CALLBACK(addressbook_list_selected), NULL);
 	g_signal_connect(G_OBJECT(clist), "tree_expand",
 			 G_CALLBACK(addressbook_person_expand_node), NULL );
 	g_signal_connect(G_OBJECT(clist), "tree_collapse",
@@ -1561,19 +1554,6 @@ static void addressbook_list_menu_setup( void ) {
 #endif
 }
 
-static void addressbook_list_selected(GtkCList *clist, gint row, gint column,
-				      GdkEvent *event, gpointer data)
-{
-	if (event && event->type == GDK_2BUTTON_PRESS) {
-		/* Handle double click */
-		if (prefs_common.add_address_by_click &&
-		    addrbook.target_compose)
-			addressbook_to_clicked(NULL, GINT_TO_POINTER(COMPOSE_TO));
-		else
-			addressbook_edit_address_cb(NULL, 0, NULL);
-	}
-}
-
 static void addressbook_select_row_tree	(GtkCTree	*ctree,
 					 GtkCTreeNode	*node,
 					 gint		 column,
@@ -1943,10 +1923,14 @@ static void addressbook_entry_gotfocus( GtkWidget *widget ) {
 	gtk_editable_select_region( GTK_EDITABLE(addrbook.entry), 0, -1 );
 }
 
+/* from gdkevents.c */
+#define DOUBLE_CLICK_TIME 250
+
 static gboolean addressbook_list_button_pressed(GtkWidget *widget,
 						GdkEventButton *event,
 						gpointer data)
 {
+	static guint32 lasttime = 0;
 	if( ! event ) return FALSE;
 
 	addressbook_list_menu_setup();
@@ -1954,7 +1938,19 @@ static gboolean addressbook_list_button_pressed(GtkWidget *widget,
 	if( event->button == 3 ) {
 		gtk_menu_popup( GTK_MENU(addrbook.list_popup), NULL, NULL, NULL, NULL,
 		       event->button, event->time );
+	} else if (event->button == 1) {
+		if (event->time - lasttime < DOUBLE_CLICK_TIME) {
+			if (prefs_common.add_address_by_click &&
+			    addrbook.target_compose)
+				addressbook_to_clicked(NULL, GINT_TO_POINTER(COMPOSE_TO));
+			else
+				addressbook_edit_address_cb(NULL, 0, NULL);
+
+			lasttime = 0;
+		} else
+			lasttime = event->time;
 	}
+
 	return FALSE;
 }
 
