@@ -57,6 +57,13 @@
 #define NNTPS_PORT	563
 #endif
 
+static Folder *news_folder_new(const gchar * name, const gchar * folder);
+static void news_folder_destroy(Folder * folder);
+
+static gchar *news_fetch_msg(Folder * folder, FolderItem * item, gint num);
+
+static gint news_scan_group(Folder * folder, FolderItem * item);
+
 static void news_folder_init		 (Folder	*folder,
 					  const gchar	*name,
 					  const gchar	*path);
@@ -136,10 +143,6 @@ FolderClass news_class =
 	news_fetch_msg,
 	NULL,
 	NULL,
-	NULL,
-	NULL,
-	NULL,
-	news_remove_msg,
 	NULL,
 	NULL,
 	NULL,

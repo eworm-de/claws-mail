@@ -35,8 +35,5 @@ struct _MHFolder
 };
 
 FolderClass *mh_get_class	();
-Folder	*mh_folder_new		(const gchar	*name,
-				 const gchar	*path);
-void     mh_folder_destroy	(Folder		*folder);
 
 #endif /* __MH_H__ */

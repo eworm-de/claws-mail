@@ -43,69 +43,42 @@
 #include "procheader.h"
 #include "utils.h"
 
-static void	mh_folder_init			(Folder		*folder,
-						 const gchar	*name,
-						 const gchar	*path);
+static void mh_folder_init(Folder * folder,
+			   const gchar * name, const gchar * path);
 
-GSList  *mh_get_msg_list	(Folder		*folder,
-				 FolderItem	*item,
-				 gboolean	 use_cache);
-gchar   *mh_fetch_msg		(Folder		*folder,
-				 FolderItem	*item,
-				 gint		 num);
-MsgInfo   *mh_get_msginfo	(Folder		*folder,
-				 FolderItem	*item,
-				 gint		 num);
-gint     mh_add_msg		(Folder		*folder,
-				 FolderItem	*dest,
-				 const gchar	*file,
-				 gboolean	 remove_source);
-gint     mh_move_msg		(Folder		*folder,
-				 FolderItem	*dest,
-				 MsgInfo	*msginfo);
-gint     mh_move_msgs_with_dest	(Folder		*folder,
-				 FolderItem	*dest,
-				 GSList		*msglist);
-gint     mh_copy_msg		(Folder		*folder,
-				 FolderItem	*dest,
-				 MsgInfo	*msginfo);
-gint     mh_copy_msgs_with_dest	(Folder		*folder,
-				 FolderItem	*dest,
-				 GSList		*msglist);
-gint     mh_remove_msg		(Folder		*folder,
-				 FolderItem	*item,
-				 gint		 num);
-gint     mh_remove_all_msg	(Folder		*folder,
-				 FolderItem	*item);
-gboolean mh_is_msg_changed	(Folder		*folder,
-				 FolderItem	*item,
-				 MsgInfo	*msginfo);
+static Folder *mh_folder_new(const gchar * name, const gchar * path);
+static void mh_folder_destroy(Folder * folder);
+static gchar *mh_fetch_msg(Folder * folder, FolderItem * item, gint num);
+static MsgInfo *mh_get_msginfo(Folder * folder,
+			       FolderItem * item, gint num);
+static gint mh_add_msg(Folder * folder,
+		       FolderItem * dest,
+		       const gchar * file, gboolean remove_source);
+static gint mh_copy_msg(Folder * folder,
+			FolderItem * dest, MsgInfo * msginfo);
+static gint mh_remove_msg(Folder * folder, FolderItem * item, gint num);
+static gint mh_remove_all_msg(Folder * folder, FolderItem * item);
+static gboolean mh_is_msg_changed(Folder * folder,
+				  FolderItem * item, MsgInfo * msginfo);
 
-gint    mh_scan_folder		(Folder		*folder,
-				 FolderItem	*item);
-gint mh_get_num_list		(Folder		*folder,
-				 FolderItem	*item,
-				 GSList	       **list);
-void    mh_scan_tree		(Folder		*folder);
+static gint mh_get_num_list(Folder * folder,
+			    FolderItem * item, GSList ** list);
+static void mh_scan_tree(Folder * folder);
 
-gint    mh_create_tree		(Folder		*folder);
-FolderItem *mh_create_folder	(Folder		*folder,
-				 FolderItem	*parent,
-				 const gchar	*name);
-gint    mh_rename_folder	(Folder		*folder,
-				 FolderItem	*item,
-				 const gchar	*name);
-gint    mh_remove_folder	(Folder		*folder,
-				 FolderItem	*item);
+static gint mh_create_tree(Folder * folder);
+static FolderItem *mh_create_folder(Folder * folder,
+				    FolderItem * parent,
+				    const gchar * name);
+static gint mh_rename_folder(Folder * folder,
+			     FolderItem * item, const gchar * name);
+static gint mh_remove_folder(Folder * folder, FolderItem * item);
 
-gchar   *mh_get_new_msg_filename		(FolderItem	*dest);
+static gchar *mh_get_new_msg_filename(FolderItem * dest);
 
-static MsgInfo *mh_parse_msg			(const gchar	*file,
-						 FolderItem	*item);
-static void	mh_scan_tree_recursive		(FolderItem	*item);
+static MsgInfo *mh_parse_msg(const gchar * file, FolderItem * item);
+static void mh_scan_tree_recursive(FolderItem * item);
 
-static gboolean mh_rename_folder_func		(GNode		*node,
-						 gpointer	 data);
+static gboolean mh_rename_folder_func(GNode * node, gpointer data);
 
 
 FolderClass mh_class =
@@ -137,12 +110,8 @@ FolderClass mh_class =
 	NULL,
 	mh_fetch_msg,
 	mh_add_msg,
-	mh_move_msg,
-	mh_move_msgs_with_dest,
 	mh_copy_msg,
-	mh_copy_msgs_with_dest,
 	mh_remove_msg,
-	NULL,
 	mh_remove_all_msg,
 	mh_is_msg_changed,
 	NULL,
@@ -370,152 +339,6 @@ gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 	return dest->last_num;
 }
 
-static gint mh_do_move(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
-{
-	gchar *srcfile;
-	gchar *destfile;
-	gint filemode = 0;
-	PrefsFolderItem *prefs;
-
-	g_return_val_if_fail(dest != NULL, -1);
-	g_return_val_if_fail(msginfo != NULL, -1);
-
-	if (msginfo->folder == dest) {
-		g_warning("the src folder is identical to the dest.\n");
-		return -1;
-	}
-
-	if (dest->last_num < 0) {
-		mh_get_last_num(folder, dest);
-		if (dest->last_num < 0) return -1;
-	}
-
-	prefs = dest->prefs;
-
-	destfile = mh_get_new_msg_filename(dest);
-	if (!destfile) return -1;
-
-	srcfile = procmsg_get_message_file(msginfo);
-	
-	debug_print("Moving message %s%c%d to %s ...\n",
-		    msginfo->folder->path, G_DIR_SEPARATOR,
-		    msginfo->msgnum, dest->path);
-
-	if (move_file(srcfile, destfile, FALSE) < 0) {
-		g_free(srcfile);
-		g_free(destfile);
-		return -1;
-	}
-
-	if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
-		if (chmod(destfile, prefs->folder_chmod) < 0)
-			FILE_OP_ERROR(destfile, "chmod");
-
-		/* for mark file */
-		filemode = prefs->folder_chmod;
-		if (filemode & S_IRGRP) filemode |= S_IWGRP;
-		if (filemode & S_IROTH) filemode |= S_IWOTH;
-	}
-
-	g_free(srcfile);
-	g_free(destfile);
-	dest->last_num++;
-
-	return dest->last_num;
-}
-
-gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
-{
-	gchar *srcfile;
- 	gint ret = 0;
- 
- 	g_return_val_if_fail(folder != NULL, -1);
- 	g_return_val_if_fail(dest != NULL, -1);
- 	g_return_val_if_fail(msginfo != NULL, -1);
- 	g_return_val_if_fail(msginfo->folder != NULL, -1);
- 
- 	if (folder == msginfo->folder->folder)
- 		return mh_do_move(folder, dest, msginfo);
- 
- 	srcfile = procmsg_get_message_file(msginfo);
- 	if (!srcfile) return -1;
- 
- 	ret = mh_add_msg(folder, dest, srcfile, FALSE);
- 	g_free(srcfile);
- 
- 	if (ret != -1)
- 		ret = folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
- 
- 	return ret;
-}
-
-static gint mh_do_move_msgs_with_dest(Folder *folder, FolderItem *dest,
-				      GSList *msglist)
-{
-	gchar *srcfile;
-	gchar *destfile;
-	GSList *cur;
-	MsgInfo *msginfo;
-	PrefsFolderItem *prefs;
-
-	g_return_val_if_fail(dest != NULL, -1);
-	g_return_val_if_fail(msglist != NULL, -1);
-
-	if (dest->last_num < 0) {
-		mh_get_last_num(folder, dest);
-		if (dest->last_num < 0) return -1;
-	}
-
-	prefs = dest->prefs;
-
-	for (cur = msglist; cur != NULL; cur = cur->next) {
-		msginfo = (MsgInfo *)cur->data;
-
-		if (msginfo->folder == dest) {
-			g_warning("the src folder is identical to the dest.\n");
-			continue;
-		}
-		debug_print("Moving message %s%c%d to %s ...\n",
-			    msginfo->folder->path, G_DIR_SEPARATOR,
-			    msginfo->msgnum, dest->path);
-
-		destfile = mh_get_new_msg_filename(dest);
-		if (!destfile) return -1;
-		srcfile = procmsg_get_message_file(msginfo);
-
-		if (move_file(srcfile, destfile, FALSE) < 0) {
-			g_free(srcfile);
-			g_free(destfile);
-			break;
-		}
-
-		g_free(srcfile);
-		g_free(destfile);
-		dest->last_num++;
-	}
-
-	return dest->last_num;
-}
-
-gint mh_move_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
-{
-	MsgInfo *msginfo;
-	GSList *cur;
-	gint ret = 0;
-
-	msginfo = (MsgInfo *)msglist->data;
-	if (folder == msginfo->folder->folder)
-		return mh_do_move_msgs_with_dest(folder, dest, msglist);
-
-	for (cur = msglist; cur != NULL; cur = cur->next) {
-		msginfo = (MsgInfo *)cur->data;
-		ret = mh_move_msg(folder, dest, msginfo);
-		if (ret == -1) break;
-	}
-
-	return ret;
-}
-
 gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 {
 	gchar *srcfile;
@@ -582,94 +405,6 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	return dest->last_num;
 }
 
-/*
-gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
-{
-	Folder * src_folder;
-	gchar * filename;
-	gint num;
-	gchar * destdir;
-	FILE * fp;
-
-	src_folder = msginfo->folder->folder;
-	
-	g_return_val_if_fail(src_folder->fetch_msg != NULL, -1);
-	
-	filename = src_folder->fetch_msg(src_folder,
-					 msginfo->folder,
-					 msginfo->msgnum);
-	if (filename == NULL)
-		return -1;
-
-	num = folder->add_msg(folder, dest, filename, FALSE);
-
-	destdir = folder_item_get_path(dest);
-
-	if (fp) {
-		MsgInfo newmsginfo;
-
-		newmsginfo.msgnum = dest->last_num;
-		newmsginfo.flags = msginfo->flags;
-		if (dest->stype == F_OUTBOX ||
-		    dest->stype == F_QUEUE  ||
-		    dest->stype == F_DRAFT  ||
-		    dest->stype == F_TRASH)
-			MSG_UNSET_FLAGS(newmsginfo.flags,
-					MSG_NEW|MSG_UNREAD|MSG_DELETED);
-
-		procmsg_write_flags(&newmsginfo, fp);
-		fclose(fp);
-	}
-	
-	return num;
-}
-*/
-
-gint mh_copy_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
-{
-	gchar *srcfile;
-	gchar *destfile;
-	GSList *cur;
-	MsgInfo *msginfo;
-
-	g_return_val_if_fail(dest != NULL, -1);
-	g_return_val_if_fail(msglist != NULL, -1);
-
-	if (dest->last_num < 0) {
-		mh_get_last_num(folder, dest);
-		if (dest->last_num < 0) return -1;
-	}
-
-	for (cur = msglist; cur != NULL; cur = cur->next) {
-		msginfo = (MsgInfo *)cur->data;
-
-		if (msginfo->folder == dest) {
-			g_warning("the src folder is identical to the dest.\n");
-			continue;
-		}
-		debug_print("Copying message %s%c%d to %s ...\n",
-			    msginfo->folder->path, G_DIR_SEPARATOR,
-			    msginfo->msgnum, dest->path);
-
-		destfile = mh_get_new_msg_filename(dest);
-		if (!destfile) break;
-		srcfile = procmsg_get_message_file(msginfo);
-
-		if (copy_file(srcfile, destfile, TRUE) < 0) {
-			FILE_OP_ERROR(srcfile, "copy");
-			g_free(srcfile);
-			g_free(destfile);
-			break;
-		}
-
-		g_free(srcfile);
-		g_free(destfile);
-		dest->last_num++;
-	}
-
-	return dest->last_num;
-}
-
 gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
 {
 	gchar *file;
@@ -714,70 +449,6 @@ gboolean mh_is_msg_changed(Folder *folder, FolderItem *item, MsgInfo *msginfo)
 		return TRUE;
 
 	return FALSE;
-}
-
-gint mh_scan_folder(Folder *folder, FolderItem *item)
-{
-	gchar *path;
-	DIR *dp;
-	struct dirent *d;
-	struct stat s;
-	gint max = 0;
-	gint num;
-
-	g_return_val_if_fail(item != NULL, -1);
-
-	debug_print("mh_scan_folder(): Scanning %s ...\n", item->path);
-
-	path = folder_item_get_path(item);
-	g_return_val_if_fail(path != NULL, -1);
-	if (change_dir(path) < 0) {
-		g_free(path);
-		return -1;
-	}
-	g_free(path);
-
-	if ((dp = opendir(".")) == NULL) {
-		FILE_OP_ERROR(item->path, "opendir");
-		return -1;
-	}
-
-	if (folder->ui_func)
-		folder->ui_func(folder, item, folder->ui_func_data);
-
-	while ((d = readdir(dp)) != NULL) {
-		if ((num = to_number(d->d_name)) >= 0 &&
-		    stat(d->d_name, &s) == 0 &&
-		    S_ISREG(s.st_mode)) {
-/*
-			n_msg++;
-*/
-			if (max < num)
-				max = num;
-		}
-	}
-	closedir(dp);
-
-/*
-	if (n_msg == 0)
-		item->new = item->unread = item->total = 0;
-	else {
-		gint new, unread, total, min, max;
-
-		procmsg_get_mark_sum(".", &new, &unread, &total, &min, &max, 0);
-		if (n_msg > total) {
-			new += n_msg - total;
-			unread += n_msg - total;
-		}
-		item->new = new;
-		item->unread = unread;
-		item->total = n_msg;
-	}
-*/
-	debug_print("Last number in dir %s = %d\n", item->path, max);
-	item->last_num = max;
-
-	return 0;
 }
 
 void mh_scan_tree(Folder *folder)

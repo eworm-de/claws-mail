@@ -203,24 +203,12 @@ struct _FolderClass
 						 FolderItem	*dest,
 						 const gchar	*file,
 						gboolean	 remove_source);
-	gint    	(*move_msg)		(Folder		*folder,
-						 FolderItem	*dest,
-						 MsgInfo	*msginfo);
-	gint    	(*move_msgs_with_dest)	(Folder		*folder,
-						 FolderItem	*dest,
-						 GSList		*msglist);
 	gint    	(*copy_msg)		(Folder		*folder,
 						 FolderItem	*dest,
 						 MsgInfo	*msginfo);
-	gint    	(*copy_msgs_with_dest)	(Folder		*folder,
-						 FolderItem	*dest,
-						 GSList		*msglist);
 	gint    	(*remove_msg)		(Folder		*folder,
 						 FolderItem	*item,
 						 gint		 num);
-	gint    	(*remove_msgs)		(Folder		*folder,
-						 FolderItem	*item,
-						 GSList		*msglist);
 	gint    	(*remove_all_msg)	(Folder		*folder,
 						 FolderItem	*item);
 	gboolean	(*is_msg_changed)	(Folder		*folder,

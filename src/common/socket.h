@@ -94,7 +94,7 @@ gint fd_read		(gint sock, gchar *buf, gint len);
 gint fd_write		(gint sock, const gchar *buf, gint len);
 gint fd_write_all	(gint sock, const gchar *buf, gint len);
 gint fd_gets		(gint sock, gchar *buf, gint len);
-gchar *fd_getline	(gint sock);
+gint fd_getline		(gint sock, gchar **str);
 gint fd_close		(gint sock);
 
 /* Functions for SSL */

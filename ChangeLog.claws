@@ -1,3 +1,17 @@
+2003-04-02 [christoph]	0.8.11claws70
+
+	* src/folder.[ch]
+	* src/imap.[ch]
+	* src/mbox_folder.[ch]
+	* src/mh.[ch]
+	* src/news.[ch]
+		o Make all virtual folder functions private
+		o remove unused folder code
+
+	* src/common/socket.[ch]
+	* src/summaryview.c
+		fix warnings
+
 2003-03-30 [alfons]	0.8.11claws69
 
 	* src/send_message.c

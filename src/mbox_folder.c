@@ -35,20 +35,41 @@
 
 #define MSGBUFSIZE	8192
 
+static Folder *mbox_folder_new(const gchar * name, const gchar * path);
+static void mbox_folder_destroy(Folder * folder);
+
+static gchar *mbox_fetch_msg(Folder * folder, FolderItem * item, gint num);
+
+static void mbox_scan_folder(Folder * folder, FolderItem * item);
+static gint mbox_add_msg(Folder * folder, FolderItem * dest,
+			 const gchar * file, gboolean remove_source);
+
+static gint mbox_remove_all_msg(Folder * folder, FolderItem * item);
+static gint mbox_remove_msg(Folder * folder, FolderItem * item, gint num);
+static void mbox_change_flags(Folder * folder, FolderItem * item,
+			      MsgInfo * info, MsgPermFlags newflags);
+static gint mbox_copy_msg(Folder * folder, FolderItem * dest,
+			  MsgInfo * msginfo);
+static gint mbox_create_tree(Folder * folder);
+static FolderItem *mbox_create_folder(Folder * folder, FolderItem * parent,
+				      const gchar * name);
+static gint mbox_rename_folder(Folder * folder, FolderItem * item,
+			       const gchar * name);
+static gint mbox_remove_folder(Folder * folder, FolderItem * item);
+
 static void	mbox_folder_init		(Folder		*folder,
 						 const gchar	*name,
 						 const gchar	*path);
 
 static gboolean mbox_write_data(FILE * mbox_fp, FILE * new_fp,
 				gchar * new_filename, gint size);
-static gboolean mbox_rewrite(gchar * mbox);
 static gboolean mbox_purge_deleted(gchar * mbox);
 static gchar * mbox_get_new_path(FolderItem * parent, gchar * name);
 static gchar * mbox_get_folderitem_name(gchar * name);
 
-MsgInfo *mbox_get_msginfo(Folder *folder, FolderItem *item, gint num);
-gint mbox_get_num_list(Folder *folder, FolderItem *item, GSList **list);
-gboolean mbox_check_msgnum_validity(Folder *folder, FolderItem *item);
+static MsgInfo *mbox_get_msginfo(Folder *folder, FolderItem *item, gint num);
+static gint mbox_get_num_list(Folder *folder, FolderItem *item, GSList **list);
+static gboolean mbox_check_msgnum_validity(Folder *folder, FolderItem *item);
 
 FolderClass mbox_class =
 {
@@ -79,15 +100,11 @@ FolderClass mbox_class =
 	NULL,
 	mbox_fetch_msg,
 	mbox_add_msg,
-	NULL,
-	NULL,
 	mbox_copy_msg,
-	NULL,
 	mbox_remove_msg,
-	NULL,
 	mbox_remove_all_msg,
 	NULL,
-	NULL,
+	mbox_change_flags,
 };
 
 FolderClass *mbox_get_class()
@@ -1178,85 +1195,6 @@ struct _message * mbox_cache_get_msg(gchar * filename, gint num)
 /*                                                        */
 /**********************************************************/
 
-
-GSList *mbox_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
-{
-	GSList *mlist;
-	MsgInfo * msginfo;
-	GList * l;
-	FILE * fp;
-	gchar * mbox_path;
-
-#ifdef MEASURE_TIME
-	struct timeval tv_before, tv_after, tv_result;
-
-	gettimeofday(&tv_before, NULL);
-#endif
-
-	mlist = NULL;
-
-	mbox_path = mbox_folder_get_path(item);
-
-	if (mbox_path == NULL)
-		return NULL;
-
-	mbox_purge_deleted(mbox_path);
-
-	fp = fopen(mbox_path, "rb");
-	
-	if (fp == NULL) {
-		g_free(mbox_path);
-		return NULL;
-	}
-
-	mbox_lockread_file(fp, mbox_path);
-
-	mbox_cache_synchronize_from_file(fp, mbox_path, TRUE);
-
-	item->last_num = mbox_cache_get_count(mbox_path);
-
-	for(l = mbox_cache_get_msg_list(mbox_path) ; l != NULL ;
-	    l = g_list_next(l)) {
-		struct _message * msg;
-
-		msg = (struct _message *) l->data;
-
-		if (MSG_IS_INVALID(msg->flags) || !MSG_IS_REALLY_DELETED(msg->flags)) {
-			fseek(fp, msg->header, SEEK_SET);
-
-			msginfo = mbox_parse_msg(fp, msg, item);
-
-			if (!MSG_IS_INVALID(msg->flags))
-				msginfo->flags = msg->flags;
-			else {
-				msg->old_flags = msginfo->flags;
-				msg->flags = msginfo->flags;
-			}
-
-			mlist = g_slist_append(mlist, msginfo);
-		}
-		else {
-			MSG_SET_PERM_FLAGS(msg->flags, MSG_REALLY_DELETED);
-		}
-	}
-
-	mbox_unlock_file(fp, mbox_path);
-
-	g_free(mbox_path);
-
-	fclose(fp);
-
-#ifdef MEASURE_TIME
-	gettimeofday(&tv_after, NULL);
-
-	timersub(&tv_after, &tv_before, &tv_result);
-	g_print("mbox_get_msg_list: %s: elapsed time: %ld.%06ld sec\n",
-		mbox_path, tv_result.tv_sec, tv_result.tv_usec);
-#endif
-
-	return mlist;
-}
-
 static gboolean mbox_extract_msg(FolderItem * item, gint msgnum,
 				 gchar * dest_filename)
 {
@@ -1693,41 +1631,6 @@ gint mbox_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	return num;
 }
 
-void mbox_finished_copy(Folder *folder, FolderItem *dest)
-{
-	gchar * mbox_path;
-	GSList * l;
-	mboxcache * cache;
-	
-	mbox_path = mbox_folder_get_path(dest);
-	if (mbox_path == NULL)
-		return;
-
-	mbox_cache_synchronize(mbox_path, TRUE);
-
-	for(l = copy_flags_data ; l != NULL ; l = g_slist_next(l)) {
-		CopyFlagsInfo * flags_info = l->data;
-		struct _message * msg;
-
-		msg = mbox_cache_get_msg(mbox_path, flags_info->num);
-		if (msg != NULL)
-			msg->flags = flags_info->flags;
-		g_free(flags_info);
-	}
-
-	if (copy_flags_data != NULL) {
-		cache = mbox_cache_get_mbox(mbox_path);
-		cache->modification = TRUE;
-	}
-
-	g_slist_free(copy_flags_data);
-	copy_flags_data = NULL;
-
-	mbox_rewrite(mbox_path);
-
-	g_free(mbox_path);
-}
-
 void mbox_scan_folder(Folder *folder, FolderItem *item)
 {
 	gchar *mbox_path;
@@ -1916,19 +1819,7 @@ static gboolean mbox_write_message(FILE * mbox_fp, FILE * new_fp,
 	return mbox_write_data(mbox_fp, new_fp, new_filename, size);
 }
 
-void mbox_update_mark(Folder * folder, FolderItem * item)
-{
-	gchar * mbox_path;
-
-	mbox_path = mbox_folder_get_path(item);
-	if (mbox_path == NULL)
-		return;
-
-	mbox_rewrite(mbox_path);
-	g_free(mbox_path);
-}
-
-void mbox_change_flags(Folder * folder, FolderItem * item, MsgInfo * info)
+void mbox_change_flags(Folder * folder, FolderItem * item, MsgInfo * info, MsgPermFlags newflags)
 {
 	struct _message * msg;
 	mboxcache * cache;
@@ -1937,6 +1828,8 @@ void mbox_change_flags(Folder * folder, FolderItem * item, MsgInfo * info)
 	mbox_path = mbox_folder_get_path(item);
 	if (mbox_path == NULL)
 		return;
+
+	info->flags.perm_flags = newflags;
 
 	msg = mbox_cache_get_msg(mbox_path, info->msgnum);
 
@@ -1949,101 +1842,9 @@ void mbox_change_flags(Folder * folder, FolderItem * item, MsgInfo * info)
 
 	msg->flags = info->flags;
 
-	cache->modification = TRUE;
-		
+	cache->modification = TRUE;		
 }
 
-
-static gboolean mbox_rewrite(gchar * mbox)
-{
-	FILE * mbox_fp;
-	FILE * new_fp;
-	gchar * new;
-	GList * l;
-	gboolean result;
-	GList * msg_list;
-	gint count;
-	mboxcache * cache;
-
-	msg_list = mbox_cache_get_msg_list(mbox);
-
-	cache = mbox_cache_get_mbox(mbox);
-	if (cache == NULL)
-		return FALSE;
-
-	if (!cache->modification) {
-		debug_print("no modification - %s\n", mbox);
-		return FALSE;
-	}
-
-	debug_print("save modification - %s\n", mbox);
-
-	mbox_fp = fopen(mbox, "rb+");
-	mbox_lockwrite_file(mbox_fp, mbox);
-
-	mbox_cache_synchronize_from_file(mbox_fp, mbox, TRUE);
-
-	new = g_strconcat(mbox, ".", itos((int) mbox), NULL);
-	new_fp = fopen(new, "wb");
-
-	if (change_file_mode_rw(new_fp, new) < 0) {
-		FILE_OP_ERROR(new, "chmod");
-		g_warning("can't change file mode\n");
-	}
-
-	mbox_lockwrite_file(new_fp, new);
-
-	result = TRUE;
-
-	count = 0;
-	msg_list = mbox_cache_get_msg_list(mbox);
-	for(l = msg_list ; l != NULL ; l = g_list_next(l)) {
-		struct _message * msg = (struct _message *) l->data;
-		if (!mbox_write_message(mbox_fp, new_fp, new, msg)) {
-			result = FALSE;
-			break;
-		}
-		count ++;
-	}
-
-	unlink(mbox);
-
-	if (rename(new, mbox) == -1) {
-		g_warning("can't rename %s to %s\n", new, mbox);
-		mbox_unlock_file(new_fp, new);
-		fclose(new_fp);
-		mbox_unlock_file(mbox_fp, mbox);
-		fclose(mbox_fp);
-		g_free(new);
-		return -1;
-	}
-
-	if (change_file_mode_rw(new_fp, mbox) < 0) {
-		FILE_OP_ERROR(new, "chmod");
-		g_warning("can't change file mode\n");
-	}
-
-	mbox_unlock_file(new_fp, new);
-
-	fclose(new_fp);
-
-	mbox_unlock_file(mbox_fp, mbox);
-
-	fclose(mbox_fp);
-
-	debug_print("%i messages written - %s\n", count, mbox);
-
-	cache = mbox_cache_get_mbox(mbox);
-
-	if (cache != NULL)
-		cache->mtime = -1;
-
-	mbox_cache_synchronize(mbox, FALSE);
-
-	g_free(new);
-	
-	return result;
-}
 
 static gboolean mbox_purge_deleted(gchar * mbox)
 {

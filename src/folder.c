@@ -2048,7 +2048,6 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 		remove_msginfo_from_cache(item, msginfo);
 		procmsg_msginfo_free(msginfo);
 	}
-	item->total--;
 	folder_item_update(item, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 
 	return ret;
@@ -2064,13 +2063,6 @@ gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
 	g_return_val_if_fail(folder != NULL, -1);
 
 	if (!item->cache) folder_item_read_cache(item);
-
-	if (folder->class->remove_msgs) {
-		ret = folder->class->remove_msgs(folder, item, msglist);
-		if (ret == 0)
-			folder_item_scan(item);
-		return ret;
-	}
 
 	while (msglist != NULL) {
 		MsgInfo *msginfo = (MsgInfo *)msglist->data;

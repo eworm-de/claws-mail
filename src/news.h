@@ -46,28 +46,14 @@ struct _NewsGroupInfo
 };
 
 FolderClass *news_get_class		();
-Folder	*news_folder_new		(const gchar	*name,
-					 const gchar	*folder);
-void	 news_folder_destroy		(Folder		*folder);
+gint news_post				(Folder		* folder,
+					 const gchar	* file);
 
-GSList *news_get_article_list		(Folder		*folder,
-					 FolderItem	*item,
-					 gboolean	 use_cache);
-gchar *news_fetch_msg			(Folder		*folder,
-					 FolderItem	*item,
-					 gint		 num);
+GSList *news_get_group_list		(Folder 	* folder);
+void news_group_list_free		(GSList 	* group_list);
+void news_remove_group_list_cache	(Folder 	* folder);
 
-gint news_scan_group			(Folder		*folder,
-					 FolderItem	*item);
-
-GSList *news_get_group_list		(Folder		*folder);
-void news_group_list_free		(GSList		*group_list);
-void news_remove_group_list_cache	(Folder		*folder);
-
-gint news_post				(Folder		*folder,
-					 const gchar	*file);
-
-gint news_cancel_article		(Folder 	*folder,
-					 MsgInfo 	*msginfo);
+gint news_cancel_article		(Folder 	* folder,
+					 MsgInfo 	* msginfo);
 
 #endif /* __NEWS_H__ */

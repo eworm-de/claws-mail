@@ -2294,7 +2294,6 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 
 static gchar *summary_complete_address(const gchar *addr)
 {
-	gint count;
 	gchar *res, *tmp, *email_addr;
 
 	Xstrdup_a(email_addr, addr, return NULL);
