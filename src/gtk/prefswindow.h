@@ -42,7 +42,8 @@ struct _PrefsPage
 	PrefsDestroyPageFunc destroy_page;
 };
 
-void prefswindow_register_new_page	(PrefsPage *);
+void prefswindow_register_page		(PrefsPage *);
+void prefswindow_unregister_page	(PrefsPage *);
 void prefswindow_create			();
 void prefswindow_destroy_all_pages	();
 

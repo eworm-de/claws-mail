@@ -61,6 +61,7 @@ void plugin_save_list()
 			
 		fprintf(pfile->fp, "%s\n", plugin->filename);
 	}
+	fprintf(pfile->fp, "\n");
 
 	if (prefs_file_close(pfile) < 0)
 		g_warning("failed to write plugin list\n");
@@ -133,6 +134,7 @@ void plugin_unload(Plugin *plugin)
 	}
 
 	g_module_close(plugin->module);
+	plugins = g_slist_remove(plugins, plugin);
 	g_free(plugin);
 }
 
@@ -167,13 +169,17 @@ void plugin_load_all()
 
 void plugin_unload_all()
 {
-	GSList *cur;
+	GSList *list, *cur;
 
-	for (cur = plugins; cur != NULL; cur = g_slist_next(cur)) {
-		plugin_unload((Plugin *)cur->data);
+	list = g_slist_copy(plugins);
+	list = g_slist_reverse(list);
+
+	for(cur = list; cur != NULL; cur = g_slist_next(cur)) {
+		Plugin *plugin = (Plugin *) cur->data;
+		
+		plugin_unload(plugin);
 	}
-	g_slist_free(plugins);
-	plugins = NULL;
+	g_slist_free(list);
 }
 
 GSList *plugin_get_list()
