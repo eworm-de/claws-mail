@@ -1,3 +1,8 @@
+2004-10-26 [colin]	0.9.12cvs132.2
+
+	* src/prefs_folder_item.c
+		Fix default-account selection
+
 2004-10-21 [colin]	0.9.12cvs133
 
 	* src/compose.c

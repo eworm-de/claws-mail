@@ -682,7 +682,7 @@ static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage 
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_enable_default_account));
 		menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_default_account));
 		menuitem = gtk_menu_get_active(GTK_MENU(menu));
-		prefs->default_account = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+		prefs->default_account = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 	}
 
 #if USE_ASPELL
