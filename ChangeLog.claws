@@ -1,3 +1,9 @@
+2003-04-11 [paul]	0.8.11claws84
+
+	* po/es.po
+		update Spanish translation. Submitted by Ricardo
+		Mones Lastra.
+
 2003-04-10 [christoph]	0.8.11claws83
 
 	* src/mbox.c
