@@ -136,6 +136,8 @@ static void open_compose_new		(const gchar	*address,
 
 static void send_queue			(void);
 static void initial_processing		(FolderItem *item, gpointer data);
+static void quit_signal_handler         (int sig);
+static void install_basic_sighandlers   (void);
 
 #if 0
 /* for gettext */
@@ -186,6 +188,7 @@ int main(int argc, char *argv[])
 	}
 	crash_install_handlers();
 #endif
+	install_basic_sighandlers();
 
 	/* check and create unix domain socket */
 	lock_socket = prohibit_duplicate_launch();
@@ -912,4 +915,38 @@ static void send_queue(void)
 			}
 		}
 	}
+}
+
+static void quit_signal_handler(int sig)
+{
+	debug_print("Quitting on signal %d\n", sig);
+	clean_quit();
+}
+
+static void install_basic_sighandlers()
+{
+	sigset_t    mask;
+	struct sigaction act;
+
+	sigemptyset(&mask);
+
+#ifdef SIGTERM
+	sigaddset(&mask, SIGTERM);
+#endif
+#ifdef SIGINT
+	sigaddset(&mask, SIGINT);
+#endif
+
+	act.sa_handler = quit_signal_handler;
+	act.sa_mask    = mask;
+	act.sa_flags   = 0;
+
+#ifdef SIGTERM
+	sigaction(SIGTERM, &act, 0);
+#endif
+#ifdef SIGINT
+	sigaction(SIGINT, &act, 0);
+#endif	
+
+	sigprocmask(SIG_UNBLOCK, &mask, 0);
 }

@@ -115,11 +115,6 @@ void crash_install_handlers(void)
 	sigaddset(&mask, SIGABRT);
 #endif
 
-#ifdef SIGTERM
-	signal(SIGTERM, crash_handler);
-	sigaddset(&mask, SIGTERM);
-#endif
-
 	sigprocmask(SIG_UNBLOCK, &mask, 0);
 #endif /* CRASH_DIALOG */	
 }
