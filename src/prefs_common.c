@@ -347,10 +347,15 @@ static PrefParam param[] = {
 	{"auto_ext_editor", "FALSE", &prefs_common.auto_exteditor, P_BOOL,
 	 &compose.checkbtn_autoextedit,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-
+	{"forward_as_attachment", "FALSE", &prefs_common.forward_as_attachment,
+	 P_BOOL, &compose.checkbtn_forward_as_attachment,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"undo_level", "50", &prefs_common.undolevels, P_INT,
 	 &compose.spinbtn_undolevel,
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
+	{"block_cursor", "FALSE", &prefs_common.block_cursor,
+	 P_BOOL, &compose.checkbtn_block_cursor,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"linewrap_length", "72", &prefs_common.linewrap_len, P_INT,
 	 &compose.spinbtn_linewrap,
@@ -362,14 +367,8 @@ static PrefParam param[] = {
 	 &prefs_common.linewrap_at_send, P_BOOL,
 	 &compose.checkbtn_wrapatsend,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"forward_as_attachment", "FALSE", &prefs_common.forward_as_attachment,
-	 P_BOOL, &compose.checkbtn_forward_as_attachment,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
         {"smart_wrapping", "TRUE", &prefs_common.smart_wrapping,
 	 P_BOOL, &compose.checkbtn_smart_wrapping,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"block_cursor", "FALSE", &prefs_common.block_cursor,
-	 P_BOOL, &compose.checkbtn_block_cursor,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 #if USE_PSPELL
 	{"enable_pspell", "TRUE", &prefs_common.enable_pspell,
@@ -1683,6 +1682,7 @@ static void prefs_compose_create(void)
 	GtkWidget *checkbtn_forward_as_attachment;
 	GtkWidget *checkbtn_smart_wrapping;
 	GtkWidget *checkbtn_block_cursor;
+	GtkWidget *frame_msgwrap;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1727,7 +1727,7 @@ static void prefs_compose_create(void)
 	gtk_widget_set_usize (entry_sigsep, 64, -1);
 
         /* Account autoselection */
-	PACK_FRAME(vbox1, frame_autosel, _("Automatic Account Selection"));
+	PACK_FRAME(vbox1, frame_autosel, _("Automatic account selection"));
 
 	hbox_autosel = gtk_hbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (hbox_autosel);
@@ -1750,9 +1750,42 @@ static void prefs_compose_create(void)
 
 	PACK_VSPACER (vbox2, vbox3, VSPACING_NARROW_2);
 
+	hbox5 = gtk_hbox_new (FALSE, 32);
+	gtk_widget_show (hbox5);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox5, FALSE, FALSE, 0);
+
+	PACK_CHECK_BUTTON (hbox5, checkbtn_forward_as_attachment,
+			   _("Forward as attachment"));
+
+	PACK_CHECK_BUTTON (hbox5, checkbtn_block_cursor,
+			  _("Block cursor"));
+
+	hbox_undolevel = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox_undolevel);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox_undolevel, FALSE, FALSE, 0);
+
+	label_undolevel = gtk_label_new (_("Undo level"));
+	gtk_widget_show (label_undolevel);
+	gtk_box_pack_start (GTK_BOX (hbox_undolevel), label_undolevel, FALSE, FALSE, 0);
+
+	spinbtn_undolevel_adj = gtk_adjustment_new (50, 0, 100, 1, 10, 10);
+	spinbtn_undolevel = gtk_spin_button_new
+		(GTK_ADJUSTMENT (spinbtn_undolevel_adj), 1, 0);
+	gtk_widget_show (spinbtn_undolevel);
+	gtk_box_pack_start (GTK_BOX (hbox_undolevel), spinbtn_undolevel, FALSE, FALSE, 0);
+	gtk_widget_set_usize (spinbtn_undolevel, 64, -1);
+	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_undolevel), TRUE);
+
+	PACK_VSPACER (vbox2, vbox3, VSPACING_NARROW_2);
+
         /* line-wrapping */
+	PACK_FRAME(vbox1, frame_msgwrap, _("Message wrapping"));
+
 	vbox_linewrap = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox_linewrap);
+	gtk_container_add (GTK_CONTAINER (frame_msgwrap), vbox_linewrap);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_linewrap), 8);
+
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox_linewrap, FALSE, FALSE, 0);
 
 	hbox3 = gtk_hbox_new (FALSE, 8);
@@ -1786,33 +1819,9 @@ static void prefs_compose_create(void)
 	PACK_CHECK_BUTTON
 		(hbox4, checkbtn_wrapatsend, _("Wrap before sending"));
 
-	PACK_CHECK_BUTTON (vbox1, checkbtn_forward_as_attachment,
-			   _("Forward as attachment"));
-
-	PACK_CHECK_BUTTON (vbox1, checkbtn_smart_wrapping,
+	PACK_CHECK_BUTTON (vbox_linewrap, checkbtn_smart_wrapping,
 			   _("Smart wrapping (EXPERIMENTAL)"));
 	
-	PACK_CHECK_BUTTON (vbox1, checkbtn_block_cursor,
-			  _("Block cursor"));
-
-	PACK_VSPACER (vbox2, vbox3, VSPACING_NARROW_2);
-
-	hbox_undolevel = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox3);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox_undolevel, FALSE, FALSE, 0);
-
-	label_undolevel = gtk_label_new (_("Undo level"));
-	gtk_widget_show (label_undolevel);
-	gtk_box_pack_start (GTK_BOX (hbox_undolevel), label_undolevel, FALSE, FALSE, 0);
-
-	spinbtn_undolevel_adj = gtk_adjustment_new (50, 0, 100, 1, 10, 10);
-	spinbtn_undolevel = gtk_spin_button_new
-		(GTK_ADJUSTMENT (spinbtn_undolevel_adj), 1, 0);
-	gtk_widget_show (spinbtn_undolevel);
-	gtk_box_pack_start (GTK_BOX (hbox_undolevel), spinbtn_undolevel, FALSE, FALSE, 0);
-	gtk_widget_set_usize (spinbtn_undolevel, 64, -1);
-	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_undolevel), TRUE);
-
        /*
 	compose.checkbtn_quote   = checkbtn_quote;
 	compose.entry_quotemark  = entry_quotemark;
