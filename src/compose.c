@@ -2599,16 +2599,17 @@ static void compose_wrap_line(Compose *compose)
 #undef WRAP_DEBUG
 #ifdef WRAP_DEBUG
 /* Darko: used when I debug wrapping */
-void dump_text(GtkTextBuffer textbuf, int pos, int tlen, int breakoncr)
+void dump_text(GtkTextBuffer *textbuf, int pos, int tlen, int breakoncr)
 {
 	gint i, clen;
 	gchar cbuf[CHAR_BUF_SIZE];
+	GtkTextIter iter, end_iter;
 
 	printf("%d [", pos);
 	gtk_text_buffer_get_iter_at_offset(textbuf, &iter, pos);
 	gtk_text_buffer_get_iter_at_offset(textbuf, &end_iter, pos + tlen);
 	for (; gtk_text_iter_forward_char(&iter) &&
-		     gtk_text_iter_compare(&iter, &end_iter) < 0;)
+		     gtk_text_iter_compare(&iter, &end_iter) < 0;) {
 		GET_CHAR(&iter, cbuf, clen);
 		if (clen < 0) break;
 		if (breakoncr && clen == 1 && cbuf[0] == '\n')
@@ -2915,7 +2916,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 				is_new_line = TRUE;
 #ifdef WRAP_DEBUG
 				g_print("after delete l_pos=");
-				dump_text(text, line_pos, tlen, 1);
+				dump_text(textbuf, line_pos, tlen, 1);
 #endif
 				/* move beginning of line if we are on LF */
 				gtk_text_buffer_get_iter_at_offset(textbuf,
@@ -2956,8 +2957,8 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 
 #ifdef WRAP_DEBUG
 			g_print("should wrap cur_pos=%d ", cur_pos);
-			dump_text(text, p_pos, tlen, 1);
-			dump_text(text, line_pos, tlen, 1);
+			dump_text(textbuf, p_pos, tlen, 1);
+			dump_text(textbuf, line_pos, tlen, 1);
 #endif
 			/* force wrapping if it is one long word but not URL */
 			if (line_pos - p_pos <= i_len)
@@ -3009,7 +3010,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 			    gtkut_text_buffer_is_uri_string(textbuf, line_pos, tlen)) {
 #ifdef WRAP_DEBUG
 				g_print("found URL at ");
-				dump_text(text, line_pos, tlen, 1);
+				dump_text(textbuf, line_pos, tlen, 1);
 #endif
 				continue;
 			}
@@ -3035,8 +3036,8 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 				do_delete = FALSE;
 #ifdef WRAP_DEBUG
 			g_print("after CR insert ");
-			dump_text(text, line_pos, tlen, 1);
-			dump_text(text, cur_pos, tlen, 1);
+			dump_text(textbuf, line_pos, tlen, 1);
+			dump_text(textbuf, cur_pos, tlen, 1);
 #endif
 
 			/* should we insert quotation ? */
@@ -3056,7 +3057,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 					}
 #ifdef WRAP_DEBUG
 					g_print("after quote insert ");
-					dump_text(text, line_pos, tlen, 1);
+					dump_text(textbuf, line_pos, tlen, 1);
 #endif
 				}
 			}
