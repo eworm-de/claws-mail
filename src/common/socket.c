@@ -453,13 +453,20 @@ gint sock_printf(SockInfo *sock, const gchar *format, ...)
 
 gint sock_read(SockInfo *sock, gchar *buf, gint len)
 {
+	gint ret;
+
 	g_return_val_if_fail(sock != NULL, -1);
 
 #if USE_OPENSSL
 	if (sock->ssl)
-		return ssl_read(sock->ssl, buf, len);
+		ret = ssl_read(sock->ssl, buf, len);
+	else
 #endif
-	return fd_read(sock->sock, buf, len);
+		ret = fd_read(sock->sock, buf, len);
+	
+	if (ret < 0)
+		sock->state = CONN_DISCONNECTED;
+	return ret;
 }
 
 gint fd_read(gint fd, gchar *buf, gint len)
@@ -479,13 +486,20 @@ gint ssl_read(SSL *ssl, gchar *buf, gint len)
 
 gint sock_write(SockInfo *sock, const gchar *buf, gint len)
 {
+	gint ret;
+
 	g_return_val_if_fail(sock != NULL, -1);
 
 #if USE_OPENSSL
 	if (sock->ssl)
-		return ssl_write(sock->ssl, buf, len);
+		ret = ssl_write(sock->ssl, buf, len);
+	else
 #endif
-	return fd_write(sock->sock, buf, len);
+		ret = fd_write(sock->sock, buf, len);
+
+	if (ret < 0)
+		sock->state = CONN_DISCONNECTED;
+	return ret;
 }
 
 gint fd_write(gint fd, const gchar *buf, gint len)
@@ -505,13 +519,20 @@ gint ssl_write(SSL *ssl, const gchar *buf, gint len)
 
 gint sock_write_all(SockInfo *sock, const gchar *buf, gint len)
 {
+	gint ret;
+
 	g_return_val_if_fail(sock != NULL, -1);
 
 #if USE_OPENSSL
 	if (sock->ssl)
-		return ssl_write_all(sock->ssl, buf, len);
+		ret = ssl_write_all(sock->ssl, buf, len);
+	else
 #endif
-	return fd_write_all(sock->sock, buf, len);
+		ret = fd_write_all(sock->sock, buf, len);
+
+	if (ret < 0)
+		sock->state = CONN_DISCONNECTED;
+	return ret;
 }
 
 gint fd_write_all(gint fd, const gchar *buf, gint len)
@@ -609,13 +630,20 @@ gint ssl_gets(SSL *ssl, gchar *buf, gint len)
 
 gint sock_gets(SockInfo *sock, gchar *buf, gint len)
 {
+	gint ret;
+
 	g_return_val_if_fail(sock != NULL, -1);
 
 #if USE_OPENSSL
 	if (sock->ssl)
 		return ssl_gets(sock->ssl, buf, len);
+	else
 #endif
-	return fd_gets(sock->sock, buf, len);
+		return fd_gets(sock->sock, buf, len);
+
+	if (ret < 0)
+		sock->state = CONN_DISCONNECTED;
+	return ret;
 }
 
 gchar *fd_getline(gint fd)
@@ -673,13 +701,20 @@ gchar *ssl_getline(SSL *ssl)
 
 gchar *sock_getline(SockInfo *sock)
 {
+	gint ret;
+
 	g_return_val_if_fail(sock != NULL, NULL);
 
 #if USE_OPENSSL
 	if (sock->ssl)
-		return ssl_getline(sock->ssl);
+		ret = ssl_getline(sock->ssl);
+	else
 #endif
-	return fd_getline(sock->sock);
+		ret = fd_getline(sock->sock);
+
+	if (ret < 0)
+		sock->state = CONN_DISCONNECTED;
+	return ret;
 }
 
 gint sock_puts(SockInfo *sock, const gchar *buf)
@@ -694,7 +729,7 @@ gint sock_puts(SockInfo *sock, const gchar *buf)
 /* peek at the next socket character without actually reading it */
 gint sock_peek(SockInfo *sock)
 {
-	gint n;
+	gint ret, n;
 	gchar ch;
 
 	g_return_val_if_fail(sock != NULL, -1);
@@ -702,15 +737,22 @@ gint sock_peek(SockInfo *sock)
 #if USE_OPENSSL
 	if (sock->ssl) {
 		if ((n = SSL_peek(sock->ssl, &ch, 1)) < 0)
-			return -1;
+			ret = -1;
 		else
-			return ch;
+			ret = ch;
+	} else {
+#endif
+		if ((n = recv(sock->sock, &ch, 1, MSG_PEEK)) < 0)
+			ret = -1;
+		else
+			ret = ch;
+#if USE_OPENSSL
 	}
 #endif
-	if ((n = recv(sock->sock, &ch, 1, MSG_PEEK)) < 0)
-		return -1;
-	else
-		return ch;
+
+	if (ret < 0)
+		sock->state = CONN_DISCONNECTED;
+	return ret;
 }
 
 gint sock_close(SockInfo *sock)

@@ -1,3 +1,18 @@
+2003-03-27 [christoph]	0.8.11claws60
+
+	* src/folder.c
+	* src/imap.c
+	* src/common/socket.[ch]
+		set socket state to DISCONNECTED when any operation
+		fails to allow reconnecting in IMAP code without
+		checking the return code of all calls to the command
+		functions
+
+	* src/folderview.c
+	* src/summaryview.c
+		remove some more stuff that depends on specific
+		folder types
+
 2003-03-27 [paul]	0.8.11claws59
 
 	* sync with 0.8.11cvs14

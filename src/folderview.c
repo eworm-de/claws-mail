@@ -783,18 +783,6 @@ static void folderview_scan_tree_func(Folder *folder, FolderItem *item,
 				      gpointer data)
 {
 	GList *list;
-	gchar *rootpath;
-
-	if (FOLDER_IS_LOCAL(folder))
-		rootpath = LOCAL_FOLDER(folder)->rootpath;
-	else if (FOLDER_TYPE(folder) == F_IMAP && folder->account &&
-		 folder->account->recv_server)
-		rootpath = folder->account->recv_server;
-	else if (FOLDER_TYPE(folder) == F_NEWS && folder->account &&
-		 folder->account->nntp_server)
-		rootpath = folder->account->nntp_server;
-	else
-		return;
 
 	for (list = folderview_list; list != NULL; list = list->next) {
 		FolderView *folderview = (FolderView *)list->data;
@@ -803,11 +791,11 @@ static void folderview_scan_tree_func(Folder *folder, FolderItem *item,
 
 		if (item->path)
 			str = g_strdup_printf(_("Scanning folder %s%c%s ..."),
-					      rootpath, G_DIR_SEPARATOR,
+					      item->folder->name, G_DIR_SEPARATOR,
 					      item->path);
 		else
 			str = g_strdup_printf(_("Scanning folder %s ..."),
-					      rootpath);
+					      item->folder->name);
 
 		STATUSBAR_PUSH(mainwin, str);
 		STATUSBAR_POP(mainwin);

@@ -675,28 +675,23 @@ gchar *folder_item_get_name(FolderItem *item)
 
 	switch (item->stype) {
 	case F_INBOX:
-		name = g_strdup(FOLDER_IS_LOCAL(item->folder) &&
-				!strcmp2(item->name, INBOX_DIR) ? _("Inbox") :
+		name = g_strdup(!strcmp2(item->name, INBOX_DIR) ? _("Inbox") :
 				item->name);
 		break;
 	case F_OUTBOX:
-		name = g_strdup(FOLDER_IS_LOCAL(item->folder) &&
-				!strcmp2(item->name, OUTBOX_DIR) ? _("Sent") :
+		name = g_strdup(!strcmp2(item->name, OUTBOX_DIR) ? _("Sent") :
 				item->name);
 		break;
 	case F_QUEUE:
-		name = g_strdup(FOLDER_IS_LOCAL(item->folder) &&
-				!strcmp2(item->name, QUEUE_DIR) ? _("Queue") :
+		name = g_strdup(!strcmp2(item->name, QUEUE_DIR) ? _("Queue") :
 				item->name);
 		break;
 	case F_TRASH:
-		name = g_strdup(FOLDER_IS_LOCAL(item->folder) &&
-				!strcmp2(item->name, TRASH_DIR) ? _("Trash") :
+		name = g_strdup(!strcmp2(item->name, TRASH_DIR) ? _("Trash") :
 				item->name);
 		break;
 	case F_DRAFT:
-		name = g_strdup(FOLDER_IS_LOCAL(item->folder) &&
-				!strcmp2(item->name, DRAFT_DIR) ? _("Drafts") :
+		name = g_strdup(!strcmp2(item->name, DRAFT_DIR) ? _("Drafts") :
 				item->name);
 		break;
 	default:

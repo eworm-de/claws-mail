@@ -1978,18 +1978,12 @@ static void summary_status_show(SummaryView *summaryview)
 	g_free(cp);
 	g_free(itstr);
 
-	if (FOLDER_IS_LOCAL(summaryview->folder_item->folder)) {
-		str = g_strdup_printf(_("%d new, %d unread, %d total (%s)"),
-				      summaryview->newmsgs,
-				      summaryview->unread,
-				      summaryview->messages,
-				      to_human_readable(summaryview->total_size));
-	} else {
-		str = g_strdup_printf(_("%d new, %d unread, %d total"),
-				      summaryview->newmsgs,
-				      summaryview->unread,
-				      summaryview->messages);
-	}
+	str = g_strdup_printf(_("%d new, %d unread, %d total (%s)"),
+			      summaryview->newmsgs,
+			      summaryview->unread,
+			      summaryview->messages,
+			      to_human_readable(summaryview->total_size));
+
 	gtk_label_set(GTK_LABEL(summaryview->statlabel_msgs), str);
 	g_free(str);
 }
