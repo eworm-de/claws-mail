@@ -1,8 +1,14 @@
+2002-05-12 [melvin]	0.7.5claws22
+
+	* src/procmsg.[ch]
+		Removed unneeded priority code introduced by the previous 
+		commit.
+
 2002-05-12 [melvin]	0.7.5claws21
 
 	* src/compose.[ch]
 		Added possibility to set message's priority.
-	*  src/procmsg.[ch]
+	* src/procmsg.[ch]
 		Added possibility to set message's priority.
 		Added missing headers
 

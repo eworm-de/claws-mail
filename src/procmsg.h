@@ -200,8 +200,6 @@ struct _MsgInfo
 	/* used only for encrypted messages */
 	gchar *plaintext_file;
 	guint decryption_failed : 1;
-
-	gint priority;
 };
 
 GHashTable *procmsg_msg_hash_table_create	(GSList		*mlist);
