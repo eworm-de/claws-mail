@@ -153,7 +153,7 @@ FolderItem *folder_item_new(const gchar *name, const gchar *path)
 	item->last_num = -1;
 	item->no_sub = FALSE;
 	item->no_select = FALSE;
-	item->collapsed = FALSE; /* default is open */
+	item->collapsed = FALSE;
 	item->parent = NULL;
 	item->folder = NULL;
 	item->data = NULL;
@@ -578,10 +578,6 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 	g_return_val_if_fail(msginfo != NULL, -1);
 
 	folder = dest->folder;
-
-	g_return_val_if_fail(folder->scan != NULL, -1);
-	g_return_val_if_fail(folder->move_msg != NULL, -1);
-
 	if (dest->last_num < 0) folder->scan(folder, dest);
 
 	num = folder->move_msg(folder, dest, msginfo);
@@ -639,10 +635,6 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	g_return_val_if_fail(msglist != NULL, -1);
 
 	folder = dest->folder;
-
-	g_return_val_if_fail(folder->scan != NULL, -1);
-	g_return_val_if_fail(folder->move_msgs_with_dest != NULL, -1);
-
 	if (dest->last_num < 0) folder->scan(folder, dest);
 
 	num = folder->move_msgs_with_dest(folder, dest, msglist);
@@ -703,10 +695,6 @@ gint folder_item_copy_msg(FolderItem *dest, MsgInfo *msginfo)
 	g_return_val_if_fail(msginfo != NULL, -1);
 
 	folder = dest->folder;
-
-	g_return_val_if_fail(folder->scan != NULL, -1);
-	g_return_val_if_fail(folder->copy_msg != NULL, -1);
-
 	if (dest->last_num < 0) folder->scan(folder, dest);
 
 	num = folder->copy_msg(folder, dest, msginfo);
@@ -753,10 +741,6 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	g_return_val_if_fail(msglist != NULL, -1);
 
 	folder = dest->folder;
-
-	g_return_val_if_fail(folder->scan != NULL, -1);
-	g_return_val_if_fail(folder->copy_msgs_with_dest != NULL, -1);
-
 	if (dest->last_num < 0) folder->scan(folder, dest);
 
 	num = folder->copy_msgs_with_dest(folder, dest, msglist);
@@ -1179,10 +1163,8 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 			account = account_find_from_id(atoi(attr->value));
 			if (!account) g_warning("account_id: %s not found\n",
 						attr->value);
-		}
-		else if (!strcmp(attr->name, "collapsed")) {
-			collapsed = *(attr->value) == '1' ? 1 : 0;
-		}
+		} else if (!strcmp(attr->name, "collapsed"))
+			collapsed = *attr->value == '1' ? TRUE : FALSE;
 	}
 
 	folder = folder_new(type, name, path);
@@ -1190,22 +1172,14 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 	folder->account = account;
 	if (account && (type == F_IMAP || type == F_NEWS))
 		account->folder = REMOTE_FOLDER(folder);
-		
 	node->data = folder->node->data;
 	g_node_destroy(folder->node);
 	folder->node = node;
-
 	folder_add(folder);
+	FOLDER_ITEM(node->data)->collapsed = collapsed;
 
 	g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
 			folder_build_tree, folder);
-
-	/* ALFONS_NOTE: after a folder_new() the folder system also created a 
-	 * FolderItem for the folder (which makes insertion in the GtkCTree
-	 * easier because it deals with FolderItems only). put the collapsed
-	 * state for this Folder in its associated FolderItem */
-
-	FOLDER_ITEM((folder->node->data))->collapsed = collapsed; 
 
 	return FALSE;
 }
@@ -1254,13 +1228,8 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 		if (folder->account)
 			fprintf(fp, " account_id=\"%d\"",
 				folder->account->account_id);
-				
-		/* ALFONS_NOTE: for each Folder structure, also a FolderItem is created;
-		 * this is very clever, but undocumented. (it is clever because the
-		 * folderview's GtkCTree only deals with FolderItems.) */
-		if (item->collapsed )
-			fprintf(fp, " collapsed=\"1\"");
-		
+		if (item->collapsed)
+			fputs(" collapsed=\"1\"", fp);
 	} else {
 		fprintf(fp, "<folderitem type=\"%s\"",
 			folder_item_stype_str[item->stype]);
@@ -1281,7 +1250,7 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 			fputs(" no_sub=\"1\"", fp);
 		if (item->no_select)
 			fputs(" no_select=\"1\"", fp);
-		if (item->collapsed) 
+		if (item->collapsed)
 			fputs(" collapsed=\"1\"", fp);
 		fprintf(fp,
 			" mtime=\"%ld\" new=\"%d\" unread=\"%d\" total=\"%d\"",

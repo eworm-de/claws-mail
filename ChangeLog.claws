@@ -3,6 +3,10 @@
 	* configure.in
 		0.5.1claws1
 
+	* src/folderview.c
+	  src/folder.[ch]
+		sync with Hiroyuki's 0.5.0cvs1
+
 	* src/summaryview.c
 		more rewrite label colouring
 
