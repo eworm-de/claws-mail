@@ -1,3 +1,9 @@
+2004-12-13 [colin]	0.9.13cvs14
+
+	* src/gtk/prefswindow.c
+	* src/gtk/pluginwindow.c
+		Fix key_pressed handlers
+
 2004-12-11 [colin]	0.9.13cvs13
 
 	* src/quote_fmt_parse.y
