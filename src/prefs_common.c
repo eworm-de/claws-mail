@@ -116,9 +116,10 @@ static struct Compose {
 	GtkWidget *checkbtn_wrapatsend;
 
 	GtkWidget *checkbtn_quote;
-	GtkWidget * checkbtn_forward_as_attachment;
-	GtkWidget * checkbtn_smart_wrapping;
-	GtkWidget * checkbtn_block_cursor;
+	GtkWidget *checkbtn_forward_as_attachment;
+	GtkWidget *checkbtn_smart_wrapping;
+	GtkWidget *checkbtn_block_cursor;
+	GtkWidget *checkbtn_reply_with_quote;
 
 	/* spelling */
 #if USE_PSPELL
@@ -350,7 +351,7 @@ static PrefParam param[] = {
 	 prefs_dictionary_set_data_from_optmenu, prefs_dictionary_set_optmenu },
 #endif
 	{"reply_with_quote", "TRUE", &prefs_common.reply_with_quote, P_BOOL,
-	 NULL, NULL, NULL},
+	 &compose.checkbtn_reply_with_quote, prefs_set_data_from_toggle, prefs_set_toggle},
 
 	/* Account autoselection */
 	{"reply_account_autoselect", "TRUE",
@@ -1604,12 +1605,16 @@ static void prefs_quote_create(void)
 
 	GtkWidget *btn_quotedesc;
 
+	GtkWidget *checkbtn_reply_with_quote;
+
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	/* reply */
+
+	PACK_CHECK_BUTTON (vbox1, checkbtn_reply_with_quote, _("Reply will quote by default"));
 
 	PACK_FRAME (vbox1, frame_quote, _("Reply format"));
 
@@ -1700,6 +1705,7 @@ static void prefs_quote_create(void)
 	gtk_signal_connect(GTK_OBJECT(btn_quotedesc), "clicked",
 			   GTK_SIGNAL_FUNC(prefs_quote_description), NULL);
 
+	compose.checkbtn_reply_with_quote= checkbtn_reply_with_quote;
 	quote.entry_quotemark    = entry_quotemark;
 	quote.text_quotefmt      = text_quotefmt;
 	quote.entry_fw_quotemark = entry_fw_quotemark;

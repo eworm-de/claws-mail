@@ -1,3 +1,14 @@
+2001-11-29 [paul]	0.6.5claws44
+
+	* src/mainwindow.[ch]
+        * src/prefs_common.c
+        * src/pixmaps/stock_mail_reply_quote.xpm            ** NEW FILE **
+        * src/pixmaps/stock_mail_reply_to_all_quote.xpm     ** NEW FILE **
+        * src/pixmaps/stock_mail_reply_to_author_quote.xpm  ** NEW FILE **
+        	usability enhancements to the quoting, implements
+                use of Ctrl key to toggle quoting settings
+                Submitted by Carsten Schurig <Carsten.Schurig@web.de>
+
 2001-11-29 [paul]	0.6.5claws43
 	
         * sync with sylpheed 0.6.5cvs19
