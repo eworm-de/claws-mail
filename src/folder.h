@@ -36,6 +36,7 @@ typedef struct _FolderItem	FolderItem;
 #include "prefs_account.h"
 #include "session.h"
 #include "procmsg.h"
+#include "prefs_folder_item.h"
 
 #define FOLDER(obj)		((Folder *)obj)
 #define FOLDER_TYPE(obj)	(FOLDER(obj)->type)
@@ -205,6 +206,8 @@ struct _FolderItem
 	Folder *folder;
 
 	gpointer data;
+
+	PrefsFolderItem * prefs;
 };
 
 Folder     *folder_new		(FolderType	 type,

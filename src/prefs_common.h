@@ -82,6 +82,7 @@ struct _PrefsCommon
 	gboolean show_unread;
 	gboolean show_mime;
 	gboolean show_number;
+	gboolean show_score;
 	gboolean show_size;
 	gboolean show_date;
 	gboolean show_from;
@@ -107,6 +108,7 @@ struct _PrefsCommon
 	gint summary_col_date;
 	gint summary_col_from;
 	gint summary_col_subject;
+	gint summary_col_score;
 
 	gint mainview_x;
 	gint mainview_y;

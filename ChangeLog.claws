@@ -1,3 +1,51 @@
+2001-05-06 [hoa]
+
+	* src/Makefile.am
+		added scoring.c scoring.h
+		prefs_folder_item.c prefs_folder_item.h
+		matcher.c matcher.h
+	* src/defs.h
+		added FOLDERITEM_RC SCORING_RC
+	* src/folder.[ch]
+		added prefs field in FolderItem :
+		properties for each folder (PrefsFolderItem),
+		sorting type and mode were added as the first properties.
+	* src/main.c
+		read config for scoring
+	* added src/matcher.[ch]
+		gives functions to parse configuration file to do
+		matching on mails with a list of conditions.
+	* src/mainwindow.c
+		add option to sort by score
+	* src/prefs_common.[ch]
+		added preference option to show score and for
+		the score column size
+	* added src/prefs_folder_item.[ch]
+		properties for each folder (PrefsFolderItem),
+		sorting type and mode were added as the first properties.
+	* src/procheader.[ch]
+		added procheader_parse_header()
+		added procheader_header_free()
+		added procheader_headername_equal()
+		and made modification to use them.
+	* src/procmsg.[ch]
+		added score field to MsgInfo structure
+	* added src/scoring.[ch]
+		gives functions to parse configuration file to do
+		scoring on mails with a list of conditions.
+	* src/summaryview.[ch]
+		save the sorting type and mode for the folder
+		added column to display the score of the mail
+		added function summary_score_clicked()
+		sorting type and mode are restored to the folder
+		when it is reopen
+	* src/textview.c
+		use procheader_parse_header(), procheader_headername_equal()
+		removed memory leak in text_scan_header when freeing headers
+
+	Scoring functions are implemented, an interface is needed
+	to configure that.
+
 2001-05-04 [alfons]
 
 	* src/gtkstext.c: 

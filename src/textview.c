@@ -938,22 +938,6 @@ enum
 	H_ORGANIZATION	= 11,
 };
 
-static gboolean hdrequal(char * hdr1, char * hdr2)
-{
-	int len1;
-	int len2;
-
-	len1 = strlen(hdr1);
-	len2 = strlen(hdr2);
-	if (hdr1[len1 - 1] == ':')
-		len1--;
-	if (hdr2[len2 - 1] == ':')
-		len2--;
-	if (len1 != len2)
-		return 0;
-	return (strncasecmp(hdr1, hdr2, len1) == 0);
-}
-
 static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 {
 	/*
@@ -1011,20 +995,9 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 		gchar * p;
 		Header *header;
 
-		if (*buf == ':') continue;
-		for (p = buf; *p && *p != ' '; p++) {
-			if (*p == ':') {
-				header = g_new(Header, 1);
-				header->name = g_strndup(buf, p - buf + 1);
-				p++;
-				/* while (*p == ' ' || *p == '\t') p++; */
-				conv_unmime_header(tmp, sizeof(tmp), p, NULL);
-				header->body = g_strdup(tmp);
-
-				g_ptr_array_add(headers, header);
-				break;
-			}
-		}
+		header = procheader_parse_header(buf);
+		if (header != NULL)
+			g_ptr_array_add(headers, header);
 	}
 
 	sorted_headers = g_ptr_array_new();
@@ -1033,12 +1006,11 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 		HeaderDisplayProp * dp = (HeaderDisplayProp *) l->data;
 		for(i = 0 ; i < headers->len ; i++) {
 			Header * header = g_ptr_array_index(headers, i);
-			if (hdrequal(header->name, dp->name)) {
+			if (procheader_headername_equal(header->name,
+							dp->name)) {
 				if (dp->hidden) {
 					g_ptr_array_remove_index(headers, i);
-					g_free(header->body);
-					g_free(header->name);
-					g_free(header);
+					procheader_header_free(header);
 					i--;
 				}
 				else {
@@ -1052,14 +1024,20 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 	}
 
 	if (prefs_display_headers.show_other_headers) {
-		for(i = 0 ; i < headers->len ; i++) {
-			Header * header = g_ptr_array_index(headers, i);
+		while (headers->len != 0) {
+			Header * header = g_ptr_array_index(headers, 0);
 			g_ptr_array_add(sorted_headers, header);
+			g_ptr_array_remove_index(headers, 0);
 		}
 	}
 
-	g_ptr_array_free(headers, TRUE);
-	
+	for(i = 0 ; i < headers->len ; i++) {
+		Header * header = g_ptr_array_index(headers, i);
+		procheader_header_free(header);
+	}
+
+	g_ptr_array_free(headers, FALSE);
+
 	return sorted_headers;
 }
 
@@ -1079,6 +1057,8 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 
 		gtk_text_insert(text, textview->boldfont, NULL, NULL,
 				header->name, -1);
+		gtk_text_insert(text, textview->boldfont, NULL, NULL,
+				" ", -1);
 		if (prefs_common.enable_color &&
 		    (strncmp(header->name, "X-Mailer", 8) == 0 ||
 		     strncmp(header->name, "X-Newsreader", 12) == 0) &&

@@ -66,5 +66,9 @@ time_t procheader_date_parse		(gchar		*dest,
 void procheader_date_get_localtime	(gchar		*dest,
 					 gint		 len,
 					 const time_t	 timer);
+Header * procheader_parse_header        (gchar * buf);
+
+gboolean procheader_headername_equal    (char * hdr1, char * hdr2);
+void procheader_header_free             (Header * header);
 
 #endif /* __PROCHEADER_H__ */

@@ -72,6 +72,7 @@
 #include "filter.h"
 #include "folder.h"
 #include "addressbook.h"
+#include "scoring.h"
 
 #include "pixmaps/dir-open.xpm"
 #include "pixmaps/mark.xpm"
@@ -253,6 +254,8 @@ static void summary_add_sender_to_cb (SummaryView			*summaryview,
 
 static void summary_num_clicked		(GtkWidget		*button,
 					 SummaryView		*summaryview);
+static void summary_score_clicked       (GtkWidget *button,
+					 SummaryView *summaryview);
 static void summary_size_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
 static void summary_date_clicked	(GtkWidget		*button,
@@ -288,6 +291,9 @@ static gint summary_cmp_by_from		(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
 static gint summary_cmp_by_subject	(GtkCList		*clist,
+					 gconstpointer		 ptr1,
+					 gconstpointer		 ptr2);
+static gint summary_cmp_by_score	(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
 
@@ -371,7 +377,8 @@ SummaryView *summary_create(void)
 		titles[S_COL_FROM]    = "From";
 		titles[S_COL_SUBJECT] = "Subject";
 	}
-	titles[S_COL_SIZE] = _("Size");
+	titles[S_COL_SIZE]  = _("Size");
+	titles[S_COL_SCORE] = _("Score");
 
 	ctree = gtk_sctree_new_with_titles(N_SUMMARY_COLS, S_COL_SUBJECT, titles);
 	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolledwin),
@@ -388,6 +395,8 @@ SummaryView *summary_create(void)
 					   GTK_JUSTIFY_CENTER);
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), S_COL_NUMBER,
 					   GTK_JUSTIFY_RIGHT);
+	gtk_clist_set_column_justification(GTK_CLIST(ctree), S_COL_SCORE,
+					   GTK_JUSTIFY_RIGHT);
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), S_COL_SIZE,
 					   GTK_JUSTIFY_RIGHT);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), S_COL_MARK,
@@ -398,6 +407,8 @@ SummaryView *summary_create(void)
 				   SUMMARY_COL_MIME_WIDTH);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), S_COL_NUMBER,
 				   prefs_common.summary_col_number);
+	gtk_clist_set_column_width(GTK_CLIST(ctree), S_COL_SCORE,
+				   prefs_common.summary_col_score);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), S_COL_SIZE,
 				   prefs_common.summary_col_size);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), S_COL_DATE,
@@ -427,6 +438,11 @@ SummaryView *summary_create(void)
 		(GTK_OBJECT(GTK_CLIST(ctree)->column[S_COL_NUMBER].button),
 		 "clicked",
 		 GTK_SIGNAL_FUNC(summary_num_clicked),
+		 summaryview);
+	gtk_signal_connect
+		(GTK_OBJECT(GTK_CLIST(ctree)->column[S_COL_SCORE].button),
+		 "clicked",
+		 GTK_SIGNAL_FUNC(summary_score_clicked),
 		 summaryview);
 	gtk_signal_connect
 		(GTK_OBJECT(GTK_CLIST(ctree)->column[S_COL_SIZE].button),
@@ -580,6 +596,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	gchar *buf;
 	gboolean is_refresh;
 	guint prev_msgnum = 0;
+	GSList *cur;
+	gint sort_mode;
+	gint sort_type;
 
 	STATUSBAR_POP(summaryview->mainwin);
 
@@ -640,6 +659,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	main_window_cursor_wait(summaryview->mainwin);
 
 	mlist = item->folder->get_msg_list(item->folder, item, !update_cache);
+
+	for(cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
+		MsgInfo * msginfo = (MsgInfo *) cur->data;
+
+		msginfo->score = score_message(prefs_scoring, msginfo);
+	}
 
 	STATUSBAR_POP(summaryview->mainwin);
 
@@ -704,6 +729,20 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	STATUSBAR_PUSH(summaryview->mainwin, _("done."));
 
 	main_window_cursor_normal(summaryview->mainwin);
+
+	/* sort before */
+	sort_mode = prefs_folder_item_get_sort_mode(item);
+	sort_type = prefs_folder_item_get_sort_type(item);
+
+	if (sort_mode != SORT_BY_NONE) {
+		summaryview->sort_mode = sort_mode;
+		if (sort_type == GTK_SORT_DESCENDING)
+			summaryview->sort_type = GTK_SORT_ASCENDING;
+		else
+			summaryview->sort_type = GTK_SORT_DESCENDING;
+
+		summary_sort(summaryview, sort_mode);
+	}
 
 	return TRUE;
 }
@@ -1298,6 +1337,9 @@ void summary_sort(SummaryView *summaryview, SummarySortType type)
 	case SORT_BY_SUBJECT:
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_subject;
 		break;
+	case SORT_BY_SCORE:
+		cmp_func = (GtkCListCompareFunc)summary_cmp_by_score;
+		break;
 	default:
 		return;
 	}
@@ -1323,6 +1365,11 @@ void summary_sort(SummaryView *summaryview, SummarySortType type)
 
 	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
 	//gtkut_ctree_set_focus_row(ctree, summaryview->selected);
+
+	prefs_folder_item_set_config(summaryview->folder_item,
+				     summaryview->sort_type,
+				     summaryview->sort_mode);
+	prefs_folder_item_save_config(summaryview->folder_item);
 
 	debug_print(_("done.\n"));
 	STATUSBAR_POP(summaryview->mainwin);
@@ -1495,6 +1542,7 @@ static void summary_set_header(gchar *text[], MsgInfo *msginfo)
 	text[S_COL_MIME] = NULL;
 	text[S_COL_NUMBER] = itos(msginfo->msgnum);
 	text[S_COL_SIZE]   = to_human_readable(msginfo->size);
+	text[S_COL_SCORE]  = itos(msginfo->score);
 
 	if (msginfo->date_t) {
 		procheader_date_get_localtime(date_modified,
@@ -2842,6 +2890,9 @@ static void summary_col_resized(GtkCList *clist, gint column, gint width,
 	case S_COL_NUMBER:
 		prefs_common.summary_col_number = width;
 		break;
+	case S_COL_SCORE:
+		prefs_common.summary_col_score = width;
+		break;
 	case S_COL_SIZE:
 		prefs_common.summary_col_size = width;
 		break;
@@ -2962,6 +3013,12 @@ static void summary_num_clicked(GtkWidget *button, SummaryView *summaryview)
 	summary_sort(summaryview, SORT_BY_NUMBER);
 }
 
+static void summary_score_clicked(GtkWidget *button,
+				  SummaryView *summaryview)
+{
+	summary_sort(summaryview, SORT_BY_SCORE);
+}
+
 static void summary_size_clicked(GtkWidget *button, SummaryView *summaryview)
 {
 	summary_sort(summaryview, SORT_BY_SIZE);
@@ -2991,6 +3048,7 @@ void summary_change_display_item(SummaryView *summaryview)
 	gtk_clist_set_column_visibility(clist, S_COL_UNREAD, prefs_common.show_unread);
 	gtk_clist_set_column_visibility(clist, S_COL_MIME, prefs_common.show_mime);
 	gtk_clist_set_column_visibility(clist, S_COL_NUMBER, prefs_common.show_number);
+	gtk_clist_set_column_visibility(clist, S_COL_SCORE, prefs_common.show_score);
 	gtk_clist_set_column_visibility(clist, S_COL_SIZE, prefs_common.show_size);
 	gtk_clist_set_column_visibility(clist, S_COL_DATE, prefs_common.show_date);
 	gtk_clist_set_column_visibility(clist, S_COL_FROM, prefs_common.show_from);
@@ -3121,4 +3179,20 @@ static gint summary_cmp_by_subject(GtkCList *clist,
 		return -1;
 
 	return strcasecmp(msginfo1->subject, msginfo2->subject);
+}
+
+static gint summary_cmp_by_score(GtkCList *clist,
+				 gconstpointer ptr1, gconstpointer ptr2)
+{
+	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
+	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
+	int diff;
+
+	/* if score are equal, sort by date */
+
+	diff = msginfo1->score - msginfo2->score;
+	if (diff != 0)
+		return diff;
+	else
+		return summary_cmp_by_date(clist, ptr1, ptr2);
 }

@@ -78,7 +78,10 @@ sylpheed_SOURCES = \
 	customheader.c customheader.h \
 	prefs_headers.c prefs_headers.h \
 	headers_display.c headers_display.h \
-	prefs_display_headers.c prefs_display_headers.h
+	prefs_display_headers.c prefs_display_headers.h \
+	scoring.c scoring.h \
+	prefs_folder_item.c prefs_folder_item.h \
+	matcher.c matcher.h
 
 EXTRA_DIST = \
 	pixmaps/clip.xpm \

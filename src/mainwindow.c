@@ -501,6 +501,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Summary/_Sort/Sort by _date"),	NULL, sort_summary_cb, SORT_BY_DATE, NULL},
 	{N_("/_Summary/_Sort/Sort by _from"),	NULL, sort_summary_cb, SORT_BY_FROM, NULL},
 	{N_("/_Summary/_Sort/Sort by _subject"),NULL, sort_summary_cb, SORT_BY_SUBJECT, NULL},
+	{N_("/_Summary/_Sort/Sort by sco_re"),  NULL, sort_summary_cb, SORT_BY_SCORE, NULL},
 	{N_("/_Summary/_Sort/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Summary/_Sort/_Attract by subject"),
 						NULL, attract_by_subject_cb, 0, NULL},

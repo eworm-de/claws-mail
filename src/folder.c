@@ -143,6 +143,8 @@ FolderItem *folder_item_new(const gchar *name, const gchar *path)
 	item->folder = NULL;
 	item->data = NULL;
 
+	item->prefs = prefs_folder_item_new();
+
 	return item;
 }
 
@@ -822,6 +824,9 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	case F_TRASH:  folder->trash  = item; break;
 	default:
 	}
+
+	prefs_folder_item_read_config(item);
+
 	node->data = item;
 	xml_free_node(xmlnode);
 

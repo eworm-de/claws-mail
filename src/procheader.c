@@ -192,6 +192,63 @@ gchar *procheader_get_unfolded_line(gchar *buf, gint len, FILE *fp)
 	return buf;
 }
 
+/*
+  tests whether two headers are equal
+*/
+
+gboolean procheader_headername_equal(char * hdr1, char * hdr2)
+{
+	int len1;
+	int len2;
+
+	len1 = strlen(hdr1);
+	len2 = strlen(hdr2);
+	if ((hdr1[len1 - 1] == ':') || (hdr1[len1 - 1] == ' '))
+		len1--;
+	if ((hdr2[len2 - 1] == ':') || (hdr2[len2 - 1] == ' '))
+		len2--;
+	if (len1 != len2)
+		return 0;
+	return (strncasecmp(hdr1, hdr2, len1) == 0);
+}
+
+void procheader_header_free(Header * header)
+{
+	g_free(header->name);
+	g_free(header->body);
+	g_free(header);
+}
+
+/*
+  parse headers, for example :
+  From: dinh@enseirb.fr becomes :
+  header->name = "From:"
+  header->body = "dinh@enseirb.fr"
+ */
+
+Header * procheader_parse_header(gchar * buf)
+{
+	gchar tmp[BUFFSIZE];
+	gchar *p = buf;
+	Header * header;
+
+	if ((*buf == ':') || (*buf == ' '))
+		return NULL;
+
+	for (p = buf; *p ; p++) {
+		if ((*p == ':') || (*p == ' ')) {
+			header = g_new(Header, 1);
+			header->name = g_strndup(buf, p - buf + 1);
+			p++;
+			while (*p == ' ' || *p == '\t') p++;
+			conv_unmime_header(tmp, sizeof(tmp), p, NULL);
+			header->body = g_strdup(tmp);
+			return header;
+		}
+	}
+	return NULL;
+}
+
 GSList *procheader_get_header_list(const gchar *file)
 {
 	FILE *fp;
@@ -206,20 +263,9 @@ GSList *procheader_get_header_list(const gchar *file)
 	}
 
 	while (procheader_get_unfolded_line(buf, sizeof(buf), fp) != NULL) {
-		if (*buf == ':') continue;
-		for (p = buf; *p && *p != ' '; p++) {
-			if (*p == ':') {
-				header = g_new(Header, 1);
-				header->name = g_strndup(buf, p - buf);
-				p++;
-				while (*p == ' ' || *p == '\t') p++;
-				conv_unmime_header(tmp, sizeof(tmp), p, NULL);
-				header->body = g_strdup(tmp);
-
-				hlist = g_slist_append(hlist, header);
-				break;
-			}
-		}
+		header = procheader_parse_header(buf);
+		if (header != NULL)
+			hlist = g_slist_append(hlist, header);
 	}
 
 	fclose(fp);
@@ -233,9 +279,7 @@ void procheader_header_list_destroy(GSList *hlist)
 	while (hlist != NULL) {
 		header = hlist->data;
 
-		g_free(header->name);
-		g_free(header->body);
-		g_free(header);
+		procheader_header_free(header);
 		hlist = g_slist_remove(hlist, header);
 	}
 }

@@ -309,6 +309,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"show_number", "TRUE", &prefs_common.show_number, P_BOOL,
 	 NULL, NULL, NULL},
+	{"show_score", "TRUE", &prefs_common.show_score, P_BOOL,
+	 NULL, NULL, NULL},
 	{"show_size", "FALSE", &prefs_common.show_size, P_BOOL,
 	 NULL, NULL, NULL},
 	{"show_date", "TRUE", &prefs_common.show_date, P_BOOL,
@@ -343,6 +345,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"summary_col_number", "40", &prefs_common.summary_col_number, P_INT,
 	 NULL, NULL, NULL},
+	{"summary_col_score", "40", &prefs_common.summary_col_score,
+	 P_INT, NULL, NULL, NULL},
 	{"summary_col_size", "48", &prefs_common.summary_col_size, P_INT,
 	 NULL, NULL, NULL},
 	{"summary_col_date", "120", &prefs_common.summary_col_date, P_INT,
@@ -2243,6 +2247,7 @@ void prefs_summary_display_item_set(void)
 	SET_ACTIVE(S_COL_UNREAD, show_unread);
 	SET_ACTIVE(S_COL_MIME, show_mime);
 	SET_ACTIVE(S_COL_NUMBER, show_number);
+	SET_ACTIVE(S_COL_SCORE, show_score);
 	SET_ACTIVE(S_COL_SIZE, show_size);
 	SET_ACTIVE(S_COL_DATE, show_date);
 	SET_ACTIVE(S_COL_FROM, show_from);
@@ -2256,6 +2261,7 @@ void prefs_summary_display_item_set(void)
 		GET_ACTIVE(S_COL_UNREAD, show_unread);
 		GET_ACTIVE(S_COL_MIME, show_mime);
 		GET_ACTIVE(S_COL_NUMBER, show_number);
+		GET_ACTIVE(S_COL_SCORE, show_score);
 		GET_ACTIVE(S_COL_SIZE, show_size);
 		GET_ACTIVE(S_COL_DATE, show_date);
 		GET_ACTIVE(S_COL_FROM, show_from);
@@ -2306,6 +2312,7 @@ static void prefs_summary_display_item_dialog_create(gboolean *cancelled)
 	SET_CHECK_BUTTON(S_COL_UNREAD, _("Unread"));
 	SET_CHECK_BUTTON(S_COL_MIME, _("MIME"));
 	SET_CHECK_BUTTON(S_COL_NUMBER, _("Number"));
+	SET_CHECK_BUTTON(S_COL_SCORE, _("Score"));
 	SET_CHECK_BUTTON(S_COL_SIZE, _("Size"));
 	SET_CHECK_BUTTON(S_COL_DATE, _("Date"));
 	SET_CHECK_BUTTON(S_COL_FROM, _("From"));

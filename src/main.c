@@ -204,6 +204,7 @@ int main(int argc, char *argv[])
 	prefs_filter_write_config();
 	prefs_display_headers_read_config();
 	prefs_display_headers_write_config();
+	prefs_scoring_read_config();
 
 #if USE_GPGME
 	if (gpgme_check_engine()) {  /* Also does some gpgme init */

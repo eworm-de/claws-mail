@@ -755,6 +755,8 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 	MEMBDUP(xface);
 	MEMBDUP(dispositionnotificationto);
 
+	MEMBCOPY(score);
+
 	return newmsginfo;
 }
 

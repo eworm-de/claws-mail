@@ -43,13 +43,14 @@ typedef enum
 	S_COL_UNREAD	= 1,
 	S_COL_MIME	= 2,
 	S_COL_NUMBER	= 3,
-	S_COL_SIZE	= 4,
-	S_COL_DATE	= 5,
-	S_COL_FROM	= 6,
-	S_COL_SUBJECT	= 7
+	S_COL_SCORE     = 4,
+	S_COL_SIZE	= 5,
+	S_COL_DATE	= 6,
+	S_COL_FROM	= 7,
+	S_COL_SUBJECT	= 8
 } SummaryColumnPos;
 
-#define N_SUMMARY_COLS	8
+#define N_SUMMARY_COLS	9
 
 typedef enum
 {
@@ -58,7 +59,8 @@ typedef enum
 	SORT_BY_SIZE,
 	SORT_BY_DATE,
 	SORT_BY_FROM,
-	SORT_BY_SUBJECT
+	SORT_BY_SUBJECT,
+	SORT_BY_SCORE
 } SummarySortType;
 
 typedef enum

@@ -124,6 +124,8 @@ struct _MsgInfo
 
 	gchar *dispositionnotificationto;
 
+	int score;
+
 	/* used only for encrypted messages */
 	gchar *plaintext_file;
 	guint decryption_failed : 1;
