@@ -1,3 +1,15 @@
+2003-08-02 [luke]	0.9.3claws91
+	* src/mimeview.c
+		o fixed appearance of icon list when toggling back from the 
+		  ctree
+		o toggling of icons using the keyboard works correctly
+		o fixed all other keyboard shortcuts to work when icons are
+		  active
+	
+	* src/messageview.c
+		o fixed bug 4 - focus lost when changing messageview view type
+	
+
 2003-08-02 [christoph]	0.9.3claws90
 
 	* src/common/hooks.c
