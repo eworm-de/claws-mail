@@ -121,19 +121,23 @@ struct _PrefsCommon
 	gchar *normalfont;
 	gchar *boldfont;
 	gchar *smallfont;
+
+	gboolean trans_hdr;
 	gboolean display_folder_unread;
 	gint ng_abbrev_len;
-	ToolbarStyle toolbar_style;
-	gboolean show_statusbar;
+
 	gboolean show_searchbar;
-	gboolean trans_hdr;
-	gboolean enable_thread;
-	gboolean enable_hscrollbar;
-	gboolean expand_thread;
-	gboolean bold_unread;
 	gboolean swap_from;
+	gboolean expand_thread;
 	gboolean use_addr_book;
 	gchar *date_format;
+
+	gboolean enable_hscrollbar;
+	gboolean bold_unread;
+	gboolean enable_thread;
+
+	ToolbarStyle toolbar_style;
+	gboolean show_statusbar;
 
 	gint folderview_vscrollbar_policy;
 

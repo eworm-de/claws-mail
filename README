@@ -130,6 +130,25 @@ the toolbar. Then, fill the required settings.
 
 Refer to the manual supplied with this program for the general usage.
 
+Hidden settings
+---------------
+
+You can configure most of the features in Sylpheed through the preferences
+dialog, but there are a few parameters which don't have user interface
+(you don't have to modify them in normal use). You must edit
+~/.sylpheed/sylpheedrc by an editor when Sylpheed is not running.
+
+bold_font			bold font used in folder, summary and text view
+small_font			small font used in summary view etc.
+enable_hscrollbar		enable horizontal scroll bar in summary view
+				0: off  1: on	[default: 1]
+bold_unread			show unread messages using bold font in
+				summary view
+				0: off  1: on   [default: 1]
+folderview_vscrollbar_policy	specify the policy of vertical scroll bar
+				of folder view
+				0: always  1: automatic  2: never [default: 0]
+
 Information
 ===========
 

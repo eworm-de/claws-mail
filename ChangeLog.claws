@@ -1,3 +1,11 @@
+2002-11-27 [paul]	0.8.6claws18
+
+	* sync with 0.8.6cvs12
+	  src/prefs_common.c
+		Differences are that main uses a 'Receive dialog'
+		frame on the Interface tab, whereas claws groups all 
+		the dialogs together in a 'Dialogs' frame.
+
 2002-11-27 [colin]	0.8.6claws17
 
 	* src/prefs_matcher.c

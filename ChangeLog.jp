@@ -1,3 +1,12 @@
+2002-11-27
+
+	* README: 隠し設定の説明を追加。
+
+2002-11-27
+
+	* src/prefs_common.[ch]: 全般の設定ダイアログを再構成。
+	  enable_hscrollbar と bold_unread を隠しオプションにした。
+
 2002-11-26
 
 	* src/quote_fmt_parse.y: パースエラーを修正(Andreas Hinz さん thanks)。
