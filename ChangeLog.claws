@@ -1,3 +1,28 @@
+2003-02-23 [alfons]
+
+	* src/summaryview.c
+		also wait cursor when deleting files
+
+2003-02-23 [paul]
+
+	* tools/freshmeat_search.pl
+	  tools/google_search.pl
+	  	scripts should now work for any browser/browser command line
+
+2003-02-22 [christoph]	0.8.10claws45
+
+	* src/procmsg.c
+		fix IMAP flag setting, IMAP flag is not handled correctly
+		anymore by the folder system and information about the
+		folder should not be saved in the MsgInfo (in my opinion)
+
+	Patch submitted by Simon 'corecode' Schubert <corecode@corecode.ath.cx>
+
+2003-02-22 [christoph]	0.8.10claws44
+
+	* src/summaryview.c
+		fix spelling of "label" ;-)
+
 2003-02-22 [thorsten]	0.8.10claws43
 
 	* src/mimeview.c
@@ -2337,7 +2362,7 @@
 		start seperation of common code initialization seperated from gui
 
 	* src/summaryview.c
-		The function that is called when a color lable changes
+		The function that is called when a color label changes
 		should not change the color lable again
 
 2002-12-08 [colin]	0.8.6claws74
