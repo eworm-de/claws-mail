@@ -645,7 +645,7 @@ static void account_edit_prefs(void)
 	    ac_prefs->folder && strcmp2(ac_name, ac_prefs->account_name) != 0) {
 		folder_set_name(FOLDER(ac_prefs->folder),
 				ac_prefs->account_name);
-		folderview_rescan_all();
+		folderview_set_all();
 	}
 
 	account_clist_set();
@@ -690,7 +690,7 @@ static void account_delete(void)
 	ac_prefs = gtk_clist_get_row_data(clist, row);
 	if (ac_prefs->folder) {
 		folder_destroy(FOLDER(ac_prefs->folder));
-		folderview_rescan_all();
+		folderview_set_all();
 	}
 	account_destroy(ac_prefs);
 	account_clist_set();

@@ -3240,7 +3240,7 @@ static void summary_execute_move(SummaryView *summaryview)
 	if (summaryview->mlist) {
 		procmsg_move_messages(summaryview->mlist);
 
-		folderview_update_item_foreach(summaryview->folder_table);
+		folderview_update_item_foreach(summaryview->folder_table, FALSE);
 
 		for (cur = summaryview->mlist; cur != NULL; cur = cur->next)
 			procmsg_msginfo_free((MsgInfo *)cur->data);
@@ -3295,7 +3295,7 @@ static void summary_execute_copy(SummaryView *summaryview)
 		procmsg_copy_messages(summaryview->mlist);
 
 		/* folder_item_scan_foreach(summaryview->folder_table); */
-		folderview_update_item_foreach(summaryview->folder_table);
+		folderview_update_item_foreach(summaryview->folder_table, FALSE);
 
 		g_slist_free(summaryview->mlist);
 		summaryview->mlist = NULL;
@@ -3655,7 +3655,7 @@ void summary_filter(SummaryView *summaryview)
 		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 
 		/* folder_item_scan_foreach(summaryview->folder_table); */
-		folderview_update_item_foreach(summaryview->folder_table);
+		folderview_update_item_foreach(summaryview->folder_table, FALSE);
 
 		g_hash_table_destroy(summaryview->folder_table);
 		summaryview->folder_table = NULL;

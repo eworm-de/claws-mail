@@ -1,3 +1,28 @@
+2002-08-16
+
+	* src/mh.c: mh_scan_tree_recursive(): disabled Maildir folder
+	  checking to prevent confusion.
+
+2002-08-16
+
+	* src/folder.[ch]: folder_item_get_msg_list(): added a wrapper for
+	  method Folder::get_msg_list().
+	* src/account.c: account_edit_prefs(), account_delete(): use
+	  folderview_set_all() instead of folderview_rescan_all().
+	* src/folderview.[ch]:
+	  folderview_check_new_all(): new. Updates all folders.
+	  folderview_rescan_tree(): confirm before executing.
+	  folderview_rescan_all(): commented out since it's not used anymore.
+	  folderview_update_item_foreach(): added a flag for summary update.
+	* src/inc.c: inc_finished(): update summary only when
+	  prefs_common.scan_all_after_inc is set.
+	  inc_drop_message(): set mtime of target folder to 0 to force
+	  the updating of summary.
+	  inc_start(), get_spool(): update also summary when updating
+	  folder view.
+	* src/mainwindow.c: changed 'File - Rescan folder tree' to
+	  'File - Check for new messages in all folders'.
+
 2002-08-09
 
 	* src/compose.c: compose_write_to_file(): clearsign message body

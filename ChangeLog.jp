@@ -1,3 +1,28 @@
+2002-08-16
+
+	* src/mh.c: mh_scan_tree_recursive(): 混乱を避けるために Maildir
+	  フォルダチェックを無効にした。
+
+2002-08-16
+
+	* src/folder.[ch]: folder_item_get_msg_list(): メソッド
+	  Folder::get_msg_list() へのラッパーを追加。
+	* src/account.c: account_edit_prefs(), account_delete():
+	  folderview_rescan_all() の代わりに folderview_set_all() を使用。
+	* src/folderview.[ch]:
+	  folderview_check_new_all(): 新規。全フォルダを更新する。
+	  folderview_rescan_tree(): 実行前に確認するようにした。
+	  folderview_rescan_all(): もう使われないためコメントアウト。
+	  folderview_update_item_foreach(): サマリの更新のフラグを追加。
+	* src/inc.c: inc_finished(): prefs_common.scan_all_after_inc が
+	  セットされている場合のみサマリを更新するようにした。
+	  inc_drop_message(): サマリの更新を強制するために対象フォルダの
+	  mtime を 0 にセット。
+	  inc_start(), get_spool(): フォルダビューを更新するときにサマリも
+	  更新するようにした。
+	* src/mainwindow.c: 「ファイル - フォルダツリーを再スキャン」を
+	  「ファイル - 全フォルダの新着メッセージをチェック」に変更。
+
 2002-08-09
 
 	* src/compose.c: compose_write_to_file(): 指定した場合メッセージ本文

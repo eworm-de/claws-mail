@@ -400,7 +400,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Add mailbox..."),		NULL, add_mailbox_cb, 0, NULL},
 	{N_("/_File/_Add mbox mailbox..."),     NULL, add_mbox_cb, 0, NULL},
-	{N_("/_File/_Check for new mails in all folders"),
+	{N_("/_File/_Check for new messages in all folders"),
 						NULL, update_folderview_cb, 0, NULL},
 	{N_("/_File/_Folder"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Folder/Create _new folder..."),
@@ -1466,18 +1466,19 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		gchar *const entry;
 		SensitiveCond cond;
 	} entry[] = {
-		{"/File/Add mailbox..."        , M_UNLOCKED},
-                {"/File/Add mbox mailbox..."   , M_UNLOCKED},
-		{"/File/Check for new mails in all folders", M_UNLOCKED},
-		{"/File/Folder"                , M_UNLOCKED},
-		{"/File/Import mbox file..."   , M_UNLOCKED},
-		{"/File/Export to mbox file...", M_UNLOCKED},
-		{"/File/Empty trash"           , M_UNLOCKED},
-		{"/File/Work offline"	       , M_UNLOCKED},
+		{"/File/Add mailbox..."                       , M_UNLOCKED},
+                {"/File/Add mbox mailbox..."   		      , M_UNLOCKED},
+		{"/File/Check for new messages in all folders", M_UNLOCKED},
+		{"/File/Folder"                               , M_UNLOCKED},
+		{"/File/Import mbox file..."                  , M_UNLOCKED},
+		{"/File/Export to mbox file..."               , M_UNLOCKED},
+		{"/File/Empty trash"                          , M_UNLOCKED},
+		{"/File/Work offline"	       		      , M_UNLOCKED},
+
 		{"/File/Save as...", M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/File/Print..."  , M_TARGET_EXIST|M_UNLOCKED},
-		/* {"/File/Close", M_UNLOCKED}, */
-		{"/File/Exit" , M_UNLOCKED},
+		/* {"/File/Close"  , M_UNLOCKED}, */
+		{"/File/Exit"      , M_UNLOCKED},
 
 		{"/Edit/Select thread"		   , M_SINGLE_TARGET_EXIST},
 		{"/View/Sort"                      , M_EXEC},

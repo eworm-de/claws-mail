@@ -1156,6 +1156,7 @@ static MsgInfo *mh_parse_msg(const gchar *file, FolderItem *item)
 	return msginfo;
 }
 
+#if 0
 static gboolean mh_is_maildir_one(const gchar *path, const gchar *dir)
 {
 	gchar *entry;
@@ -1179,6 +1180,7 @@ static gboolean mh_is_maildir(const gchar *path)
 	       mh_is_maildir_one(path, "cur") &&
 	       mh_is_maildir_one(path, "tmp");
 }
+#endif
 
 static void mh_scan_tree_recursive(FolderItem *item)
 {
@@ -1222,10 +1224,12 @@ static void mh_scan_tree_recursive(FolderItem *item)
 		if (S_ISDIR(s.st_mode)) {
 			FolderItem *new_item;
 
+#if 0
 			if (mh_is_maildir(entry)) {
 				g_free(entry);
 				continue;
 			}
+#endif
 
 			new_item = folder_item_new(item->folder, d->d_name, entry);
 			folder_item_append(item, new_item);

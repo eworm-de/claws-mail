@@ -2350,7 +2350,7 @@ void folder_item_apply_processing(FolderItem *item)
 	}
 	
 	/* folder_item_scan_foreach(summaryview->folder_table); */
-	folderview_update_item_foreach(folder_table);
+	folderview_update_item_foreach(folder_table, FALSE);
 
 	g_slist_free(mlist);
 	

@@ -152,11 +152,10 @@ static void inc_finished(MainWindow *mainwin, gboolean new_messages)
 			folderview_unselect(mainwin->folderview);
 			folderview_select(mainwin->folderview, item);
 		}	
-	} else {
+	} else if (prefs_common.scan_all_after_inc) {
 		item = mainwin->summaryview->folder_item;
 		if (FOLDER_SUMMARY_MISMATCH(item, mainwin->summaryview)) {
-			folderview_unselect(mainwin->folderview);
-			folderview_select(mainwin->folderview, item);
+			folderview_update_item(item, TRUE);
 		}	
 	}
 }
@@ -609,7 +608,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		new_msgs += pop3_state->cur_total_num;
 
 		folderview_update_item_foreach
-			(pop3_state->folder_table);
+			(pop3_state->folder_table, TRUE);
 
 		if (pop3_state->error_val == PS_AUTHFAIL &&
 		    pop3_state->ac_prefs->tmp_pass) {
@@ -1036,6 +1035,10 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 	val = GPOINTER_TO_INT(g_hash_table_lookup
 			      (state->folder_table, dropfolder));
 	if (val == 0) {
+		folder_item_scan(dropfolder);
+		/* force updating */
+		if (FOLDER_IS_LOCAL(dropfolder->folder))
+			dropfolder->mtime = 0;
 		g_hash_table_insert(state->folder_table, dropfolder,
 				    GINT_TO_POINTER(1));
 	}
@@ -1187,11 +1190,11 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 		if (!prefs_common.scan_all_after_inc) {
 		g_hash_table_insert(folder_table, dest,
 				    GINT_TO_POINTER(1));
-			folderview_update_item_foreach(folder_table);
+			folderview_update_item_foreach(folder_table, TRUE);
 		}
 		g_hash_table_destroy(folder_table);
 	} else if (!prefs_common.scan_all_after_inc) {
-		folderview_update_item(dest, FALSE);
+		folderview_update_item(dest, TRUE);
 	}
 
 	return msgs;
