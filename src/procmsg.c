@@ -757,7 +757,9 @@ void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 	g_free(prtmp);
 
 	g_strchomp(buf);
+#ifndef WIN32
 	if (buf[strlen(buf) - 1] != '&') strcat(buf, "&");
+#endif
 	system(buf);
 }
 

@@ -924,6 +924,9 @@ gchar *folder_get_path(Folder *folder)
 					   G_DIR_SEPARATOR_S,
 					   folder->account->userid,
 					   NULL);
+#ifdef WIN32 /* replace ':' in IPv6 Adress (but after drive separator) */
+			subst_char(path+2, ':', '$');
+#endif
 			break;
 
 		case F_NEWS:
@@ -932,6 +935,9 @@ gchar *folder_get_path(Folder *folder)
 					   G_DIR_SEPARATOR_S,
 					   folder->account->nntp_server,
 					   NULL);
+#ifdef WIN32 /* replace ':' in IPv6 Adress (but after drive separator) */
+			subst_char(path+2, ':', '$');
+#endif
 			break;
 
 		default:
