@@ -1,3 +1,10 @@
+2004-07-18 [colin]	0.9.12cvs30.3
+
+	* src/compose.c
+		Fix smart wrapping (block text_inserted handler
+		while putting quotation to avoid wrap on input,
+		don't join lines if next is sig separator)
+
 2004-07-17 [colin]	0.9.12cvs30.2
 
 	* src/folderview.c

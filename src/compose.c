@@ -1808,16 +1808,23 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 		g_signal_handlers_block_by_func(G_OBJECT(buffer),
 					G_CALLBACK(compose_changed_cb),
 					compose);
+		g_signal_handlers_block_by_func(G_OBJECT(buffer),
+					G_CALLBACK(text_inserted),
+					compose);
 		
 		mark = gtk_text_buffer_get_insert(buffer);
 		gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
 
 		lastp = strchr(p, '\n');
 		len = lastp ? lastp - p + 1 : -1;
+
 		gtk_text_buffer_insert(buffer, &iter, p, len);
 
 		g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
 					G_CALLBACK(compose_changed_cb),
+					compose);
+		g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
+					G_CALLBACK(text_inserted),
 					compose);
 		
 		if (lastp)
@@ -2704,6 +2711,35 @@ static guint ins_quote(GtkTextBuffer *textbuf, GtkTextIter *iter,
 	return ins_len;
 }
 
+static gboolean is_sig_separator(Compose *compose, GtkTextBuffer *textbuf, guint start_pos) 
+{
+	char *text = NULL;
+	GtkTextIter iter; 
+	GtkTextIter end_iter;
+	if (!compose->account->sig_sep)
+		return FALSE;
+	
+	gtk_text_buffer_get_iter_at_offset(textbuf, &iter, start_pos+1);
+	gtk_text_buffer_get_iter_at_offset(textbuf, &end_iter,
+		start_pos+strlen(compose->account->sig_sep)+1);
+
+	if (!strcmp(gtk_text_iter_get_text(&iter, &end_iter),
+			compose->account->sig_sep)) {
+		/* check \n */
+		gtk_text_buffer_get_iter_at_offset(textbuf, &iter,
+			start_pos+strlen(compose->account->sig_sep)+1);
+		gtk_text_buffer_get_iter_at_offset(textbuf, &end_iter,
+			start_pos+strlen(compose->account->sig_sep)+2);
+
+		if (!strcmp(gtk_text_iter_get_text(&iter, &end_iter),"\n"));
+			return TRUE;
+		
+
+	}
+
+	return FALSE;
+}
+
 /* check if we should join the next line */
 static gboolean join_next_line_is_needed(GtkTextBuffer *textbuf,
 					 guint start_pos, guint tlen,
@@ -2720,6 +2756,7 @@ static gboolean join_next_line_is_needed(GtkTextBuffer *textbuf,
 		gtk_text_buffer_get_iter_at_offset(textbuf, &iter,
 						   start_pos + indent_len);
 		GET_CHAR(&iter, cbuf, ch_len);
+		
 		if (ch_len > 0 && (cbuf[0] != '\n'))
 			do_join = TRUE;
 	}
@@ -2783,10 +2820,11 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 
 			/* should we join the next line */
 			if ((autowrap || i_len != cur_len) && do_delete &&
+			!is_sig_separator(compose, textbuf, cur_pos+i_len) &&
 			    join_next_line_is_needed
-				(textbuf, cur_pos + 1, tlen, i_len, autowrap))
+				(textbuf, cur_pos + 1, tlen, i_len, autowrap)) {
 				do_delete = TRUE;
-			else
+			} else
 				do_delete = FALSE;
 
 			/* skip delete if it is continuous URL */
@@ -2959,9 +2997,9 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 			/* start over with current line */
 			is_new_line = TRUE;
 			line_len = cur_len = 0;
-			if (autowrap || i_len > 0)
+			if (autowrap || i_len > 0) {
 				do_delete = TRUE;
-			else
+			} else
 				do_delete = FALSE;
 #ifdef WRAP_DEBUG
 			g_print("after CR insert ");
