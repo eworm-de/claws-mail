@@ -440,11 +440,8 @@ void renderer_write_config(void)
 	}
 }
 
-FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
+FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 {
-	return NULL;
-
-#if 0	/* FIXME */
 	FILE *tmpfp, *outfp;
 	gchar *src_codeset;
 	gboolean conv_fail = FALSE;
@@ -452,28 +449,32 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 	gchar *str;
 	struct ContentRenderer * renderer;
 	GList * cur;
-
+	gchar *tmpfile, *content_type;
+    
 	g_return_val_if_fail(mimeinfo != NULL, NULL);
-	g_return_val_if_fail(infp != NULL, NULL);
-	g_return_val_if_fail(mimeinfo->mime_type == MIME_TEXT ||
-			     mimeinfo->mime_type == MIME_TEXT_HTML ||
-			     mimeinfo->mime_type == MIME_TEXT_ENRICHED, NULL);
 
-	if (fseek(infp, mimeinfo->fpos, SEEK_SET) < 0) {
-		perror("fseek");
+	if (!procmime_decode_content(mimeinfo))
+		return NULL;
+
+	tmpfile = procmime_get_tmp_file_name(mimeinfo);
+	if (tmpfile == NULL)
+		return NULL;
+
+	if (procmime_get_part(tmpfile, mimeinfo) < 0) {
+		g_free(tmpfile);
 		return NULL;
 	}
 
-	while (fgets(buf, sizeof(buf), infp) != NULL)
-		if (buf[0] == '\r' || buf[0] == '\n') break;
-
-	tmpfp = procmime_decode_content(NULL, infp, mimeinfo);
-	if (!tmpfp)
+	tmpfp = fopen(tmpfile, "rb");
+	if (tmpfp == NULL) {
+		g_free(tmpfile);
 		return NULL;
+	}
 
 	if ((outfp = my_tmpfile()) == NULL) {
 		perror("tmpfile");
 		fclose(tmpfp);
+		g_free(tmpfile);
 		return NULL;
 	}
 
@@ -482,15 +483,18 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 
 	renderer = NULL;
 
+	content_type = g_strdup_printf("%s/%s", procmime_get_type_str(mimeinfo->type),
+		mimeinfo->subtype);
 	for(cur = renderer_list ; cur != NULL ; cur = cur->next) {
 		struct ContentRenderer * cr;
+
 		cr = cur->data;
-		if (g_strcasecmp(cr->content_type,
-				 mimeinfo->content_type) == 0) {
+		if (g_strcasecmp(cr->content_type, content_type) == 0) {
 			renderer = cr;
 			break;
 		}
 	}
+	g_free(content_type);
 
 	if (renderer != NULL) {
 		FILE * p;
@@ -512,18 +516,7 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 		}
 		
 		dup2(oldout, 1);
-	} else if (mimeinfo->mime_type == MIME_TEXT) {
-		while (fgets(buf, sizeof(buf), tmpfp) != NULL) {
-			str = conv_codeset_strdup(buf, src_codeset, NULL);
-			if (str) {
-				fputs(str, outfp);
-				g_free(str);
-			} else {
-				conv_fail = TRUE;
-				fputs(buf, outfp);
-			}
-		}
-	} else if (mimeinfo->mime_type == MIME_TEXT_HTML) {
+	} else if (mimeinfo->type == MIMETYPE_TEXT && !g_strcasecmp(mimeinfo->subtype, "html")) {
 		HTMLParser *parser;
 		CodeConverter *conv;
 
@@ -534,7 +527,7 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 		}
 		html_parser_destroy(parser);
 		conv_code_converter_destroy(conv);
-	} else if (mimeinfo->mime_type == MIME_TEXT_ENRICHED) {
+	} else if (mimeinfo->type == MIMETYPE_TEXT && !g_strcasecmp(mimeinfo->subtype, "enriched")) {
 		ERTFParser *parser;
 		CodeConverter *conv;
 
@@ -545,6 +538,17 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 		}
 		ertf_parser_destroy(parser);
 		conv_code_converter_destroy(conv);
+	} else if (mimeinfo->type == MIMETYPE_TEXT) {
+		while (fgets(buf, sizeof(buf), tmpfp) != NULL) {
+			str = conv_codeset_strdup(buf, src_codeset, NULL);
+			if (str) {
+				fputs(str, outfp);
+				g_free(str);
+			} else {
+				conv_fail = TRUE;
+				fputs(buf, outfp);
+			}
+		}
 	}
 
 	if (conv_fail)
@@ -552,19 +556,17 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 
 	fclose(tmpfp);
 	rewind(outfp);
+	unlink(tmpfile);
+	g_free(tmpfile);
 
 	return outfp;
-#endif
 }
 
 /* search the first text part of (multipart) MIME message,
    decode, convert it and output to outfp. */
 FILE *procmime_get_first_text_content(MsgInfo *msginfo)
 {
-	return NULL;
-
-#if 0	/* FIXME */
-	FILE *infp, *outfp = NULL;
+	FILE *outfp = NULL;
 	MimeInfo *mimeinfo, *partinfo;
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
@@ -572,30 +574,16 @@ FILE *procmime_get_first_text_content(MsgInfo *msginfo)
 	mimeinfo = procmime_scan_message(msginfo);
 	if (!mimeinfo) return NULL;
 
-	if ((infp = procmsg_open_message(msginfo)) == NULL) {
-		procmime_mimeinfo_free_all(mimeinfo);
-		return NULL;
-	}
-
 	partinfo = mimeinfo;
-	while (partinfo && partinfo->mime_type != MIME_TEXT)
+	while (partinfo && partinfo->type != MIMETYPE_TEXT)
 		partinfo = procmime_mimeinfo_next(partinfo);
-	if (!partinfo) {
-		partinfo = mimeinfo;
-		while (partinfo && partinfo->mime_type != MIME_TEXT_HTML &&
-				partinfo->mime_type != MIME_TEXT_ENRICHED)
-			partinfo = procmime_mimeinfo_next(partinfo);
-	}
-	
 
 	if (partinfo)
-		outfp = procmime_get_text_content(partinfo, infp);
+		outfp = procmime_get_text_content(partinfo);
 
-	fclose(infp);
 	procmime_mimeinfo_free_all(mimeinfo);
 
 	return outfp;
-#endif
 }
 
 gboolean procmime_find_string_part(MimeInfo *mimeinfo, const gchar *filename,

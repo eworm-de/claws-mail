@@ -163,8 +163,7 @@ MimeInfo *procmime_scan_mime_header	(FILE		*fp);
 gboolean procmime_decode_content	(MimeInfo	*mimeinfo);
 gint procmime_get_part			(const gchar	*outfile,
 					 MimeInfo	*mimeinfo);
-FILE *procmime_get_text_content		(MimeInfo	*mimeinfo,
-					 FILE		*infp);
+FILE *procmime_get_text_content		(MimeInfo	*mimeinfo);
 FILE *procmime_get_first_text_content	(MsgInfo	*msginfo);
 
 gboolean procmime_find_string_part	(MimeInfo	*mimeinfo,

@@ -1,3 +1,9 @@
+2003-10-15 [christoph]  0.9.6claws31
+
+	* src/procmime.[ch]
+		fix procmime_get_text_content() and
+		procmime_get_first_text_content()
+
 2003-10-15 [christoph]	0.9.6claws30
 
 	* src/plugins/spamassassin/spamassassin_gtk.c
