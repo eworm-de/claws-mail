@@ -49,7 +49,7 @@ homepage. Please refer to the link section below.
     pthreads                    (pthreads-2002-11-04.exe)
     libjconv                    (libjconv-2.8.1-dev.zip)
 * unix build tools (diff,patch,msgfmt,grep,sed,bison,flex,cvs)
-    unix-tools                  (unix-tools.zip)
+    unix-tools                  (unix-tools-031221.zip)
 
 
 3. Create the source tree:
@@ -136,8 +136,8 @@ homepage. Please refer to the link section below.
 * Before opening the project, some files have to be created by calling
   "patch_claws.bat" in \dev\proj\sylpheed-claws\win32. This will create
   version.h, some bison/flex generated files and the translations.
-  You will need the files from unix-tools.zip or a running cygwin
-  installation for this step.
+  You will need the files from unix-tools-031221.zip or a running cygwin
+  or msys installation for this step.
 * libjconv and glib need patches, when compiled from source. As libjconv
   is rather small, the patched version is provided with the source.
   The patch for glib (2.0.0 and 2.0.1) is available in "win32\patches".

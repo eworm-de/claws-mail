@@ -501,6 +501,7 @@ EXPORTS
 	compose_reply_mode 
 	compose_send 
 	compose_toolbar_cb 
+	compose_update_actions_menu 
 	conv_X_any_to_disp 
 	conv_X_get_current_iso_charset_str 
 	conv_X_locale_from_utf8 
@@ -1040,6 +1041,7 @@ EXPORTS
 	main_window_toggle_message_view 
 	main_window_toggle_work_offline 
 	main_window_unlock 
+	main_window_update_actions_menu 
 	mainwindow_get_mainwindow 
 	mainwindow_key_pressed 
 	mainwindow_progressindicator_hook 
@@ -1139,6 +1141,7 @@ EXPORTS
 	messageview_set_position 
 	messageview_show 
 	messageview_toggle_view_real 
+	messageview_update_actions_menu 
 	mgu_clear_list 
 	mgu_clear_slist 
 	mgu_email_check_empty 
@@ -1860,7 +1863,6 @@ EXPORTS
 	wcscasestr 
 	wcsncasecmp 
 	wcsndup 
-	xml_attr_cmp_name 
 	xml_close_file 
 	xml_compare_tag 
 	xml_copy_attr 

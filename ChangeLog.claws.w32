@@ -1,3 +1,13 @@
+2003-12-19 [thorsten]	0.9.8claws5-1
+
+	* win32/utils/mk_translation.bat
+		fix: patch "charset=" entry in .po files (gettext-0.13)
+
+2003-12-19 [thorsten]	0.9.8claws
+
+	* win32/utils/sylpheed-setup.iss.in
+		fix: invoke matcher conversion tool during install
+
 2003-12-04 [thorsten]	0.9.7claws9-2
 
 	* src/recv.c

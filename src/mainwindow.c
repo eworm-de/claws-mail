@@ -1031,7 +1031,7 @@ MainWindow *main_window_create(SeparateType type)
 	toolbar_main_set_sensitive(mainwin);
 
 	/* create actions menu */
-	action_update_mainwin_menu(ifactory, mainwin);
+	main_window_update_actions_menu(mainwin);
 
 	/* attach accel groups to main window */
 #define	ADD_MENU_ACCEL_GROUP_TO_WINDOW(menu,win)	\
@@ -1083,6 +1083,14 @@ void main_window_destroy(MainWindow *mainwin)
 {
 	/* TODO : destroy other component */
 	messageview_destroy(mainwin->messageview);
+}
+
+void main_window_update_actions_menu(MainWindow *mainwin)
+{
+	GtkItemFactory *ifactory;
+
+	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
+	action_update_mainwin_menu(ifactory, "/Tools/Actions", mainwin);
 }
 
 void main_window_cursor_wait(MainWindow *mainwin)

@@ -5431,9 +5431,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	}
 #endif
 
-	action_update_compose_menu(ifactory, compose);
-
-
 	undostruct = undo_init(text);
 	undo_set_change_state_func(undostruct, &compose_undo_state_changed,
 				   menubar);
@@ -5541,13 +5538,10 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 			}
         	}
 	}
+        compose->gtkaspell = gtkaspell;
 #endif
 
 	compose_select_account(compose, account, TRUE);
-
-#if USE_ASPELL
-        compose->gtkaspell      = gtkaspell;
-#endif
 
 	if (account->set_autocc && account->auto_cc && mode != COMPOSE_REEDIT)
 		compose_entry_append(compose, account->auto_cc, COMPOSE_CC);
@@ -5565,7 +5559,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry), prefs_common.trans_hdr ? _("Newsgroups:") : "Newsgroups:");
 
 	addressbook_set_target_compose(compose);
-	action_update_compose_menu(ifactory, compose);
 	
 	if (mode != COMPOSE_REDIRECT)
 		compose_set_template_menu(compose);
@@ -5583,7 +5576,10 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	/* Priority */
 	compose->priority = PRIORITY_NORMAL;
 	compose_update_priority_menu_item(compose);
-	
+
+	/* Actions menu */
+	compose_update_actions_menu(compose);
+
 #if USE_GPGME
 	activate_gnupg_mode(compose, account);
 #endif	
@@ -5735,6 +5731,14 @@ static void compose_set_template_menu(Compose *compose)
 
 	gtk_widget_show(menu);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(compose->tmpl_menu), menu);
+}
+
+void compose_update_actions_menu(Compose *compose)
+{
+	GtkItemFactory *ifactory;
+
+	ifactory = gtk_item_factory_from_widget(compose->menubar);
+	action_update_compose_menu(ifactory, "/Tools/Actions", compose);
 }
 
 void compose_reflect_prefs_all(void)

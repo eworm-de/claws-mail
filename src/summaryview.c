@@ -5069,25 +5069,25 @@ CMP_FUNC_DEF(summary_cmp_by_to, to);
 
 #undef CMP_FUNC_DEF
 
-static gint summary_cmp_by_subject(GtkCList *clist,			 \
-				   gconstpointer ptr1,			 \
-				   gconstpointer ptr2)			 \
-{									 \
-	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;		 \
-	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;		 \
-									 \
-	if (!msginfo1->subject)						 \
-		return (msginfo2->subject != NULL);			 \
-	if (!msginfo2->subject)						 \
-		return -1;						 \
-									 \
-	return subject_compare_for_sort					 \
-		(msginfo1->subject, msginfo2->subject);			 \
+static gint summary_cmp_by_subject(GtkCList *clist,
+				   gconstpointer ptr1,
+				   gconstpointer ptr2)
+{
+	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
+	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
+
+	if (!msginfo1->subject)
+		return (msginfo2->subject != NULL);
+	if (!msginfo2->subject)
+		return -1;
+
+	return subject_compare_for_sort
+		(msginfo1->subject, msginfo2->subject);
 }
 
- static gint summary_cmp_by_from(GtkCList *clist, gconstpointer ptr1,
- 				 gconstpointer ptr2)
- {
+static gint summary_cmp_by_from(GtkCList *clist, gconstpointer ptr1,
+				gconstpointer ptr2)
+{
 	const gchar *str1, *str2;
 	const GtkCListRow *r1 = (const GtkCListRow *) ptr1;
 	const GtkCListRow *r2 = (const GtkCListRow *) ptr2;
@@ -5105,9 +5105,9 @@ static gint summary_cmp_by_subject(GtkCList *clist,			 \
  		return -1;
  
 	return strcasecmp(str1, str2);
- }
+}
  
- static gint summary_cmp_by_simplified_subject
+static gint summary_cmp_by_simplified_subject
 	(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
 {
 	const FolderItemPrefs *prefs;
@@ -5136,7 +5136,7 @@ static gint summary_cmp_by_subject(GtkCList *clist,			 \
 	if (!prefs)
 		return -1;
 	
-	return strcasecmp(str1, str2);
+	return subject_compare_for_sort(str1, str2);
 }
 
 static gint summary_cmp_by_score(GtkCList *clist,
