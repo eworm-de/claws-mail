@@ -1611,7 +1611,14 @@ gboolean procmsg_msg_has_flagged_parent(MsgInfo *info, MsgPermFlags perm_flags)
 			procmsg_msginfo_free(tmp);
 			return TRUE;
 		} else if (tmp != NULL) {
-			gboolean result = procmsg_msg_has_flagged_parent(tmp, perm_flags);
+			gboolean result;
+			if (tmp->msgnum == info->msgnum) {
+				debug_print("LOOP: message %s%c%d references itself\n",
+					folder_item_get_path(info->folder), 
+					G_DIR_SEPARATOR, info->msgnum);
+				result = FALSE;
+			} else
+				result = procmsg_msg_has_flagged_parent(tmp, perm_flags);
 			procmsg_msginfo_free(tmp);
 			return result;
 		} else {

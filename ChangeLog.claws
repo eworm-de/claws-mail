@@ -1,3 +1,9 @@
+2003-01-01 [thorsten]	0.8.8claws34
+
+	* src/procmsg.c
+		inhibit endless loop if msg references itself
+		(closes Bug [ 660477 ] Infinite loop in parent flag search)
+
 2003-01-01 [christoph]	0.8.8claws33
 
 	* src/mainwindow.c
