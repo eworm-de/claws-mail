@@ -522,6 +522,7 @@ static HTMLState html_parse_tag(HTMLParser *parser)
 {
 	gchar buf[HTMLBUFSIZE];
 	gchar *p;
+	static gboolean is_in_href = FALSE;
 
 	html_get_parenthesis(parser, buf, sizeof(buf));
 
@@ -541,6 +542,30 @@ static HTMLState html_parse_tag(HTMLParser *parser)
 		parser->space = FALSE;
 		html_append_char(parser, '\n');
 		parser->state = HTML_BR;
+	} else if (!strcmp(buf, "a")) {
+	        /* look for tokens separated by space or = */
+	        char* href_token = strtok(++p, " =");
+		parser->state = HTML_NORMAL;
+		while (href_token != NULL) {
+		        /* look for href */
+		        if (!strcmp(href_token, "href")) {
+			        /* the next token is the url, between double
+				 * quotes */
+			        char* url = strtok(NULL, "\"");
+				html_append_str(parser, url, strlen(url));
+				html_append_char(parser, ' ');
+				/* start enforcing html link */
+				parser->state = HTML_HREF;
+				is_in_href = TRUE;
+				break;
+			}
+			/* or get next token */
+			href_token = strtok(NULL, " =");
+		}
+	} else if (!strcmp(buf, "/a")) {
+	        /* stop enforcing html link */
+	        parser->state = HTML_NORMAL;
+	        is_in_href = FALSE;
 	} else if (!strcmp(buf, "p")) {
 		parser->space = FALSE;
 		if (!parser->empty_line) {
@@ -589,6 +614,12 @@ static HTMLState html_parse_tag(HTMLParser *parser)
 			html_append_char(parser, '\n');
 		}
 		parser->state = HTML_NORMAL;
+	}
+	
+	if (is_in_href == TRUE) {
+	        /* when inside a link, everything will be written as
+		 * clickable (see textview_show_thml in textview.c) */
+	        parser->state = HTML_HREF;
 	}
 
 	return parser->state;

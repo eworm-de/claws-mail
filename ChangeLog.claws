@@ -1,10 +1,16 @@
+2001-10-29 [paul]	0.6.4claws15
+
+	* src/html.c, src/textview.c
+		activate links in html mail and fix clickable parts
+		Submitted by Matthieu Dazy <dazy@t-surf.com>
+
 2001-10-29 [paul]
 
 	* po/de.po, po/es.po, po/pt_BR/po
 		updated translations, submitted by Jens Oberender,
 		Ricardo Mones Lastra, and Fabio Junior Beneditto
 
-2001-10-29 [darko]
+2001-10-29 [darko]	0.6.4claws14
 
 	* src/compose.c
 		fix wrapping for good
@@ -14,7 +20,7 @@
 	* src/compose.c
 		undo previous change as it broke the smart wrapping
 
-2001-10-29 [darko]
+2001-10-29 [darko]	0.6.4claws13
 
 	* src/compose.c
 		fix infinite loop when long URL is quoted

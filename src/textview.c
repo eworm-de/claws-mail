@@ -103,6 +103,10 @@ static void textview_show_html		(TextView	*textview,
 static void textview_write_line		(TextView	*textview,
 					 const gchar	*str,
 					 CodeConverter	*conv);
+static void textview_write_link         (TextView	*textview,
+                                         const gchar    *url,
+					 const gchar	*str,
+					 CodeConverter	*conv);
 static GPtrArray *textview_scan_header	(TextView	*textview,
 					 FILE		*fp);
 static void textview_show_header	(TextView	*textview,
@@ -420,12 +424,30 @@ static void textview_show_html(TextView *textview, FILE *fp,
 {
 	HTMLParser *parser;
 	gchar *str;
+	gchar* url = NULL;
 
 	parser = html_parser_new(fp, conv);
 	g_return_if_fail(parser != NULL);
 
 	while ((str = html_parse(parser)) != NULL) {
-		textview_write_line(textview, str, NULL);
+	        if (parser->state == HTML_HREF) {
+		        /* first time : get and copy the URL */
+		        if (url == NULL) {
+		                url = strdup(strtok(str, " "));
+				/* the URL may (or not) be followed by the
+				 * referenced text */
+		                str = strtok(NULL, "");
+		        }
+		        if (str != NULL) {
+			        textview_write_link(textview, url, str, NULL);
+		        }
+	        } else {
+		        if (url != NULL) {
+		                free(url);
+				url = NULL;
+			}
+		        textview_write_line(textview, str, NULL);
+	        }
 	}
 	html_parser_destroy(parser);
 }
@@ -738,6 +760,41 @@ static void textview_make_clickable_parts(TextView *textview,
 }
 
 #undef ADD_TXT_POS
+
+/* This function writes str as a double-clickable link with the given url. */ 
+static void textview_write_link(TextView *textview, const gchar *url,
+                                const gchar *str, CodeConverter *conv)
+{
+    GdkColor *link_color = NULL;
+    RemoteURI* uri;
+    GtkText *text = GTK_TEXT(textview->text);
+    gchar buf[BUFFSIZE];
+
+    /* this part is taken from textview_write_line. Right now the only place
+     * that calls this function passes NULL for conv, but you never know. */
+    if (!conv)
+	    strncpy2(buf, str, sizeof(buf));
+    else if (conv_convert(conv, buf, sizeof(buf), str) < 0) {
+       	    gtk_text_insert(text, textview->msgfont,
+		            prefs_common.enable_color
+		            ? &error_color : NULL, NULL,
+		            "*** Warning: code conversion failed ***\n",
+		            -1);
+	    return;
+    }
+
+    /* this part is based on the code in make_clickable_parts */
+    if (prefs_common.enable_color) {
+	link_color = &uri_color;
+    }
+    uri = g_new(RemoteURI, 1);
+    uri->uri = g_strdup(url);
+    uri->start = gtk_text_get_point(text);
+    gtk_text_insert(text, textview->msgfont, link_color, NULL, buf,
+	            strlen(buf));
+    uri->end = gtk_text_get_point(text);
+    textview->uri_list = g_slist_append(textview->uri_list, uri);
+}
 
 static void textview_write_line(TextView *textview, const gchar *str,
 				CodeConverter *conv)
@@ -1359,6 +1416,13 @@ static void textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 	    ((event->button == 1 && event->type == GDK_2BUTTON_PRESS)
 	     || event->button == 2 || event->button == 3)) {
 		GSList *cur;
+
+		/* double click seems to set the cursor after the current
+		 * word. The cursor position needs fixing, otherwise the
+		 * last word of a clickable zone will not work */
+		if (event->button == 1 && event->type == GDK_2BUTTON_PRESS) {
+		        textview->cur_pos--;
+		}
 
 		for (cur = textview->uri_list; cur != NULL; cur = cur->next) {
 			RemoteURI *uri = (RemoteURI *)cur->data;
