@@ -1,3 +1,13 @@
+2003-03-01 [paul]	0.8.10claws65
+
+	* src/addressbook.c
+		revert commit 0.8.10claws54 - breaks editing of
+		addressbook.
+		
+	* po/bg.po
+		update Bulgarian translation, submitted by
+		George Danchev
+
 2003-02-28 [christoph]	0.8.10claws64
 
 	* src/account.c
