@@ -12,6 +12,9 @@
 	* po/nl.po
 		update for last minute sync
 
+	* src/undo.c
+		increased undo_levels from 10 to 50
+
 2001-12-15 [melvin]
 
 	* po/fr.po

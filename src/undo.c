@@ -154,7 +154,7 @@ static void undo_check_size(UndoMain *undostruct)
 {
         gint n;
         UndoInfo *nth_undo;
-	gint undo_levels = 10;
+	gint undo_levels = 50;
 
         if (undo_levels < 1)
                 return;
