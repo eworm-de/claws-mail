@@ -194,7 +194,7 @@ void alertpanel_error_log(const gchar *format, ...)
 	mainwin = mainwindow_get_mainwindow();
 	
 	if (mainwin && mainwin->logwin) {
-		val = alertpanel(_("Error"), buf, _("OK"), _("View log"), NULL);
+		val = alertpanel_with_type(_("Error"), buf, _("OK"), _("View log"), NULL, NULL, ALERT_ERROR);
 		if (val == G_ALERTALTERNATE)
 			log_window_show(mainwin->logwin);
 	} else
