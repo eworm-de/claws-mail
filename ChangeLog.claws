@@ -1,3 +1,8 @@
+2002-08-08 [oliver]	0.8.1claws37
+
+	* src/prefs_toolbar.c
+		fix substitute pixmap bug
+
 2002-08-08 [paul]	0.8.1claws36
 
 	* sync with 0.8.1cvs19

@@ -330,7 +330,7 @@ static gint prefs_toolbar_register(void)
 	gint row_set = 0;
 	GdkPixmap *xpm;
 	GdkBitmap *xpmmask;
-	gchar *item[5] = {0};
+	gchar *item[4];
 
 	if (clist_icons->rows == 0) return -1; 
 
@@ -348,7 +348,8 @@ static gint prefs_toolbar_register(void)
 		item[3] = g_strdup ("");
 		
 		row_set = gtk_clist_append (GTK_CLIST (mtoolbar.clist_set), item);
-	
+
+		g_free (item[0]);
 	} else {
 
 		if (is_duplicate (item[3])) {
@@ -376,7 +377,6 @@ static gint prefs_toolbar_register(void)
 	gtk_clist_moveto(clist_set, row_set, 0, row_set/clist_set->rows, 0);
 	gtk_clist_select_row (clist_set, row_set, 0);
 
-	g_free (item[0]);
 	g_free (item[2]);
 	g_free (item[3]);
 
@@ -392,7 +392,7 @@ static gint prefs_toolbar_substitute(void)
 	gint row_set = 0;
 	GdkPixmap *xpm;
 	GdkBitmap *xpmmask;
-	gchar *item[5] = {0};
+	gchar *item[4];
 	gchar *ac_set;
 
 	/* no rows or nothing selected */
@@ -417,6 +417,8 @@ static gint prefs_toolbar_substitute(void)
 
 		gtk_clist_remove (clist_set, row_set);
 		row_set = gtk_clist_insert (clist_set, row_set, item);
+
+		g_free (item[0]);
 	} else {
 
 		if ((is_duplicate(item[3])) && (g_strcasecmp(item[3], ac_set) != 0)){
@@ -441,12 +443,9 @@ static gint prefs_toolbar_substitute(void)
 		gtk_clist_set_pixmap (clist_set, row_set, 0, xpm, xpmmask);
 	}
 	
-
-	
 	gtk_clist_moveto(clist_set, row_set, 0, row_set/clist_set->rows, 0);
 	gtk_clist_select_row (clist_set, row_set, 0);
 
-	g_free (item[0]);
 	g_free (item[2]);
 	g_free (item[3]);
 	
