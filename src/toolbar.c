@@ -774,6 +774,8 @@ void toolbar_set_style(GtkWidget *toolbar_wid, GtkWidget *handlebox_wid, guint a
 	}
 
 	prefs_common.toolbar_style = (ToolbarStyle)action;
+	gtk_widget_set_usize(handlebox_wid, 1, -1);
+	
 	if (prefs_common.toolbar_style != TOOLBAR_NONE) {
 		gtk_widget_show(handlebox_wid);
 		gtk_widget_queue_resize(handlebox_wid);

@@ -1,3 +1,8 @@
+2004-01-23 [paul]	0.9.8.claws44
+
+	* sync with 0.9.8cvs5
+		see ChangeLog 2004-01-22
+
 2004-01-23 [alfons]	0.9.8claws43
 
 	* src/procmsg.c

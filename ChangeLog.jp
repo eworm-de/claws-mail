@@ -1,3 +1,13 @@
+2004-01-22
+
+	* src/mainwindow.c: ツールバーによってウィンドウサイズが自動的に
+	  伸長してしまうのを修正。
+
+2004-01-21
+
+	* src/addr_compl.[ch]
+	  src/gtkshruler.[ch]: 著作権表示を変更。
+
 2004-01-20
 
 	* src/gtkstext.c: find_line_params(): マルチバイトとシングルバイト

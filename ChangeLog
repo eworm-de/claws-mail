@@ -1,3 +1,13 @@
+2004-01-22
+
+	* src/mainwindow.c: fixed automatic expansion of window size because
+	  of toolbar.
+
+2004-01-21
+
+	* src/addr_compl.[ch]
+	  src/gtkshruler.[ch]: changed the copyright notice.
+
 2004-01-20
 
 	* src/gtkstext.c: find_line_params(): also break between mutlibyte
