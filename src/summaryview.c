@@ -1947,7 +1947,6 @@ gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
 	summary_set_marks_func(ctree, cnode, summaryview);
 
 	if (msgid)
-	//if (msgid && g_hash_table_lookup(msgid_table, msgid) == NULL)
 		g_hash_table_insert(msgid_table, (gchar *)msgid, cnode);
 
 	return TRUE;
