@@ -389,3 +389,4 @@
 ( cvs diff -u -r 1.65.2.23 -r 1.65.2.24 src/codeconv.c; cvs diff -u -r 1.83.2.31 -r 1.83.2.32 src/mimeview.c; ) > 1.0.1cvs11.5.patchset
 ( cvs diff -u -r 1.207.2.30 -r 1.207.2.31 src/folderview.c; ) > 1.0.1cvs11.6.patchset
 ( cvs diff -u -r 1.8.2.1 -r 1.8.2.2 src/quote_fmt_lex.l; cvs diff -u -r 1.22.2.6 -r 1.22.2.7 src/quote_fmt_parse.y; ) > 1.0.1cvs14.1.patchset
+( cvs diff -u -r 1.9.2.9 -r 1.9.2.10 src/common/defs.h; ) > 1.0.1cvs151.patchset

@@ -75,7 +75,7 @@
 #define CLAWS_THEMES_URI	"http://sylpheed-claws.sourceforge.net/themes.php"
 #define THEMEINFO_FILE		".sylpheed_themeinfo"
 #define FOLDER_LIST		"folderlist.xml"
-#define CACHE_FILE		".sylpheed_cache"
+#define CACHE_FILE		".sylpheed_claws_cache"
 #define MARK_FILE		".sylpheed_mark"
 #define CACHE_VERSION		23
 #define MARK_VERSION		2

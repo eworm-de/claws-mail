@@ -1,3 +1,13 @@
+2005-02-20 [colin]	1.0.1cvs151
+
+	* src/common/defs.h
+		Change cache file to .sylpheed_claws_cache, as
+		suggested by Alfons. Allows people to switch
+		between Sylpheed and Sylpheed-Claws. it is
+		a good idea to "Check for new messages" at next
+		startup.
+
+
 2005-02-18 [colin]	1.0.1cvs14.1
 
 	* src/quote_fmt_lex.l
