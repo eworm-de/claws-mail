@@ -726,6 +726,7 @@ static void account_edit_create(void)
 			  G_CALLBACK (account_edit_close),
 			  NULL);
 
+	account_create_list_view_images(list_view);
 
 	edit_account.window    = window;
 	edit_account.list_view = list_view;
@@ -1125,10 +1126,11 @@ static void account_list_view_add(PrefsAccount *ac_prefs)
 			 ac_prefs->protocol == A_LOCAL);
 	getall = has_getallbox && ac_prefs->recv_at_getall;
 
-	return account_list_view_insert_account_item(list_store,
-						     name, protocol, server,
-						     ac_prefs->is_default,
-						     getall, ac_prefs);
+	account_list_view_insert_account_item(list_store,
+					     name, protocol, server,
+					     ac_prefs->is_default,
+					     getall, ac_prefs);
+	return;
 }
 
 static void account_list_view_set(void)
@@ -1310,9 +1312,6 @@ static GtkWidget *account_list_view_create(void)
 	
 	selector = gtk_tree_view_get_selection(list_view);
 	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
-
-	/* create the pixbufs */
-	account_create_list_view_images(GTK_WIDGET(list_view));
 
 	/* create the columns */
 	account_create_list_view_columns(GTK_WIDGET(list_view));

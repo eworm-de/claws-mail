@@ -1,3 +1,9 @@
+2005-01-03 [colin]	0.9.13cvs24.3
+
+	* src/account.c
+		Two patches from Alfons and Alex S Moore:
+		fix images, fix return value.
+
 2005-01-01 [colin]	0.9.13cvs24.2
 
 	* src/prefs_actions.c
