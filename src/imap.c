@@ -753,7 +753,7 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 	return IMAP_SUCCESS;
 }
 
-#define QUOTE_IF_REQUIRED(out, str) \
+#define RETURN_VAL_IF_QUOTE_REQUIRED_FAIL(out, str) \
 { \
 	if (*str != '"' && strchr(str, ' ')) { \
 		gint len; \
@@ -764,6 +764,19 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 		Xstrdup_a(out, str, return IMAP_ERROR); \
 	} \
 }
+
+#define RETURN_IF_QUOTE_REQUIRED_FAIL(out, str) \
+{ \
+	if (*str != '"' && strchr(str, ' ')) { \
+		gint len; \
+		len = strlen(str) + 3; \
+		Xalloca(out, len, return); \
+		g_snprintf(out, len, "\"%s\"", str); \
+	} else { \
+		Xstrdup_a(out, str, return); \
+	} \
+}
+
 
 gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 {
@@ -899,8 +912,8 @@ static void imap_scan_tree_recursive(IMAPSession *session,
 
 	if (item->path) {
 		real_path = imap_get_real_path(imapfolder, item->path);
-		Xstrconcat_a(wildcard_path, real_path,"/%", return IMAP_ERROR);
-		QUOTE_IF_REQUIRED(wildcard_path_, wildcard_path);
+		Xstrconcat_a(wildcard_path, real_path,"/%", return);
+		RETURN_IF_QUOTE_REQUIRED_FAIL(wildcard_path_, wildcard_path);
 		imap_cmd_gen_send(SESSION(session)->sock, "LIST \"\" %s",
 				  wildcard_path_,
 				  namespace && namespace->separator
@@ -909,8 +922,8 @@ static void imap_scan_tree_recursive(IMAPSession *session,
 	} else {
 		real_path = g_strdup(namespace && namespace->name
 				     ? namespace->name : "");
-		Xstrconcat_a(wildcard_path, real_path, "%", return IMAP_ERROR);
-		QUOTE_IF_REQUIRED(wildcard_path_, wildcard_path);
+		Xstrconcat_a(wildcard_path, real_path, "%", return);
+		RETURN_IF_QUOTE_REQUIRED_FAIL(wildcard_path_, wildcard_path);
 		imap_cmd_gen_send(SESSION(session)->sock, "LIST \"\" %s",
 				  wildcard_path_);
 		g_free(wildcard_path);
@@ -1898,7 +1911,7 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 	argbuf = g_ptr_array_new();
 
 	real_path = imap_get_real_path(folder, path);
-	QUOTE_IF_REQUIRED(real_path_, real_path);
+	RETURN_VAL_IF_QUOTE_REQUIRED_FAIL(real_path_, real_path);
 	imap_cmd_gen_send(SESSION(session)->sock, "STATUS %s "
 			  "(MESSAGES RECENT UNSEEN UIDVALIDITY)", real_path_);
 
@@ -1951,8 +1964,8 @@ static gint imap_cmd_login(SockInfo *sock,
 	gchar *user_, *pass_;
 	gint ok;
 
-	QUOTE_IF_REQUIRED(user_, user);
-	QUOTE_IF_REQUIRED(pass_, pass);
+	RETURN_VAL_IF_QUOTE_REQUIRED_FAIL(user_, user);
+	RETURN_VAL_IF_QUOTE_REQUIRED_FAIL(pass_, pass);
 	imap_cmd_gen_send(sock, "LOGIN %s %s", user_, pass_);
 
 	ok = imap_cmd_ok(sock, NULL);
@@ -2009,8 +2022,8 @@ static gint imap_cmd_list(SockInfo *sock, const gchar *ref,
 	if (!ref) ref = "\"\"";
 	if (!mailbox) mailbox = "\"\"";
 
-	QUOTE_IF_REQUIRED(ref_, ref);
-	QUOTE_IF_REQUIRED(mailbox_, mailbox);
+	RETURN_VAL_IF_QUOTE_REQUIRED_FAIL(ref_, ref);
+	RETURN_VAL_IF_QUOTE_REQUIRED_FAIL(mailbox_, mailbox);
 	imap_cmd_gen_send(sock, "LIST %s %s", ref_, mailbox_);
 
 	return imap_cmd_ok(sock, argbuf);
@@ -2037,7 +2050,7 @@ static gint imap_cmd_do_select(SockInfo *sock, const gchar *folder,
 	else
 		select_cmd = "SELECT";
 
-	QUOTE_IF_REQUIRED(folder_, folder);
+	RETURN_VAL_IF_QUOTE_REQUIRED_FAIL(folder_, folder);
 	imap_cmd_gen_send(sock, "%s %s", select_cmd, folder_);
 
 	if ((ok = imap_cmd_ok(sock, argbuf)) != IMAP_SUCCESS) THROW;
@@ -2104,7 +2117,7 @@ static gint imap_cmd_create(SockInfo *sock, const gchar *folder)
 {
 	gchar *folder_;
 
-	QUOTE_IF_REQUIRED(folder_, folder);
+	RETURN_VAL_IF_QUOTE_REQUIRED_FAIL(folder_, folder);
 	imap_cmd_gen_send(sock, "CREATE %s", folder_);
 
 	return imap_cmd_ok(sock, NULL);
@@ -2114,7 +2127,7 @@ static gint imap_cmd_delete(SockInfo *sock, const gchar *folder)
 {
 	gchar *folder_;
 
-	QUOTE_IF_REQUIRED(folder_, folder);
+	RETURN_VAL_IF_QUOTE_REQUIRED_FAIL(folder_, folder);
 	imap_cmd_gen_send(sock, "DELETE %s", folder_);
 
 	return imap_cmd_ok(sock, NULL);
@@ -2171,7 +2184,7 @@ static gint imap_cmd_append(SockInfo *sock, const gchar *destfolder,
 	g_return_val_if_fail(file != NULL, IMAP_ERROR);
 
 	size = get_file_size(file);
-	QUOTE_IF_REQUIRED(destfolder_, destfolder);
+	RETURN_VAL_IF_QUOTE_REQUIRED_FAIL(destfolder_, destfolder);
 	imap_cmd_gen_send(sock, "APPEND %s {%d}", destfolder_, size);
 	ok = imap_cmd_ok(sock, NULL);
 	if (ok != IMAP_SUCCESS) {
@@ -2189,7 +2202,7 @@ static gint imap_cmd_copy(SockInfo *sock, guint32 uid, const gchar *destfolder)
 
 	g_return_val_if_fail(destfolder != NULL, IMAP_ERROR);
 
-	QUOTE_IF_REQUIRED(destfolder_, destfolder);
+	RETURN_VAL_IF_QUOTE_REQUIRED_FAIL(destfolder_, destfolder);
 	imap_cmd_gen_send(sock, "UID COPY %d %s", uid, destfolder_);
 
 	ok = imap_cmd_ok(sock, NULL);

@@ -1,3 +1,8 @@
+2001-12-10 [alfons]	0.6.5claws72
+
+	* src/imap.c
+		clean up warnings "returning value for void function" 
+
 2001-12-10 [paul]	0.6.5claws71
 
 	* src/compose.c
