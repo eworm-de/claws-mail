@@ -1,3 +1,9 @@
+2003-04-13 [paul]	0.8.11claws88
+
+	* src/plugins/clamav/clamav_plugin.c
+		fix memory leaks
+		clean up
+
 2003-04-12 [paul]	0.8.11claws87
 
 	* src/plugins/clamav/clamav_plugin.c

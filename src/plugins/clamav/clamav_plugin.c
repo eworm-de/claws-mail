@@ -24,11 +24,6 @@
 #include "defs.h"
 
 #include <glib.h>
-
-#if HAVE_LOCALE_H
-#  include <locale.h>
-#endif
-
 #include <clamav.h>
 
 #include "common/plugin.h"
@@ -148,45 +143,48 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			g_warning("Can't get the part of multipart message.");
 		else {
 			debug_print("Scanning %s\n", outfile);
-    	 		if((ret = cl_scanfile(outfile, &virname, &size, root, 
+    	 		if ((ret = cl_scanfile(outfile, &virname, &size, root, 
 					      &limits, scan_archive)) == CL_VIRUS) {
 				is_infected = TRUE;
 				debug_print("Detected %s virus.\n", virname); 
     			} else {
 				debug_print("No virus detected.\n");
-				if(ret != CL_CLEAN)
+				if (ret != CL_CLEAN)
 	    				debug_print("Error: %s\n", cl_perror(ret));
     			}
 
     			kb = size * (CL_COUNT_PRECISION / 1024);
     			debug_print("Data scanned: %2.2Lf Kb\n", kb);
     
-			if (is_infected) {
-				debug_print("message part(s) infected with %s\n", virname);
-				if (config.clamav_receive_infected) {
-					FolderItem *clamav_save_folder;
+			unlink(outfile);
 
-					if ((!config.clamav_save_folder) ||
-			    	    	(config.clamav_save_folder[0] == '\0') ||
-			    	    	((clamav_save_folder = folder_find_item_from_identifier(config.clamav_save_folder)) == NULL))
-				    		clamav_save_folder = folder_get_default_trash();
-
-					procmsg_msginfo_unset_flags(msginfo, ~0, 0);
-					folder_item_move_msg(clamav_save_folder, msginfo);
-				} else {
-					folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
-				}
-
-				return TRUE;
-			}
-				child = child->next;
+			if (is_infected) break;
+			child = child->next;
 		}
 	}
+
+	if (is_infected) {
+		debug_print("message part(s) infected with %s\n", virname);
+		if (config.clamav_receive_infected) {
+			FolderItem *clamav_save_folder;
+
+			if ((!config.clamav_save_folder) ||
+			    (config.clamav_save_folder[0] == '\0') ||
+			    ((clamav_save_folder = folder_find_item_from_identifier(config.clamav_save_folder)) == NULL))
+				    clamav_save_folder = folder_get_default_trash();
+
+			procmsg_msginfo_unset_flags(msginfo, ~0, 0);
+			folder_item_move_msg(clamav_save_folder, msginfo);
+		} else {
+			folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
+		}
+	}
+	
     	cl_freetrie(root);
 	g_free(infile);
 	procmime_mimeinfo_free_all(mimeinfo);
-
-	return FALSE;
+	
+	return is_infected;
 }
 
 #undef IS_FIRST_PART_TEXT
