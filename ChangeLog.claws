@@ -1,9 +1,16 @@
-2003-10-01 [melvin] 0.9.5claws40
+2003-10-01 [paul]	0.9.5claws41
+
+	* po/pl.po
+	  po/sr.po
+	  	update Polish and Serbian translations, submitted by
+		Emil and Urke MMI
+
+2003-10-01 [melvin] 	0.9.5claws40
 
 	* po/fr.po
 		Updated French translations
 
-2003-10-01 [melvin] 0.9.5claws39
+2003-10-01 [melvin] 	0.9.5claws39
 
 	* src/prefs_fonts.c
 		Fixed a Gtk warning
