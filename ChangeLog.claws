@@ -18,7 +18,6 @@
 2002-02-17 [melvin]	0.7.1claws10
 
 	* acconfig.h
-	* configure.in
 		Added PSPELL_PATH macro and removed obsolete ISPELL_PATH
 	* src/prefs_common.c
 		Pspell data package directory no more hard coded but
@@ -27,6 +26,8 @@
 
 2002-02-17 [melvin]	0.7.1claws9
 
+	* configure.in
+		Added PSPELL_PATH macro and removed obsolete ISPELL_PATH
 	* src/gtkspell.c
 		Fixed compile-time warnings.
 
