@@ -38,6 +38,8 @@
 ssize_t socketread(int fd, void *buf, ssize_t len);
 #endif
 
+#define UNUSED_VARIABLE(v)	((void)(v))
+
 extern int libspamc_timeout;  /* default timeout in seconds */
 
 #ifdef WIN32 /* somewhere ssl.h gets included -> conflicting typedef's */
@@ -61,7 +63,8 @@ ssize_t fd_timeout_read (int fd, void *, size_t );
 int ssl_timeout_read (SSL *ssl, void *, int );  
 
 /* these are fd-only, no SSL support */
-int full_read(int fd, unsigned char *buf, int min, int len);
-int full_write(int fd, const unsigned char *buf, int len);
+int full_read(int fd, void *buf, int min, int len);
+int full_read_ssl(SSL *ssl, unsigned char *buf, int min, int len);
+int full_write(int fd, const void *buf, int len);
 
 #endif

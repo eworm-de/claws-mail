@@ -572,7 +572,7 @@ SOURCE=..\src\procmsg.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\progressdialog.c
+SOURCE=..\src\gtk\progressdialog.c
 # End Source File
 # Begin Source File
 
@@ -1172,7 +1172,7 @@ SOURCE=..\src\procmsg.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\progressdialog.h
+SOURCE=..\src\gtk\progressdialog.h
 # End Source File
 # Begin Source File
 

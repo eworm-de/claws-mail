@@ -6,4 +6,5 @@ EXPORTS
 	plugin_init 
 	plugin_name 
 	plugin_type 
+	transports 
 	gpg_started 

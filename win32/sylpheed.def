@@ -1346,6 +1346,11 @@ EXPORTS
 	prefs_folder_item_open 
 	prefs_folder_item_register_page 
 	prefs_folder_item_unregister_page 
+	prefs_fonts 
+	prefs_fonts_create_widget 
+	prefs_fonts_done 
+	prefs_fonts_init 
+	prefs_fonts_save 
 	prefs_free 
 	prefs_gtk_open 
 	prefs_gtk_register_page 

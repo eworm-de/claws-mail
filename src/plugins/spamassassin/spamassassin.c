@@ -94,11 +94,13 @@ struct _SpamThreadData
 #endif
 
 static PrefParam param[] = {
-	{"enable", "FALSE", &config.enable, P_BOOL,
+	{"transport", "0", &config.transport, P_INT,
 	 NULL, NULL, NULL},
 	{"hostname", "localhost", &config.hostname, P_STRING,
 	 NULL, NULL, NULL},
 	{"port", "783", &config.port, P_INT,
+	 NULL, NULL, NULL},
+	{"socket", "", &config.socket, P_STRING,
 	 NULL, NULL, NULL},
 	{"receive_spam", "TRUE", &config.receive_spam, P_BOOL,
 	 NULL, NULL, NULL},
@@ -125,12 +127,31 @@ gboolean timeout_func(gpointer data)
 
 static gboolean msg_is_spam(FILE *fp)
 {
-	struct sockaddr addr;
+	struct transport trans;
 	struct message m;
 	gboolean is_spam = FALSE;
 
-	if (lookup_host(config.hostname, config.port, &addr) != EX_OK) {
-		debug_print("failed to look up spamd host\n");
+	transport_init(&trans);
+	switch (config.transport) {
+	case SPAMASSASSIN_TRANSPORT_LOCALHOST:
+		trans.type = TRANSPORT_LOCALHOST;
+		trans.port = config.port;
+		break;
+	case SPAMASSASSIN_TRANSPORT_TCP:
+		trans.type = TRANSPORT_TCP;
+		trans.hostname = config.hostname;
+		trans.port = config.port;
+		break;
+	case SPAMASSASSIN_TRANSPORT_UNIX:
+		trans.type = TRANSPORT_UNIX;
+		trans.socketpath = config.socket;
+		break;
+	default:
+		return FALSE;
+	}
+
+	if (transport_setup(&trans, flags) != EX_OK) {
+		debug_print("failed to setup transport\n");
 		return FALSE;
 	}
 
@@ -144,7 +165,7 @@ static gboolean msg_is_spam(FILE *fp)
 		return FALSE;
 	}
 
-	if (message_filter(&addr, username, flags, &m) != EX_OK) {
+	if (message_filter(&trans, username, flags, &m) != EX_OK) {
 		debug_print("filtering the message failed\n");
 		message_cleanup(&m);
 		return FALSE;
@@ -178,7 +199,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	SpamThreadData *threaddata = g_new(SpamThreadData,1);
 #endif
 
-	if (!config.enable)
+	if (config.transport == SPAMASSASSIN_DISABLED)
 		return FALSE;
 
 	debug_print("Filtering message %d\n", msginfo->msgnum);

@@ -845,6 +845,8 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	gtk_signal_connect(GTK_OBJECT(down_btn), "clicked",
 			   GTK_SIGNAL_FUNC(prefs_toolbar_down), prefs_toolbar);
 	
+	gtk_widget_show_all(main_vbox);
+
 	prefs_toolbar->clist_icons      = clist_icons;
 	prefs_toolbar->clist_set        = clist_set;
 	prefs_toolbar->combo_action     = combo_action;

@@ -2,15 +2,13 @@
 EXPORTS
 	fd_timeout_read 
 	full_read 
+	full_read_ssl 
 	full_write 
 	gpg_started 
 	libspamc_timeout 
-	lookup_host 
-	lookup_host_for_failover 
 	message_cleanup 
 	message_dump 
 	message_filter 
-	message_filter_with_failover 
 	message_process 
 	message_read 
 	message_write 
@@ -27,3 +25,5 @@ EXPORTS
 	spamassassin_save_config 
 	ssl_timeout_read 
 	timeout_func 
+	transport_init 
+	transport_setup 

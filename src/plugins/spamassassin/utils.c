@@ -32,6 +32,7 @@
 /* Aug 14, 2002 bj: EINTR and EAGAIN aren't fatal, are they? */
 /* Aug 14, 2002 bj: moved these to utils.c */
 /* Jan 13, 2003 ym: added timeout functionality */
+/* Apr 24, 2003 sjf: made full_read and full_write void* params */
 
 /* -------------------------------------------------------------------------- */
 
@@ -56,7 +57,7 @@ sigfunc* sig_catch(int sig, void (*f)(int))
 #endif
 
 static void catch_alrm(int x) {
-  /* dummy */
+  UNUSED_VARIABLE(x);
 }
 
 ssize_t
@@ -100,6 +101,12 @@ ssl_timeout_read (SSL *ssl, void *buf, int nbytes)
   int nred;
   sigfunc* sig;
 
+#ifndef SPAMC_SSL
+  UNUSED_VARIABLE(ssl);
+  UNUSED_VARIABLE(buf);
+  UNUSED_VARIABLE(nbytes);
+#endif
+
 #ifndef WIN32
   sig = sig_catch(SIGALRM, catch_alrm);
   if (libspamc_timeout > 0) {
@@ -135,8 +142,9 @@ ssl_timeout_read (SSL *ssl, void *buf, int nbytes)
 /* -------------------------------------------------------------------------- */
 
 int
-full_read (int fd, unsigned char *buf, int min, int len)
+full_read (int fd, void *vbuf, int min, int len)
 {
+  unsigned char *buf = (unsigned char *)vbuf;
   int total;
   int thistime;
 
@@ -161,8 +169,31 @@ full_read (int fd, unsigned char *buf, int min, int len)
 }
 
 int
-full_write (int fd, const unsigned char *buf, int len)
+full_read_ssl (SSL *ssl, unsigned char *buf, int min, int len)
 {
+  int total;
+  int thistime;
+
+  for (total = 0; total < min; ) {
+    thistime = ssl_timeout_read (ssl, buf+total, len-total);
+
+    if (thistime < 0) {
+      return -1;
+    } else if (thistime == 0) {
+      /* EOF, but we didn't read the minimum.  return what we've read
+       * so far and next read (if there is one) will return 0. */
+      return total;
+    }
+
+    total += thistime;
+  }
+  return total;
+}
+
+int
+full_write (int fd, const void *vbuf, int len)
+{
+  const unsigned char *buf = (const unsigned char *)vbuf;
   int total;
   int thistime;
 
