@@ -1,3 +1,10 @@
+2001-10-06 [alfons]	0.6.2.claws22
+
+	* src/summaryview.c
+		fix bug with summary view selecting last *inserted*
+		node instead of last *visible* node. remember we
+		work with a tree
+
 2001-10-06 [paul]	0.6.2claws21
 
 	* po/pt_BR.po

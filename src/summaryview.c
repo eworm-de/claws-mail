@@ -922,8 +922,11 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 		else
 			node = summary_find_next_unread_msg(summaryview, NULL);
 
-		if (node == NULL && GTK_CLIST(ctree)->row_list != NULL)
-			node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list_end);
+		if (node == NULL && GTK_CLIST(ctree)->row_list != NULL) {
+			/* Get the last visible node on screen */
+			/* FIXME: huh, what happens if node is null? that allowed?? */
+			node = gtk_ctree_node_nth(ctree, GTK_CLIST(ctree)->rows - 1);
+		}	
 		if (prefs_common.open_unread_on_enter) {
 			summary_unlock(summaryview);
 			summary_select_node(summaryview, node, TRUE);
