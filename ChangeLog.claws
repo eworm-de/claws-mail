@@ -1,3 +1,9 @@
+2003-12-05 [alfons]	0.9.7claws23
+
+	* src/prefs_folder_item.c
+		K&R 2nd Ed., page 241 (function parameter identifiers
+		starting with an underscore are kind of insulting)
+
 2003-12-05 [hoa]	0.9.7claws22
 
 	* src/main.c
