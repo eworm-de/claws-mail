@@ -18,7 +18,7 @@
  */
 
 /*
- * Edit VCard address book data.
+ * Import LDIF address book data.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -123,20 +123,6 @@ static void imp_ldif_message( void ) {
 		sMsg = _( "File imported." );
 	}
 	imp_ldif_status_show( sMsg );
-}
-
-static gchar *imp_ldif_guess_file( AddressBookFile *abf ) {
-	gchar *newFile = NULL;
-	GList *fileList = NULL;
-	gint fileNum = 1;
-	fileList = addrbook_get_bookfile_list( abf );
-	if( fileList ) {
-		fileNum = 1 + abf->maxValue;
-	}
-	newFile = addrbook_gen_new_file_name( fileNum );
-	g_list_free( fileList );
-	fileList = NULL;
-	return newFile;
 }
 
 static void imp_ldif_update_row( GtkCList *clist ) {
@@ -264,7 +250,7 @@ static gboolean imp_ldif_field_move() {
 	abf = addrbook_create_book();
 	addrbook_set_path( abf, _imp_addressIndex_->filePath );
 	addrbook_set_name( abf, impldif_dlg.nameBook );
-	newFile = imp_ldif_guess_file( abf );
+	newFile = addrbook_guess_next_file( abf );
 	addrbook_set_file( abf, newFile );
 	g_free( newFile );
 

@@ -322,6 +322,8 @@ int main(int argc, char *argv[])
 
 	gtk_main();
 
+	addressbook_destroy();
+
 #if USE_PSPELL       
 	gtkpspell_checkers_delete();
 #endif

@@ -49,7 +49,6 @@ typedef struct _SyldapServer SyldapServer;
 struct _SyldapServer {
 	AddressBookType type;
 	AddressCache *addressCache;
-	gboolean  accessFlag;
 	gint      retVal;
 	gchar     *hostName;
 	gint      port;
@@ -87,6 +86,8 @@ void syldap_free		( SyldapServer *ldapServer );
 gint syldap_get_status		( SyldapServer *ldapServer );
 gboolean syldap_get_accessed	( SyldapServer *ldapServer );
 gchar *syldap_get_name		( SyldapServer *ldapServer );
+gboolean syldap_get_modified	( SyldapServer *ldapServer );
+void syldap_set_modified	( SyldapServer *ldapServer, const gboolean value );
 
 void syldap_print_data		( SyldapServer *ldapServer, FILE *stream );
 gboolean syldap_check_search	( SyldapServer *ldapServer );
@@ -94,7 +95,6 @@ gint syldap_read_data		( SyldapServer *ldapServer );
 gint syldap_read_data_th	( SyldapServer *ldapServer );
 void syldap_cancel_read		( SyldapServer *ldapServer );
 
-/* GList *syldap_get_address_list	( const SyldapServer *ldapServer ); */
 ItemFolder *syldap_get_root_folder	( SyldapServer *ldapServer );
 GList *syldap_get_list_person	( SyldapServer *ldapServer );
 GList *syldap_get_list_folder	( SyldapServer *ldapServer );

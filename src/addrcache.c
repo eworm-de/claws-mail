@@ -21,9 +21,7 @@
  * Functions to maintain address cache.
  */
 
-#include <glib.h>
 #include <stdio.h>
-#include <string.h>
 #include <sys/stat.h>
 
 #include "mgutils.h"
@@ -63,6 +61,7 @@ AddressCache *addrcache_create() {
 	cache->dataRead = FALSE;
 	cache->modified = FALSE;
 	cache->dirtyFlag = FALSE;
+	cache->accessFlag = FALSE;
 	cache->name = NULL;
 	cache->modifyTime = 0;
 
@@ -103,6 +102,30 @@ void addrcache_set_dirty( AddressCache *cache, const gboolean value ) {
 	g_return_if_fail( cache != NULL );
 	cache->dirtyFlag = value;
 }
+gboolean addrcache_get_modified( AddressCache *cache ) {
+	g_return_val_if_fail( cache != NULL, FALSE );
+	return cache->modified;
+}
+void addrcache_set_modified( AddressCache *cache, const gboolean value ) {
+	g_return_if_fail( cache != NULL );
+	cache->modified = value;
+}
+gboolean addrcache_get_read_flag( AddressCache *cache ) {
+	g_return_val_if_fail( cache != NULL, FALSE );
+	return cache->dataRead;
+}
+void addrcache_set_read_flag( AddressCache *cache, const gboolean value ) {
+	g_return_if_fail( cache != NULL );
+	cache->dataRead = value;
+}
+gboolean addrcache_get_accessed( AddressCache *cache ) {
+	g_return_val_if_fail( cache != NULL, FALSE );
+	return cache->accessFlag;
+}
+void addrcache_set_accessed( AddressCache *cache, const gboolean value ) {
+	g_return_if_fail( cache != NULL );
+	cache->accessFlag = value;
+}
 gchar *addrcache_get_name( AddressCache *cache ) {
 	g_return_val_if_fail( cache != NULL, NULL );
 	return cache->name;
@@ -128,6 +151,7 @@ void addrcache_next_id( AddressCache *cache ) {
 void addrcache_refresh( AddressCache *cache ) {
 	cache->dataRead = FALSE;
 	cache->modified = TRUE;
+	cache->accessFlag = FALSE;
 	cache->modifyTime = 0;
 }
 
@@ -186,6 +210,7 @@ static void addrcache_free_all_folders( ItemFolder *parent ) {
 void addrcache_clear( AddressCache *cache ) {
 	g_return_if_fail( cache != NULL );
 
+	/* printf( "...addrcache_clear :%s:\n", cache->name ); */
 	/* Free up folders and hash table */
 	addrcache_free_all_folders( cache->rootFolder );
 	addrcache_free_item_hash( cache->itemHash );

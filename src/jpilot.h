@@ -50,7 +50,6 @@ typedef struct _JPilotFile JPilotFile;
 struct _JPilotFile {
 	AddressBookType type;
 	AddressCache *addressCache;
-	gboolean accessFlag;
 	gint     retVal;
 	FILE     *file;
 	gchar    *path;
@@ -79,6 +78,7 @@ void jpilot_set_file			( JPilotFile* pilotFile, const gchar *value );
 void jpilot_free			( JPilotFile *pilotFile );
 gint jpilot_get_status			( JPilotFile *pilotFile );
 gboolean jpilot_get_modified		( JPilotFile *pilotFile );
+void jpilot_set_modified		( JPilotFile *pilotFile, const gboolean value );
 gboolean jpilot_get_accessed		( JPilotFile *pilotFile );
 void jpilot_set_accessed		( JPilotFile *pilotFile, const gboolean value );
 gboolean jpilot_get_read_flag		( JPilotFile *pilotFile );

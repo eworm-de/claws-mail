@@ -54,7 +54,6 @@ SyldapServer *syldap_create() {
 	ldapServer = g_new0( SyldapServer, 1 );
 	ldapServer->type = ADBOOKTYPE_LDAP;
 	ldapServer->addressCache = addrcache_create();
-	ldapServer->accessFlag = FALSE;
 	ldapServer->retVal = MGU_SUCCESS;
 	ldapServer->hostName = NULL;
 	ldapServer->port = SYLDAP_DFL_PORT;
@@ -185,11 +184,6 @@ void syldap_set_callback( SyldapServer *ldapServer, void *func ) {
 	ldapServer->callBack = func;
 }
 
-void syldap_set_accessed( SyldapServer *ldapServer, const gboolean value ) {
-	g_return_if_fail( ldapServer != NULL );
-	ldapServer->accessFlag = value;
-}
-
 /*
 * Refresh internal variables to force a file read.
 */
@@ -215,7 +209,22 @@ gchar *syldap_get_name( SyldapServer *ldapServer ) {
 
 gboolean syldap_get_accessed( SyldapServer *ldapServer ) {
 	g_return_val_if_fail( ldapServer != NULL, FALSE );
-	return ldapServer->accessFlag;
+	return ldapServer->addressCache->accessFlag;
+}
+
+void syldap_set_accessed( SyldapServer *ldapServer, const gboolean value ) {
+	g_return_if_fail( ldapServer != NULL );
+	ldapServer->addressCache->accessFlag = value;
+}
+
+gboolean syldap_get_modified( SyldapServer *ldapServer ) {
+	g_return_val_if_fail( ldapServer != NULL, FALSE );
+	return ldapServer->addressCache->modified;
+}
+
+void syldap_set_modified( SyldapServer *ldapServer, const gboolean value ) {
+	g_return_if_fail( ldapServer != NULL );
+	ldapServer->addressCache->modified = value;
 }
 
 /*
@@ -261,7 +270,6 @@ void syldap_free( SyldapServer *ldapServer ) {
 
 	ldapServer->type = ADBOOKTYPE_NONE;
 	ldapServer->addressCache = NULL;
-	ldapServer->accessFlag = FALSE;
 	ldapServer->retVal = MGU_SUCCESS;
 
 	/* Now release LDAP object */
@@ -656,7 +664,7 @@ static gint syldap_display_search_results(SyldapServer *ldapServer)
 gint syldap_read_data( SyldapServer *ldapServer ) {
 	g_return_val_if_fail( ldapServer != NULL, -1 );
 
-	ldapServer->accessFlag = FALSE;
+	ldapServer->addressCache->accessFlag = FALSE;
 	pthread_detach( pthread_self() );
 	if( ldapServer->newSearch ) {
 		/* Read data into the list */
@@ -665,7 +673,7 @@ gint syldap_read_data( SyldapServer *ldapServer ) {
 		/* Mark cache */
 		ldapServer->addressCache->modified = FALSE;
 		ldapServer->addressCache->dataRead = TRUE;
-		ldapServer->accessFlag = FALSE;
+		ldapServer->addressCache->accessFlag = FALSE;
 	}
 
 	/* Callback */

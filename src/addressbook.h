@@ -32,13 +32,7 @@ void addressbook_read_file		(void);
 void addressbook_export_to_file		(void);
 gint addressbook_obj_name_compare	(gconstpointer	 a,
 					 gconstpointer	 b);
-/* static gint addressbook_obj_name_compare(gconstpointer	 a,
- 					 gconstpointer	 b); */
-
-/* provisional API for accessing the address book */
-
-void addressbook_access (void);
-void addressbook_unaccess (void);
+void addressbook_destroy		( void );
 
 gboolean addressbook_add_contact	( const gchar	*name,
 					  const gchar	*address,

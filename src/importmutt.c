@@ -74,20 +74,6 @@ void imp_mutt_status_show( gchar *msg ) {
 	}
 }
 
-static gchar *imp_mutt_guess_file( AddressBookFile *abf ) {
-	gchar *newFile = NULL;
-	GList *fileList = NULL;
-	gint fileNum = 1;
-	fileList = addrbook_get_bookfile_list( abf );
-	if( fileList ) {
-		fileNum = 1 + abf->maxValue;
-	}
-	newFile = addrbook_gen_new_file_name( fileNum );
-	g_list_free( fileList );
-	fileList = NULL;
-	return newFile;
-}
-
 static gboolean imp_mutt_import_file( gchar *sName, gchar *sFile ) {
 	gboolean retVal = FALSE;
 	gchar *newFile;
@@ -101,7 +87,7 @@ static gboolean imp_mutt_import_file( gchar *sName, gchar *sFile ) {
 	abf = addrbook_create_book();
 	addrbook_set_path( abf, _imp_addressIndex_->filePath );
 	addrbook_set_name( abf, sName );
-	newFile = imp_mutt_guess_file( abf );
+	newFile = addrbook_guess_next_file( abf );
 	addrbook_set_file( abf, newFile );
 	g_free( newFile );
 

@@ -440,7 +440,6 @@ static addrindex_hash_add_cache( AddressIndex *addrIndex, AddressDataSource *ds 
 * Free hash table callback function.
 */
 static gboolean addrindex_free_cache_cb( gpointer key, gpointer value, gpointer data ) {
-	printf( "free cache db: %s\n", key );
 	g_free( key );
 	key = NULL;
 	value = NULL;
@@ -1232,7 +1231,7 @@ gint addrindex_save_all_books( AddressIndex *addrIndex ) {
 				AddressDataSource *ds = nodeDS->data;
 				AddressBookFile *abf = ds->rawDataSource;
 				if( addrbook_get_dirty( abf ) ) {
-					if( abf->readFlag ) {
+					if( addrbook_get_read_flag( abf ) ) {
 						addrbook_save_data( abf );
 						if( abf->retVal != MGU_SUCCESS ) {
 							retVal = abf->retVal;

@@ -129,20 +129,6 @@ static void edit_book_name_focus( GtkWidget *widget, GdkEventFocus *event, gpoin
 	edit_book_status_show( "" );
 }
 
-static gchar *edit_book_guess_file( AddressBookFile *abf ) {
-	gchar *newFile = NULL;
-	GList *fileList = NULL;
-	gint fileNum = 1;
-	fileList = addrbook_get_bookfile_list( abf );
-	if( fileList ) {
-		fileNum = 1 + abf->maxValue;
-	}
-	newFile = addrbook_gen_new_file_name( fileNum );
-	g_list_free( fileList );
-	fileList = NULL;
-	return newFile;
-}
-
 static void addressbook_edit_book_create( gboolean *cancelled ) {
 	GtkWidget *window;
 	GtkWidget *vbox;
@@ -285,7 +271,7 @@ AdapterDSource *addressbook_edit_book( AddressIndex *addrIndex, AdapterDSource *
 		addrbook_set_path( abf, addrIndex->filePath );
 
 		/* Take initial guess at file name */
-		newFile = edit_book_guess_file( abf );
+		newFile = addrbook_guess_next_file( abf );
 		if( newFile ) {
 			tmp = g_strdup_printf( "<%s>", newFile );
 			gtk_label_set_text(GTK_LABEL(addrbookedit_dlg.file_label), tmp );
@@ -324,7 +310,7 @@ AdapterDSource *addressbook_edit_book( AddressIndex *addrIndex, AdapterDSource *
 	else {
 		if( newBook ) {
 			/* Get final file name in case it changed */
-			newFile = edit_book_guess_file( abf );
+			newFile = addrbook_guess_next_file( abf );
 			addrbook_set_file( abf, newFile );
 			g_free( newFile );
 			ds = addrindex_index_add_datasource( addrIndex, ADDR_IF_BOOK, abf );

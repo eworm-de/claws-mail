@@ -42,6 +42,7 @@ struct _AddressCache {
 	ItemFolder *rootFolder;
 	gchar      *cacheID;
 	gboolean   dirtyFlag;
+	gboolean   accessFlag;
 	gchar      *name;
 };
 
@@ -52,6 +53,15 @@ GList *addrcache_get_list_folder	( AddressCache *cache );
 GList *addrcache_get_list_person	( AddressCache *cache );
 gboolean addrcache_get_dirty		( AddressCache *cache );
 void addrcache_set_dirty		( AddressCache *cache,
+					  const gboolean value );
+gboolean addrcache_get_modified		( AddressCache *cache );
+void addrcache_set_modified		( AddressCache *cache,
+					  const gboolean value );
+gboolean addrcache_get_read_flag	( AddressCache *cache );
+void addrcache_set_read_flag		( AddressCache *cache,
+					  const gboolean value );
+gboolean addrcache_get_accessed		( AddressCache *cache );
+void addrcache_set_accessed		( AddressCache *cache,
 					  const gboolean value );
 gchar *addrcache_get_name		( AddressCache *cache );
 void addrcache_set_name			( AddressCache *cache,

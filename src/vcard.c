@@ -48,7 +48,6 @@ VCardFile *vcard_create() {
 	cardFile = g_new0( VCardFile, 1 );
 	cardFile->type = ADBOOKTYPE_VCARD;
 	cardFile->addressCache = addrcache_create();
-	cardFile->accessFlag = FALSE;
 	cardFile->retVal = MGU_SUCCESS;
 
 	cardFile->file = NULL;
@@ -72,29 +71,35 @@ void vcard_set_file( VCardFile* cardFile, const gchar *value ) {
 }
 void vcard_set_accessed( VCardFile *cardFile, const gboolean value ) {
 	g_return_if_fail( cardFile != NULL );
-	cardFile->accessFlag = value;
+	cardFile->addressCache->accessFlag = value;
 }
 
 /*
 * Test whether file was modified since last access.
 * Return: TRUE if file was modified.
 */
-gboolean vcard_get_modified( VCardFile *vcardFile ) {
-	g_return_val_if_fail( vcardFile != NULL, FALSE );
-	return addrcache_check_file( vcardFile->addressCache, vcardFile->path );
+gboolean vcard_get_modified( VCardFile *cardFile ) {
+	g_return_val_if_fail( cardFile != NULL, FALSE );
+	cardFile->addressCache->modified =
+		addrcache_check_file( cardFile->addressCache, cardFile->path );
+	return cardFile->addressCache->modified;
 }
-gboolean vcard_get_accessed( VCardFile *vcardFile ) {
-	g_return_val_if_fail( vcardFile != NULL, FALSE );
-	return addrcache_check_file( vcardFile->addressCache, vcardFile->path );
+gboolean vcard_get_accessed( VCardFile *cardFile ) {
+	g_return_val_if_fail( cardFile != NULL, FALSE );
+	return cardFile->addressCache->accessFlag;
 }
 
 /*
 * Test whether file was read.
 * Return: TRUE if file was read.
 */
-gboolean vcard_get_read_flag( VCardFile *vcardFile ) {
-	g_return_val_if_fail( vcardFile != NULL, FALSE );
-	return vcardFile->addressCache->dataRead;
+gboolean vcard_get_read_flag( VCardFile *cardFile ) {
+	g_return_val_if_fail( cardFile != NULL, FALSE );
+	return cardFile->addressCache->dataRead;
+}
+void vcard_set_read_flag( VCardFile *cardFile, const gboolean value ) {
+	g_return_if_fail( cardFile != NULL );
+	cardFile->addressCache->dataRead = value;
 }
 
 /*
@@ -155,7 +160,6 @@ void vcard_free( VCardFile *cardFile ) {
 
 	cardFile->type = ADBOOKTYPE_NONE;
 	cardFile->addressCache = NULL;
-	cardFile->accessFlag = FALSE;
 	cardFile->retVal = MGU_SUCCESS;
 
 	/* Now release file object */
@@ -558,7 +562,7 @@ gint vcard_read_data( VCardFile *cardFile ) {
 	g_return_val_if_fail( cardFile != NULL, -1 );
 
 	cardFile->retVal = MGU_SUCCESS;
-	cardFile->accessFlag = FALSE;
+	cardFile->addressCache->accessFlag = FALSE;
 	if( addrcache_check_file( cardFile->addressCache, cardFile->path ) ) {
 		addrcache_clear( cardFile->addressCache );
 		vcard_open_file( cardFile );

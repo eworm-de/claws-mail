@@ -155,7 +155,6 @@ JPilotFile *jpilot_create() {
 	pilotFile = g_new0( JPilotFile, 1 );
 	pilotFile->type = ADBOOKTYPE_JPILOT;
 	pilotFile->addressCache = addrcache_create();
-	pilotFile->accessFlag = FALSE;
 	pilotFile->retVal = MGU_SUCCESS;
 
 	pilotFile->file = NULL;
@@ -193,7 +192,7 @@ void jpilot_set_file( JPilotFile* pilotFile, const gchar *value ) {
 }
 void jpilot_set_accessed( JPilotFile *pilotFile, const gboolean value ) {
 	g_return_if_fail( pilotFile != NULL );
-	pilotFile->accessFlag = value;
+	pilotFile->addressCache->accessFlag = value;
 }
 
 gint jpilot_get_status( JPilotFile *pilotFile ) {
@@ -372,11 +371,16 @@ static gboolean jpilot_check_files( JPilotFile *pilotFile ) {
 */
 gboolean jpilot_get_modified( JPilotFile *pilotFile ) {
 	g_return_val_if_fail( pilotFile != NULL, FALSE );
-	return jpilot_check_files( pilotFile );
+	pilotFile->addressCache->modified = jpilot_check_files( pilotFile );
+	return pilotFile->addressCache->modified;
+}
+void jpilot_set_modified( JPilotFile *pilotFile, const gboolean value ) {
+	g_return_if_fail( pilotFile != NULL );
+	pilotFile->addressCache->modified = value;
 }
 gboolean jpilot_get_accessed( JPilotFile *pilotFile ) {
 	g_return_val_if_fail( pilotFile != NULL, FALSE );
-	return pilotFile->accessFlag;
+	return pilotFile->addressCache->accessFlag;
 }
 
 /*
@@ -403,7 +407,6 @@ void jpilot_free( JPilotFile *pilotFile ) {
 
 	pilotFile->type = ADBOOKTYPE_NONE;
 	pilotFile->addressCache = NULL;
-	pilotFile->accessFlag = FALSE;
 	pilotFile->retVal = MGU_SUCCESS;
 
 	/* Now release file object */
@@ -941,7 +944,7 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 	/* Read the PC3 file, if present */
 	pcFile = jpilot_get_pc3_file( pilotFile );
 	if( pcFile == NULL ) return MGU_SUCCESS;
-	pc_in = fopen( pcFile, "rb");
+	pc_in = fopen( pcFile, "rb" );
 	g_free( pcFile );
 
 	if( pc_in == NULL ) {
@@ -1437,8 +1440,7 @@ gint jpilot_read_data( JPilotFile *pilotFile ) {
 	g_return_val_if_fail( pilotFile != NULL, -1 );
 
 	pilotFile->retVal = MGU_SUCCESS;
-	pilotFile->accessFlag = FALSE;
-
+	pilotFile->addressCache->accessFlag = FALSE;
 	if( jpilot_check_files( pilotFile ) ) {
 		addrcache_clear( pilotFile->addressCache );
 		jpilot_read_metadata( pilotFile );
@@ -1562,7 +1564,7 @@ gchar *jpilot_find_pilotdb( void ) {
 	strcat( str, JPILOT_DBHOME_FILE );
 
 	/* Attempt to open */
-	if( ( fp = fopen( str, "rb" ) ) != NULL ) {
+	if( ( fp = fopen( str, "r" ) ) != NULL ) {
 		fclose( fp );
 	}
 	else {

@@ -38,15 +38,12 @@ typedef struct _AddressBookFile AddressBookFile;
 struct _AddressBookFile {
 	AddressBookType type;
 	AddressCache *addressCache;
-	gboolean   accessFlag;
 	gint       retVal;
 	gchar      *path;
 	gchar      *fileName;
 	gint       maxValue;
 	GList      *tempList;
 	GHashTable *tempHash;
-	gboolean   readFlag;
-	gboolean   modifyFlag;
 	jmp_buf    jumper;
 };
 
@@ -61,10 +58,12 @@ void addrbook_dump_book			( AddressBookFile *book, FILE *stream );
 void addrbook_set_name			( AddressBookFile *book, const gchar *value );
 void addrbook_set_path			( AddressBookFile *book, const gchar *value );
 void addrbook_set_file			( AddressBookFile *book, const gchar *value );
-void addrbook_set_accessed		( AddressBookFile *book, const gboolean value );
 gboolean addrbook_get_modified		( AddressBookFile *book );
+void addrbook_set_modified		( AddressBookFile *book, const gboolean value );
 gboolean addrbook_get_accessed		( AddressBookFile *book );
+void addrbook_set_accessed		( AddressBookFile *book, const gboolean value );
 gboolean addrbook_get_read_flag		( AddressBookFile *book );
+void addrbook_set_read_flag		( AddressBookFile *book, const gboolean value );
 gint addrbook_get_status		( AddressBookFile *book );
 ItemFolder *addrbook_get_root_folder	( AddressBookFile *book );
 GList *addrbook_get_list_folder		( AddressBookFile *book );
@@ -97,8 +96,10 @@ ItemGroup *addrbook_add_group_list	( AddressBookFile *book, ItemFolder *folder,
 					  GList *listEMail );
 ItemFolder *addrbook_add_new_folder	( AddressBookFile *book, ItemFolder *parent );
 
-void addrbook_update_attrib_list	( AddressBookFile *book, ItemPerson *person, GList *listAttrib );
-void addrbook_add_attrib_list		( AddressBookFile *book, ItemPerson *person, GList *listAttrib );
+void addrbook_update_attrib_list	( AddressBookFile *book, ItemPerson *person,
+					  GList *listAttrib );
+void addrbook_add_attrib_list		( AddressBookFile *book, ItemPerson *person,
+					  GList *listAttrib );
 
 ItemFolder *addrbook_remove_folder	( AddressBookFile *book, ItemFolder *folder );
 ItemFolder *addrbook_remove_folder_delete( AddressBookFile *book, ItemFolder *folder );
@@ -112,5 +113,7 @@ GList *addrbook_get_all_persons		( AddressBookFile *book );
 ItemPerson *addrbook_add_contact	( AddressBookFile *book, ItemFolder *folder,
 					  const gchar *name, const gchar *address,
 					  const gchar *remarks );
+
+gchar *addrbook_guess_next_file		( AddressBookFile *book );
 
 #endif /* __ADDRBOOK_H__ */

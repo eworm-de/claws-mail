@@ -18,7 +18,7 @@
  */
 
 /*
- * General functions for accessing external address book files.
+ * General functions for accessing address book files.
  */
 
 #include <glib.h>
@@ -56,15 +56,13 @@ AddressBookFile *addrbook_create_book() {
 	book = g_new0( AddressBookFile, 1 );
 	book->type = ADBOOKTYPE_BOOK;
 	book->addressCache = addrcache_create();
-	book->accessFlag = FALSE;
 	book->retVal = MGU_SUCCESS;
 	book->path = NULL;
 	book->fileName = NULL;
 	book->maxValue = 0;
 	book->tempList = NULL;
 	book->tempHash = NULL;
-	book->readFlag = FALSE;
-	book->modifyFlag = TRUE;
+	book->addressCache->modified = TRUE;
 	return book;
 }
 
@@ -89,21 +87,29 @@ void addrbook_set_file( AddressBookFile *book, const gchar *value ) {
 	book->fileName = mgu_replace_string( book->fileName, value );
 	addrcache_set_dirty( book->addressCache, TRUE );
 }
-void addrbook_set_accessed( AddressBookFile *book, const gboolean value ) {
-	g_return_if_fail( book != NULL );
-	book->accessFlag = value;
-}
 gboolean addrbook_get_modified( AddressBookFile *book ) {
 	g_return_val_if_fail( book != NULL, FALSE );
-	return book->modifyFlag;
+	return book->addressCache->modified;
+}
+void addrbook_set_modified( AddressBookFile *book, const gboolean value ) {
+	g_return_if_fail( book != NULL );
+	book->addressCache->modified = value;
 }
 gboolean addrbook_get_accessed( AddressBookFile *book ) {
 	g_return_val_if_fail( book != NULL, FALSE );
-	return book->accessFlag;
+	return book->addressCache->accessFlag;
+}
+void addrbook_set_accessed( AddressBookFile *book, const gboolean value ) {
+	g_return_if_fail( book != NULL );
+	book->addressCache->accessFlag = value;
 }
 gboolean addrbook_get_read_flag( AddressBookFile *book ) {
 	g_return_val_if_fail( book != NULL, FALSE );
-	return book->readFlag;
+	return book->addressCache->dataRead;
+}
+void addrbook_set_read_flag( AddressBookFile *book, const gboolean value ) {
+	g_return_if_fail( book != NULL );
+	book->addressCache->dataRead = value;
 }
 gint addrbook_get_status( AddressBookFile *book ) {
 	g_return_val_if_fail( book != NULL, -1 );
@@ -144,9 +150,9 @@ void addrbook_empty_book( AddressBookFile *book ) {
 	/* Reset to initial state */
 	book->tempList = NULL;
 	book->tempHash = NULL;
-	book->readFlag = FALSE;
-	book->modifyFlag = FALSE;
-	book->accessFlag = FALSE;
+	book->addressCache->dataRead = FALSE;
+	book->addressCache->modified = FALSE;
+	book->addressCache->accessFlag = FALSE;
 	book->retVal = MGU_SUCCESS;
 }
 
@@ -159,7 +165,6 @@ void addrbook_free_book( AddressBookFile *book ) {
 	/* Clear cache */
 	addrcache_clear( book->addressCache );
 	addrcache_free( book->addressCache );
-	addrcache_set_dirty( book->addressCache, FALSE );
 
 	/* Free up internal objects */
 	g_free( book->path );
@@ -171,12 +176,9 @@ void addrbook_free_book( AddressBookFile *book ) {
 	book->maxValue = 0;
 	book->tempList = NULL;
 	book->tempHash = NULL;
-	book->readFlag = FALSE;
-	book->modifyFlag = FALSE;
 
 	book->type = ADBOOKTYPE_NONE;
 	book->addressCache = NULL;
-	book->accessFlag = FALSE;
 	book->retVal = MGU_SUCCESS;
 
 	g_free( book );
@@ -847,10 +849,16 @@ gint addrbook_read_data( AddressBookFile *book ) {
 
 	g_return_val_if_fail( book != NULL, -1 );
 
+	/*
+	printf( "...addrbook_read_data :%s:\t:%s:\n", book->fileName,
+		addrcache_get_name( book->addressCache ) );
+	*/
+
 	fileSpec = g_strconcat( book->path, G_DIR_SEPARATOR_S, book->fileName, NULL );
 	book->retVal = MGU_OPEN_FILE;
-	book->accessFlag = FALSE;
-	book->modifyFlag = FALSE;
+	addrcache_clear( book->addressCache );
+	book->addressCache->modified = FALSE;
+	book->addressCache->accessFlag = FALSE;
 	file = xml_open_file( fileSpec );
 	g_free( fileSpec );
 	if( file ) {
@@ -867,7 +875,8 @@ gint addrbook_read_data( AddressBookFile *book ) {
 		/* Resolve folder items */
 		addrbook_resolve_folder_items( book );
 		book->tempList = NULL;
-		book->readFlag = TRUE;
+		book->addressCache->modified = FALSE;
+		book->addressCache->dataRead = TRUE;
 		addrcache_set_dirty( book->addressCache, FALSE );
 	}
 	return book->retVal;
@@ -1988,5 +1997,27 @@ ItemPerson *addrbook_add_contact( AddressBookFile *book, ItemFolder *folder, con
 }
 
 /*
+ * Return file name for next address book file.
+ * Enter:  book Address book.
+ * Return: File name, or NULL if could not create. This should be g_free()
+ *         when done.
+ */
+gchar *addrbook_guess_next_file( AddressBookFile *book ) {
+	gchar *newFile = NULL;
+	GList *fileList = NULL;
+	gint fileNum = 1;
+	fileList = addrbook_get_bookfile_list( book );
+	if( fileList ) {
+		fileNum = 1 + book->maxValue;
+	}
+	newFile = addrbook_gen_new_file_name( fileNum );
+	g_list_free( fileList );
+	fileList = NULL;
+	return newFile;
+}
+
+/*
 * End of Source.
 */
+
+

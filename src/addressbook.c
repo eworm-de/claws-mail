@@ -95,19 +95,6 @@
 #include "addrselect.h"
 #include "addrclip.h"
 
-/*
-#include "pixmaps/dir-close.xpm"
-#include "pixmaps/dir-open.xpm"
-#include "pixmaps/group.xpm"
-#include "pixmaps/interface.xpm"
-#include "pixmaps/book.xpm"
-#include "pixmaps/address.xpm"
-#include "pixmaps/vcard.xpm"
-#include "pixmaps/jpilot.xpm"
-#include "pixmaps/category.xpm"
-#include "pixmaps/ldap.xpm"
-*/
-
 typedef enum
 {
 	COL_NAME	= 0,
@@ -453,6 +440,22 @@ void addressbook_open(Compose *target)
 	gtk_widget_show_all(addrbook.window);
 
 	addressbook_set_target_compose(target);
+}
+
+void addressbook_destroy() {
+	/* Free up address stuff */
+	if( _addressSelect_ != NULL ) {
+		addrselect_list_free( _addressSelect_ );
+	}
+	if( _clipBoard_ != NULL ) {
+		addrclip_free( _clipBoard_ );
+	}
+	if( _addressIndex_ != NULL ) {
+	       addrindex_free_index( _addressIndex_ );
+	}
+	_addressSelect_ = NULL;
+	_clipBoard_ = NULL;
+	_addressIndex_ = NULL;
 }
 
 void addressbook_set_target_compose(Compose *target)
@@ -1237,7 +1240,6 @@ static void addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
 	addressbook_menuitem_set_sensitive( obj, node );
 
 	addressbook_list_select_clear();
-
 }
 
 /*
@@ -1934,6 +1936,10 @@ static gchar *addressbook_edit_datasource( AddressObject *obj, GtkCTreeNode *nod
 	if( ! iface->haveLibrary ) return NULL;
 
 	/* Read data from data source */
+	if( addrindex_ds_get_modify_flag( ds ) ) {
+		addrindex_ds_read_data( ds );
+	}
+
 	if( ! addrindex_ds_get_read_flag( ds ) ) {
 		addrindex_ds_read_data( ds );
 	}
@@ -3767,7 +3773,6 @@ gboolean addressbook_add_contact( const gchar *name, const gchar *address, const
 * Return: TRUE if data loaded, FALSE if address index not loaded.
 */
 gboolean addressbook_load_completion( gint (*callBackFunc) ( const gchar *, const gchar * ) ) {
-	/* AddressInterface *interface; */
 	AddressDataSource *ds;
 	GList *nodeIf, *nodeDS;
 	GList *listP, *nodeP;
@@ -3786,6 +3791,10 @@ gboolean addressbook_load_completion( gint (*callBackFunc) ( const gchar *, cons
 			ds = nodeDS->data;
 
 			/* Read address book */
+			if( addrindex_ds_get_modify_flag( ds ) ) {
+				addrindex_ds_read_data( ds );
+			}
+
 			if( ! addrindex_ds_get_read_flag( ds ) ) {
 				addrindex_ds_read_data( ds );
 			}
@@ -3853,12 +3862,19 @@ static void addressbook_import_ldif_cb() {
 		if( adapter->treeNode ) {
 			abf = addressbook_imp_ldif( _addressIndex_ );
 			if( abf ) {
-				ds = addrindex_index_add_datasource( _addressIndex_, ADDR_IF_BOOK, abf );
-				ads = addressbook_create_ds_adapter( ds, ADDR_BOOK, NULL );
-				addressbook_ads_set_name( ads, addrbook_get_name( abf ) );
-				newNode = addressbook_add_object( adapter->treeNode, ADDRESS_OBJECT(ads) );
+				ds = addrindex_index_add_datasource(
+					_addressIndex_, ADDR_IF_BOOK, abf );
+				ads = addressbook_create_ds_adapter(
+					ds, ADDR_BOOK, NULL );
+				addressbook_ads_set_name(
+					ads, addrbook_get_name( abf ) );
+				newNode = addressbook_add_object(
+					adapter->treeNode,
+					ADDRESS_OBJECT(ads) );
 				if( newNode ) {
-					gtk_ctree_select( GTK_CTREE(addrbook.ctree), newNode );
+					gtk_ctree_select(
+						GTK_CTREE(addrbook.ctree),
+						newNode );
 					addrbook.treeSelected = newNode;
 				}
 
@@ -3867,7 +3883,6 @@ static void addressbook_import_ldif_cb() {
 			}
 		}
 	}
-
 }
 
 /*
@@ -3885,12 +3900,19 @@ static void addressbook_import_mutt_cb() {
 		if( adapter->treeNode ) {
 			abf = addressbook_imp_mutt( _addressIndex_ );
 			if( abf ) {
-				ds = addrindex_index_add_datasource( _addressIndex_, ADDR_IF_BOOK, abf );
-				ads = addressbook_create_ds_adapter( ds, ADDR_BOOK, NULL );
-				addressbook_ads_set_name( ads, addrbook_get_name( abf ) );
-				newNode = addressbook_add_object( adapter->treeNode, ADDRESS_OBJECT(ads) );
+				ds = addrindex_index_add_datasource(
+					_addressIndex_, ADDR_IF_BOOK, abf );
+				ads = addressbook_create_ds_adapter(
+					ds, ADDR_BOOK, NULL );
+				addressbook_ads_set_name(
+					ads, addrbook_get_name( abf ) );
+				newNode = addressbook_add_object(
+					adapter->treeNode,
+					ADDRESS_OBJECT(ads) );
 				if( newNode ) {
-					gtk_ctree_select( GTK_CTREE(addrbook.ctree), newNode );
+					gtk_ctree_select(
+						GTK_CTREE(addrbook.ctree),
+						newNode );
 					addrbook.treeSelected = newNode;
 				}
 
@@ -3899,7 +3921,6 @@ static void addressbook_import_mutt_cb() {
 			}
 		}
 	}
-
 }
 
 /*
