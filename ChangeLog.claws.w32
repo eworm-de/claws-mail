@@ -1,3 +1,17 @@
+2005-03-10 [thorsten]	1.0.3cvs0.1
+
+	* ChangeLog.claws
+	* configure.ac
+	* po/de.po
+	* po/es.po
+	* po/fr.po
+	* po/it.po
+	* po/pt_BR.po
+	* po/sk.po
+	* po/sr.po
+	* po/zh_CN.po
+		sync 1.0.3
+
 2005-03-07 [thorsten]	1.0.1cvs22.2
 
 	* src/common/utils.c
