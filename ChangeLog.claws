@@ -1,3 +1,10 @@
+2003-10-04 [christoph]	0.9.6claws4
+
+	* src/plugins/spamassassin/libspamc.[ch]
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/utils.[ch]
+		update libspamc to version from SpamAssassin 2.60
+
 2003-10-03 [christoph]	0.9.6claws3
 
 	* src/send_message.c

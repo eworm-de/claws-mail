@@ -111,12 +111,17 @@ gboolean timeout_func(gpointer data)
 
 static gboolean msg_is_spam(FILE *fp)
 {
-	struct sockaddr addr;
+	struct transport trans;
 	struct message m;
 	gboolean is_spam = FALSE;
 
-	if (lookup_host(config.hostname, config.port, &addr) != EX_OK) {
-		debug_print("failed to look up spamd host\n");
+	transport_init(&trans);
+	trans.type = TRANSPORT_TCP;
+	trans.hostname = config.hostname;
+	trans.port = config.port;
+
+	if (transport_setup(&trans, flags) != EX_OK) {
+		debug_print("failed to setup transport\n");
 		return FALSE;
 	}
 
@@ -130,7 +135,7 @@ static gboolean msg_is_spam(FILE *fp)
 		return FALSE;
 	}
 
-	if (message_filter(&addr, username, flags, &m) != EX_OK) {
+	if (message_filter(&trans, username, flags, &m) != EX_OK) {
 		debug_print("filtering the message failed\n");
 		message_cleanup(&m);
 		return FALSE;
