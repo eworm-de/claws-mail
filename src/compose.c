@@ -1674,15 +1674,16 @@ static gint compose_save_to_outbox(Compose *compose, const gchar *file)
 	debug_print(_("saving sent message...\n"));
 
 	outbox = folder_get_default_outbox();
-	folder_item_scan(outbox);
-	if ((num = folder_item_add_msg(outbox, file, FALSE)) < 0) {
-		g_warning(_("can't save message\n"));
-		return -1;
-	}
-
 	path = folder_item_get_path(outbox);
 	if (!is_dir_exist(path))
 		make_dir_hier(path);
+
+	folder_item_scan(outbox);
+	if ((num = folder_item_add_msg(outbox, file, FALSE)) < 0) {
+		g_free(path);
+		g_warning(_("can't save message\n"));
+		return -1;
+	}
 
 	if ((fp = procmsg_open_mark_file(path, TRUE)) == NULL)
 		g_warning(_("can't open mark file\n"));
@@ -1782,17 +1783,17 @@ static gint compose_queue(Compose *compose, const gchar *file)
 
 	queue = folder_get_default_queue();
 	folder_item_scan(queue);
+	queue_path = folder_item_get_path(queue);
+	if (!is_dir_exist(queue_path))
+		make_dir_hier(queue_path);
 	if ((num = folder_item_add_msg(queue, tmp, TRUE)) < 0) {
 		g_warning(_("can't queue the message\n"));
 		unlink(tmp);
 		g_free(tmp);
+		g_free(queue_path);
 		return -1;
 	}
 	g_free(tmp);
-
-	queue_path = folder_item_get_path(queue);
-	if (!is_dir_exist(queue_path))
-		make_dir_hier(queue_path);
 
 	if ((fp = procmsg_open_mark_file(queue_path, TRUE)) == NULL)
 		g_warning(_("can't open mark file\n"));
