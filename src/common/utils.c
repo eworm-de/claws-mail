@@ -41,6 +41,7 @@
 #include <sys/wait.h>
 #include <dirent.h>
 #include <time.h>
+#include <regex.h>
 
 #include "intl.h"
 #include "utils.h"
@@ -575,16 +576,15 @@ gint subject_compare_for_sort(const gchar *s1, const gchar *s2)
 void trim_subject_for_compare(gchar *str)
 {
 	gchar *srcp;
+	int skip;
 
 	eliminate_parenthesis(str, '[', ']');
 	eliminate_parenthesis(str, '(', ')');
 	g_strstrip(str);
 
-	while (!strncasecmp(str, "Re:", 3)) {
-		srcp = str + 3;
-		while (isspace(*srcp)) srcp++;
+	srcp = str + subject_get_reply_prefix_length(str);
+	if (srcp != str)
 		memmove(str, srcp, strlen(srcp) + 1);
-	}
 }
 
 void trim_subject_for_sort(gchar *str)
@@ -593,11 +593,9 @@ void trim_subject_for_sort(gchar *str)
 
 	g_strstrip(str);
 
-	while (!strncasecmp(str, "Re:", 3)) {
-		srcp = str + 3;
-		while (isspace(*srcp)) srcp++;
+	srcp = str + subject_get_reply_prefix_length(str);
+	if (srcp != str)	
 		memmove(str, srcp, strlen(srcp) + 1);
-	}
 }
 
 void trim_subject(gchar *str)
@@ -606,11 +604,7 @@ void trim_subject(gchar *str)
 	gchar op, cl;
 	gint in_brace;
 
-	destp = str;
-	while (!strncasecmp(destp, "Re:", 3)) {
-		destp += 3;
-		while (isspace(*destp)) destp++;
-	}
+	destp = str + subject_get_reply_prefix_length(str);
 
 	if (*destp == '[') {
 		op = '[';
@@ -3259,29 +3253,19 @@ void * subject_table_lookup(GHashTable *subject_table, gchar * subject)
 {
 	if (subject == NULL)
 		subject = "";
-
-	if (g_strncasecmp(subject, "Re: ", 4) == 0)
-		return g_hash_table_lookup(subject_table, subject + 4);
 	else
-		return g_hash_table_lookup(subject_table, subject);
+		subject += subject_get_reply_prefix_length(subject);
+
+	return g_hash_table_lookup(subject_table, subject);
 }
 
 void subject_table_insert(GHashTable *subject_table, gchar * subject,
 			  void * data)
 {
-	if (subject == NULL)
+	if (subject == NULL || *subject == 0)
 		return;
-	if (* subject == 0)
-		return;
-	if (g_strcasecmp(subject, "Re:") == 0)
-		return;
-	if (g_strcasecmp(subject, "Re: ") == 0)
-		return;
-
-	if (g_strncasecmp(subject, "Re: ", 4) == 0)
-		g_hash_table_insert(subject_table, subject + 4, data);
-	else
-		g_hash_table_insert(subject_table, subject, data);
+	subject += subject_get_reply_prefix_length(subject);
+	g_hash_table_insert(subject_table, subject, data);
 }
 
 void subject_table_remove(GHashTable *subject_table, gchar * subject)
@@ -3289,19 +3273,71 @@ void subject_table_remove(GHashTable *subject_table, gchar * subject)
 	if (subject == NULL)
 		return;
 
-	if (g_strncasecmp(subject, "Re: ", 4) == 0)
-		g_hash_table_remove(subject_table, subject + 4);
-	else
-		g_hash_table_remove(subject_table, subject);
+	subject += subject_get_reply_prefix_length(subject);	
+	g_hash_table_remove(subject_table, subject);
 }
 
-gboolean subject_is_reply(const gchar *subject)
+/*!
+ *\brief	Check if a string is prefixed with known (combinations) 
+ *		of reply prefixes. The function assumes that each prefix 
+ *		is terminated by zero or exactly _one_ space.
+ *
+ *\param	str String to check for a prefixes
+ *
+ *\return	int Number of chars in the prefix that should be skipped 
+ *		for a "clean" subject line. If no prefix was found, 0
+ *		is returned.
+ */		
+int subject_get_reply_prefix_length(const gchar *subject)
 {
-	/* XXX: just simply here so someone can handle really
-	 * advanced Re: detection like "Re[4]", "ANTW:" or
-	 * Re: Re: Re: Re: Re: Re: Re: Re:" stuff. */
-	if (subject == NULL) return FALSE;
-	else return 0 == g_strncasecmp(subject, "Re: ", 4);
+	/*!< Array with allowable reply prefixes regexps. */
+	static const gchar * const reply_prefixes[] = {
+		"[Rr][Ee]\\:",			/* "Re:" */
+		"[Rr][Ee]\\[[1-9][0-9]*\\]\\:",	/* Intelligent but stupidly non-conforming Re[XXX]:*/
+		"[Aa][Nn][Tt][Ww]\\:"		/* Overactive i18n / translation teams             */
+		/* add more */
+	};
+	const int REPLY_PREFIXES = sizeof reply_prefixes / sizeof reply_prefixes[0];
+	int n;
+	regmatch_t pos;
+	static regex_t regex;
+	static gboolean init_;
+
+	if (!subject) return 0;
+	if (!*subject) return 0;
+
+	if (!init_) {
+		GString *s = g_string_new("");
+		
+		for (n = 0; n < REPLY_PREFIXES; n++)
+			/* Terminate each prefix regexpression by a
+			 * "\ ?" (zero or ONE space), and OR them */
+			g_string_sprintfa(s, "(%s\\ ?)%s",
+					  reply_prefixes[n],
+					  n < REPLY_PREFIXES - 1 ? 
+					  "|" : "");
+		
+		g_string_prepend(s, "(");
+		g_string_append(s, ")+");	/* match at least once */
+		g_string_prepend(s, "^\\ *");	/* from beginning of line */
+		
+
+		/* We now have something like "^\ *((PREFIX1\ ?)|(PREFIX2\ ?))+" 
+		 * TODO: Should this be       "^\ *(((PREFIX1)|(PREFIX2))\ ?)+" ??? */
+		if (regcomp(&regex, s->str, REG_EXTENDED)) { 
+			debug_print("Error compiling regexp %s\n", s->str);
+			g_string_free(s, TRUE);
+			return 0;
+		} else {
+			init_ = TRUE;
+			g_string_free(s, TRUE);
+		}
+	}
+	
+	if (!regexec(&regex, subject, 1, &pos, 0) && pos.rm_so != -1)
+		return pos.rm_eo;
+	else
+		return 0;
 }
 
 FILE *get_tmpfile_in_dir(const gchar *dir, gchar **filename)

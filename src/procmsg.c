@@ -175,19 +175,20 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			g_hash_table_insert(msgid_table, (gchar *)msgid, node);
 
 		if (prefs_common.thread_by_subject) {
-			subject = msginfo->subject;
-			found_subject = subject_table_lookup(subject_table,
-							     (gchar *) subject);
+			subject  = msginfo->subject;
+			subject += subject_get_reply_prefix_length(subject);
+			found_subject = subject_table_lookup_clean(subject_table,
+							           (gchar *) subject);
 			if (found_subject == NULL)
-				subject_table_insert(subject_table, (gchar *) subject,
-						     node);
+				subject_table_insert_clean(subject_table, (gchar *) subject,
+						           node);
 			else {
 				/* replace if msg in table is older than current one 
 				 * can add here more stuff. */
 				if ( ((MsgInfo*)(found_subject->data))->date_t >
 				     ((MsgInfo*)(node->data))->date_t )  {
-					subject_table_remove(subject_table, (gchar *) subject);
-					subject_table_insert(subject_table, (gchar *) subject, node);
+					subject_table_remove_clean(subject_table, (gchar *) subject);
+					subject_table_insert_clean(subject_table, (gchar *) subject, node);
 				}	
 			}
 		}
@@ -220,28 +221,24 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 		for (node = root->children; node != NULL; ) {
 			next = node->next;
 			msginfo = (MsgInfo *) node->data;
-			parent = NULL;
-			if (subject_is_reply(msginfo->subject)) {
-				parent = subject_table_lookup(subject_table,
-							      msginfo->subject);
-				/* the node may already be threaded by IN-REPLY-TO,
-				   so go up in the tree to find the parent node */
-				if (parent != NULL) {
-					if (g_node_is_ancestor(node, parent))
-						parent = NULL;
-					if (parent == node)
-						parent = NULL;
-				}
+			parent = subject_table_lookup(subject_table, msginfo->subject);
+			/* the node may already be threaded by IN-REPLY-TO,
+			   so go up in the tree to find the parent node */
+			if (parent != NULL) {
+				if (g_node_is_ancestor(node, parent))
+					parent = NULL;
+				if (parent == node)
+					parent = NULL;
+			}
 
-				if (parent) {
-					g_node_unlink(node);
-					g_node_append(parent, node);
-					/* CLAWS: ignore thread */
-					if (MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-						g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
-					}
+			if (parent) {
+				g_node_unlink(node);
+				g_node_append(parent, node);
+				/* CLAWS: ignore thread */
+				if (MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
+					g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
 				}
-			}					
+			}
 			node = next;
 		}	
 	}

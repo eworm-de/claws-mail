@@ -1,3 +1,12 @@
+2003-06-12 [alfons]	0.9.0claws30
+
+	* src/compose.c
+	* src/procmsg.c
+	* src/common/utils.[ch]
+		handle reply subject prefixes better (initial 
+		suggestion by Robert Story adapted and enhanced 
+		using regexps)
+
 2003-06-12 [melvin]	0.9.0claws29
 
 	* src/compose.c

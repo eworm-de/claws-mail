@@ -1789,12 +1789,9 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	if (msginfo->subject && *msginfo->subject) {
 		gchar *buf, *buf2, *p;
 
-		buf = g_strdup(msginfo->subject);
-		while (!strncasecmp(buf, "Re:", 3)) {
-			p = buf + 3;
-			while (isspace(*p)) p++;
-			memmove(buf, p, strlen(p) + 1);
-		}
+		buf = p = g_strdup(msginfo->subject);
+		p += subject_get_reply_prefix_length(p);
+		memmove(buf, p, strlen(p) + 1);
 
 		buf2 = g_strdup_printf("Re: %s", buf);
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), buf2);
