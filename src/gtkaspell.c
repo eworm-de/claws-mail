@@ -1712,6 +1712,9 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 	caption = g_strdup_printf(_("\"%s\" unknown in %s"), 
 				  (unsigned char*) l->data, 
 				  gtkaspell->gtkaspeller->dictionary->dictname);
+#ifdef WIN32
+	locale_to_utf8(&caption);
+#endif
 	item = gtk_menu_item_new_with_label(caption);
 	gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu), item);
@@ -1801,7 +1804,16 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 							  curmenu);
 			}
 
+#ifdef WIN32
+			{
+				gchar *locdata = g_strdup((unsigned char*)l->data);
+				locale_to_utf8(&locdata);
+				item = gtk_menu_item_new_with_label(locdata);
+
+			}
+#else
 			item = gtk_menu_item_new_with_label((unsigned char*)l->data);
+#endif
 			gtk_widget_show(item);
 			gtk_menu_append(GTK_MENU(curmenu), item);
 			gtk_signal_connect(GTK_OBJECT(item), "activate",
