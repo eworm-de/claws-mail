@@ -55,6 +55,7 @@ src/messageview.c
 src/mimeview.c
 src/news.c
 src/passphrase.c
+src/pgpmime.c
 src/plugins/clamav/clamav_plugin.c
 src/plugins/clamav/clamav_plugin_gtk.c
 src/plugins/demo/demo.c
@@ -91,6 +92,7 @@ src/rfc2015.c
 src/select-keys.c
 src/send_message.c
 src/setup.c
+src/sgpgme.c
 src/sigstatus.c
 src/sourcewindow.c
 src/ssl_manager.c

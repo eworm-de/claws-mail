@@ -2303,72 +2303,122 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 	gtk_clist_set_row_data(GTK_CLIST(compose->attach_clist), row, ainfo);
 }
 
-#define IS_FIRST_PART_TEXT(info) \
-	((info->type == MIMETYPE_TEXT) || \
-	 (info->type == MIMETYPE_MULTIPART && info->subtype && \
-	  !strcasecmp(info->subtype, "alternative") && \
-	  (info->node->children && \
-	   (((MimeInfo *) info->node->children->data)->type == MIMETYPE_TEXT))))
+#ifdef USE_GPGME
+static void compose_use_signing(Compose *compose, gboolean use_signing)
+{
+	GtkItemFactory *ifactory;
+	GtkWidget *menuitem = NULL;
+
+	compose->use_signing = use_signing;
+	ifactory = gtk_item_factory_from_widget(compose->menubar);
+	menuitem = gtk_item_factory_get_item
+		(ifactory, "/Message/Sign");
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), 
+				       use_signing);
+	compose_update_gnupg_mode_menu_item(compose);
+}
+#endif /* USE_GPGME */
+
+#define NEXT_PART_NOT_CHILD(info)  \
+{  \
+	node = info->node;  \
+	while (node->children)  \
+		node = g_node_last_child(node);  \
+	info = procmime_mimeinfo_next((MimeInfo *)node->data);  \
+}
 
 static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 {
 	MimeInfo *mimeinfo;
 	MimeInfo *child;
-	gchar *infile;
+	MimeInfo *firsttext = NULL;
+	MimeInfo *encrypted = NULL;
+	GNode    *node;
 	gchar *outfile;
 	const gchar *partname = NULL;
 
 	mimeinfo = procmime_scan_message(msginfo);
 	if (!mimeinfo) return;
 
-	/* skip first text (presumably message body) */
-	child = (MimeInfo *) mimeinfo->node->children->data;
-	if (!child || IS_FIRST_PART_TEXT(mimeinfo)) {
+	if (mimeinfo->node->children == NULL) {
 		procmime_mimeinfo_free_all(mimeinfo);
 		return;
 	}
 
-	if (IS_FIRST_PART_TEXT(child))
-		child = (MimeInfo *) child->node->next;
+	/* find first content part */
+	child = (MimeInfo *) mimeinfo->node->children->data;
+	while (child && child->node->children && (child->type == MIMETYPE_MULTIPART))
+		child = (MimeInfo *)child->node->children->data;
 
-	infile = procmsg_get_message_file_path(msginfo);
-
+	if (child->type == MIMETYPE_TEXT) {
+		firsttext = child;
+		debug_print("First text part found\n");
+	} else if (compose->mode == COMPOSE_REEDIT &&
+		 child->type == MIMETYPE_APPLICATION &&
+		 !strcasecmp(child->subtype, "pgp-encrypted")) {
+		AlertValue val;
+		val = alertpanel(_("Encrypted message"),
+				 _("Cannot re-edit an encrypted message. \n"
+				   "Discard encrypted part?"),
+				 _("Yes"), _("No"), NULL);
+		if (val == G_ALERTDEFAULT) 
+			encrypted = (MimeInfo *)child->node->parent->data;
+	}
+     
+	child = (MimeInfo *) mimeinfo->node->children->data;
 	while (child != NULL) {
-		if (child->node->children || child->type == MIMETYPE_MULTIPART) {
+		if (child == encrypted) {
+			/* skip this part of tree */
+			NEXT_PART_NOT_CHILD(child);
+			continue;
+		}
+
+		if (child->type == MIMETYPE_MULTIPART) {
+			/* get the actual content */
 			child = procmime_mimeinfo_next(child);
 			continue;
 		}
-		if (child->node->parent && child->node->parent->parent
-		&& (((MimeInfo *) child->node->parent->parent->data)->type == MIMETYPE_MULTIPART)
-		&& !strcasecmp(((MimeInfo *) child->node->parent->parent->data)->subtype, "signed")
-		&& child->type == MIMETYPE_TEXT) {
-			/* this is the main text part of a signed message */
+		    
+		if (child == firsttext) {
+			child = procmime_mimeinfo_next(child);
+			continue;
+		}
+
+		if ((compose->mode == COMPOSE_REEDIT || 
+		     compose->mode == COMPOSE_FORWARD_INLINE ||
+		     compose->mode == COMPOSE_FORWARD )  &&
+		    (child->type == MIMETYPE_APPLICATION) && 
+		    !strcmp(child->subtype, "pgp-signature")) {
+#ifdef USE_GPGME
+			if (compose->mode == COMPOSE_REEDIT) {
+				compose->gnupg_mode  = GNUPG_MODE_DETACH;
+				compose_use_signing(compose, TRUE);
+			}
+#endif
 			child = procmime_mimeinfo_next(child);
 			continue;
 		}
 		outfile = procmime_get_tmp_file_name(child);
 		if (procmime_get_part(outfile, child) < 0)
 			g_warning("Can't get the part of multipart message.");
-		else if (compose->mode != COMPOSE_REEDIT || 
-		    !((child->type == MIMETYPE_APPLICATION) && !strcmp(child->subtype, "pgp-signature"))) {
+		else {
 			gchar *content_type;
 
 			content_type = g_strdup_printf("%s/%s", procmime_get_type_str(child->type), child->subtype);
 			partname = procmime_mimeinfo_get_parameter(child, "name");
-			
+			if (partname == NULL)
+				partname = "";
 			compose_attach_append(compose, outfile, 
 					      partname, content_type);
 			g_free(content_type);
 		}
-
-		child = child->node->next != NULL ? (MimeInfo *) child->node->next->data : NULL;
+		g_free(outfile);
+		NEXT_PART_NOT_CHILD(child);
 	}
-
-	g_free(infile);
 	procmime_mimeinfo_free_all(mimeinfo);
 }
 
-#undef IS_FIRST_PART_TEXT
+#undef NEXT_PART_NOT_CHILD
 
 #define GET_CHAR(pos, buf, len)						     \
 {									     \
@@ -3328,7 +3378,8 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 {
 	gchar buf[BUFFSIZE];
 	gchar *str;
-	gboolean first_address;
+	gboolean first_to_address;
+	gboolean first_cc_address;
 	GSList *list;
 	ComposeHeaderEntry *headerentry;
 	gchar *headerentryname;
@@ -3340,7 +3391,8 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 	cc_hdr = prefs_common.trans_hdr ? _("Cc:") : "Cc:";
  	to_hdr = prefs_common.trans_hdr ? _("To:") : "To:";
 
-	first_address = TRUE;
+	first_to_address = TRUE;
+	first_cc_address = TRUE;
 	for (list = compose->header_list; list; list = list->next) {
 		headerentry = ((ComposeHeaderEntry *)list->data);
 		headerentryname = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(headerentry->combo)->entry));
@@ -3354,12 +3406,24 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 				compose_convert_header
 					(buf, sizeof(buf), str,
 					strlen("Resent-To") + 2, TRUE);
-				if (first_address) {
-					fprintf(fp, "Resent-To: ");
-					first_address = FALSE;
-				} else {
-					fprintf(fp, ",");
+				if (g_strcasecmp(headerentryname, to_hdr) == 0) {
+					if (first_to_address) {
+						fprintf(fp, "Resent-To: ");
+						first_to_address = FALSE;
+					} else {
+						fprintf(fp, ",");
+					}
 				}
+				if (g_strcasecmp(headerentryname, cc_hdr) == 0) {
+					if (first_cc_address) {
+						fprintf(fp, "\n");
+						fprintf(fp, "Resent-Cc: ");
+						first_cc_address = FALSE;
+					} else {
+						fprintf(fp, ",");
+					}
+				}
+				
 				fprintf(fp, "%s", buf);
 			}
 		}

@@ -23,6 +23,7 @@
  
 #ifdef USE_GPGME
 
+#include <time.h>
 #include <gtk/gtk.h>
 #include <gpgme.h>
 
@@ -120,7 +121,7 @@ gchar *sgpgme_sigstat_info_short(GpgmeCtx ctx, GpgmeSigStat status)
 			get_validity_str(validity));
 	}
 	case GPGME_SIG_STAT_GOOD_EXP:
-		return g_strdup(_("The signature of this part has expired"));
+		return g_strdup(_("The signature has expired"));
 	case GPGME_SIG_STAT_GOOD_EXPKEY:
 		return g_strdup(_("The key that was used to sign this part has expired"));
 	case GPGME_SIG_STAT_DIFF:
@@ -134,9 +135,136 @@ gchar *sgpgme_sigstat_info_short(GpgmeCtx ctx, GpgmeSigStat status)
 	case GPGME_SIG_STAT_ERROR:
 		return g_strdup(_("An error occured"));
 	case GPGME_SIG_STAT_NONE:
-		return g_strdup(_("The signature of this part has not been checked"));
+		return g_strdup(_("The signature has not been checked"));
 	}
 	return g_strdup(_("Error"));
+}
+
+gchar *sgpgme_sigstat_info_full(GpgmeCtx ctx, GpgmeSigStat status)
+{
+	gint i = 0;
+	gchar *ret;
+	GString *siginfo;
+	GpgmeKey key;
+	
+	siginfo = g_string_sized_new(64);
+	while (gpgme_get_sig_key(ctx, i, &key) != GPGME_EOF) {
+		time_t sigtime, expiretime;
+		GpgmeSigStat sigstatus;
+		gchar timestr[64];
+		const gchar *keytype, *keyid, *uid;
+		
+		sigtime = gpgme_get_sig_ulong_attr(ctx, i, GPGME_ATTR_CREATED, 0);
+		strftime(timestr, 64, "%c", gmtime(&sigtime));
+		keytype = gpgme_key_get_string_attr(key, GPGME_ATTR_ALGO, NULL, 0);
+		keyid = gpgme_key_get_string_attr(key, GPGME_ATTR_KEYID, NULL, 0);
+		g_string_sprintfa(siginfo,
+			_("Signature made %s using %s key ID %s\n"),
+			timestr, keytype, keyid);
+		
+		sigstatus = gpgme_get_sig_ulong_attr(ctx, i, GPGME_ATTR_SIG_STATUS, 0);	
+		uid = gpgme_key_get_string_attr(key, GPGME_ATTR_USERID, NULL, 0);
+		switch (sigstatus) {
+		case GPGME_SIG_STAT_GOOD:
+		case GPGME_SIG_STAT_GOOD_EXPKEY:
+			g_string_sprintfa(siginfo,
+				_("Good signature from \"%s\"\n"),
+				uid);
+			break;
+		case GPGME_SIG_STAT_GOOD_EXP:
+			g_string_sprintfa(siginfo,
+				_("Expired signature from \"%s\"\n"),
+				uid);
+			break;
+		case GPGME_SIG_STAT_BAD:
+			g_string_sprintfa(siginfo,
+				_("BAD signature from \"%s\"\n"),
+				uid);
+			break;
+		default:
+			break;
+		}
+		if (sigstatus != GPGME_SIG_STAT_BAD) {
+			gint j = 1;
+			
+			while (uid = gpgme_key_get_string_attr(key, GPGME_ATTR_USERID, NULL, j)) {
+				g_string_sprintfa(siginfo,
+					_("                aka \"%s\"\n"),
+					uid);
+				j++;
+			}
+			g_string_sprintfa(siginfo,
+				_("Primary key fingerprint: %s\n"), 
+				gpgme_key_get_string_attr(key, GPGME_ATTR_FPR, NULL, 0));
+		}
+
+		
+		expiretime = gpgme_get_sig_ulong_attr(ctx, i, GPGME_ATTR_EXPIRE, 0);
+		if (expiretime > 0) {
+			const gchar *format;
+
+			strftime(timestr, 64, "%c", gmtime(&expiretime));
+			if (time(NULL) < expiretime)
+				format = _("Signature expires %s\n");
+			else
+				format = _("Signature expired %s\n");
+			g_string_sprintfa(siginfo, format, time);
+		}
+		
+		g_string_append(siginfo, "\n");
+		i++;
+	}
+
+	ret = siginfo->str;
+	g_string_free(siginfo, FALSE);
+	return ret;
+}
+
+GpgmeData sgpgme_data_from_mimeinfo(MimeInfo *mimeinfo)
+{
+	GpgmeData data;
+	
+	gpgme_data_new_from_filepart(&data,
+		mimeinfo->filename,
+		NULL,
+		mimeinfo->offset,
+		mimeinfo->length);
+	
+	return data;
+}
+
+GpgmeData sgpgme_decrypt(GpgmeData cipher)
+{
+	GpgmeCtx ctx;
+	struct passphrase_cb_info_s info;
+	GpgmeData plain;
+	GpgmeError err;
+
+	memset (&info, 0, sizeof info);
+	
+	if (gpgme_new(&ctx) != GPGME_No_Error)
+		return NULL;
+
+	if (gpgme_data_new(&plain) != GPGME_No_Error) {
+		gpgme_release(ctx);
+		return NULL;
+	}
+	
+    	if (!getenv("GPG_AGENT_INFO")) {
+        	info.c = ctx;
+        	gpgme_set_passphrase_cb (ctx, gpgmegtk_passphrase_cb, &info);
+    	}
+
+	err = gpgme_op_decrypt(ctx, cipher, plain);
+	gpgmegtk_free_passphrase();
+	gpgme_release(ctx);
+
+	if (err != GPGME_No_Error) {
+		gpgme_data_release(plain);
+		return NULL;
+	}
+
+	return plain;
 }
 
 void sgpgme_init()

@@ -477,8 +477,8 @@ static const gchar *const col_label[N_SUMMARY_COLS] = {
  */
 static gchar *search_descr_strings[] = {
 	"a",	 N_("all messages"),
-	"ag #",  N_("messages whose age is greather than #"),
-	"al #",  N_("messages whose age is greather than #"),
+	"ag #",  N_("messages whose age is greater than #"),
+	"al #",  N_("messages whose age is less than #"),
 	"b S",	 N_("messages which contain S in the message body"),
 	"B S",	 N_("messages which contain S in the whole message"),
 	"c S",	 N_("messages carbon-copied to S"),
@@ -781,7 +781,8 @@ void summary_init(SummaryView *summaryview)
 			else
 #endif
 			smallfont = gtkut_font_load(SMALL_FONT);
-		small_style->font = smallfont;
+		if (smallfont)
+			small_style->font = smallfont;
 		small_marked_style = gtk_style_copy(small_style);
 		small_marked_style->fg[GTK_STATE_NORMAL] =
 			summaryview->color_marked;
@@ -2846,7 +2847,7 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 	} else {
 		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_MIME], NULL);
 	}
-        if (!style)
+	if (!style)
 		style = small_style;
 
 	gtk_ctree_node_set_row_style(ctree, row, style);

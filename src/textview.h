@@ -80,6 +80,8 @@ void textview_set_all_headers	(TextView	*textview,
 				 gboolean	 all_headers);
 void textview_set_font		(TextView	*textview,
 				 const gchar	*codeset);
+void textview_set_text		(TextView	*textview,
+				 const gchar	*text);
 void textview_set_position	(TextView	*textview,
 				 gint		 pos);
 void textview_scroll_one_line	(TextView	*textview,

@@ -34,5 +34,9 @@ SignatureStatus sgpgme_sigstat_gpgme_to_privacy
 					(GpgmeSigStat status);
 gchar *sgpgme_sigstat_info_short	(GpgmeCtx ctx,
 					 GpgmeSigStat status);
+gchar *sgpgme_sigstat_info_full		(GpgmeCtx ctx,
+					 GpgmeSigStat status);
+GpgmeData sgpgme_data_from_mimeinfo	(MimeInfo *mimeinfo);
+GpgmeData sgpgme_decrypt		(GpgmeData cipher);
 
 #endif /* SGPGME_H */

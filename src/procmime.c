@@ -61,7 +61,7 @@ MimeInfo *procmime_mimeinfo_new(void)
 
 	mimeinfo->parameters = g_hash_table_new(g_str_hash, g_str_equal);
 	mimeinfo->node       = g_node_new(mimeinfo);
-
+	
 	return mimeinfo;
 }
 
@@ -604,7 +604,7 @@ FILE *procmime_get_first_text_content(MsgInfo *msginfo)
 gboolean procmime_find_string_part(MimeInfo *mimeinfo, const gchar *filename,
 				   const gchar *str, gboolean case_sens)
 {
-	FILE *infp, *outfp;
+	FILE *outfp;
 	gchar buf[BUFFSIZE];
 	gchar *(* StrFindFunc) (const gchar *haystack, const gchar *needle);
 
@@ -1051,13 +1051,13 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 	FILE *fp;
 
 	boundary = g_hash_table_lookup(mimeinfo->parameters, "boundary");
-	if(!boundary)
+	if (!boundary)
 		return;
 	boundary_len = strlen(boundary);
 
-	if(mimeinfo->encoding_type != ENC_BINARY && 
-	   mimeinfo->encoding_type != ENC_7BIT && 
-	   mimeinfo->encoding_type != ENC_8BIT)
+	if (mimeinfo->encoding_type != ENC_BINARY && 
+	    mimeinfo->encoding_type != ENC_7BIT && 
+	    mimeinfo->encoding_type != ENC_8BIT)
 		procmime_decode_content(mimeinfo);
 
 	fp = fopen(mimeinfo->filename, "rb");
@@ -1067,7 +1067,7 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 			break;
 
 		if (IS_BOUNDARY(buf, boundary, boundary_len)) {
-			if(lastoffset != -1) {
+			if (lastoffset != -1) {
 				procmime_parse_mimepart(mimeinfo,
 				                        hentry[0].body, hentry[1].body,
 							hentry[2].body, hentry[3].body, 
@@ -1087,6 +1087,10 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 			lastoffset = ftell(fp);
 		}
 	}
+	for (i = 0; i < 4; i++) {
+		g_free(hentry[i].body);
+		hentry[i].body = NULL;
+	}
 	fclose(fp);
 }
 
@@ -1096,6 +1100,9 @@ static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mim
 	gchar **strarray;
 	gchar *str;
 	struct TypeTable *typetablearray;
+	
+	g_return_if_fail(content_type != NULL);
+	g_return_if_fail(mimeinfo != NULL);
 	
 	/* Split content type into parts and remove trailing
 	   and leading whitespaces from all strings */
@@ -1107,6 +1114,10 @@ static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mim
 	/* Get mimeinfo->type and mimeinfo->subtype */
 	mimeinfo->type = MIMETYPE_UNKNOWN;
 	str = content_type_parts[0];
+	if (str == NULL) {
+		g_strfreev(content_type_parts);
+		return;
+	}
 	for (typetablearray = mime_type_table; typetablearray->str != NULL; typetablearray++) {
 		if (g_strncasecmp(str, typetablearray->str, strlen(typetablearray->str)) == 0 &&
 		    str[strlen(typetablearray->str)] == '/') {

@@ -1,3 +1,40 @@
+2003-11-14
+
+	* src/folder.h: FolderItem に 'updated' フラグを追加。
+	* src/folderview.[ch]: folderview_update_all_updated(): 新規。全ての
+	  更新されたフォルダを更新する。
+	* src/imap.c: 内容の変更時に FolderView::update フラグをセット。
+	* src/main.c: send_queue()
+	  src/mainwindow.c: send_queue_cb(): コードの整理。
+	* src/mh.c: コードの整理。
+	  mh_scan_folder(): 新着メッセージを正しくカウントするようにした。
+	* src/procmsg.[ch]: コードの整理。
+	  procmsg_open_cache_file(): 新規。
+	  procmsg_open_mark_file(): 読み込み/書き込み/追加書き込みができる
+	  ようにした。
+	  procmsg_send_queue(): アカウントに対応する送信控を正しく選択する
+	  ようにした。
+	* src/send_message.[ch]: send_get_queue_info(): 送信待ちメッセージ
+	  からキュー情報を取得。
+	  send_queue_info_free(): QueueInfo を開放。
+	  send_message_queue(): ファイルの代わりに QueueInfo を引数にとる
+	  ようにした。
+	* src/summaryview.c: summary_write_cache(): コードの整理。
+
+2003-11-10
+
+	* src/compose.c: compose_redirect_write_headers(): Resent-Cc: ヘッダ
+	  を正しく付加するようにした。
+
+2003-11-05
+
+	* src/imap.c: imap_get_msg_list(): フラグを得るための SEARCH コマンド
+	  に失敗した場合 FETCH コマンドに fallback するようにした。
+	  imap_search_flags(): SEARCH コマンドを使用して UID の配列とフラグの
+	  ハッシュテーブルを返す。
+	  imap_fetch_flags(): FETCH コマンドを使用して UID の配列とフラグの
+	  ハッシュテーブルを返す。
+
 2003-10-28
 
 	* src/summary_search.c: summary_search_execute(): 後方検索が有効な

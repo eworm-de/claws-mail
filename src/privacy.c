@@ -25,16 +25,32 @@
 
 static GSList *systems = NULL;
 
+/**
+ * Register a new Privacy System
+ *
+ * \param system The Privacy System that should be registered
+ */
 void privacy_register_system(PrivacySystem *system)
 {
 	systems = g_slist_append(systems, system);
 }
 
+/**
+ * Unregister a new Privacy System. The system must not be in
+ * use anymore when it is unregistered.
+ *
+ * \param system The Privacy System that should be unregistered
+ */
 void privacy_unregister_system(PrivacySystem *system)
 {
 	systems = g_slist_remove(systems, system);
 }
 
+/**
+ * Free a PrivacyData of a PrivacySystem
+ *
+ * \param privacydata The data to free
+ */
 void privacy_free_privacydata(PrivacyData *privacydata)
 {
 	g_return_if_fail(privacydata != NULL);
@@ -42,6 +58,15 @@ void privacy_free_privacydata(PrivacyData *privacydata)
 	privacydata->system->free_privacydata(privacydata);
 }
 
+/**
+ * Check if a MimeInfo is signed with one of the available
+ * privacy system. If a privacydata is set in the MimeInfo
+ * it will directory return the return value by the system
+ * set in the privacy data or check all available privacy
+ * systems otherwise.
+ *
+ * \return True if the MimeInfo has a signature
+ */
 gboolean privacy_mimeinfo_is_signed(MimeInfo *mimeinfo)
 {
 	GSList *cur;
@@ -66,6 +91,14 @@ gboolean privacy_mimeinfo_is_signed(MimeInfo *mimeinfo)
 	return FALSE;
 }
 
+/**
+ * Check the signature of a MimeInfo. privacy_mimeinfo_is_signed
+ * should be called before otherwise it is done by this function.
+ * If the MimeInfo is not signed an error code will be returned.
+ *
+ * \return Error code indicating the result of the check,
+ *         < 0 if an error occured
+ */
 gint privacy_mimeinfo_check_signature(MimeInfo *mimeinfo)
 {
 	PrivacySystem *system;
@@ -123,9 +156,72 @@ gchar *privacy_mimeinfo_sig_info_short(MimeInfo *mimeinfo)
 	return system->get_sig_info_short(mimeinfo);
 }
 
+gchar *privacy_mimeinfo_sig_info_full(MimeInfo *mimeinfo)
+{
+	PrivacySystem *system;
+
+	g_return_val_if_fail(mimeinfo != NULL, NULL);
+
+	if (mimeinfo->privacy == NULL)
+		privacy_mimeinfo_is_signed(mimeinfo);
+	
+	if (mimeinfo->privacy == NULL)
+		return g_strdup(_("No signature found"));
+	
+	system = mimeinfo->privacy->system;
+	if (system->get_sig_info_full == NULL)
+		return g_strdup(_("No information available"));
+	
+	return system->get_sig_info_full(mimeinfo);
+}
+
 gboolean privacy_mimeinfo_is_encrypted(MimeInfo *mimeinfo)
 {
+	GSList *cur;
 	g_return_val_if_fail(mimeinfo != NULL, FALSE);
 
+	for(cur = systems; cur != NULL; cur = g_slist_next(cur)) {
+		PrivacySystem *system = (PrivacySystem *) cur->data;
+
+		if(system->is_encrypted != NULL && system->is_encrypted(mimeinfo))
+			return TRUE;
+	}
+
 	return FALSE;
+}
+
+static gint decrypt(MimeInfo *mimeinfo, PrivacySystem *system)
+{
+	MimeInfo *decryptedinfo, *parentinfo;
+	gint childnumber;
+	
+	g_return_val_if_fail(system->decrypt != NULL, -1);
+	
+	decryptedinfo = system->decrypt(mimeinfo);
+	if (decryptedinfo == NULL)
+		return -1;
+
+	parentinfo = procmime_mimeinfo_parent(mimeinfo);
+	childnumber = g_node_child_index(parentinfo->node, mimeinfo);
+	
+	procmime_mimeinfo_free_all(mimeinfo);
+
+	g_node_insert(parentinfo->node, childnumber, decryptedinfo->node);
+
+	return 0;
+}
+
+gint privacy_mimeinfo_decrypt(MimeInfo *mimeinfo)
+{
+	GSList *cur;
+	g_return_val_if_fail(mimeinfo != NULL, FALSE);
+
+	for(cur = systems; cur != NULL; cur = g_slist_next(cur)) {
+		PrivacySystem *system = (PrivacySystem *) cur->data;
+
+		if(system->is_encrypted != NULL && system->is_encrypted(mimeinfo))
+			return decrypt(mimeinfo, system);
+	}
+
+	return -1;
 }

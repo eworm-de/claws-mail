@@ -397,6 +397,11 @@ int main(int argc, char *argv[])
 	/* ignore SIGPIPE signal for preventing sudden death of program */
 	signal(SIGPIPE, SIG_IGN);
 
+	if (cmd.online_mode == ONLINE_MODE_OFFLINE)
+		main_window_toggle_work_offline(mainwin, TRUE);
+	if (cmd.online_mode == ONLINE_MODE_ONLINE)
+		main_window_toggle_work_offline(mainwin, FALSE);
+
 	if (cmd.receive_all)
 		inc_all_account_mail(mainwin, FALSE, 
 				     prefs_common.newmail_notify_manu);
@@ -425,11 +430,6 @@ int main(int argc, char *argv[])
 		g_ptr_array_free(cmd.status_full_folders, TRUE);
 		cmd.status_full_folders = NULL;
 	}
-
-	if (cmd.online_mode == ONLINE_MODE_OFFLINE)
-		main_window_toggle_work_offline(mainwin, TRUE);
-	if (cmd.online_mode == ONLINE_MODE_ONLINE)
-		main_window_toggle_work_offline(mainwin, FALSE);
 
 	prefs_toolbar_init();
 
@@ -1013,9 +1013,6 @@ static void open_compose_new(const gchar *address, GPtrArray *attach_files)
 static void send_queue(void)
 {
 	GList *list;
-	FolderItem *def_outbox;
-
-	def_outbox = folder_get_default_outbox();
 
 	for (list = folder_get_list(); list != NULL; list = list->next) {
 		Folder *folder = list->data;
@@ -1028,10 +1025,6 @@ static void send_queue(void)
 				alertpanel_error(_("Some errors occurred while sending queued messages."));
 			if (res) 	
 				folder_item_scan(folder->queue);
-			if (prefs_common.savemsg && folder->outbox) {
-				if (folder->outbox == def_outbox)
-					def_outbox = NULL;
-			}
 		}
 	}
 }
