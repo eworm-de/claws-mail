@@ -1,3 +1,11 @@
+2003-04-18 [thorsten]	0.8.11claws102-3
+
+	* src/main.c
+	  src/mimeview.c
+	  src/common/utils.[ch]
+		add: copy attachments to TempExec dir (for realtime virus
+		scanners)
+
 2003-04-18 [thorsten]	0.8.11claws102-2
 
 	* src/plugins/spamassassin/utils.[ch]

@@ -443,20 +443,6 @@ void get_rfc822_date		(gchar		*buf,
 /* debugging */
 void debug_print_real	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
 
-#ifdef WIN32
-gchar *w32_parse_path(gchar *const);
-gchar *get_installed_dir(void);
-void translate_strs(gchar *str, gchar *str_src, gchar *str_dst);
-int calc_child(const gchar *path);
-int Xrename(const char *oldpath, const char *newpath);
-void w32_log_handler(const gchar *log_domain, GLogLevelFlags log_level,
-					 const gchar *message, gpointer user_data);
-void locale_to_utf8(gchar **buf);
-void locale_from_utf8(gchar **buf);
-
-void unlink_tempfiles(void);
-#endif
-
 /* subject threading */
 void * subject_table_lookup(GHashTable *subject_table, gchar * subject);
 void subject_table_insert(GHashTable *subject_table, gchar * subject,
@@ -472,7 +458,28 @@ const gchar * line_has_quote_char_last	(const gchar *str,
 
 /* used in extended search */
 gchar * expand_search_string	(const gchar *str);
+
+guint g_stricase_hash	(gconstpointer gptr);
+gint g_stricase_equal	(gconstpointer gptr1, gconstpointer gptr2);
+gint g_int_compare	(gconstpointer a, gconstpointer b);
+
 #ifdef WIN32
+#undef isspace
+#define isspace iswspace
+#endif
+
+gchar *w32_parse_path(gchar *const);
+gchar *get_installed_dir(void);
+void translate_strs(gchar *str, gchar *str_src, gchar *str_dst);
+int calc_child(const gchar *path);
+int Xrename(const char *oldpath, const char *newpath);
+void w32_log_handler(const gchar *log_domain, GLogLevelFlags log_level,
+					 const gchar *message, gpointer user_data);
+void locale_to_utf8(gchar **buf);
+void locale_from_utf8(gchar **buf);
+
+void unlink_tempfiles(void);
+
 /* timer needed for socket(gdk_input) */
 gint mswin_helper_timeout_tag;
 void start_mswin_helper(void);
@@ -481,12 +488,7 @@ static gint mswin_helper_timeout_cb(gpointer *data);
 
 wchar_t  *gtkwcs2winwcs(wchar_t *gtkwcs);
 
-#undef isspace
-#define isspace iswspace
-#endif
-
-guint g_stricase_hash	(gconstpointer gptr);
-gint g_stricase_equal	(gconstpointer gptr1, gconstpointer gptr2);
-gint g_int_compare	(gconstpointer a, gconstpointer b);
+gchar *w32_get_exec_dir();
+gchar *w32_move_to_exec_dir(const gchar *filename);
 
 #endif /* __UTILS_H__ */

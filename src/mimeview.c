@@ -988,6 +988,26 @@ static void mimeview_save_as(MimeView *mimeview)
 			(_("Can't save the part of multipart message."));
 }
 
+#ifdef WIN32
+static gchar *w32_get_open_cmd(filename)
+{
+	gchar *open_cmd;
+	if ( (open_cmd=g_strdup(w32_mailcap_lookup(filename)))==NULL) {
+		open_cmd = g_malloc(MAX_PATH);
+		FindExecutable(filename, NULL, open_cmd);
+		if (!(open_cmd && *open_cmd)){
+			g_free(open_cmd);
+			open_cmd = NULL;
+		} else {
+			gchar *p = g_strdup(open_cmd);
+			open_cmd = g_strconcat("\"", p, "\"", " \"%s\"", NULL);
+			g_free(p);
+		}
+	}
+	return open_cmd;
+}
+#endif
+
 static void mimeview_launch(MimeView *mimeview)
 {
 	MimeInfo *partinfo;
@@ -1013,21 +1033,9 @@ static void mimeview_launch(MimeView *mimeview)
 		return;
 	}
 
-	if ( (open_cmd=g_strdup(w32_mailcap_lookup(partinfo->name)))==NULL) {
-		open_cmd = g_malloc(MAX_PATH);
-		FindExecutable(filename, NULL, open_cmd);
-		if (!(open_cmd && *open_cmd)){
-			g_free(open_cmd);
-			open_cmd = NULL;
-		} else {
-			gchar *p = g_strdup(open_cmd);
-			open_cmd = g_strconcat("\"", p, "\"", " \"%s\"", NULL);
-			g_free(p);
-		}
-	}
-
+	filename = g_strdup(w32_move_to_exec_dir(filename));
+	open_cmd = w32_get_open_cmd(filename);
 	mimeview_view_file(filename, partinfo, open_cmd);
-
 	g_free(open_cmd);
 #else
 	if (procmime_get_part(filename, mimeview->file, partinfo) < 0)
@@ -1070,18 +1078,8 @@ static void mimeview_open_with(MimeView *mimeview)
 			add_history(NULL, prefs_common.mime_open_cmd);
 
 #ifdef WIN32
-	if ( (open_cmd=g_strdup(w32_mailcap_lookup(partinfo->name)))==NULL) {
-		open_cmd = g_malloc(MAX_PATH);
-		FindExecutable(filename, NULL, open_cmd);
-		if (!(open_cmd && *open_cmd)) {
-			g_free(open_cmd);
-			open_cmd = g_strdup(prefs_common.mime_open_cmd);
-		} else {
-			gchar *p = g_strdup(open_cmd);
-			open_cmd = g_strconcat("\"", p, "\"", " \"%s\"", NULL);
-			g_free(p);
-		}
-	}
+	filename = g_strdup(w32_move_to_exec_dir(filename));
+	open_cmd = w32_get_open_cmd(filename);
 #endif
 
 	cmd = input_dialog_combo

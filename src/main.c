@@ -687,6 +687,9 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 
 	/* delete temporary files */
 	remove_all_files(get_mime_tmp_dir());
+#ifdef WIN32
+	remove_all_files(w32_get_exec_dir());
+#endif
 
 	close_log_file();
 

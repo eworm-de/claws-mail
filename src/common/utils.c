@@ -3949,4 +3949,30 @@ wchar_t  *gtkwcs2winwcs(wchar_t *gtkwcs) {
 }
 /*----------------------------------------------------------------------*/
 
+gchar *w32_get_exec_dir()
+{
+	static gchar *exec_dir=NULL;
+
+	if (!exec_dir)
+		exec_dir = getenv("SYLPHEED_TEMPEXEC")
+		    ? getenv("SYLPHEED_TEMPEXEC")
+		    : g_strdup_printf("%s\\TempExec", get_home_dir());
+	make_dir_hier(exec_dir);
+	return exec_dir;
+}
+
+/* execute/open attachments in separate dir for easier avscan */
+gchar *w32_move_to_exec_dir(const gchar *filename)
+{
+	gint res=0;
+	G_CONST_RETURN gchar *exec_dir;
+	G_CONST_RETURN gchar *basename;
+	static gchar *exec_name;
+	
+	exec_dir = w32_get_exec_dir();
+	basename=g_basename(filename);
+	exec_name=g_strdup_printf("%s\\%s", exec_dir, basename);
+	res = CopyFile(filename, exec_name, FALSE);
+	return exec_name;
+}
 #endif
