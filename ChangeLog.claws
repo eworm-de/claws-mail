@@ -1,3 +1,17 @@
+2002-09-10 [paul]	0.8.2claws32
+
+	* AUTHORS
+	  po/bg.po	** NEW FILE **
+		new Bulgarian translation submitted by
+		George Danchev <danchev@spnet.net>
+		
+	* tools/Makefile.am
+	  tools/README
+	  tools/tb2sylpheed	** NEW FILE **
+	  	add script that converts an addressbook exported
+		from The Bat! into a Sylpheed addressbook. Submitted
+		by Urke MMI <urke-kg@eunet.yu>
+
 2002-09-10 [paul]	0.8.2claws31
 
 	* sync with 0.8.2cvs12
