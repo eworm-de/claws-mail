@@ -1,3 +1,16 @@
+2004-08-05 [paul]	0.9.12cvs43
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/imap.c
+	* src/news.c
+	* src/common/nntp.c
+	* src/common/session.c
+	* src/common/session.h
+	* src/common/socket.c
+		sync with main 0.9.12cvs2
+		see ChangeLog 2004-08-04
+
 2004-08-04 [christoph]	0.9.12cvs42
 
 	* configure.ac
@@ -10,7 +23,8 @@
 	* src/folder.c
 	* src/localfolder.c
 	* src/common/xml.[ch]
-		sync with main
+		sync with main 0.9.12cvs1
+		see ChangeLog 2004-07-23
 
 2004-08-03 [christoph]
 

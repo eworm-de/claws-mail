@@ -33,6 +33,7 @@
 #include <sys/signal.h>
 #include <sys/wait.h>
 #include <sys/time.h>
+#include <time.h>
 #include <errno.h>
 
 #include "session.h"
@@ -203,6 +204,11 @@ gboolean session_is_connected(Session *session)
 	return (session->state == SESSION_READY ||
 		session->state == SESSION_SEND ||
 		session->state == SESSION_RECV);
+}
+
+void session_set_access_time(Session *session)
+{
+	session->last_access_time = time(NULL);
 }
 
 void session_set_timeout(Session *session, guint interval)

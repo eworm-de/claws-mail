@@ -159,6 +159,8 @@ gint session_disconnect		(Session	*session);
 void session_destroy		(Session	*session);
 gboolean session_is_connected	(Session	*session);
 
+void session_set_access_time	(Session	*session);
+
 void session_set_timeout	(Session	*session,
 				 guint		 interval);
 
