@@ -2849,6 +2849,11 @@ void summary_mark_all_read(SummaryView *summaryview)
 	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list); node != NULL;
 	     node = gtkut_ctree_node_next(ctree, node))
 		summary_mark_row_as_read(summaryview, node);
+	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list); node != NULL;
+	     node = gtkut_ctree_node_next(ctree, node)) {
+		if (!GTK_CTREE_ROW(node)->expanded)
+			summary_set_row_marks(summaryview, node);
+	}
 	folder_item_update_thaw();
 	gtk_clist_thaw(clist);
 
