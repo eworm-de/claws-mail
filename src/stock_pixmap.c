@@ -108,6 +108,7 @@
 #include "pixmaps/privacy_warn.xpm"                 
 #include "pixmaps/mime_message.xpm"                  
 #include "pixmaps/address_search.xpm"
+#include "pixmaps/check_spelling.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
 
@@ -131,6 +132,7 @@ static StockPixmapData pixmaps[] =
 	{category_xpm				, NULL, NULL, "category", "  "},
 	{checkbox_off_xpm			, NULL, NULL, "checkbox_off", "  "},
 	{checkbox_on_xpm			, NULL, NULL, "checkbox_on", "  "},
+	{check_spelling_xpm                     , NULL, NULL, "check_spelling", "  "},
 	{clip_xpm				, NULL, NULL, "clip", "  "},
 	{clipkey_xpm				, NULL, NULL, "clipkey", "  "},
 	{close_xpm				, NULL, NULL, "close", "  "},
@@ -168,8 +170,7 @@ static StockPixmapData pixmaps[] =
 	{mail_receive_all_xpm			, NULL, NULL, "mail_receive_all", "  "},
 	{mail_reply_xpm				, NULL, NULL, "mail_reply", "  "},
 	{mail_reply_to_all_xpm			, NULL, NULL, "mail_reply_to_all", "  "},
-	{mail_reply_to_author_xpm
-						, NULL, NULL, "mail_reply_to_author", "  "},
+	{mail_reply_to_author_xpm		, NULL, NULL, "mail_reply_to_author", "  "},
 	{mail_send_xpm				, NULL, NULL, "mail_send", "  "},
 	{mail_send_queue_xpm			, NULL, NULL, "mail_send_queue", "  "},
 	{mail_xpm				, NULL, NULL, "mail_sign", "  "},
