@@ -196,6 +196,9 @@ struct _Compose
         GtkPspell *gtkpspell;
 #endif
 
+ 	/* Priority */
+ 	gint priority;
+
 	gchar *bounce_filename;
 };
 

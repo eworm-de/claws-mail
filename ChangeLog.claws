@@ -1,3 +1,40 @@
+2002-05-13 [thorsten]	0.7.5claws25
+
+	* src/messageview.c
+		fix select_all and copy in multipart messages
+	* src/mainwindow.c
+		fix select_all and copy in multipart messages
+
+2002-05-12 [paul]	0.7.5claws24
+
+	* src/summaryview.c
+		reverse last commit, bug already fixed in 0.7.5claws3
+
+2002-05-12 [netztorte]	0.7.5claws23
+
+	* src/summaryview.c
+		dont parse empty addressbook (checked in before claws20)
+
+2002-05-12 [melvin]	0.7.5claws22
+
+	* src/procmsg.[ch]
+		Removed unneeded priority code introduced by the previous 
+		commit.
+
+2002-05-12 [melvin]	0.7.5claws21
+
+	* src/compose.[ch]
+		Added possibility to set message's priority.
+	* src/procmsg.[ch]
+		Added possibility to set message's priority.
+		Added missing headers
+
+2002-05-12 [melvin]	0.7.5claws20
+
+	* src/prefs_actions.c
+		Removed implicitely added quotes around the name
+		of the temporary files of mime parts.
+
 2002-05-12 [paul]	0.7.5claws19
 
 	* sync with 0.7.5cvs20

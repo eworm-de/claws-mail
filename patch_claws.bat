@@ -1,3 +1,3 @@
 cd src
-patch -p0 < generated.diff
+patch -p1 < generated.diff
 cd ..

@@ -37,6 +37,8 @@
 #if USE_GPGME
 #  include "rfc2015.h"
 #endif
+#include "alertpanel.h"
+#include "news.h"
 
 typedef struct _FlagInfo	FlagInfo;
 
