@@ -11,9 +11,9 @@ EXTRA_TOOLS = \
 	google_search.pl \
 	kmail2sylpheed.pl \
 	kmail2sylpheed_v2.pl \
-	launch_firebird \
 	maildir2sylpheed.pl \
 	multiwebsearch.pl \
+	nautilus2sylpheed.sh \
 	newscache_clean.pl \
 	outlook2sylpheed.pl \
 	sylpheed-switcher \
