@@ -35,7 +35,6 @@
 #include <gtk/gtkclist.h>
 #include <gtk/gtkctree.h>
 #include <gtk/gtkvpaned.h>
-#include <gtk/gtktext.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkeditable.h>
 #include <gtk/gtkwindow.h>
@@ -66,6 +65,9 @@
 #  include <wchar.h>
 #  include <wctype.h>
 #endif
+
+
+#include "gtkstext.h"
 
 #include "intl.h"
 #include "main.h"
@@ -200,7 +202,7 @@ static void compose_input_cb			(gpointer	    data,
 static void compose_set_ext_editor_sensitive	(Compose	   *compose,
 						 gboolean	    sensitive);
 
-static gint calc_cursor_xpos	(GtkText	*text,
+static gint calc_cursor_xpos	(GtkSText	*text,
 				 gint		 extra,
 				 gint		 char_width);
 
@@ -441,7 +443,7 @@ void compose_new_with_recipient(PrefsAccount *account, const gchar *to)
 	if (prefs_common.auto_sig)
 		compose_insert_sig(compose);
 	gtk_editable_set_position(GTK_EDITABLE(compose->text), 0);
-	gtk_text_set_point(GTK_TEXT(compose->text), 0);
+	gtk_stext_set_point(GTK_STEXT(compose->text), 0);
 
 	if (account->protocol != A_NNTP) {
 		if (to) {
@@ -457,7 +459,7 @@ void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all)
 {
 	Compose *compose;
 	PrefsAccount *account;
-	GtkText *text;
+	GtkSText *text;
 
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(msginfo->folder != NULL);
@@ -475,8 +477,8 @@ void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all)
 	if (compose_parse_header(compose, msginfo) < 0) return;
 	compose_reply_set_entry(compose, msginfo, to_all);
 
-	text = GTK_TEXT(compose->text);
-	gtk_text_freeze(text);
+	text = GTK_STEXT(compose->text);
+	gtk_stext_freeze(text);
 
 	if (quote) {
 		FILE *fp;
@@ -487,7 +489,7 @@ void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all)
 		else {
 			quote_str = compose_quote_parse_fmt
 				(compose, msginfo, prefs_common.quotefmt);
-			gtk_text_insert(text, NULL, NULL, NULL, quote_str, -1);
+			gtk_stext_insert(text, NULL, NULL, NULL, quote_str, -1);
 			g_free(quote_str);
 			compose_quote_file(compose, msginfo, fp);
 			fclose(fp);
@@ -497,24 +499,24 @@ void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all)
 	if (prefs_common.auto_sig)
 		compose_insert_sig(compose);
 	gtk_editable_set_position(GTK_EDITABLE(text), 0);
-	gtk_text_set_point(text, 0);
+	gtk_stext_set_point(text, 0);
 
-	gtk_text_thaw(text);
+	gtk_stext_thaw(text);
 	gtk_widget_grab_focus(compose->text);
 }
 
 #define INSERT_FW_HEADER(var, hdr) \
 if (msginfo->var && *msginfo->var) { \
-	gtk_text_insert(text, NULL, NULL, NULL, hdr, -1); \
-	gtk_text_insert(text, NULL, NULL, NULL, msginfo->var, -1); \
-	gtk_text_insert(text, NULL, NULL, NULL, "\n", 1); \
+	gtk_stext_insert(text, NULL, NULL, NULL, hdr, -1); \
+	gtk_stext_insert(text, NULL, NULL, NULL, msginfo->var, -1); \
+	gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1); \
 }
 
 void compose_forward(MsgInfo *msginfo, gboolean as_attach)
 {
 	Compose *compose;
 	PrefsAccount *account;
-	GtkText *text;
+	GtkSText *text;
 	FILE *fp;
 	gchar buf[BUFFSIZE];
 
@@ -537,8 +539,8 @@ void compose_forward(MsgInfo *msginfo, gboolean as_attach)
 				      msginfo->subject);
 	}
 
-	text = GTK_TEXT(compose->text);
-	gtk_text_freeze(text);
+	text = GTK_STEXT(compose->text);
+	gtk_stext_freeze(text);
 
 	if (as_attach) {
 		gchar *msgfile;
@@ -556,18 +558,18 @@ void compose_forward(MsgInfo *msginfo, gboolean as_attach)
 			g_warning(_("Can't get text part\n"));
 		else {
 			/* insert header */
-			gtk_text_insert(text, NULL, NULL, NULL,
+			gtk_stext_insert(text, NULL, NULL, NULL,
 					_("\n\nBegin forwarded message:\n\n"), -1);
 			INSERT_FW_HEADER(date,       "Date: ");
 			INSERT_FW_HEADER(from,       "From: ");
 			INSERT_FW_HEADER(to,         "To: ");
 			INSERT_FW_HEADER(newsgroups, "Newsgroups: ");
 			INSERT_FW_HEADER(subject,    "Subject: ");
-			gtk_text_insert(text, NULL, NULL, NULL, "\n\n", 2);
+			gtk_stext_insert(text, NULL, NULL, NULL, "\n\n", 2);
 
 			/* forward body */
 			while (fgets(buf, sizeof(buf), fp) != NULL)
-				gtk_text_insert(text, NULL, NULL, NULL,
+				gtk_stext_insert(text, NULL, NULL, NULL,
 						buf, -1);
 			fclose(fp);
 		}
@@ -576,9 +578,9 @@ void compose_forward(MsgInfo *msginfo, gboolean as_attach)
 	if (prefs_common.auto_sig)
 		compose_insert_sig(compose);
 	gtk_editable_set_position(GTK_EDITABLE(compose->text), 0);
-	gtk_text_set_point(GTK_TEXT(compose->text), 0);
+	gtk_stext_set_point(GTK_STEXT(compose->text), 0);
 
-	gtk_text_thaw(text);
+	gtk_stext_thaw(text);
 	if (account->protocol != A_NNTP)
 		gtk_widget_grab_focus(compose->to_entry);
 	else
@@ -589,7 +591,7 @@ void compose_reedit(MsgInfo *msginfo)
 {
 	Compose *compose;
 	PrefsAccount *account;
-	GtkText *text;
+	GtkSText *text;
 	FILE *fp;
 	gchar buf[BUFFSIZE];
 
@@ -607,18 +609,18 @@ void compose_reedit(MsgInfo *msginfo)
 	if (compose_parse_header(compose, msginfo) < 0) return;
 	compose_reedit_set_entry(compose, msginfo);
 
-	text = GTK_TEXT(compose->text);
-	gtk_text_freeze(text);
+	text = GTK_STEXT(compose->text);
+	gtk_stext_freeze(text);
 
 	if ((fp = procmime_get_text_part(msginfo)) == NULL)
 		g_warning(_("Can't get text part\n"));
 	else {
 		while (fgets(buf, sizeof(buf), fp) != NULL)
-			gtk_text_insert(text, NULL, NULL, NULL, buf, -1);
+			gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
 		fclose(fp);
 	}
 
-	gtk_text_thaw(text);
+	gtk_stext_thaw(text);
 	gtk_widget_grab_focus(compose->text);
 }
 
@@ -794,7 +796,7 @@ static gchar *compose_parse_references(const gchar *ref, const gchar *msgid)
 
 static void compose_quote_file(Compose *compose, MsgInfo *msginfo, FILE *fp)
 {
-	GtkText *text = GTK_TEXT(compose->text);
+	GtkSText *text = GTK_STEXT(compose->text);
 	gchar *qmark;
 	gchar *quote_str;
 	GdkColor *qcolor = NULL;
@@ -818,9 +820,9 @@ static void compose_quote_file(Compose *compose, MsgInfo *msginfo, FILE *fp)
 	if (!prefs_common.linewrap_quote ||
 	    prefs_common.linewrap_len <= qlen) {
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
-			gtk_text_insert(text, NULL, qcolor, NULL,
+			gtk_stext_insert(text, NULL, qcolor, NULL,
 					quote_str, -1);
-			gtk_text_insert(text, NULL, qcolor, NULL, buf, -1);
+			gtk_stext_insert(text, NULL, qcolor, NULL, buf, -1);
 		}
 		g_free(quote_str);
 		return;
@@ -833,10 +835,10 @@ static void compose_quote_file(Compose *compose, MsgInfo *msginfo, FILE *fp)
 		str_len = strlen(buf);
 
 		if (str_len <= wrap_len) {
-			gtk_text_insert(text, NULL, qcolor, NULL,
+			gtk_stext_insert(text, NULL, qcolor, NULL,
 					quote_str, -1);
-			gtk_text_insert(text, NULL, qcolor, NULL, buf, -1);
-			gtk_text_insert(text, NULL, NULL, NULL, "\n", 1);
+			gtk_stext_insert(text, NULL, qcolor, NULL, buf, -1);
+			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
 			continue;
 		}
 
@@ -853,18 +855,18 @@ static void compose_quote_file(Compose *compose, MsgInfo *msginfo, FILE *fp)
 			}
 
 			if (cur_len + ch_len > wrap_len && line_len > 0) {
-				gtk_text_insert(text, NULL, qcolor, NULL,
+				gtk_stext_insert(text, NULL, qcolor, NULL,
 						quote_str, -1);
 
 				if (isspace(*(linep - 1)))
-					gtk_text_insert(text, NULL,
+					gtk_stext_insert(text, NULL,
 							qcolor, NULL,
 							leftp, line_len - 1);
 				else
-					gtk_text_insert(text, NULL,
+					gtk_stext_insert(text, NULL,
 							qcolor, NULL,
 							leftp, line_len);
-				gtk_text_insert(text, NULL, NULL, NULL,
+				gtk_stext_insert(text, NULL, NULL, NULL,
 						"\n", 1);
 
 				leftp = linep;
@@ -883,10 +885,10 @@ static void compose_quote_file(Compose *compose, MsgInfo *msginfo, FILE *fp)
 		}
 
 		if (*leftp) {
-			gtk_text_insert(text, NULL, qcolor, NULL,
+			gtk_stext_insert(text, NULL, qcolor, NULL,
 					quote_str, -1);
-			gtk_text_insert(text, NULL, qcolor, NULL, leftp, -1);
-			gtk_text_insert(text, NULL, NULL, NULL, "\n", 1);
+			gtk_stext_insert(text, NULL, qcolor, NULL, leftp, -1);
+			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
 		}
 	}
 
@@ -1177,11 +1179,11 @@ static void compose_insert_sig(Compose *compose)
 		return;
 	}
 
-	gtk_text_insert(GTK_TEXT(compose->text), NULL, NULL, NULL, "\n\n", 2);
+	gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, "\n\n", 2);
 	if (prefs_common.sig_sep) {
-		gtk_text_insert(GTK_TEXT(compose->text), NULL, NULL, NULL,
+		gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL,
 				prefs_common.sig_sep, -1);
-		gtk_text_insert(GTK_TEXT(compose->text), NULL, NULL, NULL,
+		gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL,
 				"\n", 1);
 	}
 
@@ -1191,7 +1193,7 @@ static void compose_insert_sig(Compose *compose)
 
 static void compose_insert_file(Compose *compose, const gchar *file)
 {
-	GtkText *text = GTK_TEXT(compose->text);
+	GtkSText *text = GTK_STEXT(compose->text);
 	gchar buf[BUFFSIZE];
 	FILE *fp;
 
@@ -1202,12 +1204,12 @@ static void compose_insert_file(Compose *compose, const gchar *file)
 		return;
 	}
 
-	gtk_text_freeze(text);
+	gtk_stext_freeze(text);
 
 	while (fgets(buf, sizeof(buf), fp) != NULL)
-		gtk_text_insert(text, NULL, NULL, NULL, buf, -1);
+		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
 
-	gtk_text_thaw(text);
+	gtk_stext_thaw(text);
 
 	fclose(fp);
 }
@@ -1275,23 +1277,23 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 
 static void compose_wrap_line(Compose *compose)
 {
-	GtkText *text = GTK_TEXT(compose->text);
+	GtkSText *text = GTK_STEXT(compose->text);
 	guint text_len;
 	guint line_pos = 0, cur_pos = 0;
 	gint line_len = 0, cur_len = 0;
 	gint ch_len;
 	gchar cbuf[MB_CUR_MAX];
 
-	gtk_text_freeze(text);
+	gtk_stext_freeze(text);
 
-	text_len = gtk_text_get_length(text);
+	text_len = gtk_stext_get_length(text);
 
 	for (; cur_pos < text_len; cur_pos++) {
 		if (text->use_wchar)
 			ch_len = wctomb
-				(cbuf, (wchar_t)GTK_TEXT_INDEX(text, cur_pos));
+				(cbuf, (wchar_t)GTK_STEXT_INDEX(text, cur_pos));
 		else {
-			cbuf[0] = GTK_TEXT_INDEX(text, cur_pos);
+			cbuf[0] = GTK_STEXT_INDEX(text, cur_pos);
 			ch_len = 1;
 		}
 
@@ -1316,14 +1318,14 @@ static void compose_wrap_line(Compose *compose)
 			gint tlen;
 
 			if (text->use_wchar)
-				tlen = wctomb(cbuf, (wchar_t)GTK_TEXT_INDEX(text, line_pos - 1));
+				tlen = wctomb(cbuf, (wchar_t)GTK_STEXT_INDEX(text, line_pos - 1));
 			else {
-				cbuf[0] = GTK_TEXT_INDEX(text, line_pos - 1);
+				cbuf[0] = GTK_STEXT_INDEX(text, line_pos - 1);
 				tlen = 1;
 			}
 			if (tlen == 1 && isspace(*cbuf)) {
-				gtk_text_set_point(text, line_pos);
-				gtk_text_backward_delete(text, 1);
+				gtk_stext_set_point(text, line_pos);
+				gtk_stext_backward_delete(text, 1);
 				text_len--;
 				cur_pos--;
 				line_pos--;
@@ -1331,8 +1333,8 @@ static void compose_wrap_line(Compose *compose)
 				line_len--;
 			}
 
-			gtk_text_set_point(text, line_pos);
-			gtk_text_insert(text, NULL, NULL, NULL, "\n", 1);
+			gtk_stext_set_point(text, line_pos);
+			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
 			text_len++;
 			cur_pos++;
 			line_pos++;
@@ -1348,7 +1350,7 @@ static void compose_wrap_line(Compose *compose)
 		cur_len += ch_len;
 	}
 
-	gtk_text_thaw(text);
+	gtk_stext_thaw(text);
 }
 
 static void compose_set_title(Compose *compose)
@@ -2367,12 +2369,14 @@ static Compose *compose_create(PrefsAccount *account)
 	gtk_box_pack_start(GTK_BOX(edit_vbox), scrolledwin, TRUE, TRUE, 0);
 	gtk_widget_set_usize(scrolledwin, prefs_common.compose_width, -1);
 
-	text = gtk_text_new(gtk_scrolled_window_get_hadjustment
+	text = gtk_stext_new(gtk_scrolled_window_get_hadjustment
 			    (GTK_SCROLLED_WINDOW(scrolledwin)),
 			    gtk_scrolled_window_get_vadjustment
 			    (GTK_SCROLLED_WINDOW(scrolledwin)));
-	gtk_text_set_editable(GTK_TEXT(text), TRUE);
-	gtk_text_set_word_wrap(GTK_TEXT(text), TRUE);
+	gtk_stext_set_editable(GTK_STEXT(text), TRUE);
+	gtk_stext_set_word_wrap(GTK_STEXT(text), TRUE);
+	gtk_stext_set_wrap_rmargin(GTK_STEXT(text), prefs_common.linewrap_len);
+
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 
 	gtk_signal_connect(GTK_OBJECT(text), "changed",
@@ -2402,7 +2406,7 @@ static Compose *compose_create(PrefsAccount *account)
 
 	style = gtk_widget_get_style(text);
 
-	/* workaround for the slow down of GtkText when using Pixmap theme */
+	/* workaround for the slow down of GtkSText when using Pixmap theme */
 	if (style->engine) {
 		GtkThemeEngine *engine;
 
@@ -3296,14 +3300,14 @@ static void compose_input_cb(gpointer data, gint source,
 	waitpid(compose->exteditor_pid, NULL, 0);
 
 	if (buf[0] == '0') {		/* success */
-		GtkText *text = GTK_TEXT(compose->text);
+		GtkSText *text = GTK_STEXT(compose->text);
 
-		gtk_text_freeze(text);
-		gtk_text_set_point(text, 0);
-		gtk_text_forward_delete(text, gtk_text_get_length(text));
+		gtk_stext_freeze(text);
+		gtk_stext_set_point(text, 0);
+		gtk_stext_forward_delete(text, gtk_stext_get_length(text));
 		compose_insert_file(compose, compose->exteditor_file);
 		compose_changed_cb(NULL, compose);
-		gtk_text_thaw(text);
+		gtk_stext_thaw(text);
 
 		if (unlink(compose->exteditor_file) < 0)
 			FILE_OP_ERROR(compose->exteditor_file, "unlink");
@@ -3355,7 +3359,7 @@ static void compose_set_ext_editor_sensitive(Compose *compose,
 	gtk_widget_set_sensitive(compose->linewrap_btn,  sensitive);
 }
 
-static gint calc_cursor_xpos(GtkText *text, gint extra, gint char_width)
+static gint calc_cursor_xpos(GtkSText *text, gint extra, gint char_width)
 {
 	gint cursor_pos;
 
@@ -3387,7 +3391,7 @@ static gboolean compose_edit_size_alloc(GtkEditable *widget,
 		/* got the maximum */
 		gtk_ruler_set_range(GTK_RULER(shruler),
 				    0.0, line_width_in_chars,
-				    calc_cursor_xpos(GTK_TEXT(widget),
+				    calc_cursor_xpos(GTK_STEXT(widget),
 						     allocation->x,
 						     char_width),
 				    /*line_width_in_chars*/ char_width);
@@ -3723,7 +3727,7 @@ static void compose_changed_cb(GtkEditable *editable, Compose *compose)
 static void compose_button_press_cb(GtkWidget *widget, GdkEventButton *event,
 				    Compose *compose)
 {
-	gtk_text_set_point(GTK_TEXT(widget),
+	gtk_stext_set_point(GTK_STEXT(widget),
 			   gtk_editable_get_position(GTK_EDITABLE(widget)));
 }
 
@@ -3731,7 +3735,7 @@ static void compose_button_press_cb(GtkWidget *widget, GdkEventButton *event,
 static void compose_key_press_cb(GtkWidget *widget, GdkEventKey *event,
 				 Compose *compose)
 {
-	gtk_text_set_point(GTK_TEXT(widget),
+	gtk_stext_set_point(GTK_STEXT(widget),
 			   gtk_editable_get_position(GTK_EDITABLE(widget)));
 }
 #endif
