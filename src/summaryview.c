@@ -357,6 +357,8 @@ static gint summary_cmp_by_from		(GtkCList		*clist,
 static gint summary_cmp_by_subject	(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
+static gint summary_cmp_by_simplified_subject
+	(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2);
 static gint summary_cmp_by_score	(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
@@ -527,6 +529,10 @@ SummaryView *summary_create(void)
 	summaryview->popupfactory = popupfactory;
 	summaryview->lock_count = 0;
 
+	/* CLAWS: need this to get the SummaryView * from
+	 * the CList */
+	gtk_object_set_data(GTK_OBJECT(ctree), "summaryview", (gpointer)summaryview); 
+
 	gtk_widget_show_all(vbox);
 
 	return summaryview;
@@ -683,8 +689,7 @@ GtkCTreeNode * summary_find_prev_important_score(SummaryView *summaryview,
 		return best_node;
 }
 
-gboolean summary_show(SummaryView *summaryview, FolderItem *item,
-		      gboolean update_cache)
+gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCTreeNode *node;
@@ -693,7 +698,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	gboolean is_refresh;
 	guint selected_msgnum = 0;
 	guint displayed_msgnum = 0;
-	GtkCTreeNode *selected_node = summaryview->folderview->selected;
 	GSList *cur;
 
 	if (summary_is_locked(summaryview)) return FALSE;
@@ -704,8 +708,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	STATUSBAR_POP(summaryview->mainwin);
 
 	is_refresh = (!prefs_common.open_inbox_on_inc &&
-		      item == summaryview->folder_item &&
-		      update_cache == FALSE) ? TRUE : FALSE;
+		      item == summaryview->folder_item) ? TRUE : FALSE;
 	if (is_refresh) {
 		selected_msgnum = summary_get_msgnum(summaryview,
 						     summaryview->selected);
@@ -735,8 +738,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
    		folder_update_op_count();
 	}
 	
-	summaryview->folderview->opened = selected_node;
-
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
 	summary_clear_list(summaryview);
@@ -1899,7 +1900,14 @@ void summary_sort(SummaryView *summaryview,
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_from;
 		break;
 	case SORT_BY_SUBJECT:
-		cmp_func = (GtkCListCompareFunc)summary_cmp_by_subject;
+		{
+			PrefsFolderItem *prefs = summaryview->folder_item->prefs;
+
+			if (prefs == NULL) 
+				cmp_func = (GtkCListCompareFunc)summary_cmp_by_subject;
+			else
+				cmp_func = (GtkCListCompareFunc)summary_cmp_by_simplified_subject;
+		}				
 		break;
 	case SORT_BY_SCORE:
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_score;
@@ -3748,7 +3756,7 @@ void summary_filter(SummaryView *summaryview)
 	 * we want the lock to be context aware...  
 	 */
 	if (global_processing) {
-		summary_show(summaryview, summaryview->folder_item, TRUE);		
+		summary_show(summaryview, summaryview->folder_item);
 	}		
 }
 
@@ -4328,7 +4336,7 @@ void summary_set_column_order(SummaryView *summaryview)
 	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
 	gtk_widget_show(ctree);
 
-	summary_show(summaryview, item, FALSE);
+	summary_show(summaryview, item);
 
 	summary_select_by_msgnum(summaryview, selected_msgnum);
 	summaryview->displayed = summary_find_msg_by_msgnum(summaryview, displayed_msgnum);
@@ -4788,6 +4796,38 @@ static gint summary_cmp_by_subject(GtkCList *clist,
 	return strcasecmp(msginfo1->subject, msginfo2->subject);
 }
 
+static gint summary_cmp_by_simplified_subject
+	(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
+{
+	const PrefsFolderItem *prefs;
+	const gchar *str1, *str2;
+	const GtkCListRow *r1 = (const GtkCListRow *) ptr1;
+	const GtkCListRow *r2 = (const GtkCListRow *) ptr2;
+	const MsgInfo *msginfo1 = r1->data;
+	const MsgInfo *msginfo2 = r2->data;
+	const SummaryView *sv = gtk_object_get_data(GTK_OBJECT(clist), "summaryview");
+	
+	g_return_val_if_fail(sv, -1);
+	g_return_val_if_fail(msginfo1 == NULL || msginfo2 == NULL, -1);
+	
+	str1 = GTK_CELL_TEXT(r1->cell[sv->col_pos[S_COL_SUBJECT]])->text;
+	str2 = GTK_CELL_TEXT(r2->cell[sv->col_pos[S_COL_SUBJECT]])->text;
+
+	if (!str1)
+		return str2 != NULL;
+
+	if (!str2)
+		return -1;
+
+	prefs = msginfo1->folder->prefs;
+	if (!prefs)
+		prefs = msginfo2->folder->prefs;
+	if (!prefs)
+		return -1;
+	
+	return strcasecmp(str1, str2);
+}
+
 static gint summary_cmp_by_label(GtkCList *clist,
 				 gconstpointer ptr1, gconstpointer ptr2)
 {
@@ -5009,7 +5049,7 @@ void summary_toggle_show_read_messages(SummaryView *summaryview)
  		summaryview->folder_item->hide_read_msgs = 0;
  	else
  		summaryview->folder_item->hide_read_msgs = 1;
- 	summary_show(summaryview, summaryview->folder_item, FALSE);
+ 	summary_show(summaryview, summaryview->folder_item);
 }
  
 static void summary_set_hide_read_msgs_menu (SummaryView *summaryview,

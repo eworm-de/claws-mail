@@ -1,3 +1,33 @@
+2002-07-25 [christoph]	0.8.0claws11
+
+	* src/folder.c
+		don't mix copy, fetch_msginfo and remove
+		operations in folder item copy and move
+		operations
+
+2002-07-25 [christoph]	0.8.0claws10
+
+	* src/folderview.c
+	* src/mainwindow.c
+	* src/prefs_folder_item.c
+	* src/summaryview.[ch]
+		remove no longer required parameter update_cache from
+		summary_show
+
+2002-07-25 [paul]	0.8.0claws9
+
+	* sync with 0.8.1
+	
+	* AUTHORS
+		a few corrections
+
+2002-07-24 [alfons]	0.8.0claws8
+
+	* src/summaryview.c
+		sort correctly when using simplified subject line
+		(closes feature request "[ 585141 ] applying regexp to subject 
+		before sort" submitted by Alexandra Walford)
+
 2002-07-24 [paul]	0.8.0claws7
 
 	* sync with 0.8.0cvs3

@@ -41,7 +41,7 @@ to the link section below.
     libcompface                 (libcompface-dev-20020306.lzh)
     libkcc                      (libkcc-dev-20020306.lzh)
     regex                       (regex-dev-20020306.lzh)
-    w32lib                      (w32lib-dev-20020323.lzh)
+    w32lib                      (w32lib-dev-20020724.zip)
     gpgme                       (gpgme-dev-20020423.lzh)
     openssl                     (claws_w32_ssl_dev_020415.zip)
 * unix build tools (diff,patch,msgfmt,grep,sed,bison,flex,cvs)

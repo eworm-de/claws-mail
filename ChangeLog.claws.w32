@@ -1,3 +1,10 @@
+2002-07-24 [thorsten]	0.8.0claws4-2
+
+	* ../w32lib/src/w32_dirent.c
+		fix: FindNextFile crashed on NT4.0
+	* src/prefs_actions.c
+		fix: removed wrong #endif
+
 2002-07-23 [thorsten]	0.8.0claws4-1
 
 	* src/prefs_actions.c
