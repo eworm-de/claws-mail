@@ -7,13 +7,13 @@ set GENERATED=generated.diff
 set AUTOSRC=auto_src
 rem set AUTOSRC=\cygwin\src\sylpheed-claws-w32\sylpheed-claws-head\sylpheed-claws\src
 set SRC=..\..\src
+set PATCHES=..\patches
 
 deltree /y src
 deltree /y empty
 mkdir src
 mkdir empty
 
-copy %SRC%\version.h			src	> NUL
 copy %SRC%\config.h			src	> NUL
 copy %AUTOSRC%\matcher_parser_lex.c	src	> NUL
 copy %AUTOSRC%\matcher_parser_parse.c	src	> NUL
@@ -22,8 +22,12 @@ copy %AUTOSRC%\quote_fmt_lex.c		src	> NUL
 copy %AUTOSRC%\quote_fmt_parse.c	src	> NUL
 copy %AUTOSRC%\quote_fmt_parse.h	src	> NUL
 
-diff -urN empty src > %GENERATED%
-copy %GENERATED% ..\patches
+diff -urN empty src > %PATCHES%\%GENERATED%
 
 deltree /y src
 deltree /y empty
+
+set GENERATED=
+set AUTOSRC=
+set SRC=
+set PATCHES=

@@ -29,15 +29,13 @@ Get following packages:
 All packages are mirrored at the Sylpheed-Claws homepage. Please refer
 to the link section below.
 
-* NEW MSVC project:
-    sylpheed-claws-dev          (sylpheed-claws-dev-20020424.lzh)
+* Sylpheed sourcecode:
+    sylpheed-sources            (075claws17_snapshot_020511.zip or cvs checkout)
 * Gtk+ libraries:
     glib-dev                    (glib-dev-2.0.0-20020310.zip)
     gtk+-dev                    (gtk+-dev-1.3.0-20020310.zip)
     libiconv-dev                (libiconv-dev-1.7.zip)
     libintl                     (libintl-0.10.40-20020101.zip)
-* Sylpheed sourcecode:
-    sylpheed-sources            (sylpheed-0.7.4.tar.gz or cvs checkout)
 * Support libraries:
     libjconv                    (libjconv-2.8.1.tar.gz)
     fnmatch                     (fnmatch-dev-20020306.lzh)
@@ -47,6 +45,9 @@ to the link section below.
     w32lib                      (w32lib-dev-20020323.lzh)
     gpgme                       (gpgme-dev-20020423.lzh)
     openssl                     (claws_w32_ssl_dev_020415.zip)
+* unix build tools (patch,msgfmt,grep,sed)
+    unix-tools                  (unix-tools.zip)
+
 
 Create the source tree:
 -----------------------
@@ -93,7 +94,7 @@ The resulting directory tree:
       +---w32lib
       |   \---src
       +---gpgme
-      \---sylpheed         (standard sylpheed assumes MSVC project files here)
+      \---sylpheed-claws   (standard sylpheed assumes MSVC project files here)
           +---ac
           +---faq
           +---intl
@@ -105,21 +106,18 @@ The resulting directory tree:
           +---files
           \---win32        (MSVC project files for sylpheed-claws)
               +---patches  (generated.diff, external bugfixes, etc.)
+	      +---apps     (optional: unix build utilities)
 
 Hints:
 ------
-* There are several files, that cant be build on Windows easily, as you
-  need many unix utilities like autoconf, bison, etc. The necessary
-  sources are provided in "win32\patches\generated.diff", so be sure to
-  apply them calling "patch_claws.bat" in win32 subdir.
+* Before opening the project, some files have to be created by calling
+  "patch_claws.bat" in \dev\proj\sylpheed-claws\win32. This will extract
+  config.h and some bison/flex generated files, create version.h and
+  the translations. You will need the files from unix-tools.zip or a
+  running cygwin installation for this step.
 * libjconv and glib need patches, when compiled from source. As libjconv
   is rather small, the patched version is provided with the source.
   The patch for glib (2.0.0 and 2.0.1) is available in "win32\patches".
-* Ready compiled translations (and a sample gtk config) are available
-  in "files\locale" and "files\etc". To compile translations on your own,
-  you need either cygwin or an unix like os, and convert the source
-  (.po) files to utf8 before compiling.
-  (Note: This point will change soon)
  
 
 Links:
