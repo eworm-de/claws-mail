@@ -154,6 +154,7 @@ static gboolean export_ldif_key_pressed( GtkWidget *widget, GdkEventKey *event, 
 	if (event && event->keyval == GDK_Escape) {
 		export_ldif_cancel( widget, data );
 	}
+	return FALSE
 }
 
 /**

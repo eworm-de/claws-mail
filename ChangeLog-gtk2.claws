@@ -1,3 +1,8 @@
+2005-02-22 [colin]	1.0.1cvs15.5
+
+	* src/expldifdlg.c
+		Fix keyboard input. Patch by Alfons.
+
 2005-02-21 [colin]	1.0.1cvs15.4
 
 	* src/compose.c
