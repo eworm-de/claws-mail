@@ -1,3 +1,8 @@
+2004-08-13 [colin]	0.9.12cvs60.2
+
+	* src/common/defs.h
+		Cache versions have been fixed
+
 2004-08-13 [colin]	0.9.12cvs60.1
 
 	* src/folderutils.c

@@ -77,7 +77,6 @@
 #define FOLDER_LIST		"folderlist.xml"
 #define CACHE_FILE		".sylpheed_cache"
 #define MARK_FILE		".sylpheed_mark"
-/* #warning FIXME_GTK2 */
 #define CACHE_VERSION		22
 #define MARK_VERSION		2
 
