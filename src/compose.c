@@ -2761,13 +2761,21 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 				}
 
 				GET_CHAR(cur_pos, cb, clen);
+				/* insert space between the next line */
+				if (cur_pos > 0) {
+					gint clen_prev;
+					gchar cb_prev[MB_LEN_MAX];
 
-				/* insert space if it's alphanumeric */
-				if ((cur_pos != line_pos) &&
-				    ((clen > 1) || isalnum((guchar)cb[0]))) {
-					gtk_stext_insert(text, NULL, NULL,
-							NULL, " ", 1);
-					tlen++;
+					GET_CHAR(cur_pos - 1, cb_prev,
+						 clen_prev);
+					if (clen_prev != clen ||
+					    (clen == 1 &&
+					     !isspace((guchar)cb[0]))) {
+						gtk_stext_insert
+							(text, NULL, NULL,
+							 NULL, " ", 1);
+						tlen++;
+					}
 				}
 
 				/* and start over with current line */

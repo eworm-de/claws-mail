@@ -334,13 +334,28 @@ static gchar *parse_action_cmd(gchar *action, MsgInfo *msginfo,
 static gboolean parse_append_filename(GString *cmd, MsgInfo *msginfo)
 {
 	gchar *filename;
+	gchar *p;
 
 	g_return_val_if_fail(msginfo, FALSE);
 
 	filename = procmsg_get_message_file(msginfo);
 
 	if (filename) {
-		g_string_append(cmd, filename);
+		g_string_append_c(cmd, '"');
+		for (p = filename; *p != '\0'; p++) {
+			switch (*p) {
+			case '$':
+			case '"':
+			case '`':
+			case '\\':
+				g_string_append_c(cmd, '\\');
+				break;
+			default:
+				break;
+			}
+			g_string_append_c(cmd, *p);
+		}
+		g_string_append_c(cmd, '"');
 		g_free(filename);
 	} else {
 		alertpanel_error(_("Could not get message file %d"),
@@ -460,7 +475,7 @@ static void action_update_menu(GtkItemFactory *ifactory,
 		action_p = strstr(action, ": ");
 		if (action_p && action_p[2] &&
 		    action_get_type(&action_p[2]) != ACTION_ERROR) {
-			action_p[0] = 0x00;
+			action_p[0] = '\0';
 			menu_path = g_strdup_printf("%s/%s", branch_path,
 						    action);
 			ifentry.path = menu_path;
@@ -797,6 +812,7 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 	}
 
 	debug_print("Forking child and grandchild.\n");
+	debug_print("Executing: /bin/sh -c %s\n", cmd);
 
 	pid = fork();
 	if (pid == 0) { /* Child */
@@ -836,7 +852,7 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 			cmdline[0] = "sh";
 			cmdline[1] = "-c";
 			cmdline[2] = cmd;
-			cmdline[3] = 0;
+			cmdline[3] = NULL;
 			execvp("/bin/sh", cmdline);
 
 			perror("execvp");

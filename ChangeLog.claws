@@ -1,3 +1,13 @@
+2004-12-14 [paul]	0.9.13cvs16
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/action.c
+	* src/compose.c
+	* src/common/utils.c
+		sync with main, see ChangeLog entries 2004-12-10
+		and 2004-12-13
+
 2004-12-13 [thorsten]	0.9.13cvs15
 
 	* src/plugins/spamassassin/libspamc.c
