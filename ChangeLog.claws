@@ -9,6 +9,7 @@
 
 2001-04-28 [alfons]
 
+	* bug sync with sylpheed
 	* prefs_common.c: created date format ui for darko
 	* sync with 0.4.65cvs11
 	* configure.in: corrected to have the new gpg checks

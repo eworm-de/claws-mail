@@ -1,3 +1,10 @@
+2001-04-28
+
+	* src/inc.c: ダイアログに現在の読み込んだバイト数を表示するように
+	  した。
+	* src/pop.c: recv_write(): 文字列を編集する前に UI 関数を呼ぶように
+	  した。
+
 2001-04-27
 
 	* src/progressdialog.c: progress_dialog_create(): ダイアログの

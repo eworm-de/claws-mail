@@ -670,22 +670,26 @@ static gint connection_check_cb(Automaton *atm)
 
 static void inc_pop3_recv_func(SockInfo *sock, gint read_len, gpointer data)
 {
+	gchar buf[MSGBUFSIZE];
 	IncSession *session = (IncSession *)data;
 	Pop3State *state = session->pop3_state;
 	IncProgressDialog *inc_dialog = session->data;
 	ProgressDialog *dialog = inc_dialog->dialog;
+	gint cur_total;
 
 	state->cur_msg_bytes += read_len;
+	cur_total = state->cur_total_bytes + state->cur_msg_bytes;
+	if (cur_total > state->total_bytes)
+		cur_total = state->total_bytes;
 
-	//g_snprintf(buf, sizeof(buf),
-	//	   _("Retrieving message (%d / %d)"),
-	//	   state->cur_msg, state->count);
-	//progress_dialog_set_label(dialog, buf);
+	g_snprintf(buf, sizeof(buf),
+		   _("Retrieving message (%d / %d) (%d / %d bytes)"),
+		   state->cur_msg, state->count,
+		   cur_total, state->total_bytes);
+	progress_dialog_set_label(dialog, buf);
 
 	progress_dialog_set_percentage
-		(dialog,
-		 (gfloat)(state->cur_total_bytes + state->cur_msg_bytes) /
-		 (gfloat)(state->total_bytes));
+		(dialog, (gfloat)cur_total / (gfloat)state->total_bytes);
 	GTK_EVENTS_FLUSH();
 }
 
@@ -718,11 +722,10 @@ void inc_progress_update(Pop3State *state, Pop3Phase phase)
 	case POP3_RETR_SEND:
 	case POP3_RETR_RECV:
 		g_snprintf(buf, sizeof(buf),
-			   _("Retrieving message (%d / %d)"),
-			   state->cur_msg, state->count);
+			   _("Retrieving message (%d / %d) (%d / %d bytes)"),
+			   state->cur_msg, state->count,
+			   state->cur_total_bytes, state->total_bytes);
 		progress_dialog_set_label(dialog, buf);
-		//progress_dialog_set_percentage
-		//	(dialog, (gfloat)state->cur_msg / state->count);
 		progress_dialog_set_percentage
 			(dialog,
 			 (gfloat)(state->cur_total_bytes) /

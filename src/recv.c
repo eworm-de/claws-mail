@@ -115,6 +115,9 @@ gint recv_write(SockInfo *sock, FILE *fp)
 		len = strlen(buf);
 		if (len > 1 && buf[0] == '.' && buf[1] == '\r') break;
 
+		if (recv_ui_func)
+			recv_ui_func(sock, len, recv_ui_func_data);
+
 		if (len > 1 && buf[len - 1] == '\n' && buf[len - 2] == '\r') {
 			buf[len - 2] = '\n';
 			buf[len - 1] = '\0';
@@ -126,9 +129,6 @@ gint recv_write(SockInfo *sock, FILE *fp)
 
 		if (!strncmp(buf, ">From ", 6))
 			memmove(buf, buf + 1, len--);
-
-		if (recv_ui_func)
-			recv_ui_func(sock, len, recv_ui_func_data);
 
 		if (fp && fputs(buf, fp) == EOF) {
 			perror("fputs");
