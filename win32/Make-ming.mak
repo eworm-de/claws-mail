@@ -56,11 +56,11 @@ SRCDIR	=../src
 ifeq ($(DEBUGVERSION),1)
 	DEBUGFLAG=-g
 	DEBUGDEF=-D_DEBUG
-	APPNAME=sylpheed_d
+	APPNAME=sylpheed_d.exe
 else
 	NOCONSOLE=-mwindows
 	OPTIMIZATION=-O3
-	APPNAME=sylpheed
+	APPNAME=sylpheed.exe
 endif
 
 ifeq ($(GCCVERSION),3)
@@ -270,7 +270,7 @@ link: $(APPNAME)
 $(APPNAME):
 	$(CC) $(NOCONSOLE) $(FLAGS) $(OBJECTS) $(RESOURCE).o $(EXTRALIBS) $(LIBS) -o $(APPNAME)
 clean:
-	-rm *.o $(APPNAME).exe
+	-rm *.o $(APPNAME)
 
 ### dependencies
 # sylpheed

@@ -1,3 +1,8 @@
+2002-11-02 [thorsten]	0.8.5claws66-3
+
+	* win32/Make-ming.mak
+		fix: include .exe in $APPNAME (mingw cross compilation)
+
 2002-11-02 [thorsten]	0.8.5claws66-2
 
 	* win32/Make-ming.mak
