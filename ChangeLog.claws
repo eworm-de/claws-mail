@@ -1,3 +1,9 @@
+2003-02-23 [paul]
+
+	* tools/freshmeat_search.pl
+	  tools/google_search.pl
+	  	scripts should now work for any browser/browser command line
+
 2003-02-22 [christoph]	0.8.10claws45
 
 	* src/procmsg.c
