@@ -755,6 +755,8 @@ static PrefParam param[] = {
 	{"warn_queued_on_exit", "TRUE", &prefs_common.warn_queued_on_exit,
 	 P_BOOL, &other.checkbtn_warnqueued,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"work_offline", "FALSE", &prefs_common.work_offline, P_BOOL,
+	 NULL, NULL, NULL},
 
 	{"kill_score", "-9999", &prefs_common.kill_score, P_INT,
 	 NULL, NULL, NULL},

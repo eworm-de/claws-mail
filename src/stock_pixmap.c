@@ -83,6 +83,8 @@
 #include "pixmaps/unread.xpm"
 #include "pixmaps/vcard.xpm"
 #include "pixmaps/ignorethread.xpm"
+#include "pixmaps/work_online.xpm"
+#include "pixmaps/work_offline.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
 
@@ -168,6 +170,8 @@ static StockPixmapData pixmaps[] =
 	{trash_hrm_xpm			, NULL, NULL, "trash_close_hrm", "  "},
 	{unread_xpm				, NULL, NULL, "unread", "  "},
 	{vcard_xpm				, NULL, NULL, "vcard", "  "},
+	{work_online_xpm			, NULL, NULL, "work_online", "  "},
+	{work_offline_xpm			, NULL, NULL, "work_offline", "  "},
 };
 
 /* return newly constructed GtkPixmap from GdkPixmap */

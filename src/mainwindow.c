@@ -242,6 +242,9 @@ static void toggle_expand_summaryview_cb	 (MainWindow	*mainwin,
 static void toggle_expand_messageview_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void toggle_work_offline_cb	 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
 static void separate_widget_cb	(GtkCheckMenuItem *checkitem,
 				 guint action,
 				 GtkWidget *widget);
@@ -432,6 +435,9 @@ static void new_account_cb	 (MainWindow	*mainwin,
 static void account_menu_cb	 (GtkMenuItem	*menuitem,
 				  gpointer	 data);
 
+static void online_switch_clicked(GtkButton     *btn, 
+				  gpointer data);
+
 static void manual_open_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -481,6 +487,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File/_Import mbox file..."),	NULL, import_mbox_cb, 0, NULL},
 	{N_("/_File/_Export to mbox file..."),	NULL, export_mbox_cb, 0, NULL},
 	{N_("/_File/Empty _trash"),		"<shift>D", empty_trash_cb, 0, NULL},
+	{N_("/_File/_Work offline"),		"<control>W", toggle_work_offline_cb, 0, "<ToggleItem>"},						
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Save as..."),		"<control>S", save_as_cb, 0, NULL},
 	{N_("/_File/_Print..."),		NULL, print_cb, 0, NULL},
@@ -763,7 +770,6 @@ static GtkItemFactoryEntry fwd_popup_entries[] =
 	{N_("/Forward message as _attachment"), "<shift>F", reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL}
 };
 
-
 MainWindow *main_window_create(SeparateType type)
 {
 	MainWindow *mainwin;
@@ -778,6 +784,10 @@ MainWindow *main_window_create(SeparateType type)
 	GtkWidget *statuslabel;
 	GtkWidget *ac_button;
 	GtkWidget *ac_label;
+ 	GtkWidget *online_status;
+	GtkWidget *offline_status;
+	GtkWidget *online_switch;
+	GtkWidget *offline_switch;
 
 	FolderView *folderview;
 	SummaryView *summaryview;
@@ -886,6 +896,19 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_widget_set_usize(progressbar, 120, 1);
 	gtk_box_pack_start(GTK_BOX(hbox_stat), progressbar, FALSE, FALSE, 0);
 
+	online_status = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_WORK_ONLINE);
+	offline_status = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_WORK_OFFLINE);
+	online_switch = gtk_button_new ();
+	offline_switch = gtk_button_new ();
+	gtk_container_add (GTK_CONTAINER(online_switch), online_status);
+	gtk_button_set_relief (GTK_BUTTON(online_switch), GTK_RELIEF_NONE);
+	gtk_signal_connect (GTK_OBJECT(online_switch), "clicked", (GtkSignalFunc)online_switch_clicked, mainwin);
+	gtk_box_pack_start (GTK_BOX(hbox_stat), online_switch, FALSE, FALSE, 0);
+	gtk_container_add (GTK_CONTAINER(offline_switch), offline_status);
+	gtk_button_set_relief (GTK_BUTTON(offline_switch), GTK_RELIEF_NONE);
+	gtk_signal_connect (GTK_OBJECT(offline_switch), "clicked", (GtkSignalFunc)online_switch_clicked, mainwin);
+	gtk_box_pack_start (GTK_BOX(hbox_stat), offline_switch, FALSE, FALSE, 0);
+	
 	statuslabel = gtk_label_new("");
 	gtk_box_pack_start(GTK_BOX(hbox_stat), statuslabel, FALSE, FALSE, 0);
 
@@ -902,6 +925,7 @@ MainWindow *main_window_create(SeparateType type)
 
 	gtk_widget_show_all(hbox_stat);
 
+	gtk_widget_hide(offline_switch);
 	/* create views */
 	mainwin->folderview  = folderview  = folderview_create();
 	mainwin->summaryview = summaryview = summary_create();
@@ -933,6 +957,8 @@ MainWindow *main_window_create(SeparateType type)
 	mainwin->replyall_popup = replyall_popup;
 	mainwin->replysender_popup = replysender_popup;
 	mainwin->fwd_popup = fwd_popup;
+	mainwin->online_switch = online_switch;
+	mainwin->offline_switch = offline_switch;
 	
 	/* set context IDs for status bar */
 	mainwin->mainwin_cid = gtk_statusbar_get_context_id
@@ -1067,6 +1093,10 @@ MainWindow *main_window_create(SeparateType type)
 		watch_cursor = gdk_cursor_new(GDK_WATCH);
 
 	mainwin_list = g_list_append(mainwin_list, mainwin);
+
+	/* init work_offline */
+	if (prefs_common.work_offline)
+		online_switch_clicked (GTK_BUTTON(online_switch), mainwin);
 
 	return mainwin;
 }
@@ -1581,6 +1611,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/File/Import mbox file..."   , M_UNLOCKED},
 		{"/File/Export to mbox file...", M_UNLOCKED},
 		{"/File/Empty trash"           , M_UNLOCKED},
+		{"/File/Work offline"	       , M_UNLOCKED},
 		{"/File/Save as...", M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/File/Print..."  , M_TARGET_EXIST|M_UNLOCKED},
 		/* {"/File/Close", M_UNLOCKED}, */
@@ -2548,8 +2579,47 @@ static void toggle_expand_messageview_cb(MainWindow *mainwin, guint action, GtkW
 	messageview_toggle_view_real(mainwin->messageview);
 }
 
-static void separate_widget_cb(GtkCheckMenuItem *checkitem, guint action, GtkWidget *widget)
+static void toggle_work_offline_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+{
+	if (GTK_CHECK_MENU_ITEM(widget)->active) {
+		online_switch_clicked (GTK_BUTTON(mainwin->online_switch), mainwin);
+	} else {
+		online_switch_clicked (GTK_BUTTON(mainwin->offline_switch), mainwin);		
+	}
+}
 
+static void online_switch_clicked (GtkButton *btn, gpointer data) 
+{
+	MainWindow *mainwin;
+	GtkItemFactory *ifactory;
+	GtkCheckMenuItem *menuitem;
+
+	mainwin = (MainWindow *) data;
+	
+	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
+	menuitem = GTK_CHECK_MENU_ITEM (gtk_item_factory_get_widget(ifactory, "/File/Work offline"));
+	
+	g_return_if_fail(mainwin != NULL);
+	g_return_if_fail(menuitem != NULL);
+	
+	if (btn == GTK_BUTTON(mainwin->online_switch)) {
+		/* go offline */
+		gtk_widget_hide (mainwin->online_switch);
+		gtk_widget_show (mainwin->offline_switch);
+		menuitem->active = TRUE;
+		prefs_common.work_offline = TRUE;
+		inc_autocheck_timer_remove();		
+	} else {
+		/*go online */
+		gtk_widget_hide (mainwin->offline_switch);
+		gtk_widget_show (mainwin->online_switch);
+		menuitem->active = FALSE;
+		prefs_common.work_offline = FALSE;
+		inc_autocheck_timer_set();
+	}
+}
+
+static void separate_widget_cb(GtkCheckMenuItem *checkitem, guint action, GtkWidget *widget)
 {
 	MainWindow *mainwin;
 	SeparateType type;
@@ -2601,6 +2671,12 @@ static void inc_cancel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 static void send_queue_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	GList *list;
+
+	if (prefs_common.work_offline)
+		if (alertpanel(_("Offline warning"), 
+			       _("You're working offline. Override?"),
+			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
+		return;
 
 	for (list = folder_get_list(); list != NULL; list = list->next) {
 		Folder *folder = list->data;

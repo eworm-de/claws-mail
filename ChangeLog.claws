@@ -1,3 +1,11 @@
+2002-04-21 [colin]	0.7.4claws89
+	* src/compose.c
+	* src/inc.c
+	* src/mainwindow.[ch]
+	* src/prefs_common.[ch]
+	* src/stock_pixmap.[ch]
+		Added "Work offline" ability.
+
 2002-04-21 [colin]	0.7.4claws88
 	
 	* src/mimeview.c

@@ -121,6 +121,8 @@ struct _MainWindow
 	GtkWidget *ac_button;
 	GtkWidget *ac_label;
 	GtkWidget *ac_menu;
+	GtkWidget *online_switch;
+	GtkWidget *offline_switch;
 
 	/* context IDs for status bar */
 	gint mainwin_cid;

@@ -166,6 +166,12 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 
 	if (inc_lock_count) return;
 
+	if (prefs_common.work_offline)
+		if (alertpanel(_("Offline warning"), 
+			       _("You're working offline. Override?"),
+			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
+		return;
+
 	inc_autocheck_timer_remove();
 	summary_write_cache(mainwin->summaryview);
 	main_window_lock(mainwin);
@@ -249,6 +255,12 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 	GList *list, *queue_list = NULL;
 	IncProgressDialog *inc_dialog;
 	gint new_msgs = 0;
+	
+	if (prefs_common.work_offline)
+		if (alertpanel(_("Offline warning"), 
+			       _("You're working offline. Override?"),
+			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
+		return;
 
 	if (inc_lock_count) return;
 
@@ -1256,8 +1268,10 @@ void inc_autocheck_timer_init(MainWindow *mainwin)
 static void inc_autocheck_timer_set_interval(guint interval)
 {
 	inc_autocheck_timer_remove();
-
-	if (prefs_common.autochk_newmail && autocheck_data) {
+	/* last test is to avoid re-enabling auto_check after modifying 
+	   the common preferences */
+	if (prefs_common.autochk_newmail && autocheck_data
+	    && prefs_common.work_offline == FALSE) {
 		autocheck_timer = gtk_timeout_add
 			(interval, inc_autocheck_func, autocheck_data);
 		debug_print("added timer = %d\n", autocheck_timer);
