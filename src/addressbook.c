@@ -1932,7 +1932,7 @@ static void addressbook_list_button_pressed(GtkWidget *widget,
 	static guint32 lasttime = 0;
 
 	if( ! event ) return;
-	printf("event pres\n");
+	
 	addressbook_list_menu_setup();
 	if( event->button == 3 ) {
 		gtk_menu_popup( GTK_MENU(addrbook.list_popup), NULL, NULL, NULL, NULL,
