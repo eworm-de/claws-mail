@@ -3,3 +3,6 @@ REGEDIT4
 [HKEY_CURRENT_USER\Software\Sylpheed]
 "InstalledDir"="C:\\Sylpheed\\"
 
+[HKEY_CURRENT_USER\Software\Sylpheed]
+"HomeDir"="C:\\Sylpheed\\"
+

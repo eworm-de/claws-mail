@@ -5947,10 +5947,12 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 	{
 		gchar *fullname;
 		int hEditor;
-
 		fullname = g_strdup(cmdline[0]);
 		strcpy(cmdline[0],g_path_get_basename (cmdline[0]));
-		if ((hEditor=spawnv(P_NOWAIT, fullname, cmdline)) < 0) {
+		if ((hEditor=spawnvp(P_NOWAIT, fullname, cmdline)) < 0) {
+			gint source;
+			GdkInputCondition condition;
+			compose_input_cb( compose , source , condition );
 			perror("spawnv");
 			return -1;
 		}

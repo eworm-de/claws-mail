@@ -2132,15 +2132,11 @@ gint execute_async(gchar *const argv[])
 	gchar *fullname;
 	fullname = g_strdup(argv[0]);
 	strcpy(argv[0],g_path_get_basename (argv[0]));
-	if (spawnv(P_NOWAIT, fullname, argv) < 0) {
+	if (spawnvp(P_NOWAIT, fullname, argv) < 0) {
 		perror("spawnv");
 		return -1;
 	}
 	g_free(fullname);
-//	if (spawnv(P_NOWAIT, argv[0], argv) < 0) {
-//		perror("spawnv");
-//		return -1;
-//	}
 #else
 	pid_t pid;
 
@@ -2179,15 +2175,11 @@ gint execute_sync(gchar *const argv[])
 	gchar *fullname;
 	fullname = g_strdup(argv[0]);
 	strcpy(argv[0],g_path_get_basename (argv[0]));
-	if (spawnv(P_WAIT, fullname, argv) < 0) {
+	if (spawnvp(P_WAIT, fullname, argv) < 0) {
 		perror("spawnv");
 		return -1;
 	}
 	g_free(fullname);
-//	if (spawnv(P_WAIT, argv[0], argv) < 0) {
-//		perror("spawnv");
-//		return -1;
-//	}
 #else
 	pid_t pid;
 

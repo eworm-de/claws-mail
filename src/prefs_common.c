@@ -2912,6 +2912,8 @@ static void prefs_other_create(void)
 			       "netscape -remote \"openURL(%s,raise)\"",
 			       "netscape \"%s\"",
 			       "c:\\program files\\internet explorer\\iexplore \"%s\"",
+			       "c:\\program files\\mozilla\\mozilla.exe \"%s\"",
+			       "c:\\program files\\k-meleon\\k-meleon.exe \"%s\"",
 #else
 			       "netscape -remote 'openURL(%s,raise)'",
 			       "netscape '%s'",
@@ -2949,6 +2951,7 @@ static void prefs_other_create(void)
 #ifdef WIN32
 			       "notepad \"%s\"",
 #endif
+			       "gvim -f -c \"set syn=mail\" \"%s\"",
 			       "gedit %s",
 			       "kedit %s",
 			       "mgedit --no-fork %s",

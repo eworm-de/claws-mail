@@ -310,8 +310,24 @@ static void sd_clist_set_items()
 		gint row_num;
 		
 		row[0] = _("");
+#ifdef WIN32
+		{
+			gchar *p_from, *p_subject;
+			p_from    = g_strdup(items->from);
+			p_subject = g_strdup(items->subject);
+			locale_to_utf8(&p_from);
+			locale_to_utf8(&p_subject);
+
+			row[1] = p_from;
+			row[2] = p_subject;
+
+			//g_free(p_from);
+			//g_free(p_subject);
+		}
+#else
 		row[1] = items->from;
 		row[2] = items->subject;
+#endif
 		row[3] = items->date;
 		row[4] = g_strdup_printf("%i KB", items->size/1024);
 		
@@ -383,7 +399,11 @@ static void sd_clist_get_items()
 		
 		items->from    = msginfo->from;
 		items->subject = msginfo->subject;
+#ifdef WIN32
+		g_strlcpy(items->date, msginfo->date, sizeof(items->date));
+#else
 		strncpy2(items->date, msginfo->date, sizeof(items->date));
+#endif
 		
 		msginfo->folder = folder_get_default_processing();
 
