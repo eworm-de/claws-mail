@@ -1,3 +1,11 @@
+2005-01-03 [colin]	0.9.13cvs25.4
+
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/gtk/prefswindow.c
+		Move auto pointer stuff to utils.c
+		Patch by Alfons again :)
+
 2005-01-03 [colin]	0.9.13cvs25.3
 
 	* src/compose.c

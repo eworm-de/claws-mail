@@ -72,21 +72,6 @@ struct _PrefsTreeNode
 	gfloat     treeweight; /* GTK2: not used */
 };
 
-static GType G_TYPE_AUTO_POINTER;
-
-typedef struct AutoPointerRef {
-	gpointer	pointer;
-	glong		cnt;
-} AutoPointerRef;
-
-typedef struct AutoPointer {
-	AutoPointerRef *ref;
-} AutoPointer;
-
-static gpointer g_auto_pointer_new			(gpointer pointer);
-static gpointer g_auto_pointer_copy			(gpointer p);
-static void g_auto_pointer_free				(gpointer p);
-
 static GtkTreeStore *prefswindow_create_data_store	(void);
 static GtkWidget *prefswindow_tree_view_create		(PrefsWindow* prefswindow);
 static void prefs_filtering_create_tree_view_columns	(GtkWidget *tree_view);
@@ -272,7 +257,7 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages)
 						   PREFS_PAGE_DATA, &prefs_node,
 						   -1);
 			} else {
-				gpointer autoptr; 
+				GAuto *autoptr; 
 			
 				/* create a new top level */
 				gtk_tree_store_append(store, &child, i == 0 ? NULL : &node);
@@ -425,59 +410,8 @@ void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data)
 	prefswindow_open_full(title, prefs_pages, data, NULL);
 }
 
-/* NOTE: auto pointer could be made more generic, but this works
- * fine for now. */
-
-static gpointer g_auto_pointer_new(gpointer p)
-{	
-	AutoPointerRef *ref = g_new0(AutoPointerRef, 1);
-	AutoPointer    *ptr = g_new0(AutoPointer, 1);
-
-	ref->pointer = p;
-	ref->cnt = 1;
-
-	ptr->ref = ref;
-
-	return ptr;
-}
-
-static gpointer g_auto_pointer_copy(gpointer p)
-{
-	AutoPointer	*ptr = p;
-	AutoPointerRef	*ref = ptr->ref;
-	AutoPointer	*newp = g_new0(AutoPointer, 1);
-	newp->ref = ref;
-
-	++(ref->cnt);
-	return newp;
-}
-
-static void g_auto_pointer_free(gpointer p)
-{
-	AutoPointer	*ptr = p;
-	AutoPointerRef	*ref = ptr->ref;
-
-	if (--(ref->cnt) == 0) {
-		g_free(ref->pointer);
-		g_free(ref);
-	}
-	g_free(ptr);		
-}
-
-static void prefswindow_static_init(void)
-{
-	if (!G_TYPE_AUTO_POINTER)
-		G_TYPE_AUTO_POINTER = 
-			g_boxed_type_register_static("G_TYPE_AUTO_POINTER",
-						     g_auto_pointer_copy,
-						     g_auto_pointer_free);
-}
-
 static GtkTreeStore *prefswindow_create_data_store(void)
 {
-	/* should always be called before using auto pointer type */
-	prefswindow_static_init();
-	
 	return gtk_tree_store_new(N_PREFS_PAGE_COLUMNS,
 				  G_TYPE_STRING,
 				  G_TYPE_POINTER,

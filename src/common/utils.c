@@ -3731,3 +3731,168 @@ void get_hex_str(gchar *out, guchar ch)
 	INT_TO_HEX(hex, ch & 0x0f);
 	*out++ = hex;
 }
+
+#undef REF_DEBUG
+#ifndef REF_DEBUG
+#define G_PRINT_REF 1 == 1 ? (void) 0 : (void)
+#else
+#define G_PRINT_REF g_print
+#endif
+
+/*!
+ *\brief	Register ref counted pointer. It is based on GBoxed, so should
+ *		work with anything that uses the GType system. The semantics
+ *		are similar to a C++ auto pointer, with the exception that
+ *		C doesn't have automatic closure (calling destructors) when 
+ *		exiting a block scope.
+ *		Use the \ref G_TYPE_AUTO_POINTER macro instead of calling this
+ *		function directly.
+ *
+ *\return	GType A GType type.
+ */
+GType g_auto_pointer_register(void)
+{
+	static GType auto_pointer_type;
+	if (!auto_pointer_type)
+		auto_pointer_type =
+			g_boxed_type_register_static
+				("G_TYPE_AUTO_POINTER",
+				 (GBoxedCopyFunc) g_auto_pointer_copy,
+				 (GBoxedFreeFunc) g_auto_pointer_free);
+	return auto_pointer_type;						     
+}
+
+/*!
+ *\brief	Structure with g_new() allocated pointer guarded by the
+ *		auto pointer
+ */
+typedef struct AutoPointerRef {
+	void	      (*free) (gpointer);
+	gpointer	pointer;
+	glong		cnt;
+} AutoPointerRef;
+
+/*!
+ *\brief	The auto pointer opaque structure that references the
+ *		pointer guard block.
+ */
+typedef struct AutoPointer {
+	AutoPointerRef *ref;
+	gpointer	ptr; /*!< access to protected pointer */
+} AutoPointer;
+
+/*!
+ *\brief	Creates an auto pointer for a g_new()ed pointer. Example:
+ *
+ *\code	
+ *
+ *		... tell gtk_list_store it should use a G_TYPE_AUTO_POINTER
+ *		... when assigning, copying and freeing storage elements
+ *
+ *		gtk_list_store_new(N_S_COLUMNS, 
+ *				   G_TYPE_AUTO_POINTER,
+ *				   -1);
+ *
+ *
+ *		Template *precious_data = g_new0(Template, 1);
+ *		g_pointer protect = g_auto_pointer_new(precious_data);
+ *
+ *		gtk_list_store_set(container, &iter,
+ *				   S_DATA, protect,
+ *				   -1);
+ *
+ *		... the gtk_list_store has copied the pointer and 
+ *		... incremented its reference count, we should free
+ *		... the auto pointer (in C++ a destructor would do
+ *		... this for us when leaving block scope)
+ * 
+ *		g_auto_pointer_free(protect);
+ *
+ *		... gtk_list_store_set() now manages the data. When
+ *		... *explicitly* requesting a pointer from the list 
+ *		... store, don't forget you get a copy that should be 
+ *		... freed with g_auto_pointer_free() eventually.
+ *
+ *\endcode
+ *
+ *\param	pointer Pointer to be guarded.
+ *
+ *\return	GAuto * Pointer that should be used in containers with
+ *		GType support.
+ */
+GAuto *g_auto_pointer_new(gpointer p)
+{
+	AutoPointerRef *ref = g_new0(AutoPointerRef, 1);
+	AutoPointer    *ptr = g_new0(AutoPointer, 1);
+
+	ref->pointer = p;
+	ref->free = g_free;
+	ref->cnt = 1;
+
+	ptr->ref = ref;
+	ptr->ptr = p;
+
+	G_PRINT_REF ("XXXX ALLOC(%lx)\n", p);
+
+	return ptr;
+}
+
+/*!
+ *\brief	Allocate an autopointer using the passed \a free function to
+ *		free the guarded pointer
+ */
+GAuto *g_auto_pointer_new_with_free(gpointer p, GFreeFunc free_)
+{	
+	AutoPointer *aptr = g_auto_pointer_new(p);
+
+	aptr->ref->free = free_;
+	return aptr; 
+}
+
+gpointer g_auto_pointer_get_ptr(GAuto *auto_ptr)
+{
+	return ((AutoPointer *) auto_ptr)->ptr; 
+}
+
+/*!
+ *\brief	Copies an auto pointer by. It's mostly not necessary
+ *		to call this function directly, unless you copy/assign
+ *		the guarded pointer.
+ *
+ *\param	auto_ptr Auto pointer returned by previous call to 
+ *		g_auto_pointer_new_XXX()
+ *
+ *\return	gpointer An auto pointer
+ */
+GAuto *g_auto_pointer_copy(GAuto *auto_ptr)
+{
+	AutoPointer	*ptr = auto_ptr;
+	AutoPointerRef	*ref = ptr->ref;
+	AutoPointer	*newp = g_new0(AutoPointer, 1);
+
+	newp->ref = ref;
+	newp->ptr = ref->pointer;
+	++(ref->cnt);
+	
+	G_PRINT_REF ("XXXX COPY(%lx) -- REF (%d)\n", ref->pointer, ref->cnt);
+
+	return newp;
+}
+
+/*!
+ *\brief	Free an auto pointer
+ */
+void g_auto_pointer_free(GAuto *auto_ptr)
+{
+	AutoPointer	*ptr = auto_ptr;
+	AutoPointerRef	*ref = ptr->ref;
+
+	if (--(ref->cnt) == 0) {
+		G_PRINT_REF ("XXXX FREE(%lx) -- REF (%d)\n", ref->pointer, ref->cnt);
+		ref->free(ref->pointer);
+		g_free(ref);
+	} else
+		G_PRINT_REF ("XXXX DEREF(%lx) -- REF (%d)\n", ref->pointer, ref->cnt);
+	g_free(ptr);		
+}
+

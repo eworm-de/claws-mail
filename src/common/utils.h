@@ -25,6 +25,7 @@
 #endif
 
 #include <glib.h>
+#include <glib-object.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -476,6 +477,18 @@ GNode *g_node_map(GNode *node, GNodeMapFunc func, gpointer data);
 
 gboolean get_hex_value(guchar *out, gchar c1, gchar c2);
 void get_hex_str(gchar *out, guchar ch);
+
+/* auto pointer for containers that support GType system */
+
+#define G_TYPE_AUTO_POINTER	g_auto_pointer_register()
+typedef struct AutoPointer	GAuto;
+GType g_auto_pointer_register		(void);
+GAuto *g_auto_pointer_new		(gpointer pointer);
+GAuto *g_auto_pointer_new_with_free	(gpointer p, 
+					 GFreeFunc free);
+gpointer g_auto_pointer_get_ptr		(GAuto *auto_ptr);
+GAuto *g_auto_pointer_copy		(GAuto *auto_ptr);
+void g_auto_pointer_free		(GAuto *auto_ptr);
 
 #ifdef __cplusplus
 }
