@@ -1,3 +1,8 @@
+2003-10-25 [christoph]	0.9.6claws52
+
+	* src/procmime.c
+		fix message body searching
+
 2003-10-25 [paul]	0.9.6claws51
 
 	* src/compose.c

@@ -167,15 +167,19 @@ MimeInfo *procmime_mimeinfo_parent(MimeInfo *mimeinfo)
 
 MimeInfo *procmime_mimeinfo_next(MimeInfo *mimeinfo)
 {
-	if (!mimeinfo) return NULL;
+	g_return_val_if_fail(mimeinfo != NULL, NULL);
+	g_return_val_if_fail(mimeinfo->node != NULL, NULL);
 
 	if (mimeinfo->node->children)
 		return (MimeInfo *) mimeinfo->node->children->data;
 	if (mimeinfo->node->next)
 		return (MimeInfo *) mimeinfo->node->next->data;
 
-	for (mimeinfo = (MimeInfo *) mimeinfo->node->parent->data; mimeinfo != NULL;
-	     mimeinfo = (MimeInfo *) mimeinfo->node->parent->data) {
+	if (mimeinfo->node->parent == NULL)
+		return NULL;
+
+	while (mimeinfo->node->parent != NULL) {
+		mimeinfo = (MimeInfo *) mimeinfo->node->parent->data;
 		if (mimeinfo->node->next)
 			return (MimeInfo *) mimeinfo->node->next->data;
 	}
@@ -597,26 +601,15 @@ FILE *procmime_get_first_text_content(MsgInfo *msginfo)
 gboolean procmime_find_string_part(MimeInfo *mimeinfo, const gchar *filename,
 				   const gchar *str, gboolean case_sens)
 {
-	return FALSE;
-
-#if 0	/* FIXME */
 	FILE *infp, *outfp;
 	gchar buf[BUFFSIZE];
 	gchar *(* StrFindFunc) (const gchar *haystack, const gchar *needle);
 
 	g_return_val_if_fail(mimeinfo != NULL, FALSE);
-	g_return_val_if_fail(mimeinfo->mime_type == MIME_TEXT ||
-			     mimeinfo->mime_type == MIME_TEXT_HTML ||
-			     mimeinfo->mime_type == MIME_TEXT_ENRICHED, FALSE);
+	g_return_val_if_fail(mimeinfo->type == MIMETYPE_TEXT, FALSE);
 	g_return_val_if_fail(str != NULL, FALSE);
 
-	if ((infp = fopen(filename, "rb")) == NULL) {
-		FILE_OP_ERROR(filename, "fopen");
-		return FALSE;
-	}
-
-	outfp = procmime_get_text_content(mimeinfo, infp);
-	fclose(infp);
+	outfp = procmime_get_text_content(mimeinfo);
 
 	if (!outfp)
 		return FALSE;
@@ -636,15 +629,11 @@ gboolean procmime_find_string_part(MimeInfo *mimeinfo, const gchar *filename,
 	fclose(outfp);
 
 	return FALSE;
-#endif
 }
 
 gboolean procmime_find_string(MsgInfo *msginfo, const gchar *str,
 			      gboolean case_sens)
 {
-	return FALSE;
-
-#if 0	/* FIXME */
 	MimeInfo *mimeinfo;
 	MimeInfo *partinfo;
 	gchar *filename;
@@ -659,9 +648,7 @@ gboolean procmime_find_string(MsgInfo *msginfo, const gchar *str,
 
 	for (partinfo = mimeinfo; partinfo != NULL;
 	     partinfo = procmime_mimeinfo_next(partinfo)) {
-		if (partinfo->mime_type == MIME_TEXT ||
-		    partinfo->mime_type == MIME_TEXT_HTML ||
-		    partinfo->mime_type == MIME_TEXT_ENRICHED) {
+		if (partinfo->type == MIMETYPE_TEXT) {
 			if (procmime_find_string_part
 				(partinfo, filename, str, case_sens) == TRUE) {
 				found = TRUE;
@@ -674,7 +661,6 @@ gboolean procmime_find_string(MsgInfo *msginfo, const gchar *str,
 	g_free(filename);
 
 	return found;
-#endif
 }
 
 gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
