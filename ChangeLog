@@ -1,3 +1,48 @@
+2002-05-17
+
+	* src/mainwindow.c: added 'Expand/Collapse all threads' menu.
+	* src/summaryview.[ch]:
+	  summary_expand_threads(), summary_collapse_threads(): new.
+
+2002-05-17
+
+	* src/mainwindow.c: Fixed the behavior of
+	  '/View/Show or hide/Folder tree' and
+	  '/View/Show or hide/Message view' toggle menu.
+	  Removed '/View/Toggle summary view' menu and integrated the
+	  function into '/View/Show or hide/Message view'.
+	  main_window_set_widgets(): change the state of toggle menu items.
+	* src/prefs_common.c: prefs_keybind_apply_clicked(): updated menurc
+	  strings.
+
+2002-05-16
+
+	* src/mimeview.c: mimeview_set_multipart_tree(): show single part
+	  MIME contents other than text as children of message/rfc822 part.
+	* src/procmime.c:
+	  procmime_mimeinfo_next(): modified for message/rfc822 part which
+	  content-type is single part MIME.
+	  procmime_scan_multipart_message(): fix for nested message/rfc822
+	  part. Corrected the size of the contents of message/rfc822.
+	* src/textview.c: textview_show_part(): extract the contents of
+	  multipart/* and message/rfc822. Some code cleanups.
+	  textview_add_parts(): new. It adds the all parts under a part to
+	  textview.
+	  textview_clear(): reset body_pos and cur_pos.
+
+2002-05-16
+
+	* src/addr_compl.c: modified so that it behaves better.
+	  get_address_from_edit(): ignore comma inside of brackets.
+	  completion_window_apply_selection(): new. Only apply the current
+	  clist selection.
+	  completion_window_accept_selection(): removed.
+	  address_completion_complete_address_in_entry(): minor code cleanup.
+	  don't replace address in entry here.
+	  completion_window_select_row(): always apply clist selection to
+	  entry.
+	  completion_window_key_press(): don't apply selection here.
+
 2002-05-15
 
 	* src/imap.c: imap_create_folder(): keep trailing directory separator

@@ -197,6 +197,9 @@ void summary_select_node	  (SummaryView		*summaryview,
 void summary_thread_build	  (SummaryView		*summaryview);
 void summary_unthread		  (SummaryView		*summaryview);
 
+void summary_expand_threads	  (SummaryView		*summaryview);
+void summary_collapse_threads	  (SummaryView		*summaryview);
+
 void summary_filter		  (SummaryView		*summaryview);
 void summary_filter_open	  (SummaryView		*summaryview,
 				   PrefsFilterType	 type);

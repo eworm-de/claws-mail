@@ -115,6 +115,9 @@ static void textview_show_ertf		(TextView	*textview,
 static void textview_add_part		(TextView	*textview,
 					 MimeInfo	*mimeinfo,
 					 FILE		*fp);
+static void textview_add_parts		(TextView	*textview,
+					 MimeInfo	*mimeinfo,
+					 FILE		*fp);
 static void textview_write_body		(TextView	*textview,
 					 MimeInfo	*mimeinfo,
 					 FILE		*fp,
@@ -310,8 +313,6 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 		charset = mimeinfo->charset;
 	textview_set_font(textview, charset);
 	textview_clear(textview);
-	textview->body_pos = 0;
-	textview->cur_pos  = 0;
 
 	gtk_stext_freeze(text);
 
@@ -323,15 +324,7 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 		textview->body_pos = gtk_stext_get_length(text);
 	}
 
-	while (mimeinfo != NULL) {
-		textview_add_part(textview, mimeinfo, fp);
-		if (mimeinfo->parent && mimeinfo->parent->content_type &&
-		    !strcasecmp(mimeinfo->parent->content_type,
-				"multipart/alternative"))
-			mimeinfo = mimeinfo->parent->next;
-		else
-			mimeinfo = procmime_mimeinfo_next(mimeinfo);
-	}
+	textview_add_parts(textview, mimeinfo, fp);
 
 	gtk_stext_thaw(text);
 
@@ -350,7 +343,11 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	g_return_if_fail(mimeinfo != NULL);
 	g_return_if_fail(fp != NULL);
 
-	if (mimeinfo->mime_type == MIME_MULTIPART) return;
+	if (mimeinfo->mime_type == MIME_MULTIPART) {
+		textview_clear(textview);
+		textview_add_parts(textview, mimeinfo, fp);
+		return;
+	}
 
 	if (mimeinfo->parent && mimeinfo->parent->boundary) {
 		boundary = mimeinfo->parent->boundary;
@@ -393,15 +390,12 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	}
 
 	/* display attached RFC822 single text message */
-	if (mimeinfo->parent && mimeinfo->mime_type == MIME_MESSAGE_RFC822) {
+	if (mimeinfo->mime_type == MIME_MESSAGE_RFC822) {
 		if (headers) procheader_header_array_destroy(headers);
-		if (!mimeinfo->sub || mimeinfo->sub->children) return;
-		headers = textview_scan_header(textview, fp);
-		mimeinfo = mimeinfo->sub;
-	} else if (!mimeinfo->parent &&
-		   mimeinfo->mime_type == MIME_MESSAGE_RFC822) {
-		if (headers) procheader_header_array_destroy(headers);
-		if (!mimeinfo->sub) return;
+		if (!mimeinfo->sub) {
+			textview_clear(textview);
+			return;
+		}
 		headers = textview_scan_header(textview, fp);
 		mimeinfo = mimeinfo->sub;
 	}
@@ -415,17 +409,18 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	textview_clear(textview);
 	gtk_stext_freeze(text);
 
-	textview->body_pos = 0;
-	textview->cur_pos  = 0;
-
 	if (headers) {
 		textview_show_header(textview, headers);
-		gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
 		procheader_header_array_destroy(headers);
 		textview->body_pos = gtk_stext_get_length(text);
+		if (!mimeinfo->main)
+			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
 	}
 
-	textview_write_body(textview, mimeinfo, fp, charset);
+	if (mimeinfo->mime_type == MIME_MULTIPART || mimeinfo->main)
+		textview_add_parts(textview, mimeinfo, fp);
+	else
+		textview_write_body(textview, mimeinfo, fp, charset);
 
 	gtk_stext_thaw(text);
 }
@@ -503,6 +498,28 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	}
 
 	gtk_stext_thaw(text);
+}
+
+static void textview_add_parts(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
+{
+	gint level;
+
+	g_return_if_fail(mimeinfo != NULL);
+	g_return_if_fail(fp != NULL);
+
+	level = mimeinfo->level;
+
+	for (;;) {
+		textview_add_part(textview, mimeinfo, fp);
+		if (mimeinfo->parent && mimeinfo->parent->content_type &&
+		    !strcasecmp(mimeinfo->parent->content_type,
+				"multipart/alternative"))
+			mimeinfo = mimeinfo->parent->next;
+		else
+			mimeinfo = procmime_mimeinfo_next(mimeinfo);
+		if (!mimeinfo || mimeinfo->level <= level)
+			break;
+	}
 }
 
 #define TEXT_INSERT(str) \
@@ -1063,6 +1080,9 @@ void textview_clear(TextView *textview)
 
 	textview_uri_list_remove_all(textview->uri_list);
 	textview->uri_list = NULL;
+
+	textview->body_pos = 0;
+	textview->cur_pos  = 0;
 }
 
 void textview_destroy(TextView *textview)

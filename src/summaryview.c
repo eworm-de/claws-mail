@@ -3914,6 +3914,42 @@ void summary_processing(SummaryView *summaryview, GSList * mlist)
 	summary_unlock(summaryview);
 }
 
+void summary_expand_threads(SummaryView *summaryview)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GtkCTreeNode *node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+
+	gtk_clist_freeze(GTK_CLIST(ctree));
+
+	while (node) {
+		if (GTK_CTREE_ROW(node)->children)
+			gtk_ctree_expand(ctree, node);
+		node = GTK_CTREE_NODE_NEXT(node);
+	}
+
+	gtk_clist_thaw(GTK_CLIST(ctree));
+
+	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
+}
+
+void summary_collapse_threads(SummaryView *summaryview)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GtkCTreeNode *node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+
+	gtk_clist_freeze(GTK_CLIST(ctree));
+
+	while (node) {
+		if (GTK_CTREE_ROW(node)->children)
+			gtk_ctree_collapse(ctree, node);
+		node = GTK_CTREE_ROW(node)->sibling;
+	}
+
+	gtk_clist_thaw(GTK_CLIST(ctree));
+
+	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
+}
+
 void summary_filter(SummaryView *summaryview)
 {
 	if (!prefs_common.fltlist && !global_processing) {

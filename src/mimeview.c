@@ -361,6 +361,12 @@ static void mimeview_set_multipart_tree(MimeView *mimeview,
 
 	if (!mimeinfo->sub && mimeinfo->parent)
 		current = mimeview_append_part(mimeview, mimeinfo, parent);
+	if (mimeinfo->sub && !mimeinfo->sub->children &&
+	    mimeinfo->sub->mime_type != MIME_TEXT &&
+	    mimeinfo->sub->mime_type != MIME_TEXT_HTML) {
+		mimeview_append_part(mimeview, mimeinfo->sub, parent);
+		return;
+	}
 
 	if (mimeinfo->sub)
 		mimeview_set_multipart_tree(mimeview, mimeinfo->sub, current);

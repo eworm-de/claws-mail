@@ -223,12 +223,15 @@ gchar *get_address_from_edit(GtkEntry *entry, gint *start_pos)
 	wchar_t rfc_mail_sep;
 	wchar_t quote;
 	wchar_t lt;
+	wchar_t gt;
 	gboolean in_quote = FALSE;
+	gboolean in_bracket = FALSE;
 	gchar *str;
 
 	if (mbtowc(&rfc_mail_sep, ",", 1) < 0) return NULL;
 	if (mbtowc(&quote, "\"", 1) < 0) return NULL;
 	if (mbtowc(&lt, "<", 1) < 0) return NULL;
+	if (mbtowc(&gt, ">", 1) < 0) return NULL;
 
 	edit_text = gtk_entry_get_text(entry);
 	if (edit_text == NULL) return NULL;
@@ -240,10 +243,16 @@ gchar *get_address_from_edit(GtkEntry *entry, gint *start_pos)
 
 	/* scan for a separator. doesn't matter if walk points at null byte. */
 	for (wp = wtext + cur_pos; wp > wtext; wp--) {
-		if (!in_quote && *wp == rfc_mail_sep)
-			break;
 		if (*wp == quote)
 			in_quote ^= TRUE;
+		else if (!in_quote) {
+			if (!in_bracket && *wp == rfc_mail_sep)
+				break;
+			else if (*wp == gt)
+				in_bracket = TRUE;
+			else if (*wp == lt)
+				in_bracket = FALSE;
+		}
 	}
 
 	/* have something valid */
@@ -516,6 +525,7 @@ static void completion_window_advance_selection(GtkCList *clist, gboolean forwar
 	gtk_clist_thaw(clist);
 }
 
+#if 0
 /* completion_window_accept_selection() - accepts the current selection in the
  * clist, and destroys the window */
 static void completion_window_accept_selection(GtkWidget **window,
@@ -523,7 +533,7 @@ static void completion_window_accept_selection(GtkWidget **window,
 					       GtkEntry *entry)
 {
 	gchar *address = NULL, *text = NULL;
-	gint   cursor_pos, row, col;
+	gint   cursor_pos, row;
 
 	g_return_if_fail(window != NULL);
 	g_return_if_fail(*window != NULL);
@@ -531,20 +541,38 @@ static void completion_window_accept_selection(GtkWidget **window,
 	g_return_if_fail(entry != NULL);
 	g_return_if_fail(clist->selection != NULL);
 
-	col = 0;
-
 	/* FIXME: I believe it's acceptable to access the selection member directly  */
 	row = GPOINTER_TO_INT(clist->selection->data);
 
 	/* we just need the cursor position */
 	address = get_address_from_edit(entry, &cursor_pos);
-	gtk_clist_get_text(clist, row, col, &text);
+	g_free(address);
+	gtk_clist_get_text(clist, row, 0, &text);
 	replace_address_in_edit(entry, text, cursor_pos);
-	g_free(address);				
 
 	clear_completion_cache();
 	gtk_widget_destroy(*window);
 	*window = NULL;
+}
+#endif
+
+/* completion_window_apply_selection() - apply the current selection in the
+ * clist */
+static void completion_window_apply_selection(GtkCList *clist, GtkEntry *entry)
+{
+	gchar *address = NULL, *text = NULL;
+	gint   cursor_pos, row;
+
+	g_return_if_fail(clist != NULL);
+	g_return_if_fail(entry != NULL);
+	g_return_if_fail(clist->selection != NULL);
+
+	row = GPOINTER_TO_INT(clist->selection->data);
+
+	address = get_address_from_edit(entry, &cursor_pos);
+	g_free(address);
+	gtk_clist_get_text(clist, row, 0, &text);
+	replace_address_in_edit(entry, text, cursor_pos);
 }
 
 /* should be called when creating the main window containing address
@@ -674,25 +702,26 @@ static gboolean address_completion_complete_address_in_entry(GtkEntry *entry,
 	if (!GTK_WIDGET_HAS_FOCUS(entry)) return FALSE;
 
 	/* get an address component from the cursor */
-	if (0 != (address = get_address_from_edit(entry, &cursor_pos))) {
-		/* still something in the cache */
-		if (is_completion_pending()) {
-			new = next ? get_next_complete_address() :
-				get_prev_complete_address();
-		} else {
-			if (0 < (ncount = complete_address(address)))
-				new = get_next_complete_address();
-		}
+	address = get_address_from_edit(entry, &cursor_pos);
+	if (!address) return FALSE;
 
-		if (new) {
-			/* prevent "change" signal */
-			replace_address_in_edit(entry, new, cursor_pos);
-			g_free(new);
-			completed = TRUE;
-		}
+	/* still something in the cache */
+	if (is_completion_pending()) {
+		new = next ? get_next_complete_address() :
+			get_prev_complete_address();
+	} else {
+		if (0 < (ncount = complete_address(address)))
+			new = get_next_complete_address();
+	}
 
-		g_free(address);
-	}					
+	if (new) {
+		/* prevent "change" signal */
+		/* replace_address_in_edit(entry, new, cursor_pos); */
+		g_free(new);
+		completed = TRUE;
+	}
+
+	g_free(address);
 
 	return completed;
 }
@@ -787,23 +816,6 @@ static void completion_window_select_row(GtkCList *clist, gint row, gint col,
 {
 	GtkEntry *entry;
 
-	/* first check if it's anything but a mouse event. Mouse events
-	 * accept the completion. Anything else is accepted by the
-	 * completion_window_key_press() */
-	if (!event) {
-		/* event == NULL if key press did the selection or just
-		 * event emitted with signal_emit_XXX(). This seems to 
-		 * be the case for the gtk versions I have seen */
-		return;
-	}
-
-	/* however, a future version of GTK might pass the event type
-	 * that triggered the select_row. since this event handler
-	 * only wants mouse clicks, we check for that. */
-	if (event->type != GDK_BUTTON_RELEASE) {
-		return;
-	}
-
 	g_return_if_fail(completion_window != NULL);
 	g_return_if_fail(*completion_window != NULL);
 
@@ -811,7 +823,14 @@ static void completion_window_select_row(GtkCList *clist, gint row, gint col,
 					      WINDOW_DATA_COMPL_ENTRY));
 	g_return_if_fail(entry != NULL);
 
-	completion_window_accept_selection(completion_window, clist, entry);	
+	completion_window_apply_selection(clist, entry);
+
+	if (!event || event->type != GDK_BUTTON_RELEASE)
+		return;
+
+	clear_completion_cache();
+	gtk_widget_destroy(*completion_window);
+	*completion_window = NULL;
 }
 
 /* completion_window_button_press() - check is mouse click is anywhere
@@ -852,10 +871,10 @@ static gboolean completion_window_button_press(GtkWidget *widget,
 		replace_address_in_edit(GTK_ENTRY(entry), prefix, cursor_pos);
 	}
 
+	clear_completion_cache();
 	gtk_widget_destroy(*completion_window);
 	*completion_window = NULL;
 
-	clear_completion_cache();
 	return TRUE;
 }
 
@@ -903,9 +922,9 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 
 	/* look for presses that accept the selection */
 	if (event->keyval == GDK_Return || event->keyval == GDK_space) {
-		completion_window_accept_selection(completion_window,
-						   GTK_CLIST(clist),
-						   GTK_ENTRY(entry));
+		clear_completion_cache();
+		gtk_widget_destroy(*completion_window);
+		*completion_window = NULL;
 		return FALSE;
 	}
 
