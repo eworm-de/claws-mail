@@ -1,3 +1,15 @@
+2004-11-09 [christoph]	0.9.12cvs144
+
+	* src/compose.c
+	* src/prefs_account.[ch]
+		add option menu to select default privacy system
+
+	* src/plugins/pgpmime/pgpmime.c
+		better memory allocation
+
+	* src/folder.c
+		syncronize flags when scanning a folder
+
 2004-11-08 [colin]	0.9.12cvs143
 
 	* src/summaryview.c

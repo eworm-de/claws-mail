@@ -1526,6 +1526,50 @@ static MsgInfo *get_msginfo(FolderItem *item, guint num)
 	return msginfo;
 }
 
+static gint syncronize_flags(FolderItem *item, MsgInfoList *msglist)
+{
+	GRelation *relation;
+	gint ret = 0;
+	GSList *cur;
+
+	if(msglist == NULL)
+		return 0;
+	if(item->folder->klass->get_flags == NULL)
+		return 0;
+
+	relation = g_relation_new(2);
+	g_relation_index(relation, 0, g_direct_hash, g_direct_equal);
+	if ((ret = item->folder->klass->get_flags(
+	    item->folder, item, msglist, relation)) == 0) {
+		GTuples *tuples;
+		MsgInfo *msginfo;
+		MsgPermFlags permflags;
+		gboolean skip;
+
+		for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
+			msginfo = (MsgInfo *) cur->data;
+		
+			tuples = g_relation_select(relation, msginfo, 0);
+			skip = tuples->len < 1;
+			if (!skip)
+				permflags = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
+			g_tuples_destroy(tuples);
+			if (skip)
+				continue;
+			
+			if (msginfo->flags.perm_flags != permflags) {
+				procmsg_msginfo_set_flags(msginfo,
+					permflags & ~msginfo->flags.perm_flags, 0);
+				procmsg_msginfo_unset_flags(msginfo,
+					~permflags & msginfo->flags.perm_flags, 0);
+			}
+		}
+	}
+	g_relation_destroy(relation);	
+
+	return ret;
+}
+
 gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 {
 	Folder *folder;
@@ -1704,6 +1748,8 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 		g_slist_free(new_list);
 	}
 
+	syncronize_flags(item, exists_list);
+
 	folder_item_update_freeze();
 	if (newmsg_list != NULL) {
 		GSList *elem;
@@ -1767,60 +1813,6 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	return 0;
 }
 
-gint folder_item_syncronize_flags(FolderItem *item)
-{
-	MsgInfoList *msglist = NULL;
-	GSList *cur;
-	GRelation *relation;
-	gint ret = 0;
-	
-	g_return_val_if_fail(item != NULL, -1);
-	g_return_val_if_fail(item->folder != NULL, -1);
-	g_return_val_if_fail(item->folder->klass != NULL, -1);
-	if(item->folder->klass->get_flags == NULL)
-		return 0;
-	
-	if (item->cache == NULL)
-		folder_item_read_cache(item);
-	
-	msglist = msgcache_get_msg_list(item->cache);
-	
-	relation = g_relation_new(2);
-	g_relation_index(relation, 0, g_direct_hash, g_direct_equal);
-	if ((ret = item->folder->klass->get_flags(
-	    item->folder, item, msglist, relation)) == 0) {
-		GTuples *tuples;
-		MsgInfo *msginfo;
-		MsgPermFlags permflags;
-		gboolean skip;
-
-		for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
-			msginfo = (MsgInfo *) cur->data;
-		
-			tuples = g_relation_select(relation, msginfo, 0);
-			skip = tuples->len < 1;
-			if (!skip)
-				permflags = GPOINTER_TO_INT(g_tuples_index(tuples, 0, 1));
-			g_tuples_destroy(tuples);
-			if (skip)
-				continue;
-			
-			if (msginfo->flags.perm_flags != permflags) {
-				procmsg_msginfo_set_flags(msginfo,
-					permflags & ~msginfo->flags.perm_flags, 0);
-				procmsg_msginfo_unset_flags(msginfo,
-					~permflags & msginfo->flags.perm_flags, 0);
-			}
-		}
-	}
-	g_relation_destroy(relation);
-	
-	for (cur = msglist; cur != NULL; cur = g_slist_next(cur))
-		procmsg_msginfo_free((MsgInfo *) cur->data);
-	
-	return ret;
-}
-
 gint folder_item_scan(FolderItem *item)
 {
 	return folder_item_scan_full(item, TRUE);
@@ -1860,6 +1852,29 @@ void folder_count_total_cache_memusage(FolderItem *item, gpointer data)
 		return;
 	
 	*memusage += msgcache_get_memory_usage(item->cache);
+}
+
+gint folder_item_syncronize_flags(FolderItem *item)
+{
+	MsgInfoList *msglist = NULL;
+	GSList *cur;
+	gint ret = 0;
+	
+	g_return_val_if_fail(item != NULL, -1);
+	g_return_val_if_fail(item->folder != NULL, -1);
+	g_return_val_if_fail(item->folder->klass != NULL, -1);
+	
+	if (item->cache == NULL)
+		folder_item_read_cache(item);
+	
+	msglist = msgcache_get_msg_list(item->cache);
+	
+	ret = syncronize_flags(item, msglist);
+
+	for (cur = msglist; cur != NULL; cur = g_slist_next(cur))
+		procmsg_msginfo_free((MsgInfo *) cur->data);
+	
+	return ret;
 }
 
 gint folder_cache_time_compare_func(gconstpointer a, gconstpointer b)
