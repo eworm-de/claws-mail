@@ -129,9 +129,9 @@ void news_folder_destroy(NewsFolder *folder)
 static void news_folder_init(Folder *folder, const gchar *name,
 			     const gchar *path)
 {
-	folder_remote_folder_init(folder, name, path);
-
 	folder->type = F_NEWS;
+
+	folder_remote_folder_init(folder, name, path);
 
 /*
 	folder->get_msg_list = news_get_article_list;

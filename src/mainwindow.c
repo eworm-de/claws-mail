@@ -1506,7 +1506,7 @@ void main_window_add_mbox(MainWindow *mainwin)
 
 	folder_add(folder);
 
-	item = folder_item_new(folder->name, NULL);
+	item = folder_item_new(folder, folder->name, NULL);
 	item->folder = folder;
 	folder->node = g_node_new(item);
 

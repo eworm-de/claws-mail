@@ -67,9 +67,9 @@ void mbox_folder_destroy(MBOXFolder *folder)
 
 static void mbox_folder_init(Folder *folder, const gchar *name, const gchar *path)
 {
-	folder_local_folder_init(folder, name, path);
-
 	folder->type = F_MBOX;
+
+	folder_local_folder_init(folder, name, path);
 
 /*
 	folder->get_msg_list        = mbox_get_msg_list;
@@ -2202,7 +2202,7 @@ FolderItem *mbox_create_folder(Folder *folder, FolderItem *parent,
 
 	foldername = mbox_get_folderitem_name((gchar *) name);
 
-	new_item = folder_item_new(foldername, path);
+	new_item = folder_item_new(folder, foldername, path);
 	folder_item_append(parent, new_item);
 
 	if (!strcmp(name, "inbox")) {

@@ -277,7 +277,8 @@ void        folder_destroy		(Folder		*folder);
 void        folder_local_folder_destroy	(LocalFolder	*lfolder);
 void        folder_remote_folder_destroy(RemoteFolder	*rfolder);
 
-FolderItem *folder_item_new	(const gchar	*name,
+FolderItem *folder_item_new	(Folder		*folder,
+				 const gchar	*name,
 				 const gchar	*path);
 void        folder_item_append	(FolderItem	*parent,
 				 FolderItem	*item);

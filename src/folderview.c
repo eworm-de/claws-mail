@@ -2327,7 +2327,7 @@ static void folderview_new_news_group_cb(FolderView *folderview, guint action,
 					     FALSE, FALSE);
 		gtk_ctree_expand(ctree, servernode);
 
-		newitem = folder_item_new(name, name);
+		newitem = folder_item_new(folder, name, name);
 		folder_item_append(rootitem, newitem);
 		gtk_ctree_node_set_row_data(ctree, node, newitem);
 	}

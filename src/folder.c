@@ -104,7 +104,6 @@ static void folder_init(Folder *folder, const gchar *name)
 	folder_set_name(folder, name);
 
 	/* Init folder data */
-	folder->type = F_UNKNOWN;
 	folder->account = NULL;
 	folder->inbox = NULL;
 	folder->outbox = NULL;
@@ -122,7 +121,7 @@ static void folder_init(Folder *folder, const gchar *name)
 	folder->check_msgnum_validity = NULL;
 
 	/* Create root folder item */
-	item = folder_item_new(name, NULL);
+	item = folder_item_new(folder, name, NULL);
 	item->folder = folder;
 	folder->node = g_node_new(item);
 	folder->data = NULL;
@@ -198,11 +197,24 @@ Folder *maildir_folder_new(const gchar *name, const gchar *path)
 }
 #endif
 
-FolderItem *folder_item_new(const gchar *name, const gchar *path)
+FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path)
 {
-	FolderItem *item;
+	FolderItem *item = NULL;
 
-	item = g_new0(FolderItem, 1);
+	switch (folder->type) {
+	case F_IMAP:
+		item = imap_folder_item_new();
+		break;
+	case F_MH:
+	case F_NEWS:
+	case F_MBOX:
+		item = g_new0(FolderItem, 1);
+		break;
+	default:
+		return NULL;
+	}
+
+	g_return_val_if_fail(item != NULL, NULL);
 
 	item->stype = F_NORMAL;
 	item->name = g_strdup(name);
@@ -269,7 +281,15 @@ void folder_item_destroy(FolderItem *item)
 	g_return_if_fail(item != NULL);
 
 	debug_print(_("Destroying folder item %s\n"), item->path);
-	
+
+	switch (item->folder->type) {
+	case F_IMAP:
+		imap_folder_item_destroy(item);
+		break;
+	default:
+		break;
+	}
+
 	if(item->cache)
 		folder_item_free_cache(item);
 	g_free(item->name);
@@ -728,14 +748,14 @@ FolderItem *folder_get_default_trash(void)
 	return folder->trash;
 }
 
-#define CREATE_FOLDER_IF_NOT_EXIST(member, dir, type)	\
-{							\
-	if (!folder->member) {				\
-		item = folder_item_new(dir, dir);	\
-		item->stype = type;			\
-		folder_item_append(rootitem, item);	\
-		folder->member = item;			\
-	}						\
+#define CREATE_FOLDER_IF_NOT_EXIST(member, dir, type)		\
+{								\
+	if (!folder->member) {					\
+		item = folder_item_new(folder, dir, dir);	\
+		item->stype = type;				\
+		folder_item_append(rootitem, item);		\
+		folder->member = item;				\
+	}							\
 }
 
 void folder_set_missing_folders(void)
@@ -1859,7 +1879,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 		}
 	}
 
-	item = folder_item_new(name, path);
+	item = folder_item_new(folder, name, path);
 	item->stype = stype;
 	item->account = account;
 	item->mtime = mtime;
@@ -2178,7 +2198,7 @@ static void folder_create_processing_folder(void)
 	}
 	else {
 		debug_print("*TMP* already created\n");
-		processing_folder_item = folder_item_new(".processing", ".processing");
+		processing_folder_item = folder_item_new(processing_folder, ".processing", ".processing");
 		g_assert(processing_folder_item);
 		folder_item_append(processing_folder->node->data, processing_folder_item);
 	}

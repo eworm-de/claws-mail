@@ -1,3 +1,15 @@
+2002-07-25 [christoph]	0.8.0claws13
+
+	* src/filter.c
+	* src/folder.[ch]
+	* src/folderview.c
+	* src/imap.[ch]
+	* src/mainwindow.c
+	* src/mbox_folder.c
+	* src/mh.c
+	* src/news.c
+		implement imap uid cache and uid validity check
+
 2002-07-25 [alfons]	0.8.0claws12
 
 	* src/summaryview.c
