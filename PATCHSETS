@@ -239,3 +239,5 @@
 ( cvs diff -u -r 1.69 -r 1.70 po/de.po; cvs diff -u -r 1.73 -r 1.74 po/es.po; cvs diff -u -r 1.52 -r 1.53 po/fr.po; cvs diff -u -r 1.40 -r 1.41 po/it.po; cvs diff -u -r 1.14 -r 1.15 po/sk.po; cvs diff -u -r 1.25 -r 1.26 po/sr.po; ) > 1.0.0cvs29.patchset
 ( cvs diff -u -r 1.129 -r 1.130 src/mimeview.c; cvs diff -u -r 1.23 -r 1.24 src/mimeview.h; cvs diff -u -r 1.131 -r 1.133 src/messageview.c; ) > 1.0.1cvs1.patchset
 ( cvs diff -u -r 1.133 -r 1.134 src/messageview.c; ) > 1.0.1cvs2.patchset
+( cvs diff -u -r 1.317 -r 1.318 src/mainwindow.c; ) > 1.0.1cvs3.patchset
+

@@ -1,3 +1,11 @@
+2005-02-10 [colin]	1.0.1cvs3
+
+	* src/mainwindow.c
+		dereference freed messageview,
+		and don't try to use it after free.
+		This caused occasional late segfaults
+		when quitting.
+
 2005-02-10 [colin]	1.0.1cvs2
 
 	* src/messageview.c
