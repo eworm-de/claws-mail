@@ -118,7 +118,7 @@ static gint generic_get_one_field(gchar *buf, gint len, void *data,
 
 			for (hp = hentry, hnum = 0; hp->name != NULL;
 			     hp++, hnum++) {
-				if (!strncasecmp(hp->name, buf,
+				if (!g_strncasecmp(hp->name, buf,
 						 strlen(hp->name)))
 					break;
 			}
@@ -681,7 +681,7 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			}
 			break;
 		case H_CONTENT_TYPE:
-			if (!strncasecmp(hp, "multipart/", 10))
+			if (!g_strncasecmp(hp, "multipart/", 10))
 				MSG_SET_TMP_FLAGS(msginfo->flags, MSG_MULTIPART);
 			break;
 #ifdef ALLOW_HEADER_HINT			
@@ -914,7 +914,7 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 
 	month[3] = '\0';
 	for (p = monthstr; *p != '\0'; p += 3) {
-		if (!strncasecmp(p, month, 3)) {
+		if (!g_strncasecmp(p, month, 3)) {
 			dmonth = (gint)(p - monthstr) / 3 + 1;
 			break;
 		}

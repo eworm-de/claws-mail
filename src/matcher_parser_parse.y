@@ -44,7 +44,6 @@ static MatcherProp *prop;
 static GSList *matchers_list = NULL;
 
 static MatcherList *cond;
-static gint score = 0;
 static GSList *action_list = NULL;
 static FilteringAction *action = NULL;
 

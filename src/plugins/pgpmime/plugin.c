@@ -26,6 +26,7 @@
 #include "intl.h"
 
 #include "version.h"
+#include "common/sylpheed.h"
 #include "sgpgme.h"
 #include "pgpmime.h"
 #include "prefs_gpg.h"

@@ -1,3 +1,57 @@
+2004-10-19 [colin]	0.9.12cvs128.1
+
+	* src/addrbook.c
+	* src/addrcache.c
+	* src/addressbook.c
+	* src/codeconv.c
+	* src/compose.c
+	* src/customheader.c
+	* src/editaddress.c
+	* src/editgroup.c
+	* src/exporthtml.c
+	* src/folder.c
+	* src/folderview.c
+	* src/imap.c
+	* src/jpilot.c
+	* src/main.c
+	* src/matcher_parser_parse.y
+	* src/mbox.c
+	* src/pop.c
+	* src/prefs_account.c
+	* src/prefs_gtk.c
+	* src/prefs_msg_colors.c
+	* src/procheader.c
+	* src/procmime.c
+	* src/procmime.h
+	* src/procmsg.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/common/base64.c
+	* src/common/partial_download.c
+	* src/common/socket.c
+	* src/common/sylpheed.c
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/gtk/pluginwindow.c
+	* src/gtk/quicksearch.c
+	* src/plugins/clamav/clamav_plugin.c
+	* src/plugins/clamav/clamav_plugin.h
+	* src/plugins/clamav/clamav_plugin_gtk.c
+	* src/plugins/pgpmime/passphrase.c
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/plugin.c
+	* src/plugins/pgpmime/prefs_gpg.c
+	* src/plugins/pgpmime/prefs_gpg.h
+	* src/plugins/pgpmime/select-keys.c
+	* src/plugins/pgpmime/sgpgme.c
+	* src/plugins/spamassassin/libspamc.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin.h
+	* src/plugins/spamassassin/spamassassin_gtk.c
+	* src/plugins/trayicon/trayicon.c
+	* src/plugins/trayicon/libeggtrayicon/gtkplugxembed.c
+		Sync with HEAD
+
 2004-10-14 [colin]	0.9.12cvs126.2
 
 	* src/codeconv.c

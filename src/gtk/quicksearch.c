@@ -21,6 +21,8 @@
 #  include "config.h"
 #endif
 
+#include <ctype.h>
+
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 

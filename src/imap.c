@@ -1370,16 +1370,16 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 
 			base = g_basename(new_item->path);
 
-			if (!folder->outbox && !strcasecmp(base, "Sent")) {
+			if (!folder->outbox && !g_strcasecmp(base, "Sent")) {
 				new_item->stype = F_OUTBOX;
 				folder->outbox = new_item;
-			} else if (!folder->draft && !strcasecmp(base, "Drafts")) {
+			} else if (!folder->draft && !g_strcasecmp(base, "Drafts")) {
 				new_item->stype = F_DRAFT;
 				folder->draft = new_item;
-			} else if (!folder->queue && !strcasecmp(base, "Queue")) {
+			} else if (!folder->queue && !g_strcasecmp(base, "Queue")) {
 				new_item->stype = F_QUEUE;
 				folder->queue = new_item;
-			} else if (!folder->trash && !strcasecmp(base, "Trash")) {
+			} else if (!folder->trash && !g_strcasecmp(base, "Trash")) {
 				new_item->stype = F_TRASH;
 				folder->trash = new_item;
 			}
@@ -3188,10 +3188,10 @@ static gint imap_cmd_ok(IMAPSession *session, GPtrArray *argbuf)
 
 	while ((ok = imap_gen_recv(session, &buf))
 	       == IMAP_SUCCESS) {
-		// make sure data is long enough for any substring of buf
+		/* make sure data is long enough for any substring of buf */
 		data = alloca(strlen(buf) + 1);
 
-		// untagged line read
+		/* untagged line read */
 		if (buf[0] == '*' && buf[1] == ' ') {
 			gint num;
 			if (argbuf)
@@ -3208,14 +3208,14 @@ static gint imap_cmd_ok(IMAPSession *session, GPtrArray *argbuf)
 					session->folder_content_changed = TRUE;
 				}
 			}
-		// tagged line with correct tag and OK response found
+		/* tagged line with correct tag and OK response found */
 		} else if ((sscanf(buf, "%d %s", &cmd_num, data) >= 2) &&
 			   (cmd_num == session->cmd_count) &&
 			   !strcmp(data, "OK")) {
 			if (argbuf)
 				g_ptr_array_add(argbuf, g_strdup(buf));
 			break;
-		// everything else
+		/* everything else */
 		} else {
 			ok = IMAP_ERROR;
 			break;
@@ -3241,7 +3241,7 @@ static void imap_gen_send(IMAPSession *session, const gchar *format, ...)
 	session->cmd_count++;
 
 	buf = g_strdup_printf("%d %s\r\n", session->cmd_count, tmp);
-	if (!strncasecmp(tmp, "LOGIN ", 6) && (p = strchr(tmp + 6, ' '))) {
+	if (!g_strncasecmp(tmp, "LOGIN ", 6) && (p = strchr(tmp + 6, ' '))) {
 		*p = '\0';
 		log_print("IMAP4> %d %s ********\n", session->cmd_count, tmp);
 	} else
@@ -3490,7 +3490,7 @@ static gchar *imap_utf8_to_modified_utf7(const gchar *from)
 	Xalloca(norm_utf7, norm_utf7_len + 1, return g_strdup(from));
 	norm_utf7_p = norm_utf7;
 
-#define IS_PRINT(ch) (isprint(ch) && isascii(ch))
+#define IS_PRINT(ch) (isprint(ch) && IS_ASCII(ch))
 
 	while (from_len > 0) {
 		if (*from_tmp == '+') {

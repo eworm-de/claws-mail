@@ -22,6 +22,7 @@
 #include <string.h>
 
 #include "base64.h"
+#include "utils.h"
 
 static const gchar base64char[64] =
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -37,7 +38,7 @@ static const gchar base64val[128] = {
 	41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1
 };
 
-#define BASE64VAL(c)	(isascii((guchar)c) ? base64val[(gint)(c)] : -1)
+#define BASE64VAL(c)	(IS_ASCII(c) ? base64val[(gint) (c)] : -1)
 
 void base64_encode(gchar *out, const guchar *in, gint inlen)
 {

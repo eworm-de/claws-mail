@@ -355,17 +355,14 @@ gint copy_mbox(const gchar *src, const gchar *dest)
 
 void empty_mbox(const gchar *mbox)
 {
-	if (truncate(mbox, 0) < 0) {
-		FILE *fp;
+	FILE *fp;
 
-		FILE_OP_ERROR(mbox, "truncate");
-		if ((fp = fopen(mbox, "wb")) == NULL) {
-			FILE_OP_ERROR(mbox, "fopen");
-			g_warning("can't truncate mailbox to zero.\n");
-			return;
-		}
-		fclose(fp);
+	if ((fp = fopen(mbox, "wb")) == NULL) {
+		FILE_OP_ERROR(mbox, "fopen");
+		g_warning("can't truncate mailbox to zero.\n");
+		return;
 	}
+	fclose(fp);
 }
 
 /* read all messages in SRC, and store them into one MBOX file. */

@@ -204,9 +204,9 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 				g_free(folder_id);
 			}
 			else if (download == POP3_PARTIAL_DLOAD_UNKN)
-				stat = strdup("1");
+				stat = g_strdup("1");
 			else if (download == POP3_PARTIAL_DLOAD_DELE)
-				stat = strdup("0");
+				stat = g_strdup("0");
 			
 			fprintf(fpnew, "%s\t%ld\t%s\n", 
 				uidl, recv_time, stat);
@@ -283,7 +283,7 @@ int partial_unmark(MsgInfo *msginfo)
 
 void partial_delete_old(const gchar *file) 
 {
-	gchar *id = strdup(file);
+	gchar *id = g_strdup(file);
 	gchar *snum = strrchr(file, ':');
 	int num = 0;
 	FolderItem *item = NULL;
@@ -355,7 +355,7 @@ gchar *partial_get_filename(const gchar *server, const gchar *login,
 			}
 		}
 		if (!strcmp(muidl, uidl)) {
-			result = strdup(tmp);
+			result = g_strdup(tmp);
 			break;
 		}
 	}

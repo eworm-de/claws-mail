@@ -37,8 +37,6 @@
 #include "prefs_gpg.h"
 #include "select-keys.h"
 
-extern struct GPGConfig prefs_gpg;
-
 static void idle_function_for_gpgme(void)
 {
 	while (gtk_events_pending())
@@ -235,7 +233,7 @@ GpgmeData sgpgme_data_from_mimeinfo(MimeInfo *mimeinfo)
 	GpgmeData data;
 	
 	gpgme_data_new_from_filepart(&data,
-		mimeinfo->filename,
+		mimeinfo->data.filename,
 		NULL,
 		mimeinfo->offset,
 		mimeinfo->length);
@@ -313,7 +311,7 @@ void sgpgme_init()
 		debug_print("gpgme_engine_version:\n%s\n",
 			    gpgme_get_engine_info());
 
-		if (prefs_gpg.gpg_warning) {
+		if (prefs_gpg_get_config()->gpg_warning) {
 			AlertValue val;
 
 			val = alertpanel_message_with_disable
@@ -322,7 +320,7 @@ void sgpgme_init()
 				   "to be upgraded.\n"
 				   "OpenPGP support disabled."), ALERT_WARNING);
 			if (val & G_ALERTDISABLE)
-				prefs_gpg.gpg_warning = FALSE;
+				prefs_gpg_get_config()->gpg_warning = FALSE;
 		}
 	}
 

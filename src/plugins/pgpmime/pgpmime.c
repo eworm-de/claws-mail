@@ -37,8 +37,6 @@
 #include "prefs_gpg.h"
 #include "passphrase.h"
 
-extern struct GPGConfig prefs_gpg;
-
 typedef struct _PrivacyDataPGP PrivacyDataPGP;
 
 struct _PrivacyDataPGP
@@ -171,7 +169,7 @@ static gint pgpmime_check_signature(MimeInfo *mimeinfo)
 	debug_print("Checking PGP/MIME signature\n");
 	parent = procmime_mimeinfo_parent(mimeinfo);
 
-	fp = fopen(parent->filename, "rb");
+	fp = fopen(parent->data.filename, "rb");
 	g_return_val_if_fail(fp != NULL, SIGNATURE_INVALID);
 	
 	boundary = g_hash_table_lookup(parent->typeparameters, "boundary");
@@ -202,7 +200,7 @@ static SignatureStatus pgpmime_get_sig_status(MimeInfo *mimeinfo)
 	g_return_val_if_fail(data != NULL, SIGNATURE_INVALID);
 
 	if (data->sigstatus == GPGME_SIG_STAT_NONE && 
-	    prefs_gpg.auto_check_signatures)
+	    prefs_gpg_get_config()->auto_check_signatures)
 		pgpmime_check_signature(mimeinfo);
 	
 	return sgpgme_sigstat_gpgme_to_privacy(data->ctx, data->sigstatus);
@@ -215,7 +213,7 @@ static gchar *pgpmime_get_sig_info_short(MimeInfo *mimeinfo)
 	g_return_val_if_fail(data != NULL, g_strdup("Error"));
 
 	if (data->sigstatus == GPGME_SIG_STAT_NONE && 
-	    prefs_gpg.auto_check_signatures)
+	    prefs_gpg_get_config()->auto_check_signatures)
 		pgpmime_check_signature(mimeinfo);
 	
 	return sgpgme_sigstat_info_short(data->ctx, data->sigstatus);
@@ -228,7 +226,7 @@ static gchar *pgpmime_get_sig_info_full(MimeInfo *mimeinfo)
 	g_return_val_if_fail(data != NULL, g_strdup("Error"));
 
 	if (data->sigstatus == GPGME_SIG_STAT_NONE && 
-	    prefs_gpg.auto_check_signatures)
+	    prefs_gpg_get_config()->auto_check_signatures)
 		pgpmime_check_signature(mimeinfo);
 	
 	return sgpgme_sigstat_info_full(data->ctx, data->sigstatus);
@@ -474,8 +472,8 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo)
 	newinfo->type = MIMETYPE_APPLICATION;
 	newinfo->subtype = g_strdup("pgp-signature");
 	newinfo->content = MIMECONTENT_MEM;
-	newinfo->data = g_memdup(sigcontent, len + 1);
-	newinfo->data[len] = '\0';
+	newinfo->data.mem = g_memdup(sigcontent, len + 1);
+	newinfo->data.mem[len] = '\0';
 	g_node_append(sigmultipart->node, newinfo->node);
 
 	g_free(sigcontent);
@@ -560,15 +558,15 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	newinfo->type = MIMETYPE_APPLICATION;
 	newinfo->subtype = g_strdup("pgp-encrypted");
 	newinfo->content = MIMECONTENT_MEM;
-	newinfo->data = g_strdup("Version: 1\n");
+	newinfo->data.mem = g_strdup("Version: 1\n");
 	g_node_append(encmultipart->node, newinfo->node);
 
 	newinfo = procmime_mimeinfo_new();
 	newinfo->type = MIMETYPE_APPLICATION;
 	newinfo->subtype = g_strdup("octet-stream");
 	newinfo->content = MIMECONTENT_MEM;
-	newinfo->data = g_memdup(enccontent, len + 1);
-	newinfo->data[len] = '\0';
+	newinfo->data.mem = g_memdup(enccontent, len + 1);
+	newinfo->data.mem[len] = '\0';
 	g_node_append(encmultipart->node, newinfo->node);
 
 	g_free(enccontent);

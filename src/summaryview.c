@@ -4844,7 +4844,7 @@ static gint func_name(GtkCList *clist,					 \
 	if (!msginfo2->var_name)					 \
 		return -1;						 \
 									 \
-	return strcasecmp(msginfo1->var_name, msginfo2->var_name);	 \
+	return g_strcasecmp(msginfo1->var_name, msginfo2->var_name);	 \
 }
 
 CMP_FUNC_DEF(summary_cmp_by_to, to);
@@ -4886,7 +4886,7 @@ static gint summary_cmp_by_from(GtkCList *clist, gconstpointer ptr1,
 	if (!str2)
  		return -1;
  
-	return strcasecmp(str1, str2);
+	return g_strcasecmp(str1, str2);
 }
  
 static gint summary_cmp_by_simplified_subject

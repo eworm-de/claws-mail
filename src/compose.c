@@ -2208,7 +2208,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 
 	if (content_type) {
 		ainfo->content_type = g_strdup(content_type);
-		if (!strcasecmp(content_type, "message/rfc822")) {
+		if (!g_strcasecmp(content_type, "message/rfc822")) {
 			MsgInfo *msginfo;
 			MsgFlags flags = {0, 0};
 			const gchar *name;
@@ -2321,7 +2321,7 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 		debug_print("First text part found\n");
 	} else if (compose->mode == COMPOSE_REEDIT &&
 		 child->type == MIMETYPE_APPLICATION &&
-		 !strcasecmp(child->subtype, "pgp-encrypted")) {
+		 !g_strcasecmp(child->subtype, "pgp-encrypted")) {
 		AlertValue val;
 		val = alertpanel(_("Encrypted message"),
 				 _("Cannot re-edit an encrypted message. \n"
@@ -3520,7 +3520,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
         mimemsg->type = MIMETYPE_MESSAGE;
         mimemsg->subtype = g_strdup("rfc822");
 	mimemsg->content = MIMECONTENT_MEM;
-	mimemsg->data = compose_get_header(compose);
+	mimemsg->data.mem = compose_get_header(compose);
 
 	/* Create text part MimeInfo */
 	/* get all composed text */
@@ -3537,7 +3537,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 		const gchar *src_codeset;
 
 		out_codeset = conv_get_outgoing_charset_str();
-		if (!strcasecmp(out_codeset, CS_US_ASCII))
+		if (!g_strcasecmp(out_codeset, CS_US_ASCII))
 			out_codeset = CS_ISO_8859_1;
 
 		if (prefs_common.encoding_method == CTE_BASE64)
@@ -3552,7 +3552,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 		src_codeset = CS_UTF_8;
 		/* if current encoding is US-ASCII, set it the same as
 		   outgoing one to prevent code conversion failure */
-		if (!strcasecmp(src_codeset, CS_US_ASCII))
+		if (!g_strcasecmp(src_codeset, CS_US_ASCII))
 			src_codeset = out_codeset;
 
 		debug_print("src encoding = %s, out encoding = %s, transfer encoding = %s\n",
@@ -3590,7 +3590,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 
 	mimetext = procmime_mimeinfo_new();
 	mimetext->content = MIMECONTENT_MEM;
-	mimetext->data = buf;
+	mimetext->data.mem = buf;
 	mimetext->type = MIMETYPE_TEXT;
 	mimetext->subtype = g_strdup("plain");
 	g_hash_table_insert(mimetext->typeparameters, g_strdup("charset"),
@@ -3934,7 +3934,7 @@ static void compose_add_attachments(Compose *compose, MimeInfo *parent)
 	     row++) {
 		mimepart = procmime_mimeinfo_new();
 		mimepart->content = MIMECONTENT_FILE;
-		mimepart->filename = g_strdup(ainfo->file);
+		mimepart->data.filename = g_strdup(ainfo->file);
 		mimepart->offset = 0;
 
 		stat(ainfo->file, &statbuf);
@@ -4308,7 +4308,7 @@ static void compose_generate_msgid(gchar *buf, gint len)
 		   lt->tm_year + 1900, lt->tm_mon + 1,
 		   lt->tm_mday, lt->tm_hour,
 		   lt->tm_min, lt->tm_sec,
-		   (guint)random(), addr);
+		   (guint) rand(), addr);
 
 	debug_print("generated Message-ID: %s\n", buf);
 

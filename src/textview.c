@@ -372,7 +372,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	if ((mimeinfo->type == MIMETYPE_MESSAGE) && !g_strcasecmp(mimeinfo->subtype, "rfc822")) {
 		FILE *fp;
 
-		fp = fopen(mimeinfo->filename, "rb");
+		fp = fopen(mimeinfo->data.filename, "rb");
 		fseek(fp, mimeinfo->offset, SEEK_SET);
 		headers = textview_scan_header(textview, fp);
 		if (headers) {
@@ -422,7 +422,7 @@ static void recursive_add_parts(TextView *textview, GNode *node)
             (mimeinfo->type != MIMETYPE_MESSAGE))
                 return;
         
-        if (strcasecmp(mimeinfo->subtype, "alternative") == 0) {
+        if (g_strcasecmp(mimeinfo->subtype, "alternative") == 0) {
                 GNode * prefered_body;
                 int prefered_score;
                 
@@ -445,7 +445,7 @@ static void recursive_add_parts(TextView *textview, GNode *node)
                                 score = 2;
                         
                         if (submime->subtype != NULL) {
-                                if (strcasecmp(submime->subtype, "plain") == 0)
+                                if (g_strcasecmp(submime->subtype, "plain") == 0)
                                         score = 3;
                         }
                         
@@ -570,7 +570,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 		}
 		g_free(filename);
 	} else {
-		tmpfp = fopen(mimeinfo->filename, "rb");
+		tmpfp = fopen(mimeinfo->data.filename, "rb");
 		fseek(tmpfp, mimeinfo->offset, SEEK_SET);
 		debug_print("Viewing text content of type: %s (length: %d)\n", mimeinfo->subtype, mimeinfo->length);
 		while ((fgets(buf, sizeof(buf), tmpfp) != NULL) && 
@@ -600,7 +600,7 @@ static void textview_show_html(TextView *textview, FILE *fp,
 				 * if still inside an <a>, but already parsed past HREF */
 				str = strtok(str, " ");
 				if (str) { 
-					parser->href = strdup(str);
+					parser->href = g_strdup(str);
 					/* the URL may (or not) be followed by the
 					 * referenced text */
 					str = strtok(NULL, "");
@@ -647,7 +647,7 @@ static gboolean get_uri_part(const gchar *start, const gchar *scanpos,
 	/* find end point of URI */
 	for (ep_ = scanpos; *ep_ != '\0'; ep_++) {
 		if (!isgraph(*(const guchar *)ep_) ||
-		    !isascii(*(const guchar *)ep_) ||
+		    !IS_ASCII(*(const guchar *)ep_) ||
 		    strchr("()<>\"", *ep_))
 			break;
 	}
@@ -679,14 +679,14 @@ static gchar *make_uri_string(const gchar *bp, const gchar *ep)
 
 /* valid mail address characters */
 #define IS_RFC822_CHAR(ch) \
-	(isascii(ch) && \
+	(IS_ASCII(ch) && \
 	 (ch) > 32   && \
 	 (ch) != 127 && \
 	 !isspace(ch) && \
 	 !strchr("(),;<>\"", (ch)))
 
 /* alphabet and number within 7bit ASCII */
-#define IS_ASCII_ALNUM(ch)	(isascii(ch) && isalnum(ch))
+#define IS_ASCII_ALNUM(ch)	(IS_ASCII(ch) && isalnum(ch))
 #define IS_QUOTE(ch) ((ch) == '\'' || (ch) == '"')
 
 static GHashTable *create_domain_tab(void)

@@ -926,7 +926,7 @@ handle_modality_on (GtkPlugXEmbed *plug)
       gtk_grab_add (plug->modality_window);
     }
 #else
-  // g_print("Modality On for plug %p\n", plug);
+  /* g_print("Modality On for plug %p\n", plug); */
 #endif
 }
 
@@ -940,7 +940,7 @@ handle_modality_off (GtkPlugXEmbed *plug)
       plug->modality_window = NULL;
     }
 #else
-  // g_print("Modality Off for plug %p\n", plug);
+  /* g_print("Modality Off for plug %p\n", plug); */
 #endif
 }
 
