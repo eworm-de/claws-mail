@@ -66,7 +66,7 @@ void filter_message(GSList * filtering_list, FolderItem * item,
 void filter_incoming_message(FolderItem *default_folder, const gchar *file_name, 
 			     GHashTable *folder_table);
 
-gchar * filteringaction_to_string(FilteringAction * action);
+gchar * filteringaction_to_string(gchar *dest, gint destlen, FilteringAction * action);
 void prefs_filtering_write_config(void);
 void prefs_filtering_read_config(void);
 gchar * filteringprop_to_string(FilteringProp * prop);

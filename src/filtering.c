@@ -427,9 +427,10 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 			folder_find_item_from_identifier(action->destination);
 		if (!dest_folder)
 			return FALSE;
-
-		if (folder_item_move_msg(dest_folder, info) == -1)
+		
+		if (folder_item_move_msg(dest_folder, info) == -1) {
 			return FALSE;
+		}	
 
 		/* WRONG: can not update the mark, because the message has 
 		 * been moved. info pertains to original location. 
@@ -479,7 +480,6 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 						    GINT_TO_POINTER(1));
 			}
 		}
-			
 		return TRUE;
 
 	case MATCHACTION_DELETE:
@@ -602,22 +602,14 @@ static gboolean filteringprop_apply(FilteringProp * filtering, MsgInfo * info,
 				    GHashTable *folder_table)
 {
 	if (matcherlist_match(filtering->matchers, info)) {
-		gint result;
-		gchar * action_str;
+		gboolean result;
+		gchar   *action_str;
+		gchar    buf[256]; 
 
-		result = TRUE;
-
-		result = filteringaction_apply(filtering->action, info,
-					       folder_table);
-		action_str =
-			filteringaction_to_string(filtering->action);
-		if (!result) {
-			g_warning(_("action %s could not be applied"),
-				  action_str);
-		}
-		else {
-			debug_print(_("message %i %s..."),
-				      info->msgnum, action_str);
+		if (FALSE == (result = filteringaction_apply(filtering->action, info,
+					       folder_table))) {
+			action_str = filteringaction_to_string(buf, sizeof buf, filtering->action);
+			g_warning(_("action %s could not be applied"), action_str);
 		}
 
 		g_free(action_str);
@@ -1151,16 +1143,10 @@ void prefs_filtering_read_config(void)
 }
 */
 
-gchar * filteringaction_to_string(FilteringAction * action)
+gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *action)
 {
-	gchar * command_str;
-	gint i;
-	gchar * account_id_str;
-	gchar * labelcolor_str;
+	gchar *command_str;
 
-	/* FIXME: use g_sprintf() throughout */
-
-	command_str = NULL;
 	command_str = get_matchparser_tab_str(action->type);
 
 	if (command_str == NULL)
@@ -1170,26 +1156,25 @@ gchar * filteringaction_to_string(FilteringAction * action)
 	case MATCHACTION_MOVE:
 	case MATCHACTION_COPY:
 	case MATCHACTION_EXECUTE:
-		return g_strconcat(command_str, " \"", action->destination,
-				   "\"", NULL);
+		g_snprintf(dest, destlen, "%s \"%s\"", command_str, action->destination);
+		return dest;
 
 	case MATCHACTION_DELETE:
 	case MATCHACTION_MARK:
 	case MATCHACTION_UNMARK:
 	case MATCHACTION_MARK_AS_READ:
 	case MATCHACTION_MARK_AS_UNREAD:
-		return g_strdup(command_str);
-		break;
+		g_snprintf(dest, destlen, "%s", command_str);
+		return dest;
 
 	case MATCHACTION_FORWARD:
 	case MATCHACTION_FORWARD_AS_ATTACHMENT:
-		account_id_str = itos(action->account_id);
-		return g_strconcat(command_str, " ", account_id_str,
-				   " \"", action->destination, "\"", NULL);
+		g_snprintf(dest, destlen, "%s %d \"%s\"", command_str, action->account_id, action->destination); 
+		return dest; 
 
 	case MATCHACTION_COLOR:
-		labelcolor_str = itos(action->labelcolor);
-		return g_strconcat(command_str, " ", labelcolor_str, NULL);  
+		g_snprintf(dest, destlen, "%s %d", command_str, action->labelcolor);
+		return dest;  
 
 	default:
 		return NULL;
@@ -1198,25 +1183,23 @@ gchar * filteringaction_to_string(FilteringAction * action)
 
 gchar * filteringprop_to_string(FilteringProp * prop)
 {
-	gchar * list_str;
-	gchar * action_str;
-	gchar * filtering_str;
+	gchar *list_str;
+	gchar *action_str;
+	gchar *filtering_str;
+	gchar  buf[256];
 
-	action_str = filteringaction_to_string(prop->action);
+	action_str = filteringaction_to_string(buf, sizeof buf, prop->action);
 
 	if (action_str == NULL)
 		return NULL;
 
 	list_str = matcherlist_to_string(prop->matchers);
 
-	if (list_str == NULL) {
-		g_free(action_str);
+	if (list_str == NULL)
 		return NULL;
-	}
 
 	filtering_str = g_strconcat(list_str, " ", action_str, NULL);
 	g_free(list_str);
-	g_free(action_str);
 
 	return filtering_str;
 }

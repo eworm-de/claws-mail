@@ -1,3 +1,8 @@
+2001-11-18 [alfons]	0.6.5claws19
+
+	* src/filtering.[ch]
+		clean up & plug leaks
+
 2001-11-18 [paul]	0.6.5claws18
 
 	* sync with sylpheed 0.6.5cvs9
