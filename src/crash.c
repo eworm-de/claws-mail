@@ -48,6 +48,7 @@
 #ifdef SIGTERM
 #include "main.h"
 #endif
+#include "sylpheed.h"
 #include "intl.h"
 #include "crash.h"
 #include "utils.h"

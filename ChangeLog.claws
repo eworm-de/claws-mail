@@ -1,3 +1,8 @@
+2005-01-23 [holger]	1.0.0cvs9
+
+	* src/crash.c
+		Include missing header file
+
 2005-01-22 [colin]	1.0.0cvs8
 
 	* src/summaryview.c
