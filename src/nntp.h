@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,15 @@
 
 typedef struct _NNTPSockInfo	NNTPSockInfo;
 
+struct _NNTPSockInfo
+{
+	SockInfo *sock;
+
+	gchar *userid;
+	gchar *passwd;
+	gboolean auth_failed;
+};
+
 #define NN_SUCCESS	0
 #define NN_SOCKET	2
 #define NN_AUTHFAIL	3
@@ -36,33 +45,54 @@ typedef struct _NNTPSockInfo	NNTPSockInfo;
 
 #define NNTPBUFSIZE	8192
 
-struct _NNTPSockInfo
-{
-	SockInfo *sock;
-	gchar *userid;
-	gchar *passwd;
-	gboolean auth_failed;
-};
-
-NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf);
-NNTPSockInfo *nntp_open_auth(const gchar *server, gushort port, gchar *buf,
-			     const gchar *userid, const gchar *passwd);
-void nntp_close(NNTPSockInfo *sock);
-gint nntp_group(NNTPSockInfo *sock, const gchar *group,
-		gint *num, gint *first, gint *last);
-gint nntp_get_article(NNTPSockInfo *sock, const gchar *cmd, gint num, gchar **msgid);
-gint nntp_article(NNTPSockInfo *sock, gint num, gchar **msgid);
-gint nntp_body(NNTPSockInfo *sock, gint num, gchar **msgid);
-gint nntp_head(NNTPSockInfo *sock, gint num, gchar **msgid);
-gint nntp_stat(NNTPSockInfo *sock, gint num, gchar **msgid);
-gint nntp_next(NNTPSockInfo *sock, gint *num, gchar **msgid);
-gint nntp_xover(NNTPSockInfo *sock, gint first, gint last);
-gint nntp_post(NNTPSockInfo *sock, FILE *fp);
-gint nntp_newgroups(NNTPSockInfo *sock);
-gint nntp_newnews(NNTPSockInfo *sock);
-gint nntp_mode(NNTPSockInfo *sock, gboolean stream);
-gint nntp_ok(NNTPSockInfo *sock, gchar *argbuf);
-gint nntp_list(NNTPSockInfo *sock);
-gint nntp_xhdr(NNTPSockInfo *sock, gchar * header, gint first, gint last);
+NNTPSockInfo *nntp_open		(const gchar	*server,
+				 gushort	 port,
+				 gchar		*buf);
+NNTPSockInfo *nntp_open_auth	(const gchar	*server,
+				 gushort	 port,
+				 gchar		*buf,
+				 const gchar	*userid,
+				 const gchar	*passwd);
+void nntp_close			(NNTPSockInfo	*sock);
+gint nntp_group			(NNTPSockInfo	*sock,
+				 const gchar	*group,
+				 gint		*num,
+				 gint		*first,
+				 gint		*last);
+gint nntp_get_article		(NNTPSockInfo	*sock,
+				 const gchar	*cmd,
+				 gint		 num,
+				 gchar	       **msgid);
+gint nntp_article		(NNTPSockInfo	*sock,
+				 gint		 num,
+				 gchar	       **msgid);
+gint nntp_body			(NNTPSockInfo	*sock,
+				 gint		 num,
+				 gchar	       **msgid);
+gint nntp_head			(NNTPSockInfo	*sock,
+				 gint		 num,
+				 gchar	       **msgid);
+gint nntp_stat			(NNTPSockInfo	*sock,
+				 gint		 num,
+				 gchar	       **msgid);
+gint nntp_next			(NNTPSockInfo	*sock,
+				 gint		*num,
+				 gchar	       **msgid);
+gint nntp_xover			(NNTPSockInfo	*sock,
+				 gint		 first,
+				 gint		 last);
+gint nntp_xhdr			(NNTPSockInfo	*sock,
+				 const gchar	*header,
+				 gint		 first,
+				 gint		 last);
+gint nntp_list			(NNTPSockInfo	*sock);
+gint nntp_post			(NNTPSockInfo	*sock,
+				 FILE		*fp);
+gint nntp_newgroups		(NNTPSockInfo	*sock);
+gint nntp_newnews		(NNTPSockInfo	*sock);
+gint nntp_mode			(NNTPSockInfo	*sock,
+				 gboolean	 stream);
+gint nntp_ok			(NNTPSockInfo	*sock,
+				 gchar		*argbuf);
 
 #endif /* __NNTP_H__ */

@@ -1,3 +1,13 @@
+2001-05-22 [paul]
+
+        0.4.99claws2
+
+        * sync with sylpheed 0.4.99cvs2
+                * src/news.[ch]
+                * src/nntp.[ch]
+                * INSTALL
+                * INSTALL.jp
+
 2001-05-22 [alfons]
 
 	* src/summaryview.c: bugfixed a premature assignment in  summaryview_add_sender_to_cb()
@@ -69,7 +79,7 @@
 
         0.4.99claws1
 
-        *sync with sylpheed 0.4.99cvs1
+        * sync with sylpheed 0.4.99cvs1
 
 2001-05-18 [hoa]
 

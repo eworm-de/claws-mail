@@ -26,6 +26,7 @@ o RedHat Linux 6.0
 o RedHat Linux 6.1 + Helix GNOME (glibc 2.1.x)
 o RedHat Linux 6.2 / 6.2J (glibc 2.1.x)
 o RedHat Linux 7.0 / 7.0J
+o RedHat Linux 7.1
 o LinuxPPC2000 + 雪風(日本語化 kit)
 o Linux2000G (Intel / PPC)
 o HOLON Linux 2.0 (Intel / PPC)
@@ -38,7 +39,7 @@ o Slackware 7.1
 o Linux Mandrake 7.0
 o Linux Mandrake 7.1
 o Linux Mandrake 7.2
-o Linux Mandrake 8.0 beta
+o Linux Mandrake 8.0
 o SuSE Linux 6.3 (glibc 2.1.2)
 o SuSE Linux 6.4
 o SuSE Linux 7.0
@@ -86,7 +87,8 @@ Password: [パスワードを入力]
 マルチスレッド対応を有効にしたい場合は、 ./configure の後に
 --enable-threads オプションを追加してください。
 
-注意: マルチスレッド対応はまだ実験段階であり、正しく動作しません。
+警告: マルチスレッド対応はまだ実験段階であり、正しく動作しません。
+      hack したいのでなければ、使用しないでください。
 
 IPv6 対応を有効にしたい場合は、 ./configure の後に
 --enable-ipv6 オプションを追加してください。

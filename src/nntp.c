@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,23 +32,28 @@
 
 static gint verbose = 1;
 
-static void nntp_gen_send(NNTPSockInfo *sock, const gchar *format, ...);
-static gint nntp_gen_recv(NNTPSockInfo *sock, gchar *buf, gint size);
-static gint nntp_gen_command(NNTPSockInfo *sock, gchar *argbuf,
-			     const gchar *format, ...);
+static void nntp_gen_send	(NNTPSockInfo	*sock,
+				 const gchar	*format,
+				 ...);
+static gint nntp_gen_recv	(NNTPSockInfo	*sock,
+				 gchar		*buf,
+				 gint		 size);
+static gint nntp_gen_command	(NNTPSockInfo	*sock,
+				 gchar		*argbuf,
+				 const gchar	*format,
+				 ...);
 
 NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf)
 {
 	SockInfo *sock;
 	NNTPSockInfo *nntp_sock;
 
-	nntp_sock = g_new0(NNTPSockInfo, 1);
 	if ((sock = sock_connect(server, port)) == NULL) {
 		log_warning(_("Can't connect to NNTP server: %s:%d\n"),
 			    server, port);
-		g_free(nntp_sock);
 		return NULL;
 	}
+	nntp_sock = g_new0(NNTPSockInfo, 1);
 	nntp_sock->sock = sock;
 
 	if (nntp_ok(nntp_sock, buf) == NN_SUCCESS)
@@ -66,22 +71,21 @@ NNTPSockInfo *nntp_open_auth(const gchar *server, gushort port, gchar *buf,
 	NNTPSockInfo *sock;
 
 	sock = nntp_open(server, port, buf);
-	if (!sock)
-		return NULL;
+	if (!sock) return NULL;
+
 	sock->userid = g_strdup(userid);
 	sock->passwd = g_strdup(passwd);
+
 	return sock;
 }
 
-
 void nntp_close(NNTPSockInfo *sock)
 {
-	if (!sock)
-		return;
+	if (!sock) return;
 
 	sock_close(sock->sock);
-	g_free(sock->passwd);
 	g_free(sock->userid);
+	g_free(sock->passwd);
 	g_free(sock);
 }
 
@@ -106,7 +110,8 @@ gint nntp_group(NNTPSockInfo *sock, const gchar *group,
 	return NN_SUCCESS;
 }
 
-gint nntp_get_article(NNTPSockInfo *sock, const gchar *cmd, gint num, gchar **msgid)
+gint nntp_get_article(NNTPSockInfo *sock, const gchar *cmd, gint num,
+		      gchar **msgid)
 {
 	gint ok;
 	gchar buf[NNTPBUFSIZE];
@@ -187,7 +192,7 @@ gint nntp_xover(NNTPSockInfo *sock, gint first, gint last)
 	return NN_SUCCESS;
 }
 
-gint nntp_xhdr(NNTPSockInfo *sock, gchar * header, gint first, gint last)
+gint nntp_xhdr(NNTPSockInfo *sock, const gchar *header, gint first, gint last)
 {
 	gint ok;
 	gchar buf[NNTPBUFSIZE];
@@ -197,6 +202,11 @@ gint nntp_xhdr(NNTPSockInfo *sock, gchar * header, gint first, gint last)
 		return ok;
 
 	return NN_SUCCESS;
+}
+
+gint nntp_list(NNTPSockInfo *sock)
+{
+	return nntp_gen_command(sock, NULL, "LIST");
 }
 
 gint nntp_post(NNTPSockInfo *sock, FILE *fp)
@@ -245,7 +255,7 @@ gint nntp_mode(NNTPSockInfo *sock, gboolean stream)
 	gint ok;
 
 	if (sock->auth_failed)
-		return NN_AUTHREQ; /* force reconnection */
+		return NN_AUTHREQ;
 
 	ok = nntp_gen_command(sock, NULL, "MODE %s",
 			      stream ? "STREAM" : "READER");
@@ -269,6 +279,7 @@ gint nntp_ok(NNTPSockInfo *sock, gchar *argbuf)
 
 			if (!strncmp(buf, "381 ", 4))
 				return NN_AUTHCONT;
+
 			return NN_SUCCESS;
 		} else if (!strncmp(buf, "480 ", 4))
 			return NN_AUTHREQ;
@@ -320,7 +331,7 @@ static gint nntp_gen_command(NNTPSockInfo *sock, gchar *argbuf,
 	gint ok;
 
 	va_start(args, format);
-	g_vsnprintf(buf, sizeof(buf) - 2, format, args);
+	g_vsnprintf(buf, sizeof(buf), format, args);
 	va_end(args);
 
 	nntp_gen_send(sock, "%s", buf);
@@ -330,6 +341,7 @@ static gint nntp_gen_command(NNTPSockInfo *sock, gchar *argbuf,
 			sock->auth_failed = TRUE;
 			return ok;
 		}
+
 		nntp_gen_send(sock, "AUTHINFO USER %s", sock->userid);
 		ok = nntp_ok(sock, NULL);
 		if (ok == NN_AUTHCONT) {
@@ -340,18 +352,10 @@ static gint nntp_gen_command(NNTPSockInfo *sock, gchar *argbuf,
 			sock->auth_failed = TRUE;
 			return ok;
 		}
+
 		nntp_gen_send(sock, "%s", buf);
 		ok = nntp_ok(sock, argbuf);
 	}
+
 	return ok;
-}
-
-/*
-  nntp_list sends the command "LIST" to the news server,
-  a function is needed to read the newsgroups list.
- */
-
-gint nntp_list(NNTPSockInfo *sock)
-{
-	return nntp_gen_command(sock, NULL, "LIST");
 }

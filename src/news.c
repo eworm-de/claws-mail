@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,11 @@
 #include "inputdialog.h"
 #include "alertpanel.h"
 
+static Session *news_session_new	 (const gchar	*server,
+					  gushort	 port,
+					  const gchar	*userid,
+					  const gchar	*passwd);
+
 static gint news_get_article_cmd	 (NNTPSession	*session,
 					  const gchar	*cmd,
 					  gint		 num,
@@ -59,15 +64,15 @@ static gint news_get_header		 (NNTPSession	*session,
 					  gchar		*filename);
 
 static gint news_select_group		 (NNTPSession	*session,
-					  const char	*group);
+					  const gchar	*group);
 static GSList *news_get_uncached_articles(NNTPSession	*session,
 					  FolderItem	*item,
 					  gint		 cache_last,
 					  gint		*rfirst,
 					  gint		*rlast);
 static MsgInfo *news_parse_xover	 (const gchar	*xover_str);
-static gchar * news_parse_xhdr           (const gchar *xover_str,
-					  MsgInfo * info);
+static gchar *news_parse_xhdr		 (const gchar	*xhdr_str,
+					  MsgInfo	*msginfo);
 static GSList *news_delete_old_article	 (GSList	*alist,
 					  gint		 first);
 static void news_delete_all_article	 (FolderItem	*item);
@@ -113,20 +118,16 @@ void news_session_destroy(NNTPSession *session)
 	g_free(session->group);
 }
 
-static gchar *news_query_password(const gchar *server,
-				  const gchar *user)
+static gchar *news_query_password(const gchar *server, const gchar *user)
 {
 	gchar *message;
 	gchar *pass;
 
 	message = g_strdup_printf(_("Input password for %s on %s:"),
 				  user, server);
-
-	pass = input_dialog_with_invisible(_("Input password"),
-					   message, NULL);
+	pass = input_dialog_with_invisible(_("Input password"), message, NULL);
 	g_free(message);
-/*  	manage_window_focus_in(inc_dialog->mainwin->window, */
-/*  			       NULL, NULL); */
+
 	return pass;
 }
 
@@ -134,24 +135,21 @@ static Session *news_session_new_for_folder(Folder *folder)
 {
 	Session *session;
 	PrefsAccount *ac;
-	const gchar *userid;
-	gchar *passwd;
+	const gchar *userid = NULL;
+	gchar *passwd = NULL;
 
 	ac = folder->account;
 	if (ac->use_nntp_auth && ac->userid && ac->userid[0]) {
 		userid = ac->userid;
 		if (ac->passwd && ac->passwd[0])
 			passwd = g_strdup(ac->passwd);
-		else {
+		else
 			passwd = news_query_password(ac->nntp_server, userid);
-			if (!passwd)
-				userid = NULL;
-		}
-	} else {
-		userid = passwd = NULL;
 	}
+
 	session = news_session_new(ac->nntp_server, 119, userid, passwd);
 	g_free(passwd);
+
 	return session;
 }
 
@@ -341,26 +339,24 @@ static gint news_get_header(NNTPSession *session, gint num, gchar *filename)
  * news_select_group:
  * @session: Active NNTP session.
  * @group: Newsgroup name.
- * 
+ *
  * Select newsgroup @group with the GROUP command if it is not already
  * selected in @session.
- * 
+ *
  * Return value: NNTP result code.
  **/
-static gint news_select_group(NNTPSession *session,
-			      const char *group)
+static gint news_select_group(NNTPSession *session, const gchar *group)
 {
 	gint ok;
 	gint num, first, last;
 
-	if (g_strcasecmp(session->group, group) == 0)
+	if (session->group && g_strcasecmp(session->group, group) == 0)
 		return NN_SUCCESS;
 
 	g_free(session->group);
 	session->group = NULL;
 
 	ok = nntp_group(session->nntp_sock, group, &num, &first, &last);
-
 	if (ok == NN_SUCCESS)
 		session->group = g_strdup(group);
 
@@ -395,7 +391,6 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 		log_warning(_("can't set group: %s\n"), item->path);
 		return NULL;
 	}
-
 	session->group = g_strdup(item->path);
 
 	/* calculate getting overview range */
@@ -414,6 +409,9 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 	} else
 		begin = cache_last + 1;
 	end = last;
+
+	if (rfirst) *rfirst = first;
+	if (rlast)  *rlast  = last;
 
 	if (prefs_common.max_articles > 0 &&
 	    end - begin + 1 > prefs_common.max_articles)
@@ -454,61 +452,54 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 
 	if (nntp_xhdr(session->nntp_sock, "to", begin, end) != NN_SUCCESS) {
 		log_warning(_("can't get xhdr\n"));
-		return NULL;
+		return newlist;
 	}
 
 	llast = newlist;
 
 	for (;;) {
-		gchar * value;
-		
 		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-			log_warning(_("error occurred while getting xover.\n"));
+			log_warning(_("error occurred while getting xhdr.\n"));
 			return newlist;
 		}
 
 		if (buf[0] == '.' && buf[1] == '\r') break;
+		if (!llast) {
+			g_warning("llast == NULL\n");
+			continue;
+		}
 
-		msginfo = (MsgInfo *) llast->data;
-
-		value = news_parse_xhdr(buf, msginfo);
-
-		if (value)
-			msginfo->to = value;
+		msginfo = (MsgInfo *)llast->data;
+		msginfo->to = news_parse_xhdr(buf, msginfo);
 
 		llast = llast->next;
-		
 	}
 
 	if (nntp_xhdr(session->nntp_sock, "cc", begin, end) != NN_SUCCESS) {
 		log_warning(_("can't get xhdr\n"));
-		return NULL;
+		return newlist;
 	}
 
 	llast = newlist;
 
 	for (;;) {
-		gchar * value;
-		
 		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-			log_warning(_("error occurred while getting xover.\n"));
+			log_warning(_("error occurred while getting xhdr.\n"));
 			return newlist;
 		}
 
 		if (buf[0] == '.' && buf[1] == '\r') break;
+		if (!llast) {
+			g_warning("llast == NULL\n");
+			continue;
+		}
 
-		msginfo = (MsgInfo *) llast->data;
-
-		value = news_parse_xhdr(buf, msginfo);
-
-		if (value)
-			msginfo->cc = value;
+		msginfo = (MsgInfo *)llast->data;
+		msginfo->cc = news_parse_xhdr(buf, msginfo);
 
 		llast = llast->next;
 	}
 
-	if (rfirst) *rfirst = first;
-	if (rlast)  *rlast  = last;
 	return newlist;
 }
 
@@ -581,23 +572,21 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
 	return msginfo;
 }
 
-static gchar * news_parse_xhdr(const gchar *xover_str, MsgInfo * info)
+static gchar *news_parse_xhdr(const gchar *xhdr_str, MsgInfo *msginfo)
 {
 	gchar buf[NNTPBUFSIZE];
 	gchar *p;
+	gchar *tmp;
 	gint num;
-	gchar * tmp;
 
-	p = strchr(xover_str, ' ');
+	p = strchr(xhdr_str, ' ');
 	if (!p)
 		return NULL;
 	else
 		p++;
 
-	num = atoi(xover_str);
-
-	if (info->msgnum != num)
-		return NULL;
+	num = atoi(xhdr_str);
+	if (msginfo->msgnum != num) return NULL;
 
 	tmp = strchr(p, '\r');
 	if (!tmp) tmp = strchr(p, '\n');
