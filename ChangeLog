@@ -1,5 +1,9 @@
 2002-08-23
 
+	* updated NEWS.
+
+2002-08-23
+
 	* src/alertpanel.c: alertpanel_create(): modified the layout.
 	* src/rfc2015.c: check_signature(): don't abort on error.
 

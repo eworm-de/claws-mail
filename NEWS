@@ -1,5 +1,31 @@
 Changes of Sylpheed
 
+* 0.8.2
+
+    * GnuPG improvements and fix
+      o The line endings are canonicalized correctly before signing.
+
+        WARNING: don't sign messages with Sylpheed prior to this version
+                 since they didn't fully conform RFC3156 and may cause
+                 incompatibility between other MUAs.
+
+      o The feature to store passphrase in memory temporarily has been
+        implemented.
+      o The ascii-armored encryption and clear text signing has been
+        implemented.
+    * Line-wrapping improvements and fix
+      o The lines that are not quoted will be wrapped correctly.
+      o The cursor movement on auto-wrapping has been fixed.
+      o Flickers on auto-wrapping has been repressed.
+    * Socket I/O timeout has been implemented.
+    * The '--attach' command line option has been implemented.
+    * Automatic cache expiration for News has been implemented.
+    * Time stamp has been added to the log messages.
+    * Temporary files are created in home directory.
+    * Folder and summary view refresh on incorporation has been fixed.
+    * The correct FQDN will be returned to server.
+    * Some major memory leaks have been fixed.
+
 * 0.8.1
 
     * The regression of Japanese code conversion have been fixed.
