@@ -139,17 +139,14 @@ static gboolean procmsg_ignore_node(GNode *node, gpointer data)
 
 /* CLAWS subject threading:
   
-  in the first round it inserts subject lines in a hash 
-  table. a duplicate subject line replaces the one in
-  the table only if its older. (this round should actually 
-  create a list of all duplicate subject lines)
+  in the first round it inserts subject lines in a 
+  relation (subject <-> node)
 
   the second round finishes the threads by attaching
-  duplicate subject lines to the one found in the
-  hash table. as soon as a subject line is found that
-  is too old, that one becomes the new parent for
-  the next iteration. (this fails when a parent arrived
-  later than its child.)
+  matching subject lines to the one found in the
+  relation. will use the oldest node with the same
+  subject that is not more then thread_by_subject_max_age
+  days old (see subject_relation_lookup)
 */  
 
 static void subject_relation_insert(GRelation *relation, GNode *node)
