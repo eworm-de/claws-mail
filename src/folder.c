@@ -704,13 +704,10 @@ void folder_write_list(void)
 	path = folder_get_list_path();
 	if ((pfile = prefs_write_open(path)) == NULL) return;
 
-	fprintf(pfile->fp, "<?xml version=\"1.0\" encoding=\"%s\"?>\n",
-		conv_get_current_charset_str());
+	xml_file_put_xml_decl(pfile->fp);
 	tag = xml_tag_new("folderlist");
 
-	xmlnode = g_new0(XMLNode, 1);
-	xmlnode->tag = tag;
-	xmlnode->element = NULL;
+	xmlnode = xml_node_new(tag, NULL);
 
 	rootnode = g_node_new(xmlnode);
 
@@ -2978,7 +2975,6 @@ static gchar *folder_get_list_path(void)
 static gpointer folder_item_to_xml(gpointer nodedata, gpointer data)
 {
 	FolderItem *item = (FolderItem *) nodedata;
-	XMLNode *xmlnode;
 	XMLTag *tag;
 
 	g_return_val_if_fail(item != NULL, NULL);
@@ -2988,11 +2984,7 @@ static gpointer folder_item_to_xml(gpointer nodedata, gpointer data)
 	else
 		tag = folder_item_get_xml(item->folder, item);
 
-	xmlnode = g_new0(XMLNode, 1);
-	xmlnode->tag = tag;
-	xmlnode->element = NULL;
-
-	return xmlnode;
+	return xml_node_new(tag, NULL);;
 }
 
 static GNode *folder_get_xml_node(Folder *folder)
@@ -3010,9 +3002,7 @@ static GNode *folder_get_xml_node(Folder *folder)
 
 	xml_tag_add_attr(tag, xml_attr_new("type", folder->klass->idstr));
 
-	xmlnode = g_new0(XMLNode, 1);
-	xmlnode->tag = tag;
-	xmlnode->element = NULL;
+	xmlnode = xml_node_new(tag, NULL);
 
 	node = g_node_new(xmlnode);
 	if (folder->node->children) {

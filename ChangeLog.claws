@@ -1,3 +1,10 @@
+2004-08-04 [christoph]	0.9.12cvs42
+
+	* configure.ac
+		add missing AC_DEFINE(USE_OPENSSL, ...)
+	* src/folder.c
+		use new xml_node_new() function
+
 2004-08-03 [christoph]	0.9.12cvs41
 
 	* src/folder.c
