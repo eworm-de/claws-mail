@@ -1,3 +1,9 @@
+2002-11-12 [colin] 	0.8.5claws134
+
+	* src/msgcache.c
+		Reverse last commit which had performance 
+		problems, but still reverse the list
+
 2002-11-12 [colin]	0.8.5claws133
 
 	* src/msgcache.c

@@ -449,7 +449,7 @@ static void msgcache_get_msg_list_func(gpointer key, gpointer value, gpointer us
 	GSList **listptr = user_data;
 	MsgInfo *msginfo = value;
 
-	*listptr = g_slist_append(*listptr, procmsg_msginfo_new_ref(msginfo));
+	*listptr = g_slist_prepend(*listptr, procmsg_msginfo_new_ref(msginfo));
 }
 
 GSList *msgcache_get_msg_list(MsgCache *cache)
@@ -460,6 +460,8 @@ GSList *msgcache_get_msg_list(MsgCache *cache)
 
 	g_hash_table_foreach((GHashTable *)cache->msgnum_table, msgcache_get_msg_list_func, (gpointer)&msg_list);	
 	cache->last_access = time(NULL);
+	
+	msg_list = g_slist_reverse(msg_list);
 
 	return msg_list;
 }
