@@ -1185,7 +1185,9 @@ void procmime_parse_mimepart(MimeInfo *parent,
 	mimeinfo->offset = offset;
 	mimeinfo->length = length;
 
-	if (content_type != NULL) {
+	/* RFC 2045, page 13 says that the mime subtype is MANDATORY; if
+	 * it's not available than don't parse */
+	if (content_type != NULL && strchr(content_type, '/')) {
 		procmime_parse_content_type(content_type, mimeinfo);
 	} else {
 		mimeinfo->type = MIMETYPE_TEXT;

@@ -1,3 +1,8 @@
+2003-12-03 [alfons]	0.9.7claws14
+
+	* src/procmime.c
+		catch invalid Content-Type with no subtype
+
 2003-12-03 [alfons]	0.9.7claws13
 
 	* src/alertpanel.h
