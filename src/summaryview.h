@@ -179,6 +179,7 @@ void summary_unlock		  (SummaryView		*summaryview);
 gboolean summary_is_locked	  (SummaryView		*summaryview);
 
 SummarySelection summary_get_selection_type	(SummaryView	*summaryview);
+MsgInfo *summary_get_selected_msg		(SummaryView *summaryview);
 GSList *summary_get_selected_msg_list		(SummaryView	*summaryview);
 
 void summary_select_prev_unread	  (SummaryView		*summaryview);

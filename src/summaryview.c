@@ -1270,6 +1270,22 @@ SummarySelection summary_get_selection_type(SummaryView *summaryview)
 	return selection;
 }
 
+/*!
+ *\return	MsgInfo	* Selected message if there's one selected;
+ *		if multiple selected, or none, return NULL.
+ */ 
+MsgInfo *summary_get_selected_msg(SummaryView *summaryview)
+{
+	/* summaryview->selected may be valid when multiple 
+	 * messages were selected */
+	GList *sellist = GTK_CLIST(summaryview->ctree)->selection;
+
+	if (sellist == NULL || sellist->next) 
+		return NULL;
+	
+	return GTKUT_CTREE_NODE_GET_ROW_DATA(sellist->data);
+}
+
 GSList *summary_get_selected_msg_list(SummaryView *summaryview)
 {
 	GSList *mlist = NULL;
