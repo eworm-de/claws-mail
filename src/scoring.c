@@ -28,6 +28,26 @@ ScoringProp * scoringprop_new(MatcherList * matchers, int score)
 	return scoring;
 }
 
+ScoringProp * scoringprop_copy(ScoringProp *src)
+{
+	ScoringProp * new;
+	GSList *tmp;
+	
+	new = g_new0(ScoringProp, 1);
+	new->matchers = g_new0(MatcherList, 1);
+	for (tmp = src->matchers->matchers; tmp != NULL && tmp->data != NULL;) {
+		MatcherProp *matcher = (MatcherProp *)tmp->data;
+		
+		new->matchers->matchers = g_slist_append(new->matchers->matchers,
+						   matcherprop_copy(matcher));
+		tmp = tmp->next;
+	}
+	new->matchers->bool_and = src->matchers->bool_and;
+	new->score = src->score;
+
+	return new;
+}
+
 void scoringprop_free(ScoringProp * prop)
 {
 	matcherlist_free(prop->matchers);

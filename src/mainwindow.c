@@ -1462,7 +1462,7 @@ void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 	for (list = folder_get_list(); list != NULL; list = list->next) {
 		folder = list->data;
 		if (folder && folder->trash) {
-			folderview_update_item(folder->trash, TRUE);
+			folder_update_item(folder->trash, TRUE);
 		}
 	}
 
@@ -3086,7 +3086,7 @@ void send_queue_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 				alertpanel_error(_("Some errors occurred while sending queued messages."));
 			statusbar_pop_all();
 			folder_item_scan(folder->queue);
-			folderview_update_item(folder->queue, TRUE);
+			folder_update_item(folder->queue, TRUE);
 		}
 	}
 }

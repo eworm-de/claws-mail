@@ -72,6 +72,8 @@ gchar * filteringprop_to_string(FilteringProp *prop);
 void prefs_filtering_clear();
 void prefs_filtering_free(GSList *prefs_filtering);
 
+FilteringProp * filteringprop_copy(FilteringProp *src);
+
 extern GSList * global_processing;
 
 #endif

@@ -55,6 +55,8 @@ struct _FolderView
 
 	MainWindow   *mainwin;
 	SummaryView  *summaryview;
+
+	gint folder_item_update_callback_id;
 };
 
 FolderView *folderview_create		(void);
@@ -71,13 +73,6 @@ void folderview_rescan_tree		(Folder		*folder);
 void folderview_rescan_all		(void);
 void folderview_check_new		(Folder		*folder);
 void folderview_check_new_all		(void);
-
-void folderview_update_item		(FolderItem	*item,
-					 gboolean	 update_summary);
-void folderview_update_items_when_required
-					(gboolean        update_summary);
-void folderview_update_item_foreach	(GHashTable	*table,
-					 gboolean	 update_summary);
 
 void folderview_new_folder		(FolderView	*folderview);
 void folderview_rename_folder		(FolderView	*folderview);

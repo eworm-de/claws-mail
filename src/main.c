@@ -984,9 +984,8 @@ static void send_queue(void)
 				alertpanel_error(_("Some errors occurred while sending queued messages."));
 			statusbar_pop_all();
 			folder_item_scan(folder->queue);
-			folderview_update_item(folder->queue, TRUE);
 			if (prefs_common.savemsg && folder->outbox) {
-				folderview_update_item(folder->outbox, TRUE);
+				folder_update_item(folder->outbox, TRUE);
 				if (folder->outbox == def_outbox)
 					def_outbox = NULL;
 			}
@@ -994,5 +993,5 @@ static void send_queue(void)
 	}
 
 	if (prefs_common.savemsg && def_outbox)
-		folderview_update_item(def_outbox, TRUE);
+		folder_update_item(def_outbox, TRUE);
 }

@@ -51,7 +51,10 @@ FilteringProp * matcher_parser_get_filtering(gchar * str)
 	   in yacc */
 	matcher_parserlineno = 1;
 	matcher_parser_dialog = 1;
+	matcher_parserrestart(NULL);
+        matcher_parser_init();
 	bufstate = matcher_parser_scan_string(str);
+        matcher_parser_switch_to_buffer(bufstate);
 	if (matcher_parserparse() != 0)
 		filtering = NULL;
 	matcher_parser_dialog = 0;
@@ -67,7 +70,10 @@ ScoringProp * matcher_parser_get_scoring(gchar * str)
 	   in yacc */
 	matcher_parserlineno = 1;
 	matcher_parser_dialog = 1;
+	matcher_parserrestart(NULL);
+        matcher_parser_init();
 	bufstate = matcher_parser_scan_string(str);
+        matcher_parser_switch_to_buffer(bufstate);
 	if (matcher_parserparse() != 0)
 		scoring = NULL;
 	matcher_parser_dialog = 0;
@@ -83,6 +89,8 @@ MatcherList * matcher_parser_get_cond(gchar * str)
 	   in yacc */
 	matcher_parserlineno = 1;
 	matcher_parser_dialog = 1;
+	matcher_parserrestart(NULL);
+        matcher_parser_init();
 	bufstate = matcher_parser_scan_string(str);
 	matcher_parserparse();
 	matcher_parser_dialog = 0;

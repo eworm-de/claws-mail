@@ -39,6 +39,7 @@
 #include "addr_compl.h"
 #include "prefs_scoring.h"
 #include "gtkutils.h"
+#include "filtering.h"
 
 PrefsFolderItem tmp_prefs;
 
@@ -303,7 +304,7 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 	/* Window */
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
 	gtk_window_set_title (GTK_WINDOW(window),
-			      _("Folder Property"));
+			      _("Folder Properties"));
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
@@ -320,7 +321,7 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 
 	/* Label */
 	folder_identifier = folder_item_get_identifier(item);
-	infotext = g_strconcat(_("Folder Property for "), folder_identifier, NULL);
+	infotext = g_strconcat(_("Folder Properties for "), folder_identifier, NULL);
 	infolabel = gtk_label_new(infotext);
 	gtk_table_attach(GTK_TABLE(table), infolabel, 0, 2, rowcount, 
 			 rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
@@ -592,9 +593,13 @@ void prefs_folder_item_ok_cb(GtkWidget *widget,
 	
 	if (dialog->item == dialog->folderview->summaryview->folder_item &&
 	    (prefs->enable_simplify_subject != old_simplify_val ||  
-	    0 != strcmp2(prefs->simplify_subject_regexp, old_simplify_str))) 
-		summary_show(dialog->folderview->summaryview, dialog->item);
-		
+	    0 != strcmp2(prefs->simplify_subject_regexp, old_simplify_str))) {
+		summary_clear_all(dialog->folderview->summaryview);
+		dialog->folderview->opened = NULL;
+		dialog->folderview->selected = NULL;
+		folderview_select(dialog->folderview, dialog->item);
+	}
+
 	if (old_simplify_str) g_free(old_simplify_str);
 
 	prefs->enable_folder_chmod = 
@@ -612,7 +617,7 @@ void prefs_folder_item_ok_cb(GtkWidget *widget,
 	prefs->color = dialog->item->prefs->color;
 	/* update folder view */
 	if (prefs->color > 0)
-		folderview_update_item(dialog->item, FALSE);
+		folder_update_item(dialog->item, FALSE);
 
 	prefs_folder_item_save_config(dialog->item);
 	prefs_folder_item_destroy(dialog);
@@ -710,3 +715,56 @@ static void folder_color_set_dialog_key_pressed(GtkWidget *widget,
 	gtk_widget_destroy(color_dialog);
 }
 
+void prefs_folder_item_copy_prefs(FolderItem * src, FolderItem * dest)
+{
+	GSList *tmp_prop_list = NULL, *tmp_scor_list = NULL, *tmp;
+	prefs_folder_item_read_config(src);
+
+	tmp_prefs.directory			= g_strdup(src->prefs->directory);
+	tmp_prefs.sort_by_number		= src->prefs->sort_by_number;
+	tmp_prefs.sort_by_size			= src->prefs->sort_by_size;
+	tmp_prefs.sort_by_date			= src->prefs->sort_by_date;
+	tmp_prefs.sort_by_from			= src->prefs->sort_by_from;
+	tmp_prefs.sort_by_subject		= src->prefs->sort_by_subject;
+	tmp_prefs.sort_by_score			= src->prefs->sort_by_score;
+	tmp_prefs.sort_descending		= src->prefs->sort_descending;
+	tmp_prefs.enable_thread			= src->prefs->enable_thread;
+	tmp_prefs.kill_score			= src->prefs->kill_score;
+	tmp_prefs.important_score		= src->prefs->important_score;
+
+	prefs_matcher_read_config();
+	for (tmp = src->prefs->scoring; tmp != NULL && tmp->data != NULL;) {
+		ScoringProp *prop = (ScoringProp *)tmp->data;
+		
+		tmp_scor_list = g_slist_append(tmp_scor_list,
+					   scoringprop_copy(prop));
+		tmp = tmp->next;
+	}
+	tmp_prefs.scoring			= tmp_scor_list;
+
+	for (tmp = src->prefs->processing; tmp != NULL && tmp->data != NULL;) {
+		FilteringProp *prop = (FilteringProp *)tmp->data;
+		
+		tmp_prop_list = g_slist_append(tmp_prop_list,
+					   filteringprop_copy(prop));
+		tmp = tmp->next;
+	}
+	tmp_prefs.processing			= tmp_prop_list;
+	
+	tmp_prefs.request_return_receipt	= src->prefs->request_return_receipt;
+	tmp_prefs.enable_default_to		= src->prefs->enable_default_to;
+	tmp_prefs.default_to			= g_strdup(src->prefs->default_to);
+	tmp_prefs.enable_default_reply_to	= src->prefs->enable_default_reply_to;
+	tmp_prefs.default_reply_to		= src->prefs->default_reply_to;
+	tmp_prefs.enable_simplify_subject	= src->prefs->enable_simplify_subject;
+	tmp_prefs.simplify_subject_regexp	= g_strdup(src->prefs->simplify_subject_regexp);
+	tmp_prefs.enable_folder_chmod		= src->prefs->enable_folder_chmod;
+	tmp_prefs.folder_chmod			= src->prefs->folder_chmod;
+	tmp_prefs.enable_default_account	= src->prefs->enable_default_account;
+	tmp_prefs.default_account		= src->prefs->default_account;
+	tmp_prefs.save_copy_to_folder		= src->prefs->save_copy_to_folder;
+	tmp_prefs.color				= src->prefs->color;
+
+	*dest->prefs = tmp_prefs;
+	prefs_folder_item_save_config(dest);
+}

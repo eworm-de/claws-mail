@@ -1,3 +1,209 @@
+2002-11-10 [colin]	0.8.5claws117
+
+	* src/summaryview.c
+		a STATUSBAR_PUSH/POP fix
+
+2002-11-10 [colin]	0.8.5claws116
+
+	* src/prefs_folder_item.c
+		Fix hanging after opening folder properties
+
+2002-11-10 [hoa]	0.8.5claws115
+
+	* src/matcher_parser_lex.l
+	* src/matcher_parser_parse.y
+		config file for scoring and filtering is no more trashed
+		when there is a syntax error in a filtering rule when
+		editing it in a dialog.
+
+2002-11-09 [colin]	0.8.5claws114
+
+	* src/mbox_folder.c
+		Added missing initialisation of folder->destroy()
+
+2002-11-09 [colin]	0.8.5claws113
+
+	* src/folder.c
+	  src/folderview.c
+		Fix the status bar messages
+
+2002-11-09 [colin]	0.8.5claws112
+
+	* src/folderview.c
+		Fix hangs after folder dnd, happening after 
+		claws109.
+
+2002-11-09 [christoph]	0.8.5claws111
+
+	* src/folderview.c
+		just changed order of calls (reverse order of
+		associated calls)
+	* src/inc.c
+		lock inc when checking only one account, otherwise
+		inc all could be executed at the same time
+
+2002-11-09 [christoph]	0.8.5claws110
+
+	* src/folderview.c
+		better unlock the mouse cursor before calling
+		summary_show because it changes the cursor too
+
+2002-11-09 [christoph]	0.8.5claws109
+
+	* src/folder.[ch]
+	* src/folderview.c
+		add functions to open and close a folder
+		o opending will execute scanning for remote folders
+		  and processing
+		o closing will unset new flag for messages
+
+2002-11-09 [colin]	0.8.5claws108
+
+	* src/folder.c
+		Add a call to prefs_matcher_write_config to 
+		avoid non-leaf folders filtering settings to be
+		lost
+
+2002-11-09 [paul]	0.8.5claws107
+
+	* src/prefs_account.c
+		re-word a label
+
+2002-11-09 [colin]	0.8.5claws106
+
+	* src/folderview.c
+		Minor esthetic fix
+
+2002-11-09 [colin]	0.8.5claws105
+
+	* src/folderview.c
+		Fix prefs_filtering deletion for MH folders (same
+		reason as below)
+	* src/prefs_filtering.c
+		Fix prefs_filtering renaming and deletion for 
+		folder-based processing rules.	
+
+2002-11-09 [christoph]	0.8.5claws104
+
+	* src/compose.c
+	* src/folder.[ch]
+	* src/folderview.[ch]
+	* src/import.c
+	* src/inc.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/prefs_folder_item.c
+	* src/procmsg.c
+	* src/summaryview.c
+		implement a callback system for folder item updates
+
+2002-11-09 [colin]	0.8.5claws103
+
+	* src/folderview.c
+		Fix prefs_filtering renaming for MH folders (we
+		shouldn't rename by path as another folder could
+		have the same hierarchy).
+
+2002-11-09 [colin]	0.8.5claws102
+
+	* src/folder.c
+		Fix a leak found by Christoph, use better variable
+		names
+
+2002-11-09 [colin]	0.8.5claws101
+
+	* src/folder.c
+		One more fix for processing rules
+
+2002-11-08 [colin] 	0.8.5claws100
+	
+	* src/matcher.c
+		Don't copy the compiled regexp (will be reevaluated)
+	* src/folderview.c
+		Lock folderview while moving
+	* src/folder.c
+		Provide info on what's happening to the user
+
+2002-11-08 [colin]	0.8.5claws99
+
+	* src/folderview.c
+		Fix folder reordering after a move if parent is 
+		root
+	* src/scoring.[ch]
+		Add function to copy a ScoringProp
+	* src/prefs_folder_item.c
+		Copy scoring rules when copying a folder prefs
+
+2002-11-08 [colin]	0.8.5claws98
+
+	* src/folderview.c
+		Fixes in case of failure
+	* src/filtering.[ch]	
+		Add function to duplicate a FilteringProp
+	* src/matcher.[ch]
+		Add function to duplicate a MatcherProp
+	* src/prefs_folder_item.c
+		Save folder's processing rules when copying 
+		its prefs
+
+2002-11-08 [colin]	0.8.5claws97
+	
+	* src/folderview.c
+		Sort after move
+	* src/folder.c 
+		Change a printf to debug_print
+
+2002-11-08 [colin]	0.8.5claws96
+
+	* src/folder.c
+	  src/folderview.c
+		Fix segfaults, call me stupido
+	
+
+2002-11-08 [colin]	0.8.5claws95
+
+	*src/folder.c
+		Added forgotten prefs to save when moving folders
+
+2002-11-08 [colin]	0.8.5claws94
+
+	* src/folder.c
+		Fixes to folder DND (prefs copy)
+	* src/folderview.c
+		Optimization for folder DND (don't rescan whole tree)
+		Added folderview_create_folder_node() for this 
+		optimization, so de-duped a bit the code
+	* src/prefs_folder_item.[ch]
+		Added prefs_folder_item_copy_prefs()	
+	  
+2002-11-08 [paul]	0.8.5claws93
+
+	* src/prefs_account.c
+	  tools/README
+	  tools/kmail2sylpheed_v2.pl
+	  	correct some typos
+
+2002-11-08 [paul]	0.8.5claws92
+
+	* src/compose.c
+	  src/prefs_account.[ch]
+	  	remove account options 'clearsign' and 'ascii_armored',
+		replace with 'default_gnupg_mode' to prevent mixed-mode
+		Privacy settings
+
+2002-11-08 [paul]	0.8.5claws91
+
+	* src/compose.[ch]
+		re-implement GnuPG 'on-the-fly' mode selection,
+		disallow mixed-mode
+
+2002-11-08 [colin]	0.8.5claws90
+
+	* src/folderview.c
+	  src/prefs_folder_item.c
+		Change "Property" to "Properties"
+
 2002-11-07 [colin]	0.8.5claws89
 
 	* src/folderview.c

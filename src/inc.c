@@ -162,7 +162,7 @@ static void inc_finished(MainWindow *mainwin, gboolean new_messages)
 	} else if (prefs_common.scan_all_after_inc) {
 		item = mainwin->summaryview->folder_item;
 		if (FOLDER_SUMMARY_MISMATCH(item, mainwin->summaryview)) {
-			folderview_update_item(item, TRUE);
+			folder_update_item(item, TRUE);
 		}	
 	}
 }
@@ -179,6 +179,7 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
 		return;
 
+	inc_lock();
 	inc_autocheck_timer_remove();
 	main_window_lock(mainwin);
 
@@ -209,6 +210,7 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 	main_window_unlock(mainwin);
  	inc_notify_cmd(new_msgs, notify);
 	inc_autocheck_timer_set();
+	inc_unlock();
 }
 
 void inc_selective_download(MainWindow *mainwin, PrefsAccount *acc, gint session)
@@ -257,7 +259,7 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 		folderview_check_new(FOLDER(account->folder));
 		if (!prefs_common.scan_all_after_inc && item != NULL &&
 		    FOLDER(account->folder) == item->folder)
-			folderview_update_item(item, TRUE);
+			folder_update_item(item, TRUE);
 		return 1;
 
 	case A_POP3:
@@ -335,7 +337,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 			folderview_check_new(FOLDER(account->folder));
 			if (!prefs_common.scan_all_after_inc && item != NULL &&
 			    FOLDER(account->folder) == item->folder)
-				folderview_update_item(item, TRUE);
+				folder_update_item(item, TRUE);
 		}
 	}
 
@@ -621,7 +623,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		new_msgs += pop3_state->cur_total_num;
 
 		if (!prefs_common.scan_all_after_inc) {
-			folderview_update_items_when_required
+			folder_update_items_when_required
 				 (!prefs_common.open_inbox_on_inc);
 		}
 
@@ -1180,10 +1182,10 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 	unlock_mbox(mbox, lockfd, LOCK_FLOCK);
 
 	if (!prefs_common.scan_all_after_inc) {
-		folderview_update_items_when_required
+		folder_update_items_when_required
 			(!prefs_common.open_inbox_on_inc);
 	} else if (!prefs_common.scan_all_after_inc) {
-		folderview_update_item(dest, TRUE);
+		folder_update_item(dest, TRUE);
 	}
 
 	return msgs;
