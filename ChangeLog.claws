@@ -1,4 +1,11 @@
+2003-07-19 [alfons]	0.9.3claws29
+
+	* src/prefs_folder_item.c
+		reinit "legacy" tmp_prefs, so we don't free nor use invalid 
+		string pointers
+
 2003-07-19 [luke]	0.9.3claws28
+
 	* src/messageview.c
 	* src/mimeview.[ch]
 	* src/procmime.h

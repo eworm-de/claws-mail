@@ -117,6 +117,7 @@ static PrefParam param[] = {
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
+static PrefsFolderItem *prefs_folder_item_clear (PrefsFolderItem *prefs);
 void prefs_folder_item_delete_cb		(GtkWidget *widget, GdkEventAny *event, 
 						 struct PrefsFolderItemDialog *dialog);
 void prefs_folder_item_cancel_cb		(GtkWidget *widget, 
@@ -139,9 +140,7 @@ void prefs_folder_item_read_config(FolderItem * item)
 	gchar * id;
 
 	id = folder_item_get_identifier(item);
-
-	tmp_prefs.scoring = NULL;
-	tmp_prefs.processing = NULL;
+	prefs_folder_item_clear(&tmp_prefs);
 	prefs_read_config(param, id, FOLDERITEM_RC);
 	g_free(id);
 
@@ -194,42 +193,44 @@ void prefs_folder_item_set_config(FolderItem * item,
 	item->sort_type = sort_mode;
 }
 
+static PrefsFolderItem *prefs_folder_item_clear(PrefsFolderItem *prefs)
+{
+	prefs->sort_by_number = FALSE;
+	prefs->sort_by_size = FALSE;
+	prefs->sort_by_date = FALSE;
+	prefs->sort_by_from = FALSE;
+	prefs->sort_by_subject = FALSE;
+	prefs->sort_by_score = FALSE;
+	prefs->sort_descending = FALSE;
+	prefs->kill_score = -9999;
+	prefs->important_score = 9999;
+
+	prefs->request_return_receipt = FALSE;
+	prefs->enable_default_to = FALSE;
+	prefs->default_to = NULL;
+	prefs->enable_default_reply_to = FALSE;
+	prefs->default_reply_to = NULL;
+	prefs->enable_simplify_subject = FALSE;
+	prefs->simplify_subject_regexp = NULL;
+	prefs->enable_folder_chmod = FALSE;
+	prefs->folder_chmod = 0;
+	prefs->enable_default_account = FALSE;
+	prefs->default_account = 0;
+	prefs->save_copy_to_folder = FALSE;
+	prefs->color = 0;
+
+	prefs->scoring = NULL;
+	prefs->processing = NULL;
+	return prefs;
+}
+
 PrefsFolderItem * prefs_folder_item_new(void)
 {
 	PrefsFolderItem * prefs;
 
 	prefs = g_new0(PrefsFolderItem, 1);
 
-	tmp_prefs.sort_by_number = FALSE;
-	tmp_prefs.sort_by_size = FALSE;
-	tmp_prefs.sort_by_date = FALSE;
-	tmp_prefs.sort_by_from = FALSE;
-	tmp_prefs.sort_by_subject = FALSE;
-	tmp_prefs.sort_by_score = FALSE;
-	tmp_prefs.sort_descending = FALSE;
-	tmp_prefs.kill_score = -9999;
-	tmp_prefs.important_score = 9999;
-
-	tmp_prefs.request_return_receipt = FALSE;
-	tmp_prefs.enable_default_to = FALSE;
-	tmp_prefs.default_to = NULL;
-	tmp_prefs.enable_default_reply_to = FALSE;
-	tmp_prefs.default_reply_to = NULL;
-	tmp_prefs.enable_simplify_subject = FALSE;
-	tmp_prefs.simplify_subject_regexp = NULL;
-	tmp_prefs.enable_folder_chmod = FALSE;
-	tmp_prefs.folder_chmod = 0;
-	tmp_prefs.enable_default_account = FALSE;
-	tmp_prefs.default_account = 0;
-	tmp_prefs.save_copy_to_folder = FALSE;
-	tmp_prefs.color = 0;
-
-	tmp_prefs.scoring = NULL;
-	tmp_prefs.processing = NULL;
-
-	* prefs = tmp_prefs;
-	
-	return prefs;
+	return prefs_folder_item_clear(prefs);
 }
 
 void prefs_folder_item_free(PrefsFolderItem * prefs)
