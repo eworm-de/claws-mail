@@ -106,6 +106,7 @@ static gint procmsg_read_cache_data_str(FILE *fp, gchar **str)
 	size_t len;
 
 	if (fread(&len, sizeof(len), 1, fp) == 1) {
+		len = me2ne_32(len);
 		if (len < 0)
 			ret = -1;
 		else {
@@ -155,6 +156,8 @@ static gint procmsg_read_cache_data_str(FILE *fp, gchar **str)
 		g_warning(_("Cache data is corrupted\n")); \
 		procmsg_msginfo_free(msginfo); \
 		break; \
+	} else { \
+		n = me2ne_32(n); \
 	} \
 }
 

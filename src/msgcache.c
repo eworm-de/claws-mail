@@ -305,23 +305,6 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 	fclose(fp);
 }
 
-#define WRITE_CACHE_DATA_INT(n, fp) \
-	fwrite(&n, sizeof(n), 1, fp)
-
-#define WRITE_CACHE_DATA(data, fp) \
-{ \
-	gint len; \
- \
-	if (data == NULL || (len = strlen(data)) == 0) { \
-		len = 0; \
-		WRITE_CACHE_DATA_INT(len, fp); \
-	} else { \
-		len = strlen(data); \
-		WRITE_CACHE_DATA_INT(len, fp); \
-		fwrite(data, len, 1, fp); \
-	} \
-}
-
 void msgcache_write_cache(MsgInfo *msginfo, FILE *fp)
 {
 	MsgTmpFlags flags = msginfo->flags.tmp_flags & MSG_CACHED_FLAG_MASK;
