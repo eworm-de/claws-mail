@@ -1,3 +1,8 @@
+2004-12-22 [martin]	0.9.13cvs21.2
+
+	* src/action.c
+		free the command line after its use
+
 2004-12-18 [paul]	0.9.13cvs21.1
 
 	* AUTHORS

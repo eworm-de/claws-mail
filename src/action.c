@@ -841,15 +841,15 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 			ret_str = g_locale_from_utf8(cmd, strlen(cmd),
 						     &by_read, &by_written,
 						     NULL);
-			if (ret_str && by_written) {
+			if (ret_str && by_written)
 				cmdline[2] = ret_str;
-				g_free(ret_str);
-			} else
+			else
 				cmdline[2] = cmd;
 			cmdline[3] = NULL;
 			execvp("/bin/sh", cmdline);
 
 			perror("execvp");
+			g_free(ret_str);
 			_exit(1);
 		} else if (gch_pid < (pid_t) 0) { /* Fork error */
 			if (sync)
