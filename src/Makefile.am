@@ -73,7 +73,6 @@ sylpheed_SOURCES = \
 	inputdialog.c inputdialog.h \
 	progressdialog.c progressdialog.h \
 	grouplistdialog.c grouplistdialog.h \
-	about.c about.h \
 	setup.c setup.h \
 	codeconv.c codeconv.h \
 	unmime.c unmime.h \

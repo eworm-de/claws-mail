@@ -44,3 +44,5 @@ menu.[ch]		gtk/menu.[ch]		ok
 stringtable.[ch]	common/stringtable.[ch]	ok
 
 gtkutils.[ch]		gtk/gtkutils.[ch]	ok
+
+about.[ch]		gtk/about.[ch]		ok

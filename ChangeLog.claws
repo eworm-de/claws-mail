@@ -1,3 +1,11 @@
+2003-02-25 [christoph]	0.8.10claws52
+
+	* src/Makefile.am
+	* src/about.[ch]		** REMOVE **
+	* src/gtk/Makefile.am
+	* src/gtk/about.[ch]		** NEW **
+		move about files to gtk directory
+
 2003-02-25 [christoph]	0.8.10claws51
 
 	* src/folder.c
@@ -634,13 +642,13 @@
 2003-01-26 [christoph]	0.8.9claws14
 
 	* src/Makefile.am
-	* src/mgutils.[ch]
-	* src/xml.[ch]
-	* src/xmlprops.[ch]
+	* src/mgutils.[ch]		** REMOVE **
+	* src/xml.[ch]			** REMOVE **
+	* src/xmlprops.[ch]		** REMOVE **
 	* src/common/Makefile.am
-	* src/common/mgutils.[ch]
-	* src/common/xml.[ch]
-	* src/common/xmlprops.[ch]
+	* src/common/mgutils.[ch]	** NEW **
+	* src/common/xml.[ch]		** NEW **
+	* src/common/xmlprops.[ch]	** NEW **
 		move xml files to common directory
 
 2003-01-26 [christoph]	0.8.9claws13
