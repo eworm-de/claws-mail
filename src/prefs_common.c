@@ -280,6 +280,11 @@ static PrefParam param[] = {
 	{"signature_separator", "-- ", &prefs_common.sig_sep, P_STRING,
 	 &compose.entry_sigsep, prefs_set_data_from_entry, prefs_set_entry},
 
+	{"reply_account_autoselect", "TRUE",
+	 &prefs_common.reply_account_autosel, P_BOOL,
+	 &compose.checkbtn_reply_account_autosel,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
 	{"linewrap_length", "74", &prefs_common.linewrap_len, P_INT,
 	 &compose.spinbtn_linewrap,
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
@@ -292,9 +297,6 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"forward_as_attachment", "FALSE", &prefs_common.forward_as_attachment,
 	 P_BOOL, &compose.checkbtn_forward_as_attachment,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"reply_account_autoselect", "TRUE", &prefs_common.reply_account_autosel,
-	 P_BOOL, &compose.checkbtn_reply_account_autosel,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
         {"smart_wrapping", "TRUE", &prefs_common.smart_wrapping,
 	 P_BOOL, &compose.checkbtn_smart_wrapping,
@@ -596,6 +598,26 @@ static void prefs_privacy_create	(void);
 #endif
 static void prefs_interface_create	(void);
 static void prefs_other_create		(void);
+
+static void date_format_ok_btn_clicked		(GtkButton	*button,
+						 GtkWidget     **widget);
+static void date_format_cancel_btn_clicked	(GtkButton	*button,
+						 GtkWidget     **widget);
+static void date_format_key_pressed		(GtkWidget	*keywidget,
+						 GdkEventKey	*event,
+						 GtkWidget     **widget);
+static gboolean date_format_on_delete		(GtkWidget	*dialogwidget,
+						 GdkEventAny	*event,
+						 GtkWidget     **widget);
+static void date_format_entry_on_change		(GtkEditable	*editable,
+						 GtkLabel	*example);
+static void date_format_select_row		(GtkWidget	*date_format_list,
+						 gint		 row,
+						 gint		 column,
+						 GdkEventButton	*event,
+						 GtkWidget	*date_format);
+static GtkWidget *date_format_create		(GtkButton	*button,
+						 void		*data);
 
 static void prefs_quote_description		(void);
 static void prefs_quote_description_create	(void);
@@ -995,23 +1017,24 @@ static void prefs_send_create(void)
 	SET_MENUITEM(_("Unicode (UTF-8)"),		 CS_UTF_8);
 #endif
 	SET_MENUITEM(_("Western European (ISO-8859-1)"), CS_ISO_8859_1);
-#if HAVE_LIBJCONV
 	SET_MENUITEM(_("Central European (ISO-8859-2)"), CS_ISO_8859_2);
 	SET_MENUITEM(_("Baltic (ISO-8859-13)"),		 CS_ISO_8859_13);
 	SET_MENUITEM(_("Baltic (ISO-8859-4)"),		 CS_ISO_8859_4);
 	SET_MENUITEM(_("Greek (ISO-8859-7)"),		 CS_ISO_8859_7);
 	SET_MENUITEM(_("Turkish (ISO-8859-9)"),		 CS_ISO_8859_9);
+#if HAVE_LIBJCONV
 	SET_MENUITEM(_("Cyrillic (ISO-8859-5)"),	 CS_ISO_8859_5);
+#endif
 	SET_MENUITEM(_("Cyrillic (KOI8-R)"),		 CS_KOI8_R);
+#if HAVE_LIBJCONV
 	SET_MENUITEM(_("Cyrillic (Windows-1251)"),	 CS_CP1251);
 	SET_MENUITEM(_("Cyrillic (KOI8-U)"),		 CS_KOI8_U);
-#endif /* HAVE_LIBJCONV */
+#endif
 	SET_MENUITEM(_("Japanese (ISO-2022-JP)"),	 CS_ISO_2022_JP);
 #if 0
 	SET_MENUITEM(_("Japanese (EUC-JP)"),		 CS_EUC_JP);
 	SET_MENUITEM(_("Japanese (Shift_JIS)"),		 CS_SHIFT_JIS);
 #endif /* 0 */
-#if HAVE_LIBJCONV
 	SET_MENUITEM(_("Simplified Chinese (GB2312)"),	 CS_GB2312);
 	SET_MENUITEM(_("Traditional Chinese (Big5)"),	 CS_BIG5);
 #if 0
@@ -1019,7 +1042,6 @@ static void prefs_send_create(void)
 	SET_MENUITEM(_("Chinese (ISO-2022-CN)"),	 CS_ISO_2022_CN);
 #endif /* 0 */
 	SET_MENUITEM(_("Korean (EUC-KR)"),		 CS_EUC_KR);
-#endif /* HAVE_LIBJCONV */
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu), optmenu_menu);
 
@@ -1062,6 +1084,7 @@ static void prefs_compose_create(void)
 	GtkWidget *label_sigsep;
 	GtkWidget *entry_sigsep;
 
+	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *vbox_linewrap;
 	GtkWidget *hbox3;
 	GtkWidget *hbox4;
@@ -1072,7 +1095,6 @@ static void prefs_compose_create(void)
 	GtkWidget *checkbtn_wrapatsend;
 
 	GtkWidget *checkbtn_forward_as_attachment;
-	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *checkbtn_smart_wrapping;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
@@ -1229,274 +1251,6 @@ static void prefs_compose_create(void)
 		checkbtn_smart_wrapping;
 }
 
-static void date_format_ok_btn_clicked(GtkButton *button, GtkWidget **widget)
-{
-	gchar	  *text;
-	GtkWidget *datefmt_sample = NULL;
-
-	g_return_if_fail(widget != NULL);
-	g_return_if_fail(*widget != NULL);
-	g_return_if_fail(display.entry_datefmt != NULL);
-
-	datefmt_sample = (GtkWidget *)gtk_object_get_data(GTK_OBJECT(*widget), "datefmt_sample");
-	g_return_if_fail(datefmt_sample != NULL);
-
-	text = gtk_editable_get_chars(GTK_EDITABLE(datefmt_sample), 0, -1);
-	g_free(prefs_common.date_format);
-	prefs_common.date_format = text;
-	gtk_entry_set_text(GTK_ENTRY(display.entry_datefmt), text);
-
-	gtk_widget_destroy(*widget);
-	*widget = NULL;
-}
-
-static void date_format_cancel_btn_clicked(GtkButton *button,
-					   GtkWidget **widget)
-{
-	g_return_if_fail(widget != NULL);
-	g_return_if_fail(*widget != NULL);
-
-	gtk_widget_destroy(*widget);
-	*widget = NULL;
-}
-
-static gboolean date_format_on_delete(GtkWidget *dialogwidget, gpointer d1, GtkWidget **widget)
-{
-	g_return_val_if_fail(widget != NULL, FALSE);
-	g_return_val_if_fail(*widget != NULL, FALSE);
-	*widget = NULL;
-	return FALSE;
-}
-
-static void date_format_entry_on_change(GtkEditable *editable, GtkLabel *example)
-{
-	time_t cur_time;
-	struct tm *cal_time;
-	char buffer[100];
-	char *text;
-	cur_time = time(NULL);
-	cal_time = localtime(&cur_time);
-	buffer[0] = 0;
-	text = gtk_editable_get_chars(editable, 0, -1);
-	if (text) {
-		strftime(buffer, sizeof buffer, text, cal_time); 
-	}
-	gtk_label_set_text(example, buffer);
-}
-
-static void date_format_select_row(GtkWidget *date_format_list, gint row,
-					gint column, GdkEventButton *event,
-					GtkWidget *date_format)
-{
-	gint	  curs_pos;
-	gchar	  *format;
-	gchar	  *old_format;
-	gchar	  *new_format;
-	GtkWidget *datefmt_sample = (GtkWidget *) gtk_object_get_data(GTK_OBJECT(date_format), "datefmt_sample");
-
-	g_return_if_fail(date_format_list != NULL);
-	g_return_if_fail(date_format != NULL);
-	g_return_if_fail(datefmt_sample != NULL);
-
-	/* only on double click */
-	if (event->type != GDK_2BUTTON_PRESS)
-		return;
-
-	/* get format from clist */
-	gtk_clist_get_text(GTK_CLIST(date_format_list), row, 0, &format);
-
-	curs_pos = gtk_editable_get_position(GTK_EDITABLE(datefmt_sample));
-	old_format = gtk_entry_get_text(GTK_ENTRY(datefmt_sample));
-
-	/* insert the format into the text entry */
-	new_format = g_malloc(strlen(old_format) + 3);
-
-	strncpy(new_format, old_format, curs_pos);
-	new_format[curs_pos] = '\0';
-	strcat(new_format, format);
-	strcat(new_format, &old_format[curs_pos]);
-
-	gtk_entry_set_text(GTK_ENTRY(datefmt_sample), new_format);
-	gtk_editable_set_position(GTK_EDITABLE(datefmt_sample), curs_pos + 2);
-
-	g_free(new_format);
-}
-
-static GtkWidget *create_date_format(GtkButton *button, void *data)
-{
-	static GtkWidget *date_format = NULL;
-	GtkWidget      *vbox1;
-	GtkWidget      *scrolledwindow1;
-	GtkWidget      *date_format_list;
-	GtkWidget      *label3;
-	GtkWidget      *label4;
-	GtkWidget      *table2;
-	GtkWidget      *vbox2;
-	GtkWidget      *vbox3;
-	GtkWidget      *hbox2;
-	GtkWidget      *label5;
-	GtkWidget      *hbox1;
-	GtkWidget      *label6;
-	GtkWidget      *label7;
-	GtkWidget      *confirm_area;
-	GtkWidget      *ok_btn;
-	GtkWidget      *cancel_btn;
-	GtkWidget	   *datefmt_sample = NULL;
-
-	const struct  {
-		gchar *fmt;
-		gchar *txt;
-	} time_format[] = {
-		{ "%a", _("the full abbreviated weekday name") },
-		{ "%A", _("the full weekday name") },
-		{ "%b", _("the abbreviated month name") },
-		{ "%B", _("the full month name") },
-		{ "%c", _("the preferred date and time for the current locale") },
-		{ "%C", _("the century number (year/100)") },
-		{ "%d", _("the day of the month as a decimal number") },
-		{ "%H", _("the hour as a decimal number using a 24-hour clock") },
-		{ "%I", _("the hour as a decimal number using a 12-hour clock") },
-		{ "%j", _("the day of the year as a decimal number") },
-		{ "%m", _("the month as a decimal number") },
-		{ "%M", _("the minute as a decimal number") },
-		{ "%p", _("either AM or PM") },
-		{ "%S", _("the second as a decimal number") },
-		{ "%w", _("the day of the week as a decimal number") },
-		{ "%x", _("the preferred date for the current locale") },
-		{ "%y", _("the last two digits of a year") },
-		{ "%Y", _("the year as a decimal number") },
-		{ "%Z", _("the time zone or name or abbreviation") }
-	};
-	int tmp;
-	const int TIME_FORMAT_ELEMS = sizeof time_format / sizeof time_format[0];
-
-	if (date_format) return date_format;
-
-	date_format = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_window_set_title(GTK_WINDOW(date_format), _("Date format"));
-	gtk_window_set_position(GTK_WINDOW(date_format), GTK_WIN_POS_CENTER);
-	gtk_window_set_default_size(GTK_WINDOW(date_format), 440, 280);
-
-	vbox1 = gtk_vbox_new(FALSE, 10);
-	gtk_widget_show(vbox1);
-	gtk_container_add(GTK_CONTAINER(date_format), vbox1);
-
-	scrolledwindow1 = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow1),
-			GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_widget_show(scrolledwindow1);
-	gtk_box_pack_start(GTK_BOX(vbox1), scrolledwindow1, TRUE, TRUE, 0);
-
-	date_format_list = gtk_clist_new(2);
-	gtk_widget_show(date_format_list);
-	gtk_container_add(GTK_CONTAINER(scrolledwindow1), date_format_list);
-	gtk_clist_set_column_width(GTK_CLIST(date_format_list), 0, 80);
-	gtk_clist_set_column_width(GTK_CLIST(date_format_list), 1, 80);
-	gtk_clist_column_titles_show(GTK_CLIST(date_format_list));
-
-	label3 = gtk_label_new(_("Date Format"));
-	gtk_widget_show(label3);
-	gtk_clist_set_column_widget(GTK_CLIST(date_format_list), 0, label3);
-
-	label4 = gtk_label_new(_("Date Format Description"));
-	gtk_widget_show(label4);
-	gtk_clist_set_column_widget(GTK_CLIST(date_format_list), 1, label4);
-
-	for (tmp = 0; tmp < TIME_FORMAT_ELEMS; tmp++) {
-		gchar *text[3];
-		/* phoney casting necessary because of gtk... */
-		text[0] = (gchar *) time_format[tmp].fmt;
-		text[1] = (gchar *) time_format[tmp].txt;
-		text[2] = NULL;
-		gtk_clist_append(GTK_CLIST(date_format_list), text);
-	}
-
-	table2 = gtk_table_new(1, 1, TRUE);
-	gtk_widget_show(table2);
-	gtk_box_pack_start(GTK_BOX(vbox1), table2, FALSE, TRUE, 0);
-
-	vbox2 = gtk_vbox_new(FALSE, 0);
-	gtk_widget_show(vbox2);
-	gtk_table_attach(GTK_TABLE(table2), vbox2, 0, 1, 0, 1,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-
-	vbox3 = gtk_vbox_new(TRUE, 4);
-	gtk_widget_show(vbox3);
-	gtk_box_pack_end(GTK_BOX(vbox2), vbox3, FALSE, FALSE, 10);
-
-	hbox2 = gtk_hbox_new(FALSE, 0);
-	gtk_widget_show(hbox2);
-	gtk_box_pack_start(GTK_BOX(vbox3), hbox2, TRUE, TRUE, 0);
-
-	label5 = gtk_label_new(_("Date format"));
-	gtk_widget_show(label5);
-	gtk_box_pack_start(GTK_BOX(hbox2), label5, FALSE, FALSE, 0);
-	gtk_misc_set_padding(GTK_MISC(label5), 8, 0);
-
-	datefmt_sample = gtk_entry_new_with_max_length(300);
-	gtk_widget_show(datefmt_sample);
-	gtk_box_pack_start(GTK_BOX(hbox2), datefmt_sample, TRUE, TRUE, 40);
-	
-	/* we need the "sample" entry box; add it as data so callbacks can
-	 * get the entry box */
-	gtk_object_set_data(GTK_OBJECT(date_format), "datefmt_sample", datefmt_sample);
-
-	hbox1 = gtk_hbox_new(FALSE, 0);
-	gtk_widget_show(hbox1);
-	gtk_box_pack_start(GTK_BOX(vbox3), hbox1, TRUE, TRUE, 0);
-
-	label6 = gtk_label_new(_("Example"));
-	gtk_widget_show(label6);
-	gtk_box_pack_start(GTK_BOX(hbox1), label6, FALSE, TRUE, 0);
-	gtk_misc_set_padding(GTK_MISC(label6), 8, 0);
-
-	label7 = gtk_label_new("");
-	gtk_widget_show(label7);
-	gtk_box_pack_start(GTK_BOX(hbox1), label7, TRUE, TRUE, 60);
-	gtk_label_set_justify(GTK_LABEL(label7), GTK_JUSTIFY_LEFT);
-
-	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
-				&cancel_btn, _("Cancel"), NULL, NULL);
-	gtk_widget_grab_default(ok_btn);
-
-	gtk_widget_show(confirm_area);
-
-	gtk_box_pack_start(GTK_BOX(vbox1), confirm_area, FALSE, FALSE, 0);
-
-	/* set the current format */
-	gtk_entry_set_text(GTK_ENTRY(datefmt_sample), prefs_common.date_format);
-	date_format_entry_on_change(GTK_EDITABLE(datefmt_sample),
-				    GTK_LABEL(label7));
-
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(date_format_ok_btn_clicked),
-			   &date_format);
-				  
-	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(date_format_cancel_btn_clicked),
-			   &date_format);
-
-	gtk_signal_connect(GTK_OBJECT(date_format), "delete_event",
-			   GTK_SIGNAL_FUNC(date_format_on_delete),
-			   &date_format);
-
-	gtk_signal_connect(GTK_OBJECT(datefmt_sample), "changed",
-			   GTK_SIGNAL_FUNC(date_format_entry_on_change),
-			   label7);
-				  
-	gtk_window_set_position(GTK_WINDOW(date_format), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(date_format), TRUE);
-
-	gtk_widget_show(date_format);					
-
-	gtk_signal_connect(GTK_OBJECT(date_format_list), "select_row",
-			   GTK_SIGNAL_FUNC(date_format_select_row),
-			   date_format);
-
-	return date_format;
-}
-
 static void prefs_display_create(void)
 {
 	GtkWidget *vbox1;
@@ -1514,11 +1268,11 @@ static void prefs_display_create(void)
 	GtkWidget *chkbtn_useaddrbook;
 	GtkWidget *hbox1;
 	GtkWidget *label_datefmt;
-	GtkWidget *label_datefmt_btn;
-	GtkWidget *tmplabel, *tmpentry, *tmpbutton;
+	GtkWidget *button_datefmt;
 	GtkWidget *entry_datefmt;
-	GtkTooltips *tooltips_datefmt;
+	GtkWidget *vbox3;
 	GtkWidget *button_dispitem;
+	GtkWidget *tmplabel, *tmpbutton, *tmpentry;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1649,12 +1403,17 @@ static void prefs_display_create(void)
 	entry_datefmt = gtk_entry_new ();
 	gtk_widget_show (entry_datefmt);
 	gtk_box_pack_start (GTK_BOX (hbox1), entry_datefmt, TRUE, TRUE, 0);
-	
-	label_datefmt_btn = gtk_button_new_with_label(_("Customize"));
-	gtk_widget_show(label_datefmt_btn);
-	gtk_box_pack_start(GTK_BOX (hbox1), label_datefmt_btn, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(label_datefmt_btn), "clicked",
-			   GTK_SIGNAL_FUNC(create_date_format), NULL);
+
+	button_datefmt = gtk_button_new_with_label (_("... "));
+	gtk_widget_show (button_datefmt);
+	gtk_box_pack_start (GTK_BOX (hbox1), button_datefmt, FALSE, FALSE, 0);
+	gtk_signal_connect (GTK_OBJECT (button_datefmt), "clicked",
+			    GTK_SIGNAL_FUNC (date_format_create), NULL);
+
+	/* spacer */
+	vbox3 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox3);
+	gtk_box_pack_start (GTK_BOX (vbox2), vbox3, FALSE, TRUE, 0);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -2184,6 +1943,272 @@ static void prefs_other_create(void)
 
 	other.exteditor_combo = exteditor_combo;
 	other.exteditor_entry = exteditor_entry;
+}
+
+static void date_format_ok_btn_clicked(GtkButton *button, GtkWidget **widget)
+{
+	GtkWidget *datefmt_sample = NULL;
+	gchar *text;
+
+	g_return_if_fail(widget != NULL);
+	g_return_if_fail(*widget != NULL);
+	g_return_if_fail(display.entry_datefmt != NULL);
+
+	datefmt_sample = GTK_WIDGET(gtk_object_get_data
+				    (GTK_OBJECT(*widget), "datefmt_sample"));
+	g_return_if_fail(datefmt_sample != NULL);
+
+	text = gtk_editable_get_chars(GTK_EDITABLE(datefmt_sample), 0, -1);
+	g_free(prefs_common.date_format);
+	prefs_common.date_format = text;
+	gtk_entry_set_text(GTK_ENTRY(display.entry_datefmt), text);
+
+	gtk_widget_destroy(*widget);
+	*widget = NULL;
+}
+
+static void date_format_cancel_btn_clicked(GtkButton *button,
+					   GtkWidget **widget)
+{
+	g_return_if_fail(widget != NULL);
+	g_return_if_fail(*widget != NULL);
+
+	gtk_widget_destroy(*widget);
+	*widget = NULL;
+}
+
+static void date_format_key_pressed(GtkWidget *keywidget, GdkEventKey *event,
+				    GtkWidget **widget)
+{
+	if (event && event->keyval == GDK_Escape)
+		date_format_cancel_btn_clicked(NULL, widget);
+}
+
+static gboolean date_format_on_delete(GtkWidget *dialogwidget,
+				      GdkEventAny *event, GtkWidget **widget)
+{
+	g_return_val_if_fail(widget != NULL, FALSE);
+	g_return_val_if_fail(*widget != NULL, FALSE);
+
+	*widget = NULL;
+	return FALSE;
+}
+
+static void date_format_entry_on_change(GtkEditable *editable,
+					GtkLabel *example)
+{
+	time_t cur_time;
+	struct tm *cal_time;
+	gchar buffer[100];
+	gchar *text;
+
+	cur_time = time(NULL);
+	cal_time = localtime(&cur_time);
+	buffer[0] = 0;
+	text = gtk_editable_get_chars(editable, 0, -1);
+	if (text)
+		strftime(buffer, sizeof buffer, text, cal_time); 
+	gtk_label_set_text(example, buffer);
+}
+
+static void date_format_select_row(GtkWidget *date_format_list, gint row,
+				   gint column, GdkEventButton *event,
+				   GtkWidget *date_format)
+{
+	gint cur_pos;
+	gchar *format;
+	gchar *old_format;
+	gchar *new_format;
+	GtkWidget *datefmt_sample;
+
+	datefmt_sample = GTK_WIDGET(gtk_object_get_data
+				    (GTK_OBJECT(date_format), "datefmt_sample"));
+
+	g_return_if_fail(date_format_list != NULL);
+	g_return_if_fail(date_format != NULL);
+	g_return_if_fail(datefmt_sample != NULL);
+
+	/* only on double click */
+	if (event->type != GDK_2BUTTON_PRESS) return;
+
+	/* get format from clist */
+	gtk_clist_get_text(GTK_CLIST(date_format_list), row, 0, &format);
+
+	cur_pos = gtk_editable_get_position(GTK_EDITABLE(datefmt_sample));
+	old_format = gtk_entry_get_text(GTK_ENTRY(datefmt_sample));
+
+	/* insert the format into the text entry */
+	new_format = g_malloc(strlen(old_format) + 3);
+
+	strncpy(new_format, old_format, cur_pos);
+	new_format[cur_pos] = '\0';
+	strcat(new_format, format);
+	strcat(new_format, &old_format[cur_pos]);
+
+	gtk_entry_set_text(GTK_ENTRY(datefmt_sample), new_format);
+	gtk_editable_set_position(GTK_EDITABLE(datefmt_sample), cur_pos + 2);
+
+	g_free(new_format);
+}
+
+static GtkWidget *date_format_create(GtkButton *button, void *data)
+{
+	static GtkWidget *datefmt_win = NULL;
+	GtkWidget *vbox1;
+	GtkWidget *scrolledwindow1;
+	GtkWidget *datefmt_clist;
+	GtkWidget *table;
+	GtkWidget *label1;
+	GtkWidget *label2;
+	GtkWidget *label3;
+	GtkWidget *confirm_area;
+	GtkWidget *ok_btn;
+	GtkWidget *cancel_btn;
+	GtkWidget *datefmt_entry;
+
+	const struct {
+		gchar *fmt;
+		gchar *txt;
+	} time_format[] = {
+		{ "%a", _("the full abbreviated weekday name") },
+		{ "%A", _("the full weekday name") },
+		{ "%b", _("the abbreviated month name") },
+		{ "%B", _("the full month name") },
+		{ "%c", _("the preferred date and time for the current locale") },
+		{ "%C", _("the century number (year/100)") },
+		{ "%d", _("the day of the month as a decimal number") },
+		{ "%H", _("the hour as a decimal number using a 24-hour clock") },
+		{ "%I", _("the hour as a decimal number using a 12-hour clock") },
+		{ "%j", _("the day of the year as a decimal number") },
+		{ "%m", _("the month as a decimal number") },
+		{ "%M", _("the minute as a decimal number") },
+		{ "%p", _("either AM or PM") },
+		{ "%S", _("the second as a decimal number") },
+		{ "%w", _("the day of the week as a decimal number") },
+		{ "%x", _("the preferred date for the current locale") },
+		{ "%y", _("the last two digits of a year") },
+		{ "%Y", _("the year as a decimal number") },
+		{ "%Z", _("the time zone or name or abbreviation") }
+	};
+
+	gchar *titles[2];
+	gint i;
+	const gint TIME_FORMAT_ELEMS =
+		sizeof time_format / sizeof time_format[0];
+
+	if (datefmt_win) return datefmt_win;
+
+	datefmt_win = gtk_window_new(GTK_WINDOW_DIALOG);
+	gtk_container_set_border_width(GTK_CONTAINER(datefmt_win), 8);
+	gtk_window_set_title(GTK_WINDOW(datefmt_win), _("Date format"));
+	gtk_window_set_position(GTK_WINDOW(datefmt_win), GTK_WIN_POS_CENTER);
+	gtk_widget_set_usize(datefmt_win, 440, 280);
+
+	vbox1 = gtk_vbox_new(FALSE, 10);
+	gtk_widget_show(vbox1);
+	gtk_container_add(GTK_CONTAINER(datefmt_win), vbox1);
+
+	scrolledwindow1 = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy
+		(GTK_SCROLLED_WINDOW(scrolledwindow1),
+		 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_widget_show(scrolledwindow1);
+	gtk_box_pack_start(GTK_BOX(vbox1), scrolledwindow1, TRUE, TRUE, 0);
+
+	titles[0] = _("Date format");
+	titles[1] = _("Date format description");
+	datefmt_clist = gtk_clist_new_with_titles(2, titles);
+	gtk_widget_show(datefmt_clist);
+	gtk_container_add(GTK_CONTAINER(scrolledwindow1), datefmt_clist);
+	gtk_clist_set_column_width(GTK_CLIST(datefmt_clist), 0, 80);
+	gtk_clist_set_selection_mode(GTK_CLIST(datefmt_clist),
+				     GTK_SELECTION_BROWSE);
+
+	for (i = 0; i < TIME_FORMAT_ELEMS; i++) {
+		gchar *text[2];
+		/* phoney casting necessary because of gtk... */
+		text[0] = (gchar *)time_format[i].fmt;
+		text[1] = (gchar *)time_format[i].txt;
+		gtk_clist_append(GTK_CLIST(datefmt_clist), text);
+	}
+
+	table = gtk_table_new(2, 2, FALSE);
+	gtk_widget_show(table);
+	gtk_box_pack_start(GTK_BOX(vbox1), table, FALSE, FALSE, 0);
+	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
+	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+
+	label1 = gtk_label_new(_("Date format"));
+	gtk_widget_show(label1);
+	gtk_table_attach(GTK_TABLE(table), label1, 0, 1, 0, 1,
+			 GTK_FILL, 0, 0, 0);
+	gtk_label_set_justify(GTK_LABEL(label1), GTK_JUSTIFY_LEFT);
+	gtk_misc_set_alignment(GTK_MISC(label1), 0, 0.5);
+
+	datefmt_entry = gtk_entry_new_with_max_length(256);
+	gtk_widget_show(datefmt_entry);
+	gtk_table_attach(GTK_TABLE(table), datefmt_entry, 1, 2, 0, 1,
+			 (GTK_EXPAND | GTK_FILL), 0, 0, 0);
+
+	/* we need the "sample" entry box; add it as data so callbacks can
+	 * get the entry box */
+	gtk_object_set_data(GTK_OBJECT(datefmt_win), "datefmt_sample",
+			    datefmt_entry);
+
+	label2 = gtk_label_new(_("Example"));
+	gtk_widget_show(label2);
+	gtk_table_attach(GTK_TABLE(table), label2, 0, 1, 1, 2,
+			 GTK_FILL, 0, 0, 0);
+	gtk_label_set_justify(GTK_LABEL(label2), GTK_JUSTIFY_LEFT);
+	gtk_misc_set_alignment(GTK_MISC(label2), 0, 0.5);
+
+	label3 = gtk_label_new("");
+	gtk_widget_show(label3);
+	gtk_table_attach(GTK_TABLE(table), label3, 1, 2, 1, 2,
+			 (GTK_EXPAND | GTK_FILL), 0, 0, 0);
+	gtk_label_set_justify(GTK_LABEL(label3), GTK_JUSTIFY_LEFT);
+	gtk_misc_set_alignment(GTK_MISC(label3), 0, 0.5);
+
+	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
+				&cancel_btn, _("Cancel"), NULL, NULL);
+	gtk_widget_grab_default(ok_btn);
+	gtk_widget_grab_focus(ok_btn);
+	gtk_widget_show(confirm_area);
+
+	gtk_box_pack_start(GTK_BOX(vbox1), confirm_area, FALSE, FALSE, 0);
+
+	/* set the current format */
+	gtk_entry_set_text(GTK_ENTRY(datefmt_entry), prefs_common.date_format);
+	date_format_entry_on_change(GTK_EDITABLE(datefmt_entry),
+				    GTK_LABEL(label3));
+
+	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
+			   GTK_SIGNAL_FUNC(date_format_ok_btn_clicked),
+			   &datefmt_win);
+	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
+			   GTK_SIGNAL_FUNC(date_format_cancel_btn_clicked),
+			   &datefmt_win);
+	gtk_signal_connect(GTK_OBJECT(datefmt_win), "key_press_event",
+			   GTK_SIGNAL_FUNC(date_format_key_pressed),
+			   &datefmt_win);
+	gtk_signal_connect(GTK_OBJECT(datefmt_win), "delete_event",
+			   GTK_SIGNAL_FUNC(date_format_on_delete),
+			   &datefmt_win);
+	gtk_signal_connect(GTK_OBJECT(datefmt_entry), "changed",
+			   GTK_SIGNAL_FUNC(date_format_entry_on_change),
+			   label3);
+
+	gtk_window_set_position(GTK_WINDOW(datefmt_win), GTK_WIN_POS_CENTER);
+	gtk_window_set_modal(GTK_WINDOW(datefmt_win), TRUE);
+
+	gtk_widget_show(datefmt_win);
+	manage_window_set_transient(GTK_WINDOW(datefmt_win));
+
+	gtk_signal_connect(GTK_OBJECT(datefmt_clist), "select_row",
+			   GTK_SIGNAL_FUNC(date_format_select_row),
+			   datefmt_win);
+
+	return datefmt_win;
 }
 
 void prefs_quote_colors_dialog(void)

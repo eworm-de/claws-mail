@@ -2051,7 +2051,7 @@ static void summary_set_header(gchar *text[], MsgInfo *msginfo)
 		Xalloca(from, strlen(msginfo->from) + 1, return);
 		strcpy(from, msginfo->from);
 		extract_address(from);
-		if (account_find_mail_from_address(from)) {
+		if (account_find_from_address(from)) {
 			g_free(to);
 			to = g_strconcat("-->", msginfo->to, NULL);
 			text[S_COL_FROM] = to;

@@ -1,7 +1,20 @@
+2001-07-27
+
+	* src/prefs_common.c: date_format_create(): modified the layout of
+	  the dialog.
+
+2001-07-26
+
+	* src/account.c: account_find_from_address(): fixed a minor bug.
+	* src/prefs_common.c: incorporated the user-interface for setting
+	  date format from the claws branch, and made some modification to
+	  that.
+
 2001-07-25
 
-	* src/account.c: account_edit_create(): modified the text of
+	* src/account.[ch]: account_edit_create(): modified the text of
 	  default button.
+	  account_find_from_address(): new.
 	* src/procmime.c:
 	  procmime_scan_content_type(), procmime_scan_content_disposition():
 	  fixed ESC code detection.

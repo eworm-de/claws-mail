@@ -1,7 +1,19 @@
+2001-07-27
+
+	* src/prefs_common.c: date_format_create(): ダイアログのレイアウト
+	  を修正。
+
+2001-07-26
+
+	* src/account.c: account_find_from_address(): マイナーなバグを修正。
+	* src/prefs_common.c: claws ブランチから日付の形式の設定のユーザ
+	  インタフェースを取り込み、いくつかの修正を加えた。
+
 2001-07-25
 
-	* src/account.c: account_edit_create(): デフォルトボタンの文字列
+	* src/account.[ch]: account_edit_create(): デフォルトボタンの文字列
 	  を修正。
+	  account_find_from_address(): 新規。
 	* src/procmime.c:
 	  procmime_scan_content_type(), procmime_scan_content_disposition():
 	  ESC コード検出を修正。

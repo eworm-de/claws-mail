@@ -1,3 +1,11 @@
+2001-07-27 [alfons]
+
+	* procheader.c
+		disallow setting flags when detecting certain headers
+		(X-Status, Status, Seen, X-Seen). 
+	
+	* sync with Hiroyuki's Sylpheed 0.5.1cvs5
+
 2001-07-27 [christoph]
 
 	* src/prefs_filter.c

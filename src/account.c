@@ -173,22 +173,21 @@ PrefsAccount *account_find_from_smtp_server(const gchar *address,
 }
 
 /*
- * account_find_mail_from_address:
+ * account_find_from_address:
  * @address: Email address string.
  *
  * Find a mail (not news) account with the specified email address.
  *
  * Return value: The found account, or NULL if not found.
  */
-PrefsAccount *account_find_mail_from_address(const gchar *address)
+PrefsAccount *account_find_from_address(const gchar *address)
 {
 	GList *cur;
 	PrefsAccount *ac;
 
 	for (cur = account_list; cur != NULL; cur = cur->next) {
 		ac = (PrefsAccount *)cur->data;
-		if (!ac->protocol != A_NNTP &&
-		    !strcmp2(address, ac->address))
+		if (ac->protocol != A_NNTP && !strcmp2(address, ac->address))
 			return ac;
 	}
 

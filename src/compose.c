@@ -580,7 +580,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		gchar *to;
 		Xstrdup_a(to, msginfo->to, return);
 		extract_address(to);
-		account = account_find_mail_from_address(to);
+		account = account_find_from_address(to);
 	}
 	if (!account) account = cur_account;
 	g_return_if_fail(account != NULL);
@@ -588,7 +588,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	if (ignore_replyto && account->protocol == A_NNTP &&
 	    !followup_and_reply_to) {
 		reply_account =
-			account_find_mail_from_address(account->address);
+			account_find_from_address(account->address);
 		if (!reply_account)
 			reply_account = compose_current_mail_account();
 		if (!reply_account)

@@ -454,6 +454,13 @@ MsgInfo *procheader_parse(const gchar *file, MsgFlags flags, gboolean full)
 	return msginfo;
 }
 
+
+/* FIXME: we should not allow headers in messages to change the sylpheed marks
+ * so we're currently disabling setting any MsgFlags when detecting X-Seen,
+ * Seen, X-Status, Status. See macro ALLOW_HEADER_HINT */  
+
+#define ALLOW_HEADER_HINT
+
 MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
 			       gboolean full)
 {
@@ -602,10 +609,12 @@ MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
 			if (!strncasecmp(hp, "multipart", 9))
 				MSG_SET_TMP_FLAGS(msginfo->flags, MSG_MIME);
 			break;
+#ifdef ALLOW_HEADER_HINT			
 		case H_SEEN:
 			/* mnews Seen header */
 			MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_NEW|MSG_UNREAD);
 			break;
+#endif			
 		case H_X_FACE:
 			if (msginfo->xface) break;
 			msginfo->xface = g_strdup(hp);
@@ -618,6 +627,7 @@ MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
 			if (msginfo->returnreceiptto) break;
 			msginfo->returnreceiptto = g_strdup(hp);
 			break;
+#ifdef ALLOW_HEADER_HINT			
 		case H_STATUS:
 			if (strchr(hp, 'R') != NULL)
 				MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_UNREAD);
@@ -639,6 +649,7 @@ MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
 			if (strchr(hp, 'f') != NULL)
 				MSG_SET_PERM_FLAGS(msginfo->flags, MSG_FORWARDED);
 			break;
+#endif			
 		case H_FROM_SPACE:
 			if (msginfo->fromspace) break;
 			msginfo->fromspace = g_strdup(hp);
