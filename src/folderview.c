@@ -260,7 +260,7 @@ static void folderview_drag_data_get     (GtkWidget        *widget,
 
 void folderview_create_folder_node       (FolderView       *folderview, 
 					  FolderItem       *item);
-void folderview_update_item		 (gpointer 	    source,
+gboolean folderview_update_item		 (gpointer 	    source,
 					  gpointer	    data);
 
 static void folderview_scoring_cb(FolderView *folderview, guint action,
@@ -1261,16 +1261,16 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		folderview_update_node(folderview, node);
 }
 
-void folderview_update_item(gpointer source, gpointer data)
+gboolean folderview_update_item(gpointer source, gpointer data)
 {
 	FolderItemUpdateData *update_info = (FolderItemUpdateData *)source;
 	FolderView *folderview = (FolderView *)data;
 	GtkCTree *ctree;
 	GtkCTreeNode *node;
 
-	g_return_if_fail(update_info != NULL);
-	g_return_if_fail(update_info->item != NULL);
-	g_return_if_fail(folderview != NULL);
+	g_return_val_if_fail(update_info != NULL, TRUE);
+	g_return_val_if_fail(update_info->item != NULL, TRUE);
+	g_return_val_if_fail(folderview != NULL, TRUE);
 
     	ctree = GTK_CTREE(folderview->ctree);
 
@@ -1280,6 +1280,8 @@ void folderview_update_item(gpointer source, gpointer data)
 		if (update_info->content_change && folderview->opened == node)
 			summary_show(folderview->summaryview, update_info->item);
 	}
+	
+	return FALSE;
 }
 
 static gboolean folderview_gnode_func(GtkCTree *ctree, guint depth,

@@ -35,7 +35,7 @@
 #define BUFFSIZE 1024
 
 static GList *statusbar_list = NULL;
-void statusbar_puts_all_hook (gpointer source, gpointer data);
+gboolean statusbar_puts_all_hook (gpointer source, gpointer data);
 
 GtkWidget *statusbar_create(void)
 {
@@ -51,10 +51,15 @@ GtkWidget *statusbar_create(void)
 	return statusbar;
 }
 
-void statusbar_puts_all_hook (gpointer source, gpointer data)
+gboolean statusbar_puts_all_hook (gpointer source, gpointer data)
 {
 	LogText *logtext = (LogText *) source;
+
+	g_return_val_if_fail(logtext != NULL, NULL);
+
 	statusbar_puts_all(logtext->text);
+
+	return FALSE;
 }
 
 void statusbar_puts(GtkStatusbar *statusbar, const gchar *str)

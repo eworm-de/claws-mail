@@ -380,7 +380,7 @@ static void news_flag_crosspost		(MsgInfo *msginfo);
 static void tog_searchbar_cb		(GtkWidget	*w,
 					 gpointer	 data);
 
-static void summary_update_msg		(gpointer source, gpointer data);
+static gboolean summary_update_msg	(gpointer source, gpointer data);
 
 GtkTargetEntry summary_drag_types[1] =
 {
@@ -5416,18 +5416,20 @@ void summary_save_prefs_to_folderitem(SummaryView *summaryview, FolderItem *item
 	item->threaded = summaryview->threaded;
 }
 
-static void summary_update_msg(gpointer source, gpointer data) {
+static gboolean summary_update_msg(gpointer source, gpointer data) {
 	MsgInfoUpdate *msginfo_update = (MsgInfoUpdate *) source;
 	SummaryView *summaryview = (SummaryView *)data;
 	GtkCTreeNode *node;
 
-	g_return_if_fail(msginfo_update != NULL);
-	g_return_if_fail(summaryview != NULL);
+	g_return_val_if_fail(msginfo_update != NULL, TRUE);
+	g_return_val_if_fail(summaryview != NULL, TRUE);
 
 	node = gtk_ctree_find_by_row_data(GTK_CTREE(summaryview->ctree), NULL, msginfo_update->msginfo);
 	
 	if (node) 
 		summary_set_row_marks(summaryview, node);
+
+	return FALSE;
 }
 
 /*

@@ -1,3 +1,13 @@
+2002-12-08 [christoph]	0.8.6claws77
+
+	* src/folderview.c
+	* src/statusbar.c
+	* src/summaryview.c
+	* src/common/hooks.[ch]
+		hook functions now have a gboolean return value, if a hook
+		returns TRUE it will stop executing of any more hooks in
+		the same hooklist for this invokation
+
 2002-12-08 [colin]	0.8.6claws76
 	
 	* src/main.c

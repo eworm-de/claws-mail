@@ -74,23 +74,36 @@ void hooks_unregister_hook(gchar *hooklist_name,
 {
 }
 
-static void hooks_marshal(GHook *hook, gpointer source)
+struct MarshalData
+{
+	gpointer	source;
+	gboolean	abort;
+};
+
+static void hooks_marshal(GHook *hook, gpointer data)
 {
 	gboolean (*func) (gpointer source, gpointer data);
-	
-	func = hook->func;
-	func(source, hook->data);
+	struct MarshalData *marshal_data = (struct MarshalData *)data;
+
+	if (!marshal_data->abort) {
+		func = hook->func;
+		marshal_data->abort = func(marshal_data->source, hook->data);
+	}
 }
 
 void hooks_invoke(gchar *hooklist_name,
 		  gpointer source)
 {
 	GHookList *hooklist;
+	struct MarshalData marshal_data;
 	
 	g_return_if_fail(hooklist_name != NULL);
 
 	hooklist = hooks_get_hooklist(hooklist_name);
 	g_return_if_fail(hooklist != NULL);
 
-	g_hook_list_marshal(hooklist, TRUE, hooks_marshal, source);
+	marshal_data.source = source;
+	marshal_data.abort = FALSE;
+
+	g_hook_list_marshal(hooklist, TRUE, hooks_marshal, &marshal_data);
 }

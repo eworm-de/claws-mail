@@ -21,7 +21,7 @@
 #define __VERSION_H__
 
 #define PACKAGE			"sylpheed"
-#define VERSION			"0.8.6claws75"
+#define VERSION			"0.8.6claws77"
 #define PROG_VERSION		"Sylpheed version "VERSION
 
 #endif /* __VERSION_H__ */
