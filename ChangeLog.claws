@@ -1,3 +1,10 @@
+2003-02-21 [paul]	0.8.10claws37
+
+	* src/compose.c
+		revert commit 0.8.10claws26, there are ulterior motives
+		for users to set a Reply-To header when posting to
+		newsgroups
+
 2003-02-21 [paul]	0.8.10claws36
 
 	* sync with 0.8.10cvs17
