@@ -484,6 +484,7 @@ static ErrMsgTableEntry _lutErrorsLDAP_[] = {
 	{ LDAPRC_CRITERIA,	N_("Error in LDAP search criteria") },
 	{ LDAPRC_NOENTRIES,	N_("No LDAP entries found for search criteria") },
 	{ LDAPRC_STOP_FLAG,	N_("LDAP search terminated on request") },
+	{ LDAPRC_TLS,		N_("Error starting TLS connection") },
 	{ 0,			NULL }
 };
 #endif
@@ -1330,14 +1331,6 @@ static void addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
 	AddressDataSource *ds = NULL;
 	ItemFolder *rootFolder = NULL;
 	AddressObjectType aot;
-
-	if( addrbook.treeSelected == node ) {
-		/*
-		 * Prevent double selection - this happens with a mouse
-		 * click but not with a key-press.
-		 */
-		/* return; */
-	}
 
 	addrbook.treeSelected = node;
 	addrbook.listSelected = NULL;

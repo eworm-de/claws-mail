@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003 Match Grun
+ * Copyright (C) 2003-2004 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,8 @@ struct _LdapControl {
 	gint      timeOut;
 	gint      maxQueryAge;
 	gint      matchingOption;
+	gint      version;
+	gboolean  enableTLS;
 	gchar     *attribEMail;
 	gchar     *attribCName;
 	gchar     *attribFName;
@@ -85,6 +87,7 @@ void ldapctl_set_max_entries	( LdapControl* ctl, const gint value );
 void ldapctl_set_timeout	( LdapControl* ctl, const gint value );
 void ldapctl_set_max_query_age	( LdapControl* ctl, const gint value );
 void ldapctl_set_matching_option( LdapControl* ctl, const gint value );
+void ldapctl_set_tls		( LdapControl* ctl, const gboolean value );
 void ldapctl_set_criteria_list	( LdapControl* ctl, GList *value );
 GList *ldapctl_get_criteria_list( const LdapControl* ctl );
 void ldapctl_criteria_list_clear( LdapControl *ctl );

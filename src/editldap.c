@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2003 Match Grun
+ * Copyright (C) 2001-2004 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,6 +79,7 @@ static struct _LDAPEdit {
 	GtkWidget *spinbtn_queryage;
 	GtkWidget *check_dynsearch;
 	GtkWidget *check_matchoption;
+	GtkWidget *check_tls;
 } ldapedit;
 
 /**
@@ -372,8 +373,11 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *entry_baseDN;
 	GtkWidget *check_btn;
 	GtkWidget *lookdn_btn;
+	GtkWidget *check_tls;
 	GtkTooltips *toolTip;
 	gint top;
+
+	check_tls = NULL;	/* Force NULL */
 
 	vbox = gtk_vbox_new( FALSE, 8 );
 	gtk_widget_show( vbox );
@@ -483,6 +487,19 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 		"directory names on the server." ),
 		NULL );
 
+#ifdef USE_LDAP_TLS
+	/* Next row */
+	++top;
+	check_tls = gtk_check_button_new_with_label( _("Enable TLS") );
+	gtk_table_attach(GTK_TABLE(table), check_tls, 1, 3, top, (top + 1),
+		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, check_tls, _( 
+		"Connect to the server using TLS encrypted connection." ),
+		NULL );
+#endif
+
 	/* Signal handlers */
 	gtk_signal_connect(GTK_OBJECT(check_btn), "clicked",
 			   GTK_SIGNAL_FUNC(edit_ldap_server_check), NULL);
@@ -496,6 +513,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	ldapedit.entry_server = entry_server;
 	ldapedit.spinbtn_port = spinbtn_port;
 	ldapedit.entry_baseDN = entry_baseDN;
+	ldapedit.check_tls    = check_tls;
 }
 
 static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
@@ -615,7 +633,7 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 		"search usually takes longer to complete. Note that for " \
 		"performance reasons, address completion uses " \
 		"\"begins-with\" for all searches against other address " \
-		"interfaces." \
+		"interfaces."
 		),
 		NULL );
 
@@ -876,6 +894,10 @@ static void edit_ldap_clear_fields( void ) {
 		GTK_TOGGLE_BUTTON( ldapedit.check_dynsearch), TRUE );
 	gtk_toggle_button_set_active(
 		GTK_TOGGLE_BUTTON( ldapedit.check_matchoption), FALSE );
+#ifdef USE_LDAP_TLS
+	gtk_toggle_button_set_active(
+		GTK_TOGGLE_BUTTON( ldapedit.check_tls), FALSE );
+#endif
 }
 
 /**
@@ -920,12 +942,16 @@ static void edit_ldap_set_fields( LdapServer *server ) {
 		gtk_entry_set_text(GTK_ENTRY(ldapedit.entry_criteria), "" );
 	}
 	gtk_spin_button_set_value(
-		GTK_SPIN_BUTTON(ldapedit.spinbtn_queryage), ctl->maxQueryAge );
+		GTK_SPIN_BUTTON(ldapedit.spinbtn_queryage ), ctl->maxQueryAge );
 	gtk_toggle_button_set_active(
-		GTK_TOGGLE_BUTTON( ldapedit.check_dynsearch), server->searchFlag );
+		GTK_TOGGLE_BUTTON( ldapedit.check_dynsearch ), server->searchFlag );
 	gtk_toggle_button_set_active(
-		GTK_TOGGLE_BUTTON( ldapedit.check_matchoption),
+		GTK_TOGGLE_BUTTON( ldapedit.check_matchoption ),
 		( ctl->matchingOption == LDAPCTL_MATCH_CONTAINS ) );
+#ifdef USE_LDAP_TLS
+	gtk_toggle_button_set_active(
+		GTK_TOGGLE_BUTTON( ldapedit.check_tls ), ctl->enableTLS );
+#endif
 }
 
 /**
@@ -941,7 +967,7 @@ AdapterDSource *addressbook_edit_ldap(
 	static gboolean cancelled;
 	gchar *sName, *sHost, *sBase, *sBind, *sPass, *sCrit;
 	gint iPort, iMaxE, iTime, iAge;
-	gboolean bSrch, bMatch;
+	gboolean bSrch, bMatch, bTLS;
 	AddressDataSource *ds = NULL;
 	LdapServer *server = NULL;
 	LdapControl *ctl = NULL;
@@ -997,6 +1023,12 @@ AdapterDSource *addressbook_edit_ldap(
 			GTK_TOGGLE_BUTTON( ldapedit.check_dynsearch ) );
 	bMatch = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON( ldapedit.check_matchoption ) );
+#ifdef USE_LDAP_TLS
+	bTLS = gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON( ldapedit.check_tls ) );
+#else
+	bTLS = FALSE;
+#endif
 
 	fin = FALSE;
 	if( *sName == '\0' ) fin = TRUE;
@@ -1027,6 +1059,7 @@ AdapterDSource *addressbook_edit_ldap(
 		ldapctl_set_matching_option(
 			ctl, bMatch ?
 			LDAPCTL_MATCH_CONTAINS : LDAPCTL_MATCH_BEGINWITH );
+		ldapctl_set_tls( ctl, bTLS );
 
 		/* Save attributes */
 		editldap_parse_criteria( sCrit, ctl );
