@@ -406,6 +406,8 @@ static void inc_progress_dialog_clear(IncProgressDialog *inc_dialog)
 {
 	progress_dialog_set_value(inc_dialog->dialog, 0.0);
 	progress_dialog_set_label(inc_dialog->dialog, "");
+	gtk_progress_set_show_text
+		(GTK_PROGRESS(inc_dialog->mainwin->progressbar), FALSE);
 	if (inc_dialog->mainwin)
 		gtk_progress_bar_update
 			(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar), 0.0);
@@ -416,6 +418,9 @@ static void inc_progress_dialog_destroy(IncProgressDialog *inc_dialog)
 	g_return_if_fail(inc_dialog != NULL);
 
 	inc_dialog_list = g_list_remove(inc_dialog_list, inc_dialog);
+
+	gtk_progress_set_show_text
+		(GTK_PROGRESS(inc_dialog->mainwin->progressbar), FALSE);
 	if (inc_dialog->mainwin)
 		gtk_progress_bar_update
 			(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar), 0.0);
@@ -616,6 +621,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 		folder_item_update_thaw();
 
+		statusbar_pop_all();
 
 		new_msgs += pop3_session->cur_total_num;
 
@@ -718,15 +724,13 @@ static IncState inc_pop3_session_do(IncSession *session)
 		pop3_session->ac_prefs->popport : 110;
 #endif
 
-	statusbar_verbosity_set(TRUE);
-	buf = g_strdup_printf(_("Connecting to POP3 server: %s ..."), server);
+	buf = g_strdup_printf(_("Connecting to POP3 server: %s..."), server);
 	log_message("%s\n", buf);
 
 	progress_dialog_set_label(inc_dialog->dialog, buf);
 	g_free(buf);
 	GTK_EVENTS_FLUSH();
 
-	statusbar_verbosity_set(FALSE);
 
 	if (session_connect(SESSION(pop3_session), server, port) < 0) {
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
@@ -741,18 +745,17 @@ static IncState inc_pop3_session_do(IncSession *session)
 			manage_window_focus_out(inc_dialog->dialog->window, NULL, NULL);
 		}
 		session->inc_state = INC_CONNECT_ERROR;
+		statusbar_pop_all();
 		return INC_CONNECT_ERROR;
 	}
-
-	statusbar_verbosity_set(TRUE);
 
 	while (SESSION(pop3_session)->state != SESSION_DISCONNECTED &&
 	       SESSION(pop3_session)->state != SESSION_ERROR &&
 	       session->inc_state != INC_CANCEL)
 		gtk_main_iteration();
 
+	statusbar_pop_all();
 
-	statusbar_verbosity_set(FALSE);
 	if (session->inc_state == INC_SUCCESS) {
 		switch (pop3_session->error_val) {
 		case PS_SUCCESS:
@@ -803,6 +806,8 @@ static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
 	case POP3_GETAUTH_PASS:
 	case POP3_GETAUTH_APOP:
 		progress_dialog_set_label(dialog, _("Authenticating..."));
+		statusbar_print_all(_("Retrieving messages from %s..."),
+				    SESSION(session)->server);
 		break;
 	case POP3_GETRANGE_STAT:
 		progress_dialog_set_label
@@ -821,6 +826,12 @@ static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
 			(dialog, _("Getting the size of messages (LIST)..."));
 		break;
 	case POP3_RETR:
+		gtk_progress_set_show_text
+			(GTK_PROGRESS(inc_dialog->mainwin->progressbar), TRUE);
+		g_snprintf(buf, sizeof(buf), "%d / %d",
+			   session->cur_msg, session->count);
+		gtk_progress_set_format_string
+			(GTK_PROGRESS(inc_dialog->mainwin->progressbar), buf);
 		inc_recv_data_progressive
 			(SESSION(session), 0,
 			 session->msg[session->cur_msg].size,
@@ -859,6 +870,8 @@ static gint inc_recv_data_progressive(Session *session, guint cur_len,
 	    pop3_session->state != POP3_RETR_RECV &&
 	    pop3_session->state != POP3_DELETE &&
 	    pop3_session->state != POP3_LOGOUT) return 0;
+
+	if (!pop3_session->new_msg_exist) return 0;
 
 	inc_dialog = (IncProgressDialog *)inc_session->data;
 	dialog = inc_dialog->dialog;

@@ -212,9 +212,10 @@ static gint pop3_getrange_last_recv(Pop3Session *session, const gchar *msg)
 		session->error_val = PS_PROTOCOL;
 		return -1;
 	} else {
-		if (session->count > last)
+		if (session->count > last) {
+			session->new_msg_exist = TRUE;
 			session->cur_msg = last + 1;
-		else
+		} else
 			session->cur_msg = 0;
 	}
 

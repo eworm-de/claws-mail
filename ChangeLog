@@ -1,5 +1,12 @@
 2003-06-26
 
+	* src/socket.c: made socket connection protocol independent.
+	* src/session.c: removed debug g_print().
+	* src/inc.c: made status bar output less verbose, and show counter
+	  on main window's progressbar.
+
+2003-06-26
+
 	* src/session.c: added missing #include <errno.h>.
 
 2003-06-25

@@ -391,7 +391,6 @@ static gboolean session_read_msg_cb(GIOChannel *source, GIOCondition condition,
 	if (read_len < 0) {
 		switch (errno) {
 		case EAGAIN:
-			g_print("session_read_msg_cb: %s\n", g_strerror(errno));
 			return TRUE;
 		default:
 			g_warning("sock_peek: %s\n", g_strerror(errno));
@@ -411,7 +410,6 @@ static gboolean session_read_msg_cb(GIOChannel *source, GIOCondition condition,
 	if (read_len < 0) {
 		switch (errno) {
 		case EAGAIN:
-			g_print("session_read_msg_cb: %s\n", g_strerror(errno));
 			return TRUE;
 		default:
 			g_warning("sock_read: %s\n", g_strerror(errno));
@@ -470,7 +468,6 @@ static gboolean session_read_data_cb(GIOChannel	*source, GIOCondition condition,
 	if (read_len < 0) {
 		switch (errno) {
 		case EAGAIN:
-			g_print("session_read_data_cb: %s\n", g_strerror(errno));
 			return TRUE;
 		default:
 			g_warning("sock_read: %s\n", g_strerror(errno));
@@ -553,7 +550,6 @@ static gint session_write_buf(Session *session)
 	if (write_len < 0) {
 		switch (errno) {
 		case EAGAIN:
-			g_print("session_write_cb: %s\n", g_strerror(errno));
 			write_len = 0;
 			break;
 		default:

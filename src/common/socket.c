@@ -85,8 +85,11 @@ struct _SockLookupData {
 };
 
 struct _SockAddrData {
+	gint family;
+	gint socktype;
+	gint protocol;
 	gint addr_len;
-	gpointer addr_data;
+	struct sockaddr *addr;
 };
 
 static guint io_timeout = 60;
@@ -494,7 +497,7 @@ static void sock_address_list_free(GList *addr_list)
 
 	for (cur = addr_list; cur != NULL; cur = cur->next) {
 		SockAddrData *addr_data = (SockAddrData *)cur->data;
-		g_free(addr_data->addr_data);
+		g_free(addr_data->addr);
 		g_free(addr_data);
 	}
 
@@ -630,78 +633,21 @@ gint sock_connect_async_cancel(gint id)
 static gint sock_connect_address_list_async(SockConnectData *conn_data)
 {
 	SockAddrData *addr_data;
-	struct sockaddr_in ad;
-#ifdef INET6
-	struct sockaddr_in6 ad6;
-#endif
-	struct sockaddr *sa;
-	gint sa_size;
 	gint sock = -1;
 
 	for (; conn_data->cur_addr != NULL;
 	     conn_data->cur_addr = conn_data->cur_addr->next) {
 		addr_data = (SockAddrData *)conn_data->cur_addr->data;
 
-#ifdef INET6
-		if (addr_data->addr_len != 4 && addr_data->addr_len != 16)
-			continue;
-
-		if (addr_data->addr_len == 4) {
-			/* IPv4 address */
-			if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-				perror("socket");
-				conn_data->cur_addr = NULL;
-				break;
-			}
-
-			memset(&ad, 0, sizeof(ad));
-			ad.sin_family = AF_INET;
-			ad.sin_port = htons(conn_data->port);
-			memcpy(&ad.sin_addr, addr_data->addr_data,
-			       addr_data->addr_len);
-
-			sa = (struct sockaddr *)&ad;
-			sa_size = sizeof(ad);
-		} else {
-			/* IPv6 address */
-			if ((sock = socket(AF_INET6, SOCK_STREAM, 0)) < 0) {
-				perror("socket");
-				conn_data->cur_addr = NULL;
-				break;
-			}
-
-			memset(&ad6, 0, sizeof(ad6));
-			ad6.sin6_family = AF_INET6;
-			ad6.sin6_port = htons(conn_data->port);
-			memcpy(&ad6.sin6_addr, addr_data->addr_data,
-			       addr_data->addr_len);
-
-			sa = (struct sockaddr *)&ad6;
-			sa_size = sizeof(ad6);
-		}
-#else /* !INET6 */
-		/* IPv4 only */
-		if (addr_data->addr_len != 4)
-			continue;
-
-		if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		if ((sock = socket(addr_data->family, addr_data->socktype,
+				   addr_data->protocol)) < 0) {
 			perror("socket");
-			conn_data->cur_addr = NULL;
-			break;
+			continue;
 		}
-
-		memset(&ad, 0, sizeof(ad));
-		ad.sin_family = AF_INET;
-		ad.sin_port = htons(conn_data->port);
-		memcpy(&ad.sin_addr, addr_data->addr_data, addr_data->addr_len);
-
-		sa = (struct sockaddr *)&ad;
-		sa_size = sizeof(ad);
-#endif
 
 		set_nonblocking_mode(sock, TRUE);
 
-		if (connect(sock, sa, sa_size) < 0) {
+		if (connect(sock, addr_data->addr, addr_data->addr_len) < 0) {
 			if (EINPROGRESS == errno) {
 				break;
 			} else {
@@ -740,45 +686,49 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 	GList *addr_list = NULL;
 	SockAddrData *addr_data;
 	guint bytes_read;
-	guint8 addr_len;
-	gchar buf[16];
+	gint ai_member[4];
+	struct sockaddr *addr;
 
 	for (;;) {
-		if (g_io_channel_read(source, &addr_len, 1, &bytes_read)
+		if (g_io_channel_read(source, (gchar *)ai_member,
+				      sizeof(ai_member), &bytes_read)
 		    != G_IO_ERROR_NONE) {
 			g_warning("sock_get_address_info_async_cb: "
 				  "address length read error\n");
 			break;
 		}
 
-		if (bytes_read == 0)
+		if (bytes_read == 0 || bytes_read != sizeof(ai_member))
 			break;
 
-		if (addr_len == 'e') {
+		if (ai_member[0] == AF_UNSPEC) {
 			g_warning("DNS lookup failed\n");
-			break;
-		} else if (addr_len != 4 && addr_len != 16) {
-			g_warning("illegal address length: %d\n", addr_len);
 			break;
 		}
 
-		if (g_io_channel_read(source, buf, addr_len, &bytes_read)
+		addr = g_malloc(ai_member[3]);
+		if (g_io_channel_read(source, (gchar *)addr, ai_member[3],
+				      &bytes_read)
 		    != G_IO_ERROR_NONE) {
 			g_warning("sock_get_address_info_async_cb: "
 				  "address data read error\n");
+			g_free(addr);
 			break;
 		}
 
-		if (bytes_read != addr_len) {
+		if (bytes_read != ai_member[3]) {
 			g_warning("sock_get_address_info_async_cb: "
 				  "incomplete address data\n");
+			g_free(addr);
 			break;
 		}
 
 		addr_data = g_new0(SockAddrData, 1);
-		addr_data->addr_len = addr_len;
-		addr_data->addr_data = g_malloc(addr_len);
-		memcpy(addr_data->addr_data, buf, addr_len);
+		addr_data->family = ai_member[0];
+		addr_data->socktype = ai_member[1];
+		addr_data->protocol = ai_member[2];
+		addr_data->addr_len = ai_member[3];
+		addr_data->addr = addr;
 
 		addr_list = g_list_append(addr_list, addr_data);
 	}
@@ -827,8 +777,9 @@ static SockLookupData *sock_get_address_info_async(const gchar *hostname,
 #else /* !INET6 */
 		struct hostent *hp;
 		gchar **addr_list_p;
+		struct sockaddr_in ad;
 #endif /* INET6 */
-		guint8 addr_len;
+		gint ai_member[4] = {AF_UNSPEC, 0, 0, 0};
 
 		close(pipe_fds[0]);
 
@@ -845,51 +796,50 @@ static SockLookupData *sock_get_address_info_async(const gchar *hostname,
 		if (gai_err != 0) {
 			g_warning("getaddrinfo for %s:%s failed: %s\n",
 				  hostname, port_str, gai_strerror(gai_err));
-			fd_write(pipe_fds[1], "e", 1);
+			fd_write_all(pipe_fds[1], (gchar *)ai_member,
+				     sizeof(ai_member));
 			close(pipe_fds[1]);
 			_exit(1);
 		}
 
 		for (ai = res; ai != NULL; ai = ai->ai_next) {
-			if (ai->ai_family == AF_INET) {
-				struct sockaddr_in *ad;
+			ai_member[0] = ai->ai_family;
+			ai_member[1] = ai->ai_socktype;
+			ai_member[2] = ai->ai_protocol;
+			ai_member[3] = ai->ai_addrlen;
 
-				ad = (struct sockaddr_in *)ai->ai_addr;
-				addr_len = sizeof(ad->sin_addr);
-
-				fd_write(pipe_fds[1], &addr_len, 1);
-				fd_write_all(pipe_fds[1],
-					     (gchar *)&ad->sin_addr,
-					     sizeof(ad->sin_addr));
-			} else if (ai->ai_family == AF_INET6) {
-				struct sockaddr_in6 *ad;
-
-				ad = (struct sockaddr_in6 *)ai->ai_addr;
-				addr_len = sizeof(ad->sin6_addr);
-
-				fd_write(pipe_fds[1], &addr_len, 1);
-				fd_write_all(pipe_fds[1],
-					     (gchar *)&ad->sin6_addr,
-					     sizeof(ad->sin6_addr));
-			}
+			fd_write_all(pipe_fds[1], (gchar *)ai_member,
+				     sizeof(ai_member));
+			fd_write_all(pipe_fds[1], (gchar *)ai->ai_addr,
+				     ai->ai_addrlen);
 		}
 
 		if (res != NULL)
 			freeaddrinfo(res);
 #else /* !INET6 */
 		hp = my_gethostbyname(hostname);
-		if (hp == NULL) {
-			fd_write(pipe_fds[1], "e", 1);
+		if (hp == NULL || hp->h_addrtype != AF_INET) {
+			fd_write_all(pipe_fds[1], (gchar *)ai_member,
+				     sizeof(ai_member));
 			close(pipe_fds[1]);
 			_exit(1);
 		}
 
-		addr_len = (guint8)hp->h_length;
+		ai_member[0] = AF_INET;
+		ai_member[1] = SOCK_STREAM;
+		ai_member[2] = IPPROTO_TCP;
+		ai_member[3] = sizeof(ad);
+
+		memset(&ad, 0, sizeof(ad));
+		ad.sin_family = AF_INET;
+		ad.sin_port = htons(port);
 
 		for (addr_list_p = hp->h_addr_list; *addr_list_p != NULL;
 		     addr_list_p++) {
-			fd_write(pipe_fds[1], &addr_len, 1);
-			fd_write_all(pipe_fds[1], *addr_list_p, hp->h_length);
+			memcpy(&ad.sin_addr, *addr_list_p, hp->h_length);
+			fd_write_all(pipe_fds[1], (gchar *)ai_member,
+				     sizeof(ai_member));
+			fd_write_all(pipe_fds[1], (gchar *)&ad, sizeof(ad));
 		}
 #endif /* INET6 */
 
@@ -930,8 +880,6 @@ static gint sock_get_address_info_async_cancel(SockLookupData *lookup_data)
 
 	g_free(lookup_data->hostname);
 	g_free(lookup_data);
-
-	g_print("DNS lookup cancelled\n");
 
 	return 0;
 }
