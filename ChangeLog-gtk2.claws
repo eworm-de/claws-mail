@@ -1,3 +1,8 @@
+2005-01-20 [colin]	1.0.0cvs3.3
+
+	* src/ssl_manager.c
+		Fix leak, thanks to Alfons.
+
 2005-01-20 [colin]	1.0.0cvs3.2
 
 	* src/ssl_manager.c

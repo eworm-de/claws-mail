@@ -253,8 +253,8 @@ static void ssl_manager_list_view_insert_cert(GtkWidget *list_view,
 		/* append new */
 		gtk_list_store_append(list_store, &iter);
 		gtk_list_store_set(list_store, &iter,
-				   SSL_MANAGER_HOST, g_strdup(host),
-				   SSL_MANAGER_PORT, g_strdup(port),
+				   SSL_MANAGER_HOST, host,
+				   SSL_MANAGER_PORT, port,
 				   SSL_MANAGER_CERT, cert,
 				   -1);
 	} else {
@@ -269,8 +269,8 @@ static void ssl_manager_list_view_insert_cert(GtkWidget *list_view,
 		g_free(old_host);				
 		g_free(old_port);				
 		gtk_list_store_set(list_store, row_iter,
-				   SSL_MANAGER_HOST, g_strdup(host),
-				   SSL_MANAGER_PORT, g_strdup(port),
+				   SSL_MANAGER_HOST, host,
+				   SSL_MANAGER_PORT, port,
 				   SSL_MANAGER_CERT, cert,
 				   -1);
 	}
