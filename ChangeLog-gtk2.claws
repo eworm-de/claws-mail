@@ -7,8 +7,8 @@
 	* src/procmsg.c
 	* src/summaryview.c
 	* src/common/Makefile.am
-	* src/common/partial_download.c
-	* src/common/partial_download.h
+	* src/common/partial_download.c ** NEW FILES **
+	* src/common/partial_download.h ** NEW FILES **
 		Move partial-download related stuff to its
 		own file
 
