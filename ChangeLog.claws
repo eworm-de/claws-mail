@@ -1,3 +1,8 @@
+2002-10-05 [melvin]	0.8.3claws47
+
+	* src/prefs_actions.c
+		Made the help text more clear for the %p token
+
 2002-10-04 [paul]	0.8.3claws46
 
 	* sync with 0.8.5
