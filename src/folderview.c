@@ -976,8 +976,23 @@ static gboolean folderview_gnode_func(GtkCTree *ctree, guint depth,
 static void folderview_expand_func(GtkCTree *ctree, GtkCTreeNode *node,
 				   gpointer data)
 {
-	if (GTK_CTREE_ROW(node)->children)
-		gtk_ctree_expand(ctree, node);
+	/* NOTE: data should by FolderView pointer */
+	if (GTK_CTREE_ROW(node)->children) {
+		FolderItem *item = gtk_ctree_node_get_row_data(ctree, node);
+		FolderView *view = (FolderView *) data;
+		g_return_if_fail(item != NULL);
+		g_return_if_fail(view);
+		
+		if (!item->collapsed) {
+			gtk_ctree_expand(ctree, node);
+		}
+		else {
+			/* if it is collapsed we should update the node,
+			 * in case one of the children contains unread
+			 * messages or other visible state things */
+			folderview_update_node(view, node); 			 
+		}
+	}		
 }
 
 #define SET_SPECIAL_FOLDER(ctree, item) \
@@ -1358,12 +1373,20 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 static void folderview_tree_expanded(GtkCTree *ctree, GtkCTreeNode *node,
 				     FolderView *folderview)
 {
+	FolderItem *item = gtk_ctree_node_get_row_data(ctree, node);
+
+	g_return_if_fail(item);
+	item->collapsed = FALSE;
 	folderview_update_node(folderview, node);
 }
 
 static void folderview_tree_collapsed(GtkCTree *ctree, GtkCTreeNode *node,
 				      FolderView *folderview)
 {
+	FolderItem *item = gtk_ctree_node_get_row_data(ctree, node);
+
+	g_return_if_fail(item);
+	item->collapsed = TRUE;
 	folderview_update_node(folderview, node);
 }
 

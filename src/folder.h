@@ -211,8 +211,10 @@ struct _FolderItem
 
 	gint last_num;
 
-	gboolean no_sub;
-	gboolean no_select;
+	/* special flags */
+	guint no_sub    : 1; /* no childs allowed? */	
+	guint no_select : 1; /* not selectable?    */
+	guint collapsed : 1; /* collapsed item     */
 
 	FolderItem *parent;
 

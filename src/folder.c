@@ -153,6 +153,7 @@ FolderItem *folder_item_new(const gchar *name, const gchar *path)
 	item->last_num = -1;
 	item->no_sub = FALSE;
 	item->no_select = FALSE;
+	item->collapsed = FALSE; /* default is open */
 	item->parent = NULL;
 	item->folder = NULL;
 	item->data = NULL;
@@ -1050,7 +1051,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	const gchar *name = NULL;
 	const gchar *path = NULL;
 	PrefsAccount *account = NULL;
-	gboolean no_sub = FALSE, no_select = FALSE;
+	gboolean no_sub = FALSE, no_select = FALSE, collapsed = FALSE;
 	gint mtime = 0, new = 0, unread = 0, total = 0;
 
 	g_return_val_if_fail(node->data != NULL, FALSE);
@@ -1100,6 +1101,8 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 			no_sub = *attr->value == '1' ? TRUE : FALSE;
 		else if (!strcmp(attr->name, "no_select"))
 			no_select = *attr->value == '1' ? TRUE : FALSE;
+		else if (!strcmp(attr->name, "collapsed"))
+			collapsed = *attr->value == '1' ? TRUE : FALSE;
 	}
 
 	item = folder_item_new(name, path);
@@ -1111,6 +1114,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	item->total = total;
 	item->no_sub = no_sub;
 	item->no_select = no_select;
+	item->collapsed = collapsed;
 	item->parent = FOLDER_ITEM(node->parent->data);
 	item->folder = folder;
 	switch (stype) {
@@ -1140,6 +1144,7 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 	const gchar *name = NULL;
 	const gchar *path = NULL;
 	PrefsAccount *account = NULL;
+	gboolean collapsed = FALSE;
 
 	if (g_node_depth(node) != 2) return FALSE;
 	g_return_val_if_fail(node->data != NULL, FALSE);
@@ -1175,6 +1180,9 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 			if (!account) g_warning("account_id: %s not found\n",
 						attr->value);
 		}
+		else if (!strcmp(attr->name, "collapsed")) {
+			collapsed = *(attr->value) == '1' ? 1 : 0;
+		}
 	}
 
 	folder = folder_new(type, name, path);
@@ -1182,13 +1190,22 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 	folder->account = account;
 	if (account && (type == F_IMAP || type == F_NEWS))
 		account->folder = REMOTE_FOLDER(folder);
+		
 	node->data = folder->node->data;
 	g_node_destroy(folder->node);
 	folder->node = node;
+
 	folder_add(folder);
 
 	g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
 			folder_build_tree, folder);
+
+	/* ALFONS_NOTE: after a folder_new() the folder system also created a 
+	 * FolderItem for the folder (which makes insertion in the GtkCTree
+	 * easier because it deals with FolderItems only). put the collapsed
+	 * state for this Folder in its associated FolderItem */
+
+	FOLDER_ITEM((folder->node->data))->collapsed = collapsed; 
 
 	return FALSE;
 }
@@ -1237,6 +1254,13 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 		if (folder->account)
 			fprintf(fp, " account_id=\"%d\"",
 				folder->account->account_id);
+				
+		/* ALFONS_NOTE: for each Folder structure, also a FolderItem is created;
+		 * this is very clever, but undocumented. (it is clever because the
+		 * folderview's GtkCTree only deals with FolderItems.) */
+		if (item->collapsed )
+			fprintf(fp, " collapsed=\"1\"");
+		
 	} else {
 		fprintf(fp, "<folderitem type=\"%s\"",
 			folder_item_stype_str[item->stype]);
@@ -1257,6 +1281,8 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 			fputs(" no_sub=\"1\"", fp);
 		if (item->no_select)
 			fputs(" no_select=\"1\"", fp);
+		if (item->collapsed) 
+			fputs(" collapsed=\"1\"", fp);
 		fprintf(fp,
 			" mtime=\"%ld\" new=\"%d\" unread=\"%d\" total=\"%d\"",
 			item->mtime, item->new, item->unread, item->total);
