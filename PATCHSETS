@@ -154,3 +154,4 @@
 ( cvs diff -u -r 1.5.2.3 -r 1.5.2.4 src/prefs_spelling.c; ) > 0.9.12cvs87.1.patchset
 ( cvs diff -u -r 1.3.2.2 -r 1.3.2.3 src/ldapquery.c; ) > 0.9.12cvs88.1.patchset
 ( cvs diff -u -r 1.28.2.2 -r 1.28.2.3 src/addrindex.c; ) > 0.9.12cvs89.1.patchset
+( cvs diff -u -r 1.61.2.8 -r 1.61.2.9 src/account.c; ) > 0.9.12cvs90.1.patchset

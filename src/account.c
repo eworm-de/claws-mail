@@ -1168,18 +1168,31 @@ PrefsAccount *account_get_reply_account(MsgInfo *msginfo, gboolean reply_autosel
 	
 	/* select account by to: and cc: header if enabled */
 	if (reply_autosel) {
-		if (!account && msginfo->to) {
-			gchar *to;
-			Xstrdup_a(to, msginfo->to, return NULL);
-			extract_address(to);
-			account = account_find_from_address(to);
-		}
-		if (!account) {
-			gchar cc[BUFFSIZE];
-			if (!procheader_get_header_from_msginfo(msginfo, cc, sizeof(cc), "CC:")) { /* Found a CC header */
-				extract_address(cc);
-				account = account_find_from_address(cc);
-			}        
+		gchar * field = NULL;
+		int fieldno = 0;
+		for (field = msginfo->to; fieldno++ < 2; field = msginfo->cc) {
+			printf("search %s (%d)\n", field, fieldno);
+			if (!account && field) {
+				gchar *to = NULL;
+				printf("finding from %s\n", field);
+				if (!strchr(field, ',')) {
+					Xstrdup_a(to, field, return NULL);
+					extract_address(to);
+					account = account_find_from_address(to);
+				} else {
+					gchar **split = g_strsplit(field, ",", -1);
+					int i = -1;
+					do {
+						i++;
+						if (!split[i])
+							break;
+						Xstrdup_a(to, split[i], return NULL);
+						extract_address(to);
+						account = account_find_from_address(to);
+					} while (!account);
+					g_strfreev(split);
+				}
+			}
 		}
 	}
 
