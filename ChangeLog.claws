@@ -22,6 +22,9 @@
 	* tools/newscache_clean.pl
 		allow for new 'hidereadmsgs' entry in folderlist.xml
 
+	* po/es.po
+        	updated translation, submitted by Ricardo Mones Lastra
+
 2001-12-11 [paul]	0.6.5claws74
 
 	* sync with sylpheed 0.6.5cvs25
