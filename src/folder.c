@@ -965,13 +965,27 @@ gint folder_item_scan(FolderItem *item)
 		num = i + min;
 		/* Add message to cache if in folder and not in cache */
 		if( (folderscaninfo[i] & IN_FOLDER) && 
-		   !(folderscaninfo[i] & IN_CACHE) && 
-		    (folder->type != F_NEWS ||
-			(((prefs_common.max_articles == 0) || (num > (max - prefs_common.max_articles))) &&
-			(num > cache_max)))
-		    ) {
-			new_list = g_slist_prepend(new_list, GINT_TO_POINTER(num));
-			debug_print("Remembered message %d for fetching\n", num);
+		   !(folderscaninfo[i] & IN_CACHE)) {
+			gboolean add = FALSE;
+
+			switch(folder->type) {
+				case F_NEWS:
+					if((num > cache_max) && 
+					   ((prefs_common.max_articles == 0) ||
+					    (max < prefs_common.max_articles) ||
+					    (num > (max - prefs_common.max_articles)))) {
+						add = TRUE;
+					}
+					break;
+				default:
+					add = TRUE;
+					break;
+			}
+			
+			if(add) {
+				new_list = g_slist_prepend(new_list, GINT_TO_POINTER(num));
+				debug_print("Remembered message %d for fetching\n", num);
+			}
 		}
 		/* Remove message from cache if not in folder and in cache */
 		if(!(folderscaninfo[i] & IN_FOLDER) && 
@@ -1058,6 +1072,8 @@ gint folder_item_scan(FolderItem *item)
 	g_slist_free(cache_list);
 	g_slist_free(new_list);
 	g_free(folderscaninfo);
+
+	folderview_update_item(item, FALSE);
 
 	return 0;
 }
