@@ -1,3 +1,10 @@
+2001-07-22 [christoph]
+
+	* po/POTFILES.in
+		Added src/ssl.c
+	* src/ssl.c
+		changed a wrong debug message
+
 2001-07-22 [alfons]
 
 	* po/nl.po

@@ -76,3 +76,4 @@ src/unmime.c
 src/utils.c
 src/uuencode.c
 src/xml.c
+src/ssl.c

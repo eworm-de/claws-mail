@@ -39,7 +39,7 @@ void ssl_init() {
     if(ssl_ctx == NULL) {
     	debug_print(_("SSL disabled\n"));
     } else {
-	debug_print(_("SSL loaded: \n"));
+	debug_print(_("SSL loaded\n"));
     }
 }
 
