@@ -145,58 +145,65 @@ BUILT_SOURCES = \
 EXTRA_DIST = \
 	quote_fmt_parse.h \
 	version.h.in \
-	pixmaps/clip.xpm \
-	pixmaps/deleted.xpm \
-	pixmaps/dir-close.xpm \
-	pixmaps/dir-open.xpm \
-	pixmaps/folder.xpm \
-	pixmaps/forwarded.xpm \
-	pixmaps/group.xpm \
-	pixmaps/inbox.xpm \
-	pixmaps/mark.xpm \
-	pixmaps/checkbox_on.xpm \
-	pixmaps/checkbox_off.xpm \
-	pixmaps/new.xpm \
-	pixmaps/outbox.xpm \
-	pixmaps/regular.xpm \
-	pixmaps/replied.xpm \
-	pixmaps/trash.xpm \
-	pixmaps/unread.xpm \
-	pixmaps/linewrap.xpm \
-	pixmaps/continue.xpm \
-	pixmaps/complete.xpm \
-	pixmaps/error.xpm \
-	pixmaps/mail.xpm \
-	pixmaps/mail_attach.xpm \
-	pixmaps/mail_receive.xpm \
-	pixmaps/mail_receive_all.xpm \
-	pixmaps/mail_send.xpm \
-	pixmaps/mail_send_queue.xpm \
-	pixmaps/mail_compose.xpm \
-	pixmaps/news_compose.xpm \
-	pixmaps/mail_reply.xpm \
-	pixmaps/mail_reply_to_all.xpm \
-	pixmaps/mail_reply_to_author.xpm \
-	pixmaps/mail_forward.xpm \
-	pixmaps/preferences.xpm \
-	pixmaps/properties.xpm \
-	pixmaps/search.xpm \
-	pixmaps/close.xpm \
-	pixmaps/exec.xpm \
-	pixmaps/trash.xpm \
-	pixmaps/up_arrow.xpm \
-	pixmaps/down_arrow.xpm \
-	pixmaps/paste.xpm \
-	pixmaps/tb_address_book.xpm \
-	pixmaps/sylpheed-logo.xpm \
+	pixmaps/address_book.xpm \
 	pixmaps/address.xpm \
 	pixmaps/book.xpm \
 	pixmaps/category.xpm \
+	pixmaps/checkbox_off.xpm \
+	pixmaps/checkbox_on.xpm \
+	pixmaps/clip.xpm \
+	pixmaps/clipkey.xpm \
+	pixmaps/close.xpm \
+	pixmaps/complete.xpm \
+	pixmaps/continue.xpm \
+	pixmaps/deleted.xpm \
+	pixmaps/dir_close.xpm \
+	pixmaps/dir_open.xpm \
+	pixmaps/dir_open_hrm.xpm \
+	pixmaps/down_arrow.xpm \
+	pixmaps/error.xpm \
+	pixmaps/exec.xpm \
+	pixmaps/folder.xpm \
+	pixmaps/forwarded.xpm \
+	pixmaps/group.xpm \
+	pixmap/ignorethread.xpm \
+	pixmaps/inbox.xpm \
+	pixmaps/inbox_hrm.xpm \
 	pixmaps/interface.xpm \
 	pixmaps/jpilot.xpm \
+	pixmaps/key.xpm \
 	pixmaps/ldap.xpm \
-	pixmaps/vcard.xpm \
+	pixmaps/linewrap.xpm \
 	pixmaps/locked.xpm \
+	pixmaps/mail.xpm \
+	pixmaps/mail_attach.xpm \
+	pixmaps/mail_compose.xpm \
+	pixmaps/mail_forward.xpm \
+	pixmaps/mail_receive.xpm \
+	pixmaps/mail_receive_all.xpm \
+	pixmaps/mail_reply.xpm \
+	pixmaps/mail_reply_to_all.xpm \
+	pixmaps/mail_reply_to_author.xpm \
+	pixmaps/mail_send.xpm \
+	pixmaps/mail_send_queue.xpm \
+	pixmaps/mark.xpm \
+	pixmaps/new.xpm \
+	pixmaps/news_compose.xpm \
+	pixmaps/outbox.xpm \
+	pixmaps/outbox_hrm.xpm \
+	pixmaps/paste.xpm \
+	pixmaps/preferences.xpm \
+	pixmaps/properties.xpm \
+	pixmaps/regular.xpm \
+	pixmaps/replied.xpm \
+	pixmaps/search.xpm \
+	pixmaps/sylpheed.xpm
+	pixmaps/sylpheed-logo.xpm \
+	pixmaps/trash.xpm \
+	pixmaps/trash_hrm.xpm \
+	pixmaps/unread.xpm \
+	pixmaps/up_arrow.xpm \
+	pixmaps/vcard.xpm \
 	pixmaps/work_offline.xpm \
 	pixmaps/work_online.xpm
 
