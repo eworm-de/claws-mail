@@ -1827,6 +1827,51 @@ gint remove_numbered_files(const gchar *dir, guint first, guint last)
 	return 0;
 }
 
+gint remove_numbered_files_not_in_list(const gchar *dir, GSList *numberlist)
+{
+	DIR *dp;
+	struct dirent *d;
+	gchar *prev_dir;
+	gint fileno;
+
+	prev_dir = g_get_current_dir();
+
+	if (chdir(dir) < 0) {
+		FILE_OP_ERROR(dir, "chdir");
+		g_free(prev_dir);
+		return -1;
+	}
+
+	if ((dp = opendir(".")) == NULL) {
+		FILE_OP_ERROR(dir, "opendir");
+		g_free(prev_dir);
+		return -1;
+	}
+
+	while ((d = readdir(dp)) != NULL) {
+		fileno = to_number(d->d_name);
+		if (fileno >= 0 && (g_slist_find(numberlist, GINT_TO_POINTER(fileno)) == NULL)) {
+			debug_print("removing unwanted file %d from %s\n", fileno, dir);
+			if (is_dir_exist(d->d_name))
+				continue;
+			if (unlink(d->d_name) < 0)
+				FILE_OP_ERROR(d->d_name, "unlink");
+		}
+	}
+
+	closedir(dp);
+
+	if (chdir(prev_dir) < 0) {
+		FILE_OP_ERROR(prev_dir, "chdir");
+		g_free(prev_dir);
+		return -1;
+	}
+
+	g_free(prev_dir);
+
+	return 0;
+}
+
 gint remove_all_numbered_files(const gchar *dir)
 {
 	return remove_numbered_files(dir, 0, UINT_MAX);

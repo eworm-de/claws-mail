@@ -332,6 +332,8 @@ gint remove_all_files		(const gchar	*dir);
 gint remove_numbered_files	(const gchar	*dir,
 				 guint		 first,
 				 guint		 last);
+gint remove_numbered_files_not_in_list(const gchar *dir,
+				       GSList *numberlist);
 gint remove_all_numbered_files	(const gchar	*dir);
 gint remove_expired_files	(const gchar	*dir,
 				 guint		 hours);

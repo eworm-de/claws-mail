@@ -1049,6 +1049,7 @@ GSList *news_get_num_list(Folder *folder, FolderItem *item)
 	NNTPSession *session;
 	gint i, ok, num, first, last;
 	GSList *msgnum_list = NULL;
+	gchar *dir;
 
 	session = news_session_get(folder);
 	g_return_val_if_fail(session != NULL, NULL);
@@ -1071,6 +1072,11 @@ GSList *news_get_num_list(Folder *folder, FolderItem *item)
 	for(i = first; i <= last; i++) {
 		msgnum_list = g_slist_prepend(msgnum_list, GINT_TO_POINTER(i));
 	}
+
+	dir = folder_item_get_path(item);
+	debug_print("removing old messages from %d to %d in %s\n", first, last, dir);
+	remove_numbered_files(dir, 1, first - 1);
+	g_free(dir);
 
 	return msgnum_list;
 }

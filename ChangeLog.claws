@@ -1,3 +1,11 @@
+2002-10-05 [christoph]	0.8.3claws48
+
+	* src/imap.c
+	* src/news.c
+	* src/utils.c
+	* src/utils.h
+		implement cache cleanups for claws' folder system
+
 2002-10-05 [melvin]	0.8.3claws47
 
 	* src/prefs_actions.c
