@@ -1893,6 +1893,10 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 
 	compose_update_priority_menu_item(compose);
 
+	compose_update_priority_menu_item(compose);
+
+	compose_update_priority_menu_item(compose);
+
 	compose_show_first_last_header(compose, TRUE);
 
 #if 0 /* NEW COMPOSE GUI */

@@ -1,3 +1,17 @@
+2002-05-19 [alfons]	0.7.6claws5
+
+	* src/procheader.c
+	* src/procheader.h
+		add function for returning ime zone offset
+	* src/quote_fmt.c
+	* src/quote_fmt_parse.y
+		better quotation formatting - does not convert
+		to local time, but uses the original date string.
+		
+		Note: %z inserts the timezone offset (should 
+		work also on platforms where strftime does not
+		support %z).
+
 2002-05-18 [christoph]	0.7.6claws4
 
 	* src/summaryview.c
@@ -8,6 +22,7 @@
 		add missing \
 		correct path for ignorethread.xpm
 		incorrect filename for sylpheed_logo.xpm
+		add missing include matcher_parser_parse.h
 
 2002-05-18 [paul]	0.7.6claws3
 

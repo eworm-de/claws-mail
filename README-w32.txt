@@ -13,15 +13,14 @@ Please note, that these ports are in a very early development state:
 
 The main part of porting Sylpheed to Windows was done by Munesato Nakada
 <munesato@post.co.jp>. This english installation help and the Sylpheed-Claws
-port are derived from his work by Thorsten Maerz <info@netztorte.de>.
+port are derived from his work by Thorsten Maerz <torte@netztorte.de>.
 
 
-sylpheed-claws win32 branch:
+Sylpheed-Claws Win32 branch:
 ----------------------------
-This package contains the MSVC project files and patches for Sylpheed-claws /
-Win32. Create the directory structure and install the libraries as shown
-below. Then copy or checkout the sylpheed-claws sources.
--> Finally, apply the patches using "patch_claws.bat" (in the win32 subdir).
+First get the libraries and install everything as described below. Then call
+"patch_claws.bat" (in \dev\proj\win32) to create necessary files using some
+unix tools (bison, sed, ...). Repeat this step after each "cvs update".
 
 
 Get following packages:
@@ -45,7 +44,7 @@ to the link section below.
     w32lib                      (w32lib-dev-20020323.lzh)
     gpgme                       (gpgme-dev-20020423.lzh)
     openssl                     (claws_w32_ssl_dev_020415.zip)
-* unix build tools (patch,msgfmt,grep,sed)
+* unix build tools (diff,patch,msgfmt,grep,sed,bison,flex,cvs)
     unix-tools                  (unix-tools.zip)
 
 
@@ -111,14 +110,14 @@ The resulting directory tree:
 Hints:
 ------
 * Before opening the project, some files have to be created by calling
-  "patch_claws.bat" in \dev\proj\sylpheed-claws\win32. This will extract
-  config.h and some bison/flex generated files, create version.h and
-  the translations. You will need the files from unix-tools.zip or a
-  running cygwin installation for this step.
+  "patch_claws.bat" in \dev\proj\sylpheed-claws\win32. This will create
+  version.h, some bison/flex generated files and the translations.
+  You will need the files from unix-tools.zip or a running cygwin
+  installation for this step.
 * libjconv and glib need patches, when compiled from source. As libjconv
   is rather small, the patched version is provided with the source.
   The patch for glib (2.0.0 and 2.0.1) is available in "win32\patches".
- 
+
 
 Links:
 ------
