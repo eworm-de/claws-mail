@@ -2112,7 +2112,7 @@ static gboolean cancel_menu_cb(GtkMenuShell *w, gpointer data)
 	
 }
 
-gboolean gtkaspell_change_dict(GtkAspell *gtkaspell, guchar *dictionary)
+gboolean gtkaspell_change_dict(GtkAspell *gtkaspell, const gchar *dictionary)
 {
 	Dictionary 	*dict;       
 	GtkAspeller 	*gtkaspeller;

@@ -1,3 +1,8 @@
+2003-09-01 [alfons]	0.9.4claws53
+
+	* src/gtk/gtkaspell.[ch]
+		be pedantic and strict and use const gchar * instead of guchar *
+
 2003-09-01 [alfons]	0.9.4claws52
 
 	* src/mainwindow.c
