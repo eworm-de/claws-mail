@@ -1,3 +1,17 @@
+2002-01-11 [christoph]	0.6.6claws49
+
+	* src/prefs.h
+		set sensitivity in SET_TOGGLE_SENSITIVITY macro from
+		toggle widget, because non static prefs can not use
+		prefs_set_* functions
+	* src/prefs_account.c
+		toggle smtp auth password field sensitivity if
+		user id is empty and add descrition of usage for
+		these fields
+	* src/prefs_folder_item.c
+		use SET_TOGGLE_SENSITIVITY macro to instead of extra
+		callbacks
+
 2002-01-11 [melvin]	0.6.6claws48
 
 	* src/compose.c

@@ -178,6 +178,8 @@ static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
 					   gpointer user_data);
 static void prefs_account_mailcmd_toggled(GtkToggleButton *button,
 					  gpointer user_data);
+static void prefs_account_smtp_userid_cb(GtkEditable *editable,
+					 gpointer smtp_passwd);
 
 static PrefParam param[] = {
 	/* Basic */
@@ -270,7 +272,7 @@ static PrefParam param[] = {
 	 &send.smtp_auth_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
-	{"smtp_user_id", "ENV_USER", &tmp_ac_prefs.smtp_userid, P_STRING,
+	{"smtp_user_id", NULL, &tmp_ac_prefs.smtp_userid, P_STRING,
 	 &send.smtp_userid_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"smtp_password", NULL, &tmp_ac_prefs.smtp_passwd, P_STRING,
@@ -1061,6 +1063,7 @@ static void prefs_account_send_create(void)
 	GtkWidget *frame3;
 	GtkWidget *vbox3;
 	GtkWidget *smtp_auth_chkbtn;
+	GtkWidget *hbox2;
 	GtkWidget *smtp_auth_hbox;
 	GtkWidget *label;
 	GtkWidget *uid_label;
@@ -1111,6 +1114,20 @@ static void prefs_account_send_create(void)
 	PACK_CHECK_BUTTON (vbox3, smtp_auth_chkbtn,
 		_("SMTP Authentication (SMTP AUTH)"));
 
+	hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start (GTK_BOX (vbox3), hbox2, FALSE, FALSE, 0);
+
+	label = gtk_label_new ("");
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 0);
+	gtk_widget_set_usize (label, 16, -1);
+
+	label = gtk_label_new (_("(Leave User ID empty to use receive server's account information)"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox2), label,
+			    FALSE, FALSE, 0);
+
 	smtp_auth_hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (smtp_auth_hbox);
 	gtk_box_pack_start (GTK_BOX (vbox3), smtp_auth_hbox, FALSE, FALSE, 0);
@@ -1125,20 +1142,17 @@ static void prefs_account_send_create(void)
 	gtk_box_pack_start (GTK_BOX (smtp_auth_hbox), uid_label,
 			    FALSE, FALSE, 0);
 	gtk_misc_set_alignment (GTK_MISC (uid_label), 1, 0.5);
-	SET_TOGGLE_SENSITIVITY (smtp_auth_chkbtn, uid_label);
 
 	smtp_userid_entry = gtk_entry_new ();
 	gtk_widget_show (smtp_userid_entry);
 	gtk_widget_set_usize (smtp_userid_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (smtp_auth_hbox), smtp_userid_entry,
 			    TRUE, TRUE, 0);
-	SET_TOGGLE_SENSITIVITY (smtp_auth_chkbtn, smtp_userid_entry);
 
 	pass_label = gtk_label_new (_("Password"));
 	gtk_widget_show (pass_label);
 	gtk_box_pack_start (GTK_BOX (smtp_auth_hbox), pass_label,
 			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY (smtp_auth_chkbtn, pass_label);
 
 	smtp_passwd_entry = gtk_entry_new ();
 	gtk_widget_show (smtp_passwd_entry);
@@ -1146,7 +1160,11 @@ static void prefs_account_send_create(void)
 	gtk_box_pack_start (GTK_BOX (smtp_auth_hbox), smtp_passwd_entry,
 			    TRUE, TRUE, 0);
 	gtk_entry_set_visibility (GTK_ENTRY (smtp_passwd_entry), FALSE);
-	SET_TOGGLE_SENSITIVITY (smtp_auth_chkbtn, smtp_passwd_entry);
+
+	SET_TOGGLE_SENSITIVITY (smtp_auth_chkbtn, smtp_auth_hbox);
+	gtk_signal_connect(GTK_OBJECT(smtp_userid_entry), "changed",
+			   GTK_SIGNAL_FUNC(prefs_account_smtp_userid_cb), smtp_passwd_entry);
+	prefs_account_smtp_userid_cb(GTK_EDITABLE(smtp_userid_entry), smtp_passwd_entry);
 
 	PACK_CHECK_BUTTON (vbox3, pop_bfr_smtp_chkbtn,
 		_("Authenticate with POP3 before sending"));
@@ -2006,4 +2024,20 @@ static void prefs_account_mailcmd_toggled(GtkToggleButton *button,
 	gtk_widget_set_sensitive(basic.smtpserv_label, !use_mailcmd);
 	gtk_widget_set_sensitive(basic.uid_entry,  !use_mailcmd);
 	gtk_widget_set_sensitive(basic.pass_entry, !use_mailcmd);
+}
+
+static void prefs_account_smtp_userid_cb(GtkEditable *editable,
+					 gpointer smtp_passwd)
+{
+	gchar *buf;
+	gboolean use_smtp_userid;
+	
+	buf = gtk_editable_get_chars(editable, 0, -1);
+	if(buf[0] == '\0') {
+		use_smtp_userid = FALSE;
+	} else {
+		use_smtp_userid = TRUE;
+	}
+	gtk_widget_set_sensitive(GTK_WIDGET(smtp_passwd), use_smtp_userid);
+	g_free(buf);
 }

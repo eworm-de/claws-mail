@@ -104,14 +104,6 @@ void prefs_folder_item_cancel_cb		(GtkWidget *widget,
 						 struct PrefsFolderItemDialog *dialog);
 void prefs_folder_item_ok_cb			(GtkWidget *widget, 
 						 struct PrefsFolderItemDialog *dialog);
-void prefs_folder_item_default_to_cb		(GtkWidget *widget, 
-						 struct PrefsFolderItemDialog *dialog);
-void prefs_folder_item_simplify_subject_cb	(GtkWidget *widget, 
-						 struct PrefsFolderItemDialog *dialog);
-void prefs_folder_item_folder_chmod_cb		(GtkWidget *widget, 
-						 struct PrefsFolderItemDialog *dialog);
-void prefs_folder_item_default_account_cb	(GtkWidget *widget, 
-						 struct PrefsFolderItemDialog *dialog);
 gint prefs_folder_item_chmod_mode		(gchar *folder_chmod);
 
 
@@ -352,13 +344,11 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_to), 
 				     item->prefs->enable_default_to);
-	gtk_signal_connect(GTK_OBJECT(checkbtn_default_to), "toggled",
-			    GTK_SIGNAL_FUNC(prefs_folder_item_default_to_cb), dialog);
 
 	entry_default_to = gtk_entry_new();
 	gtk_widget_show(entry_default_to);
 	gtk_table_attach_defaults(GTK_TABLE(table), entry_default_to, 1, 2, rowcount, rowcount + 1);
-	gtk_editable_set_editable(GTK_EDITABLE(entry_default_to), item->prefs->enable_default_to);
+	SET_TOGGLE_SENSITIVITY(checkbtn_default_to, entry_default_to);
 	gtk_entry_set_text(GTK_ENTRY(entry_default_to), SAFE_STRING(item->prefs->default_to));
 	address_completion_register_entry(GTK_ENTRY(entry_default_to));
 
@@ -371,15 +361,12 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_simplify_subject), 
 				     item->prefs->enable_simplify_subject);
-	gtk_signal_connect(GTK_OBJECT(checkbtn_simplify_subject), "toggled",
-			   GTK_SIGNAL_FUNC(prefs_folder_item_simplify_subject_cb), dialog);
 
 	entry_simplify_subject = gtk_entry_new();
 	gtk_widget_show(entry_simplify_subject);
 	gtk_table_attach_defaults(GTK_TABLE(table), entry_simplify_subject, 1, 2, 
 				  rowcount, rowcount + 1);
-	gtk_editable_set_editable(GTK_EDITABLE(entry_simplify_subject), 
-				  item->prefs->enable_simplify_subject);
+	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, entry_simplify_subject);
 	gtk_entry_set_text(GTK_ENTRY(entry_simplify_subject), 
 			   SAFE_STRING(item->prefs->simplify_subject_regexp));
 
@@ -393,15 +380,12 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_folder_chmod), 
 				     item->prefs->enable_folder_chmod);
-	gtk_signal_connect(GTK_OBJECT(checkbtn_folder_chmod), "toggled",
-			    GTK_SIGNAL_FUNC(prefs_folder_item_folder_chmod_cb), dialog);
 
 	entry_folder_chmod = gtk_entry_new();
 	gtk_widget_show(entry_folder_chmod);
 	gtk_table_attach_defaults(GTK_TABLE(table), entry_folder_chmod, 1, 2, 
 				  rowcount, rowcount + 1);
-	gtk_editable_set_editable(GTK_EDITABLE(entry_folder_chmod), 
-				  item->prefs->enable_folder_chmod);
+	SET_TOGGLE_SENSITIVITY(checkbtn_folder_chmod, entry_folder_chmod);
 	if (item->prefs->folder_chmod) {
 		gchar *buf;
 
@@ -419,8 +403,6 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_default_account), 
 				     item->prefs->enable_default_account);
-	gtk_signal_connect(GTK_OBJECT(checkbtn_enable_default_account), "toggled",
-			    GTK_SIGNAL_FUNC(prefs_folder_item_default_account_cb), dialog);
 
  	optmenu_default_account = gtk_option_menu_new ();
  	gtk_widget_show (optmenu_default_account);
@@ -453,7 +435,7 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
 
-	gtk_widget_set_sensitive(optmenu_default_account, item->prefs->enable_default_account);
+	SET_TOGGLE_SENSITIVITY(checkbtn_enable_default_account, optmenu_default_account);
 
 	rowcount++;
 
@@ -566,23 +548,6 @@ void prefs_folder_item_ok_cb(GtkWidget *widget,
 	prefs_folder_item_destroy(dialog);
 }
 
-void prefs_folder_item_default_to_cb(GtkWidget *widget, struct PrefsFolderItemDialog *dialog) 
-{
-	gtk_editable_set_editable(GTK_EDITABLE(dialog->entry_default_to),
-	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_default_to)));
-}
-
-void prefs_folder_item_simplify_subject_cb(GtkWidget *widget, struct PrefsFolderItemDialog *dialog) 
-{
-	gtk_editable_set_editable(GTK_EDITABLE(dialog->entry_simplify_subject),
-	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_simplify_subject)));
-}
-
-void prefs_folder_item_folder_chmod_cb(GtkWidget *widget, struct PrefsFolderItemDialog *dialog) {
-	gtk_editable_set_editable(GTK_EDITABLE(dialog->entry_folder_chmod),
-	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_folder_chmod)));
-}
-
 gint prefs_folder_item_chmod_mode(gchar *folder_chmod) 
 {
 	gint newmode = 0;
@@ -595,10 +560,4 @@ gint prefs_folder_item_chmod_mode(gchar *folder_chmod)
 	}
 
 	return newmode;
-}
-
-void prefs_folder_item_default_account_cb(GtkWidget *widget, struct PrefsFolderItemDialog *dialog) 
-{
-	gtk_widget_set_sensitive(dialog->optmenu_default_account,
-	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_enable_default_account)));
 }
