@@ -1,5 +1,23 @@
 2001-04-29 [sergey]
 
+	* src/news.c (news_nntp_group, news_nntp_list, news_nntp_xover,
+	news_nntp_post, news_nntp_mode): new functions (wrappers with
+	authentication support).
+	(news_get_article_cmd, news_get_article, news_get_header): new
+	argument "folder"; all callers changed.
+	(news_get_article_cmd): added authentication support.
+	(news_session_get): use news_nntp_mode() instead of nntp_mode().
+	(news_post): use news_nntp_post() instead of nntp_post().
+	(news_get_uncached_articles): use news_nntp_group() instead of
+	nntp_group() and news_nntp_xover() instead of nntp_xover();
+	removed old authentication code.
+	(news_get_group_list): use news_nntp_list() instead of nntp_list().
+
+	* src/nntp.c (nntp_list): return real error code instead of
+	hardcoded NN_ERROR.
+
+2001-04-29 [sergey]
+
 	* configure.in: fixed wint_t typedef detection again
 
 2001-04-28 [hoa]
