@@ -122,6 +122,16 @@ void menu_set_toggle(GtkItemFactory *ifactory, const gchar *path,
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(widget), active);
 }
 
+void menu_toggle_toggle(GtkItemFactory *ifactory, const gchar *path)
+{
+	GtkWidget *widget;
+	
+	g_return_if_fail(ifactory != NULL);
+	
+	widget = gtk_item_factory_get_item(ifactory, path);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), !((GTK_CHECK_MENU_ITEM(widget))->active));
+}
+
 void menu_button_position(GtkMenu *menu, gint *x, gint *y, gpointer user_data)
 {
 	GtkWidget *button;

@@ -58,6 +58,7 @@ static void messageview_size_allocate_cb(GtkWidget	*widget,
 static void key_pressed			(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 MessageView	*messageview);
+static void messageview_toggle_view(MessageView *messageview);
 
 MessageView *messageview_create(void)
 {
@@ -647,4 +648,52 @@ static void key_pressed(GtkWidget *widget, GdkEventKey *event,
 {
 	if (event && event->keyval == GDK_Escape && messageview->window)
 		gtk_widget_destroy(messageview->window);
+}
+
+static void messageview_toggle_view(MessageView *messageview)
+{
+	MainWindow *mainwin = messageview->mainwin;
+	GtkItemFactory *ifactory;
+	
+	if (!mainwin) return;
+	
+	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
+	menu_toggle_toggle(ifactory, "/View/Expand Summary View");
+}
+
+void messageview_toggle_view_real(MessageView *messageview)
+{
+	MainWindow *mainwin = messageview->mainwin;
+	union CompositeWin *cwin = &mainwin->win;
+	GtkWidget *vpaned = NULL;
+	GtkWidget *container = NULL;
+	GtkItemFactory *ifactory =gtk_item_factory_from_widget(mainwin->menubar);
+	
+	switch (mainwin->type) {
+	case SEPARATE_NONE:
+		vpaned = cwin->sep_none.vpaned;
+		container = cwin->sep_none.hpaned;
+		break;
+	case SEPARATE_FOLDER:
+		vpaned = cwin->sep_folder.vpaned;
+		container = mainwin->vbox_body;
+		break;
+	case SEPARATE_MESSAGE:
+	case SEPARATE_BOTH:
+		return;
+	}
+
+	if (vpaned->parent != NULL) {
+		gtk_widget_ref(vpaned);
+		gtkut_container_remove(GTK_CONTAINER(container), vpaned);
+		gtk_widget_reparent(GTK_WIDGET_PTR(messageview), container);
+		menu_set_sensitive(ifactory, "/View/Expand Summary View", FALSE);
+		gtk_widget_grab_focus(GTK_WIDGET(messageview->textview->text));
+	} else {
+		gtk_widget_reparent(GTK_WIDGET_PTR(messageview), vpaned);
+		gtk_container_add(GTK_CONTAINER(container), vpaned);
+		gtk_widget_unref(vpaned);
+		menu_set_sensitive(ifactory, "/View/Expand Summary View", TRUE);
+		gtk_widget_grab_focus(GTK_WIDGET(mainwin->summaryview->ctree));
+	}
 }

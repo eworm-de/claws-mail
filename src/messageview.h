@@ -67,6 +67,7 @@ void messageview_copy_clipboard			(MessageView	*messageview);
 void messageview_select_all			(MessageView	*messageview);
 void messageview_set_position			(MessageView	*messageview,
 						 gint		 pos);
+void messageview_toggle_view_real(MessageView *messageview);
 
 gboolean messageview_search_string		(MessageView	*messageview,
 						 const gchar	*str,

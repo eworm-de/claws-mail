@@ -58,6 +58,8 @@ void menu_set_insensitive_all	(GtkMenuShell		*menu_shell);
 void menu_set_toggle		(GtkItemFactory 	*ifactory,
 				 const gchar 		*path,
 				 gboolean 		 active);
+void menu_toggle_toggle		(GtkItemFactory		*ifactory,
+				 const gchar		*path);
 void menu_button_position	(GtkMenu		*menu,
 				 gint			*x,
 				 gint			*y,

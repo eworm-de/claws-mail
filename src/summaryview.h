@@ -101,8 +101,8 @@ struct _SummaryView
 	GtkWidget *statlabel_folder;
 	GtkWidget *statlabel_select;
 	GtkWidget *statlabel_msgs;
-	GtkWidget *toggle_eventbox;
-	GtkWidget *toggle_arrow;
+	GtkWidget *toggle_view_btn;
+	GtkWidget *toggle_view_arrow;
 	GtkWidget *popupmenu;
 	GtkWidget *colorlabel_menu;
 
@@ -247,5 +247,7 @@ void summary_set_column_order	  (SummaryView		*summaryview);
 void processing_apply();
 
 void summary_toggle_show_read_messages (SummaryView *summaryview);
+
+void summary_toggle_view_real	(SummaryView	*summaryview);
 
 #endif /* __SUMMARY_H__ */

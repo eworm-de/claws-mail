@@ -1,3 +1,18 @@
+2002-01-21 [carsten]	0.7.0claws19
+	* src/mainwindow.c
+	* src/menu.[ch]
+	* src/messageview.[ch]
+	* src/summaryview.[ch]
+		changes to shortcuts handling again:
+			+ "Q" now controled by mainwin
+			+ v/V are now customizable and have slightly
+			  different meanings
+		the "button" to minimize the messageview (and maximize
+		the summary view) is a real button now
+	* src/compose.c
+		"Delete Line+" added to Edit/Advanced (this will also
+		delete the '\n')
+
 2002-01-20 [melvin] 0.7.0claws18
 
 	* src/addressbook.c
