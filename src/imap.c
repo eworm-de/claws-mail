@@ -163,7 +163,7 @@ static void imap_session_destroy(Session * session);
 static gchar *imap_fetch_msg(Folder * folder, FolderItem * item, gint uid);
 static gint imap_add_msg(Folder * folder,
 			 FolderItem * dest,
-			 const gchar * file, gboolean remove_source);
+			 const gchar * file);
 
 static gint imap_copy_msg(Folder * folder,
 			  FolderItem * dest, MsgInfo * msginfo);
@@ -778,8 +778,7 @@ gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
 	return filename;
 }
 
-gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
-		  gboolean remove_source)
+gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file)
 {
 	gchar *destdir;
 	IMAPSession *session;
@@ -799,11 +798,6 @@ gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 	if (ok != IMAP_SUCCESS) {
 		g_warning("can't append message %s\n", file);
 		return -1;
-	}
-
-	if (remove_source) {
-		if (unlink(file) < 0)
-			FILE_OP_ERROR(file, "unlink");
 	}
 
 	return newuid;
@@ -884,7 +878,7 @@ gint imap_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	srcfile = procmsg_get_message_file(msginfo);
 	if (!srcfile) return -1;
 
-	ret = imap_add_msg(folder, dest, srcfile, FALSE);
+	ret = imap_add_msg(folder, dest, srcfile);
 
 	g_free(srcfile);
 

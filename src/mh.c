@@ -53,12 +53,9 @@ static MsgInfo *mh_get_msginfo(Folder * folder,
 			       FolderItem * item, gint num);
 static gint mh_add_msg(Folder * folder,
 		       FolderItem * dest,
-		       const gchar * file, gboolean remove_source);
-gint     mh_add_msgs		(Folder		*folder,
-				 FolderItem	*dest,
-				 GSList		*file_list,
-				 gboolean	 remove_source,
-				 gint		*first);
+		       const gchar * file);
+static gint mh_add_msgs(Folder * folder,
+		 FolderItem * dest, GSList * file_list, MsgNumberList **newnum_list);
 static gint mh_copy_msg(Folder * folder,
 			FolderItem * dest, MsgInfo * msginfo);
 static gint mh_remove_msg(Folder * folder, FolderItem * item, gint num);
@@ -311,26 +308,28 @@ gchar *mh_get_new_msg_filename(FolderItem *dest)
 	procmsg_write_flags(&newmsginfo, fp); \
 }
 
-gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
-		gboolean remove_source)
+gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file)
 {
         GSList file_list; 
+	gint ret;
+	MsgNumberList *newnum_list = NULL;
   
         g_return_val_if_fail(file != NULL, -1); 
   
         file_list.data = (gpointer) file; 
         file_list.next = NULL; 
   
-        return mh_add_msgs(folder, dest, &file_list, remove_source, NULL); 
+        ret = mh_add_msgs(folder, dest, &file_list, NULL); 
+	g_slist_free(newnum_list);
+	return ret;
 } 
  
 gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list, 
-                gboolean remove_source, gint *first) 
+                 MsgNumberList **newnum_list) 
 { 
 	gchar *destfile;
         GSList *cur; 
         gchar *file; 
-        gint first_ = 0; 
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(file_list != NULL, -1);
@@ -345,8 +344,6 @@ gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 
                 destfile = mh_get_new_msg_filename(dest); 
                 if (destfile == NULL) return -1; 
-                if (first_ == 0 || first_ > dest->last_num + 1) 
-                        first_ = dest->last_num + 1; 
   
                 if (link(file, destfile) < 0) { 
                         if (copy_file(file, destfile, TRUE) < 0) { 
@@ -356,20 +353,10 @@ gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
                                 return -1; 
                         } 
 		}
+		*newnum_list = g_slist_append(*newnum_list, GINT_TO_POINTER(dest->last_num + 1));
 
 		g_free(destfile);
 		dest->last_num++;
-	}
-
-	if (first)
-		*first = first_;
-
-	if (remove_source) {
-		for (cur = file_list; cur != NULL; cur = cur->next) {
-			file = (gchar *)cur->data;
-			if (unlink(file) < 0)
-				FILE_OP_ERROR(file, "unlink");
- 		}
 	}
 
 	return dest->last_num; 

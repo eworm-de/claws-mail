@@ -1,3 +1,11 @@
+2003-07-25 [christoph]	0.9.3claws53
+
+	* src/folder.[ch]
+	* src/imap.c
+	* src/mh.c
+		rewrite adding of multiple messages to a folder for
+		claws' folder system
+
 2003-07-25 [luke]	0.9.3claws52
 
 	* src/mimeview.c
