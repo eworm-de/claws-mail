@@ -1,3 +1,8 @@
+2002-09-10
+
+	* src/summaryview.c: summary_show(): refresh even if open_inbox_on_inc
+	  is set (to avoid summary refresh problem).
+
 2002-09-06
 
 	* src/prefs_common.c: corrected English.

@@ -1,3 +1,8 @@
+2002-09-10 [paul]	0.8.2claws31
+
+	* sync with 0.8.2cvs12
+		see ChangeLog 2002-09-10
+
 2002-09-06 [paul]	0.8.2claws30
 
 	* src/prefs_common.c

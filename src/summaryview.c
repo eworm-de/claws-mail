@@ -782,8 +782,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	
 	STATUSBAR_POP(summaryview->mainwin);
 
-	is_refresh = (!prefs_common.open_inbox_on_inc &&
-		      item == summaryview->folder_item) ? TRUE : FALSE;
+	is_refresh = (item == summaryview->folder_item) ? TRUE : FALSE;
 	if (is_refresh) {
 		selected_msgnum = summary_get_msgnum(summaryview,
 						     summaryview->selected);
