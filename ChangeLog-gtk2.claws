@@ -1,3 +1,8 @@
+2004-10-12 [colin]	0.9.12cvs124.3
+
+	* src/compose.c
+		Fix encoding bug from latest sync
+
 2004-10-12 [paul]	0.9.12cvs124.2
 
 	* src/plugins/pgpmime/prefs_gpg.c

@@ -3535,7 +3535,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp)
 		else
 			encoding = procmime_get_encoding_for_charset(out_codeset);
 
-		src_codeset = conv_get_current_charset_str();
+		src_codeset = CS_UTF_8;
 		/* if current encoding is US-ASCII, set it the same as
 		   outgoing one to prevent code conversion failure */
 		if (!strcasecmp(src_codeset, CS_US_ASCII))
