@@ -37,3 +37,4 @@
 ( cvs diff -u -r 1.5 -r 1.6 src/folderutils.c; ) > 0.9.12cvs53.patchset
 ( cvs diff -u -r 1.71 -r 1.72 po/POTFILES.in; cvs diff -u -r 1.138 -r 1.139 src/main.c ) > 0.9.12cvs54.patchset
 ( cvs diff -u -r 1.139 -r 1.140 src/main.c; cvs diff -u -r 1.13 -r 1.14 src/common/ssl.c; cvs diff -u -r 1.7 -r 1.8 src/common/sylpheed.c; cvs diff -u -r 1.5 -r 1.6 src/common/sylpheed.h; ) > 0.9.12cvs55.patchset
+( cvs diff -u -r 1.140 -r 1.141 src/main.c; cvs diff -u -r 1.14 -r 1.15 src/common/ssl.c; cvs diff -u -r 1.8 -r 1.9 src/common/sylpheed.c; cvs diff -u -r 1.6 -r 1.7 src/common/sylpheed.h; ) > 0.9.12cvs56.patchset

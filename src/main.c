@@ -165,12 +165,6 @@ _("File `%s' already exists.\n"
 
 static MainWindow *static_mainwindow;
 
-void sylpheed_gtk_idle(void) 
-{
-	while(gtk_events_pending())
-		gtk_main_iteration();
-}
-
 int main(int argc, char *argv[])
 {
 	gchar *userrc;
@@ -356,8 +350,6 @@ int main(int argc, char *argv[])
 		g_ptr_array_free(cmd.status_full_folders, TRUE);
 		cmd.status_full_folders = NULL;
 	}
-
-	sylpheed_register_idle_function(sylpheed_gtk_idle);
 
 	prefs_toolbar_init();
 
