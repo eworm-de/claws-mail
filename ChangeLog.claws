@@ -1,3 +1,25 @@
+2003-04-13 [paul]	0.8.11claws88
+
+	* src/plugins/clamav/clamav_plugin.c
+		fix memory leaks
+		clean up
+
+2003-04-12 [paul]	0.8.11claws87
+
+	* src/plugins/clamav/clamav_plugin.c
+		activate enable/disable archive scanning option
+		
+	* src/plugins/clamav/.cvsignore		** NEW FILE **
+
+2003-04-12 [paul]	0.8.11claws86
+
+	* src/plugins/Makefile.am
+	  src/plugins/clamav/Makefile.am		** NEW FILE **
+	  src/plugins/clamav/README 			** NEW FILE ** 
+	  src/plugins/clamav/clamav_plugin.[ch]		** NEW FILES **
+	  src/plugins/clamav/clamav_plugin_gtk.c	** NEW FILE **
+	  	add Clam AntiVirus plugin
+
 2003-04-12 [paul]	0.8.11claws85
 
 	* sync with 0.8.11cvs21

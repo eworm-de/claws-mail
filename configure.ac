@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=11
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws85
+EXTRA_VERSION=claws88
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -431,6 +431,20 @@ if test x"$ac_cv_enable_trayicon_plugin" = xyes; then
 	PLUGINS="trayicon $PLUGINS"
 fi
 
+AC_ARG_ENABLE(clamav-plugin,
+	[  --enable-clamav-plugin    Build clamav plugin [default=no]],
+	[ac_cv_enable_clamav_plugin=$enableval], [ac_cv_enable_clamav_plugin=no])
+AM_CONDITIONAL(BUILD_CLAMAV_PLUGIN, test x"$ac_cv_enable_clamav_plugin" = xyes)
+if test x"$ac_cv_enable_clamav_plugin" = xyes; then
+	AC_CHECK_LIB(clamav, cl_scanfile, clamav_lib=-lclamav)
+	if test -z "${clamav_lib}"
+	then
+		AC_MSG_ERROR(clamav library not found)
+	fi
+	LIBS="${clamav_lib} ${LIBS}"
+	PLUGINS="clamav $PLUGINS"
+fi
+
 dnl ****************************
 dnl ** Final configure output **
 dnl ****************************
@@ -453,6 +467,7 @@ src/plugins/mathml_viewer/Makefile
 src/plugins/dillo_viewer/Makefile
 src/plugins/image_viewer/Makefile
 src/plugins/trayicon/Makefile
+src/plugins/clamav/Makefile
 faq/Makefile
 faq/de/Makefile
 faq/en/Makefile
