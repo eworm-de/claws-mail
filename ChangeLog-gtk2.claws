@@ -1,3 +1,8 @@
+2005-02-11 [paul]	1.0.1cvs4.2
+
+	* po/Makefile.in.in
+		fix 'make release'
+
 2005-02-10 [paul]	1.0.1cvs4.1
 
 	* ChangeLog
