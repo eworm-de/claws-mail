@@ -1,3 +1,13 @@
+2005-01-21 [colin]	1.0.0cvs4.1
+
+	* src/folder.h
+	* src/folderview.c
+	* src/folderview.h
+	* src/summaryview.c
+	* src/gtk/quicksearch.c
+	* src/gtk/quicksearch.h
+		Sync with HEAD (recursive quicksearch)
+
 2005-01-20 [colin]	1.0.0cvs3.4
 
 	* src/ssl_manager.c

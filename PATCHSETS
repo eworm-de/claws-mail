@@ -332,3 +332,4 @@
 ( cvs diff -u -r 1.3.2.4 -r 1.3.2.5 src/ssl_manager.c; ) > 1.0.0cvs3.2.patchset
 ( cvs diff -u -r 1.3.2.5 -r 1.3.2.6 src/ssl_manager.c; ) > 1.0.0cvs3.3.patchset
 ( cvs diff -u -r 1.3.2.6 -r 1.3.2.7 src/ssl_manager.c; ) > 1.0.0cvs3.4.patchset
+( cvs diff -u -r 1.87.2.9 -r 1.87.2.10 src/folder.h; cvs diff -u -r 1.207.2.24 -r 1.207.2.25 src/folderview.c; cvs diff -u -r 1.20.2.3 -r 1.20.2.4 src/folderview.h; cvs diff -u -r 1.395.2.42 -r 1.395.2.43 src/summaryview.c; cvs diff -u -r 1.1.2.13 -r 1.1.2.14 src/gtk/quicksearch.c; cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/gtk/quicksearch.h; ) > 1.0.0cvs4.1.patchset

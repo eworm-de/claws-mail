@@ -47,5 +47,9 @@ gchar *expand_search_string(const gchar *str);
 gboolean quicksearch_is_running(QuickSearch *quicksearch);
 gboolean quicksearch_has_focus(QuickSearch *quicksearch);
 void quicksearch_pass_key(QuickSearch *quicksearch, guint val, GdkModifierType mod);
+void quicksearch_reset_cur_folder_item(QuickSearch *quicksearch);
+void quicksearch_search_subfolders(QuickSearch *quicksearch, 
+				   FolderView  *folderview,
+				   FolderItem  *folder_item);
 
 #endif /* QUICKSEARCH_H */
