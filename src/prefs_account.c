@@ -1517,7 +1517,7 @@ static gint prefs_account_apply(void)
 		alertpanel_error(_("SMTP server is not entered."));
 		return -1;
 	}
-	if ((protocol == A_POP3 || protocol == A_APOP || protocol == A_LOCAL) &&
+	if ((protocol == A_POP3 || protocol == A_APOP || protocol == A_IMAP4) &&
 	    *gtk_entry_get_text(GTK_ENTRY(basic.uid_entry)) == '\0') {
 		alertpanel_error(_("User ID is not entered."));
 		return -1;

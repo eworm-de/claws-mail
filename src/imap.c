@@ -253,11 +253,11 @@ static IMAPSession *imap_session_get(Folder *folder)
 					 folder->account->userid,
 					 folder->account->passwd);
 #endif
-		if (rfolder->session)
+		if (rfolder->session) {
 			imap_parse_namespace(IMAP_SESSION(rfolder->session),
 					     IMAP_FOLDER(folder));
-
-		rfolder->session->last_access_time = time(NULL);
+			rfolder->session->last_access_time = time(NULL);
+		}
 		statusbar_pop_all();
 		return IMAP_SESSION(rfolder->session);
 	}

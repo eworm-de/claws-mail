@@ -1,3 +1,14 @@
+2001-12-09
+
+	* src/prefs_account.c: prefs_account_apply(): fixed a bug that
+	  checked user ID on "local", but didn't on IMAP4.
+	* src/imap.c: imap_session_get(): fixed a crash bug when
+	  rfolder->session == NULL.
+	* Makefile.am: changed the arguments of tar from 'chojf' to
+	  '--bzip2 -chof'.
+	* src/summaryview.c: summary_toggle_view(): disclaim the selection
+	  of textview before removing vpaned.
+
 2001-12-08
 
 	* src/messageview.c: messageview_change_view_type(): disclaim the

@@ -1,3 +1,14 @@
+2001-12-09
+
+	* src/prefs_account.c: prefs_account_apply(): 「ローカル」で
+	  ユーザ ID をチェックし、 IMAP4 でチェックしていなかったバグを
+	  修正。
+	* src/imap.c: imap_session_get(): rfolder->session == NULL のとき
+	  にクラッシュするバグを修正。
+	* Makefile.am: tar の引数を 'chojf' から '--bzip2 -chof' に変更。
+	* src/summaryview.c: summary_toggle_view(): vpaned を remove する
+	  前に textview のセレクションを放棄。
+
 2001-12-08
 
 	* src/messageview.c: messageview_change_view_type(): textview を

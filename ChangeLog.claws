@@ -1,3 +1,8 @@
+2001-12-09 [paul]	0.6.5claws66
+
+	* sync with sylpheed 0.6.5cvs24
+        	see ChangeLog entry 2001-12-09
+
 2001-12-08 [alfons]	0.6.5claws65
 
 	* src/textview.c
