@@ -261,7 +261,7 @@ begin
   if FileExists(matcherrc)
   and not FileExists(matcherrc+'.sav')
   then InstExec(ExpandConstant('{app}')+'\bin\matcher_convert.exe',
-                matcherrc+' '+matcherrc+'.sav',
+                '"'+matcherrc+'" "'+matcherrc+'.sav"',
                 '',true,false,SW_SHOWNORMAL,res);
 end;
 
