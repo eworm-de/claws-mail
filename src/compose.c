@@ -2838,20 +2838,24 @@ static gint compose_bounce_write_to_file(Compose *compose, const gchar *file)
 		if (fputs(buf, fdest) == -1)
 			goto error;
 
-		if (g_strncasecmp(buf, "From:", strlen("From:")) == 0) {
-			fputs(" (by way of ", fdest);
-			if (compose->account->name
-			    && *compose->account->name) {
-				compose_convert_header
-					(buf, sizeof(buf),
-					 compose->account->name,
-					 strlen("From: "));
-				fprintf(fdest, "%s <%s>",
-					buf, compose->account->address);
-			} else
-				fprintf(fdest, "%s",
-					compose->account->address);
-			fputs(")", fdest);
+		if (!prefs_common.bounce_keep_from) {
+			if (g_strncasecmp(buf, "From:",
+					  strlen("From:")) == 0) {
+				fputs(" (by way of ", fdest);
+				if (compose->account->name
+				    && *compose->account->name) {
+					compose_convert_header
+						(buf, sizeof(buf),
+						 compose->account->name,
+						 strlen("From: "));
+					fprintf(fdest, "%s <%s>",
+						buf,
+						compose->account->address);
+				} else
+					fprintf(fdest, "%s",
+						compose->account->address);
+				fputs(")", fdest);
+			}
 		}
 
 		if (fputs("\n", fdest) == -1)

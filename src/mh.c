@@ -766,6 +766,8 @@ void mh_scan_tree(Folder *folder)
 
 	pptable = folder_persist_prefs_new(folder);
 
+	prefs_scoring_clear();
+	prefs_filtering_clear();
 	folder_tree_destroy(folder);
 	item = folder_item_new(folder->name, NULL);
 	item->folder = folder;
@@ -782,6 +784,8 @@ void mh_scan_tree(Folder *folder)
 	mh_scan_tree_recursive(item, pptable);
 	
 	folder_persist_prefs_free(pptable);
+
+	prefs_matcher_read_config();
 }
 
 #define MAKE_DIR_IF_NOT_EXIST(dir) \

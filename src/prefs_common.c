@@ -125,6 +125,7 @@ static struct Compose {
 
 	GtkWidget *checkbtn_quote;
 	GtkWidget *checkbtn_forward_as_attachment;
+	GtkWidget *checkbtn_bounce_keep_from;
 	GtkWidget *checkbtn_smart_wrapping;
 	GtkWidget *checkbtn_block_cursor;
 	GtkWidget *checkbtn_reply_with_quote;
@@ -349,6 +350,10 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"forward_as_attachment", "FALSE", &prefs_common.forward_as_attachment,
 	 P_BOOL, &compose.checkbtn_forward_as_attachment,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"bounce_keep_from", "FALSE",
+	 &prefs_common.bounce_keep_from, P_BOOL,
+	 &compose.checkbtn_bounce_keep_from,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"undo_level", "50", &prefs_common.undolevels, P_INT,
 	 &compose.spinbtn_undolevel,
@@ -1680,6 +1685,7 @@ static void prefs_compose_create(void)
 	GtkWidget *frame_reply;
 	GtkWidget *checkbtn_quote;
 	GtkWidget *checkbtn_forward_as_attachment;
+	GtkWidget *checkbtn_bounce_keep_from;
 	GtkWidget *checkbtn_smart_wrapping;
 	GtkWidget *checkbtn_block_cursor;
 	GtkWidget *frame_msgwrap;
@@ -1759,6 +1765,9 @@ static void prefs_compose_create(void)
 
 	PACK_CHECK_BUTTON (hbox5, checkbtn_block_cursor,
 			  _("Block cursor"));
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_bounce_keep_from,
+			   _("Keep the original 'From' header when bouncing"));
 
 	hbox_undolevel = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_undolevel);
@@ -1846,6 +1855,8 @@ static void prefs_compose_create(void)
 
 	compose.checkbtn_forward_as_attachment =
 		checkbtn_forward_as_attachment;
+	compose.checkbtn_bounce_keep_from =
+		checkbtn_bounce_keep_from;
 	compose.checkbtn_smart_wrapping = 
 		checkbtn_smart_wrapping;
 	compose.checkbtn_block_cursor   =

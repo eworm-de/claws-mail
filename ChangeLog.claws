@@ -1,3 +1,15 @@
+2002-03-25 [hoa]	0.7.4claws45
+
+	* src/matcher.c
+	* src/mh.c
+		fix the bug #516442 with folder rescan.
+
+	* src/prefs_common.[ch]
+	* src/compose.c
+		added an option to enable two different behaviours
+		for bounce.
+
+
 2002-03-25 [paul]	0.7.4claws44
 
 	* src/mainwindow.c

@@ -1180,7 +1180,7 @@ void prefs_matcher_read_config(void)
 	else {
 		/* previous version compatibily */
 
-		printf("reading filtering\n");
+		/* printf("reading filtering\n"); */
 		rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				     FILTERING_RC, NULL);
 		f = fopen(rcpath, "rb");
@@ -1191,7 +1191,7 @@ void prefs_matcher_read_config(void)
 			fclose(matcher_parserin);
 		}
 		
-		printf("reading scoring\n");
+		/* printf("reading scoring\n"); */
 		rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				     SCORING_RC, NULL);
 		f = fopen(rcpath, "rb");
