@@ -259,6 +259,9 @@ static gboolean prefs_scoring_free_func(GNode *node, gpointer data)
 {
 	FolderItem *item = node->data;
 
+	if(!item->prefs)
+		return FALSE;
+
 	prefs_scoring_free(item->prefs->scoring);
 	item->prefs->scoring = NULL;
 

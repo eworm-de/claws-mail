@@ -1,9 +1,30 @@
+2001-07-25 [christoph]
+
+	* src/scoring.c
+		fixed segfault
+		item->prefs == NULL (don't know why)
+
 2001-07-25 [alfons]
 
 	* configure.in
 		Sylpheed 0.5.1claws1
 
 	* sync with Sylpheed 0.5.1cvs1-3
+
+2001-07-24 [christoph]
+
+	* src/folderview.c
+	* src/prefs_folder_item.[ch]
+		added folderitem preferences dialog with
+		default To: and auto request return receipt
+
+	* src/compose.[ch]
+	* src/menu.[ch]
+		changes to handle new folderitem preferences
+
+	* src/mainwindow.c
+	* src/summaryview.c
+		call compose new mail with current folderitem
 
 2001-07-24 [alfons]
 
@@ -21,19 +42,6 @@
 	* po/es.po
 		updated translation
 		(submitted by Ricardo Mones Lastra <mones@trasgu.aic.uniovi.es>)
-
-	* src/folderview.c
-	* src/prefs_folder_item.[ch]
-		added folderitem preferences dialog with
-		default To: and auto request return receipt
-
-	* src/compose.[ch]
-	* src/menu.[ch]
-		changes to handle new folderitem preferences
-
-	* src/mainwindow.c
-	* src/summaryview.c
-		call compose new mail with current folderitem
 
 2001-07-22 [alfons]
 
