@@ -137,16 +137,16 @@ static void about_create(void)
 		   " IPv6"
 #endif
 #if HAVE_LIBCOMPFACE
-		   " libcompface"
+		   " compface"
 #endif
 #if HAVE_LIBJCONV
-		   " libjconv"
+		   " jconv"
 #endif
 #if USE_GPGME
-		   " GPGME"
+		   " GnuPG"
 #endif
 #if USE_SSL
-		   " SSL"
+		   " OpenSSL"
 #endif
 #if USE_LDAP
 		   " LDAP"
@@ -154,8 +154,8 @@ static void about_create(void)
 #if USE_JPILOT
 		   " JPilot"
 #endif
-#if USE_PSPELL
-		   " pspell"
+#if USE_ASPELL
+		   " GNU/aspell"
 #endif
 	"");
 

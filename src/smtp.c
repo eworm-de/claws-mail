@@ -127,6 +127,9 @@ Session *smtp_session_new(const gchar *server, gushort port,
 	SESSION(session)->phase            = SESSION_READY;
 	SESSION(session)->last_access_time = 0;
 	SESSION(session)->data             = NULL;
+
+	SESSION(session)->destroy          = smtp_session_destroy;
+
 	session->avail_auth_type           = avail_auth_type;
 	session->user                      = user ? g_strdup(user) : NULL;
 	session->pass                      = pass ? g_strdup(pass) :
@@ -135,13 +138,13 @@ Session *smtp_session_new(const gchar *server, gushort port,
 	return SESSION(session);
 }
 
-void smtp_session_destroy(SMTPSession *session)
+void smtp_session_destroy(Session *session)
 {
-	sock_close(SESSION(session)->sock);
-	SESSION(session)->sock = NULL;
+	sock_close(session->sock);
+	session->sock = NULL;
 
-	g_free(session->user);
-	g_free(session->pass);
+	g_free(SMTP_SESSION(session)->user);
+	g_free(SMTP_SESSION(session)->pass);
 }
 
 gint smtp_from(SMTPSession *session, const gchar *from,

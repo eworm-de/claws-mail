@@ -77,7 +77,7 @@ Session *smtp_session_new	(const gchar	*server,
 				 const gchar	*user,
 				 const gchar	*pass);
 #endif
-void smtp_session_destroy	(SMTPSession	*session);
+void smtp_session_destroy	(Session	*session);
 
 gint smtp_from			(SMTPSession	*session,
 				 const gchar	*from,

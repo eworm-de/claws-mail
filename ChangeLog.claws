@@ -1,3 +1,80 @@
+2002-08-29 [paul]	0.8.2claws9
+
+	* sync with 0.8.2cvs5
+		see ChangeLog 2002-08-29
+
+2002-08-29 [colin]	0.8.2claws8
+
+	* src/summaryview.c
+		Added a sanity check in summary_select_thread
+		Should fix bug 601605
+
+2002-08-29 [colin]	0.8.2claws7
+
+	* src/main.c
+		Revert claws6 changes regarding bug #591676
+
+2002-08-28 [colin]	0.8.2claws6
+	
+	* src/main.c
+		Ignore cache for queue folderitems
+		Fix bug #591676
+
+2002-08-28 [melvin]	0.8.2claws5
+
+	* README.claws
+		Fixed typos.
+
+2002-08-28 [melvin]	0.8.2claws4
+
+	* README.claws
+		Updated a bit the text concerning the spell checker
+
+2002-08-28 [melvin]	0.8.2claws3
+
+	Merged the GNU_aspell_branch:
+		Support of new GNU/aspell is now included and the old pspell
+		is not supported anymore.
+		See README.claws
+
+	* README.claws
+		Updated spell checker text to reflect the switch to GNU/aspell
+
+	* ac/aspell.m4 		*** NEW ***
+	* src/gtkaspell.[ch]	*** NEW *** 
+	* ac/pspell.m4          *** DELETED *** 
+	* src/gtkspell.[ch]     *** DELETED ***
+
+	* ac/Makefile.am
+		Updated for GNU/aspell support
+
+	* po/POTFILES.in
+		Replaced gtkspell.c by gtkaspell.c
+
+	* acconfig.h
+	* src/Makefile.am
+	* src/about.c
+	* src/compose.[ch]
+	* src/crash.c
+	* src/main.c
+	* src/prefs_common.[ch]
+		Updated for GNU/aspell support
+
+2002-08-28 [paul]	0.8.2claws2
+
+	* sync with 0.8.2cvs4
+		see ChangeLog 2002-08-27 and 2002-08-28
+
+2002-08-28 [colin]	0.8.2claws1
+
+	* src/summary_search.c
+		Added "AND search"
+
+2002-08-28 [jens]	0.8.2claws
+
+	*po/de.po
+		Updated German translations
+
 2002-08-27 [melvin]	0.8.2claws
 
 	* po/fr.po

@@ -411,6 +411,7 @@ gint pop3_getsize_list_recv(SockInfo *sock, gpointer data)
 	if (pop3_ok(sock, NULL) != PS_SUCCESS) return POP3_LOGOUT_SEND;
 
 	state->cur_total_bytes = 0;
+	state->cur_total_recv_bytes = 0;
 
 	while ((len = sock_gets(sock, buf, sizeof(buf))) > 0) {
 		guint num, size;
@@ -518,6 +519,7 @@ gint pop3_retr_recv(SockInfo *sock, gpointer data)
 			return next_state;
 	
 		state->cur_total_bytes += state->msg[state->cur_msg].size;
+		state->cur_total_recv_bytes += state->msg[state->cur_msg].size;
 		state->cur_total_num++;
 
 		state->msg[state->cur_msg].received = TRUE;

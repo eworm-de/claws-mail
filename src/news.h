@@ -58,9 +58,9 @@ struct _NewsGroupInfo
 
 Folder	*news_folder_new		(const gchar	*name,
 					 const gchar	*folder);
-void	 news_folder_destroy		(NewsFolder	*folder);
+void	 news_folder_destroy		(Folder		*folder);
 
-void news_session_destroy		(NNTPSession	*session);
+void news_session_destroy		(Session	*session);
 NNTPSession *news_session_get		(Folder		*folder);
 
 GSList *news_get_article_list		(Folder		*folder,

@@ -293,10 +293,15 @@ Folder *imap_folder_new(const gchar *name, const gchar *path)
 	return folder;
 }
 
-void imap_folder_destroy(IMAPFolder *folder)
+void imap_folder_destroy(Folder *folder)
 {
-	g_free(folder->selected_folder);
-	
+	gchar *dir;
+
+	dir = folder_get_path(folder);
+	if (is_dir_exist(dir))
+		remove_dir_recursive(dir);
+	g_free(dir);
+
 	folder_remote_folder_destroy(REMOTE_FOLDER(folder));
 }
 
@@ -327,6 +332,7 @@ static void imap_folder_init(Folder *folder, const gchar *name,
 	folder->create_folder         = imap_create_folder;
 	folder->rename_folder         = imap_rename_folder;
 	folder->remove_folder         = imap_remove_folder;
+	folder->destroy		      = imap_folder_destroy;
 	folder->check_msgnum_validity = imap_check_msgnum_validity;
 
 	folder->get_num_list	      = imap_get_num_list;
@@ -514,6 +520,7 @@ Session *imap_session_new(const PrefsAccount *account)
 	}
 
 	session = g_new(IMAPSession, 1);
+
 	SESSION(session)->type             = SESSION_IMAP;
 	SESSION(session)->server           = g_strdup(account->recv_server);
 	SESSION(session)->sock             = imap_sock;
@@ -521,6 +528,9 @@ Session *imap_session_new(const PrefsAccount *account)
 	SESSION(session)->phase            = SESSION_READY;
 	SESSION(session)->last_access_time = time(NULL);
 	SESSION(session)->data             = NULL;
+
+	SESSION(session)->destroy          = imap_session_destroy;
+
 	session->mbox = NULL;
 
 	session_list = g_list_append(session_list, session);
@@ -528,12 +538,12 @@ Session *imap_session_new(const PrefsAccount *account)
 	return SESSION(session);
 }
 
-void imap_session_destroy(IMAPSession *session)
+void imap_session_destroy(Session *session)
 {
-	sock_close(SESSION(session)->sock);
-	SESSION(session)->sock = NULL;
+	sock_close(session->sock);
+	session->sock = NULL;
 
-	g_free(session->mbox);
+	g_free(IMAP_SESSION(session)->mbox);
 
 	session_list = g_list_remove(session_list, session);
 }
@@ -956,6 +966,7 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 	guint32 uid_validity;
 	gint ok;
 	IMAPSession *session;
+	gchar *dir;
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(folder->type == F_IMAP, -1);
@@ -986,6 +997,10 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 		return ok;
 	}
 
+	dir = folder_item_get_path(item);
+	remove_numbered_files(dir, uid, uid);
+	g_free(dir);
+
 	return IMAP_SUCCESS;
 }
 
@@ -995,6 +1010,7 @@ gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 	guint32 uid_validity;
 	gint ok;
 	IMAPSession *session;
+	gchar *dir;
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(item != NULL, -1);
@@ -1025,6 +1041,10 @@ gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 		log_warning(_("can't expunge\n"));
 		return ok;
 	}
+
+	dir = folder_item_get_path(item);
+	remove_all_numbered_files(dir);
+	g_free(dir);
 
 	return IMAP_SUCCESS;
 }

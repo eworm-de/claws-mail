@@ -428,8 +428,8 @@ static const gchar *get_compiled_in_features(void)
 #if USE_JPILOT
 		   " JPilot"
 #endif
-#if USE_PSPELL
-		   " pspell"
+#if USE_ASPELL
+		   " GNU/aspell"
 #endif
 	"");
 }

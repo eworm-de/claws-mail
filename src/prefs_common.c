@@ -60,8 +60,8 @@
 #include "stock_pixmap.h"
 #include "quote_fmt.h"
 
-#if USE_PSPELL
-#include "gtkspell.h"
+#if USE_ASPELL
+#include "gtkaspell.h"
 #endif
 
 PrefsCommon prefs_common;
@@ -133,11 +133,11 @@ static struct Compose {
 } compose;
 
 	/* spelling */
-#if USE_PSPELL
+#if USE_ASPELL
 static struct Spelling {
-	GtkWidget *checkbtn_enable_pspell;
-	GtkWidget *entry_pspell_path;
-	GtkWidget *btn_pspell_path;
+	GtkWidget *checkbtn_enable_aspell;
+	GtkWidget *entry_aspell_path;
+	GtkWidget *btn_aspell_path;
 	GtkWidget *optmenu_dictionary;
 	GtkWidget *optmenu_sugmode;
 	GtkWidget *misspelled_btn;
@@ -220,6 +220,7 @@ static struct Interface {
 	GtkWidget *checkbtn_addaddrbyclick;
 	GtkWidget *optmenu_recvdialog;
 	GtkWidget *checkbtn_no_recv_err_panel;
+	GtkWidget *checkbtn_close_recv_dialog;
  	GtkWidget *optmenu_nextunreadmsgdialog;
 	GtkWidget *entry_pixmap_theme;
 	GtkWidget *combo_pixmap_theme;
@@ -268,7 +269,7 @@ static void prefs_common_recv_dialog_set_optmenu(PrefParam *pparam);
 static void prefs_nextunreadmsgdialog_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_nextunreadmsgdialog_set_optmenu(PrefParam *pparam);
 
-#if USE_PSPELL
+#if USE_ASPELL
 static void prefs_dictionary_set_data_from_optmenu	(PrefParam *param);
 static void prefs_dictionary_set_optmenu		(PrefParam *pparam);
 static void prefs_speller_sugmode_set_data_from_optmenu	(PrefParam *pparam);
@@ -387,17 +388,17 @@ static PrefParam param[] = {
         {"smart_wrapping", "TRUE", &prefs_common.smart_wrapping,
 	 P_BOOL, &compose.checkbtn_smart_wrapping,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-#if USE_PSPELL
-	{"enable_pspell", "TRUE", &prefs_common.enable_pspell,
-	 P_BOOL, &spelling.checkbtn_enable_pspell,
+#if USE_ASPELL
+	{"enable_aspell", "TRUE", &prefs_common.enable_aspell,
+	 P_BOOL, &spelling.checkbtn_enable_aspell,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"pspell_path", PSPELL_PATH, &prefs_common.pspell_path, 
-	 P_STRING, &spelling.entry_pspell_path, 
+	{"aspell_path", ASPELL_PATH, &prefs_common.aspell_path, 
+	 P_STRING, &spelling.entry_aspell_path, 
 	 prefs_set_data_from_entry, prefs_set_entry},
 	{"dictionary",  "", &prefs_common.dictionary,
 	 P_STRING, &spelling.optmenu_dictionary, 
 	 prefs_dictionary_set_data_from_optmenu, prefs_dictionary_set_optmenu },
-	{"pspell_sugmode",  "1", &prefs_common.pspell_sugmode,
+	{"aspell_sugmode",  "1", &prefs_common.aspell_sugmode,
 	 P_INT, &spelling.optmenu_sugmode, 
 	 prefs_speller_sugmode_set_data_from_optmenu, prefs_speller_sugmode_set_optmenu },
 	{"use_alternate_dict", "FALSE", &prefs_common.use_alternate,
@@ -778,6 +779,9 @@ static PrefParam param[] = {
 	{"no_receive_error_panel", "FALSE", &prefs_common.no_recv_err_panel,
 	 P_BOOL, &Xinterface.checkbtn_no_recv_err_panel,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"close_receive_dialog", "TRUE", &prefs_common.close_recv_dialog,
+	 P_BOOL, &Xinterface.checkbtn_close_recv_dialog,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"nextunreadmsg_dialog", NULL, &prefs_common.next_unread_msg_dialog, P_ENUM,
 	 &Xinterface.optmenu_nextunreadmsgdialog,
 	 prefs_nextunreadmsgdialog_set_data_from_optmenu,
@@ -1042,7 +1046,7 @@ static void prefs_common_create(void)
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Send"),      page++);
 	prefs_compose_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Compose"),   page++);
-#if USE_PSPELL
+#if USE_ASPELL
 	prefs_spelling_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Spell Checker"),   page++);
 #endif	
@@ -1450,7 +1454,7 @@ static void prefs_common_recv_dialog_newmail_notify_toggle_cb(GtkWidget *w, gpoi
 	gtk_widget_set_sensitive(receive.hbox_newmail_notify, toggled);
 }
 
-#if USE_PSPELL
+#if USE_ASPELL
 static void prefs_dictionary_set_data_from_optmenu(PrefParam *param)
 {
 	gchar *str;
@@ -1461,7 +1465,7 @@ static void prefs_dictionary_set_data_from_optmenu(PrefParam *param)
 	g_return_if_fail(param->widget);
 	g_return_if_fail(*(param->widget));
 
-	dict_fullname = gtkpspell_get_dictionary_menu_active_item
+	dict_fullname = gtkaspell_get_dictionary_menu_active_item
 		(gtk_option_menu_get_menu(GTK_OPTION_MENU(*(param->widget))));
 	str = *((gchar **) param->data);
 	if (str)
@@ -1508,7 +1512,7 @@ static void prefs_speller_sugmode_set_data_from_optmenu(PrefParam *param)
 	g_return_if_fail(param->widget);
 	g_return_if_fail(*(param->widget));
 
-	sugmode = gtkpspell_get_sugmode_from_option_menu
+	sugmode = gtkaspell_get_sugmode_from_option_menu
 		(GTK_OPTION_MENU(*(param->widget)));
 	*((gint *) param->data) = sugmode;
 }
@@ -1522,11 +1526,11 @@ static void prefs_speller_sugmode_set_optmenu(PrefParam *pparam)
 	g_return_if_fail(pparam->data != NULL);
 
 	sugmode = *(gint *) pparam->data;
-	gtkpspell_sugmode_option_menu_set(optmenu, sugmode);
+	gtkaspell_sugmode_option_menu_set(optmenu, sugmode);
 }
 	
 	
-static void prefs_spelling_checkbtn_enable_pspell_toggle_cb
+static void prefs_spelling_checkbtn_enable_aspell_toggle_cb
 	(GtkWidget *widget,
 	 gpointer data)
 {
@@ -1534,40 +1538,40 @@ static void prefs_spelling_checkbtn_enable_pspell_toggle_cb
 
 	toggled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 
-	gtk_widget_set_sensitive(spelling.entry_pspell_path,   toggled);
+	gtk_widget_set_sensitive(spelling.entry_aspell_path,   toggled);
 	gtk_widget_set_sensitive(spelling.optmenu_dictionary,  toggled);
 	gtk_widget_set_sensitive(spelling.optmenu_sugmode,     toggled);
-	gtk_widget_set_sensitive(spelling.btn_pspell_path,     toggled);
+	gtk_widget_set_sensitive(spelling.btn_aspell_path,     toggled);
 	gtk_widget_set_sensitive(spelling.misspelled_btn,      toggled);
 	gtk_widget_set_sensitive(spelling.checkbtn_use_alternate,      toggled);
 	gtk_widget_set_sensitive(spelling.checkbtn_check_while_typing, toggled);
 }
 
-static void prefs_spelling_btn_pspell_path_clicked_cb(GtkWidget *widget,
+static void prefs_spelling_btn_aspell_path_clicked_cb(GtkWidget *widget,
 						     gpointer data)
 {
 	gchar *file_path, *tmp;
 	GtkWidget *new_menu;
 
 	file_path = filesel_select_file(_("Select dictionaries location"),
-					prefs_common.pspell_path);
+					prefs_common.aspell_path);
 	if (file_path == NULL) {
 		/* don't change */	
 	}
 	else {
 	  tmp=g_dirname(file_path);
 	  
-		if (prefs_common.pspell_path)
-			g_free(prefs_common.pspell_path);
-		prefs_common.pspell_path = g_strdup_printf("%s%s",tmp,
+		if (prefs_common.aspell_path)
+			g_free(prefs_common.aspell_path);
+		prefs_common.aspell_path = g_strdup_printf("%s%s",tmp,
 							   G_DIR_SEPARATOR_S);
 
-		new_menu = gtkpspell_dictionary_option_menu_new(prefs_common.pspell_path);
+		new_menu = gtkaspell_dictionary_option_menu_new(prefs_common.aspell_path);
 		gtk_option_menu_set_menu(GTK_OPTION_MENU(spelling.optmenu_dictionary),
 					 new_menu);
 
-		gtk_entry_set_text(GTK_ENTRY(spelling.entry_pspell_path), 
-				   prefs_common.pspell_path);					 
+		gtk_entry_set_text(GTK_ENTRY(spelling.entry_aspell_path), 
+				   prefs_common.aspell_path);					 
 		/* select first one */
 		gtk_option_menu_set_history(GTK_OPTION_MENU(
 					spelling.optmenu_dictionary), 0);
@@ -1576,7 +1580,7 @@ static void prefs_spelling_btn_pspell_path_clicked_cb(GtkWidget *widget,
 			g_free(prefs_common.dictionary);
 
 		prefs_common.dictionary = 
-			gtkpspell_get_dictionary_menu_active_item(
+			gtkaspell_get_dictionary_menu_active_item(
 				gtk_option_menu_get_menu(
 					GTK_OPTION_MENU(
 						spelling.optmenu_dictionary)));
@@ -1590,11 +1594,11 @@ static void prefs_spelling_create()
 	GtkWidget *vbox1;
 	GtkWidget *frame_spell;
 	GtkWidget *vbox_spell;
-	GtkWidget *hbox_pspell_path;
-	GtkWidget *checkbtn_enable_pspell;
-	GtkWidget *label_pspell_path;
-	GtkWidget *entry_pspell_path;
-	GtkWidget *btn_pspell_path;
+	GtkWidget *hbox_aspell_path;
+	GtkWidget *checkbtn_enable_aspell;
+	GtkWidget *label_aspell_path;
+	GtkWidget *entry_aspell_path;
+	GtkWidget *btn_aspell_path;
 	GtkWidget *spell_table;
 	GtkWidget *label_dictionary;
 	GtkWidget *optmenu_dictionary;
@@ -1618,11 +1622,11 @@ static void prefs_spelling_create()
 	gtk_container_add(GTK_CONTAINER(frame_spell), vbox_spell);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_spell), 8);
 
-	PACK_CHECK_BUTTON(vbox_spell, checkbtn_enable_pspell, 
-			  _("Enable spell checker (EXPERIMENTAL)"));
+	PACK_CHECK_BUTTON(vbox_spell, checkbtn_enable_aspell, 
+			  _("Enable spell checker"));
 
-	gtk_signal_connect(GTK_OBJECT(checkbtn_enable_pspell), "toggled",
-			   GTK_SIGNAL_FUNC(prefs_spelling_checkbtn_enable_pspell_toggle_cb),
+	gtk_signal_connect(GTK_OBJECT(checkbtn_enable_aspell), "toggled",
+			   GTK_SIGNAL_FUNC(prefs_spelling_checkbtn_enable_aspell_toggle_cb),
 			   NULL);
 
 	/* Check while typing */
@@ -1643,31 +1647,31 @@ static void prefs_spelling_create()
 
 	gtk_box_pack_start(GTK_BOX(vbox_spell), spell_table, TRUE, TRUE, 0);
 
-	label_pspell_path = gtk_label_new (_("Dictionaries path:"));
-	gtk_misc_set_alignment(GTK_MISC(label_pspell_path), 1.0, 0.5);
-	gtk_widget_show(label_pspell_path);
-	gtk_table_attach (GTK_TABLE (spell_table), label_pspell_path, 0, 1, 0,
+	label_aspell_path = gtk_label_new (_("Dictionaries path:"));
+	gtk_misc_set_alignment(GTK_MISC(label_aspell_path), 1.0, 0.5);
+	gtk_widget_show(label_aspell_path);
+	gtk_table_attach (GTK_TABLE (spell_table), label_aspell_path, 0, 1, 0,
 			  1, GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
 	
-	hbox_pspell_path = gtk_hbox_new (FALSE, 8);
-	gtk_table_attach (GTK_TABLE (spell_table), hbox_pspell_path, 1, 2, 0,
+	hbox_aspell_path = gtk_hbox_new (FALSE, 8);
+	gtk_table_attach (GTK_TABLE (spell_table), hbox_aspell_path, 1, 2, 0,
 			  1, GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-	gtk_widget_show(hbox_pspell_path);
+	gtk_widget_show(hbox_aspell_path);
 
-	entry_pspell_path = gtk_entry_new();
-	gtk_widget_show(entry_pspell_path);
-	gtk_box_pack_start(GTK_BOX(hbox_pspell_path), entry_pspell_path, TRUE,
+	entry_aspell_path = gtk_entry_new();
+	gtk_widget_show(entry_aspell_path);
+	gtk_box_pack_start(GTK_BOX(hbox_aspell_path), entry_aspell_path, TRUE,
 			   TRUE, 0);	
 	
-	gtk_widget_set_sensitive(entry_pspell_path, prefs_common.enable_pspell);
+	gtk_widget_set_sensitive(entry_aspell_path, prefs_common.enable_aspell);
 
-	btn_pspell_path = gtk_button_new_with_label(" ... ");
-	gtk_widget_show(btn_pspell_path);
-	gtk_box_pack_start(GTK_BOX(hbox_pspell_path), btn_pspell_path, FALSE, FALSE, 0);
-	gtk_widget_set_sensitive(btn_pspell_path, prefs_common.enable_pspell);
+	btn_aspell_path = gtk_button_new_with_label(" ... ");
+	gtk_widget_show(btn_aspell_path);
+	gtk_box_pack_start(GTK_BOX(hbox_aspell_path), btn_aspell_path, FALSE, FALSE, 0);
+	gtk_widget_set_sensitive(btn_aspell_path, prefs_common.enable_aspell);
 
-	gtk_signal_connect(GTK_OBJECT(btn_pspell_path), "clicked", 
-			   GTK_SIGNAL_FUNC(prefs_spelling_btn_pspell_path_clicked_cb),
+	gtk_signal_connect(GTK_OBJECT(btn_aspell_path), "clicked", 
+			   GTK_SIGNAL_FUNC(prefs_spelling_btn_aspell_path_clicked_cb),
 			   NULL);
 
 	label_dictionary = gtk_label_new(_("Default dictionary:"));
@@ -1679,11 +1683,11 @@ static void prefs_spelling_create()
 	optmenu_dictionary = gtk_option_menu_new();
 	gtk_widget_show(optmenu_dictionary);
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_dictionary), 
-				 gtkpspell_dictionary_option_menu_new(
-					 prefs_common.pspell_path));
+				 gtkaspell_dictionary_option_menu_new(
+					 prefs_common.aspell_path));
 	gtk_table_attach (GTK_TABLE (spell_table), optmenu_dictionary, 1, 2, 1,
 			  2, GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-	gtk_widget_set_sensitive(optmenu_dictionary, prefs_common.enable_pspell);
+	gtk_widget_set_sensitive(optmenu_dictionary, prefs_common.enable_aspell);
 
 	/* Suggestion mode */
 	sugmode_label = gtk_label_new(_("Default suggestion mode"));
@@ -1695,10 +1699,10 @@ static void prefs_spelling_create()
 	sugmode_optmenu = gtk_option_menu_new();
 	gtk_widget_show(sugmode_optmenu);
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(sugmode_optmenu),
-			    gtkpspell_sugmode_option_menu_new(prefs_common.pspell_sugmode));
+			    gtkaspell_sugmode_option_menu_new(prefs_common.aspell_sugmode));
 	gtk_table_attach(GTK_TABLE(spell_table), sugmode_optmenu, 1, 2, 2, 3,
 			 GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-	gtk_widget_set_sensitive(sugmode_optmenu, prefs_common.enable_pspell);
+	gtk_widget_set_sensitive(sugmode_optmenu, prefs_common.enable_aspell);
 
 	/* Color */
 	color_label = gtk_label_new(_("Misspelled word color:"));
@@ -1716,15 +1720,15 @@ static void prefs_spelling_create()
 	set_button_bg_color(spelling.misspelled_btn,
 			    prefs_common.misspelled_col);
 	gtk_widget_set_usize (spelling.misspelled_btn, 30, 20);
-	gtk_widget_set_sensitive(spelling.misspelled_btn, prefs_common.enable_pspell);
+	gtk_widget_set_sensitive(spelling.misspelled_btn, prefs_common.enable_aspell);
 	gtk_signal_connect (GTK_OBJECT (spelling.misspelled_btn), "clicked",
 			    GTK_SIGNAL_FUNC(quote_color_set_dialog), "Misspelled word");
 	gtk_container_add(GTK_CONTAINER(col_align), spelling.misspelled_btn);
 
 
-	spelling.checkbtn_enable_pspell = checkbtn_enable_pspell;
-	spelling.entry_pspell_path      = entry_pspell_path;
-	spelling.btn_pspell_path	= btn_pspell_path;
+	spelling.checkbtn_enable_aspell = checkbtn_enable_aspell;
+	spelling.entry_aspell_path      = entry_aspell_path;
+	spelling.btn_aspell_path	= btn_aspell_path;
 	spelling.optmenu_dictionary     = optmenu_dictionary;
 	spelling.optmenu_sugmode        = sugmode_optmenu;
 	spelling.checkbtn_use_alternate = checkbtn_use_alternate;
@@ -2608,6 +2612,7 @@ static void prefs_interface_create(void)
 	GtkWidget *menu;
 	GtkWidget *menuitem;
 	GtkWidget *checkbtn_no_recv_err_panel;
+	GtkWidget *checkbtn_close_recv_dialog;
 
 	GtkWidget *frame_addr;
 	GtkWidget *vbox_addr;
@@ -2674,9 +2679,6 @@ static void prefs_interface_create(void)
 
 	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW);
 
-	PACK_CHECK_BUTTON (vbox2, checkbtn_no_recv_err_panel,
-			   _("No popup error dialog on receive error"));
-
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
@@ -2697,6 +2699,12 @@ static void prefs_interface_create(void)
 	MENUITEM_ADD (menu, menuitem, _("Never"), RECV_DIALOG_NEVER);
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_recvdialog), menu);
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_no_recv_err_panel,
+			   _("Don't popup error dialog on receive error"));
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_close_recv_dialog,
+			   _("Close receive dialog when finished"));
 
 	PACK_FRAME (vbox1, frame_addr, _("Address book"));
 
@@ -2791,6 +2799,7 @@ static void prefs_interface_create(void)
 	Xinterface.checkbtn_immedexec          = checkbtn_immedexec;
 	Xinterface.optmenu_recvdialog	      = optmenu_recvdialog;
 	Xinterface.checkbtn_no_recv_err_panel  = checkbtn_no_recv_err_panel;
+	Xinterface.checkbtn_close_recv_dialog  = checkbtn_close_recv_dialog;
 	Xinterface.checkbtn_addaddrbyclick     = checkbtn_addaddrbyclick;
 	Xinterface.optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
 	Xinterface.combo_pixmap_theme	      = combo_pixmap_theme;
@@ -3467,7 +3476,7 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	} else if(g_strcasecmp(type, "TGTFLD") == 0) {
 		title = _("Pick color for target folder");
 		rgbvalue = prefs_common.tgt_folder_col;
-#if USE_PSPELL		
+#if USE_ASPELL		
 	} else if(g_strcasecmp(type, "Misspelled word") == 0) {
 		title = _("Pick color for misspelled word");
 		rgbvalue = prefs_common.misspelled_col;
@@ -3539,7 +3548,7 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 		prefs_common.tgt_folder_col = rgbvalue;
 		set_button_bg_color(color_buttons.tgt_folder_btn, rgbvalue);
 		folderview_set_target_folder_color(prefs_common.tgt_folder_col);
-#if USE_PSPELL		
+#if USE_ASPELL		
 	} else if (g_strcasecmp(type, "Misspelled word") == 0) {
 		prefs_common.misspelled_col = rgbvalue;
 		set_button_bg_color(spelling.misspelled_btn, rgbvalue);

@@ -20,28 +20,13 @@
 #include <glib.h>
 
 #include "session.h"
-#include "imap.h"
-#include "news.h"
-#include "smtp.h"
 
 void session_destroy(Session *session)
 {
 	g_return_if_fail(session != NULL);
+	g_return_if_fail(session->destroy != NULL);
 
-	switch (session->type) {
-	case SESSION_IMAP:
-		imap_session_destroy(IMAP_SESSION(session));
-		break;
-	case SESSION_NEWS:
-		news_session_destroy(NNTP_SESSION(session));
-		break;
-	case SESSION_SMTP:
-		smtp_session_destroy(SMTP_SESSION(session));
-		break;
-	default:
-		break;
-	}
-
+	session->destroy(session);
 	g_free(session->server);
 	g_free(session);
 }

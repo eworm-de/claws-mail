@@ -1,6 +1,47 @@
+2002-08-29
+
+	* src/inc.[ch]
+	  src/pop.c
+	  src/progressdialog.c: 状態カラムに詳細な情報を表示。
+	  Pop3State に cur_total_recv_bytes を追加。
+	* src/prefs_common.[ch]: 完了時に受信ダイアログを閉じるかどうかを
+	  指定するオプションを追加。
+
+2002-08-28
+
+	* src/folder.[ch]: folder_get_path(): 新規。 Folder のルートパスを
+	  返す。
+	* src/imap.c
+	  src/news.c
+	  imap_folder_destroy()
+	  imap_remove_msg()
+	  imap_remove_all_msg()
+	  news_folder_destroy(): Folder / メッセージを削除するときに
+	  キャッシュディレクトリ / ファイルを削除するようにした。
+	* src/utils.c:
+	  file_exist()
+	  is_dir_exist()
+	  is_file_entry_exist(): 引数が NULL かどうかをチェック。
+	  remove_all_files()
+	  remove_numbered_files()
+	  remove_expired_files(): エラー時のメモリリークを修正。
+
+2002-08-28
+
+	* src/folder.[ch]
+	  src/imap.[ch]
+	  src/mh.[ch]
+	  src/news.[ch]
+	  src/session.[ch]
+	  src/smtp.[ch]: Folder と Session のデストラクタを仮想メソッドに
+	  した。
+
 2002-08-27
 
 	* src/compose.c: 通常行の結合を自動改行時のみ行うようにした。
+	* src/main.c: GnuPG の警告メッセージを修正。
+	* src/about.c: about_create(): コンパイル済機能一覧を修正。
+	* configure.in: LDAP ライブラリのチェックを改良(Alfons さん thanks)。
 
 2002-08-26
 

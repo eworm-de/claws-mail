@@ -1,6 +1,48 @@
+2002-08-29
+
+	* src/inc.[ch]
+	  src/pop.c
+	  src/progressdialog.c: show detailed information to the status
+	  column.
+	  Added cur_total_recv_bytes to Pop3State.
+	* src/prefs_common.[ch]: added an option to specify whether to
+	  close receive dialog when finished.
+
+2002-08-28
+
+	* src/folder.[ch]: folder_get_path(): new. It returns the root path
+	  of Folder.
+	* src/imap.c
+	  src/news.c
+	  imap_folder_destroy()
+	  imap_remove_msg()
+	  imap_remove_all_msg()
+	  news_folder_destroy(): remove cache directories / files when
+	  deleting Folder / messages.
+	* src/utils.c:
+	  file_exist()
+	  is_dir_exist()
+	  is_file_entry_exist(): check if the argument is NULL.
+	  remove_all_files()
+	  remove_numbered_files()
+	  remove_expired_files(): fixed memory leaks on error.
+
+2002-08-28
+
+	* src/folder.[ch]
+	  src/imap.[ch]
+	  src/mh.[ch]
+	  src/news.[ch]
+	  src/session.[ch]
+	  src/smtp.[ch]: made Folder and Session destructor virtual method.
+
 2002-08-27
 
 	* src/compose.c: do joining of normal lines only when auto-wrapping.
+	* src/main.c: modified the warning message for GnuPG.
+	* src/about.c: about_create(): modified the compiled-in features
+	  list.
+	* configure.in: improved LDAP library checking (thanks to Alfons).
 
 2002-08-26
 

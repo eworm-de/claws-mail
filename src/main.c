@@ -348,7 +348,7 @@ int main(int argc, char *argv[])
 
 			val = alertpanel_message_with_disable
 				(_("Warning"),
-				 _("GnuPG is not installed properly.\n"
+				 _("GnuPG is not installed properly, or needs to be upgraded.\n"
 				   "OpenPGP support disabled."));
 			if (val & G_ALERTDISABLE)
 				prefs_common.gpg_warning = FALSE;
@@ -358,8 +358,8 @@ int main(int argc, char *argv[])
 	gpgme_register_idle(idle_function_for_gpgme);
 #endif
 
-#if USE_PSPELL
-	gtkpspellcheckers = gtkpspell_checkers_new();
+#if USE_ASPELL
+	gtkaspellcheckers = gtkaspell_checkers_new();
 #endif
 	
 
@@ -436,8 +436,8 @@ int main(int argc, char *argv[])
 
 	addressbook_destroy();
 
-#if USE_PSPELL       
-	gtkpspell_checkers_delete();
+#if USE_ASPELL       
+	gtkaspell_checkers_delete();
 #endif
 
 #ifdef WIN32
@@ -554,9 +554,8 @@ static gint get_queued_message_num(void)
 
 static void save_all_caches(FolderItem *item, gpointer data)
 {
-	if(!item->cache)
+	if (!item->cache)
 		return;
-		
 	folder_item_write_cache(item);
 }
 

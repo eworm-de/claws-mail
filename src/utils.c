@@ -1622,6 +1622,9 @@ gboolean file_exist(const gchar *file, gboolean allow_fifo)
 {
 	struct stat s;
 
+	if (file == NULL)
+		return FALSE;
+
 	if (stat(file, &s) < 0) {
 		if (ENOENT != errno) FILE_OP_ERROR(file, "stat");
 		return FALSE;
@@ -1637,6 +1640,9 @@ gboolean is_dir_exist(const gchar *dir)
 {
 	struct stat s;
 
+	if (dir == NULL)
+		return FALSE;
+
 	if (stat(dir, &s) < 0) {
 		if (ENOENT != errno) FILE_OP_ERROR(dir, "stat");
 		return FALSE;
@@ -1651,6 +1657,9 @@ gboolean is_dir_exist(const gchar *dir)
 gboolean is_file_entry_exist(const gchar *file)
 {
 	struct stat s;
+
+	if (file == NULL)
+		return FALSE;
 
 	if (stat(file, &s) < 0) {
 		if (ENOENT != errno) FILE_OP_ERROR(file, "stat");
@@ -1737,11 +1746,13 @@ gint remove_all_files(const gchar *dir)
 
 	if (chdir(dir) < 0) {
 		FILE_OP_ERROR(dir, "chdir");
+		g_free(prev_dir);
 		return -1;
 	}
 
 	if ((dp = opendir(".")) == NULL) {
 		FILE_OP_ERROR(dir, "opendir");
+		g_free(prev_dir);
 		return -1;
 	}
 
@@ -1778,11 +1789,13 @@ gint remove_numbered_files(const gchar *dir, guint first, guint last)
 
 	if (chdir(dir) < 0) {
 		FILE_OP_ERROR(dir, "chdir");
+		g_free(prev_dir);
 		return -1;
 	}
 
 	if ((dp = opendir(".")) == NULL) {
 		FILE_OP_ERROR(dir, "opendir");
+		g_free(prev_dir);
 		return -1;
 	}
 
@@ -1827,11 +1840,13 @@ gint remove_expired_files(const gchar *dir, guint hours)
 
 	if (chdir(dir) < 0) {
 		FILE_OP_ERROR(dir, "chdir");
+		g_free(prev_dir);
 		return -1;
 	}
 
 	if ((dp = opendir(".")) == NULL) {
 		FILE_OP_ERROR(dir, "opendir");
+		g_free(prev_dir);
 		return -1;
 	}
 

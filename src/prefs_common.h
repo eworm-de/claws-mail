@@ -96,12 +96,12 @@ struct _PrefsCommon
 	gboolean block_cursor;
 	gchar *quote_chars;
 	
-#if USE_PSPELL
-	gboolean enable_pspell;
-	gchar *pspell_path;
+#if USE_ASPELL
+	gboolean enable_aspell;
+	gchar *aspell_path;
 	gchar *dictionary;
 	gint misspelled_col;
-	gint pspell_sugmode;
+	gint aspell_sugmode;
 	gboolean check_while_typing;
 	gboolean use_alternate;
 #endif
@@ -224,6 +224,7 @@ struct _PrefsCommon
 	gboolean open_inbox_on_inc;
 	gboolean immediate_exec;
 	RecvDialogMode recv_dialog_mode;
+	gboolean close_recv_dialog;
 	gboolean no_recv_err_panel;
 	NextUnreadMsgDialogShow next_unread_msg_dialog;
 	gboolean add_address_by_click;

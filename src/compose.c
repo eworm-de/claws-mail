@@ -214,6 +214,8 @@ static void compose_attach_parts		(Compose	*compose,
 						 MsgInfo	*msginfo);
 static void compose_wrap_line			(Compose	*compose);
 static void compose_wrap_line_all		(Compose	*compose);
+static void compose_wrap_line_all_full		(Compose	*compose,
+						 gboolean	 autowrap);
 static void compose_set_title			(Compose	*compose);
 
 static PrefsAccount *compose_current_mail_account(void);
@@ -491,7 +493,7 @@ void compose_headerentry_key_press_event_cb(GtkWidget	       *entry,
 
 static void compose_show_first_last_header (Compose *compose, gboolean show_first);
 
-#if USE_PSPELL
+#if USE_ASPELL
 static void compose_check_all		   (Compose *compose);
 static void compose_highlight_all	   (Compose *compose);
 static void compose_check_backwards	   (Compose *compose);
@@ -614,7 +616,7 @@ static GtkItemFactoryEntry compose_entries[] =
 					"<control><alt>L", compose_wrap_line_all, 0, NULL},
 	{N_("/_Edit/Edit with e_xternal editor"),
 					"<shift><control>X", compose_ext_editor_cb, 0, NULL},
-#if USE_PSPELL
+#if USE_ASPELL
 	{N_("/_Spelling"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Spelling/_Check all or check selection"),
 					NULL, compose_check_all, 0, NULL},
@@ -2481,7 +2483,7 @@ static guint ins_quote(GtkSText *text, guint indent_len,
 
 /* check if we should join the next line */
 static gboolean join_next_line(GtkSText *text, guint start_pos, guint tlen,
-			       guint prev_ilen)
+			       guint prev_ilen, gboolean autowrap)
 {
 	guint indent_len, ch_len;
 	gboolean do_join = FALSE;
@@ -2489,7 +2491,7 @@ static gboolean join_next_line(GtkSText *text, guint start_pos, guint tlen,
 
 	indent_len = get_indent_length(text, start_pos, tlen);
 
-	if (indent_len > 0 && indent_len == prev_ilen) {
+	if ((autowrap || indent_len > 0) && indent_len == prev_ilen) {
 		GET_CHAR(start_pos + indent_len, cbuf, ch_len);
 		if (ch_len > 0 && (cbuf[0] != '\n'))
 			do_join = TRUE;
@@ -2498,10 +2500,15 @@ static gboolean join_next_line(GtkSText *text, guint start_pos, guint tlen,
 	return do_join;
 }
 
+static void compose_wrap_line_all(Compose *compose)
+{
+	compose_wrap_line_all_full(compose, FALSE);
+}
+
 #define STEXT_FREEZE() \
 	if (!frozen) { gtk_stext_freeze(text); frozen = TRUE; }
 
-static void compose_wrap_line_all(Compose *compose)
+static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 {
 	GtkSText *text = GTK_STEXT(compose->text);
 	guint tlen;
@@ -2565,8 +2572,9 @@ static void compose_wrap_line_all(Compose *compose)
 #endif
 
 			/* should we join the next line */
-			if (i_len != cur_len && do_delete &&
-			    join_next_line(text, cur_pos + 1, tlen, i_len))
+			if ((autowrap || i_len != cur_len) && do_delete &&
+			    join_next_line
+				(text, cur_pos + 1, tlen, i_len, autowrap))
 				do_delete = TRUE;
 			else
 				do_delete = FALSE;
@@ -2718,7 +2726,7 @@ static void compose_wrap_line_all(Compose *compose)
 			/* start over with current line */
 			is_new_line = TRUE;
 			line_len = cur_len = 0;
-			if (i_len)
+			if (autowrap || i_len > 0)
 				do_delete = TRUE;
 			else
 				do_delete = FALSE;
@@ -4659,8 +4667,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	GtkWidget *tmpl_menu;
 	gint n_entries;
 
-#if USE_PSPELL
-        GtkPspell * gtkpspell = NULL;
+#if USE_ASPELL
+        GtkAspell * gtkaspell = NULL;
 #endif
 
 	static GdkGeometry geometry;
@@ -4980,31 +4988,31 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	compose->redirect_filename = NULL;
 	compose->undostruct = undostruct;
-#if USE_PSPELL
+#if USE_ASPELL
 	
 	menu_set_sensitive(ifactory, "/Spelling", FALSE);
-        if (prefs_common.enable_pspell) {
-		gtkpspell = gtkpspell_new((const gchar*)prefs_common.dictionary,
+        if (prefs_common.enable_aspell) {
+		gtkaspell = gtkaspell_new((const gchar*)prefs_common.dictionary,
 					  conv_get_current_charset_str(),
 					  prefs_common.misspelled_col,
 					  prefs_common.check_while_typing,
 					  prefs_common.use_alternate,
 					  GTK_STEXT(text));
-		if (!gtkpspell) {
-			alertpanel_error(_("Spell checker could not be started.\n%s"), gtkpspellcheckers->error_message);
-			gtkpspell_checkers_reset_error();
+		if (!gtkaspell) {
+			alertpanel_error(_("Spell checker could not be started.\n%s"), gtkaspellcheckers->error_message);
+			gtkaspell_checkers_reset_error();
 		} else {
 
 			GtkWidget *menuitem;
 
-			if (!gtkpspell_set_sug_mode(gtkpspell, prefs_common.pspell_sugmode)) {
-				debug_print("Pspell: could not set suggestion mode %s\n",
-				    gtkpspellcheckers->error_message);
-				gtkpspell_checkers_reset_error();
+			if (!gtkaspell_set_sug_mode(gtkaspell, prefs_common.aspell_sugmode)) {
+				debug_print("Aspell: could not set suggestion mode %s\n",
+				    gtkaspellcheckers->error_message);
+				gtkaspell_checkers_reset_error();
 			}
 
 			menuitem = gtk_item_factory_get_item(ifactory, "/Spelling/Spelling Configuration");
-			gtkpspell_populate_submenu(gtkpspell, menuitem);
+			gtkaspell_populate_submenu(gtkaspell, menuitem);
 			menu_set_sensitive(ifactory, "/Spelling", TRUE);
 			}
         }
@@ -5018,8 +5026,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->use_followupto = FALSE;
 #endif
 
-#if USE_PSPELL
-        compose->gtkpspell      = gtkpspell;
+#if USE_ASPELL
+        compose->gtkaspell      = gtkaspell;
 #endif
 
 #if 0 /* NEW COMPOSE GUI */
@@ -5482,9 +5490,9 @@ static void compose_destroy(Compose *compose)
 	if (addressbook_get_target_compose() == compose)
 		addressbook_set_target_compose(NULL);
 
-#if USE_PSPELL
-        if (compose->gtkpspell) {
-	        gtkpspell_delete(compose->gtkpspell);
+#if USE_ASPELL
+        if (compose->gtkaspell) {
+	        gtkaspell_delete(compose->gtkaspell);
         }
 #endif
 
@@ -6701,6 +6709,7 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 			return;
 		}
 	}
+
 #ifdef WIN32
 /*XXX:075 */
 	if (compose->window)
@@ -6803,60 +6812,35 @@ static void compose_allsel_cb(Compose *compose)
 			(GTK_EDITABLE(compose->focused_editable), 0, -1);
 }
 
-static void compose_gtk_stext_action_cb(Compose *compose, ComposeCallGtkSTextAction action)
+static void compose_gtk_stext_action_cb(Compose *compose,
+					ComposeCallGtkSTextAction action)
 {
-	if (!(compose->focused_editable && GTK_WIDGET_HAS_FOCUS(compose->focused_editable))) return;
-		
-	switch (action) {
-		case COMPOSE_CALL_GTK_STEXT_MOVE_BEGINNING_OF_LINE:
-			gtk_stext_move_beginning_of_line(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_MOVE_FORWARD_CHARACTER:
-			gtk_stext_move_forward_character(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_MOVE_BACKWARD_CHARACTER:
-			gtk_stext_move_backward_character(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_MOVE_FORWARD_WORD:
-			gtk_stext_move_forward_word(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_MOVE_BACKWARD_WORD:
-			gtk_stext_move_backward_word(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_MOVE_END_OF_LINE:
-			gtk_stext_move_end_of_line(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_MOVE_NEXT_LINE:
-			gtk_stext_move_next_line(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_MOVE_PREVIOUS_LINE:
-			gtk_stext_move_previous_line(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_DELETE_FORWARD_CHARACTER:
-			gtk_stext_delete_forward_character(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_DELETE_BACKWARD_CHARACTER:
-			gtk_stext_delete_backward_character(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_DELETE_FORWARD_WORD:
-			gtk_stext_delete_forward_word(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_DELETE_BACKWARD_WORD:
-			gtk_stext_delete_backward_word(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_DELETE_LINE:
-			gtk_stext_delete_line(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_DELETE_LINE_N:
-			gtk_stext_delete_line(GTK_STEXT(compose->focused_editable));
-			gtk_stext_delete_forward_character(GTK_STEXT(compose->focused_editable));
-			break;
-		case COMPOSE_CALL_GTK_STEXT_DELETE_TO_LINE_END:
-			gtk_stext_delete_to_line_end(GTK_STEXT(compose->focused_editable));
-			break;
-		default:
-			break;
-	}
+	GtkSText *text = GTK_STEXT(compose->text);
+	static struct {
+		void (*do_action) (GtkSText *text);
+	} action_table[] = {
+		{gtk_stext_move_beginning_of_line},
+		{gtk_stext_move_forward_character},
+		{gtk_stext_move_backward_character},
+		{gtk_stext_move_forward_word},
+		{gtk_stext_move_backward_word},
+		{gtk_stext_move_end_of_line},
+		{gtk_stext_move_next_line},
+		{gtk_stext_move_previous_line},
+		{gtk_stext_delete_forward_character},
+		{gtk_stext_delete_backward_character},
+		{gtk_stext_delete_forward_word},
+		{gtk_stext_delete_backward_word},
+		{gtk_stext_delete_line},
+		{gtk_stext_delete_line}, /* gtk_stext_delete_line_n */
+		{gtk_stext_delete_to_line_end}
+	};
+
+	if (!GTK_WIDGET_HAS_FOCUS(text)) return;
+
+	if (action >= COMPOSE_CALL_GTK_STEXT_MOVE_BEGINNING_OF_LINE &&
+	    action <= COMPOSE_CALL_GTK_STEXT_DELETE_TO_LINE_END)
+		action_table[action].do_action(text);
 }
 
 static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
@@ -7318,7 +7302,7 @@ static void text_inserted(GtkWidget *widget, const gchar *text,
 		gtk_editable_insert_text(editable, text, length, position);
 
 	if (prefs_common.autowrap)
-		compose_wrap_line_all(compose);
+		compose_wrap_line_all_full(compose, TRUE);
 
 	gtk_signal_handler_unblock_by_func(GTK_OBJECT(widget),
 					   GTK_SIGNAL_FUNC(text_inserted),
@@ -7359,23 +7343,23 @@ static gboolean compose_send_control_enter(Compose *compose)
 	return FALSE;
 }
 
-#if USE_PSPELL
+#if USE_ASPELL
 static void compose_check_all(Compose *compose)
 {
-	if (compose->gtkpspell)
-		gtkpspell_check_all(compose->gtkpspell);
+	if (compose->gtkaspell)
+		gtkaspell_check_all(compose->gtkaspell);
 }
 
 static void compose_highlight_all(Compose *compose)
 {
-	if (compose->gtkpspell)
-		gtkpspell_highlight_all(compose->gtkpspell);
+	if (compose->gtkaspell)
+		gtkaspell_highlight_all(compose->gtkaspell);
 }
 
 static void compose_check_backwards(Compose *compose)
 {
-	if (compose->gtkpspell)	
-		gtkpspell_check_backwards(compose->gtkpspell);
+	if (compose->gtkaspell)	
+		gtkaspell_check_backwards(compose->gtkaspell);
 	else {
 		GtkItemFactory *ifactory;
 		ifactory = gtk_item_factory_from_widget(compose->popupmenu);
@@ -7386,8 +7370,8 @@ static void compose_check_backwards(Compose *compose)
 
 static void compose_check_forwards_go(Compose *compose)
 {
-	if (compose->gtkpspell)	
-		gtkpspell_check_forwards_go(compose->gtkpspell);
+	if (compose->gtkaspell)	
+		gtkaspell_check_forwards_go(compose->gtkaspell);
 	else {
 		GtkItemFactory *ifactory;
 		ifactory = gtk_item_factory_from_widget(compose->popupmenu);

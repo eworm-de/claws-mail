@@ -3,7 +3,7 @@
 
 [Setup]
 AppName=Sylpheed-Claws
-AppVerName=Sylpheed-0.8.2-Claws (Win32)
+AppVerName=Sylpheed-0.8.2-Claws9 (Win32)
 AppPublisher=The friendly Sylpheed hackers
 AppPublisherURL=http://claws-w32.sourceforge.net
 AppSupportURL=http://claws-w32.sourceforge.net
