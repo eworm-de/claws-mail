@@ -756,6 +756,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	main_window_cursor_wait(summaryview->mainwin);
 
 	mlist = item->folder->get_msg_list(item->folder, item, !update_cache);
+	debug_print("*** folder %s has %d messages\n", item->path, g_slist_length(mlist));
 
 	summary_processing(summaryview, mlist);
 
@@ -3740,6 +3741,7 @@ void summary_filter(SummaryView *summaryview)
 			summary_status_show(summaryview);
 	}
 	else {
+		FolderItem *item = summaryview->folder_item;
 		summaryview->folder_table = g_hash_table_new(NULL, NULL);
 
 		gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
@@ -3753,8 +3755,6 @@ void summary_filter(SummaryView *summaryview)
 
 		g_hash_table_destroy(summaryview->folder_table);
 		summaryview->folder_table = NULL;
-
-		summary_show(summaryview, summaryview->folder_item, FALSE);
 	}
 
 	debug_print(_("done.\n"));
@@ -3762,6 +3762,11 @@ void summary_filter(SummaryView *summaryview)
 	main_window_cursor_normal(summaryview->mainwin);
 
 	summary_unlock(summaryview);
+
+	/* CLAWS: summary_show() only valid after having a lock. ideally
+	 * we want the lock to be context aware...  */
+	if (global_processing)
+		summary_show(summaryview, summaryview->folder_item, FALSE);
 }
 
 static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
@@ -3782,7 +3787,7 @@ static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
 		    summaryview->folder_item != dest)
 			summary_move_row_to(summaryview, node, dest);
 	}
-	else
+	else 
 		filter_msginfo_move_or_delete(global_processing, msginfo,
 					      summaryview->folder_table);
 }

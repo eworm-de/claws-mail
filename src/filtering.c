@@ -262,72 +262,76 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 	}
 }
 
-/* filteringprop_apply() - runs the action on one MsgInfo if it matches the 
- * criterium. certain actions can be followed by other actions. in this
- * case the function returns FALSE. if an action can not be followed
- * by others, the function returns TRUE. */
-static gboolean filteringprop_apply(FilteringProp * filtering, MsgInfo * info,
-				    GHashTable *folder_table)
+static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *info)
 {
-	if (matcherlist_match(filtering->matchers, info)) {
-		gboolean result;
-		gchar   *action_str;
-		gchar    buf[256]; 
+	return matcherlist_match(filtering->matchers, info);
+}
 
-		if (FALSE == (result = filteringaction_apply(filtering->action, info,
-					       folder_table))) {
-			action_str = filteringaction_to_string(buf, sizeof buf, filtering->action);
-			g_warning(_("action %s could not be applied"), action_str);
-		}
+static gboolean filtering_apply_rule(FilteringProp *filtering, MsgInfo *info, 
+				     GHashTable *foldertable)
+{
+	gboolean result;
+	gchar    actionstr;
+	gchar    buf[50];
 
-		switch(filtering->action->type) {
-		case MATCHACTION_MOVE:
-		case MATCHACTION_DELETE:
-			return TRUE; /* MsgInfo invalid for message */
-		case MATCHACTION_EXECUTE:
-		case MATCHACTION_COPY:
-		case MATCHACTION_MARK:
-		case MATCHACTION_MARK_AS_READ:
-		case MATCHACTION_UNMARK:
-		case MATCHACTION_MARK_AS_UNREAD:
-		case MATCHACTION_FORWARD:
-		case MATCHACTION_FORWARD_AS_ATTACHMENT:
-		case MATCHACTION_BOUNCE:
-			return FALSE; /* MsgInfo still valid for message */
-		default:
-			return FALSE;
-		}
+	if (FALSE == (result = filteringaction_apply(filtering->action, info, foldertable))) {
+		g_warning(_("action %s could not be applied"), 
+			  filteringaction_to_string(buf, sizeof buf, filtering->action));
 	}
-	else
+	return result;
+}
+
+static gboolean filtering_is_final_action(FilteringProp *filtering)
+{
+	switch(filtering->action->type) {
+	case MATCHACTION_MOVE:
+	case MATCHACTION_DELETE:
+		return TRUE; /* MsgInfo invalid for message */
+	case MATCHACTION_EXECUTE:
+	case MATCHACTION_COPY:
+	case MATCHACTION_MARK:
+	case MATCHACTION_MARK_AS_READ:
+	case MATCHACTION_UNMARK:
+	case MATCHACTION_MARK_AS_UNREAD:
+	case MATCHACTION_FORWARD:
+	case MATCHACTION_FORWARD_AS_ATTACHMENT:
+	case MATCHACTION_BOUNCE:
+		return FALSE; /* MsgInfo still valid for message */
+	default:
 		return FALSE;
+	}
 }
 
 static void filter_msginfo(GSList * filtering_list, FolderItem *inbox,
 			   MsgInfo * info, GHashTable *folder_table)
 {
-	GSList		*l;
-	gboolean	 result;
+	GSList	*l;
+	gboolean final;
+	gboolean applied;
+	gint val;
 	
 	if (info == NULL) {
 		g_warning(_("msginfo is not set"));
 		return;
 	}
 	
-	for(l = filtering_list ; l != NULL ; l = g_slist_next(l)) {
+	for (l = filtering_list, final = FALSE, applied = FALSE; l != NULL; l = g_slist_next(l)) {
 		FilteringProp * filtering = (FilteringProp *) l->data;
-		if (TRUE == (result = filteringprop_apply(filtering, info, folder_table))) 
-			break;
+
+		if (filtering_match_condition(filtering, info)) {
+			applied = filtering_apply_rule(filtering, info, folder_table);
+			if (TRUE == (final = filtering_is_final_action(filtering)))
+				break;
+		}		
 	}
 
-	/* drop in inbox too */
-	if (!result) {
-		gint val;
-
+	/* put in inbox if a final rule could not be applied, or
+	 * the last rule was not a final one. */
+	if ((final && !applied) || !final) {
 		if (folder_item_move_msg(inbox, info) == -1) {
 			debug_print(_("*** Could not drop message in inbox; still in .processing\n"));
 			return;
 		}	
-
 		if (folder_table) {
 			val = GPOINTER_TO_INT(g_hash_table_lookup
 					      (folder_table, inbox));
@@ -356,7 +360,8 @@ void filter_msginfo_move_or_delete(GSList * filtering_list, MsgInfo * info,
 		switch (filtering->action->type) {
 		case MATCHACTION_MOVE:
 		case MATCHACTION_DELETE:
-			if (filteringprop_apply(filtering, info, folder_table))
+			if (filtering_match_condition(filtering, info) &&
+			    filtering_apply_rule(filtering, info, folder_table))
 				return;
 		}
 	}

@@ -1,3 +1,17 @@
+2001-01-09 [alfons]	0.6.6claws45
+
+	* src/filtering.c
+		break up filteringprop_apply() in three separate pieces
+		so we can drop messages that failed processing in the
+		inbox
+
+	* src/summaryview.c
+		fix bug #469598 "no refresh of inbox after filter" which 
+		was introduced by the new summary view locking, and which 
+		prevented the summary view to update after a manual filter 
+		message. claw's filter message requires a summary_show().
+		(aargh, summary_show() again! :-)
+		
 2002-01-07 [alfons]	0.6.6claws44
 
 	* src/headerwindow.c
