@@ -1819,6 +1819,7 @@ static gint show_url_timeout_cb(gpointer data)
 	TextView *textview = (TextView *)data;
 	
 	TEXTVIEW_STATUSBAR_POP(textview);
+	textview->show_url_timeout_tag = 0;
 	return FALSE;
 }
 
@@ -1859,6 +1860,10 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 				/* single click: display url in statusbar */
 				if (event->button == 1 && textview->last_buttonpress != GDK_2BUTTON_PRESS) {
 					if (textview->messageview->mainwin) {
+						if (textview->show_url_timeout_tag != 0) {
+							gtk_timeout_remove(textview->show_url_timeout_tag);
+							TEXTVIEW_STATUSBAR_POP(textview);
+						}
 						TEXTVIEW_STATUSBAR_PUSH(textview, trimmed_uri);
 						textview->show_url_timeout_tag = gtk_timeout_add
 							(4000, show_url_timeout_cb, textview);

@@ -1,3 +1,8 @@
+2004-06-16 [christoph]	0.9.11cvs12
+
+	* src/textview.c
+		correctly clear the URL in the status bar
+
 2004-06-15 [christoph]	0.9.11cvs11
 
 	* src/summaryview.c
