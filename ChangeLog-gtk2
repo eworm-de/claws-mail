@@ -1,3 +1,7 @@
+2004-02-14 Thorsten Maerz <torte@netztorte.de>
+	* src/grouplistdialog.c
+		allow multiple selections without ctrl key
+
 2004-02-09 Thorsten Maerz <torte@netztorte.de>
 	* src/main.c
 		enable customizable accelerators

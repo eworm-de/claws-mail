@@ -91,13 +91,8 @@ static void refresh_clicked	(GtkWidget	*widget,
 static gboolean key_pressed	(GtkWidget	*widget,
 				 GdkEventKey	*event,
 				 gpointer	 data);
-static void ctree_selected	(GtkCTree	*ctree,
-				 GtkCTreeNode	*node,
-				 gint		 column,
-				 gpointer	 data);
-static void ctree_unselected	(GtkCTree	*ctree,
-				 GtkCTreeNode	*node,
-				 gint		 column,
+static gboolean button_press_cb (GtkCTree	*ctree,
+				 GdkEventButton	*button,
 				 gpointer	 data);
 static void entry_activated	(GtkEditable	*editable);
 static void search_clicked	(GtkWidget	*widget,
@@ -229,10 +224,8 @@ static void grouplist_dialog_create(void)
 	for (i = 0; i < 3; i++)
 		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(ctree)->column[i].button,
 				       GTK_CAN_FOCUS);
-	g_signal_connect(G_OBJECT(ctree), "tree_select_row",
-			 G_CALLBACK(ctree_selected), NULL);
-	g_signal_connect(G_OBJECT(ctree), "tree_unselect_row",
-			 G_CALLBACK(ctree_unselected), NULL);
+	g_signal_connect(G_OBJECT(ctree), "button-press-event",
+			 G_CALLBACK(button_press_cb), NULL);
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
@@ -415,24 +408,15 @@ static void grouplist_dialog_set_list(const gchar *pattern, gboolean refresh)
 			locked = FALSE;
 			return;
 		}
-	} else {
-		g_signal_handlers_block_by_func
-			(G_OBJECT(ctree), G_CALLBACK(ctree_unselected),
-			 NULL);
+	} else
 		gtk_clist_clear(GTK_CLIST(ctree));
-		g_signal_handlers_unblock_by_func
-			(G_OBJECT(ctree), G_CALLBACK(ctree_unselected),
-			 NULL);
-	}
+
 	gtk_entry_set_text(GTK_ENTRY(entry), pattern);
 
 	grouplist_hash_init();
 
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
-	g_signal_handlers_block_by_func(G_OBJECT(ctree),
-					G_CALLBACK(ctree_selected),
-					NULL);
 
 	for (cur = group_list; cur != NULL ; cur = cur->next) {
 		NewsGroupInfo *ginfo = (NewsGroupInfo *)cur->data;
@@ -448,10 +432,6 @@ static void grouplist_dialog_set_list(const gchar *pattern, gboolean refresh)
 	}
 	for (cur = subscribed; cur; cur = g_slist_next(cur))
 		grouplist_expand_upwards(GTK_CTREE(ctree), (gchar *)cur->data);
-
-	g_signal_handlers_unblock_by_func(G_OBJECT(ctree),
-					  G_CALLBACK(ctree_selected),
-					  NULL);
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
 
@@ -475,16 +455,10 @@ static void grouplist_search(void)
 
 static void grouplist_clear(void)
 {
-	g_signal_handlers_block_by_func(G_OBJECT(ctree),
-					G_CALLBACK(ctree_unselected),
-					NULL);
 	gtk_clist_clear(GTK_CLIST(ctree));
 	gtk_entry_set_text(GTK_ENTRY(entry), "");
 	news_group_list_free(group_list);
 	group_list = NULL;
-	g_signal_handlers_unblock_by_func(G_OBJECT(ctree),
-					  G_CALLBACK(ctree_unselected),
-					  NULL);
 }
 
 static gboolean grouplist_recv_func(SockInfo *sock, gint count, gint read_bytes,
@@ -546,32 +520,48 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data
 	return FALSE;
 }
 
-static void ctree_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
-			   gpointer data)
+/* clist/ctree clear old selection on click (gtk2 only)
+ * - intercept all button clicks (always return TRUE)
+ * - only allow left button single click
+ * - handle click on expander
+ * - update "subscribed" list and un-/select row
+ */
+static gboolean button_press_cb(GtkCTree *ctree, GdkEventButton *button,
+				gpointer data)
 {
-	NewsGroupInfo *ginfo;
-
-	ginfo = gtk_ctree_node_get_row_data(ctree, node);
-	if (!ginfo) return;
-
-	subscribed = g_slist_append(subscribed, g_strdup(ginfo->name));
-}
-
-static void ctree_unselected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
-			     gpointer data)
-{
+	gint row, col;
+	GtkCTreeNode *node;
 	NewsGroupInfo *ginfo;
 	GSList *list;
 
+	if (button->type != GDK_BUTTON_PRESS) return TRUE;
+	if (button->button != 1) return TRUE;
+
+	gtk_clist_get_selection_info(GTK_CLIST(ctree), 
+				     button->x, button->y, &row, &col);
+	node = gtk_ctree_node_nth(ctree, row);
+	if (!node) return TRUE;
+
+	if (gtk_ctree_is_hot_spot(ctree, button->x, button->y)) {
+		gtk_ctree_toggle_expansion(ctree, node);
+		return TRUE;
+	}
+
 	ginfo = gtk_ctree_node_get_row_data(ctree, node);
-	if (!ginfo) return;
+	if (!ginfo) return TRUE;
 
 	list = g_slist_find_custom(subscribed, ginfo->name,
 				   (GCompareFunc)g_strcasecmp);
 	if (list) {
 		g_free(list->data);
 		subscribed = g_slist_remove(subscribed, list->data);
+		gtk_clist_unselect_row(GTK_CLIST(ctree), row, 0);
+	} else {
+		subscribed = g_slist_append(subscribed, g_strdup(ginfo->name));
+		gtk_clist_select_row(GTK_CLIST(ctree), row, 0);
 	}
+
+	return TRUE;
 }
 
 static void entry_activated(GtkEditable *editable)
