@@ -149,8 +149,8 @@ static gint send_message_with_command(GSList *to_list, gchar * mailcmd,
 			fputs(buf, p);
 			fputs("\n", p);
 		}
+		pclose(p);
 	}
-	pclose(p);
 
 	log_message(_("Mail sent successfully ...\n"));
 

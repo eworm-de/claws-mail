@@ -1,6 +1,7 @@
 2001-05-14 [hiroyuki]
 
 	* src/send.c: fixed some weird indentations.
+	  send_message_with_command(): call pclose() only if p != NULL.
 	* src/textview.c: get_email_part(): modified the code for readability.
 
 2001-05-14 [hiroyuki]
