@@ -1,3 +1,16 @@
+2003-01-25 [match]	0.8.9claws7
+
+	* src/mgutils.[ch]
+		removed reference to LDAP constants. removed error2string.
+		included functions to support LDAP dynamic queries.
+	* src/syldap.h
+		moved LDAP constants here.
+	* src/addressbook.c
+	* src/addrindex.c
+	* src/importldif.c
+		removed references to LDAP constants and references to
+		error2string.
+
 2003-01-25 [paul]	0.8.9claws6
 
 	* src/summaryview.c
