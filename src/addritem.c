@@ -336,7 +336,7 @@ ItemEMail *addritem_person_get_email( ItemPerson *person, const gchar *eid ) {
 	g_return_val_if_fail( person != NULL, NULL );
 	if( eid == NULL || *eid == '\0' ) return NULL;
 
-	// Look for email
+	/* Look for email */
 	node = person->listEMail;
 	while( node ) {
 		AddrItemObject *objE = node->data;
@@ -364,7 +364,7 @@ ItemEMail *addritem_person_remove_email_id( ItemPerson *person, const gchar *eid
 	g_return_val_if_fail( person != NULL, NULL );
 	if( eid == NULL || *eid == '\0' ) return NULL;
 
-	// Look for email
+	/* Look for email */
 	node = person->listEMail;
 	while( node ) {
 		AddrItemObject *objE = node->data;
@@ -378,11 +378,11 @@ ItemEMail *addritem_person_remove_email_id( ItemPerson *person, const gchar *eid
 	}
 
 	if( email ) {
-		// Remove email from person's address list
+		/* Remove email from person's address list */
 		if( person->listEMail ) {
 			person->listEMail = g_list_remove( person->listEMail, email );
 		}
-		// Unlink reference to person.
+		/* Unlink reference to person. */
 		ADDRITEM_PARENT(email) = NULL;
 	}
 	return email;
@@ -401,7 +401,7 @@ ItemEMail *addritem_person_remove_email( ItemPerson *person, ItemEMail *email ) 
 	g_return_val_if_fail( person != NULL, NULL );
 	if( email == NULL ) return NULL;
 
-	// Look for email
+	/* Look for email */
 	node = person->listEMail;
 	while( node ) {
 		if( node-> data == email ) {
@@ -412,11 +412,11 @@ ItemEMail *addritem_person_remove_email( ItemPerson *person, ItemEMail *email ) 
 	}
 
 	if( found ) {
-		// Remove email from person's address list
+		/* Remove email from person's address list */
 		if( person->listEMail ) {
 			person->listEMail = g_list_remove( person->listEMail, email );
 		}
-		// Unlink reference to person.
+		/* Unlink reference to person. */
 		ADDRITEM_PARENT(email) = NULL;
 		return email;
 	}
@@ -445,7 +445,7 @@ UserAttribute *addritem_person_get_attribute( ItemPerson *person, const gchar *a
 	g_return_val_if_fail( person != NULL, NULL );
 	if( aid == NULL || *aid == '\0' ) return NULL;
 
-	// Look for attribute
+	/* Look for attribute */
 	node = person->listAttrib;
 	while( node ) {
 		UserAttribute *attr = node->data;
@@ -473,7 +473,7 @@ UserAttribute *addritem_person_remove_attrib_id( ItemPerson *person, const gchar
 	g_return_val_if_fail( person != NULL, NULL );
 	if( aid == NULL || *aid == '\0' ) return NULL;
 
-	// Look for attribute
+	/* Look for attribute */
 	node = person->listAttrib;
 	while( node ) {
 		UserAttribute *attr = node->data;
@@ -486,7 +486,7 @@ UserAttribute *addritem_person_remove_attrib_id( ItemPerson *person, const gchar
 		node = g_list_next( node );
 	}
 
-	// Remove email from person's address list
+	/* Remove email from person's address list */
 	if( person->listAttrib ) {
 		person->listAttrib = g_list_remove( person->listAttrib, attrib );
 	}
@@ -506,7 +506,7 @@ UserAttribute *addritem_person_remove_attribute( ItemPerson *person, UserAttribu
 	g_return_val_if_fail( person != NULL, NULL );
 	if( attrib == NULL ) return NULL;
 
-	// Look for attribute
+	/* Look for attribute */
 	node = person->listAttrib;
 	while( node ) {
 		if( node-> data == attrib ) {
@@ -517,7 +517,7 @@ UserAttribute *addritem_person_remove_attribute( ItemPerson *person, UserAttribu
 	}
 
 	if( found ) {
-		// Remove attribute
+		/* Remove attribute */
 		if( person->listAttrib ) {
 			person->listAttrib = g_list_remove( person->listAttrib, attrib );
 		}
@@ -717,7 +717,7 @@ void addritem_folder_set_remarks( ItemFolder *folder, const gchar *value ) {
 void addritem_free_item_folder( ItemFolder *folder ) {
 	g_return_if_fail( folder != NULL );
 
-	// Free internal stuff
+	/* Free internal stuff */
 	g_free( ADDRITEM_ID(folder) );
 	g_free( ADDRITEM_NAME(folder) );
 	g_free( folder->remarks );
@@ -771,7 +771,7 @@ void addritem_folder_free_person( ItemFolder *folder ) {
 
 	g_return_if_fail( folder != NULL );
 	
-	// Free up folder of persons.
+	/* Free up folder of persons. */
 	node = folder->listPerson;
 	while( node ) {
 		ItemPerson *person = node->data;
@@ -825,7 +825,7 @@ gboolean addritem_folder_add_group( ItemFolder *folder, ItemGroup *item ) {
 */
 void addritem_print_item_folder( ItemFolder *folder, FILE *stream ) {
 	GList *node;
-	//ItemPerson *person;
+	/* ItemPerson *person; */
 	ItemFolder *parent;
 
 	g_return_if_fail( folder != NULL );

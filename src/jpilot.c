@@ -56,14 +56,14 @@
 #define JPILOT_DBHOME_FILE  "AddressDB.pdb"
 #define PILOT_LINK_LIB_NAME "libpisock.so"
 
-#define IND_LABEL_LASTNAME  0 	// Index of last name in address data
-#define IND_LABEL_FIRSTNAME 1 	// Index of first name in address data
-#define IND_PHONE_EMAIL     4 	// Index of E-Mail address in phone labels
-#define OFFSET_PHONE_LABEL  3 	// Offset to phone data in address data
-#define IND_CUSTOM_LABEL    14	// Offset to custom label names
-#define NUM_CUSTOM_LABEL    4 	// Number of custom labels
+#define IND_LABEL_LASTNAME  0 	/* Index of last name in address data */
+#define IND_LABEL_FIRSTNAME 1 	/* Index of first name in address data */
+#define IND_PHONE_EMAIL     4 	/* Index of E-Mail address in phone labels */
+#define OFFSET_PHONE_LABEL  3 	/* Offset to phone data in address data */
+#define IND_CUSTOM_LABEL    14	/* Offset to custom label names */
+#define NUM_CUSTOM_LABEL    4 	/* Number of custom labels */
 
-// Shamelessly copied from JPilot (libplugin.h)
+/* Shamelessly copied from JPilot (libplugin.h) */
 typedef struct {
 	unsigned char db_name[32];
 	unsigned char flags[2];
@@ -81,7 +81,7 @@ typedef struct {
 	unsigned char number_of_records[2];
 } RawDBHeader;
 
-// Shamelessly copied from JPilot (libplugin.h)
+/* Shamelessly copied from JPilot (libplugin.h) */
 typedef struct {
 	char db_name[32];
 	unsigned int flags;
@@ -99,14 +99,14 @@ typedef struct {
 	unsigned int number_of_records;
 } DBHeader;
 
-// Shamelessly copied from JPilot (libplugin.h)
+/* Shamelessly copied from JPilot (libplugin.h) */
 typedef struct {
 	unsigned char Offset[4];  /*4 bytes offset from BOF to record */
 	unsigned char attrib;
 	unsigned char unique_ID[3];
 } record_header;
 
-// Shamelessly copied from JPilot (libplugin.h)
+/* Shamelessly copied from JPilot (libplugin.h) */
 typedef struct mem_rec_header_s {
 	unsigned int rec_num;
 	unsigned int offset;
@@ -115,7 +115,7 @@ typedef struct mem_rec_header_s {
 	struct mem_rec_header_s *next;
 } mem_rec_header;
 
-// Shamelessly copied from JPilot (libplugin.h)
+/* Shamelessly copied from JPilot (libplugin.h) */
 #define SPENT_PC_RECORD_BIT	256
 
 typedef enum {
@@ -127,7 +127,7 @@ typedef enum {
 	DELETED_DELETED_PALM_REC = SPENT_PC_RECORD_BIT + 105L
 } PCRecType;
 
-// Shamelessly copied from JPilot (libplugin.h)
+/* Shamelessly copied from JPilot (libplugin.h) */
 typedef struct {
 	PCRecType rt;
 	unsigned int unique_id;
@@ -225,11 +225,11 @@ void jpilot_clear_custom_labels( JPilotFile *pilotFile ) {
 
 	g_return_if_fail( pilotFile != NULL );
 
-	// Release custom labels
+	/* Release custom labels */
 	mgu_free_dlist( pilotFile->customLabels );
 	pilotFile->customLabels = NULL;
 
-	// Release indexes
+	/* Release indexes */
 	node = pilotFile->labelInd;
 	while( node ) {
 		node->data = NULL;
@@ -238,7 +238,7 @@ void jpilot_clear_custom_labels( JPilotFile *pilotFile ) {
 	g_list_free( pilotFile->labelInd );
 	pilotFile->labelInd = NULL;
 
-	// Force a fresh read
+	/* Force a fresh read */
 	addrcache_refresh( pilotFile->addressCache );
 }
 
@@ -257,7 +257,7 @@ void jpilot_add_custom_label( JPilotFile *pilotFile, const gchar *labelName ) {
 		}
 		else {
 			pilotFile->customLabels = g_list_append( pilotFile->customLabels, labelCopy );
-			// Force a fresh read
+			/* Force a fresh read */
 			addrcache_refresh( pilotFile->addressCache );
 		}
 	}
@@ -290,7 +290,7 @@ void jpilot_free( JPilotFile *pilotFile ) {
 	/* Free internal stuff */
 	g_free( pilotFile->path );
 
-	// Release custom labels
+	/* Release custom labels */
 	jpilot_clear_custom_labels( pilotFile );
 
 	/* Clear cache */
@@ -365,7 +365,7 @@ void jpilot_print_short( JPilotFile *pilotFile, FILE *stream ) {
 	addrcache_print( pilotFile->addressCache, stream );
 }
 
-// Shamelessly copied from JPilot (libplugin.c)
+/* Shamelessly copied from JPilot (libplugin.c) */
 static unsigned int bytes_to_bin(unsigned char *bytes, unsigned int num_bytes) {
 unsigned int i, n;
 	n=0;
@@ -375,16 +375,16 @@ unsigned int i, n;
 	return n;
 }
 
-// Shamelessly copied from JPilot (utils.c)
-/*These next 2 functions were copied from pi-file.c in the pilot-link app */
-/* Exact value of "Jan 1, 1970 0:00:00 GMT" - "Jan 1, 1904 0:00:00 GMT" */
+/* Shamelessly copied from JPilot (utils.c)
+   These next 2 functions were copied from pi-file.c in the pilot-link app
+   Exact value of "Jan 1, 1970 0:00:00 GMT" - "Jan 1, 1904 0:00:00 GMT" */
 #define PILOT_TIME_DELTA (unsigned)(2082844800)
 
 time_t pilot_time_to_unix_time ( unsigned long raw_time ) {
    return (time_t)(raw_time - PILOT_TIME_DELTA);
 }
 
-// Shamelessly copied from JPilot (libplugin.c)
+/* Shamelessly copied from JPilot (libplugin.c) */
 static int raw_header_to_header(RawDBHeader *rdbh, DBHeader *dbh) {
 	unsigned long temp;
 
@@ -412,7 +412,7 @@ static int raw_header_to_header(RawDBHeader *rdbh, DBHeader *dbh) {
 	return 0;
 }
 
-// Shamelessly copied from JPilot (libplugin.c)
+/* Shamelessly copied from JPilot (libplugin.c) */
 /*returns 1 if found */
 /*        0 if eof */
 static int find_next_offset( mem_rec_header *mem_rh, long fpos,
@@ -439,7 +439,7 @@ static int find_next_offset( mem_rec_header *mem_rh, long fpos,
 	return found;
 }
 
-// Shamelessly copied from JPilot (libplugin.c)
+/* Shamelessly copied from JPilot (libplugin.c) */
 static void free_mem_rec_header(mem_rec_header **mem_rh) {
 	mem_rec_header *h, *next_h;
 	for (h=*mem_rh; h; h=next_h) {
@@ -449,7 +449,7 @@ static void free_mem_rec_header(mem_rec_header **mem_rh) {
 	*mem_rh = NULL;
 }
 
-// Shamelessly copied from JPilot (libplugin.c)
+/* Shamelessly copied from JPilot (libplugin.c) */
 static int jpilot_free_db_list( GList **br_list ) {
 	GList *temp_list, *first;
 	buf_rec *br;
@@ -474,8 +474,8 @@ static int jpilot_free_db_list( GList **br_list ) {
 	return 0;
 }
 
-// Shamelessly copied from JPilot (libplugin.c)
-// Read file size.
+/* Shamelessly copied from JPilot (libplugin.c)
+   Read file size. */
 static int jpilot_get_info_size( FILE *in, int *size ) {
 	RawDBHeader rdbh;
 	DBHeader dbh;
@@ -485,7 +485,7 @@ static int jpilot_get_info_size( FILE *in, int *size ) {
 	fseek(in, 0, SEEK_SET);
 	fread(&rdbh, sizeof(RawDBHeader), 1, in);
 	if (feof(in)) {
-		// fprintf( stderr, "error reading file in 'jpilot_get_info_size'\n" );
+		/* fprintf( stderr, "error reading file in 'jpilot_get_info_size'\n" ); */
 		return MGU_EOF;
 	}
 
@@ -511,8 +511,8 @@ static int jpilot_get_info_size( FILE *in, int *size ) {
 	return MGU_SUCCESS;
 }
 
-// Read address file into address list. Based on JPilot's
-// libplugin.c (jp_get_app_info)
+/* Read address file into address list. Based on JPilot's
+   libplugin.c (jp_get_app_info) */
 static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, int *buf_size ) {
 	FILE *in;
  	int num;
@@ -530,19 +530,19 @@ static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, in
 	if( pilotFile->path ) {
 		in = fopen( pilotFile->path, "r" );
 		if( !in ) {
-			// fprintf( stderr, "can't open %s\n", pilotFile->path );
+			/* fprintf( stderr, "can't open %s\n", pilotFile->path ); */
 			return MGU_OPEN_FILE;
 		}
 	}
 	else {
-		// fprintf( stderr, "file not specified\n" );
+		/* fprintf( stderr, "file not specified\n" ); */
 		return MGU_NO_FILE;
 	}
 
 	num = fread( &rdbh, sizeof( RawDBHeader ), 1, in );
 	if( num != 1 ) {
 	  	if( ferror(in) ) {
-  			// fprintf( stderr, "error reading %s\n", pilotFile->path );
+  			/* fprintf( stderr, "error reading %s\n", pilotFile->path ); */
 			fclose(in);
 			return MGU_ERROR_READ;
 		}
@@ -552,7 +552,7 @@ static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, in
 		return MGU_EOF;
 	}
 
-	// Convert header into something recognizable
+	/* Convert header into something recognizable */
 	raw_header_to_header(&rdbh, &dbh);
 
 	num = jpilot_get_info_size(in, &rec_size);
@@ -564,7 +564,7 @@ static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, in
 	fseek(in, dbh.app_info_offset, SEEK_SET);
 	*buf = ( char * ) malloc(rec_size);
 	if (!(*buf)) {
-		// fprintf( stderr, "jpilot_get_file_info(): Out of memory\n" );
+		/* fprintf( stderr, "jpilot_get_file_info(): Out of memory\n" ); */
 		fclose(in);
 		return MGU_OO_MEMORY;
 	}
@@ -573,7 +573,7 @@ static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, in
 		if (ferror(in)) {
 			fclose(in);
 			free(*buf);
-			// fprintf( stderr, "Error reading %s\n", pilotFile->path );
+			/* fprintf( stderr, "Error reading %s\n", pilotFile->path ); */
 			return MGU_ERROR_READ;
 		}
 	}
@@ -586,8 +586,8 @@ static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, in
 
 #define	FULLNAME_BUFSIZE   256
 #define	EMAIL_BUFSIZE      256
-// Read address file into address cache. Based on JPilot's
-// jp_read_DB_files (from libplugin.c)
+/* Read address file into address cache. Based on JPilot's
+   jp_read_DB_files (from libplugin.c) */
 static gint jpilot_read_file( JPilotFile *pilotFile ) {
 	FILE *in;
 	gchar *buf;
@@ -621,19 +621,19 @@ static gint jpilot_read_file( JPilotFile *pilotFile ) {
 	mem_rh = last_mem_rh = NULL;
 	recs_returned = 0;
 
-	// Pointer to address metadata.
+	/* Pointer to address metadata. */
 	ai = & pilotFile->addrInfo;
 
-	// Open file for read
+	/* Open file for read */
 	if( pilotFile->path ) {
 		in = fopen( pilotFile->path, "r" );
 		if( !in ) {
-			// fprintf( stderr, "can't open %s\n", pilotFile->path );
+			/* fprintf( stderr, "can't open %s\n", pilotFile->path ); */
 			return MGU_OPEN_FILE;
 		}
 	}
 	else {
-		// fprintf( stderr, "file not specified\n" );
+		/* fprintf( stderr, "file not specified\n" ); */
 		return MGU_NO_FILE;
 	}
 
@@ -641,7 +641,7 @@ static gint jpilot_read_file( JPilotFile *pilotFile ) {
 	num = fread(&rdbh, sizeof(RawDBHeader), 1, in);
 	if (num != 1) {
 		if (ferror(in)) {
-			// fprintf( stderr, "error reading '%s'\n", pilotFile->path );
+			/* fprintf( stderr, "error reading '%s'\n", pilotFile->path ); */
 			fclose(in);
 			return MGU_ERROR_READ;
 		}
@@ -661,7 +661,7 @@ static gint jpilot_read_file( JPilotFile *pilotFile ) {
 		num = fread( &rh, sizeof( record_header ), 1, in );
 		if (num != 1) {
 			if (ferror(in)) {
-				// fprintf( stderr, "error reading '%s'\n", pilotFile->path );
+				/* fprintf( stderr, "error reading '%s'\n", pilotFile->path ); */
 				retVal = MGU_ERROR_READ;
 				break;
 			}
@@ -678,7 +678,7 @@ static gint jpilot_read_file( JPilotFile *pilotFile ) {
 
 		temp_mem_rh = (mem_rec_header *)malloc(sizeof(mem_rec_header));
 		if (!temp_mem_rh) {
-			// fprintf( stderr, "jpilot_read_db_file(): Out of memory 1\n" );
+			/* fprintf( stderr, "jpilot_read_db_file(): Out of memory 1\n" ); */
 			retVal = MGU_OO_MEMORY;
 			break;
 		}
@@ -698,7 +698,7 @@ static gint jpilot_read_file( JPilotFile *pilotFile ) {
 			last_mem_rh = temp_mem_rh;
 		}
 
-	}	// for( ;; )
+	}	/* for( ;; ) */
 
 	temp_mem_rh = mem_rh;
 
@@ -715,7 +715,7 @@ static gint jpilot_read_file( JPilotFile *pilotFile ) {
 		}
 		fseek(in, next_offset, SEEK_SET);
 
-		// Build array of pointers to categories;
+		/* Build array of pointers to categories; */
 		i = 0;
 		node = addrcache_get_list_folder( pilotFile->addressCache );
 		while( node ) {
@@ -726,9 +726,9 @@ static gint jpilot_read_file( JPilotFile *pilotFile ) {
 			i++;
 		}
 
-		// Now go load all records		
+		/* Now go load all records */		
 		while(!feof(in)) {
-			//struct CategoryAppInfo *cat = &ai->category;
+			/* struct CategoryAppInfo *cat = &ai->category; */
 
 			fpos = ftell(in);
 			if (out_of_order) {
@@ -753,14 +753,14 @@ static gint jpilot_read_file( JPilotFile *pilotFile ) {
 			num = fread(buf, rec_size, 1, in);
 			if ((num != 1)) {
 				if (ferror(in)) {
-					// fprintf( stderr, "Error reading %s 5\n", pilotFile );
+					/* fprintf( stderr, "Error reading %s 5\n", pilotFile ); */
 					free(buf);
 					retVal = MGU_ERROR_READ;
 					break;
 				}
 			}
 
-			// Retrieve address
+			/* Retrieve address */
 			inum = unpack_Address( & addr, buf, rec_size );
 			if( inum > 0 ) {
 				addrEnt = addr.entry;
@@ -788,7 +788,7 @@ static gint jpilot_read_file( JPilotFile *pilotFile ) {
 				g_free( extID );
 				extID = NULL;
 
-				// Add entry for each email address listed under phone labels.
+				/* Add entry for each email address listed under phone labels. */
 				indPhoneLbl = addr.phoneLabel;
 				for( k = 0; k < JPILOT_NUM_ADDR_PHONE; k++ ) {
 					gint ind;
@@ -813,7 +813,7 @@ static gint jpilot_read_file( JPilotFile *pilotFile ) {
 					}
 				}
 
-				// Add entry for each custom label
+				/* Add entry for each custom label */
 				node = pilotFile->labelInd;
 				while( node ) {
 					gint ind;
@@ -844,12 +844,12 @@ static gint jpilot_read_file( JPilotFile *pilotFile ) {
 
 				if( person->listEMail ) {
 					if( cat_id > -1 && cat_id < JPILOT_NUM_CATEG ) {
-						// Add to specified category
+						/* Add to specified category */
 						addrcache_folder_add_person(
 							pilotFile->addressCache, folderInd[cat_id], person );
 					}
 					else {
-						// Add to root folder
+						/* Add to root folder */
 						addrcache_add_person( pilotFile->addressCache, person );
 					}
 				}
@@ -881,7 +881,7 @@ static gint jpilot_read_metadata( JPilotFile *pilotFile ) {
 	pilotFile->readMetadata = FALSE;
 	addrcache_clear( pilotFile->addressCache );
 
-	// Read file info
+	/* Read file info */
 	retVal = jpilot_get_file_info( pilotFile, &buf, &rec_size);
 	if( retVal != MGU_SUCCESS ) {
 		pilotFile->retVal = retVal;
@@ -893,7 +893,7 @@ static gint jpilot_read_metadata( JPilotFile *pilotFile ) {
 		free(buf);
 	}
 	if( num <= 0 ) {
-		// fprintf( stderr, "error reading '%s'\n", pilotFile->path );
+		/* fprintf( stderr, "error reading '%s'\n", pilotFile->path ); */
 		pilotFile->retVal = MGU_ERROR_READ;
 		return pilotFile->retVal;
 	}
@@ -914,7 +914,7 @@ static gboolean jpilot_setup_labels( JPilotFile *pilotFile ) {
 
 	g_return_val_if_fail( pilotFile != NULL, -1 );
 
-	// Release indexes
+	/* Release indexes */
 	node = pilotFile->labelInd;
 	while( node ) {
 		node->data = NULL;
@@ -1095,13 +1095,13 @@ static void jpilot_remove_empty( JPilotFile *pilotFile ) {
 		ItemFolder *folder = node->data;
 		if( ADDRITEM_NAME(folder) == NULL || *ADDRITEM_NAME(folder) == '\0' ) {
 			if( folder->listPerson ) {
-				// Give name to folder
+				/* Give name to folder */
 				gchar name[20];
 				sprintf( name, "? %d", i );
 				addritem_folder_set_name( folder, name );
 			}
 			else {
-				// Mark for removal
+				/* Mark for removal */
 				remList = g_list_append( remList, folder );
 			}
 		}
@@ -1117,12 +1117,12 @@ static void jpilot_remove_empty( JPilotFile *pilotFile ) {
 	g_list_free( remList );
 }
 
-// ============================================================================================
-/*
+/* ============================================================================================
+
 * Read file into list. Main entry point
 * Return: TRUE if file read successfully.
-*/
-// ============================================================================================
+
+  ============================================================================================ */
 gint jpilot_read_data( JPilotFile *pilotFile ) {
 	g_return_val_if_fail( pilotFile != NULL, -1 );
 
@@ -1248,12 +1248,12 @@ gchar *jpilot_find_pilotdb( void ) {
 	strcat( str, G_DIR_SEPARATOR_S );
 	strcat( str, JPILOT_DBHOME_FILE );
 
-	// Attempt to open
+	/* Attempt to open */
 	if( ( fp = fopen( str, "r" ) ) != NULL ) {
 		fclose( fp );
 	}
 	else {
-		// Truncate filename
+		/* Truncate filename */
 		str[ len ] = '\0';
 	}
 	return g_strdup( str );
@@ -1315,7 +1315,7 @@ gboolean jpilot_test_pilot_lib( void ) {
 		return FALSE;
 	}
 
-	// Test for symbols we need
+	/* Test for symbols we need */
 	fun = dlsym( handle, "unpack_Address" );
 	if( ! fun ) {
 		dlclose( handle );

@@ -25,7 +25,7 @@
 #include <sys/stat.h>
 #include <glib.h>
 
-// #include "mgutils.h"
+/* #include "mgutils.h" */
 #include "addritem.h"
 #include "addrcache.h"
 
@@ -46,7 +46,7 @@ AddressCache *addrcache_create() {
 	cache->modified = FALSE;
 	cache->modifyTime = 0;
 
-	// Generate the next ID using system time
+	/* Generate the next ID using system time */
 	cache->nextID = 1;
 	t = time( NULL );
 	if( t > 0 ) {
@@ -147,7 +147,7 @@ static void addrcache_free_all_folders( ItemFolder *parent ) {
 void addrcache_clear( AddressCache *cache ) {
 	g_return_if_fail( cache != NULL );
 
-	// Free up folders and hash table
+	/* Free up folders and hash table */
 	addrcache_free_all_folders( cache->rootFolder );
 	addrcache_free_item_hash( cache->itemHash );
 	cache->itemHash = NULL;
@@ -157,7 +157,7 @@ void addrcache_clear( AddressCache *cache ) {
 	g_list_free( cache->tempList );
 	cache->tempList = NULL;
 
-	// Reset to initial state
+	/* Reset to initial state */
 	cache->itemHash = g_hash_table_new( g_str_hash, g_str_equal );
 	cache->rootFolder = addritem_create_item_folder();
 	cache->rootFolder->isRoot = TRUE;
@@ -514,7 +514,7 @@ AddrItemObject *addrcache_get_object( AddressCache *cache, const gchar *uid ) {
 	if( uid == NULL || *uid == '\0' ) return NULL;
 	obj = ( AddrItemObject * ) g_hash_table_lookup( cache->itemHash, uid );
 	if( obj ) {
-		// Check for matching UID
+		/* Check for matching UID */
 		uidH = ADDRITEM_ID(obj);
 		if( uidH ) {
 			if( strcmp( uidH, uid ) == 0 ) return obj;
@@ -571,7 +571,7 @@ ItemEMail *addrcache_get_email( AddressCache *cache, const gchar *uid, const gch
 	objP = addrcache_get_object( cache, uid );
 	if( objP ) {
 		if( ADDRITEM_TYPE(objP) == ITEMTYPE_PERSON ) {
-			// Sequential search through email addresses
+			/* Sequential search through email addresses */
 			ItemPerson *person = ( ItemPerson * ) objP;
 			GList *nodeMail = person->listEMail;
 			while( nodeMail ) {
@@ -642,7 +642,7 @@ ItemGroup *addrcache_remove_group_id( AddressCache *cache, const gchar *uid ) {
 			ItemGroup *group = ( ItemGroup * ) obj;
 			ItemFolder *parent = ( ItemFolder * ) ADDRITEM_PARENT(group);
 			if( ! parent ) parent = cache->rootFolder;
-			// Remove group from parent's list and hash table
+			/* Remove group from parent's list and hash table */
 			parent->listGroup = g_list_remove( parent->listGroup, group );
 			g_hash_table_remove( cache->itemHash, uid );
 			return ( ItemGroup * ) obj;
@@ -669,7 +669,7 @@ ItemGroup *addrcache_remove_group( AddressCache *cache, ItemGroup *group ) {
 			ItemFolder *parent = ( ItemFolder * ) ADDRITEM_PARENT(group);
 			if( ! parent ) parent = cache->rootFolder;
 
-			// Remove group from parent's list and hash table
+			/* Remove group from parent's list and hash table */
 			parent->listGroup = g_list_remove( parent->listGroup, obj );
 			g_hash_table_remove( cache->itemHash, uid );
 			return group;
@@ -687,7 +687,7 @@ static void addrcache_foldergrp_rem_person( ItemFolder *folder, ItemPerson *pers
 	while( nodeGrp ) {
 		ItemGroup *group = nodeGrp->data;
 		if( group ) {
-			// Remove each email address that belongs to the person from the list
+			/* Remove each email address that belongs to the person from the list */
 			GList *node = person->listEMail;
 			while( node ) {
 				group->listEMail = g_list_remove( group->listEMail, node->data );
@@ -714,13 +714,13 @@ ItemPerson *addrcache_remove_person_id( AddressCache *cache, const gchar *uid ) 
 	obj = ( AddrItemObject * ) g_hash_table_lookup( cache->itemHash, uid );
 	if( obj ) {
 		if( ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON ) {
-			// Remove person's email addresses from all groups where
-			// referenced and from hash table.
+			/* Remove person's email addresses from all groups where
+			   referenced and from hash table. */
 			ItemPerson *person = ( ItemPerson * ) obj;
 			ItemFolder *parent = ( ItemFolder * ) ADDRITEM_PARENT(person);
 			if( ! parent ) parent = cache->rootFolder;
-			// Remove emails from groups, remove from parent's list
-			// and hash table
+			/* Remove emails from groups, remove from parent's list
+			   and hash table */
 			addrcache_foldergrp_rem_person( parent, person );
 			parent->listPerson = g_list_remove( parent->listPerson, person );
 			g_hash_table_remove( cache->itemHash, uid );
@@ -746,8 +746,8 @@ ItemPerson *addrcache_remove_person( AddressCache *cache, ItemPerson *person ) {
 		obj = ( AddrItemObject * ) g_hash_table_lookup( cache->itemHash, uid );
 		if( obj ) {
 			if( ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON ) {
-				// Remove person's email addresses from all groups where
-				// referenced and from hash table.
+				/* Remove person's email addresses from all groups where
+				   referenced and from hash table. */
 				ItemFolder *parent = ( ItemFolder * ) ADDRITEM_PARENT(person);
 				if( ! parent ) parent = cache->rootFolder;
 				addrcache_foldergrp_rem_person( parent, person );
@@ -771,7 +771,7 @@ static void addrcache_allgrp_rem_email_vis( gpointer key, gpointer value, gpoint
 	if( ADDRITEM_TYPE(obj) == ITEMTYPE_GROUP ) {
 		ItemGroup *group = ( ItemGroup * ) value;
 		if( group ) {
-			// Remove each email address that belongs to the person from the list
+			/* Remove each email address that belongs to the person from the list */
 			group->listEMail = g_list_remove( group->listEMail, email );
 		}
 	}
@@ -793,14 +793,14 @@ ItemEMail *addrcache_person_remove_email_id( AddressCache *cache, const gchar *u
 	if( person ) {
 		email = addritem_person_remove_email_id( person, eid );
 		if( email ) {
-			// Remove email from all groups.
+			/* Remove email from all groups. */
 			g_hash_table_foreach( cache->itemHash, addrcache_allgrp_rem_email_vis, email );
 
-			// Remove email from person's address list
+			/* Remove email from person's address list */
 			if( person->listEMail ) {
 				person->listEMail = g_list_remove( person->listEMail, email );
 			}
-			// Unlink reference to person.
+			/* Unlink reference to person. */
 			ADDRITEM_PARENT(email) = NULL;
 		}
 	}
@@ -821,14 +821,14 @@ ItemEMail *addrcache_person_remove_email( AddressCache *cache, ItemPerson *perso
 	if( person && email ) {
 		found = addritem_person_remove_email( person, email );
 		if( found ) {
-			// Remove email from all groups.
+			/* Remove email from all groups. */
 			g_hash_table_foreach( cache->itemHash, addrcache_allgrp_rem_email_vis, email );
 
-			// Remove email from person's address list
+			/* Remove email from person's address list */
 			if( person->listEMail ) {
 				person->listEMail = g_list_remove( person->listEMail, email );
 			}
-			// Unlink reference to person.
+			/* Unlink reference to person. */
 			ADDRITEM_PARENT(email) = NULL;
 		}
 	}
@@ -1099,7 +1099,7 @@ ItemFolder *addrcache_remove_folder( AddressCache *cache, ItemFolder *folder ) {
 			AddrItemObject *aio;
 			if( ! parent ) parent = cache->rootFolder;
 
-			// Re-parent children in folder
+			/* Re-parent children in folder */
 			node = folder->listFolder;
 			while( node ) {
 				aio = ( AddrItemObject * ) node->data;
@@ -1122,7 +1122,7 @@ ItemFolder *addrcache_remove_folder( AddressCache *cache, ItemFolder *folder ) {
 				node = g_list_next( node );
 			}
 
-			// Remove folder from parent's list and hash table
+			/* Remove folder from parent's list and hash table */
 			parent->listFolder = g_list_remove( parent->listFolder, folder );
 			ADDRITEM_PARENT(folder) = NULL;
 			g_hash_table_remove( cache->itemHash, uid );
@@ -1150,7 +1150,7 @@ ItemFolder *addrcache_remove_folder_delete( AddressCache *cache, ItemFolder *fol
 			ItemFolder *parent = ( ItemFolder * ) ADDRITEM_PARENT(folder);
 			if( ! parent ) parent = cache->rootFolder;
 
-			// Remove groups
+			/* Remove groups */
 			while( folder->listGroup ) {
 				ItemGroup *item = ( ItemGroup * ) folder->listGroup->data;
 				item = addrcache_remove_group( cache, item );
@@ -1169,7 +1169,7 @@ ItemFolder *addrcache_remove_folder_delete( AddressCache *cache, ItemFolder *fol
 				}
 			}
 
-			// Recursive deletion of folder
+			/* Recursive deletion of folder */
 			while( folder->listFolder ) {
 				ItemFolder *item = ( ItemFolder * ) folder->listFolder->data;
 				item = addrcache_remove_folder_delete( cache, item );
@@ -1179,7 +1179,7 @@ ItemFolder *addrcache_remove_folder_delete( AddressCache *cache, ItemFolder *fol
 				}
 			}
 
-			// Remove folder from parent's list and hash table
+			/* Remove folder from parent's list and hash table */
 			parent->listFolder = g_list_remove( parent->listFolder, folder );
 			ADDRITEM_PARENT(folder) = NULL;
 			g_hash_table_remove( cache->itemHash, uid );
@@ -1210,13 +1210,13 @@ ItemPerson *addrcache_add_contact( AddressCache *cache, ItemFolder *folder, cons
 
 	if( ! f ) f = cache->rootFolder;
 
-	// Create person object
+	/* Create person object */
 	person = addritem_create_item_person();
 	addritem_person_set_common_name( person, name );
 	addrcache_id_person( cache, person );
 	addrcache_folder_add_person( cache, f, person );
 
-	// Create email object
+	/* Create email object */
 	email = addritem_create_item_email();
 	addritem_email_set_address( email, address );
 	addritem_email_set_remarks( email, remarks );

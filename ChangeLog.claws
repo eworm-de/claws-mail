@@ -1,3 +1,11 @@
+2001-09-27 [paul]	0.6.2claws9
+
+	* src/addrbook.c, src/addrcache.c, src/addritem.c, src/jpilot.c
+		replace '// comments' with '/* comments */' to prevent
+		some compiler warnings 
+
+	* sync with sylpheed 0.6.2cvs6
+
 2001-09-26 [alfons]	0.6.2claws8
 
 	* src/messageview.c
