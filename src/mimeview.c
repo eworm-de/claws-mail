@@ -301,6 +301,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	mimeview->tooltips      = tooltips;
 	mimeview->oldsize       = 60;
 	mimeview->mime_toggle   = mime_toggle;
+	mimeview->scroll_button = scrollbutton;
 
 	mimeview->target_list	= gtk_target_list_new(mimeview_mime_types, 1); 
 	
@@ -709,6 +710,8 @@ static void mimeview_clear(MimeView *mimeview)
 
 	g_free(mimeview->file);
 	mimeview->file = NULL;
+
+	gtk_vscrollbutton_reset(GTK_VSCROLLBUTTON(mimeview->scroll_button));
 	icon_list_clear(mimeview);
 
 	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(mimeview->mime_toggle)))

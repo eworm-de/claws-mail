@@ -1,3 +1,11 @@
+2003-07-29 [alfons]	0.9.3claws74
+
+	* src/mimeview.[ch]
+	* src/gtk/gtkvscrollbutton.[ch]
+		fix UI glitch where mime icon toolbox' scroll position is not 
+		reset after switching to another message
+		
+
 2003-07-29 [paul]	0.9.3claws73
 
 	* src/prefs_folder_item.c

@@ -72,9 +72,10 @@ extern "C" {
 #endif /* __cplusplus */
 
 
-GtkType    gtk_vscrollbutton_get_type (void);
-GtkWidget* gtk_vscrollbutton_new      (GtkAdjustment *adjustment);
+GtkType    gtk_vscrollbutton_get_type	(void);
+GtkWidget* gtk_vscrollbutton_new	(GtkAdjustment *adjustment);
 
+void	   gtk_vscrollbutton_reset	(GtkVScrollbutton *vscroll_button);
 
 #ifdef __cplusplus
 }

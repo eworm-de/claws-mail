@@ -201,6 +201,13 @@ void gtk_vscrollbutton_set_adjustment(GtkVScrollbutton *scrollbutton,
     }
 }
 
+void gtk_vscrollbutton_reset(GtkVScrollbutton *scrollbutton)
+{
+	/* do what luke does when scrolling */
+	scrollbutton->adjustment->value = scrollbutton->adjustment->lower;
+	gtk_signal_emit_by_name(GTK_OBJECT (scrollbutton->adjustment),
+				"value_changed");
+}
 
 static gint gtk_vscrollbutton_button_press(GtkWidget *widget,
 					   GdkEventButton *event,
