@@ -278,7 +278,7 @@ GtkAspell *gtkaspell_new(const gchar *dictionary,
 	if (!gtkaspeller)
 		return NULL;
 	
-	gtkaspell = g_new(GtkAspell, 1);
+	gtkaspell = g_new0(GtkAspell, 1);
 
 	gtkaspell->gtkaspeller	      = gtkaspeller;
 	gtkaspell->alternate_speller  = NULL;
