@@ -61,6 +61,11 @@ gboolean session_parent_input_cb	(GIOChannel	*source,
 gboolean session_child_input		(Session	*session);
 
 
+/*!
+ *\brief	init session members to zero
+ *
+ *\param	session to be initialized
+ */
 void session_init(Session *session)
 {
 	session->type = 0;
@@ -76,6 +81,19 @@ void session_init(Session *session)
 	session->write_ch = NULL;
 }
 
+/*!
+ *\brief	Set up parent and child process
+ *		Childloop: Read commands from parent,
+ *		send to server, get answer, pass to parent
+ *
+ *\param	session Contains session information
+ *		server to connect to
+ *		port to connect to
+ *
+ *\return	 0 : success
+ *		-1 : pipe / fork errors (parent)
+ *		 1 : connection error (child)
+ */
 gint session_connect(Session *session, const gchar *server, gushort port)
 {
 	pid_t pid;
@@ -164,6 +182,13 @@ gint session_connect(Session *session, const gchar *server, gushort port)
 	_exit(0);
 }
 
+/*!
+ *\brief	child and parent: send DISCONNECT message to other process
+ *
+ *\param	session Contains session information
+ *
+ *\return	 0 : success
+ */
 gint session_disconnect(Session *session)
 {
 	g_print("%s: session_disconnect()\n", session->child_pid == 0 ? "child" : "parent");
@@ -171,6 +196,11 @@ gint session_disconnect(Session *session)
 	return 0;
 }
 
+/*!
+ *\brief	parent ?
+ *
+ *\param	session Contains session information
+ */
 void session_destroy(Session *session)
 {
 	g_return_if_fail(session != NULL);
@@ -222,6 +252,13 @@ void session_set_send_data_notify(Session *session, SendDataNotify notify_func,
 	session->send_data_notify_data = data;
 }
 
+/*!
+ *\brief	child and parent cleanup (child closes first)
+ *
+ *\param	session Contains session information
+ *
+ *\return	 0 : success
+ */
 static gint session_close(Session *session)
 {
 	g_return_val_if_fail(session != NULL, -1);
@@ -259,6 +296,16 @@ static gint session_close(Session *session)
 	return 0;
 }
 
+/*!
+ *\brief	child and parent: send control message to other process
+ *
+ *\param	session Contains session information
+ *		type Kind of data (commands or message data)
+ *		msg Data
+ *
+ *\return	 0 : success
+ *		-1 : error
+ */
 gint session_send_msg(Session *session, SessionMsgType type, const gchar *msg)
 {
 	gchar *prefix;
@@ -299,6 +346,13 @@ gint session_send_msg(Session *session, SessionMsgType type, const gchar *msg)
 	return 0;
 }
 
+/*!
+ *\brief	child and parent receive function
+ *
+ *\param	session Contains session information
+ *
+ *\return	Message read by current session
+ */
 static gchar *session_recv_msg(Session *session)
 {
 	gchar buf[BUFFSIZE];
@@ -355,6 +409,16 @@ gint session_start_tls(Session *session)
 }
 #endif
 
+/*!
+ *\brief	parent (child?): send data to other process
+ *
+ *\param	session Contains session information
+ *		data Data to send
+ *		size Bytes to send
+ *
+ *\return	 0 : success
+ *		-1 : error
+ */
 gint session_send_data(Session *session, const guchar *data, guint size)
 {
 	gchar *msg;
@@ -394,6 +458,14 @@ gint session_recv_data(Session *session, guint size, gboolean unescape_dot)
 	return 0;
 }
 
+/*!
+ *\brief	child (parent?): read data from other process
+ *
+ *\param	session Contains session information
+ *		size Bytes to read
+ *
+ *\return	data read from session
+ */
 static guchar *session_read_data(Session *session, guint size)
 {
 	guchar *data;
@@ -423,6 +495,16 @@ static guchar *session_read_data(Session *session, guint size)
 
 #define MAX_CHUNK_SIZE 4096
 
+/*!
+ *\brief	child: Send session data to server
+ *
+ *\param	session Contains session information
+ *		data Data to send to server
+ *		size Bytes to send
+ *
+ *\return	 0 : success
+ *		-1 : error
+ */
 static gint session_send_data_to_sock(Session *session, const guchar *data,
 				      guint size)
 {
@@ -463,6 +545,14 @@ static gint session_send_data_to_sock(Session *session, const guchar *data,
 	return 0;
 }
 
+/*!
+ *\brief	child: Read answer/data from server
+ *
+ *\param	session Contains session information
+ *		size Max bytes to receive
+ *
+ *\return	Server answer
+ */
 static guchar *session_recv_data_from_sock(Session *session, guint size)
 {
 	guchar *data;
@@ -561,6 +651,13 @@ static guchar *session_recv_data_from_sock_unescape(Session *session,
 	return ret_data;
 }
 
+/*!
+ *\brief	Return if message is an internal command or server data
+ *
+ *\param	str Message to analyze
+ *
+ *\return	Type of message
+ */
 static SessionMsgType session_get_msg_type(const gchar *str)
 {
 	if (!strncmp(str, "MESSAGE ", 8))
@@ -577,6 +674,15 @@ static SessionMsgType session_get_msg_type(const gchar *str)
 		return SESSION_MSG_UNKNOWN;
 }
 
+/*!
+ *\brief	parent: Received data from child
+ *
+ *\param	source Channel watching child pipe
+ *		condition Unused (IN, HUP, OUT)
+ *		data Contains session information
+ *
+ *\return	FALSE to remove watching channel
+ */
 gboolean session_parent_input_cb(GIOChannel *source, GIOCondition condition,
 				 gpointer data)
 {
@@ -692,6 +798,14 @@ gboolean session_parent_input_cb(GIOChannel *source, GIOCondition condition,
 	return TRUE;
 }
 
+/*!
+ *\brief	child: Receive control message from parent,
+ *		transfer data from/to server
+ *
+ *\param	session Contains session information
+ *
+ *\return	TRUE if more data is available
+ */
 gboolean session_child_input(Session *session)
 {
 	gchar buf[BUFFSIZE];

@@ -1,3 +1,8 @@
+2003-03-28 [thorsten]	0.8.11claws63
+
+	* src/common/session.c
+		added some comments
+
 2003-03-28 [paul]	0.8.11claws62
 
 	* sync with 0.8.11cvs16
