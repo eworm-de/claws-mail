@@ -311,9 +311,9 @@ static void prefs_toolbar_ok(void)
 
 static void prefs_toolbar_cancel(void)
 {
-	prefs_toolbar_close();
 	toolbar_update();
 	main_window_reflect_prefs_all_real(TRUE);
+	prefs_toolbar_close();
 }
 
 static void get_action_name(gchar *entry, gchar **menu)
