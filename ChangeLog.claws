@@ -1,3 +1,14 @@
+2003-11-04 [luke]	0.9.6claws66
+        * src/plugins/image_viewer/viewer.c
+	* src/plugins/image_viewer/viewerprefs.c
+	* src/plugins/image_viewer/viewerprefs.glade
+                o  allow toggling of image scaling by clicking on image
+                o  respond to image's container widget resize
+
+        * src/procmime.c
+                o  fix bad parsing of message when re-editing/viewing a
+		   message saved to the drafts folder
+
 2003-11-02 [match]	0.9.6claws65
 
 	* src/browseldap.h
