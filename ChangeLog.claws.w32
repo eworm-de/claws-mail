@@ -1,3 +1,13 @@
+2002-11-02 [thorsten]	0.8.5claws66-5
+
+	* src/summaryview.c
+		fix: utf8 conv. for status (submitted by Hu Gang)
+
+2002-11-02 [thorsten]	0.8.5claws66-4
+
+	* win32/Make-ming.mak
+		add: Prefix for cross compilation (submitted by Hu Gang)
+
 2002-11-02 [thorsten]	0.8.5claws66-3
 
 	* win32/Make-ming.mak
