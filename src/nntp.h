@@ -63,5 +63,6 @@ gint nntp_newnews(NNTPSockInfo *sock);
 gint nntp_mode(NNTPSockInfo *sock, gboolean stream);
 gint nntp_ok(NNTPSockInfo *sock, gchar *argbuf);
 gint nntp_list(NNTPSockInfo *sock);
+gint nntp_xhdr(NNTPSockInfo *sock, gchar * header, gint first, gint last);
 
 #endif /* __NNTP_H__ */

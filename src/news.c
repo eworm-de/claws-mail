@@ -65,6 +65,8 @@ static GSList *news_get_uncached_articles(NNTPSession	*session,
 					  gint		*rfirst,
 					  gint		*rlast);
 static MsgInfo *news_parse_xover	 (const gchar	*xover_str);
+static gchar * news_parse_xhdr           (const gchar *xover_str,
+					  MsgInfo * info);
 static GSList *news_delete_old_article	 (GSList	*alist,
 					  gint		 first);
 static void news_delete_all_article	 (FolderItem	*item);
@@ -445,6 +447,61 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 		}
 	}
 
+	if (nntp_xhdr(session->nntp_sock, "to", begin, end) != NN_SUCCESS) {
+		log_warning(_("can't get xhdr\n"));
+		return NULL;
+	}
+
+	llast = newlist;
+
+	for (;;) {
+		gchar * value;
+		
+		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
+			log_warning(_("error occurred while getting xover.\n"));
+			return newlist;
+		}
+
+		if (buf[0] == '.' && buf[1] == '\r') break;
+
+		msginfo = (MsgInfo *) llast->data;
+
+		value = news_parse_xhdr(buf, msginfo);
+
+		if (value)
+			msginfo->to = value;
+
+		llast = llast->next;
+		
+	}
+
+	if (nntp_xhdr(session->nntp_sock, "cc", begin, end) != NN_SUCCESS) {
+		log_warning(_("can't get xhdr\n"));
+		return NULL;
+	}
+
+	llast = newlist;
+
+	for (;;) {
+		gchar * value;
+		
+		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
+			log_warning(_("error occurred while getting xover.\n"));
+			return newlist;
+		}
+
+		if (buf[0] == '.' && buf[1] == '\r') break;
+
+		msginfo = (MsgInfo *) llast->data;
+
+		value = news_parse_xhdr(buf, msginfo);
+
+		if (value)
+			msginfo->cc = value;
+
+		llast = llast->next;
+	}
+
 	if (rfirst) *rfirst = first;
 	if (rlast)  *rlast  = last;
 	return newlist;
@@ -516,6 +573,26 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
 	}
 
 	return msginfo;
+}
+
+static gchar * news_parse_xhdr(const gchar *xover_str, MsgInfo * info)
+{
+	gchar buf[NNTPBUFSIZE];
+	gchar *p;
+	gint num;
+
+	p = strchr(xover_str, ' ');
+	if (!p)
+		return NULL;
+	else
+		p++;
+
+	num = atoi(xover_str);
+
+	if (info->msgnum != num)
+		return NULL;
+
+	return g_strdup(p);
 }
 
 static GSList *news_delete_old_article(GSList *alist, gint first)

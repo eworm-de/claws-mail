@@ -187,6 +187,18 @@ gint nntp_xover(NNTPSockInfo *sock, gint first, gint last)
 	return NN_SUCCESS;
 }
 
+gint nntp_xhdr(NNTPSockInfo *sock, gchar * header, gint first, gint last)
+{
+	gint ok;
+	gchar buf[NNTPBUFSIZE];
+
+	ok = nntp_gen_command(sock, buf, "XHDR %s %d-%d", header, first, last);
+	if (ok != NN_SUCCESS)
+		return ok;
+
+	return NN_SUCCESS;
+}
+
 gint nntp_post(NNTPSockInfo *sock, FILE *fp)
 {
 	gint ok;

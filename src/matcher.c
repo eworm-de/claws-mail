@@ -782,7 +782,7 @@ gboolean matcherlist_match_file(MatcherList * matchers, MsgInfo * info,
 	if (!read_headers && !read_body)
 		return result;
 
-	file = procmsg_get_message_file_path(info);
+	file = procmsg_get_message_file(info);
 	g_return_if_fail(file != NULL);
 
 	if ((fp = fopen(file, "r")) == NULL) {

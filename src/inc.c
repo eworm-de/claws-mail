@@ -894,7 +894,8 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 {
 	gint msgs, size;
 	gint lockfd;
-	gchar tmp_mbox[256] = "/tmp/tmpmboxXXXXXX";
+	/*	gchar tmp_mbox[256] = "/tmp/tmpmboxXXXXXX"; */
+	gchar tmp_mbox[MAXPATHLEN + 1];
 	GHashTable *folder_table = NULL;
 
 	g_return_val_if_fail(dest != NULL, -1);
@@ -909,8 +910,12 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 	if ((lockfd = lock_mbox(mbox, LOCK_FLOCK)) < 0)
 		return -1;
 
+	g_snprintf(tmp_mbox, sizeof(tmp_mbox), "%s%ctmpmbox%d",
+		   get_rc_dir(), G_DIR_SEPARATOR, (gint)mbox);
+	/*
 	if (mktemp(tmp_mbox) == NULL)
 		return -1;
+	*/
 
 	if (copy_mbox(mbox, tmp_mbox) < 0)
 		return -1;

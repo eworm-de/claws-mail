@@ -1,3 +1,19 @@
+2001-05-06 [hoa]
+
+	* removed src/headers_display.[ch]
+	* removed src/prefs_display_headers.[ch]
+	* src/inc.c
+		use a temporary file in the user directory for mbox import
+	* src/news.c
+		added XHDR support to get "To" and "Cc" headers
+		(in order to match news with to or cc field for
+		scoring)
+		added function news_parse_xhdr() to get XHDR response
+	* src/nntp.[ch]
+		added function nntp_xhdr()
+	* src/matcher.c
+		fetch the message if necessary
+
 2001-05-06 [alfons]
 
 	0.4.66claws3
