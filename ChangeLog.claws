@@ -1,3 +1,9 @@
+2003-03-21 [colin]	0.8.11claws35
+
+	* src/folder.c 
+	* src/folderview.c
+		speed up a bit folder dnd
+
 2003-03-20 [alfons]	0.8.11claws34
 
 	* src/main.c

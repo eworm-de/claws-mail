@@ -1595,18 +1595,9 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 		new_item->folder = dest->folder;
 
 	/* move messages */
-	for (cur = mlist ; cur != NULL ; cur = cur->next) {
-		MsgInfo * msginfo;
-		cnt++;
-		if (cnt%500)
-			log_message(_("Moving %s to %s (%d%%)...\n"), src->name, 
-					new_item->path,
-					100*cnt/g_slist_length(mlist));
-		msginfo = (MsgInfo *) cur->data;
-		folder_item_move_msg(new_item, msginfo);
-
-		procmsg_msginfo_free(msginfo);
-	}
+	log_message(_("Moving %s to %s...\n"), 
+			src->name, new_item->path);
+	folder_item_move_msgs_with_dest(new_item, mlist);
 	
 	/*copy prefs*/
 	prefs_folder_item_copy_prefs(src, new_item);
