@@ -1,3 +1,8 @@
+2004-09-02 [colin]	0.9.12cvs89.1
+
+	* src/addrindex.c
+		Sync with HEAD (free deleted queries)
+
 2004-09-02 [colin]	0.9.12cvs88.1
 
 	* src/ldapquery.c

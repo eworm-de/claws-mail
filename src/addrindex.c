@@ -2771,6 +2771,9 @@ void addrindex_remove_results( AddressDataSource *ds, ItemFolder *folder ) {
 		queryID = ADDRQUERY_ID(qry);
 		/* printf( "calling ldapquery_remove_results...queryID=%d\n", queryID ); */
 		delFlag = ldapquery_remove_results( qry );
+		if (delFlag) {
+			ldapqry_free( qry );
+		}
 		/* printf( "calling ldapquery_remove_results...done\n" ); */
 		/*
 		if( delFlag ) {
