@@ -1,3 +1,28 @@
+2002-12-30 [christoph]	0.8.8claws26
+
+	* src/common/hooks.[ch]
+		return abort status to caller of hooks_invoke
+		
+	* src/inc.[ch]
+		invoke message filtering hook and stop
+		default handling when filter returns abort
+
+	* src/common/plugin.[ch]
+	* src/plugins/demo/demo.c
+		modify plugin loader, because resolving symbols for strings
+		does not work correctly
+	
+	* configure.in
+	* ac/spamassassin.m4				** NEW **
+	* src/plugins/spamassassin/.cvsignore		** NEW **
+	* src/plugins/spamassassin/Makefile.am		** NEW **
+	* src/plugins/spamassassin/README		** NEW **
+	* src/plugins/spamassassin/libspamc.[ch]	** NEW **
+	* src/plugins/spamassassin/spamassassin.c	** NEW **
+	* src/plugins/spamassassin/utils.[ch]		** NEW **
+		add spamassassin plugin, see src/plugins/spamassassin/README
+		for details
+
 2002-12-29 [alfons]	0.8.8claws25
 
 	* src/mainwindow.c

@@ -31,9 +31,9 @@
 struct _Plugin
 {
 	gchar	*filename;
-	gchar	*name;
 	GModule	*module;
-	gchar	*desc;
+	gchar	*(*name) ();
+	gchar	*(*desc) ();
 };
 
 /**
@@ -78,6 +78,7 @@ gint plugin_load(const gchar *filename, gchar **error)
 {
 	Plugin *plugin;
 	gint (*plugin_init) (gchar **error);
+	gchar *plugin_name, *plugin_desc;
 	gint ok;
 
 	g_return_val_if_fail(filename != NULL, -1);
@@ -96,8 +97,8 @@ gint plugin_load(const gchar *filename, gchar **error)
 		return -1;
 	}
 
-	if (!g_module_symbol(plugin->module, "plugin_name", (gpointer *)&plugin->name) ||
-	    !g_module_symbol(plugin->module, "plugin_desc", (gpointer *)&plugin->desc) ||
+	if (!g_module_symbol(plugin->module, "plugin_name", (gpointer *)&plugin_name) ||
+	    !g_module_symbol(plugin->module, "plugin_desc", (gpointer *)&plugin_desc) ||
 	    !g_module_symbol(plugin->module, "plugin_init", (gpointer *)&plugin_init)) {
 		*error = g_strdup(g_module_error());
 		g_module_close(plugin->module);
@@ -111,9 +112,13 @@ gint plugin_load(const gchar *filename, gchar **error)
 		return ok;
 	}
 
+	plugin->name = plugin_name;
+	plugin->desc = plugin_desc;
+	plugin->filename = g_strdup(filename);
+
 	plugins = g_slist_append(plugins, plugin);
 
-	debug_print("Plugin %s (from file %s) loaded\n", plugin->name, plugin->filename);
+	debug_print("Plugin %s (from file %s) loaded\n", plugin->name(), filename);
 
 	return 0;
 }
@@ -173,10 +178,10 @@ GSList *plugin_get_list()
 
 const gchar *plugin_get_name(Plugin *plugin)
 {
-	return plugin->name;
+	return plugin->name();
 }
 
 const gchar *plugin_get_desc(Plugin *plugin)
 {
-	return plugin->desc;
+	return plugin->desc();
 }

@@ -27,6 +27,8 @@ typedef struct _Plugin Plugin;
 /* Functions to implement by the plugin */
 gint plugin_init		(gchar		**error);
 void plugin_done		();
+const gchar *plugin_name	();
+const gchar *plugin_desc	();
 
 /* Functions by the sylpheed plugin system */
 gint plugin_load		(const gchar	 *filename,

@@ -66,6 +66,7 @@
 #include "filtering.h"
 #include "selective_download.h"
 #include "log.h"
+#include "hooks.h"
 
 static GList *inc_dialog_list = NULL;
 
@@ -597,13 +598,19 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 		/* process messages */
 		for(msglist_element = msglist; msglist_element != NULL; msglist_element = msglist_element->next) {
+			MailFilteringData mail_filtering_data;
 			msginfo = (MsgInfo *) msglist_element->data;
-			/* filter if enabled in prefs or move to inbox if not */
-			if(global_processing && pop3_state->ac_prefs->filter_on_recv) {
-				filter_message_by_msginfo_with_inbox(global_processing, msginfo,
-								     inbox);
-			} else {
-				folder_item_move_msg(inbox, msginfo);
+			
+			mail_filtering_data.msginfo = msginfo;
+			
+			if (!hooks_invoke(MAIL_FILTERING_HOOKLIST, &mail_filtering_data)) {
+				/* filter if enabled in prefs or move to inbox if not */
+				if(global_processing && pop3_state->ac_prefs->filter_on_recv) {
+					filter_message_by_msginfo_with_inbox(global_processing, msginfo,
+									     inbox);
+				} else {
+					folder_item_move_msg(inbox, msginfo);
+				}
 			}
 			procmsg_msginfo_free(msginfo);
 		}

@@ -103,19 +103,21 @@ static void hooks_marshal(GHook *hook, gpointer data)
 	}
 }
 
-void hooks_invoke(gchar *hooklist_name,
+gboolean hooks_invoke(gchar *hooklist_name,
 		  gpointer source)
 {
 	GHookList *hooklist;
 	struct MarshalData marshal_data;
 	
-	g_return_if_fail(hooklist_name != NULL);
+	g_return_val_if_fail(hooklist_name != NULL, FALSE);
 
 	hooklist = hooks_get_hooklist(hooklist_name);
-	g_return_if_fail(hooklist != NULL);
+	g_return_val_if_fail(hooklist != NULL, FALSE);
 
 	marshal_data.source = source;
 	marshal_data.abort = FALSE;
 
 	g_hook_list_marshal(hooklist, TRUE, hooks_marshal, &marshal_data);
+
+	return marshal_data.abort;
 }

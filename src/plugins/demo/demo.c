@@ -22,9 +22,6 @@
 #include "hooks.h"
 #include "log.h"
 
-gchar *plugin_name = "Dummy plugin";
-gchar *plugin_desc = "Plugin that does nothing and never loads";
-
 gboolean my_log_hook(gpointer source, gpointer data)
 {
 	LogText *logtext = (LogText *)source;
@@ -54,4 +51,14 @@ void plugin_done()
 	hooks_unregister_hook(LOG_APPEND_TEXT_HOOKLIST, hook_id);
 
 	printf("Demo plugin unloaded\n");
+}
+
+const gchar *plugin_name()
+{
+	return "Dummy plugin";
+}
+
+const gchar *plugin_desc()
+{
+	return "Plugin that does nothing and never loads";
 }

@@ -28,7 +28,7 @@ gint hooks_register_hook	(gchar			*hooklist_name,
 				 gpointer		 userdata);
 void hooks_unregister_hook	(gchar			*hooklist_name,
 				 guint			 hook_id);
-void hooks_invoke		(gchar			*hooklist_name,
+gboolean hooks_invoke		(gchar			*hooklist_name,
 				 gpointer		 source);
 
 #endif /* HOOKS_H */
