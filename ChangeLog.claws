@@ -1,3 +1,10 @@
+2002-05-08 [paul]	0.7.5claws12
+
+	* src/mainwindow.c
+	  src/textview.[ch]
+		fix segfault on View->Open in new window
+		patch submitted by Thorsten Maerz <torte@netztorte.de>
+
 2002-05-07 [paul]	0.7.5claws11
 
 	* sync with 0.7.5cvs9

@@ -58,6 +58,8 @@ struct _TextView
 
 	MessageView *messageview;
 	gint last_buttonpress;
+	gint show_url_msgid;
+	gint show_url_timeout_tag;
 };
 
 TextView *textview_create	(void);

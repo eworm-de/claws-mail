@@ -257,6 +257,7 @@ TextView *textview_create(void)
 	textview->cur_pos          = 0;
 	textview->show_all_headers = FALSE;
 	textview->last_buttonpress = GDK_NOTHING;
+	textview->show_url_msgid   = 0;
 
 	return textview;
 }
@@ -1641,6 +1642,16 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	return TRUE;
 }
 
+static gint show_url_timeout_cb(TextView    *textview ){
+	if (textview->messageview->mainwin)
+	  	if (textview->show_url_msgid)
+			gtk_statusbar_remove(GTK_STATUSBAR(
+				textview->messageview->mainwin->statusbar),
+				textview->messageview->mainwin->folderview_cid,
+				textview->show_url_msgid);
+		return FALSE;
+}
+
 static gint textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 				    TextView *textview)
 {
@@ -1667,21 +1678,30 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 		        textview->cur_pos--;
 		}
 
-		gtk_statusbar_pop(GTK_STATUSBAR(textview->messageview->mainwin->statusbar),
-			  	  textview->messageview->mainwin->folderview_cid);
-
 		for (cur = textview->uri_list; cur != NULL; cur = cur->next) {
 			RemoteURI *uri = (RemoteURI *)cur->data;
 
 			if (textview->cur_pos >= uri->start &&
 			    textview->cur_pos <  uri->end) {
 				/* single click: display url in statusbar */
-				if (event->button == 1 
-				    && (textview->last_buttonpress != GDK_2BUTTON_PRESS)) {
-					gtk_statusbar_push(
-					    	GTK_STATUSBAR(textview->messageview->mainwin->statusbar),
-						textview->messageview->mainwin->folderview_cid, uri->uri);
-					gtkut_widget_wait_for_draw(textview->messageview->mainwin->hbox_stat);
+				if (event->button == 1) {
+					if (textview->messageview->mainwin
+					&& textview->last_buttonpress != GDK_2BUTTON_PRESS) {
+						if (textview->show_url_msgid) {
+						  	gtk_timeout_remove(textview->show_url_timeout_tag);
+							gtk_statusbar_remove(GTK_STATUSBAR(
+								textview->messageview->mainwin->statusbar),
+								textview->messageview->mainwin->folderview_cid,
+								textview->show_url_msgid);
+							textview->show_url_msgid = 0;
+						}
+						textview->show_url_msgid = gtk_statusbar_push(
+								GTK_STATUSBAR(textview->messageview->mainwin->statusbar),
+								textview->messageview->mainwin->folderview_cid,
+								uri->uri);
+						textview->show_url_timeout_tag = gtk_timeout_add( 2000, show_url_timeout_cb, textview );
+						gtkut_widget_wait_for_draw(textview->messageview->mainwin->hbox_stat);
+					}
 				} else
 				if (!g_strncasecmp(uri->uri, "mailto:", 7)) {
 					if (event->button == 3) {
