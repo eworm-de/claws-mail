@@ -1,4 +1,11 @@
 2004-01-25 Thorsten Maerz <torte@netztorte.de>
+	* src/gtk/filesel.c
+		crash when inserting file in compose window
+		(TODO: keep old selection on clicks)
+	* src/main.c
+		use gtkrc-2.0 instead of gtkrc
+
+2004-01-25 Thorsten Maerz <torte@netztorte.de>
 	* src/messageview.c
 		remove orphaned mimeview unref()
 

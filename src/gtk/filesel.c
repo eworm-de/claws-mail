@@ -196,9 +196,18 @@ static void filesel_create(const gchar *title, gboolean multiple_files)
 	MANAGE_WINDOW_SIGNALS_CONNECT(filesel);
 
 	if (multiple_files) {
+#ifndef _MSC_VER
+#warning GTK2 dir_list/file_list now GtkTreeView. selection handlers not working.
+#endif
+#if 1
+		gtk_file_selection_set_select_multiple
+			(GTK_FILE_SELECTION(filesel), TRUE);
+#else
 		gtk_clist_set_selection_mode
 			(GTK_CLIST(GTK_FILE_SELECTION(filesel)->file_list),
 			 GTK_SELECTION_MULTIPLE);
+#endif
+
 		gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filesel)->file_list),
 				   "select_row", 
 				   GTK_SIGNAL_FUNC(filesel_file_list_select_row_multi),
@@ -324,6 +333,7 @@ static void filesel_dir_list_select_row_single(GtkCList *clist, gint row, gint c
 
 static GList *filesel_get_multiple_filenames(void)
 {
+#if 0
 	/* as noted before we are not using the entry text when selecting
 	 * multiple files. to much hassle to parse out invalid chars (chars
 	 * that need to be escaped). instead we use the file_list. the
@@ -367,5 +377,21 @@ static GList *filesel_get_multiple_filenames(void)
 	g_free(cwd);
 	
 	return list;
+#else
+/* GTK2 : gtk_file_selection_get_selections() returns newly allocated gchar**
+ * all entries have complete path / are non-utf8 / are free()d in caller
+ */
+	GList *list = NULL;
+	gchar **file_list, **list_ptr;
+	
+	file_list = gtk_file_selection_get_selections (GTK_FILE_SELECTION(filesel));
+
+	/* fetch the selected file names */
+	for (list_ptr = file_list; list_ptr && *list_ptr; list_ptr++)
+		list = g_list_append(list, *list_ptr);
+	g_free(file_list);
+	
+	return list;
+#endif
 }
 
