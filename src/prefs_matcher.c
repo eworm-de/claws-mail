@@ -1085,8 +1085,12 @@ static void prefs_matcher_up(void)
 	if (!clist->selection) return;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row > 1)
+	if (row > 1) {
 		gtk_clist_row_move(clist, row, row - 1);
+		if(gtk_clist_row_is_visible(clist, row - 1) != GTK_VISIBILITY_FULL) {
+			gtk_clist_moveto(clist, row - 1, 0, 0, 0);
+		} 
+	}
 }
 
 static void prefs_matcher_down(void)
@@ -1097,8 +1101,12 @@ static void prefs_matcher_down(void)
 	if (!clist->selection) return;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row >= 1 && row < clist->rows - 1)
+	if (row >= 1 && row < clist->rows - 1) {
 		gtk_clist_row_move(clist, row, row + 1);
+		if(gtk_clist_row_is_visible(clist, row + 1) != GTK_VISIBILITY_FULL) {
+			gtk_clist_moveto(clist, row + 1, 0, 1, 0);
+		} 
+	}
 }
 
 static void prefs_matcher_select(GtkCList *clist, gint row, gint column,

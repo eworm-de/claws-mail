@@ -851,6 +851,9 @@ static void prefs_filtering_up(void)
 	row = GPOINTER_TO_INT(clist->selection->data);
 	if (row > 1) {
 		gtk_clist_row_move(clist, row, row - 1);
+		if(gtk_clist_row_is_visible(clist, row - 1) != GTK_VISIBILITY_FULL) {
+			gtk_clist_moveto(clist, row - 1, 0, 0, 0);
+		} 
 	}
 }
 
@@ -864,6 +867,9 @@ static void prefs_filtering_down(void)
 	row = GPOINTER_TO_INT(clist->selection->data);
 	if (row > 0 && row < clist->rows - 1) {
 		gtk_clist_row_move(clist, row, row + 1);
+		if(gtk_clist_row_is_visible(clist, row + 1) != GTK_VISIBILITY_FULL) {
+			gtk_clist_moveto(clist, row + 1, 0, 1, 0);
+		} 
 	}
 }
 
