@@ -1,3 +1,8 @@
+2005-02-18 [colin]	1.0.1cvs11.6
+
+	* src/folderview.c
+		Fix scrolldown (bug 662)
+
 2005-02-17 [colin]	1.0.1cvs11.5
 
 	* src/codeconv.c
