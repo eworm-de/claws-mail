@@ -1,3 +1,8 @@
+2002-08-06 [match]	0.8.0claws21
+
+	* src/addrclip.c
+		improvements to cut/copy/paste address
+
 2002-08-05 [match]	0.8.0claws20
 
 	* src/addritem.[ch]
