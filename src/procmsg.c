@@ -190,6 +190,7 @@ static GNode *subject_relation_lookup(GRelation *relation, MsgInfo *msginfo)
 			/* best node should be the oldest in the found nodes */
 			/* parent node must not be older then msginfo */
 			if ((relation_msginfo->date_t < msginfo->date_t) &&
+			    (relation_msginfo->msgnum < msginfo->msgnum) &&
 			    ((best_msginfo == NULL) ||
 			     (best_msginfo->date_t > relation_msginfo->date_t)))
 				match = TRUE;
@@ -252,10 +253,9 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 		}
 	}
 
-	/* complete the unfinished threads */
+	/* complete the unfinished threads. record the last encountered node. */
 	for (node = root->children; node != NULL; ) {
-		prev = node->prev;	/* CLAWS: need the last node */
-		parent = NULL;
+		parent = prev = NULL;
 		next = node->next;
 		msginfo = (MsgInfo *)node->data;
 		if (msginfo->inreplyto) { 
@@ -264,12 +264,15 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			   be an ancestor of parent (circular reference) */
 			if (parent && parent != node && 
 			    !g_node_is_ancestor(node, parent)) {
+				/* since this node is moved away, the previous
+				 * one is the last recorded one */
+				prev = node->prev;
 				g_node_unlink(node);
 				g_node_insert_before
 					(parent, parent->children, node);
 			}				
 		}
-		last = (next == NULL) ? prev : node;
+		last = prev ? prev : node;
 		node = next;
 	}
 

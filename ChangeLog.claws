@@ -1,3 +1,16 @@
+2003-01-10 [alfons]	0.9.8claws27
+
+	* src/procmsg.c
+		subject threading fixes:
+		
+			- make message with lowest message number the
+			  thread parent,
+			- refine recording last node when threading. the last node
+			  should be the previous one if a node has a thread parent,
+			  or the current node if not
+		
+		(there's another threading bug fix coming up)
+
 2004-01-10 [paul]	0.9.8claws26
 
 	* src/main.c
