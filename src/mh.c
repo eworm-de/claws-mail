@@ -931,6 +931,7 @@ FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
 		fclose(mh_sequences_file);
 	}
 	g_free(mh_sequences_filename);
+	g_free(path);
 
 	return new_item;
 }

@@ -1,3 +1,10 @@
+2002-12-14 [christoph]	0.8.6claws111
+
+	* src/addr_compl.c
+		remove stupid addressbook dump to debug output
+	* src/mh.c
+		fix memory leak found by Hiro
+
 2002-12-14 [paul]	0.8.6claws110
 
 	* src/compose.c
