@@ -114,7 +114,8 @@ MessageView *messageview_create_with_new_window(void)
 	MessageView *msgview;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(window), "Message");
+	gtk_window_set_title(GTK_WINDOW(window), _("Sylpheed - Message View"));
+	gtk_window_set_wmclass(GTK_WINDOW(window), "message_view", "Sylpheed");
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, FALSE);
 	gtk_widget_set_usize(window, prefs_common.msgwin_width,
 			     prefs_common.msgwin_height);

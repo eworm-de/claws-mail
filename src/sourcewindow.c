@@ -78,6 +78,7 @@ SourceWindow *source_window_create(void)
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Source of the message"));
+	gtk_window_set_wmclass(GTK_WINDOW(window), "source_window", "Sylpheed");
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, FALSE);
 	gtk_widget_set_usize(window, 600, 500);
 	gtk_signal_connect(GTK_OBJECT(window), "destroy",
