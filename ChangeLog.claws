@@ -1,3 +1,8 @@
+2002-01-12 [alfons]	0.6.6claws52
+
+	* src/filtering.c
+		plug mem leak that has been sitting there for ages		
+
 2002-01-12 [alfons]	0.6.6claws51
 
 	* src/summaryview.c

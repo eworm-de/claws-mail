@@ -400,6 +400,8 @@ void filter_message(GSList *filtering_list, FolderItem *inbox,
 	msginfo->msgnum = msgnum;
 
 	filter_msginfo(filtering_list, inbox, msginfo, folder_table);
+
+	procmsg_msginfo_free(msginfo);
 }
 
 gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *action)
