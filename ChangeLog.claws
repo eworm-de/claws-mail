@@ -1,3 +1,16 @@
+2001-05-03 [hoa]
+
+	* src/defs.h
+	* src/procmsg.[ch]
+	* src/procheader.c
+		 changed version of cache, added cc field
+
+	* src/prefs_display_headers.c
+		the interface was changed
+
+	* src/prefs_headers.c
+		added cancel button
+
 2001-05-03 [alfons]
 
 	* src/textview.c: re-edited, prepared for fixing the email address

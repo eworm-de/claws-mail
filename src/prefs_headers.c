@@ -49,7 +49,11 @@
 static struct Headers {
 	GtkWidget *window;
 
+	/*
 	GtkWidget *close_btn;
+	*/
+	GtkWidget *ok_btn;
+	GtkWidget *cancel_btn;
 
 	GtkWidget *hdr_combo;
 	GtkWidget *hdr_entry;
@@ -92,7 +96,11 @@ static void prefs_headers_select		(GtkCList	*clist,
 static void prefs_headers_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
+/*
 static void prefs_headers_close		(GtkButton	*button);
+*/
+static void prefs_headers_ok		(GtkButton	*button);
+static void prefs_headers_cancel	(GtkButton	*button);
 
 static PrefsAccount * cur_ac = NULL;
 
@@ -103,7 +111,10 @@ void prefs_headers_open(PrefsAccount * ac)
 	}
 
 	manage_window_set_transient(GTK_WINDOW(headers.window));
+	/*
 	gtk_widget_grab_focus(headers.close_btn);
+	*/
+	gtk_widget_grab_focus(headers.ok_btn);
 
 	prefs_headers_set_dialog(ac);
 
@@ -116,7 +127,11 @@ static void prefs_headers_create(void)
 {
 	GtkWidget *window;
 	GtkWidget *vbox;
-	GtkWidget *close_btn;
+
+	/*	GtkWidget *close_btn; */
+	GtkWidget *ok_btn;
+	GtkWidget *cancel_btn;
+
 	GtkWidget *confirm_area;
 
 	GtkWidget *vbox1;
@@ -156,11 +171,18 @@ static void prefs_headers_create(void)
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
+	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
+				&cancel_btn, _("Cancel"), NULL, NULL);
+	/*
 	gtkut_button_set_create (&confirm_area, &close_btn, _("Close"),
 				 NULL, NULL, NULL, NULL);
+	*/
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
+	/*
 	gtk_widget_grab_default (close_btn);
+	*/
+	gtk_widget_grab_default (ok_btn);
 
 	gtk_window_set_title (GTK_WINDOW(window),
 			      _("Headers setting"));
@@ -172,8 +194,10 @@ static void prefs_headers_create(void)
 			    GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
 	gtk_signal_connect (GTK_OBJECT(window), "focus_out_event",
 			    GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
-	gtk_signal_connect (GTK_OBJECT(close_btn), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_headers_close), NULL);
+	gtk_signal_connect (GTK_OBJECT(ok_btn), "clicked",
+			    GTK_SIGNAL_FUNC(prefs_headers_ok), NULL);
+	gtk_signal_connect (GTK_OBJECT(cancel_btn), "clicked",
+			    GTK_SIGNAL_FUNC(prefs_headers_cancel), NULL);
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -299,7 +323,9 @@ static void prefs_headers_create(void)
 	gtk_widget_show_all(window);
 
 	headers.window    = window;
-	headers.close_btn = close_btn;
+	/*	headers.close_btn = close_btn; */
+	headers.ok_btn = ok_btn;
+	headers.cancel_btn = cancel_btn;
 
 	headers.hdr_combo  = hdr_combo;
 	headers.hdr_entry  = GTK_COMBO (hdr_combo)->entry;
@@ -623,8 +649,17 @@ static void prefs_headers_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		gtk_widget_hide(headers.window);
 }
 
-static void prefs_headers_close(GtkButton *button)
+static void prefs_headers_ok(GtkButton *button)
 {
 	prefs_headers_write_config(cur_ac);
+	gtk_widget_hide(headers.window);
+}
+
+static void prefs_headers_cancel(GtkButton *button)
+{
+	/*
+	prefs_headers_write_config(cur_ac); 
+	*/
+	prefs_headers_read_config(cur_ac); 
 	gtk_widget_hide(headers.window);
 }

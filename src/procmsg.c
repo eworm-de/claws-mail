@@ -229,6 +229,7 @@ GSList *procmsg_read_cache(FolderItem *item, gboolean scan_file)
 		READ_CACHE_DATA(msginfo->date, fp);
 		READ_CACHE_DATA(msginfo->from, fp);
 		READ_CACHE_DATA(msginfo->to, fp);
+		READ_CACHE_DATA(msginfo->cc, fp);
 		READ_CACHE_DATA(msginfo->newsgroups, fp);
 		READ_CACHE_DATA(msginfo->subject, fp);
 		READ_CACHE_DATA(msginfo->msgid, fp);
@@ -357,6 +358,7 @@ void procmsg_write_cache(MsgInfo *msginfo, FILE *fp)
 	WRITE_CACHE_DATA(msginfo->date, fp);
 	WRITE_CACHE_DATA(msginfo->from, fp);
 	WRITE_CACHE_DATA(msginfo->to, fp);
+	WRITE_CACHE_DATA(msginfo->cc, fp);
 	WRITE_CACHE_DATA(msginfo->newsgroups, fp);
 	WRITE_CACHE_DATA(msginfo->subject, fp);
 	WRITE_CACHE_DATA(msginfo->msgid, fp);
@@ -689,6 +691,7 @@ void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 	if (msginfo->date) fprintf(prfp, "Date: %s\n", msginfo->date);
 	if (msginfo->from) fprintf(prfp, "From: %s\n", msginfo->from);
 	if (msginfo->to)   fprintf(prfp, "To: %s\n", msginfo->to);
+	if (msginfo->cc)   fprintf(prfp, "Cc: %s\n", msginfo->cc);
 	if (msginfo->newsgroups)
 		fprintf(prfp, "Newsgroups: %s\n", msginfo->newsgroups);
 	if (msginfo->subject) fprintf(prfp, "Subject: %s\n", msginfo->subject);
@@ -740,6 +743,7 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 	MEMBDUP(date);
 	MEMBDUP(from);
 	MEMBDUP(to);
+	MEMBDUP(cc);
 	MEMBDUP(newsgroups);
 	MEMBDUP(subject);
 	MEMBDUP(msgid);
@@ -766,6 +770,7 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	g_free(msginfo->date);
 	g_free(msginfo->from);
 	g_free(msginfo->to);
+	g_free(msginfo->cc);
 	g_free(msginfo->newsgroups);
 	g_free(msginfo->subject);
 	g_free(msginfo->msgid);

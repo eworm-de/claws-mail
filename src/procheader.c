@@ -272,15 +272,16 @@ enum
 	H_DATE		= 0,
 	H_FROM		= 1,
 	H_TO		= 2,
-	H_NEWSGROUPS	= 3,
-	H_SUBJECT	= 4,
-	H_MSG_ID	= 5,
-	H_REFERENCES	= 6,
-	H_IN_REPLY_TO	= 7,
-	H_CONTENT_TYPE	= 8,
-	H_SEEN		= 9,
-	H_X_FACE	= 10,
-	H_DISPOSITION_NOTIFICATION_TO = 11
+	H_CC		= 3,
+	H_NEWSGROUPS	= 4,
+	H_SUBJECT	= 5,
+	H_MSG_ID	= 6,
+	H_REFERENCES	= 7,
+	H_IN_REPLY_TO	= 8,
+	H_CONTENT_TYPE	= 9,
+	H_SEEN		= 10,
+	H_X_FACE	= 11,
+	H_DISPOSITION_NOTIFICATION_TO = 12
 };
 
 MsgInfo *procheader_parse(const gchar *file, MsgFlags flags, gboolean full)
@@ -288,6 +289,7 @@ MsgInfo *procheader_parse(const gchar *file, MsgFlags flags, gboolean full)
 	static HeaderEntry hentry_full[] = {{"Date:",		NULL, FALSE},
 					   {"From:",		NULL, TRUE},
 					   {"To:",		NULL, TRUE},
+					   {"Cc:",		NULL, TRUE},
 					   {"Newsgroups:",	NULL, TRUE},
 					   {"Subject:",		NULL, TRUE},
 					   {"Message-Id:",	NULL, FALSE},
@@ -302,6 +304,7 @@ MsgInfo *procheader_parse(const gchar *file, MsgFlags flags, gboolean full)
 	static HeaderEntry hentry_short[] = {{"Date:",		NULL, FALSE},
 					    {"From:",		NULL, TRUE},
 					    {"To:",		NULL, TRUE},
+					    {"Cc:",		NULL, TRUE},
 					    {"Newsgroups:",	NULL, TRUE},
 					    {"Subject:",	NULL, TRUE},
 					    {"Message-Id:",	NULL, FALSE},
@@ -362,6 +365,16 @@ MsgInfo *procheader_parse(const gchar *file, MsgFlags flags, gboolean full)
 				g_free(p);
 			} else
 				msginfo->to = g_strdup(tmp);
+			break;
+		case H_CC:
+			conv_unmime_header(tmp, sizeof(tmp), hp, NULL);
+			if (msginfo->cc) {
+				p = msginfo->cc;
+				msginfo->cc =
+					g_strconcat(p, ", ", tmp, NULL);
+				g_free(p);
+			} else
+				msginfo->cc = g_strdup(tmp);
 			break;
 		case H_NEWSGROUPS:
 			if (msginfo->newsgroups) {

@@ -115,6 +115,7 @@ struct _MsgInfo
 	gchar *subject;
 	gchar *msgid;
 	gchar *inreplyto;
+	gchar *cc;
 
 	FolderItem *folder;
 	FolderItem *to_folder;
