@@ -1,3 +1,8 @@
+2004-07-08 [claws]	0.9.12cvs16
+
+	* src/inc.c [1.174]
+		fix occasional non-clearance of the statusbar
+
 2004-07-07 [colin]	0.9.12cvs15
 
 	* src/prefs_common.c [1.225]

@@ -642,6 +642,8 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		}
 		g_slist_free(msglist);
 
+		statusbar_pop_all();
+
 		new_msgs += pop3_session->cur_total_num;
 
 		if (pop3_session->error_val == PS_AUTHFAIL &&
