@@ -1,3 +1,9 @@
+2002-09-14 [paul]	0.8.2claws46
+
+	* po/bg.po
+		updated Bulgarian translation, submitted by
+		George Danchev
+
 2002-09-13 [paul]	0.8.2claws45
 
 	* src/compose.c
