@@ -352,7 +352,11 @@ EXTRA_DIST = \
 	pixmaps/trash.xpm \
 	pixmaps/unread.xpm \
 	pixmaps/up_arrow.xpm \
-	pixmaps/vcard.xpm
+	pixmaps/vcard.xpm \
+	pixmaps/stock_dialog-error.xpm \
+	pixmaps/stock_dialog-info.xpm \
+	pixmaps/stock_dialog-question.xpm \
+	pixmaps/stock_dialog-warning.xpm 
 
 INCLUDES = \
 	-Icommon \

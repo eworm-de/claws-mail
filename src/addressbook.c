@@ -3164,11 +3164,13 @@ static gboolean addressbook_convert( AddressIndex *addrIndex ) {
 	}
 	if( errFlag ) {
 		debug_print( "Error\n%s\n", msg );
-		alertpanel( _( "Addressbook conversion error" ), msg, _( "Close" ), NULL, NULL );
+		alertpanel_with_type( _( "Addressbook conversion error" ), msg, _( "Close" ), 
+				      NULL, NULL, NULL, ALERT_ERROR );
 	}
 	else if( msg ) {
 		debug_print( "Warning\n%s\n", msg );
-		alertpanel( _( "Addressbook conversion" ), msg, _( "Close" ), NULL, NULL );
+		alertpanel_with_type( _( "Addressbook conversion" ), msg, _( "Close" ), 
+				      NULL, NULL, NULL, ALERT_ERROR );
 	}
 
 	return retVal;
@@ -3204,9 +3206,10 @@ void addressbook_read_file( void ) {
 		/* Error reading address book */
 		debug_print( "Could not read address index.\n" );
 		addrindex_print_index( addrIndex, stdout );
-		alertpanel( _( "Addressbook Error" ),
+		alertpanel_with_type( _( "Addressbook Error" ),
 			    _( "Could not read address index" ),
-			    _( "Close" ), NULL, NULL );
+			    _( "Close" ), NULL, NULL, NULL,
+			    ALERT_ERROR );
 	}
 	debug_print( "done.\n" );
 }

@@ -1,3 +1,28 @@
+2004-08-07 [colin]	0.9.12cvs49
+
+	* src/Makefile.am
+	* src/account.c
+	* src/addressbook.c
+	* src/alertpanel.c
+	* src/alertpanel.h
+	* src/compose.c
+	* src/exphtmldlg.c
+	* src/expldifdlg.c
+	* src/main.c
+	* src/message_search.c
+	* src/messageview.c
+	* src/pop.c
+	* src/sgpgme.c
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/gtk/sslcertwindow.c
+	* src/pixmaps/stock_dialog-error.xpm
+	* src/pixmaps/stock_dialog-info.xpm
+	* src/pixmaps/stock_dialog-question.xpm
+	* src/pixmaps/stock_dialog-warning.xpm
+		sync new alertpanel from gtk2
+
 2004-08-07 [colin]	0.9.12cvs48
 
 	* src/prefs_folder_item.c

@@ -522,8 +522,8 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 				   "Return path: %s\n"
 				   "It is advised to not to send the return "
 				   "receipt."), to, buf);
-		val = alertpanel(_("Warning"), message, _("Send"),
-				_("+Don't Send"), NULL);
+		val = alertpanel_with_type(_("Warning"), message, _("Send"),
+				_("+Don't Send"), NULL, NULL, ALERT_WARNING);
 		g_free(message);				
 		if (val != G_ALERTDEFAULT)
 			return -1;

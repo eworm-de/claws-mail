@@ -147,14 +147,14 @@ static gint pop3_getauth_apop_send(Pop3Session *session)
 	session->state = POP3_GETAUTH_APOP;
 
 	if ((start = strchr(session->greeting, '<')) == NULL) {
-		log_warning(_("Required APOP timestamp not found "
+		log_error(_("Required APOP timestamp not found "
 			    "in greeting\n"));
 		session->error_val = PS_PROTOCOL;
 		return -1;
 	}
 
 	if ((end = strchr(start, '>')) == NULL || end == start + 1) {
-		log_warning(_("Timestamp syntax error in greeting\n"));
+		log_error(_("Timestamp syntax error in greeting\n"));
 		session->error_val = PS_PROTOCOL;
 		return -1;
 	}
@@ -180,7 +180,7 @@ static gint pop3_getrange_stat_send(Pop3Session *session)
 static gint pop3_getrange_stat_recv(Pop3Session *session, const gchar *msg)
 {
 	if (sscanf(msg, "%d %d", &session->count, &session->total_bytes) != 2) {
-		log_warning(_("POP3 protocol error\n"));
+		log_error(_("POP3 protocol error\n"));
 		session->error_val = PS_PROTOCOL;
 		return -1;
 	} else {
@@ -797,23 +797,23 @@ static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 		    strstr(msg + 4, "Lock") ||
 		    strstr(msg + 4, "LOCK") ||
 		    strstr(msg + 4, "wait")) {
-			log_warning(_("mailbox is locked\n"));
+			log_error(_("mailbox is locked\n"));
 			ok = PS_LOCKBUSY;
 		} else if (strcasestr(msg + 4, "timeout")) {
-			log_warning(_("session timeout\n"));
+			log_error(_("Session timeout\n"));
 			ok = PS_ERROR;
 		} else {
 			switch (session->state) {
 #if USE_OPENSSL
 			case POP3_STLS:
-				log_warning(_("can't start TLS session\n"));
+				log_error(_("can't start TLS session\n"));
 				ok = PS_ERROR;
 				break;
 #endif
 			case POP3_GETAUTH_USER:
 			case POP3_GETAUTH_PASS:
 			case POP3_GETAUTH_APOP:
-				log_warning(_("error occurred on authentication\n"));
+				log_error(_("error occurred on authentication\n"));
 				ok = PS_AUTHFAIL;
 				break;
 			case POP3_GETRANGE_LAST:
@@ -824,7 +824,7 @@ static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 				break;
 				
 			default:
-				log_warning(_("error occurred on POP3 session\n"));
+				log_error(_("error occurred on POP3 session\n"));
 				ok = PS_ERROR;
 			}
 		}

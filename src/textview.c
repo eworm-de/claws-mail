@@ -1952,7 +1952,8 @@ static gboolean textview_uri_security_check(TextView *textview, RemoteURI *uri)
 					"the apparent URL (%s).\n"
 					"Open it anyway?"),
 				      uri->uri, visible_str);
-		aval = alertpanel(_("Warning"), msg, _("Yes"), _("No"), NULL);
+		aval = alertpanel_with_type(_("Warning"), msg, _("Yes"), 
+					    _("No"), NULL, NULL, ALERT_WARNING);
 		g_free(msg);
 		if (aval == G_ALERTDEFAULT)
 			retval = TRUE;

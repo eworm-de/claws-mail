@@ -3072,7 +3072,7 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 	if (summary_is_locked(summaryview)) return;
 
 	if (summaryview->folder_item == to_folder) {
-		alertpanel_notice(_("Destination is same as current folder."));
+		alertpanel_error(_("Destination is same as current folder."));
 		return;
 	}
 
@@ -3148,7 +3148,7 @@ void summary_copy_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 	if (summary_is_locked(summaryview)) return;
 
 	if (summaryview->folder_item == to_folder) {
-		alertpanel_notice
+		alertpanel_error
 			(_("Destination to copy is same as current folder."));
 		return;
 	}

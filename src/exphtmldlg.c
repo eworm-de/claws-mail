@@ -192,8 +192,8 @@ static gboolean exp_html_move_file( void ) {
 		msg = g_strdup_printf( _(
 			"Could not create output directory for HTML file:\n%s" ),
 			reason );
-		aval = alertpanel( _( "Failed to Create Directory" ),
-			msg, _( "Close" ), NULL, NULL );
+		aval = alertpanel_with_type( _( "Failed to Create Directory" ),
+			msg, _( "Close" ), NULL, NULL, NULL, ALERT_ERROR );
 		g_free( msg );
 		return FALSE;
 	}
