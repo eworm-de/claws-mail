@@ -36,15 +36,15 @@
 
 #include <ctype.h>
 #include <string.h>
+
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdki18n.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkselection.h>
 #include <gtk/gtksignal.h>
 
-/* #include "compose.h" */
 #include "gtkstext.h"
-#include "gtkutils.h"
+#include "utils.h"
 
 /* line_arrow.xbm */
 #define line_arrow_width 6
@@ -5246,7 +5246,7 @@ find_line_params (GtkSText* text,
 		      if (lp.end.index == lp.start.index)
 			{
 		          /* SYLPHEED: don't wrap URLs */
-                          if (gtkut_stext_is_uri_string(text, lp.end.index,
+                          if (gtk_stext_is_uri_string(text, lp.end.index,
                                         gtk_stext_get_length(text)))
                             {
 			      lp.end = saved_mark;
@@ -6167,6 +6167,88 @@ void  gtk_stext_set_wrap_rmargin (GtkSText *text, gint rmargin)
 	/* TODO: currently only allowed to set this after a
 	 * gtk_stext_new() */
 	text->wrap_rmargin = rmargin >= 0 ? rmargin : 0; 
+}
+
+gboolean gtk_stext_match_string(GtkSText *text, gint pos, wchar_t *wcs,
+				  gint len, gboolean case_sens)
+{
+	gint match_count = 0;
+
+	for (; match_count < len; pos++, match_count++) {
+		if (case_sens) {
+			if (GTK_STEXT_INDEX(text, pos) != wcs[match_count])
+				break;
+		} else {
+			if (towlower(GTK_STEXT_INDEX(text, pos)) !=
+			    towlower(wcs[match_count]))
+				break;
+		}
+	}
+
+	if (match_count == len)
+		return TRUE;
+	else
+		return FALSE;
+}
+
+guint gtk_stext_str_compare_n(GtkSText *text, guint pos1, guint pos2,
+				guint len, guint text_len)
+{
+	guint i;
+	GdkWChar ch1, ch2;
+
+	for (i = 0; i < len && pos1 + i < text_len && pos2 + i < text_len; i++) {
+		ch1 = GTK_STEXT_INDEX(text, pos1 + i);
+		ch2 = GTK_STEXT_INDEX(text, pos2 + i);
+		if (ch1 != ch2)
+			break;
+	}
+
+	return i;
+}
+
+guint gtk_stext_str_compare(GtkSText *text, guint start_pos, guint text_len,
+			      const gchar *str)
+{
+	wchar_t *wcs;
+	guint len;
+	gboolean result;
+
+	if (!str) return 0;
+
+	wcs = strdup_mbstowcs(str);
+	if (!wcs) return 0;
+	len = wcslen(wcs);
+
+	if (len > text_len - start_pos)
+		result = FALSE;
+	else
+		result = gtk_stext_match_string(text, start_pos, wcs, len,
+						  TRUE);
+
+	g_free(wcs);
+
+	return result ? len : 0;
+}
+
+gboolean gtk_stext_is_uri_string(GtkSText *text,
+				   guint start_pos, guint text_len)
+{
+	if (gtk_stext_str_compare(text, start_pos, text_len, "http://")  ||
+	    gtk_stext_str_compare(text, start_pos, text_len, "ftp://")   ||
+	    gtk_stext_str_compare(text, start_pos, text_len, "https://") ||
+	    gtk_stext_str_compare(text, start_pos, text_len, "www."))
+		return TRUE;
+
+	return FALSE;
+}
+
+void gtk_stext_clear(GtkSText *text)
+{
+	gtk_stext_freeze(text);
+	gtk_stext_set_point(text, 0);
+	gtk_stext_forward_delete(text, gtk_stext_get_length(text));
+	gtk_stext_thaw(text);
 }
 
 /**********************************************************************/

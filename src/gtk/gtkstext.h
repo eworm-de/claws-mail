@@ -31,6 +31,14 @@
 #ifndef __GTK_STEXT_H__
 #define __GTK_STEXT_H__
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
+#if (HAVE_WCTYPE_H && HAVE_WCHAR_H)
+#  include <wchar.h>
+#  include <wctype.h>
+#endif
 
 #include <gdk/gdk.h>
 #include <gtk/gtkadjustment.h>
@@ -265,6 +273,27 @@ void gtk_stext_delete_to_line_end        (GtkSText          *text);
 /* Set the rmargin for the stext. if rmargin is 0, then reset to old 
  * behaviour */
 void	   gtk_stext_set_wrap_rmargin (GtkSText *text, gint rmargin);
+
+/* gtk stext functions */
+gboolean gtk_stext_match_string		(GtkSText	*text,
+					 gint		 pos,
+					 wchar_t	*wcs,
+					 gint		 len,
+					 gboolean	 case_sens);
+guint gtk_stext_str_compare_n		(GtkSText	*text,
+					 guint		 pos1,
+					 guint		 pos2,
+					 guint		 len,
+					 guint		 text_len);
+guint gtk_stext_str_compare		(GtkSText	*text,
+					 guint		 start_pos,
+					 guint		 text_len,
+					 const gchar	*str);
+gboolean gtk_stext_is_uri_string	(GtkSText	*text,
+					 guint		 start_pos,
+					 guint		 text_len);
+void gtk_stext_clear			(GtkSText	*text);
+
 
 
 #define GTK_STEXT_INDEX(t, index)	(((t)->use_wchar) \

@@ -1441,7 +1441,7 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 
 	for (; pos < text_len; pos++) {
 		if (text_len - pos < len) break;
-		if (gtkut_stext_match_string(text, pos, wcs, len, case_sens)
+		if (gtk_stext_match_string(text, pos, wcs, len, case_sens)
 		    == TRUE) {
 			gtk_widget_hide(GTK_WIDGET(textview->scrolledwin));
 			gtk_editable_set_position(GTK_EDITABLE(text),
@@ -1484,7 +1484,7 @@ gboolean textview_search_string_backward(TextView *textview, const gchar *str,
 		pos = text_len - len;
 
 	for (; pos >= textview->body_pos; pos--) {
-		if (gtkut_stext_match_string(text, pos, wcs, len, case_sens)
+		if (gtk_stext_match_string(text, pos, wcs, len, case_sens)
 		    == TRUE) {
 			gtk_editable_set_position(GTK_EDITABLE(text), pos);
 			gtk_editable_select_region(GTK_EDITABLE(text),

@@ -1,3 +1,21 @@
+2002-12-13 [christoph]	0.8.6claws107
+
+	* src/Makefile.am
+        * src/compose.c
+	* src/gtkstext.[ch]		** REMOVE **
+	* src/gtkutils.[ch]
+	* src/textview.c
+	* src/gtk/gtkstext.[ch]		** NEW **
+	* src/gtk/Makefile.am
+		o move stext functions to gtkstext.c to remove
+		  dependency of gtkutils
+		o move gtkstext files to common		
+
+	* src/gtk/Makefile.am
+	* src/gtk/sslcertwindow.[ch]
+		UI stuff can always depend on common code so
+		it's ok to add ../common to include path
+
 2002-12-13 [colin]	0.8.6claws106
 
 	* src/summaryview.c

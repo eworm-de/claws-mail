@@ -2431,7 +2431,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 
 			/* skip delete if it is continuous URL */
 			if (do_delete && (line_pos - p_pos <= i_len) &&
-			    gtkut_stext_is_uri_string(text, line_pos, tlen))
+			    gtk_stext_is_uri_string(text, line_pos, tlen))
 				do_delete = FALSE;
 
 #ifdef WRAP_DEBUG
@@ -2450,7 +2450,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 				   indent string, delete them */
 				if (i_len) {
 					guint ilen;
-					ilen =  gtkut_stext_str_compare_n
+					ilen =  gtk_stext_str_compare_n
 						(text, cur_pos, p_pos, i_len,
 						 tlen);
 					if (ilen) {
@@ -2513,7 +2513,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 #endif
 			/* force wrapping if it is one long word but not URL */
 			if (line_pos - p_pos <= i_len)
-                        	if (!gtkut_stext_is_uri_string
+                        	if (!gtk_stext_is_uri_string
 				    (text, line_pos, tlen))
 					line_pos = cur_pos - 1;
 #ifdef WRAP_DEBUG
@@ -2525,7 +2525,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 			/* if next character is space delete it */
 			if (clen == 1 && isspace(*cbuf)) {
 				if (p_pos + i_len != line_pos ||
-                            	    !gtkut_stext_is_uri_string
+                            	    !gtk_stext_is_uri_string
 					(text, line_pos, tlen)) {
 					STEXT_FREEZE();
 					/* workaround for correct cursor
@@ -2547,7 +2547,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 
 			/* if it is URL at beginning of line don't wrap */
 			if (p_pos + i_len == line_pos &&
-			    gtkut_stext_is_uri_string(text, line_pos, tlen)) {
+			    gtk_stext_is_uri_string(text, line_pos, tlen)) {
 #ifdef WRAP_DEBUG
 				g_print("found URL at ");
 				dump_text(text, line_pos, tlen, 1);
@@ -2580,7 +2580,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 			/* should we insert quotation ? */
 			if (linewrap_quote && i_len) {
 				/* only if line is not already quoted  */
-				if (!gtkut_stext_str_compare
+				if (!gtk_stext_str_compare
 					(text, line_pos, tlen, qfmt)) {
 					guint ins_len;
 
