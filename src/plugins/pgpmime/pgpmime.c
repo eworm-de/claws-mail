@@ -566,7 +566,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	newinfo->type = MIMETYPE_APPLICATION;
 	newinfo->subtype = g_strdup("octet-stream");
 	newinfo->content = MIMECONTENT_MEM;
-	newinfo->data.mem = g_malloc(len);
+	newinfo->data.mem = g_malloc(len + 1);
 	g_memmove(newinfo->data.mem, enccontent, len);
 	newinfo->data.mem[len] = '\0';
 	g_node_append(encmultipart->node, newinfo->node);
