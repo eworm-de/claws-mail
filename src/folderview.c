@@ -2663,7 +2663,8 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		STATUSBAR_PUSH(folderview->mainwin, _("Done."));
 		main_window_cursor_normal(folderview->mainwin);
 		summary_clear_all(folderview->summaryview);
-		folderview_select(folderview, new_item);
+		if (new_item)
+			folderview_select(folderview, new_item);
 	}
 }
 
