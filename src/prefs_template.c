@@ -46,6 +46,8 @@ static struct Templates {
 	GtkWidget *entry_name;
 	GtkWidget *entry_subject;
 	GtkWidget *entry_to;
+	GtkWidget *entry_cc;	
+	GtkWidget *entry_bcc;
 	GtkWidget *text_value;
 } templates;
 
@@ -110,6 +112,8 @@ static void prefs_template_window_create(void)
 	GtkWidget         *entry_name;
 	GtkWidget       *table;
 	GtkWidget         *entry_to;
+	GtkWidget         *entry_cc;
+	GtkWidget         *entry_bcc;		
 	GtkWidget         *entry_subject;
 	GtkWidget       *scroll2;
 	GtkWidget         *text_value;
@@ -168,7 +172,9 @@ static void prefs_template_window_create(void)
 
 	ADD_ENTRY(entry_to, _("To:"), 0);
 	address_completion_register_entry(GTK_ENTRY(entry_to));
-	ADD_ENTRY(entry_subject, _("Subject:"), 1);
+	ADD_ENTRY(entry_cc, _("Cc:"), 1)
+	ADD_ENTRY(entry_bcc, _("Bcc:"), 2)	
+	ADD_ENTRY(entry_subject, _("Subject:"), 3);
 
 #undef ADD_ENTRY
 
@@ -280,6 +286,8 @@ static void prefs_template_window_create(void)
 	templates.entry_name = entry_name;
 	templates.entry_subject = entry_subject;
 	templates.entry_to = entry_to;
+	templates.entry_cc = entry_cc;
+	templates.entry_bcc = entry_bcc;	
 	templates.text_value = text_value;
 }
 
@@ -372,6 +380,8 @@ static void prefs_template_select_cb(GtkCList *clist, gint row, gint column,
 	tmpl_def.name = _("Template");
 	tmpl_def.subject = "";
 	tmpl_def.to = "";
+	tmpl_def.cc = "";
+	tmpl_def.bcc = "";	
 	tmpl_def.value = "";
 
 	if (!(tmpl = gtk_clist_get_row_data(clist, row)))
@@ -380,6 +390,10 @@ static void prefs_template_select_cb(GtkCList *clist, gint row, gint column,
 	gtk_entry_set_text(GTK_ENTRY(templates.entry_name), tmpl->name);
 	gtk_entry_set_text(GTK_ENTRY(templates.entry_to),
 			   tmpl->to ? tmpl->to : "");
+	gtk_entry_set_text(GTK_ENTRY(templates.entry_cc),
+			   tmpl->cc ? tmpl->cc : "");
+	gtk_entry_set_text(GTK_ENTRY(templates.entry_bcc),
+			   tmpl->bcc ? tmpl->bcc : "");			
 	gtk_entry_set_text(GTK_ENTRY(templates.entry_subject),
 			   tmpl->subject ? tmpl->subject : "");
 	
@@ -416,6 +430,8 @@ static gint prefs_template_clist_set_row(gint row)
 	gchar *name;
 	gchar *subject;
 	gchar *to;
+	gchar *cc;
+	gchar *bcc;	
 	gchar *value;
 	gchar *title[1];
 
@@ -446,6 +462,10 @@ static gint prefs_template_clist_set_row(gint row)
 					 0, -1);
 	to = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_to),
 				    0, -1);
+	cc = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_cc),
+				    0, -1);
+	bcc = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_bcc),
+				    0, -1);
 
 	if (subject && *subject == '\0') {
 		g_free(subject);
@@ -455,11 +475,21 @@ static gint prefs_template_clist_set_row(gint row)
 		g_free(to);
 		to = NULL;
 	}
-
+	if (cc && *cc == '\0') {
+		g_free(cc);
+		cc = NULL;
+	}
+	if (bcc && *bcc == '\0') {
+		g_free(bcc);
+		bcc = NULL;
+	}
+	
 	tmpl = g_new(Template, 1);
 	tmpl->name = name;
 	tmpl->subject = subject;
 	tmpl->to = to;
+	tmpl->cc = cc;
+	tmpl->bcc = bcc;	
 	tmpl->value = value;
 
 	title[0] = name;

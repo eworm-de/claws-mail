@@ -5372,6 +5372,11 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 				   tmpl->subject);
 	if (tmpl->to && *tmpl->to != '\0')
 		compose_entry_append(compose, tmpl->to, COMPOSE_TO);
+	if (tmpl->cc && *tmpl->cc != '\0')
+		compose_entry_append(compose, tmpl->cc, COMPOSE_CC);
+
+	if (tmpl->bcc && *tmpl->bcc != '\0')
+		compose_entry_append(compose, tmpl->bcc, COMPOSE_BCC);
 
 	if (replace)
 		gtk_stext_clear(GTK_STEXT(compose->text));

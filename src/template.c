@@ -49,6 +49,8 @@ static Template *template_load(gchar *filename)
 	tmpl->name = NULL;
 	tmpl->subject = NULL;
 	tmpl->to = NULL;
+	tmpl->cc = NULL;	
+	tmpl->bcc = NULL;	
 	tmpl->value = NULL;
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
@@ -60,6 +62,10 @@ static Template *template_load(gchar *filename)
 			tmpl->subject = g_strdup(g_strstrip(buf + 8));
 		else if (!g_strncasecmp(buf, "To:", 3))
 			tmpl->to = g_strdup(g_strstrip(buf + 3));
+		else if (!g_strncasecmp(buf, "Cc:", 3))
+			tmpl->cc = g_strdup(g_strstrip(buf + 3));
+		else if (!g_strncasecmp(buf, "Bcc:", 4))
+			tmpl->bcc = g_strdup(g_strstrip(buf + 4));						
 	}
 
 	if (!tmpl->name) {
@@ -86,6 +92,8 @@ void template_free(Template *tmpl)
 	g_free(tmpl->name);
 	g_free(tmpl->subject);
 	g_free(tmpl->to);
+	g_free(tmpl->cc);
+	g_free(tmpl->bcc);		
 	g_free(tmpl->value);
 	g_free(tmpl);
 }
@@ -192,6 +200,10 @@ void template_write_config(GSList *tmpl_list)
 			fprintf(fp, "Subject: %s\n", tmpl->subject);
 		if (tmpl->to && *tmpl->to != '\0')
 			fprintf(fp, "To: %s\n", tmpl->to);
+		if (tmpl->cc && *tmpl->cc != '\0')
+			fprintf(fp, "Cc: %s\n", tmpl->cc);
+		if (tmpl->bcc && *tmpl->bcc != '\0')
+			fprintf(fp, "Bcc: %s\n", tmpl->bcc);						
 		fputs("\n", fp);
 		fwrite(tmpl->value, sizeof(gchar) * strlen(tmpl->value), 1, fp);
 		fclose(fp);

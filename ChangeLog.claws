@@ -1,3 +1,11 @@
+2002-10-12 [paul]	0.8.5claws23
+
+	* src/compose.c
+	  src/prefs_template.c
+	  src/template.[ch]
+	  	add Cc and Bcc to templates. Patch submitted by
+		John L. Males.
+
 2002-10-12 [colin]	0.8.5claws22
 
 	* src/folderview.c
