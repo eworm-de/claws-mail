@@ -381,4 +381,4 @@
 ( cvs diff -u -r 1.382.2.101 -r 1.382.2.102 src/compose.c; cvs diff -u -r 1.49.2.33 -r 1.49.2.34 src/procmime.c; ) > 1.0.1cvs7.1.patchset
 ( cvs diff -u -r 1.83.2.29 -r 1.83.2.30 src/mimeview.c; ) > 1.0.1cvs7.2.patchset
 ( cvs diff -u -r 1.5.2.11 -r 1.5.2.12 src/gtk/pluginwindow.c; ) > 1.0.1cvs7.3.patchset
-( cvs diff -u -r 1.83.2.30 -r 1.83.2.31 src/mimeview.c; cvs diff -u -r 1.36.2.23 -r 1.36.2.24 src/common/utils.c; ) > 1.0.1cvs8.1.patchset
+( cvs diff -u -r 1.83.2.30 -r 1.83.2.31 src/mimeview.c; cvs diff -u -r 1.36.2.23 -r 1.36.2.25 src/common/utils.c; ) > 1.0.1cvs8.1.patchset
