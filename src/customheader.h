@@ -17,12 +17,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __HEADERS_H__
-#define __HEADERS_H__
+#ifndef __CUSTOMHEADER_H__
+#define __CUSTOMHEADER_H__
 
 struct _CustomHeader
 {
-	gchar *account_name;
+	int account_id;
 	gchar *name;
 	gchar *value;
 };
@@ -33,4 +33,4 @@ gchar * custom_header_get_str(CustomHeader *ch);
 CustomHeader * custom_header_read_str(gchar * buf);
 void custom_header_free(CustomHeader *ch);
 
-#endif /* __HEADERS_H__ */
+#endif /* __CUSTOMHEADER_H__ */

@@ -75,7 +75,7 @@ sylpheed_SOURCES = \
 	addr_compl.c addr_compl.h \
 	gtkstext.c gtkstext.h \
 	grouplist_dialog.c grouplist_dialog.h \
-	headers.c headers.h \
+	customheader.c customheader.h \
 	prefs_headers.c prefs_headers.h \
 	headers_display.c headers_display.h \
 	prefs_display_headers.c prefs_display_headers.h

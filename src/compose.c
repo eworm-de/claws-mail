@@ -97,7 +97,7 @@
 #include "gtkshruler.h"
 #include "folder.h"
 #include "addr_compl.h"
-#include "headers.h"
+#include "customheader.h"
 
 #if USE_GPGME
 #  include "rfc2015.h"

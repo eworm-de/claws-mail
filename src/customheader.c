@@ -27,20 +27,20 @@
 #include <stdlib.h>
 
 #include "intl.h"
-#include "headers.h"
+#include "customheader.h"
 #include "utils.h"
 
 
 gchar * custom_header_get_str(CustomHeader *ch)
 {
  	return g_strdup_printf
- 		("%s\t%s: %s", ch->account_name, ch->name, ch->value);
+ 		("%i:%s: %s", ch->account_id, ch->name, ch->value);
 }
  
 CustomHeader * custom_header_read_str(gchar * buf)
 {
  	CustomHeader * ch;
- 	gchar * account_name;
+ 	gchar * account_id_str;
  	gchar * name;
  	gchar * value;
  	gchar * tmp;
@@ -48,9 +48,9 @@ CustomHeader * custom_header_read_str(gchar * buf)
  	Xalloca(tmp, strlen(buf) + 1, return NULL);
  	strcpy(tmp, buf);
 
-	account_name = tmp;
+	account_id_str = tmp;
 
- 	name = strchr(account_name, '\t');
+ 	name = strchr(account_id_str, ':');
  	if (!name)
  		return NULL;
  	else
@@ -61,12 +61,15 @@ CustomHeader * custom_header_read_str(gchar * buf)
  	
  	ch = g_new0(CustomHeader, 1);
 
- 	ch->account_name = *account_name ? g_strdup(account_name) : NULL;
+ 	ch->account_id = atoi(account_id_str);
+	if (ch->account_id == 0) {
+		g_free(ch);
+		return NULL;
+	}
 
  	value = strchr(name, ':');
  	if (!value)
 		{
-			g_free(ch->account_name);
 			g_free(ch);
 			return NULL;
 		}
@@ -87,8 +90,6 @@ void custom_header_free(CustomHeader *ch)
 {
  	if (!ch) return;
  
-	if (ch->account_name)
-		g_free(ch->account_name);
 	if (ch->name)
 		g_free(ch->name);
 	if (ch->value)

@@ -1,3 +1,10 @@
+2001-05-01 [hoa]
+
+	* src/Makefile.am changed headers.[ch] in customheader.[ch]
+	* src/prefs_display_headers.c changed the UI
+	* src/prefs_headers.c changed account_name to account_id
+	* src/compose.c using customheader.h
+
 2001-05-01 [hiroyuki]
 
 	* src/esmtp.c
@@ -6,6 +13,7 @@
 	  unsynched.
 
 2001-05-01 [hoa]
+
 	* src/Makefile.am added prefs_display_headers.[ch] headers_display.[ch]
 	* src/defs.h added HEADERS_DISPLAY_RC : name of the config file
 		for displaying of headers

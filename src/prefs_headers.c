@@ -40,7 +40,7 @@
 #include "mainwindow.h"
 #include "foldersel.h"
 #include "manage_window.h"
-#include "headers.h"
+#include "customheader.h"
 #include "utils.h"
 #include "gtkutils.h"
 #include "alertpanel.h"
@@ -339,7 +339,7 @@ void prefs_headers_read_config(PrefsAccount * ac)
  		g_strchomp(buf);
  		ch = custom_header_read_str(buf);
  		if (ch) {
-			if (strcmp(ch->account_name, ac->account_name) == 0)
+			if (ch->account_id == ac->account_id)
 				ac->customhdr_list =
 					g_slist_append(ac->customhdr_list, ch);
 			else
@@ -375,7 +375,7 @@ void prefs_headers_write_config(PrefsAccount * ac)
 			g_strchomp(buf);
 			ch = custom_header_read_str(buf);
 			if (ch) {
-				if (strcmp(ch->account_name, ac->account_name) != 0)
+				if (ch->account_id != ac->account_id)
 					all_hdrs =
 						g_slist_append(all_hdrs, ch);
 				else
@@ -501,7 +501,7 @@ static gint prefs_headers_clist_set_row(PrefsAccount * ac, gint row)
 
 	ch = g_new0(CustomHeader, 1);
 
-	ch->account_name = g_strdup(ac->account_name);
+	ch->account_id = ac->account_id;
 
 	ch->name = g_strdup(entry_text);
 
