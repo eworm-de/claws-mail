@@ -1,3 +1,14 @@
+2002-06-28 [jens]	0.7.8claws32
+
+	* po/de.po
+		translation updated
+
+	* src/selective_download.c
+		removed gettext for space " "
+
+	* src/imap.c
+		removed wrong space
+
 2002-06-28 [paul]	0.7.8claws31
 
 	* sync with 0.7.8cvs11

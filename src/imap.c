@@ -1671,7 +1671,7 @@ static SockInfo *imap_init_sock(SockInfo *sock)
 #endif
 
 	if (imap_cmd_noop(sock) != IMAP_SUCCESS) {
-		log_warning(_("Can't establish IMAP4 session. \n"));
+		log_warning(_("Can't establish IMAP4 session.\n"));
 		sock_close(sock);
 		return NULL;
 	}
