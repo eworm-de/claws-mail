@@ -1,3 +1,9 @@
+2002-01-18 [melvin]	0.7.0claws15
+
+	* src/prefs_filters.c
+		fixed bug where 'cancel' from 'filters' window stops autochecking
+		if the timer timed out  when the window was open.
+
 2002-01-18 [match]	0.7.0claws14
 
 	* src/addrclip.[ch]	** NEW FILE **

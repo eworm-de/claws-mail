@@ -877,5 +877,5 @@ static void prefs_filter_cancel(void)
 {
 	prefs_filter_read_config();
 	gtk_widget_hide(filter.window);
-	inc_autocheck_timer_set();	
+	inc_unlock();
 }
