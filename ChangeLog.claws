@@ -1,3 +1,15 @@
+2004-03-08 [paul]	0.9.9claws41
+
+	* po/es.po
+	  po/ja.po
+	  po/ru.po
+	  po/sk.po
+	  po/sr.po
+	  po/zh_CN.po
+	  	update translations. submitted by Ricardo Mones Lastra,
+		Rui Hirokawa, Pavlo Bohmat, Andrej Kacian, Urke MMI,
+		Hansom Young
+
 2004-03-06 [paul]	0.9.9claws40
 
 	* src/stock_pixmap.c
