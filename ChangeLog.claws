@@ -1,6 +1,7 @@
 2001-05-04 [alfons]
 
-	* src/gtkstext.c: fix top of buffer bug, 
+	* src/gtkstext.c: 
+		hopefully fixed the row up navigation bug,
 		removed adding back / forward lines to cache
 
 2001-05-04 [sergey]

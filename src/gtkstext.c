@@ -4261,29 +4261,25 @@ static void move_cursor_to_display_row_up(GtkSText *text)
 	int			  new_index;
 	int		      col;
 	GtkSPropertyMark  mark;
-	
+
 	mark = find_this_line_start_mark(text, text->cursor_mark.index, &text->cursor_mark);
 
 	/* top of buffer */
 	if (mark.index == 0) {
-		/* this is a quick fix */
 		XDEBUG ( ("%s(%d) top of buffer", __FILE__, __LINE__) );
-		gtk_stext_set_position_X(GTK_EDITABLE(text), 0);		
-		return;
 	}
 
-	/* we need to previous DISPLAY row not the previous BUFFER line, so we go one line back,
-	 * and iterate over the lines until we have a LineParams that matches the original */
-
+	/* we need previous DISPLAY row not the previous BUFFER line, so we go to start
+	 * of paragraph, and iterate over the lines until we have a LineParams that matches 
+	 * the original */
 	lp  = CACHE_DATA(text->current_line);
 	col = (text->cursor_mark.index - lp.start.index);
 	data.start = lp.start.index;
 	data.end   = lp.end.index;
 
 	/* get the previous line */
-	if (mark.index - 1 > 0) {
+	if (mark.index != 0) {
 		decrement_mark(&mark);
-		XDEBUG( ("%s(%d) mark decrement", __FILE__, __LINE__) );
 		if (mark.index - 1 > 0) {
 			GtkSPropertyMark smark = mark;
 			XDEBUG( ("%s(%d) finding line start mark", __FILE__, __LINE__) );
@@ -4369,6 +4365,7 @@ static void move_cursor_to_display_row_down	(GtkSText *text)
 			new_index = data.lp.end.index;
 		}
 		/* and move the cursor */
+		XDEBUG( ("%s(%d) - FW set pos %d", __FILE__, __LINE__, new_index) );
 		gtk_stext_set_position_X(GTK_EDITABLE(text), new_index);		
 	}
 }
