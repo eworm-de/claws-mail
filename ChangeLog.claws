@@ -14,6 +14,7 @@
 	* src/prefs_common.h
 	* src/prefs_gtk.c
 	* src/prefs_gtk.h
+		sync with main 0.9.12cv1
 
 2004-07-15 [colin]	0.9.12cvs24
 

@@ -882,9 +882,9 @@ void prefs_common_save_history(const gchar *history, GList *list)
 	g_free(path);
 }
 
-void prefs_common_save_config(void)
+void prefs_common_write_config(void)
 {
-	prefs_save_config(param, "Common", COMMON_RC);
+	prefs_write_config(param, "Common", COMMON_RC);
 
 	prefs_common_save_history(COMMAND_HISTORY, 
 		prefs_common.mime_open_cmd_history);
@@ -3063,7 +3063,7 @@ static void prefs_common_apply(void)
 	prefs_set_data_from_dialog(param);
 	sock_set_io_timeout(prefs_common.io_timeout_secs);
 	main_window_reflect_prefs_all_real(FALSE);
-	prefs_common_save_config();
+	prefs_common_write_config();
 
 	mainwindow = mainwindow_get_mainwindow();
 	log_window_set_clipping(mainwindow->logwin, prefs_common.cliplog,

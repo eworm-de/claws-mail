@@ -32,7 +32,7 @@ typedef gint	(*AccountFunc)	(PrefsAccount	*ac_prefs,
 extern PrefsAccount *cur_account;
 
 void	      account_read_config_all	(void);
-void	      account_save_config_all	(void);
+void	      account_write_config_all	(void);
 
 GList        *account_find_all_from_address	(GList		*ac_list,
 						 const gchar	*address);

@@ -142,7 +142,7 @@ void folder_item_prefs_save_config(FolderItem * item)
 
 	id = folder_item_get_identifier(item);
 
-	prefs_save_config(param, id, FOLDERITEM_RC);
+	prefs_write_config(param, id, FOLDERITEM_RC);
 	g_free(id);
 
 	/* MIGRATION: make sure migrated items are not saved

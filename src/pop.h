@@ -149,8 +149,8 @@ struct _Pop3Session
 };
 
 #define POPBUFSIZE	512
-#define IDLEN		128
-
+/* #define IDLEN	128 */
+#define IDLEN		POPBUFSIZE
 
 Session *pop3_session_new	(PrefsAccount	*account);
 void pop3_get_uidl_table	(PrefsAccount	*account, Pop3Session *session);

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -199,7 +199,7 @@ PrefsAccount *prefs_account_new		(void);
 
 void prefs_account_read_config		(PrefsAccount	*ac_prefs,
 					 const gchar	*label);
-void prefs_account_save_config_all	(GList		*account_list);
+void prefs_account_write_config_all	(GList		*account_list);
 
 void prefs_account_free			(PrefsAccount	*ac_prefs);
 
