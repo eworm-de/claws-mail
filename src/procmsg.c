@@ -773,6 +773,7 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 {
 	if (msginfo == NULL) return;
 
+	g_free(msginfo->fromspace);
 	g_free(msginfo->references);
 	g_free(msginfo->returnreceiptto);
 	g_free(msginfo->dispositionnotificationto);

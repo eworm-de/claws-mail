@@ -175,24 +175,27 @@ static gboolean filteringaction_update_mark(MsgInfo * info)
 	gchar * dest_path;
 	FILE * fp;
 
-	dest_path = folder_item_get_path(info->folder);
-	if (!is_dir_exist(dest_path))
-		make_dir_hier(dest_path);
-
-	if (dest_path == NULL) {
-		g_warning(_("Can't open mark file.\n"));
-		return FALSE;
+	if (info->folder->folder->type == F_MH) {
+		dest_path = folder_item_get_path(info->folder);
+		if (!is_dir_exist(dest_path))
+			make_dir_hier(dest_path);
+		
+		if (dest_path == NULL) {
+			g_warning(_("Can't open mark file.\n"));
+			return FALSE;
+		}
+		
+		if ((fp = procmsg_open_mark_file(dest_path, TRUE))
+		    == NULL) {
+			g_warning(_("Can't open mark file.\n"));
+			return FALSE;
+		}
+		
+		procmsg_write_flags(info, fp);
+		fclose(fp);
+		return TRUE;
 	}
-
-	if ((fp = procmsg_open_mark_file(dest_path, TRUE))
-		 == NULL) {
-		g_warning(_("Can't open mark file.\n"));
-		return FALSE;
-	}
-
-	procmsg_write_flags(info, fp);
-	fclose(fp);
-	return TRUE;
+	return FALSE;
 }
 
 /*
@@ -200,6 +203,14 @@ static gboolean filteringaction_update_mark(MsgInfo * info)
   runs the action on one MsgInfo
   return value : return TRUE if the action could be applied
 */
+
+#define CHANGE_FLAGS(msginfo) \
+{ \
+if (msginfo->folder->folder->change_flags != NULL) \
+msginfo->folder->folder->change_flags(msginfo->folder->folder, \
+				      msginfo->folder, \
+				      msginfo); \
+}
 
 static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 				      GHashTable *folder_table)
@@ -269,11 +280,15 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		MSG_SET_FLAGS(info->flags, MSG_MARKED);
 		filteringaction_update_mark(info);
 
+		CHANGE_FLAGS(info);
+
 		return TRUE;
 
 	case MATCHING_ACTION_UNMARK:
 		MSG_UNSET_FLAGS(info->flags, MSG_MARKED);
 		filteringaction_update_mark(info);
+
+		CHANGE_FLAGS(info);
 
 		return TRUE;
 		
@@ -281,12 +296,16 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		MSG_UNSET_FLAGS(info->flags, MSG_UNREAD | MSG_NEW);
 		filteringaction_update_mark(info);
 
+		CHANGE_FLAGS(info);
+
 		return TRUE;
 
 	case MATCHING_ACTION_MARK_AS_UNREAD:
 		MSG_SET_FLAGS(info->flags, MSG_UNREAD | MSG_NEW);
 		filteringaction_update_mark(info);
 
+		CHANGE_FLAGS(info);
+		
 		return TRUE;
 
 	case MATCHING_ACTION_FORWARD:

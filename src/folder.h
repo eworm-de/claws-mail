@@ -148,6 +148,7 @@ struct _Folder
 	void     (*change_flags)	(Folder		*folder,
 					 FolderItem	*item,
 					 MsgInfo        *info);
+	void     (*finished_copy)       (Folder * folder, FolderItem * item);
 };
 
 struct _LocalFolder

@@ -1644,6 +1644,14 @@ static void summary_set_header(gchar *text[], MsgInfo *msginfo)
 		_("(No Subject)");
 }
 
+#define CHANGE_FLAGS(msginfo) \
+{ \
+if (msginfo->folder->folder->change_flags != NULL) \
+msginfo->folder->folder->change_flags(msginfo->folder->folder, \
+				      msginfo->folder, \
+				      msginfo); \
+}
+
 static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 				gboolean new_window)
 {
@@ -1697,6 +1705,9 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 		summaryview->unread--;
 	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
 		MSG_UNSET_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
+
+		CHANGE_FLAGS(msginfo);
+		
 		summary_set_row_marks(summaryview, row);
 		gtk_clist_thaw(GTK_CLIST(ctree));
 		summary_status_show(summaryview);
@@ -1888,6 +1899,9 @@ static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
 		summaryview->copied--;
 	MSG_UNSET_FLAGS(msginfo->flags, MSG_DELETED | MSG_MOVE | MSG_COPY);
 	MSG_SET_FLAGS(msginfo->flags, MSG_MARKED);
+
+	CHANGE_FLAGS(msginfo);
+
 	summary_set_row_marks(summaryview, row);
 	debug_print(_("Message %d is marked\n"), msginfo->msgnum);
 }
@@ -1918,6 +1932,9 @@ static void summary_mark_row_as_read(SummaryView *summaryview,
 	if (MSG_IS_NEW(msginfo->flags) ||
 	    MSG_IS_UNREAD(msginfo->flags)) {
 		MSG_UNSET_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
+
+		CHANGE_FLAGS(msginfo);
+		
 		summary_set_row_marks(summaryview, row);
 		debug_print(_("Message %d is marked as being read\n"),
 			    msginfo->msgnum);
@@ -1951,12 +1968,16 @@ static void summary_mark_row_as_unread(SummaryView *summaryview,
 	MSG_UNSET_FLAGS(msginfo->flags, MSG_REPLIED | MSG_FORWARDED);
 	if (!MSG_IS_UNREAD(msginfo->flags)) {
 		MSG_SET_FLAGS(msginfo->flags, MSG_UNREAD);
+
 		gtk_ctree_node_set_pixmap(ctree, row, S_COL_UNREAD,
 					  unreadxpm, unreadxpmmask);
 		summaryview->unread++;
 		debug_print(_("Message %d is marked as unread\n"),
 			    msginfo->msgnum);
 	}
+
+	CHANGE_FLAGS(msginfo);
+
 	summary_set_row_marks(summaryview, row);
 }
 
@@ -1991,6 +2012,9 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 			MSG_MOVE |
 			MSG_COPY);
 	MSG_SET_FLAGS(msginfo->flags, MSG_DELETED);
+
+	CHANGE_FLAGS(msginfo);
+
 	summaryview->deleted++;
 
 	if (!prefs_common.immediate_exec)
@@ -2082,6 +2106,9 @@ static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
 			MSG_DELETED |
 			MSG_MOVE |
 			MSG_COPY);
+
+	CHANGE_FLAGS(msginfo);
+
 	summary_set_row_marks(summaryview, row);
 
 	debug_print(_("Message %s/%d is unmarked\n"),
@@ -2118,6 +2145,7 @@ static void summary_move_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 		MSG_SET_FLAGS(msginfo->flags, MSG_MOVE);
 		summaryview->moved++;
 	}
+
 	if (!prefs_common.immediate_exec)
 		summary_set_row_marks(summaryview, row);
 
@@ -2179,6 +2207,7 @@ static void summary_copy_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 		MSG_SET_FLAGS(msginfo->flags, MSG_COPY);
 		summaryview->copied++;
 	}
+
 	if (!prefs_common.immediate_exec)
 		summary_set_row_marks(summaryview, row);
 
@@ -2314,7 +2343,8 @@ void summary_execute(SummaryView *summaryview)
 
 	gtk_clist_freeze(clist);
 
-	if (prefs_common.enable_thread)
+	if (summaryview->folder_item->prefs->enable_thread)
+		/*	if (prefs_common.enable_thread) */
 		summary_unthread_for_exec(summaryview);
 
 	summary_execute_move(summaryview);
@@ -2337,7 +2367,8 @@ void summary_execute(SummaryView *summaryview)
 		node = next;
 	}
 
-	if (prefs_common.enable_thread)
+	if (summaryview->folder_item->prefs->enable_thread)
+		/*	if (prefs_common.enable_thread) */
 		summary_thread_build(summaryview);
 
 	summaryview->selected = clist->selection ?
@@ -2451,6 +2482,7 @@ static void summary_execute_copy_func(GtkCTree *ctree, GtkCTreeNode *node,
 			g_slist_append(summaryview->mlist, msginfo);
 
 		MSG_UNSET_FLAGS(msginfo->flags, MSG_COPY);
+		
 		summary_set_row_marks(summaryview, node);
 	}
 }
@@ -2927,6 +2959,9 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	case S_COL_MARK:
 		if (MSG_IS_MARKED(msginfo->flags)) {
 			MSG_UNSET_FLAGS(msginfo->flags, MSG_MARKED);
+
+			CHANGE_FLAGS(msginfo);
+			
 			summary_set_row_marks(summaryview, row);
 		} else
 			summary_mark_row(summaryview, row);

@@ -38,10 +38,12 @@ struct _FolderView
 	GtkWidget *mail_popup;
 	GtkWidget *imap_popup;
 	GtkWidget *news_popup;
+	GtkWidget *mbox_popup;
 
 	GtkItemFactory *mail_factory;
 	GtkItemFactory *imap_factory;
 	GtkItemFactory *news_factory;
+	GtkItemFactory *mbox_factory;
 
 	GtkCTreeNode *selected;
 	GtkCTreeNode *opened;

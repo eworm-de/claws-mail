@@ -974,7 +974,7 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 		}
 	}
 
-	g_ptr_array_free(headers, TRUE);
+	g_ptr_array_free(headers, FALSE);
 
 	return sorted_headers;
 }
@@ -995,7 +995,9 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 
 		gtk_text_insert(text, textview->boldfont, NULL, NULL,
 				header->name, -1);
-		gtk_text_insert(text, textview->boldfont, NULL, NULL, " ", 1);
+		if (header->name[strlen(header->name) - 1] != ' ')
+			gtk_text_insert(text, textview->boldfont,
+					NULL, NULL, " ", 1);
 
 		if (procheader_headername_equal(header->name, "Subject") ||
 		    procheader_headername_equal(header->name, "From")    ||

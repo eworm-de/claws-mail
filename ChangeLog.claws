@@ -1,3 +1,56 @@
+2001-05-28 [hoa]
+
+	* src/compose.c
+		handling flags for mbox format
+
+	* src/filtering.c
+		use of mark file only for MH format
+		handling flags for mbox format
+		filtering cannot yet move or copy mails to mbox folders.
+
+	* src/folder.[ch]
+		changed move_msg, copy_msg,
+		move_msgs_with_dest, copy_msgs_with_dest functions
+		uses only folder->copy_msg() function
+		uses folder->finished_copy() to handle the destination
+		folder at the end of the copy or move operation.
+
+	* src/foldersel.c
+		included mbox directories.
+
+	* src/folderview.[ch]
+	* src/mainwindow.c
+		handle folders operation for mbox format
+
+	* src/mbox.c
+		disable conversion of "From " header
+
+	* src/mbox_folder.[ch]
+		completion of mbox format handling
+
+	* src/mh.c
+		changed mh_copy_msg() function and
+		removed mh_move_msg(), mh_move_msgs_with_dest(),
+		mh_copy_msgs_with_dest()
+
+	* src/prefs_filtering.c
+		removed some warnings
+
+	* src/procheader.c
+		handling flags for mbox format
+		handling of "From " header
+
+	* src/procmsg.[ch]
+		removed data field
+		added MSG_REALLY_DELETED flags to handle deletion of
+		messages in mbox format.
+
+	* src/summaryview.c
+		handling flags for mbox format
+
+	* src/textview.c
+		"From " headers display fixed.
+
 2001-05-27 [alfons]
 
 	* src/textview.c:

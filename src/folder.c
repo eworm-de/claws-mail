@@ -548,6 +548,7 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 	return num;
 }
 
+/*
 gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 {
 	Folder *folder;
@@ -568,7 +569,47 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 
 	return num;
 }
+*/
 
+gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
+{
+	Folder *folder;
+	gint num;
+	gchar * filename;
+	Folder * src_folder;
+
+	g_return_val_if_fail(dest != NULL, -1);
+	g_return_val_if_fail(msginfo != NULL, -1);
+
+	folder = dest->folder;
+
+	g_return_val_if_fail(folder->scan != NULL, -1);
+	g_return_val_if_fail(folder->remove_msg != NULL, -1);
+	g_return_val_if_fail(folder->copy_msg != NULL, -1);
+
+	if (dest->last_num < 0) folder->scan(folder, dest);
+
+	src_folder = msginfo->folder->folder;
+
+	num = folder->copy_msg(folder, dest, msginfo);
+	if (num != -1)
+		src_folder->remove_msg(src_folder,
+				       msginfo->folder,
+				       msginfo->msgnum);
+	
+	if (folder->finished_copy)
+		folder->finished_copy(folder, dest);
+
+	src_folder = msginfo->folder->folder;
+
+	if (msginfo->folder && src_folder->scan)
+		src_folder->scan(src_folder, msginfo->folder);
+	folder->scan(folder, dest);
+
+	return num;
+}
+
+/*
 gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 {
 	Folder *folder;
@@ -589,7 +630,54 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 
 	return num;
 }
+*/
 
+gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
+{
+	Folder *folder;
+	FolderItem * item;
+	GSList * l;
+	gchar * filename;
+
+	g_return_val_if_fail(dest != NULL, -1);
+	g_return_val_if_fail(msglist != NULL, -1);
+
+	folder = dest->folder;
+
+	g_return_val_if_fail(folder->scan != NULL, -1);
+	g_return_val_if_fail(folder->copy_msg != NULL, -1);
+	g_return_val_if_fail(folder->remove_msg != NULL, -1);
+
+	if (dest->last_num < 0) folder->scan(folder, dest);
+
+	item = NULL;
+	for(l = msglist ; l != NULL ; l = g_slist_next(l)) {
+		MsgInfo * msginfo = (MsgInfo *) l->data;
+
+		if (!item && msginfo->folder != NULL)
+			item = msginfo->folder;
+
+		if (folder->copy_msg(folder, dest, msginfo) != -1)
+			item->folder->remove_msg(item->folder,
+						 msginfo->folder,
+						 msginfo->msgnum);
+	}
+
+	if (folder->finished_copy)
+		folder->finished_copy(folder, dest);
+
+	printf("là scan\n");
+
+	if (item && item->folder->scan)
+		item->folder->scan(item->folder, item);
+	folder->scan(folder, dest);
+
+	printf("ici scan\n");
+
+	return dest->last_num;
+}
+
+/*
 gint folder_item_copy_msg(FolderItem *dest, MsgInfo *msginfo)
 {
 	Folder *folder;
@@ -610,7 +698,36 @@ gint folder_item_copy_msg(FolderItem *dest, MsgInfo *msginfo)
 
 	return num;
 }
+*/
 
+gint folder_item_copy_msg(FolderItem *dest, MsgInfo *msginfo)
+{
+	Folder *folder;
+	gint num;
+	gchar * filename;
+	Folder * src_folder;
+
+	g_return_val_if_fail(dest != NULL, -1);
+	g_return_val_if_fail(msginfo != NULL, -1);
+
+	folder = dest->folder;
+
+	g_return_val_if_fail(folder->scan != NULL, -1);
+	g_return_val_if_fail(folder->copy_msg != NULL, -1);
+
+	if (dest->last_num < 0) folder->scan(folder, dest);
+	
+	num = folder->copy_msg(folder, dest, msginfo);
+
+	if (folder->finished_copy)
+		folder->finished_copy(folder, dest);
+
+	folder->scan(folder, dest);
+
+	return num;
+}
+
+/*
 gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 {
 	Folder *folder;
@@ -630,6 +747,38 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	if (num > 0) dest->last_num = num;
 
 	return num;
+}
+*/
+
+gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
+{
+	Folder *folder;
+	gint num;
+	GSList * l;
+	gchar * filename;
+
+	g_return_val_if_fail(dest != NULL, -1);
+	g_return_val_if_fail(msglist != NULL, -1);
+
+	folder = dest->folder;
+ 
+	g_return_val_if_fail(folder->scan != NULL, -1);
+	g_return_val_if_fail(folder->copy_msg != NULL, -1);
+
+	if (dest->last_num < 0) folder->scan(folder, dest);
+
+	for(l = msglist ; l != NULL ; l = g_slist_next(l)) {
+		MsgInfo * msginfo = (MsgInfo *) l->data;
+
+		folder->copy_msg(folder, dest, msginfo);
+	}
+
+	if (folder->finished_copy)
+		folder->finished_copy(folder, dest);
+
+	folder->scan(folder, dest);
+
+	return dest->last_num;
 }
 
 gint folder_item_remove_msg(FolderItem *item, gint num)
@@ -653,10 +802,12 @@ gint folder_item_remove_all_msg(FolderItem *item)
 	Folder *folder;
 
 	g_return_val_if_fail(item != NULL, -1);
+
+	folder = item->folder;
+
 	g_return_val_if_fail(folder->scan != NULL, -1);
 	g_return_val_if_fail(folder->remove_all_msg != NULL, -1);
 
-	folder = item->folder;
 	if (item->last_num < 0) folder->scan(folder, item);
 
 	return folder->remove_all_msg(folder, item);
@@ -738,10 +889,13 @@ static void folder_init(Folder *folder, FolderType type, const gchar *name)
 		folder->get_msg_list        = mh_get_msg_list;
 		folder->fetch_msg           = mh_fetch_msg;
 		folder->add_msg             = mh_add_msg;
+		/*
 		folder->move_msg            = mh_move_msg;
 		folder->move_msgs_with_dest = mh_move_msgs_with_dest;
 		folder->copy_msg            = mh_copy_msg;
 		folder->copy_msgs_with_dest = mh_copy_msgs_with_dest;
+		*/
+		folder->copy_msg            = mh_copy_msg;
 		folder->remove_msg          = mh_remove_msg;
 		folder->remove_all_msg      = mh_remove_all_msg;
 		folder->is_msg_changed      = mh_is_msg_changed;
@@ -755,8 +909,10 @@ static void folder_init(Folder *folder, FolderType type, const gchar *name)
 	case F_IMAP:
 		folder->get_msg_list        = imap_get_msg_list;
 		folder->fetch_msg           = imap_fetch_msg;
+		/*
 		folder->move_msg            = imap_move_msg;
 		folder->move_msgs_with_dest = imap_move_msgs_with_dest;
+		*/
 		folder->remove_msg          = imap_remove_msg;
 		folder->remove_all_msg      = imap_remove_all_msg;
 		folder->scan                = imap_scan_folder;
@@ -775,18 +931,23 @@ static void folder_init(Folder *folder, FolderType type, const gchar *name)
 		folder->add_msg             = mbox_add_msg;
 		folder->remove_all_msg      = mbox_remove_all_msg;
 		folder->remove_msg          = mbox_remove_msg;
-		folder->update_mark         = mbox_update_mark;
+		/*
 		folder->move_msg            = mbox_move_msg;
 		folder->move_msgs_with_dest = mbox_move_msgs_with_dest;
+		folder->copy_msg            = mbox_copy_msg;
+		folder->copy_msgs_with_dest = mbox_copy_msgs_with_dest;
+		*/
+		folder->copy_msg            = mbox_copy_msg;
 
-		/*
-		folder->remove_msg          = mh_remove_msg;
-		folder->is_msg_changed      = mh_is_msg_changed;
-		folder->scan_tree           = mh_scan_tree;
-		folder->create_tree         = mh_create_tree;
-		folder->create_folder       = mh_create_folder;
-		folder->rename_folder       = mh_rename_folder;
-		folder->remove_folder       = mh_remove_folder;*/
+		folder->create_tree         = mbox_create_tree;
+		folder->create_folder       = mbox_create_folder;
+		folder->rename_folder       = mbox_rename_folder;
+		folder->remove_folder       = mbox_remove_folder;
+
+		folder->update_mark         = mbox_update_mark;
+		folder->change_flags        = mbox_change_flags;
+		folder->finished_copy       = mbox_finished_copy;
+
 		break;
 	default:
 	}
@@ -1021,7 +1182,7 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 			xml_file_put_escape_str(fp, folder->name);
 			fputs("\"", fp);
 		}
-		if (folder->type == F_MH) {
+		if ((folder->type == F_MH) || (folder->type == F_MBOX)) {
 			fputs(" path=\"", fp);
 			xml_file_put_escape_str
 				(fp, LOCAL_FOLDER(folder)->rootpath);

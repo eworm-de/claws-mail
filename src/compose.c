@@ -464,6 +464,14 @@ Compose * compose_new_with_recipient(PrefsAccount *account, const gchar *to)
 	return compose;
 }
 
+#define CHANGE_FLAGS(msginfo) \
+{ \
+if (msginfo->folder->folder->change_flags != NULL) \
+msginfo->folder->folder->change_flags(msginfo->folder->folder, \
+				      msginfo->folder, \
+				      msginfo); \
+}
+
 void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
 		   gboolean to_author)
 {
@@ -491,6 +499,8 @@ void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
 
 	MSG_UNSET_FLAGS(msginfo->flags, MSG_FORWARDED);
 	MSG_SET_FLAGS(msginfo->flags, MSG_REPLIED);
+
+	CHANGE_FLAGS(msginfo);
 
 	compose = compose_create(reply_account);
 	compose->mode = COMPOSE_REPLY;
@@ -553,6 +563,8 @@ Compose * compose_forward(PrefsAccount * account, MsgInfo *msginfo,
 
 	MSG_UNSET_FLAGS(msginfo->flags, MSG_REPLIED);
 	MSG_SET_FLAGS(msginfo->flags, MSG_FORWARDED);
+
+	CHANGE_FLAGS(msginfo);
 
 	compose = compose_create(account);
 	compose->mode = COMPOSE_FORWARD;

@@ -147,6 +147,9 @@ static gint main_window_close_cb (GtkWidget	*widget,
 static void add_mailbox_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void add_mbox_cb 	 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
 static void update_folderview_cb (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -191,8 +194,7 @@ static void toggle_toolbar_cb	 (MainWindow	*mainwin,
 static void toggle_statusbar_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
-				  
-static void separate_widget_cb(GtkCheckMenuItem *checkitem, guint action);				   
+static void separate_widget_cb(GtkCheckMenuItem *checkitem, guint action);
 
 static void addressbook_open_cb	(MainWindow	*mainwin,
 				 guint		 action,
@@ -351,6 +353,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 {
 	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Add mailbox..."),		NULL, add_mailbox_cb, 0, NULL},
+	{N_("/_File/_Add mbox mailbox..."),     NULL, add_mbox_cb, 0, NULL},
 	{N_("/_File/_Update folder tree"),	NULL, update_folderview_cb, 0, NULL},
 	{N_("/_File/_Folder"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Folder/Create _new folder..."),
@@ -1048,6 +1051,56 @@ void main_window_add_mailbox(MainWindow *mainwin)
 	folderview_set(mainwin->folderview);
 }
 
+void main_window_add_mbox(MainWindow *mainwin)
+{
+	gchar *path;
+	Folder *folder;
+	FolderItem * item;
+
+	path = input_dialog(_("Add mbox mailbox"),
+			    _("Input the location of mailbox."),
+			    "mail");
+
+	if (!path) return;
+
+	/*
+	if (folder_find_from_path(path)) {
+		alertpanel_error(_("The mailbox `%s' already exists."), path);
+		g_free(path);
+		return;
+	}
+	*/
+
+	/*
+	if (!strcmp(path, "Mail"))
+		folder = folder_new(F_MBOX, _("Mailbox"), path);
+		else
+	*/
+
+	folder = folder_new(F_MBOX, g_basename(path), path);
+	g_free(path);
+
+	if (folder->create_tree(folder) < 0) {
+		alertpanel_error(_("Creation of the mailbox failed."));
+		folder_destroy(folder);
+		return;
+	}
+
+	folder_add(folder);
+
+	item = folder_item_new(folder->name, NULL);
+	item->folder = folder;
+	folder->node = g_node_new(item);
+
+	mbox_create_folder(folder, item, "inbox");
+	mbox_create_folder(folder, item, "outbox");
+	mbox_create_folder(folder, item, "queue");
+	mbox_create_folder(folder, item, "draft");
+	mbox_create_folder(folder, item, "trash");
+
+	folderview_set(mainwin->folderview);
+}
+
 void main_window_set_toolbar_sensitive(MainWindow *mainwin, gboolean sensitive)
 {
 	gtk_widget_set_sensitive(mainwin->reply_btn,       sensitive);
@@ -1670,6 +1723,12 @@ static void add_mailbox_cb(MainWindow *mainwin, guint action,
 	main_window_add_mailbox(mainwin);
 }
 
+static void add_mbox_cb(MainWindow *mainwin, guint action,
+			GtkWidget *widget)
+{
+	main_window_add_mbox(mainwin);
+}
+
 static void update_folderview_cb(MainWindow *mainwin, guint action,
 				 GtkWidget *widget)
 {
@@ -1820,7 +1879,7 @@ static void toggle_statusbar_cb(MainWindow *mainwin, guint action,
 	}
 }
 
-static void separate_widget_cb(GtkCheckMenuItem *checkitem, guint action)				   
+static void separate_widget_cb(GtkCheckMenuItem *checkitem, guint action)
 {
 	MainWindow *mainwin;
 	SeparateType type;

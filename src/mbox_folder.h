@@ -27,5 +27,15 @@ void mbox_update_mark(Folder * folder, FolderItem * item);
 gint mbox_move_msgs_with_dest(Folder *folder, FolderItem *dest,
 			      GSList *msglist);
 gint mbox_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo);
+void mbox_change_flags(Folder * folder, FolderItem * item, MsgInfo * info);
+gint mbox_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo);
+gint mbox_copy_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist);
+gint mbox_create_tree(Folder *folder);
+FolderItem *mbox_create_folder(Folder *folder, FolderItem *parent,
+			       const gchar *name);
+gint mbox_rename_folder(Folder *folder, FolderItem *item, const gchar *name);
+gint mbox_remove_folder(Folder *folder, FolderItem *item);
+void mbox_finished_copy(Folder *folder, FolderItem *dest);
+
 
 #endif

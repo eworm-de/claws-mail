@@ -56,8 +56,9 @@ gint procheader_get_one_field(gchar *buf, gint len, FILE *fp,
 			for (hp = hentry, hnum = 0; hp->name != NULL;
 			     hp++, hnum++) {
 				if (!strncasecmp(hp->name, buf,
-						 strlen(hp->name)))
+						 strlen(hp->name))) {
 					break;
+				}
 			}
 		} while (hp->name == NULL);
 	} else {
@@ -430,8 +431,8 @@ enum
 	H_SEEN		= 10,
 	H_STATUS        = 11,
 	H_X_STATUS      = 12,
-	H_X_FACE	= 13,
-	H_FROM_SPACE	= 14,
+	H_FROM_SPACE	= 13,
+	H_X_FACE	= 14,
 	H_DISPOSITION_NOTIFICATION_TO = 15,
 	H_RETURN_RECEIPT_TO = 16
 };
@@ -469,8 +470,8 @@ MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
 					   {"Seen:",		NULL, FALSE},
 					   {"Status:",          NULL, FALSE},
 					   {"X-Status:",        NULL, FALSE},
-					   {"X-Face:",		NULL, FALSE},
 					   {"From ",		NULL, FALSE},
+					   {"X-Face:",		NULL, FALSE},
 					   {"Disposition-Notification-To:", NULL, FALSE},
 					   {"Return-Receipt-To:", NULL, FALSE},
 					   {NULL,		NULL, FALSE}};
@@ -621,8 +622,17 @@ MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
 				MSG_SET_FLAGS(msginfo->flags, MSG_UNREAD);
 			break;
 		case H_X_STATUS:
-			if (strchr(hp, 'X') != NULL)
+			if (strchr(hp, 'D') != NULL)
+				MSG_SET_FLAGS(msginfo->flags,
+					      MSG_REALLY_DELETED);
+			if (strchr(hp, 'F') != NULL)
 				MSG_SET_FLAGS(msginfo->flags, MSG_MARKED);
+			if (strchr(hp, 'd') != NULL)
+				MSG_SET_FLAGS(msginfo->flags, MSG_DELETED);
+			if (strchr(hp, 'r') != NULL)
+				MSG_SET_FLAGS(msginfo->flags, MSG_REPLIED);
+			if (strchr(hp, 'f') != NULL)
+				MSG_SET_FLAGS(msginfo->flags, MSG_FORWARDED);
 			break;
 		case H_FROM_SPACE:
 			if (msginfo->fromspace) break;

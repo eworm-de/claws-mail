@@ -370,7 +370,6 @@ static void prefs_filtering_create(void)
 	for (accounts = account_get_list() ; accounts != NULL;
 	     accounts = accounts->next) {
 		PrefsAccount *ac = (PrefsAccount *)accounts->data;
-		GtkWidget *menuitem;
 		gchar *name;
 
 		name = g_strdup_printf("%s <%s> (%s)",
@@ -650,7 +649,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(void)
 	cond_str = gtk_entry_get_text(GTK_ENTRY(filtering.cond_entry));
 	if (*cond_str == '\0') {
 		alertpanel_error(_("Score is not set."));
-		return;
+		return NULL;
 	}
 
 	action_id = get_sel_from_list(GTK_LIST(filtering.action_list));
@@ -666,7 +665,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(void)
 		destination = gtk_entry_get_text(GTK_ENTRY(filtering.dest_entry));
 		if (*destination == '\0') {
 			alertpanel_error(_("Destination is not set."));
-			return;
+			return NULL;
 		}
 		break;
 	default:
@@ -682,7 +681,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(void)
 	if (tmp == NULL) {
 		alertpanel_error(_("Match string is not valid."));
 		filteringaction_free(action);
-		return;
+		return NULL;
 	}
 
 	prop = filteringprop_new(cond, action);

@@ -116,6 +116,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 			FILE_OP_ERROR(tmp_file, "chmod");
 
 		/* convert unix From into Return-Path */
+		/*
 		startp = from_line + 5;
 		endp = strchr(startp, ' ');
 		if (endp == NULL)
@@ -126,6 +127,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 		g_snprintf(from_line, sizeof(from_line),
 			   "Return-Path: %s\n", rpath);
 		g_free(rpath);
+		*/
 
 		FPUTS_TO_TMP_ABORT_IF_FAIL(from_line);
 		FPUTS_TO_TMP_ABORT_IF_FAIL(buf);

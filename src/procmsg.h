@@ -39,6 +39,7 @@ typedef enum
 	MSG_DELETED	= 1 << 3,
 	MSG_REPLIED	= 1 << 4,
 	MSG_FORWARDED	= 1 << 5,
+	MSG_REALLY_DELETED = 1 << 6,
 
 	/* temporary flags (0xffff0000) */
 	MSG_MOVE	= 1 << 16,
@@ -58,7 +59,8 @@ typedef enum
 					 MSG_MARKED    | \
 					 MSG_DELETED   | \
 					 MSG_REPLIED   | \
-					 MSG_FORWARDED)
+					 MSG_FORWARDED | \
+                                         MSG_REALLY_DELETED)
 #define MSG_CACHED_FLAG_MASK		(MSG_MIME)
 
 #define MSG_SET_FLAGS(msg, flags)	{ (msg) |= (flags); }
@@ -72,6 +74,7 @@ typedef enum
 
 #define MSG_IS_MOVE(msg)		((msg & MSG_MOVE) != 0)
 #define MSG_IS_COPY(msg)		((msg & MSG_COPY) != 0)
+#define MSG_IS_REALLY_DELETED(msg)	((msg & MSG_REALLY_DELETED) != 0)
 
 #define MSG_IS_QUEUED(msg)		((msg & MSG_QUEUED) != 0)
 #define MSG_IS_DRAFT(msg)		((msg & MSG_DRAFT) != 0)
@@ -134,8 +137,6 @@ struct _MsgInfo
 	/* used only for encrypted messages */
 	gchar *plaintext_file;
 	guint decryption_failed : 1;
-
-	void * data;
 };
 
 GHashTable *procmsg_msg_hash_table_create	(GSList		*mlist);

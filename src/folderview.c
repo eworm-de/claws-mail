@@ -150,6 +150,9 @@ static void folderview_col_resized	(GtkCList	*clist,
 static void folderview_new_folder_cb	(FolderView	*folderview,
 					 guint		 action,
 					 GtkWidget	*widget);
+static void folderview_new_mbox_folder_cb(FolderView *folderview,
+					  guint action,
+					  GtkWidget *widget);
 static void folderview_rename_folder_cb	(FolderView	*folderview,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -199,6 +202,17 @@ static void folderview_drag_received_cb  (GtkWidget        *widget,
 					  guint             time,
 					  FolderView       *folderview);
 
+static GtkItemFactoryEntry folderview_mbox_popup_entries[] =
+{
+	{N_("/Create _new folder..."),	NULL, folderview_new_mbox_folder_cb,    0, NULL},
+	{N_("/_Rename folder..."),	NULL, folderview_rename_folder_cb, 0, NULL},
+	{N_("/_Delete folder"),		NULL, folderview_delete_folder_cb, 0, NULL},
+	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/Remove _mailbox"),	NULL, folderview_remove_mailbox_cb, 0, NULL},
+	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Property..."),		NULL, NULL, 0, NULL}
+};
+
 static GtkItemFactoryEntry folderview_mail_popup_entries[] =
 {
 	{N_("/Create _new folder..."),	NULL, folderview_new_folder_cb,    0, NULL},
@@ -243,9 +257,11 @@ FolderView *folderview_create(void)
 	GtkWidget *mail_popup;
 	GtkWidget *news_popup;
 	GtkWidget *imap_popup;
+	GtkWidget *mbox_popup;
 	GtkItemFactory *mail_factory;
 	GtkItemFactory *news_factory;
 	GtkItemFactory *imap_factory;
+	GtkItemFactory *mbox_factory;
 	gint n_entries;
 	gint i;
 
@@ -306,6 +322,12 @@ FolderView *folderview_create(void)
 				       n_entries,
 				       "<NewsFolder>", &news_factory,
 				       folderview);
+	n_entries = sizeof(folderview_mbox_popup_entries) /
+		sizeof(folderview_mbox_popup_entries[0]);
+	mbox_popup = menu_create_items(folderview_mbox_popup_entries,
+				       n_entries,
+				       "<MailFolder>", &mbox_factory,
+				       folderview);
 
 	gtk_signal_connect(GTK_OBJECT(ctree), "key_press_event",
 			   GTK_SIGNAL_FUNC(folderview_key_pressed),
@@ -340,6 +362,9 @@ FolderView *folderview_create(void)
 	gtk_signal_connect(GTK_OBJECT(news_popup), "selection_done",
 			   GTK_SIGNAL_FUNC(folderview_popup_close),
 			   folderview);
+	gtk_signal_connect(GTK_OBJECT(mbox_popup), "selection_done",
+			   GTK_SIGNAL_FUNC(folderview_popup_close),
+			   folderview);
 
         /* drop callback */
 	gtk_drag_dest_set(ctree, GTK_DEST_DEFAULT_ALL &
@@ -364,6 +389,8 @@ FolderView *folderview_create(void)
 	folderview->imap_factory = imap_factory;
 	folderview->news_popup   = news_popup;
 	folderview->news_factory = news_factory;
+	folderview->mbox_popup   = mbox_popup;
+	folderview->mbox_factory = mbox_factory;
 
 	gtk_widget_show_all(scrolledwin);
 
@@ -969,8 +996,10 @@ void folderview_new_folder(FolderView *folderview)
 	g_return_if_fail(item->folder != NULL);
 
 	switch (item->folder->type) {
-	case F_MH:
 	case F_MBOX:
+		folderview_new_mbox_folder_cb(folderview, 0, NULL);
+		break;
+	case F_MH:
 	case F_MAILDIR:
 		folderview_new_folder_cb(folderview, 0, NULL);
 		break;
@@ -1090,6 +1119,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	menu_set_insensitive_all(GTK_MENU_SHELL(folderview->mail_popup));
 	menu_set_insensitive_all(GTK_MENU_SHELL(folderview->imap_popup));
 	menu_set_insensitive_all(GTK_MENU_SHELL(folderview->news_popup));
+	menu_set_insensitive_all(GTK_MENU_SHELL(folderview->mbox_popup));
 
 	if (folder->type == F_MH && item->parent == NULL) {
 		menu_set_sensitive(folderview->mail_factory,
@@ -1127,6 +1157,22 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		menu_set_sensitive(folderview->news_factory,
 				   "/Remove newsgroup", TRUE);
 	}
+	if (folder->type == F_MBOX && item->parent == NULL) {
+		menu_set_sensitive(folderview->mbox_factory,
+				   "/Create new folder...", TRUE);
+		menu_set_sensitive(folderview->mbox_factory,
+				   "/Remove mailbox", TRUE);
+	} else if (folder->type == F_MBOX && item->stype != F_NORMAL) {
+		menu_set_sensitive(folderview->mbox_factory,
+				   "/Create new folder...", TRUE);
+	} else if (folder->type == F_MBOX) {
+		menu_set_sensitive(folderview->mbox_factory,
+				   "/Create new folder...", TRUE);
+		menu_set_sensitive(folderview->mbox_factory,
+				   "/Rename folder...", TRUE);
+		menu_set_sensitive(folderview->mbox_factory,
+				   "/Delete folder", TRUE);
+	}
 
 	if (folder->type == F_MH)
 		gtk_menu_popup(GTK_MENU(folderview->mail_popup), NULL, NULL,
@@ -1136,6 +1182,9 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 			       NULL, NULL, event->button, event->time);
 	else if (folder->type == F_NEWS)
 		gtk_menu_popup(GTK_MENU(folderview->news_popup), NULL, NULL,
+			       NULL, NULL, event->button, event->time);
+	else if (folder->type == F_MBOX)
+		gtk_menu_popup(GTK_MENU(folderview->mbox_popup), NULL, NULL,
 			       NULL, NULL, event->button, event->time);
 }
 
@@ -1187,6 +1236,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 {
 	static gboolean can_select = TRUE;	/* exclusive lock */
 	FolderItem *item;
+	gchar * s = NULL;
 
 	folderview->selected = row;
 
@@ -1317,6 +1367,56 @@ static void folderview_new_folder_cb(FolderView *folderview, guint action,
 		g_free(new_folder);
 		return;
 	}
+
+	/* find whether the directory already exists */
+	if (folderview_find_by_name(ctree, folderview->selected, new_folder)) {
+		alertpanel_error(_("The folder `%s' already exists."),
+				 new_folder);
+		g_free(new_folder);
+		return;
+	}
+
+	new_item = item->folder->create_folder(item->folder, item, new_folder);
+	g_free(new_folder);
+	if (!new_item) return;
+
+	gtk_clist_freeze(GTK_CLIST(ctree));
+
+	text[COL_FOLDER] = new_item->name;
+	node = gtk_ctree_insert_node(ctree, folderview->selected, NULL, text,
+				     FOLDER_SPACING,
+				     folderxpm, folderxpmmask,
+				     folderopenxpm, folderopenxpmmask,
+				     FALSE, FALSE);
+	gtk_ctree_expand(ctree, folderview->selected);
+	gtk_ctree_node_set_row_data(ctree, node, new_item);
+	folderview_sort_folders(folderview, folderview->selected, item->folder);
+
+	gtk_clist_thaw(GTK_CLIST(ctree));
+
+	folder_write_list();
+}
+
+static void folderview_new_mbox_folder_cb(FolderView *folderview, guint action,
+					  GtkWidget *widget)
+{
+	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	gchar *text[N_FOLDER_COLS] = {NULL, "0", "0", "0"};
+	FolderItem *item;
+	FolderItem *new_item;
+	gchar *new_folder;
+	GtkCTreeNode *node;
+
+	if (!folderview->selected) return;
+
+	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->folder != NULL);
+
+	new_folder = input_dialog(_("New folder"),
+				  _("Input the name of new folder:"),
+				  _("NewFolder"));
+	if (!new_folder) return;
 
 	/* find whether the directory already exists */
 	if (folderview_find_by_name(ctree, folderview->selected, new_folder)) {
