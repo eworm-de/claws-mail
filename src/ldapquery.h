@@ -77,7 +77,7 @@ struct _LdapQuery {
 	void        (*callBackEnd)( void * );
 	ItemFolder  *folder;		/* Reference to folder in cache */
 	LdapServer  *server;		/* Reference to (parent) LDAP server */
-	// SyldapServer *server;		/* Reference to (parent) LDAP server */
+	/* SyldapServer *server; */		/* Reference to (parent) LDAP server */
 };
 
 /* Function prototypes */

@@ -1,3 +1,13 @@
+2003-05-03 [thorsten]	0.8.11claws140
+
+	* src/addrquery.h
+	  src/ldapquery.h
+	  src/mainwindow.c
+		removed C++ comments
+	* src/addr_compl.c
+		function with non-int retval/param used before
+		implementation/declaration
+
 2003-05-02 [paul]	0.8.11claws139
 
 	* src/addr_compl.[ch]
