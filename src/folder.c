@@ -156,7 +156,7 @@ FolderItem *folder_item_new(const gchar *name, const gchar *path)
 	item->no_sub = FALSE;
 	item->no_select = FALSE;
 	item->collapsed = FALSE;
-	item->threaded  = FALSE;
+	item->threaded  = TRUE;
 	item->ret_rcpt  = FALSE;
 	item->parent = NULL;
 	item->folder = NULL;
@@ -1042,7 +1042,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	const gchar *path = NULL;
 	PrefsAccount *account = NULL;
 	gboolean no_sub = FALSE, no_select = FALSE, collapsed = FALSE, 
-		 threaded = FALSE, ret_rcpt = FALSE;
+		 threaded = TRUE, ret_rcpt = FALSE;
 	gint mtime = 0, new = 0, unread = 0, total = 0;
 
 	g_return_val_if_fail(node->data != NULL, FALSE);
@@ -1141,7 +1141,7 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 	const gchar *name = NULL;
 	const gchar *path = NULL;
 	PrefsAccount *account = NULL;
-	gboolean collapsed = FALSE, threaded = FALSE, ret_rcpt = FALSE;
+	gboolean collapsed = FALSE, threaded = TRUE, ret_rcpt = FALSE;
 
 	if (g_node_depth(node) != 2) return FALSE;
 	g_return_val_if_fail(node->data != NULL, FALSE);

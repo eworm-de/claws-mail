@@ -1,3 +1,11 @@
+2001-09-25
+
+	* src/folder.c
+	  src/folder.h
+	  src/mainwindow.c
+	  src/summaryview.c: フォルダ毎のスレッド表示設定ができるようにする
+	  Alfons さんのパッチを適用(thanks!)。
+
 2001-09-23
 
 	* src/message_search.[ch]: 新規。現在のメッセージの検索ダイアログ。

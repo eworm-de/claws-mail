@@ -1240,7 +1240,8 @@ static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	if (mainwin->summaryview->folder_item) {
 		if (mainwin->summaryview->folder_item->threaded)
 			state |= M_THREADED;
-		else state |= M_UNTHREADED;	
+		else
+			state |= M_UNTHREADED;	
 	}		
 	if (selection == SUMMARY_SELECTED_SINGLE ||
 	    selection == SUMMARY_SELECTED_MULTIPLE)
@@ -1349,8 +1350,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Summary/Go to/Prev labeled message", M_MSG_EXIST},
 		{"/Summary/Go to/Next labeled message", M_MSG_EXIST},
 		{"/Summary/Sort"                      , M_MSG_EXIST},
-		{"/Summary/Thread view"               ,	M_UNTHREADED | M_UNLOCKED},
-		{"/Summary/Unthread view"             , M_THREADED | M_UNLOCKED},
+		{"/Summary/Thread view"               ,	M_UNTHREADED},
+		{"/Summary/Unthread view"             , M_THREADED},
 
 		{"/Configuration", M_UNLOCKED},
 
@@ -2544,21 +2545,21 @@ static void thread_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	GtkItemFactory *ifactory;
 
+	if (!mainwin->summaryview->folder_item) return;
+
 	ifactory = gtk_item_factory_from_widget(widget);
 
-	if (mainwin->summaryview->folder_item) {
-		if (0 == action) {
-			summary_thread_build(mainwin->summaryview, FALSE);
-			mainwin->summaryview->folder_item->threaded = TRUE;
-			menu_set_sensitive(ifactory, "/Summary/Thread view",   FALSE);
-			menu_set_sensitive(ifactory, "/Summary/Unthread view", TRUE);
-		} else {
-			summary_unthread(mainwin->summaryview);
-			mainwin->summaryview->folder_item->threaded = FALSE;
-			menu_set_sensitive(ifactory, "/Summary/Thread view",   TRUE);
-			menu_set_sensitive(ifactory, "/Summary/Unthread view", FALSE);
-		}
-	}		
+	if (0 == action) {
+		summary_thread_build(mainwin->summaryview, FALSE);
+		mainwin->summaryview->folder_item->threaded = TRUE;
+		menu_set_sensitive(ifactory, "/Summary/Thread view",   FALSE);
+		menu_set_sensitive(ifactory, "/Summary/Unthread view", TRUE);
+	} else {
+		summary_unthread(mainwin->summaryview);
+		mainwin->summaryview->folder_item->threaded = FALSE;
+		menu_set_sensitive(ifactory, "/Summary/Thread view",   TRUE);
+		menu_set_sensitive(ifactory, "/Summary/Unthread view", FALSE);
+	}
 }
 
 static void set_display_item_cb(MainWindow *mainwin, guint action,
