@@ -388,7 +388,7 @@ static void sd_update_msg_num(PrefsAccount *acc)
 				msg_num++;
 	}
 
-	text = g_strdup_printf("%i Messages", msg_num);
+	text = g_strdup_printf(_("%i Messages"), msg_num);
 	gtk_label_set_text(GTK_LABEL(selective.msgs_label), text);
 
 	g_free(text);
@@ -750,7 +750,7 @@ static void sd_window_create(MainWindow *mainwin)
 			  (GtkAttachOptions) (GTK_FILL),
 			  (GtkAttachOptions) (GTK_FILL), 0, 0);
 
-	show_old_chkbtn = gtk_check_button_new_with_label("Show only old messages");
+	show_old_chkbtn = gtk_check_button_new_with_label(_("Show only old messages"));
 	gtk_box_pack_start (GTK_BOX(bottom_hbox), show_old_chkbtn, FALSE, FALSE, 0);
 
 	gtk_signal_connect (GTK_OBJECT(show_old_chkbtn), "toggled",
