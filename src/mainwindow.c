@@ -1560,7 +1560,6 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/File/Add mailbox"                          , M_UNLOCKED},
 
                 {"/File/Add mailbox/MH..."   		      , M_UNLOCKED},
-		{"/File/Add mailbox/mbox..."                  , M_UNLOCKED},
 		{"/File/Export to mbox file..."               , M_UNLOCKED},
 		{"/File/Empty trash"                          , M_UNLOCKED},
 		{"/File/Work offline"	       		      , M_UNLOCKED},
