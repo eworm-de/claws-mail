@@ -3973,7 +3973,6 @@ static void prefs_nextunreadmsgdialog_set_optmenu(PrefParam *pparam)
 	case NEXTUNREADMSGDIALOG_ASSUME_NO:
 		gtk_option_menu_set_history(optmenu, 2);
 		break;
-	default:
 	}
 
 	menu = gtk_option_menu_get_menu(optmenu);

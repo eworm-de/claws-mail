@@ -1045,6 +1045,7 @@ gint procmsg_send_message_queue(const gchar *file)
 	gint hnum;
 	PrefsAccount *mailac = NULL, *newsac = NULL;
 	gchar *tmp = NULL;
+	int local = 0;
 
 	g_return_val_if_fail(file != NULL, -1);
 
@@ -1079,7 +1080,6 @@ gint procmsg_send_message_queue(const gchar *file)
 		case Q_SAVE_COPY_FOLDER:
 			if (!savecopyfolder) savecopyfolder = g_strdup(p);
 			break;
-		default:
 		}
 	}
 	filepos = ftell(fp);
@@ -1117,8 +1117,10 @@ gint procmsg_send_message_queue(const gchar *file)
 		} else if (mailac && mailac->use_mail_command &&
 			   mailac->mail_command && (* mailac->mail_command)) {
 			mailval = send_message_local(mailac->mail_command, fp);
+			local = 1;
 		} else if (prefs_common.use_extsend && prefs_common.extsend_cmd) {
 			mailval = send_message_local(prefs_common.extsend_cmd, fp);
+			local = 1;
 		} else {
 			if (!mailac) {
 				mailac = account_find_from_smtp_server(from, smtpserver);
@@ -1144,8 +1146,16 @@ gint procmsg_send_message_queue(const gchar *file)
 			}
 		}
 		if (mailval < 0) {
-            		alertpanel_error(_("Error occurred while sending the message to %s ."),
-                                 mailac ? mailac->smtp_server : smtpserver);
+            		if (!local)
+				alertpanel_error(
+					_("Error occurred while sending the message to `%s'."),
+					mailac ? mailac->smtp_server : smtpserver);
+			else
+				alertpanel_error(
+					_("Error occurred while sending the message with command `%s'."),
+					(mailac && mailac->use_mail_command && 
+					 mailac->mail_command && (*mailac->mail_command)) ? 
+						mailac->mail_command : prefs_common.extsend_cmd);
 		}
 	}
 

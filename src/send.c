@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/time.h>
+#include <signal.h>
 #include <unistd.h>
 
 #include "intl.h"
@@ -214,6 +215,7 @@ gint send_message_local(const gchar *command, FILE *fp)
 	FILE *pipefp;
 	gchar buf[BUFFSIZE];
 	int r;
+	sigset_t osig, mask;
 
 	g_return_val_if_fail(command != NULL, -1);
 	g_return_val_if_fail(fp != NULL, -1);
@@ -233,9 +235,19 @@ gint send_message_local(const gchar *command, FILE *fp)
 		fputc('\n', pipefp);
 	}
 
+	/* we need to block SIGCHLD, otherwise pspell's handler will wait()
+	 * the pipecommand away and pclose will return -1 because of its
+	 * failed wait4().
+	 */
+	sigemptyset(&mask);
+	sigaddset(&mask, SIGCHLD);
+	sigprocmask(SIG_BLOCK, &mask, &osig);
+	
 	r = pclose(pipefp);
+
+	sigprocmask(SIG_SETMASK, &osig, NULL);
 	if (r != 0) {
-		g_warning(_("external command failed: %s\n"), command);
+		g_warning(_("external command `%s' failed with code `%i'\n"), command, r);
 		return -1;
 	}
 
