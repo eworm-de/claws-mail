@@ -46,6 +46,7 @@
 #include "mainwindow.h"
 #include "stock_pixmap.h"
 #include "setup.h"
+#include "folder.h"
 
 typedef enum
 {
@@ -87,6 +88,8 @@ static void wizard_write_config(WizardWindow *wizard)
 	gboolean mailbox_ok = FALSE;
 	PrefsAccount *prefs_account = prefs_account_new();
 	GList *account_list = NULL;
+	GtkWidget *menu, *menuitem;
+	int tmp;
 	
 	if (wizard->create_mailbox) {
 		mailbox_ok = setup_write_mailbox_path(wizard->mainwin, 
@@ -109,10 +112,27 @@ static void wizard_write_config(WizardWindow *wizard)
 				gtk_entry_get_text(GTK_ENTRY(wizard->recv_username)));
 	prefs_account->passwd = g_strdup(
 				gtk_entry_get_text(GTK_ENTRY(wizard->recv_password)));
+
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(wizard->recv_type));
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	prefs_account->protocol = GPOINTER_TO_INT
-			(g_object_get_data(G_OBJECT(wizard->recv_type), 
-					   MENU_VAL_ID));
-	
+			(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+
+	tmp = atoi(gtk_entry_get_text(GTK_ENTRY(wizard->smtp_port)));
+	if (tmp != 25) {
+		prefs_account->smtpport = tmp;
+		prefs_account->set_smtpport = TRUE;
+	}
+
+	tmp = atoi(gtk_entry_get_text(GTK_ENTRY(wizard->recv_port)));
+	if (prefs_account->protocol == A_POP3 && tmp != 110) {
+		prefs_account->popport = tmp;
+		prefs_account->set_popport = TRUE;
+	} else if (prefs_account->protocol == A_IMAP4 && tmp != 143) {
+		prefs_account->imapport = tmp;
+		prefs_account->set_imapport = TRUE;
+	}
+
 	account_list = g_list_append(account_list, prefs_account);
 	prefs_account_write_config_all(account_list);
 	prefs_account_free(prefs_account);
@@ -231,7 +251,6 @@ static GtkWidget* mailbox_page (WizardWindow * wizard)
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
-	wizard->full_name = gtk_entry_new();
 	wizard->mailbox_name = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(wizard->mailbox_name), "Mail");
 	GTK_TABLE_ADD_ROW_AT(table, _("Mailbox name:"), 
@@ -265,7 +284,6 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
-	wizard->full_name = gtk_entry_new();
 	wizard->smtp_server = gtk_entry_new();
 	text = get_default_server("smtp");
 	gtk_entry_set_text(GTK_ENTRY(wizard->smtp_server), text);
@@ -281,6 +299,27 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	return table;
 }
 
+static void wizard_protocol_changed(GtkMenuItem *menuitem, gpointer data)
+{
+	WizardWindow *wizard = (WizardWindow *)data;
+	RecvProtocol protocol;
+	gchar *text;
+	protocol = GPOINTER_TO_INT
+		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+	
+	if (protocol == A_POP3) {
+		text = get_default_server("pop");
+		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), text);
+		g_free(text);
+		gtk_entry_set_text(GTK_ENTRY(wizard->recv_port), "110");
+	} else {
+		text = get_default_server("imap");
+		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), text);
+		g_free(text);
+		gtk_entry_set_text(GTK_ENTRY(wizard->recv_port), "143");		
+	}
+}
+
 static GtkWidget* recv_page (WizardWindow * wizard)
 {
 	GtkWidget *table = gtk_table_new(5,2, FALSE);
@@ -292,11 +331,16 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
-	wizard->full_name = gtk_entry_new();
 	wizard->recv_type = gtk_option_menu_new();
 	
 	MENUITEM_ADD (menu, menuitem, _("POP3"), A_POP3);
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(wizard_protocol_changed),
+			 wizard);
 	MENUITEM_ADD (menu, menuitem, _("IMAP"), A_IMAP4);
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(wizard_protocol_changed),
+			 wizard);
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (wizard->recv_type), menu);
 	GTK_TABLE_ADD_ROW_AT(table, _("Server type:"), 
 			     wizard->recv_type, i); i++;

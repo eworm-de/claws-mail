@@ -138,3 +138,4 @@
 ( cvs diff -u -r 1.16.2.1 -r 1.16.2.2 src/matcher_parser_lex.l; ) > 0.9.12cvs79.3.patchset
 ( cvs diff -u -r 1.213.2.13 -r 1.213.2.14 src/folder.c; ) > 0.9.12cvs80.1.patchset
 ( cvs diff -u -r 1.155.2.10 -r 1.155.2.11 src/Makefile.am; cvs diff -u -r 1.115.2.15 -r 1.115.2.16 src/main.c; cvs diff -u -r 1.5.2.1 -r 1.5.2.2 src/setup.c; cvs diff -u -r 1.1.1.1 -r 1.1.1.2 src/setup.h; cvs diff -u -r 1.25.2.5 -r 1.25.2.6 src/stock_pixmap.c; cvs diff -u -r 1.18.2.3 -r 1.18.2.4 src/stock_pixmap.h; cvs diff -u -r 0 -r 1 src/wizard.c; cvs diff -u -r 0 -r 1 src/wizard.h; cvs diff -u -r 0 -r 1 src/pixmaps/sylpheed_icon.xpm; ) > 0.9.12cvs80.2.patchset
+( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/wizard.c; ) > 0.9.12cvs80.3.patchset

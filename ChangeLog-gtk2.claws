@@ -1,3 +1,8 @@
+2004-08-24 [colin]	0.9.12cvs80.3
+
+	* src/wizard.c
+		Fix full name, ports, and imap
+
 2004-08-24 [colin]	0.9.12cvs80.2
 
 	* src/Makefile.am
