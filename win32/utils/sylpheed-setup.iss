@@ -67,7 +67,7 @@ Source: "D:\_pak\Sylpheed.076.claws\themes\*.*";                DestDir: "{app}\
 Source: "D:\_pak\Sylpheed.076.claws\bin\libeay32.dll";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 Source: "D:\_pak\Sylpheed.076.claws\bin\ssleay32.dll";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 
-Source: "D:\_pak\gnupg\*.*";                                    DestDir: "C:\gnupg";                    CopyMode: alwaysoverwrite; Components: gpg
+Source: "D:\_pak\gnupg\*.*";                                    DestDir: "C:\gnupg";                    CopyMode: onlyifdoesntexist; Components: gpg
 
 [INI]
 Filename: "{app}\doc\gtk-w32.url";                              Section: "InternetShortcut"; Key: "URL"; String: "http://www.gimp.org/~tml/gimp/win32/"
