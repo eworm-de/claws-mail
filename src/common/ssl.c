@@ -78,6 +78,10 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 	return ssl_init_socket_with_method(sockinfo, SSL_METHOD_SSLv23);
 }
 
+#ifdef WIN32 /* XXX:tm Why does writing to log window hang here? */
+# define log_printf debug_print
+# define log_warning debug_print
+#endif
 gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 {
 	X509 *server_cert;
@@ -133,6 +137,10 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 
 	return TRUE;
 }
+#ifdef WIN32
+# undef log_printf
+# undef log_warning
+#endif
 
 void ssl_done_socket(SockInfo *sockinfo)
 {

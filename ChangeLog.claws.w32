@@ -1,3 +1,9 @@
+2003-05-04 [thorsten]	0.8.11claws140-1
+
+	* src/ssl.c
+		workaround: writing to log window hangs while auth. in
+		ssl_init_socket_with_method() using SMTP/TLS
+
 2003-04-18 [thorsten]	0.8.11claws102-3
 
 	* src/main.c
