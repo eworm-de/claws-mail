@@ -1437,42 +1437,50 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 }
 */
 		
-gint folder_item_move_recursive (FolderItem *src, FolderItem *dest) 
+FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest) 
 {
 	GSList *mlist;
 	GSList *cur;
 	FolderItem *new_item;
 	FolderItem *next_item;
 	GNode *srcnode;
-
+	
 	mlist = folder_item_get_msg_list(src);
 
 	/* move messages */
 	debug_print("Moving %s to %s\n", src->path, dest->path);
 	new_item = folder_create_folder(dest, g_basename(src->path));
-	
 	if (new_item == NULL) {
 		printf("Can't create folder\n");
-		return -1;
+		return NULL;
 	}
 	
+	if (new_item->folder == NULL)
+		new_item->folder = dest->folder;
+
+	/* move messages */
 	for (cur = mlist ; cur != NULL ; cur = cur->next) {
 		MsgInfo * msginfo;
 		msginfo = (MsgInfo *) cur->data;
 		folder_item_move_msg(new_item, msginfo);
 	}
+	
+	/*copy prefs*/
+	prefs_folder_item_copy_prefs(src, new_item);
+
+	/* recurse */
 	srcnode = src->folder->node;	
 	srcnode = g_node_find(srcnode, G_PRE_ORDER, G_TRAVERSE_ALL, src);
 	srcnode = srcnode->children;
 	while (srcnode != NULL) {
 		if (srcnode && srcnode->data) {
 			next_item = (FolderItem*) srcnode->data;
-			if (folder_item_move_recursive(next_item, new_item) != 0)
-				return -1;
+			if (folder_item_move_recursive(next_item, new_item) == NULL)
+				return NULL;
 		}
 		srcnode = srcnode->next;
 	}
-	return 0;
+	return new_item;
 }
 
 FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest)
@@ -1515,7 +1523,7 @@ FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest)
 		return NULL;
 	}
 	debug_print("moving \"%s\" to \"%s\"\n", phys_srcpath, phys_dstpath);
-	if (folder_item_move_recursive(src, dest) != 0) {
+	if ((tmp = folder_item_move_recursive(src, dest)) == NULL) {
 		alertpanel_error(_("Move failed !"));
 		return NULL;
 	}
@@ -1532,18 +1540,12 @@ FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest)
 	
 	folder_write_list();
 
-	/* rescan parents */
-	debug_print("rescanning foldertree ....\n");
-	folderview_rescan_tree(dest->folder);
-		
 	g_free(srcpath);
 	g_free(dstpath);
 	g_free(phys_srcpath);
 	g_free(phys_dstpath);
-	return folder_find_item_from_identifier(g_strconcat(dstpath, 
-							G_DIR_SEPARATOR_S, 
-							g_basename(srcpath), 
-							NULL));
+
+	return tmp;
 }
 
 gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)

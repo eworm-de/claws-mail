@@ -1,3 +1,14 @@
+2002-11-08 [colin]	0.8.5claws94
+
+	* src/folder.c
+		Fixes to folder DND (prefs copy)
+	* src/folderview.c
+		Optimization for folder DND (don't rescan whole tree)
+		Added folderview_create_folder_node() for this 
+		optimization, so de-duped a bit the code
+	* src/prefs_folder_item.[ch]
+		Added prefs_folder_item_copy_prefs()	
+	  
 2002-11-08 [paul]	0.8.5claws93
 
 	* src/prefs_account.c

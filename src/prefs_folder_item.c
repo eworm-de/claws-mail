@@ -710,3 +710,41 @@ static void folder_color_set_dialog_key_pressed(GtkWidget *widget,
 	gtk_widget_destroy(color_dialog);
 }
 
+void prefs_folder_item_copy_prefs(FolderItem * src, FolderItem * dest)
+{
+	PrefsFolderItem old_prefs;
+	prefs_folder_item_read_config(src);
+	old_prefs = *src->prefs;
+
+	tmp_prefs.directory			= g_strdup(old_prefs.directory);
+	tmp_prefs.sort_by_number		= old_prefs.sort_by_number;
+	tmp_prefs.sort_by_size			= old_prefs.sort_by_size;
+	tmp_prefs.sort_by_date			= old_prefs.sort_by_date;
+	tmp_prefs.sort_by_from			= old_prefs.sort_by_from;
+	tmp_prefs.sort_by_subject		= old_prefs.sort_by_subject;
+	tmp_prefs.sort_by_score			= old_prefs.sort_by_score;
+	tmp_prefs.sort_descending		= old_prefs.sort_descending;
+	tmp_prefs.enable_thread			= old_prefs.enable_thread;
+	tmp_prefs.kill_score			= old_prefs.kill_score;
+	tmp_prefs.important_score		= old_prefs.important_score;
+	/* FIXME!
+	tmp_prefs.scoring			= g_slist_copy(old_prefs.scoring); 
+	tmp_prefs.processing			= g_slist_copy(old_prefs.processing);
+	*/
+	tmp_prefs.request_return_receipt	= old_prefs.request_return_receipt;
+	tmp_prefs.enable_default_to		= old_prefs.enable_default_to;
+	tmp_prefs.default_to			= g_strdup(old_prefs.default_to);
+	tmp_prefs.enable_default_reply_to	= old_prefs.enable_default_reply_to;
+	tmp_prefs.default_reply_to		= old_prefs.default_reply_to;
+	tmp_prefs.enable_simplify_subject	= old_prefs.enable_simplify_subject;
+	tmp_prefs.simplify_subject_regexp	= g_strdup(old_prefs.simplify_subject_regexp);
+	tmp_prefs.enable_folder_chmod		= old_prefs.enable_folder_chmod;
+	tmp_prefs.folder_chmod			= old_prefs.folder_chmod;
+	tmp_prefs.enable_default_account	= old_prefs.enable_default_account;
+	tmp_prefs.default_account		= old_prefs.default_account;
+	tmp_prefs.save_copy_to_folder		= old_prefs.save_copy_to_folder;
+	tmp_prefs.color				= old_prefs.color;
+
+	*dest->prefs = tmp_prefs;
+	prefs_folder_item_save_config(dest);
+}
