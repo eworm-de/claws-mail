@@ -3,6 +3,16 @@
 	* src/imap.c: imap_parse_envelope(): fixed a bug that didn't
 	  parse the FETCH response that continues to the next line.
 	  imap_parse_fetch_element(): removed.
+	  imap_parse_atom(), imap_parse_one_address(), imap_parse_address(),
+	  imap_parse_envelope(), imap_get_uncached_messages(): use GString
+	  and sock_getline() to parse the FETCH response.
+	  imap_remove_all_msg(): fixed a bug that didn't delete messages
+	  correctly.
+	  imap_parse_address(): fixed a bug that didn't concaternate
+	  addresses correctly, using GString.
+	* src/socket.[ch]: sock_getline(), fd_getline(): new. They read
+	  the whole line and return the newly allocated string.
+	* src/prefs_account.[ch]: added `IMAP server directory' entry.
 
 2001-06-25
 

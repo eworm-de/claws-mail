@@ -79,6 +79,8 @@ struct _PrefsAccount
 	gboolean recv_at_getall;
 	gboolean filter_on_recv;
 
+        gchar *imap_dir;
+
 	/* Send */
 	gboolean  add_date;
 	gboolean  gen_msgid;

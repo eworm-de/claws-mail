@@ -89,6 +89,9 @@ static struct Receive {
 	GtkWidget *getall_chkbtn;
 	GtkWidget *recvatgetall_chkbtn;
 	GtkWidget *filter_on_recv_chkbtn;
+
+	GtkWidget *imap_frame;
+	GtkWidget *imapdir_entry;
 } receive;
 
 static struct Send {
@@ -215,6 +218,9 @@ static PrefParam param[] = {
 	{"filter_on_receive", "TRUE", &tmp_ac_prefs.filter_on_recv, P_BOOL,
 	 &receive.filter_on_recv_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"imap_directory", NULL, &tmp_ac_prefs.imap_dir, P_STRING,
+	 &receive.imapdir_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	/* Send */
 	{"add_date", "TRUE", &tmp_ac_prefs.add_date, P_BOOL,
@@ -874,6 +880,10 @@ static void prefs_account_receive_create(void)
 	GtkWidget *getall_chkbtn;
 	GtkWidget *recvatgetall_chkbtn;
 	GtkWidget *filter_on_recv_chkbtn;
+	GtkWidget *frame2;
+	GtkWidget *hbox1;
+	GtkWidget *imapdir_label;
+	GtkWidget *imapdir_entry;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -897,11 +907,33 @@ static void prefs_account_receive_create(void)
 	PACK_CHECK_BUTTON (vbox2, filter_on_recv_chkbtn,
 			   _("Filter messages on receiving"));
 
+	PACK_FRAME (vbox1, frame2, _("IMAP4"));
+
+	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox2);
+	gtk_container_add (GTK_CONTAINER (frame2), vbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
+
+	imapdir_label = gtk_label_new (_("IMAP server directory"));
+	gtk_widget_show (imapdir_label);
+	gtk_box_pack_start (GTK_BOX (hbox1), imapdir_label, FALSE, FALSE, 0);
+
+	imapdir_entry = gtk_entry_new();
+	gtk_widget_show (imapdir_entry);
+	gtk_box_pack_start (GTK_BOX (hbox1), imapdir_entry, TRUE, TRUE, 0);
+
 	receive.pop3_frame            = frame1;
 	receive.rmmail_chkbtn         = rmmail_chkbtn;
 	receive.getall_chkbtn         = getall_chkbtn;
 	receive.recvatgetall_chkbtn   = recvatgetall_chkbtn;
 	receive.filter_on_recv_chkbtn = filter_on_recv_chkbtn;
+
+	receive.imap_frame    = frame2;
+	receive.imapdir_entry = imapdir_entry;
 }
 
 static void prefs_account_send_create(void)
@@ -1440,6 +1472,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		prefs_account_nntpauth_toggled
 			(GTK_TOGGLE_BUTTON(basic.nntpauth_chkbtn), NULL);
 		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
+		gtk_widget_set_sensitive(receive.imap_frame, FALSE);
 		break;
 	case A_LOCAL:
 		gtk_widget_set_sensitive(basic.inbox_label, TRUE);
@@ -1483,6 +1516,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
 		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
 		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
+		gtk_widget_set_sensitive(receive.imap_frame, FALSE);
 		prefs_account_mailcmd_toggled
 			(GTK_TOGGLE_BUTTON(basic.mailcmd_chkbtn), NULL);
 		break;
@@ -1530,6 +1564,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
 		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
 		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
+		gtk_widget_set_sensitive(receive.imap_frame, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
 		break;
@@ -1578,6 +1613,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
 		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
 		gtk_widget_set_sensitive(receive.pop3_frame, TRUE);
+		gtk_widget_set_sensitive(receive.imap_frame, FALSE);
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
 		break;

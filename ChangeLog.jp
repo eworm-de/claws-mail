@@ -3,6 +3,16 @@
 	* src/imap.c: imap_parse_envelope(): 次の行に続く FETCH 応答を
 	  解析できなかったバグを修正。
 	  imap_parse_fetch_element(): 削除。
+	  imap_parse_atom(), imap_parse_one_address(), imap_parse_address(),
+	  imap_parse_envelope(), imap_get_uncached_messages(): FETCH 応答
+	  を解析するために GString と sock_getline() を使用するようにした。
+	  imap_remove_all_msg(): メッセージを正しく削除していなかったバグを
+	  修正。
+	  imap_parse_address(): アドレスを正しく結合していなかったバグを
+	  GString を使用して修正。
+	* src/socket.[ch]: sock_getline(), fd_getline(): 新規。行全体を
+	  読み込み、新規にアロケートされた文字列を返す。
+	* src/prefs_account.[ch]: 「IMAPサーバディレクトリ」エントリを追加。
 
 2001-06-25
 

@@ -457,6 +457,35 @@ gint sock_gets(SockInfo *sock, gchar *buf, gint len)
 	return fd_gets(sock->sock, buf, len);
 }
 
+gchar *fd_getline(gint fd)
+{
+	gchar buf[BUFFSIZE];
+	gchar *str = NULL;
+	gint len;
+	gulong size = 1;
+
+	while ((len = fd_gets(fd, buf, sizeof(buf))) > 0) {
+		size += len;
+		if (!str)
+			str = g_strdup(buf);
+		else {
+			str = g_realloc(str, size);
+			strcat(str, buf);
+		}
+		if (buf[len - 1] == '\n')
+			break;
+	}
+
+	return str;
+}
+
+gchar *sock_getline(SockInfo *sock)
+{
+	g_return_val_if_fail(sock != NULL, NULL);
+
+	return fd_getline(sock->sock);
+}
+
 gint sock_puts(SockInfo *sock, const gchar *buf)
 {
 	gint ret;
@@ -500,9 +529,9 @@ gint fd_close(gint fd)
 }
 
 gint sock_gdk_input_add(SockInfo *sock,
-			 GdkInputCondition condition,
-			 GdkInputFunction function,
-			 gpointer data)
+			GdkInputCondition condition,
+			GdkInputFunction function,
+			gpointer data)
 {
 	g_return_val_if_fail(sock != NULL, -1);
 

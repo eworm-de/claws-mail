@@ -77,6 +77,7 @@ gint sock_printf	(SockInfo *sock, const gchar *format, ...)
 gint sock_read		(SockInfo *sock, gchar *buf, gint len);
 gint sock_write		(SockInfo *sock, const gchar *buf, gint len);
 gint sock_gets		(SockInfo *sock, gchar *buf, gint len);
+gchar *sock_getline	(SockInfo *sock);
 gint sock_puts		(SockInfo *sock, const gchar *buf);
 gint sock_close		(SockInfo *sock);
 
@@ -95,6 +96,7 @@ gint fd_accept		(gint sock);
 gint fd_read		(gint sock, gchar *buf, gint len);
 gint fd_write		(gint sock, const gchar *buf, gint len);
 gint fd_gets		(gint sock, gchar *buf, gint len);
+gchar *fd_getline	(gint sock);
 gint fd_close		(gint sock);
 
 #endif /* __SOCKET_H__ */
