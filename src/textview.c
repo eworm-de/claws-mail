@@ -1912,7 +1912,15 @@ static gboolean textview_visibility_notify(GtkWidget *widget,
 					   TextView *textview)
 {
 	gint wx, wy;
-  
+	GdkWindow *window;
+
+	window = gtk_text_view_get_window(GTK_TEXT_VIEW(widget),
+					  GTK_TEXT_WINDOW_TEXT);
+
+	/* check if occurred for the text window part */
+	if (window != event->window)
+		return FALSE;
+	
 	gdk_window_get_pointer(widget->window, &wx, &wy, NULL);
 	textview_uri_update(textview, wx, wy);
 
