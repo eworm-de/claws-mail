@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto & The Sylpheed-Claws Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 
 #include "defs.h"
 
+#include <stdio.h>
 #include <glib.h>
 #include <stdio.h>
 #include <string.h>
@@ -967,6 +968,7 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 				{NULL,		   NULL, FALSE}};
 	guint content_start, i;
 	FILE *fp;
+	gint mime_major, mime_minor, a;
 
 	if(mimeinfo->encoding_type != ENC_BINARY && 
 	   mimeinfo->encoding_type != ENC_7BIT && 
@@ -979,7 +981,10 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 	content_start = ftell(fp);
 	fclose(fp);
 
-	if ((hentry[5].body != NULL) && !strcmp(hentry[5].body, "1.0")) {
+	g_strstrip(hentry[5].body);
+	if ((hentry[5].body != NULL) &&
+	    (sscanf(hentry[5].body, "%d.%d", &mime_major, &mime_minor) == 2) &&
+	    (mime_major == 1) && (mime_minor == 0)) {
 		procmime_parse_mimepart(mimeinfo,
 				        hentry[0].body, hentry[1].body,
 					hentry[2].body, hentry[3].body, 

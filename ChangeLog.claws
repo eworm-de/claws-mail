@@ -1,3 +1,8 @@
+2004-01-12 [christoph]	0.9.8claws30
+
+	* src/procmime.c
+		better MIME-Version check
+
 2004-01-11 [alfons]	0.9.8claws29
 
 	* src/procmsg.c
