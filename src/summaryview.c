@@ -896,40 +896,33 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		gint search_type = GPOINTER_TO_INT(gtk_object_get_user_data(
 				   GTK_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
 				   GTK_MENU(summaryview->search_type))))));
-		gchar *search_string = g_strdup(gtk_entry_get_text(
-				       GTK_ENTRY(summaryview->search_string)));
+		gchar *search_string = gtk_entry_get_text(GTK_ENTRY(summaryview->search_string));
 		gchar *searched_header = NULL;
 		
 		not_killed = NULL;
-		if(search_string)
-			g_strdown(search_string);
-
-		for(cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
+		for (cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
 			MsgInfo * msginfo = (MsgInfo *) cur->data;
+
 			switch (search_type) {
-				case S_SEARCH_SUBJECT:
-					searched_header = g_strdup(msginfo->subject);
-					break;
-				case S_SEARCH_FROM:
-					searched_header = g_strdup(msginfo->from);
-					break;
-				case S_SEARCH_TO:
-					searched_header = g_strdup(msginfo->to);
-					break;
-				default:
-					printf("bug in search_type (=%d)\n",search_type);
+			case S_SEARCH_SUBJECT:
+				searched_header = msginfo->subject;
+				break;
+			case S_SEARCH_FROM:
+				searched_header = msginfo->from;
+				break;
+			case S_SEARCH_TO:
+				searched_header = msginfo->to;
+				break;
+			default:
+				debug_print("unknown search type (%d)\n", search_type);
+				break;
 			}
-			if (searched_header) 
-				g_strdown(searched_header);
-			if (searched_header 
-			    && strstr(searched_header, search_string) != NULL)
+			if (searched_header && strcasestr(searched_header, search_string) != NULL)
 				not_killed = g_slist_append(not_killed, msginfo);
 			else
 				procmsg_msginfo_free(msginfo);
 		}
 		g_slist_free(mlist);
-		g_free(search_string);
-		g_free(searched_header);
 		mlist = not_killed;
 	}
 	
