@@ -3745,16 +3745,18 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 
 		buf = conv_codeset_strdup(chars, src_codeset, out_codeset);
 		if (!buf) {
-			AlertValue aval;
+			AlertValue aval = G_ALERTDEFAULT;
 			gchar *msg;
 
-			msg = g_strdup_printf(_("Can't convert the character encoding of the message from\n"
+			if (!is_draft) {
+				msg = g_strdup_printf(_("Can't convert the character encoding of the message from\n"
 						"%s to %s.\n"
 						"Send it anyway?"), src_codeset, out_codeset);
-			aval = alertpanel_with_type
-				(_("Error"), msg, _("Yes"), _("+No"), NULL, NULL, ALERT_ERROR);
-			g_free(msg);
-
+				aval = alertpanel_with_type
+					(_("Error"), msg, _("Yes"), _("+No"), NULL, NULL, ALERT_ERROR);
+				g_free(msg);
+			}
+			
 			if (aval != G_ALERTDEFAULT) {
 				g_free(chars);
 				fclose(fp);
@@ -4344,8 +4346,7 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 
 		if (!g_strcasecmp(trans_hdr, headerentryname)) {
 			const gchar *entstr = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
-			gchar *tmpstr = conv_codeset_strdup(entstr, CS_UTF_8, conv_get_current_charset_str());
-			Xstrdup_a(str, tmpstr, return -1);
+			Xstrdup_a(str, entstr, return -1);
 			g_strstrip(str);
 			if (str[0] != '\0') {
 				if (write_header)
@@ -4353,7 +4354,6 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 				g_string_append(headerstr, str);
 				write_header = TRUE;
 			}
-			g_free(tmpstr);
 		}
 	}
 	if (write_header) {
@@ -6726,11 +6726,10 @@ static void compose_insert_file_cb(gpointer data, guint action,
 		for ( tmp = file_list; tmp; tmp = tmp->next) {
 			gchar *file = (gchar *) tmp->data;
 			gchar *filedup = g_strdup(file);
-			gchar *shortfile;
+			const gchar *shortfile = g_basename(filedup);
 			ComposeInsertResult res;
 
 			res = compose_insert_file(compose, file);
-			shortfile = g_basename(filedup);
 			if (res == COMPOSE_INSERT_READ_ERROR) {
 				alertpanel_error(_("File '%s' could not be read."), shortfile);
 			} else if (res == COMPOSE_INSERT_INVALID_CHARACTER) {

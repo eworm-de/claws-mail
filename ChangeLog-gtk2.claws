@@ -1,3 +1,12 @@
+2004-08-21 [colin]	0.9.12cvs66.3
+
+	* src/compose.c
+	* src/codeconv.c
+		Fix warnings
+		Remove encoding hacks
+		Fix bug 575 (Strange character messes up message)
+		Don't display conversion error when drafting
+
 2004-08-21 [paul]	0.9.12cvs66.2
 
 	* src/prefs_account.c

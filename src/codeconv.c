@@ -909,13 +909,13 @@ gchar *conv_iconv_strdup(const gchar *inbuf,
 	 * whether iconv is sitting below, or something else */
 	gchar *outbuf;
 	gsize read_len, written_len;
-	gchar *src_code = conv_get_outgoing_charset_str();
-	gchar *dest_code = conv_get_current_charset_str();
+	gchar *src_code = (char *)conv_get_outgoing_charset_str();
+	gchar *dest_code = (char *)conv_get_current_charset_str();
 	
 	if (isrc_code)
-		src_code = isrc_code;
+		src_code = (char *)isrc_code;
 	if (idest_code)
-		dest_code = idest_code;
+		dest_code = (char *)idest_code;
 
 	/* don't convert if current codeset is US-ASCII */
 	if (!strcasecmp(dest_code, CS_US_ASCII))
@@ -929,9 +929,6 @@ gchar *conv_iconv_strdup(const gchar *inbuf,
 	outbuf = g_convert(inbuf, strlen(inbuf), dest_code, src_code,
 		           &read_len, &written_len, NULL);
 
-	if (outbuf == NULL && strcasecmp(src_code, CS_ISO_8859_15)) 
-		/* also try iso-8859-15 */
-		outbuf = conv_iconv_strdup(inbuf, CS_ISO_8859_15, dest_code);
 	if (outbuf == NULL)
 		g_warning(_("Valid locale type set? (Currently: %s to %s)\n"),
 			  src_code, dest_code);
@@ -1505,7 +1502,8 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 	const guchar *srcp = src;
 	guchar *destp = dest;
 	gboolean use_base64;
-
+	gchar *testbuf;
+	
 	if (MB_CUR_MAX > 1) {
 		use_base64 = TRUE;
 		mimesep_enc = "?B?";
@@ -1520,6 +1518,13 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 	if (!strcmp(out_encoding, CS_US_ASCII))
 		out_encoding = CS_ISO_8859_1;
 
+	testbuf = conv_codeset_strdup(src, cur_encoding, out_encoding);
+	
+	if (testbuf != NULL) 
+		g_free(testbuf);
+	else
+		out_encoding = CS_UTF_8;
+	
 	mimestr_len = strlen(MIMESEP_BEGIN) + strlen(out_encoding) +
 		strlen(mimesep_enc) + strlen(MIMESEP_END);
 
