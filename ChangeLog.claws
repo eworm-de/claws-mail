@@ -1,6 +1,13 @@
+2004-02-15 [paul]	0.9.10claws14
+
+	* src/folderview.c
+		fix Bug 458, 'Folder View remaining empty after 
+		removing a NEWS account' (was also true of IMAP
+		accounts)
+
 2004-03-15 [paul]	0.9.10claws13
 
-	* folderview.c
+	* src/folderview.c
 		fix folderview invisibility of newly subscribed
 		newsgroups
 

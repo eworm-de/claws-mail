@@ -2266,9 +2266,10 @@ static void folderview_rm_imap_server_cb(FolderView *folderview, guint action,
 	}
 
 	account = item->folder->account;
+	folderview_unselect(folderview);
+	summary_clear_all(folderview->summaryview);
 	folder_destroy(item->folder);
 	account_destroy(account);
-	gtk_ctree_remove_node(ctree, folderview->selected);
 	account_set_menu();
 	main_window_reflect_prefs_all();
 	folder_write_list();
@@ -2437,9 +2438,10 @@ static void folderview_rm_news_server_cb(FolderView *folderview, guint action,
 	}
 
 	account = item->folder->account;
- 	folder_destroy(item->folder);
+	folderview_unselect(folderview);
+	summary_clear_all(folderview->summaryview);
+	folder_destroy(item->folder);
 	account_destroy(account);
-	gtk_ctree_remove_node(ctree, folderview->selected);
 	account_set_menu();
 	main_window_reflect_prefs_all();
 	folder_write_list();
