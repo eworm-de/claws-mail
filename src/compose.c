@@ -3516,6 +3516,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	gchar *canon_buf;
 	const gchar *out_codeset;
 	EncodingType encoding;
+	gboolean already_encoded = FALSE;
 
 	if ((fp = fopen(file, "wb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
@@ -3599,6 +3600,17 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 
 #if USE_GPGME
 	if (!is_draft && compose->use_signing && compose->gnupg_mode) {
+		gchar *outbuf;
+
+		if (encoding == ENC_QUOTED_PRINTABLE) {
+			outbuf = g_malloc(strlen(buf) * 4);
+			qp_encode_line(outbuf, buf);
+			g_free(buf);
+			buf = g_strdup(outbuf);
+			already_encoded = TRUE;
+			g_free(outbuf);
+		}
+		
 		if (compose_clearsign_text(compose, &buf) < 0) {
 			g_warning("clearsign failed\n");
 			fclose(fp);
@@ -3655,10 +3667,14 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	} else if (encoding == ENC_QUOTED_PRINTABLE) {
 		gchar *outbuf;
 		size_t outlen;
-
-		outbuf = g_malloc(len * 4);
-		qp_encode_line(outbuf, buf);
-		outlen = strlen(outbuf);
+		if (!already_encoded) {
+			outbuf = g_malloc(len * 4);
+			qp_encode_line(outbuf, buf);
+			outlen = strlen(outbuf);
+		} else {
+			outbuf = g_strdup(buf);
+			outlen = len;
+		}
 		if (fwrite(outbuf, sizeof(gchar), outlen, fp) != outlen) {
 			FILE_OP_ERROR(file, "fwrite");
 			fclose(fp);

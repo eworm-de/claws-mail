@@ -1,3 +1,9 @@
+2004-08-21 [colin]	0.9.12cvs69
+
+	* src/compose.c
+		Fix inline-signing with 8bit chars: data must be 
+		converted to Quoted-printable before signing.
+
 2004-08-21 [colin]	0.9.12cvs68
 
 	* src/compose.c
