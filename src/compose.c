@@ -2343,6 +2343,9 @@ static gboolean join_next_line(GtkSText *text, guint start_pos, guint tlen,
 	return do_join;
 }
 
+#define STEXT_FREEZE() \
+	if (!frozen) { gtk_stext_freeze(text); frozen = TRUE; }
+
 static void compose_wrap_line_all(Compose *compose)
 {
 	GtkSText *text = GTK_STEXT(compose->text);
@@ -2355,11 +2358,10 @@ static void compose_wrap_line_all(Compose *compose)
 	gboolean linewrap_quote = TRUE;
 	gboolean set_editable_pos = FALSE;
 	gint editable_pos = 0;
+	gboolean frozen = FALSE;
 	guint linewrap_len = prefs_common.linewrap_len;
 	gchar *qfmt = prefs_common.quotemark;
 	gchar cbuf[MB_LEN_MAX];
-
-	gtk_stext_freeze(text);
 
 	tlen = gtk_stext_get_length(text);
 
@@ -2426,6 +2428,7 @@ static void compose_wrap_line_all(Compose *compose)
 #endif
 			/* should we delete to perform smart wrapping */
 			if (line_len < linewrap_len && do_delete) {
+				STEXT_FREEZE();
 				/* get rid of newline */
 				gtk_stext_set_point(text, cur_pos);
 				gtk_stext_forward_delete(text, 1);
@@ -2512,6 +2515,7 @@ static void compose_wrap_line_all(Compose *compose)
 				if (p_pos + i_len != line_pos ||
                             	    !gtkut_stext_is_uri_string
 					(text, line_pos, tlen)) {
+					STEXT_FREEZE();
 					/* workaround for correct cursor
 					   position */
 					if (set_editable_pos == FALSE) {
@@ -2540,6 +2544,7 @@ static void compose_wrap_line_all(Compose *compose)
 			}
 
 			/* insert CR */
+			STEXT_FREEZE();
 			gtk_stext_set_point(text, line_pos);
 			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
 			/* gtk_stext_compact_buffer(text); */
@@ -2569,8 +2574,6 @@ static void compose_wrap_line_all(Compose *compose)
 						ins_len = ins_quote
 							(text, i_len, p_pos,
 							 tlen, qfmt);
-
-						/* gtk_stext_compact_buffer(text); */
 						tlen += ins_len;
 					}
 #ifdef WRAP_DEBUG
@@ -2590,12 +2593,14 @@ static void compose_wrap_line_all(Compose *compose)
 		cur_len += ch_len;
 	}
 
-	gtk_stext_thaw(text);
+	if (frozen)
+		gtk_stext_thaw(text);
 
 	if (set_editable_pos && editable_pos <= tlen)
 		gtk_editable_set_position(GTK_EDITABLE(text), editable_pos);
 }
 
+#undef STEXT_FREEZE
 #undef GET_CHAR
 
 static void compose_set_title(Compose *compose)
