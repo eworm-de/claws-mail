@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed\n"
-"POT-Creation-Date: 2001-06-16 13:11+0900\n"
+"POT-Creation-Date: 2001-06-18 01:42+0900\n"
 "PO-Revision-Date: 1999-10-12\n"
 "Last-Translator: Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -570,7 +570,7 @@ msgstr "/ツール(_T)/ルーラを表示(_R)"
 msgid "/_Tool/_Address book"
 msgstr "/ツール(_T)/アドレス帳(_A)"
 
-#: src/compose.c:489 src/compose.c:559 src/compose.c:619 src/procmsg.c:686
+#: src/compose.c:489 src/compose.c:559 src/compose.c:619 src/procmsg.c:687
 msgid "Can't get text part\n"
 msgstr "テキストパートを取得できません\n"
 
@@ -1189,7 +1189,7 @@ msgstr "%d 番のメッセージはすでにキャッシュされています。\n"
 msgid "getting message %d...\n"
 msgstr "%d 番のメッセージを取得しています...\n"
 
-#: src/imap.c:375 src/procmsg.c:586
+#: src/imap.c:375 src/procmsg.c:587
 #, c-format
 msgid "can't fetch message %d\n"
 msgstr "メッセージ %d を取り込めません\n"
@@ -1581,7 +1581,7 @@ msgid "/_View/_Toolbar/_Text"
 msgstr "/表示(_V)/ツールバー(_T)/文字(_T)"
 
 #: src/mainwindow.c:364
-msgid "/_View/_Toolbar/_Non-display"
+msgid "/_View/_Toolbar/_None"
 msgstr "/表示(_V)/ツールバー(_T)/非表示(_N)"
 
 #: src/mainwindow.c:365
@@ -1697,11 +1697,11 @@ msgid "/_View/_Code set/Korean (ISO-2022-KR)"
 msgstr "/表示(_V)/文字コードセット(_C)/韓国語 (ISO-2022-KR)"
 
 #: src/mainwindow.c:445
-msgid "/_Message/Rece_ive new mail"
+msgid "/_Message/Get new ma_il"
 msgstr "/メッセージ(_M)/新着メールの受信(_I)"
 
 #: src/mainwindow.c:446
-msgid "/_Message/Receive from _all accounts"
+msgid "/_Message/Get from _all accounts"
 msgstr "/メッセージ(_M)/全アカウントから受信(_A)"
 
 #: src/mainwindow.c:449
@@ -1729,7 +1729,7 @@ msgid "/_Message/_Forward"
 msgstr "/メッセージ(_M)/転送(_F)"
 
 #: src/mainwindow.c:457
-msgid "/_Message/Forward as an a_ttachment"
+msgid "/_Message/Forward as a_ttachment"
 msgstr "/メッセージ(_M)/添付として転送(_T)"
 
 #: src/mainwindow.c:460
@@ -1765,8 +1765,8 @@ msgid "/_Message/_Mark/Mark as unr_ead"
 msgstr "/メッセージ(_M)/マーク(_M)/未読としてマーク(_E)"
 
 #: src/mainwindow.c:468
-msgid "/_Message/_Mark/Mark it as _being read"
-msgstr "/メッセージ(_M)/マーク(_M)/読んだことにする(_B)"
+msgid "/_Message/_Mark/Mark as rea_d"
+msgstr "/メッセージ(_M)/マーク(_M)/読んだことにする(_D)"
 
 #: src/mainwindow.c:471
 msgid "/_Message/Open in new _window"
@@ -1781,7 +1781,7 @@ msgid "/_Message/Show all _header"
 msgstr "/メッセージ(_M)/全てのヘッダを表示(_H)"
 
 #: src/mainwindow.c:474
-msgid "/_Message/Re_edit"
+msgid "/_Message/Re-_edit"
 msgstr "/メッセージ(_M)/再編集(_E)"
 
 #: src/mainwindow.c:476
@@ -2785,11 +2785,11 @@ msgid "Use external program for sending"
 msgstr "メールの送信に外部プログラムを使用する"
 
 #: src/prefs_common.c:882
-msgid "Save sent message to outbox"
+msgid "Save sent messages to outbox"
 msgstr "送信したメッセージを送信控に保存する"
 
 #: src/prefs_common.c:884
-msgid "Queue message that failed to send"
+msgid "Queue messages that fail to send"
 msgstr "送信に失敗したメッセージを送信待ちに入れる"
 
 #: src/prefs_common.c:890
@@ -3440,28 +3440,28 @@ msgstr "\tメッセージをマークしています..."
 msgid "\t%d new message(s)\n"
 msgstr "\t%d 通の新着メッセージ\n"
 
-#: src/procmsg.c:456
+#: src/procmsg.c:457
 msgid "Mark file not found.\n"
 msgstr "マークファイルが見つかりません。\n"
 
-#: src/procmsg.c:458
+#: src/procmsg.c:459
 #, c-format
 msgid "Mark version is different (%d != %d). Discarding it.\n"
 msgstr "マークファイルのバージョンが異なります (%d != %d)。破棄します。\n"
 
-#: src/procmsg.c:474
+#: src/procmsg.c:475
 msgid "Can't open mark file with append mode.\n"
 msgstr "マークファイルを追加モードで開けません。\n"
 
-#: src/procmsg.c:479
+#: src/procmsg.c:480
 msgid "Can't open mark file with write mode.\n"
 msgstr "マークファイルを書き込みモードで開けません。\n"
 
-#: src/procmsg.c:662
+#: src/procmsg.c:663
 msgid "Sending queued message failed.\n"
 msgstr "送信待機中のメッセージの送信に失敗しました。\n"
 
-#: src/procmsg.c:719
+#: src/procmsg.c:720
 #, c-format
 msgid "Print command line is invalid: `%s'\n"
 msgstr "印刷のコマンドラインが無効です: `%s'\n"
@@ -3743,8 +3743,8 @@ msgid "/_Mark/Mark as unr_ead"
 msgstr "/マーク(_M)/未読としてマーク(_E)"
 
 #: src/summaryview.c:298
-msgid "/_Mark/Make it as _being read"
-msgstr "/マーク(_M)/読んだことにする(_B)"
+msgid "/_Mark/Mark as rea_d"
+msgstr "/マーク(_M)/読んだことにする(_D)"
 
 #: src/summaryview.c:301
 msgid "/_Reply"
@@ -3763,7 +3763,7 @@ msgid "/_Forward"
 msgstr "/転送(_F)"
 
 #: src/summaryview.c:305
-msgid "/Forward as an a_ttachment"
+msgid "/Forward as a_ttachment"
 msgstr "/添付として転送(_T)"
 
 #: src/summaryview.c:308
@@ -3779,7 +3779,7 @@ msgid "/Show all _header"
 msgstr "/全てのヘッダを表示(_H)"
 
 #: src/summaryview.c:311
-msgid "/Re_edit"
+msgid "/Re-_edit"
 msgstr "/再編集(_E)"
 
 #: src/summaryview.c:314
