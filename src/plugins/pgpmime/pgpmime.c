@@ -503,7 +503,6 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	recipients = g_strsplit(encrypt_data, " ", 0);
 	gpgme_recipients_new(&recp);
 	for (nextrecp = recipients; *nextrecp != NULL; nextrecp++) {
-		printf("%s\n", *nextrecp);
 		gpgme_recipients_add_name_with_validity(recp, *nextrecp,
 							GPGME_VALIDITY_FULL);
 	}

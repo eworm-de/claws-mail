@@ -1,3 +1,8 @@
+2004-11-17 [colin]	0.9.12cvs151
+
+	* src/plugins/pgpmime/pgpmime.c
+		Remove debug printf
+
 2004-11-17 [colin]	0.9.12cvs150
 
 	* src/plugins/pgpmime/pgpmime.c
