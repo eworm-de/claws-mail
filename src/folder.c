@@ -1225,6 +1225,8 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 				sort_key = SORT_BY_UNREAD;
 			else if (!strcmp(attr->value, "mime"))
 				sort_key = SORT_BY_MIME;
+			else if (!strcmp(attr->value, "locked"))
+				sort_key = SORT_BY_LOCKED;
 		} else if (!strcmp(attr->name, "sort_type")) {
 			if (!strcmp(attr->value, "ascending"))
 				sort_type = SORT_ASCENDING;
@@ -1360,7 +1362,7 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 						 "draft", "queue", "trash"};
 	static gchar *sort_key_str[] = {"none", "number", "size", "date",
 					"from", "subject", "score", "label",
-					"mark", "unread", "mime"};
+					"mark", "unread", "mime", "locked" };
 
 	g_return_if_fail(item != NULL);
 
