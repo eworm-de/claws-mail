@@ -265,8 +265,8 @@ int main(int argc, char *argv[])
 	gpgme_register_idle(idle_function_for_gpgme);
 #endif
 
-#if USE_ASPELL
-	gtkaspellcheckers = gtkaspell_checkers_new();
+#ifdef USE_ASPELL
+	gtkaspell_checkers_init();
 #endif
 	
 	sock_set_io_timeout(prefs_common.io_timeout_secs);
@@ -364,8 +364,8 @@ int main(int argc, char *argv[])
 
 	addressbook_destroy();
 
-#if USE_ASPELL       
-	gtkaspell_checkers_delete();
+#ifdef USE_ASPELL       
+	gtkaspell_checkers_quit();
 #endif
 	sylpheed_done();
 

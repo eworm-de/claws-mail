@@ -32,124 +32,69 @@
 #ifndef __GTKASPELL_H__
 #define __GTKASPELL_H__
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
+#ifdef USE_ASPELL
+
 #include <gtk/gtkoptionmenu.h>
-#include <aspell.h>
 
 #include "gtkstext.h"
 
-#define ASPELL_FASTMODE       1
-#define ASPELL_NORMALMODE     2
-#define ASPELL_BADSPELLERMODE 3
+typedef struct _GtkAspell GtkAspell; /* Defined in gtkaspell.c */
 
-#define GTKASPELLWORDSIZE 1024
+void		gtkaspell_checkers_init		(void);
 
-typedef struct _GtkAspellCheckers
-{
-	GSList		*checkers;
-	GSList		*dictionary_list;
-	gchar		*error_message;
-} GtkAspellCheckers;
+void		gtkaspell_checkers_quit		(void);
 
-typedef struct _Dictionary {
-	gchar *fullname;
-	gchar *dictname;
-	gchar *encoding;
-} Dictionary;
+const char * 	gtkaspell_checkers_strerror	(void);
 
-typedef struct _GtkAspeller {
-	Dictionary	*dictionary;
-	gint		 sug_mode;
-	AspellConfig	*config;
-	AspellSpeller	*checker;
-} GtkAspeller;
+void 		gtkaspell_checkers_reset_error	(void);
 
-typedef void (*ContCheckFunc) (gpointer *gtkaspell);
+GtkAspell*	gtkaspell_new			(const gchar *dictionary_path,
+						 const gchar *dictionary, 
+						 const gchar *encoding,
+						 gint  misspelled_color,
+						 gboolean check_while_typing,  
+						 gboolean use_alternate,  
+						 GtkSText *gtktext);
 
-typedef struct _GtkAspell
-{
-	const gchar	*dictionary_path;
+void 		gtkaspell_delete		(GtkAspell *gtkaspell); 
 
-	GtkAspeller	*gtkaspeller;
-	GtkAspeller	*alternate_speller;
-	gchar 		 theword[GTKASPELLWORDSIZE];
-	gint  		 start_pos;
-	gint  		 end_pos;
-        gint 		 orig_pos;
-	gint		 end_check_pos;
-	gboolean	 misspelled;
-	gboolean	 check_while_typing;
-	gboolean	 use_alternate;
+guchar*		gtkaspell_get_dict		(GtkAspell *gtkaspell);
 
-	ContCheckFunc 	 continue_check; 
+guchar*		gtkaspell_get_path		(GtkAspell *gtkaspell);
 
-	GtkWidget	*config_menu;
-	GtkWidget	*popup_config_menu;
-	GtkWidget	*sug_menu;
-	GtkWidget	*replace_entry;
+gboolean 	gtkaspell_set_sug_mode		(GtkAspell *gtkaspell, 
+						 gint  themode);
 
-	gint		 default_sug_mode;
-	gint		 max_sug;
-	GList		*suggestions_list;
+GSList*		gtkaspell_get_dictionary_list	(const char *aspell_path,
+						 gint refresh);
 
-	GtkSText	*gtktext;
-	GdkColor 	 highlight;
-} GtkAspell;
+void 		gtkaspell_free_dictionary_list	(GSList *list);
 
-typedef AspellConfig GtkAspellConfig;
+void 		gtkaspell_check_forwards_go	(GtkAspell *gtkaspell);
+void 		gtkaspell_check_backwards	(GtkAspell *gtkaspell);
 
-extern GtkAspellCheckers *gtkaspellcheckers;
+void 		gtkaspell_check_all		(GtkAspell *gtkaspell);
+void 		gtkaspell_uncheck_all		(GtkAspell *gtkaspell);
+void 		gtkaspell_highlight_all		(GtkAspell *gtkaspell);
 
-GtkAspellCheckers*	gtkaspell_checkers_new		(void);
+void 		gtkaspell_populate_submenu	(GtkAspell *gtkaspell, 
+						 GtkWidget *menuitem);
 
-GtkAspellCheckers*	gtkaspell_checkers_delete	(void);
+GtkWidget*	gtkaspell_dictionary_option_menu_new	(const gchar *aspell_path);
 
-void 			gtkaspell_checkers_reset_error	(void);
-
-GtkAspell*		gtkaspell_new			(const gchar *dictionary_path,
-							 const gchar *dictionary, 
-							 const gchar *encoding,
-							 gint  misspelled_color,
-							 gboolean check_while_typing,  
-							 gboolean use_alternate,  
-							 GtkSText *gtktext);
-
-void 			gtkaspell_delete		(GtkAspell *gtkaspell); 
-
-guchar*			gtkaspell_get_dict		(GtkAspell *gtkaspell);
-
-guchar*			gtkaspell_get_path		(GtkAspell *gtkaspell);
-
-gboolean 		gtkaspell_set_sug_mode		(GtkAspell *gtkaspell, 
-							 gint  themode);
-
-GSList*			gtkaspell_get_dictionary_list	(const char *aspell_path,
-							 gint refresh);
-
-void 			gtkaspell_free_dictionary_list	(GSList *list);
-
-void 			gtkaspell_check_forwards_go	(GtkAspell *gtkaspell);
-void 			gtkaspell_check_backwards	(GtkAspell *gtkaspell);
-
-void 			gtkaspell_check_all		(GtkAspell *gtkaspell);
-void 			gtkaspell_uncheck_all		(GtkAspell *gtkaspell);
-void 			gtkaspell_highlight_all		(GtkAspell *gtkaspell);
-
-void 			gtkaspell_populate_submenu	(GtkAspell *gtkaspell, 
-							 GtkWidget *menuitem);
-
-GtkWidget*		gtkaspell_dictionary_option_menu_new
-							(const gchar *aspell_path);
-gchar*			gtkaspell_get_dictionary_menu_active_item
+gchar*		gtkaspell_get_dictionary_menu_active_item
 							(GtkWidget *menu);
 
-GtkWidget*		gtkaspell_sugmode_option_menu_new
-							(gint sugmode);
+GtkWidget*	gtkaspell_sugmode_option_menu_new	(gint sugmode);
 
-void 			gtkaspell_sugmode_option_menu_set
-							(GtkOptionMenu *optmenu, 
+void 		gtkaspell_sugmode_option_menu_set	(GtkOptionMenu *optmenu,
 							 gint sugmode);
 
-gint 			gtkaspell_get_sugmode_from_option_menu	
-							(GtkOptionMenu *optmenu);
+gint 		gtkaspell_get_sugmode_from_option_menu	(GtkOptionMenu *optmenu);
 
+#endif /* USE_ASPELL */
 #endif /* __GTKASPELL_H__ */

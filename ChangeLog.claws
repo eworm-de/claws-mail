@@ -1,3 +1,31 @@
+2003-06-12 [melvin]	0.9.0claws29
+
+	* src/compose.c
+		Use new gtkaspell_checkers_strerror() to get the speller's
+		error message instead of accessing the (now private)
+		checkers structure.
+		Minor code clean up
+
+	* src/main.c
+		Use #ifdef instead of #if for USE_ASPELL
+		Use the new spell checkers init/quit functions 
+
+	* src/gtk/gtkaspell.c
+		Use #ifdef instead of #if for USE_ASPELL
+		Moved in the majority of GtkAspell structures that were
+		exported before by gtkaspell.h
+	
+	* src/gtk/gktaspell.h
+		Made gtkaspell.h contain only the necessary data to be
+		publicized by moving many structures to gtkaspell.c.
+		Enclosed all the declaration in a #ifdef USE_ASPELL #endif
+		gtkaspell_checkers_new(): replaced by...
+		gtkaspell_checkers_init(): new function for initialization
+		gtkaspell_checkers_delete(): replaced by...
+		gtkaspell_checkers_quit(): new function
+		gtkaspell_checkers_strerror(): new function that returns
+		the checker's last error message.
+		
 2003-06-11 [melvin]	0.9.0claws28
 
 	* po/POTFILES.in
