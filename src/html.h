@@ -38,7 +38,8 @@ typedef enum
 	HTML_UNKNOWN,
 	HTML_CONV_FAILED,
 	HTML_ERR,
-	HTML_EOF
+	HTML_EOF,
+	HTML_HREF_BEG
 } HTMLState;
 
 typedef struct _HTMLParser	HTMLParser;
