@@ -8664,7 +8664,7 @@ diff -urN empty/version.h src/version.h
 +#define __VERSION_H__
 +
 +#define PACKAGE			"sylpheed"
-+#define VERSION			"0.7.5claws18 WIN32"
++#define VERSION			"0.7.5claws19 WIN32"
 +#define PROG_VERSION	"Sylpheed version "VERSION
 +
 +#endif /* __VERSION_H__ */

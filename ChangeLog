@@ -1,5 +1,10 @@
 2002-05-11
 
+	* src/prefs_account.c: turn off "receive at get all" option by default
+	  when creating an IMAP or News account.
+
+2002-05-11
+
 	* src/imap.c: imap_scan_tree(): don't use namespace for prefix.
 	* src/prefs_folder_item.c: show also identifier path.
 	  Made layout using table. Show uneditable entry using background

@@ -1694,6 +1694,7 @@ static void summary_update_status(SummaryView *summaryview)
 	     node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 
+//XXX:tm crash after filter/move (msgingo==NULL)
 		if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 			summaryview->newmsgs++;
 		if (MSG_IS_UNREAD(msginfo->flags)&& !MSG_IS_IGNORE_THREAD(msginfo->flags))
