@@ -83,13 +83,20 @@ Sylpheed or Main.
   again. 
 
   If you want to switch back to Claws at a later time, make sure you back up at least
-  ~/.sylpheed/filteringrc (the Claws filtering rules), and ~/.sylpheed/sylpheedrc 
+  ~/.sylpheed/matcherrc (the Claws filtering rules), and ~/.sylpheed/sylpheedrc 
   (which may have some claws specific settings).
 
   When switching back to Sylpheed you will not lose messages or message flags (color
   labels, read / unread status of messages). 
 
+  Switching between Sylpheed Claws and Sylpheed on a regular basis
+  ----------------------------------------------------------------
 
+  If you want to have both claws and main installed concurrently simply pass them
+  a different --prefix when doing ./configure. Then use the script 'sylpheed-switcher',
+  (which is provided in the tools directory), to launch the version you require without
+  fear of losing specific settings related to either claws or main. Further details can
+  be found in tools/README. 
 
 3. Things Claws does different
 ------------------------------

@@ -3002,17 +3002,14 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 	GSList *list;
 	ComposeHeaderEntry *headerentry;
 	gchar *headerentryname;
-	gchar *header_w_colon;
 	gchar *cc_hdr;
 	gchar *to_hdr;
 
 	debug_print(_("Writing redirect header\n"));
 
-	header_w_colon = g_strconcat("To:", NULL);
-	to_hdr = (prefs_common.trans_hdr ? gettext(header_w_colon) : header_w_colon);
-	header_w_colon = g_strconcat("Cc:", NULL);
-	cc_hdr = (prefs_common.trans_hdr ? gettext(header_w_colon) : header_w_colon);
-	
+	cc_hdr = prefs_common.trans_hdr ? _("Cc:") : "Cc:";
+ 	to_hdr = prefs_common.trans_hdr ? _("To:") : "To:";
+
 	first_address = TRUE;
 	for(list = compose->header_list; list; list = list->next) {
 		headerentry = ((ComposeHeaderEntry *)list->data);
@@ -3054,11 +3051,11 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 	g_return_val_if_fail(compose->account != NULL, -1);
 	g_return_val_if_fail(compose->account->address != NULL, -1);
 
-	/* Date */
+	/* Resent-Date */
 	get_rfc822_date(buf, sizeof(buf));
 	fprintf(fp, "Resent-Date: %s\n", buf);
 
-	/* From */
+	/* Resent-From */
 	if (compose->account->name && *compose->account->name) {
 		compose_convert_header
 			(buf, sizeof(buf), compose->account->name,
@@ -3068,7 +3065,25 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 	} else
 		fprintf(fp, "Resent-From: %s\n", compose->account->address);
 
-	/* To */
+	/* Subject */
+	str = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
+	if (*str != '\0') {
+		Xstrdup_a(str, str, return -1);
+		g_strstrip(str);
+		if (*str != '\0') {
+			compose_convert_header(buf, sizeof(buf), str,
+					       strlen("Subject: "));
+			fprintf(fp, "Subject: %s\n", buf);
+		}
+	}
+
+	/* Resent-Message-ID */
+	if (compose->account->gen_msgid) {
+		compose_generate_msgid(compose, buf, sizeof(buf));
+		fprintf(fp, "Resent-Message-Id: <%s>\n", buf);
+		compose->msgid = g_strdup(buf);
+	}
+
 	compose_redirect_write_headers_from_headerlist(compose, fp);
 
 	/* separator between header and body */
@@ -3103,10 +3118,16 @@ static gint compose_redirect_write_to_file(Compose *compose, const gchar *file)
 
 	while (procheader_get_unfolded_line(buf, sizeof(buf), fp)) {
 		/* should filter returnpath, delivered-to */
-		if ((g_strncasecmp(buf, "Return-Path:",
-				   strlen("Return-Path:")) == 0)
-		    || (g_strncasecmp(buf, "Delivered-To:",
-				      strlen("Delivered-To:")) == 0))
+		if (g_strncasecmp(buf, "Return-Path:",
+				   strlen("Return-Path:")) == 0 ||
+		    g_strncasecmp(buf, "Delivered-To:",
+				  strlen("Delivered-To:")) == 0 ||
+		    g_strncasecmp(buf, "Received:",
+				  strlen("Received:")) == 0 ||
+		    g_strncasecmp(buf, "Subject:",
+				  strlen("Subject:")) == 0 ||
+		    g_strncasecmp(buf, "X-UIDL:",
+				  strlen("X-UIDL:")) == 0)
 			continue;
 
 		if (fputs(buf, fdest) == -1)
