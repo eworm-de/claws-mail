@@ -217,6 +217,7 @@ sylpheedinclude_HEADERS = \
 	progressdialog.h \
 	quote_fmt.h \
 	quote_fmt_lex.h \
+	quote_fmt_parse.h \
 	recv.h \
 	rfc2015.h \
 	scoring.h \
@@ -237,8 +238,11 @@ sylpheedinclude_HEADERS = \
 	unmime.h \
 	vcard.h
 
+BUILT_SOURCES = \
+	matcher_parser_parse.h \
+	quote_fmt_parse.h
+
 EXTRA_DIST = \
-	quote_fmt_parse.h \
 	pixmaps/address_book.xpm \
 	pixmaps/address.xpm \
 	pixmaps/book.xpm \
