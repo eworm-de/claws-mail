@@ -435,3 +435,4 @@
 ( cvs diff -u -r 1.155.2.19 -r 1.155.2.20 src/Makefile.am; cvs diff -u -r 1.26.2.13 -r 1.26.2.14 src/foldersel.c; cvs diff -u -r 1.25.2.9 -r 1.25.2.10 src/stock_pixmap.c; cvs diff -u -r 1.18.2.6 -r 1.18.2.7 src/stock_pixmap.h; cvs diff -u -r 0 -r 1 src/pixmaps/dir-noselect.xpm; ) > 1.9.6cvs16.patchset
 ( cvs diff -u -r 1.382.2.115 -r 1.382.2.116 src/compose.c; ) > 1.9.6cvs17.patchset
 ( cvs diff -u -r 1.101.2.10 -r 1.101.2.11 src/news.c; cvs diff -u -r 1.16.2.16 -r 1.16.2.17 src/msgcache.c; cvs diff -u -r 1.47.2.18 -r 1.47.2.19 src/procheader.c; ) > 1.9.6cvs18.patchset
+( cvs diff -u -r 1.100.2.15 -r 1.100.2.16 AUTHORS; cvs diff -u -r 1.24.2.6 -r 1.24.2.7 Makefile.am; cvs diff -u -r 1.654.2.471 -r 1.654.2.472 configure.ac; cvs diff -u -r 1.17.2.7 -r 1.17.2.8 po/ru.po; ) > 1.9.6cvs19.patchset

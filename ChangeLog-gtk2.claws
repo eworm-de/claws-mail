@@ -1,3 +1,13 @@
+2005-04-01 [paul]	1.9.6cvs19
+
+	* AUTHORS
+	* Makefile.am
+	* configure.ac
+		check for gnome2
+		patch by Luca Cavalli <loopback<AT>slackit.org>
+	* po/ru.po
+		updated by Pavlo Bohmat
+
 2005-03-31 [colin]	1.9.6cvs18
 
 	* src/news.c

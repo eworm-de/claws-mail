@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=6
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=18
+EXTRA_VERSION=19
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -48,6 +48,10 @@ if test "$GNOME_CONFIG" != no; then
 	AC_SUBST(gnomedatadir)
 fi
 AM_CONDITIONAL(SYLPHEED_GNOME, test -n "$gnomedatadir")
+
+dnl GNOME 2.x installed?
+PKG_CHECK_MODULES(GNOME2, libgnome-2.0 >= 2.0, ac_enable_gnome2=yes, ac_enable_gnome2=no)
+AM_CONDITIONAL(SYLPHEED_GNOME2, test x"$ac_enable_gnome2" = x"yes")
 
 dnl Claws version
 AC_DEFINE(CLAWS, 1, Compiling Claws branch of sylpheed)
