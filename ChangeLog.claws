@@ -1,3 +1,15 @@
+2001-11-29 [melvin]	0.6.5claws42
+	* src/Makefile.am
+		added enriched.[ch] to the list of files
+
+	* src/textview.c
+	* src/mimeview.c
+	* src/procmime.[ch]
+	* src/enriched.[ch]
+		added support to view text/enriched
+		added support to show headers in message view for text/enriched and text/html
+			in non multipart messages
+
 2001-11-28 [paul]	0.6.5claws41
 
 	* more sync with sylpheed 0.6.5cvs18
