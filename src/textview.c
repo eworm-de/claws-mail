@@ -147,20 +147,9 @@ static void textview_show_header	(TextView	*textview,
 static gint textview_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 TextView	*textview);
-#warning FIXME_GTK2
-#if 0
-static gint textview_button_pressed	(GtkWidget	*widget,
-					 GdkEventButton	*event,
-					 TextView	*textview);
-static gint textview_button_released	(GtkWidget	*widget,
-					 GdkEventButton	*event,
-					 TextView	*textview);
-#else
 static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 					    GdkEvent *event, GtkTextIter *iter,
 					    TextView *textview);
-#endif
-
 static void textview_uri_list_remove_all(GSList		*uri_list);
 
 static void textview_smooth_scroll_do		(TextView	*textview,
@@ -172,6 +161,11 @@ static void textview_smooth_scroll_one_line	(TextView	*textview,
 static gboolean textview_smooth_scroll_page	(TextView	*textview,
 						 gboolean	 up);
 
+static void populate_popup(GtkTextView *textview, GtkMenu *menu,
+			   gpointer *dummy)
+{
+	gtk_menu_detach(menu);
+}
 
 TextView *textview_create(void)
 {
@@ -196,6 +190,10 @@ TextView *textview_create(void)
 	gtk_widget_show(text);
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
+	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(text), FALSE);
+	g_signal_connect(G_OBJECT(text), "populate-popup",
+		 G_CALLBACK(populate_popup), NULL);
+
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	clipboard = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
@@ -1945,103 +1943,6 @@ static gboolean uri_security_check(RemoteURI *uri, TextView *textview)
 	return retval;
 }
 
-#warning FIXME_GTK2
-#if 0
-static gint textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
-				    TextView *textview)
-{
-	if (event)
-		textview->last_buttonpress = event->type;
-	return FALSE;
-}
-
-static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
-				    TextView *textview)
-{
-	textview->cur_pos = 
-		gtk_editable_get_position(GTK_EDITABLE(textview->text));
-
-	if (event && 
-	    ((event->button == 1)
-	     || event->button == 2 || event->button == 3)) {
-		GSList *cur;
-
-		/* double click seems to set the cursor after the current
-		 * word. The cursor position needs fixing, otherwise the
-		 * last word of a clickable zone will not work */
-		if (event->button == 1 && textview->last_buttonpress == GDK_2BUTTON_PRESS) {
-		        textview->cur_pos--;
-		}
-
-		for (cur = textview->uri_list; cur != NULL; cur = cur->next) {
-			RemoteURI *uri = (RemoteURI *)cur->data;
-
-			if (textview->cur_pos >= uri->start &&
-			    textview->cur_pos <= uri->end) {
-			    	gchar *trimmed_uri;
-				
-				trimmed_uri = trim_string(uri->uri, 60);
-				/* single click: display url in statusbar */
-				if (event->button == 1 && textview->last_buttonpress != GDK_2BUTTON_PRESS) {
-					if (textview->messageview->mainwin) {
-						if (textview->show_url_msgid) {
-						  	gtk_timeout_remove(textview->show_url_timeout_tag);
-							gtk_statusbar_remove(GTK_STATUSBAR(
-								textview->messageview->mainwin->statusbar),
-								textview->messageview->mainwin->folderview_cid,
-								textview->show_url_msgid);
-							textview->show_url_msgid = 0;
-						}
-						textview->show_url_msgid = gtk_statusbar_push(
-								GTK_STATUSBAR(textview->messageview->mainwin->statusbar),
-								textview->messageview->mainwin->folderview_cid,
-								trimmed_uri);
-						textview->show_url_timeout_tag = gtk_timeout_add( 4000, show_url_timeout_cb, textview );
-						gtkut_widget_wait_for_draw(textview->messageview->mainwin->hbox_stat);
-					}
-				} else
-				if (!g_strncasecmp(uri->uri, "mailto:", 7)) {
-					if (event->button == 3) {
-						gchar *fromname, *fromaddress;
-						
-						/* extract url */
-						fromaddress = g_strdup(uri->uri + 7);
-						/* Hiroyuki: please put this function in utils.c! */
-						fromname = procheader_get_fromname(fromaddress);
-						extract_address(fromaddress);
-						g_message("adding from textview %s <%s>", fromname, fromaddress);
-						/* Add to address book - Match */
-						addressbook_add_contact( fromname, fromaddress, NULL );
-						
-						g_free(fromaddress);
-						g_free(fromname);
-					} else {
-						PrefsAccount *account = NULL;
-						FolderItem   *folder_item;
-
-						if (textview->messageview && textview->messageview->mainwin 
-						&&  textview->messageview->mainwin->summaryview 
-						&&  textview->messageview->mainwin->summaryview->folder_item) {
-							folder_item = textview->messageview->mainwin->summaryview->folder_item;
-							if (folder_item->prefs && folder_item->prefs->enable_default_account)
-								account = account_find_from_id(folder_item->prefs->default_account);
-						}
-						compose_new(account, uri->uri + 7, NULL);
-					}
-				} else {
-					if (uri_security_check(uri, textview) == TRUE) 
-						open_uri(uri->uri,
-							 prefs_common.uri_cmd);
-				}
-				g_free(trimmed_uri);
-			}
-		}
-	}
-	if (event)
-		textview->last_buttonpress = event->type;
-	return FALSE;
-}
-#else
 static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 					    GdkEvent *event, GtkTextIter *iter,
 					    TextView *textview)
@@ -2049,50 +1950,100 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 	GtkTextIter start_iter, end_iter;
 	gint start_pos, end_pos;
 	GdkEventButton *bevent;
+	GSList *cur;
+	gchar *trimmed_uri;
 
-	if (event->type != GDK_BUTTON_PRESS && event->type != GDK_2BUTTON_PRESS)
+	if (event->type != GDK_BUTTON_PRESS && event->type != GDK_2BUTTON_PRESS
+		&& event->type != GDK_MOTION_NOTIFY)
 		return FALSE;
 
 	bevent = (GdkEventButton *) event;
 
-	if (event &&
-	    ((event->type == GDK_2BUTTON_PRESS && bevent->button == 1) ||
-	     bevent->button == 2)) {
-		GSList *cur;
+	/* get start and end positions */
+        start_iter = *iter;
+        if(!gtk_text_iter_backward_to_tag_toggle(&start_iter, tag)) {
+		debug_print("Can't find start.");
+		return FALSE;
+	}
+	start_pos = gtk_text_iter_get_offset(&start_iter);
 
-                start_iter = *iter;
-                                                                                          
-                if(!gtk_text_iter_backward_to_tag_toggle(&start_iter, tag)) {
-                        debug_print("Can't find start.");
-                        return FALSE;
-                }
-		start_pos = gtk_text_iter_get_offset(&start_iter);
+	end_iter = *iter;
+	if(!gtk_text_iter_forward_to_tag_toggle(&end_iter, tag)) {
+		debug_print("Can't find end");
+		return FALSE;
+	}
+	end_pos = gtk_text_iter_get_offset(&end_iter);
 
-                end_iter = *iter;
-                if(!gtk_text_iter_forward_to_tag_toggle(&end_iter, tag)) {
-                        debug_print("Can't find end");
-                        return FALSE;
-                }
-		end_pos = gtk_text_iter_get_offset(&end_iter);
+	/* search current uri */
+	for (cur = textview->uri_list; cur != NULL; cur = cur->next) {
+		RemoteURI *uri = (RemoteURI *)cur->data;
 
-		for (cur = textview->uri_list; cur != NULL; cur = cur->next) {
-			RemoteURI *uri = (RemoteURI *)cur->data;
+		if (start_pos != uri->start || end_pos !=  uri->end)
+			continue;
 
-			if (start_pos == uri->start &&
-			    end_pos ==  uri->end) {
-				if (!g_strncasecmp(uri->uri, "mailto:", 7))
-					compose_new(NULL, uri->uri + 7, NULL);
-				else
-					open_uri(uri->uri,
-						 prefs_common.uri_cmd);
-				return TRUE;
+		trimmed_uri = trim_string(uri->uri, 60);
+		/* hover or single click: display url in statusbar */
+		if (event->type == GDK_MOTION_NOTIFY
+		    || (event->type == GDK_BUTTON_PRESS && bevent->button == 1)) {
+			if (textview->messageview->mainwin) {
+				if (textview->show_url_msgid) {
+				  	gtk_timeout_remove(textview->show_url_timeout_tag);
+					gtk_statusbar_remove(GTK_STATUSBAR(
+						textview->messageview->mainwin->statusbar),
+						textview->messageview->mainwin->folderview_cid,
+						textview->show_url_msgid);
+					textview->show_url_msgid = 0;
+				}
+				textview->show_url_msgid = gtk_statusbar_push(
+						GTK_STATUSBAR(textview->messageview->mainwin->statusbar),
+						textview->messageview->mainwin->folderview_cid,
+						trimmed_uri);
+				textview->show_url_timeout_tag = gtk_timeout_add( 4000, show_url_timeout_cb, textview );
+				gtkut_widget_wait_for_draw(textview->messageview->mainwin->hbox_stat);
 			}
+			return TRUE;
 		}
+		/* doubleclick: open compose / add address / browser */
+		if ((event->type == GDK_2BUTTON_PRESS && bevent->button == 1) ||
+			bevent->button == 2 || bevent->button == 3) {
+			if (!g_strncasecmp(uri->uri, "mailto:", 7))
+				if (bevent->button == 3) {
+					gchar *fromname, *fromaddress;
+						
+					/* extract url */
+					fromaddress = g_strdup(uri->uri + 7);
+					/* Hiroyuki: please put this function in utils.c! */
+					fromname = procheader_get_fromname(fromaddress);
+					extract_address(fromaddress);
+					g_message("adding from textview %s <%s>", fromname, fromaddress);
+					/* Add to address book - Match */
+					addressbook_add_contact( fromname, fromaddress, NULL );
+						
+					g_free(fromaddress);
+					g_free(fromname);
+				} else {
+					PrefsAccount *account = NULL;
+					FolderItem   *folder_item;
+
+					if (textview->messageview && textview->messageview->mainwin 
+					&&  textview->messageview->mainwin->summaryview 
+					&&  textview->messageview->mainwin->summaryview->folder_item) {
+						folder_item = textview->messageview->mainwin->summaryview->folder_item;
+						if (folder_item->prefs && folder_item->prefs->enable_default_account)
+							account = account_find_from_id(folder_item->prefs->default_account);
+					}
+					compose_new(account, uri->uri + 7, NULL);
+				}
+			else
+				if (uri_security_check(uri, textview) == TRUE)
+					open_uri(uri->uri, prefs_common.uri_cmd);
+			return TRUE;
+		}
+		g_free(trimmed_uri);
 	}
 
 	return FALSE;
 }
-#endif
 
 static void textview_uri_list_remove_all(GSList *uri_list)
 {

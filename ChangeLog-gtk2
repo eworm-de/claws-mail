@@ -1,3 +1,7 @@
+2004-01-19 Thorsten Maerz <torte@netztorte.de>
+	* src/textview.c
+		textview: hide cursor, restore old click behaviour
+
 2004-01-18 Thorsten Maerz <torte@netztorte.de>
 	* src/textview.c
 		variable names messed up
