@@ -1,3 +1,13 @@
+2002-01-11 [melvin]	0.6.6claws48
+
+	* src/compose.c
+		fix the 'Ctrl-Enter' feature for sending and test really
+		for 'Ctrl-Enter' (as Ctrl-Space is also used for activating
+		editables which was not documented in Gtk)
+
+	* src/summaryview.c
+		Made summaryview refresh after sorting and not before.
+
 2002-01-11 [christoph]	0.6.6claws47
 
 	* src/compose.c

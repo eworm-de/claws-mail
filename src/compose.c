@@ -6428,10 +6428,10 @@ static void compose_ctl_enter_send_shortcut_cb(GtkWidget *w, Compose *compose)
 	GtkAccelEntry  *accel;
 	GtkWidget      *send_button;
 	GSList *list;
-	GdkEvent *e= gtk_get_current_event();
+	GdkEventKey *e= (GdkEventKey *) gtk_get_current_event();
 	
 	if (e->type != GDK_KEY_PRESS || 
-	    !( ((GdkEventKey *)e)->state & GDK_CONTROL_MASK) )
+	    !( e->keyval == GDK_Return && e->state & GDK_CONTROL_MASK) )
 		return;
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
