@@ -843,6 +843,7 @@ EXPORTS
 	gtkut_ctree_node_is_selected 
 	gtkut_ctree_node_move_if_on_the_edge 
 	gtkut_ctree_node_next 
+	gtkut_ctree_node_prev 
 	gtkut_ctree_set_focus_row 
 	gtkut_editable_get_selection 
 	gtkut_font_load 

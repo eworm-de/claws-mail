@@ -181,6 +181,7 @@ static struct Display {
 
 	GtkWidget *chkbtn_swapfrom;
 	GtkWidget *chkbtn_useaddrbook;
+	GtkWidget *chkbtn_threadsubj;
 	GtkWidget *entry_datefmt;
 } display;
 
@@ -559,6 +560,9 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"use_address_book", "TRUE", &prefs_common.use_addr_book, P_BOOL,
 	 &display.chkbtn_useaddrbook,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"thread_by_subject", "TRUE", &prefs_common.thread_by_subject, P_BOOL,
+	 &display.chkbtn_threadsubj,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"date_format", "%y/%m/%d(%a) %H:%M", &prefs_common.date_format,
 	 P_STRING, &display.entry_datefmt,
@@ -2256,6 +2260,7 @@ static void prefs_display_create(void)
 	GtkWidget *vbox2;
 	GtkWidget *chkbtn_swapfrom;
 	GtkWidget *chkbtn_useaddrbook;
+	GtkWidget *chkbtn_threadsubj;
 	GtkWidget *vbox3;
 	GtkWidget *label_datefmt;
 	GtkWidget *button_datefmt;
@@ -2406,6 +2411,9 @@ static void prefs_display_create(void)
 	PACK_CHECK_BUTTON
 		(vbox2, chkbtn_useaddrbook,
 		 _("Display sender using address book"));
+	PACK_CHECK_BUTTON
+		(vbox2, chkbtn_threadsubj,
+		 _("Thread using subject in addition to standard headers"));
 
 	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
 
@@ -2452,6 +2460,7 @@ static void prefs_display_create(void)
 
 	display.chkbtn_swapfrom      = chkbtn_swapfrom;
 	display.chkbtn_useaddrbook   = chkbtn_useaddrbook;
+	display.chkbtn_threadsubj    = chkbtn_threadsubj;
 	display.entry_datefmt        = entry_datefmt;
 }
 

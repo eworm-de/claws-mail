@@ -1,3 +1,24 @@
+2003-02-05
+
+	* src/gtkutils.[ch]: gtkut_ctree_node_prev(): 新規。
+	* src/summary_search.c: summary_search_execute(): 閉じたノードも
+	  検索するようにした。
+
+2003-02-05
+
+	* src/codeconv.c:
+	  conv_unreadable_latin(): 0x7f を表示不可文字に含めた。
+	  conv_localetodisp(): デフォルトで 8bit 文字を削除しないようにした。
+	  conv_get_current_charset()
+	  conv_get_outgoing_charset(): locale 名の末尾に "@euro" が追加され
+	  ていれば ISO-8859-15 を返すようにした。
+	* src/compose.c: compose_write_to_file(): コード変換に失敗したとき
+	  変換元と変換先のエンコーディングを表示するようにした。
+
+2003-02-04
+
+	* version 0.8.10
+
 2003-02-04
 
 	* src/procmsg.h: WRITE_CACHE_DATA(): 速度を少し向上(Colin Leroy

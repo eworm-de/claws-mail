@@ -146,6 +146,7 @@ struct _PrefsCommon
 	gboolean enable_hscrollbar;
 	gboolean bold_unread;
 	gboolean enable_thread;
+	gboolean thread_by_subject;
 
 	ToolbarStyle toolbar_style;
 	gboolean show_statusbar;

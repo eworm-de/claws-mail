@@ -1,5 +1,11 @@
 Changes of Sylpheed
 
+* 0.8.10
+
+    * The validity check of EUC-JP code became more strict.
+    * The handling of strings which failed to be converted has been modified.
+    * Minor bugfixes and a speed improvement have been made.
+
 * 0.8.9
 
     * Transition from libjconv to direct use of iconv() API has been made.

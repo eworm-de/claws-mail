@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -234,6 +234,28 @@ GtkCTreeNode *gtkut_ctree_node_next(GtkCTree *ctree, GtkCTreeNode *node)
 	}
 
 	return NULL;
+}
+
+/* get the previous node, including the invisible one */
+GtkCTreeNode *gtkut_ctree_node_prev(GtkCTree *ctree, GtkCTreeNode *node)
+{
+	GtkCTreeNode *prev;
+	GtkCTreeNode *child;
+
+	if (!node) return NULL;
+
+	prev = GTK_CTREE_NODE_PREV(node);
+	if (prev == GTK_CTREE_ROW(node)->parent)
+		return prev;
+
+	child = prev;
+	while (GTK_CTREE_ROW(child)->children != NULL) {
+		child = GTK_CTREE_ROW(child)->children;
+		while (GTK_CTREE_ROW(child)->sibling != NULL)
+			child = GTK_CTREE_ROW(child)->sibling;
+	}
+
+	return child;
 }
 
 gboolean gtkut_ctree_node_is_selected(GtkCTree *ctree, GtkCTreeNode *node)

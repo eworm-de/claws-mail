@@ -478,7 +478,7 @@ void conv_unreadable_latin(gchar *str)
 		/* convert CR+LF -> LF */
 		if (*p == '\r' && *(p + 1) == '\n')
 			memmove(p, p + 1, strlen(p));
-		else if ((*p & 0xff) >= 0x80 && (*p & 0xff) <= 0x9f)
+		else if ((*p & 0xff) >= 0x7f && (*p & 0xff) <= 0x9f)
 			*p = SUBST_CHAR;
 		p++;
 	}
@@ -664,7 +664,6 @@ void conv_localetodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 		conv_unreadable_eucjp(outbuf);
 		break;
 	default:
-		conv_unreadable_8bit(outbuf);
 		break;
 	}
 }
@@ -1027,6 +1026,7 @@ CharSet conv_get_current_charset(void)
 {
 	static CharSet cur_charset = -1;
 	const gchar *cur_locale;
+	const gchar *p;
 	gint i;
 
 	if (cur_charset != -1)
@@ -1040,6 +1040,11 @@ CharSet conv_get_current_charset(void)
 
 	if (strcasestr(cur_locale, "UTF-8")) {
 		cur_charset = C_UTF_8;
+		return cur_charset;
+	}
+
+	if ((p = strcasestr(cur_locale, "@euro")) && p[5] == '\0') {
+		cur_charset = C_ISO_8859_15;
 		return cur_charset;
 	}
 
@@ -1073,13 +1078,14 @@ const gchar *conv_get_current_charset_str(void)
 	if (!codeset)
 		codeset = conv_get_charset_str(conv_get_current_charset());
 
-	return codeset ? codeset : "US-ASCII";
+	return codeset ? codeset : CS_US_ASCII;
 }
 
 CharSet conv_get_outgoing_charset(void)
 {
 	static CharSet out_charset = -1;
 	const gchar *cur_locale;
+	const gchar *p;
 	gint i;
 
 	if (out_charset != -1)
@@ -1088,6 +1094,11 @@ CharSet conv_get_outgoing_charset(void)
 	cur_locale = conv_get_current_locale();
 	if (!cur_locale) {
 		out_charset = C_AUTO;
+		return out_charset;
+	}
+
+	if ((p = strcasestr(cur_locale, "@euro")) && p[5] == '\0') {
+		out_charset = C_ISO_8859_15;
 		return out_charset;
 	}
 
@@ -1136,7 +1147,7 @@ const gchar *conv_get_outgoing_charset_str(void)
 	out_charset = conv_get_outgoing_charset();
 	str = conv_get_charset_str(out_charset);
 
-	return str ? str : "US-ASCII";
+	return str ? str : CS_US_ASCII;
 }
 
 const gchar *conv_get_current_locale(void)
@@ -1249,11 +1260,11 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 	}
 
 	cur_encoding = conv_get_current_charset_str();
-	if (!strcmp(cur_encoding, "US-ASCII"))
-		cur_encoding = "ISO-8859-1";
+	if (!strcmp(cur_encoding, CS_US_ASCII))
+		cur_encoding = CS_ISO_8859_1;
 	out_encoding = conv_get_outgoing_charset_str();
-	if (!strcmp(out_encoding, "US-ASCII"))
-		out_encoding = "ISO-8859-1";
+	if (!strcmp(out_encoding, CS_US_ASCII))
+		out_encoding = CS_ISO_8859_1;
 
 	mimestr_len = strlen(MIMESEP_BEGIN) + strlen(out_encoding) +
 		strlen(mimesep_enc) + strlen(MIMESEP_END);
