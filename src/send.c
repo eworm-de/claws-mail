@@ -389,6 +389,8 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 		}
 	}
 
+	statusbar_verbosity_set(TRUE);
+	
 	dialog = send_progress_dialog_create();
 
 	text[0] = NULL;
@@ -456,6 +458,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 	session_destroy(session);
 	send_progress_dialog_destroy(dialog);
 
+	statusbar_verbosity_set(FALSE);
 	return 0;
 }
 

@@ -1,3 +1,8 @@
+2003-02-21 [colin]	0.8.10claws39
+
+	* src/send.c
+		Fix smtp logging
+
 2003-02-21 [colin]	0.8.10claws38
 
 	* src/summaryview.c
