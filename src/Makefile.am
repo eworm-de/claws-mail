@@ -136,7 +136,8 @@ sylpheed_SOURCES = \
 	matcher_parser_parse.y matcher_parser.h matcher_parser_parse.h \
 	string_match.h string_match.c \
 	selective_download.c selective_download.h \
-	msgcache.h msgcache.c
+	msgcache.h msgcache.c \
+	noticeview.h noticeview.c
 
 BUILT_SOURCES = \
 	quote_fmt_lex.c \
@@ -209,7 +210,10 @@ EXTRA_DIST = \
 	pixmaps/up_arrow.xpm \
 	pixmaps/vcard.xpm \
 	pixmaps/work_offline.xpm \
-	pixmaps/work_online.xpm
+	pixmaps/work_online.xpm \
+	pixmaps/notice_warn.xpm \
+	pixmaps/notice_error.xpm \
+	pixmaps/notice_note.xpm
 
 INCLUDES = \
 	-DG_LOG_DOMAIN=\"Sylpheed\" \
