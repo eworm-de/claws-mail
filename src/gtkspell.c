@@ -58,7 +58,7 @@
 #include "gtkspell.h"
 
 #include <pspell/pspell.h>
-
+#include <pspell/string_list.h>
 /* size of the text buffer used in various word-processing routines. */
 #define BUFSIZE 1024
 
@@ -322,6 +322,15 @@ int set_path_and_dict(GtkPspell *gtkpspell, PspellConfig *config,
 	debug_print(_("Language : %s\nSpelling: %s\nJargon: %s\nModule: %s\n"),
 		    language, spelling, jargon, module);
 	
+	if (temppath[strlen(temppath)-1] == G_DIR_SEPARATOR) 
+		temppath[strlen(temppath)-1]= 0;
+	if (temppath) {
+		pspell_config_replace(config, "rem-word-list-path", temppath);
+		pspell_config_replace(config, "add-word-list-path", temppath);
+	}
+	debug_print(_("Pspell config: added path %s\n"), pspell_config_retrieve(config, "word-list-path"));
+	if (pspell_config_error_number(config))
+		debug_print(_("Pspell config: %s\n"), pspell_config_error_message(config));
 	if (language) 
 		pspell_config_replace(config, "language-tag", language);
 	if (spelling) 
@@ -330,8 +339,6 @@ int set_path_and_dict(GtkPspell *gtkpspell, PspellConfig *config,
 		pspell_config_replace(config, "jargon", jargon);
 	if (module)
 		pspell_config_replace(config, "module", module);
-	if (temppath)
-		pspell_config_replace(config, "word-list-path", temppath);
 
 	switch(gtkpspell->mode) {
 	case PSPELL_FASTMODE: 
@@ -1298,7 +1305,7 @@ GSList *gtkpspell_get_dictionary_list(const gchar *pspell_path)
 		list = create_empty_dictionary_list();
 	}
         if(list==NULL){
-          debug_print(_("No dictionary found"));
+          debug_print(_("No dictionary found\n"));
           list = create_empty_dictionary_list();
         }
 	chdir(prevdir);
