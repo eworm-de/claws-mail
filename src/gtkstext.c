@@ -4193,6 +4193,10 @@ move_cursor_hor (GtkSText *text, int count)
  * move_cursor_to_display_row_down()		(line down)
  */
 
+/*
+ * SYLPHEED_TODO: for some reason the line fetcher also returns markers
+ * of just one character! should investigate this... -- alfons
+ */
 
 static void move_cursor_to_display_row_end(GtkSText *text)
 {
@@ -4214,6 +4218,16 @@ static void move_cursor_to_display_row_start(GtkSText *text)
 	}
 }
 
+/* dumb */
+static gboolean range_intersect(gint x1, gint x2, gint y1, gint y2)
+{
+	gint tmp;
+	if (x1 > x2) { tmp = x1; x1 = x2; x2 = tmp; }
+	if (y1 > y2) { tmp = y1; y1 = y2; y1 = tmp; }
+	if (y1 < x1) { tmp = x1; x1 = y1; y1 = tmp; tmp = x2; x2 = y2; y2 = tmp; }
+	return y1 <= x2;
+}
+
 typedef struct {
 	int			start, end;
 	gboolean	found;
@@ -4224,8 +4238,7 @@ static gint back_display_row_fetcher(GtkSText *text,
 									 LineParams *params,
 									 bdrf *data)
 {
-	if (data->start <= params->start.index
-	&&  data->end   >= params->end.index) {
+	if (range_intersect(data->start, data->end, params->start.index, params->end.index)) {
 		XDEBUG( ("%s(%d) - FOUND search (%d, %d), current (%d, %d)", __FILE__, __LINE__, 
 		          data->start, data->end,
 				  params->start.index, params->end.index) );
@@ -4310,7 +4323,7 @@ static gint forward_display_row_fetcher(GtkSText *text,
 		data->completed = TRUE;
 		return TRUE;
 	}
-	else if (data->start <= lp->start.index && data->end >= lp->end.index) {
+	else if (range_intersect(data->start, data->end, lp->start.index, lp->end.index)) {
 		data->found = TRUE;
 		return FALSE;
 	}

@@ -1,5 +1,7 @@
 2001-05-02 [alfons]
 
+	* src/gtkstext.c: fix for row up/down cursor navigation. 
+
 	0.4.66claws2
 	
 	* sync with 0.4.66cvs2
