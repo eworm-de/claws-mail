@@ -1673,7 +1673,7 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	gchar *buf;
 	gchar *p, *lastp;
 	gint len;
-	gchar *trimmed_body = body;
+	const gchar *trimmed_body = body;
 	
 	if (!msginfo)
 		msginfo = &dummyinfo;

@@ -3230,7 +3230,7 @@ void debug_set_mode(gboolean mode)
 	debug_mode = mode;
 }
 
-gboolean debug_get_mode()
+gboolean debug_get_mode(void)
 {
 	return debug_mode;
 }

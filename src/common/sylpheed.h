@@ -18,5 +18,5 @@
  */
 
 gboolean sylpheed_init			(int *argc, char ***argv);
-void sylpheed_done			();
-const gchar *sylpheed_get_startup_dir	();
+void sylpheed_done			(void);
+const gchar *sylpheed_get_startup_dir	(void);

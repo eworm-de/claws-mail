@@ -21,6 +21,7 @@
 #  include "config.h"
 #endif
 
+#include "defs.h"
 #include <glib.h>
 
 #if HAVE_LOCALE_H
@@ -29,7 +30,6 @@
 
 #include "sylpheed.h"
 #include "intl.h"
-#include "defs.h"
 #include "utils.h"
 #include "ssl.h"
 #include "version.h"
@@ -114,7 +114,7 @@ gboolean sylpheed_init(int *argc, char ***argv)
 	return TRUE;
 }
 
-void sylpheed_done()
+void sylpheed_done(void)
 {
 	plugin_unload_all("Common");
 
@@ -123,7 +123,7 @@ void sylpheed_done()
 #endif
 }
 
-const gchar *sylpheed_get_startup_dir()
+const gchar *sylpheed_get_startup_dir(void)
 {
 	return startup_dir;
 }

@@ -137,7 +137,7 @@
 
 /* debug functions */
 void debug_set_mode		(gboolean mode);
-gboolean debug_get_mode		();
+gboolean debug_get_mode		(void);
 #define debug_print \
 	debug_print_real(__FILE__ ":%d:", __LINE__), \
 	debug_print_real
