@@ -1,3 +1,8 @@
+2003-09-15
+
+	* src/compose.c: compose_insert_sig(): insert signature at the
+	  current cursor position on manual operation.
+
 2003-09-11
 
 	* src/summaryview.c: summary_key_pressed(): don't ignore delete key

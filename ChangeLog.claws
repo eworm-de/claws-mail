@@ -1,11 +1,16 @@
-2003-04-14 [alfons]	0.9.5claws14
+2003-09-15 [paul]	0.9.5claws15
+
+	* sync with 0.9.5cvs5
+		see ChangeLog 2003-09-15
+
+2003-09-14 [alfons]	0.9.5claws14
 
 	* src/inc.c
 		make "Go to inbox after receiving new mail" again;
 		regression of a sync, restored to sylpheed main 
 		behaviour. (misses still some bits)
 
-2003-04-14 [alfons]	0.9.5claws13
+2003-09-14 [alfons]	0.9.5claws13
 
 	* src/prefs_filtering_action.c
 		o add proper message if empty execute command line
@@ -14,14 +19,14 @@
 		  #36, "filtering will only accept one action change 
 		  per invocation".
 
-2003-04-14 [alfons]	0.9.5claws12
+2003-09-14 [alfons]	0.9.5claws12
 
 	* src/prefs_filtering.c
 	* src/prefs_filtering_action.c
 	* src/prefs_matcher.c
 		fix function signature for key_pressed_event signal handlers
 
-2003-04-14 [alfons]	0.9.5claws11
+2003-09-14 [alfons]	0.9.5claws11
 
 	* src/mainwindow.c
 		fix regression caused by fix for invalid bug #7

@@ -1927,8 +1927,10 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 
 	gtk_stext_freeze(text);
 
-	len = gtk_stext_get_length(text);
-	gtk_stext_set_point(text, len);
+	if (replace) {
+		len = gtk_stext_get_length(text);
+		gtk_stext_set_point(text, len);
+	}
 
 	if (replace && compose->sig_str) {
 		gint pos;
