@@ -933,20 +933,24 @@ msgstr "/_Nachricht/_Verschlüsseln"
 msgid "/_Message/_Request Return Receipt"
 msgstr "/_Nachricht/_Empfangsbestätigung fordern"
 
-#: src/compose.c:628 src/mainwindow.c:668
-msgid "/_Tool"
-msgstr "/_Werkzeuge"
+#: src/compose.c:628
+msgid "/_Tools/Actio_ns"
+msgstr "/_Werkzeuge/Aktionen"
+
+#: src/mainwindow.c:668
+msgid "/Property..."
+msgstr "/Eigenschaft..."
 
 #: src/compose.c:629
-msgid "/_Tool/Show _ruler"
+msgid "/_Tools/Show _ruler"
 msgstr "/_Werkzeuge/_Lineal anzeigen"
 
 #: src/compose.c:630 src/mainwindow.c:669
-msgid "/_Tool/_Address book"
+msgid "/_Tools/_Address book"
 msgstr "/_Werkzeuge/_Adressbuch"
 
 #: src/compose.c:631
-msgid "/_Tool/_Template"
+msgid "/_Tools/_Template"
 msgstr "/_Werkzeuge/_Vorlagen"
 
 #: src/compose.c:990 src/compose.c:1974 src/mimeview.c:455
@@ -2769,24 +2773,24 @@ msgid "/_View/Ex_pand Message View"
 msgstr "/_Ansicht/Er_weitere Nachrichtenansicht"
 
 #: src/mainwindow.c:498
-msgid "/_View/_Toolbar"
-msgstr "/_Ansicht/_Werkzeugleiste"
+msgid "/_View/_Toolsbar"
+msgstr "/_Ansicht/_Werkzeugeleiste"
 
 #: src/mainwindow.c:499
-msgid "/_View/_Toolbar/Icon _and text"
-msgstr "/_Ansicht/_Werkzeugleiste/Bilder _und Text"
+msgid "/_View/_Toolsbar/Icon _and text"
+msgstr "/_Ansicht/_Werkzeugeleiste/Bilder _und Text"
 
 #: src/mainwindow.c:500
-msgid "/_View/_Toolbar/_Icon"
-msgstr "/_Ansicht/_Werkzeugleiste/_Bilder"
+msgid "/_View/_Toolsbar/_Icon"
+msgstr "/_Ansicht/_Werkzeugeleiste/_Bilder"
 
 #: src/mainwindow.c:501
-msgid "/_View/_Toolbar/_Text"
-msgstr "/_Ansicht/_Werkzeugleiste/_Text"
+msgid "/_View/_Toolsbar/_Text"
+msgstr "/_Ansicht/_Werkzeugeleiste/_Text"
 
 #: src/mainwindow.c:502
-msgid "/_View/_Toolbar/_None"
-msgstr "/_Ansicht/_Werkzeugleiste/_Keine"
+msgid "/_View/_Toolsbar/_None"
+msgstr "/_Ansicht/_Werkzeugeleiste/_Keine"
 
 #: src/mainwindow.c:503
 msgid "/_View/Status _bar"
@@ -3085,103 +3089,115 @@ msgstr "/_Nachricht/_Kopieren..."
 msgid "/_Message/_Delete"
 msgstr "/_Nachricht/_Löschen"
 
-#: src/mainwindow.c:656
-msgid "/_Message/Delete du_plicated messages"
-msgstr "/_Nachricht/_Lösche mehrfach vorhandene Nachrichten"
-
-#: src/mainwindow.c:659
+#: src/mainwindow.c:657
 msgid "/_Message/_Mark"
 msgstr "/_Nachricht/_Markieren"
 
-#: src/mainwindow.c:660
+#: src/mainwindow.c:658
 msgid "/_Message/_Mark/_Mark"
 msgstr "/_Nachricht/_Markieren/_Markieren"
 
-#: src/mainwindow.c:661
+#: src/mainwindow.c:659
 msgid "/_Message/_Mark/_Unmark"
 msgstr "/_Nachricht/_Markieren/Markierung _entfernen"
 
-#: src/mainwindow.c:662
+#: src/mainwindow.c:660
 msgid "/_Message/_Mark/---"
 msgstr "/_Nachricht/_Markieren/---"
 
-#: src/mainwindow.c:663
+#: src/mainwindow.c:661
 msgid "/_Message/_Mark/Mark as unr_ead"
 msgstr "/_Nachricht/_Markieren/Markieren als _ungelesen"
 
-#: src/mainwindow.c:664
+#: src/mainwindow.c:662
 msgid "/_Message/_Mark/Mark as rea_d"
 msgstr "/_Nachricht/_Markieren/Markieren als _gelesen"
 
-#: src/mainwindow.c:666
+#: src/mainwindow.c:664
 msgid "/_Message/_Mark/Mark all _read"
 msgstr "/_Nachricht/_Markieren/Markiere alle als _gelesen"
 
-#: src/mainwindow.c:670
-msgid "/_Tool/Add sender to address boo_k"
-msgstr "/_Werkzeug/Absender dem _Adressbuch hinzufügen"
+#: src/mainwindow.c:666
+msgid "/_Tools"
+msgstr "/_Werkzeuge"
 
-#: src/mainwindow.c:672 src/mainwindow.c:683 src/mainwindow.c:685
-msgid "/_Tool/---"
-msgstr "/_Werkzeug/---"
+#: src/mainwindow.c:667
+msgid "/_Tools/_Selective download"
+msgstr "/_Werkzeuge/_Selektiver Download"
+
+#: src/mainwindow.c:670
+msgid "/_Tools/Add sender to address boo_k"
+msgstr "/_Werkzeuge/Absender dem _Adressbuch hinzufügen"
+
+#: src/mainwindow.c:672 
+msgid "/_Tools/_Gather addresses..."
+msgstr "/_Werkzeuge/_Adressen auslesen..."
+
+#: src/mainwindow.c:683 src/mainwindow.c:685
+msgid "/_Tools/---"
+msgstr "/_Werkzeuge/---"
 
 #: src/mainwindow.c:673
-msgid "/_Tool/_Filter messages"
-msgstr "/_Werkzeug/Nachrichten _filtern"
+msgid "/_Tools/_Filter messages"
+msgstr "/_Werkzeuge/Nachrichten _filtern"
 
 #: src/mainwindow.c:674
-msgid "/_Tool/_Create filter rule"
-msgstr "/_Werkzeug/Filter_regel erstellen"
+msgid "/_Tools/_Create filter rule"
+msgstr "/_Werkzeuge/Filter_regel erstellen"
 
 #: src/mainwindow.c:675
-msgid "/_Tool/_Create filter rule/_Automatically"
-msgstr "/_Werkzeug/Filter_regel erstellen/_Automatisch"
+msgid "/_Tools/_Create filter rule/_Automatically"
+msgstr "/_Werkzeuge/Filter_regel erstellen/_Automatisch"
 
 #: src/mainwindow.c:677
-msgid "/_Tool/_Create filter rule/by _From"
-msgstr "/_Werkzeug/Filter_regel erstellen/nach _Von"
+msgid "/_Tools/_Create filter rule/by _From"
+msgstr "/_Werkzeuge/Filter_regel erstellen/nach _Von"
 
 #: src/mainwindow.c:679
-msgid "/_Tool/_Create filter rule/by _To"
-msgstr "/_Werkzeug/Filter_regel erstellen/nach _An"
+msgid "/_Tools/_Create filter rule/by _To"
+msgstr "/_Werkzeuge/Filter_regel erstellen/nach _An"
 
 #: src/mainwindow.c:681
-msgid "/_Tool/_Create filter rule/by _Subject"
-msgstr "/_Werkzeug/Filter_regel erstellen/nach _Betreff"
+msgid "/_Tools/_Create filter rule/by _Subject"
+msgstr "/_Werkzeuge/Filter_regel erstellen/nach _Betreff"
 
 #: src/mainwindow.c:684
-msgid "/_Tool/E_xecute"
-msgstr "/_Werkzeug/_Ausführen"
+msgid "/_Tools/E_xecute"
+msgstr "/_Werkzeuge/_Ausführen"
 
 #: src/mainwindow.c:686
-msgid "/_Tool/_Log window"
-msgstr "/_Werkzeug/_Logbuch-Fenster"
+msgid "/_Tools/_Log window"
+msgstr "/_Werkzeuge/_Logbuch-Fenster"
 
 #: src/mainwindow.c:687
-msgid "/_Tool/_Selective Download"
-msgstr "/_Werkzeug/Aus_gewähltes Download"
+msgid "/_Tools/_Selective Download"
+msgstr "/_Werkzeuge/Aus_gewählter Download"
 
 #: src/mainwindow.c:689
+msgid "/_Tools/Delete du_plicated messages"
+msgstr "/_Werkzeuge/Doppelte Nachrichten löschen"
+
+#: src/mainwindow.c:694
 msgid "/_Configuration"
 msgstr "/_Einstellungen"
 
-#: src/mainwindow.c:690
+#: src/mainwindow.c:695
 msgid "/_Configuration/_Common preferences..."
 msgstr "/_Einstellungen/Allgemeine _Einstellungen..."
 
-#: src/mainwindow.c:692
+#: src/mainwindow.c:697
 msgid "/_Configuration/_Filter setting..."
 msgstr "/_Einstellungen/_Filtereinstellungen..."
 
-#: src/mainwindow.c:694
+#: src/mainwindow.c:699
 msgid "/_Configuration/_Scoring ..."
 msgstr "/_Einstellungen/_Benotung ..."
 
-#: src/mainwindow.c:696
+#: src/mainwindow.c:701
 msgid "/_Configuration/_Filtering ..."
 msgstr "/_Einstellungen/_Filterung ..."
 
-#: src/mainwindow.c:698
+#: src/mainwindow.c:703
 msgid "/_Configuration/_Template..."
 msgstr "/_Einstellungen/_Vorlagen ..."
 
@@ -3351,6 +3367,14 @@ msgstr "Ort der Mailbox eingeben."
 msgid "Creation of the mailbox failed."
 msgstr "Erstellung der Mailbox schlug fehl."
 
+#: src/mainwindow.c:1599
+msgid "/Tools/Actions"
+msgstr "/Werkzeuge/Aktionen"
+
+#: src/mainwindow.c:1600
+msgid "/Tools/Delete duplicated messages"
+msgstr "Werkzeuge/Doppelte Nachrichten löschen"
+
 #: src/mainwindow.c:1681
 msgid "Setting widgets..."
 msgstr "Setze Widgets..."
@@ -3436,9 +3460,21 @@ msgid "Delete the message"
 msgstr "Nachricht löschen"
 
 #: src/mainwindow.c:1992 src/prefs_filtering.c:231 src/prefs_filtering.c:466
-#: src/prefs_matcher.c:153
+#: src/prefs_matcher.c:157
 msgid "Execute"
 msgstr "Ausführen"
+
+#: src/prefs_matcher.c:158
+msgid "Size greater than"
+msgstr "Grösser als"
+
+#: src/prefs_matcher.c:159
+msgid "Size smaller than"
+msgstr "Kleiner als"
+
+#: src/prefs_matcher.c:160
+msgid "Size exactly"
+msgstr "Genaue Größe"
 
 #: src/mainwindow.c:1993
 msgid "Execute marked process"
@@ -4459,7 +4495,7 @@ msgid ""
 "(unlimited if 0 is specified)"
 msgstr ""
 "Maximum an herunterzuladenten Artikeln\n"
-"(0 angeben fürunbegrenzt)"
+"(0 angeben für unbegrenzt)"
 
 #: src/prefs_common.c:1233
 msgid "Use external program for sending"
