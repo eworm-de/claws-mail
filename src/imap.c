@@ -108,10 +108,12 @@ static gint imap_do_copy		(Folder		*folder,
 					 FolderItem	*dest,
 					 MsgInfo	*msginfo,
 					 gboolean	 remove_source);
+#if 0
 static gint imap_do_copy_msgs_with_dest	(Folder		*folder,
 					 FolderItem	*dest, 
 					 GSList		*msglist,
 					 gboolean	 remove_source);
+#endif
 
 static GSList *imap_get_uncached_messages	(IMAPSession	*session,
 						 FolderItem	*item,
@@ -280,8 +282,6 @@ static gchar *search_array_contain_str		(GPtrArray	*array,
 						 const gchar	*str);
 static gchar *search_array_str			(GPtrArray	*array,
 						 const gchar	*str);
-static gchar *search_array_exact_str		(GPtrArray *array,
-						 const gchar *str);
 static void imap_path_separator_subst		(gchar		*str,
 						 gchar		 separator);
 
@@ -794,7 +794,7 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 	IMAPSession *session;
 	IMAPFlags iflags = 0;
 	gint messages, recent, unseen;
-	guint32 newuid = 0, uid_validity, tmp;
+	guint32 newuid = 0, uid_validity;
 	gint ok;
     
 	g_return_val_if_fail(folder != NULL, -1);
@@ -1974,14 +1974,23 @@ static void imap_parse_namespace(IMAPSession *session, IMAPFolder *folder)
 	    folder->ns_shared   != NULL)
 		return;
 
+	if (!imap_has_capability(session, "NAMESPACE")) {
+		imap_get_namespace_by_list(session, folder);
+		return;
+	}
+	
 	if (imap_cmd_namespace(SESSION(session)->sock, &ns_str)
 	    != IMAP_SUCCESS) {
 		log_warning(_("can't get namespace\n"));
-		imap_get_namespace_by_list(session, folder);
 		return;
 	}
 
 	str_array = strsplit_parenthesis(ns_str, '(', ')', 3);
+	if (str_array == NULL) {
+		g_free(ns_str);
+		imap_get_namespace_by_list(session, folder);
+		return;
+	}
 	if (str_array[0])
 		folder->ns_personal = imap_parse_namespace_str(str_array[0]);
 	if (str_array[0] && str_array[1])
@@ -3096,19 +3105,6 @@ static gchar *get_quoted(const gchar *src, gchar ch, gchar *dest, gint len)
 	return (gchar *)(*p == ch ? p + 1 : p);
 }
 
-static gchar *search_array_exact_str(GPtrArray *array, const gchar *str)
-{
-	gint i;
-
-	for (i = 0; i < array->len; i++) {
-		gchar *tmp;
-		tmp = g_ptr_array_index(array, i);
-		if (strcmp(tmp, str) == 0)
-			return tmp;
-	}
-	return NULL;
-}
-
 static gchar *search_array_contain_str(GPtrArray *array, const gchar *str)
 {
 	gint i;
@@ -3465,7 +3461,7 @@ MsgInfo *imap_get_msginfo(Folder *folder, FolderItem *item, gint uid)
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
 			 NULL, NULL, NULL, NULL);
 	if (ok != IMAP_SUCCESS)
-		return -1;
+		return NULL;
 
 	if (!(item->stype == F_QUEUE || item->stype == F_DRAFT)) {
 		GSList *list;

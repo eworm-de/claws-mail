@@ -1,3 +1,9 @@
+2003-01-10 [christoph]	0.8.8claws78
+
+	* src/imap.c
+		o fix warnings
+		o use CAPABILITY to check if NAMESPACE is available
+
 2003-01-10 [christoph]	0.8.8claws77
 
 	* src/imap.[ch]
