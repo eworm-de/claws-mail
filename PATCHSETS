@@ -119,3 +119,4 @@
 ( cvs diff -u -r 1.147 -r 1.148 src/main.c; cvs diff -u -r 1.87 -r 1.88 src/procmime.c; cvs diff -u -r 1.7 -r 1.8 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs134.patchset
 ( cvs diff -u -r 0 -r 1 doc/src/rfc2231.txt; cvs diff -u -r 1.88 -r 1.89 src/procmime.c; cvs diff -u -r 1.4 -r 1.5 src/common/quoted-printable.c; cvs diff -u -r 1.55 -r 1.56 src/common/utils.c; cvs diff -u -r 1.32 -r 1.33 src/common/utils.h; ) > 0.9.12cvs135.patchset
 ( cvs diff -u -r 1.56 -r 1.57 src/common/utils.c; ) > 0.9.12cvs136.patchset
+( cvs diff -u -r 1.89 -r 1.90 src/procmime.c; ) > 0.9.12cvs137.patchset
