@@ -1567,8 +1567,6 @@ static void prefs_compose_create(void)
 		checkbtn_redirect_keep_from;
 	compose.checkbtn_smart_wrapping = 
 		checkbtn_smart_wrapping;
-	compose.checkbtn_block_cursor   =
-		FALSE; /* gtk2 */
 	compose.checkbtn_default_reply_list = checkbtn_default_reply_list;
 }
 
