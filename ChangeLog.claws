@@ -1,3 +1,10 @@
+2002-01-12 [alfons]	0.6.6claws51
+
+	* src/summaryview.c
+		undo melvin's changes from 0.6.6claws48 because summary
+		view now refuses to select first unread message when
+		selecting a folder 
+
 2002-01-11 [alfons]	0.6.6claws50
 
 	* src/import.c

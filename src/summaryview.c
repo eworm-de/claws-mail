@@ -831,6 +831,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 
 	gtk_signal_handler_unblock_by_data(GTK_OBJECT(ctree), summaryview);
 
+	gtk_clist_thaw(GTK_CLIST(ctree));
+
 	/* sort before */
 	sort_mode = prefs_folder_item_get_sort_mode(item);
 	sort_type = prefs_folder_item_get_sort_type(item);
@@ -881,8 +883,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 		} else
 			summary_select_node(summaryview, node, FALSE);
 	}
-
-	gtk_clist_thaw(GTK_CLIST(ctree));
 
 	summary_status_show(summaryview);
 	summary_set_menu_sensitive(summaryview);
