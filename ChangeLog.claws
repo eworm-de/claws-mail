@@ -1,3 +1,13 @@
+2002-02-19 [paul]	
+
+	* version 0.7.2claws release
+
+2002-02-19 [paul]	0.7.2claws
+
+	* po/nl.po
+		updated by Wilbert Berendsen
+
+
 2002-02-18 [alfons]	0.7.1claws13
 
 	* src/syldap.c
