@@ -300,10 +300,6 @@ static void compose_undo_state_changed		(UndoMain	*undostruct,
 						 gint		 redo_state,
 						 gpointer	 data);
 
-static gint calc_cursor_xpos	(GtkTextView	*text,
-				 gint		 extra,
-				 gint		 char_width);
-
 static void compose_create_header_entry	(Compose *compose);
 static void compose_add_header_entry	(Compose *compose, gchar *header, gchar *text);
 static void compose_update_priority_menu_item(Compose * compose);
@@ -2445,16 +2441,17 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 	gunichar uc;						\
 								\
 	uc = gtk_text_iter_get_char(iter_p);			\
-	if (uc != 0)						\
+	if (uc != 0) {						\
 		len = g_unichar_to_utf8(uc, buf) > 1 ? 2 : 1;	\
-	else {							\
+		buf[len]='\0';					\
+	} else {						\
 		buf[0] = '\0';					\
 		len = 1;					\
 	}							\
 }
 #define DISP_WIDTH(len) \
-	((len > 2 && conv_get_locale_charset() == C_UTF_8) ? 2 : \
-	 (len == 2 && conv_get_locale_charset() == C_UTF_8) ? 1 : len)
+	((len > 2) ? 2 : \
+	 (len == 2) ? 1 : len)
 
 #define SPACE_CHARS	" \t"
 
@@ -2591,7 +2588,7 @@ static void compose_wrap_line(Compose *compose)
 
 		if (space) {
 			line_pos = cur_pos + 1;
-			line_len = cur_len + ch_len;
+			line_len = cur_len + DISP_WIDTH(ch_len);
 		}
 
 		gtk_text_buffer_get_iter_at_offset(textbuf, &iter, line_pos);
@@ -2619,16 +2616,12 @@ static void compose_wrap_line(Compose *compose)
 			p_end++;
 			cur_pos++;
 			line_pos++;
-			cur_len = cur_len - line_len + ch_len;
+			cur_len = cur_len - line_len + DISP_WIDTH(ch_len);
 			line_len = 0;
 			continue;
 		}
 
-		if (ch_len > 1) {
-			line_pos = cur_pos + 1;
-			line_len = cur_len + ch_len;
-		}
-		cur_len += ch_len;
+		cur_len += DISP_WIDTH(ch_len);
 	}
 }
 
@@ -2987,7 +2980,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 		/* possible line break */
 		if (ch_len == 1 && isspace(*(guchar *)cbuf)) {
 			line_pos = cur_pos + 1;
-			line_len = cur_len + ch_len;
+			line_len = cur_len + DISP_WIDTH(ch_len);
 		}
 
 		/* are we over wrapping length set in preferences ? */
@@ -3103,12 +3096,8 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 			continue;
 		}
 
-		if (ch_len > 1) {
-			line_pos = cur_pos + 1;
-			line_len = cur_len + ch_len;
-		}
 		/* advance to next character in buffer */
-		cur_len += ch_len;
+		cur_len += DISP_WIDTH(ch_len);
 	}
 
 	if (set_editable_pos && editable_pos <= tlen) {
@@ -6227,12 +6216,6 @@ static void compose_undo_state_changed(UndoMain *undostruct, gint undo_state,
 	}
 }
 
-static gint calc_cursor_xpos(GtkTextView *text, gint extra, gint char_width)
-{
-#warning FIXME_GTK2
-	return 0;
-}
-
 /* callback functions */
 
 /* compose_edit_size_alloc() - called when resized. don't know whether Gtk
@@ -6254,10 +6237,7 @@ static gboolean compose_edit_size_alloc(GtkEditable *widget,
 
 		/* got the maximum */
 		gtk_ruler_set_range(GTK_RULER(shruler),
-				    0.0, line_width_in_chars,
-				    calc_cursor_xpos(GTK_TEXT_VIEW(widget),
-						     allocation->x,
-						     char_width),
+				    0.0, line_width_in_chars, 0,
 				    /*line_width_in_chars*/ char_width);
 	}
 
@@ -6867,7 +6847,6 @@ static void textview_move_next_line (GtkTextView *text)
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	mark = gtk_text_buffer_get_insert(buffer);
 	gtk_text_buffer_get_iter_at_mark(buffer, &ins, mark);
-#warning FIXME_GTK2 /* should regist current line offset */
 	offset = gtk_text_iter_get_line_offset(&ins);
 	if (gtk_text_iter_forward_line(&ins)) {
 		gtk_text_iter_set_line_offset(&ins, offset);
@@ -6887,7 +6866,6 @@ static void textview_move_previous_line (GtkTextView *text)
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	mark = gtk_text_buffer_get_insert(buffer);
 	gtk_text_buffer_get_iter_at_mark(buffer, &ins, mark);
-#warning FIXME_GTK2 /* should regist current line offset */
 	offset = gtk_text_iter_get_line_offset(&ins);
 	if (gtk_text_iter_backward_line(&ins)) {
 		gtk_text_iter_set_line_offset(&ins, offset);
