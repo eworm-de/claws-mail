@@ -1,6 +1,7 @@
 2003-02-12 [paul]	0.8.10claws1
 
-	* src/Makefile.am
+	* ac/Makefile.am
+	  src/Makefile.am
 	  src/plugins/Makefile.am
 	  	fix failure of 'make release'
 
