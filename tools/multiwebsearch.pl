@@ -25,6 +25,8 @@ my $what  = '';
 GetOptions("where=s"	=> \$where,
 	   "what=s"	=> \$what);
 
+$what =~ s/\s/%20/g;
+
 chdir($ENV{HOME} . "/.sylpheed") 
 	|| die("Can't find your ~/.sylpheed directory\n");
 

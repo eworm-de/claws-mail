@@ -1,3 +1,10 @@
+2003-07-26 [paul]	0.9.3claws54
+
+	* tools/multiwebsearch.pl
+		do whitespace substitution before passing the string
+		to the browser. fixes bug with browsers that don't
+		do whitespace conversion themselves.
+
 2003-07-25 [christoph]	0.9.3claws53
 
 	* src/folder.[ch]
