@@ -1,3 +1,8 @@
+2004-07-27 [colin]	0.9.12cvs37.1
+
+	* src/msgcache.c
+		More fixes (synced for head again)
+
 2004-07-27 [colin]	0.9.12cvs35.3
 
 	* src/msgcache.c
