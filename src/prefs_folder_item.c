@@ -334,7 +334,7 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 
 	/* Save Copy to Folder */
 	checkbtn_save_copy_to_folder = gtk_check_button_new_with_label
-		(_("Save copy of outgoing messages to this folder instead of outbox"));
+		(_("Save copy of outgoing messages to this folder instead of Sent"));
 	gtk_widget_show(checkbtn_save_copy_to_folder);
 	gtk_table_attach(GTK_TABLE(table), checkbtn_save_copy_to_folder, 0, 2, 
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);

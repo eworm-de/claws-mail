@@ -1281,7 +1281,7 @@ static void prefs_send_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_savemsg,
-			   _("Save sent messages to outbox"));
+			   _("Save sent messages to Sent"));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_queuemsg,
 			   _("Queue messages that fail to send"));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_returnreceipt,

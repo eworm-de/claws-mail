@@ -2795,7 +2795,7 @@ gint compose_send(Compose *compose)
 				(compose->account, F_OUTBOX);
 			if (procmsg_save_to_outbox(outbox, tmp, FALSE) < 0)
 				alertpanel_error
-					(_("Can't save the message to outbox."));
+					(_("Can't save the message to Sent."));
 			else
 				folderview_update_item(outbox, TRUE);
 		}
