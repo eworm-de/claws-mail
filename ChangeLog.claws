@@ -1,3 +1,8 @@
+2002-04-15 [alfons]	0.7.0claws2
+	
+	* src/prefs_filtering.c
+		don't stop timer when prefs filtering dialog is opened
+
 2002-01-14 [alfons]	0.7.0claws1
 
 	* src/addr_compl.c

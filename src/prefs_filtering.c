@@ -232,7 +232,7 @@ void prefs_filtering_open(FolderItem * item)
 	if (prefs_rc_is_readonly(FILTERING_RC))
 		return;
 
-	inc_autocheck_timer_remove();
+	inc_lock();
 
 	if (!filtering.window) {
 		prefs_filtering_create();
@@ -256,6 +256,7 @@ static void prefs_filtering_close(void)
 	end_address_completion();
 	
 	gtk_widget_hide(filtering.window);
+	inc_unlock();
 }
 
 static void prefs_filtering_create(void)
