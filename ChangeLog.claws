@@ -1,3 +1,9 @@
+2001-05-28 [alfons]
+
+	Verified the sync for src/prefs_common.[ch] and
+	src/prefs_account.[ch]. I believe there were some
+	minor indentation differences.
+
 2001-05-28 [paul]
 
         0.4.99claws3

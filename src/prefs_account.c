@@ -702,10 +702,6 @@ static void prefs_account_basic_create(void)
 	SET_ACTIVATE (menuitem);
 	MENUITEM_ADD (optmenu_menu, menuitem, _("None (local)"), A_LOCAL);
 	SET_ACTIVATE (menuitem);
-	/*
-	MENUITEM_ADD (optmenu_menu, menuitem, _("Local (without SMTP server)"), A_LOCAL_CMD);
-	SET_ACTIVATE (menuitem);
-	*/
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu), optmenu_menu);
 
@@ -1296,7 +1292,6 @@ static void prefs_account_edit_custom_header(void)
 }
 
 #if USE_GPGME
-
 static void prefs_account_sign_key_set_data_from_radiobtn(PrefParam *pparam)
 {
 	GtkRadioButton *radiobtn;

@@ -100,7 +100,6 @@ static struct Compose {
 } compose;
 
 static struct Display {
-
 	GtkWidget *entry_textfont;
 	GtkWidget *button_textfont;
 
@@ -1422,7 +1421,6 @@ static void prefs_display_create(void)
 	GtkWidget *hbox1;
 	GtkWidget *label_datefmt;
 	GtkWidget *label_datefmt_btn;
-	GtkWidget *button_dispitem;
 	GtkWidget *tmplabel, *tmpentry, *tmpbutton;
 	GtkWidget *entry_datefmt;
 	GtkTooltips *tooltips_datefmt;
@@ -1594,7 +1592,7 @@ static void prefs_message_create(void)
 	GtkWidget *chkbtn_mbalnum;
 	GtkWidget *chkbtn_disphdrpane;
 	GtkWidget *chkbtn_disphdr;
-	GtkWidget *button_edit_disphdr;	
+	GtkWidget *button_edit_disphdr;
 	GtkWidget *hbox_linespc;
 	GtkWidget *label_linespc;
 	GtkObject *spinbtn_linespc_adj;
@@ -2129,7 +2127,7 @@ static void prefs_quote_colors_dialog_create(void)
 	gtk_widget_set_usize (color_buttons.quote_level3_btn, 40, 30);
 	gtk_container_set_border_width
 		(GTK_CONTAINER (color_buttons.quote_level3_btn), 5);
-		
+
 	color_buttons.uri_btn = gtk_button_new_with_label ("");
 	gtk_table_attach (GTK_TABLE (table), color_buttons.uri_btn,
 			  0, 1, 3, 4, 0, 0, 0, 0);
@@ -2681,7 +2679,7 @@ static void prefs_common_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				     gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
-		prefs_common_cancel();	
+		prefs_common_cancel();
 }
 
 static void prefs_common_ok(void)
