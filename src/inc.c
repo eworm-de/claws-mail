@@ -420,6 +420,7 @@ static Pop3State *inc_pop3_state_new(PrefsAccount *account)
 
 	state->ac_prefs = account;
 	state->folder_table = g_hash_table_new(NULL, NULL);
+	state->uidl_todelete_list = NULL;
 	state->uidl_table = inc_get_uidl_table(account);
 	state->inc_state = INC_SUCCESS;
 
@@ -440,7 +441,7 @@ static void inc_pop3_state_destroy(Pop3State *state)
 		hash_free_strings(state->uidl_table);
 		g_hash_table_destroy(state->uidl_table);
 	}
-
+	g_slist_free(state->uidl_todelete_list);
 	g_free(state->greeting);
 	g_free(state->user);
 	g_free(state->pass);
@@ -784,8 +785,23 @@ static GHashTable *inc_get_uidl_table(PrefsAccount *ac_prefs)
 	table = g_hash_table_new(g_str_hash, g_str_equal);
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		gchar **data = NULL;
+		GDate *curdate = g_date_new();
+
+		g_date_set_time(curdate, time(NULL));	
 		strretchomp(buf);
-		g_hash_table_insert(table, g_strdup(buf), GINT_TO_POINTER(1));
+		
+		/* data[0] will contain uidl
+		   data[1] will contain day of retrieval */
+		if( strchr(buf, '\t') ) {
+			data = g_strsplit(buf,"\t",2);
+			snprintf(data[1], sizeof(data[1]), "%d", g_date_day_of_year(curdate) );
+		}
+		else {
+			data[0] = g_strdup(buf);
+			snprintf(data[1], sizeof(data[1]), "%d", g_date_day_of_year(curdate) );
+		}
+		g_hash_table_insert(table, g_strdup(data[0]), g_strdup(data[1]));
 	}
 
 	fclose(fp);
@@ -798,7 +814,8 @@ static void inc_write_uidl_list(Pop3State *state)
 	gchar *path;
 	FILE *fp;
 	gint n;
-
+	GDate *curdate = g_date_new();
+	g_date_set_time(curdate, time(NULL));
 	if (!state->uidl_is_valid) return;
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
@@ -817,10 +834,33 @@ static void inc_write_uidl_list(Pop3State *state)
 				FILE_OP_ERROR(path, "fputs");
 				break;
 			}
-			if (fputc('\n', fp) == EOF) {
+			if (fputc('\t', fp) == EOF) {
 				FILE_OP_ERROR(path, "fputc");
 				break;
 			}
+			if(g_hash_table_lookup(state->uidl_table, state->msg[n].uidl ) != NULL) {
+				const char *sdate = g_hash_table_lookup(state->uidl_table, state->msg[n].uidl);
+				int tdate = g_date_day_of_year(curdate);
+				if(sdate != NULL)
+					tdate = atoi(sdate);
+
+				if(fprintf(fp, "%3d", tdate) == EOF) {
+					FILE_OP_ERROR(path, "fprintf");
+					break;
+				}
+			} else {
+				if(fprintf(fp, "%d", g_date_day_of_year(curdate)) == EOF) {
+					FILE_OP_ERROR(path, "fputs");
+					break;
+				}
+
+			}
+
+			if (fputc('\n', fp) == EOF) {
+				FILE_OP_ERROR(path, "fputc");
+				break;
+			}		
+			
 		}
 	}
 

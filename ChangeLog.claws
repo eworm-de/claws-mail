@@ -1,3 +1,12 @@
+2002-03-19 [paul]	0.7.4claws24
+
+	* src/inc.[ch]
+	  src/pop.c
+	  src/prefs_account.[ch]
+		allow the user to leave downloaded mail on the 
+		server for n days. Patch submitted by Colin Leroy 
+		<colin@colino.net>
+
 2002-02-19 [paul]	0.7.4claws23
 
 	* sync with sylpheed 0.7.4cvs8

@@ -89,7 +89,8 @@ struct _Pop3State
 	Pop3MsgInfo *msg;
 
 	GHashTable *uidl_table;
-
+	GSList *uidl_todelete_list;
+	
 	gboolean uidl_is_valid;
 
 	gint error_val;

@@ -102,6 +102,7 @@ struct _PrefsAccount
 
 	/* Receive */
 	gboolean rmmail;
+	gchar *leave_time;	
 	gboolean getall;
 	gboolean recv_at_getall;
 	gboolean enable_size_limit;
