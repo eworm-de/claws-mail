@@ -1,3 +1,9 @@
+2004-07-19 [colin]	0.9.12cvs33.3
+
+	* src/statusbar.c
+		Remove grip from the statusbar
+		Patch by Alfons
+
 2004-07-19 [colin]	0.9.12cvs33.2
 
 	* src/messageview.c
