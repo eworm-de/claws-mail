@@ -404,3 +404,4 @@
 ( cvs diff -u -r 1.2504.2.49 -r 1.2504.2.50 ChangeLog.claws; cvs diff -u -r 1.654.2.437 -r 1.654.2.438 configure.ac; cvs diff -u -r 1.105.2.17 -r 1.105.2.18 src/prefs_account.c; cvs diff -u -r 1.52.2.9 -r 1.52.2.10 src/prefs_folder_item.c; cvs diff -u -r 1.12.2.16 -r 1.12.2.17 src/gtk/prefswindow.c; cvs diff -u -r 1.7.2.2 -r 1.7.2.3 src/gtk/prefswindow.h; ) > 1.0.1cvs19.1.patchset
 ( cvs diff -u -r 1.395.2.57 -r 1.395.2.58 src/summaryview.c; ) > 1.0.1cvs19.2.patchset
 ( cvs diff -u -r 1.382.2.108 -r 1.382.2.109 src/compose.c; ) > 1.0.1cvs19.3.patchset
+( cvs diff -u -r 1.47.2.15 -r 1.47.2.16 src/procheader.c; cvs diff -u -r 1.11.2.2 -r 1.11.2.3 src/procheader.h; ) > 1.0.1cvs19.4.patchset

@@ -1,3 +1,9 @@
+2005-02-27 [colin]	1.0.1cvs19.4
+
+	* src/procheader.c
+	* src/procheader.h
+		Fix prototypes. Patch by Alfons
+
 2005-02-27 [colin]	1.0.1cvs19.3
 
 	* src/compose.c
