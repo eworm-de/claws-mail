@@ -433,6 +433,9 @@ GHashTable *pop3_get_uidl_table(PrefsAccount *ac_prefs)
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl", G_DIR_SEPARATOR_S, ac_prefs->recv_server,
 			   "-", ac_prefs->userid, NULL);
+#ifdef WIN32 /* replace ':' in IPv6 Adress (but after drive separator) */
+	subst_char(path+2, ':', '$');
+#endif
 	if ((fp = fopen(path, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 		g_free(path);
@@ -483,6 +486,9 @@ gint pop3_write_uidl_list(Pop3Session *session)
 			   "uidl", G_DIR_SEPARATOR_S,
 			   session->ac_prefs->recv_server,
 			   "-", session->ac_prefs->userid, NULL);
+#ifdef WIN32 /* replace ':' in IPv6 Adress (but after drive separator) */
+	subst_char(path+2, ':', '$');
+#endif
 	if ((fp = fopen(path, "wb")) == NULL) {
 		FILE_OP_ERROR(path, "fopen");
 		g_free(path);

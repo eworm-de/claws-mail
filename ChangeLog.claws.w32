@@ -1,3 +1,8 @@
+2003-06-01 [thorsten]	0.9.0claws9-1
+
+	* src/pop.c
+		fix: replace ':' in (IPv6) Address (invalid uidl filename)
+
 2003-06-01 [thorsten]	0.9.0claws5-1
 
 	* src/common/socket.c
