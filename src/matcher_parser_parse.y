@@ -327,91 +327,91 @@ MATCHER_ALL
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_ALL;
-	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_UNREAD
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_UNREAD;
-	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_NOT_UNREAD 
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NOT_UNREAD;
-	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_NEW
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NEW;
-	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_NOT_NEW
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NOT_NEW;
-	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_MARKED
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_MARKED;
-	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_NOT_MARKED
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NOT_MARKED;
-	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_DELETED
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_DELETED;
-	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_NOT_DELETED
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NOT_DELETED;
-	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_REPLIED
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_REPLIED;
-	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_NOT_REPLIED
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NOT_REPLIED;
-	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_FORWARDED
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_FORWARDED;
-	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_NOT_FORWARDED
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NOT_FORWARDED;
-	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_SUBJECT match_type MATCHER_STRING
 {
@@ -420,7 +420,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_SUBJECT;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_SUBJECT match_type MATCHER_STRING
 {
@@ -429,7 +429,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_SUBJECT;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_FROM match_type MATCHER_STRING
 {
@@ -438,7 +438,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_FROM;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_FROM match_type MATCHER_STRING
 {
@@ -447,7 +447,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_FROM;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_TO match_type MATCHER_STRING
 {
@@ -456,7 +456,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_TO;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_TO match_type MATCHER_STRING
 {
@@ -465,7 +465,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_TO;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_CC match_type MATCHER_STRING
 {
@@ -474,7 +474,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_CC;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_CC match_type MATCHER_STRING
 {
@@ -483,7 +483,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_CC;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_TO_OR_CC match_type MATCHER_STRING
 {
@@ -492,7 +492,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_TO_OR_CC;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_TO_AND_NOT_CC match_type MATCHER_STRING
 {
@@ -501,7 +501,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_TO_AND_NOT_CC;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_AGE_GREATER MATCHER_INTEGER
 {
@@ -510,7 +510,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_AGE_GREATER;
 	value = atoi($2);
-	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_AGE_LOWER MATCHER_INTEGER
 {
@@ -519,7 +519,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_AGE_LOWER;
 	value = atoi($2);
-	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_NEWSGROUPS match_type MATCHER_STRING
 {
@@ -528,7 +528,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NEWSGROUPS;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_NEWSGROUPS match_type MATCHER_STRING
 {
@@ -537,7 +537,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_NEWSGROUPS;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_INREPLYTO match_type MATCHER_STRING
 {
@@ -546,7 +546,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_INREPLYTO;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_INREPLYTO match_type MATCHER_STRING
 {
@@ -555,7 +555,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_INREPLYTO;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_REFERENCES match_type MATCHER_STRING
 {
@@ -564,7 +564,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_REFERENCES;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_REFERENCES match_type MATCHER_STRING
 {
@@ -573,7 +573,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_REFERENCES;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_SCORE_GREATER MATCHER_INTEGER
 {
@@ -582,7 +582,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_SCORE_GREATER;
 	value = atoi($2);
-	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_SCORE_LOWER MATCHER_INTEGER
 {
@@ -591,7 +591,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_SCORE_LOWER;
 	value = atoi($2);
-	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_SCORE_EQUAL MATCHER_INTEGER
 {
@@ -600,7 +600,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_SCORE_EQUAL;
 	value = atoi($2);
-	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_SIZE_GREATER MATCHER_INTEGER 
 {
@@ -608,7 +608,7 @@ MATCHER_ALL
 	gint value    = 0;
 	criteria = MATCHCRITERIA_SIZE_GREATER;
 	value = atoi($2);
-	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_SIZE_SMALLER MATCHER_INTEGER
 {
@@ -616,7 +616,7 @@ MATCHER_ALL
 	gint value    = 0;
 	criteria = MATCHCRITERIA_SIZE_SMALLER;
 	value = atoi($2);
-	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_SIZE_EQUAL MATCHER_INTEGER
 {
@@ -624,7 +624,7 @@ MATCHER_ALL
 	gint value    = 0;
 	criteria = MATCHCRITERIA_SIZE_EQUAL;
 	value = atoi($2);
-	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_HEADER MATCHER_STRING
 {
@@ -636,7 +636,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_HEADER;
 	expr = $2;
-	prop = matcherprop_new(criteria, header, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, header, match_type, expr, 0);
 	g_free(header);
 }
 | MATCHER_NOT_HEADER MATCHER_STRING
@@ -649,7 +649,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_HEADER;
 	expr = $2;
-	prop = matcherprop_new(criteria, header, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, header, match_type, expr, 0);
 	g_free(header);
 }
 | MATCHER_HEADERS_PART match_type MATCHER_STRING
@@ -659,7 +659,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_HEADERS_PART;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_HEADERS_PART match_type MATCHER_STRING
 {
@@ -668,7 +668,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_HEADERS_PART;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_MESSAGE match_type MATCHER_STRING
 {
@@ -677,7 +677,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_MESSAGE;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_MESSAGE match_type MATCHER_STRING
 {
@@ -686,7 +686,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_MESSAGE;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_BODY_PART match_type MATCHER_STRING
 {
@@ -695,7 +695,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_BODY_PART;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_BODY_PART match_type MATCHER_STRING
 {
@@ -704,7 +704,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_BODY_PART;
 	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_EXECUTE MATCHER_STRING
 {
@@ -713,7 +713,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_EXECUTE;
 	expr = $2;
-	prop = matcherprop_new(criteria, NULL, 0, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, expr, 0);
 }
 | MATCHER_NOT_EXECUTE MATCHER_STRING
 {
@@ -722,7 +722,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_EXECUTE;
 	expr = $2;
-	prop = matcherprop_new(criteria, NULL, 0, expr, 0);
+	prop = matcherprop_unquote_new(criteria, NULL, 0, expr, 0);
 }
 ;
 
