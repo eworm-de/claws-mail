@@ -1,3 +1,9 @@
+2001-11-18 [hoa]	0.6.4claws21
+
+	* src/grouplistdialog.c
+		a new newsgroups list selection dialog box
+		with a CTree instead of a CList
+
 2001-11-18 [hoa]	0.6.4claws20
 
 	* src/folderview.c

@@ -34,7 +34,8 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkentry.h>
-#include <gtk/gtkclist.h>
+// #include <gtk/gtkclist.h>
+#include <gtk/gtkctree.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkhbbox.h>
@@ -64,10 +65,10 @@ static gboolean locked;
 
 static GtkWidget *dialog;
 static GtkWidget *entry;
-static GtkWidget *clist;
+// static GtkWidget *clist;
+static GtkWidget *groups_tree;
 static GtkWidget *status_label;
 static GtkWidget *ok_button;
-static GSList *group_list = NULL;
 static Folder *news_folder;
 
 static void grouplist_dialog_create	(void);
@@ -87,16 +88,16 @@ static void refresh_clicked	(GtkWidget	*widget,
 static void key_pressed		(GtkWidget	*widget,
 				 GdkEventKey	*event,
 				 gpointer	 data);
-static void clist_selected	(GtkCList	*clist,
-				 gint		 row,
-				 gint		 column,
-				 GdkEventButton	*event,
-				 gpointer	 user_data);
-static void clist_unselected	(GtkCList	*clist,
-				 gint		 row,
-				 gint		 column,
-				 GdkEventButton	*event,
-				 gpointer	 user_data);
+static void groups_tree_selected	(GtkCTree	*groups_tree,
+					 GtkCTreeNode   * node,
+					 gint		 column,
+					 GdkEventButton	*event,
+					 gpointer	 user_data);
+static void groups_tree_unselected	(GtkCTree	*groups_tree,
+					 GtkCTreeNode   * node,
+					 gint		 column,
+					 GdkEventButton	*event,
+					 gpointer	 user_data);
 static void entry_activated	(GtkEditable	*editable);
 
 GList *grouplist_dialog(Folder *folder, GList * cur_subscriptions)
@@ -128,16 +129,6 @@ GList *grouplist_dialog(Folder *folder, GList * cur_subscriptions)
 	manage_window_focus_out(dialog, NULL, NULL);
 	gtk_widget_hide(dialog);
 
-	/*
-	if (ack) {
-		str = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
-		if (str && *str == '\0') {
-			g_free(str);
-			str = NULL;
-		}
-	} else
-		str = NULL;
-	*/
 	if (!ack) {
 	  list_free_strings(subscribed);
 	  g_list_free(subscribed);
@@ -157,7 +148,7 @@ GList *grouplist_dialog(Folder *folder, GList * cur_subscriptions)
 static void grouplist_clear(void)
 {
 	dont_unsubscribed = TRUE;
-	gtk_clist_clear(GTK_CLIST(clist));
+	gtk_clist_clear(GTK_CLIST(groups_tree));
 	gtk_entry_set_text(GTK_ENTRY(entry), "");
 	dont_unsubscribed = FALSE;
 }
@@ -215,15 +206,18 @@ static void grouplist_dialog_create(void)
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	clist = gtk_clist_new_with_titles(3, col_names);
-	gtk_container_add(GTK_CONTAINER(scrolledwin), clist);
-	gtk_clist_set_selection_mode(GTK_CLIST(clist), GTK_SELECTION_MULTIPLE);
+	groups_tree = gtk_ctree_new_with_titles(3, 0, col_names);
+	gtk_container_add(GTK_CONTAINER(scrolledwin), groups_tree);
+	gtk_clist_set_selection_mode(GTK_CLIST(groups_tree),
+				     GTK_SELECTION_MULTIPLE);
+	/*
 	GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(clist)->column[0].button,
 			       GTK_CAN_FOCUS);
-	gtk_signal_connect(GTK_OBJECT(clist), "select_row",
-			   GTK_SIGNAL_FUNC(clist_selected), NULL);
-	gtk_signal_connect(GTK_OBJECT(clist), "unselect_row",
-			   GTK_SIGNAL_FUNC(clist_unselected), NULL);
+	*/
+	gtk_signal_connect(GTK_OBJECT(groups_tree), "tree_select_row",
+			   GTK_SIGNAL_FUNC(groups_tree_selected), NULL);
+	gtk_signal_connect(GTK_OBJECT(groups_tree), "tree_unselect_row",
+			   GTK_SIGNAL_FUNC(groups_tree_unselected), NULL);
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
@@ -249,10 +243,161 @@ static void grouplist_dialog_create(void)
 	gtk_widget_show_all(GTK_DIALOG(dialog)->vbox);
 }
 
+static GHashTable * hash_last_node;
+static GHashTable * hash_branch_node;
+
+static void hash_news_init()
+{
+	hash_last_node = g_hash_table_new(g_str_hash, g_str_equal);
+	hash_branch_node = g_hash_table_new(g_str_hash, g_str_equal);
+}
+
+static void free_key(gchar * key, void * value, void * user_data)
+{
+	g_free(key);
+}
+
+static void hash_news_done()
+{
+	g_hash_table_foreach(hash_branch_node, free_key, NULL);
+	g_hash_table_foreach(hash_last_node, free_key, NULL);
+
+	g_hash_table_destroy(hash_branch_node);
+	g_hash_table_destroy(hash_last_node);
+}
+
+static GtkCTreeNode * hash_news_get_branch_node(gchar * name)
+{
+	return g_hash_table_lookup(hash_branch_node, name);
+}
+
+static void hash_news_set_branch_node(gchar * name, GtkCTreeNode * node)
+{
+	g_hash_table_insert(hash_branch_node, g_strdup(name), node);
+}
+
+static GtkCTreeNode * hash_news_get_last_node(gchar * name)
+{
+	return g_hash_table_lookup(hash_last_node, name);
+}
+
+static void hash_news_set_last_node(gchar * name, GtkCTreeNode * node)
+{
+	gchar * key;
+	void * value;
+
+	if (g_hash_table_lookup_extended(hash_last_node, name,
+					 (void *) &key, &value)) {
+		g_hash_table_remove(hash_last_node, name);
+		g_free(key);
+	}
+
+	g_hash_table_insert(hash_last_node, g_strdup(name), node);
+}
+
+static gchar * get_parent_name(gchar * name)
+{
+	gchar * p;
+
+	p = (gchar *) strrchr(name, '.');
+	if (p == NULL)
+		return g_strdup("");
+
+	return g_strndup(name, p - name);
+}
+
+static GtkCTreeNode * create_parent(GtkCTree * groups_tree, gchar * name)
+{
+	gchar * cols[3];
+	GtkCTreeNode * parent;
+	GtkCTreeNode * node;
+	gchar * parent_name;
+
+	if (* name == 0)
+		return;
+
+	if (hash_news_get_branch_node(name) != NULL)
+		return;
+
+	cols[0] = name;
+	cols[1] = "";
+	cols[2] = "";
+	
+	parent_name = get_parent_name(name);
+	create_parent(groups_tree, parent_name);
+
+	parent = hash_news_get_branch_node(parent_name);
+	node = hash_news_get_last_node(parent_name);
+	node = gtk_ctree_insert_node(groups_tree,
+				     parent, node,
+				     cols, 0, NULL, NULL,
+				     NULL, NULL,
+				     FALSE, FALSE);
+	gtk_ctree_node_set_selectable(groups_tree, node, FALSE);
+	hash_news_set_last_node(parent_name, node);
+	hash_news_set_branch_node(name, node);
+
+	g_free(parent_name);
+}
+
+static GtkCTreeNode * create_branch(GtkCTree * groups_tree, gchar * name,
+				    struct NNTPGroupInfo * info)
+{
+	gchar * parent_name;
+
+	GtkCTreeNode * node;
+	GtkCTreeNode * parent;
+
+	gchar count_str[10];
+	gchar * cols[3];
+	gint count;
+
+	count = info->last - info->first;
+	if (count < 0)
+		count = 0;
+	snprintf(count_str, 10, "%i", count);
+	
+	cols[0] = info->name;
+	cols[1] = count_str;
+	if (info->type == 'y')
+		cols[2] = "";
+	else if (info->type == 'm')
+		cols[2] = "moderated";
+	else if (info->type == 'n')
+		cols[2] = "readonly";
+	else
+		cols[2] = "unkown";
+	
+	parent_name = get_parent_name(name);
+
+	create_parent(groups_tree, parent_name);
+
+	parent = hash_news_get_branch_node(parent_name);
+	node = hash_news_get_last_node(parent_name);
+	node = gtk_ctree_insert_node(groups_tree,
+				     parent, node,
+				     cols, 0, NULL, NULL,
+				     NULL, NULL,
+				     TRUE, FALSE);
+	gtk_ctree_node_set_selectable(groups_tree, node, TRUE);
+	hash_news_set_last_node(parent_name, node);
+
+	g_free(parent_name);
+
+	if (node == NULL)
+		return NULL;
+
+	gtk_ctree_node_set_row_data(GTK_CTREE(groups_tree), node, info);
+
+	return node;
+}
+
 static void grouplist_dialog_set_list(gchar * pattern)
 {
 	GSList *cur;
-	gint row;
+	GtkCTreeNode * node;
+	GSList * group_list = NULL;
+	GSList * r_list;
 
 	if (pattern == NULL)
 		pattern = "*";
@@ -273,59 +418,51 @@ static void grouplist_dialog_set_list(gchar * pattern)
 
 	dont_unsubscribed = TRUE;
 
-	gtk_clist_freeze(GTK_CLIST(clist));
-	for (cur = group_list; cur != NULL ; cur = cur->next) {
+	hash_news_init();
+
+	gtk_clist_freeze(GTK_CLIST(groups_tree));
+
+	r_list = g_slist_copy(group_list);
+	r_list = g_slist_reverse(r_list);
+
+	for (cur = r_list; cur != NULL ; cur = cur->next) {
 		struct NNTPGroupInfo * info;
 
 		info = (struct NNTPGroupInfo *) cur->data;
 
 		if (fnmatch(pattern, info->name, 0) == 0) {
-			gchar count_str[10];
-			gchar * cols[3];
-			gint count;
 			GList * l;
 
-			count = info->last - info->first;
-			if (count < 0)
-				count = 0;
-			snprintf(count_str, 10, "%i", count);
-
-			cols[0] = info->name;
-			cols[1] = count_str;
-			if (info->type == 'y')
-				cols[2] = "";
-			else if (info->type == 'm')
-				cols[2] = "moderated";
-			else if (info->type == 'n')
-				cols[2] = "readonly";
-			else
-				cols[2] = "unkown";
-
-			row = gtk_clist_append(GTK_CLIST(clist), cols);
-			gtk_clist_set_row_data(GTK_CLIST(clist), row, info);
+			node = create_branch(GTK_CTREE(groups_tree),
+					     info->name, info);
 
 			l = g_list_find_custom(subscribed, info->name,
 					       (GCompareFunc) g_strcasecmp);
 			
 			if (l != NULL)
-			  gtk_clist_select_row(GTK_CLIST(clist), row, 0);
+			  gtk_ctree_select(GTK_CTREE(groups_tree), node);
 		}
 	}
 
-	gtk_clist_moveto(GTK_CLIST(clist), 0, 0, 0, 0);
+	g_slist_free(r_list);
+
+	hash_news_done();
+
+	node = gtk_ctree_node_nth(GTK_CTREE(groups_tree), 0);
+	gtk_ctree_node_moveto(GTK_CTREE(groups_tree), node, 0, 0, 0);
 
 	dont_unsubscribed = FALSE;
 
-	gtk_clist_set_column_width(GTK_CLIST(clist), 0, GROUPLIST_NAMES);
-	gtk_clist_set_column_justification (GTK_CLIST(clist), 1,
+	gtk_clist_set_column_width(GTK_CLIST(groups_tree), 0, GROUPLIST_NAMES);
+	gtk_clist_set_column_justification (GTK_CLIST(groups_tree), 1,
 					    GTK_JUSTIFY_RIGHT);
-	gtk_clist_set_column_auto_resize(GTK_CLIST(clist), 1, TRUE);
-	gtk_clist_set_column_auto_resize(GTK_CLIST(clist), 2, TRUE);
+	gtk_clist_set_column_auto_resize(GTK_CLIST(groups_tree), 1, TRUE);
+	gtk_clist_set_column_auto_resize(GTK_CLIST(groups_tree), 2, TRUE);
 
-	gtk_clist_thaw(GTK_CLIST(clist));
+	gtk_clist_thaw(GTK_CLIST(groups_tree));
 
 	gtk_widget_grab_focus(ok_button);
-	gtk_widget_grab_focus(clist);
+	gtk_widget_grab_focus(groups_tree);
 
 	gtk_label_set_text(GTK_LABEL(status_label), _("Done."));
 
@@ -394,28 +531,36 @@ static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 		cancel_clicked(NULL, NULL);
 }
 
-static void clist_selected(GtkCList *clist, gint row, gint column,
-			   GdkEventButton *event, gpointer user_data)
+static void groups_tree_selected(GtkCTree *groups_tree, GtkCTreeNode * node,
+				 gint column,
+				 GdkEventButton *event, gpointer user_data)
 {
 	struct NNTPGroupInfo * group;
 	GList * l;
 
 	group = (struct NNTPGroupInfo *)
-	  gtk_clist_get_row_data(GTK_CLIST(clist), row);
+	  gtk_ctree_node_get_row_data(GTK_CTREE(groups_tree), node);
+
+	if (group == NULL)
+		return;
 
 	if (!dont_unsubscribed) {
 		subscribed = g_list_append(subscribed, g_strdup(group->name));
 	}
 }
 
-static void clist_unselected(GtkCList *clist, gint row, gint column,
-			     GdkEventButton *event, gpointer user_data)
+static void groups_tree_unselected(GtkCTree *groups_tree, GtkCTreeNode * node,
+				   gint column,
+				   GdkEventButton *event, gpointer user_data)
 {
 	struct NNTPGroupInfo * group;
 	GList * l;
 
 	group = (struct NNTPGroupInfo *)
-	  gtk_clist_get_row_data(GTK_CLIST(clist), row);
+	  gtk_ctree_node_get_row_data(GTK_CTREE(groups_tree), node);
+
+	if (group == NULL)
+		return;
 
 	if (!dont_unsubscribed) {
 		l = g_list_find_custom(subscribed, group->name,
@@ -425,10 +570,6 @@ static void clist_unselected(GtkCList *clist, gint row, gint column,
 			subscribed = g_list_remove(subscribed, l->data);
 		}
 	}
-}
-
-static gboolean match_string(gchar * str, gchar * expr)
-{
 }
 
 static void entry_activated(GtkEditable *editable)
