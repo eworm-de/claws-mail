@@ -10,7 +10,7 @@ MINOR_VERSION=8
 MICRO_VERSION=3
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws28
+EXTRA_VERSION=claws29
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -297,8 +297,6 @@ if test $ac_cv_enable_aspell = yes; then
 	AC_MSG_RESULT(yes)
 	AM_PATH_ASPELL(0.50, AC_DEFINE(USE_ASPELL), [use_aspell=no
 						    ac_cv_enable_aspell=no])
-	aspell_path="`$ASPELL config dict-dir`"
-	AC_DEFINE_UNQUOTED(ASPELL_PATH, "${aspell_path}/")
 else
 	AC_MSG_RESULT(no)
 fi

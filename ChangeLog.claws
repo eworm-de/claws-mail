@@ -1,3 +1,9 @@
+2002-09-27 [melvin]	0.8.3claws29
+
+	* ac/aspell.m4
+		Improved GNU/aspell checking. 
+		Fixed bug #614490
+
 2002-09-27 [paul]	0.8.3claws28
 
 	* sync with 0.8.3cvs8
