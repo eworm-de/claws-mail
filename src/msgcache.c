@@ -237,9 +237,10 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 #define READ_CACHE_DATA_INT(n, fp) \
 { \
 	guint32 idata; \
+	size_t ni; \
  \
-	if (fread(&idata, sizeof(idata), 1, fp) != 1) { \
-		g_warning("Cache data is corrupted\n"); \
+	if (sizeof(idata) != (ni = fread(&idata, 1, sizeof(idata), fp))) { \
+		g_warning("read_int: Cache data corrupted, read %d of %d at offset %d\n", ni, sizeof(idata), ftell(fp)); \
 		procmsg_msginfo_free(msginfo); \
 		error = TRUE; \
 		break; \
@@ -322,55 +323,39 @@ static FILE *msgcache_open_data_file(const gchar *file, gint version,
 	return fp;
 }
 
-static gint msgcache_read_cache_data_str(FILE *fp, gchar **str, StringConverter *conv)
+static gint 
+msgcache_read_cache_data_str(FILE *fp, gchar **str, StringConverter *conv)
 {
-	gchar buf[BUFFSIZE], *tmpstr = NULL;
-	gint ret = 0;
-	guint32 len;
+    gchar *tmpstr = NULL;
+    size_t ni;
+    guint32 len;
 
-	if (fread(&len, sizeof(len), 1, fp) == 1) {
-		if (len > G_MAXINT)
-			ret = -1;
-		else {
-			gchar *tmp = NULL;
+    *str = NULL;
+    if (sizeof(len) != (ni = fread(&len, 1, sizeof(len), fp))
+	|| len > G_MAXINT) {
+	g_warning("read_data_str: Cache data (len) corrupted, read %d of %d bytes at offset %d\n", 
+		ni, sizeof(len), ftell(fp));
+	return -1;
+    }
+    if (0 == len)
+	return 0;
+    tmpstr = g_malloc(len + 1);
 
-			while (len > 0) {
-				size_t size = MIN(len, BUFFSIZE - 1);
+    if (len != (ni = fread(tmpstr, 1, len, fp))) {
+	g_warning("read_data_str: Cache data corrupted, read %d of %d bytes at offset %d\n", 
+		ni, len, ftell(fp));
+	g_free(tmpstr);
+	return -1;
+    }
+    tmpstr[len] = 0;
 
-				if (fread(buf, size, 1, fp) != 1) {
-					ret = -1;
-					if (tmp) g_free(tmp);
-					tmpstr = NULL;
-					break;
-				}
+    if (conv != NULL) {
+	    *str = conv->convert(conv, tmpstr);
+	    g_free(tmpstr);
+    } else 
+	    *str = tmpstr;
 
-				buf[size] = '\0';
-				if (tmp) {
-					*str = g_strconcat(tmp, buf, NULL);
-					g_free(tmp);
-					tmp = tmpstr;
-				} else
-					tmp = tmpstr = g_strdup(buf);
-
-				len -= size;
-			}
-		}
-	} else
-		ret = -1;
-
-	if (ret < 0)
-		g_warning("Cache data is corrupted\n");
-
-	if (tmpstr != NULL && conv != NULL) {
-		*str = conv->convert(conv, tmpstr);
-		g_free(tmpstr);
-	} else if (tmpstr != NULL) {
-		*str = g_strdup(tmpstr);
-		g_free(tmpstr);
-	} else
-		*str = NULL;
-
-	return ret;
+    return 0;
 }
 
 gchar *strconv_strdup_convert(StringConverter *conv, gchar *srcstr)

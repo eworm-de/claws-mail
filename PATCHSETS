@@ -201,3 +201,4 @@
 ( cvs diff -u -r 1.453 -r 1.454 ChangeLog; cvs diff -u -r 1.448 -r 1.449 ChangeLog.jp; cvs diff -u -r 1.73 -r 1.74 src/pop.c; cvs diff -u -r 1.23 -r 1.24 src/pop.h; ) > 0.9.13cvs29.patchset
 ( cvs diff -u -r 1.7 -r 1.8 src/prefs_filtering_action.c; ) > 0.9.13cvs30.patchset
 ( cvs diff -u -r 1.1 -r 1.2 tools/calypso_convert.pl; ) > 0.9.13cvs31.patchset
+( cvs diff -u -r 1.29 -r 1.30 src/msgcache.c; cvs diff -u -r 1.14 -r 1.15 src/html.c; cvs diff -u -r 1.3 -r 1.4 src/html.h; cvs diff -u -r 1.126 -r 1.127 AUTHORS; ) > 0.9.13cvs32.patchset
