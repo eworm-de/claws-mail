@@ -98,4 +98,7 @@ void gtkut_widget_get_uposition		(GtkWidget	*widget,
 
 void gtkut_widget_init			(void);
 
+void gtk_widget_set_app_icon		(GtkWidget	*widget);
+void gtk_widget_set_composer_icon	(GtkWidget	*widget);
+
 #endif /* __GTKUTILS_H__ */

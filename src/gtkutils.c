@@ -331,3 +331,33 @@ void gtkut_widget_init(void)
 	gtkut_clist_bindings_add(clist);
 	gtk_widget_unref(clist);
 }
+
+void gtkut_widget_set_app_icon(GtkWidget *widget)
+{
+#include "pixmaps/sylpheed.xpm"	
+	static GdkPixmap *sylpheedxpm;
+	static GdkBitmap *sylpheedxpmmask;
+	
+	g_return_if_fail(widget != NULL);
+	g_return_if_fail(widget->window != NULL);
+	if (!sylpheedxpm) {
+		PIXMAP_CREATE(widget, sylpheedxpm, sylpheedxpmmask, sylpheed_xpm);
+	}		
+	gdk_window_set_icon(widget->window, NULL, sylpheedxpm, sylpheedxpmmask);
+}
+
+void gtkut_widget_set_composer_icon(GtkWidget *widget)
+{
+#include "pixmaps/stock_mail_compose.xpm"
+	static GdkPixmap *xpm;
+	static GdkBitmap *bmp;
+
+	g_return_if_fail(widget != NULL);
+	g_return_if_fail(widget->window != NULL);
+	if (!xpm) {
+		PIXMAP_CREATE(widget, xpm, bmp, stock_mail_compose_xpm);
+	}
+	gdk_window_set_icon(widget->window, NULL, xpm, bmp);	
+}
+
+

@@ -639,7 +639,10 @@ MainWindow *main_window_create(SeparateType type)
 			   GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
 	gtk_signal_connect(GTK_OBJECT(window), "focus_out_event",
 			   GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
+
 	gtk_widget_realize(window);
+
+	gtkut_widget_set_app_icon(window);
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox);
@@ -831,6 +834,7 @@ MainWindow *main_window_create(SeparateType type)
 				 prefs_common.mainwin_y);
 	gtk_widget_set_usize(window, prefs_common.mainwin_width,
 			     prefs_common.mainwin_height);
+			     
 	gtk_widget_show(mainwin->window);
 
 	/* initialize views */
@@ -839,6 +843,7 @@ MainWindow *main_window_create(SeparateType type)
 	messageview_init(messageview);
 	header_window_init(mainwin->headerwin);
 	log_window_init(mainwin->logwin);
+
 
 	mainwin->lock_count = 0;
 	mainwin->cursor_count = 0;

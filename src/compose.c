@@ -2901,6 +2901,8 @@ static Compose *compose_create(PrefsAccount *account)
 			   GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
 	gtk_widget_realize(window);
 
+	gtkut_widget_set_composer_icon(window);
+
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
