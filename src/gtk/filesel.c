@@ -122,7 +122,7 @@ gchar *filesel_select_file(const gchar *title, const gchar *file)
 	if (filesel_oldfilename) 
 		g_free(filesel_oldfilename);
 
-	if (startdir);
+	if (startdir)
 		g_free(startdir);
 
 	manage_window_focus_out(filesel, NULL, NULL);

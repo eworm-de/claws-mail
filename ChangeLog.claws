@@ -1,3 +1,9 @@
+2004-02-17 [alfons]	0.9.10claws17
+
+	* src/gtk/filesel.c
+		remove bogus semicolon after if() (sometimes it pays to
+		read LKML :)
+
 2004-02-15 [darko]	0.9.10claws16
 
 	* src/gtk/filesel.c
