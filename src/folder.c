@@ -1919,14 +1919,6 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 		return F_MOVE_FAILED;
 	}
 	
-	/* update rules */
-	src_node = g_node_find(src->folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, src);
-	if (src_node) 
-		g_node_destroy(src_node);
-	else
-		debug_print("can't remove node: it's null!\n");
-	/* not to much worry if remove fails, move has been done */
-	
 	g_free(src_identifier);
 	g_free(dst_identifier);
 	g_free(phys_srcpath);

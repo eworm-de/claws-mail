@@ -1,3 +1,10 @@
+2003-09-03 [alfons]	0.9.4claws60
+
+	* src/folder.c
+		source folder item's GNode should already have been freed in 
+		a previous call to src->folder->klass->remove_folder()
+		(should fix bug #287, "crash when moving folders")
+
 2003-09-03 [thorsten]	0.9.4claws59
 
 	* src/plugins/spamassassin/spamassassin_gtk.c
