@@ -201,7 +201,10 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 		parent = NULL;
 		if (msginfo->inreplyto) 
 			parent = g_hash_table_lookup(msgid_table, msginfo->inreplyto);
-		if (parent && parent != node) {
+		/* node should not be the parent, and node should not be an ancestor
+		 * of parent (circular reference) */
+		if (parent && parent != node 
+		&& !g_node_is_ancestor(node, parent)) {
 			g_node_unlink(node);
 			g_node_insert_before
 				(parent, parent->children, node);
