@@ -1242,6 +1242,12 @@ static gint imap_scan_tree(Folder *folder)
 			log_warning(_("root folder %s does not exist\n"), real_path);
 			g_ptr_array_free(argbuf, TRUE);
 			g_free(real_path);
+
+			if (!folder->node) {
+				item = folder_item_new(folder, folder->name, NULL);
+				item->folder = folder;
+				folder->node = item->node = g_node_new(item);
+			}
 			return -1;
 		}
 		g_ptr_array_free(argbuf, TRUE);

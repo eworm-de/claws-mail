@@ -1,3 +1,9 @@
+2004-01-26 [christoph]	0.9.8claws54
+
+	* src/imap.c
+		create a root node for the Folder if scan fails because root
+		folder does not exist
+
 2004-01-26 [paul]	0.9.8claws53
 
 	* sync with 0.9.8cvs7
