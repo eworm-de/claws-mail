@@ -494,7 +494,7 @@ static void sd_window_create(MainWindow *mainwin)
 	gtk_toolbar_set_space_size (GTK_TOOLBAR (toolbar), 20);
 	gtk_toolbar_set_space_style (GTK_TOOLBAR (toolbar), GTK_TOOLBAR_SPACE_LINE);
 	
-	tmp_toolbar_icon = stock_pixmap_widget(hbox_toolbar, STOCK_PIXMAP_MAIL);
+	tmp_toolbar_icon = stock_pixmap_widget(hbox_toolbar, STOCK_PIXMAP_MAIL_RECEIVE);
 	btn_receive = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
 						  GTK_TOOLBAR_CHILD_BUTTON,
 						  NULL,
