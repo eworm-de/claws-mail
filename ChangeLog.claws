@@ -1,3 +1,8 @@
+2004-12-07 [keith]	0.9.13cvs3
+
+	* src/procmime.c
+		Fix typo
+
 2004-12-07 [colin]	0.9.13cvs2
 
 	* AUTHORS
