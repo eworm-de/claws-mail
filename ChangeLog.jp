@@ -1,3 +1,10 @@
+2002-08-26
+
+	* src/compose.c:
+	  join_next_line()
+	  compose_wrap_line_all(): インデントされていない行を結合する変更
+	  を元に戻した。
+
 2002-08-23
 
 	* src/alertpanel.c: alertpanel_create(): 少し修正。

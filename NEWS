@@ -14,7 +14,6 @@ Changes of Sylpheed
       o The ascii-armored encryption and clear text signing has been
         implemented.
     * Line-wrapping improvements and fix
-      o The lines that are not quoted will be wrapped correctly.
       o The cursor movement on auto-wrapping has been fixed.
       o Flickers on auto-wrapping has been repressed.
     * Socket I/O timeout has been implemented.

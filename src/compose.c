@@ -2336,7 +2336,7 @@ static gboolean join_next_line(GtkSText *text, guint start_pos, guint tlen,
 
 	indent_len = get_indent_length(text, start_pos, tlen);
 
-	if (indent_len == prev_ilen) {
+	if (indent_len > 0 && indent_len == prev_ilen) {
 		GET_CHAR(start_pos + indent_len, cbuf, ch_len);
 		if (ch_len > 0 && (cbuf[0] != '\n'))
 			do_join = TRUE;
@@ -2407,7 +2407,7 @@ static void compose_wrap_line_all(Compose *compose)
 			gchar cb[MB_LEN_MAX];
 
 			/* should we join the next line */
-			if (do_delete &&
+			if (i_len != cur_len && do_delete &&
 			    join_next_line(text, cur_pos + 1, tlen, i_len))
 				do_delete = TRUE;
 			else
@@ -2556,9 +2556,11 @@ static void compose_wrap_line_all(Compose *compose)
 			cur_pos = line_pos - 1;
 			/* start over with current line */
 			is_new_line = TRUE;
-			line_len = 0;
-			cur_len = 0;
-			do_delete = TRUE;
+			line_len = cur_len = 0;
+			if (i_len)
+				do_delete = TRUE;
+			else
+				do_delete = FALSE;
 #ifdef WRAP_DEBUG
 			g_print("after CR insert ");
 			dump_text(text, line_pos, tlen, 1);
