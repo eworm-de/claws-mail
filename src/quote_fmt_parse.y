@@ -202,9 +202,15 @@ string:
 	}
 	| string CHARACTER
 	{
-		strcpy($$, $1);
-		$$[strlen($$) + 1] = '\0';
-		$$[strlen($$)] = $2;
+		int len;
+		
+		strncpy($$, $1, sizeof($$));
+		len = strlen($$);
+		if (len + 1 < sizeof($$)) {
+			$$[len + 1] = '\0';
+			$$[len] = $2;
+		}
+		$$[sizeof($$) - 1] = '\0';
 	};
 
 special:

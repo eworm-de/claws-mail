@@ -1,3 +1,12 @@
+2004-12-08 [colin]	0.9.13cvs6.1
+
+	* src/quote_fmt_parse.y
+	* src/textview.c
+		Sync with HEAD
+	* src/gtk/prefswindow.c
+	* src/gtk/pluginwindow.c
+		Fix G_CALLBACKS protos (thanks to Alfons)
+
 2004-12-07 [torte]	0.9.13cvs2.2
 
 	* src/procmime.c

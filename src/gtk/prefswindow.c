@@ -205,7 +205,7 @@ gint compare_func(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
 							          0;
 }
 
-static void prefswindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
+static gboolean prefswindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				    gpointer data)
 {
 	if (event) {
@@ -221,6 +221,7 @@ static void prefswindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				break;
 		}
 	}
+	return FALSE;
 }
 
 void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer data, GtkDestroyNotify func)

@@ -138,7 +138,7 @@ static void load_cb(GtkButton *button, PluginWindow *pluginwindow)
 	set_plugin_list(pluginwindow);		
 }
 
-static void pluginwindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
+static gboolean pluginwindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				     PluginWindow *pluginwindow)
 {
 	if (event) {
@@ -164,6 +164,7 @@ static void pluginwindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				break;
 		}
 	}
+	return FALSE;
 }
 
 void pluginwindow_create()
