@@ -1,3 +1,8 @@
+2002-11-07 [paul]	0.8.5claws86
+
+	* src/compose.c
+		add a forgotten '#if USE_GPGME ... #endif'
+
 2002-11-07 [paul]	0.8.5claws85
 
 	* sync with 0.8.5cvs20

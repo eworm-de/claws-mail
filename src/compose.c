@@ -1788,10 +1788,10 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 	SET_ADDRESS(COMPOSE_REPLYTO, compose->replyto);
 
 	compose_update_priority_menu_item(compose);
-	
+#if USE_GPGME	
 	compose_update_sigmode_menu_item(compose);
 	compose_update_encmode_menu_item(compose);
-
+#endif
 	compose_show_first_last_header(compose, TRUE);
 
 #if 0 /* NEW COMPOSE GUI */
