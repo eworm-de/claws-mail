@@ -91,7 +91,7 @@ struct _PrefsCommon
 	gchar *fw_quotemark;
 	gchar *fw_quotefmt;
 	gboolean forward_as_attachment;
-	gboolean bounce_keep_from;
+	gboolean redirect_keep_from;
 	gboolean smart_wrapping;
 	gboolean block_cursor;
 	gchar *quote_chars;

@@ -162,7 +162,7 @@ int matcher_parserwrap(void)
 %token MATCHER_MARK_AS_READ  MATCHER_MARK_AS_UNREAD  MATCHER_FORWARD
 %token MATCHER_FORWARD_AS_ATTACHMENT  MATCHER_EOL  MATCHER_STRING  
 %token MATCHER_OR MATCHER_AND  
-%token MATCHER_COLOR MATCHER_SCORE_EQUAL MATCHER_BOUNCE MATCHER_DELETE_ON_SERVER
+%token MATCHER_COLOR MATCHER_SCORE_EQUAL MATCHER_REDIRECT MATCHER_DELETE_ON_SERVER
 %token MATCHER_SIZE_GREATER MATCHER_SIZE_SMALLER MATCHER_SIZE_EQUAL
 
 %start file
@@ -811,13 +811,13 @@ MATCHER_EXECUTE MATCHER_STRING
 	destination = $3;
 	action = filteringaction_new(action_type, account_id, destination, 0);
 }
-| MATCHER_BOUNCE MATCHER_INTEGER MATCHER_STRING
+| MATCHER_REDIRECT MATCHER_INTEGER MATCHER_STRING
 {
 	gchar * destination = NULL;
 	gint action_type = 0;
 	gint account_id = 0;
 
-	action_type = MATCHACTION_BOUNCE;
+	action_type = MATCHACTION_REDIRECT;
 	account_id = atoi($2);
 	destination = $3;
 	action = filteringaction_new(action_type, account_id, destination, 0);

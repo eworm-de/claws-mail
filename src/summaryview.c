@@ -398,7 +398,7 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/Follow-up and reply to"),	NULL, summary_reply_cb,	COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL},
 	{N_("/Reply to a_ll"),		NULL, summary_reply_cb,	COMPOSE_REPLY_TO_ALL, NULL},
 	{N_("/_Forward"),		NULL, summary_reply_cb, COMPOSE_FORWARD, NULL},
-	{N_("/Bounce"),	                NULL, summary_reply_cb, COMPOSE_BOUNCE, NULL},
+	{N_("/Redirect"),	        NULL, summary_reply_cb, COMPOSE_REDIRECT, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/Re-_edit"),		NULL, summary_reedit,   0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
@@ -1097,7 +1097,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/Reply to sender",	  sens);
 	menu_set_sensitive(ifactory, "/Reply to all",		  sens);
 	menu_set_sensitive(ifactory, "/Forward",		  TRUE);
-	menu_set_sensitive(ifactory, "/Bounce",	                  TRUE);
+	menu_set_sensitive(ifactory, "/Redirect",	          TRUE);
 
 	menu_set_sensitive(ifactory, "/Add sender to address book", sens);
 	menu_set_sensitive(ifactory, "/Create filter rule",         sens);
@@ -4229,8 +4229,8 @@ void summary_reply(SummaryView *summaryview, ComposeMode mode)
 			g_slist_free(msginfo_list);
 		}			
 		break;
-	case COMPOSE_BOUNCE:
-		compose_bounce(NULL, msginfo);
+	case COMPOSE_REDIRECT:
+		compose_redirect(NULL, msginfo);
 		break;
 	default:
 		g_warning("summary_reply_cb(): invalid action: %d\n", mode);

@@ -128,7 +128,7 @@ enum {
 	ACTION_MARK_AS_UNREAD = 6,
 	ACTION_FORWARD = 7,
 	ACTION_FORWARD_AS_ATTACHMENT = 8,
-	ACTION_BOUNCE = 9,
+	ACTION_REDIRECT = 9,
 	ACTION_EXECUTE = 10,
 	ACTION_COLOR = 11,
 	ACTION_DELETE_ON_SERVER = 12,
@@ -206,8 +206,8 @@ static gint prefs_filtering_get_matching_from_action(gint action_id)
 		return MATCHACTION_FORWARD;
 	case ACTION_FORWARD_AS_ATTACHMENT:
 		return MATCHACTION_FORWARD_AS_ATTACHMENT;
-	case ACTION_BOUNCE:
-		return MATCHACTION_BOUNCE;
+	case ACTION_REDIRECT:
+		return MATCHACTION_REDIRECT;
 	case ACTION_EXECUTE:
 		return MATCHACTION_EXECUTE;
 	case ACTION_COLOR:
@@ -229,7 +229,7 @@ static gchar * action_text [] = {
 	N_("Mark as unread"),
 	N_("Forward"), 
 	N_("Forward as attachment"), 
-	N_("Bounce"), 
+	N_("Redirect"), 
 	N_("Execute"),
 	N_("Color"),
 	N_("Delete on Server")
@@ -887,7 +887,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(void)
 	case ACTION_COPY:
 	case ACTION_FORWARD:
 	case ACTION_FORWARD_AS_ATTACHMENT:
-	case ACTION_BOUNCE:
+	case ACTION_REDIRECT:
 	case ACTION_EXECUTE:
 		destination = gtk_entry_get_text(GTK_ENTRY(filtering.dest_entry));
 		if (*destination == '\0') {
@@ -1075,10 +1075,10 @@ static void prefs_filtering_select_set(FilteringProp * prop)
 		gtk_list_select_item(GTK_LIST(filtering.account_list),
 				     list_id);
 		break;
-	case MATCHACTION_BOUNCE:
+	case MATCHACTION_REDIRECT:
 		list_id = get_list_id_from_account_id(action->account_id);
 		gtk_list_select_item(GTK_LIST(filtering.action_list),
-				     ACTION_BOUNCE);
+				     ACTION_REDIRECT);
 		gtk_list_select_item(GTK_LIST(filtering.account_list),
 				     list_id);
 		break;
@@ -1268,7 +1268,7 @@ static void prefs_filtering_action_select(GtkList *list,
 		gtk_widget_hide(filtering.color_optmenu);
 		gtk_widget_hide(filtering.color_label);
 		break;
-	case ACTION_BOUNCE:
+	case ACTION_REDIRECT:
 		gtk_widget_set_sensitive(filtering.account_combo, TRUE);
 		gtk_widget_show(filtering.dest_entry);
 		gtk_widget_set_sensitive(filtering.dest_entry, TRUE);

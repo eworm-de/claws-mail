@@ -1,3 +1,16 @@
+2002-05-23 [paul]	0.7.6claws13
+
+	* src/compose.[ch]
+	  src/filtering.c
+	  src/mainwindow.c
+	  src/matcher.[ch]
+	  src/matcher_parser_lex.l
+	  src/matcher_parser_parse.y
+	  src/prefs_common.[ch]
+	  src/prefs_filtering.c
+	  src/summaryview.c
+		rename 'Bounce' to 'Redirect'
+
 2002-05-23 [paul]	0.7.6claws12
 
 	* more sync with 0.7.6cvs13

@@ -86,7 +86,7 @@ static void add_char(char ch)
 "forward"	       return MATCHER_FORWARD;
 "forward_as_attachment"	      return MATCHER_FORWARD_AS_ATTACHMENT;
 "color"         return MATCHER_COLOR;
-"bounce"	return MATCHER_BOUNCE;
+"redirect"	return MATCHER_REDIRECT;
 "delete_on_server"	return MATCHER_DELETE_ON_SERVER;
 [ \t]+
 "\n"		return MATCHER_EOL;
