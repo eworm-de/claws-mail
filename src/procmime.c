@@ -1110,7 +1110,7 @@ static void add_to_mimeinfo_parameters(gchar **parts, MimeInfo *mimeinfo)
 	for (strarray = parts; *strarray != NULL; strarray++) {
 		gchar **parameters_parts;
 
-		parameters_parts = g_strsplit(*strarray, "=", 1);
+		parameters_parts = g_strsplit(*strarray, "=", 2);
 		if ((parameters_parts[0] != NULL) && (parameters_parts[1] != NULL)) {
 			gchar *firstspace;
 
