@@ -1,3 +1,8 @@
+2002-11-12
+
+	* src/folder.c: folder_write_list_recursive(): To/Cc/Bcc/Reply-To
+	  の文字列をエスケープするようにした。
+
 2002-11-11
 
 	* src/codeconv.c: conv_encode_header(): libjconv 未使用時に日本語

@@ -1,3 +1,8 @@
+2002-11-12
+
+	* src/folder.c: folder_write_list_recursive(): escape
+	  To/Cc/Bcc/Reply-To strings.
+
 2002-11-11
 
 	* src/codeconv.c: conv_encode_header(): enabled B-encoding of

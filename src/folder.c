@@ -2338,6 +2338,13 @@ static gchar *folder_get_list_path(void)
 	return filename;
 }
 
+#define PUT_ESCAPE_STR(fp, attr, str)			\
+{							\
+	fputs(" " attr "=\"", fp);			\
+	xml_file_put_escape_str(fp, str);		\
+	fputs("\"", fp);				\
+}
+
 static void folder_write_list_recursive(GNode *node, gpointer data)
 {
 	FILE *fp = (FILE *)data;
@@ -2363,17 +2370,11 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 		Folder *folder = item->folder;
 
 		fprintf(fp, "<folder type=\"%s\"", folder_type_str[folder->type]);
-		if (folder->name) {
-			fputs(" name=\"", fp);
-			xml_file_put_escape_str(fp, folder->name);
-			fputs("\"", fp);
-		}
-		if ((folder->type == F_MH) || (folder->type == F_MBOX)) {
-			fputs(" path=\"", fp);
-			xml_file_put_escape_str
-				(fp, LOCAL_FOLDER(folder)->rootpath);
-			fputs("\"", fp);
-		}
+		if (folder->name)
+			PUT_ESCAPE_STR(fp, "name", folder->name);
+		if ((folder->type == F_MH || (folder->type == F_MBOX))
+			PUT_ESCAPE_STR(fp, "path",
+				       LOCAL_FOLDER(folder)->rootpath);
 		if (item->collapsed && node->children)
 			fputs(" collapsed=\"1\"", fp);
 		if (folder->account)
@@ -2386,17 +2387,11 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 	} else {
 		fprintf(fp, "<folderitem type=\"%s\"",
 			folder_item_stype_str[item->stype]);
-		if (item->name) {
-			fputs(" name=\"", fp);
-			xml_file_put_escape_str(fp, item->name);
-			fputs("\"", fp);
-		}
-		if (item->path) {
-			fputs(" path=\"", fp);
-			xml_file_put_escape_str(fp, item->path);
-			fputs("\"", fp);
-		}
-		
+		if (item->name)
+			PUT_ESCAPE_STR(fp, "name", item->name);
+		if (item->path)
+			PUT_ESCAPE_STR(fp, "path", item->path);
+
 		if (item->no_sub)
 			fputs(" no_sub=\"1\"", fp);
 		if (item->no_select)
@@ -2426,7 +2421,7 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 		fprintf(fp,
 			" mtime=\"%lu\" new=\"%d\" unread=\"%d\" total=\"%d\"",
 			item->mtime, item->new, item->unread, item->total);
-			
+
 		if (item->account)
 			fprintf(fp, " account_id=\"%d\"",
 				item->account->account_id);
@@ -2780,3 +2775,5 @@ void folder_update_item_recursive(FolderItem *item, gboolean update_summary)
 		node = node->next;
 	}
 }
+
+#undef PUT_ESCAPE_STR

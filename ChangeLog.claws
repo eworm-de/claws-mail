@@ -1,3 +1,8 @@
+2002-11-12 [paul]	0.8.5claws128
+
+	* sync with 0.8.5cvs23
+		see ChangeLog entry 2002-11-12
+
 2002-11-11 [colin]	0.8.5claws127
 
 	* src/ssl_certificate.c
