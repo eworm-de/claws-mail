@@ -1259,10 +1259,10 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(basic.smtpserv_label);
 		gtk_widget_hide(basic.smtpserv_entry);
 		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table), 3, 0);
-		gtk_widget_set_sensitive(basic.uid_label,  FALSE);
-		gtk_widget_set_sensitive(basic.pass_label, FALSE);
-		gtk_widget_set_sensitive(basic.uid_entry,  FALSE);
-		gtk_widget_set_sensitive(basic.pass_entry, FALSE);
+		gtk_widget_set_sensitive(basic.uid_label,  TRUE);
+		gtk_widget_set_sensitive(basic.pass_label, TRUE);
+		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
+		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
 		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
 		break;
 	case A_LOCAL:

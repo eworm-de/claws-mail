@@ -42,6 +42,9 @@
 #include "codeconv.h"
 #include "utils.h"
 #include "prefs_common.h"
+#include "prefs_account.h"
+#include "inputdialog.h"
+#include "alertpanel.h"
 
 static gint news_get_article_cmd	 (NNTPSession	*session,
 					  const gchar	*cmd,
@@ -267,6 +270,58 @@ static gint news_get_header(NNTPSession *session, gint num, gchar *filename)
 	return news_get_article_cmd(session, "HEAD", num, filename);
 }
 
+static gchar *news_query_password(NNTPSession *session,
+				  const gchar *user)
+{
+	gchar *message;
+	gchar *pass;
+
+	message = g_strdup_printf
+		(_("Input password for %s on %s:"),
+		 user,
+		 SESSION(session)->server);
+
+	pass = input_dialog_with_invisible(_("Input password"),
+					   message, NULL);
+	g_free(message);
+/*  	manage_window_focus_in(inc_dialog->mainwin->window, */
+/*  			       NULL, NULL); */
+	return pass;
+}
+
+static gint news_authenticate(NNTPSession *session,
+			      FolderItem *item)
+{
+	gint ok;
+	const gchar *user;
+	gchar *pass;
+	gboolean need_free_pass = FALSE;
+
+	debug_print(_("news server requested authentication\n"));
+	if (!item || !item->folder || !item->folder->account)
+		return NN_ERROR;
+	user = item->folder->account->userid;
+	if (!user)
+		return NN_ERROR;
+	ok = nntp_authinfo_user(SESSION(session)->sock, user);
+	if (ok == NN_AUTHCONT) {
+		pass = item->folder->account->passwd;
+		if (!pass || !pass[0]) {
+			pass = news_query_password(session, user);
+			need_free_pass = TRUE;
+		}
+		ok = nntp_authinfo_pass(SESSION(session)->sock, pass);
+		if (need_free_pass)
+			g_free(pass);
+	}
+	if (ok != NN_SUCCESS) {
+		log_warning(_("NNTP authentication failed\n"));
+		alertpanel_error(_("Authentication for %s on %s failed."),
+				 user, SESSION(session)->server);
+	}
+	return ok;
+}
+
 static GSList *news_get_uncached_articles(NNTPSession *session,
 					  FolderItem *item, gint cache_last,
 					  gint *rfirst, gint *rlast)
@@ -288,6 +343,13 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 
 	ok = nntp_group(SESSION(session)->sock, item->path,
 			&num, &first, &last);
+	if (ok == NN_AUTHREQ) {
+		ok = news_authenticate(session, item);
+		if (ok != NN_SUCCESS)
+			return NULL;
+		ok = nntp_group(SESSION(session)->sock, item->path,
+				&num, &first, &last);
+	}
 	if (ok != NN_SUCCESS) {
 		log_warning(_("can't set group: %s\n"), item->path);
 		return NULL;

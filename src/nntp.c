@@ -209,6 +209,28 @@ gint nntp_mode(gint sock, gboolean stream)
 	return ok;
 }
 
+gint nntp_authinfo_user(gint sock, const gchar *user)
+{
+	gint ok;
+	gchar buf[NNTPBUFSIZE];
+
+	nntp_gen_send(sock, "AUTHINFO USER %s", user);
+	ok = nntp_ok(sock, buf);
+
+	return ok;
+}
+
+gint nntp_authinfo_pass(gint sock, const gchar *pass)
+{
+	gint ok;
+	gchar buf[NNTPBUFSIZE];
+
+	nntp_gen_send(sock, "AUTHINFO PASS %s", pass);
+	ok = nntp_ok(sock, buf);
+
+	return ok;
+}
+
 gint nntp_ok(gint sock, gchar *argbuf)
 {
 	gint ok;
@@ -223,8 +245,12 @@ gint nntp_ok(gint sock, gchar *argbuf)
 			if (argbuf)
 				strcpy(argbuf, buf);
 
+			if (!strncmp(buf, "381 ", 4))
+				return NN_AUTHCONT;
 			return NN_SUCCESS;
-		} else
+		} else if (!strncmp(buf, "480 ", 4))
+			return NN_AUTHREQ;
+		else
 			return NN_ERROR;
 	}
 
@@ -240,8 +266,12 @@ static void nntp_gen_send(gint sock, const gchar *format, ...)
 	g_vsnprintf(buf, sizeof(buf), format, args);
 	va_end(args);
 
-	if (verbose)
-		log_print("NNTP> %s\n", buf);
+	if (verbose) {
+		if (!g_strncasecmp(buf, "AUTHINFO PASS", 13))
+			log_print("NNTP> AUTHINFO PASS ***\n");
+		else
+			log_print("NNTP> %s\n", buf);
+	}
 
 	strcat(buf, "\r\n");
 	sock_write(sock, buf, strlen(buf));

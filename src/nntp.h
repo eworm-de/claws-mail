@@ -27,6 +27,8 @@
 #define NN_SYNTAX	5
 #define NN_IOERR	6
 #define NN_ERROR	7
+#define NN_AUTHREQ	8
+#define NN_AUTHCONT	9
 
 #define NNTPBUFSIZE	8192
 
@@ -40,6 +42,8 @@ gint nntp_head(gint sock, gint num, gchar **msgid);
 gint nntp_stat(gint sock, gint num, gchar **msgid);
 gint nntp_next(gint sock, gint *num, gchar **msgid);
 gint nntp_xover(gint sock, gint first, gint last);
+gint nntp_authinfo_user(gint sock, const gchar *user);
+gint nntp_authinfo_pass(gint sock, const gchar *pass);
 gint nntp_post(gint sock, FILE *fp);
 gint nntp_newgroups(gint sock);
 gint nntp_newnews(gint sock);

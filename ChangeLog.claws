@@ -1,3 +1,14 @@
+2001-04-26 [sergey]
+
+	* src/news.c: news_query_password(), news_authenticate(): new
+	  functions.
+	  news_get_uncached_articles(): added NNTP authentication
+	  handling.
+	* src/nntp.[ch]: nntp_authinfo_user(), nntp_authinfo_pass():
+	  new functions.
+	* src/prefs_account.c: prefs_account_protocol_activated():
+	  enable userid and password fields for NNTP.
+
 2001-04-26
 
 	* configure.in: check for availability of strftime()
