@@ -1,3 +1,9 @@
+2001-12-05 [paul]	0.6.5claws52
+
+	* src/mainwindow.c
+                fix bug where 'Empty Trash?' pop-up window appears even
+                when Trash is empty, submitted by Jesse Skinner        	
+
 2001-12-05 [melvin]	0.6.5claws51
 
 	* src/compose.c
