@@ -127,20 +127,28 @@ static void toolbar_reply_cb		(GtkWidget	*widget,
 static void toolbar_reply_popup_cb	(GtkWidget	*widget,
 					 GdkEventButton *event,
 					 gpointer	 data);
+static void toolbar_reply_popup_closed_cb(GtkMenuShell	*menu_shell,
+					 gpointer	 data);
 static void toolbar_reply_to_all_cb	(GtkWidget	*widget,
 					 gpointer	 data);
 static void toolbar_reply_to_all_popup_cb(GtkWidget	*widget,
 					 GdkEventButton *event,
+					 gpointer	 data);
+static void toolbar_reply_to_all_popup_closed_cb(GtkMenuShell	*menu_shell,
 					 gpointer	 data);
 static void toolbar_reply_to_sender_cb	(GtkWidget	*widget,
 					 gpointer	 data);
 static void toolbar_reply_to_sender_popup_cb(GtkWidget	*widget,
 					 GdkEventButton *event,
 					 gpointer	 data);
+static void toolbar_reply_to_sender_popup_closed_cb(GtkMenuShell	*menu_shell,
+					 gpointer	 data);
 static void toolbar_forward_cb		(GtkWidget	*widget,
 					 gpointer	 data);
 static void toolbar_forward_popup_cb	(GtkWidget	*widget,
 					 GdkEventButton *event,
+					 gpointer	 data);
+static void toolbar_forward_popup_closed_cb(GtkMenuShell	*menu_shell,
 					 gpointer	 data);
 
 static void toolbar_delete_cb		(GtkWidget	*widget,
@@ -736,20 +744,28 @@ MainWindow *main_window_create(SeparateType type)
 			sizeof(reply_popup_entries[0]);
 	reply_popup = popupmenu_create(window, reply_popup_entries, n_menu_entries,
 				      "<ReplyPopup>", mainwin);
+	gtk_signal_connect(GTK_OBJECT(reply_popup), "selection_done",
+			   GTK_SIGNAL_FUNC(toolbar_reply_popup_closed_cb), mainwin);
 	n_menu_entries = sizeof(replyall_popup_entries) /
 			sizeof(replyall_popup_entries[0]);
 	replyall_popup = popupmenu_create(window, replyall_popup_entries, n_menu_entries,
 				      "<ReplyAllPopup>", mainwin);
+	gtk_signal_connect(GTK_OBJECT(replyall_popup), "selection_done",
+			   GTK_SIGNAL_FUNC(toolbar_reply_to_all_popup_closed_cb), mainwin);
 	n_menu_entries = sizeof(replysender_popup_entries) /
 			sizeof(replysender_popup_entries[0]);
 	replysender_popup = popupmenu_create(window, replysender_popup_entries, n_menu_entries,
 				      "<ReplySenderPopup>", mainwin);
+	gtk_signal_connect(GTK_OBJECT(replysender_popup), "selection_done",
+			   GTK_SIGNAL_FUNC(toolbar_reply_to_sender_popup_closed_cb), mainwin);
 	/* create the popup menu for the forward button */
 	n_menu_entries = sizeof(fwd_popup_entries) /
 			sizeof(fwd_popup_entries[0]);
 	fwd_popup = popupmenu_create(window, fwd_popup_entries, n_menu_entries,
 				      "<ForwardPopup>", mainwin);
-					  
+	gtk_signal_connect(GTK_OBJECT(fwd_popup), "selection_done",
+			   GTK_SIGNAL_FUNC(toolbar_forward_popup_closed_cb), mainwin);
+			   
 	main_window_toolbar_create(mainwin, handlebox);
 
 	/* vbox that contains body */
@@ -1958,8 +1974,20 @@ static void toolbar_reply_popup_cb(GtkWidget *widget, GdkEventButton *event, gpo
 	
 	if (!event) return;
 
-	if (event->button == 3)
-		gtk_menu_popup(GTK_MENU(mainwindow->reply_popup), NULL, NULL, NULL,	NULL, 1, 0);
+	if (event->button == 3) {
+		gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
+		gtk_menu_popup(GTK_MENU(mainwindow->reply_popup), NULL, NULL,
+		       menu_button_position, widget,
+		       event->button, event->time);
+	}
+}
+
+static void toolbar_reply_popup_closed_cb(GtkMenuShell *menu_shell, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+
+	gtk_button_set_relief(GTK_BUTTON(mainwin->reply_btn), GTK_RELIEF_NONE);
+	manage_window_focus_in(mainwin->window, NULL, NULL);
 }
 
 static void toolbar_reply_to_all_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
@@ -1968,8 +1996,20 @@ static void toolbar_reply_to_all_popup_cb(GtkWidget *widget, GdkEventButton *eve
 	
 	if (!event) return;
 
-	if (event->button == 3)
-		gtk_menu_popup(GTK_MENU(mainwindow->replyall_popup), NULL, NULL, NULL,	NULL, 1, 0);
+	if (event->button == 3) {
+		gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
+		gtk_menu_popup(GTK_MENU(mainwindow->replyall_popup), NULL, NULL,
+		       menu_button_position, widget,
+		       event->button, event->time);
+	}
+}
+
+static void toolbar_reply_to_all_popup_closed_cb(GtkMenuShell *menu_shell, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+
+	gtk_button_set_relief(GTK_BUTTON(mainwin->replyall_btn), GTK_RELIEF_NONE);
+	manage_window_focus_in(mainwin->window, NULL, NULL);
 }
 
 static void toolbar_reply_to_sender_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
@@ -1979,8 +2019,20 @@ static void toolbar_reply_to_sender_popup_cb(GtkWidget *widget, GdkEventButton *
 
 	if (!event) return;
 
-	if (event->button == 3)
-		gtk_menu_popup(GTK_MENU(mainwindow->replysender_popup), NULL, NULL, NULL,	NULL, 1, 0);
+	if (event->button == 3) {
+		gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
+		gtk_menu_popup(GTK_MENU(mainwindow->replysender_popup), NULL, NULL,
+		       menu_button_position, widget,
+		       event->button, event->time);
+	}
+}
+
+static void toolbar_reply_to_sender_popup_closed_cb(GtkMenuShell *menu_shell, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+
+	gtk_button_set_relief(GTK_BUTTON(mainwin->replysender_btn), GTK_RELIEF_NONE);
+	manage_window_focus_in(mainwin->window, NULL, NULL);
 }
 
 static void toolbar_forward_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
@@ -1989,8 +2041,20 @@ static void toolbar_forward_popup_cb(GtkWidget *widget, GdkEventButton *event, g
 	
 	if (!event) return;
 
-	if (event->button == 3)
-		gtk_menu_popup(GTK_MENU(mainwindow->fwd_popup), NULL, NULL, NULL,	NULL, 1, 0);
+	if (event->button == 3) {
+		gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
+		gtk_menu_popup(GTK_MENU(mainwindow->fwd_popup), NULL, NULL,
+		       menu_button_position, widget,
+		       event->button, event->time);
+	}
+}
+
+static void toolbar_forward_popup_closed_cb(GtkMenuShell *menu_shell, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+
+	gtk_button_set_relief(GTK_BUTTON(mainwin->fwd_btn), GTK_RELIEF_NONE);
+	manage_window_focus_in(mainwin->window, NULL, NULL);
 }
 
 static void toolbar_inc_cb	(GtkWidget	*widget,
