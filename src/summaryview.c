@@ -1876,7 +1876,6 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 		summary_status_show(summaryview);
 	}
 
-	if (GTK_WIDGET_VISIBLE(summaryview->headerwin->window))
 	if (new_window) {
 		MessageView *msgview;
 
@@ -1899,6 +1898,7 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 		gtkut_ctree_node_move_if_on_the_edge(ctree, row);
 	}
 
+	if (GTK_WIDGET_VISIBLE(summaryview->headerwin->window))
 		header_window_show(summaryview->headerwin, msginfo);
 
 	lock = FALSE;
