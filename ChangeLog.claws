@@ -1,3 +1,17 @@
+2003-03-11 [paul]	0.8.10claws107
+
+	* manual/en/Makefile.am
+	  manual/en/*.html
+	  	update English manual, add a new page
+		updated by Francois Barriere <fbarriere@atmel.fr>
+		
+	* po/bg.po
+	  po/it.po
+	  po/sr.po
+	  	update Bulgarian, Italian, and Serbian translations
+		submitted by George Danchev, Alessandro Maestri, and
+		Urke MMI
+
 2003-03-10 [paul]	0.8.10claws106
 
 	* src/gtk/about.c
