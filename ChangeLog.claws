@@ -1,3 +1,9 @@
+2004-02-27 [luke]	0.9.9claws34
+	
+	* src/folder.c
+		Do folder_item_apply_processing() even if no processing
+		rules for the folder exist (so global processing is applied)
+
 2004-02-26 [thorsten]	0.9.9claws33
 
 	* src/mimeview.c
