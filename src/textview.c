@@ -1735,17 +1735,16 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		if (summaryview)
 			summary_pass_key_press_event(summaryview, event);
 		break;
-	case GDK_n:
-	case GDK_N:
-	case GDK_p:
-	case GDK_P:
 	case GDK_y:
 	case GDK_t:
 	case GDK_l:
-		KEY_PRESS_EVENT_STOP();
-		mimeview_pass_key_press_event(messageview->mimeview,
-					      event);
-		/* fall through */
+		if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) == 0) {
+			KEY_PRESS_EVENT_STOP();
+			mimeview_pass_key_press_event(messageview->mimeview,
+						      event);
+			break;
+		}
+		/* possible fall through */
 	default:
 		if (summaryview &&
 		    event->window != messageview->mainwin->window->window) {

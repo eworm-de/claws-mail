@@ -347,8 +347,6 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 		icon_list_toggle_by_mime_info
 			(mimeview, gtk_ctree_node_get_row_data(ctree, node));
 		gtkut_ctree_set_focus_row(ctree, node);
-		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(mimeview->mime_toggle)))
-			gtk_widget_grab_focus(mimeview->ctree);
 	}
 }
 
@@ -623,7 +621,7 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
 	if (privacy_mimeinfo_is_signed(mimeinfo)) {
 		gchar *text = NULL, *button_text = NULL;
 		GtkSignalFunc func = NULL;
-		StockPixmap icon;
+		StockPixmap icon = STOCK_PIXMAP_PRIVACY_SIGNED;
 		
 		switch (privacy_mimeinfo_get_sig_status(mimeinfo)) {
 		case SIGNATURE_UNCHECKED:
@@ -910,15 +908,14 @@ static void mimeview_save_all(MimeView *mimeview)
 {
 	gchar *dirname;
 	gchar *defname = NULL;
-	MimeInfo *partinfo;
 	MimeInfo *attachment;
 	gchar buf[1024];
 
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
 
-	partinfo = mimeview_get_selected_part(mimeview);
-	g_return_if_fail(partinfo != NULL);
+	attachment = mimeview->mimeinfo;
+	g_return_if_fail(attachment != NULL);
 
 	dirname = filesel_select_file(_("Save as"), defname);
 	if (!dirname) return;
@@ -941,43 +938,42 @@ static void mimeview_save_all(MimeView *mimeview)
 		}
 	}
 
-	/* return to first children */
-	if (partinfo->node->parent->children == NULL) return;  /* multipart container? */
-	attachment = partinfo->node->parent->children->next != NULL ?
-	    (MimeInfo *) partinfo->node->parent->children->next->data : NULL;
 	/* for each attachment, extract it in the selected dir. */
 	while (attachment != NULL) {
-		static guint subst_cnt = 1;
-		gchar *attachdir;
-		gchar *attachname = g_strdup(get_part_name(attachment));
-		AlertValue aval = G_ALERTDEFAULT;
-		gchar *res;
+		if (attachment->type != MIMETYPE_MESSAGE &&
+		    attachment->type != MIMETYPE_MULTIPART) {
+			static guint subst_cnt = 1;
+			gchar *attachdir;
+			gchar *attachname = g_strdup(get_part_name(attachment));
+			AlertValue aval = G_ALERTDEFAULT;
+			gchar *res;
 
-		if (!attachname || !strlen(attachname))
-			attachname = g_strdup_printf("noname.%d",subst_cnt++);
-		subst_chars(attachname, ":?*&|<>\t\r\n", '_');
-		g_snprintf(buf, sizeof(buf), "%s%s",
-			   dirname,
-			   (attachname[0] == G_DIR_SEPARATOR)
-			   ? &attachname[1]
-			   : attachname);
-		subst_chars(buf, "/\\", G_DIR_SEPARATOR);
-		attachdir = g_dirname(buf);
-		make_dir_hier(attachdir);
-		g_free(attachdir);
-
-		if (is_file_exist(buf)) {
-			res = g_strdup_printf(_("Overwrite existing file '%s'?"),
-					      attachname);
-			aval = alertpanel(_("Overwrite"), res, _("OK"), 
-					  _("Cancel"), NULL);
-			g_free(res);					  
+			if (!attachname || !strlen(attachname))
+				attachname = g_strdup_printf("noname.%d",subst_cnt++);
+			subst_chars(attachname, ":?*&|<>\t\r\n", '_');
+			g_snprintf(buf, sizeof(buf), "%s%s",
+				   dirname,
+				   (attachname[0] == G_DIR_SEPARATOR)
+				   ? &attachname[1]
+				   : attachname);
+			subst_chars(buf, "/\\", G_DIR_SEPARATOR);
+			attachdir = g_dirname(buf);
+			make_dir_hier(attachdir);
+			g_free(attachdir);
+			
+			if (is_file_exist(buf)) {
+				res = g_strdup_printf(_("Overwrite existing file '%s'?"),
+						      attachname);
+				aval = alertpanel(_("Overwrite"), res, _("OK"), 
+						  _("Cancel"), NULL);
+				g_free(res);					  
+			}
+			g_free(attachname);
+			
+			if ((G_ALERTDEFAULT != aval) || (procmime_get_part(buf, attachment) < 0))
+				alertpanel_error(_("Can't save the part of multipart message."));
 		}
-		g_free(attachname);
-
-		if ((G_ALERTDEFAULT != aval) || (procmime_get_part(buf, attachment) < 0))
-			alertpanel_error(_("Can't save the part of multipart message."));
-		attachment = attachment->node->next != NULL ? (MimeInfo *) attachment->node->next->data : NULL;
+		attachment = procmime_mimeinfo_next(attachment);
 	}
 }
 
@@ -1215,15 +1211,17 @@ static gboolean icon_clicked_cb (GtkWidget *button, GdkEventButton *event, MimeV
 
 	num      = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(button), "icon_number"));
 	partinfo = gtk_object_get_data(GTK_OBJECT(button), "partinfo");
-	if (event->button == 1) { 
-		icon_selected(mimeview, num, partinfo);
-		gtk_widget_grab_focus(button);
-		
-		if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button)))
-			toggle_icon(GTK_TOGGLE_BUTTON(button), mimeview);
-		else
-			gtk_signal_emit_stop_by_name(GTK_OBJECT(button), "button_press_event");
-	}		
+
+	icon_selected(mimeview, num, partinfo);
+	gtk_widget_grab_focus(button);
+	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
+		toggle_icon(GTK_TOGGLE_BUTTON(button), mimeview);
+		if (event->button == 2 || event->button == 3)
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
+						     TRUE);
+	} else {
+		gtk_signal_emit_stop_by_name(GTK_OBJECT(button), "button_press_event");
+	}
 
 	part_button_pressed(mimeview, event, partinfo);
 

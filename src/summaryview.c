@@ -4486,12 +4486,6 @@ static gint summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		textview_scroll_one_line
 			(textview, (event->state & GDK_MOD1_MASK) != 0);
 		break;
-	case GDK_asterisk:	/* Mark */
-		summary_mark(summaryview);
-		break;
-	case GDK_exclam:	/* Mark as unread */
-		summary_mark_as_unread(summaryview);
-		break;
 	case GDK_Delete:
 		BREAK_ON_MODIFIER_KEY();
 		summary_delete(summaryview);
