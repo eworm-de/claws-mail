@@ -1,3 +1,12 @@
+2002-04-19 [match]	0.7.4claws83
+	* src/addressbook.[ch]
+	* src/addrharvest.[ch]
+	* src/addrgather.[ch]
+		recurse folders.
+	* src/mainwindow.c
+	* src/summaryview.[ch]
+		change menu option.
+
 2002-04-19 [paul]	0.7.4claws82
 
 	* po/pt_BR.po
