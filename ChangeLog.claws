@@ -1,3 +1,9 @@
+2003-04-28 [paul]	0.8.11claws121
+
+	* src/action.c
+		a better fix for the crash when performing an action
+		on a mime part
+
 2003-04-28 [paul]	0.8.11claws120
 
 	* src/action.c

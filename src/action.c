@@ -588,32 +588,34 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 	}
 
 	if (text) {
-		start = GTK_EDITABLE(text)->selection_start_pos;
-		end   = GTK_EDITABLE(text)->selection_end_pos;
-		if (start > end) {
-			guint tmp;
-			tmp = start;
-			start = end;
-			end = tmp;
-		}
+		if (GTK_EDITABLE(text)->has_selection) {
+			start = GTK_EDITABLE(text)->selection_start_pos;
+			end   = GTK_EDITABLE(text)->selection_end_pos;
+			if (start > end) {
+				guint tmp;
+				tmp = start;
+				start = end;
+				end = tmp;
+			}
 
-		if (start == end) {
+			if (start == end) {
+				start = body_pos;
+				end = gtk_stext_get_length(GTK_STEXT(text));
+				msg_str = gtk_editable_get_chars(GTK_EDITABLE(text),
+							 start, end);
+			} else {
+				sel_str = gtk_editable_get_chars(GTK_EDITABLE(text),
+							 	 start, end);
+			msg_str = g_strdup(sel_str);
+			}
+		}  else {
 			start = body_pos;
 			end = gtk_stext_get_length(GTK_STEXT(text));
 			msg_str = gtk_editable_get_chars(GTK_EDITABLE(text),
-							 start, end);
-		} else {
-			sel_str = gtk_editable_get_chars(GTK_EDITABLE(text),
-							 start, end);
-			msg_str = g_strdup(sel_str);
-		}
-	} else {
-		start = body_pos;
-		end = gtk_stext_get_length(GTK_STEXT(text));
-		msg_str = gtk_editable_get_chars(GTK_EDITABLE(text),
 						 start, end);
+		} 
 	}
-
+	
 	if (action_type & ACTION_USER_STR) {
 		if (!(user_str = get_user_string(action, ACTION_USER_STR))) {
 			g_free(msg_str);
