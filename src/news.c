@@ -102,6 +102,8 @@ static GSList *news_delete_old_articles	 (GSList	*alist,
 					  FolderItem	*item,
 					  gint		 first);
 static void news_delete_all_articles	 (FolderItem	*item);
+static void news_delete_expired_caches	 (GSList	*alist,
+					  FolderItem	*item);
 
 static gint news_remove_msg		 (Folder	*folder, 
 					  FolderItem	*item, 
@@ -293,7 +295,7 @@ GSList *news_get_article_list(Folder *folder, FolderItem *item,
 
 	if (!session) {
 		alist = procmsg_read_cache(item, FALSE);
-		item->last_num = procmsg_get_last_num_in_cache(alist);
+		item->last_num = procmsg_get_last_num_in_msg_list(alist);
 	} else if (use_cache) {
 		GSList *newlist;
 		gint cache_last;
@@ -301,12 +303,20 @@ GSList *news_get_article_list(Folder *folder, FolderItem *item,
 
 		alist = procmsg_read_cache(item, FALSE);
 
-		cache_last = procmsg_get_last_num_in_cache(alist);
+		cache_last = procmsg_get_last_num_in_msg_list(alist);
 		newlist = news_get_uncached_articles
 			(session, item, cache_last, &first, &last);
-		alist = news_delete_old_articles(alist, item, first);
+		if (first == 0 && last == 0) {
+			news_delete_all_articles(item);
+			procmsg_msg_list_free(alist);
+			alist = NULL;
+		} else {
+			alist = news_delete_old_articles(alist, item, first);
+			news_delete_expired_caches(alist, item);
+		}
 
 		alist = g_slist_concat(alist, newlist);
+
 		item->last_num = last;
 	} else {
 		gint last;
@@ -696,8 +706,8 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 	GSList *llast = NULL;
 	MsgInfo *msginfo;
 
-	if (rfirst) *rfirst = 0;
-	if (rlast)  *rlast  = 0;
+	if (rfirst) *rfirst = -1;
+	if (rlast)  *rlast  = -1;
 
 	g_return_val_if_fail(session != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
@@ -716,6 +726,10 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 			    first, last);
 		return NULL;
 	}
+
+	if (rfirst) *rfirst = first;
+	if (rlast)  *rlast  = last;
+
 	if (cache_last < first)
 		begin = first;
 	else if (last < cache_last)
@@ -726,9 +740,6 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 	} else
 		begin = cache_last + 1;
 	end = last;
-
-	if (rfirst) *rfirst = first;
-	if (rlast)  *rlast  = last;
 
 	if (prefs_common.max_articles > 0 &&
 	    end - begin + 1 > prefs_common.max_articles)
@@ -934,7 +945,7 @@ static GSList *news_delete_old_articles(GSList *alist, FolderItem *item,
 
 	if (first < 2) return alist;
 
-	debug_print(_("Deleting cached articles 1 - %d ... "), first - 1);
+	debug_print("Deleting cached articles 1 - %d ...\n", first - 1);
 
 	dir = folder_item_get_path(item);
 	remove_numbered_files(dir, 1, first - 1);
@@ -951,7 +962,6 @@ static GSList *news_delete_old_articles(GSList *alist, FolderItem *item,
 
 		cur = next;
 	}
-	debug_print(_("done.\n"));
 
 	return alist;
 }
@@ -964,13 +974,26 @@ static void news_delete_all_articles(FolderItem *item)
 	g_return_if_fail(item->folder != NULL);
 	g_return_if_fail(item->folder->type == F_NEWS);
 
-	debug_print(_("\tDeleting all cached articles... "));
+	debug_print("Deleting all cached articles...\n");
 
 	dir = folder_item_get_path(item);
 	remove_all_numbered_files(dir);
 	g_free(dir);
+}
 
-	debug_print(_("done.\n"));
+static void news_delete_expired_caches(GSList *alist, FolderItem *item)
+{
+	gchar *dir;
+
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->folder != NULL);
+	g_return_if_fail(item->folder->type == F_NEWS);
+
+	debug_print("Deleting expired cached articles...\n");
+
+	dir = folder_item_get_path(item);
+	remove_expired_files(dir, 24 * 7);
+	g_free(dir);
 }
 
 gint news_cancel_article(Folder * folder, MsgInfo * msginfo)

@@ -1793,6 +1793,60 @@ gint remove_all_numbered_files(const gchar *dir)
 	return remove_numbered_files(dir, 0, UINT_MAX);
 }
 
+gint remove_expired_files(const gchar *dir, guint hours)
+{
+	DIR *dp;
+	struct dirent *d;
+	struct stat s;
+	gchar *prev_dir;
+	gint fileno;
+	time_t mtime, now, expire_time;
+
+	prev_dir = g_get_current_dir();
+
+	if (chdir(dir) < 0) {
+		FILE_OP_ERROR(dir, "chdir");
+		return -1;
+	}
+
+	if ((dp = opendir(".")) == NULL) {
+		FILE_OP_ERROR(dir, "opendir");
+		return -1;
+	}
+
+	now = time(NULL);
+	expire_time = hours * 60 * 60;
+
+	while ((d = readdir(dp)) != NULL) {
+		fileno = to_number(d->d_name);
+		if (fileno >= 0) {
+			if (stat(d->d_name, &s) < 0) {
+				FILE_OP_ERROR(d->d_name, "stat");
+				continue;
+			}
+			if (S_ISDIR(s.st_mode))
+				continue;
+			mtime = MAX(s.st_mtime, s.st_atime);
+			if (now - mtime > expire_time) {
+				if (unlink(d->d_name) < 0)
+					FILE_OP_ERROR(d->d_name, "unlink");
+			}
+		}
+	}
+
+	closedir(dp);
+
+	if (chdir(prev_dir) < 0) {
+		FILE_OP_ERROR(prev_dir, "chdir");
+		g_free(prev_dir);
+		return -1;
+	}
+
+	g_free(prev_dir);
+
+	return 0;
+}
+
 gint remove_dir_recursive(const gchar *dir)
 {
 	struct stat s;

@@ -1376,15 +1376,19 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
         if (num > 0) {
     		msginfo = folder->fetch_msginfo(folder, dest, num);
 
-		if(MSG_IS_NEW(msginfo->flags))
-			dest->new++;
-		if(MSG_IS_UNREAD(msginfo->flags))
-			dest->unread++;
-		dest->total++;
+		if(msginfo != NULL) {
+			if(MSG_IS_NEW(msginfo->flags))
+			        dest->new++;
+		        if(MSG_IS_UNREAD(msginfo->flags))
+				dest->unread++;
+			dest->total++;
+
+            		msgcache_add_msg(dest->cache, msginfo);
+
+    			procmsg_msginfo_free(msginfo);
+		}
 
                 dest->last_num = num;
-                msgcache_add_msg(dest->cache, msginfo);
-    		procmsg_msginfo_free(msginfo);
         }
 
 	return num;

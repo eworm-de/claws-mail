@@ -1,5 +1,15 @@
 2002-07-26
 
+	* src/news.c: implement automatic cache expiration.
+	  news_delete_expired_caches(): new.
+	  news_get_article_list(): fixed a bug that nonexistent messages
+	  were not removed from list.
+	* src/procmsg.[ch]: procmsg_get_last_num_in_msg_list(): renamed
+	  procmsg_get_last_num_in_cache().
+	* src/utils.[ch]: remove_expired_files(): new.
+
+2002-07-26
+
 	* src/inc.c:
 	  inc_mail(): force summary refresh when using external command for
 	  incorporation.

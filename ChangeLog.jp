@@ -1,5 +1,15 @@
 2002-07-26
 
+	* src/news.c: 自動キャッシュ削除を実装。
+	  news_delete_expired_caches(): 新規。
+	  news_get_article_list(): 存在しないメッセージがリストから削除
+	  されないバグを修正。
+	* src/procmsg.[ch]: procmsg_get_last_num_in_msg_list():
+	  procmsg_get_last_num_in_cache() を名称変更。
+	* src/utils.[ch]: remove_expired_files(): 新規。
+
+2002-07-26
+
 	* src/inc.c
 	  inc_mail(): 取込に外部コマンドを使ったときはサマリの更新を強制
 	  するようにした。
