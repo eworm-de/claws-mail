@@ -3787,6 +3787,19 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	g_return_val_if_fail(compose->account != NULL, -1);
 	g_return_val_if_fail(compose->account->address != NULL, -1);
 
+	/* Save copy folder */
+	if(is_draft) {
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
+			gchar *savefolderid;
+
+			savefolderid = gtk_editable_get_chars(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
+			fprintf(fp, "SCF:%s\n\n", savefolderid);
+			g_free(savefolderid);
+		} else {
+			fprintf(fp, " \n\n");
+		}
+	}
+
 	/* Date */
 	if (compose->account->add_date) {
 		get_rfc822_date(buf, sizeof(buf));
@@ -4012,15 +4025,6 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		}
 	}
 	
-	/* Save copy folder */
-	if(is_draft && gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
-		gchar *savefolderid;
-		
-		savefolderid = gtk_editable_get_chars(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
-		fprintf(fp, "SCF:%s\n", savefolderid);
-		g_free(savefolderid);
-	}
-
 	/* separator between header and body */
 	fputs("\n", fp);
 
@@ -6218,6 +6222,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 
 	newmsginfo = folder_item_fetch_msginfo(draft, msgnum);
 	procmsg_msginfo_unset_flags(newmsginfo, ~0, ~0);
+	MSG_SET_TMP_FLAGS(newmsginfo->flags, MSG_DRAFT);
 	folderview_update_item(draft, TRUE);
 	procmsg_msginfo_free(newmsginfo);
 	

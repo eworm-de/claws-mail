@@ -531,7 +531,7 @@ MsgInfo *procheader_parse_stream(FILE *fp, MsgFlags flags, gboolean full,
 
 	hentry = full ? hentry_full : hentry_short;
 
-	if (MSG_IS_QUEUED(flags)) {
+	if (MSG_IS_QUEUED(flags) || MSG_IS_DRAFT(flags)) {
 		while (fgets(buf, sizeof(buf), fp) != NULL)
 			if (buf[0] == '\r' || buf[0] == '\n') break;
 	}

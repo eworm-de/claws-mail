@@ -1,3 +1,14 @@
+2002-09-11 [colin]	0.8.2claws41
+	
+	* src/compose.c
+		Put SCF: pseudo-header on top of message
+		Set draft tmp_flag when saved as draft
+
+	* src/procmsg.c
+	  src/procheader.c
+		Skip after first \n\n for beginning of real message
+		for drafts too
+
 2002-09-11 [christoph]	0.8.2claws40
 
 	* src/filtering.c

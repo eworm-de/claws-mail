@@ -774,7 +774,7 @@ FILE *procmsg_open_message(MsgInfo *msginfo)
 
 	g_free(file);
 
-	if (MSG_IS_QUEUED(msginfo->flags)) {
+	if (MSG_IS_QUEUED(msginfo->flags) || MSG_IS_DRAFT(msginfo->flags)) {
 		gchar buf[BUFFSIZE];
 
 		while (fgets(buf, sizeof(buf), fp) != NULL)
