@@ -1374,6 +1374,7 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 	case MATCHCRITERIA_HEADERS_PART:
 	case MATCHCRITERIA_BODY_PART:
 	case MATCHCRITERIA_MESSAGE:
+	case MATCHCRITERIA_EXECUTE:
 		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), prop->expr);
 		break;
 

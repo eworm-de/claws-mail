@@ -1,3 +1,8 @@
+2003-05-18 [alfons]	0.8.11claws164
+
+	* src/prefs_matcher.c
+		put "execute" action command line ("expression") in edit box
+
 2003-05-18 [christoph]	0.8.11claws163
 
 	* src/mimeview.[ch]
