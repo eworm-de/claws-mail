@@ -1,3 +1,11 @@
+2001-08-31
+
+	* po/ja.po: fixed a typo that crashed Sylpheed with older version
+	  of GTK+.
+	* configure.in: fixed a bug that didn't show results correctly.
+	  Fixed a bug that --enable-compface and --enable-jconv disabled
+	  the options.
+
 2001-08-30
 
 	* version 0.6.0

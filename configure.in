@@ -8,7 +8,7 @@ MINOR_VERSION=6
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws
+EXTRA_VERSION=claws1
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl
@@ -78,20 +78,21 @@ AM_PATH_GTK(1.2.6,,
 dnl Check for built-in image view support
 AC_ARG_ENABLE(gdk-pixbuf,
 	[  --disable-gdk-pixbuf    Do not use gdk-pixbuf],
-	[ac_cv_disable_gdk_pixbuf=disable], [ac_cv_disable_gdk_pixbuf=no])
+	[ac_cv_enable_gdk_pixbuf=$enableval], [ac_cv_enable_gdk_pixbuf=yes])
 AC_ARG_ENABLE(imlib,
 	[  --disable-imlib         Do not use imlib],
-	[ac_cv_disable_imlib=disable], [ac_cv_disable_imlib=no])
+	[ac_cv_enable_imlib=$enableval], [ac_cv_enable_imlib=yes])
 
-if test "$ac_cv_disable_gdk_pixbuf" = no; then
+if test "$ac_cv_enable_gdk_pixbuf" = yes; then
 	AM_PATH_GDK_PIXBUF(0.8.0,
-		AC_DEFINE(HAVE_GDK_PIXBUF), [ac_cv_disable_gdk_pixbuf=disable])
+		[AC_DEFINE(HAVE_GDK_PIXBUF)
+		 ac_cv_enable_imlib=no], [ac_cv_enable_gdk_pixbuf=no])
 fi
-if test "$ac_cv_disable_gdk_pixbuf" = disable -a "$ac_cv_disable_imlib" = no; then
+if test "$ac_cv_enable_imlib" = yes; then
 	AM_PATH_GDK_IMLIB(1.9,
-		AC_DEFINE(HAVE_GDK_IMLIB), [ac_cv_disable_imlib=disable])
+		AC_DEFINE(HAVE_GDK_IMLIB), [ac_cv_enable_imlib=no])
 fi
-if test "$ac_cv_disable_gdk_pixbuf" = disable -a "$ac_cv_disable_imlib" = disable; then
+if test "$ac_cv_enable_gdk_pixbuf" = no -a "$ac_cv_enable_imlib" = no; then
 	AC_MSG_WARN(*** Built-in image view will not be supported ***)
 fi
 
@@ -123,7 +124,8 @@ if test $ac_cv_enable_ssl = yes; then
 	[ AC_MSG_RESULT(yes)
 	  AC_DEFINE(USE_SSL) ],
 	[ AC_MSG_RESULT(no)
-	  LIBS="$ac_save_LIBS" ])
+	  LIBS="$ac_save_LIBS"
+	  ac_cv_enable_ssl=no ])
 else
 	AC_MSG_RESULT(no)
 fi
@@ -131,9 +133,9 @@ fi
 dnl Check for X-Face support
 AC_ARG_ENABLE(compface,
 	[  --disable-compface      Do not use compface (X-Face)],
-	[ac_cv_disable_compface=disable], [ac_cv_disable_compface=no])
-if test "$ac_cv_disable_compface" = no; then
-	AC_CHECK_LIB(compface, uncompface,,[ac_cv_disable_compface=disable])
+	[ac_cv_enable_compface=$enableval], [ac_cv_enable_compface=yes])
+if test "$ac_cv_enable_compface" = yes; then
+	AC_CHECK_LIB(compface, uncompface,,[ac_cv_enable_compface=no])
 fi
 
 dnl for JPilot support in addressbook
@@ -202,9 +204,9 @@ fi
 dnl Check for libjconv
 AC_ARG_ENABLE(jconv,
 	[  --disable-jconv         Do not use libjconv],
-	[ac_cv_disable_jconv=disable], [ac_cv_disable_jconv=no])
-if test "$ac_cv_disable_jconv" = no; then
-	AC_CHECK_LIB(jconv, jconv_alloc_conv,,[ac_cv_disable_jconv=disable])
+	[ac_cv_enable_jconv=$enableval], [ac_cv_enable_jconv=yes])
+if test "$ac_cv_enable_jconv" = yes; then
+	AC_CHECK_LIB(jconv, jconv_alloc_conv,,[ac_cv_enable_jconv=no])
 fi
 
 AC_CHECK_LIB(xpg4, setlocale)
@@ -232,11 +234,11 @@ fi
 dnl check for IPv6 option
 AC_ARG_ENABLE(ipv6,
 	[  --enable-ipv6           Enable IPv6 support [default=no]],
-	[ac_cv_enableipv6=$enableval], [ac_cv_enableipv6=no])
+	[ac_cv_enable_ipv6=$enableval], [ac_cv_enable_ipv6=no])
 
 dnl automated checks for IPv6 support.
 AC_MSG_CHECKING([whether to use IPv6])
-if test x"$ac_cv_enableipv6" = xyes; then
+if test x"$ac_cv_enable_ipv6" = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_MSG_CHECKING([for IPv6 support])
 	AC_CACHE_VAL(ac_cv_ipv6,[
@@ -251,7 +253,7 @@ if test x"$ac_cv_enableipv6" = xyes; then
 		AC_DEFINE(INET6)
 	else
 		AC_MSG_WARN(*** IPv6 will not be supported ***)
-		ac_cv_enableipv6=no
+		ac_cv_enable_ipv6=no
 	fi
 else
 	AC_MSG_RESULT(no)
@@ -333,32 +335,15 @@ dnl Output the configuration summary
 echo ""
 echo "$PACKAGE $VERSION"
 echo ""
-if test "$ac_cv_disable_gdk_pixbuf" = no; then
-	echo "gdk-pixbuf : yes"
-	echo "gdk_imlib  : no"
-else
-	echo "gdk-pixbuf : no"
-	if test "$ac_cv_disable_imlib" = no; then
-		echo "gdk_imlib  : yes"
-	else
-		echo "gdk_imlib  : no"
-	fi
-fi
+echo "gdk-pixbuf : $ac_cv_enable_gdk_pixbuf"
+echo "gdk_imlib  : $ac_cv_enable_imlib"
 echo "GPGME      : $ac_cv_enable_gpgme"
 echo "JPilot     : $ac_cv_enable_jpilot"
 echo "LDAP       : $ac_cv_enable_ldap"
 echo "OpenSSL    : $ac_cv_enable_ssl"
-if test "$ac_cv_disable_compface" = no; then
-	echo "compface   : yes"
-else
-	echo "compface   : no"
-fi
-if test "$ac_cv_disable_jconv" = no; then
-	echo "libjconv   : yes"
-else
-	echo "libjconv   : no"
-fi
-echo "IPv6       : $ac_cv_enableipv6"
+echo "compface   : $ac_cv_enable_compface"
+echo "libjconv   : $ac_cv_enable_jconv"
+echo "IPv6       : $ac_cv_enable_ipv6"
 echo ""
 echo "The binary will be installed in $prefix/bin"
 echo ""
