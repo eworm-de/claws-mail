@@ -1,3 +1,9 @@
+2001-06-30 [paul]
+
+	* src/codeconv.c
+		small change to Alfons' previous stuff so that it
+		actually makes
+
 2001-06-30 [alfons]
 
 	* lots of files changed; first attempt to merge the changes

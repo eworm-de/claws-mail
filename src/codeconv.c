@@ -965,7 +965,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 
 	g_free(wsrc);
 
-	/g_print("dest = %s\n", dest);
+	/* g_print("dest = %s\n", dest);  */
 }
 #else /* !HAVE_LIBJCONV */
 
