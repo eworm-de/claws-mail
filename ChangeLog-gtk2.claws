@@ -1,3 +1,10 @@
+2004-09-14 [colin]	0.9.12cvs99.5
+
+	* src/common/socket.c
+	* AUTHORS
+		Fix send error on 64bit platforms
+		Patch by Guy Rouillier <guy-rouillier@speakeasy.net>
+
 2004-09-14 [colin]	0.9.12cvs99.4
 
 	* src/action.c

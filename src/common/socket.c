@@ -797,7 +797,7 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 	SockLookupData *lookup_data = (SockLookupData *)data;
 	GList *addr_list = NULL;
 	SockAddrData *addr_data;
-	guint bytes_read;
+	gsize bytes_read;
 	gint ai_member[4];
 	struct sockaddr *addr;
 
