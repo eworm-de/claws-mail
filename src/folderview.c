@@ -865,7 +865,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	if (use_bold && boldfont)
 		style->font = boldfont;
 	else
-		style->font = ctree_style->font;
+		style->font = normalfont;
 
 	if (use_color) {
 		style->fg[GTK_STATE_NORMAL]   = folderview->color_new;

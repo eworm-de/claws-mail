@@ -2,6 +2,10 @@
 
 	* src/prefs_common.c
 		bug fix in font selection
+	* src/folderview.c
+		use sylpheed's normal font instead of
+		gtk default font for folders without
+		new messages
 
 2001-06-24 [alfons]
 
