@@ -1,3 +1,9 @@
+2004-05-19 [alfons]	0.9.10claws65
+
+	* src/summaryview.h
+		on some platforms regoff_t is defined as off_t, so 
+		pull in sys/types.h
+
 2004-05-19 [paul]	0.9.10claws64
 
 	* sync with 0.9.10cvs13
