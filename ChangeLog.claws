@@ -1,4 +1,7 @@
 2001-04-24
+	* added comments in src/news.c src/nntp.c
+
+2001-04-24
 
     0.4.65claws5
 
@@ -16,6 +19,18 @@
 
 		 * updated all .cvsignores to really ignore things that could
 		   be unintentionally committed by a recursive commit.
+
+2001-04-23
+	* added src/grouplist_dialog.[ch]
+	* changed src/folderview.c to call grouplist_dialog instead
+		of inputdialog
+	* src/news.c :
+		added functions news_reset_group_list
+		and news_get_group_list
+	* src/nntp.c :
+		added function nntp_list
+	* src/defs.h :
+		added GROUPLIST_FILE : name of the newsgroup list cache file
 
 2001-04-21
 
