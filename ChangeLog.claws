@@ -1,3 +1,11 @@
+2002-05-12 [melvin]	0.7.5claws21
+
+	* src/compose.[ch]
+		Added possibility to set message's priority.
+	*  src/procmsg.[ch]
+		Added possibility to set message's priority.
+		Added missing headers
+
 2002-05-12 [melvin]	0.7.5claws20
 
 	* src/prefs_actions.c
