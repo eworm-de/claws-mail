@@ -227,6 +227,7 @@ void mimeview_init(MimeView *mimeview)
 static gboolean mimeview_is_signed(MimeView *mimeview)
 {
 	MimeInfo *partinfo;
+	MsgInfo *msginfo;
 
         debug_print("mimeview_is signed of %p\n", mimeview);
 
@@ -247,7 +248,7 @@ static gboolean mimeview_is_signed(MimeView *mimeview)
 	do {
 		if (rfc2015_has_signature(partinfo))
 			return TRUE;
-		if (pgptext_has_signature(partinfo))
+		if (pgptext_has_signature(msginfo, partinfo))
 			return TRUE;
         } while ((partinfo = partinfo->parent) != NULL);
 

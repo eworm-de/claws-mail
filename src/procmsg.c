@@ -791,6 +791,44 @@ FILE *procmsg_open_message_decrypted(MsgInfo *msginfo, MimeInfo **mimeinfo)
 		}
 	}
 
+	if (!MSG_IS_ENCRYPTED(msginfo->flags) &&
+	    pgptext_is_encrypted(mimeinfo_, msginfo)) {
+		MSG_SET_TMP_FLAGS(msginfo->flags, MSG_ENCRYPTED);
+	}
+
+	/* To avoid trouble with the rfc2015 stuff we go for encryption 
+	 * right here. */
+	if (MSG_IS_ENCRYPTED(msginfo->flags)  &&
+	    !msginfo->plaintext_file  &&
+	    !msginfo->decryption_failed) {
+		/* This is an encrypted message but it has not yet
+		 * been decrypted and there was no unsuccessful
+		 * decryption attempt */
+		pgptext_decrypt_message(msginfo, mimeinfo_, fp);
+		if (msginfo->plaintext_file &&
+		    !msginfo->decryption_failed) {
+			fclose(fp);
+			procmime_mimeinfo_free_all(mimeinfo_);
+			if ((fp = procmsg_open_message(msginfo)) == NULL)
+				return NULL;
+			mimeinfo_ = procmime_scan_mime_header(fp);
+			if (!mimeinfo_) {
+				fclose(fp);
+				return NULL;
+			}
+		}
+	}
+
+
+		/* FIXME: Move the sig stuff to the place were the rfc2015 sig
+		 * stuff is and clean it up a bit. */
+		if (mimeinfo_->mime_type != MIME_MULTIPART) {
+			/* Right now mime/multipart does not work, so we do no 
+			 * checking on it. */
+			if (pgptext_has_signature(msginfo, mimeinfo_) == TRUE)
+				pgptext_check_signature(mimeinfo_, fp);
+		}
+
 	if (mimeinfo) *mimeinfo = mimeinfo_;
 	return fp;
 }

@@ -1,3 +1,29 @@
+2002-02-26 [paul]	0.7.2claws16
+
+	* src/mimeview.c
+	  src/pgptext.[ch]
+	  src/procmsg.c
+		make decryption of ascii-armored pgp encrypted messages
+		and verification of ascii-armored signatures work again.
+		slightly altered from the patch by Jens Jahnke 
+		<jan0sch@gmx.net>
+
+		##FIX ME##
+		* the checking of plaintext signatures always comes up in 
+		  a popup box
+		* it doesn't work for multipart messages 
+		* the mail headers and first lines of a pgptext signed message 
+		  (e.g. -----BEGIN PGP SIGNED MESSAGE-----\nHash: SHA1)
+		  are not displayed
+
+	* src/mainwindow.c
+		"View/Folder Tree" becomes "View/Separate Folder View"
+		"View/Message View" becomes "View/Separate Message View"
+		because its less ambiguous.
+
+	* po/es.po
+		updated by Ricardo Mones Lastra
+
 2002-02-26 [paul]	0.7.2claws15
 
 	* sync with sylpheed 0.7.2cvs17
