@@ -1,3 +1,12 @@
+2004-12-07 [colin]	0.9.13cvs2
+
+	* AUTHORS
+	* src/prefs_account.c
+	* src/common/smtp.c
+	* src/common/smtp.h
+		Add SMTP PLAIN authentication. Patch by 
+		George Michaelson <ggm@apnic.net>
+
 2004-12-07 [thorsten]	0.9.13cvs1
 
 	* src/procmime.c
