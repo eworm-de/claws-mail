@@ -1048,12 +1048,6 @@ static void update_io_dialog(Children *children)
 
 	debug_print("Updating actions input/output dialog.\n");
 
-	if (children->progress_bar) {
-		gtk_progress_configure(GTK_PROGRESS(children->progress_bar),
-				children->initial_nb -children->nb,
-				0.0, children->initial_nb);
-	}
-
 	if (!children->nb) {
 		gtk_widget_set_sensitive(children->abort_btn, FALSE);
 		gtk_widget_set_sensitive(children->close_btn, TRUE);
@@ -1186,18 +1180,10 @@ static void create_io_dialog(Children *children)
 
 	if (children->initial_nb > 1) {
 		progress_bar = gtk_progress_bar_new();
-		gtk_progress_bar_set_bar_style(GTK_PROGRESS_BAR(progress_bar),
-				GTK_PROGRESS_CONTINUOUS);
 		gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR(progress_bar),
 				GTK_PROGRESS_LEFT_TO_RIGHT);
-		gtk_progress_set_activity_mode(GTK_PROGRESS(progress_bar), 
-				FALSE);
-		gtk_progress_set_format_string(GTK_PROGRESS(progress_bar),
-				_("Completed %v/%u"));
-		gtk_progress_set_show_text(GTK_PROGRESS(progress_bar), TRUE);
-		gtk_progress_configure(GTK_PROGRESS(progress_bar),
-				children->initial_nb -children->nb,
-				0.0, children->initial_nb);
+		gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress_bar),
+					  _("Completed %v/%u"));
 
 		gtk_box_pack_start(GTK_BOX(vbox), progress_bar, FALSE, FALSE, 0);
 		gtk_widget_show(progress_bar);

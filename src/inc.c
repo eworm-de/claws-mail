@@ -386,7 +386,7 @@ static IncProgressDialog *inc_progress_dialog_create(gboolean autocheck)
 			 G_CALLBACK(inc_dialog_delete_cb), dialog);
 	/* manage_window_set_transient(GTK_WINDOW(progress->window)); */
 
-	progress_dialog_set_value(progress, 0.0);
+	progress_dialog_get_fraction(progress);
 
 	stock_pixmap_gdk(progress->clist, STOCK_PIXMAP_COMPLETE,
 			 &okxpm, &okxpmmask);
@@ -433,7 +433,7 @@ static void inc_progress_dialog_set_list(IncProgressDialog *inc_dialog)
 
 static void inc_progress_dialog_clear(IncProgressDialog *inc_dialog)
 {
-	progress_dialog_set_value(inc_dialog->dialog, 0.0);
+	progress_dialog_get_fraction(inc_dialog->dialog);
 	progress_dialog_set_label(inc_dialog->dialog, "");
 	if (inc_dialog->mainwin)
 		main_window_progress_off(inc_dialog->mainwin);
@@ -915,16 +915,14 @@ static void inc_progress_dialog_set_progress(IncProgressDialog *inc_dialog,
 		progress_dialog_set_label(inc_dialog->dialog, buf);
 	}
 
-	progress_dialog_set_percentage
+	progress_dialog_set_fraction
 		(inc_dialog->dialog,(gfloat)cur_total / (gfloat)total);
 
-	gtk_progress_set_show_text
-		(GTK_PROGRESS(inc_dialog->mainwin->progressbar), TRUE);
 	g_snprintf(buf, sizeof(buf), "%d / %d",
 		   pop3_session->cur_msg, pop3_session->count);
-	gtk_progress_set_format_string
-		(GTK_PROGRESS(inc_dialog->mainwin->progressbar), buf);
-	gtk_progress_bar_update
+	gtk_progress_bar_set_text
+		(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar), buf);
+	gtk_progress_bar_set_fraction
 		(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
 		 (gfloat)cur_total / (gfloat)total);
 

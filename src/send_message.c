@@ -506,7 +506,7 @@ static gint send_send_data_progressive(Session *session, guint cur_len,
 	g_snprintf(buf, sizeof(buf), _("Sending message (%d / %d bytes)"),
 		   cur_len, total_len);
 	progress_dialog_set_label(dialog->dialog, buf);
-	progress_dialog_set_percentage
+	progress_dialog_set_fraction
 		(dialog->dialog, (gfloat)cur_len / (gfloat)total_len);
 
 	return 0;
@@ -539,7 +539,7 @@ static SendProgressDialog *send_progress_dialog_create(void)
 	gtk_window_set_modal(GTK_WINDOW(progress->window), TRUE);
 	manage_window_set_transient(GTK_WINDOW(progress->window));
 
-	progress_dialog_set_value(progress, 0.0);
+	progress_dialog_get_fraction(progress);
 
 	if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS) {
 		gtk_widget_show_now(progress->window);

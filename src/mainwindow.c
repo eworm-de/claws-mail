@@ -1543,15 +1543,13 @@ void main_window_get_position(MainWindow *mainwin)
 
 void main_window_progress_on(MainWindow *mainwin)
 {
-	gtk_progress_set_show_text(GTK_PROGRESS(mainwin->progressbar), TRUE);
-	gtk_progress_set_format_string(GTK_PROGRESS(mainwin->progressbar), "");
+	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(mainwin->progressbar), "");
 }
 
 void main_window_progress_off(MainWindow *mainwin)
 {
-	gtk_progress_set_show_text(GTK_PROGRESS(mainwin->progressbar), FALSE);
-	gtk_progress_bar_update(GTK_PROGRESS_BAR(mainwin->progressbar), 0.0);
-	gtk_progress_set_format_string(GTK_PROGRESS(mainwin->progressbar), "");
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(mainwin->progressbar), 0.0);
+	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(mainwin->progressbar), "");
 }
 
 void main_window_progress_set(MainWindow *mainwin, gint cur, gint total)
@@ -1559,8 +1557,8 @@ void main_window_progress_set(MainWindow *mainwin, gint cur, gint total)
 	gchar buf[32];
 
 	g_snprintf(buf, sizeof(buf), "%d / %d", cur, total);
-	gtk_progress_set_format_string(GTK_PROGRESS(mainwin->progressbar), buf);
-	gtk_progress_bar_update(GTK_PROGRESS_BAR(mainwin->progressbar),
+	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(mainwin->progressbar), buf);
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(mainwin->progressbar),
 				(cur == 0 && total == 0) ? 0 :
 				(gfloat)cur / (gfloat)total);
 }
@@ -3093,10 +3091,10 @@ gboolean mainwindow_progressindicator_hook(gpointer source, gpointer userdata)
 	switch (data->cmd) {
 	case PROGRESS_COMMAND_START:
 	case PROGRESS_COMMAND_STOP:
-		gtk_progress_set_percentage(GTK_PROGRESS(mainwin->progressbar), 0.0);
-		break;
+/*		gtk_progress_set_percentage(GTK_PROGRESS(mainwin->progressbar), 0.0);
+		break; */
 	case PROGRESS_COMMAND_SET_PERCENTAGE:
-		gtk_progress_set_percentage(GTK_PROGRESS(mainwin->progressbar), data->value);
+/*		gtk_progress_set_percentage(GTK_PROGRESS(mainwin->progressbar), data->value); */
 		break;		
 	}
 	while (gtk_events_pending()) gtk_main_iteration ();

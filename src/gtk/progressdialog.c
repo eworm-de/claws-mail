@@ -113,16 +113,16 @@ void progress_dialog_set_label(ProgressDialog *progress, gchar *str)
 	gtk_label_set_text(GTK_LABEL(progress->label), str);
 }
 
-void progress_dialog_set_value(ProgressDialog *progress, gfloat value)
+void progress_dialog_get_fraction(ProgressDialog *progress)
 {
-	gtk_progress_set_value(GTK_PROGRESS(progress->progressbar), value);
+	gtk_progress_bar_get_fraction(GTK_PROGRESS_BAR(progress->progressbar));
 }
 
-void progress_dialog_set_percentage(ProgressDialog *progress,
-				    gfloat percentage)
+void progress_dialog_set_fraction(ProgressDialog *progress,
+				  gfloat percentage)
 {
-	gtk_progress_set_percentage(GTK_PROGRESS(progress->progressbar),
-				    percentage);
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress->progressbar),
+				      percentage);
 }
 
 void progress_dialog_destroy(ProgressDialog *progress)

@@ -1,3 +1,13 @@
+2004-07-28 [paul]	0.9.12cvs37.6
+
+	* src/action.c
+	* src/inc.c
+	* src/mainwindow.c
+	* src/send_message.c
+	* src/gtk/progressdialog.c
+	* src/gtk/progressdialog.h
+		replace deprecated gtk_progress_*
+
 2004-07-28 [paul]	0.9.12cvs37.5
 
 	* src/gtk/filesel.c
