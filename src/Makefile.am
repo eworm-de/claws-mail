@@ -35,6 +35,7 @@ sylpheed_SOURCES = \
 	prefs_customheader.c prefs_customheader.h \
 	prefs_summary_column.c prefs_summary_column.h \
 	prefs_template.c prefs_template.h \
+	prefs_actions.c prefs_actions.h \
 	account.c account.h \
 	displayheader.c displayheader.h \
 	customheader.c customheader.h \
@@ -125,7 +126,6 @@ sylpheed_SOURCES = \
 	matcher.c matcher.h \
 	prefs_matcher.c prefs_matcher.h \
 	prefs_scoring.c prefs_scoring.h \
-	prefs_actions.c prefs_actions.h \
 	filtering.c filtering.h \
 	prefs_filtering.c prefs_filtering.h \
 	mbox_folder.c mbox_folder.h \
@@ -213,7 +213,6 @@ EXTRA_DIST = \
 
 INCLUDES = \
 	-DG_LOG_DOMAIN=\"Sylpheed\" \
-	-I$(top_srcdir)/libkcc \
 	-I$(top_srcdir)/intl \
 	$(GTK_CFLAGS) \
 	$(GDK_IMLIB_CFLAGS) \
@@ -223,7 +222,6 @@ INCLUDES = \
 	-I$(includedir)
 
 sylpheed_LDADD = \
-	$(top_builddir)/libkcc/libkcc.a	\
 	$(INTLLIBS) \
 	$(GTK_LIBS) \
 	$(GDK_IMLIB_LIBS) \

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,8 +39,6 @@
 #  include <jconv.h>
 #endif
 
-#include <kcc.h>
-
 #include "intl.h"
 #include "codeconv.h"
 #include "unmime.h"
@@ -48,73 +46,270 @@
 #include "utils.h"
 #include "prefs_common.h"
 
-#define iskanji(c) \
+typedef enum
+{
+	JIS_ASCII,
+	JIS_KANJI,
+	JIS_HWKANA,
+	JIS_AUXKANJI
+} JISState;
+
+#define SUBST_CHAR	'_'
+#define ESC		'\033'
+
+#define iseuckanji(c) \
 	(((c) & 0xff) >= 0xa1 && ((c) & 0xff) <= 0xfe)
-#define iseucss(c) \
-	(((c) & 0xff) == 0x8e || ((c) & 0xff) == 0x8f)
-#define isunprintablekanji(c) \
+#define iseuchwkana1(c) \
+	(((c) & 0xff) == 0x8e)
+#define iseuchwkana2(c) \
+	(((c) & 0xff) >= 0xa1 && ((c) & 0xff) <= 0xdf)
+#define iseucaux(c) \
+	(((c) & 0xff) == 0x8f)
+#define isunprintableeuckanji(c) \
 	(((c) & 0xff) >= 0xa9 && ((c) & 0xff) <= 0xaf)
+#define issjiskanji1(c) \
+	((((c) & 0xff) >= 0x81 && ((c) & 0xff) <= 0x9f) || \
+	 (((c) & 0xff) >= 0xe0 && ((c) & 0xff) <= 0xfc))
+#define issjiskanji2(c) \
+	((((c) & 0xff) >= 0x40 && ((c) & 0xff) <= 0x7e) || \
+	 (((c) & 0xff) >= 0x80 && ((c) & 0xff) <= 0xfc))
+#define issjishwkana(c) \
+	(((c) & 0xff) >= 0xa1 && ((c) & 0xff) <= 0xdf)
+
+#define K_IN()				\
+	if (state != JIS_KANJI) {	\
+		*out++ = ESC;		\
+		*out++ = '$';		\
+		*out++ = 'B';		\
+		state = JIS_KANJI;	\
+	}
+
+#define K_OUT()				\
+	if (state != JIS_ASCII) {	\
+		*out++ = ESC;		\
+		*out++ = '(';		\
+		*out++ = 'B';		\
+		state = JIS_ASCII;	\
+	}
+
+#define HW_IN()				\
+	if (state != JIS_HWKANA) {	\
+		*out++ = ESC;		\
+		*out++ = '(';		\
+		*out++ = 'I';		\
+		state = JIS_HWKANA;	\
+	}
+
+#define AUX_IN()			\
+	if (state != JIS_AUXKANJI) {	\
+		*out++ = ESC;		\
+		*out++ = '$';		\
+		*out++ = '(';		\
+		*out++ = 'D';		\
+		state = JIS_AUXKANJI;	\
+	}
 
 void conv_jistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
-	KCC_filter(outbuf, "EUC", (gchar *)inbuf, "JISBB", 0, 0, 0);
+	const guchar *in = inbuf;
+	guchar *out = outbuf;
+	JISState state = JIS_ASCII;
+
+	while (*in != '\0') {
+		if (*in == ESC) {
+			in++;
+			if (*in == '$') {
+				if (*(in + 1) == '@' || *(in + 1) == 'B') {
+					state = JIS_KANJI;
+					in += 2;
+				} else if (*(in + 1) == '(' &&
+					   *(in + 2) == 'D') {
+					state = JIS_AUXKANJI;
+					in += 3;
+				} else {
+					/* unknown escape sequence */
+					state = JIS_ASCII;
+				}
+			} else if (*in == '(') {
+				if (*(in + 1) == 'B' || *(in + 1) == 'J') {
+					state = JIS_ASCII;
+					in += 2;
+				} else if (*(in + 1) == 'I') {
+					state = JIS_HWKANA;
+					in += 2;
+				} else {
+					/* unknown escape sequence */
+					state = JIS_ASCII;
+				}
+			} else {
+				/* unknown escape sequence */
+				state = JIS_ASCII;
+			}
+		} else if (*in == 0x0e) {
+			state = JIS_HWKANA;
+			in++;
+		} else if (*in == 0x0f) {
+			state = JIS_ASCII;
+			in++;
+		} else {
+			switch (state) {
+			case JIS_ASCII:
+				*out++ = *in++;
+				break;
+			case JIS_KANJI:
+				*out++ = *in++ | 0x80;
+				if (*in == '\0') break;
+				*out++ = *in++ | 0x80;
+				break;
+			case JIS_HWKANA:
+				*out++ = 0x8e;
+				*out++ = *in++ | 0x80;
+				break;
+			case JIS_AUXKANJI:
+				*out++ = 0x8f;
+				*out++ = *in++ | 0x80;
+				if (*in == '\0') break;
+				*out++ = *in++ | 0x80;
+				break;
+			}
+		}
+	}
+
+	*out = '\0';
 }
 
 void conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
-	size_t inlen, len;
+	const guchar *in = inbuf;
+	guchar *out = outbuf;
+	JISState state = JIS_ASCII;
 
-	inlen = strlen(inbuf);
-	if (iskanji(inbuf[inlen - 1]) || iseucss(inbuf[inlen - 1])) {
-		/* if tail end of the string is not ended with ascii,
-		   add dummy return code. */
-		gchar *tmpin, *tmpout;
-
-		/* length of original string + '\n' + '\0' */
-		tmpin = alloca(inlen + 2);
-		if (tmpin == NULL) {
-			g_warning(_("can't allocate memory\n"));
-			KCC_filter(outbuf, "JISBB", (gchar *)inbuf, "EUC",
-				   0, 0, 0);
-			return;
+	while (*in != '\0') {
+		if (isascii(*in)) {
+			K_OUT();
+			*out++ = *in++;
+		} else if (iseuckanji(*in)) {
+			if (iseuckanji(*(in + 1))) {
+				K_IN();
+				*out++ = *in++ & 0x7f;
+				*out++ = *in++ & 0x7f;
+			} else {
+				K_OUT();
+				*out++ = SUBST_CHAR;
+				in++;
+				if (*in != '\0' && !isascii(*in)) {
+					*out++ = SUBST_CHAR;
+					in++;
+				}
+			}
+		} else if (iseuchwkana1(*in)) {
+			in++;
+			if (iseuchwkana2(*in)) {
+				HW_IN();
+				*out++ = *in++ & 0x7f;
+			} else {
+				K_OUT();
+				if (*in != '\0' && !isascii(*in)) {
+					*out++ = SUBST_CHAR;
+					in++;
+				}
+			}
+		} else if (iseucaux(*in)) {
+			in++;
+			if (iseuckanji(*in) && iseuckanji(*(in + 1))) {
+				AUX_IN();
+				*out++ = *in++ & 0x7f;
+				*out++ = *in++ & 0x7f;
+			} else {
+				K_OUT();
+				if (*in != '\0' && !isascii(*in)) {
+					*out++ = SUBST_CHAR;
+					in++;
+					if (*in != '\0' && !isascii(*in)) {
+						*out++ = SUBST_CHAR;
+						in++;
+					}
+				}
+			}
 		}
-		strcpy(tmpin, inbuf);
-		tmpin[inlen] = '\n';
-		tmpin[inlen + 1] = '\0';
+	}
 
-		tmpout = alloca(outlen + 1);
-		if (tmpout == NULL) {
-			g_warning(_("can't allocate memory\n"));
-			KCC_filter(outbuf, "JISBB", (gchar *)inbuf, "EUC",
-				   0, 0, 0);
-			return;
-		}
-
-		KCC_filter(tmpout, "JISBB", tmpin, "EUC", 0, 0, 0);
-		len = strlen(tmpout);
-		if (tmpout[len - 1] == '\n')
-			tmpout[len - 1] = '\0';
-		strncpy2(outbuf, tmpout, outlen);
-	} else
-		KCC_filter(outbuf, "JISBB", (gchar *)inbuf, "EUC", 0, 0, 0);
+	K_OUT();
+	*out = '\0';
 }
 
 void conv_sjistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
-	KCC_filter(outbuf, "EUC", (gchar *)inbuf, "SJIS", 0, 0, 0);
+	const guchar *in = inbuf;
+	guchar *out = outbuf;
+
+	while (*in != '\0') {
+		if (isascii(*in)) {
+			*out++ = *in++;
+		} else if (issjiskanji1(*in)) {
+			if (issjiskanji2(*(in + 1))) {
+				guchar out1 = *in;
+				guchar out2 = *(in + 1);
+				guchar row;
+
+				row = out1 < 0xa0 ? 0x70 : 0xb0;
+				if (out2 < 0x9f) {
+					out1 = (out1 - row) * 2 - 1;
+					out2 -= out2 > 0x7f ? 0x20 : 0x1f;
+				} else {
+					out1 = (out1 - row) * 2;
+					out2 -= 0x7e;
+				}
+
+				*out++ = out1 | 0x80;
+				*out++ = out2 | 0x80;
+				in += 2;
+			} else {
+				*out++ = SUBST_CHAR;
+				in++;
+				if (*in != '\0' && !isascii(*in)) {
+					*out++ = SUBST_CHAR;
+					in++;
+				}
+			}
+		} else if (issjishwkana(*in)) {
+			*out++ = 0x8e;
+			*out++ = *in++;
+		} else {
+			*out++ = SUBST_CHAR;
+			in++;
+		}
+	}
+
+	*out = '\0';
 }
 
 void conv_anytoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
-	KCC_filter(outbuf, "EUC", (gchar *)inbuf, "AUTO", 0, 0, 0);
+	switch (conv_guess_encoding(inbuf)) {
+	case C_ISO_2022_JP:
+		conv_jistoeuc(outbuf, outlen, inbuf);
+		break;
+	case C_SHIFT_JIS:
+		conv_sjistoeuc(outbuf, outlen, inbuf);
+		break;
+	default:
+		strncpy2(outbuf, inbuf, outlen);
+		break;
+	}
 }
 
 void conv_anytojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
-	KCC_filter(outbuf, "JISBB", (gchar *)inbuf, "AUTO", 0, 0, 0);
+	switch (conv_guess_encoding(inbuf)) {
+	case C_EUC_JP:
+		conv_euctojis(outbuf, outlen, inbuf);
+		break;
+	default:
+		strncpy2(outbuf, inbuf, outlen);
+		break;
+	}
 }
-
-#define SUBST_CHAR	'_'
 
 void conv_unreadable_eucjp(gchar *str)
 {
@@ -127,8 +322,8 @@ void conv_unreadable_eucjp(gchar *str)
 				memmove(p, p + 1, strlen(p));
 			/* printable 7 bit code */
 			p++;
-		} else if (iskanji(*p)) {
-			if (iskanji(*(p + 1)) && !isunprintablekanji(*p))
+		} else if (iseuckanji(*p)) {
+			if (iseuckanji(*(p + 1)) && !isunprintableeuckanji(*p))
 				/* printable euc-jp code */
 				p += 2;
 			else {
@@ -141,11 +336,17 @@ void conv_unreadable_eucjp(gchar *str)
 						*p++ = SUBST_CHAR;
 				}
 			}
-		} else if (iseucss(*p)) {
-			if ((*(p + 1) & 0x80) != 0)
+		} else if (iseuchwkana1(*p)) {
+			if (iseuchwkana2(*(p + 1)))
 				/* euc-jp hankaku kana */
 				p += 2;
 			else
+				*p++ = SUBST_CHAR;
+		} else if (iseucaux(*p)) {
+			if (iseuckanji(*(p + 1)) && iseuckanji(*(p + 2))) {
+				/* auxiliary kanji */
+				p += 3;
+			} else
 				*p++ = SUBST_CHAR;
 		} else
 			/* substitute unprintable 1 byte code */
@@ -236,7 +437,7 @@ void conv_mb_alnum(gchar *str)
 				p += 2;
 				len -= 2;
 			}
-		} else if (iskanji(*p)) {
+		} else if (iseuckanji(*p)) {
 			p += 2;
 			len -= 2;
 		} else {
@@ -244,6 +445,46 @@ void conv_mb_alnum(gchar *str)
 			len--;
 		}
 	}
+}
+
+CharSet conv_guess_encoding(const gchar *str)
+{
+	const guchar *p = str;
+	CharSet guessed = C_US_ASCII;
+
+	while (*p != '\0') {
+		if (*p == ESC && (*(p + 1) == '$' || *(p + 1) == '(')) {
+			if (guessed == C_US_ASCII)
+				return C_ISO_2022_JP;
+			p += 2;
+		} else if (iseuckanji(*p) && iseuckanji(*(p + 1))) {
+			if (*p >= 0xfd && *p <= 0xfe)
+				return C_EUC_JP;
+			else if (guessed == C_SHIFT_JIS) {
+				if ((issjiskanji1(*p) &&
+				     issjiskanji2(*(p + 1))) ||
+				    issjishwkana(*p))
+					guessed = C_SHIFT_JIS;
+				else
+					guessed = C_EUC_JP;
+			} else
+				guessed = C_EUC_JP;
+			p += 2;
+		} else if (issjiskanji1(*p) && issjiskanji2(*(p + 1))) {
+			if (iseuchwkana1(*p) && iseuchwkana2(*(p + 1)))
+				guessed = C_SHIFT_JIS;
+			else
+				return C_SHIFT_JIS;
+			p += 2;
+		} else if (issjishwkana(*p)) {
+			guessed = C_SHIFT_JIS;
+			p++;
+		} else {
+			p++;
+		}
+	}
+
+	return guessed;
 }
 
 void conv_jistodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
@@ -261,6 +502,12 @@ void conv_sjistodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 void conv_euctodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	strncpy2(outbuf, inbuf, outlen);
+	conv_unreadable_eucjp(outbuf);
+}
+
+void conv_anytodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
+{
+	conv_anytoeuc(outbuf, outlen, inbuf);
 	conv_unreadable_eucjp(outbuf);
 }
 
@@ -763,7 +1010,7 @@ void conv_unmime_header_overwrite(gchar *str)
 		UnMimeHeader(buf);
 		len = strlen(buf) * 2 + 1;
 		Xalloca(tmp, len, {strncpy2(str, buf, outlen); return;});
-		conv_jistodisp(tmp, len, buf);
+		conv_anytodisp(tmp, len, buf);
 		strncpy2(str, tmp, outlen);
 	} else
 		UnMimeHeader(str);
@@ -790,7 +1037,7 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 
 		len = strlen(outbuf) * 2 + 1;
 		Xalloca(buf, len, return);
-		conv_jistodisp(buf, len, outbuf);
+		conv_anytodisp(buf, len, outbuf);
 		strncpy2(outbuf, buf, outlen);
 	}
 }

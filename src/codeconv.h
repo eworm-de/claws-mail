@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,6 +121,8 @@ void conv_unreadable_eucjp(gchar *str);
 void conv_unreadable_8bit(gchar *str);
 void conv_unreadable_latin(gchar *str);
 void conv_mb_alnum(gchar *str);
+
+CharSet conv_guess_encoding(const gchar *str);
 
 void conv_jistodisp  (gchar *outbuf, gint outlen, const gchar *inbuf);
 void conv_sjistodisp (gchar *outbuf, gint outlen, const gchar *inbuf);
