@@ -2191,6 +2191,28 @@ static void summary_write_cache_func(GtkCTree *ctree, GtkCTreeNode *node,
 	procmsg_write_flags(msginfo, fps->mark_fp);
 }
 
+static gchar *summary_complete_address(const gchar *addr)
+{
+	gint count;
+	gchar *res, *tmp, *email_addr;
+
+	Xstrdup_a(email_addr, addr, return NULL);
+	extract_address(email_addr);
+	g_return_val_if_fail(*email_addr, NULL);
+
+	/*
+	 * completion stuff must be already initialized
+	 */
+	res = NULL;
+	if (1 < (count = complete_address(email_addr))) {
+		tmp = get_complete_address(1);
+		res = procheader_get_fromname(tmp);
+		g_free(tmp);	
+	}
+	
+	return res;
+}
+
 static void summary_set_header(SummaryView *summaryview, gchar *text[],
 			       MsgInfo *msginfo)
 {
@@ -2230,34 +2252,36 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 		_("(No From)");
 	if (prefs_common.swap_from && msginfo->from && msginfo->to &&
 	    !MSG_IS_NEWS(msginfo->flags)) {
-		gchar *from;
+		gchar *addr = NULL;
 
-		Xstrdup_a(from, msginfo->from, return);
-		extract_address(from);
-		if (account_find_from_address(from)) {
-			g_free(to);
-			to = g_strconcat("-->", msginfo->to, NULL);
+		if (prefs_common.use_addr_book) {
+			Xstrdup_a(addr, msginfo->from, return);
+			extract_address(addr);
+		}
+
+		if (account_find_from_address(addr)) {
+			addr = summary_complete_address(msginfo->to); 
+			to   = g_strconcat("-->", addr == NULL ? msginfo->to : addr, NULL);
 			text[col_pos[S_COL_FROM]] = to;
 		}
 	}
 
-	if ((text[col_pos[S_COL_FROM]] != to) && prefs_common.use_addr_book &&
-	    msginfo->from) {
-		gint count;
+	/*
+	 * CLAWS: note that the "text[col_pos[S_COL_FROM]] != to" is really a hack, 
+	 * checking whether the above block (which handles the special case of
+	 * the --> in sent boxes) was executed.
+	 */
+	if (text[col_pos[S_COL_FROM]] != to && prefs_common.use_addr_book && msginfo->from) {
 		gchar *from;
-  
-		Xstrdup_a(from, msginfo->from, return);
-		extract_address(from);
-		if (*from) {
-			count = complete_address(from);
-			if (count > 1) {
-				g_free(from_name);
-				from = get_complete_address(1);
-				from_name = procheader_get_fromname(from);
-				g_free(from);
-				text[col_pos[S_COL_FROM]] = from_name;
-			}
-		}
+		from = summary_complete_address(msginfo->from);
+		if (from) {
+			/*
+			 * FIXME: this text[col_pos[S_COL_FROM]] should be freed
+			 * but may have been assigned _("No From"). Should be
+			 * freed??? 
+			 */
+			text[col_pos[S_COL_FROM]] = from;
+		}	
 	}
 
 	if (prefs->enable_simplify_subject 

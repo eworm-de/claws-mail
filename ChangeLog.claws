@@ -1,3 +1,9 @@
+2002-04-01 [alfons]	0.7.4aprilfool55
+
+	* src/summaryview.c
+		honour feature request item #537427 to allow for
+		displaying names from address book for sent mail also
+
 2002-03-29 [paul]	0.7.4claws54
 
 	* src/mainwindow.c
