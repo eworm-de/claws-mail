@@ -1,3 +1,8 @@
+2003-07-04 [christoph]	0.9.0claws81
+
+	* src/plugins/spamassassin/spamassassin.c
+		set timeout for spam check
+
 2003-07-04 [christoph]	0.9.0claws80
 
 	* src/main.c
