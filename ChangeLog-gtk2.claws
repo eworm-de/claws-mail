@@ -1,3 +1,8 @@
+2004-07-20 [colin]	0.9.12cvs33.6
+
+	* src/codeconv.h
+		Forgot one hunk in 0.9.12cvs33.4
+
 2004-07-19 [colin]	0.9.12cvs33.5
 
 	* src/action.c
