@@ -1,3 +1,17 @@
+2003-08-07 [hoa] 0.9.4claws7
+
+	* src/filtering.[ch]
+	* src/matcher_parser.h
+	* src/matcher_parser_parse.y
+		can define several actions for each filtering rule
+		can import old versions of filtering rules
+
+	* src/prefs_filtering.c
+		call to a new dialog box to define actions
+
+	* src/prefs_filtering_action.[ch]
+		dialog box to define actions for filtering rules
+
 2003-08-06 [christoph]	0.9.4claws6
 
 	* src/imap.c

@@ -37,7 +37,7 @@ typedef struct _FilteringAction FilteringAction;
 
 struct _FilteringProp {
 	MatcherList * matchers;
-	FilteringAction * action;
+	GSList * action_list;
 };
 
 typedef struct _FilteringProp FilteringProp;
@@ -52,7 +52,7 @@ void filteringaction_free(FilteringAction *action);
 FilteringAction * filteringaction_parse(gchar **str);
 
 FilteringProp * filteringprop_new(MatcherList *matchers,
-				  FilteringAction *action);
+				  GSList *action_list);
 void filteringprop_free(FilteringProp *prop);
 
 FilteringProp * filteringprop_parse(gchar **str);
@@ -63,6 +63,7 @@ gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info);
 gchar * filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *action);
 void prefs_filtering_write_config(void);
 void prefs_filtering_read_config(void);
+gchar * filteringaction_list_to_string(GSList * action_list);
 gchar * filteringprop_to_string(FilteringProp *prop);
 
 void prefs_filtering_clear(void);

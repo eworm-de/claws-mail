@@ -82,6 +82,7 @@ sylpheed_SOURCES = \
 	prefs_customheader.c \
 	prefs_display_header.c \
 	prefs_filtering.c \
+	prefs_filtering_action.c \
 	prefs_folder_item.c \
 	prefs_gtk.c \
 	prefs_matcher.c \
@@ -200,6 +201,7 @@ sylpheedinclude_HEADERS = \
 	prefs_customheader.h \
 	prefs_display_header.h \
 	prefs_filtering.h \
+	prefs_filtering_action.h \
 	prefs_folder_item.h \
 	prefs_gtk.h \
 	prefs_matcher.h \

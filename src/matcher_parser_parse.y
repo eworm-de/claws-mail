@@ -46,6 +46,7 @@ static GSList *matchers_list = NULL;
 
 static MatcherList *cond;
 static gint score = 0;
+static GSList *action_list = NULL;
 static FilteringAction *action = NULL;
 
 static FilteringProp *filtering;
@@ -54,7 +55,19 @@ static ScoringProp *scoring = NULL;
 static GSList **prefs_scoring = NULL;
 static GSList **prefs_filtering = NULL;
 
+#if 0
 static int matcher_parser_dialog = 0;
+#endif
+
+enum {
+        MATCHER_PARSE_NONE,
+        MATCHER_PARSE_NO_EOL,
+        MATCHER_PARSE_CONDITION,
+        MATCHER_PARSE_FILTERING_OR_SCORING,
+};
+
+static int matcher_parse_op = MATCHER_PARSE_NONE;
+
 
 /* ******************************************************************** */
 
@@ -71,14 +84,14 @@ FilteringProp *matcher_parser_get_filtering(gchar *str)
 	/* bad coding to enable the sub-grammar matching
 	   in yacc */
 	matcher_parserlineno = 1;
-	matcher_parser_dialog = 1;
+	matcher_parse_op = MATCHER_PARSE_NO_EOL;
 	matcher_parserrestart(NULL);
         matcher_parser_init();
 	bufstate = matcher_parser_scan_string(str);
         matcher_parser_switch_to_buffer(bufstate);
 	if (matcher_parserparse() != 0)
 		filtering = NULL;
-	matcher_parser_dialog = 0;
+	matcher_parse_op = MATCHER_PARSE_NONE;
 	matcher_parser_delete_buffer(bufstate);
 	return filtering;
 }
@@ -90,14 +103,14 @@ ScoringProp *matcher_parser_get_scoring(gchar *str)
 	/* bad coding to enable the sub-grammar matching
 	   in yacc */
 	matcher_parserlineno = 1;
-	matcher_parser_dialog = 1;
+	matcher_parse_op = MATCHER_PARSE_NO_EOL;
 	matcher_parserrestart(NULL);
         matcher_parser_init();
 	bufstate = matcher_parser_scan_string(str);
         matcher_parser_switch_to_buffer(bufstate);
 	if (matcher_parserparse() != 0)
 		scoring = NULL;
-	matcher_parser_dialog = 0;
+	matcher_parse_op = MATCHER_PARSE_NONE;
 	matcher_parser_delete_buffer(bufstate);
 	return scoring;
 }
@@ -133,14 +146,36 @@ MatcherList *matcher_parser_get_cond(gchar *str)
 	/* bad coding to enable the sub-grammar matching
 	   in yacc */
 	matcher_parserlineno = 1;
-	matcher_parser_dialog = 1;
+	matcher_parse_op = MATCHER_PARSE_CONDITION;
 	matcher_parserrestart(NULL);
         matcher_parser_init();
 	bufstate = matcher_parser_scan_string(str);
 	matcher_parserparse();
-	matcher_parser_dialog = 0;
+	matcher_parse_op = MATCHER_PARSE_NONE;
 	matcher_parser_delete_buffer(bufstate);
 	return cond;
+}
+
+GSList *matcher_parser_get_action_list(gchar *str)
+{
+	void *bufstate;
+
+	if (!check_quote_symetry(str)) {
+		action_list = NULL;
+		return action_list;
+	}
+	
+	/* bad coding to enable the sub-grammar matching
+	   in yacc */
+	matcher_parserlineno = 1;
+	matcher_parse_op = MATCHER_PARSE_FILTERING_OR_SCORING;
+	matcher_parserrestart(NULL);
+        matcher_parser_init();
+	bufstate = matcher_parser_scan_string(str);
+	matcher_parserparse();
+	matcher_parse_op = MATCHER_PARSE_NONE;
+	matcher_parser_delete_buffer(bufstate);
+	return action_list;
 }
 
 MatcherProp *matcher_parser_get_prop(gchar *str)
@@ -233,7 +268,7 @@ int matcher_parserwrap(void)
 
 file:
 {
-	if (!matcher_parser_dialog) {
+	if (matcher_parse_op == MATCHER_PARSE_NONE) {
 		prefs_scoring = &global_scoring;
 		prefs_filtering = &global_processing;
 	}
@@ -248,7 +283,9 @@ file_line_list
 
 file_line:
 section_notification
-| instruction
+| 
+{ action_list = NULL; }
+instruction
 | error MATCHER_EOL
 {
 	yyerrok;
@@ -260,7 +297,7 @@ MATCHER_SECTION MATCHER_EOL
 	gchar *folder = $1;
 	FolderItem *item = NULL;
 
-	if (!matcher_parser_dialog) {
+	if (matcher_parse_op == MATCHER_PARSE_NONE) {
 		if (!strcmp(folder, "global")) {
 			prefs_scoring = &global_scoring;
 			prefs_filtering = &global_processing;
@@ -279,43 +316,44 @@ MATCHER_SECTION MATCHER_EOL
 ;
 
 instruction:
-condition end_instr_opt
+condition filtering_or_scoring MATCHER_EOL
+| condition filtering_or_scoring
+{
+	if (matcher_parse_op == MATCHER_PARSE_NO_EOL)
+		YYACCEPT;
+	else {
+		matcher_parsererror("parse error");
+		YYERROR;
+	}
+}
+| condition
+{
+	if (matcher_parse_op == MATCHER_PARSE_CONDITION)
+		YYACCEPT;
+	else {
+		matcher_parsererror("parse error");
+		YYERROR;
+	}
+}
+| filtering_action_list
+{
+	if (matcher_parse_op == MATCHER_PARSE_FILTERING_OR_SCORING)
+		YYACCEPT;
+	else {
+		matcher_parsererror("parse error");
+		YYERROR;
+	}
+}
 | MATCHER_EOL
 ;
 
-end_instr_opt:
-filtering_or_scoring end_action
-|
-{
-	if (matcher_parser_dialog)
-		YYACCEPT;
-	else {
-		matcher_parsererror("parse error");
-		YYERROR;
-	}
-}
-;
-
-end_action:
-MATCHER_EOL
-|
-{
-	if (matcher_parser_dialog)
-		YYACCEPT;
-	else {
-		matcher_parsererror("parse error");
-		YYERROR;
-	}
-}
-;
-
 filtering_or_scoring:
-filtering_action
+filtering_action_list
 {
-	filtering = filteringprop_new(cond, action);
+	filtering = filteringprop_new(cond, action_list);
 	cond = NULL;
-	action = NULL;
-	if (!matcher_parser_dialog && (prefs_filtering != NULL)) {
+	action_list = NULL;
+	if ((matcher_parse_op == MATCHER_PARSE_NONE) && (prefs_filtering != NULL)) {
 		*prefs_filtering = g_slist_append(*prefs_filtering,
 						  filtering);
 		filtering = NULL;
@@ -326,10 +364,24 @@ filtering_action
 	scoring = scoringprop_new(cond, score);
 	cond = NULL;
 	score = 0;
-	if (!matcher_parser_dialog && (prefs_scoring != NULL)) {
+	if ((matcher_parse_op == MATCHER_PARSE_NONE)
+            && (prefs_scoring != NULL)) {
 		*prefs_scoring = g_slist_append(*prefs_scoring, scoring);
 		scoring = NULL;
 	}
+}
+;
+
+filtering_action_list:
+filtering_action_b filtering_action_list
+| filtering_action_b
+;
+
+filtering_action_b:
+filtering_action
+{
+        action_list = g_slist_append(action_list, action);
+        action = NULL;
 }
 ;
 
