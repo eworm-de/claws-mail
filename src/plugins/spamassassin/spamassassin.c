@@ -203,6 +203,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		return FALSE;
 
 	debug_print("Filtering message %d\n", msginfo->msgnum);
+	statusbar_print_all(_("SpamAssassin: filtering message..."));
 
 	if ((fp = procmsg_open_message(msginfo)) == NULL) {
 		debug_print("failed to open message file\n");

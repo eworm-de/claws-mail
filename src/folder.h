@@ -322,6 +322,7 @@ struct _FolderItemUpdateData
 
 void	    folder_system_init		(void);
 void	    folder_register_class	(FolderClass	*klass);
+void	    folder_unregister_class	(FolderClass	*klass);
 Folder     *folder_new			(FolderClass	*type,
 					 const gchar	*name,
 					 const gchar	*path);

@@ -83,6 +83,7 @@ sylpheed_SOURCES = \
 	prefs_common.c \
 	prefs_customheader.c \
 	prefs_display_header.c \
+	prefs_ext_prog.c \
 	prefs_filtering_action.c \
 	prefs_filtering.c \
 	prefs_folder_item.c \
@@ -112,7 +113,6 @@ sylpheed_SOURCES = \
 	ssl_manager.c \
 	statusbar.c \
 	stock_pixmap.c \
-	string_match.c \
 	summary_search.c \
 	summaryview.c \
 	textview.c \
@@ -209,6 +209,7 @@ sylpheedinclude_HEADERS = \
 	prefs_common.h \
 	prefs_customheader.h \
 	prefs_display_header.h \
+	prefs_ext_prog.h \
 	prefs_filtering_action.h \
 	prefs_filtering.h \
 	prefs_folder_item.h \
@@ -237,7 +238,6 @@ sylpheedinclude_HEADERS = \
 	ssl_manager.h \
 	statusbar.h \
 	stock_pixmap.h \
-	string_match.h \
 	summary_search.h \
 	summaryview.h \
 	textview.h \

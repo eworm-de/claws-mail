@@ -770,6 +770,7 @@ EXPORTS
 	folder_tree_destroy 
 	folder_tree_destroy_func 
 	folder_unref_account_all 
+	folder_unregister_class 
 	folder_update_op_count 
 	folder_write_list 
 	foldersel_folder_sel 
@@ -1303,6 +1304,11 @@ EXPORTS
 	prefs_display_header_open 
 	prefs_display_header_read_config 
 	prefs_display_header_write_config 
+	prefs_ext_prog 
+	prefs_ext_prog_create_widget 
+	prefs_ext_prog_done 
+	prefs_ext_prog_init 
+	prefs_ext_prog_save 
 	prefs_file_close 
 	prefs_file_close_revert 
 	prefs_filtering_action_exec_info 
@@ -1874,6 +1880,7 @@ EXPORTS
 	xml_compare_tag 
 	xml_copy_attr 
 	xml_copy_tag 
+	xml_copy_tree 
 	xml_file_put_escape_str 
 	xml_free_node 
 	xml_free_tag 
@@ -1882,6 +1889,7 @@ EXPORTS
 	xml_get_current_tag_attr 
 	xml_get_dtd 
 	xml_get_element 
+	xml_new_tag 
 	xml_open_file 
 	xml_parse_file 
 	xml_parse_next_tag 
@@ -1891,7 +1899,7 @@ EXPORTS
 	xml_tag_add_attr 
 	xml_truncate_buf 
 	xml_unescape_str 
-	xml_write_node 
+	xml_write_tree 
 	xmlprops_clear 
 	xmlprops_create 
 	xmlprops_free 

@@ -39,6 +39,18 @@
 #
 # Change Log
 #
+# 2004-01-05
+#	- added matcher and action for OpenOffice Writer documents
+#	  (requires ooo2txt)
+#
+# 2004-01-05
+#	- changed page width parameter for antiword
+#	- fixed matcher for 'diffs'
+#	- added a matcher and action for bzip2 - bzip2 files
+#	  are decompressed and textviewer.sh run on the result
+#	- similarly decompress gzip files and run textviewer.sh
+#	  on the result, insteading of doing 'gzip -l'
+#
 # 2003-12-30
 #	added the script to sylpheed-claws/tools
 #
@@ -78,6 +90,7 @@ FILETYPE=`file --brief "$1"` ||
 	echo "Please install the command 'file' to use this script." >&2
 	exit 1 
 };
+
 case "$1" in 
 	*.doc)	TYPE=MSWORD	;;
 	*.zip)	TYPE=ZIP	;;
@@ -89,13 +102,15 @@ case "$1" in
 	*.diff)	TYPE=TEXT	;;
 	*.txt)	TYPE=TEXT	;;
 	*.rtf)	TYPE=RTF	;;
+	*.sxw)	TYPE=OOWRITER	;;
 esac
 
 if [ "$TYPE" == "" ]	
 then
 	case $FILETYPE in 
-		"'diff'*")	TYPE=TEXT	;;
+		"'diff'"*)	TYPE=TEXT	;;
 		gzip*)		TYPE=GZIP ;;
+		bzip2*)		TYPE=BZIP ;;
 		"Zip "*) 	TYPE=ZIP  ;;
 		ASCII*)		TYPE=TEXT	;;
 		"Rich Text Format"*)	
@@ -114,11 +129,18 @@ case $TYPE in
 	TARBZ)	echo -e "Tarball contents:\n" 		; 
 		tar -tjvf "$1"				;;
 
+	BZIP)	TMP=`mktemp "$1".temp.XXXXXXX` || exit 1;
+		bunzip2 -c "$1" > "$TMP"  || exit 1;
+		"$0" "$TMP";
+		rm "$TMP"				;;
+
+        GZIP)   TMP=`mktemp "$1".temp.XXXXXXX` || exit 1;
+                gunzip -c "$1" > "$TMP"  || exit 1;
+                "$0" "$TMP";
+                rm "$TMP"                               ;;
+
 	TAR)	echo -e "Tar archive contents:\n" 	; 
 		tar -tvf "$1" 				;;
-
-	GZIP)	echo -e "GZip file contents:\n" 	; 
-		gunzip -l "$1" 				;;
 
 	ZIP)	unzip -l "$1"				;;
 
@@ -136,7 +158,14 @@ case $TYPE in
 			echo "Program 'antiword' for displaying MS Word files not found" >&2
 			exit 1 
 		};
-		antiword "$1" 				;;
+		antiword -w 72 "$1" 				;;
+
+	OOWRITER) which ooo2txt > /dev/null 2>&1 ||
+		{
+			echo "Program 'ooo2txt' for converting OpenOffice Writer files not files not found" >&2
+			exit 1
+		};
+		ooo2txt "$1"					;;
 
 	*)	echo "Unsupported file type \"$FILETYPE\", cannot display.";;
 esac

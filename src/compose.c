@@ -6696,6 +6696,7 @@ static void account_activated(GtkMenuItem *menuitem, gpointer data)
 	Compose *compose = (Compose *)data;
 
 	PrefsAccount *ac;
+	gchar *folderidentifier;
 
 	ac = account_find_from_id(
 		GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(menuitem))));
@@ -6703,6 +6704,21 @@ static void account_activated(GtkMenuItem *menuitem, gpointer data)
 
 	if (ac != compose->account)
 		compose_select_account(compose, ac, FALSE);
+
+	/* Set message save folder */
+	if (account_get_special_folder(compose->account, F_OUTBOX)) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), prefs_common.savemsg);
+	}
+	gtk_signal_connect(GTK_OBJECT(compose->savemsg_checkbtn), "toggled",
+			   GTK_SIGNAL_FUNC(compose_savemsg_checkbtn_cb), compose);
+			   
+	gtk_editable_delete_text(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
+	if (account_get_special_folder(compose->account, F_OUTBOX)) {
+		folderidentifier = folder_item_get_identifier(account_get_special_folder
+				  (compose->account, F_OUTBOX));
+		gtk_entry_set_text(GTK_ENTRY(compose->savemsg_entry), folderidentifier);
+		g_free(folderidentifier);
+	}
 }
 
 static void attach_selected(GtkCList *clist, gint row, gint column,

@@ -377,6 +377,17 @@ gboolean xml_compare_tag(XMLFile *file, const gchar *name)
 		return FALSE;
 }
 
+XMLTag *xml_new_tag(const gchar	*tag)
+{
+	XMLTag *new_tag;
+
+	new_tag = g_new(XMLTag, 1);
+	new_tag->tag = XML_STRING_ADD(tag);
+	new_tag->attr = NULL;
+
+	return new_tag;
+}
+
 XMLTag *xml_copy_tag(XMLTag *tag)
 {
 	XMLTag *new_tag;
@@ -560,7 +571,7 @@ void xml_tag_add_attr(XMLTag *tag, const gchar *name, gchar *value)
 	tag->attr = g_list_append(tag->attr, attr);
 }
 
-static void xml_write_node_recursive(GNode *node, FILE *fp)
+static void xml_write_tree_recursive(GNode *node, FILE *fp)
 {
 	gint i, depth;
 	XMLTag *tag;
@@ -593,7 +604,7 @@ static void xml_write_node_recursive(GNode *node, FILE *fp)
 
 			cur = child;
 			child = cur->next;
-			xml_write_node_recursive(cur, fp);
+			xml_write_tree_recursive(cur, fp);
 		}
 
 		for (i = 0; i < depth; i++)
@@ -603,8 +614,24 @@ static void xml_write_node_recursive(GNode *node, FILE *fp)
 		fputs(" />\n", fp);
 }
 
-void xml_write_node(GNode *node, FILE *fp)
+void xml_write_tree(GNode *node, FILE *fp)
 {
-	xml_write_node_recursive(node, fp);
+	xml_write_tree_recursive(node, fp);
 }
 
+static gpointer copy_node_func(gpointer nodedata, gpointer data)
+{
+	XMLNode *xmlnode = (XMLNode *) nodedata;
+	XMLNode *newxmlnode;
+	
+	newxmlnode = g_new0(XMLNode, 1);
+	newxmlnode->tag = xml_copy_tag(xmlnode->tag);
+	newxmlnode->element = g_strdup(xmlnode->element);
+
+	return newxmlnode;
+}
+
+GNode *xml_copy_tree(GNode *node)
+{
+	return g_node_map(node, copy_node_func, NULL);
+}

@@ -13,6 +13,7 @@ src/common/plugin.c
 src/common/smtp.c
 src/common/ssl.c
 src/common/ssl_certificate.c
+src/common/string_match.c
 src/common/utils.c
 src/compose.c
 src/crash.c
@@ -80,6 +81,7 @@ src/prefs_actions.c
 src/prefs_common.c
 src/prefs_customheader.c
 src/prefs_display_header.c
+src/prefs_ext_prog.c
 src/prefs_filtering_action.c
 src/prefs_filtering.c
 src/prefs_folder_item.c
@@ -101,7 +103,6 @@ src/setup.c
 src/sgpgme.c
 src/sourcewindow.c
 src/ssl_manager.c
-src/string_match.c
 src/summary_search.c
 src/summaryview.c
 src/textview.c

@@ -223,7 +223,6 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 	GRelation *subject_relation;
 	MsgInfo *msginfo;
 	const gchar *msgid;
-	const gchar *subject;
 
 	root = g_node_new(NULL);
 	msgid_table = g_hash_table_new(g_str_hash, g_str_equal);
@@ -252,10 +251,9 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 		}
 	}
 
-	/* complete the unfinished threads */
+	/* complete the unfinished threads. record the last encountered node. */
 	for (node = root->children; node != NULL; ) {
-		prev = node->prev;	/* CLAWS: need the last node */
-		parent = NULL;
+		parent = prev = NULL;
 		next = node->next;
 		msginfo = (MsgInfo *)node->data;
 		if (msginfo->inreplyto) { 
@@ -264,12 +262,15 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			   be an ancestor of parent (circular reference) */
 			if (parent && parent != node && 
 			    !g_node_is_ancestor(node, parent)) {
+				/* since this node is moved away, the previous
+				 * one is the last recorded one */
+				prev = node->prev;
 				g_node_unlink(node);
 				g_node_insert_before
 					(parent, parent->children, node);
 			}				
 		}
-		last = (next == NULL) ? prev : node;
+		last = prev ? prev : node;
 		node = next;
 	}
 
@@ -278,11 +279,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			next = node->prev;
 			msginfo = (MsgInfo *) node->data;
 			
-			/* may not parentize if parent was delivered after childs */
-			if (subject != msginfo->subject)
-				parent = subject_relation_lookup(subject_relation, msginfo);
-			else
-				parent = NULL; 
+			parent = subject_relation_lookup(subject_relation, msginfo);
 			
 			/* the node may already be threaded by IN-REPLY-TO, so go up in the tree to 
 			   find the parent node */

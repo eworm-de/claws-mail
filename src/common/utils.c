@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto & The Sylpheed-Claws Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3643,7 +3643,7 @@ int subject_get_prefix_length(const gchar *subject)
 		"Res\\:",			/* "Res:" (Brazilian Outlook) */
 		"Fw\\:",			/* "Fw:" Forward */
 		"Enc\\:",			/* "Enc:" Forward (Brazilian Outlook) */
-		"Odp\\:"			/* "Odp:" Re (Polish Outlook) */
+		"Odp\\:",			/* "Odp:" Re (Polish Outlook) */
 		/* add more */
 	};
 	const int PREFIXES = sizeof prefixes / sizeof prefixes[0];

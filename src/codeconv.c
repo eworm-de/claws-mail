@@ -834,12 +834,12 @@ gchar *conv_iconv_strdup(const gchar *inbuf,
 	const gchar *inbuf_p;
 	gchar *outbuf;
 	gchar *outbuf_p;
-	gint in_size;
-	gint in_left;
-	gint out_size;
-	gint out_left;
-	gint n_conv;
-	gint len;
+	size_t in_size;
+	size_t in_left;
+	size_t out_size;
+	size_t out_left;
+	size_t n_conv;
+	size_t len;
 
 	if (!src_code)
 		src_code = conv_get_outgoing_charset_str();
@@ -876,7 +876,7 @@ gchar *conv_iconv_strdup(const gchar *inbuf,
 }
 
 	while ((n_conv = iconv(cd, (ICONV_CONST gchar **)&inbuf_p, &in_left,
-			       &outbuf_p, &out_left)) < 0) {
+			       &outbuf_p, &out_left)) == (size_t)-1) {
 		if (EILSEQ == errno) {
 			inbuf_p++;
 			in_left--;
@@ -896,7 +896,8 @@ gchar *conv_iconv_strdup(const gchar *inbuf,
 		}
 	}
 
-	while ((n_conv = iconv(cd, NULL, NULL, &outbuf_p, &out_left)) < 0) {
+	while ((n_conv = iconv(cd, NULL, NULL, &outbuf_p, &out_left)) ==
+	       (size_t)-1) {
 		if (E2BIG == errno) {
 			EXPAND_BUF();
 		} else {

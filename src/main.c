@@ -57,6 +57,7 @@
 #include "prefs_common.h"
 #include "prefs_account.h"
 #include "prefs_actions.h"
+#include "prefs_ext_prog.h"
 #include "prefs_fonts.h"
 #include "prefs_spelling.h"
 #include "prefs_themes.h"
@@ -329,6 +330,7 @@ int main(int argc, char *argv[])
 #endif
 	prefs_themes_init();
 	prefs_fonts_init();
+	prefs_ext_prog_init();
 #ifdef USE_ASPELL
 #ifdef WIN32
 	w32_aspell_init();
@@ -455,7 +457,7 @@ static void save_all_caches(FolderItem *item, gpointer data)
 static void exit_sylpheed(MainWindow *mainwin)
 {
 	gchar *filename;
-	GList *list;
+	GList *list, *cur;
 
 	debug_print("shutting down\n");
 
@@ -476,11 +478,6 @@ static void exit_sylpheed(MainWindow *mainwin)
 	/* save all state before exiting */
 	folder_write_list();
 	folder_func_to_all_folders(save_all_caches, NULL);
-	for (list = folder_get_list(); list != NULL; list = g_list_next(list)) {
-		Folder *folder = FOLDER(list->data);
-
-		folder_tree_destroy(folder);
-	}
 
 	main_window_get_size(mainwin);
 	main_window_get_position(mainwin);
@@ -522,6 +519,7 @@ static void exit_sylpheed(MainWindow *mainwin)
 #endif
 	prefs_themes_done();
 	prefs_fonts_done();
+	prefs_ext_prog_done();
 #ifdef USE_ASPELL       
 	prefs_spelling_done();
 	gtkaspell_checkers_quit();

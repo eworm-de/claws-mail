@@ -299,6 +299,7 @@ OBJECTS= \
 	prefs_common.o \
 	prefs_customheader.o \
 	prefs_display_header.o \
+	prefs_ext_prog.o \
 	prefs_filtering.o \
 	prefs_filtering_action.o \
 	prefs_folder_item.o \
@@ -638,6 +639,7 @@ prefs_actions.o: 	prefs_actions.c prefs_actions.h
 prefs_common.o: 	prefs_common.c prefs_common.h
 prefs_customheader.o: 	prefs_customheader.c prefs_customheader.h
 prefs_display_header.o: 	prefs_display_header.c prefs_display_header.h
+prefs_ext_prog.o: 	prefs_ext_prog.c prefs_ext_prog.h
 prefs_filtering.o: 	prefs_filtering.c prefs_filtering.h
 prefs_filtering_action.o:	prefs_filtering_action.c prefs_filtering_action.h
 prefs_folder_item.o: 	prefs_folder_item.c prefs_folder_item.h

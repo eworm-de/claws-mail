@@ -51,6 +51,7 @@ typedef struct _ExtProgPage
 	GtkWidget *uri_entry;
 	
 	GtkWidget *printcmd_label;
+	GtkWidget *printcmd_combo;
 	GtkWidget *printcmd_entry;
 	
 	GtkWidget *exteditor_label;
@@ -77,6 +78,7 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *uri_combo;
 	GtkWidget *uri_entry;
 	GtkWidget *printcmd_label;
+	GtkWidget *printcmd_combo;
 	GtkWidget *printcmd_entry;
 	GtkWidget *exteditor_label;
 	GtkWidget *exteditor_combo;
@@ -130,6 +132,12 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtkut_combo_set_items (GTK_COMBO (uri_combo),
 			       DEFAULT_BROWSER_CMD,
+#ifdef WIN32
+			       "\"?p\\internet explorer\\iexplore\" \"%s\"",
+			       "\"?p\\netscape\\communicator\\program\\netscape\" -remote \"openURL(%s,raise)\"",
+			       "\"?p\\netscape\\communicator\\program\\netscape\" \"%s\"",
+			       "\"?p\\k-meleon\\k-meleon.exe\" \"%s\"",
+#else
 			       "galeon --new-tab '%s'",
 			       "galeon '%s'",
 			       "mozilla -remote 'openurl(%s,new-window)'",
@@ -140,6 +148,7 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 			       "opera -newwindow '%s'",
 			       "kterm -e w3m '%s'",
 			       "kterm -e lynx '%s'",
+#endif
 			       NULL);
 	uri_entry = GTK_COMBO (uri_combo)->entry;
 	gtk_entry_set_text(GTK_ENTRY(uri_entry), prefs_common.uri_cmd);
@@ -153,11 +162,23 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_label_set_justify(GTK_LABEL (hint_label), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC (hint_label), 1, 0.5);
 
-	printcmd_entry = gtk_entry_new ();
-	gtk_widget_show (printcmd_entry);
-	gtk_table_attach(GTK_TABLE (table2), printcmd_entry, 1, 2, 1, 2,
-                    	 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    	 (GtkAttachOptions) (0), 0, 0);
+	printcmd_combo = gtk_combo_new ();
+	gtk_widget_show (printcmd_combo);
+	gtk_table_attach (GTK_TABLE (table2), printcmd_combo, 1, 2, 1, 2,
+			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtkut_combo_set_items (GTK_COMBO (printcmd_combo),
+#ifdef WIN32
+			       "notepad /p \"%s\"",
+			       "@wordpad /p \"%s\"",
+			       "@lpr -P dummy -S localhost \"%s\"",
+#endif
+			       "lpr \"%s\"",
+			       "@sylprint.pl -v \"%s\"",
+			       "@a2ps -RB \"%s\"",
+			       "@enscript -jG -E email \"%s\"",
+			       "@muttprint -2 -f \"%s\" -p - | ghostview -",
+			       NULL);
+	printcmd_entry = GTK_COMBO (printcmd_combo)->entry;
 	gtk_entry_set_text(GTK_ENTRY(printcmd_entry), prefs_common.print_cmd);
 
 	exteditor_label = gtk_label_new (_("Text editor"));
@@ -174,6 +195,9 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_table_attach (GTK_TABLE (table2), exteditor_combo, 1, 2, 2, 3,
 			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtkut_combo_set_items (GTK_COMBO (exteditor_combo),
+#ifdef WIN32
+			       "notepad \"%s\"",
+#endif
 			       "gedit %s",
 			       "kedit %s",
 			       "nedit %s",

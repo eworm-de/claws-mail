@@ -504,6 +504,10 @@ SOURCE=..\src\prefs_display_header.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\prefs_ext_prog.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\prefs_filtering.c
 # End Source File
 # Begin Source File
@@ -664,7 +668,7 @@ SOURCE=..\src\stock_pixmap.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\string_match.c
+SOURCE=..\src\common\string_match.c
 # End Source File
 # Begin Source File
 
@@ -1124,6 +1128,10 @@ SOURCE=..\src\prefs_display_header.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\prefs_ext_prog.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\prefs_filtering_action.h
 # End Source File
 # Begin Source File
@@ -1269,6 +1277,10 @@ SOURCE=..\src\statusbar.h
 # Begin Source File
 
 SOURCE=..\src\stock_pixmap.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\common\string_match.h
 # End Source File
 # Begin Source File
 

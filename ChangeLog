@@ -1,3 +1,10 @@
+2004-01-05
+
+	* src/codeconv.c: conv_iconv_strdup(): fixed crashes on LP64
+	  environments (thanks to James Noyes).
+	* src/compose.c: compose_select_account(): don't turn off the sign/
+	  encrypt option automatically.
+
 2003-12-17
 
 	* src/inc.[ch]: made inc_account_mail() public.
