@@ -124,23 +124,24 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->item	   = item;
 
 	/* Table */
-	table = gtk_table_new(4, 2, FALSE);
+	table = gtk_table_new(5, 2, FALSE);
 	gtk_widget_show(table);
-	gtk_table_set_row_spacings(GTK_TABLE(table), -1);
+	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
+	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
 	rowcount = 0;
 
 	/* Simplify Subject */
 	checkbtn_simplify_subject = gtk_check_button_new_with_label(_("Simplify Subject RegExp: "));
 	gtk_widget_show(checkbtn_simplify_subject);
 	gtk_table_attach(GTK_TABLE(table), checkbtn_simplify_subject, 0, 1, 
-			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_simplify_subject), 
 				     item->prefs->enable_simplify_subject);
 
 	entry_simplify_subject = gtk_entry_new();
 	gtk_widget_show(entry_simplify_subject);
-	gtk_table_attach_defaults(GTK_TABLE(table), entry_simplify_subject, 1, 2, 
-				  rowcount, rowcount + 1);
+	gtk_table_attach(GTK_TABLE(table), entry_simplify_subject, 1, 2, 
+			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, entry_simplify_subject);
 	gtk_entry_set_text(GTK_ENTRY(entry_simplify_subject), 
 			   SAFE_STRING(item->prefs->simplify_subject_regexp));
@@ -151,15 +152,15 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	checkbtn_folder_chmod = gtk_check_button_new_with_label(_("Folder chmod: "));
 	gtk_widget_show(checkbtn_folder_chmod);
 	gtk_table_attach(GTK_TABLE(table), checkbtn_folder_chmod, 0, 1, 
-			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_folder_chmod), 
 				     item->prefs->enable_folder_chmod);
 
 	entry_folder_chmod = gtk_entry_new();
 	gtk_widget_show(entry_folder_chmod);
-	gtk_table_attach_defaults(GTK_TABLE(table), entry_folder_chmod, 1, 2, 
-				  rowcount, rowcount + 1);
+	gtk_table_attach(GTK_TABLE(table), entry_folder_chmod, 1, 2, 
+			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_folder_chmod, entry_folder_chmod);
 	if (item->prefs->folder_chmod) {
 		gchar *buf;
@@ -175,13 +176,13 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	folder_color = gtk_label_new(_("Folder color: "));
 	gtk_misc_set_alignment(GTK_MISC(folder_color), 0, 0.5);
 	gtk_widget_show(folder_color);
-	gtk_table_attach_defaults(GTK_TABLE(table), folder_color, 0, 1, 
-			 rowcount, rowcount + 1);
+	gtk_table_attach(GTK_TABLE(table), folder_color, 0, 1, 
+			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(hbox);
-	gtk_table_attach_defaults(GTK_TABLE(table), hbox, 1, 2, 
-				  rowcount, rowcount + 1);
+	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 
+			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 
 	folder_color_btn = gtk_button_new_with_label("");
 	gtk_widget_set_size_request(folder_color_btn, 36, 26);
@@ -201,7 +202,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	checkbtn_enable_processing = gtk_check_button_new_with_label(_("Process at startup"));
 	gtk_widget_show(checkbtn_enable_processing);
 	gtk_table_attach(GTK_TABLE(table), checkbtn_enable_processing, 0, 2, 
-			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
+			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_processing), 
 				     item->prefs->enable_processing);
@@ -212,7 +213,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	checkbtn_newmailcheck = gtk_check_button_new_with_label(_("Scan for new mail"));
 	gtk_widget_show(checkbtn_newmailcheck);
 	gtk_table_attach(GTK_TABLE(table), checkbtn_newmailcheck, 0, 2,
-					 rowcount, rowcount+1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
+			 rowcount, rowcount+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_newmailcheck),
 								 item->prefs->newmailcheck);
@@ -324,7 +325,8 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 #endif
 	table = gtk_table_new(TABLEHEIGHT, 2, FALSE);
 	gtk_widget_show(table);
-	gtk_table_set_row_spacings(GTK_TABLE(table), -1);
+	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
+	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	rowcount = 0;
 
 	/* Request Return Receipt */
@@ -360,7 +362,8 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 
 	entry_default_to = gtk_entry_new();
 	gtk_widget_show(entry_default_to);
-	gtk_table_attach_defaults(GTK_TABLE(table), entry_default_to, 1, 2, rowcount, rowcount + 1);
+	gtk_table_attach(GTK_TABLE(table), entry_default_to, 1, 2,
+			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_default_to, entry_default_to);
 	gtk_entry_set_text(GTK_ENTRY(entry_default_to), SAFE_STRING(item->prefs->default_to));
 	address_completion_register_entry(GTK_ENTRY(entry_default_to));
@@ -377,7 +380,8 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 
 	entry_default_reply_to = gtk_entry_new();
 	gtk_widget_show(entry_default_reply_to);
-	gtk_table_attach_defaults(GTK_TABLE(table), entry_default_reply_to, 1, 2, rowcount, rowcount + 1);
+	gtk_table_attach(GTK_TABLE(table), entry_default_reply_to, 1, 2,
+			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_default_reply_to, entry_default_reply_to);
 	gtk_entry_set_text(GTK_ENTRY(entry_default_reply_to), SAFE_STRING(item->prefs->default_reply_to));
 	address_completion_register_entry(GTK_ENTRY(entry_default_reply_to));
@@ -394,8 +398,8 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 
  	optmenu_default_account = gtk_option_menu_new ();
  	gtk_widget_show (optmenu_default_account);
-	gtk_table_attach_defaults(GTK_TABLE(table), optmenu_default_account, 1, 2, 
-				  rowcount, rowcount + 1);
+	gtk_table_attach(GTK_TABLE(table), optmenu_default_account, 1, 2, 
+			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
  	optmenu_default_account_menu = gtk_menu_new ();
 
 	account_list = account_get_list();
@@ -436,8 +440,8 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 
 	optmenu_default_dictionary = gtk_option_menu_new();
 	gtk_widget_show(optmenu_default_dictionary);
-	gtk_table_attach_defaults(GTK_TABLE(table), optmenu_default_dictionary, 1, 2,
-	    			rowcount, rowcount + 1);
+	gtk_table_attach(GTK_TABLE(table), optmenu_default_dictionary, 1, 2,
+	    		 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
 
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_default_dictionary), 
 				 gtkaspell_dictionary_option_menu_new(

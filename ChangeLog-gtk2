@@ -1,5 +1,13 @@
+2004-02-08 Thorsten Maerz <torte@netztorte.de>
+	* src/prefs_common.c
+		re-enable different font settings for gtk1/2
+	* src/prefs_folder_item.c
+		fix folder prefs displayed wrong
+	* src/textview.c
+		set 'sunken' shadow type
+
 2004-02-07 Colin Leroy <colin@colino.net>
-	*src/compose.c
+	* src/compose.c
 		Fix message being always [Edited]
 		Encode headers correctly (utf8 buf)
 
