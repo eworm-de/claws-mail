@@ -1,3 +1,16 @@
+2001-07-05
+
+	* version 0.5.0pre4
+
+	* manual/ja/sylpheed.sgml
+	  manual/ja/*.html: updated the Japanese manual (thanks to Imai).
+	* src/summaryview.c: summary_set_row_marks(): fixed a bug that
+	  didn't set foreground correctly.
+	* src/folderview.h
+	  src/summaryview.h: removed the member color_normal from FolderView
+	  and SummaryView.
+	* src/mainwindow.c: main_window_create(): removed color_normal.
+
 2001-07-04
 
 	* src/prefs_account.[ch]: the port numbers of IMAP4 and NNTP

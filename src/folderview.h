@@ -51,7 +51,6 @@ struct _FolderView
 	gboolean open_folder;
 
 	GdkColor color_new;
-	GdkColor color_normal;
 
 	MainWindow   *mainwin;
 	SummaryView  *summaryview;

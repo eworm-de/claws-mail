@@ -1,3 +1,16 @@
+2001-07-05
+
+	* version 0.5.0pre4
+
+	* manual/ja/sylpheed.sgml
+	  manual/ja/*.html: 日本語マニュアルを更新(今井さん thanks)。
+	* src/summaryview.c: summary_set_row_marks(): フォアグラウンドを
+	  正しく指定していなかったバグを修正。
+	* src/folderview.h
+	  src/summaryview.h: color_normal メンバを FolderView と SummaryView
+	  から削除。
+	* src/mainwindow.c: main_window_create(): color_normal を削除。
+
 2001-07-04
 
 	* src/prefs_account.[ch]: IMAP4 と NNTP のポート番号を指定可能にした。

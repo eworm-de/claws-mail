@@ -106,7 +106,6 @@ struct _SummaryView
 	GdkColor color_important;
 	GdkColor color_marked;
 	GdkColor color_dim;
-	GdkColor color_normal;
 
 	MainWindow   *mainwin;
 	FolderView   *folderview;

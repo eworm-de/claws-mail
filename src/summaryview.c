@@ -2161,7 +2161,7 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 
 	flags = msginfo->flags;
 
-	gtk_ctree_node_set_foreground(ctree, row, &summaryview->color_normal);
+	gtk_ctree_node_set_foreground(ctree, row, NULL);
 
 	/* set new/unread column */
 	if (MSG_IS_IGNORE_THREAD(flags)) {
