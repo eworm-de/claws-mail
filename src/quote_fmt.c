@@ -94,6 +94,7 @@ static void quote_fmt_quote_description_create(void)
 
 	table = gtk_table_new(sizeof(symbol_table), 2, FALSE);
 	gtk_container_add(GTK_CONTAINER(quote_desc_win), table);
+	gtk_table_set_col_spacings(GTK_TABLE(table), 10);
 
 	for(i = 0; symbol_table[i][0] != NULL; i++) {
 		if(symbol_table[i][0][0] != '\0') {

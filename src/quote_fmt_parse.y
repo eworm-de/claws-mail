@@ -488,6 +488,7 @@ insert:
 				while(fgets(buffer, sizeof(buffer), file)) {
 					INSERT(buffer);
 				}
+				fclose(file);
 			}
 		}
 	}
@@ -501,6 +502,7 @@ insert:
 				while(fgets(buffer, sizeof(buffer), file)) {
 					INSERT(buffer);
 				}
+				fclose(file);
 			}
 		}
 	};

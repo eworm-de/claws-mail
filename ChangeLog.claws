@@ -1,3 +1,10 @@
+2002-02-22 [christoph]	0.7.2claws7
+
+	* src/quote_fmt.c
+		Add column space to table
+	* src/quote_fmt_parse.y
+		Close files
+
 2002-02-22 [paul]	0.7.2claws6
 
 	* src/Makefile.am
