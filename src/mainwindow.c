@@ -835,8 +835,8 @@ static GtkItemFactoryEntry replyall_popup_entries[] =
 };
 static GtkItemFactoryEntry replylist_popup_entries[] =
 {
-	{N_("/Reply to list with _quote"), "<shift>A", reply_cb, COMPOSE_REPLY_TO_LIST_WITH_QUOTE, NULL},
-	{N_("/_Reply to list without quote"), "a", reply_cb, COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE, NULL}
+	{N_("/Reply to list with _quote"), NULL, reply_cb, COMPOSE_REPLY_TO_LIST_WITH_QUOTE, NULL},
+	{N_("/_Reply to list without quote"), NULL, reply_cb, COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE, NULL}
 };
 static GtkItemFactoryEntry replysender_popup_entries[] =
 {
