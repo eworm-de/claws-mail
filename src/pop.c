@@ -481,7 +481,9 @@ gint pop3_delete_recv(SockInfo *sock, gpointer data)
 	gint ok;
 
 	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
-		state->msg[state->cur_msg].deleted = TRUE;
+		if (state->ac_prefs->session_type == RETR_NORMAL)
+			state->msg[state->cur_msg].deleted = TRUE;
+
 		if (pop3_delete_header(state) == TRUE) 
 			return POP3_DELETE_SEND;
 

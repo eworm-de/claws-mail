@@ -1,3 +1,9 @@
+2002-03-03 [alfons]	0.7.2claws29
+
+	* src/pop.c
+		merge fix by Oliver Haertel for selective
+		download buglet
+
 2002-03-03 [paul]	0.7.2claws28
 	
 	* sync with sylpheed 0.7.3
