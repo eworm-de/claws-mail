@@ -399,3 +399,4 @@
 ( cvs diff -u -r 1.395.2.55 -r 1.395.2.56 src/summaryview.c; ) > 1.0.1cvs15.8.patchset
 ( cvs diff -u -r 1.395.2.56 -r 1.395.2.57 src/summaryview.c; ) > 1.0.1cvs15.9.patchset
 ( cvs diff -u -r 1.94.2.46 -r 1.94.2.47 src/messageview.c; ) > 1.0.1cvs15.10.patchset
+( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/plugins/pgpmime/passphrase.c; ) > 1.0.1cvs15.11.patchset

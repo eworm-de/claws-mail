@@ -68,7 +68,12 @@ static GtkWidget *create_description (const gchar *desc);
 void
 gpgmegtk_set_passphrase_grab (gint yes)
 {
+#warning "passphrase grab does not work"	
+#if 0
     grab_all = yes;
+#else
+    grab_all = FALSE;
+#endif
 }
 
 static gchar*

@@ -1,3 +1,8 @@
+2005-02-24 [colin]	1.0.1cvs15.11
+
+	* src/plugins/pgpmime/passphrase.c
+		Disable input grabbing; it doesn't work yet.
+
 2005-02-24 [colin]	1.0.1cvs15.10
 
 	* src/messageview.c
