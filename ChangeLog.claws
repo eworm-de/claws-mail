@@ -1,3 +1,9 @@
+2003-07-19 [alfons]	0.9.3claws27
+
+	* src/folderview.c
+		o plug leaking nodes_to_recollapse
+		o add folderview_recollapse_all_nodes() (not used yet)
+
 2003-07-19 [alfons]	0.9.3claws26
 
 	* src/compose.c

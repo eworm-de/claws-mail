@@ -2493,6 +2493,18 @@ static void folderview_recollapse_nodes(FolderView *folderview, GtkCTreeNode *no
 	g_slist_free(done);
 }
 
+static void folderview_recollapse_all_nodes(FolderView *folderview)
+{
+	GSList *list = folderview->nodes_to_recollapse;
+	if (!list) return;
+	for (; list != NULL; list = g_slist_next(list))
+		if (list->data) 
+			gtk_ctree_collapse(GTK_CTREE(folderview->ctree), 
+					   GTK_CTREE_NODE(list->data));
+	g_slist_free(folderview->nodes_to_recollapse);	
+	folderview->nodes_to_recollapse = NULL;
+}
+
 static void folderview_move_to_cb(FolderView *folderview) 
 {
 	FolderItem *from_folder = NULL, *to_folder = NULL;
@@ -2696,9 +2708,9 @@ static void folderview_start_drag(GtkWidget *widget, gint button, GdkEvent *even
 
 	g_return_if_fail(folderview != NULL);
 	if (folderview->selected == NULL) return;
-
-	folderview->nodes_to_recollapse = NULL; /* in case the last drag has been cancelled */
-	
+	if (folderview->nodes_to_recollapse) 
+		g_slist_free(folderview->nodes_to_recollapse);
+	folderview->nodes_to_recollapse = NULL;
 	context = gtk_drag_begin(widget, folderview->target_list,
 				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event);
 	gtk_drag_set_icon_default(context);
@@ -2912,5 +2924,7 @@ static void folderview_drag_end_cb(GtkWidget	    *widget,
                                    FolderView	    *folderview)
 {
 	drag_state_stop(folderview);
+	g_slist_free(folderview->nodes_to_recollapse);
+	folderview->nodes_to_recollapse = NULL;
 }
 
