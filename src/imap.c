@@ -367,7 +367,7 @@ static gint imap_cmd_ok		(IMAPSession	*session,
 static void imap_gen_send	(IMAPSession	*sock,
 				 const gchar	*format, ...);
 static gint imap_gen_recv	(IMAPSession	*sock,
-				 gchar	       **buf);
+				 gchar	       **ret);
 
 /* misc utility functions */
 static gchar *strchr_cpy			(const gchar	*src,
@@ -2342,7 +2342,7 @@ static gint imap_cmd_authenticate(IMAPSession *session, const gchar *user,
 {
 	gchar *auth_type;
 	gint ok;
-	gchar *buf;
+	gchar *buf = NULL;
 	gchar *challenge;
 	gint challenge_len;
 	gchar hexdigest[33];
@@ -2361,8 +2361,8 @@ static gint imap_cmd_authenticate(IMAPSession *session, const gchar *user,
 	challenge = g_malloc(strlen(buf + 2) + 1);
 	challenge_len = base64_decode(challenge, buf + 2, -1);
 	challenge[challenge_len] = '\0';
-	log_print("IMAP< [Decoded: %s]\n", challenge);
 	g_free(buf);
+	log_print("IMAP< [Decoded: %s]\n", challenge);
 
 	md5_hex_hmac(hexdigest, challenge, challenge_len, pass, strlen(pass));
 	g_free(challenge);
@@ -2728,7 +2728,7 @@ static gint imap_cmd_search(IMAPSession *session, const gchar *criteria, GSList 
 static gint imap_cmd_fetch(IMAPSession *session, guint32 uid, const gchar *filename)
 {
 	gint ok;
-	gchar *buf;
+	gchar *buf = NULL;
 	gchar *cur_pos;
 	gchar size_str[32];
 	glong size_num;
@@ -2737,14 +2737,12 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid, const gchar *filen
 
 	imap_gen_send(session, "UID FETCH %d BODY.PEEK[]", uid);
 
-	while ((ok = imap_gen_recv(session, &buf))
-	       == IMAP_SUCCESS) {
+	while ((ok = imap_gen_recv(session, &buf)) == IMAP_SUCCESS) {
 		if (buf[0] != '*' || buf[1] != ' ') {
 			g_free(buf);
 			return IMAP_ERROR;
 		}
-		if (strstr(buf, "FETCH") != NULL)
-			break;
+		if (strstr(buf, "FETCH") != NULL) break;
 		g_free(buf);
 	}
 	if (ok != IMAP_SUCCESS) {
@@ -2752,29 +2750,27 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid, const gchar *filen
 		return ok;
 	}
 
+#define RETURN_ERROR_IF_FAIL(cond)	\
+	if (!(cond)) {			\
+		g_free(buf);		\
+		return IMAP_ERROR;	\
+	}
+
 	cur_pos = strchr(buf, '{');
-	if (cur_pos == NULL) {
-		g_free(buf);
-		return IMAP_ERROR;
-	}
-
+	RETURN_ERROR_IF_FAIL(cur_pos != NULL);
 	cur_pos = strchr_cpy(cur_pos + 1, '}', size_str, sizeof(size_str));
-	if (cur_pos == NULL) {
-		g_free(buf);
-		return IMAP_ERROR;
-	}
+	RETURN_ERROR_IF_FAIL(cur_pos != NULL);
 	size_num = atol(size_str);
-	g_return_val_if_fail(size_num > 0, IMAP_ERROR);
+	RETURN_ERROR_IF_FAIL(size_num > 0);
 
-	if (*cur_pos != '\0') {
-		g_free(buf);
-		return IMAP_ERROR;
-	}
+	RETURN_ERROR_IF_FAIL(*cur_pos == '\0');
 
-	if (recv_bytes_write_to_file(SESSION(session)->sock, size_num, filename) != 0) {
-		g_free(buf);
+#undef RETURN_ERROR_IF_FAIL
+
+	g_free(buf);
+
+	if (recv_bytes_write_to_file(SESSION(session)->sock, size_num, filename) != 0)
 		return IMAP_ERROR;
-	}
 
 	if (imap_gen_recv(session, &buf) != IMAP_SUCCESS) {
 		g_free(buf);
@@ -2785,8 +2781,8 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid, const gchar *filen
 		g_free(buf);
 		return IMAP_ERROR;
 	}
-
 	g_free(buf);
+
 	ok = imap_cmd_ok(session, NULL);
 
 	return ok;
@@ -2799,7 +2795,8 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 	gint size, newuid;
 	gchar *destfolder_;
 	gchar *flag_str;
-	gchar buf[BUFFSIZE], *imapbuf;
+	gchar *ret = NULL;
+	gchar buf[BUFFSIZE];
 	FILE *fp;
 	GPtrArray *reply;
 	gchar *okmsginfo;
@@ -2817,14 +2814,14 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 		      destfolder_, flag_str, size);
 	g_free(flag_str);
 
-	ok = imap_gen_recv(session, &imapbuf);
-	if (ok != IMAP_SUCCESS || imapbuf[0] != '+' || imapbuf[1] != ' ') {
+	ok = imap_gen_recv(session, &ret);
+	if (ok != IMAP_SUCCESS || ret[0] != '+' || ret[1] != ' ') {
 		log_warning(_("can't append %s to %s\n"), file, destfolder_);
-		g_free(imapbuf);
+		g_free(ret);
 		fclose(fp);
 		return IMAP_ERROR;
 	}
-	g_free(imapbuf);
+	g_free(ret);
 
 	log_print("IMAP4> %s\n", _("(sending file...)"));
 
@@ -3051,14 +3048,14 @@ static void imap_gen_send(IMAPSession *session, const gchar *format, ...)
 	g_free(buf);
 }
 
-static gint imap_gen_recv(IMAPSession *session, gchar **buf)
+static gint imap_gen_recv(IMAPSession *session, gchar **ret)
 {
-	if ((*buf = sock_getline(SESSION(session)->sock)) == NULL)
+	if ((*ret = sock_getline(SESSION(session)->sock)) == NULL)
 		return IMAP_SOCKET;
 
-	strretchomp(*buf);
+	strretchomp(*ret);
 
-	log_print("IMAP4< %s\n", *buf);
+	log_print("IMAP4< %s\n", *ret);
 
 	return IMAP_SUCCESS;
 }

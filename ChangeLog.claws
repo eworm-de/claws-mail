@@ -1,3 +1,8 @@
+2003-07-27 [christoph]	0.9.3claws61
+
+	* sync with 0.9.3cvs20
+		see ChangeLog 2003-07-25
+
 2003-07-27 [paul]	0.9.3claws60
 
 	* src/procmsg.c
