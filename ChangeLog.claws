@@ -1,3 +1,11 @@
+2002-10-14 [melvin]	0.8.5claws34
+
+	* src/gtkaspell.c
+		Fixed bug in dictionary list context menu where
+		"More..." pointed to an emtpy submenu if the
+		number of dictionaries is a multiple of 15
+		Removed unneeded code in suggestions list creation
+
 2002-10-14 [paul]	0.8.5claws33
 
 	* po/bg.po

@@ -1749,17 +1749,7 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 		gint count = 0;
 		
 		do {
-			if (l->data == NULL && l->next != NULL) {
-				count = 0;
-				curmenu = gtk_menu_new();
-				item = gtk_menu_item_new_with_label(_("Others..."));
-				gtk_widget_show(item);
-				gtk_menu_append(GTK_MENU(curmenu), item);
-				gtk_menu_item_set_submenu(GTK_MENU_ITEM(item),
-							  curmenu);
-
-				l = l->next;
-			} else if (count > MENUCOUNT) {
+			if (count == MENUCOUNT) {
 				count -= MENUCOUNT;
 
 				item = gtk_menu_item_new_with_label(_("More..."));
@@ -1911,6 +1901,19 @@ static void populate_submenu(GtkAspell *gtkaspell, GtkWidget *menu)
 		
 		for (tmp = gtkaspellcheckers->dictionary_list; tmp != NULL; 
 				tmp = g_slist_next(tmp)) {
+			if (count == MENUCOUNT) {
+				GtkWidget *newmenu;
+				
+				newmenu = gtk_menu_new();
+				item = gtk_menu_item_new_with_label(_("More..."));
+				gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), 
+							  newmenu);
+				
+				gtk_menu_append(GTK_MENU(curmenu), item);
+				gtk_widget_show(item);
+				curmenu = newmenu;
+				count = 0;
+			}
 			dict = (Dictionary *) tmp->data;
 			item = gtk_check_menu_item_new_with_label(dict->dictname);
 			gtk_object_set_data(GTK_OBJECT(item), "dict_name",
@@ -1930,20 +1933,6 @@ static void populate_submenu(GtkAspell *gtkaspell, GtkWidget *menu)
 			gtk_menu_append(GTK_MENU(curmenu), item);
 			
 			count++;
-			
-			if (count == MENUCOUNT) {
-				GtkWidget *newmenu;
-				
-				newmenu = gtk_menu_new();
-				item = gtk_menu_item_new_with_label(_("More..."));
-				gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), 
-							  newmenu);
-				
-				gtk_menu_append(GTK_MENU(curmenu), item);
-				gtk_widget_show(item);
-				curmenu = newmenu;
-				count = 0;
-			}
 		}
         }  
 }
