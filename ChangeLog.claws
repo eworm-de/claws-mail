@@ -3,6 +3,10 @@
 	* po/POTFILES.in
 		update to reflect recent changes (thanks
 		to Ricardo Mones Lastra)
+		
+	* tools/filter_conv.pl
+		 fix problem with quoted strings. Patch submitted
+		 by Luke Plant <lukeplant@softhome.net>
 
 2002-12-03 [paul]	0.8.6claws52
 
