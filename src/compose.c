@@ -860,7 +860,7 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 #if USE_GPGME
 	for (;;) {
 		if ((fp = procmsg_open_message(msginfo)) == NULL) return;
-		mimeinfo = procmime_scan_mime_header(fp);
+		mimeinfo = procmime_scan_mime_header(fp, MIME_TEXT);
 		if (!mimeinfo) break;
 
 		if (!MSG_IS_ENCRYPTED(msginfo->flags) &&
@@ -882,7 +882,7 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 	}
 #else /* !USE_GPGME */
 	if ((fp = procmsg_open_message(msginfo)) == NULL) return;
-	mimeinfo = procmime_scan_mime_header(fp);
+	mimeinfo = procmime_scan_mime_header(fp, MIME_TEXT);
 #endif /* USE_GPGME */
 
 	fclose(fp);
@@ -927,7 +927,7 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 
 		prev_fpos = fpos;
 
-		partinfo = procmime_scan_mime_header(fp);
+		partinfo = procmime_scan_mime_header(fp, MIME_TEXT);
 		if (!partinfo) break;
 
 		if (npart != 0)

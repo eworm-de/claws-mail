@@ -329,23 +329,21 @@ static void mimeview_set_multipart_tree(MimeView *mimeview,
 					MimeInfo *mimeinfo,
 					GtkCTreeNode *parent)
 {
+	GtkCTreeNode *current = parent;
+
 	g_return_if_fail(mimeinfo != NULL);
 
-	if (!mimeinfo->main && mimeinfo->parent)
-		parent = mimeview_append_part(mimeview, mimeinfo, parent);
+	if (!mimeinfo->sub && mimeinfo->parent)
+		current = mimeview_append_part(mimeview, mimeinfo, parent);
 
-	if (mimeinfo->sub && mimeinfo->sub->children)
-		mimeview_set_multipart_tree(mimeview, mimeinfo->sub, parent);
+	if (mimeinfo->sub)
+		mimeview_set_multipart_tree(mimeview, mimeinfo->sub, current);
 
-	if (mimeinfo->children) {
-		MimeInfo *child;
+	if (mimeinfo->children)
+		mimeview_set_multipart_tree(mimeview, mimeinfo->children, current);
 
-		child = mimeinfo->children;
-		while (child) {
-			mimeview_set_multipart_tree(mimeview, child, parent);
-			child = child->next;
-		}
-	}
+	if (mimeinfo->next)
+		mimeview_set_multipart_tree(mimeview, mimeinfo->next, parent);
 }
 
 static gchar *get_part_name(MimeInfo *partinfo)

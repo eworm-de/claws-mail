@@ -145,7 +145,12 @@ void procmime_scan_content_type		(MimeInfo	*mimeinfo,
 					 const gchar	*content_type);
 void procmime_scan_content_disposition	(MimeInfo	*mimeinfo,
 					 const gchar	*content_disposition);
-MimeInfo *procmime_scan_mime_header	(FILE		*fp);
+void procmime_scan_content_description	(MimeInfo	*mimeinfo,
+					 const gchar	*content_description);
+void procmime_scan_subject              (MimeInfo       *mimeinfo,
+			                 const gchar    *subject);
+MimeInfo *procmime_scan_mime_header	(FILE		*fp,
+					 ContentType    default_type);
 
 FILE *procmime_decode_content		(FILE		*outfp,
 					 FILE		*infp,

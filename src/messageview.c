@@ -373,7 +373,7 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo)
 #if USE_GPGME
 	for (;;) {
 		if ((fp = procmsg_open_message(msginfo)) == NULL) return;
-		mimeinfo = procmime_scan_mime_header(fp);
+		mimeinfo = procmime_scan_mime_header(fp, MIME_TEXT);
 		if (!mimeinfo) break;
 
 		if (!MSG_IS_ENCRYPTED(msginfo->flags) &&
@@ -418,7 +418,7 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo)
 	}
 #else /* !USE_GPGME */
 	if ((fp = procmsg_open_message(msginfo)) == NULL) return;
-	mimeinfo = procmime_scan_mime_header(fp);
+	mimeinfo = procmime_scan_mime_header(fp, MIME_TEXT);
 #endif /* USE_GPGME */
 	fclose(fp);
 	if (!mimeinfo) return;
