@@ -47,7 +47,8 @@ static GSList  *mh_get_uncached_msgs		(GHashTable	*msg_table,
 						 FolderItem	*item);
 static MsgInfo *mh_parse_msg			(const gchar	*file,
 						 FolderItem	*item);
-static void	mh_scan_tree_recursive		(FolderItem	*item);
+static void	mh_scan_tree_recursive		(FolderItem	*item, 
+						 GHashTable *pptable);
 
 static gboolean mh_rename_folder_func		(GNode		*node,
 						 gpointer	 data);
@@ -673,8 +674,11 @@ void mh_scan_tree(Folder *folder)
 {
 	FolderItem *item;
 	gchar *rootpath;
+	GHashTable *pptable;
 
 	g_return_if_fail(folder != NULL);
+
+	pptable = folder_persist_prefs_new(folder);
 
 	folder_tree_destroy(folder);
 	item = folder_item_new(folder->name, NULL);
@@ -688,7 +692,9 @@ void mh_scan_tree(Folder *folder)
 	}
 	g_free(rootpath);
 
-	mh_scan_tree_recursive(item);
+	mh_scan_tree_recursive(item, pptable);
+	
+	folder_persist_prefs_free(pptable);
 }
 
 #define MAKE_DIR_IF_NOT_EXIST(dir) \
@@ -1000,7 +1006,7 @@ static gboolean mh_is_maildir(const gchar *path)
 	       mh_is_maildir_one(path, "tmp");
 }
 
-static void mh_scan_tree_recursive(FolderItem *item)
+static void mh_scan_tree_recursive(FolderItem *item, GHashTable *pptable)
 {
 	DIR *dp;
 	struct dirent *d;
@@ -1067,7 +1073,8 @@ static void mh_scan_tree_recursive(FolderItem *item)
 					item->folder->trash = new_item;
 				}
 			}
-			mh_scan_tree_recursive(new_item);
+			folder_item_restore_persist_prefs(new_item, pptable);
+			mh_scan_tree_recursive(new_item, pptable);
 		} else if (to_number(d->d_name) != -1) n_msg++;
 
 		g_free(entry);

@@ -68,6 +68,11 @@ static void folder_write_list_recursive	(GNode		*node,
 static void folder_update_op_count_rec	(GNode		*node);
 
 
+static void folder_get_persist_prefs_recursive
+					(GNode *node, GHashTable *pptable);
+static gboolean persist_prefs_free	(gpointer key, gpointer val, gpointer data);
+
+
 Folder *folder_new(FolderType type, const gchar *name, const gchar *path)
 {
 	Folder *folder = NULL;
@@ -1609,5 +1614,90 @@ FolderItem *folder_get_default_processing(void)
 		folder_create_processing_folder();
 	}
 	return processing_folder_item;
+}
+
+/* folder_persist_prefs_new() - return hash table with persistent
+ * settings (and folder name as key). 
+ * (note that in claws other options are in the PREFS_FOLDER_ITEM_RC
+ * file, so those don't need to be included in PersistPref yet) 
+ */
+GHashTable *folder_persist_prefs_new(Folder *folder)
+{
+	GHashTable *pptable;
+
+	g_return_val_if_fail(folder, NULL);
+	pptable = g_hash_table_new(g_str_hash, g_str_equal);
+	folder_get_persist_prefs_recursive(folder->node, pptable);
+	return pptable;
+}
+
+void folder_persist_prefs_free(GHashTable *pptable)
+{
+	g_return_if_fail(pptable);
+	g_hash_table_foreach_remove(pptable, persist_prefs_free, NULL);
+	g_hash_table_destroy(pptable);
+}
+
+const PersistPrefs *folder_get_persist_prefs(GHashTable *pptable, const char *name)
+{
+	if (pptable == NULL || name == NULL) return NULL;
+	return g_hash_table_lookup(pptable, name);
+}
+
+void folder_item_restore_persist_prefs(FolderItem *item, GHashTable *pptable)
+{
+	const PersistPrefs *pp;
+
+	pp = folder_get_persist_prefs(pptable, item->path); 
+	if (!pp) return;
+
+	/* CLAWS: since not all folder properties have been migrated to 
+	 * folderlist.xml, we need to call the old stuff first before
+	 * setting things that apply both to Main and Claws. */
+	prefs_folder_item_read_config(item); 
+	 
+	item->collapsed = pp->collapsed;
+	item->threaded  = pp->threaded;
+	item->ret_rcpt  = pp->ret_rcpt;
+	item->hide_read_msgs = pp->hide_read_msgs;
+}
+
+static void folder_get_persist_prefs_recursive(GNode *node, GHashTable *pptable)
+{
+	FolderItem *item = FOLDER_ITEM(node->data);
+	PersistPrefs *pp;
+	GNode *child, *cur;
+
+	g_return_if_fail(node != NULL);
+	g_return_if_fail(item != NULL);
+
+	/* FIXME: item->path == NULL for top level folder, so this means that 
+	 * properties of MH folder root will not be stored. Not quite important, 
+	 * because the top level folder properties are not special anyway. */
+	if (item->path) {
+		pp = g_new0(PersistPrefs, 1);
+		g_return_if_fail(pp != NULL);
+		pp->collapsed = item->collapsed;
+		pp->threaded  = item->threaded;
+		pp->ret_rcpt  = item->ret_rcpt;	
+		pp->hide_read_msgs = item->hide_read_msgs;
+		g_hash_table_insert(pptable, item->path, pp);
+	}		
+
+	if (node->children) {
+		child = node->children;
+		while (child) {
+			cur = child;
+			child = cur->next;
+			folder_get_persist_prefs_recursive(cur, pptable);
+		}
+	}	
+}
+
+static gboolean persist_prefs_free(gpointer key, gpointer val, gpointer data)
+{
+	if (val) 
+		g_free(val);
+	return TRUE;	
 }
 

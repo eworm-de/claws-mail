@@ -1,3 +1,11 @@
+2001-12-30 [alfons]	0.6.6claws31
+
+	* src/mh.c
+	* src/folder.[ch]
+		make folder properties (like threading and sorting) persistent
+		(closes bug #497424 "rescan folder tree resets proprieties")
+		currently this is only for MH folders. 
+
 2001-12-29 [melvin]	0.6.6claws30
 
 	* src/string_match.[ch]

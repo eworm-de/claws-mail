@@ -235,6 +235,14 @@ struct _FolderItem
 	PrefsFolderItem * prefs;
 };
 
+typedef struct {
+	guint	collapsed	: 1;
+	guint	threaded	: 1;
+	guint   hide_read_msgs	: 1; /* CLAWS */
+	guint	ret_rcpt	: 1; /* CLAWS */
+} PersistPrefs;
+
+
 Folder     *folder_new		(FolderType	 type,
 				 const gchar	*name,
 				 const gchar	*path);
@@ -309,5 +317,12 @@ gchar *folder_item_get_cache_file	(FolderItem	*item);
 gchar *folder_item_get_mark_file	(FolderItem	*item);
 gchar * folder_item_get_identifier(FolderItem * item);
 FolderItem * folder_find_item_from_identifier(const gchar *identifier);
+
+GHashTable *folder_persist_prefs_new	(Folder *folder);
+void folder_persist_prefs_free		(GHashTable *pptable);
+const PersistPrefs *folder_get_persist_prefs
+					(GHashTable *pptable, const char *name);
+
+void folder_item_restore_persist_prefs	(FolderItem *item, GHashTable *pptable);
 
 #endif /* __FOLDER_H__ */
