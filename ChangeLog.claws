@@ -1,3 +1,8 @@
+2002-11-12 [colin]	0.8.5claws135
+
+	* src/inc.c
+		Fix the "socket error" dialog which disappeared
+
 2002-11-12 [colin] 	0.8.5claws134
 
 	* src/msgcache.c

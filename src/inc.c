@@ -631,8 +631,10 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 		if (inc_state != INC_SUCCESS && inc_state != INC_CANCEL) {
 			error_num++;
-			if (inc_state == INC_NO_SPACE ||
-			    inc_state == INC_IO_ERROR) {
+			if (inc_state == INC_ERROR    ||
+			    inc_state == INC_NO_SPACE ||
+			    inc_state == INC_IO_ERROR ||
+			    inc_state == INC_SOCKET_ERROR) {
 				inc_put_error(inc_state);
 				break;
 			}
