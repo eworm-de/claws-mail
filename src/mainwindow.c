@@ -61,6 +61,7 @@
 #include "export.h"
 #include "prefs_common.h"
 #include "prefs_filter.h"
+#include "prefs_actions.h"
 #include "prefs_filtering.h"
 #include "prefs_scoring.h"
 #include "prefs_account.h"
@@ -410,6 +411,9 @@ static void prefs_account_open_cb(MainWindow	*mainwin,
 static void prefs_template_open_cb	(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
+static void prefs_actions_open_cb	(MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
 static void new_account_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -466,6 +470,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Edit/_Find in current message..."),
 						"<control>F", search_cb, 0, NULL},
 	{N_("/_Edit/_Search folder..."),	"<shift><control>F", search_cb, 1, NULL},
+	{N_("/_Edit/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Edit/Actio_ns"),			NULL, NULL, 0, "<Branch>"},
 
 	{N_("/_View"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/_Folder tree"),		NULL, NULL, SEPARATE_ACTION + SEPARATE_FOLDER,  "<ToggleItem>"},
@@ -671,6 +677,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Configuration/_Filtering ..."),
 						NULL, prefs_filtering_open_cb, 0, NULL},
 	{N_("/_Configuration/_Template..."),	NULL, prefs_template_open_cb, 0, NULL},
+	{N_("/_Configuration/_Actions..."),	NULL, prefs_actions_open_cb, 0, NULL},
 	{N_("/_Configuration/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Configuration/_Preferences for current account..."),
 						NULL, prefs_account_open_cb, 0, NULL},
@@ -984,6 +991,9 @@ MainWindow *main_window_create(SeparateType type)
 	mainwin->ac_menu = ac_menu;
 
 	main_window_set_toolbar_sensitive(mainwin);
+
+	/* Create actions menu */
+	update_mainwin_actions_menu(ifactory, mainwin);
 
 	/* show main window */
 	gtk_widget_set_uposition(mainwin->window,
@@ -1486,6 +1496,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		/* {"/File/Close", M_UNLOCKED}, */
 		{"/File/Exit" , M_UNLOCKED},
 
+		{"/Edit/Actions"		   , M_MSG_EXIST},
 		{"/View/Sort"                      , M_MSG_EXIST},
 		{"/View/Thread view"               , M_UNTHREADED},
 		{"/View/Unthread view"             , M_THREADED},
@@ -2860,6 +2871,12 @@ static void prefs_template_open_cb(MainWindow *mainwin, guint action,
 				   GtkWidget *widget)
 {
 	prefs_template_open();
+}
+
+static void prefs_actions_open_cb(MainWindow *mainwin, guint action,
+				  GtkWidget *widget)
+{
+	prefs_actions_open(mainwin);
 }
 
 static void prefs_account_open_cb(MainWindow *mainwin, guint action,

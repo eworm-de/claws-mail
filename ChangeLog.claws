@@ -1,3 +1,22 @@
+2002-02-06 [melvin]	0.7.0claws51
+
+	* src/prefs_actions.c	** NEW FILE **
+	* src/prefs_actions.h	** NEW FILE **
+		Added actions to execute on message text view, or on the
+			message's file.
+	* src/Makefile.am
+		Added src/prefs_actions.[ch]
+	* src/compose.c
+		Added new menu "Edit/Actions"
+	* src/defs.h
+		Added new actionsrc file.
+	* src/main.c
+		Added actionsrc reading.
+	* src/mainwindow.c
+		Added new menus "Edit/Actions" and "Configuration/Actions..."
+	* src/prefs_common.h
+		Added new element actionslst element to prefs_common.
+
 2002-02-06 [paul]	0.7.0claws50
 
 	* sync with sylpheed 0.7.0cvs36

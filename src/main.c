@@ -258,6 +258,8 @@ int main(int argc, char *argv[])
 	prefs_common_save_config();
 	prefs_filter_read_config();
 	prefs_filter_write_config();
+	prefs_actions_read_config();
+	prefs_actions_write_config();
 	prefs_display_header_read_config();
 	prefs_display_header_write_config();
 	/* prefs_filtering_read_config(); */

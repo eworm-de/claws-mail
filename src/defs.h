@@ -51,6 +51,7 @@
 #define SCORING_RC              "scoringrc"
 #define FILTERING_RC		"filteringrc"
 #define MATCHER_RC		"matcherrc"
+#define ACTIONS_RC		"actionsrc"
 #define MENU_RC			"menurc"
 #define RENDERER_RC		"rendererrc"
 #define COMMAND_HISTORY		"command_history"

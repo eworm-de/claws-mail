@@ -123,6 +123,9 @@ struct _PrefsCommon
 	gint kill_score;
 	gint important_score;
 
+	/* Actions */
+	GSList *actionslst;
+
 	/* Summary columns visibility, position and size */
 	gboolean summary_col_visible[N_SUMMARY_COLS];
 	gint summary_col_pos[N_SUMMARY_COLS];
