@@ -379,7 +379,8 @@ gboolean gtkut_stext_is_uri_string(GtkSText *text,
 {
 	if (gtkut_stext_str_compare(text, start_pos, text_len, "http://") ||
 	    gtkut_stext_str_compare(text, start_pos, text_len, "ftp://")  ||
-	    gtkut_stext_str_compare(text, start_pos, text_len, "https://"))
+	    gtkut_stext_str_compare(text, start_pos, text_len, "https://")||
+	    gtkut_stext_str_compare(text, start_pos, text_len, "www."))
 		return TRUE;
 
 	return FALSE;

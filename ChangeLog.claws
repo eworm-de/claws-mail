@@ -1,3 +1,13 @@
+2002-03-01 [paul]	0.7.2claws22
+
+	* src/gtkutils.c
+	  src/textview.c
+		recognise urls that that don't include 'http://' and
+		simply begin 'www.' 
+
+	* AUTHORS
+		remove duplicated name
+
 2002-02-28 [paul]	0.7.2claws21
 
 	* src/mainwindow.c
