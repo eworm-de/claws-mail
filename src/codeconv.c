@@ -568,7 +568,7 @@ void conv_unreadable_latin(gchar *str)
 		/* convert CR+LF -> LF */
 		if (*p == '\r' && *(p + 1) == '\n')
 			memmove(p, p + 1, strlen(p));
-		else if ((*p & 0xff) >= 0x7f && (*p & 0xff) <= 0x9f)
+		else if ((*p & 0xff) >= 0x7f)
 			*p = SUBST_CHAR;
 		p++;
 	}
@@ -577,17 +577,18 @@ void conv_unreadable_latin(gchar *str)
 void conv_unreadable_utf8(gchar *str)
 {
 	register guchar *p = str;
-
+printf("in %s\n", str);
 	while (*p != '\0') {
 		/* convert CR+LF -> LF */
-
+printf("p %x(%c) - %x\n",*p, *p, (*p & 0xff));
 		if (*p == '\r' && *(p + 1) == '\n')
 			memmove(p, p + 1, strlen(p));
-		else if (((*p & 0xff) >= 0x7f && (*p & 0xff) <= 0x9f) 
+		else if (((*p & 0xff) >= 0x7f) 
 			 || *p == 0xfc)
 			*p = SUBST_CHAR;
 		p++;
 	}
+printf("out %s\n", str);
 }
 
 void conv_unreadable_locale(gchar *str)
