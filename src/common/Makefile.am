@@ -1,6 +1,9 @@
 noinst_LTLIBRARIES = libsylpheedcommon.la
 
 libsylpheedcommon_la_SOURCES = \
+	intl.h \
+	defs.h \
+	version.h \
 	base64.c base64.h \
 	hooks.c hooks.h \
 	log.c log.h \

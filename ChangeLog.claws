@@ -1,3 +1,11 @@
+2002-12-23 [christoph]	0.8.7claws1
+
+	* src/Makefile.am
+	* src/common/Makefile.am
+		update Makefiles for moved intl.h, version.h and defs.h
+	* src/imap.c
+		rewrite imap_session_get to avoid duplicate code
+
 2002-12-23 [paul]	0.8.7claws
 
 	* Santa-Claws released
