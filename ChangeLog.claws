@@ -1,3 +1,10 @@
+2002-11-09 [colin]	0.8.5claws108
+
+	* src/folder.c
+		Add a call to prefs_matcher_write_config to 
+		avoid non-leaf folders filtering settings to be
+		lost
+
 2002-11-09 [paul]	0.8.5claws107
 
 	* src/prefs_account.c

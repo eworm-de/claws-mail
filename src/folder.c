@@ -1493,6 +1493,8 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 	new_item->sort_key  = src->sort_key;
 	new_item->sort_type = src->sort_type;
 
+	prefs_matcher_write_config();
+	
 	/* recurse */
 	srcnode = src->folder->node;	
 	srcnode = g_node_find(srcnode, G_PRE_ORDER, G_TRAVERSE_ALL, src);
