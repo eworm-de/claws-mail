@@ -8,7 +8,7 @@ MINOR_VERSION=4
 MICRO_VERSION=65
 INTERFACE_AGE=65
 BINARY_AGE=65
-EXTRA_VERSION=claws4
+EXTRA_VERSION=claws5
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl
@@ -148,6 +148,26 @@ if test x"$ac_cv_enableipv6" = xyes; then
 		AC_DEFINE(INET6)
 	fi
 fi
+
+dnl check if gdk / gtk was compiled with USE_XIM
+AC_MSG_CHECKING([whether GTK was compiled with XIM support])
+CFLAGS_SAVE="$CFLAGS"
+LDFLAGS_SAVE="$LDFLAGS"
+CFLAGS="$CFLAGS `$GLIB_CONFIG --cflags` `gtk-config --cflags`"
+LDFLAGS="$LIBS `$GLIB_CONFIG --libs` `gtk-config --libs`"
+AC_CACHE_VAL(ac_cv_use_gtkgdk_xim, [
+	AC_TRY_COMPILE([#include <gtk/gtk.h>
+			#include <gdk/gdk.h>],
+			[extern gint gdk_im_open(void); gdk_im_open();],
+			 ac_cv_use_gtkgdk_xim=yes, ac_cv_use_gtkgdk_xim=no)
+	])
+AC_MSG_RESULT($ac_cv_use_gtkgdk_xim)
+if test $ac_cv_use_gtkgdk_xim = yes; then
+	AC_DEFINE(USE_GTKGDK_XIM)
+fi
+CFLAGS="$CFLAGS_SAVE"
+LDFLAGS="$LDFLAGS_SAVE"
+
 
 dnl Checks for header files.
 AC_HEADER_DIRENT
