@@ -1062,6 +1062,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 	while (*wsrcp) {
 		wchar_t *wp, *wtmp, *wtmpp;
 		gint nspc = 0;
+		gboolean str_is_non_ascii;
 
 		/* irresponsible buffer overrun check */
 		if ((len - (destp - dest)) < (MAX_LINELEN + 1) * 2) break;
@@ -1072,8 +1073,11 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 			wp = wsrcp;
 			while ((wp = find_wspace(wp)) != NULL)
 				if (!is_next_nonascii(wp)) break;
-		} else
+			str_is_non_ascii = TRUE;
+		} else {
 			wp = find_wspace(wsrcp);
+			str_is_non_ascii = FALSE;
+		}
 
 		if (wp != NULL) {
 			wtmp = wcsndup(wsrcp, wp - wsrcp);
@@ -1087,7 +1091,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 		wtmpp = wtmp;
 
 		do {
-			gint tlen = 0, str_ascii = 1;
+			gint tlen = 0;
 			gchar *tmp; /* internal codeset */
 			gchar *raw; /* converted, but not base64 encoded */
 			register gchar *tmpp;
@@ -1105,8 +1109,6 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 				int raw_new_len = 0;
 				const gchar *src_codeset;
 
-				if (*wtmpp < 32 || *wtmpp >= 127)
-					str_ascii = 0;
 				mbl = wctomb(tmpp, *wtmpp);
 				if (mbl == -1) {
 					g_warning("invalid wide character\n");
@@ -1127,7 +1129,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 					wtmpp++;
 					continue;
 				}
-				if (!str_ascii) {
+				if (str_is_non_ascii) {
 					gint dlen = mimehdr_len +
 						B64LEN(raw_len);
 					if ((line_len + dlen +
@@ -1139,7 +1141,6 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 							*destp++ = '\n';
 							*destp++ = ' ';
 							line_len = 1;
-							str_ascii = 1;
 							continue;
 						} else {
 							*tmpp = '\0';
@@ -1189,7 +1190,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 				line_len++;
 			}
 
-			if (!str_ascii) {
+			if (str_is_non_ascii) {
 				g_snprintf(destp, len - strlen(dest), "%s%s%s",
 					   mimehdr_init, mimehdr_charset,
 					   mimehdr_enctype);

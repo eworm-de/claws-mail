@@ -1,5 +1,10 @@
 2002-07-23
 
+	* src/codeconv.c: conv_encode_header(): fixed a problem in encoding
+	  strings which include both multi-byte and us-ascii characters.
+
+2002-07-23
+
 	* src/utils.c: remove_numbered_files(): don't try to unlink()
 	  directories.
 	* src/codeconv.c:
