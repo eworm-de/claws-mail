@@ -103,7 +103,6 @@ sylpheed_SOURCES = \
 	sigstatus.c sigstatus.h \
 	simple-gettext.c \
 	manual.c manual.h \
-	stringtable.c stringtable.h \
 	scoring.c scoring.h \
 	matcher.c matcher.h \
 	prefs_matcher.c prefs_matcher.h \

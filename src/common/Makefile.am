@@ -16,6 +16,7 @@ libsylpheedcommon_la_SOURCES = \
 	socket.c socket.h \
 	ssl_certificate.c ssl_certificate.h \
 	ssl.c ssl.h \
+	stringtable.c stringtable.h \
 	sylpheed.c sylpheed.h \
 	template.c template.h \
 	utils.c utils.h \

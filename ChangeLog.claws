@@ -1,3 +1,11 @@
+2002-12-29 [christoph]	0.8.8claws24
+
+	* src/Makefile.am
+	* src/stringtable.[ch]		** REMOVE **
+	* src/common/Makefile.am
+	* src/common/stringtable.[ch]	** NEW **
+		move stringtable files to common directory
+
 2002-12-29 [christoph]	0.8.8claws23
 
 	* src/Makefile.am
