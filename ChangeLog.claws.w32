@@ -1,3 +1,12 @@
+2003-02-27 [thorsten]	0.8.10claws53-1
+
+	* src/main.c
+		add: "LockPort" registry option
+	* src/common/plugin.c
+		add: DebugPlugin section
+	* src/common/socket.c
+		fix: wait before closing socket
+
 2003-02-25 [thorsten]	0.8.10claws46-1
 
 	* src/socket.c

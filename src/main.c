@@ -744,11 +744,20 @@ static gint prohibit_duplicate_launch(void)
 #ifdef WIN32
 	SockInfo *lock_sock;
 	gchar *path;
-
+        gchar *portstr;
+	gint lockport;
+	
 	path = NULL;
-	lock_sock = sock_connect("localhost", LOCK_PORT);
+	if (portstr = read_w32_registry_string(NULL,
+		"Software\\Sylpheed", "LockPort")) {
+		lockport = atoi(portstr);
+		g_free(portstr);
+	}
+	if (!lockport)
+		lockport = LOCK_PORT ;
+	lock_sock = sock_connect("localhost", lockport);
 	if (!lock_sock) {
-		return fd_open_lock_service(LOCK_PORT);
+		return fd_open_lock_service(lockport);
 	}
 #else
 	gint uxsock;

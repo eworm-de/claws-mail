@@ -820,6 +820,7 @@ gint sock_close(SockInfo *sock)
 #endif
 #ifdef WIN32
 	shutdown(sock->sock,SD_SEND); /* complete transfer before close */
+	sleep(250);
 	ret = closesocket(sock->sock);
 #else
 	ret = fd_close(sock->sock); 

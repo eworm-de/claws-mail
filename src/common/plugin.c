@@ -50,7 +50,11 @@ void plugin_save_list()
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
 	if ((pfile = prefs_write_open(rcpath)) == NULL ||
+#if defined(WIN32) & defined(_DEBUG)
+	    (prefs_set_block_label(pfile, "DebugPlugins") < 0)) {
+#else
 	    (prefs_set_block_label(pfile, "Plugins") < 0)) {
+#endif
 		g_warning("failed to write plugin list\n");
 		g_free(rcpath);
 		return;
@@ -147,7 +151,11 @@ void plugin_load_all()
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);	
 	if ((pfile = prefs_read_open(rcpath)) == NULL ||
+#if defined(WIN32) & defined(_DEBUG)
+	    (prefs_set_block_label(pfile, "DebugPlugins") < 0)) {
+#else
 	    (prefs_set_block_label(pfile, "Plugins") < 0)) {
+#endif
 		g_free(rcpath);
 		return;
 	}
