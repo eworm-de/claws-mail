@@ -35,6 +35,14 @@ typedef enum {
 	A_LOCAL
 } RecvProtocol;
 
+#if USE_GPGME
+typedef enum {
+	SIGN_KEY_DEFAULT,
+	SIGN_KEY_BY_FROM,
+	SIGN_KEY_CUSTOM
+} SignKeyType;
+#endif /* USE_GPGME */
+
 struct _PrefsAccount
 {
 	gchar *account_name;
@@ -78,6 +86,12 @@ struct _PrefsAccount
 
 	/* Compose */
 	gchar *sig_path;
+
+#if USE_GPGME
+	/* Privacy */
+	SignKeyType sign_key;
+	gchar *sign_key_id;
+#endif /* USE_GPGME */
 
 	/* Advanced */
 	gboolean  set_smtpport;

@@ -104,6 +104,15 @@ static struct Compose {
 	GtkWidget *sigpath_entry;
 } compose;
 
+#if USE_GPGME
+static struct Privacy {
+	GtkWidget *defaultkey_radiobtn;
+	GtkWidget *emailkey_radiobtn;
+	GtkWidget *customkey_radiobtn;
+	GtkWidget *customkey_entry;
+} privacy;
+#endif /* USE_GPGME */
+
 static struct Advanced {
 	GtkWidget *smtpport_chkbtn;
 	GtkWidget *smtpport_entry;
@@ -116,6 +125,10 @@ static struct Advanced {
 static void prefs_account_protocol_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_account_protocol_set_optmenu		(PrefParam *pparam);
 static void prefs_account_protocol_activated		(GtkMenuItem *menuitem);
+#if USE_GPGME
+static void prefs_account_sign_key_set_data_from_radiobtn (PrefParam *pparam);
+static void prefs_account_sign_key_set_radiobtn		  (PrefParam *pparam);
+#endif /* USE_GPGME */
 
 static PrefParam param[] = {
 	/* Basic */
@@ -228,6 +241,17 @@ static PrefParam param[] = {
 	 &compose.sigpath_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
+#if USE_GPGME
+	/* Privacy */
+	{"sign_key", NULL, &tmp_ac_prefs.sign_key, P_ENUM,
+	 &privacy.defaultkey_radiobtn,
+	 prefs_account_sign_key_set_data_from_radiobtn,
+	 prefs_account_sign_key_set_radiobtn},
+	{"sign_key_id", "", &tmp_ac_prefs.sign_key_id, P_STRING,
+	 &privacy.customkey_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+#endif /* USE_GPGME */
+
 	/* Advanced */
 	{"set_smtpport", "FALSE", &tmp_ac_prefs.set_smtpport, P_BOOL,
 	 &advanced.smtpport_chkbtn,
@@ -261,6 +285,9 @@ static void prefs_account_basic_create		(void);
 static void prefs_account_receive_create	(void);
 static void prefs_account_send_create		(void);
 static void prefs_account_compose_create	(void);
+#if USE_GPGME
+static void prefs_account_privacy_create	(void);
+#endif /* USE_GPGME */
 static void prefs_account_advanced_create	(void);
 
 static void prefs_account_key_pressed		(GtkWidget	*widget,
@@ -459,6 +486,10 @@ static void prefs_account_create(void)
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Send"), page++);
 	prefs_account_compose_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Compose"), page++);
+#if USE_GPGME
+	prefs_account_privacy_create();
+	SET_NOTEBOOK_LABEL(dialog.notebook, _("Privacy"), page++);
+#endif /* USE_GPGME */
 	prefs_account_advanced_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Advanced"), page++);
 
@@ -903,6 +934,84 @@ static void prefs_account_compose_create(void)
 	compose.sigpath_entry = sigpath_entry;
 }
 
+#if USE_GPGME
+static void prefs_account_privacy_create(void)
+{
+	GtkWidget *vbox1;
+	GtkWidget *frame1;
+	GtkWidget *vbox2;
+	GtkWidget *hbox1;
+	GtkWidget *label;
+	GtkWidget *defaultkey_radiobtn;
+	GtkWidget *emailkey_radiobtn;
+	GtkWidget *customkey_radiobtn;
+	GtkWidget *customkey_entry;
+
+	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox1);
+	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), BOX_BORDER);
+
+	PACK_FRAME (vbox1, frame1, _("Sign key"));
+
+	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox2);
+	gtk_container_add (GTK_CONTAINER (frame1), vbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+
+	defaultkey_radiobtn = gtk_radio_button_new_with_label
+		(NULL, _("Use default GnuPG key"));
+	gtk_widget_show (defaultkey_radiobtn);
+	gtk_box_pack_start (GTK_BOX (vbox2), defaultkey_radiobtn,
+			    FALSE, FALSE, 0);
+	gtk_object_set_user_data (GTK_OBJECT (defaultkey_radiobtn),
+				  GINT_TO_POINTER (SIGN_KEY_DEFAULT));
+
+	emailkey_radiobtn = gtk_radio_button_new_with_label_from_widget
+		(GTK_RADIO_BUTTON (defaultkey_radiobtn),
+		 _("Select key by your email address"));
+	gtk_widget_show (emailkey_radiobtn);
+	gtk_box_pack_start (GTK_BOX (vbox2), emailkey_radiobtn,
+			    FALSE, FALSE, 0);
+	gtk_object_set_user_data (GTK_OBJECT (emailkey_radiobtn),
+				  GINT_TO_POINTER (SIGN_KEY_BY_FROM));
+
+	customkey_radiobtn = gtk_radio_button_new_with_label_from_widget
+		(GTK_RADIO_BUTTON (defaultkey_radiobtn),
+		 _("Specify key manually"));
+	gtk_widget_show (customkey_radiobtn);
+	gtk_box_pack_start (GTK_BOX (vbox2), customkey_radiobtn,
+			    FALSE, FALSE, 0);
+	gtk_object_set_user_data (GTK_OBJECT (customkey_radiobtn),
+				  GINT_TO_POINTER (SIGN_KEY_CUSTOM));
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
+
+	label = gtk_label_new ("");
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
+	gtk_widget_set_usize (label, 16, -1);
+
+	label = gtk_label_new (_("User or key ID:"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
+
+	customkey_entry = gtk_entry_new ();
+	gtk_widget_show (customkey_entry);
+	gtk_box_pack_start (GTK_BOX (hbox1), customkey_entry,
+			    TRUE, TRUE, 0);
+
+	SET_TOGGLE_SENSITIVITY (customkey_radiobtn, customkey_entry);
+
+	privacy.defaultkey_radiobtn = defaultkey_radiobtn;
+	privacy.emailkey_radiobtn = emailkey_radiobtn;
+	privacy.customkey_radiobtn = customkey_radiobtn;
+	privacy.customkey_entry = customkey_entry;
+}
+#endif /* USE_GPGME */
+
 static void prefs_account_advanced_create(void)
 {
 	GtkWidget *vbox1;
@@ -1032,6 +1141,48 @@ static void prefs_account_cancel(void)
 	cancelled = TRUE;
 	gtk_main_quit();
 }
+
+#if USE_GPGME
+
+static void prefs_account_sign_key_set_data_from_radiobtn(PrefParam *pparam)
+{
+	GtkRadioButton *radiobtn;
+	GSList *group;
+
+	radiobtn = GTK_RADIO_BUTTON (*pparam->widget);
+	group = gtk_radio_button_group (radiobtn);
+	while (group != NULL) {
+		GtkToggleButton *btn = GTK_TOGGLE_BUTTON (group->data);
+		if (gtk_toggle_button_get_active (btn)) {
+			*((SignKeyType *)pparam->data) = GPOINTER_TO_INT
+				(gtk_object_get_user_data (GTK_OBJECT (btn)));
+			break;
+		}
+		group = group->next;
+	}
+}
+
+static void prefs_account_sign_key_set_radiobtn(PrefParam *pparam)
+{
+	GtkRadioButton *radiobtn;
+	GSList *group;
+	gpointer data;
+
+	data = GINT_TO_POINTER (*((RecvProtocol *)pparam->data));
+	radiobtn = GTK_RADIO_BUTTON (*pparam->widget);
+	group = gtk_radio_button_group (radiobtn);
+	while (group != NULL) {
+		GtkToggleButton *btn = GTK_TOGGLE_BUTTON (group->data);
+		gpointer data1 = gtk_object_get_user_data (GTK_OBJECT (btn));
+		if (data1 == data) {
+			gtk_toggle_button_set_active (btn, TRUE);
+			break;
+		}
+		group = group->next;
+	}
+}
+
+#endif /* USE_GPGME */
 
 static void prefs_account_protocol_set_data_from_optmenu(PrefParam *pparam)
 {

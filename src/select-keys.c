@@ -37,13 +37,17 @@
 #include <gtk/gtkentry.h>
 #include <gtk/gtkhbbox.h>
 #include <gtk/gtkbutton.h>
-#include <gtk/gtkprogressbar.h>
 #include <gtk/gtksignal.h>
 
 #include "intl.h"
 #include "select-keys.h"
 #include "utils.h"
 #include "gtkutils.h"
+#include "inputdialog.h"
+
+#define DIM(v) (sizeof(v)/sizeof((v)[0]))
+#define DIMof(type,member)   DIM(((type *)0)->member)
+
 
 enum col_titles { 
     COL_ALGO,
@@ -55,39 +59,51 @@ enum col_titles {
     N_COL_TITLES
 };
 
-static struct {
+struct select_keys_s {
     int okay;
     GtkWidget *window;
     GtkLabel *toplabel;
     GtkCList *clist;
-    GtkProgress *progress;
     const char *pattern;
     GpgmeRecipients rset;
-} select_keys;
+    GpgmeCtx select_ctx;
+
+    GtkSortType sort_type;
+    enum col_titles sort_column;
+    
+};
 
 
 static void set_row (GtkCList *clist, GpgmeKey key );
-static void fill_clist (GtkCList *clist, const char *pattern );
-static void create_dialog (void);
-static void open_dialog (void);
-static void close_dialog (void);
+static void fill_clist (struct select_keys_s *sk, const char *pattern );
+static void create_dialog (struct select_keys_s *sk);
+static void open_dialog (struct select_keys_s *sk);
+static void close_dialog (struct select_keys_s *sk);
 static void key_pressed_cb (GtkWidget *widget,
                             GdkEventKey *event, gpointer data);
 static void select_btn_cb (GtkWidget *widget, gpointer data);
 static void cancel_btn_cb (GtkWidget *widget, gpointer data);
+static void other_btn_cb (GtkWidget *widget, gpointer data);
+static void sort_keys ( struct select_keys_s *sk, enum col_titles column);
+static void sort_keys_name (GtkWidget *widget, gpointer data);
+static void sort_keys_email (GtkWidget *widget, gpointer data);
 
 
 static void
-update_progress (void)
+update_progress (struct select_keys_s *sk, int running, const char *pattern)
 {
-    if (select_keys.progress) {
-        gfloat val = gtk_progress_get_value (select_keys.progress);
+    static int windmill[] = { '-', '\\', '|', '/' };
+    char *buf;
 
-        val += 1;
-        gtk_progress_set_value (select_keys.progress, val);
-        if ( !GTK_WIDGET_VISIBLE (select_keys.progress) )
-            gtk_widget_show (GTK_WIDGET (select_keys.progress));
-    }
+    if (!running)
+        buf = g_strdup_printf (_("Please select key for `%s'"), 
+                               pattern);
+    else 
+        buf = g_strdup_printf (_("Collecting info for `%s' ... %c"), 
+                               pattern,
+                               windmill[running%DIM(windmill)] );
+    gtk_label_set_text (sk->toplabel, buf );
+    g_free (buf);
 }
 
 
@@ -104,38 +120,37 @@ update_progress (void)
 GpgmeRecipients
 gpgmegtk_recipient_selection (GSList *recp_names)
 {
+    struct select_keys_s sk;
     GpgmeError err;
 
-    err = gpgme_recipients_new (&select_keys.rset);
+    memset ( &sk, 0, sizeof sk);
+
+    err = gpgme_recipients_new (&sk.rset);
     if (err) {
         g_message ("** failed to allocate recipients set: %s",
                    gpgme_strerror (err) );
         return NULL;
     }
         
-    open_dialog ();
+    open_dialog (&sk);
 
     do {
-        select_keys.pattern = recp_names? recp_names->data:NULL;
-        gtk_label_set_text (select_keys.toplabel, select_keys.pattern );
-        gtk_clist_clear (select_keys.clist);
-        fill_clist (select_keys.clist, select_keys.pattern);
+        sk.pattern = recp_names? recp_names->data:NULL;
+        gtk_clist_clear (sk.clist);
+        fill_clist (&sk, sk.pattern);
+        update_progress (&sk, 0, sk.pattern);
         gtk_main ();
         if (recp_names)
             recp_names = recp_names->next;
-    } while (select_keys.okay && recp_names );
+    } while (sk.okay && recp_names );
 
-    close_dialog ();
+    close_dialog (&sk);
 
-    {
-        GpgmeRecipients rset = select_keys.rset;
-        select_keys.rset = NULL;
-        if (!rset) {
-            gpgme_recipients_release (rset);
-            rset = NULL;
-        }
-        return rset;
+    if (!sk.okay) {
+        gpgme_recipients_release (sk.rset);
+        sk.rset = NULL;
     }
+    return sk.rset;
 } 
 
 static void
@@ -180,18 +195,31 @@ set_row (GtkCList *clist, GpgmeKey key )
 
 
 static void 
-fill_clist (GtkCList *clist, const char *pattern )
+fill_clist (struct select_keys_s *sk, const char *pattern )
 {
+    GtkCList *clist;
     GpgmeCtx ctx;
     GpgmeError err;
     GpgmeKey key;
+    int running=0;
+
+    g_return_if_fail (sk);
+    clist = sk->clist;
+    g_return_if_fail (clist);
 
     debug_print ("select_keys:fill_clist:  pattern `%s'\n", pattern );
 
     /*gtk_clist_freeze (select_keys.clist);*/
     err = gpgme_new (&ctx);
-    g_assert (!err);
+    if (err) {
+        g_message ("** gpgme_new failed: %s",
+                   gpgme_strerror (err));
+        return;
+    }
 
+    sk->select_ctx = ctx;
+
+    update_progress (sk, ++running, pattern);
     while (gtk_events_pending ())
         gtk_main_iteration ();
 
@@ -199,21 +227,23 @@ fill_clist (GtkCList *clist, const char *pattern )
     if (err) {
         g_message ("** gpgme_op_keylist_start(%s) failed: %s",
                    pattern, gpgme_strerror (err));
+        sk->select_ctx = NULL;
+	gpgme_release (ctx);
         return;
     }
-    update_progress ();
+    update_progress (sk, ++running, pattern);
     while ( !(err = gpgme_op_keylist_next ( ctx, &key )) ) {
         debug_print ("%% %s:%d:  insert\n", __FILE__ ,__LINE__ );
         set_row (clist, key ); key = NULL;
-        update_progress ();
+        update_progress (sk, ++running, pattern);
         while (gtk_events_pending ())
             gtk_main_iteration ();
     }
     debug_print ("%% %s:%d:  ready\n", __FILE__ ,__LINE__ );
-    gtk_widget_hide (GTK_WIDGET (select_keys.progress));
     if ( err != GPGME_EOF )
         g_message ("** gpgme_op_keylist_next failed: %s",
                    gpgme_strerror (err));
+    sk->select_ctx = NULL;
     gpgme_release (ctx);
     /*gtk_clist_thaw (select_keys.clist);*/
 }
@@ -222,7 +252,7 @@ fill_clist (GtkCList *clist, const char *pattern )
 
 
 static void 
-create_dialog ()
+create_dialog (struct select_keys_s *sk)
 {
     GtkWidget *window;
     GtkWidget *vbox, *vbox2, *hbox;
@@ -230,28 +260,25 @@ create_dialog ()
     GtkWidget *scrolledwin;
     GtkWidget *clist;
     GtkWidget *label;
-    GtkWidget *progress;
-    GtkWidget *select_btn, *cancel_btn;
-    gchar *titles[N_COL_TITLES];
+    GtkWidget *other_btn, *select_btn, *cancel_btn;
+    const char *titles[N_COL_TITLES];
 
-    g_assert (!select_keys.window);
+    g_assert (!sk->window);
     window = gtk_window_new (GTK_WINDOW_DIALOG);
     gtk_widget_set_usize (window, 500, 320);
     gtk_container_set_border_width (GTK_CONTAINER (window), 8);
     gtk_window_set_title (GTK_WINDOW (window), _("Select Keys"));
     gtk_window_set_modal (GTK_WINDOW (window), TRUE);
     gtk_signal_connect (GTK_OBJECT (window), "delete_event",
-                        GTK_SIGNAL_FUNC (close_dialog), NULL);
+                        GTK_SIGNAL_FUNC (close_dialog), sk);
     gtk_signal_connect (GTK_OBJECT (window), "key_press_event",
-                        GTK_SIGNAL_FUNC (key_pressed_cb), NULL);
+                        GTK_SIGNAL_FUNC (key_pressed_cb), sk);
 
     vbox = gtk_vbox_new (FALSE, 8);
     gtk_container_add (GTK_CONTAINER (window), vbox);
 
     hbox  = gtk_hbox_new(FALSE, 4);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-    label = gtk_label_new ( _("Select key for: ") );
-    gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
     label = gtk_label_new ( "" );
     gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
@@ -273,7 +300,7 @@ create_dialog ()
     titles[COL_EMAIL]    = _("Address");
     titles[COL_VALIDITY] = _("Val");
 
-    clist = gtk_clist_new_with_titles (N_COL_TITLES, titles);
+    clist = gtk_clist_new_with_titles (N_COL_TITLES, (char**)titles);
     gtk_container_add (GTK_CONTAINER (scrolledwin), clist);
     gtk_clist_set_column_width (GTK_CLIST(clist), COL_ALGO,      40);
     gtk_clist_set_column_width (GTK_CLIST(clist), COL_KEYID,     60);
@@ -281,58 +308,70 @@ create_dialog ()
     gtk_clist_set_column_width (GTK_CLIST(clist), COL_EMAIL,    100);
     gtk_clist_set_column_width (GTK_CLIST(clist), COL_VALIDITY,  20);
     gtk_clist_set_selection_mode (GTK_CLIST(clist), GTK_SELECTION_BROWSE);
+    gtk_signal_connect (GTK_OBJECT(GTK_CLIST(clist)->column[COL_NAME].button),
+		        "clicked",
+                        GTK_SIGNAL_FUNC(sort_keys_name), sk);
+    gtk_signal_connect (GTK_OBJECT(GTK_CLIST(clist)->column[COL_EMAIL].button),
+		        "clicked",
+                        GTK_SIGNAL_FUNC(sort_keys_email), sk);
 
     hbox = gtk_hbox_new (FALSE, 8);
     gtk_box_pack_end (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
-    gtkut_button_set_create (&bbox, &select_btn, _("Select"),
-                             &cancel_btn, _("Cancel"), NULL, NULL);
+    gtkut_button_set_create (&bbox, 
+                             &other_btn,  _("Other"),
+                             &select_btn, _("Select"),
+                             &cancel_btn, _("Cancel"));
     gtk_box_pack_end (GTK_BOX (hbox), bbox, FALSE, FALSE, 0);
     gtk_widget_grab_default (select_btn);
 
+    gtk_signal_connect (GTK_OBJECT (other_btn), "clicked",
+                        GTK_SIGNAL_FUNC (other_btn_cb), sk);
     gtk_signal_connect (GTK_OBJECT (select_btn), "clicked",
-                        GTK_SIGNAL_FUNC (select_btn_cb), clist);
+                        GTK_SIGNAL_FUNC (select_btn_cb), sk);
     gtk_signal_connect (GTK_OBJECT(cancel_btn), "clicked",
-                        GTK_SIGNAL_FUNC (cancel_btn_cb), NULL);
+                        GTK_SIGNAL_FUNC (cancel_btn_cb), sk);
+    
 
     vbox2 = gtk_vbox_new (FALSE, 4);
     gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, FALSE, 0);
 
-    progress = gtk_progress_bar_new ();
-    gtk_box_pack_start (GTK_BOX (vbox2), progress, FALSE, FALSE, 4);
-    gtk_progress_set_activity_mode (GTK_PROGRESS (progress), 1);
-
     gtk_widget_show_all (window);
-    select_keys.window = window;
-    select_keys.toplabel = GTK_LABEL (label);
-    select_keys.clist  = GTK_CLIST (clist);
-    select_keys.progress = GTK_PROGRESS (progress);
+    sk->window = window;
+    sk->toplabel = GTK_LABEL (label);
+    sk->clist  = GTK_CLIST (clist);
 }
 
 
 static void
-open_dialog ()
+open_dialog (struct select_keys_s *sk)
 {
-    if ( !select_keys.window )
-        create_dialog ();
-    select_keys.okay = 0;
-    gtk_widget_show (select_keys.window);
+    if ( !sk->window )
+        create_dialog (sk);
+    sk->okay = 0;
+    sk->sort_column = N_COL_TITLES; /* use an invalid value */
+    sk->sort_type = GTK_SORT_ASCENDING;
+    gtk_widget_show (sk->window);
 }
 
 
 static void
-close_dialog ()
+close_dialog (struct select_keys_s *sk)
 {
-    gtk_widget_destroy (select_keys.window);
-    select_keys.window = NULL;
+    g_return_if_fail (sk);
+    gtk_widget_destroy (sk->window);
+    sk->window = NULL;
 }
 
 
 static void 
 key_pressed_cb (GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
+    struct select_keys_s *sk = data;
+
+    g_return_if_fail (sk);
     if (event && event->keyval == GDK_Escape) {
-        select_keys.okay = 0;
+        sk->okay = 0;
         gtk_main_quit ();
     }
 }
@@ -341,24 +380,28 @@ key_pressed_cb (GtkWidget *widget, GdkEventKey *event, gpointer data)
 static void 
 select_btn_cb (GtkWidget *widget, gpointer data)
 {
-    GtkCList *clist = GTK_CLIST (data);
+    struct select_keys_s *sk = data;
     int row;
     GpgmeKey key;
 
-    if (!clist->selection) {
+    g_return_if_fail (sk);
+    if (!sk->clist->selection) {
         g_message ("** nothing selected");
         return;
     }
-    row = GPOINTER_TO_INT(clist->selection->data);
-    key = gtk_clist_get_row_data(clist, row);
+    row = GPOINTER_TO_INT(sk->clist->selection->data);
+    key = gtk_clist_get_row_data(sk->clist, row);
     if (key) {
         const char *s = gpgme_key_get_string_attr (key,
                                                    GPGME_ATTR_FPR,
                                                    NULL, 0 );
-        g_message ("** FIXME: we are faking the trust calculation");
-        if (!gpgme_recipients_add_name_with_validity (select_keys.rset, s,
+        if ( gpgme_key_get_ulong_attr (key, GPGME_ATTR_VALIDITY, NULL, 0 )
+             < GPGME_VALIDITY_FULL ) {
+            g_message ("** FIXME: we are faking the trust calculation");
+        }
+        if (!gpgme_recipients_add_name_with_validity (sk->rset, s,
                                                       GPGME_VALIDITY_FULL) ) {
-            select_keys.okay = 1;
+            sk->okay = 1;
             gtk_main_quit ();
         }
     }
@@ -368,8 +411,102 @@ select_btn_cb (GtkWidget *widget, gpointer data)
 static void 
 cancel_btn_cb (GtkWidget *widget, gpointer data)
 {
-    select_keys.okay = 0;
+    struct select_keys_s *sk = data;
+
+    g_return_if_fail (sk);
+    sk->okay = 0;
+    if (sk->select_ctx)
+        gpgme_cancel (sk->select_ctx);
     gtk_main_quit ();
 }
+
+
+static void
+other_btn_cb (GtkWidget *widget, gpointer data)
+{
+    struct select_keys_s *sk = data;
+    char *uid;
+
+    g_return_if_fail (sk);
+    uid = input_dialog ( _("Add key"),
+                         _("Enter another user or key ID\n"),
+                         NULL );
+    if (!uid)
+        return;
+    fill_clist (sk, uid);
+    update_progress (sk, 0, sk->pattern);
+    g_free (uid);
+}
+
+
+static gint 
+cmp_attr (gconstpointer pa, gconstpointer pb, GpgmeAttr attr)
+{
+    GpgmeKey a = ((GtkCListRow *)pa)->data;
+    GpgmeKey b = ((GtkCListRow *)pb)->data;
+    const char *sa, *sb;
+    
+    sa = a? gpgme_key_get_string_attr (a, attr, NULL, 0 ) : NULL;
+    sb = b? gpgme_key_get_string_attr (b, attr, NULL, 0 ) : NULL;
+    if (!sa)
+        return !!sb;
+    if (!sb)
+        return -1;
+    return strcasecmp(sa, sb);
+}
+
+static gint 
+cmp_name (GtkCList *clist, gconstpointer pa, gconstpointer pb)
+{
+    return cmp_attr (pa, pb, GPGME_ATTR_NAME);
+}
+
+static gint 
+cmp_email (GtkCList *clist, gconstpointer pa, gconstpointer pb)
+{
+    return cmp_attr (pa, pb, GPGME_ATTR_EMAIL);
+}
+
+static void
+sort_keys ( struct select_keys_s *sk, enum col_titles column)
+{
+    GtkCList *clist = sk->clist;
+
+    switch (column) {
+      case COL_NAME:
+        gtk_clist_set_compare_func (clist, cmp_name);
+        break;
+      case COL_EMAIL:
+        gtk_clist_set_compare_func (clist, cmp_email);
+        break;
+      default:
+        return;
+    }
+
+    /* column clicked again: toggle as-/decending */
+    if ( sk->sort_column == column) {
+        sk->sort_type = sk->sort_type == GTK_SORT_ASCENDING ?
+                        GTK_SORT_DESCENDING : GTK_SORT_ASCENDING;
+    }
+    else
+        sk->sort_type = GTK_SORT_ASCENDING;
+
+    sk->sort_column = column;
+    gtk_clist_set_sort_type (clist, sk->sort_type);
+    gtk_clist_sort (clist);
+}
+
+static void
+sort_keys_name (GtkWidget *widget, gpointer data)
+{
+    sort_keys ( (struct select_keys_s*)data, COL_NAME );
+}
+
+static void
+sort_keys_email (GtkWidget *widget, gpointer data)
+{
+    sort_keys ( (struct select_keys_s*)data, COL_EMAIL );
+}
+
 
 #endif /*USE_GPGME*/

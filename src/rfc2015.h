@@ -24,6 +24,7 @@
 #include <stdio.h>
 
 #include "procmime.h"
+#include "prefs_account.h"
 
 void rfc2015_secure_remove (const char *fname);
 MimeInfo * rfc2015_find_signature (MimeInfo *mimeinfo);
@@ -32,6 +33,6 @@ void rfc2015_check_signature (MimeInfo *mimeinfo, FILE *fp);
 int rfc2015_is_encrypted (MimeInfo *mimeinfo);
 void rfc2015_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp);
 int rfc2015_encrypt (const char *file, GSList *recp_list);
-int rfc2015_sign (const char *file);
+int rfc2015_sign (const char *file, PrefsAccount *ac);
 
 #endif /* __RFC2015_H__ */

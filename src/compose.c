@@ -1588,7 +1588,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 
 #if USE_GPGME
 	if (compose->use_signing) {
-		if (rfc2015_sign(file) < 0) {
+		if (rfc2015_sign(file, compose->account) < 0) {
 			unlink(file);
 			return -1;
 		}

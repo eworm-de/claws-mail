@@ -1,6 +1,8 @@
 2001-04-21
 
-    * tag name claws added to prevent confusion with main branch [alfons]
+	* enhanced GnuPG key selection support [sergey]
+
+	* tag name claws added to prevent confusion with main branch [alfons]
 
 	* Sync with sylpheed-0.4.65cvs4 and made it compile. [sergey]
 

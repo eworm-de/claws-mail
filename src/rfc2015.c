@@ -867,12 +867,73 @@ failure:
     return -1; /* error */
 }
 
+static int
+set_signers (GpgmeCtx ctx, PrefsAccount *ac)
+{
+    GSList *key_list = NULL;
+    GpgmeCtx list_ctx = NULL;
+    const char *keyid = NULL;
+    GSList *p;
+    GpgmeError err;
+    GpgmeKey key;
+
+    if (ac == NULL)
+	return 0;
+
+    switch (ac->sign_key) {
+    case SIGN_KEY_DEFAULT:
+	return 0;		/* nothing to do */
+
+    case SIGN_KEY_BY_FROM:
+	keyid = ac->address;
+	break;
+
+    case SIGN_KEY_CUSTOM:
+	keyid = ac->sign_key_id;
+	break;
+
+    default:
+	g_assert_not_reached ();
+    }
+
+    err = gpgme_new (&list_ctx);
+    if (err)
+	goto leave;
+    err = gpgme_op_keylist_start (list_ctx, keyid, 1);
+    if (err)
+	goto leave;
+    while ( !(err = gpgme_op_keylist_next (list_ctx, &key)) ) {
+	key_list = g_slist_append (key_list, key);
+    }
+    if (err != GPGME_EOF)
+	goto leave;
+    if (key_list == NULL) {
+	g_warning ("no keys found for keyid \"%s\"", keyid);
+    }
+    gpgme_signers_clear (ctx);
+    for (p = key_list; p != NULL; p = p->next) {
+	err = gpgme_signers_add (ctx, (GpgmeKey) p->data);
+	if (err)
+	    goto leave;
+    }
+
+leave:
+    if (err)
+        g_message ("** set_signers failed: %s", gpgme_strerror (err));
+    for (p = key_list; p != NULL; p = p->next)
+	gpgme_key_unref ((GpgmeKey) p->data);
+    g_slist_free (key_list);
+    if (list_ctx)
+	gpgme_release (list_ctx);
+    return err;
+}
+
 /* 
  * plain contains an entire mime object.  Sign it and return an
  * GpgmeData object with the signature of it or NULL in case of error.
  */
 static GpgmeData
-pgp_sign (GpgmeData plain)
+pgp_sign (GpgmeData plain, PrefsAccount *ac)
 {
     GpgmeCtx ctx = NULL;
     GpgmeError err;
@@ -894,6 +955,9 @@ pgp_sign (GpgmeData plain)
     }
     gpgme_set_textmode (ctx, 1);
     gpgme_set_armor (ctx, 1);
+    err = set_signers (ctx, ac);
+    if (err)
+	goto leave;
     err = gpgme_op_sign (ctx, plain, sig, GPGME_SIG_MODE_DETACH);
 
 leave:
@@ -914,7 +978,7 @@ leave:
  * Sign the file and replace its content with the signed one.
  */
 int
-rfc2015_sign (const char *file)
+rfc2015_sign (const char *file, PrefsAccount *ac)
 {
     FILE *fp = NULL;
     char buf[BUFFSIZE];
@@ -996,7 +1060,7 @@ rfc2015_sign (const char *file)
         goto failure;
     }
 
-    sigdata = pgp_sign (plain);
+    sigdata = pgp_sign (plain, ac);
     if (!sigdata) 
         goto failure;
 
