@@ -71,6 +71,7 @@
 #include "pixmaps/trash.xpm"
 #include "pixmaps/unread.xpm"
 #include "pixmaps/vcard.xpm"
+#include "pixmaps/ignorethread.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
 
@@ -130,6 +131,7 @@ static StockPixmapData pixmaps[] =
 	{trash_xpm			, NULL, NULL},
 	{unread_xpm			, NULL, NULL},
 	{vcard_xpm			, NULL, NULL},
+	{ignorethread_xpm		, NULL, NULL},
 };
 
 /* return newly constructed GtkPixmap from GdkPixmap */

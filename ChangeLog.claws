@@ -1,3 +1,9 @@
+2001-12-25 [christoph]	0.6.6claws19
+
+	* src/stock_pixmap.[ch]
+	* src/summaryview.c
+		add ignore thread pixmap
+
 2001-12-24 [alfons]	0.6.6claws18
 
 	* src/prefs_folder_item.c
