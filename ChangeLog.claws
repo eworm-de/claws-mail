@@ -11,7 +11,7 @@
 	* src/exportldif.[ch]			** NEW **
 	* src/expldifdlg.[ch]			** NEW **
 	* src/addressbook.[ch]
-	* po/Makefile.in
+	* src/Makefile.am
 		export of LDIF files.
 		documented.
 

@@ -31,8 +31,10 @@ sylpheed_SOURCES = \
 	editvcard.c \
 	enriched.c \
 	exphtmldlg.c \
+	expldifdlg.c \
 	export.c \
 	exporthtml.c \
+	exportldif.c \
 	filtering.c \
 	folder.c \
 	folder_item_prefs.c \

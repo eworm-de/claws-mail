@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Match Grun
+ * Copyright (C) 2001-2003 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 #include <string.h>
 #include <sys/stat.h>
 
+#include "intl.h"
 #include "mgutils.h"
 #include "ldif.h"
 #include "addritem.h"
@@ -33,9 +34,13 @@
 
 #include "base64.h"
 
-/*
-* Create new object.
-*/
+#define	LDIF_SEP_TAG    ':'
+#define	LDIF_LANG_TAG   ';'
+
+/**
+ * Create new object.
+ * \return Initialized LDIF file object.
+ */
 LdifFile *ldif_create() {
 	LdifFile *ldifFile;
 	ldifFile = g_new0( LdifFile, 1 );
@@ -52,9 +57,11 @@ LdifFile *ldif_create() {
 	return ldifFile;
 }
 
-/*
-* Properties...
-*/
+/**
+ * Specify full file specification of LDIF file.
+ * \param ldifFile LDIF import control object.
+ * \param value    Value of access flag.
+ */
 void ldif_set_file( LdifFile *ldifFile, const gchar *value ) {
 	g_return_if_fail( ldifFile != NULL );
 
@@ -69,27 +76,39 @@ void ldif_set_file( LdifFile *ldifFile, const gchar *value ) {
 	g_strstrip( ldifFile->path );
 	ldifFile->importCount = 0;
 }
+
+/**
+ * Set the file access indicator.
+ * \param ldifFile LDIF import control object.
+ * \param value    File specification.
+ */
 void ldif_set_accessed( LdifFile *ldifFile, const gboolean value ) {
 	g_return_if_fail( ldifFile != NULL );
 	ldifFile->accessFlag = value;
 }
 
-/*
-* Register a callback function. When called, the function will be passed
-* the following arguments:
-*	LdifFile object,
-*	File size (long),
-*	Current position (long)
-* This can be used for a progress indicator.
-*/
+/**
+ * Register a progress indicator callback function.
+ *
+ * \param ldifFile LDIF import control object.
+ * \param func     Function to be called. When called, the function will be
+ *                 passed the following arguments:
+ *
+ * <ul>
+ * <li>LdifFile object,</li>
+ * <li>File size (long),</li>
+ * <li>Current position (long)</li>
+ * </ul>
+ */
 void ldif_set_callback( LdifFile *ldifFile, void *func ) {
 	ldifFile->cbProgress = func;
 }
 
-/*
-* Create field record object.
-*/
-static Ldif_FieldRec *ldif_create_fieldrec( gchar *field ) {
+/**
+ * Create field record object.
+ * \return Initialized LDIF field object.
+ */
+static Ldif_FieldRec *ldif_create_fieldrec( const gchar *field ) {
 	Ldif_FieldRec *rec = g_new0( Ldif_FieldRec, 1 );
 	rec->tagName = g_strdup( field );
 	rec->userName = NULL;
@@ -98,9 +117,10 @@ static Ldif_FieldRec *ldif_create_fieldrec( gchar *field ) {
 	return rec;
 }
 
-/*
-* Free field record object.
-*/
+/**
+ * Free field record object.
+ * \param rec LDIF field object.
+ */
 static void ldif_free_fieldrec( Ldif_FieldRec *rec ) {
 	if( rec ) {
 		g_free( rec->tagName );
@@ -113,8 +133,54 @@ static void ldif_free_fieldrec( Ldif_FieldRec *rec ) {
 	}
 }
 
-/*
-* Free hash table entry visitor function.
+/**
+ * Set user name for field record.
+ * \param rec   LDIF field object.
+ * \param value User name to set. Note that reserved fields cannot be
+ *              named.
+ */
+void ldif_field_set_name( Ldif_FieldRec *rec, const gchar *value ) {
+	g_return_if_fail( rec != NULL );
+
+	if( ! rec->reserved ) {
+		rec->userName = mgu_replace_string( rec->userName, value );
+		g_strstrip( rec->userName );
+	}
+}
+
+/**
+ * Specify selection for field record.
+ * \param rec   LDIF field object.
+ * \param value Set to <i>TRUE</i> to select field. Note that reserved
+ *              fields cannot be unselected.
+ */
+void ldif_field_set_selected( Ldif_FieldRec *rec, const gboolean value ) {
+	g_return_if_fail( rec != NULL );
+
+	if( ! rec->reserved ) {
+		rec->selected = value;
+	}
+}
+
+/**
+ * Toggle selection for field record. Note that reserved fields cannot be
+ * toggled.
+ * \param rec   LDIF field object.
+ */
+void ldif_field_toggle( Ldif_FieldRec *rec ) {
+	g_return_if_fail( rec != NULL );
+
+	if( ! rec->reserved ) {
+		rec->selected = !rec->selected;
+	}
+}
+
+/**
+ * Free hash table entry visitor function.
+ * \param  key   Key.
+ * \param  value Value (the LDIF field record).
+ * \param  data  User data.
+ * \return <code>-1</code>.
 */
 static gint ldif_hash_free_vis( gpointer key, gpointer value, gpointer data ) {
 	ldif_free_fieldrec( ( Ldif_FieldRec * ) value );
@@ -123,9 +189,10 @@ static gint ldif_hash_free_vis( gpointer key, gpointer value, gpointer data ) {
 	return -1;
 }
 
-/*
-* Free up object by releasing internal memory.
-*/
+/**
+ * Free up object by releasing internal memory.
+ * \param ldifFile LDIF import control object.
+ */
 void ldif_free( LdifFile *ldifFile ) {
 	g_return_if_fail( ldifFile != NULL );
 
@@ -153,28 +220,35 @@ void ldif_free( LdifFile *ldifFile ) {
 	g_free( ldifFile );
 }
 
-/*
-* Display field record.
-*/
+/**
+ * Display field record.
+ * \param rec    LDIF field object.
+ * \param stream File output stream.
+ */
 void ldif_print_fieldrec( Ldif_FieldRec *rec, FILE *stream ) {
 	fprintf( stream, "\ttag:\t%s", rec->reserved ? "yes" : "no" );
 	fprintf( stream, "\t%s", rec->selected ? "yes" : "no" );
 	fprintf( stream, "\t:%s:\t:%s:\n", rec->userName, rec->tagName );
 }
 
-/*
-* Display field record.
+/**
+ * Display field record.
+ * \param key   Key.
+ * \param value Value (the LDIF field record).
+ * \param data  User data (file output stream).
  * 
-*/
+ */
 static void ldif_print_file_vis( gpointer key, gpointer value, gpointer data ) {
 	Ldif_FieldRec *rec = value;
 	FILE *stream = data;
 	ldif_print_fieldrec( rec, stream );
 }
 
-/*
-* Display object to specified stream.
-*/
+/**
+ * Display object to specified stream.
+ * \param ldifFile LDIF import control object.
+ * \param stream   File output stream.
+ */
 void ldif_print_file( LdifFile *ldifFile, FILE *stream ) {
 	g_return_if_fail( ldifFile != NULL );
 	fprintf( stream, "LDIF File:\n" );
@@ -185,10 +259,11 @@ void ldif_print_file( LdifFile *ldifFile, FILE *stream ) {
 	fprintf( stream, "} ---\n" );
 }
 
-/*
-* Open file for read.
-* return: TRUE if file opened successfully.
-*/
+/**
+ * Open file for read.
+ * \param  ldifFile LDIF import control object.
+ * \return <i>TRUE</i> if file opened successfully.
+ */
 static gint ldif_open_file( LdifFile* ldifFile ) {
 	/* printf( "Opening file\n" ); */
 	if( ldifFile->path ) {
@@ -212,19 +287,21 @@ static gint ldif_open_file( LdifFile* ldifFile ) {
 	return ldifFile->retVal;
 }
 
-/*
-* Close file.
-*/
+/**
+ * Close file.
+ * \param  ldifFile LDIF import control object.
+ */
 static void ldif_close_file( LdifFile *ldifFile ) {
 	g_return_if_fail( ldifFile != NULL );
 	if( ldifFile->file ) fclose( ldifFile->file );
 	ldifFile->file = NULL;
 }
 
-/*
-* Read line of text from file.
-* Return: ptr to buffer where line starts.
-*/
+/**
+ * Read line of text from file.
+ * \param  ldifFile LDIF import control object.
+ * \return ptr to buffer where line starts.
+ */
 static gchar *ldif_get_line( LdifFile *ldifFile ) {
 	gchar buf[ LDIFBUFSIZE ];
 	gint ch;
@@ -253,13 +330,13 @@ static gchar *ldif_get_line( LdifFile *ldifFile ) {
 	return g_strdup( buf );
 }
 
-/*
-* Parse tag name from line buffer.
-* Enter: line   Buffer.
-*        flag64 Base-64 encoder flag.
-* Return: Buffer containing the tag name, or NULL if no delimiter char found.
-* If a double delimiter (::) is found, flag64 is set.
-*/
+/**
+ * Parse tag name from line buffer.
+ * \param  line Buffer.
+ * \param  flag64 Base-64 encoder flag.
+ * \return Buffer containing the tag name, or NULL if no delimiter char found.
+ *         If a double delimiter (::) is found, flag64 is set.
+ */
 static gchar *ldif_get_tagname( char* line, gboolean *flag64 ) {
 	gint len = 0;
 	gchar *tag = NULL;
@@ -293,12 +370,12 @@ static gchar *ldif_get_tagname( char* line, gboolean *flag64 ) {
 	return tag;
 }
 
-/*
-* Parse tag value from line buffer.
-* Enter: line   Buffer.
-* Return: Buffer containing the tag value. Empty string is returned if
-* no delimiter char found.
-*/
+/**
+ * Parse tag value from line buffer.
+ * \param  line Buffer.
+ * \return Buffer containing the tag value. Empty string is returned if
+ *         no delimiter char found.
+ */
 static gchar *ldif_get_tagvalue( gchar* line ) {
 	gchar *value = NULL;
 	gchar *start = NULL;
@@ -325,9 +402,9 @@ static gchar *ldif_get_tagvalue( gchar* line ) {
 	return value;
 }
 
-/*
-* Parsed address data.
-*/
+/**
+ * Parsed address data record.
+ */
 typedef struct _Ldif_ParsedRec_ Ldif_ParsedRec;
 struct _Ldif_ParsedRec_ {
 	GSList *listCName;
@@ -339,24 +416,30 @@ struct _Ldif_ParsedRec_ {
 	GSList *userAttr;
 };
 
-/*
-* User attribute data.
-*/
+/**
+ * User attribute data record.
+ */
 typedef struct _Ldif_UserAttr_ Ldif_UserAttr;
 struct _Ldif_UserAttr_ {
 	gchar *name;
 	gchar *value;
 };
 
-/*
-* Build an address list entry and append to list of address items. Name is formatted
-* as "<first-name> <last-name>".
-*/
-static void ldif_build_items( LdifFile *ldifFile, Ldif_ParsedRec *rec, AddressCache *cache ) {
+/**
+ * Build an address list entry and append to list of address items in the
+ * address cache. Name is formatted as "<first-name> <last-name>".
+ * \param ldifFile LDIF import control object.
+ * \param rec      LDIF field object.
+ * \param cache    Address cache to be populated with data.
+ */
+static void ldif_build_items(
+		LdifFile *ldifFile, Ldif_ParsedRec *rec, AddressCache *cache )
+{
 	GSList *nodeFirst;
 	GSList *nodeAddress;
 	GSList *nodeAttr;
-	gchar *firstName = NULL, *lastName = NULL, *fullName = NULL, *nickName = NULL;
+	gchar *firstName = NULL, *lastName = NULL, *fullName = NULL;
+	gchar *nickName = NULL;
 	gint iLen = 0, iLenT = 0;
 	ItemPerson *person;
 	ItemEMail *email;
@@ -387,7 +470,8 @@ static void ldif_build_items( LdifFile *ldifFile, Ldif_ParsedRec *rec, AddressCa
 
 	if( firstName ) {
 		if( lastName ) {
-			fullName = g_strdup_printf( "%s %s", firstName, lastName );
+			fullName = g_strdup_printf(
+				"%s %s", firstName, lastName );
 		}
 		else {
 			fullName = g_strdup_printf( "%s", firstName );
@@ -439,17 +523,23 @@ static void ldif_build_items( LdifFile *ldifFile, Ldif_ParsedRec *rec, AddressCa
 	nodeAttr = NULL;
 }
 
-/*
-* Add selected field as user attribute.
-*/
-static void ldif_add_user_attr( Ldif_ParsedRec *rec, gchar *tagName, gchar *tagValue, GHashTable *hashField ) {
+/**
+ * Add selected field as user attribute.
+ * \param rec       LDIF field object.
+ * \param tagName   LDIF tag name.
+ * \param tagValue  Data value.
+ * \param hashField Hash table to populate.
+ */
+static void ldif_add_user_attr(
+		Ldif_ParsedRec *rec, gchar *tagName, gchar *tagValue,
+		GHashTable *hashField )
+{
 	Ldif_FieldRec *fld = NULL;
 	Ldif_UserAttr *attr = NULL;
 	gchar *name;
 
 	fld = g_hash_table_lookup( hashField, tagName );
 	if( fld ) {
-		if( fld->reserved ) return;
 		if( ! fld->selected ) return;
 
 		name = fld->tagName;
@@ -463,10 +553,17 @@ static void ldif_add_user_attr( Ldif_ParsedRec *rec, gchar *tagName, gchar *tagV
 	}
 }
 
-/*
-* Add value to parsed data.
-*/
-static void ldif_add_value( Ldif_ParsedRec *rec, gchar *tagName, gchar *tagValue, GHashTable *hashField ) {
+/**
+ * Add value to parsed data.
+ * \param rec       LDIF field object.
+ * \param tagName   LDIF tag name.
+ * \param tagValue  Data value.
+ * \param hashField Hash table to populate.
+ */
+static void ldif_add_value(
+	       Ldif_ParsedRec *rec, gchar *tagName, gchar *tagValue,
+	       GHashTable *hashField )
+{
 	gchar *nm, *val;
 
 	nm = g_strdup( tagName );
@@ -478,6 +575,7 @@ static void ldif_add_value( Ldif_ParsedRec *rec, gchar *tagName, gchar *tagValue
 		val = g_strdup( "" );
 	}
 	g_strstrip( val );
+
 	if( g_strcasecmp( nm, LDIF_TAG_COMMONNAME ) == 0 ) {
 		rec->listCName = g_slist_append( rec->listCName, val );
 	}
@@ -500,9 +598,10 @@ static void ldif_add_value( Ldif_ParsedRec *rec, gchar *tagName, gchar *tagValue
 	g_free( nm );
 }
 
-/*
-* Clear parsed data.
-*/
+/**
+ * Clear parsed data record.
+ * \param rec LDIF field object.
+ */
 static void ldif_clear_rec( Ldif_ParsedRec *rec ) {
 	GSList *list;
 
@@ -533,10 +632,12 @@ static void ldif_clear_rec( Ldif_ParsedRec *rec ) {
 	rec->listID = NULL;
 }
 
-/*
-* Print parsed data.
-*/
 #if 0
+/**
+ * Print parsed data.
+ * \param rec    LDIF field object.
+ * \param stream Output stream.
+ */
 static void ldif_print_record( Ldif_ParsedRec *rec, FILE *stream ) {
 	GSList *list;
 
@@ -570,12 +671,15 @@ static void ldif_print_record( Ldif_ParsedRec *rec, FILE *stream ) {
 }
 #endif
 
-/*
-* Read file data into address cache.
-* Note that one LDIF record identifies one entity uniquely with the
-* distinguished name (dn) tag. Each person can have multiple E-Mail
-* addresses. Also, each person can have many common name (cn) tags.
-*/
+/**
+ * Read file data into address cache.
+ * Note that one LDIF record identifies one entity uniquely with the
+ * distinguished name (dn) tag. Each person can have multiple E-Mail
+ * addresses. Also, each person can have many common name (cn) tags.
+ *
+ * \param  ldifFile LDIF import control object.
+ * \param  cache    Address cache to be populated with data.
+ */
 static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 	gchar *tagName = NULL, *tagValue = NULL;
 	gchar *lastTag = NULL, *fullValue = NULL;
@@ -641,11 +745,13 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 			flagEOR = FALSE;
 			if( *line == ' ' ) {
 				/* Continuation line */
-				listValue = g_slist_append( listValue, g_strdup( line+1 ) );
+				listValue = g_slist_append(
+					listValue, g_strdup( line+1 ) );
 			}
 			else if( *line == '=' ) {
 				/* Base-64 encoded continuation field */
-				listValue = g_slist_append( listValue, g_strdup( line ) );
+				listValue = g_slist_append(
+					listValue, g_strdup( line ) );
 			}
 			else {
 				/* Parse line */
@@ -655,7 +761,8 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 					if( tagValue ) {
 						if( lastTag ) {
 							/* Save data */
-							fullValue = mgu_list_coalesce( listValue );
+							fullValue =
+								mgu_list_coalesce( listValue );
 							/* Base-64 encoded data */
 							/*
 							if( last64 ) {
@@ -663,7 +770,9 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 							}
 							*/
 
-							ldif_add_value( rec, lastTag, fullValue, hashField );
+							ldif_add_value(
+								rec, lastTag, fullValue,
+								hashField );
 							g_free( lastTag );
 							mgu_free_list( listValue );
 							lastTag = NULL;
@@ -672,7 +781,9 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 						}
 
 						lastTag = g_strdup( tagName );
-						listValue = g_slist_append( listValue, g_strdup( tagValue ) );
+						listValue = g_slist_append(
+							listValue,
+							g_strdup( tagValue ) );
 						g_free( tagValue );
 						last64 = flag64;
 					}
@@ -690,9 +801,11 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 	mgu_free_list( listValue );
 }
 
-/*
-* Add list of field names to hash table.
-*/
+/**
+ * Add list of field names to hash table.
+ * \param table Hashtable.
+ * \param list  List of fields.
+ */
 static void ldif_hash_add_list( GHashTable *table, GSList *list ) {
 	GSList *node = list;
 
@@ -704,20 +817,29 @@ static void ldif_hash_add_list( GHashTable *table, GSList *list ) {
 			gchar *key = g_strdup( tag );
 
 			rec = ldif_create_fieldrec( tag );
-			if( g_strcasecmp( tag, LDIF_TAG_COMMONNAME ) == 0 ) {
-				rec->reserved = TRUE;
+			if( g_strcasecmp( tag, LDIF_TAG_DN ) == 0 ) {
+				rec->reserved = rec->selected = TRUE;
+				rec->userName = g_strdup( "dn" );
+			}
+			else if( g_strcasecmp( tag, LDIF_TAG_COMMONNAME ) == 0 ) {
+				rec->reserved = rec->selected = TRUE;
+				rec->userName = g_strdup( _( "Display Name" ) );
 			}
 			else if( g_strcasecmp( tag, LDIF_TAG_FIRSTNAME ) == 0 ) {
-				rec->reserved = TRUE;
+				rec->reserved = rec->selected = TRUE;
+				rec->userName = g_strdup( _( "First Name" ) );
 			}
 			else if( g_strcasecmp( tag, LDIF_TAG_LASTNAME ) == 0 ) {
-				rec->reserved = TRUE;
+				rec->reserved = rec->selected = TRUE;
+				rec->userName = g_strdup( _( "Last Name" ) );
 			}
 			else if( g_strcasecmp( tag, LDIF_TAG_NICKNAME ) == 0 ) {
-				rec->reserved = TRUE;
+				rec->reserved = rec->selected = TRUE;
+				rec->userName = g_strdup( _( "Nick Name" ) );
 			}
 			else if( g_strcasecmp( tag, LDIF_TAG_EMAIL ) == 0 ) {
-				rec->reserved = TRUE;
+				rec->reserved = rec->selected = TRUE;
+				rec->userName = g_strdup( _( "E-Mail Address" ) );
 			}
 			g_hash_table_insert( table, key, rec );
 		}
@@ -725,26 +847,46 @@ static void ldif_hash_add_list( GHashTable *table, GSList *list ) {
 	}
 }
 
-/*
-* Sorted list comparison function.
-*/
-static int ldif_field_compare( gconstpointer ptr1, gconstpointer ptr2 ) {
+/**
+ * Sorted list comparison function.
+ * \param  ptr1 First field.
+ * \param  ptr2 Second field.
+ * \return <code>-1, 0, +1</code> if first record less than, equal,
+ *         greater than second.
+ */
+static gint ldif_field_compare( gconstpointer ptr1, gconstpointer ptr2 ) {
 	const Ldif_FieldRec *rec1 = ptr1;
 	const Ldif_FieldRec *rec2 = ptr2;
+
+	if( rec1->reserved ) {
+		if( ! rec2->reserved ) {
+			return +1;
+		}
+	}
+	else {
+		if( rec2->reserved ) {
+			return -1;
+		}
+	}
 	return g_strcasecmp( rec1->tagName, rec2->tagName );
 }
 
 /*
-* Append hash table entry to list - visitor function.
-*/
+ * Append hash table entry to list - visitor function.
+ * \param key   Key.
+ * \param value Data value.
+ * \param data  User data (the LDIF import control object).
+ */
 static void ldif_hash2list_vis( gpointer key, gpointer value, gpointer data ) {
 	LdifFile *ldf = data;
-	ldf->tempList = g_list_insert_sorted( ldf->tempList, value, ldif_field_compare );
+	ldf->tempList =
+		g_list_insert_sorted( ldf->tempList, value, ldif_field_compare );
 }
 
-/*
-* Read tag names for file data.
-*/
+/**
+ * Read tag names for file data.
+ * \param  ldifFile LDIF import control object.
+ */
 static void ldif_read_tag_list( LdifFile *ldifFile ) {
 	gchar *tagName = NULL;
 	GSList *listTags = NULL;
@@ -754,7 +896,8 @@ static void ldif_read_tag_list( LdifFile *ldifFile ) {
 	long posCur = 0L;
 
 	/* Clear hash table */
-	g_hash_table_foreach_remove( ldifFile->hashFields, ldif_hash_free_vis, NULL );
+	g_hash_table_foreach_remove(
+		ldifFile->hashFields, ldif_hash_free_vis, NULL );
 
 	/* Find EOF for progress indicator */
 	fseek( ldifFile->file, 0L, SEEK_END );
@@ -783,7 +926,8 @@ static void ldif_read_tag_list( LdifFile *ldifFile ) {
 			/* EOR, Output address data */
 			/* Save field list to hash table */
 			if( flagMail ) {
-				ldif_hash_add_list( ldifFile->hashFields, listTags );
+				ldif_hash_add_list(
+					ldifFile->hashFields, listTags );
 			}
 			mgu_free_list( listTags );
 			listTags = NULL;
@@ -803,7 +947,9 @@ static void ldif_read_tag_list( LdifFile *ldifFile ) {
 				if( tagName ) {
 					/* Add tag to list */
 					listTags = g_slist_append( listTags, tagName );
-					if( g_strcasecmp( tagName, LDIF_TAG_EMAIL ) == 0 ) {
+					if( g_strcasecmp(
+						tagName, LDIF_TAG_EMAIL ) == 0 )
+					{
 						flagMail = TRUE;
 					}
 				}
@@ -817,14 +963,12 @@ static void ldif_read_tag_list( LdifFile *ldifFile ) {
 	listTags = NULL;
 }
 
-/*
-* ============================================================================
-* Read file into list. Main entry point
-* Enter:  ldifFile LDIF control data.
-*         cache    Address cache to load.
-* Return: Status code.
-* ============================================================================
-*/
+/**
+ * Read file into list. Main entry point
+ * \param  ldifFile LDIF import control object.
+ * \param  cache    Address cache to load.
+ * \return Status code.
+ */
 gint ldif_import_data( LdifFile *ldifFile, AddressCache *cache ) {
 	g_return_val_if_fail( ldifFile != NULL, MGU_BAD_ARGS );
 	ldifFile->retVal = MGU_SUCCESS;
@@ -843,14 +987,12 @@ gint ldif_import_data( LdifFile *ldifFile, AddressCache *cache ) {
 	return ldifFile->retVal;
 }
 
-/*
-* ============================================================================
-* Process entire file reading list of unique fields. List of fields may be
-* accessed with the ldif_get_fieldlist() function.
-* Enter:  ldifFile LDIF control data.
-* Return: Status code.
-* ============================================================================
-*/
+/**
+ * Process entire file reading list of unique fields. List of fields may be
+ * accessed with the <code>ldif_get_fieldlist()</code> function.
+ * \param  ldifFile LDIF import control object.
+ * \return Status code.
+ */
 gint ldif_read_tags( LdifFile *ldifFile ) {
 	g_return_val_if_fail( ldifFile != NULL, MGU_BAD_ARGS );
 	ldifFile->retVal = MGU_SUCCESS;
@@ -867,14 +1009,14 @@ gint ldif_read_tags( LdifFile *ldifFile ) {
 	return ldifFile->retVal;
 }
 
-/*
-* Return list of fields for LDIF file.
-* Enter: ldifFile LdifFile object.
-* Return: Linked list of Ldif_FieldRec objects. This list may be g_free'd.
-* Note that the objects in the list should not be freed since they refer to
-* objects inside the internal cache. These objects will be freed when
-* LDIF file object is freed.
-*/
+/**
+ * Return list of fields for LDIF file.
+ * \param  ldifFile LDIF import control object.
+ * \return Linked list of <code>Ldif_FieldRec</code> objects. This list may be
+ *         <code>g_free()</code>. Note that the objects in the list should not
+ *         be freed since they refer to objects inside the internal cache.
+ *         These objects will be freed when LDIF file object is freed.
+ */
 GList *ldif_get_fieldlist( LdifFile *ldifFile ) {
 	GList *list = NULL;
 
@@ -888,7 +1030,37 @@ GList *ldif_get_fieldlist( LdifFile *ldifFile ) {
 	return list;
 }
 
+/**
+ * Output LDIF name-value pair to stream. Only non-empty names and values will
+ * be output to file.
+ * \param stream File output stream.
+ * \param name   Name.
+ * \param value  Data value.
+ * \return <i>TRUE</i> if data output.
+ */
+gboolean ldif_write_value( FILE *stream, const gchar *name, const gchar *value ) {
+	if( name == NULL ) return FALSE;
+	if( value == NULL ) return FALSE;
+	if( strlen( name ) < 1 ) return FALSE;
+	if( strlen( value ) < 1 ) return FALSE;
+	fprintf( stream, "%s: ", name );
+	fprintf( stream, "%s\n", value );
+	return TRUE;
+}
+
+/**
+ * Output LDIF End of Record to stream.
+ * \param stream File output stream.
+ * \return <i>TRUE</i> if data output.
+ */
+void ldif_write_eor( FILE *stream ) {
+	/* Simple but caller should not need to know how to end record. */
+	fprintf( stream, "\n" );
+}
+
 /*
-* End of Source.
-*/
+ * ============================================================================
+ * End of Source.
+ * ============================================================================
+ */
 
