@@ -1793,14 +1793,13 @@ static void summary_set_header(gchar *text[], MsgInfo *msginfo)
 	text[S_COL_FROM] = msginfo->fromname ? msginfo->fromname :
 		_("(No From)");
 	if (prefs_common.swap_from && msginfo->from && msginfo->to &&
-	    cur_account && cur_account->address &&
 	    !MSG_IS_NEWS(msginfo->flags)) {
 		gchar *from;
 
 		Xalloca(from, strlen(msginfo->from) + 1, return);
 		strcpy(from, msginfo->from);
 		extract_address(from);
-		if (!strcmp(from, cur_account->address)) {
+		if (account_find_mail_from_address(from)) {
 			g_free(to);
 			to = g_strconcat("-->", msginfo->to, NULL);
 			text[S_COL_FROM] = to;
