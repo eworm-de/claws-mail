@@ -1,4 +1,12 @@
+2002-04-21 [alfons]	0.7.4claws84
+
+	apply sync patch from Paul
+
+	* src/folderview.c
+		use old claws prefs_folder_item_create() for now
+
 2002-04-19 [match]	0.7.4claws83
+
 	* src/addressbook.[ch]
 	* src/addrharvest.[ch]
 	* src/addrgather.[ch]

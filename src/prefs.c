@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -484,6 +484,16 @@ void prefs_dialog_create(PrefsDialog *dialog)
 	dialog->ok_btn     = ok_btn;
 	dialog->cancel_btn = cancel_btn;
 	dialog->apply_btn  = apply_btn;
+}
+
+void prefs_dialog_destroy(PrefsDialog *dialog)
+{
+	gtk_widget_destroy(dialog->window);
+	dialog->window     = NULL;
+	dialog->notebook   = NULL;
+	dialog->ok_btn     = NULL;
+	dialog->cancel_btn = NULL;
+	dialog->apply_btn  = NULL;
 }
 
 void prefs_button_toggled(GtkToggleButton *toggle_btn, GtkWidget *widget)

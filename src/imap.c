@@ -922,28 +922,30 @@ gboolean imap_is_msg_changed(Folder *folder, FolderItem *item, MsgInfo *msginfo)
 	return FALSE;
 }
 
-void imap_scan_folder(Folder *folder, FolderItem *item)
+gint imap_scan_folder(Folder *folder, FolderItem *item)
 {
 	IMAPSession *session;
 	gint messages, recent, unseen;
 	guint32 uid_validity;
 	gint ok;
 
-	g_return_if_fail(folder != NULL);
-	g_return_if_fail(item != NULL);
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(item != NULL, -1);
 
 	session = imap_session_get(folder);
-	if (!session) return;
+	if (!session) return -1;
 
 	ok = imap_status(session, IMAP_FOLDER(folder), item->path,
 			 &messages, &recent, &unseen, &uid_validity);
 	statusbar_pop_all();
-	if (ok != IMAP_SUCCESS) return;
+	if (ok != IMAP_SUCCESS) return -1;
 
 	item->new = unseen > 0 ? recent : 0;
 	item->unread = unseen;
 	item->total = messages;
 	/* item->mtime = uid_validity; */
+
+	return 0;
 }
 
 void imap_scan_tree(Folder *folder)
@@ -1180,6 +1182,7 @@ static void imap_create_missing_folders(Folder *folder)
 	if (!folder->inbox)
 		folder->inbox = imap_create_special_folder
 			(folder, F_INBOX, "INBOX");
+#if 0
 	if (!folder->outbox)
 		folder->outbox = imap_create_special_folder
 			(folder, F_OUTBOX, "Sent");
@@ -1189,6 +1192,7 @@ static void imap_create_missing_folders(Folder *folder)
 	if (!folder->queue)
 		folder->queue = imap_create_special_folder
 			(folder, F_QUEUE, "Queue");
+#endif
 	if (!folder->trash)
 		folder->trash = imap_create_special_folder
 			(folder, F_TRASH, "Trash");

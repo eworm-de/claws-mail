@@ -133,7 +133,7 @@ struct _Folder
 	gboolean (*is_msg_changed)	(Folder		*folder,
 					 FolderItem	*item,
 					 MsgInfo	*msginfo);
-	void     (*scan)		(Folder		*folder,
+	gint     (*scan)		(Folder		*folder,
 					 FolderItem	*item);
 	void     (*scan_tree)		(Folder		*folder);
 
@@ -277,7 +277,7 @@ FolderItem *folder_get_default_processing (void);
 void folder_set_missing_folders		(void);
 
 gchar *folder_item_get_path		(FolderItem	*item);
-void   folder_item_scan			(FolderItem	*item);
+gint   folder_item_scan			(FolderItem	*item);
 void   folder_item_scan_foreach		(GHashTable	*table);
 gchar *folder_item_fetch_msg		(FolderItem	*item,
 					 gint		 num);

@@ -796,6 +796,8 @@ MainWindow *main_window_create(SeparateType type)
 	GtkWidget *fwd_popup;
 	gint i;
 
+	static GdkGeometry geometry;
+
 	debug_print(_("Creating main window...\n"));
 	mainwin = g_new0(MainWindow, 1);
 
@@ -804,6 +806,14 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_window_set_title(GTK_WINDOW(window), PROG_VERSION);
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, FALSE);
 	gtk_window_set_wmclass(GTK_WINDOW(window), "main_window", "Sylpheed");
+
+	if (!geometry.min_height) {
+		geometry.min_width = 320;
+		geometry.min_height = 200;
+	}
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
 			   GTK_SIGNAL_FUNC(main_window_close_cb), mainwin);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);

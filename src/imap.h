@@ -127,7 +127,7 @@ gboolean imap_is_msg_changed		(Folder		*folder,
 					 FolderItem	*item,
 					 MsgInfo	*msginfo);
 
-void imap_scan_folder			(Folder		*folder,
+gint imap_scan_folder			(Folder		*folder,
 					 FolderItem	*item);
 void imap_scan_tree			(Folder		*folder);
 

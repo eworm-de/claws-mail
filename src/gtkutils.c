@@ -422,7 +422,7 @@ void gtkut_widget_wait_for_draw(GtkWidget *widget)
 {
 	gboolean flag = FALSE;
 
-	if (!GTK_WIDGET_VISIBLE(widget)) return;
+	if (!GTK_WIDGET_VISIBLE(widget) || !GTK_WIDGET_MAPPED(widget)) return;
 
 	gtk_signal_connect(GTK_OBJECT(widget), "draw",
 			   GTK_SIGNAL_FUNC(gtkut_widget_draw_cb), &flag);

@@ -1,3 +1,53 @@
+2002-04-17
+
+	* src/mainwindow.c: main_window_create(): restrict the minimum size.
+
+2002-04-17
+
+	* src/compose.c: merged the new line-wrapping routine.
+	  join_next_line(): fixed a bug that didn't join multibyte
+	  characters.
+	  get_indent_length(): modified enums and variable names.
+	  INDENT_CHARS: don't indent ':'.
+	* src/folderview.c:
+	  folderview_rename_folder_cb()
+	  folderview_delete_folder_cb(): support folder identifier.
+	  folderview_rm_imap_folder_cb(): integrated with
+	  folderview_delete_folder_cb().
+
+2002-04-15
+
+	* src/folder.[ch]: folder_item_scan(): return -1 if scanning failed.
+	* src/folderview.c: folderview_check_new(): abort checking if
+	  folder_item_scan() failed.
+
+2002-04-15
+
+	* src/imap.c: imap_create_missing_folders(): create only INBOX and
+	  Trash.
+	* src/prefs_folder_item.c: prefs_folder_item_set_dialog(): made the
+	  type of news folders unchangeable.
+	  prefs_folder_item_destroy(): use prefs_dialog_destroy().
+	* src/prefs.[ch]: prefs_dialog_destroy(): new.
+
+2002-04-15
+
+	* src/prefs_account.[ch]: added special folder setting to Advanced
+	  tab. Also moved "IMAP server directory" setting to there.
+	* src/account.[ch]: account_get_special_folder(): new. It returns
+	  the optimal special folder for accounts.
+	* src/compose.c: use account_get_special_folder().
+	* src/prefs_folder_item.[ch]: new. Implemented folder property
+	  dialog, and the special folder settings (most of the functions in
+	  claws are not integrated yet, and the structure is slightly
+	  modified).
+	* src/folderview.c: enabled Property menu.
+
+2002-04-14
+
+	* src/textview.c: IS_RFC822_CHAR(): make email parser also stop
+	  scanning when encountering separators ',' and ';'.
+
 2002-04-12
 
 	* src/mainwindow.c: reorderd the menu a bit.

@@ -108,8 +108,6 @@ struct _PrefsAccount
 	gint   session_type;
 	GSList *to_delete;
 
-	gchar *imap_dir;
-
 	/* Send */
 	gboolean add_date;
 	gboolean gen_msgid;
@@ -167,6 +165,15 @@ struct _PrefsAccount
 	 * as a particular user. */
 	gboolean  set_tunnelcmd;
 	gchar     *tunnelcmd;
+
+	gchar *imap_dir;
+
+	gboolean set_sent_folder;
+	gchar *sent_folder;
+	gboolean set_draft_folder;
+	gchar *draft_folder;
+	gboolean set_trash_folder;
+	gchar *trash_folder;
 
 	/* Default or not */
 	gboolean is_default;

@@ -695,7 +695,7 @@ gboolean mh_is_msg_changed(Folder *folder, FolderItem *item, MsgInfo *msginfo)
 	return FALSE;
 }
 
-void mh_scan_folder(Folder *folder, FolderItem *item)
+gint mh_scan_folder(Folder *folder, FolderItem *item)
 {
 	gchar *path;
 	DIR *dp;
@@ -705,21 +705,21 @@ void mh_scan_folder(Folder *folder, FolderItem *item)
 	gint num;
 	gint n_msg = 0;
 
-	g_return_if_fail(item != NULL);
+	g_return_val_if_fail(item != NULL, -1);
 
 	debug_print("mh_scan_folder(): Scanning %s ...\n", item->path);
 
 	path = folder_item_get_path(item);
-	g_return_if_fail(path != NULL);
+	g_return_val_if_fail(path != NULL, -1);
 	if (change_dir(path) < 0) {
 		g_free(path);
-		return;
+		return -1;
 	}
 	g_free(path);
 
 	if ((dp = opendir(".")) == NULL) {
 		FILE_OP_ERROR(item->path, "opendir");
-		return;
+		return -1;
 	}
 
 	if (folder->ui_func)
@@ -754,6 +754,8 @@ void mh_scan_folder(Folder *folder, FolderItem *item)
 
 	debug_print(_("Last number in dir %s = %d\n"), item->path, max);
 	item->last_num = max;
+
+	return 0;
 }
 
 void mh_scan_tree(Folder *folder)

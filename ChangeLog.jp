@@ -1,3 +1,52 @@
+2002-04-17
+
+	* src/mainwindow.c: main_window_create(): 最小サイズを制限。
+
+2002-04-17
+
+	* src/compose.c: 新しい自動改行ルーチンをマージ。
+	  join_next_line(): マルチバイト文字を結合しないバグを修正。
+	  get_indent_length(): enum と変数名を修正。
+	  INDENT_CHARS: ':' をインデントしないようにした。
+	* src/folderview.c:
+	  folderview_rename_folder_cb()
+	  folderview_delete_folder_cb(): フォルダ識別子に対応。
+	  folderview_rm_imap_folder_cb(): folderview_delete_folder_cb()
+	  と統合。
+
+2002-04-15
+
+	* src/folder.[ch]: folder_item_scan(): スキャンに失敗したら -1 を
+	  返す。
+	* src/folderview.c: folderview_check_new(): folder_item_scan() に
+	  失敗したらチェックを中断。
+
+2002-04-15
+
+	* src/imap.c: imap_create_missing_folders(): INBOX と Trash のみを
+	  作成するようにした。
+	* src/prefs_folder_item.c: prefs_folder_item_set_dialog(): ニュース
+	  フォルダのタイプを変えられないようにした。
+	  prefs_folder_item_destroy(): prefs_dialog_destroy() を使用。
+	* src/prefs.[ch]: prefs_dialog_destroy(): 新規。
+
+2002-04-15
+
+	* src/prefs_account.[ch]: 「高度な設定」タブに特別フォルダの設定を
+	  追加。「 IMAP サーバディレクトリ」の設定もそこに移動。
+	* src/account.[ch]: account_get_special_folder(): 新規。アカウント
+	  に対する最適な特別フォルダを返す。
+	* src/compose.c: account_get_special_folder() を使用。
+	* src/prefs_folder_item.[ch]: 新規。フォルダプロパティダイアログを
+	  実装し、特別フォルダの設定を実装(claws の大部分の機能はまだ統合
+	  されておらず、構造は少し変更されている)。
+	* src/folderview.c: プロパティメニューを有効にした。
+
+2002-04-14
+
+	* src/textview.c: IS_RFC822_CHAR(): ',' や ';' 等のセパレータが
+	  現れたときにもパーサのスキャンを停止するようにした。
+
 2002-04-12
 
 	* src/mainwindow.c: メニューの順序を少し変更。

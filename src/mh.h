@@ -69,7 +69,7 @@ gboolean mh_is_msg_changed	(Folder		*folder,
 				 FolderItem	*item,
 				 MsgInfo	*msginfo);
 
-void    mh_scan_folder		(Folder		*folder,
+gint    mh_scan_folder		(Folder		*folder,
 				 FolderItem	*item);
 void    mh_scan_tree		(Folder		*folder);
 

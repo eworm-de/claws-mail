@@ -746,17 +746,14 @@ gchar *folder_item_get_path(FolderItem *item)
 	return path;
 }
 
-void folder_item_scan(FolderItem *item)
+gint folder_item_scan(FolderItem *item)
 {
 	Folder *folder;
 
 	g_return_if_fail(item != NULL);
 
 	folder = item->folder;
-
-	g_return_if_fail(folder->scan != NULL);
-
-	folder->scan(folder, item);
+	return folder->scan(folder, item);
 }
 
 static void folder_item_scan_foreach_func(gpointer key, gpointer val,

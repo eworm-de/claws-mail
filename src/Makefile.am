@@ -30,6 +30,7 @@ sylpheed_SOURCES = \
 	prefs_common.c prefs_common.h \
 	prefs_filter.c prefs_filter.h \
 	prefs_account.c prefs_account.h \
+	prefs_folder_item.c prefs_folder_item.h \
 	prefs_display_header.c prefs_display_header.h \
 	prefs_customheader.c prefs_customheader.h \
 	prefs_summary_column.c prefs_summary_column.h \
@@ -118,7 +119,6 @@ sylpheed_SOURCES = \
 	manual.c manual.h \
 	stringtable.c stringtable.h \
 	scoring.c scoring.h \
-	prefs_folder_item.c prefs_folder_item.h \
 	matcher.c matcher.h \
 	prefs_matcher.c prefs_matcher.h \
 	prefs_scoring.c prefs_scoring.h \

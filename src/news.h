@@ -70,7 +70,7 @@ gchar *news_fetch_msg			(Folder		*folder,
 					 FolderItem	*item,
 					 gint		 num);
 
-void news_scan_group			(Folder		*folder,
+gint news_scan_group			(Folder		*folder,
 					 FolderItem	*item);
 
 GSList *news_get_group_list		(Folder		*folder);

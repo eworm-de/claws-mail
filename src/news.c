@@ -359,7 +359,7 @@ gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	return filename;
 }
 
-void news_scan_group(Folder *folder, FolderItem *item)
+gint news_scan_group(Folder *folder, FolderItem *item)
 {
 	NNTPSession *session;
 	gint num = 0, first = 0, last = 0;
@@ -368,21 +368,21 @@ void news_scan_group(Folder *folder, FolderItem *item)
 	gchar *path;
 	gint ok;
 
-	g_return_if_fail(folder != NULL);
-	g_return_if_fail(item != NULL);
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(item != NULL, -1);
 
 	session = news_session_get(folder);
-	if (!session) return;
+	if (!session) return -1;
 
 	ok = news_select_group(session, item->path, &num, &first, &last);
 	if (ok != NN_SUCCESS) {
 		log_warning(_("can't set group: %s\n"), item->path);
-		return;
+		return -1;
 	}
 
 	if (num == 0) {
 		item->new = item->unread = item->total = item->last_num = 0;
-		return;
+		return 0;
 	}
 
 	path = folder_item_get_path(item);
@@ -392,17 +392,22 @@ void news_scan_group(Folder *folder, FolderItem *item)
 	}
 	g_free(path);
 
-	if (last >= max) {
+	if (first < min) {
+		new = unread = total = num;
+	} else if (max < first) {
+		new = unread = total = num;
+	} else if (last > max) {
 		new += last - max;
 		unread += last - max;
 		if (new > num) new = num;
 		if (unread > num) unread = num;
 	}
-
 	item->new = new;
 	item->unread = unread;
 	item->total = num;
 	item->last_num = last;
+
+	return 0;
 }
 
 static NewsGroupInfo *news_group_info_new(const gchar *name,
