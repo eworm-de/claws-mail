@@ -422,10 +422,10 @@ GtkAspell *gtkaspell_new(const gchar *dictionary_path,
 	g_signal_connect_after(G_OBJECT(buffer), "insert-text",
 			       G_CALLBACK(entry_insert_cb), gtkaspell);
 	g_signal_connect_after(G_OBJECT(buffer), "delete-range",
-		                 GTK_SIGNAL_FUNC(entry_delete_cb), gtkaspell);
-	gtk_signal_connect(GTK_OBJECT(gtktext), "button-press-event",
-			   GTK_SIGNAL_FUNC(button_press_intercept_cb),
-			   gtkaspell);
+		               G_CALLBACK(entry_delete_cb), gtkaspell);
+	g_signal_connect(G_OBJECT(gtktext), "button-press-event",
+			 G_CALLBACK(button_press_intercept_cb),
+			 gtkaspell);
 	
 	debug_print("Aspell: created gtkaspell %0x\n", (guint) gtkaspell);
 
@@ -441,10 +441,10 @@ void gtkaspell_delete(GtkAspell * gtkaspell)
 				      gtkaspell);
 	g_signal_handlers_disconnect_by_func(G_OBJECT(gtktext),
 					     G_CALLBACK(entry_delete_cb),
-				      gtkaspell);
-	gtk_signal_disconnect_by_func(GTK_OBJECT(gtktext),
-                                      GTK_SIGNAL_FUNC(button_press_intercept_cb),
-				      gtkaspell);
+				      	     gtkaspell);
+	g_signal_handlers_disconnect_by_func(G_OBJECT(gtktext),
+                                      	     G_CALLBACK(button_press_intercept_cb),
+				      	     gtkaspell);
 
 	gtkaspell_uncheck_all(gtkaspell);
 	
@@ -567,17 +567,17 @@ static gint button_press_intercept_cb(GtkTextView *gtktext,
 	/* forge the leftclick */
 	eb->button = 1;
 
-        gtk_signal_handler_block_by_func(GTK_OBJECT(gtktext),
-					 GTK_SIGNAL_FUNC(button_press_intercept_cb), 
-					 gtkaspell);
-	gtk_signal_emit_by_name(GTK_OBJECT(gtktext), "button-press-event",
-				e, &retval);
-	gtk_signal_emit_by_name(GTK_OBJECT(gtktext), "button-release-event",
-				e, &retval);
-	gtk_signal_handler_unblock_by_func(GTK_OBJECT(gtktext),
-					   GTK_SIGNAL_FUNC(button_press_intercept_cb), 
+        g_signal_handlers_block_by_func(G_OBJECT(gtktext),
+					G_CALLBACK(button_press_intercept_cb), 
+					gtkaspell);
+	g_signal_emit_by_name(G_OBJECT(gtktext), "button-press-event",
+			      e, &retval);
+	g_signal_emit_by_name(G_OBJECT(gtktext), "button-release-event",
+			      e, &retval);
+	g_signal_handlers_unblock_by_func(G_OBJECT(gtktext),
+					  G_CALLBACK(button_press_intercept_cb), 
 					   gtkaspell);
-	gtk_signal_emit_stop_by_name(GTK_OBJECT(gtktext), "button-press-event");
+	g_signal_stop_emission_by_name(G_OBJECT(gtktext), "button-press-event");
     
 	/* now do the menu wackiness */
 	popup_menu(gtkaspell, eb);
@@ -1420,9 +1420,9 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	gtk_window_set_title(GTK_WINDOW(dialog),_("Replace unknown word"));
 	gtk_widget_set_uposition(dialog, xx, yy);
 
-	gtk_signal_connect_object(GTK_OBJECT(dialog), "destroy",
-				  GTK_SIGNAL_FUNC(gtk_widget_destroy), 
-				  GTK_OBJECT(dialog));
+	g_signal_connect_swapped(G_OBJECT(dialog), "destroy",
+				 G_CALLBACK(gtk_widget_destroy), 
+				 G_OBJECT(dialog));
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 8);
@@ -1437,12 +1437,12 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	gtkaspell->replace_entry = entry;
 	gtk_entry_set_text(GTK_ENTRY(entry), gtkaspell->theword);
 	gtk_editable_select_region(GTK_EDITABLE(entry), 0, -1);
-	gtk_signal_connect(GTK_OBJECT(entry), "activate",
-			   GTK_SIGNAL_FUNC(replace_with_supplied_word_cb), 
-			   gtkaspell);
-	gtk_signal_connect_object(GTK_OBJECT(entry), "activate",
-			   GTK_SIGNAL_FUNC(gtk_widget_destroy), 
-			   GTK_OBJECT(dialog));
+	g_signal_connect(G_OBJECT(entry), "activate",
+			 G_CALLBACK(replace_with_supplied_word_cb), 
+			 gtkaspell);
+	g_signal_connect_swapped(G_OBJECT(entry), "activate",
+			   	 G_CALLBACK(gtk_widget_destroy), 
+			   	 G_OBJECT(dialog));
 	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
 
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, TRUE, 
@@ -1459,18 +1459,18 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 
 	ok_button = gtk_button_new_with_label(_("OK"));
 	gtk_box_pack_start(GTK_BOX(hbox), ok_button, TRUE, TRUE, 8);
-	gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
-			GTK_SIGNAL_FUNC(replace_with_supplied_word_cb), 
-			gtkaspell);
-	gtk_signal_connect_object(GTK_OBJECT(ok_button), "clicked",
-			GTK_SIGNAL_FUNC(gtk_widget_destroy), 
-			GTK_OBJECT(dialog));
+	g_signal_connect(G_OBJECT(ok_button), "clicked",
+			 G_CALLBACK(replace_with_supplied_word_cb), 
+			 gtkaspell);
+	g_signal_connect_swapped(G_OBJECT(ok_button), "clicked",
+				   G_CALLBACK(gtk_widget_destroy), 
+				   G_OBJECT(dialog));
 
 	cancel_button = gtk_button_new_with_label(_("Cancel"));
 	gtk_box_pack_start(GTK_BOX(hbox), cancel_button, TRUE, TRUE, 8);
-	gtk_signal_connect_object(GTK_OBJECT(cancel_button), "clicked",
-			GTK_SIGNAL_FUNC(gtk_widget_destroy), 
-			GTK_OBJECT(dialog));
+	g_signal_connect_swapped(G_OBJECT(cancel_button), "clicked",
+				 G_CALLBACK(gtk_widget_destroy), 
+				 G_OBJECT(dialog));
 
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), hbox);
 
@@ -1627,8 +1627,8 @@ GtkWidget *gtkaspell_dictionary_option_menu_new(const gchar *aspell_path)
 	for (tmp = dict_list; tmp != NULL; tmp = g_slist_next(tmp)) {
 		dict = (Dictionary *) tmp->data;
 		item = gtk_menu_item_new_with_label(dict->dictname);
-		gtk_object_set_data(GTK_OBJECT(item), "dict_name",
-				    dict->fullname); 
+		g_object_set_data(G_OBJECT(item), "dict_name",
+				  dict->fullname); 
 					 
 		gtk_menu_append(GTK_MENU(menu), item);					 
 		gtk_widget_show(item);
@@ -1648,8 +1648,8 @@ gchar *gtkaspell_get_dictionary_menu_active_item(GtkWidget *menu)
 	g_return_val_if_fail(GTK_IS_MENU(menu), NULL);
 
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-        dict_fullname = (gchar *) gtk_object_get_data(GTK_OBJECT(menuitem), 
-						      "dict_name");
+        dict_fullname = (gchar *) g_object_get_data(G_OBJECT(menuitem), 
+						    "dict_name");
         g_return_val_if_fail(dict_fullname, NULL);
 
 	label = g_strdup(dict_fullname);
@@ -1676,8 +1676,8 @@ gint gtkaspell_set_dictionary_menu_active_item(GtkWidget *menu,
 		gchar *dict_name;
 
 		menuitem = GTK_WIDGET(cur->data);
-		dict_name = gtk_object_get_data(GTK_OBJECT(menuitem), 
-						"dict_name");
+		dict_name = g_object_get_data(G_OBJECT(menuitem), 
+					      "dict_name");
 		if ((dict_name != NULL) && !strcmp2(dict_name, dictionary)) {
 			gtk_option_menu_set_history(GTK_OPTION_MENU(menu), n);
 
@@ -1700,20 +1700,20 @@ GtkWidget *gtkaspell_sugmode_option_menu_new(gint sugmode)
 	item = gtk_menu_item_new_with_label(_("Fast Mode"));
         gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu), item);
-	gtk_object_set_data(GTK_OBJECT(item), "sugmode",
-			    GINT_TO_POINTER(ASPELL_FASTMODE));
+	g_object_set_data(G_OBJECT(item), "sugmode",
+			  GINT_TO_POINTER(ASPELL_FASTMODE));
 
 	item = gtk_menu_item_new_with_label(_("Normal Mode"));
         gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu), item);
-	gtk_object_set_data(GTK_OBJECT(item), "sugmode",
-			    GINT_TO_POINTER(ASPELL_NORMALMODE));
+	g_object_set_data(G_OBJECT(item), "sugmode",
+			  GINT_TO_POINTER(ASPELL_NORMALMODE));
 	
 	item = gtk_menu_item_new_with_label(_("Bad Spellers Mode"));
         gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu), item);
-	gtk_object_set_data(GTK_OBJECT(item), "sugmode",
-			    GINT_TO_POINTER(ASPELL_BADSPELLERMODE));
+	g_object_set_data(G_OBJECT(item), "sugmode",
+			  GINT_TO_POINTER(ASPELL_BADSPELLERMODE));
 
 	return menu;
 }
@@ -1738,8 +1738,8 @@ gint gtkaspell_get_sugmode_from_option_menu(GtkOptionMenu *optmenu)
 
 	item = gtk_menu_get_active(GTK_MENU(gtk_option_menu_get_menu(optmenu)));
 	
-	sugmode = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(item),
-						      "sugmode"));
+	sugmode = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(item),
+						    "sugmode"));
 
 	return sugmode;
 }
@@ -1806,8 +1806,8 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 
 	gtkaspell->sug_menu = menu;	
 
-	gtk_signal_connect(GTK_OBJECT(menu), "cancel",
-		GTK_SIGNAL_FUNC(cancel_menu_cb), gtkaspell);
+	g_signal_connect(G_OBJECT(menu), "cancel",
+			 G_CALLBACK(cancel_menu_cb), gtkaspell);
 
 	caption = g_strdup_printf(_("\"%s\" unknown in %s"), 
 				  (unsigned char*) l->data, 
@@ -1825,9 +1825,9 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 	item = gtk_menu_item_new_with_label(_("Accept in this session"));
 	gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu), item);
-        gtk_signal_connect(GTK_OBJECT(item), "activate",
-			   GTK_SIGNAL_FUNC(add_word_to_session_cb), 
-			   gtkaspell);
+        g_signal_connect(G_OBJECT(item), "activate",
+			 G_CALLBACK(add_word_to_session_cb), 
+			 gtkaspell);
 	gtk_widget_add_accelerator(item, "activate", accel, GDK_space,
 				   GDK_MOD1_MASK,
 				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
@@ -1835,9 +1835,9 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 	item = gtk_menu_item_new_with_label(_("Add to personal dictionary"));
 	gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu), item);
-        gtk_signal_connect(GTK_OBJECT(item), "activate",
-			   GTK_SIGNAL_FUNC(add_word_to_personal_cb), 
-			   gtkaspell);
+        g_signal_connect(G_OBJECT(item), "activate",
+			 G_CALLBACK(add_word_to_personal_cb), 
+			 gtkaspell);
 	gtk_widget_add_accelerator(item, "activate", accel, GDK_Return,
 				   GDK_MOD1_MASK,
 				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
@@ -1845,9 +1845,9 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
         item = gtk_menu_item_new_with_label(_("Replace with..."));
 	gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu), item);
-        gtk_signal_connect(GTK_OBJECT(item), "activate",
-			   GTK_SIGNAL_FUNC(replace_with_create_dialog_cb), 
-			   gtkaspell);
+        g_signal_connect(G_OBJECT(item), "activate",
+			 G_CALLBACK(replace_with_create_dialog_cb), 
+			 gtkaspell);
 	gtk_widget_add_accelerator(item, "activate", accel, GDK_R, 0,
 				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
 
@@ -1858,9 +1858,9 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 		g_free(caption);
 		gtk_widget_show(item);
 		gtk_menu_append(GTK_MENU(menu), item);
-		gtk_signal_connect(GTK_OBJECT(item), "activate",
-				GTK_SIGNAL_FUNC(check_with_alternate_cb),
-				gtkaspell);
+		g_signal_connect(G_OBJECT(item), "activate",
+				 G_CALLBACK(check_with_alternate_cb),
+				 gtkaspell);
 		gtk_widget_add_accelerator(item, "activate", accel, GDK_X, 0,
 					   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
 	}
@@ -1897,9 +1897,9 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 			item = gtk_menu_item_new_with_label(utf8buf);
 			gtk_widget_show(item);
 			gtk_menu_append(GTK_MENU(curmenu), item);
-			gtk_signal_connect(GTK_OBJECT(item), "activate",
-					   GTK_SIGNAL_FUNC(replace_word_cb),
-					   gtkaspell);
+			g_signal_connect(G_OBJECT(item), "activate",
+					 G_CALLBACK(replace_word_cb),
+					 gtkaspell);
 
 			if (curmenu == menu && count < MENUCOUNT) {
 				gtk_widget_add_accelerator(item, "activate",
@@ -1924,7 +1924,7 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 #endif
 /* XXX:GTK2 */
 #if 0
-	gtk_accel_group_attach(accel, GTK_OBJECT(menu));
+	gtk_accel_group_attach(accel, G_OBJECT(menu));
 	gtk_accel_group_unref(accel);
 #endif
 	
@@ -1963,9 +1963,9 @@ static void populate_submenu(GtkAspell *gtkaspell, GtkWidget *menu)
 				gtkaspell->alternate_speller->dictionary->dictname);
 		item = gtk_menu_item_new_with_label(dictname);
 		g_free(dictname);
-		gtk_signal_connect(GTK_OBJECT(item), "activate",
-				   GTK_SIGNAL_FUNC(switch_to_alternate_cb),
-				   gtkaspell);
+		g_signal_connect(G_OBJECT(item), "activate",
+				 G_CALLBACK(switch_to_alternate_cb),
+				 gtkaspell);
 		gtk_widget_show(item);
 		gtk_menu_append(GTK_MENU(menu), item);
 	}
@@ -1975,9 +1975,9 @@ static void populate_submenu(GtkAspell *gtkaspell, GtkWidget *menu)
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item),TRUE);
 		gtk_widget_set_sensitive(GTK_WIDGET(item),FALSE);
 	} else
-		gtk_signal_connect(GTK_OBJECT(item), "activate",
-				   GTK_SIGNAL_FUNC(set_sug_mode_cb),
-				   gtkaspell);
+		g_signal_connect(G_OBJECT(item), "activate",
+				 G_CALLBACK(set_sug_mode_cb),
+				 gtkaspell);
 	gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu), item);
 
@@ -1986,9 +1986,9 @@ static void populate_submenu(GtkAspell *gtkaspell, GtkWidget *menu)
 		gtk_widget_set_sensitive(GTK_WIDGET(item), FALSE);
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
 	} else
-		gtk_signal_connect(GTK_OBJECT(item), "activate",
-				   GTK_SIGNAL_FUNC(set_sug_mode_cb),
-				   gtkaspell);
+		g_signal_connect(G_OBJECT(item), "activate",
+				 G_CALLBACK(set_sug_mode_cb),
+				 gtkaspell);
 	gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu),item);
 
@@ -1997,9 +1997,9 @@ static void populate_submenu(GtkAspell *gtkaspell, GtkWidget *menu)
 		gtk_widget_set_sensitive(GTK_WIDGET(item), FALSE);
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
 	} else
-		gtk_signal_connect(GTK_OBJECT(item), "activate",
-				   GTK_SIGNAL_FUNC(set_sug_mode_cb),
-				   gtkaspell);
+		g_signal_connect(G_OBJECT(item), "activate",
+				 G_CALLBACK(set_sug_mode_cb),
+				 gtkaspell);
 	gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu), item);
 	
@@ -2012,9 +2012,9 @@ static void populate_submenu(GtkAspell *gtkaspell, GtkWidget *menu)
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
 	else	
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), FALSE);
-	gtk_signal_connect(GTK_OBJECT(item), "activate",
-			   GTK_SIGNAL_FUNC(toggle_check_while_typing_cb),
-			   gtkaspell);
+	g_signal_connect(G_OBJECT(item), "activate",
+			 G_CALLBACK(toggle_check_while_typing_cb),
+			 gtkaspell);
 	gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu), item);
 
@@ -2055,8 +2055,8 @@ static void populate_submenu(GtkAspell *gtkaspell, GtkWidget *menu)
 			}
 			dict = (Dictionary *) tmp->data;
 			item = gtk_check_menu_item_new_with_label(dict->dictname);
-			gtk_object_set_data(GTK_OBJECT(item), "dict_name",
-					    dict->fullname); 
+			g_object_set_data(G_OBJECT(item), "dict_name",
+					  dict->fullname); 
 			if (strcmp2(dict->fullname,
 			    gtkaspell->gtkaspeller->dictionary->fullname))
 				gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), FALSE);
@@ -2065,9 +2065,9 @@ static void populate_submenu(GtkAspell *gtkaspell, GtkWidget *menu)
 				gtk_widget_set_sensitive(GTK_WIDGET(item),
 							 FALSE);
 			}
-			gtk_signal_connect(GTK_OBJECT(item), "activate",
-					   GTK_SIGNAL_FUNC(change_dict_cb),
-					   gtkaspell);
+			g_signal_connect(G_OBJECT(item), "activate",
+					 G_CALLBACK(change_dict_cb),
+					 gtkaspell);
 			gtk_widget_show(item);
 			gtk_menu_append(GTK_MENU(curmenu), item);
 			
@@ -2215,7 +2215,7 @@ static void change_dict_cb(GtkWidget *w, GtkAspell *gtkaspell)
 {
 	gchar		*fullname;
   
-        fullname = (gchar *) gtk_object_get_data(GTK_OBJECT(w), "dict_name");
+        fullname = (gchar *) g_object_get_data(G_OBJECT(w), "dict_name");
 	
 	if (!strcmp2(fullname, _("None")))
 		return;
@@ -2407,9 +2407,9 @@ static void gtkaspell_alert_dialog(gchar *message)
 	dialog = gtk_dialog_new();
 	gtk_window_set_policy(GTK_WINDOW(dialog), FALSE, FALSE, FALSE);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_MOUSE);
-	gtk_signal_connect_object(GTK_OBJECT(dialog), "destroy",
-				   GTK_SIGNAL_FUNC(gtk_widget_destroy), 
-				   GTK_OBJECT(dialog));
+	g_signal_connect_swapped(G_OBJECT(dialog), "destroy",
+				 G_CALLBACK(gtk_widget_destroy), 
+				 G_OBJECT(dialog));
 
 	label  = gtk_label_new(message);
 	gtk_misc_set_padding(GTK_MISC(label), 8, 8);
@@ -2422,9 +2422,9 @@ static void gtkaspell_alert_dialog(gchar *message)
 	GTK_WIDGET_SET_FLAGS(ok_button, GTK_CAN_DEFAULT);
 	gtk_box_pack_start(GTK_BOX(hbox), ok_button, TRUE, TRUE, 8);	
 
-	gtk_signal_connect_object(GTK_OBJECT(ok_button), "clicked",
-				   GTK_SIGNAL_FUNC(gtk_widget_destroy), 
-				   GTK_OBJECT(dialog));
+	g_signal_connect_swapped(G_OBJECT(ok_button), "clicked",
+				 G_CALLBACK(gtk_widget_destroy), 
+				 G_OBJECT(dialog));
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), hbox);
 			
 	gtk_widget_grab_default(ok_button);

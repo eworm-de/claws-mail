@@ -718,7 +718,7 @@ SummaryView *summary_create(void)
 
 	/* CLAWS: need this to get the SummaryView * from
 	 * the CList */
-	gtk_object_set_data(GTK_OBJECT(ctree), "summaryview", (gpointer)summaryview); 
+	g_object_set_data(G_OBJECT(ctree), "summaryview", (gpointer)summaryview); 
 
 	gtk_widget_show_all(vbox);
 
@@ -981,7 +981,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	summaryview->folder_item = item;
 	item->opened = TRUE;
 
-	gtk_signal_handler_block_by_data(GTK_OBJECT(ctree), summaryview);
+	g_signal_handlers_unblock_matched(G_OBJECT(ctree), G_SIGNAL_MATCH_DATA,
+					  0, 0, NULL, NULL, summaryview);
 
 	buf = g_strdup_printf(_("Scanning folder (%s)..."), item->path);
 	debug_print("%s\n", buf);
@@ -1025,7 +1026,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	if (strlen(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(summaryview->search_string)->entry))) > 0) {
 		GSList *not_killed;
 		gint search_type = GPOINTER_TO_INT(g_object_get_data(
-				   GTK_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
+				   G_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
 				   GTK_MENU(summaryview->search_type)))), MENU_VAL_ID));
 		const gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(summaryview->search_string)->entry));
 		gchar *searched_header = NULL;
@@ -1128,7 +1129,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	if (summaryview->sort_key != SORT_BY_NONE)
 		summary_sort(summaryview, summaryview->sort_key, summaryview->sort_type);
 
-	gtk_signal_handler_unblock_by_data(GTK_OBJECT(ctree), summaryview);
+	g_signal_handlers_unblock_matched(G_OBJECT(ctree), G_SIGNAL_MATCH_DATA,
+					  0, 0, NULL, NULL, summaryview);
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
 
@@ -1482,7 +1484,7 @@ void summary_select_next_unread(SummaryView *summaryview)
  			}
 
 			if (val == G_ALERTDEFAULT) {
-				gtk_signal_emit_stop_by_name(GTK_OBJECT(ctree),
+				g_signal_stop_emission_by_name(G_OBJECT(ctree),
 							 "key_press_event");
 				folderview_select_next_unread(summaryview->folderview);
 				return;
@@ -1534,15 +1536,8 @@ void summary_select_next_new(SummaryView *summaryview)
 				   "Go to next folder?"),
 				 _("Yes"), _("Search again"), _("No"));
 		if (val == G_ALERTDEFAULT) {
-#warning FIXME_GTK2
-#if 0
-			if (gtk_signal_n_emissions_by_name
-				(GTK_OBJECT(ctree), "key_press_event") > 0)
-					gtk_signal_emit_stop_by_name
-						(GTK_OBJECT(ctree),
-						 "key_press_event");
+			g_signal_stop_emission_by_name(G_OBJECT(ctree),"key_press_event");
 			folderview_select_next_unread(summaryview->folderview);
-#endif
 			return;
 		} else if (val == G_ALERTALTERNATE)
 			node = NULL;
@@ -4583,7 +4578,7 @@ static gboolean summary_searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 				prefs_common.summary_quicksearch_history);			
 		}
 	 	summary_show(summaryview, summaryview->folder_item);
-	 	gtk_signal_emit_stop_by_name(GTK_OBJECT(widget), "key_press_event");
+	 	g_signal_stop_emission_by_name(G_OBJECT(widget), "key_press_event");
 		return TRUE; 		
 	}
 	return FALSE;
@@ -4608,7 +4603,7 @@ static void summary_searchtype_changed(GtkMenuItem *widget, gpointer data)
 {
 	SummaryView *sw = (SummaryView *)data;
 	prefs_common.summary_quicksearch_type = GPOINTER_TO_INT(g_object_get_data(
-				   GTK_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
+				   G_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
 				   GTK_MENU(sw->search_type)))), MENU_VAL_ID));
 
 	/* Show extended search description button, only when Extended is selected */
@@ -5008,7 +5003,7 @@ static gint summary_cmp_by_from(GtkCList *clist, gconstpointer ptr1,
 	const gchar *str1, *str2;
 	const GtkCListRow *r1 = (const GtkCListRow *) ptr1;
 	const GtkCListRow *r2 = (const GtkCListRow *) ptr2;
-	const SummaryView *sv = gtk_object_get_data(GTK_OBJECT(clist), "summaryview");
+	const SummaryView *sv = g_object_get_data(G_OBJECT(clist), "summaryview");
 	
 	g_return_val_if_fail(sv, -1);
 	
@@ -5033,7 +5028,7 @@ static gint summary_cmp_by_simplified_subject
 	const GtkCListRow *r2 = (const GtkCListRow *) ptr2;
 	const MsgInfo *msginfo1 = r1->data;
 	const MsgInfo *msginfo2 = r2->data;
-	const SummaryView *sv = gtk_object_get_data(GTK_OBJECT(clist), "summaryview");
+	const SummaryView *sv = g_object_get_data(G_OBJECT(clist), "summaryview");
 	
 	g_return_val_if_fail(sv, -1);
 	g_return_val_if_fail(msginfo1 != NULL && msginfo2 != NULL, -1);
@@ -5282,11 +5277,11 @@ static void summary_set_hide_read_msgs_menu (SummaryView *summaryview,
  
  	widget = gtk_item_factory_get_item(gtk_item_factory_from_widget(summaryview->mainwin->menubar),
  					   "/View/Hide read messages");
- 	gtk_object_set_data(GTK_OBJECT(widget), "dont_toggle",
- 			    GINT_TO_POINTER(1));
+ 	g_object_set_data(G_OBJECT(widget), "dont_toggle",
+ 			  GINT_TO_POINTER(1));
  	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(widget), action);
- 	gtk_object_set_data(GTK_OBJECT(widget), "dont_toggle",
- 			    GINT_TO_POINTER(0));
+ 	g_object_set_data(G_OBJECT(widget), "dont_toggle",
+ 			  GINT_TO_POINTER(0));
 }
 
 void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)

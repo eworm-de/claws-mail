@@ -153,12 +153,12 @@ gtk_plug_xembed_class_init (GtkPlugXEmbedClass *class)
 #endif
 
   plug_signals[EMBEDDED] =
-	  gtk_signal_new ("embedded",
-			  GTK_RUN_LAST,
-			  GTK_OBJECT_CLASS (class)->type,
-			  GTK_STRUCT_OFFSET (GtkPlugXEmbedClass, embedded),
-			  gtk_marshal_NONE__NONE,
-			  GTK_TYPE_NONE, 0);
+	  g_signal_new ("embedded",
+			GTK_RUN_LAST,
+			GTK_OBJECT_CLASS (class)->type,
+			GTK_STRUCT_OFFSET (GtkPlugXEmbedClass, embedded),
+			gtk_marshal_NONE__NONE,
+			GTK_TYPE_NONE, 0);
 }
 
 static void
@@ -187,7 +187,7 @@ gtk_plug_xembed_set_is_child (GtkPlugXEmbed  *plug,
       if (plug->modality_group)
 	{
 	  gtk_window_group_remove_window (plug->modality_group, GTK_WINDOW (plug));
-	  gtk_object_unref (plug->modality_group);
+	  g_object_unref (plug->modality_group);
 	  plug->modality_group = NULL;
 	}
 #endif
@@ -292,8 +292,8 @@ _gtk_plug_xembed_remove_from_socket (GtkPlugXEmbed   *plug,
 
   widget = GTK_WIDGET (plug);
 
-  gtk_object_ref (plug);
-  gtk_object_ref (socket);
+  g_object_ref (plug);
+  g_object_ref (socket);
 
   widget_was_visible = GTK_WIDGET_VISIBLE (plug);
   
@@ -327,12 +327,12 @@ _gtk_plug_xembed_remove_from_socket (GtkPlugXEmbed   *plug,
     gtk_widget_destroy (widget);
   
   gdk_window_unref (event.any.window);
-  gtk_object_unref (plug);
+  g_object_unref (plug);
 
   if (widget_was_visible && GTK_WIDGET_VISIBLE (socket))
     gtk_widget_queue_resize (GTK_WIDGET (socket));
 
-  gtk_object_unref (socket);
+  g_object_unref (socket);
 #endif
 }
 
@@ -440,7 +440,7 @@ gtk_plug_xembed_unrealize (GtkWidget *widget)
 	handle_modality_off (plug);
 
       gtk_window_group_remove_window (plug->modality_group, GTK_WINDOW (plug));
-      gtk_object_unref (plug->modality_group);
+      g_object_unref (plug->modality_group);
     }
 #endif
   
@@ -1088,7 +1088,7 @@ gtk_plug_xembed_filter_func (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer da
 
 	return_val = GDK_FILTER_REMOVE;
 	
-	gtk_object_ref (GTK_OBJECT(plug));
+	g_object_ref (G_OBJECT(plug));
 	
 	if (was_embedded)
 	  {
@@ -1166,11 +1166,11 @@ gtk_plug_xembed_filter_func (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer da
 #endif
 
 	    if (!was_embedded)
-	      gtk_signal_emit (GTK_OBJECT (plug), plug_signals[EMBEDDED], 0);
+	      g_signal_emit (G_OBJECT (plug), plug_signals[EMBEDDED], 0);
 	  }
 
       done:
-	gtk_object_unref (GTK_OBJECT(plug));
+	g_object_unref (G_OBJECT(plug));
 	
 	break;
       }

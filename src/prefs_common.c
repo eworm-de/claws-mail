@@ -987,9 +987,9 @@ static void prefs_common_create(void)
 			  G_CALLBACK(prefs_common_ok), NULL);
 	g_signal_connect (G_OBJECT(dialog.apply_btn), "clicked",
 			  G_CALLBACK(prefs_common_apply), NULL);
-	gtk_signal_connect_object (GTK_OBJECT(dialog.cancel_btn), "clicked",
-				   GTK_SIGNAL_FUNC(prefs_common_cancel),
-				   GTK_OBJECT(dialog.window));
+	g_signal_connect_swapped(G_OBJECT(dialog.cancel_btn), "clicked",
+				 G_CALLBACK(prefs_common_cancel),
+				 G_OBJECT(dialog.window));
 
 	/* create all widgets on notebook */
 	prefs_receive_create();
@@ -2512,8 +2512,8 @@ static void date_format_select_row(GtkWidget *date_format_list, gint row,
 	if (!event || event->type != GDK_2BUTTON_PRESS) return;
 
 
-	datefmt_sample = GTK_WIDGET(gtk_object_get_data
-				    (GTK_OBJECT(date_format), "datefmt_sample"));
+	datefmt_sample = GTK_WIDGET(g_object_get_data(G_OBJECT(date_format), 
+						      "datefmt_sample"));
 
 	g_return_if_fail(date_format_list != NULL);
 	g_return_if_fail(date_format != NULL);

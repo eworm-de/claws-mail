@@ -650,8 +650,8 @@ static void account_edit_create(void)
 	clone_btn = gtk_button_new_with_label (_(" Clone "));
 	gtk_widget_show (clone_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), clone_btn, FALSE, FALSE, 4);
-	gtk_signal_connect (GTK_OBJECT(clone_btn), "clicked",
-			    GTK_SIGNAL_FUNC (account_clone), NULL);
+	g_signal_connect(G_OBJECT(clone_btn), "clicked",
+			 G_CALLBACK(account_clone), NULL);
 	
 	down_btn = gtk_button_new_with_label (_("Down"));
 	gtk_widget_show (down_btn);

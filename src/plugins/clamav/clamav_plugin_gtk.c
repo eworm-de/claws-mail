@@ -180,7 +180,8 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 
 	config = clamav_get_config();
 
-	gtk_signal_connect(GTK_OBJECT(save_folder_select), "released", GTK_SIGNAL_FUNC(foldersel_cb), page);
+	g_signal_connect(G_OBJECT(save_folder_select), "released", 
+			 G_CALLBACK(foldersel_cb), page);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_clamav), config->clamav_enable);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_arc), config->clamav_enable_arc);

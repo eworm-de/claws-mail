@@ -224,27 +224,27 @@ static void filesel_create(const gchar *title, gboolean multiple_files)
 			 GTK_SELECTION_MULTIPLE);
 #endif
 
-		gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filesel)->file_list),
-				   "select_row", 
-				   GTK_SIGNAL_FUNC(filesel_file_list_select_row_multi),
-				   NULL);
-		gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filesel)->file_list),
-				   "unselect_row",
-				   GTK_SIGNAL_FUNC(filesel_file_list_select_row_multi),
-				   NULL);
-		gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filesel)->dir_list),
-				   "select_row",
-				   GTK_SIGNAL_FUNC(filesel_dir_list_select_row_multi),
-				   NULL);
+		g_signal_connect(G_OBJECT(GTK_FILE_SELECTION(filesel)->file_list),
+				 "select_row", 
+				 G_CALLBACK(filesel_file_list_select_row_multi),
+				 NULL);
+		g_signal_connect(G_OBJECT(GTK_FILE_SELECTION(filesel)->file_list),
+				 "unselect_row",
+				 G_CALLBACK(filesel_file_list_select_row_multi),
+				 NULL);
+		g_signal_connect(G_OBJECT(GTK_FILE_SELECTION(filesel)->dir_list),
+				 "select_row",
+				 G_CALLBACK(filesel_dir_list_select_row_multi),
+				 NULL);
 	} else {
-		gtk_signal_connect_after(GTK_OBJECT(GTK_FILE_SELECTION(filesel)->file_list),
-					 "select_row", 
-					 GTK_SIGNAL_FUNC(filesel_file_list_select_row_single),
-					 NULL);
-		gtk_signal_connect_after(GTK_OBJECT(GTK_FILE_SELECTION(filesel)->dir_list),
-					 "select_row",
-					 GTK_SIGNAL_FUNC(filesel_dir_list_select_row_single),
-					 NULL);
+		g_signal_connect_after(G_OBJECT(GTK_FILE_SELECTION(filesel)->file_list),
+				       "select_row", 
+				       G_CALLBACK(filesel_file_list_select_row_single),
+				       NULL);
+		g_signal_connect_after(G_OBJECT(GTK_FILE_SELECTION(filesel)->dir_list),
+				       "select_row",
+				       G_CALLBACK(filesel_dir_list_select_row_single),
+				       NULL);
 	}
 }
 

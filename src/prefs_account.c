@@ -1986,7 +1986,7 @@ static void prefs_account_crosspost_set_data_from_colormenu(PrefParam *pparam)
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(advanced.crosspost_colormenu));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	*((gint *)pparam->data) = GPOINTER_TO_INT
-		(gtk_object_get_data(GTK_OBJECT(menuitem), "color"));
+		(g_object_get_data(G_OBJECT(menuitem), "color"));
 }
 
 static void prefs_account_crosspost_set_colormenu(PrefParam *pparam)

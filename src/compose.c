@@ -4742,14 +4742,19 @@ static void compose_create_header_entry(Compose *compose)
 	gtk_widget_show(entry);
 	gtk_table_attach(GTK_TABLE(compose->header_table), entry, 1, 2, compose->header_nextrow, compose->header_nextrow+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 
-        gtk_signal_connect(GTK_OBJECT(entry), "key-press-event", GTK_SIGNAL_FUNC(compose_headerentry_key_press_event_cb), headerentry);
-    	gtk_signal_connect(GTK_OBJECT(entry), "changed", GTK_SIGNAL_FUNC(compose_headerentry_changed_cb), headerentry);
-    	gtk_signal_connect(GTK_OBJECT(entry), "activate", GTK_SIGNAL_FUNC(text_activated), compose);
+        g_signal_connect(G_OBJECT(entry), "key-press-event", 
+			 G_CALLBACK(compose_headerentry_key_press_event_cb), 
+			 headerentry);
+    	g_signal_connect(G_OBJECT(entry), "changed", 
+			 G_CALLBACK(compose_headerentry_changed_cb), 
+			 headerentry);
+    	g_signal_connect(G_OBJECT(entry), "activate", 
+			 G_CALLBACK(text_activated), compose);
 	g_signal_connect(G_OBJECT(entry), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
-	gtk_signal_connect(GTK_OBJECT(entry), "button-press-event", 
-			   GTK_SIGNAL_FUNC(compose_headerentry_button_pressed),
-			   NULL);
+	g_signal_connect(G_OBJECT(entry), "button-press-event", 
+			 G_CALLBACK(compose_headerentry_button_pressed),
+			 NULL);
 
 	address_completion_register_entry(GTK_ENTRY(entry));
 
@@ -4987,8 +4992,8 @@ static GtkWidget *compose_create_others(Compose *compose)
 	if (account_get_special_folder(compose->account, F_OUTBOX)) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(savemsg_checkbtn), prefs_common.savemsg);
 	}
-	gtk_signal_connect(GTK_OBJECT(savemsg_checkbtn), "toggled",
-			    GTK_SIGNAL_FUNC(compose_savemsg_checkbtn_cb), compose);
+	g_signal_connect(G_OBJECT(savemsg_checkbtn), "toggled",
+			 G_CALLBACK(compose_savemsg_checkbtn_cb), compose);
 
 	savemsg_entry = gtk_entry_new();
 	gtk_widget_show(savemsg_entry);
@@ -5004,11 +5009,11 @@ static GtkWidget *compose_create_others(Compose *compose)
 	}
 
 	savemsg_select = gtk_button_new_with_label (_("Select ..."));
-	gtk_widget_show (savemsg_select);
+	gtk_widget_show(savemsg_select);
 	gtk_table_attach(GTK_TABLE(table), savemsg_select, 2, 3, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
-	gtk_signal_connect (GTK_OBJECT (savemsg_select), "clicked",
-			    GTK_SIGNAL_FUNC (compose_savemsg_select_cb),
-			    compose);
+	g_signal_connect(G_OBJECT(savemsg_select), "clicked",
+			 G_CALLBACK(compose_savemsg_select_cb),
+			 compose);
 
 	rowcount++;
 
@@ -5168,7 +5173,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	subject_entry = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(subject), subject_entry, TRUE, TRUE, 2);
-    	gtk_signal_connect(GTK_OBJECT(subject_entry), "activate", GTK_SIGNAL_FUNC(text_activated), compose);
+    	g_signal_connect(G_OBJECT(subject_entry), "activate", 
+			 G_CALLBACK(text_activated), compose);
 	g_signal_connect(G_OBJECT(subject_entry), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 	gtk_widget_show(subject_entry);
@@ -6472,8 +6478,8 @@ static void account_activated(GtkMenuItem *menuitem, gpointer data)
 	if (account_get_special_folder(compose->account, F_OUTBOX)) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), prefs_common.savemsg);
 	}
-	gtk_signal_connect(GTK_OBJECT(compose->savemsg_checkbtn), "toggled",
-			   GTK_SIGNAL_FUNC(compose_savemsg_checkbtn_cb), compose);
+	g_signal_connect(G_OBJECT(compose->savemsg_checkbtn), "toggled",
+			 G_CALLBACK(compose_savemsg_checkbtn_cb), compose);
 			   
 	gtk_editable_delete_text(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
 	if (account_get_special_folder(compose->account, F_OUTBOX)) {
@@ -6916,10 +6922,10 @@ static void compose_paste_as_quote_cb(Compose *compose)
 		 * after the gtk_editable_paste_clipboard) know that 
 		 * text is to be inserted as a quotation. implemented
 		 * by using a simple refcount... */
-		gint paste_as_quotation = GPOINTER_TO_INT(gtk_object_get_data(
-						GTK_OBJECT(compose->focused_editable),
+		gint paste_as_quotation = GPOINTER_TO_INT(g_object_get_data(
+						G_OBJECT(compose->focused_editable),
 						"paste_as_quotation"));
-		gtk_object_set_data(GTK_OBJECT(compose->focused_editable),
+		g_object_set_data(G_OBJECT(compose->focused_editable),
 				    "paste_as_quotation",
 				    GINT_TO_POINTER(paste_as_quotation + 1));
 		entry_paste_clipboard(compose->focused_editable);
@@ -7579,7 +7585,7 @@ gboolean compose_headerentry_key_press_event_cb(GtkWidget *entry,
 			/* Override default next focus, and give it to subject_entry
 			 * instead of notebook tabs
 			 */
-			gtk_signal_emit_stop_by_name(GTK_OBJECT(entry), "key-press-event"); 
+			g_signal_stop_emission_by_name(G_OBJECT(entry), "key-press-event"); 
 			gtk_widget_grab_focus(headerentry->compose->subject_entry);
 			return TRUE;
 		}
@@ -7596,8 +7602,9 @@ gboolean compose_headerentry_changed_cb(GtkWidget *entry,
 				       headerentry);
 		
 		compose_create_header_entry(headerentry->compose);
-		gtk_signal_disconnect_by_data
-			(GTK_OBJECT(entry), headerentry);
+		g_signal_handlers_disconnect_matched
+			(G_OBJECT(entry), G_SIGNAL_MATCH_DATA,
+			 0, 0, NULL, NULL, headerentry);
 		
 		/* Automatically scroll down */
 		compose_show_first_last_header(headerentry->compose, FALSE);

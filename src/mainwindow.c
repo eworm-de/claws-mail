@@ -835,10 +835,10 @@ MainWindow *main_window_create(SeparateType type)
 	handlebox = gtk_handle_box_new();
 	gtk_widget_show(handlebox);
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(handlebox), "child_attached",
-			   GTK_SIGNAL_FUNC(toolbar_child_attached), mainwin);
-	gtk_signal_connect(GTK_OBJECT(handlebox), "child_detached",
-			   GTK_SIGNAL_FUNC(toolbar_child_detached), mainwin);
+	g_signal_connect(G_OBJECT(handlebox), "child_attached",
+			 G_CALLBACK(toolbar_child_attached), mainwin);
+	g_signal_connect(G_OBJECT(handlebox), "child_detached",
+			 G_CALLBACK(toolbar_child_detached), mainwin);
 
 	/* link window to mainwin->window to avoid gdk warnings */
 	mainwin->window       = window;
@@ -1233,9 +1233,9 @@ static void main_window_set_account_selector_menu(MainWindow *mainwin,
 			 ? ac_prefs->account_name : _("Untitled"));
 		gtk_widget_show(menuitem);
 		gtk_menu_append(GTK_MENU(mainwin->ac_menu), menuitem);
-		gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-				   GTK_SIGNAL_FUNC(account_selector_menu_cb),
-				   ac_prefs);
+		g_signal_connect(G_OBJECT(menuitem), "activate",
+				 G_CALLBACK(account_selector_menu_cb),
+				 ac_prefs);
 	}
 }
 
@@ -1274,9 +1274,9 @@ static void main_window_set_account_receive_menu(MainWindow *mainwin,
 			 : _("Untitled"));
 		gtk_widget_show(menuitem);
 		gtk_menu_append(GTK_MENU(menu), menuitem);
-		gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-				   GTK_SIGNAL_FUNC(account_receive_menu_cb),
-				   ac_prefs);
+		g_signal_connect(G_OBJECT(menuitem), "activate",
+				 G_CALLBACK(account_receive_menu_cb),
+				 ac_prefs);
 	}
 }
 

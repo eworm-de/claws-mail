@@ -133,22 +133,22 @@ static void gtk_vscrollbutton_init(GtkVScrollbutton *scrollbutton)
     gtk_widget_show(scrollbutton->downbutton);
     gtk_widget_show(scrollbutton->upbutton);
 
-    gtk_signal_connect(GTK_OBJECT(scrollbutton->upbutton),
+    g_signal_connect(G_OBJECT(scrollbutton->upbutton),
 		       "button_press_event",
-		       GTK_SIGNAL_FUNC(gtk_vscrollbutton_button_press),
+		       G_CALLBACK(gtk_vscrollbutton_button_press),
 		       scrollbutton);
-    gtk_signal_connect(GTK_OBJECT(scrollbutton->downbutton),
+    g_signal_connect(G_OBJECT(scrollbutton->downbutton),
 		       "button_press_event",
-		       GTK_SIGNAL_FUNC(gtk_vscrollbutton_button_press),
+		       G_CALLBACK(gtk_vscrollbutton_button_press),
 		       scrollbutton);
-    gtk_signal_connect(GTK_OBJECT(scrollbutton->upbutton),
-		       "button_release_event",
-		       GTK_SIGNAL_FUNC
-		       (gtk_vscrollbutton_button_release), scrollbutton);
-    gtk_signal_connect(GTK_OBJECT(scrollbutton->downbutton),
-		       "button_release_event",
-		       GTK_SIGNAL_FUNC
-		       (gtk_vscrollbutton_button_release), scrollbutton);
+    g_signal_connect(G_OBJECT(scrollbutton->upbutton),
+		     "button_release_event",
+		     G_CALLBACK
+		     (gtk_vscrollbutton_button_release), scrollbutton);
+    g_signal_connect(G_OBJECT(scrollbutton->downbutton),
+		     "button_release_event",
+		     G_CALLBACK
+		     (gtk_vscrollbutton_button_release), scrollbutton);
     gtk_box_pack_start(GTK_BOX(&scrollbutton->vbox),
 		       scrollbutton->upbutton, TRUE, TRUE, 0);
     gtk_box_pack_end(GTK_BOX(&scrollbutton->vbox),
@@ -162,13 +162,13 @@ GtkWidget *gtk_vscrollbutton_new(GtkAdjustment *adjustment)
     vscrollbutton = GTK_WIDGET(gtk_type_new(gtk_vscrollbutton_get_type()));
     gtk_vscrollbutton_set_adjustment(GTK_VSCROLLBUTTON(vscrollbutton),
 				     adjustment);
-    gtk_signal_connect(GTK_OBJECT(GTK_VSCROLLBUTTON(vscrollbutton)->adjustment),
+    g_signal_connect(G_OBJECT(GTK_VSCROLLBUTTON(vscrollbutton)->adjustment),
 		       "value_changed",
-		       GTK_SIGNAL_FUNC
+		       G_CALLBACK
 		       (gtk_vscrollbutton_set_sensitivity), vscrollbutton);
-    gtk_signal_connect(GTK_OBJECT(GTK_VSCROLLBUTTON(vscrollbutton)->adjustment),
+    g_signal_connect(G_OBJECT(GTK_VSCROLLBUTTON(vscrollbutton)->adjustment),
 		       "changed",
-		       GTK_SIGNAL_FUNC
+		       G_CALLBACK
 		       (gtk_vscrollbutton_set_sensitivity), vscrollbutton);
     return vscrollbutton;
 }
@@ -188,15 +188,15 @@ void gtk_vscrollbutton_set_adjustment(GtkVScrollbutton *scrollbutton,
 
     if (scrollbutton->adjustment != adjustment) {
 	if (scrollbutton->adjustment) {
-	    gtk_signal_disconnect_by_data(GTK_OBJECT
-					  (scrollbutton->
-					   adjustment), (gpointer)
-					  scrollbutton);
-	    gtk_object_unref(GTK_OBJECT(scrollbutton->adjustment));
+	    g_signal_handlers_disconnect_matched(scrollbutton->adjustment,
+	    					 G_SIGNAL_MATCH_DATA,
+	    					 0, 0, NULL, NULL, 
+						 (gpointer) scrollbutton);
+	    g_object_unref(G_OBJECT(scrollbutton->adjustment));
 	}
 
 	scrollbutton->adjustment = adjustment;
-	gtk_object_ref(GTK_OBJECT(adjustment));
+	g_object_ref(G_OBJECT(adjustment));
 	gtk_object_sink(GTK_OBJECT(adjustment));
     }
 }
@@ -282,7 +282,7 @@ static gint gtk_vscrollbutton_scroll(GtkVScrollbutton *scrollbutton)
 
     if (new_value != scrollbutton->adjustment->value) {
 	scrollbutton->adjustment->value = new_value;
-	gtk_signal_emit_by_name(GTK_OBJECT
+	g_signal_emit_by_name(G_OBJECT
 				(scrollbutton->adjustment),
 				"value_changed");
 	gtk_widget_queue_resize(GTK_WIDGET(scrollbutton)); /* ensure resize */
@@ -298,7 +298,7 @@ gtk_vscrollbutton_timer_1st_time(GtkVScrollbutton *scrollbutton)
      * If the real timeout function succeeds and the timeout is still set,
      * replace it with a quicker one so successive scrolling goes faster.
      */
-    gtk_object_ref(GTK_OBJECT(scrollbutton));
+    g_object_ref(G_OBJECT(scrollbutton));
     if (scrollbutton->timer) {
 	/* We explicitely remove ourselves here in the paranoia
 	 * that due to things happening above in the callback
@@ -310,7 +310,7 @@ gtk_vscrollbutton_timer_1st_time(GtkVScrollbutton *scrollbutton)
 					      gtk_real_vscrollbutton_timer,
 					      scrollbutton);
     }
-    gtk_object_unref(GTK_OBJECT(scrollbutton));
+    g_object_unref(G_OBJECT(scrollbutton));
     return FALSE;		/* don't keep calling this function */
 }
 

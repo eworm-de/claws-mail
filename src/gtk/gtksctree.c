@@ -351,7 +351,7 @@ gtk_sctree_button_press (GtkWidget *widget, GdkEventButton *event)
 		sctree->dnd_select_pending_state = 0;
 
 		if (on_row)
-			g_signal_emit (GTK_OBJECT (sctree),
+			g_signal_emit (G_OBJECT (sctree),
 				       sctree_signals[OPEN_ROW], 0);
 
 		retval = TRUE;

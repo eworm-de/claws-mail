@@ -254,16 +254,14 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 	gtk_container_add(GTK_CONTAINER(hbuttonbox4), button5);
 	GTK_WIDGET_SET_FLAGS(button5, GTK_CAN_DEFAULT);
 	
-	gtk_signal_connect(GTK_OBJECT(window1), "delete_event",
-			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
-	gtk_signal_connect(GTK_OBJECT(button3),   "clicked",
-			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
-	gtk_signal_connect(GTK_OBJECT(button4), "clicked",
-			   GTK_SIGNAL_FUNC(crash_save_crash_log),
-			   crash_report);
-	gtk_signal_connect(GTK_OBJECT(button5), "clicked",
-			   GTK_SIGNAL_FUNC(crash_create_bug_report),
-			   NULL);
+	g_signal_connect(G_OBJECT(window1), "delete_event",
+			 G_CALLBACK(gtk_main_quit), NULL);
+	g_signal_connect(G_OBJECT(button3),   "clicked",
+			 G_CALLBACK(gtk_main_quit), NULL);
+	g_signal_connect(G_OBJECT(button4), "clicked",
+			 G_CALLBACK(crash_save_crash_log), crash_report);
+	g_signal_connect(G_OBJECT(button5), "clicked",
+			 G_CALLBACK(crash_create_bug_report), NULL);
 
 	gtk_widget_show(window1);
 

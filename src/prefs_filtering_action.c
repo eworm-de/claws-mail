@@ -283,15 +283,15 @@ static void prefs_filtering_action_create(void)
 
 	gtk_window_set_title(GTK_WINDOW(window),
 			     _("Filtering action configuration"));
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(prefs_filtering_action_deleted), NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(prefs_filtering_action_key_pressed), NULL);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(prefs_filtering_action_deleted), NULL);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(prefs_filtering_action_key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_filtering_action_ok), NULL);
-	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_filtering_action_cancel), NULL);
+	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+			 G_CALLBACK(prefs_filtering_action_ok), NULL);
+	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
+			 G_CALLBACK(prefs_filtering_action_cancel), NULL);
 
 	vbox1 = gtk_vbox_new(FALSE, VSPACING);
 	gtk_widget_show(vbox1);
@@ -326,13 +326,13 @@ static void prefs_filtering_action_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), action_combo,
 			    TRUE, TRUE, 0);
 	action_type_list = GTK_COMBO(action_combo)->list;
-	gtk_signal_connect (GTK_OBJECT (action_type_list), "select-child",
-			    GTK_SIGNAL_FUNC (prefs_filtering_action_type_select),
-			    NULL);
+	g_signal_connect (G_OBJECT(action_type_list), "select-child",
+			  G_CALLBACK(prefs_filtering_action_type_select),
+			  NULL);
 
-	gtk_signal_connect(GTK_OBJECT(action_type_list), "selection-changed",
-			   GTK_SIGNAL_FUNC(prefs_filtering_action_type_selection_changed),
-			   NULL);
+	g_signal_connect(G_OBJECT(action_type_list), "selection-changed",
+			 G_CALLBACK(prefs_filtering_action_type_selection_changed),
+			 NULL);
 
 	/* accounts */
 
@@ -420,16 +420,16 @@ static void prefs_filtering_action_create(void)
 	dest_btn = gtk_button_new_with_label (_("Select ..."));
 	gtk_widget_show (dest_btn);
 	gtk_box_pack_start (GTK_BOX (hbox1), dest_btn, FALSE, FALSE, 0);
-	gtk_signal_connect (GTK_OBJECT (dest_btn), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_filtering_action_select_dest),
-			    NULL);
+	g_signal_connect (G_OBJECT (dest_btn), "clicked",
+			  G_CALLBACK(prefs_filtering_action_select_dest),
+			  NULL);
 
 	exec_btn = gtk_button_new_with_label (_("Info ..."));
 	gtk_widget_show (exec_btn);
 	gtk_box_pack_start (GTK_BOX (hbox1), exec_btn, FALSE, FALSE, 0);
-	gtk_signal_connect (GTK_OBJECT (exec_btn), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_filtering_action_exec_info),
-			    NULL);
+	g_signal_connect (G_OBJECT (exec_btn), "clicked",
+			  G_CALLBACK(prefs_filtering_action_exec_info),
+			  NULL);
 
 	/* register / substitute / delete */
 
@@ -449,21 +449,21 @@ static void prefs_filtering_action_create(void)
 	reg_btn = gtk_button_new_with_label(_("Add"));
 	gtk_widget_show(reg_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), reg_btn, FALSE, TRUE, 0);
-	gtk_signal_connect(GTK_OBJECT(reg_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_filtering_action_register_cb), NULL);
+	g_signal_connect(G_OBJECT(reg_btn), "clicked",
+			 G_CALLBACK(prefs_filtering_action_register_cb), NULL);
 
 	subst_btn = gtk_button_new_with_label(_("  Replace  "));
 	gtk_widget_show(subst_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), subst_btn, FALSE, TRUE, 0);
-	gtk_signal_connect(GTK_OBJECT(subst_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_filtering_action_substitute_cb),
-			   NULL);
+	g_signal_connect(G_OBJECT(subst_btn), "clicked",
+			 G_CALLBACK(prefs_filtering_action_substitute_cb),
+			 NULL);
 
 	del_btn = gtk_button_new_with_label(_("Delete"));
 	gtk_widget_show(del_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);
-	gtk_signal_connect(GTK_OBJECT(del_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_filtering_action_delete_cb), NULL);
+	g_signal_connect(G_OBJECT(del_btn), "clicked",
+			 G_CALLBACK(prefs_filtering_action_delete_cb), NULL);
 
 	action_hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(action_hbox);
@@ -487,8 +487,8 @@ static void prefs_filtering_action_create(void)
 				     GTK_SELECTION_BROWSE);
 	GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(action_clist)->column[0].button,
 			       GTK_CAN_FOCUS);
-	gtk_signal_connect(GTK_OBJECT(action_clist), "select_row",
-			   GTK_SIGNAL_FUNC(prefs_filtering_action_select), NULL);
+	g_signal_connect(G_OBJECT(action_clist), "select_row",
+			 G_CALLBACK(prefs_filtering_action_select), NULL);
 
 	btn_vbox = gtk_vbox_new(FALSE, 8);
 	gtk_widget_show(btn_vbox);
@@ -497,14 +497,14 @@ static void prefs_filtering_action_create(void)
 	up_btn = gtk_button_new_with_label(_("Up"));
 	gtk_widget_show(up_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(up_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_filtering_action_up), NULL);
+	g_signal_connect(G_OBJECT(up_btn), "clicked",
+			 G_CALLBACK(prefs_filtering_action_up), NULL);
 
 	down_btn = gtk_button_new_with_label(_("Down"));
 	gtk_widget_show(down_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(down_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_filtering_action_down), NULL);
+	g_signal_connect(G_OBJECT(down_btn), "clicked",
+			 G_CALLBACK(prefs_filtering_action_down), NULL);
 
 	gtk_widget_show_all(window);
 

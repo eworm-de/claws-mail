@@ -324,8 +324,8 @@ create_dialog (struct select_keys_s *sk)
     gtk_widget_show (showall_btn);
     gtk_box_pack_start (GTK_BOX (hbox), showall_btn, FALSE, FALSE, 0);
 
-    gtk_signal_connect (GTK_OBJECT (showall_btn), "clicked",
-                        GTK_SIGNAL_FUNC (showall_btn_cb), sk);
+    g_signal_connect(G_OBJECT (showall_btn), "clicked",
+                     G_CALLBACK(showall_btn_cb), sk);
 
     gtkut_button_set_create (&bbox, 
                              &select_btn, _("Select"),

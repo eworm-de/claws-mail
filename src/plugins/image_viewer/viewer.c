@@ -420,12 +420,12 @@ MimeViewer *image_viewer_create(void)
 
 	gtk_widget_ref(notebook);
 
-	gtk_signal_connect(GTK_OBJECT(load_button), "released",
-			   GTK_SIGNAL_FUNC(load_cb), imageviewer);
-	gtk_signal_connect(GTK_OBJECT(scrolledwin), "button-press-event",
-			   GTK_SIGNAL_FUNC(scrolledwin_button_cb), imageviewer);
-	gtk_signal_connect(GTK_OBJECT(scrolledwin), "size-allocate",
-			   GTK_SIGNAL_FUNC(scrolledwin_resize_cb), imageviewer);
+	g_signal_connect(G_OBJECT(load_button), "released",
+			 G_CALLBACK(load_cb), imageviewer);
+	g_signal_connect(G_OBJECT(scrolledwin), "button-press-event",
+			 G_CALLBACK(scrolledwin_button_cb), imageviewer);
+	g_signal_connect(G_OBJECT(scrolledwin), "size-allocate",
+			 G_CALLBACK(scrolledwin_resize_cb), imageviewer);
 
 	image_viewer_set_notebook_page((MimeViewer *)imageviewer);
 

@@ -196,8 +196,8 @@ static void summary_search_create(SummaryView *summaryview)
 	gtk_widget_show (all_checkbtn);
 	gtk_box_pack_start (GTK_BOX (checkbtn_hbox), all_checkbtn,
 			    FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(all_checkbtn), "clicked",
-			   GTK_SIGNAL_FUNC(all_clicked), summaryview);
+	g_signal_connect(G_OBJECT(all_checkbtn), "clicked",
+			 G_CALLBACK(all_clicked), summaryview);
 
 	and_checkbtn =
 		gtk_check_button_new_with_label (_("AND search"));

@@ -1831,7 +1831,7 @@ static gboolean textview_smooth_scroll_page(TextView *textview, gboolean up)
 #if 0
 #define KEY_PRESS_EVENT_STOP() \
 	if (gtk_signal_n_emissions_by_name \
-		(GTK_OBJECT(widget), "key_press_event") > 0) { \
+		(G_OBJECT(widget), "key_press_event") > 0) { \
 		g_signal_stop_emission_by_name(G_OBJECT(widget), \
 					       "key_press_event"); \
 	}

@@ -85,9 +85,9 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	gtk_box_pack_start(GTK_BOX(hbox), text, FALSE, FALSE, 0);
 
 	widget = gtk_button_new_with_label("");
-	gtk_signal_connect(GTK_OBJECT(widget), "clicked", 
-			   GTK_SIGNAL_FUNC(noticeview_button_pressed),
-			   (gpointer) noticeview);
+	g_signal_connect(G_OBJECT(widget), "clicked", 
+			 G_CALLBACK(noticeview_button_pressed),
+			 (gpointer) noticeview);
 	gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 4);
 	
 	noticeview->vbox   = vbox;

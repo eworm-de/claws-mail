@@ -768,27 +768,27 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 
 	reg_btn = gtk_button_new_with_label(_("Add"));
 	gtk_box_pack_start(GTK_BOX(btn_hbox), reg_btn, FALSE, TRUE, 0);
-	gtk_signal_connect(GTK_OBJECT(reg_btn), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_toolbar_register), 
-			    prefs_toolbar);
+	g_signal_connect(G_OBJECT(reg_btn), "clicked",
+			 G_CALLBACK(prefs_toolbar_register), 
+			 prefs_toolbar);
 
 	subst_btn = gtk_button_new_with_label(_("  Replace  "));
 	gtk_box_pack_start(GTK_BOX(btn_hbox), subst_btn, FALSE, TRUE, 0);
-	gtk_signal_connect(GTK_OBJECT(subst_btn), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_toolbar_substitute),
-			    prefs_toolbar);
+	g_signal_connect(G_OBJECT(subst_btn), "clicked",
+			 G_CALLBACK(prefs_toolbar_substitute),
+			 prefs_toolbar);
 
 	del_btn = gtk_button_new_with_label(_("Delete"));
 	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);
-	gtk_signal_connect(GTK_OBJECT(del_btn), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_toolbar_delete), 
-			    prefs_toolbar);
+	g_signal_connect(G_OBJECT(del_btn), "clicked",
+			 G_CALLBACK(prefs_toolbar_delete), 
+			  prefs_toolbar);
 
 	default_btn = gtk_button_new_with_label(_(" Default "));
 	gtk_box_pack_end(GTK_BOX(reg_hbox), default_btn, FALSE, TRUE, 0);
-	gtk_signal_connect(GTK_OBJECT(default_btn), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_toolbar_default), 
-			    prefs_toolbar);
+	g_signal_connect(G_OBJECT(default_btn), "clicked",
+			 G_CALLBACK(prefs_toolbar_default), 
+			 prefs_toolbar);
 
 	/* currently active toolbar items */
 	frame_toolbar_items = gtk_frame_new(_("Displayed toolbar items"));
@@ -831,19 +831,19 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	gtk_widget_show(down_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
 
-	gtk_signal_connect(GTK_OBJECT(clist_set), "select_row",
-			   GTK_SIGNAL_FUNC(prefs_toolbar_select_row_set),
-			   prefs_toolbar);
-	gtk_signal_connect(GTK_OBJECT(clist_icons), "select_row",
-			   GTK_SIGNAL_FUNC(prefs_toolbar_select_row_icons),
-			   prefs_toolbar);
-	gtk_signal_connect(GTK_OBJECT(combo_list), "selection-changed",
-			   GTK_SIGNAL_FUNC(prefs_toolbar_selection_changed),
-			   prefs_toolbar);
-	gtk_signal_connect(GTK_OBJECT(up_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_toolbar_up), prefs_toolbar);
-	gtk_signal_connect(GTK_OBJECT(down_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_toolbar_down), prefs_toolbar);
+	g_signal_connect(G_OBJECT(clist_set), "select_row",
+			 G_CALLBACK(prefs_toolbar_select_row_set),
+			 prefs_toolbar);
+	g_signal_connect(G_OBJECT(clist_icons), "select_row",
+			 G_CALLBACK(prefs_toolbar_select_row_icons),
+			 prefs_toolbar);
+	g_signal_connect(G_OBJECT(combo_list), "selection-changed",
+			 G_CALLBACK(prefs_toolbar_selection_changed),
+			 prefs_toolbar);
+	g_signal_connect(G_OBJECT(up_btn), "clicked",
+			 G_CALLBACK(prefs_toolbar_up), prefs_toolbar);
+	g_signal_connect(G_OBJECT(down_btn), "clicked",
+			 G_CALLBACK(prefs_toolbar_down), prefs_toolbar);
 	
 	gtk_widget_show_all(main_vbox);
 

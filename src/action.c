@@ -985,8 +985,9 @@ static void hide_io_dialog_cb(GtkWidget *w, gpointer data)
 	Children *children = (Children *)data;
 
 	if (!children->nb) {
-		gtk_signal_disconnect_by_data(GTK_OBJECT(children->dialog),
-					      children);
+		g_signal_handlers_disconnect_matched
+			(G_OBJECT(children->dialog), G_SIGNAL_MATCH_DATA,
+			 0, 0, NULL, NULL, children);
 		gtk_widget_destroy(children->dialog);
 		free_children(children);
 	}
@@ -1073,8 +1074,8 @@ static void update_io_dialog(Children *children)
 		GtkTextIter iter, start_iter, end_iter;
 		GdkFont *font;
 
-		font = gtk_object_get_data(GTK_OBJECT(children->dialog), 
-					   "s_txtfont");
+		font = g_object_get_data(G_OBJECT(children->dialog), 
+					 "s_txtfont");
 		gtk_widget_show(children->scrolledwin);
 		textbuf = gtk_text_view_get_buffer (GTK_TEXT_VIEW(text));
 		gtk_text_buffer_get_start_iter (textbuf, &start_iter);

@@ -134,14 +134,12 @@ static void description_create(DescriptionWindow * dwindow)
 				  1, 2, i, i+1);
 */
 	gtk_widget_grab_default(ok_btn);
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
-	gtk_signal_connect
-		(GTK_OBJECT(dwindow->window), "key_press_event",
-		 GTK_SIGNAL_FUNC(description_window_key_pressed),
-		 NULL);
-	gtk_signal_connect(GTK_OBJECT(dwindow->window), "delete_event",
-			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
+	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+			 G_CALLBACK(gtk_main_quit), NULL);
+	g_signal_connect(G_OBJECT(dwindow->window), "key_press_event",
+		 	 G_CALLBACK(description_window_key_pressed), NULL);
+	g_signal_connect(G_OBJECT(dwindow->window), "delete_event",
+			 G_CALLBACK(gtk_main_quit), NULL);
 
 	gtk_widget_show_all(table);
 }

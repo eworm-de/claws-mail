@@ -373,10 +373,12 @@ static void exp_ldif_file_select_create( AddressFileSelection *afs ) {
 	fileSelector = gtk_file_selection_new( _("Select LDIF Output File") );
 	gtk_file_selection_hide_fileop_buttons( GTK_FILE_SELECTION(fileSelector) );
 	gtk_file_selection_complete( GTK_FILE_SELECTION(fileSelector), "*.html" );
-	gtk_signal_connect( GTK_OBJECT (GTK_FILE_SELECTION(fileSelector)->ok_button),
-		"clicked", GTK_SIGNAL_FUNC (exp_ldif_file_ok), ( gpointer ) afs );
-	gtk_signal_connect( GTK_OBJECT (GTK_FILE_SELECTION(fileSelector)->cancel_button),
-		"clicked", GTK_SIGNAL_FUNC (exp_ldif_file_cancel), ( gpointer ) afs );
+	g_signal_connect(G_OBJECT(GTK_FILE_SELECTION(fileSelector)->ok_button),
+			 "clicked", 
+			 G_CALLBACK(exp_ldif_file_ok), (gpointer)afs);
+	g_signal_connect(G_OBJECT(GTK_FILE_SELECTION(fileSelector)->cancel_button),
+			 "clicked", 
+			 G_CALLBACK(exp_ldif_file_cancel), (gpointer)afs);
 	afs->fileSelector = fileSelector;
 	afs->cancelled = TRUE;
 }
@@ -460,8 +462,8 @@ static void export_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	gtk_widget_show_all(vbox);
 
 	/* Button handler */
-	gtk_signal_connect(GTK_OBJECT(btnFile), "clicked",
-			   GTK_SIGNAL_FUNC(exp_ldif_file_select), NULL);
+	g_signal_connect(G_OBJECT(btnFile), "clicked",
+			 G_CALLBACK(exp_ldif_file_select), NULL);
 
 	expldif_dlg.labelBook = labelBook;
 	expldif_dlg.entryLdif = entryLdif;
@@ -710,12 +712,12 @@ static void export_ldif_dialog_create( void ) {
 		_("Export Address Book to LDIF File") );
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(export_ldif_delete_event),
-			   NULL );
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(export_ldif_key_pressed),
-			   NULL );
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(export_ldif_delete_event),
+			 NULL );
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(export_ldif_key_pressed),
+			 NULL );
 
 	vbox = gtk_vbox_new(FALSE, 4);
 	gtk_widget_show(vbox);
@@ -749,12 +751,12 @@ static void export_ldif_dialog_create( void ) {
 	gtk_widget_grab_default(btnNext);
 
 	/* Button handlers */
-	gtk_signal_connect(GTK_OBJECT(btnPrev), "clicked",
-			   GTK_SIGNAL_FUNC(export_ldif_prev), NULL);
-	gtk_signal_connect(GTK_OBJECT(btnNext), "clicked",
-			   GTK_SIGNAL_FUNC(export_ldif_next), NULL);
-	gtk_signal_connect(GTK_OBJECT(btnCancel), "clicked",
-			   GTK_SIGNAL_FUNC(export_ldif_cancel), NULL);
+	g_signal_connect(G_OBJECT(btnPrev), "clicked",
+			 G_CALLBACK(export_ldif_prev), NULL);
+	g_signal_connect(G_OBJECT(btnNext), "clicked",
+			 G_CALLBACK(export_ldif_next), NULL);
+	g_signal_connect(G_OBJECT(btnCancel), "clicked",
+			 G_CALLBACK(export_ldif_cancel), NULL);
 
 	gtk_widget_show_all(vbox);
 

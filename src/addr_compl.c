@@ -944,7 +944,7 @@ void address_completion_register_entry(GtkEntry *entry)
 
 	/* add keypress event */
 	g_signal_connect_closure
-		(GTK_OBJECT(entry), "key_press_event",
+		(G_OBJECT(entry), "key_press_event",
 		 g_cclosure_new(G_CALLBACK(address_completion_entry_key_pressed),
 				COMPLETION_UNIQUE_DATA,
 				NULL),
@@ -964,7 +964,7 @@ void address_completion_unregister_entry(GtkEntry *entry)
 
 	entry_obj = g_object_get_data(G_OBJECT(entry), ENTRY_DATA_TAB_HOOK);
 	g_return_if_fail(entry_obj);
-	g_return_if_fail(entry_obj == GTK_OBJECT(entry));
+	g_return_if_fail(entry_obj == G_OBJECT(entry));
 
 	/* has the hooked property? */
 	g_object_set_data(G_OBJECT(entry), ENTRY_DATA_TAB_HOOK, NULL);

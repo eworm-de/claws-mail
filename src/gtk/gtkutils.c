@@ -193,20 +193,20 @@ ComboButton *gtkut_combo_button_create(GtkWidget *button,
 					&combo->factory, data);
 	combo->data = data;
 
-	gtk_signal_connect(GTK_OBJECT(combo->button), "size_request",
-			   GTK_SIGNAL_FUNC(combo_button_size_request), combo);
-	gtk_signal_connect(GTK_OBJECT(combo->button), "enter",
-			   GTK_SIGNAL_FUNC(combo_button_enter), combo);
-	gtk_signal_connect(GTK_OBJECT(combo->button), "leave",
-			   GTK_SIGNAL_FUNC(combo_button_leave), combo);
-	gtk_signal_connect(GTK_OBJECT(combo->arrow), "enter",
-			   GTK_SIGNAL_FUNC(combo_button_enter), combo);
-	gtk_signal_connect(GTK_OBJECT(combo->arrow), "leave",
-			   GTK_SIGNAL_FUNC(combo_button_leave), combo);
-	gtk_signal_connect(GTK_OBJECT(combo->arrow), "button_press_event",
-			   GTK_SIGNAL_FUNC(combo_button_arrow_pressed), combo);
-	gtk_signal_connect(GTK_OBJECT(combo->arrow), "destroy",
-			   GTK_SIGNAL_FUNC(combo_button_destroy), combo);
+	g_signal_connect(G_OBJECT(combo->button), "size_request",
+			 G_CALLBACK(combo_button_size_request), combo);
+	g_signal_connect(G_OBJECT(combo->button), "enter",
+			 G_CALLBACK(combo_button_enter), combo);
+	g_signal_connect(G_OBJECT(combo->button), "leave",
+			 G_CALLBACK(combo_button_leave), combo);
+	g_signal_connect(G_OBJECT(combo->arrow), "enter",
+			 G_CALLBACK(combo_button_enter), combo);
+	g_signal_connect(G_OBJECT(combo->arrow), "leave",
+			 G_CALLBACK(combo_button_leave), combo);
+	g_signal_connect(G_OBJECT(combo->arrow), "button_press_event",
+			 G_CALLBACK(combo_button_arrow_pressed), combo);
+	g_signal_connect(G_OBJECT(combo->arrow), "destroy",
+			 G_CALLBACK(combo_button_destroy), combo);
 
 	return combo;
 }
@@ -603,7 +603,7 @@ void gtkut_widget_set_composer_icon(GtkWidget *widget)
 }
 
 GtkWidget *gtkut_account_menu_new(GList			*ac_list,
-				  GtkSignalFunc		 callback,
+				  GCallback		 callback,
 				  gpointer		 data)
 {
 	GList *cur_ac;
@@ -631,9 +631,8 @@ GtkWidget *gtkut_account_menu_new(GList			*ac_list,
 		MENUITEM_ADD(menu, menuitem, name, account->account_id);
 		g_free(name);
 		if (callback != NULL)
-			gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-					   callback,
-					   data);
+			g_signal_connect(G_OBJECT(menuitem), "activate",
+					 callback, data);
 	}
 	return menu;
 }

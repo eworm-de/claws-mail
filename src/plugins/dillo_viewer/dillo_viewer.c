@@ -91,10 +91,8 @@ static void dillo_show_mimepart(MimeViewer *_viewer,
 				  viewer->socket);
 		gtk_widget_realize(viewer->socket);
 		gtk_widget_show(viewer->socket);
-		gtk_signal_connect(GTK_OBJECT(viewer->socket), 
-				   "destroy", 
-				   GTK_SIGNAL_FUNC(socket_destroy_cb),
-				   viewer);
+		g_signal_connect(G_OBJECT(viewer->socket), "destroy", 
+				 G_CALLBACK(socket_destroy_cb), viewer);
 
 		cmd = g_strdup_printf("dillo %s%s-x %d \"%s\"",
 				      (dillo_prefs.local ? "-l " : ""),

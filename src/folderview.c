@@ -282,9 +282,9 @@ static GtkItemFactory *create_ifactory(FolderView *folderview, FolderViewPopup *
 			gtk_item_factory_create_item(factory, entries->data, folderview, 1);
 
 	popup = gtk_item_factory_get_widget(factory, fpopup->path);
-        gtk_signal_connect(GTK_OBJECT(popup), "selection_done",
-                           GTK_SIGNAL_FUNC(folderview_popup_close),
-                           folderview);
+        g_signal_connect(G_OBJECT(popup), "selection_done",
+                         G_CALLBACK(folderview_popup_close),
+                         folderview);
 
 	return factory;
 }

@@ -133,7 +133,7 @@ void foldersort_open()
 	GtkWidget *label2;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_object_set_data(GTK_OBJECT(window), "window", window);
+	g_object_set_data(G_OBJECT(window), "window", window);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 4);
 	gtk_window_set_title(GTK_WINDOW(window),
 			     _("Set folder sortorder"));
@@ -234,21 +234,21 @@ void foldersort_open()
 	gtk_widget_set_sensitive(movedown_btn, FALSE);
 	gtk_clist_set_reorderable(GTK_CLIST(folderlist), TRUE);
 
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-                           GTK_SIGNAL_FUNC(ok_clicked), dialog);
-	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
-                           GTK_SIGNAL_FUNC(cancel_clicked), dialog);
-	gtk_signal_connect(GTK_OBJECT(moveup_btn), "clicked",
-                           GTK_SIGNAL_FUNC(moveup_clicked), dialog);
-	gtk_signal_connect(GTK_OBJECT(movedown_btn), "clicked",
-                           GTK_SIGNAL_FUNC(movedown_clicked), dialog);
+	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+                         G_CALLBACK(ok_clicked), dialog);
+	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
+                         G_CALLBACK(cancel_clicked), dialog);
+	g_signal_connect(G_OBJECT(moveup_btn), "clicked",
+                         G_CALLBACK(moveup_clicked), dialog);
+	g_signal_connect(G_OBJECT(movedown_btn), "clicked",
+                         G_CALLBACK(movedown_clicked), dialog);
 
-	gtk_signal_connect(GTK_OBJECT(folderlist), "select-row",
-			   GTK_SIGNAL_FUNC(row_selected), dialog);
-	gtk_signal_connect(GTK_OBJECT(folderlist), "unselect-row",
-			   GTK_SIGNAL_FUNC(row_unselected), dialog);
-	gtk_signal_connect(GTK_OBJECT(folderlist), "row-move",
-			   GTK_SIGNAL_FUNC(row_moved), dialog);
+	g_signal_connect(G_OBJECT(folderlist), "select-row",
+			 G_CALLBACK(row_selected), dialog);
+	g_signal_connect(G_OBJECT(folderlist), "unselect-row",
+			 G_CALLBACK(row_unselected), dialog);
+	g_signal_connect(G_OBJECT(folderlist), "row-move",
+			 G_CALLBACK(row_moved), dialog);
 
 	dialog->rows = 0;
 	dialog->selected = -1;

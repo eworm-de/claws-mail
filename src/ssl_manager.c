@@ -83,21 +83,21 @@ void ssl_manager_create(void)
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
-	gtk_signal_connect (GTK_OBJECT(window), "delete_event",
-			    GTK_SIGNAL_FUNC(ssl_manager_ok_cb), NULL);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(ssl_manager_ok_cb), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
 	
 	hbox1 = gtk_hbox_new(FALSE,2);
 	vbox1 = gtk_vbox_new(FALSE,0);
 	delete_btn = gtk_button_new_with_label(_("Delete"));
-	gtk_signal_connect (GTK_OBJECT(delete_btn), "clicked",
-			    GTK_SIGNAL_FUNC(ssl_manager_delete_cb), NULL);
+	g_signal_connect(G_OBJECT(delete_btn), "clicked",
+			 G_CALLBACK(ssl_manager_delete_cb), NULL);
 	view_btn = gtk_button_new_with_label(_("View"));
-	gtk_signal_connect (GTK_OBJECT(view_btn), "clicked",
-			    GTK_SIGNAL_FUNC(ssl_manager_view_cb), NULL);
+	g_signal_connect(G_OBJECT(view_btn), "clicked",
+			 G_CALLBACK(ssl_manager_view_cb), NULL);
 	ok_btn = gtk_button_new_with_label(_("OK"));
-	gtk_signal_connect (GTK_OBJECT(ok_btn), "clicked",
-			    GTK_SIGNAL_FUNC(ssl_manager_ok_cb), NULL);
+	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+			 G_CALLBACK(ssl_manager_ok_cb), NULL);
 	gtk_widget_set_usize(ok_btn, 80, -1);
 	gtk_widget_set_usize(delete_btn, 80, -1);
 	gtk_widget_set_usize(view_btn, 80, -1);
@@ -109,8 +109,8 @@ void ssl_manager_create(void)
 	gtk_clist_set_column_width(GTK_CLIST(certlist), 0, 220);
 	gtk_clist_set_selection_mode(GTK_CLIST(certlist), GTK_SELECTION_SINGLE);
 	gtk_widget_set_usize(certlist, 300, 200);
-	gtk_signal_connect (GTK_OBJECT(certlist), "open_row",
-			    GTK_SIGNAL_FUNC(ssl_manager_view_cb), NULL);
+	g_signal_connect(G_OBJECT(certlist), "open_row",
+			 G_CALLBACK(ssl_manager_view_cb), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox1), certlist, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox1), vbox1, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox1), view_btn, FALSE, FALSE, 0);

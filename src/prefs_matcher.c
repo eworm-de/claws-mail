@@ -375,15 +375,15 @@ static void prefs_matcher_create(void)
 
 	gtk_window_set_title(GTK_WINDOW(window),
 			     _("Condition configuration"));
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(prefs_matcher_deleted), NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(prefs_matcher_key_pressed), NULL);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(prefs_matcher_deleted), NULL);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(prefs_matcher_key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_matcher_ok), NULL);
-	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_matcher_cancel), NULL);
+	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+			 G_CALLBACK(prefs_matcher_ok), NULL);
+	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
+			 G_CALLBACK(prefs_matcher_cancel), NULL);
 
 	vbox1 = gtk_vbox_new(FALSE, VSPACING);
 	gtk_widget_show(vbox1);
@@ -422,9 +422,9 @@ static void prefs_matcher_create(void)
 	gtk_table_attach(GTK_TABLE(criteria_table), criteria_combo, 0, 1, 1, 2,
 			  0, 0, 0, 0);
 	criteria_list = GTK_COMBO(criteria_combo)->list;
-	gtk_signal_connect(GTK_OBJECT(criteria_list), "select-child",
-			   GTK_SIGNAL_FUNC(prefs_matcher_criteria_select),
-			   NULL);
+	g_signal_connect(G_OBJECT(criteria_list), "select-child",
+			 G_CALLBACK(prefs_matcher_criteria_select),
+			 NULL);
 
 	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(criteria_combo)->entry),
 			       FALSE);
@@ -468,9 +468,9 @@ static void prefs_matcher_create(void)
 	gtk_widget_show(test_btn);
 	gtk_table_attach(GTK_TABLE (criteria_table), test_btn, 3, 4, 1, 2,
 			 GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
-	gtk_signal_connect(GTK_OBJECT (test_btn), "clicked",
-			   GTK_SIGNAL_FUNC (prefs_matcher_test_info),
-			   NULL);
+	g_signal_connect(G_OBJECT (test_btn), "clicked",
+			 G_CALLBACK(prefs_matcher_test_info),
+			 NULL);
 
 	color_optmenu = gtk_option_menu_new();
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(color_optmenu),
@@ -557,21 +557,21 @@ static void prefs_matcher_create(void)
 	reg_btn = gtk_button_new_with_label(_("Add"));
 	gtk_widget_show(reg_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), reg_btn, FALSE, TRUE, 0);
-	gtk_signal_connect(GTK_OBJECT(reg_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_matcher_register_cb), NULL);
+	g_signal_connect(G_OBJECT(reg_btn), "clicked",
+			 G_CALLBACK(prefs_matcher_register_cb), NULL);
 
 	subst_btn = gtk_button_new_with_label(_("  Replace  "));
 	gtk_widget_show(subst_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), subst_btn, FALSE, TRUE, 0);
-	gtk_signal_connect(GTK_OBJECT(subst_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_matcher_substitute_cb),
-			   NULL);
+	g_signal_connect(G_OBJECT(subst_btn), "clicked",
+			 G_CALLBACK(prefs_matcher_substitute_cb),
+			 NULL);
 
 	del_btn = gtk_button_new_with_label(_("Delete"));
 	gtk_widget_show(del_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);
-	gtk_signal_connect(GTK_OBJECT(del_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_matcher_delete_cb), NULL);
+	g_signal_connect(G_OBJECT(del_btn), "clicked",
+			 G_CALLBACK(prefs_matcher_delete_cb), NULL);
 
 	/* boolean operation */
 
@@ -623,8 +623,8 @@ static void prefs_matcher_create(void)
 				     GTK_SELECTION_BROWSE);
 	GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(cond_clist)->column[0].button,
 			       GTK_CAN_FOCUS);
-	gtk_signal_connect(GTK_OBJECT(cond_clist), "select_row",
-			   GTK_SIGNAL_FUNC(prefs_matcher_select), NULL);
+	g_signal_connect(G_OBJECT(cond_clist), "select_row",
+			 G_CALLBACK(prefs_matcher_select), NULL);
 
 	btn_vbox = gtk_vbox_new(FALSE, 8);
 	gtk_widget_show(btn_vbox);
@@ -633,14 +633,14 @@ static void prefs_matcher_create(void)
 	up_btn = gtk_button_new_with_label(_("Up"));
 	gtk_widget_show(up_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(up_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_matcher_up), NULL);
+	g_signal_connect(G_OBJECT(up_btn), "clicked",
+			 G_CALLBACK(prefs_matcher_up), NULL);
 
 	down_btn = gtk_button_new_with_label(_("Down"));
 	gtk_widget_show(down_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(down_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_matcher_down), NULL);
+	g_signal_connect(G_OBJECT(down_btn), "clicked",
+			 G_CALLBACK(prefs_matcher_down), NULL);
 
 	gtk_widget_show_all(window);
 

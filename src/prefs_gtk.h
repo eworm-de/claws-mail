@@ -129,8 +129,8 @@ struct _PrefsDialog
 #define SET_TOGGLE_SENSITIVITY(togglewid, targetwid) \
 { \
 	gtk_widget_set_sensitive(targetwid, gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(togglewid))); \
-	gtk_signal_connect(GTK_OBJECT(togglewid), "toggled", \
-			   GTK_SIGNAL_FUNC(prefs_button_toggled), targetwid); \
+	g_signal_connect(G_OBJECT(togglewid), "toggled", \
+			 G_CALLBACK(prefs_button_toggled), targetwid); \
 }
 
 void prefs_read_config		(PrefParam	*param,

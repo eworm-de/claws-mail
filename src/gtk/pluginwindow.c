@@ -239,16 +239,16 @@ void pluginwindow_create()
 
 	pluginwindow = g_new0(PluginWindow, 1);
 
-	gtk_signal_connect(GTK_OBJECT(load_btn), "released",
-			   GTK_SIGNAL_FUNC(load_cb), pluginwindow);
-	gtk_signal_connect(GTK_OBJECT(unload_btn), "released",
-			   GTK_SIGNAL_FUNC(unload_cb), pluginwindow);
-	gtk_signal_connect(GTK_OBJECT(close_btn), "released",
-			   GTK_SIGNAL_FUNC(close_cb), pluginwindow);
-	gtk_signal_connect(GTK_OBJECT(plugin_list), "select-row",
-			   GTK_SIGNAL_FUNC(select_row_cb), pluginwindow);
-	gtk_signal_connect(GTK_OBJECT(plugin_list), "unselect-row",
-			   GTK_SIGNAL_FUNC(unselect_row_cb), pluginwindow);
+	g_signal_connect(G_OBJECT(load_btn), "released",
+			 G_CALLBACK(load_cb), pluginwindow);
+	g_signal_connect(G_OBJECT(unload_btn), "released",
+			 G_CALLBACK(unload_cb), pluginwindow);
+	g_signal_connect(G_OBJECT(close_btn), "released",
+			 G_CALLBACK(close_cb), pluginwindow);
+	g_signal_connect(G_OBJECT(plugin_list), "select-row",
+			 G_CALLBACK(select_row_cb), pluginwindow);
+	g_signal_connect(G_OBJECT(plugin_list), "unselect-row",
+			 G_CALLBACK(unselect_row_cb), pluginwindow);
 
 	pluginwindow->window = window;
 	pluginwindow->plugin_list = plugin_list;

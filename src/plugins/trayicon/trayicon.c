@@ -170,12 +170,12 @@ static void create_trayicon()
 #endif
 
 	destroy_signal_id =
-	gtk_signal_connect(GTK_OBJECT(trayicon), "destroy",
-                     GTK_SIGNAL_FUNC(destroy_cb), NULL);
-	gtk_signal_connect(GTK_OBJECT(trayicon), "size_allocate",
-		    GTK_SIGNAL_FUNC(resize_cb), NULL);
-	gtk_signal_connect(GTK_OBJECT(eventbox), "button-press-event",
-		    GTK_SIGNAL_FUNC(click_cb), NULL);
+	g_signal_connect(G_OBJECT(trayicon), "destroy",
+                     	 G_CALLBACK(destroy_cb), NULL);
+	g_signal_connect(G_OBJECT(trayicon), "size_allocate",
+		    	 G_CALLBACK(resize_cb), NULL);
+	g_signal_connect(G_OBJECT(eventbox), "button-press-event",
+		    	 G_CALLBACK(click_cb), NULL);
 
         tooltips = gtk_tooltips_new();
         gtk_tooltips_set_delay(tooltips, 1000);
@@ -211,7 +211,7 @@ int plugin_init(gchar **error)
 
 void plugin_done(void)
 {
-	gtk_signal_disconnect(GTK_OBJECT(trayicon), destroy_signal_id);
+	g_signal_handler_disconnect(G_OBJECT(trayicon), destroy_signal_id);
 
 	gtk_widget_destroy(GTK_WIDGET(trayicon));
 	hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, hook_id);

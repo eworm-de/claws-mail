@@ -348,7 +348,8 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 
 	config = spamassassin_get_config();
 
-	gtk_signal_connect(GTK_OBJECT(button4), "released", GTK_SIGNAL_FUNC(foldersel_cb), page);
+	g_signal_connect(G_OBJECT(button4), "released", 
+			 G_CALLBACK(foldersel_cb), page);
 
 	if (config->hostname != NULL)
 		gtk_entry_set_text(GTK_ENTRY(hostname), config->hostname);

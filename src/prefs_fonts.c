@@ -73,28 +73,27 @@ static void prefs_font_select(GtkButton *button, GtkEntry *entry)
 			(_("Font selection"));
 		gtk_window_position(GTK_WINDOW(font_sel_win),
 				    GTK_WIN_POS_CENTER);
-		gtk_signal_connect(GTK_OBJECT(font_sel_win), "delete_event",
-				   GTK_SIGNAL_FUNC(gtk_widget_hide_on_delete),
-				   NULL);
-		gtk_signal_connect
-			(GTK_OBJECT(font_sel_win), "key_press_event",
-			 GTK_SIGNAL_FUNC(prefs_font_selection_key_pressed),
-			 NULL);
-		gtk_signal_connect_object
-			(GTK_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->cancel_button),
+		g_signal_connect(G_OBJECT(font_sel_win), "delete_event",
+				 G_CALLBACK(gtk_widget_hide_on_delete),
+				 NULL);
+		g_signal_connect(G_OBJECT(font_sel_win), "key_press_event",
+			 	 G_CALLBACK(prefs_font_selection_key_pressed),
+			 	 NULL);
+		g_signal_connect_swapped
+			(G_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->cancel_button),
 			 "clicked",
-			 GTK_SIGNAL_FUNC(gtk_widget_hide_on_delete),
-			 GTK_OBJECT(font_sel_win));
+			 G_CALLBACK(gtk_widget_hide_on_delete),
+			 G_OBJECT(font_sel_win));
 	}
 
 	if(font_sel_conn_id) {
-		gtk_signal_disconnect(GTK_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->ok_button), font_sel_conn_id);
+		g_signal_handler_disconnect
+			(G_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->ok_button), 
+			 font_sel_conn_id);
 	}
-	font_sel_conn_id = gtk_signal_connect
-		(GTK_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->ok_button),
-	         "clicked",
-		 GTK_SIGNAL_FUNC(prefs_font_selection_ok),
-		 entry);
+	font_sel_conn_id = g_signal_connect
+		(G_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->ok_button),
+	         "clicked", G_CALLBACK(prefs_font_selection_ok), entry);
 
 	font_name = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
 	gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(font_sel_win), font_name);
@@ -169,8 +168,8 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (tmpbutton);
 	gtk_table_attach (GTK_TABLE (table), tmpbutton, 2, 3, 0, 1,
 			  0, 0, 0, 0);
-	gtk_signal_connect (GTK_OBJECT(tmpbutton), "clicked",
-				GTK_SIGNAL_FUNC(prefs_font_select), entry_folderviewfont);
+	g_signal_connect(G_OBJECT(tmpbutton), "clicked",
+			 G_CALLBACK(prefs_font_select), entry_folderviewfont);
 
 	tmplabel = gtk_label_new (_("Message List"));
 	gtk_widget_show (tmplabel);
@@ -191,8 +190,8 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (tmpbutton);
 	gtk_table_attach (GTK_TABLE (table), tmpbutton, 2, 3, 1, 2,
 			  0, 0, 0, 0);
-	gtk_signal_connect (GTK_OBJECT(tmpbutton), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_font_select), entry_summaryviewfont);
+	g_signal_connect(G_OBJECT(tmpbutton), "clicked",
+			 G_CALLBACK(prefs_font_select), entry_summaryviewfont);
 
 	tmplabel = gtk_label_new (_("Message"));
 	gtk_widget_show (tmplabel);
@@ -213,8 +212,8 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (tmpbutton);
 	gtk_table_attach (GTK_TABLE (table), tmpbutton, 2, 3, 2, 3,
 			  0, 0, 0, 0);
-	gtk_signal_connect (GTK_OBJECT (tmpbutton), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_font_select), entry_messageviewfont);
+	g_signal_connect(G_OBJECT(tmpbutton), "clicked",
+			 G_CALLBACK(prefs_font_select), entry_messageviewfont);
 
 	tmplabel = gtk_label_new (_("Bold"));
 	gtk_widget_show (tmplabel);
@@ -235,8 +234,8 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (tmpbutton);
 	gtk_table_attach (GTK_TABLE (table), tmpbutton, 2, 3, 3, 4,
 			  0, 0, 0, 0);
-	gtk_signal_connect (GTK_OBJECT(tmpbutton), "clicked",
-				GTK_SIGNAL_FUNC(prefs_font_select), entry_boldfont);
+	g_signal_connect(G_OBJECT(tmpbutton), "clicked",
+			 G_CALLBACK(prefs_font_select), entry_boldfont);
 
 	vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
 	gtk_widget_show(vbox);

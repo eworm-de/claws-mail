@@ -238,10 +238,10 @@ static void browse_create( void ) {
 	gtk_window_set_title( GTK_WINDOW(window), _("Browse Directory Entry") );
 	gtk_window_set_position( GTK_WINDOW(window), GTK_WIN_POS_MOUSE );
 	gtk_window_set_modal( GTK_WINDOW(window), TRUE );
-	gtk_signal_connect( GTK_OBJECT(window), "delete_event",
-			    GTK_SIGNAL_FUNC(browse_delete_event), NULL );
-	gtk_signal_connect( GTK_OBJECT(window), "key_press_event",
-			    GTK_SIGNAL_FUNC(browse_key_pressed), NULL );
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(browse_delete_event), NULL);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(browse_key_pressed), NULL);
 
 	vbox = gtk_vbox_new(FALSE, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
@@ -309,8 +309,8 @@ static void browse_create( void ) {
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(hbbox), 0 );
 
-	gtk_signal_connect(GTK_OBJECT(close_btn), "clicked",
-			   GTK_SIGNAL_FUNC(browse_close), NULL);
+	g_signal_connect(G_OBJECT(close_btn), "clicked",
+			 G_CALLBACK(browse_close), NULL);
 	gtk_widget_grab_default(close_btn);
 
 	gtk_widget_show_all(vbox);

@@ -275,9 +275,9 @@ static void prefs_themes_set_themes_menu(GtkOptionMenu *opmenu, const ThemesData
 		
 		item = gtk_menu_item_new_with_label(tname->name);
 		gtk_widget_show(item);
-		gtk_signal_connect(GTK_OBJECT(item), "activate",
-				   GTK_SIGNAL_FUNC(prefs_themes_menu_item_activated_cb),
-				   tname->item->data);
+		g_signal_connect(G_OBJECT(item), "activate",
+				 G_CALLBACK(prefs_themes_menu_item_activated_cb),
+				 tname->item->data);
 		gtk_menu_append(GTK_MENU(menu), item);
 
 		if (tdata->displayed != NULL && tdata->displayed == tpath)
@@ -991,18 +991,18 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	gtk_container_add (GTK_CONTAINER (hbuttonbox1), btn_remove);
 	GTK_WIDGET_SET_FLAGS (btn_remove, GTK_CAN_DEFAULT);
 
-	gtk_signal_connect(GTK_OBJECT (btn_use), "clicked",
-			GTK_SIGNAL_FUNC (prefs_themes_btn_use_clicked_cb),
-			NULL);
-	gtk_signal_connect(GTK_OBJECT(btn_remove), "clicked",
-			GTK_SIGNAL_FUNC(prefs_themes_btn_remove_clicked_cb),
-			NULL);
-	gtk_signal_connect(GTK_OBJECT(btn_install), "clicked",
-			GTK_SIGNAL_FUNC(prefs_themes_btn_install_clicked_cb),
-			NULL);
-	gtk_signal_connect(GTK_OBJECT(btn_more), "clicked",
-			GTK_SIGNAL_FUNC(prefs_themes_btn_more_clicked_cb),
-			NULL);
+	g_signal_connect(G_OBJECT(btn_use), "clicked",
+			 G_CALLBACK(prefs_themes_btn_use_clicked_cb),
+			 NULL);
+	g_signal_connect(G_OBJECT(btn_remove), "clicked",
+			 G_CALLBACK(prefs_themes_btn_remove_clicked_cb),
+			 NULL);
+	g_signal_connect(G_OBJECT(btn_install), "clicked",
+			 G_CALLBACK(prefs_themes_btn_install_clicked_cb),
+			 NULL);
+	g_signal_connect(G_OBJECT(btn_more), "clicked",
+			 G_CALLBACK(prefs_themes_btn_more_clicked_cb),
+			 NULL);
 
 	gtk_widget_grab_default (btn_use);
 	/* END GLADE EDITED CODE */

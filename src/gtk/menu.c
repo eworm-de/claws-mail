@@ -280,7 +280,7 @@ static void menu_item_add_accel( GtkWidget *widget, guint accel_signal_id, GtkAc
 #warning FIXME_GTK2
 #if 0
 	GtkWidget *connected = GTK_WIDGET(user_data);	
-	if (gtk_signal_n_emissions_by_name(GTK_OBJECT(widget),"add_accelerator") > 1 ) return;
+	if (gtk_signal_n_emissions_by_name(G_OBJECT(widget),"add_accelerator") > 1 ) return;
 	gtk_widget_remove_accelerators(connected,"activate",FALSE);
 	/* lock _this_ widget */
 	gtk_accel_group_lock_entry(accel_group,accel_key,accel_mods);
@@ -301,7 +301,7 @@ static void menu_item_remove_accel(GtkWidget *widget, GtkAccelGroup *accel_group
 #if 0
 	GtkWidget *wid = GTK_WIDGET(user_data);
 
-	if (gtk_signal_n_emissions_by_name(GTK_OBJECT(widget),
+	if (gtk_signal_n_emissions_by_name(G_OBJECT(widget),
 	    "remove_accelerator") > 2 )
 		return;
 	gtk_widget_remove_accelerators(wid,"activate",FALSE);
@@ -310,10 +310,10 @@ static void menu_item_remove_accel(GtkWidget *widget, GtkAccelGroup *accel_group
 
 static void connect_accel_change_signals(GtkWidget* widget, GtkWidget *wid2) 
 {
-	gtk_signal_connect_after(GTK_OBJECT(widget), "add_accelerator", 
-				 G_CALLBACK(menu_item_add_accel), wid2);
-	gtk_signal_connect_after(GTK_OBJECT(widget), "remove_accelerator", 
-				 G_CALLBACK(menu_item_remove_accel), wid2);
+	g_signal_connect_after(G_OBJECT(widget), "add_accelerator", 
+			       G_CALLBACK(menu_item_add_accel), wid2);
+	g_signal_connect_after(G_OBJECT(widget), "remove_accelerator", 
+			       G_CALLBACK(menu_item_remove_accel), wid2);
 }
 
 void menu_connect_identical_items(void)
@@ -383,7 +383,7 @@ void menu_select_by_data(GtkMenu *menu, gpointer data)
 	children = gtk_container_children(GTK_CONTAINER(menu));
 
 	for (cur = children; cur != NULL; cur = g_list_next(cur)) {
-		GtkObject *child = GTK_OBJECT(cur->data);
+		GtkObject *child = G_OBJECT(cur->data);
 
 		if (gtk_object_get_user_data(child) == data) {
 			select_item = GTK_WIDGET(child);

@@ -301,7 +301,8 @@ void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data)
 				curnode->treeweight = page->weight;
 		}
 	}
-	gtk_signal_connect(GTK_OBJECT(prefswindow->ctree), "tree-select-row", GTK_SIGNAL_FUNC(ctree_select_row), prefswindow);
+	g_signal_connect(G_OBJECT(prefswindow->ctree), "tree-select-row", 
+			 G_CALLBACK(ctree_select_row), prefswindow);
 
 	gtk_clist_set_selection_mode(GTK_CLIST(prefswindow->ctree), GTK_SELECTION_BROWSE);
 	gtk_clist_column_titles_passive(GTK_CLIST(prefswindow->ctree));
@@ -321,10 +322,14 @@ void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data)
 
 	gtk_table_attach(GTK_TABLE(prefswindow->table1), prefswindow->confirm_area, 0, 2, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL, 2, 2);
 
-	gtk_signal_connect(GTK_OBJECT(prefswindow->ok_btn), "released", GTK_SIGNAL_FUNC(ok_button_released), prefswindow);
-	gtk_signal_connect(GTK_OBJECT(prefswindow->cancel_btn), "released", GTK_SIGNAL_FUNC(cancel_button_released), prefswindow);
-	gtk_signal_connect(GTK_OBJECT(prefswindow->apply_btn), "released", GTK_SIGNAL_FUNC(apply_button_released), prefswindow);
-	gtk_signal_connect(GTK_OBJECT(prefswindow->window), "delete_event", GTK_SIGNAL_FUNC(window_closed), prefswindow);
+	g_signal_connect(G_OBJECT(prefswindow->ok_btn), "released", 
+			 G_CALLBACK(ok_button_released), prefswindow);
+	g_signal_connect(G_OBJECT(prefswindow->cancel_btn), "released", 
+			 G_CALLBACK(cancel_button_released), prefswindow);
+	g_signal_connect(G_OBJECT(prefswindow->apply_btn), "released", 
+			 G_CALLBACK(apply_button_released), prefswindow);
+	g_signal_connect(G_OBJECT(prefswindow->window), "delete_event", 
+			 G_CALLBACK(window_closed), prefswindow);
 
 	gtk_widget_show_all(prefswindow->window);
 }

@@ -476,10 +476,10 @@ static void addrgather_dlg_create( void ) {
 	gtk_container_set_border_width(GTK_CONTAINER(window), 0);
 	gtk_window_set_position( GTK_WINDOW(window), GTK_WIN_POS_CENTER );
 	gtk_window_set_modal( GTK_WINDOW(window), TRUE );	
-	gtk_signal_connect( GTK_OBJECT(window), "delete_event",
-		GTK_SIGNAL_FUNC( addrgather_dlg_delete_event ), NULL );
-	gtk_signal_connect( GTK_OBJECT(window), "key_press_event",
-		GTK_SIGNAL_FUNC( addrgather_dlg_key_pressed ), NULL );
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(addrgather_dlg_delete_event), NULL);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(addrgather_dlg_key_pressed), NULL);
 
 	vbox = gtk_vbox_new( FALSE, 8 );
 	gtk_container_add( GTK_CONTAINER(window), vbox );
@@ -510,10 +510,10 @@ static void addrgather_dlg_create( void ) {
 	gtk_container_set_border_width( GTK_CONTAINER(hbbox), 0 );
 
 	/* Signal handlers */
-	gtk_signal_connect( GTK_OBJECT(btnOk), "clicked",
-		GTK_SIGNAL_FUNC(addrgather_dlg_ok), NULL );
-	gtk_signal_connect( GTK_OBJECT(btnCancel), "clicked",
-		GTK_SIGNAL_FUNC(addrgather_dlg_cancel), NULL );
+	g_signal_connect(G_OBJECT(btnOk), "clicked",
+			 G_CALLBACK(addrgather_dlg_ok), NULL);
+	g_signal_connect(G_OBJECT(btnCancel), "clicked",
+			 G_CALLBACK(addrgather_dlg_cancel), NULL);
 
 	gtk_widget_show_all( vbox );
 	addrgather_dlg.window     = window;

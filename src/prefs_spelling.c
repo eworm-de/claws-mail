@@ -269,14 +269,14 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	gtk_entry_set_text(GTK_ENTRY(entry_aspell_path), 
 			   SAFE_STRING(prefs_common.aspell_path));
 
-	gtk_signal_connect(GTK_OBJECT(checkbtn_enable_aspell), "toggled",
-			   GTK_SIGNAL_FUNC(prefs_spelling_checkbtn_enable_aspell_toggle_cb),
-			   prefs_spelling);
-	gtk_signal_connect(GTK_OBJECT(btn_aspell_path), "clicked", 
-			   GTK_SIGNAL_FUNC(prefs_spelling_btn_aspell_path_clicked_cb),
-			   prefs_spelling);
-	gtk_signal_connect(GTK_OBJECT(misspelled_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_spelling_colorsel), prefs_spelling);
+	g_signal_connect(G_OBJECT(checkbtn_enable_aspell), "toggled",
+			 G_CALLBACK(prefs_spelling_checkbtn_enable_aspell_toggle_cb),
+			 prefs_spelling);
+	g_signal_connect(G_OBJECT(btn_aspell_path), "clicked", 
+			 G_CALLBACK(prefs_spelling_btn_aspell_path_clicked_cb),
+			 prefs_spelling);
+	g_signal_connect(G_OBJECT(misspelled_btn), "clicked",
+			 G_CALLBACK(prefs_spelling_colorsel), prefs_spelling);
 
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_dictionary),
 				 gtkaspell_dictionary_option_menu_new(prefs_common.aspell_path));

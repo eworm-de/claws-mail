@@ -184,10 +184,12 @@ static void imp_mutt_file_select_create( AddressFileSelection *afs ) {
 
 	fileSelector = gtk_file_selection_new( _("Select MUTT File") );
 	gtk_file_selection_hide_fileop_buttons( GTK_FILE_SELECTION(fileSelector) );
-	gtk_signal_connect( GTK_OBJECT (GTK_FILE_SELECTION(fileSelector)->ok_button),
-                             "clicked", GTK_SIGNAL_FUNC (imp_mutt_file_ok), ( gpointer ) afs );
-	gtk_signal_connect( GTK_OBJECT (GTK_FILE_SELECTION(fileSelector)->cancel_button),
-                             "clicked", GTK_SIGNAL_FUNC (imp_mutt_file_cancel), ( gpointer ) afs );
+	g_signal_connect(G_OBJECT(GTK_FILE_SELECTION(fileSelector)->ok_button),
+                         "clicked", 
+			 G_CALLBACK(imp_mutt_file_ok), (gpointer)afs);
+	g_signal_connect(G_OBJECT(GTK_FILE_SELECTION(fileSelector)->cancel_button),
+                         "clicked", 
+			 G_CALLBACK(imp_mutt_file_cancel), (gpointer)afs);
 	afs->fileSelector = fileSelector;
 	afs->cancelled = TRUE;
 }
@@ -240,12 +242,10 @@ static void imp_mutt_create( gboolean *cancelled ) {
 	gtk_window_set_title( GTK_WINDOW(window), _("Import MUTT file into Address Book") );
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(imp_mutt_delete_event),
-			   cancelled);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(imp_mutt_key_pressed),
-			   cancelled);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(imp_mutt_delete_event), cancelled);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(imp_mutt_key_pressed), cancelled);
 
 	vbox = gtk_vbox_new(FALSE, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
@@ -294,12 +294,12 @@ static void imp_mutt_create( gboolean *cancelled ) {
 	hsep = gtk_hseparator_new();
 	gtk_box_pack_end(GTK_BOX(vbox), hsep, FALSE, FALSE, 0);
 
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(imp_mutt_ok), cancelled);
-	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(imp_mutt_cancel), cancelled);
-	gtk_signal_connect(GTK_OBJECT(file_btn), "clicked",
-			   GTK_SIGNAL_FUNC(imp_mutt_file_select), NULL);
+	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+			 G_CALLBACK(imp_mutt_ok), cancelled);
+	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
+			 G_CALLBACK(imp_mutt_cancel), cancelled);
+	g_signal_connect(G_OBJECT(file_btn), "clicked",
+			 G_CALLBACK(imp_mutt_file_select), NULL);
 
 	gtk_widget_show_all(vbox);
 
