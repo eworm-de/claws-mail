@@ -43,11 +43,6 @@
 # include <gdk/gdkx.h>
 #endif
 
-#if USE_GPGME
-#  include <gpgme.h>
-#  include "passphrase.h"
-#endif
-
 #include "sylpheed.h"
 #include "intl.h"
 #include "main.h"
@@ -226,6 +221,7 @@ void sylpheed_gtk_idle(void)
 
 int main(int argc, char *argv[])
 {
+
 	gchar *userrc;
 	MainWindow *mainwin;
 	FolderView *folderview;

@@ -42,27 +42,11 @@ typedef enum {
 	SIG_DIRECT
 } SigType;
 
-#if USE_GPGME
-typedef enum {
-	SIGN_KEY_DEFAULT,
-	SIGN_KEY_BY_FROM,
-	SIGN_KEY_CUSTOM
-} SignKeyType;
-
-typedef enum {
-	GNUPG_MODE_DETACH,
-	GNUPG_MODE_INLINE
-} DefaultGnuPGMode;
-#endif /* USE_GPGME */
-
 #include <glib.h>
 
 #include "smtp.h"
 #include "folder.h"
 
-#ifdef USE_GPGME
-#  include "rfc2015.h"
-#endif
 
 
 struct _PrefsAccount
@@ -144,14 +128,9 @@ struct _PrefsAccount
 	gboolean  set_autoreplyto;
 	gchar    *auto_replyto;
 
-#if USE_GPGME
 	/* Privacy */
 	gboolean default_encrypt;
 	gboolean default_sign;
-	gboolean default_gnupg_mode;
-	SignKeyType sign_key;
-	gchar *sign_key_id;
-#endif /* USE_GPGME */
 
 	/* Advanced */
 	gboolean  set_smtpport;

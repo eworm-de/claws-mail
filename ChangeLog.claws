@@ -1,3 +1,33 @@
+2004-10-08 [christoph]	0.9.12cvs123
+
+	* src/Makefile.am
+	* src/account.c
+	* src/compose.[ch]
+	* src/crash.c
+	* src/main.c
+	* src/mimeview.c
+	* src/passphrase.[ch]				** REMOVE **
+	* src/prefs_account.[ch]
+	* src/prefs_common.[ch]
+	* src/privacy.[ch]
+	* src/procmime.[ch]
+	* src/procmsg.c
+	* src/rfc2015.[ch]				** REMOVE **
+	* src/select-keys.[ch]				** REMOVE **
+	* src/common/utils.[ch]
+	* src/gtk/about.c
+	* src/plugins/pgpmime/Makefile.am
+	* src/plugins/pgpmime/passphrase.[ch]		** NEW **
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/plugin.c
+	* src/plugins/pgpmime/prefs_gpg.[ch]
+	* src/plugins/pgpmime/select-keys.[ch]		** NEW **
+	* src/plugins/pgpmime/sgpgme.[ch]
+		o Add new MIME-Writer
+		o extend PrivacySystem with sign and encrypt functions
+		o extend PGP/MIME plugin with sign and encrypt functions
+		o integrate extended Privacy API in Compose and Sending process
+
 2004-10-04 [colin]	0.9.12cvs122
 
 	* src/mainwindow.c

@@ -141,9 +141,6 @@ static void about_create(void)
 #if HAVE_LIBCOMPFACE
 		   " compface"
 #endif
-#if USE_GPGME
-		   " GnuPG"
-#endif
 #if USE_OPENSSL
 		   " OpenSSL"
 #endif
@@ -203,11 +200,6 @@ static void about_create(void)
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 
 	gtk_text_freeze(GTK_TEXT(text));
-
-#if USE_GPGME
-	gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
-		_("GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>\n\n"), -1);
-#endif /* USE_GPGME */
 
 	gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
 		_("This program is free software; you can redistribute it and/or modify "

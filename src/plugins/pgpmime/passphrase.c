@@ -45,6 +45,9 @@
 #include "prefs_common.h"
 #include "manage_window.h"
 #include "utils.h"
+#include "prefs_gpg.h"
+
+extern struct GPGConfig prefs_gpg;
 
 static int grab_all = 0;
 
@@ -293,11 +296,11 @@ gpgmegtk_passphrase_cb (void *opaque, const char *desc, void **r_hd)
         /* FIXME: cleanup by looking at *r_hd */
         return NULL;
     }
-    if (prefs_common.store_passphrase && last_pass != NULL &&
+    if (prefs_gpg.store_passphrase && last_pass != NULL &&
         strncmp(desc, "TRY_AGAIN", 9) != 0)
         return g_strdup(last_pass);
 
-    gpgmegtk_set_passphrase_grab (prefs_common.passphrase_grab);
+    gpgmegtk_set_passphrase_grab (prefs_gpg.passphrase_grab);
     debug_print ("%% requesting passphrase for `%s': ", desc);
     pass = passphrase_mbox (desc);
     gpgmegtk_free_passphrase();
@@ -306,13 +309,13 @@ gpgmegtk_passphrase_cb (void *opaque, const char *desc, void **r_hd)
         gpgme_cancel (ctx);
     }
     else {
-        if (prefs_common.store_passphrase) {
+        if (prefs_gpg.store_passphrase) {
             last_pass = g_strdup(pass);
             if (mlock(last_pass, strlen(last_pass)) == -1)
                 debug_print("%% locking passphrase failed");
 
-            if (prefs_common.store_passphrase_timeout > 0) {
-                gtk_timeout_add(prefs_common.store_passphrase_timeout*60*1000,
+            if (prefs_gpg.store_passphrase_timeout > 0) {
+                gtk_timeout_add(prefs_gpg.store_passphrase_timeout*60*1000,
                                 free_passphrase, NULL);
             }
         }

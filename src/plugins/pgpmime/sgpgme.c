@@ -34,6 +34,10 @@
 #include "alertpanel.h"
 #include "passphrase.h"
 #include "intl.h"
+#include "prefs_gpg.h"
+#include "select-keys.h"
+
+extern struct GPGConfig prefs_gpg;
 
 static void idle_function_for_gpgme(void)
 {
@@ -244,7 +248,6 @@ GpgmeData sgpgme_decrypt_verify(GpgmeData cipher, GpgmeSigStat *status, GpgmeCtx
 	struct passphrase_cb_info_s info;
 	GpgmeData plain;
 	GpgmeError err;
-	GpgmeSigStat sigstat;
 
 	memset (&info, 0, sizeof info);
 	
@@ -269,6 +272,39 @@ GpgmeData sgpgme_decrypt_verify(GpgmeData cipher, GpgmeSigStat *status, GpgmeCtx
 	return plain;
 }
 
+gchar *sgpgme_get_encrypt_data(GSList *recp_names)
+{
+
+	GpgmeRecipients recp;
+	GString *encdata;
+	void *iter;
+	const gchar *recipient;
+	gchar *data;
+
+	recp = gpgmegtk_recipient_selection(recp_names);
+	if (recp == NULL)
+		return NULL;
+
+	if (gpgme_recipients_enum_open(recp, &iter) != GPGME_No_Error) {
+		gpgme_recipients_release(recp);
+		return NULL;
+	}
+
+	encdata = g_string_sized_new(64);
+	while ((recipient = gpgme_recipients_enum_read(recp, &iter)) != NULL) {
+		if (encdata->len > 0)
+			g_string_append_c(encdata, ' ');
+		g_string_append(encdata, recipient);
+	}
+
+	gpgme_recipients_release(recp);
+
+	data = encdata->str;
+	g_string_free(encdata, FALSE);
+
+	return data;
+}
+
 void sgpgme_init()
 {
 	if (gpgme_engine_check_version(GPGME_PROTOCOL_OpenPGP) != 
@@ -277,7 +313,7 @@ void sgpgme_init()
 		debug_print("gpgme_engine_version:\n%s\n",
 			    gpgme_get_engine_info());
 
-		if (prefs_common.gpg_warning) {
+		if (prefs_gpg.gpg_warning) {
 			AlertValue val;
 
 			val = alertpanel_message_with_disable
@@ -286,7 +322,7 @@ void sgpgme_init()
 				   "to be upgraded.\n"
 				   "OpenPGP support disabled."), ALERT_WARNING);
 			if (val & G_ALERTDISABLE)
-				prefs_common.gpg_warning = FALSE;
+				prefs_gpg.gpg_warning = FALSE;
 		}
 	}
 
@@ -296,6 +332,7 @@ void sgpgme_init()
 void sgpgme_done()
 {
         gpgmegtk_free_passphrase();
+	gpgme_register_idle(NULL);
 }
 
 #endif /* USE_GPGME */

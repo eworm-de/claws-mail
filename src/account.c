@@ -847,14 +847,9 @@ static void account_clone(void)
         ACP_FASSIGN(set_autoreplyto);
         ACP_FDUP(auto_replyto);
 
-#if USE_GPGME
         /* privacy */
         ACP_FASSIGN(default_encrypt);
         ACP_FASSIGN(default_sign);
-        ACP_FASSIGN(default_gnupg_mode);
-        ACP_FASSIGN(sign_key);
-        ACP_FDUP(sign_key_id);
-#endif /* USE_GPGME */
 	
         /* advanced */
         ACP_FASSIGN(set_smtpport);

@@ -153,17 +153,6 @@ static struct Message {
 	GtkWidget *chkbtn_attach_desc;
 } message;
 
-#if USE_GPGME
-static struct Privacy {
-	GtkWidget *checkbtn_auto_check_signatures;
-	GtkWidget *checkbtn_store_passphrase;
-	GtkWidget *spinbtn_store_passphrase;
-	GtkObject *spinbtn_store_passphrase_adj;
-	GtkWidget *checkbtn_passphrase_grab;
-	GtkWidget *checkbtn_gpg_warning;
-} privacy;
-#endif
-
 static struct Interface {
 	/* GtkWidget *checkbtn_emacs; */
 	GtkWidget *checkbtn_always_show_msg;
@@ -629,29 +618,6 @@ static PrefParam param[] = {
 	{"mime_open_command", "gedit '%s'",
 	 &prefs_common.mime_open_cmd, P_STRING, NULL, NULL, NULL},
 
-#if USE_GPGME
-	/* Privacy */
-	{"auto_check_signatures", "TRUE",
-	 &prefs_common.auto_check_signatures, P_BOOL,
-	 &privacy.checkbtn_auto_check_signatures,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"store_passphrase", "FALSE", &prefs_common.store_passphrase, P_BOOL,
-	 &privacy.checkbtn_store_passphrase,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"store_passphrase_timeout", "0",
-	 &prefs_common.store_passphrase_timeout, P_INT,
-	 &privacy.spinbtn_store_passphrase,
-	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
-#ifndef __MINGW32__
-	{"passphrase_grab", "FALSE", &prefs_common.passphrase_grab, P_BOOL,
-	 &privacy.checkbtn_passphrase_grab,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-#endif /* __MINGW32__ */
-	{"gpg_warning", "TRUE", &prefs_common.gpg_warning, P_BOOL,
-	 &privacy.checkbtn_gpg_warning,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-#endif /* USE_GPGME */
-
 	/* Interface */
 	{"separate_folder", "FALSE", &prefs_common.sep_folder, P_BOOL,
 	 NULL, NULL, NULL},
@@ -763,9 +729,6 @@ static void prefs_compose_create	(void);
 static void prefs_quote_create		(void);
 static void prefs_display_create	(void);
 static void prefs_message_create	(void);
-#if USE_GPGME
-static void prefs_privacy_create	(void);
-#endif
 static void prefs_interface_create	(void);
 static void prefs_other_create		(void);
 
@@ -951,10 +914,6 @@ static void prefs_common_create(void)
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Display"),   page++);
 	prefs_message_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Message"),   page++);
-#if USE_GPGME
-	prefs_privacy_create();
-	SET_NOTEBOOK_LABEL(dialog.notebook, _("Privacy"),   page++);
-#endif
 	prefs_interface_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Interface"), page++);
 	prefs_other_create();
@@ -1900,108 +1859,6 @@ static void prefs_message_create(void)
 
 	message.chkbtn_attach_desc  = chkbtn_attach_desc;
 }
-
-#if USE_GPGME
-static void prefs_privacy_create(void)
-{
-	GtkWidget *vbox1;
-	GtkWidget *vbox2;
-	GtkWidget *vbox3;
-	GtkWidget *hbox1;
-	GtkWidget *hbox_spc;
-	GtkWidget *label;
-	GtkWidget *checkbtn_auto_check_signatures;
-	GtkWidget *checkbtn_store_passphrase;
-	GtkObject *spinbtn_store_passphrase_adj;
-	GtkWidget *spinbtn_store_passphrase;
-	GtkTooltips *store_tooltip;
-	GtkWidget *checkbtn_passphrase_grab;
-	GtkWidget *checkbtn_gpg_warning;
-
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
-
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox2);
-	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
-
-	PACK_CHECK_BUTTON (vbox2, checkbtn_auto_check_signatures,
-			   _("Automatically check signatures"));
-
-	PACK_CHECK_BUTTON (vbox2, checkbtn_store_passphrase,
-			   _("Store passphrase in memory temporarily"));
-
-	vbox3 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox3);
-	gtk_box_pack_start (GTK_BOX (vbox2), vbox3, FALSE, FALSE, 0);
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox3), hbox1, FALSE, FALSE, 0);
-
-	hbox_spc = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox_spc);
-	gtk_box_pack_start (GTK_BOX (hbox1), hbox_spc, FALSE, FALSE, 0);
-	gtk_widget_set_usize (hbox_spc, 12, -1);
-
-	label = gtk_label_new (_("Expire after"));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
-
-	store_tooltip = gtk_tooltips_new();
-
-	spinbtn_store_passphrase_adj = gtk_adjustment_new (0, 0, 1440, 1, 5, 5);
-	spinbtn_store_passphrase = gtk_spin_button_new
-		(GTK_ADJUSTMENT (spinbtn_store_passphrase_adj), 1, 0);
-	gtk_widget_show (spinbtn_store_passphrase);
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(store_tooltip), spinbtn_store_passphrase,
-			     _("Setting to '0' will store the passphrase"
-			       " for the whole session"),
-			     NULL);
- 	gtk_box_pack_start (GTK_BOX (hbox1), spinbtn_store_passphrase, FALSE, FALSE, 0);
-	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_store_passphrase),
-				     TRUE);
-	gtk_widget_set_usize (spinbtn_store_passphrase, 64, -1);
-
-	label = gtk_label_new (_("minute(s) "));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox3), hbox1, FALSE, FALSE, 0);
-
-	hbox_spc = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox_spc);
-	gtk_box_pack_start (GTK_BOX (hbox1), hbox_spc, FALSE, FALSE, 0);
-	gtk_widget_set_usize (hbox_spc, 12, -1);
-
-	SET_TOGGLE_SENSITIVITY (checkbtn_store_passphrase, vbox3);
-
-#ifndef __MINGW32__
-	PACK_CHECK_BUTTON (vbox2, checkbtn_passphrase_grab,
-			   _("Grab input while entering a passphrase"));
-#endif
-
-	PACK_CHECK_BUTTON
-		(vbox2, checkbtn_gpg_warning,
-		 _("Display warning on startup if GnuPG doesn't work"));
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-
-	privacy.checkbtn_auto_check_signatures
-					     = checkbtn_auto_check_signatures;
-	privacy.checkbtn_store_passphrase    = checkbtn_store_passphrase;
-	privacy.spinbtn_store_passphrase     = spinbtn_store_passphrase;
-	privacy.spinbtn_store_passphrase_adj = spinbtn_store_passphrase_adj;
-	privacy.checkbtn_passphrase_grab     = checkbtn_passphrase_grab;
-	privacy.checkbtn_gpg_warning         = checkbtn_gpg_warning;
-}
-#endif /* USE_GPGME */
 
 static void prefs_interface_create(void)
 {

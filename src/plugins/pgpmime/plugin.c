@@ -28,6 +28,7 @@
 #include "version.h"
 #include "sgpgme.h"
 #include "pgpmime.h"
+#include "prefs_gpg.h"
 
 gint plugin_init(gchar **error)
 {
@@ -43,12 +44,14 @@ gint plugin_init(gchar **error)
 
 	sgpgme_init();
 	pgpmime_init();
+	prefs_gpg_init();
 
 	return 0;	
 }
 
 void plugin_done(void)
 {
+	prefs_gpg_init();
 	pgpmime_done();
 	sgpgme_done();
 }
