@@ -1,3 +1,10 @@
+2002-03-05
+
+	* src/inc.c: inc_write_uidl_list(): fixed a bug that lost UIDL
+	  information if any errors occured before issuing UIDL command.
+	  src/inc.h: added uidl_is_valid to Pop3State.
+	  src/pop.c: set uidl_is_valid to TRUE if UIDL becomes valid.
+
 2002-03-03
 
 	* version 0.7.3

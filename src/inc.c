@@ -395,7 +395,7 @@ static Pop3State *inc_pop3_state_new(PrefsAccount *account)
 
 	state->ac_prefs = account;
 	state->folder_table = g_hash_table_new(NULL, NULL);
-	state->id_table = inc_get_uidl_table(account);
+	state->uidl_table = inc_get_uidl_table(account);
 	state->inc_state = INC_SUCCESS;
 
 	return state;
@@ -411,9 +411,9 @@ static void inc_pop3_state_destroy(Pop3State *state)
 		g_free(state->msg[n].uidl);
 	g_free(state->msg);
 
-	if (state->id_table) {
-		hash_free_strings(state->id_table);
-		g_hash_table_destroy(state->id_table);
+	if (state->uidl_table) {
+		hash_free_strings(state->uidl_table);
+		g_hash_table_destroy(state->uidl_table);
 	}
 
 	g_free(state->greeting);
@@ -773,6 +773,8 @@ static void inc_write_uidl_list(Pop3State *state)
 	gchar *path;
 	FILE *fp;
 	gint n;
+
+	if (!state->uidl_is_valid) return;
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl-", state->ac_prefs->recv_server,

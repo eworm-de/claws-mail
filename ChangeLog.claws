@@ -1,3 +1,8 @@
+2002-03-06 [paul]	0.7.2claws33
+
+	* sync with sylpheed 0.7.3cvs1
+		bug fix, see ChangeLog entry 2002-03-05
+
 2002-03-05 [paul]	0.7.2claws32
 
 	* src/mimeview.c

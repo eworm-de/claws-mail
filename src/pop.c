@@ -216,9 +216,10 @@ gint pop3_getrange_stat_recv(SockInfo *sock, gpointer data)
 			log_warning(_("POP3 protocol error\n"));
 			return -1;
 		} else {
-			if (state->count == 0)
+			if (state->count == 0) {
+				state->uidl_is_valid = TRUE;
 				return POP3_LOGOUT_SEND;
-			else {
+			} else {
 				state->msg = g_new0
 					(Pop3MsgInfo, state->count + 1);
 				state->cur_msg = 1;
@@ -286,7 +287,7 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 
 	if (pop3_ok(sock, NULL) != PS_SUCCESS) return POP3_GETRANGE_LAST_SEND;
 
-	if (!state->id_table) new = TRUE;
+	if (!state->uidl_table) new = TRUE;
 	if (state->ac_prefs->rmmail || state->ac_prefs->getall)
 		get_all = TRUE;
 
@@ -300,9 +301,9 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 
 		state->msg[num].uidl = g_strdup(id);
 
-		if (state->id_table) {
+		if (state->uidl_table) {
 			if (!get_all &&
-			    g_hash_table_lookup(state->id_table, id) != NULL)
+			    g_hash_table_lookup(state->uidl_table, id) != NULL)
 				state->msg[num].received = TRUE;
 			else {
 				if (new == FALSE) {
@@ -312,6 +313,8 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 			}
 		}
 	}
+
+	state->uidl_is_valid = TRUE;
 
 	if (new == TRUE)
 		return POP3_GETSIZE_LIST_SEND;
