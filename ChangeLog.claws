@@ -1,3 +1,8 @@
+2003-12-05 [alfons]	0.9.7claws25
+
+	* src/matcher.[ch]
+		clean up my old cruft
+
 2003-12-05 [alfons]	0.9.7claws24
 
 	* src/matcher.c

@@ -187,96 +187,6 @@ gint get_matchparser_tab_id(const gchar *str)
 		return -1;
 }
 
-/*!
- *\brief	Escape characters in a string by inserting '\' characters
- *
- *\param	str String with characters to be escaped
- *
- *\return	gchar * Newly allocated string with escaped characters
- */
-#if 0
-gchar *matcher_escape_str(const gchar *str)
-{
-	register const gchar *walk;
-	register int escape;
-	gchar *res;
-	register char *reswalk;
-
-	if (str == NULL)
-		return NULL;
-
-	for (escape = 0, walk = str; *walk; walk++)
-		if (*walk == '\\' || *walk == '\'' || *walk == '\"')
-			escape++;
-
-	if (!escape)
-		return g_strdup(str);
-	
-	reswalk = res = g_new0(gchar, (walk - str) + escape + 1);
-	for (walk = str; *walk; walk++, reswalk++) {
-		if (*walk == '\\' || *walk == '\'' || *walk == '\"')
-			*reswalk++ = '\\';
-		*reswalk = *walk;
-	}
-
-	*reswalk = 0;
-	return res;
-}
-#endif
-
-/*!
- *\brief	Unescape string by replacing escaped char sequences
- *		(\b, \n, etc) by their actual char. Note that this
- *		function changes the contents of the buffer pointed
- *		to by \a str.
- *
- *\param	str Buffer containing string that needs to be escaped.
- *		Note that this function changes the contents of the
- *		buffer
- *
- *\return	gchar * Pointer to changed buffer
- */
-#if 0
-gchar *matcher_unescape_str(gchar *str)
-{
-	gchar *tmp = alloca(strlen(str) + 1);
-	register gchar *src = tmp;
-	register gchar *dst = str;
-	
-	strcpy(tmp, str);
-
-	for ( ; *src; src++) {
-		if (*src != '\\') 
-			*dst++ = *src;
-		else {
-			src++;
-                        if (*src == 'n')   /* insert control characters */
-				*dst++ = '\n';
-			else if (*src == 'r') 
-				*dst++ = '\r';
-			else if (*src == 't') 
-				*dst++ = '\t';
-			else if (*src == 'r') 
-				*dst++ = '\r';
-			else if (*src == 'b')
-				*dst++ = '\b';
-			else if (*src == 'f')
-				*dst++ = '\f';
-			else if (*src == '\\' || *src == '\'' || *src == '\"')
-                                /* insert \\, \' or \" */
-				*dst++ = *src;
-			else {
-				/* FIXME: should perhaps escape character... */
-				src--;
-				*dst++ = *src;
-			}				
-		}
-	}
-	*dst = 0;
-	return str;
-}
-#endif
-
 /* **************** data structure allocation **************** */
 
 /*!
@@ -349,43 +259,6 @@ MatcherProp *matcherprop_copy(const MatcherProp *src)
 	prop->error = src->error;	
 	return prop;		
 }
-
-/* ****************** wrapper for file reading ************** */
-
-/*!
- *\brief	Allocate a matcher structure where all strings
- *		are unescaped ("unquoted")
- *
- *\param	criteria One of the MATCHCRITERIA_XXX constants
- *\param	header A header string
- *\param	matchtype Type of matcher (MATCHTYPE_XXX)
- *\param	expr Matcher string expression
- *\param	value Matcher integer value
- *
- *\return	MatcherProp * Pointer to newly allocated matcher
- *		structure
- */
-#if 0
-MatcherProp *matcherprop_unquote_new(gint criteria, const gchar *header,
-				     gint matchtype, const gchar *expr,
-				     int value)
-{
-        MatcherProp *prop;
-
-        if (expr != NULL)
-                expr = matcher_unescape_str(g_strdup(expr));
-
-        if (header != NULL)
-                header = matcher_unescape_str(g_strdup(header));
-        
-        prop = matcherprop_new(criteria, header, matchtype, expr, value);
-
-        g_free((gpointer) header);
-        g_free((gpointer) expr);
-
-	return prop;
-}
-#endif
 
 /* ************** match ******************************/
 
@@ -1293,9 +1166,6 @@ static void add_str_default(gchar ** dest,
  *\param	info Message info to use for command
  *
  *\return	gchar * Newly allocated string
- *
- *\warning	The \a cmd string should have been unescaped using
- *		#matcher_unescape_str.
  */
 gchar *matching_build_command(const gchar *cmd, MsgInfo *info)
 {

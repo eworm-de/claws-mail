@@ -137,11 +137,6 @@ MatcherProp *matcherprop_new		(gint		 criteria,
 					 gint		 matchtype, 
 					 const gchar	*expr,
 					 int	         value);
-MatcherProp *matcherprop_unquote_new	(gint		 criteria, 
-					 const gchar	*header,
-					 gint		 matchtype, 
-					 const gchar	*expr,
-					 int		 value);
 void matcherprop_free			(MatcherProp *prop);
 
 MatcherProp *matcherprop_parse		(gchar	**str);
@@ -165,8 +160,6 @@ gint matcher_parse_number		(gchar		**str);
 gboolean matcher_parse_boolean_op	(gchar		**str);
 gchar *matcher_parse_regexp		(gchar		**str);
 gchar *matcher_parse_str		(gchar		**str);
-gchar *matcher_escape_str		(const gchar	*str);
-gchar *matcher_unescape_str		(gchar		*str);
 gchar *matcherprop_to_string		(MatcherProp	*matcher);
 gchar *matcherlist_to_string		(const MatcherList	*matchers);
 gchar *matching_build_command		(const gchar	*cmd, 
