@@ -32,7 +32,7 @@
 
 static void ssl_certificate_destroy(SSLCertificate *cert);
 
-static char * convert_fingerprint(char *src) 
+static char * readable_fingerprint(unsigned char *src, int len) 
 {
 	int i=0;
 	char * ret;
@@ -40,12 +40,13 @@ static char * convert_fingerprint(char *src)
 	if (src == NULL)
 		return NULL;
 	ret = g_strdup("");
-	while (src[i] != '\0') {
+	while (i < len) {
 		char *tmp2;
 		if(i>0)
 			tmp2 = g_strdup_printf("%s:%02X", ret, src[i]);
 		else
 			tmp2 = g_strdup_printf("%02X", src[i]);
+		g_free(ret);
 		ret = g_strdup(tmp2);
 		g_free(tmp2);
 		i++;
@@ -53,19 +54,17 @@ static char * convert_fingerprint(char *src)
 	return ret;
 }
 
-SSLCertificate *ssl_certificate_new(gchar *host, gchar *issuer, gchar *subject, gchar *md)
+SSLCertificate *ssl_certificate_new(X509 *x509_cert, gchar *host)
 {
 	SSLCertificate *cert = g_new0(SSLCertificate, 1);
 	
-	if (host == NULL || issuer == NULL || subject == NULL || md == NULL) {
+	if (host == NULL || x509_cert == NULL) {
 		ssl_certificate_destroy(cert);
 		return NULL;
 	}
 
+	cert->x509_cert = X509_dup(x509_cert);
 	cert->host = g_strdup(host);
-	cert->issuer = g_strdup(issuer);
-	cert->subject = g_strdup(subject);
-	cert->fingerprint = g_strdup(md);
 	return cert;
 }
 
@@ -90,37 +89,36 @@ static void ssl_certificate_save (SSLCertificate *cert)
 		alertpanel_error(_("Can't save certificate !"));
 		return;
 	}
-	fputs("issuer=", fp);
-	fputs(cert->issuer, fp);
-	fputs("\nsubject=", fp);
-	fputs(cert->subject, fp);
-	fputs("\nfingerprint=", fp);
-	fputs(cert->fingerprint, fp);
-	fputs("\n", fp);
+	i2d_X509_fp(fp, cert->x509_cert);
+	g_free(file);
 	fclose(fp);
+
 }
 
 static char* ssl_certificate_to_string(SSLCertificate *cert)
 {
 	char *ret;
+	int j;
+	unsigned int n;
+	unsigned char md[EVP_MAX_MD_SIZE];	
+		
+	X509_digest(cert->x509_cert, EVP_md5(), md, &n);
+			
 	ret = g_strdup_printf("  Issuer: %s\n  Subject: %s\n  Fingerprint: %s",
-				cert->issuer,
-				cert->subject,
-				cert->fingerprint);
+				X509_NAME_oneline(X509_get_issuer_name(cert->x509_cert), 0, 0),
+				X509_NAME_oneline(X509_get_subject_name(cert->x509_cert), 0, 0),
+				readable_fingerprint(md, (int)n));
+
 	return ret;
 }
 	
 void ssl_certificate_destroy(SSLCertificate *cert) 
 {
 	g_return_if_fail(cert != NULL);
+	if (cert->x509_cert)
+		X509_free(cert->x509_cert);
 	if (cert->host)	
 		g_free(cert->host);
-	if (cert->issuer)
-		g_free(cert->issuer);
-	if (cert->subject)
-		g_free(cert->subject);
-	if (cert->fingerprint)
-		g_free(cert->fingerprint);
 	g_free(cert);
 	cert = NULL;
 }
@@ -129,7 +127,8 @@ static SSLCertificate *ssl_certificate_find (gchar *host)
 {
 	gchar *file;
 	gchar buf[1024], *subject, *issuer, *fingerprint;
-	SSLCertificate *cert;
+	SSLCertificate *cert = NULL;
+	X509 *tmp_x509;
 	FILE *fp;
 	
 	file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
@@ -142,42 +141,22 @@ static SSLCertificate *ssl_certificate_find (gchar *host)
 		return NULL;
 	}
 	
-	while( fgets( buf, sizeof( buf ), fp ) != NULL ) {
-		if (!strncmp(buf, "subject=", 8)) {
-			subject = g_strdup((char *)buf +8);
-			g_strdelimit(subject, "\r\n", '\0');
-		}
-		else if (!strncmp(buf, "issuer=", 7)) {
-			issuer = g_strdup((char *)buf +7);
-			g_strdelimit(issuer, "\r\n", '\0');
-		}
-		else if (!strncmp(buf, "fingerprint=", 12)) {
-			fingerprint = g_strdup((char *)buf +12);
-			g_strdelimit(fingerprint, "\r\n", '\0');
-		}
-	}
-	fclose (fp);
-	if (subject && issuer && fingerprint) {
-		cert = ssl_certificate_new(host, issuer, subject, fingerprint);
-	}
 	
+	if ((tmp_x509 = d2i_X509_fp(fp, 0)) != NULL) {
+		cert = ssl_certificate_new(tmp_x509, host);
+		X509_free(tmp_x509);
+	}
+	fclose(fp);
 	g_free(file);
 	
-	if (subject)
-		g_free(subject);
-	if (issuer)
-		g_free(issuer);
-	if (fingerprint)
-		g_free(fingerprint);
-
 	return cert;
 }
 
 static gboolean ssl_certificate_compare (SSLCertificate *cert_a, SSLCertificate *cert_b)
 {
-	if (!strcmp(cert_a->issuer, cert_b->issuer)
-	&&  !strcmp(cert_a->subject, cert_b->subject)
-	&&  !strcmp(cert_a->fingerprint, cert_b->fingerprint))
+	if (cert_a == NULL || cert_b == NULL)
+		return FALSE;
+	else if (!X509_cmp(cert_a->x509_cert, cert_b->x509_cert))
 		return TRUE;	
 	else
 		return FALSE;
@@ -223,26 +202,15 @@ static char *ssl_certificate_check_signer (X509 *cert)
 	return NULL;
 }
 
-gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gchar *issuer, 
-				gchar *subject, gchar *md) 
+gboolean ssl_certificate_check (X509 *x509_cert, gchar *host)
 {
-	char *readable_md = convert_fingerprint(md);
-	SSLCertificate *current_cert = ssl_certificate_new(host, issuer, subject, readable_md);
+	SSLCertificate *current_cert = ssl_certificate_new(x509_cert, host);
 	SSLCertificate *known_cert;
 
 	if (current_cert == NULL) {
 		debug_print("Buggy certificate !\n");
-		debug_print("host: %s\n", host);
-		debug_print("issuer: %s\n", issuer);
-		debug_print("subject: %s\n", subject);
-		debug_print("md: %s\n", readable_md);
-		if (readable_md)
-			g_free(readable_md);
 		return FALSE;
 	}
-
-	if (readable_md)
-		g_free(readable_md);
 
 	known_cert = ssl_certificate_find (host);
 
@@ -261,7 +229,8 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gchar *issuer,
 					  (sig_status == NULL)?"The presented certificate signature is correct.":"The presented certificate signature is not correct: ",
 					  (sig_status == NULL)?"":sig_status);
 		g_free (cur_cert_str);
-		g_free (sig_status);
+		if (sig_status)
+			g_free (sig_status);
  
 		val = alertpanel(_("Warning"),
 			       err_msg,
@@ -294,7 +263,8 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gchar *issuer,
 					  (sig_status == NULL)?"":sig_status);
 		g_free (cur_cert_str);
 		g_free (known_cert_str);
-		g_free (sig_status);
+		if (sig_status)
+			g_free (sig_status);
 
 		val = alertpanel(_("Warning"),
 			       err_msg,

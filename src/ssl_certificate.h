@@ -39,14 +39,14 @@ typedef struct _SSLCertificate SSLCertificate;
 
 struct _SSLCertificate
 {
+	X509 *x509_cert;
 	gchar *host;
 	gchar *issuer;
 	gchar *subject;
 	gchar *fingerprint;
 };
 
-gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gchar *issuer, 
-				gchar *subject, gchar *md);
+gboolean ssl_certificate_check (X509 *x509_cert, gchar *host);
 
 #endif /* USE_SSL */
 #endif /* SSL_CHECK_H */
