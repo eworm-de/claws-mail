@@ -1,3 +1,9 @@
+2003-09-23 [paul]	0.9.5claws27
+
+	* po/zh_CN.po
+		update Simplified Chinese translation. submitted by
+		Hansom Young
+
 2003-09-23 [paul]	0.9.5claws26
 
 	* tools/Makefile.am
