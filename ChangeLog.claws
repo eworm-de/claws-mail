@@ -1,3 +1,15 @@
+2004-07-16 [paul]	0.9.12cvs26
+	
+	* src/gtk/quicksearch.c
+	* src/compose.c
+	* src/customheader.c
+	* src/messageview.c
+	* src/news.c
+	* src/prefs_account.c
+	* src/prefs_display_header.c
+	* src/procheader.c
+		replace "Message-Id" with "Message-ID"
+
 2004-07-16 [paul]	0.9.12cvs25
 
 	* ChangeLog
@@ -14,7 +26,7 @@
 	* src/prefs_common.h
 	* src/prefs_gtk.c
 	* src/prefs_gtk.h
-		sync with main 0.9.12cv1
+		sync with main 0.9.12cvs1
 
 2004-07-15 [colin]	0.9.12cvs24
 

@@ -536,7 +536,7 @@ static gint news_get_article_cmd(NNTPSession *session, const gchar *cmd,
 	if (ok != NN_SUCCESS)
 		return ok;
 
-	debug_print("Message-Id = %s, num = %d\n", msgid, num);
+	debug_print("Message-ID = %s, num = %d\n", msgid, num);
 	g_free(msgid);
 
 	ok = recv_write_to_file(SESSION(session)->sock, filename);
