@@ -1,3 +1,8 @@
+2002-09-22 [oliver]	0.8.3claws5
+
+	* src/compose.[ch]
+		custom toolbar for compose
+		
 2002-09-22 [oliver]	0.8.3claws4
 	
 	* src/mainwindow.[ch]

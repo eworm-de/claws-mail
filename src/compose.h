@@ -25,6 +25,7 @@
 #include <gtk/gtkitemfactory.h>
 
 typedef struct _Compose		Compose;
+typedef struct _ComposeToolbar  ComposeToolbar;
 typedef struct _AttachInfo	AttachInfo;
 
 #include "procmsg.h"
@@ -79,18 +80,10 @@ struct _Compose
 	GtkWidget *window;
 	GtkWidget *vbox;
 	GtkWidget *menubar;
-
+	
+	/* Toolbar handlebox */
 	GtkWidget *handlebox;
-	GtkWidget *toolbar;
-	GtkWidget *send_btn;
-	GtkWidget *sendl_btn;
-	GtkWidget *draft_btn;
-	GtkWidget *insert_btn;
-	GtkWidget *attach_btn;
-	GtkWidget *sig_btn;
-	GtkWidget *exteditor_btn;
-	GtkWidget *linewrap_btn;
-	GtkWidget *addrbook_btn;
+	ComposeToolbar *toolbar;
 
 	GtkWidget *vbox2;
 
@@ -203,6 +196,24 @@ struct _Compose
 	gchar *redirect_filename;
 };
 
+struct _ComposeToolbar {
+
+	GtkWidget *toolbar;
+
+	GtkWidget *send_btn;
+	GtkWidget *sendl_btn;
+	GtkWidget *draft_btn;
+	GtkWidget *insert_btn;
+	GtkWidget *attach_btn;
+	GtkWidget *sig_btn;
+	GtkWidget *exteditor_btn;
+	GtkWidget *linewrap_btn;
+	GtkWidget *addrbook_btn;
+
+	GSList    *t_action_list;
+	GSList    *t_item_list;
+};
+
 struct _AttachInfo
 {
 	gchar *file;
@@ -252,5 +263,7 @@ gint compose_send			(Compose	  *compose);
 
 void compose_reflect_prefs_all			(void);
 void compose_reflect_prefs_pixmap_theme	(void);
+
+void compose_destroy_all                (void);
 
 #endif /* __COMPOSE_H__ */
