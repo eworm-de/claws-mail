@@ -36,5 +36,6 @@ CustomHeader *custom_header_read_str	(const gchar	*buf);
 CustomHeader *custom_header_find	(GSList		*header_list,
 					 const gchar	*header);
 void custom_header_free			(CustomHeader	*ch);
+gboolean custom_header_is_allowed	(const gchar	*header);
 
 #endif /* __CUSTOMHEADER_H__ */

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -141,6 +141,7 @@ static void textview_write_body		(TextView	*textview,
 static void textview_show_html		(TextView	*textview,
 					 FILE		*fp,
 					 CodeConverter	*conv);
+
 static void textview_write_line		(TextView	*textview,
 					 const gchar	*str,
 					 CodeConverter	*conv);
@@ -148,6 +149,7 @@ static void textview_write_link		(TextView	*textview,
 					 const gchar	*str,
 					 const gchar	*uri,
 					 CodeConverter	*conv);
+
 static GPtrArray *textview_scan_header	(TextView	*textview,
 					 FILE		*fp);
 static void textview_show_header	(TextView	*textview,
@@ -163,8 +165,6 @@ static gint textview_button_released	(GtkWidget	*widget,
 					 GdkEventButton	*event,
 					 TextView	*textview);
 
-static void textview_uri_list_remove_all(GSList		*uri_list);
-
 static void textview_smooth_scroll_do		(TextView	*textview,
 						 gfloat		 old_value,
 						 gfloat		 last_value,
@@ -173,6 +173,10 @@ static void textview_smooth_scroll_one_line	(TextView	*textview,
 						 gboolean	 up);
 static gboolean textview_smooth_scroll_page	(TextView	*textview,
 						 gboolean	 up);
+
+static gboolean textview_uri_security_check	(TextView	*textview,
+						 RemoteURI	*uri);
+static void textview_uri_list_remove_all	(GSList		*uri_list);
 
 
 TextView *textview_create(void)
@@ -725,7 +729,9 @@ static gboolean get_uri_part(const gchar *start, const gchar *scanpos,
 
 	/* find end point of URI */
 	for (ep_ = scanpos; *ep_ != '\0'; ep_++) {
-		if (!isgraph(*ep_) || !isascii(*ep_) || strchr("()<>\"", *ep_))
+		if (!isgraph(*(const guchar *)ep_) ||
+		    !isascii(*(const guchar *)ep_) ||
+		    strchr("()<>\"", *ep_))
 			break;
 	}
 
@@ -737,7 +743,9 @@ static gboolean get_uri_part(const gchar *start, const gchar *scanpos,
 
 #define IS_REAL_PUNCT(ch)	(ispunct(ch) && ((ch) != '/')) 
 
-	for (; ep_ - 1 > scanpos + 1 && IS_REAL_PUNCT(*(ep_ - 1)); ep_--)
+	for (; ep_ - 1 > scanpos + 1 &&
+	       IS_REAL_PUNCT(*(const guchar *)(ep_ - 1));
+	     ep_--)
 		;
 
 #undef IS_REAL_PUNCT
@@ -855,17 +863,19 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 	g_return_val_if_fail(dom_tab, FALSE);	
 
 	/* scan start of address */
-	for (bp_ = scanpos - 1; bp_ >= start && IS_RFC822_CHAR(*bp_); bp_--)
+	for (bp_ = scanpos - 1;
+	     bp_ >= start && IS_RFC822_CHAR(*(const guchar *)bp_); bp_--)
 		;
 
 	/* TODO: should start with an alnum? */
 	bp_++;
-	for (; bp_ < scanpos && !IS_ASCII_ALNUM(*bp_); bp_++)
+	for (; bp_ < scanpos && !IS_ASCII_ALNUM(*(const guchar *)bp_); bp_++)
 		;
 
 	if (bp_ != scanpos) {
 		/* scan end of address */
-		for (ep_ = scanpos + 1; *ep_ && IS_RFC822_CHAR(*ep_); ep_++)
+		for (ep_ = scanpos + 1;
+		     *ep_ && IS_RFC822_CHAR(*(const guchar *)ep_); ep_++)
 			if (*ep_ == '.') {
 				prelast_dot = last_dot;
 				last_dot = ep_;
@@ -878,7 +888,8 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 			}
 
 		/* TODO: really should terminate with an alnum? */
-		for (; ep_ > scanpos && !IS_ASCII_ALNUM(*ep_); --ep_)
+		for (; ep_ > scanpos && !IS_ASCII_ALNUM(*(const guchar *)ep_);
+		     --ep_)
 			;
 		ep_++;
 
@@ -976,6 +987,7 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 }
 
 #undef IS_QUOTE
+#undef IS_ASCII_ALNUM
 #undef IS_RFC822_CHAR
 
 static gchar *make_email_string(const gchar *bp, const gchar *ep)
@@ -1199,7 +1211,7 @@ void textview_write_link(TextView *textview, const gchar *str,
 
 	strcrchomp(buf);
 
-	for (bufp = buf; isspace(*bufp); bufp++)
+	for (bufp = buf; isspace(*(guchar *)bufp); bufp++)
 		gtk_stext_insert(text, textview->msgfont, NULL, NULL, bufp, 1);
 
     	if (prefs_common.enable_color) {
@@ -1852,70 +1864,6 @@ static gint show_url_timeout_cb(gpointer data)
 		return FALSE;
 }
 
-/*!
- *\brief    Check to see if a web URL has been disguised as a different
- *          URL (possible with HTML email).
- *
- *\param    uri The uri to check
- *
- *\param    textview The TextView the URL is contained in
- *
- *\return   gboolean TRUE if the URL is ok, or if the user chose to open
- *          it anyway, otherwise FALSE          
- */
-static gboolean uri_security_check(RemoteURI *uri, TextView *textview) 
-{
-	gchar *clicked_str;
-	gboolean retval = TRUE;
-
-	if (g_strncasecmp(uri->uri, "http:", 5) &&
-	    g_strncasecmp(uri->uri, "https:", 6) &&
-	    g_strncasecmp(uri->uri, "www.", 4)) 
-		return retval;
-
-	clicked_str = gtk_editable_get_chars(GTK_EDITABLE(textview->text),
-					     uri->start,
-					     uri->end);
-	if (clicked_str == NULL)
-		return TRUE;
-
-	if (strcmp(clicked_str, uri->uri) &&
-	    (!g_strncasecmp(clicked_str, "http:",  5) ||
-	     !g_strncasecmp(clicked_str, "https:", 6) ||
-	     !g_strncasecmp(clicked_str, "www.",   4))) {
-		gchar *str;
-		retval = FALSE;
-
-		/* allow uri->uri    == http://somewhere.com
-		   and   clicked_str ==        somewhere.com */
-		str = g_strconcat("http://", clicked_str, NULL);
-
-		if (!g_strcasecmp(str, uri->uri))
-			retval = TRUE;
-		g_free(str);
-	}
-
-	if (retval == FALSE) {
-		gchar *msg = NULL;
-		AlertValue resp;
-
-		msg = g_strdup_printf(_("The real URL (%s) is different from\n"
-					"the apparent URL (%s).  \n"
-					"Open it anyway?"),
-					uri->uri, clicked_str);
-		resp = alertpanel(_("Warning"), 
-				  msg,
-				  _("Yes"), 
-				  _("No"),
-				  NULL);
-		g_free(msg);
-		if (resp == G_ALERTDEFAULT)
-			retval = TRUE;
-	} 
-	g_free(clicked_str);
-	return retval;
-}
-
 static gint textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 				    TextView *textview)
 {
@@ -2008,7 +1956,7 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 						compose_new(account, uri->uri + 7, NULL);
 					}
 				} else {
-					if (uri_security_check(uri, textview) == TRUE) 
+					if (textview_uri_security_check(textview, uri) == TRUE) 
 						open_uri(uri->uri,
 							 prefs_common.uri_cmd);
 				}
@@ -2019,6 +1967,59 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 	if (event)
 		textview->last_buttonpress = event->type;
 	return FALSE;
+}
+
+/*!
+ *\brief    Check to see if a web URL has been disguised as a different
+ *          URL (possible with HTML email).
+ *
+ *\param    uri The uri to check
+ *
+ *\param    textview The TextView the URL is contained in
+ *
+ *\return   gboolean TRUE if the URL is ok, or if the user chose to open
+ *          it anyway, otherwise FALSE          
+ */
+static gboolean textview_uri_security_check(TextView *textview, RemoteURI *uri)
+{
+	gchar *visible_str;
+	gboolean retval = TRUE;
+
+	if (is_uri_string(uri->uri) == FALSE)
+		return TRUE;
+
+	visible_str = gtk_editable_get_chars(GTK_EDITABLE(textview->text),
+					     uri->start, uri->end);
+	if (visible_str == NULL)
+		return TRUE;
+
+	if (strcmp(visible_str, uri->uri) != 0 && is_uri_string(visible_str)) {
+		gchar *uri_path;
+		gchar *visible_uri_path;
+
+		uri_path = get_uri_path(uri->uri);
+		visible_uri_path = get_uri_path(visible_str);
+		if (strcmp(uri_path, visible_uri_path) != 0)
+			retval = FALSE;
+	}
+
+	if (retval == FALSE) {
+		gchar *msg;
+		AlertValue aval;
+
+		msg = g_strdup_printf(_("The real URL (%s) is different from\n"
+					"the apparent URL (%s).\n"
+					"Open it anyway?"),
+				      uri->uri, visible_str);
+		aval = alertpanel(_("Warning"), msg, _("Yes"), _("No"), NULL);
+		g_free(msg);
+		if (aval == G_ALERTDEFAULT)
+			retval = TRUE;
+	}
+
+	g_free(visible_str);
+
+	return retval;
 }
 
 static void textview_uri_list_remove_all(GSList *uri_list)

@@ -582,7 +582,7 @@ PrefsAccount *prefs_account_new(void)
 
 void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 {
-	const gchar *p = label;
+	const guchar *p = label;
 	gint id;
 
 	g_return_if_fail(ac_prefs != NULL);

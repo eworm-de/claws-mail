@@ -83,6 +83,7 @@
 #include "matcher_parser.h"
 #include "hooks.h"
 #include "description_window.h"
+#include "folderutils.h"
 
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_STATUS_WIDTH	13
@@ -3238,53 +3239,14 @@ void summary_delete(SummaryView *summaryview)
 
 void summary_delete_duplicated(SummaryView *summaryview)
 {
-	if (!summaryview->folder_item ||
-	    FOLDER_TYPE(summaryview->folder_item->folder) == F_NEWS) return;
-	if (summaryview->folder_item->stype == F_TRASH) return;
-
 	main_window_cursor_wait(summaryview->mainwin);
-	debug_print("Deleting duplicated messages...");
 	STATUSBAR_PUSH(summaryview->mainwin,
 		       _("Deleting duplicated messages..."));
 
-	folder_item_update_freeze();
-	
-	gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
-				GTK_CTREE_FUNC(summary_delete_duplicated_func),
-				summaryview);
+	folderutils_delete_duplicates(summaryview->folder_item);
 
-	if (prefs_common.immediate_exec)
-		summary_execute(summaryview);
-	else
-		summary_status_show(summaryview);
-
-	folder_item_update_thaw();
-
-	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
-}
-
-static void summary_delete_duplicated_func(GtkCTree *ctree, GtkCTreeNode *node,
-					   SummaryView *summaryview)
-{
-	GtkCTreeNode *found;
-	MsgInfo *msginfo;
-	MsgInfo *dup_msginfo;
-
-	msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
-	
-	if (!msginfo || !msginfo->msgid || !*msginfo->msgid) return;
-
-	found = g_hash_table_lookup(summaryview->msgid_table, msginfo->msgid);
-	
-	if (found && found != node) {
-		dup_msginfo = gtk_ctree_node_get_row_data(ctree, found);
-		/* prefer to delete the unread one */
-		if ((MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_UNREAD(dup_msginfo->flags))
-		||  (MSG_IS_UNREAD(msginfo->flags) == MSG_IS_UNREAD(dup_msginfo->flags)))
-			summary_delete_row(summaryview, node);
-	}
 }
 
 static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
@@ -4591,16 +4553,16 @@ static gint summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	GtkCTreeNode *node;
 	MessageView *messageview;
 	TextView *textview;
-	GtkAdjustment *sumadj;
+	GtkAdjustment *adj;
 
 	if (summary_is_locked(summaryview)) return TRUE;
 	if (!event) return TRUE;
 
 	switch (event->keyval) {
 	case GDK_Left:		/* Move focus */
-		sumadj = gtk_scrolled_window_get_hadjustment
-				(GTK_SCROLLED_WINDOW(summaryview->scrolledwin));
-		if (sumadj->lower != sumadj->value) 
+		adj = gtk_scrolled_window_get_hadjustment
+			(GTK_SCROLLED_WINDOW(summaryview->scrolledwin));
+		if (adj->lower != adj->value)
 			break;
 		/* FALLTHROUGH */	
 	case GDK_Escape:

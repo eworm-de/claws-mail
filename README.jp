@@ -1,6 +1,6 @@
 	Sylpheed - GTK+ ベースの軽量で高速な電子メールクライアント
 
-   Copyright(C) 1999-2002 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>
+   Copyright(C) 1999-2004 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -40,61 +40,86 @@
 What's Sylpheed
 ===============
 
-Sylpheed は GTK+ を使用した、 X Window System 上で動作する
+SylpheedはGUIツールキットにGTK+を使用した、 X Window System上で動作する
+電子メールクライアント&ニュースリーダーです。
 
-  * 軽快な動作
-  * 美しく、洗練されたインタフェース
-  * 容易な設定・直観的な操作
-  * 豊富な機能
+Sylpheed は GNU GPL に従って配布されているフリーソフトウェアです。
 
-を目指した電子メールクライアント(& ニュースリーダー)です。
+Sylpheedは以下のことを目標にして開発されています。
+
+  * CPU・メモリの消費を最小限に抑えて軽快に動作
+  * 1フォルダ中に大量にメッセージが存在する場合(10000通以上)でも高速に処理
+  * シンプルで美しく、洗練されたインタフェースにより直観的な操作が可能
+  * 他のメーラに近い操作が可能
+  * 簡単な設定ですぐに使用可能
+  * メーラに必要とされる機能を完備
+  * 日本語に完全対応し、国際化にも対応
+  * 外部コマンドとの柔軟な連携が可能
+  * 安定動作し、万一クラッシュした場合でも極力データを消失しない
 
 外観やインタフェースは Outlook Express 、 Becky! 、 Datula といった、
 Windows では定番のメーラを参考にしています。また、操作系は Mew や
 Wanderlust 等の Emacs 系メーラを参考にしており、キーボードのみによる操作
-が可能となっています。 Windows 上のメーラ、あるいは Mew や Wanderlust 等
-の使用経験があればすぐに使い方は分かると思います。
+が可能となっています。そのため、他のメーラに慣れている場合でもそれほど
+違和感なく移行できると思います。
 
 メッセージは MH 形式で管理しており、他の MH 形式を使用したメーラ(Mew 等)
-と併用することが可能です。また、 fetchmail や procmail を利用したり、受信
-に外部プログラム(inc, imget 等)を使用することも可能です。
+と併用することが可能です。1ファイル1メールの形式のため、障害が発生した際に
+メールを失う危険性が少なくなっています。 mbox形式のメッセージをインポート・
+エクスポートすることも可能です。また、 fetchmail や procmail を利用したり、
+受信に外部プログラム(inc, imget 等)を使用することも可能です。
 
-現在実装されている機能は
+現在実装されている主な機能
+==========================
+
+対応プロトコル
 
 	o POP3 対応
 	o IMAP4rev1 対応
-	o 統合 NetNews クライアント
+	o SMTP
+	o NNTP
+	o SSL/TLSv1 (POP3, SMTP, IMAP4rev1, NNTP)
+	o IPv6
+
+機能
+
 	o 無制限の複数アカウント管理
 	o スレッド表示
 	o 振り分け機能
 	o MIME (添付)
+	o 統合 ニュースリーダー
+	o SMTP AUTH 対応
+	o CRAM-MD5 認証 (SMTP AUTH / IMAP4rev1)
+	o APOP 認証 (POP3)
+	o PGP 署名・暗号化(要 GPGME)
 	o 画像表示機能を内蔵
-	o X-Face 対応
-	o 複数の MH フォルダに対応
+	o X-Face 表示
+	o ユーザ定義ヘッダ
+	o カラーラベル
+	o Mew/Wanderlust 互換キーバインド
+	o 複数の MH フォルダ対応
 	o mbox ファイルのインポート / エクスポート
-	o コマンドラインによるリモート操作
-	o フォルダ毎の設定
-	o 外部エディタ対応
-	o 送信待機機能
-	o 自動メールチェック機能
-	o 草稿機能
-	o テンプレート機能
-	o 自動改行機能
+	o 外部エディタ
+	o 送信待機
+	o 自動メールチェック
+	o 草稿
+	o テンプレート
+	o 自動改行
 	o クリッカブル URI
 	o XML ベースのアドレス帳
-	o LDAP, vCard, JPilot 対応
 	o 新着・未読管理
-	o Mew/Wanderlust ライクなキーバインド
-	o 印刷機能
-	o APOP 認証対応
-	o SMTP AUTH 対応
-	o SSL 対応 (POP3, SMTP, IMAP4rev1)
-	o IPv6 対応
+	o 印刷
+	o オフラインモード
+	o コマンドラインによるリモート操作
+	o フォルダ毎の設定
+	o LDAP, vCard, JPilot 対応
 	o ドラッグ & ドロップ (一部実装)
-	o GnuPG 対応 (現在実装中)
-	o automake + autoconf 対応
+
+その他
+
+	o autoconf, automake 対応
 	o gettext によるメッセージの国際化対応
-	o UTF-8 (Unicode) を含む多数のコードセットに対応(libjconv 使用時)
+	o UTF-8 (Unicode) を含む多数の文字コードに対応
 
 等です。
 
@@ -157,6 +182,8 @@ Sylpheed のほとんどの機能は設定ダイアログから設定できますが、ユーザインタ
 Sylpheed が起動していないときに ~/.sylpheed/sylpheedrc をエディタで編集
 する必要があります。
 
+allow_jisx0201_kana		JIS X 0201 カナ(半角カナ)を送信時に許可します。
+				0: off  1: on   [デフォルト: 0]
 bold_font			フォルダ、サマリ、テキストビューで使用される
 				ボールドフォント
 small_font			サマリビュー等で使用される小フォント

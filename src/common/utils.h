@@ -265,7 +265,7 @@ wchar_t *wcscasestr		(const wchar_t *haystack,
 gint get_mbs_len		(const gchar	*s);
 
 gboolean is_next_nonascii	(const guchar *s);
-gint get_next_word_len		(const gchar *s);
+gint get_next_word_len		(const guchar *s);
 
 /* functions for string parsing */
 gint subject_compare			(const gchar	*s1,
@@ -350,6 +350,8 @@ gchar *trim_string			(const gchar	*str,
 					 gint		 len);
 
 GList *uri_list_extract_filenames	(const gchar	*uri_list);
+gboolean is_uri_string			(const gchar	*str);
+gchar *get_uri_path			(const gchar	*uri);
 void decode_uri				(gchar		*decoded_uri,
 					 const gchar	*encoded_uri);
 gint scan_mailto_url			(const gchar	*mailto,

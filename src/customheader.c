@@ -98,3 +98,23 @@ void custom_header_free(CustomHeader *ch)
 	g_free(ch->value);
 	g_free(ch);
 }
+
+gboolean custom_header_is_allowed(const gchar *header)
+{
+	g_return_val_if_fail(header != NULL, FALSE);
+
+	if (strcasecmp(header, "Date")         != 0 &&
+	    strcasecmp(header, "From")         != 0 &&
+	    strcasecmp(header, "To")           != 0 &&
+	 /* strcasecmp(header, "Sender")       != 0 && */
+	    strcasecmp(header, "Message-Id")   != 0 &&
+	    strcasecmp(header, "In-Reply-To")  != 0 &&
+	    strcasecmp(header, "References")   != 0 &&
+	    strcasecmp(header, "Mime-Version") != 0 &&
+	    strcasecmp(header, "Content-Type") != 0 &&
+	    strcasecmp(header, "Content-Transfer-Encoding")
+	    != 0)
+		return TRUE;
+
+	return FALSE;
+}

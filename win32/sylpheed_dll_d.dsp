@@ -264,6 +264,10 @@ SOURCE=..\src\foldersel.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\folderutils.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\folderview.c
 # End Source File
 # Begin Source File
@@ -909,6 +913,10 @@ SOURCE=..\src\folder_item_prefs.h
 # Begin Source File
 
 SOURCE=..\src\foldersel.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\folderutils.h
 # End Source File
 # Begin Source File
 

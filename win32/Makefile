@@ -238,6 +238,7 @@ OBJECTS= \
 	folder.o \
 	folder_item_prefs.o \
 	foldersel.o \
+	folderutils.o \
 	folderview.o \
 	grouplistdialog.o \
 	gtkaspell.o \
@@ -580,6 +581,7 @@ filtering.o: 	filtering.c filtering.h
 folder.o: 	folder.c folder.h
 folder_item_prefs.o: 	folder_item_prefs.c folder_item_prefs.h
 foldersel.o: 	foldersel.c foldersel.h
+folderutils.o: 	folderutils.c folderutils.h
 folderview.o: 	folderview.c folderview.h
 grouplistdialog.o: 	grouplistdialog.c grouplistdialog.h
 gtkaspell.o: 	gtkaspell.c gtkaspell.h

@@ -836,7 +836,8 @@ GList *procmime_get_mime_type_list(void)
 	GList *list = NULL;
 	FILE *fp;
 	gchar buf[BUFFSIZE];
-	gchar *p, *delim;
+	guchar *p;
+	gchar *delim;
 	MimeType *mime_type;
  		gchar *mimetypes_filename;
 

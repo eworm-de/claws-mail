@@ -1,5 +1,18 @@
 Changes of Sylpheed
 
+* 0.9.9
+
+    * Word wrapping on multibyte locales has been improved.
+    * The receive menu has been improved.
+    * The combo button for toolbar has been implemented.
+    * The download feature for IMAP / News folders has been implemented.
+    * URL is now shown on the toolbar when links are clicked, and put
+      warning in case of fake URL.
+    * JIS X 0201 Kana (hankaku kana) will be converted into JIS X 0208
+      when sending.
+    * Crashes on 64-bit environments has been fixed.
+    * Other bugfixes have been made.
+
 * 0.9.8a
 
     * The bug that caused the failure of cache data read has been fixed.

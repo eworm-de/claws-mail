@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -176,6 +176,72 @@ void conv_jistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 	*out = '\0';
 }
 
+#define JIS_HWDAKUTEN		0x5e
+#define JIS_HWHANDAKUTEN	0x5f
+
+static gint conv_jis_hantozen(guchar *outbuf, guchar jis_code, guchar sound_sym)
+{
+	static guint16 h2z_tbl[] = {
+		/* 0x20 - 0x2f */
+		0x0000, 0x2123, 0x2156, 0x2157, 0x2122, 0x2126, 0x2572, 0x2521,
+		0x2523, 0x2525, 0x2527, 0x2529, 0x2563, 0x2565, 0x2567, 0x2543,
+		/* 0x30 - 0x3f */
+		0x213c, 0x2522, 0x2524, 0x2526, 0x2528, 0x252a, 0x252b, 0x252d,
+		0x252f, 0x2531, 0x2533, 0x2535, 0x2537, 0x2539, 0x253b, 0x253d,
+		/* 0x40 - 0x4f */
+		0x253f, 0x2541, 0x2544, 0x2546, 0x2548, 0x254a, 0x254b, 0x254c,
+		0x254d, 0x254e, 0x254f, 0x2552, 0x2555, 0x2558, 0x255b, 0x255e,
+		/* 0x50 - 0x5f */
+		0x255f, 0x2560, 0x2561, 0x2562, 0x2564, 0x2566, 0x2568, 0x2569,
+		0x256a, 0x256b, 0x256c, 0x256d, 0x256f, 0x2573, 0x212b, 0x212c
+	};
+
+	static guint16 dakuten_tbl[] = {
+		/* 0x30 - 0x3f */
+		0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x252c, 0x252e,
+		0x2530, 0x2532, 0x2534, 0x2536, 0x2538, 0x253a, 0x253c, 0x253e,
+		/* 0x40 - 0x4f */
+		0x2540, 0x2542, 0x2545, 0x2547, 0x2549, 0x0000, 0x0000, 0x0000,
+		0x0000, 0x0000, 0x2550, 0x2553, 0x2556, 0x2559, 0x255c, 0x0000
+	};
+
+	static guint16 handakuten_tbl[] = {
+		/* 0x4a - 0x4e */
+		0x2551, 0x2554, 0x2557, 0x255a, 0x255d
+	};
+
+	guint16 out_code;
+
+	jis_code &= 0x7f;
+	sound_sym &= 0x7f;
+
+	if (jis_code < 0x21 || jis_code > 0x5f)
+		return 0;
+
+	if (sound_sym == JIS_HWDAKUTEN &&
+	    jis_code >= 0x36 && jis_code <= 0x4e) {
+		out_code = dakuten_tbl[jis_code - 0x30];
+		if (out_code != 0) {
+			*outbuf = out_code >> 8;
+			*(outbuf + 1) = out_code & 0xff;
+			return 2;
+		}
+	}
+
+	if (sound_sym == JIS_HWHANDAKUTEN &&
+	    jis_code >= 0x4a && jis_code <= 0x4e) {
+		out_code = handakuten_tbl[jis_code - 0x4a];
+		*outbuf = out_code >> 8;
+		*(outbuf + 1) = out_code & 0xff;
+		return 2;
+	}
+
+	out_code = h2z_tbl[jis_code - 0x20];
+	*outbuf = out_code >> 8;
+	*(outbuf + 1) = out_code & 0xff;
+	return 1;
+}
+
 void conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	const guchar *in = inbuf;
@@ -201,12 +267,36 @@ void conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 				}
 			}
 		} else if (iseuchwkana1(*in)) {
-			in++;
-			if (iseuchwkana2(*in)) {
-				HW_IN();
-				*out++ = *in++ & 0x7f;
+			if (iseuchwkana2(*(in + 1))) {
+				if (prefs_common.allow_jisx0201_kana) {
+					HW_IN();
+					in++;
+					*out++ = *in++ & 0x7f;
+				} else {
+					guchar jis_ch[2];
+					gint len;
+
+					if (iseuchwkana1(*(in + 2)) &&
+					    iseuchwkana2(*(in + 3)))
+						len = conv_jis_hantozen
+							(jis_ch,
+							 *(in + 1), *(in + 3));
+					else
+						len = conv_jis_hantozen
+							(jis_ch,
+							 *(in + 1), '\0');
+					if (len == 0)
+						in += 2;
+					else {
+						K_IN();
+						in += len * 2;
+						*out++ = jis_ch[0];
+						*out++ = jis_ch[1];
+					}
+				}
 			} else {
 				K_OUT();
+				in++;
 				if (*in != '\0' && !isascii(*in)) {
 					*out++ = SUBST_CHAR;
 					in++;
@@ -1363,7 +1453,7 @@ const gchar *conv_get_outgoing_charset_str(void)
 	const gchar *str;
 
 	if (prefs_common.outgoing_charset) {
-		if (!isalpha(prefs_common.outgoing_charset[0])) {
+		if (!isalpha((guchar)prefs_common.outgoing_charset[0])) {
 			g_free(prefs_common.outgoing_charset);
 			prefs_common.outgoing_charset = g_strdup(CS_AUTO);
 		} else if (strcmp(prefs_common.outgoing_charset, CS_AUTO) != 0)
@@ -1480,13 +1570,13 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 
 #define LBREAK_IF_REQUIRED(cond, is_plain_text)				\
 {									\
-	if (len - (destp - dest) < MAX_LINELEN + 2) {			\
+	if (len - (destp - (guchar *)dest) < MAX_LINELEN + 2) {		\
 		*destp = '\0';						\
 		return;							\
 	}								\
 									\
 	if ((cond) && *srcp) {						\
-		if (destp > dest && left < MAX_LINELEN - 1) {		\
+		if (destp > (guchar *)dest && left < MAX_LINELEN - 1) {	\
 			if (isspace(*(destp - 1)))			\
 				destp--;				\
 			else if (is_plain_text && isspace(*srcp))	\
@@ -1508,8 +1598,8 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 	gint mimestr_len;
 	gchar *mimesep_enc;
 	gint left;
-	const gchar *srcp = src;
-	gchar *destp = dest;
+	const guchar *srcp = src;
+	guchar *destp = dest;
 	gboolean use_base64;
 
 	if (MB_CUR_MAX > 1) {
@@ -1570,7 +1660,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 			gchar *part_str;
 			gchar *out_str;
 			gchar *enc_str;
-			const gchar *p = srcp;
+			const guchar *p = srcp;
 			gint out_str_len;
 			gint out_enc_str_len;
 			gint mime_block_len;

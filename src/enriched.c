@@ -170,7 +170,7 @@ static ERTFState ertf_parse_tag(ERTFParser *parser)
 	ertf_get_parenthesis (parser, buf, sizeof(buf));
 	
 	for (p = buf; *p != '\0'; p++) {
-		if (isspace (*p)) {
+		if (isspace (*(guchar *)p)) {
 			*p = '\0';
 			break;
 		}

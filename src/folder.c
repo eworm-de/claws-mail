@@ -1948,19 +1948,34 @@ gchar *folder_item_fetch_msg(FolderItem *item, gint num)
 
 gint folder_item_fetch_all_msg(FolderItem *item)
 {
+	Folder *folder;
 	GSList *mlist;
 	GSList *cur;
+	gint num = 0;
 	gint ret = 0;
 
 	g_return_val_if_fail(item != NULL, -1);
 
 	debug_print("fetching all messages in %s ...\n", item->path);
 
+	folder = item->folder;
+
+	if (folder->ui_func)
+		folder->ui_func(folder, item, folder->ui_func_data ?
+				folder->ui_func_data : GINT_TO_POINTER(num));
+
 	mlist = folder_item_get_msg_list(item);
 
 	for (cur = mlist; cur != NULL; cur = cur->next) {
 		MsgInfo *msginfo = (MsgInfo *)cur->data;
 		gchar *msg;
+
+		num++;
+		if (folder->ui_func)
+			folder->ui_func(folder, item,
+					folder->ui_func_data ?
+					folder->ui_func_data :
+					GINT_TO_POINTER(num));
 
 		msg = folder_item_fetch_msg(item, msginfo->msgnum);
 		if (!msg) {
@@ -2571,6 +2586,7 @@ gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
 
 	if (!item->cache) folder_item_read_cache(item);
 
+	folder_item_update_freeze();
 	while (msglist != NULL) {
 		MsgInfo *msginfo = (MsgInfo *)msglist->data;
 
@@ -2579,6 +2595,7 @@ gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
 		msgcache_remove_msg(item->cache, msginfo->msgnum);
 		msglist = msglist->next;
 	}
+	folder_item_update_thaw();
 
 	return ret;
 }

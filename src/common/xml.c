@@ -179,7 +179,7 @@ gint xml_get_dtd(XMLFile *file)
 gint xml_parse_next_tag(XMLFile *file)
 {
 	gchar buf[XMLBUFSIZE];
-	gchar *bufp = buf;
+	guchar *bufp = buf;
 	XMLTag *tag;
 	gint len;
 

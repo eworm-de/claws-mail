@@ -483,6 +483,10 @@ static gint prefs_custom_header_clist_set_row(PrefsAccount *ac, gint row)
 		alertpanel_error(_("Header name is not set."));
 		return -1;
 	}
+	if (!custom_header_is_allowed(entry_text)) {
+		alertpanel_error(_("This Header name is not allowed as a custom header."));
+		return -1;
+	}
 
 	ch = g_new0(CustomHeader, 1);
 

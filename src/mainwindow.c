@@ -960,6 +960,8 @@ MainWindow *main_window_create(SeparateType type)
 		(GTK_STATUSBAR(statusbar), "Folder View");
 	mainwin->summaryview_cid = gtk_statusbar_get_context_id
 		(GTK_STATUSBAR(statusbar), "Summary View");
+	mainwin->messageview_cid = gtk_statusbar_get_context_id
+		(GTK_STATUSBAR(statusbar), "Message View");
 
 	/* allocate colors for summary view and folder view */
 	summaryview->color_marked.red = summaryview->color_marked.green = 0;
@@ -1455,6 +1457,9 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 			      GTK_ARROW_DOWN, GTK_SHADOW_OUT);
 	}
 
+	if (mainwin->messageview->visible == FALSE)
+		messageview_clear(mainwin->messageview);
+
 	main_window_set_menu_sensitive(mainwin);
 
 	prefs_common.msgview_visible = mainwin->messageview->visible;
@@ -1537,6 +1542,30 @@ void main_window_get_position(MainWindow *mainwin)
 		prefs_common.main_msgwin_y = y;
 		debug_print("message window position: %d, %d\n", x, y);
 	}
+}
+
+void main_window_progress_on(MainWindow *mainwin)
+{
+	gtk_progress_set_show_text(GTK_PROGRESS(mainwin->progressbar), TRUE);
+	gtk_progress_set_format_string(GTK_PROGRESS(mainwin->progressbar), "");
+}
+
+void main_window_progress_off(MainWindow *mainwin)
+{
+	gtk_progress_set_show_text(GTK_PROGRESS(mainwin->progressbar), FALSE);
+	gtk_progress_bar_update(GTK_PROGRESS_BAR(mainwin->progressbar), 0.0);
+	gtk_progress_set_format_string(GTK_PROGRESS(mainwin->progressbar), "");
+}
+
+void main_window_progress_set(MainWindow *mainwin, gint cur, gint total)
+{
+	gchar buf[32];
+
+	g_snprintf(buf, sizeof(buf), "%d / %d", cur, total);
+	gtk_progress_set_format_string(GTK_PROGRESS(mainwin->progressbar), buf);
+	gtk_progress_bar_update(GTK_PROGRESS_BAR(mainwin->progressbar),
+				(cur == 0 && total == 0) ? 0 :
+				(gfloat)cur / (gfloat)total);
 }
 
 void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)

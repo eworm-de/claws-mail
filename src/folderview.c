@@ -1851,6 +1851,26 @@ static GtkCTreeNode *folderview_find_by_name(GtkCTree *ctree,
 	return NULL;
 }
 
+static void folderview_download_func(Folder *folder, FolderItem *item,
+				     gpointer data)
+{
+	GList *list;
+
+	for (list = folderview_list; list != NULL; list = list->next) {
+		FolderView *folderview = (FolderView *)list->data;
+		MainWindow *mainwin = folderview->mainwin;
+		gchar *str;
+
+		str = g_strdup_printf
+			(_("Downloading messages in %s ..."), item->path);
+		main_window_progress_set(mainwin,
+					 GPOINTER_TO_INT(data), item->total_msgs);
+		STATUSBAR_PUSH(mainwin, str);
+		STATUSBAR_POP(mainwin);
+		g_free(str);
+	}
+}
+
 static void folderview_download_cb(FolderView *folderview, guint action,
 				   GtkWidget *widget)
 {
@@ -1873,11 +1893,13 @@ static void folderview_download_cb(FolderView *folderview, guint action,
 			return;
 	}
 #endif
-	STATUSBAR_PUSH(mainwin, _("Downloading messages..."));
 	main_window_cursor_wait(mainwin);
 	inc_lock();
 	main_window_lock(mainwin);
+	gtk_widget_set_sensitive(folderview->ctree, FALSE);
+	main_window_progress_on(mainwin);
 	GTK_EVENTS_FLUSH();
+	folder_set_ui_func(item->folder, folderview_download_func, NULL);
 	if (folder_item_fetch_all_msg(item) < 0) {
 		gchar *name;
 
@@ -1885,10 +1907,12 @@ static void folderview_download_cb(FolderView *folderview, guint action,
 		alertpanel_error(_("Error occurred while downloading messages in `%s'."), name);
 		g_free(name);
 	}
+	folder_set_ui_func(item->folder, NULL, NULL);
+	main_window_progress_off(mainwin);
+	gtk_widget_set_sensitive(folderview->ctree, TRUE);
 	main_window_unlock(mainwin);
 	inc_unlock();
 	main_window_cursor_normal(mainwin);
-	STATUSBAR_POP(mainwin);
 }
 
 static void folderview_update_tree_cb(FolderView *folderview, guint action,

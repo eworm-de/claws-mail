@@ -1898,7 +1898,8 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	}
 
 	if (msginfo->subject && *msginfo->subject) {
-		gchar *buf, *buf2, *p;
+		gchar *buf, *buf2;
+		guchar *p;
 
 		buf = p = g_strdup(msginfo->subject);
 		p += subject_get_prefix_length(p);
@@ -2176,20 +2177,7 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 		}
 		if (mbstowcs(NULL, buf, 0) == -1)
 			badtxt = TRUE;
-//<<<<<<< compose.c
-//#ifdef noconvWIN32
-//		{
-//			gchar *p_buf;
-//			p_buf = g_strdup(buf);
-//			locale_to_utf8(&p_buf);
-//			gtk_stext_insert(text, NULL, NULL, NULL, p_buf, -1);
-//			g_free(p_buf);
-//		}
-//#else
-//=======
-//>>>>>>> 1.395
 		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
-//#endif
 	}
 
 	gtk_stext_thaw(text);
@@ -2483,7 +2471,7 @@ static void compose_wrap_line(Compose *compose)
 			if (ch_len == 1 
 			    && strchr(prefs_common.quote_chars, *cbuf))
 				quoted = 1;
-			else if (ch_len != 1 || !isspace(*cbuf))
+			else if (ch_len != 1 || !isspace(*(guchar *)cbuf))
 				quoted = 0;
 
 			line_end = 0;
@@ -2530,15 +2518,16 @@ static void compose_wrap_line(Compose *compose)
 			ch_len = 1;
 		}
 
-		if (ch_len == 1 && isspace(*cbuf))
+		if (ch_len == 1 && isspace(*(guchar *)cbuf))
 			space = 1;
 
 		if (ch_len == 1 && *cbuf == '\n') {
 			guint replace = 0;
-			if (last_ch_len == 1 && !isspace(last_ch)) {
+			if (last_ch_len == 1 && !isspace((guchar)last_ch)) {
 				if (cur_pos + 1 < p_end) {
 					GET_CHAR(cur_pos + 1, cbuf, ch_len);
-					if (ch_len == 1 && !isspace(*cbuf))
+					if (ch_len == 1 &&
+					    !isspace(*(guchar *)cbuf))
 						replace = 1;
 				}
 			}
@@ -2569,7 +2558,7 @@ static void compose_wrap_line(Compose *compose)
 			gint tlen = ch_len;
 
 			GET_CHAR(line_pos - 1, cbuf, ch_len);
-			if (ch_len == 1 && isspace(*cbuf)) {
+			if (ch_len == 1 && isspace(*(guchar *)cbuf)) {
 				gtk_stext_set_point(text, line_pos);
 				gtk_stext_backward_delete(text, 1);
 				p_end--;
@@ -2665,7 +2654,7 @@ static guint get_indent_length(GtkSText *text, guint start_pos, guint text_len)
 			break;
 		case WAIT_FOR_INDENT_CHAR_OR_SPACE:
 			if (is_indent == FALSE && is_space == FALSE &&
-			    !isupper(cbuf[0]))
+			    !isupper((guchar)cbuf[0]))
 				goto out;
 			if (is_space == TRUE) {
 				alnum_cnt = 0;
@@ -2679,7 +2668,7 @@ static guint get_indent_length(GtkSText *text, guint start_pos, guint text_len)
 			}
 			break;
 		case WAIT_FOR_INDENT_CHAR:
-			if (is_indent == FALSE && !isupper(cbuf[0]))
+			if (is_indent == FALSE && !isupper((guchar)cbuf[0]))
 				goto out;
 			if (is_indent == TRUE) {
 				if (alnum_cnt > 0 
@@ -2861,7 +2850,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 
 				/* insert space if it's alphanumeric */
 				if ((cur_pos != line_pos) &&
-				    ((clen > 1) || isalnum(cb[0]))) {
+				    ((clen > 1) || isalnum((guchar)cb[0]))) {
 					gtk_stext_insert(text, NULL, NULL,
 							NULL, " ", 1);
 					tlen++;
@@ -2905,7 +2894,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 		}
 
 		/* possible line break */
-		if (ch_len == 1 && isspace(*cbuf)) {
+		if (ch_len == 1 && isspace(*(guchar *)cbuf)) {
 			line_pos = cur_pos + 1;
 			line_len = cur_len + ch_len;
 		}
@@ -2931,7 +2920,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 			GET_CHAR(line_pos - 1, cbuf, clen);
 
 			/* if next character is space delete it */
-			if (clen == 1 && isspace(*cbuf)) {
+			if (clen == 1 && isspace(*(guchar *)cbuf)) {
 				if (p_pos + i_len != line_pos ||
                             	    !gtk_stext_is_uri_string
 					(text, line_pos, tlen)) {
@@ -4386,28 +4375,26 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	}
 
 	/* From */
-	if (!IS_IN_CUSTOM_HEADER("From")) {
-		if (compose->account->name && *compose->account->name) {
+	if (compose->account->name && *compose->account->name) {
 #ifdef WIN32
 		gchar *p_name;
 
 		p_name = g_strdup(compose->account->name);
 		locale_from_utf8(&p_name);
-			compose_convert_header
-				(buf, sizeof(buf), p_name,
-				 strlen("From: "), TRUE);
+		compose_convert_header
+			(buf, sizeof(buf), p_name,
+			 strlen("From: "), TRUE);
 		g_free(p_name);
 #else
-			compose_convert_header
-				(buf, sizeof(buf), compose->account->name,
-				 strlen("From: "), TRUE);
+		compose_convert_header
+			(buf, sizeof(buf), compose->account->name,
+			 strlen("From: "), TRUE);
 #endif
-			QUOTE_IF_REQUIRED(name, buf);
-			fprintf(fp, "From: %s <%s>\n",
-				name, compose->account->address);
-		} else
-			fprintf(fp, "From: %s\n", compose->account->address);
-	}
+		QUOTE_IF_REQUIRED(name, buf);
+		fprintf(fp, "From: %s <%s>\n",
+			name, compose->account->address);
+	} else
+		fprintf(fp, "From: %s\n", compose->account->address);
 	
 	/* To */
 	compose_write_headers_from_headerlist(compose, fp, "To", ", ");
@@ -4615,17 +4602,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		     cur = cur->next) {
 			CustomHeader *chdr = (CustomHeader *)cur->data;
 
-			if (strcasecmp(chdr->name, "Date")         != 0 &&
-			    strcasecmp(chdr->name, "From")         != 0 &&
-			    strcasecmp(chdr->name, "To")           != 0 &&
-			 /* strcasecmp(chdr->name, "Sender")       != 0 && */
-			    strcasecmp(chdr->name, "Message-Id")   != 0 &&
-			    strcasecmp(chdr->name, "In-Reply-To")  != 0 &&
-			    strcasecmp(chdr->name, "References")   != 0 &&
-			    strcasecmp(chdr->name, "Mime-Version") != 0 &&
-			    strcasecmp(chdr->name, "Content-Type") != 0 &&
-			    strcasecmp(chdr->name, "Content-Transfer-Encoding")
-			    != 0) {
+			if (custom_header_is_allowed(chdr->name)) {
 #ifdef WIN32
 				gchar *p_value;
 				p_value = chdr->value ? g_strdup(chdr->value) : g_strdup("");
