@@ -1,3 +1,64 @@
+2003-03-11 [melvin]	0.8.10claws108
+
+	* po/fr.po
+		Updated French translations
+
+2003-03-11 [paul]	0.8.10claws107
+
+	* manual/en/Makefile.am
+	  manual/en/*.html
+	  	update English manual, add a new page
+		updated by Francois Barriere <fbarriere@atmel.fr>
+		
+	* po/bg.po
+	  po/it.po
+	  po/sr.po
+	  	update Bulgarian, Italian, and Serbian translations
+		submitted by George Danchev, Alessandro Maestri, and
+		Urke MMI
+
+2003-03-10 [paul]	0.8.10claws106
+
+	* src/gtk/about.c
+	  src/gtk/prefswindow.c
+	  	make some strings translatable
+
+2003-03-10 [darko]	0.8.10claws105
+
+	* src/compose.c
+		code cleanup to make Hiro happy
+
+2003-03-10 [paul]	0.8.10claws104
+
+	* sync with 0.8.11cvs2
+		see ChangeLog 2003-03-10
+
+2003-03-09 [melvin]	0.8.10claws103
+
+	* src/textview.c
+		textview_set_font(): fix for message display in
+	  	UTF-8 locales (thanks to Sergey Vlasov).
+		(was unintentionnaly reverted in 0.8.6claws6)	
+
+2003-03-08 [darko]	0.8.10claws102
+
+	* src/compose.c
+		fix infinite loop in wrapping as reported
+		by happycactus
+		obsoletes patch #696482
+
+2003-03-08 [christoph]	0.8.10claws101
+
+	* src/imap.c
+		add workaround for IMAP servers that do not
+		support the "UID SEARCH UID" command
+
+2003-03-07 [christoph]	0.8.10claws100
+
+	* src/plugins/spamassassin/spamassassin.[ch]
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		code cleanup
+
 2003-03-07 [paul]	0.8.10claws99
 
 	* po/es.po

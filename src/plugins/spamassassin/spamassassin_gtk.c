@@ -65,6 +65,7 @@ static void foldersel_cb(GtkWidget *widget, gpointer data)
 static void spamassassin_create_widget_func(PrefsPage * _page, GtkWindow *window, gpointer data)
 {
 	struct SpamAssassinPage *page = (struct SpamAssassinPage *) _page;
+	SpamAssassinConfig *config;
 
 	/* ------------------ code made by glade -------------------- */
 	GtkWidget *table1;
@@ -199,17 +200,19 @@ static void spamassassin_create_widget_func(PrefsPage * _page, GtkWindow *window
 	gtk_misc_set_alignment(GTK_MISC(label11), 0, 0.5);
 	/* --------------------------------------------------------- */
 
+	config = spamassassin_get_config();
+
 	gtk_widget_set_usize(GTK_WIDGET(port), 64, -1);
 	gtk_signal_connect(GTK_OBJECT(button4), "released", GTK_SIGNAL_FUNC(foldersel_cb), page);
 
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable), spamassassin_enable);
-	if (spamassassin_hostname != NULL)
-		gtk_entry_set_text(GTK_ENTRY(hostname), spamassassin_hostname);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(port), (float) spamassassin_port);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(max_size), (float) spamassassin_max_size);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(receive_spam), spamassassin_receive_spam);
-	if (spamassassin_save_folder != NULL)
-		gtk_entry_set_text(GTK_ENTRY(save_folder), spamassassin_save_folder);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable), config->enable);
+	if (config->hostname != NULL)
+		gtk_entry_set_text(GTK_ENTRY(hostname), config->hostname);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(port), (float) config->port);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(max_size), (float) config->max_size);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(receive_spam), config->receive_spam);
+	if (config->save_folder != NULL)
+		gtk_entry_set_text(GTK_ENTRY(save_folder), config->save_folder);
 	
 	page->enable = enable;
 	page->hostname = hostname;
@@ -226,65 +229,48 @@ static void spamassassin_destroy_widget_func(PrefsPage *_page)
 	debug_print("Destroying SpamAssassin widget\n");
 }
 
-#ifdef WIN32
-void getconf()
-{
-	_spamassassin_cfg * p_spamassassin_cfg = &spamassassin_cfg;
-	spamassassin_getconf(p_spamassassin_cfg);
-	FROM_SPAMCFG_STRUCT(p_spamassassin_cfg);
-}
-
-void setconf()
-{
-	_spamassassin_cfg * p_spamassassin_cfg = &spamassassin_cfg;
-	TO_SPAMCFG_STRUCT(p_spamassassin_cfg);
-	spamassassin_setconf(p_spamassassin_cfg);
-}
-#endif
-
 static void spamassassin_save_func(PrefsPage *_page)
 {
 	struct SpamAssassinPage *page = (struct SpamAssassinPage *) _page;
-	gchar *tmp;
+	SpamAssassinConfig *config;
 
 	debug_print("Saving SpamAssassin Page\n");
 
-	spamassassin_enable = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->enable));
-	if (spamassassin_hostname)
-		g_free(spamassassin_hostname);
-	spamassassin_hostname = gtk_editable_get_chars(GTK_EDITABLE(page->hostname), 0, -1);
-	tmp = gtk_editable_get_chars(GTK_EDITABLE(page->port), 0, -1);
-	spamassassin_port = atoi(tmp);
-	g_free(tmp);
-	spamassassin_max_size = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->max_size));
-	spamassassin_receive_spam = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->receive_spam));
-	if (spamassassin_save_folder)
-		g_free(spamassassin_save_folder);
-	spamassassin_save_folder = gtk_editable_get_chars(GTK_EDITABLE(page->save_folder), 0, -1);
+	config = spamassassin_get_config();
 
-#ifdef WIN32
-	setconf();
-#endif
+	/* enable */
+	config->enable = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->enable));
+
+	/* hostname */
+	g_free(config->hostname);
+	config->hostname = gtk_editable_get_chars(GTK_EDITABLE(page->hostname), 0, -1);
+
+	/* port */
+	config->port = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->port));
+
+	/* maxsize */
+	config->max_size = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->max_size));
+
+	/* receive_spam */
+	config->receive_spam = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->receive_spam));
+
+	/* save_folder */
+	g_free(config->save_folder);
+	config->save_folder = gtk_editable_get_chars(GTK_EDITABLE(page->save_folder), 0, -1);
+
 	spamassassin_save_config();
 }
 
-static struct SpamAssassinPage *spamassassin_page;
+static struct SpamAssassinPage spamassassin_page;
 
 gint plugin_init(gchar **error)
 {
-	struct SpamAssassinPage *page;
+	spamassassin_page.page.path = "Filtering/SpamAssassin";
+	spamassassin_page.page.create_widget = spamassassin_create_widget_func;
+	spamassassin_page.page.destroy_widget = spamassassin_destroy_widget_func;
+	spamassassin_page.page.save_page = spamassassin_save_func;
 
-#ifdef WIN32
-	getconf();
-#endif
-	page = g_new0(struct SpamAssassinPage, 1);
-	page->page.path = _("Filtering/SpamAssassin");
-	page->page.create_widget = spamassassin_create_widget_func;
-	page->page.destroy_widget = spamassassin_destroy_widget_func;
-	page->page.save_page = spamassassin_save_func;
-	prefs_gtk_register_page((PrefsPage *) page);
-
-	spamassassin_page = page;
+	prefs_gtk_register_page((PrefsPage *) &spamassassin_page);
 
 	debug_print("SpamAssassin GTK plugin loaded\n");
 	return 0;	
@@ -292,8 +278,7 @@ gint plugin_init(gchar **error)
 
 void plugin_done()
 {
-	prefs_gtk_unregister_page((PrefsPage *) spamassassin_page);
-	g_free(spamassassin_page);
+	prefs_gtk_unregister_page((PrefsPage *) &spamassassin_page);
 
 	debug_print("SpamAssassin GTK plugin unloaded\n");
 }

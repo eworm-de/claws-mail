@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@
 #include "intl.h"
 #include "headerview.h"
 #include "prefs_common.h"
+#include "codeconv.h"
 #include "gtkutils.h"
 #include "utils.h"
 
@@ -172,61 +173,53 @@ void headerview_init(HeaderView *headerview)
 
 void headerview_show(HeaderView *headerview, MsgInfo *msginfo)
 {
-#ifdef WIN32
-	gchar *p_subject    = g_strdup( msginfo->subject );
-	gchar *p_from       = g_strdup( msginfo->from );
-	gchar *p_to         = g_strdup( msginfo->to );
-	gchar *p_newsgroups = g_strdup( msginfo->newsgroups );
+	gchar *str;
 
-	locale_to_utf8( &p_subject ) ;
-	locale_to_utf8( &p_from ) ;
-	locale_to_utf8( &p_to ) ;
-	locale_to_utf8( &p_newsgroups ) ;
-#endif
 	headerview_clear(headerview);
 
+	if (msginfo->from) {
+		Xstrdup_a(str, msginfo->from, return);
+		conv_unreadable_locale(str);
+#ifdef WIN32
+		Xlocale_to_utf8_a(str, msginfo->from, return);
+#endif
+	} else
+		str = NULL;
 	gtk_label_set_text(GTK_LABEL(headerview->from_body_label),
-#ifdef WIN32
-			   p_from ? p_from : _("(No From)"));
-#else
-			   msginfo->from ? msginfo->from : _("(No From)"));
-#endif
+			   str ? str : _("(No From)"));
 	if (msginfo->to) {
-		gtk_label_set_text(GTK_LABEL(headerview->to_body_label),
+		Xstrdup_a(str, msginfo->to, return);
+		conv_unreadable_locale(str);
 #ifdef WIN32
-				   p_to);
-#else
-				   msginfo->to);
+		Xlocale_to_utf8_a(str, msginfo->from, return);
 #endif
+		gtk_label_set_text(GTK_LABEL(headerview->to_body_label), str);
 		gtk_widget_show(headerview->to_header_label);
 		gtk_widget_show(headerview->to_body_label);
 	}
 	if (msginfo->newsgroups) {
-		gtk_label_set_text(GTK_LABEL(headerview->ng_body_label),
+		Xstrdup_a(str, msginfo->newsgroups, return);
+		conv_unreadable_locale(str);
 #ifdef WIN32
-				   p_newsgroups);
-#else
-				   msginfo->newsgroups);
+		Xlocale_to_utf8_a(str, msginfo->from, return);
 #endif
+		gtk_label_set_text(GTK_LABEL(headerview->ng_body_label), str);
 		gtk_widget_show(headerview->ng_header_label);
 		gtk_widget_show(headerview->ng_body_label);
 	}
-	gtk_label_set_text(GTK_LABEL(headerview->subject_body_label),
+	if (msginfo->subject) {
+		Xstrdup_a(str, msginfo->subject, return);
+		conv_unreadable_locale(str);
 #ifdef WIN32
-		p_subject ? p_subject :
-#else
-		msginfo->subject ? msginfo->subject :
+		Xlocale_to_utf8_a(str, msginfo->from, return);
 #endif
-			   _("(No Subject)"));
+	} else
+		str = NULL;
+	gtk_label_set_text(GTK_LABEL(headerview->subject_body_label),
+			   str ? str : _("(No Subject)"));
 
 #if HAVE_LIBCOMPFACE
 	headerview_show_xface(headerview, msginfo);
-#endif
-#ifdef WIN32
-	g_free( p_subject );
-	g_free( p_from );
-	g_free( p_to );
-	g_free( p_newsgroups );
 #endif
 }
 

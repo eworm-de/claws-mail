@@ -515,6 +515,7 @@ EXPORTS
 	conv_unreadable_8bit 
 	conv_unreadable_eucjp 
 	conv_unreadable_latin 
+	conv_unreadable_locale 
 	conv_ustodisp 
 	convert_kanji 
 	convert_kanji_auto 
@@ -1656,6 +1657,7 @@ EXPORTS
 	strstr_with_skip_quote 
 	strtailchomp 
 	subject_compare 
+	subject_compare_for_sort 
 	subject_is_reply 
 	subject_table_insert 
 	subject_table_lookup 
@@ -1788,6 +1790,8 @@ EXPORTS
 	translate_strs 
 	trim_string 
 	trim_subject 
+	trim_subject_for_compare 
+	trim_subject_for_sort 
 	tzoffset 
 	tzoffset_sec 
 	uncanonicalize_file 

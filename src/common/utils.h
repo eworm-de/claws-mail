@@ -133,6 +133,41 @@
 	ptr = __tmp; \
 }
 
+#ifdef WIN32
+#define Xlocale_to_utf8_a(ptr, str, iffail) \
+{ \
+	gchar *__tmp; \
+	gchar *__tmputf8 = g_locale_to_utf8(str, -1, NULL, NULL, NULL); \
+ \
+	if ((__tmp = alloca(strlen(__tmputf8) + 1)) == NULL) { \
+	  	g_free(__tmputf8); \
+		g_warning("can't allocate memory\n"); \
+		iffail; \
+	} else \
+		strcpy(__tmp, __tmputf8); \
+ \
+	g_free(__tmputf8); \
+	ptr = __tmp; \
+}
+
+#define Xlocale_a_from_utf8_a(ptr, str, iffail) \
+{ \
+	gchar *__tmp; \
+	gchar *__tmputf8 = g_locale_from_utf8(str, -1, NULL, NULL, NULL); \
+ \
+	if ((__tmp = alloca(strlen(__tmputf8) + 1)) == NULL) { \
+	  	g_free(__tmputf8); \
+		g_warning("can't allocate memory\n"); \
+		iffail; \
+	} else \
+		strcpy(__tmp, __tmputf8); \
+ \
+	g_free(__tmputf8); \
+	ptr = __tmp; \
+}
+
+#endif /* WIN32 */
+
 #define FILE_OP_ERROR(file, func) \
 { \
 	fprintf(stderr, "%s: ", file); \
@@ -225,6 +260,10 @@ gint get_next_word_len		(const gchar *s);
 /* functions for string parsing */
 gint subject_compare			(const gchar	*s1,
 					 const gchar	*s2);
+gint subject_compare_for_sort		(const gchar	*s1,
+					 const gchar	*s2);
+void trim_subject_for_compare		(gchar		*str);
+void trim_subject_for_sort		(gchar		*str);
 void trim_subject			(gchar		*str);
 void eliminate_parenthesis		(gchar		*str,
 					 gchar		 op,

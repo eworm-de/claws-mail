@@ -136,16 +136,8 @@ EXPORTS
 	plugin_name 
 	process_message 
 	socketread 
-	spamassassin_cfg 
-	spamassassin_enable 
-	spamassassin_getconf 
-	spamassassin_hostname 
-	spamassassin_max_size 
-	spamassassin_port 
-	spamassassin_receive_spam 
+	spamassassin_get_config 
 	spamassassin_save_config 
-	spamassassin_save_folder 
-	spamassassin_setconf 
 	timeout_read 
 	to_aspell_document_checker 
 	to_aspell_filter 

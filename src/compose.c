@@ -2730,6 +2730,14 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 				g_print("after delete l_pos=");
 				dump_text(text, line_pos, tlen, 1);
 #endif
+				/* move beginning of line if we are on LF */
+				GET_CHAR(line_pos, cb, clen);
+				if (clen == 1 && *cb == '\n')
+					line_pos++;
+#ifdef WRAP_DEBUG
+				g_print("new line_pos=%d\n", line_pos);
+#endif
+
 				continue;
 			}
 
@@ -3561,6 +3569,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 				return -1;
 			} else {
 				buf = chars;
+				out_codeset = src_codeset;
 				chars = NULL;
 			}
 		}

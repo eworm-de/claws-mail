@@ -1,17 +1,8 @@
 
 EXPORTS
-	getconf 
-	gpg_started 
 	mswin_helper_timeout_tag 
 	plugin_desc 
 	plugin_done 
 	plugin_init 
 	plugin_name 
-	setconf 
-	spamassassin_cfg 
-	spamassassin_enable 
-	spamassassin_hostname 
-	spamassassin_max_size 
-	spamassassin_port 
-	spamassassin_receive_spam 
-	spamassassin_save_folder 
+	gpg_started 
