@@ -1,3 +1,8 @@
+2004-02-07 Colin Leroy <colin@colino.net>
+	*src/compose.c
+		Fix message being always [Edited]
+		Encode headers correctly (utf8 buf)
+
 2004-01-27 Thorsten Maerz <torte@netztorte.de>
 	* src/socket.c
 		remove double g_source_attach()
@@ -43,6 +48,7 @@
 	* src/textview.c
 		variable names messed up
 
+>>>>>>> 1.1.2.19
 2004-01-17 Colin Leroy <colin@colino.net>
 	* src/addr_compl.c
 		Fix completion address too thin

@@ -1770,12 +1770,21 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 		GtkTextMark *mark;
 		GtkTextIter iter;
 
+		g_signal_handlers_block_by_func(G_OBJECT(buffer),
+					G_CALLBACK(compose_changed_cb),
+					compose);
+		
 		mark = gtk_text_buffer_get_insert(buffer);
 		gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
 
 		lastp = strchr(p, '\n');
 		len = lastp ? lastp - p + 1 : -1;
 		gtk_text_buffer_insert(buffer, &iter, p, len);
+
+		g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
+					G_CALLBACK(compose_changed_cb),
+					compose);
+		
 		if (lastp)
 			p = lastp + 1;
 		else
@@ -1961,8 +1970,13 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 	GtkTextIter iter;
 	gint cur_pos;
 
+	
 	g_return_if_fail(compose->account != NULL);
 
+	g_signal_handlers_block_by_func(G_OBJECT(buffer),
+					G_CALLBACK(compose_changed_cb),
+					compose);
+	
 	mark = gtk_text_buffer_get_insert(buffer);
 	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
 	cur_pos = gtk_text_iter_get_offset (&iter);
@@ -2002,6 +2016,11 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 
 	gtk_text_buffer_get_iter_at_offset (buffer, &iter, cur_pos);
 	gtk_text_buffer_place_cursor (buffer, &iter);
+
+	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
+					G_CALLBACK(compose_changed_cb),
+					compose);
+	
 }
 
 static gchar *compose_get_signature_str(Compose *compose)
@@ -4241,7 +4260,13 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 
 		if (!g_strcasecmp(trans_hdr, headerentryname)) {
 			const gchar *entstr = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
-			Xstrdup_a(str, entstr, return -1);
+#warning FIXME_GTK2
+#if 1
+			gchar *tmpstr = conv_codeset_strdup(entstr, CS_UTF_8, conv_get_current_charset_str());
+#else
+			gchar *tmpstr = strdup(entstr);
+#endif
+			Xstrdup_a(str, tmpstr, return -1);
 			g_strstrip(str);
 			if (str[0] != '\0') {
 				if (write_header)
@@ -4249,6 +4274,7 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 				g_string_append(headerstr, str);
 				write_header = TRUE;
 			}
+			g_free(tmpstr);
 		}
 	}
 	if (write_header) {
@@ -4593,16 +4619,26 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 static void compose_convert_header(gchar *dest, gint len, gchar *src,
 				   gint header_len, gboolean addr_field)
 {
+	gchar *tmpstr = NULL;
+	
 	g_return_if_fail(src != NULL);
 	g_return_if_fail(dest != NULL);
 
 	if (len < 1) return;
 
-	subst_char(src, '\n', ' ');
-	subst_char(src, '\r', ' ');
-	g_strchomp(src);
+#warning FIXME_GTK2
+#if 1
+	tmpstr = conv_codeset_strdup(src, CS_UTF_8, conv_get_current_charset_str());
+#else
+	tmpstr = strdup(src);
+#endif
 
-	conv_encode_header(dest, len, src, header_len, addr_field);
+	subst_char(tmpstr, '\n', ' ');
+	subst_char(tmpstr, '\r', ' ');
+	g_strchomp(tmpstr);
+
+	conv_encode_header(dest, len, tmpstr, header_len, addr_field);
+	g_free(tmpstr);
 }
 
 static void compose_generate_msgid(gchar *buf, gint len)
