@@ -398,7 +398,7 @@ static void prefs_toolbar_register(GtkButton *button, ToolbarPage *prefs_toolbar
 
 		if (g_utf8_collate(item[3], syl_act) == 0) {
 
-			const gchar *entry = gtk_entry_get_text(GTK_ENTRY(prefs_toolbar->combo_syl_entry));
+			gchar *entry = (gpointer)gtk_entry_get_text(GTK_ENTRY(prefs_toolbar->combo_syl_entry));
 			get_action_name(entry, &item[2]);
 		}
 		else {
@@ -469,7 +469,7 @@ static void prefs_toolbar_substitute(GtkButton *button, ToolbarPage *prefs_toolb
 
 		if (g_utf8_collate(item[3], syl_act) == 0) {
 
-			const gchar *entry = gtk_entry_get_text(GTK_ENTRY(prefs_toolbar->combo_syl_entry));
+			gchar *entry = (gpointer)gtk_entry_get_text(GTK_ENTRY(prefs_toolbar->combo_syl_entry));
 			get_action_name(entry, &item[2]);
 		} else {
 			item[2] = g_strdup(gtk_entry_get_text(GTK_ENTRY(prefs_toolbar->entry_icon_text)));

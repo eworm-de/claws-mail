@@ -73,7 +73,7 @@ void matcher_parser_start_parsing(FILE *f)
  
 void * matcher_parser_scan_string(const char * str);
  
-FilteringProp *matcher_parser_get_filtering(const gchar *str)
+FilteringProp *matcher_parser_get_filtering(gchar *str)
 {
 	void *bufstate;
 
@@ -111,7 +111,7 @@ static gboolean check_quote_symetry(gchar *str)
 	return !(ret % 2);
 }
 
-MatcherList *matcher_parser_get_cond(const gchar *str)
+MatcherList *matcher_parser_get_cond(gchar *str)
 {
 	void *bufstate;
 
@@ -133,7 +133,7 @@ MatcherList *matcher_parser_get_cond(const gchar *str)
 	return cond;
 }
 
-GSList *matcher_parser_get_action_list(const gchar *str)
+GSList *matcher_parser_get_action_list(gchar *str)
 {
 	void *bufstate;
 
@@ -155,7 +155,7 @@ GSList *matcher_parser_get_action_list(const gchar *str)
 	return action_list;
 }
 
-MatcherProp *matcher_parser_get_prop(const gchar *str)
+MatcherProp *matcher_parser_get_prop(gchar *str)
 {
 	MatcherList *list;
 	MatcherProp *prop;

@@ -1,3 +1,16 @@
+2004-11-13 [paul]	0.9.12cvs146.6
+
+	* src/compose.c
+	* src/imap.c
+	* src/matcher_parser.h
+	* src/matcher_parser_parse.y
+	* src/prefs_filtering.c
+	* src/prefs_filtering_action.c
+	* src/prefs_themes.c
+	* src/prefs_toolbar.c
+	* src/common/utils.c
+		various small fixes/cleanups
+
 2004-11-12 [colin]	0.9.12cvs146.5
 
 	* src/textview.c

@@ -737,7 +737,7 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 	gint action_type;
 	gint list_id;
 	gint account_id;
-	const gchar * destination;
+	gchar * destination;
 	gint labelcolor = 0;
         FilteringAction * action;
         gchar * score_str;
@@ -754,7 +754,8 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 	case ACTION_MOVE:
 	case ACTION_COPY:
 	case ACTION_EXECUTE:
-		destination = gtk_entry_get_text(GTK_ENTRY(filtering_action.dest_entry));
+		destination = (gpointer)gtk_entry_get_text(
+				GTK_ENTRY(filtering_action.dest_entry));
 		if (*destination == '\0') {
 			if (alert)
                                 alertpanel_error(action_id == ACTION_EXECUTE 
@@ -766,7 +767,8 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 	case ACTION_FORWARD:
 	case ACTION_FORWARD_AS_ATTACHMENT:
 	case ACTION_REDIRECT:
-		destination = gtk_entry_get_text(GTK_ENTRY(filtering_action.dest_entry));
+		destination = (gpointer)gtk_entry_get_text(
+				GTK_ENTRY(filtering_action.dest_entry));
 		if (*destination == '\0') {
 			if (alert)
                                 alertpanel_error(_("Recipient is not set."));
@@ -780,7 +782,7 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 		break;
         case ACTION_CHANGE_SCORE:
         case ACTION_SET_SCORE:
-		score_str = gtk_entry_get_text(GTK_ENTRY(filtering_action.dest_entry));
+		score_str = (gpointer)gtk_entry_get_text(GTK_ENTRY(filtering_action.dest_entry));
 		if (*score_str == '\0') {
 			if (alert)
                                 alertpanel_error(_("Score is not set"));

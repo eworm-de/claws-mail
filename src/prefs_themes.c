@@ -178,7 +178,7 @@ static void prefs_themes_file_stats(const gchar *filename, gpointer data)
 static void prefs_themes_file_remove(const gchar *filename, gpointer data)
 {
 	gchar **status = (gchar **)data;
-	gchar *name;
+	const gchar *name;
 	
 	if ((*status) != NULL)
 		return;
@@ -196,7 +196,7 @@ static void prefs_themes_file_remove(const gchar *filename, gpointer data)
 static void prefs_themes_file_install(const gchar *filename, gpointer data)
 {
 	CopyInfo *ci = (CopyInfo *)data;
-	gchar *name;
+	const gchar *name;
 	
 	if (ci->status != NULL)
 		return;
@@ -307,7 +307,7 @@ static void prefs_themes_get_themes_and_names(ThemesData *tdata)
 	tpaths = tdata->themes;
 	while (tpaths != NULL) {
 		ThemeName *name = g_new0(ThemeName, 1);
-		gchar     *sname = g_basename((gchar *)(tpaths->data));
+		const gchar *sname = g_basename((gchar *)(tpaths->data));
 		
 		if (IS_INTERNAL_THEME(sname))
 			name->name = g_strdup(_("Default internal theme"));
@@ -453,7 +453,8 @@ static void prefs_themes_btn_remove_clicked_cb(GtkWidget *widget, gpointer data)
 static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data)
 {
 	gchar      *filename, *source;
-	gchar      *themeinfo, *themename;
+	gchar 	   *themeinfo;
+	const gchar *themename;
 	gchar      *alert_title = NULL;
 	CopyInfo   *cinfo;
 	AlertValue  val = 0;

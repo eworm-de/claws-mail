@@ -705,10 +705,10 @@ static void prefs_filtering_condition_define_done(MatcherList * matchers)
 
 static void prefs_filtering_condition_define(void)
 {
-	const gchar * cond_str;
+	gchar * cond_str;
 	MatcherList * matchers = NULL;
 
-	cond_str = gtk_entry_get_text(GTK_ENTRY(filtering.cond_entry));
+	cond_str = (gpointer)gtk_entry_get_text(GTK_ENTRY(filtering.cond_entry));
 
 	if (*cond_str != '\0') {
 		matchers = matcher_parser_get_cond(cond_str);
@@ -739,10 +739,10 @@ static void prefs_filtering_action_define_done(GSList * action_list)
 
 static void prefs_filtering_action_define(void)
 {
-	const gchar * action_str;
+	gchar * action_str;
 	GSList * action_list = NULL;
 
-	action_str = gtk_entry_get_text(GTK_ENTRY(filtering.action_entry));
+	action_str = (gpointer)gtk_entry_get_text(GTK_ENTRY(filtering.action_entry));
 
 	if (*action_str != '\0') {
 		action_list = matcher_parser_get_action_list(action_str);
@@ -768,31 +768,31 @@ static void prefs_filtering_action_define(void)
 static FilteringProp * prefs_filtering_dialog_to_filtering(gboolean alert)
 {
 	MatcherList * cond;
-	const gchar * cond_str;
-	const gchar * action_str;
+	gchar * cond_str;
+	gchar * action_str;
 	FilteringProp * prop;
 	GSList * action_list;
 
-	cond_str = gtk_entry_get_text(GTK_ENTRY(filtering.cond_entry));
+	cond_str = (gpointer)gtk_entry_get_text(GTK_ENTRY(filtering.cond_entry));
 	if (*cond_str == '\0') {
 		if(alert == TRUE) alertpanel_error(_("Condition string is empty."));
 		return NULL;
 	}
 
-	action_str = gtk_entry_get_text(GTK_ENTRY(filtering.action_entry));
+	action_str = (gpointer)gtk_entry_get_text(GTK_ENTRY(filtering.action_entry));
 	if (*action_str == '\0') {
 		if(alert == TRUE) alertpanel_error(_("Action string is empty."));
 		return NULL;
 	}
 
-	cond = matcher_parser_get_cond(cond_str);
+	cond = (gpointer)matcher_parser_get_cond(cond_str);
 
 	if (cond == NULL) {
 		if(alert == TRUE) alertpanel_error(_("Condition string is not valid."));
 		return NULL;
 	}
         
-        action_list = matcher_parser_get_action_list(action_str);
+        action_list = (gpointer)matcher_parser_get_action_list(action_str);
 
 	if (action_list == NULL) {
 		if(alert == TRUE) alertpanel_error(_("Action string is not valid."));

@@ -4109,7 +4109,7 @@ static gchar *compose_get_header(Compose *compose)
 	compose_add_headerfield_from_headerlist(compose, header, "Bcc", ", ");
 
 	/* Subject */
-	str = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
+	str = (gpointer)gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
 	if (*str != '\0' && !IS_IN_CUSTOM_HEADER("Subject")) {
 		gchar *tmpstr;
 
@@ -4259,7 +4259,7 @@ static gchar *compose_get_header(Compose *compose)
 		g_free(tmp);
 		
 		entry_str = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
-		Xstrdup_a(headervalue, entry_str, return -1);
+		Xstrdup_a(headervalue, entry_str, return FALSE);
 		subst_char(headervalue, '\r', ' ');
 		subst_char(headervalue, '\n', ' ');
 		string = std_headers;

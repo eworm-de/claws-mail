@@ -1368,7 +1368,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 			new_item->stype = F_INBOX;
 			folder->inbox = new_item;
 		} else if (!folder_item_parent(item) || item->stype == F_INBOX) {
-			gchar *base;
+			const gchar *base;
 
 			base = g_basename(new_item->path);
 
