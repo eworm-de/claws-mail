@@ -849,10 +849,16 @@ gint procmsg_send_queue(gboolean save_msgs)
 				g_warning(_("Sending queued message %d failed.\n"), i);
 				ret = -1;
 			} else {
+			/* CLAWS: 
+			 * We save in procmsg_send_message_queue because
+			 * we need the destination folder from the queue
+			 * header
+			 			
 				if (save_msgs)
 					procmsg_save_to_outbox
 						(queue->folder->outbox,
 						 file, TRUE);
+*/
 				folder_item_remove_msg(queue, i);
 			}
 			g_free(file);
@@ -905,6 +911,10 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 	if ((num = folder_item_add_msg(outbox, file, FALSE)) < 0) {
 		g_warning(_("can't save message\n"));
 		return -1;
+	}
+
+	if(is_queued) {
+		unlink(file);
 	}
 
 	path = folder_item_get_path(outbox);
@@ -1118,7 +1128,6 @@ gint procmsg_send_message_queue(const gchar *file)
 	gchar buf[BUFFSIZE];
 	gint hnum;
 	PrefsAccount *mailac = NULL, *newsac = NULL;
-	gchar *tmp = NULL;
 	int local = 0;
 
 	g_return_val_if_fail(file != NULL, -1);
@@ -1157,30 +1166,6 @@ gint procmsg_send_message_queue(const gchar *file)
 		}
 	}
 	filepos = ftell(fp);
-
-	if(newsgroup_list || prefs_common.savemsg) {
-		FILE *tmpfp;
-
-    		/* write to temporary file */
-    		tmp = g_strdup_printf("%s%ctmp%d", g_get_tmp_dir(),
-                    	    G_DIR_SEPARATOR, (gint)file);
-    		if ((tmpfp = fopen(tmp, "wb")) == NULL) {
-            		FILE_OP_ERROR(tmp, "fopen");
-            		newsval = -1;
-    		}
-    		if (change_file_mode_rw(tmpfp, tmp) < 0) {
-            		FILE_OP_ERROR(tmp, "chmod");
-            		g_warning(_("can't change file mode\n"));
-    		}
-
-		while ((newsval == 0) && fgets(buf, sizeof(buf), fp) != NULL) {
-			if (fputs(buf, tmpfp) == EOF) {
-				FILE_OP_ERROR(tmp, "fputs");
-				newsval = -1;
-			}
-		}
-		fclose(tmpfp);
-	}
 
 	fseek(fp, filepos, SEEK_SET);
 	if (to_list) {
@@ -1235,53 +1220,45 @@ gint procmsg_send_message_queue(const gchar *file)
 
 	if(newsgroup_list && (newsval == 0)) {
 		Folder *folder;
+		gchar *tmp = NULL;
+		FILE *tmpfp;
 
-		debug_print(_("Sending message by news\n"));
+    		/* write to temporary file */
+    		tmp = g_strdup_printf("%s%ctmp%d", g_get_tmp_dir(),
+                    	    G_DIR_SEPARATOR, (gint)file);
+    		if ((tmpfp = fopen(tmp, "wb")) == NULL) {
+            		FILE_OP_ERROR(tmp, "fopen");
+            		newsval = -1;
+			alertpanel_error(_("Could not create temorary file for news sending."));
+    		} else {
+    			if (change_file_mode_rw(tmpfp, tmp) < 0) {
+            			FILE_OP_ERROR(tmp, "chmod");
+            			g_warning(_("can't change file mode\n"));
+    			}
 
-		folder = FOLDER(newsac->folder);
-
-    		newsval = news_post(folder, tmp);
-    		if (newsval < 0) {
-            		alertpanel_error(_("Error occurred while posting the message to %s ."),
-                                 newsac->nntp_server);
-    		}
-	}
-
-	/* save message to outbox */
-	if (mailval == 0 && newsval == 0 && savecopyfolder) {
-		FolderItem *folder;
-		gchar *path;
-		gint num;
-		FILE *fp;
-
-		debug_print(_("saving sent message...\n"));
-
-		folder = folder_find_item_from_identifier(savecopyfolder);
-		if(!folder)
-			folder = folder_get_default_outbox();
-		path = folder_item_get_path(folder);
-		if (!is_dir_exist(path))
-			make_dir_hier(path);
-
-		folder_item_scan(folder);
-		if ((num = folder_item_add_msg(folder, tmp, FALSE)) < 0) {
-			g_warning(_("can't save message\n"));
-		}
-
-		if(num) {
-			if ((fp = procmsg_open_mark_file(path, TRUE)) == NULL)
-				g_warning(_("can't open mark file\n"));
-			else {
-				MsgInfo newmsginfo;
-
-				newmsginfo.msgnum = num;
-				newmsginfo.flags.perm_flags = 0;
-				newmsginfo.flags.tmp_flags = 0;
-				procmsg_write_flags(&newmsginfo, fp);
-				fclose(fp);
+			while ((newsval == 0) && fgets(buf, sizeof(buf), fp) != NULL) {
+				if (fputs(buf, tmpfp) == EOF) {
+					FILE_OP_ERROR(tmp, "fputs");
+					newsval = -1;
+					alertpanel_error(_("Error when writing temorary file for news sending."));
+				}
 			}
+			fclose(tmpfp);
+
+			if(newsval == 0) {
+				debug_print(_("Sending message by news\n"));
+
+				folder = FOLDER(newsac->folder);
+
+    				newsval = news_post(folder, tmp);
+    				if (newsval < 0) {
+            				alertpanel_error(_("Error occurred while posting the message to %s ."),
+                            			 newsac->nntp_server);
+    				}
+			}
+			unlink(tmp);
 		}
-		g_free(path);
+		g_free(tmp);
 	}
 
 	slist_free_strings(to_list);
@@ -1291,9 +1268,18 @@ gint procmsg_send_message_queue(const gchar *file)
 	g_free(from);
 	g_free(smtpserver);
 	fclose(fp);
-	if(tmp) {
-		unlink(tmp);
-		g_free(tmp);
+
+	/* save message to outbox */
+	if (mailval == 0 && newsval == 0 && savecopyfolder) {
+		FolderItem *outbox;
+
+		debug_print(_("saving sent message...\n"));
+
+		outbox = folder_find_item_from_identifier(savecopyfolder);
+		if(!outbox)
+			outbox = folder_get_default_outbox();
+
+		procmsg_save_to_outbox(outbox, file, TRUE);
 	}
 
 	return (newsval != 0 ? newsval : mailval);

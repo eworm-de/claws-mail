@@ -1,3 +1,11 @@
+2002-03-25 [christoph]	0.7.4claws43
+
+	* src/procmsg.c
+		fix non deleted tmp message in
+		procmsg_save_to_outbox
+		fix problems caused by sync with
+		main branch's procmsg_send_queue
+
 2002-03-25 [paul]	0.7.4claws42
 
 	* src/quote_fmt.c
