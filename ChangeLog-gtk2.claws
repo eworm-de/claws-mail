@@ -1,3 +1,17 @@
+2004-07-26 [colin]	0.9.12cvs33.23
+
+	* po/de.po
+	* po/es.po
+	* po/fr.po
+	* po/it.po
+	* po/ja.po
+	* po/pl.po
+	* po/ru.po
+	* po/sk.po
+	* po/sr.po
+	* po/zh_CN.po
+		Sync po files with HEAD
+
 2004-07-26 [paul]	0.9.12cvs33.22
 
 	* src/compose.c
