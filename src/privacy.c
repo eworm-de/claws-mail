@@ -295,7 +295,7 @@ gboolean privacy_system_can_encrypt(const gchar *id)
 	return system->can_encrypt;
 }
 
-gboolean privacy_sign(const gchar *id, MimeInfo *target)
+gboolean privacy_sign(const gchar *id, MimeInfo *target, PrefsAccount *account)
 {
 	PrivacySystem *system;
 
@@ -310,7 +310,7 @@ gboolean privacy_sign(const gchar *id, MimeInfo *target)
 	if (system->sign == NULL)
 		return FALSE;
 
-	return system->sign(target);
+	return system->sign(target, account);
 }
 
 gchar *privacy_get_encrypt_data(const gchar *id, GSList *recp_names)

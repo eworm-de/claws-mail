@@ -402,7 +402,7 @@ extract_micalg (char *xml)
     return NULL;
 }
 
-gboolean pgpmime_sign(MimeInfo *mimeinfo)
+gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 {
 	MimeInfo *msgcontent, *sigmultipart, *newinfo;
 	gchar *textstr, *opinfo, *micalg;
@@ -446,7 +446,8 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo)
 	gpgme_new(&ctx);
 	gpgme_set_textmode(ctx, 1);
 	gpgme_set_armor(ctx, 1);
-	gpgme_signers_clear(ctx);
+	if (!sgpgme_setup_signers(ctx, account))
+		return FALSE;
 
 	if (!getenv("GPG_AGENT_INFO")) {
     		info.c = ctx;

@@ -45,7 +45,6 @@
 #include "codeconv.h"
 #include "utils.h"
 #include "prefs_common.h"
-
 #include "prefs_gtk.h"
 
 static GHashTable *procmime_get_mime_type_table	(void);
@@ -1660,11 +1659,18 @@ typedef enum {
     ENC_AS_EXTENDED,
 } EncodeAs;
 
+typedef struct _ParametersData {
+	FILE *fp;
+	guint len;
+} ParametersData;
+
 static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 {
 	gchar *param = key;
 	gchar *val = value, *valpos;
-	FILE *fp = user_data;
+	ParametersData *pdata = (ParametersData *)user_data;
+	GString *buf = g_string_new("");
+
 	EncodeAs encas = ENC_AS_TOKEN;
 
 	for (valpos = val; *valpos != 0; valpos++) {
@@ -1704,43 +1710,60 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 
 	switch (encas) {
 	case ENC_AS_TOKEN:
-		fprintf(fp, "; %s=", param);
-		fprintf(fp, "%s", val);
+		g_string_append_printf(buf, "%s=%s", param, val);
 		break;
 
 	case ENC_AS_QUOTED_STRING:
-		fprintf(fp, "; %s=", param);
-		fprintf(fp, "\"%s\"", val);
+		g_string_append_printf(buf, "%s=\"%s\"", param, val);
 		break;
 
 	case ENC_AS_EXTENDED:
-		fprintf(fp, "; %s*=", param);
-		fprintf(fp, "%s''", conv_get_current_charset_str());
+		g_string_append_printf(buf, "%s*=%s''", param,
+			conv_get_current_charset_str());
 		for (valpos = val; *valpos != '\0'; valpos++) {
-			if (IS_ASCII(*valpos) && isalnum(*valpos))
-				fprintf(fp, "%c", *valpos);
-			else {
+			if (IS_ASCII(*valpos) && isalnum(*valpos)) {
+				g_string_append_printf(buf, "%c", *valpos);
+			} else {
 				gchar hexstr[3] = "XX";
 				get_hex_str(hexstr, *valpos);
-				fprintf(fp, "%%%s", hexstr);
+				g_string_append_printf(buf, "%%%s", hexstr);
 			}
 		}
 		break;
 	}
+	
+	if (buf->str && strlen(buf->str)) {
+		if (pdata->len + strlen(buf->str) + 2 > 76) {
+			fprintf(pdata->fp, ";\n %s", buf->str);
+			pdata->len = strlen(buf->str) + 1;
+		} else {
+			fprintf(pdata->fp, "; %s", buf->str);
+			pdata->len += strlen(buf->str) + 2;
+		}
+	}
+	g_string_free(buf, TRUE);
 }
 
 void procmime_write_mime_header(MimeInfo *mimeinfo, FILE *fp)
 {
 	struct TypeTable *type_table;
-
+	ParametersData *pdata = g_new0(ParametersData, 1);
 	debug_print("procmime_write_mime_header\n");
+	
+	pdata->fp = fp;
 
 	for (type_table = mime_type_table; type_table->str != NULL; type_table++)
 		if (mimeinfo->type == type_table->type) {
-			fprintf(fp, "Content-Type: %s/%s", type_table->str, mimeinfo->subtype);
+			gchar *buf = g_strdup_printf(
+				"Content-Type: %s/%s", type_table->str, mimeinfo->subtype);
+			fprintf(fp, buf);
+			pdata->len = strlen(buf);
+			g_free(buf);
 			break;
 		}
-	g_hash_table_foreach(mimeinfo->typeparameters, write_parameters, fp);
+	g_hash_table_foreach(mimeinfo->typeparameters, write_parameters, pdata);
+	g_free(pdata);
+
 	fprintf(fp, "\n");
 
 	if (mimeinfo->encoding_type != ENC_UNKNOWN)
@@ -1753,16 +1776,22 @@ void procmime_write_mime_header(MimeInfo *mimeinfo, FILE *fp)
 		fprintf(fp, "Content-ID: %s\n", mimeinfo->id);
 
 	if (mimeinfo->disposition != DISPOSITIONTYPE_UNKNOWN) {
-		fprintf(fp, "Content-Disposition: ");
+		ParametersData *pdata = g_new0(ParametersData, 1);
+		gchar *buf = NULL;
 		if (mimeinfo->disposition == DISPOSITIONTYPE_INLINE)
-			fprintf(fp, "inline");
+			buf = g_strdup("Content-Disposition: inline");
 		else if (mimeinfo->disposition == DISPOSITIONTYPE_ATTACHMENT)
-			fprintf(fp, "attachment");
+			buf = g_strdup("Content-Disposition: attachment");
 		else
-			fprintf(fp, "unknown");
+			buf = g_strdup("Content-Disposition: unknown");
 
-		/* FIXME: linebreaks after too many parameters */
-		g_hash_table_foreach(mimeinfo->dispositionparameters, write_parameters, fp);
+		fprintf(fp, "%s", buf);
+		pdata->len = strlen(buf);
+		g_free(buf);
+
+		pdata->fp = fp;
+		g_hash_table_foreach(mimeinfo->dispositionparameters, write_parameters, pdata);
+		g_free(pdata);
 		fprintf(fp, "\n");
 	}
 

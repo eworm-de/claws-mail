@@ -62,7 +62,7 @@
 #include "statusbar.h"
 #include "hooks.h"
 #include "folderutils.h"
-#include "common/partial_download.h"
+#include "partial_download.h"
 
 typedef enum
 {

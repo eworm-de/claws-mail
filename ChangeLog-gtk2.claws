@@ -1,3 +1,30 @@
+2004-11-23 [colin]	0.9.12cvs166.1
+
+	* src/Makefile.am
+	* src/codeconv.c
+	* src/compose.c
+	* src/folderview.c
+	* src/main.c
+	* src/partial_download.c
+	* src/partial_download.h
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/privacy.c
+	* src/privacy.h
+	* src/procmime.c
+	* src/common/Makefile.am
+	* src/common/base64.h
+	* src/common/partial_download.c
+	* src/common/partial_download.h
+	* src/gtk/prefswindow.c
+	* src/gtk/prefswindow.h
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/prefs_gpg.c
+	* src/plugins/pgpmime/prefs_gpg.h
+	* src/plugins/pgpmime/sgpgme.c
+	* src/plugins/pgpmime/sgpgme.h
+		Sync with HEAD
+
 2004-11-23 [colin]	0.9.12cvs163.1
 
 	* src/main.c

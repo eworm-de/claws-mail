@@ -1495,8 +1495,6 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 #define MIMESEP_BEGIN		"=?"
 #define MIMESEP_END		"?="
 
-#define B64LEN(len)	((len) / 3 * 4 + ((len) % 3 ? 4 : 0))
-
 #define LBREAK_IF_REQUIRED(cond, is_plain_text)				\
 {									\
 	if (len - (destp - (guchar *)dest) < MAX_LINELEN + 2) {		\

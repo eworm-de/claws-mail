@@ -3640,7 +3640,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 	/* sign message if sending */
 	if (action == COMPOSE_WRITE_FOR_SEND && compose->use_signing && 
 	    privacy_system_can_sign(compose->privacy_system))
-		if (!privacy_sign(compose->privacy_system, mimemsg))
+		if (!privacy_sign(compose->privacy_system, mimemsg, compose->account))
 			return -1;
 
 	procmime_write_mimeinfo(mimemsg, fp);

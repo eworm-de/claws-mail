@@ -223,6 +223,178 @@ static void prefs_gpg_save_func(PrefsPage *_page)
 	prefs_gpg_save_config();
 }
 
+struct GPGAccountPage
+{
+	PrefsPage page;
+
+	GtkWidget *key_default;
+	GtkWidget *key_by_from;
+	GtkWidget *key_custom;
+	GtkWidget *keyid;
+
+	PrefsAccount *account;
+};
+
+void key_custom_toggled(GtkToggleButton *togglebutton, gpointer user_data)
+{
+	struct GPGAccountPage *page = (struct GPGAccountPage *) user_data;
+	gboolean active;
+
+	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->key_custom));
+	gtk_widget_set_sensitive(GTK_WIDGET(page->keyid), active);
+	if (!active)
+		gtk_editable_delete_text(GTK_EDITABLE(page->keyid), 0, -1);
+}
+
+static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
+						 GtkWindow *window,
+						 gpointer data)
+{
+	struct GPGAccountPage *page = (struct GPGAccountPage *) _page;
+	PrefsAccount *account = (PrefsAccount *) data;
+	GPGAccountConfig *config;
+
+	/*** BEGIN GLADE CODE ***/
+	GtkWidget *vbox;
+	GtkWidget *frame1;
+	GtkWidget *table1;
+	GSList *key_group = NULL;
+	GtkWidget *key_default;
+	GtkWidget *key_by_from;
+	GtkWidget *key_custom;
+	GtkWidget *label13;
+	GtkWidget *label14;
+	GtkWidget *label15;
+	GtkWidget *label16;
+	GtkWidget *keyid;
+
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_widget_show(vbox);
+
+	frame1 = gtk_frame_new(_("Sign key"));
+	gtk_widget_show(frame1);
+	gtk_box_pack_start(GTK_BOX(vbox), frame1, FALSE, FALSE, 0);
+	gtk_frame_set_label_align(GTK_FRAME(frame1), 4.84288e-08, 0.5);
+
+	table1 = gtk_table_new(4, 3, FALSE);
+	gtk_widget_show(table1);
+	gtk_container_add(GTK_CONTAINER(frame1), table1);
+	gtk_container_set_border_width(GTK_CONTAINER(table1), 8);
+	gtk_table_set_row_spacings(GTK_TABLE(table1), 4);
+	gtk_table_set_col_spacings(GTK_TABLE(table1), 4);
+
+	key_default = gtk_radio_button_new_with_label(key_group, "");
+	key_group = gtk_radio_button_group(GTK_RADIO_BUTTON(key_default));
+	gtk_widget_show(key_default);
+	gtk_table_attach(GTK_TABLE(table1), key_default, 0, 1, 0, 1,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+
+	key_by_from = gtk_radio_button_new_with_label(key_group, "");
+	key_group = gtk_radio_button_group(GTK_RADIO_BUTTON(key_by_from));
+	gtk_widget_show(key_by_from);
+	gtk_table_attach(GTK_TABLE(table1), key_by_from, 0, 1, 1, 2,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+
+	key_custom = gtk_radio_button_new_with_label(key_group, "");
+	key_group = gtk_radio_button_group(GTK_RADIO_BUTTON(key_custom));
+	gtk_widget_show(key_custom);
+	gtk_table_attach(GTK_TABLE(table1), key_custom, 0, 1, 2, 3,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+
+	label13 = gtk_label_new(_("Use default GnuPG key"));
+	gtk_widget_show(label13);
+	gtk_table_attach(GTK_TABLE(table1), label13, 1, 3, 0, 1,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+	gtk_misc_set_alignment(GTK_MISC(label13), 0, 0.5);
+
+	label14 = gtk_label_new(_("Select key by your email address"));
+	gtk_widget_show(label14);
+	gtk_table_attach(GTK_TABLE(table1), label14, 1, 3, 1, 2,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+	gtk_misc_set_alignment(GTK_MISC(label14), 0, 0.5);
+
+	label15 = gtk_label_new(_("Specify key manually"));
+	gtk_widget_show(label15);
+	gtk_table_attach(GTK_TABLE(table1), label15, 1, 3, 2, 3,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+	gtk_misc_set_alignment(GTK_MISC(label15), 0, 0.5);
+
+	label16 = gtk_label_new(_("User or key ID:"));
+	gtk_widget_show(label16);
+	gtk_table_attach(GTK_TABLE(table1), label16, 1, 2, 3, 4,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+	gtk_label_set_justify(GTK_LABEL(label16), GTK_JUSTIFY_LEFT);
+
+	keyid = gtk_entry_new();
+	gtk_widget_show(keyid);
+	gtk_table_attach(GTK_TABLE(table1), keyid, 2, 3, 3, 4,
+			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+	/*** END GLADE CODE ***/
+
+	config = prefs_gpg_account_get_config(account);
+	switch (config->sign_key) {
+	case SIGN_KEY_DEFAULT:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(key_default), TRUE);
+		gtk_widget_set_sensitive(GTK_WIDGET(keyid), FALSE);
+		break;
+	case SIGN_KEY_BY_FROM:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(key_by_from), TRUE);
+		gtk_widget_set_sensitive(GTK_WIDGET(keyid), FALSE);
+		break;
+	case SIGN_KEY_CUSTOM:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(key_custom), TRUE);
+		gtk_widget_set_sensitive(GTK_WIDGET(keyid), TRUE);
+		break;
+	}
+
+	if (config->sign_key_id != NULL)
+		gtk_entry_set_text(GTK_ENTRY(keyid), config->sign_key_id);
+
+	g_signal_connect(G_OBJECT(key_custom), "toggled", G_CALLBACK(key_custom_toggled), page);
+
+	page->key_default = key_default;
+	page->key_by_from = key_by_from;
+	page->key_custom = key_custom;
+	page->keyid = keyid;
+
+	page->page.widget = vbox;
+	page->account = account;
+}
+
+static void prefs_gpg_account_destroy_widget_func(PrefsPage *_page)
+{
+	/* nothing to do here */
+}
+
+static void prefs_gpg_account_save_func(PrefsPage *_page)
+{
+	struct GPGAccountPage *page = (struct GPGAccountPage *) _page;
+	GPGAccountConfig *config;
+
+	config = prefs_gpg_account_get_config(page->account);
+
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->key_default)))
+		config->sign_key = SIGN_KEY_DEFAULT;
+	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->key_by_from)))
+		config->sign_key = SIGN_KEY_BY_FROM;
+	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->key_custom))) {
+		config->sign_key = SIGN_KEY_CUSTOM;
+		g_free(config->sign_key_id);
+		config->sign_key_id = gtk_editable_get_chars(GTK_EDITABLE(page->keyid), 0, -1);
+	}
+
+	prefs_gpg_account_set_config(page->account, config);
+	prefs_gpg_account_free_config(config);
+}
+
 GPGConfig *prefs_gpg_get_config(void)
 {
 	return &prefs_gpg;
@@ -251,7 +423,68 @@ void prefs_gpg_save_config(void)
 	prefs_file_close(pfile);
 }
 
+struct GPGAccountConfig *prefs_gpg_account_get_config(PrefsAccount *account)
+{
+	GPGAccountConfig *config;
+	const gchar *confstr;
+	gchar **strv;
+
+	config = g_new0(GPGAccountConfig, 1);
+	config->sign_key = SIGN_KEY_DEFAULT;
+	config->sign_key_id = NULL;
+
+	confstr = prefs_account_get_privacy_prefs(account, "gpg");
+	if (confstr == NULL)
+		return config;
+
+	strv = g_strsplit(confstr, ";", 0);
+	if (strv[0] != NULL) {
+		if (!strcmp(strv[0], "DEFAULT"))
+			config->sign_key = SIGN_KEY_DEFAULT;
+		if (!strcmp(strv[0], "BY_FROM"))
+			config->sign_key = SIGN_KEY_BY_FROM;
+		if (!strcmp(strv[0], "CUSTOM")) {
+			if (strv[1] != NULL) {
+				config->sign_key = SIGN_KEY_CUSTOM;
+				config->sign_key_id = g_strdup(strv[1]);
+			} else
+				config->sign_key = SIGN_KEY_DEFAULT;
+		}
+	}
+	g_strfreev(strv);
+
+	return config;
+}
+
+void prefs_gpg_account_set_config(PrefsAccount *account, GPGAccountConfig *config)
+{
+	gchar *confstr;
+
+	switch (config->sign_key) {
+	case SIGN_KEY_DEFAULT:
+		confstr = g_strdup("DEFAULT");
+		break;
+	case SIGN_KEY_BY_FROM:
+		confstr = g_strdup("BY_FROM");
+		break;
+	case SIGN_KEY_CUSTOM:
+		confstr = g_strdup_printf("CUSTOM;%s", config->sign_key_id);
+		break;
+	}
+
+	prefs_account_set_privacy_prefs(account, "gpg", confstr);
+
+	g_free(confstr);
+}
+
+void prefs_gpg_account_free_config(GPGAccountConfig *config)
+{
+	g_free(config->sign_key_id);
+	g_free(config);
+}
+
 static struct GPGPage gpg_page;
+static struct GPGAccountPage gpg_account_page;
 
 void prefs_gpg_init()
 {
@@ -271,6 +504,14 @@ void prefs_gpg_init()
         gpg_page.page.weight = 30.0;
 
         prefs_gtk_register_page((PrefsPage *) &gpg_page);
+
+        gpg_account_page.page.path = path;
+        gpg_account_page.page.create_widget = prefs_gpg_account_create_widget_func;
+        gpg_account_page.page.destroy_widget = prefs_gpg_account_destroy_widget_func;
+        gpg_account_page.page.save_page = prefs_gpg_account_save_func;
+        gpg_account_page.page.weight = 30.0;
+
+        prefs_account_register_page((PrefsPage *) &gpg_account_page);
 }
 
 void prefs_gpg_done()
