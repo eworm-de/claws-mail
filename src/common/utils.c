@@ -3292,10 +3292,12 @@ int subject_get_reply_prefix_length(const gchar *subject)
 {
 	/*!< Array with allowable reply prefixes regexps. */
 	static const gchar * const reply_prefixes[] = {
-		"[Rr][Ee]\\:",			/* "Re:" */
-		"[Rr][Ee]\\[[1-9][0-9]*\\]\\:",	/* Intelligent but stupidly non-conforming Re[XXX]:*/
-		"[Aa][Nn][Tt][Ww]\\:",		/* Overactive i18n / translation teams */
-		"[Aa][Ww]\\:"			/* "Aw:" */
+		"Re\\:",			/* "Re:" */
+		"Re\\[[1-9][0-9]*\\]\\:",	/* "Re[XXX]:" (non-conforming news mail clients) */
+		"Antw\\:",			/* "Antw:" (Dutch / German Outlook) */
+		"Aw\\:",			/* "Aw:"   (German) */
+		"Antwort\\:",			/* "Antwort:" (German Lotus Notes) */
+		"Res\\:"			/* "Res:" (Brazilian Outlook) */
 		/* add more */
 	};
 	const int REPLY_PREFIXES = sizeof reply_prefixes / sizeof reply_prefixes[0];
@@ -3325,7 +3327,7 @@ int subject_get_reply_prefix_length(const gchar *subject)
 
 		/* We now have something like "^\ *((PREFIX1\ ?)|(PREFIX2\ ?))+" 
 		 * TODO: Should this be       "^\ *(((PREFIX1)|(PREFIX2))\ ?)+" ??? */
-		if (regcomp(&regex, s->str, REG_EXTENDED)) { 
+		if (regcomp(&regex, s->str, REG_EXTENDED | REG_ICASE)) { 
 			debug_print("Error compiling regexp %s\n", s->str);
 			g_string_free(s, TRUE);
 			return 0;
