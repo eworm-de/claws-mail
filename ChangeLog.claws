@@ -1,3 +1,9 @@
+2003-07-05 [alfons]	0.9.0claws82
+
+	* configure.ac
+		take the clue in bug #202 "./configure script - 
+		'if test' comparison failure" reported by John Kristoff. 
+
 2003-07-04 [christoph]	0.9.0claws81
 
 	* src/plugins/spamassassin/spamassassin.c

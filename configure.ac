@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws81
+EXTRA_VERSION=claws82
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -420,7 +420,7 @@ if test x"$ac_cv_enable_image_viewer_plugin" = xyes; then
 			AC_DEFINE(HAVE_GDK_IMLIB, 1, Define if you use gdk_imlib to support image viewer),
 			[ac_cv_enable_imlib=no])
 	fi
-	if test "$ac_cv_enable_gdk_pixbuf" = no -a "$ac_cv_enable_imlib" = no; then
+	if test x"$ac_cv_enable_gdk_pixbuf" = xno -a x"$ac_cv_enable_imlib" = xno; then
 		$ac_cv_enable_image_viewer_plugin = no
 	fi
 fi
