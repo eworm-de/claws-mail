@@ -1065,6 +1065,8 @@ static void prefs_filtering_delete_cb(void)
 
 	gtk_clist_remove(clist, row);
 
+	prefs_filtering_reset_dialog();
+
 	prefs_filtering_update_hscrollbar();
 }
 
@@ -1480,19 +1482,20 @@ static void prefs_filtering_ok(void)
 	prop = prefs_filtering_dialog_to_filtering(FALSE);
 	if (prop != NULL) {
 		str = filteringprop_to_string(prop);
+
 		while (gtk_clist_get_text(GTK_CLIST(filtering.cond_clist),
 					  row, 0, &filtering_str)) {
 			if (strcmp(filtering_str, str) == 0) break;
 			row++;
 		}
 		if (strcmp(filtering_str, str) != 0) {
-                        val = alertpanel(_("Entry not saved"),
-       	                         _("The entry was not saved. Close anyway?"),
-               	                 _("Yes"), _("No"), NULL);
-                        if (G_ALERTDEFAULT != val) {
+			val = alertpanel(_("Entry not saved"),
+				 _("The entry was not saved. Close anyway?"),
+				 _("Yes"), _("No"), NULL);
+			if (G_ALERTDEFAULT != val) {
 				g_free(str);
 				return;
-                        }
+			}
 		}
 		g_free(str);
 	}
