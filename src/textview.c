@@ -463,6 +463,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	gtk_stext_thaw(text);
 }
 
+#if 0
 static gboolean add_parts_func(GNode *node, gpointer data)
 {
 	MimeInfo *mimeinfo = (MimeInfo *) node->data;
@@ -480,6 +481,72 @@ static void textview_add_parts(TextView *textview, MimeInfo *mimeinfo)
 	g_return_if_fail(mimeinfo != NULL);
 
 	g_node_traverse(mimeinfo->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, add_parts_func, textview);
+}
+#endif
+
+static void recursive_add_parts(TextView *textview, GNode *node)
+{
+        GNode * iter;
+	MimeInfo *mimeinfo;
+        
+        mimeinfo = (MimeInfo *) node->data;
+        
+        textview_add_part(textview, mimeinfo);
+        
+        if ((mimeinfo->type != MIMETYPE_MULTIPART) &&
+            (mimeinfo->type != MIMETYPE_MESSAGE))
+                return;
+        
+        if (strcasecmp(mimeinfo->subtype, "alternative") == 0) {
+                GNode * prefered_body;
+                int prefered_score;
+                
+                /*
+                  text/plain : score 3
+                  text/*     : score 2
+                  other      : score 1
+                */
+                prefered_body = NULL;
+                prefered_score = 0;
+                
+                for(iter = g_node_first_child(node) ; iter != NULL ;
+                    iter = g_node_next_sibling(iter)) {
+                        int score;
+                        MimeInfo * submime;
+                        
+                        score = 1;
+                        submime = (MimeInfo *) iter->data;
+                        if (submime->type == MIMETYPE_TEXT)
+                                score = 2;
+                        
+                        if (submime->subtype != NULL) {
+                                if (strcasecmp(submime->subtype, "plain") == 0)
+                                        score = 3;
+                        }
+                        
+                        if (score > prefered_score) {
+                                prefered_score = score;
+                                prefered_body = iter;
+                        }
+                }
+                
+                if (prefered_body != NULL) {
+                        recursive_add_parts(textview, prefered_body);
+                }
+        }
+        else {
+                for(iter = g_node_first_child(node) ; iter != NULL ;
+                    iter = g_node_next_sibling(iter)) {
+                        recursive_add_parts(textview, iter);
+                }
+        }
+}
+
+static void textview_add_parts(TextView *textview, MimeInfo *mimeinfo)
+{
+	g_return_if_fail(mimeinfo != NULL);
+        
+        recursive_add_parts(textview, mimeinfo->node);
 }
 
 #define TEXT_INSERT(str) \
