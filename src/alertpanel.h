@@ -41,6 +41,13 @@ AlertValue alertpanel	(const gchar	*title,
 			 const gchar	*button2_label,
 			 const gchar	*button3_label);
 
+AlertValue alertpanel_with_widget	(const gchar *title,
+				  	 const gchar *message,
+				  	 const gchar *button1_label,
+				  	 const gchar *button2_label,
+				  	 const gchar *button3_label,
+				  	 GtkWidget *widget);
+
 void alertpanel_message	(const gchar	*title,
 			 const gchar	*message);
 

@@ -50,7 +50,8 @@ static void alertpanel_create		(const gchar	*title,
 					 const gchar	*button1_label,
 					 const gchar	*button2_label,
 					 const gchar	*button3_label,
-					 gboolean	 can_disable);
+					 gboolean	 can_disable,
+					 GtkWidget	*custom_widget);
 
 static void alertpanel_button_toggled	(GtkToggleButton	*button,
 					 gpointer		 data);
@@ -75,13 +76,31 @@ AlertValue alertpanel(const gchar *title,
 		alertpanel_is_open = TRUE;
 
 	alertpanel_create(title, message, button1_label, button2_label,
-			  button3_label, FALSE);
+			  button3_label, FALSE, NULL);
 	alertpanel_show();
 
 	debug_print("return value = %d\n", value);
 	return value;
 }
 
+AlertValue alertpanel_with_widget(const gchar *title,
+				  const gchar *message,
+				  const gchar *button1_label,
+				  const gchar *button2_label,
+				  const gchar *button3_label,
+				  GtkWidget *widget)
+{
+	if (alertpanel_is_open)
+		return -1;
+	else
+		alertpanel_is_open = TRUE;
+	alertpanel_create(title, message, button1_label, button2_label, 
+			  button3_label, FALSE, widget);
+	alertpanel_show();
+
+	debug_print("return value = %d\n", value);
+	return value;
+}
 void alertpanel_message(const gchar *title, const gchar *message)
 {
 	if (alertpanel_is_open)
@@ -89,7 +108,7 @@ void alertpanel_message(const gchar *title, const gchar *message)
 	else
 		alertpanel_is_open = TRUE;
 
-	alertpanel_create(title, message, NULL, NULL, NULL, FALSE);
+	alertpanel_create(title, message, NULL, NULL, NULL, FALSE, NULL);
 	alertpanel_show();
 }
 
@@ -101,7 +120,7 @@ AlertValue alertpanel_message_with_disable(const gchar *title,
 	else
 		alertpanel_is_open = TRUE;
 
-	alertpanel_create(title, message, NULL, NULL, NULL, TRUE);
+	alertpanel_create(title, message, NULL, NULL, NULL, TRUE, NULL);
 	alertpanel_show();
 
 	return value;
@@ -170,13 +189,15 @@ static void alertpanel_create(const gchar *title,
 			      const gchar *button1_label,
 			      const gchar *button2_label,
 			      const gchar *button3_label,
-			      gboolean	   can_disable)
+			      gboolean	   can_disable,
+			      GtkWidget *custom_widget)
 {
 	static GdkFont *titlefont;
 	GtkStyle *style;
 	GtkWidget *label;
 	GtkWidget *hbox;
 	GtkWidget *vbox;
+	GtkWidget *vbox2;
 	GtkWidget *disable_chkbtn;
 	GtkWidget *confirm_area;
 	GtkWidget *button1;
@@ -223,17 +244,27 @@ static void alertpanel_create(const gchar *title,
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area),
 			  vbox);
+	vbox2 = gtk_vbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 20);
+	gtk_box_pack_start(GTK_BOX(vbox), vbox2, TRUE, TRUE, 0);
 
 	/* for message label */
 	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 20);
+	gtk_box_pack_start(GTK_BOX(vbox2), hbox, FALSE, FALSE, 0);
 
 	/* message label */
 	label = gtk_label_new(message);
-	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 32);
+	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 12);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 
+	/* custom widget */
+	if (custom_widget) {
+		GtkWidget *hbox2 = gtk_hbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(vbox2), hbox2, FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(hbox2), custom_widget, FALSE, FALSE, 
+				   12);
+	}
 	/* for button(s) */
 	if (!button1_label)
 		button1_label = _("OK");

@@ -145,4 +145,8 @@ void gtkut_widget_init			(void);
 
 void gtkut_widget_set_app_icon		(GtkWidget	*widget);
 void gtkut_widget_set_composer_icon	(GtkWidget	*widget);
+
+GtkWidget *gtkut_account_menu_new	(GList			*ac_list,
+				  	 GtkSignalFunc	 	 callback,
+					 gpointer		 data);
 #endif /* __GTKUTILS_H__ */

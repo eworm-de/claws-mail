@@ -1,3 +1,20 @@
+2002-08-06 [melvin]	0.8.0claws19
+
+	* src/account.[ch]
+		account_find_all_from_address(): new function that returns the
+		list of all accounts that are matched in an address.
+	* src/alertpanel.[ch]
+		alertpanel() now accepts a custom widget
+		alertpanel_with_widget(): new function that pops up a panel with
+		a custom widget in it 
+	* src/gtkutils.[ch]
+		gtkut_account_menu_new(): new function that allows the selection
+		of an account from a list of accounts.
+	* src/messageview.c
+		Extended Return Receipt notification to select the correct 
+		account and to make a security test on the Delivery-Notification
+		address which should be the same as the Return-Path.
+
 2002-08-06 [thorsten]	0.8.0claws18
 
 	* src/mimeview.c

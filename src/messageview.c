@@ -65,6 +65,9 @@ static void return_receipt_show		(NoticeView     *noticeview,
 static void return_receipt_send_clicked (NoticeView	*noticeview, 
                                          MsgInfo        *msginfo);
 
+static PrefsAccount *select_account_from_list
+					(GList		*ac_list);
+
 MessageView *messageview_create(void)
 {
 	MessageView *messageview;
@@ -280,17 +283,77 @@ static gint disposition_notification_queue(PrefsAccount * account,
 	return 0;
 }
 
-static gint disposition_notification_send(MsgInfo * msginfo)
+static gint disposition_notification_send(MsgInfo	*msginfo)
 {
 	gchar buf[BUFFSIZE];
 	gchar tmp[MAXPATHLEN + 1];
 	FILE *fp;
-	GSList * to_list;
+	GSList *to_list;
+	GList *ac_list;
+	PrefsAccount *account;
 	gint ok;
-	gchar * to;
+	gchar *to;
 
 	if ((!msginfo->returnreceiptto) && 
 	    (!msginfo->dispositionnotificationto)) 
+		return -1;
+
+	/* RFC2298: Test for Return-Path */
+	if (msginfo->dispositionnotificationto)
+		to = msginfo->dispositionnotificationto;
+	else
+		to = msginfo->returnreceiptto;
+
+	ok = get_header_from_msginfo(msginfo, buf, sizeof(buf),
+				"Return-Path:");
+	if (ok == 0) {
+		gchar *to_addr = g_strdup(to);
+		extract_address(to_addr);
+		extract_address(buf);
+		ok = strcmp(to_addr, buf);
+		g_free(to_addr);
+	} else {
+		strncpy(buf, _("<No Return-Path found>"), 
+				sizeof(buf));
+	}
+	
+	if (ok != 0) {
+		AlertValue val;
+		gchar *message;
+		message = g_strdup_printf(
+				 _("The notification address to which the "
+				   "return receipt is to be sent\n"
+				   "does not correspond to the return path:\n"
+				   "Notification address: %s\n"
+				   "Return path: %s\n"
+				   "It is advised to not to send the return "
+				   "receipt."), to, buf);
+		val = alertpanel(_("Warning"), message, _("Send"),
+				_("+Don't Send"), NULL);
+		if (val != G_ALERTDEFAULT)
+			return -1;
+	}
+
+	ac_list = account_find_all_from_address(NULL, msginfo->to);
+	ac_list = account_find_all_from_address(ac_list, msginfo->cc);
+
+	if (ac_list == NULL) {
+		alertpanel_error(_("This message is asking for a return "
+				   "receipt notification\n"
+				   "but according to its 'To:' and 'CC:' "
+				   "headers it was not\nofficially addressed "
+				   "to you.\n"
+				   "Receipt notification cancelled."));
+		return -1;
+	}
+
+	if (g_list_length(ac_list) > 1)
+		account = select_account_from_list(ac_list);
+	else
+		account = (PrefsAccount *) ac_list->data;
+	g_list_free(ac_list);
+
+	if (account == NULL)
 		return -1;
 
 	/* write to temporary file */
@@ -313,19 +376,14 @@ static gint disposition_notification_send(MsgInfo * msginfo)
 	fprintf(fp, "Date: %s\n", buf);
 
 	/* From */
-	if (cur_account->name && *cur_account->name) {
+	if (account->name && *account->name) {
 		notification_convert_header
-			(buf, sizeof(buf), cur_account->name,
+			(buf, sizeof(buf), account->name,
 			 strlen("From: "));
-		fprintf(fp, "From: %s <%s>\n", buf, cur_account->address);
+		fprintf(fp, "From: %s <%s>\n", buf, account->address);
 	} else
-		fprintf(fp, "From: %s\n", cur_account->address);
+		fprintf(fp, "From: %s\n", account->address);
 
-	/* To */
-	if (msginfo->dispositionnotificationto)
-		to = msginfo->dispositionnotificationto;
-	else
-		to = msginfo->returnreceiptto;
 	fprintf(fp, "To: %s\n", to);
 
 	/* Subject */
@@ -340,7 +398,7 @@ static gint disposition_notification_send(MsgInfo * msginfo)
 	}
 
 	to_list = address_list_append(NULL, to);
-	ok = send_message(tmp, cur_account, to_list);
+	ok = send_message(tmp, account, to_list);
 	
 	if (ok < 0) {
 		if (prefs_common.queue_msg) {
@@ -352,7 +410,7 @@ static gint disposition_notification_send(MsgInfo * msginfo)
 				   "Put this notification into queue folder?"),
 				 _("OK"), _("Cancel"), NULL);
 			if (G_ALERTDEFAULT == val) {
-				ok = disposition_notification_queue(cur_account, to, tmp);
+				ok = disposition_notification_queue(account, to, tmp);
 				if (ok < 0)
 					alertpanel_error(_("Can't queue the notification."));
 			}
@@ -629,6 +687,9 @@ static void return_receipt_send_clicked(NoticeView *noticeview, MsgInfo *msginfo
 	}
 
 	tmpmsginfo = procheader_parse_file(file, msginfo->flags, TRUE, TRUE);
+	tmpmsginfo->folder = msginfo->folder;
+	tmpmsginfo->msgnum = msginfo->msgnum;
+
 	if (disposition_notification_send(tmpmsginfo) >= 0) {
 		procmsg_msginfo_unset_flags(msginfo, MSG_RETRCPT_PENDING, 0);
 		noticeview_hide(noticeview);
@@ -638,4 +699,35 @@ static void return_receipt_send_clicked(NoticeView *noticeview, MsgInfo *msginfo
 	g_free(file);
 }
 
+static void select_account_cb(GtkWidget *w, gpointer data)
+{
+	*(gint*)data = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(w)));
+}
+	
+static PrefsAccount *select_account_from_list(GList *ac_list)
+{
+	GtkWidget *optmenu;
+	GtkWidget *menu;
+	gint account_id;
 
+	g_return_val_if_fail(ac_list != NULL, NULL);
+	g_return_val_if_fail(ac_list->data != NULL, NULL);
+	
+	optmenu = gtk_option_menu_new();
+	menu = gtkut_account_menu_new(ac_list, select_account_cb, &account_id);
+	if (!menu)
+		return NULL;
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu), menu);
+	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu), 0);
+	account_id = ((PrefsAccount *) ac_list->data)->account_id;
+	if (alertpanel_with_widget(
+				_("Return Receipt Notification"),
+				_("The message was sent to several of your "
+				  "accounts.\n"
+				  "Please choose which account do you want to "
+				  "use for sending the receipt notification:"),
+			        _("Send Notification"), _("+Cancel"), NULL,
+			        optmenu) != G_ALERTDEFAULT)
+		return NULL;
+	return account_find_from_id(account_id);
+}
