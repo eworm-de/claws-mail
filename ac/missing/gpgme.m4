@@ -9,7 +9,7 @@ dnl AM_PATH_GPGME([MINIMUM-VERSION,
 dnl               [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND ]]])
 dnl Test for gpgme, and define GPGME_CFLAGS and GPGME_LIBS
 dnl
-AC_DEFUN(AM_PATH_GPGME,
+AC_DEFUN([AM_PATH_GPGME],
 [dnl
 dnl Get the cflags and libraries from the gpgme-config script
 dnl
