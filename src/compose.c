@@ -1704,7 +1704,12 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	g_return_if_fail(msginfo != NULL);
 
 	if ((compose->account->protocol != A_NNTP) || followup_and_reply_to)
-		compose_entry_append(compose,
+		if (!(to_all || ignore_replyto)
+		    && msginfo->folder && msginfo->folder->prefs->enable_default_reply_to) {
+			compose_entry_append(compose, msginfo->folder->prefs->default_reply_to, COMPOSE_TO);
+			compose_entry_select(compose, msginfo->folder->prefs->default_reply_to);
+		} else
+			compose_entry_append(compose,
 		 		    ((compose->replyto && !ignore_replyto)
 				     ? compose->replyto
 				     : (compose->mailinglist && !ignore_replyto)

@@ -231,6 +231,7 @@ static struct Interface {
 static struct Other {
 	GtkWidget *uri_combo;
 	GtkWidget *uri_entry;
+	GtkWidget *printcmd_combo;
 	GtkWidget *printcmd_entry;
 	GtkWidget *exteditor_combo;
 	GtkWidget *exteditor_entry;
@@ -2879,6 +2880,7 @@ static void prefs_other_create(void)
 	GtkWidget *uri_entry;
 
 	GtkWidget *printcmd_label;
+	GtkWidget *printcmd_combo;
 	GtkWidget *printcmd_entry;
 
 	GtkWidget *exteditor_label;
@@ -2949,10 +2951,23 @@ static void prefs_other_create(void)
 			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 	gtk_misc_set_alignment (GTK_MISC (printcmd_label), 1, 0.5);
 
-	printcmd_entry = gtk_entry_new ();
-	gtk_widget_show (printcmd_entry);
-	gtk_table_attach (GTK_TABLE (ext_table), printcmd_entry, 1, 2, 1, 2,
+	printcmd_combo = gtk_combo_new ();
+	gtk_widget_show (printcmd_combo);
+	gtk_table_attach (GTK_TABLE (ext_table), printcmd_combo, 1, 2, 1, 2,
 			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtkut_combo_set_items (GTK_COMBO (printcmd_combo),
+#ifdef WIN32
+			       "notepad /p \"%s\"",
+			       "@wordpad /p \"%s\"",
+			       "@lpr -P dummy -S localhost \"%s\"",
+#endif
+			       "lpr \"%s\"",
+			       "@sylprint.pl -v \"%s\"",
+			       "@a2ps -RB \"%s\"",
+			       "@enscript -jG -E email \"%s\"",
+			       "@muttprint -2 -f \"%s\" -p - | ghostview -",
+			       NULL);
+	printcmd_entry = GTK_COMBO (printcmd_combo)->entry;
 
 	exteditor_label = gtk_label_new (_("Editor"));
 	gtk_widget_show (exteditor_label);
@@ -3029,6 +3044,7 @@ static void prefs_other_create(void)
 
 	other.uri_combo = uri_combo;
 	other.uri_entry = uri_entry;
+	other.printcmd_combo = printcmd_combo;
 	other.printcmd_entry = printcmd_entry;
 
 	other.exteditor_combo = exteditor_combo;

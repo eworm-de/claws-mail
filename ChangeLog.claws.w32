@@ -1,3 +1,12 @@
+2002-07-16 [thorsten]	0.7.8claws71-1
+
+	* src/compose.c
+	* src/prefs_folder_item.[ch]
+		add: default reply-to folderoption
+	* src/prefs_common.c
+	* src/summaryview.c
+		add: print_cmd combobox, '@' to skip confirmation
+
 2002-07-12 [thorsten]	0.7.8claws63-1
 
 	* src/codeconv.c

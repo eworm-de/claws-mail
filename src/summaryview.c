@@ -3388,11 +3388,16 @@ void summary_print(SummaryView *summaryview)
 
 	if (clist->selection == NULL) return;
 
-	cmdline = input_dialog(_("Print"),
+	if (prefs_common.print_cmd && prefs_common.print_cmd[0]=='@')
+		cmdline = g_strdup(prefs_common.print_cmd + sizeof(gchar));
+	else {
+		cmdline = input_dialog(_("Print"),
 			       _("Enter the print command line:\n"
 				 "(`%s' will be replaced with file name)"),
 			       prefs_common.print_cmd);
+	}
 	if (!cmdline) return;
+	
 	if (!(p = strchr(cmdline, '%')) || *(p + 1) != 's' ||
 	    strchr(p + 2, '%')) {
 		alertpanel_error(_("Print command line is invalid:\n`%s'"),
