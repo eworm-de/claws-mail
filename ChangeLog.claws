@@ -1,3 +1,8 @@
+2004-08-25 [colin]	0.9.12cvs82
+
+	* src/plugins/pgpmime/pgpmime.c
+		Fix leak on non-combined encrypted messages
+
 2004-08-25 [colin]	0.9.12cvs81
 
 	* src/plugins/pgpmime/pgpmime.c
