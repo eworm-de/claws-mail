@@ -85,10 +85,7 @@ gpgmegtk_passphrase_mbox (const gchar *desc)
                        GTK_SIGNAL_FUNC(passphrase_deleted), NULL);
     gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
                        GTK_SIGNAL_FUNC(passphrase_key_pressed), NULL);
-    gtk_signal_connect(GTK_OBJECT(window), "focus_in_event",
-                       GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
-    gtk_signal_connect(GTK_OBJECT(window), "focus_out_event",
-                       GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
+    MANAGE_WINDOW_SIGNALS_CONNECT(window);
     manage_window_set_transient(GTK_WINDOW(window));
 
     vbox = gtk_vbox_new(FALSE, 8);

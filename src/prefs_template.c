@@ -1,7 +1,7 @@
 /*
  * Sylpheed templates subsystem 
  * Copyright (C) 2001 Alexander Barinov
- * Copyright (C) 2001 Hiroyuki Yamamoto
+ * Copyright (C) 2001-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -266,10 +266,7 @@ static void prefs_template_window_create(void)
 			   GTK_SIGNAL_FUNC(prefs_template_deleted_cb), NULL);
 	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
 			   GTK_SIGNAL_FUNC(prefs_template_key_pressed_cb), NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "focus_in_event",
-			   GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "focus_out_event",
-			   GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
+	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
 			   GTK_SIGNAL_FUNC(prefs_template_ok_cb), NULL);
 	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",

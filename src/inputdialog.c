@@ -170,10 +170,7 @@ static void input_dialog_create(void)
 			   GTK_SIGNAL_FUNC(delete_event), NULL);
 	gtk_signal_connect(GTK_OBJECT(dialog), "key_press_event",
 			   GTK_SIGNAL_FUNC(key_pressed), NULL);
-	gtk_signal_connect(GTK_OBJECT(dialog), "focus_in_event",
-			   GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
-	gtk_signal_connect(GTK_OBJECT(dialog), "focus_out_event",
-			   GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
+	MANAGE_WINDOW_SIGNALS_CONNECT(dialog);
 
 	gtk_widget_realize(dialog);
 

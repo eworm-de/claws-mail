@@ -129,8 +129,10 @@ gint recv_write(SockInfo *sock, FILE *fp)
 			   than 50msec, update UI */
 			if (tv_cur.tv_sec - tv_prev.tv_sec > 0 ||
 			    tv_cur.tv_usec - tv_prev.tv_usec > UI_REFRESH_INTERVAL) {
-				recv_ui_func(sock, count, bytes,
-					     recv_ui_func_data);
+				gboolean ret;
+				ret = recv_ui_func(sock, count, bytes,
+						   recv_ui_func_data);
+				if (ret == FALSE) return -1;
 				gettimeofday(&tv_prev, NULL);
 			}
 		}

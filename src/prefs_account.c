@@ -618,10 +618,8 @@ static void prefs_account_create(void)
 			   GTK_SIGNAL_FUNC(prefs_account_deleted), NULL);
 	gtk_signal_connect(GTK_OBJECT(dialog.window), "key_press_event",
 			   GTK_SIGNAL_FUNC(prefs_account_key_pressed), NULL);
-	gtk_signal_connect(GTK_OBJECT(dialog.window), "focus_in_event",
-			   GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
-	gtk_signal_connect(GTK_OBJECT(dialog.window), "focus_out_event",
-			   GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
+	MANAGE_WINDOW_SIGNALS_CONNECT(dialog.window);
+
 	gtk_signal_connect(GTK_OBJECT(dialog.ok_btn), "clicked",
 	 		   GTK_SIGNAL_FUNC(prefs_account_ok), NULL);
 	gtk_signal_connect(GTK_OBJECT(dialog.apply_btn), "clicked",

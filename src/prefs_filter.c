@@ -220,10 +220,7 @@ static void prefs_filter_create(void)
 			    GTK_SIGNAL_FUNC(prefs_filter_deleted), NULL);
 	gtk_signal_connect (GTK_OBJECT(window), "key_press_event",
 			    GTK_SIGNAL_FUNC(prefs_filter_key_pressed), NULL);
-	gtk_signal_connect (GTK_OBJECT(window), "focus_in_event",
-			    GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
-	gtk_signal_connect (GTK_OBJECT(window), "focus_out_event",
-			    GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
+	MANAGE_WINDOW_SIGNALS_CONNECT (window);
 	gtk_signal_connect (GTK_OBJECT(ok_btn), "clicked",
 			    GTK_SIGNAL_FUNC(prefs_filter_ok), NULL);
 	gtk_signal_connect (GTK_OBJECT(cancel_btn), "clicked",
@@ -573,12 +570,15 @@ void prefs_filter_rename_path(const gchar *old_path, const gchar *new_path)
 	gchar *dest_path;
 	gint oldpathlen;
 
+	g_return_if_fail(old_path != NULL);
+	g_return_if_fail(new_path != NULL);
+
 	for (cur = prefs_common.fltlist; cur != NULL; cur = cur->next) {
 		Filter *flt = (Filter *)cur->data;
 
 		oldpathlen = strlen(old_path);
-		if (!strncmp(old_path, (gchar *)flt->dest, oldpathlen)) {
-			base = (gchar *)flt->dest + oldpathlen;
+		if (flt->dest && !strncmp(old_path, flt->dest, oldpathlen)) {
+			base = flt->dest + oldpathlen;
 			while (*base == G_DIR_SEPARATOR) base++;
 			if (*base == '\0')
 				dest_path = g_strdup(new_path);
@@ -598,14 +598,14 @@ void prefs_filter_delete_path(const gchar *path)
 {
 	GSList *cur;
 	GSList *next;
-	gint len;
+
+	g_return_if_fail(path != NULL);
 
 	for (cur = prefs_common.fltlist; cur != NULL; cur = next) {
 		Filter *flt = (Filter *)cur->data;
 		next = cur->next;
 
-		len = strlen(path);
-		if (!strncmp(path, flt->dest, len)) {
+		if (flt->dest && !strncmp(path, flt->dest, strlen(path))) {
 			filter_free(flt);
 			prefs_common.fltlist =
 				g_slist_remove(prefs_common.fltlist, flt);

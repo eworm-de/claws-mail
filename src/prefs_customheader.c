@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -161,10 +161,7 @@ static void prefs_custom_header_create(void)
 	gtk_widget_grab_default (ok_btn);
 
 	gtk_window_set_title (GTK_WINDOW(window), _("Custom header setting"));
-	gtk_signal_connect (GTK_OBJECT(window), "focus_in_event",
-			    GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
-	gtk_signal_connect (GTK_OBJECT(window), "focus_out_event",
-			    GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
+	MANAGE_WINDOW_SIGNALS_CONNECT (window);
 	gtk_signal_connect (GTK_OBJECT(window), "delete_event",
 			    GTK_SIGNAL_FUNC(prefs_custom_header_deleted),
 			    NULL);

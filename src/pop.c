@@ -436,7 +436,8 @@ gint pop3_retr_recv(SockInfo *sock, gpointer data)
 
 	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
 		if (recv_write_to_file(sock, (file = get_tmp_file())) < 0) {
-			state->inc_state = INC_NOSPACE;
+			if (state->inc_state == INC_SUCCESS)
+				state->inc_state = INC_NOSPACE;
 			return -1;
 		}
 

@@ -74,7 +74,7 @@ static void grouplist_dialog_set_list	(const gchar	*pattern,
 					 gboolean	 refresh);
 static void grouplist_search		(void);
 static void grouplist_clear		(void);
-static void grouplist_recv_func		(SockInfo	*sock,
+static gboolean grouplist_recv_func	(SockInfo	*sock,
 					 gint		 count,
 					 gint		 read_bytes,
 					 gpointer	 data);
@@ -127,7 +127,7 @@ GSList *grouplist_dialog(Folder *folder)
 
 	grouplist_dialog_set_list(NULL, TRUE);
 
-	gtk_main();
+	if (ack) gtk_main();
 
 	manage_window_focus_out(dialog, NULL, NULL);
 	gtk_widget_hide(dialog);
@@ -175,10 +175,7 @@ static void grouplist_dialog_create(void)
 			   GTK_SIGNAL_FUNC(cancel_clicked), NULL);
 	gtk_signal_connect(GTK_OBJECT(dialog), "key_press_event",
 			   GTK_SIGNAL_FUNC(key_pressed), NULL);
-	gtk_signal_connect(GTK_OBJECT(dialog), "focus_in_event",
-			   GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
-	gtk_signal_connect(GTK_OBJECT(dialog), "focus_out_event",
-			   GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
+	MANAGE_WINDOW_SIGNALS_CONNECT(dialog);
 
 	gtk_widget_realize(dialog);
 
@@ -391,12 +388,13 @@ static void grouplist_dialog_set_list(const gchar *pattern, gboolean refresh)
 		pattern = "*";
 
 	if (refresh) {
+		ack = TRUE;
 		grouplist_clear();
 		recv_set_ui_func(grouplist_recv_func, NULL);
 		group_list = news_get_group_list(news_folder);
 		group_list = g_slist_reverse(group_list);
 		recv_set_ui_func(NULL, NULL);
-		if (group_list == NULL) {
+		if (group_list == NULL && ack == TRUE) {
 			alertpanel_error(_("Can't retrieve newsgroup list."));
 			locked = FALSE;
 			return;
@@ -470,8 +468,8 @@ static void grouplist_clear(void)
 					   NULL);
 }
 
-static void grouplist_recv_func(SockInfo *sock, gint count, gint read_bytes,
-				gpointer data)
+static gboolean grouplist_recv_func(SockInfo *sock, gint count, gint read_bytes,
+				    gpointer data)
 {
 	gchar buf[BUFFSIZE];
 
@@ -480,6 +478,10 @@ static void grouplist_recv_func(SockInfo *sock, gint count, gint read_bytes,
 		   count, to_human_readable(read_bytes));
 	gtk_label_set_text(GTK_LABEL(status_label), buf);
 	GTK_EVENTS_FLUSH();
+	if (ack == FALSE)
+		return FALSE;
+	else
+		return TRUE;
 }
 
 static void ok_clicked(GtkWidget *widget, gpointer data)

@@ -297,10 +297,7 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
 	gtk_signal_connect (GTK_OBJECT(window), "delete_event",
 			    GTK_SIGNAL_FUNC(prefs_folder_item_delete_cb), dialog);
-	gtk_signal_connect (GTK_OBJECT(window), "focus_in_event",
-			    GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
-	gtk_signal_connect (GTK_OBJECT(window), "focus_out_event",
-			    GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
+	MANAGE_WINDOW_SIGNALS_CONNECT (window);
 
 	/* Table */
 	table = gtk_table_new(4, 2, FALSE);

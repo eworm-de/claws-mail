@@ -427,6 +427,8 @@ GSList *news_get_group_list(Folder *folder)
 		statusbar_pop_all();
 		if (recv_write_to_file(SESSION(session)->sock, filename) < 0) {
 			log_warning(_("can't retrieve newsgroup list\n"));
+			session_destroy(SESSION(session));
+			REMOTE_FOLDER(folder)->session = NULL;
 			g_free(filename);
 			return NULL;
 		}

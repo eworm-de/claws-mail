@@ -4239,10 +4239,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 			   GTK_SIGNAL_FUNC(compose_delete_cb), compose);
 	gtk_signal_connect(GTK_OBJECT(window), "destroy",
 			   GTK_SIGNAL_FUNC(compose_destroy_cb), compose);
-	gtk_signal_connect(GTK_OBJECT(window), "focus_in_event",
-			   GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "focus_out_event",
-			   GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
+	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 	gtk_widget_realize(window);
 
 	gtkut_widget_set_composer_icon(window);

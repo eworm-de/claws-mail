@@ -68,7 +68,6 @@
 #include "gtkutils.h"
 #include "stock_pixmap.h"
 #include "filesel.h"
-#include "manage_window.h"
 #include "alertpanel.h"
 #include "inputdialog.h"
 #include "statusbar.h"

@@ -97,7 +97,7 @@ static gint pop3_automaton_terminate	(SockInfo		*source,
 static GHashTable *inc_get_uidl_table	(PrefsAccount		*ac_prefs);
 static void inc_write_uidl_list		(Pop3State		*state);
 
-static void inc_pop3_recv_func		(SockInfo	*sock,
+static gboolean inc_pop3_recv_func	(SockInfo	*sock,
 					 gint		 count,
 					 gint		 read_bytes,
 					 gpointer	 data);
@@ -753,8 +753,8 @@ static void inc_write_uidl_list(Pop3State *state)
 	g_free(path);
 }
 
-static void inc_pop3_recv_func(SockInfo *sock, gint count, gint read_bytes,
-			       gpointer data)
+static gboolean inc_pop3_recv_func(SockInfo *sock, gint count, gint read_bytes,
+				   gpointer data)
 {
 	gchar buf[MSGBUFSIZE];
 	IncSession *session = (IncSession *)data;
@@ -768,7 +768,8 @@ static void inc_pop3_recv_func(SockInfo *sock, gint count, gint read_bytes,
 	if (cur_total > state->total_bytes)
 		cur_total = state->total_bytes;
 
-	Xstrdup_a(total_size, to_human_readable(state->total_bytes), return);
+	Xstrdup_a(total_size, to_human_readable(state->total_bytes),
+		  return FALSE);
 	g_snprintf(buf, sizeof(buf),
 		   _("Retrieving message (%d / %d) (%s / %s)"),
 		   state->cur_msg, state->count,
@@ -781,6 +782,11 @@ static void inc_pop3_recv_func(SockInfo *sock, gint count, gint read_bytes,
 		(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
 		 (gfloat)cur_total / (gfloat)state->total_bytes);
 	GTK_EVENTS_FLUSH();
+
+	if (state->inc_state == INC_CANCEL)
+		return FALSE;
+	else
+		return TRUE;
 }
 
 void inc_progress_update(Pop3State *state, Pop3Phase phase)

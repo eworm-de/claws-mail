@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,31 @@
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkwindow.h>
 
+#define MANAGE_WINDOW_SIGNALS_CONNECT(window) \
+{ \
+	gtk_signal_connect(GTK_OBJECT(window), "focus_in_event", \
+			   GTK_SIGNAL_FUNC(manage_window_focus_in), NULL); \
+	gtk_signal_connect(GTK_OBJECT(window), "focus_out_event", \
+			   GTK_SIGNAL_FUNC(manage_window_focus_out), NULL); \
+	gtk_signal_connect(GTK_OBJECT(window), "unmap_event", \
+			   GTK_SIGNAL_FUNC(manage_window_unmap), NULL); \
+	gtk_signal_connect(GTK_OBJECT(window), "destroy", \
+			   GTK_SIGNAL_FUNC(manage_window_destroy), NULL); \
+}
+
 gint manage_window_focus_in		(GtkWidget	*widget,
 					 GdkEventFocus	*event,
 					 gpointer	 data);
 gint manage_window_focus_out		(GtkWidget	*widget,
 					 GdkEventFocus	*event,
+					 gpointer	 data);
+gint manage_window_unmap		(GtkWidget	*widget,
+					 GdkEventAny	*event,
+					 gpointer	 data);
+gint manage_window_delete		(GtkWidget	*widget,
+					 GdkEventAny	*event,
+					 gpointer	 data);
+void manage_window_destroy		(GtkWidget	*widget,
 					 gpointer	 data);
 
 void manage_window_set_transient	(GtkWindow	*window);
@@ -36,6 +56,5 @@ void manage_window_set_transient	(GtkWindow	*window);
 extern GtkWidget *focus_window;
 
 GtkWidget *manage_window_get_focus_window	(void);
-
 
 #endif /* __MANAGE_WINDOW_H__ */

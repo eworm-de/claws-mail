@@ -901,10 +901,8 @@ static void prefs_common_create(void)
 			    GTK_SIGNAL_FUNC(prefs_common_deleted), NULL);
 	gtk_signal_connect (GTK_OBJECT(dialog.window), "key_press_event",
 			    GTK_SIGNAL_FUNC(prefs_common_key_pressed), NULL);
-	gtk_signal_connect (GTK_OBJECT(dialog.window), "focus_in_event",
-			    GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
-	gtk_signal_connect (GTK_OBJECT(dialog.window), "focus_out_event",
-			    GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
+	MANAGE_WINDOW_SIGNALS_CONNECT(dialog.window);
+
 	gtk_signal_connect (GTK_OBJECT(dialog.ok_btn), "clicked",
 			    GTK_SIGNAL_FUNC(prefs_common_ok), NULL);
 	gtk_signal_connect (GTK_OBJECT(dialog.apply_btn), "clicked",
@@ -3091,10 +3089,7 @@ static void prefs_quote_colors_dialog_create(void)
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 
 	gtk_widget_grab_default(ok_btn);
-	gtk_signal_connect(GTK_OBJECT(window), "focus_in_event",
-			   GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "focus_out_event",
-			   GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
+	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
 			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
 	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
@@ -3414,10 +3409,7 @@ static void prefs_keybind_select(void)
 	gtk_box_pack_end (GTK_BOX (hbox1), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default (ok_btn);
 
-	gtk_signal_connect (GTK_OBJECT (window), "focus_in_event",
-			    GTK_SIGNAL_FUNC (manage_window_focus_in), NULL);
-	gtk_signal_connect (GTK_OBJECT (window), "focus_out_event",
-			    GTK_SIGNAL_FUNC (manage_window_focus_out), NULL);
+	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 	gtk_signal_connect (GTK_OBJECT (window), "delete_event",
 			    GTK_SIGNAL_FUNC (prefs_keybind_deleted), NULL);
 	gtk_signal_connect (GTK_OBJECT (window), "key_press_event",

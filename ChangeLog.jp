@@ -1,3 +1,31 @@
+2002-02-22
+
+	* src/manage_window.[ch]: メインウィンドウを隠しているときに
+	  クラッシュするバグを修正。
+	  MANAGE_WINDOW_SIGNALS_CONNECT(): 新規マクロ。
+	  "unmap_event", "destroy" イベントを監視するようにした。
+	* src/account.c;
+	  src/addressbook.c
+	  src/compose.c
+	  src/export.c
+	  src/filesel.c
+	  src/foldersel.c
+	  src/grouplistdialog.c
+	  src/import.c
+	  src/inputdialog.c
+	  src/mainwindow.c
+	  src/message_search.c
+	  src/passphrase.c
+	  src/prefs_account.c
+	  src/prefs_common.c
+	  src/prefs_customheader.c
+	  src/prefs_display_header.c
+	  src/prefs_filter.c
+	  src/prefs_template.c
+	  src/summary_search.c
+	  src/summaryview.c: ウィンドウ管理のためにシグナルを接続するのに
+	  MANAGE_WINDO_SIGNALS_CONNECT() マクロを使用するようにした。
+
 2002-02-21
 
 	* src/prefs_account.[ch]: 受信サイズ制限のオプションを追加。
