@@ -3681,7 +3681,7 @@ void w32_log_handler(const gchar *log_domain,
 void locale_to_utf8(gchar **buf){
 	if (*buf && 0 < strlen(*buf)){
 		gchar *_tmp_p;
-		int _tmp_len = strlen(*buf) * 2;
+		int _tmp_len = strlen(*buf) * 6;
 		_tmp_p = g_malloc(_tmp_len);
 		strncpy(_tmp_p, *buf, _tmp_len);
 		conv_X_locale_to_utf8(_tmp_p, _tmp_len);
@@ -3693,7 +3693,7 @@ void locale_to_utf8(gchar **buf){
 void locale_from_utf8(gchar **buf){
 	if (*buf && 0 < strlen(*buf)){
 		gchar *_tmp_p;
-		int _tmp_len = strlen(*buf) * 2;
+		int _tmp_len = strlen(*buf) * 6;
 		_tmp_p = g_malloc(_tmp_len);
 		strncpy(_tmp_p, *buf, _tmp_len);
 		conv_X_locale_from_utf8(_tmp_p, _tmp_len);

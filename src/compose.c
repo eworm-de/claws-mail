@@ -3427,6 +3427,11 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 
 		out_codeset = conv_get_outgoing_charset_str();
 		if (!strcasecmp(out_codeset, CS_US_ASCII))
+#ifdef WIN32
+			if (strrchr(chars, 0x80)) /* euro */
+				out_codeset = CS_ISO_8859_15;
+			else
+#endif
 			out_codeset = CS_ISO_8859_1;
 
 		if (prefs_common.encoding_method == CTE_BASE64)
