@@ -15,3 +15,4 @@
 ( cvs diff -u -r 1.56.2.7 -r 1.56.2.8 src/pop.c; ) > 0.9.11cvs17.19.patchset
 ( cvs diff -u -r 1.94.2.14 -r 1.94.2.15 src/messageview.c; cvs diff -u -r 1.56.2.8 -r 1.56.2.9 src/pop.c; cvs diff -u -r 1.17.2.5 -r 1.17.2.6 src/pop.h; ) > 0.9.11cvs17.20.patchset
 ( cvs diff -u -r 1.94.2.15 -r 1.94.2.16 src/messageview.c; cvs diff -u -r 1.56.2.9 -r 1.56.2.10 src/pop.c; cvs diff -u -r 1.17.2.6 -r 1.17.2.7 src/pop.h; ) > 0.9.11cvs17.21.patchset
+( cvs diff -u -r 1.149.2.8 -r 1.149.2.9 src/inc.c; cvs diff -u -r 1.94.2.16 -r 1.94.2.17 src/messageview.c; cvs diff -u -r 1.5.2.4 -r 1.5.2.5 src/noticeview.c; ) > 0.9.11cvs17.22.patchset

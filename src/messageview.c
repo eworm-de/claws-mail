@@ -1031,7 +1031,7 @@ void messageview_toggle_view_real(MessageView *messageview)
 
 static void return_receipt_show(NoticeView *noticeview, MsgInfo *msginfo)
 {
-	noticeview_set_text(noticeview, _("This message asks for a return receipt"));
+	noticeview_set_text(noticeview, _("This message asks for a return receipt."));
 	noticeview_set_button_text(noticeview, _("Send receipt"));
 	noticeview_set_button_press_callback(noticeview,
 					     GTK_SIGNAL_FUNC(return_receipt_send_clicked),
@@ -1097,7 +1097,7 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 		break;
 	case POP3_PARTIAL_DLOAD_DELE:
 		text = g_strdup_printf(_("This message has been partially "
-				"retrieved;\nit is %s. and will be deleted."),
+				"retrieved;\nit is %s and will be deleted."),
 				to_human_readable(
 					(off_t)(msginfo->total_size)));
 		button1 = _("Mark for download");
@@ -1115,13 +1115,9 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 	noticeview_set_button_press_callback(noticeview,
 		     GTK_SIGNAL_FUNC(button1_cb), (gpointer) msginfo);
 
-	if (button2 && button2_cb) {
-		noticeview_set_2ndbutton_text(noticeview, button2);
-		noticeview_set_2ndbutton_press_callback(noticeview,
-			     GTK_SIGNAL_FUNC(button2_cb), (gpointer) msginfo);
-	} else {
-		noticeview_set_2ndbutton_text(noticeview, NULL);
-	}
+	noticeview_set_2ndbutton_text(noticeview, button2);
+	noticeview_set_2ndbutton_press_callback(noticeview,
+		     GTK_SIGNAL_FUNC(button2_cb), (gpointer) msginfo);
 
 	noticeview_show(noticeview);
 }
@@ -1222,7 +1218,9 @@ static PrefsAccount *select_account_from_list(GList *ac_list)
 	g_return_val_if_fail(ac_list->data != NULL, NULL);
 	
 	optmenu = gtk_option_menu_new();
-	menu = gtkut_account_menu_new(ac_list, select_account_cb, &account_id);
+	menu = gtkut_account_menu_new(ac_list, 
+			G_CALLBACK(select_account_cb), 
+			&account_id);
 	if (!menu)
 		return NULL;
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu), menu);
@@ -1261,7 +1259,7 @@ gchar *messageview_get_selection(MessageView *msgview)
 	textview = messageview_get_current_textview(msgview);
 	g_return_val_if_fail(textview != NULL, NULL);
 
-	edit = GTK_EDITABLE(textview->text);
+	edit = GTK_TEXT_VIEW(textview->text);
 	g_return_val_if_fail(edit != NULL, NULL);
 	body_pos = textview->body_pos;
 

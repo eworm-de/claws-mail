@@ -1062,9 +1062,6 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file,
 		return -1;
 	}
 
-	if (FOLDER_TYPE(inbox->folder) != F_MH)
-		update_file = FALSE;
-
 	/* CLAWS: claws uses a global .processing folder for the filtering. */
 	dropfolder = folder_get_default_processing();
 
@@ -1074,15 +1071,26 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file,
 		unlink(file);
 		return -1;
 	}
+
 	if (update_file) {
 		gchar *path = strdup(file);
-		gchar *snum = strrchr(file, G_DIR_SEPARATOR)+1;
-		int num = atoi(snum);
+		gchar *snum = strrchr(file, G_DIR_SEPARATOR);
+		int num = 0;
 		FolderItem *item = NULL;
 		
-		*(strrchr(path, G_DIR_SEPARATOR))='\0';
-		item = folder_find_item_from_phys_path(path);
+		if (snum) {
+			snum++;
+		} else {
+			g_free(path);
+			return 0; /* not a real problem */
+		}
 		
+		num = atoi(snum);
+		
+		if (strrchr(path, G_DIR_SEPARATOR))
+			*(strrchr(path, G_DIR_SEPARATOR))='\0';
+		
+		item = folder_find_item_from_phys_path(path);
 		if (item) {
 			folder_item_remove_msg(item, num);
 		} 

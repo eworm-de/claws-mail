@@ -1,3 +1,16 @@
+2004-07-09 [colin]	0.9.11cvs17.22
+
+	* src/inc.c
+		Remove folder-type check and do
+		more tests to be sure everything's
+		ok
+	* src/messageview.c
+		Punctuation update, remove useless
+		code, fix two warnings
+	* src/noticeview.c
+		Layout cleaning, reset 2nd button
+		when specifying one
+
 2004-07-09 [colin]	0.9.11cvs17.21
 
 	* src/messageview.c
