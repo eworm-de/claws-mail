@@ -1,3 +1,20 @@
+2002-11-30 [christoph]	0.8.6claws41
+
+	* src/common			** NEW **
+		new directory for UI independent code
+	* src/gtk			** NEW **
+		new directory for GTK frontend
+	* src/common/.cvsignore		** NEW **
+	* src/gtk/.cvsignore		** NEW **
+		ignore build files
+	* src/common/Makefile.am	** NEW **
+	* src/gtk/Makefile.am		** NEW **
+		automake files to build new seperated stuff
+	* src/Makefile.am
+		the binary will currently still be build with the
+		files in src, so we include the code from the
+		subdirs for now after building the libs there
+
 2002-11-30 [paul]	0.8.6claws40
 
 	* src/compose.c

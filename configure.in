@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=6
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws40
+EXTRA_VERSION=claws41
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -381,6 +381,8 @@ ac/Makefile
 po/Makefile.in
 src/version.h
 src/Makefile
+src/common/Makefile
+src/gtk/Makefile
 faq/Makefile
 faq/de/Makefile
 faq/en/Makefile

@@ -1,3 +1,5 @@
+SUBDIRS = common gtk
+
 bin_PROGRAMS = sylpheed
 
 sylpheed_SOURCES = \
@@ -229,6 +231,7 @@ INCLUDES = \
 	-I$(includedir)
 
 sylpheed_LDADD = \
+	gtk/libsylpheedgtk.la \
 	$(INTLLIBS) \
 	$(ASPELL_LIBS) \
 	$(GTK_LIBS) \
