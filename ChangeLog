@@ -1,5 +1,13 @@
 2002-10-04
 
+	* src/account.c: account_find_from_item(): fixed a bug which didn't
+	  select the correct account.
+	* inc_pop3_session_do():
+	  fixed the resource leak when SSL initialization failed.
+	  Immediately break from temporary event loop if cancelled.
+
+2002-10-04
+
 	* src/account.[ch]: account_find_from_item(): new.
 	* src/compose.c:
 	  compose_reply(), compose_forward(), compose_redirect()

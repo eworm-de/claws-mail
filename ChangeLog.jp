@@ -1,5 +1,13 @@
 2002-10-04
 
+	* src/account.c: account_find_from_item(): 正しいアカウントを選択
+	  していなかったバグを修正。
+	* inc_pop3_session_do():
+	  SSL の初期化に失敗したときのリソースのリークを修正。
+	  キャンセルされたら一時的なイベントループからすぐに抜けるようにした。
+
+2002-10-04
+
 	* src/account.[ch]: account_find_from_item(): 新規。
 	* src/compose.c:
 	  compose_reply(), compose_forward(), compose_redirect()

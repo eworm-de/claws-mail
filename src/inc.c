@@ -774,7 +774,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 #if USE_SSL
 	if (pop3_state->ac_prefs->ssl_pop == SSL_TUNNEL &&
 	    !ssl_init_socket(sockinfo)) {
-		pop3_automaton_terminate(NULL, atm);
+		pop3_automaton_terminate(sockinfo, atm);
 		automaton_destroy(atm);
 		session->inc_state = INC_CONNECT_ERROR;
 		return INC_CONNECT_ERROR;
@@ -800,8 +800,11 @@ static IncState inc_pop3_session_do(IncSession *session)
 				      atm->state[atm->num].condition,
 				      automaton_input_cb, atm);
 
-	while (!atm->terminated)
+	while (!atm->terminated && !atm->cancelled)
 		gtk_main_iteration();
+
+	if (!atm->terminated)
+		pop3_automaton_terminate(sockinfo, atm);
 
 	log_verbosity_set(FALSE);
 	/* oha: see above */
