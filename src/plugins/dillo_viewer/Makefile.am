@@ -4,7 +4,7 @@ plugin_LTLIBRARIES = dillo_viewer.la
 
 dillo_viewer_la_SOURCES = \
          dillo_viewer.c \
-         dillo_prefs.c
+         dillo_prefs.c dillo_prefs.h
 
 dillo_viewer_la_LDFLAGS = \
 	-avoid-version -module \
