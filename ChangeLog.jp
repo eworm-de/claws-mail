@@ -1,3 +1,11 @@
+2001-12-08
+
+	* src/messageview.c: messageview_change_view_type(): textview を
+	  外す前にセレクションを放棄するようにした。これで謎のコピー・
+	  ペーストの障害が解決(Melvin Hadasht さん thanks)。
+	* src/textview.c: textview_set_font(): gtk_editable_select_region()
+	  の代わりに gtk_editable_claim_selection() を使用するようにした。
+
 2001-12-06
 
 	* src/prefs_template.c: prefs_template_window_create(): To:

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -472,8 +472,8 @@ static void messageview_change_view_type(MessageView *messageview,
 	if (messageview->type == type) return;
 
 	if (type == MVIEW_MIME) {
-		if (textview->text) 
-			gtk_editable_claim_selection(GTK_EDITABLE(textview->text), FALSE, GDK_CURRENT_TIME);
+		gtk_editable_claim_selection(GTK_EDITABLE(textview->text),
+					     FALSE, GDK_CURRENT_TIME);
 		gtk_container_remove
 			(GTK_CONTAINER(GTK_WIDGET_PTR(messageview)),
 			 GTK_WIDGET_PTR(textview));
@@ -483,8 +483,8 @@ static void messageview_change_view_type(MessageView *messageview,
 				  GTK_WIDGET_PTR(textview));
 		mimeview->type = MIMEVIEW_TEXT;
 	} else if (type == MVIEW_TEXT) {
-		if (mimeview->textview->text) 
-			gtk_editable_claim_selection(GTK_EDITABLE(mimeview->textview->text), FALSE, GDK_CURRENT_TIME);
+		gtk_editable_claim_selection(GTK_EDITABLE(textview->text),
+					     FALSE, GDK_CURRENT_TIME);
 		gtk_container_remove
 			(GTK_CONTAINER(GTK_WIDGET_PTR(messageview)),
 			 GTK_WIDGET_PTR(mimeview));

@@ -1,3 +1,12 @@
+2001-12-08
+
+	* src/messageview.c: messageview_change_view_type(): disclaim the
+	  selection before removing textview. This solves the mysterious
+	  copy-paste disability (thanks to Melvin Hadasht).
+	* src/textview.c: textview_set_font(): use
+	  gtk_editable_claim_selection() instead of
+	  gtk_editable_select_region().
+
 2001-12-06
 
 	* src/prefs_template.c: prefs_template_window_create(): supported
