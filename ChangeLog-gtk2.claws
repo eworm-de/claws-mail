@@ -1,3 +1,8 @@
+2005-03-20 [thorsten]	1.9.6cvs5
+
+	* src/compose.c
+		use a more compatible syntax
+
 2005-03-20 [thorsten]	1.9.6cvs4
 
 	* src/prefs_toolbar.c

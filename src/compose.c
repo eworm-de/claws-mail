@@ -7012,7 +7012,7 @@ static void compose_header_drag_received_cb (GtkWidget		*widget,
 	 * does not work */
 
 	if (!strncmp(email, "mailto:", strlen("mailto:"))) {
-		gchar decoded[strlen(email)];
+		gchar *decoded=g_new(gchar, strlen(email));
 		int start = 0;
 
 		email += strlen("mailto:");
@@ -7020,6 +7020,7 @@ static void compose_header_drag_received_cb (GtkWidget		*widget,
 		gtk_editable_delete_text(entry, 0, -1);
 		gtk_editable_insert_text(entry, decoded, strlen(decoded), &start);
 		gtk_drag_finish(drag_context, TRUE, FALSE, time);
+		g_free(decoded);
 		return;
 	}
 	gtk_drag_finish(drag_context, TRUE, FALSE, time);
