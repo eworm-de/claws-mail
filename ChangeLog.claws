@@ -1,3 +1,8 @@
+2002-11-07 [paul] 	0.8.5claws88
+
+	* src/compose.c
+		revert last commit
+
 2002-11-07 [paul]	0.8.5claws87
 
 	* src/compose.c
