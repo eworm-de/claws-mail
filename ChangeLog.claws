@@ -1,4 +1,10 @@
+2004-02-26 [alfons]	0.9.9claws29
+
+	* src/procmime.c
+		clean up (1)
+
 2004-02-24 [luke]
+
 	* tools/textviewer.sh
 		tweaks from Johann Koenig, recognition of shell
 		scripts in particular

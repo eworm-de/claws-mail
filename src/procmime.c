@@ -1131,8 +1131,6 @@ static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mim
 			g_hash_table_insert(mimeinfo->parameters,
 					    g_strdup("charset"),
 					    g_strdup("us-ascii"));
-		g_strfreev(content_type_parts);
-		return;
 	} else {
 		mimeinfo->type = MIMETYPE_UNKNOWN;
 		for (typetablearray = mime_type_table; typetablearray->str != NULL; typetablearray++) {
