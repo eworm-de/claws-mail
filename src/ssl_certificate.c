@@ -29,8 +29,10 @@
 #include "alertpanel.h"
 #include "utils.h"
 #include "intl.h"
+#include "prefs_common.h"
 
 static void ssl_certificate_destroy(SSLCertificate *cert);
+static char *ssl_certificate_check_signer (X509 *cert); 
 
 static char * readable_fingerprint(unsigned char *src, int len) 
 {
@@ -97,24 +99,70 @@ static void ssl_certificate_save (SSLCertificate *cert)
 
 static char* ssl_certificate_to_string(SSLCertificate *cert)
 {
-	char *ret, *issuer, *subject, *fingerprint;
-	int j;
+	char *ret, buf[100];
+	char *issuer_commonname, *issuer_location, *issuer_organization;
+	char *subject_commonname, *subject_location, *subject_organization;
+	char *fingerprint, *sig_status;
 	unsigned int n;
 	unsigned char md[EVP_MAX_MD_SIZE];	
-		
-	X509_digest(cert->x509_cert, EVP_md5(), md, &n);
-	issuer = X509_NAME_oneline(X509_get_issuer_name(cert->x509_cert), 0, 0);
-	subject = X509_NAME_oneline(X509_get_subject_name(cert->x509_cert), 0, 0);
-	fingerprint = readable_fingerprint(md, (int)n);		
-	ret = g_strdup_printf("  Issuer: %s\n  Subject: %s\n  Fingerprint: %s",
-				issuer, subject, fingerprint);
+	
+	/* issuer */	
+	 X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
+					NID_commonName, buf, 100);
+	 issuer_commonname = g_strdup(buf);
+	 X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
+					NID_localityName, buf, 100);
+	 issuer_location = g_strdup(buf);
+	 X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
+					NID_countryName, buf, 100);
+	 issuer_location = g_strconcat(issuer_location,", ",buf, NULL);
+	 X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
+					NID_organizationName, buf, 100);
+	 issuer_organization = g_strdup(buf);
 
-	if (issuer)
-		g_free(issuer);
-	if (subject)
-		g_free(subject);
+	/* issuer */	
+	 X509_NAME_get_text_by_NID(X509_get_subject_name(cert->x509_cert), 
+					NID_commonName, buf, 100);
+	 subject_commonname = g_strdup(buf);
+	 X509_NAME_get_text_by_NID(X509_get_subject_name(cert->x509_cert), 
+					NID_localityName, buf, 100);
+	 subject_location = g_strdup(buf);
+	 X509_NAME_get_text_by_NID(X509_get_subject_name(cert->x509_cert), 
+					NID_countryName, buf, 100);
+	 subject_location = g_strconcat(subject_location,", ",buf, NULL);
+	 X509_NAME_get_text_by_NID(X509_get_subject_name(cert->x509_cert), 
+					NID_organizationName, buf, 100);
+	 subject_organization = g_strdup(buf);
+	 	 
+	/* fingerprint */
+	X509_digest(cert->x509_cert, EVP_md5(), md, &n);
+	fingerprint = readable_fingerprint(md, (int)n);
+
+	/* signature */
+	sig_status = ssl_certificate_check_signer(cert->x509_cert);
+
+	ret = g_strdup_printf(_("  Owner: %s (%s) in %s\n  Signed by: %s (%s) in %s\n  Fingerprint: %s\n  Signature status: %s"),
+				subject_commonname, subject_organization, subject_location, 
+				issuer_commonname, issuer_organization, issuer_location, 
+				fingerprint,
+				(sig_status==NULL ? "correct":sig_status));
+
+	if (issuer_commonname)
+		g_free(issuer_commonname);
+	if (issuer_location)
+		g_free(issuer_location);
+	if (issuer_organization)
+		g_free(issuer_organization);
+	if (subject_commonname)
+		g_free(subject_commonname);
+	if (subject_location)
+		g_free(subject_location);
+	if (subject_organization)
+		g_free(subject_organization);
 	if (fingerprint)
 		g_free(fingerprint);
+	if (sig_status)
+		g_free(sig_status);
 	return ret;
 }
 	
@@ -179,7 +227,7 @@ static char *ssl_certificate_check_signer (X509 *cert)
 	store = X509_STORE_new();
 	if (store == NULL) {
 		printf("Can't create X509_STORE\n");
-		return FALSE;
+		return NULL;
 	}
 	if (X509_STORE_set_default_paths(store)) 
 		ok++;
@@ -223,21 +271,22 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host)
 	if (known_cert == NULL) {
 		gint val;
 		gchar *err_msg, *cur_cert_str;
-		gchar *sig_status = NULL;
 		
 		cur_cert_str = ssl_certificate_to_string(current_cert);
 		
-		sig_status = ssl_certificate_check_signer(x509_cert);
-
-		err_msg = g_strdup_printf(_("The SSL certificate presented by %s is unknown.\nPresented certificate is:\n%s\n\n%s%s"),
+		err_msg = g_strdup_printf(_("%s presented an unknown SSL certificate:\n%s"),
 					  host,
-					  cur_cert_str,
-					  (sig_status == NULL)?"The presented certificate signature is correct.":"The presented certificate signature is not correct: ",
-					  (sig_status == NULL)?"":sig_status);
+					  cur_cert_str);
 		g_free (cur_cert_str);
-		if (sig_status)
-			g_free (sig_status);
- 
+
+		if (prefs_common.no_recv_err_panel) {
+			log_error(_("%s\n\nMail won't be retrieved on this account until you save the certificate.\n(Uncheck the \"%s\" preference).\n"),
+					err_msg,
+					_("Don't popup error dialog on receive error"));
+			g_free(err_msg);
+			return FALSE;
+		}
+		 
 		val = alertpanel(_("Warning"),
 			       err_msg,
 			       _("Accept and save"), _("Cancel connection"), NULL);
@@ -261,16 +310,22 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host)
 
 		known_cert_str = ssl_certificate_to_string(known_cert);
 		cur_cert_str = ssl_certificate_to_string(current_cert);
-		err_msg = g_strdup_printf(_("The SSL certificate presented by %s differs from the known one.\nKnown certificate is:\n%s\nPresented certificate is:\n%s\n\n%s%s"),
+		err_msg = g_strdup_printf(_("%s's SSL certificate changed !\nWe have saved this one:\n%s\n\nIt is now:\n%s\n\nThis could mean the server answering is not the known one."),
 					  host,
 					  known_cert_str,
-					  cur_cert_str,
-					  (sig_status == NULL)?"The presented certificate signature is correct.":"The presented certificate signature is not correct: ",
-					  (sig_status == NULL)?"":sig_status);
+					  cur_cert_str);
 		g_free (cur_cert_str);
 		g_free (known_cert_str);
 		if (sig_status)
 			g_free (sig_status);
+
+		if (prefs_common.no_recv_err_panel) {
+			log_error(_("%s\n\nMail won't be retrieved on this account until you save the certificate.\n(Uncheck the \"%s\" preference).\n"),
+					err_msg,
+					_("Don't popup error dialog on receive error"));
+			g_free(err_msg);
+			return FALSE;
+		}
 
 		val = alertpanel(_("Warning"),
 			       err_msg,

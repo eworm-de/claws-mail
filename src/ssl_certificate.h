@@ -27,6 +27,7 @@
 #if USE_SSL
 
 #include <openssl/ssl.h>
+#include <openssl/objects.h>
 #include <glib.h>
 
 typedef struct _SSLCertificate SSLCertificate;

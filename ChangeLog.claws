@@ -1,3 +1,12 @@
+2002-11-11 [colin]	0.8.5claws127
+
+	* src/ssl_certificate.c
+		Cleaner messages
+		Don't popup, instead log error, if the 
+		corresponding pref is checked
+	* src/ssl_certificate.h
+		include <openssl/objects/h>
+
 2002-11-11 [colin]	0.8.5claws126
 
 	* src/ssl_certificate.h
