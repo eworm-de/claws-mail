@@ -5221,7 +5221,7 @@ static void compose_attach_property_create(gboolean *cancelled)
 			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
 	optmenu = gtk_option_menu_new();
-	gtk_box_pack_start(GTK_BOX(hbox), optmenu, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), optmenu, TRUE, TRUE, 0);
 
 	optmenu_menu = gtk_menu_new();
 	MENUITEM_ADD(optmenu_menu, menuitem, "7bit", ENC_7BIT);

@@ -1,3 +1,11 @@
+2002-03-17 [hoa]	0.7.3claws20
+
+	* src/news.c
+		fixed the count of new messages
+
+	* src/compose.c
+		fixed the "attachment properties" window
+
 2002-03-17 [paul]	0.7.4claws19
 
 	* src/defs.h

@@ -351,16 +351,13 @@ void news_scan_group(Folder *folder, FolderItem *item)
 	}
 	g_free(path);
 
-	if (first < min) {
-		new = unread = total = num;
-	} else if (max < first) {
-		new = unread = total = num;
-	} else if (last > max) {
+	if (last >= max) {
 		new += last - max;
 		unread += last - max;
 		if (new > num) new = num;
 		if (unread > num) unread = num;
 	}
+
 	item->new = new;
 	item->unread = unread;
 	item->total = num;
