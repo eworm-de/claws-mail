@@ -1,3 +1,11 @@
+2002-08-03 [melvin]	0.8.1claws12
+
+	* src/prefs_actions.c
+		removed unnecessary checks for NULL introduced in 0.8.1claws11.
+	* src/messageview.c
+		fixed bug where the Return Receipt was sent to
+		Delivery-Notification-To address even if it was not present
+
 2002-08-02 [alfons]	0.8.1claws11
 
 	* src/prefs_actions.c
