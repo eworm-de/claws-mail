@@ -1,3 +1,8 @@
+2003-08-15 [paul]	0.9.4claws21
+
+	* po/ru.po
+		update submitted by Ruslan N. Balkin
+
 2003-08-14 [christoph]	0.9.4claws20
 
 	* src/procmsg.c
