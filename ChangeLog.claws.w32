@@ -1,3 +1,8 @@
+2002-08-24 [thorsten]	0.8.1claws112-1
+
+	* src/compose.c
+		fix: G_DIR_SEPARATOR for dragged attachments
+
 2002-07-29 [thorsten]   0.8.0claws25-1
 
         * src/prefs_actions.c

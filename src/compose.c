@@ -7093,6 +7093,7 @@ static void compose_attach_drag_received_cb (GtkWidget		*widget,
 			&& strncmp("///",filename,3) == 0)
 				offset = 3 ;	/* local file : ///c:/foo.txt */
 		decode_uri(filename, (const gchar *)tmp->data + offset);
+		subst_char(filename,'/','\\');
 		locale_from_utf8(&filename);
 		compose_attach_append
 			(compose, filename,

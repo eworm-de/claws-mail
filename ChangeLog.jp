@@ -1,5 +1,10 @@
 2002-08-23
 
+	* src/alertpanel.c: alertpanel_create(): 少し修正。
+	* NEWS を修正。
+
+2002-08-23
+
 	* NEWS を更新。
 
 2002-08-23
