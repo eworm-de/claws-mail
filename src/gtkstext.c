@@ -5072,6 +5072,24 @@ scroll_up (GtkSText* text, gint diff0)
     process_exposes (text);
 }
 
+/* compare gtkstext string at pos1 with string at pos2 for equality
+   (max. len chars) - we treat characters as single byte */
+guint gtkstext_strncmp(GtkSText *text, guint pos1, guint pos2, guint len,
+		       guint tlen)
+{
+	guint i = 0;
+	gchar ch1, ch2;
+
+	for (; (i < len) && (pos1 + i < tlen) && (pos2 + i < tlen); i++) {
+		ch1 = GTK_STEXT_INDEX(text, pos1 + i);
+		ch2 = GTK_STEXT_INDEX(text, pos2 + i);
+		if (ch1 != ch2)
+			break;
+	}
+
+	return i;
+}
+
 /* return str length if text at start_pos matches str else return zero */
 guint gtkstext_str_strcmp(GtkSText *text, guint start_pos,
 			  guint text_len, gchar *str) {

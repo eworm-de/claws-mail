@@ -251,6 +251,8 @@ void	   gtk_stext_set_cursor_type  (GtkSText *text, GtkSTextCursorType cursor_ty
 
 /* SYLPHEED */
 guint	   is_url_string (GtkSText *text, guint start_pos, guint text_len);
+guint	   gtkstext_strncmp (GtkSText *text, guint pos1, guint pos2,
+			     guint text_len, guint len);
 guint	   gtkstext_str_strcmp (GtkSText *text, guint start_pos,
 			  	guint text_len, gchar *str);
 

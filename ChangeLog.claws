@@ -1,3 +1,10 @@
+2001-11-02 [darko]	0.6.4claws19
+
+	* src/compose.c
+		new wrap quotation and URL/long words wrapping implementation
+	* src/compose.c src/gtkstext.[ch]
+		move gtkstext_strncmp() to gtkstext.c
+
 2001-11-01 [christoph]	0.6.4claws18
 
 	* src/prefs_account.c
