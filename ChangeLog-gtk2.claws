@@ -1,3 +1,8 @@
+2005-02-06 [colin]	1.0.0cvs28.2
+
+	* src/compose.c
+		Make pasting via middle-click more reliable
+
 2005-02-05 [paul]	1.0.0cvs28.1
 
 	* ChangeLog
