@@ -1,3 +1,15 @@
+2001-06-22
+
+	* src/imap.c: imap_cmd_status(): 代入の前に "value" へのポインタを
+	  チェックするようにした(西島さん thanks)。
+
+2001-06-21
+
+	* src/folderview.c: folderview_drag_motion_cb(): MH と IMAP4 フォルダ
+	  間の DnD が(今のところ)できないようにした(平松さん thanks)。
+	* src/foldersel.[ch]: 現在のフォルダの対象になれないフォルダを
+	  表示しないようにした。
+
 2001-06-20
 
 	* version 0.5.0pre1

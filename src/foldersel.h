@@ -25,6 +25,7 @@
 
 #include "folder.h"
 
-FolderItem *foldersel_folder_sel(const gchar *default_folder);
+FolderItem *foldersel_folder_sel(Folder		*cur_folder,
+				 const gchar	*default_folder);
 
 #endif /* __FOLDERSEL_H__ */

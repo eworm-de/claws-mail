@@ -1530,7 +1530,7 @@ static gint imap_cmd_status(SockInfo *sock, const gchar *folder,
 	GPtrArray *argbuf;
 	gchar *str;
 
-	*value = 0;
+	if (value) *value = 0;
 	argbuf = g_ptr_array_new();
 
 	if (strchr(folder, ' ') != NULL)
@@ -1549,7 +1549,7 @@ static gint imap_cmd_status(SockInfo *sock, const gchar *folder,
 	str += strlen(status);
 	if (*str != ' ') THROW;
 	str++;
-	*value = atoi(str);
+	if (value) *value = atoi(str);
 
 catch:
 	ptr_array_free_strings(argbuf);

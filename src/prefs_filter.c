@@ -693,7 +693,7 @@ static void prefs_filter_select_dest_cb(void)
 {
 	FolderItem *dest;
 
-	dest = foldersel_folder_sel(NULL);
+	dest = foldersel_folder_sel(NULL, NULL);
 	if (!dest) return;
 
 	gtk_entry_set_text(GTK_ENTRY(filter.dest_entry), dest->path);

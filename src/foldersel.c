@@ -67,7 +67,7 @@ static gboolean cancelled;
 
 static void foldersel_create(void);
 static void foldersel_init(void);
-static void foldersel_set_tree(void);
+static void foldersel_set_tree(Folder *cur_folder);
 static void foldersel_selected(GtkCList *clist, gint row, gint column,
 			       GdkEvent *event, gpointer data);
 
@@ -77,7 +77,8 @@ static void foldersel_activated(void);
 static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data);
 static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
 
-FolderItem *foldersel_folder_sel(const gchar *default_folder)
+FolderItem *foldersel_folder_sel(Folder *cur_folder,
+				 const gchar *default_folder)
 {
 	GtkCTreeNode *node;
 
@@ -88,7 +89,7 @@ FolderItem *foldersel_folder_sel(const gchar *default_folder)
 		gtk_widget_show(window);
 	manage_window_set_transient(GTK_WINDOW(window));
 
-	foldersel_set_tree();
+	foldersel_set_tree(cur_folder);
 
 	if (folder_item) {
 		node = gtk_ctree_find_by_row_data
@@ -218,7 +219,7 @@ static void foldersel_expand_func(GtkCTree *ctree, GtkCTreeNode *node,
 		gtk_ctree_expand(ctree, node);
 }
 
-static void foldersel_set_tree(void)
+static void foldersel_set_tree(Folder *cur_folder)
 {
 	Folder *folder;
 	GtkCTreeNode *node;
@@ -233,6 +234,13 @@ static void foldersel_set_tree(void)
 		g_return_if_fail(folder != NULL);
 
 		if (folder->type == F_NEWS) continue;
+		if (cur_folder) {
+			if (cur_folder->type != folder->type) continue;
+			if (cur_folder->type == F_IMAP) {
+				if (cur_folder->account != folder->account)
+					continue;
+			}
+		}
 
 		node = gtk_ctree_insert_gnode(GTK_CTREE(ctree), NULL, NULL,
 					      folder->node,

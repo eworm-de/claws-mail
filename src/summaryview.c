@@ -2378,7 +2378,7 @@ void summary_move_to(SummaryView *summaryview)
 	if (!summaryview->folder_item ||
 	    summaryview->folder_item->folder->type == F_NEWS) return;
 
-	to_folder = foldersel_folder_sel(NULL);
+	to_folder = foldersel_folder_sel(NULL, NULL);
 	summary_move_selected_to(summaryview, to_folder);
 }
 
@@ -2441,7 +2441,7 @@ void summary_copy_to(SummaryView *summaryview)
 	if (!summaryview->folder_item ||
 	    summaryview->folder_item->folder->type == F_NEWS) return;
 
-	to_folder = foldersel_folder_sel(NULL);
+	to_folder = foldersel_folder_sel(NULL, NULL);
 	summary_copy_selected_to(summaryview, to_folder);
 }
 
@@ -3012,7 +3012,7 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_G:
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
-		to_folder = foldersel_folder_sel(NULL);
+		to_folder = foldersel_folder_sel(NULL, NULL);
 		if (to_folder) {
 			debug_print(_("Go to %s\n"), to_folder->path);
 			folderview_select(summaryview->folderview, to_folder);

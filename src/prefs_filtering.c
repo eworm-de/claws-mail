@@ -903,7 +903,7 @@ static void prefs_filtering_select_dest(void)
 	FolderItem *dest;
 	gchar * path;
 
-	dest = foldersel_folder_sel(NULL);
+	dest = foldersel_folder_sel(NULL, NULL);
 	if (!dest) return;
 
 	path = folder_item_get_identifier(dest);

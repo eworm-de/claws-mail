@@ -1958,30 +1958,42 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 					  FolderView     *folderview)
 {
 	gint row, column;
-	FolderItem *item;
-	GtkCTreeNode *node;
+	FolderItem *item, *current_item;
+	GtkCTreeNode *node = NULL;
+	gboolean acceptable = FALSE;
 
 	if (gtk_clist_get_selection_info(GTK_CLIST(widget),
 					 x - 24, y - 24, &row, &column)) {
 		node = gtk_ctree_node_nth(GTK_CTREE(widget), row);
 		item = gtk_ctree_node_get_row_data(GTK_CTREE(widget), node);
+		current_item = folderview->summaryview->folder_item;
 		if (item != NULL &&
 		    item->path != NULL &&
-		    folderview->summaryview->folder_item != item) {
-			if (item->folder->type != F_NEWS) {
-				gtk_ctree_select(GTK_CTREE(widget), node);
-				gdk_drag_status(context,
-						context->suggested_action,
-						time);
-				return TRUE;
+		    current_item != NULL &&
+		    current_item != item) {
+			switch (item->folder->type){
+			case F_MH:
+				if (current_item->folder->type == F_MH)
+				    acceptable = TRUE;
+				break;
+			case F_IMAP:
+				if (current_item->folder->account == item->folder->account)
+				    acceptable = TRUE;
+				break;
+			default:
 			}
 		}
 	}
 
-	gtk_ctree_select(GTK_CTREE(widget), folderview->opened);
-	gdk_drag_status(context, 0, time);
+	if (acceptable) {
+		gtk_ctree_select(GTK_CTREE(widget), node);
+		gdk_drag_status(context, context->suggested_action, time);
+	} else {
+		gtk_ctree_select(GTK_CTREE(widget), folderview->opened);
+		gdk_drag_status(context, 0, time);
+	}
 
-	return FALSE;
+	return acceptable;
 }
 
 static void folderview_drag_leave_cb(GtkWidget      *widget,

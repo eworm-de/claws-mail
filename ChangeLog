@@ -1,3 +1,15 @@
+2001-06-22
+
+	* src/imap.c: imap_cmd_status(): check the pointer to "value"
+	  before the assignment (thanks to NISHIJIMA).
+
+2001-06-21
+
+	* src/folderview.c: folderview_drag_motion_cb(): don't allow DnD
+	  across MH and IMAP4 folder (for now) (thanks to Hiramatu).
+	* src/foldersel.[ch]: don't show folders which can't be targets
+	  for current folder.
+
 2001-06-20
 
 	* version 0.5.0pre1
