@@ -1,3 +1,14 @@
+2003-01-14
+
+	* src/folderview.c
+	  src/summaryview.c
+	  src/utils.[ch]: get_abbrev_newsgroup_name(): improved the way
+	  of abbreviation of newsgroup name.
+
+2003-01-14
+
+	* configure.in: show the result of iconv detection.
+
 2003-01-13
 
 	* src/codeconv.[ch]: made the transition from libjconv to iconv().

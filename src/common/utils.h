@@ -290,8 +290,7 @@ gchar **strsplit_with_quote		(const gchar	*str,
 					 gint		 max_tokens);
 
 gchar *get_abbrev_newsgroup_name	(const gchar	*group,
-					 gint            len);
-
+					 gint		 len);
 gchar *trim_string			(const gchar	*str,
 					 gint		 len);
 

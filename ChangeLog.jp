@@ -1,3 +1,14 @@
+2003-01-14
+
+	* src/folderview.c
+	  src/summaryview.c
+	  src/utils.[ch]: get_abbrev_newsgroup_name(): ニュースグループ名
+	  の省略方法を改良。
+
+2003-01-14
+
+	* configure.in: iconv 検出結果を表示。
+
 2003-01-13
 
 	* src/codeconv.[ch]: libjconv から iconv() へ移行。

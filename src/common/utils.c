@@ -1247,22 +1247,21 @@ gchar *get_abbrev_newsgroup_name(const gchar *group, gint len)
 	gchar *abbrev_group;
 	gchar *ap;
 	const gchar *p = group;
-	gint  count = 0;
+	const gchar *last;
 
+	last = group + strlen(group);
 	abbrev_group = ap = g_malloc(strlen(group) + 1);
 
 	while (*p) {
 		while (*p == '.')
 			*ap++ = *p++;
-
-		if ((strlen( p) + count) > len && strchr(p, '.')) {
+		if ((ap - abbrev_group) + (last - p) > len && strchr(p, '.')) {
 			*ap++ = *p++;
 			while (*p != '.') p++;
 		} else {
-			strcpy( ap, p);
+			strcpy(ap, p);
 			return abbrev_group;
 		}
-		count = count + 2;
 	}
 
 	*ap = '\0';
