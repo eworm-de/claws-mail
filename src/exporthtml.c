@@ -1051,9 +1051,11 @@ static void exporthtml_build_filespec( ExportHtmlCtl *ctl ) {
  */
 void exporthtml_parse_filespec( ExportHtmlCtl *ctl, gchar *fileSpec ) {
 	gchar *t;
+	gchar *base = g_path_get_basename(fileSpec);
 
 	ctl->fileHtml =
-		mgu_replace_string( ctl->fileHtml, g_basename( fileSpec ) );
+		mgu_replace_string( ctl->fileHtml, base );
+	g_free(base);
 	t = g_path_get_dirname( fileSpec );
 	ctl->dirOutput = mgu_replace_string( ctl->dirOutput, t );
 	g_free( t );

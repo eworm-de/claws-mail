@@ -585,8 +585,8 @@ static void parse_cmd_opt(int argc, char *argv[])
 		} else if (!strncmp(argv[i], "--offline", 9)) {
 			cmd.online_mode = ONLINE_MODE_OFFLINE;
 		} else if (!strncmp(argv[i], "--help", 6)) {
-			g_print(_("Usage: %s [OPTION]...\n"),
-				g_basename(argv[0]));
+			gchar *base = g_path_get_basename(argv[0]);
+			g_print(_("Usage: %s [OPTION]...\n"), base);
 
 			puts(_("  --compose [address]    open composition window"));
 			puts(_("  --attach file1 [file2]...\n"
@@ -605,6 +605,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			puts(_("  --version              output version information and exit"));
 			puts(_("  --config-dir           output configuration directory"));
 
+			g_free(base);
 			exit(1);
 		} else if (!strncmp(argv[i], "--crash", 7)) {
 			cmd.crash = TRUE;

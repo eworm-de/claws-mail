@@ -1,3 +1,21 @@
+2004-11-13 [paul]	0.9.12cvs146.7
+
+	* src/compose.c
+	* src/exporthtml.c
+	* src/exportldif.c
+	* src/folder.c
+	* src/imap.c
+	* src/imap_gtk.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/mh_gtk.c
+	* src/prefs_themes.c
+	* src/procmime.c
+	* src/setup.c
+	* src/summaryview.c
+		replace deprecated g_basename
+
 2004-11-13 [paul]	0.9.12cvs146.6
 
 	* src/compose.c

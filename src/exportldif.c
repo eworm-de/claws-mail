@@ -534,9 +534,11 @@ static void exportldif_build_filespec( ExportLdifCtl *ctl ) {
  */
 void exportldif_parse_filespec( ExportLdifCtl *ctl, gchar *fileSpec ) {
 	gchar *t;
+	gchar *base = g_path_get_basename(fileSpec);
 
 	ctl->fileLdif =
-		mgu_replace_string( ctl->fileLdif, g_basename( fileSpec ) );
+		mgu_replace_string( ctl->fileLdif, base );
+	g_free(base);
 	t = g_path_get_dirname( fileSpec );
 	ctl->dirOutput = mgu_replace_string( ctl->dirOutput, t );
 	g_free( t );

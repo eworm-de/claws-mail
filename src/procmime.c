@@ -802,7 +802,7 @@ gboolean procmime_find_string(MsgInfo *msginfo, const gchar *str,
 gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 {
 	static guint32 id = 0;
-	const gchar *base;
+	gchar *base;
 	gchar *filename;
 	gchar f_prefix[10];
 
@@ -820,15 +820,16 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 			basetmp = procmime_mimeinfo_get_parameter(mimeinfo, "name");
 		if (basetmp == NULL)
 			basetmp = "mimetmp";
-		base = g_basename(basetmp);
+		base = g_path_get_basename(basetmp);
 		if (*base == '\0') base = "mimetmp";
-		Xstrdup_a(base, base, return NULL);
+		Xstrdup_a(base, base, {g_free(base); return NULL;});
 		subst_for_shellsafe_filename(base);
 	}
 
 	filename = g_strconcat(get_mime_tmp_dir(), G_DIR_SEPARATOR_S,
 			       f_prefix, base, NULL);
 
+	g_free(base);
 	return filename;
 }
 
@@ -840,14 +841,16 @@ gchar *procmime_get_mime_type(const gchar *filename)
 	MimeType *mime_type;
 	const gchar *p;
 	gchar *ext;
+	gchar *base;
 
 	if (!mime_type_table) {
 		mime_type_table = procmime_get_mime_type_table();
 		if (!mime_type_table) return NULL;
 	}
 
-	filename = g_basename(filename);
-	p = strrchr(filename, '.');
+	base = g_path_get_basename(filename);
+	p = strrchr(base, '.');
+	g_free(base);
 	if (!p) return NULL;
 
 	Xstrdup_a(ext, p + 1, return NULL);

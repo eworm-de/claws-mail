@@ -1368,9 +1368,9 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 			new_item->stype = F_INBOX;
 			folder->inbox = new_item;
 		} else if (!folder_item_parent(item) || item->stype == F_INBOX) {
-			const gchar *base;
+			gchar *base;
 
-			base = g_basename(new_item->path);
+			base = g_path_get_basename(new_item->path);
 
 			if (!folder->outbox && !g_ascii_strcasecmp(base, "Sent")) {
 				new_item->stype = F_OUTBOX;
@@ -1385,6 +1385,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 				new_item->stype = F_TRASH;
 				folder->trash = new_item;
 			}
+			g_free(base);
 		}
 
 		if (new_item->no_sub == FALSE)
@@ -1403,7 +1404,7 @@ static GSList *imap_parse_list(IMAPFolder *folder, IMAPSession *session,
 	gchar flags[256];
 	gchar separator_str[16];
 	gchar *p;
-	const gchar *name;
+	gchar *base;
 	gchar *loc_name, *loc_path;
 	GSList *item_list = NULL;
 	GString *str;
@@ -1462,10 +1463,10 @@ static GSList *imap_parse_list(IMAPFolder *folder, IMAPSession *session,
 
 		if (separator_str[0] != '\0')
 			subst_char(buf, separator_str[0], '/');
-		name = g_basename(buf);
-		if (name[0] == '.') continue;
+		base = g_path_get_basename(buf);
+		if (base[0] == '.') continue;
 
-		loc_name = imap_modified_utf7_to_utf8(name);
+		loc_name = imap_modified_utf7_to_utf8(base);
 		loc_path = imap_modified_utf7_to_utf8(buf);
 		new_item = folder_item_new(FOLDER(folder), loc_name, loc_path);
 		if (strcasestr(flags, "\\Noinferiors") != NULL)
@@ -1477,6 +1478,7 @@ static GSList *imap_parse_list(IMAPFolder *folder, IMAPSession *session,
 		item_list = g_slist_append(item_list, new_item);
 
 		debug_print("folder '%s' found.\n", loc_path);
+		g_free(base);
 		g_free(loc_path);
 		g_free(loc_name);
 	}

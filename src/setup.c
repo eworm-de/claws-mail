@@ -54,6 +54,7 @@ void setup(MainWindow *mainwin)
 gboolean setup_write_mailbox_path(MainWindow *mainwin, const gchar *path)
 {
 	Folder *folder;
+	gchar *base;
 
 	if (!path) return FALSE;
 	if (folder_find_from_path(path)) {
@@ -61,12 +62,14 @@ gboolean setup_write_mailbox_path(MainWindow *mainwin, const gchar *path)
 		return FALSE;
 	}
 
-	folder = folder_new(mh_get_class(), !strcmp(path, "Mail") ? _("Mailbox") : g_basename(path), path);
+	base = g_path_get_basename(path);
+	folder = folder_new(mh_get_class(), !strcmp(path, "Mail") ? _("Mailbox") : base, path);
 
 	if (folder->klass->create_tree(folder) < 0) {
 		alertpanel_error(_("Creation of the mailbox failed.\n"
 				   "Maybe some files already exist, or you don't have the permission to write there."));
 		folder_destroy(folder);
+		g_free(base);
 		return FALSE;
 	}
 
@@ -74,6 +77,7 @@ gboolean setup_write_mailbox_path(MainWindow *mainwin, const gchar *path)
 	folder_set_ui_func(folder, scan_tree_func, mainwin);
 	folder_scan_tree(folder);
 	folder_set_ui_func(folder, NULL, NULL);
+	g_free(base);
 	return TRUE;
 }
 

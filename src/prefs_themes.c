@@ -178,44 +178,46 @@ static void prefs_themes_file_stats(const gchar *filename, gpointer data)
 static void prefs_themes_file_remove(const gchar *filename, gpointer data)
 {
 	gchar **status = (gchar **)data;
-	const gchar *name;
+	gchar *base;
 	
 	if ((*status) != NULL)
 		return;
 	
-	name = g_basename(filename);
+	base = g_path_get_basename(filename);
 	if (TRUE == is_dir_exist(filename)) {
-		if (!((name[0] == '.') || (name[0] == '.' && name[1] == '.')))
+		if (!((base[0] == '.') || (base[0] == '.' && base[1] == '.')))
 			g_warning("prefs_themes_file_remove(): subdir in theme dir skipped.\n");
 	}
 	else if (0 != unlink(filename)) {
 		(*status) = g_strdup(filename);
 	}
+	g_free(base);
 }
 
 static void prefs_themes_file_install(const gchar *filename, gpointer data)
 {
 	CopyInfo *ci = (CopyInfo *)data;
-	const gchar *name;
+	gchar *base;
 	
 	if (ci->status != NULL)
 		return;
 	
-	name = g_basename(filename);
+	base = g_path_get_basename(filename);
 	if (TRUE == is_dir_exist(filename)) {
-		if (!((name[0] == '.') || (name[0] == '.' && name[1] == '.')))
+		if (!((base[0] == '.') || (base[0] == '.' && base[1] == '.')))
 			g_warning("prefs_themes_file_install(): subdir in theme dir skipped.\n");
 	}
 	else {
 		gchar *fulldest;
 		
-		fulldest = g_strconcat(ci->dest, G_DIR_SEPARATOR_S, name, NULL);
+		fulldest = g_strconcat(ci->dest, G_DIR_SEPARATOR_S, base, NULL);
 		
 		if (0 != copy_file(filename, fulldest, FALSE)) {
 			ci->status = g_strdup(filename);
 		}
 		g_free(fulldest);
 	}
+	g_free(base);
 }
 
 static void prefs_themes_foreach_file(const gchar *dirname, const FileFunc func, gpointer data)
@@ -307,7 +309,7 @@ static void prefs_themes_get_themes_and_names(ThemesData *tdata)
 	tpaths = tdata->themes;
 	while (tpaths != NULL) {
 		ThemeName *name = g_new0(ThemeName, 1);
-		const gchar *sname = g_basename((gchar *)(tpaths->data));
+		gchar *sname = g_path_get_basename((const gchar *)(tpaths->data));
 		
 		if (IS_INTERNAL_THEME(sname))
 			name->name = g_strdup(_("Default internal theme"));
@@ -317,7 +319,8 @@ static void prefs_themes_get_themes_and_names(ThemesData *tdata)
 			
 		tdata->names = g_list_append(tdata->names, name);
 		tpaths = g_list_next(tpaths);
-	}	
+		g_free(sname);	
+	}
 }
 
 void prefs_themes_init(void)
@@ -416,11 +419,11 @@ static void prefs_themes_btn_remove_clicked_cb(GtkWidget *widget, gpointer data)
 			return;
 		}
 		alert_title = g_strdup_printf(_("Remove system theme '%s'"), 
-					      g_basename(theme_str));
+					      g_path_get_basename(theme_str));
 	}
 	if (NULL == alert_title) {
 		alert_title = g_strdup_printf(_("Remove theme '%s'"), 
-					      g_basename(theme_str));
+					      g_path_get_basename(theme_str));
 	}
 	val = alertpanel(alert_title,
 			 _("Are you sure you want to remove this theme?"),
@@ -448,13 +451,13 @@ static void prefs_themes_btn_remove_clicked_cb(GtkWidget *widget, gpointer data)
 			prefs_themes_get_theme_info(tdata);
 		}
 	}
+	g_free(theme_str);
 }
 
 static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data)
 {
 	gchar      *filename, *source;
-	gchar 	   *themeinfo;
-	const gchar *themename;
+	gchar 	   *themeinfo, *themename;
 	gchar      *alert_title = NULL;
 	CopyInfo   *cinfo;
 	AlertValue  val = 0;
@@ -466,7 +469,7 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 	
 	cinfo = g_new0(CopyInfo, 1);
 	source = g_path_get_dirname(filename);
-	themename = g_basename(source);
+	themename = g_path_get_basename(source);
 	debug_print("Installing '%s' theme from %s\n", themename, filename);
 
 	themeinfo = g_strconcat(source, G_DIR_SEPARATOR_S, THEMEINFO_FILE, NULL);
@@ -534,6 +537,7 @@ end_inst:
 	g_free(source);
 	g_free(themeinfo);
 	g_free(cinfo);
+	g_free(themename);
 }
 
 static void prefs_themes_btn_more_clicked_cb(GtkWidget *widget, gpointer data)

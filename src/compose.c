@@ -2173,6 +2173,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 	FILE *fp;
 	off_t size;
 	gint row;
+	gchar *name;
 
 	if (!is_file_exist(file)) {
 		g_warning("File %s doesn't exist\n", file);
@@ -2208,7 +2209,6 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 		if (!g_ascii_strcasecmp(content_type, "message/rfc822")) {
 			MsgInfo *msginfo;
 			MsgFlags flags = {0, 0};
-			const gchar *name;
 
 			if (procmime_get_encoding_for_file(file) == ENC_7BIT)
 				ainfo->encoding = ENC_7BIT;
@@ -2219,7 +2219,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 			if (msginfo && msginfo->subject)
 				name = msginfo->subject;
 			else
-				name = g_basename(filename ? filename : file);
+				name = g_path_get_basename(filename ? filename : file);
 
 			ainfo->name = g_strdup_printf(_("Message: %s"), name);
 
@@ -2230,9 +2230,10 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 					procmime_get_encoding_for_file(file);
 			else
 				ainfo->encoding = ENC_BASE64;
-			ainfo->name = g_strdup
-				(g_basename(filename ? filename : file));
+			name = g_path_get_basename(filename ? filename : file);
+			ainfo->name = g_strdup(name);
 		}
+		g_free(name);
 	} else {
 		ainfo->content_type = procmime_get_mime_type(file);
 		if (!ainfo->content_type) {
@@ -2243,7 +2244,9 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 			ainfo->encoding = procmime_get_encoding_for_file(file);
 		else
 			ainfo->encoding = ENC_BASE64;
-		ainfo->name = g_strdup(g_basename(filename ? filename : file));	
+		name = g_path_get_basename(filename ? filename : file);
+		ainfo->name = g_strdup(name);	
+		g_free(name);
 	}
 
 	if (!strcmp(ainfo->content_type, "unknown")) {
@@ -4259,7 +4262,7 @@ static gchar *compose_get_header(Compose *compose)
 		g_free(tmp);
 		
 		entry_str = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
-		Xstrdup_a(headervalue, entry_str, return FALSE);
+		Xstrdup_a(headervalue, entry_str, return NULL);
 		subst_char(headervalue, '\r', ' ');
 		subst_char(headervalue, '\n', ' ');
 		string = std_headers;
@@ -6386,7 +6389,7 @@ static void compose_insert_file_cb(gpointer data, guint action,
 		for ( tmp = file_list; tmp; tmp = tmp->next) {
 			gchar *file = (gchar *) tmp->data;
 			gchar *filedup = g_strdup(file);
-			const gchar *shortfile = g_basename(filedup);
+			gchar *shortfile = g_path_get_basename(filedup);
 			ComposeInsertResult res;
 
 			res = compose_insert_file(compose, file);
@@ -6396,6 +6399,7 @@ static void compose_insert_file_cb(gpointer data, guint action,
 				alertpanel_error(_("File '%s' contained invalid characters\n"
 						   "for the current encoding, insertion may be incorrect."), shortfile);
 			}
+			g_free(shortfile);
 			g_free(filedup);
 			g_free(file);
 		}

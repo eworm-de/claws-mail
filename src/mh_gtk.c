@@ -206,6 +206,7 @@ static void rename_folder_cb(FolderView *folderview, guint action,
 	gchar *old_path;
 	gchar *old_id;
 	gchar *new_id;
+	gchar *base;
 
 	item = folderview_get_selected_item(folderview);
 	g_return_if_fail(item != NULL);
@@ -214,10 +215,11 @@ static void rename_folder_cb(FolderView *folderview, guint action,
 
 	name = trim_string(item->name, 32);
 	message = g_strdup_printf(_("Input new name for `%s':"), name);
-	new_folder = input_dialog(_("Rename folder"), message,
-				  g_basename(item->path));
+	base = g_path_get_basename(item->path);
+	new_folder = input_dialog(_("Rename folder"), message, base);
 	g_free(message);
 	g_free(name);
+	g_free(base);
 	if (!new_folder) return;
 	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
 

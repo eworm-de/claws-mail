@@ -3334,14 +3334,13 @@ void summary_save_as(SummaryView *summaryview)
 	if ( aval==0 ) { /* append */
 		if (append_file(src, dest, TRUE) < 0) 
 			alertpanel_error(_("Can't save the file `%s'."),
-					 g_basename(dest));
+					 g_path_get_basename(dest));
 	} else { /* overwrite */
 		if (copy_file(src, dest, TRUE) < 0)
 			alertpanel_error(_("Can't save the file `%s'."),
-					 g_basename(dest));
+					 g_path_get_basename(dest));
 	}
 	g_free(src);
-
 	
 	/*
 	 * If two or more msgs are selected,
@@ -3355,10 +3354,11 @@ void summary_save_as(SummaryView *summaryview)
 			src = procmsg_get_message_file(msginfo);
 			if (append_file(src, dest, TRUE) < 0)
 				alertpanel_error(_("Can't save the file `%s'."),
-						 g_basename(dest));
+						 g_path_get_basename(dest));
 		}
 		g_free(src);
 	}
+	g_free(dest);
 }
 
 void summary_print(SummaryView *summaryview)

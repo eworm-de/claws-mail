@@ -984,8 +984,9 @@ void messageview_save_as(MessageView *messageview)
 	src = procmsg_get_message_file(msginfo);
 	if (copy_file(src, dest, TRUE) < 0) {
 		alertpanel_error(_("Can't save the file `%s'."),
-				 g_basename(dest));
+				 g_path_get_basename(dest));
 	}
+	g_free(dest);
 	g_free(src);
 }
 

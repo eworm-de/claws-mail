@@ -1063,8 +1063,10 @@ FolderItem *folder_find_child_item_by_name(FolderItem *item, const gchar *name)
 
 	for (node = item->node->children; node != NULL; node = node->next) {
 		child = FOLDER_ITEM(node->data);
-		if (strcmp2(g_basename(child->path), name) == 0)
+		if (strcmp2(g_path_get_basename(child->path), name) == 0) {
+			g_free(child->path);
 			return child;
+		}
 	}
 
 	return NULL;
@@ -2524,7 +2526,10 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 	}
 
 	phys_srcpath = folder_item_get_path(src);
-	phys_dstpath = g_strconcat(folder_item_get_path(dest),G_DIR_SEPARATOR_S,g_basename(phys_srcpath),NULL);
+	phys_dstpath = g_strconcat(folder_item_get_path(dest),
+		       G_DIR_SEPARATOR_S,
+		       g_path_get_basename(phys_srcpath),
+		       NULL);
 
 	if (folder_item_parent(src) == dest || src == dest) {
 		g_free(src_identifier);
