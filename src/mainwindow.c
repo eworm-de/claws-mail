@@ -39,6 +39,7 @@
 #include <gtk/gtkhandlebox.h>
 #include <gtk/gtktoolbar.h>
 #include <gtk/gtkbutton.h>
+#include <gtk/gtktooltips.h>
 #include <string.h>
 
 #include "intl.h"
@@ -432,10 +433,11 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File/_Import mbox file..."),	NULL, import_mbox_cb, 0, NULL},
 	{N_("/_File/_Export to mbox file..."),	NULL, export_mbox_cb, 0, NULL},
 	{N_("/_File/Empty _trash"),		"<shift>D", empty_trash_cb, 0, NULL},
-	{N_("/_File/_Work offline"),		"<control>W", toggle_work_offline_cb, 0, "<ToggleItem>"},						
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Save as..."),		"<control>S", save_as_cb, 0, NULL},
 	{N_("/_File/_Print..."),		NULL, print_cb, 0, NULL},
+	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_File/_Work offline"),		"<control>W", toggle_work_offline_cb, 0, "<ToggleItem>"},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	/* {N_("/_File/_Close"),		"<alt>W", app_exit_cb, 0, NULL}, */
 	{N_("/_File/E_xit"),			"<control>Q", app_exit_cb, 0, NULL},
@@ -829,16 +831,17 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_widget_set_usize(progressbar, 120, 1);
 	gtk_box_pack_start(GTK_BOX(hbox_stat), progressbar, FALSE, FALSE, 0);
 
-	online_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_WORK_ONLINE);
-	offline_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_WORK_OFFLINE);
+	online_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_ONLINE);
+	offline_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_OFFLINE);
 	online_tip = gtk_tooltips_new();
 	online_switch = gtk_button_new ();
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(online_tip),
-			     online_switch, _("Go offline"), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(online_tip),online_switch, 
+			     _("You are online. Click the icon to go offline"), NULL);
 	offline_tip = gtk_tooltips_new();
 	offline_switch = gtk_button_new ();
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(offline_tip),
-			     offline_switch, _("Go online"), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(offline_tip),offline_switch, 
+			     _("You are offline. Click the icon to go online"),
+			     NULL);
 	gtk_container_add (GTK_CONTAINER(online_switch), online_pixmap);
 	gtk_button_set_relief (GTK_BUTTON(online_switch), GTK_RELIEF_NONE);
 	gtk_signal_connect (GTK_OBJECT(online_switch), "clicked", (GtkSignalFunc)online_switch_clicked, mainwin);
@@ -1131,13 +1134,13 @@ void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
 			folderview_reflect_prefs_pixmap_theme(mainwin->folderview);
 			summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
 
-			pixmap = stock_pixmap_widget(mainwin->hbox_stat, STOCK_PIXMAP_WORK_ONLINE);
+			pixmap = stock_pixmap_widget(mainwin->hbox_stat, STOCK_PIXMAP_ONLINE);
 			gtk_container_remove(GTK_CONTAINER(mainwin->online_switch), 
 					     mainwin->online_pixmap);
 			gtk_container_add (GTK_CONTAINER(mainwin->online_switch), pixmap);
 			gtk_widget_show(pixmap);
 			mainwin->online_pixmap = pixmap;
-			pixmap = stock_pixmap_widget(mainwin->hbox_stat, STOCK_PIXMAP_WORK_OFFLINE);
+			pixmap = stock_pixmap_widget(mainwin->hbox_stat, STOCK_PIXMAP_OFFLINE);
 			gtk_container_remove(GTK_CONTAINER(mainwin->offline_switch), 
 					     mainwin->offline_pixmap);
 			gtk_container_add (GTK_CONTAINER(mainwin->offline_switch), pixmap);

@@ -1,3 +1,9 @@
+2003-12-06 [paul]	0.9.7claws27
+
+	* partial sync with 0.9.7cvs8
+		leaving claws' online/offline more or less intact
+		see ChangeLog 2003-12-04 and 2003-12-06
+
 2003-12-05 [christoph]	0.9.7claws26
 
 	* src/messageview.c

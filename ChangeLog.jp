@@ -1,3 +1,30 @@
+2003-12-06
+
+	* src/mainwindow.[ch]: ステータスバーにオンラインスイッチボタンを
+	  追加し、メニューに「/ファイル/オフラインにする」を追加。
+	* src/pixmaps/offline.xpm
+	  src/pixmaps/online.xpm: 新規(Mozilla の
+	  themes/classic/communicator/icons/ から拝借)。
+	* src/stock_pixmap.[ch]: online.xpm と offline.xpm を追加。
+	* src/textview.[ch]: textview_show_error(): 新規。
+	* src/summaryview.c: summary_display_msg_full(): メッセージが表示
+	  された場合のみマークを更新。
+	* src/prefs_common.[ch]: PrefsCommon::online_mode を追加。
+	* src/news.c: news_session_get()
+	  src/imap.c: imap_session_get(): オフラインモードのときは NULL を
+	  返すようにした。
+	* src/messageview.[ch]: messageview_show(): メッセージが表示できた
+	  かどうかのステータスを返すようにした。失敗したときはエラー
+	  メッセージをビューに表示するようにした。
+	* src/procmsg.c:
+	  procmsg_get_message_file()
+	  procmsg_open_message(): 取得に失敗したときに警告を表示しないように
+	  した。
+
+2003-12-04
+
+	* src/html.c: html_get_tag(): 値を持たない属性に対応。
+
 2003-12-04
 
 	* src/codeconv.c: conv_get_code_conv_func(): src_charset と現在の

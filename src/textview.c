@@ -553,6 +553,21 @@ static void textview_add_parts(TextView *textview, MimeInfo *mimeinfo)
 #define TEXT_INSERT(str) \
 	gtk_stext_insert(text, textview->msgfont, NULL, NULL, str, -1)
 
+void textview_show_error(TextView *textview)
+{
+	GtkSText *text;
+
+	textview_set_font(textview, NULL);
+	text = GTK_STEXT(textview->text);
+	textview_clear(textview);
+
+	gtk_stext_freeze(text);
+
+	TEXT_INSERT(_("This message can't be displayed.\n"));
+
+	gtk_stext_thaw(text);
+}
+
 void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 {
 	GtkSText *text;

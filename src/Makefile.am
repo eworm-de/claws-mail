@@ -311,6 +311,8 @@ EXTRA_DIST = \
 	pixmaps/notice_error.xpm \
 	pixmaps/notice_note.xpm \
 	pixmaps/notice_warn.xpm \
+	pixmaps/offline.xpm \
+	pixmaps/online.xpm \
 	pixmaps/outbox_hrm.xpm \
 	pixmaps/outbox.xpm \
 	pixmaps/paste.xpm \
@@ -332,9 +334,7 @@ EXTRA_DIST = \
 	pixmaps/trash.xpm \
 	pixmaps/unread.xpm \
 	pixmaps/up_arrow.xpm \
-	pixmaps/vcard.xpm \
-	pixmaps/work_offline.xpm \
-	pixmaps/work_online.xpm
+	pixmaps/vcard.xpm
 
 INCLUDES = \
 	-Icommon \

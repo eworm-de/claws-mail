@@ -84,8 +84,8 @@
 #include "pixmaps/unread.xpm"
 #include "pixmaps/vcard.xpm"
 #include "pixmaps/ignorethread.xpm"
-#include "pixmaps/work_online.xpm"
-#include "pixmaps/work_offline.xpm"
+#include "pixmaps/online.xpm"
+#include "pixmaps/offline.xpm"
 #include "pixmaps/notice_warn.xpm"
 #include "pixmaps/notice_error.xpm"
 #include "pixmaps/notice_note.xpm"
@@ -195,8 +195,8 @@ static StockPixmapData pixmaps[] =
 	{trash_hrm_xpm				, NULL, NULL, "trash_close_hrm", "  "},
 	{unread_xpm				, NULL, NULL, "unread", "  "},
 	{vcard_xpm				, NULL, NULL, "vcard", "  "},
-	{work_online_xpm			, NULL, NULL, "work_online", "  "},
-	{work_offline_xpm			, NULL, NULL, "work_offline", "  "},
+	{online_xpm				, NULL, NULL, "online", "  "},
+	{offline_xpm				, NULL, NULL, "offline", "  "},
 	{notice_warn_xpm			, NULL, NULL, "notice_warn",  "  "},
 	{notice_error_xpm			, NULL, NULL, "notice_error",  "  "},
 	{notice_note_xpm			, NULL, NULL, "notice_note",  "  "},

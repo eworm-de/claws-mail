@@ -72,6 +72,7 @@ void textview_show_message	(TextView	*textview,
 void textview_show_part		(TextView	*textview,
 				 MimeInfo	*mimeinfo,
 				 FILE		*fp);
+void textview_show_error	(TextView	*textview);
 void textview_show_mime_part	(TextView	*textview,
 				 MimeInfo	*partinfo);
 void textview_clear		(TextView	*textview);

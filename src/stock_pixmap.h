@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,8 +95,8 @@ typedef enum
 	STOCK_PIXMAP_TRASH_CLOSE_HRM,
 	STOCK_PIXMAP_UNREAD,
 	STOCK_PIXMAP_VCARD,
-	STOCK_PIXMAP_WORK_ONLINE,
-	STOCK_PIXMAP_WORK_OFFLINE,
+	STOCK_PIXMAP_ONLINE,
+	STOCK_PIXMAP_OFFLINE,
 	STOCK_PIXMAP_NOTICE_WARN,		/* small warning */
 	STOCK_PIXMAP_NOTICE_ERROR,		/* small error   */
 	STOCK_PIXMAP_NOTICE_NOTE,		/* small message */

@@ -551,36 +551,38 @@ static HTMLTag *html_get_tag(const gchar *str)
 
 		while (isspace(*tmpp)) tmpp++;
 		attr_name = tmpp;
-		if ((p = strchr(attr_name, '=')) == NULL) {
-			g_warning("html_get_tag(): syntax error in tag: '%s'\n", str);
-			return tag;
-		}
-		tmpp = p;
-		*tmpp++ = '\0';
-		while (isspace(*tmpp)) tmpp++;
 
-		if (*tmpp == '\0') {
-			g_warning("html_get_tag(): syntax error in tag: '%s'\n", str);
-			return tag;
-		} else if (*tmpp == '"' || *tmpp == '\'') {
-			/* name="value" */
-			quote = *tmpp;
-			tmpp++;
-			attr_value = tmpp;
-			if ((p = strchr(attr_value, quote)) == NULL) {
-				g_warning("html_get_tag(): syntax error in tag: '%s'\n", str);
-				return tag;
-			}
-			tmpp = p;
+		while (*tmpp != '\0' && !isspace(*tmpp) && *tmpp != '=') tmpp++;
+		if (*tmpp != '\0' && *tmpp != '=') {
 			*tmpp++ = '\0';
 			while (isspace(*tmpp)) tmpp++;
-		} else {
-			/* name=value */
-			attr_value = tmpp;
-			while (*tmpp != '\0' && !isspace(*tmpp)) tmpp++;
-			if (*tmpp != '\0')
-				*tmpp++ = '\0';
 		}
+
+		if (*tmpp == '=') {
+			*tmpp++ = '\0';
+			while (isspace(*tmpp)) tmpp++;
+
+			if (*tmpp == '"' || *tmpp == '\'') {
+				/* name="value" */
+				quote = *tmpp;
+				tmpp++;
+				attr_value = tmpp;
+				if ((p = strchr(attr_value, quote)) == NULL) {
+					g_warning("html_get_tag(): syntax error in tag: '%s'\n", str);
+					return tag;
+				}
+				tmpp = p;
+				*tmpp++ = '\0';
+				while (isspace(*tmpp)) tmpp++;
+			} else {
+				/* name=value */
+				attr_value = tmpp;
+				while (*tmpp != '\0' && !isspace(*tmpp)) tmpp++;
+				if (*tmpp != '\0')
+					*tmpp++ = '\0';
+			}
+		} else
+			attr_value = "";
 
 		g_strchomp(attr_name);
 		g_strdown(attr_name);
