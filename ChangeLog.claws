@@ -1,3 +1,9 @@
+2004-03-06 [paul]	0.9.9claws40
+
+	* src/stock_pixmap.c
+		fix crash: g_strdup(DEFAULT_PIXMAP_THEME)
+		patch submitted by Pawel Pekala
+
 2004-03-06 [alfons]		0.9.9claws39
 
 	* src/addrindex.c
