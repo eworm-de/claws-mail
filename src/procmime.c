@@ -1120,7 +1120,8 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 			       f_prefix, base, NULL);
 
 #ifdef WIN32
-	g_free(base);
+	//XXX:tm crash
+	//g_free(base);
 #endif
 
 	return filename;
