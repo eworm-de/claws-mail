@@ -331,8 +331,12 @@ Session *imap_session_new(const PrefsAccount *account)
 	gboolean is_preauth;
 
 #ifdef USE_SSL
+	/* FIXME: IMAP over SSL only... */ 
+	gboolean use_ssl;
+
 	port = account->set_imapport ? account->imapport
 		: account->ssl_imap ? IMAPS_PORT : IMAP4_PORT;
+	use_ssl = account->ssl_imap ? TRUE : FALSE;	
 #else
 	port = account->set_imapport ? account->imapport
 		: IMAP4_PORT;
@@ -351,7 +355,7 @@ Session *imap_session_new(const PrefsAccount *account)
 		
 #if USE_SSL
 		if ((imap_sock = imap_open(account->recv_server, port,
-					   account->use_ssl)) == NULL)
+					   use_ssl)) == NULL)
 #else
 	       	if ((imap_sock = imap_open(account->recv_server, port)) == NULL)
 #endif
