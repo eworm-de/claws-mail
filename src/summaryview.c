@@ -5052,13 +5052,34 @@ static gint func_name(GtkCList *clist,					 \
 	return strcasecmp(msginfo1->var_name, msginfo2->var_name);	 \
 }
 
-CMP_FUNC_DEF(summary_cmp_by_from, fromname)
 CMP_FUNC_DEF(summary_cmp_by_subject, subject);
 CMP_FUNC_DEF(summary_cmp_by_to, to);
 
 #undef CMP_FUNC_DEF
 
-static gint summary_cmp_by_simplified_subject
+ static gint summary_cmp_by_from(GtkCList *clist, gconstpointer ptr1,
+ 				 gconstpointer ptr2)
+ {
+	const gchar *str1, *str2;
+	const GtkCListRow *r1 = (const GtkCListRow *) ptr1;
+	const GtkCListRow *r2 = (const GtkCListRow *) ptr2;
+	const SummaryView *sv = gtk_object_get_data(GTK_OBJECT(clist), "summaryview");
+	
+	g_return_val_if_fail(sv, -1);
+	
+	str1 = GTK_CELL_TEXT(r1->cell[sv->col_pos[S_COL_FROM]])->text;
+	str2 = GTK_CELL_TEXT(r2->cell[sv->col_pos[S_COL_FROM]])->text;
+
+	if (!str1)
+		return str2 != NULL;
+ 
+	if (!str2)
+ 		return -1;
+ 
+	return strcasecmp(str1, str2);
+ }
+ 
+ static gint summary_cmp_by_simplified_subject
 	(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
 {
 	const PrefsFolderItem *prefs;

@@ -1,3 +1,10 @@
+2002-12-29 [paul]	0.8.8claws19
+
+	* src/summaryview.c
+		fix bug [ 659054 ] incorrect sorting of 'From' column
+		when using 'display sender using address book'
+		thanks to Alfons and Luke Plant
+
 2002-12-29 [christoph]	0.8.8claws18
 
 	* src/folder.c
