@@ -1,3 +1,11 @@
+2001-12-21 [christoph]	0.6.6claws6
+
+	* src/compose.c
+	* src/prefs_folder_item.[ch]
+		implement saving of outgoing messages to current folder.
+		fix segfault when no default outbox is available
+		(closes bug #495683)
+
 2001-12-21 [carsten]	0.6.6claws5
 	* src/folderview.c
 	* src/summaryview.c

@@ -38,6 +38,7 @@ struct PrefsFolderItemDialog
 	FolderItem *item;
 	GtkWidget *window;
 	GtkWidget *checkbtn_request_return_receipt;
+	GtkWidget *checkbtn_save_copy_to_folder;
 	GtkWidget *checkbtn_default_to;
 	GtkWidget *entry_default_to;
 	GtkWidget *checkbtn_folder_chmod;
@@ -81,6 +82,8 @@ static PrefParam param[] = {
 	{"enable_default_account", "", &tmp_prefs.enable_default_account, P_BOOL,
 	 NULL, NULL, NULL},
 	{"default_account", NULL, &tmp_prefs.default_account, P_INT,
+	 NULL, NULL, NULL},
+	{"save_copy_to_folder", NULL, &tmp_prefs.save_copy_to_folder, P_BOOL,
 	 NULL, NULL, NULL},
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -183,6 +186,7 @@ PrefsFolderItem * prefs_folder_item_new(void)
 	tmp_prefs.folder_chmod = 0;
 	tmp_prefs.enable_default_account = FALSE;
 	tmp_prefs.default_account = 0;
+	tmp_prefs.save_copy_to_folder = FALSE;
 
 	* prefs = tmp_prefs;
 	
@@ -243,6 +247,7 @@ void prefs_folder_item_create(FolderItem *item) {
 	GtkWidget *confirm_area;
 	
 	GtkWidget *checkbtn_request_return_receipt;
+	GtkWidget *checkbtn_save_copy_to_folder;
 	GtkWidget *checkbtn_default_to;
 	GtkWidget *entry_default_to;
 	GtkWidget *checkbtn_folder_chmod;
@@ -297,6 +302,15 @@ void prefs_folder_item_create(FolderItem *item) {
 	gtk_table_attach(GTK_TABLE(table), checkbtn_request_return_receipt, 0, 2, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_request_return_receipt),
 				     item->ret_rcpt ? TRUE : FALSE);
+
+	rowcount++;
+
+	/* Save Copy to Folder */
+	checkbtn_save_copy_to_folder = gtk_check_button_new_with_label(_("Save copy of outgoing messages to this folder instead of outbox"));
+	gtk_widget_show(checkbtn_save_copy_to_folder);
+	gtk_table_attach(GTK_TABLE(table), checkbtn_save_copy_to_folder, 0, 2, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_save_copy_to_folder),
+				     item->prefs->save_copy_to_folder ? TRUE : FALSE);
 
 	rowcount++;
 
@@ -395,6 +409,7 @@ void prefs_folder_item_create(FolderItem *item) {
 
 	dialog->window = window;
 	dialog->checkbtn_request_return_receipt = checkbtn_request_return_receipt;
+	dialog->checkbtn_save_copy_to_folder = checkbtn_save_copy_to_folder;
 	dialog->checkbtn_default_to = checkbtn_default_to;
 	dialog->entry_default_to = entry_default_to;
 	dialog->checkbtn_folder_chmod = checkbtn_folder_chmod;
@@ -430,6 +445,9 @@ void prefs_folder_item_ok_cb(GtkWidget *widget, struct PrefsFolderItemDialog *di
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_request_return_receipt));
 	/* MIGRATION */    
 	dialog->item->ret_rcpt = prefs->request_return_receipt;
+
+	prefs->save_copy_to_folder = 
+	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_save_copy_to_folder));
 
 	prefs->enable_default_to = 
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_default_to));

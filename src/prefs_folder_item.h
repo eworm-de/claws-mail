@@ -51,6 +51,7 @@ struct _PrefsFolderItem {
 	gint folder_chmod;
 	gboolean enable_default_account;
 	gint default_account;
+	gboolean save_copy_to_folder;
 };
 
 typedef struct _PrefsFolderItem PrefsFolderItem;
