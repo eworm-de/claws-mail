@@ -1155,43 +1155,48 @@ void summary_select_next_unread(SummaryView *summaryview)
 	GtkCTreeNode *node = summaryview->selected;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 
-	while ((node = summary_find_next_unread_msg(summaryview, node)) == NULL) {
-		AlertValue val;
-
- 		switch (prefs_common.next_unread_msg_dialog) {
- 			case NEXTUNREADMSGDIALOG_ALWAYS:
-				val = alertpanel(_("No more unread messages"),
-						 _("No unread message found. "
-						   "Go to next folder?"),
-						 _("Yes"), _("Search again"), _("No"));
- 				break;
- 			case NEXTUNREADMSGDIALOG_ASSUME_YES:
- 				val = G_ALERTDEFAULT;
- 				break;
- 			case NEXTUNREADMSGDIALOG_ASSUME_NO:
- 				val = G_ALERTOTHER;
- 				break;
- 			default:
- 				debug_print(
- 					_("Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"));
- 		}
-
-		if (val == G_ALERTDEFAULT) {
-			if (gtk_signal_n_emissions_by_name
-				(GTK_OBJECT(ctree), "key_press_event") > 0)
-					gtk_signal_emit_stop_by_name
-						(GTK_OBJECT(ctree),
-						 "key_press_event");
-			folderview_select_next_unread(summaryview->folderview);
-			return;
-		} else if (val == G_ALERTALTERNATE)
-			node = NULL;
-		else
-			return;
-	}
-
+	node = summary_find_next_unread_msg(summaryview, node);
+	
 	if (node)
 		summary_select_node(summaryview, node, TRUE, FALSE);
+	else {
+		node = summary_find_next_unread_msg(summaryview, NULL);
+		if (node == NULL) {
+			AlertValue val;
+
+ 			switch (prefs_common.next_unread_msg_dialog) {
+ 				case NEXTUNREADMSGDIALOG_ALWAYS:
+					val = alertpanel(_("No more unread messages"),
+							 _("No unread message found. "
+							   "Go to next folder?"),
+							 _("Yes"), _("No"), NULL);
+ 					break;
+ 				case NEXTUNREADMSGDIALOG_ASSUME_YES:
+ 					val = G_ALERTDEFAULT;
+ 					break;
+ 				case NEXTUNREADMSGDIALOG_ASSUME_NO:
+ 					val = G_ALERTOTHER;
+ 					break;
+ 				default:
+ 					debug_print(
+ 						_("Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"));
+ 			}
+
+			if (val == G_ALERTDEFAULT) {
+				if (gtk_signal_n_emissions_by_name
+					(GTK_OBJECT(ctree), "key_press_event") > 0)
+						gtk_signal_emit_stop_by_name
+							(GTK_OBJECT(ctree),
+							 "key_press_event");
+				folderview_select_next_unread(summaryview->folderview);
+				return;
+			} 
+			else
+				return;
+		} else
+			summary_select_node(summaryview, node, TRUE, FALSE);
+
+	}
 }
 
 void summary_select_prev_marked(SummaryView *summaryview)
