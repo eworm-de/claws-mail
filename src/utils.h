@@ -244,6 +244,7 @@ gchar *get_domain_name		(void);
 
 /* file / directory handling */
 off_t get_file_size		(const gchar	*file);
+off_t get_left_file_size	(FILE		*fp);
 gboolean file_exist		(const gchar	*file,
 				 gboolean	 allow_fifo);
 gboolean is_dir_exist		(const gchar	*dir);

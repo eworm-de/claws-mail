@@ -1,3 +1,31 @@
+2001-05-10
+
+	* src/textview.c: textview_show_mime_part(): メッセージを修正。
+	  TEXT_INSERT(): 新規マクロ。
+	* po/ja.po: 修正。
+	* src/prefs_display_header.c: prefs_display_header_create():
+	  チェックボタンのテキストを修正。
+
+2001-05-09
+
+	* src/mimeview.c: コンテキストメニューに「アプリケーションから
+	  開く...」を追加。
+	* src/summaryview.c: summary_print()
+	  src/inputdialog.c: input_dialog(): メモリリークを修正。
+	* src/textview.c: textview_show_mime_part(): 説明文を更新。
+	* src/send.c: 送信進捗ダイアログを実装。
+	  (TODO: automaton を使用すべき。)
+	  send_progress_dialog_create(), send_progress_dialog_destroy(),
+	  send_cancel(): 新規。
+	  send_message_smtp(): 各ステージでダイアログを更新するようにした。
+	* src/utils.[ch]: get_left_file_size(): 新規。オープンされたファイル
+	  の残りのバイト数を得る。
+	* src/summaryview.c: summary_show(): open_inbox_on_inc がセットされ
+	  ているときは、フォルダが前と同じであっても最初の未読メッセージに
+	  移動するようにした。
+	* src/prefs_common.c: カラーセレクションダイアログを transient に
+	  し、エスケープキーでダイアログを閉じられるようにした。
+
 2001-05-08
 
 	* version 0.4.66

@@ -1171,6 +1171,33 @@ off_t get_file_size(const gchar *file)
 	return s.st_size;
 }
 
+off_t get_left_file_size(FILE *fp)
+{
+	glong pos;
+	glong end;
+	off_t size;
+
+	if ((pos = ftell(fp)) < 0) {
+		perror("ftell");
+		return -1;
+	}
+	if (fseek(fp, 0L, SEEK_END) < 0) {
+		perror("fseek");
+		return -1;
+	}
+	if ((end = ftell(fp)) < 0) {
+		perror("fseek");
+		return -1;
+	}
+	size = end - pos;
+	if (fseek(fp, pos, SEEK_SET) < 0) {
+		perror("fseek");
+		return -1;
+	}
+
+	return size;
+}
+
 gboolean file_exist(const gchar *file, gboolean allow_fifo)
 {
 	struct stat s;

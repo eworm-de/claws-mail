@@ -604,7 +604,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 
 	STATUSBAR_POP(summaryview->mainwin);
 
-	is_refresh = (item == summaryview->folder_item) ? TRUE : FALSE;
+	is_refresh = (!prefs_common.open_inbox_on_inc &&
+		      item == summaryview->folder_item) ? TRUE : FALSE;
 	if (is_refresh) {
 		prev_msgnum = summary_get_current_msgnum(summaryview);
 		if (prev_msgnum < 1)
@@ -1569,7 +1570,7 @@ static void summary_set_header(gchar *text[], MsgInfo *msginfo)
 		_("(No From)");
 	if (prefs_common.swap_from && msginfo->from && msginfo->to &&
 	    cur_account && cur_account->address &&
-+	    !MSG_IS_NEWS(msginfo->flags)) {
+	    !MSG_IS_NEWS(msginfo->flags)) {
 		gchar *from;
 
 		Xalloca(from, strlen(msginfo->from) + 1, return);
@@ -1629,6 +1630,17 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 	}
 	g_free(filename);
 
+	if (MSG_IS_NEW(msginfo->flags))
+		summaryview->newmsgs--;
+	if (MSG_IS_UNREAD(msginfo->flags))
+		summaryview->unread--;
+	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
+		MSG_UNSET_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
+		summary_set_row_marks(summaryview, row);
+		gtk_clist_thaw(GTK_CLIST(ctree));
+		summary_status_show(summaryview);
+	}
+
 	if (new_window) {
 		MessageView *msgview;
 
@@ -1649,17 +1661,6 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 			gtk_widget_grab_focus(summaryview->ctree);
 		GTK_EVENTS_FLUSH();
 		gtkut_ctree_node_move_if_on_the_edge(ctree, row);
-	}
-
-	if (MSG_IS_NEW(msginfo->flags))
-		summaryview->newmsgs--;
-	if (MSG_IS_UNREAD(msginfo->flags))
-		summaryview->unread--;
-	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
-		MSG_UNSET_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
-		summary_set_row_marks(summaryview, row);
-		gtk_clist_thaw(GTK_CLIST(ctree));
-		summary_status_show(summaryview);
 	}
 
 	if (GTK_WIDGET_VISIBLE(summaryview->headerwin->window))
@@ -2247,6 +2248,7 @@ void summary_print(SummaryView *summaryview)
 	    strchr(p + 2, '%')) {
 		alertpanel_error(_("Print command line is invalid:\n`%s'"),
 				 cmdline);
+		g_free(cmdline);
 		return;
 	}
 
@@ -2255,6 +2257,8 @@ void summary_print(SummaryView *summaryview)
 			(ctree, GTK_CTREE_NODE(cur->data));
 		if (msginfo) procmsg_print_message(msginfo, cmdline);
 	}
+	
+	g_free(cmdline);
 }
 
 void summary_execute(SummaryView *summaryview)

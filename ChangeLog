@@ -1,3 +1,29 @@
+2001-05-10
+
+	* src/textview.c: textview_show_mime_part(): modified the messages.
+	  TEXT_INSERT(): new macro.
+	* po/ja.po: fixed.
+	* src/prefs_display_header.c: prefs_display_header_create():
+	  modified the text of checkbutton.
+
+2001-05-09
+
+	* src/mimeview.c: added "Open with..." to the context menu.
+	* src/summaryview.c: summary_print()
+	  src/inputdialog.c: input_dialog(): fixed memory leaks.
+	* src/textview.c: textview_show_mime_part(): updated the description.
+	* src/send.c: implemented sending progress dialog.
+	  (TODO: automaton should be used.)
+	  send_progress_dialog_create(), send_progress_dialog_destroy(),
+	  send_cancel(): new.
+	  send_message_smtp(): made it update the dialog for each stage.
+	* src/utils.[ch]: get_left_file_size(): new. Get the left bytes
+	  of opened file.
+	* src/summaryview.c: summary_show(): when open_inbox_on_inc is set,
+	  go to first unread message even if folder is same as previous.
+	* src/prefs_common.c: made color selection dialog transient, and
+	  made escape key close the dialogs.
+
 2001-05-08
 
 	* version 0.4.66

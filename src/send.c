@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,8 +24,14 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <gtk/gtkmain.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkwindow.h>
+#include <gtk/gtkclist.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/time.h>
+#include <unistd.h>
 
 #include "intl.h"
 #include "send.h"
@@ -34,11 +40,22 @@
 #include "prefs_account.h"
 #include "account.h"
 #include "compose.h"
+#include "progressdialog.h"
+#include "manage_window.h"
 #include "procmsg.h"
 #include "procheader.h"
 #include "utils.h"
+#include "gtkutils.h"
 
 #define SMTP_PORT	25
+
+typedef struct _SendProgressDialog	SendProgressDialog;
+
+struct _SendProgressDialog
+{
+	ProgressDialog *dialog;
+	GList *queue_list;
+};
 
 static gint send_message_smtp	(GSList *to_list, const gchar *from,
 				 const gchar *server, gushort port,
@@ -47,30 +64,13 @@ static gint send_message_smtp	(GSList *to_list, const gchar *from,
 				 FILE *fp);
 static SockInfo *send_smtp_open	(const gchar *server, gushort port,
 				 const gchar *domain, gboolean use_smtp_auth);
+
+static SendProgressDialog *send_progress_dialog_create(void);
+static void send_progress_dialog_destroy(SendProgressDialog *dialog);
+static void send_cancel(GtkWidget *widget, gpointer data);
+
 static gint send_message_with_command(GSList *to_list, gchar * mailcmd,
 				      FILE * fp);
-
-#define SEND_EXIT_IF_ERROR(f, s) \
-{ \
-	if (!(f)) { \
-		log_warning("Error occurred while %s\n", s); \
-		sock_close(smtp_sock); \
-		smtp_sock = NULL; \
-		return -1; \
-	} \
-}
-
-#define SEND_EXIT_IF_NOTOK(f, s) \
-{ \
-	if ((f) != SM_OK) { \
-		log_warning("Error occurred while %s\n", s); \
-		if (smtp_quit(smtp_sock) != SM_OK) \
-			log_warning("Error occurred while sending QUIT\n"); \
-		sock_close(smtp_sock); \
-		smtp_sock = NULL; \
-		return -1; \
-	} \
-}
 
 gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 {
@@ -240,37 +240,111 @@ gint send_message_queue(const gchar *file)
 	return val;
 }
 
+#define SEND_EXIT_IF_ERROR(f, s) \
+{ \
+	if (!(f)) { \
+		log_warning("Error occurred while %s\n", s); \
+		sock_close(smtp_sock); \
+		smtp_sock = NULL; \
+		return -1; \
+	} \
+}
+
+#define SEND_EXIT_IF_NOTOK(f, s) \
+{ \
+	if ((f) != SM_OK) { \
+		log_warning("Error occurred while %s\n", s); \
+		if (smtp_quit(smtp_sock) != SM_OK) \
+			log_warning("Error occurred while sending QUIT\n"); \
+		sock_close(smtp_sock); \
+		smtp_sock = NULL; \
+		return -1; \
+	} \
+}
+
 static gint send_message_smtp(GSList *to_list, const gchar *from,
 			      const gchar *server, gushort port,
 			      const gchar *domain, const gchar *userid,
-			      const gchar* passwd, gboolean use_smtp_auth,
+			      const gchar *passwd, gboolean use_smtp_auth,
 			      FILE *fp)
 {
 	SockInfo *smtp_sock;
+	SendProgressDialog *dialog;
+	GtkCList *clist;
+	const gchar *text[3];
 	gchar buf[BUFFSIZE];
+	gchar str[BUFFSIZE];
 	GSList *cur;
+	gint size;
+	gint bytes = 0;
+	struct timeval tv_prev, tv_cur;
 
 	g_return_val_if_fail(to_list != NULL, -1);
 	g_return_val_if_fail(from != NULL, -1);
 	g_return_val_if_fail(server != NULL, -1);
 	g_return_val_if_fail(fp != NULL, -1);
 
-	log_message(_("Connecting to SMTP server: %s ...\n"), server);
+	size = get_left_file_size(fp);
+	if (size < 0) return -1;
+
+	dialog = send_progress_dialog_create();
+
+	text[0] = NULL;
+	text[1] = server;
+	text[2] = _("Standby");
+	clist = GTK_CLIST(dialog->dialog->clist);
+	gtk_clist_append(clist, (gchar **)text);
+
+	g_snprintf(buf, sizeof(buf), _("Connecting to SMTP server: %s ..."),
+		   server);
+	log_message("%s\n", buf);
+	progress_dialog_set_label(dialog->dialog, buf);
+	gtk_clist_set_text(clist, 0, 2, _("Connecting"));
+	GTK_EVENTS_FLUSH();
 
 	SEND_EXIT_IF_ERROR((smtp_sock = send_smtp_open
 				(server, port, domain, use_smtp_auth)),
 			   "connecting to server");
+
+	progress_dialog_set_label(dialog->dialog, _("Sending MAIL FROM..."));
+	gtk_clist_set_text(clist, 0, 2, _("Sending"));
+	GTK_EVENTS_FLUSH();
+
 	SEND_EXIT_IF_NOTOK
 		(smtp_from(smtp_sock, from, userid, passwd, use_smtp_auth),
 		 "sending MAIL FROM");
+
+	progress_dialog_set_label(dialog->dialog, _("Sending RCPT TO..."));
+	GTK_EVENTS_FLUSH();
+
 	for (cur = to_list; cur != NULL; cur = cur->next)
 		SEND_EXIT_IF_NOTOK(smtp_rcpt(smtp_sock, (gchar *)cur->data),
 				   "sending RCPT TO");
+
+	progress_dialog_set_label(dialog->dialog, _("Sending DATA..."));
+	GTK_EVENTS_FLUSH();
+
 	SEND_EXIT_IF_NOTOK(smtp_data(smtp_sock), "sending DATA");
+
+	gettimeofday(&tv_prev, NULL);
 
 	/* send main part */
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		bytes += strlen(buf);
 		strretchomp(buf);
+
+		gettimeofday(&tv_cur, NULL);
+		if (tv_cur.tv_sec - tv_prev.tv_sec > 0 ||
+		    tv_cur.tv_usec - tv_prev.tv_usec > 10000) {
+			g_snprintf(str, sizeof(str),
+				   _("Sending message (%d / %d bytes)"),
+				   bytes, size);
+			progress_dialog_set_label(dialog->dialog, str);
+			progress_dialog_set_percentage
+				(dialog->dialog, (gfloat)bytes / (gfloat)size);
+			GTK_EVENTS_FLUSH();
+			gettimeofday(&tv_prev, NULL);
+		}
 
 		/* escape when a dot appears on the top */
 		if (buf[0] == '.')
@@ -280,10 +354,15 @@ static gint send_message_smtp(GSList *to_list, const gchar *from,
 		SEND_EXIT_IF_ERROR(sock_puts(smtp_sock, buf), "sending data");
 	}
 
+	progress_dialog_set_label(dialog->dialog, _("Quitting..."));
+	GTK_EVENTS_FLUSH();
+
 	SEND_EXIT_IF_NOTOK(smtp_eom(smtp_sock), "terminating data");
 	SEND_EXIT_IF_NOTOK(smtp_quit(smtp_sock), "sending QUIT");
 
 	sock_close(smtp_sock);
+	send_progress_dialog_destroy(dialog);
+
 	return 0;
 }
 
@@ -311,4 +390,46 @@ static SockInfo *send_smtp_open(const gchar *server, gushort port,
 	sock_close(sock);
 
 	return NULL;
+}
+
+
+static SendProgressDialog *send_progress_dialog_create(void)
+{
+	SendProgressDialog *dialog;
+	ProgressDialog *progress;
+
+	dialog = g_new0(SendProgressDialog, 1);
+
+	progress = progress_dialog_create();
+	gtk_window_set_title(GTK_WINDOW(progress->window),
+			     _("Sending message"));
+	gtk_signal_connect(GTK_OBJECT(progress->cancel_btn), "clicked",
+			   GTK_SIGNAL_FUNC(send_cancel), dialog);
+	gtk_signal_connect(GTK_OBJECT(progress->window), "delete_event",
+			   GTK_SIGNAL_FUNC(gtk_true), NULL);
+	manage_window_set_transient(GTK_WINDOW(progress->window));
+
+	progress_dialog_set_value(progress, 0.0);
+
+	gtk_widget_show_now(progress->window);
+
+	dialog->dialog = progress;
+	dialog->queue_list = NULL;
+
+	return dialog;
+}
+
+static void send_progress_dialog_destroy(SendProgressDialog *dialog)
+{
+	g_return_if_fail(dialog != NULL);
+
+	progress_dialog_destroy(dialog->dialog);
+	g_free(dialog);
+}
+
+static void send_cancel(GtkWidget *widget, gpointer data)
+{
+	SendProgressDialog *dialog = data;
+
+	g_print("cancelled\n");
 }

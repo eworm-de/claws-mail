@@ -544,11 +544,17 @@ static void prefs_quote_description		(void);
 static void prefs_quote_description_create	(void);
 static void prefs_quote_colors_dialog		(void);
 static void prefs_quote_colors_dialog_create	(void);
+static void prefs_quote_colors_key_pressed	(GtkWidget	*widget,
+						 GdkEventKey	*event,
+						 gpointer	 data);
 static void quote_color_set_dialog		(GtkWidget	*widget,
 						 gpointer	 data);
 static void quote_colors_set_dialog_ok		(GtkWidget	*widget,
 						 gpointer	 data);
 static void quote_colors_set_dialog_cancel	(GtkWidget	*widget,
+						 gpointer	 data);
+static void quote_colors_set_dialog_key_pressed	(GtkWidget	*widget,
+						 GdkEventKey	*event,
 						 gpointer	 data);
 static void set_button_bg_color			(GtkWidget	*widget,
 						 gint		 color);
@@ -1974,6 +1980,7 @@ void prefs_quote_colors_dialog(void)
 	if (!quote_color_win)
 		prefs_quote_colors_dialog_create();
 	gtk_widget_show(quote_color_win);
+	manage_window_set_transient(GTK_WINDOW(dialog.window));
 
 	gtk_main();
 	gtk_widget_hide(quote_color_win);
@@ -2002,7 +2009,7 @@ static void prefs_quote_colors_dialog_create(void)
 	gtk_window_set_title(GTK_WINDOW(window), _("Set message colors"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, FALSE);
+	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
 
 	vbox = gtk_vbox_new (FALSE, VSPACING);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
@@ -2015,57 +2022,53 @@ static void prefs_quote_colors_dialog_create(void)
 	gtk_table_set_row_spacings (GTK_TABLE (table), 2);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 4);
 
-/*	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0); */
-
 	color_buttons.quote_level1_btn = gtk_button_new();
-	gtk_table_attach(GTK_TABLE (table), color_buttons.quote_level1_btn, 0, 1, 0, 1,
-					(GtkAttachOptions) (0),
-					(GtkAttachOptions) (0), 0, 0);
+	gtk_table_attach (GTK_TABLE (table), color_buttons.quote_level1_btn,
+			  0, 1, 0, 1, 0, 0, 0, 0);
 	gtk_widget_set_usize (color_buttons.quote_level1_btn, 40, 30);
-	gtk_container_set_border_width (GTK_CONTAINER (color_buttons.quote_level1_btn), 5);
+	gtk_container_set_border_width
+		(GTK_CONTAINER (color_buttons.quote_level1_btn), 5);
 
 	color_buttons.quote_level2_btn = gtk_button_new();
-	gtk_table_attach(GTK_TABLE (table), color_buttons.quote_level2_btn, 0, 1, 1, 2,
-					(GtkAttachOptions) (0),
-					(GtkAttachOptions) (0), 0, 0);
+	gtk_table_attach (GTK_TABLE (table), color_buttons.quote_level2_btn,
+			  0, 1, 1, 2, 0, 0, 0, 0);
 	gtk_widget_set_usize (color_buttons.quote_level2_btn, 40, 30);
 	gtk_container_set_border_width (GTK_CONTAINER (color_buttons.quote_level2_btn), 5);
 
 	color_buttons.quote_level3_btn = gtk_button_new_with_label ("");
-	gtk_table_attach(GTK_TABLE (table), color_buttons.quote_level3_btn, 0, 1, 2, 3,
-					(GtkAttachOptions) (0),
-					(GtkAttachOptions) (0), 0, 0);
+	gtk_table_attach (GTK_TABLE (table), color_buttons.quote_level3_btn,
+			  0, 1, 2, 3, 0, 0, 0, 0);
 	gtk_widget_set_usize (color_buttons.quote_level3_btn, 40, 30);
-	gtk_container_set_border_width (GTK_CONTAINER (color_buttons.quote_level3_btn), 5);
-
+	gtk_container_set_border_width
+		(GTK_CONTAINER (color_buttons.quote_level3_btn), 5);
+		
 	color_buttons.uri_btn = gtk_button_new_with_label ("");
-	gtk_table_attach(GTK_TABLE (table), color_buttons.uri_btn, 0, 1, 3, 4,
-					(GtkAttachOptions) (0),
-					(GtkAttachOptions) (0), 0, 0);
+	gtk_table_attach (GTK_TABLE (table), color_buttons.uri_btn,
+			  0, 1, 3, 4, 0, 0, 0, 0);
 	gtk_widget_set_usize (color_buttons.uri_btn, 40, 30);
 	gtk_container_set_border_width (GTK_CONTAINER (color_buttons.uri_btn), 5);
 
 	quotelevel1_label = gtk_label_new (_("Quoted Text - First Level"));
-	gtk_table_attach(GTK_TABLE (table), quotelevel1_label, 1, 2, 0, 1,
-					(GTK_EXPAND | GTK_FILL), 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (table), quotelevel1_label, 1, 2, 0, 1,
+			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (quotelevel1_label), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment (GTK_MISC (quotelevel1_label), 0, 0.5);
 
 	quotelevel2_label = gtk_label_new (_("Quoted Text - Second Level"));
-	gtk_table_attach(GTK_TABLE (table), quotelevel2_label, 1, 2, 1, 2,
-					(GTK_EXPAND | GTK_FILL), 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (table), quotelevel2_label, 1, 2, 1, 2,
+			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (quotelevel2_label), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment (GTK_MISC (quotelevel2_label), 0, 0.5);
 
 	quotelevel3_label = gtk_label_new (_("Quoted Text - Third Level"));
-	gtk_table_attach(GTK_TABLE (table), quotelevel3_label, 1, 2, 2, 3,
-					(GTK_EXPAND | GTK_FILL), 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (table), quotelevel3_label, 1, 2, 2, 3,
+			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (quotelevel3_label), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment (GTK_MISC (quotelevel3_label), 0, 0.5);
 
 	uri_label = gtk_label_new (_("URI link"));
-	gtk_table_attach(GTK_TABLE (table), uri_label, 1, 2, 3, 4,
-					(GTK_EXPAND | GTK_FILL), 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (table), uri_label, 1, 2, 3, 4,
+			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (uri_label), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment (GTK_MISC (uri_label), 0, 0.5);
 
@@ -2077,10 +2080,15 @@ static void prefs_quote_colors_dialog_create(void)
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 
 	gtk_widget_grab_default(ok_btn);
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-					GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
+	gtk_signal_connect(GTK_OBJECT(window), "focus_in_event",
+			   GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
+	gtk_signal_connect(GTK_OBJECT(window), "focus_out_event",
+			   GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-					GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
+			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
+	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
+			   GTK_SIGNAL_FUNC(prefs_quote_colors_key_pressed),
+			   NULL);
 
 	gtk_signal_connect(GTK_OBJECT(color_buttons.quote_level1_btn), "clicked",
 			   GTK_SIGNAL_FUNC(quote_color_set_dialog), "LEVEL1");
@@ -2092,6 +2100,8 @@ static void prefs_quote_colors_dialog_create(void)
 			   GTK_SIGNAL_FUNC(quote_color_set_dialog), "URI");
 	gtk_signal_connect(GTK_OBJECT(recycle_colors_btn), "toggled",
 			   GTK_SIGNAL_FUNC(prefs_recycle_colors_toggled), NULL);
+	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
+			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
 
 	/* show message button colors and recycle options */
 	set_button_bg_color(color_buttons.quote_level1_btn,
@@ -2107,6 +2117,13 @@ static void prefs_quote_colors_dialog_create(void)
 
 	gtk_widget_show_all(vbox);
 	quote_color_win = window;
+}
+
+static void prefs_quote_colors_key_pressed(GtkWidget *widget,
+					   GdkEventKey *event, gpointer data)
+{
+	if (event && event->keyval == GDK_Escape)
+		gtk_main_quit();
 }
 
 static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
@@ -2130,7 +2147,7 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 		title = _("Pick color for URI");
 		rgbvalue = prefs_common.uri_col;
 	} else {   /* Should never be called */
-		fprintf(stderr, "Unrecognized datatype '%s' in quote_color_set_dialog\n", type);
+		g_warning("Unrecognized datatype '%s' in quote_color_set_dialog\n", type);
 		return;
 	}
 
@@ -2138,19 +2155,23 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	gtk_window_set_position(GTK_WINDOW(color_dialog), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(color_dialog), TRUE);
 	gtk_window_set_policy(GTK_WINDOW(color_dialog), FALSE, FALSE, FALSE);
+	manage_window_set_transient(GTK_WINDOW(color_dialog));
 
-	gtk_signal_connect(GTK_OBJECT(((GtkColorSelectionDialog *)color_dialog)->ok_button),
+	gtk_signal_connect(GTK_OBJECT(GTK_COLOR_SELECTION_DIALOG(color_dialog)->ok_button),
 			   "clicked", GTK_SIGNAL_FUNC(quote_colors_set_dialog_ok), data);
-	gtk_signal_connect(GTK_OBJECT(((GtkColorSelectionDialog *)color_dialog)->cancel_button),
+	gtk_signal_connect(GTK_OBJECT(GTK_COLOR_SELECTION_DIALOG(color_dialog)->cancel_button),
 			   "clicked", GTK_SIGNAL_FUNC(quote_colors_set_dialog_cancel), data);
+	gtk_signal_connect(GTK_OBJECT(color_dialog), "key_press_event",
+			   GTK_SIGNAL_FUNC(quote_colors_set_dialog_key_pressed),
+			   data);
 
 	/* preselect the previous color in the color selection dialog */
 	color[0] = (gdouble) ((rgbvalue & 0xff0000) >> 16) / 255.0;
 	color[1] = (gdouble) ((rgbvalue & 0x00ff00) >>  8) / 255.0;
 	color[2] = (gdouble)  (rgbvalue & 0x0000ff)        / 255.0;
-	dialog = (GtkColorSelectionDialog *)color_dialog;
+	dialog = GTK_COLOR_SELECTION_DIALOG(color_dialog);
 	gtk_color_selection_set_color
-		((GtkColorSelection *)dialog->colorsel, color);
+		(GTK_COLOR_SELECTION(dialog->colorsel), color);
 
 	gtk_widget_show(color_dialog);
 }
@@ -2191,12 +2212,19 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 	} else
 		fprintf( stderr, "Unrecognized datatype '%s' in quote_color_set_dialog_ok\n", type );
 
-	gtk_widget_hide(color_dialog);
+	gtk_widget_destroy(color_dialog);
 }
 
 static void quote_colors_set_dialog_cancel(GtkWidget *widget, gpointer data)
 {
-	gtk_widget_hide(color_dialog);
+	gtk_widget_destroy(color_dialog);
+}
+
+static void quote_colors_set_dialog_key_pressed(GtkWidget *widget,
+						GdkEventKey *event,
+						gpointer data)
+{
+	gtk_widget_destroy(color_dialog);
 }
 
 static void set_button_bg_color(GtkWidget *widget, gint rgbvalue)

@@ -349,6 +349,9 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	gtk_text_thaw(text);
 }
 
+#define TEXT_INSERT(str) \
+	gtk_text_insert(text, textview->msgfont, NULL, NULL, str, -1)
+
 void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 {
 	GtkText *text;
@@ -361,26 +364,17 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 
 	gtk_text_freeze(text);
 
-	gtk_text_insert
-		(text, textview->msgfont, NULL, NULL,
-		 _("To save this part, pop up the context menu with\n"), -1);
-	gtk_text_insert
-		(text, textview->msgfont, NULL, NULL,
-		 _("right click and select `Save as...', or press `y' key.\n\n"), -1);
+	TEXT_INSERT(_("To save this part, pop up the context menu with "));
+	TEXT_INSERT(_("right click and select `Save as...', "));
+	TEXT_INSERT(_("or press `y' key.\n\n"));
 
-	gtk_text_insert
-		(text, textview->msgfont, NULL, NULL,
-		 _("To display this part as a text message, select\n"), -1);
-	gtk_text_insert
-		(text, textview->msgfont, NULL, NULL,
-		 _("`Display as text', or press `t' key.\n\n"), -1);
+	TEXT_INSERT(_("To display this part as a text message, select "));
+	TEXT_INSERT(_("`Display as text', or press `t' key.\n\n"));
 
-	gtk_text_insert
-		(text, textview->msgfont, NULL, NULL,
-		 _("To open this part with external program, select `Open',\n"), -1);
-	gtk_text_insert
-		(text, textview->msgfont, NULL, NULL,
-		 _("or double-click, or click the center button, or press `l' key."), -1);
+	TEXT_INSERT(_("To open this part with external program, select "));
+	TEXT_INSERT(_("`Open' or `Open with...', "));
+	TEXT_INSERT(_("or double-click, or click the center button, "));
+	TEXT_INSERT(_("or press `l' key."));
 
 	gtk_text_thaw(text);
 }
@@ -399,23 +393,18 @@ void textview_show_signature_part(TextView *textview, MimeInfo *partinfo)
 	gtk_text_freeze(text);
 
 	if (partinfo->sigstatus_full == NULL) {
-		gtk_text_insert
-			(text, textview->msgfont, NULL, NULL,
-			 _("This signature has not been checked yet.\n"), -1);
-		gtk_text_insert
-			(text, textview->msgfont, NULL, NULL,
-			 _("To check it, pop up the context menu with\n"), -1);
-		gtk_text_insert
-			(text, textview->msgfont, NULL, NULL,
-			 _("right click and select `Check signature'.\n"), -1);
+		TEXT_INSERT(_("This signature has not been checked yet.\n"));
+		TEXT_INSERT(_("To check it, pop up the context menu with\n"));
+		TEXT_INSERT(_("right click and select `Check signature'.\n"));
 	} else {
-		gtk_text_insert(text, textview->msgfont, NULL, NULL,
-				partinfo->sigstatus_full, -1);
+		TEXT_INSERT(partinfo->sigstatus_full);
 	}
 
 	gtk_text_thaw(text);
 }
 #endif /* USE_GPGME */
+
+#undef TEXT_INSERT
 
 static void textview_show_html(TextView *textview, FILE *fp,
 			       CodeConverter *conv)

@@ -241,7 +241,7 @@ static void prefs_display_header_create(void)
 			       "Reply-To", "Sender", "User-Agent", "X-Mailer",
 			       NULL);
 
-	clist_hbox = gtk_hbox_new (FALSE, 8);
+	clist_hbox = gtk_hbox_new (FALSE, 10);
 	gtk_widget_show (clist_hbox);
 	gtk_box_pack_start (GTK_BOX (vbox1), clist_hbox, TRUE, TRUE, 0);
 
@@ -345,7 +345,7 @@ static void prefs_display_header_create(void)
 			    (void *) hidden_headers_clist);
 
 	PACK_CHECK_BUTTON (btn_hbox, checkbtn_other_headers,
-			   _("Show other headers"));
+			   _("Show all unspecified headers"));
 	SET_TOGGLE_SENSITIVITY (checkbtn_other_headers, clist_hbox2);
 
 	gtk_widget_show_all(window);

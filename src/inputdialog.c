@@ -90,8 +90,10 @@ gchar *input_dialog(const gchar *title, const gchar *message,
 
 	if (ack) {
 		str = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
-		if (str && *str == '\0')
+		if (str && *str == '\0') {
+			g_free(str);
 			str = NULL;
+		}
 	} else
 		str = NULL;
 

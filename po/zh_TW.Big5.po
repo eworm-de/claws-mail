@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed\n"
-"POT-Creation-Date: 2001-05-08 14:03+0900\n"
+"POT-Creation-Date: 2001-05-10 16:18+0900\n"
 "PO-Revision-Date: 2000-11-18 14:39+0900\n"
 "Last-Translator: Frank J. J. Weng <franklin@hyweb.com.tw>\n"
 "Language-Team: Frank J. J. Weng <franklin@hyweb.com.tw>\n"
@@ -66,11 +66,11 @@ msgstr ""
 
 #: src/about.c:234 src/addressbook.c:1293 src/alertpanel.c:212
 #: src/compose.c:1460 src/compose.c:3071 src/export.c:185 src/foldersel.c:176
-#: src/import.c:189 src/inputdialog.c:158 src/main.c:319 src/main.c:327
-#: src/mainwindow.c:1655 src/mimeview.c:705 src/passphrase.c:117
-#: src/prefs.c:467 src/prefs_common.c:1796 src/prefs_common.c:2015
-#: src/prefs_common.c:2131 src/prefs_display_header.c:195
-#: src/summaryview.c:2016 src/summaryview.c:2524
+#: src/import.c:189 src/inputdialog.c:160 src/main.c:319 src/main.c:327
+#: src/mainwindow.c:1655 src/mimeview.c:709 src/passphrase.c:117
+#: src/prefs.c:467 src/prefs_common.c:1799 src/prefs_common.c:2043
+#: src/prefs_common.c:2159 src/prefs_display_header.c:195
+#: src/summaryview.c:2017 src/summaryview.c:2528
 msgid "OK"
 msgstr "確定"
 
@@ -104,7 +104,7 @@ msgid "Edit accounts"
 msgstr "編輯帳號設定"
 
 #: src/account.c:388 src/addressbook.c:318 src/addressbook.c:1289
-#: src/compose.c:2188 src/mimeview.c:135 src/select-keys.c:301
+#: src/compose.c:2188 src/mimeview.c:139 src/select-keys.c:301
 msgid "Name"
 msgstr "名稱"
 
@@ -157,7 +157,7 @@ msgstr "您確定要刪除這個帳號嗎？"
 #: src/compose.c:3243 src/folderview.c:1273 src/folderview.c:1315
 #: src/folderview.c:1404 src/folderview.c:1444 src/folderview.c:1543
 #: src/folderview.c:1576 src/mainwindow.c:944 src/prefs_filter.c:721
-#: src/summary_search.c:297 src/summaryview.c:573 src/summaryview.c:813
+#: src/summary_search.c:297 src/summaryview.c:574 src/summaryview.c:814
 msgid "Yes"
 msgstr "是的"
 
@@ -292,8 +292,8 @@ msgid "Really delete the address(es)?"
 msgstr "您確定要刪除這些紀錄嗎？"
 
 #: src/addressbook.c:579 src/addressbook.c:1224 src/mainwindow.c:944
-#: src/prefs_filter.c:721 src/summary_search.c:297 src/summaryview.c:573
-#: src/summaryview.c:813
+#: src/prefs_filter.c:721 src/summary_search.c:297 src/summaryview.c:574
+#: src/summaryview.c:814
 msgid "No"
 msgstr "不要"
 
@@ -357,11 +357,11 @@ msgstr "位址"
 
 #: src/addressbook.c:1294 src/compose.c:1460 src/compose.c:3072
 #: src/compose.c:3641 src/export.c:186 src/foldersel.c:177 src/import.c:190
-#: src/inputdialog.c:159 src/main.c:319 src/main.c:327 src/mainwindow.c:1655
-#: src/mimeview.c:705 src/passphrase.c:121 src/prefs.c:468
-#: src/prefs_common.c:2132 src/prefs_display_header.c:196
-#: src/progressdialog.c:75 src/select-keys.c:326 src/summaryview.c:573
-#: src/summaryview.c:2016 src/summaryview.c:2524
+#: src/inputdialog.c:161 src/main.c:319 src/main.c:327 src/mainwindow.c:1655
+#: src/mimeview.c:709 src/passphrase.c:121 src/prefs.c:468
+#: src/prefs_common.c:2160 src/prefs_display_header.c:196
+#: src/progressdialog.c:75 src/select-keys.c:326 src/summaryview.c:574
+#: src/summaryview.c:2017 src/summaryview.c:2528
 msgid "Cancel"
 msgstr "取消"
 
@@ -376,10 +376,10 @@ msgstr "%s 不存在。\n"
 
 #: src/addressbook.c:1550 src/addressbook.c:1843 src/imap.c:661
 #: src/mainwindow.c:675 src/mainwindow.c:1281 src/mh.c:842 src/mh.c:849
-#: src/news.c:484 src/procmsg.c:257 src/procmsg.c:321 src/summaryview.c:994
-#: src/summaryview.c:1200 src/summaryview.c:1282 src/summaryview.c:1343
-#: src/summaryview.c:1800 src/summaryview.c:2275 src/summaryview.c:2298
-#: src/summaryview.c:2319 src/summaryview.c:2412
+#: src/news.c:484 src/procmsg.c:257 src/procmsg.c:321 src/summaryview.c:995
+#: src/summaryview.c:1201 src/summaryview.c:1283 src/summaryview.c:1344
+#: src/summaryview.c:1801 src/summaryview.c:2279 src/summaryview.c:2302
+#: src/summaryview.c:2323 src/summaryview.c:2416
 msgid "done.\n"
 msgstr "完成。\n"
 
@@ -637,7 +637,7 @@ msgstr "送信時發生錯誤。"
 msgid "Can't save the message to outbox."
 msgstr "無法將信件送至寄件備份中。"
 
-#: src/compose.c:1500 src/compose.c:1621 src/compose.c:1707 src/utils.c:1495
+#: src/compose.c:1500 src/compose.c:1621 src/compose.c:1707 src/utils.c:1522
 msgid "can't change file mode\n"
 msgstr "無法改變檔案型態 \n"
 
@@ -683,7 +683,7 @@ msgstr "產生信件的編號：%s\n"
 msgid "MIME type"
 msgstr "MIME 型態"
 
-#: src/compose.c:2188 src/mimeview.c:135 src/prefs_common.c:2126
+#: src/compose.c:2188 src/mimeview.c:139 src/prefs_common.c:2154
 #: src/select-keys.c:299 src/summaryview.c:361
 msgid "Size"
 msgstr "大小"
@@ -697,7 +697,7 @@ msgid "From:"
 msgstr "來自："
 
 #: src/compose.c:2671 src/mainwindow.c:1352 src/prefs_account.c:494
-#: src/prefs_common.c:621
+#: src/prefs_common.c:627
 msgid "Send"
 msgstr "送出"
 
@@ -737,7 +737,7 @@ msgstr "附加"
 msgid "Attach file"
 msgstr "附加檔案"
 
-#: src/compose.c:2715 src/prefs_common.c:1020
+#: src/compose.c:2715 src/prefs_common.c:1026
 msgid "Signature"
 msgstr "簽名"
 
@@ -921,7 +921,7 @@ msgstr "資料夾"
 msgid "New"
 msgstr "新的"
 
-#: src/folderview.c:235 src/prefs_common.c:2123
+#: src/folderview.c:235 src/prefs_common.c:2151
 msgid "Unread"
 msgstr "未讀的"
 
@@ -1087,11 +1087,11 @@ msgstr "標題："
 msgid "Creating header view...\n"
 msgstr "產生標頭視窗...\n"
 
-#: src/headerview.c:173 src/summaryview.c:1383
+#: src/headerview.c:173 src/summaryview.c:1384
 msgid "(No From)"
 msgstr "（沒有來源）"
 
-#: src/headerview.c:188 src/summaryview.c:1399
+#: src/headerview.c:188 src/summaryview.c:1400
 msgid "(No Subject)"
 msgstr "（沒有標題）"
 
@@ -1248,7 +1248,7 @@ msgstr "目標目錄："
 msgid "Select importing file"
 msgstr "選擇匯入檔案"
 
-#: src/inc.c:187 src/inc.c:236
+#: src/inc.c:187 src/inc.c:236 src/send.c:236
 msgid "Standby"
 msgstr ""
 
@@ -1943,7 +1943,7 @@ msgstr "檢查所有帳號的新郵件"
 msgid "Send queued message(s)"
 msgstr "將暫存資料夾中的信件送出"
 
-#: src/mainwindow.c:1363 src/prefs_account.c:496 src/prefs_common.c:623
+#: src/mainwindow.c:1363 src/prefs_account.c:496 src/prefs_common.c:629
 msgid "Compose"
 msgstr "撰寫郵件"
 
@@ -2011,11 +2011,11 @@ msgstr "帳號"
 msgid "Account setting"
 msgstr "帳號設定"
 
-#: src/mainwindow.c:1654 src/summaryview.c:2523
+#: src/mainwindow.c:1654 src/summaryview.c:2527
 msgid "Exit"
 msgstr "離開"
 
-#: src/mainwindow.c:1654 src/summaryview.c:2523
+#: src/mainwindow.c:1654 src/summaryview.c:2527
 msgid "Exit this program?"
 msgstr "您確定要離開嗎？"
 
@@ -2149,55 +2149,73 @@ msgstr "找到 %d 封。\n"
 msgid "\tSorting uncached messages in numerical order... "
 msgstr "以編號排序中..."
 
-#: src/mimeview.c:110
+#: src/mimeview.c:113
 msgid "/_Open"
 msgstr "/開啟(_O)"
 
-#: src/mimeview.c:111
+#: src/mimeview.c:114
+msgid "/Open _with..."
+msgstr ""
+
+#: src/mimeview.c:115
 msgid "/_Display as text"
 msgstr "/以純文字呈現(_D)"
 
-#: src/mimeview.c:112 src/summaryview.c:312
+#: src/mimeview.c:116 src/summaryview.c:312
 msgid "/_Save as..."
 msgstr "另存新檔...(_S)"
 
-#: src/mimeview.c:115
+#: src/mimeview.c:119
 msgid "/_Check signature"
 msgstr "/檢查數位簽章(_C)"
 
-#: src/mimeview.c:135
+#: src/mimeview.c:139
 msgid "MIME Type"
 msgstr "MIME 型態"
 
-#: src/mimeview.c:139
+#: src/mimeview.c:143
 msgid "Creating MIME view...\n"
 msgstr "產生 MIME 視窗...\n"
 
-#: src/mimeview.c:240
+#: src/mimeview.c:244
 msgid "Select \"Check signature\" to check"
 msgstr "請選擇「檢查數位簽章」來檢查"
 
-#: src/mimeview.c:411
+#: src/mimeview.c:415
 msgid "Can't get the part of multipart message."
 msgstr "無法取得這個附加檔。"
 
-#: src/mimeview.c:663 src/mimeview.c:711 src/mimeview.c:730
+#: src/mimeview.c:667 src/mimeview.c:715 src/mimeview.c:734 src/mimeview.c:757
 msgid "Can't save the part of multipart message."
 msgstr "無法儲存這個附加檔。"
 
-#: src/mimeview.c:697 src/summaryview.c:2009
+#: src/mimeview.c:701 src/summaryview.c:2010
 msgid "Save as"
 msgstr "另存新檔"
 
-#: src/mimeview.c:703 src/summaryview.c:2014
+#: src/mimeview.c:707 src/summaryview.c:2015
 msgid "Overwrite"
 msgstr "覆寫"
 
-#: src/mimeview.c:704 src/summaryview.c:2015
+#: src/mimeview.c:708 src/summaryview.c:2016
 msgid "Overwrite existing file?"
 msgstr "您要覆蓋\掉已存在的檔案嗎？"
 
-#: src/mimeview.c:773
+#: src/mimeview.c:762
+#, fuzzy
+msgid "Open with"
+msgstr "離開設定"
+
+#: src/mimeview.c:763
+#, fuzzy, c-format
+msgid ""
+"Enter the command line to open file:\n"
+"(`%s' will be replaced with file name)"
+msgstr ""
+"請輸入列印指令：\n"
+"（ `%s' 將會被置換為檔名）"
+
+#: src/mimeview.c:815
 #, c-format
 msgid "MIME viewer command line is invalid: `%s'"
 msgstr "開啟此 MIME 型態的命令是錯誤的：`%s'"
@@ -2387,11 +2405,11 @@ msgstr "產生帳號喜好設定的視窗...\n"
 msgid "Basic"
 msgstr "基本設定"
 
-#: src/prefs_account.c:492 src/prefs_common.c:619
+#: src/prefs_account.c:492 src/prefs_common.c:625
 msgid "Receive"
 msgstr "接收設定"
 
-#: src/prefs_account.c:499 src/prefs_common.c:630
+#: src/prefs_account.c:499 src/prefs_common.c:636
 msgid "Privacy"
 msgstr "私人資料"
 
@@ -2503,7 +2521,7 @@ msgstr "產生郵件識別碼"
 msgid "Add user-defined header"
 msgstr "加入使用者定義的標頭"
 
-#: src/prefs_account.c:836 src/prefs_common.c:1268 src/prefs_common.c:1293
+#: src/prefs_account.c:836 src/prefs_common.c:1274 src/prefs_common.c:1299
 msgid " Edit... "
 msgstr "編輯..."
 
@@ -2595,79 +2613,79 @@ msgstr "未輸入接收郵件伺服器。"
 msgid "NNTP server is not entered."
 msgstr "未輸入新聞伺服器。"
 
-#: src/prefs_common.c:597
+#: src/prefs_common.c:603
 msgid "Creating common preferences window...\n"
 msgstr "產生共同喜好設定視窗...\n"
 
-#: src/prefs_common.c:601
+#: src/prefs_common.c:607
 msgid "Common Preferences"
 msgstr "共同喜好設定"
 
-#: src/prefs_common.c:625
+#: src/prefs_common.c:631
 msgid "Display"
 msgstr "顯示"
 
-#: src/prefs_common.c:627
+#: src/prefs_common.c:633
 msgid "Message"
 msgstr "信件"
 
-#: src/prefs_common.c:633
+#: src/prefs_common.c:639
 msgid "Interface"
 msgstr "介面"
 
-#: src/prefs_common.c:635 src/select-keys.c:324
+#: src/prefs_common.c:641 src/select-keys.c:324
 msgid "Other"
 msgstr "其他"
 
-#: src/prefs_common.c:675 src/prefs_common.c:833
+#: src/prefs_common.c:681 src/prefs_common.c:839
 msgid "External program"
 msgstr "外部程式"
 
-#: src/prefs_common.c:684
+#: src/prefs_common.c:690
 msgid "Use external program for incorporation"
 msgstr "用其他外部程式來收信"
 
-#: src/prefs_common.c:691 src/prefs_common.c:850
+#: src/prefs_common.c:697 src/prefs_common.c:856
 msgid "Program path"
 msgstr "程式路徑"
 
-#: src/prefs_common.c:703
+#: src/prefs_common.c:709
 msgid "Local spool"
 msgstr "本地 spool"
 
-#: src/prefs_common.c:714
+#: src/prefs_common.c:720
 msgid "Incorporate from spool"
 msgstr "從 spool 取得信件"
 
-#: src/prefs_common.c:716
+#: src/prefs_common.c:722
 msgid "Filter on incorporation"
 msgstr "收信時過濾"
 
-#: src/prefs_common.c:724
+#: src/prefs_common.c:730
 msgid "Spool directory"
 msgstr "Spool 目錄"
 
-#: src/prefs_common.c:742
+#: src/prefs_common.c:748
 msgid "Auto-check new mail"
 msgstr "自動檢查新郵件"
 
-#: src/prefs_common.c:744
+#: src/prefs_common.c:750
 msgid "each"
 msgstr "每"
 
-#: src/prefs_common.c:756
+#: src/prefs_common.c:762
 msgid "minute(s)"
 msgstr "分鐘"
 
-#: src/prefs_common.c:765
+#: src/prefs_common.c:771
 msgid "Check new mail on startup"
 msgstr "開啟時檢查新郵件"
 
-#: src/prefs_common.c:767
+#: src/prefs_common.c:773
 msgid "News"
 msgstr "新聞"
 
-#: src/prefs_common.c:775
+#: src/prefs_common.c:781
 msgid ""
 "Maximum article number to download\n"
 "(unlimited if 0 is specified)"
@@ -2675,184 +2693,184 @@ msgstr ""
 "一次下載文章數量上限\n"
 "(設為 0 則不限制數量)"
 
-#: src/prefs_common.c:843
+#: src/prefs_common.c:849
 msgid "Use external program for sending"
 msgstr "用其他外部程式來送信"
 
-#: src/prefs_common.c:867
+#: src/prefs_common.c:873
 msgid "Save sent message to outbox"
 msgstr "將已送出之信件存到寄件備份"
 
-#: src/prefs_common.c:869
+#: src/prefs_common.c:875
 msgid "Queue message that failed to send"
 msgstr "寄送失敗的信件送到暫存資料夾"
 
-#: src/prefs_common.c:875
+#: src/prefs_common.c:881
 msgid "Outgoing codeset"
 msgstr "輸出字集"
 
-#: src/prefs_common.c:890
+#: src/prefs_common.c:896
 msgid "Automatic"
 msgstr "自動"
 
-#: src/prefs_common.c:891
+#: src/prefs_common.c:897
 msgid "7bit ascii (US-ASCII)"
 msgstr "7位元 ASCII 字集"
 
-#: src/prefs_common.c:893
+#: src/prefs_common.c:899
 msgid "Unicode (UTF-8)"
 msgstr ""
 
-#: src/prefs_common.c:895
+#: src/prefs_common.c:901
 msgid "Western European (ISO-8859-1)"
 msgstr "西歐語系 (ISO-8859-1)"
 
-#: src/prefs_common.c:897
+#: src/prefs_common.c:903
 msgid "Central European (ISO-8859-2)"
 msgstr "中歐語系 (ISO-8859-2)"
 
-#: src/prefs_common.c:898
+#: src/prefs_common.c:904
 msgid "Baltic (ISO-8859-13)"
 msgstr "波羅的海語系 (ISO-8859-13)"
 
-#: src/prefs_common.c:899
+#: src/prefs_common.c:905
 msgid "Baltic (ISO-8859-4)"
 msgstr "波羅的海語系 (ISO-8859-4)"
 
-#: src/prefs_common.c:900
+#: src/prefs_common.c:906
 msgid "Greek (ISO-8859-7)"
 msgstr "希臘語 (ISO-8859-7)"
 
-#: src/prefs_common.c:901
+#: src/prefs_common.c:907
 msgid "Turkish (ISO-8859-9)"
 msgstr "土耳其語 (ISO-8859-9)"
 
-#: src/prefs_common.c:902
+#: src/prefs_common.c:908
 msgid "Cyrillic (ISO-8859-5)"
 msgstr "斯拉夫語 (ISO-8859-5)"
 
-#: src/prefs_common.c:903
+#: src/prefs_common.c:909
 msgid "Cyrillic (KOI8-R)"
 msgstr "斯拉夫語 (KOI8-R)"
 
-#: src/prefs_common.c:904
+#: src/prefs_common.c:910
 msgid "Cyrillic (Windows-1251)"
 msgstr "斯拉夫語 (Windows-1251)"
 
-#: src/prefs_common.c:905
+#: src/prefs_common.c:911
 msgid "Cyrillic (KOI8-U)"
 msgstr "斯拉夫語 (KOI8-U)"
 
-#: src/prefs_common.c:907
+#: src/prefs_common.c:913
 msgid "Japanese (ISO-2022-JP)"
 msgstr "日文 (ISO-2022-JP)"
 
-#: src/prefs_common.c:909
+#: src/prefs_common.c:915
 msgid "Japanese (EUC-JP)"
 msgstr "日文 (EUC-JP)"
 
-#: src/prefs_common.c:910
+#: src/prefs_common.c:916
 msgid "Japanese (Shift_JIS)"
 msgstr "日文 (Shift_JIS)"
 
-#: src/prefs_common.c:913
+#: src/prefs_common.c:919
 msgid "Simplified Chinese (GB2312)"
 msgstr "簡體中文 (GB2312)"
 
-#: src/prefs_common.c:914
+#: src/prefs_common.c:920
 msgid "Traditional Chinese (Big5)"
 msgstr "繁體中文 (Big5)"
 
-#: src/prefs_common.c:916
+#: src/prefs_common.c:922
 msgid "Traditional Chinese (EUC-TW)"
 msgstr "繁體中文 (EUC-TW)"
 
-#: src/prefs_common.c:917
+#: src/prefs_common.c:923
 msgid "Chinese (ISO-2022-CN)"
 msgstr "中文 (ISO-2022-CN)"
 
-#: src/prefs_common.c:919
+#: src/prefs_common.c:925
 msgid "Korean (EUC-KR)"
 msgstr "韓文 (EUC-KR)"
 
-#: src/prefs_common.c:969
+#: src/prefs_common.c:975
 msgid "Quotation"
 msgstr "引用設定"
 
-#: src/prefs_common.c:977
+#: src/prefs_common.c:983
 msgid "Quote message when replying"
 msgstr "回信時引用原文"
 
-#: src/prefs_common.c:983
+#: src/prefs_common.c:989
 msgid "Quotation mark"
 msgstr "引用的原文前面加上"
 
-#: src/prefs_common.c:996
+#: src/prefs_common.c:1002
 msgid "Quotation format:"
 msgstr "引用原文時最前面加上："
 
-#: src/prefs_common.c:1001
+#: src/prefs_common.c:1007
 msgid " Description of symbols "
 msgstr "特殊符號代表的意義"
 
-#: src/prefs_common.c:1028
+#: src/prefs_common.c:1034
 msgid "Insert signature automatically"
 msgstr "自動加入簽名"
 
-#: src/prefs_common.c:1034
+#: src/prefs_common.c:1040
 msgid "Signature separator"
 msgstr "簽名分隔符號"
 
-#: src/prefs_common.c:1052
+#: src/prefs_common.c:1058
 msgid "Wrap messages at"
 msgstr "每行最多"
 
-#: src/prefs_common.c:1064
+#: src/prefs_common.c:1070
 msgid "characters"
 msgstr "個字元"
 
-#: src/prefs_common.c:1072
+#: src/prefs_common.c:1078
 msgid "Wrap quotation"
 msgstr "折行時顯示符號"
 
-#: src/prefs_common.c:1074
+#: src/prefs_common.c:1080
 msgid "Wrap before sending"
 msgstr "寄送之前自動折行"
 
-#: src/prefs_common.c:1113
+#: src/prefs_common.c:1119
 msgid "Font"
 msgstr "字型"
 
-#: src/prefs_common.c:1122
+#: src/prefs_common.c:1128
 msgid "Text"
 msgstr ""
 
-#: src/prefs_common.c:1145
+#: src/prefs_common.c:1151
 msgid "Translate header name (such as `From:', `Subject:')"
 msgstr "將標頭名稱翻譯出來"
 
-#: src/prefs_common.c:1148
+#: src/prefs_common.c:1154
 msgid "Display unread number next to folder name"
 msgstr "若有未讀信件，就顯示在資料夾名稱後面"
 
 #. ---- Summary ----
-#: src/prefs_common.c:1152
+#: src/prefs_common.c:1158
 msgid "Summary View"
 msgstr ""
 
-#: src/prefs_common.c:1161
+#: src/prefs_common.c:1167
 msgid "Display recipient on `From' column if sender is yourself"
 msgstr "若發信人是你自己，就在信件列表的來源中顯示收信人"
 
-#: src/prefs_common.c:1163
+#: src/prefs_common.c:1169
 msgid "Enable horizontal scroll bar"
 msgstr "顯示水平捲軸"
 
-#: src/prefs_common.c:1169
+#: src/prefs_common.c:1175
 msgid "Date format"
 msgstr ""
 
-#: src/prefs_common.c:1180
+#: src/prefs_common.c:1186
 msgid ""
 "Ordinary characters placed in the format string are copied without "
 "conversion. Conversion specifiers are introduced by a % character, and are "
@@ -2878,191 +2896,191 @@ msgid ""
 "%Z: the time zone or name or abbreviation"
 msgstr ""
 
-#: src/prefs_common.c:1209
+#: src/prefs_common.c:1215
 msgid " Set display item of summary... "
 msgstr "設定信件列表選項..."
 
-#: src/prefs_common.c:1263
+#: src/prefs_common.c:1269
 msgid "Enable coloration of message"
 msgstr "信件中的字允許\變色"
 
-#: src/prefs_common.c:1282
+#: src/prefs_common.c:1288
 msgid "Display 2-byte alphabet and numeric with 1-byte character"
 msgstr "將全形英文與數字以半形來顯示"
 
-#: src/prefs_common.c:1284
+#: src/prefs_common.c:1290
 msgid "Display header pane above message view"
 msgstr ""
 
-#: src/prefs_common.c:1291
+#: src/prefs_common.c:1297
 msgid "Display short headers on message view"
 msgstr "在信件預覽中顯示信件標頭"
 
-#: src/prefs_common.c:1311
+#: src/prefs_common.c:1317
 msgid "Line space"
 msgstr "行間距"
 
-#: src/prefs_common.c:1325 src/prefs_common.c:1365
+#: src/prefs_common.c:1331 src/prefs_common.c:1371
 msgid "pixel(s)"
 msgstr "像素 (pixels)"
 
-#: src/prefs_common.c:1330
+#: src/prefs_common.c:1336
 msgid "Leave space on head"
 msgstr "每行最前面空一格"
 
-#: src/prefs_common.c:1332
+#: src/prefs_common.c:1338
 msgid "Scroll"
 msgstr ""
 
-#: src/prefs_common.c:1339
+#: src/prefs_common.c:1345
 msgid "Half page"
 msgstr ""
 
-#: src/prefs_common.c:1345
+#: src/prefs_common.c:1351
 msgid "Smooth scroll"
 msgstr ""
 
-#: src/prefs_common.c:1351
+#: src/prefs_common.c:1357
 msgid "Step"
 msgstr ""
 
-#: src/prefs_common.c:1410
+#: src/prefs_common.c:1416
 msgid "Encrypt message by default"
 msgstr "信件自動加密"
 
-#: src/prefs_common.c:1413
+#: src/prefs_common.c:1419
 msgid "Sign message by default"
 msgstr "信件自動做數位簽章"
 
-#: src/prefs_common.c:1416
+#: src/prefs_common.c:1422
 msgid "Automatically check signatures"
 msgstr "自動檢查數位簽章"
 
-#: src/prefs_common.c:1420
+#: src/prefs_common.c:1426
 msgid "Grab input while entering a passphrase"
 msgstr ""
 
 #. create default signkey box
-#: src/prefs_common.c:1428
+#: src/prefs_common.c:1434
 msgid "Default Sign Key"
 msgstr "預設的數位簽章"
 
-#: src/prefs_common.c:1527
+#: src/prefs_common.c:1533
 msgid ""
 "Emulate the behavior of mouse operation of\n"
 "Emacs-based mailer"
 msgstr "模擬 Emacs-based mailer 的滑鼠行為"
 
-#: src/prefs_common.c:1534
+#: src/prefs_common.c:1540
 msgid "Open first unread message when entering a folder"
 msgstr "進入資料夾時直接跳到第一封未讀信件上"
 
-#: src/prefs_common.c:1538
+#: src/prefs_common.c:1544
 msgid "Go to inbox after receiving new mail"
 msgstr "接收完新郵件後直接進入收件夾中"
 
-#: src/prefs_common.c:1546
+#: src/prefs_common.c:1552
 msgid "Execute immediately when moving or deleting messages"
 msgstr "移動或刪除信件時立即執行"
 
-#: src/prefs_common.c:1553
+#: src/prefs_common.c:1559
 msgid ""
 "(Messages will be just marked till execution\n"
 " if this is turned off)"
 msgstr "（若此選項關閉，則必須按下「執行」才會執行移動或刪除）"
 
-#: src/prefs_common.c:1560
+#: src/prefs_common.c:1566
 msgid "Add address to destination when double-clicked"
 msgstr ""
 
-#: src/prefs_common.c:1562
+#: src/prefs_common.c:1568
 msgid "On exit"
 msgstr "離開設定"
 
-#: src/prefs_common.c:1570
+#: src/prefs_common.c:1576
 msgid "Confirm on exit"
 msgstr "離開時確認"
 
-#: src/prefs_common.c:1577
+#: src/prefs_common.c:1583
 msgid "Empty trash on exit"
 msgstr "離開時清空刪除的郵件"
 
-#: src/prefs_common.c:1579
+#: src/prefs_common.c:1585
 msgid "Ask before emptying"
 msgstr "清除時確認"
 
-#: src/prefs_common.c:1583
+#: src/prefs_common.c:1589
 msgid "Warn if there are queued messages"
 msgstr ""
 
-#: src/prefs_common.c:1621
+#: src/prefs_common.c:1627
 #, c-format
 msgid "External Web browser (%s will be replaced with URI)"
 msgstr "預設的瀏覽器指令（%s 將會被置換成 URL）"
 
-#: src/prefs_common.c:1628 src/prefs_common.c:1652 src/prefs_common.c:1668
+#: src/prefs_common.c:1634 src/prefs_common.c:1658 src/prefs_common.c:1674
 msgid "Command"
 msgstr "命令列"
 
-#: src/prefs_common.c:1645
+#: src/prefs_common.c:1651
 #, c-format
 msgid "Printing (%s will be replaced with file name)"
 msgstr "列印指令（%s 將會被置換成檔名）"
 
-#: src/prefs_common.c:1661
+#: src/prefs_common.c:1667
 #, c-format
 msgid "External editor (%s will be replaced with file name)"
 msgstr "其他外部編輯器指令（%s 將會被置換成檔名）"
 
-#: src/prefs_common.c:1723
+#: src/prefs_common.c:1730
 msgid "Set message colors"
 msgstr "設定信件顏色"
 
-#: src/prefs_common.c:1731
+#: src/prefs_common.c:1738
 msgid "Colors"
 msgstr "顏色"
 
-#: src/prefs_common.c:1769
+#: src/prefs_common.c:1772
 msgid "Quoted Text - First Level"
 msgstr "引言內容 - 第一層"
 
-#: src/prefs_common.c:1775
+#: src/prefs_common.c:1778
 msgid "Quoted Text - Second Level"
 msgstr "引言內容 - 第二層"
 
-#: src/prefs_common.c:1781
+#: src/prefs_common.c:1784
 msgid "Quoted Text - Third Level"
 msgstr "引言內容 - 第三層"
 
-#: src/prefs_common.c:1787
+#: src/prefs_common.c:1790
 msgid "URI link"
 msgstr "超連結"
 
-#: src/prefs_common.c:1794
+#: src/prefs_common.c:1797
 msgid "Recycle quote colors"
 msgstr ""
 
-#: src/prefs_common.c:1842
+#: src/prefs_common.c:1859
 msgid "Pick color for quotation level 1"
 msgstr "選擇第一層引言的顏色"
 
-#: src/prefs_common.c:1845
+#: src/prefs_common.c:1862
 msgid "Pick color for quotation level 2"
 msgstr "選擇第二層引言的顏色"
 
-#: src/prefs_common.c:1848
+#: src/prefs_common.c:1865
 msgid "Pick color for quotation level 3"
 msgstr "選擇第三層引言的顏色"
 
-#: src/prefs_common.c:1851
+#: src/prefs_common.c:1868
 msgid "Pick color for URI"
 msgstr "選擇超連結的顏色"
 
-#: src/prefs_common.c:1975
+#: src/prefs_common.c:2003
 msgid "Description of symbols"
 msgstr "特殊符號代表的意義"
 
-#: src/prefs_common.c:2002
+#: src/prefs_common.c:2030
 #, c-format
 msgid ""
 "Date\n"
@@ -3076,35 +3094,35 @@ msgid ""
 "%"
 msgstr ""
 
-#: src/prefs_common.c:2105
+#: src/prefs_common.c:2133
 msgid "Set display item"
 msgstr "信件列表顯示設定"
 
-#: src/prefs_common.c:2122
+#: src/prefs_common.c:2150
 msgid "Mark"
 msgstr "標記"
 
-#: src/prefs_common.c:2124
+#: src/prefs_common.c:2152
 msgid "MIME"
 msgstr ""
 
-#: src/prefs_common.c:2125
+#: src/prefs_common.c:2153
 msgid "Number"
 msgstr "編號"
 
-#: src/prefs_common.c:2127 src/summaryview.c:352
+#: src/prefs_common.c:2155 src/summaryview.c:352
 msgid "Date"
 msgstr "日期"
 
-#: src/prefs_common.c:2128 src/summaryview.c:353
+#: src/prefs_common.c:2156 src/summaryview.c:353
 msgid "From"
 msgstr "來源(From)"
 
-#: src/prefs_common.c:2129 src/summaryview.c:354
+#: src/prefs_common.c:2157 src/summaryview.c:354
 msgid "Subject"
 msgstr "主題"
 
-#: src/prefs_common.c:2182
+#: src/prefs_common.c:2210
 msgid "Font selection"
 msgstr "選擇字型"
 
@@ -3406,31 +3424,67 @@ msgstr ""
 msgid "Enter another user or key ID\n"
 msgstr ""
 
-#: src/send.c:148
+#: src/send.c:147
 msgid "Queued message header is broken.\n"
 msgstr "暫存資料夾中的信件標頭錯誤。\n"
 
-#: src/send.c:157
+#: src/send.c:156
 msgid "Account not found. Using current account...\n"
 msgstr "找不到帳號，將改用現有帳號...\n"
 
-#: src/send.c:168
+#: src/send.c:167
 msgid "Account not found.\n"
 msgstr "找不到帳號。\n"
 
-#: src/send.c:199
-#, c-format
-msgid "Connecting to SMTP server: %s ...\n"
+#: src/send.c:240
+#, fuzzy, c-format
+msgid "Connecting to SMTP server: %s ..."
 msgstr "連線到 SMTP 伺服器 %s...\n"
 
-#: src/send.c:240
+#: src/send.c:244
+msgid "Connecting"
+msgstr ""
+
+#: src/send.c:251
+msgid "Sending MAIL FROM..."
+msgstr ""
+
+#: src/send.c:252
+#, fuzzy
+msgid "Sending"
+msgstr "送出"
+
+#: src/send.c:259
+msgid "Sending RCPT TO..."
+msgstr ""
+
+#: src/send.c:266
+msgid "Sending DATA..."
+msgstr ""
+
+#: src/send.c:282
+#, fuzzy, c-format
+msgid "Sending message (%d / %d bytes)"
+msgstr "取得新郵件 (%d / %d) (%d / %d bytes)"
+
+#: src/send.c:299
+#, fuzzy
+msgid "Quitting..."
+msgstr "離開"
+
+#: src/send.c:320
 #, c-format
 msgid "Can't connect to SMTP server: %s:%d\n"
 msgstr "無法連線到 SMTP 伺服器 %s:%d\n"
 
-#: src/send.c:251
+#: src/send.c:331
 msgid "Error occurred while sending HELO\n"
 msgstr "送 HELO 訊息時發生錯誤\n"
+
+#: src/send.c:347
+#, fuzzy
+msgid "Sending message"
+msgstr "送出信件"
 
 #: src/setup.c:43
 msgid "Mailbox setting"
@@ -3598,155 +3652,155 @@ msgstr ""
 msgid "No."
 msgstr ""
 
-#: src/summaryview.c:571
+#: src/summaryview.c:572
 msgid "Process mark"
 msgstr ""
 
-#: src/summaryview.c:572
+#: src/summaryview.c:573
 msgid "Some marks are left. Process it?"
 msgstr ""
 
-#: src/summaryview.c:596
+#: src/summaryview.c:597
 msgid ""
 "empty folder\n"
 "\n"
 msgstr ""
 
-#: src/summaryview.c:608
+#: src/summaryview.c:609
 #, c-format
 msgid "Scanning folder (%s)..."
 msgstr "掃描資料夾(%s)..."
 
-#: src/summaryview.c:677
+#: src/summaryview.c:678
 msgid "done."
 msgstr "完成。"
 
-#: src/summaryview.c:811
+#: src/summaryview.c:812
 msgid "No unread message"
 msgstr "沒有未讀信件"
 
-#: src/summaryview.c:812
+#: src/summaryview.c:813
 msgid "No unread message found. Go to next folder?"
 msgstr "沒有未讀信件。要到下一個資料夾嗎？"
 
-#: src/summaryview.c:948 src/summaryview.c:950
+#: src/summaryview.c:949 src/summaryview.c:951
 msgid "Attracting messages by subject..."
 msgstr ""
 
-#: src/summaryview.c:1093
+#: src/summaryview.c:1094
 #, c-format
 msgid "%d deleted"
 msgstr "%d 已刪除"
 
-#: src/summaryview.c:1097
+#: src/summaryview.c:1098
 #, c-format
 msgid "%s%d moved"
 msgstr "%s%d 已移動"
 
-#: src/summaryview.c:1098 src/summaryview.c:1105
+#: src/summaryview.c:1099 src/summaryview.c:1106
 msgid ", "
 msgstr ""
 
-#: src/summaryview.c:1103
+#: src/summaryview.c:1104
 #, c-format
 msgid "%s%d copied"
 msgstr "%s%d 已複製"
 
-#: src/summaryview.c:1120
+#: src/summaryview.c:1121
 msgid " item(s) selected"
 msgstr "封已選擇"
 
-#: src/summaryview.c:1131
+#: src/summaryview.c:1132
 #, c-format
 msgid "%d new, %d unread, %d total (%s)"
 msgstr "%d 封未讀，%d 封已讀，共 %d 封(%s)"
 
-#: src/summaryview.c:1137
+#: src/summaryview.c:1138
 #, c-format
 msgid "%d new, %d unread, %d total"
 msgstr "%d 封未讀，%d 封已讀，共 %d 封"
 
-#: src/summaryview.c:1178 src/summaryview.c:1179
+#: src/summaryview.c:1179 src/summaryview.c:1180
 msgid "Sorting summary..."
 msgstr "信件排序中..."
 
-#: src/summaryview.c:1217
+#: src/summaryview.c:1218
 msgid "\tSetting summary from message data..."
 msgstr ""
 
-#: src/summaryview.c:1219
+#: src/summaryview.c:1220
 msgid "Setting summary from message data..."
 msgstr "產生信件列表中..."
 
-#: src/summaryview.c:1328
+#: src/summaryview.c:1329
 #, c-format
 msgid "Writing summary cache (%s)..."
 msgstr "寫入快取(%s)..."
 
-#: src/summaryview.c:1380
+#: src/summaryview.c:1381
 msgid "(No Date)"
 msgstr "(沒有日期)"
 
-#: src/summaryview.c:1645
+#: src/summaryview.c:1646
 #, c-format
 msgid "Message %d is marked\n"
 msgstr "信件 %d 已標記\n"
 
-#: src/summaryview.c:1674
+#: src/summaryview.c:1675
 #, c-format
 msgid "Message %d is marked as being read\n"
 msgstr "信件 %d 已標記成已讀\n"
 
-#: src/summaryview.c:1709
+#: src/summaryview.c:1710
 #, c-format
 msgid "Message %d is marked as unread\n"
 msgstr "信件 %d 已標記成未讀\n"
 
-#: src/summaryview.c:1751
+#: src/summaryview.c:1752
 #, c-format
 msgid "Message %s/%d is set to delete\n"
 msgstr "信件 %s/%d 已標記刪除\n"
 
-#: src/summaryview.c:1765
+#: src/summaryview.c:1766
 msgid "Current folder is Trash."
 msgstr "您現在在已刪除信件資料夾中。"
 
-#: src/summaryview.c:1787 src/summaryview.c:1789
+#: src/summaryview.c:1788 src/summaryview.c:1790
 msgid "Deleting duplicated messages..."
 msgstr "刪除重覆的信件..."
 
-#: src/summaryview.c:1839
+#: src/summaryview.c:1840
 #, c-format
 msgid "Message %s/%d is unmarked\n"
 msgstr "信件 %s/%d 已消除標記\n"
 
-#: src/summaryview.c:1876
+#: src/summaryview.c:1877
 #, c-format
 msgid "Message %d is set to move to %s\n"
 msgstr "信件 %d 已設定移動到 %s\n"
 
-#: src/summaryview.c:1888
+#: src/summaryview.c:1889
 msgid "Destination is same as current folder."
 msgstr "目標資料夾與來源資料夾相同"
 
-#: src/summaryview.c:1937
+#: src/summaryview.c:1938
 #, c-format
 msgid "Message %d is set to copy to %s\n"
 msgstr ""
 
-#: src/summaryview.c:1950
+#: src/summaryview.c:1951
 msgid "Destination to copy is same as current folder."
 msgstr "信件無法複製到同一個資料夾內"
 
-#: src/summaryview.c:1982
+#: src/summaryview.c:1983
 msgid "Selecting all messages..."
 msgstr "選擇所有的信件..."
 
-#: src/summaryview.c:2036
+#: src/summaryview.c:2037
 msgid "Print"
 msgstr "列印"
 
-#: src/summaryview.c:2037
+#: src/summaryview.c:2038
 #, c-format
 msgid ""
 "Enter the print command line:\n"
@@ -3755,7 +3809,7 @@ msgstr ""
 "請輸入列印指令：\n"
 "（ `%s' 將會被置換為檔名）"
 
-#: src/summaryview.c:2043
+#: src/summaryview.c:2044
 #, c-format
 msgid ""
 "Print command line is invalid:\n"
@@ -3764,27 +3818,27 @@ msgstr ""
 "輸入的列印指令有誤：\n"
 "`%s'"
 
-#: src/summaryview.c:2262 src/summaryview.c:2263
+#: src/summaryview.c:2266 src/summaryview.c:2267
 msgid "Building threads..."
 msgstr "產生信件串列中..."
 
-#: src/summaryview.c:2285 src/summaryview.c:2286
+#: src/summaryview.c:2289 src/summaryview.c:2290
 msgid "Unthreading..."
 msgstr "解除信件串列中..."
 
-#: src/summaryview.c:2308
+#: src/summaryview.c:2312
 msgid "Unthreading for execution..."
 msgstr ""
 
-#: src/summaryview.c:2395
+#: src/summaryview.c:2399
 msgid "filtering..."
 msgstr ""
 
-#: src/summaryview.c:2396
+#: src/summaryview.c:2400
 msgid "Filtering..."
 msgstr "過濾中..."
 
-#: src/summaryview.c:2500
+#: src/summaryview.c:2504
 #, c-format
 msgid "Go to %s\n"
 msgstr "到 %s\n"
@@ -3793,23 +3847,33 @@ msgstr "到 %s\n"
 msgid "Creating text view...\n"
 msgstr ""
 
-#: src/textview.c:365
-msgid "To save this part, pop up the context menu with\n"
+#: src/textview.c:366
+#, fuzzy
+msgid "To save this part, pop up the context menu with "
 msgstr "要儲存這個檔案，請按滑鼠右鍵並在目錄中\n"
 
-#: src/textview.c:368
-msgid ""
-"right click and select `Save as...', or press `y' key.\n"
-"\n"
+#: src/textview.c:367
+#, fuzzy
+msgid "right click and select `Save as...', "
 msgstr ""
 "選擇『另存新檔』...，或者是按下 `y' 鍵。\n"
 "\n"
 
-#: src/textview.c:372
-msgid "To display this part as a text message, select\n"
+#: src/textview.c:368
+#, fuzzy
+msgid ""
+"or press `y' key.\n"
+"\n"
+msgstr ""
+"或者是按下 `t' 鍵。\n"
+"\n"
+
+#: src/textview.c:370
+#, fuzzy
+msgid "To display this part as a text message, select "
 msgstr "要以文字模式觀看這個檔案，請選擇『以純文字呈現』\n"
 
-#: src/textview.c:375
+#: src/textview.c:371
 msgid ""
 "`Display as text', or press `t' key.\n"
 "\n"
@@ -3817,37 +3881,47 @@ msgstr ""
 "或者是按下 `t' 鍵。\n"
 "\n"
 
-#: src/textview.c:379
-msgid "To open this part with external program, select `Open',\n"
+#: src/textview.c:373
+#, fuzzy
+msgid "To open this part with external program, select "
 msgstr "要以其他程式開啟這個檔案，請選擇『開啟』\n"
 
-#: src/textview.c:382
-msgid "or double-click, or click the center button, or press `l' key."
+#: src/textview.c:374
+msgid "`Open' or `Open with...', "
+msgstr ""
+
+#: src/textview.c:375
+#, fuzzy
+msgid "or double-click, or click the center button, "
 msgstr "也可以雙擊該檔案，或是按滑鼠中鍵，或是按 `l' 鍵。"
 
-#: src/textview.c:403
+#: src/textview.c:376
+msgid "or press `l' key."
+msgstr ""
+
+#: src/textview.c:395
 msgid "This signature has not been checked yet.\n"
 msgstr "這個數位簽章尚未經過檢查\n"
 
-#: src/textview.c:406
+#: src/textview.c:396
 msgid "To check it, pop up the context menu with\n"
 msgstr "要檢查數位簽章，請按下滑鼠右鍵並在目錄中\n"
 
-#: src/textview.c:409
+#: src/textview.c:397
 msgid "right click and select `Check signature'.\n"
 msgstr "選擇「檢查數位簽章」。\n"
 
-#: src/utils.c:1425 src/utils.c:1502
+#: src/utils.c:1452 src/utils.c:1529
 #, c-format
 msgid "writing to %s failed.\n"
 msgstr "寫入到 %s 的動作失敗。\n"
 
-#: src/utils.c:1445
+#: src/utils.c:1472
 #, c-format
 msgid "File copy from %s to %s failed.\n"
 msgstr ""
 
-#: src/utils.c:1663
+#: src/utils.c:1690
 #, c-format
 msgid "Open URI command line is invalid: `%s'"
 msgstr "開啟 URL 的命令錯誤：`%s'"

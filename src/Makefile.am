@@ -142,7 +142,7 @@ sylpheed_LDADD = \
 	$(GDK_PIXBUF_LIBS) \
 	$(GPGME_LIBS)
 
-CPPFLAGS = -W -Wall \
+CPPFLAGS = \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DMANUALDIR=\""$(manualdir)"\" \
 	-DHOST_ALIAS=\""$(host_alias)"\"
