@@ -94,6 +94,7 @@ struct _PrefsCommon
 	gboolean enable_pspell;
 	gchar *pspell_path;
 	gchar *dictionary;
+	gint misspelled_col;
 #endif
         
 	/* Display */

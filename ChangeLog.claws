@@ -1,3 +1,13 @@
+2001-12-30 [melvin]	0.6.6claws32
+	
+	* src/prefs_common.[ch]
+		Added configurable color for misspelled words.
+
+	* src/gtkspell.[ch]
+		Fixed bug of foreground text color (reported by David
+				Mehrmann)
+		Added configurable color for misspelled words.
+
 2001-12-30 [alfons]	0.6.6claws31
 
 	* src/folder.c

@@ -219,6 +219,7 @@ static struct MessageColorButtons {
 	GtkWidget *quote_level3_btn;
 	GtkWidget *uri_btn;
 	GtkWidget *tgt_folder_btn;
+	GtkWidget *misspelled_btn;
 } color_buttons;
 
 static GtkWidget *quote_desc_win;
@@ -355,6 +356,8 @@ static PrefParam param[] = {
 	{"dictionary",  "", &prefs_common.dictionary,
 	 P_STRING, &spelling.optmenu_dictionary, 
 	 prefs_dictionary_set_data_from_optmenu, prefs_dictionary_set_optmenu },
+	{"misspelled_color", "16711680", &prefs_common.misspelled_col, P_INT,
+	 NULL, NULL, NULL},
 #endif
 	{"reply_with_quote", "TRUE", &prefs_common.reply_with_quote, P_BOOL,
 	 &compose.checkbtn_reply_with_quote, prefs_set_data_from_toggle, prefs_set_toggle},
@@ -1354,9 +1357,12 @@ static void prefs_spelling_create()
 	GtkWidget *label_pspell_path;
 	GtkWidget *entry_pspell_path;
 	GtkWidget *btn_pspell_path;
-	GtkWidget *hbox_dictionary;
+	GtkWidget *spell_table;
 	GtkWidget *label_dictionary;
 	GtkWidget *optmenu_dictionary;
+	GtkWidget *color_label;
+	GtkWidget *hbox_col;
+	GtkWidget *col_align;
 
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
@@ -1378,18 +1384,29 @@ static void prefs_spelling_create()
 			   GTK_SIGNAL_FUNC(prefs_spelling_checkbtn_enable_pspell_toggle_cb),
 			   NULL);
 
-	hbox_pspell_path = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show(hbox_pspell_path);
-	gtk_box_pack_start(GTK_BOX(vbox_spell), hbox_pspell_path, TRUE, TRUE, 0);
+	spell_table = gtk_table_new(3, 3, FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (spell_table), 0);
+	gtk_table_set_row_spacings(GTK_TABLE(spell_table), 8);
+	gtk_table_set_col_spacings(GTK_TABLE(spell_table), 8);
 
-	label_pspell_path = gtk_label_new (_("Dictionaries path"));
-	gtk_widget_show(label_pspell_path);
-	gtk_box_pack_start(GTK_BOX(hbox_pspell_path), label_pspell_path, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_spell), spell_table, TRUE, TRUE, 0);
+
 	
+	label_pspell_path = gtk_label_new (_("Dictionaries path:"));
+	gtk_misc_set_alignment(GTK_MISC(label_pspell_path), 1.0, 0.5);
+	gtk_widget_show(label_pspell_path);
+	gtk_table_attach (GTK_TABLE (spell_table), label_pspell_path, 0, 1, 0, 1,
+			  GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
+	
+	hbox_pspell_path = gtk_hbox_new (FALSE, 8);
+	gtk_table_attach (GTK_TABLE (spell_table), hbox_pspell_path, 1, 2, 0, 1,
+			  GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
+	gtk_widget_show(hbox_pspell_path);
+
 	entry_pspell_path = gtk_entry_new();
 	gtk_widget_show(entry_pspell_path);
-	gtk_box_pack_start(GTK_BOX(hbox_pspell_path), entry_pspell_path, FALSE, FALSE, 0);
-	gtk_widget_set_usize(entry_pspell_path, 150, -1);
+	gtk_box_pack_start(GTK_BOX(hbox_pspell_path), entry_pspell_path, TRUE, TRUE, 0);	
+	
 	gtk_widget_set_sensitive(entry_pspell_path, prefs_common.enable_pspell);
 
 	btn_pspell_path = gtk_button_new_with_label(_("..."));
@@ -1401,20 +1418,42 @@ static void prefs_spelling_create()
 			   GTK_SIGNAL_FUNC(prefs_spelling_btn_pspell_path_clicked_cb),
 			   NULL);
 
-	hbox_dictionary = gtk_hbox_new(FALSE, 8);
-	gtk_widget_show(hbox_dictionary);
-	gtk_box_pack_start(GTK_BOX(vbox_spell), hbox_dictionary, TRUE, TRUE, 0);
-
-	label_dictionary = gtk_label_new(_("Dictionary"));
+	label_dictionary = gtk_label_new(_("Default dictionary:"));
+	gtk_misc_set_alignment(GTK_MISC(label_dictionary), 1.0, 0.5);
 	gtk_widget_show(label_dictionary);
-	gtk_box_pack_start(GTK_BOX(hbox_dictionary), label_dictionary, FALSE, FALSE, 0);
+	gtk_table_attach (GTK_TABLE (spell_table), label_dictionary, 0, 1, 1, 2,
+			  GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
 
 	optmenu_dictionary = gtk_option_menu_new();
 	gtk_widget_show(optmenu_dictionary);
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_dictionary), 
 				 gtkpspell_dictionary_option_menu_new(prefs_common.pspell_path));
-	gtk_box_pack_start(GTK_BOX(hbox_dictionary), optmenu_dictionary, FALSE, FALSE, 0);
+	gtk_table_attach (GTK_TABLE (spell_table), optmenu_dictionary, 1, 2, 1, 2,
+			  GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
 	gtk_widget_set_sensitive(optmenu_dictionary, prefs_common.enable_pspell);
+
+	/* Color */
+	color_label = gtk_label_new(_("Misspelled word color:"));
+	gtk_misc_set_alignment(GTK_MISC(color_label), 1.0, 0.5);
+	gtk_table_attach (GTK_TABLE (spell_table), color_label, 0, 1, 2, 3,
+			  GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_widget_show(color_label);
+	
+	col_align = gtk_alignment_new(0.0, 0.5, 0, 0);
+	gtk_widget_show(col_align);
+	gtk_table_attach (GTK_TABLE (spell_table), col_align, 1, 2, 2, 3,
+			  GTK_FILL, GTK_SHRINK, 0, 0);
+
+	color_buttons.misspelled_btn = gtk_button_new_with_label ("");
+	set_button_bg_color(color_buttons.misspelled_btn,
+			    prefs_common.misspelled_col);
+	gtk_widget_set_usize (color_buttons.misspelled_btn, 30, 20);
+	gtk_widget_set_sensitive(color_buttons.misspelled_btn, prefs_common.enable_pspell);
+	gtk_signal_connect (GTK_OBJECT (color_buttons.misspelled_btn), "clicked",
+			    GTK_SIGNAL_FUNC(quote_color_set_dialog), "Misspelled word");
+	gtk_container_add(GTK_CONTAINER(col_align), color_buttons.misspelled_btn);
+
+
 	spelling.checkbtn_enable_pspell = checkbtn_enable_pspell;
 	spelling.entry_pspell_path      = entry_pspell_path;
 	spelling.btn_pspell_path	= btn_pspell_path;
@@ -3008,6 +3047,9 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	} else if(g_strcasecmp(type, "TGTFLD") == 0) {
 		title = _("Pick color for target folder");
 		rgbvalue = prefs_common.tgt_folder_col;
+	} else if(g_strcasecmp(type, "Misspelled word") == 0) {
+		title = _("Pick color for misspelled word");
+		rgbvalue = prefs_common.misspelled_col;
 	} else {   /* Should never be called */
 		g_warning("Unrecognized datatype '%s' in quote_color_set_dialog\n", type);
 		return;
@@ -3075,6 +3117,9 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 		prefs_common.tgt_folder_col = rgbvalue;
 		set_button_bg_color(color_buttons.tgt_folder_btn, rgbvalue);
 		folderview_set_target_folder_color(prefs_common.tgt_folder_col);
+	} else if (g_strcasecmp(type, "Misspelled word") == 0) {
+		prefs_common.misspelled_col = rgbvalue;
+		set_button_bg_color(color_buttons.misspelled_btn, rgbvalue);
 	} else
 		fprintf( stderr, "Unrecognized datatype '%s' in quote_color_set_dialog_ok\n", type );
 

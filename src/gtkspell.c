@@ -80,12 +80,10 @@ static void entry_insert_cb		(GtkXText *gtktext, gchar *newtext,
 static gint compare_dict		(Dictionary *a, Dictionary *b);
 guchar *convert_to_pspell_encoding 	(const guchar *encoding);
 
+static void allocate_color(GtkPspell *gtkpspell);
 
 /* gtkspellconfig - only one config per session */
 GtkPspellConfig * gtkpspellconfig;
-
-/* TODO: configurable */
-static GdkColor highlight = { 0, 255 * 256, 0, 0 };
 
 /******************************************************************************/
 
@@ -151,6 +149,7 @@ GtkPspell * gtkpspell_new(GtkPspellConfig *gtkpspellconfig)
 	gtkpspell->mode            = PSPELL_FASTMODE;
 	gtkpspell->learn	   = TRUE;
 	gtkpspell->gtktext         = NULL;
+
 	return gtkpspell;
 }
 
@@ -211,6 +210,7 @@ GtkPspell *gtkpspell_new_with_config(GtkPspellConfig *gtkpspellconfig,
 	else {
 		gtkpspell->checker = to_pspell_manager( gtkpspell->possible_err );
 	}
+
 	return gtkpspell;
 }
 
@@ -730,16 +730,10 @@ static gboolean check_at(GtkPspell *gtkpspell, int from_pos)
 	gtkpspell->theword[BUFSIZE - 1] = 0;
 
 	if (misspelled_test(gtkpspell, buf)) {
-		if (highlight.pixel == 0) {
-			/* add an entry for the highlight in the color map. */
-			GdkColormap *gc = gtk_widget_get_colormap(GTK_WIDGET(gtktext));
-			gdk_colormap_alloc_color(gc, &highlight, FALSE, TRUE);
-		}
-		change_color(gtkpspell, start, end, &highlight);
+			change_color(gtkpspell, start, end, &(gtkpspell->highlight));
 		return TRUE;
 	} else {
-		change_color(gtkpspell, start, end,
-			     &(GTK_WIDGET(gtktext)->style->fg[0]));
+		change_color(gtkpspell, start, end, NULL);
 		return FALSE;
 	}
 }
@@ -795,8 +789,7 @@ static void entry_insert_cb(GtkXText *gtktext, gchar *newtext,
 	/* Never mess with set_insertion when frozen */
 	gtk_xtext_freeze(gtktext);
 	gtk_xtext_backward_delete(GTK_XTEXT(gtktext), len);
-	gtk_xtext_insert(GTK_XTEXT(gtktext), NULL,
-                        &(GTK_WIDGET(gtktext)->style->fg[0]), NULL, newtext, len);
+	gtk_xtext_insert(GTK_XTEXT(gtktext), NULL, NULL, NULL, newtext, len);
 	*ppos = gtk_xtext_get_point(GTK_XTEXT(gtktext));
 	       
 	if (iswordsep(newtext[0])) {
@@ -1236,7 +1229,7 @@ void gtkpspell_uncheck_all(GtkPspell * gtkpspell)
 
 void gtkpspell_attach(GtkPspell *gtkpspell, GtkXText *gtktext) 
 {
-	gtkpspell->gtktext=gtktext;
+	gtkpspell->gtktext = gtktext;
 	gtk_signal_connect_after(GTK_OBJECT(gtktext), "insert-text",
 		           GTK_SIGNAL_FUNC(entry_insert_cb), gtkpspell);
 	gtk_signal_connect_after(GTK_OBJECT(gtktext), "delete-text",
@@ -1244,6 +1237,8 @@ void gtkpspell_attach(GtkPspell *gtkpspell, GtkXText *gtktext)
 	gtk_signal_connect(GTK_OBJECT(gtktext), "button-press-event",
 		           GTK_SIGNAL_FUNC(button_press_intercept_cb), gtkpspell);
 
+	allocate_color(gtkpspell);
+	
 }
 
 void gtkpspell_detach(GtkPspell * gtkpspell) 
@@ -1437,6 +1432,21 @@ guchar *convert_to_pspell_encoding (const guchar *encoding)
 	
 }
 
-		
-		
+static void allocate_color(GtkPspell *gtkpspell)
+{
+
+	GdkColormap *gc;
+	/* Color allocation */
+	gc = gtk_widget_get_colormap(GTK_WIDGET(gtkpspell->gtktext));
+
+	if (gtkpspell->highlight.pixel)
+		gdk_colormap_free_colors(gc, &(gtkpspell->highlight), 1);
+
+	gtkut_convert_int_to_gdk_color(prefs_common.misspelled_col,
+			&(gtkpspell->highlight));
+
+	/* add an entry for the highlight in the color map. */
+	gdk_colormap_alloc_color(gc, &(gtkpspell->highlight), FALSE, TRUE);
+}
+
 #endif

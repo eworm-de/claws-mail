@@ -70,6 +70,8 @@ typedef struct _GtkPspell
 	guint mode;
 	guint learn;
         guint orig_pos;
+
+	GdkColor highlight;
 	     
 	GSList * dictionary_list;
 	GtkXText * gtktext;
