@@ -18,6 +18,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include "intl.h"
 #include "string_match.h"
 
@@ -63,8 +67,11 @@ gchar *string_remove_match(gchar *buf, gint buflen, gchar * txt, regex_t *preg)
 			}
 		} while (txt[j] && i < buflen - 1);
 		buf[i] = 0x00;
-		if (buf[0] == 0x00)
-			strcpy(buf, _("(Subject cleared by regexp)"));
+		if (buf[0] == 0x00) {
+			strncpy(buf, _("(Subject cleared by RegExp)"),
+					buflen - 1);
+			buf[buflen - 1] = 0x00;
+		}
 		return buf;		
 	}
 	return txt;

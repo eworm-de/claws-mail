@@ -97,6 +97,7 @@ src/socket.c
 src/sourcewindow.c
 src/ssl.c
 src/statusbar.c
+src/string_match.c
 src/summary_search.c
 src/summaryview.c
 src/syldap.c

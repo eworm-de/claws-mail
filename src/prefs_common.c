@@ -1883,8 +1883,6 @@ static void prefs_compose_create(void)
 	gtk_container_add (GTK_CONTAINER (frame_msgwrap), vbox_linewrap);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_linewrap), 8);
 
-	gtk_box_pack_start (GTK_BOX (vbox1), vbox_linewrap, FALSE, FALSE, 0);
-
 	hbox3 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox3);
 	gtk_box_pack_start (GTK_BOX (vbox_linewrap), hbox3, FALSE, FALSE, 0);
@@ -2831,7 +2829,7 @@ static void prefs_interface_create(void)
 	gtk_signal_connect (GTK_OBJECT (button_keybind), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_keybind_select), NULL);
 
- 	PACK_FRAME(vbox1, frame_pixmap_theme, "Pixmap theme");
+ 	PACK_FRAME(vbox1, frame_pixmap_theme, _("Pixmap theme"));
  	
  	vbox_pixmap_theme = gtk_vbox_new(FALSE, 0);
  	gtk_widget_show(vbox_pixmap_theme);

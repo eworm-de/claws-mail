@@ -1,3 +1,37 @@
+2002-06-13 [paul]	0.7.6claws46
+
+	* src/filesel.c
+		allow filename to be typed in, rather than just
+		selected by the mouse. Patch by Gustavo Noronha Silva.
+
+2002-06-13 [alfons]	0.7.6claws45
+
+	* src/mainwindow.[ch]
+		more cleanups (removing unnecessary menu items Expand 
+		summary / message view)
+	
+2002-06-13 [melvin]	0.7.6claws44
+
+	* po/POTFILES.in
+		Added src/string_match.c
+	* src/string_match.c
+		Fixed possible buffer overflow.
+		Corrected typo.
+		Added missing config.h header.
+	* src/prefs_common.c
+	  src/prefs_matcher.c
+	  src/prefs_scoring.c
+	  	Made some strings translatable (missing _(..)).
+
+2002-06-13 [melvin]	0.7.6claws43
+
+	* README.claws
+		Corrected action example (verifying clearsigned mail).
+	* src/prefs_account.c
+		Corrected typo.
+	* src/prefs_common.c
+		Removed incorrect line that generated a Gtk-CRITICAL msg.
+
 2002-06-12 [alfons]	0.7.6claws42
 
 	* src/summaryview.c
