@@ -542,7 +542,7 @@ void summary_init(SummaryView *summaryview)
 			 &clipxpm, &clipxpmmask);
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_LOCKED,
 			 &lockedxpm, &lockedxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_LOCKED,
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_IGNORETHREAD,
 			 &ignorethreadxpm, &ignorethreadxpmmask);
 
 	if (!small_style) {

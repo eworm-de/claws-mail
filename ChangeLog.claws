@@ -3,6 +3,7 @@
 	* src/stock_pixmap.[ch]
 	* src/summaryview.c
 		add ignore thread pixmap
+		(can someone draw a better icon for this?)
 
 2001-12-24 [alfons]	0.6.6claws18
 
