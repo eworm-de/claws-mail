@@ -1,12 +1,4 @@
 2002-04-21
-	
-	* src/mimeview.c
-	* src/prefs_common.c
-	* src/prefs_common.h
-	* src/textview.c : Added an option to common preferences -> display
-	  to allow user not to automatically display images.
-
-2002-04-21
 
 	* src/summaryview.c: summary_show(): fixed a bug that didn't process
 	  the left marks.

@@ -1,3 +1,11 @@
+2002-04-21 [colin]	0.7.4claws88
+	
+	* src/mimeview.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/textview.c : Added an option to common preferences -> display
+	  to allow user not to automatically display images.
+
 2002-04-21 [paul]	0.7.4claws87
 
 	* sync with 0.7.4cvs52
