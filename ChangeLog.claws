@@ -1,3 +1,8 @@
+2004-11-29 [colin]	0.9.12cvs176
+
+	* src/folderview.c
+		Fix disappearing separators in folderview's popup
+
 2004-11-29 [colin]	0.9.12cvs175
 
 	* src/procmime.c
