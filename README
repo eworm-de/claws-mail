@@ -54,6 +54,8 @@ Currently implemented features are:
 	o X-Face support
 	o multiple MH folder support
 	o mbox importing / exporting
+	o remote operation by command line
+	o per-folder configuration
 	o external editor support
 	o message queueing
 	o automatic mail checking
@@ -71,7 +73,7 @@ Currently implemented features are:
 	o SSL support (POP3, SMTP, IMAP4rev1)
 	o IPv6 support
 	o drag & drop (partially implemented)
-	o GnuPG support (currently implementing)
+	o GnuPG support (currently in progress)
 	o automake + autoconf support
 	o internationalization of messages by gettext
 	o support of many code sets, including UTF-8 (Unicode) (when using

@@ -1,3 +1,29 @@
+2002-12-26 [paul]	0.8.8claws
+
+	* 0.8.8claws released
+
+2002-12-26 [paul]	0.8.7claws12
+
+	* po/bg.po
+		updated by George Danchev
+
+2002-12-26 [paul]	0.8.7claws11
+
+	* po/POTFILES.in
+		remove unneeded 'src/prefs.c' entry 
+
+2002-12-26 [paul]	0.8.7claws10
+
+	* src/codeconv.c
+	  src/mainwindow.c
+		sync with 0.8.8 release
+	
+	* src/folder.[ch]
+	  src/mh.c
+	  src/summaryview.c
+		partial sync with 0.8.8 release
+	
+
 2002-12-25 [alfons]	0.8.7claws9
 
 	* src/matcher.[ch]

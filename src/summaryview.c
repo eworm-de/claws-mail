@@ -364,22 +364,25 @@ static gint summary_cmp_by_date		(GtkCList		*clist,
 static gint summary_cmp_by_from		(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
-static gint summary_cmp_by_to		(GtkCList		*clist,
-					 gconstpointer		 ptr1, 
-					 gconstpointer		 ptr2);
 static gint summary_cmp_by_subject	(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
 static gint summary_cmp_by_simplified_subject
-	(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2);
+					(GtkCList 		*clist, 
+					 gconstpointer 		 ptr1, 
+					 gconstpointer 		 ptr2);
 static gint summary_cmp_by_score	(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
-static gint summary_cmp_by_locked	(GtkCList *clist,
-				         gconstpointer ptr1, gconstpointer ptr2);
 static gint summary_cmp_by_label	(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
+static gint summary_cmp_by_to		(GtkCList		*clist,
+					 gconstpointer		 ptr1,
+					 gconstpointer		 ptr2);
+static gint summary_cmp_by_locked	(GtkCList 		*clist,
+				         gconstpointer 		 ptr1, 
+					 gconstpointer 		 ptr2);
 
 static void news_flag_crosspost		(MsgInfo *msginfo);
 
@@ -2102,10 +2105,7 @@ void summary_sort(SummaryView *summaryview,
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_date;
 		break;
 	case SORT_BY_FROM:
-		if (summaryview->folder_item && summaryview->folder_item->stype != F_OUTBOX)
-			cmp_func = (GtkCListCompareFunc) summary_cmp_by_from;
-		else			
-			cmp_func = (GtkCListCompareFunc) summary_cmp_by_to;
+		cmp_func = (GtkCListCompareFunc)summary_cmp_by_from;
 		break;
 	case SORT_BY_SUBJECT:
 		if (summaryview->simplify_subject_preg)
@@ -2116,11 +2116,14 @@ void summary_sort(SummaryView *summaryview,
 	case SORT_BY_SCORE:
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_score;
 		break;
-	case SORT_BY_LOCKED:
-		cmp_func = (GtkCListCompareFunc)summary_cmp_by_locked;
-		break;
 	case SORT_BY_LABEL:
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_label;
+		break;
+	case SORT_BY_TO:
+		cmp_func = (GtkCListCompareFunc)summary_cmp_by_to;
+		break;
+	case SORT_BY_LOCKED:
+		cmp_func = (GtkCListCompareFunc)summary_cmp_by_locked;
 		break;
 	case SORT_BY_NONE:
 		cmp_func = NULL;

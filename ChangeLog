@@ -1,3 +1,32 @@
+2002-12-25
+
+	* version 0.8.8
+
+2002-12-25
+
+	* src/codeconv.c: conv_encode_header(): fixed a bug which will run
+	  into infinite loop when encountering invalid characters.
+
+2002-12-25
+
+	* src/procmsg.[ch]: procmsg_sort_msg_list(): new. It sorts message
+	  list.
+	* src/summaryview.c: summary_show(): removed summary_sort() because
+	  it is done inside folder_item_get_msg_list(). This will improve
+	  the performance of summary display.
+	  Sorted out the summary sort functions using macros.
+	* src/mh.c
+	  src/imap.c
+	  src/news.c
+	  src/folder.[ch]: folder_item_get_msg_list(): return pre-sorted
+	  list if FolderItem::sort_key is set.
+	  Added SORT_BY_TO to FolderSortKey enum.
+	* src/mainwindow.c: added "View/Sort/by recipient".
+
+2002-12-20
+
+	* version 0.8.7
+
 2002-12-20
 
 	* src/codeconv.c: conv_encode_header(): fix for redundant space on
