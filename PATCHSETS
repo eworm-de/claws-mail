@@ -17,3 +17,4 @@
 ( cvs diff -u -r 1.121 -r 1.123 src/mimeview.c; ) > 0.9.12cvs28.patchset
 ( cvs diff -u -r 1.105 -r 1.106 src/folder.h; cvs diff -u -r 1.242 -r 1.243 src/folderview.c; cvs diff -u -r 1.438 -r 1.439 src/summaryview.c; ) > 0.9.12cvs29.patchset
 ( cvs diff -u -r 1.439 -r 1.440 src/summaryview.c; ) > 0.9.12cvs30.patchset
+( cvs diff -u -r 1.243 -r 1.244 src/folderview.c; ) > 0.9.12cvs31.patchset
