@@ -84,6 +84,8 @@ struct _PrefsAccount
 	gboolean use_smtp_auth;
 	gboolean pop_before_smtp;
 
+	GSList *customhdr_list;
+
 	/* Compose */
 	gchar *sig_path;
 

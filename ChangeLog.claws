@@ -1,5 +1,14 @@
 2001-04-24
 	* added comments in src/news.c src/nntp.c
+	* added src/prefs_headers.[ch]
+	* added src/headers.[ch]
+	* modified compose.c to activate custom headers
+		added function is_in_custom_headers
+	* modified prefs_account.[ch]
+		added function prefs_account_customhdr_edit
+	* modified src/defs.h :
+		added HEADERS_RC : name of the config file
+		for the custom headers
 
 2001-04-24
 

@@ -97,6 +97,7 @@
 #include "gtkshruler.h"
 #include "folder.h"
 #include "addr_compl.h"
+#include "headers.h"
 
 #if USE_GPGME
 #  include "rfc2015.h"
@@ -1857,6 +1858,21 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 	fprintf(fp, "\n--%s--\n", compose->boundary);
 }
 
+static gint is_in_custom_headers(Compose *compose, gchar * header)
+{
+	GSList * cur;
+
+	if (compose->account->add_customhdr) {
+		for (cur = compose->account->customhdr_list;
+		     cur != NULL; cur = cur->next) {
+			CustomHeader * ch = (CustomHeader *) cur->data;
+			if (strcasecmp(ch->name, header) == 0)
+				return 1;
+		}
+	}
+	return 0;
+}
+
 static gint compose_write_headers(Compose *compose, FILE *fp,
 				  const gchar *charset, EncodingType encoding,
 				  gboolean is_draft)
@@ -1864,6 +1880,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	gchar buf[BUFFSIZE];
 	gchar *str;
 	/* struct utsname utsbuf; */
+	GSList * cur;
 
 	g_return_val_if_fail(fp != NULL, -1);
 	g_return_val_if_fail(charset != NULL, -1);
@@ -1871,19 +1888,23 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	g_return_val_if_fail(compose->account->address != NULL, -1);
 
 	/* Date */
-	if (compose->account->add_date) {
-		get_rfc822_date(buf, sizeof(buf));
-		fprintf(fp, "Date: %s\n", buf);
+	if (!is_in_custom_headers(compose, "Date")) {
+		if (compose->account->add_date) {
+			get_rfc822_date(buf, sizeof(buf));
+			fprintf(fp, "Date: %s\n", buf);
+		}
 	}
 
 	/* From */
-	if (compose->account->name && *compose->account->name) {
-		compose_convert_header
-			(buf, sizeof(buf), compose->account->name,
-			 strlen("From: "));
-		fprintf(fp, "From: %s <%s>\n", buf, compose->account->address);
-	} else
-		fprintf(fp, "From: %s\n", compose->account->address);
+	if (!is_in_custom_headers(compose, "From")) {
+		if (compose->account->name && *compose->account->name) {
+			compose_convert_header
+				(buf, sizeof(buf), compose->account->name,
+				 strlen("From: "));
+			fprintf(fp, "From: %s <%s>\n", buf, compose->account->address);
+		} else
+			fprintf(fp, "From: %s\n", compose->account->address);
+	}
 
 	slist_free_strings(compose->to_list);
 	g_slist_free(compose->to_list);
@@ -1900,7 +1921,9 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 					(compose->to_list, str);
 				compose_convert_header(buf, sizeof(buf), str,
 						       strlen("To: "));
-				fprintf(fp, "To: %s\n", buf);
+				if (!is_in_custom_headers(compose, "To")) {
+					fprintf(fp, "To: %s\n", buf);
+				}
 			}
 		}
 	}
@@ -1921,7 +1944,9 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 						      str);
 			compose_convert_header(buf, sizeof(buf), str,
 					       strlen("Newsgroups: "));
-			fprintf(fp, "Newsgroups: %s\n", buf);
+			if (!is_in_custom_headers(compose, "Newsgroups")) {
+				fprintf(fp, "Newsgroups: %s\n", buf);
+			}
 		}
 	}
 
@@ -1939,7 +1964,9 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 					(compose->to_list, str);
 				compose_convert_header(buf, sizeof(buf), str,
 						       strlen("Cc: "));
-				fprintf(fp, "Cc: %s\n", buf);
+				if (!is_in_custom_headers(compose, "Cc")) {
+					fprintf(fp, "Cc: %s\n", buf);
+				}
 			}
 		}
 	}
@@ -1957,110 +1984,151 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 					compose_convert_header
 						(buf, sizeof(buf), str,
 						 strlen("Bcc: "));
-					fprintf(fp, "Bcc: %s\n", buf);
+					if (!is_in_custom_headers(compose,
+								  "Bcc")) {
+						fprintf(fp, "Bcc: %s\n", buf);
+					}
 				}
 			}
 		}
 	}
 
 	/* Subject */
-	str = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
-	if (*str != '\0') {
-		Xstrdup_a(str, str, return -1);
-		g_strstrip(str);
+	if (!is_in_custom_headers(compose, "Subject")) {
+		str = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
 		if (*str != '\0') {
-			compose_convert_header(buf, sizeof(buf), str,
-					       strlen("Subject: "));
-			fprintf(fp, "Subject: %s\n", buf);
+			Xstrdup_a(str, str, return -1);
+			g_strstrip(str);
+			if (*str != '\0') {
+				compose_convert_header(buf, sizeof(buf), str,
+						       strlen("Subject: "));
+				fprintf(fp, "Subject: %s\n", buf);
+			}
 		}
 	}
 
 	/* Message-ID */
-	if (compose->account->gen_msgid) {
-		compose_generate_msgid(compose, buf, sizeof(buf));
-		fprintf(fp, "Message-Id: <%s>\n", buf);
-		compose->msgid = g_strdup(buf);
+	if (!is_in_custom_headers(compose, "Message-Id")) {
+		if (compose->account->gen_msgid) {
+			compose_generate_msgid(compose, buf, sizeof(buf));
+			fprintf(fp, "Message-Id: <%s>\n", buf);
+			compose->msgid = g_strdup(buf);
+		}
 	}
 
 	/* In-Reply-To */
-	if (compose->inreplyto && compose->to_list)
-		fprintf(fp, "In-Reply-To: <%s>\n", compose->inreplyto);
+	if (!is_in_custom_headers(compose, "In-Reply-To")) {
+		if (compose->inreplyto && compose->to_list)
+			fprintf(fp, "In-Reply-To: <%s>\n", compose->inreplyto);
+	}
 
 	/* References */
-	if (compose->references)
-		fprintf(fp, "References: %s\n", compose->references);
+	if (!is_in_custom_headers(compose, "References")) {
+		if (compose->references)
+			fprintf(fp, "References: %s\n", compose->references);
+	}
 
 	/* Followup-To */
-	if (compose->use_followupto) {
-		str = gtk_entry_get_text(GTK_ENTRY(compose->followup_entry));
-		if (*str != '\0') {
-			Xstrdup_a(str, str, return -1);
-			g_strstrip(str);
-			remove_space(str);
+	if (!is_in_custom_headers(compose, "Followup-To")) {
+		if (compose->use_followupto) {
+			str = gtk_entry_get_text(GTK_ENTRY(compose->followup_entry));
 			if (*str != '\0') {
-				compose_convert_header(buf, sizeof(buf), str,
-						       strlen("Followup-To: "));
-				fprintf(fp, "Followup-To: %s\n", buf);
+				Xstrdup_a(str, str, return -1);
+				g_strstrip(str);
+				remove_space(str);
+				if (*str != '\0') {
+					compose_convert_header(buf, sizeof(buf), str,
+							       strlen("Followup-To: "));
+					fprintf(fp, "Followup-To: %s\n", buf);
+				}
 			}
 		}
 	}
 
 	/* Reply-To */
-	if (compose->use_replyto) {
-		str = gtk_entry_get_text(GTK_ENTRY(compose->reply_entry));
-		if (*str != '\0') {
-			Xstrdup_a(str, str, return -1);
-			g_strstrip(str);
+	if (!is_in_custom_headers(compose, "Reply-To")) {
+		if (compose->use_replyto) {
+			str = gtk_entry_get_text(GTK_ENTRY(compose->reply_entry));
 			if (*str != '\0') {
-				compose_convert_header(buf, sizeof(buf), str,
-						       strlen("Reply-To: "));
-				fprintf(fp, "Reply-To: %s\n", buf);
+				Xstrdup_a(str, str, return -1);
+				g_strstrip(str);
+				if (*str != '\0') {
+					compose_convert_header(buf, sizeof(buf), str,
+							       strlen("Reply-To: "));
+					fprintf(fp, "Reply-To: %s\n", buf);
+				}
 			}
 		}
 	}
 
 	/* Program version and system info */
 	/* uname(&utsbuf); */
-	str = gtk_entry_get_text(GTK_ENTRY(compose->to_entry));
-	if (*str != '\0') {
-		fprintf(fp, "X-Mailer: %s (GTK+ %d.%d.%d; %s)\n",
-			prog_version,
-			gtk_major_version, gtk_minor_version, gtk_micro_version,
-			HOST_ALIAS);
+	if (!is_in_custom_headers(compose, "X-Mailer")) {
+		str = gtk_entry_get_text(GTK_ENTRY(compose->to_entry));
+		if (*str != '\0') {
+			fprintf(fp, "X-Mailer: %s (GTK+ %d.%d.%d; %s)\n",
+				prog_version,
+				gtk_major_version, gtk_minor_version, gtk_micro_version,
+				HOST_ALIAS);
 			/* utsbuf.sysname, utsbuf.release, utsbuf.machine); */
+		}
 	}
-	str = gtk_entry_get_text(GTK_ENTRY(compose->newsgroups_entry));
-	if (*str != '\0') {
+
+	if (!is_in_custom_headers(compose, "X-Newsreader")) {
+		str = gtk_entry_get_text(GTK_ENTRY(compose->newsgroups_entry));
+		if (*str != '\0') {
 		fprintf(fp, "X-Newsreader: %s (GTK+ %d.%d.%d; %s)\n",
 			prog_version,
 			gtk_major_version, gtk_minor_version, gtk_micro_version,
 			HOST_ALIAS);
 			/* utsbuf.sysname, utsbuf.release, utsbuf.machine); */
+		}
 	}
 
 	/* Organization */
-	if (compose->account->organization) {
-		compose_convert_header(buf, sizeof(buf),
-				       compose->account->organization,
-				       strlen("Organization: "));
-		fprintf(fp, "Organization: %s\n", buf);
+	if (!is_in_custom_headers(compose, "Organization")) {
+		if (compose->account->organization) {
+			compose_convert_header(buf, sizeof(buf),
+					       compose->account->organization,
+					       strlen("Organization: "));
+			fprintf(fp, "Organization: %s\n", buf);
+		}
 	}
 
 	/* MIME */
-	fprintf(fp, "Mime-Version: 1.0\n");
+	if (!is_in_custom_headers(compose, "Mime-Version")) {
+		fprintf(fp, "Mime-Version: 1.0\n");
+	}
+
 	if (compose->use_attach) {
 		get_rfc822_date(buf, sizeof(buf));
 		subst_char(buf, ' ', '_');
 		subst_char(buf, ',', '_');
 		compose->boundary = g_strdup_printf("Multipart_%s_%08x",
 						    buf, (guint)compose);
-		fprintf(fp,
-			"Content-Type: multipart/mixed;\n"
-			" boundary=\"%s\"\n", compose->boundary);
+		if (!is_in_custom_headers(compose, "Content-Type")) {
+			fprintf(fp,
+				"Content-Type: multipart/mixed;\n"
+				" boundary=\"%s\"\n", compose->boundary);
+		}
 	} else {
-		fprintf(fp, "Content-Type: text/plain; charset=%s\n", charset);
-		fprintf(fp, "Content-Transfer-Encoding: %s\n",
-			procmime_get_encoding_str(encoding));
+		if (!is_in_custom_headers(compose, "Content-Type")) {
+			fprintf(fp, "Content-Type: text/plain; charset=%s\n", charset);
+		}
+		if (!is_in_custom_headers(compose,
+					  "Content-Transfer-Encoding")) {
+			fprintf(fp, "Content-Transfer-Encoding: %s\n",
+				procmime_get_encoding_str(encoding));
+		}
+	}
+
+	/* Custom Headers */
+	if (compose->account->add_customhdr) {
+		for (cur = compose->account->customhdr_list; cur != NULL;
+		     cur = cur->next) {
+			CustomHeader * ch = (CustomHeader *) cur->data;
+			fprintf(fp, "%s: %s\n", ch->name, ch->value);
+		}
 	}
 
 	/* separator between header and body */

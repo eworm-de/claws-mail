@@ -297,6 +297,8 @@ static void prefs_account_ok			(void);
 static gint prefs_account_apply			(void);
 static void prefs_account_cancel		(void);
 
+static void prefs_account_customhdr_edit	(void);
+
 #define VSPACING		12
 #define VSPACING_NARROW		4
 #define BOX_BORDER		16
@@ -317,6 +319,8 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 	id = atoi(p);
 	if (id < 0) g_warning("wrong account id: %d\n", id);
 	ac_prefs->account_id = id;
+
+	prefs_headers_read_config(ac_prefs);
 }
 
 void prefs_account_save_config(PrefsAccount *ac_prefs)
@@ -819,7 +823,7 @@ static void prefs_account_send_create(void)
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 
-	gtk_widget_set_sensitive(hbox, FALSE);
+	//	gtk_widget_set_sensitive(hbox, FALSE);
 
 	PACK_CHECK_BUTTON (hbox, customhdr_chkbtn,
 			   _("Add user-defined header"));
@@ -891,6 +895,10 @@ static void prefs_account_send_create(void)
 	PACK_CHECK_BUTTON (vbox3, pop_bfr_smtp_chkbtn,
 		_("Authenticate with POP3 before sending"));
 	gtk_widget_set_sensitive(pop_bfr_smtp_chkbtn, FALSE);
+
+	gtk_signal_connect(GTK_OBJECT(customhdr_edit_btn), "clicked",
+			   GTK_SIGNAL_FUNC(prefs_account_customhdr_edit),
+			   NULL);
 
 	send.date_chkbtn      = date_chkbtn;
 	send.msgid_chkbtn     = msgid_chkbtn;
@@ -1140,6 +1148,11 @@ static void prefs_account_cancel(void)
 {
 	cancelled = TRUE;
 	gtk_main_quit();
+}
+
+static void prefs_account_customhdr_edit(void)
+{
+	prefs_headers_open(&tmp_ac_prefs);
 }
 
 #if USE_GPGME
