@@ -162,3 +162,4 @@
 ( cvs diff -u -r 1.16 -r 1.17 src/gtk/prefswindow.c; cvs diff -u -r 1.8 -r 1.9 src/gtk/pluginwindow.c; ) > 0.9.12cvs177.patchset
 ( cvs diff -u -r 1.458 -r 1.459 src/compose.c; ) > 0.9.12cvs178.patchset
 ( cvs diff -u -r 1.459 -r 1.460 src/compose.c; ) > 0.9.12cvs179.patchset
+( cvs diff -u -r 1.447 -r 1.448 ChangeLog; cvs diff -u -r 1.442 -r 1.443 ChangeLog.jp; cvs diff -u -r 1.189 -r 1.190 src/Makefile.am; cvs diff -u -r 1.71 -r 1.72 src/pop.c; cvs diff -u -r 1.59 -r 1.60 src/common/utils.c; cvs diff -u -r 1.35 -r 1.36 src/common/utils.h; cvs diff -u -r -1.1.1.1 -r -1.1.1.2 src/pixmaps/folder.xpm; ) > 0.9.12cvs180.patchset
