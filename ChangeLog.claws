@@ -1,4 +1,4 @@
-2002-12-14 [christoph]	0.8.6vlaws114
+2002-12-14 [christoph]	0.8.6claws114
 
 	* src/imap.c
 		o don't create a session if imap greeting fails
