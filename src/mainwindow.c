@@ -112,6 +112,10 @@ static void toolbar_send_cb		(GtkWidget	*widget,
 
 static void toolbar_compose_cb		(GtkWidget	*widget,
 					 gpointer	 data);
+static void toolbar_popup_compose_type_cb(GtkWidget	*widget,
+					 gpointer	 data);
+static void toolbar_popup_compose_type_set(GtkWidget	*widget,
+					 gpointer	 data);
 static void toolbar_compose_news_cb		(GtkWidget	*widget,
 					 gpointer	 data);
 static void toolbar_compose_mail_cb		(GtkWidget	*widget,
@@ -355,6 +359,9 @@ static void manual_open_cb	 (MainWindow	*mainwin,
 static void scan_tree_func	 (Folder	*folder,
 				  FolderItem	*item,
 				  gpointer	 data);
+				  
+static void activate_compose_button (MainWindow *mainwin,
+				ComposeButtonType type);
 
 #define  SEPARATE_ACTION  667
 
@@ -798,6 +805,17 @@ MainWindow *main_window_create(SeparateType type)
 	messageview_init(messageview);
 	header_window_init(mainwin->headerwin);
 	log_window_init(mainwin->logwin);
+
+	{
+		GtkStyle *newstyle;
+
+		gtk_widget_ensure_style(folderview->ctree);
+		newstyle = gtk_widget_get_style(folderview->ctree);
+		newstyle = gtk_style_copy(newstyle);
+		gtk_widget_set_style(summaryview->ctree, newstyle);
+		gtk_widget_ensure_style(summaryview->ctree);
+		gtk_widget_realize(summaryview->ctree);
+	}
 
 	mainwin->cursor_count = 0;
 
@@ -1442,7 +1460,8 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	GtkWidget *icon_wid;
 	GtkWidget *get_btn;
 	GtkWidget *getall_btn;
-	GtkWidget *compose_btn;
+	GtkWidget *compose_mail_btn;
+	GtkWidget *compose_news_btn;
 	GtkWidget *reply_btn;
 	GtkWidget *replyall_btn;
 	GtkWidget *replysender_btn;
@@ -1455,6 +1474,11 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	GtkWidget *next_btn;
 	GtkWidget *delete_btn;
 	GtkWidget *exec_btn;
+
+	GtkWidget *compose_type_btn;
+	GtkWidget *compose_type_arrow;
+	GtkWidget *compose_box;
+	GtkWidget *compose_label;
 
 	toolbar = gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL,
 				  GTK_TOOLBAR_BOTH);
@@ -1490,24 +1514,77 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 					   toolbar_send_cb,
 					   mainwin);
 
-	gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
+	/* insert compose mail button widget */					   
 
+	compose_mail_btn = gtk_button_new();
+	gtk_widget_show(compose_mail_btn);
+
+	compose_box = gtk_vbox_new(0, 0);
+	gtk_widget_show(compose_box);
+	
+	gtk_container_add(GTK_CONTAINER(compose_mail_btn), compose_box);
 	CREATE_TOOLBAR_ICON(stock_mail_compose_xpm);
-	compose_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-					      _("Compose email"),
-					      _("Compose an email message"),
-					      "New",
-					      icon_wid,
-					      toolbar_compose_mail_cb,
-					      mainwin);
+	gtk_box_pack_start(GTK_BOX(compose_box), icon_wid, FALSE, FALSE, 0);
+
+	compose_label = gtk_label_new(_("Compose email"));
+	gtk_widget_show(compose_label);
+	gtk_box_pack_start(GTK_BOX(compose_box), compose_label, FALSE, FALSE, 0);
+	
+	GTK_WIDGET_UNSET_FLAGS(GTK_WIDGET(compose_mail_btn), GTK_CAN_FOCUS);
+	gtk_button_set_relief(GTK_BUTTON(compose_mail_btn), GTK_RELIEF_NONE);
+	gtk_toolbar_append_widget(GTK_TOOLBAR(toolbar), compose_mail_btn,
+		NULL, NULL);
+
+	/* insert compose news button widget */
+
+	compose_news_btn = gtk_button_new();
+	gtk_widget_show(compose_news_btn);
+
+	compose_box = gtk_vbox_new(0, 0);
+	gtk_widget_show(compose_box);
+	
+	gtk_container_add(GTK_CONTAINER(compose_news_btn), compose_box);
 	CREATE_TOOLBAR_ICON(stock_news_compose_xpm);
-	compose_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
+	gtk_box_pack_start(GTK_BOX(compose_box), icon_wid, FALSE, FALSE, 0);
+
+	compose_label = gtk_label_new(_("Compose news"));
+	gtk_widget_show(compose_label);
+	gtk_box_pack_start(GTK_BOX(compose_box), compose_label, FALSE, FALSE, 0);
+	
+	GTK_WIDGET_UNSET_FLAGS(GTK_WIDGET(compose_news_btn), GTK_CAN_FOCUS);
+	gtk_button_set_relief(GTK_BUTTON(compose_news_btn), GTK_RELIEF_NONE);
+	gtk_toolbar_append_widget(GTK_TOOLBAR(toolbar), compose_news_btn,
+		NULL, NULL);
+
+	/* insert compose button type widget */
+	
+	compose_type_btn = gtk_button_new();
+	gtk_widget_show(compose_type_btn);
+	
+	compose_type_arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
+	gtk_widget_show(compose_type_arrow);
+	
+	gtk_container_add(GTK_CONTAINER(compose_type_btn), compose_type_arrow);
+
+	GTK_WIDGET_UNSET_FLAGS(GTK_WIDGET(compose_type_btn), GTK_CAN_FOCUS);
+	gtk_button_set_relief(GTK_BUTTON(compose_type_btn), GTK_RELIEF_NONE);
+
+	gtk_toolbar_append_widget(GTK_TOOLBAR(toolbar), compose_type_btn,
+		NULL, NULL);
+
+#if 0
+	CREATE_TOOLBAR_ICON(stock_news_compose_xpm);
+	compose_news_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					      _("Compose news"),
 					      _("Compose a news message"),
 					      "New",
 					      icon_wid,
 					      toolbar_compose_news_cb,
 					      mainwin);
+#endif						  
+
+	gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
+	
 	CREATE_TOOLBAR_ICON(stock_mail_reply_xpm);
 	reply_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					    _("Reply"),
@@ -1518,7 +1595,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 					    mainwin);
 	CREATE_TOOLBAR_ICON(stock_mail_reply_to_all_xpm);
 	replyall_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-					       _("Reply all"),
+					       _("All"),
 					       _("Reply to all"),
 					       "Reply to all",
 					       icon_wid,
@@ -1526,7 +1603,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 					       mainwin);
 	CREATE_TOOLBAR_ICON(stock_mail_reply_to_author_xpm);
 	replysender_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-						  _("Reply sender"),
+						  _("Sender"),
 						  _("Reply to sender"),
 						  "Reply to sender",
 						  icon_wid,
@@ -1594,10 +1671,19 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 			   mainwin);
 	*/
 
+	gtk_signal_connect(GTK_OBJECT(compose_type_btn), "clicked",
+		GTK_SIGNAL_FUNC(toolbar_popup_compose_type_cb),
+		mainwin);
+
+	gtk_signal_connect(GTK_OBJECT(compose_mail_btn), "clicked",
+		GTK_SIGNAL_FUNC(toolbar_compose_cb),
+		mainwin);
+	
 	mainwin->toolbar         = toolbar;
 	mainwin->get_btn         = get_btn;
 	mainwin->getall_btn      = getall_btn;
-	mainwin->compose_btn     = compose_btn;
+	mainwin->compose_mail_btn = compose_mail_btn;
+	mainwin->compose_news_btn = compose_news_btn;
 	mainwin->reply_btn       = reply_btn;
 	mainwin->replyall_btn    = replyall_btn;
 	mainwin->replysender_btn = replysender_btn;
@@ -1612,9 +1698,51 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	mainwin->exec_btn        = exec_btn;
 
 	gtk_widget_show_all(toolbar);
+
+	activate_compose_button(mainwin, COMPOSEBUTTON_MAIL);
 }
 
 /* callback functions */
+
+static void toolbar_popup_compose_type_cb	(GtkWidget	*widget,
+				 gpointer data)
+{
+	MainWindow *mainwindow = (MainWindow *) data;
+	GtkWidget *compose_menu, *compose_item;
+
+	g_return_if_fail(mainwindow != NULL);
+	
+	compose_menu = gtk_menu_new();
+	
+	compose_item = gtk_menu_item_new_with_label(_("E-Mail message"));
+	gtk_widget_show(compose_item);
+	gtk_menu_append(GTK_MENU(compose_menu), compose_item);
+	gtk_signal_connect(GTK_OBJECT(compose_item), "activate",
+		GTK_SIGNAL_FUNC(toolbar_popup_compose_type_set),
+		mainwindow);
+	gtk_object_set_data(GTK_OBJECT(compose_item), "entry", GINT_TO_POINTER(COMPOSEBUTTON_MAIL));		
+	
+	compose_item = gtk_menu_item_new_with_label(_("News article"));
+	gtk_widget_show(compose_item);
+	gtk_menu_append(GTK_MENU(compose_menu), compose_item);
+	gtk_signal_connect(GTK_OBJECT(compose_item), "activate",
+		GTK_SIGNAL_FUNC(toolbar_popup_compose_type_set),
+		mainwindow);
+	gtk_object_set_data(GTK_OBJECT(compose_item), "entry", GINT_TO_POINTER(COMPOSEBUTTON_NEWS));		
+		
+	gtk_menu_popup(GTK_MENU(compose_menu), NULL, NULL, NULL,
+		NULL, 1, 0);
+}
+
+static void toolbar_popup_compose_type_set(GtkWidget *widget, gpointer data)
+{
+	ComposeButtonType compose_type = GPOINTER_TO_INT( gtk_object_get_data(GTK_OBJECT(widget), "entry") );
+	MainWindow *mainwindow = (MainWindow *) data;
+
+	mainwindow->compose_btn_type = compose_type;
+
+	activate_compose_button(mainwindow, mainwindow->compose_btn_type);
+}	
 
 static void toolbar_inc_cb	(GtkWidget	*widget,
 				 gpointer	 data)
@@ -1645,7 +1773,10 @@ static void toolbar_compose_cb	(GtkWidget	*widget,
 {
 	MainWindow *mainwin = (MainWindow *)data;
 
-	compose_cb(mainwin, 0, NULL);
+	if (mainwin->compose_btn_type == COMPOSEBUTTON_MAIL)
+		compose_cb(mainwin, 0, NULL);
+	else
+		compose_news_cb(mainwin, 0, NULL);
 }
 
 static void toolbar_compose_news_cb	(GtkWidget	*widget,
@@ -2401,3 +2532,14 @@ static void scan_tree_func(Folder *folder, FolderItem *item, gpointer data)
 	STATUSBAR_POP(mainwin);
 	g_free(str);
 }
+
+static void activate_compose_button (MainWindow *mainwin,
+				ComposeButtonType type)
+{
+	gtk_widget_hide(type == COMPOSEBUTTON_NEWS ? mainwin->compose_mail_btn 
+		: mainwin->compose_news_btn);
+	gtk_widget_show(type == COMPOSEBUTTON_NEWS ? mainwin->compose_news_btn
+		: mainwin->compose_mail_btn);
+	mainwin->compose_btn_type = type;		
+}
+

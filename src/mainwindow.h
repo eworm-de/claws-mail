@@ -47,6 +47,12 @@ typedef enum
 	TOOLBAR_BOTH	= 3
 } ToolbarStyle;
 
+typedef enum 
+{
+	COMPOSEBUTTON_MAIL,
+	COMPOSEBUTTON_NEWS
+} ComposeButtonType;
+
 struct _MainWindow
 {
 	SeparateType type;
@@ -80,7 +86,12 @@ struct _MainWindow
 	GtkWidget *toolbar;
 	GtkWidget *get_btn;
 	GtkWidget *getall_btn;
-	GtkWidget *compose_btn;
+
+	/* compose button stuff */
+	GtkWidget *compose_mail_btn;
+	GtkWidget *compose_news_btn;
+	ComposeButtonType compose_btn_type;
+	
 	GtkWidget *reply_btn;
 	GtkWidget *replyall_btn;
 	GtkWidget *replysender_btn;
