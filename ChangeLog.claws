@@ -1,3 +1,13 @@
+2002-01-26 [melvin]	0.7.0claws30
+
+	* src/folderview.c
+	* src/summaryview.c
+		Readded 'Mark all read' into summary view popup menu
+		Added 'Mark all read' in folder view popup menu for IMAP
+		and NNTP.
+		Made it insensitive if the selected folder is not the shown
+		one to avoid 'Mark all read' on the wrong folder.
+		
 2002-01-26 [paul]	0.7.0claws29
 
 	* src/folderview.c

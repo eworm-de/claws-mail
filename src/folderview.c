@@ -271,6 +271,8 @@ static GtkItemFactoryEntry folderview_mail_popup_entries[] =
 
 static GtkItemFactoryEntry folderview_imap_popup_entries[] =
 {
+	{N_("/Mark all _read"),		NULL, mark_all_read_cb, 0, NULL},
+	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/Create _new folder..."),	NULL, folderview_new_imap_folder_cb, 0, NULL},
 	{N_("/_Rename folder..."),	NULL, NULL, 0, NULL},
 	{N_("/_Delete folder"),		NULL, folderview_rm_imap_folder_cb, 0, NULL},
@@ -289,6 +291,8 @@ static GtkItemFactoryEntry folderview_imap_popup_entries[] =
 
 static GtkItemFactoryEntry folderview_news_popup_entries[] =
 {
+	{N_("/Mark all _read"),		NULL, mark_all_read_cb, 0, NULL},
+	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Subscribe to newsgroup..."),
 					 NULL, folderview_new_news_group_cb, 0, NULL},
 	{N_("/_Remove newsgroup"),	 NULL, folderview_rm_news_group_cb, 0, NULL},
@@ -579,8 +583,8 @@ void folderview_select(FolderView *folderview, FolderItem *item)
 static void mark_all_read_cb(FolderView *folderview, guint action,
                              GtkWidget *widget)
 {
-	if (!folderview->selected) return;
-       	summary_mark_all_read(folderview->summaryview);
+	if (folderview->selected)
+		summary_mark_all_read(folderview->summaryview);
 }
 
 static void folderview_select_node(FolderView *folderview, GtkCTreeNode *node)
@@ -1398,6 +1402,9 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 
 #define SET_SENS(factory, name, sens) \
 	menu_set_sensitive(folderview->factory, name, sens)
+	
+	mark_all_read = mark_all_read && 
+			(item == folderview->summaryview->folder_item);
 
 	if (FOLDER_IS_LOCAL(folder)) {
 		popup = folderview->mail_popup;
@@ -1416,6 +1423,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	} else if (FOLDER_TYPE(folder) == F_IMAP) {
 		popup = folderview->imap_popup;
 		menu_set_insensitive_all(GTK_MENU_SHELL(popup));
+		SET_SENS(imap_factory, "/Mark all read", mark_all_read);
 		SET_SENS(imap_factory, "/Create new folder...", new_folder);
 		SET_SENS(imap_factory, "/Rename folder...", rename_folder);
 		SET_SENS(imap_factory, "/Delete folder", delete_folder);
@@ -1428,6 +1436,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	} else if (FOLDER_TYPE(folder) == F_NEWS) {
 		popup = folderview->news_popup;
 		menu_set_insensitive_all(GTK_MENU_SHELL(popup));
+		SET_SENS(news_factory, "/Mark all read", mark_all_read);
 		SET_SENS(news_factory, "/Subscribe to newsgroup...", new_folder);
 		SET_SENS(news_factory, "/Remove newsgroup", delete_folder);
 #if 0
