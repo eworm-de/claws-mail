@@ -1,3 +1,10 @@
+2002-09-10 [thorsten]	0.8.2claws30-1
+
+	* src/compose.c
+		add: pipes for signatures
+	* src/quote_fmt_parse.y
+		add: pipes for templates
+
 2002-08-24 [thorsten]	0.8.1claws112-1
 
 	* src/compose.c

@@ -1932,11 +1932,23 @@ static void compose_exec_sig(Compose *compose, gchar *sigfile)
 	FILE  *sigprg;
 	gchar  *buf;
 	size_t buf_len = 128;
+#ifdef WIN32
+	gint retval;
+	gchar *tmp;
+	gchar *cmd;
+#endif			
  
 	if (strlen(sigfile) < 2)
 	  return;
  
+#ifdef WIN32
+	tmp = get_tmp_file();
+	cmd = g_strdup_printf("%s > %s",sigfile+1,tmp);
+	retval = system(cmd);
+	sigprg = fopen(tmp, "r");
+#else
 	sigprg = popen(sigfile+1, "r");
+#endif
 	if (sigprg) {
 
 		buf = g_malloc(buf_len);
@@ -1945,7 +1957,14 @@ static void compose_exec_sig(Compose *compose, gchar *sigfile)
 			gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, \
 			"Unable to insert signature (malloc failed)\n", -1);
 
+#ifdef WIN32
+			fclose(sigprg);
+			unlink(tmp);
+			g_free(tmp);
+			g_free(cmd);
+#else
 			pclose(sigprg);
+#endif
 			return;
 		}
 
@@ -1960,7 +1979,14 @@ static void compose_exec_sig(Compose *compose, gchar *sigfile)
 		}
 
 		g_free(buf);
+#ifdef WIN32
+		fclose(sigprg);
+		unlink(tmp);
+		g_free(tmp);
+		g_free(cmd);
+#else
 		pclose(sigprg);
+#endif
 	}
 	else
 	{
@@ -1968,6 +1994,11 @@ static void compose_exec_sig(Compose *compose, gchar *sigfile)
 		"Can't exec file: ", -1);
 		gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, \
 		sigfile+1, -1);
+#ifdef WIN32
+		unlink(tmp);
+		g_free(tmp);
+		g_free(cmd);
+#endif
 	}
 }
 
