@@ -1,3 +1,12 @@
+2002-09-29 [christoph]	0.8.3claws35
+
+	* acconfig.h	** REMOVED **
+	* configure.in
+	* ac/aspell.m4
+	* ac/check-type.m4
+	* ac/gnupg-check-typedef.m4
+		fix autoheader 2.50 warning
+
 2002-09-29 [christoph]	0.8.3claws34
 
 	* major code cleanup (part 2)
