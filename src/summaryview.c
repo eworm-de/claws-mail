@@ -4754,10 +4754,7 @@ static void summary_col_resized(GtkCList *clist, gint column, gint width,
 static void summary_reply_cb(SummaryView *summaryview, guint action,
 			     GtkWidget *widget)
 {
-	ToolbarItem *item;
-	item->parent = summaryview;
-	item->type = TOOLBAR_MAIN;
-	toolbar_reply(item, action);
+	toolbar_menu_reply(TOOLBAR_MAIN, summaryview->mainwin, action);
 }
 
 static void summary_execute_cb(SummaryView *summaryview, guint action,
