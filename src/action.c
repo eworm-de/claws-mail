@@ -1207,7 +1207,7 @@ static void create_io_dialog(Children *children)
 			gtk_entry_set_visibility(GTK_ENTRY(entry), FALSE);
 		gtk_widget_show(entry);
 
-		send_button = gtk_button_new_with_label(_(" Send "));
+		send_button = gtk_button_new_from_stock(GTK_STOCK_EXECUTE);
 		g_signal_connect(G_OBJECT(send_button), "clicked",
 				 G_CALLBACK(send_input), children);
 		gtk_box_pack_start(GTK_BOX(input_hbox), send_button, FALSE,
@@ -1233,8 +1233,8 @@ static void create_io_dialog(Children *children)
 		gtk_widget_show(progress_bar);
 	}
 
-	gtkut_button_set_create(&hbox, &abort_button, _("Abort"),
-				&close_button, _("Close"), NULL, NULL);
+	gtkut_button_set_create_stock(&hbox, &abort_button, GTK_STOCK_STOP,
+				      &close_button, GTK_STOCK_CLOSE, NULL, NULL);
 	g_signal_connect(G_OBJECT(abort_button), "clicked",
 			 G_CALLBACK(kill_children_cb), children);
 	g_signal_connect(G_OBJECT(close_button), "clicked",

@@ -157,6 +157,20 @@ static void account_double_clicked		(GtkTreeView		*list_view,
 						 GtkTreePath		*path,
 						 GtkTreeViewColumn	*column,
 						 gpointer		 data);
+						 
+static void drag_begin				(GtkTreeView *list_view,
+						 GdkDragContext *context,
+						 gpointer data);
+
+static void drag_end				(GtkTreeView *list_view,
+						 GdkDragContext *context,
+						 gpointer data);
+		      
+static void account_row_changed_while_drag_drop	(GtkTreeModel *model, 
+						 GtkTreePath  *path,
+						 GtkTreeIter  *iter,
+						 gpointer      arg3,
+						 GtkTreeView  *list_view);
 
 void account_read_config_all(void)
 {
@@ -647,37 +661,37 @@ static void account_edit_create(void)
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, FALSE, 0);
 
-	add_btn = gtk_button_new_with_label (_("Add"));
+	add_btn = gtk_button_new_from_stock(GTK_STOCK_ADD);
 	gtk_widget_show (add_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), add_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(add_btn), "clicked",
 			  G_CALLBACK (account_add), NULL);
 
-	edit_btn = gtk_button_new_with_label (_("Edit"));
+	edit_btn = gtk_button_new_from_stock(GTK_STOCK_PROPERTIES);
 	gtk_widget_show (edit_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), edit_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(edit_btn), "clicked",
 			  G_CALLBACK (account_edit_prefs), NULL);
 
-	del_btn = gtk_button_new_with_label (_(" Delete "));
+	del_btn = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), del_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(del_btn), "clicked",
 			  G_CALLBACK (account_delete), NULL);
 
-	clone_btn = gtk_button_new_with_label (_(" Clone "));
+	clone_btn = gtk_button_new_from_stock(GTK_STOCK_COPY);
 	gtk_widget_show (clone_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), clone_btn, FALSE, FALSE, 4);
 	g_signal_connect(G_OBJECT(clone_btn), "clicked",
 			 G_CALLBACK(account_clone), NULL);
 	
-	down_btn = gtk_button_new_with_label (_("Down"));
+	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
 	gtk_widget_show (down_btn);
 	gtk_box_pack_end (GTK_BOX (vbox2), down_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(down_btn), "clicked",
 			  G_CALLBACK (account_down), NULL);
 
-	up_btn = gtk_button_new_with_label (_("Up"));
+	up_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
 	gtk_widget_show (up_btn);
 	gtk_box_pack_end (GTK_BOX (vbox2), up_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(up_btn), "clicked",
@@ -697,9 +711,14 @@ static void account_edit_create(void)
 	g_signal_connect (G_OBJECT(default_btn), "clicked",
 			  G_CALLBACK (account_set_default), NULL);
 
-	gtkut_button_set_create(&hbbox, &close_btn, _("Close"),
-				NULL, NULL, NULL, NULL);
+	hbbox = gtk_hbutton_box_new();
+	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbbox), GTK_BUTTONBOX_END);
+	gtk_box_set_spacing(GTK_BOX(hbbox), 5);
+
+	gtkut_button_set_create_stock(&hbbox, &close_btn, GTK_STOCK_CLOSE,
+				      NULL, NULL, NULL, NULL);
 	gtk_widget_show(hbbox);
+
 	gtk_box_pack_end (GTK_BOX (hbox), hbbox, FALSE, FALSE, 0);
 	gtk_widget_grab_default (close_btn);
 
@@ -1282,10 +1301,11 @@ static GtkWidget *account_list_view_create(void)
 {
 	GtkTreeView *list_view;
 	GtkTreeSelection *selector;
+	GtkListStore *store = account_create_data_store();
 
-	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(GTK_TREE_MODEL
-		(account_create_data_store())));
-	
+	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(GTK_TREE_MODEL(store)));
+	g_object_unref(G_OBJECT(store));
+
 	gtk_tree_view_set_rules_hint(list_view, TRUE);
 	
 	selector = gtk_tree_view_get_selection(list_view);
@@ -1302,6 +1322,15 @@ static GtkWidget *account_list_view_create(void)
 	                 G_CALLBACK(account_double_clicked),
 			 list_view);
 
+	g_signal_connect(G_OBJECT(list_view), "drag_begin", 			 
+			 G_CALLBACK(drag_begin),
+			 list_view);
+			 
+	g_signal_connect(G_OBJECT(list_view), "drag_end", 			 
+			 G_CALLBACK(drag_end),
+			 list_view);
+			 
+	gtk_tree_view_set_reorderable(list_view, TRUE);
 	return GTK_WIDGET(list_view);
 }
 
@@ -1561,4 +1590,38 @@ static void account_double_clicked(GtkTreeView		*list_view,
 				   gpointer		 data)
 {
 	account_edit_prefs(NULL, NULL);	
+}
+
+static void drag_begin(GtkTreeView *list_view,
+		      GdkDragContext *context,
+		      gpointer data)
+{
+	/* XXX unfortunately a completed drag & drop does not emit 
+	 * a "rows_reordered" signal, but a "row_changed" signal.
+	 * So during drag and drop, listen to "row_changed", and
+	 * update the account list accordingly */
+
+	GtkTreeModel *model = gtk_tree_view_get_model(list_view);
+	g_signal_connect(G_OBJECT(model), "row_changed",
+			 G_CALLBACK(account_row_changed_while_drag_drop),
+			 list_view);
+}
+
+static void drag_end(GtkTreeView *list_view,
+		    GdkDragContext *context,
+		    gpointer data)
+{
+	GtkTreeModel *model = gtk_tree_view_get_model(list_view);
+	g_signal_handlers_disconnect_by_func(G_OBJECT(model),
+					     G_CALLBACK(account_row_changed_while_drag_drop),
+					     list_view);
+}
+
+static void account_row_changed_while_drag_drop(GtkTreeModel *model, 
+				   GtkTreePath  *path,
+				   GtkTreeIter  *iter,
+				   gpointer      arg3,
+				   GtkTreeView  *list_view)
+{	
+	account_list_set();	
 }

@@ -313,11 +313,11 @@ static void prefs_summary_column_create(void)
 	gtk_widget_show(btn_vbox1);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), btn_vbox1, TRUE, FALSE, 0);
 
-	up_btn = gtk_button_new_with_label(_("Up"));
+	up_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
 	gtk_widget_show(up_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox1), up_btn, FALSE, FALSE, 0);
 
-	down_btn = gtk_button_new_with_label(_("Down"));
+	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
 	gtk_widget_show(down_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox1), down_btn, FALSE, FALSE, 0);
 
@@ -341,8 +341,8 @@ static void prefs_summary_column_create(void)
 			 G_CALLBACK(prefs_summary_column_set_to_default),
 			 NULL);
 
-	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
-				&cancel_btn, _("Cancel"), NULL, NULL);
+	gtkut_button_set_create_stock(&confirm_area, &ok_btn, GTK_STOCK_OK,
+				      &cancel_btn, GTK_STOCK_CANCEL, NULL, NULL);
 	gtk_widget_show(confirm_area);
 	gtk_box_pack_end(GTK_BOX(btn_hbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);

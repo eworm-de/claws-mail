@@ -103,6 +103,14 @@ void gtkut_button_set_create		(GtkWidget	**bbox,
 					 const gchar	 *label2,
 					 GtkWidget	**button3,
 					 const gchar	 *label3);
+					 
+void gtkut_button_set_create_stock	(GtkWidget	**bbox,
+					 GtkWidget	**button1,
+					 const gchar	 *label1,
+					 GtkWidget	**button2,
+					 const gchar	 *label2,
+					 GtkWidget	**button3,
+					 const gchar	 *label3);
 
 ComboButton *gtkut_combo_button_create	(GtkWidget		*button,
 					 GtkItemFactoryEntry	*entries,

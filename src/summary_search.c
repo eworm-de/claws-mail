@@ -219,10 +219,10 @@ static void summary_search_create(SummaryView *summaryview)
 	g_signal_connect(G_OBJECT(all_checkbtn), "clicked",
 			 G_CALLBACK(all_clicked), summaryview);
 
-	gtkut_button_set_create(&confirm_area,
-				&search_btn, _("Search"),
-				&clear_btn,  _("Clear"),
-				&close_btn,  _("Close"));
+	gtkut_button_set_create_stock(&confirm_area,
+				      &search_btn, GTK_STOCK_FIND,
+				      &clear_btn,  GTK_STOCK_CLEAR,
+				      &close_btn,  GTK_STOCK_CLOSE);
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_start (GTK_BOX (vbox1), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(search_btn);

@@ -397,10 +397,10 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 
 	gtk_widget_grab_focus(prefswindow->tree_view);
 
-	gtkut_button_set_create(&prefswindow->confirm_area,
-				&prefswindow->ok_btn,		_("OK"),
-				&prefswindow->cancel_btn,	_("Cancel"),
-				&prefswindow->apply_btn,	_("Apply"));
+	gtkut_button_set_create_stock(&prefswindow->confirm_area,
+				      &prefswindow->ok_btn,	GTK_STOCK_OK,
+				      &prefswindow->cancel_btn,	GTK_STOCK_CANCEL,
+				      &prefswindow->apply_btn,	GTK_STOCK_APPLY);
 
 	gtk_widget_show_all(prefswindow->confirm_area);
 

@@ -117,8 +117,8 @@ static void description_create(DescriptionWindow * dwindow)
 		line++;
 	}
 
-	gtkut_button_set_create(&hbbox, &ok_btn, _("OK"),
-				NULL, NULL, NULL, NULL);
+	gtkut_button_set_create_stock(&hbbox, &ok_btn, GTK_STOCK_OK,
+				      NULL, NULL, NULL, NULL);
 	gtk_widget_show(hbbox);
 
 	vbox = gtk_vbox_new(FALSE, 0);

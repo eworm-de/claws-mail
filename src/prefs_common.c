@@ -2515,8 +2515,8 @@ static void prefs_keybind_select(void)
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
-	gtkut_button_set_create (&confirm_area, &ok_btn, _("OK"),
-				 &cancel_btn, _("Cancel"), NULL, NULL);
+	gtkut_button_set_create_stock (&confirm_area, &ok_btn, GTK_STOCK_OK,
+				       &cancel_btn, GTK_STOCK_CANCEL, NULL, NULL);
 	gtk_box_pack_end (GTK_BOX (hbox1), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default (ok_btn);
 

@@ -220,8 +220,8 @@ static void about_create(void)
 		  "Foundation, Inc., 59 Temple Place - Suite 330, Boston, "
 		  "MA 02111-1307, USA."), -1);
 
-	gtkut_button_set_create(&confirm_area, &ok_button, _("OK"),
-				NULL, NULL, NULL, NULL);
+	gtkut_button_set_create_stock(&confirm_area, &ok_button, GTK_STOCK_OK,
+				      NULL, NULL, NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_button);
 	g_signal_connect_closure
