@@ -1,3 +1,9 @@
+2002-11-25 [colin]	0.8.6claws2
+
+	* src/summaryview.[ch]
+		Add S_SEARCH_EXTENDED to the quick search, which 
+		allows to search using filtering syntax.
+
 2002-11-25 [colin]	0.8.6claws1
 
 	* src/summaryview.c

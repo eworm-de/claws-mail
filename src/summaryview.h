@@ -75,7 +75,8 @@ typedef enum
 {
 	S_SEARCH_SUBJECT,
 	S_SEARCH_FROM,
-	S_SEARCH_TO
+	S_SEARCH_TO,
+	S_SEARCH_EXTENDED
 } SummarySearchType;
 
 extern GtkTargetEntry summary_drag_types[1];

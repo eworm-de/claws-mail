@@ -83,6 +83,8 @@
 #include "string_match.h"
 #include "toolbar.h"
 #include "news.h"
+#include "matcher.h"
+#include "matcher_parser.h"
 
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_UNREAD_WIDTH	13
@@ -562,6 +564,10 @@ SummaryView *summary_create(void)
 	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
 			   GTK_SIGNAL_FUNC(summary_searchtype_changed),
 			   summaryview);
+	MENUITEM_ADD (search_type, menuitem, _("Extended"), S_SEARCH_EXTENDED);
+	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+			   GTK_SIGNAL_FUNC(summary_searchtype_changed),
+			   summaryview);
 
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(search_type_opt), search_type);
 	gtk_widget_show(search_type);
@@ -913,7 +919,11 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 				   GTK_MENU(summaryview->search_type))))));
 		gchar *search_string = gtk_entry_get_text(GTK_ENTRY(summaryview->search_string));
 		gchar *searched_header = NULL;
+		MatcherList * tmp_list = NULL;
 		
+		if (search_type == S_SEARCH_EXTENDED)
+			tmp_list = matcher_parser_get_cond(search_string);
+
 		not_killed = NULL;
 		for (cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
 			MsgInfo * msginfo = (MsgInfo *) cur->data;
@@ -928,15 +938,30 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			case S_SEARCH_TO:
 				searched_header = msginfo->to;
 				break;
+			case S_SEARCH_EXTENDED:
+				break;
 			default:
 				debug_print("unknown search type (%d)\n", search_type);
 				break;
 			}
-			if (searched_header && strcasestr(searched_header, search_string) != NULL)
-				not_killed = g_slist_append(not_killed, msginfo);
-			else
-				procmsg_msginfo_free(msginfo);
+			if (search_type != S_SEARCH_EXTENDED) {
+				if (searched_header && strcasestr(searched_header, search_string) != NULL)
+					not_killed = g_slist_append(not_killed, msginfo);
+				else
+					procmsg_msginfo_free(msginfo);
+			} else {
+				if (tmp_list != NULL && matcherlist_match(tmp_list, msginfo))
+					not_killed = g_slist_append(not_killed, msginfo);
+				else
+					procmsg_msginfo_free(msginfo);
+			}
 		}
+
+		if (search_type == S_SEARCH_EXTENDED && tmp_list != NULL) {
+			matcherlist_free(tmp_list);
+			tmp_list = NULL;
+		}
+
 		g_slist_free(mlist);
 		mlist = not_killed;
 	}
