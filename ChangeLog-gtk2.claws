@@ -1,3 +1,9 @@
+2004-07-18 [colin]	0.9.12cvs31.8
+
+	* src/pop.c
+		Fix partial download bug with Download all
+		messages option
+
 2004-07-18 [colin]	0.9.12cvs31.7
 
 	* src/textview.c
