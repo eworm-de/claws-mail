@@ -1,3 +1,9 @@
+2002-01-13 [paul]
+
+	* tools/filter_conv.pl
+	* tools/README
+		rewritten to output to matcherrc instead of filteringrc 
+
 2002-01-13 [alfons]
 
 	* po/nl.po

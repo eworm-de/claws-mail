@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-#  * Copyright 2001 Paul Mangan <claws@thewildbeast.co.uk>
+#  * Copyright 2002 Paul Mangan <claws@thewildbeast.co.uk>
 #  *
 #  * This file is free software; you can redistribute it and/or modify it
 #  * under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 #  *
 
 chdir;
-chdir '.sylpheed' || die("You don't appear to have Sylpheed installed\n");
+chdir '.sylpheed-claws.bakup-test' || die("You don't appear to have Sylpheed installed\n");
 
 open(FOLDERLIST, "<folderlist.xml") || die("Can't find folderlist.xml\n");
 @folderlist = <FOLDERLIST>;
@@ -34,15 +34,26 @@ foreach $folderlist (@folderlist) {
 }
 
 open (FILTERRC, "<filterrc") || die("Can't find your old filter rules\n");
-@input_file = <FILTERRC>;
+@filterrc = <FILTERRC>;
 close FILTERRC;
 
 $WRITE_THIS = "";
 $COUNT      = "0";
 
-foreach $input_file (@input_file) {
+if (-e "matcherrc") {
+	open (MATCHER, "<matcherrc") || die("Can't open matcherrc\n");
+	@matcherrc = <MATCHER>;
+	close MATCHER;
+		foreach $matcherrc (@matcherrc) {
+			$WRITE_THIS .= $matcherrc;
+		}
+}
+
+$WRITE_THIS .= "[global]\n";
+
+foreach $filterrc (@filterrc) {
 	$COUNT++;
-	@split_lines = split("\t", $input_file);
+	@split_lines = split("\t", $filterrc);
 	if (($split_lines[3]) && ($split_lines[0] eq "To")) {
 		$WRITE_THIS .= "to_or_cc match \"$split_lines[1]\"";
 	} elsif ($split_lines[0] eq "To") {
@@ -63,9 +74,9 @@ foreach $input_file (@input_file) {
 	@split_lines = "";
 }
 
-open (FILTERINGRC, ">filteringrc");
-print FILTERINGRC $WRITE_THIS;
-close FILTERINGRC;
+open (MATCHERRC, ">matcherrc");
+print MATCHERRC $WRITE_THIS;
+close MATCHERRC;
 
 print "\nYou have sucessfully converted $COUNT filtering rules\n\n";
 exit;
