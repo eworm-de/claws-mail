@@ -2660,7 +2660,7 @@ static void prefs_interface_create(void)
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_show_msg_with_cursor,
-		 _("Open messages with cursor keys in summary"));
+		 _("Open messages in summary with cursor keys"));
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_openunread,

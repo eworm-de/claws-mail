@@ -175,7 +175,7 @@ static void prefs_summary_column_create(void)
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
 	gtk_window_set_title(GTK_WINDOW(window),
-			     _("Summary displayed items configuration"));
+			     _("Displayed items configuration"));
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
 			   GTK_SIGNAL_FUNC(prefs_summary_column_delete_event),
 			   NULL);
@@ -193,7 +193,7 @@ static void prefs_summary_column_create(void)
 
 	label = gtk_label_new
 		(_("Select items to be displayed in the summary view. You can modify\n"
-		   "the order by using the Up / Down button, or dragging the items."));
+		   "the order by using the Up / Down buttons or by dragging the items."));
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(label_hbox), label, FALSE, FALSE, 4);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
@@ -303,7 +303,7 @@ static void prefs_summary_column_create(void)
 	gtk_widget_show(btn_vbox);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), btn_vbox, FALSE, FALSE, 0);
 
-	default_btn = gtk_button_new_with_label(_(" Revert to default "));
+	default_btn = gtk_button_new_with_label(_(" Use default "));
 	gtk_widget_show(default_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), default_btn, TRUE, FALSE, 0);
 	gtk_signal_connect(GTK_OBJECT(default_btn), "clicked",

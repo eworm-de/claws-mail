@@ -1,9 +1,16 @@
-2002-11-27 [colin]	0.8.6claws24
+2002-11-28 [paul]	0.8.6claws25
+
+	* src/grouplistdialog.c
+	  src/prefs_common.c
+	  src/prefs_summary_column.c
+	  	a few more improvements to the English
+
+2002-11-28 [colin]	0.8.6claws24
 
 	* man/sylpheed.1
 		A few updates to command-line parameters
 
-2002-11-27 [colin]	0.8.6claws23
+2002-11-28 [colin]	0.8.6claws23
 
 	* src/prefs_filtering.c
 		Fix problems with prefs_filtering_delete_path:
