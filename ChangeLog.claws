@@ -1,4 +1,11 @@
-2003-06-14 [alfons]	0.9.0claws37
+2003-06-15 [alfons]	0.9.0claws39
+
+	* src/gtk/gtkstext.c
+		don't output debug text;
+		#ifdef out print_line() if not debugging (thanks to Martin Wicke
+		for pointing this out);
+
+2003-06-14 [alfons]	0.9.0claws38
 	
 	* src/messageview.c
 		remove printf() and make one if..else comply with coding style
