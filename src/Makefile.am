@@ -22,7 +22,6 @@ sylpheed_SOURCES = \
 	procmsg.c procmsg.h \
 	procheader.c procheader.h \
 	compose.c compose.h \
-	gtkshruler.c gtkshruler.h \
 	menu.c menu.h \
 	stock_pixmap.c stock_pixmap.h \
 	prefs.c prefs.h \

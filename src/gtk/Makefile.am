@@ -1,6 +1,7 @@
 noinst_LTLIBRARIES = libsylpheedgtk.la
 
 libsylpheedgtk_la_SOURCES = \
+	gtkshruler.c gtkshruler.h \
 	gtksctree.c gtksctree.h \
 	gtkstext.c gtkstext.h \
 	sslcertwindow.c sslcertwindow.h

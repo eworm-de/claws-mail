@@ -1,3 +1,11 @@
+2002-12-13 [christoph]	0.8.6claws108
+
+	* src/Makefile.am
+	* src/gtkshruler.[ch]
+	* src/gtk/Makefile.am
+	* src/gtk/gtkshruler.[ch]
+		move gtkshruler files to gtk directory
+
 2002-12-13 [christoph]	0.8.6claws107
 
 	* src/Makefile.am
@@ -9,7 +17,7 @@
 	* src/gtk/Makefile.am
 		o move stext functions to gtkstext.c to remove
 		  dependency of gtkutils
-		o move gtkstext files to common		
+		o move gtkstext files to gtk directory
 
 	* src/gtk/Makefile.am
 	* src/gtk/sslcertwindow.[ch]
