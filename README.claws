@@ -14,6 +14,7 @@ Summary:
    * default to address for folders
    * threading mode per folder
    * spell checking (with installation instructions)
+   * simplify subject string
 4. How to contribute
 5. How to request features
 6. History
@@ -268,6 +269,16 @@ are hardly noticable, but deserve mentioning:
 There are a lot more options. If you find one, don't hesitate to
 mention it.
 
+
+* simplify subject string
+    It is possible to remove parts of string from the subject line.
+    Example: [Sylpheed-claws-users] This is a test
+    becomes: This is a test
+    This is a per folder property. Right click on a folder and select
+    property, enable Simplify Subject RegExp check box. Example
+    regexp for the above is: \[Sylpheed-claws-(devel|users)\]
+    Another example for the Sylpheed mailing list (not claws!) is:
+    \[sylpheed:[0-9]{5}\]
 
 
 4. How to contribute
