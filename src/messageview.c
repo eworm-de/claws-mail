@@ -68,7 +68,7 @@ static void return_receipt_send_clicked (NoticeView	*noticeview,
 static PrefsAccount *select_account_from_list
 					(GList		*ac_list);
 
-MessageView *messageview_create(void)
+MessageView *messageview_create(MainWindow *mainwin)
 {
 	MessageView *messageview;
 	GtkWidget *vbox;
@@ -85,7 +85,7 @@ MessageView *messageview_create(void)
 
 	headerview = headerview_create();
 
-	noticeview = noticeview_create();
+	noticeview = noticeview_create(mainwin);
 
 	textview = textview_create();
 	textview->messageview = messageview;
@@ -125,7 +125,7 @@ MessageView *messageview_create(void)
 	return messageview;
 }
 
-MessageView *messageview_create_with_new_window(void)
+MessageView *messageview_create_with_new_window(MainWindow *mainwin)
 {
 	GtkWidget *window;
 	MessageView *msgview;
@@ -137,7 +137,7 @@ MessageView *messageview_create_with_new_window(void)
 	gtk_widget_set_usize(window, prefs_common.msgwin_width,
 			     prefs_common.msgwin_height);
 
-	msgview = messageview_create();
+	msgview = messageview_create(mainwin);
 
 	gtk_signal_connect(GTK_OBJECT(window), "size_allocate",
 			   GTK_SIGNAL_FUNC(messageview_size_allocate_cb),

@@ -40,13 +40,14 @@ typedef enum
 	M_EXEC                = 1 << 4,
 	M_ALLOW_REEDIT        = 1 << 5,
 	M_HAVE_ACCOUNT        = 1 << 6,
-	M_THREADED	    = 1 << 7,
-	M_UNTHREADED	    = 1 << 8,
-	M_ALLOW_DELETE	    = 1 << 9,
-	M_INC_ACTIVE	    = 1 << 10,
+	M_THREADED	      = 1 << 7,
+	M_UNTHREADED	      = 1 << 8,
+	M_ALLOW_DELETE	      = 1 << 9,
+	M_INC_ACTIVE	      = 1 << 10,
 	M_NEWS                = 1 << 11,
 	M_HAVE_NEWS_ACCOUNT   = 1 << 12,
-	M_HIDE_READ_MSG	    = 1 << 13
+	M_HIDE_READ_MSG	      = 1 << 13,
+	M_DELAY_EXEC	      = 1 << 14
 } SensitiveCond;
 
 typedef enum

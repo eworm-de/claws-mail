@@ -175,9 +175,6 @@ static void toggle_toolbar_cb	 (MainWindow	*mainwin,
 static void toggle_statusbar_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
-static void toggle_searchbar_cb	 (MainWindow 	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
 static void separate_widget_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -447,8 +444,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, toggle_toolbar_cb, TOOLBAR_NONE, "/View/Show or hide/Toolbar/Icon and text"},
 	{N_("/_View/Show or hi_de/Status _bar"),
 						NULL, toggle_statusbar_cb, 0, "<ToggleItem>"},
-	{N_("/_View/Show or hi_de/Quick _search"),
-						NULL, toggle_searchbar_cb, 0, "<ToggleItem>"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Separate f_older tree"),	NULL, separate_widget_cb, SEPARATE_FOLDER, "<ToggleItem>"},
 	{N_("/_View/Separate m_essage view"),	NULL, separate_widget_cb, SEPARATE_MESSAGE, "<ToggleItem>"},
@@ -774,6 +769,9 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_widget_show(handlebox);
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 
+	/* link window to mainwin->window to avoid gdk warnings */
+	mainwin->window       = window;
+	
 	/* create toolbar */
 	toolbar_create(mainwin, handlebox);
 
@@ -826,7 +824,7 @@ MainWindow *main_window_create(SeparateType type)
 	/* create views */
 	mainwin->folderview  = folderview  = folderview_create();
 	mainwin->summaryview = summaryview = summary_create();
-	mainwin->messageview = messageview = messageview_create();
+	mainwin->messageview = messageview = messageview_create(mainwin);
 	mainwin->logwin      = log_window_create();
 
 	folderview->mainwin      = mainwin;
@@ -839,7 +837,6 @@ MainWindow *main_window_create(SeparateType type)
 
 	messageview->mainwin     = mainwin;
 
-	mainwin->window       = window;
 	mainwin->vbox         = vbox;
 	mainwin->menubar      = menubar;
 	mainwin->menu_factory = ifactory;
@@ -927,12 +924,12 @@ MainWindow *main_window_create(SeparateType type)
 		(ifactory, "/View/Show or hide/Status bar");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 				       prefs_common.show_statusbar);
+	
+	gtk_widget_hide(GTK_WIDGET(mainwin->summaryview->hbox_search));
+	
+	if (prefs_common.show_searchbar)
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mainwin->summaryview->toggle_search), TRUE);
 
-	gtk_widget_hide(mainwin->summaryview->hbox_search);
-	menuitem = gtk_item_factory_get_item
-		(ifactory, "/View/Show or hide/Quick search");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
-				       prefs_common.show_searchbar);
 
 	/* set account selection menu */
 	ac_menu = gtk_item_factory_get_widget
@@ -1058,11 +1055,6 @@ void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
 			summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
 		}
 		
-		if (prefs_common.immediate_exec)
-			gtk_widget_hide(mainwin->toolbar->exec_btn);
-		else
-			gtk_widget_show(mainwin->toolbar->exec_btn);
-
 		summary_redisplay_msg(mainwin->summaryview);
 		headerview_set_visibility(mainwin->messageview->headerview,
 					  prefs_common.display_header_pane);
@@ -1423,6 +1415,10 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		/*		if (item->folder->type != F_NEWS) */
 		state |= M_ALLOW_DELETE;
 
+		if (prefs_common.immediate_exec == 0
+		    && mainwin->lock_count == 0)
+			state |= M_DELAY_EXEC;
+
 		if ((selection == SUMMARY_NONE && item->hide_read_msgs)
 		    || selection != SUMMARY_NONE)
 			state |= M_HIDE_READ_MSG;	
@@ -1532,7 +1528,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Tools/Filter messages"           , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Tools/Create filter rule"        , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/Tools/Actions"                   , M_TARGET_EXIST|M_UNLOCKED},
-		{"/Tools/Execute"                   , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Tools/Execute"                   , M_DELAY_EXEC},
 		{"/Tools/Delete duplicated messages", M_MSG_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 
 		{"/Configuration", M_UNLOCKED},
@@ -1753,6 +1749,10 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 
 		mainwin->win.sep_none.hpaned = hpaned;
 		mainwin->win.sep_none.vpaned = vpaned;
+		
+		/* remove headerview if not in prefs */
+		headerview_set_visibility(mainwin->messageview->headerview,
+					  prefs_common.display_header_pane);
 		break;
 	case SEPARATE_FOLDER:
 		vpaned = gtk_vpaned_new();
@@ -1791,6 +1791,11 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		 * lose track of its visibility state */
 		if (!noticeview_is_visible(mainwin->messageview->noticeview)) 
 			gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->noticeview));
+		
+		/* remove headerview if not in prefs */
+		headerview_set_visibility(mainwin->messageview->headerview,
+					  prefs_common.display_header_pane);
+		
 		break;
 	case SEPARATE_MESSAGE:
 		hpaned = gtk_hpaned_new();
@@ -1849,6 +1854,10 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		break;
 	}
 
+	/* rehide quick search if necessary */
+	if (!prefs_common.show_searchbar)
+		gtk_widget_hide(mainwin->summaryview->hbox_search);
+	
 	mainwin->type = type;
 
 	mainwin->messageview->visible = TRUE;
@@ -2125,18 +2134,6 @@ static void toggle_statusbar_cb(MainWindow *mainwin, guint action,
 	} else {
 		gtk_widget_hide(mainwin->hbox_stat);
 		prefs_common.show_statusbar = FALSE;
-	}
-}
-
-static void toggle_searchbar_cb(MainWindow *mainwin, guint action,
-				GtkWidget *widget)
-{
-	if (GTK_CHECK_MENU_ITEM(widget)->active) {
-		gtk_widget_show(mainwin->summaryview->hbox_search);
-		prefs_common.show_searchbar = TRUE;
-	} else {
-		gtk_widget_hide(mainwin->summaryview->hbox_search);
-		prefs_common.show_searchbar = FALSE;
 	}
 }
 

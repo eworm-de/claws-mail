@@ -215,7 +215,8 @@ EXTRA_DIST = \
 	pixmaps/work_online.xpm \
 	pixmaps/notice_warn.xpm \
 	pixmaps/notice_error.xpm \
-	pixmaps/notice_note.xpm
+	pixmaps/notice_note.xpm \
+	pixmaps/quicksearch.xpm
 
 INCLUDES = \
 	-DG_LOG_DOMAIN=\"Sylpheed\" \

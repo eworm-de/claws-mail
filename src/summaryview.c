@@ -375,6 +375,10 @@ static gint summary_cmp_by_label	(GtkCList		*clist,
 
 static void news_flag_crosspost		(MsgInfo *msginfo);
 
+static void tog_searchbar_cb		(GtkWidget	*w,
+					 gpointer	 data);
+
+
 GtkTargetEntry summary_drag_types[1] =
 {
 	{"text/plain", GTK_TARGET_SAME_APP, TARGET_DUMMY}
@@ -466,6 +470,8 @@ SummaryView *summary_create(void)
 	GtkWidget *search_type;
 	GtkWidget *search_string;
 	GtkWidget *menuitem;
+	GtkWidget *toggle_search;
+	GtkTooltips *search_tip;
 	GtkItemFactory *popupfactory;
 	gint n_entries;
 
@@ -476,15 +482,24 @@ SummaryView *summary_create(void)
 	
 	/* create status label */
 	hbox = gtk_hbox_new(FALSE, 0);
+	
+	search_tip = gtk_tooltips_new();
+	toggle_search = gtk_toggle_button_new();
+
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(search_tip),
+			     toggle_search,
+			     _("Toggle quick-search bar"), NULL);
+	
+	gtk_box_pack_start(GTK_BOX(hbox), toggle_search, FALSE, FALSE, 2);	
 
 	hbox_l = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), hbox_l, TRUE, TRUE, 0);
-
+ 
 	statlabel_folder = gtk_label_new("");
 	gtk_box_pack_start(GTK_BOX(hbox_l), statlabel_folder, FALSE, FALSE, 2);
 	statlabel_select = gtk_label_new("");
 	gtk_box_pack_start(GTK_BOX(hbox_l), statlabel_select, FALSE, FALSE, 12);
-
+ 
 	/* toggle view button */
 	toggle_eventbox = gtk_event_box_new();
 	gtk_box_pack_end(GTK_BOX(hbox), toggle_eventbox, FALSE, FALSE, 4);
@@ -493,7 +508,8 @@ SummaryView *summary_create(void)
 	gtk_signal_connect(GTK_OBJECT(toggle_eventbox), "button_press_event",
 			   GTK_SIGNAL_FUNC(summary_toggle_pressed),
 			   summaryview);
-
+	
+	
 	statlabel_msgs = gtk_label_new("");
 	gtk_box_pack_end(GTK_BOX(hbox), statlabel_msgs, FALSE, FALSE, 4);
 
@@ -556,6 +572,9 @@ SummaryView *summary_create(void)
 			   GTK_SIGNAL_FUNC(summary_searchbar_pressed),
 			   summaryview);
 
+  	gtk_signal_connect (GTK_OBJECT(toggle_search), "toggled",
+                        GTK_SIGNAL_FUNC(tog_searchbar_cb), hbox_search);
+
 	/* create popup menu */
 	n_entries = sizeof(summary_popup_entries) /
 		sizeof(summary_popup_entries[0]);
@@ -574,6 +593,7 @@ SummaryView *summary_create(void)
 	summaryview->statlabel_msgs = statlabel_msgs;
 	summaryview->toggle_eventbox = toggle_eventbox;
 	summaryview->toggle_arrow = toggle_arrow;
+	summaryview->toggle_search = toggle_search;
 	summaryview->popupmenu = popupmenu;
 	summaryview->popupfactory = popupfactory;
 	summaryview->lock_count = 0;
@@ -672,6 +692,10 @@ void summary_init(SummaryView *summaryview)
 	gtk_widget_show(pixmap);
 	summaryview->folder_pixmap = pixmap;
 
+	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_QUICKSEARCH);
+	gtk_container_add (GTK_CONTAINER(summaryview->toggle_search), pixmap);
+	gtk_widget_show(pixmap);
+	
 	/* Init summaryview prefs */
 	summaryview->sort_key = SORT_BY_NONE;
 	summaryview->sort_type = SORT_ASCENDING;
@@ -900,40 +924,33 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		gint search_type = GPOINTER_TO_INT(gtk_object_get_user_data(
 				   GTK_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
 				   GTK_MENU(summaryview->search_type))))));
-		gchar *search_string = g_strdup(gtk_entry_get_text(
-				       GTK_ENTRY(summaryview->search_string)));
+		gchar *search_string = gtk_entry_get_text(GTK_ENTRY(summaryview->search_string));
 		gchar *searched_header = NULL;
 		
 		not_killed = NULL;
-		if(search_string)
-			g_strdown(search_string);
-
-		for(cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
+		for (cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
 			MsgInfo * msginfo = (MsgInfo *) cur->data;
+
 			switch (search_type) {
-				case S_SEARCH_SUBJECT:
-					searched_header = g_strdup(msginfo->subject);
-					break;
-				case S_SEARCH_FROM:
-					searched_header = g_strdup(msginfo->from);
-					break;
-				case S_SEARCH_TO:
-					searched_header = g_strdup(msginfo->to);
-					break;
-				default:
-					printf("bug in search_type (=%d)\n",search_type);
+			case S_SEARCH_SUBJECT:
+				searched_header = msginfo->subject;
+				break;
+			case S_SEARCH_FROM:
+				searched_header = msginfo->from;
+				break;
+			case S_SEARCH_TO:
+				searched_header = msginfo->to;
+				break;
+			default:
+				debug_print("unknown search type (%d)\n", search_type);
+				break;
 			}
-			if (searched_header) 
-				g_strdown(searched_header);
-			if (searched_header 
-			    && strstr(searched_header, search_string) != NULL)
+			if (searched_header && strcasestr(searched_header, search_string) != NULL)
 				not_killed = g_slist_append(not_killed, msginfo);
 			else
 				procmsg_msginfo_free(msginfo);
 		}
 		g_slist_free(mlist);
-		g_free(search_string);
-		g_free(searched_header);
 		mlist = not_killed;
 	}
 	
@@ -2379,7 +2396,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	if (new_window) {
 		MessageView *msgview;
 
-		msgview = messageview_create_with_new_window();
+		msgview = messageview_create_with_new_window(summaryview->mainwin);
 		messageview_show(msgview, msginfo, all_headers);
 	} else {
 		MessageView *msgview;
@@ -4561,6 +4578,17 @@ static void summary_searchtype_changed(GtkMenuItem *widget, gpointer data)
 	 	summary_show(sw, sw->folder_item);
 }
 
+static void tog_searchbar_cb(GtkWidget *w, gpointer data)
+{
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w))) {
+		prefs_common.show_searchbar = TRUE;
+ 		gtk_widget_show(GTK_WIDGET(data));
+	} else {
+		prefs_common.show_searchbar = FALSE;
+		gtk_widget_hide(GTK_WIDGET(data));
+	}
+}
+
 static void summary_open_row(GtkSCTree *sctree, SummaryView *summaryview)
 {
 	if (summaryview->folder_item->stype == F_OUTBOX ||
@@ -5188,7 +5216,7 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 
 	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_DIR_OPEN);
 	gtk_box_pack_start(GTK_BOX(summaryview->hbox), pixmap, FALSE, FALSE, 4);
-	gtk_box_reorder_child(GTK_BOX(summaryview->hbox), pixmap, 0);
+	gtk_box_reorder_child(GTK_BOX(summaryview->hbox), pixmap, 1); /* search_toggle before */
 	gtk_widget_show(pixmap);
 	summaryview->folder_pixmap = pixmap; 
 

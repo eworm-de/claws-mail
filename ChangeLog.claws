@@ -1,3 +1,114 @@
+2002-08-25 [alfons]	0.8.1claws112
+
+	* src/summaryview.c
+		remove unnecessary allocations for search bar fixing leaks
+		reported by Martin Kluge
+		(see "[ 599451 ] Further memory leaks?")
+
+2002-08-24 [alfons]	0.8.1claws111
+
+	* src/main.c
+		make get_socket_name() public for crash.c
+	* src/crash.c
+		o make report bug button work (goes to claws' 
+		  bug tracker at sf.net)
+		o introduce function for doing important stuff just
+		  before claws goes down
+		o clean up code 
+
+2002-08-24 [alfons]	0.8.1claws110
+
+	* src/compose.c
+		move cursor to "To" entry when forwarding as attachment
+		(reported and solved by Steve Lamb, closes bug report
+		"[ 592880 ] Forward as attachment; cursor not in to")
+
+2002-08-24 [colin]	0.8.1claws109
+
+	* src/mainwindow.c
+		fix quick search visibility after GUI (de)separations.
+
+2002-08-23 [colin]	0.8.1claws108
+
+	* src/mainwindow.c
+		fix header pane visibility after folderview or
+		messageview (de)separation
+
+2002-08-23 [paul]	0.8.1claws107
+
+	* src/mainwindow.[ch]
+	  src/toolbar.c
+		give full control of display or non-display 
+		of the Execute icon to Custom toolbar settings.
+		add new sensitivity condition to maninwindow.h: 
+		M_DELAY_EXEC
+
+	* ChangeLog
+	  ChangeLog.jp
+	  NEWS
+		more sync with 0.8.1cvs29
+
+2002-08-23 [melvin]	0.8.1claws106
+
+	* src/alertpanel.c
+		Readded support for custom widget in alertpanel lost in last
+		sync.
+
+2002-08-23 [paul]	0.8.1claws105
+
+	* sync with 0.8.1cvs29
+		see ChangeLog 2002-08-23
+
+2002-08-23 [colin]	0.8.1claws104
+
+	* src/summaryview.c
+		Fix folder and search pixmaps exchanging positions
+		after theme or toolbar changes. Thank to Oliver for 
+		reporting this.
+
+2002-08-23 [colin]	0.8.1claws103
+
+	* src/mainwindow.c
+	  src/messageview.[ch]
+	  src/noticeview.[ch]
+	  src/summaryview.c
+		Changed messageview_create() and noticeview_create()
+		to avoid the last gdk_warning
+
+2002-08-22 [colin]	0.8.1claws102
+
+	* src/summaryview.c
+		Fix my new `Creating pixmap from xpm' warning
+
+2002-08-22 [colin]	0.8.1claws101
+
+	* src/mainwindow.c
+		Fix some of the gdk warnings
+
+2002-08-22 [colin]	0.8.1claws100
+
+	* src/Makefile.am
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/pixmaps/quicksearch.xpm *ADDED*
+		Add the quicksearch pixmap
+	* src/mainwindow.c
+	* src/summaryview.c
+	* src/summaryview.h
+		Make quicksearch bar visible/hidden via a button
+
+2002-08-22 [christoph]	0.8.1claws99
+
+	* src/folder.c
+		fix folder update for newsgroups with message
+		numbers below minimum number of articles to fetch
+		(closes bug #598445)
+
+2002-08-22 [paul]	0.8.1claws98
+
+	* sync with 0.8.1cvs28
+		see ChangeLog 2002-08-22
+
 2002-08-21 [alfons]	0.8.1claws97
 
 	* src/crash.c

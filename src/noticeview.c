@@ -49,7 +49,7 @@
 
 static void noticeview_button_pressed	(GtkButton *button, NoticeView *noticeview);
 
-NoticeView *noticeview_create(void)
+NoticeView *noticeview_create(MainWindow *mainwin)
 {
 	NoticeView *noticeview;
 	GtkWidget  *vbox;
@@ -71,7 +71,7 @@ NoticeView *noticeview_create(void)
 	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
 
-	icon = stock_pixmap_widget(hbox, STOCK_PIXMAP_NOTICE_WARN); 
+	icon = stock_pixmap_widget(mainwin->window, STOCK_PIXMAP_NOTICE_WARN); 
 #if 0
 	/* also possible... */
 	icon = gtk_pixmap_new(NULL, NULL);

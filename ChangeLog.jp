@@ -1,3 +1,17 @@
+2002-08-23
+
+	* NEWS を更新。
+
+2002-08-23
+
+	* src/alertpanel.c: alertpanel_create(): レイアウトを修正。
+	* src/rfc2015.c: check_signature(): エラー時に abort しないようにした。
+
+2002-08-22
+
+	* src/compose.c: compose_wrap_line_all(): ちらつきを抑えるために
+	  必要なときのみ widget を freeze するようにした。
+
 2002-08-21
 
 	* src/compose.c: 行折り返しを改良。

@@ -44,6 +44,7 @@
 #include "utils.h"
 #include "filesel.h"
 #include "version.h"
+#include "prefs_common.h"
 
 #if 0
 #include "gtkutils.h"
@@ -57,18 +58,22 @@
  * to be possible.
  */
 
-static void		 crash_handler			(int sig);
-static gboolean		 is_crash_dialog_allowed	(void);
+/***/
+
+static GtkWidget	*crash_dialog_show		(const gchar *text, 
+							 const gchar *debug_output);
+static gboolean		 crash_create_debugger_file	(void);
+static void		 crash_save_crash_log		(GtkButton *, const gchar *);
+static void		 crash_create_bug_report	(GtkButton *, const gchar *);
 static void		 crash_debug			(unsigned long crash_pid, 
 							 gchar   *exe_image,
 							 GString *debug_output);
-static gboolean		 crash_create_debugger_file	(void);
-static void		 crash_save_crash_log		(GtkButton *, const gchar *);
-
 static const gchar	*get_compiled_in_features	(void);
 static const gchar	*get_lib_version		(void);
 static const gchar	*get_operating_system		(void);
-
+static gboolean		 is_crash_dialog_allowed	(void);
+static void		 crash_handler			(int sig);
+static void		 crash_cleanup_exit		(void);
 
 /***/
 
@@ -76,10 +81,83 @@ static const gchar *DEBUG_SCRIPT = "bt\nq";
 
 /***/
 
-/*
+/*!
+ *\brief	install crash handlers
+ */
+void crash_install_handlers(void)
+{
+#if HAVE_GDB
+	sigset_t mask;
+
+	if (!is_crash_dialog_allowed()) return;
+
+	sigemptyset(&mask);
+
+#ifdef SIGSEGV
+	signal(SIGSEGV, crash_handler);
+	sigaddset(&mask, SIGSEGV);
+#endif
+	
+#ifdef SIGFPE
+	signal(SIGFPE, crash_handler);
+	sigaddset(&mask, SIGFPE);
+#endif
+
+#ifdef SIGILL
+	signal(SIGILL, crash_handler);
+	sigaddset(&mask, SIGILL);
+#endif
+
+#ifdef SIGABRT
+	signal(SIGABRT, crash_handler);
+	sigaddset(&mask, SIGABRT);
+#endif
+
+	sigprocmask(SIG_UNBLOCK, &mask, 0);
+#endif /* HAVE_GDB */	
+}
+
+/***/
+
+/*!
+ *\brief	crash dialog entry point 
+ */
+void crash_main(const char *arg) 
+{
+#if HAVE_GDB
+	gchar *text;
+	gchar **tokens;
+	unsigned long pid;
+	GString *output;
+	extern gchar *startup_dir;
+
+	crash_create_debugger_file();
+	tokens = g_strsplit(arg, ",", 0);
+
+	pid = atol(tokens[0]);
+	text = g_strdup_printf(_("Sylpheed process (%ld) received signal %ld"),
+			       pid, atol(tokens[1]));
+
+	output = g_string_new("");     
+	crash_debug(pid, tokens[2], output);
+
+	/*
+	 * try to get the settings
+	 */
+	prefs_common_init();
+	prefs_common_read_config();
+
+	crash_dialog_show(text, output->str);
+	g_string_free(output, TRUE);
+	g_free(text);
+	g_strfreev(tokens);
+#endif /* HAVE_GDB */	
+}
+
+/*!
  *\brief	(can't get pixmap working, so discarding it)
  */
-static GtkWidget *crash_dialog_new(const gchar *text, const gchar *debug_output)
+static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output)
 {
 	GtkWidget *window1;
 	GtkWidget *vbox1;
@@ -185,6 +263,9 @@ static GtkWidget *crash_dialog_new(const gchar *text, const gchar *debug_output)
 	gtk_signal_connect(GTK_OBJECT(button4), "clicked",
 			   GTK_SIGNAL_FUNC(crash_save_crash_log),
 			   crash_report);
+	gtk_signal_connect(GTK_OBJECT(button5), "clicked",
+			   GTK_SIGNAL_FUNC(crash_create_bug_report),
+			   NULL);
 
 	gtk_widget_show(window1);
 
@@ -192,75 +273,8 @@ static GtkWidget *crash_dialog_new(const gchar *text, const gchar *debug_output)
 	return window1;
 }
 
-/***/
 
-/*
- *\brief	install crash handlers
- */
-void crash_install_handlers(void)
-{
-#if HAVE_GDB
-	sigset_t mask;
-
-	if (!is_crash_dialog_allowed()) return;
-
-	sigemptyset(&mask);
-
-#ifdef SIGSEGV
-	signal(SIGSEGV, crash_handler);
-	sigaddset(&mask, SIGSEGV);
-#endif
-	
-#ifdef SIGFPE
-	signal(SIGFPE, crash_handler);
-	sigaddset(&mask, SIGFPE);
-#endif
-
-#ifdef SIGILL
-	signal(SIGILL, crash_handler);
-	sigaddset(&mask, SIGILL);
-#endif
-
-#ifdef SIGABRT
-	signal(SIGABRT, crash_handler);
-	sigaddset(&mask, SIGABRT);
-#endif
-
-	sigprocmask(SIG_UNBLOCK, &mask, 0);
-#endif /* HAVE_GDB */	
-}
-
-/***/
-
-/*
- *\brief	crash dialog entry point 
- */
-void crash_main(const char *arg) 
-{
-#if HAVE_GDB
-	gchar *text;
-	gchar **tokens;
-	unsigned long pid;
-	GString *output;
-	extern gchar *startup_dir;
-
-	crash_create_debugger_file();
-	tokens = g_strsplit(arg, ",", 0);
-
-	pid = atol(tokens[0]);
-	text = g_strdup_printf(_("Sylpheed process (%ld) received signal %ld"),
-			       pid, atol(tokens[1]));
-
-	output = g_string_new("");     
-	crash_debug(pid, tokens[2], output);
-	crash_dialog_new(text, output->str);
-	g_string_free(output, TRUE);
-	g_free(text);
-	g_strfreev(tokens);
-#endif /* HAVE_GDB */	
-}
-
-/*
+/*!
  *\brief	create debugger script file in sylpheed directory.
  *		all the other options (creating temp files) looked too 
  *		convoluted.
@@ -273,7 +287,7 @@ static gboolean crash_create_debugger_file(void)
 	g_free(filespec);
 }
 
-/*
+/*!
  *\brief	saves crash log to a file
  */
 static void crash_save_crash_log(GtkButton *button, const gchar *text)
@@ -292,7 +306,16 @@ static void crash_save_crash_log(GtkButton *button, const gchar *text)
 	g_free(filename);	
 }
 
-/*
+/*!
+ *\brief	create bug report (goes to Sylpheed Claws bug tracker)	
+ */
+static void crash_create_bug_report(GtkButton *button, const gchar *data)
+{
+	open_uri("http://sourceforge.net/tracker/?func=add&group_id=25528&atid=384598",
+		 prefs_common.uri_cmd);
+}
+
+/*!
  *\brief	launches debugger and attaches it to crashed sylpheed
  */
 static void crash_debug(unsigned long crash_pid, 
@@ -369,7 +392,7 @@ static void crash_debug(unsigned long crash_pid,
 
 /***/
 
-/*
+/*!
  *\brief	features
  */
 static const gchar *get_compiled_in_features(void)
@@ -413,7 +436,7 @@ static const gchar *get_compiled_in_features(void)
 
 /***/
 
-/*
+/*!
  *\brief	library version
  */
 static const gchar *get_lib_version(void)
@@ -427,7 +450,7 @@ static const gchar *get_lib_version(void)
 
 /***/
 
-/*
+/*!
  *\brief	operating system
  */
 static const gchar *get_operating_system(void)
@@ -447,7 +470,7 @@ static const gchar *get_operating_system(void)
 
 /***/
 
-/*
+/*!
  *\brief	see if the crash dialog is allowed (because some
  *		developers may prefer to run sylpheed under gdb...)
  */
@@ -456,7 +479,7 @@ static gboolean is_crash_dialog_allowed(void)
 	return !getenv("SYLPHEED_NO_CRASH");
 }
 
-/*
+/*!
  *\brief	this handler will probably evolve into 
  *		something better.
  */
@@ -488,7 +511,6 @@ static void crash_handler(int sig)
 	gdk_keyboard_ungrab(GDK_CURRENT_TIME);
 	gdk_flush();
 
-
 	if (0 == (pid = fork())) {
 		char buf[50];
 		char *args[5];
@@ -511,9 +533,21 @@ static void crash_handler(int sig)
 		execvp(argv0, args);
 	} else {
 		waitpid(pid, NULL, 0);
+		crash_cleanup_exit();
 		_exit(253);
 	}
 
 	_exit(253);
+}
+
+/*!
+ *\brief	put all the things here we can do before
+ *		letting the program die
+ */
+static void crash_cleanup_exit(void)
+{
+	extern gchar *get_socket_name(void);
+	const char *filename = get_socket_name();
+	unlink(filename);
 }
 

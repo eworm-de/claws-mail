@@ -230,7 +230,8 @@ static void alertpanel_create(const gchar *title,
 	GtkWidget *label;
 	GtkWidget *hbox;
 	GtkWidget *vbox;
-	GtkWidget *vbox2;
+	GtkWidget *spc_vbox;
+	GtkWidget *msg_vbox;
 	GtkWidget *disable_chkbtn;
 	GtkWidget *confirm_area;
 	GtkWidget *button1;
@@ -277,27 +278,52 @@ static void alertpanel_create(const gchar *title,
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area),
 			  vbox);
-	vbox2 = gtk_vbox_new(FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 20);
-	gtk_box_pack_start(GTK_BOX(vbox), vbox2, TRUE, TRUE, 0);
+
+	spc_vbox = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), spc_vbox, FALSE, FALSE, 0);
+	gtk_widget_set_usize(spc_vbox, -1, 16);
+
+	msg_vbox = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), msg_vbox, FALSE, FALSE, 0);
 
 	/* for message label */
 	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox2), hbox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(msg_vbox), hbox, FALSE, FALSE, 0);
 
 	/* message label */
 	label = gtk_label_new(message);
-	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 12);
+	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 24);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 
-	/* custom widget */
+	/* Claws: custom widget */
 	if (custom_widget) {
-		GtkWidget *hbox2 = gtk_hbox_new(FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(vbox2), hbox2, FALSE, FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(hbox2), custom_widget, FALSE, FALSE, 
-				   12);
+		GtkWidget *custom_hbox = gtk_hbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(msg_vbox), custom_hbox, FALSE,
+				   FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(custom_hbox), custom_widget, FALSE,
+				   FALSE, 24);
 	}
+	if (can_disable) {
+		hbox = gtk_hbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+		gtk_container_set_border_width(GTK_CONTAINER(hbox), 8);
+
+		disable_chkbtn = gtk_check_button_new_with_label
+			(_("Show this message next time"));
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(disable_chkbtn),
+					     TRUE);
+		gtk_box_pack_start(GTK_BOX(hbox), disable_chkbtn,
+				   FALSE, FALSE, 0);
+		gtk_signal_connect(GTK_OBJECT(disable_chkbtn), "toggled",
+				   GTK_SIGNAL_FUNC(alertpanel_button_toggled),
+				   GUINT_TO_POINTER(G_ALERTDISABLE));
+	} else {
+		spc_vbox = gtk_vbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(vbox), spc_vbox, FALSE, FALSE, 0);
+		gtk_widget_set_usize(spc_vbox, -1, 20);
+	}
+
 	/* for button(s) */
 	if (!button1_label)
 		button1_label = _("OK");
@@ -334,18 +360,6 @@ static void alertpanel_create(const gchar *title,
 		gtk_signal_connect(GTK_OBJECT(button3), "clicked",
 				   GTK_SIGNAL_FUNC(alertpanel_button_clicked),
 				   GUINT_TO_POINTER(G_ALERTOTHER));
-
-	if (can_disable) {
-		disable_chkbtn = gtk_check_button_new_with_label
-			(_("Show this message next time"));
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(disable_chkbtn),
-					     TRUE);
-		gtk_box_pack_end(GTK_BOX(vbox), disable_chkbtn,
-				 FALSE, FALSE, 0);
-		gtk_signal_connect(GTK_OBJECT(disable_chkbtn), "toggled",
-				   GTK_SIGNAL_FUNC(alertpanel_button_toggled),
-				   GUINT_TO_POINTER(G_ALERTDISABLE));
-	}
 
 	gtk_widget_show_all(dialog);
 }
