@@ -1,3 +1,9 @@
+2005-04-05 [paul]	1.9.6cvs25
+
+	* src/summaryview.c
+		hide display of threading
+		patch by Alfons
+
 2005-04-04 [thorsten]	1.9.6cvs24
 
 	* src/mh.c

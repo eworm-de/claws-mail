@@ -2077,10 +2077,6 @@ void summary_sort(SummaryView *summaryview,
 		gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
 
 		main_window_cursor_normal(summaryview->mainwin);
-
-		if (summaryview->threaded)
-			summary_thread_init(summaryview);
-                        
                 gtk_clist_thaw(clist);
 
 		debug_print("done.\n");
@@ -2168,6 +2164,8 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		}
 
 		g_node_destroy(root);
+                
+		summary_thread_init(summaryview);
 	} else {
 		gchar *text[N_SUMMARY_COLS];
 		cur = mlist;

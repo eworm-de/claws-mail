@@ -441,3 +441,4 @@
 ( cvs diff -u -r 1.395.2.63 -r 1.395.2.64 src/summaryview.c; ) > 1.9.6cvs22.patchset
 ( cvs diff -u -r 1.395.2.64 -r 1.395.2.65 src/summaryview.c; ) > 1.9.6cvs23.patchset
 ( cvs diff -u -r 1.79.2.9 -r 1.79.2.10 src/mh.c; ) > 1.9.6cvs24.patchset
+( cvs diff -u -r 1.395.2.65 -r 1.395.2.66 src/summaryview.c; ) > 1.9.6cvs25.patchset
