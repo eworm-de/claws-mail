@@ -203,6 +203,22 @@ gchar *mh_get_newmsg_filename(FolderItem *dest)
 	return destfile;
 }
 
+#define SET_DEST_MSG_FLAGS(fp, dest, msginfo) \
+{ \
+	MsgInfo newmsginfo; \
+ \
+	newmsginfo.msgnum = dest->last_num; \
+	newmsginfo.flags = msginfo->flags; \
+	if (dest->stype == F_OUTBOX || \
+	    dest->stype == F_QUEUE  || \
+	    dest->stype == F_DRAFT  || \
+	    dest->stype == F_TRASH) \
+		MSG_UNSET_PERM_FLAGS(newmsginfo.flags, \
+				     MSG_NEW|MSG_UNREAD|MSG_DELETED); \
+ \
+	procmsg_write_flags(&newmsginfo, fp); \
+}
+
 gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 		gboolean remove_source)
 {
@@ -238,7 +254,7 @@ gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 	return dest->last_num;
 }
 
-gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
+static gint mh_do_move(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 {
 	gchar *destdir;
 	gchar *srcfile;
@@ -263,8 +279,6 @@ gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	prefs = dest->prefs;
 
 	destdir = folder_item_get_path(dest);
-	if ((fp = procmsg_open_mark_file(destdir, TRUE)) == NULL)
-		g_warning(_("Can't open mark file.\n"));
 
 	debug_print(_("Moving message %s%c%d to %s ...\n"),
 		    msginfo->folder->path, G_DIR_SEPARATOR,
@@ -274,12 +288,11 @@ gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	destfile = mh_get_newmsg_filename(dest);
 	if(!destfile) return -1;
 
-	g_free(destdir);
 
 	if (move_file(srcfile, destfile) < 0) {
 		g_free(srcfile);
 		g_free(destfile);
-		if (fp) fclose(fp);
+		g_free(destdir);
 		return -1;
 	}
 
@@ -297,20 +310,10 @@ gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	g_free(destfile);
 	dest->last_num++;
 
-	if (fp) {
-		MsgInfo newmsginfo;
-
-		newmsginfo.msgnum = dest->last_num;
-		newmsginfo.flags = msginfo->flags;
-		if (dest->stype == F_OUTBOX ||
-		    dest->stype == F_QUEUE  ||
-		    dest->stype == F_DRAFT  ||
-		    dest->stype == F_TRASH)
-			MSG_UNSET_PERM_FLAGS(newmsginfo.flags,
-					     MSG_NEW|MSG_UNREAD|MSG_DELETED);
-
-		procmsg_write_flags(&newmsginfo, fp);
-
+ 	if ((fp = procmsg_open_mark_file(destdir, TRUE)) == NULL)
+ 		g_warning(_("Can't open mark file.\n"));
+ 	else {
+ 		SET_DEST_MSG_FLAGS(fp, dest, msginfo);
 		if (filemode) {
 #if HAVE_FCHMOD
 			fchmod(fileno(fp), filemode);
@@ -327,11 +330,51 @@ gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 
 		fclose(fp);
 	}
+	g_free(destdir);
 
 	return dest->last_num;
 }
 
-gint mh_move_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
+gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
+{
+	gchar *srcfile;
+ 	gint ret = 0;
+ 
+ 	g_return_val_if_fail(folder != NULL, -1);
+ 	g_return_val_if_fail(dest != NULL, -1);
+ 	g_return_val_if_fail(msginfo != NULL, -1);
+ 	g_return_val_if_fail(msginfo->folder != NULL, -1);
+ 
+ 	if (folder == msginfo->folder->folder)
+ 		return mh_do_move(folder, dest, msginfo);
+ 
+ 	srcfile = procmsg_get_message_file(msginfo);
+ 	if (!srcfile) return -1;
+ 
+ 	ret = mh_add_msg(folder, dest, srcfile, FALSE);
+ 	g_free(srcfile);
+ 
+ 	if (ret != -1) {
+ 		gchar *destdir;
+ 		FILE *fp;
+ 
+ 		destdir = folder_item_get_path(dest);
+ 		if ((fp = procmsg_open_mark_file(destdir, TRUE)) == NULL)
+ 			g_warning(_("Can't open mark file.\n"));
+ 		else {
+ 			SET_DEST_MSG_FLAGS(fp, dest, msginfo);
+ 			fclose(fp);
+ 		}
+ 		g_free(destdir);
+ 
+ 		ret = folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
+ 	}
+ 
+ 	return ret;
+}
+
+static gint mh_do_move_msgs_with_dest(Folder *folder, FolderItem *dest,
+				      GSList *msglist)
 {
 	gchar *destdir;
 	gchar *srcfile;
@@ -381,19 +424,7 @@ gint mh_move_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 		dest->last_num++;
 
 		if (fp) {
-			MsgInfo newmsginfo;
-
-			newmsginfo.msgnum = dest->last_num;
-			newmsginfo.flags = msginfo->flags;
-			if (dest->stype == F_OUTBOX ||
-			    dest->stype == F_QUEUE  ||
-			    dest->stype == F_DRAFT  ||
-			    dest->stype == F_TRASH)
-				MSG_UNSET_PERM_FLAGS
-					(newmsginfo.flags,
-					 MSG_NEW|MSG_UNREAD|MSG_DELETED);
-
-			procmsg_write_flags(&newmsginfo, fp);
+			SET_DEST_MSG_FLAGS(fp, dest, msginfo);
 		}
 	}
 
@@ -401,6 +432,25 @@ gint mh_move_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 	if (fp) fclose(fp);
 
 	return dest->last_num;
+}
+
+gint mh_move_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
+{
+	MsgInfo *msginfo;
+	GSList *cur;
+	gint ret = 0;
+
+	msginfo = (MsgInfo *)msglist->data;
+	if (folder == msginfo->folder->folder)
+		return mh_do_move_msgs_with_dest(folder, dest, msglist);
+
+	for (cur = msglist; cur != NULL; cur = cur->next) {
+		msginfo = (MsgInfo *)cur->data;
+		ret = mh_move_msg(folder, dest, msginfo);
+		if (ret == -1) break;
+	}
+
+	return ret;
 }
 
 gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
@@ -445,15 +495,13 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 		return -1;
 	}
 	
-	g_free(destdir);
-
 	dest->op_count--;
 
 	if (copy_file(srcfile, destfile) < 0) {
 		FILE_OP_ERROR(srcfile, "copy");
 		g_free(srcfile);
 		g_free(destfile);
-		if (fp) fclose(fp);
+		g_free(destdir);
 		return -1;
 	}
 
@@ -471,18 +519,10 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	g_free(destfile);
 	dest->last_num++;
 
-	if (fp) {
-		MsgInfo newmsginfo;
-
-		newmsginfo.msgnum = dest->last_num;
-		newmsginfo.flags = msginfo->flags;
-		if (dest->stype == F_OUTBOX ||
-		    dest->stype == F_QUEUE  ||
-		    dest->stype == F_DRAFT  ||
-		    dest->stype == F_TRASH)
-			MSG_UNSET_PERM_FLAGS(newmsginfo.flags,
-					     MSG_NEW|MSG_UNREAD|MSG_DELETED);
-		procmsg_write_flags(&newmsginfo, fp);
+ 	if ((fp = procmsg_open_mark_file(destdir, TRUE)) == NULL)
+ 		g_warning(_("Can't open mark file.\n"));
+ 	else {
+ 		SET_DEST_MSG_FLAGS(fp, dest, msginfo);
 
 		if (filemode) {
 #if HAVE_FCHMOD
@@ -500,6 +540,7 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 
 		fclose(fp);
 	}
+	g_free(destdir);
 
 	return dest->last_num;
 }
@@ -526,8 +567,6 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	num = folder->add_msg(folder, dest, filename, FALSE);
 
 	destdir = folder_item_get_path(dest);
-	if ((fp = procmsg_open_mark_file(destdir, TRUE)) == NULL)
-		g_warning(_("Can't open mark file.\n"));
 
 	if (fp) {
 		MsgInfo newmsginfo;
@@ -603,18 +642,7 @@ gint mh_copy_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 		dest->last_num++;
 
 		if (fp) {
-			MsgInfo newmsginfo;
-
-			newmsginfo.msgnum = dest->last_num;
-			newmsginfo.flags = msginfo->flags;
-			if (dest->stype == F_OUTBOX ||
-			    dest->stype == F_QUEUE  ||
-			    dest->stype == F_DRAFT  ||
-			    dest->stype == F_TRASH)
-				MSG_UNSET_PERM_FLAGS
-					(newmsginfo.flags,
-					 MSG_NEW|MSG_UNREAD|MSG_DELETED);
-			procmsg_write_flags(&newmsginfo, fp);
+			SET_DEST_MSG_FLAGS(fp, dest, msginfo);
 		}
 	}
 
