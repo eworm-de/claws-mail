@@ -414,8 +414,10 @@ CodeConvFunc conv_get_code_conv_func(const gchar *charset)
 		code_conv = conv_jistodisp;
 	else if (!strcasecmp(charset, CS_US_ASCII))
 		code_conv = conv_ustodisp;
+#if !HAVE_LIBJCONV
 	else if (!strncasecmp(charset, "ISO-8859-", 9))
 		code_conv = conv_latintodisp;
+#endif /* !HAVE_LIBJCONV */
 	else if (!strcasecmp(charset, CS_SHIFT_JIS) ||
 		 !strcasecmp(charset, "SHIFT-JIS")  ||
 		 !strcasecmp(charset, "SJIS")       ||
