@@ -56,7 +56,7 @@ static char * readable_fingerprint(unsigned char *src, int len)
 	return ret;
 }
 
-SSLCertificate *ssl_certificate_new(X509 *x509_cert, gchar *host)
+SSLCertificate *ssl_certificate_new(X509 *x509_cert, gchar *host, gushort port)
 {
 	SSLCertificate *cert = g_new0(SSLCertificate, 1);
 	
@@ -67,13 +67,15 @@ SSLCertificate *ssl_certificate_new(X509 *x509_cert, gchar *host)
 
 	cert->x509_cert = X509_dup(x509_cert);
 	cert->host = g_strdup(host);
+	cert->port = port;
 	return cert;
 }
 
 static void ssl_certificate_save (SSLCertificate *cert)
 {
-	gchar *file;
+	gchar *file, *port;
 	FILE *fp;
+
 	file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
 			  "certs", G_DIR_SEPARATOR_S, NULL);
 	
@@ -81,10 +83,12 @@ static void ssl_certificate_save (SSLCertificate *cert)
 		make_dir_hier(file);
 	g_free(file);
 
+	port = g_strdup_printf("%d", cert->port);
 	file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
 			  "certs", G_DIR_SEPARATOR_S,
-			  cert->host, ".cert", NULL);
+			  cert->host, ".", port, ".cert", NULL);
 
+	g_free(port);
 	fp = fopen(file, "w");
 	if (fp == NULL) {
 		g_free(file);
@@ -177,18 +181,20 @@ void ssl_certificate_destroy(SSLCertificate *cert)
 	cert = NULL;
 }
 
-static SSLCertificate *ssl_certificate_find (gchar *host)
+static SSLCertificate *ssl_certificate_find (gchar *host, gushort port)
 {
 	gchar *file;
-	gchar buf[1024], *subject, *issuer, *fingerprint;
+	gchar *buf;
 	SSLCertificate *cert = NULL;
 	X509 *tmp_x509;
 	FILE *fp;
 	
+	buf = g_strdup_printf("%d", port);
 	file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
 			  "certs", G_DIR_SEPARATOR_S,
-			  host, ".cert", NULL);
+			  host, ".", buf, ".cert", NULL);
 
+	g_free(buf);
 	fp = fopen(file, "r");
 	if (fp == NULL) {
 		g_free(file);
@@ -197,7 +203,7 @@ static SSLCertificate *ssl_certificate_find (gchar *host)
 	
 	
 	if ((tmp_x509 = d2i_X509_fp(fp, 0)) != NULL) {
-		cert = ssl_certificate_new(tmp_x509, host);
+		cert = ssl_certificate_new(tmp_x509, host, port);
 		X509_free(tmp_x509);
 	}
 	fclose(fp);
@@ -256,9 +262,9 @@ static char *ssl_certificate_check_signer (X509 *cert)
 	return NULL;
 }
 
-gboolean ssl_certificate_check (X509 *x509_cert, gchar *host)
+gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 {
-	SSLCertificate *current_cert = ssl_certificate_new(x509_cert, host);
+	SSLCertificate *current_cert = ssl_certificate_new(x509_cert, host, port);
 	SSLCertificate *known_cert;
 
 	if (current_cert == NULL) {
@@ -266,7 +272,7 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host)
 		return FALSE;
 	}
 
-	known_cert = ssl_certificate_find (host);
+	known_cert = ssl_certificate_find (host, port);
 
 	if (known_cert == NULL) {
 		gint val;

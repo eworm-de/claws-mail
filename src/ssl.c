@@ -119,7 +119,7 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 	/* Get server's certificate (note: beware of dynamic allocation) */
 
 	if ((server_cert = SSL_get_peer_certificate(sockinfo->ssl)) != NULL) {
-		ret = ssl_certificate_check (server_cert, sockinfo->hostname);
+		ret = ssl_certificate_check (server_cert, sockinfo->hostname, sockinfo->port);
 		X509_free(server_cert);
 	} else {
 		printf("server_cert is NULL ! this _should_not_ happen !\n");

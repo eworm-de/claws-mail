@@ -1,3 +1,13 @@
+2002-11-12 [colin]	0.8.5claws130
+
+	* src/ssl_certificate.[ch]
+		Take connection port into account for 
+		checking certificates (a single hostname
+		could have multiple servers with multiple
+		certificates)
+	* src/ssl.c
+		Pass the port to ssl_certificate_check
+
 2002-11-12 [paul]	0.8.5claws129
 
 	* src/folder.c

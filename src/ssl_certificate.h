@@ -36,9 +36,10 @@ struct _SSLCertificate
 {
 	X509 *x509_cert;
 	gchar *host;
+	gushort port;
 };
 
-gboolean ssl_certificate_check (X509 *x509_cert, gchar *host);
+gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port);
 
 #endif /* USE_SSL */
 #endif /* SSL_CERTIFICATE_H */
