@@ -1,3 +1,8 @@
+2003-11-17 [luke]	0.9.6claws78
+        * src/textview.c
+                add check for disguised URLs, fixing bug 57
+                "Hidden URL in HTML Mails"
+
 2003-11-16 [christoph]	0.9.6claws77
 
 	* src/procmime.c
