@@ -20,6 +20,7 @@ Summary:
    * new cache
    * selective download, delete messages on server
    * extended search in quick search
+   * 'dynamic' signatures
 4. How to contribute
 5. How to request features
 6. Installing Claws from CVS
@@ -533,6 +534,14 @@ mention it.
     %f "John Beavis"   messages from John Beavis (case sensitive)
     ~s foo             messages which do not have foo in the subject
     f foo & ~s bar     messages from foo that do not have bar in thesubject
+    
+* 'dynamic' signatures
+----------------------
+    To use program output, e.g. fortune, as a message signature
+    use a | (pipe) symbol. For example, in the Account Preferences
+    'Compose' tab, enter the following in the Signature File box:
+
+    | /usr/games/fortune 
 
 
 4. How to contribute
