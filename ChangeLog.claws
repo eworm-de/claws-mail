@@ -1,3 +1,10 @@
+2002-07-24 [alfons]	0.8.0claws8
+
+	* src/summaryview.c
+		sort correctly when using simplified subject line
+		(closes feature request "[ 585141 ] applying regexp to subject 
+		before sort" submitted by Alexandra Walford)
+
 2002-07-24 [paul]	0.8.0claws7
 
 	* sync with 0.8.0cvs3
@@ -23,7 +30,7 @@
 		o don't set ignore thread flag in procmsg_get_thread_tree
 		  if it is already set
 	* src/mainwindow.c
-	* src/statusbar.h
+	* src/shttps://sourceforge.net/account/login.phptatusbar.h
 		o moved STATUSBAR_PUSH/POP to statusbar.h because
 		  they are used in different files
 

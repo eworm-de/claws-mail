@@ -354,6 +354,8 @@ static gint summary_cmp_by_from		(GtkCList		*clist,
 static gint summary_cmp_by_subject	(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
+static gint summary_cmp_by_simplified_subject
+	(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2);
 static gint summary_cmp_by_score	(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
@@ -523,6 +525,10 @@ SummaryView *summary_create(void)
 	summaryview->popupmenu = popupmenu;
 	summaryview->popupfactory = popupfactory;
 	summaryview->lock_count = 0;
+
+	/* CLAWS: need this to get the SummaryView * from
+	 * the CList */
+	gtk_object_set_data(GTK_OBJECT(ctree), "summaryview", (gpointer)summaryview); 
 
 	gtk_widget_show_all(vbox);
 
@@ -1856,7 +1862,14 @@ void summary_sort(SummaryView *summaryview,
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_from;
 		break;
 	case SORT_BY_SUBJECT:
-		cmp_func = (GtkCListCompareFunc)summary_cmp_by_subject;
+		{
+			PrefsFolderItem *prefs = summaryview->folder_item->prefs;
+
+			if (prefs == NULL) 
+				cmp_func = (GtkCListCompareFunc)summary_cmp_by_subject;
+			else
+				cmp_func = (GtkCListCompareFunc)summary_cmp_by_simplified_subject;
+		}				
 		break;
 	case SORT_BY_SCORE:
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_score;
@@ -4697,6 +4710,38 @@ static gint summary_cmp_by_subject(GtkCList *clist,
 		return -1;
 
 	return strcasecmp(msginfo1->subject, msginfo2->subject);
+}
+
+static gint summary_cmp_by_simplified_subject
+	(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
+{
+	const PrefsFolderItem *prefs;
+	const gchar *str1, *str2;
+	const GtkCListRow *r1 = (const GtkCListRow *) ptr1;
+	const GtkCListRow *r2 = (const GtkCListRow *) ptr2;
+	const MsgInfo *msginfo1 = r1->data;
+	const MsgInfo *msginfo2 = r2->data;
+	const SummaryView *sv = gtk_object_get_data(GTK_OBJECT(clist), "summaryview");
+	
+	g_return_val_if_fail(sv, -1);
+	g_return_val_if_fail(msginfo1 == NULL || msginfo2 == NULL, -1);
+	
+	str1 = GTK_CELL_TEXT(r1->cell[sv->col_pos[S_COL_SUBJECT]])->text;
+	str2 = GTK_CELL_TEXT(r2->cell[sv->col_pos[S_COL_SUBJECT]])->text;
+
+	if (!str1)
+		return str2 != NULL;
+
+	if (!str2)
+		return -1;
+
+	prefs = msginfo1->folder->prefs;
+	if (!prefs)
+		prefs = msginfo2->folder->prefs;
+	if (!prefs)
+		return -1;
+	
+	return strcasecmp(str1, str2);
 }
 
 static gint summary_cmp_by_label(GtkCList *clist,
