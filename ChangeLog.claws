@@ -1,3 +1,10 @@
+2001-06-03 [alfons]
+
+	* src/headerwindow.c:
+
+		(headerwindow_show_cb): use the selected summary view item, not
+		the displayed item.
+
 2001-06-02 [alfons]
 
 	* src/headerwindow.c:

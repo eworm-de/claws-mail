@@ -156,7 +156,7 @@ void header_window_show(HeaderWindow *headerwin, MsgInfo *msginfo)
 void header_window_show_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	MainWindow *mainwin = data;
-	GtkCTreeNode *node = mainwin->summaryview->displayed;
+	GtkCTreeNode *node = mainwin->summaryview->selected;
 	MsgInfo *msginfo;
 
 	g_return_if_fail(node != NULL);
