@@ -424,3 +424,4 @@
 ( cvs diff -u -r 1.382.2.112 -r 1.382.2.113 src/compose.c; ) > 1.9.6cvs5.patchset
 ( cvs diff -u -r 1.13.2.3 -r 1.13.2.4 src/common/plugin.c; ) > 1.9.6cvs6.patchset
 ( cvs diff -u -r 1.18.2.6 -r 1.18.2.7 src/plugins/spamassassin/spamassassin.c; ) > 1.9.6cvs7.patchset
+( cvs diff -u -r 1.4.2.8 -r 1.4.2.9 src/gtk/about.c; ) > 1.9.6cvs8.patchset

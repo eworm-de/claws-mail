@@ -80,6 +80,7 @@ static void about_create(void)
 	GdkColormap *cmap;
 	GdkColor uri_color[2] = {{0, 0, 0, 0xffff}, {0, 0xffff, 0, 0}};
 	gboolean success[2];
+	char *markup;
 
 #if HAVE_SYS_UTSNAME_H
 	struct utsname utsbuf;
@@ -109,10 +110,16 @@ static void about_create(void)
   	vbox2 = gtk_vbox_new (FALSE, 6);
   	gtk_box_pack_start (GTK_BOX (hbox1), vbox2, TRUE, FALSE, 0);
 	
-	label = gtk_label_new("Sylpheed-Claws\nversion "VERSION);
+	label = gtk_label_new("");
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
 	gtk_box_pack_start(GTK_BOX(vbox2), label, TRUE, FALSE, 0);
+
+	markup = g_markup_printf_escaped
+		("<span weight=\"bold\" size=\"x-large\">Sylpheed-Claws</span>\nversion %s",
+		 VERSION);
+	gtk_label_set_markup(GTK_LABEL(label), markup);
+	g_free(markup);
 
 	hbox2 = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox2), hbox2, FALSE, FALSE, 0);

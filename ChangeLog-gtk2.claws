@@ -1,3 +1,8 @@
+2005-03-21 [paul]	1.9.6cvs8
+
+	* src/gtk/about.c
+		cosmetic improvement
+
 2005-03-21 [holger]	1.9.6cvs7
 
 	* src/plugins/spamassassin/spamassassin.c
