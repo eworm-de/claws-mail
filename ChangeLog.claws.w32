@@ -1,3 +1,12 @@
+2002-07-05 [thorsten]	0.7.8claws48-1
+
+	* win32/sylpheed.dsp
+	* win32/sylpheed.mak
+	* win32/sylpheed_debug.dsp 
+	* win32/sylpheed_debug.mak 
+	* src/codeconv.c
+		removed references to libkcc
+
 2002-07-05 [thorsten]	0.7.8claws47-1
 
 	* src/imap.c
