@@ -1,5 +1,9 @@
 2001-07-14 [alfons]
 
+	* src/mainwindow.c
+		change text labels for news and mail message so there's
+		plenty of toolbar estate left
+
 	* configure.in
 		0.5.1claws1
 

@@ -1568,7 +1568,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	
 	CREATE_TOOLBAR_ICON(stock_mail_compose_xpm);
 	compose_mail_btn_plain = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-					      _("Compose email"),
+					      _("Email"),
 					      _("Compose an email message"),
 					      "New",
 					      icon_wid,
@@ -1579,7 +1579,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 
 	CREATE_TOOLBAR_ICON(stock_news_compose_xpm);
 	compose_news_btn_plain = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-					      _("Compose news"),
+					      _("News"),
 					      _("Compose a news message"),
 					      "New",
 					      icon_wid,
