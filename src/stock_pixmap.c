@@ -84,6 +84,7 @@
 #include "pixmaps/trash.xpm"
 #include "pixmaps/trash_hrm.xpm"
 #include "pixmaps/unread.xpm"
+#include "pixmaps/read.xpm"
 #include "pixmaps/vcard.xpm"
 #include "pixmaps/ignorethread.xpm"
 #include "pixmaps/online.xpm"
@@ -249,6 +250,7 @@ static StockPixmapData pixmaps[] =
 	{privacy_emblem_warn_xpm		, NULL, NULL, "privacy_emblem_warn", NULL},
 	{mime_message_xpm			, NULL, NULL, "mime_message", NULL},
 	{sylpheed_icon_xpm			, NULL, NULL, "sylpheed_icon", NULL},
+	{read_xpm				, NULL, NULL, "read", NULL},
 	{sylpheed_logo_xpm			, NULL, NULL, "sylpheed_logo", NULL},
 };
 

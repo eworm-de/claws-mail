@@ -127,6 +127,8 @@ static GdkPixmap *newxpm;
 static GdkBitmap *newxpmmask;
 static GdkPixmap *unreadxpm;
 static GdkBitmap *unreadxpmmask;
+static GdkPixmap *readxpm;
+static GdkBitmap *readxpmmask;
 static GdkPixmap *draftsxpm;
 static GdkBitmap *draftsxpmmask;
 static GdkPixmap *draftsopenxpm;
@@ -434,9 +436,11 @@ void folderview_init(FolderView *folderview)
 	GtkWidget *ctree = folderview->ctree;
 	GtkWidget *label_new;
 	GtkWidget *label_unread;
+	GtkWidget *label_total;
 	GtkWidget *hbox_new;
 	GtkWidget *hbox_unread;
-	
+	GtkWidget *hbox_total;
+		
 	gtk_widget_realize(ctree);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE, &inboxxpm, &inboxxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE_HRM, &inboxhrmxpm, &inboxhrmxpmmask);
@@ -467,24 +471,32 @@ void folderview_init(FolderView *folderview)
 			 &newxpm, &newxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_UNREAD,
 			 &unreadxpm, &unreadxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_READ,
+			 &readxpm, &readxpmmask);
 		
 	label_new = gtk_pixmap_new(newxpm, newxpmmask);
 	label_unread = gtk_pixmap_new(unreadxpm, unreadxpmmask);
+	label_total = gtk_pixmap_new(readxpm, readxpmmask);
 
 	hbox_new = gtk_hbox_new(FALSE, 4);
 	hbox_unread = gtk_hbox_new(FALSE, 4);
+	hbox_total = gtk_hbox_new(FALSE, 4);
 
 	/* left justified */
 	gtk_box_pack_start(GTK_BOX(hbox_new), label_new, TRUE, TRUE, 0);
 	gtk_misc_set_alignment (GTK_MISC (label_new), 1, 0.5);
 	gtk_box_pack_start(GTK_BOX(hbox_unread), label_unread, TRUE, TRUE, 0);
 	gtk_misc_set_alignment (GTK_MISC (label_unread), 1, 0.5);
+	gtk_box_pack_start(GTK_BOX(hbox_total), label_total, TRUE, TRUE, 0);
+	gtk_misc_set_alignment (GTK_MISC (label_total), 1, 0.5);
 
 	gtk_widget_show_all(hbox_new);
 	gtk_widget_show_all(hbox_unread);
+	gtk_widget_show_all(hbox_total);
 
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),COL_NEW,hbox_new);
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),COL_UNREAD,hbox_unread);
+	gtk_clist_set_column_widget(GTK_CLIST(ctree),COL_TOTAL,hbox_total);
 			
 	if (!normal_style) {
 		PangoFontDescription *font_desc;

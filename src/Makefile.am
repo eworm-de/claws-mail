@@ -350,6 +350,7 @@ EXTRA_DIST = \
 	pixmaps/trash_hrm.xpm \
 	pixmaps/trash.xpm \
 	pixmaps/unread.xpm \
+	pixmaps/read.xpm \
 	pixmaps/up_arrow.xpm \
 	pixmaps/vcard.xpm
 
