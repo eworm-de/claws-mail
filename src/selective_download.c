@@ -76,16 +76,17 @@ static GdkPixmap *deletedxpm;
 static GdkBitmap *deletedxpmmask;
 
 /* local functions */
-static void sd_clear_msglist();
-static void sd_remove_header_files();
-static void sd_toggle_btn();
-static SD_State sd_header_filter (MsgInfo *msginfo);
-static MsgInfo *sd_get_msginfo_from_file (const gchar *filename);
+static void sd_clear_msglist			(void);
+static void sd_remove_header_files		(void);
+static void sd_toggle_btn			(void);
+static SD_State sd_header_filter		(MsgInfo	*msginfo);
+static MsgInfo *sd_get_msginfo_from_file	(const gchar	*filename);
 
-static void sd_clist_set_pixmap(HeaderItems *items, gint row);
-static void sd_clist_get_items();
-static void sd_clist_set_items();
-static void sd_update_msg_num(PrefsAccount *acc);
+static void sd_clist_set_pixmap			(HeaderItems	*items,
+						 gint		 row);
+static void sd_clist_get_items			(void);
+static void sd_clist_set_items			(void);
+static void sd_update_msg_num			(PrefsAccount	*acc);
 
 enum {
 	PREVIEW_NEW,
@@ -97,25 +98,37 @@ enum {
 };
 
 /* callbacks */
-static void sd_action_cb(GtkWidget *widget, guint action);
+static void sd_action_cb	(GtkWidget 	*widget,
+				 guint		 action);
 
-static void sd_select_row_cb(GtkCList *clist, gint row, gint column,
-			      GdkEvent *event, gpointer user_data);
-static void sd_key_pressed(GtkWidget *widget,
-			    GdkEventKey *event,
-			    gpointer data);
+static void sd_select_row_cb	(GtkCList 	*clist,
+				 gint		 row,
+				 gint		 column,
+				 GdkEvent 	*event,
+				 gpointer	 user_data);
+static gint sd_key_pressed	(GtkWidget	*widget,
+				 GdkEventKey	*event,
+				 gpointer	 data);
+static gint sd_delete_event_cb	(GtkWidget	*widget, 
+				 GdkEvent	*event,
+				 gpointer	 data);
+
 /* account menu */
-static void sd_ac_label_pressed(GtkWidget *widget, 
-				 GdkEventButton *event,
-				 gpointer data);
+static gint sd_ac_label_pressed		(GtkWidget	*widget, 
+				 	 GdkEventButton	*event,
+					 gpointer	 data);
 
-static void sd_ac_menu_popup_closed(GtkMenuShell *menu_shell);
-static void sd_ac_menu_cb(GtkMenuItem *menuitem, gpointer data);
-static void sd_ac_menu_set();
+static void sd_ac_menu_popup_closed	(GtkMenuShell	*menu_shell);
+static void sd_ac_menu_cb		(GtkMenuItem	*menuitem,
+					 gpointer	 data);
+static void sd_ac_menu_set		(void);
 
 /* preview popup */
-static void sd_preview_popup_closed(GtkMenuShell *menu_shell);
-static void sd_preview_popup_cb(GtkWidget *widget, GdkEventButton *event);
+static void sd_preview_popup_closed	(GtkMenuShell	*menu_shell);
+static gint sd_preview_popup_cb		(GtkWidget	*widget,
+					 GdkEventButton	*event,
+					 gpointer	 data);
+
 static GtkItemFactoryEntry preview_popup_entries[] =
 {
 	{N_("/Preview _new messages"), NULL, sd_action_cb, PREVIEW_NEW, NULL},
@@ -123,11 +136,12 @@ static GtkItemFactoryEntry preview_popup_entries[] =
 };
 
 /* create dialog */
-static void sd_window_create(MainWindow *mainwin);
-static void sd_create_toolbar(MainWindow *mainwin, GtkWidget *container);
+static void sd_window_create	(MainWindow	*mainwin);
+static void sd_create_toolbar	(MainWindow	*mainwin,
+				 GtkWidget	*container);
 
 /* pixmaps */
-void sd_init_pixmaps(MainWindow *mainwin);
+void sd_init_pixmaps		(MainWindow	*mainwin);
 
 void selective_download(MainWindow *mainwin)
 {
@@ -422,16 +436,6 @@ static void sd_clist_get_items(void)
 	g_free(path);
 }
 
-static gint sd_deleted_cb(GtkWidget *widget, GdkEventAny *event, gpointer data)
-{
-	sd_remove_header_files();
-	sd_clear_msglist();
-	gtk_widget_destroy(selective.window);	
-	selective.window = NULL;
-	inc_unlock();
-	return TRUE;
-}
-
 /* --- Callbacks -- */
 static void sd_action_cb(GtkWidget *widget, guint action)
 {
@@ -508,19 +512,30 @@ static void sd_select_row_cb(GtkCList *clist, gint row, gint column,
 	}
 }
 
-static void sd_key_pressed(GtkWidget *widget,
+static gint sd_key_pressed(GtkWidget *widget,
 			   GdkEventKey *event,
 			   gpointer data)
 {
-	if (event && event->keyval == GDK_Escape)
+	if (event && event->keyval == GDK_Escape) {
 		sd_action_cb(widget, DONE);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+static gint sd_delete_event_cb(GtkWidget *widget, 
+			      GdkEvent *event,
+			      gpointer data)
+{
+	sd_action_cb(widget, DONE);
+	return TRUE;
 }
 
 /* account menu */
-static void sd_ac_label_pressed(GtkWidget *widget, GdkEventButton *event,
+static gint sd_ac_label_pressed(GtkWidget *widget, GdkEventButton *event,
 				    gpointer data)
 {
-	if (!event) return;
+	if (!event) return FALSE;
 
 	gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
 	gtk_object_set_data(GTK_OBJECT(selective.ac_menu), "menu_button",
@@ -529,6 +544,7 @@ static void sd_ac_label_pressed(GtkWidget *widget, GdkEventButton *event,
 	gtk_menu_popup(GTK_MENU(selective.ac_menu), NULL, NULL,
 		       menu_button_position, widget,
 		       event->button, event->time);
+	return TRUE;
 }
 
 static void sd_ac_menu_popup_closed(GtkMenuShell *menu_shell)
@@ -590,16 +606,19 @@ static void sd_preview_popup_closed(GtkMenuShell *menu_shell)
 	manage_window_focus_in(selective.window, NULL, NULL);
 }
 
-static void sd_preview_popup_cb(GtkWidget *widget, GdkEventButton *event)
+static gint sd_preview_popup_cb(GtkWidget *widget, GdkEventButton *event,
+				gpointer data)
 {
-	if (!event) return;
+	if (!event) return FALSE;
 	
 	if (event->button == 1) {
 		gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
 		gtk_menu_popup(GTK_MENU(selective.preview_popup), NULL, NULL,
 		       menu_button_position, widget,
 		       event->button, event->time);
+		return TRUE;
 	}
+	return FALSE;
 }
 
 static void sd_create_toolbar(MainWindow *mainwin, GtkWidget *container)
@@ -806,7 +825,7 @@ static void sd_window_create(MainWindow *mainwin)
 
 
 	gtk_signal_connect (GTK_OBJECT (window), "delete_event",
-			    GTK_SIGNAL_FUNC (gtk_widget_hide_on_delete),
+			    GTK_SIGNAL_FUNC (sd_delete_event_cb),
 			    NULL);
 	gtk_signal_connect (GTK_OBJECT(window), "key_press_event",
 			    GTK_SIGNAL_FUNC(sd_key_pressed),

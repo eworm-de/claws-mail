@@ -2862,11 +2862,12 @@ static void prefs_other_create(void)
 	gtk_table_attach (GTK_TABLE (ext_table), uri_combo, 1, 2, 0, 1,
 			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtkut_combo_set_items (GTK_COMBO (uri_combo),
+			       "mozilla -remote 'openurl(%s,new-window)'",
 			       "netscape -remote 'openURL(%s,raise)'",
 			       "netscape '%s'",
 			       "gnome-moz-remote --raise --newwin '%s'",
 			       "kfmclient openURL '%s'",
-			       "opera -newwindow '%s'",	       
+			       "opera -newwindow '%s'",
 			       "kterm -e w3m '%s'",
 			       "kterm -e lynx '%s'",
 			       NULL);

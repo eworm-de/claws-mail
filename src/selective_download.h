@@ -44,7 +44,7 @@ struct _HeaderItems {
 	guint       del_by_old_session : 1;
 };
 
-void selective_download(MainWindow *mainwin);
-void sd_reflect_prefs_pixmap_theme();
+void selective_download			(MainWindow	*mainwin);
+void sd_reflect_prefs_pixmap_theme	(void);
 
 #endif /* __SELECTIVE_DOWNLOAD_H__ */
