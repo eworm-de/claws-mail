@@ -262,6 +262,7 @@ struct _PrefsCommon
 	gboolean always_show_msg;
 	gboolean open_unread_on_enter;
 	gboolean mark_as_read_on_new_window;
+	gboolean mark_as_read_delay;
 	gboolean open_inbox_on_inc;
 	gboolean immediate_exec;
 	NextUnreadMsgDialogShow next_unread_msg_dialog;
