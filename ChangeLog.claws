@@ -1,3 +1,9 @@
+2003-05-01 [alfons]	0.8.11claws124
+
+	* src/imap.c
+		fix a leak found while browsing Martin Kluge's 
+		valgrind log (Claws only)
+
 2003-04-29 [darko]	0.8.11claws123
 
 	* src/gtk/gtkstext.h
