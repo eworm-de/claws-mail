@@ -1,4 +1,9 @@
 2004-01-27 Thorsten Maerz <torte@netztorte.de>
+	* src/socket.c
+		remove double g_source_attach()
+		(Thanks to Colin Leroy)
+
+2004-01-27 Thorsten Maerz <torte@netztorte.de>
 	* src/gtk/gtksctree.c
 		Fix SSL certificate list not shown
 	* src/mimeview.c
