@@ -1,3 +1,20 @@
+2002-11-29 [melvin]	0.8.6claws36
+
+	* configure.in
+		Increased minimal gpgme version to 0.3.10 (Zombies out)
+		and to detect signatures expirations (gpgme 0.3.6)
+
+	* src/main.c
+		Use non obsolescent function for Gpgme engine checking.
+
+	* src/rfc2015.c
+		Inform about expired signatures or signatures which key
+		has expired. Expiration date is displayed.
+
+	* src/sigstatus.c
+		Inform about expired signatures or signatures which key
+		has expired.
+
 2002-11-28 [paul]	0.8.6claws35
 
 	* src/folderview.c

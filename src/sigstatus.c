@@ -224,6 +224,12 @@ const char *gpgmegtk_sig_status_to_string(GpgmeSigStat status)
 	case GPGME_SIG_STAT_GOOD:
 		result = _("Good signature");
 		break;
+	case GPGME_SIG_STAT_GOOD_EXP:	
+		result = _("Good signature but it has expired");
+		break;
+	case GPGME_SIG_STAT_GOOD_EXPKEY:
+		result = _("Good signature but the key has expired");
+		break;
 	case GPGME_SIG_STAT_BAD:
 		result = _("BAD signature");
 		break;

@@ -258,7 +258,8 @@ int main(int argc, char *argv[])
 
 #if USE_GPGME
 	gpg_started = FALSE;
-	if (gpgme_check_engine()) {  /* Also does some gpgme init */
+	if (gpgme_engine_check_version(GPGME_PROTOCOL_OpenPGP) != 
+			GPGME_No_Error) {  /* Also does some gpgme init */
 		rfc2015_disable_all();
 		debug_print("gpgme_engine_version:\n%s\n",
 			    gpgme_get_engine_info());
