@@ -6923,3 +6923,16 @@ static void compose_add_field_list( Compose *compose, GList *listAddress ) {
  * End of Source.
  */
 
+void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list, 
+				    guint action)
+{
+	gchar *body;
+
+	g_return_if_fail(msgview != NULL);
+
+	g_return_if_fail(msginfo_list != NULL);
+
+	body = messageview_get_selection(msgview);
+	compose_reply_mode((ComposeMode)action, msginfo_list, body);
+	g_free(body);
+}

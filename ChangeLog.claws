@@ -1,3 +1,13 @@
+2005-01-27 [colin]	1.0.0cvs16
+
+	* src/messageview.c
+	* src/summaryview.c
+	* src/compose.c
+	* src/compose.h
+	* src/toolbar.c
+	* src/mainwindow.c
+		Factorize this reply mess
+
 2005-01-26 [paul]	1.0.0cvs15
 
 	* ChangeLog

@@ -4621,17 +4621,12 @@ static void summary_reply_cb(SummaryView *summaryview, guint action,
 {
 	MessageView *msgview = (MessageView*)summaryview->messageview;
 	GSList *msginfo_list;
-	gchar *body;
 
 	g_return_if_fail(msgview != NULL);
 
 	msginfo_list = summary_get_selection(summaryview);
 	g_return_if_fail(msginfo_list != NULL);
-
-	body = messageview_get_selection(msgview);
-
-	compose_reply_mode((ComposeMode)action, msginfo_list, body);
-	g_free(body);
+	compose_reply_from_messageview(msgview, msginfo_list, action);
 	g_slist_free(msginfo_list);
 }
 

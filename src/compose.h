@@ -33,6 +33,7 @@ typedef struct _AttachInfo	AttachInfo;
 #include "prefs_account.h"
 #include "undo.h"
 #include "toolbar.h"
+#include "messageview.h"
 
 #ifdef USE_ASPELL
 #include "gtkaspell.h"
@@ -279,5 +280,8 @@ void compose_destroy_all                (void);
 void compose_draft	                (gpointer data);
 void compose_toolbar_cb			(gint 		action, 
 					 gpointer 	data);
+void compose_reply_from_messageview	(MessageView 	*msgview, 
+					 GSList 	*msginfo_list, 
+					 guint 		 action);
 
 #endif /* __COMPOSE_H__ */
