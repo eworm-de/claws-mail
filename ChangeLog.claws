@@ -1,3 +1,9 @@
+2001-11-26 [paul]
+
+	* tools/README, tools/filter_conv.pl
+        	read name of top level mailbox from folderlist.xml
+                and presume nothing about its name       	
+
 2001-11-26 [darko]	0.6.5claws36
 
 	* src/gtkstext.[ch]
