@@ -1,3 +1,13 @@
+2004-07-11 [colin]	0.9.11cvs17.24
+
+	* src/inc.c
+	* src/messageview.c
+	* src/pop.c
+	* src/pop.h
+		Use folderitem and msgnum instead of filename to
+		know which mail to delete
+		Move old partial mail deletion to pop.c
+
 2004-07-10 [colin]	0.9.11cvs17.23
 
 	* src/inc.c

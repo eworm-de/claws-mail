@@ -36,6 +36,7 @@
 #include "prefs_account.h"
 #include "utils.h"
 #include "recv.h"
+#include "folder.h"
 
 #include "log.h"
 #include "hooks.h"
@@ -93,6 +94,7 @@ static gint pop3_session_recv_data_finished	(Session	*session,
 
 static gchar *pop3_get_filename_for_partial_mail(Pop3Session 	*session, 
 						 gchar 		*muidl);
+static void pop3_delete_old_partial	(const gchar 	*file);
 
 static gint pop3_greeting_recv(Pop3Session *session, const gchar *msg)
 {
@@ -358,19 +360,16 @@ static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 	    == POP3_MUST_COMPLETE_RECV) {
 		gchar *old_file = pop3_get_filename_for_partial_mail(
 				session, session->msg[session->cur_msg].uidl);
-		if (old_file != NULL) {
-			move_file(file, old_file, TRUE);
-			g_free(file);
-			file = old_file;
+		
+		if (old_file) {
+			pop3_delete_old_partial (old_file);
+			g_free(old_file);
 		}
-		/* drop_ok: 0: success 1: don't receive -1: error */
-		drop_ok = session->drop_message(
-				session, file, old_file != NULL);
-	} else {
-		/* drop_ok: 0: success 1: don't receive -1: error */
-		drop_ok = session->drop_message(
-				session, file, FALSE);
-	}
+	} 
+
+	/* drop_ok: 0: success 1: don't receive -1: error */
+	drop_ok = session->drop_message(session, file);
+
 	g_free(file);
 	if (drop_ok < 0) {
 		session->error_val = PS_IOERR;
@@ -430,7 +429,7 @@ static gint pop3_top_recv(Pop3Session *session, const gchar *data, guint len)
 	g_free(partial_notice);
 
 	/* drop_ok: 0: success 1: don't receive -1: error */
-	drop_ok = session->drop_message(session, file, FALSE);
+	drop_ok = session->drop_message(session, file);
 	g_free(file);
 	if (drop_ok < 0) {
 		session->error_val = PS_IOERR;
@@ -722,6 +721,7 @@ static gchar *pop3_get_filename_for_partial_mail(Pop3Session *session,
 
 static int pop3_uidl_mark_mail(const gchar *server, const gchar *login, 
 			  const gchar *muidl, const gchar *filename, 
+			  const gchar *folder_item_id, guint msgnum, 
 			  int download)
 {
 	gchar *path;
@@ -782,13 +782,19 @@ static int pop3_uidl_mark_mail(const gchar *server, const gchar *login,
 			fprintf(fpnew, "%s\t%ld\t%s\n", 
 				uidl, recv_time, partial_recv);
 		} else {
-			gchar *stat = "0";
-			if (download == POP3_PARTIAL_DLOAD_DLOAD)
-				stat = filename;
-			if (download == POP3_PARTIAL_DLOAD_UNKN)
-				stat = "1";
+			gchar *stat = NULL;
+			if (download == POP3_PARTIAL_DLOAD_DLOAD) {
+				stat = g_strdup_printf("%s:%d",
+					folder_item_id, msgnum);
+			}
+			else if (download == POP3_PARTIAL_DLOAD_UNKN)
+				stat = strdup("1");
+			else if (download == POP3_PARTIAL_DLOAD_DELE)
+				stat = strdup("0");
+			
 			fprintf(fpnew, "%s\t%ld\t%s\n", 
 				uidl, recv_time, stat);
+			g_free(stat);
 		}
 	}
 	fclose(fpnew);
@@ -863,24 +869,56 @@ static int pop3_uidl_mark_mail(const gchar *server, const gchar *login,
  */
  
 int pop3_mark_for_delete(const gchar *server, const gchar *login, 
-			 const gchar *muidl, const gchar *filename)
+			 const gchar *muidl, const gchar *file, 
+			 const gchar *folder_item_id, guint msgnum)
 {
-	return pop3_uidl_mark_mail(server, login, muidl, filename, 
-		POP3_PARTIAL_DLOAD_DELE);
+	return pop3_uidl_mark_mail(server, login, muidl, file, folder_item_id, 
+		msgnum, POP3_PARTIAL_DLOAD_DELE);
 }
 
 int pop3_mark_for_download(const gchar *server, const gchar *login, 
-			  const gchar *muidl, const gchar *filename)
+			   const gchar *muidl, const gchar *file, 
+			   const gchar *folder_item_id, guint msgnum)
 {
-	return pop3_uidl_mark_mail(server, login, muidl, filename, 
-		POP3_PARTIAL_DLOAD_DLOAD);
+	return pop3_uidl_mark_mail(server, login, muidl, file, folder_item_id, 
+		msgnum, POP3_PARTIAL_DLOAD_DLOAD);
 }
 
 int pop3_unmark(const gchar *server, const gchar *login, 
-		const gchar *muidl, const gchar *filename)
+		const gchar *muidl, const gchar *file, 
+		const gchar *folder_item_id, guint msgnum)
 {
-	return pop3_uidl_mark_mail(server, login, muidl, filename, 
-		POP3_PARTIAL_DLOAD_UNKN);
+	return pop3_uidl_mark_mail(server, login, muidl, file, folder_item_id, 
+		msgnum, POP3_PARTIAL_DLOAD_UNKN);
+}
+
+static void pop3_delete_old_partial(const gchar *file) 
+{
+	gchar *id = strdup(file);
+	gchar *snum = strrchr(file, ':');
+	int num = 0;
+	FolderItem *item = NULL;
+
+	debug_print("too big message updated,should remove %s\n", file);
+
+	if (snum) {
+		snum++;
+	} else {
+		g_free(id);
+		return; /* not a real problem */
+	}
+
+	num = atoi(snum);
+
+	if (strrchr(id, ':'))
+		*(strrchr(id, ':'))='\0';
+
+	item = folder_find_item_from_identifier(id);
+	if (item) {
+		debug_print("removing %d in %s\n", num, id);
+		folder_item_remove_msg(item, num);
+	} 
+	g_free(id);
 }
 
 gint pop3_write_uidl_list(Pop3Session *session)

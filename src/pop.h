@@ -157,8 +157,7 @@ struct _Pop3Session
 
 	/* virtual method to drop message */
 	gint (*drop_message)	(Pop3Session	*session,
-				 const gchar	*file,
-				 gboolean	 update_file);
+				 const gchar	*file);
 };
 
 #define POPBUFSIZE	512
@@ -174,14 +173,20 @@ gint pop3_msg_in_uidl_list	(const gchar 	*server,
 int pop3_mark_for_download	(const gchar 	*server, 
 				 const gchar 	*login, 
 				 const gchar 	*uidl, 
-				 const gchar 	*filename);
+				 const gchar 	*filename, 
+				 const gchar 	*folder_item_id,
+				 guint		 msgnum);
 int pop3_mark_for_delete	(const gchar 	*server, 
 				 const gchar 	*login, 
 				 const gchar 	*uidl, 
-				 const gchar 	*filename);
+				 const gchar 	*filename, 
+				 const gchar 	*folder_item_id,
+				 guint		 msgnum);
 int pop3_unmark			(const gchar 	*server, 
 				 const gchar 	*login, 
 				 const gchar 	*uidl, 
-				 const gchar 	*filename);
+				 const gchar 	*filename, 
+				 const gchar 	*folder_item_id,
+				 guint		 msgnum);
 
 #endif /* __POP_H__ */

@@ -120,8 +120,7 @@ static gint inc_recv_message		(Session	*session,
 					 const gchar	*msg,
 					 gpointer	 data);
 static gint inc_drop_message		(Pop3Session	*session,
-					 const gchar	*file,
-					 gboolean	 update_file);
+					 const gchar	*file);
 
 static void inc_put_error		(IncState	 istate,
 					 const gchar	*msg);
@@ -1040,8 +1039,7 @@ static gint inc_recv_message(Session *session, const gchar *msg, gpointer data)
 	return 0;
 }
 
-static gint inc_drop_message(Pop3Session *session, const gchar *file, 
-			     gboolean update_file)
+static gint inc_drop_message(Pop3Session *session, const gchar *file)
 {
 	FolderItem *inbox;
 	FolderItem *dropfolder;
@@ -1067,39 +1065,11 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file,
 
 	/* add msg file to drop folder */
 	if ((msgnum = folder_item_add_msg(
-			dropfolder, file, NULL, !update_file)) < 0) {
+			dropfolder, file, NULL, TRUE)) < 0) {
 		unlink(file);
 		return -1;
 	}
 
-	if (update_file) {
-		gchar *path = strdup(file);
-		gchar *snum = strrchr(file, G_DIR_SEPARATOR);
-		int num = 0;
-		FolderItem *item = NULL;
-		
-		debug_print("too big message updated,should remove %s\n", file);
-		
-		if (snum) {
-			snum++;
-		} else {
-			g_free(path);
-			return 0; /* not a real problem */
-		}
-		
-		num = atoi(snum);
-		
-		if (strrchr(path, G_DIR_SEPARATOR))
-			*(strrchr(path, G_DIR_SEPARATOR))='\0';
-		
-		item = folder_find_item_from_phys_path(path);
-		if (item) {
-			debug_print("removing %d in %s\n", num, 
-				folder_item_get_identifier(item));
-			folder_item_remove_msg(item, num);
-		} 
-		g_free(path);
-	}
 	return 0;
 }
 

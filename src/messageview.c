@@ -1140,7 +1140,9 @@ static void partial_recv_dload_clicked(NoticeView *noticeview,
 
 	if (pop3_mark_for_download(tmpmsginfo->account_server, 
 				   tmpmsginfo->account_login, 
-			   	   tmpmsginfo->partial_recv, file) == 0) {
+			   	   tmpmsginfo->partial_recv, file,
+				   folder_item_get_identifier(msginfo->folder), 
+				   msginfo->msgnum) == 0) {
 		msginfo->planned_download = POP3_PARTIAL_DLOAD_DLOAD;
 		partial_recv_show(noticeview, msginfo);
 	}
@@ -1167,7 +1169,9 @@ static void partial_recv_del_clicked(NoticeView *noticeview,
 
 	if (pop3_mark_for_delete(tmpmsginfo->account_server, 
 				   tmpmsginfo->account_login, 
-			   	   tmpmsginfo->partial_recv, file) == 0) {
+			   	   tmpmsginfo->partial_recv, file,
+				   folder_item_get_identifier(msginfo->folder), 
+				   msginfo->msgnum) == 0) {
 		msginfo->planned_download = POP3_PARTIAL_DLOAD_DELE;
 		partial_recv_show(noticeview, msginfo);
 	}
@@ -1194,7 +1198,9 @@ static void partial_recv_unmark_clicked(NoticeView *noticeview,
 
 	if (pop3_unmark(tmpmsginfo->account_server, 
 			tmpmsginfo->account_login, 
-			tmpmsginfo->partial_recv, file) == 0) {
+			tmpmsginfo->partial_recv, file,
+			folder_item_get_identifier(msginfo->folder), 
+			msginfo->msgnum) == 0) {
 		msginfo->planned_download = POP3_PARTIAL_DLOAD_UNKN;
 		partial_recv_show(noticeview, msginfo);
 	}
