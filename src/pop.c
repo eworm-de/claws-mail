@@ -378,7 +378,11 @@ static gboolean should_delete(const char *uidl, gpointer data)
 		return FALSE;
 
 	/* remove \r\n */
+#ifdef WIN32
+	tuidl  = g_strndup(uidl, strlen(uidl) - 1);		/* only CR */
+#else
 	tuidl  = g_strndup(uidl, strlen(uidl) - 2);
+#endif
 	answer = g_strsplit(tuidl, " ", 2);
 	id     = atoi(answer[0]);
 

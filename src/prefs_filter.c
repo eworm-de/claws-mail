@@ -522,6 +522,7 @@ void prefs_filter_read_config(void)
 			locale_to_utf8(&p_buf);
 			flt = filter_read_str(p_buf);
 			g_free(p_buf);
+			subst_char(flt->dest,'\\','/'); /* keep filterrc unix compatible */
 		}
 #else
 		flt = filter_read_str(buf);
@@ -787,7 +788,9 @@ static void prefs_filter_select_dest_cb(void)
 
 	dest = foldersel_folder_sel(NULL, FOLDER_SEL_COPY, NULL);
 	if (!dest || !dest->path) return;
-
+#ifdef WIN32
+	subst_char(dest->path,'\\','/');
+#endif
 	id = folder_item_get_identifier(dest);
 	if (id) {
 		gtk_entry_set_text(GTK_ENTRY(filter.dest_entry), id);
