@@ -1,3 +1,10 @@
+2001-05-17 [hoa]
+
+	* src/filtering.c
+	* src/matcher.[ch]
+	* src/prefs_filtering.c
+		changed attachement into attachment
+
 2001-05-17 [alfons]
 
 	0.4.67claws4	
@@ -7,28 +14,28 @@
 
 2001-05-17 [hoa]
 
-* src/Makefile.am
-	added prefs_filtering.c
+	* src/Makefile.am
+		added prefs_filtering.c
 
-* src/filtering.[ch]
-* src/matcher.[ch]
-	removed action : forward_news and forward_news_as_attachement
-	(forward and forward_as_attachement can be used instead)
+	* src/filtering.[ch]
+	* src/matcher.[ch]
+		removed action : forward_news and forward_news_as_attachement
+		(forward and forward_as_attachement can be used instead)
 
-* src/mainwindow.c
-	added menu option to access filtering configuration
+	* src/mainwindow.c
+		added menu option to access filtering configuration
 
-* src/prefs_account.c
-	changed mail_command default to /usr/sbin/sendmail
+	* src/prefs_account.c
+		changed mail_command default to /usr/sbin/sendmail
 
-* added src/prefs_filtering.[ch]
-	dialog box for filtering configuration
+	* added src/prefs_filtering.[ch]
+		dialog box for filtering configuration
 
-* src/prefs_matcher.c
-	added function prefs_matcher_get_criteria_from_matching()
+	* src/prefs_matcher.c
+		added function prefs_matcher_get_criteria_from_matching()
 
-* src/prefs_scoring.c
-	reset the dialog when register or substitute is clicked
+	* src/prefs_scoring.c
+		reset the dialog when register or substitute is clicked
 
 2001-05-15 [hoa]
 

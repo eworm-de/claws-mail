@@ -111,7 +111,7 @@ enum {
 	ACTION_MARK_AS_READ = 5,
 	ACTION_MARK_AS_UNREAD = 6,
 	ACTION_FORWARD = 7,
-	ACTION_FORWARD_AS_ATTACHEMENT =8
+	ACTION_FORWARD_AS_ATTACHMENT =8
 };
 
 static gint get_sel_from_list(GtkList * list)
@@ -181,8 +181,8 @@ static gint prefs_filtering_get_matching_from_action(gint action_id)
 		return MATCHING_ACTION_MARK_AS_UNREAD;
 	case ACTION_FORWARD:
 		return MATCHING_ACTION_FORWARD;
-	case ACTION_FORWARD_AS_ATTACHEMENT:
-		return MATCHING_ACTION_FORWARD_AS_ATTACHEMENT;
+	case ACTION_FORWARD_AS_ATTACHMENT:
+		return MATCHING_ACTION_FORWARD_AS_ATTACHMENT;
 	default:
 		return -1;
 	}
@@ -191,7 +191,7 @@ static gint prefs_filtering_get_matching_from_action(gint action_id)
 gchar * action_text [] = {
 	"Move",	"Copy", "Delete",
 	"Mark", "Unmark", "Mark as read", "Mark as unread",
-	"Forward", "Forward as attachement"
+	"Forward", "Forward as attachment"
 };
 
 void prefs_filtering_open(void)
@@ -655,7 +655,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(void)
 	case ACTION_MOVE:
 	case ACTION_COPY:
 	case ACTION_FORWARD:
-	case ACTION_FORWARD_AS_ATTACHEMENT:
+	case ACTION_FORWARD_AS_ATTACHMENT:
 		destination = gtk_entry_get_text(GTK_ENTRY(filtering.dest_entry));
 		if (*destination == '\0') {
 			alertpanel_error(_("Destination is not set."));
@@ -817,10 +817,10 @@ static void prefs_filtering_select_set(FilteringProp * prop)
 		gtk_list_select_item(GTK_LIST(filtering.account_list),
 				     list_id);
 		break;
-	case MATCHING_ACTION_FORWARD_AS_ATTACHEMENT:
+	case MATCHING_ACTION_FORWARD_AS_ATTACHMENT:
 		list_id = get_list_id_from_account_id(action->account_id);
 		gtk_list_select_item(GTK_LIST(filtering.action_list),
-				     ACTION_FORWARD_AS_ATTACHEMENT);
+				     ACTION_FORWARD_AS_ATTACHMENT);
 		gtk_list_select_item(GTK_LIST(filtering.account_list),
 				     list_id);
 		break;
@@ -914,7 +914,7 @@ static void prefs_filtering_action_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering.dest_entry, TRUE);
 		gtk_widget_hide(filtering.dest_btn);
 		break;
-	case ACTION_FORWARD_AS_ATTACHEMENT:
+	case ACTION_FORWARD_AS_ATTACHMENT:
 		gtk_widget_set_sensitive(filtering.account_combo, TRUE);
 		gtk_widget_set_sensitive(filtering.dest_entry, TRUE);
 		gtk_widget_hide(filtering.dest_btn);

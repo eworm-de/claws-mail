@@ -88,7 +88,7 @@ FilteringAction * filteringaction_parse(gchar ** str)
 		}
 
 		break;
-	case MATCHING_ACTION_FORWARD_AS_ATTACHEMENT:
+	case MATCHING_ACTION_FORWARD_AS_ATTACHMENT:
 		account_id = matcher_parse_number(&tmp);
 		if (tmp == NULL) {
 			* str = NULL;
@@ -286,7 +286,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 
 		return FALSE;
 
-	case MATCHING_ACTION_FORWARD_AS_ATTACHEMENT:
+	case MATCHING_ACTION_FORWARD_AS_ATTACHMENT:
 
 		return FALSE;
 
@@ -335,7 +335,7 @@ static gboolean filteringprop_apply(FilteringProp * filtering, MsgInfo * info,
 		case MATCHING_ACTION_UNMARK:
 		case MATCHING_ACTION_MARK_AS_UNREAD:
 		case MATCHING_ACTION_FORWARD:
-		case MATCHING_ACTION_FORWARD_AS_ATTACHEMENT:
+		case MATCHING_ACTION_FORWARD_AS_ATTACHMENT:
 			return FALSE;
 		default:
 			return FALSE;
@@ -473,7 +473,7 @@ gchar * filteringaction_to_string(FilteringAction * action)
 		break;
 
 	case MATCHING_ACTION_FORWARD:
-	case MATCHING_ACTION_FORWARD_AS_ATTACHEMENT:
+	case MATCHING_ACTION_FORWARD_AS_ATTACHMENT:
 		account_id_str = itos(action->account_id);
 		return g_strconcat(command_str, " ", account_id_str,
 				   " \"", action->destination, "\"", NULL);
