@@ -1,3 +1,12 @@
+2003-01-27 [christoph]	0.8.9claws18
+
+	* ac/openssl.m4
+	* ac/spamassassin.m4
+	* src/plugins/spamassassin/README
+	* src/plugins/spamassassin/libspamc.[ch]
+	* src/plugins/spamassassin/utils.[ch]
+		updated to latest libspamc
+
 2003-01-27 [christoph]	0.8.9claws17
 
 	* src/folder.c
