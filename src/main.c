@@ -451,8 +451,7 @@ static void save_all_caches(FolderItem *item, gpointer data)
 {
 	if (!item->cache)
 		return;
-	if (!item->stype == F_QUEUE)	
-		folder_item_write_cache(item);
+	folder_item_write_cache(item);
 }
 
 static void initial_processing(FolderItem *item, gpointer data)
@@ -472,9 +471,6 @@ static void initial_processing(FolderItem *item, gpointer data)
 	
 	folder_item_apply_processing(item);
 
-	if (item->stype == F_QUEUE)
-		folder_item_scan(item);
-	
 	debug_print("done.\n");
 	STATUSBAR_POP(mainwin);
 	main_window_cursor_normal(mainwin);
