@@ -7,6 +7,7 @@ if not %1x==x%1 goto process
 echo Creating translations:
 if not exist locale mkdir locale
 for %%i in ( bg cs de el en_GB es fr hr it ja ko nl pl pt_BR ru sr sv ) do call %0 %%i
+rem for %%i in ( bg cs de el en_GB es fr hr it ja ko nl pl pt_BR ru sr sv zh_CN zh_TW.Big5 ) do call %0 %%i
 echo Done. Copy "locale" folder to your sylpheed directory.
 goto end
 
@@ -14,8 +15,14 @@ goto end
 echo Processing %1 ...
 if not exist locale\%1 mkdir locale\%1
 if not exist locale\%1\LC_MESSAGES mkdir locale\%1\LC_MESSAGES
-apps\utf8conv ..\..\po\%1.po %1-utf8.po
+rem *** utf8 translation ***
+SET CONTENTTYPE=^\"Content-Type: text\/plain; charset=
+copy ..\..\po\%1.po
+echo PATH=apps;%%PATH%% > mk_%1.bat
+sed -n -e "/%CONTENTTYPE%/ {s/.*=/iconv -f /;s/\\\\.*/ -t utf-8 %1.po/;p;} " %1.po ">> mk_%1.bat
+call mk_%1.bat > %1-utf8.po
+rem *** make .mo ***
 apps\msgfmt -o locale\%1\LC_MESSAGES\sylpheed.mo %1-utf8.po
-del %1-utf8.po
+del %1.po %1-utf8.po mk_%1.bat
 
 :end

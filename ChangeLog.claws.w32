@@ -1,3 +1,9 @@
+2002-11-01 [thorsten]	0.8.5claws64-1
+
+	* win32/utils/mk_translation.bat
+	  win32/utils/utf8conv/*	** REMOVED **
+	  	fix: use iconv to convert .po files to utf-8
+
 2002-10-24 [thorsten]	0.8.5claws47-1
 
 	* src/*.c
