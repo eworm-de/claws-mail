@@ -1,3 +1,9 @@
+2004-09-29 [colin]	0.9.12cvs114
+
+	* src/compose.c
+		Don't close compose until message is sent if 
+		Show Send Dialog is Always
+
 2004-09-29 [paul]	0.9.12cvs113
 
 	* src/quote_fmt_parse.y

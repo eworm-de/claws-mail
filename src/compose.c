@@ -3154,14 +3154,22 @@ gint compose_send(Compose *compose)
 		goto bail;
 	}
 
-	compose->sending = FALSE;	
-	gtk_widget_destroy(compose->window);
-	/* No more compose access in the normal codepath after this point! */
+
+	if (prefs_common.send_dialog_mode != SEND_DIALOG_ALWAYS) {
+		compose->sending = FALSE;
+		gtk_widget_destroy(compose->window);
+		/* No more compose access in the normal codepath 
+		 * after this point! */
+	}
 
 	if (msgnum == 0) {
 		alertpanel_error(_("The message was queued but could not be "
 				   "sent.\nUse \"Send queued messages\" from "
 				   "the main window to retry."));
+		if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS) {
+			compose->sending = FALSE;
+			compose_allow_user_actions (compose, TRUE);
+		}
 		return 0;
 	}
 	
@@ -3169,9 +3177,20 @@ gint compose_send(Compose *compose)
 	val = procmsg_send_message_queue(msgpath);
 	g_free(msgpath);
 
+	if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS) {
+		compose->sending = FALSE;
+		compose_allow_user_actions (compose, TRUE);
+		if (val != 0) {
+			folder_item_remove_msg(folder, msgnum);
+			folder_item_scan(folder);
+		}
+	}
+
 	if (val == 0) {
 		folder_item_remove_msg(folder, msgnum);
 		folder_item_scan(folder);
+		if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS)
+			gtk_widget_destroy(compose->window);
 	}
 
 	return 0;
