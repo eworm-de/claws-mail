@@ -1,3 +1,8 @@
+2001-09-25 [melvin]
+		
+	* src/compose.c src/gtkspell.[ch]
+		added support for different encodings
+
 2001-09-25 [paul]
 
 	* more sync with sylpheed 0.6.2cvs5
