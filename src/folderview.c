@@ -785,18 +785,10 @@ static GtkWidget *label_window_create(const gchar *str)
 void folderview_rescan_tree(Folder *folder)
 {
 	GtkWidget *window;
-	AlertValue avalue;
 
 	g_return_if_fail(folder != NULL);
 
 	if (!folder->scan_tree) return;
-
-	avalue = alertpanel
-		(_("Rescan folder tree"),
-		 _("All previous settings for each folders will be lost.\n"
-		   "Continue?"),
-		 _("Yes"), _("No"), NULL);
-	if (avalue != G_ALERTDEFAULT) return;
 
 	inc_lock();
 	window = label_window_create(_("Rescanning folder tree..."));
