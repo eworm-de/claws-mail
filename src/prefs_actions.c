@@ -124,8 +124,9 @@ struct _ChildInfo
 };
 
 struct _UserStringDialog {
-	GtkWidget *dialog;
-	gchar *user_str;
+	GtkWidget	*dialog;
+	GtkEntry	*entry;
+	gchar		*user_str;
 };
 
 /* widget creating functions */
@@ -233,7 +234,21 @@ static void catch_status		(gpointer		 data,
 					 gint			 source,
 					 GdkInputCondition	 cond);
 
-static gchar *get_user_string(const gchar *action, ActionType type);
+static gboolean user_string_dialog_delete_cb
+					(GtkWidget		*widget,
+					 GdkEvent 		*event,
+					 gpointer 		 data);
+static void user_string_dialog_destroy_cb
+					(GtkWidget		*widget,
+					 gpointer		 data);
+
+
+static void user_string_dialog_activate_cb
+					(GtkWidget		*widget,
+					 gpointer		 data);
+
+static gchar *get_user_string		(const gchar		*action,
+					 ActionType		 type);
 
 void prefs_actions_open(MainWindow *mainwin)
 {
@@ -1899,28 +1914,36 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 	wait_for_children(child_info->children);
 }
 
-static gboolean user_string_dialog_delete_cb(GtkWidget *w, GdkEvent *e, gpointer user_str)
+static gboolean user_string_dialog_delete_cb(GtkWidget	*widget,
+					     GdkEvent	*event,
+					     gpointer 	 data)
 {
-	gtk_main_quit();
 	return FALSE;
 }
 
-static void user_string_dialog_activate_cb(GtkWidget *w, gpointer data)
+static void user_string_dialog_destroy_cb(GtkWidget *widget, gpointer data)
+{
+	gtk_main_quit();
+}
+
+static void user_string_dialog_activate_cb(GtkWidget *widget, gpointer data)
 {
 	UserStringDialog *user_dialog = (UserStringDialog *) data;
 	if (user_dialog->user_str)
 		g_free(user_dialog->user_str);
-	user_dialog->user_str = gtk_editable_get_chars(GTK_EDITABLE(w), 0, -1);
+	user_dialog->user_str =
+		gtk_editable_get_chars(GTK_EDITABLE(user_dialog->entry), 0, -1);
 	gtk_widget_destroy(user_dialog->dialog);
 }
 
 static gchar *get_user_string(const gchar *action, ActionType type )
 {
-	GtkWidget *dialog;
-	GtkWidget *label;
-	GtkWidget *entry;
-	gchar *user_str = NULL;
-	gchar *label_text;
+	GtkWidget	*dialog;
+	GtkWidget	*label;
+	GtkWidget	*entry;
+	GtkWidget	*ok_button;
+	GtkWidget	*cancel_button;
+	gchar		*label_text;
 	UserStringDialog user_dialog;
 	
 	dialog = gtk_dialog_new();
@@ -1931,15 +1954,6 @@ static gchar *get_user_string(const gchar *action, ActionType type )
 			GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 5);
 	gtk_window_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 
-	user_dialog.dialog   = dialog;
-	user_dialog.user_str = user_str;
-
-	gtk_signal_connect(GTK_OBJECT(dialog), "delete_event",
-			   GTK_SIGNAL_FUNC(user_string_dialog_delete_cb),
-			   &user_dialog);
-	gtk_signal_connect(GTK_OBJECT(dialog), "destroy",
-			   GTK_SIGNAL_FUNC(user_string_dialog_delete_cb),
-			   &user_dialog);
 	switch (type) {
 		case ACTION_USER_HIDDEN_STR:
 			gtk_window_set_title(GTK_WINDOW(dialog),
@@ -1960,20 +1974,50 @@ static gchar *get_user_string(const gchar *action, ActionType type )
 	}
 
 	label = gtk_label_new(label_text);
+	g_free(label_text);
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label,
 			   TRUE, TRUE, 0);
 	
-	entry = gtk_entry_new();		   
+	entry = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(entry), 
 				 type != ACTION_USER_HIDDEN_STR);
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), entry,
+			   TRUE, TRUE, 0);
+
+	ok_button     = gtk_button_new_with_label(_("OK"));
+	gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->action_area),
+			 ok_button, TRUE, TRUE, 0);
+				
+	cancel_button = gtk_button_new_with_label(_("Cancel"));
+	gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->action_area),
+			 cancel_button, TRUE, TRUE, 0);
+
+	user_dialog.dialog   = dialog;
+	user_dialog.user_str = NULL;
+	user_dialog.entry    = entry;
+
+	gtk_signal_connect(GTK_OBJECT(dialog), "delete_event",
+			   GTK_SIGNAL_FUNC(user_string_dialog_delete_cb),
+			   &user_dialog);
+	gtk_signal_connect(GTK_OBJECT(dialog), "destroy",
+			   GTK_SIGNAL_FUNC(user_string_dialog_destroy_cb),
+			   &user_dialog);
 	gtk_signal_connect(GTK_OBJECT(entry), "activate",
 			   GTK_SIGNAL_FUNC(user_string_dialog_activate_cb),
 			   &user_dialog);
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), entry,
-			   TRUE, TRUE, 0);
+	gtk_signal_connect(GTK_OBJECT(ok_button),     "clicked",
+			   GTK_SIGNAL_FUNC(user_string_dialog_activate_cb),
+			   &user_dialog);
+	gtk_signal_connect_object(GTK_OBJECT(cancel_button), "clicked",
+			   GTK_SIGNAL_FUNC(gtk_widget_destroy),
+			   GTK_OBJECT(dialog));
+	
 	gtk_widget_grab_focus(entry);
+
 	gtk_widget_show_all(dialog);
+
 	gtk_main();
+
 	return user_dialog.user_str;
 }
 
@@ -1999,9 +2043,9 @@ static gchar *actions_desc_strings[] = {
 	"     %f",  N_("for message file name"),
 	"     %F",  N_("for the list of the file names of selected messages"),
 	"     %p",  N_("for the selected message MIME part"),
-	"     %u",  N_("for a user provided text"),
-	"     %U",  N_("for a user provided hidden text"),
-	"     %s",  N_("for the message body or selection"),
+	"     %u",  N_("for a user provided argument"),
+	"     %h",  N_("for a user provided hidden argument"),
+	"     %s",  N_("for the text selection"),
 	NULL
 };
 

@@ -1,3 +1,11 @@
+2003-03-13 [melvin]	0.8.11claws8
+
+	* src/prefs_actions.c
+		Fixed a memory leak
+		Code clean ups
+		Added Cancel and OK buttons
+		Corrected help text
+
 2003-03-13 [christoph]	0.8.11claws7
 
 	* src/account.c
