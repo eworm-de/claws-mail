@@ -923,14 +923,23 @@ static guchar get_text_index_whar(GtkAspell *gtkaspell, int pos)
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(view);
 	GtkTextIter start, end;
 	const gchar *utf8chars;
-	guchar a;
+	guchar a = '\0';
 
 	gtk_text_buffer_get_iter_at_offset(buffer, &start, pos);
 	gtk_text_buffer_get_iter_at_offset(buffer, &end, pos+1);
 
 	utf8chars = gtk_text_iter_get_text(&start, &end);
-	a = utf8chars ? utf8chars[0] : 0 ;
-	g_free(utf8chars);
+	if (is_ascii_str(utf8chars)) {
+		a = utf8chars ? utf8chars[0] : '\0' ;
+	} else {
+		gchar *tr = conv_iconv_strdup(utf8chars, CS_UTF_8, 
+				gtkaspell->gtkaspeller->dictionary->encoding);
+		if (tr) {
+			a = tr[0];
+			g_free(tr);
+		}
+	}
+
 	return a;
 }
 
@@ -1008,9 +1017,10 @@ static gboolean get_word_from_pos(GtkAspell *gtkaspell, gint pos,
 
 	if (buf) {
 		if (end - start < buflen) {
-			for (pos = start; pos < end; pos++) 
+			for (pos = start; pos < end; pos++) {
 				buf[pos - start] =
 					get_text_index_whar(gtkaspell, pos);
+			}
 			buf[pos - start] = 0;
 		} else
 			return FALSE;
