@@ -15,6 +15,14 @@ static void add_char(char ch)
 	if (string_buf_ptr - string_buf < sizeof(string_buf))
 		*string_buf_ptr++ = ch;
 }
+
+
+/* this function will reinitializes the parser */
+
+void matcher_parser_init(void)
+{
+        BEGIN(0);
+}
 %}
 
 %option prefix="matcher_parser"

@@ -1,3 +1,11 @@
+2002-11-10 [hoa]	0.8.5claws115
+
+	* src/matcher_parser_lex.l
+	* src/matcher_parser_parse.y
+		config file for scoring and filtering is no more trashed
+		when there is a syntax error in a filtering rule when
+		editing it in a dialog.
+
 2002-11-09 [colin]	0.8.5claws114
 
 	* src/mbox_folder.c
