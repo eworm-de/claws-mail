@@ -20,6 +20,10 @@
 #ifndef __IMAP_H__
 #define __IMAP_H__
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include <glib.h>
 
 #include "folder.h"
@@ -70,17 +74,17 @@ typedef enum
 #define IMAP_IS_DELETED(flags)	((flags & IMAP_FLAG_DELETED) != 0)
 #define IMAP_IS_DRAFT(flags)	((flags & IMAP_FLAG_DRAFT) != 0)
 
-#if !USE_SSL
-Session *imap_session_new		(const gchar	*server,
-					 gushort	 port,
-					 const gchar	*user,
-					 const gchar	*pass);
-#else
+#if USE_SSL
 Session *imap_session_new		(const gchar	*server,
 					 gushort	 port,
 					 const gchar	*user,
 					 const gchar	*pass,
 					 gboolean	 use_ssl);
+#else
+Session *imap_session_new		(const gchar	*server,
+					 gushort	 port,
+					 const gchar	*user,
+					 const gchar	*pass);
 #endif
 void imap_session_destroy		(IMAPSession	*session);
 void imap_session_destroy_all		(void);
