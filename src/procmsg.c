@@ -653,6 +653,7 @@ gint procmsg_send_queue(void)
 {
 	FolderItem *queue;
 	gint i;
+	gint ret = 0;
 
 	queue = folder_get_default_queue();
 	g_return_val_if_fail(queue != NULL, -1);
@@ -666,16 +667,15 @@ gint procmsg_send_queue(void)
 		file = folder_item_fetch_msg(queue, i);
 		if (file) {
 			if (send_message_queue(file) < 0) {
-				g_warning(_("Sending queued message failed.\n"));
-				g_free(file);
-				return -1;
-			}
-			folder_item_remove_msg(queue, i);
+				g_warning(_("Sending queued message %d failed.\n"), i);
+				ret = -1;
+			} else
+				folder_item_remove_msg(queue, i);
 			g_free(file);
 		}
 	}
 
-	return 0;
+	return ret;
 }
 
 void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
