@@ -1,3 +1,8 @@
+2004-04-09 [alfons]	0.9.10claws43
+
+	* src/summaryview.c
+		make quick search combo matching case sensitive
+
 2004-04-06 [alfons]	0.9.10claws42
 
 	* src/addr_compl.c

@@ -660,7 +660,7 @@ SummaryView *summary_create(void)
 	search_string = gtk_combo_new();
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_string, FALSE, FALSE, 2);
 	gtk_combo_set_value_in_list(GTK_COMBO(search_string), FALSE, TRUE);
-	gtk_combo_set_case_sensitive(GTK_COMBO(search_string), FALSE);
+	gtk_combo_set_case_sensitive(GTK_COMBO(search_string), TRUE);
 	if (prefs_common.summary_quicksearch_history) 
 		gtk_combo_set_popdown_strings(GTK_COMBO(search_string), 
 			prefs_common.summary_quicksearch_history);
