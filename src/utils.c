@@ -1382,16 +1382,13 @@ gchar *get_home_dir(void)
 {
 #if HAVE_DOSISH_SYSTEM
     static gchar *home_dir;
+    int i;
 
     if (!home_dir) {
         home_dir = read_w32_registry_string(NULL,
                                             "Software\\Sylpheed", "HomeDir" );
         if (!home_dir || !*home_dir) {
-#ifdef WIN32
-            if (getenv ("HOMEDRIVE") && getenv("HOMEPATH")) {
-#else
             if (getenv ("HOMEDRIVE") && getenv("HOMEPATH") || (getenv("HOME")) ) {
-#endif
                 const char *s = g_get_home_dir();
                 if (s && *s)
                     home_dir = g_strdup (s);
@@ -1404,6 +1401,12 @@ gchar *get_home_dir(void)
                 	home_dir = g_strdup ("c:\\sylpheed");
         }
         debug_print("initialized home_dir to `%s'\n", home_dir);
+    }
+    for (i = strlen(home_dir) - 1; 0 <= i; i--) {
+	    if (*(home_dir + i) == '\\' || *(home_dir + i) == '/') {
+		    *(home_dir + i) = '\0';
+	    } else 
+		    break;
     }
     return home_dir;
 #else /* standard glib */

@@ -1,3 +1,11 @@
+2002-07-17 [thorsten]	0.7.8claws74-1
+
+	* src/utils.c
+	* win32/sylpheed.reg
+		fix: recognition of HOME/HKCU:HomeDir
+	* win32/sylpheed-setup.iss
+		change: removed gpg
+
 2002-07-16 [thorsten]	0.7.8claws71-1
 
 	* src/compose.c

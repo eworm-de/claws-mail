@@ -28,7 +28,6 @@ Name: "settings";               Description: "Sylpheed registry settings";      
 Name: "help";                   Description: "Sylpheed help files";                     Types: full custom;
 Name: "themes";                 Description: "Sylpheed theme pack";                     Types: full;
 Name: "gtk";                    Description: "Gtk+ libraries (customized build, v1.3 + v2.0)";  Types: full compact custom;
-Name: "gpg";                    Description: "GnuPG 1.0.6-2 (installs to C:\gnupg)";    Types: full;
 
 [Tasks]
 Name: "desktopicon";            Description: "Create a &desktop icon";                          GroupDescription: "Additional icons:"
@@ -36,9 +35,6 @@ Name: "quicklaunchicon";        Description: "Create a &Quick Launch icon";     
 
 Name: "reg_sylpheed";           Description: "Create Sylpheed &registry key (recommended)";     GroupDescription: "Registry settings:"; Components: settings;
 Name: "reg_defaultmailer";      Description: "Set Sylpheed default &mailer for mailto: links";  GroupDescription: "Registry settings:"; Components: settings;
-Name: "reg_gpgme";              Description: "Create &GPGME registry key (needed fpr GnuPG)";   GroupDescription: "Registry settings:"; Components: settings;
-
-Name: "reg_gnupg";              Description: "Create Gnu&PG registry key";                      GroupDescription: "Registry settings:"; Components: gpg;
 
 [Files]
 Source: "D:\_pak\Sylpheed.078.claws\bin\sylpheed.exe";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
@@ -66,8 +62,6 @@ Source: "D:\_pak\Sylpheed.078.claws\themes\*.*";                DestDir: "{app}\
 ; Claws specific
 Source: "D:\_pak\Sylpheed.078.claws\bin\libeay32.dll";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 Source: "D:\_pak\Sylpheed.078.claws\bin\ssleay32.dll";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
-
-Source: "D:\_pak\gnupg\*.*";                                    DestDir: "C:\gnupg";                    CopyMode: onlyifdoesntexist; Components: gpg
 
 [INI]
 Filename: "{app}\doc\gtk-w32.url";                              Section: "InternetShortcut"; Key: "URL"; String: "http://www.gimp.org/~tml/gimp/win32/"
@@ -103,8 +97,6 @@ Name: "{group}\links\Sylpheed-patches";                         Filename: "{app}
 [Registry]
 Root: HKCU; Subkey: "Software\Sylpheed";                        Flags: uninsdeletekey; Tasks: reg_sylpheed
 Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: string;      ValueName: "InstalledDir";      ValueData: "{app}";             Tasks: reg_sylpheed
-Root: HKCU; Subkey: "Software\Software\GNU\GnuPG";                                              ValueType: string;      ValueName: "gpgProgram";        ValueData: "C:\gnupg\gpg.exe";  Tasks: reg_gpgme
-Root: HKCU; Subkey: "Software\Software\GNU\GnuPG";                                              ValueType: string;      ValueName: "InstalledDir";      ValueData: "C:\gnupg";  Components: gpg
 
 Root: HKCR; Subkey: "mailto";                                   Flags: uninsclearvalue; Tasks: reg_defaultmailer
 Root: HKCR; Subkey: "mailto";                                                                   ValueType: string;      ValueName: "";                  ValueData: "URL:MailTo-Protocol";                       Flags: uninsclearvalue; Tasks: reg_defaultmailer
