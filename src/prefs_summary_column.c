@@ -72,7 +72,8 @@ static const gchar *const col_name[N_SUMMARY_COLS] = {
 	N_("Date"),		/* S_COL_DATE    */
 	N_("Size"),		/* S_COL_SIZE    */
 	N_("Number"),		/* S_COL_NUMBER  */
-        N_("Score")		/* S_COL_SCORE   */
+        N_("Score"),		/* S_COL_SCORE   */
+	N_("Locked"),		/* S_COL_LOCKED  */
 };
 
 static SummaryColumnState default_state[N_SUMMARY_COLS] = {
@@ -84,7 +85,8 @@ static SummaryColumnState default_state[N_SUMMARY_COLS] = {
 	{ S_COL_DATE   , TRUE  },
 	{ S_COL_SIZE   , TRUE  },
 	{ S_COL_NUMBER , FALSE },
-        { S_COL_SCORE  , FALSE }
+        { S_COL_SCORE  , FALSE },
+	{ S_COL_LOCKED , FALSE  },
 };
 
 static void prefs_summary_column_create	(void);

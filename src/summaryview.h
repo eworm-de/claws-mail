@@ -48,10 +48,11 @@ typedef enum
 	S_COL_DATE,
 	S_COL_SIZE,
 	S_COL_NUMBER,
-	S_COL_SCORE
+	S_COL_SCORE,
+	S_COL_LOCKED
 } SummaryColumnType;
 
-#define N_SUMMARY_COLS	9
+#define N_SUMMARY_COLS	10
 
 typedef enum
 {
@@ -231,6 +232,7 @@ void summary_mark		  (SummaryView		*summaryview);
 void summary_unmark		  (SummaryView		*summaryview);
 void summary_mark_as_unread	  (SummaryView		*summaryview);
 void summary_mark_as_read	  (SummaryView		*summaryview);
+void summary_mark_as_locked	  (SummaryView		*summaryview);
 void summary_mark_all_read	  (SummaryView		*summaryview);
 void summary_add_address	  (SummaryView		*summaryview);
 void summary_select_all		  (SummaryView		*summaryview);

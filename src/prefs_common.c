@@ -463,6 +463,8 @@ static PrefParam param[] = {
 	 &prefs_common.summary_col_visible[S_COL_NUMBER], P_BOOL, NULL, NULL, NULL},
 	{"summary_col_show_score", "FALSE",
 	 &prefs_common.summary_col_visible[S_COL_SCORE], P_BOOL, NULL, NULL, NULL},
+	{"summary_col_show_locked", "FALSE",
+	 &prefs_common.summary_col_visible[S_COL_LOCKED], P_BOOL, NULL, NULL, NULL},
 
 	{"summary_col_pos_mark", "0",
 	  &prefs_common.summary_col_pos[S_COL_MARK], P_INT, NULL, NULL, NULL},
@@ -482,6 +484,8 @@ static PrefParam param[] = {
 	  &prefs_common.summary_col_pos[S_COL_NUMBER], P_INT, NULL, NULL, NULL},
 	{"summary_col_pos_score", "8",
 	 &prefs_common.summary_col_pos[S_COL_SCORE], P_INT, NULL, NULL, NULL},
+	{"summary_col_pos_locked", "9",
+	 &prefs_common.summary_col_pos[S_COL_LOCKED], P_INT, NULL, NULL, NULL},
 
 	{"summary_col_size_mark", "10",
 	 &prefs_common.summary_col_size[S_COL_MARK], P_INT, NULL, NULL, NULL},
@@ -501,6 +505,8 @@ static PrefParam param[] = {
 	 &prefs_common.summary_col_size[S_COL_NUMBER], P_INT, NULL, NULL, NULL},
 	{"summary_col_size_score", "40",
 	 &prefs_common.summary_col_size[S_COL_SCORE], P_INT, NULL, NULL, NULL},
+	{"summary_col_size_locked", "13",
+	 &prefs_common.summary_col_size[S_COL_LOCKED], P_INT, NULL, NULL, NULL},
 
 	/* Widget size */
 	{"folderview_width", "179", &prefs_common.folderview_width, P_INT,

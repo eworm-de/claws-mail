@@ -89,6 +89,7 @@
 #include "pixmaps/forwarded.xpm"
 #include "pixmaps/clip.xpm"
 #include "pixmaps/ignorethread.xpm"
+#include "pixmaps/locked.xpm"
 
 #define STATUSBAR_PUSH(mainwin, str) \
 { \
@@ -105,6 +106,7 @@
 
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_UNREAD_WIDTH	13
+#define SUMMARY_COL_LOCKED_WIDTH	13
 #define SUMMARY_COL_MIME_WIDTH		10
 
 static GdkFont *boldfont;
@@ -135,6 +137,8 @@ static GdkPixmap *forwardedxpm;
 static GdkBitmap *forwardedxpmmask;
 static GdkPixmap *ignorethreadxpm;
 static GdkBitmap *ignorethreadxpmmask;
+static GdkPixmap *lockedxpm;
+static GdkBitmap *lockedxpmmask;
 
 static GdkPixmap *clipxpm;
 static GdkBitmap *clipxpmmask;
@@ -206,6 +210,8 @@ static void summary_mark_row_as_read	(SummaryView		*summaryview,
 					 GtkCTreeNode		*row);
 static void summary_mark_row_as_unread	(SummaryView		*summaryview,
 					 GtkCTreeNode		*row);
+static void summary_mark_row_as_locked  (SummaryView *summaryview,
+				         GtkCTreeNode *row);
 static void summary_delete_row		(SummaryView		*summaryview,
 					 GtkCTreeNode		*row);
 static void summary_unmark_row		(SummaryView		*summaryview,
@@ -399,6 +405,7 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/_Mark/---"),		NULL, NULL,		0, "<Separator>"},
 	{N_("/_Mark/Mark as unr_ead"),	NULL, summary_mark_as_unread, 0, NULL},
 	{N_("/_Mark/Mark as rea_d"),	NULL, summary_mark_as_read, 0, NULL},
+	{N_("/_Mark/Mark as _locked"),	NULL, summary_mark_as_locked, 0, NULL},
 	{N_("/_Mark/Mark all read"),    NULL, summary_mark_all_read, 0, NULL},
 	{N_("/_Mark/Ignore thread"),	NULL, summary_ignore_thread, 0, NULL},
 	{N_("/_Mark/Unignore thread"),	NULL, summary_unignore_thread, 0, NULL},
@@ -535,6 +542,7 @@ void summary_init(SummaryView *summaryview)
 		      forwarded_xpm);
 	PIXMAP_CREATE(summaryview->ctree, ignorethreadxpm, ignorethreadxpmmask,
 		      ignorethread_xpm);
+	PIXMAP_CREATE(summaryview->ctree, lockedxpm, lockedxpmmask, locked_xpm);		      
 	PIXMAP_CREATE(summaryview->ctree, clipxpm, clipxpmmask, clip_xpm);
 	PIXMAP_CREATE(summaryview->hbox, folderxpm, folderxpmmask,
 		      dir_open_xpm);
@@ -993,6 +1001,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 
 	menu_set_sensitive(ifactory, "/Mark/Mark as unread", TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Mark as read",   TRUE);
+	menu_set_sensitive(ifactory, "/Mark/Mark as locked", TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Mark all read", TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Ignore thread",   TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Unignore thread", TRUE);
@@ -2491,6 +2500,14 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_MARK], NULL);
 	}
 
+	if (MSG_IS_LOCKED(flags)) {
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_LOCKED],
+					  lockedxpm, lockedxpmmask);
+	}
+	else {
+		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_LOCKED], NULL);
+	}
+
 	if (MSG_IS_MIME(flags)) {
 		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
 					  clipxpm, clipxpmmask);
@@ -2637,6 +2654,29 @@ static void summary_mark_row_as_unread(SummaryView *summaryview,
 	summary_set_row_marks(summaryview, row);
 }
 
+static void summary_mark_row_as_locked(SummaryView *summaryview,
+				       GtkCTreeNode *row)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	MsgInfo *msginfo;
+
+	msginfo = gtk_ctree_node_get_row_data(ctree, row);
+	if (MSG_IS_DELETED(msginfo->flags)) {
+		msginfo->to_folder = NULL;
+		MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_DELETED);
+		summaryview->deleted--;
+	}
+	if (!MSG_IS_LOCKED(msginfo->flags)) {
+		MSG_SET_PERM_FLAGS(msginfo->flags, MSG_LOCKED);
+		debug_print(_("Message %d is marked as locked\n"),
+			    msginfo->msgnum);
+	}
+
+	CHANGE_FLAGS(msginfo);
+
+	summary_set_row_marks(summaryview, row);
+}
+
 void summary_mark_as_unread(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
@@ -2644,6 +2684,18 @@ void summary_mark_as_unread(SummaryView *summaryview)
 
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
 		summary_mark_row_as_unread(summaryview,
+					   GTK_CTREE_NODE(cur->data));
+
+	summary_status_show(summaryview);
+}
+
+void summary_mark_as_locked(SummaryView *summaryview)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GList *cur;
+
+	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
+		summary_mark_row_as_locked(summaryview,
 					   GTK_CTREE_NODE(cur->data));
 
 	summary_status_show(summaryview);
@@ -3787,6 +3839,8 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 					   GTK_JUSTIFY_CENTER);
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_UNREAD],
 					   GTK_JUSTIFY_CENTER);
+	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_LOCKED],
+					   GTK_JUSTIFY_CENTER);
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_MIME],
 					   GTK_JUSTIFY_CENTER);
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_SIZE],
@@ -3799,6 +3853,8 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 				   SUMMARY_COL_MARK_WIDTH);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_UNREAD],
 				   SUMMARY_COL_UNREAD_WIDTH);
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_LOCKED],
+				   SUMMARY_COL_LOCKED_WIDTH);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_MIME],
 				   SUMMARY_COL_MIME_WIDTH);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_SUBJECT],

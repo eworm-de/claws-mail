@@ -65,6 +65,7 @@ typedef enum
 #define MSG_CLABEL_BROWN	MSG_CLABEL_7
 
 	MSG_IGNORE_THREAD   = 1 << 10,   /* ignore threads */
+	MSG_LOCKED	    = 1 << 11,   /* msg is locked  */
 
 	/* RESERVED */
 	MSG_RESERVED_CLAWS  = 1 << 30,	/* for sylpheed-claws */
@@ -109,6 +110,7 @@ typedef enum
 #define MSG_IS_MARKED(msg)		(((msg).perm_flags & MSG_MARKED) != 0)
 #define MSG_IS_DELETED(msg)		(((msg).perm_flags & MSG_DELETED) != 0)
 #define MSG_IS_REPLIED(msg)		(((msg).perm_flags & MSG_REPLIED) != 0)
+#define MSG_IS_LOCKED(msg)		(((msg).perm_flags & MSG_LOCKED) != 0)
 #define MSG_IS_FORWARDED(msg)		(((msg).perm_flags & MSG_FORWARDED) != 0)
 
 #define MSG_GET_COLORLABEL(msg)		(((msg).perm_flags & MSG_CLABEL_FLAG_MASK))
