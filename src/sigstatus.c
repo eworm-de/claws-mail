@@ -40,33 +40,31 @@
  * with too many of them */
 #define MY_TIMEOUT (30*1000)
 
-
 struct gpgmegtk_sig_status_s {
-        GtkWidget *mainwindow;
-        GtkWidget *label;
-        int running;
-        int destroy_pending;
-        guint timeout_id;
-        int timeout_id_valid;
+	GtkWidget *mainwindow;
+	GtkWidget *label;
+	gint running;
+	gint destroy_pending;
+	guint timeout_id;
+	gint timeout_id_valid;
 };
 
 
 static void do_destroy(GpgmegtkSigStatus hd)
 {
-        if (!hd->running ) {
-                if (hd->mainwindow) {
-                        gtk_widget_destroy ( hd->mainwindow );
-                        hd->mainwindow = NULL;
-                }
-                if (hd->timeout_id_valid) {
-                        gtk_timeout_remove(hd->timeout_id);
-                        hd->timeout_id_valid = 0;
-                }
-                if(hd->destroy_pending) 
-                        g_free(hd);
-        }
+	if (!hd->running) {
+		if (hd->mainwindow) {
+			gtk_widget_destroy ( hd->mainwindow );
+			hd->mainwindow = NULL;
+		}
+		if (hd->timeout_id_valid) {
+			gtk_timeout_remove(hd->timeout_id);
+			hd->timeout_id_valid = 0;
+		}
+		if (hd->destroy_pending)
+		g_free(hd);
+	}
 }
-
 
 static void okay_cb(GtkWidget *widget, gpointer data)
 {
@@ -75,7 +73,6 @@ static void okay_cb(GtkWidget *widget, gpointer data)
         hd->running = 0;
         do_destroy(hd);
 }
-
 
 static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data)
 {
@@ -87,7 +84,6 @@ static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data)
 	return TRUE;
 }
 
-
 static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
         GpgmegtkSigStatus hd = data;
@@ -98,8 +94,7 @@ static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
         }
 }
 
-
-GpgmegtkSigStatus gpgmegtk_sig_status_create()
+GpgmegtkSigStatus gpgmegtk_sig_status_create(void)
 {
 	GtkWidget *window;
 	GtkWidget *vbox;
@@ -136,7 +131,7 @@ GpgmegtkSigStatus gpgmegtk_sig_status_create()
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 8);
 	gtk_widget_show(label);
 
-	gtkut_button_set_create(&okay_area, &okay_btn, _("Okay"),
+	gtkut_button_set_create(&okay_area, &okay_btn, _("OK"),
 				NULL, NULL, NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), okay_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(okay_btn);
@@ -158,6 +153,7 @@ static gint timeout_cb(gpointer data)
     hd->running = 0;
     hd->timeout_id_valid = 0;
     do_destroy(hd);
+
     return FALSE;
 }
 
@@ -174,28 +170,27 @@ void gpgmegtk_sig_status_destroy(GpgmegtkSigStatus hd)
         }
 }
 
-
 /* Fixme: remove status and get it from the context */
 void gpgmegtk_sig_status_update(GpgmegtkSigStatus hd, GpgmeCtx ctx)
 {
-    int idx;
+    gint idx;
     time_t created;
     GpgmeSigStat status;
-    char *text = NULL;
+    gchar *text = NULL;
 
     if (!hd || !hd->running || !ctx)
         return;
 
-    for (idx=0; gpgme_get_sig_status(ctx, idx, &status, &created); idx++ ) {
-        char *tmp;
-        const char *userid;
+	for (idx = 0; gpgme_get_sig_status(ctx, idx, &status, &created);
+	     idx++) {
+        gchar *tmp;
+        const gchar *userid;
         GpgmeKey key = NULL;
 
         if ( !gpgme_get_sig_key (ctx, idx, &key) ) {
-            userid = gpgme_key_get_string_attr (key, GPGME_ATTR_USERID,
-                                                NULL, 0);
-        }
-        else
+			userid = gpgme_key_get_string_attr
+				(key, GPGME_ATTR_USERID, NULL, 0);
+        } else
             userid = "[?]";
 
         tmp = g_strdup_printf ( "%s%s%s from \"%s\"",
@@ -214,7 +209,6 @@ void gpgmegtk_sig_status_update(GpgmegtkSigStatus hd, GpgmeCtx ctx)
     while (gtk_events_pending())
         gtk_main_iteration();
 }
-
 
 const char *gpgmegtk_sig_status_to_string(GpgmeSigStat status)
 {
@@ -239,6 +233,7 @@ const char *gpgmegtk_sig_status_to_string(GpgmeSigStat status)
             case GPGME_SIG_STAT_ERROR:
                 result = _("Error verifying the signature");
                 break;
+	default:
         }
 
         return result;

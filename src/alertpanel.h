@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,10 @@ typedef enum
 	G_ALERTOTHER,
 	G_ALERTWAIT,
 
-	G_ALERT_VALUE_MASK	= 0x0000FFFF,
-	G_ALERTDISABLE		= 0x00010000
+	G_ALERTDISABLE	= 1 << 16
 } AlertValue;
+
+#define G_ALERT_VALUE_MASK	0x0000ffff
 
 AlertValue alertpanel	(const gchar	*title,
 			 const gchar	*message,
@@ -43,8 +44,8 @@ AlertValue alertpanel	(const gchar	*title,
 void alertpanel_message	(const gchar	*title,
 			 const gchar	*message);
 
-AlertValue alertpanel_message_with_disable(const gchar	*title,
-					   const gchar	*message);
+AlertValue alertpanel_message_with_disable	(const gchar	*title,
+						 const gchar	*message);
 
 void alertpanel_notice	(const gchar	*format,
 			 ...) G_GNUC_PRINTF(1, 2);

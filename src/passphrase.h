@@ -24,4 +24,4 @@
 void gpgmegtk_set_passphrase_grab (gint yesno);
 gchar *gpgmegtk_passphrase_mbox (const gchar *desc);
 
-#endif /*GPGMEGTK_PASSPHRASE_H*/
+#endif /* GPGMEGTK_PASSPHRASE_H */

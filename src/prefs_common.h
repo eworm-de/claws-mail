@@ -156,13 +156,13 @@ struct _PrefsCommon
 	gchar *mime_audio_player;
 
 	/* Privacy */
-	gboolean gpgme_warning;
 	gboolean default_encrypt;
 	gboolean default_sign;
-        gboolean auto_check_signatures;
-        gboolean signature_popup;
+	gboolean auto_check_signatures;
+	gboolean gpg_signature_popup;
 	gboolean passphrase_grab;
 	gchar *default_signkey;
+	gboolean gpg_warning;
 
 	/* Interface */
 	gboolean sep_folder;

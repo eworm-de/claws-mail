@@ -121,7 +121,8 @@ gchar *itos(gint n)
 {
 	static gchar nstr[11];
 
-	return itos_buf(nstr, n);
+	g_snprintf(nstr, 11, "%d", n);
+	return nstr;
 }
 
 gchar *to_human_readable(off_t size)

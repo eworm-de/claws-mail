@@ -1,3 +1,51 @@
+2001-05-27
+
+	* src/passphrase.c: enclosed with #if USE_GPGME.
+	* src/prefs_account.c: added NNTP AUTH check button.
+	* src/alertpanel.[ch]: alertpanel_create(): added new argument
+	  `can_disable', all existing callers changed to pass FALSE;
+	  created a check button to disable the message.
+	  alertpanel_message_with_disable(): new.
+	  alertpanel_show(): mask value with G_ALERT_VALUE_MASK.
+	  alertpanel_button_toggled(): new.
+	  alertpanel_button_clicked(), alertpanel_close(): set value using
+	  G_ALERT_VALUE_MASK.
+	* src/prefs_common.[ch]: added option to toggle GnuPG signature
+	  check popup window, and GnuPG warning.
+	* src/rfc2015.c: check_signature(): show signature check dialog
+	  only if it is enabled.
+	* src/main.c: modified GnuPG checking.
+	* src/main.c
+	  src/prefs_common.c: fixed some compilation bugs when enabled
+	  GPGME.
+
+2001-05-26
+
+	* src/codeconv.c: conv_get_code_conv_func(): fix for ISO-8859-*
+	  encodings with libjconv.
+	  conv_encode_header(): fixed an endless loop bug when encountering
+	  an invalid wide character (thanks to Alte).
+	* src/headerview.c: SET_FONT_STYLE(): fixed segfault with invalid
+	  bold font.
+	* src/imap.c: imap_create_folder(): don't create folder if the
+	  name is INBOX.
+	* src/mainwindow.c: main_window_reflect_prefs_all(): hide the
+	  execute button when immediate execution is enabled.
+
+2001-05-22
+
+	* README
+	  README.jp: added the "How to run" section.
+
+2001-05-19
+
+	* merged NNTP AUTH from the claws branch.
+	* src/news.[ch]: supported NNTP AUTH.
+	* src/nntp.[ch]: wrapped SockInfo with NNTPSockInfo for NNTP AUTH.
+	* INSTALL
+	  INSTALL.jp: modified the confirmation list and the warning about
+	  threads.
+
 2001-05-18
 
 	* src/gtkutils.[ch]: moved folderview_find_collapsed_parent() to
@@ -8,6 +56,8 @@
 	* src/main.c: main(): moved parse_cmd_opt() before gtk_init()
 	  so that X is not necessary for --help and --version.
 	  parse_cmd_opt(): changed g_get_prgname() to g_basename(argv[0]).
+	* src/folderview.c: folderview_update_node(): a fix for collapsed
+	  nodes.
 
 2001-05-17
 

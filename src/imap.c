@@ -484,7 +484,6 @@ void imap_scan_folder(Folder *folder, FolderItem *item)
 FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 			       const gchar *name)
 {
-	gint ok;
 	gchar *dirpath, *imappath;
 	IMAPSession *session;
 	FolderItem *new_item;
@@ -505,7 +504,9 @@ FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	imappath = g_strdup(dirpath);
 	/* imap_path_subst_slash_to_dot(imappath); */
 
-	if (strcmp(name, "INBOX") != 0) {
+	if (strcasecmp(name, "INBOX") != 0) {
+		gint ok;
+
 		ok = imap_create(SESSION(session)->sock, imappath);
 		if (ok != IMAP_SUCCESS) {
 			log_warning(_("can't create mailbox\n"));

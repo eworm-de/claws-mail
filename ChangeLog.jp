@@ -1,3 +1,51 @@
+2001-05-27
+
+	* src/passphrase.c: #if USE_GPGME で囲った。
+	* src/prefs_account.c: NNTP AUTH チェックボタンを追加。
+	* src/alertpanel.[ch]: alertpanel_create(): 新たな引数 `can_disable'
+	  を追加。全ての呼び出し側を FALSE を渡すように変更。
+	  メッセージを無効にするチェックボタンを作成。
+	  alertpanel_message_with_disable(): 新規。
+	  alertpanel_show(): G_ALERT_VALUE_MASK で値をマスクするようにした。
+	  alertpanel_button_toggled(): 新規。
+	  alertpanel_button_clicked(), alertpanel_close(): G_ALERT_VALUE_MASK
+	  を使って値をセットするようにした。
+	* src/prefs_common.[ch]: GnuPG 署名検証ポップアップウィンドウと、
+	  GnuPG の警告を切り替えるオプションを追加。
+	* src/rfc2015.c: check_signature(): 有効な場合のみ署名チェック
+	  ダイアログを表示するようにした。
+	* src/main.c: GnuPG のチェックを修正。
+	* src/main.c
+	  src/prefs_common.c: GPGME を有効にしたときのコンパイル時のバグを
+	  いくつか修正。
+
+2001-05-26
+
+	* src/codeconv.c: conv_get_code_conv_func(): libjconv 使用時の
+	  ISO-8859-* エンコーディングについて修正。
+	  conv_encode_header(): 不正なワイドキャラクタが現れたとき無限ループ
+	  になるバグを修正(Alte さん thanks)。
+	* src/headerview.c: SET_FONT_STYLE(): ボールドフォントが無効のとき
+	  の segfault を修正。
+	* src/imap.c: imap_create_folder(): フォルダ名が INBOX のときは
+	  フォルダを作成しないようにした。
+	* src/mainwindow.c: main_window_reflect_prefs_all(): 即座に実行が
+	  有効になっていれば実行ボタンを隠すようにした。
+
+2001-05-22
+
+	* README
+	  README.jp: 「起動方法」セクションを追加。
+
+2001-05-19
+
+	* claws ブランチから NNTP AUTH をマージ。
+	* src/news.[ch]: NNTP AUTH に対応。
+	* src/nntp.[ch]: NNTP AUTH のために SockInfo を NNTPSockInfo で
+	  ラップした。
+	* INSTALL
+	  INSTALL.jp: 動作確認リストとスレッドに関する警告を修正。
+
 2001-05-18
 
 	* src/gtkutils.[ch]: folderview_find_collapsed_parent() を
@@ -8,6 +56,8 @@
 	* src/main.c: main(): --help と --version に X が不要になるように
 	  parse_cmd_opt() を gtk_init() の前に移動。
 	  parse_cmd_opt(): g_get_prgname() を g_basename(argv[0]) に変更。
+	* src/folderview.c: folderview_update_node(): 折り畳まれたノード
+	  に対する修正。
 
 2001-05-17
 

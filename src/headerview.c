@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -141,9 +141,8 @@ void headerview_init(HeaderView *headerview)
 	GtkStyle *style; \
  \
 	style = gtk_style_copy(gtk_widget_get_style(headerview->wid)); \
-	if (boldfont) { \
+	if (boldfont) \
 		style->font = boldfont; \
-        } \
 	gtk_widget_set_style(headerview->wid, style); \
 }
 

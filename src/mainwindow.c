@@ -603,7 +603,6 @@ MainWindow *main_window_create(SeparateType type)
 	n_menu_entries = sizeof(mainwin_entries) / sizeof(mainwin_entries[0]);
 	menubar = menubar_create(window, mainwin_entries, 
 				 n_menu_entries, "<Main>", mainwin);
-
 	gtk_widget_show(menubar);
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 
@@ -828,6 +827,7 @@ void main_window_reflect_prefs_all(void)
 			gtk_widget_set_sensitive(mainwin->get_btn,    FALSE);
 			gtk_widget_set_sensitive(mainwin->getall_btn, FALSE);
 		}
+
 		if (prefs_common.immediate_exec)
 			gtk_widget_hide(mainwin->exec_btn);
 		else
@@ -1525,8 +1525,6 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 					   icon_wid,
 					   toolbar_exec_cb,
 					   mainwin);
-
-	gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
 
 	CREATE_TOOLBAR_ICON(stock_down_arrow_xpm);
 	next_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),

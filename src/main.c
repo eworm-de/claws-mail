@@ -73,8 +73,8 @@
 #include "gtkutils.h"
 
 #if USE_GPGME
-#include "rfc2015.h"
-#endif /* USE_GPGME */
+#  include "rfc2015.h"
+#endif
 
 gchar *prog_version;
 gchar *startup_dir;
@@ -156,6 +156,8 @@ int main(int argc, char *argv[])
 	gtk_widget_push_colormap(gdk_imlib_get_colormap());
 #endif
 
+	srandom((gint)time(NULL));
+
 	/* parse gtkrc files */
 	userrc = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S, ".gtkrc",
 			     NULL);
@@ -202,7 +204,7 @@ int main(int argc, char *argv[])
 				      "rename");
 	}
 
-	srandom((gint)time(NULL));
+	prefs_common_read_config();
 
 #if USE_GPGME
 	if (gpgme_check_engine()) {  /* Also does some gpgme init */
@@ -210,21 +212,20 @@ int main(int argc, char *argv[])
 		debug_print("gpgme_engine_version:\n%s\n",
 			    gpgme_get_engine_info());
 
-		if (prefs_common.gpgme_warning) {
-			AlertValue v = alertpanel_message_with_disable
+		if (prefs_common.gpg_warning) {
+			AlertValue val;
+
+			val = alertpanel_message_with_disable
 				(_("Warning"),
 				 _("GnuPG is not installed properly.\n"
 				   "OpenPGP support disabled."));
-			if (v & G_ALERTDISABLE) {
-				prefs_common.gpgme_warning = FALSE;
-				prefs_common_save_config();
-			}
+			if (val & G_ALERTDISABLE)
+				prefs_common.gpg_warning = FALSE;
 		}
 	}
 	gpgme_register_idle(idle_function_for_gpgme);
 #endif
 
-	prefs_common_read_config();
 	prefs_common_save_config();
 	prefs_filter_read_config();
 	prefs_filter_write_config();

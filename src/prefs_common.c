@@ -137,12 +137,12 @@ static struct Message {
 
 #if USE_GPGME
 static struct Privacy {
-	GtkWidget *checkbtn_gpgme_warning;
 	GtkWidget *checkbtn_default_encrypt;
 	GtkWidget *checkbtn_default_sign;
 	GtkWidget *checkbtn_auto_check_signatures;
+	GtkWidget *checkbtn_gpg_signature_popup;
 	GtkWidget *checkbtn_passphrase_grab;
-	GtkWidget *checkbtn_signature_popup;
+	GtkWidget *checkbtn_gpg_warning;
 	GtkWidget *optmenu_default_signkey;
 } privacy;
 #endif
@@ -460,9 +460,6 @@ static PrefParam param[] = {
 
 #if USE_GPGME
 	/* Privacy */
-	{"gpgme_warning", "TRUE", &prefs_common.gpgme_warning, P_BOOL,
-	 &privacy.checkbtn_gpgme_warning,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"default_encrypt", "FALSE", &prefs_common.default_encrypt, P_BOOL,
 	 &privacy.checkbtn_default_encrypt,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -473,15 +470,18 @@ static PrefParam param[] = {
 	 &prefs_common.auto_check_signatures, P_BOOL,
 	 &privacy.checkbtn_auto_check_signatures,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"signature_popup", "FALSE",
-	 &prefs_common.signature_popup, P_BOOL,
-	 &privacy.checkbtn_signature_popup,
+	{"gpg_signature_popup", "FALSE",
+	 &prefs_common.gpg_signature_popup, P_BOOL,
+	 &privacy.checkbtn_gpg_signature_popup,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 #ifndef __MINGW32__
 	{"passphrase_grab", "FALSE", &prefs_common.passphrase_grab, P_BOOL,
 	 &privacy.checkbtn_passphrase_grab,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 #endif /* __MINGW32__ */
+	{"gpg_warning", "TRUE", &prefs_common.gpg_warning, P_BOOL,
+	 &privacy.checkbtn_gpg_warning,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"default_signkey", CS_AUTO, &prefs_common.default_signkey, P_STRING,
 	 &privacy.optmenu_default_signkey,
 	 prefs_common_default_signkey_set_data_from_optmenu,
@@ -1425,6 +1425,8 @@ static void prefs_display_create(void)
 	GtkWidget *button_dispitem;
 	GtkWidget *tmplabel, *tmpentry, *tmpbutton;
 	GtkWidget *entry_datefmt;
+	GtkTooltips *tooltips_datefmt;
+	GtkWidget *button_dispitem;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1433,7 +1435,7 @@ static void prefs_display_create(void)
 
 	PACK_FRAME(vbox1, frame_font, _("Font"));
 
-	table1 = gtk_table_new (4, 3, FALSE);
+	table1 = gtk_table_new (1, 3, FALSE);
 	gtk_widget_show (table1);
 	gtk_container_add (GTK_CONTAINER (frame_font), table1);
 	gtk_container_set_border_width (GTK_CONTAINER (table1), 8);
@@ -1544,9 +1546,9 @@ static void prefs_display_create(void)
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
 
-	label_datefmt = gtk_label_new(_("Date format"));
-	gtk_widget_show(label_datefmt);
-	gtk_box_pack_start(GTK_BOX (hbox1), label_datefmt, FALSE, FALSE, 0);
+	label_datefmt = gtk_label_new (_("Date format"));
+	gtk_widget_show (label_datefmt);
+	gtk_box_pack_start (GTK_BOX (hbox1), label_datefmt, FALSE, FALSE, 0);
 
 	entry_datefmt = gtk_entry_new ();
 	gtk_widget_show (entry_datefmt);
@@ -1646,15 +1648,15 @@ static void prefs_message_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
 
 	PACK_CHECK_BUTTON(hbox1, chkbtn_disphdr,
-		_("Display short headers on message view"));
+			  _("Display short headers on message view"));
 
 	button_edit_disphdr = gtk_button_new_with_label (_(" Edit... "));
 	gtk_widget_show (button_edit_disphdr);
 	gtk_box_pack_end (GTK_BOX (hbox1), button_edit_disphdr,
-				  FALSE, TRUE, 0);
+			  FALSE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (button_edit_disphdr), "clicked",
-					    GTK_SIGNAL_FUNC (prefs_display_header_open),
-					    NULL);
+			    GTK_SIGNAL_FUNC (prefs_display_header_open),
+			    NULL);
 
 	SET_TOGGLE_SENSITIVITY(chkbtn_disphdr, button_edit_disphdr);
 
@@ -1746,12 +1748,12 @@ static void prefs_privacy_create(void)
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
 	GtkWidget *hbox1;
-	GtkWidget *checkbtn_gpgme_warning;
 	GtkWidget *checkbtn_default_encrypt;
 	GtkWidget *checkbtn_default_sign;
 	GtkWidget *checkbtn_auto_check_signatures;
-	GtkWidget *checkbtn_signature_popup;
+	GtkWidget *checkbtn_gpg_signature_popup;
 	GtkWidget *checkbtn_passphrase_grab;
+	GtkWidget *checkbtn_gpg_warning;
 	GtkWidget *label;
 	GtkWidget *menuitem;
 	GtkWidget *optmenu;
@@ -1766,10 +1768,6 @@ static void prefs_privacy_create(void)
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
-	PACK_CHECK_BUTTON
-		(vbox2, checkbtn_gpgme_warning,
-		 _("Display warning on startup if GnuPG does not work"));
-
 	PACK_CHECK_BUTTON (vbox2, checkbtn_default_encrypt,
 			   _("Encrypt message by default"));
 
@@ -1779,13 +1777,17 @@ static void prefs_privacy_create(void)
 	PACK_CHECK_BUTTON (vbox2, checkbtn_auto_check_signatures,
 			   _("Automatically check signatures"));
 
-	PACK_CHECK_BUTTON (vbox2, checkbtn_signature_popup,
+	PACK_CHECK_BUTTON (vbox2, checkbtn_gpg_signature_popup,
 			   _("Show signature check result in a popup window"));
 
 #ifndef __MINGW32__
 	PACK_CHECK_BUTTON (vbox2, checkbtn_passphrase_grab,
 			   _("Grab input while entering a passphrase"));
 #endif
+
+	PACK_CHECK_BUTTON
+		(vbox2, checkbtn_gpg_warning,
+		 _("Display warning on startup if GnuPG doesn't work"));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -1806,13 +1808,14 @@ static void prefs_privacy_create(void)
 	/* FIXME: disabled because not implemented */
 	gtk_widget_set_sensitive(optmenu, FALSE);
 
-	privacy.checkbtn_gpgme_warning   = checkbtn_gpgme_warning;
 	privacy.checkbtn_default_encrypt = checkbtn_default_encrypt;
 	privacy.checkbtn_default_sign    = checkbtn_default_sign;
 	privacy.checkbtn_auto_check_signatures
 					 = checkbtn_auto_check_signatures;
-	privacy.checkbtn_signature_popup = checkbtn_signature_popup;
+	privacy.checkbtn_gpg_signature_popup
+					 = checkbtn_gpg_signature_popup;
 	privacy.checkbtn_passphrase_grab = checkbtn_passphrase_grab;
+	privacy.checkbtn_gpg_warning     = checkbtn_gpg_warning;
 	privacy.optmenu_default_signkey  = optmenu;
 }
 
@@ -2003,6 +2006,7 @@ static void prefs_other_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), uri_combo, TRUE, TRUE, 0);
 	gtkut_combo_set_items (GTK_COMBO (uri_combo),
 			       "netscape -remote 'openURL(%s,raise)'",
+			       "netscape '%s'",
 			       "gnome-moz-remote --raise --newwin '%s'",
 			       "kterm -e w3m '%s'",
 			       "kterm -e lynx '%s'",
@@ -2064,7 +2068,7 @@ void prefs_quote_colors_dialog(void)
 	if (!quote_color_win)
 		prefs_quote_colors_dialog_create();
 	gtk_widget_show(quote_color_win);
-	manage_window_set_transient(GTK_WINDOW(dialog.window));
+	manage_window_set_transient(GTK_WINDOW(quote_color_win));
 
 	gtk_main();
 	gtk_widget_hide(quote_color_win);

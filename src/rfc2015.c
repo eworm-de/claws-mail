@@ -20,7 +20,8 @@
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
-#ifdef USE_GPGME
+
+#if USE_GPGME
 
 #include "defs.h"
 
@@ -279,11 +280,10 @@ static void check_signature (MimeInfo *mimeinfo, MimeInfo *partinfo, FILE *fp)
     GpgmeError err;
     GpgmeData sig = NULL, text = NULL;
     GpgmeSigStat status = GPGME_SIG_STAT_NONE;
-    GpgmegtkSigStatus statuswindow;
+    GpgmegtkSigStatus statuswindow = NULL;
     const char *result = NULL;
-    gboolean signature_popup = prefs_common.signature_popup;
 
-    if (signature_popup)
+    if (prefs_common.gpg_signature_popup)
 	statuswindow = gpgmegtk_sig_status_create ();
 
     err = gpgme_new (&ctx);
@@ -319,8 +319,8 @@ static void check_signature (MimeInfo *mimeinfo, MimeInfo *partinfo, FILE *fp)
 leave:
     result = gpgmegtk_sig_status_to_string(status);
     debug_print("verification status: %s\n", result);
-    if (signature_popup)
-	gpgmegtk_sig_status_update(statuswindow,ctx);
+    if (prefs_common.gpg_signature_popup)
+	gpgmegtk_sig_status_update (statuswindow,ctx);
 
     g_assert (!err); /* FIXME: Hey: this may indeed happen */
     g_free (partinfo->sigstatus);
@@ -329,8 +329,8 @@ leave:
     gpgme_data_release (sig);
     gpgme_data_release (text);
     gpgme_release (ctx);
-    if (signature_popup)
-	gpgmegtk_sig_status_destroy(statuswindow);
+    if (prefs_common.gpg_signature_popup)
+	gpgmegtk_sig_status_destroy (statuswindow);
 }
 
 static const char *

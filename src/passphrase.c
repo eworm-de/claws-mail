@@ -20,6 +20,8 @@
 #  include <config.h>
 #endif
 
+#if USE_GPGME
+
 #include <string.h>
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
@@ -251,3 +253,5 @@ create_description (const gchar *desc)
 
     return label;
 }
+
+#endif /* USE_GPGME */

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,16 +50,17 @@ static void alertpanel_create		(const gchar	*title,
 					 const gchar	*button2_label,
 					 const gchar	*button3_label,
 					 gboolean	 can_disable);
-static void alertpanel_button_toggled	(GtkToggleButton *button,
-					 gpointer	 data);
-static void alertpanel_button_clicked	(GtkWidget	*widget,
-					 gpointer	 data);
-static gint alertpanel_deleted		(GtkWidget	*widget,
-					 GdkEventAny	*event,
-					 gpointer	 data);
-static void alertpanel_close		(GtkWidget	*widget,
-					 GdkEventAny	*event,
-					 gpointer	 data);
+
+static void alertpanel_button_toggled	(GtkToggleButton	*button,
+					 gpointer		 data);
+static void alertpanel_button_clicked	(GtkWidget		*widget,
+					 gpointer		 data);
+static gint alertpanel_deleted		(GtkWidget		*widget,
+					 GdkEventAny		*event,
+					 gpointer		 data);
+static void alertpanel_close		(GtkWidget		*widget,
+					 GdkEventAny		*event,
+					 gpointer		 data);
 
 AlertValue alertpanel(const gchar *title,
 		      const gchar *message,
@@ -91,8 +92,8 @@ void alertpanel_message(const gchar *title, const gchar *message)
 	alertpanel_show();
 }
 
-AlertValue alertpanel_message_with_disable(const gchar	*title,
-					   const gchar	*message)
+AlertValue alertpanel_message_with_disable(const gchar *title,
+					   const gchar *message)
 {
 	if (alertpanel_is_open)
 		return 0;
@@ -101,6 +102,7 @@ AlertValue alertpanel_message_with_disable(const gchar	*title,
 
 	alertpanel_create(title, message, NULL, NULL, NULL, TRUE);
 	alertpanel_show();
+
 	return value;
 }
 
@@ -174,15 +176,13 @@ static void alertpanel_create(const gchar *title,
 	GtkWidget *label;
 	GtkWidget *hbox;
 	GtkWidget *vbox;
+	GtkWidget *disable_chkbtn;
 	GtkWidget *confirm_area;
 	GtkWidget *button1;
 	GtkWidget *button2;
 	GtkWidget *button3;
 	const gchar *label2;
 	const gchar *label3;
-	GtkWidget *hbox2;
-	GtkWidget *disable_chkbtn;
-	GtkWidget *box_for_buttons;
 
 	debug_print(_("Creating alert panel dialog...\n"));
 
@@ -244,24 +244,7 @@ static void alertpanel_create(const gchar *title,
 				button2_label ? &button2 : NULL, label2,
 				button3_label ? &button3 : NULL, label3);
 
-	if (can_disable) {
-		hbox2 = gtk_hbox_new(FALSE, 8);
-		gtk_box_pack_end(GTK_BOX(vbox), hbox2, FALSE, FALSE, 0);
-		disable_chkbtn = gtk_check_button_new_with_label
-			(_("Show this message next time"));
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(disable_chkbtn),
-					     TRUE);
-		gtk_signal_connect(GTK_OBJECT(disable_chkbtn), "toggled",
-				   GTK_SIGNAL_FUNC(alertpanel_button_toggled),
-				   GUINT_TO_POINTER(G_ALERTDISABLE));
-		gtk_box_pack_start(GTK_BOX(hbox2), disable_chkbtn,
-				   TRUE, TRUE, 0);
-		box_for_buttons = hbox2;
-	} else
-		box_for_buttons = vbox;
-
-	gtk_box_pack_end(GTK_BOX(box_for_buttons), confirm_area,
-			 FALSE, FALSE, 0);
+	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(button1);
 	gtk_widget_grab_focus(button1);
 	if (button2_label && *button2_label == '+') {
@@ -275,15 +258,27 @@ static void alertpanel_create(const gchar *title,
 
 	gtk_signal_connect(GTK_OBJECT(button1), "clicked",
 			   GTK_SIGNAL_FUNC(alertpanel_button_clicked),
-			   (gpointer)G_ALERTDEFAULT);
+			   GUINT_TO_POINTER(G_ALERTDEFAULT));
 	if (button2_label)
 		gtk_signal_connect(GTK_OBJECT(button2), "clicked",
 				   GTK_SIGNAL_FUNC(alertpanel_button_clicked),
-				   (gpointer)G_ALERTALTERNATE);
+				   GUINT_TO_POINTER(G_ALERTALTERNATE));
 	if (button3_label)
 		gtk_signal_connect(GTK_OBJECT(button3), "clicked",
 				   GTK_SIGNAL_FUNC(alertpanel_button_clicked),
-				   (gpointer)G_ALERTOTHER);
+				   GUINT_TO_POINTER(G_ALERTOTHER));
+
+	if (can_disable) {
+		disable_chkbtn = gtk_check_button_new_with_label
+			(_("Show this message next time"));
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(disable_chkbtn),
+					     TRUE);
+		gtk_box_pack_end(GTK_BOX(vbox), disable_chkbtn,
+				 FALSE, FALSE, 0);
+		gtk_signal_connect(GTK_OBJECT(disable_chkbtn), "toggled",
+				   GTK_SIGNAL_FUNC(alertpanel_button_toggled),
+				   GUINT_TO_POINTER(G_ALERTDISABLE));
+	}
 
 	gtk_widget_show_all(dialog);
 }
