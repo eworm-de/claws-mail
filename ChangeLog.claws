@@ -1,3 +1,9 @@
+2002-10-05 [christoph]	0.8.3claws49
+
+	* src/gtkstext.c
+		check if line_start_cache is set in gtk_stext_update_text
+		(closes bug [ 618119 ] crash while doing search in folder)
+
 2002-10-05 [christoph]	0.8.3claws48
 
 	* src/imap.c
