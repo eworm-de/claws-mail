@@ -575,6 +575,68 @@ void summary_init(SummaryView *summaryview)
 	summary_set_menu_sensitive(summaryview);
 }
 
+GtkCTreeNode * summary_find_next_important_score(SummaryView *summaryview,
+						 GtkCTreeNode *current_node)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GtkCTreeNode *node;
+	MsgInfo *msginfo;
+	gint best_score = MIN_SCORE;
+	GtkCTreeNode *best_node = NULL;
+
+	if (current_node)
+		//node = current_node;
+		node = GTK_CTREE_NODE_NEXT(current_node);
+	else
+		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+
+	for (; node != NULL; node = GTK_CTREE_NODE_NEXT(node)) {
+		msginfo = gtk_ctree_node_get_row_data(ctree, node);
+		if (msginfo->score >= summaryview->important_score)
+			break;
+		if (msginfo->score > best_score) {
+			best_score = msginfo->score;
+			best_node = node;
+		}
+	}
+
+	if (node != NULL)
+		return node;
+	else
+		return best_node;
+}
+
+GtkCTreeNode * summary_find_prev_important_score(SummaryView *summaryview,
+						 GtkCTreeNode *current_node)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GtkCTreeNode *node;
+	MsgInfo *msginfo;
+	gint best_score = MIN_SCORE;
+	GtkCTreeNode *best_node = NULL;
+
+	if (current_node)
+		//node = current_node;
+		node = GTK_CTREE_NODE_PREV(current_node);
+	else
+		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+
+	for (; node != NULL; node = GTK_CTREE_NODE_PREV(node)) {
+		msginfo = gtk_ctree_node_get_row_data(ctree, node);
+		if (msginfo->score >= summaryview->important_score)
+			break;
+		if (msginfo->score > best_score) {
+			best_score = msginfo->score;
+			best_node = node;
+		}
+	}
+
+	if (node != NULL)
+		return node;
+	else
+		return best_node;
+}
+
 gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 		      gboolean update_cache)
 {
@@ -653,7 +715,36 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	for(cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
 		MsgInfo * msginfo = (MsgInfo *) cur->data;
 
-		msginfo->score = score_message(prefs_scoring, msginfo);
+		msginfo->score = score_message(global_scoring, msginfo);
+		if (msginfo->score != MAX_SCORE &&
+		    msginfo->score != MIN_SCORE) {
+			msginfo->score += score_message(item->prefs->scoring,
+							msginfo);
+		}
+	}
+
+	summaryview->killed_messages = NULL;
+	if ((global_scoring || item->prefs->scoring) &&
+	    (item->folder->type == F_NEWS)) {
+		GSList *not_killed;
+		gint kill_score;
+
+		not_killed = NULL;
+		kill_score = prefs_common.kill_score;
+		if (item->prefs->kill_score > kill_score)
+			kill_score = item->prefs->kill_score;
+		for(cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
+			MsgInfo * msginfo = (MsgInfo *) cur->data;
+
+			if (MSG_IS_NEWS(msginfo->flags) &&
+			    (msginfo->score <= kill_score))
+				summaryview->killed_messages = g_slist_append(summaryview->killed_messages, msginfo);
+			else
+				not_killed = g_slist_append(not_killed,
+							    msginfo);
+		}
+		g_slist_free(mlist);
+		mlist = not_killed;
 	}
 
 	STATUSBAR_POP(summaryview->mainwin);
@@ -691,11 +782,30 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	
 	gtk_clist_thaw(GTK_CLIST(ctree));
 
+	/* sort before */
+	sort_mode = prefs_folder_item_get_sort_mode(item);
+	sort_type = prefs_folder_item_get_sort_type(item);
+
+	if (sort_mode != SORT_BY_NONE) {
+		summaryview->sort_mode = sort_mode;
+		if (sort_type == GTK_SORT_DESCENDING)
+			summaryview->sort_type = GTK_SORT_ASCENDING;
+		else
+			summaryview->sort_type = GTK_SORT_DESCENDING;
+
+		summary_sort(summaryview, sort_mode);
+	}
+
 	if (is_refresh) {
 		summary_select_by_msgnum(summaryview, prev_msgnum);
 	} else {
 		/* select first unread message */
-		node = summary_find_next_unread_msg(summaryview, NULL);
+		if (sort_mode == SORT_BY_SCORE)
+			node = summary_find_next_important_score(summaryview,
+								 NULL);
+		else
+			node = summary_find_next_unread_msg(summaryview, NULL);
+
 		if (node == NULL && GTK_CLIST(ctree)->row_list != NULL)
 			node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list_end);
 		if (node) {
@@ -720,20 +830,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 
 	main_window_cursor_normal(summaryview->mainwin);
 
-	/* sort before */
-	sort_mode = prefs_folder_item_get_sort_mode(item);
-	sort_type = prefs_folder_item_get_sort_type(item);
-
-	if (sort_mode != SORT_BY_NONE) {
-		summaryview->sort_mode = sort_mode;
-		if (sort_type == GTK_SORT_DESCENDING)
-			summaryview->sort_type = GTK_SORT_ASCENDING;
-		else
-			summaryview->sort_type = GTK_SORT_DESCENDING;
-
-		summary_sort(summaryview, sort_mode);
-	}
-
 	return TRUE;
 }
 
@@ -741,8 +837,18 @@ void summary_clear_list(SummaryView *summaryview)
 {
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
 	gint optimal_width;
+	GSList * cur;
 
 	gtk_clist_freeze(clist);
+
+	for(cur = summaryview->killed_messages ; cur != NULL ; 
+	    cur = g_slist_next(cur)) {
+		MsgInfo * msginfo = (MsgInfo *) cur->data;
+
+		procmsg_msginfo_free(msginfo);
+	}
+	g_slist_free(summaryview->killed_messages);
+	summaryview->killed_messages = NULL;
 
 	gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree),
 				NULL, summary_free_msginfo_func, NULL);
@@ -1405,6 +1511,14 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		msginfo->threadscore = msginfo->score;
 	}
 
+	if (global_scoring || summaryview->folder_item->prefs->scoring) {
+		summaryview->important_score = prefs_common.important_score;
+		if (summaryview->folder_item->prefs->important_score <
+		    summaryview->important_score)
+			summaryview->important_score =
+				summaryview->folder_item->prefs->important_score;
+	}
+	
 	/*	if (prefs_common.enable_thread) { */
 	if (summaryview->folder_item->prefs->enable_thread) {
 		for (; mlist != NULL; mlist = mlist->next) {
@@ -1423,6 +1537,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 				(ctree, parent, NULL, text, 2,
 				 NULL, NULL, NULL, NULL, FALSE, TRUE);
 			GTKUT_CTREE_NODE_SET_ROW_DATA(node, msginfo);
+
 			summary_set_marks_func(ctree, node, summaryview);
 
 			/* preserve previous node if the message is
@@ -1515,6 +1630,7 @@ gint summary_write_cache(SummaryView *summaryview)
 	gint ver = CACHE_VERSION;
 	gchar *buf;
 	gchar *cachefile, *markfile;
+	GSList * cur;
 
 	if (!summaryview->folder_item || !summaryview->folder_item->path)
 		return -1;
@@ -1555,6 +1671,14 @@ gint summary_write_cache(SummaryView *summaryview)
 	WRITE_CACHE_DATA_INT(ver, fps.mark_fp);
 
 	gtk_ctree_pre_recursive(ctree, NULL, summary_write_cache_func, &fps);
+
+	for(cur = summaryview->killed_messages ; cur != NULL ;
+	    cur = g_slist_next(cur)) {
+		MsgInfo *msginfo = (MsgInfo *) cur->data;
+
+		procmsg_write_cache(msginfo, fps.cache_fp);
+		procmsg_write_flags(msginfo, fps.mark_fp);
+	}
 
 	fclose(fps.cache_fp);
 	fclose(fps.mark_fp);
@@ -1868,6 +1992,15 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 		gtk_ctree_node_set_text(ctree, row, S_COL_MARK, "O");
 		gtk_ctree_node_set_foreground(ctree, row,
 					      &summaryview->color_marked);
+	}
+	else if ((global_scoring ||
+		  summaryview->folder_item->prefs->scoring) &&
+		 (msginfo->score >= summaryview->important_score) &&
+		 ((msginfo->flags &
+		   (MSG_MARKED | MSG_MOVE | MSG_COPY)) == 0)) {
+		gtk_ctree_node_set_text(ctree, row, S_COL_MARK, "!");
+		gtk_ctree_node_set_foreground(ctree, row,
+					      &summaryview->color_important);
 	} else {
 		gtk_ctree_node_set_text(ctree, row, S_COL_MARK, NULL);
 	}

@@ -73,7 +73,7 @@ struct _PrefsCommon
 	ToolbarStyle toolbar_style;
 	gboolean show_statusbar;
 	gboolean trans_hdr;
-	gboolean enable_thread;
+	/* gboolean enable_thread; */
 	gboolean enable_hscrollbar;
 	gboolean swap_from;
 	gboolean use_addr_book;
@@ -81,6 +81,9 @@ struct _PrefsCommon
 
 	/* Filtering */
 	GSList *fltlist;
+
+	gint kill_score;
+	gint important_score;
 
 	gboolean show_mark;
 	gboolean show_unread;

@@ -16,8 +16,9 @@ struct _ScoringProp {
 
 typedef struct _ScoringProp ScoringProp;
 
-extern GSList * prefs_scoring;
-
+extern GSList * global_scoring;
+extern gint global_kill_score;
+extern gint global_important_score;
 
 ScoringProp * scoringprop_new(MatcherList * matchers, int score);
 void scoringprop_free(ScoringProp * prop);
@@ -31,5 +32,7 @@ gint score_message(GSList * scoring_list, MsgInfo * info);
 void prefs_scoring_write_config(void);
 void prefs_scoring_read_config(void);
 gchar * scoringprop_to_string(ScoringProp * prop);
+
+void prefs_scoring_free(GSList * prefs_scoring);
 
 #endif

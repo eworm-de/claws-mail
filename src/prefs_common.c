@@ -317,8 +317,10 @@ static PrefParam param[] = {
 	 P_STRING, &display.entry_datefmt,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
+	/*
 	{"enable_thread", "TRUE", &prefs_common.enable_thread, P_BOOL,
 	 NULL, NULL, NULL},
+	*/
 	{"toolbar_style", "3", &prefs_common.toolbar_style, P_ENUM,
 	 NULL, NULL, NULL},
 	{"show_statusbar", "TRUE", &prefs_common.show_statusbar, P_BOOL,
@@ -534,6 +536,11 @@ static PrefParam param[] = {
 	{"ext_editor_command", "gedit %s",
 	 &prefs_common.ext_editor_cmd, P_STRING,
 	 &other.exteditor_entry, prefs_set_data_from_entry, prefs_set_entry},
+
+	{"kill_score", "-9999", &prefs_common.kill_score, P_INT,
+	 NULL, NULL, NULL},
+	{"important_score", "9999", &prefs_common.important_score, P_INT,
+	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };

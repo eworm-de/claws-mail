@@ -102,6 +102,7 @@ struct _SummaryView
 	gboolean msg_is_toggled_on;
 	gboolean display_msg;
 
+	GdkColor color_important;
 	GdkColor color_marked;
 	GdkColor color_dim;
 	GdkColor color_normal;
@@ -113,6 +114,9 @@ struct _SummaryView
 	HeaderWindow *headerwin;
 
 	FolderItem *folder_item;
+
+	GSList * killed_messages;
+	gint important_score;
 
 	/* current message status */
 	gint   newmsgs;

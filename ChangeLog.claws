@@ -1,3 +1,20 @@
+2001-06-01 [hoa]
+
+	* src/folderview.c
+	* src/prefs_folder_item.[ch]
+	* src/prefs_scoring.[ch]
+	* src/scoring.[ch]
+	* src/summaryview.[ch]
+	* src/main.c
+	* src/mainwindow.c
+	* src/prefs_common.[ch]
+		support for folder scoring
+		kill score and important score for messages
+	
+	* src/prefs_account.c
+		some display bug fixed for local account
+		preferences
+
 2001-05-31 [alfons]
 
 	* src/summaryview.c:

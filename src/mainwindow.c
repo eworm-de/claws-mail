@@ -690,6 +690,10 @@ MainWindow *main_window_create(SeparateType type)
 	folderview->color_normal.red = folderview->color_normal.green =
 		folderview->color_normal.blue = 0;
 
+	summaryview->color_important.red = 0;
+	summaryview->color_marked.green = 0;
+	summaryview->color_important.blue = (guint16)65535;
+
 	color[0] = summaryview->color_marked;
 	color[1] = summaryview->color_dim;
 	color[2] = summaryview->color_normal;
@@ -753,10 +757,14 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_signal_connect(GTK_OBJECT(menuitem), "toggled", GTK_SIGNAL_FUNC(separate_widget_cb), 
 					   GUINT_TO_POINTER(SEPARATE_MESSAGE));
 
+	/*
 	menu_set_sensitive(ifactory, "/Summary/Thread view",
 			   prefs_common.enable_thread ? FALSE : TRUE);
 	menu_set_sensitive(ifactory, "/Summary/Unthread view",
 			   prefs_common.enable_thread ? TRUE : FALSE);
+	*/
+	main_window_set_thread_option(mainwin);
+
 	menu_set_sensitive(ifactory, "/Help/Manual/English", FALSE);
 
 	/* set account selection menu */
@@ -2051,27 +2059,40 @@ static void set_charset_cb(MainWindow *mainwin, guint action,
 void main_window_set_thread_option(MainWindow *mainwin)
 {
 	GtkItemFactory *ifactory;
+	gboolean no_item = FALSE;
 
 	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
 
-	if (mainwin->summaryview->folder_item->prefs->enable_thread) {
+	if (mainwin->summaryview == NULL)
+		no_item = TRUE;
+	else if (mainwin->summaryview->folder_item == NULL)
+		no_item = TRUE;
+
+	if (no_item) {
 		menu_set_sensitive(ifactory, "/Summary/Thread view",   FALSE);
-		menu_set_sensitive(ifactory, "/Summary/Unthread view", TRUE);
-		summary_thread_build(mainwin->summaryview);
+		menu_set_sensitive(ifactory, "/Summary/Unthread view", FALSE);
 	}
 	else {
-		menu_set_sensitive(ifactory, "/Summary/Thread view",   TRUE);
-		menu_set_sensitive(ifactory, "/Summary/Unthread view", FALSE);
-		summary_unthread(mainwin->summaryview);
+		if (mainwin->summaryview->folder_item->prefs->enable_thread) {
+			menu_set_sensitive(ifactory,
+					   "/Summary/Thread view",   FALSE);
+			menu_set_sensitive(ifactory,
+					   "/Summary/Unthread view", TRUE);
+			summary_thread_build(mainwin->summaryview);
+		}
+		else {
+			menu_set_sensitive(ifactory,
+					   "/Summary/Thread view",   TRUE);
+			menu_set_sensitive(ifactory,
+					   "/Summary/Unthread view", FALSE);
+			summary_unthread(mainwin->summaryview);
+		}
+		prefs_folder_item_save_config(mainwin->summaryview->folder_item);
 	}
-	prefs_folder_item_save_config(mainwin->summaryview->folder_item);
 }
 
 static void thread_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
-	/*
-	ifactory = gtk_item_factory_from_widget(widget);
-	*/
 	mainwin->summaryview->folder_item->prefs->enable_thread =
 		!mainwin->summaryview->folder_item->prefs->enable_thread;
 	main_window_set_thread_option(mainwin);
@@ -2212,7 +2233,7 @@ static void prefs_filter_open_cb(MainWindow *mainwin, guint action,
 static void prefs_scoring_open_cb(MainWindow *mainwin, guint action,
 				  GtkWidget *widget)
 {
-	prefs_scoring_open();
+	prefs_scoring_open(NULL);
 }
 
 static void prefs_filtering_open_cb(MainWindow *mainwin, guint action,

@@ -19,7 +19,11 @@ struct _PrefsFolderItem {
 
 	gboolean enable_thread;
 
+	gint kill_score;
+	gint important_score;
+
 	GSList * scoring;
+	GSList * processing;
 };
 
 typedef struct _PrefsFolderItem PrefsFolderItem;

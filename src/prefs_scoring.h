@@ -26,7 +26,10 @@
 void prefs_scoring_read_config	(void);
 void prefs_scoring_write_config	(void);
 */
+void prefs_scoring_open(FolderItem * item);
+     /*
 void prefs_scoring_open		(void);
+     */
 void prefs_scoring_open_with_scoring(ScoringProp * prop);
 
 #endif /* __PREFS_SCORING_H__ */

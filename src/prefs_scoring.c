@@ -53,6 +53,8 @@ static struct Scoring {
 	GtkWidget *ok_btn;
 	GtkWidget *cond_entry;
 	GtkWidget *score_entry;
+	GtkWidget *kill_score_entry;
+	GtkWidget *important_score_entry;
 
 	GtkWidget *cond_clist;
 } scoring;
@@ -101,7 +103,12 @@ static gint prefs_scoring_clist_set_row(gint row, ScoringProp * prop);
 static void prefs_scoring_select_set_dialog(ScoringProp * prop);
 static void prefs_scoring_reset_dialog(void);
 
-void prefs_scoring_open(void)
+
+static FolderItem * cur_item = NULL;
+static gint cur_important_score;
+static gint cur_kill_score;
+
+void prefs_scoring_open(FolderItem * item)
 {
 	inc_autocheck_timer_remove();
 
@@ -111,6 +118,8 @@ void prefs_scoring_open(void)
 
 	manage_window_set_transient(GTK_WINDOW(scoring.window));
 	gtk_widget_grab_focus(scoring.ok_btn);
+
+	cur_item = item;
 
 	prefs_scoring_set_dialog(NULL);
 
@@ -164,6 +173,9 @@ static void prefs_scoring_create(void)
 	GtkWidget *btn_vbox;
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
+
+	GtkWidget *important_score_entry;
+	GtkWidget *kill_score_entry;
 
 	gchar *title[] = {_("Registered rules")};
 
@@ -316,6 +328,32 @@ static void prefs_scoring_create(void)
 	gtk_signal_connect (GTK_OBJECT (down_btn), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_scoring_down), NULL);
 
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, TRUE, TRUE, 0);
+
+	score_label = gtk_label_new (_("Kill score"));
+	gtk_widget_show (score_label);
+	gtk_misc_set_alignment (GTK_MISC (score_label), 0, 0.5);
+	gtk_box_pack_start (GTK_BOX (hbox1), score_label, FALSE, FALSE, 0);
+
+	kill_score_entry = gtk_entry_new ();
+	gtk_widget_show (kill_score_entry);
+	gtk_widget_set_usize (kill_score_entry, 50, -1);
+	gtk_box_pack_start (GTK_BOX (hbox1), kill_score_entry,
+			    FALSE, FALSE, 0);
+
+	score_label = gtk_label_new (_("Important score"));
+	gtk_widget_show (score_label);
+	gtk_misc_set_alignment (GTK_MISC (score_label), 0, 0.5);
+	gtk_box_pack_start (GTK_BOX (hbox1), score_label, FALSE, FALSE, 0);
+
+	important_score_entry = gtk_entry_new ();
+	gtk_widget_show (important_score_entry);
+	gtk_widget_set_usize (important_score_entry, 50, -1);
+	gtk_box_pack_start (GTK_BOX (hbox1), important_score_entry,
+			    FALSE, FALSE, 0);
+
 	gtk_widget_show_all(window);
 
 	scoring.window    = window;
@@ -323,6 +361,8 @@ static void prefs_scoring_create(void)
 
 	scoring.cond_entry = cond_entry;
 	scoring.score_entry = score_entry;
+	scoring.kill_score_entry = kill_score_entry;
+	scoring.important_score_entry = important_score_entry;
 
 	scoring.cond_clist   = cond_clist;
 }
@@ -331,6 +371,8 @@ static void prefs_scoring_set_dialog(ScoringProp * cond)
 {
 	GtkCList *clist = GTK_CLIST(scoring.cond_clist);
 	GSList *cur;
+	GSList * prefs_scoring;
+	gchar * score_str;
 
 	if (cond == NULL)
 		prefs_scoring_reset_dialog();
@@ -341,11 +383,30 @@ static void prefs_scoring_set_dialog(ScoringProp * cond)
 	gtk_clist_clear(clist);
 
 	prefs_scoring_clist_set_row(-1, NULL);
-	for(cur = prefs_scoring ; cur != NULL ; cur = g_slist_next(cur)) {
-		ScoringProp * prop = (ScoringProp *) cur->data;
+	if (cur_item == NULL) {
+		prefs_scoring = global_scoring;
+		cur_kill_score = prefs_common.kill_score;
+		cur_important_score = prefs_common.important_score;
+	}
+	else {
+		prefs_scoring = cur_item->prefs->scoring;
+		cur_kill_score = cur_item->prefs->kill_score;
+		cur_important_score = cur_item->prefs->important_score;
+	}
 
+	for(cur = prefs_scoring ; cur != NULL ;
+	    cur = g_slist_next(cur)) {
+		ScoringProp * prop = (ScoringProp *) cur->data;
+		
 		prefs_scoring_clist_set_row(-1, prop);
 	}
+
+	score_str = itos(cur_kill_score);
+	gtk_entry_set_text(GTK_ENTRY(scoring.kill_score_entry),
+			   score_str);
+	score_str = itos(cur_important_score);
+	gtk_entry_set_text(GTK_ENTRY(scoring.important_score_entry),
+			   score_str);
 
 	gtk_clist_thaw(clist);
 }
@@ -363,8 +424,15 @@ static void prefs_scoring_set_list(void)
 	GSList * cur;
 	gchar * scoring_str;
 	gchar * tmp;
+	GSList * prefs_scoring;
 
-	for(cur = prefs_scoring ; cur != NULL ; cur = g_slist_next(cur))
+	if (cur_item == NULL)
+		prefs_scoring = global_scoring;
+	else
+		prefs_scoring = cur_item->prefs->scoring;
+
+	for(cur = prefs_scoring ; cur != NULL ;
+	    cur = g_slist_next(cur))
 		scoringprop_free((ScoringProp *) cur->data);
 	g_slist_free(prefs_scoring);
 	prefs_scoring = NULL;
@@ -379,6 +447,20 @@ static void prefs_scoring_set_list(void)
 							       prop);
 		}
 		row++;
+	}
+
+	cur_kill_score = atoi(gtk_entry_get_text(GTK_ENTRY(scoring.kill_score_entry)));
+	cur_important_score = atoi(gtk_entry_get_text(GTK_ENTRY(scoring.important_score_entry)));
+
+	if (cur_item == NULL) {
+		global_scoring = prefs_scoring;
+		prefs_common.kill_score = cur_kill_score;
+		prefs_common.important_score = cur_important_score;
+	}
+	else {
+		cur_item->prefs->scoring = prefs_scoring;
+		cur_item->prefs->kill_score = cur_kill_score;
+		cur_item->prefs->important_score = cur_important_score;
 	}
 }
 
@@ -643,6 +725,8 @@ static void prefs_scoring_ok(void)
 {
 	prefs_scoring_set_list();
 	prefs_scoring_write_config();
+	if (cur_item != NULL)
+		prefs_folder_item_save_config(cur_item);
 	gtk_widget_hide(scoring.window);
 }
 

@@ -23,38 +23,35 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"enable_thread", "TRUE", &tmp_prefs.enable_thread, P_BOOL,
 	 NULL, NULL, NULL},
+	{"kill_score", "-9999", &tmp_prefs.kill_score, P_INT,
+	 NULL, NULL, NULL},
+	{"important_score", "9999", &tmp_prefs.important_score, P_INT,
+	 NULL, NULL, NULL},
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
 void prefs_folder_item_read_config(FolderItem * item)
 {
-	gchar * path;
+	gchar * id;
 
-	path = folder_item_get_path(item);
-	/*
-	if (!is_dir_exist(path))
-		make_dir_hier(path);
-	*/
-	prefs_read_config(param, path, FOLDERITEM_RC);
-	g_free(path);
+	id = folder_item_get_identifier(item);
+
+	prefs_read_config(param, id, FOLDERITEM_RC);
+	g_free(id);
 
 	* item->prefs = tmp_prefs;
 }
 
 void prefs_folder_item_save_config(FolderItem * item)
 {	
-	gchar * path;
+	gchar * id;
 
 	tmp_prefs = * item->prefs;
 
-	path = folder_item_get_path(item);
-	/*
-	if (!is_dir_exist(path))
-		make_dir_hier(path);
-	*/
+	id = folder_item_get_identifier(item);
 
-	prefs_save_config(param, path, FOLDERITEM_RC);
-	g_free(path);
+	prefs_save_config(param, id, FOLDERITEM_RC);
+	g_free(id);
 }
 
 void prefs_folder_item_set_config(FolderItem * item,
@@ -107,6 +104,8 @@ PrefsFolderItem * prefs_folder_item_new(void)
 	tmp_prefs.sort_by_subject = FALSE;
 	tmp_prefs.sort_by_score = FALSE;
 	tmp_prefs.sort_descending = FALSE;
+	tmp_prefs.kill_score = -9999;
+	tmp_prefs.important_score = 9999;
 
 	* prefs = tmp_prefs;
 	
@@ -115,6 +114,8 @@ PrefsFolderItem * prefs_folder_item_new(void)
 
 void prefs_folder_item_free(PrefsFolderItem * prefs)
 {
+	if (prefs->scoring != NULL)
+		prefs_scoring_free(prefs->scoring);
 	g_free(prefs);
 }
 
