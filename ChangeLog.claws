@@ -1,3 +1,14 @@
+2002-03-05 [paul]	0.7.2claws32
+
+	* src/mimeview.c
+	  src/pgptext.[ch]
+	  src/procmsg.c
+		reverse the pgp ascii-armored code implemented in 
+		0.7.2claws16. removal of this code until it matures.
+		this means that verifying ascii-armored pgp sigs and
+		automatic decryption of ascii-armored encrypted
+		messages no longer works.
+
 2002-03-05 [paul]	0.7.2claws31
 
 	* configure.in

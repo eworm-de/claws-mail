@@ -17,26 +17,25 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef PGPTXT_H__
+#ifndef PGPTXT_H__ 
 #define PGPTXT_H__
 
 #include <glib.h>
 #include <stdio.h>
 
 #include "procmime.h"
-/* #include "prefs_account.h" */
+#include "prefs_account.h"
 
 /*
 void pgptext_disable_all (void);
 void pgptext_secure_remove (const char *fname);
+MimeInfo * pgptext_find_signature (MimeInfo *mimeinfo);
 */
-MimeInfo * pgptext_find_signature (MimeInfo *mimeinfo, FILE *fp);
-gboolean pgptext_has_signature (MsgInfo *msginfo, MimeInfo *mimeinfo);
-/*int pgptext_has_signature (MimeInfo *mimeinfo);*/
+gboolean pgptext_has_signature (MimeInfo *mimeinfo);
 void pgptext_check_signature (MimeInfo *mimeinfo, FILE *fp);
 int pgptext_is_encrypted (MimeInfo *mimeinfo, MsgInfo *msginfo);
 void pgptext_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp);
-/* int pgptext_encrypt (const char *file, GSList *recp_list);
-int pgptext_sign (const char *file, PrefsAccount *ac); */
+int pgptext_encrypt (const char *file, GSList *recp_list);
+int pgptext_sign (const char *file, PrefsAccount *ac);
 
 #endif /* PGPTEXT_H__ */
