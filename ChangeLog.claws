@@ -1,3 +1,8 @@
+2002-05-12 [paul]	0.7.5claws19
+
+	* sync with 0.7.5cvs20
+		see ChangeLog 2002-05-11
+
 2002-05-12 [alfons]	0.7.5claws18
 
 	* src/quote_fmt_lex.l

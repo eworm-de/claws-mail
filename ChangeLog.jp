@@ -1,5 +1,10 @@
 2002-05-11
 
+	* src/prefs_account.c: IMAP または News アカウントを作成するときに
+	  「全受信で受信」オプションをデフォルトでオフにするようにした。
+
+2002-05-11
+
 	* src/imap.c: imap_scan_tree(): namespace をプレフィクスに使用しない
 	  ようにした。
 	* src/prefs_folder_item.c: 識別子パスも表示。

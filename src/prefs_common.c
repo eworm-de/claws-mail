@@ -2180,6 +2180,9 @@ static void prefs_display_create(void)
 
 	PACK_CHECK_BUTTON (vbox2, chkbtn_display_img,
 			   _("Automatically display images"));
+
+	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
+
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);

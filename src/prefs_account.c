@@ -2066,6 +2066,13 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 			(GTK_TOGGLE_BUTTON(basic.nntpauth_chkbtn), NULL);
 		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
+
+		if (!tmp_ac_prefs.account_name) {
+			gtk_toggle_button_set_active
+				(GTK_TOGGLE_BUTTON(receive.recvatgetall_chkbtn),
+				 FALSE);
+		}
+
 #if USE_SSL
 		gtk_widget_set_sensitive(ssl.receive_frame, TRUE);
 		gtk_widget_set_sensitive(ssl.pop_chkbtn, FALSE);
@@ -2123,6 +2130,12 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, FALSE);
 		prefs_account_mailcmd_toggled
 			(GTK_TOGGLE_BUTTON(basic.mailcmd_chkbtn), NULL);
+
+		if (!tmp_ac_prefs.account_name) {
+			gtk_toggle_button_set_active
+				(GTK_TOGGLE_BUTTON(receive.recvatgetall_chkbtn),
+				 TRUE);
+		}
 
 #if USE_SSL
 		gtk_widget_set_sensitive(ssl.receive_frame, FALSE);
@@ -2184,6 +2197,12 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
 
+		if (!tmp_ac_prefs.account_name) {
+			gtk_toggle_button_set_active
+				(GTK_TOGGLE_BUTTON(receive.recvatgetall_chkbtn),
+				 FALSE);
+		}
+
 #if USE_SSL
 		gtk_widget_set_sensitive(ssl.receive_frame, TRUE);
 		gtk_widget_set_sensitive(ssl.pop_chkbtn, FALSE);
@@ -2244,6 +2263,12 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
+
+		if (!tmp_ac_prefs.account_name) {
+			gtk_toggle_button_set_active
+				(GTK_TOGGLE_BUTTON(receive.recvatgetall_chkbtn),
+				 TRUE);
+		}
 
 #if USE_SSL
 		gtk_widget_set_sensitive(ssl.receive_frame, TRUE);
