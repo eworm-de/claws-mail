@@ -1,3 +1,9 @@
+2002-01-06 [alfons]	0.6.6claws41
+
+	* src/mainwindow.c
+		adapt Hiro's separate window menu (to get rid of the funny
+		duplicate menu items), and make it work again
+
 2002-01-06 [alfons]	0.6.6claws40
 
 	* tools/Makefile.am

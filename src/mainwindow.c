@@ -447,17 +447,17 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Edit/_Search folder..."),	"<control>S", search_cb, 1, NULL},
 
 	{N_("/_View"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/_Folder tree"),		NULL, toggle_folder_cb, 0, "<ToggleItem>"},
-	{N_("/_View/_Message view"),		NULL, toggle_message_cb, 0, "<ToggleItem>"},
+	{N_("/_View/_Folder tree"),		NULL, NULL, SEPARATE_ACTION + SEPARATE_FOLDER,  "<ToggleItem>"},
+	{N_("/_View/_Message view"),		NULL, NULL, SEPARATE_ACTION + SEPARATE_MESSAGE, "<ToggleItem>"},
 	{N_("/_View/_Toolbar"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/_Toolbar/Icon _and text"),	NULL, toggle_toolbar_cb, TOOLBAR_BOTH, "<RadioItem>"},
 	{N_("/_View/_Toolbar/_Icon"),		NULL, toggle_toolbar_cb, TOOLBAR_ICON, "/View/Toolbar/Icon and text"},
 	{N_("/_View/_Toolbar/_Text"),		NULL, toggle_toolbar_cb, TOOLBAR_TEXT, "/View/Toolbar/Icon and text"},
 	{N_("/_View/_Toolbar/_None"),		NULL, toggle_toolbar_cb, TOOLBAR_NONE, "/View/Toolbar/Icon and text"},
 	{N_("/_View/Status _bar"),		NULL, toggle_statusbar_cb, 0, "<ToggleItem>"},
-	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
+/*	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Separate f_older tree"),	NULL, NULL, SEPARATE_ACTION + SEPARATE_FOLDER, "<ToggleItem>"},
-	{N_("/_View/Separate m_essage view"),	NULL, NULL, SEPARATE_ACTION + SEPARATE_MESSAGE, "<ToggleItem>"},
+	{N_("/_View/Separate m_essage view"),	NULL, NULL, SEPARATE_ACTION + SEPARATE_MESSAGE, "<ToggleItem>"},*/
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Sort"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/_Sort/Sort by _number"),	NULL, sort_summary_cb, SORT_BY_NUMBER, NULL},
@@ -911,14 +911,14 @@ MainWindow *main_window_create(SeparateType type)
 	menuitem = gtk_item_factory_get_item(ifactory, "/View/Status bar");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 				       prefs_common.show_statusbar);
-
+#if 0 /* FIXED SEPARATE WINDOWS */
 	/* Message view and Folder tree are always shown at startup
 	 * make that in the menu visible */
 	menuitem = gtk_item_factory_get_item(ifactory, "/View/Message view");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 	menuitem = gtk_item_factory_get_item(ifactory, "/View/Folder tree");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-	
+#endif	
 	/* set the check of the SEPARATE_xxx menu items. we also need the main window
 	 * as a property and pass the action type to the callback */
 	menuitem = gtk_item_factory_get_widget_by_action(ifactory, SEPARATE_ACTION + SEPARATE_FOLDER);
@@ -1625,8 +1625,8 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 				     prefs_common.mainwin_height);
 		gtk_widget_show_all(vpaned);
 
-		menu_set_sensitive(ifactory, "/View/Message view", FALSE);
-		menu_set_sensitive(ifactory, "/View/Folder tree", FALSE);
+		menu_set_sensitive(ifactory, "/View/Message view", TRUE);
+		menu_set_sensitive(ifactory, "/View/Folder tree", TRUE);
 		
 		mainwin->win.sep_none.hpaned = hpaned;
 		mainwin->win.sep_none.vpaned = vpaned;
