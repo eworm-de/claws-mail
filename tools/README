@@ -4,8 +4,10 @@ Contents of the tools directory:
 --------------------------------------------------------------------------------
 
 Action scripts:
+  freshmeat_search.pl		Search freshmeat.net for selected text
   gpg-sign-syl                  Clear-sign current selection
-  google_msgid.pl               Lookup selected message-id in google
+  google_msgid.pl               Search groups.google.com for selected message-id
+  google_search.pl		Search google.com for selected text
   uudec                         Decode and display uuencoded images
 
 Addressbook conversion:

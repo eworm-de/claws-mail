@@ -1,3 +1,17 @@
+2003-02-15 [paul]
+
+	* tools/Makefile.am
+	  tools/README
+	  tools/freshmeat_search.pl	** NEW FILE **
+	  tools/google_search.pl	** NEW FILE **
+	  	Add 2 Actions scripts which search freshmeat/google
+		for the selected text using the browser configured
+		in sylpheedrc.
+		
+	Note: These scripts are very dependent on the format of the
+	browser command and may not work on every occasion. Testing
+	is welcome. 
+
 2003-02-14 [alfons]	0.8.10claws12
 
 	* src/compose.c
