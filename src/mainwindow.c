@@ -588,7 +588,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/E_xpand all threads"),	NULL, expand_threads_cb, 0, NULL},
 	{N_("/_View/Co_llapse all threads"),	NULL, collapse_threads_cb, 0, NULL},
 	{N_("/_View/_Hide read messages"),	NULL, hide_read_messages, 0, "<ToggleItem>"},
-	{N_("/_View/Set display _item..."),	NULL, set_display_item_cb, 0, NULL},
+	{N_("/_View/Set displayed _items..."),	NULL, set_display_item_cb, 0, NULL},
 
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Go to"),			NULL, NULL, 0, "<Branch>"},
@@ -699,7 +699,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Open in new _window"),	"<control><alt>N", open_msg_cb, 0, NULL},
 	{N_("/_View/Mess_age source"),		"<control>U", view_source_cb, 0, NULL},
-	{N_("/_View/Show all _header"),		"<control>H", show_all_header_cb, 0, "<ToggleItem>"},
+	{N_("/_View/Show all _headers"),	"<control>H", show_all_header_cb, 0, "<ToggleItem>"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Update summary"),		"<control><alt>U", update_summary_cb,  0, NULL},
 
@@ -775,11 +775,11 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Configuration"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Configuration/_Common preferences..."),
 						NULL, prefs_common_open_cb, 0, NULL},
-	{N_("/_Configuration/C_ustom toolbar"),
+	{N_("/_Configuration/C_ustomize toolbar"),
 						NULL, NULL, 0, "<Branch>"},
-	{N_("/_Configuration/C_ustom toolbar/_Main toolbar..."),
+	{N_("/_Configuration/C_ustomize toolbar/_Main toolbar..."),
 						NULL, prefs_toolbar_cb, TOOLBAR_MAIN, NULL},
-	{N_("/_Configuration/C_ustom toolbar/_Compose toolbar..."),
+	{N_("/_Configuration/C_ustomize toolbar/_Compose toolbar..."),
 						NULL, prefs_toolbar_cb, TOOLBAR_COMPOSE, NULL},
 #if 0
 	{N_("/_Configuration/_Filter setting..."),
@@ -1676,7 +1676,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/View/Go to/Prev labeled message", M_MSG_EXIST},
 		{"/View/Go to/Next labeled message", M_MSG_EXIST},
 		{"/View/Open in new window"        , M_SINGLE_TARGET_EXIST},
-		{"/View/Show all header"           , M_SINGLE_TARGET_EXIST},
+		{"/View/Show all headers"          , M_SINGLE_TARGET_EXIST},
 		{"/View/Message source"            , M_SINGLE_TARGET_EXIST},
 
 		{"/Message/Get new mail"          , M_HAVE_ACCOUNT|M_UNLOCKED},
@@ -1773,7 +1773,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		menu_set_sensitive(ifactory, "/View/Sort/Descending", FALSE);
 	}
 
-	SET_CHECK_MENU_ACTIVE("/View/Show all header",
+	SET_CHECK_MENU_ACTIVE("/View/Show all headers",
 			      mainwin->messageview->textview->show_all_headers);
 	SET_CHECK_MENU_ACTIVE("/View/Thread view", (state & M_THREADED) != 0);
 

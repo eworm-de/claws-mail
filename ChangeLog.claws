@@ -1,3 +1,14 @@
+2002-09-29 [colin]	0.8.3claws38
+
+	* src/mainwindow.c
+		Renamed "Custom toolbar" to "Customize toolbar"
+		Renamed "Show all header" to "Show all headers"
+		Renamed "Set diplay item" to "Set displayed items"
+	* src/prefs_common.c
+		Renamed "Show all header" to "Show all headers"
+	* src/prefs_summary_column.c
+		Renamed "diplay item" to "displayed items"
+
 2002-09-29 [colin]	0.8.3claws37
 
 	* src/mainwindow.[ch]

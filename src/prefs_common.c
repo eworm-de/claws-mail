@@ -2286,7 +2286,7 @@ static void prefs_display_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
 
 	button_dispitem = gtk_button_new_with_label
-		(_(" Set display item of summary... "));
+		(_(" Set displayed items of summary... "));
 	gtk_widget_show (button_dispitem);
 	gtk_box_pack_start (GTK_BOX (hbox1), button_dispitem, FALSE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (button_dispitem), "clicked",
@@ -3803,7 +3803,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/View/Go to/Other folder...\" \"G\")\n"
 		"(menu-path \"<Main>/View/Open in new window\" \"<control><alt>N\")\n"
 		"(menu-path \"<Main>/View/View source\" \"<control>U\")\n"
-		"(menu-path \"<Main>/View/Show all header\" \"<control>H\")\n"
+		"(menu-path \"<Main>/View/Show all headers\" \"<control>H\")\n"
 		"(menu-path \"<Main>/View/Update\" \"<control><alt>U\")\n"
 
 		"(menu-path \"<Main>/Message/Get new mail\" \"<control>I\")\n"
@@ -3856,7 +3856,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/View/Go to/Other folder...\" \"G\")\n"
 		"(menu-path \"<Main>/View/Open in new window\" \"<control><alt>N\")\n"
 		"(menu-path \"<Main>/View/View source\" \"<control>U\")\n"
-		"(menu-path \"<Main>/View/Show all header\" \"<shift>H\")\n"
+		"(menu-path \"<Main>/View/Show all headers\" \"<shift>H\")\n"
 		"(menu-path \"<Main>/View/Update\" \"<shift>S\")\n"
 
 		"(menu-path \"<Main>/Message/Get new mail\" \"<control>I\")\n"
@@ -3908,7 +3908,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/View/Go to/Other folder...\" \"C\")\n"
 		"(menu-path \"<Main>/View/Open in new window\" \"<control><alt>N\")\n"
 		"(menu-path \"<Main>/View/View source\" \"<control>U\")\n"
-		"(menu-path \"<Main>/View/Show all header\" \"<control>H\")\n"
+		"(menu-path \"<Main>/View/Show all headers\" \"<control>H\")\n"
 		"(menu-path \"<Main>/View/Update\" \"<control><alt>U\")\n"
 
 		"(menu-path \"<Main>/Message/Get new mail\" \"<control>I\")\n"
@@ -3961,7 +3961,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/View/Go to/Other folder...\" \"<alt>G\")\n"
 		"(menu-path \"<Main>/View/Open in new window\" \"<shift><control>N\")\n"
 		"(menu-path \"<Main>/View/View source\" \"<control>U\")\n"
-		"(menu-path \"<Main>/View/Show all header\" \"<control>H\")\n"
+		"(menu-path \"<Main>/View/Show all headers\" \"<control>H\")\n"
 		"(menu-path \"<Main>/View/Update\" \"<alt>U\")\n"
 
 		"(menu-path \"<Main>/Message/Get new mail\" \"<alt>I\")\n"
@@ -4014,7 +4014,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/View/Go to/Other folder...\" \"\")\n"
 		"(menu-path \"<Main>/View/Open in new window\" \"\")\n"
 		"(menu-path \"<Main>/View/View source\" \"\")\n"
-		"(menu-path \"<Main>/View/Show all header\" \"\")\n"
+		"(menu-path \"<Main>/View/Show all headers\" \"\")\n"
 		"(menu-path \"<Main>/View/Update\" \"\")\n"
 
 		"(menu-path \"<Main>/Message/Get new mail\" \"\")\n"
