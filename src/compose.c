@@ -676,58 +676,6 @@ static GtkTargetEntry compose_mime_types[] =
 	{"text/uri-list", 0, 0}
 };
 
-Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
-{
-	Compose *c;
-	gchar *filename;
-	GtkItemFactory *ifactory;
-	
-	c = compose_generic_new(account, NULL, NULL, NULL);
-
-	filename = procmsg_get_message_file(msginfo);
-	if (filename == NULL)
-		return NULL;
-
-	c->redirect_filename = filename;
-
-	if (msginfo->subject)
-		gtk_entry_set_text(GTK_ENTRY(c->subject_entry),
-				   msginfo->subject);
-	gtk_editable_set_editable(GTK_EDITABLE(c->subject_entry), FALSE);
-
-	compose_quote_fmt(c, msginfo, "%M", NULL, NULL);
-	gtk_editable_set_editable(GTK_EDITABLE(c->text), FALSE);
-
-	ifactory = gtk_item_factory_from_widget(c->popupmenu);
-	menu_set_sensitive(ifactory, "/Add...", FALSE);
-	menu_set_sensitive(ifactory, "/Remove", FALSE);
-	menu_set_sensitive(ifactory, "/Property...", FALSE);
-
-	ifactory = gtk_item_factory_from_widget(c->menubar);
-	menu_set_sensitive(ifactory, "/File/Insert file", FALSE);
-	menu_set_sensitive(ifactory, "/File/Attach file", FALSE);
-	menu_set_sensitive(ifactory, "/File/Insert signature", FALSE);
-	menu_set_sensitive(ifactory, "/Edit/Paste", FALSE);
-	menu_set_sensitive(ifactory, "/Edit/Wrap current paragraph", FALSE);
-	menu_set_sensitive(ifactory, "/Edit/Wrap all long lines", FALSE);
-	menu_set_sensitive(ifactory, "/Edit/Edit with external editor", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Attach", FALSE);
-#if USE_GPGME
-	menu_set_sensitive(ifactory, "/Message/Sign", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Encrypt", FALSE);
-#endif
-	menu_set_sensitive(ifactory, "/Message/Request Return Receipt", FALSE);
-	menu_set_sensitive(ifactory, "/Tools/Template", FALSE);
-	
-	gtk_widget_set_sensitive(c->insert_btn, FALSE);
-	gtk_widget_set_sensitive(c->attach_btn, FALSE);
-	gtk_widget_set_sensitive(c->sig_btn, FALSE);
-	gtk_widget_set_sensitive(c->exteditor_btn, FALSE);
-	gtk_widget_set_sensitive(c->linewrap_btn, FALSE);
-
-	return c;
-}
-
 Compose *compose_new(PrefsAccount *account, const gchar *mailto,
 		     GPtrArray *attach_files)
 {
@@ -1260,6 +1208,73 @@ void compose_reedit(MsgInfo *msginfo)
 
         if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
+}
+
+Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
+{
+	Compose *compose;
+	gchar *filename;
+	GtkItemFactory *ifactory;
+
+	g_return_val_if_fail(msginfo != NULL, NULL);
+
+	if(!account)
+ 		account = cur_account;
+	g_return_val_if_fail(account != NULL, NULL);
+
+	compose = compose_create(account, COMPOSE_REDIRECT);
+	ifactory = gtk_item_factory_from_widget(compose->menubar);
+
+	compose->replyinfo = NULL;
+
+	compose_show_first_last_header(compose, TRUE);
+
+	gtk_widget_grab_focus(compose->header_last->entry);
+
+	filename = procmsg_get_message_file(msginfo);
+	if (filename == NULL)
+		return NULL;
+
+	compose->redirect_filename = filename;
+
+	if (msginfo->subject)
+		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry),
+				   msginfo->subject);
+	gtk_editable_set_editable(GTK_EDITABLE(compose->subject_entry), FALSE);
+
+	gtk_stext_freeze(GTK_STEXT(compose->text));
+	compose_quote_fmt(compose, msginfo, "%M", NULL, NULL);
+	gtk_editable_set_editable(GTK_EDITABLE(compose->text), FALSE);
+	gtk_stext_thaw(GTK_STEXT(compose->text));
+
+	ifactory = gtk_item_factory_from_widget(compose->popupmenu);
+	menu_set_sensitive(ifactory, "/Add...", FALSE);
+	menu_set_sensitive(ifactory, "/Remove", FALSE);
+	menu_set_sensitive(ifactory, "/Property...", FALSE);
+
+	ifactory = gtk_item_factory_from_widget(compose->menubar);
+	menu_set_sensitive(ifactory, "/File/Insert file", FALSE);
+	menu_set_sensitive(ifactory, "/File/Attach file", FALSE);
+	menu_set_sensitive(ifactory, "/File/Insert signature", FALSE);
+	menu_set_sensitive(ifactory, "/Edit/Paste", FALSE);
+	menu_set_sensitive(ifactory, "/Edit/Wrap current paragraph", FALSE);
+	menu_set_sensitive(ifactory, "/Edit/Wrap all long lines", FALSE);
+	menu_set_sensitive(ifactory, "/Edit/Edit with external editor", FALSE);
+	menu_set_sensitive(ifactory, "/Message/Attach", FALSE);
+#if USE_GPGME
+	menu_set_sensitive(ifactory, "/Message/Sign", FALSE);
+	menu_set_sensitive(ifactory, "/Message/Encrypt", FALSE);
+#endif
+	menu_set_sensitive(ifactory, "/Message/Request Return Receipt", FALSE);
+	menu_set_sensitive(ifactory, "/Tools/Template", FALSE);
+	
+	gtk_widget_set_sensitive(compose->insert_btn, FALSE);
+	gtk_widget_set_sensitive(compose->attach_btn, FALSE);
+	gtk_widget_set_sensitive(compose->sig_btn, FALSE);
+	gtk_widget_set_sensitive(compose->exteditor_btn, FALSE);
+	gtk_widget_set_sensitive(compose->linewrap_btn, FALSE);
+
+        return compose;
 }
 
 GList *compose_get_compose_list(void)

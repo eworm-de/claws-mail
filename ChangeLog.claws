@@ -1,3 +1,12 @@
+2002-09-10 [christoph]	0.8.2claws36
+
+	* src/compose.c
+		compose_redirect should not use compose_generic_new
+		because that does more stuff than expected including
+		opening the external editor
+		(closes bug "[ 526608 ] bounced messages appear blank
+		 in editor")
+
 2002-09-10 [christoph]	0.8.2claws35
 
 	* src/folder.c
