@@ -35,6 +35,7 @@ src/gtk/gtkutils.c
 src/gtk/logwindow.c
 src/gtk/pluginwindow.c
 src/gtk/prefswindow.c
+src/gtk/progressdialog.c
 src/gtk/sslcertwindow.c
 src/headerview.c
 src/imap.c
@@ -84,7 +85,6 @@ src/prefs_summary_column.c
 src/prefs_template.c
 src/prefs_toolbar.c
 src/procmsg.c
-src/progressdialog.c
 src/quote_fmt.c
 src/rfc2015.c
 src/select-keys.c
