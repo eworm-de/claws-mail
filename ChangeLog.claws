@@ -1,3 +1,10 @@
+2004-11-30 [colin]	0.9.12cvs177
+
+	* src/gtk/prefswindow.c
+	* src/gtk/pluginwindow.c
+		Add shortcut keys to prefs window
+		and plugin window. Patch by Fabien Vantard.
+
 2004-11-29 [colin]	0.9.12cvs176
 
 	* src/folderview.c
