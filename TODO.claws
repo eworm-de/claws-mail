@@ -17,11 +17,9 @@ win32 0.8.0claws+
 [hoa]
 
 	o work on sylpheed :)
-	o several actions on filtering condition
 	o separate code of compose dialog and building of message
 	  compose should return some kind of MIME structure so that
     	  a message can be built.
-	o use libEtPan! in sylpheed
 
 [christoph]
 

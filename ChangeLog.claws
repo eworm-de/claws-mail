@@ -1,3 +1,12 @@
+2003-09-17 [hoa]	0.9.5claws18
+	
+	* changed the keyword used for command execution in condition
+		keyword is changed from "execute" to "test"
+		so that it is not the same as the one used for action.
+		This will fix a bug when using filtering dialog.
+		All semantic in the code is also changed to reflect
+		the keyword change.
+
 2003-09-17 [paul]
 	
 	* sync with 0.9.6 release
