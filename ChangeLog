@@ -1,3 +1,10 @@
+2004-03-16
+
+	* src/nntp.c: nntp_session_new(): attempt to authenticate at the
+	  beginning of a session (thanks to Shiino Yuki and IWAMOTO, Kouichi).
+	* src/news.c
+	  src/nntp.c: destroy session when socket error occurred.
+
 2004-03-12
 
 	* src/mainwindow.c

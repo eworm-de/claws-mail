@@ -1,3 +1,11 @@
+2004-03-16
+
+	* src/nntp.c: nntp_session_new(): セッションの開始時に認証を試みる
+	  ようにした(Shiino Yuki さん、 IWAMOTO, Kouichi さん thanks)。
+	* src/news.c
+	  src/nntp.c: ソケットエラーが発生したときはセッションを破棄する
+	  ようにした。
+
 2004-03-12
 
 	* src/mainwindow.c

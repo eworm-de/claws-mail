@@ -1,10 +1,15 @@
-2004-02-17 [alfons]	0.9.10claws17
+2004-03-18 [paul]	0.9.10claws18
+
+	* sync with 0.9.10cvs6
+		see ChangeLog 2004-03-16
+
+2004-03-17 [alfons]	0.9.10claws17
 
 	* src/gtk/filesel.c
 		remove bogus semicolon after if() (sometimes it pays to
 		read LKML :)
 
-2004-02-15 [darko]	0.9.10claws16
+2004-03-15 [darko]	0.9.10claws16
 
 	* src/gtk/filesel.c
 		support full path in place of a filename
@@ -14,13 +19,13 @@
 	* src/prefs_common.[hc]
 		store directory attachments were last saved to
 
-2004-02-15 [paul]	0.9.10claws15
+2004-03-15 [paul]	0.9.10claws15
 
 	* src/folderview.c
 		fix bug where unsubscribing a newsgroup would destroy
 		(most of the) filtering rules
 
-2004-02-15 [paul]	0.9.10claws14
+2004-03-15 [paul]	0.9.10claws14
 
 	* src/folderview.c
 		fix Bug 458, 'Folder View remaining empty after 
