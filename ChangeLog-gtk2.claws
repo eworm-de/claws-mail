@@ -1,3 +1,8 @@
+2004-05-14 [alfons]
+
+	* src/procmime.h
+		add forgotton prototype
+
 2004-05-10 [paul]	0.9.10claws57
 
 	* sync with 0.9.10claws57 HEAD
