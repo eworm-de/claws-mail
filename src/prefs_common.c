@@ -929,7 +929,7 @@ static void prefs_receive_create(void)
 	PACK_CHECK_BUTTON (hbox_autochk, checkbtn_autochk,
 			   _("Auto-check new mail"));
 
-	label_autochk1 = gtk_label_new (_("each"));
+	label_autochk1 = gtk_label_new (_("every"));
 	gtk_widget_show (label_autochk1);
 	gtk_box_pack_start (GTK_BOX (hbox_autochk), label_autochk1, FALSE, FALSE, 0);
 
