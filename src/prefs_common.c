@@ -145,6 +145,7 @@ static struct Interface {
 	GtkWidget *checkbtn_cleanonexit;
 	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_warnqueued;
+	GtkWidget *checkbtn_returnreceipt;
 	GtkWidget *checkbtn_addaddrbyclick;
 } interface;
 
@@ -475,6 +476,9 @@ static PrefParam param[] = {
 
 	{"confirm_on_exit", "TRUE", &prefs_common.confirm_on_exit, P_BOOL,
 	 &interface.checkbtn_confonexit,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"send_return_receipt", "TRUE", &prefs_common.return_receipt, P_BOOL,
+	 &interface.checkbtn_returnreceipt,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"clean_trash_on_exit", "FALSE", &prefs_common.clean_on_exit, P_BOOL,
 	 &interface.checkbtn_cleanonexit,
@@ -1678,6 +1682,7 @@ static void prefs_interface_create(void)
 	GtkWidget *checkbtn_cleanonexit;
 	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_warnqueued;
+	GtkWidget *checkbtn_returnreceipt;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1747,6 +1752,9 @@ static void prefs_interface_create(void)
 	PACK_CHECK_BUTTON (vbox_exit, checkbtn_warnqueued,
 			   _("Warn if there are queued messages"));
 
+	PACK_CHECK_BUTTON (vbox_exit, checkbtn_returnreceipt,
+			   _("Send return receipt on request"));
+
 	interface.checkbtn_emacs          = checkbtn_emacs;
 	interface.checkbtn_openunread     = checkbtn_openunread;
 	interface.checkbtn_openinbox      = checkbtn_openinbox;
@@ -1756,6 +1764,7 @@ static void prefs_interface_create(void)
 	interface.checkbtn_cleanonexit    = checkbtn_cleanonexit;
 	interface.checkbtn_askonclean     = checkbtn_askonclean;
 	interface.checkbtn_warnqueued     = checkbtn_warnqueued;
+	interface.checkbtn_returnreceipt  = checkbtn_returnreceipt;
 }
 
 static void prefs_other_create(void)

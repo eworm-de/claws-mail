@@ -1,3 +1,9 @@
+2001-05-03 [hoa]
+
+	* src/messageview.c
+	* src/prefs_common.[ch] added option to activate the return receipt
+		feature.
+
 2001-05-02 [alfons]
 
 	* src/gtkstext.c: fix for row up/down cursor navigation. 

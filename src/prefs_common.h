@@ -167,6 +167,7 @@ struct _PrefsCommon
 	gboolean clean_on_exit;
 	gboolean ask_on_clean;
 	gboolean warn_queued_on_exit;
+	gboolean return_receipt;
 
 	/* Other */
 	gchar *uri_cmd;

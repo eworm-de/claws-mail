@@ -271,7 +271,8 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo)
 
 	tmpmsginfo = procheader_parse(file, msginfo->flags, TRUE);
 
-	if (tmpmsginfo->dispositionnotificationto
+	if (prefs_common.return_receipt
+	    && tmpmsginfo->dispositionnotificationto
 	    && (MSG_IS_UNREAD(msginfo->flags))) {
 		gint ok;
 		
