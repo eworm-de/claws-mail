@@ -1,0 +1,153 @@
+( cvs diff -u -r 1.15 -r 1.16 src/common/smtp.c; ) > 0.9.12cvs9.patchset
+( cvs diff -u -r 1.3 -r 1.4 src/gtk/quicksearch.c; ) > 0.9.12cvs14.patchset
+( cvs diff -u -r 1.224 -r 1.225 src/prefs_common.c; cvs diff -u -r 1.111 -r 1.112 src/prefs_common.h; cvs diff -u -r 1.436 -r 1.437 src/summaryview.c; cvs diff -u -r 1.4 -r 1.5 src/gtk/quicksearch.c; cvs diff -u -r 1.2 -r 1.3 src/gtk/quicksearch.h; ) > 0.9.12cvs15.patchset
+( cvs diff -u -r 1.173 -r 1.174 src/inc.c; ) > 0.9.12cvs16.patchset
+( cvs diff -u -r 1.16 -r 1.18 src/common/smtp.c; ) > 0.9.12cvs17.patchset
+( cvs diff -u -r 1.7 -r 1.8 src/common/smtp.h; ) > 0.9.12cvs18.patchset
+( cvs diff -u -r 1.5 -r 1.6 src/gtk/quicksearch.c; ) > 0.9.12cvs19.patchset
+( cvs diff -u -r 1.5 -r 1.6 src/gtk/quicksearch.c; ) > 0.9.12cvs19.patchset
+( cvs diff -u -r 1.119 -r 1.120 src/mimeview.c; ) > 0.9.12cvs20.patchset
+( cvs diff -u -r 1.250 -r 1.251 src/folder.c; cvs diff -u -r 1.174 -r 1.175 src/inc.c; cvs diff -u -r 1.87 -r 1.88 src/matcher.c; cvs diff -u -r 1.47 -r 1.48 src/matcher.h; cvs diff -u -r 1.34 -r 1.35 src/matcher_parser_parse.y; cvs diff -u -r 1.118 -r 1.119 src/messageview.c; cvs diff -u -r 1.23 -r 1.24 src/msgcache.c; cvs diff -u -r 1.9 -r 1.10 src/noticeview.c; cvs diff -u -r 1.4 -r 1.5 src/noticeview.h; cvs diff -u -r 1.61 -r 1.62 src/pop.c; cvs diff -u -r 1.20 -r 1.21 src/pop.h; cvs diff -u -r 1.46 -r 1.47 src/prefs_matcher.c; cvs diff -u -r 1.56 -r 1.57 src/procheader.c; cvs diff -u -r 1.164 -r 1.165 src/procmsg.c; cvs diff -u -r 1.68 -r 1.69 src/procmsg.h; cvs diff -u -r 1.437 -r 1.438 src/summaryview.c; cvs diff -u -r 1.26 -r 1.27 src/common/Makefile.am; cvs diff -u -r 1.14 -r 1.15 src/common/defs.h; cvs diff -u -r 1.6 -r 1.7 src/gtk/quicksearch.c; ) > 0.9.12cvs21.patchset
+( cvs diff -u -r 1.62 -r 1.63 src/pop.c; cvs diff -u -r 1.2 -r 1.3 src/common/partial_download.c; ) > 0.9.12cvs22.patchset
+( cvs diff -u -r 1.11 -r 1.12 src/pgpmime.c; cvs diff -u -r 1.83 -r 1.84 src/procmime.c; ) > 0.9.12cvs23.patchset
+( cvs diff -u -r 1.251 -r 1.252 src/folder.c; ) > 0.9.12cvs24.patchset
+( cvs diff -u -r 1.438 -r 1.439 ChangeLog; cvs diff -u -r 1.433 -r 1.434 ChangeLog.jp; cvs diff -u -r 1.68 -r 1.69 src/account.c; cvs diff -u -r 1.11 -r 1.12 src/account.h; cvs diff -u -r 1.8 -r 1.9 src/folder_item_prefs.c; cvs diff -u -r 1.135 -r 1.136 src/main.c; cvs diff -u -r 1.63 -r 1.64 src/pop.c; cvs diff -u -r 1.21 -r 1.22 src/pop.h; cvs diff -u -r 1.112 -r 1.113 src/prefs_account.c; cvs diff -u -r 1.51 -r 1.52 src/prefs_account.h; cvs diff -u -r 1.225 -r 1.226 src/prefs_common.c; cvs diff -u -r 1.112 -r 1.113 src/prefs_common.h; cvs diff -u -r 1.11 -r 1.12 src/prefs_gtk.c; cvs diff -u -r 1.5 -r 1.6 src/prefs_gtk.h; ) > 0.9.12cvs25.patchset
+( cvs diff -u -r 1.7 -r 1.8 src/gtk/quicksearch.c; cvs diff -u -r 1.429 -r 1.430 src/compose.c; cvs diff -u -r 1.6 -r 1.7 src/customheader.c; cvs diff -u -r 1.119 -r 1.120 src/messageview.c; cvs diff -u -r 1.115 -r 1.116 src/news.c; cvs diff -u -r 1.113 -r 1.114 src/prefs_account.c; cvs diff -u -r 1.17 -r 1.18 src/prefs_display_header.c; cvs diff -u -r 1.57 -r 1.58 src/procheader.c; ) > 0.9.12cvs26.patchset
+( cvs diff -u -r 1.120 -r 1.121 src/mimeview.c; ) > 0.9.12cvs27.patchset
+( cvs diff -u -r 1.121 -r 1.123 src/mimeview.c; ) > 0.9.12cvs28.patchset
+( cvs diff -u -r 1.105 -r 1.106 src/folder.h; cvs diff -u -r 1.242 -r 1.243 src/folderview.c; cvs diff -u -r 1.438 -r 1.439 src/summaryview.c; ) > 0.9.12cvs29.patchset
+( cvs diff -u -r 1.439 -r 1.440 src/summaryview.c; ) > 0.9.12cvs30.patchset
+( cvs diff -u -r 1.243 -r 1.244 src/folderview.c; ) > 0.9.12cvs31.patchset
+( cvs diff -u -r 1.64 -r 1.65 src/pop.c; ) > 0.9.12cvs32.patchset
+( cvs diff -u -r 1.106 -r 1.107 src/folder.h; cvs diff -u -r 1.244 -r 1.245 src/folderview.c; cvs diff -u -r 1.440 -r 1.441 src/summaryview.c; ) > 0.9.12cvs33.patchset
+( cvs diff -u -r 1.430 -r 1.431 src/compose.c; ) > 0.9.12cvs34.patchset
+( cvs diff -u -r 1.65 -r 1.66 src/pop.c; ) > 0.9.12cvs35.patchset
+( cvs diff -u -r 1.24 -r 1.25 src/msgcache.c; ) > 0.9.12cvs36.patchset
+( cvs diff -u -r 1.25 -r 1.26 src/msgcache.c; ) > 0.9.12cvs37.patchset
+( cvs diff -u -r 1.120 -r 1.121 src/messageview.c; ) > 0.9.12cvs38.patchset
+( cvs diff -u -r 1.121 -r 1.122 src/messageview.c; ) > 0.9.12cvs39.patchset
+( cvs diff -u -r 1.120 -r 1.121 AUTHORS; cvs diff -u -r 1.50 -r 1.51 po/pt_BR.po; ) > 0.9.12cvs40.patchset
+( cvs diff -u -r 1.439 -r 1.440 ChangeLog; cvs diff -u -r 1.434 -r 1.435 ChangeLog.jp; cvs diff -u -r 1.204 -r 1.205 src/imap.c; cvs diff -u -r 1.116 -r 1.117 src/news.c; cvs diff -u -r 1.10 -r 1.11 src/common/nntp.c; cvs diff -u -r 1.25 -r 1.26 src/common/session.c; cvs diff -u -r 1.10 -r 1.11 src/common/session.h; cvs diff -u -r 1.13 -r 1.14 src/common/socket.c; ) > 0.9.12cvs43.patchset
+( cvs diff -u -r 1.431 -r 1.432 src/compose.c; ) > 0.9.12cvs47.patchset
+( cvs diff -u -r 1.62 -r 1.63 src/prefs_folder_item.c; ) > 0.9.12cvs48.patchset
+( cvs diff -u -r 1.182 -r 1.183 src/Makefile.am; cvs diff -u -r 1.69 -r 1.70 src/account.c; cvs diff -u -r 1.69 -r 1.70 src/addressbook.c; cvs diff -u -r 1.19 -r 1.20 src/alertpanel.c; cvs diff -u -r 1.5 -r 1.6 src/alertpanel.h; cvs diff -u -r 1.432 -r 1.433 src/compose.c; cvs diff -u -r 1.3 -r 1.4 src/exphtmldlg.c; cvs diff -u -r 1.1 -r 1.2 src/expldifdlg.c; cvs diff -u -r 1.136 -r 1.137 src/main.c; cvs diff -u -r 1.3 -r 1.4 src/message_search.c; cvs diff -u -r 1.123 -r 1.124 src/messageview.c; cvs diff -u -r 1.66 -r 1.67 src/pop.c; cvs diff -u -r 1.14 -r 1.15 src/sgpgme.c; cvs diff -u -r 1.17 -r 1.18 src/summary_search.c; cvs diff -u -r 1.441 -r 1.442 src/summaryview.c; cvs diff -u -r 1.122 -r 1.123 src/textview.c; cvs diff -u -r 1.9 -r 1.10 src/gtk/sslcertwindow.c; cvs diff -u -r 0 -r 1 src/pixmaps/stock_dialog-error.xpm; cvs diff -u -r 0 -r 1 src/pixmaps/stock_dialog-info.xpm; cvs diff -u -r 0 -r 1 src/pixmaps/stock_dialog-question.xpm; cvs diff -u -r 0 -r 1 src/pixmaps/stock_dialog-warning.xpm; ) > 0.9.12cvs49.patchset
+( cvs diff -u -r 1.67 -r 1.68 src/pop.c; cvs diff -u -r 1.3 -r 1.4 src/common/partial_download.c; ) > 0.9.12cvs50.patchset
+( cvs diff -u -r 1.255 -r 1.256 src/folder.c; ) > 0.9.12cvs51.patchset
+( cvs diff -u -r 1.1110 -r 1.1111 configure.ac; cvs diff -u -r 1.183 -r 1.184 src/Makefile.am; cvs diff -u -r 1.137 -r 1.138 src/main.c; cvs diff -u -r -1.12 -r -1.13 src/pgpmime.c; cvs diff -u -r -1.1 -r -1.2 src/pgpmime.h; cvs diff -u -r -1.15 -r -1.16 src/sgpgme.c; cvs diff -u -r -1.5 -r -1.6 src/sgpgme.h; cvs diff -u -r 1.8 -r 1.9 src/plugins/Makefile.am; cvs diff -u -r 0 -r 1 src/plugins/pgpmime/.cvsignore; cvs diff -u -r 0 -r 1 src/plugins/pgpmime/Makefile.am; cvs diff -u -r 0 -r 1 src/plugins/pgpmime/pgpmime.c; cvs diff -u -r 0 -r 1 src/plugins/pgpmime/pgpmime.h; cvs diff -u -r 0 -r 1 src/plugins/pgpmime/plugin.c; cvs diff -u -r 0 -r 1 src/plugins/pgpmime/sgpgme.c; cvs diff -u -r 0 -r 1 src/plugins/pgpmime/sgpgme.h; ) > 0.9.12cvs52.patchset
+( cvs diff -u -r 1.5 -r 1.6 src/folderutils.c; ) > 0.9.12cvs53.patchset
+( cvs diff -u -r 1.71 -r 1.72 po/POTFILES.in; cvs diff -u -r 1.138 -r 1.139 src/main.c ) > 0.9.12cvs54.patchset
+( cvs diff -u -r 1.139 -r 1.140 src/main.c; cvs diff -u -r 1.13 -r 1.14 src/common/ssl.c; cvs diff -u -r 1.7 -r 1.8 src/common/sylpheed.c; cvs diff -u -r 1.5 -r 1.6 src/common/sylpheed.h; ) > 0.9.12cvs55.patchset
+( cvs diff -u -r 1.140 -r 1.141 src/main.c; cvs diff -u -r 1.14 -r 1.15 src/common/ssl.c; cvs diff -u -r 1.8 -r 1.9 src/common/sylpheed.c; cvs diff -u -r 1.6 -r 1.7 src/common/sylpheed.h; ) > 0.9.12cvs56.patchset
+( cvs diff -u -r 1.141 -r 1.142 src/main.c; cvs diff -u -r 1.14 -r 1.15 src/common/socket.c; cvs diff -u -r 1.15 -r 1.16 src/common/ssl.c; cvs diff -u -r 1.9 -r 1.10 src/common/sylpheed.c; cvs diff -u -r 1.7 -r 1.8 src/common/sylpheed.h; ) > 0.9.12cvs57.patchset
+( cvs diff -u -r 1.1117 -r 1.1118 configure.ac; cvs diff -u -r 1.7 -r 1.8 sylpheed.desktop; cvs diff -u -r 1.185 -r 1.186 src/Makefile.am; cvs diff -u -r 1.142 -r 1.143 src/main.c; ) > 0.9.12cvs58.patchset
+( cvs diff -u -r 1.14 -r 1.15 src/plugins/trayicon/trayicon.c; ) > 0.9.12cvs59.patchset
+( cvs diff -u -r 1.6 -r 1.7 src/folderutils.c; ) > 0.9.12cvs60.patchset
+( cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/plugin.c; ) > 0.9.12cvs61.patchset
+( cvs diff -u -r 1.16 -r 1.17 src/common/ssl.c; ) > 0.9.12cvs62.patchset
+( cvs diff -u -r 1.17 -r 1.18 src/common/ssl.c; ) > 0.9.12cvs63.patchset
+( cvs diff -u -r 1.18 -r 1.19 src/common/ssl.c; ) > 0.9.12cvs64.patchset
+( cvs diff -u -r 1.19 -r 1.20 src/common/ssl.c; cvs diff -u -r 1.2 -r 1.3 src/plugins/pgpmime/plugin.c; ) > 0.9.12cvs65.patchset
+
+( cvs diff -u -r 1.71 -r 1.72 src/codeconv.c; ) > 0.9.12cvs66.patchset
+( cvs diff -u -r 1.305 -r 1.306 src/mainwindow.c; ) > 0.9.12cvs67.patchset
+( cvs diff -u -r 1.433 -r 1.434 src/compose.c; ) > 0.9.12cvs68.patchset
+( cvs diff -u -r 1.434 -r 1.435 src/compose.c; ) > 0.9.12cvs69.patchset
+( cvs diff -u -r 1.435 -r 1.436 src/compose.c; ) > 0.9.12cvs70.patchset
+( cvs diff -u -r 1.442 -r 1.443 src/summaryview.c; ) > 0.9.12cvs71.patchset
+( cvs diff -u -r 1.436 -r 1.437 src/compose.c; ) > 0.9.12cvs72.patchset
+( cvs diff -u -r 1.53 -r 1.54 src/toolbar.c; ) > 0.9.12cvs73.patchset
+( cvs diff -u -r 1.437 -r 1.438 src/compose.c; ) > 0.9.12cvs74.patchset
+( cvs diff -u -r 1.1 -r 1.2 m4/Makefile.am; ) > 0.9.12cvs75.patchset
+( cvs diff -u -r 1.15 -r 1.16 src/plugins/trayicon/trayicon.c; ) > 0.9.12cvs76.patchset
+( cvs diff -u -r 1.205 -r 1.206 src/imap.c; ) > 0.9.12cvs77.patchset
+( cvs diff -u -r 1.41 -r 1.42 src/rfc2015.c; cvs diff -u -r 1.8 -r 1.9 src/rfc2015.h; cvs diff -u -r 1.438 -r 1.439 src/compose.c; ) > 0.9.12cvs78.patchset
+( cvs diff -u -r 1.439 -r 1.441 src/compose.c; ) > 0.9.12cvs79.patchset
+( cvs diff -u -r 1.256 -r 1.257 src/folder.c; ) > 0.9.12cvs80.patchset
+( cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/pgpmime.c; cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/sgpgme.c; cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/sgpgme.h; ) > 0.9.12cvs81.patchset
+( cvs diff -u -r 1.2 -r 1.3 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs82.patchset
+( cvs diff -u -r 1.441 -r 1.442 ChangeLog; cvs diff -u -r 1.436 -r 1.437 ChangeLog.jp; cvs diff -u -r 1.85 -r 1.86 src/mh.c; cvs diff -u -r 1.58 -r 1.59 src/procheader.c; cvs diff -u -r 1.165 -r 1.166 src/procmsg.c; cvs diff -u -r 1.69 -r 1.70 src/procmsg.h; cvs diff -u -r 1.51 -r 1.52 src/common/utils.c; cvs diff -u -r 1.7 -r 1.8 src/gtk/menu.h; ) > 0.9.12cvs83.patchset
+( cvs diff -u -r 1.124 -r 1.125 src/mimeview.c; ) > 0.9.12cvs84.patchset
+( cvs diff -u -r 1.257 -r 1.258 src/folder.c; ) > 0.9.12cvs85.patchset
+( cvs diff -u -r 1.70 -r 1.71 src/filtering.c; cvs diff -u -r 1.206 -r 1.207 src/imap.c; cvs diff -u -r 1.47 -r 1.48 src/prefs_matcher.c; cvs diff -u -r 1.35 -r 1.36 src/stock_pixmap.c; ) > 0.9.12cvs86.patchset
+( cvs diff -u -r 1.6 -r 1.7 src/prefs_spelling.c; ) > 0.9.12cvs87.patchset
+( cvs diff -u -r 1.8 -r 1.9 src/ldapquery.c; ) > 0.9.12cvs88.patchset
+( cvs diff -u -r 1.34 -r 1.35 src/addrindex.c; ) > 0.9.12cvs89.patchset
+( cvs diff -u -r 1.70 -r 1.72 src/account.c; ) > 0.9.12cvs90.patchset
+( cvs diff -u -r 1.8 -r 1.9 src/gtk/menu.c; ) > 0.9.12cvs91.patchset
+( cvs diff -u -r 1.226 -r 1.227 src/prefs_common.c; cvs diff -u -r 1.113 -r 1.114 src/prefs_common.h; cvs diff -u -r 1.443 -r 1.444 src/summaryview.c; ) > 0.9.12cvs92.patchset
+( cvs diff -u -r 1.444 -r 1.445 src/summaryview.c; ) > 0.9.12cvs93.patchset
+( cvs diff -u -r 1.70 -r 1.71 src/addressbook.c; cvs diff -u -r 1.5 -r 1.6 src/addressitem.h; cvs diff -u -r 1.14 -r 1.15 src/addritem.c; cvs diff -u -r 1.13 -r 1.14 src/addritem.h; ) > 0.9.12cvs94.patchset
+( cvs diff -u -r 1.445 -r 1.446 src/summaryview.c; cvs diff -u -r 1.125 -r 1.126 src/mimeview.c; ) > 0.9.12cvs95.patchset
+( cvs diff -u -r 1.54 -r 1.55 src/toolbar.c; ) > 0.9.12cvs96.patchset
+( cvs diff -u -r 1.175 -r 1.176 src/inc.c; ) > 0.9.12cvs97.patchset
+( cvs diff -u -r 1.258 -r 1.259 src/folder.c; cvs diff -u -r 1.166 -r 1.167 src/procmsg.c; cvs diff -u -r 1.70 -r 1.71 src/procmsg.h; cvs diff -u -r 1.3 -r 1.4 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs98.patchset
+( cvs diff -u -r 1.72 -r 1.73 src/account.c; ) > 0.9.12cvs99.patchset
+( cvs diff -u -r 1.259 -r 1.260 src/folder.c; ) > 0.9.12cvs100.patchset
+( cvs diff -u -r 1.143 -r 1.144 src/main.c; ) > 0.9.12cvs101.patchset
+( cvs diff -u -r 1.442 -r 1.443 ChangeLog; cvs diff -u -r 1.437 -r 1.438 ChangeLog.jp; cvs diff -u -r 1.176 -r 1.177 src/inc.c; ) > 0.9.12cvs102.patchset
+( cvs diff -u -r 1.6 -r 1.7 src/plugins/spamassassin/libspamc.c; cvs diff -u -r 1.5 -r 1.6 src/plugins/spamassassin/libspamc.h; cvs diff -u -r 1.4 -r 1.5 src/plugins/spamassassin/utils.c; cvs diff -u -r 1.4 -r 1.5 src/plugins/spamassassin/utils.h; ) > 0.9.12cvs103.patchset
+( cvs diff -u -r 1.144 -r 1.145 src/main.c; ) > 0.9.12cvs104.patchset
+( cvs diff -u -r 1.3047 -r 1.3048 ChangeLog.claws; cvs diff -u -r 1.245 -r 1.246 src/folderview.c; ) > 0.9.12cvs105.patchset
+( cvs diff -u -r 1.177 -r 1.178 src/inc.c; ) > 0.9.12cvs106.patchset
+( cvs diff -u -r 1.71 -r 1.73 src/addressbook.c; ) > 0.9.12cvs107.patchset
+( cvs diff -u -r 1.73 -r 1.74 src/addressbook.c; ) > 0.9.12cvs108.patchset
+( cvs diff -u -r 1.306 -r 1.307 src/mainwindow.c; ) > 0.9.12cvs109.patchset
+( cvs diff -u -r 1.246 -r 1.247 src/folderview.c; cvs diff -u -r 1.307 -r 1.308 src/mainwindow.c; ) > 0.9.12cvs110.patchset
+( cvs diff -u -r 1.308 -r 1.309 src/mainwindow.c; ) > 0.9.12cvs111.patchset
+( cvs diff -u -r 1.309 -r 1.310 src/mainwindow.c; cvs diff -u -r 1.247 -r 1.248 src/folderview.c; ) > 0.9.12cvs112.patchset
+( cvs diff -u -r 1.24 -r 1.25 src/quote_fmt_parse.y; ) > 0.9.12cvs113.patchset
+( cvs diff -u -r 1.441 -r 1.442 src/compose.c; ) > 0.9.12cvs114.patchset
+( cvs diff -u -r 1.36 -r 1.37 src/stock_pixmap.c; cvs diff -u -r 1.25 -r 1.26 src/stock_pixmap.h; cvs diff -u -r 1.248 -r 1.249 src/folderview.c; cvs diff -u -r 1.186 -r 1.187 src/Makefile.am; cvs diff -u -r 0 -r 1 src/pixmaps/read.xpm; ) > 0.9.12cvs115.patchset
+( cvs diff -u -r 1.443 -r 1.444 ChangeLog; cvs diff -u -r 1.438 -r 1.439 ChangeLog.jp; cvs diff -u -r 1.73 -r 1.74 src/account.c; cvs diff -u -r 1.227 -r 1.228 src/prefs_common.c; cvs diff -u -r 1.3 -r 1.4 src/gtk/colorlabel.c; ) > 0.9.12cvs116.patchset
+( cvs diff -u -r 1.126 -r 1.127 src/mimeview.c; ) > 0.9.12cvs117.patchset
+( cvs diff -u -r 1.127 -r 1.128 src/mimeview.c; ) > 0.9.12cvs118.patchset
+( cvs diff -u -r 1.310 -r 1.311 src/mainwindow.c; cvs diff -u -r 1.124 -r 1.125 src/messageview.c; cvs diff -u -r 1.114 -r 1.115 src/prefs_common.h; cvs diff -u -r 1.84 -r 1.85 src/procmime.c; cvs diff -u -r 1.29 -r 1.30 src/procmime.h; cvs diff -u -r 1.123 -r 1.124 src/textview.c; ) > 0.9.12cvs119.patchset
+( cvs diff -u -r 1.446 -r 1.447 src/summaryview.c; ) > 0.9.12cvs120.patchset
+( cvs diff -u -r 1.447 -r 1.448 src/summaryview.c; ) > 0.9.12cvs121.patchset
+( cvs diff -u -r 1.311 -r 1.312 src/mainwindow.c; cvs diff -u -r 1.125 -r 1.126 src/messageview.c; cvs diff -u -r 1.25 -r 1.26 src/messageview.h; cvs diff -u -r 1.124 -r 1.125 src/textview.c; ) > 0.9.12cvs122.patchset
+( cvs diff -u -r 1.187 -r 1.188 src/Makefile.am; cvs diff -u -r 1.74 -r 1.75 src/account.c; cvs diff -u -r 1.442 -r 1.443 src/compose.c; cvs diff -u -r 1.56 -r 1.57 src/compose.h; cvs diff -u -r 1.24 -r 1.25 src/crash.c; cvs diff -u -r 1.145 -r 1.146 src/main.c; cvs diff -u -r 1.128 -r 1.129 src/mimeview.c; cvs diff -u -r -1.13 -r -1.14 src/passphrase.c; cvs diff -u -r -1.5 -r -1.6 src/passphrase.h; cvs diff -u -r 1.114 -r 1.115 src/prefs_account.c; cvs diff -u -r 1.52 -r 1.53 src/prefs_account.h; cvs diff -u -r 1.228 -r 1.229 src/prefs_common.c; cvs diff -u -r 1.115 -r 1.116 src/prefs_common.h; cvs diff -u -r 1.10 -r 1.11 src/privacy.c; cvs diff -u -r 1.10 -r 1.11 src/privacy.h; cvs diff -u -r 1.85 -r 1.86 src/procmime.c; cvs diff -u -r 1.30 -r 1.31 src/procmime.h; cvs diff -u -r 1.167 -r 1.168 src/procmsg.c; cvs diff -u -r -1.42 -r -1.43 src/rfc2015.c; cvs diff -u -r -1.9 -r -1.10 src/rfc2015.h; cvs diff -u -r -1.7 -r -1.8 src/select-keys.c; cvs diff -u -r -1.1.1.1 -r -1.1.1.2 src/select-keys.h; cvs diff -u -r 1.52 -r 1.53 src/common/utils.c; cvs diff -u -r 1.30 -r 1.31 src/common/utils.h; cvs diff -u -r 1.6 -r 1.7 src/gtk/about.c; cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/Makefile.am; cvs diff -u -r 0 -r 1 src/plugins/pgpmime/passphrase.c; cvs diff -u -r 0 -r 1 src/plugins/pgpmime/passphrase.h; cvs diff -u -r 1.4 -r 1.5 src/plugins/pgpmime/pgpmime.c; cvs diff -u -r 1.3 -r 1.4 src/plugins/pgpmime/plugin.c; cvs diff -u -r 0 -r 1 src/plugins/pgpmime/prefs_gpg.c; cvs diff -u -r 0 -r 1 src/plugins/pgpmime/prefs_gpg.h; cvs diff -u -r 0 -r 1 src/plugins/pgpmime/select-keys.c; cvs diff -u -r 0 -r 1 src/plugins/pgpmime/select-keys.h; cvs diff -u -r 1.2 -r 1.3 src/plugins/pgpmime/sgpgme.c; cvs diff -u -r 1.2 -r 1.3 src/plugins/pgpmime/sgpgme.h; ) > 0.9.12cvs123.patchset
+( cvs diff -u -r 1.1 -r 1.2 m4/spamassassin.m4; cvs diff -u -r 1.443 -r 1.444 src/compose.c; ) > 0.9.12cvs124.patchset
+( cvs diff -u -r 1.73 -r 1.74 po/POTFILES.in; ) > 0.9.12cvs125.patchset
+( cvs diff -u -r 1.444 -r 1.445 src/compose.c; ) > 0.9.12cvs126.patchset
+( cvs diff -u -r 1.23 -r 1.24 src/addrbook.c; cvs diff -u -r 1.16 -r 1.17 src/addrcache.c; cvs diff -u -r 1.74 -r 1.75 src/addressbook.c; cvs diff -u -r 1.72 -r 1.73 src/codeconv.c; cvs diff -u -r 1.445 -r 1.446 src/compose.c; cvs diff -u -r 1.7 -r 1.8 src/customheader.c; cvs diff -u -r 1.14 -r 1.15 src/editaddress.c; cvs diff -u -r 1.11 -r 1.12 src/editgroup.c; cvs diff -u -r 1.5 -r 1.6 src/exporthtml.c; cvs diff -u -r 1.260 -r 1.261 src/folder.c; cvs diff -u -r 1.249 -r 1.250 src/folderview.c; cvs diff -u -r 1.207 -r 1.208 src/imap.c; cvs diff -u -r 1.19 -r 1.20 src/jpilot.c; cvs diff -u -r 1.146 -r 1.147 src/main.c; cvs diff -u -r 1.35 -r 1.36 src/matcher_parser_parse.y; cvs diff -u -r 1.29 -r 1.30 src/mbox.c; cvs diff -u -r 1.68 -r 1.69 src/pop.c; cvs diff -u -r 1.115 -r 1.116 src/prefs_account.c; cvs diff -u -r 1.12 -r 1.13 src/prefs_gtk.c; cvs diff -u -r 1.2 -r 1.3 src/prefs_msg_colors.c; cvs diff -u -r 1.59 -r 1.60 src/procheader.c; cvs diff -u -r 1.86 -r 1.87 src/procmime.c; cvs diff -u -r 1.31 -r 1.32 src/procmime.h; cvs diff -u -r 1.168 -r 1.169 src/procmsg.c; cvs diff -u -r 1.448 -r 1.449 src/summaryview.c; cvs diff -u -r 1.125 -r 1.126 src/textview.c; cvs diff -u -r 1.2 -r 1.3 src/common/base64.c; cvs diff -u -r 1.4 -r 1.5 src/common/partial_download.c; cvs diff -u -r 1.15 -r 1.16 src/common/socket.c; cvs diff -u -r 1.10 -r 1.11 src/common/sylpheed.c; cvs diff -u -r 1.53 -r 1.54 src/common/utils.c; cvs diff -u -r 1.31 -r 1.32 src/common/utils.h; cvs diff -u -r 1.5 -r 1.6 src/gtk/filesel.c; cvs diff -u -r 1.7 -r 1.8 src/gtk/pluginwindow.c; cvs diff -u -r 1.8 -r 1.9 src/gtk/quicksearch.c; cvs diff -u -r 1.25 -r 1.26 src/plugins/clamav/clamav_plugin.c; cvs diff -u -r 1.3 -r 1.4 src/plugins/clamav/clamav_plugin.h; cvs diff -u -r 1.11 -r 1.12 src/plugins/clamav/clamav_plugin_gtk.c; cvs diff -u -r 1.5 -r 1.6 src/plugins/pgpmime/pgpmime.c; cvs diff -u -r 1.4 -r 1.5 src/plugins/pgpmime/plugin.c; cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/select-keys.c; cvs diff -u -r 1.3 -r 1.4 src/plugins/pgpmime/sgpgme.c; cvs diff -u -r 1.7 -r 1.8 src/plugins/spamassassin/libspamc.c; cvs diff -u -r 1.23 -r 1.24 src/plugins/spamassassin/spamassassin.c; cvs diff -u -r 1.5 -r 1.6 src/plugins/spamassassin/spamassassin.h; cvs diff -u -r 1.26 -r 1.27 src/plugins/spamassassin/spamassassin_gtk.c; cvs diff -u -r 1.16 -r 1.17 src/plugins/trayicon/trayicon.c; cvs diff -u -r 1.1 -r 1.2 src/plugins/trayicon/libeggtrayicon/eggtrayicon.c; cvs diff -u -r 1.1 -r 1.2 src/plugins/trayicon/libeggtrayicon/eggtrayicon.h; cvs diff -u -r 1.1 -r 1.2 src/plugins/trayicon/libeggtrayicon/gtkplugxembed.c; ) > 0.9.12cvs127.patchset
+( cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/passphrase.c; cvs diff -u -r 1.6 -r 1.7 src/plugins/pgpmime/pgpmime.c; cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/prefs_gpg.c; cvs diff -u -r 0 -r 1 src/plugins/pgpmime/prefs_gpg.glade; cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/prefs_gpg.h; cvs diff -u -r 1.4 -r 1.5 src/plugins/pgpmime/sgpgme.c; ) > 0.9.12cvs128.patchset
+( cvs diff -u -r 1.446 -r 1.447 src/compose.c; cvs diff -u -r 1.54 -r 1.55 src/common/utils.c; ) > 0.9.12cvs129.patchset
+( cvs diff -u -r 1.447 -r 1.448 src/compose.c; cvs diff -u -r 1.9 -r 1.10 src/gtk/menu.c; ) > 0.9.12cvs130.patchset
+( cvs diff -u -r 1.448 -r 1.449 src/compose.c; ) > 0.9.12cvs131.patchset
+( cvs diff -u -r 1.449 -r 1.450 src/compose.c; ) > 0.9.12cvs132.patchset
+( cvs diff -u -r 1.450 -r 1.451 src/compose.c; cvs diff -u -r 1.229 -r 1.230 src/prefs_common.c; cvs diff -u -r 1.116 -r 1.117 src/prefs_common.h; cvs diff -u -r 1.2 -r 1.3 src/prefs_wrapping.c; ) > 0.9.12cvs133.patchset
+( cvs diff -u -r 1.147 -r 1.148 src/main.c; cvs diff -u -r 1.87 -r 1.88 src/procmime.c; cvs diff -u -r 1.7 -r 1.8 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs134.patchset
+( cvs diff -u -r 0 -r 1 doc/src/rfc2231.txt; cvs diff -u -r 1.88 -r 1.89 src/procmime.c; cvs diff -u -r 1.4 -r 1.5 src/common/quoted-printable.c; cvs diff -u -r 1.55 -r 1.56 src/common/utils.c; cvs diff -u -r 1.32 -r 1.33 src/common/utils.h; ) > 0.9.12cvs135.patchset
+( cvs diff -u -r 1.56 -r 1.57 src/common/utils.c; ) > 0.9.12cvs136.patchset
+( cvs diff -u -r 1.89 -r 1.90 src/procmime.c; ) > 0.9.12cvs137.patchset
+( cvs diff -u -r 1.74 -r 1.75 po/POTFILES.in; cvs diff -u -r 1.4 -r 1.5 src/prefs_ext_prog.c; cvs diff -u -r 1.3 -r 1.4 tools/kdeservicemenu/template_sylpheed-attach-files.desktop; cvs diff -u -r 1.3 -r 1.4 tools/kdeservicemenu/template_sylpheed-compress-attach.desktop; ) > 0.9.12cvs138.patchset
+( cvs diff -u -r 1.3087 -r 1.3088 ChangeLog.claws; cvs diff -u -r 1.451 -r 1.452 src/compose.c; cvs diff -u -r 1.90 -r 1.91 src/procmime.c; cvs diff -u -r 1.1 -r 1.2 src/plugins/trayicon/README; ) > 0.9.12cvs139.patchset
+( cvs diff -u -r 1.452 -r 1.453 src/compose.c; ) > 0.9.12cvs140.patchset
+( cvs diff -u -r 1.126 -r 1.127 src/textview.c; ) > 0.9.12cvs141.patchset
+( cvs diff -u -r 1.127 -r 1.128 src/textview.c; ) > 0.9.12cvs142.patchset
+( cvs diff -u -r 1.449 -r 1.450 src/summaryview.c; ) > 0.9.12cvs143.patchset
+( cvs diff -u -r 1.453 -r 1.454 src/compose.c; cvs diff -u -r 1.261 -r 1.262 src/folder.c; cvs diff -u -r 1.312 -r 1.313 src/mainwindow.c; cvs diff -u -r 1.116 -r 1.118 src/prefs_account.c; cvs diff -u -r 1.53 -r 1.54 src/prefs_account.h; cvs diff -u -r 1.8 -r 1.9 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs144.patchset
+( cvs diff -u -r 1.444 -r 1.445 ChangeLog; cvs diff -u -r 1.439 -r 1.440 ChangeLog.jp; cvs diff -u -r 1.75 -r 1.76 src/account.c; cvs diff -u -r 1.250 -r 1.251 src/folderview.c; cvs diff -u -r 1.26 -r 1.27 src/folderview.h; cvs diff -u -r 1.208 -r 1.209 src/imap.c; cvs diff -u -r 1.2 -r 1.3 src/imap_gtk.c; cvs diff -u -r 1.178 -r 1.179 src/inc.c; cvs diff -u -r 1.312 -r 1.313 src/mainwindow.c; cvs diff -u -r 1.4 -r 1.5 src/mh_gtk.c; cvs diff -u -r 1.2 -r 1.3 src/news_gtk.c; cvs diff -u -r 1.69 -r 1.70 src/pop.c; cvs diff -u -r 1.118 -r 1.119 src/prefs_account.c; cvs diff -u -r 1.54 -r 1.55 src/prefs_account.h; cvs diff -u -r 1.5 -r 1.6 src/prefs_ext_prog.c; cvs diff -u -r 1.169 -r 1.170 src/procmsg.c; cvs diff -u -r 1.71 -r 1.72 src/procmsg.h; cvs diff -u -r 1.18 -r 1.19 src/summary_search.c; cvs diff -u -r 1.450 -r 1.451 src/summaryview.c; cvs diff -u -r 1.128 -r 1.129 src/textview.c; cvs diff -u -r 1.16 -r 1.17 src/common/defs.h; cvs diff -u -r 1.57 -r 1.58 src/common/utils.c; cvs diff -u -r 1.33 -r 1.34 src/common/utils.h; cvs diff -u -r 1.10 -r 1.11 src/gtk/menu.c; cvs diff -u -r 1.8 -r 1.9 src/gtk/menu.h; ) > 0.9.12cvs145.patchset
+( cvs diff -u -r 1.119 -r 1.120 src/prefs_account.c; cvs diff -u -r 1.91 -r 1.92 src/procmime.c; cvs diff -u -r 1.32 -r 1.33 src/procmime.h; ) > 0.9.12cvs146.patchset
+( cvs diff -u -r 1.170 -r 1.171 src/procmsg.c; ) > 0.9.12cvs147.patchset
+( cvs diff -u -r 1.171 -r 1.172 src/procmsg.c; ) > 0.9.12cvs148.patchset
+( cvs diff -u -r 1.172 -r 1.173 src/procmsg.c; ) > 0.9.12cvs149.patchset
+( cvs diff -u -r 1.9 -r 1.10 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs150.patchset
+( cvs diff -u -r 1.10 -r 1.11 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs151.patchset
+( cvs diff -u -r 1.446 -r 1.447 ChangeLog; cvs diff -u -r 1.441 -r 1.442 ChangeLog.jp; cvs diff -u -r 1.51 -r 1.52 NEWS; cvs diff -u -r 1.454 -r 1.455 src/compose.c; cvs diff -u -r 1.20 -r 1.21 src/jpilot.c; cvs diff -u -r 1.92 -r 1.93 src/procmime.c; ) > 0.9.12cvs152.patchset
+( cvs diff -u -r 1.33 -r 1.34 src/procmime.h; ) > 0.9.12cvs153.patchset
+( cvs diff -u -r 1.11 -r 1.12 src/privacy.c; ) > 0.9.12cvs154.patchset
+( cvs diff -u -r 1.455 -r 1.456 src/compose.c; cvs diff -u -r 1.173 -r 1.174 src/procmsg.c; cvs diff -u -r 1.55 -r 1.56 src/toolbar.c; ) > 0.9.12cvs155.patchset
+( cvs diff -u -r 1.120 -r 1.121 src/prefs_account.c; cvs diff -u -r 1.55 -r 1.56 src/prefs_account.h; cvs diff -u -r 1.174 -r 1.175 src/procmsg.c; ) > 0.9.12cvs156.patchset
+( cvs diff -u -r 1.313 -r 1.314 src/mainwindow.c; cvs diff -u -r 1.230 -r 1.231 src/prefs_common.c; ) > 0.9.12cvs157.patchset
+( cvs diff -u -r 1.456 -r 1.457 src/compose.c; cvs diff -u -r 1.126 -r 1.127 src/messageview.c; cvs diff -u -r 1.58 -r 1.59 src/common/utils.c; cvs diff -u -r 1.34 -r 1.35 src/common/utils.h; ) > 0.9.12cvs158.patchset
+( cvs diff -u -r 1.231 -r 1.232 src/prefs_common.c; ) > 0.9.12cvs159.patchset
+( cvs diff -u -r 1.6 -r 1.7 src/prefs_themes.c; ) > 0.9.12cvs160.patchset
+( cvs diff -u -r 1.6 -r 1.7 src/gtk/gtkstext.c; ) > 0.9.12cvs161.patchset
+( cvs diff -u -r 1.27 -r 1.28 src/msgcache.c; ) > 0.9.12cvs162.patchset
+( cvs diff -u -r 1.148 -r 1.149 src/main.c; ) > 0.9.12cvs163.patchset
+( cvs diff -u -r 1.188 -r 1.189 src/Makefile.am; cvs diff -u -r 1.73 -r 1.74 src/codeconv.c; cvs diff -u -r 1.457 -r 1.458 src/compose.c; cvs diff -u -r 1.251 -r 1.252 src/folderview.c; cvs diff -u -r 1.149 -r 1.150 src/main.c; cvs diff -u -r 0 -r 1 src/partial_download.c; cvs diff -u -r 0 -r 1 src/partial_download.h; cvs diff -u -r 1.121 -r 1.122 src/prefs_account.c; cvs diff -u -r 1.56 -r 1.57 src/prefs_account.h; cvs diff -u -r 1.12 -r 1.13 src/privacy.c; cvs diff -u -r 1.11 -r 1.12 src/privacy.h; cvs diff -u -r 1.28 -r 1.29 src/common/Makefile.am; cvs diff -u -r 1.1 -r 1.2 src/common/base64.h; cvs diff -u -r -1.5 -r -1.6 src/common/partial_download.c; cvs diff -u -r -1.2 -r -1.3 src/common/partial_download.h; cvs diff -u -r 1.15 -r 1.16 src/gtk/prefswindow.c; cvs diff -u -r 1.8 -r 1.9 src/gtk/prefswindow.h; cvs diff -u -r 1.11 -r 1.12 src/plugins/pgpmime/pgpmime.c; cvs diff -u -r 1.2 -r 1.3 src/plugins/pgpmime/prefs_gpg.c; cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/prefs_gpg.glade; cvs diff -u -r 1.2 -r 1.3 src/plugins/pgpmime/prefs_gpg.h; cvs diff -u -r 1.5 -r 1.6 src/plugins/pgpmime/sgpgme.c; cvs diff -u -r 1.3 -r 1.4 src/plugins/pgpmime/sgpgme.h; ) > 0.9.12cvs164.patchset
+( cvs diff -u -r 1.93 -r 1.94 src/procmime.c; ) > 0.9.12cvs165.patchset
+( cvs diff -u -r 1.94 -r 1.95 src/procmime.c; ) > 0.9.12cvs166.patchset
+( cvs diff -u -r 1.16 -r 1.17 commitHelper; cvs diff -u -r 1.1 -r 1.2 src/partial_download.c; cvs diff -u -r 1.1 -r 1.2 src/partial_download.h; ) > 0.9.12cvs167.patchset
+( cvs diff -u -r 1.5 -r 1.6 src/plugins/pgpmime/plugin.c; ) > 0.9.12cvs168.patchset
