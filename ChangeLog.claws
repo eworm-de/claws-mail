@@ -1,3 +1,8 @@
+2003-01-13 [melvin]	0.8.8claws91
+
+	* src/prefs_actions.c
+		Justify help text.
+
 2003-01-12 [thorsten]	0.8.8claws90
 
 	* src/common/prefs.c
@@ -39,7 +44,7 @@
 		give up const-correctness on functions that call non-const-correct functions;
 		several casts to gpointer in g_free();
 		add change_score;
-		
+
 2003-01-12 [christoph]	0.8.8claws84
 
 	* src/compose.c
@@ -95,7 +100,7 @@
 	* src/toolbar.c
 		use the translatable string for "Separator" as file name for
 		separator toolbar items (probably make this uppercase?)
-	
+
 2003-01-10 [alfons]	0.8.8claws79
 
 	* src/prefs_toolbar.c
