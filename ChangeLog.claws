@@ -1485,25 +1485,25 @@
 		see ChangeLog 2002-11-28 (no sync needed
 		for src/compose.c)
 
-2002-11-28 [Ivan Francolin Martinez (ivanfm@sourceforge.net)]	0.8.6claws31
+2002-11-28 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.6claws31
 	
 	* src/mainwindow.[ch]
 		add patch by Ivan F. Martinez introducing messageview Toolbar
 		some changes and committed by oliver	
 
-2002-11-28 [Ivan Francolin Martinez (ivanfm@sourceforge.net)]	0.8.6claws30
+2002-11-28 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.6claws30
 
 	* src/messageview.[ch]
 		add patch by Ivan F. Martinez introducing messageview Toolbar
 		some changes and committed by oliver	
 
-2002-11-28 [Ivan Francolin Martinez (ivanfm@sourceforge.net)]	0.8.6claws29
+2002-11-28 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.6claws29
 
 	* src/compose.[ch]
 		add patch by Ivan F. Martinez introducing messageview Toolbar
 		some changes and committed by oliver	
 
-2002-11-28 [Ivan Francolin Martinez (ivanfm@sourceforge.net)]	0.8.6claws28
+2002-11-28 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.6claws28
 	
 	* src/toolbar.[ch]
 		add patch by Ivan F. Martinez introducing messageview Toolbar
