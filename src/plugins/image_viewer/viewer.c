@@ -289,6 +289,12 @@ MimeViewerFactory image_viewer_factory =
 
 void image_viewer_init(void)
 {
+#if HAVE_GDK_IMLIB
+	gdk_imlib_init();
+	gtk_widget_push_visual(gdk_imlib_get_visual());
+	gtk_widget_push_colormap(gdk_imlib_get_colormap());
+#endif
+
 	mimeview_register_viewer_factory(&image_viewer_factory);
 }
 

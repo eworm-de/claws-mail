@@ -1,3 +1,12 @@
+2003-05-06 [christoph]	0.8.11claws145
+
+	* src/main.c
+	* src/plugins/image_viewer/viewer.c
+		fix usage of imlib in imageviewer plugin
+
+	* src/gtk/prefswindow.c
+		handle window close event correctly
+
 2003-05-06 [paul]	0.8.11claws144
 
 	* src/common/ssl.c

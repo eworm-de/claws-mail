@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=11
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws144
+EXTRA_VERSION=claws145
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -412,7 +412,11 @@ if test x"$ac_cv_enable_image_viewer_plugin" = xyes; then
 fi
 AM_CONDITIONAL(BUILD_IMAGE_VIEWER_PLUGIN, test x"$ac_cv_enable_image_viewer_plugin" = xyes)
 if test x"$ac_cv_enable_image_viewer_plugin" = xyes; then
-	PLUGINS="image-viewer $PLUGINS"
+	if test "$ac_cv_enable_gdk_pixbuf" = yes; then
+		PLUGINS="image-viewer(gdk-pixbuf)"
+	elif test "$ac_cv_enable_imlib" = yes; then
+		PLUGINS="image-viewer(gdk_imlib)"
+	fi
 fi
 
 AC_ARG_ENABLE(dillo-viewer-plugin,
@@ -489,13 +493,6 @@ dnl Output the configuration summary
 echo ""
 echo "$PACKAGE $VERSION"
 echo ""
-if test "$ac_cv_enable_gdk_pixbuf" = yes; then
-	echo "image support : yes (gdk-pixbuf)"
-elif test "$ac_cv_enable_imlib" = yes; then
-	echo "image support : yes (gdk_imlib)"
-else
-	echo "image support : no"
-fi
 echo "GnuPG         : $ac_cv_enable_gpgme"
 echo "JPilot        : $ac_cv_enable_jpilot"
 echo "LDAP          : $ac_cv_enable_ldap"
