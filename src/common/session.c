@@ -439,6 +439,10 @@ static gboolean session_read_msg_cb(SockInfo *source, GIOCondition condition,
 
 		if (read_len == -1 && session->state == SESSION_DISCONNECTED) {
 			g_warning ("sock_read: session disconnected\n");
+			if (session->io_tag > 0) {
+				g_source_remove(session->io_tag);
+				session->io_tag = 0;
+			}
 			return FALSE;
 		}
 		

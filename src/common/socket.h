@@ -54,6 +54,7 @@ struct _SockInfo
 	gint sock;
 #if USE_OPENSSL
 	SSL *ssl;
+	guint g_source;
 #endif
 	GIOChannel *sock_ch;
 

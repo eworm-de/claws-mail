@@ -327,9 +327,9 @@ static gboolean sock_watch_cb(GIOChannel *source, GIOCondition condition,
 {
 	SockInfo *sock = (SockInfo *)data;
 
-	if (!sock || !sock->callback || !sock->data)
+	if (!sock || !sock->callback || !sock->data) {
 		return FALSE;
-
+	}
 	return sock->callback(sock, condition, sock->data);
 }
 
@@ -348,7 +348,7 @@ guint sock_add_watch(SockInfo *sock, GIOCondition condition, SockFunc func,
 		((SockSource *) source)->sock = sock;
 		g_source_set_priority(source, G_PRIORITY_DEFAULT);
 		g_source_set_can_recurse(source, FALSE);
-		g_source_attach(source, NULL);
+		sock->g_source = g_source_attach(source, NULL);
 	}
 #endif
 
@@ -1362,6 +1362,9 @@ gint sock_close(SockInfo *sock)
 #if USE_OPENSSL
 	if (sock->ssl)
 		ssl_done_socket(sock);
+	if (sock->g_source != 0)
+		g_source_remove(sock->g_source);
+	sock->g_source = 0;
 #endif
 	ret = fd_close(sock->sock); 
 	g_free(sock->hostname);

@@ -216,7 +216,7 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 				       GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 
 	text1 = gtk_text_new(NULL, NULL);
-	gtk_text_set_editable(GTK_TEXT(text1), FALSE);
+	gtk_text_set_editable((text1), FALSE);
 	gtk_widget_show(text1);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow1), text1);
 	
@@ -229,7 +229,7 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 		get_lib_version(),
 		debug_output);
 
-	gtk_text_insert(GTK_TEXT(text1), NULL, NULL, NULL, crash_report, -1);
+	gtk_text_insert((text1), NULL, NULL, NULL, crash_report, -1);
 
 	hbuttonbox3 = gtk_hbutton_box_new();
 	gtk_widget_show(hbuttonbox3);
