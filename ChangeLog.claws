@@ -1,3 +1,8 @@
+2002-01-18 [paul]	0.7.0claws13
+
+	* sync with sylpheed 0.7.0cvs8
+		configure.in: support Mac OS X (Darwin)
+
 2002-01-18 [carsten]	0.7.0claws12
 	* src/html.c
 		small hack to fix a segfault with an empty href

@@ -1,3 +1,7 @@
+2002-01-18
+
+	* configure.in: support Mac OS X (Darwin).
+
 2002-01-16
 
 	* src/prefs_filter.c: use inc_(un)lock() instead of

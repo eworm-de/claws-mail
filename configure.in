@@ -8,8 +8,11 @@ MINOR_VERSION=7
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws12
+EXTRA_VERSION=claws13
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
+
+dnl set $target
+AC_CANONICAL_SYSTEM
 
 dnl
 AM_INIT_AUTOMAKE($PACKAGE, $VERSION, no-define)
@@ -54,11 +57,17 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_CPP
 dnl AC_PROG_RANLIB
-AM_PROG_LIBTOOL
 AM_PROG_LEX
 AC_PROG_YACC
+AM_PROG_LIBTOOL
 
 SYLPHEED_ACLOCAL_INCLUDE(ac)
+
+case "$target" in
+*-darwin*)
+	CFLAGS="$CFLAGS -traditional-cpp -fno-common"
+	;;
+esac
 
 dnl for gettext
 ALL_LINGUAS="cs de el es fr hr it ja ko nl pl pt_BR ru sv"
@@ -149,17 +158,19 @@ AC_MSG_CHECKING([whether to use JPilot])
 if test "$ac_cv_enable_jpilot" = yes; then
 	AC_MSG_RESULT(yes)
 	AC_CHECK_HEADERS(pi-args.h pi-appinfo.h pi-address.h,
-			 [ LIBS="$LIBS -lpisock"
-			   AC_DEFINE(USE_JPILOT) ],
+			 [ AC_DEFINE(USE_JPILOT) ],
 			 [ ac_cv_enable_jpilot=no ])
 	if test "$ac_cv_enable_jpilot" = no; then
 		AC_CHECK_HEADERS(libpisock/pi-args.h libpisock/pi-appinfo.h libpisock/pi-address.h,
-				 [ LIBS="$LIBS -lpisock"
-				   ac_cv_enable_jpilot=yes
+				 [ ac_cv_enable_jpilot=yes
 				   AC_DEFINE(USE_JPILOT) ])
 	fi
 	AC_MSG_CHECKING([whether jpilot is available])
 	AC_MSG_RESULT($ac_cv_enable_jpilot)
+
+	if test "$ac_cv_enable_jpilot" = yes; then
+		LIBS="$LIBS -lpisock"
+	fi
 else
 	AC_MSG_RESULT(no)
 fi
@@ -173,11 +184,15 @@ AC_MSG_CHECKING([whether to use LDAP])
 if test "$ac_cv_enable_ldap" = yes; then
 	AC_MSG_RESULT(yes)
 	AC_CHECK_HEADERS(ldap.h lber.h pthread.h,
-			 [ LIBS="$LIBS -lldap -llber -lpthread -lresolv `glib-config --libs gthread`"
-			   AC_DEFINE(USE_LDAP) ],
+			 [ AC_DEFINE(USE_LDAP) ],
 			 [ ac_cv_enable_ldap=no ])
 	AC_MSG_CHECKING([whether ldap is available])
 	AC_MSG_RESULT($ac_cv_enable_ldap)
+
+	if test "$ac_cv_enable_ldap" = yes; then
+		CFLAGS="$CFLAGS `$GLIB_CONFIG --cflags gthread`"
+		LIBS="$LIBS -lldap -llber -lpthread -lresolv `$GLIB_CONFIG --libs gthread`"
+	fi
 else
 	AC_MSG_RESULT(no)
 fi

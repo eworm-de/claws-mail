@@ -1,3 +1,7 @@
+2002-01-18
+
+	* configure.in: Mac OS X (Darwin) に対応。
+
 2002-01-16
 
 	* src/prefs_filter.c: inc_autocheck_timer_{remove|set}() の代わりに
