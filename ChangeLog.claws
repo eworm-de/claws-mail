@@ -1,3 +1,12 @@
+2002-11-18 [paul]	0.8.5claws169
+
+	* src/compose.c
+		more sensitivity fixes to redirect mode:
+		* disable toolbar draft button
+		* allow only Address book in the Tools menu
+		* disable editing of message by the spell
+		  checker
+
 2002-11-18 [paul]	0.8.5claws168
 
 	* src/compose.c

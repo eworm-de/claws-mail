@@ -1280,7 +1280,6 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	menu_set_sensitive(ifactory, "/File/Attach file", FALSE);
 	menu_set_sensitive(ifactory, "/File/Insert signature", FALSE);
 	menu_set_sensitive(ifactory, "/Edit", FALSE);
-	menu_set_sensitive(ifactory, "/Spelling", FALSE);
 	menu_set_sensitive(ifactory, "/Message/Save to draft folder", FALSE);
 	menu_set_sensitive(ifactory, "/Message/Save and keep editing", FALSE);
 #if USE_GPGME
@@ -1291,8 +1290,10 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 #endif
 	menu_set_sensitive(ifactory, "/Message/Priority", FALSE);
 	menu_set_sensitive(ifactory, "/Message/Request Return Receipt", FALSE);
-	menu_set_sensitive(ifactory, "/Tools", FALSE);
+	menu_set_sensitive(ifactory, "/Tools/Show ruler", FALSE);
+	menu_set_sensitive(ifactory, "/Tools/Actions", FALSE);
 	
+	gtk_widget_set_sensitive(compose->toolbar->draft_btn, FALSE);
 	gtk_widget_set_sensitive(compose->toolbar->insert_btn, FALSE);
 	gtk_widget_set_sensitive(compose->toolbar->attach_btn, FALSE);
 	gtk_widget_set_sensitive(compose->toolbar->sig_btn, FALSE);
@@ -4947,34 +4948,35 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->redirect_filename = NULL;
 	compose->undostruct = undostruct;
 #if USE_ASPELL
-	
 	menu_set_sensitive(ifactory, "/Spelling", FALSE);
-        if (prefs_common.enable_aspell && prefs_common.dictionary &&
-	    strcmp(prefs_common.dictionary, _("None"))) {
-		gtkaspell = gtkaspell_new((const gchar*)prefs_common.dictionary,
-					  conv_get_current_charset_str(),
-					  prefs_common.misspelled_col,
-					  prefs_common.check_while_typing,
-					  prefs_common.use_alternate,
-					  GTK_STEXT(text));
-		if (!gtkaspell) {
-			alertpanel_error(_("Spell checker could not be started.\n%s"), gtkaspellcheckers->error_message);
-			gtkaspell_checkers_reset_error();
-		} else {
-
-			GtkWidget *menuitem;
-
-			if (!gtkaspell_set_sug_mode(gtkaspell, prefs_common.aspell_sugmode)) {
-				debug_print("Aspell: could not set suggestion mode %s\n",
-				    gtkaspellcheckers->error_message);
+	if (mode != COMPOSE_REDIRECT) {
+        	if (prefs_common.enable_aspell && prefs_common.dictionary &&
+	    	    strcmp(prefs_common.dictionary, _("None"))) {
+			gtkaspell = gtkaspell_new((const gchar*)prefs_common.dictionary,
+						  conv_get_current_charset_str(),
+						  prefs_common.misspelled_col,
+						  prefs_common.check_while_typing,
+						  prefs_common.use_alternate,
+						  GTK_STEXT(text));
+			if (!gtkaspell) {
+				alertpanel_error(_("Spell checker could not be started.\n%s"), gtkaspellcheckers->error_message);
 				gtkaspell_checkers_reset_error();
-			}
+			} else {
 
-			menuitem = gtk_item_factory_get_item(ifactory, "/Spelling/Spelling Configuration");
-			gtkaspell_populate_submenu(gtkaspell, menuitem);
-			menu_set_sensitive(ifactory, "/Spelling", TRUE);
-			}
-        }
+				GtkWidget *menuitem;
+
+				if (!gtkaspell_set_sug_mode(gtkaspell, prefs_common.aspell_sugmode)) {
+					debug_print("Aspell: could not set suggestion mode %s\n",
+				    	gtkaspellcheckers->error_message);
+					gtkaspell_checkers_reset_error();
+				}
+
+				menuitem = gtk_item_factory_get_item(ifactory, "/Spelling/Spelling Configuration");
+				gtkaspell_populate_submenu(gtkaspell, menuitem);
+				menu_set_sensitive(ifactory, "/Spelling", TRUE);
+				}
+        	}
+	}
 #endif
 
 	compose_select_account(compose, account);
@@ -5000,7 +5002,14 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	addressbook_set_target_compose(compose);
 	update_compose_actions_menu(ifactory, "/Tools/Actions", compose);
-	compose_set_template_menu(compose);
+	
+	if (mode != COMPOSE_REDIRECT)
+		compose_set_template_menu(compose);
+	else {
+		GtkWidget *menuitem;
+		menuitem = gtk_item_factory_get_item(ifactory, "/Tools/Template");
+		menu_set_sensitive(ifactory, "/Tools/Template", FALSE);
+	}
 
 	compose_list = g_list_append(compose_list, compose);
 
