@@ -55,15 +55,15 @@ void plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return "Demo";
+	return _("Demo");
 }
 
 const gchar *plugin_desc(void)
 {
-	return "This Plugin is only a demo of how to write plugins for Sylpheed. "
-	       "It installs a hook for new log output and writes it to stdout."
-	       "\n\n"
-	       "It is not really usefull";
+	return _("This Plugin is only a demo of how to write plugins for Sylpheed. "
+	         "It installs a hook for new log output and writes it to stdout."
+	         "\n\n"
+	         "It is not really usefull");
 }
 
 const gchar *plugin_type(void)

@@ -1,4 +1,18 @@
-2003 -05-16 [paul]
+2003-05-16 [christoph]	0.8.11claws156
+
+	* po/POTFILES.in
+		include plugin .c files for translation until I
+		find a better solution to have plugins have their
+		own textdomain
+	* src/plugins/demo/demo.c
+	* src/plugins/image_viewer/plugin.c
+	* src/plugins/mathml_viewer/mathml_viewer.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+	* src/plugins/trayicon/trayicon.c
+		add gettext macros for plugin name and description
+
+2003-05-16 [paul]
 
 	* sync with 0.9.0
 

@@ -36,6 +36,7 @@
 #include "folder.h"
 #include "prefs.h"
 #include "prefs_gtk.h"
+#include "intl.h"
 
 #include "libspamc.h"
 #include "spamassassin.h"
@@ -216,22 +217,22 @@ void plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return "SpamAssassin";
+	return _("SpamAssassin");
 }
 
 const gchar *plugin_desc(void)
 {
-	return "This plugin checks all messages that are received from a POP "
-	       "account for spam using a SpamAssassin server. You will need "
-	       "a SpamAssassin Server (spamd) running somewhere.\n"
-	       "\n"
-	       "When a message is identified as spam it can be deleted or "
-	       "saved into a special folder.\n"
-	       "\n"
-	       "This plugin only contains the actual function for filtering "
-	       "and deleting or moving the message. You probably want to load "
-	       "a User Interface plugin too, otherwise you will have to "
-	       "manually write the plugin configuration.\n";
+	return _("This plugin checks all messages that are received from a POP "
+	         "account for spam using a SpamAssassin server. You will need "
+	         "a SpamAssassin Server (spamd) running somewhere.\n"
+	         "\n"
+	         "When a message is identified as spam it can be deleted or "
+	         "saved into a special folder.\n"
+	         "\n"
+	         "This plugin only contains the actual function for filtering "
+	         "and deleting or moving the message. You probably want to load "
+	         "a User Interface plugin too, otherwise you will have to "
+	         "manually write the plugin configuration.\n");
 }
 
 const gchar *plugin_type(void)

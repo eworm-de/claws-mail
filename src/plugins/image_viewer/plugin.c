@@ -17,7 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "prefs.h"
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
+#include "intl.h"
 
 #include "viewer.h"
 #include "viewerprefs.h"
@@ -37,13 +41,13 @@ void plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return "Image Viewer";
+	return _("Image Viewer");
 }
 
 const gchar *plugin_desc(void)
 {
-	return "This plugin uses either gdk-pixbuf or imlib to display "
-	       "attached images.";
+	return _("This plugin uses either gdk-pixbuf or imlib to display "
+	         "attached images.");
 }
 
 const gchar *plugin_type(void)
