@@ -1,3 +1,8 @@
+2003-03-13 [thorsten]	0.8.11claws11-1
+
+	* src/mimeview.c
+		fix: "open with" crashed when falling back to default
+
 2003-03-13 [thorsten]	0.8.11claws10-1
 
 	* src/headerview.c

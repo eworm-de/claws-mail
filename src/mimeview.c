@@ -1044,7 +1044,7 @@ static void mimeview_open_with(MimeView *mimeview)
 		FindExecutable(filename, NULL, open_cmd);
 		if (!(open_cmd && *open_cmd)) {
 			g_free(open_cmd);
-			open_cmd = prefs_common.mime_open_cmd;
+			open_cmd = g_strdup(prefs_common.mime_open_cmd);
 		} else {
 			gchar *p = g_strdup(open_cmd);
 			open_cmd = g_strconcat("\"", p, "\"", " \"%s\"", NULL);
