@@ -3128,6 +3128,14 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 
 		folderview_update_item(to_folder, 0);
 	}
+	
+	if (!summaryview->selected) { /* this was the last message */
+		GtkCTreeNode *node = gtk_ctree_node_nth (GTK_CTREE(summaryview->ctree), 
+							 GTK_CLIST(summaryview->ctree)->rows - 1);
+		if (node)
+			summary_select_node(summaryview, node, TRUE, TRUE);
+	}
+
 }
 
 void summary_move_to(SummaryView *summaryview)
