@@ -1,3 +1,10 @@
+2004-07-29 [colin]	0.9.12cvs39
+
+	* src/messageview.c
+		Inform the user when a partially 
+		downloaded mail isn't on the server
+		anymore (due to Mark for deletion)
+
 2004-07-29 [colin]	0.9.12cvs38
 
 	* src/messageview.c

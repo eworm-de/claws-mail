@@ -1065,44 +1065,46 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 	void  *button2_cb = NULL;
 
 	if (!partial_msg_in_uidl_list(msginfo)) {
-		/* in case it was there from previous mail */
-		noticeview_hide(noticeview);
-		return;
-	}
-
-	switch (msginfo->planned_download) {
-	case POP3_PARTIAL_DLOAD_UNKN:
 		text = g_strdup_printf(_("This message has been partially "
-				"retrieved;\nit is %s."),
-				to_human_readable(
-					(off_t)(msginfo->total_size)));
-		button1 = _("Mark for download");
-		button2 = _("Mark for deletion");
-		button1_cb = partial_recv_dload_clicked;
-		button2_cb = partial_recv_del_clicked;
-		break;
-	case POP3_PARTIAL_DLOAD_DLOAD:
-		text = g_strdup_printf(_("This message has been partially "
-				"retrieved;\nit is %s and will be downloaded."),
-				to_human_readable(
-					(off_t)(msginfo->total_size)));
-		button1 = _("Unmark");
-		button1_cb = partial_recv_unmark_clicked;
-		button2 = _("Mark for deletion");
-		button2_cb = partial_recv_del_clicked;
-		break;
-	case POP3_PARTIAL_DLOAD_DELE:
-		text = g_strdup_printf(_("This message has been partially "
-				"retrieved;\nit is %s and will be deleted."),
-				to_human_readable(
-					(off_t)(msginfo->total_size)));
-		button1 = _("Mark for download");
-		button1_cb = partial_recv_dload_clicked;
-		button2 = _("Unmark");
-		button2_cb = partial_recv_unmark_clicked;
-		break;
-	default:
-		return;
+				"retrieved,\nand has been deleted from the "
+				"server."));
+	} else {
+		switch (msginfo->planned_download) {
+		case POP3_PARTIAL_DLOAD_UNKN:
+			text = g_strdup_printf(_("This message has been "
+					"partially retrieved;\nit is %s."),
+					to_human_readable(
+						(off_t)(msginfo->total_size)));
+			button1 = _("Mark for download");
+			button2 = _("Mark for deletion");
+			button1_cb = partial_recv_dload_clicked;
+			button2_cb = partial_recv_del_clicked;
+			break;
+		case POP3_PARTIAL_DLOAD_DLOAD:
+			text = g_strdup_printf(_("This message has been "
+					"partially retrieved;\nit is %s and "
+					"will be downloaded."),
+					to_human_readable(
+						(off_t)(msginfo->total_size)));
+			button1 = _("Unmark");
+			button1_cb = partial_recv_unmark_clicked;
+			button2 = _("Mark for deletion");
+			button2_cb = partial_recv_del_clicked;
+			break;
+		case POP3_PARTIAL_DLOAD_DELE:
+			text = g_strdup_printf(_("This message has been "
+					"partially retrieved;\nit is %s and "
+					"will be deleted."),
+					to_human_readable(
+						(off_t)(msginfo->total_size)));
+			button1 = _("Mark for download");
+			button1_cb = partial_recv_dload_clicked;
+			button2 = _("Unmark");
+			button2_cb = partial_recv_unmark_clicked;
+			break;
+		default:
+			return;
+		}
 	}
 	
 	noticeview_set_text(noticeview, text);
