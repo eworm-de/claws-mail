@@ -325,3 +325,4 @@
 ( cvs diff -u -r 1.382.2.85 -r 1.382.2.86 src/compose.c; ) > 0.9.13cvs36.2.patchset
 ( cvs diff -u -r 1.30.2.8 -r 1.30.2.9 src/prefs_toolbar.c; cvs diff -u -r 1.4.2.6 -r 1.4.2.7 src/prefs_fonts.c; cvs diff -u -r 1.60.2.9 -r 1.60.2.10 src/prefs_actions.c; ) > 0.9.13cvs36.3.patchset
 ( cvs diff -u -r 1.26.2.9 -r 1.26.2.10 src/foldersel.c; ) > 1.0.0cvs0.1.patchset
+( cvs diff -u -r 1.654.2.360 -r 1.654.2.361 configure.ac; cvs diff -u -r 1.58.2.5 -r 1.58.2.6 po/de.po; cvs diff -u -r 1.60.2.6 -r 1.60.2.7 po/es.po; cvs diff -u -r 1.42.2.6 -r 1.42.2.7 po/fr.po; cvs diff -u -r 1.7.2.3 -r 1.7.2.4 po/hr.po; cvs diff -u -r 1.34.2.5 -r 1.34.2.6 po/it.po; cvs diff -u -r 1.16.2.4 -r 1.16.2.5 po/ja.po; cvs diff -u -r 1.8.2.2 -r 1.8.2.3 po/ko.po; cvs diff -u -r 1.50.2.4 -r 1.50.2.5 po/pt_BR.po; cvs diff -u -r 1.17.2.3 -r 1.17.2.4 po/ru.po; cvs diff -u -r 1.2.2.7 -r 1.2.2.8 po/sk.po; cvs diff -u -r 1.17.2.7 -r 1.17.2.8 po/sr.po; ) > 1.0.0cvs1.1.patchset

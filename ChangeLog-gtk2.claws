@@ -1,3 +1,19 @@
+2005-01-19 [paul]	1.0.0cvs1.1
+
+	* configure.ac
+	* po/de.po
+	* po/es.po
+	* po/fr.po
+	* po/hr.po
+	* po/it.po
+	* po/ja.po
+	* po/ko.po
+	* po/pt_BR.po
+	* po/ru.po
+	* po/sk.po
+	* po/sr.po
+		sync with HEAD (update translations)
+
 2005-01-18 [colin]	1.0.0cvs0.1
 
 	* src/foldersel.c
