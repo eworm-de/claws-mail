@@ -1,3 +1,8 @@
+2004-04-03 [alfons]	0.9.10claws39
+
+	* src/matcher.c
+		free address list
+
 2004-04-03 [alfons]	0.9.10claws38
 
 	* src/matcher_parser_parse.y

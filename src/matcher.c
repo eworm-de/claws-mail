@@ -284,6 +284,8 @@ static gboolean match_with_addresses_in_addressbook
 	res = FALSE;
 	for (walk = address_list; walk != NULL; walk = walk->next) {
 		gboolean found = complete_address(walk->data) ? TRUE : FALSE;
+		
+		g_free(walk->data);
 		if (!found && type == MATCHTYPE_ALL_IN_ADDRESSBOOK) {
 			res = FALSE;
 			break;
@@ -291,7 +293,10 @@ static gboolean match_with_addresses_in_addressbook
 			res = TRUE;
 	}
 
+	g_slist_free(address_list);
+
 	end_address_completion();
+	
 	return res;
 }
 
