@@ -1,3 +1,11 @@
+2002-11-07 [colin]	0.8.5claws84
+
+	* src/folder.[ch]
+		Change folder_item_move_to to return the newly 
+		created folderitem.
+	* src/folderview.c
+		Select the new folderitem after moving.
+
 2002-11-07 [colin]	0.8.5claws83
 
 	* src/prefs_filtering.c

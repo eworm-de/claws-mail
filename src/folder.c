@@ -1475,7 +1475,7 @@ gint folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 	return 0;
 }
 
-gint folder_item_move_to(FolderItem *src, FolderItem *dest)
+FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest)
 {
 	FolderItem *tmp = dest->parent;
 	char * srcpath, * dstpath;
@@ -1483,7 +1483,7 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest)
 	while (tmp) {
 		if (tmp == src) {
 			alertpanel_error(_("Can't move a folder to one of its children."));
-			return -1;
+			return NULL;
 		}
 		tmp = tmp->parent;
 	}
@@ -1495,7 +1495,7 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest)
 	
 	if (srcpath == NULL || dstpath == NULL) {
 		printf("Can't get identifiers\n");
-		return -1;
+		return NULL;
 	}
 
 	phys_srcpath = folder_item_get_path(src);
@@ -1507,17 +1507,20 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest)
 		g_free(dstpath);
 		g_free(phys_srcpath);
 		g_free(phys_dstpath);
-		return -1;
+		return NULL;
 	}
 	debug_print("moving \"%s\" to \"%s\"\n", phys_srcpath, phys_dstpath);
 	if (folder_item_move_recursive(src, dest) != 0) {
 		alertpanel_error(_("Move failed !"));
-		return -1;
+		return NULL;
 	}
 	
 	/* update rules */
 	debug_print("updating rules ....\n");
-	prefs_filtering_rename_path(srcpath, g_strconcat(dstpath, G_DIR_SEPARATOR_S, g_basename(srcpath), NULL));
+	prefs_filtering_rename_path(srcpath, g_strconcat(dstpath, 
+						G_DIR_SEPARATOR_S, 
+						g_basename(srcpath), 
+						NULL));
 
 	src->folder->remove_folder(src->folder, src);
 	/* not to much worry if remove fails, move has been done */
@@ -1532,7 +1535,10 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest)
 	g_free(dstpath);
 	g_free(phys_srcpath);
 	g_free(phys_dstpath);
-	return 0;
+	return folder_find_item_from_identifier(g_strconcat(dstpath, 
+							G_DIR_SEPARATOR_S, 
+							g_basename(srcpath), 
+							NULL));
 }
 
 gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)

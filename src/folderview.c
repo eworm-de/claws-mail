@@ -2639,6 +2639,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		/* comes from folderview */
 		char *source;
 		char *buf;
+		FolderItem *new_item;
 		source = data->data + 17;
 		if (*source == 0)
 			return;
@@ -2655,12 +2656,14 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		buf = g_strdup_printf(_("Moving %s to %s..."), src_item->name, item->name);
 		STATUSBAR_PUSH(folderview->mainwin, buf);
 		main_window_cursor_wait(folderview->mainwin);
-		if (!folder_item_move_to(src_item, item))
+		if ((new_item = folder_item_move_to(src_item, item)) != NULL)
 			gtk_drag_finish(drag_context, TRUE, TRUE, time);
 		else
 			gtk_drag_finish(drag_context, FALSE, FALSE, time);
 		STATUSBAR_PUSH(folderview->mainwin, _("Done."));
 		main_window_cursor_normal(folderview->mainwin);
+		summary_clear_all(folderview->summaryview);
+		folderview_select(folderview, new_item);
 	}
 }
 

@@ -352,7 +352,7 @@ gchar *folder_item_fetch_msg		(FolderItem	*item,
 gint   folder_item_add_msg		(FolderItem	*dest,
 					 const gchar	*file,
 					 gboolean	 remove_source);
-gint   folder_item_move_to		(FolderItem	*src,
+FolderItem   *folder_item_move_to	(FolderItem	*src,
 					 FolderItem	*dest);
 gint   folder_item_move_msg		(FolderItem	*dest,
 					 MsgInfo	*msginfo);
