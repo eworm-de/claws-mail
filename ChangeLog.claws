@@ -1,3 +1,10 @@
+2002-01-27 [alfons]	0.7.0claws33
+
+	* src/folder.c
+		add extra checks
+	* src/news.c
+		implement remove_msg() 
+
 2002-01-27 [alfons]	0.7.0claws32
 
 	* src/procmsg.h

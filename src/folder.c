@@ -680,8 +680,11 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 	src_folder = msginfo->folder->folder;
 
 	num = folder->copy_msg(folder, dest, msginfo);
-
+	
 	if (num != -1) {
+		/* CLAWS */
+		g_assert(src_folder);
+		g_assert(src_folder->remove_msg);
 		src_folder->remove_msg(src_folder,
 				       msginfo->folder,
 				       msginfo->msgnum);
