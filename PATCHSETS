@@ -407,3 +407,4 @@
 ( cvs diff -u -r 1.47.2.15 -r 1.47.2.16 src/procheader.c; cvs diff -u -r 1.11.2.2 -r 1.11.2.3 src/procheader.h; ) > 1.0.1cvs19.4.patchset
 ( cvs diff -u -r 1.2504.2.50 -r 1.2504.2.51 ChangeLog.claws; cvs diff -u -r 1.654.2.441 -r 1.654.2.442 configure.ac; cvs diff -u -r 1.94.2.47 -r 1.94.2.48 src/messageview.c; ) > 1.0.1cvs20.1.patchset
 ( cvs diff -u -r 1.11.2.8 -r 1.11.2.9 src/common/smtp.c; cvs diff -u -r 1.6.2.4 -r 1.6.2.5 src/common/smtp.h; ) > 1.0.1cvs22.1.patchset
+( cvs diff -u -r 1.382.2.109 -r 1.382.2.110 src/compose.c; ) > 1.0.1cvs22.2.patchset

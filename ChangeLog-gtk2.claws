@@ -1,3 +1,8 @@
+2005-03-04 [colin]	1.0.1cvs22.2
+
+	* src/compose.c
+		Fix signatures with accentued chars in it
+
 2005-03-04 [colin]	1.0.1cvs22.1
 
 	* src/common/smtp.c

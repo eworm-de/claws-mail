@@ -2157,9 +2157,12 @@ static gchar *compose_get_signature_str(Compose *compose)
 		sig_str = g_strconcat("\n\n", sig_body, NULL);
 
 	if (sig_str) {
-		utf8_sig_str = conv_codeset_strdup
-			(sig_str, conv_get_locale_charset_str(), CS_INTERNAL);
-		g_free(sig_str);
+		if (!g_utf8_validate(sig_str,1, NULL)) {
+			utf8_sig_str = conv_codeset_strdup
+				(sig_str, conv_get_locale_charset_str(), CS_INTERNAL);
+			g_free(sig_str);
+		} else
+			utf8_sig_str = sig_str;
 	}
 
 	return utf8_sig_str;
