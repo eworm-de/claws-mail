@@ -759,7 +759,8 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 
 	mimeinfo = procmime_mimeinfo_next(mimeinfo);
 	if (mimeinfo && (mimeinfo->type != MIMETYPE_TEXT || 
-	    strcmp(mimeinfo->subtype, "plain"))) {
+	    (strcmp(mimeinfo->subtype, "plain") &&
+	     strcmp(mimeinfo->subtype, "html")))) {
 		mimeview_show_part(messageview->mimeview,mimeinfo);
 	}
 

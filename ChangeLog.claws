@@ -1,3 +1,9 @@
+2005-02-10 [colin]	1.0.1cvs2
+
+	* src/messageview.c
+		Don't display html with plugin automatically
+		(Dillo steals focus)
+
 2005-02-09 [colin]	1.0.1cvs1
 
 	* src/mimeview.c
