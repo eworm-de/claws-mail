@@ -661,7 +661,7 @@ static PrefParam param[] = {
 	{"open_unread_on_enter", "FALSE", &prefs_common.open_unread_on_enter,
 	 P_BOOL, &interface.checkbtn_openunread,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"open_inbox_on_inc", "TRUE", &prefs_common.open_inbox_on_inc,
+	{"open_inbox_on_inc", "FALSE", &prefs_common.open_inbox_on_inc,
 	 P_BOOL, &interface.checkbtn_openinbox,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"immediate_execution", "TRUE", &prefs_common.immediate_exec, P_BOOL,

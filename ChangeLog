@@ -1,3 +1,13 @@
+2002-01-29
+
+	* src/mimeview.c: fixed multiple dialog / moving by correcting
+	  button / key event processing.
+	* src/mimeview.[ch]
+	  src/textview.c: pass some key press events to MimeView in MIME
+	  mode.
+	* src/prefs_filter.c: fixed a bug that didn't set the order of
+	  rules correctly.
+
 2002-01-28
 
 	* src/mainwindow.c
@@ -9,6 +19,13 @@
 	  and 'On exit'.
 	* src/importldif.c: imp_ldif_delete_event(): fixed segfault when
 	  closing the dialog with window manager (in more appropriate way).
+	* src/imageview.[ch]
+	  src/messageview.c
+	  src/mimeview.c: fixed wrong scrolling position when switching
+	  between text and image parts. Also free the unrequired image
+	  (thanks to Sergey Vlasov).
+	* src/prefs_common.c: disabled 'Go to inbox after receiving new mail'
+	  by default.
 
 2002-01-28
 

@@ -1,3 +1,8 @@
+2002-01-29 [paul]	0.7.0claws39
+
+	* sync with sylpheed 0.7.0cvs22
+		see ChangeLog entries 2002-01-28 and 2002-01-29
+
 2002-01-28 [melvin]	0.7.0claws38
 
 	* src/compose.c

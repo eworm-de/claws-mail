@@ -119,7 +119,7 @@ static GPtrArray *textview_scan_header	(TextView	*textview,
 static void textview_show_header	(TextView	*textview,
 					 GPtrArray	*headers);
 
-static void textview_key_pressed	(GtkWidget	*widget,
+static gint textview_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 TextView	*textview);
 static gint textview_button_pressed	(GtkWidget	*widget,
@@ -1423,14 +1423,22 @@ static gboolean textview_smooth_scroll_page(TextView *textview, gboolean up)
 	return TRUE;
 }
 
-static void textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
+#define KEY_PRESS_EVENT_STOP() \
+	if (gtk_signal_n_emissions_by_name \
+		(GTK_OBJECT(widget), "key_press_event") > 0) { \
+		gtk_signal_emit_stop_by_name(GTK_OBJECT(widget), \
+					     "key_press_event"); \
+	}
+
+static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				 TextView *textview)
 {
 	SummaryView *summaryview = NULL;
+	MessageView *messageview = textview->messageview;
 
-	if (!event) return;
-	if (textview->messageview->mainwin)
-		summaryview = textview->messageview->mainwin->summaryview;
+	if (!event) return FALSE;
+	if (messageview->mainwin)
+		summaryview = messageview->mainwin->summaryview;
 
 	switch (event->keyval) {
 	case GDK_Tab:
@@ -1458,11 +1466,27 @@ static void textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		textview_scroll_one_line(textview,
 					 (event->state & GDK_MOD1_MASK) != 0);
 		break;
+	case GDK_n:
+	case GDK_N:
+	case GDK_p:
+	case GDK_P:
+	case GDK_y:
+	case GDK_t:
+	case GDK_l:
+		if (messageview->type == MVIEW_MIME) {
+			KEY_PRESS_EVENT_STOP();
+			mimeview_pass_key_press_event(messageview->mimeview,
+						      event);
+			break;
+		}
+		/* fall through */
 	default:
 		if (summaryview)
 			summary_pass_key_press_event(summaryview, event);
 		break;
 	}
+
+	return TRUE;
 }
 
 static gint textview_button_pressed(GtkWidget *widget, GdkEventButton *event,

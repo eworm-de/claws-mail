@@ -84,10 +84,10 @@ static void mimeview_start_drag 	(GtkWidget	*widget,
 					 gint		 button,
 					 GdkEvent	*event,
 					 MimeView	*mimeview);
-static void mimeview_button_pressed	(GtkWidget	*widget,
+static gint mimeview_button_pressed	(GtkWidget	*widget,
 					 GdkEventButton	*event,
 					 MimeView	*mimeview);
-static void mimeview_key_pressed	(GtkWidget	*widget,
+static gint mimeview_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 MimeView	*mimeview);
 
@@ -550,19 +550,19 @@ static void mimeview_start_drag (GtkWidget *widget, gint button,
 	gtk_drag_set_icon_default(context);
 }
 
-static void mimeview_button_pressed(GtkWidget *widget, GdkEventButton *event,
+static gint mimeview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 				    MimeView *mimeview)
 {
 	GtkCList *clist = GTK_CLIST(widget);
 	MimeInfo *partinfo;
 	gint row, column;
 
-	if (!event) return;
+	if (!event) return FALSE;
 
 	if (event->button == 2 || event->button == 3) {
 		if (!gtk_clist_get_selection_info(clist, event->x, event->y,
 						  &row, &column))
-			return;
+			return FALSE;
 		gtk_clist_unselect_all(clist);
 		gtk_clist_select_row(clist, row, column);
 		gtkut_clist_set_focus_row(clist, row);
@@ -603,74 +603,94 @@ static void mimeview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 			       NULL, NULL, NULL, NULL,
 			       event->button, event->time);
 	}
+
+	return TRUE;
+}
+
+void mimeview_pass_key_press_event(MimeView *mimeview, GdkEventKey *event)
+{
+	mimeview_key_pressed(mimeview->ctree, event, mimeview);
 }
 
 #define BREAK_ON_MODIFIER_KEY() \
 	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) != 0) break
 
-static void mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
+#define KEY_PRESS_EVENT_STOP() \
+	if (gtk_signal_n_emissions_by_name \
+		(GTK_OBJECT(ctree), "key_press_event") > 0) { \
+		gtk_signal_emit_stop_by_name(GTK_OBJECT(ctree), \
+					     "key_press_event"); \
+	}
+
+static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				 MimeView *mimeview)
 {
 	SummaryView *summaryview;
-	GtkCTree *ctree = GTK_CTREE(mimeview->ctree);
+	GtkCTree *ctree = GTK_CTREE(widget);
 	GtkCTreeNode *node;
 
-	if (!event) return;
-	if (!mimeview->opened) return;
+	if (!event) return FALSE;
+	if (!mimeview->opened) return FALSE;
 
 	switch (event->keyval) {
 	case GDK_space:
-		if (textview_scroll_page(mimeview->textview, FALSE)) return;
+		if (textview_scroll_page(mimeview->textview, FALSE))
+			return TRUE;
 
 		node = GTK_CTREE_NODE_NEXT(mimeview->opened);
 		if (node) {
 			gtk_sctree_unselect_all(GTK_SCTREE(ctree));
 			gtk_sctree_select(GTK_SCTREE(ctree), node);
-			return;
+			return TRUE;
 		}
 		break;
 	case GDK_BackSpace:
 		textview_scroll_page(mimeview->textview, TRUE);
-		return;
+		return TRUE;
 	case GDK_Return:
 		textview_scroll_one_line(mimeview->textview,
 					 (event->state & GDK_MOD1_MASK) != 0);
-		return;
+		return TRUE;
 	case GDK_n:
 	case GDK_N:
 		BREAK_ON_MODIFIER_KEY();
 		if (!GTK_CTREE_NODE_NEXT(mimeview->opened)) break;
+		KEY_PRESS_EVENT_STOP();
 
 		gtk_signal_emit_by_name(GTK_OBJECT(ctree), "scroll_vertical",
 					GTK_SCROLL_STEP_FORWARD, 0.0);
-		return;
+		return TRUE;
 	case GDK_p:
 	case GDK_P:
 		BREAK_ON_MODIFIER_KEY();
 		if (!GTK_CTREE_NODE_PREV(mimeview->opened)) break;
+		KEY_PRESS_EVENT_STOP();
 
 		gtk_signal_emit_by_name(GTK_OBJECT(ctree), "scroll_vertical",
 					GTK_SCROLL_STEP_BACKWARD, 0.0);
-		return;
+		return TRUE;
 	case GDK_y:
 		BREAK_ON_MODIFIER_KEY();
+		KEY_PRESS_EVENT_STOP();
 		mimeview_save_as(mimeview);
-		return;
+		return TRUE;
 	case GDK_t:
 		BREAK_ON_MODIFIER_KEY();
+		KEY_PRESS_EVENT_STOP();
 		mimeview_display_as_text(mimeview);
-		return;
+		return TRUE;
 	case GDK_l:
 		BREAK_ON_MODIFIER_KEY();
+		KEY_PRESS_EVENT_STOP();
 		mimeview_launch(mimeview);
-		return;
+		return TRUE;
 	default:
-		break;
 	}
 
-	if (!mimeview->messageview->mainwin) return;
+	if (!mimeview->messageview->mainwin) return FALSE;
 	summaryview = mimeview->messageview->mainwin->summaryview;
 	summary_pass_key_press_event(summaryview, event);
+	return TRUE;
 }
 
 static void mimeview_drag_data_get(GtkWidget	    *widget,

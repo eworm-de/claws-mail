@@ -442,8 +442,9 @@ static void prefs_filter_create(void)
 				GTK_CAN_FOCUS);
 	gtk_signal_connect (GTK_OBJECT (cond_clist), "select_row",
 			    GTK_SIGNAL_FUNC (prefs_filter_select), NULL);
-	gtk_signal_connect (GTK_OBJECT (cond_clist), "row_move",
-			    GTK_SIGNAL_FUNC (prefs_filter_row_move), NULL);
+	gtk_signal_connect_after (GTK_OBJECT (cond_clist), "row_move",
+				  GTK_SIGNAL_FUNC (prefs_filter_row_move),
+				  NULL);
 
 	btn_vbox = gtk_vbox_new (FALSE, 8);
 	gtk_widget_show (btn_vbox);

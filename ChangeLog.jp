@@ -1,3 +1,12 @@
+2002-01-29
+
+	* src/mimeview.c: ボタン / キーイベント処理を修正して多重ダイアログ
+	  / 移動を修正。
+	* src/mimeview.[ch]
+	  src/textview.c: MIME モードでいくつかのキープレスイベントを
+	  MimeView に渡すようにした。
+	* src/prefs_filter.c: ルールの順序を正しくセットしないバグを修正。
+
 2002-01-28
 
 	* src/mainwindow.c
@@ -8,6 +17,13 @@
 	  交換。
 	* src/importldif.c: imp_ldif_delete_event(): ダイアログをウィンドウ
 	  マネージャで閉じたときの segfault を修正(より正しい方法で)。
+	* src/imageview.[ch]
+	  src/messageview.c
+	  src/mimeview.c: テキストと画像パートを切り替えたときの誤った
+	  スクロール位置を修正。また不要な画像を開放するようにした
+	  (Sergey Vlasov さん thanks)。
+	* src/prefs_common.c: 「新着メールを受信した後受信箱に移動する」
+	  をデフォルトで無効にした。
 
 2002-01-28
 
