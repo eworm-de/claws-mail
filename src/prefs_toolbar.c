@@ -402,7 +402,7 @@ static void prefs_toolbar_register(GtkButton *button, gpointer data)
 	if (g_strcasecmp(item[1], toolbar_ret_descr_from_val(A_SEPARATOR)) == 0) {
 		item[0] = g_strdup(SEPARATOR_PIXMAP);
 		item[2] = g_strdup("");
-		item[3] = g_strdup("");
+		item[3] = g_strdup(toolbar_ret_descr_from_val(A_SEPARATOR));
 		
 		row_set = gtk_clist_append(GTK_CLIST(prefs_toolbar.clist_set), item);
 
@@ -472,7 +472,7 @@ static void prefs_toolbar_substitute(GtkButton *button, gpointer data)
 	if (g_strcasecmp(item[1], toolbar_ret_descr_from_val(A_SEPARATOR)) == 0) {
 		item[0] = g_strdup(SEPARATOR_PIXMAP);
 		item[2] = g_strdup("");
-		item[3] = g_strdup("");
+		item[3] = g_strdup(toolbar_ret_descr_from_val(A_SEPARATOR));
 
 		gtk_clist_remove(clist_set, row_set);
 		row_set = gtk_clist_insert(clist_set, row_set, item);

@@ -1,3 +1,11 @@
+2003-01-10 [alfons]	0.8.8claws79
+
+	* src/prefs_toolbar.c
+		put right A_SEPARATOR description string in "displayed
+		toolbar items list" so manually added separators are
+		saved correctly (bug #10, "Adding a separator to the main 
+		toolbar fails, entry in xml file is wrong")
+
 2003-01-10 [christoph]	0.8.8claws78
 
 	* src/imap.c
