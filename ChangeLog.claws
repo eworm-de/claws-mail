@@ -1,3 +1,13 @@
+2002-11-11 [colin]	0.8.5claws121
+
+	* src/ssl_certificate.[ch] ** NEW FILES **
+	* src/ssl.[ch]
+		Check SSL certificates presented to us
+	* src/Makefile.am
+		Add ssl_certificate.[ch]
+	* po/POTFILES.in
+		Add ssl_certificate.c
+
 2002-11-11 [paul]	0.8.5claws120
 
 	* sync with 0.8.5cvs22

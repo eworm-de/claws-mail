@@ -93,6 +93,7 @@ sylpheed_SOURCES = \
 	md5.c md5.h \
 	socket.c socket.h \
 	ssl.c ssl.h \
+	ssl_certificate.c ssl_certificate.h \
 	automaton.c automaton.h \
 	session.c session.h \
 	smtp.c smtp.h \

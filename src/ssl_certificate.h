@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __SSL_H__
-#define __SSL_H__
+#ifndef __SSL_CHECK_H__
+#define __SSL_CHECK_H__
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
@@ -26,34 +26,27 @@
 
 #if USE_SSL
 
-#include <glib.h>
-#include <openssl/crypto.h>
-#include <openssl/x509.h>
-#include <openssl/pem.h>
 #include <openssl/ssl.h>
-#include <openssl/err.h>
-#include <openssl/evp.h>
-
-#include "socket.h"
+#include <glib.h>
 
 typedef enum {
-	SSL_METHOD_SSLv23,
-	SSL_METHOD_TLSv1
-} SSLMethod;
+	SSL_CERTIFICATE_OK,
+	SSL_CERTIFICATE_UNKNOWN,
+	SSL_CERTIFICATE_CHANGED
+} SSLCertificateStatus;
 
-typedef enum {
-	SSL_NONE,
-	SSL_TUNNEL,
-	SSL_STARTTLS
-} SSLType;
+typedef struct _SSLCertificate SSLCertificate;
 
-void ssl_init				(void);
-void ssl_done				(void);
-gboolean ssl_init_socket		(SockInfo	*sockinfo);
-gboolean ssl_init_socket_with_method	(SockInfo	*sockinfo,
-					 SSLMethod	 method);
-void ssl_done_socket			(SockInfo	*sockinfo);
+struct _SSLCertificate
+{
+	gchar *host;
+	gchar *issuer;
+	gchar *subject;
+	gchar *fingerprint;
+};
+
+gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gchar *issuer, 
+				gchar *subject, gchar *md);
 
 #endif /* USE_SSL */
-
-#endif /* __SSL_H__ */
+#endif /* SSL_CHECK_H */

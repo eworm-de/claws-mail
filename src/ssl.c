@@ -30,6 +30,7 @@
 #include "intl.h"
 #include "utils.h"
 #include "ssl.h"
+#include "ssl_certificate.h"
 
 static SSL_CTX *ssl_ctx_SSLv23;
 static SSL_CTX *ssl_ctx_TLSv1;
@@ -73,7 +74,10 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 {
 	X509 *server_cert;
-	gint ret;
+	gboolean ret;
+	unsigned char md[EVP_MAX_MD_SIZE];
+	char *issuer;
+	char *subject;
 
 	switch (method) {
 	case SSL_METHOD_SSLv23:
@@ -115,24 +119,33 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 	/* Get server's certificate (note: beware of dynamic allocation) */
 
 	if ((server_cert = SSL_get_peer_certificate(sockinfo->ssl)) != NULL) {
-		gchar *str;
-
+		int j;
+		unsigned int n;
+		EVP_MD *digest = EVP_md5();
+		
 		log_print(_("Server certificate:\n"));
 
-		if ((str = X509_NAME_oneline(X509_get_subject_name(server_cert), 0, 0)) != NULL) {
-			log_print(_("  Subject: %s\n"), str);
-			free(str);
+		if ((subject = X509_NAME_oneline(X509_get_subject_name(server_cert), 0, 0)) != NULL) {
+			log_print(_("  Subject: %s\n"), subject);
 		}
 
-		if ((str = X509_NAME_oneline(X509_get_issuer_name(server_cert), 0, 0)) != NULL) {
-			log_print(_("  Issuer: %s\n"), str);
-			free(str);
+		if ((issuer = X509_NAME_oneline(X509_get_issuer_name(server_cert), 0, 0)) != NULL) {
+			log_print(_("  Issuer: %s\n"), issuer);
 		}
 
+		if (!X509_digest(server_cert, digest, md, &n))
+			printf("Can't get fingerprint !\n");
+
+		ret = ssl_certificate_check (server_cert, sockinfo->hostname, issuer, subject, md);
 		X509_free(server_cert);
 	}
+	if (!ret)
 
-	return TRUE;
+	if (issuer)
+		free(issuer);
+	if (subject)
+		free(subject);
+	return ret;
 }
 
 void ssl_done_socket(SockInfo *sockinfo)
