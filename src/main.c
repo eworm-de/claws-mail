@@ -329,8 +329,8 @@ int main(int argc, char *argv[])
 
 	/* if Sylpheed crashed, rebuild caches */
 	if (!cmd.crash && is_file_exist(get_crashfile_name())) {
-		debug_print("Sylpheed crashed, checking for new messages\n");
-		folderview_check_new_all();
+		debug_print("Sylpheed crashed, checking for new messages in local folders\n");
+		folderview_check_new(NULL);
 	}
 	/* make the crash-indicator file */
 	str_write_to_file("foo", get_crashfile_name());
