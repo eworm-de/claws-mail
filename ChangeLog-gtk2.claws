@@ -1,3 +1,15 @@
+2004-08-23 [colin]	0.9.12cvs77.1
+
+	* src/imap.c
+	* po/es.po
+	* po/fr.po
+	* po/it.po
+	* po/pl.po
+	* po/pt_BR.po
+	* po/sk.po
+	* po/sr.po
+		Sync with HEAD
+
 2004-08-22 [colin]	0.9.12cvs76.1
 
 	* src/plugins/trayicon/trayicon.c
