@@ -312,7 +312,6 @@ OBJECTS= \
 	rfc2015.o \
 	scoring.o \
 	select-keys.o \
-	selective_download.o \
 	send_message.o \
 	session.o \
 	setup.o \
@@ -615,7 +614,6 @@ recv.o: 	recv.c recv.h
 rfc2015.o: 	rfc2015.c rfc2015.h
 scoring.o: 	scoring.c scoring.h
 select-keys.o: 	select-keys.c select-keys.h
-selective_download.o: 	selective_download.c selective_download.h
 send_message.o:	send_message.c send_message.h
 session.o: 	session.c session.h
 setup.o: 	setup.c setup.h

@@ -1,3 +1,34 @@
+2003-03-28
+
+	* send_message.c: send_message_smtp():
+	  SMTP AUTH の認証方法の強制を再び有効にした。
+	  認証に失敗したら一時パスワードをクリアするようにした。
+	* smtp.c: エラーが発生した場合は警告をログに出力し、
+	  SMTPSession::error_val をセットするようにした。
+	* smtp.h: エラー値を enum に変更。 SMTPSession::error_val を追加。
+	* src/mbox.c: proc_mbox(): フォルダの更新を強制するようにした。
+
+2003-03-28
+
+	* src/pop.h: エラー値を enum に変更。
+	* src/pop.c: pop3_retr_recv(): inc_drop_message() が失敗したら
+	  PS_IOERR を返すようにした。
+	  pop3_ok(): 現在の状態に基づいて適切なエラー値を返すようにした。
+	  エラーが発生した場合は警告をログに出力するようにした。
+
+2003-03-27
+
+	* src/nntp.[ch]
+	  src/news.[ch]: リファクタリング。 NNTPSockInfo を削除し、 nntp.c
+	  で NNTPSession を使用するようにした。
+
+2003-03-27
+
+	* src/inc.c: inc_pop3_session_do(): Session::state == SESSION_ERROR
+	  の場合は適切なエラーを返すようにした。
+	* po/POTFILES.in: src/automaton.c, src/send.c を削除。
+	  src/send_message.c を追加。
+
 2003-03-26
 
 	* src/pop.[ch]

@@ -309,6 +309,8 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 		ac_prefs->set_domain ? g_strdup(ac_prefs->domain) : NULL;
 
 	if (ac_prefs->use_smtp_auth) {
+		smtp_session->forced_auth_type = ac_prefs->smtp_auth_type;
+
 		if (ac_prefs->smtp_userid) {
 			smtp_session->user = g_strdup(ac_prefs->smtp_userid);
 			if (ac_prefs->smtp_passwd)
@@ -407,12 +409,15 @@ smtp_session->from = g_strdup_printf("%s", ac_prefs->address);
 	       session->state != SESSION_ERROR)
 		gtk_main_iteration();
 
-	if (SMTP_SESSION(session)->state == SMTP_AUTH_FAILED) {
-		g_free(ac_prefs->tmp_smtp_pass);
-		ac_prefs->tmp_smtp_pass = NULL;
+	if (SMTP_SESSION(session)->error_val == SM_AUTHFAIL) {
+		if (ac_prefs->smtp_userid && ac_prefs->tmp_smtp_pass) {
+			g_free(ac_prefs->tmp_smtp_pass);
+			ac_prefs->tmp_smtp_pass = NULL;
+		}
 		ret = -1;
-	} else if ((session->state == SESSION_ERROR) ||
-		   (SMTP_SESSION(session)->state == SMTP_ERROR))
+	} else if (session->state == SESSION_ERROR ||
+		   SMTP_SESSION(session)->state == SMTP_ERROR ||
+		   SMTP_SESSION(session)->error_val != SM_OK)
 		ret = -1;
 	else if (dialog->cancelled == TRUE)
 		ret = -1;

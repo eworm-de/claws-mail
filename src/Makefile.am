@@ -114,7 +114,6 @@ sylpheed_SOURCES = \
 	matcher_parser_lex.l matcher_parser_lex.h \
 	matcher_parser_parse.y matcher_parser.h matcher_parser_parse.h \
 	string_match.h string_match.c \
-	selective_download.c selective_download.h \
 	msgcache.h msgcache.c \
 	noticeview.h noticeview.c \
 	toolbar.c toolbar.h \
@@ -212,9 +211,9 @@ INCLUDES = \
 	-I$(includedir)
 
 sylpheed_LDADD = \
+	$(ASPELL_LIBS) \
 	gtk/libsylpheedgtk.la \
 	$(INTLLIBS) \
-	$(ASPELL_LIBS) \
 	$(GTK_LIBS) \
 	$(GPGME_LIBS) \
 	$(LDAP_LIBS) \

@@ -97,6 +97,8 @@ Session *smtp_session_new(void)
 	session->forced_auth_type          = 0;
 	session->auth_type                 = 0;
 
+	session->error_val                 = SM_OK;
+
 	return SESSION(session);
 }
 
@@ -409,14 +411,30 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 	SMTPSession *smtp_session = SMTP_SESSION(session);
 	gboolean cont = FALSE;
 
-	if (strlen(msg) < 4)
+	if (strlen(msg) < 4) {
+		log_warning(_("bad SMTP response\n"));
 		return -1;
+	}
 
-	log_print("SMTP< %s\n", msg);
+	switch (smtp_session->state) {
+	case SMTP_EHLO:
+	case SMTP_STARTTLS:
+	case SMTP_AUTH:
+	case SMTP_AUTH_LOGIN_USER:
+	case SMTP_AUTH_LOGIN_PASS:
+	case SMTP_AUTH_CRAM_MD5:
+		log_print("ESMTP< %s\n", msg);
+		break;
+	default:
+		log_print("SMTP< %s\n", msg);
+		break;
+	}
 
 	if (msg[0] == '5' && msg[1] == '0' &&
 	    (msg[2] == '4' || msg[2] == '3' || msg[2] == '1')) {
+		log_warning(_("error occurred on SMTP session\n"));
 		smtp_session->state = SMTP_ERROR;
+		smtp_session->error_val = SM_ERROR;
 		return -1;
 	}
 
@@ -426,14 +444,18 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 	}
 
 	if (msg[0] != '1' && msg[0] != '2' && msg[0] != '3') {
+		log_warning(_("error occurred on SMTP session\n"));
 		smtp_session->state = SMTP_ERROR;
+		smtp_session->error_val = SM_ERROR;
 		return -1;
 	}
 
 	if (msg[3] == '-')
 		cont = TRUE;
 	else if (msg[3] != ' ' && msg[3] != '\0') {
+		log_warning(_("bad SMTP response\n"));
 		smtp_session->state = SMTP_ERROR;
+		smtp_session->error_val = SM_UNRECOVERABLE;
 		return -1;
 	}
 
@@ -475,8 +497,12 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 		break;
 	case SMTP_STARTTLS:
 #if USE_OPENSSL
-		if (session_start_tls(session) < 0)
+		if (session_start_tls(session) < 0) {
+			log_warning(_("can't start TLS session\n"));
+			smtp_session->state = SMTP_ERROR;
+			smtp_session->error_val = SM_ERROR;
 			return -1;
+		}
 		smtp_session->tls_init_done = TRUE;
 		smtp_ehlo(smtp_session);
 #endif
@@ -513,6 +539,8 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 	case SMTP_ERROR:
 	case SMTP_AUTH_FAILED:
 	default:
+		log_warning(_("error occurred on SMTP session\n"));
+		smtp_session->error_val = SM_ERROR;
 		return -1;
 	}
 

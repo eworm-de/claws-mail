@@ -2009,43 +2009,12 @@ static void summary_status_show(SummaryView *summaryview)
 	g_free(cp);
 	g_free(itstr);
 
-	if (FOLDER_IS_LOCAL(summaryview->folder_item->folder)) {
-#ifdef WIN32
-		gchar *p;
-		p = g_strdup(_("%d new, %d unread, %d total (%s)"));
-		locale_from_utf8(&p);
-		str = g_strdup_printf(p,
-				      summaryview->newmsgs,
-				      summaryview->unread,
-				      summaryview->messages,
-				      to_human_readable(summaryview->total_size));
-		g_free(p);
-		locale_to_utf8(&str);
-#else
-		str = g_strdup_printf(_("%d new, %d unread, %d total (%s)"),
-				      summaryview->newmsgs,
-				      summaryview->unread,
-				      summaryview->messages,
-				      to_human_readable(summaryview->total_size));
-#endif
-	} else {
-#ifdef WIN32
-		gchar *p;
-		p = g_strdup(_("%d new, %d unread, %d total"));
-		locale_from_utf8(&p);
-		str = g_strdup_printf(p,
-				      summaryview->newmsgs,
-				      summaryview->unread,
-				      summaryview->messages);
-		g_free(p);
-		locale_to_utf8(&str);
-#else
-		str = g_strdup_printf(_("%d new, %d unread, %d total"),
-				      summaryview->newmsgs,
-				      summaryview->unread,
-				      summaryview->messages);
-#endif
-	}
+	str = g_strdup_printf(_("%d new, %d unread, %d total (%s)"),
+			      summaryview->newmsgs,
+			      summaryview->unread,
+			      summaryview->messages,
+			      to_human_readable(summaryview->total_size));
+
 	gtk_label_set(GTK_LABEL(summaryview->statlabel_msgs), str);
 	g_free(str);
 }

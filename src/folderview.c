@@ -793,50 +793,33 @@ static void folderview_scan_tree_func(Folder *folder, FolderItem *item,
 				      gpointer data)
 {
 	GList *list;
-	gchar *rootpath;
-
-	if (FOLDER_IS_LOCAL(folder))
-		rootpath = LOCAL_FOLDER(folder)->rootpath;
-	else if (FOLDER_TYPE(folder) == F_IMAP && folder->account &&
-		 folder->account->recv_server)
-		rootpath = folder->account->recv_server;
-	else if (FOLDER_TYPE(folder) == F_NEWS && folder->account &&
-		 folder->account->nntp_server)
-		rootpath = folder->account->nntp_server;
-	else
-		return;
 
 	for (list = folderview_list; list != NULL; list = list->next) {
 		FolderView *folderview = (FolderView *)list->data;
 		MainWindow *mainwin = folderview->mainwin;
 		gchar *str;
 #ifdef WIN32
-		gchar *p_rootpath, *p_path;
+		gchar *p_path = g_locale_to_utf8(item->path, -1, NULL, NULL, NULL);
+		gchar *p_foldername = g_locale_to_utf8(item->folder->name, -1, NULL, NULL, NULL);
 
-		p_rootpath = g_strdup(rootpath);
-		locale_to_utf8(&p_rootpath);
-
-		if (item->path) {
-			p_path = g_strdup(item->path);
-			locale_to_utf8(&p_path);
+		if (item->path)
 			str = g_strdup_printf(_("Scanning folder %s%c%s ..."),
-					      p_rootpath, G_DIR_SEPARATOR,
+					      p_foldername, G_DIR_SEPARATOR,
 					      p_path);
-			g_free(p_path);
-		}
 		else
 			str = g_strdup_printf(_("Scanning folder %s ..."),
-					      p_rootpath);
-		g_free(p_rootpath);
+					      p_foldername);
+		g_free(p_path);
+		g_free(p_foldername);
 #else
 
 		if (item->path)
 			str = g_strdup_printf(_("Scanning folder %s%c%s ..."),
-					      rootpath, G_DIR_SEPARATOR,
+					      item->folder->name, G_DIR_SEPARATOR,
 					      item->path);
 		else
 			str = g_strdup_printf(_("Scanning folder %s ..."),
-					      rootpath);
+					      item->folder->name);
 #endif
 
 		STATUSBAR_PUSH(mainwin, str);

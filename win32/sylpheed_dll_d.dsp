@@ -576,10 +576,6 @@ SOURCE="..\src\select-keys.c"
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\selective_download.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\send_message.c
 # End Source File
 # Begin Source File

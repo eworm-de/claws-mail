@@ -69,7 +69,6 @@
 #include "alertpanel.h"
 #include "folder.h"
 #include "filtering.h"
-#include "selective_download.h"
 #include "log.h"
 #include "hooks.h"
 
@@ -214,30 +213,6 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
  	inc_notify_cmd(new_msgs, notify);
 	inc_autocheck_timer_set();
 	inc_unlock();
-}
-
-void inc_selective_download(MainWindow *mainwin, PrefsAccount *acc, gint session)
-{
-	GSList *cur;
-	gint new_msgs = 0;
-
-	acc->session = session;
-	inc_account_mail(acc, mainwin);
-	acc->session = STYPE_NORMAL;
-	
-	for (cur = acc->msg_list; cur != NULL; cur = cur->next) {
-		HeaderItems *items =(HeaderItems*)cur->data;
-
-		if (items->state == SD_DOWNLOADED && 
-		    items->del_by_old_session == FALSE) {
-			new_msgs++;			
-		}
-	}
-
-	if (new_msgs) {
-		inc_finished(mainwin, TRUE);
-		inc_notify_cmd(new_msgs, prefs_common.newmail_notify_manu);
-	}
 }
 
 void inc_pop_before_smtp(PrefsAccount *acc)
@@ -779,7 +754,13 @@ static IncState inc_pop3_session_do(IncSession *session)
 	if (session->inc_state == INC_SUCCESS) {
 		switch (pop3_session->error_val) {
 		case PS_SUCCESS:
-			session->inc_state = INC_SUCCESS;
+			if (SESSION(pop3_session)->state == SESSION_ERROR) {
+				if (pop3_session->state == POP3_READY)
+					session->inc_state = INC_CONNECT_ERROR;
+				else
+					session->inc_state = INC_ERROR;
+			} else
+				session->inc_state = INC_SUCCESS;
 			break;
 		case PS_AUTHFAIL:
 			session->inc_state = INC_AUTH_FAILED;
@@ -872,21 +853,6 @@ static gint inc_recv_message(Session *session, const gchar *msg, gpointer data)
 	case POP3_GETSIZE_LIST:
 		progress_dialog_set_label
 			(dialog, _("Getting the size of messages (LIST)..."));
-		break;
-	case POP3_TOP:
-		g_snprintf(buf, sizeof(buf),
-			   _("Retrieving header (%d / %d)"),
-			   pop3_session->cur_msg, pop3_session->count);
-		progress_dialog_set_label (dialog, buf);
-		progress_dialog_set_percentage
-			(dialog,
-			 (gfloat)(pop3_session->cur_msg) /
-			 (gfloat)(pop3_session->count));
-		if (inc_dialog->mainwin)
-			gtk_progress_bar_update 
-				(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
-				 (gfloat)(pop3_session->cur_msg) /
-				 (gfloat)(pop3_session->count));
 		break;
 	case POP3_RETR:
 		inc_recv_data_progressive

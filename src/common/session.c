@@ -220,12 +220,8 @@ void session_child_thread(void *data)
 	while (session_child_input(session) == TRUE)
 		;
 
-#ifdef WIN32
-	{	/* XXX:tm  */
-		gint nwritten;
-		g_io_channel_write(session->write_ch, "\n", 1, &nwritten);
-		Sleep(1); /* run other threads (process DISCONNECT message) */
-	}
+#ifdef WIN32	/* XXX:tm */
+	Sleep(1); /* run other threads (process DISCONNECT message) */
 #endif
 	session_close(session);
 #ifdef WIN32

@@ -1,3 +1,83 @@
+2003-03-28 [paul]	0.8.11claws62
+
+	* sync with 0.8.11cvs16
+		see ChangeLog 2003-03-28
+
+2003-03-28 [paul]	0.8.11claws61
+
+	* sync with 0.8.11cvs15
+		see ChangeLog 2003-03-28
+
+2003-03-27 [christoph]	0.8.11claws60
+
+	* src/folder.c
+	* src/imap.c
+	* src/common/socket.[ch]
+		set socket state to DISCONNECTED when any operation
+		fails to allow reconnecting in IMAP code without
+		checking the return code of all calls to the command
+		functions
+
+	* src/folderview.c
+	* src/summaryview.c
+		remove some more stuff that depends on specific
+		folder types
+
+2003-03-27 [paul]	0.8.11claws59
+
+	* sync with 0.8.11cvs14
+		see ChangeLog 2003-03-27
+		
+	* src/selective_download.[ch]	** REMOVED **
+		really removed
+
+2003-03-27 [christoph]	0.8.11claws58
+
+	* src/folder.c
+		fix handling of tmp_flags in flag copy function
+
+2003-03-27 [paul]	0.8.11claws57
+
+	* sync with 0.8.11cvs13
+		see ChangeLog 2003-03-27
+
+2003-03-27 [oliver]	0.8.11claws56
+
+	* src/maiwindow.c
+		remove sel_download_cb
+
+2003-03-27 [oliver]	0.8.11claws55
+	
+	* src/inc.c
+		remove POP3_TOP
+	
+2003-03-26 [oliver]	0.8.11claws54
+
+	*src/pop.h
+		remove POP3_TOP*
+	* README.claws
+		remove selective donwload readme
+
+2003-03-26 [oliver]	0.8.11claws53
+	* src/matcher.[ch]
+	* src/matcher_parser_parse.y 
+	* src/pop.c 
+	* src/prefs_account.[ch]
+	* src/prefs_filtering.c
+		remove selective donwload
+
+2003-03-26 [oliver]	0.8.11claws52
+
+	* src/inc.[ch] 
+	* src/filtering.c 
+	* src/mainwindow.c 
+		remove selective donwload
+
+2003-03-26 [oliver]	0.8.11claws51
+	
+	* src/Makefile.am
+	* src/selective_download.[ch]   ** REMOVE **	
+
 2003-03-26 [christoph]	0.8.11claws50
 
 	* src/news.c

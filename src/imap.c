@@ -450,6 +450,13 @@ static IMAPSession *imap_session_get(Folder *folder)
 	if(session == NULL)
 		return NULL;
 
+	if (session->sock->state == CONN_DISCONNECTED) {
+		debug_print("IMAP server disconnected\n");
+		session_destroy(session);
+		imap_reset_uid_lists(folder);
+		session = imap_session_new(folder->account);
+	}		
+
 	/* Get CAPABILITY */
 	imap_get_capability(session); 
 

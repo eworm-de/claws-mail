@@ -123,7 +123,6 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHACTION_EXECUTE, "execute"},
 	{MATCHACTION_COLOR, "color"},
 	{MATCHACTION_REDIRECT, "redirect"},
-	{MATCHACTION_DELETE_ON_SERVER, "delete_on_server"},
 	{MATCHACTION_CHANGE_SCORE, "change_score"}
 };
 

@@ -958,7 +958,6 @@ EXPORTS
 	inc_mail 
 	inc_mail_cb 
 	inc_pop_before_smtp 
-	inc_selective_download 
 	inc_unlock 
 	input_dialog 
 	input_dialog_combo 
@@ -1245,12 +1244,10 @@ EXPORTS
 	news_post_stream 
 	news_remove_group_list_cache 
 	news_scan_group 
-	news_session_destroy 
 	news_session_get 
 	newsgroup_list_append 
 	nntp_article 
 	nntp_body 
-	nntp_close 
 	nntp_forceauth 
 	nntp_get_article 
 	nntp_group 
@@ -1260,10 +1257,8 @@ EXPORTS
 	nntp_newgroups 
 	nntp_newnews 
 	nntp_next 
-	nntp_ok 
-	nntp_open 
-	nntp_open_auth 
 	nntp_post 
+	nntp_session_new 
 	nntp_stat 
 	nntp_xhdr 
 	nntp_xover 
@@ -1557,9 +1552,6 @@ EXPORTS
 	scoringprop_new 
 	scoringprop_score_message 
 	scoringprop_to_string 
-	sd_init_pixmaps 
-	sd_reflect_prefs_pixmap_theme 
-	selective_download 
 	send_message 
 	send_message_local 
 	send_message_smtp 
