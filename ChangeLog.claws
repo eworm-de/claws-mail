@@ -1,3 +1,8 @@
+2004-01-25 [thorsten]	0.9.8claws46
+
+	* src/messageview.c
+		remove orphaned mimeview unref()
+
 2004-01-23 [christoph]	0.9.8claws45
 
 	* src/summaryview.c
