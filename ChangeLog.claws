@@ -1,3 +1,13 @@
+2004-04-15 [luke]	0.9.10claws47
+
+	* src/prefs_folder_item.c
+		o remove buttons for applying 'scan for new mail'
+		  and 'process at startup' to sub folders
+		o add 'apply to sub folder' check buttons for all
+		  properties and set folder prefs accordingly
+		o replace multiple gtk_widget_show() with one
+		  gtk_widget_show_all() on container
+
 2004-04-14 [darko]	0.9.10claws46
 
 	* src/gtk/Makefile.am
