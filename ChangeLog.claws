@@ -1,3 +1,10 @@
+2003-01-14 [paul]	0.8.8claws99
+
+	* configure.in	** REMOVED **
+	  configure.ac	** NEW FILE **
+	  	rename configure.in to configure.ac, as it is now
+		preferred
+
 2003-01-14 [melvin]	0.8.8claws98
 
 	* src/folderview.c
