@@ -51,7 +51,7 @@ struct _FlagInfo
 
 static GHashTable *procmsg_read_mark_file	(const gchar	*folder);
 void   procmsg_msginfo_write_flags		(MsgInfo 	*msginfo);
-
+static void procmsg_update_unread_children (MsgInfo *info, gboolean newly_marked);
 
 GHashTable *procmsg_msg_hash_table_create(GSList *mlist)
 {
@@ -903,6 +903,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 
 	return ret;
 }
+
 gint procmsg_remove_special_headers(const gchar *in, const gchar *out)
 {
 	FILE *fp, *outfp;
@@ -1461,6 +1462,17 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 		item->need_update = TRUE;
 	}
 
+	if (!MSG_IS_UNREAD(msginfo->flags) &&(perm_flags & MSG_UNREAD)
+	&& procmsg_msg_has_marked_parent(msginfo)) {
+		item->unreadmarked++;
+		item->need_update = TRUE;
+	}
+	
+	if (!MSG_IS_MARKED(msginfo->flags) && (perm_flags & MSG_MARKED)) {
+		procmsg_update_unread_children(msginfo, TRUE);
+	}
+
+
 	/* if ignore thread flag is set */
 	if ((perm_flags & MSG_IGNORE_THREAD) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 		if (MSG_IS_NEW(msginfo->flags) || (perm_flags & MSG_NEW)) {
@@ -1471,6 +1483,16 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 			item->unread--;
 			item->need_update = TRUE;
 		}
+		if ((perm_flags & MSG_UNREAD) || (MSG_IS_UNREAD(msginfo->flags)
+		&& procmsg_msg_has_marked_parent(msginfo))) {
+			item->unreadmarked--;
+			item->need_update = TRUE;
+		}
+		if ((perm_flags & MSG_MARKED) || MSG_IS_MARKED(msginfo->flags)
+		&& !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
+			procmsg_update_unread_children(msginfo, FALSE);
+		}
+
 	}
 
 	if (MSG_IS_IMAP(msginfo->flags))
@@ -1506,6 +1528,18 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 		item->unread--;
 		item->need_update = TRUE;
 	}
+	
+	if (MSG_IS_UNREAD(msginfo->flags) && (perm_flags & MSG_UNREAD)
+	&& !MSG_IS_IGNORE_THREAD(msginfo->flags)
+	&& procmsg_msg_has_marked_parent(msginfo)) {
+		item->unreadmarked--;
+		item->need_update = TRUE;
+	}
+
+	if (MSG_IS_MARKED(msginfo->flags) && (perm_flags & MSG_MARKED)
+	&& !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
+		procmsg_update_unread_children(msginfo, FALSE);
+	}
 
 	/* if ignore thread flag is unset */
 	if ((perm_flags & MSG_IGNORE_THREAD) && MSG_IS_IGNORE_THREAD(msginfo->flags)) {
@@ -1517,6 +1551,15 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 			item->unread++;
 			item->need_update = TRUE;
 		}
+		if (MSG_IS_UNREAD(msginfo->flags) && !(perm_flags & MSG_UNREAD)
+		&& procmsg_msg_has_marked_parent(msginfo)) {
+			item->unreadmarked++;
+			item->need_update = TRUE;
+		}
+		if (MSG_IS_MARKED(msginfo->flags) && !(perm_flags & MSG_MARKED)) {
+			procmsg_update_unread_children(msginfo, TRUE);
+		}
+
 	}
 
 	if (MSG_IS_IMAP(msginfo->flags))
@@ -1546,6 +1589,68 @@ void procmsg_msginfo_write_flags(MsgInfo *msginfo)
 	}
 	
 	g_free(destdir);
+}
+
+gboolean procmsg_msg_has_marked_parent	(MsgInfo *info)
+{
+	MsgInfo *tmp;
+	g_return_val_if_fail(info != NULL, FALSE);
+	if (info != NULL && info->folder != NULL && info->inreplyto != NULL) {
+		tmp = folder_item_get_msginfo_by_msgid(info->folder, info->inreplyto);
+		if (tmp && MSG_IS_MARKED(tmp->flags)) {
+			procmsg_msginfo_free(tmp);
+			return TRUE;
+		} else if (tmp != NULL) {
+			gboolean result = procmsg_msg_has_marked_parent(tmp);
+			procmsg_msginfo_free(tmp);
+			return result;
+		} else {
+			return FALSE;
+		}
+	} else
+		return FALSE;
+}	
+
+GSList *procmsg_find_children (MsgInfo *info)
+{
+	GSList *children = NULL;
+	GSList *all, *cur;
+	
+	g_return_val_if_fail(info!=NULL, NULL);
+	if (info->msgid == NULL)
+		return NULL;
+	all = folder_item_get_msg_list(info->folder);
+	for (cur = all; cur != NULL; cur = g_slist_next(cur)) {
+		MsgInfo *tmp = (MsgInfo *)cur->data;
+		if (tmp->inreplyto && !strcmp(tmp->inreplyto, info->msgid)) {
+			GSList *grand_children;
+			children = g_slist_prepend(children, tmp);
+			grand_children = procmsg_find_children(tmp);
+			children = slist_concat_unique(children, grand_children);
+			g_slist_free(grand_children);
+		}
+		if (tmp && tmp != info)
+			procmsg_msginfo_free(tmp);
+	}
+	
+	return children;
+}
+
+static void procmsg_update_unread_children (MsgInfo *info, gboolean newly_marked)
+{
+	GSList *children = procmsg_find_children(info);
+	GSList *cur;
+	for (cur = children; cur != NULL; cur = g_slist_next(cur)) {
+		MsgInfo *tmp = (MsgInfo *)cur->data;
+		if(MSG_IS_UNREAD(tmp->flags) && !MSG_IS_IGNORE_THREAD(tmp->flags)) {
+			if(newly_marked) 
+				info->folder->unreadmarked++;
+			else
+				info->folder->unreadmarked--;
+			info->folder->need_update = TRUE;
+		}
+		procmsg_msginfo_free(tmp);
+	}
 }
 
 /*

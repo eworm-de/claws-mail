@@ -290,4 +290,6 @@ void msginfo_update_item		(MsgInfo	*info);
 gint procmsg_remove_special_headers	(const gchar 	*in, 
 					 const gchar 	*out);
 
+gboolean procmsg_msg_has_marked_parent	(MsgInfo	*info);
+GSList *procmsg_find_children		(MsgInfo	*info);
 #endif /* __PROCMSG_H__ */

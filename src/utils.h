@@ -247,6 +247,8 @@ gchar *strrchr_with_skip_quote		(const gchar	*str,
 					 gint		 c);
 void extract_address			(gchar		*str);
 
+GSList *slist_concat_unique		(GSList		*first,
+					 GSList		*second);
 GSList *address_list_append		(GSList		*addr_list,
 					 const gchar	*str);
 GSList *references_list_append		(GSList		*msgid_list,

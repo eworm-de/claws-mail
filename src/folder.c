@@ -207,6 +207,7 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 	item->mtime = 0;
 	item->new = 0;
 	item->unread = 0;
+	item->unreadmarked = 0;
 	item->total = 0;
 	item->last_num = -1;
 	item->cache = NULL;
@@ -464,6 +465,7 @@ struct TotalMsgCount
 {
 	guint new;
 	guint unread;
+	guint unreadmarked;
 	guint total;
 };
 
@@ -513,14 +515,15 @@ static void folder_count_total_msgs_func(FolderItem *item, gpointer data)
 
 	count->new += item->new;
 	count->unread += item->unread;
+	count->unreadmarked += item->unreadmarked;
 	count->total += item->total;
 }
 
-void folder_count_total_msgs(guint *new, guint *unread, guint *total)
+void folder_count_total_msgs(guint *new, guint *unread, guint *unreadmarked, guint *total)
 {
 	struct TotalMsgCount count;
 
-	count.new = count.unread = count.total = 0;
+	count.new = count.unread = count.unreadmarked = count.total = 0;
 
 	debug_print("Counting total number of messages...\n");
 
@@ -528,6 +531,7 @@ void folder_count_total_msgs(guint *new, guint *unread, guint *total)
 
 	*new = count.new;
 	*unread = count.unread;
+	*unreadmarked = count.unreadmarked;
 	*total = count.total;
 }
 
@@ -992,7 +996,7 @@ gint folder_item_scan(FolderItem *item)
 {
 	Folder *folder;
 	GSList *folder_list = NULL, *cache_list = NULL, *folder_list_cur, *cache_list_cur, *new_list = NULL;
-	guint newcnt = 0, unreadcnt = 0, totalcnt = 0;
+	guint newcnt = 0, unreadcnt = 0, totalcnt = 0, unreadmarkedcnt = 0;
 	guint cache_max_num, folder_max_num, cache_cur_num, folder_cur_num;
 	gboolean contentchange = FALSE;
     
@@ -1139,6 +1143,8 @@ gint folder_item_scan(FolderItem *item)
 						newcnt++;
 					if (MSG_IS_UNREAD(newmsginfo->flags) && !MSG_IS_IGNORE_THREAD(newmsginfo->flags))
 						unreadcnt++;
+					if (MSG_IS_UNREAD(newmsginfo->flags) && procmsg_msg_has_marked_parent(newmsginfo))
+						unreadmarkedcnt++;
 					procmsg_msginfo_free(newmsginfo);
 				}					
 
@@ -1148,6 +1154,8 @@ gint folder_item_scan(FolderItem *item)
 					newcnt++;
 				if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 					unreadcnt++;
+				if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
+					unreadmarkedcnt++;
 			}
 			totalcnt++;
 			procmsg_msginfo_free(msginfo);
@@ -1193,6 +1201,8 @@ gint folder_item_scan(FolderItem *item)
 					newcnt++;
 				if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 					unreadcnt++;
+				if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
+					unreadmarkedcnt++;
 				totalcnt++;
 				procmsg_msginfo_free(msginfo);
 			}
@@ -1213,6 +1223,8 @@ gint folder_item_scan(FolderItem *item)
 				    newcnt++;
 				if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 				    unreadcnt++;
+				if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
+					unreadmarkedcnt++;
 				totalcnt++;
 				procmsg_msginfo_free(msginfo);
 				debug_print("Added newly found message %d to cache.\n", num);
@@ -1223,7 +1235,7 @@ gint folder_item_scan(FolderItem *item)
 	item->new = newcnt;
 	item->unread = unreadcnt;
 	item->total = totalcnt;
-	
+	item->unreadmarked = unreadmarkedcnt;
 	g_slist_free(new_list);
 
 	folder_update_item(item, contentchange);
@@ -1463,6 +1475,8 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 			        dest->new++;
 		        if (MSG_IS_UNREAD(msginfo->flags))
 				dest->unread++;
+			if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
+				dest->unreadmarked++;
 			dest->total++;
 			dest->need_update = TRUE;
 
@@ -1665,6 +1679,8 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 				dest->new++;
 			if (MSG_IS_UNREAD(newmsginfo->flags))
 				dest->unread++;
+			if (MSG_IS_UNREAD(newmsginfo->flags) && procmsg_msg_has_marked_parent(newmsginfo))
+				dest->unreadmarked++;
 			dest->total++;
 			dest->need_update = TRUE;
 
@@ -1681,6 +1697,8 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 				msginfo->folder->new--;
 			if (MSG_IS_UNREAD(msginfo->flags))
 				msginfo->folder->unread--;
+			if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
+				msginfo->folder->unreadmarked--;
 			msginfo->folder->total--;
 			msginfo->folder->need_update = TRUE;
 		}
@@ -1774,6 +1792,8 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 					dest->new++;
 				if (MSG_IS_UNREAD(newmsginfo->flags))
 					dest->unread++;
+				if (MSG_IS_UNREAD(newmsginfo->flags) && procmsg_msg_has_marked_parent(newmsginfo))
+					dest->unreadmarked++;
 				dest->total++;
 				dest->need_update = TRUE;
 
@@ -1806,6 +1826,8 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 				msginfo->folder->new--;
 			if (MSG_IS_UNREAD(msginfo->flags))
 				msginfo->folder->unread--;
+			if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
+				msginfo->folder->unreadmarked--;
 			msginfo->folder->total--;			
 			msginfo->folder->need_update = TRUE;
 		}
@@ -1872,6 +1894,8 @@ gint folder_item_copy_msg(FolderItem *dest, MsgInfo *msginfo)
 				dest->new++;
 			if (MSG_IS_UNREAD(newmsginfo->flags))
 				dest->unread++;
+			if (MSG_IS_UNREAD(newmsginfo->flags) && procmsg_msg_has_marked_parent(newmsginfo))
+				dest->unreadmarked++;
 			dest->total++;
 			dest->need_update = TRUE;
 
@@ -1961,6 +1985,8 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 					dest->new++;
 				if (MSG_IS_UNREAD(newmsginfo->flags))
 					dest->unread++;
+				if (MSG_IS_UNREAD(newmsginfo->flags) && procmsg_msg_has_marked_parent(newmsginfo))
+					dest->unreadmarked++;
 				dest->total++;
 				dest->need_update = TRUE;
 
@@ -1996,6 +2022,8 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 			item->new--;
 		if (MSG_IS_UNREAD(msginfo->flags))
 			item->unread--;
+		if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
+			item->unreadmarked--;
 		procmsg_msginfo_free(msginfo);
 		msgcache_remove_msg(item->cache, num);
 	}
@@ -2057,6 +2085,7 @@ gint folder_item_remove_all_msg(FolderItem *item)
 
 		item->new = 0;
 		item->unread = 0;
+		item->unreadmarked = 0;
 		item->total = 0;
 		item->need_update = TRUE;
 	}
@@ -2128,7 +2157,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	gboolean ret_rcpt = FALSE, hidereadmsgs = FALSE; /* CLAWS */
 	FolderSortKey sort_key = SORT_BY_NONE;
 	FolderSortType sort_type = SORT_ASCENDING;
-	gint new = 0, unread = 0, total = 0;
+	gint new = 0, unread = 0, total = 0, unreadmarked = 0;
 	time_t mtime = 0;
 
 	g_return_val_if_fail(node->data != NULL, FALSE);
@@ -2168,6 +2197,8 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 			new = atoi(attr->value);
 		else if (!strcmp(attr->name, "unread"))
 			unread = atoi(attr->value);
+		else if (!strcmp(attr->name, "unreadmarked"))
+			unreadmarked = atoi(attr->value);
 		else if (!strcmp(attr->name, "total"))
 			total = atoi(attr->value);
 		else if (!strcmp(attr->name, "no_sub"))
@@ -2225,6 +2256,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	item->mtime = mtime;
 	item->new = new;
 	item->unread = unread;
+	item->unreadmarked = unreadmarked;
 	item->total = total;
 	item->no_sub = no_sub;
 	item->no_select = no_select;
@@ -2422,8 +2454,8 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 		}
 
 		fprintf(fp,
-			" mtime=\"%lu\" new=\"%d\" unread=\"%d\" total=\"%d\"",
-			item->mtime, item->new, item->unread, item->total);
+			" mtime=\"%lu\" new=\"%d\" unread=\"%d\" unreadmarked=\"%d\" total=\"%d\"",
+			item->mtime, item->new, item->unread, item->unreadmarked, item->total);
 
 		if (item->account)
 			fprintf(fp, " account_id=\"%d\"",

@@ -1170,18 +1170,24 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		 prefs_common.display_folder_unread) {
 
 		if (item->unread > 0)
-			str = g_strdup_printf("%s (%d%s)", name, item->unread,
-					      add_unread_mark ? "+" : "");
+			str = g_strdup_printf("%s (%d%s%s)", name, item->unread,
+					      add_unread_mark ? "+" : "", 
+				              item->unreadmarked > 0 ? "!":"");
 		else
 			str = g_strdup_printf("%s (+)", name);
 		gtk_ctree_set_node_info(ctree, node, str, FOLDER_SPACING,
 					xpm, mask, openxpm, openmask,
 					FALSE, GTK_CTREE_ROW(node)->expanded);
 		g_free(str);
-	} else
-		gtk_ctree_set_node_info(ctree, node, name, FOLDER_SPACING,
+	} else {
+		str = g_strdup_printf("%s%s", name, 
+			              item->unreadmarked > 0 ? " (!)":"");
+	
+		gtk_ctree_set_node_info(ctree, node, str, FOLDER_SPACING,
 					xpm, mask, openxpm, openmask,
 					FALSE, GTK_CTREE_ROW(node)->expanded);
+		g_free(str);
+	}
 	g_free(name);
 
 	if (!item->parent) {
@@ -1207,7 +1213,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		use_color =
 			(item->new > 0) ||
 			(add_unread_mark &&
-			 folderview_have_new_children(folderview, node));
+			 folderview_have_new_children(folderview, node));	
 	}
 
 	gtk_ctree_node_set_foreground(ctree, node, NULL);

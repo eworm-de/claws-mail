@@ -243,6 +243,7 @@ struct _FolderItem
 	gint new;
 	gint unread;
 	gint total;
+	gint unreadmarked;
 
 	gint last_num;
 
@@ -328,6 +329,7 @@ void   folder_func_to_all_folders	(FolderItemFunc function,
 					 gpointer data);
 void   folder_count_total_msgs	(guint		*new,
 				 guint		*unread,
+				 guint		*unreadmarked,
 				 guint		*total);
 
 Folder     *folder_find_from_path		(const gchar	*path);

@@ -1,3 +1,18 @@
+2002-11-25 [colin]	0.8.6claws4
+
+	* src/utils.[ch]
+		Add slist_concat_unique(), function to merge
+		two GSList filtering dups
+	* src/folder.[ch]
+	* src/summaryview.[ch]
+	* src/folderview.c
+	* src/main.c
+		Add detection/update/display of unread answers
+		to marked mails
+	* src/procmsg.[ch]
+		Add procmsg_find_children()
+		Add procmsg_msg_has_marked_parent()
+
 2002-11-25 [colin]	0.8.6claws3
 
 	* src/ssl_certificate.[ch]

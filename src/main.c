@@ -763,10 +763,10 @@ static void lock_socket_input_cb(gpointer data,
 	} else if (!strncmp(buf, "offline", 7)) {
 		main_window_toggle_work_offline(mainwin, TRUE);
 	} else if (!strncmp(buf, "status", 6)) {
-		guint new, unread, total;
+		guint new, unread, unreadmarked, total;
 
-		folder_count_total_msgs(&new, &unread, &total);
-		g_snprintf(buf, sizeof(buf), "%d %d %d\n", new, unread, total);
+		folder_count_total_msgs(&new, &unread, &unreadmarked, &total);
+		g_snprintf(buf, sizeof(buf), "%d %d %d %d\n", new, unread, unreadmarked, total);
 		fd_write(sock, buf, strlen(buf));
 	}
 

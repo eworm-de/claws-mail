@@ -1751,6 +1751,10 @@ static void summary_set_marks_func(GtkCTree *ctree, GtkCTreeNode *node,
 		summaryview->newmsgs++;
 	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->unread++;
+	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)
+	&& procmsg_msg_has_marked_parent(msginfo))
+		summaryview->unreadmarked++;
+
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted++;
 
@@ -1778,6 +1782,9 @@ static void summary_update_status(SummaryView *summaryview)
 			summaryview->newmsgs++;
 		if (MSG_IS_UNREAD(msginfo->flags)&& !MSG_IS_IGNORE_THREAD(msginfo->flags))
 			summaryview->unread++;
+		if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)
+		&& procmsg_msg_has_marked_parent(msginfo))
+			summaryview->unreadmarked++;
 		if (MSG_IS_DELETED(msginfo->flags))
 			summaryview->deleted++;
 		if (MSG_IS_MOVE(msginfo->flags))
@@ -2338,6 +2345,9 @@ static void summary_display_msg_full(SummaryView *summaryview,
 			summaryview->newmsgs--;
 		if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 			summaryview->unread--;
+		if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags) 
+		&& procmsg_msg_has_marked_parent(msginfo))
+			summaryview->unreadmarked--;
 		if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
 			procmsg_msginfo_unset_flags
 				(msginfo, MSG_NEW | MSG_UNREAD, 0);
@@ -2647,6 +2657,25 @@ void summary_set_marks_selected(SummaryView *summaryview)
 		summary_set_row_marks(summaryview, GTK_CTREE_NODE(cur->data));
 }
 
+static gboolean summary_update_unread_children (SummaryView *summaryview, MsgInfo *info, gboolean newly_marked)
+{
+	GSList *children = procmsg_find_children(info);
+	GSList *cur;
+	gboolean changed = FALSE;
+	for (cur = children; cur != NULL; cur = g_slist_next(cur)) {
+		MsgInfo *tmp = (MsgInfo *)cur->data;
+		if(MSG_IS_UNREAD(tmp->flags) && !MSG_IS_IGNORE_THREAD(tmp->flags)) {
+			if(newly_marked) 
+				summaryview->unreadmarked++;
+			else
+				summaryview->unreadmarked--;
+			changed = TRUE;
+		}
+		procmsg_msginfo_free(tmp);
+	}
+	return changed;
+}
+
 static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
 {
 	gboolean changed = FALSE;
@@ -2664,6 +2693,8 @@ static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
 		summaryview->copied--;
 		changed = TRUE;
 	}
+	changed |= summary_update_unread_children (summaryview, msginfo, TRUE);
+
 	if (changed && !prefs_common.immediate_exec) {
 		msginfo->to_folder->op_count--;
 		if (msginfo->to_folder->op_count == 0)
@@ -2733,6 +2764,9 @@ static void summary_mark_row_as_read(SummaryView *summaryview,
 		summaryview->newmsgs--;
 	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->unread--;
+	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)
+	&& procmsg_msg_has_marked_parent(msginfo))
+		summaryview->unreadmarked--;
 
 	procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
 	summary_set_row_marks(summaryview, row);
@@ -2789,6 +2823,10 @@ static void summary_mark_row_as_unread(SummaryView *summaryview,
 
 	if (!MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->unread++;
+
+	if (!MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)
+	&& procmsg_msg_has_marked_parent(msginfo))
+		summaryview->unreadmarked++;
 
 	procmsg_msginfo_unset_flags(msginfo, MSG_REPLIED | MSG_FORWARDED, 0);
 	procmsg_msginfo_set_flags(msginfo, MSG_UNREAD, 0);
@@ -2883,6 +2921,8 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 		summaryview->copied--;
 		changed = TRUE;
 	}
+	changed |= summary_update_unread_children (summaryview, msginfo, FALSE);
+
 	if (changed && !prefs_common.immediate_exec) {
 		msginfo->to_folder->op_count--;
 		if (msginfo->to_folder->op_count == 0)
@@ -3045,6 +3085,8 @@ static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
 		summaryview->copied--;
 		changed = TRUE;
 	}
+	changed |= summary_update_unread_children (summaryview, msginfo, FALSE);
+
 	if (changed && !prefs_common.immediate_exec) {
 		msginfo->to_folder->op_count--;
 		if (msginfo->to_folder->op_count == 0)
@@ -4675,8 +4717,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	switch (column < 0 ? column : summaryview->col_state[column].type) {
 	case S_COL_MARK:
 		if (MSG_IS_MARKED(msginfo->flags)) {
-			procmsg_msginfo_unset_flags(msginfo, MSG_MARKED, 0);
-			summary_set_row_marks(summaryview, row);
+			summary_unmark_row(summaryview, row);
 		} else
 			summary_mark_row(summaryview, row);
 		break;
@@ -5097,6 +5138,8 @@ static void summary_ignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpoin
 		summaryview->newmsgs--;
 	if (MSG_IS_UNREAD(msginfo->flags))
 		summaryview->unread--;
+	if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
+		summaryview->unreadmarked--;
 
 	procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 
@@ -5129,6 +5172,8 @@ static void summary_unignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpo
 		summaryview->newmsgs++;
 	if (MSG_IS_UNREAD(msginfo->flags))
 		summaryview->unread++;
+	if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
+		summaryview->unreadmarked++;
 
 	procmsg_msginfo_unset_flags(msginfo, MSG_IGNORE_THREAD, 0);
 
