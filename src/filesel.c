@@ -350,6 +350,8 @@ static GList *filesel_get_multiple_filenames(void)
 		g_free(sel_text);
 	}
 	
+	g_free(cwd);
+	
 	return list;
 }
 

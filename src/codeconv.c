@@ -621,7 +621,9 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 
 		func = conv_get_code_conv_func(src_codeset);
 		if (func != conv_noconv) {
-			if (func == conv_jistodisp || func == conv_sjistodisp)
+			if (func == conv_jistodisp ||
+			    func == conv_sjistodisp ||
+			    func == conv_anytodisp)
 				len = strlen(inbuf) * 2 + 1;
 			else
 				len = strlen(inbuf) + 1;
@@ -696,10 +698,12 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 CodeConvFunc conv_get_code_conv_func(const gchar *charset)
 {
 	CodeConvFunc code_conv;
+	CharSet cur_charset;
 
 	if (!charset) {
-		if (conv_get_outgoing_charset() == C_ISO_2022_JP)
-			return conv_jistodisp;
+		cur_charset = conv_get_current_charset();
+		if (cur_charset == C_EUC_JP || cur_charset == C_SHIFT_JIS)
+			return conv_anytodisp;
 		else
 			return conv_noconv;
 	}
@@ -1020,28 +1024,7 @@ const gchar *conv_get_current_locale(void)
 void conv_unmime_header_overwrite(gchar *str)
 {
 	gchar *buf;
-	gint outlen;
-	CharSet cur_charset;
-
-	cur_charset = conv_get_current_charset();
-
-	outlen = strlen(str) + 1;
-	Xalloca(buf, outlen, return);
-	unmime_header(buf, str);
-#ifdef WIN32
-	if (cur_charset == C_EUC_JP || cur_charset == C_SHIFT_JIS)
-#else
-	if (cur_charset == C_EUC_JP)
-#endif
-		conv_jistodisp(str, outlen, buf);
-	else
-		strncpy2(str, buf, outlen);
-}
-
-void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
-			const gchar *charset)
-{
-	gchar *buf;
+	gint buflen;
 	CharSet cur_charset;
 
 	cur_charset = conv_get_current_charset();
@@ -1051,9 +1034,37 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 #else
 	if (cur_charset == C_EUC_JP) {
 #endif
-		Xalloca(buf, outlen, return);
+		buflen = strlen(str) * 2 + 1;
+		Xalloca(buf, buflen, return);
+		conv_anytodisp(buf, buflen, str);
+		unmime_header(str, buf);
+	} else {
+		buflen = strlen(str) + 1;
+		Xalloca(buf, buflen, return);
 		unmime_header(buf, str);
-		conv_jistodisp(outbuf, outlen, buf);
+		strncpy2(str, buf, buflen);
+	}
+}
+
+void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
+			const gchar *charset)
+{
+	CharSet cur_charset;
+
+	cur_charset = conv_get_current_charset();
+
+#ifdef WIN32
+	if (cur_charset == C_EUC_JP || cur_charset == C_SHIFT_JIS) {
+#else
+	if (cur_charset == C_EUC_JP) {
+#endif
+		gchar *buf;
+		gint buflen;
+
+		buflen = strlen(str) * 2 + 1;
+		Xalloca(buf, buflen, return);
+		conv_anytodisp(buf, buflen, str);
+		unmime_header(outbuf, buf);
 	} else
 		unmime_header(outbuf, str);
 }
@@ -1095,6 +1106,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 	while (*wsrcp) {
 		wchar_t *wp, *wtmp, *wtmpp;
 		gint nspc = 0;
+		gboolean str_is_non_ascii;
 
 		/* irresponsible buffer overrun check */
 		if ((len - (destp - dest)) < (MAX_LINELEN + 1) * 2) break;
@@ -1105,8 +1117,11 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 			wp = wsrcp;
 			while ((wp = find_wspace(wp)) != NULL)
 				if (!is_next_nonascii(wp)) break;
-		} else
+			str_is_non_ascii = TRUE;
+		} else {
 			wp = find_wspace(wsrcp);
+			str_is_non_ascii = FALSE;
+		}
 
 		if (wp != NULL) {
 			wtmp = wcsndup(wsrcp, wp - wsrcp);
@@ -1120,7 +1135,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 		wtmpp = wtmp;
 
 		do {
-			gint tlen = 0, str_ascii = 1;
+			gint tlen = 0;
 			gchar *tmp; /* internal codeset */
 			gchar *raw; /* converted, but not base64 encoded */
 			register gchar *tmpp;
@@ -1138,8 +1153,6 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 				int raw_new_len = 0;
 				const gchar *src_codeset;
 
-				if (*wtmpp < 32 || *wtmpp >= 127)
-					str_ascii = 0;
 				mbl = wctomb(tmpp, *wtmpp);
 				if (mbl == -1) {
 					g_warning("invalid wide character\n");
@@ -1160,7 +1173,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 					wtmpp++;
 					continue;
 				}
-				if (!str_ascii) {
+				if (str_is_non_ascii) {
 					gint dlen = mimehdr_len +
 						B64LEN(raw_len);
 					if ((line_len + dlen +
@@ -1172,7 +1185,6 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 							*destp++ = '\n';
 							*destp++ = ' ';
 							line_len = 1;
-							str_ascii = 1;
 							continue;
 						} else {
 							*tmpp = '\0';
@@ -1222,7 +1234,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 				line_len++;
 			}
 
-			if (!str_ascii) {
+			if (str_is_non_ascii) {
 				g_snprintf(destp, len - strlen(dest), "%s%s%s",
 					   mimehdr_init, mimehdr_charset,
 					   mimehdr_enctype);

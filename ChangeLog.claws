@@ -1,3 +1,74 @@
+2002-07-23 [christoph]	0.8.0claws4
+
+	* src/filesel.c
+		fix another g_dirname memory leak
+
+2002-07-23 [christoph]	0.8.0claws3
+
+	* src/mh.c
+		fixed a memory leak in mh_fetch_msginfo
+		fixed crash when message header could not be
+		parsed
+
+2002-07-23 [paul]	0.8.0claws2
+
+	* sync with 0.8.0cvs2
+		see ChangeLog 2002-07-23
+
+2002-07-23 [paul]	0.8.0claws1
+
+	* sync with 0.8.0cvs1
+		see ChangeLog 2002-07-23
+
+2002-07-23 [paul]	0.8.0claws
+
+	* release of 0.8.0claws
+
+2002-07-23 [paul]	0.7.8claws99
+
+	* po/ru.po
+		new Russian translation, submitted by
+		Botalov Vyacheslav <botalov_v@upr.uralkaly.ru>
+
+2002-07-22 [jens]	0.7.8claws98
+
+	* po/de.po
+		Updated German translations.
+
+2002-07-22 [paul]	0.7.8claws97
+
+	* po/es.po
+	  po/it.po
+	  po/nl.po
+	  po/pt_BR.po
+		updated translations by Ricardo Mones Lastra,
+		Alessandro Maestri, Wilbert Berendsen and 
+		Fabio Jr. Beneditto respectively
+
+2002-07-22 [christoph]	0.7.8claws96
+
+	* src/mimeview.c
+		fix memory leak caused by wrong g_dirname usage
+
+2002-07-22 [christoph]	0.7.8claws95
+
+	* src/summaryview.c
+		update new and unread message counts for summaryview
+		summaryview does not get it from the folder anymore
+		and has to update the values itself
+
+2002-07-22 [melvin]	0.7.8claws94
+
+	* po/fr.po
+		Updated French translations.
+
+2002-07-22 [christoph]	0.7.8claws93
+
+	* src/matcher.c
+		set prop->preg pointer to NULL or following check
+		will not fail and regexec will be called with
+		invalid pointer
+
 2002-07-21 [alfons]	0.7.8claws92
 	
 	* src/prefs_common.[ch]

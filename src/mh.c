@@ -358,6 +358,11 @@ MsgInfo *mh_fetch_msginfo(Folder *folder, FolderItem *item, gint num)
 
 	folder_item_set_default_flags(item, &flags);
 	msginfo = procheader_parse_file(file, flags, TRUE, FALSE);
+	if(!msginfo) {
+		g_free(file);
+		return NULL;
+	}
+
 	msginfo->msgnum = num;
 	msginfo->folder = item;
 
@@ -369,6 +374,8 @@ MsgInfo *mh_fetch_msginfo(Folder *folder, FolderItem *item, gint num)
 		msginfo->size = s.st_size;
 		msginfo->mtime = s.st_mtime;
 	}
+
+	g_free(file);
 
 	return msginfo;
 }

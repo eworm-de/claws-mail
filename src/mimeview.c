@@ -847,7 +847,7 @@ static void mimeview_save_all(MimeView *mimeview)
 				   ? &attachname[1]
 				   : attachname);
 			attachdir = g_dirname(buf);
-			make_dir_hier(g_dirname(buf));
+			make_dir_hier(attachdir);
 			g_free(attachdir);
 			g_free(attachname);
 

@@ -1768,6 +1768,8 @@ gint remove_numbered_files(const gchar *dir, guint first, guint last)
 	while ((d = readdir(dp)) != NULL) {
 		fileno = to_number(d->d_name);
 		if (fileno >= 0 && first <= fileno && fileno <= last) {
+			if (is_dir_exist(d->d_name))
+				continue;
 			if (unlink(d->d_name) < 0)
 				FILE_OP_ERROR(d->d_name, "unlink");
 		}
