@@ -20,8 +20,7 @@ clamav_plugin_gtk_la_LDFLAGS = \
 INCLUDES = \
 	-I../.. \
 	-I../../common \
-	-I../../gtk \
-	-I$(CLAMAV_LIBS)
+	-I../../gtk
 
 AM_CPPFLAGS = \
 	$(ASPELL_CFLAGS) \

@@ -1,3 +1,14 @@
+2003-08-29 [christoph]	0.9.4claws43
+
+	* configure.ac
+		fix bug found by Ivan Rayner <ivanr@sgi.com>
+
+	* src/stock_pixmap.c
+		change unecessary warning into a debug message
+
+	* src/plugins/clamav/Makefile.am
+		Fix error "-I$(CLAMAV_LIBS)"
+
 2003-08-29 [christoph]	0.9.4claws42
 
 	* intl/Makefile.in

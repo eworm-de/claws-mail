@@ -484,7 +484,7 @@ if test x"$ac_cv_enable_clamav_plugin" = xyes; then
 
 		PLUGINS="clamav $PLUGINS"
 	else
-		AC_MSG_NOTICE(clamav library not found, will not build clamav plugin)
+		AC_MSG_NOTICE([clamav library not found, will not build clamav plugin])
 	fi
 fi
 AM_CONDITIONAL(BUILD_CLAMAV_PLUGIN, test x"$ac_cv_enable_clamav_plugin" = xyes)

@@ -295,7 +295,7 @@ static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname)
 	DIR *dp;
 	
 	if ((dp = opendir(dirname)) == NULL) {
-		FILE_OP_ERROR(dirname, "opendir");
+		debug_print("dir %s not found, skipping theme scan", dirname);
 		return;
 	}
 	
