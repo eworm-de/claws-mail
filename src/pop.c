@@ -399,7 +399,7 @@ gint pop3_top_recv(SockInfo *sock, gpointer data)
 	}
 	/* we add a Complete-Size Header Item ...
 	   note: overwrites first line  --> this is dirty */
-	if ( (fp = fopen(filename, "r+")) != NULL ) {
+	if ( (fp = fopen(filename, "rb+")) != NULL ) {
 		gchar *buf = g_strdup_printf("%s%i", SIZE_HEADER, 
 					     state->msg[state->cur_msg].size);
 	

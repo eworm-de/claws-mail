@@ -86,7 +86,7 @@ gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 	g_return_val_if_fail(ac_prefs != NULL, -1);
 	g_return_val_if_fail(to_list != NULL, -1);
 
-	if ((fp = fopen(file, "r")) == NULL) {
+	if ((fp = fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return -1;
 	}
@@ -139,7 +139,7 @@ gint send_message_queue(const gchar *file)
 
 	g_return_val_if_fail(file != NULL, -1);
 
-	if ((fp = fopen(file, "r")) == NULL) {
+	if ((fp = fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return -1;
 	}

@@ -1,3 +1,8 @@
+2002-03-13
+
+	* src/messageview.c: messageview_show(): シングルパートの text/html
+	  メッセージを通常のテキストビューで表示。
+
 2002-03-09
 
 	* version 0.7.4

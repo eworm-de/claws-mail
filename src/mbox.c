@@ -69,7 +69,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 
 	debug_print(_("Getting messages from %s into %s...\n"), mbox, dest->path);
 
-	if ((mbox_fp = fopen(mbox, "r")) == NULL) {
+	if ((mbox_fp = fopen(mbox, "rb")) == NULL) {
 		FILE_OP_ERROR(mbox, "fopen");
 		return -1;
 	}
@@ -108,7 +108,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 		gboolean is_next_msg = FALSE;
 		gint msgnum;
 
-		if ((tmp_fp = fopen(tmp_file, "w")) == NULL) {
+		if ((tmp_fp = fopen(tmp_file, "wb")) == NULL) {
 			FILE_OP_ERROR(tmp_file, "fopen");
 			g_warning(_("can't open temporary file\n"));
 			fclose(mbox_fp);
@@ -261,7 +261,7 @@ gint lock_mbox(const gchar *base, LockType type)
 		FILE *lockfp;
 
 		lockfile = g_strdup_printf("%s.%d", base, getpid());
-		if ((lockfp = fopen(lockfile, "w")) == NULL) {
+		if ((lockfp = fopen(lockfile, "wb")) == NULL) {
 			FILE_OP_ERROR(lockfile, "fopen");
 			g_warning(_("can't create lock file %s\n"), lockfile);
 			g_warning(_("use 'flock' instead of 'file' if possible.\n"));
@@ -380,7 +380,7 @@ void empty_mbox(const gchar *mbox)
 		FILE *fp;
 
 		FILE_OP_ERROR(mbox, "truncate");
-		if ((fp = fopen(mbox, "w")) == NULL) {
+		if ((fp = fopen(mbox, "wb")) == NULL) {
 			FILE_OP_ERROR(mbox, "fopen");
 			g_warning(_("can't truncate mailbox to zero.\n"));
 			return;
@@ -406,7 +406,7 @@ gint export_to_mbox(FolderItem *src, const gchar *mbox)
 	debug_print(_("Exporting messages from %s into %s...\n"),
 		    src->path, mbox);
 
-	if ((mbox_fp = fopen(mbox, "w")) == NULL) {
+	if ((mbox_fp = fopen(mbox, "wb")) == NULL) {
 		FILE_OP_ERROR(mbox, "fopen");
 		return -1;
 	}

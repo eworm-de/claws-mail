@@ -378,7 +378,7 @@ copy_gpgmedata_to_temp (GpgmeData data, guint *length)
     tmp = g_strdup_printf("%s%cgpgtmp.%08x",
                           get_mime_tmp_dir(), G_DIR_SEPARATOR, ++id );
 
-    if ((fp = fopen(tmp, "w")) == NULL) {
+    if ((fp = fopen(tmp, "wb")) == NULL) {
         FILE_OP_ERROR(tmp, "fopen");
         g_free(tmp);
         return NULL;
@@ -616,7 +616,7 @@ void rfc2015_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
     fname = g_strdup_printf("%s%cplaintext.%08x",
 			    get_mime_tmp_dir(), G_DIR_SEPARATOR, ++id);
 
-    if ((dstfp = fopen(fname, "w")) == NULL) {
+    if ((dstfp = fopen(fname, "wb")) == NULL) {
         FILE_OP_ERROR(fname, "fopen");
         g_free(fname);
         DECRYPTION_ABORT();

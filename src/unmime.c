@@ -918,9 +918,9 @@ int main(int argc, char *argv[])
 
   pid = getpid();
   sprintf(fnam, "/tmp/i_unmime.%x", pid);
-  fd_orig = fopen(fnam, "w");
+  fd_orig = fopen(fnam, "wb");
   sprintf(fnam, "/tmp/o_unmime.%x", pid);
-  fd_conv = fopen(fnam, "w");
+  fd_conv = fopen(fnam, "wb");
 #endif
 
   BufSize = BUFSIZE_INCREMENT;    /* Initial size of buffer */

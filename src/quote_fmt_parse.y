@@ -484,7 +484,7 @@ insert:
 			FILE *file;
 			char buffer[256];
 			
-			if(file = fopen($3, "r")) {
+			if(file = fopen($3, "rb")) {
 				while(fgets(buffer, sizeof(buffer), file)) {
 					INSERT(buffer);
 				}
@@ -498,7 +498,7 @@ insert:
 			FILE *file;
 			char buffer[256];
 
-			if(file = popen($3, "r")) {
+			if(file = popen($3, "rb")) {
 				while(fgets(buffer, sizeof(buffer), file)) {
 					INSERT(buffer);
 				}

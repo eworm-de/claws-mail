@@ -231,7 +231,7 @@ int pgptext_is_encrypted (MimeInfo *mimeinfo, MsgInfo *msginfo)
 	g_return_if_fail(file != NULL);
 
 	if (mimeinfo->mime_type != MIME_TEXT) {
-		if ((fp = fopen(file, "r")) == NULL) {
+		if ((fp = fopen(file, "rb")) == NULL) {
 			FILE_OP_ERROR(file, "fopen");
 			return;
 		}
@@ -256,7 +256,7 @@ int pgptext_is_encrypted (MimeInfo *mimeinfo, MsgInfo *msginfo)
 		}
 		fclose(fp);
 	} else {
-		if ((fp = fopen(file, "r")) == NULL) {
+		if ((fp = fopen(file, "rb")) == NULL) {
 			FILE_OP_ERROR(file, "fopen");
 			return;
 		}
@@ -329,7 +329,7 @@ void pgptext_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
     fname = g_strdup_printf("%s%cplaintext.%08x",
 			    get_mime_tmp_dir(), G_DIR_SEPARATOR, ++id);
 
-    if ((dstfp = fopen(fname, "w")) == NULL) {
+    if ((dstfp = fopen(fname, "wb")) == NULL) {
         FILE_OP_ERROR(fname, "fopen");
         g_free(fname);
         msginfo->decryption_failed = 1;

@@ -1065,7 +1065,7 @@ gint addrbook_write_to( AddressBookFile *book, gchar *newFile ) {
 
 	book->retVal = MGU_OPEN_FILE;
 #ifdef DEV_STANDALONE
-	fp = fopen( fileSpec, "w" );
+	fp = fopen( fileSpec, "wb" );
 	g_free( fileSpec );
 	if( fp ) {
 		fputs( "<?xml version=\"1.0\" ?>\n", fp );

@@ -667,7 +667,7 @@ gint procmime_get_part(const gchar *outfile, const gchar *infile,
 	g_return_val_if_fail(infile != NULL, -1);
 	g_return_val_if_fail(mimeinfo != NULL, -1);
 
-	if ((infp = fopen(infile, "r")) == NULL) {
+	if ((infp = fopen(infile, "rb")) == NULL) {
 		FILE_OP_ERROR(infile, "fopen");
 		return -1;
 	}
@@ -676,7 +676,7 @@ gint procmime_get_part(const gchar *outfile, const gchar *infile,
 		fclose(infp);
 		return -1;
 	}
-	if ((outfp = fopen(outfile, "w")) == NULL) {
+	if ((outfp = fopen(outfile, "wb")) == NULL) {
 		FILE_OP_ERROR(outfile, "fopen");
 		fclose(infp);
 		return -1;
@@ -736,7 +736,7 @@ void renderer_read_config(void)
 	renderer_list = NULL;
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, RENDERER_RC, NULL);
-	f = fopen(rcpath, "r");
+	f = fopen(rcpath, "rb");
 	g_free(rcpath);
 	
 	if (f == NULL)
@@ -957,7 +957,7 @@ gboolean procmime_find_string_part(MimeInfo *mimeinfo, const gchar *filename,
 			     mimeinfo->mime_type == MIME_TEXT_ENRICHED, FALSE);
 	g_return_val_if_fail(str != NULL, FALSE);
 
-	if ((infp = fopen(filename, "r")) == NULL) {
+	if ((infp = fopen(filename, "rb")) == NULL) {
 		FILE_OP_ERROR(filename, "fopen");
 		return FALSE;
 	}
@@ -1180,8 +1180,8 @@ GList *procmime_get_mime_type_list(void)
 	if (mime_type_list) 
 		return mime_type_list;
 
-	if ((fp = fopen("/etc/mime.types", "r")) == NULL) {
-		if ((fp = fopen(SYSCONFDIR "/mime.types", "r")) == NULL) {
+	if ((fp = fopen("/etc/mime.types", "rb")) == NULL) {
+		if ((fp = fopen(SYSCONFDIR "/mime.types", "rb")) == NULL) {
 			FILE_OP_ERROR(SYSCONFDIR "/mime.types", "fopen");
 			return NULL;
 		}

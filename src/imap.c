@@ -2382,7 +2382,7 @@ static gint imap_cmd_append(SockInfo *sock, const gchar *destfolder,
 	g_return_val_if_fail(file != NULL, IMAP_ERROR);
 
 	size = get_file_size_as_crlf(file);
-	if ((fp = fopen(file, "r")) == NULL) {
+	if ((fp = fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return -1;
 	}

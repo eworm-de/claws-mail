@@ -841,7 +841,7 @@ void prefs_common_read_config(void)
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMAND_HISTORY,
 			   NULL);
-	if ((fp = fopen(path, "r")) == NULL) {
+	if ((fp = fopen(path, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 		g_free(path);
 		return;
@@ -869,7 +869,7 @@ void prefs_common_save_config(void)
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMAND_HISTORY,
 			   NULL);
-	if ((fp = fopen(path, "w")) == NULL) {
+	if ((fp = fopen(path, "wb")) == NULL) {
 		FILE_OP_ERROR(path, "fopen");
 		g_free(path);
 		return;

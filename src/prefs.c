@@ -56,7 +56,7 @@ void prefs_read_config(PrefParam *param, const gchar *label,
 	prefs_set_default(param);
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, rcfile, NULL);
-	if ((fp = fopen(rcpath, "r")) == NULL) {
+	if ((fp = fopen(rcpath, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(rcpath, "fopen");
 		g_free(rcpath);
 		return;
@@ -159,7 +159,7 @@ void prefs_save_config(PrefParam *param, const gchar *label,
 	g_return_if_fail(rcfile != NULL);
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, rcfile, NULL);
-	if ((orig_fp = fopen(rcpath, "r")) == NULL) {
+	if ((orig_fp = fopen(rcpath, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(rcpath, "fopen");
 	}
 
@@ -272,7 +272,7 @@ PrefFile *prefs_write_open(const gchar *path)
 	}
 
 	tmppath = g_strconcat(path, ".tmp", NULL);
-	if ((fp = fopen(tmppath, "w")) == NULL) {
+	if ((fp = fopen(tmppath, "wb")) == NULL) {
 		FILE_OP_ERROR(tmppath, "fopen");
 		g_free(tmppath);
 		return NULL;

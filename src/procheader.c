@@ -191,7 +191,7 @@ GSList *procheader_get_header_list_from_file(const gchar *file)
 	FILE *fp;
 	GSList *hlist;
 
-	if ((fp = fopen(file, "r")) == NULL) {
+	if ((fp = fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return NULL;
 	}
@@ -443,7 +443,7 @@ MsgInfo *procheader_parse(const gchar *file, MsgFlags flags,
 	FILE *fp;
 	MsgInfo *msginfo;
 
-	if ((fp = fopen(file, "r")) == NULL) {
+	if ((fp = fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return NULL;
 	}
@@ -798,7 +798,7 @@ gint get_header_from_msginfo(MsgInfo *msginfo, gchar *buf, gint len,gchar *heade
        gint val;
        g_return_if_fail(msginfo != NULL);
        file = procmsg_get_message_file_path(msginfo);
-       if ((fp = fopen(file, "r")) == NULL) {
+       if ((fp = fopen(file, "rb")) == NULL) {
                FILE_OP_ERROR(file, "fopen");
                g_free(file);
                return;

@@ -184,7 +184,7 @@ MsgInfo *sd_get_msginfo_from_file(const gchar *filename)
 	MsgFlags msgflags = { 0, 0 };
 
 	msginfo  = (MsgInfo*) procheader_parse(filename, msgflags, TRUE, FALSE);
-	if ( (fp = fopen(filename, "r")) != NULL ) {
+	if ( (fp = fopen(filename, "rb")) != NULL ) {
 		static HeaderEntry hentry[] = { { SIZE_HEADER, NULL, FALSE},
 						{ NULL, NULL, FALSE} };
 		

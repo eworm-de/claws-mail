@@ -1326,7 +1326,7 @@ off_t get_file_size_as_crlf(const gchar *file)
 	off_t size = 0;
 	gchar buf[BUFFSIZE];
 
-	if ((fp = fopen(file, "r")) == NULL) {
+	if ((fp = fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return -1;
 	}
@@ -1721,7 +1721,7 @@ gint copy_file(const gchar *src, const gchar *dest)
 	gchar *dest_bak = NULL;
 	gboolean err = FALSE;
 
-	if ((src_fp = fopen(src, "r")) == NULL) {
+	if ((src_fp = fopen(src, "rb")) == NULL) {
 		FILE_OP_ERROR(src, "fopen");
 		return -1;
 	}
@@ -1735,7 +1735,7 @@ gint copy_file(const gchar *src, const gchar *dest)
 		}
 	}
 
-	if ((dest_fp = fopen(dest, "w")) == NULL) {
+	if ((dest_fp = fopen(dest, "wb")) == NULL) {
 		FILE_OP_ERROR(dest, "fopen");
 		fclose(src_fp);
 		if (dest_bak) {
@@ -2243,7 +2243,7 @@ static FILE *log_fp = NULL;
 void set_log_file(const gchar *filename)
 {
 	if (log_fp) return;
-	log_fp = fopen(filename, "w");
+	log_fp = fopen(filename, "wb");
 	if (!log_fp)
 		FILE_OP_ERROR(filename, "fopen");
 }

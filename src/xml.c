@@ -73,7 +73,7 @@ XMLFile *xml_open_file(const gchar *path)
 
 	newfile = g_new(XMLFile, 1);
 
-	newfile->fp = fopen(path, "r");
+	newfile->fp = fopen(path, "rb");
 	if (!newfile->fp) {
 		g_free(newfile);
 		return NULL;

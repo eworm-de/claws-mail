@@ -1,3 +1,38 @@
+2002-03-13
+
+	* src/messageview.c: messageview_show(): display single-part
+	  text/html messages with the normal text view.
+	* src/account.c
+	  src/addrbook.c
+	  src/addrindex.c
+	  src/compose.c
+	  src/imap.c
+	  src/inc.c
+	  src/jpilot.c
+	  src/ldif.c
+	  src/mbox.c
+	  src/mimeview.c
+	  src/news.c
+	  src/prefs.c
+	  src/prefs_common.c
+	  src/prefs_customheader.c
+	  src/prefs_display_header.c
+	  src/prefs_filter.c
+	  src/procheader.c
+	  src/procmime.c
+	  src/procmsg.c
+	  src/recv.c
+	  src/rfc2015.c
+	  src/send.c
+	  src/sourcewindow.c
+	  src/summaryview.c
+	  src/template.c
+	  src/textview.c
+	  src/unmime.c
+	  src/utils.c
+	  src/vcard.c
+	  src/xml.c: added 'b' to the option of all fopen().
+
 2002-03-09
 
 	* version 0.7.4

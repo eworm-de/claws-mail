@@ -192,7 +192,7 @@ void ldif_print_file( LdifFile *ldifFile, FILE *stream ) {
 static gint ldif_open_file( LdifFile* ldifFile ) {
 	/* printf( "Opening file\n" ); */
 	if( ldifFile->path ) {
-		ldifFile->file = fopen( ldifFile->path, "r" );
+		ldifFile->file = fopen( ldifFile->path, "rb" );
 		if( ! ldifFile->file ) {
 			/* printf( "can't open %s\n", ldifFile->path ); */
 			ldifFile->retVal = MGU_OPEN_FILE;

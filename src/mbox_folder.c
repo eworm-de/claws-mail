@@ -153,7 +153,7 @@ static gboolean mbox_file_lock_file(gchar * base)
 	FILE *lockfp;
 
 	lockfile = g_strdup_printf("%s.%d", base, getpid());
-	if ((lockfp = fopen(lockfile, "w")) == NULL) {
+	if ((lockfp = fopen(lockfile, "wb")) == NULL) {
 		FILE_OP_ERROR(lockfile, "fopen");
 		g_warning(_("can't create lock file %s\n"), lockfile);
 		g_warning(_("use 'flock' instead of 'file' if possible.\n"));
@@ -537,7 +537,7 @@ static mailfile * mailfile_init(char * filename)
 	FILE * f;
 	mailfile * mf;
   
-	f = fopen(filename, "r");
+	f = fopen(filename, "rb");
 
 	if (f == NULL) {
 		mailfile_error = MAILFILE_ERROR_FILE_NOT_FOUND;
@@ -575,7 +575,7 @@ static char * readfile(char * filename, int offset, int max_offset)
 	int bread;
 	FILE * handle;
 
-	handle = fopen(filename, "r");
+	handle = fopen(filename, "rb");
 
 	if (handle == NULL) {
 		mailfile_error = MAILFILE_ERROR_FILE_NOT_FOUND;
@@ -677,7 +677,7 @@ static int mailfile_find_deleted(mailfile f, char * filename)
 {
 	FILE * handle;
 
-	handle = fopen(filename, "r");
+	handle = fopen(filename, "rb");
 
 	while (elt) {
 		struct _message m = elt->data;
@@ -795,7 +795,7 @@ static void mbox_cache_get_msginfo(gchar * filename, GList * msg_list)
 {
 	FILE * fp;
 
-	fp = fopen(filename, "r");
+	fp = fopen(filename, "rb");
 	if (fp == NULL)
 		return;
 
@@ -1181,7 +1181,7 @@ GSList *mbox_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 
 	mbox_purge_deleted(mbox_path);
 
-	fp = fopen(mbox_path, "r");
+	fp = fopen(mbox_path, "rb");
 	
 	if (fp == NULL) {
 		g_free(mbox_path);
@@ -1255,7 +1255,7 @@ static gboolean mbox_extract_msg(FolderItem * item, gint msgnum,
 	if (mbox_path == NULL)
 		return FALSE;
 
-	src = fopen(mbox_path, "r");
+	src = fopen(mbox_path, "rb");
 	if (src == NULL) {
 		g_free(mbox_path);
 		return FALSE;
@@ -1290,7 +1290,7 @@ static gboolean mbox_extract_msg(FolderItem * item, gint msgnum,
 
 	fseek(src, offset, SEEK_SET);
 
-	dest = fopen(dest_filename, "w");
+	dest = fopen(dest_filename, "wb");
 	if (dest == NULL) {
 		mbox_unlock_file(src, mbox_path);
 		fclose(src);
@@ -1384,7 +1384,7 @@ gint mbox_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 		if (dest->last_num < 0) return -1;
 	}
 
-	src_fp = fopen(file, "r");
+	src_fp = fopen(file, "rb");
 	if (src_fp == NULL) {
 		return -1;
 	}
@@ -1393,7 +1393,7 @@ gint mbox_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 	if (mbox_path == NULL)
 		return -1;
 
-	dest_fp = fopen(mbox_path, "a");
+	dest_fp = fopen(mbox_path, "ab");
 	if (dest_fp == NULL) {
 		fclose(src_fp);
 		g_free(mbox_path);
@@ -1520,7 +1520,7 @@ gint mbox_remove_all_msg(Folder *folder, FolderItem *item)
 	if (mbox_path == NULL)
 		return -1;
 
-	fp = fopen(mbox_path, "w");
+	fp = fopen(mbox_path, "wb");
 	if (fp == NULL) {
 		g_free(mbox_path);
 		return -1;
@@ -1963,13 +1963,13 @@ static gboolean mbox_rewrite(gchar * mbox)
 
 	debug_print(_("save modification - %s\n"), mbox);
 
-	mbox_fp = fopen(mbox, "r+");
+	mbox_fp = fopen(mbox, "rb+");
 	mbox_lockwrite_file(mbox_fp, mbox);
 
 	mbox_cache_synchronize_from_file(mbox_fp, mbox, TRUE);
 
 	new = g_strconcat(mbox, ".", itos((int) mbox), NULL);
-	new_fp = fopen(new, "w");
+	new_fp = fopen(new, "wb");
 
 	if (change_file_mode_rw(new_fp, new) < 0) {
 		FILE_OP_ERROR(new, "chmod");
@@ -2057,13 +2057,13 @@ static gboolean mbox_purge_deleted(gchar * mbox)
 
 	debug_print(_("purge deleted messages - %s\n"), mbox);
 
-	mbox_fp = fopen(mbox, "r+");
+	mbox_fp = fopen(mbox, "rb+");
 	mbox_lockwrite_file(mbox_fp, mbox);
 
 	mbox_cache_synchronize_from_file(mbox_fp, mbox, TRUE);
 
 	new = g_strconcat(mbox, ".", itos((int) mbox), NULL);
-	new_fp = fopen(new, "w");
+	new_fp = fopen(new, "wb");
 
 	if (change_file_mode_rw(new_fp, new) < 0) {
 		FILE_OP_ERROR(new, "chmod");

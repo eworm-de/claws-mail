@@ -42,7 +42,7 @@ static Template *template_load(gchar *filename)
 
 	debug_print(_("%s:%d loading template from %s\n"), __FILE__, __LINE__, filename);
 
-	if ((fp = fopen(filename, "r")) == NULL) {
+	if ((fp = fopen(filename, "rb")) == NULL) {
 		FILE_OP_ERROR(filename, "fopen");
 		return NULL;
 	}
@@ -184,7 +184,7 @@ void template_write_config(GSList *tmpl_list)
 		filename = g_strconcat(path, G_DIR_SEPARATOR_S,
 				       itos(tmpl_num), NULL);
 
-		if ((fp = fopen(filename, "w")) == NULL) {
+		if ((fp = fopen(filename, "wb")) == NULL) {
 			FILE_OP_ERROR(filename, "fopen");
 			g_free(filename);
 			g_free(path);

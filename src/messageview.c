@@ -187,12 +187,12 @@ static gint disposition_notification_queue(PrefsAccount * account,
 
 	tmp = g_strdup_printf("%s%cqueue.%d", g_get_tmp_dir(),
 			      G_DIR_SEPARATOR, (gint)file);
-	if ((fp = fopen(tmp, "w")) == NULL) {
+	if ((fp = fopen(tmp, "wb")) == NULL) {
 		FILE_OP_ERROR(tmp, "fopen");
 		g_free(tmp);
 		return -1;
 	}
-	if ((src_fp = fopen(file, "r")) == NULL) {
+	if ((src_fp = fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		fclose(fp);
 		unlink(tmp);
@@ -297,7 +297,7 @@ static gint disposition_notification_send(MsgInfo * msginfo)
 	g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg%d",
 		   get_rc_dir(), G_DIR_SEPARATOR, (gint)msginfo);
 
-	if ((fp = fopen(tmp, "w")) == NULL) {
+	if ((fp = fopen(tmp, "wb")) == NULL) {
 		FILE_OP_ERROR(tmp, "fopen");
 		return -1;
 	}
@@ -418,7 +418,8 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	textview_set_all_headers(messageview->textview, all_headers);
 	textview_set_all_headers(messageview->mimeview->textview, all_headers);
 
-	if (mimeinfo->mime_type != MIME_TEXT) {
+	if (mimeinfo->mime_type != MIME_TEXT &&
+	    mimeinfo->mime_type != MIME_TEXT_HTML) {
 		messageview_change_view_type(messageview, MVIEW_MIME);
 		mimeview_show_message(messageview->mimeview, mimeinfo, file);
 	} else {

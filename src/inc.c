@@ -774,7 +774,7 @@ static GHashTable *inc_get_uidl_table(PrefsAccount *ac_prefs)
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl-", ac_prefs->recv_server,
 			   "-", ac_prefs->userid, NULL);
-	if ((fp = fopen(path, "r")) == NULL) {
+	if ((fp = fopen(path, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 		g_free(path);
 		return NULL;
@@ -804,7 +804,7 @@ static void inc_write_uidl_list(Pop3State *state)
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl-", state->ac_prefs->recv_server,
 			   "-", state->user, NULL);
-	if ((fp = fopen(path, "w")) == NULL) {
+	if ((fp = fopen(path, "wb")) == NULL) {
 		FILE_OP_ERROR(path, "fopen");
 		g_free(path);
 		return;

@@ -1,3 +1,8 @@
+2002-03-14 [paul]	0.7.4claws2
+
+	* sync with sylpheed 0.7.4cvs2
+		see ChangeLog entry 2002-03-13
+
 2002-03-12 [darko]	0.7.4claws1
 
 	* src/mainwindow.c

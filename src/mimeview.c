@@ -288,7 +288,7 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 
 	mimeview->mimeinfo = mimeinfo;
 
-	if ((fp = fopen(file, "r")) == NULL) {
+	if ((fp = fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return;
 	}
@@ -425,7 +425,7 @@ static void mimeview_show_message_part(MimeView *mimeview, MimeInfo *partinfo)
 #endif /* USE_GPGME */
 	if (!fname) return;
 
-	if ((fp = fopen(fname, "r")) == NULL) {
+	if ((fp = fopen(fname, "rb")) == NULL) {
 		FILE_OP_ERROR(fname, "fopen");
 		return;
 	}
@@ -979,7 +979,7 @@ static void mimeview_check_signature(MimeView *mimeview)
 	while (mimeinfo->parent)
 		mimeinfo = mimeinfo->parent;
 
-	if ((fp = fopen(mimeview->file, "r")) == NULL) {
+	if ((fp = fopen(mimeview->file, "rb")) == NULL) {
 		FILE_OP_ERROR(mimeview->file, "fopen");
 		return;
 	}

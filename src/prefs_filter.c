@@ -497,7 +497,7 @@ void prefs_filter_read_config(void)
 	debug_print(_("Reading filter configuration...\n"));
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, FILTER_RC, NULL);
-	if ((fp = fopen(rcpath, "r")) == NULL) {
+	if ((fp = fopen(rcpath, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(rcpath, "fopen");
 		g_free(rcpath);
 		return;

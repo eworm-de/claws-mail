@@ -43,7 +43,7 @@ gint recv_write_to_file(SockInfo *sock, const gchar *filename)
 
 	g_return_val_if_fail(filename != NULL, -1);
 
-	if ((fp = fopen(filename, "w")) == NULL) {
+	if ((fp = fopen(filename, "wb")) == NULL) {
 		FILE_OP_ERROR(filename, "fopen");
 		recv_write(sock, NULL);
 		return -1;
@@ -73,7 +73,7 @@ gint recv_bytes_write_to_file(SockInfo *sock, glong size, const gchar *filename)
 
 	g_return_val_if_fail(filename != NULL, -1);
 
-	if ((fp = fopen(filename, "w")) == NULL) {
+	if ((fp = fopen(filename, "wb")) == NULL) {
 		FILE_OP_ERROR(filename, "fopen");
 		recv_write(sock, NULL);
 		return -1;

@@ -298,7 +298,7 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 	const gchar *charset = NULL;
 	GPtrArray *headers = NULL;
 
-	if ((fp = fopen(file, "r")) == NULL) {
+	if ((fp = fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return;
 	}

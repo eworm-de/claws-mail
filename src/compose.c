@@ -1765,7 +1765,7 @@ static void compose_exec_sig(Compose *compose, gchar *sigfile)
 	if (strlen(sigfile) < 2)
 	  return;
  
-	sigprg = popen(sigfile+1, "r");
+	sigprg = popen(sigfile+1, "rb");
 	if (sigprg) {
 
 		buf = g_malloc(buf_len);
@@ -1835,7 +1835,7 @@ static void compose_insert_file(Compose *compose, const gchar *file)
 
 	g_return_if_fail(file != NULL);
 
-	if ((fp = fopen(file, "r")) == NULL) {
+	if ((fp = fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return;
 	}
@@ -1881,7 +1881,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 		alertpanel_notice(_("File %s is empty."), file);
 		return;
 	}
-	if ((fp = fopen(file, "r")) == NULL) {
+	if ((fp = fopen(file, "rb")) == NULL) {
 		alertpanel_error(_("Can't read %s."), file);
 		return;
 	}
@@ -2810,12 +2810,12 @@ static gint compose_bounce_write_to_file(Compose *compose, const gchar *file)
 	size_t len;
 	gchar buf[BUFFSIZE];
 
-	if ((fp = fopen(compose->bounce_filename, "r")) == NULL) {
+	if ((fp = fopen(compose->bounce_filename, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return -1;
 	}
 
-	if ((fdest = fopen(file, "w")) == NULL) {
+	if ((fdest = fopen(file, "wb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		fclose(fp);
 		return -1;
@@ -2926,7 +2926,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	const gchar *out_codeset;
 	EncodingType encoding;
 
-	if ((fp = fopen(file, "w")) == NULL) {
+	if ((fp = fopen(file, "wb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return -1;
 	}
@@ -3066,7 +3066,7 @@ static gint compose_write_body_to_file(Compose *compose, const gchar *file)
 	size_t len;
 	gchar *chars;
 
-	if ((fp = fopen(file, "w")) == NULL) {
+	if ((fp = fopen(file, "wb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return -1;
 	}
@@ -3237,13 +3237,13 @@ static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
 
 	/* add queue header */
 	tmp = g_strdup_printf("%s%cqueue.%d", g_get_tmp_dir(),
-				      G_DIR_SEPARATOR, (gint)compose);
-	if ((fp = fopen(tmp, "w")) == NULL) {
+			      G_DIR_SEPARATOR, (gint)compose);
+	if ((fp = fopen(tmp, "wb")) == NULL) {
 		FILE_OP_ERROR(tmp, "fopen");
 		g_free(tmp);
 		return -1;
 	}
-	if ((src_fp = fopen(tmp2, "r")) == NULL) {
+	if ((src_fp = fopen(tmp2, "rb")) == NULL) {
 		FILE_OP_ERROR(tmp2, "fopen");
 		fclose(fp);
 		unlink(tmp);
@@ -3401,7 +3401,7 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 		gchar buf[BUFFSIZE];
 		gchar inbuf[B64_LINE_SIZE], outbuf[B64_BUFFSIZE];
 
-		if ((attach_fp = fopen(ainfo->file, "r")) == NULL) {
+		if ((attach_fp = fopen(ainfo->file, "rb")) == NULL) {
 			g_warning(_("Can't open file %s\n"), ainfo->file);
 			continue;
 		}

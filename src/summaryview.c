@@ -2093,7 +2093,7 @@ gint summary_write_cache(SummaryView *summaryview)
 
 	cachefile = folder_item_get_cache_file(summaryview->folder_item);
 	g_return_val_if_fail(cachefile != NULL, -1);
-	if ((fps.cache_fp = fopen(cachefile, "w")) == NULL) {
+	if ((fps.cache_fp = fopen(cachefile, "wb")) == NULL) {
 		FILE_OP_ERROR(cachefile, "fopen");
 		g_free(cachefile);
 		return -1;
@@ -2117,7 +2117,7 @@ gint summary_write_cache(SummaryView *summaryview)
 	g_free(cachefile);
 
 	markfile = folder_item_get_mark_file(summaryview->folder_item);
-	if ((fps.mark_fp = fopen(markfile, "w")) == NULL) {
+	if ((fps.mark_fp = fopen(markfile, "wb")) == NULL) {
 		FILE_OP_ERROR(markfile, "fopen");
 		fclose(fps.cache_fp);
 		g_free(markfile);
