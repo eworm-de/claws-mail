@@ -56,10 +56,11 @@
 #include "folderview.h"
 #include "stock_pixmap.h"
 #include "quote_fmt.h"
+#include "prefswindow.h"
 
 PrefsCommon prefs_common;
 
-static PrefsDialog dialog;
+GtkWidget *notebook;
 
 static struct Receive {
 	GtkWidget *checkbtn_incext;
@@ -768,19 +769,67 @@ static gboolean prefs_keybind_key_pressed	(GtkWidget	*widget,
 static void prefs_keybind_cancel		(void);
 static void prefs_keybind_apply_clicked		(GtkWidget	*widget);
 
-static gint prefs_common_deleted	(GtkWidget	*widget,
-					 GdkEventAny	*event,
-					 gpointer	 data);
-static gboolean prefs_common_key_pressed(GtkWidget	*widget,
-					 GdkEventKey	*event,
-					 gpointer	 data);
-static void prefs_common_ok		(void);
 static void prefs_common_apply		(void);
-static void prefs_common_cancel		(void);
+
+typedef struct CommonPage
+{
+        PrefsPage page;
+ 
+        GtkWidget *vbox;
+} CommonPage;
+
+static CommonPage common_page;
+
+static void create_widget_func(PrefsPage * _page,
+                                           GtkWindow * window,
+                                           gpointer data)
+{
+	CommonPage *page = (CommonPage *) _page;
+	GtkWidget *vbox;
+
+	vbox = gtk_vbox_new(FALSE, 6);
+	gtk_widget_show(vbox);
+
+	if (notebook == NULL)
+		prefs_common_create();
+	gtk_box_pack_start (GTK_BOX (vbox), notebook, TRUE, TRUE, 0);
+	gtk_notebook_set_page(GTK_NOTEBOOK(notebook), 0);
+
+	prefs_set_dialog(param);
+
+	page->vbox = vbox;
+
+	page->page.widget = vbox;
+}
+
+static void destroy_widget_func(PrefsPage *_page)
+{
+	CommonPage *page = (CommonPage *) _page;
+
+	gtk_container_remove(GTK_CONTAINER (page->vbox), notebook);
+}
+
+static void save_func(PrefsPage * _page)
+{
+	prefs_common_apply();
+}
 
 void prefs_common_init(void) 
 {
+        static gchar *path[2];
+
 	prefs_common.disphdr_list = NULL;
+            
+        path[0] = _("Common");
+        path[2] = NULL;
+        
+        common_page.page.path = path;
+	common_page.page.weight = 1000.0;
+        common_page.page.create_widget = create_widget_func;
+        common_page.page.destroy_widget = destroy_widget_func;
+        common_page.page.save_page = save_func;
+
+        prefs_gtk_register_page((PrefsPage *) &common_page);
 }
 
 PrefsCommon *prefs_common_get(void)
@@ -864,68 +913,41 @@ void prefs_common_write_config(void)
 		prefs_common.summary_quicksearch_history);
 }
 
-void prefs_common_open(void)
-{
-	if (prefs_rc_is_readonly(COMMON_RC))
-		return;
-
-	inc_lock();
-
-	if (!dialog.window) {
-		prefs_common_create();
-	}
-
-	manage_window_set_transient(GTK_WINDOW(dialog.window));
-	gtk_notebook_set_current_page(GTK_NOTEBOOK(dialog.notebook), 0);
-	gtk_widget_grab_focus(dialog.ok_btn);
-
-	prefs_set_dialog(param);
-
-	gtk_widget_show(dialog.window);
-}
-
 static void prefs_common_create(void)
 {
 	gint page = 0;
 
 	debug_print("Creating common preferences window...\n");
 
-	prefs_dialog_create(&dialog);
-	gtk_window_set_title (GTK_WINDOW(dialog.window),
-			      _("Common Preferences"));
-	g_signal_connect (G_OBJECT(dialog.window), "delete_event",
-			  G_CALLBACK(prefs_common_deleted), NULL);
-	g_signal_connect (G_OBJECT(dialog.window), "key_press_event",
-			  G_CALLBACK(prefs_common_key_pressed), NULL);
-	MANAGE_WINDOW_SIGNALS_CONNECT(dialog.window);
+	notebook = gtk_notebook_new ();
+	gtk_widget_show(notebook);
+	gtk_container_set_border_width (GTK_CONTAINER (notebook), 2);
+	/* GTK_WIDGET_UNSET_FLAGS (notebook, GTK_CAN_FOCUS); */
+	gtk_notebook_set_scrollable (GTK_NOTEBOOK (notebook), TRUE);
+	
+	gtk_notebook_popup_enable (GTK_NOTEBOOK (notebook));
 
-	g_signal_connect (G_OBJECT(dialog.ok_btn), "clicked",
-			  G_CALLBACK(prefs_common_ok), NULL);
-	g_signal_connect (G_OBJECT(dialog.apply_btn), "clicked",
-			  G_CALLBACK(prefs_common_apply), NULL);
-	g_signal_connect_swapped(G_OBJECT(dialog.cancel_btn), "clicked",
-				 G_CALLBACK(prefs_common_cancel),
-				 G_OBJECT(dialog.window));
+	gtk_widget_ref(notebook);
 
 	/* create all widgets on notebook */
 	prefs_receive_create();
-	SET_NOTEBOOK_LABEL(dialog.notebook, _("Receive"),   page++);
+	SET_NOTEBOOK_LABEL(notebook, _("Receive"),   page++);
 	prefs_send_create();
-	SET_NOTEBOOK_LABEL(dialog.notebook, _("Send"),      page++);
+	SET_NOTEBOOK_LABEL(notebook, _("Send"),      page++);
 	prefs_compose_create();
-	SET_NOTEBOOK_LABEL(dialog.notebook, _("Compose"),   page++);
+	SET_NOTEBOOK_LABEL(notebook, _("Compose"),   page++);
 	prefs_quote_create();
-	SET_NOTEBOOK_LABEL(dialog.notebook, _("Quote"),   page++);
+	SET_NOTEBOOK_LABEL(notebook, _("Quote"),     page++);
 	prefs_display_create();
-	SET_NOTEBOOK_LABEL(dialog.notebook, _("Display"),   page++);
+	SET_NOTEBOOK_LABEL(notebook, _("Display"),   page++);
 	prefs_message_create();
-	SET_NOTEBOOK_LABEL(dialog.notebook, _("Message"),   page++);
+	SET_NOTEBOOK_LABEL(notebook, _("Message"),   page++);
 	prefs_interface_create();
-	SET_NOTEBOOK_LABEL(dialog.notebook, _("Interface"), page++);
+	SET_NOTEBOOK_LABEL(notebook, _("Interface"), page++);
 	prefs_other_create();
-	SET_NOTEBOOK_LABEL(dialog.notebook, _("Other"),     page++);
+	SET_NOTEBOOK_LABEL(notebook, _("Other"),     page++);
 
-	gtk_widget_show_all(dialog.window);
+	gtk_widget_show_all(notebook);
 }
 
 static void prefs_receive_create(void)
@@ -966,7 +988,7 @@ static void prefs_receive_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
+	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	PACK_FRAME(vbox1, frame_incext, _("External program"));
@@ -1151,7 +1173,7 @@ static void prefs_send_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
+	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	vbox2 = gtk_vbox_new (FALSE, 0);
@@ -1327,7 +1349,7 @@ static void prefs_compose_create(void)
 	
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
+	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
         /* Account autoselection */
@@ -1447,7 +1469,7 @@ static void prefs_quote_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
+	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	/* reply */
@@ -1601,7 +1623,7 @@ static void prefs_display_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
+	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	vbox2 = gtk_vbox_new (FALSE, 0);
@@ -1735,7 +1757,7 @@ static void prefs_message_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
+	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	vbox2 = gtk_vbox_new (FALSE, 0);
@@ -1884,7 +1906,7 @@ static void prefs_interface_create(void)
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
+	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	vbox2 = gtk_vbox_new (FALSE, 0);
@@ -2011,7 +2033,7 @@ static void prefs_other_create(void)
 #endif
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
+	gtk_container_add (GTK_CONTAINER (notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	PACK_FRAME (vbox1, frame_addr, _("Address book"));
@@ -2934,29 +2956,6 @@ static void prefs_common_send_dialog_set_optmenu(PrefParam *pparam)
 	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
 }
 
-static gint prefs_common_deleted(GtkWidget *widget, GdkEventAny *event,
-				 gpointer data)
-{
-	prefs_common_cancel();
-	return TRUE;
-}
-
-static gboolean prefs_common_key_pressed(GtkWidget *widget, GdkEventKey *event,
-					 gpointer data)
-{
-	if (event && event->keyval == GDK_Escape)
-		prefs_common_cancel();
-	return FALSE;
-}
-
-static void prefs_common_ok(void)
-{
-	prefs_common_apply();
-	gtk_widget_hide(dialog.window);
-
-	inc_unlock();
-}
-
 static void prefs_common_apply(void)
 {
 	MainWindow *mainwindow;
@@ -3011,12 +3010,13 @@ static void prefs_nextunreadmsgdialog_set_optmenu(PrefParam *pparam)
 	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
 }
 
+/*
 static void prefs_common_cancel(void)
 {
 	gtk_widget_hide(dialog.window);
 	inc_unlock();
 }
-
+*/
 
 /* static void prefs_recvdialog_set_data_from_optmenu(PrefParam *pparam)
 {

@@ -643,7 +643,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	fprintf(fp, "Subject: Disposition notification: %s\n", buf);
 
 	/* Message ID */
-	generate_msgid(account->address, buf, sizeof buf);
+	generate_msgid(buf, sizeof(buf));
 	fprintf(fp, "Message-ID: <%s>\n", buf);
 
 	if (fclose(fp) == EOF) {

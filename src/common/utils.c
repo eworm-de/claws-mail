@@ -3539,7 +3539,7 @@ gint g_int_compare(gconstpointer a, gconstpointer b)
 	return GPOINTER_TO_INT(a) - GPOINTER_TO_INT(b);
 }
 
-gchar *generate_msgid(const gchar *address, gchar *buf, gint len)
+gchar *generate_msgid(gchar *buf, gint len)
 {
 	struct tm *lt;
 	time_t t;
@@ -3548,25 +3548,19 @@ gchar *generate_msgid(const gchar *address, gchar *buf, gint len)
 	t = time(NULL);
 	lt = localtime(&t);
 
-	if (address && *address) {
-		if (strchr(address, '@'))
-			addr = g_strdup(address);
-		else
-			addr = g_strconcat(address, "@", get_domain_name(), NULL);
-	} else
-		addr = g_strconcat(g_get_user_name(), "@", get_domain_name(),
-				   NULL);
+	addr = g_strconcat("@", get_domain_name(), NULL);
 
-	g_snprintf(buf, len, "%04d%02d%02d%02d%02d%02d.%08x.%s",
+	g_snprintf(buf, len, "%04d%02d%02d%02d%02d%02d.%08x%s",
 		   lt->tm_year + 1900, lt->tm_mon + 1,
 		   lt->tm_mday, lt->tm_hour,
 		   lt->tm_min, lt->tm_sec,
 		   (guint) rand(), addr);
 
+	debug_print("generated Message-ID: %s\n", buf);
+
 	g_free(addr);
 	return buf;
 }
-
 
 /*
    quote_cmd_argument()
