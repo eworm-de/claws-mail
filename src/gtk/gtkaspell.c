@@ -349,8 +349,6 @@ void gtkaspell_delete(GtkAspell * gtkaspell)
 	if (gtkaspell->suggestions_list)
 		free_suggestions_list(gtkaspell);
 
-	g_free((gchar *)gtkaspell->dictionary_path);
-	
 	debug_print("Aspell: deleting gtkaspell %0x\n", (guint) gtkaspell);
 
 	g_free(gtkaspell);
