@@ -1,3 +1,9 @@
+2002-09-15 [colin]	0.8.2claws52
+
+	* src/compose.c
+		Fix custom headers recognition when
+		prefs_common.trans_hdr is on
+
 2002-09-15 [colin]	0.8.2claws51
 
 	* src/compose.c

@@ -3882,7 +3882,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	gchar *str;
 	gchar *name;
 	GSList *list;
-	gchar * std_headers[] = {"To", "Cc", "Bcc", "Newsgroups", "Reply-To", "Followup-To", NULL};
+	gchar * std_headers[] = {"To:", "Cc:", "Bcc:", "Newsgroups:", "Reply-To:", "Followup-To:", NULL};
 
 	/* struct utsname utsbuf; */
 
@@ -4133,6 +4133,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	for (list = compose->header_list; list; list = list->next) {
     		ComposeHeaderEntry *headerentry;
 		gchar * headerentryname;
+		gchar * trans_headername;
 		gchar * headerentryvalue;
 		gchar **string;
 		gboolean standard_header = FALSE;
@@ -4140,23 +4141,24 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		headerentry = ((ComposeHeaderEntry *)list->data);
 		headerentryname = g_strdup(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(headerentry->combo)->entry)));
 		headerentryvalue = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
-		if (strstr(headerentryname,":"))
-			headerentryname = strtok(headerentryname,":");
 		string = std_headers;
 		while (*string != NULL) {
-			if (!strcmp(*string,headerentryname))
+			if (!strstr(headerentryname,":"))
+				headerentryname = g_strconcat(headerentryname,":",NULL);
+			trans_headername = (prefs_common.trans_hdr ? gettext(*string) : *string);
+			if (!strcmp(trans_headername,headerentryname))
 				standard_header = TRUE;
 			string++;
 		}
 		if (!standard_header && !IS_IN_CUSTOM_HEADER(headerentryname))
-			fprintf(fp,"%s: %s\n",headerentryname, headerentryvalue);
+			fprintf(fp,"%s %s\n",headerentryname, headerentryvalue);
 				
 		g_free(headerentryname);
 	}
 
 	/* separator between header and body */
 	fputs("\n", fp);
-	
+
 	return 0;
 }
 
