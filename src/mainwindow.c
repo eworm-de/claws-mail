@@ -463,7 +463,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/_Sort/by _color label"),
 						NULL, sort_summary_cb, SORT_BY_LABEL, "/View/Sort/by number"},
 	{N_("/_View/_Sort/by _mark"),		NULL, sort_summary_cb, SORT_BY_MARK, "/View/Sort/by number"},
-	{N_("/_View/_Sort/by _unread"),		NULL, sort_summary_cb, SORT_BY_UNREAD, "/View/Sort/by number"},
+	{N_("/_View/_Sort/by _status"),		NULL, sort_summary_cb, SORT_BY_STATUS, "/View/Sort/by number"},
 	{N_("/_View/_Sort/by a_ttachment"),
 						NULL, sort_summary_cb, SORT_BY_MIME, "/View/Sort/by number"},
 	{N_("/_View/_Sort/by score"),		NULL, sort_summary_cb, SORT_BY_SCORE, "/View/Sort/by number"},
@@ -1620,8 +1620,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		menu_path = "/View/Sort/by color label"; break;
 	case SORT_BY_MARK:
 		menu_path = "/View/Sort/by mark"; break;
-	case SORT_BY_UNREAD:
-		menu_path = "/View/Sort/by unread"; break;
+	case SORT_BY_STATUS:
+		menu_path = "/View/Sort/by status"; break;
 	case SORT_BY_MIME:
 		menu_path = "/View/Sort/by attachment"; break;
 	case SORT_BY_SCORE:

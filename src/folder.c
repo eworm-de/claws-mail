@@ -287,6 +287,7 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 	item->no_sub = FALSE;
 	item->no_select = FALSE;
 	item->collapsed = FALSE;
+	item->thread_collapsed = FALSE;
 	item->threaded  = TRUE;
 	item->ret_rcpt  = FALSE;
 	item->opened    = FALSE;
@@ -1550,6 +1551,40 @@ gchar *folder_item_fetch_msg(FolderItem *item, gint num)
 	return folder->fetch_msg(folder, item, num);
 }
 
+static gint folder_item_get_msg_num_by_file(FolderItem *dest, const gchar *file)
+{
+	static HeaderEntry hentry[] = {{"Message-ID:",  NULL, TRUE},
+				       {NULL,		NULL, FALSE}};
+	FILE *fp;
+	MsgInfo *msginfo;
+	gint msgnum = 0;
+	gchar buf[BUFFSIZE];
+
+	if ((fp = fopen(file, "rb")) == NULL)
+		return 0;
+
+	if ((dest->stype == F_QUEUE) || (dest->stype == F_DRAFT))
+		while (fgets(buf, sizeof(buf), fp) != NULL)
+			if (buf[0] == '\r' || buf[0] == '\n') break;
+
+	procheader_get_header_fields(fp, hentry);
+	if (hentry[0].body) {
+    		extract_parenthesis(hentry[0].body, '<', '>');
+		remove_space(hentry[0].body);
+		if ((msginfo = msgcache_get_msg_by_id(dest->cache, hentry[0].body)) != NULL) {
+			msgnum = msginfo->msgnum;
+			procmsg_msginfo_free(msginfo);
+
+			debug_print("found message as uid %d\n", msgnum);
+		}
+	}
+	
+	g_free(hentry[0].body);
+	fclose(fp);
+
+	return msgnum;
+}
+
 gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 			 gboolean remove_source)
 {
@@ -1567,7 +1602,7 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 	if (!dest->cache)
 		folder_item_read_cache(dest);
 
-	num = folder->add_msg(folder, dest, file, remove_source);
+	num = folder->add_msg(folder, dest, file, FALSE);
 
         if (num > 0) {
     		msginfo = folder->get_msginfo(folder, dest, num);
@@ -1590,7 +1625,15 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 		}
 
                 dest->last_num = num;
-        }
+        } else if (num == 0) {
+		folder_item_scan(dest);
+		num = folder_item_get_msg_num_by_file(dest, file);
+	}
+
+	if (num >= 0 && remove_source) {
+		if (unlink(file) < 0)
+			FILE_OP_ERROR(file, "unlink");
+	}
 
 	return num;
 }
@@ -1654,6 +1697,7 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 	/*copy prefs*/
 	prefs_folder_item_copy_prefs(src, new_item);
 	new_item->collapsed = src->collapsed;
+	new_item->thread_collapsed = src->thread_collapsed;
 	new_item->threaded  = src->threaded;
 	new_item->ret_rcpt  = src->ret_rcpt;
 	new_item->hide_read_msgs = src->hide_read_msgs;
@@ -2274,7 +2318,8 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	PrefsAccount *account = NULL;
 	gboolean no_sub = FALSE, no_select = FALSE, collapsed = FALSE, 
 		 threaded = TRUE, apply_sub = FALSE;
-	gboolean ret_rcpt = FALSE, hidereadmsgs = FALSE; /* CLAWS */
+	gboolean ret_rcpt = FALSE, hidereadmsgs = FALSE,
+		 thread_collapsed = FALSE; /* CLAWS */
 	FolderSortKey sort_key = SORT_BY_NONE;
 	FolderSortType sort_type = SORT_ASCENDING;
 	gint new = 0, unread = 0, total = 0, unreadmarked = 0;
@@ -2327,6 +2372,8 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 			no_select = *attr->value == '1' ? TRUE : FALSE;
 		else if (!strcmp(attr->name, "collapsed"))
 			collapsed = *attr->value == '1' ? TRUE : FALSE;
+		else if (!strcmp(attr->name, "thread_collapsed"))
+			thread_collapsed =  *attr->value == '1' ? TRUE : FALSE;
 		else if (!strcmp(attr->name, "threaded"))
 			threaded =  *attr->value == '1' ? TRUE : FALSE;
 		else if (!strcmp(attr->name, "hidereadmsgs"))
@@ -2353,7 +2400,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 			else if (!strcmp(attr->value, "mark"))
 				sort_key = SORT_BY_MARK;
 			else if (!strcmp(attr->value, "unread"))
-				sort_key = SORT_BY_UNREAD;
+				sort_key = SORT_BY_STATUS;
 			else if (!strcmp(attr->value, "mime"))
 				sort_key = SORT_BY_MIME;
 			else if (!strcmp(attr->value, "to"))
@@ -2383,6 +2430,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	item->no_sub = no_sub;
 	item->no_select = no_select;
 	item->collapsed = collapsed;
+	item->thread_collapsed = thread_collapsed;
 	item->threaded  = threaded;
 	item->hide_read_msgs  = hidereadmsgs;
 	item->ret_rcpt  = ret_rcpt;
@@ -2418,7 +2466,7 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 	const gchar *path = NULL;
 	PrefsAccount *account = NULL;
 	gboolean collapsed = FALSE, threaded = TRUE, apply_sub = FALSE;
-	gboolean ret_rcpt = FALSE; /* CLAWS */
+	gboolean ret_rcpt = FALSE, thread_collapsed = FALSE; /* CLAWS */
 
 	if (g_node_depth(node) != 2) return FALSE;
 	g_return_val_if_fail(node->data != NULL, FALSE);
@@ -2451,6 +2499,8 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 			path = attr->value;
 		else if (!strcmp(attr->name, "collapsed"))
 			collapsed = *attr->value == '1' ? TRUE : FALSE;
+		else if (!strcmp(attr->name, "thread_collapsed"))
+			thread_collapsed = *attr->value == '1' ? TRUE : FALSE;
 		else if (!strcmp(attr->name, "threaded"))
 			threaded = *attr->value == '1' ? TRUE : FALSE;
 		else if (!strcmp(attr->name, "account_id")) {
@@ -2473,6 +2523,7 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 	folder->node = node;
 	folder_add(folder);
 	FOLDER_ITEM(node->data)->collapsed = collapsed;
+	FOLDER_ITEM(node->data)->thread_collapsed = thread_collapsed;
 	FOLDER_ITEM(node->data)->threaded  = threaded;
 	FOLDER_ITEM(node->data)->account   = account;
 	FOLDER_ITEM(node->data)->apply_sub = apply_sub;
@@ -2568,6 +2619,12 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 			fputs(" no_select=\"1\"", fp);
 		if (item->collapsed && node->children)
 			fputs(" collapsed=\"1\"", fp);
+		else
+			fputs(" collapsed=\"0\"", fp);
+		if (item->thread_collapsed)
+			fputs(" thread_collapsed=\"1\"", fp);
+		else
+			fputs(" thread_collapsed=\"0\"", fp);
 		if (item->threaded)
 			fputs(" threaded=\"1\"", fp);
 		else
@@ -2781,6 +2838,7 @@ void folder_item_restore_persist_prefs(FolderItem *item, GHashTable *pptable)
 	prefs_folder_item_read_config(item); 
 	 
 	item->collapsed = pp->collapsed;
+	item->thread_collapsed = pp->thread_collapsed;
 	item->threaded  = pp->threaded;
 	item->ret_rcpt  = pp->ret_rcpt;
 	item->hide_read_msgs = pp->hide_read_msgs;
@@ -2805,6 +2863,7 @@ static void folder_get_persist_prefs_recursive(GNode *node, GHashTable *pptable)
 		pp = g_new0(PersistPrefs, 1);
 		g_return_if_fail(pp != NULL);
 		pp->collapsed = item->collapsed;
+		pp->thread_collapsed = item->thread_collapsed;
 		pp->threaded  = item->threaded;
 		pp->ret_rcpt  = item->ret_rcpt;	
 		pp->hide_read_msgs = item->hide_read_msgs;

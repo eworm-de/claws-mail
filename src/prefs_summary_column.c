@@ -65,7 +65,7 @@ static struct _SummaryColumnDialog
 
 static const gchar *const col_name[N_SUMMARY_COLS] = {
 	N_("Mark"),		/* S_COL_MARK    */
-	N_("Unread"),		/* S_COL_UNREAD  */
+	N_("Status"),		/* S_COL_STATUS  */
 	N_("Attachment"),	/* S_COL_MIME    */
 	N_("Subject"),		/* S_COL_SUBJECT */
 	N_("From"),		/* S_COL_FROM    */
@@ -78,7 +78,7 @@ static const gchar *const col_name[N_SUMMARY_COLS] = {
 
 static SummaryColumnState default_state[N_SUMMARY_COLS] = {
 	{ S_COL_MARK   , TRUE  },
-	{ S_COL_UNREAD , TRUE  },
+	{ S_COL_STATUS , TRUE  },
 	{ S_COL_MIME   , TRUE  },
 	{ S_COL_SUBJECT, TRUE  },
 	{ S_COL_FROM   , TRUE  },

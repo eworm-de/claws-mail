@@ -281,10 +281,8 @@ static gchar *vcard_read_qp( VCardFile *cardFile, char *tagvalue ) {
 	while( line ) {
 		listQP = g_slist_append( listQP, line );
 		len = strlen( line ) - 1;
-		if( len > 0 ) {
-			if( line[ len ] != '=' ) break;
-			line[ len ] = '\0';
-		}
+		if( line[ len ] != '=' ) break;
+		line[ len ] = '\0';
 		line = vcard_get_line( cardFile );
 	}
 

@@ -272,7 +272,7 @@ SOURCE=..\src\gtk\gtkstext.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\gtkutils.c
+SOURCE=..\src\gtk\gtkutils.c
 # End Source File
 # Begin Source File
 
@@ -688,11 +688,11 @@ SOURCE=..\src\w32_mailcap.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\xml.c
+SOURCE=..\src\common\xml.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\xmlprops.c
+SOURCE=..\src\common\xmlprops.c
 # End Source File
 # End Group
 # Begin Group "Header-Dateien"
@@ -860,7 +860,7 @@ SOURCE=..\src\gtk\gtkstext.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\gtkutils.h
+SOURCE=..\src\gtk\gtkutils.h
 # End Source File
 # Begin Source File
 
@@ -1216,11 +1216,11 @@ SOURCE=..\src\w32_mailcap.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\xml.h
+SOURCE=..\src\common\xml.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\xmlprops.h
+SOURCE=..\src\common\xmlprops.h
 # End Source File
 # End Group
 # Begin Group "Ressourcendateien"

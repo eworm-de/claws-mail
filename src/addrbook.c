@@ -239,10 +239,9 @@ void addrbook_print_book(AddressBookFile *book, FILE *stream)
 	g_return_if_fail(book != NULL);
 
 	fprintf(stream, "AddressBook:\n");
-	fprintf(stream, "\tpath : '%s'\n", book->path);
-	fprintf(stream, "\tfile : '%s'\n", book->fileName);
-	fprintf(stream, "\tstatus : %d : '%s'\n", book->retVal,
-		mgu_error2string(book->retVal));
+	fprintf(stream, "\t  path : '%s'\n", book->path);
+	fprintf(stream, "\t  file : '%s'\n", book->fileName);
+	fprintf(stream, "\tstatus : %d\n",   book->retVal );
 	addrcache_print(book->addressCache, stream);
 }
 

@@ -181,7 +181,6 @@ static struct Display {
 
 	GtkWidget *chkbtn_swapfrom;
 	GtkWidget *chkbtn_useaddrbook;
-	GtkWidget *chkbtn_expand_thread;
 	GtkWidget *entry_datefmt;
 } display;
 
@@ -564,9 +563,6 @@ static PrefParam param[] = {
 	{"date_format", "%y/%m/%d(%a) %H:%M", &prefs_common.date_format,
 	 P_STRING, &display.entry_datefmt,
 	 prefs_set_data_from_entry, prefs_set_entry},
-	{"expand_thread", "TRUE", &prefs_common.expand_thread, P_BOOL,
-	 &display.chkbtn_expand_thread,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"enable_hscrollbar", "TRUE", &prefs_common.enable_hscrollbar, P_BOOL,
 	 NULL, NULL, NULL},
@@ -589,7 +585,7 @@ static PrefParam param[] = {
 	{"summary_col_show_mark", "TRUE",
 	 &prefs_common.summary_col_visible[S_COL_MARK], P_BOOL, NULL, NULL, NULL},
 	{"summary_col_show_unread", "TRUE",
-	 &prefs_common.summary_col_visible[S_COL_UNREAD], P_BOOL, NULL, NULL, NULL},
+	 &prefs_common.summary_col_visible[S_COL_STATUS], P_BOOL, NULL, NULL, NULL},
 	{"summary_col_show_mime", "TRUE",
 	 &prefs_common.summary_col_visible[S_COL_MIME], P_BOOL, NULL, NULL, NULL},
 	{"summary_col_show_subject", "TRUE",
@@ -610,7 +606,7 @@ static PrefParam param[] = {
 	{"summary_col_pos_mark", "0",
 	  &prefs_common.summary_col_pos[S_COL_MARK], P_INT, NULL, NULL, NULL},
 	{"summary_col_pos_unread", "1",
-	  &prefs_common.summary_col_pos[S_COL_UNREAD], P_INT, NULL, NULL, NULL},
+	  &prefs_common.summary_col_pos[S_COL_STATUS], P_INT, NULL, NULL, NULL},
 	{"summary_col_pos_mime", "2",
 	  &prefs_common.summary_col_pos[S_COL_MIME], P_INT, NULL, NULL, NULL},
 	{"summary_col_pos_subject", "3",
@@ -631,7 +627,7 @@ static PrefParam param[] = {
 	{"summary_col_size_mark", "10",
 	 &prefs_common.summary_col_size[S_COL_MARK], P_INT, NULL, NULL, NULL},
 	{"summary_col_size_unread", "13",
-	 &prefs_common.summary_col_size[S_COL_UNREAD], P_INT, NULL, NULL, NULL},
+	 &prefs_common.summary_col_size[S_COL_STATUS], P_INT, NULL, NULL, NULL},
 	{"summary_col_size_mime", "10",
 	 &prefs_common.summary_col_size[S_COL_MIME], P_INT, NULL, NULL, NULL},
 	{"summary_col_size_subject", "200",
@@ -2260,7 +2256,6 @@ static void prefs_display_create(void)
 	GtkWidget *vbox2;
 	GtkWidget *chkbtn_swapfrom;
 	GtkWidget *chkbtn_useaddrbook;
-	GtkWidget *chkbtn_expand_thread;
 	GtkWidget *vbox3;
 	GtkWidget *label_datefmt;
 	GtkWidget *button_datefmt;
@@ -2411,8 +2406,6 @@ static void prefs_display_create(void)
 	PACK_CHECK_BUTTON
 		(vbox2, chkbtn_useaddrbook,
 		 _("Display sender using address book"));
-	PACK_CHECK_BUTTON
-		(vbox2, chkbtn_expand_thread, _("Expand threads"));
 
 	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
 
@@ -2458,7 +2451,6 @@ static void prefs_display_create(void)
 	display.spinbtn_ng_abbrev_len_adj = spinbtn_ng_abbrev_len_adj;
 
 	display.chkbtn_swapfrom      = chkbtn_swapfrom;
-	display.chkbtn_expand_thread = chkbtn_expand_thread;
 	display.chkbtn_useaddrbook   = chkbtn_useaddrbook;
 	display.entry_datefmt        = entry_datefmt;
 }

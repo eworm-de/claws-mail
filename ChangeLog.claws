@@ -1,4 +1,137 @@
-2001-01-24 [paul]	0.8.9claws
+2003-01-26 [paul]	0.8.9claws15
+
+	* src/summaryview.c
+		speed up of marking messages as read
+		patch submitted by Jens Rantil <ztyx@users.sourceforge.net>
+
+2003-01-26 [christoph]	0.8.9claws14
+
+	* src/Makefile.am
+	* src/mgutils.[ch]
+	* src/xml.[ch]
+	* src/xmlprops.[ch]
+	* src/common/Makefile.am
+	* src/common/mgutils.[ch]
+	* src/common/xml.[ch]
+	* src/common/xmlprops.[ch]
+		move xml files to common directory
+
+2003-01-26 [christoph]	0.8.9claws13
+
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		only set gtk entry text if string is available
+
+2003-01-26 [melvin]	0.8.9claws12
+
+	* src/description_window.c
+		Allow resizing of the window
+		Allow automatic horizontal scroll bar
+		Do not vertically expand and fill
+
+2003-01-26 [christoph]	0.8.9claws11
+
+	* src/Makefile.am
+	* src/gtkutils.[ch]		** REMOVE **
+	* src/common/sylpheed.c
+	* src/gtk/Makefile.am
+	* src/gtk/description_window.c
+	* src/gtk/gtkutils.[ch]		** NEW **
+	* src/gtk/prefswindow.c
+		move gtkutils to gtk directory
+
+2003-01-26 [paul]	0.8.9claws10
+
+	* src/summaryview.c
+		rename summary_unread_clicked() to summary_status_clicked()
+
+2003-01-26 [melvin]	0.8.9claws9
+
+	* src/prefs_actions.c
+		Cosmetical changes to the help text
+
+2003-01-26 [paul]	0.8.9claws8
+
+	* src/folder.[ch]
+	  src/mainwindow.c
+	  src/prefs_common.c
+	  src/prefs_sumamry_column.c
+	  summaryview.[ch]
+	  	rename the 'Unread' column to 'Status'
+
+2003-01-25 [match]	0.8.9claws7
+
+	* src/mgutils.[ch]
+		removed reference to LDAP constants. removed error2string.
+		included functions to support LDAP dynamic queries.
+	* src/syldap.h
+		moved LDAP constants here.
+	* src/addressbook.c
+	* src/addrindex.c
+	* src/importldif.c
+		removed references to LDAP constants and references to
+		error2string.
+
+2003-01-25 [paul]	0.8.9claws6
+
+	* src/summaryview.c
+		summary_thread_build(), summary_thread_init(): remove 
+		unneeded reference to summaryview->folder_item
+
+2003-01-25 [christoph]	0.8.9claws5
+
+	* src/gtk/description_window.c
+		o allow description texts to expand over multiple columns
+		o translate all columns
+	* src/prefs_actions.c
+		change syntax description to use new multi column feature
+
+	Patch submitted by Ivan F. Martinez <ivanfm@users.sourceforge.net>
+
+2003-01-25 [match]	0.8.9claws4
+
+	* src/vcard.c
+		fixed bug with Quoted-Printable
+
+2003-01-25 [paul]	0.8.9claws3
+
+	* src/folder.[ch]
+	  src/summaryview.[ch]
+	  	implement per-folder collapsed/expanded threads setting
+		
+	* src/prefs_common.c
+		remove global collapsed/expanded threads option
+
+2003-01-25 [christoph]	0.8.9claws2
+
+	* po/POTFILES.in
+		add pluginwindow and prefswindow
+	* src/compose.c
+		make send respond correctly to messages that could be added
+		to the queue folder, but the UID of the message is unknown
+	* src/folder.c
+	* src/imap.c
+		don't return guessed UIDs in imap_add_msg anymore. We return
+		0 to tell the folder system it was appened but the UID is
+		unknown. Folder system now get's the UID by scaning the folder
+		and searching the cache for the Message-ID
+		(closes bug #29 Messages queued, but not sent)
+
+2003-01-25 [paul]	0.8.9claws1
+
+	* src/codeconv.c
+		conv_encode_header():  fix bug when long headers with 8-bit
+		characters are used, so that the encoded words are wrapped.
+		If the space in the original text falls on the wrap boundary,
+		it can be lost.
+		Patch by Sergey Vlasov.
+		
+	* src/folderview.c
+		 fix bug where a change to the sorting method or thread view
+		 of a folder's messages is lost if simpify-subject is set and
+		 toggled on or off.
+		 Patch by Luke Plant.
+
+2003-01-24 [paul]	0.8.9claws
 
 	* sylpheed-0.8.9claws released
 	
@@ -88,6 +221,7 @@
 
 	* src/procmsg.c
 		fix infinite loop in procmsg_find_children
+		 (closes bug #25 sylpheed crashes on delete.)
 
 	Patch submitted by Ivan F. Martinez <ivanfm@users.sourceforge.net>
 
@@ -520,18 +654,22 @@
 		Note: - Please verify that no updates are missing
 		      - Check where freeze/thaws should be added
 
-2003-01-07 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.8claws62
+2003-01-07 [christoph]	0.8.8claws62
 
 	* src/prefs_actions.c
 		don't translate empty strings
 
-2003-01-06 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.8claws61
+	Patch submitted by Ivan Francolin Martinez <ivanfm@users.sourceforge.net>
+
+2003-01-06 [christoph]	0.8.8claws61
 
 	* src/prefs_actions.c
 		mark strings for gettext
 	* src/prefs_matcher.c
 		use new description window for Execute action and
 		match condition in Filtering
+
+	Patch submitted by Ivan Francolin Martinez <ivanfm@users.sourceforge.net>
 
 2003-01-06 [alfons]	0.8.8claws60
 
@@ -544,14 +682,16 @@
 		add documentation so others may comprehend the
 		UI part of the conditions
 		
-2003-01-06 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.8claws59
+2003-01-06 [christoph]	0.8.8claws59
 
 	* src/prefs_actions.c
 		use new description window for syntax help
 	* src/gtk/description_window.c
 		fix display of descriptions with column count != 2
 
-2003-01-06 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.8claws58
+	Patch submitted by Ivan Francolin Martinez <ivanfm@users.sourceforge.net>
+
+2003-01-06 [christoph]	0.8.8claws58
 
 	* src/quote_fmt.c
 	* src/summaryview.[ch]
@@ -560,6 +700,8 @@
 		use a generic window to display syntax descriptions
 		currently used in quote_fmt and summaryview (new description
 		for extended quick search)
+
+	Patch submitted by Ivan Francolin Martinez <ivanfm@users.sourceforge.net>
 
 2003-01-06 [paul]	0.8.8claws57
 
@@ -680,6 +822,7 @@
 
 	* src/procmsg.c
 		update save folder after adding the sent message
+		 (closes bug #6 Folder View doesn't refresh for "Sent"-messages)
 
 2003-01-02 [christoph]	0.8.8claws42
 

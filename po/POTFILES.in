@@ -77,3 +77,5 @@ src/string_match.c
 src/summary_search.c
 src/summaryview.c
 src/toolbar.c
+src/gtk/pluginwindow.c
+src/gtk/prefswindow.c

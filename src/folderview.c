@@ -2601,6 +2601,7 @@ static void folderview_property_cb(FolderView *folderview, guint action,
 	if (item->parent == NULL && item->folder->account)
 		account_open(item->folder->account);
 	else
+		summary_save_prefs_to_folderitem(folderview->summaryview, item);
 		prefs_folder_item_create(folderview, item);
 }
 

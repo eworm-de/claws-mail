@@ -1088,7 +1088,7 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 
 #define B64LEN(len)	((len) / 3 * 4 + ((len) % 3 ? 4 : 0))
 
-#define LBREAK_IF_REQUIRED(cond)				\
+#define LBREAK_IF_REQUIRED(cond, plaintext)			\
 {								\
 	if (len - (destp - dest) < MAX_LINELEN + 2) {		\
 		*destp = '\0';					\
@@ -1098,7 +1098,7 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 	if ((cond) && *srcp) {					\
 		if (destp > dest && isspace(*(destp - 1)))	\
 			destp--;				\
-		else if (isspace(*srcp))			\
+		else if (plaintext && isspace(*srcp))		\
 			srcp++;					\
 		if (*srcp) {					\
 			*destp++ = '\n';			\
@@ -1141,12 +1141,12 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 	left = MAX_LINELEN - header_len;
 
 	while (*srcp) {
-		LBREAK_IF_REQUIRED(left <= 0);
+		LBREAK_IF_REQUIRED(left <= 0, TRUE);
 
 		while (isspace(*srcp)) {
 			*destp++ = *srcp++;
 			left--;
-			LBREAK_IF_REQUIRED(left <= 0);
+			LBREAK_IF_REQUIRED(left <= 0, TRUE);
 		}
 
 		/* output as it is if the next word is ASCII string */
@@ -1154,9 +1154,9 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 			gint word_len;
 
 			word_len = get_next_word_len(srcp);
-			LBREAK_IF_REQUIRED(left < word_len);
+			LBREAK_IF_REQUIRED(left < word_len, TRUE);
 			while (word_len > 0) {
-				LBREAK_IF_REQUIRED(left <= 0);
+				LBREAK_IF_REQUIRED(left <= 0, TRUE);
 				*destp++ = *srcp++;
 				left--;
 				word_len--;
@@ -1211,7 +1211,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 					cur_len += mb_len;
 					p += mb_len;
 				} else if (cur_len == 0) {
-					LBREAK_IF_REQUIRED(1);
+					LBREAK_IF_REQUIRED(1, FALSE);
 					continue;
 				} else {
 					cont = TRUE;
@@ -1254,7 +1254,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 				left -= mime_block_len;
 			}
 
-			LBREAK_IF_REQUIRED(cont);
+			LBREAK_IF_REQUIRED(cont, FALSE);
 
 			if (cur_len == 0)
 				break;

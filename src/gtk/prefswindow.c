@@ -26,7 +26,7 @@
 
 #include "intl.h"
 #include "prefswindow.h"
-#include "../gtkutils.h"
+#include "gtkutils.h"
 
 typedef struct _PrefsWindow PrefsWindow;
 

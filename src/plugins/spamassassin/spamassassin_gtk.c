@@ -203,11 +203,13 @@ static void spamassassin_create_widget_func(PrefsPage * _page, GtkWindow *window
 	gtk_signal_connect(GTK_OBJECT(button4), "released", GTK_SIGNAL_FUNC(foldersel_cb), page);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable), spamassassin_enable);
-	gtk_entry_set_text(GTK_ENTRY(hostname), spamassassin_hostname);
+	if (spamassassin_hostname != NULL)
+		gtk_entry_set_text(GTK_ENTRY(hostname), spamassassin_hostname);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(port), (float) spamassassin_port);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(max_size), (float) spamassassin_max_size);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(receive_spam), spamassassin_receive_spam);
-	gtk_entry_set_text(GTK_ENTRY(save_folder), spamassassin_save_folder);
+	if (spamassassin_save_folder != NULL)
+		gtk_entry_set_text(GTK_ENTRY(save_folder), spamassassin_save_folder);
 	
 	page->enable = enable;
 	page->hostname = hostname;

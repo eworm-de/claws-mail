@@ -7,6 +7,7 @@ libsylpheedcommon_la_SOURCES = \
 	intl.h \
 	log.c log.h \
 	md5.c md5.h \
+	mgutils.c mgutils.h \
 	nntp.c nntp.h \
 	plugin.c plugin.h \
 	prefs.c prefs.h \
@@ -20,8 +21,10 @@ libsylpheedcommon_la_SOURCES = \
 	sylpheed.c sylpheed.h \
 	template.c template.h \
 	utils.c utils.h \
+	uuencode.c uuencode.h \
 	version.h \
-	uuencode.c uuencode.h
+	xml.c xml.h \
+	xmlprops.c xmlprops.h
 
 CPPFLAGS = \
 	$(GLIB_CFLAGS) \

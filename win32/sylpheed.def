@@ -1109,14 +1109,17 @@ EXPORTS
 	mgu_clear_list 
 	mgu_clear_slist 
 	mgu_email_check_empty 
-	mgu_error2string 
 	mgu_free_dlist 
 	mgu_free_list 
 	mgu_list_coalesce 
+	mgu_list_longest_entry 
+	mgu_list_test_unq_nc 
 	mgu_parse_string 
 	mgu_print_dlist 
 	mgu_print_list 
 	mgu_replace_string 
+	mgu_slist_longest_entry 
+	mgu_slist_test_unq_nc 
 	mgu_str_ltc2space 
 	mgu_str_unescape 
 	mh_add_msg 
