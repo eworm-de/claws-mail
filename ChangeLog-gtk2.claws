@@ -1,3 +1,10 @@
+2004-07-18 [colin]	0.9.12cvs31.3
+
+	* src/compose.c
+		Fix tab char handling in wrapping
+	(Fix Bug 537 Line wrap problem - TAB character treated as 
+	 one character instead of 8)
+
 2004-07-18 [colin]	0.9.12cvs31.2
 
 	* src/textview.c

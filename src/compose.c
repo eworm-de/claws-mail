@@ -2815,10 +2815,8 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 			guint tab_width = 8;
 			guint tab_offset = line_len % tab_width;
 
-			if (tab_offset) {
-				line_len += tab_width - tab_offset - 1;
-				cur_len = line_len;
-			}
+			line_len += tab_width - tab_offset - 1;
+			cur_len = line_len;
 		}
 
 		/* we have encountered line break */
