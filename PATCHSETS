@@ -56,3 +56,4 @@
 ( cvs diff -u -r 1.442 -r 1.443 src/summaryview.c; ) > 0.9.12cvs71.patchset
 ( cvs diff -u -r 1.436 -r 1.437 src/compose.c; ) > 0.9.12cvs72.patchset
 ( cvs diff -u -r 1.53 -r 1.54 src/toolbar.c; ) > 0.9.12cvs73.patchset
+( cvs diff -u -r 1.437 -r 1.438 src/compose.c; ) > 0.9.12cvs74.patchset

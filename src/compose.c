@@ -5350,7 +5350,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	if (account->set_autocc && account->auto_cc && mode != COMPOSE_REEDIT)
 		compose_entry_append(compose, account->auto_cc, COMPOSE_CC);
 
-	if (account->set_autobcc) 
+	if (account->set_autobcc && account->auto_bcc && mode != COMPOSE_REEDIT) 
 		compose_entry_append(compose, account->auto_bcc, COMPOSE_BCC);
 	
 	if (account->set_autoreplyto && account->auto_replyto && mode != COMPOSE_REEDIT)
