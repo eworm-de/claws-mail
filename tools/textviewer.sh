@@ -44,7 +44,7 @@
 #	- make extension matching case insensitive
 #
 # 2003-03-23
-#	- Support for MS Excel (xlhtml)
+#	- Support for MS Excel (xlhtml) and Powerpoint (ppthtml)
 #
 # 2004-03-09
 #	- Support for HTML (html2text)
