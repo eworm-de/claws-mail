@@ -1738,7 +1738,7 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 
 	separator = imap_get_path_separator(IMAP_FOLDER(folder), item->path);
 	if (strchr(item->path, G_DIR_SEPARATOR)) {
-		dirpath = g_dirname(item->path);
+		dirpath = g_path_get_dirname(item->path);
 		newpath = g_strconcat(dirpath, G_DIR_SEPARATOR_S, name, NULL);
 		g_free(dirpath);
 	} else

@@ -639,7 +639,7 @@ static gint mh_rename_folder(Folder *folder, FolderItem *item,
 	if (!is_dir_exist(oldpath))
 		make_dir_hier(oldpath);
 
-	dirname = g_dirname(oldpath);
+	dirname = g_path_get_dirname(oldpath);
 	real_name = mh_filename_from_utf8(name);
 	newpath = g_strconcat(dirname, G_DIR_SEPARATOR_S, real_name, NULL);
 	g_free(real_name);
@@ -655,7 +655,7 @@ static gint mh_rename_folder(Folder *folder, FolderItem *item,
 	g_free(newpath);
 
 	if (strchr(item->path, G_DIR_SEPARATOR) != NULL) {
-		dirname = g_dirname(item->path);
+		dirname = g_path_get_dirname(item->path);
 		utf8newpath = g_strconcat(dirname, G_DIR_SEPARATOR_S,
 					  name, NULL);
 		g_free(dirname);

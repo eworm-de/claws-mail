@@ -97,7 +97,7 @@ static void prefs_spelling_btn_aspell_path_clicked_cb(GtkWidget *widget,
 	if (file_path != NULL) {
 		gchar *tmp_path, *tmp;
 
-		tmp_path = g_dirname(file_path);
+		tmp_path = g_path_get_dirname(file_path);
 		tmp = g_strdup_printf("%s%s", tmp_path, G_DIR_SEPARATOR_S);
 		g_free(tmp_path);
 

@@ -1,3 +1,14 @@
+2004-11-12 [paul]	0.9.12cvs146.4
+
+	* src/exporthtml.c
+	* src/exportldif.c
+	* src/imap.c
+	* src/mh.c
+	* src/mimeview.c
+	* src/prefs_spelling.c
+	* src/prefs_themes.c
+		replace deprecated g_dirname	
+
 2004-11-12 [colin]	0.9.12cvs146.3
 
 	* src/textview.c

@@ -464,7 +464,7 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 		return;
 	
 	cinfo = g_new0(CopyInfo, 1);
-	source = g_dirname(filename);
+	source = g_path_get_dirname(filename);
 	themename = g_basename(source);
 	debug_print("Installing '%s' theme from %s\n", themename, filename);
 

@@ -1012,7 +1012,7 @@ static gboolean mimeview_write_part(const gchar *filename,
 {
 	gchar *dir;
 	
-	dir= g_dirname(filename);
+	dir= g_path_get_dirname(filename);
 	if (!is_dir_exist(dir))
 		make_dir_hier(dir);
 	g_free(dir);
@@ -1147,7 +1147,7 @@ static void mimeview_save_as(MimeView *mimeview)
 
 	mimeview_write_part(filename, partinfo);
 
-	filedir = g_dirname(filename);
+	filedir = g_path_get_dirname(filename);
 	if (filedir && strcmp(filedir, ".")) {
 		if (prefs_common.attach_save_dir)
 			g_free(prefs_common.attach_save_dir);
