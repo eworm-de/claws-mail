@@ -1,5 +1,11 @@
 2002-12-20
 
+	* src/codeconv.c: conv_encode_header(): 改行時の余分な空白の修正。
+	* src/compose.c: compose_convert_header(): 改行するために常に
+	  文字列を conv_encode_header() に渡すようにした。
+
+2002-12-20
+
 	* src/textview.c: textview_make_clickable_parts(): 誤った email
 	  アドレスのパースを修正。
 

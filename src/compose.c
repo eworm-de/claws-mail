@@ -3741,8 +3741,8 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 			fprintf(fp, "Content-Type: %s\n", ainfo->content_type);
 			fprintf(fp, "Content-Disposition: inline\n");
 		} else {
-			conv_encode_header(filename, sizeof(filename),
-					   ainfo->name, 12);
+			compose_convert_header(filename, sizeof(filename),
+					       ainfo->name, 12);
 			fprintf(fp, "Content-Type: %s;\n"
 				    " name=\"%s\"\n",
 				ainfo->content_type, filename);
@@ -4193,12 +4193,7 @@ static void compose_convert_header(gchar *dest, gint len, gchar *src,
 
 	remove_return(src);
 
-	if (is_ascii_str(src)) {
-		strncpy2(dest, src, len);
-		dest[len - 1] = '\0';
-		return;
-	} else
-		conv_encode_header(dest, len, src, header_len);
+	conv_encode_header(dest, len, src, header_len);
 }
 
 static void compose_generate_msgid(Compose *compose, gchar *buf, gint len)

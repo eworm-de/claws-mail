@@ -1,5 +1,12 @@
 2002-12-20
 
+	* src/codeconv.c: conv_encode_header(): fix for redundant space on
+	  line-breaking.
+	* src/compose.c: compose_convert_header(): always pass string to
+	  conv_encode_header() for line-breaking.
+
+2002-12-20
+
 	* src/textview.c: textview_make_clickable_parts(): fixed incorrect
 	  parsing of email addresses.
 

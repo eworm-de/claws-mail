@@ -8,7 +8,9 @@ Changes of Sylpheed
     * The routine of MIME header encoding has been rewritten completely,
       and Q-encoding for single-byte locales has been also implemented.
     * Strings beginning with "www." are now treated as URI.
+    * The default WWW browser has been changed to Mozilla.
     * The common preferences dialog has been reorganized a bit.
+    * The remote command operation can be executed without X now.
     * Code cleanups for the implementation of SMTP has been made.
     * Autotools and libtool have been updated.
     * A fix for font loading problem has been made.
