@@ -95,7 +95,7 @@ AlertValue alertpanel_message_with_disable(const gchar	*title,
 					   const gchar	*message)
 {
 	if (alertpanel_is_open)
-		return;
+		return 0;
 	else
 		alertpanel_is_open = TRUE;
 

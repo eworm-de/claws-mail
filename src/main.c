@@ -72,6 +72,10 @@
 #include "utils.h"
 #include "gtkutils.h"
 
+#if USE_GPGME
+#include "rfc2015.h"
+#endif /* USE_GPGME */
+
 gchar *prog_version;
 gchar *startup_dir;
 gboolean debug_mode = FALSE;
