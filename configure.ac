@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=11
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=17.2
+EXTRA_VERSION=17.3
 EXTRA_RELEASE=
 
 if test \( $EXTRA_VERSION -eq 0 \) -o \( "x$EXTRA_RELEASE" != "x" \); then
@@ -305,7 +305,7 @@ dnl ** GTK user interface **
 dnl ************************
 
 dnl Checks for GTK
-AM_PATH_GTK_2_0(2.0.0,,
+AM_PATH_GTK_2_0(2.4.0,,
 	AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
 
 dnl check if gdk / gtk was compiled with USE_XIM

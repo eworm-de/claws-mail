@@ -22,8 +22,8 @@
 
 #include <glib.h>
 
-gchar *filesel_select_file(const gchar *title, const gchar *file);
+gchar *filesel_select_file(const gchar *title, const gchar *path);
 
-GList *filesel_select_multiple_files(const gchar *title, const gchar *file);
+GList *filesel_select_multiple_files(const gchar *title);
 
 #endif /* __FILESEL_H__ */

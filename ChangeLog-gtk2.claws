@@ -1,3 +1,14 @@
+2004-06-27 [colin]	0.9.11cvs17.3
+
+	* src/gtk/filesel.[ch]
+		Use the new GTK file selector
+		Update prototype to match the reality: multiple file
+		selection is open-only
+	* src/compose.c
+		Match the new prototypes	
+	* configure.ac
+		Match the new requirements (gtk 2.4.0)
+			
 2004-06-26 [colin]	0.9.11cvs17.2
 
 	* src/plugins/trayicon/trayicon.c

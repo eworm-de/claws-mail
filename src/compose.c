@@ -6676,7 +6676,7 @@ static void compose_attach_cb(gpointer data, guint action, GtkWidget *widget)
 	if (compose->redirect_filename != NULL)
 		return;
 
-	file_list = filesel_select_multiple_files(_("Select file"), NULL);
+	file_list = filesel_select_multiple_files(_("Select file"));
 
 	if (file_list) {
 		GList *tmp;
@@ -6697,7 +6697,7 @@ static void compose_insert_file_cb(gpointer data, guint action,
 	Compose *compose = (Compose *)data;
 	GList *file_list;
 
-	file_list = filesel_select_multiple_files(_("Select file"), NULL);
+	file_list = filesel_select_multiple_files(_("Select file"));
 
 	if (file_list) {
 		GList *tmp;
