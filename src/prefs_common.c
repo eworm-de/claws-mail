@@ -2609,6 +2609,8 @@ static void prefs_other_create(void)
 			       "netscape -remote 'openURL(%s,raise)'",
 			       "netscape '%s'",
 			       "gnome-moz-remote --raise --newwin '%s'",
+			       "kfmclient openProfile webbrowsing '%s'",
+			       "opera -newwindow '%s'",	       
 			       "kterm -e w3m '%s'",
 			       "kterm -e lynx '%s'",
 			       NULL);

@@ -1,3 +1,10 @@
+2002-02-24 [alfons]	0.7.2.claws11
+	
+	* AUTHORS
+	* src/prefs_common.c
+		add presets for Opera and Konqueror, closes patch #517261,
+		submitted by Ville Skyttä <scop@users.sourceforge.net>
+
 2002-02-24 [alfons]	0.7.2.claws10
 
 	* AUTHORS
