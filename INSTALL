@@ -51,7 +51,7 @@ SpamAssassin
 Clam AntiVirus
     for Clam AntiVirus plugin support
     http://clamav.sourceforge.net/
-Dillo
+Dillo (>= 0.7.0)
     for Dillo HTML viewer plugin support
     http://www.dillo.org/
 GtkMathView (>= 0.4.2 and < 0.5)

@@ -1,3 +1,18 @@
+2004-12-06 [paul]	0.9.12cvs186
+
+	* INSTALL
+	* README.claws
+		updated
+	* po/es.po
+	* po/fr.po
+	* po/it.po
+	* po/ja.po
+	* po/pt_BR.po
+	* po/zh_CN.po
+		updated by Ricardo Mones Lastra, Fabien Vantard, Andrea 
+		Spadaccini, Rui Hirokawa, Frederico Goncalves Guimaraes,
+		and Yang Guilong
+
 2004-12-05 [paul]	0.9.12cvs185
 
 	* INSTALL
