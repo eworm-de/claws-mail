@@ -1,8 +1,17 @@
 2001-05-10 [alfons]
 
+	0.4.67claws1
+	
+	* AUTHORS: 
+		thought it would be nice to have a list of all
+		contributors (used Changelog as a reference)
+	
+	* configure.in: 
+		messed up version numbering...
+
 	0.4.66claws1
 
-	* sync with sylpheed 0.4.66cvs1-3
+	* sync with sylpheed 0.4.67cvs1-3
 
 2001-05-10 [darko]
 
