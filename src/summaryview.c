@@ -3066,13 +3066,15 @@ static void summary_add_sender_to_cb (SummaryView			*summaryview,
 	GtkMenuShell	*menushell;
 	GtkWidget		*menu;
 	GtkWidget		*menuitem;
-	GList			*child = menushell->children;
+	GList			*child;
 	gboolean		found = FALSE;
 	MsgInfo			*msginfo;
 	gchar			*from_address;
 
 	menushell = GTK_MENU_SHELL(summaryview->popupmenu);
-	g_return_if_fail(GTK_MENU_SHELL(summaryview->popupmenu));
+	g_return_if_fail(menushell != NULL);
+	child = menushell->children;
+	g_return_if_fail(child);
 
 	/* we're iterating each menu item searching for the one with 
 	 * a "contacts" object data. if not found add the menu,

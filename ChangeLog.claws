@@ -1,3 +1,7 @@
+2001-05-22 [alfons]
+
+	* src/summaryview.c: bugfixed a premature assignment in  summaryview_add_sender_to_cb()
+
 2001-05-21 [alfons]
 
 	Minor things:
