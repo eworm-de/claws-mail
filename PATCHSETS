@@ -283,3 +283,4 @@
 ( cvs diff -u -r 1.25.2.6 -r 1.25.2.7 src/matcher_parser_parse.y; cvs diff -u -r 1.16.2.10 -r 1.16.2.11 src/msgcache.c; cvs diff -u -r 1.43.2.10 -r 1.43.2.11 src/prefs_matcher.c; cvs diff -u -r 1.47.2.11 -r 1.47.2.12 src/procheader.c; cvs diff -u -r 1.75.2.3 -r 1.75.2.4 src/matcher.c; cvs diff -u -r 1.9.2.8 -r 1.9.2.9 src/common/defs.h; cvs diff -u -r 1.17.2.6 -r 1.17.2.7 po/sr.po; ) > 0.9.13cvs7.1.patchset
 ( cvs diff -u -r 1.22.2.4 -r 1.22.2.5 src/quote_fmt_parse.y; ) > 0.9.13cvs8.1.patchset
 ( cvs diff -u -r 1.5.2.8 -r 1.5.2.9 src/gtk/pluginwindow.c; ) > 0.9.13cvs8.2.patchset
+( cvs diff -u -r 1.2.2.3 -r 1.2.2.4 src/gtk/colorlabel.c; ) > 0.9.13cvs9.1.patchset
