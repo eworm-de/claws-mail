@@ -121,6 +121,11 @@ gint nntp_group(NNTPSockInfo *sock, const gchar *group,
 
 	ok = nntp_gen_command(sock, buf, "GROUP %s", group);
 
+	if (ok != NN_SUCCESS) {
+		ok = nntp_gen_command(sock, buf, "MODE READER");
+		if (ok == NN_SUCCESS)
+			ok = nntp_gen_command(sock, buf, "GROUP %s", group);
+	}	
 	if (ok != NN_SUCCESS)
 		return ok;
 
