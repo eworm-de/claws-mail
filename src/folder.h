@@ -539,14 +539,16 @@ struct _FolderClass
 						 MsgInfo        *msginfo,
 						 MsgPermFlags	 newflags);
 	/**
-	 * Get the flags for a list of messages
+	 * Get the flags for a list of messages. Flags that are not supported
+	 * by the folder should be preserved. They can be copied from
+	 * \c msginfo->flags.perm_flags
 	 *
 	 * \param folder The \c Folder of the messages
 	 * \param item The \c FolderItem of the messages
 	 * \param msglist The list of \c MsgInfos for which the flags should
 	 *                   be returned
-	 * \param msgflags A \c GRelation for tuples of (message number,
-	 *                 permanent flags). Add tuples for the messages in msgnumlist
+	 * \param msgflags A \c GRelation for tuples of (MsgInfo, new permanent
+         *        flags for MsgInfo). Add tuples for the messages in msglist
 	 * \return 0 on success, a negative number otherwise
 	 */
 	gint		(*get_flags)		(Folder		*folder,

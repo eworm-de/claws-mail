@@ -1,3 +1,14 @@
+2004-03-12 [christoph]	0.9.10claws5
+
+	* src/folderview.c
+		Add error requester when renaming a folder failed
+
+	* src/imap.c
+		Check new FolderItem name for namespace seperator
+		before renaming
+
+	(Closes Bug 443 Bad named IMAP folders won't be displayed)
+
 2004-03-11 [christoph]	0.9.10claws4
 
 	* src/folder.[ch]
