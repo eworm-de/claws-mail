@@ -1,3 +1,62 @@
+2002-12-18
+
+	* src/mainwindow.c:
+	  set_charset_cb()
+	  sort_summary_cb()
+	  sort_summary_type_cb(): prevent unwanted processing on unchecking
+	  menu items.
+
+2002-12-18
+
+	* src/main.c: process command line option before gtk_init() to
+	  enable remote operation without X (thanks to Ruslan N. Balkin).
+	* src/codeconv.c: conv_encode_header(): fixed a potential buffer
+	  overflow.
+
+2002-12-18
+
+	* src/Makefile.am: changed $(target_alias) to $(target_triplet)
+	  (the spec of autotools seems to be changed).
+
+2002-12-18
+
+	* src/imap.c: get path separator using LIST command if server
+	  doesn't support NAMESPACE (based on the patch by Brian Sammon).
+	  imap_parse_list(): added an argument to return path separator.
+	  imap_get_namespace_by_list(): new.
+
+2002-12-17
+
+	* src/addr_compl.c: add_address(): removed the debug print.
+	* src/gtkutils.[ch]: gtkut_window_popup()
+	  src/mainwindow.c: main_window_popup(): applied the patch to fix
+	  the behavior of window popup from Sergey Vlasov (thanks!)
+	* src/account.c: account_edit_create(): use signal_connect_after
+	  for row_move signal to fix the row position bug.
+	  account_row_moved(): scroll the CList half page.
+	* src/prefs_filter.c: prefs_filter_row_move(): scroll the CList
+	  half page.
+	* src/summaryview.c: summary_reply(): use selection text only if
+	  the displayed message is selected (thanks to Sergey Vlasov).
+
+2002-12-13
+
+	* src/codeconv.c: conv_encode_header(): reimplemented the routine
+	  of MIME header encoding. And use Q-encoding method if the current
+	  locale is single-byte one.
+	* src/utils.[ch]: is_next_nonascii(): take multi-byte string instead
+	  of wide-character string. Consider control codes as non-ASCII.
+	  get_next_word_len(): new. It returns the length of next word.
+	  is_next_mbs(), find_wspace(): removed.
+	* src/quoted-printable.[ch]: new.
+	  qp_decode_line(): decodes one QP line.
+	  qp_decode_q_encoding(): decodes Q-encoded string in MIME header.
+	  qp_get_q_encoding_len(): returns the length when a string is
+	  Q-encoded.
+	  qp_q_encode(): Q-encode a string (RFC 2047).
+	* src/unmime.c: moved the functions for quoted-printable to
+	  quoted-printable.c.
+
 2002-12-05
 
 	* src/send.c: send_message_local(): escape line that only have one

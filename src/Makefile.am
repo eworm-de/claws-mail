@@ -22,8 +22,6 @@ sylpheed_SOURCES = \
 	procmsg.c procmsg.h \
 	procheader.c procheader.h \
 	compose.c compose.h \
-	gtkshruler.c gtkshruler.h \
-	gtkstext.c gtkstext.h \
 	menu.c menu.h \
 	stock_pixmap.c stock_pixmap.h \
 	prefs.c prefs.h \
@@ -76,7 +74,6 @@ sylpheed_SOURCES = \
 	statusbar.c statusbar.h \
 	logwindow.c logwindow.h \
 	sourcewindow.c sourcewindow.h \
-	manage_window.c manage_window.h \
 	undo.c undo.h \
 	alertpanel.c alertpanel.h \
 	inputdialog.c inputdialog.h \
@@ -236,7 +233,7 @@ CPPFLAGS = \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DMANUALDIR=\""$(manualdir)"\" \
 	-DFAQDIR=\""$(faqdir)"\" \
-	-DTARGET_ALIAS=\""$(target_alias)"\" \
+	-DTARGET_ALIAS=\""$(target_triplet)"\" \
 	-DSYSCONFDIR=\""$(sysconfdir)"\"
 
 YFLAGS = -d

@@ -6,6 +6,7 @@ libsylpheedcommon_la_SOURCES = \
 	log.c log.h \
 	md5.c md5.h \
 	nntp.c nntp.h \
+	quoted-printable.c quoted-printable.h \
 	session.c session.h \
 	smtp.c smtp.h \
 	socket.c socket.h \

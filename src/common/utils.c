@@ -501,52 +501,29 @@ wchar_t *wcscasestr(const wchar_t *haystack, const wchar_t *needle)
 }
 
 /* Examine if next block is non-ASCII string */
-gboolean is_next_nonascii(const wchar_t *s)
+gboolean is_next_nonascii(const guchar *s)
 {
-	const wchar_t *wp;
+	const guchar *p;
 
 	/* skip head space */
-	for (wp = s; *wp != (wchar_t)0 && iswspace(*wp); wp++)
+	for (p = s; *p != '\0' && isspace(*p); p++)
 		;
-	for (; *wp != (wchar_t)0 && !iswspace(*wp); wp++) {
-		if (*wp > 127)
+	for (; *p != '\0' && !isspace(*p); p++) {
+		if (*p > 127 || *p < 32)
 			return TRUE;
 	}
 
 	return FALSE;
 }
 
-/* Examine if next block is multi-byte string */
-gboolean is_next_mbs(const wchar_t *s)
+gint get_next_word_len(const gchar *s)
 {
-	gint mbl;
-	const wchar_t *wp;
-	gchar tmp[MB_LEN_MAX];
+	gint len = 0;
 
-	/* skip head space */
-	for (wp = s; *wp != (wchar_t)0 && iswspace(*wp); wp++)
+	for (; *s != '\0' && !isspace(*s); s++, len++)
 		;
-	for (; *wp != (wchar_t)0 && !iswspace(*wp); wp++) {
-		mbl = wctomb(tmp, *wp);
-		if (mbl > 1)
-			return TRUE;
-	}
 
-	return FALSE;
-}
-
-wchar_t *find_wspace(const wchar_t *s)
-{
-	const wchar_t *wp;
-
-	for (wp = s; *wp != (wchar_t)0 && iswspace(*wp); wp++)
-		;
-	for (; *wp != (wchar_t)0; wp++) {
-		if (iswspace(*wp))
-			return (wchar_t *)wp;
-	}
-
-	return NULL;
+	return len;
 }
 
 /* compare subjects */

@@ -894,6 +894,8 @@ static PrefParam param[] = {
 #endif
 	{"work_offline", "FALSE", &prefs_common.work_offline, P_BOOL,
 	 NULL, NULL, NULL},
+	{"summary_quicksearch_type", "0", &prefs_common.summary_quicksearch_type, P_INT,
+	 NULL, NULL, NULL},
 
 	{"hide_score", "-9999", &prefs_common.kill_score, P_INT,
 	 NULL, NULL, NULL},

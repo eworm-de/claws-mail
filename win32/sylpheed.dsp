@@ -260,11 +260,11 @@ SOURCE=..\src\gtk\gtksctree.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\gtkshruler.c
+SOURCE=..\src\gtk\gtkshruler.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\gtkstext.c
+SOURCE=..\src\gtk\gtkstext.c
 # End Source File
 # Begin Source File
 
@@ -344,7 +344,7 @@ SOURCE=..\src\mainwindow.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\manage_window.c
+SOURCE=..\src\gtk\manage_window.c
 # End Source File
 # Begin Source File
 
@@ -509,6 +509,10 @@ SOURCE=..\src\quote_fmt_lex.c
 # Begin Source File
 
 SOURCE=..\src\quote_fmt_parse.c
+# End Source File
+# Begin Source File
+
+SOURCE="..\src\common\quoted-printable.c"
 # End Source File
 # Begin Source File
 
@@ -816,11 +820,11 @@ SOURCE=..\src\gtk\gtksctree.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\gtkshruler.h
+SOURCE=..\src\gtk\gtkshruler.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\gtkstext.h
+SOURCE=..\src\gtk\gtkstext.h
 # End Source File
 # Begin Source File
 
@@ -896,7 +900,7 @@ SOURCE=..\src\mainwindow.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\manage_window.h
+SOURCE=..\src\gtk\manage_window.h
 # End Source File
 # Begin Source File
 
@@ -1021,6 +1025,10 @@ SOURCE=..\src\quote_fmt_lex.h
 # Begin Source File
 
 SOURCE=..\src\quote_fmt_parse.h
+# End Source File
+# Begin Source File
+
+SOURCE="..\src\common\quoted-printable.h"
 # End Source File
 # Begin Source File
 

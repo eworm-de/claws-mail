@@ -163,8 +163,6 @@ static gint add_address(const gchar *name, const gchar *address, const gchar *al
 
 	if (!name || !address) return -1;
 
-	debug_print( "completion: add_address: %s - %s\n", name, address );
-
 	ae = g_new0(address_entry, 1);
 
 	g_return_val_if_fail(ae != NULL, -1);

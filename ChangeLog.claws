@@ -1,3 +1,146 @@
+2002-12-18 [paul]	0.8.6claws116
+
+	* sync with 0.8.6cvs23
+		see ChangeLog 2002-12-18
+
+2002-12-18 [paul]	0.8.6claws115
+
+	* src/Makefile.am
+	* src/account.c
+	* src/codeconv.c
+	* src/gtkutils.[ch]
+	* src/imap.c
+		sync with 0.8.6cvs22.
+		see ChangeLog 2002-12-17 and 2002-12-18
+
+2002-12-17 [christoph]	0.8.6claws114
+
+	* src/imap.c
+		o don't create a session if imap greeting fails
+		o don't close socket when authentication fails
+		  this is done by imap_session_destroy
+
+2002-12-17 [thorsten]	0.8.6claws113
+
+	* tools/Makefile.am
+	  tools/README
+	  tools/google_msgid.pl	** NEW FILE **
+	  	Added "search for message-id" script and doc
+
+2002-12-17 [thorsten]	0.8.6claws112
+
+	* po/hu.po
+		Updated hungarian translation
+		(updated by Gal Zoltan)
+
+2002-12-16 [christoph]	0.8.6claws111
+
+	* src/addr_compl.c
+		remove stupid addressbook dump to debug output
+	* src/mh.c
+		fix memory leak found by Hiro
+
+2002-12-14 [paul]	0.8.6claws110
+
+	* src/compose.c
+		fix menubar sensitivity on send
+		
+	* src/prefs_filtering.c
+	* src/prefs_matcher.c
+	* src/prefs_scoring.c
+		Fix english ;)
+		
+	* src/common/quoted-printable.h
+		sync: fix typo
+	
+2002-12-13 [christoph]	0.8.6claws109
+
+	* src/Makefile.am
+	* src/manage_window.[ch]
+	* src/gtk/Makefile.am
+	* src/gtk/manage_window.[ch]
+		move manage_window files to gtk directory
+
+2002-12-13 [christoph]	0.8.6claws108
+
+	* src/Makefile.am
+	* src/gtkshruler.[ch]
+	* src/gtk/Makefile.am
+	* src/gtk/gtkshruler.[ch]
+		move gtkshruler files to gtk directory
+
+2002-12-13 [christoph]	0.8.6claws107
+
+	* src/Makefile.am
+        * src/compose.c
+	* src/gtkstext.[ch]		** REMOVE **
+	* src/gtkutils.[ch]
+	* src/textview.c
+	* src/gtk/gtkstext.[ch]		** NEW **
+	* src/gtk/Makefile.am
+		o move stext functions to gtkstext.c to remove
+		  dependency of gtkutils
+		o move gtkstext files to gtk directory
+
+	* src/gtk/Makefile.am
+	* src/gtk/sslcertwindow.[ch]
+		UI stuff can always depend on common code so
+		it's ok to add ../common to include path
+
+2002-12-13 [colin]	0.8.6claws106
+
+	* src/summaryview.c
+		Disconnect sighandlers for mainwindow when
+		quicksearch has the focus
+		Fix bug #653231
+	* src/mainwindow.[ch]
+		Make key_pressed callback public, to be able
+		to disconnect it
+
+2002-12-13 [christoph]	0.8.6claws105
+
+	* src/mh.c
+		create .mh_sequences file in new MH folders
+		(closes feature request [ 523162 ] MH folders should
+		 get a .mh_sequences)
+
+2002-12-13 [colin]	0.8.6claws104
+
+	* src/summaryview.c
+		Better handling of quicksearch show/hide
+		(basically the button stays under the mouse 
+		 when toggled)
+
+2002-12-13 [paul]	0.8.6claws103
+
+	* sync with 0.8.6cvs17
+		see ChangeLog 2002-12-13
+
+2002-12-13 [paul]	0.8.6claws102
+
+	* po/es.po
+		updated by Ricardo Mones Lastra
+
+2002-12-11 [colin]       0.8.6claws101
+
+	* src/folder.c
+		remove statusbar stuff
+	  src/folderview.c
+	  	set statusbar verbosity when moving folders
+
+2002-12-11 [colin]       0.8.6claws100
+        * src/prefs_filtering.c
+        * src/prefs_matcher.c
+        * src/prefs_scoring.c
+		Fix english ;)
+
+2002-12-11 [colin]       0.8.6claws99
+
+	* src/prefs_common.[ch]
+		Add summary_quicksearch_type
+	* src/summaryview.c
+		Save last used quicksearch type
+
 2002-12-11 [jens]       0.8.6claws98
 	* src/prefs_filtering.c
 	* src/prefs_matcher.c

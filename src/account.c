@@ -613,8 +613,8 @@ static void account_edit_create(void)
 
 	gtk_signal_connect (GTK_OBJECT (clist), "select_row",
 			    GTK_SIGNAL_FUNC (account_selected), NULL);
-	gtk_signal_connect (GTK_OBJECT (clist), "row_move",
-			    GTK_SIGNAL_FUNC (account_row_moved), NULL);
+	gtk_signal_connect_after (GTK_OBJECT (clist), "row_move",
+				  GTK_SIGNAL_FUNC (account_row_moved), NULL);
 
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
@@ -766,10 +766,8 @@ static void account_up(void)
 	if (!clist->selection) return;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row > 0) {
+	if (row > 0)
 		gtk_clist_row_move(clist, row, row - 1);
-		account_list_set();
-	}
 }
 
 static void account_down(void)
@@ -780,11 +778,8 @@ static void account_down(void)
 	if (!clist->selection) return;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row < clist->rows - 1) {
+	if (row < clist->rows - 1)
 		gtk_clist_row_move(clist, row, row + 1);
-		account_list_set();
-	}
-
 }
 
 static void account_set_default(void)
@@ -853,10 +848,8 @@ static void account_selected(GtkCList *clist, gint row, gint column,
 static void account_row_moved(GtkCList *clist, gint source_row, gint dest_row)
 {
 	account_list_set();
-	if (gtk_clist_row_is_visible(clist, dest_row) != GTK_VISIBILITY_FULL) {
-		gtk_clist_moveto(clist, dest_row, -1,
-				 source_row < dest_row ? 1.0 : 0.0, 0.0);
-	}
+	if (gtk_clist_row_is_visible(clist, dest_row) != GTK_VISIBILITY_FULL)
+		gtk_clist_moveto(clist, dest_row, -1, 0.5, 0.0);
 }
 
 static void account_key_pressed(GtkWidget *widget, GdkEventKey *event,

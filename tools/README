@@ -1,3 +1,60 @@
+
+Contents of the tools directory:
+-----------------------------------------------------------------------
+
+Action scripts:
+  gpg-sign-syl                  Clear-sign current selection
+  google_msgid.pl               Lookup selected message-id in google
+  uudec                         Decode and display uuencoded images
+
+Addressbook conversion:
+  eud2gc.py                     Convert Eudora addressbook to Gnomecard
+  kmail2sylpheed.pl             Import a Kmail addressbook
+  kmail2sylpheed_v2.pl          Import an exported Kmail addressbook csv file
+  outlook2sylpheed.pl           Import an Outlook generated contact list
+  tb2sylpheed                   Import The Bat! address books
+
+Mailbox conversion:
+  calypso_convert.pl            Import mbox files with attachments from Calypso
+
+Other tools:
+  gif2xface.pl                  Convert a 48x48 GIF file to an X-Face header
+  OOo2sylpheed.pl               Send documents from OpenOffice.org
+  sylprint.pl                   Printing engine, explained in README.sylprint
+
+Sylpheed specific tools:
+  filter_conv.pl                Convert old-style filters to new filtering
+  newscache_clean.pl            Clean up news directory
+  sylpheed-switcher             Run either sylpheed or claws (separate configs)
+  update-po                     Update the .po files named on the command line.
+
+
+Detailed Descriptions:
+-----------------------------------------------------------------------
+
+Action scripts:
+
+* gpg-sign-syl
+  WORKS ON: selection, whole message
+  COMMAND: |gpg-sign-syl|
+  Clear-sign current selection using gpg.
+
+* google_msgid.pl
+  WORKS ON: selection
+  COMMAND: |google_msgid.pl
+  Lookup selected message-id in google using mozilla. Edit the script to use
+  different browsers.
+
+* uudec
+  WORKS ON: current message (or part of multipart message)
+  COMMAND: uudec %f&
+  Decode and display uuencoded images using uudecode.
+
+* More action examples can be found at
+  http://melvin.hadasht.free.fr/home/sylpheed/actions/
+
+-----------------------------------------------------------------------
+
 * calypso_convert.pl
 
   WHAT IT DOES

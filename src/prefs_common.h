@@ -276,6 +276,8 @@ struct _PrefsCommon
 	/* boolean for work offline 
 	   stored here for use in inc.c */
 	gboolean work_offline;
+	
+	gint summary_quicksearch_type;
 
 };
 

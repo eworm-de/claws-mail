@@ -488,10 +488,6 @@ static void scan_tree_func	 (Folder	*folder,
 				  FolderItem	*item,
 				  gpointer	 data);
 				  
-static void key_pressed (GtkWidget *widget, 
-				GdkEventKey *event,
-				gpointer data);
-
 static void toggle_work_offline_cb(MainWindow *mainwin, guint action, GtkWidget *widget);
 
 static void addr_harvest_cb	 ( MainWindow  *mainwin,
@@ -890,7 +886,7 @@ MainWindow *main_window_create(SeparateType type)
 			   GTK_SIGNAL_FUNC(main_window_close_cb), mainwin);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-				GTK_SIGNAL_FUNC(key_pressed), mainwin);
+				GTK_SIGNAL_FUNC(mainwindow_key_pressed), mainwin);
 
 	gtk_widget_realize(window);
 	gtk_widget_add_events(window, GDK_KEY_PRESS_MASK|GDK_KEY_RELEASE_MASK);
@@ -3205,13 +3201,15 @@ static void set_charset_cb(MainWindow *mainwin, guint action,
 {
 	const gchar *str;
 
-	str = conv_get_charset_str((CharSet)action);
-	g_free(prefs_common.force_charset);
-	prefs_common.force_charset = str ? g_strdup(str) : NULL;
+	if (GTK_CHECK_MENU_ITEM(widget)->active) {
+		str = conv_get_charset_str((CharSet)action);
+		g_free(prefs_common.force_charset);
+		prefs_common.force_charset = str ? g_strdup(str) : NULL;
 
-	summary_redisplay_msg(mainwin->summaryview);
-
-	debug_print("forced charset: %s\n", str ? str : "Auto-Detect");
+		summary_redisplay_msg(mainwin->summaryview);
+		
+		debug_print("forced charset: %s\n", str ? str : "Auto-Detect");
+	}
 }
 
 static void hide_read_messages (MainWindow *mainwin, guint action,
@@ -3262,7 +3260,8 @@ static void sort_summary_cb(MainWindow *mainwin, guint action,
 	GtkWidget *menuitem;
 
 	if (mainwin->menu_lock_count) return;
-	if (item) {
+
+	if (GTK_CHECK_MENU_ITEM(widget)->active && item) {
 		menuitem = gtk_item_factory_get_item
 			(mainwin->menu_factory, "/View/Sort/Ascending");
 		summary_sort(mainwin->summaryview, (FolderSortKey)action,
@@ -3277,7 +3276,8 @@ static void sort_summary_type_cb(MainWindow *mainwin, guint action,
 	FolderItem *item = mainwin->summaryview->folder_item;
 
 	if (mainwin->menu_lock_count) return;
-	if (item)
+
+	if (GTK_CHECK_MENU_ITEM(widget)->active && item)
 		summary_sort(mainwin->summaryview,
 			     item->sort_key, (FolderSortType)action);
 }
@@ -3507,7 +3507,8 @@ static void scan_tree_func(Folder *folder, FolderItem *item, gpointer data)
 #define BREAK_ON_MODIFIER_KEY() \
 	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) != 0) break
 
-static void key_pressed (GtkWidget *widget, GdkEventKey *event,	gpointer data)
+void mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
+				    gpointer data)
 {
 	MainWindow *mainwin = (MainWindow*) data;
 	

@@ -2652,7 +2652,9 @@ static void folderview_move_to(FolderView *folderview, FolderItem *from_folder,
 	gtk_widget_set_sensitive(GTK_WIDGET(folderview->ctree), FALSE);
 	inc_lock();
 	main_window_cursor_wait(folderview->mainwin);
+	statusbar_verbosity_set(TRUE);
 	if ((status = folder_item_move_to(from_folder, to_folder, &new_folder)) == F_MOVE_OK) {
+		statusbar_verbosity_set(FALSE);
 		main_window_cursor_normal(folderview->mainwin);
 		STATUSBAR_POP(folderview->mainwin);
 		if (src_node)
@@ -2668,6 +2670,7 @@ static void folderview_move_to(FolderView *folderview, FolderItem *from_folder,
 				NULL, new_folder->parent), new_folder->folder);
 		folderview_select(folderview, new_folder);
 	} else {
+		statusbar_verbosity_set(FALSE);		
 		main_window_cursor_normal(folderview->mainwin);
 		STATUSBAR_POP(folderview->mainwin);
 		switch (status) {

@@ -175,4 +175,8 @@ void main_window_destroy_all                  (void);
 void main_window_toggle_work_offline          (MainWindow        *mainwin, 
                                                gboolean           offline);
 
+/* public so it can be disabled from summaryview */
+void mainwindow_key_pressed 		      (GtkWidget 	 *widget, 
+					       GdkEventKey 	 *event,
+				   	       gpointer 	  data);
 #endif /* __MAINWINDOW_H__ */

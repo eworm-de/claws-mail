@@ -142,6 +142,7 @@ CLEAN :
 	-@erase "$(INTDIR)\quote_fmt.obj"
 	-@erase "$(INTDIR)\quote_fmt_lex.obj"
 	-@erase "$(INTDIR)\quote_fmt_parse.obj"
+	-@erase "$(INTDIR)\quoted-printable.obj"
 	-@erase "$(INTDIR)\recv.obj"
 	-@erase "$(INTDIR)\rfc2015.obj"
 	-@erase "$(INTDIR)\scoring.obj"
@@ -335,6 +336,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\quote_fmt.obj" \
 	"$(INTDIR)\quote_fmt_lex.obj" \
 	"$(INTDIR)\quote_fmt_parse.obj" \
+	"$(INTDIR)\quoted-printable.obj" \
 	"$(INTDIR)\recv.obj" \
 	"$(INTDIR)\rfc2015.obj" \
 	"$(INTDIR)\scoring.obj" \
@@ -613,6 +615,8 @@ CLEAN :
 	-@erase "$(INTDIR)\quote_fmt_lex.sbr"
 	-@erase "$(INTDIR)\quote_fmt_parse.obj"
 	-@erase "$(INTDIR)\quote_fmt_parse.sbr"
+	-@erase "$(INTDIR)\quoted-printable.obj"
+	-@erase "$(INTDIR)\quoted-printable.sbr"
 	-@erase "$(INTDIR)\recv.obj"
 	-@erase "$(INTDIR)\recv.sbr"
 	-@erase "$(INTDIR)\rfc2015.obj"
@@ -843,6 +847,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\quote_fmt.sbr" \
 	"$(INTDIR)\quote_fmt_lex.sbr" \
 	"$(INTDIR)\quote_fmt_parse.sbr" \
+	"$(INTDIR)\quoted-printable.sbr" \
 	"$(INTDIR)\recv.sbr" \
 	"$(INTDIR)\rfc2015.sbr" \
 	"$(INTDIR)\scoring.sbr" \
@@ -994,6 +999,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\quote_fmt.obj" \
 	"$(INTDIR)\quote_fmt_lex.obj" \
 	"$(INTDIR)\quote_fmt_parse.obj" \
+	"$(INTDIR)\quoted-printable.obj" \
 	"$(INTDIR)\recv.obj" \
 	"$(INTDIR)\rfc2015.obj" \
 	"$(INTDIR)\scoring.obj" \
@@ -1819,7 +1825,7 @@ SOURCE=..\src\gtk\gtksctree.c
 
 !ENDIF 
 
-SOURCE=..\src\gtkshruler.c
+SOURCE=..\src\gtk\gtkshruler.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 
@@ -1837,7 +1843,7 @@ SOURCE=..\src\gtkshruler.c
 
 !ENDIF 
 
-SOURCE=..\src\gtkstext.c
+SOURCE=..\src\gtk\gtkstext.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 
@@ -2197,7 +2203,7 @@ SOURCE=..\src\mainwindow.c
 
 !ENDIF 
 
-SOURCE=..\src\manage_window.c
+SOURCE=..\src\gtk\manage_window.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 
@@ -2948,6 +2954,24 @@ SOURCE=..\src\quote_fmt_parse.c
 
 
 "$(INTDIR)\quote_fmt_parse.obj"	"$(INTDIR)\quote_fmt_parse.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE="..\src\common\quoted-printable.c"
+
+!IF  "$(CFG)" == "sylpheed - Win32 Release"
+
+
+"$(INTDIR)\quoted-printable.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
+
+
+"$(INTDIR)\quoted-printable.obj"	"$(INTDIR)\quoted-printable.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -132,7 +132,7 @@ MATCHER_PARSER_TARGETS=$(MATCHER_PARSER)_lex.c $(MATCHER_PARSER)_parse.c $(MATCH
 
 ### translation
 
-MOFILES=bg.mo cs.mo de.mo el.mo en_GB.mo es.mo fr.mo hr.mo it.mo ja.mo ko.mo nl.mo pl.mo pt_BR.mo ru.mo sr.mo sv.mo
+MOFILES=bg.mo cs.mo de.mo el.mo en_GB.mo es.mo fr.mo hr.mo hu.mo it.mo ja.mo ko.mo nl.mo pl.mo pt_BR.mo ru.mo sr.mo sv.mo
 MONAME=sylpheed.mo
 # avoid check for backslash, different shells need different escaping. yucc!
 CHARSET_RE=\(.*Content-Type: text\/plain; charset=\)\([-a-zA-Z0-9]*\)\(.*\)
@@ -283,6 +283,7 @@ OBJECTS= \
 	quote_fmt.o \
 	quote_fmt_lex.o \
 	quote_fmt_parse.o \
+	quoted-printable.o \
 	recv.o \
 	rfc2015.o \
 	scoring.o \
@@ -507,6 +508,7 @@ matcher_parser_lex.o: 	matcher_parser_lex.c matcher_parser_lex.h
 matcher_parser_parse.o: 	matcher_parser_parse.c matcher_parser_parse.h
 quote_fmt_lex.o:	quote_fmt_lex.c quote_fmt_lex.h
 quote_fmt_parse.o: 	quote_fmt_parse.c quote_fmt_parse.h
+quoted-printable.o:	quoted-printable.c quoted-printable.h
 # win32 additions
 w32_aspell_init.o:	w32_aspell_init.c w32_aspell_init.h
 w32_mailcap.o:	w32_mailcap.c w32_mailcap.h

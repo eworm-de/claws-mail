@@ -26,11 +26,11 @@
 #include <openssl/ssl.h>
 #include <glib.h>
 #include <gtk/gtk.h>
-#include "../common/intl.h"
-#include "../common/ssl_certificate.h"
-#include "../common/utils.h"
+#include "intl.h"
+#include "ssl_certificate.h"
+#include "utils.h"
 #include "../alertpanel.h"
-#include "../common/hooks.h"
+#include "hooks.h"
 
 static void toggle_cert_cb(GtkWidget	*widget,
 			 gpointer	 data);

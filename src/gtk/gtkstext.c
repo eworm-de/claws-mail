@@ -322,7 +322,7 @@ static void advance_mark_n (GtkSPropertyMark* mark, gint n);
 static void decrement_mark_n (GtkSPropertyMark* mark, gint n);
 static void move_mark_n (GtkSPropertyMark* mark, gint n);
 static GtkSPropertyMark find_mark (GtkSText* text, guint mark_position);
-static GtkSPropertyMark find_mark_near (GtkSText* text, guint mark_position, const GtkSPropertyMark* near);
+static GtkSPropertyMark find_mark_near (GtkSText* text, guint mark_position, const GtkSPropertyMark* Xnear);
 static void find_line_containing_point (GtkSText* text, guint point,
 					gboolean scroll);
 
@@ -1086,8 +1086,21 @@ gtk_stext_insert (GtkSText    *text,
 	  memcpy (chars_nt, chars, length);
 	  chars_nt[length] = 0;
 	}
+#ifdef WIN32
+	{
+		int nWritten;
+		int maxlen = (length+1)*2 ;
+		gchar *p_chars = g_malloc0(maxlen);
+		p_chars = g_locale_to_utf8( chars_nt , length , NULL , &nWritten , NULL );
+		if (p_chars)
+			  numwcs = gdk_mbstowcs(text->text.wc + text->gap_position, 
+									p_chars, nWritten);
+		g_free( p_chars );
+	}
+#else
       numwcs = gdk_mbstowcs (text->text.wc + text->gap_position, chars_nt,
- 			     length);
+			     length);
+#endif
       if (chars_nt != chars)
 	g_free(chars_nt);
       if (numwcs < 0)
@@ -2093,9 +2106,20 @@ gtk_stext_insert_text    (GtkEditable       *editable,
   font = property->flags & PROPERTY_FONT ? property->font->gdk_font : NULL; 
   fore = property->flags & PROPERTY_FOREGROUND ? &property->fore_color : NULL; 
   back = property->flags & PROPERTY_BACKGROUND ? &property->back_color : NULL; 
-  
+#ifdef WIN32
+  {
+	gchar *p_new_text, ch;
+	int nWritten;
+	p_new_text = g_strdup(new_text);
+	p_new_text = g_locale_from_utf8( new_text , new_text_length , NULL , &nWritten , NULL );
+	gtk_stext_insert (text, font, fore, back, p_new_text, nWritten );
+	g_free(p_new_text);
+  }
+#else
+
   gtk_stext_insert (text, font, fore, back, new_text, new_text_length);
 
+#endif
   *position = text->point.index;
 }
 
@@ -2297,6 +2321,9 @@ gtk_stext_key_press (GtkWidget   *widget,
 	  gtk_stext_delete_line (text);
 	  break;
 	case GDK_Insert:
+#ifdef WIN32
+	  gtk_stext_freeze(text);
+#endif
 	  if (event->state & GDK_SHIFT_MASK)
 	    {
 	      extend_selection = FALSE;
@@ -2310,6 +2337,9 @@ gtk_stext_key_press (GtkWidget   *widget,
 	    {
 	      /* gtk_toggle_insert(text) -- IMPLEMENT */
 	    }
+#ifdef WIN32
+	  gtk_stext_thaw(text);
+#endif
 	  break;
 	case GDK_Delete:
 	  if (event->state & GDK_CONTROL_MASK)
@@ -2558,11 +2588,11 @@ gtk_stext_disconnect (GtkAdjustment *adjustment,
 
 
 static GtkSPropertyMark
-find_this_line_start_mark (GtkSText* text, guint point_position, const GtkSPropertyMark* near)
+find_this_line_start_mark (GtkSText* text, guint point_position, const GtkSPropertyMark* Xnear)
 {
   GtkSPropertyMark mark;
   
-  mark = find_mark_near (text, point_position, near);
+  mark = find_mark_near (text, point_position, Xnear);
   
   while (mark.index > 0 &&
 	 GTK_STEXT_INDEX (text, mark.index - 1) != LINE_DELIM)
@@ -3762,17 +3792,17 @@ find_mark (GtkSText* text, guint mark_position)
  * You can also start from the end, what a drag.
  */
 static GtkSPropertyMark
-find_mark_near (GtkSText* text, guint mark_position, const GtkSPropertyMark* near)
+find_mark_near (GtkSText* text, guint mark_position, const GtkSPropertyMark* Xnear)
 {
   gint diffa;
   gint diffb;
   
   GtkSPropertyMark mark;
   
-  if (!near)
+  if (!Xnear)
     diffa = mark_position + 1;
   else
-    diffa = mark_position - near->index;
+    diffa = mark_position - Xnear->index;
   
   diffb = mark_position;
   
@@ -3781,7 +3811,7 @@ find_mark_near (GtkSText* text, guint mark_position, const GtkSPropertyMark* nea
   
   if (diffa <= diffb)
     {
-      mark = *near;
+      mark = *Xnear;
     }
   else
     {
@@ -5684,8 +5714,13 @@ undraw_cursor (GtkSText* text, gint absolute)
 	{
 	  draw_bg_rect (text, &text->cursor_mark, 
 			text->cursor_pos_x,
-			text->cursor_pos_y - text->cursor_char_offset - font->ascent,
+#ifdef WIN32
+                        text->cursor_pos_y - text->cursor_char_offset - font->ascent - 1,
+			2, font->descent + font->ascent + 2, FALSE);
+#else
+                        text->cursor_pos_y - text->cursor_char_offset - font->ascent,
 			2, font->descent + font->ascent + 1, FALSE);
+#endif
 	}
 
       if (text->cursor_char)

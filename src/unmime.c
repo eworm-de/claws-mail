@@ -27,11 +27,10 @@
 
 #include "codeconv.h"
 #include "base64.h"
+#include "quoted-printable.h"
 
 #define ENCODED_WORD_BEGIN	"=?"
 #define ENCODED_WORD_END	"?="
-
-static gboolean get_hex_value(gchar *out, gchar c1, gchar c2);
 
 /* Decodes headers based on RFC2045 and RFC2047. */
 
@@ -100,29 +99,11 @@ void unmime_header(gchar *out, const gchar *str)
 					    eword_end_p - (text_begin_p + 1));
 			decoded_text[len] = '\0';
 		} else if (encoding == 'Q') {
-			const gchar *ep = text_begin_p + 1;
-			gchar *dp;
-
-			dp = decoded_text = g_malloc(eword_end_p - ep + 1);
-
-			while (ep < eword_end_p) {
-				if (*ep == '=' && ep + 3 <= eword_end_p) {
-					if (get_hex_value(dp, ep[1], ep[2])
-					    == TRUE) {
-						ep += 3;
-					} else {
-						*dp = *ep++;
-					}
-				} else if (*ep == '_') {
-					*dp = ' ';
-					ep++;
-				} else {
-					*dp = *ep++;
-				}
-				dp++;
-			}
-
-			*dp = '\0';
+			decoded_text = g_malloc
+				(eword_end_p - (text_begin_p + 1) + 1);
+			len = qp_decode_q_encoding
+				(decoded_text, text_begin_p + 1,
+				 eword_end_p - (text_begin_p + 1));
 		} else {
 			memcpy(outp, p, eword_end_p + 2 - p);
 			outp += eword_end_p + 2 - p;
@@ -152,60 +133,4 @@ void unmime_header(gchar *out, const gchar *str)
 	}
 
 	*outp = '\0';
-}
-
-gint unmime_quoted_printable_line(gchar *str)
-{
-	gchar *inp = str, *outp = str;
-
-	while (*inp != '\0') {
-		if (*inp == '=') {
-			if (inp[1] && inp[2] &&
-			    get_hex_value(outp, inp[1], inp[2]) == TRUE) {
-				inp += 3;
-			} else if (inp[1] == '\0' || isspace(inp[1])) {
-				/* soft line break */
-				break;
-			} else {
-				/* broken QP string */
-				*outp = *inp++;
-			}
-		} else {
-			*outp = *inp++;
-		}
-		outp++;
-	}
-
-	*outp = '\0';
-
-	return outp - str;
-}
-
-#define HEX_TO_INT(val, hex)			\
-{						\
-	gchar c = hex;				\
-						\
-	if ('0' <= c && c <= '9') {		\
-		val = c - '0';			\
-	} else if ('a' <= c && c <= 'f') {	\
-		val = c - 'a' + 10;		\
-	} else if ('A' <= c && c <= 'F') {	\
-		val = c - 'A' + 10;		\
-	} else {				\
-		val = -1;			\
-	}					\
-}
-
-static gboolean get_hex_value(gchar *out, gchar c1, gchar c2)
-{
-	gint hi, lo;
-
-	HEX_TO_INT(hi, c1);
-	HEX_TO_INT(lo, c2);
-
-	if (hi == -1 || lo == -1)
-		return FALSE;
-
-	*out = (hi << 4) + lo;
-	return TRUE;
 }

@@ -122,33 +122,14 @@ gchar *gtkut_editable_get_selection	(GtkEditable	*editable);
 void gtkut_container_remove		(GtkContainer	*container,
 					 GtkWidget	*widget);
 
-gboolean gtkut_stext_match_string	(GtkSText	*text,
-					 gint		 pos,
-					 wchar_t	*wcs,
-					 gint		 len,
-					 gboolean	 case_sens);
-guint gtkut_stext_str_compare_n		(GtkSText	*text,
-					 guint		 pos1,
-					 guint		 pos2,
-					 guint		 len,
-					 guint		 text_len);
-guint gtkut_stext_str_compare		(GtkSText	*text,
-					 guint		 start_pos,
-					 guint		 text_len,
-					 const gchar	*str);
-gboolean gtkut_stext_is_uri_string	(GtkSText	*text,
-					 guint		 start_pos,
-					 guint		 text_len);
-void gtk_stext_clear			(GtkSText	*text);
-
-void gtkut_widget_disable_theme_engine	(GtkWidget	*widget);
-void gtkut_widget_wait_for_draw		(GtkWidget	*widget);
-void gtkut_widget_get_uposition		(GtkWidget	*widget,
-					 gint		*px,
-					 gint		*py);
 
 void gtkut_window_popup			(GtkWidget	*window);
 
+void gtkut_widget_get_uposition		(GtkWidget	*widget,
+					 gint		*px,
+					 gint		*py);
+void gtkut_widget_disable_theme_engine	(GtkWidget	*widget);
+void gtkut_widget_wait_for_draw		(GtkWidget	*widget);
 void gtkut_widget_init			(void);
 
 void gtkut_widget_set_app_icon		(GtkWidget	*widget);

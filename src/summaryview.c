@@ -269,6 +269,9 @@ static void summary_key_pressed		(GtkWidget		*ctree,
 static void summary_searchbar_pressed	(GtkWidget		*ctree,
 					 GdkEventKey		*event,
 					 SummaryView		*summaryview);
+static void summary_searchbar_focus_evt	(GtkWidget		*ctree,
+					 GdkEventFocus		*event,
+					 SummaryView		*summaryview);
 static void summary_searchtype_changed	(GtkMenuItem 		*widget, 
 					 gpointer 		 data);
 static void summary_open_row		(GtkSCTree		*sctree,
@@ -489,7 +492,8 @@ SummaryView *summary_create(void)
 	debug_print("Creating summary view...\n");
 	summaryview = g_new0(SummaryView, 1);
 
-	vbox = gtk_vbox_new(FALSE, 3);
+#define SUMMARY_VBOX_SPACING 3
+	vbox = gtk_vbox_new(FALSE, SUMMARY_VBOX_SPACING);
 	
 	/* create status label */
 	hbox = gtk_hbox_new(FALSE, 0);
@@ -574,6 +578,9 @@ SummaryView *summary_create(void)
 			   summaryview);
 
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(search_type_opt), search_type);
+	
+	gtk_option_menu_set_history(GTK_OPTION_MENU(search_type_opt), prefs_common.summary_quicksearch_type);
+	
 	gtk_widget_show(search_type);
 	
 	search_string = gtk_entry_new();
@@ -587,8 +594,16 @@ SummaryView *summary_create(void)
 			   GTK_SIGNAL_FUNC(summary_searchbar_pressed),
 			   summaryview);
 
+	gtk_signal_connect(GTK_OBJECT(search_string), "focus_in_event",
+			   GTK_SIGNAL_FUNC(summary_searchbar_focus_evt),
+			   summaryview);
+
+	gtk_signal_connect(GTK_OBJECT(search_string), "focus_out_event",
+			   GTK_SIGNAL_FUNC(summary_searchbar_focus_evt),
+			   summaryview);
+
   	gtk_signal_connect (GTK_OBJECT(toggle_search), "toggled",
-                        GTK_SIGNAL_FUNC(tog_searchbar_cb), hbox_search);
+                        GTK_SIGNAL_FUNC(tog_searchbar_cb), summaryview);
 
 	/* create popup menu */
 	n_entries = sizeof(summary_popup_entries) /
@@ -4773,21 +4788,59 @@ static void summary_searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 	 	summary_show(summaryview, summaryview->folder_item);
 }
 
+static void summary_searchbar_focus_evt(GtkWidget *widget, GdkEventFocus *event,
+				SummaryView *summaryview)
+{
+	if (event != NULL && event->in)
+		gtk_signal_handler_block_by_func(GTK_OBJECT(summaryview->mainwin->window), 
+						 GTK_SIGNAL_FUNC(mainwindow_key_pressed),
+                                         	 summaryview->mainwin);
+	else
+		gtk_signal_handler_unblock_by_func(GTK_OBJECT(summaryview->mainwin->window), 
+						   GTK_SIGNAL_FUNC(mainwindow_key_pressed),
+                                         	   summaryview->mainwin);
+}
+
 static void summary_searchtype_changed(GtkMenuItem *widget, gpointer data)
 {
 	SummaryView *sw = (SummaryView *)data;
+	prefs_common.summary_quicksearch_type = GPOINTER_TO_INT(gtk_object_get_user_data(
+				   GTK_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
+				   GTK_MENU(sw->search_type))))));
+
 	if (gtk_entry_get_text(GTK_ENTRY(sw->search_string)))
 	 	summary_show(sw, sw->folder_item);
 }
 
 static void tog_searchbar_cb(GtkWidget *w, gpointer data)
 {
+	SummaryView *summaryview = (SummaryView *)data;
+	GtkWidget *hbox= summaryview->hbox_search;
+	GtkAllocation size = hbox->allocation;
+	GtkAllocation msgview_size = summaryview->messageview->vbox->allocation;
+	GtkAllocation parent_size = summaryview->vbox->allocation;
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w))) {
 		prefs_common.show_searchbar = TRUE;
- 		gtk_widget_show(GTK_WIDGET(data));
+ 		gtk_widget_show(hbox);
+		if (!prefs_common.sep_msg && messageview_is_visible(summaryview->messageview)
+		&&  msgview_size.height > 1 && parent_size.height > 1) {
+			gtk_widget_set_usize(GTK_WIDGET(summaryview->messageview->vbox),
+						-1,msgview_size.height - size.height - SUMMARY_VBOX_SPACING);
+			gtk_widget_set_usize(GTK_WIDGET(summaryview->vbox),
+						-1,parent_size.height + size.height + SUMMARY_VBOX_SPACING);
+			gtk_paned_set_position(GTK_PANED(summaryview->vbox->parent),-1);
+		}
 	} else {
 		prefs_common.show_searchbar = FALSE;
-		gtk_widget_hide(GTK_WIDGET(data));
+		gtk_widget_hide(hbox);
+		if (!prefs_common.sep_msg && messageview_is_visible(summaryview->messageview)
+		&&  msgview_size.height > 1 && parent_size.height > 1) {
+			gtk_widget_set_usize(GTK_WIDGET(summaryview->messageview->vbox),
+						-1,msgview_size.height + size.height + SUMMARY_VBOX_SPACING);
+			gtk_widget_set_usize(GTK_WIDGET(summaryview->vbox),
+						-1,parent_size.height - size.height - SUMMARY_VBOX_SPACING);
+			gtk_paned_set_position(GTK_PANED(summaryview->vbox->parent),-1);
+		}
 	}
 }
 
