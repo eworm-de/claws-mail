@@ -1,3 +1,9 @@
+2002-08-16 [paul]	0.8.1claws67
+
+	* src/toolbar.h
+		fix bug where 'Compose News' icon showed wrong
+		tooltip
+
 2002-08-16 [paul]	0.8.1claws66
 
 	* sync with 0.8.1cvs24
