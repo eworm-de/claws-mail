@@ -43,6 +43,9 @@ typedef enum
 	CONN_DISCONNECTED,
 } ConnectionState;
 
+typedef gint (*SockConnectFunc)		(SockInfo	*sock,
+					 gpointer	 data);
+
 struct _SockInfo
 {
 #if USE_GIO
@@ -70,6 +73,9 @@ struct hostent *my_gethostbyname	(const gchar *hostname);
 
 SockInfo *sock_connect			(const gchar *hostname, gushort port);
 SockInfo *sock_connect_cmd		(const gchar *hostname, const gchar *tunnelcmd);
+gint sock_connect_async			(const gchar *hostname, gushort port,
+					 SockConnectFunc func, gpointer data);
+gint sock_connect_async_cancel		(gint id);
 
 gint sock_printf	(SockInfo *sock, const gchar *format, ...)
 			 G_GNUC_PRINTF(2, 3);
@@ -79,6 +85,7 @@ gint sock_write_all	(SockInfo *sock, const gchar *buf, gint len);
 gint sock_gets		(SockInfo *sock, gchar *buf, gint len);
 gchar *sock_getline	(SockInfo *sock);
 gint sock_puts		(SockInfo *sock, const gchar *buf);
+gint sock_peek		(SockInfo *sock, gchar *buf, gint len);
 gint sock_close		(SockInfo *sock);
 
 /* Functions to directly work on FD.  They are needed for pipes */

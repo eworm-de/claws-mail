@@ -58,10 +58,12 @@ static gint pop3_getrange_last_recv	(Pop3Session *session,
 					 const gchar *msg);
 static gint pop3_getrange_uidl_send	(Pop3Session *session);
 static gint pop3_getrange_uidl_recv	(Pop3Session *session,
-					 const gchar *msg);
+					 const gchar *data,
+					 guint        len);
 static gint pop3_getsize_list_send	(Pop3Session *session);
 static gint pop3_getsize_list_recv	(Pop3Session *session,
-					 const gchar *msg);
+					 const gchar *data,
+					 guint        len);
 static gint pop3_retr_send		(Pop3Session *session);
 static gint pop3_retr_recv		(Pop3Session *session,
 					 const gchar *data,
@@ -226,41 +228,51 @@ static gint pop3_getrange_uidl_send(Pop3Session *session)
 	return PS_SUCCESS;
 }
 
-static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *msg)
+static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *data,
+				    guint len)
 {
 	gchar id[IDLEN + 1];
+	gchar buf[POPBUFSIZE];
+	gint buf_len;
 	gint num;
 	time_t recv_time;
+	const gchar *p = data;
+	const gchar *lastp = data + len;
+	const gchar *newline;
 
-	if (msg[0] == '.') {
-		session->uidl_is_valid = TRUE;
-		return PS_SUCCESS;
+	while (p < lastp) {
+		if ((newline = memchr(p, '\r', lastp - p)) == NULL)
+			return -1;
+		buf_len = MIN(newline - p, sizeof(buf) - 1);
+		memcpy(buf, p, buf_len);
+		buf[buf_len] = '\0';
+
+		p = newline + 1;
+		if (p < lastp && *p == '\n') p++;
+
+		if (sscanf(buf, "%d %" Xstr(IDLEN) "s", &num, id) != 2)
+			return -1;
+		if (num <= 0 || num > session->count)
+			return -1;
+
+		session->msg[num].uidl = g_strdup(id);
+
+		recv_time = (time_t)g_hash_table_lookup(session->uidl_table, id);
+		session->msg[num].recv_time = recv_time;
+
+		if (!session->ac_prefs->getall && recv_time != RECV_TIME_NONE)
+			session->msg[num].received = TRUE;
+
+		if (!session->new_msg_exist &&
+		    (session->ac_prefs->getall || recv_time == RECV_TIME_NONE ||
+		     session->ac_prefs->rmmail)) {
+			session->cur_msg = num;
+			session->new_msg_exist = TRUE;
+		}
 	}
 
-	if (sscanf(msg, "%d %" Xstr(IDLEN) "s", &num, id) != 2)
-		return -1;
-	if (num <= 0 || num > session->count)
-		return -1;
-
-	session->msg[num].uidl = g_strdup(id);
-
-	if (!session->uidl_table)
-		return PS_CONTINUE;
-
-	recv_time = (time_t)g_hash_table_lookup(session->uidl_table, id);
-	session->msg[num].recv_time = recv_time;
-
-	if (!session->ac_prefs->getall && recv_time != RECV_TIME_NONE)
-		session->msg[num].received = TRUE;
-
-	if (!session->new_msg_exist &&
-	    (session->ac_prefs->getall || recv_time == RECV_TIME_NONE ||
-	     session->ac_prefs->rmmail)) {
-		session->cur_msg = num;
-		session->new_msg_exist = TRUE;
-	}
-
-	return PS_CONTINUE;
+	session->uidl_is_valid = TRUE;
+	return PS_SUCCESS;
 }
 
 static gint pop3_getsize_list_send(Pop3Session *session)
@@ -270,24 +282,38 @@ static gint pop3_getsize_list_send(Pop3Session *session)
 	return PS_SUCCESS;
 }
 
-static gint pop3_getsize_list_recv(Pop3Session *session, const gchar *msg)
+static gint pop3_getsize_list_recv(Pop3Session *session, const gchar *data,
+				   guint len)
 {
+	gchar buf[POPBUFSIZE];
+	gint buf_len;
 	guint num, size;
+	const gchar *p = data;
+	const gchar *lastp = data + len;
+	const gchar *newline;
 
-	if (msg[0] == '.')
-		return PS_SUCCESS;
+	while (p < lastp) {
+		if ((newline = memchr(p, '\r', lastp - p)) == NULL)
+			return -1;
+		buf_len = MIN(newline - p, sizeof(buf) - 1);
+		memcpy(buf, p, buf_len);
+		buf[buf_len] = '\0';
 
-	if (sscanf(msg, "%u %u", &num, &size) != 2) {
-		session->error_val = PS_PROTOCOL;
-		return -1;
+		p = newline + 1;
+		if (p < lastp && *p == '\n') p++;
+
+		if (sscanf(buf, "%u %u", &num, &size) != 2) {
+			session->error_val = PS_PROTOCOL;
+			return -1;
+		}
+
+		if (num > 0 && num <= session->count)
+			session->msg[num].size = size;
+		if (num > 0 && num < session->cur_msg)
+			session->cur_total_bytes += size;
 	}
 
-	if (num > 0 && num <= session->count)
-		session->msg[num].size = size;
-	if (num > 0 && num < session->cur_msg)
-		session->cur_total_bytes += size;
-
-	return PS_CONTINUE;
+	return PS_SUCCESS;
 }
 
 static gint pop3_retr_send(Pop3Session *session)
@@ -381,12 +407,9 @@ Session *pop3_session_new(PrefsAccount *account)
 
 	session = g_new0(Pop3Session, 1);
 
+	session_init(SESSION(session));
+
 	SESSION(session)->type = SESSION_POP3;
-	SESSION(session)->server = NULL;
-	SESSION(session)->port = 0;
-	SESSION(session)->sock = NULL;
-	SESSION(session)->state = SESSION_READY;
-	SESSION(session)->data = NULL;
 
 	SESSION(session)->recv_msg = pop3_session_recv_msg;
 	SESSION(session)->recv_data_finished = pop3_session_recv_data_finished;
@@ -546,6 +569,9 @@ static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
 			prev = cur + 2;
 		else
 			prev = cur + 1;
+
+		if (prev - data < len - 1 && *prev == '.' && *(prev + 1) == '.')
+			prev++;
 
 		if (prev - data >= len)
 			break;
@@ -757,39 +783,16 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 			pop3_getrange_last_send(pop3_session);
 		} else {
 			pop3_session->state = POP3_GETRANGE_UIDL_RECV;
-			return 1;
+			session_recv_data(session, 0, ".\r\n");
 		}
-		break;
-	case POP3_GETRANGE_UIDL_RECV:
-		val = pop3_getrange_uidl_recv(pop3_session, body);
-		if (val == PS_CONTINUE)
-			return 1;
-		else if (val == PS_SUCCESS) {
-			if (pop3_session->new_msg_exist)
-				pop3_getsize_list_send(pop3_session);
-			else
-				pop3_logout_send(pop3_session);
-		} else
-			return -1;
 		break;
 	case POP3_GETSIZE_LIST:
 		pop3_session->state = POP3_GETSIZE_LIST_RECV;
-		return 1;
-	case POP3_GETSIZE_LIST_RECV:
-		val = pop3_getsize_list_recv(pop3_session, body);
-		if (val == PS_CONTINUE)
-			return 1;
-		else if (val == PS_SUCCESS) {
-			if (pop3_lookup_next(pop3_session) == POP3_ERROR)
-				return -1;
-		} else
-			return -1;
+		session_recv_data(session, 0, ".\r\n");
 		break;
 	case POP3_RETR:
 		pop3_session->state = POP3_RETR_RECV;
-		session_recv_data
-			(session,
-			 pop3_session->msg[pop3_session->cur_msg].size, TRUE);
+		session_recv_data(session, 0, ".\r\n");
 		break;
 	case POP3_DELETE:
 		pop3_delete_recv(pop3_session);
@@ -816,24 +819,47 @@ static gint pop3_session_recv_data_finished(Session *session, guchar *data,
 					    guint len)
 {
 	Pop3Session *pop3_session = POP3_SESSION(session);
+	Pop3ErrorValue val = PS_SUCCESS;
 
-	if (len == 0)
-		return -1;
-
-	if (pop3_retr_recv(pop3_session, data, len) < 0)
-		return -1;
-
-	if (pop3_session->ac_prefs->rmmail &&
-	    pop3_session->ac_prefs->msg_leave_time == 0 &&
-	    pop3_session->msg[pop3_session->cur_msg].recv_time
-	    != RECV_TIME_KEEP)
-		pop3_delete_send(pop3_session);
-	else if (pop3_session->cur_msg == pop3_session->count)
-		pop3_logout_send(pop3_session);
-	else {
-		pop3_session->cur_msg++;
-		if (pop3_lookup_next(pop3_session) == POP3_ERROR)
+	switch (pop3_session->state) {
+	case POP3_GETRANGE_UIDL_RECV:
+		val = pop3_getrange_uidl_recv(pop3_session, data, len);
+		if (val == PS_SUCCESS) {
+			if (pop3_session->new_msg_exist)
+				pop3_getsize_list_send(pop3_session);
+			else
+				pop3_logout_send(pop3_session);
+		} else
 			return -1;
+		break;
+	case POP3_GETSIZE_LIST_RECV:
+		val = pop3_getsize_list_recv(pop3_session, data, len);
+		if (val == PS_SUCCESS) {
+			if (pop3_lookup_next(pop3_session) == POP3_ERROR)
+				return -1;
+		} else
+			return -1;
+		break;
+	case POP3_RETR_RECV:
+		if (pop3_retr_recv(pop3_session, data, len) < 0)
+			return -1;
+
+		if (pop3_session->ac_prefs->rmmail &&
+		    pop3_session->ac_prefs->msg_leave_time == 0 &&
+		    pop3_session->msg[pop3_session->cur_msg].recv_time
+		    != RECV_TIME_KEEP)
+			pop3_delete_send(pop3_session);
+		else if (pop3_session->cur_msg == pop3_session->count)
+			pop3_logout_send(pop3_session);
+		else {
+			pop3_session->cur_msg++;
+			if (pop3_lookup_next(pop3_session) == POP3_ERROR)
+				return -1;
+		}
+		break;
+	case POP3_ERROR:
+	default:
+		return -1;
 	}
 
 	return 0;

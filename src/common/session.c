@@ -33,52 +33,55 @@
 #include <sys/signal.h>
 #include <sys/wait.h>
 #include <sys/time.h>
+#include <errno.h>
 
 #include "session.h"
 #include "utils.h"
 
+static gint session_connect_cb		(SockInfo	*sock,
+					 gpointer	 data);
 static gint session_close		(Session	*session);
 
-static gchar *session_recv_msg		(Session	*session);
-
-static guchar *session_read_data	(Session	*session,
-					 guint		 size);
-
-static gint session_send_data_to_sock		(Session	*session,
-						 const guchar	*data,
-						 guint		 size);
-static guchar *session_recv_data_from_sock	(Session	*session,
-						 guint		 size);
-
-static guchar *session_recv_data_from_sock_unescape	(Session *session,
-							 guint	  size,
-							 guint	 *actual_size);
-
-gboolean session_parent_input_cb	(GIOChannel	*source,
+static gboolean session_read_msg_cb	(GIOChannel	*source,
+					 GIOCondition	 condition,
+					 gpointer	 data);
+static gboolean session_read_data_cb	(GIOChannel	*source,
+					 GIOCondition	 condition,
+					 gpointer	 data);
+static gboolean session_write_msg_cb	(GIOChannel	*source,
+					 GIOCondition	 condition,
+					 gpointer	 data);
+static gboolean session_write_data_cb	(GIOChannel	*source,
 					 GIOCondition	 condition,
 					 gpointer	 data);
 
-gboolean session_child_input		(Session	*session);
 
-
-/*!
- *\brief	init session members to zero
- *
- *\param	session to be initialized
- */
 void session_init(Session *session)
 {
-	session->type = 0;
+	session->type = SESSION_UNKNOWN;
 	session->sock = NULL;
-
 	session->server = NULL;
 	session->port = 0;
+#if USE_OPENSSL
+	session->ssl_type = SSL_NONE;
+#endif
 	session->state = SESSION_READY;
 	session->last_access_time = time(NULL);
-	session->data = NULL;
 
-	session->read_ch = NULL;
-	session->write_ch = NULL;
+	gettimeofday(&session->tv_prev, NULL);
+
+	session->conn_id = 0;
+
+	session->sock_ch = NULL;
+	session->io_tag = 0;
+
+	session->read_buf = g_string_sized_new(1024);
+	session->read_data_buf = g_byte_array_new();
+	session->write_buf = NULL;
+	session->write_buf_p = NULL;
+	session->write_buf_len = 0;
+
+	session->data = NULL;
 }
 
 /*!
@@ -96,90 +99,54 @@ void session_init(Session *session)
  */
 gint session_connect(Session *session, const gchar *server, gushort port)
 {
-	pid_t pid;
-	gint pipe_fds1[2], pipe_fds2[2];
-	SockInfo *sock;
-	gchar *str;
-
 	session->server = g_strdup(server);
 	session->port = port;
 
-	if (pipe(pipe_fds1) < 0) {
-		perror("pipe");
-		return -1;
-	}
-	if (pipe(pipe_fds2) < 0) {
-		perror("pipe");
-		close(pipe_fds1[0]);
-		close(pipe_fds1[1]);
-		return -1;
-	}
-
-	if ((pid = fork()) < 0) {
-		perror("fork");
-		return -1;
-	}
-
-	if (pid != 0) {
-		session->child_pid = pid;
-		session->read_ch = g_io_channel_unix_new(pipe_fds2[0]);
-		session->write_ch = g_io_channel_unix_new(pipe_fds1[1]);
-		close(pipe_fds1[0]);
-		close(pipe_fds2[1]);
-		session->read_tag = g_io_add_watch(session->read_ch, G_IO_IN,
-						   session_parent_input_cb,
-						   session);
-		return 0;
-	}
-
-	/* child process */
-
-	session->read_ch = g_io_channel_unix_new(pipe_fds1[0]);
-	session->write_ch = g_io_channel_unix_new(pipe_fds2[1]);
-	close(pipe_fds1[1]);
-	close(pipe_fds2[0]);
-
-	debug_print("session: child: connecting to %s:%d ...\n", server, port);
-
-	if ((sock = sock_connect(server, port)) == NULL) {
-		session_send_msg(session, SESSION_MSG_ERROR,
-				 "can't connect to server.");
+	session->conn_id = sock_connect_async(server, port, session_connect_cb,
+					      session);
+	if (session->conn_id < 0) {
+		g_warning("can't connect to server.");
 		session_close(session);
-		_exit(1);
+		return -1;
 	}
+
+	return 0;
+}
+
+static gint session_connect_cb(SockInfo *sock, gpointer data)
+{
+	Session *session = SESSION(data);
+
+	session->conn_id = 0;
+
+	if (!sock) {
+		g_warning("can't connect to server.");
+		session->state = SESSION_ERROR;
+		return -1;
+	}
+
+	session->sock = sock;
 
 #if USE_OPENSSL
+	sock_set_nonblocking_mode(sock, FALSE);
 	if (session->ssl_type == SSL_TUNNEL && !ssl_init_socket(sock)) {
-		session_send_msg(session, SESSION_MSG_ERROR,
-				 "can't initialize SSL.");
-		session_close(session);
-		_exit(1);
+		g_warning("can't initialize SSL.");
+		session->state = SESSION_ERROR;
+		return -1;
 	}
 #endif
 
 	debug_print("session: child: connected\n");
 
-	session->sock = sock;
+	debug_print("session: connected\n");
+
 	session->state = SESSION_RECV;
+	session->sock_ch = g_io_channel_unix_new(sock->sock);
+	session->io_tag = g_io_add_watch(session->sock_ch, G_IO_IN,
+					 session_read_msg_cb,
+					 session);
 
-	if ((str = sock_getline(sock)) == NULL) {
-		session_send_msg(session, SESSION_MSG_ERROR,
-				 "can't get server response.");
-		session_close(session);
-		_exit(1);
-	}
-	strretchomp(str);
-	session_send_msg(session, SESSION_MSG_NORMAL, str);
-	g_free(str);
-
-	while (session_child_input(session) == TRUE)
-		;
-
-	session_close(session);
-
-	debug_print("session: child: disconnected\n");
-
-	_exit(0);
+	return 0;
 }
 
 /*!
@@ -191,9 +158,7 @@ gint session_connect(Session *session, const gchar *server, gushort port)
  */
 gint session_disconnect(Session *session)
 {
-	debug_print("session: %s: session_disconnect()\n",
-		    session->child_pid == 0 ? "child" : "parent");
-	session_send_msg(session, SESSION_MSG_CONTROL, "DISCONNECT");
+	session_close(session);
 	return 0;
 }
 
@@ -211,6 +176,10 @@ void session_destroy(Session *session)
 	session_close(session);
 	session->destroy(session);
 	g_free(session->server);
+	g_string_free(session->read_buf, TRUE);
+	g_byte_array_free(session->read_data_buf, TRUE);
+	g_free(session->read_data_terminator);
+	g_free(session->write_buf);
 	g_free(session);
 }
 
@@ -264,24 +233,21 @@ static gint session_close(Session *session)
 {
 	g_return_val_if_fail(session != NULL, -1);
 
-	debug_print("session: %s: session_close()\n",
-		    session->child_pid == 0 ? "child" : "parent");
+	debug_print("session_close\n");
 
-	if (session->read_tag > 0) {
-		g_source_remove(session->read_tag);
-		session->read_tag = 0;
+	if (session->conn_id > 0) {
+		sock_connect_async_cancel(session->conn_id);
+		session->conn_id = 0;
 	}
-	
-	if (session->read_ch) {
-		g_io_channel_close(session->read_ch);
-		g_io_channel_unref(session->read_ch);
-		session->read_ch = NULL;
+
+	if (session->io_tag > 0) {
+		g_source_remove(session->io_tag);
+		session->io_tag = 0;
 	}
-	
-	if (session->write_ch) {
-		g_io_channel_close(session->write_ch);
-		g_io_channel_unref(session->write_ch);
-		session->write_ch = NULL;
+
+	if (session->sock_ch) {
+		g_io_channel_unref(session->sock_ch);
+		session->sock_ch = NULL;
 	}
 
 	if (session->sock) {
@@ -290,129 +256,68 @@ static gint session_close(Session *session)
 		session->state = SESSION_DISCONNECTED;
 	}
 
-	if (session->child_pid) {
-		if (session->state != SESSION_DISCONNECTED)
-			kill(session->child_pid, SIGTERM);
-		waitpid(session->child_pid, NULL, 0);
-		session->child_pid = 0;
-	}
-
 	return 0;
-}
-
-/*!
- *\brief	child and parent: send control message to other process
- *
- *\param	session Contains session information
- *		type Kind of data (commands or message data)
- *		msg Data
- *
- *\return	 0 : success
- *		-1 : error
- */
-gint session_send_msg(Session *session, SessionMsgType type, const gchar *msg)
-{
-	gchar *prefix;
-	gchar *str;
-	gchar *cur;
-	guint size;
-	guint bytes_written;
-
-	switch (type) {
-	case SESSION_MSG_NORMAL:
-		prefix = "MESSAGE"; break;
-	case SESSION_MSG_SEND_DATA:
-		prefix = "SENDDATA"; break;
-	case SESSION_MSG_RECV_DATA:
-		prefix = "RECVDATA"; break;
-	case SESSION_MSG_CONTROL:
-		prefix = "CONTROL"; break;
-	case SESSION_MSG_ERROR:
-		prefix = "ERROR"; break;
-	default:
-		return -1;
-	}
-
-	cur = str = g_strdup_printf("%s %s\n", prefix, msg);
-	size = strlen(str);
-
-	while (size > 0) {
-		if (g_io_channel_write(session->write_ch, cur, size,
-				       &bytes_written)
-		    != G_IO_ERROR_NONE || bytes_written == 0) {
-			g_warning("%s: sending message failed.\n",
-				  session->child_pid == 0 ? "child" : "parent");
-			g_free(str);
-			return -1;
-		}
-		size -= bytes_written;
-		cur += bytes_written;
-	}
-
-	g_free(str);
-
-	return 0;
-}
-
-/*!
- *\brief	child and parent receive function
- *
- *\param	session Contains session information
- *
- *\return	Message read by current session
- */
-static gchar *session_recv_msg(Session *session)
-{
-	gchar buf[BUFFSIZE];
-	gchar *str = NULL;
-	guint size = 1;
-	guint bytes_read;
-
-	for (;;) {
-		if (g_io_channel_read(session->read_ch, buf, sizeof(buf) - 1,
-				      &bytes_read)
-		    != G_IO_ERROR_NONE || bytes_read == 0) {
-			g_warning("%s: receiving message failed.\n",
-				  session->child_pid == 0 ? "child" : "parent");
-			g_free(str);
-			str = NULL;
-			break;
-		}
-
-		size += bytes_read;
-		buf[bytes_read] = '\0';
-
-		if (!str)
-			str = g_strdup(buf);
-		else {
-			str = g_realloc(str, size);
-			strcat(str, buf);
-		}
-		if (str[size - 2] == '\n') {
-			str[size - 2] = '\0';
-			break;
-		}
-	}
-
-	return str;
 }
 
 #if USE_OPENSSL
 gint session_start_tls(Session *session)
 {
-	gchar *ctl_msg;
+	gboolean nb_mode;
 
-	session_send_msg(session, SESSION_MSG_CONTROL, "STARTTLS");
-	ctl_msg = session_recv_msg(session);
-	if (!ctl_msg || strcmp(ctl_msg, "CONTROL STARTTLSOK") != 0) {
-		g_free(ctl_msg);
+	nb_mode = sock_is_nonblocking_mode(session->sock);
+
+	if (nb_mode)
+		sock_set_nonblocking_mode(session->sock, FALSE);
+
+	if (!ssl_init_socket_with_method(session->sock, SSL_METHOD_TLSv1)) {
+		g_warning("can't start TLS session.\n");
+		if (nb_mode)
+			sock_set_nonblocking_mode(session->sock, TRUE);
 		return -1;
 	}
-	g_free(ctl_msg);
+
+	if (nb_mode)
+		sock_set_nonblocking_mode(session->sock, TRUE);
 
 	return 0;
 }
 #endif
+
+gint session_send_msg(Session *session, SessionMsgType type, const gchar *msg)
+{
+	gboolean ret;
+
+	g_return_val_if_fail(session->write_buf == NULL, -1);
+	g_return_val_if_fail(msg != NULL, -1);
+	g_return_val_if_fail(msg[0] != '\0', -1);
+
+	session->state = SESSION_SEND;
+	session->write_buf = g_strconcat(msg, "\r\n", NULL);
+	session->write_buf_p = session->write_buf;
+	session->write_buf_len = strlen(msg) + 2;
+
+	ret = session_write_msg_cb(session->sock_ch, G_IO_OUT, session);
+
+	if (ret == TRUE)
+		session->io_tag = g_io_add_watch(session->sock_ch, G_IO_OUT,
+						 session_write_msg_cb, session);
+	else if (session->state == SESSION_ERROR)
+		return -1;
+
+	return 0;
+}
+
+gint session_recv_msg(Session *session)
+{
+	g_return_val_if_fail(session->read_buf->len == 0, -1);
+
+	session->state = SESSION_RECV;
+
+	session->io_tag = g_io_add_watch(session->sock_ch, G_IO_IN,
+					 session_read_msg_cb, session);
+
+	return 0;
+}
 
 /*!
  *\brief	parent (child?): send data to other process
@@ -426,540 +331,327 @@ gint session_start_tls(Session *session)
  */
 gint session_send_data(Session *session, const guchar *data, guint size)
 {
-	gchar *msg;
-	const guchar *cur = data;
-	guint bytes_written;
-	GIOError err;
+	gboolean ret;
 
-	session_send_msg(session, SESSION_MSG_SEND_DATA, itos(size));
-	if ((msg = session_recv_msg(session)) == NULL)
+	g_return_val_if_fail(session->write_buf == NULL, -1);
+	g_return_val_if_fail(data != NULL, -1);
+	g_return_val_if_fail(size != 0, -1);
+
+	session->state = SESSION_SEND;
+
+	session->write_buf = g_malloc(size);
+	session->write_buf_p = session->write_buf;
+	memcpy(session->write_buf, data, size);
+	session->write_buf_len = size;
+	gettimeofday(&session->tv_prev, NULL);
+
+	ret = session_write_data_cb(session->sock_ch, G_IO_OUT, session);
+
+	if (ret == TRUE)
+		session->io_tag = g_io_add_watch(session->sock_ch, G_IO_OUT,
+						 session_write_data_cb,
+						 session);
+	else if (session->state == SESSION_ERROR)
 		return -1;
-	g_free(msg);
-
-	while (size > 0) {
-		if ((err = g_io_channel_write(session->write_ch, (guchar *)cur,
-					      size, &bytes_written))
-		    != G_IO_ERROR_NONE || bytes_written == 0) {
-			g_warning("%s: sending data failed: %d\n",
-				  session->child_pid == 0 ? "child" : "parent",
-				  err);
-			return -1;
-		}
-		size -= bytes_written;
-		cur += bytes_written;
-		debug_print("session: %s: sent %d bytes of data\n",
-			    session->child_pid == 0 ? "child" : "parent",
-			    bytes_written);
-	}
 
 	return 0;
 }
 
-gint session_recv_data(Session *session, guint size, gboolean unescape_dot)
+gint session_recv_data(Session *session, guint size, const gchar *terminator)
 {
-	if (unescape_dot) {
-		gchar buf[BUFFSIZE];
+	g_return_val_if_fail(session->read_data_buf->len == 0, -1);
 
-		g_snprintf(buf, sizeof(buf), "%d UNESCAPE", size);
-		session_send_msg(session, SESSION_MSG_RECV_DATA, buf);
-	} else
-		session_send_msg(session, SESSION_MSG_RECV_DATA, itos(size));
-	return 0;
-}
+	session->state = SESSION_RECV;
 
-/*!
- *\brief	child (parent?): read data from other process
- *
- *\param	session Contains session information
- *		size Bytes to read
- *
- *\return	data read from session
- */
-static guchar *session_read_data(Session *session, guint size)
-{
-	guchar *data;
-	guchar *cur;
-	guint bytes_read;
-	GIOError err;
+	g_free(session->read_data_terminator);
+	session->read_data_terminator = g_strdup(terminator);
+	gettimeofday(&session->tv_prev, NULL);
 
-	cur = data = g_malloc(size);
-
-	while (size > 0) {
-		if ((err = g_io_channel_read(session->read_ch, cur, size,
-					     &bytes_read))
-		    != G_IO_ERROR_NONE || bytes_read == 0) {
-			g_warning("%s: reading data failed: %d\n",
-				  session->child_pid == 0 ? "child" : "parent",
-				  err);
-			g_free(data);
-			return NULL;
-		}
-		size -= bytes_read;
-		cur += bytes_read;
-		debug_print("session: %s: received %d bytes of data\n",
-			    session->child_pid == 0 ? "child" : "parent",
-			    bytes_read);
-	}
-
-	return data;
-}
-
-#define MAX_CHUNK_SIZE 4096
-
-/*!
- *\brief	child: Send session data to server
- *
- *\param	session Contains session information
- *		data Data to send to server
- *		size Bytes to send
- *
- *\return	 0 : success
- *		-1 : error
- */
-static gint session_send_data_to_sock(Session *session, const guchar *data,
-				      guint size)
-{
-	const guchar *cur = data;
-	gint bytes_written;
-	gint total_write_len = 0;
-	guint left = size;
-	gchar buf[BUFFSIZE];
-	gchar *msg;
-	struct timeval tv_prev, tv_cur;
-
-	gettimeofday(&tv_prev, NULL);
-
-	while (1) {
-		bytes_written = sock_write(session->sock, cur,
-					   MIN(left, MAX_CHUNK_SIZE));
-		if (bytes_written <= 0)
-			return -1;
-		left -= bytes_written;
-		cur += bytes_written;
-		total_write_len += bytes_written;
-		if (left == 0)
-			break;
-
-		gettimeofday(&tv_cur, NULL);
-		if (tv_cur.tv_sec - tv_prev.tv_sec > 0 ||
-		    tv_cur.tv_usec - tv_prev.tv_usec > UI_REFRESH_INTERVAL) {
-			g_snprintf(buf, sizeof(buf), "DATASENDINPROG %d %d",
-				   total_write_len, size);
-			session_send_msg(session, SESSION_MSG_CONTROL, buf);
-			if ((msg = session_recv_msg(session)) == NULL)
-				return -1;
-			g_free(msg);
-			gettimeofday(&tv_prev, NULL);
-		}
-	}
+	session->io_tag = g_io_add_watch(session->sock_ch, G_IO_IN,
+					 session_read_data_cb, session);
 
 	return 0;
 }
 
-/*!
- *\brief	child: Read answer/data from server
- *
- *\param	session Contains session information
- *		size Max bytes to receive
- *
- *\return	Server answer
- */
-static guchar *session_recv_data_from_sock(Session *session, guint size)
-{
-	guchar *data;
-	guchar *cur;
-	gint bytes_read;
-	gint total_read_len = 0;
-	guint left = size;
-	gchar buf[BUFFSIZE];
-	gchar *msg;
-	struct timeval tv_prev, tv_cur;
-
-	gettimeofday(&tv_prev, NULL);
-
-	cur = data = g_malloc(size);
-
-	while (1) {
-		bytes_read = sock_read(session->sock, cur, left);
-		if (bytes_read <= 0) {
-			g_free(data);
-			return NULL;
-		}
-		debug_print("session: child: "
-			    "received %d bytes of data from sock\n",
-			    bytes_read);
-		left -= bytes_read;
-		cur += bytes_read;
-		total_read_len += bytes_read;
-		if (left == 0)
-			break;
-
-		gettimeofday(&tv_cur, NULL);
-		if (tv_cur.tv_sec - tv_prev.tv_sec > 0 ||
-		    tv_cur.tv_usec - tv_prev.tv_usec > UI_REFRESH_INTERVAL) {
-			g_snprintf(buf, sizeof(buf), "DATARECVINPROG %d %d",
-				   total_read_len, size);
-			session_send_msg(session, SESSION_MSG_CONTROL, buf);
-			if ((msg = session_recv_msg(session)) == NULL) {
-				g_free(data);
-				return NULL;
-			}
-			g_free(msg);
-			gettimeofday(&tv_prev, NULL);
-		}
-	}
-
-	return data;
-}
-
-static guchar *session_recv_data_from_sock_unescape(Session *session,
-						    guint size,
-						    guint *actual_size)
-{
-	GString *data;
-	guchar *ret_data;
-	gint bytes_read;
-	gchar buf[BUFFSIZE];
-	gchar *msg;
-	struct timeval tv_prev, tv_cur;
-
-	gettimeofday(&tv_prev, NULL);
-
-	data = g_string_sized_new(size + 1);
-	*actual_size = 0;
-
-	while (1) {
-		bytes_read = sock_gets(session->sock, buf, sizeof(buf));
-		if (bytes_read <= 0) {
-			g_string_free(data, TRUE);
-			return NULL;
-		}
-
-		if (buf[0] == '.' && buf[1] == '\r' && buf[2] == '\n')
-			break;
-		if (buf[0] == '.' && buf[1] == '.')
-			g_string_append(data, buf + 1);
-		else
-			g_string_append(data, buf);
-
-		gettimeofday(&tv_cur, NULL);
-		if (tv_cur.tv_sec - tv_prev.tv_sec > 0 ||
-		    tv_cur.tv_usec - tv_prev.tv_usec > UI_REFRESH_INTERVAL) {
-			g_snprintf(buf, sizeof(buf), "DATARECVINPROG %d %d",
-				   data->len, MAX(data->len, size));
-			session_send_msg(session, SESSION_MSG_CONTROL, buf);
-			if ((msg = session_recv_msg(session)) == NULL) {
-				g_string_free(data, TRUE);
-				return NULL;
-			}
-			g_free(msg);
-			gettimeofday(&tv_prev, NULL);
-		}
-	}
-
-	ret_data = data->str;
-	*actual_size = data->len;
-	g_string_free(data, FALSE);
-
-	return ret_data;
-}
-
-/*!
- *\brief	Return if message is an internal command or server data
- *
- *\param	str Message to analyze
- *
- *\return	Type of message
- */
-static SessionMsgType session_get_msg_type(const gchar *str)
-{
-	if (!strncmp(str, "MESSAGE ", 8))
-		return SESSION_MSG_NORMAL;
-	else if (!strncmp(str, "SENDDATA ", 9))
-		return SESSION_MSG_SEND_DATA;
-	else if (!strncmp(str, "RECVDATA ", 9))
-		return SESSION_MSG_RECV_DATA;
-	else if (!strncmp(str, "CONTROL ", 8))
-		return SESSION_MSG_CONTROL;
-	else if (!strncmp(str, "ERROR ", 6))
-		return SESSION_MSG_ERROR;
-	else
-		return SESSION_MSG_UNKNOWN;
-}
-
-/*!
- *\brief	parent: Received data from child
- *
- *\param	source Channel watching child pipe
- *		condition Unused (IN, HUP, OUT)
- *		data Contains session information
- *
- *\return	FALSE to remove watching channel
- */
-gboolean session_parent_input_cb(GIOChannel *source, GIOCondition condition,
-				 gpointer data)
+static gboolean session_read_msg_cb(GIOChannel *source, GIOCondition condition,
+				    gpointer data)
 {
 	Session *session = SESSION(data);
+	gchar buf[SESSION_BUFFSIZE];
+	gint read_len;
+	gint to_read_len;
+	gchar *newline;
 	gchar *msg;
-	gchar *msg_data;
-	gint len;
-	gint total;
-	guchar *recv_data;
-	guint size;
 	gint ret;
 
-	if ((msg = session_recv_msg(session)) == NULL) {
-		session->state = SESSION_ERROR;
-		return FALSE;
+	g_return_val_if_fail(condition == G_IO_IN, FALSE);
+
+	read_len = sock_peek(session->sock, buf, sizeof(buf) - 1);
+
+	if (read_len < 0) {
+		switch (errno) {
+		case EAGAIN:
+			g_print("session_read_msg_cb: %s\n", g_strerror(errno));
+			return TRUE;
+		default:
+			g_warning("sock_peek: %s\n", g_strerror(errno));
+			session->state = SESSION_ERROR;
+			return FALSE;
+		}
 	}
 
-	switch (session_get_msg_type(msg)) {
-	case SESSION_MSG_NORMAL:
-		msg_data = msg + strlen("MESSAGE ");
-		ret = session->recv_msg(session, msg_data);
-		session->recv_msg_notify(session, msg_data,
-					 session->recv_msg_notify_data);
-		if (ret > 0)
-			session_send_msg(session, SESSION_MSG_CONTROL,
-					 "CONTINUE");
-		else if (ret < 0) {
+	if ((newline = memchr(buf, '\n', read_len)) != NULL)
+		to_read_len = newline - buf + 1;
+	else
+		to_read_len = read_len;
+
+	read_len = sock_read(session->sock, buf, to_read_len);
+
+	/* this should always succeed */
+	if (read_len < 0) {
+		switch (errno) {
+		case EAGAIN:
+			g_print("session_read_msg_cb: %s\n", g_strerror(errno));
+			return TRUE;
+		default:
+			g_warning("sock_read: %s\n", g_strerror(errno));
 			session->state = SESSION_ERROR;
-			g_free(msg);
 			return FALSE;
 		}
-		break;
-	case SESSION_MSG_SEND_DATA:
-		msg_data = msg + strlen("SENDDATA ");
-		size = atoi(msg_data);
-		session_send_msg(session, SESSION_MSG_CONTROL, "ACCEPTDATA");
-		recv_data = session_read_data(session, size);
-		if (!recv_data) {
-			session->state = SESSION_ERROR;
-			g_free(msg);
-			return FALSE;
-		}
-		ret = session->recv_data_finished(session, recv_data, size);
-		g_free(recv_data);
-		session->recv_data_notify(session, size,
-					  session->recv_data_notify_data);
-		if (ret > 0)
-			session_send_msg(session, SESSION_MSG_CONTROL,
-					 "CONTINUE");
-		else if (ret < 0) {
-			session->state = SESSION_ERROR;
-			g_free(msg);
-			return FALSE;
-		}
-		break;
-	case SESSION_MSG_RECV_DATA:
-		break;
-	case SESSION_MSG_CONTROL:
-		msg_data = msg + strlen("CONTROL ");
-		if (!strncmp(msg_data, "DATARECVINPROG ", 15)) {
-			ret = sscanf(msg_data,
-				     "DATARECVINPROG %d %d", &len, &total);
-			if (ret != 2) {
-				g_warning("wrong control message: %s\n", msg);
-				session->state = SESSION_ERROR;
-				g_free(msg);
-				return FALSE;
-			}
-			session_send_msg(session, SESSION_MSG_CONTROL,
-					 "CONTINUE");
-			session->recv_data_progressive_notify
-				(session, len, total,
-				 session->recv_data_progressive_notify_data);
-		} else if (!strncmp(msg_data, "DATASENDINPROG ", 15)) {
-			ret = sscanf(msg_data,
-				     "DATASENDINPROG %d %d", &len, &total);
-			if (ret != 2) {
-				g_warning("wrong control message: %s\n", msg);
-				session->state = SESSION_ERROR;
-				g_free(msg);
-				return FALSE;
-			}
-			session_send_msg(session, SESSION_MSG_CONTROL,
-					 "CONTINUE");
-			session->send_data_progressive_notify
-				(session, len, total,
-				 session->send_data_progressive_notify_data);
-		} else if (!strncmp(msg_data, "DATASENT ", 9)) {
-			len = atoi(msg_data + 9);
-			ret = session->send_data_finished(session, len);
-			session->send_data_notify
-				(session, len, session->send_data_notify_data);
-		} else if (!strcmp(msg_data, "DISCONNECTED")) {
-			session->state = SESSION_DISCONNECTED;
-			g_free(msg);
-			return FALSE;
-		} else {
-			g_warning("wrong control message: %s\n", msg);
-			session->state = SESSION_ERROR;
-			g_free(msg);
-			return FALSE;
-		}
-		break;
-	case SESSION_MSG_ERROR:
-	default:
-		g_warning("error from child: %s\n", msg + strlen("ERROR "));
-		session->state = SESSION_ERROR;
-		g_free(msg);
-		return FALSE;
 	}
+
+	buf[read_len] = '\0';
+
+	/* incomplete read */
+	if (read_len == 0 || buf[read_len - 1] != '\n') {
+		g_string_append(session->read_buf, buf);
+		return TRUE;
+	}
+
+	/* complete */
+	strretchomp(buf);
+	g_string_append(session->read_buf, buf);
+
+	if (session->io_tag > 0) {
+		g_source_remove(session->io_tag);
+		session->io_tag = 0;
+	}
+
+	/* callback */
+	msg = g_strdup(session->read_buf->str);
+	g_string_truncate(session->read_buf, 0);
+
+	ret = session->recv_msg(session, msg);
+	session->recv_msg_notify(session, msg, session->recv_msg_notify_data);
 
 	g_free(msg);
-	return TRUE;
+
+	if (ret < 0)
+		session->state = SESSION_ERROR;
+
+	return FALSE;
 }
 
-/*!
- *\brief	child: Receive control message from parent,
- *		transfer data from/to server
- *
- *\param	session Contains session information
- *
- *\return	TRUE if more data is available
- */
-gboolean session_child_input(Session *session)
+static gboolean session_read_data_cb(GIOChannel	*source, GIOCondition condition,
+				     gpointer data)
 {
-	gchar buf[BUFFSIZE];
-	gchar *msg;
-	gchar *msg_data;
-	gchar *str;
-	guchar *send_data;
-	guchar *recv_data;
-	guint size;
-	guint actual_size;
+	Session *session = SESSION(data);
+	gchar buf[SESSION_BUFFSIZE];
+	GByteArray *data_buf;
+	gint read_len;
+	gint terminator_len;
+	gboolean complete = FALSE;
+	gint ret;
 
-	if ((msg = session_recv_msg(session)) == NULL) {
-		session_send_msg(session, SESSION_MSG_ERROR,
-				 "receiving message failed.");
-		session->state = SESSION_ERROR;
-		return FALSE;
+	g_return_val_if_fail(condition == G_IO_IN, FALSE);
+
+	read_len = sock_read(session->sock, buf, sizeof(buf));
+
+	if (read_len < 0) {
+		switch (errno) {
+		case EAGAIN:
+			g_print("session_read_data_cb: %s\n", g_strerror(errno));
+			return TRUE;
+		default:
+			g_warning("sock_read: %s\n", g_strerror(errno));
+			session->state = SESSION_ERROR;
+			return FALSE;
+		}
 	}
 
-	switch (session_get_msg_type(msg)) {
-	case SESSION_MSG_NORMAL:
-		msg_data = msg + strlen("MESSAGE ");
-		session->state = SESSION_SEND;
-		sock_puts(session->sock, msg_data);
-		session->state = SESSION_RECV;
-		str = sock_getline(session->sock);
-		if (!str) {
-			session_send_msg(session, SESSION_MSG_ERROR,
-					 "receiving message failed.");
-			session->state = SESSION_ERROR;
-			g_free(msg);
-			return FALSE;
-		}
-		strretchomp(str);
-		session_send_msg(session, SESSION_MSG_NORMAL, str);
-		g_free(str);
-		break;
-	case SESSION_MSG_SEND_DATA:
-		msg_data = msg + strlen("SENDDATA ");
-		size = atoi(msg_data);
-		session_send_msg(session, SESSION_MSG_CONTROL, "ACCEPTDATA");
-		send_data = session_read_data(session, size);
-		if (!send_data) {
-			session_send_msg(session, SESSION_MSG_ERROR,
-					 "sending data failed.");
-			session->state = SESSION_ERROR;
-			g_free(msg);
-			return FALSE;
-		}
-		session->state = SESSION_SEND;
-		if (session_send_data_to_sock(session, send_data, size) < 0) {
-			session_send_msg(session, SESSION_MSG_ERROR,
-					 "sending data failed.");
-			session->state = SESSION_ERROR;
-			g_free(send_data);
-			g_free(msg);
-			return FALSE;
-		}
-		g_free(send_data);
-		g_snprintf(buf, sizeof(buf), "DATASENT %d", size);
-		session_send_msg(session, SESSION_MSG_CONTROL, buf);
-		break;
-	case SESSION_MSG_RECV_DATA:
-		msg_data = msg + strlen("RECVDATA ");
-		size = atoi(msg_data);
-		session->state = SESSION_RECV;
-		if (strstr(msg_data, "UNESCAPE") != NULL) {
-			recv_data = session_recv_data_from_sock_unescape
-				(session, size, &actual_size);
-			size = actual_size;
-		} else
-			recv_data = session_recv_data_from_sock(session, size);
-		if (!recv_data) {
-			session_send_msg(session, SESSION_MSG_ERROR,
-					 "receiving data failed.");
-			session->state = SESSION_ERROR;
-			g_free(msg);
-			return FALSE;
-		}
-		if (session_send_data(session, recv_data, size) < 0) {
-			session->state = SESSION_ERROR;
-			g_free(recv_data);
-			g_free(msg);
-			return FALSE;
-		}
-		g_free(recv_data);
-		break;
-	case SESSION_MSG_CONTROL:
-		msg_data = msg + strlen("CONTROL ");
-		if (!strcmp(msg_data, "CONTINUE")) {
-			session->state = SESSION_RECV;
-			str = sock_getline(session->sock);
-			if (!str) {
-				session_send_msg(session, SESSION_MSG_ERROR,
-						 "receiving message failed.");
-				session->state = SESSION_ERROR;
-				g_free(msg);
-				return FALSE;
-			}
-			strretchomp(str);
-			session_send_msg(session, SESSION_MSG_NORMAL, str);
-			g_free(str);
-			break;
-#if USE_OPENSSL
-		} else if (!strcmp(msg_data, "STARTTLS")) {
-			if (!ssl_init_socket_with_method(session->sock,
-							 SSL_METHOD_TLSv1)) {
-				session_send_msg(session, SESSION_MSG_ERROR,
-						 "can't start TLS session.");
-				session->state = SESSION_ERROR;
-				g_free(msg);
-				return FALSE;
-			}
-			session_send_msg(session, SESSION_MSG_CONTROL,
-					 "STARTTLSOK");
-			break;
-#endif
-		} else if (!strcmp(msg_data, "DISCONNECT")) {
-			sock_close(session->sock);
-			session->sock = NULL;
-			session->state = SESSION_DISCONNECTED;
-			session_send_msg(session, SESSION_MSG_CONTROL,
-					 "DISCONNECTED");
-			g_free(msg);
-			return FALSE;
-		} else {
-			session_send_msg(session, SESSION_MSG_ERROR,
-					 "wrong control message.");
-			session->state = SESSION_ERROR;
-			g_free(msg);
-			return FALSE;
-		}
-		break;
-	case SESSION_MSG_ERROR:
-	default:
-		session_send_msg(session, SESSION_MSG_ERROR,
-				 "error received from parent.");
-		session->state = SESSION_ERROR;
-		g_free(msg);
-		return FALSE;
+	data_buf = session->read_data_buf;
+
+	g_byte_array_append(data_buf, buf, read_len);
+	terminator_len = strlen(session->read_data_terminator);
+
+	/* check if data is terminated */
+	if (read_len > 0 && data_buf->len >= terminator_len) {
+		if (memcmp(data_buf->data, session->read_data_terminator,
+			   terminator_len) == 0)
+			complete = TRUE;
+		else if (data_buf->len >= terminator_len + 2 &&
+			 memcmp(data_buf->data + data_buf->len -
+				(terminator_len + 2), "\r\n", 2) == 0 &&
+			 memcmp(data_buf->data + data_buf->len -
+				terminator_len, session->read_data_terminator,
+				terminator_len) == 0)
+			complete = TRUE;
 	}
 
-	g_free(msg);
-	return TRUE;
+	/* incomplete read */
+	if (!complete) {
+		struct timeval tv_cur;
+
+		gettimeofday(&tv_cur, NULL);
+		if (tv_cur.tv_sec - session->tv_prev.tv_sec > 0 ||
+		    tv_cur.tv_usec - session->tv_prev.tv_usec >
+		    UI_REFRESH_INTERVAL) {
+			session->recv_data_progressive_notify
+				(session, data_buf->len, 0,
+				 session->recv_data_progressive_notify_data);
+			gettimeofday(&session->tv_prev, NULL);
+		}
+		return TRUE;
+	}
+
+	/* complete */
+	if (session->io_tag > 0) {
+		g_source_remove(session->io_tag);
+		session->io_tag = 0;
+	}
+
+	/* callback */
+	ret = session->recv_data_finished(session, data_buf->data,
+					  data_buf->len - terminator_len);
+	session->recv_data_notify(session, data_buf->len - terminator_len,
+				  session->recv_data_notify_data);
+
+	g_byte_array_set_size(data_buf, 0);
+
+	if (ret < 0)
+		session->state = SESSION_ERROR;
+
+	return FALSE;
+}
+
+static gint session_write_buf(Session *session)
+{
+	gint write_len;
+	gint to_write_len;
+
+	g_return_val_if_fail(session->write_buf != NULL, -1);
+	g_return_val_if_fail(session->write_buf_p != NULL, -1);
+	g_return_val_if_fail(session->write_buf_len > 0, -1);
+
+	to_write_len = session->write_buf_len -
+		(session->write_buf_p - session->write_buf);
+	to_write_len = MIN(to_write_len, SESSION_BUFFSIZE);
+
+	write_len = sock_write(session->sock, session->write_buf_p,
+			       to_write_len);
+
+	if (write_len < 0) {
+		switch (errno) {
+		case EAGAIN:
+			g_print("session_write_cb: %s\n", g_strerror(errno));
+			write_len = 0;
+			break;
+		default:
+			g_warning("sock_write: %s\n", g_strerror(errno));
+			session->state = SESSION_ERROR;
+			return -1;
+		}
+	}
+
+	/* incomplete write */
+	if (session->write_buf_p - session->write_buf + write_len <
+	    session->write_buf_len) {
+		session->write_buf_p += write_len;
+		return 1;
+	}
+
+	g_free(session->write_buf);
+	session->write_buf = NULL;
+	session->write_buf_p = NULL;
+	session->write_buf_len = 0;
+
+	return 0;
+}
+
+static gboolean session_write_msg_cb(GIOChannel *source, GIOCondition condition,
+				     gpointer data)
+{
+	Session *session = SESSION(data);
+	gint ret;
+
+	g_return_val_if_fail(condition == G_IO_OUT, FALSE);
+	g_return_val_if_fail(session->write_buf != NULL, FALSE);
+	g_return_val_if_fail(session->write_buf_p != NULL, FALSE);
+	g_return_val_if_fail(session->write_buf_len > 0, FALSE);
+
+	ret = session_write_buf(session);
+
+	if (ret < 0) {
+		session->state = SESSION_ERROR;
+		return FALSE;
+	} else if (ret > 0)
+		return TRUE;
+
+	if (session->io_tag > 0) {
+		g_source_remove(session->io_tag);
+		session->io_tag = 0;
+	}
+
+	session_recv_msg(session);
+
+	return FALSE;
+}
+
+static gboolean session_write_data_cb(GIOChannel *source,
+				      GIOCondition condition, gpointer data)
+{
+	Session *session = SESSION(data);
+	guint write_buf_len;
+	gint ret;
+
+	g_return_val_if_fail(condition == G_IO_OUT, FALSE);
+	g_return_val_if_fail(session->write_buf != NULL, FALSE);
+	g_return_val_if_fail(session->write_buf_p != NULL, FALSE);
+	g_return_val_if_fail(session->write_buf_len > 0, FALSE);
+
+	write_buf_len = session->write_buf_len;
+
+	ret = session_write_buf(session);
+
+	if (ret < 0) {
+		session->state = SESSION_ERROR;
+		return FALSE;
+	} else if (ret > 0) {
+		struct timeval tv_cur;
+
+		gettimeofday(&tv_cur, NULL);
+		if (tv_cur.tv_sec - session->tv_prev.tv_sec > 0 ||
+		    tv_cur.tv_usec - session->tv_prev.tv_usec >
+		    UI_REFRESH_INTERVAL) {
+			session->send_data_progressive_notify
+				(session,
+				 session->write_buf_p - session->write_buf,
+				 write_buf_len,
+				 session->send_data_progressive_notify_data);
+			gettimeofday(&session->tv_prev, NULL);
+		}
+		return TRUE;
+	}
+
+	if (session->io_tag > 0) {
+		g_source_remove(session->io_tag);
+		session->io_tag = 0;
+	}
+
+	/* callback */
+	ret = session->send_data_finished(session, write_buf_len);
+	session->send_data_notify(session, write_buf_len,
+				  session->send_data_notify_data);
+
+	return FALSE;
 }

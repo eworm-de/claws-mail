@@ -855,6 +855,11 @@ static gint inc_recv_data_progressive(Session *session, guint cur_len,
 
 	g_return_val_if_fail(inc_session != NULL, -1);
 
+	if (pop3_session->state != POP3_RETR &&
+	    pop3_session->state != POP3_RETR_RECV &&
+	    pop3_session->state != POP3_DELETE &&
+	    pop3_session->state != POP3_LOGOUT) return 0;
+
 	inc_dialog = (IncProgressDialog *)inc_session->data;
 	dialog = inc_dialog->dialog;
 
@@ -940,6 +945,11 @@ gint inc_drop_message(const gchar *file, Pop3Session *session)
 static void inc_put_error(IncState istate, const gchar *msg)
 {
 	switch (istate) {
+	case INC_CONNECT_ERROR:
+		if (prefs_common.no_recv_err_panel)
+			break;
+		alertpanel_error(_("Connection failed."));
+		break;
 	case INC_ERROR:
 		if (prefs_common.no_recv_err_panel)
 			break;

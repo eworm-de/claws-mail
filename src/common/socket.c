@@ -24,6 +24,7 @@
 #include <glib.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <netinet/in.h>
@@ -54,7 +55,43 @@
 
 #define BUFFSIZE	8192
 
-guint io_timeout = 60;
+typedef gint (*SockAddrFunc)	(GList		*addr_list,
+				 gpointer	 data);
+
+typedef struct _SockConnectData	SockConnectData;
+typedef struct _SockLookupData	SockLookupData;
+typedef struct _SockAddrData	SockAddrData;
+
+struct _SockConnectData {
+	gint id;
+	gchar *hostname;
+	gushort port;
+	GList *addr_list;
+	GList *cur_addr;
+	SockLookupData *lookup_data;
+	GIOChannel *channel;
+	guint io_tag;
+	SockConnectFunc func;
+	gpointer data;
+};
+
+struct _SockLookupData {
+	gchar *hostname;
+	pid_t child_pid;
+	GIOChannel *channel;
+	guint io_tag;
+	SockAddrFunc func;
+	gpointer data;
+};
+
+struct _SockAddrData {
+	gint addr_len;
+	gpointer addr_data;
+};
+
+static guint io_timeout = 60;
+
+static GList *sock_connect_data_list = NULL;
 
 static gint sock_connect_with_timeout	(gint			 sock,
 					 const struct sockaddr	*serv_addr,
@@ -73,6 +110,27 @@ static gint sock_connect_by_getaddrinfo	(const gchar	*hostname,
 static SockInfo *sockinfo_from_fd(const gchar *hostname,
 				  gushort port,
 				  gint sock);
+static void sock_address_list_free		(GList		*addr_list);
+
+static gboolean sock_connect_async_cb		(GIOChannel	*source,
+						 GIOCondition	 condition,
+						 gpointer	 data);
+static gint sock_connect_async_get_address_info_cb
+						(GList		*addr_list,
+						 gpointer	 data);
+
+static gint sock_connect_address_list_async	(SockConnectData *conn_data);
+
+static gboolean sock_get_address_info_async_cb	(GIOChannel	*source,
+						 GIOCondition	 condition,
+						 gpointer	 data);
+static SockLookupData *sock_get_address_info_async
+						(const gchar	*hostname,
+						 gushort	 port,
+						 SockAddrFunc	 func,
+						 gpointer	 data);
+static gint sock_get_address_info_async_cancel	(SockLookupData	*lookup_data);
+
 
 gint sock_set_io_timeout(guint sec)
 {
@@ -194,6 +252,9 @@ static gint fd_check_io(gint fd, GIOCondition cond)
 {
 	struct timeval timeout;
 	fd_set fds;
+
+	if (is_nonblocking_mode(fd))
+		return 0;
 
 	timeout.tv_sec  = io_timeout;
 	timeout.tv_usec = 0;
@@ -425,6 +486,454 @@ SockInfo *sock_connect(const gchar *hostname, gushort port)
 #endif /* INET6 */
 
 	return sockinfo_from_fd(hostname, port, sock);
+}
+
+static void sock_address_list_free(GList *addr_list)
+{
+	GList *cur;
+
+	for (cur = addr_list; cur != NULL; cur = cur->next) {
+		SockAddrData *addr_data = (SockAddrData *)cur->data;
+		g_free(addr_data->addr_data);
+		g_free(addr_data);
+	}
+
+	g_list_free(addr_list);
+}
+
+/* asynchronous TCP connection */
+
+static gboolean sock_connect_async_cb(GIOChannel *source,
+				      GIOCondition condition, gpointer data)
+{
+	SockConnectData *conn_data = (SockConnectData *)data;
+	gint fd;
+	gint val;
+	gint len;
+	SockInfo *sockinfo;
+
+	fd = g_io_channel_unix_get_fd(source);
+
+	conn_data->io_tag = 0;
+	conn_data->channel = NULL;
+	g_io_channel_unref(source);
+
+	len = sizeof(val);
+	if (getsockopt(fd, SOL_SOCKET, SO_ERROR, &val, &len) < 0) {
+		perror("getsockopt");
+		close(fd);
+		sock_connect_address_list_async(conn_data);
+		return FALSE;
+	}
+
+	if (val != 0) {
+		close(fd);
+		sock_connect_address_list_async(conn_data);
+		return FALSE;
+	}
+
+	sockinfo = g_new0(SockInfo, 1);
+	sockinfo->sock = fd;
+	sockinfo->hostname = g_strdup(conn_data->hostname);
+	sockinfo->port = conn_data->port;
+	sockinfo->state = CONN_ESTABLISHED;
+
+	conn_data->func(sockinfo, conn_data->data);
+
+	sock_connect_async_cancel(conn_data->id);
+
+	return FALSE;
+}
+
+static gint sock_connect_async_get_address_info_cb(GList *addr_list,
+						   gpointer data)
+{
+	SockConnectData *conn_data = (SockConnectData *)data;
+
+	conn_data->addr_list = addr_list;
+	conn_data->cur_addr = addr_list;
+	conn_data->lookup_data = NULL;
+
+	return sock_connect_address_list_async(conn_data);
+}
+
+gint sock_connect_async(const gchar *hostname, gushort port,
+			SockConnectFunc func, gpointer data)
+{
+	static gint id = 1;
+	SockConnectData *conn_data;
+
+	conn_data = g_new0(SockConnectData, 1);
+	conn_data->id = id++;
+	conn_data->hostname = g_strdup(hostname);
+	conn_data->port = port;
+	conn_data->addr_list = NULL;
+	conn_data->cur_addr = NULL;
+	conn_data->io_tag = 0;
+	conn_data->func = func;
+	conn_data->data = data;
+
+	conn_data->lookup_data = sock_get_address_info_async
+		(hostname, port, sock_connect_async_get_address_info_cb,
+		 conn_data);
+
+	if (conn_data->lookup_data == NULL) {
+		g_free(conn_data->hostname);
+		g_free(conn_data);
+		return -1;
+	}
+
+	sock_connect_data_list = g_list_append(sock_connect_data_list,
+					       conn_data);
+
+	return conn_data->id;
+}
+
+gint sock_connect_async_cancel(gint id)
+{
+	SockConnectData *conn_data = NULL;
+	GList *cur;
+
+	for (cur = sock_connect_data_list; cur != NULL; cur = cur->next) {
+		if (((SockConnectData *)cur->data)->id == id) {
+			conn_data = (SockConnectData *)cur->data;
+			break;
+		}
+	}
+
+	if (conn_data) {
+		sock_connect_data_list = g_list_remove(sock_connect_data_list,
+						       conn_data);
+
+		if (conn_data->lookup_data)
+			sock_get_address_info_async_cancel
+				(conn_data->lookup_data);
+
+		if (conn_data->io_tag > 0)
+			g_source_remove(conn_data->io_tag);
+		if (conn_data->channel) {
+			g_io_channel_close(conn_data->channel);
+			g_io_channel_unref(conn_data->channel);
+		}
+
+		sock_address_list_free(conn_data->addr_list);
+		g_free(conn_data->hostname);
+		g_free(conn_data);
+	} else {
+		g_warning("sock_connect_async_cancel: id %d not found.\n", id);
+		return -1;
+	}
+
+	return 0;
+}
+
+static gint sock_connect_address_list_async(SockConnectData *conn_data)
+{
+	SockAddrData *addr_data;
+	struct sockaddr_in ad;
+#ifdef INET6
+	struct sockaddr_in6 ad6;
+#endif
+	struct sockaddr *sa;
+	gint sa_size;
+	gint sock = -1;
+
+	for (; conn_data->cur_addr != NULL;
+	     conn_data->cur_addr = conn_data->cur_addr->next) {
+		addr_data = (SockAddrData *)conn_data->cur_addr->data;
+
+#ifdef INET6
+		if (addr_data->addr_len != 4 && addr_data->addr_len != 16)
+			continue;
+
+		if (addr_data->addr_len == 4) {
+			/* IPv4 address */
+			if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+				perror("socket");
+				conn_data->cur_addr = NULL;
+				break;
+			}
+
+			memset(&ad, 0, sizeof(ad));
+			ad.sin_family = AF_INET;
+			ad.sin_port = htons(conn_data->port);
+			memcpy(&ad.sin_addr, addr_data->addr_data,
+			       addr_data->addr_len);
+
+			sa = (struct sockaddr *)&ad;
+			sa_size = sizeof(ad);
+		} else {
+			/* IPv6 address */
+			if ((sock = socket(AF_INET6, SOCK_STREAM, 0)) < 0) {
+				perror("socket");
+				conn_data->cur_addr = NULL;
+				break;
+			}
+
+			memset(&ad6, 0, sizeof(ad6));
+			ad6.sin6_family = AF_INET6;
+			ad6.sin6_port = htons(conn_data->port);
+			memcpy(&ad6.sin6_addr, addr_data->addr_data,
+			       addr_data->addr_len);
+
+			sa = (struct sockaddr *)&ad6;
+			sa_size = sizeof(ad6);
+		}
+#else /* !INET6 */
+		/* IPv4 only */
+		if (addr_data->addr_len != 4)
+			continue;
+
+		if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+			perror("socket");
+			conn_data->cur_addr = NULL;
+			break;
+		}
+
+		memset(&ad, 0, sizeof(ad));
+		ad.sin_family = AF_INET;
+		ad.sin_port = htons(conn_data->port);
+		memcpy(&ad.sin_addr, addr_data->addr_data, addr_data->addr_len);
+
+		sa = (struct sockaddr *)&ad;
+		sa_size = sizeof(ad);
+#endif
+
+		set_nonblocking_mode(sock, TRUE);
+
+		if (connect(sock, sa, sa_size) < 0) {
+			if (EINPROGRESS == errno) {
+				break;
+			} else {
+				perror("connect");
+				close(sock);
+			}
+		} else
+			break;
+	}
+
+	if (conn_data->cur_addr == NULL) {
+		g_warning("sock_connect_address_list_async: "
+			  "connection to %s:%d failed\n",
+			  conn_data->hostname, conn_data->port);
+		conn_data->func(NULL, conn_data->data);
+		sock_connect_async_cancel(conn_data->id);
+		return -1;
+	}
+
+	conn_data->cur_addr = conn_data->cur_addr->next;
+
+	conn_data->channel = g_io_channel_unix_new(sock);
+	conn_data->io_tag = g_io_add_watch(conn_data->channel, G_IO_IN|G_IO_OUT,
+					   sock_connect_async_cb, conn_data);
+
+	return 0;
+}
+
+/* asynchronous DNS lookup */
+
+static gboolean sock_get_address_info_async_cb(GIOChannel *source,
+					       GIOCondition condition,
+					       gpointer data)
+{
+	SockLookupData *lookup_data = (SockLookupData *)data;
+	GList *addr_list = NULL;
+	SockAddrData *addr_data;
+	guint bytes_read;
+	guint8 addr_len;
+	gchar buf[16];
+
+	for (;;) {
+		if (g_io_channel_read(source, &addr_len, 1, &bytes_read)
+		    != G_IO_ERROR_NONE) {
+			g_warning("sock_get_address_info_async_cb: "
+				  "address length read error\n");
+			break;
+		}
+
+		if (bytes_read == 0)
+			break;
+
+		if (addr_len == 'e') {
+			g_warning("DNS lookup failed\n");
+			break;
+		} else if (addr_len != 4 && addr_len != 16) {
+			g_warning("illegal address length: %d\n", addr_len);
+			break;
+		}
+
+		if (g_io_channel_read(source, buf, addr_len, &bytes_read)
+		    != G_IO_ERROR_NONE) {
+			g_warning("sock_get_address_info_async_cb: "
+				  "address data read error\n");
+			break;
+		}
+
+		if (bytes_read != addr_len) {
+			g_warning("sock_get_address_info_async_cb: "
+				  "incomplete address data\n");
+			break;
+		}
+
+		addr_data = g_new0(SockAddrData, 1);
+		addr_data->addr_len = addr_len;
+		addr_data->addr_data = g_malloc(addr_len);
+		memcpy(addr_data->addr_data, buf, addr_len);
+
+		addr_list = g_list_append(addr_list, addr_data);
+	}
+
+	g_io_channel_close(source);
+	g_io_channel_unref(source);
+
+	kill(lookup_data->child_pid, SIGKILL);
+	waitpid(lookup_data->child_pid, NULL, 0);
+
+	lookup_data->func(addr_list, lookup_data->data);
+
+	g_free(lookup_data->hostname);
+	g_free(lookup_data);
+
+	return FALSE;
+}
+
+static SockLookupData *sock_get_address_info_async(const gchar *hostname,
+						   gushort port,
+						   SockAddrFunc func,
+						   gpointer data)
+{
+	SockLookupData *lookup_data = NULL;
+	gint pipe_fds[2];
+	pid_t pid;
+
+	if (pipe(pipe_fds) < 0) {
+		perror("pipe");
+		func(NULL, data);
+		return NULL;
+	}
+
+	if ((pid = fork()) < 0) {
+		perror("fork");
+		func(NULL, data);
+		return NULL;
+	}
+
+	/* child process */
+	if (pid == 0) {
+#ifdef INET6
+		gint gai_err;
+		struct addrinfo hints, *res, *ai;
+		gchar port_str[6];
+#else /* !INET6 */
+		struct hostent *hp;
+		gchar **addr_list_p;
+#endif /* INET6 */
+		guint8 addr_len;
+
+		close(pipe_fds[0]);
+
+#ifdef INET6
+		memset(&hints, 0, sizeof(hints));
+		/* hints.ai_flags = AI_CANONNAME; */
+		hints.ai_family = AF_UNSPEC;
+		hints.ai_socktype = SOCK_STREAM;
+		hints.ai_protocol = IPPROTO_TCP;
+
+		g_snprintf(port_str, sizeof(port_str), "%d", port);
+
+		gai_err = getaddrinfo(hostname, port_str, &hints, &res);
+		if (gai_err != 0) {
+			g_warning("getaddrinfo for %s:%s failed: %s\n",
+				  hostname, port_str, gai_strerror(gai_err));
+			fd_write(pipe_fds[1], "e", 1);
+			close(pipe_fds[1]);
+			_exit(1);
+		}
+
+		for (ai = res; ai != NULL; ai = ai->ai_next) {
+			if (ai->ai_family == AF_INET) {
+				struct sockaddr_in *ad;
+
+				ad = (struct sockaddr_in *)ai->ai_addr;
+				addr_len = sizeof(ad->sin_addr);
+
+				fd_write(pipe_fds[1], &addr_len, 1);
+				fd_write_all(pipe_fds[1],
+					     (gchar *)&ad->sin_addr,
+					     sizeof(ad->sin_addr));
+			} else if (ai->ai_family == AF_INET6) {
+				struct sockaddr_in6 *ad;
+
+				ad = (struct sockaddr_in6 *)ai->ai_addr;
+				addr_len = sizeof(ad->sin6_addr);
+
+				fd_write(pipe_fds[1], &addr_len, 1);
+				fd_write_all(pipe_fds[1],
+					     (gchar *)&ad->sin6_addr,
+					     sizeof(ad->sin6_addr));
+			}
+		}
+
+		if (res != NULL)
+			freeaddrinfo(res);
+#else /* !INET6 */
+		hp = my_gethostbyname(hostname);
+		if (hp == NULL) {
+			fd_write(pipe_fds[1], "e", 1);
+			close(pipe_fds[1]);
+			_exit(1);
+		}
+
+		addr_len = (guint8)hp->h_length;
+
+		for (addr_list_p = hp->h_addr_list; *addr_list_p != NULL;
+		     addr_list_p++) {
+			fd_write(pipe_fds[1], &addr_len, 1);
+			fd_write_all(pipe_fds[1], *addr_list_p, hp->h_length);
+		}
+#endif /* INET6 */
+
+		close(pipe_fds[1]);
+
+		_exit(0);
+	} else {
+		close(pipe_fds[1]);
+
+		lookup_data = g_new0(SockLookupData, 1);
+		lookup_data->hostname = g_strdup(hostname);
+		lookup_data->child_pid = pid;
+		lookup_data->func = func;
+		lookup_data->data = data;
+
+		lookup_data->channel = g_io_channel_unix_new(pipe_fds[0]);
+		lookup_data->io_tag = g_io_add_watch
+			(lookup_data->channel, G_IO_IN,
+			 sock_get_address_info_async_cb, lookup_data);
+	}
+
+	return lookup_data;
+}
+
+static gint sock_get_address_info_async_cancel(SockLookupData *lookup_data)
+{
+	if (lookup_data->io_tag > 0)
+		g_source_remove(lookup_data->io_tag);
+	if (lookup_data->channel) {
+		g_io_channel_close(lookup_data->channel);
+		g_io_channel_unref(lookup_data->channel);
+	}
+
+	if (lookup_data->child_pid > 0) {
+		kill(lookup_data->child_pid, SIGKILL);
+		waitpid(lookup_data->child_pid, NULL, 0);
+	}
+
+	g_free(lookup_data->hostname);
+	g_free(lookup_data);
+
+	g_print("DNS lookup cancelled\n");
+
+	return 0;
 }
 
 
@@ -728,33 +1237,16 @@ gint sock_puts(SockInfo *sock, const gchar *buf)
 	return sock_write_all(sock, "\r\n", 2);
 }
 
-/* peek at the next socket character without actually reading it */
-gint sock_peek(SockInfo *sock)
+/* peek at the socket data without actually reading it */
+gint sock_peek(SockInfo *sock, gchar *buf, gint len)
 {
-	gint ret, n;
-	gchar ch;
-
 	g_return_val_if_fail(sock != NULL, -1);
 
 #if USE_OPENSSL
-	if (sock->ssl) {
-		if ((n = SSL_peek(sock->ssl, &ch, 1)) < 0)
-			ret = -1;
-		else
-			ret = ch;
-	} else {
+	if (sock->ssl)
+		return SSL_peek(sock->ssl, buf, len);
 #endif
-		if ((n = recv(sock->sock, &ch, 1, MSG_PEEK)) < 0)
-			ret = -1;
-		else
-			ret = ch;
-#if USE_OPENSSL
-	}
-#endif
-
-	if (ret < 0)
-		sock->state = CONN_DISCONNECTED;
-	return ret;
+	return fd_recv(sock->sock, buf, len, MSG_PEEK);
 }
 
 gint sock_close(SockInfo *sock)

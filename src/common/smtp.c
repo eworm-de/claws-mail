@@ -61,12 +61,10 @@ Session *smtp_session_new(void)
 	SMTPSession *session;
 
 	session = g_new0(SMTPSession, 1);
+
+	session_init(SESSION(session));
+
 	SESSION(session)->type             = SESSION_SMTP;
-	SESSION(session)->server           = NULL;
-	SESSION(session)->port             = 0;
-	SESSION(session)->sock             = NULL;
-	SESSION(session)->state            = SESSION_READY;
-	SESSION(session)->data             = NULL;
 
 	SESSION(session)->recv_msg         = smtp_session_recv_msg;
 
@@ -473,7 +471,7 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 
 	/* ignore all multiline responses except for EHLO */
 	if (cont && smtp_session->state != SMTP_EHLO)
-		return 1;
+		return session_recv_msg(session);
 
 	switch (smtp_session->state) {
 	case SMTP_READY:
@@ -556,7 +554,7 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 	}
 
 	if (cont)
-		return 1;
+		return session_recv_msg(session);
 
 	return 0;
 }

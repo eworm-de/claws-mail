@@ -1,3 +1,23 @@
+2003-06-26
+
+	* src/session.c: #include <errno.h> が足りなかったので追加。
+
+2003-06-25
+
+	* src/session.[ch]: 性能とコードデザインの問題を解決するために
+	  Session システムを非ブロッキング I/O で再実装。
+	* src/socket.[ch]: sock_connect_async() と sock_connect_async_cancel()
+	  を追加し、非同期接続を可能にした。
+	  sock_peek(): 実装を変更。
+	* src/pop.c: UIDL/LIST/RETR の応答の受信を最適化。
+
+2003-06-18
+
+	* src/procmsg.c: procmsg_get_thread_tree(): ノードが祖先(parent /
+	  great parent)の場合(主に循環参照の場合に起こる) (メッセージ群の
+	  サンプルを発見した Phillipe Gramoulle さんとパッチを提供した
+	  Alfons さん thanks)。
+
 2003-06-16
 
 	* src/pop.c: pop3_get_uidl_table(): UIDL リストが見つからなかった場合
@@ -12,6 +32,10 @@
 	* src/folder.[ch]: folder_get_status(): 新規。フォルダの配列を引数
 	  として受け取り、それらのステータスを返す。
 	  folder_count_total_msgs(): 削除。
+
+2003-06-06
+
+	* version 0.9.2
 
 2003-06-06
 

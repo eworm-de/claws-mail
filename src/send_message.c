@@ -501,6 +501,10 @@ static gint send_send_data_progressive(Session *session, guint cur_len,
 
 	g_return_val_if_fail(dialog != NULL, -1);
 
+	if (SMTP_SESSION(session)->state != SMTP_SEND_DATA &&
+	    SMTP_SESSION(session)->state != SMTP_EOM)
+		return 0;
+
 	g_snprintf(buf, sizeof(buf), _("Sending message (%d / %d bytes)"),
 		   cur_len, total_len);
 	progress_dialog_set_label(dialog->dialog, buf);
