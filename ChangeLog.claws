@@ -1,3 +1,11 @@
+2003-01-06 [alfons]     0.8.8claws53
+
+	re-organize matcher part 8; more to come
+       
+        * src/matcher.c
+                matcherprop_to_string(): put g_free()s before the
+                switch-case break to fix memleaks                
+
 2003-01-06 [colin]	0.8.8claws52
 
 	* src/summaryview.c

@@ -1142,9 +1142,9 @@ gchar *matcherprop_to_string(const MatcherProp *matcher)
 			matcher_str = g_strdup_printf
 					("%s %s \"%s\"", criteria_str,
 					 matchtype_str, expr);
-		break;
                 g_free(header);
                 g_free(expr);
+		break;
 	}
 
 	return matcher_str;
