@@ -1,3 +1,8 @@
+2004-07-18 [colin]	0.9.12cvs32.3
+
+	* src/sourcewindow.c
+		Proper utf8
+
 2004-07-18 [colin]	0.9.12cvs32.2
 
 	* src/compose.c
