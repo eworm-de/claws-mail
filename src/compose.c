@@ -103,6 +103,8 @@
 #  include "rfc2015.h"
 #endif
 
+#include "quote_fmt.tab.h"
+
 typedef enum
 {
 	COL_MIMETYPE = 0,
@@ -369,6 +371,11 @@ static void followupto_activated	(GtkWidget	*widget,
 static void compose_attach_parts(Compose * compose,
 				 MsgInfo * msginfo);
 
+static gchar *compose_quote_fmt		(Compose	*compose,
+					 MsgInfo	*msginfo,
+					 const gchar	*fmt,
+					 const gchar    * qmark);
+
 static GtkItemFactoryEntry compose_popup_entries[] =
 {
 	{N_("/_Add..."),	NULL, compose_attach_cb, 0, NULL},
@@ -520,11 +527,27 @@ void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
 		if ((fp = procmime_get_text_part(msginfo)) == NULL)
 			g_warning(_("Can't get text part\n"));
 		else {
+			gchar * qmark;
+
+			if (prefs_common.quotemark && *prefs_common.quotemark)
+				qmark = prefs_common.quotemark;
+			else
+				qmark = "> ";
+
+			quote_str = compose_quote_fmt(compose, msginfo,
+						      prefs_common.quotefmt,
+						      qmark);
+
+			/*
 			quote_str = compose_quote_parse_fmt
 				(compose, msginfo, prefs_common.quotefmt);
-			gtk_stext_insert(text, NULL, NULL, NULL, quote_str, -1);
-			g_free(quote_str);
-			compose_quote_file(compose, msginfo, fp);
+			*/
+
+			if (quote_str != NULL)
+				gtk_stext_insert(text, NULL, NULL, NULL,
+						 quote_str, -1);
+			/*			g_free(quote_str); */
+			/* compose_quote_file(compose, msginfo, fp); */
 			fclose(fp);
 		}
 	}
@@ -627,6 +650,8 @@ static void compose_attach_parts(Compose * compose,
 
 	fclose(fp);
 	if (!mimeinfo) return;
+	if (mimeinfo->mime_type == MIME_TEXT)
+		return;
 
 	if ((fp = procmsg_open_message(msginfo)) == NULL) return;
 
@@ -792,25 +817,31 @@ Compose * compose_forward(PrefsAccount * account, MsgInfo *msginfo,
 
 		g_free(msgfile);
 	} else {
+		FILE *fp;
+		gchar *quote_str;
+
 		if ((fp = procmime_get_text_part(msginfo)) == NULL)
 			g_warning(_("Can't get text part\n"));
 		else {
-			/* insert header */
-			gtk_stext_insert(text, NULL, NULL, NULL,
-					_("\n\nBegin forwarded message:\n\n"), -1);
-			INSERT_FW_HEADER(date,       "Date: ");
-			INSERT_FW_HEADER(from,       "From: ");
-			INSERT_FW_HEADER(to,         "To: ");
-			INSERT_FW_HEADER(newsgroups, "Newsgroups: ");
-			INSERT_FW_HEADER(subject,    "Subject: ");
-			gtk_stext_insert(text, NULL, NULL, NULL, "\n\n", 2);
+			gchar * qmark;
 
-			/* forward body */
-			while (fgets(buf, sizeof(buf), fp) != NULL)
+			if (prefs_common.fw_quotemark &&
+			    *prefs_common.fw_quotemark)
+				qmark = prefs_common.fw_quotemark;
+			else
+				qmark = "> ";
+
+			quote_str = compose_quote_fmt(compose, msginfo,
+						      prefs_common.fw_quotefmt,
+						      qmark);
+
+			if (quote_str != NULL)
 				gtk_stext_insert(text, NULL, NULL, NULL,
-						buf, -1);
+						 quote_str, -1);
+
 			fclose(fp);
 		}
+
 		compose_attach_parts(compose, msginfo);
 	}
 
@@ -1041,6 +1072,7 @@ static gchar *compose_parse_references(const gchar *ref, const gchar *msgid)
 	return new_ref_str;
 }
 
+/*
 static void compose_quote_file(Compose *compose, MsgInfo *msginfo, FILE *fp)
 {
 	GtkSText *text = GTK_STEXT(compose->text);
@@ -1055,7 +1087,7 @@ static void compose_quote_file(Compose *compose, MsgInfo *msginfo, FILE *fp)
 	gint str_len;
 	gint ch_len;
 
-	/* if (prefs_common.enable_color) qcolor = &quote_color; */
+	// if (prefs_common.enable_color) qcolor = &quote_color;
 	if (prefs_common.quotemark && *prefs_common.quotemark)
 		qmark = prefs_common.quotemark;
 	else
@@ -1141,7 +1173,9 @@ static void compose_quote_file(Compose *compose, MsgInfo *msginfo, FILE *fp)
 
 	g_free(quote_str);
 }
+*/
 
+/*
 static gchar *compose_quote_parse_fmt(Compose *compose, MsgInfo *msginfo,
 				      const gchar *fmt)
 {
@@ -1185,7 +1219,7 @@ static gchar *compose_quote_parse_fmt(Compose *compose, MsgInfo *msginfo,
 				str = msginfo->from;
 				sp++;
 				break;
-			case 'I':	/* initial */
+			case 'I':
 				if (!msginfo->fromname) {sp++; break;}
 				p = msginfo->fromname;
 				tmp[0] = tmp[1] = tmp[2] = '\0';
@@ -1296,6 +1330,7 @@ static gchar *compose_quote_parse_fmt(Compose *compose, MsgInfo *msginfo,
 
 	return ext_str;
 }
+*/
 
 static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				    gboolean to_all, gboolean to_author)
@@ -4373,4 +4408,40 @@ static void compose_toggle_return_receipt_cb(gpointer data, guint action,
 		compose->return_receipt = TRUE;
 	else
 		compose->return_receipt = FALSE;
+}
+
+static gchar *compose_quote_fmt		(Compose	*compose,
+					 MsgInfo	*msginfo,
+					 const gchar	*fmt,
+					 const gchar    *qmark)
+{
+	gchar * quote_str = NULL;
+
+	if (qmark != NULL) {
+		gchar * p;
+
+		quote_fmt_init(msginfo, NULL);
+		quote_fmt_scan_string(qmark);
+		quote_fmtparse();
+
+		p = quote_fmt_get_buffer();
+		if (p == NULL) {
+			alertpanel_error
+				(_("Quote mark format error."));
+		}
+		else {
+			quote_str = alloca(strlen(p) + 1);
+			strcpy(quote_str, p);
+		}
+	}
+
+	quote_fmt_init(msginfo, quote_str);
+	quote_fmt_scan_string(fmt);
+	quote_fmtparse();
+
+	if (quote_fmt_get_buffer() == NULL)
+		alertpanel_error
+			(_("Message reply/forward format error."));
+
+	return quote_fmt_get_buffer();
 }

@@ -62,6 +62,8 @@ struct _PrefsCommon
 	gboolean linewrap_quote;
 	gboolean linewrap_at_send;
 	gboolean show_ruler;
+	gchar *fw_quotemark;
+	gchar *fw_quotefmt;
 
 	/* Display */
 	gchar *widgetfont;

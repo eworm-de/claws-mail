@@ -1,3 +1,22 @@
+2001-06-05 [hoa]
+
+	* added src/quote_fmt.y
+	* added src/quote_fmt.l
+	* added src/quote_fmt.tab.h
+	* added src/quote_fmt.tab.c
+	* added src/lex.quote_fmt.c
+		parsing configuration for replying
+		and forwarding
+
+	* src/Makefile.am
+	* src/prefs_common.[ch]
+		added configuration UI for replying
+		and forwarding
+
+	* src/compose.c
+		using configuration for replying
+		and forwarding
+
 2001-06-04 [hoa]
 
 	* src/filtering.c
