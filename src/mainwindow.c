@@ -1223,7 +1223,8 @@ typedef enum
 	M_ALLOW_REEDIT        = 1 << 5,
 	M_HAVE_ACCOUNT        = 1 << 6,
 	M_THREADED	      = 1 << 7,
-	M_UNTHREADED	      = 1 << 8
+	M_UNTHREADED	      = 1 << 8,
+	M_NEWS                = 1 << 9
 } SensitiveCond;
 
 static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
@@ -1251,6 +1252,9 @@ static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	if (mainwin->summaryview->folder_item &&
 	    mainwin->summaryview->folder_item->folder->type != F_NEWS)
 		state |= M_EXEC;
+	if (mainwin->summaryview->folder_item &&
+	    mainwin->summaryview->folder_item->folder->type == F_NEWS)
+		state |= M_NEWS;
 	if (selection == SUMMARY_SELECTED_SINGLE &&
 	    (mainwin->summaryview->folder_item &&
 	     (mainwin->summaryview->folder_item->stype == F_DRAFT ||
@@ -1322,15 +1326,16 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/View/Show all header"      , M_SINGLE_TARGET_EXIST},
 		{"/View/View source"          , M_SINGLE_TARGET_EXIST},
 
-		{"/Message/Get new mail"         , M_HAVE_ACCOUNT|M_UNLOCKED},
-		{"/Message/Get from all accounts", M_HAVE_ACCOUNT|M_UNLOCKED},
-/*		{"/Message/Compose new message"  , M_HAVE_ACCOUNT}, */
-		{"/Message/Reply"                , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Message/Reply to sender"      , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Message/Reply to all"         , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Message/Forward"              , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Message/Forward as attachment", M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Message/Open in new window"   , M_SINGLE_TARGET_EXIST},
+		{"/Message/Get new mail"          , M_HAVE_ACCOUNT|M_UNLOCKED},
+		{"/Message/Get from all accounts" , M_HAVE_ACCOUNT|M_UNLOCKED},
+/*		{"/Message/Compose new message"   , M_HAVE_ACCOUNT}, */
+		{"/Message/Reply"                 , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Message/Reply to sender"       , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Message/Reply to all"          , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Message/Follow-up and reply to", M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST|M_NEWS},
+		{"/Message/Forward"               , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Message/Forward as attachment" , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Message/Open in new window"    , M_SINGLE_TARGET_EXIST},
 		{"/Message/Re-edit", M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 		{"/Message/Move...", M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Message/Copy...", M_TARGET_EXIST|M_EXEC|M_UNLOCKED},

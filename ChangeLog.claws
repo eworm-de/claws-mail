@@ -1,3 +1,10 @@
+2001-09-26 [paul]	0.6.2claws6
+
+	* src/mainwindow.c
+		make 'Follow-up and reply to' sensitive
+
+	* more sync with sylpheed 0.6.2cvs5
+
 2001-09-25 [melvin]
 
 	* 0.6.2claws5
