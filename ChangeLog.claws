@@ -1,3 +1,8 @@
+2004-09-02 [colin]	0.9.12cvs89
+
+	* src/addrindex.c
+		Free deleted queries too
+
 2004-09-02 [colin]	0.9.12cvs88
 
 	* src/ldapquery.c
