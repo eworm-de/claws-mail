@@ -1,3 +1,11 @@
+2003-03-30 [christoph]	0.8.11claws66
+
+	* src/folder.c
+		don't use default folder for processing folder item because
+		it can be a non local folder
+
+	(fixes bug reported by Stephen Lewis <slewis@paradise.net.nz>)
+
 2003-03-30 [alfons]	0.8.11claws65
 
 	* src/send_message.c

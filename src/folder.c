@@ -2585,44 +2585,51 @@ static gchar * folder_item_get_tree_identifier(FolderItem * item)
 */
 
 /* CLAWS: temporary local folder for filtering */
-static Folder *processing_folder;
+#define TEMP_FOLDER "TEMP_FOLDER"
+#define PROCESSING_FOLDER_ITEM "processing"	
+
 static FolderItem *processing_folder_item;
 
 static void folder_create_processing_folder(void)
 {
-#define PROCESSING_FOLDER ".processing"	
-	Folder	   *tmpparent;
+	Folder *processing_folder;
 	gchar      *tmpname;
 
-	tmpparent = folder_get_default_folder();
-	g_assert(tmpparent);
-	debug_print("tmpparentroot %s\n", LOCAL_FOLDER(tmpparent)->rootpath);
-	if (LOCAL_FOLDER(tmpparent)->rootpath[0] == '/')
-		tmpname = g_strconcat(LOCAL_FOLDER(tmpparent)->rootpath,
-				      G_DIR_SEPARATOR_S, PROCESSING_FOLDER,
+	if ((processing_folder = folder_find_from_name(TEMP_FOLDER, mh_get_class())) == NULL) {
+		gchar *tmppath;
+
+		tmppath =
+		    g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+				"tempfolder", NULL);
+		processing_folder =
+		    folder_new(mh_get_class(), TEMP_FOLDER, tmppath);
+		g_free(tmppath);
+	}
+	g_assert(processing_folder != NULL);
+
+	debug_print("tmpparentroot %s\n", LOCAL_FOLDER(processing_folder)->rootpath);
+	if (LOCAL_FOLDER(processing_folder)->rootpath[0] == '/')
+		tmpname = g_strconcat(LOCAL_FOLDER(processing_folder)->rootpath,
+				      G_DIR_SEPARATOR_S, PROCESSING_FOLDER_ITEM,
 				      NULL);
 	else
 		tmpname = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
-				      LOCAL_FOLDER(tmpparent)->rootpath,
-				      G_DIR_SEPARATOR_S, PROCESSING_FOLDER,
+				      LOCAL_FOLDER(processing_folder)->rootpath,
+				      G_DIR_SEPARATOR_S, PROCESSING_FOLDER_ITEM,
 				      NULL);
-
-	processing_folder = folder_new(mh_get_class(), "PROCESSING", LOCAL_FOLDER(tmpparent)->rootpath);
-	g_assert(processing_folder);
 
 	if (!is_dir_exist(tmpname)) {
 		debug_print("*TMP* creating %s\n", tmpname);
 		processing_folder_item = processing_folder->class->create_folder(processing_folder,
 								   	         processing_folder->node->data,
-										 PROCESSING_FOLDER);
-		g_assert(processing_folder_item);									  
-	}
-	else {
+										 PROCESSING_FOLDER_ITEM);
+	} else {
 		debug_print("*TMP* already created\n");
 		processing_folder_item = folder_item_new(processing_folder, ".processing", ".processing");
 		g_assert(processing_folder_item);
 		folder_item_append(processing_folder->node->data, processing_folder_item);
 	}
+	g_assert(processing_folder_item != NULL);
 	g_free(tmpname);
 }
 
