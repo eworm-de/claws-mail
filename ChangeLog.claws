@@ -9,7 +9,7 @@
 	  src/prefs_filtering.[ch]
 		add filter rename on folder rename and filter
 		delete on folder delete. Patch submitted by
-		Neill Miller <neillm@thecodefactory.com> 
+		Neill Miller <neillm@thecodefactory.org> 
 
 2002-03-14 [christoph]	0.7.4claws3
 
