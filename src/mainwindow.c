@@ -764,6 +764,7 @@ MainWindow *main_window_create(SeparateType type)
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), PROG_VERSION);
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, FALSE);
+	gtk_window_set_wmclass(GTK_WINDOW(window), "main_window", "Sylpheed");
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
 			   GTK_SIGNAL_FUNC(main_window_close_cb), mainwin);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);

@@ -1142,19 +1142,19 @@ static void mh_scan_tree_recursive(FolderItem *item, GHashTable *pptable)
 			new_item = folder_item_new(d->d_name, entry);
 			folder_item_append(item, new_item);
 			if (!item->path) {
-				if (!strcmp(d->d_name, "inbox")) {
+				if (!strcmp(d->d_name, INBOX_DIR)) {
 					new_item->stype = F_INBOX;
 					item->folder->inbox = new_item;
-				} else if (!strcmp(d->d_name, "outbox")) {
+				} else if (!strcmp(d->d_name, OUTBOX_DIR)) {
 					new_item->stype = F_OUTBOX;
 					item->folder->outbox = new_item;
-				} else if (!strcmp(d->d_name, "draft")) {
+				} else if (!strcmp(d->d_name, DRAFT_DIR)) {
 					new_item->stype = F_DRAFT;
 					item->folder->draft = new_item;
-				} else if (!strcmp(d->d_name, "queue")) {
+				} else if (!strcmp(d->d_name, QUEUE_DIR)) {
 					new_item->stype = F_QUEUE;
 					item->folder->queue = new_item;
-				} else if (!strcmp(d->d_name, "trash")) {
+				} else if (!strcmp(d->d_name, TRASH_DIR)) {
 					new_item->stype = F_TRASH;
 					item->folder->trash = new_item;
 				}

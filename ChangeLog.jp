@@ -1,3 +1,14 @@
+2002-02-26
+
+	* src/filesel.c
+	  src/foldersel.c
+	  src/mainwindow.c: ウィンドウ/ダイアログの WMCLASS をセット。
+
+2002-02-25
+
+	* src/mh.c: mh_scan_tree_recursive(): ハードコードされたディレクトリ
+	  名をマクロに変更。
+
 2002-02-24
 
 	* src/messageview.c

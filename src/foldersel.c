@@ -145,6 +145,8 @@ static void foldersel_create(void)
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, TRUE);
+	gtk_window_set_wmclass
+		(GTK_WINDOW(window), "folder_selection", "Sylpheed");
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
 			   GTK_SIGNAL_FUNC(delete_event), NULL);
 	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",

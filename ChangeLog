@@ -1,3 +1,14 @@
+2002-02-26
+
+	* src/filesel.c
+	  src/foldersel.c
+	  src/mainwindow.c: set WMCLASS for window/dialog.
+
+2002-02-25
+
+	* src/mh.c: mh_scan_tree_recursive(): changed the hardcoded directory
+	  name to the macros.
+
 2002-02-24
 
 	* src/messageview.c
