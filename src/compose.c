@@ -1621,6 +1621,49 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 
 #undef SET_ENTRY
 
+static void compose_exec_sig(Compose *compose, gchar *sigfile)
+{
+	FILE *tmpfp;
+	pid_t thepid;
+	gchar *sigtext;
+	FILE  *sigprg;
+	gchar  *buf;
+	size_t buf_len = 128;
+ 
+	if (strlen(sigfile) < 2)
+	  return;
+ 
+	sigprg = popen(sigfile+1, "r");
+	if (sigprg) {
+
+		buf = g_malloc(buf_len);
+
+		if (!buf) {
+			gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, \
+			"Unable to insert signature (malloc failed)\n", -1);
+
+			pclose(sigprg);
+			return;
+		}
+
+		while (!feof(sigprg)) {
+			bzero(buf, buf_len);
+			fread(buf, buf_len-1, 1, sigprg);
+			gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, buf, -1);
+		}
+
+		g_free(buf);
+		pclose(sigprg);
+	}
+	else
+	{
+		gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, \
+		"Can't exec file: ", -1);
+		gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, \
+		sigfile+1, -1);
+	}
+}
+
 static void compose_insert_sig(Compose *compose)
 {
 	gchar *sigfile;
@@ -1632,7 +1675,7 @@ static void compose_insert_sig(Compose *compose)
 				      DEFAULT_SIGNATURE, NULL);
 	}
 
-	if (!is_file_or_fifo_exist(sigfile)) {
+	if (!is_file_or_fifo_exist(sigfile) & (sigfile[0] != '|')) {
 		g_free(sigfile);
 		return;
 	}
@@ -1645,7 +1688,14 @@ static void compose_insert_sig(Compose *compose)
 				"\n", 1);
 	}
 
-	compose_insert_file(compose, sigfile);
+	if (sigfile[0] == '|')
+	{
+		compose_exec_sig(compose, sigfile);
+	}
+	else
+	{
+		compose_insert_file(compose, sigfile);
+	}
 	g_free(sigfile);
 }
 
