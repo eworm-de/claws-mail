@@ -329,8 +329,7 @@ EXTRA_DIST = \
 INCLUDES = \
 	-Icommon \
 	-Igtk \
-	-I$(top_srcdir)/intl \
-	-I$(includedir)
+	-I$(top_srcdir)/intl
 
 sylpheed_LDFLAGS = \
 	-export-dynamic

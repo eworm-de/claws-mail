@@ -54,6 +54,9 @@ sylpheedcommoninclude_HEADERS = \
 	xml.h \
 	xmlprops.h
 
+INCLUDES = \
+	-I$(top_srcdir)/intl
+
 AM_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(OPENSSL_CFLAGS) \

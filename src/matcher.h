@@ -170,5 +170,6 @@ gchar *matching_build_command		(const gchar	*cmd,
 
 void prefs_matcher_read_config		(void);
 void prefs_matcher_write_config		(void);
+void *matcher_parser_scan_string        (gchar          *str);
 
 #endif
