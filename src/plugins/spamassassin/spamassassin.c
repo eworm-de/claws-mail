@@ -63,7 +63,7 @@
 #include <pwd.h>
 #endif
 
-static gint hook_id;
+static guint hook_id;
 static int flags = SPAMC_RAW_MODE | SPAMC_SAFE_FALLBACK | SPAMC_CHECK_ONLY;
 static gchar *username = NULL;
 

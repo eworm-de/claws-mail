@@ -45,21 +45,21 @@ GHookList *hooks_get_hooklist(gchar *hooklist_name)
 	return hooklist;
 }
 
-gint hooks_register_hook(gchar *hooklist_name,
-			 SylpheedHookFunction hook_func,
-			 gpointer userdata)
+guint hooks_register_hook(gchar *hooklist_name,
+			  SylpheedHookFunction hook_func,
+			  gpointer userdata)
 {
 	GHookList *hooklist;
 	GHook *hook;
 
-	g_return_val_if_fail(hooklist_name != NULL, -1);
-	g_return_val_if_fail(hook_func != NULL, -1);
+	g_return_val_if_fail(hooklist_name != NULL, (guint)-1);
+	g_return_val_if_fail(hook_func != NULL, (guint)-1);
 	
 	hooklist = hooks_get_hooklist(hooklist_name);
-	g_return_val_if_fail(hooklist != NULL, -1);
+	g_return_val_if_fail(hooklist != NULL, (guint)-1);
 
 	hook = g_hook_alloc(hooklist);
-	g_return_val_if_fail(hook != NULL, -1);
+	g_return_val_if_fail(hook != NULL, (guint)-1);
 
 	hook->func = hook_func;
 	hook->data = userdata;

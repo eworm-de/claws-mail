@@ -35,7 +35,7 @@
 #include "unreadmail.xpm"
 #include "nomail.xpm"
 
-static gint hook_id;
+static guint hook_id;
 
 static GdkPixmap *newmail_pixmap;
 static GdkPixmap *newmail_bitmap;

@@ -1,3 +1,11 @@
+2003-07-17 [alfons]	0.9.3claws19
+
+	* src/common/hooks.[ch]
+	* src/plugins/clamav/clamav_plugin.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/trayicon/trayicon.c
+		fix signedness muck 
+
 2003-07-17 [alfons]	0.9.3claws18
 
 	* src/procmime.c

@@ -25,7 +25,7 @@
 typedef gboolean (*SylpheedHookFunction)	(gpointer source,
 						 gpointer userdata);
 
-gint hooks_register_hook	(gchar			*hooklist_name,
+guint hooks_register_hook	(gchar			*hooklist_name,
 				 SylpheedHookFunction	 hook_func,
 				 gpointer		 userdata);
 void hooks_unregister_hook	(gchar			*hooklist_name,

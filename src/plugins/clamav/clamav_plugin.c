@@ -38,7 +38,7 @@
 
 #include "clamav_plugin.h"
 
-static gint hook_id;
+static guint hook_id;
 
 static ClamAvConfig config;
 
