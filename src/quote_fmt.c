@@ -56,14 +56,14 @@ static gchar *symbol_table[][2] =
 	{"",		NULL},
 	{"?x{expr}",	N_("Insert expr if x is set\nx is one of the characters above after %")},
 	{"",		NULL},
-	{"\\%", 	N_("Literal %")}, /* % */ 
-	{"\\\\",	N_("Literal backslash")}, /* \ */ 
-	{"\\?",		N_("Literal question mark")}, /* ? */ 
-	{"\\|",		N_("Literal pipe")}, /* | */
+	{"\\%", 	N_("Literal %")},
+	{"\\\\",	N_("Literal backslash")},
+	{"\\?",		N_("Literal question mark")},
+	{"\\|",		N_("Literal pipe")},
 	{"\\{",		N_("Literal opening curly brace")},
 	{"\\}",		N_("Literal closing curly brace")},
 	{"",		NULL},
-	{"|f{file}",	N_("Insert File")}, /* insert file */ 
+	{"|f{file}",	N_("Insert File")},
 	{"|p{command}", N_("Insert program output")}, /* insert program output */ 
 	{NULL,NULL},
 };
