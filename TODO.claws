@@ -6,7 +6,8 @@
 	o with the new cache / mark system done by Christoph, it's
 	  about time to make the cache files endian neutral (bribe
 	  Hiro to accept the new system too)
-	o make sock_gets() use buffered I/O 
+	o make sock_gets() use buffered I/O
+	o more assistence to the Win32 version
 
 [thorsten]
 	
