@@ -1,3 +1,10 @@
+2001-04-27 [darko]
+
+	* configure.in: remove check for availability of
+	  strftime() as advised by Hiroyuki
+	* src/prefs_common.[ch], src/procheader.c:
+	  synch strftime() code with Hiroyki's main branch
+
 2001-04-26 [sergey]
 
 	* src/news.c: news_query_password(), news_authenticate(): new
@@ -16,7 +23,6 @@
 	* src/prefs_common.[ch], src/procheader.c: use
 	  strftime() for displaying date in summary pane if it
 	  is available
-
 
 2001-04-25
 

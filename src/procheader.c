@@ -31,8 +31,8 @@
 #include "procheader.h"
 #include "procmsg.h"
 #include "codeconv.h"
-#include "utils.h"
 #include "prefs_common.h"
+#include "utils.h"
 
 #define BUFFSIZE	8192
 
@@ -524,35 +524,13 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 
 void procheader_date_get_localtime(gchar *dest, gint len, const time_t timer)
 {
-#ifdef HAVE_STRFTIME
 	struct tm *lt;
+	gchar *default_format = "%y/%m/%d(%a) %H:%M";
 
 	lt = localtime(&timer);
 
 	if (prefs_common.date_format)
 		strftime(dest, len, prefs_common.date_format, lt);
 	else
-		*dest = '\0';
-#else
-	static gchar *wdaystr = N_("SunMonTueWedThuFriSat");
-	static gchar *tr_wday = NULL;
-	struct tm *lt;
-	gint wdlen;
-	gchar *wday;
-
-	if (!tr_wday)
-		tr_wday = g_strdup(gettext(wdaystr));
-
-	lt = localtime(&timer);
-
-	wdlen = strlen(tr_wday) / 7;
-	if ((wday = alloca(wdlen + 1))) {
-		strncpy(wday, tr_wday + lt->tm_wday * wdlen, wdlen);
-		wday[wdlen] = '\0';
-	}
-
-	g_snprintf(dest, len, "%02d/%d/%d(%s) %02d:%02d",
-		   lt->tm_year % 100, lt->tm_mon + 1, lt->tm_mday,
-		   wday, lt->tm_hour, lt->tm_min);
-#endif
+		strftime(dest, len, default_format, lt);
 }
