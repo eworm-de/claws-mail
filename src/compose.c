@@ -481,6 +481,9 @@ void compose_headerentry_changed_cb	   (GtkWidget	       *entry,
 void compose_headerentry_key_press_event_cb(GtkWidget	       *entry,
 					    GdkEventKey        *event,
 					    ComposeHeaderEntry *headerentry);
+static gboolean compose_headerentry_button_pressed (GtkWidget *entry, 
+					            GdkEventButton *event,
+						    gpointer data);
 
 static void compose_show_first_last_header (Compose *compose, gboolean show_first);
 
@@ -4583,6 +4586,9 @@ static void compose_create_header_entry(Compose *compose)
         gtk_signal_connect(GTK_OBJECT(entry), "key-press-event", GTK_SIGNAL_FUNC(compose_headerentry_key_press_event_cb), headerentry);
     	gtk_signal_connect(GTK_OBJECT(entry), "changed", GTK_SIGNAL_FUNC(compose_headerentry_changed_cb), headerentry);
     	gtk_signal_connect(GTK_OBJECT(entry), "activate", GTK_SIGNAL_FUNC(text_activated), compose);
+	gtk_signal_connect(GTK_OBJECT(entry), "button-press-event", 
+			   GTK_SIGNAL_FUNC(compose_headerentry_button_pressed),
+			   NULL);
 
 	address_completion_register_entry(GTK_ENTRY(entry));
 
@@ -7116,6 +7122,13 @@ void compose_headerentry_changed_cb(GtkWidget *entry,
 		compose_show_first_last_header(headerentry->compose, FALSE);
 		
 	}
+}
+
+static gboolean compose_headerentry_button_pressed
+	(GtkWidget *entry, GdkEventButton *event, gpointer data)
+{
+	gtk_widget_grab_focus(entry);
+	return TRUE;
 }
 
 static void compose_show_first_last_header(Compose *compose, gboolean show_first)

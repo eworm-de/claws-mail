@@ -1,3 +1,9 @@
+2004-04-02 [alfons]	0.9.8claws61
+
+	* src/compose.c
+		always grab focus when one of the header entries is clicked 
+		(should fix bug #430, "no focus on pasted addresses 3 & higher")
+
 2004-02-02 [paul]
 
 	* ac/missing/gdk-pixbuf.m4
