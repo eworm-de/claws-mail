@@ -587,7 +587,14 @@ gboolean matcherprop_match(const MatcherProp *prop,
 
 /* ********************* MatcherList *************************** */
 
-
+/*!
+ *\brief	Create a new list of matchers 
+ *
+ *\param	matchers List of matcher structures
+ *\param	bool_and Operator
+ *
+ *\return	MatcherList * New list
+ */
 MatcherList *matcherlist_new(GSList *matchers, gboolean bool_and)
 {
 	MatcherList *cond;
@@ -600,6 +607,11 @@ MatcherList *matcherlist_new(GSList *matchers, gboolean bool_and)
 	return cond;
 }
 
+/*!
+ *\brief	Frees a list of matchers
+ *
+ *\param	cond List of matchers
+ */
 void matcherlist_free(MatcherList *cond)
 {
 	GSList *l;
@@ -610,10 +622,11 @@ void matcherlist_free(MatcherList *cond)
 	g_free(cond);
 }
 
-/*
-  skip the headers
+/*!
+ *\brief	Skip all headers in a message file
+ *
+ *\param	fp Message file
  */
-
 static void matcherlist_skip_headers(FILE *fp)
 {
 	gchar buf[BUFFSIZE];
@@ -622,13 +635,16 @@ static void matcherlist_skip_headers(FILE *fp)
 		;
 }
 
-/*
-  matcherprop_match_one_header
-  returns TRUE if buf matchs the MatchersProp criteria
+/*!
+ *\brief	Check if a header matches a matcher condition
+ *
+ *\param	matcher Matcher structure to check header for
+ *\param	buf Header name
+ *
+ *\return	boolean TRUE if matching header
  */
-
-static gboolean matcherprop_match_one_header(MatcherProp *matcher,
-					     gchar *buf)
+static gboolean matcherprop_match_one_header(const MatcherProp *matcher,
+					     const gchar *buf)
 {
 	gboolean result;
 	Header *header;
@@ -662,12 +678,16 @@ static gboolean matcherprop_match_one_header(MatcherProp *matcher,
 	return FALSE;
 }
 
-/*
-  matcherprop_criteria_header
-  returns TRUE if the headers must be matched
+/*!
+ *\brief	Check if the matcher structure wants headers to
+ *		be matched
+ *
+ *\param	matcher Matcher structure
+ *
+ *\return	gboolean TRUE if the matcher structure describes
+ *		a header match condition
  */
-
-static gboolean matcherprop_criteria_headers(MatcherProp *matcher)
+static gboolean matcherprop_criteria_headers(const MatcherProp *matcher)
 {
 	switch (matcher->criteria) {
 	case MATCHCRITERIA_HEADER:
@@ -680,6 +700,16 @@ static gboolean matcherprop_criteria_headers(MatcherProp *matcher)
 	}
 }
 
+/*!
+ *\brief	Check if the matcher structure wants the message
+ *		to be matched (just perform an action on any
+ *		message)
+ *
+ *\param	matcher Matcher structure
+ *
+ *\return	gboolean TRUE if matcher condition should match
+ *		a message
+ */
 static gboolean matcherprop_criteria_message(MatcherProp *matcher)
 {
 	switch (matcher->criteria) {
@@ -691,19 +721,23 @@ static gboolean matcherprop_criteria_message(MatcherProp *matcher)
 	}
 }
 
-/*
-  matcherlist_match_one_header
-  returns TRUE if match should stop
+/*!
+ *\brief	Check if a list of conditions match a header
+ *
+ *\param	matchers One set of conditions
+ *\param	buf Name of header
+ *
+ *\return	gboolean TRUE if matching should stop
  */
-
 static gboolean matcherlist_match_one_header(MatcherList *matchers,
-					     gchar *buf)
+					     const gchar *buf)
 {
 	GSList *l;
 
 	for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
 		MatcherProp *matcher = (MatcherProp *) l->data;
-
+		
+		/* see if a single condition matches */
 		if (matcherprop_criteria_headers(matcher) ||
 		    matcherprop_criteria_message(matcher)) {
 			if (matcherprop_match_one_header(matcher, buf)) {
@@ -722,11 +756,16 @@ static gboolean matcherlist_match_one_header(MatcherList *matchers,
 	return FALSE;
 }
 
-/*
-  matcherlist_match_headers
-  returns TRUE if one of the headers matchs the MatcherList criteria
+/*!
+ *\brief	Check if a list of conditions matches one header in
+ *		a message file.
+ *
+ *\param	matchers List of conditions
+ *\param	fp Message file
+ *
+ *\return	gboolean TRUE if one of the headers is matched by
+ *		the list of conditions.	
  */
-
 static gboolean matcherlist_match_headers(MatcherList *matchers, FILE *fp)
 {
 	gchar buf[BUFFSIZE];
@@ -738,12 +777,14 @@ static gboolean matcherlist_match_headers(MatcherList *matchers, FILE *fp)
 	return FALSE;
 }
 
-/*
-  matcherprop_criteria_body
-  returns TRUE if the body must be matched
+/*!
+ *\brief	Check if a matcher wants to check the message body
+ *
+ *\param	matcher Matcher structure
+ *
+ *\return	gboolean TRUE if body must be matched.
  */
-
-static gboolean matcherprop_criteria_body(MatcherProp *matcher)
+static gboolean matcherprop_criteria_body(const MatcherProp *matcher)
 {
 	switch (matcher->criteria) {
 	case MATCHCRITERIA_BODY_PART:
@@ -754,12 +795,16 @@ static gboolean matcherprop_criteria_body(MatcherProp *matcher)
 	}
 }
 
-/*
-  matcherprop_match_line
-  returns TRUE if the string matchs the MatcherProp criteria
+/*!
+ *\brief	Check if a (line) string matches the criteria
+ *		described by a matcher structure
+ *
+ *\param	matcher Matcher structure
+ *\param	line String
+ *
+ *\return	gboolean TRUE if string matches criteria
  */
-
-static gboolean matcherprop_match_line(MatcherProp *matcher, gchar *line)
+static gboolean matcherprop_match_line(MatcherProp *matcher, const gchar *line)
 {
 	switch (matcher->criteria) {
 	case MATCHCRITERIA_BODY_PART:
@@ -772,12 +817,15 @@ static gboolean matcherprop_match_line(MatcherProp *matcher, gchar *line)
 	return FALSE;
 }
 
-/*
-  matcherlist_match_line
-  returns TRUE if the string matchs the MatcherList criteria
+/*!
+ *\brief	Check if a list of conditions matches a (line) string
+ *
+ *\param	matchers List of matchers
+ *\param	line String to match
+ *
+ *\return	gboolean TRUE if string matches list of criteria
  */
-
-static gboolean matcherlist_match_line(MatcherList *matchers, gchar *line)
+static gboolean matcherlist_match_line(MatcherList *matchers, const gchar *line)
 {
 	GSList *l;
 
@@ -799,11 +847,15 @@ static gboolean matcherlist_match_line(MatcherList *matchers, gchar *line)
 	return FALSE;
 }
 
-/*
-  matcherlist_match_body
-  returns TRUE if one line of the body matchs the MatcherList criteria
+/*!
+ *\brief	Check if a line in a message file's body matches
+ *		the criteria
+ *
+ *\param	matchers List of conditions
+ *\param	fp Message file
+ *
+ *\return	gboolean TRUE if succesful match
  */
-
 static gboolean matcherlist_match_body(MatcherList *matchers, FILE *fp)
 {
 	gchar buf[BUFFSIZE];
@@ -815,6 +867,15 @@ static gboolean matcherlist_match_body(MatcherList *matchers, FILE *fp)
 	return FALSE;
 }
 
+/*!
+ *\brief	Check if a message file matches criteria
+ *
+ *\param	matchers Criteria
+ *\param	info Message info
+ *\param	result Default result
+ *
+ *\return	gboolean TRUE if matched
+ */
 gboolean matcherlist_match_file(MatcherList *matchers, MsgInfo *info,
 				gboolean result)
 {
@@ -898,8 +959,14 @@ gboolean matcherlist_match_file(MatcherList *matchers, MsgInfo *info,
 	return result;
 }
 
-/* test a list of condition */
-
+/*!
+ *\brief	Test list of conditions on a message.
+ *
+ *\param	matchers List of conditions
+ *\param	info Message info
+ *
+ *\return	gboolean TRUE if matched
+ */
 gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 {
 	GSList *l;
@@ -988,12 +1055,18 @@ gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 	return result;
 }
 
-
-gchar *matcherprop_to_string(MatcherProp *matcher)
+/*!
+ *\brief	Convert a matcher structure to a string
+ *
+ *\param	matcher Matcher structure
+ *
+ *\return	gchar * Newly allocated string
+ */
+gchar *matcherprop_to_string(const MatcherProp *matcher)
 {
 	gchar *matcher_str = NULL;
-	gchar *criteria_str;
-	gchar *matchtype_str;
+	const gchar *criteria_str;
+	const gchar *matchtype_str;
 	int i;
         char *expr;
         char *header;
@@ -1077,7 +1150,14 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 	return matcher_str;
 }
 
-gchar *matcherlist_to_string(MatcherList *matchers)
+/*!
+ *\brief	Convert a list of conditions to a string
+ *
+ *\param	matchers List of conditions
+ *
+ *\return	gchar * Newly allocated string
+ */
+gchar *matcherlist_to_string(const MatcherList *matchers)
 {
 	gint count;
 	gchar **vstr;
@@ -1111,9 +1191,20 @@ gchar *matcherlist_to_string(MatcherList *matchers)
 #define STRLEN_ZERO(s) ((s) ? strlen(s) : 0)
 #define STRLEN_DEFAULT(s,d) ((s) ? strlen(s) : STRLEN_ZERO(d))
 /* matching_build_command() - preferably cmd should be unescaped */
-gchar *matching_build_command(gchar *cmd, MsgInfo *info)
+/*!
+ *\brief	Build the command line to execute
+ *
+ *\param	cmd String with command line specifiers
+ *\param	info Message info to use for command
+ *
+ *\return	gchar * Newly allocated string
+ *
+ *\warning	The \a cmd string should have been unescaped using
+ *		#matcher_unescape_str.
+ */
+gchar *matching_build_command(const gchar *cmd, MsgInfo *info)
 {
-	gchar *s = cmd;
+	const gchar *s = cmd;
 	gchar *filename = NULL;
 	gchar *processed_cmd;
 	gchar *p;
@@ -1273,6 +1364,12 @@ gchar *matching_build_command(gchar *cmd, MsgInfo *info)
 
 /* ************************************************************ */
 
+/*!
+ *\brief	Write scoring list to file
+ *
+ *\param	fp File
+ *\param	prefs_scoring List of scoring conditions
+ */
 static void prefs_scoring_write(FILE *fp, GSList *prefs_scoring)
 {
 	GSList *cur;
@@ -1293,11 +1390,17 @@ static void prefs_scoring_write(FILE *fp, GSList *prefs_scoring)
 	}
 }
 
-static void prefs_filtering_write(FILE *fp, GSList *prefs_scoring)
+/*!
+ *\brief	Write filtering list to file
+ *
+ *\param	fp File
+ *\param	prefs_filtering List of filtering conditions
+ */
+static void prefs_filtering_write(FILE *fp, GSList *prefs_filtering)
 {
 	GSList *cur;
 
-	for (cur = prefs_scoring; cur != NULL; cur = cur->next) {
+	for (cur = prefs_filtering; cur != NULL; cur = cur->next) {
 		gchar *filtering_str;
 		FilteringProp *prop;
 
@@ -1317,6 +1420,14 @@ static void prefs_filtering_write(FILE *fp, GSList *prefs_scoring)
 	}
 }
 
+/*!
+ *\brief	Write matchers from a folder item
+ *
+ *\param	node Node with folder info
+ *\param	data File pointer
+ *
+ *\return	gboolean FALSE
+ */
 static gboolean prefs_matcher_write_func(GNode *node, gpointer data)
 {
 	FolderItem *item;
@@ -1357,6 +1468,11 @@ static gboolean prefs_matcher_write_func(GNode *node, gpointer data)
 	return FALSE;
 }
 
+/*!
+ *\brief	Save matchers from folder items
+ *
+ *\param	fp File
+ */
 static void prefs_matcher_save(FILE *fp)
 {
 	GList *cur;
@@ -1371,7 +1487,9 @@ static void prefs_matcher_save(FILE *fp)
 	prefs_matcher_write_func(NULL, fp);
 }
 
-
+/*!
+ *\brief	Write filtering / matcher configuration file
+ */
 void prefs_matcher_write_config(void)
 {
 	gchar *rcpath;
@@ -1401,6 +1519,9 @@ void prefs_matcher_write_config(void)
 
 /* ******************************************************************* */
 
+/*!
+ *\brief	Read matcher configuration
+ */
 void prefs_matcher_read_config(void)
 {
 	gchar *rcpath;

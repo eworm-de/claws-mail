@@ -161,9 +161,9 @@ gchar *matcher_parse_regexp		(gchar		**str);
 gchar *matcher_parse_str		(gchar		**str);
 const gchar *matcher_escape_str		(const gchar	*str);
 gchar *matcher_unescape_str		(gchar		*str);
-gchar *matcherprop_to_string		(MatcherProp	*matcher);
-gchar *matcherlist_to_string		(MatcherList	*matchers);
-gchar *matching_build_command		(gchar		*cmd, 
+gchar *matcherprop_to_string		(const MatcherProp	*matcher);
+gchar *matcherlist_to_string		(const MatcherList	*matchers);
+gchar *matching_build_command		(const gchar	*cmd, 
 					 MsgInfo	*info);
 
 void prefs_matcher_read_config		(void);
