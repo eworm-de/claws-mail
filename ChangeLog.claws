@@ -1,6 +1,14 @@
-2002-06-09 [colin]	0.7.6claws34
+2002-06-10 [melvin]	0.7.6claws35
 	
-	*src/summaryview.c
+	* src/prefs_actions.c
+		Make it possible to use a more elaborate command line
+		(e.g. |foo|bar|cat>there;echo Done|)
+		Corrected error message when calling %f, %F and %p commands
+		from the compose window.
+
+2002-06-09 [colin]	0.7.6claws34
+
+	* src/summaryview.c
 		Automatically find unread messages in current folder
 		before annoying the user.
 

@@ -549,8 +549,6 @@ static guint get_action_type(gchar *action)
 		} else if (p[0] == '|') {
 			if (p[1] == 0x00)
 				action_type |= ACTION_PIPE_OUT;
-			else
-				action_type  = ACTION_ERROR;
 		} else if (p[0] == '&') {
 			if (p[1] == 0x00)
 				action_type |= ACTION_ASYNC;
@@ -580,7 +578,7 @@ static gchar *parse_action_cmd		(gchar *action,
 
 	cmd = g_string_sized_new(strlen(action));
 
-	while (p[0] && p[0] != '|' && p[0] != '&') {
+	while (p[0] && !(p[0] == '|' && !p[1]) && p[0] != '&') {
 		if (p[0] == '%' && p[1]) {
 			switch (p[1]) {
 			   case 'f': cmd = parse_append_filename(cmd, msginfo);
@@ -1068,9 +1066,9 @@ static void compose_actions_execute_cb	(Compose	*compose,
 	action_type = get_action_type(action);
 	if (action_type & ACTION_MULTIPLE ||
 	    action_type & ACTION_SINGLE   ) {		
-		alertpanel_warning(_("The selected action is not a pipe "
-				     "action.\n You can only use pipe actions "
-				     "when composing a message."));
+		alertpanel_warning(_("The selected action cannot be used "
+				     "in the compose window because it "
+				     "contains %%f, %%F or %%p."));
 		return;
 	}
 
@@ -1244,7 +1242,7 @@ ChildInfo *fork_child(gchar *cmd,
 		      Children *children)
 {
 	gint chld_in[2], chld_out[2], chld_err[2], chld_status[2];
-	gchar **cmdline;
+	gchar *cmdline[4];
 	gint start, end, is_selection;
 	gchar *selection;
 	pid_t pid_c, pid_gc;
@@ -1294,11 +1292,13 @@ ChildInfo *fork_child(gchar *cmd,
 			close(chld_err[0]);
 			close(chld_err[1]);
 
-			cmdline = strsplit_with_quote(cmd, " ", 1024);
-
-			execvp(cmdline[0], cmdline);
+			cmdline[0] = "sh";
+			cmdline[1] = "-c";
+			cmdline[2] = cmd;
+			cmdline[3] = 0;
+			execvp("/bin/sh", cmdline);
+			
 			perror("execvp");
-			g_strfreev(cmdline);
 
 			_exit(1);
 		} else if (pid_gc < (pid_t) 0) {/* Fork erro */
