@@ -237,6 +237,9 @@ void procmime_scan_multipart_message(MimeInfo *mimeinfo, FILE *fp)
 		while ((p = fgets(buf, sizeof(buf), fp)) != NULL)
 			if (IS_BOUNDARY(buf, boundary, boundary_len)) break;
 		if (!p) return;
+	} else if (mimeinfo->parent && mimeinfo->parent->boundary) {
+		boundary = mimeinfo->parent->boundary;
+		boundary_len = strlen(boundary);
 	}
 
 	if ((fpos = ftell(fp)) < 0) {
@@ -247,6 +250,7 @@ void procmime_scan_multipart_message(MimeInfo *mimeinfo, FILE *fp)
 	for (;;) {
 		MimeInfo *partinfo;
 		gboolean eom = FALSE;
+		gint len;
 
 		prev_fpos = fpos;
 		debug_print("prev_fpos: %ld\n", fpos);
@@ -266,6 +270,8 @@ void procmime_scan_multipart_message(MimeInfo *mimeinfo, FILE *fp)
 			partinfo = procmime_scan_mime_header(fp);
 			if (!partinfo) break;
 			procmime_mimeinfo_insert(mimeinfo, partinfo);
+			debug_print("content-type: %s\n",
+				    partinfo->content_type);
 		}
 
 		if (partinfo->mime_type == MIME_MULTIPART ||
@@ -289,10 +295,13 @@ void procmime_scan_multipart_message(MimeInfo *mimeinfo, FILE *fp)
 			buf[0] = '\0';
 			eom = TRUE;
 		}
+		debug_print("boundary: %s\n", buf);
+
 		fpos = ftell(fp);
 		debug_print("fpos: %ld\n", fpos);
 
-		partinfo->size = fpos - prev_fpos - strlen(buf);
+		len = strlen(buf);
+		partinfo->size = fpos - prev_fpos - len;
 		debug_print("partinfo->size: %d\n", partinfo->size);
 		if (partinfo->sub && !partinfo->sub->sub &&
 		    !partinfo->sub->children) {
@@ -301,7 +310,12 @@ void procmime_scan_multipart_message(MimeInfo *mimeinfo, FILE *fp)
 			debug_print("partinfo->sub->size: %d\n",
 				    partinfo->sub->size);
 		}
-		debug_print("boundary: %s\n", buf);
+
+		if (mimeinfo->mime_type == MIME_MESSAGE_RFC822) {
+			if (len > 0 && fseek(fp, fpos - len, SEEK_SET) < 0)
+				perror("fseek");
+			break;
+		}
 
 		if (eom) break;
 	}
