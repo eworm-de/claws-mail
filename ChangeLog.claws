@@ -1,3 +1,11 @@
+2004-06-30 [christoph]	0.9.12cvs3
+
+	* configure.ac
+		better 'localedir'
+
+	* src/common/intl.h
+		allow plugins to define TEXTDOMAIN for the _(...) macro
+
 2004-06-30 [paul]	0.9.12cvs2
 
 	* po/POTFILES.in
