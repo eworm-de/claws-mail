@@ -1,3 +1,9 @@
+2003-07-23
+
+	* src/procmsg.h: changed MsgPermFlags and MsgTmpFlags from enum to
+	  guint32 for portability (thanks to Alfons).
+	* src/imap.c: imap_add_msgs(): removed redundant unlink().
+
 2003-07-22
 
 	* src/session.[ch]:

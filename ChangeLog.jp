@@ -1,3 +1,9 @@
+2003-07-23
+
+	* src/procmsg.h: 移植性のため MsgPermFlags と MsgTmpFlags を enum
+	  から guint32 に変更(Alfons さん thanks)。
+	* src/imap.c: imap_add_msgs(): 冗長な unlink() を削除。
+
 2003-07-22
 
 	* src/session.[ch]:
