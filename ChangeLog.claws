@@ -1,3 +1,8 @@
+2003-10-13 [luke]	0.9.6claws21
+	* src/compose.c
+	        error reporting for inserting files, including catching
+        	invalid characters for current locale/encoding
+
 2003-10-13 [paul]	0.9.6claws20
 
 	* src/folderview.c
