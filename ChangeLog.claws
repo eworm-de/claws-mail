@@ -1,4 +1,13 @@
-2003-09-11 [alfons]	0.9.5claws8
+2003-09-13 [paul]	0.9.5claws9
+	
+	* po/pl.po
+	  po/zh_CN.po	** NEW FILE **
+	  	update Polish translation, submitted by Emil 
+		<eminowbl@posejdon.wpk.p.lodz.pl>
+		add new Simplified Chinese translation, submitted by
+		Hansom Young <hansom_young@yahoo.com>
+
+2003-09-12 [alfons]	0.9.5claws8
 
 	* src/summaryview.c
 		don't open separate message views when View | Separate message view
