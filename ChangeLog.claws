@@ -1,3 +1,10 @@
+2004-09-02 [colin]	0.9.12cvs87
+
+	* src/prefs_spelling.c
+		Fix bug with aspell prefs init, where spell checking
+		is enabled at first but dictionary not specified. Use
+		LANG's dictionary by default.
+
 2004-09-01 [colin]	0.9.12cvs86
 
 	* src/filtering.c
