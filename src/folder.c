@@ -47,7 +47,6 @@
 #include "scoring.h"
 #include "prefs_folder_item.h"
 #include "procheader.h"
-#include "statusbar.h"
 #include "hooks.h"
 #include "log.h"
 
@@ -1536,7 +1535,6 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 		new_item->folder = dest->folder;
 
 	/* move messages */
-	statusbar_verbosity_set(TRUE);
 	for (cur = mlist ; cur != NULL ; cur = cur->next) {
 		MsgInfo * msginfo;
 		cnt++;
@@ -1549,7 +1547,6 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 
 		procmsg_msginfo_free(msginfo);
 	}
-	statusbar_verbosity_set(FALSE);
 	
 	/*copy prefs*/
 	prefs_folder_item_copy_prefs(src, new_item);

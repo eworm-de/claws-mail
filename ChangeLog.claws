@@ -1,3 +1,10 @@
+2002-12-11 [colin]       0.8.6claws101
+
+	* src/folder.c
+		remove statusbar stuff
+	  src/folderview.c
+	  	set statusbar verbosity when moving folders
+
 2002-12-11 [colin]       0.8.6claws100
         * src/prefs_filtering.c
         * src/prefs_matcher.c
