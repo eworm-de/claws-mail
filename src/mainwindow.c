@@ -1132,6 +1132,7 @@ void main_window_destroy(MainWindow *mainwin)
 {
 	/* TODO : destroy other component */
 	messageview_destroy(mainwin->messageview);
+	mainwin->messageview = NULL;
 }
 
 void main_window_update_actions_menu(MainWindow *mainwin)
@@ -1500,6 +1501,12 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 void main_window_get_size(MainWindow *mainwin)
 {
 	GtkAllocation *allocation;
+
+	if (mainwin->messageview == NULL) {
+		debug_print("called after messageview "
+			    "has been deallocated!\n");
+		return;
+	}
 
 	allocation = &(GTK_WIDGET_PTR(mainwin->summaryview)->allocation);
 

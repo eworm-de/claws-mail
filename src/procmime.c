@@ -482,7 +482,16 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 
 		while (fgets(inbuf, sizeof(inbuf), infp) != NULL) {
 			qp_encode_line(outbuf, inbuf);
-			fputs(outbuf, outfp);
+
+			if (!strncmp("From ", outbuf, sizeof("From ")-1)) {
+				gchar *tmpbuf = outbuf;
+				
+				tmpbuf += sizeof("From ")-1;
+				
+				fputs("=46rom ", outfp);
+				fputs(tmpbuf, outfp);
+			} else 
+				fputs(outbuf, outfp);
 		}
 	} else {
 		gchar buf[BUFFSIZE];
@@ -1267,6 +1276,7 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 				{NULL,		   NULL, FALSE}};
 	guint content_start, i;
 	FILE *fp;
+	gchar buf[BUFFSIZE];
 	gint mime_major, mime_minor;
 
 	procmime_decode_content(mimeinfo);
@@ -1279,11 +1289,14 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 	fseek(fp, mimeinfo->offset, SEEK_SET);
 	procheader_get_header_fields(fp, hentry);
 	if (hentry[0].body != NULL)
-		conv_unmime_header_overwrite(hentry[0].body);
+		conv_unmime_header(buf, sizeof(buf), hentry[0].body,
+				   NULL);
 	if (hentry[2].body != NULL)
-		conv_unmime_header_overwrite(hentry[2].body);
+		conv_unmime_header(buf, sizeof(buf), hentry[2].body,
+				   NULL);
 	if (hentry[4].body != NULL)
-		conv_unmime_header_overwrite(hentry[4].body);
+		conv_unmime_header(buf, sizeof(buf), hentry[4].body,
+				   NULL);
 	content_start = ftell(fp);
 	fclose(fp);
 
@@ -1371,11 +1384,14 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 			}
 			procheader_get_header_fields(fp, hentry);
 			if (hentry[0].body != NULL)
-				conv_unmime_header_overwrite(hentry[0].body);
+				conv_unmime_header(buf, sizeof(buf), hentry[0].body,
+				NULL);
 			if (hentry[2].body != NULL)
-				conv_unmime_header_overwrite(hentry[2].body);
+				conv_unmime_header(buf, sizeof(buf), hentry[2].body,
+				NULL);
 			if (hentry[4].body != NULL)
-				conv_unmime_header_overwrite(hentry[4].body);
+				conv_unmime_header(buf, sizeof(buf), hentry[4].body,
+				NULL);
 			lastoffset = ftell(fp);
 		}
 	}

@@ -1,3 +1,34 @@
+2005-03-05 [thorsten]	1.0.1cvs22.1
+
+	* ChangeLog
+	* ChangeLog.claws
+	* ChangeLog.jp
+	* PATCHSETS
+	* configure.ac
+	* po/ru.po
+	* src/addrharvest.c
+	* src/codeconv.c
+	* src/codeconv.h
+	* src/compose.c
+	* src/filtering.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/mh.c
+	* src/mimeview.c
+	* src/mimeview.h
+	* src/prefs_account.c
+	* src/prefs_folder_item.c
+	* src/procmime.c
+	* src/procmsg.c
+	* src/quote_fmt_lex.l
+	* src/quote_fmt_parse.y
+	* src/common/smtp.c
+	* src/common/smtp.h
+	* src/common/utils.c
+	* src/gtk/prefswindow.c
+	* src/gtk/prefswindow.h
+		sync 1.0.1cvs22
+
 2005-03-05 [thorsten]	1.0.1cvs0.4
 
 	* src/common/partial_download.c		*** REMOVED ***

@@ -96,6 +96,7 @@ Session *smtp_session_new(void)
 	session->avail_auth_type           = 0;
 	session->forced_auth_type          = 0;
 	session->auth_type                 = 0;
+	session->esmtp_flags               = 0;
 
 	session->error_val                 = SM_OK;
 	session->error_msg                 = NULL;
@@ -126,7 +127,7 @@ static gint smtp_from(SMTPSession *session)
 
 	session->state = SMTP_FROM;
 	
-	if (session->is_esmtp)
+	if (session->is_esmtp && (session->esmtp_flags & ESMTP_SIZE)!=0)
 		mail_size = g_strdup_printf(" SIZE=%d", session->send_data_len);
 	else
 		mail_size = g_strdup("");
@@ -299,6 +300,7 @@ static gint smtp_ehlo_recv(SMTPSession *session, const gchar *msg)
 		if (g_strncasecmp(p, "SIZE", 4) == 0) {
 			p += 5;
 			session->max_message_size = atoi(p);
+			session->esmtp_flags |= ESMTP_SIZE;
 		}
 		return SM_OK;
 	} else if ((msg[0] == '1' || msg[0] == '2' || msg[0] == '3') &&

@@ -1181,7 +1181,6 @@ gint procmsg_send_message_queue(const gchar *file)
 				content = file_read_stream_to_str(fp);
 				rewind(fp);
 
-				get_tmpfile_in_dir(get_mime_tmp_dir(), &tmp_enc_file);
 				str_write_to_file(content, tmp_enc_file);
 				g_free(content);
 			} else {
@@ -1289,9 +1288,13 @@ gint procmsg_send_message_queue(const gchar *file)
 			procmsg_save_to_outbox(outbox, file, TRUE);
 		} else {
 			procmsg_save_to_outbox(outbox, tmp_enc_file, FALSE);
-			unlink(tmp_enc_file);
-			free(tmp_enc_file);
 		}
+	}
+
+	if (tmp_enc_file != NULL) {
+		unlink(tmp_enc_file);
+		free(tmp_enc_file);
+		tmp_enc_file = NULL;
 	}
 
 	if (replymessageid != NULL || fwdmessageid != NULL) {

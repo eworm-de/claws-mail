@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1520,33 +1520,6 @@ const gchar *conv_get_current_locale(void)
 		    cur_locale ? cur_locale : "(none)");
 
 	return cur_locale;
-}
-
-void conv_unmime_header_overwrite(gchar *str)
-{
-	gchar *buf;
-	gint buflen;
-	CharSet cur_charset;
-
-	g_return_if_fail(str != NULL);
-	
-	cur_charset = conv_get_current_charset();
-
-#ifdef WIN32
-	if (cur_charset == C_EUC_JP || cur_charset == C_SHIFT_JIS) {
-#else
-	if (cur_charset == C_EUC_JP) {
-#endif
-		buflen = strlen(str) * 2 + 1;
-		Xalloca(buf, buflen, return);
-		conv_anytodisp(buf, buflen, str);
-		unmime_header(str, buf);
-	} else {
-		buflen = strlen(str) + 1;
-		Xalloca(buf, buflen, return);
-		unmime_header(buf, str);
-		strncpy2(str, buf, buflen);
-	}
 }
 
 void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,

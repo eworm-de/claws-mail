@@ -302,7 +302,7 @@ static GtkItemFactoryEntry msgview_entries[] =
 					NULL, create_filter_cb, FILTER_BY_TO, NULL},
 	{N_("/_Tools/_Create filter rule/by _Subject"),
 					NULL, create_filter_cb, FILTER_BY_SUBJECT, NULL},
-	{N_("/_Tools/Create processing rule/"),
+	{N_("/_Tools/Create processing rule"),
 					NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/Create processing rule/_Automatically"),
 					NULL, create_processing_cb, FILTER_BY_AUTO, NULL},
@@ -668,6 +668,12 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		return -1;
 	}
 	
+	if (prefs_common.work_offline)
+		if (alertpanel(_("Offline warning"), 
+			       _("You're working offline. Override?"),
+			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
+			return 0;
+
 	/* send it */
 	path = folder_item_fetch_msg(queue, num);
 	ok = procmsg_send_message_queue(path);
@@ -756,6 +762,13 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 				    messageview->msginfo);
 	else 
 		noticeview_hide(messageview->noticeview);
+
+	mimeinfo = procmime_mimeinfo_next(mimeinfo);
+	if (mimeinfo && (mimeinfo->type != MIMETYPE_TEXT || 
+	    (strcmp(mimeinfo->subtype, "plain") &&
+	     strcmp(mimeinfo->subtype, "html")))) {
+		mimeview_show_part(messageview->mimeview,mimeinfo);
+	}
 
 	g_free(file);
 

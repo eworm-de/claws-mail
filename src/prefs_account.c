@@ -660,6 +660,11 @@ static void destroy_widget_func(PrefsPage *_page)
 	gtk_container_remove(GTK_CONTAINER (page->vbox), notebook);
 }
 
+static gboolean can_close_func(PrefsPage *page_)
+{	
+	return prefs_account_apply() >= 0;
+}
+
 static void save_func(PrefsPage * _page)
 {
 	if (prefs_account_apply() >= 0)
@@ -678,6 +683,7 @@ void prefs_account_init()
         account_page.page.create_widget = create_widget_func;
         account_page.page.destroy_widget = destroy_widget_func;
         account_page.page.save_page = save_func;
+	account_page.page.can_close = can_close_func;
 
         prefs_account_register_page((PrefsPage *) &account_page);
 }

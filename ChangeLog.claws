@@ -1,3 +1,174 @@
+2005-03-04 [colin]	1.0.1cvs22
+
+	* src/common/smtp.c
+	* src/common/smtp.h
+		Don't use SIZE parameter in MAIL FROM: if
+		server doesn't support it. Patch by 
+		Eugen Freiter <eugen_f@users.sf.net>
+
+2005-03-04 [paul]	1.0.1cvs21
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/addrharvest.c
+	* src/codeconv.c
+	* src/codeconv.h
+	* src/compose.c
+	* src/procmime.c
+		sync with main 1.0.3
+		see ChangeLog 2005-02-28, 2005-03-02, and 2005-03-04
+
+2005-02-27 [paul]	1.0.1cvs20
+
+	* src/messageview.c
+		fix crash-causing typo. spotted by
+		Ralgh Young 
+
+2005-02-25 [paul]	1.0.1cvs19
+
+	* src/prefs_account.c
+	* src/prefs_folder_item.c
+	* src/gtk/prefswindow.c
+	* src/gtk/prefswindow.h
+		fix bug 698 'Clicking OK without username 'crashes'
+		account edit window'. Patch by Alfons
+
+2005-02-24 [colin]	1.0.1cvs18
+
+	* src/messageview.c
+		Don't send out receipts if offline. Ask.
+
+2005-02-23 [colin]	1.0.1cvs17
+
+	* src/compose.c
+		Encode parts when signing
+
+2005-02-23 [colin]	1.0.1cvs16
+
+	* src/compose.c
+	* src/procmsg.c
+		Fix mimeinfo leakages
+
+2005-02-21 [colin]	1.0.1cvs15
+
+	* src/compose.c
+		Fix signing/encrypting still on after
+		privacy system has been disabled
+
+2005-02-18 [colin]	1.0.1cvs14
+
+	* src/quote_fmt_lex.l
+	* src/quote_fmt_parse.y
+		Bugfix: Fix parser init (patch by Ivan)
+
+2005-02-18 [colin]	1.0.1cvs13
+
+	* src/plugins/pgpmime/pgpmime.c
+		Fix build (missed my `mv`)
+
+2005-02-18 [colin]	1.0.1cvs12
+
+	* src/Makefile.am
+	* src/privacy.c		** RE-ADDED **
+	* src/privacy.cpp	** REMOVED **
+	* src/privacy.h
+	* src/plugins/pgpmime/Makefile.am
+	* src/plugins/pgpmime/passphrase.h
+	* src/plugins/pgpmime/pgpmime.c		** RE-ADDED **
+	* src/plugins/pgpmime/pgpmime.cpp	** REMOVED **
+	* src/plugins/pgpmime/pgpmime.h
+	* src/plugins/pgpmime/prefs_gpg.h
+	* src/plugins/pgpmime/select-keys.h
+	* src/plugins/pgpmime/sgpgme.h
+		Revert huge API breakage.
+
+2005-02-16 [christoph]	1.0.1cvs11
+
+	* src/mh.c
+		add scan required function for MH folders
+
+	(Patch by Ivan Rayner <ivanr@sgi.com>)
+
+2005-02-15 [christoph]	1.0.1cvs10
+
+	* src/plugins/pgpmime/pgpmime.cpp
+	* src/plugins/pgpmime/pgpmime.h
+		add sign and encrypt functions
+
+2005-02-15 [christoph]	1.0.1cvs9
+
+	* configure.ac
+	* src/Makefile.am
+	* src/privacy.c					** REMOVE **
+	* src/privacy.cpp				** NEW **
+	* src/privacy.h
+	* src/plugins/pgpmime/Makefile.am
+	* src/plugins/pgpmime/passphrase.h
+	* src/plugins/pgpmime/pgpmime.c			** REMOVE **
+	* src/plugins/pgpmime/pgpmime.cpp		** NEW **
+	* src/plugins/pgpmime/pgpmime.h
+	* src/plugins/pgpmime/prefs_gpg.h
+	* src/plugins/pgpmime/select-keys.h
+	* src/plugins/pgpmime/sgpgme.h
+		change Privacy-API to C++
+
+2005-02-15 [colin]	1.0.1cvs8
+
+	* src/mimeview.c
+	* src/common/utils.c
+		Sanitize substitution for saved filenames:
+		only \ / * and \r \n \t are bad. 
+
+2005-02-15 [colin]	1.0.1cvs7
+
+	* src/compose.c
+	* src/procmime.c
+		Optimize (constant instead of strlen). Thanks
+		Alfons for the hint.
+
+2005-02-14 [colin]	1.0.1cvs6
+
+	* src/compose.c
+	* src/procmime.c
+		Use quoted-printable instead of 7bit or 8bit
+		to encode "^From " and avoid mail corruption 
+		on the MTA, as specified by RFC 3156. Thanks
+		Hoa for the hint.
+
+2005-02-12 [colin]	1.0.1cvs5
+
+	* src/filtering.c
+		Remove wrong use of compose struct after
+		compose_send(). Spotted by Alfons and Holger Berndt.
+
+2005-02-10 [paul]	1.0.1cvs4
+
+	* src/compose.c
+		sync with main, see ChangeLog 2005-02-10
+
+2005-02-10 [colin]	1.0.1cvs3
+
+	* src/mainwindow.c
+		dereference freed messageview,
+		and don't try to use it after free.
+		This caused occasional late segfaults
+		when quitting.
+
+2005-02-10 [colin]	1.0.1cvs2
+
+	* src/messageview.c
+		Don't display html with plugin automatically
+		(Dillo steals focus)
+
+2005-02-09 [colin]	1.0.1cvs1
+
+	* src/mimeview.c
+	* src/mimeview.h
+	* src/messageview.c
+		Display first relevant part using plugin
+		if not text/plain if possible (useful for 
+		vCalendar for example)
+
 2005-02-08 [paul]	1.0.1
 
 	1.0.1 released
@@ -1938,7 +2109,7 @@
 2004-07-14 [christoph]	0.9.12cvs23
 
 	* src/pgpmime.c
-		add missing fclose
+		add missing fclose. Patch by Thomas Gilgin.
 
 	* src/procmime.c
 		add checks if fopen really worked

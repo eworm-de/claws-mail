@@ -111,6 +111,9 @@ static gboolean mh_rename_folder_func		(GNode		*node,
 static gchar   *mh_item_get_path		(Folder *folder, 
 						 FolderItem *item);
 
+static gboolean mh_scan_required	(Folder		*folder,
+					 FolderItem	*item);
+
 static FolderClass mh_class;
 
 FolderClass *mh_get_class(void)
@@ -134,6 +137,7 @@ FolderClass *mh_get_class(void)
 		mh_class.rename_folder = mh_rename_folder;
 		mh_class.remove_folder = mh_remove_folder;
 		mh_class.get_num_list = mh_get_num_list;
+		mh_class.scan_required = mh_scan_required;
 		
 		/* Message functions */
 		mh_class.get_msginfo = mh_get_msginfo;
@@ -169,6 +173,37 @@ static void mh_folder_init(Folder *folder, const gchar *name, const gchar *path)
 {
 	folder_local_folder_init(folder, name, path);
 
+}
+
+gboolean mh_scan_required(Folder *folder, FolderItem *item)
+{
+	gchar *path;
+	struct stat s;
+
+	path = folder_item_get_path(item);
+	g_return_val_if_fail(path != NULL, FALSE);
+
+	if (stat(path, &s) < 0) {
+		FILE_OP_ERROR(path, "stat");
+		g_free(path);
+		return FALSE;
+	}
+
+	if (s.st_mtime > item->mtime) {
+		debug_print("MH scan required, folder updated: %s (%ld > %ld)\n",
+			    path,
+			    s.st_mtime,
+			    item->mtime);
+		g_free(path);
+		return TRUE;
+	}
+
+	debug_print("MH scan not required: %s (%ld <= %ld)\n",
+		    path,
+		    s.st_mtime,
+		    item->mtime);
+	g_free(path);
+	return FALSE;
 }
 
 void mh_get_last_num(Folder *folder, FolderItem *item)
@@ -219,7 +254,7 @@ gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list, gboolean *
 
 	g_return_val_if_fail(item != NULL, -1);
 
-	debug_print("mh_get_last_num(): Scanning %s ...\n", item->path);
+	debug_print("mh_get_num_list(): Scanning %s ...\n", item->path);
 
 	*old_uids_valid = TRUE;
 
@@ -244,6 +279,7 @@ gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list, gboolean *
 	}
 	closedir(dp);
 
+	item->mtime = time(NULL);
 	return nummsgs;
 }
 
@@ -370,6 +406,7 @@ static gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 
 static gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 {
+	gboolean dest_need_scan = FALSE;
 	gchar *srcfile;
 	gchar *destfile;
 	gint filemode = 0;
@@ -423,6 +460,10 @@ static gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 		return -1;
 	}
 
+	dest_need_scan = mh_scan_required(dest->folder, dest);
+	if (!dest_need_scan)
+		dest->mtime = time(NULL);
+
 
 	if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
 		if (chmod(destfile, prefs->folder_chmod) < 0)
@@ -443,6 +484,7 @@ static gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 
 static gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
 {
+	gboolean need_scan = FALSE;
 	gchar *file;
 
 	g_return_val_if_fail(item != NULL, -1);
@@ -450,11 +492,16 @@ static gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
 	file = mh_fetch_msg(folder, item, num);
 	g_return_val_if_fail(file != NULL, -1);
 
+	need_scan = mh_scan_required(folder, item);
+
 	if (unlink(file) < 0) {
 		FILE_OP_ERROR(file, "unlink");
 		g_free(file);
 		return -1;
 	}
+
+	if (!need_scan)
+		item->mtime = time(NULL);
 
 	g_free(file);
 	return 0;
@@ -915,6 +962,8 @@ static void mh_scan_tree_recursive(FolderItem *item)
 	}
 
 	closedir(dp);
+
+	item->mtime = time(NULL);
 
 /*
 	if (item->path) {

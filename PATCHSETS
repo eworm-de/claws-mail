@@ -237,3 +237,26 @@
 ( cvs diff -u -r 1.2 -r 1.3 src/partial_download.c; ) > 1.0.0cvs27.patchset
 ( cvs diff -u -r 1.472 -r 1.473 src/compose.c; ) > 1.0.0cvs28.patchset
 ( cvs diff -u -r 1.69 -r 1.70 po/de.po; cvs diff -u -r 1.73 -r 1.74 po/es.po; cvs diff -u -r 1.52 -r 1.53 po/fr.po; cvs diff -u -r 1.40 -r 1.41 po/it.po; cvs diff -u -r 1.14 -r 1.15 po/sk.po; cvs diff -u -r 1.25 -r 1.26 po/sr.po; ) > 1.0.0cvs29.patchset
+( cvs diff -u -r 1.129 -r 1.130 src/mimeview.c; cvs diff -u -r 1.23 -r 1.24 src/mimeview.h; cvs diff -u -r 1.131 -r 1.133 src/messageview.c; ) > 1.0.1cvs1.patchset
+( cvs diff -u -r 1.133 -r 1.134 src/messageview.c; ) > 1.0.1cvs2.patchset
+( cvs diff -u -r 1.317 -r 1.318 src/mainwindow.c; ) > 1.0.1cvs3.patchset
+
+( cvs diff -u -r 1.473 -r 1.474 src/compose.c; ) > 1.0.1cvs4.patchset
+( cvs diff -u -r 1.71 -r 1.72 src/filtering.c; ) > 1.0.1cvs5.patchset
+( cvs diff -u -r 1.474 -r 1.475 src/compose.c; cvs diff -u -r 1.103 -r 1.104 src/procmime.c; ) > 1.0.1cvs6.patchset
+( cvs diff -u -r 1.475 -r 1.476 src/compose.c; cvs diff -u -r 1.104 -r 1.105 src/procmime.c; ) > 1.0.1cvs7.patchset
+( cvs diff -u -r 1.130 -r 1.131 src/mimeview.c; cvs diff -u -r 1.62 -r 1.64 src/common/utils.c; ) > 1.0.1cvs8.patchset
+( cvs diff -u -r 1.1330 -r 1.1331 configure.ac; cvs diff -u -r 1.191 -r 1.192 src/Makefile.am; cvs diff -u -r -1.13 -r -1.14 src/privacy.c; cvs diff -u -r 0 -r 1 src/privacy.cpp; cvs diff -u -r 1.12 -r 1.13 src/privacy.h; cvs diff -u -r 1.3 -r 1.4 src/plugins/pgpmime/Makefile.am; cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/passphrase.h; cvs diff -u -r -1.15 -r -1.16 src/plugins/pgpmime/pgpmime.c; cvs diff -u -r 0 -r 1 src/plugins/pgpmime/pgpmime.cpp; cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/pgpmime.h; cvs diff -u -r 1.3 -r 1.4 src/plugins/pgpmime/prefs_gpg.h; cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/select-keys.h; cvs diff -u -r 1.4 -r 1.5 src/plugins/pgpmime/sgpgme.h; ) > 1.0.1cvs9.patchset
+( cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/pgpmime.cpp; cvs diff -u -r 1.2 -r 1.3 src/plugins/pgpmime/pgpmime.h; ) > 1.0.1cvs10.patchset
+( cvs diff -u -r 1.87 -r 1.88 src/mh.c; ) > 1.0.1cvs11.patchset
+( cvs diff -u -r 1.192 -r 1.193 src/Makefile.am; cvs diff -u -r 0 -r 1 src/privacy.c; cvs diff -u -r -1.1 -r -1.2 src/privacy.cpp; cvs diff -u -r 1.13 -r 1.14 src/privacy.h; cvs diff -u -r 1.4 -r 1.5 src/plugins/pgpmime/Makefile.am; cvs diff -u -r 1.2 -r 1.3 src/plugins/pgpmime/passphrase.h; cvs diff -u -r 0 -r 1 src/plugins/pgpmime/pgpmime.c; cvs diff -u -r -1.2 -r -1.3 src/plugins/pgpmime/pgpmime.cpp; cvs diff -u -r 1.3 -r 1.4 src/plugins/pgpmime/pgpmime.h; cvs diff -u -r 1.4 -r 1.5 src/plugins/pgpmime/prefs_gpg.h; cvs diff -u -r 1.2 -r 1.3 src/plugins/pgpmime/select-keys.h; cvs diff -u -r 1.5 -r 1.6 src/plugins/pgpmime/sgpgme.h; ) > 1.0.1cvs12.patchset
+( cvs diff -u -r 1.17 -r 1.18 src/plugins/pgpmime/pgpmime.c; ) > 1.0.1cvs13.patchset
+( cvs diff -u -r 1.9 -r 1.10 src/quote_fmt_lex.l; cvs diff -u -r 1.28 -r 1.29 src/quote_fmt_parse.y; ) > 1.0.1cvs14.patchset
+( cvs diff -u -r 1.476 -r 1.477 src/compose.c; ) > 1.0.1cvs15.patchset
+( cvs diff -u -r 1.477 -r 1.478 src/compose.c; cvs diff -u -r 1.177 -r 1.178 src/procmsg.c; ) > 1.0.1cvs16.patchset
+( cvs diff -u -r 1.478 -r 1.479 src/compose.c; ) > 1.0.1cvs17.patchset
+( cvs diff -u -r 1.134 -r 1.135 src/messageview.c; ) > 1.0.1cvs18.patchset
+( cvs diff -u -r 1.123 -r 1.124 src/prefs_account.c; cvs diff -u -r 1.63 -r 1.64 src/prefs_folder_item.c; cvs diff -u -r 1.20 -r 1.21 src/gtk/prefswindow.c; cvs diff -u -r 1.9 -r 1.10 src/gtk/prefswindow.h; ) > 1.0.1cvs19.patchset
+( cvs diff -u -r 1.135 -r 1.136 src/messageview.c; ) > 1.0.1cvs20.patchset
+( cvs diff -u -r 1.458 -r 1.459 ChangeLog; cvs diff -u -r 1.453 -r 1.454 ChangeLog.jp; cvs diff -u -r 1.7 -r 1.8 src/addrharvest.c; cvs diff -u -r 1.74 -r 1.75 src/codeconv.c; cvs diff -u -r 1.16 -r 1.17 src/codeconv.h; cvs diff -u -r 1.479 -r 1.480 src/compose.c; cvs diff -u -r 1.105 -r 1.106 src/procmime.c; ) > 1.0.1cvs21.patchset
+( cvs diff -u -r 1.20 -r 1.21 src/common/smtp.c; cvs diff -u -r 1.10 -r 1.11 src/common/smtp.h; ) > 1.0.1cvs22.patchset

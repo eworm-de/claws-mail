@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1667,6 +1667,7 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 	};
 
 	FILE *fp;
+	gchar buf[BUFFSIZE];
 
 	g_return_val_if_fail(msginfo != NULL, -1);
 
@@ -1675,13 +1676,16 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 	fclose(fp);
 
 	if (hentry[H_REPLY_TO].body != NULL) {
-		conv_unmime_header_overwrite(hentry[H_REPLY_TO].body);
-		compose->replyto = hentry[H_REPLY_TO].body;
+		conv_unmime_header(buf, sizeof(buf), hentry[H_REPLY_TO].body,
+				   NULL);
+		compose->replyto = g_strdup(buf);
+		g_free(hentry[H_REPLY_TO].body);
 		hentry[H_REPLY_TO].body = NULL;
 	}
 	if (hentry[H_CC].body != NULL) {
-		conv_unmime_header_overwrite(hentry[H_CC].body);
-		compose->cc = hentry[H_CC].body;
+		conv_unmime_header(buf, sizeof(buf), hentry[H_CC].body, NULL);
+		compose->cc = g_strdup(buf);
+		g_free(hentry[H_CC].body);
 		hentry[H_CC].body = NULL;
 	}
 	if (hentry[H_REFERENCES].body != NULL) {
@@ -1696,20 +1700,22 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 	}
 	if (hentry[H_BCC].body != NULL) {
 		if (compose->mode == COMPOSE_REEDIT) {
-			conv_unmime_header_overwrite(hentry[H_BCC].body);
-			compose->bcc = hentry[H_BCC].body;
-		} else
-			g_free(hentry[H_BCC].body);
+			conv_unmime_header
+				(buf, sizeof(buf), hentry[H_BCC].body, NULL);
+			compose->bcc = g_strdup(buf);
+		}
+		g_free(hentry[H_BCC].body);
 		hentry[H_BCC].body = NULL;
 	}
 	if (hentry[H_NEWSGROUPS].body != NULL) {
-		conv_unmime_header_overwrite(hentry[H_NEWSGROUPS].body);
 		compose->newsgroups = hentry[H_NEWSGROUPS].body;
 		hentry[H_NEWSGROUPS].body = NULL;
 	}
 	if (hentry[H_FOLLOWUP_TO].body != NULL) {
-		conv_unmime_header_overwrite(hentry[H_FOLLOWUP_TO].body);
-		compose->followup_to = hentry[H_FOLLOWUP_TO].body;
+		conv_unmime_header
+			(buf, sizeof(buf), hentry[H_FOLLOWUP_TO].body, NULL);
+		compose->followup_to = g_strdup(buf);
+		g_free(hentry[H_FOLLOWUP_TO].body);
 		hentry[H_FOLLOWUP_TO].body = NULL;
 	}
 	if (hentry[H_LIST_POST].body != NULL) {
@@ -1745,13 +1751,17 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 			compose->priority =  priority;
 		}
  
-	if (compose->mode == COMPOSE_REEDIT && msginfo->inreplyto)
-		compose->inreplyto = g_strdup(msginfo->inreplyto);
-	else if (compose->mode != COMPOSE_REEDIT &&
-		 msginfo->msgid && *msginfo->msgid) {
+	if (compose->mode == COMPOSE_REEDIT) {
+		if (msginfo->inreplyto && *msginfo->inreplyto)
+			compose->inreplyto = g_strdup(msginfo->inreplyto);
+		return 0;
+	}
+
+	if (msginfo->msgid && *msginfo->msgid)
 		compose->inreplyto = g_strdup(msginfo->msgid);
 
-		if (!compose->references) {
+	if (!compose->references) {
+		if (msginfo->msgid && *msginfo->msgid) {
 			if (msginfo->inreplyto && *msginfo->inreplyto)
 				compose->references =
 					g_strdup_printf("<%s>\n\t<%s>",
@@ -1761,6 +1771,10 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 				compose->references =
 					g_strconcat("<", msginfo->msgid, ">",
 						    NULL);
+		} else if (msginfo->inreplyto && *msginfo->inreplyto) {
+			compose->references =
+				g_strconcat("<", msginfo->inreplyto, ">",
+					    NULL);
 		}
 	}
 
@@ -3567,6 +3581,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 
 		if (action == COMPOSE_WRITE_FOR_SEND) {
 			buf = conv_codeset_strdup(chars, src_codeset, out_codeset);
+			
 			if (!buf) {
 				AlertValue aval;
 				gchar *msg;
@@ -3595,6 +3610,13 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 	}
 	g_free(chars);
 
+	if (encoding == ENC_8BIT || encoding == ENC_7BIT) {
+		if (!strncmp(buf, "From ", sizeof("From ")-1) ||
+		    strstr(buf, "\nFrom ") != NULL) {
+			encoding = ENC_QUOTED_PRINTABLE;
+		}
+	}
+
 	mimetext = procmime_mimeinfo_new();
 	mimetext->content = MIMECONTENT_MEM;
 	mimetext->data.mem = buf;
@@ -3605,7 +3627,10 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 	/* protect trailing spaces when signing message */
 	if (action == COMPOSE_WRITE_FOR_SEND && compose->use_signing && 
 	    privacy_system_can_sign(compose->privacy_system))
-		encoding = ENC_QUOTED_PRINTABLE;
+	    	if (encoding == ENC_7BIT)
+			encoding = ENC_QUOTED_PRINTABLE;
+		else if (encoding == ENC_8BIT)
+			encoding = ENC_BASE64;
 	if (encoding != ENC_UNKNOWN)
 		procmime_encode_content(mimetext, encoding);
 
@@ -3636,6 +3661,8 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 			return -1;
 
 	procmime_write_mimeinfo(mimemsg, fp);
+	
+	procmime_mimeinfo_free_all(mimemsg);
 
 	return 0;
 }
@@ -3971,6 +3998,13 @@ static void compose_add_attachments(Compose *compose, MimeInfo *parent)
 			mimepart->disposition = DISPOSITIONTYPE_ATTACHMENT;
 		}
 
+		if (compose->use_signing) {
+			if (ainfo->encoding == ENC_7BIT)
+				ainfo->encoding = ENC_QUOTED_PRINTABLE;
+			else if (ainfo->encoding == ENC_8BIT)
+				ainfo->encoding = ENC_BASE64;
+		}
+		
 		procmime_encode_content(mimepart, ainfo->encoding);
 
 		g_node_append(parent->node, mimepart->node);
@@ -5244,7 +5278,11 @@ static void compose_set_privacy_system_cb(GtkWidget *widget, gpointer data)
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	menu_set_sensitive(ifactory, "/Options/Sign", can_sign);
+	if (!can_sign)
+		menu_set_active(ifactory, "/Options/Sign", FALSE);
 	menu_set_sensitive(ifactory, "/Options/Encrypt", can_encrypt);
+	if (!can_encrypt)
+		menu_set_active(ifactory, "/Options/Encrypt", FALSE);
 }
 
 static void compose_update_privacy_system_menu_item(Compose * compose)
@@ -5526,7 +5564,9 @@ static void compose_destroy(Compose *compose)
 	prefs_common.compose_width = compose->scrolledwin->allocation.width;
 	prefs_common.compose_height = compose->window->allocation.height;
 
-	gtk_widget_destroy(compose->paned);
+	if (!compose->paned->parent)
+		gtk_widget_destroy(compose->paned);
+	gtk_widget_destroy(compose->popupmenu);
 
 	toolbar_destroy(compose->toolbar);
 	g_free(compose->toolbar);

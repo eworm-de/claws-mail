@@ -759,11 +759,10 @@ static void folder_color_set_dialog(GtkWidget *widget, gpointer data)
 }
 
 
-FolderItemGeneralPage folder_item_general_page;
-
 static void register_general_page()
 {
 	static gchar *pfi_general_path[2];
+	static FolderItemGeneralPage folder_item_general_page;
 
 	pfi_general_path[0] = _("General");
 	pfi_general_path[1] = NULL;
@@ -776,11 +775,11 @@ static void register_general_page()
 	prefs_folder_item_register_page((PrefsPage *) &folder_item_general_page);
 }
 
-FolderItemComposePage folder_item_compose_page;
 
 static void register_compose_page(void)
 {
 	static gchar *pfi_compose_path[2];
+	static FolderItemComposePage folder_item_compose_page;
 
 	pfi_compose_path[0] = _("Compose");
 	pfi_compose_path[1] = NULL;

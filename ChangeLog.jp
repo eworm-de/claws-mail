@@ -1,3 +1,59 @@
+2005-03-04
+
+	* version 1.0.3
+
+2005-03-04
+
+	* src/codeconv.[ch]: バッファオーバーフローを起こしていた
+	  conv_unmime_header_overwrite() を削除。
+	* src/compose.c: compose_parse_header(): バッファオーバーフローを
+	  起こす conv_unmime_header_overwrite() を使用しないようにした。
+
+2005-03-02
+
+	* src/compose.c: compose_destroy(): paned がウィンドウに付属して
+	  いない場合のみ destroy するようにした。ポップアップメニューが
+	  メモリリークしていたのを修正。
+
+2005-02-28
+
+	* version 1.0.2
+
+2005-02-28
+
+	* src/compose.c: compose_parse_header(): 親メッセージが Message-Id:
+	  を持っていない場合でも In-Reply-To: から References: を生成する
+	  ようにした(mori さん thanks)。
+
+2005-02-24
+
+	* src/compose.c: compose_write_attach(): PGP 署名のために行末の空白を
+	  保護するために転送エンコーディングを強制するようにした。
+
+2005-02-10
+
+	* src/compose.c: compose_write_file(): PGP 署名のために行末の空白を
+	  保護するために転送エンコーディングを強制するようにした(gnupg 1.2
+	  と 1.4 間の非互換性を修正) (Thorsten Maerz さん thanks)。
+
+2005-02-02
+
+	* INSTALL, INSTALL.jp: gpgme に関する記述を修正。
+
+2005-02-01
+
+	* version 1.0.1
+
+2005-01-28
+
+	* src/select-keys.c: use_untrusted(): alertpanel() を使用するように
+	  修正。
+
+2005-01-28
+
+	* gpgme-1.0 に対応(変更点は ChangeLog を参照) (Toshio Kuratomi さん
+	  thanks)。
+
 2005-01-25
 
 	* src/template.c: template_write_config(): メモリリークを修正。

@@ -54,6 +54,8 @@ static gint error = 0;
 
 static gint cursor_pos  = 0;
 
+extern int quote_fmt_firsttime;
+
 static void add_visibility(gboolean val)
 {
 	stacksize++;
@@ -132,6 +134,10 @@ void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 		*buffer = 0;
 	bufsize = 0;
 	error = 0;
+        /*
+         * force LEX initialization
+         */
+	quote_fmt_firsttime = 1;
 	cursor_pos = 0;
 }
 
