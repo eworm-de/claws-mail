@@ -18,28 +18,19 @@
  */
 
 #include <glib.h>
+#include <sys/types.h>
+#include <regex.h>
 #include "string_match.h"
 
+/* the size used for regexec in string_remove_match */
+#define STRING_MATCH_MR_SIZE 30
 
-int string_match_regexp(char * txt, char * rexp,
-			int size, regmatch_t matches[],
-			int cflags, int eflags)
-{
-	regex_t re;
-	int problem;
 
-	g_return_val_if_fail(txt, 0);
-	g_return_val_if_fail(rexp, 0);
+static int string_match_regexp	(char * txt, char * rexp,
+			         int size, regmatch_t matches[],
+			         int cflags, int eflags);
 
-	problem = regcomp(&re, rexp, cflags);  
-	if (problem == 0) {
-		problem = regexec(&re, txt, size, matches, eflags);
-	}
-	regfree(&re);
-	return problem == 0;
-}
-
-int string_remove_match(char * txt, char * rexp, int cflags, int eflags)
+int string_remove_match(char *txt, char *rexp, int cflags, int eflags)
 {
 	regmatch_t matches[STRING_MATCH_MR_SIZE];
 	int foundp;
@@ -67,7 +58,7 @@ int string_remove_match(char * txt, char * rexp, int cflags, int eflags)
 	}
 }
 
-int string_remove_all_matches(char * txt, char * rexp, int cflags, int eflags)
+int string_remove_all_matches(char *txt, char *rexp, int cflags, int eflags)
 {
 	int pos = 0;
 	int pos0 = pos;
@@ -84,3 +75,22 @@ int string_remove_all_matches(char * txt, char * rexp, int cflags, int eflags)
 	}
 	return pos;
 }
+
+static int string_match_regexp(char * txt, char * rexp,
+			       int size, regmatch_t matches[],
+			       int cflags, int eflags)
+{
+	regex_t re;
+	int problem;
+
+	g_return_val_if_fail(txt, 0);
+	g_return_val_if_fail(rexp, 0);
+
+	problem = regcomp(&re, rexp, cflags);  
+	if (problem == 0) {
+		problem = regexec(&re, txt, size, matches, eflags);
+	}
+	regfree(&re);
+	return problem == 0;
+}
+

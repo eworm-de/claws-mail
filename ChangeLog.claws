@@ -1,3 +1,9 @@
+2001-12-28 [alfons]	0.6.6claws29
+
+	* src/string_match.[ch]
+		clean up name space
+		allow compilation *BSD
+
 2001-12-27 [alfons]	0.6.6claws28
 
 	* src/filter.c
