@@ -34,7 +34,7 @@
 
 static GtkWidget *filesel;
 static gboolean filesel_ack;
-static gchar *filesel_oldfilename = NULL;
+static gchar *filesel_oldfilename;
 
 static void filesel_create(const gchar *title, gboolean multiple_files);
 static void filesel_ok_cb(GtkWidget *widget, gpointer data);
@@ -77,6 +77,8 @@ gchar *filesel_select_file(const gchar *title, const gchar *file)
 		gtk_file_selection_set_filename(GTK_FILE_SELECTION(filesel),
 						file);
 		filesel_oldfilename = g_strdup(file);
+	} else {
+		filesel_oldfilename = NULL;
 	}
 
 	gtk_widget_show(filesel);
@@ -98,6 +100,8 @@ gchar *filesel_select_file(const gchar *title, const gchar *file)
 			g_free(dir);
 		}
 	}
+
+	g_free(filesel_oldfilename);
 
 	manage_window_focus_out(filesel, NULL, NULL);
 	gtk_widget_destroy(filesel);
@@ -182,20 +186,27 @@ static void filesel_create(const gchar *title, gboolean multiple_files)
 				   "select_row",
 				   GTK_SIGNAL_FUNC(filesel_dir_list_select_row_multi),
 				   NULL);
+	} else {
+		gtk_signal_connect_after(GTK_OBJECT(GTK_FILE_SELECTION(filesel)->file_list),
+					 "select_row", 
+					 GTK_SIGNAL_FUNC(filesel_file_list_select_row_single),
+					 NULL);
+		gtk_signal_connect_after(GTK_OBJECT(GTK_FILE_SELECTION(filesel)->dir_list),
+					 "select_row",
+					 GTK_SIGNAL_FUNC(filesel_dir_list_select_row_single),
+					 NULL);
 	}
 }
 
 static void filesel_ok_cb(GtkWidget *widget, gpointer data)
 {
 	filesel_ack = TRUE;
-	g_free(filesel_oldfilename);
 	gtk_main_quit();
 }
 
 static void filesel_cancel_cb(GtkWidget *widget, gpointer data)
 {
 	filesel_ack = FALSE;
-	g_free(filesel_oldfilename);
 	gtk_main_quit();
 }
 
@@ -253,6 +264,33 @@ static void filesel_dir_list_select_row_multi(GtkCList *clist, gint row, gint co
 	/* if dir list is selected we clean everything */
 	gtk_editable_delete_text(GTK_EDITABLE(entry), 0, -1);
 	gtk_clist_unselect_all(file_list);
+}
+
+static void filesel_file_list_select_row_single(GtkCList *clist, gint row, gint col,
+					 GdkEventButton *event, gpointer userdata)
+{
+	gchar *text;
+
+	if(gtk_clist_get_text(clist, row, 0, &text)) {
+		filesel_oldfilename = g_strdup(text);
+		debug_print("%s\n", filesel_oldfilename);
+	} else {
+		filesel_oldfilename = NULL;
+	}
+}
+
+static void filesel_dir_list_select_row_single(GtkCList *clist, gint row, gint col,
+				        GdkEventButton *event, gpointer userdata)
+{
+	gchar *buf;
+	GtkEntry *entry = GTK_ENTRY(GTK_FILE_SELECTION(filesel)->selection_entry);
+
+	buf = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
+	if(filesel_oldfilename && !(*buf)) {
+		gtk_editable_delete_text(GTK_EDITABLE(entry), 0, -1);
+		gtk_entry_append_text(entry, filesel_oldfilename);
+	}
+	g_free(buf);
 }
 
 static GList *filesel_get_multiple_filenames(void)
