@@ -54,6 +54,8 @@ static struct Headers {
 	GtkWidget *hdr_entry;
 	GtkWidget *key_check;
 	GtkWidget *headers_clist;
+
+	GtkWidget *other_headers;
 } headers;
 
 /*
@@ -87,15 +89,14 @@ static void prefs_display_headers_select		(GtkCList	*clist,
 					 gint		 column,
 					 GdkEvent	*event);
 
-static void prefs_display_headers_dest_radio_button_toggled	(void);
-static void prefs_display_headers_notrecv_radio_button_toggled	(void);
+static void prefs_display_headers_other_headers_toggled(void);
 
 static void prefs_display_headers_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
 static void prefs_display_headers_close		(GtkButton	*button);
 
-GSList * prefs_display_headers = NULL;
+PrefsDisplayHeaders prefs_display_headers = { 1, NULL};
 
 static char * defaults[] =
 {
@@ -126,8 +127,8 @@ static void prefs_display_headers_set_default(void)
 	for(i = 0 ; i < sizeof(defaults) / sizeof(char *) ; i++) {
 		HeaderDisplayProp * dp =
 			header_display_prop_read_str(defaults[i]);
-		prefs_display_headers =
-			g_slist_append(prefs_display_headers, dp);
+		prefs_display_headers.headers_list =
+			g_slist_append(prefs_display_headers.headers_list, dp);
 	}
 }
 
@@ -174,6 +175,8 @@ static void prefs_display_headers_create(void)
 	GtkWidget *btn_vbox;
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
+
+	GtkWidget *checkbtn_other_headers;
 
 	gchar *title[] = {_("Order of headers"), _("Action")};
 
@@ -336,6 +339,15 @@ static void prefs_display_headers_create(void)
 	gtk_signal_connect (GTK_OBJECT (down_btn), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_display_headers_down), NULL);
 
+	PACK_CHECK_BUTTON (vbox1, checkbtn_other_headers,
+			   _("Show other headers"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_other_headers),
+				     1);
+
+	gtk_signal_connect
+		(GTK_OBJECT (checkbtn_other_headers), "toggled",
+		 GTK_SIGNAL_FUNC (prefs_display_headers_other_headers_toggled),
+		 NULL);
 
 	gtk_widget_show_all(window);
 
@@ -346,6 +358,8 @@ static void prefs_display_headers_create(void)
 	headers.hdr_entry  = GTK_COMBO (hdr_combo)->entry;
 	headers.key_check  = key_check;
 	headers.headers_clist   = headers_clist;
+
+	headers.other_headers = checkbtn_other_headers;
 }
 
 void prefs_display_headers_read_config(void)
@@ -362,27 +376,32 @@ void prefs_display_headers_read_config(void)
 	if ((fp = fopen(rcpath, "r")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(rcpath, "fopen");
 		g_free(rcpath);
-		prefs_display_headers = NULL;
+		prefs_display_headers.headers_list = NULL;
 		prefs_display_headers_set_default();
 		return;
 	}
 	g_free(rcpath);
 
  	/* remove all previous headers list */
- 	while (prefs_display_headers != NULL) {
- 		dp = (HeaderDisplayProp *)prefs_display_headers->data;
+ 	while (prefs_display_headers.headers_list != NULL) {
+ 		dp = (HeaderDisplayProp *)
+			prefs_display_headers.headers_list->data;
  		header_display_prop_free(dp);
- 		prefs_display_headers =
-			g_slist_remove(prefs_display_headers, dp);
+ 		prefs_display_headers.headers_list =
+			g_slist_remove(prefs_display_headers.headers_list, dp);
  	}
+
+	prefs_display_headers.show_other_headers = 1;
  
  	while (fgets(buf, sizeof(buf), fp) != NULL) {
  		g_strchomp(buf);
- 		dp = header_display_prop_read_str(buf);
- 		if (dp) {
-			prefs_display_headers =
-				g_slist_append(prefs_display_headers, dp);
- 		}
+		if (strcmp(buf, "-") == 0)
+			prefs_display_headers.show_other_headers = 0;
+		else {
+			dp = header_display_prop_read_str(buf);
+			if (dp)
+				prefs_display_headers.headers_list = g_slist_append(prefs_display_headers.headers_list, dp);
+		}
  	}
  
  	fclose(fp);
@@ -408,7 +427,8 @@ void prefs_display_headers_write_config(void)
 		return;
 	}
 
-	for (cur = prefs_display_headers; cur != NULL; cur = cur->next) {
+	for (cur = prefs_display_headers.headers_list; cur != NULL;
+	     cur = cur->next) {
  		HeaderDisplayProp *hdr = (HeaderDisplayProp *)cur->data;
 		gchar *dpstr;
 
@@ -422,6 +442,15 @@ void prefs_display_headers_write_config(void)
 			return;
 		}
 		g_free(dpstr);
+	}
+
+	if (!prefs_display_headers.show_other_headers) {
+		if (fputs("-\n", pfile->fp) == EOF) {
+			FILE_OP_ERROR(rcpath, "fputs");
+			prefs_write_close_revert(pfile);
+			g_free(rcpath);
+			return;
+		}
 	}
 
 	g_free(rcpath);
@@ -447,7 +476,8 @@ static void prefs_display_headers_set_dialog()
 	row = gtk_clist_append(clist, dp_str);
 	gtk_clist_set_row_data(clist, row, NULL);
 
-	for (cur = prefs_display_headers; cur != NULL; cur = cur->next) {
+	for (cur = prefs_display_headers.headers_list; cur != NULL;
+	     cur = cur->next) {
  		HeaderDisplayProp *dp = (HeaderDisplayProp *)cur->data;
 
 		/*
@@ -466,6 +496,8 @@ static void prefs_display_headers_set_dialog()
 	}
 
 	gtk_clist_thaw(clist);
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(headers.other_headers), prefs_display_headers.show_other_headers);
 }
 
 static void prefs_display_headers_set_list()
@@ -473,13 +505,13 @@ static void prefs_display_headers_set_list()
 	gint row = 1;
 	HeaderDisplayProp *dp;
 
-	g_slist_free(prefs_display_headers);
-	prefs_display_headers = NULL;
+	g_slist_free(prefs_display_headers.headers_list);
+	prefs_display_headers.headers_list = NULL;
 
 	while ((dp = gtk_clist_get_row_data(GTK_CLIST(headers.headers_clist),
 		row)) != NULL) {
-		prefs_display_headers = g_slist_append(prefs_display_headers,
-						       dp);
+		prefs_display_headers.headers_list =
+			g_slist_append(prefs_display_headers.headers_list, dp);
 		row++;
 	}
 }
@@ -579,7 +611,8 @@ static void prefs_display_headers_delete_cb(void)
 	dp = gtk_clist_get_row_data(clist, row);
 	header_display_prop_free(dp);
 	gtk_clist_remove(clist, row);
-	prefs_display_headers = g_slist_remove(prefs_display_headers, dp);
+	prefs_display_headers.headers_list =
+		g_slist_remove(prefs_display_headers.headers_list, dp);
 }
 
 static void prefs_display_headers_up(void)
@@ -645,4 +678,9 @@ static void prefs_display_headers_close(GtkButton *button)
 {
 	prefs_display_headers_write_config();
 	gtk_widget_hide(headers.window);
+}
+
+static void prefs_display_headers_other_headers_toggled(void)
+{
+	prefs_display_headers.show_other_headers = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(headers.other_headers));
 }

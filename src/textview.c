@@ -1023,7 +1023,8 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 	}
 
 	sorted_headers = g_ptr_array_new();
-	for(l = prefs_display_headers ; l != NULL ; l = g_slist_next(l)) {
+	for(l = prefs_display_headers.headers_list ; l != NULL ;
+	    l = g_slist_next(l)) {
 		HeaderDisplayProp * dp = (HeaderDisplayProp *) l->data;
 		for(i = 0 ; i < headers->len ; i++) {
 			Header * header = g_ptr_array_index(headers, i);
@@ -1045,9 +1046,11 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 		}
 	}
 
-	for(i = 0 ; i < headers->len ; i++) {
-		Header * header = g_ptr_array_index(headers, i);
-		g_ptr_array_add(sorted_headers, header);
+	if (prefs_display_headers.show_other_headers) {
+		for(i = 0 ; i < headers->len ; i++) {
+			Header * header = g_ptr_array_index(headers, i);
+			g_ptr_array_add(sorted_headers, header);
+		}
 	}
 
 	g_ptr_array_free(headers, TRUE);

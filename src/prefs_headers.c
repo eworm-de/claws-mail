@@ -89,9 +89,6 @@ static void prefs_headers_select		(GtkCList	*clist,
 					 gint		 column,
 					 GdkEvent	*event);
 
-static void prefs_headers_dest_radio_button_toggled	(void);
-static void prefs_headers_notrecv_radio_button_toggled	(void);
-
 static void prefs_headers_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);

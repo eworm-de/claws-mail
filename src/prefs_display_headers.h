@@ -24,6 +24,14 @@ void prefs_display_headers_read_config	(void);
 void prefs_display_headers_write_config	(void);
 void prefs_display_headers_open         (void);
 
-extern GSList * prefs_display_headers;
+struct _PrefsDisplayHeaders {
+	gboolean show_other_headers;
+	GSList * headers_list;
+};
+
+typedef struct _PrefsDisplayHeaders PrefsDisplayHeaders;
+
+extern PrefsDisplayHeaders prefs_display_headers;
+
 
 #endif /* __PREFS_DISPLAY_HEADERS_H__ */
