@@ -904,6 +904,11 @@ static void account_delete(void)
 	row = GPOINTER_TO_INT(clist->selection->data);
 	ac_prefs = gtk_clist_get_row_data(clist, row);
 	if (ac_prefs->folder) {
+		FolderItem *item;
+
+		item = mainwindow_get_mainwindow()->summaryview->folder_item;
+		if (item && item->folder == FOLDER(ac_prefs->folder))
+			summary_clear_all(mainwindow_get_mainwindow()->summaryview);
 		folder_destroy(FOLDER(ac_prefs->folder));
 		folderview_set_all();
 	}

@@ -1,3 +1,18 @@
+2004-12-24
+
+	* version 1.0.0
+
+2004-12-22
+
+	* src/account.c: account_delete(): fixed the crash on deleting a
+	  remote account if the corresponding folder was selected (Debian BTS
+	  #284483).
+
+2004-12-21
+
+	* NEWS, TODO, TODO.jp: updated.
+	* manual/ja/sylpheed.sgml: updated.
+
 2004-12-17
 
 	* src/action.c: parse_append_filename(): escape all special characters
