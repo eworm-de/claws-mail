@@ -1753,7 +1753,7 @@ void procmime_write_mime_header(MimeInfo *mimeinfo, FILE *fp)
 		if (mimeinfo->type == type_table->type) {
 			gchar *buf = g_strdup_printf(
 				"Content-Type: %s/%s", type_table->str, mimeinfo->subtype);
-			fprintf(fp, buf);
+			fprintf(fp, "%s", buf);
 			pdata->len = strlen(buf);
 			g_free(buf);
 			break;
