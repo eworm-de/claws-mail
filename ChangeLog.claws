@@ -1,3 +1,9 @@
+2003-04-30 [alfons]	0.8.11claws129
+
+	* src/common/utils.c
+		make is_ascii_str() fail gracefully when NULL pointer
+		is passed
+
 2003-04-30 [paul]	0.8.11claws128
 
 	* src/addrindex.c

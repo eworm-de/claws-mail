@@ -1061,6 +1061,8 @@ gboolean is_header_line(const gchar *str)
 
 gboolean is_ascii_str(const guchar *str)
 {
+	g_return_val_if_fail(str, FALSE);
+
 	while (*str != '\0') {
 		if (*str != '\t' && *str != ' ' &&
 		    *str != '\r' && *str != '\n' &&
