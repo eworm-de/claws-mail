@@ -11,7 +11,7 @@ EXTRA_TOOLS = \
 	google_search.pl \
 	kmail2sylpheed.pl \
 	kmail2sylpheed_v2.pl \
-	launch_phoenix \
+	launch_firebird \
 	maildir2sylpheed.pl \
 	multiwebsearch.pl \
 	newscache_clean.pl \

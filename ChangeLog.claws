@@ -1,3 +1,8 @@
+2003-06-18 [alfons]
+
+	* tools/Makefile.am
+		phoenix <- firebird	
+
 2003-06-18 [paul]
 
 	* tools/launch_phoenix		** REMOVED **
