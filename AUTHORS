@@ -11,6 +11,7 @@ claws-branch (http://sylpheed-claws.sourceforge.net)
 	Christoph Hohmann	<reboot@gmx.ch>
 	Alfons Hoogervorst	<alfons@proteus.demon.nl>
 	Darko Koruga		<darko.koruga@hermes.si>
+	Colin Leroy		<colin@colino.net>
 	Paul Mangan		<claws@thewildbeast.co.uk>
 	Carsten Schurig		<Carsten.Schurig@web.de>
 	Sergey Vlasov		<vsu@mivlgu.murom.ru>
@@ -37,6 +38,10 @@ user manuals
 
 	Yoichi Imai (Japanese)	<yoichi@silver-forest.com>
 	Paul Kater (English)	<paul@nlpagan.net>
+
+application icon
+
+	WAKAI Kazunao		<silver@lacmhacarh.gr.jp>
 
 contributors (beside the above; based on Changelog)
 
@@ -84,7 +89,7 @@ contributors (beside the above; based on Changelog)
 	Nishika
 	shigeri
 	Tajiri
-	Kazunao Wakai
+	WAKAI Kazunao
 	Rodrigo Dias Arruda Senra
 	Fabio Junior Beneditto
 	Satoshi Nagayasu
@@ -132,7 +137,6 @@ contributors (beside the above; based on Changelog)
 	Oliver Haertel
 	Bob Forsman
 	Ville Skyttä
-	Colin Leroy
 	Wilbert Berendsen
 	Bob Woodside
 	Stefaan Eeckels

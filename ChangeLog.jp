@@ -1,5 +1,13 @@
 2002-04-21
 
+	* version 0.7.5
+
+2002-04-21
+
+	* sylpheed*.png: 若井さんによる新しい app アイコンを追加(thanks!)。
+
+2002-04-21
+
 	* src/summaryview.c: summary_show(): 残ったマークを処理しないバグを
 	  修正。
 	* src/account.c: account_edit_prefs(): アカウント名が空の場合の

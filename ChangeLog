@@ -1,5 +1,13 @@
 2002-04-21
 
+	* version 0.7.5
+
+2002-04-21
+
+	* sylpheed*.png: added new app icons by WAKAI Kazunao (thanks!).
+
+2002-04-21
+
 	* src/summaryview.c: summary_show(): fixed a bug that didn't process
 	  the left marks.
 	* src/account.c: account_edit_prefs(): fixed a crash bug when account

@@ -1,4 +1,9 @@
-2002-04-22 [alfons]
+2002-04-21 [paul]	0.7.4claws90
+
+	* sync with 0.7.5 release
+		see ChangeLog entry 2002-04-21
+
+2002-04-21 [alfons]
 
 	* src/Makefile.am
 		add colin's new pixmaps to EXTRA_DIST

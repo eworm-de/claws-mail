@@ -4,14 +4,16 @@ EXTRA_DIST = \
 	ChangeLog.jp \
 	INSTALL.jp \
 	README.jp \
+	ChangeLog.claws \
 	README.claws \
 	TODO.jp \
 	sylpheed.desktop \
 	sylpheed.spec \
 	sylpheed.spec.in \
-	autogen.sh \
 	sylpheed.png \
-	ChangeLog.claws
+	sylpheed-128x128.png \
+	sylpheed-64x64.png \
+	autogen.sh 
 
 if SYLPHEED_GNOME
 pixmapdir=$(gnomedir)/share/pixmaps

@@ -23,6 +23,7 @@ Changes of Sylpheed
     * Displayed newsgroup names are now abbreviated.
     * The timeout of DNS lookup has been implemented.
     * 'Ctrl-Enter' shortcut now works even if Num Lock is on.
+    * The new application icon has been added.
     * New message checking on IMAP or news server will be aborted immediately
       if some errors occurred.
     * Some menu items have been modified.
