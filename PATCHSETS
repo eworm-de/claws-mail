@@ -228,3 +228,4 @@
 ( cvs diff -u -r 1.469 -r 1.470 src/compose.c; ) > 1.0.0cvs18.patchset
 ( cvs diff -u -r 1.102 -r 1.103 src/procmime.c; ) > 1.0.0cvs19.patchset
 ( cvs diff -u -r 1.262 -r 1.263 src/folder.c; cvs diff -u -r 1.256 -r 1.257 src/folderview.c; ) > 1.0.0cvs20.patchset
+( cvs diff -u -r 1.176 -r 1.177 src/procmsg.c; cvs diff -u -r 1.470 -r 1.471 src/compose.c; ) > 1.0.0cvs21.patchset

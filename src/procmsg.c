@@ -1654,7 +1654,7 @@ MsgInfo *procmsg_msginfo_new_from_mimeinfo(MsgInfo *src_msginfo, MimeInfo *mimei
 	
 	
 	if (!mimeinfo || mimeinfo->type != MIMETYPE_MESSAGE ||
-	    g_ascii_strcasecmp(mimeinfo->subtype, "rfc822")) {
+	    g_strcasecmp(mimeinfo->subtype, "rfc822")) {
 		g_warning("procmsg_msginfo_new_from_mimeinfo(): unsuitable mimeinfo");
 		return NULL;
 	}

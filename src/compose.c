@@ -6934,7 +6934,7 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
  		MsgInfo *orig_msginfo = (MsgInfo *)msginfo_list->data;
  		
  		if (mimeinfo != NULL && mimeinfo->type == MIMETYPE_MESSAGE && 
- 		    !g_ascii_strcasecmp(mimeinfo->subtype, "rfc822")) {
+ 		    !g_strcasecmp(mimeinfo->subtype, "rfc822")) {
  	    		
  			MsgInfo *tmp_msginfo = procmsg_msginfo_new_from_mimeinfo(
  						orig_msginfo, mimeinfo);
