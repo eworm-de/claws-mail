@@ -1,4 +1,10 @@
-2001-06-22 [alfons]
+2001-06-24 [paul]
+
+        Added instructions for ldif-to-xml.py
+
+        * tools/README
+
+2001-06-23 [alfons]
 
 	Some minor things.
 
@@ -10,7 +16,7 @@
 		merged dutch translation of sylpheed-main with
 		sylpheed.pot
 
-2001-06-22 [paul]
+2001-06-23 [paul]
 
         Added tools directory and files.
 

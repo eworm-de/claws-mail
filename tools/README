@@ -9,13 +9,15 @@
 
   HOW TO USE IT
 
-  Move 'filter_conv.pl' to the ~/.sylpheed directory.
-  From the ~/.sylpheed directory, issue the command:
+  Move 'filter_conv.pl' to the $HOME/.sylpheed directory.
+  From the $HOME/.sylpheed directory, issue the command:
 
         perl filter_conv.pl
 
   That's it, the new filtering system is now implemented with your
   previous rules applied.
+
+  Any problems, contact Paul <claws@thewildbeast.co.uk>
 
 -----------------------------------------------------------------------
 
@@ -26,5 +28,22 @@
   This python script converts the netscape ldif format address book to
   the sylpheed xml format.
 
+  HOW TO USE IT
 
+  Inside Netscape export your address book to a file.
+  From the command line, execute:
+
+      ./ldif-to-xml.py <path/filename>
+
+  In case of trouble, just invoke your python interpreter directly:
+
+      python ldif-to-xml.py <path/filename>
+
+  Either way a file called addressbook.xml will be generated in the current
+  directory. This xml file should be merged with or simply placed in the
+  $HOME/.sylpheed directory.
+
+  Any problems, contact Rod Senra <rodrigo.senra@ic.unicamp.br>
+
+-----------------------------------------------------------------------
 
