@@ -43,6 +43,7 @@ src/gtk/logwindow.c
 src/gtk/pluginwindow.c
 src/gtk/prefswindow.c
 src/gtk/progressdialog.c
+src/gtk/quicksearch.c
 src/gtk/sslcertwindow.c
 src/headerview.c
 src/imap.c
