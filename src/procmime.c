@@ -1371,7 +1371,7 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 		oldvalue[0] = '\0';
 		oldvalue++;
 
-		newvalue = conv_codeset_strdup(oldvalue, charset, conv_get_current_charset_str());
+		newvalue = conv_codeset_strdup(oldvalue, charset, CS_UTF_8);
 
 		g_hash_table_remove(table, attribute);
 		g_free(key);
