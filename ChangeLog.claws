@@ -1,3 +1,8 @@
+2004-08-12 [colin]	0.9.12cvs59
+
+	* src/plugins/trayicon/trayicon.c
+		Add a context menu with most common operations
+
 2004-08-12 [colin]	0.9.12cvs58
 
 	* configure.ac
