@@ -1,3 +1,8 @@
+2004-02-06 [darko]	0.9.8claws64
+
+	* src/compose.c
+		don't allow Ctrl+Enter while external editor is active
+
 2004-02-06 [paul]	0.9.8claws63
 
 	* po/es.po
