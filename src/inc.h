@@ -79,7 +79,6 @@ struct _Pop3State
 	gint new;
 	gint total_bytes;
 	gint cur_msg;
-	gint cur_msg_bytes;
 	gint cur_total_bytes;
 	gint *sizes;
 

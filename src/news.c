@@ -21,6 +21,8 @@
 #  include "config.h"
 #endif
 
+#include "defs.h"
+
 #include <glib.h>
 #include <stdio.h>
 #include <string.h>
@@ -28,7 +30,6 @@
 #include <dirent.h>
 #include <unistd.h>
 
-#include "defs.h"
 #include "intl.h"
 #include "news.h"
 #include "nntp.h"

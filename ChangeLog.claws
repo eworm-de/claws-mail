@@ -1,3 +1,11 @@
+2001-05-07 [hiroyuki]
+
+	* src/inc.h
+	  src/pop.c: pop3_retr_recv(): removed cur_msg_bytes from the
+	  member of Pop3State.
+	* src/news.c: brought #include "defs.h" before #include <glib.h>
+	  to prevent the warning of `MIN' and `MAX' redefinition.
+
 2001-05-06 [hoa]
 
 	* removed src/headers_display.[ch]
