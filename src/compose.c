@@ -1284,6 +1284,10 @@ void compose_reedit(MsgInfo *msginfo)
 	mark = gtk_text_buffer_get_insert(textbuf);
 	gtk_text_buffer_get_iter_at_mark(textbuf, &iter, mark);
 
+	g_signal_handlers_block_by_func(G_OBJECT(textbuf),
+					G_CALLBACK(compose_changed_cb),
+					compose);
+
 	if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
 		g_warning("Can't get text part\n");
 	else {
@@ -1293,7 +1297,12 @@ void compose_reedit(MsgInfo *msginfo)
 		}
 		fclose(fp);
 	}
+	
 	compose_attach_parts(compose, msginfo);
+
+	g_signal_handlers_unblock_by_func(G_OBJECT(textbuf),
+					G_CALLBACK(compose_changed_cb),
+					compose);
 
 	gtk_widget_grab_focus(compose->text);
 
