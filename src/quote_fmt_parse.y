@@ -595,7 +595,7 @@ insert:
 #ifdef WIN32
 			gint retval;
 			gchar *tmp = get_tmp_file();
-			gchar *cmd = g_strdup_printf("%s > %s",yyvsp[-1].str,tmp);
+			gchar *cmd = g_strdup_printf("%s > %s",$3,tmp);
 			
 			retval = system(cmd);
 			if(!retval && (file = fopen(tmp, "r")))

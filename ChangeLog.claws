@@ -1,3 +1,14 @@
+2002-09-11 [paul]	0.8.2claws38
+
+	* sync with 0.8.2cvs14
+		see ChangeLog 2002-09-11
+
+2002-09-11 [colin]	0.8.2claws37
+
+	* src/folder.c
+		Fix a typo (seeming to cause new/unread status to
+		be lost)
+
 2002-09-10 [christoph]	0.8.2claws36
 
 	* src/compose.c
