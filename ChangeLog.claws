@@ -1,3 +1,8 @@
+2004-08-16 [colin]	0.9.12cvs62
+
+	* src/common/ssl.c
+		Fix format error
+
 2004-08-13 [colin]	0.9.12cvs61
 
 	* src/plugins/pgpmime/plugin.c

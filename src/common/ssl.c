@@ -113,7 +113,7 @@ gint SSL_connect_nb(SSL *ssl)
 	g_free(td);
 
 	debug_print("SSL_connect thread returned %d\n", 
-			GINT_TO_POINTER(res));
+			GPOINTER_TO_INT(res));
 	
 	return GPOINTER_TO_INT(res);
 #else
