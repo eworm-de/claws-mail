@@ -1,10 +1,22 @@
-2003-01-06 [colin]     0.8.8claws55
+2003-01-06 [christoph]	0.8.8claws56
+
+	* src/mainwindow.c
+	* src/prefs_gtk.[ch]
+	* src/gtk/prefswindow.[ch]
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		o remove page management from prefswindow, pages
+		  will be an argument to prefswindow_open
+		o prefswindow_open gets a datapointer that is
+		  passed to the widget_create function to allow
+		  creation of prefswindow for specific items
+
+2003-01-06 [colin]     	0.8.8claws55
 	
 	* src/summaryview.c
 		We don't want regexp in the reply-finder, 
 		because MIDs can contain !,$,. and so on
 
-2003-01-06 [jens]     0.8.8claws54
+2003-01-06 [jens]     	0.8.8claws54
 
 	* src/jpilot.c
 		fixed a wrong free in jpilot_read_db_files
