@@ -1,3 +1,12 @@
+2001-07-01 [paul]
+
+	* src/ mainwindow.c
+	* src/procmsg.h
+	* src/summaryview.[ch]
+		new right-click option: Label.
+		substitute for 'Mark-->Mark/Unmark', colours the line.
+		submitted by Satoshi Nagayasu
+
 2001-07-01 [christoph]
 
 	* src/folderview.c

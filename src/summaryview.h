@@ -60,7 +60,8 @@ typedef enum
 	SORT_BY_DATE,
 	SORT_BY_FROM,
 	SORT_BY_SUBJECT,
-	SORT_BY_SCORE
+	SORT_BY_SCORE,
+	SORT_BY_LABEL
 } SummarySortType;
 
 typedef enum
@@ -195,5 +196,7 @@ void summary_mark_as_unread	  (SummaryView		*summaryview);
 void summary_mark_as_read	  (SummaryView		*summaryview);
 void summary_select_all		  (SummaryView		*summaryview);
 void summary_unselect_all	  (SummaryView		*summaryview);
+void summary_set_label		  (SummaryView		*summaryview, guint labelcolor, GtkWidget *widget);
+void summary_set_label_color	  (GtkCTree *ctree, GtkCTreeNode *node, guint labelcolor);
 
 #endif /* __SUMMARY_H__ */

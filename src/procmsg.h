@@ -45,6 +45,16 @@ typedef enum
 	MSG_MOVE	= 1 << 16,
 	MSG_COPY	= 1 << 17,
 
+	MSG_LABEL         = 1 << 8 | 1 << 7 | 1 << 6,
+	MSG_LABEL_NONE    = 0 << 8 | 0 << 7 | 0 << 6,
+	MSG_LABEL_ORANGE  = 0 << 8 | 0 << 7 | 1 << 6,
+	MSG_LABEL_RED     = 0 << 8 | 1 << 7 | 0 << 6,
+	MSG_LABEL_PINK    = 0 << 8 | 1 << 7 | 1 << 6,
+	MSG_LABEL_SKYBLUE = 1 << 8 | 0 << 7 | 0 << 6,
+	MSG_LABEL_BLUE    = 1 << 8 | 0 << 7 | 1 << 6,
+	MSG_LABEL_GREEN   = 1 << 8 | 1 << 7 | 0 << 6,
+	MSG_LABEL_BROWN   = 1 << 8 | 1 << 7 | 1 << 6,
+
 	MSG_QUEUED	= 1 << 25,
 	MSG_DRAFT	= 1 << 26,
 	MSG_ENCRYPTED   = 1 << 27,
@@ -60,6 +70,7 @@ typedef enum
 					 MSG_DELETED   | \
 					 MSG_REPLIED   | \
 					 MSG_FORWARDED | \
+                                         MSG_LABEL     | \
                                          MSG_REALLY_DELETED)
 #define MSG_CACHED_FLAG_MASK		(MSG_MIME)
 
@@ -83,6 +94,8 @@ typedef enum
 #define MSG_IS_MIME(msg)		((msg & MSG_MIME) != 0)
 #define MSG_IS_NEWS(msg)		((msg & MSG_NEWS) != 0)
 #define MSG_IS_CACHED(msg)		((msg & MSG_CACHED) != 0)
+
+#define MSG_GET_LABEL(msg)		(msg & MSG_LABEL)
 
 #define WRITE_CACHE_DATA_INT(n, fp) \
 	fwrite(&n, sizeof(n), 1, fp)

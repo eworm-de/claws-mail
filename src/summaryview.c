@@ -266,6 +266,8 @@ static void summary_from_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
 static void summary_subject_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
+static void summary_mark_clicked	(GtkWidget		*button,
+					 SummaryView		*summaryview);
 
 static void summary_start_drag		(GtkWidget        *widget, 
 					 int button,
@@ -298,6 +300,9 @@ static gint summary_cmp_by_subject	(GtkCList		*clist,
 static gint summary_cmp_by_score	(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
+static gint summary_cmp_by_label	(GtkCList		*clist,
+					 gconstpointer		 ptr1,
+					 gconstpointer		 ptr2);
 
 GtkTargetEntry summary_drag_types[1] =
 {
@@ -317,6 +322,16 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/_Mark/Mark as unr_ead"),	NULL, summary_mark_as_unread, 0, NULL},
 	{N_("/_Mark/Mark as rea_d"),
 					NULL, summary_mark_as_read, 0, NULL},
+	{N_("/_Label"),                 NULL, NULL, 0, "<Branch>"},
+	{N_("/_Label/None"),            NULL, summary_set_label, MSG_LABEL_NONE, NULL},
+	{N_("/_Label/---"),             NULL, NULL,             0, "<Separator>"},
+	{N_("/_Label/Orange"),          NULL, summary_set_label, MSG_LABEL_ORANGE, NULL},
+	{N_("/_Label/Red"),             NULL, summary_set_label, MSG_LABEL_RED, NULL},
+	{N_("/_Label/Pink"),            NULL, summary_set_label, MSG_LABEL_PINK, NULL},
+	{N_("/_Label/SkyBlue"),         NULL, summary_set_label, MSG_LABEL_SKYBLUE, NULL},
+	{N_("/_Label/Blue"),            NULL, summary_set_label, MSG_LABEL_BLUE, NULL},
+	{N_("/_Label/Green"),           NULL, summary_set_label, MSG_LABEL_GREEN, NULL},
+	{N_("/_Label/Brown"),           NULL, summary_set_label, MSG_LABEL_BROWN, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Reply"),			NULL, summary_reply_cb,	COMPOSE_REPLY, NULL},
 	{N_("/Repl_y to sender"),	NULL, summary_reply_cb,	COMPOSE_REPLY_TO_SENDER, NULL},
@@ -336,6 +351,95 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/Select _all"),		NULL, summary_select_all, 0, NULL}
 };
+
+void summary_set_label_color(GtkCTree *ctree, GtkCTreeNode *node,
+			     guint labelcolor)
+{
+  GdkColor color;
+  GtkStyle *style, *prev_style, *ctree_style;
+  MsgInfo *msginfo;
+  
+  ctree_style = gtk_widget_get_style(GTK_WIDGET(ctree));
+  
+  prev_style = gtk_ctree_node_get_row_style(ctree, node);
+  
+  if (!prev_style)
+    prev_style = ctree_style;
+  
+  style = gtk_style_copy(prev_style);
+  
+  switch (labelcolor) {
+  case MSG_LABEL_ORANGE:
+    color.red = 0xffff;
+    color.green = (0x99<<8);
+    color.blue = 0x0;
+    break;
+  case MSG_LABEL_RED:
+    color.red = 0xffff;
+    color.green = color.blue = 0x0;
+    break;
+  case MSG_LABEL_PINK:
+    color.red = 0xffff;
+    color.green = (0x66<<8);
+    color.blue = 0xffff;
+    break;
+  case MSG_LABEL_SKYBLUE:
+    color.red = 0x0;
+    color.green = (0xcc<<8);
+    color.blue = 0xffff;
+    break;
+  case MSG_LABEL_BLUE:
+    color.red = 0x0;
+    color.green = 0x0;
+    color.blue = 0xffff;
+    break;
+  case MSG_LABEL_GREEN:
+    color.red = 0x0;
+    color.green = (0x99<<8);
+    color.blue = 0x0;
+    break;
+  case MSG_LABEL_BROWN:
+    color.red = (0x66<<8);
+    color.green = (0x33<<8);
+    color.blue = (0x33<<8);
+    break;
+  case MSG_LABEL_NONE:
+  default:
+    labelcolor = MSG_LABEL_NONE;
+    color.red = ctree_style->fg[GTK_STATE_NORMAL].red;
+    color.green = ctree_style->fg[GTK_STATE_NORMAL].green;
+    color.blue = ctree_style->fg[GTK_STATE_NORMAL].blue;
+    style->fg[GTK_STATE_NORMAL] = color;
+
+    color.red = ctree_style->fg[GTK_STATE_SELECTED].red;
+    color.green = ctree_style->fg[GTK_STATE_SELECTED].green;
+    color.blue = ctree_style->fg[GTK_STATE_SELECTED].blue;
+    style->fg[GTK_STATE_SELECTED] = color;
+    gtk_ctree_node_set_row_style(ctree, node, style);
+    break;
+  }
+
+  msginfo = gtk_ctree_node_get_row_data(ctree, node);
+
+  MSG_UNSET_FLAGS(msginfo->flags, MSG_LABEL);
+  MSG_SET_FLAGS(msginfo->flags, labelcolor);
+
+  if ( style ) {
+    style->fg[GTK_STATE_NORMAL] = color;
+    style->fg[GTK_STATE_SELECTED] = color;
+    gtk_ctree_node_set_row_style(ctree, node, style);
+  }
+}
+
+void summary_set_label(SummaryView *summaryview, guint labelcolor, GtkWidget *widget)
+{
+  GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+  GtkCList *clist = GTK_CLIST(summaryview->ctree);
+  GList *cur;
+  
+  for (cur = clist->selection; cur != NULL; cur = cur->next)
+    summary_set_label_color(ctree, GTK_CTREE_NODE(cur->data), labelcolor);
+}
 
 SummaryView *summary_create(void)
 {
@@ -466,6 +570,11 @@ SummaryView *summary_create(void)
 		(GTK_OBJECT(GTK_CLIST(ctree)->column[S_COL_SUBJECT].button),
 		 "clicked",
 		 GTK_SIGNAL_FUNC(summary_subject_clicked),
+		 summaryview);
+	gtk_signal_connect
+		(GTK_OBJECT(GTK_CLIST(ctree)->column[S_COL_MARK].button),
+		 "clicked",
+		 GTK_SIGNAL_FUNC(summary_mark_clicked),
 		 summaryview);
 
 	/* create status label */
@@ -957,6 +1066,8 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 
 	menu_set_sensitive(ifactory, "/Mark/Mark as unread", TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Mark as read",   TRUE);
+
+	menu_set_sensitive(ifactory, "/Label", TRUE);
 
 	menu_set_sensitive(ifactory, "/Select all", TRUE);
 
@@ -1460,6 +1571,9 @@ void summary_sort(SummaryView *summaryview, SummarySortType type)
 	case SORT_BY_SCORE:
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_score;
 		break;
+	case SORT_BY_LABEL:
+		cmp_func = (GtkCListCompareFunc)summary_cmp_by_label;
+		break;
 	default:
 		return;
 	}
@@ -1582,6 +1696,9 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 			GTKUT_CTREE_NODE_SET_ROW_DATA(node, msginfo);
 
 			summary_set_marks_func(ctree, node, summaryview);
+			
+			if ( MSG_GET_LABEL(msginfo->flags) )
+			  summary_set_label_color(ctree, node, (msginfo->flags & MSG_LABEL));
 
 			/* preserve previous node if the message is
 			   duplicated */
@@ -1641,6 +1758,9 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 				 NULL, NULL, NULL, NULL, FALSE, TRUE);
 			GTKUT_CTREE_NODE_SET_ROW_DATA(node, msginfo);
 			summary_set_marks_func(ctree, node, summaryview);
+
+			if ( MSG_GET_LABEL(msginfo->flags) )
+			  summary_set_label_color(ctree, node, (msginfo->flags & MSG_LABEL));
 
 			if (msginfo->msgid && *msginfo->msgid &&
 			    g_hash_table_lookup(msgid_table, msginfo->msgid)
@@ -3437,6 +3557,12 @@ static void summary_subject_clicked(GtkWidget *button,
 	summary_sort(summaryview, SORT_BY_SUBJECT);
 }
 
+static void summary_mark_clicked(GtkWidget *button,
+				 SummaryView *summaryview)
+{
+	summary_sort(summaryview, SORT_BY_LABEL);
+}
+
 void summary_change_display_item(SummaryView *summaryview)
 {
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
@@ -3576,6 +3702,15 @@ static gint summary_cmp_by_subject(GtkCList *clist,
 		return -1;
 
 	return strcasecmp(msginfo1->subject, msginfo2->subject);
+}
+
+static gint summary_cmp_by_label(GtkCList *clist,
+				 gconstpointer ptr1, gconstpointer ptr2)
+{
+	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
+	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
+
+	return MSG_GET_LABEL(msginfo1->flags) - MSG_GET_LABEL(msginfo2->flags);
 }
 
 static gint summary_cmp_by_score(GtkCList *clist,
