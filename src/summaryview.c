@@ -722,6 +722,10 @@ SummaryView *summary_create(void)
 
 	gtk_widget_show_all(vbox);
 
+	/* hide widgets that shouldn't be displayed */
+	if (prefs_common.summary_quicksearch_type != S_SEARCH_EXTENDED)
+		gtk_widget_hide(search_description);
+
 	return summaryview;
 }
 

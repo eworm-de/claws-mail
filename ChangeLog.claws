@@ -1,3 +1,9 @@
+2004-03-20 [alfons]	0.9.10claws23
+
+	* src/summaryview.c
+		hide ext search button on initial display (should fix bug #459,
+		"Toggling quick-search at 1st time: minor UI inconsistency")
+
 2004-03-20 [alfons]	0.9.10claws22
 
 	* src/summaryview.[ch]
