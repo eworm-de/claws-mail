@@ -1,3 +1,8 @@
+2003-02-27 [thorsten]	0.8.10claws108-1
+
+	* win32/utils/sylpheed-setup.iss.in
+		fix: version number in install script
+
 2003-02-27 [thorsten]	0.8.10claws99-1
 
 	* src/prefs_actions.c

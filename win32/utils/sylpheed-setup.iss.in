@@ -46,10 +46,10 @@ Source: "@PAKDIR@\bin\sylpheed.exe";          DestDir: "{app}\bin";             
 Source: "@PAKDIR@\bin\sylpheed.dll";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 Source: "@PAKDIR@\bin\fnmatch.dll";           DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 Source: "@PAKDIR@\bin\libcompface.dll";       DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
-Source: "@PAKDIR@\bin\libkcc.dll";            DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 Source: "@PAKDIR@\bin\regex.dll";             DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 Source: "@PAKDIR@\bin\w32lib.dll";            DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 Source: "@PAKDIR@\bin\iconv.dll";             DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
+Source: "@PAKDIR@\bin\crypt.dll";             DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 
 Source: "@PAKDIR@\bin\gspawn-win32-helper.exe";  DestDir: "{app}\bin";                CopyMode: alwaysoverwrite; Components: gtk
 Source: "@PAKDIR@\bin\libgthread-2.0-0.dll";  DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite; Components: gtk
@@ -110,9 +110,9 @@ Name: "{group}\links\Sylpheed-patches";                         Filename: "{app}
 Root: HKCU; Subkey: "Software\Sylpheed";                        Flags: uninsdeletekeyifempty; Tasks: reg_sylpheed
 Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: string;      ValueName: "InstalledDir";      ValueData: "{app}";                     Tasks: reg_sylpheed
 Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: string;      ValueName: "HomeDir";           ValueData: "{code:GetHomeDir}";         Tasks: reg_sylpheed
-Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: dword;       ValueName: "MajorVersion";      ValueData: "0";                         Flags: uninsdeletekey
-Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: dword;       ValueName: "MinorVersion";      ValueData: "8";                         Flags: uninsdeletekey
-Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: dword;       ValueName: "MicroVersion";      ValueData: "6";                         Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: dword;       ValueName: "MajorVersion";      ValueData: "@MAJOR_VERSION@";                         Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: dword;       ValueName: "MinorVersion";      ValueData: "@MINOR_VERSION@";                         Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: dword;       ValueName: "MicroVersion";      ValueData: "@MICRO_VERSION@";                         Flags: uninsdeletekey
 Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: string;      ValueName: "UninstallString";   ValueData: "{uninstallexe}";            Flags: uninsdeletekey
 
 Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\Sylpheed.exe";     Flags: uninsdeletekey; Tasks: reg_sylpheed
