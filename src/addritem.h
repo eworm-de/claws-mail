@@ -192,5 +192,6 @@ ItemEMail *addritem_move_email_after	( ItemPerson *person,
 void addritem_parse_first_last		( ItemPerson *person );
 GList *addritem_folder_path		( const ItemFolder *folder,
 					  const gboolean seq );
+gchar *addritem_format_email		( ItemEMail *email );
 
 #endif /* __ADDRITEM_H__ */

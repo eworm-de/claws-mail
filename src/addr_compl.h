@@ -22,8 +22,6 @@
 #define __ADDR_COMPL_H__
 
 gint start_address_completion		(void);
-guint complete_address			(const gchar *str);
-gchar *get_complete_address		(gint        index);
 gint end_address_completion		(void);
 
 /* ui functions */

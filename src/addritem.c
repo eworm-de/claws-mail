@@ -28,9 +28,10 @@
 #include "addritem.h"
 #include "mgutils.h"
 
-/*
-* Create new email address item.
-*/
+/**
+ * Create new email address item.
+ * \return Initialized email item.
+ */
 ItemEMail *addritem_create_item_email( void ) {
 	ItemEMail *item;
 	item = g_new0( ItemEMail, 1 );
@@ -44,10 +45,11 @@ ItemEMail *addritem_create_item_email( void ) {
 	return item;
 }
 
-/*
-* Create a shallow copy of specified email address item.
-* Enter: item E-Mail to copy.
-*/
+/**
+ * Create a shallow copy of specified email address item.
+ * \param  item E-Mail to copy.
+ * \return Copy of email, or <i>NULL</i> if null argument supplied.
+ */
 ItemEMail *addritem_copy_item_email( ItemEMail *item ) {
 	ItemEMail *itemNew = NULL;
 	if( item ) {
@@ -59,10 +61,11 @@ ItemEMail *addritem_copy_item_email( ItemEMail *item ) {
 	return itemNew;
 }
 
-/*
-* Create a full copy of specified email address item.
-* Enter: item E-Mail to copy.
-*/
+/**
+ * Create a full copy (deep copy) of specified email address item.
+ * \param  item E-Mail to copy.
+ * \return Copy of email.
+ */
 ItemEMail *addritem_copyfull_item_email( ItemEMail *item ) {
 	ItemEMail *itemNew = NULL;
 	if( item ) {
@@ -76,22 +79,46 @@ ItemEMail *addritem_copyfull_item_email( ItemEMail *item ) {
 	return itemNew;
 }
 
+/**
+ * Specify ID for email.
+ * \param email E-Mail item.
+ * \param value ID.
+ */
 void addritem_email_set_id( ItemEMail *email, const gchar *value ) {
 	ADDRITEM_ID(email) = mgu_replace_string( ADDRITEM_ID(email), value );
 }
+
+/**
+ * Specify alias for email.
+ * \param email E-Mail item.
+ * \param value Alias.
+ */
 void addritem_email_set_alias( ItemEMail *email, const gchar *value ) {
 	ADDRITEM_NAME(email) = mgu_replace_string( ADDRITEM_NAME(email), value );
 }
+
+/**
+ * Specify address for email.
+ * \param email E-Mail item.
+ * \param value Address.
+ */
 void addritem_email_set_address( ItemEMail *email, const gchar *value ) {
 	email->address = mgu_replace_string( email->address, value );
 }
+
+/**
+ * Specify remarks for email.
+ * \param email E-Mail item.
+ * \param value Remarks.
+ */
 void addritem_email_set_remarks( ItemEMail *email, const gchar *value ) {
 	email->remarks = mgu_replace_string( email->remarks, value );
 }
 
-/*
-* Free address item email.
-*/
+/**
+ * Free address item email object.
+ * \param item E-Mail item to free.
+ */
 void addritem_free_item_email( ItemEMail *item ) {
 	g_return_if_fail( item != NULL );
 
@@ -111,9 +138,10 @@ void addritem_free_item_email( ItemEMail *item ) {
 	g_free( item );
 }
 
-/*
-* Create new attribute.
-*/
+/**
+ * Create new attribute object.
+ * \return Initialized attribute object.
+ */
 UserAttribute *addritem_create_attribute( void ) {
 	UserAttribute *item;
 	item = g_new0( UserAttribute, 1 );
@@ -123,9 +151,11 @@ UserAttribute *addritem_create_attribute( void ) {
 	return item;
 }
 
-/*
-* Create copy of specified attribute.
-*/
+/**
+ * Create copy (deep copy) of specified attribute.
+ * \param  item Attribute to copy.
+ * \return Copy of attribute, or <i>NULL</i> if null argument supplied.
+ */
 UserAttribute *addritem_copy_attribute( UserAttribute *item ) {
 	UserAttribute *itemNew = NULL;
 	if( item ) {
@@ -137,22 +167,40 @@ UserAttribute *addritem_copy_attribute( UserAttribute *item ) {
 	return itemNew;
 }
 
+/**
+ * Specify ID for attribute.
+ * \param item Attribute object.
+ * \param value ID.
+ */
 void addritem_attrib_set_id( UserAttribute *item, const gchar *value ) {
 	g_return_if_fail( item != NULL );
 	item->uid = mgu_replace_string( item->uid, value );
 }
+
+/**
+ * Specify name for attribute.
+ * \param item Attribute object.
+ * \param value Name.
+ */
 void addritem_attrib_set_name( UserAttribute *item, const gchar *value ) {
 	g_return_if_fail( item != NULL );
 	item->name = mgu_replace_string( item->name, value );
 }
+
+/**
+ * Specify value for attribute.
+ * \param item Attribute object.
+ * \param value Value.
+ */
 void addritem_attrib_set_value( UserAttribute *item, const gchar *value ) {
 	g_return_if_fail( item != NULL );
 	item->value = mgu_replace_string( item->value, value );
 }
 
-/*
-* Free user attribute.
-*/
+/**
+ * Free user attribute.
+ * \param item Attribute object to free.
+ */
 void addritem_free_attribute( UserAttribute *item ) {
 	g_return_if_fail( item != NULL );
 	g_free( item->uid );
@@ -164,9 +212,10 @@ void addritem_free_attribute( UserAttribute *item ) {
 	g_free( item );
 }
 
-/*
-* Create new address book person.
-*/
+/**
+ * Create new address book person.
+ * \return Initialized person object.
+ */
 ItemPerson *addritem_create_item_person( void ) {
 	ItemPerson *person;
 	person = g_new0( ItemPerson, 1 );
@@ -185,10 +234,11 @@ ItemPerson *addritem_create_item_person( void ) {
 	return person;
 }
 
-/*
-* Create a shallow copy of address book person.
-* Enter: item Person to copy.
-*/
+/**
+ * Create a shallow copy of address book person object.
+ * \param  item Person to copy.
+ * \return Copy of person, or <i>NULL</i> if null argument supplied.
+ */
 ItemPerson *addritem_copy_item_person( ItemPerson *item ) {
 	ItemPerson *itemNew;
 
@@ -204,32 +254,74 @@ ItemPerson *addritem_copy_item_person( ItemPerson *item ) {
 	return itemNew;
 }
 
+/**
+ * Specify ID for person object.
+ * \param person Person object.
+ * \param value ID.
+ */
 void addritem_person_set_id( ItemPerson *person, const gchar *value ) {
 	ADDRITEM_ID(person) = mgu_replace_string( ADDRITEM_ID(person), value );
 }
+
+/**
+ * Specify first name for person object.
+ * \param person Person object.
+ * \param value Name.
+ */
 void addritem_person_set_first_name( ItemPerson *person, const gchar *value ) {
 	person->firstName = mgu_replace_string( person->firstName, value );
 }
+
+/**
+ * Specify last name for person object.
+ * \param person Person object.
+ * \param value name.
+ */
 void addritem_person_set_last_name( ItemPerson *person, const gchar *value ) {
 	person->lastName = mgu_replace_string( person->lastName, value );
 }
+
+/**
+ * Specify nick name for person object.
+ * \param person Person object.
+ * \param value name.
+ */
 void addritem_person_set_nick_name( ItemPerson *person, const gchar *value ) {
 	person->nickName = mgu_replace_string( person->nickName, value );
 }
+
+/**
+ * Specify common name for person object.
+ * \param person Person object.
+ * \param value name.
+ */
 void addritem_person_set_common_name( ItemPerson *person, const gchar *value ) {
 	ADDRITEM_NAME(person) = mgu_replace_string( ADDRITEM_NAME(person), value );
 }
+
+/**
+ * Specify external ID for person object.
+ * \param person Person object.
+ * \param value ID.
+ */
 void addritem_person_set_external_id( ItemPerson *person, const gchar *value ) {
 	person->externalID = mgu_replace_string( person->externalID, value );
 }
+
+/**
+ * Specify value of open indicator for person object. This is typically used to
+ * simplify open/close folders in the address book GUI.
+ * \param person Person object.
+ * \param value  Value for indicator. Set to <i>TRUE</i> if opened.
+ */
 void addritem_person_set_opened( ItemPerson *person, const gboolean value ) {
 	person->isOpened = value;
 }
 
-/*
+/**
  * Test whether person's data is empty.
- * Enter: person Person to test.
- * Return: TRUE if empty.
+ * \param  person Person to test.
+ * \return <i>TRUE</i> if empty.
  */
 gboolean addritem_person_empty( ItemPerson *person ) {
 	gchar *t;
@@ -254,11 +346,11 @@ gboolean addritem_person_empty( ItemPerson *person ) {
 	return TRUE;
 }
 
-/*
+/**
  * Free linked list of item addresses; both addresses and the list are freed.
  * It is assumed that addresses are *NOT* contained within some other
  * container.
- * Enter: list List of addresses to be freed.
+ * \param list List of addresses to be freed.
  */
 void addritem_free_list_email( GList *list ) {
 	GList *node = list;
@@ -273,9 +365,12 @@ void addritem_free_list_email( GList *list ) {
 	list = NULL;
 }
 
-/*
-* Free linked list of attributes.
-*/
+/**
+ * Free linked list of attributes; both attributes and the list are freed.
+ * It is assumed that attributes are *NOT* contained within some other
+ * container.
+ * \param list List of attributes to be freed.
+ */
 void addritem_free_list_attribute( GList *list ) {
 	GList *node = list;
 	while( node ) {
@@ -286,9 +381,10 @@ void addritem_free_list_attribute( GList *list ) {
 	g_list_free( list );
 }
 
-/*
-* Free address person.
-*/
+/**
+ * Free address person object.
+ * \param person Person object to free.
+ */
 void addritem_free_item_person( ItemPerson *person ) {
 	g_return_if_fail( person != NULL );
 
@@ -317,9 +413,11 @@ void addritem_free_item_person( ItemPerson *person ) {
 	g_free( person );
 }
 
-/*
-* Print address item.
-*/
+/**
+ * Print E-Mail address object for debug.
+ * \param item   Item to print.
+ * \param stream Output stream.
+ */
 void addritem_print_item_email( ItemEMail *item, FILE *stream ) {
 	g_return_if_fail( item != NULL );
 	fprintf( stream, "\t\tt/id: %d : '%s'\n", ADDRITEM_TYPE(item), ADDRITEM_ID(item) );
@@ -330,9 +428,11 @@ void addritem_print_item_email( ItemEMail *item, FILE *stream ) {
 	fprintf( stream, "\t\t---\n" );
 }
 
-/*
-* Print user attribute.
-*/
+/**
+ * Print user attribute object for debug.
+ * \param item   Attribute to print.
+ * \param stream Output stream.
+ */
 void addritem_print_attribute( UserAttribute *item, FILE *stream ) {
 	g_return_if_fail( item != NULL );
 	fprintf( stream, "\t\tuid  : '%s'\n", item->uid );
@@ -341,9 +441,11 @@ void addritem_print_attribute( UserAttribute *item, FILE *stream ) {
 	fprintf( stream, "\t\t---\n" );
 }
 
-/*
-* Print person item.
-*/
+/**
+ * Print person item for debug.
+ * \param person Person to print.
+ * \param stream Output stream.
+ */
 void addritem_print_item_person( ItemPerson *person, FILE *stream ) {
 	GList *node;
 	g_return_if_fail( person != NULL );
@@ -372,10 +474,12 @@ void addritem_print_item_person( ItemPerson *person, FILE *stream ) {
 	fprintf( stream, "\t===\n" );
 }
 
-/*
-* Add EMail address to person.
-* return: TRUE if item added.
-*/
+/**
+ * Add E-Mail address object to person.
+ * \param  person Person.
+ * \param  email  E-Mail object to add.
+ * \return <i>TRUE</i> if E-Mail added.
+ */
 gboolean addritem_person_add_email( ItemPerson *person, ItemEMail *email ) {
 	GList *node;
 
@@ -392,12 +496,12 @@ gboolean addritem_person_add_email( ItemPerson *person, ItemEMail *email ) {
 	return TRUE;
 }
 
-/*
-* Return email object with specified ID.
-* param: person Person object.
-*        eid	EMail ID.
-* return: EMail object, or NULL if not found.
-*/
+/**
+ * Return email object with specified ID for specified person.
+ * \param  person Person object.
+ * \param  eid    EMail ID.
+ * \return EMail object, or <i>NULL</i> if not found.
+ */
 ItemEMail *addritem_person_get_email( ItemPerson *person, const gchar *eid ) {
 	ItemEMail *email = NULL;
 	GList *node;
@@ -420,12 +524,13 @@ ItemEMail *addritem_person_get_email( ItemPerson *person, const gchar *eid ) {
 	return email;
 }
 
-/*
-* Remove email address for specified person.
-* param: person Person object.
-*        eid	EMail ID.
-* return: EMail object, or NULL if not found. Note that object should still be freed.
-*/
+/**
+ * Remove email address with specified ID for specified person.
+ * \param  person Person object.
+ * \param  eid    EMail ID.
+ * \return EMail object, or <i>NULL</i> if not found. Note that object should
+ *         still be freed after calling this function.
+ */
 ItemEMail *addritem_person_remove_email_id( ItemPerson *person, const gchar *eid ) {
 	ItemEMail *email = NULL;
 	GList *node;
@@ -457,12 +562,13 @@ ItemEMail *addritem_person_remove_email_id( ItemPerson *person, const gchar *eid
 	return email;
 }
 
-/*
-* Remove email address for specified.
-* param: person	Person.
-*        email	EMail to remove.
-* return: EMail object, or NULL if not found. Note that object should still be freed.
-*/
+/**
+ * Remove email address for specified person.
+ * \param  person Person.
+ * \param  email  EMail to remove.
+ * \return EMail object, or <i>NULL</i> if not found. Note that object should
+ *         still be freed after calling this method.
+ */
 ItemEMail *addritem_person_remove_email( ItemPerson *person, ItemEMail *email ) {
 	gboolean found = FALSE;
 	GList *node;
@@ -492,22 +598,28 @@ ItemEMail *addritem_person_remove_email( ItemPerson *person, ItemEMail *email ) 
 	return NULL;
 }
 
-/*
-* Add user attribute to person.
-* return: TRUE if item added.
-*/
-void addritem_person_add_attribute( ItemPerson *person, UserAttribute *attrib ) {
+/**
+ * Add user attribute to specified person.
+ * \param  person Person.
+ * \param  attrib Attribute to add.
+ * \return <i>TRUE</i> if item added.
+ */
+void addritem_person_add_attribute(
+			ItemPerson *person, UserAttribute *attrib )
+{
 	g_return_if_fail( person != NULL );
 	person->listAttrib = g_list_append( person->listAttrib, attrib );
 }
 
-/*
-* Return attribute with specified ID.
-* param: person Person object.
-*        aid    Attribute ID.
-* return: UserAttribute object, or NULL if not found. Note that object should still be freed.
-*/
-UserAttribute *addritem_person_get_attribute( ItemPerson *person, const gchar *aid ) {
+/**
+ * Return attribute with specified ID for person.
+ * \param  person Person object.
+ * \param  aid    Attribute ID.
+ * \return Reference to UserAttribute object, or <i>NULL</i> if not found.
+ */
+UserAttribute *addritem_person_get_attribute(
+			ItemPerson *person, const gchar *aid )
+{
 	UserAttribute *attrib = NULL;
 	GList *node;
 
@@ -529,13 +641,16 @@ UserAttribute *addritem_person_get_attribute( ItemPerson *person, const gchar *a
 	return attrib;
 }
 
-/*
-* Remove attribute from person.
-* param: person Person object.
-*        aid    Attribute ID.
-* return: UserAttribute object, or NULL if not found. Note that object should still be freed.
-*/
-UserAttribute *addritem_person_remove_attrib_id( ItemPerson *person, const gchar *aid ) {
+/**
+ * Remove attribute with specified ID from person.
+ * \param  person Person object.
+ * \param  aid    Attribute ID to remove.
+ * \return UserAttribute object, or <i>NULL</i> if not found. Note that
+ *         attribute object should still be freed after calling this method.
+ */
+UserAttribute *addritem_person_remove_attrib_id(
+			ItemPerson *person, const gchar *aid )
+{
 	UserAttribute *attrib = NULL;
 	GList *node;
 
@@ -562,13 +677,16 @@ UserAttribute *addritem_person_remove_attrib_id( ItemPerson *person, const gchar
 	return attrib;
 }
 
-/*
-* Remove attribute from person.
-* param: person	Person.
-*        attrib	Attribute to remove.
-* return: UserAttribute object. Note that object should still be freed.
-*/
-UserAttribute *addritem_person_remove_attribute( ItemPerson *person, UserAttribute *attrib ) {
+/**
+ * Remove attribute from person.
+ * \param  person Person.
+ * \param  attrib Attribute to remove.
+ * \return UserAttribute object to remove. Note that attribute object should
+ *         still be freed.
+ */
+UserAttribute *addritem_person_remove_attribute(
+			ItemPerson *person, UserAttribute *attrib )
+{
 	gboolean found = FALSE;
 	GList *node;
 
@@ -594,9 +712,10 @@ UserAttribute *addritem_person_remove_attribute( ItemPerson *person, UserAttribu
 	return attrib;
 }
 
-/*
-* Create new address book group.
-*/
+/**
+ * Create new address book group object.
+ * \return Initialized group object.
+ */
 ItemGroup *addritem_create_item_group( void ) {
 	ItemGroup *group;
 
@@ -611,11 +730,11 @@ ItemGroup *addritem_create_item_group( void ) {
 	return group;
 }
 
-/*
-* Copy address book group.
-* Enter:  item Group to copy.
-* Return: A copy of the group. 
-*/
+/**
+ * Copy (deep copy) address book group.
+ * \param  item Group to copy.
+ * \return Copy of the group object, or <i>NULL</i> if null argument supplied.
+ */
 ItemGroup *addritem_copy_item_group( ItemGroup *item ) {
 	ItemGroup *itemNew;
 
@@ -628,22 +747,37 @@ ItemGroup *addritem_copy_item_group( ItemGroup *item ) {
 	return itemNew;
 }
 
-/*
-* Specify name to be used.
-*/
+/**
+ * Specify ID to be used for group.
+ * \param group Group object.
+ * \param value ID of group.
+ */
 void addritem_group_set_id( ItemGroup *group, const gchar *value ) {
 	ADDRITEM_ID(group) = mgu_replace_string( ADDRITEM_ID(group), value );
 }
+
+/**
+ * Specify name to be used for group.
+ * \param group Group object.
+ * \param value Name of group.
+ */
 void addritem_group_set_name( ItemGroup *group, const gchar *value ) {
 	ADDRITEM_NAME(group) = mgu_replace_string( ADDRITEM_NAME(group), value );
 }
+
+/**
+ * Specify remarks to be used for group.
+ * \param group Group object.
+ * \param value Remarks for group.
+ */
 void addritem_group_set_remarks( ItemGroup *group, const gchar *value ) {
 	group->remarks = mgu_replace_string( group->remarks, value );
 }
 
-/*
-* Free address group.
-*/
+/**
+ * Free address group object.
+ * \param group Group to free.
+ */
 void addritem_free_item_group( ItemGroup *group ) {
 	g_return_if_fail( group != NULL );
 
@@ -665,10 +799,14 @@ void addritem_free_item_group( ItemGroup *group ) {
 	g_free( group );
 }
 
-/*
-* Add EMail address to group.
-* return: TRUE if item added.
-*/
+/**
+ * Add EMail address to group. Note that a reference to an E-Mail item is
+ * added to a group. A person object is the only container that for an
+ * address.
+ * \param  group Group.
+ * \param  email E-Mail object.
+ * \return <i>TRUE</i> if email item added.
+ */
 gboolean addritem_group_add_email( ItemGroup *group, ItemEMail *email ) {
 	GList *node;
 
@@ -684,14 +822,15 @@ gboolean addritem_group_add_email( ItemGroup *group, ItemEMail *email ) {
 	return TRUE;
 }
 
-/*
-* Remove email address for specified group.
-* param: group	Group from which to remove address.
-*        email	EMail to remove
-* return: EMail object, or NULL if email not found in group. Note that this object is
-* referenced (linked) to a group and should *NOT* be freed. This object should only be
-* freed after removing from a person.
-*/
+/**
+ * Remove email address object for specified group.
+ * \param  group Group from which to remove address.
+ * \param  email EMail to remove
+ * \return EMail object, or <i>NULL if email not found in group. Note that
+ *         this object is referenced (linked) to a group and should *NOT*
+ *         be freed. An E-Mail object object should only be freed after
+ *         removing from a person.
+ */
 ItemEMail *addritem_group_remove_email( ItemGroup *group, ItemEMail *email ) {
 	if( group && email ) {
 		GList *node = group->listEMail;
@@ -706,14 +845,15 @@ ItemEMail *addritem_group_remove_email( ItemGroup *group, ItemEMail *email ) {
 	return NULL;
 }
 
-/*
-* Remove email address for specified group and ID.
-* param: group	Group from which to remove address.
-*        eid	EMail ID.
-* return: EMail object, or NULL if email not found in group. Note that this object is
-* referenced (linked) to a group and should *NOT* be freed. This object should only be
-* freed after removing from a person.
-*/
+/**
+ * Remove email address of specified ID for specified group.
+ * \param  group Group from which to remove address.
+ * \param  eid  EMail ID.
+ * \return EMail object, or <i>NULL</i> if email not found in group. Note that
+ *         this object is referenced (linked) to a group and should *NOT* be
+ *         freed. An E-Mail object should only be freed after removing from a
+ *         person.
+ */
 ItemEMail *addritem_group_remove_email_id( ItemGroup *group, const gchar *eid ) {
 	if( group ) {
 		GList *node = group->listEMail;
@@ -729,9 +869,11 @@ ItemEMail *addritem_group_remove_email_id( ItemGroup *group, const gchar *eid ) 
 	return NULL;
 }
 
-/*
-* Print address group item.
-*/
+/**
+ * Print address group item for debug.
+ * \param group  Group to print.
+ * \param stream Output stream.
+ */
 void addritem_print_item_group( ItemGroup *group, FILE *stream ) {
 	GList *node;
 	ItemPerson *person;
@@ -761,9 +903,10 @@ void addritem_print_item_group( ItemGroup *group, FILE *stream ) {
 	fprintf( stream, "\t***\n" );
 }
 
-/*
-* Create new address folder.
-*/
+/**
+ * Create new address folder.
+ * \return Initialized address folder object.
+ */
 ItemFolder *addritem_create_item_folder( void ) {
 	ItemFolder *folder;
 	folder = g_new0( ItemFolder, 1 );
@@ -783,11 +926,12 @@ ItemFolder *addritem_create_item_folder( void ) {
 	return folder;
 }
 
-/*
-* Copy address book folder.
-* Enter:  item Folder to copy.
-* Return: A copy of the folder. 
-*/
+/**
+ * Copy address book folder. Note that only the folder and not its contents are
+ * copied.
+ * \param  item Folder to copy.
+ * \return A copy of the folder, or <i>NULL</i> if null argument supplied.
+ */
 ItemFolder *addritem_copy_item_folder( ItemFolder *item ) {
 	ItemFolder *itemNew;
 
@@ -800,24 +944,39 @@ ItemFolder *addritem_copy_item_folder( ItemFolder *item ) {
 	return itemNew;
 }
 
-/*
-* Specify name to be used.
-*/
+/**
+ * Specify ID to be used for folder.
+ * \param folder Folder.
+ * \param value  ID.
+ */
 void addritem_folder_set_id( ItemFolder *folder, const gchar *value ) {
 	ADDRITEM_ID(folder) = mgu_replace_string( ADDRITEM_ID(folder), value );
 }
+
+/**
+ * Specify name to be used for folder.
+ * \param folder Folder.
+ * \param value  Name.
+ */
 void addritem_folder_set_name( ItemFolder *folder, const gchar *value ) {
 	ADDRITEM_NAME(folder) = mgu_replace_string( ADDRITEM_NAME(folder), value );
 }
+
+/**
+ * Specify remarks to be used for folder.
+ * \param folder Folder.
+ * \param value  Remarks.
+ */
 void addritem_folder_set_remarks( ItemFolder *folder, const gchar *value ) {
 	folder->remarks = mgu_replace_string( folder->remarks, value );
 }
 
-/*
-* Free address folder. Note: this does not free up the lists of children
-* (folders, groups and person). This should be done prior to calling this
-* function.
-*/
+/**
+ * Free address folder. Note: this does not free up the lists of children
+ * (folders, groups and person). This should be done prior to calling this
+ * function.
+ * \param folder Folder to free.
+ */
 void addritem_free_item_folder( ItemFolder *folder ) {
 	g_return_if_fail( folder != NULL );
 
@@ -845,11 +1004,12 @@ void addritem_free_item_folder( ItemFolder *folder ) {
 	g_free( folder );
 }
 
-/*
-* Free up folders recursively. Note: this does not free up the lists of children
-* (folders, groups and person). This should be done prior to calling this
-* function.
-*/
+/**
+ * Free up folders recursively. Note: this only frees up the lists of
+ * children and *NOT* the children objects (folders, groups and person).
+ * This should be done prior to calling this function.
+ * \param parent Parent folder object to be processed.
+ */
 void addritem_free_item_folder_recurse( ItemFolder *parent ) {
 	GList *node = parent->listFolder;
 
@@ -866,9 +1026,10 @@ void addritem_free_item_folder_recurse( ItemFolder *parent ) {
 	parent->listFolder = NULL;
 }
 
-/*
-* Free up list of persons in specified folder.
-*/
+/**
+ * Free up list of person objects contained in specified folder.
+ * \param folder Folder to process.
+ */
 void addritem_folder_free_person( ItemFolder *folder ) {
 	GList *node;
 
@@ -884,10 +1045,12 @@ void addritem_folder_free_person( ItemFolder *folder ) {
 	}
 }
 
-/*
-* Add person into folder.
-* return: TRUE if person added.
-*/
+/**
+ * Add person into folder.
+ * \param  folder Folder.
+ * \param  item   Person to add.
+ * \return <i>TRUE</i> if person added.
+ */
 gboolean addritem_folder_add_person( ItemFolder *folder, ItemPerson *item ) {
 	g_return_val_if_fail( folder != NULL, FALSE );
 	g_return_val_if_fail( item != NULL, FALSE );
@@ -897,10 +1060,12 @@ gboolean addritem_folder_add_person( ItemFolder *folder, ItemPerson *item ) {
 	return TRUE;
 }
 
-/*
-* Add folder into folder.
-* return: TRUE if folder added.
-*/
+/**
+ * Add folder into folder.
+ * \param  folder Folder.
+ * \param  item   Folder to add.
+ * \return <i>TRUE</i> if folder added.
+ */
 gboolean addritem_folder_add_folder( ItemFolder *folder, ItemFolder *item ) {
 	g_return_val_if_fail( folder != NULL, FALSE );
 	g_return_val_if_fail( item != NULL, FALSE );
@@ -910,10 +1075,12 @@ gboolean addritem_folder_add_folder( ItemFolder *folder, ItemFolder *item ) {
 	return TRUE;
 }
 
-/*
-* Add group into folder.
-* return: TRUE if folder added.
-*/
+/**
+ * Add group into folder.
+ * \param  folder Folder.
+ * \param  item   Group to add.
+ * \return <i>TRUE</i> if group added.
+ */
 gboolean addritem_folder_add_group( ItemFolder *folder, ItemGroup *item ) {
 	g_return_val_if_fail( folder != NULL, FALSE );
 	g_return_val_if_fail( item != NULL, FALSE );
@@ -923,9 +1090,11 @@ gboolean addritem_folder_add_group( ItemFolder *folder, ItemGroup *item ) {
 	return TRUE;
 }
 
-/*
-* Print address folder item.
-*/
+/**
+ * Print address folder item contents for debug.
+ * \param folder Folder to process.
+ * \param stream Output stream.
+ */
 void addritem_print_item_folder( ItemFolder *folder, FILE *stream ) {
 	GList *node;
 	/* ItemPerson *person; */
@@ -996,9 +1165,11 @@ void addritem_print_item_folder( ItemFolder *folder, FILE *stream ) {
 	fprintf( stream, "\t###\n" );
 }
 
-/*
-* Print address item.
-*/
+/**
+ * Print address item for debug.
+ * \param aio    Address item to format.
+ * \param stream Output stream.
+ */
 void addritem_print_item( AddrItemObject *aio, FILE *stream ) {
 	g_return_if_fail( aio != NULL );
 
@@ -1020,12 +1191,14 @@ void addritem_print_item( AddrItemObject *aio, FILE *stream ) {
 	}
 }
 
-/*
-* Return link list of persons for specified folder. Note that the list contains
-* references to items and should be g_free() when done. Do *NOT* attempt to use the
-* addritem_free_xxx() functions... this will destroy the addressbook data!
-* Return: List of items, or NULL if none.
-*/
+/**
+ * Return link list of persons for specified folder. Note that the list contains
+ * references to items and should be g_free() when done. Do *NOT* attempt to use the
+ * addritem_free_xxx() functions... this will destroy the addressbook data!
+ *
+ * \param  folder Folder to process.
+ * \return List of items, or <i>NULL</i> if none.
+ */
 GList *addritem_folder_get_person_list( ItemFolder *folder ) {
 	GList *list = NULL;
 	GList *node = NULL;
@@ -1041,12 +1214,14 @@ GList *addritem_folder_get_person_list( ItemFolder *folder ) {
 	return list;
 }
 
-/*
-* Return link list of groups for specified folder. Note that the list contains
-* references to items and should be g_free() when done. Do *NOT* attempt to use the
-* addritem_free_xxx() functions... this will destroy the addressbook data!
-* Return: List of items, or NULL if none.
-*/
+/**
+ * Return link list of groups for specified folder. Note that the list contains
+ * references to items and should be g_free() when done. Do *NOT* attempt to use the
+ * addritem_free_xxx() functions... this will destroy the addressbook data!
+ *
+ * \param  folder Folder to process.
+ * \return List of items, or <i>NULL</i> if none.
+ */
 GList *addritem_folder_get_group_list( ItemFolder *folder ) {
 	GList *list = NULL;
 	GList *node = NULL;
@@ -1062,14 +1237,18 @@ GList *addritem_folder_get_group_list( ItemFolder *folder ) {
 	return list;
 }
 
-/*
-* Move person's email item.
-* param: person     Person.
-*        itemMove   Item to move.
-*        itemTarget Target item before which to move item.
-*/
+/**
+ * Move person's email item.
+ * \param  person     Person.
+ * \param  itemMove   Item to move.
+ * \param  itemTarget Target item before which to move item.
+ * \return Reference to item that was moved, or <i>NULL</i> if null arguments
+ *         supplied.
+ */
 
-ItemEMail *addritem_move_email_before( ItemPerson *person, ItemEMail *itemMove, ItemEMail *itemTarget ) {
+ItemEMail *addritem_move_email_before(
+		ItemPerson *person, ItemEMail *itemMove, ItemEMail *itemTarget )
+{
 	gint posT, posM;
 
 	g_return_val_if_fail( person != NULL, NULL );
@@ -1087,13 +1266,17 @@ ItemEMail *addritem_move_email_before( ItemPerson *person, ItemEMail *itemMove, 
 	return itemMove;
 }
 
-/*
-* Move person's email item.
-* param: person     Person.
-*        itemMove   Item to move.
-*        itemTarget Target item after which to move item.
-*/
-ItemEMail *addritem_move_email_after( ItemPerson *person, ItemEMail *itemMove, ItemEMail *itemTarget ) {
+/**
+ * Move person's email item.
+ * \param  person    Person.
+ * \param  itemMove  Item to move.
+ * \param  itemTarget Target item after which to move item.
+ * \return Reference to item that was moved, or <i>NULL</i> if null arguments
+ *         supplied.
+ */
+ItemEMail *addritem_move_email_after(
+		ItemPerson *person, ItemEMail *itemMove, ItemEMail *itemTarget )
+{
 	gint posT, posM;
 
 	g_return_val_if_fail( person != NULL, NULL );
@@ -1113,7 +1296,7 @@ ItemEMail *addritem_move_email_after( ItemPerson *person, ItemEMail *itemMove, I
 
 /**
  * Parse first and last names for person from common name.
- * Enter: person Person to process.
+ * \param person Person to process.
  */
 void addritem_parse_first_last( ItemPerson *person ) {
 	gchar *name;
@@ -1165,11 +1348,11 @@ void addritem_parse_first_last( ItemPerson *person ) {
 		g_strstrip( person->lastName );
 }
 
-/*
+/**
  * Build a path of all ancestor folders for specified folder.
- * Enter:  folder Folder.
- *         seq    Path sequence, FALSE top down, TRUE bottom up.
- * Return: List of folders from the top down.
+ * \param  folder Folder.
+ * \param  seq    Path sequence, FALSE top down, TRUE bottom up.
+ * \return List of folders from the top down.
  */
 GList *addritem_folder_path( const ItemFolder *folder, const gboolean seq ) {
 	GList *list;
@@ -1190,6 +1373,42 @@ GList *addritem_folder_path( const ItemFolder *folder, const gboolean seq ) {
 		}
 	}
 	return list;
+}
+
+/**
+ * Format E-Mail address.
+ * \param email EMail item to format.
+ * \return Formatted string. Should be freed after use.
+ */
+gchar *addritem_format_email( ItemEMail *email ) {
+	gchar *address;
+	gchar *name;
+	ItemPerson *person;
+
+	address = NULL;
+	name = NULL;
+	if( ADDRITEM_NAME( email ) ) {
+		if( strlen( ADDRITEM_NAME( email ) ) ) {
+			name = ADDRITEM_NAME( email );
+		}
+	}
+	if( ! name ) {
+		person = ( ItemPerson * ) ADDRITEM_PARENT( email );
+		name = ADDRITEM_NAME( person );
+	}
+
+	if( name ) {
+		if( strchr_with_skip_quote( name, '"', ',' ) ) {
+			address = g_strdup_printf( "\"%s\" <%s>", name, email->address );
+		}
+		else {
+			address = g_strdup_printf( "%s <%s>", name, email->address );
+		}
+	}
+	else {
+		address = g_strdup_printf( "%s", email->address );
+	}
+	return address;
 }
 
 /*

@@ -257,42 +257,6 @@ static void replace_address_in_edit(GtkEntry *entry, const gchar *newtext,
 }
 
 /**
- * Format E-Mail address.
- * \param email EMail item to format.
- * \return Formatted string. Should be freed after use.
- */
-static gchar *addrcompl_format_email( ItemEMail *email ) {
-	gchar *address;
-	gchar *name;
-	ItemPerson *person;
-
-	address = NULL;
-	name = NULL;
-	if( ADDRITEM_NAME( email ) ) {
-		if( strlen( ADDRITEM_NAME( email ) ) ) {
-			name = ADDRITEM_NAME( email );
-		}
-	}
-	if( ! name ) {
-		person = ( ItemPerson * ) ADDRITEM_PARENT( email );
-		name = ADDRITEM_NAME( person );
-	}
-
-	if( name ) {
-		if( strchr_with_skip_quote( name, '"', ',' ) ) {
-			address = g_strdup_printf( "\"%s\" <%s>", name, email->address );
-		}
-		else {
-			address = g_strdup_printf( "%s <%s>", name, email->address );
-		}
-	}
-	else {
-		address = g_strdup_printf( "%s", email->address );
-	}
-	return address;
-}
-
-/**
  * Resize window to accommodate maximum number of address entries.
  * \param cw Completion window.
  */
@@ -359,7 +323,7 @@ static gboolean addrcompl_idle( gpointer data ) {
 		while( node ) {
 			ItemEMail *email = node->data;
 			/* printf( "email/address ::%s::\n", email->address ); */
-			address = addrcompl_format_email( email );
+			address = addritem_format_email( email );
 			/* printf( "address ::: %s :::\n", address ); */
 			addrcompl_add_entry( cw, address );
 			g_free( address );
@@ -835,49 +799,43 @@ static gboolean completion_window_key_press(GtkWidget *widget,
  * ============================================================================
  */
 /**
+ * Setup completion object.
+ */
+void addrcompl_initialize( void ) {
+	/* printf( "addrcompl_initialize...\n" ); */
+	if( ! _compWindow_ ) {
+		_compWindow_ = addrcompl_create_window();
+	}
+	_queryID_ = 0;
+	_completionIdleID_ = 0;
+	/* printf( "addrcompl_initialize...done\n" ); */
+}
+
+/**
+ * Teardown completion object.
+ */
+void addrcompl_teardown( void ) {
+	/* printf( "addrcompl_teardown...\n" ); */
+	addrcompl_free_window( _compWindow_ );
+	_compWindow_ = NULL;
+	if( _displayQueue_ ) {
+		g_list_free( _displayQueue_ );
+	}
+	_displayQueue_ = NULL;
+	_completionIdleID_ = 0;
+	/* printf( "addrcompl_teardown...done\n" ); */
+}
+
+/**
  * Start address completion operation.
  */
 gint start_address_completion(void)
 {
 	if( ! _compWindow_ ) {
-		_compWindow_ = addrcompl_create_window();
-		_queryID_ = 0;
+		addrcompl_initialize();
 	}
 	addressbook_read_all();
 	return 0;
-}
-
-/**
- * complete_address() - tries to complete an addres, and returns the
- * number of addresses found. use get_complete_address() to get one.
- * returns zero if no match was found, otherwise the number of addresses,
- * with the original searchTerm at index 0.
- * TODO: move out of here. This should be used for retrieving an address
- * without completion.
- */
-guint complete_address(const gchar *str)
-{
-	g_return_val_if_fail(str != NULL, 0);
-
-	/* Xstrdup_a(d, str, return 0); */
-
-	/* Attempt completion */
-	/* printf( "addrcompl: Start search...\n" ); */
-	/* addressbook_start_search( 0, str, NULL, address_completion_callback ); */
-	/* printf( "addrcompl: Start search...done\n" ); */
-	/* Existing code is below */
-
-	return 0;
-}
-
-/**
- * Returns a complete address. TODO: remove
- * get_complete_address() - returns a complete address. the returned
- * string should be freed 
- */
-gchar *get_complete_address(gint index)
-{
-	return NULL;
 }
 
 /**
@@ -960,34 +918,6 @@ void address_completion_end(GtkWidget *mainwindow)
 	/* if address_completion_end() is really called on closing the window,
 	 * we don't need to unregister the set_focus_cb */
 	end_address_completion();
-}
-
-/**
- * Setup completion object.
- */
-void addrcompl_initialize( void ) {
-	printf( "addrcompl_initialize...\n" );
-	if( ! _compWindow_ ) {
-		_compWindow_ = addrcompl_create_window();
-	}
-	_queryID_ = 0;
-	_completionIdleID_ = 0;
-	printf( "addrcompl_initialize...done\n" );
-}
-
-/**
- * Teardown completion object.
- */
-void addrcompl_teardown( void ) {
-	printf( "addrcompl_teardown...\n" );
-	addrcompl_free_window( _compWindow_ );
-	_compWindow_ = NULL;
-	if( _displayQueue_ ) {
-		g_list_free( _displayQueue_ );
-	}
-	_displayQueue_ = NULL;
-	_completionIdleID_ = 0;
-	printf( "addrcompl_teardown...done\n" );
 }
 
 /*

@@ -76,7 +76,6 @@
 #include "inc.h"
 #include "imap.h"
 #include "addressbook.h"
-#include "addr_compl.h"
 #include "scoring.h"
 #include "prefs_folder_item.h"
 #include "filtering.h"
@@ -2233,9 +2232,6 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	subject_table = g_hash_table_new(g_str_hash, g_str_equal);
 	summaryview->subject_table = subject_table;
 
-	if (prefs_common.use_addr_book)
-		start_address_completion();
-	
 	for (cur = mlist ; cur != NULL; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;
 		msginfo->threadscore = msginfo->score;
@@ -2292,9 +2288,6 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 					   optimal_width);
 	}
 
-	if (prefs_common.use_addr_book)
-		end_address_completion();
-
 	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
 	if (debug_get_mode()) {
@@ -2318,12 +2311,12 @@ static gchar *summary_complete_address(const gchar *addr)
 	 * completion stuff must be already initialized
 	 */
 	res = NULL;
-	if (1 < (count = complete_address(email_addr))) {
-		tmp = get_complete_address(1);
+	tmp = addressbook_lookup_name( email_addr );
+	if( tmp ) {
 		res = procheader_get_fromname(tmp);
-		g_free(tmp);	
+		g_free(tmp);
 	}
-	
+
 	return res;
 }
 
@@ -2362,7 +2355,6 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 
 		Xstrdup_a(addr, msginfo->from, return);
 		extract_address(addr);
-
 		if (prefs_common.use_addr_book) {
 			if (account_find_from_address(addr)) {
 				addr = summary_complete_address(msginfo->to);
