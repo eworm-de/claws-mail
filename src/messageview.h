@@ -58,8 +58,8 @@ struct _MessageView
 	gboolean visible;
 };
 
-MessageView *messageview_create			(void);
-MessageView *messageview_create_with_new_window	(void);
+MessageView *messageview_create			(MainWindow	*mainwin);
+MessageView *messageview_create_with_new_window	(MainWindow	*mainwin);
 void messageview_init				(MessageView	*messageview);
 void messageview_show				(MessageView	*messageview,
 						 MsgInfo	*msginfo,

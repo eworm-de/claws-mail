@@ -1,3 +1,12 @@
+2002-08-22 [colin]	0.8.1claws103
+
+	* src/mainwindow.c
+	  src/messageview.[ch]
+	  src/noticeview.[ch]
+	  src/summaryview.c
+		Changed messageview_create() and noticeview_create()
+		to avoid the last gdk_warning
+
 2002-08-22 [colin]	0.8.1claws102
 
 	* src/summaryview.c

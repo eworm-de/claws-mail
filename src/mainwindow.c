@@ -824,7 +824,7 @@ MainWindow *main_window_create(SeparateType type)
 	/* create views */
 	mainwin->folderview  = folderview  = folderview_create();
 	mainwin->summaryview = summaryview = summary_create();
-	mainwin->messageview = messageview = messageview_create();
+	mainwin->messageview = messageview = messageview_create(mainwin);
 	mainwin->logwin      = log_window_create();
 
 	folderview->mainwin      = mainwin;

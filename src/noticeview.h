@@ -35,7 +35,7 @@ struct _NoticeView
 	void		(*press) (NoticeView *, gpointer user_data);
 };
 
-NoticeView	*noticeview_create	(void);
+NoticeView	*noticeview_create	(MainWindow 	*mainwin);
 void		 noticeview_destroy	(NoticeView	*noticeview);
 void		 noticeview_init	(NoticeView	*noticeview);
 void		 noticeview_set_icon	(NoticeView	*noticeview,

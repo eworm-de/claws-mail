@@ -2319,7 +2319,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	if (new_window) {
 		MessageView *msgview;
 
-		msgview = messageview_create_with_new_window();
+		msgview = messageview_create_with_new_window(summaryview->mainwin);
 		messageview_show(msgview, msginfo, all_headers);
 	} else {
 		MessageView *msgview;
