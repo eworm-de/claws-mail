@@ -1,3 +1,13 @@
+2003-12-08 [christoph]	0.9.7claws31
+
+	* src/folder_item_prefs.[ch]
+	* src/folderview.c
+	* src/prefs_folder_item.c
+		add new FolderItem property to exclude folders from new
+		mail checks
+
+	Patch submitted by Chad Robinson <crobinson@rfgonline.com>
+
 2003-12-07 [paul]	0.9.7claws30
 
 	* src/plugins/clamav/clamav_plugin.c
@@ -21,7 +31,7 @@
 		leaving claws' online/offline more or less intact
 		see ChangeLog 2003-12-04 and 2003-12-06
 
-2003-12-05 [christoph]	0.9.7claws26
+2003-12-06 [christoph]	0.9.7claws26
 
 	* src/messageview.c
 	* src/privacy.[ch]

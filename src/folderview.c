@@ -876,6 +876,7 @@ gint folderview_check_new(Folder *folder)
 			if (item->no_select) continue;
 			if (folder && folder != item->folder) continue;
 			if (!folder && !FOLDER_IS_LOCAL(item->folder)) continue;
+			if (!item->prefs->newmailcheck) continue;
 
 			folderview_scan_tree_func(item->folder, item, NULL);
 			former_new = item->new_msgs;
