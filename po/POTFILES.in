@@ -6,7 +6,6 @@ src/addrgather.c
 src/addrindex.c
 src/alertpanel.c
 src/browseldap.c
-src/common/intl.h
 src/common/md5.c
 src/common/nntp.c
 src/common/plugin.c
@@ -36,6 +35,7 @@ src/grouplistdialog.c
 src/gtk/about.c
 src/gtk/colorlabel.c
 src/gtk/description_window.c
+src/gtk/foldersort.c
 src/gtk/gtkaspell.c
 src/gtk/gtkutils.c
 src/gtk/inputdialog.c
@@ -46,6 +46,7 @@ src/gtk/progressdialog.c
 src/gtk/sslcertwindow.c
 src/headerview.c
 src/imap.c
+src/imap_gtk.c
 src/import.c
 src/importldif.c
 src/importmutt.c
@@ -58,8 +59,10 @@ src/matcher.c
 src/message_search.c
 src/messageview.c
 src/mh.c
+src/mh_gtk.c
 src/mimeview.c
 src/news.c
+src/news_gtk.c
 src/passphrase.c
 src/plugins/clamav/clamav_plugin.c
 src/plugins/clamav/clamav_plugin_gtk.c
@@ -70,10 +73,8 @@ src/plugins/image_viewer/plugin.c
 src/plugins/image_viewer/viewer.c
 src/plugins/image_viewer/viewerprefs.c
 src/plugins/mathml_viewer/mathml_viewer.c
-src/plugins/spamassassin/libspamc.c
 src/plugins/spamassassin/spamassassin.c
 src/plugins/spamassassin/spamassassin_gtk.c
-src/plugins/spamassassin/utils.c
 src/plugins/trayicon/trayicon.c
 src/pop.c
 src/prefs_account.c
@@ -96,7 +97,6 @@ src/prefs_toolbar.c
 src/privacy.c
 src/procmsg.c
 src/quote_fmt.c
-src/rfc2015.c
 src/select-keys.c
 src/send_message.c
 src/setup.c
