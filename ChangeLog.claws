@@ -1,3 +1,8 @@
+2002-12-08 [paul]	0.8.6claws81
+
+	* src/stringtable.c
+		put back needed include
+
 2002-12-08 [colin]	0.8.6claws80
 	
 	* src/gtk/sslcertwindow.c

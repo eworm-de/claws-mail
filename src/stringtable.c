@@ -21,6 +21,7 @@
 #include <string.h>
 
 #include "stringtable.h"
+#include "utils.h"
 
 /* alfons - hashed string table (I wasn't content with GStringChunk; 
  * can't recall why :-) */
