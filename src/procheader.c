@@ -758,6 +758,11 @@ static gint procheader_scan_date_string(const gchar *str,
 			day, month, year, hh, mm, ss, zone);
 	if (result == 7) return 0;
 
+	*zone = '\0';
+	result = sscanf(str, "%10s %d %9s %d %2d:%2d:%2d",
+			weekday, day, month, year, hh, mm, ss);
+	if (result == 7) return 0;
+
 	*ss = 0;
 	result = sscanf(str, "%10s %d %9s %d %2d:%2d %5s",
 			weekday, day, month, year, hh, mm, zone);
@@ -840,6 +845,7 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 	struct tm t;
 	gchar *p;
 	time_t timer;
+	time_t tz_offset;
 
 	if (procheader_scan_date_string(src, weekday, &day, month, &year,
 					&hh, &mm, &ss, zone) < 0) {
@@ -850,8 +856,8 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 	}
 
 	/* Y2K compliant :) */
-	if (year < 100) {
-		if (year < 70)
+	if (year < 1000) {
+		if (year < 50)
 			year += 2000;
 		else
 			year += 1900;
@@ -878,7 +884,9 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 	t.tm_isdst = -1;
 
 	timer = mktime(&t);
-	timer += tzoffset_sec(&timer) - remote_tzoffset_sec(zone);
+	tz_offset = remote_tzoffset_sec(zone);
+	if (tz_offset != -1)
+		timer += tzoffset_sec(&timer) - tz_offset;
 
 	if (dest)
 		procheader_date_get_localtime(dest, len, timer);

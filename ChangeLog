@@ -1,3 +1,20 @@
+2003-04-23
+
+	* src/procheader.c: procheader_date_parse(): removed debug print.
+	* src/session.c: changed every g_print to debug_print.
+	  session_child_input(): removed unrequired session_close() (it'll
+	  be closed anyway after returning FALSE).
+
+2003-04-23
+
+	* src/procheader.c: procheader_procheader_date_parse(): don't add
+	  local timezone offset if timezone is unknown.
+	  Made the Y2K workaround code to follow RFC 2822.
+	  procheader_scan_date_string(): workaround for date strings which
+	  don't have timezone specification.
+	* src/utils.c: remote_tzoffset_sec(): return -1 if timezone is
+	  unknown.
+
 2003-04-22
 
 	* src/action.[ch]: refactored. Also fixed a bug on MIME mode, and
