@@ -814,22 +814,23 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 		base = "mimetmp.html";
 	else {
 		const gchar *basetmp;
+		gchar *basename;
 
 		basetmp = procmime_mimeinfo_get_parameter(mimeinfo, "filename");
 		if (basetmp == NULL)
 			basetmp = procmime_mimeinfo_get_parameter(mimeinfo, "name");
 		if (basetmp == NULL)
 			basetmp = "mimetmp";
-		base = g_path_get_basename(basetmp);
+		basename = g_path_get_basename(basetmp);
 		if (*base == '\0') base = "mimetmp";
-		Xstrdup_a(base, base, {g_free(base); return NULL;});
+		Xstrdup_a(base, basename, {g_free(basename); return NULL;});
 		subst_for_shellsafe_filename(base);
+		g_free(basename);
 	}
 
 	filename = g_strconcat(get_mime_tmp_dir(), G_DIR_SEPARATOR_S,
 			       f_prefix, base, NULL);
 
-	g_free(base);
 	return filename;
 }
 
