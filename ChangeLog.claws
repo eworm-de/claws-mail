@@ -1,3 +1,14 @@
+2003-01-06 [alfons]	0.8.8claws60
+
+	keep myself inspired to re-organize matcher part 8; 
+	yes, more to come (I need to move out the descriptive
+	text for actions to matcher.c, or at least make it not
+	depend on the wicked ordering)
+
+	* src/prefs_matcher.c
+		add documentation so others may comprehend the
+		UI part of the conditions
+		
 2003-01-06 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.8claws59
 
 	* src/prefs_actions.c

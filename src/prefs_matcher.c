@@ -49,6 +49,9 @@
 #include "matcher_parser.h"
 #include "colorlabel.h"
 
+/*!
+ *\brief	UI data for matcher dialog
+ */
 static struct Matcher {
 	GtkWidget *window;
 
@@ -80,12 +83,18 @@ static struct Matcher {
 
 	GtkWidget *criteria_table;
 
-	/* selected criteria in combobox */
-	gint selected_criteria; 
+	gint selected_criteria; /*!< selected criteria in combobox */ 
 } matcher;
 
-/* choice in the list */
-
+/*!
+ *\brief	Conditions with a negate counterpart (like unread and ~unread)
+ *		have the same CRITERIA_XXX id). I.e. both unread and ~unread
+ *		have criteria id CRITERIA_UNREAD. This id is passed as the
+ *		first parameter to #matcherprop_new and #matcherprop_unquote_new.
+ *
+ *\warning	Currently the enum constants should have the same order as the 
+ *		#criteria_text	
+ */		
 enum {
 	CRITERIA_ALL = 0,
 
@@ -125,34 +134,10 @@ enum {
 	CRITERIA_SIZE_EQUAL   = 30
 };
 
-enum {
-	BOOL_OP_OR = 0,
-	BOOL_OP_AND = 1
-};
-
-static gchar *bool_op_text [] = {
-	N_("or"), N_("and")
-};
-
-enum {
-	PREDICATE_CONTAINS = 0,
-	PREDICATE_DOES_NOT_CONTAIN = 1
-};
-
-static gchar *predicate_text [] = {
-	N_("contains"), N_("does not contain")
-};
-
-enum {
-	PREDICATE_FLAG_ENABLED = 0,
-	PREDICATE_FLAG_DISABLED = 1
-};
-
-static gchar *predicate_flag_text [] = {
-	N_("yes"), N_("no")
-};
-
-static gchar *criteria_text [] = {
+/*!
+ *\brief	Descriptive text for conditions
+ */
+static const gchar *criteria_text [] = {
 	N_("All messages"), N_("Subject"),
 	N_("From"), N_("To"), N_("Cc"), N_("To or Cc"),
 	N_("Newsgroups"), N_("In reply to"), N_("References"),
@@ -173,7 +158,61 @@ static gchar *criteria_text [] = {
 	N_("Size exactly")
 };
 
-static PrefsMatcherSignal * matchers_callback;
+/*!
+ *\brief	Boolean / predicate constants
+ *
+ *\warning	Same order as #bool_op_text!
+ */
+enum {
+	BOOL_OP_OR = 0,
+	BOOL_OP_AND = 1
+};
+
+/*!
+ *\brief	Descriptive text in UI
+ */
+static const gchar *bool_op_text [] = {
+	N_("or"), N_("and")
+};
+
+/*!
+ *\brief	Contains predicate	
+ *
+ *\warning	Same order as in #predicate_text
+ */
+enum {
+	PREDICATE_CONTAINS = 0,
+	PREDICATE_DOES_NOT_CONTAIN = 1
+};
+
+/*!
+ *\brief	Descriptive text in UI for predicate
+ */
+static const gchar *predicate_text [] = {
+	N_("contains"), N_("does not contain")
+};
+
+/*!
+ *\brief	Enabled predicate
+ *
+ *\warning	Same order as in #predicate_flag_text
+ */
+enum {
+	PREDICATE_FLAG_ENABLED = 0,
+	PREDICATE_FLAG_DISABLED = 1
+};
+
+/*!
+ *\brief	Descriptive text in UI for enabled flag
+ */
+static const gchar *predicate_flag_text [] = {
+	N_("yes"), N_("no")
+};
+
+/*!
+ *\brief	Hooks
+ */
+static PrefsMatcherSignal *matchers_callback;
 
 /* widget creating functions */
 static void prefs_matcher_create	(void);
@@ -202,10 +241,18 @@ static gint prefs_matcher_deleted	(GtkWidget *widget, GdkEventAny *event,
 static void prefs_matcher_criteria_select	(GtkList   *list,
 						 GtkWidget *widget,
 						 gpointer   user_data);
-static MatcherList * prefs_matcher_get_list	(void);
+static MatcherList *prefs_matcher_get_list	(void);
 static void prefs_matcher_exec_info_create	(void);
 
-static gint get_sel_from_list(GtkList * list)
+
+/*!
+ *\brief	Find index of list selection 
+ *
+ *\param	list GTK list widget
+ *
+ *\return	gint Selection index
+ */
+static gint get_sel_from_list(GtkList *list)
 {
 	gint row = 0;
 	void * sel;
@@ -221,6 +268,13 @@ static gint get_sel_from_list(GtkList * list)
 	return row;
 }
 
+/*!
+ *\brief	Opens the matcher dialog with a list of conditions
+ *
+ *\param	matchers List of conditions
+ *\param	cb Callback
+ *
+ */
 void prefs_matcher_open(MatcherList *matchers, PrefsMatcherSignal *cb)
 {
 	inc_lock();
@@ -239,6 +293,9 @@ void prefs_matcher_open(MatcherList *matchers, PrefsMatcherSignal *cb)
 	gtk_widget_show(matcher.window);
 }
 
+/*!
+ *\brief	Create the matcher dialog
+ */
 static void prefs_matcher_create(void)
 {
 	GtkWidget *window;
@@ -612,6 +669,14 @@ static void prefs_matcher_create(void)
 	matcher.cond_clist = cond_clist;
 }
 
+/*!
+ *\brief	Set the contents of a row
+ *
+ *\param	row Index of row to set
+ *\param	prop Condition to set
+ *
+ *\return	gint Row index \a prop has been added
+ */
 static gint prefs_matcher_clist_set_row(gint row, MatcherProp *prop)
 {
 	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
@@ -634,6 +699,9 @@ static gint prefs_matcher_clist_set_row(gint row, MatcherProp *prop)
 	return row;
 }
 
+/*!
+ *\brief	Clears a condition in the list widget
+ */
 static void prefs_matcher_reset_condition(void)
 {
 	gtk_list_select_item(GTK_LIST(matcher.criteria_list), 0);
@@ -642,12 +710,20 @@ static void prefs_matcher_reset_condition(void)
 	gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), "");
 }
 
+/*!
+ *\brief	Update scrollbar
+ */
 static void prefs_matcher_update_hscrollbar(void)
 {
 	gint optwidth = gtk_clist_optimal_column_width(GTK_CLIST(matcher.cond_clist), 0);
 	gtk_clist_set_column_width(GTK_CLIST(matcher.cond_clist), 0, optwidth);
 }
 
+/*!
+ *\brief	Initializes dialog with a set of conditions
+ *
+ *\param	matchers List of conditions
+ */
 static void prefs_matcher_set_dialog(MatcherList *matchers)
 {
 	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
@@ -678,6 +754,12 @@ static void prefs_matcher_set_dialog(MatcherList *matchers)
 	prefs_matcher_reset_condition();
 }
 
+/*!
+ *\brief	Converts current conditions in list box in
+ *		a matcher list used by the matcher.
+ *
+ *\return	MatcherList * List of conditions.
+ */
 static MatcherList *prefs_matcher_get_list(void)
 {
 	gchar *matcher_str;
@@ -711,6 +793,15 @@ static MatcherList *prefs_matcher_get_list(void)
 	return matchers;
 }
 
+/*!
+ *\brief	Maps a keyword id (see #get_matchparser_tab_id) to a 
+ *		criteria type (see first parameter of #matcherprop_new
+ *		or #matcherprop_unquote_new)
+ *
+ *\param	matching_id Id returned by the matcher parser.
+ *
+ *\return	gint One of the CRITERIA_xxx constants.
+ */
 static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 {
 	switch(matching_id) {
@@ -804,6 +895,14 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 	}
 }
 
+/*!
+ *\brief	Returns the matcher keyword id from a criteria id
+ *
+ *\param	criteria_id Criteria id (should not be the negate
+ *		one)
+ *
+ *\return	gint A matcher keyword id. See #get_matchparser_tab_id.
+ */
 static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 {
 	switch (criteria_id) {
@@ -874,6 +973,14 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 	}
 }
 
+/*!
+ *\brief	Returns the negate matcher keyword id from a matcher keyword
+ *		id.
+ *
+ *\param	matcher_criteria Matcher keyword id. 
+ *
+ *\return	gint A matcher keyword id. See #get_matchparser_tab_id.
+ */
 static gint prefs_matcher_not_criteria(gint matcher_criteria)
 {
 	switch(matcher_criteria) {
@@ -926,6 +1033,12 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 	}
 }
 
+/*!
+ *\brief	Converts the text in the selected row to a 
+ *		matcher structure
+ *
+ *\return	MatcherProp * Newly allocated matcher structure.
+ */
 static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 {
 	MatcherProp *matcherprop;
@@ -1071,6 +1184,9 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	return matcherprop;
 }
 
+/*!
+ *\brief	Signal handler for register button
+ */
 static void prefs_matcher_register_cb(void)
 {
 	MatcherProp *matcherprop;
@@ -1087,6 +1203,9 @@ static void prefs_matcher_register_cb(void)
 	prefs_matcher_update_hscrollbar();
 }
 
+/*!
+ *\brief	Signal handler for substitute button
+ */
 static void prefs_matcher_substitute_cb(void)
 {
 	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
@@ -1110,6 +1229,9 @@ static void prefs_matcher_substitute_cb(void)
 	prefs_matcher_update_hscrollbar();
 }
 
+/*!
+ *\brief	Signal handler for delete button
+ */
 static void prefs_matcher_delete_cb(void)
 {
 	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
@@ -1125,6 +1247,9 @@ static void prefs_matcher_delete_cb(void)
 	prefs_matcher_update_hscrollbar();
 }
 
+/*!
+ *\brief	Signal handler for 'move up' button
+ */
 static void prefs_matcher_up(void)
 {
 	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
@@ -1140,6 +1265,9 @@ static void prefs_matcher_up(void)
 	}
 }
 
+/*!
+ *\brief	Signal handler for 'move down' button
+ */
 static void prefs_matcher_down(void)
 {
 	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
@@ -1155,6 +1283,14 @@ static void prefs_matcher_down(void)
 	}
 }
 
+/*!
+ *\brief	Signal handler for select row.
+ *
+ *\param	clist List widget
+ *\param	row Selected row
+ *\param	column Selected column
+ *\param	event Event information
+ */
 static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 				 GdkEvent *event)
 {
@@ -1290,11 +1426,20 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 	}
 }
 
+/*!
+ *\brief	Helper function that allows us to replace the 'Value' entry box
+ *		by another widget.
+ *
+ *\param	old_widget Widget that needs to be removed.
+ *\param	new_widget Replacement widget
+ */
 static void prefs_matcher_set_value_widget(GtkWidget *old_widget, 
 					   GtkWidget *new_widget)
 {
-	/* TODO: find out why the following spews harmless 
-	 * "parent errors" */
+	/* TODO: find out why the following spews harmless "parent errors" */
+
+	/* NOTE: we first need to bump up the refcount of the old_widget,
+	 * because the gtkut_container_remove() will otherwise destroy it */
 	gtk_widget_ref(old_widget);
 	gtkut_container_remove(GTK_CONTAINER(matcher.criteria_table), old_widget);
 	gtk_widget_show(new_widget);
@@ -1305,6 +1450,13 @@ static void prefs_matcher_set_value_widget(GtkWidget *old_widget,
 			 0, 0, 0);
 }
 
+/*!
+ *\brief	Change widgets depending on the selected condition
+ *
+ *\param	list List widget
+ *\param	widget Not used
+ *\param	user_data Not used	
+ */
 static void prefs_matcher_criteria_select(GtkList *list,
 					  GtkWidget *widget,
 					  gpointer user_data)
@@ -1456,6 +1608,13 @@ static void prefs_matcher_criteria_select(GtkList *list,
 	}
 }
 
+/*!
+ *\brief	Handle key press
+ *
+ *\param	widget Widget receiving key press
+ *\param	event Key event
+ *\param	data User data
+ */
 static void prefs_matcher_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				     gpointer data)
 {
@@ -1463,12 +1622,18 @@ static void prefs_matcher_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		prefs_matcher_cancel();
 }
 
+/*!
+ *\brief	Cancel matcher dialog
+ */
 static void prefs_matcher_cancel(void)
 {
 	gtk_widget_hide(matcher.window);
 	inc_unlock();
 }
 
+/*!
+ *\brief	Accept current matchers
+ */
 static void prefs_matcher_ok(void)
 {
 	MatcherList *matchers;
@@ -1512,6 +1677,15 @@ static void prefs_matcher_ok(void)
 	}
 }
 
+/*!
+ *\brief	Called when closing dialog box
+ *
+ *\param	widget Dialog widget
+ *\param	event Event info
+ *\param	data User data
+ *
+ *\return	gint TRUE
+ */
 static gint prefs_matcher_deleted(GtkWidget *widget, GdkEventAny *event,
 				  gpointer data)
 {
@@ -1519,8 +1693,15 @@ static gint prefs_matcher_deleted(GtkWidget *widget, GdkEventAny *event,
 	return TRUE;
 }
 
+/*!
+ *\brief	Widget displaying information about the Execute action's
+ *		format specifiers
+ */
 static GtkWidget *exec_info_win;
 
+/*!
+ *\brief	Show Execute action's info
+ */
 void prefs_matcher_exec_info(void)
 {
 	if (!exec_info_win)
@@ -1531,6 +1712,9 @@ void prefs_matcher_exec_info(void)
 	gtk_widget_hide(exec_info_win);
 }
 
+/*!
+ *\brief	Create dialog for Execute action's info
+ */
 static void prefs_matcher_exec_info_create(void)
 {
 	GtkWidget *vbox;
