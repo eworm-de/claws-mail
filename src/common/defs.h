@@ -75,7 +75,7 @@
 /* #define DEFAULT_INC_PROGRAM	"imget" */
 #define DEFAULT_SENDMAIL_CMD	"/usr/sbin/sendmail -t"
 #ifdef WIN32
-#define DEFAULT_BROWSER_CMD	"?p\\mozilla.org\\Mozilla\\mozilla.exe  -remote openURL "%s"
+#define DEFAULT_BROWSER_CMD	"?p\\mozilla.org\\Mozilla\\mozilla.exe -remote openURL \"%s\""
 #else
 #define DEFAULT_BROWSER_CMD	"mozilla -remote 'openURL(%s, new-window)'"
 #endif
