@@ -163,8 +163,8 @@ static void prefs_custom_header_create(void)
 	gtk_window_set_title (GTK_WINDOW(window), _("Custom header configuration"));
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
 	g_signal_connect (G_OBJECT(window), "delete_event",
-			    GTK_SIGNAL_FUNC(prefs_custom_header_deleted),
-			    NULL);
+			  G_CALLBACK(prefs_custom_header_deleted),
+			  NULL);
 	g_signal_connect (G_OBJECT(window), "key_press_event",
 			  G_CALLBACK(prefs_custom_header_key_pressed),
 			  NULL);

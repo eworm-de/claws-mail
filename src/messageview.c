@@ -1054,7 +1054,7 @@ static void return_receipt_show(NoticeView *noticeview, MsgInfo *msginfo)
 	noticeview_set_text(noticeview, _("This message asks for a return receipt."));
 	noticeview_set_button_text(noticeview, _("Send receipt"));
 	noticeview_set_button_press_callback(noticeview,
-					     GTK_SIGNAL_FUNC(return_receipt_send_clicked),
+					     G_CALLBACK(return_receipt_send_clicked),
 					     (gpointer) msginfo);
 	noticeview_show(noticeview);
 }
@@ -1138,11 +1138,11 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 	g_free(text);
 	noticeview_set_button_text(noticeview, button1);
 	noticeview_set_button_press_callback(noticeview,
-		     GTK_SIGNAL_FUNC(button1_cb), (gpointer) msginfo);
+		     G_CALLBACK(button1_cb), (gpointer) msginfo);
 
 	noticeview_set_2ndbutton_text(noticeview, button2);
 	noticeview_set_2ndbutton_press_callback(noticeview,
-		     GTK_SIGNAL_FUNC(button2_cb), (gpointer) msginfo);
+		     G_CALLBACK(button2_cb), (gpointer) msginfo);
 
 	noticeview_show(noticeview);
 }

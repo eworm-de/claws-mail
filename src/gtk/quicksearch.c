@@ -312,7 +312,7 @@ QuickSearch *quicksearch_new()
 				   FALSE, FALSE, 0);
 		gtk_widget_set_usize(clear_search, 120, -1);
 		g_signal_connect(G_OBJECT(clear_search), "clicked",
-				   GTK_SIGNAL_FUNC(clear_search_cb), quicksearch);
+				 G_CALLBACK(clear_search_cb), quicksearch);
 		gtk_widget_show(clear_search);
 	}
 
@@ -337,15 +337,15 @@ QuickSearch *quicksearch_new()
 			   quicksearch);
 
 	
-	g_signal_connect(GTK_OBJECT(GTK_COMBO(search_string_entry)->entry), 
-			   "focus_in_event",
-			   GTK_SIGNAL_FUNC(searchbar_focus_evt),
-			   quicksearch);
+	g_signal_connect(G_OBJECT(GTK_COMBO(search_string_entry)->entry),
+			 "focus_in_event",
+			 G_CALLBACK(searchbar_focus_evt),
+			 quicksearch);
 
-	g_signal_connect(GTK_OBJECT(GTK_COMBO(search_string_entry)->entry), 
-			   "focus_out_event",
-			   GTK_SIGNAL_FUNC(searchbar_focus_evt),
-			   quicksearch);
+	g_signal_connect(G_OBJECT(GTK_COMBO(search_string_entry)->entry),
+			 "focus_out_event",
+			 G_CALLBACK(searchbar_focus_evt),
+			 quicksearch);
 	
 
 	quicksearch->hbox_search = hbox_search;

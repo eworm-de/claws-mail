@@ -669,7 +669,7 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
 	noticeview_set_button_text(mimeview->siginfoview, button_text);
 	noticeview_set_button_press_callback(
 		mimeview->siginfoview,
-		GTK_SIGNAL_FUNC(func),
+		G_CALLBACK(func),
 		(gpointer) mimeview);
 	noticeview_set_icon(mimeview->siginfoview, icon);
 }
