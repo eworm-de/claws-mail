@@ -323,6 +323,7 @@ gint session_send_msg(Session *session, SessionMsgType type, const gchar *msg)
 {
 	gchar *prefix;
 	gchar *str;
+	gchar *cur;
 	guint size;
 	guint bytes_written;
 
@@ -341,18 +342,20 @@ gint session_send_msg(Session *session, SessionMsgType type, const gchar *msg)
 		return -1;
 	}
 
-	str = g_strdup_printf("%s %s\n", prefix, msg);
+	cur = str = g_strdup_printf("%s %s\n", prefix, msg);
 	size = strlen(str);
 
 	while (size > 0) {
-		if (g_io_channel_write(session->write_ch, str, size,
+		if (g_io_channel_write(session->write_ch, cur, size,
 				       &bytes_written)
 		    != G_IO_ERROR_NONE || bytes_written == 0) {
 			g_warning("%s: sending message failed.\n",
 				  session->child_pid == 0 ? "child" : "parent");
+			g_free(str);
 			return -1;
 		}
 		size -= bytes_written;
+		cur += bytes_written;
 	}
 
 	g_free(str);
@@ -438,6 +441,7 @@ gint session_start_tls(Session *session)
 gint session_send_data(Session *session, const guchar *data, guint size)
 {
 	gchar *msg;
+	const guchar *cur = data;
 	guint bytes_written;
 	GIOError err;
 
@@ -447,7 +451,7 @@ gint session_send_data(Session *session, const guchar *data, guint size)
 	g_free(msg);
 
 	while (size > 0) {
-		if ((err = g_io_channel_write(session->write_ch, (guchar *)data,
+		if ((err = g_io_channel_write(session->write_ch, (guchar *)cur,
 					      size, &bytes_written))
 		    != G_IO_ERROR_NONE || bytes_written == 0) {
 			g_warning("%s: sending data failed: %d\n",
@@ -456,6 +460,7 @@ gint session_send_data(Session *session, const guchar *data, guint size)
 			return -1;
 		}
 		size -= bytes_written;
+		cur += bytes_written;
 		debug_print("session: %s: sent %d bytes of data\n",
 			    session->child_pid == 0 ? "child" : "parent",
 			    bytes_written);

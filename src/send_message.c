@@ -428,7 +428,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 	if (ret == -1) {
 		manage_window_focus_in(dialog->dialog->window, NULL, NULL);
 		send_put_error(session);
-		manage_window_focus_in(dialog->dialog->window, NULL, NULL);
+		manage_window_focus_out(dialog->dialog->window, NULL, NULL);
 	}
 
 	session_destroy(session);

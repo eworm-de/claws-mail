@@ -1,3 +1,11 @@
+2003-04-28
+
+	* src/session.c:
+	  session_send_msg()
+	  session_send_data(): fixed a memory leak and data sending bug.
+	* src/send_message.c:
+	  send_message_smtp(): fixed focus management.
+
 2003-04-25
 
 	* src/smtp.[ch]: set the response string to SMTPSession::error_msg
