@@ -1,3 +1,10 @@
+2005-02-03 [colin]	1.0.0cvs26
+
+	* src/common/plugin.c
+		Don't load GTK2 plugins at all. This solves
+		the plugins problem when switching between
+		GTK1 and GTK2 version.
+
 2005-02-02 [colin]	1.0.0cvs25
 
 	* src/messageview.c
