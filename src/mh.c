@@ -100,8 +100,6 @@ gint    mh_remove_folder	(Folder		*folder,
 
 gchar   *mh_get_new_msg_filename		(FolderItem	*dest);
 
-static GSList  *mh_get_uncached_msgs		(GHashTable	*msg_table,
-						 FolderItem	*item);
 static MsgInfo *mh_parse_msg			(const gchar	*file,
 						 FolderItem	*item);
 static void	mh_scan_tree_recursive		(FolderItem	*item);
@@ -229,67 +227,6 @@ gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list)
 	closedir(dp);
 
 	return nummsgs;
-}
-
-GSList *mh_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
-{
-	GSList *mlist;
-	GHashTable *msg_table;
-	gchar *path;
-	struct stat s;
-	gboolean scan_new = TRUE;
-#ifdef MEASURE_TIME
-	struct timeval tv_before, tv_after, tv_result;
-
-	gettimeofday(&tv_before, NULL);
-#endif
-
-	g_return_val_if_fail(item != NULL, NULL);
-
-	path = folder_item_get_path(item);
-	if (stat(path, &s) < 0) {
-		FILE_OP_ERROR(path, "stat");
-	} else {
-		time_t mtime;
-
-		mtime = MAX(s.st_mtime, s.st_ctime);
-		if (item->mtime == mtime) {
-			debug_print("Folder is not modified.\n");
-			scan_new = FALSE;
-		} else
-			item->mtime = mtime;
-	}
-	g_free(path);
-
-	if (use_cache && !scan_new) {
-		mlist = procmsg_read_cache(item, FALSE);
-		if (!mlist)
-			mlist = mh_get_uncached_msgs(NULL, item);
-	} else if (use_cache) {
-		GSList *newlist;
-
-		mlist = procmsg_read_cache(item, TRUE);
-		msg_table = procmsg_msg_hash_table_create(mlist);
-
-		newlist = mh_get_uncached_msgs(msg_table, item);
-		if (msg_table)
-			g_hash_table_destroy(msg_table);
-
-		mlist = g_slist_concat(mlist, newlist);
-	} else
-		mlist = mh_get_uncached_msgs(NULL, item);
-
-	procmsg_set_flags(mlist, item);
-
-#ifdef MEASURE_TIME
-	gettimeofday(&tv_after, NULL);
-
-	timersub(&tv_after, &tv_before, &tv_result);
-	g_print("mh_get_msg_list: %s: elapsed time: %ld.%06ld sec\n",
-		item->path, tv_result.tv_sec, tv_result.tv_usec);
-#endif
-
-	return mlist;
 }
 
 gchar *mh_fetch_msg(Folder *folder, FolderItem *item, gint num)
@@ -481,21 +418,8 @@ gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
  	ret = mh_add_msg(folder, dest, srcfile, FALSE);
  	g_free(srcfile);
  
- 	if (ret != -1) {
- 		gchar *destdir;
- 		FILE *fp;
- 
- 		destdir = folder_item_get_path(dest);
- 		if ((fp = procmsg_open_mark_file(destdir, TRUE)) == NULL)
- 			g_warning("Can't open mark file.\n");
- 		else {
- 			SET_DEST_MSG_FLAGS(fp, dest, msginfo);
- 			fclose(fp);
- 		}
- 		g_free(destdir);
- 
+ 	if (ret != -1)
  		ret = folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
- 	}
  
  	return ret;
 }
@@ -1008,104 +932,6 @@ gint mh_remove_folder(Folder *folder, FolderItem *item)
 	g_free(path);
 	folder_item_remove(item);
 	return 0;
-}
-
-
-static GSList *mh_get_uncached_msgs(GHashTable *msg_table, FolderItem *item)
-{
-	gchar *path;
-	DIR *dp;
-	struct dirent *d;
-	struct stat s;
-	GSList *newlist = NULL;
-	GSList *last = NULL;
-	MsgInfo *msginfo;
-	gint n_newmsg = 0;
-	gint num;
-
-	g_return_val_if_fail(item != NULL, NULL);
-
-	path = folder_item_get_path(item);
-	g_return_val_if_fail(path != NULL, NULL);
-	if (change_dir(path) < 0) {
-		g_free(path);
-		return NULL;
-	}
-	g_free(path);
-
-	if ((dp = opendir(".")) == NULL) {
-		FILE_OP_ERROR(item->path, "opendir");
-		return NULL;
-	}
-
-	debug_print("Searching uncached messages...\n");
-
-	if (msg_table) {
-		while ((d = readdir(dp)) != NULL) {
-			if ((num = to_number(d->d_name)) < 0) continue;
-			if (stat(d->d_name, &s) < 0) {
-				FILE_OP_ERROR(d->d_name, "stat");
-				continue;
-			}
-			if (!S_ISREG(s.st_mode)) continue;
-
-			msginfo = g_hash_table_lookup
-				(msg_table, GUINT_TO_POINTER(num));
-
-			if (!msginfo) {
-				/* not found in the cache (uncached message) */
-				msginfo = mh_parse_msg(d->d_name, item);
-				if (!msginfo) continue;
-
-				if (!newlist)
-					last = newlist =
-						g_slist_append(NULL, msginfo);
-				else {
-					last = g_slist_append(last, msginfo);
-					last = last->next;
-				}
-				n_newmsg++;
-			}
-		}
-	} else {
-		/* discard all previous cache */
-		while ((d = readdir(dp)) != NULL) {
-			if (to_number(d->d_name) < 0) continue;
-			if (stat(d->d_name, &s) < 0) {
-				FILE_OP_ERROR(d->d_name, "stat");
-				continue;
-			}
-			if (!S_ISREG(s.st_mode)) continue;
-
-			msginfo = mh_parse_msg(d->d_name, item);
-			if (!msginfo) continue;
-
-			if (!newlist)
-				last = newlist = g_slist_append(NULL, msginfo);
-			else {
-				last = g_slist_append(last, msginfo);
-				last = last->next;
-			}
-			n_newmsg++;
-		}
-	}
-
-	closedir(dp);
-
-	if (n_newmsg)
-		debug_print("%d uncached message(s) found.\n", n_newmsg);
-	else
-		debug_print("done.\n");
-
-	/* sort new messages in numerical order */
-	if (newlist) {
-		debug_print("Sorting uncached messages in numerical order...\n");
-		newlist = g_slist_sort
-			(newlist, (GCompareFunc)procmsg_cmp_msgnum_for_sort);
-		debug_print("done.\n");
-	}
-
-	return newlist;
 }
 
 static MsgInfo *mh_parse_msg(const gchar *file, FolderItem *item)

@@ -3737,9 +3737,6 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 
 	for (row = 0; (ainfo = gtk_clist_get_row_data(clist, row)) != NULL;
 	     row++) {
-		gchar buf[BUFFSIZE];
-		gchar inbuf[B64_LINE_SIZE], outbuf[B64_BUFFSIZE];
-
 		if ((attach_fp = fopen(ainfo->file, "rb")) == NULL) {
 			g_warning("Can't open file %s\n", ainfo->file);
 			continue;

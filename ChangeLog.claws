@@ -1,3 +1,26 @@
+2003-02-28 [christoph]	0.8.10claws64
+
+	* src/account.c
+	* src/addressadd.c
+	* src/compose.c
+	* src/gtkaspell.c
+	* src/gtkxtext.h		** REMOVE **
+	* src/imap.c
+	* src/matcher.[ch]
+	* src/mh.c
+	* src/news.c
+	* src/pine.c
+	* src/prefs_common.c
+	* src/prefs_matcher.c
+	* src/procheader.[ch]
+	* src/procmsg.[ch]
+	* src/toolbar.c
+	* src/common/ssl_certificate.c
+	* src/gtk/colorlabel.c
+	* src/gtk/menu.c
+		o fix warnings
+		o remove code obsoleted by new cache and folder system rework
+
 2003-02-28 [oliver]	0.8.10claws63
 	
 	* src/toolbar.[ch]

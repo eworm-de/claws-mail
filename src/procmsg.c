@@ -41,6 +41,7 @@
 #include "news.h"
 #include "imap.h"
 #include "hooks.h"
+#include "msgcache.h"
 
 typedef struct _FlagInfo	FlagInfo;
 
@@ -49,9 +50,6 @@ struct _FlagInfo
 	guint    msgnum;
 	MsgFlags flags;
 };
-
-static GHashTable *procmsg_read_mark_file	(const gchar	*folder);
-void   procmsg_msginfo_write_flags		(MsgInfo 	*msginfo);
 
 GHashTable *procmsg_msg_hash_table_create(GSList *mlist)
 {
@@ -99,241 +97,6 @@ GHashTable *procmsg_to_folder_hash_table_create(GSList *mlist)
 	return msg_table;
 }
 
-static gint procmsg_read_cache_data_str(FILE *fp, gchar **str)
-{
-	gchar buf[BUFFSIZE];
-	gint ret = 0;
-	size_t len;
-
-	if (fread(&len, sizeof(len), 1, fp) == 1) {
-		if (len < 0)
-			ret = -1;
-		else {
-			gchar *tmp = NULL;
-
-			while (len > 0) {
-				size_t size = MIN(len, BUFFSIZE - 1);
-
-				if (fread(buf, size, 1, fp) != 1) {
-					ret = -1;
-					if (tmp) g_free(tmp);
-					*str = NULL;
-					break;
-				}
-
-				buf[size] = '\0';
-				if (tmp) {
-					*str = g_strconcat(tmp, buf, NULL);
-					g_free(tmp);
-					tmp = *str;
-				} else
-					tmp = *str = g_strdup(buf);
-
-				len -= size;
-			}
-		}
-	} else
-		ret = -1;
-
-	if (ret < 0)
-		g_warning("Cache data is corrupted\n");
-
-	return ret;
-}
-
-#define READ_CACHE_DATA(data, fp) \
-{ \
-	if (procmsg_read_cache_data_str(fp, &data) < 0) { \
-		procmsg_msginfo_free(msginfo); \
-		break; \
-	} \
-}
-
-#define READ_CACHE_DATA_INT(n, fp) \
-{ \
-	if (fread(&n, sizeof(n), 1, fp) != 1) { \
-		g_warning("Cache data is corrupted\n"); \
-		procmsg_msginfo_free(msginfo); \
-		break; \
-	} \
-}
-
-GSList *procmsg_read_cache(FolderItem *item, gboolean scan_file)
-{
-	GSList *mlist = NULL;
-	GSList *last = NULL;
-	gchar *cache_file;
-	FILE *fp;
-	MsgInfo *msginfo;
-	MsgFlags default_flags;
-	gchar file_buf[BUFFSIZE];
-	gint ver;
-	guint num;
-	FolderType type;
-
-	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(item->folder != NULL, NULL);
-	type = item->folder->type;
-
-	default_flags.perm_flags = MSG_NEW|MSG_UNREAD;
-	default_flags.tmp_flags = MSG_CACHED;
-	if (type == F_MH || type == F_IMAP) {
-		if (item->stype == F_QUEUE) {
-			MSG_SET_TMP_FLAGS(default_flags, MSG_QUEUED);
-		} else if (item->stype == F_DRAFT) {
-			MSG_SET_TMP_FLAGS(default_flags, MSG_DRAFT);
-		}
-	}
-	if (type == F_IMAP) {
-		MSG_SET_TMP_FLAGS(default_flags, MSG_IMAP);
-	} else if (type == F_NEWS) {
-		MSG_SET_TMP_FLAGS(default_flags, MSG_NEWS);
-	}
-
-	if (type == F_MH) {
-		gchar *path;
-
-		path = folder_item_get_path(item);
-		if (change_dir(path) < 0) {
-			g_free(path);
-			return NULL;
-		}
-		g_free(path);
-	}
-	cache_file = folder_item_get_cache_file(item);
-	if ((fp = fopen(cache_file, "rb")) == NULL) {
-		debug_print("\tNo cache file\n");
-		g_free(cache_file);
-		return NULL;
-	}
-	setvbuf(fp, file_buf, _IOFBF, sizeof(file_buf));
-	g_free(cache_file);
-
-	debug_print("\tReading summary cache...\n");
-
-	/* compare cache version */
-	if (fread(&ver, sizeof(ver), 1, fp) != 1 ||
-	    CACHE_VERSION != ver) {
-		debug_print("Cache version is different. Discarding it.\n");
-		fclose(fp);
-		return NULL;
-	}
-
-	while (fread(&num, sizeof(num), 1, fp) == 1) {
-		msginfo = procmsg_msginfo_new();
-		msginfo->msgnum = num;
-		READ_CACHE_DATA_INT(msginfo->size, fp);
-		READ_CACHE_DATA_INT(msginfo->mtime, fp);
-		READ_CACHE_DATA_INT(msginfo->date_t, fp);
-		READ_CACHE_DATA_INT(msginfo->flags.tmp_flags, fp);
-
-		READ_CACHE_DATA(msginfo->fromname, fp);
-
-		READ_CACHE_DATA(msginfo->date, fp);
-		READ_CACHE_DATA(msginfo->from, fp);
-		READ_CACHE_DATA(msginfo->to, fp);
-		READ_CACHE_DATA(msginfo->cc, fp);
-		READ_CACHE_DATA(msginfo->newsgroups, fp);
-		READ_CACHE_DATA(msginfo->subject, fp);
-		READ_CACHE_DATA(msginfo->msgid, fp);
-		READ_CACHE_DATA(msginfo->inreplyto, fp);
-		READ_CACHE_DATA(msginfo->references, fp);
-                READ_CACHE_DATA(msginfo->xref, fp);
-
-
-		MSG_SET_PERM_FLAGS(msginfo->flags, default_flags.perm_flags);
-		MSG_SET_TMP_FLAGS(msginfo->flags, default_flags.tmp_flags);
-
-		/* if the message file doesn't exist or is changed,
-		   don't add the data */
-		if (type == F_MH && scan_file &&
-		    folder_item_is_msg_changed(item, msginfo))
-			procmsg_msginfo_free(msginfo);
-		else {
-			msginfo->folder = item;
-
-			if (!mlist)
-				last = mlist = g_slist_append(NULL, msginfo);
-			else {
-				last = g_slist_append(last, msginfo);
-				last = last->next;
-			}
-		}
-	}
-
-	fclose(fp);
-	debug_print("done.\n");
-
-	return mlist;
-}
-
-#undef READ_CACHE_DATA
-#undef READ_CACHE_DATA_INT
-
-void procmsg_set_flags(GSList *mlist, FolderItem *item)
-{
-	GSList *cur, *tmp;
-	gint newmsg = 0;
-	gint lastnum = 0;
-	gchar *markdir;
-	MsgInfo *msginfo;
-	GHashTable *mark_table;
-	MsgFlags *flags;
-
-	if (!mlist) return;
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
-
-	debug_print("\tMarking the messages...\n");
-
-	markdir = folder_item_get_path(item);
-	if (!is_dir_exist(markdir))
-		make_dir_hier(markdir);
-
-	mark_table = procmsg_read_mark_file(markdir);
-	g_free(markdir);
-
-	if (!mark_table) return;
-
-	for (cur = mlist; cur != NULL; cur = cur->next) {
-		msginfo = (MsgInfo *)cur->data;
-
-		if (lastnum < msginfo->msgnum)
-			lastnum = msginfo->msgnum;
-
-		flags = g_hash_table_lookup
-			(mark_table, GUINT_TO_POINTER(msginfo->msgnum));
-
-		if (flags != NULL) {
-			/* add the permanent flags only */
-			msginfo->flags.perm_flags = flags->perm_flags;
-			if (item->folder->type == F_IMAP) {
-				MSG_SET_TMP_FLAGS(msginfo->flags, MSG_IMAP);
-			} else if (item->folder->type == F_NEWS) {
-				MSG_SET_TMP_FLAGS(msginfo->flags, MSG_NEWS);
-			}
-		} else {
-			/* not found (new message) */
-			if (newmsg == 0) {
-				for (tmp = mlist; tmp != cur; tmp = tmp->next)
-					MSG_UNSET_PERM_FLAGS
-						(((MsgInfo *)tmp->data)->flags,
-						 MSG_NEW);
-			}
-			newmsg++;
-		}
-	}
-
-	item->last_num = lastnum;
-
-	debug_print("done.\n");
-	if (newmsg)
-		debug_print("\t%d new message(s)\n", newmsg);
-
-	hash_free_value_mem(mark_table);
-	g_hash_table_destroy(mark_table);
-}
-
 gint procmsg_get_last_num_in_msg_list(GSList *mlist)
 {
 	GSList *cur;
@@ -361,90 +124,6 @@ void procmsg_msg_list_free(GSList *mlist)
 	g_slist_free(mlist);
 }
 
-void procmsg_write_cache(MsgInfo *msginfo, FILE *fp)
-{
-	MsgTmpFlags flags = msginfo->flags.tmp_flags & MSG_CACHED_FLAG_MASK;
-
-	WRITE_CACHE_DATA_INT(msginfo->msgnum, fp);
-	WRITE_CACHE_DATA_INT(msginfo->size, fp);
-	WRITE_CACHE_DATA_INT(msginfo->mtime, fp);
-	WRITE_CACHE_DATA_INT(msginfo->date_t, fp);
-	WRITE_CACHE_DATA_INT(flags, fp);
-
-	WRITE_CACHE_DATA(msginfo->fromname, fp);
-
-	WRITE_CACHE_DATA(msginfo->date, fp);
-	WRITE_CACHE_DATA(msginfo->from, fp);
-	WRITE_CACHE_DATA(msginfo->to, fp);
-	WRITE_CACHE_DATA(msginfo->cc, fp);
-	WRITE_CACHE_DATA(msginfo->newsgroups, fp);
-	WRITE_CACHE_DATA(msginfo->subject, fp);
-	WRITE_CACHE_DATA(msginfo->msgid, fp);
-	WRITE_CACHE_DATA(msginfo->inreplyto, fp);
-	WRITE_CACHE_DATA(msginfo->references, fp);
-	WRITE_CACHE_DATA(msginfo->xref, fp);
-
-}
-
-void procmsg_write_flags(MsgInfo *msginfo, FILE *fp)
-{
-	MsgPermFlags flags = msginfo->flags.perm_flags;
-
-	WRITE_CACHE_DATA_INT(msginfo->msgnum, fp);
-	WRITE_CACHE_DATA_INT(flags, fp);
-}
-
-void procmsg_flush_mark_queue(FolderItem *item, FILE *fp)
-{
-	MsgInfo *flaginfo;
-
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(fp != NULL);
-
-	while (item->mark_queue != NULL) {
-		flaginfo = (MsgInfo *)item->mark_queue->data;
-		procmsg_write_flags(flaginfo, fp);
-		procmsg_msginfo_free(flaginfo);
-		item->mark_queue = g_slist_remove(item->mark_queue, flaginfo);
-	}
-}
-
-void procmsg_add_flags(FolderItem *item, gint num, MsgFlags flags)
-{
-	FILE *fp;
-	gchar *path;
-	MsgInfo msginfo;
-
-	g_return_if_fail(item != NULL);
-
-	if (item->opened) {
-		MsgInfo *queue_msginfo;
-
-		queue_msginfo = g_new0(MsgInfo, 1);
-		queue_msginfo->msgnum = num;
-		queue_msginfo->flags = flags;
-		item->mark_queue = g_slist_append
-			(item->mark_queue, queue_msginfo);
-		return;
-	}
-
-	path = folder_item_get_path(item);
-	g_return_if_fail(path != NULL);
-
-	if ((fp = procmsg_open_mark_file(path, TRUE)) == NULL) {
-		g_warning("can't open mark file\n");
-		g_free(path);
-		return;
-	}
-	g_free(path);
-
-	msginfo.msgnum = num;
-	msginfo.flags = flags;
-
-	procmsg_write_flags(&msginfo, fp);
-	fclose(fp);
-}
-
 struct MarkSum {
 	gint *new;
 	gint *unread;
@@ -453,83 +132,6 @@ struct MarkSum {
 	gint *max;
 	gint first;
 };
-
-static GHashTable *procmsg_read_mark_file(const gchar *folder)
-{
-	FILE *fp;
-	GHashTable *mark_table = NULL;
-	gint num;
-	MsgFlags *flags;
-	MsgPermFlags perm_flags;
-
-	if ((fp = procmsg_open_mark_file(folder, FALSE)) == NULL)
-		return NULL;
-
-	mark_table = g_hash_table_new(NULL, g_direct_equal);
-
-	while (fread(&num, sizeof(num), 1, fp) == 1) {
-		if (fread(&perm_flags, sizeof(perm_flags), 1, fp) != 1) break;
-
-		flags = g_hash_table_lookup(mark_table, GUINT_TO_POINTER(num));
-		if (flags != NULL)
-			g_free(flags);
-
-		flags = g_new0(MsgFlags, 1);
-		flags->perm_flags = perm_flags;
-    
-		if (!MSG_IS_REALLY_DELETED(*flags)) {
-			g_hash_table_insert(mark_table, GUINT_TO_POINTER(num), flags);
-		} else {
-			g_hash_table_remove(mark_table, GUINT_TO_POINTER(num));
-		}
-	}
-
-	fclose(fp);
-	return mark_table;
-}
-
-FILE *procmsg_open_mark_file(const gchar *folder, gboolean append)
-{
-	gchar *markfile;
-	FILE *fp;
-	gint ver;
-
-	markfile = g_strconcat(folder, G_DIR_SEPARATOR_S, MARK_FILE, NULL);
-
-	if ((fp = fopen(markfile, "rb")) == NULL)
-		debug_print("Mark file not found.\n");
-	else if (fread(&ver, sizeof(ver), 1, fp) != 1 || MARK_VERSION != ver) {
-		debug_print("Mark version is different (%d != %d). "
-			      "Discarding it.\n", ver, MARK_VERSION);
-		fclose(fp);
-		fp = NULL;
-	}
-
-	/* read mode */
-	if (append == FALSE) {
-		g_free(markfile);
-		return fp;
-	}
-
-	if (fp) {
-		/* reopen with append mode */
-		fclose(fp);
-		if ((fp = fopen(markfile, "ab")) == NULL)
-			g_warning("Can't open mark file with append mode.\n");
-	} else {
-		/* open with overwrite mode if mark file doesn't exist or
-		   version is different */
-		if ((fp = fopen(markfile, "wb")) == NULL)
-			g_warning("Can't open mark file with write mode.\n");
-		else {
-			ver = MARK_VERSION;
-			WRITE_CACHE_DATA_INT(ver, fp);
-		}
-	}
-
-	g_free(markfile);
-	return fp;
-}
 
 static gboolean procmsg_ignore_node(GNode *node, gpointer data)
 {
@@ -1525,7 +1127,6 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 	folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT);
 
 	CHANGE_FLAGS(msginfo);
-	procmsg_msginfo_write_flags(msginfo);
 }
 
 void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
@@ -1591,26 +1192,6 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 	folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT);
 
 	CHANGE_FLAGS(msginfo);
-	procmsg_msginfo_write_flags(msginfo);
-}
-
-void procmsg_msginfo_write_flags(MsgInfo *msginfo)
-{
-	gchar *destdir;
-	FILE *fp;
-
-	destdir = folder_item_get_path(msginfo->folder);
-	if (!is_dir_exist(destdir))
-		make_dir_hier(destdir);
-
-	if ((fp = procmsg_open_mark_file(destdir, TRUE))) {
-		procmsg_write_flags(msginfo, fp);
-		fclose(fp);
-	} else {
-		g_warning("Can't open mark file.\n");
-	}
-	
-	g_free(destdir);
 }
 
 /*!

@@ -26,6 +26,7 @@
 
 #include <glib.h>
 #include <gdk/gdkx.h>
+#include <gtk/gtk.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkpixmap.h>
 #include <gtk/gtkmenu.h>

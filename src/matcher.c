@@ -174,7 +174,6 @@ static void create_matchparser_hashtab(void)
  */
 gint get_matchparser_tab_id(const gchar *str)
 {
-	gint i;
 	MatchParser *res;
 
 	if (NULL != (res = g_hash_table_lookup(matchparser_hashtab, str))) {
@@ -190,7 +189,7 @@ gint get_matchparser_tab_id(const gchar *str)
  *
  *\return	gchar * Newly allocated string with escaped characters
  */
-const gchar *matcher_escape_str(const gchar *str)
+gchar *matcher_escape_str(const gchar *str)
 {
 	register const gchar *walk;
 	register int escape;
@@ -1069,8 +1068,7 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 	const gchar *criteria_str;
 	const gchar *matchtype_str;
 	int i;
-        const char *expr;
-        char *header;
+        gchar *expr;
 
 	criteria_str = NULL;
 	for (i = 0; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)); i++) {

@@ -22,6 +22,7 @@
 #endif
 
 #include <glib.h>
+#include <gtk/gtk.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenubar.h>

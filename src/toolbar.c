@@ -1960,7 +1960,6 @@ void toolbar_reply(gpointer data, guint action)
 	GList *sel = NULL;
 	MsgInfo *msginfo = NULL;
 	gchar *text;
-	gchar *path;
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:

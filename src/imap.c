@@ -119,10 +119,6 @@ static GSList *imap_get_uncached_messages	(IMAPSession	*session,
 						 FolderItem	*item,
 						 guint32	 first_uid,
 						 guint32	 last_uid);
-static GSList *imap_delete_cached_messages	(GSList		*mlist,
-						 FolderItem	*item,
-						 guint32	 first_uid,
-						 guint32	 last_uid);
 static void imap_delete_all_cached_messages	(FolderItem	*item);
 
 #if USE_OPENSSL
@@ -161,9 +157,6 @@ static gint imap_select			(IMAPSession	*session,
 					 gint		*recent,
 					 gint		*unseen,
 					 guint32	*uid_validity);
-static gint imap_get_uid		(IMAPSession	*session,
-					 gint		 msgnum,
-					 guint32	*uid);
 static gint imap_status			(IMAPSession	*session,
 					 IMAPFolder	*folder,
 					 const gchar	*path,
@@ -610,99 +603,6 @@ void imap_session_destroy_all(void)
 		session_destroy(SESSION(session));
 	}
 }
-
-#define THROW goto catch
-
-GSList *imap_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
-{
-	GSList *mlist = NULL;
-	IMAPSession *session;
-	gint ok, exists = 0, recent = 0, unseen = 0;
-	guint32 uid_validity = 0;
-	guint32 first_uid = 0, last_uid = 0, begin;
-
-	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(folder->type == F_IMAP, NULL);
-	g_return_val_if_fail(folder->account != NULL, NULL);
-
-	session = imap_session_get(folder);
-
-	if (!session) {
-		mlist = procmsg_read_cache(item, FALSE);
-		item->last_num = procmsg_get_last_num_in_msg_list(mlist);
-		procmsg_set_flags(mlist, item);
-		return mlist;
-	}
-
-	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
-			 &exists, &recent, &unseen, &uid_validity);
-	if (ok != IMAP_SUCCESS) THROW;
-	if (exists > 0) {
-		ok = imap_get_uid(session, 1, &first_uid);
-		if (ok != IMAP_SUCCESS) THROW;
-		if (1 != exists) {
-			ok = imap_get_uid(session, exists, &last_uid);
-			if (ok != IMAP_SUCCESS) THROW;
-		} else
-			last_uid = first_uid;
-	} else {
-		imap_delete_all_cached_messages(item);
-		return NULL;
-	}
-
-	if (use_cache) {
-		guint32 cache_last;
-
-		mlist = procmsg_read_cache(item, FALSE);
-		procmsg_set_flags(mlist, item);
-		cache_last = procmsg_get_last_num_in_msg_list(mlist);
-
-		/* calculating the range of envelope to get */
-		if (item->mtime != uid_validity) {
-			/* mailbox is changed (get all) */
-			begin = first_uid;
-		} else if (last_uid < cache_last) {
-			/* mailbox is changed (get all) */
-			begin = first_uid;
-		} else if (last_uid == cache_last) {
-			/* mailbox unchanged (get none)*/
-			begin = 0;
-		} else {
-			begin = cache_last + 1;
-		}
-
-		item->mtime = uid_validity;
-
-		if (first_uid > 0 && last_uid > 0) {
-			mlist = imap_delete_cached_messages(mlist, item,
-							    0, first_uid - 1);
-			mlist = imap_delete_cached_messages(mlist, item,
-							    last_uid + 1,
-							    UINT_MAX);
-		}
-		if (begin > 0)
-			mlist = imap_delete_cached_messages(mlist, item,
-							    begin, UINT_MAX);
-	} else {
-		imap_delete_all_cached_messages(item);
-		begin = first_uid;
-	}
-
-	if (begin > 0 && begin <= last_uid) {
-		GSList *newlist;
-		newlist = imap_get_uncached_messages(session, item,
-						     begin, last_uid);
-		mlist = g_slist_concat(mlist, newlist);
-	}
-
-	item->last_num = last_uid;
-
-catch:
-	return mlist;
-}
-
-#undef THROW
 
 gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
 {
@@ -1765,43 +1665,6 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 	return newlist;
 }
 
-static GSList *imap_delete_cached_messages(GSList *mlist, FolderItem *item,
-					   guint32 first_uid, guint32 last_uid)
-{
-	GSList *cur, *next;
-	MsgInfo *msginfo;
-	gchar *dir;
-
-	g_return_val_if_fail(item != NULL, mlist);
-	g_return_val_if_fail(item->folder != NULL, mlist);
-	g_return_val_if_fail(item->folder->type == F_IMAP, mlist);
-
-	debug_print("Deleting cached messages %u - %u ... ",
-		    first_uid, last_uid);
-
-	dir = folder_item_get_path(item);
-	if (is_dir_exist(dir))
-		remove_numbered_files(dir, first_uid, last_uid);
-	g_free(dir);
-
-	for (cur = mlist; cur != NULL; ) {
-		next = cur->next;
-
-		msginfo = (MsgInfo *)cur->data;
-		if (msginfo != NULL && first_uid <= msginfo->msgnum &&
-		    msginfo->msgnum <= last_uid) {
-			procmsg_msginfo_free(msginfo);
-			mlist = g_slist_remove(mlist, msginfo);
-		}
-
-		cur = next;
-	}
-
-	debug_print("done.\n");
-
-	return mlist;
-}
-
 static void imap_delete_all_cached_messages(FolderItem *item)
 {
 	gchar *dir;
@@ -2462,36 +2325,6 @@ static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 
 #define THROW(err) { ok = err; goto catch; }
 
-static gint imap_get_uid(IMAPSession *session, gint msgnum, guint32 *uid)
-{
-	gint ok;
-	GPtrArray *argbuf;
-	gchar *str;
-	gint num;
-
-	*uid = 0;
-	argbuf = g_ptr_array_new();
-
-	imap_cmd_gen_send(SESSION(session)->sock, "FETCH %d (UID)", msgnum);
-	if ((ok = imap_cmd_ok(SESSION(session)->sock, argbuf)) != IMAP_SUCCESS)
-		THROW(ok);
-
-	str = search_array_contain_str(argbuf, "FETCH");
-	if (!str) THROW(IMAP_ERROR);
-
-	if (sscanf(str, "%d FETCH (UID %d)", &num, uid) != 2 ||
-	    num != msgnum) {
-		g_warning("imap_get_uid(): invalid FETCH line.\n");
-		THROW(IMAP_ERROR);
-	}
-
-catch:
-	ptr_array_free_strings(argbuf);
-	g_ptr_array_free(argbuf, TRUE);
-
-	return ok;
-}
-
 static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 			const gchar *path,
 			gint *messages, gint *recent,
@@ -2979,7 +2812,7 @@ static gint imap_cmd_copy(IMAPSession *session,
 		log_warning(_("can't copy %d to %s\n"), msgnum, destfolder_);
 	else if (imap_has_capability(session, "UIDPLUS") && reply->len > 0)
 		if ((okmsginfo = g_ptr_array_index(reply, reply->len - 1)) != NULL &&
-		    sscanf(okmsginfo, "%*u OK [COPYUID %*llu %u %u]", &olduid, &newuid) == 2 &&
+		    sscanf(okmsginfo, "%*u OK [COPYUID %*u %u %u]", &olduid, &newuid) == 2 &&
 		    olduid == msgnum)
 			*new_uid = newuid;
 

@@ -143,25 +143,6 @@ typedef enum
 #define MSG_IS_IGNORE_THREAD(msg)	(((msg).perm_flags & MSG_IGNORE_THREAD) != 0)
 #define MSG_IS_RETRCPT_PENDING(msg)	(((msg).perm_flags & MSG_RETRCPT_PENDING) != 0)
 
-
-#define WRITE_CACHE_DATA_INT(n, fp) \
-	fwrite(&n, sizeof(n), 1, fp)
-
-#define WRITE_CACHE_DATA(data, fp)			\
-{							\
-	gint len;					\
-							\
-	if (data == NULL) {				\
-		len = 0;				\
-		WRITE_CACHE_DATA_INT(len, fp);		\
-	} else {					\
-		len = strlen(data);			\
-		WRITE_CACHE_DATA_INT(len, fp);		\
-		if (len > 0)				\
-			fwrite(data, len, 1, fp);	\
-	}						\
-}
-
 struct _MsgFlags
 {
 	MsgPermFlags perm_flags;
@@ -225,19 +206,8 @@ GHashTable *procmsg_to_folder_hash_table_create	(GSList		*mlist);
 
 GSList *procmsg_read_cache		(FolderItem	*item,
 					 gboolean	 scan_file);
-void	procmsg_set_flags		(GSList		*mlist,
-					 FolderItem	*item);
 gint	procmsg_get_last_num_in_msg_list(GSList		*mlist);
 void	procmsg_msg_list_free		(GSList		*mlist);
-void	procmsg_write_cache		(MsgInfo	*msginfo,
-					 FILE		*fp);
-void	procmsg_write_flags		(MsgInfo	*msginfo,
-					 FILE		*fp);
-void	procmsg_flush_mark_queue	(FolderItem	*item,
-					 FILE		*fp);
-void	procmsg_add_flags		(FolderItem	*item,
-					 gint		 num,
-					 MsgFlags	 flags);
 void	procmsg_get_mark_sum		(const gchar	*folder,
 					 gint		*new,
 					 gint		*unread,
@@ -245,8 +215,6 @@ void	procmsg_get_mark_sum		(const gchar	*folder,
 					 gint		*min,
 					 gint		*max,
 					 gint		 first);
-FILE   *procmsg_open_mark_file		(const gchar	*folder,
-					 gboolean	 append);
 
 GNode  *procmsg_get_thread_tree		(GSList		*mlist);
 

@@ -45,6 +45,7 @@
 #include "gtkutils.h"
 #include "utils.h"
 #include "alertpanel.h"
+#include "procheader.h"
 
 typedef enum
 {
@@ -1007,7 +1008,7 @@ PrefsAccount *account_get_reply_account(MsgInfo *msginfo, gboolean reply_autosel
 	if (reply_autosel) {
 		if (!account && msginfo->to) {
 			gchar *to;
-			Xstrdup_a(to, msginfo->to, return);
+			Xstrdup_a(to, msginfo->to, return NULL);
 			extract_address(to);
 			account = account_find_from_address(to);
 		}

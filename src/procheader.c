@@ -521,7 +521,7 @@ static HeaderEntry hentry_short[] = {{"Date:",		NULL, FALSE},
 				    {"From ",		NULL, FALSE},
 				    {NULL,		NULL, FALSE}};
 
-const HeaderEntry* procheader_get_headernames(gboolean full)
+HeaderEntry* procheader_get_headernames(gboolean full)
 {
 	return full ? hentry_full : hentry_short;
 }
@@ -534,7 +534,7 @@ MsgInfo *procheader_parse_stream(FILE *fp, MsgFlags flags, gboolean full,
 	gchar *reference = NULL;
 	gchar *p;
 	gchar *hp;
-	const HeaderEntry *hentry;
+	HeaderEntry *hentry;
 	gint hnum;
 
 	hentry = procheader_get_headernames(full);

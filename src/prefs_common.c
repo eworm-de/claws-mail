@@ -1738,7 +1738,6 @@ static void prefs_compose_create(void)
 {
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
-	GtkWidget *hbox1;
 
 	GtkWidget *checkbtn_autoextedit;
 

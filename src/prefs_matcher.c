@@ -1642,8 +1642,6 @@ static void prefs_matcher_ok(void)
 	MatcherList *matchers;
 	MatcherProp *matcherprop;
 	AlertValue val;
-	gint criteria;
-	gint value_criteria;
 	gchar *matcher_str;
 	gchar *str;
 	gint row = 1;
