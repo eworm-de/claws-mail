@@ -210,6 +210,7 @@ OBJECTS= \
 	addrharvest.o \
 	addrindex.o \
 	addritem.o \
+	addrquery.o \
 	addrselect.o \
 	alertpanel.o \
 	base64.o \
@@ -550,6 +551,7 @@ addrgather.o: 	addrgather.c addrgather.h
 addrharvest.o: 	addrharvest.c addrharvest.h
 addrindex.o: 	addrindex.c addrindex.h
 addritem.o: 	addritem.c addritem.h
+addrquery.o:	addrquery.c addrquery.h
 addrselect.o: 	addrselect.c addrselect.h
 alertpanel.o: 	alertpanel.c alertpanel.h
 base64.o: 	base64.c base64.h

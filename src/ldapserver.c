@@ -458,7 +458,7 @@ LdapQuery *ldapsvr_locate_query( LdapServer *server, const gchar *searchTerm )
 }
 
 /**
- * Retire aged queries.
+ * Retire aged queries. Only dynamic queries are retired.
  * \param server LdapServer.
  */
 void ldapsvr_retire_query( LdapServer *server ) {
@@ -468,6 +468,7 @@ void ldapsvr_retire_query( LdapServer *server ) {
 	gint maxAge;
 	LdapControl *ctl;
 
+	/* printf( "ldapsvr_retire_query\n" ); */
 	g_return_if_fail( server != NULL );
 	ctl = server->control;
 	maxAge = ctl->maxQueryAge;
@@ -478,13 +479,19 @@ void ldapsvr_retire_query( LdapServer *server ) {
 	while( node ) {
 		LdapQuery *qry = node->data;
 
+		node = g_list_next( node );
+		if( qry->queryType == LDAPQUERY_STATIC ) continue;
+
+		/* Only dynamic queries are retired */
 		ldapqry_age( qry, maxAge );
 		if( qry->agedFlag ) {
 			/* Delete folder associated with query */
+			/*
+			printf( "deleting folder... ::%s::\n", qry->queryName );
+			*/
 			ldapqry_delete_folder( qry );
 			listDelete = g_list_append( listDelete, qry );
 		}
-		node = g_list_next( node );
 	}
 
 	/* Delete queries */

@@ -148,6 +148,10 @@ SOURCE=..\src\addritem.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\addrquery.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\addrselect.c
 # End Source File
 # Begin Source File

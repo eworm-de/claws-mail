@@ -551,7 +551,7 @@ static gint _queryID_ = 0;
 /**
  * Completion idle ID.
  */
-static gint _completionIdleID_ = 0;
+static guint _completionIdleID_ = 0;
 
 /*
  * address completion entry ui. the ui (completion list was inspired by galeon's
@@ -801,17 +801,18 @@ static gint addrcompl_callback(
 
 	/* printf( "addrcompl_callback::queryID=%d\n", queryID ); */
 	pthread_mutex_lock( & _completionMutex_ );
-	if( queryID == _queryID_ ) {
-		/* Append contents to end of display queue */
-		node = listEMail;
-		while( node ) {
-			ItemEMail *email = node->data;
-			if( target ) {
+	if( target ) {
+		if( queryID == _queryID_ ) {
+			/* Append contents to end of display queue */
+			node = listEMail;
+			while( node ) {
+				ItemEMail *email = node->data;
+
 				address = addritem_format_email( email );
 				/* printf( "\temail/address ::%s::\n", address ); */
 				_displayQueue_ = g_list_append( _displayQueue_, address );
+				node = g_list_next( node );
 			}
-			node = g_list_next( node );
 		}
 	}
 	pthread_mutex_unlock( & _completionMutex_ );

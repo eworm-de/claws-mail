@@ -677,6 +677,7 @@ GList *addrindex_get_interface_list( AddressIndex *addrIndex ) {
  * \param addrIndex Address index.
  */
 void addrindex_initialize( AddressIndex *addrIndex ) {
+	qrymgr_initialize();
 	addrcompl_initialize( addrIndex );
 }
 
@@ -686,6 +687,7 @@ void addrindex_initialize( AddressIndex *addrIndex ) {
  */
 void addrindex_teardown( AddressIndex *addrIndex ) {
 	addrcompl_teardown();
+	qrymgr_teardown();
 }
 
 /**
@@ -2547,7 +2549,8 @@ static void addrindex_ldap_end_cb( LdapQuery *qry ) {
  * \param folder.
  * \return List of ItemEMail objects.
  */
-static void addrindex_ldap_use_previous( const ItemFolder *folder, const gint queryID )
+static void addrindex_ldap_use_previous(
+	const ItemFolder *folder, const gint queryID )
 {
 	GList *listEMail;
 	GList *node;
@@ -2574,10 +2577,13 @@ static void addrindex_ldap_use_previous( const ItemFolder *folder, const gint qu
 	}
 }
 
+/*
+ * Function prototype (not in header file or circular reference encountered!)
+ */
 LdapQuery *ldapsvr_locate_query( LdapServer *server, const gchar *searchTerm );
 
 /**
- * Construct an LDAP query and initiate an LDAP search.
+ * Construct an LDAP query and initiate an LDAP dynamic search.
  * \param server  LDAP server object.
  * \param queryID ID of search query to be executed.
  */
@@ -2620,34 +2626,6 @@ static void addrindex_search_ldap( LdapServer *server, const gint queryID ) {
 	ldapsvr_execute_query( server, qry );
 }
 
-/**
- * Construct an LDAP query and initiate an LDAP search.
- * \param server      LDAP server object to search.
- * \param searchTerm  Search term to locate.
- * \param callbackEnd Function to call when search has terminated.
- *
- */
-void addrindex_search_ldap_noid(
-	LdapServer *server, const gchar *searchTerm, void * callbackEnd )
-{
-	LdapQuery *qry;
-	gchar *name;
-
-	/* Construct a query */
-	qry = ldapqry_create();
-	ldapqry_set_search_value( qry, searchTerm );
-	ldapqry_set_query_type( qry, LDAPQUERY_STATIC );
-	ldapqry_set_callback_end( qry, callbackEnd );
-
-	/* Name the query */
-	name = g_strdup_printf( "Static Search for '%s'", searchTerm );
-	ldapqry_set_name( qry, name );
-	g_free( name );
-
-	ldapsvr_add_query( server, qry );
-	/* printf( "addrindex_search_ldap_noid::executing static search...\n" ); */
-	ldapsvr_execute_query( server, qry );
-}
 #endif
 
 /**
@@ -2732,6 +2710,140 @@ void addrindex_stop_search( AddressIndex *addrIndex, const gint queryID ){
 		}
 	}
 #endif
+}
+
+#ifdef USE_LDAP
+/**
+ * LDAP callback entry point for completion of search.
+ * \param qry LDAP query.
+ */
+static void addrindex_ldap_end_static_cb( LdapQuery *qry ) {
+	AddrQuery *addrQry;
+	gint queryID;
+	AddrQueryType queryType;
+	AddrSearchStaticFunc *callBack;
+
+	queryID = qry->queryID;
+	queryType = qry->queryType;
+	addrQry = qrymgr_find_query( queryID );
+	if( addrQry == NULL ) {
+		return;
+	}
+	callBack = addrQry->callBack;
+
+	/* Delete query */
+	qrymgr_delete_query( queryID );
+
+	/* Execute callback function */
+	callBack( queryID, queryType, qry->retVal );
+}
+#endif
+
+/**
+ * Setup the explicit search that will be performed. The search is registered with
+ * the query manager.
+ *
+ * \param  ds          Data source to search.
+ * \param  searchTerm  Search term to locate.
+ * \param  folder      Folder to receive search results; may be NULL.
+ * \param  callbackEnd Function to call when search has terminated.
+ * \return ID allocated to query that will be executed.
+ */
+gint addrindex_setup_static_search(
+	AddressDataSource *ds, const gchar *searchTerm, ItemFolder *folder,
+	void *callbackEnd )
+{
+	AddrQuery *addrQry;
+	gint queryID;
+	gchar *name;
+
+	queryID = ++_currentQueryID_;
+
+	/* Name the query */
+	name = g_strdup_printf( "Search '%s'", searchTerm );
+
+	/* Set up a generic address query */
+	addrQry = qrymgr_add_query( queryID, searchTerm, callbackEnd, NULL );
+
+	if( ds->type == ADDR_IF_LDAP ) {
+#ifdef USE_LDAP
+		LdapServer *server;
+		LdapQuery *qry;
+
+		server = ds->rawDataSource;
+
+		/* Construct a query */
+		qry = ldapqry_create();
+		ldapqry_set_query_id( qry, queryID );
+		ldapqry_set_name( qry, name );
+		ldapqry_set_search_value( qry, searchTerm );
+		ldapqry_set_query_type( qry, LDAPQUERY_STATIC );
+		ldapqry_set_callback_end( qry, addrindex_ldap_end_static_cb );
+
+		/* Specify folder type and back reference */
+		qry->folder = folder;
+		folder->folderType = ADDRFOLDER_LDAP_QUERY;
+		folder->folderData = ( gpointer ) qry;
+
+		/* Setup server */
+		ldapsvr_add_query( server, qry );
+
+		/* Set up generic query */
+		addrqry_set_query_type( addrQry, ADDRQUERY_LDAP );
+		addrqry_set_server( addrQry, server );
+		addrqry_set_query( addrQry, qry );
+#endif
+	}
+	else {
+		qrymgr_delete_query( queryID );
+		queryID = 0;
+	}
+
+	g_free( name );
+
+	return queryID;
+}
+
+/**
+ * Perform the previously registered explicit search.
+ * \param  queryID    ID of search query to be executed.
+ * \param  idleID     Idler ID.
+ * \return <i>TRUE</i> if search started successfully, or <i>FALSE</i> if
+ *         failed.
+ */
+gboolean addrindex_start_static_search( const gint queryID, const guint idleID )
+{
+	gboolean retVal;
+	AddrQuery *addrQry;
+
+	retVal = FALSE;
+	addrQry = qrymgr_find_query( queryID );
+	if( addrQry == NULL ) {
+		return retVal;
+	}
+
+	if( addrQry->queryType == ADDRQUERY_LDAP ) {
+#ifdef USE_LDAP
+		LdapServer *server;
+		LdapQuery *qry;
+
+		server = ( LdapServer * ) addrQry->serverObject;
+		qry = ( LdapQuery * ) addrQry->queryObject;
+
+		/* Retire any aged queries */
+		ldapsvr_retire_query( server );
+
+		/* Start the search */
+		ldapsvr_execute_query( server, qry );
+		retVal = TRUE;
+#endif
+	}
+
+	if( retVal ) {
+		addrqry_set_idle_id( addrQry, idleID );
+	}
+
+	return retVal;
 }
 
 /**
