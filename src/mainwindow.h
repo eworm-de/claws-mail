@@ -111,6 +111,8 @@ struct _MainWindow
 	GtkWidget *vbox_body;
 	GtkWidget *hbox_stat;
 	GtkWidget *statusbar;
+	GtkWidget *progressbar;
+	GtkWidget *statuslabel;
 	GtkWidget *ac_button;
 	GtkWidget *ac_label;
 	GtkWidget *ac_menu;
@@ -152,8 +154,7 @@ void main_window_empty_trash		(MainWindow	*mainwin,
 					 gboolean	 confirm);
 void main_window_add_mailbox		(MainWindow	*mainwin);
 
-void main_window_set_toolbar_sensitive	(MainWindow	*mainwin,
-					 gboolean	 sensitive);
+void main_window_set_toolbar_sensitive	(MainWindow	*mainwin);
 void main_window_set_menu_sensitive	(MainWindow	*mainwin);
 
 void main_window_popup			(MainWindow	*mainwin);

@@ -917,13 +917,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	gint sort_type;
         static gboolean locked = FALSE;
 
-	if (locked) {
-		g_print("Summary view is locked, waiting...\n");
+	if (locked)
 		return FALSE;
-		/* while (locked)
-			gtk_main_iteration();
-		g_print("unlocked.\n"); */
-	}
 	locked = TRUE;
 
 	STATUSBAR_POP(summaryview->mainwin);
@@ -1096,8 +1091,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 
 	summary_set_menu_sensitive(summaryview);
 
-	main_window_set_toolbar_sensitive
-		(summaryview->mainwin, summaryview->selected ? TRUE : FALSE);
+	main_window_set_toolbar_sensitive(summaryview->mainwin);
 
 	debug_print("\n");
 	STATUSBAR_PUSH(summaryview->mainwin, _("Done."));
@@ -1165,7 +1159,7 @@ void summary_clear_all(SummaryView *summaryview)
 {
 	summary_clear_list(summaryview);
 	summary_set_menu_sensitive(summaryview);
-	main_window_set_toolbar_sensitive(summaryview->mainwin, FALSE);
+	main_window_set_toolbar_sensitive(summaryview->mainwin);
 	summary_status_show(summaryview);
 }
 

@@ -1,3 +1,15 @@
+2001-08-22
+
+	* src/mainwindow.[ch]: added progressbar and status label to the
+	  statusbar.
+	* src/inc.c: update the progressbar of main window, too.
+
+2001-08-22
+
+	* src/mainwindow.[ch]: main_window_set_toolbar_sensitive(): removed
+	  the second argument, and determine the sensitivity with the
+	  state of summary view.
+
 2001-08-21
 
 	* src/pop.c: pop3_getsize_list_recv(), pop3_retr_recv(),

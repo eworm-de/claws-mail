@@ -1,3 +1,15 @@
+2001-08-22
+
+	* src/mainwindow.[ch]: ステータスバーにプログレスバーとステータス
+	  ラベルを追加。
+	* src/inc.c: メインウィンドウのプログレスバーも更新するようにした。
+
+2001-08-22
+
+	* src/mainwindow.[ch]: main_window_set_toolbar_sensitive(): 2番目の
+	  引数を削除し、サマリビューの状態で sensitivity を決定するように
+	  した。
+
 2001-08-21
 
 	* src/pop.c: pop3_getsize_list_recv(), pop3_retr_recv(),

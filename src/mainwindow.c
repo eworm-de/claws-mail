@@ -27,6 +27,7 @@
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkcontainer.h>
 #include <gtk/gtkstatusbar.h>
+#include <gtk/gtkprogressbar.h>
 #include <gtk/gtkhpaned.h>
 #include <gtk/gtkvpaned.h>
 #include <gtk/gtkcheckmenuitem.h>
@@ -596,6 +597,8 @@ MainWindow *main_window_create(SeparateType type)
 	GtkWidget *vbox_body;
 	GtkWidget *hbox_stat;
 	GtkWidget *statusbar;
+	GtkWidget *progressbar;
+	GtkWidget *statuslabel;
 	GtkWidget *ac_button;
 	GtkWidget *ac_label;
 
@@ -655,6 +658,13 @@ MainWindow *main_window_create(SeparateType type)
 	statusbar = statusbar_create();
 	gtk_box_pack_start(GTK_BOX(hbox_stat), statusbar, TRUE, TRUE, 0);
 
+	progressbar = gtk_progress_bar_new();
+	gtk_widget_set_usize(progressbar, 120, -1);
+	gtk_box_pack_start(GTK_BOX(hbox_stat), progressbar, FALSE, FALSE, 0);
+
+	statuslabel = gtk_label_new("");
+	gtk_box_pack_start(GTK_BOX(hbox_stat), statuslabel, FALSE, FALSE, 0);
+
 	ac_button = gtk_button_new();
 	gtk_button_set_relief(GTK_BUTTON(ac_button), GTK_RELIEF_NONE);
 	GTK_WIDGET_UNSET_FLAGS(ac_button, GTK_CAN_FOCUS);
@@ -686,15 +696,17 @@ MainWindow *main_window_create(SeparateType type)
 
 	messageview->mainwin     = mainwin;
 
-	mainwin->window    = window;
-	mainwin->vbox      = vbox;
-	mainwin->menubar   = menubar;
-	mainwin->handlebox = handlebox;
-	mainwin->vbox_body = vbox_body;
-	mainwin->hbox_stat = hbox_stat;
-	mainwin->statusbar = statusbar;
-	mainwin->ac_button = ac_button;
-	mainwin->ac_label  = ac_label;
+	mainwin->window      = window;
+	mainwin->vbox        = vbox;
+	mainwin->menubar     = menubar;
+	mainwin->handlebox   = handlebox;
+	mainwin->vbox_body   = vbox_body;
+	mainwin->hbox_stat   = hbox_stat;
+	mainwin->statusbar   = statusbar;
+	mainwin->progressbar = progressbar;
+	mainwin->statuslabel = statuslabel;
+	mainwin->ac_button   = ac_button;
+	mainwin->ac_label    = ac_label;
 
 	/* set context IDs for status bar */
 	mainwin->mainwin_cid = gtk_statusbar_get_context_id
@@ -799,7 +811,7 @@ MainWindow *main_window_create(SeparateType type)
 			   GTK_SIGNAL_FUNC(ac_menu_popup_closed), mainwin);
 	mainwin->ac_menu = ac_menu;
 
-	main_window_set_toolbar_sensitive(mainwin, FALSE);
+	main_window_set_toolbar_sensitive(mainwin);
 
 	/* show main window */
 	gtk_widget_set_uposition(mainwin->window,
@@ -1163,8 +1175,15 @@ void main_window_add_mbox(MainWindow *mainwin)
 	folderview_set(mainwin->folderview);
 }
 
-void main_window_set_toolbar_sensitive(MainWindow *mainwin, gboolean sensitive)
+void main_window_set_toolbar_sensitive(MainWindow *mainwin)
 {
+	gboolean sensitive;
+
+	if (GTK_CLIST(mainwin->summaryview->ctree)->row_list)
+		sensitive = TRUE;
+	else
+		sensitive = FALSE;
+
 	gtk_widget_set_sensitive(mainwin->reply_btn,       sensitive);
 	gtk_widget_set_sensitive(mainwin->replyall_btn,    sensitive);
 	gtk_widget_set_sensitive(mainwin->replysender_btn, sensitive);

@@ -27,6 +27,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkprogressbar.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
@@ -332,12 +333,16 @@ static void inc_progress_dialog_clear(IncProgressDialog *inc_dialog)
 {
 	progress_dialog_set_value(inc_dialog->dialog, 0.0);
 	progress_dialog_set_label(inc_dialog->dialog, "");
+	gtk_progress_bar_update
+		(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar), 0.0);
 }
 
 static void inc_progress_dialog_destroy(IncProgressDialog *inc_dialog)
 {
 	g_return_if_fail(inc_dialog != NULL);
 
+	gtk_progress_bar_update
+		(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar), 0.0);
 	progress_dialog_destroy(inc_dialog->dialog);
 
 	g_free(inc_dialog);
@@ -416,6 +421,9 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 	gint num = 0;
 	gint error_num = 0;
 	gint new_msgs = 0;
+
+	/* gtk_label_set_text(GTK_LABEL(inc_dialog->mainwin->statuslabel),
+			   _("Receiving"));  */
 
 	while (inc_dialog->queue_list != NULL) {
 		session = inc_dialog->queue_list->data;
@@ -526,6 +534,8 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 		num++;
 	}
+
+	/* gtk_label_set_text(GTK_LABEL(inc_dialog->mainwin->statuslabel), "");  */
 
 	if (error_num) {
 		if (inc_dialog->show_dialog)
@@ -826,6 +836,9 @@ static void inc_pop3_recv_func(SockInfo *sock, gint count, gint read_bytes,
 
 	progress_dialog_set_percentage
 		(dialog, (gfloat)cur_total / (gfloat)state->total_bytes);
+	gtk_progress_bar_update
+		(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
+		 (gfloat)cur_total / (gfloat)state->total_bytes);
 	GTK_EVENTS_FLUSH();
 }
 
@@ -878,6 +891,10 @@ void inc_progress_update(Pop3State *state, Pop3Phase phase)
 		progress_dialog_set_label(dialog, buf);
 		progress_dialog_set_percentage
 			(dialog,
+			 (gfloat)(state->cur_total_bytes) /
+			 (gfloat)(state->total_bytes));
+		gtk_progress_bar_update
+			(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
 			 (gfloat)(state->cur_total_bytes) /
 			 (gfloat)(state->total_bytes));
 		break;
