@@ -468,6 +468,12 @@ XMLTag *folder_item_get_xml(Folder *folder, FolderItem *item)
 					"mark", "unread", "mime", "to", 
 					"locked"};
 	XMLTag *tag;
+#ifdef WIN32
+	gchar *path = g_strdup(item->path);
+
+	if (path)
+		subst_char(path, G_DIR_SEPARATOR, '/');
+#endif
 
 	tag = g_new0(XMLTag, 1);
 	tag->tag = g_strdup("folderitem");
@@ -476,7 +482,11 @@ XMLTag *folder_item_get_xml(Folder *folder, FolderItem *item)
 	if (item->name)
 		xml_tag_add_attr(tag, "name", g_strdup(item->name));
 	if (item->path)
+#ifdef WIN32
+		xml_tag_add_attr(tag, "path", path);
+#else
 		xml_tag_add_attr(tag, "path", g_strdup(item->path));
+#endif
 	if (item->no_sub)
 		xml_tag_add_attr(tag, "no_sub", g_strdup("1"));
 	if (item->no_select)
@@ -988,6 +998,7 @@ gchar *folder_item_get_identifier(FolderItem *item)
 #ifdef WIN32
 	p_path = g_strdup(item->path);
 	locale_to_utf8(&p_path);
+subst_char(p_path, G_DIR_SEPARATOR, '/');
 	id = g_strconcat(folder_id, "/", p_path, NULL);
 	g_free(p_path);
 #else
@@ -1893,8 +1904,6 @@ static void copy_msginfo_flags(MsgInfo *source, MsgInfo *dest)
 	procmsg_msginfo_set_flags(dest,
 				  ~dest->flags.perm_flags & perm_flags,
 				  ~dest->flags.tmp_flags  & tmp_flags);
-
-	folder_item_update(dest->folder, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 }
 
 static void add_msginfo_to_cache(FolderItem *item, MsgInfo *newmsginfo, MsgInfo *flagsource)
@@ -1908,9 +1917,11 @@ static void add_msginfo_to_cache(FolderItem *item, MsgInfo *newmsginfo, MsgInfo 
 		item->unreadmarked_msgs++;
 	item->total_msgs++;
 
-	copy_msginfo_flags(flagsource, newmsginfo);
-
+	folder_item_update_freeze();
 	msgcache_add_msg(item->cache, newmsginfo);
+	copy_msginfo_flags(flagsource, newmsginfo);
+	folder_item_update(item,  F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
+	folder_item_update_thaw();
 }
 
 static void remove_msginfo_from_cache(FolderItem *item, MsgInfo *msginfo)

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed\n"
 "Report-Msgid-Bugs-To: twb@users.sourceforge.net\n"
-"POT-Creation-Date: 2003-10-01 21:03+0100\n"
+"POT-Creation-Date: 2003-12-19 06:29+0000\n"
 "PO-Revision-Date: 2003-10-02 06:38+0000\n"
 "Last-Translator: Paul Mangan <claws@thewildbeast.co.uk>\n"
 "Language-Team: Paul Mangan <claws@thewildbeast.co.uk>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/common/ssl_certificate.c:371 src/common/ssl_certificate.c:409
-#: src/prefs_common.c:1128
+#: src/prefs_common.c:1123
 msgid "Don't popup error dialog on receive error"
 msgstr "Don't popup error dialogue on receive error"
 
@@ -61,7 +61,7 @@ msgstr ""
 "is formatted similar to:\n"
 "  mail=joe.bloggs@domain.co.uk,ou=people,dc=sylpheed,dc=org"
 
-#: src/imap.c:689
+#: src/imap.c:714
 msgid "creating tunneled IMAP4 connection\n"
 msgstr "creating tunnelled IMAP4 connection\n"
 
@@ -70,83 +70,87 @@ msgstr "creating tunnelled IMAP4 connection\n"
 msgid "Authorization for %s on %s failed"
 msgstr "Authorisation for %s on %s failed"
 
-#: src/mainwindow.c:477
+#: src/mainwindow.c:485
 msgid "/_View/_Sort/by _color label"
 msgstr "/_View/_Sort/by _colour label"
 
-#: src/mainwindow.c:516
+#: src/mainwindow.c:524
 msgid "/_View/_Go to/Prev _labeled message"
 msgstr "/_View/_Go to/Prev _labelled message"
 
-#: src/mainwindow.c:518
+#: src/mainwindow.c:526
 msgid "/_View/_Go to/Next la_beled message"
 msgstr "/_View/_Go to/Next la_belled message"
 
-#: src/prefs_account.c:2098
+#: src/prefs_account.c:2099
 msgid "Mark cross-posted messages as read and color:"
 msgstr "Mark cross-posted messages as read and colour:"
 
-#: src/prefs_common.c:1890
+#: src/prefs_common.c:1885
 msgid "Enable coloration of message"
 msgstr "Enable colouration of message"
 
-#: src/prefs_common.c:2844
+#: src/prefs_common.c:2833
 msgid "Set message colors"
 msgstr "Set message colours"
 
-#: src/prefs_common.c:2852
+#: src/prefs_common.c:2841
 msgid "Colors"
 msgstr "Colours"
 
-#: src/prefs_common.c:2936
+#: src/prefs_common.c:2925
 msgid "Recycle quote colors"
 msgstr "Recycle quote colours"
 
-#: src/prefs_common.c:3003
+#: src/prefs_common.c:2992
 msgid "Pick color for quotation level 1"
 msgstr "Pick colour for quotation level 1"
 
-#: src/prefs_common.c:3006
+#: src/prefs_common.c:2995
 msgid "Pick color for quotation level 2"
 msgstr "Pick colour for quotation level 2"
 
-#: src/prefs_common.c:3009
+#: src/prefs_common.c:2998
 msgid "Pick color for quotation level 3"
 msgstr "Pick colour for quotation level 3"
 
-#: src/prefs_common.c:3012
+#: src/prefs_common.c:3001
 msgid "Pick color for URI"
 msgstr "Pick colour for URI"
 
-#: src/prefs_common.c:3015
+#: src/prefs_common.c:3004
 msgid "Pick color for target folder"
 msgstr "Pick colour for target folder"
 
-#: src/prefs_common.c:3018
+#: src/prefs_common.c:3007
 msgid "Pick color for signatures"
 msgstr "Pick colour for signatures"
 
-#: src/prefs_common.c:1110
+#: src/prefs_common.c:1105
 msgid "Show receive dialog"
 msgstr "Show receive dialogue"
 
-#: src/prefs_common.c:1131
+#: src/prefs_common.c:1126
 msgid "Close receive dialog when finished"
 msgstr "Close receive dialogue when finished"
 
-#: src/prefs_common.c:1235
+#: src/prefs_common.c:1230
 msgid "Show send dialog"
 msgstr "Show send dialogue"
 
-#: src/prefs_common.c:2214
+#: src/prefs_common.c:2203
 msgid "Show no-unread-message dialog"
 msgstr "Show no-unread-message dialogue"
 
-#: src/prefs_folder_item.c:172
+#: src/prefs_filtering_action.c:146 src/prefs_filtering_action.c:400
+msgid "Color"
+msgstr "Colour"
+
+#: src/prefs_folder_item.c:175
 msgid "Folder color: "
 msgstr "Folder colour: "
 
-#: src/prefs_folder_item.c:524
+#: src/prefs_folder_item.c:553
 msgid "Pick color for folder"
 msgstr "Pick colour for folder"
 
@@ -162,15 +166,15 @@ msgstr "Pick colour for misspelled word"
 msgid "Misspelled word color:"
 msgstr "Misspelled word colour:"
 
-#: src/prefs_toolbar.c:873
+#: src/prefs_toolbar.c:875
 msgid "Customize Toolbars/Main Window"
 msgstr "Customise Toolbars/Main Window"
 
-#: src/prefs_toolbar.c:882
+#: src/prefs_toolbar.c:884
 msgid "Customize Toolbars/Message Window"
 msgstr "Customise Toolbars/Message Window"
 
-#: src/prefs_toolbar.c:891
+#: src/prefs_toolbar.c:893
 msgid "Customize Toolbars/Compose Window"
 msgstr "Customise Toolbars/Compose Window"
 
@@ -178,23 +182,23 @@ msgstr "Customise Toolbars/Compose Window"
 msgid "Customize date format (see man strftime)"
 msgstr "Customise date format (see man strftime)"
 
-#: src/summaryview.c:432
+#: src/summaryview.c:433
 msgid "/Color la_bel"
 msgstr "Colour la_bel"
 
-#: src/summaryview.c:1573 src/summaryview.c:1598
+#: src/summaryview.c:1593 src/summaryview.c:1618
 msgid "No more labeled messages"
 msgstr "No more labelled messages"
 
-#: src/summaryview.c:1574
+#: src/summaryview.c:1594
 msgid "No labeled message found. Search from the end?"
 msgstr "No labelled message found. Search from the end?"
 
-#: src/summaryview.c:1583 src/summaryview.c:1608
+#: src/summaryview.c:1603 src/summaryview.c:1628
 msgid "No labeled messages."
 msgstr "No labelled messages."
 
-#: src/summaryview.c:1599
+#: src/summaryview.c:1619
 msgid "No labeled message found. Search from the beginning?"
 msgstr "No labelled message found. Search from the beginning?"
 

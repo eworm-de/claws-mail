@@ -177,8 +177,11 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 	case MATCHACTION_MOVE:
 		dest_folder =
 			folder_find_item_from_identifier(action->destination);
-		if (!dest_folder)
+		if (!dest_folder) {
+			debug_print("*** folder not found '%s'\n",
+				action->destination ?action->destination :"");
 			return FALSE;
+		}
 		
 		if (folder_item_move_msg(dest_folder, info) == -1) {
 			debug_print("*** could not move message\n");
@@ -191,8 +194,11 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		dest_folder =
 			folder_find_item_from_identifier(action->destination);
 
-		if (!dest_folder)
+		if (!dest_folder) {
+			debug_print("*** folder not found '%s'\n",
+				action->destination ?action->destination :"");
 			return FALSE;
+		}
 
 		if (folder_item_copy_msg(dest_folder, info) == -1)
 			return FALSE;
@@ -277,7 +283,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		info->score = action->score;
 		return TRUE;
 
-	case MATCHACTION_ADD_SCORE:
+	case MATCHACTION_CHANGE_SCORE:
 		info->score += action->score;
 		return TRUE;
 
@@ -429,7 +435,7 @@ gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *act
 		g_snprintf(dest, destlen, "%s %d", command_str, action->labelcolor);
 		return dest;  
 
-	case MATCHACTION_ADD_SCORE:
+	case MATCHACTION_CHANGE_SCORE:
 	case MATCHACTION_SET_SCORE:
 		g_snprintf(dest, destlen, "%s %d", command_str, action->score);
 		return dest;  

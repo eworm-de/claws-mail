@@ -1089,6 +1089,12 @@ void subst_for_filename(gchar *str)
 #endif
 }
 
+void subst_for_shellsafe_filename(gchar *str)
+{
+	subst_for_filename(str);
+	subst_chars(str, "|&;()<>'!{}[]",'_');
+}
+
 gboolean is_header_line(const gchar *str)
 {
 	if (str[0] == ':') return FALSE;
@@ -3727,6 +3733,7 @@ gchar *expand_search_string(const gchar *search_string)
 		{ "T",	"marked",			0,	FALSE,	FALSE },
 		{ "U",	"unread",			0,	FALSE,	FALSE },
 		{ "x",	"header \"References\"",	1,	TRUE,	TRUE  },
+		{ "X",  "test",				1,	FALSE,  FALSE }, 
 		{ "y",	"header \"X-Label\"",		1,	TRUE,	TRUE  },
 		{ "&",	"&",				0,	FALSE,	FALSE },
 		{ "|",	"|",				0,	FALSE,	FALSE },

@@ -66,6 +66,7 @@ struct FolderItemGeneralPage
 	GtkWidget *entry_folder_chmod;
 	GtkWidget *folder_color_btn;
 	GtkWidget *checkbtn_enable_processing;
+	GtkWidget *checkbtn_newmailcheck;
 
 	gint	   folder_color;
 };
@@ -118,6 +119,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *folder_color;
 	GtkWidget *folder_color_btn;
 	GtkWidget *checkbtn_enable_processing;
+	GtkWidget *checkbtn_newmailcheck;
 
 	page->item	   = item;
 
@@ -168,7 +170,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	}
 	
 	rowcount++;
-
+	
 	/* Folder color */
 	folder_color = gtk_label_new(_("Folder color: "));
 	gtk_misc_set_alignment(GTK_MISC(folder_color), 0, 0.5);
@@ -196,7 +198,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	rowcount++;
 
 	/* Enable processing at startup */
-	checkbtn_enable_processing = gtk_check_button_new_with_label(_("Processing on startup: "));
+	checkbtn_enable_processing = gtk_check_button_new_with_label(_("Process at startup"));
 	gtk_widget_show(checkbtn_enable_processing);
 	gtk_table_attach(GTK_TABLE(table), checkbtn_enable_processing, 0, 2, 
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
@@ -206,6 +208,17 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	rowcount++;
 
+	/* Check folder for new mail */
+	checkbtn_newmailcheck = gtk_check_button_new_with_label(_("Scan for new mail"));
+	gtk_widget_show(checkbtn_newmailcheck);
+	gtk_table_attach(GTK_TABLE(table), checkbtn_newmailcheck, 0, 2,
+					 rowcount, rowcount+1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
+	
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_newmailcheck),
+								 item->prefs->newmailcheck);
+	
+	rowcount++;
+
 	page->table = table;
 	page->checkbtn_simplify_subject = checkbtn_simplify_subject;
 	page->entry_simplify_subject = entry_simplify_subject;
@@ -213,6 +226,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->entry_folder_chmod = entry_folder_chmod;
 	page->folder_color_btn = folder_color_btn;
 	page->checkbtn_enable_processing = checkbtn_enable_processing;
+	page->checkbtn_newmailcheck = checkbtn_newmailcheck;
 
 	page->page.widget = table;
 }
@@ -258,6 +272,9 @@ void prefs_folder_item_general_save_func(PrefsPage *page_)
 
 	prefs->enable_processing = 
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_enable_processing));
+
+	prefs->newmailcheck = 
+	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_newmailcheck));
 
 	folder_item_prefs_save_config(page->item);
 }

@@ -14,8 +14,7 @@ EXTRA_DIST = \
 	sylpheed.spec.in \
 	TODO \
 	TODO.claws \
-	TODO.jp \
-	autogen.sh 
+	TODO.jp
 
 if SYLPHEED_GNOME
 pixmapdir=$(gnomedatadir)/pixmaps

@@ -1,3 +1,64 @@
+2003-12-15
+
+	* version 0.9.8a
+
+2003-12-15
+
+	* src/procmsg.c: procmsg_open_data_file(): DATA_READ が指定されて
+	  バッファが与えられたらバッファをセットするようにした。
+	  procmsg_open_cache_file_with_buffer(): 新規。
+	  procmsg_read_cache(): ファイル I/O の後に setvbuf() を呼んでいた
+	  (バッファ読み込みエラーを起こしていた)バグを修正。
+
+2003-12-12
+
+	* version 0.9.8
+
+2003-12-12
+
+	* configure.in: IPv6 にデフォルトで対応するようにした。
+
+2003-12-11
+
+	* src/inc.c: inc_mail(), inc_all_account_mail(): オフラインモードの
+	  ときはユーザにオンラインに切り替えるように促すようにした。
+	* src/mainwindow.h: main_window_toggle_online() を追加。
+
+2003-12-11
+
+	* src/foldersel.c
+	  src/folderview.[ch]
+	  src/mainwindow.c
+	  src/stock_pixmap.[ch]
+	  src/pixmap/dir-noselect.xpm: no-select フォルダを薄いアイコンと
+	  文字列で表示。
+	* src/Makefile.am: offline.xpm, online.xpm, dir-noselect.xpm を
+	  EXTRA_DIST に追加。
+
+2003-12-11
+
+	* src/folder.h: マクロ FOLDER_ITEM_CAN_ADD() を追加。
+	* src/folderview.c: folderview_drag_motion_cb(): コードの整理。
+	  folderview_drag_received_cb(): no_select フォルダで、あるいは
+	  それ自身から受け付けないようにした。
+	* src/foldersel.c: no_select フラグがセットされているフォルダを選択
+	  不可にした。
+
+2003-12-10
+
+	* src/imap.c: imap_do_copy_msgs(), imap_remove_msgs(): コードの整理。
+	  メッセージを削除したときに MSG_INVALID フラグをセット。
+	* src/mh.c: mh_do_move_msgs(), mh_remove_msg(): メッセージを削除した
+	  ときに MSG_INVALID フラグをセット。
+	* src/procmsg.[ch]:
+	  procmsg_move_messages()
+	  procmsg_copy_messages(): エラーステータスを返すようにした。
+	  MsgTmpFlags に MSG_INVALID を追加。
+	* src/summaryview.c: summary_execute(): エラーを検出し、無効になった
+	  ノードのみを削除するようにした。
+	  summary_unthread_for_exec(): 閉じたツリー中のノードを削除しない
+	  バグを修正。
+
 2003-12-06
 
 	* src/mainwindow.[ch]: ステータスバーにオンラインスイッチボタンを

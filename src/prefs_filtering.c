@@ -64,6 +64,8 @@ static struct Filtering {
 	GtkWidget *cond_clist;
 } filtering;
 
+static GSList ** p_processing_list = NULL;
+
 /* widget creating functions */
 static void prefs_filtering_create		(void);
 
@@ -101,7 +103,7 @@ static void prefs_filtering_reset_dialog	(void);
 static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data);
 static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data);
 
-static GSList ** p_processing_list = NULL;
+static void delete_path(GSList ** p_filters, const gchar * path);
 
 void prefs_filtering_open(GSList ** p_processing,
 			  const gchar * title,
@@ -500,8 +502,6 @@ static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data)
 	return FALSE;
 }
 
-static void delete_path(GSList ** p_filters, const gchar * path);
-
 void prefs_filtering_delete_path(const gchar *path)
 {
 	GList * cur;
@@ -530,6 +530,7 @@ static void delete_path(GSList ** p_filters, const gchar * path)
         GSList * action_cur;
 	GSList * cur;
         
+	filters = *p_filters;
 	pathlen = strlen(path);
 	duplist = g_slist_copy(filters);
 	for (cur = duplist ; cur != NULL; cur = g_slist_next(cur)) {

@@ -1,3 +1,211 @@
+2003-12-19 [paul]	0.9.8claws
+
+	0.9.8claws released
+
+2003-12-19 [paul]	0.9.7claws51
+
+	* po/en_GB.po
+	  po/es.po
+	  po/ja.po
+	  po/pl.po
+	  po/sk.po
+	  po/zh_CN.po
+	  	update translations. submitted by me, Ricardo Mones
+		Lastra, Rui Hirokawa, Emil Nowak, Andrej Kacian,
+		Hansom Young
+		
+	* src/folder_item_prefs.c
+		'enable_processing' set to FALSE by default
+
+2003-12-18 [melvin]	0.9.7claws50
+
+	* po/fr.po
+		Updated French translation
+
+2003-12-17 [christoph]	0.9.7claws49
+
+	* src/procheader.c
+		revert discarding of whitespace from 0.9.7claws44
+
+		RFC2822 2.2.3: Unfolding is accomplished by simply
+		removing any CRLF that is immediately followed by WSP.
+
+2003-12-17 [paul]	0.9.7claws48
+
+	* src/folder.c
+		fix new message count
+		
+	* configure.ac
+		update autotools macros
+
+	* sync with 0.9.8a
+
+2003-12-16 [christoph]	0.9.7claws47
+
+	* src/folder.c
+		fix folder update before adding MsgInfo to cache
+		in add_msginfo_to_cache()
+
+	* src/procmsg.c
+		remove old call to folder_item_update() that is no
+		longer required
+
+2003-12-16 [christoph]	0.9.7claws46
+
+	* src/main.c
+		make sure the shutdown process only runs once
+
+2003-12-16 [hoa]	0.9.7claws45
+
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/summaryview.[ch]
+	        Create filter rules using a message is fixed.
+	        We can now create processing rules using a message.
+
+2003-12-15 [alfons]	0.9.7claws44
+
+	* src/procheader.c
+		make sure we discard folding white space
+
+2003-12-15 [luke]	0.9.7claws43
+        * src/textview.c
+        * src/mimeview.c
+ 		o use "name" parameter if "filename" doesn't exist
+
+2003-12-14 [alfons]	0.9.7claws42
+
+	* src/summaryview.c
+	* src/common/utils.c
+		allow quick finding based on the result of passing
+		a message to an external command. E.g:
+
+			X "bogofilter < %F" 
+		
+		gets me all the spam in a folder.
+
+2003-12-14 [luke]	0.9.7claws41
+
+	* src/textview.c
+	* src/mimeview.c
+		o use parameter "filename" instead of "name" in a couple of 
+		  places for correctness
+
+	* src/procmime.c
+	* src/common/utils.[ch]
+		o make temporary filename for attachments safe for %p 
+		  substitutions in actions.
+
+2003-12-13 [christoph]	0.9.7claws40
+
+	* src/main.c
+		readd exit(0) to clean_quit() because otherwise sylpheed
+		does not always terminate
+
+	* src/pgpmime.c
+	* src/privacy.h
+		add an identifier-string for PrivacySystems
+
+2003-12-12 [paul]
+
+	* doc/man/sylpheed.1
+		update the man page
+
+2003-12-12 [paul]	0.9.7claws39
+
+	general clean up
+	
+	* configure.ac
+		correct and clean up './configure --help' info
+	
+	* src/plugins/clamav/clamav_plugin.c
+	  src/plugins/spamassassin/spamassassin.c
+	  	correct plugin_desc(), works with LOCAL, IMAP, and
+		POP accounts
+		
+	* src/filtering.c
+	  src/matcher.[ch]
+	  src/matcher_parser_parse.y
+	  src/prefs_filtering_action.c
+	  	use 'Change Score' instead of '(In/De)crease score'.
+		use *CHANGE_SCORE* instead of *ADD_SCORE*
+	 
+	 * src/mainwindow.c
+	 	hyphenate: 'Pre-processing', 'Post-processing'
+		
+	* src/prefs_account.c
+		change 'Generate Message-ID' to 'Generate Message-Id'
+		
+	* src/prefs_folder_item.c
+		change 'Processing on startup:' to 'Process at startup'
+		change 'Scan for new mail:' to 'Scan for new mail'
+		
+2003-12-11 [christoph]	0.9.7claws38
+
+	* src/crash.c
+	* src/main.[ch]
+		make sure the clean_exit() funtion is not called again by the
+		signal handler while it is already running
+
+	(closes Bug 366 lost all folders -> spoiling folderlist.xml file)
+
+	* src/summaryview.c
+		fix wrong assertion
+
+2003-12-11 [paul]	0.9.7claws37
+
+	* src/compose.c
+		'anonymise' Message-Id: header string
+
+2003-12-11 [paul]	0.9.7claws36
+
+	* src/plugins/clamav/clamav_plugin.c
+		fix (don't break) signature count
+		use cl_strerror() instead of deprecated cl_perror()
+	
+2003-12-11 [darko]	0.9.7claws35
+
+	* src/summaryview.c
+		also update the sort arrow (thanks Christoph)
+
+2003-12-11 [darko]	0.9.7claws34
+
+	* src/summaryview.c
+		allow reverting to default sort mode (no sort)
+
+2003-12-10 [hoa]	0.9.7claws33
+
+	* src/matcher.c
+	        fixed quotation of string for matcher.
+
+2003-12-08 [paul]	0.9.7claws32
+
+	* src/imap.c
+	  src/inc.c
+	  	plug memory leaks (patch by Alfons)
+
+2003-12-08 [christoph]	0.9.7claws31
+
+	* src/folder_item_prefs.[ch]
+	* src/folderview.c
+	* src/prefs_folder_item.c
+		add new FolderItem property to exclude folders from new
+		mail checks
+
+	Patch submitted by Chad Robinson <crobinson@rfgonline.com>
+
+2003-12-07 [paul]	0.9.7claws30
+
+	* src/plugins/clamav/clamav_plugin.c
+		fix signature count
+
+2003-12-07 [thorsten]	0.9.7claws29
+
+	* src/filtering.c
+		debug_print some warning if destfolder missing
+	* src/prefs_filtering.c
+		uninitialized filter list when deleting a folder
+
 2003-12-06 [paul]	0.9.7claws28
 
 	* src/procheader.c
@@ -9,7 +217,7 @@
 		leaving claws' online/offline more or less intact
 		see ChangeLog 2003-12-04 and 2003-12-06
 
-2003-12-05 [christoph]	0.9.7claws26
+2003-12-06 [christoph]	0.9.7claws26
 
 	* src/messageview.c
 	* src/privacy.[ch]

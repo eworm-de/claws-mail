@@ -1033,6 +1033,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 		g_tuples_destroy(tuples);
 	}
 
+	g_relation_destroy(uid_mapping);
 	imap_seq_set_free(seq_list);
 
 	g_free(destdir);

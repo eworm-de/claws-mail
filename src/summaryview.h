@@ -205,8 +205,11 @@ void summary_collapse_threads	  (SummaryView		*summaryview);
 void summary_toggle_ignore_thread (SummaryView		*summaryview);
 
 void summary_filter		  (SummaryView		*summaryview);
-void summary_filter_open	  (SummaryView		*summaryview,
-				   PrefsFilterType	 type);
+void summary_filter_open          (SummaryView *summaryview,
+				   PrefsFilterType type,
+				   gint processing_rule);
+void summary_msginfo_filter_open  (FolderItem * item, MsgInfo *msginfo,
+				   PrefsFilterType type, gint processing_rule);
 
 void summary_sort		  (SummaryView		*summaryview,
 				   FolderSortKey	 sort_key,

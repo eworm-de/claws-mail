@@ -687,7 +687,12 @@ static gint mh_rename_folder(Folder *folder, FolderItem *item,
 	g_free(oldpath);
 	g_free(newpath);
 
+#ifdef WIN32
+	if ((strchr(item->path, G_DIR_SEPARATOR) != NULL)
+		|| (strchr(item->path, '/') != NULL)) {
+#else
 	if (strchr(item->path, G_DIR_SEPARATOR) != NULL) {
+#endif
 		dirname = g_dirname(item->path);
 		newpath = g_strconcat(dirname, G_DIR_SEPARATOR_S, name, NULL);
 		g_free(dirname);

@@ -289,6 +289,7 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 }
 
 static PrivacySystem pgpmime_system = {
+	"pgpmime",			/* id */
 	"PGP/Mime",			/* name */
 
 	pgpmime_free_privacydata,	/* free_privacydata */

@@ -411,6 +411,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	gchar buf[BUFFSIZE];
 	const gchar *charset = NULL;
 	GPtrArray *headers = NULL;
+	const gchar *name;
 
 	g_return_if_fail(mimeinfo != NULL);
 
@@ -436,9 +437,12 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 
 	gtk_stext_freeze(text);
 
-	if (g_hash_table_lookup(mimeinfo->parameters, "name") != NULL)
+	name = procmime_mimeinfo_get_parameter(mimeinfo, "filename");
+	if (name == NULL)
+		name = procmime_mimeinfo_get_parameter(mimeinfo, "name");
+	if (name != NULL)
 		g_snprintf(buf, sizeof(buf), "\n[%s  %s/%s (%d bytes)]\n",
-			   (gchar *) g_hash_table_lookup(mimeinfo->parameters, "name"),
+			   name,
 			   procmime_get_type_str(mimeinfo->type),
 			   mimeinfo->subtype, mimeinfo->length);
 	else

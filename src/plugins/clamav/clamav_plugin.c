@@ -88,7 +88,7 @@ static gboolean scan_func(GNode *node, gpointer data)
     		} else {
 			debug_print("No virus detected.\n");
 			if (ret != CL_CLEAN)
-				debug_print("Error: %s\n", cl_perror(ret));
+				debug_print("Error: %s\n", cl_strerror(ret));
     		}
 
 		unlink(outfile);
@@ -103,7 +103,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	MsgInfo *msginfo = mail_filtering_data->msginfo;
 	MimeInfo *mimeinfo;
 
-	int ret, no;
+	int ret, no = 0;
 	struct scan_parameters params;
 
 	if (!config.clamav_enable)
@@ -125,7 +125,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		params.scan_archive = TRUE;
 
     	if((ret = cl_loaddbdir(cl_retdbdir(), &params.root, &no))) {
-		debug_print("cl_loaddbdir: %s\n", cl_perror(ret));
+		debug_print("cl_loaddbdir: %s\n", cl_strerror(ret));
 		exit(2);
     	}
     	debug_print("Database loaded (containing in total %d signatures)\n", no);
@@ -226,8 +226,8 @@ const gchar *plugin_name(void)
 
 const gchar *plugin_desc(void)
 {
-	return _("This plugin uses Clam AntiVirus to scan all message attachments "
-	       "that are received from a POP account.\n"
+	return _("This plugin uses Clam AntiVirus to scan all messages that are "
+	       "received from an IMAP, LOCAL or POP account.\n"
 	       "\n"
 	       "When a message attachment is found to contain a virus it can be "
 	       "deleted or saved in a specially designated folder.\n"

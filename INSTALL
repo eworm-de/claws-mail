@@ -31,7 +31,7 @@ o RedHat Linux 5.2 (glibc 2.0.7)
 o RedHat Linux 6.0
 o RedHat Linux 6.1 + Helix GNOME (glibc 2.1.x)
 o RedHat Linux 6.2 / 6.2J (glibc 2.1.x)
-o RedHat Linux 7.0 / 7.0J / 7.1 / 7.2 / 7.3 / 8.0
+o RedHat Linux 7.0 / 7.0J / 7.1 / 7.2 / 7.3 / 8.0 / 9.0
 o LinuxPPC2000 + Yukikaze(Japanization kit)
 o Linux2000G (Intel / PPC)
 o HOLON Linux 2.0 (Intel / PPC)
@@ -44,7 +44,7 @@ o Plamo Linux 2.0 / 2.1 / 2.2.x / 3.0
 o Slackware 7.0 / 7.1 / 8.0 / 8.1 / 9.0
 o Linux Mandrake 7.0 / 7.1 / 7.2 / 8.0 / 8.1 / 9.0 / 9.1
 o SuSE Linux 6.3 (glibc 2.1.2) / 6.4
-o SuSE Linux 7.0 / 7.1 / 7.2 / 7.3 / 8.0 / 8.1
+o SuSE Linux 7.0 / 7.1 / 7.2 / 7.3 / 8.0 / 8.1 / 8.2
 o OpenLinux 2.3 (glibc 2.1.1 -> 2.1.3)
 o Caldera OpenDesktop 2.4
 o Caldera Workstation 3.1
@@ -74,10 +74,10 @@ Other commercial Unix
 
 o Solaris 2.5 / 2.5.1 / 2.6
 o Solaris 7 / 8 / 9
+o AIX 4.3.3
 o IRIX 6.3 / 6.4 / 6.5 6.5.8m
 o HP-UX 10.20 / 11.0 / 11i
 o Tru64 Unix 5.0 (OSF1 V5.0)
-o SCO UnixWare 7
 o Mac OS X 10.1.4 (Darwin 5.4) + XDarwin (without XLocale support) + libxpg4
 
 Others
@@ -126,11 +126,11 @@ Options for configure script
 ============================
 
   --disable-compface  disable compface (X-Face) support
-  --enable-openssl    SSL support (requires OpenSSL)
-  --enable-ipv6       IPv6 support
+  --disable-ipv6      disable IPv6 support
   --enable-gpgme      GnuPG support (requires GPGME and GnuPG)
   --enable-ldap       LDAP support
   --enable-jpilot     JPilot support
+  --enable-openssl        SSL support (requires OpenSSL)
 
 For other options, refer to ./configure --help .
 

@@ -22,6 +22,9 @@
 #include "folder.h"
 #include "localfolder.h"
 #include "xml.h"
+#ifdef WIN32
+#include "utils.h"
+#endif
 
 void folder_local_folder_init(Folder *folder, const gchar *name,
 			      const gchar *path)
@@ -49,9 +52,17 @@ void folder_local_set_xml(Folder *_folder, XMLTag *tag)
 
 		if (!attr || !attr->name || !attr->value) continue;
 		if (!strcmp(attr->name, "path")) {
+#ifdef WIN32
+			gchar *path = g_strdup(attr->value);
+#endif
 			if (folder->rootpath != NULL)
 				g_free(folder->rootpath);
+#ifdef WIN32
+			subst_char(path, G_DIR_SEPARATOR, '/');
+			folder->rootpath = path;
+#else
 			folder->rootpath = g_strdup(attr->value);
+#endif
 		}
 	}
 }
@@ -60,10 +71,19 @@ XMLTag *folder_local_get_xml(Folder *_folder)
 {
 	LocalFolder *folder = LOCAL_FOLDER(_folder);
 	XMLTag *tag;
+#ifdef WIN32
+	gchar *path = g_strdup(folder->rootpath);
+#endif
 
 	tag = folder_get_xml(_folder);
 
+#ifdef WIN32
+	if (path)
+		subst_char(path, G_DIR_SEPARATOR, '/');
+	xml_tag_add_attr(tag, "path", path);
+#else
 	xml_tag_add_attr(tag, "path", g_strdup(folder->rootpath));
+#endif
 
 	return tag;
 }
