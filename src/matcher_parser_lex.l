@@ -50,6 +50,8 @@ void matcher_parser_init(void)
 "~forwarded"	return MATCHER_NOT_FORWARDED;
 "locked"	return MATCHER_LOCKED;
 "~locked"	return MATCHER_NOT_LOCKED;
+"colorlabel"	return MATCHER_COLORLABEL;
+"~colorlabel"	return MATCHER_NOT_COLORLABEL;
 "subject"	return MATCHER_SUBJECT;
 "~subject"	return MATCHER_NOT_SUBJECT;
 "from"		return MATCHER_FROM;

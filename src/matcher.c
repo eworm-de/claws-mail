@@ -53,6 +53,8 @@ static MatchParser matchparser_tab[] = {
 	{MATCHCRITERIA_NOT_FORWARDED, "~forwarded"},
 	{MATCHCRITERIA_LOCKED, "locked"},
 	{MATCHCRITERIA_NOT_LOCKED, "~locked"},
+	{MATCHCRITERIA_COLORLABEL, "colorlabel"},
+	{MATCHCRITERIA_NOT_COLORLABEL, "~colorlabel"},
 
 	/* msginfo headers */
 	{MATCHCRITERIA_SUBJECT, "subject"},
@@ -410,6 +412,10 @@ gboolean matcherprop_match(MatcherProp * prop, MsgInfo * info)
 		return MSG_IS_LOCKED(info->flags);
 	case MATCHCRITERIA_NOT_LOCKED:
 		return !MSG_IS_LOCKED(info->flags);
+	case MATCHCRITERIA_COLORLABEL:
+		return MSG_GET_COLORLABEL_VALUE(info->flags) == prop->value; 
+	case MATCHCRITERIA_NOT_COLORLABEL:
+		return MSG_GET_COLORLABEL_VALUE(info->flags) != prop->value; 
 	case MATCHCRITERIA_SUBJECT:
 		return matcherprop_string_match(prop, info->subject);
 	case MATCHCRITERIA_NOT_SUBJECT:
@@ -820,6 +826,8 @@ gboolean matcherlist_match(MatcherList * matchers, MsgInfo * info)
 		case MATCHCRITERIA_NOT_FORWARDED:
 		case MATCHCRITERIA_LOCKED:
 		case MATCHCRITERIA_NOT_LOCKED:
+		case MATCHCRITERIA_COLORLABEL:
+		case MATCHCRITERIA_NOT_COLORLABEL:
 		case MATCHCRITERIA_SUBJECT:
 		case MATCHCRITERIA_NOT_SUBJECT:
 		case MATCHCRITERIA_FROM:
@@ -901,6 +909,8 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 	case MATCHCRITERIA_SIZE_GREATER:
 	case MATCHCRITERIA_SIZE_SMALLER:
 	case MATCHCRITERIA_SIZE_EQUAL:
+	case MATCHCRITERIA_COLORLABEL:
+	case MATCHCRITERIA_NOT_COLORLABEL:
 		return g_strdup_printf("%s %i", criteria_str, matcher->value);
 	case MATCHCRITERIA_ALL:
 	case MATCHCRITERIA_UNREAD:

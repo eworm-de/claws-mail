@@ -1,3 +1,11 @@
+2002-12-26 [alfons]	0.8.8claws6
+
+	* src/matcher.[ch]
+	* src/matcher_parser_lex.l
+	* src/matcher_parser_parse.y
+	* src/prefs_matcher.c
+		allow color label as a condition in the matcher
+
 2002-12-26 [oliver]	0.8.8claws5
 	
 	* src/toolbar.c 

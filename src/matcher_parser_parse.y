@@ -10,6 +10,9 @@
 #include "matcher.h"
 #include "matcher_parser.h"
 #include "matcher_parser_lex.h"
+#include "procmsg.h"
+
+#define MAX_COLORLABELS (MSG_CLABEL_7 - MSG_CLABEL_NONE)
 
 static gint error = 0;
 static gint bool_op = 0;
@@ -199,6 +202,7 @@ int matcher_parserwrap(void)
 %token MATCHER_COLOR MATCHER_SCORE_EQUAL MATCHER_REDIRECT MATCHER_DELETE_ON_SERVER
 %token MATCHER_SIZE_GREATER MATCHER_SIZE_SMALLER MATCHER_SIZE_EQUAL
 %token MATCHER_LOCKED MATCHER_NOT_LOCKED
+%token MATCHER_COLORLABEL MATCHER_NOT_COLORLABEL
 
 %start file
 
@@ -461,6 +465,28 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_LOCKED;
 	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+}
+| MATCHER_COLORLABEL MATCHER_INTEGER
+{
+	gint criteria = 0;
+	gint value = 0;
+
+	criteria = MATCHCRITERIA_COLORLABEL;
+	value = atoi($2);
+	if (value < 1) value = 1;
+	else if (value > MAX_COLORLABELS) value = MAX_COLORLABELS;
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
+}
+| MATCHER_NOT_COLORLABEL MATCHER_INTEGER
+{
+	gint criteria = 0;
+	gint value = 0;
+
+	criteria = MATCHCRITERIA_NOT_COLORLABEL;
+	value = atoi($2);
+	if (value < 1) value = 1;
+	else if (value > MAX_COLORLABELS) value = MAX_COLORLABELS;
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_SUBJECT match_type MATCHER_STRING
 {

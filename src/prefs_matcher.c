@@ -47,6 +47,7 @@
 #include "folder.h"
 
 #include "matcher_parser.h"
+#include "colorlabel.h"
 
 static struct Matcher {
 	GtkWidget *window;
@@ -71,10 +72,16 @@ static struct Matcher {
 	GtkWidget *value_label;
 	GtkWidget *case_chkbtn;
 	GtkWidget *regexp_chkbtn;
+	GtkWidget *color_optmenu;
 
 	GtkWidget *exec_btn;
 
 	GtkWidget *cond_clist;
+
+	GtkWidget *criteria_table;
+
+	/* selected criteria in combobox */
+	gint selected_criteria; 
 } matcher;
 
 /* choice in the list */
@@ -104,16 +111,17 @@ enum {
 	CRITERIA_REPLIED = 19,
 	CRITERIA_FORWARDED = 20,
 	CRITERIA_LOCKED = 21,
+	CRITERIA_COLORLABEL = 22,
 
-	CRITERIA_SCORE_GREATER = 22,
-	CRITERIA_SCORE_LOWER = 23,
-	CRITERIA_SCORE_EQUAL = 24,
+	CRITERIA_SCORE_GREATER = 23,
+	CRITERIA_SCORE_LOWER = 24,
+	CRITERIA_SCORE_EQUAL = 25,
 
-	CRITERIA_EXECUTE = 25,
+	CRITERIA_EXECUTE = 26,
 
-	CRITERIA_SIZE_GREATER = 26,
-	CRITERIA_SIZE_SMALLER = 27,
-	CRITERIA_SIZE_EQUAL   = 28
+	CRITERIA_SIZE_GREATER = 27,
+	CRITERIA_SIZE_SMALLER = 28,
+	CRITERIA_SIZE_EQUAL   = 29
 };
 
 enum {
@@ -153,7 +161,8 @@ gchar * criteria_text [] = {
 	N_("Unread flag"), N_("New flag"),
 	N_("Marked flag"), N_("Deleted flag"),
 	N_("Replied flag"), N_("Forwarded flag"),
-	N_("Locked flag"), 
+	N_("Locked flag"),
+	N_("Color label"),
 	N_("Score greater than"), N_("Score lower than"),
 	N_("Score equal to"),
 	N_("Execute"),
@@ -184,18 +193,11 @@ static PrefsMatcherSignal * matchers_callback;
 /* widget creating functions */
 static void prefs_matcher_create	(void);
 
-static void prefs_matcher_set_dialog	(MatcherList * matchers);
-
-/*
-static void prefs_matcher_set_list	(void);
-static gint prefs_matcher_clist_set_row	(gint	 row);
-*/
+static void prefs_matcher_set_dialog	(MatcherList *matchers);
+static gint prefs_matcher_clist_set_row	(gint row, MatcherProp *prop);
 
 /* callback functions */
 
-/*
-static void prefs_matcher_select_dest_cb	(void);
-*/
 static void prefs_matcher_register_cb	(void);
 static void prefs_matcher_substitute_cb	(void);
 static void prefs_matcher_delete_cb	(void);
@@ -248,7 +250,7 @@ static void prefs_matcher_create(void)
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
 	GtkWidget *vbox3;
-	GtkWidget *table1;
+	GtkWidget *criteria_table;
 
 	GtkWidget *hbox1;
 
@@ -288,6 +290,8 @@ static void prefs_matcher_create(void)
 	GtkWidget *down_btn;
 
 	GtkWidget *exec_btn;
+
+	GtkWidget *color_optmenu;
 
 	GList *combo_items;
 	gint i;
@@ -329,19 +333,19 @@ static void prefs_matcher_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox), vbox1, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
-	table1 = gtk_table_new (2, 4, FALSE);
-	gtk_widget_show (table1);
+	criteria_table = gtk_table_new (2, 4, FALSE);
+	gtk_widget_show (criteria_table);
 
-	gtk_box_pack_start (GTK_BOX (vbox1), table1, FALSE, FALSE, 0);
-	gtk_table_set_row_spacings (GTK_TABLE (table1), 8);
-	gtk_table_set_col_spacings (GTK_TABLE (table1), 8);
+	gtk_box_pack_start (GTK_BOX (vbox1), criteria_table, FALSE, FALSE, 0);
+	gtk_table_set_row_spacings (GTK_TABLE (criteria_table), 8);
+	gtk_table_set_col_spacings (GTK_TABLE (criteria_table), 8);
 
 	/* criteria combo box */
 
 	criteria_label = gtk_label_new (_("Match type"));
 	gtk_widget_show (criteria_label);
 	gtk_misc_set_alignment (GTK_MISC (criteria_label), 0, 0.5);
-	gtk_table_attach (GTK_TABLE (table1), criteria_label, 0, 1, 0, 1,
+	gtk_table_attach (GTK_TABLE (criteria_table), criteria_label, 0, 1, 0, 1,
 			  GTK_FILL, 0, 0, 0);
 
 	criteria_combo = gtk_combo_new ();
@@ -359,7 +363,7 @@ static void prefs_matcher_create(void)
 	g_list_free(combo_items);
 
 	gtk_widget_set_usize (criteria_combo, 120, -1);
-	gtk_table_attach (GTK_TABLE (table1), criteria_combo, 0, 1, 1, 2,
+	gtk_table_attach (GTK_TABLE (criteria_table), criteria_combo, 0, 1, 1, 2,
 			  0, 0, 0, 0);
 	criteria_list = GTK_COMBO(criteria_combo)->list;
 	gtk_signal_connect (GTK_OBJECT (criteria_list), "select-child",
@@ -374,7 +378,7 @@ static void prefs_matcher_create(void)
 	header_label = gtk_label_new (_("Header name"));
 	gtk_widget_show (header_label);
 	gtk_misc_set_alignment (GTK_MISC (header_label), 0, 0.5);
-	gtk_table_attach (GTK_TABLE (table1), header_label, 1, 2, 0, 1,
+	gtk_table_attach (GTK_TABLE (criteria_table), header_label, 1, 2, 0, 1,
 			  GTK_FILL, 0, 0, 0);
 
 	header_combo = gtk_combo_new ();
@@ -385,7 +389,7 @@ static void prefs_matcher_create(void)
 			       "Sender", "X-ML-Name", "X-List", "X-Sequence",
 			       "X-Mailer","X-BeenThere",
 			       NULL);
-	gtk_table_attach (GTK_TABLE (table1), header_combo, 1, 2, 1, 2,
+	gtk_table_attach (GTK_TABLE (criteria_table), header_combo, 1, 2, 1, 2,
 			  0, 0, 0, 0);
 	header_entry = GTK_COMBO (header_combo)->entry;
 	gtk_entry_set_editable (GTK_ENTRY (header_entry), TRUE);
@@ -395,22 +399,26 @@ static void prefs_matcher_create(void)
 	value_label = gtk_label_new (_("Value"));
 	gtk_widget_show (value_label);
 	gtk_misc_set_alignment (GTK_MISC (value_label), 0, 0.5);
-	gtk_table_attach (GTK_TABLE (table1), value_label, 2, 3, 0, 1,
+	gtk_table_attach (GTK_TABLE (criteria_table), value_label, 2, 3, 0, 1,
 			  GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
 
 	value_entry = gtk_entry_new ();
 	gtk_widget_show (value_entry);
 	gtk_widget_set_usize (value_entry, 200, -1);
-	gtk_table_attach (GTK_TABLE (table1), value_entry, 2, 3, 1, 2,
+	gtk_table_attach (GTK_TABLE (criteria_table), value_entry, 2, 3, 1, 2,
 			  GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
 
 	exec_btn = gtk_button_new_with_label (_("Info ..."));
 	gtk_widget_show (exec_btn);
-	gtk_table_attach (GTK_TABLE (table1), exec_btn, 3, 4, 1, 2,
+	gtk_table_attach (GTK_TABLE (criteria_table), exec_btn, 3, 4, 1, 2,
 			  GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
 	gtk_signal_connect (GTK_OBJECT (exec_btn), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_matcher_exec_info),
 			    NULL);
+
+	color_optmenu = gtk_option_menu_new();
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(color_optmenu),
+				 colorlabel_create_color_menu());
 
 	/* predicate */
 
@@ -602,6 +610,8 @@ static void prefs_matcher_create(void)
 	matcher.regexp_chkbtn = regexp_chkbtn;
 	matcher.bool_op_list = bool_op_list;
 	matcher.exec_btn = exec_btn;
+	matcher.color_optmenu = color_optmenu;
+	matcher.criteria_table = criteria_table;
 
 	matcher.cond_clist   = cond_clist;
 }
@@ -731,6 +741,9 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 	case MATCHCRITERIA_LOCKED:
 	case MATCHCRITERIA_NOT_LOCKED:
 		return CRITERIA_LOCKED;
+	case MATCHCRITERIA_COLORLABEL:
+	case MATCHCRITERIA_NOT_COLORLABEL:
+		return CRITERIA_COLORLABEL;
 	case MATCHCRITERIA_NOT_SUBJECT:
 	case MATCHCRITERIA_SUBJECT:
 		return CRITERIA_SUBJECT;
@@ -811,6 +824,8 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHCRITERIA_FORWARDED;
 	case CRITERIA_LOCKED:
 		return MATCHCRITERIA_LOCKED;
+	case CRITERIA_COLORLABEL:
+		return MATCHCRITERIA_COLORLABEL;
 	case CRITERIA_SUBJECT:
 		return MATCHCRITERIA_SUBJECT;
 	case CRITERIA_FROM:
@@ -875,6 +890,8 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 		return MATCHCRITERIA_NOT_FORWARDED;
 	case MATCHCRITERIA_LOCKED:
 		return MATCHCRITERIA_NOT_LOCKED;
+	case MATCHCRITERIA_COLORLABEL:
+		return MATCHCRITERIA_NOT_COLORLABEL;
 	case MATCHCRITERIA_SUBJECT:
 		return MATCHCRITERIA_NOT_SUBJECT;
 	case MATCHCRITERIA_FROM:
@@ -906,9 +923,9 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 	}
 }
 
-static MatcherProp * prefs_matcher_dialog_to_matcher()
+static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 {
-	MatcherProp * matcherprop;
+	MatcherProp *matcherprop;
 	gint criteria;
 	gint matchtype;
 	gint value_pred;
@@ -916,10 +933,10 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 	gint value_criteria;
 	gboolean use_regexp;
 	gboolean case_sensitive;
-	gchar * header;
-	gchar * expr;
+	gchar *header;
+	gchar *expr;
 	gint value;
-	gchar * value_str;
+	gchar *value_str;
 
 	value_criteria = get_sel_from_list(GTK_LIST(matcher.criteria_list));
 
@@ -940,6 +957,7 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 	case CRITERIA_FORWARDED:
 	case CRITERIA_LOCKED:
 	case CRITERIA_EXECUTE:
+	case CRITERIA_COLORLABEL:
 		if (value_pred_flag == PREDICATE_FLAG_DISABLED)
 			criteria = prefs_matcher_not_criteria(criteria);
 		break;
@@ -1023,6 +1041,12 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 		value = atoi(value_str);
 
 		break;
+		
+	case CRITERIA_COLORLABEL:
+		value = colorlabel_get_color_menu_active_item
+			(gtk_option_menu_get_menu(GTK_OPTION_MENU
+				(matcher.color_optmenu))); 
+		break;
 
 	case CRITERIA_HEADER:
 
@@ -1036,15 +1060,15 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 		break;
 	}
 
-	matcherprop =  matcherprop_new(criteria, header, matchtype,
-				       expr, value);
+	matcherprop = matcherprop_new(criteria, header, matchtype,
+				      expr, value);
 
 	return matcherprop;
 }
 
 static void prefs_matcher_register_cb(void)
 {
-	MatcherProp * matcherprop;
+	MatcherProp *matcherprop;
 	
 	matcherprop = prefs_matcher_dialog_to_matcher();
 	if (matcherprop == NULL)
@@ -1062,7 +1086,7 @@ static void prefs_matcher_substitute_cb(void)
 {
 	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
 	gint row;
-	MatcherProp * matcherprop;
+	MatcherProp *matcherprop;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
 	if (row == 0)
@@ -1106,9 +1130,8 @@ static void prefs_matcher_up(void)
 	row = GPOINTER_TO_INT(clist->selection->data);
 	if (row > 1) {
 		gtk_clist_row_move(clist, row, row - 1);
-		if(gtk_clist_row_is_visible(clist, row - 1) != GTK_VISIBILITY_FULL) {
+		if (gtk_clist_row_is_visible(clist, row - 1) != GTK_VISIBILITY_FULL)
 			gtk_clist_moveto(clist, row - 1, 0, 0, 0);
-		} 
 	}
 }
 
@@ -1122,9 +1145,8 @@ static void prefs_matcher_down(void)
 	row = GPOINTER_TO_INT(clist->selection->data);
 	if (row >= 1 && row < clist->rows - 1) {
 		gtk_clist_row_move(clist, row, row + 1);
-		if(gtk_clist_row_is_visible(clist, row + 1) != GTK_VISIBILITY_FULL) {
+		if (gtk_clist_row_is_visible(clist, row + 1) != GTK_VISIBILITY_FULL)
 			gtk_clist_moveto(clist, row + 1, 0, 1, 0);
-		} 
 	}
 }
 
@@ -1147,7 +1169,6 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 		return;
 	}
 
-	//	tmp = matcher_str;
 	prop = matcher_parser_get_prop(matcher_str);
 	if (prop == NULL)
 		return;
@@ -1165,6 +1186,7 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 	case MATCHCRITERIA_NOT_REPLIED:
 	case MATCHCRITERIA_NOT_FORWARDED:
 	case MATCHCRITERIA_NOT_LOCKED:
+	case MATCHCRITERIA_NOT_COLORLABEL:
 	case MATCHCRITERIA_NOT_SUBJECT:
 	case MATCHCRITERIA_NOT_FROM:
 	case MATCHCRITERIA_NOT_TO:
@@ -1221,6 +1243,12 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), itos(prop->value));
 		break;
 
+	case MATCHCRITERIA_NOT_COLORLABEL:
+	case MATCHCRITERIA_COLORLABEL:
+		gtk_option_menu_set_history(GTK_OPTION_MENU(matcher.color_optmenu),
+					    prop->value);
+		break;
+
 	case MATCHCRITERIA_NOT_HEADER:
 	case MATCHCRITERIA_HEADER:
 		gtk_entry_set_text(GTK_ENTRY(matcher.header_entry), prop->header);
@@ -1256,13 +1284,40 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 	}
 }
 
+static void prefs_matcher_set_value_widget(GtkWidget *old_widget, 
+					   GtkWidget *new_widget)
+{
+	/* TODO: find out why the following spews harmless 
+	 * "parent errors" */
+	gtk_widget_ref(old_widget);
+	gtkut_container_remove(GTK_CONTAINER(matcher.criteria_table), old_widget);
+	gtk_widget_show(new_widget);
+	gtk_widget_set_usize(new_widget, 200, -1);
+	gtk_table_attach(GTK_TABLE(matcher.criteria_table), new_widget, 
+			 2, 3, 1, 2, 
+			 GTK_FILL | GTK_SHRINK | GTK_EXPAND, 
+			 0, 0, 0);
+}
+
 static void prefs_matcher_criteria_select(GtkList *list,
 					  GtkWidget *widget,
 					  gpointer user_data)
 {
-	gint value;
+	gint value, old_value;
 
-	value = get_sel_from_list(GTK_LIST(matcher.criteria_list));
+	old_value = matcher.selected_criteria;
+	matcher.selected_criteria = value = get_sel_from_list
+		(GTK_LIST(matcher.criteria_list));
+	
+	/* CLAWS: the value widget is currently either the color label combo box,
+	 * or a GtkEntry, so kiss for now */
+	if (matcher.selected_criteria == CRITERIA_COLORLABEL) { 
+		prefs_matcher_set_value_widget(matcher.value_entry, 
+					       matcher.color_optmenu);
+	} else if (old_value == CRITERIA_COLORLABEL) {
+		prefs_matcher_set_value_widget(matcher.color_optmenu,
+					       matcher.value_entry);
+	}					       
 
 	switch (value) {
 	case CRITERIA_ALL:
@@ -1291,6 +1346,20 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		gtk_widget_set_sensitive(matcher.header_label, FALSE);
 		gtk_widget_set_sensitive(matcher.value_label, FALSE);
 		gtk_widget_set_sensitive(matcher.value_entry, FALSE);
+		gtk_widget_set_sensitive(matcher.predicate_label, TRUE);
+		gtk_widget_set_sensitive(matcher.predicate_combo, FALSE);
+		gtk_widget_set_sensitive(matcher.predicate_flag_combo, TRUE);
+		gtk_widget_hide(matcher.predicate_combo);
+		gtk_widget_show(matcher.predicate_flag_combo);
+		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
+		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
+		gtk_widget_set_sensitive(matcher.exec_btn, FALSE);
+		break;
+		
+	case CRITERIA_COLORLABEL:
+		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
+		gtk_widget_set_sensitive(matcher.header_label, FALSE);
+		gtk_widget_set_sensitive(matcher.value_label, TRUE);
 		gtk_widget_set_sensitive(matcher.predicate_label, TRUE);
 		gtk_widget_set_sensitive(matcher.predicate_combo, FALSE);
 		gtk_widget_set_sensitive(matcher.predicate_flag_combo, TRUE);
