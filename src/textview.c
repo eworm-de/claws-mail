@@ -688,7 +688,7 @@ static gchar *make_uri_string(const gchar *bp, const gchar *ep)
 	 (ch) > 32   && \
 	 (ch) != 127 && \
 	 !isspace(ch) && \
-	 !strchr("()<>\"", (ch)))
+	 !strchr("(),;<>\"", (ch)))
 
 /* alphabet and number within 7bit ASCII */
 #define IS_ASCII_ALNUM(ch)	(isascii(ch) && isalnum(ch))
