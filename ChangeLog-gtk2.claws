@@ -1,3 +1,9 @@
+2005-02-18 [colin]	1.0.1cvs14.1
+
+	* src/quote_fmt_lex.l
+	* src/quote_fmt_parse.y
+		Fix parser initialisation. Patch by Ivan.
+
 2005-02-18 [colin]	1.0.1cvs11.6
 
 	* src/folderview.c
