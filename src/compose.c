@@ -1178,25 +1178,26 @@ void compose_entry_append(Compose *compose, const gchar *address,
 
 	switch (type) {
 	case COMPOSE_CC:
-		header = _("Cc:");
+		header = N_("Cc:");
 		break;
 	case COMPOSE_BCC:
-		header = _("Bcc:");
+		header = N_("Bcc:");
 		break;
 	case COMPOSE_REPLYTO:
-		header = _("Reply-To:");
+		header = N_("Reply-To:");
 		break;
 	case COMPOSE_NEWSGROUPS:
-		header = _("Newsgroups:");
+		header = N_("Newsgroups:");
 		break;
 	case COMPOSE_FOLLOWUPTO:
-		header = _("Followup-To:");
+		header = N_( "Followup-To:");
 		break;
 	case COMPOSE_TO:
 	default:
-		header = _("To:");
+		header = N_("To:");
 		break;
 	}
+	header = prefs_common.trans_hdr ? gettext(header) : header;
 
 	compose_add_header_entry(compose, header, (gchar *)address);
 }
