@@ -100,6 +100,7 @@ struct _SummaryView
 	GtkWidget *statlabel_msgs;
 	GtkWidget *toggle_eventbox;
 	GtkWidget *toggle_arrow;
+	GtkWidget *toggle_search;
 	GtkWidget *popupmenu;
 	GtkWidget *colorlabel_menu;
 	GtkWidget *search_type_opt;

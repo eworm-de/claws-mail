@@ -99,6 +99,7 @@ typedef enum
 	STOCK_PIXMAP_NOTICE_WARN,		/* small warning */
 	STOCK_PIXMAP_NOTICE_ERROR,		/* small error   */
 	STOCK_PIXMAP_NOTICE_NOTE,		/* small message */
+	STOCK_PIXMAP_QUICKSEARCH,		/* quicksearch pixmap */
 	
 	N_STOCK_PIXMAPS
 } StockPixmap;

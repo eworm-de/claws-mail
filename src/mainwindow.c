@@ -175,9 +175,6 @@ static void toggle_toolbar_cb	 (MainWindow	*mainwin,
 static void toggle_statusbar_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
-static void toggle_searchbar_cb	 (MainWindow 	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
 static void separate_widget_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -447,8 +444,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, toggle_toolbar_cb, TOOLBAR_NONE, "/View/Show or hide/Toolbar/Icon and text"},
 	{N_("/_View/Show or hi_de/Status _bar"),
 						NULL, toggle_statusbar_cb, 0, "<ToggleItem>"},
-	{N_("/_View/Show or hi_de/Quick _search"),
-						NULL, toggle_searchbar_cb, 0, "<ToggleItem>"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Separate f_older tree"),	NULL, separate_widget_cb, SEPARATE_FOLDER, "<ToggleItem>"},
 	{N_("/_View/Separate m_essage view"),	NULL, separate_widget_cb, SEPARATE_MESSAGE, "<ToggleItem>"},
@@ -927,12 +922,12 @@ MainWindow *main_window_create(SeparateType type)
 		(ifactory, "/View/Show or hide/Status bar");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 				       prefs_common.show_statusbar);
+	
+	gtk_widget_hide(GTK_WIDGET(mainwin->summaryview->hbox_search));
+	
+	if (prefs_common.show_searchbar)
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mainwin->summaryview->toggle_search), TRUE);
 
-	gtk_widget_hide(mainwin->summaryview->hbox_search);
-	menuitem = gtk_item_factory_get_item
-		(ifactory, "/View/Show or hide/Quick search");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
-				       prefs_common.show_searchbar);
 
 	/* set account selection menu */
 	ac_menu = gtk_item_factory_get_widget
@@ -2125,18 +2120,6 @@ static void toggle_statusbar_cb(MainWindow *mainwin, guint action,
 	} else {
 		gtk_widget_hide(mainwin->hbox_stat);
 		prefs_common.show_statusbar = FALSE;
-	}
-}
-
-static void toggle_searchbar_cb(MainWindow *mainwin, guint action,
-				GtkWidget *widget)
-{
-	if (GTK_CHECK_MENU_ITEM(widget)->active) {
-		gtk_widget_show(mainwin->summaryview->hbox_search);
-		prefs_common.show_searchbar = TRUE;
-	} else {
-		gtk_widget_hide(mainwin->summaryview->hbox_search);
-		prefs_common.show_searchbar = FALSE;
 	}
 }
 

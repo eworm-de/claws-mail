@@ -89,6 +89,7 @@
 #include "pixmaps/notice_warn.xpm"
 #include "pixmaps/notice_error.xpm"
 #include "pixmaps/notice_note.xpm"
+#include "pixmaps/quicksearch.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
 
@@ -180,6 +181,7 @@ static StockPixmapData pixmaps[] =
 	{notice_warn_xpm			, NULL, NULL, "notice_warn",  "  "},
 	{notice_error_xpm			, NULL, NULL, "notice_error",  "  "},
 	{notice_note_xpm			, NULL, NULL, "notice_note",  "  "},
+	{quicksearch_xpm			, NULL, NULL, "quicksearch",  "  "},
 };
 
 /* return newly constructed GtkPixmap from GdkPixmap */

@@ -1,3 +1,15 @@
+2002-08-22 [colin]	0.8.1claws100
+
+	* src/Makefile.am
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/pixmaps/quicksearch.xpm *ADDED*
+		Add the quicksearch pixmap
+	* src/mainwindow.c
+	* src/summaryview.c
+	* src/summaryview.h
+		Make quicksearch bar visible/hidden via a button
+
 2002-08-22 [christoph]	0.8.1claws99
 
 	* src/folder.c
