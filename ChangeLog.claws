@@ -1,3 +1,8 @@
+2002-10-11 [colin]	0.8.5claws21
+
+	* src/mainwindow.c
+		Make space work (better) when no mail is selected
+
 2002-10-11 [colin]	0.8.5claws20
 
 	* src/inc.c
