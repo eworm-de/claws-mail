@@ -1,7 +1,7 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
  *
- * Copyright (C) 2000-2004 by Alfons Hoogervorst & The Sylpheed Claws Team. 
+ * Copyright (C) 2000-2005 by Alfons Hoogervorst & The Sylpheed Claws Team. 
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +30,10 @@
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkeditable.h>
-#include <gtk/gtkclist.h>
 #include <gtk/gtkscrolledwindow.h>
+#include <gtk/gtktreeview.h>
+#include <gtk/gtktreemodel.h>
+#include <gtk/gtkliststore.h>
 
 #include <string.h>
 #include <ctype.h>
@@ -44,6 +46,14 @@
 #include "addr_compl.h"
 #include "utils.h"
 #include <pthread.h>
+
+/*!
+ *\brief	For the GtkListStore
+ */
+enum {
+	ADDR_COMPL_ADDRESS,
+	N_ADDR_COMPL_COLUMNS
+};
 
 /*
  * How it works:
@@ -102,6 +112,46 @@ static gchar	   *g_completion_prefix;	/* last prefix. (this is cached here
 						 * is g_strdown()'ed */
 
 /*******************************************************************************/
+
+/*
+ * Define the structure of the completion window.
+ */
+typedef struct _CompletionWindow CompletionWindow;
+struct _CompletionWindow {
+	gint      listCount;
+	gchar     *searchTerm;
+	GtkWidget *window;
+	GtkWidget *entry;
+	GtkWidget *list_view;
+
+	gboolean   in_mouse;	/*!< mouse press pending... */
+	gboolean   destroying;  /*!< destruction in progress */
+};
+
+static GtkListStore *addr_compl_create_store	(void);
+
+static void addr_compl_list_view_add_address	(GtkWidget *list_view,
+						 const gchar *address);
+
+static GtkWidget *addr_compl_list_view_create	(CompletionWindow *window);
+
+static void addr_compl_create_list_view_columns	(GtkWidget *list_view);
+
+static gboolean list_view_button_press		(GtkWidget *widget, 
+						 GdkEventButton *event,
+						 CompletionWindow *window);
+
+static gboolean list_view_button_release	(GtkWidget *widget, 
+						 GdkEventButton *event,
+						 CompletionWindow *window);
+
+static gboolean addr_compl_selected		(GtkTreeSelection *selector,
+						 GtkTreeModel *model, 
+						 GtkTreePath *path,
+						 gboolean currently_selected,
+						 gpointer data);
+						 
+static gboolean addr_compl_defer_select_destruct(CompletionWindow *window);
 
 /**
  * Function used by GTK to find the string data to be used for completion.
@@ -502,18 +552,6 @@ gint end_address_completion(void)
 	return g_ref_count; 
 }
 
-/*
- * Define the structure of the completion window.
- */
-typedef struct _CompletionWindow CompletionWindow;
-struct _CompletionWindow {
-	gint      listCount;
-	gchar     *searchTerm;
-	GtkWidget *window;
-	GtkWidget *entry;
-	GtkWidget *clist;
-};
-
 /**
  * Completion window.
  */
@@ -557,12 +595,6 @@ static gboolean address_completion_complete_address_in_entry
 							 gboolean     next);
 static void address_completion_create_completion_window	(GtkEntry    *entry);
 
-static void completion_window_select_row(GtkCList	 *clist,
-					 gint		  row,
-					 gint		  col,
-					 GdkEvent	 *event,
-					 CompletionWindow *compWin );
-
 static gboolean completion_window_button_press
 					(GtkWidget	 *widget,
 					 GdkEventButton  *event,
@@ -586,7 +618,9 @@ static CompletionWindow *addrcompl_create_window( void ) {
 	cw->searchTerm = NULL;
 	cw->window = NULL;
 	cw->entry = NULL;
-	cw->clist = NULL;
+	cw->list_view = NULL;
+	cw->in_mouse = FALSE;
+	cw->destroying = FALSE;
 
 	return cw;	
 }
@@ -609,7 +643,7 @@ static void addrcompl_destroy_window( CompletionWindow *cw ) {
 	if( cw ) {
 		/* Clear references to widgets */
 		cw->entry = NULL;
-		cw->clist = NULL;
+		cw->list_view = NULL;
 
 		/* Free objects */
 		if( cw->window ) {
@@ -617,7 +651,10 @@ static void addrcompl_destroy_window( CompletionWindow *cw ) {
 			gtk_widget_destroy( cw->window );
 		}
 		cw->window = NULL;
+		cw->destroying = FALSE;
+		cw->in_mouse = FALSE;
 	}
+	
 }
 
 /**
@@ -641,22 +678,37 @@ static void addrcompl_free_window( CompletionWindow *cw ) {
 
 /**
  * Advance selection to previous/next item in list.
- * \param clist   List to process.
+ * \param list_view List to process.
  * \param forward Set to <i>TRUE</i> to select next or <i>FALSE</i> for
  *                previous entry.
  */
-static void completion_window_advance_selection(GtkCList *clist, gboolean forward)
+static void completion_window_advance_selection(GtkTreeView *list_view, gboolean forward)
 {
-	int row;
+	GtkTreeSelection *selection;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
 
-	g_return_if_fail(clist != NULL);
+	g_return_if_fail(list_view != NULL);
 
-	if( clist->selection ) {
-		row = GPOINTER_TO_INT(clist->selection->data);
-		row = forward ? ( row + 1 ) : ( row - 1 );
-		gtk_clist_freeze(clist);
-		gtk_clist_select_row(clist, row, 0);
-		gtk_clist_thaw(clist);
+	selection = gtk_tree_view_get_selection(list_view);
+	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
+		return;
+
+	if (forward) { 
+		forward = gtk_tree_model_iter_next(model, &iter);
+		if (forward) 
+			gtk_tree_selection_select_iter(selection, &iter);
+	} else {
+		GtkTreePath *prev;
+
+		prev = gtk_tree_model_get_path(model, &iter);
+		if (!prev) 
+			return;
+
+		if (gtk_tree_path_prev(prev))
+			gtk_tree_selection_select_path(selection, prev);
+		
+		gtk_tree_path_free(prev);
 	}
 }
 
@@ -704,7 +756,7 @@ static void addrcompl_resize_window( CompletionWindow *cw ) {
 
 	gtk_widget_hide_all( cw->window );
 	gtk_widget_show_all( cw->window );
-	gtk_widget_size_request( cw->clist, &r );
+	gtk_widget_size_request( cw->list_view, &r );
 
 	/* Adjust window height to available screen space */
 	if( ( y + r.height ) > gdk_screen_height() ) {
@@ -720,24 +772,32 @@ static void addrcompl_resize_window( CompletionWindow *cw ) {
  * \param address Address to add.
  */
 static void addrcompl_add_entry( CompletionWindow *cw, gchar *address ) {
-	gchar *text[] = { NULL, NULL };
+	GtkListStore *store;
+	GtkTreeIter iter;
+	GtkTreeSelection *selection;
+
+	store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(cw->list_view)));
+	gtk_list_store_append(store, &iter);
 
 	/* printf( "\t\tAdding :%s\n", address ); */
-	text[0] = address;
-	gtk_clist_append( GTK_CLIST(cw->clist), text );
+	gtk_list_store_set(store, &iter, ADDR_COMPL_ADDRESS, address, -1);
 	cw->listCount++;
 
 	/* Resize window */
 	addrcompl_resize_window( cw );
 	gtk_grab_add( cw->window );
 
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(cw->list_view));
+	gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter);
+
 	if( cw->listCount == 1 ) {
 		/* Select first row for now */
-		gtk_clist_select_row( GTK_CLIST(cw->clist), 0, 0);
+		gtk_tree_selection_select_iter(selection, &iter);
 	}
 	else if( cw->listCount == 2 ) {
+		gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter);
 		/* Move off first row */
-		gtk_clist_select_row( GTK_CLIST(cw->clist), 1, 0);
+		gtk_tree_selection_select_iter(selection, &iter);
 	}
 }
 
@@ -875,18 +935,24 @@ static void addrcompl_start_search( void ) {
 /**
  * Apply the current selection in the list to the entry field. Focus is also
  * moved to the next widget so that Tab key works correctly.
- * \param clist List to process.
+ * \param list_view List to process.
  * \param entry Address entry field.
  */
-static void completion_window_apply_selection(GtkCList *clist, GtkEntry *entry)
+static void completion_window_apply_selection(GtkTreeView *list_view, GtkEntry *entry)
 {
 	gchar *address = NULL, *text = NULL;
-	gint   cursor_pos, row;
+	gint   cursor_pos;
 	GtkWidget *parent;
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
 
-	g_return_if_fail(clist != NULL);
+	g_return_if_fail(list_view != NULL);
 	g_return_if_fail(entry != NULL);
-	g_return_if_fail(clist->selection != NULL);
+
+	selection = gtk_tree_view_get_selection(list_view);
+	if (! gtk_tree_selection_get_selected(selection, &model, &iter))
+		return;
 
 	/* First remove the idler */
 	if( _completionIdleID_ != 0 ) {
@@ -895,12 +961,12 @@ static void completion_window_apply_selection(GtkCList *clist, GtkEntry *entry)
 	}
 
 	/* Process selected item */
-	row = GPOINTER_TO_INT(clist->selection->data);
+	gtk_tree_model_get(model, &iter, ADDR_COMPL_ADDRESS, &text, -1);
 
 	address = get_address_from_edit(entry, &cursor_pos);
 	g_free(address);
-	gtk_clist_get_text(clist, row, 0, &text);
 	replace_address_in_edit(entry, text, cursor_pos);
+	g_free(text);
 
 	/* Move focus to next widget */
 	parent = GTK_WIDGET(entry)->parent;
@@ -964,7 +1030,7 @@ void address_completion_unregister_entry(GtkEntry *entry)
 
 	entry_obj = g_object_get_data(G_OBJECT(entry), ENTRY_DATA_TAB_HOOK);
 	g_return_if_fail(entry_obj);
-	g_return_if_fail(entry_obj == G_OBJECT(entry));
+	g_return_if_fail(G_OBJECT(entry_obj) == G_OBJECT(entry));
 
 	/* has the hooked property? */
 	g_object_set_data(G_OBJECT(entry), ENTRY_DATA_TAB_HOOK, NULL);
@@ -1109,30 +1175,30 @@ static gboolean address_completion_complete_address_in_entry(GtkEntry *entry,
 static void address_completion_create_completion_window( GtkEntry *entry_ )
 {
 	gint x, y, height, width, depth;
-	GtkWidget *scroll, *clist;
+	GtkWidget *scroll, *list_view;
 	GtkRequisition r;
 	GtkWidget *window;
 	GtkWidget *entry = GTK_WIDGET(entry_);
 
 	/* Create new window and list */
 	window = gtk_window_new(GTK_WINDOW_POPUP);
-	clist  = gtk_clist_new(1);
+	list_view  = addr_compl_list_view_create(_compWindow_);
 
 	/* Destroy any existing window */
 	addrcompl_destroy_window( _compWindow_ );
 
 	/* Create new object */
-	_compWindow_->window = window;
-	_compWindow_->entry = entry;
-	_compWindow_->clist = clist;
+	_compWindow_->window    = window;
+	_compWindow_->entry     = entry;
+	_compWindow_->list_view = list_view;
 	_compWindow_->listCount = 0;
+	_compWindow_->in_mouse  = FALSE;
 
 	scroll = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
 				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_container_add(GTK_CONTAINER(window), scroll);
-	gtk_container_add(GTK_CONTAINER(scroll), clist);
-	gtk_clist_set_selection_mode(GTK_CLIST(clist), GTK_SELECTION_SINGLE);
+	gtk_container_add(GTK_CONTAINER(scroll), list_view);
 
 	/* Use entry widget to create initial window */
 	gdk_window_get_geometry(entry->window, &x, &y, &width, &height, &depth);
@@ -1141,15 +1207,20 @@ static void address_completion_create_completion_window( GtkEntry *entry_ )
 	gtk_window_move(GTK_WINDOW(window), x, y);
 
 	/* Resize window to fit initial (empty) address list */
-	gtk_widget_size_request( clist, &r );
+	gtk_widget_size_request( list_view, &r );
 	gtk_widget_set_size_request( window, width, r.height );
 	gtk_widget_show_all( window );
-	gtk_widget_size_request( clist, &r );
+	gtk_widget_size_request( list_view, &r );
 
 	/* Setup handlers */
-	g_signal_connect(G_OBJECT(clist), "select_row",
-			 G_CALLBACK(completion_window_select_row),
-			 _compWindow_ );
+	g_signal_connect(G_OBJECT(list_view), "button_press_event",
+			 G_CALLBACK(list_view_button_press),
+			 _compWindow_);
+			 
+	g_signal_connect(G_OBJECT(list_view), "button_release_event",
+			 G_CALLBACK(list_view_button_release),
+			 _compWindow_);
+	
 	g_signal_connect(G_OBJECT(window),
 			 "button-press-event",
 			 G_CALLBACK(completion_window_button_press),
@@ -1164,39 +1235,11 @@ static void address_completion_create_completion_window( GtkEntry *entry_ )
 			 NULL, NULL, GDK_CURRENT_TIME);
 	gtk_grab_add( window );
 
-	/* this gets rid of the irritating focus rectangle that doesn't
+	/* XXX: GTK2 too??? 
+	 *
+	 * GTK1: this gets rid of the irritating focus rectangle that doesn't
 	 * follow the selection */
-	GTK_WIDGET_UNSET_FLAGS(clist, GTK_CAN_FOCUS);
-}
-
-/**
- * Respond to select row event in clist object. selection sends completed
- * address to entry. Note: event is NULL if selected by anything else than a
- * mouse button.
- * \param widget   Window object.
- * \param event    Event.
- * \param compWind Reference to completion window.
- */
-static void completion_window_select_row(GtkCList *clist, gint row, gint col,
-					 GdkEvent *event,
-					 CompletionWindow *compWin )
-{
-	GtkEntry *entry;
-
-	g_return_if_fail(compWin != NULL);
-
-	entry = GTK_ENTRY(compWin->entry);
-	g_return_if_fail(entry != NULL);
-
-	/* Don't update unless user actually selects ! */
-	if (!event || event->type != GDK_BUTTON_RELEASE)
-		return;
-
-	/* User selected address by releasing the mouse in drop-down list*/
-	completion_window_apply_selection( clist, entry );
-
-	clear_completion_cache();
-	addrcompl_destroy_window( _compWindow_ );
+	GTK_WIDGET_UNSET_FLAGS(list_view, GTK_CAN_FOCUS);
 }
 
 /**
@@ -1263,20 +1306,20 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 	GtkWidget *entry;
 	gchar *searchTerm;
 	gint cursor_pos;
-	GtkWidget *clist;
+	GtkWidget *list_view;
 	GtkWidget *parent;
 
 	g_return_val_if_fail(compWin != NULL, FALSE);
 
 	entry = compWin->entry;
-	clist = compWin->clist;
+	list_view = compWin->list_view;
 	g_return_val_if_fail(entry != NULL, FALSE);
 
-	/* allow keyboard navigation in the alternatives clist */
+	/* allow keyboard navigation in the alternatives tree view */
 	if (event->keyval == GDK_Up || event->keyval == GDK_Down ||
 	    event->keyval == GDK_Page_Up || event->keyval == GDK_Page_Down) {
 		completion_window_advance_selection
-			(GTK_CLIST(clist),
+			(GTK_TREE_VIEW(list_view),
 			 event->keyval == GDK_Down ||
 			 event->keyval == GDK_Page_Down ? TRUE : FALSE);
 		return FALSE;
@@ -1335,7 +1378,7 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 
 		/* Display selected address in entry field */		
 		completion_window_apply_selection(
-			GTK_CLIST(clist), GTK_ENTRY(entry) );
+			GTK_TREE_VIEW(list_view), GTK_ENTRY(entry) );
 
 		/* Discard the window */
 		clear_completion_cache();
@@ -1413,6 +1456,124 @@ void addrcompl_teardown( void ) {
 	_completionIdleID_ = 0;
 	/* printf( "addrcompl_teardown...done\n" ); */
 }
+
+/*
+ * tree view functions
+ */
+
+static GtkListStore *addr_compl_create_store(void)
+{
+	return gtk_list_store_new(N_ADDR_COMPL_COLUMNS,
+				  G_TYPE_STRING,
+				  -1);
+}
+
+static void addr_compl_list_view_add_address(GtkWidget *list_view,
+					     const gchar *address)
+{
+	GtkTreeIter iter;
+	GtkListStore *store = GTK_LIST_STORE(gtk_tree_view_get_model
+					(GTK_TREE_VIEW(list_view)));
+	
+	gtk_list_store_append(store, &iter);
+	gtk_list_store_set(store, &iter,
+			   ADDR_COMPL_ADDRESS, address,
+			   -1);
+}
+					     
+static GtkWidget *addr_compl_list_view_create(CompletionWindow *window)
+{
+	GtkTreeView *list_view;
+	GtkTreeSelection *selector;
+	GtkTreeModel *model;
+
+	model = GTK_TREE_MODEL(addr_compl_create_store());
+	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
+	g_object_unref(model);	
+	
+	gtk_tree_view_set_rules_hint(list_view, TRUE);
+	gtk_tree_view_set_headers_visible(list_view, FALSE);
+	
+	selector = gtk_tree_view_get_selection(list_view);
+	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
+	gtk_tree_selection_set_select_function(selector, addr_compl_selected,
+					       window, NULL);
+
+	/* create the columns */
+	addr_compl_create_list_view_columns(GTK_WIDGET(list_view));
+
+	return GTK_WIDGET(list_view);
+}
+
+static void addr_compl_create_list_view_columns(GtkWidget *list_view)
+{
+	GtkTreeViewColumn *column;
+	GtkCellRenderer *renderer;
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes
+		("", renderer, "text", ADDR_COMPL_ADDRESS, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
+}
+
+static gboolean list_view_button_press(GtkWidget *widget, GdkEventButton *event,
+				       CompletionWindow *window)
+{
+	if (window && event && event->type == GDK_BUTTON_PRESS) {
+		window->in_mouse = TRUE;
+	}
+	return FALSE;
+}
+
+static gboolean list_view_button_release(GtkWidget *widget, GdkEventButton *event,
+				         CompletionWindow *window)
+{
+	if (window && event && event->type == GDK_BUTTON_RELEASE) {
+		window->in_mouse = FALSE;
+	}
+	return FALSE;
+}
+
+static gboolean addr_compl_selected(GtkTreeSelection *selector,
+			            GtkTreeModel *model, 
+				    GtkTreePath *path,
+				    gboolean currently_selected,
+				    gpointer data)
+{
+	CompletionWindow *window = data;
+
+	if (currently_selected)
+		return TRUE;
+	
+	if (!window->in_mouse)
+		return TRUE;
+
+	/* XXX: select the entry and kill window later... select is called before
+	 * any other mouse events handlers including the tree view internal one;
+	 * not using a time out would result in a crash. if this doesn't work
+	 * safely, maybe we should set variables when receiving button presses
+	 * in the tree view. */
+	if (!window->destroying) {	 
+		window->destroying = TRUE;	 
+		g_idle_add((GSourceFunc) addr_compl_defer_select_destruct, data);
+	}		
+	
+	return TRUE;
+}
+
+static gboolean addr_compl_defer_select_destruct(CompletionWindow *window)
+{
+	GtkEntry *entry = GTK_ENTRY(window->entry);
+
+	completion_window_apply_selection(GTK_TREE_VIEW(window->list_view), 
+					  entry);
+
+	clear_completion_cache();
+
+	addrcompl_destroy_window(window);
+	return FALSE;
+}
+
 
 /*
  * End of Source.

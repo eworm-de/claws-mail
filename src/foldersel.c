@@ -412,38 +412,10 @@ static void foldersel_create(void)
 
 static void foldersel_init_tree_view_images(void)
 {
-	const guchar *pixdata;
-	GdkPixbuf *pbuf;
-	GdkPixmap *folderxpm;
-	GdkBitmap *folderxpmmask;
-	GdkPixmap *folderopenxpm;
-	GdkBitmap *folderopenxpmmask;
-
-	/* get gdkpixbuf from pixmaps, use the top left pixel to
-	 * determine the transparency color */
-
-	stock_pixmap_gdk(GTK_WIDGET(tree_view), STOCK_PIXMAP_DIR_CLOSE,
-			 &folderxpm, &folderxpmmask);
-	stock_pixmap_gdk(GTK_WIDGET(tree_view), STOCK_PIXMAP_DIR_OPEN,
-			 &folderopenxpm, &folderopenxpmmask);
-
-	pbuf = gdk_pixbuf_get_from_drawable(NULL, folderxpm, NULL,
-					    0, 0, 0, 0, -1, -1);
-	pixdata = gdk_pixbuf_get_pixels(pbuf);
-	folder_pixbuf = gdk_pixbuf_add_alpha(pbuf, TRUE, 
-					     pixdata[0],
-					     pixdata[1],
-					     pixdata[2]);
-	g_object_unref(pbuf);					 
-
-	pbuf = gdk_pixbuf_get_from_drawable(NULL, folderopenxpm, NULL,
-					    0, 0, 0, 0, -1, -1);
-	pixdata = gdk_pixbuf_get_pixels(pbuf);
-	folderopen_pixbuf = gdk_pixbuf_add_alpha(pbuf, TRUE, 
-						 pixdata[0],
-						 pixdata[1],
-						 pixdata[2]);
-	g_object_unref(pbuf);					 
+	stock_pixbuf_gdk(GTK_WIDGET(tree_view), STOCK_PIXMAP_DIR_CLOSE,
+			 &folder_pixbuf);
+	stock_pixbuf_gdk(GTK_WIDGET(tree_view), STOCK_PIXMAP_DIR_OPEN,
+			 &folderopen_pixbuf);
 }
 
 static gboolean foldersel_selected(GtkTreeSelection *selector,

@@ -127,6 +127,7 @@ struct _StockPixmapData
 	GdkBitmap *mask;
 	gchar *file;
 	gchar *icon_path;
+	GdkPixbuf *pixbuf;
 };
 
 typedef struct _OverlayData OverlayData;
@@ -267,6 +268,70 @@ GtkWidget *stock_pixmap_widget(GtkWidget *window, StockPixmap icon)
 		return gtk_image_new_from_pixmap(pixmap, mask);
 	
 	return NULL;
+}
+
+/*!
+ *\brief	
+ */
+gint stock_pixbuf_gdk(GtkWidget *window, StockPixmap icon, GdkPixbuf **pixbuf)
+{
+	StockPixmapData *pix_d;
+
+	g_return_val_if_fail(window != NULL, -1);
+	g_return_val_if_fail(icon >= 0 && icon < N_STOCK_PIXMAPS, -1);
+
+	if (pixbuf) 
+		*pixbuf = NULL;
+
+	pix_d = &pixmaps[icon];
+
+	if (!pix_d->pixbuf || (strcmp2(pix_d->icon_path, prefs_common.pixmap_theme_path) != 0)) {
+		GdkPixbuf *pix = NULL;
+	
+		if (strcmp(prefs_common.pixmap_theme_path, DEFAULT_PIXMAP_THEME) != 0) {
+			if (is_dir_exist(prefs_common.pixmap_theme_path)) {
+				char *icon_file_name; 
+				
+				icon_file_name = g_strconcat(prefs_common.pixmap_theme_path,
+							     G_DIR_SEPARATOR_S,
+							     pix_d->file,
+							     ".xpm",
+							     NULL);
+				if (is_file_exist(icon_file_name)) {
+					GError *err = NULL;
+					pix = gdk_pixbuf_new_from_file(icon_file_name, &err);	
+					if (err) g_error_free(err);
+				}					
+				if (pix) {
+					if (pix_d->icon_path != NULL) g_free(pix_d->icon_path);
+					pix_d->icon_path = g_strdup(prefs_common.pixmap_theme_path);
+				}
+				g_free(icon_file_name);
+			} else {
+				/* even the path does not exist (deleted between two sessions), so
+				set the preferences to the internal theme */
+				prefs_common.pixmap_theme_path = g_strdup(DEFAULT_PIXMAP_THEME);
+			}
+		}
+		pix_d->pixbuf = pix;
+	}
+
+	if (!pix_d->pixbuf) {
+		pix_d->pixbuf = gdk_pixbuf_new_from_xpm_data((const gchar **) pix_d->data);
+		if (pix_d->pixbuf) {
+			if (pix_d->icon_path != NULL) g_free(pix_d->icon_path);
+			pix_d->icon_path = g_strdup(DEFAULT_PIXMAP_THEME);	
+		}
+	}
+
+	g_return_val_if_fail(pix_d->pixbuf != NULL, -1);
+
+	if (pixbuf)
+		*pixbuf = pix_d->pixbuf;
+
+	/* pixbuf should have one ref outstanding */		
+
+	return 0;
 }
 
 /* create GdkPixmap if it has not created yet */

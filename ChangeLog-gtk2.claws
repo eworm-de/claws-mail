@@ -1,3 +1,12 @@
+2005-01-05 [colin]	0.9.13cvs27.2
+
+	* src/account.c
+	* src/addr_compl.c
+	* src/foldersel.c
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+		3 more GTK2 patches by Alfons.
+
 2005-01-04 [colin]	0.9.13cvs27.1
 
 	* src/folderview.c

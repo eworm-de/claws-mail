@@ -1335,21 +1335,7 @@ static GtkWidget *account_list_view_create(void)
 
 static void account_create_list_view_images(GtkWidget *list_view)
 {
-	GdkPixmap *markxpm;
-	GdkBitmap *markxpmmask;
-	const guchar *pixdata;
-	GdkPixbuf *pbuf;
-	
-	stock_pixmap_gdk(list_view, STOCK_PIXMAP_MARK, &markxpm, &markxpmmask);
-
-	pbuf = gdk_pixbuf_get_from_drawable(NULL, markxpm, NULL,
-					    0, 0, 0, 0, -1, -1);
-	pixdata = gdk_pixbuf_get_pixels(pbuf);
-	mark_pixbuf = gdk_pixbuf_add_alpha(pbuf, TRUE, 
-					   pixdata[0],
-					   pixdata[1],
-					   pixdata[2]);
-	g_object_unref(pbuf);
+	stock_pixbuf_gdk(list_view, STOCK_PIXMAP_MARK, &mark_pixbuf);
 }
 
 static void account_create_list_view_columns(GtkWidget *list_view)
