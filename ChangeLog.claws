@@ -1,3 +1,14 @@
+2001-05-01 [sergey]
+
+	* src/prefs_account.c (Basic, prefs_account_basic_create): new
+	widget nntpauth_chkbtn.
+	(prefs_account_protocol_activated): handle nntpauth_chkbtn
+	visibility.
+	(prefs_account_nntpauth_toggled): new function.
+
+	* src/news.c (news_session_new_for_folder): use NNTP
+	authentication only if ac->use_nntp_auth is set.
+
 2001-05-01 [hoa]
 
 	* src/Makefile.am changed headers.[ch] in customheader.[ch]

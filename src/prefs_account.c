@@ -71,6 +71,7 @@ static struct Basic {
 	GtkWidget *recvserv_entry;
 	GtkWidget *smtpserv_entry;
 	GtkWidget *nntpserv_entry;
+	GtkWidget *nntpauth_chkbtn;
 	GtkWidget *localmbox_entry;
 	GtkWidget *mailcmd_entry;
 	GtkWidget *uid_label;
@@ -134,6 +135,9 @@ static void prefs_account_sign_key_set_data_from_radiobtn (PrefParam *pparam);
 static void prefs_account_sign_key_set_radiobtn		  (PrefParam *pparam);
 #endif /* USE_GPGME */
 
+static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
+					   gpointer user_data);
+
 static PrefParam param[] = {
 	/* Basic */
 	{"account_name", NULL, &tmp_ac_prefs.account_name, P_STRING,
@@ -173,7 +177,8 @@ static PrefParam param[] = {
 	 &basic.mailcmd_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"use_nntp_auth", "FALSE", &tmp_ac_prefs.use_nntp_auth, P_BOOL,
-	 NULL, NULL, NULL},
+	 &basic.nntpauth_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"user_id", "ENV_USER", &tmp_ac_prefs.userid, P_STRING,
 	 &basic.uid_entry, prefs_set_data_from_entry, prefs_set_entry},
@@ -546,6 +551,7 @@ static void prefs_account_basic_create(void)
 	GtkWidget *recvserv_entry;
 	GtkWidget *smtpserv_entry;
 	GtkWidget *nntpserv_entry;
+	GtkWidget *nntpauth_chkbtn;
 	GtkWidget *localmbox_entry;
 	GtkWidget *mailcmd_entry;
 	GtkWidget *uid_label;
@@ -702,17 +708,27 @@ static void prefs_account_basic_create(void)
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 
+	nntpauth_chkbtn = gtk_check_button_new_with_label
+		(_("NNTP server requires authentication"));
+	gtk_widget_show (nntpauth_chkbtn);
+	gtk_table_attach (GTK_TABLE (serv_table), nntpauth_chkbtn, 0, 4, 5, 6,
+			  GTK_EXPAND | GTK_FILL,
+			  0, 0, 0);
+	gtk_signal_connect(GTK_OBJECT(nntpauth_chkbtn), "toggled",
+			   GTK_SIGNAL_FUNC(prefs_account_nntpauth_toggled),
+			   NULL);
+
 	uid_entry = gtk_entry_new ();
 	gtk_widget_show (uid_entry);
 	gtk_widget_set_usize (uid_entry, DEFAULT_ENTRY_WIDTH, -1);
-	gtk_table_attach (GTK_TABLE (serv_table), uid_entry, 1, 2, 5, 6,
+	gtk_table_attach (GTK_TABLE (serv_table), uid_entry, 1, 2, 6, 7,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 
 	pass_entry = gtk_entry_new ();
 	gtk_widget_show (pass_entry);
 	gtk_widget_set_usize (pass_entry, DEFAULT_ENTRY_WIDTH, -1);
-	gtk_table_attach (GTK_TABLE (serv_table), pass_entry, 3, 4, 5, 6,
+	gtk_table_attach (GTK_TABLE (serv_table), pass_entry, 3, 4, 6, 7,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 	gtk_entry_set_visibility (GTK_ENTRY (pass_entry), FALSE);
@@ -752,13 +768,13 @@ static void prefs_account_basic_create(void)
 
 	uid_label = gtk_label_new (_("User ID"));
 	gtk_widget_show (uid_label);
-	gtk_table_attach (GTK_TABLE (serv_table), uid_label, 0, 1, 5, 6,
+	gtk_table_attach (GTK_TABLE (serv_table), uid_label, 0, 1, 6, 7,
 			  GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment (GTK_MISC (uid_label), 1, 0.5);
 
 	pass_label = gtk_label_new (_("Password"));
 	gtk_widget_show (pass_label);
-	gtk_table_attach (GTK_TABLE (serv_table), pass_label, 2, 3, 5, 6,
+	gtk_table_attach (GTK_TABLE (serv_table), pass_label, 2, 3, 6, 7,
 			  0, 0, 0, 0);
 
 	basic.acname_entry   = acname_entry;
@@ -779,6 +795,7 @@ static void prefs_account_basic_create(void)
 	basic.smtpserv_entry   = smtpserv_entry;
 	basic.nntpserv_label   = nntpserv_label;
 	basic.nntpserv_entry   = nntpserv_entry;
+	basic.nntpauth_chkbtn  = nntpauth_chkbtn;
 	basic.localmbox_label   = localmbox_label;
 	basic.localmbox_entry   = localmbox_entry;
 	basic.mailcmd_label   = mailcmd_label;
@@ -1309,6 +1326,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.inbox_entry, FALSE);
 		gtk_widget_show(basic.nntpserv_label);
 		gtk_widget_show(basic.nntpserv_entry);
+		gtk_widget_show(basic.nntpauth_chkbtn);
 		gtk_widget_hide(basic.recvserv_label);
 		gtk_widget_hide(basic.recvserv_entry);
 		gtk_widget_hide(basic.smtpserv_label);
@@ -1318,10 +1336,9 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(basic.mailcmd_label);
 		gtk_widget_hide(basic.mailcmd_entry);
 		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table), 3, 0);
-		gtk_widget_set_sensitive(basic.uid_label,  TRUE);
-		gtk_widget_set_sensitive(basic.pass_label, TRUE);
-		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
-		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
+		/* update userid/passwd sensitive state */
+		prefs_account_nntpauth_toggled
+			(GTK_TOGGLE_BUTTON(basic.nntpauth_chkbtn), NULL);
 		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
 		break;
 	case A_LOCAL:
@@ -1329,6 +1346,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.inbox_entry, TRUE);
 		gtk_widget_hide(basic.nntpserv_label);
 		gtk_widget_hide(basic.nntpserv_entry);
+		gtk_widget_hide(basic.nntpauth_chkbtn);
 		gtk_widget_set_sensitive(basic.recvserv_label, FALSE);
 		gtk_widget_set_sensitive(basic.recvserv_entry, FALSE);
 		gtk_widget_hide(basic.recvserv_label);
@@ -1352,6 +1370,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.inbox_entry, TRUE);
 		gtk_widget_hide(basic.nntpserv_label);
 		gtk_widget_hide(basic.nntpserv_entry);
+		gtk_widget_hide(basic.nntpauth_chkbtn);
 		gtk_widget_set_sensitive(basic.recvserv_label, FALSE);
 		gtk_widget_set_sensitive(basic.recvserv_entry, FALSE);
 		gtk_widget_hide(basic.recvserv_label);
@@ -1375,6 +1394,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.inbox_entry, TRUE);
 		gtk_widget_hide(basic.nntpserv_label);
 		gtk_widget_hide(basic.nntpserv_entry);
+		gtk_widget_hide(basic.nntpauth_chkbtn);
 		gtk_widget_set_sensitive(basic.recvserv_label, TRUE);
 		gtk_widget_set_sensitive(basic.recvserv_entry, TRUE);
 		gtk_widget_show(basic.recvserv_label);
@@ -1398,6 +1418,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.inbox_entry, TRUE);
 		gtk_widget_hide(basic.nntpserv_label);
 		gtk_widget_hide(basic.nntpserv_entry);
+		gtk_widget_hide(basic.nntpauth_chkbtn);
 		gtk_widget_set_sensitive(basic.recvserv_label, TRUE);
 		gtk_widget_set_sensitive(basic.recvserv_entry, TRUE);
 		gtk_widget_show(basic.recvserv_label);
@@ -1419,4 +1440,16 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 	}
 
 	gtk_widget_queue_resize(basic.serv_frame);
+}
+
+static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
+					   gpointer user_data)
+{
+	gboolean auth;
+
+	auth = gtk_toggle_button_get_active (button);
+	gtk_widget_set_sensitive(basic.uid_label,  auth);
+	gtk_widget_set_sensitive(basic.pass_label, auth);
+	gtk_widget_set_sensitive(basic.uid_entry,  auth);
+	gtk_widget_set_sensitive(basic.pass_entry, auth);
 }

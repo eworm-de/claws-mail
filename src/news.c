@@ -133,7 +133,7 @@ static Session *news_session_new_for_folder(Folder *folder)
 	gchar *passwd;
 
 	ac = folder->account;
-	if (ac->userid && ac->userid[0]) {
+	if (ac->use_nntp_auth && ac->userid && ac->userid[0]) {
 		userid = ac->userid;
 		if (ac->passwd && ac->passwd[0])
 			passwd = g_strdup(ac->passwd);
