@@ -1,3 +1,16 @@
+2003-03-03 [oliver]	0.8.10claws74
+
+	* src/toolbar.[ch]
+		cleanups and refactoring
+	* src/compose.[ch]
+		compose_reply_mode reply & forwarding interface for
+		toolbar buttons
+	* src/folderview.c
+		act on messages marked for deletion in folderview_selected
+		based on prefs_common.immediate_exec since a message might 
+		have been deleted by messageview in a folder we are changing 
+		to (does anybody understand what I'm on about ?)
+
 2003-03-03 [oliver]	0.8.10claws73
 	
 	* src/messageview.[ch]
@@ -58,7 +71,8 @@
 
 2003-03-01 [oliver]	0.8.10claws67
 
-	* ???
+	* src/summaryview.c
+		menu callbacks call toolbar_menu_reply
 
 2003-03-01 [oliver]	0.8.10claws66
 

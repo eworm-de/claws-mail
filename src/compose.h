@@ -222,6 +222,10 @@ Compose *compose_new			(PrefsAccount	*account,
 Compose *compose_new_with_folderitem	(PrefsAccount	*account,
 					 FolderItem	*item);
 
+void compose_reply_mode			(ComposeMode 	 mode, 
+					 GSList 	*msginfo_list, 
+					 gchar 		*body);
+/* remove */
 void compose_followup_and_reply_to	(MsgInfo	*msginfo,
 					 gboolean	 quote,
 					 gboolean	 to_all,
@@ -239,6 +243,8 @@ Compose *compose_forward		(PrefsAccount *account,
 					 const gchar	*body);
 Compose *compose_forward_multiple	(PrefsAccount	*account, 
 					 GSList		*msginfo_list);
+/* remove end */
+
 Compose *compose_redirect		(PrefsAccount	*account,
 					 MsgInfo	*msginfo);
 void compose_reedit			(MsgInfo	*msginfo);
