@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -296,8 +296,7 @@ gchar **strsplit_with_quote		(const gchar	*str,
 					 gint		 max_tokens);
 
 gchar *get_abbrev_newsgroup_name	(const gchar	*group,
-					 gint            len);
-
+					 gint		 len);
 gchar *trim_string			(const gchar	*str,
 					 gint		 len);
 
@@ -363,9 +362,15 @@ gint copy_file_part		(FILE		*fp,
 				 off_t		 offset,
 				 size_t		 length,
 				 const gchar	*dest);
+
+gchar *canonicalize_str		(const gchar	*str);
 gint canonicalize_file		(const gchar	*src,
 				 const gchar	*dest);
 gint canonicalize_file_replace	(const gchar	*file);
+gint uncanonicalize_file	(const gchar	*src,
+				 const gchar	*dest);
+gint uncanonicalize_file_replace(const gchar	*file);
+
 gint change_file_mode_rw	(FILE		*fp,
 				 const gchar	*file);
 FILE *my_tmpfile		(void);

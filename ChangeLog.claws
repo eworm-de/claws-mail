@@ -1,3 +1,144 @@
+2003-01-17 [christoph]	0.8.8claws111
+
+	* src/folder.c
+		destroy folder items, when a folder item is removed
+
+2003-01-17 [christoph]	0.8.8claws110
+
+	* src/folder.c
+		fix wrong folder stats update when ignored message is
+		deleted
+
+2003-01-17 [colin]	0.8.8claws109
+	
+	* src/mainwindow.c
+	* src/summaryview.c
+		Quicksearch bugfixes: 
+		- hide help button at startup if not extended
+		- switch to extended when looking for replies
+
+2003-01-17 [paul]
+
+	* sync with 0.8.9 release
+
+2003-01-17 [paul]	0.8.8claws108
+
+	* sync with 0.8.8cvs11
+		see ChangeLog 2003-01-17
+
+2003-01-16 [colin]	0.8.8claws107
+
+	* src/procmsg.c
+		Changed encryption test to re-ask passphrase
+		if an encrypted message hasn't been decrypted
+		Fixes bug #5
+
+2003-01-16 [christoph]	0.8.8claws106
+
+	* src/prefs_gtk.c
+	* src/prefs_toolbar.c
+	* src/gtk/prefswindow.h
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		remove page destroy function that is not used anymore
+
+2003-01-16 [paul]	0.8.8claws105
+
+	* sync with 0.8.8cvs9
+		see ChangeLog 2002-01-16
+
+2003-01-16 [colin]	0.8.8claws104
+
+	* src/compose.[ch]
+		Fix bug with autosaved drafts for IMAP, when draft
+		folder is specified - fixes bugzilla bug #20
+
+2003-01-15 [paul]	0.8.8claws103
+
+	* src/compose.[ch]
+	  src/procmsg.c
+		store folder and message-id of message forwarding
+		in queue header and set forward flag after sending
+
+2003-01-15 [paul]	0.8.8claws102
+
+	* sync with 0.8.8cvs8
+		see ChangeLog 2002-01-15
+
+2003-01-15 [colin]	0.8.8claws101
+
+	* src/Makefile.am
+		Fix linking with GNU libiconv
+
+2003-01-15 [darko]	0.8.8claws100
+
+	* src/pine.c
+		fix crash when importing pine address book
+		entry with an empty name (reported by DY
+		<dybulk at tri8.net>)
+
+2003-01-14 [paul]	0.8.8claws99
+
+	* configure.in	** REMOVED **
+	  configure.ac	** NEW FILE **
+	  	rename configure.in to configure.ac, as it is now
+		preferred
+
+2003-01-14 [melvin]	0.8.8claws98
+
+	* src/folderview.c
+		folderview_check_new(): More precise function description
+
+2003-01-14 [melvin]	0.8.8claws97
+
+	* src/folderview.c
+		folderview_check_new(): return the number of new messages 
+			since last check.
+	* src/inc.c
+		inc_account_mail(): Disable counting of new messages for IMAP
+			and NNTP until bug [19] and [14] are fixed.
+
+2003-01-14 [paul]	0.8.8claws96
+
+	* sync with 0.8.8cvs6
+		see ChangeLog 2003-01-14
+
+2003-01-13 [alfons]	0.8.8claws95
+
+	* src/textview.c
+		tune email address validation (c. 0.8.8claws89): if . is 
+		just one char away from @, the address is invalid too 
+		(correctly rejects addresses like foo@.com)
+
+2003-01-13 [paul]	0.8.8claws94
+
+	* src/messageview.c
+	  src/toolbar.c
+	  	fixes to the Message View toolbar and menu:
+		fix non-functioning Forward button
+		make Reply button consider default_reply_list
+		remove 'Follow-up...' menu entry
+		add 'Forward' and 'Redirect' menu entries
+
+2003-01-13 [melvin]	0.8.8claws93
+
+	* src/inc.c
+		Fixed typo that could make new messages count incorrect.
+
+2003-01-13 [melvin]	0.8.8claws92
+
+	* src/folderview.[ch]
+		folderview_check_new(): return the number of new messages.
+	* src/inc.c
+		Should fix bug [14] where new mail notification worked 
+			incorrectly with IMAP accounts.
+		inc_spool_account(): return number of new msgs, or -1 on error
+		inc_all_spool(): return number of new msgs
+		
+2003-01-13 [melvin]	0.8.8claws91
+
+	* src/prefs_actions.c
+		Justify help text.
+
 2003-01-12 [thorsten]	0.8.8claws90
 
 	* src/common/prefs.c
@@ -28,7 +169,7 @@
 2003-01-12 [paul]	0.8.8claws86
 
 	* sync with 0.8.8cvs5
-		see ChangeLog 2002-01-13 (!)
+		see ChangeLog 2003-01-13 (!)
 
 2003-01-12 [alfons]	0.8.8claws85
 
@@ -39,7 +180,7 @@
 		give up const-correctness on functions that call non-const-correct functions;
 		several casts to gpointer in g_free();
 		add change_score;
-		
+
 2003-01-12 [christoph]	0.8.8claws84
 
 	* src/compose.c
@@ -95,7 +236,7 @@
 	* src/toolbar.c
 		use the translatable string for "Separator" as file name for
 		separator toolbar items (probably make this uppercase?)
-	
+
 2003-01-10 [alfons]	0.8.8claws79
 
 	* src/prefs_toolbar.c

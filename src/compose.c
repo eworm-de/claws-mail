@@ -100,6 +100,7 @@
 #include "statusbar.h"
 #include "about.h"
 #include "base64.h"
+#include "quoted-printable.h"
 #include "codeconv.h"
 #include "utils.h"
 #include "gtkutils.h"
@@ -709,6 +710,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
 	compose->replyinfo = NULL;
+	compose->fwdinfo   = NULL;
 
 	text = GTK_STEXT(compose->text);
 	gtk_stext_freeze(text);
@@ -963,12 +965,11 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	}
 	g_return_val_if_fail(account != NULL, NULL);
 
-	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_REPLIED);
-	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_FORWARDED);
-	if (MSG_IS_IMAP(msginfo->flags))
-		imap_msg_unset_perm_flags(msginfo, MSG_REPLIED);
-
 	compose = compose_create(account, COMPOSE_FORWARD);
+
+	compose->fwdinfo = procmsg_msginfo_get_full_info(msginfo);
+	if (!compose->fwdinfo)
+		compose->fwdinfo = procmsg_msginfo_copy(msginfo);
 
 	if (msginfo->subject && *msginfo->subject) {
 #ifdef WIN32
@@ -1231,6 +1232,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
 	compose->replyinfo = NULL;
+	compose->fwdinfo = NULL;
 
 	compose_show_first_last_header(compose, TRUE);
 
@@ -2093,7 +2095,10 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 	if (content_type) {
 		ainfo->content_type = g_strdup(content_type);
 		if (!strcasecmp(content_type, "message/rfc822")) {
-			ainfo->encoding = ENC_7BIT;
+			if (procmime_get_encoding_for_file(file) == ENC_7BIT)
+				ainfo->encoding = ENC_7BIT;
+			else
+				ainfo->encoding = ENC_8BIT;
 			ainfo->name = g_strdup_printf
 				(_("Message: %s"),
 				 g_basename(filename ? filename : file));
@@ -3361,8 +3366,7 @@ static gint compose_clearsign_text(Compose *compose, gchar **text)
 		return -1;
 	}
 
-	if (canonicalize_file_replace(tmp_file) < 0 ||
-	    compose_create_signers_list(compose, &key_list) < 0 ||
+	if (compose_create_signers_list(compose, &key_list) < 0 ||
 	    rfc2015_clearsign(tmp_file, key_list) < 0) {
 		unlink(tmp_file);
 		g_free(tmp_file);
@@ -3387,6 +3391,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	size_t len;
 	gchar *chars;
 	gchar *buf;
+	gchar *canon_buf;
 	const gchar *out_codeset;
 	EncodingType encoding;
 
@@ -3422,7 +3427,15 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 		out_codeset = conv_get_outgoing_charset_str();
 		if (!strcasecmp(out_codeset, CS_US_ASCII))
 			out_codeset = CS_ISO_8859_1;
-		encoding = procmime_get_encoding_for_charset(out_codeset);
+
+		if (prefs_common.encoding_method == CTE_BASE64)
+			encoding = ENC_BASE64;
+		else if (prefs_common.encoding_method == CTE_QUOTED_PRINTABLE)
+			encoding = ENC_QUOTED_PRINTABLE;
+		else if (prefs_common.encoding_method == CTE_8BIT)
+			encoding = ENC_8BIT;
+		else
+			encoding = procmime_get_encoding_for_charset(out_codeset);
 
 #if USE_GPGME
 		if (!is_draft &&
@@ -3461,33 +3474,9 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	}
 	g_free(chars);
 
-	/* Canonicalize line endings in the message text */
-	{
-		gchar *canon_buf, *out;
-		const gchar *p;
-		guint new_len = 0;
-
-		for (p = buf ; *p; ++p) {
-			if (*p != '\r') {
-				++new_len;
-				if (*p == '\n')
-					++new_len;
-			}
-		}
-
-		out = canon_buf = g_new(gchar, new_len + 1);
-		for (p = buf; *p; ++p) {
-			if (*p != '\r') {
-				if (*p == '\n')
-					*out++ = '\r';
-				*out++ = *p;
-			}
-		}
-		*out = '\0';
-
-		free(buf);
-		buf = canon_buf;
-	}
+	canon_buf = canonicalize_str(buf);
+	g_free(buf);
+	buf = canon_buf;
 
 #if USE_GPGME
 	if (!is_draft && compose->use_signing && compose->gnupg_mode) {
@@ -3540,6 +3529,22 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 			fputs(outbuf, fp);
 			fputc('\n', fp);
 		}
+	} else if (encoding == ENC_QUOTED_PRINTABLE) {
+		gchar *outbuf;
+		size_t outlen;
+
+		outbuf = g_malloc(len * 4);
+		qp_encode_line(outbuf, buf);
+		outlen = strlen(outbuf);
+		if (fwrite(outbuf, sizeof(gchar), outlen, fp) != outlen) {
+			FILE_OP_ERROR(file, "fwrite");
+			fclose(fp);
+			unlink(file);
+			g_free(outbuf);
+			g_free(buf);
+			return -1;
+		}
+		g_free(outbuf);
 	} else if (fwrite(buf, sizeof(gchar), len, fp) != len) {
 		FILE_OP_ERROR(file, "fwrite");
 		fclose(fp);
@@ -3559,8 +3564,10 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	}
 
 #if USE_GPGME
-	if (is_draft)
+	if (is_draft) {
+		uncanonicalize_file_replace(file);
 		return 0;
+	}
 
 	if ((compose->use_signing && !compose->gnupg_mode) ||
 	    compose->use_encryption) {
@@ -3587,6 +3594,8 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 		}
 	}
 #endif /* USE_GPGME */
+
+	uncanonicalize_file_replace(file);
 
 	return 0;
 }
@@ -3646,7 +3655,8 @@ static gint compose_remove_reedit_target(Compose *compose)
 	g_return_val_if_fail(item != NULL, -1);
 
 	if (procmsg_msg_exist(msginfo) &&
-	    (item->stype == F_DRAFT || item->stype == F_QUEUE)) {
+	    (item->stype == F_DRAFT || item->stype == F_QUEUE 
+	     || msginfo == compose->autosaved_draft)) {
 		if (folder_item_remove_msg(item, msginfo->msgnum) < 0) {
 			g_warning("can't remove the old message\n");
 			return -1;
@@ -3828,6 +3838,14 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		fprintf(fp, "RMID:%s\x7f%d\x7f%s\n", folderid, compose->replyinfo->msgnum, compose->replyinfo->msgid);
 		g_free(folderid);
 	}
+	/* Message-ID of message forwarding to */
+	if ((compose->fwdinfo != NULL) && (compose->fwdinfo->msgid != NULL)) {
+		gchar *folderid;
+		
+		folderid = folder_item_get_identifier(compose->fwdinfo->folder);
+		fprintf(fp, "FMID:%s\x7f%d\x7f%s\n", folderid, compose->fwdinfo->msgnum, compose->fwdinfo->msgid);
+		g_free(folderid);
+	}
 	fprintf(fp, "\n");
 
 	while (fgets(buf, sizeof(buf), src_fp) != NULL) {
@@ -3920,19 +3938,8 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 		fprintf(fp, "Content-Transfer-Encoding: %s\n\n",
 			procmime_get_encoding_str(ainfo->encoding));
 
-		switch (ainfo->encoding) {
-
-		case ENC_7BIT:
-		case ENC_8BIT:
-			/* if (ainfo->encoding == ENC_7BIT) { */
-
-			while (fgets(buf, sizeof(buf), attach_fp) != NULL) {
-				strcrchomp(buf);
-				fputs(buf, fp);
-			}
-			break;
-			/* } else { */
-		case ENC_BASE64:
+		if (ainfo->encoding == ENC_BASE64) {
+			gchar inbuf[B64_LINE_SIZE], outbuf[B64_BUFFSIZE];
 
 			while ((len = fread(inbuf, sizeof(gchar),
 					    B64_LINE_SIZE, attach_fp))
@@ -3946,10 +3953,20 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 				fputs(outbuf, fp);
 				fputc('\n', fp);
 			}
-			break;
-		default:
-			debug_print("Tried to write attachment in unsupported encoding type\n");
-			break;
+		} else if (ainfo->encoding == ENC_QUOTED_PRINTABLE) {
+			gchar inbuf[BUFFSIZE], outbuf[BUFFSIZE * 4];
+
+			while (fgets(inbuf, sizeof(inbuf), attach_fp) != NULL) {
+				qp_encode_line(outbuf, inbuf);
+				fputs(outbuf, fp);
+			}
+		} else {
+			gchar buf[BUFFSIZE];
+
+			while (fgets(buf, sizeof(buf), attach_fp) != NULL) {
+				strcrchomp(buf);
+				fputs(buf, fp);
+			}
 		}
 
 		fclose(attach_fp);
@@ -5135,6 +5152,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	compose->targetinfo = NULL;
 	compose->replyinfo  = NULL;
+	compose->fwdinfo    = NULL;
 
 	compose->replyto     = NULL;
 	compose->cc	     = NULL;
@@ -5499,6 +5517,7 @@ static void compose_destroy(Compose *compose)
 
 	procmsg_msginfo_free(compose->targetinfo);
 	procmsg_msginfo_free(compose->replyinfo);
+	procmsg_msginfo_free(compose->fwdinfo);
 
 	g_free(compose->replyto);
 	g_free(compose->cc);
@@ -5808,8 +5827,10 @@ static void compose_attach_property_create(gboolean *cancelled)
 #if 0
 	gtk_widget_set_sensitive(menuitem, FALSE);
 #endif
-	MENUITEM_ADD(optmenu_menu, menuitem, "quoted-printable", ENC_QUOTED_PRINTABLE);
-	gtk_widget_set_sensitive(menuitem, FALSE);
+	MENUITEM_ADD(optmenu_menu, menuitem, "quoted-printable",
+		     ENC_QUOTED_PRINTABLE);
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu), optmenu_menu);
+
 	MENUITEM_ADD(optmenu_menu, menuitem, "base64", ENC_BASE64);
 
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu), optmenu_menu);
@@ -6488,7 +6509,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	
 	lock = FALSE;
 
-	/* 0: quit editing  1: keep editing */
+	/* 0: quit editing  1: keep editing  2: keep editing (autosave) */
 	if (action == 0)
 		gtk_widget_destroy(compose->window);
 	else {
@@ -6512,6 +6533,10 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		compose->targetinfo->mtime = s.st_mtime;
 		compose->targetinfo->folder = draft;
 		compose->mode = COMPOSE_REEDIT;
+		
+		if (action == 2) {
+			compose->autosaved_draft = compose->targetinfo;
+		}
 	}
 }
 
@@ -7219,7 +7244,7 @@ static void text_inserted(GtkWidget *widget, const gchar *text,
 	
 	if (prefs_common.autosave && 
 	    gtk_stext_get_length(GTK_STEXT(widget)) % prefs_common.autosave_length == 0)
-		compose_draft_cb((gpointer)compose, 1, NULL);
+		compose_draft_cb((gpointer)compose, 2, NULL);
 }
 
 static gboolean compose_send_control_enter(Compose *compose)

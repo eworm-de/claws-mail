@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1289,22 +1289,21 @@ gchar *get_abbrev_newsgroup_name(const gchar *group, gint len)
 	gchar *abbrev_group;
 	gchar *ap;
 	const gchar *p = group;
-	gint  count = 0;
+	const gchar *last;
 
+	last = group + strlen(group);
 	abbrev_group = ap = g_malloc(strlen(group) + 1);
 
 	while (*p) {
 		while (*p == '.')
 			*ap++ = *p++;
-
-		if ((strlen( p) + count) > len && strchr(p, '.')) {
+		if ((ap - abbrev_group) + (last - p) > len && strchr(p, '.')) {
 			*ap++ = *p++;
 			while (*p != '.') p++;
 		} else {
-			strcpy( ap, p);
+			strcpy(ap, p);
 			return abbrev_group;
 		}
-		count = count + 2;
 	}
 
 	*ap = '\0';
@@ -2380,6 +2379,39 @@ gint copy_file_part(FILE *fp, off_t offset, size_t length, const gchar *dest)
 /* convert line endings into CRLF. If the last line doesn't end with
  * linebreak, add it.
  */
+gchar *canonicalize_str(const gchar *str)
+{
+	const gchar *p;
+	guint new_len = 0;
+	gchar *out, *outp;
+
+	for (p = str; *p != '\0'; ++p) {
+		if (*p != '\r') {
+			++new_len;
+			if (*p == '\n')
+				++new_len;
+		}
+	}
+	if (p == str || *(p - 1) != '\n')
+		new_len += 2;
+
+	out = outp = g_malloc(new_len + 1);
+	for (p = str; *p != '\0'; ++p) {
+		if (*p != '\r') {
+			if (*p == '\n')
+				*outp++ = '\r';
+			*outp++ = *p;
+		}
+	}
+	if (p == str || *(p - 1) != '\n') {
+		*outp++ = '\r';
+		*outp++ = '\n';
+	}
+	*outp = '\0';
+
+	return out;
+}
+
 gint canonicalize_file(const gchar *src, const gchar *dest)
 {
 	FILE *src_fp, *dest_fp;
@@ -2441,7 +2473,7 @@ gint canonicalize_file(const gchar *src, const gchar *dest)
 	}
 
 	if (ferror(src_fp)) {
-		FILE_OP_ERROR(src, "fread");
+		FILE_OP_ERROR(src, "fgets");
 		err = TRUE;
 	}
 	fclose(src_fp);
@@ -2465,6 +2497,79 @@ gint canonicalize_file_replace(const gchar *file)
 	tmp_file = get_tmp_file();
 
 	if (canonicalize_file(file, tmp_file) < 0) {
+		g_free(tmp_file);
+		return -1;
+	}
+
+	if (move_file(tmp_file, file, TRUE) < 0) {
+		g_warning("can't replace %s .\n", file);
+		unlink(tmp_file);
+		g_free(tmp_file);
+		return -1;
+	}
+
+	g_free(tmp_file);
+	return 0;
+}
+
+gint uncanonicalize_file(const gchar *src, const gchar *dest)
+{
+	FILE *src_fp, *dest_fp;
+	gchar buf[BUFFSIZE];
+	gboolean err = FALSE;
+
+	if ((src_fp = fopen(src, "rb")) == NULL) {
+		FILE_OP_ERROR(src, "fopen");
+		return -1;
+	}
+
+	if ((dest_fp = fopen(dest, "wb")) == NULL) {
+		FILE_OP_ERROR(dest, "fopen");
+		fclose(src_fp);
+		return -1;
+	}
+
+	if (change_file_mode_rw(dest_fp, dest) < 0) {
+		FILE_OP_ERROR(dest, "chmod");
+		g_warning("can't change file mode\n");
+	}
+
+	while (fgets(buf, sizeof(buf), src_fp) != NULL) {
+		strcrchomp(buf);
+		if (fputs(buf, dest_fp) == EOF) {
+			g_warning("writing to %s failed.\n", dest);
+			fclose(dest_fp);
+			fclose(src_fp);
+			unlink(dest);
+			return -1;
+		}
+	}
+
+	if (ferror(src_fp)) {
+		FILE_OP_ERROR(src, "fgets");
+		err = TRUE;
+	}
+	fclose(src_fp);
+	if (fclose(dest_fp) == EOF) {
+		FILE_OP_ERROR(dest, "fclose");
+		err = TRUE;
+	}
+
+	if (err) {
+		unlink(dest);
+		return -1;
+	}
+
+	return 0;
+}
+
+gint uncanonicalize_file_replace(const gchar *file)
+{
+	gchar *tmp_file;
+
+	tmp_file = get_tmp_file();
+
+	if (uncanonicalize_file(file, tmp_file) < 0) {
 		g_free(tmp_file);
 		return -1;
 	}

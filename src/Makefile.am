@@ -221,7 +221,8 @@ sylpheed_LDADD = \
 	$(GDK_PIXBUF_LIBS) \
 	$(GPGME_LIBS) \
 	$(LDAP_LIBS) \
-	$(OPENSSL_LIBS)
+	$(OPENSSL_LIBS) \
+	$(LIBICONV)
 
 CPPFLAGS = \
 	-DLOCALEDIR=\""$(localedir)"\" \

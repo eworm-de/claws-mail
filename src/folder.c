@@ -322,6 +322,11 @@ void folder_item_append(FolderItem *parent, FolderItem *item)
 	g_node_append_data(node, item);
 }
 
+gboolean folder_item_remove_func(GNode *node, gpointer data)
+{
+	folder_item_destroy((FolderItem *)node->data);
+}
+
 void folder_item_remove(FolderItem *item)
 {
 	GNode *node;
@@ -332,6 +337,9 @@ void folder_item_remove(FolderItem *item)
 	node = item->folder->node;
 	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
 	g_return_if_fail(node != NULL);
+
+	g_node_traverse(node, G_POST_ORDER, G_TRAVERSE_ALL, -1,
+		        folder_item_remove_func, NULL);
 
 	/* TODO: free all FolderItem's first */
 	if (item->folder->node == node)
@@ -1807,9 +1815,9 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 					       msginfo->msgnum);
 			msgcache_remove_msg(msginfo->folder->cache, msginfo->msgnum);
 
-			if (MSG_IS_NEW(msginfo->flags))
+			if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 				msginfo->folder->new--;
-			if (MSG_IS_UNREAD(msginfo->flags))
+			if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 				msginfo->folder->unread--;
 			if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 				msginfo->folder->unreadmarked--;
@@ -1938,9 +1946,9 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 				folder_item_read_cache(item);
 			msgcache_remove_msg(item->cache, msginfo->msgnum);
 
-			if (MSG_IS_NEW(msginfo->flags))
+			if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 				msginfo->folder->new--;
-			if (MSG_IS_UNREAD(msginfo->flags))
+			if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 				msginfo->folder->unread--;
 			if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 				msginfo->folder->unreadmarked--;
@@ -2138,9 +2146,9 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 
 	msginfo = msgcache_get_msg(item->cache, num);
 	if (msginfo != NULL) {
-		if (MSG_IS_NEW(msginfo->flags))
+		if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 			item->new--;
-		if (MSG_IS_UNREAD(msginfo->flags))
+		if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 			item->unread--;
 		if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 			item->unreadmarked--;

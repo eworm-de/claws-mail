@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -810,8 +810,7 @@ FILE *procmsg_open_message_decrypted(MsgInfo *msginfo, MimeInfo **mimeinfo)
 	}
 
 	if (MSG_IS_ENCRYPTED(msginfo->flags) &&
-	    !msginfo->plaintext_file &&
-	    !msginfo->decryption_failed) {
+	    (!msginfo->plaintext_file || msginfo->decryption_failed)) {
 		rfc2015_decrypt_message(msginfo, mimeinfo_, fp);
 		if (msginfo->plaintext_file &&
 		    !msginfo->decryption_failed) {
@@ -1222,6 +1221,7 @@ enum
 	Q_NEWS_ACCOUNT_ID  = 5,
 	Q_SAVE_COPY_FOLDER = 6,
 	Q_REPLY_MESSAGE_ID = 7,
+	Q_FWD_MESSAGE_ID   = 8
 };
 
 gint procmsg_send_message_queue(const gchar *file)
@@ -1234,6 +1234,7 @@ gint procmsg_send_message_queue(const gchar *file)
 				       {"NAID:", NULL, FALSE},
 				       {"SCF:",  NULL, FALSE},
 				       {"RMID:", NULL, FALSE},
+				       {"FMID:", NULL, FALSE},
 				       {NULL,    NULL, FALSE}};
 	FILE *fp;
 	gint filepos;
@@ -1244,6 +1245,7 @@ gint procmsg_send_message_queue(const gchar *file)
 	GSList *newsgroup_list = NULL;
 	gchar *savecopyfolder = NULL;
 	gchar *replymessageid = NULL;
+	gchar *fwdmessageid = NULL;
 	gchar buf[BUFFSIZE];
 	gint hnum;
 	PrefsAccount *mailac = NULL, *newsac = NULL;
@@ -1284,6 +1286,9 @@ gint procmsg_send_message_queue(const gchar *file)
 			break;
 		case Q_REPLY_MESSAGE_ID:
 			if (!replymessageid) replymessageid = g_strdup(p);
+			break;
+		case Q_FWD_MESSAGE_ID:
+			if (!fwdmessageid) fwdmessageid = g_strdup(p);
 			break;
 		}
 	}
@@ -1404,11 +1409,14 @@ gint procmsg_send_message_queue(const gchar *file)
 		procmsg_save_to_outbox(outbox, file, TRUE);
 	}
 
-	if (replymessageid != NULL) {
+	if (replymessageid != NULL || fwdmessageid != NULL) {
 		gchar **tokens;
 		FolderItem *item;
 		
-		tokens = g_strsplit(replymessageid, "\x7f", 0);
+		if (replymessageid != NULL)
+			tokens = g_strsplit(replymessageid, "\x7f", 0);
+		else
+			tokens = g_strsplit(fwdmessageid, "\x7f", 0);
 		item = folder_find_item_from_identifier(tokens[0]);
 		if (item != NULL) {
 			MsgInfo *msginfo;
@@ -1424,9 +1432,14 @@ gint procmsg_send_message_queue(const gchar *file)
 			}
 			
 			if (msginfo != NULL) {
-				procmsg_msginfo_unset_flags(msginfo, MSG_FORWARDED, 0);
-				procmsg_msginfo_set_flags(msginfo, MSG_REPLIED, 0);
-
+				if (replymessageid != NULL) {
+					procmsg_msginfo_unset_flags(msginfo, MSG_FORWARDED, 0);
+					procmsg_msginfo_set_flags(msginfo, MSG_REPLIED, 0);
+				} 
+				else {
+					procmsg_msginfo_unset_flags(msginfo, MSG_REPLIED, 0);
+					procmsg_msginfo_set_flags(msginfo, MSG_FORWARDED, 0);
+				}
 				procmsg_msginfo_free(msginfo);
 			}
 		}
@@ -1435,6 +1448,7 @@ gint procmsg_send_message_queue(const gchar *file)
 
 	g_free(savecopyfolder);
 	g_free(replymessageid);
+	g_free(fwdmessageid);
 	
 	return (newsval != 0 ? newsval : mailval);
 }

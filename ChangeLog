@@ -1,3 +1,78 @@
+2003-01-17
+
+	* version 0.8.9
+
+2003-01-17
+
+	* updated INSTALL.
+
+2003-01-17
+
+	* src/quoted-printable.c: qp_encode_line(): fixed linebreak
+	  duplication bug if the source string has CRLF.
+	* src/utils.[ch]:
+	  canonicalize_str(): new. Returns newly allocated canonicalized
+	  string.
+	  uncanonicalize_file(): new. Uncanonicalize (CRLF -> LF) text.
+	  uncanonicalize_file_replace(): new.
+	* src/compose.c: always canonicalize body before processing, and
+	  uncanonicalize before returning.
+
+2003-01-17
+
+	* src/procmime.c: procmime_get_encoding_for_charset(): prefer
+	  ENC_8BIT for Russian charsets.
+	* src/compose.c: compose_write_to_file(): use base64 when signing
+	  8bit message.
+
+2003-01-16
+
+	* src/prefs_common.c: prefs_send_create(): added a description for
+	  the setting of Content-Transfer-Encoding.
+
+2003-01-16
+
+	* src/codeconv.c: fixed locale_table for Russian locales (thanks to
+	  Sergey Vlasov).
+	* src/procmime.c: procmime_get_encoding_for_charset(): return
+	  ENC_BASE64 for ISO-8859-5, KOI8-* and Windows-1251.
+	* src/compose.c: compose_attach_append(): set correct Content-
+	  Transfer-Encoding for message/rfc822.
+	  compose_write_to_file(): enabled user-definable Content-Transfer-
+	  Encoding.
+	* src/prefs_common.[ch]: added an option for user-defined Content-
+	  Transfer-Encoding.
+
+2003-01-15
+
+	* src/quoted-printable.[ch]: qp_encode_line(): fixed a bug if the
+	  line doesn't end with linebreak.
+
+2003-01-15
+
+	* implemented quoted-printable encoding.
+	* src/quoted-printable.[ch]: qp_encode_line(): new.
+	* src/compose.c:
+	  compose_write_to_file()
+	  compose_write_attach(): implemented quoted-printable encoding.
+	  compose_attach_property_create(): enabled quoted-printable menu
+	  item.
+	* src/procmime.c: procmime_get_encoding_for_charset(): return
+	  ENC_QUOTED_PRINTABLE for ISO-8859-* and CP125* charset.
+	* src/Makefile.am: added $(LIBICONV) to sylpheed_LDADD for libiconv
+	  support.
+
+2003-01-14
+
+	* src/folderview.c
+	  src/summaryview.c
+	  src/utils.[ch]: get_abbrev_newsgroup_name(): improved the way
+	  of abbreviation of newsgroup name.
+
+2003-01-14
+
+	* configure.in: show the result of iconv detection.
+
 2003-01-13
 
 	* src/codeconv.[ch]: made the transition from libjconv to iconv().

@@ -1148,8 +1148,7 @@ static void toolbar_popup_cb(gpointer data, guint action, GtkWidget *widget)
 static void toolbar_reply_cb(GtkWidget *widget, gpointer data)
 {
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
-	MainWindow *mainwin;
-	MessageView *msgview;
+	MainWindow *mainwin = get_mainwin(data);
 
 	g_return_if_fail(toolbar_item != NULL);
 
@@ -1168,11 +1167,16 @@ static void toolbar_reply_cb(GtkWidget *widget, gpointer data)
 				 NULL);
 		break;
 	case TOOLBAR_MSGVIEW:
-		msgview = (MessageView*)toolbar_item->parent;
-		compose_reply(msgview->msginfo,
-			      prefs_common.reply_with_quote ? COMPOSE_REPLY_WITH_QUOTE 
-			      : COMPOSE_REPLY_WITHOUT_QUOTE,
-			      FALSE, FALSE, FALSE, NULL);
+		if (prefs_common.default_reply_list)
+			reply_cb(mainwin, 
+				 prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_LIST_WITH_QUOTE 
+				 : COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE,
+				 NULL);
+		else
+			reply_cb(mainwin,
+				 prefs_common.reply_with_quote ? COMPOSE_REPLY_WITH_QUOTE 
+				 : COMPOSE_REPLY_WITHOUT_QUOTE,
+				 NULL);
 		break;
 	default:
 		debug_print("toolbar event not supported\n");
@@ -1306,13 +1310,20 @@ static void toolbar_addrbook_cb(GtkWidget *widget, gpointer data)
 static void toolbar_forward_cb(GtkWidget *widget, gpointer data)
 {
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
-	MainWindow *mainwin;
-
+	MainWindow *mainwin = get_mainwin(data);
+	
 	g_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
 		mainwin = (MainWindow*)toolbar_item->parent;
+		if (prefs_common.forward_as_attachment)
+			reply_cb(mainwin, COMPOSE_FORWARD_AS_ATTACH, NULL);
+		else
+			reply_cb(mainwin, COMPOSE_FORWARD, NULL);
+		break;
+		
+	case TOOLBAR_MSGVIEW:
 		if (prefs_common.forward_as_attachment)
 			reply_cb(mainwin, COMPOSE_FORWARD_AS_ATTACH, NULL);
 		else

@@ -112,11 +112,8 @@ You can get compface utilities and library from the following location:
   http://freshmeat.net/projects/compface/
 
 Sylpheed supports US-ASCII, ISO-8859-1, and EUC-JP by default.
-If you want other character set / encoding (such as UTF-8, KOI8-R, and GB2312)
-to be supported, you have to install libjconv, which is a wrapper for
-iconv(). You can obtain it from the following location:
-
-  http://ghost.math.sci.hokudai.ac.jp/misc/libjconv/
+If your system supports iconv() API, other character set / encoding
+(such as UTF-8, KOI8-R, and GB2312) will be also supported.
 
 GnuPG (>= 1.2.0) and GPGME (>= 0.3.10) are required for GnuPG (PGP) support.
 You can get GnuPG and GPGME from the following location:
@@ -127,13 +124,15 @@ You can get GnuPG and GPGME from the following location:
 Options for configure script
 ============================
 
-  --disable-compface  disable compface (X-Face) support
-  --disable-jconv     disable libjconv support
-  --enable-openssl        SSL support (requires OpenSSL)
-  --enable-ipv6       IPv6 support
-  --enable-gpgme      GnuPG support (requires GPGME and GnuPG)
-  --enable-ldap       LDAP support
-  --enable-jpilot     JPilot support
+  --disable-compface  		disable compface (X-Face) support
+  --enable-openssl    		SSL support (requires OpenSSL)
+  --enable-ipv6       		IPv6 support
+  --enable-gpgme      		GnuPG support (requires GPGME and GnuPG)
+  --enable-ldap       		LDAP support
+  --enable-jpilot     		JPilot support
+  --enable-aspell     		Aspell support
+  --enable-spamassassin-plugin	SpamAssassin support
+  --enable-crash-dialog		GDB support
 
 For other options, refer to ./configure --help .
 

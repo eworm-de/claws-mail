@@ -107,15 +107,15 @@ FLAGS=$(DEBUGFLAG) $(BITFIELD) $(NOCYGWIN) $(OPTIMIZATION)
 
 ### version
 
-CONFIGURE_IN=$(ROOTDIR)/configure.in
+CONFIGURE_AC=$(ROOTDIR)/configure.ac
 VERSION_H_IN=$(SRCDIR)/common/version.h.in
 VERSION_H=$(SRCDIR)/common/version.h
 
-PACKAGE=$(shell grep ^PACKAGE= $(CONFIGURE_IN)|sed -e "s/.*=//" -)
-MAJOR_VERSION=$(shell grep ^MAJOR_VERSION= $(CONFIGURE_IN)|sed -e "s/.*=//" -)
-MINOR_VERSION=$(shell grep ^MINOR_VERSION= $(CONFIGURE_IN)|sed -e "s/.*=//" -)
-MICRO_VERSION=$(shell grep ^MICRO_VERSION= $(CONFIGURE_IN)|sed -e "s/.*=//" -)
-EXTRA_VERSION=$(shell grep ^EXTRA_VERSION= $(CONFIGURE_IN)|sed -e "s/.*=//" -)
+PACKAGE=$(shell grep ^PACKAGE= $(CONFIGURE_AC)|sed -e "s/.*=//" -)
+MAJOR_VERSION=$(shell grep ^MAJOR_VERSION= $(CONFIGURE_AC)|sed -e "s/.*=//" -)
+MINOR_VERSION=$(shell grep ^MINOR_VERSION= $(CONFIGURE_AC)|sed -e "s/.*=//" -)
+MICRO_VERSION=$(shell grep ^MICRO_VERSION= $(CONFIGURE_AC)|sed -e "s/.*=//" -)
+EXTRA_VERSION=$(shell grep ^EXTRA_VERSION= $(CONFIGURE_AC)|sed -e "s/.*=//" -)
 VERSION=$(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)$(EXTRA_VERSION)
 
 ### bisonfiles
@@ -435,7 +435,7 @@ $(RESOURCE).o: $(RESOURCE).rc
 
 ### version number
 
-$(VERSION_H): $(CONFIGURE_IN) $(VERSION_H_IN)
+$(VERSION_H): $(CONFIGURE_AC) $(VERSION_H_IN)
 	echo Version: $(PACKAGE) $(VERSION)
 	$(SED) -e "s/@PACKAGE@/$(PACKAGE)/;s/@VERSION@/$(VERSION)/;" $(VERSION_H_IN) > $@
 

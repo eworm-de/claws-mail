@@ -904,13 +904,22 @@ void folderview_rescan_all(void)
 }
 #endif
 
-void folderview_check_new(Folder *folder)
+/** folderview_check_new()
+ *  Scan and update the folder and return the 
+ *  count the number of new messages since last check. 
+ *  \param folder the folder to check for new messages
+ *  \return the number of new messages since last check
+ */
+gint folderview_check_new(Folder *folder)
 {
 	GList *list;
 	FolderItem *item;
 	FolderView *folderview;
 	GtkCTree *ctree;
 	GtkCTreeNode *node;
+	gint new_msgs = 0;
+	gint former_new_msgs = 0;
+	gint former_new = 0;
 
 	for (list = folderview_list; list != NULL; list = list->next) {
 		folderview = (FolderView *)list->data;
@@ -929,11 +938,14 @@ void folderview_check_new(Folder *folder)
 			if (!folder && !FOLDER_IS_LOCAL(item->folder)) continue;
 
 			folderview_scan_tree_func(item->folder, item, NULL);
+			former_new = item->new;
 			if (folder_item_scan(item) < 0) {
 				if (folder && !FOLDER_IS_LOCAL(folder))
 					break;
 			}
 			folderview_update_node(folderview, node);
+			new_msgs += item->new;
+			former_new_msgs += former_new;
 		}
 
 		gtk_widget_set_sensitive(folderview->ctree, TRUE);
@@ -942,6 +954,13 @@ void folderview_check_new(Folder *folder)
 	}
 
 	folder_write_list();
+	/* Number of new messages since last check is the just the difference 
+	 * between former_new_msgs and new_msgs. If new_msgs is less than
+	 * former_new_msgs, that would mean another session accessed the folder
+	 * and the result is not well defined.
+	 */
+	new_msgs = (former_new_msgs < new_msgs ? new_msgs - former_new_msgs : 0);
+	return new_msgs;
 }
 
 void folderview_check_new_all(void)
@@ -1188,9 +1207,10 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		} else {
 			if (item->folder->type == F_NEWS &&
 			    item->path &&
-			    !strcmp2(item->name, item->path) &&
-			    prefs_common.ng_abbrev_len < strlen(item->path))
-				name = get_abbrev_newsgroup_name(item->path, prefs_common.ng_abbrev_len);
+			    !strcmp2(item->name, item->path))
+				name = get_abbrev_newsgroup_name
+					(item->path,
+					 prefs_common.ng_abbrev_len);
 			else
 				name = g_strdup(item->name);
 		}

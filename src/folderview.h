@@ -74,7 +74,7 @@ void folderview_update_msg_num		(FolderView	*folderview,
 					 GtkCTreeNode	*row);
 void folderview_rescan_tree		(Folder		*folder);
 void folderview_rescan_all		(void);
-void folderview_check_new		(Folder		*folder);
+gint folderview_check_new		(Folder		*folder);
 void folderview_check_new_all		(void);
 
 void folderview_new_folder		(FolderView	*folderview);

@@ -944,9 +944,11 @@ MainWindow *main_window_create(SeparateType type)
 	
 	gtk_widget_hide(GTK_WIDGET(mainwin->summaryview->hbox_search));
 	
-	if (prefs_common.show_searchbar)
+	if (prefs_common.show_searchbar) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mainwin->summaryview->toggle_search), TRUE);
-
+		if (prefs_common.summary_quicksearch_type != S_SEARCH_EXTENDED)
+			gtk_widget_hide(summaryview->search_description);
+	}
 
 	/* set account selection menu */
 	ac_menu = gtk_item_factory_get_widget

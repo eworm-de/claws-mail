@@ -266,12 +266,6 @@ static void spamassassin_save_func(PrefsPage *_page)
 	spamassassin_save_config();
 }
 
-static void spamassassin_destroy_func(PrefsPage *_page)
-{
-	debug_print("Destroying SpamAssassin Page\n");
-	g_free(_page);
-}
-
 static struct SpamAssassinPage *spamassassin_page;
 
 gint plugin_init(gchar **error)
@@ -286,7 +280,6 @@ gint plugin_init(gchar **error)
 	page->page.create_widget = spamassassin_create_widget_func;
 	page->page.destroy_widget = spamassassin_destroy_widget_func;
 	page->page.save_page = spamassassin_save_func;
-	page->page.destroy_page = spamassassin_destroy_func;
 	prefs_gtk_register_page((PrefsPage *) page);
 
 	spamassassin_page = page;

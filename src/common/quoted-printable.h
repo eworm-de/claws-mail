@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,10 @@
 
 #include <glib.h>
 
+void qp_encode_line		(gchar		*out,
+				 const guchar	*in);
 gint qp_decode_line		(gchar		*str);
+
 gint qp_decode_q_encoding	(guchar		*out,
 				 const gchar	*in,
 				 gint		 inlen);

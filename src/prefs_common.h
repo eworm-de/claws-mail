@@ -40,6 +40,13 @@ typedef enum {
 } RecvDialogMode;
 
 typedef enum {
+	CTE_AUTO,
+	CTE_BASE64,
+	CTE_QUOTED_PRINTABLE,
+	CTE_8BIT
+} TransferEncodingMethod;
+
+typedef enum {
 	SEND_DIALOG_ALWAYS,
 	/* SEND_DIALOG_ACTIVE would be irrelevant */
 	SEND_DIALOG_NEVER
@@ -75,6 +82,7 @@ struct _PrefsCommon
 	gboolean savemsg;
 	gboolean queue_msg;
 	gchar *outgoing_charset;
+	TransferEncodingMethod encoding_method;
 
 	/* Compose */
 	gboolean auto_sig;

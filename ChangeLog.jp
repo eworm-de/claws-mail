@@ -1,3 +1,79 @@
+2003-01-17
+
+	* version 0.8.9
+
+2003-01-17
+
+	* INSTALL を更新。
+
+2003-01-17
+
+	* src/quoted-printable.c: qp_encode_line(): 元の文字列に CRLF が
+	  あった場合に改行が重複するバグを修正。
+	* src/utils.[ch]
+	  canonicalize_str(): 新規。新規に確保された正規化された文字列を
+	  返す。
+	  uncanonicalize_file(): 新規。正規化を解除する(CRLF -> LF)。
+	  uncanonicalize_file_replace(): 新規。
+	* src/compose.c: 処理の前に常に本文を正規化し、戻る前に正規化を
+	  解除するようにした。
+
+2003-01-17
+
+	* src/procmime.c: procmime_get_encoding_for_charset(): ロシア語
+	  charset の場合は ENC_8BIT を選ぶようにした。
+	* src/compose.c: compose_write_to_file(): 8bit メッセージを署名する
+	  場合は base64 を使用するようにした。
+
+2003-01-16
+
+	* src/prefs_common.c: prefs_send_create(): Content-Transfer-Encoding
+	  の設定の説明を追加。
+
+2003-01-16
+
+	* src/codeconv.c: ロシア語 locale のための locale_table の修正
+	  (Sergey Vlasov さん thanks)。
+	* src/procmime.c: procmime_get_encoding_for_charset(): ISO-8859-5,
+	  KOI8-*, Windows-1251 に対して ENC_BASE64 を返すようにした。
+	* src/compose.c: compose_attach_append(): message/rfc822 に対して
+	  正しい Content-Transfer-Encoding をセットするようにした。
+	  compose_write_to_file(): ユーザ定義の Content-Transfer-Encoding
+	  を有効にした。
+	* src/prefs_common.[ch]: ユーザ定義の Content-Transfer-Encoding
+	  のオプションを追加。
+
+2003-01-15
+
+	* src/quoted-printable.[ch]: qp_encode_line(): 行が改行で終わらない
+	  場合のバグを修正。
+
+2003-01-15
+
+	* quoted-printable 符号化を実装。
+	* src/quoted-printable.[ch]: qp_encode_line(): 新規。
+	* src/compose.c:
+	  compose_write_to_file()
+	  compose_write_attach(): quoted-printable 符号化を実装。
+	  compose_attach_property_create(): quoted-printable メニュー項目を
+	  有効にした。
+	* src/procmime.c: procmime_get_encoding_for_charset(): ISO-8859-*
+	  と CP125* 文字セットの場合は ENC_QUOTED_PRINTABLE を返すように
+	  した。
+	* src/Makefile.am: libiconv 対応のために sylpheed_LDADD に
+	  $(LIBICONV) を追加。
+
+2003-01-14
+
+	* src/folderview.c
+	  src/summaryview.c
+	  src/utils.[ch]: get_abbrev_newsgroup_name(): ニュースグループ名
+	  の省略方法を改良。
+
+2003-01-14
+
+	* configure.in: iconv 検出結果を表示。
+
 2003-01-13
 
 	* src/codeconv.[ch]: libjconv から iconv() へ移行。
