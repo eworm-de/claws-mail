@@ -1,3 +1,18 @@
+2005-01-16 [thorsten]	0.9.13cvs35.1
+
+	* AUTHORS
+	* ChangeLog
+	* ChangeLog.claws
+	* ChangeLog.jp
+	* PATCHSETS
+	* configure.ac
+	* src/html.c
+	* src/html.h
+	* src/msgcache.c
+	* src/common/template.c
+	* src/gtk/pluginwindow.c
+		sync 0.9.13cvs35
+
 2005-01-10 [thorsten]	0.9.13cvs31.2
 
 	* src/imap.c

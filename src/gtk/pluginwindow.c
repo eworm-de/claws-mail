@@ -79,6 +79,7 @@ static void set_plugin_list(PluginWindow *pluginwindow)
 
 	if (pluginwindow->selected_plugin == NULL)
 		gtk_clist_select_row (clist, 0, -1);
+	g_slist_free(plugins);
 }
 
 static void select_row_cb(GtkCList *clist, gint row, gint column,
@@ -142,7 +143,8 @@ static void load_cb(GtkButton *button, PluginWindow *pluginwindow)
 		g_free(error);
 	}
 
-	set_plugin_list(pluginwindow);		
+	set_plugin_list(pluginwindow);
+	g_free(file);
 }
 
 static gboolean pluginwindow_key_pressed(GtkWidget *widget, GdkEventKey *event,

@@ -410,11 +410,16 @@ gchar *html_parse(HTMLParser *parser)
 
 	while (*parser->bufp != '\0') {
 		switch (*parser->bufp) {
-		case '<':
-			if (parser->str->len == 0)
-				html_parse_tag(parser);
-			else
+		case '<': {
+			HTMLState st;
+			st = html_parse_tag(parser);
+			/* when we see an href, we need to flush the str
+			 * buffer.  Then collect all the chars until we
+			 * see the end anchor tag
+			 */
+			if (HTML_HREF_BEG == st || HTML_HREF == st)
 				return parser->str->str;
+			} 
 			break;
 		case '&':
 			html_parse_special(parser);
@@ -641,12 +646,10 @@ static HTMLState html_parse_tag(HTMLParser *parser)
 			g_free(parser->href);
 			parser->href =
 				g_strdup(((HTMLAttr *)tag->attr->data)->value);
-			parser->state = HTML_HREF;
+			parser->state = HTML_HREF_BEG;
 		}
 	} else if (!strcmp(tag->name, "/a")) {
-		g_free(parser->href);
-		parser->href = NULL;
-		parser->state = HTML_NORMAL;
+		parser->state = HTML_HREF;
 	} else if (!strcmp(tag->name, "p")) {
 		parser->space = FALSE;
 		if (!parser->empty_line) {
@@ -740,6 +743,89 @@ static void html_parse_special(HTMLParser *parser)
 			html_append_char(parser, ch);
 			parser->state = HTML_NORMAL;
 			return;
+		} else {
+			char *symb = NULL;
+			switch (ch) {
+			/* http://www.w3schools.com/html/html_entitiesref.asp */
+			case 338:	/* capital ligature OE  &OElig;  */
+				symb = "OE";  
+				break;
+			case 339:	/* small ligature OE	&oelig;  */
+				symb = "oe";  
+				break;
+			case 352:	/* capital S w/caron	&Scaron; */
+			case 353:	/* small S w/caron	&scaron; */
+			case 376:	/* cap Y w/ diaeres	&Yuml;   */
+				break;
+			case 710:	/* circumflex accent	&circ;   */
+				symb = "^";  
+				break;
+			case 732:	/* small tilde		&tilde;  */
+				symb = "~";  
+				break;
+			case 8194:	/* en space		&ensp;   */
+			case 8195:	/* em space		&emsp;   */
+			case 8201:	/* thin space		&thinsp; */
+				symb = " ";  
+				break;
+			case 8204:	/* zero width non-joiner &zwnj;  */
+			case 8205:	/* zero width joiner	&zwj;	*/
+			case 8206:	/* l-t-r mark		&lrm;	*/
+			case 8207:	/* r-t-l mark		&rlm	 */
+				break;
+			case 8211:	/* en dash		&ndash;  */
+				symb = "-";  
+				break;
+			case 8212:	/* em dash		&mdash;  */
+				symb = "--";  
+				break;
+			case 8216:	/* l single quot mark   &lsquo;  */
+				symb = "`";  
+				break;
+			case 8217:	/* r single quot mark   &rsquo;  */
+				symb = "'";  
+				break;
+			case 8218:	/* single low-9 quot	&sbquo;  */
+				symb = ",";  
+				break;
+			case 8220:	/* l double quot mark   &ldquo;  */
+				symb = "``";  
+				break;
+			case 8221:	/* r double quot mark   &rdquo;  */
+				symb = "''";  
+				break;
+			case 8222:	/* double low-9 quot	&bdquo;  */
+				symb = ",,";  
+				break;
+			case 8224:	/* dagger		&dagger; */
+			case 8225:	/* double dagger	&Dagger; */
+				break;
+			case 8230:	/* horizontal ellipsis  &hellip; */
+				symb = "...";  
+				break;
+			case 8240:	/* per mile		&permil; */
+				symb = "\%o";  
+				break;
+			case 8249:	/* l-pointing angle quot &lsaquo; */
+				symb = "<";  
+				break;
+			case 8250:	/* r-pointing angle quot &rsaquo; */
+				symb = ">";  
+				break;
+			case 8364:	/* euro			&euro;   */
+				symb = "EUR";  
+				break;
+			case 8482:	/* trademark		&trade;  */
+				symb  = "(TM)";  
+				break;
+			default: 
+				break;
+			}
+			if (symb) {
+				html_append_str(parser, symb, -1);
+				parser->state = HTML_NORMAL;
+				return;
+			}
 		}
 	}
 
