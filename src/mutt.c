@@ -1,0 +1,531 @@
+/*
+ * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2001 Match Grun
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+/*
+ * Functions necessary to access MUTT address book file.
+ */
+
+#include <sys/stat.h>
+#include <glib.h>
+
+#include "mgutils.h"
+#include "mutt.h"
+#include "addritem.h"
+#include "addrcache.h"
+
+#define MUTT_HOME_FILE  ".muttrc"
+
+/*
+* Create new object.
+*/
+MuttFile *mutt_create() {
+	MuttFile *muttFile;
+	muttFile = g_new0( MuttFile, 1 );
+	muttFile->path = NULL;
+	muttFile->file = NULL;
+	muttFile->bufptr = muttFile->buffer;
+	muttFile->retVal = MGU_SUCCESS;
+	muttFile->cbProgress = NULL;
+	return muttFile;
+}
+
+/*
+* Properties...
+*/
+void mutt_set_file( MuttFile* muttFile, const gchar *value ) {
+	g_return_if_fail( muttFile != NULL );
+	muttFile->path = mgu_replace_string( muttFile->path, value );
+	g_strstrip( muttFile->path );
+}
+
+/*
+* Register a callback function. When called, the function will be passed
+* the following arguments:
+*	MuttFile object,
+*	File size (long),
+*	Current position (long)
+* This can be used for a progress indicator.
+*/
+void mutt_set_callback( MuttFile *muttFile, void *func ) {
+	muttFile->cbProgress = func;
+}
+
+/*
+* Free up object by releasing internal memory.
+*/
+void mutt_free( MuttFile *muttFile ) {
+	g_return_if_fail( muttFile != NULL );
+
+	/* Close file */
+	if( muttFile->file ) fclose( muttFile->file );
+
+	/* Free internal stuff */
+	g_free( muttFile->path );
+
+	/* Clear pointers */
+	muttFile->file = NULL;
+	muttFile->path = NULL;
+	muttFile->retVal = MGU_SUCCESS;
+	muttFile->cbProgress = NULL;
+
+	/* Now release file object */
+	g_free( muttFile );
+}
+
+/*
+* Display object to specified stream.
+*/
+void mutt_print_file( MuttFile *muttFile, FILE *stream ) {
+	g_return_if_fail( muttFile != NULL );
+	fprintf( stream, "MUTT File:\n" );
+	fprintf( stream, "file spec: '%s'\n", muttFile->path );
+	fprintf( stream, "  ret val: %d\n",   muttFile->retVal );
+}
+
+/*
+* Open file for read.
+* return: TRUE if file opened successfully.
+*/
+static gint mutt_open_file( MuttFile* muttFile ) {
+	/* printf( "Opening file\n" ); */
+	if( muttFile->path ) {
+		muttFile->file = fopen( muttFile->path, "r" );
+		if( ! muttFile->file ) {
+			/* printf( "can't open %s\n", muttFile->path ); */
+			muttFile->retVal = MGU_OPEN_FILE;
+			return muttFile->retVal;
+		}
+	}
+	else {
+		/* printf( "file not specified\n" ); */
+		muttFile->retVal = MGU_NO_FILE;
+		return muttFile->retVal;
+	}
+
+	/* Setup a buffer area */
+	muttFile->buffer[0] = '\0';
+	muttFile->bufptr = muttFile->buffer;
+	muttFile->retVal = MGU_SUCCESS;
+	return muttFile->retVal;
+}
+
+/*
+* Close file.
+*/
+static void mutt_close_file( MuttFile *muttFile ) {
+	g_return_if_fail( muttFile != NULL );
+	if( muttFile->file ) fclose( muttFile->file );
+	muttFile->file = NULL;
+}
+
+/*
+* Read line of text from file.
+* Enter: muttFile File object.
+*        flagCont Continuation flag, set if back-slash character at EOL.
+* Return: ptr to buffer where line starts.
+*/
+static gchar *mutt_get_line( MuttFile *muttFile, gboolean *flagCont ) {
+	gchar buf[ MUTTBUFSIZE ];
+	gchar ch, lch;
+	gchar *ptr, *lptr;
+
+	*flagCont = FALSE;
+	if( feof( muttFile->file ) ) return NULL;
+
+	ptr = buf;
+	lch = '\0';
+	lptr = NULL;
+	while( TRUE ) {
+		*ptr = '\0';
+		ch = fgetc( muttFile->file );
+		if( ch == '\0' || ch == EOF ) {
+			if( *buf == '\0' ) return NULL;
+			break;
+		}
+		if( ch == '\n' ) {
+			if( lch == '\\' ) {
+				/* Replace backslash with NULL */
+				if( lptr ) *lptr = '\0';
+				*flagCont = TRUE;
+			}
+			break;
+		}
+		*ptr = ch;
+		lptr = ptr;
+		lch = ch;
+		ptr++;
+	}
+
+	/* Copy into private buffer */
+	return g_strdup( buf );
+}
+
+/*
+* Parsed address data.
+*/
+typedef struct _Mutt_ParsedRec_ Mutt_ParsedRec;
+struct _Mutt_ParsedRec_ {
+	gchar *address;
+	gchar *name;
+};
+
+static mutt_free_rec( Mutt_ParsedRec *rec ) {
+	if( rec ) {
+		g_free( rec->address );
+		g_free( rec->name );
+		rec->address = NULL;
+		rec->name = NULL;
+		g_free( rec );
+	}
+}
+
+void mutt_print_rec( Mutt_ParsedRec *rec, FILE *stream ) {
+	fprintf( stream, "\taddr: %s\tname: %s\n", rec->address, rec->name );
+}
+
+/*
+* Parse recipient list for each address.
+* Enter: rcpList   Recipients extracted from file.
+*        addrCount Updated with recipient count.
+* Return: Linked list of recipients.
+*/
+static GSList *mutt_parse_rcplist( gchar *rcpList, gint *addrCount ) {
+	gchar *ptr, *pStart, *pEnd, *pAddr, *pName, *address, *name;
+	gchar ch;
+	GSList *list;
+	Mutt_ParsedRec *rec;
+	gint  cnt;
+
+	list = NULL;
+	cnt = 0;
+	pStart = rcpList;
+	while( *pStart ) {
+		ptr = pStart;
+		address = name = NULL;
+		pName = pAddr = NULL;
+		/* Chew up spaces */
+		while( *ptr ) {
+			if( ! isspace( *ptr ) ) break;
+			ptr++;
+		}
+
+		/* Find address */
+		while( *ptr ) {
+			ch = *ptr;
+			if( ch == '(' ) {
+				pAddr = pName = ptr;
+				break;
+			}
+			if( ch == ',' ) {
+				pAddr = ptr;
+				ptr++;
+				break;
+			}
+			if( isspace( ch ) ) {
+				pAddr = ptr;
+				break;
+			}
+			ptr++;
+		}
+
+		/* Extract address */
+		if( pAddr ) {
+			address = g_strndup( pStart, pAddr - pStart );
+		}
+		else {
+			address = g_strdup( pStart );
+		}
+		g_strstrip( address );
+
+		/* Chew up spaces */
+		while( *ptr ) {
+			ch = *ptr;
+			if( ch == '(' ) {
+				pName = ptr;
+				break;
+			}
+			if( ch == ',' ) {
+				ptr++;
+				break;
+			}
+			ptr++;
+			if( isspace( ch ) ) continue;
+		}
+		pStart = ptr;
+	
+		/* Extract name (if any) */
+		if( pName ) {
+			/* Look for closing parens */
+			pName++;
+			pEnd = NULL;
+			ptr = pName;
+			while( *ptr ) {
+				if( *ptr == ')' ) {
+					pEnd = ptr;
+					break;
+				}
+				ptr++;
+			}
+			if( pEnd ) {
+				name = g_strndup( pName, pEnd - pName );
+				pEnd++;
+				if( *pEnd ) pEnd++;
+			}
+			else {
+				name = g_strdup( pName );
+			}
+			g_strstrip( name );
+			pStart = pEnd;
+		}
+		else {
+			name = g_strdup( "" );
+		}
+
+		/* New record */
+		rec = g_new0( Mutt_ParsedRec, 1 );
+		rec->address = address;
+		rec->name = name;
+		list = g_slist_append( list, rec );
+
+		cnt++;
+
+		/* mutt_print_rec( rec, stdout ); */
+	}
+	*addrCount = cnt;
+	return list;
+}
+
+/*
+* Build address book entries.
+* Enter: aliasName Alias,
+*        listAddr  List of address items.
+*        addrCount Address list count.
+*        cache     Cache to update.
+*/
+static void mutt_build_address(
+		gchar *aliasName, GSList *listAddr, gint addrCount,
+		AddressCache *cache )
+{
+	GSList *node = NULL;
+	ItemPerson *person;
+	ItemEMail *email;
+	ItemGroup *group;
+	Mutt_ParsedRec *rec;
+
+	email = NULL;
+	group = NULL;
+	if( listAddr != NULL && addrCount > 1 ) {
+		group = addritem_create_item_group();
+		addritem_group_set_name( group, aliasName );
+		addrcache_id_group( cache, group );
+		addrcache_add_group( cache, group );
+	}
+
+	node = listAddr;
+	while( node ) {
+		rec = node->data;
+
+		/* Create person */
+		person = addritem_create_item_person();
+		addritem_person_set_common_name( person, rec->name );
+		addrcache_id_person( cache, person );
+		addrcache_add_person( cache, person );
+		if( addrCount < 2 ) {
+			addritem_person_set_nick_name( person, aliasName );
+		}
+
+		/* Add email for person */
+		email = addritem_create_item_email();
+		addritem_email_set_address( email, rec->address );
+		addrcache_id_email( cache, email );
+		addrcache_person_add_email( cache, person, email );
+
+		/* Add email to group */
+		if( group ) {
+			addritem_group_add_email( group, email );
+		}
+
+		mutt_free_rec( rec );
+		rec = NULL;
+
+		node = g_slist_next( node );
+	}
+}
+
+/*
+* Parse address line adn build address items.
+* Enter: line  Data record.
+*        cache Address cache.
+*/
+static void mutt_build_items( gchar *line, AddressCache *cache ) {
+	GList *list, *node;
+	gint tCount, aCount;
+	gchar *aliasTag, *aliasName, *recipient;
+	GSList *addrList;
+
+	/* printf( "\nBUILD >%s<\n", line ); */
+	list = mgu_parse_string( line,  3, &tCount );
+	if( tCount < 3 ) {
+		if( list ) {
+			mgu_free_dlist( list );
+			list = NULL;
+		}
+		return;
+	}
+
+	aliasTag = list->data;
+	node = g_list_next( list );
+	aliasName = node->data;
+	node = g_list_next( node );
+	recipient = node->data;
+
+	addrList = NULL;
+	if( strcmp( aliasTag, "alias" ) == 0 ) {
+		aCount = 0;
+		/* printf( "aliasName :%s:\n", aliasName ); */
+		/* printf( "recipient :%s:\n", recipient ); */
+		addrList = mutt_parse_rcplist( recipient, &aCount );
+		/* printf( "---\n" ); */
+		mutt_build_address( aliasName, addrList, aCount, cache );
+	}
+
+	mgu_free_dlist( list );
+	list = NULL;
+
+}
+
+/*
+* Read file data into address cache.
+*/
+static void mutt_read_file( MuttFile *muttFile, AddressCache *cache ) {
+	GSList *listValue = NULL;
+	gboolean flagEOF = FALSE, flagCont = FALSE, lastCont = FALSE;
+	gchar *line =  NULL, *lineValue = NULL;
+	long posEnd = 0L;
+	long posCur = 0L;
+
+	/* Find EOF for progress indicator */
+	fseek( muttFile->file, 0L, SEEK_END );
+	posEnd = ftell( muttFile->file );
+	fseek( muttFile->file, 0L, SEEK_SET );
+
+	while( ! flagEOF ) {
+		flagCont = FALSE;
+		line =  mutt_get_line( muttFile, &flagCont );
+
+		posCur = ftell( muttFile->file );
+		if( muttFile->cbProgress ) {
+			/* Call progress indicator */
+			( muttFile->cbProgress ) ( muttFile, & posEnd, & posCur );
+		}
+
+		if( line == NULL ) flagEOF = TRUE;
+		if( ! lastCont ) {
+			/* Save data */
+			lineValue = mgu_list_coalesce( listValue );
+			if( lineValue ) {
+				mutt_build_items( lineValue, cache );
+			}
+			g_free( lineValue );
+			lineValue = NULL;
+			mgu_free_list( listValue );
+			listValue = NULL;
+		}
+		lastCont = flagCont;
+
+		/* Add line to list */
+		listValue = g_slist_append( listValue, g_strdup( line ) );
+
+		g_free( line );
+		line = NULL;
+	}
+
+	/* Release data */
+	mgu_free_list( listValue );
+	listValue = NULL;
+}
+
+/*
+* ============================================================================================
+* Read file into list. Main entry point
+* Enter:  muttFile MUTT control data.
+*         cache    Address cache to load.
+* Return: Status code.
+* ============================================================================================
+*/
+gint mutt_import_data( MuttFile *muttFile, AddressCache *cache ) {
+	g_return_val_if_fail( muttFile != NULL, MGU_BAD_ARGS );
+	g_return_val_if_fail( cache != NULL, MGU_BAD_ARGS );
+	muttFile->retVal = MGU_SUCCESS;
+	addrcache_clear( cache );
+	cache->dataRead = FALSE;
+	mutt_open_file( muttFile );
+	if( muttFile->retVal == MGU_SUCCESS ) {
+		/* Read data into the cache */
+		mutt_read_file( muttFile, cache );
+		mutt_close_file( muttFile );
+
+		/* Mark cache */
+		cache->modified = FALSE;
+		cache->dataRead = TRUE;
+	}
+	return muttFile->retVal;
+}
+
+#define WORK_BUFLEN 1024
+
+/*
+* Attempt to find a Mutt file.
+* Return: Filename, or home directory if not found, or empty string if
+* no home. Filename should be g_free() when done.
+*/
+gchar *mutt_find_file( void ) {
+	gchar *homedir;
+	gchar str[ WORK_BUFLEN ];
+	gint len;
+	FILE *fp;
+
+	homedir = g_get_home_dir();
+	if( ! homedir ) return g_strdup( "" );
+
+	strcpy( str, homedir );
+	len = strlen( str );
+	if( len > 0 ) {
+		if( str[ len-1 ] != G_DIR_SEPARATOR ) {
+			str[ len ] = G_DIR_SEPARATOR;
+			str[ ++len ] = '\0';
+		}
+	}
+	strcat( str, MUTT_HOME_FILE );
+
+	/* Attempt to open */
+	if( ( fp = fopen( str, "r" ) ) != NULL ) {
+		fclose( fp );
+	}
+	else {
+		/* Truncate filename */
+		str[ len ] = '\0';
+	}
+	return g_strdup( str );
+}
+
+/*
+* End of Source.
+*/
+

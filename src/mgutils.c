@@ -215,5 +215,67 @@ gchar *mgu_email_check_empty( gchar *address ) {
 }
 
 /*
+* Parse string into linked list. Whitespace is used as a delimiter in parsing.
+* Strings are parsed until maxTokens - 1 is reached. The remainder of the
+* input string is copied into last element of list.
+* Enter: line      String to parse.
+*        maxTokens Maximum number of tokens to parse.
+*        tokenCnt  If arg supplied, update with count of number of token parsed.
+* Return: Linked list. The list contents should be g_free'd and list should
+* freed when done.
+*/
+GList *mgu_parse_string( gchar *line, const gint maxTokens, gint *tokenCnt ) {
+	gchar *ptr, *pStart, *pFound, *str;
+	gint  args = 0;
+	GList *list = NULL;
+	gboolean done = FALSE;
+
+	if( tokenCnt ) *tokenCnt = 0;
+	if( line == NULL ) return NULL;
+	if( maxTokens < 1 ) return NULL;
+
+	ptr = line;
+	while( ! done ) {
+		args++;
+		/* Skip over leading spaces */
+		while( *ptr ) {
+			if( ! isspace( *ptr ) ) break;
+			ptr++;	
+		}
+
+		/* Find terminating space */
+		pFound = NULL;
+		pStart = ptr;
+		while( *ptr ) {
+			if( isspace( *ptr ) ) {
+				pFound = pStart;
+				break;
+			}
+			ptr++;
+		}
+
+		if( pFound ) {
+			if( args == maxTokens ) {
+				/* Rest of string */
+				str = g_strdup( pStart );
+				done = TRUE;
+			}
+			else {
+				/* Extract part of string */
+				str = g_strndup( pStart, ptr - pFound );
+			}
+		}
+		else {
+			/* Nothing there - treat as rest of string */
+			str = g_strdup( pStart );
+			done = TRUE;
+		}
+		list = g_list_append( list, str );
+	}
+	if( tokenCnt ) *tokenCnt = args;
+	return list;
+}
+
+/*
 * End of Source.
 */
