@@ -1,4 +1,10 @@
+2003-11-29 [christoph]	0.9.7claws9
+
+	* src/procheader.c
+		fix bug in unfolding
+
 2003-11-29 [luke]	0.9.7claws8
+
 	* src/textview.c
 		fix compilation for non c99 compilers
 
