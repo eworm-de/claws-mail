@@ -1,3 +1,16 @@
+2005-03-29 [paul]	1.0.4cvs1
+
+	* src/compose.c
+		fix bug 697 'Segmentation Fault due to
+		NULL string (%s) pointers in fprintf'
+		draft privacy information only when
+		privacy system available
+		patch by by Markus Schwarzenberg
+		(schwarzb<AT>ipms_fraunhofer_de)
+	* src/gtk/gtkaspell.c
+		don't pass NULL to *printf() and the likes
+		spotted by Alex Moore, patch by Alfons 
+
 2005-03-24 [paul]	1.0.4
 
 	* 1.0.4 released
