@@ -1,4 +1,4 @@
-2001-10-31 [christoph]	0.6.4claws18
+2001-11-01 [christoph]	0.6.4claws18
 
 	* src/prefs_account.c
 		fixed mess in account settings dialog
