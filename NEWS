@@ -1,5 +1,20 @@
 Changes of Sylpheed
 
+* 0.8.3
+
+    * The state of compose window is now changed automatically when the
+      account is selected.
+    * The option to only mark message as read when opened in new window has
+      been added.
+    * The receive progress dialog now shows detailed information in the
+      status list.
+    * The receive progress dialog can be kept open.
+    * The line-joining problem of auto-wrapping has been fixed.
+    * IMAP and News cache files/directores are now correctly purged if
+      they become unnecessary.
+    * The wrong news article number calculation has been fixed.
+    * The summary refresh problem has been fixed.
+
 * 0.8.2
 
     * GnuPG improvements and fix
