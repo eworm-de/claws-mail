@@ -646,8 +646,7 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 {
 	gchar *file;
 	MimeInfo *mimeinfo, *encinfo;
-	MimeInfo * decrypted;
-	
+
 	g_return_if_fail(msginfo != NULL);
 
 	mimeinfo = procmime_scan_message(msginfo);
@@ -655,17 +654,10 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 
 	while ((encinfo = find_encrypted_part(mimeinfo)) != NULL) {
 		debug_print("decrypting message part\n");
-		decrypted = privacy_mimeinfo_decrypt(encinfo);
-		if (decrypted == NULL) {
+		if (privacy_mimeinfo_decrypt(encinfo) < 0)
 			break;
-		}
-		else if (procmime_mimeinfo_parent(decrypted) == NULL) {
-			procmime_mimeinfo_free_all(mimeinfo);
-			mimeinfo = decrypted;
-			break;
-		}
 	}
-
+	
 	file = procmsg_get_message_file_path(msginfo);
 	if (!file) {
 		g_warning("can't get message file path.\n");
