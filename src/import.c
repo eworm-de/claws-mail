@@ -107,7 +107,7 @@ gint import_mbox(FolderItem *default_dest)
 				g_warning("Can't find the folder.\n");
 			} else {
 				ok = proc_mbox(dest, filename);
-				folderview_update_item(dest, TRUE);
+				folder_update_item(dest, TRUE);
 			}
 		}
 	}

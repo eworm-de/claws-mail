@@ -2844,7 +2844,7 @@ gint compose_send(Compose *compose)
 	g_free(msgpath);
 
 	folder_item_remove_msg(folder, msgnum);
-	folderview_update_item(folder, TRUE);
+	folder_update_item(folder, TRUE);
 
 	return val;
 }
@@ -2947,7 +2947,7 @@ gint compose_send(Compose *compose)
 		if (compose->mode == COMPOSE_REEDIT) {
 			compose_remove_reedit_target(compose);
 			if (compose->targetinfo)
-				folderview_update_item
+				folder_update_item
 					(compose->targetinfo->folder, TRUE);
 		}
 		/* save message to outbox */
@@ -2960,7 +2960,7 @@ gint compose_send(Compose *compose)
 				alertpanel_error
 					(_("Can't save the message to Sent."));
 			else
-				folderview_update_item(outbox, TRUE);
+				folder_update_item(outbox, TRUE);
 		}
 	}
 
@@ -3502,7 +3502,7 @@ void compose_remove_draft(Compose *compose)
 
 	if (procmsg_msg_exist(msginfo)) {
 		folder_item_remove_msg(drafts, msginfo->msgnum);
-		folderview_update_item(drafts, TRUE);
+		folder_update_item(drafts, TRUE);
 	}
 
 }
@@ -3714,11 +3714,11 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		compose_remove_reedit_target(compose);
 		if (compose->targetinfo &&
 		    compose->targetinfo->folder != queue)
-			folderview_update_item
+			folder_update_item
 				(compose->targetinfo->folder, TRUE);
 	}
 
-	folderview_update_item(queue, TRUE);
+	folder_update_item(queue, TRUE);
 
 	if ((msgnum != NULL) && (item != NULL)) {
 		*msgnum = num;
@@ -6371,14 +6371,14 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		compose_remove_reedit_target(compose);
 		if (compose->targetinfo &&
 		    compose->targetinfo->folder != draft)
-			folderview_update_item(compose->targetinfo->folder,
+			folder_update_item(compose->targetinfo->folder,
 					       TRUE);
 	}
 
 	newmsginfo = folder_item_fetch_msginfo(draft, msgnum);
 	procmsg_msginfo_unset_flags(newmsginfo, ~0, ~0);
 	MSG_SET_TMP_FLAGS(newmsginfo->flags, MSG_DRAFT);
-	folderview_update_item(draft, TRUE);
+	folder_update_item(draft, TRUE);
 	procmsg_msginfo_free(newmsginfo);
 	
 	lock = FALSE;

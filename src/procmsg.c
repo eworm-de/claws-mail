@@ -899,7 +899,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 		procmsg_msginfo_free(msginfo);
 	}
 
-	folderview_update_item(queue, FALSE);
+	folder_update_item(queue, FALSE);
 
 	return ret;
 }

@@ -613,7 +613,7 @@ void prefs_folder_item_ok_cb(GtkWidget *widget,
 	prefs->color = dialog->item->prefs->color;
 	/* update folder view */
 	if (prefs->color > 0)
-		folderview_update_item(dialog->item, FALSE);
+		folder_update_item(dialog->item, FALSE);
 
 	prefs_folder_item_save_config(dialog->item);
 	prefs_folder_item_destroy(dialog);

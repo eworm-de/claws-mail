@@ -104,6 +104,9 @@ typedef void (*FolderDestroyNotify)	(Folder		*folder,
 					 gpointer	 data);
 typedef void (*FolderItemFunc)		(FolderItem	*item,
 					 gpointer	 data);
+typedef void (*FolderItemUpdateFunc)	(FolderItem	*item,
+					 gboolean	 contentchange,
+					 gpointer	 data);
 
 struct _Folder
 {
@@ -384,5 +387,14 @@ void folder_item_write_cache		(FolderItem *item);
 void folder_item_set_default_flags	(FolderItem *dest, MsgFlags *flags);
 
 void folder_item_apply_processing	(FolderItem *item);
+
+void folder_update_item			(FolderItem *item,
+					 gboolean contentchange);
+void folder_update_items_when_required	(gboolean contentchange);
+void folder_update_item_recursive	(FolderItem *item,
+					 gboolean update_summary);
+gint folder_item_update_callback_register(FolderItemUpdateFunc func,
+					  gpointer data);
+void folder_item_update_callback_unregister(gint id);
 
 #endif /* __FOLDER_H__ */

@@ -278,7 +278,7 @@ static gint disposition_notification_queue(PrefsAccount * account,
 	}
 	g_free(tmp);
 
-	folderview_update_item(queue, TRUE);
+	folder_update_item(queue, TRUE);
 
 	return 0;
 }

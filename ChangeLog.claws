@@ -1,3 +1,18 @@
+2002-11-09 [christoph]	0.8.5claws104
+
+	* src/compose.c
+	* src/folder.[ch]
+	* src/folderview.[ch]
+	* src/import.c
+	* src/inc.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/prefs_folder_item.c
+	* src/procmsg.c
+	* src/summaryview.c
+		implement a callback system for folder item updates
+
 2002-11-09 [colin]	0.8.5claws103
 
 	* src/folderview.c

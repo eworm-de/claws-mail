@@ -2129,7 +2129,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 
 		g_node_destroy(root);
 
-		folderview_update_items_when_required(FALSE);
+		folder_update_items_when_required(FALSE);
 
 		summary_thread_init(summaryview);
 	} else {
@@ -2321,7 +2321,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 		if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
 			procmsg_msginfo_unset_flags
 				(msginfo, MSG_NEW | MSG_UNREAD, 0);
-			folderview_update_item(msginfo->folder, FALSE);
+			folder_update_item(msginfo->folder, FALSE);
 			summary_set_row_marks(summaryview, row);
 			gtk_clist_thaw(GTK_CLIST(ctree));
 			summary_status_show(summaryview);
@@ -2647,7 +2647,7 @@ static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
 	if (changed && !prefs_common.immediate_exec) {
 		msginfo->to_folder->op_count--;
 		if (msginfo->to_folder->op_count == 0)
-			folderview_update_item(msginfo->to_folder, 0);
+			folder_update_item(msginfo->to_folder, FALSE);
 	}
 	msginfo->to_folder = NULL;
 	procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_MOVE | MSG_COPY);
@@ -2677,7 +2677,7 @@ static void summary_lock_row(SummaryView *summaryview, GtkCTreeNode *row)
 	if (changed && !prefs_common.immediate_exec) {
 		msginfo->to_folder->op_count--;
 		if (msginfo->to_folder->op_count == 0)
-			folderview_update_item(msginfo->to_folder, 0);
+			folder_update_item(msginfo->to_folder, FALSE);
 	}
 	msginfo->to_folder = NULL;
 	procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_MOVE | MSG_COPY);
@@ -2728,7 +2728,7 @@ void summary_mark_as_read(SummaryView *summaryview)
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
 		summary_mark_row_as_read(summaryview,
 					 GTK_CTREE_NODE(cur->data));
-	folderview_update_items_when_required(FALSE);
+	folder_update_items_when_required(FALSE);
 
 	summary_status_show(summaryview);
 }
@@ -2749,7 +2749,7 @@ void summary_mark_all_read(SummaryView *summaryview)
 			summary_set_row_marks(summaryview, node);
 	}
 	gtk_clist_thaw(clist);
-	folderview_update_items_when_required(FALSE);
+	folder_update_items_when_required(FALSE);
 
 	summary_status_show(summaryview);
 }
@@ -2786,7 +2786,7 @@ void summary_mark_as_unread(SummaryView *summaryview)
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
 		summary_mark_row_as_unread(summaryview,
 					   GTK_CTREE_NODE(cur->data));
-	folderview_update_items_when_required(FALSE);
+	folder_update_items_when_required(FALSE);
 
 	summary_status_show(summaryview);
 }
@@ -2866,7 +2866,7 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 	if (changed && !prefs_common.immediate_exec) {
 		msginfo->to_folder->op_count--;
 		if (msginfo->to_folder->op_count == 0)
-			folderview_update_item(msginfo->to_folder, 0);
+			folder_update_item(msginfo->to_folder, FALSE);
 	}
 	msginfo->to_folder = NULL;
 	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED, MSG_MOVE | MSG_COPY);
@@ -3022,7 +3022,7 @@ static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
 	if (changed && !prefs_common.immediate_exec) {
 		msginfo->to_folder->op_count--;
 		if (msginfo->to_folder->op_count == 0)
-			folderview_update_item(msginfo->to_folder, 0);
+			folder_update_item(msginfo->to_folder, FALSE);
 	}
 	msginfo->to_folder = NULL;
 	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_MOVE | MSG_COPY);
@@ -3057,7 +3057,7 @@ static void summary_move_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 		if (!prefs_common.immediate_exec) {
 			msginfo->to_folder->op_count--;
 			if (msginfo->to_folder->op_count == 0) {
-				folderview_update_item(msginfo->to_folder, 0);
+				folder_update_item(msginfo->to_folder, FALSE);
 				changed = TRUE;
 			}
 		}
@@ -3081,7 +3081,7 @@ static void summary_move_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 		if (changed) {
 			msginfo->to_folder->op_count++;
 			if (msginfo->to_folder->op_count == 1)
-				folderview_update_item(msginfo->to_folder, 0);
+				folder_update_item(msginfo->to_folder, FALSE);
 		}
 	}
 
@@ -3116,7 +3116,7 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 	else {
 		summary_status_show(summaryview);
 
-		folderview_update_item(to_folder, 0);
+		folder_update_item(to_folder, FALSE);
 	}
 	
 	if (!summaryview->selected) { /* this was the last message */
@@ -3154,7 +3154,7 @@ static void summary_copy_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 		if (!prefs_common.immediate_exec) {
 			msginfo->to_folder->op_count--;
 			if (msginfo->to_folder->op_count == 0) {
-				folderview_update_item(msginfo->to_folder, 0);
+				folder_update_item(msginfo->to_folder, FALSE);
 				changed = TRUE;
 			}
 		}
@@ -3178,7 +3178,7 @@ static void summary_copy_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 		if (changed) {
 			msginfo->to_folder->op_count++;
 			if (msginfo->to_folder->op_count == 1)
-				folderview_update_item(msginfo->to_folder, 0);
+				folder_update_item(msginfo->to_folder, FALSE);
 		}
 	}
 
@@ -3213,7 +3213,7 @@ void summary_copy_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 	else {
 		summary_status_show(summaryview);
 
-		folderview_update_item(to_folder, 0);
+		folder_update_item(to_folder, FALSE);
 	}
 }
 
@@ -3447,7 +3447,7 @@ static void summary_execute_move(SummaryView *summaryview)
 	if (summaryview->mlist) {
 		procmsg_move_messages(summaryview->mlist);
 
-		folderview_update_items_when_required(FALSE);
+		folder_update_items_when_required(FALSE);
 
 		for (cur = summaryview->mlist; cur != NULL; cur = cur->next)
 			procmsg_msginfo_free((MsgInfo *)cur->data);
@@ -3455,7 +3455,7 @@ static void summary_execute_move(SummaryView *summaryview)
 		summaryview->mlist = NULL;
 	}
 
-	folderview_update_item(summaryview->folder_item, FALSE);
+	folder_update_item(summaryview->folder_item, FALSE);
 }
 
 static void summary_execute_move_func(GtkCTree *ctree, GtkCTreeNode *node,
@@ -3494,7 +3494,7 @@ static void summary_execute_copy(SummaryView *summaryview)
 	if (summaryview->mlist) {
 		procmsg_copy_messages(summaryview->mlist);
 
-		folderview_update_items_when_required(FALSE);
+		folder_update_items_when_required(FALSE);
 
 		g_slist_free(summaryview->mlist);
 		summaryview->mlist = NULL;
@@ -3552,9 +3552,9 @@ static void summary_execute_delete(SummaryView *summaryview)
 	summaryview->mlist = NULL;
 
 	if ((summaryview->folder_item != trash) && (trash != NULL)) {
-		folderview_update_item(trash, FALSE);
+		folder_update_item(trash, FALSE);
 	}
-	folderview_update_item(summaryview->folder_item, FALSE);
+	folder_update_item(summaryview->folder_item, FALSE);
 }
 
 static void summary_execute_delete_func(GtkCTree *ctree, GtkCTreeNode *node,
@@ -3849,7 +3849,7 @@ void summary_filter(SummaryView *summaryview)
 
 		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 
-		folderview_update_items_when_required(FALSE);
+		folder_update_items_when_required(FALSE);
 	}
 
 	debug_print("done.\n");
@@ -5019,7 +5019,7 @@ static void news_flag_crosspost(MsgInfo *msginfo)
 			debug_print(" <%s>", (gchar *)value);
 			if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
 				procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
-				folderview_update_item(msginfo->folder, FALSE);
+				folder_update_item(msginfo->folder, FALSE);
 				procmsg_msginfo_set_flags(msginfo, mff->account->crosspost_col, 0);
 			}
 			g_hash_table_remove(mff->newsart, key);
@@ -5082,7 +5082,7 @@ static void summary_ignore_thread(SummaryView *summaryview)
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next) {
 		gtk_ctree_pre_recursive(ctree, GTK_CTREE_NODE(cur->data), GTK_CTREE_FUNC(summary_ignore_thread_func), summaryview);
 	}
-	folderview_update_items_when_required(FALSE);
+	folder_update_items_when_required(FALSE);
 
 	summary_status_show(summaryview);
 }
@@ -5114,7 +5114,7 @@ static void summary_unignore_thread(SummaryView *summaryview)
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next) {
 		gtk_ctree_pre_recursive(ctree, GTK_CTREE_NODE(cur->data), GTK_CTREE_FUNC(summary_unignore_thread_func), summaryview);
 	}
-	folderview_update_items_when_required(FALSE);
+	folder_update_items_when_required(FALSE);
 
 	summary_status_show(summaryview);
 }
