@@ -1247,9 +1247,9 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 	node = item->node->children;
 	while (node != NULL) {
 		FolderItem *old_item = FOLDER_ITEM(node->data);
-		new_item = NULL;
 		GNode *next = node->next;
 
+		new_item = NULL;
 		for (cur = item_list; cur != NULL; cur = cur->next) {
 			FolderItem *cur_item = FOLDER_ITEM(cur->data);
 			if (!strcmp2(old_item->path, cur_item->path)) {

@@ -1,3 +1,8 @@
+2003-08-27 [thorsten]	0.9.4claws39
+
+	* src/imap.c
+		fix compile error
+
 2003-08-26 [paul]	0.9.4claws38
 
 	* sync with 0.9.4cvs9
