@@ -82,6 +82,8 @@ static void partial_recv_show		(NoticeView     *noticeview,
 				         MsgInfo        *msginfo);	
 static void partial_recv_dload_clicked (NoticeView	*noticeview, 
                                          MsgInfo        *msginfo);
+static void partial_recv_del_clicked (NoticeView	*noticeview, 
+                                         MsgInfo        *msginfo);
 static void save_as_cb			(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -1062,9 +1064,12 @@ static void return_receipt_send_clicked(NoticeView *noticeview, MsgInfo *msginfo
 static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 {
 	gchar *text = NULL;
-	if (!msginfo->planned_download) {
+	if (!pop3_msg_in_uidl_list(msginfo->account_server, msginfo->account_login,
+				   msginfo->partial_recv))
+		return;
+	if (msginfo->planned_download == 0) {
 		text = g_strdup_printf(_("This message has been partially "
-				 "retrieved; it is %s large."), 
+				 "retrieved;\n it is %s large."), 
 				 to_human_readable(
 				 	(off_t)(msginfo->total_size)));
 
@@ -1074,16 +1079,39 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 		noticeview_set_button_press_callback(noticeview,
 			     GTK_SIGNAL_FUNC(partial_recv_dload_clicked),
 			     (gpointer) msginfo);
+		noticeview_set_2ndbutton_text(noticeview, _("Mark for deletion"));
+		noticeview_set_2ndbutton_press_callback(noticeview,
+			     GTK_SIGNAL_FUNC(partial_recv_del_clicked),
+			     (gpointer) msginfo);
 		noticeview_show(noticeview);
-	} else {
+	} else if (msginfo->planned_download == 1) {
 		text = g_strdup_printf(_("This message has been partially "
 				 "retrieved and is planned for "
-				 "download; it is %s large."), 
+				 "download;\n it is %s large."), 
 				 to_human_readable(
 				 	(off_t)(msginfo->total_size)));
 
 		noticeview_set_text(noticeview, text);
-		noticeview_set_button_text(noticeview, NULL);
+		noticeview_set_button_text(noticeview, _("Mark for deletion"));
+		noticeview_set_2ndbutton_text(noticeview, NULL);
+		noticeview_set_button_press_callback(noticeview,
+			     GTK_SIGNAL_FUNC(partial_recv_del_clicked),
+			     (gpointer) msginfo);
+		g_free(text);
+		noticeview_show(noticeview);
+	} else if (msginfo->planned_download == -1) {
+		text = g_strdup_printf(_("This message has been partially "
+				 "retrieved and is planned for "
+				 "deletion;\n it is %s large."), 
+				 to_human_readable(
+				 	(off_t)(msginfo->total_size)));
+
+		noticeview_set_text(noticeview, text);
+		noticeview_set_button_text(noticeview, _("Mark for download"));
+		noticeview_set_2ndbutton_text(noticeview, NULL);
+		noticeview_set_button_press_callback(noticeview,
+			     GTK_SIGNAL_FUNC(partial_recv_dload_clicked),
+			     (gpointer) msginfo);
 		g_free(text);
 		noticeview_show(noticeview);
 	}
@@ -1109,6 +1137,33 @@ static void partial_recv_dload_clicked(NoticeView *noticeview,
 				   tmpmsginfo->account_login, 
 			   	   tmpmsginfo->partial_recv, file) == 0) {
 		msginfo->planned_download = 1;
+		partial_recv_show(noticeview, msginfo);
+	}
+
+	procmsg_msginfo_free(tmpmsginfo);
+	g_free(file);
+}
+
+static void partial_recv_del_clicked(NoticeView *noticeview, 
+				       MsgInfo *msginfo)
+{
+	MsgInfo *tmpmsginfo;
+	gchar *file;
+
+	file = procmsg_get_message_file_path(msginfo);
+	if (!file) {
+		g_warning("can't get message file path.\n");
+		return;
+	}
+
+	tmpmsginfo = procheader_parse_file(file, msginfo->flags, TRUE, TRUE);
+	tmpmsginfo->folder = msginfo->folder;
+	tmpmsginfo->msgnum = msginfo->msgnum;
+
+	if (pop3_mark_for_delete(tmpmsginfo->account_server, 
+				   tmpmsginfo->account_login, 
+			   	   tmpmsginfo->partial_recv, file) == 0) {
+		msginfo->planned_download = -1;
 		partial_recv_show(noticeview, msginfo);
 	}
 

@@ -1,3 +1,14 @@
+2004-07-08 [colin]	0.9.11cvs17.16
+
+	* src/noticeview.c
+	* src/noticeview.h
+		Add an optional second button
+	* src/messageview.c
+	* src/pop.c
+	* src/pop.h
+		Don't delete partially received mails after a certain
+		time; rather, let the user decide.
+
 2004-07-08 [colin]	0.9.11cvs17.15
 
 	* src/common/smtp.h

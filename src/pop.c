@@ -609,6 +609,59 @@ void pop3_get_uidl_table(PrefsAccount *ac_prefs, Pop3Session *session)
 	return;
 }
 
+int pop3_msg_in_uidl_list(const gchar *server, const gchar *login, 
+			  const gchar *muidl)
+{
+	gchar *path;
+	FILE *fp;
+	gchar buf[POPBUFSIZE];
+	gchar uidl[POPBUFSIZE];
+	time_t recv_time;
+	time_t now;
+	gint partial_recv;
+	
+	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+			   "uidl", G_DIR_SEPARATOR_S, server,
+			   "-", login, NULL);
+	if ((fp = fopen(path, "rb")) == NULL) {
+		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
+		g_free(path);
+		path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+				   "uidl-", server,
+				   "-", login, NULL);
+		if ((fp = fopen(path, "rb")) == NULL) {
+			if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
+			g_free(path);
+			return FALSE;
+		}
+	}
+	g_free(path);
+
+	now = time(NULL);
+
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		gchar tmp[POPBUFSIZE];
+		strretchomp(buf);
+		recv_time = RECV_TIME_NONE;
+		partial_recv = 0;
+		
+		if (sscanf(buf, "%s\t%ld\t%s", uidl, &recv_time, &tmp) < 2) {
+			if (sscanf(buf, "%s", uidl) != 1)
+				continue;
+			else {
+				recv_time = now;
+			}
+		}
+		if (!strcmp(uidl, muidl)) {
+			fclose(fp);
+			return TRUE;
+		}
+	}
+
+	fclose(fp);	
+	return FALSE;
+}
+
 static gchar *pop3_get_filename_for_partial_mail(Pop3Session *session, 
 						 gchar *muidl)
 {
@@ -665,8 +718,11 @@ static gchar *pop3_get_filename_for_partial_mail(Pop3Session *session,
 	return result;
 }
 
-int pop3_mark_for_download(const gchar *server, const gchar *login, 
-			   const gchar *muidl, const gchar *filename)
+#define DOWNLOAD_MAIL 1
+#define DELETE_MAIL 2
+static int pop3_mark_mail(const gchar *server, const gchar *login, 
+			  const gchar *muidl, const gchar *filename, 
+			  int download)
 {
 	gchar *path;
 	gchar *pathnew;
@@ -677,9 +733,9 @@ int pop3_mark_for_download(const gchar *server, const gchar *login,
 	time_t recv_time;
 	time_t now;
 	int len;
+	int start = TRUE;
 	gchar partial_recv[POPBUFSIZE];
 	
-
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl", G_DIR_SEPARATOR_S, server,
 			   "-", login, NULL);
@@ -727,7 +783,8 @@ int pop3_mark_for_download(const gchar *server, const gchar *login,
 				uidl, recv_time, partial_recv);
 		} else {
 			fprintf(fpnew, "%s\t%ld\t%s\n", 
-				uidl, recv_time, filename);
+				uidl, recv_time, 
+				download==DOWNLOAD_MAIL?filename:"0");
 		}
 	}
 	fclose(fpnew);
@@ -750,8 +807,17 @@ int pop3_mark_for_download(const gchar *server, const gchar *login,
 		return -1;
 	}
 	
-	fprintf(fpnew, "SC-Marked-For-Download: 1\n");
 	while ((len = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
+		if (start) {
+			start = FALSE;
+			fprintf(fpnew, "SC-Marked-For-Download: %d\n", download);
+			printf("buf '%s'\n", buf);
+			if(!strncmp(buf, "SC-Marked-For-Download:", 
+			            strlen("SC-Marked-For-Download:"))) {
+				fprintf(fpnew, "%s", buf+strlen("SC-Marked-For-Download: x\n"));
+				continue;
+			}
+		}
 		fprintf(fpnew, "%s", buf);
 	}
 	fclose(fpnew);
@@ -761,6 +827,18 @@ int pop3_mark_for_download(const gchar *server, const gchar *login,
 	
 	g_free(pathnew);
 	return 0;
+}
+
+int pop3_mark_for_delete(const gchar *server, const gchar *login, 
+			 const gchar *muidl, const gchar *filename)
+{
+	return pop3_mark_mail(server, login, muidl, filename, DELETE_MAIL);
+}
+
+int pop3_mark_for_download(const gchar *server, const gchar *login, 
+			 const gchar *muidl, const gchar *filename)
+{
+	return pop3_mark_mail(server, login, muidl, filename, DOWNLOAD_MAIL);
 }
 
 gint pop3_write_uidl_list(Pop3Session *session)
@@ -893,22 +971,14 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 		if (ac->rmmail &&
 		    msg->recv_time != RECV_TIME_NONE &&
 		    msg->recv_time != RECV_TIME_KEEP &&
+		    msg->partial_recv == 0 &&
 		    session->current_time - msg->recv_time >=
 		    ac->msg_leave_time * 24 * 60 * 60) {
-		    	if (msg->partial_recv == 0) {
-				log_message
-					(_("POP3: Deleting expired message "
-					   "%d\n"), session->cur_msg);
-				pop3_delete_send(session);
-				return POP3_DELETE;
-			} else if (session->current_time - msg->recv_time >=
-				   5 * 24 * 60 * 60) {
-				log_message
-					(_("POP3: Deleting too big expired "
-					   "message %d\n"), session->cur_msg);
-				pop3_delete_send(session);
-				return POP3_DELETE;
-			}
+			log_message
+				(_("POP3: Deleting expired message "
+				   "%d\n"), session->cur_msg);
+			pop3_delete_send(session);
+			return POP3_DELETE;
 		}
 
 		if (size_limit_over) {

@@ -156,7 +156,14 @@ struct _Pop3Session
 Session *pop3_session_new	(PrefsAccount	*account);
 void pop3_get_uidl_table	(PrefsAccount	*account, Pop3Session *session);
 gint pop3_write_uidl_list	(Pop3Session	*session);
+gint pop3_msg_in_uidl_list	(const gchar 	*server, 
+				 const gchar 	*login, 
+				 const gchar 	*uidl);
 int pop3_mark_for_download	(const gchar 	*server, 
+				 const gchar 	*login, 
+				 const gchar 	*uidl, 
+				 const gchar 	*filename);
+int pop3_mark_for_delete	(const gchar 	*server, 
 				 const gchar 	*login, 
 				 const gchar 	*uidl, 
 				 const gchar 	*filename);

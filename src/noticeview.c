@@ -46,6 +46,7 @@
 #include "noticeview.h"
 
 static void noticeview_button_pressed	(GtkButton *button, NoticeView *noticeview);
+static void noticeview_2ndbutton_pressed(GtkButton *button, NoticeView *noticeview);
 
 NoticeView *noticeview_create(MainWindow *mainwin)
 {
@@ -56,6 +57,7 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	GtkWidget  *icon;
 	GtkWidget  *text;
 	GtkWidget  *widget;
+	GtkWidget  *widget2;
 
 	debug_print("Creating notice view...\n");
 	noticeview = g_new0(NoticeView, 1);
@@ -90,12 +92,19 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 			 (gpointer) noticeview);
 	gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 4);
 	
+	widget2 = gtk_button_new_with_label("");
+	g_signal_connect(G_OBJECT(widget2), "clicked", 
+			 G_CALLBACK(noticeview_2ndbutton_pressed),
+			 (gpointer) noticeview);
+	gtk_box_pack_start(GTK_BOX(hbox), widget2, FALSE, FALSE, 4);
+	
 	noticeview->vbox   = vbox;
 	noticeview->hsep   = hsep;
 	noticeview->hbox   = hbox;
 	noticeview->icon   = icon;
 	noticeview->text   = text;
 	noticeview->button = widget;
+	noticeview->button2 = widget2;
 
 	noticeview->visible = TRUE;
 
@@ -158,6 +167,33 @@ static void noticeview_button_pressed(GtkButton *button, NoticeView *noticeview)
 {
 	if (noticeview->press) {
 		noticeview->press(noticeview, noticeview->user_data);
+	}
+}
+
+void noticeview_set_2ndbutton_text(NoticeView *noticeview, const char *text)
+{
+	g_return_if_fail(noticeview);
+
+	if (text != NULL) {
+		gtk_label_set_text
+			(GTK_LABEL(GTK_BIN(noticeview->button2)->child), text);
+		gtk_widget_show(noticeview->button2);
+	} else
+		gtk_widget_hide(noticeview->button2);
+}
+
+void noticeview_set_2ndbutton_press_callback(NoticeView	*noticeview,
+				          GtkSignalFunc  callback,
+					  gpointer	*user_data)
+{
+	noticeview->press2     = (void (*) (NoticeView *, gpointer)) callback;
+	noticeview->user_data2 = user_data;
+}
+
+static void noticeview_2ndbutton_pressed(GtkButton *button, NoticeView *noticeview)
+{
+	if (noticeview->press2) {
+		noticeview->press2(noticeview, noticeview->user_data2);
 	}
 }
 
