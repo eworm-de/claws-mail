@@ -1,3 +1,15 @@
+2002-02-24 [alfons]	0.7.2claws9
+
+	* src/summaryview.c
+	* src/filtering.c
+		make Tool | Filter Message work with filtering system so
+		setting flags also works
+
+		TODO:
+
+		- Processing uses the same function as Tool | Filter
+		  Message, but doesn't use the same update proc yet
+
 2002-02-23 [paul]	0.7.2claws8
 
 	* sync with sylpheed 0.7.2cvs14

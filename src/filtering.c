@@ -184,6 +184,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		return TRUE;
 
 	case MATCHACTION_MARK_AS_UNREAD:
+		debug_print("*** setting unread flags\n");
 		MSG_SET_PERM_FLAGS(info->flags, MSG_UNREAD | MSG_NEW);
 		return TRUE;
 	
@@ -276,7 +277,7 @@ static gboolean filtering_apply_rule(FilteringProp *filtering, MsgInfo *info,
 
 	if (FALSE == (result = filteringaction_apply(filtering->action, info, foldertable))) {
 		g_warning(_("action %s could not be applied"), 
-			  filteringaction_to_string(buf, sizeof buf, filtering->action));
+		filteringaction_to_string(buf, sizeof buf, filtering->action));
 	}
 	return result;
 }
@@ -328,45 +329,58 @@ static void filter_msginfo(GSList * filtering_list, FolderItem *inbox,
 	/* put in inbox if a final rule could not be applied, or
 	 * the last rule was not a final one. */
 	if ((final && !applied) || !final) {
-		if (folder_item_move_msg(inbox, info) == -1) {
-			debug_print(_("*** Could not drop message in inbox; still in .processing\n"));
-			return;
-		}	
-		if (folder_table) {
-			val = GPOINTER_TO_INT(g_hash_table_lookup
-					      (folder_table, inbox));
-			if (val == 0) {
-				folder_item_scan(inbox);
-				g_hash_table_insert(folder_table, inbox,
-						    GINT_TO_POINTER(1));
-			}
-		}
-	}
-}
-
-void filter_msginfo_move_or_delete(GSList * filtering_list, MsgInfo * info,
-				   GHashTable *folder_table)
-{
-	GSList * l;
-
-	if (info == NULL) {
-		g_warning(_("msginfo is not set"));
-		return;
-	}
-	
-	for(l = filtering_list ; l != NULL ; l = g_slist_next(l)) {
-		FilteringProp * filtering = (FilteringProp *) l->data;
-
-		switch (filtering->action->type) {
-		case MATCHACTION_MOVE:
-		case MATCHACTION_DELETE:
-			if (filtering_match_condition(filtering, info) &&
-			    filtering_apply_rule(filtering, info, folder_table))
+		if (inbox != info->folder) {
+			if (folder_item_move_msg(inbox, info) == -1) {
+				debug_print(_("*** Could not drop message in inbox; check .processing\n"));
 				return;
-		}
+			}	
+			if (folder_table) {
+				val = GPOINTER_TO_INT(g_hash_table_lookup
+						      (folder_table, inbox));
+				if (val == 0) {
+					folder_item_scan(inbox);
+					g_hash_table_insert(folder_table, inbox,
+							    GINT_TO_POINTER(1));
+				}
+			}
+		}	
 	}
 }
 
+/*!
+ *\brief	filters a message based on its message info data
+ *
+ *\param	flist filter and actions list
+ *\param	info message
+ *\param	ftable table with changed folders after call
+ */
+void filter_message_by_msginfo(GSList *flist, MsgInfo *info, GHashTable *ftable)
+{
+	FolderItem *inbox;
+
+	if (info->folder == NULL) {
+		debug_print("using default inbox as final destination!\n");
+		inbox = folder_get_default_inbox(); 
+	} else
+		inbox = info->folder;
+
+	/*
+	 * message is already in a folder. the filtering code will
+	 * handle duplicate moves and copies.
+	 */
+	filter_msginfo(flist, inbox,  info, ftable);
+}
+
+/*!
+ *\brief	filters a message waiting to be processed in the
+ *		.processing folder. 
+ *
+  *\param	filtering_list list of filters and actions
+  *\param	inbox default inbox when no filter could be applied
+  *\param	msgnum message number in processing folder
+  *\param	folder_table table with folders that have been
+  *		changed after the call to this function
+  */
 void filter_message(GSList *filtering_list, FolderItem *inbox,
 		    gint msgnum, GHashTable *folder_table)
 {
