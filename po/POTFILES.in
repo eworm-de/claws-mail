@@ -31,7 +31,6 @@ src/grouplistdialog.c
 src/gtkspell.c
 src/gtkutils.c
 src/headerview.c
-src/headerwindow.c
 src/imageview.c
 src/imap.c
 src/import.c
