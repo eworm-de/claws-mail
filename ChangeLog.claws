@@ -1,3 +1,11 @@
+2003-03-30 [alfons]	0.8.11claws65
+
+	* src/send_message.c
+		try fixing crashes when sending messages: my gcc 2.95.4 seems 
+		to generate bad code for 'send_send_data_progressive': When
+		called from 'send_send_data_finished', the 'data' pointer is
+		cleared just before the assignment to the dialog pointer
+
 2003-03-29 [christoph]	0.8.11claws64
 
 	* src/common/prefs.h
