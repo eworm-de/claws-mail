@@ -1336,6 +1336,9 @@ static gboolean messageview_update_msg(gpointer source, gpointer data)
 	MsgInfoUpdate *msginfo_update = (MsgInfoUpdate *) source;
 	MessageView *messageview = (MessageView *)data;
 
+	if (messageview->msginfo != msginfo_update->msginfo)
+		return FALSE;
+
 	if (msginfo_update->flags & MSGINFO_UPDATE_DELETED) {
 		messageview_clear(messageview);
 		messageview_update(messageview);
