@@ -50,6 +50,12 @@
 #include "matcher_parser.h"
 #include "colorlabel.h"
 
+enum {
+	PREFS_MATCHER_COND,
+	PREFS_MATCHER_COND_VALID,
+	N_PREFS_MATCHER_COLUMNS
+};
+
 /*!
  *\brief	UI data for matcher dialog
  */
@@ -80,7 +86,7 @@ static struct Matcher {
 
 	GtkWidget *test_btn;
 
-	GtkWidget *cond_clist;
+	GtkWidget *cond_list_view;
 
 	GtkWidget *criteria_table;
 
@@ -222,7 +228,8 @@ static PrefsMatcherSignal *matchers_callback;
 static void prefs_matcher_create	(void);
 
 static void prefs_matcher_set_dialog	(MatcherList *matchers);
-static gint prefs_matcher_clist_set_row	(gint row, MatcherProp *prop);
+static void prefs_matcher_list_view_set_row	(GtkTreeIter *row, 
+						 MatcherProp *prop);
 
 /* callback functions */
 
@@ -231,10 +238,6 @@ static void prefs_matcher_substitute_cb	(void);
 static void prefs_matcher_delete_cb	(void);
 static void prefs_matcher_up		(void);
 static void prefs_matcher_down		(void);
-static void prefs_matcher_select	(GtkCList	*clist,
-					 gint		 row,
-					 gint		 column,
-					 GdkEvent	*event);
 static gboolean prefs_matcher_key_pressed(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
@@ -247,6 +250,22 @@ static void prefs_matcher_criteria_select	(GtkList   *list,
 						 gpointer   user_data);
 static MatcherList *prefs_matcher_get_list	(void);
 
+static GtkListStore* prefs_matcher_create_data_store	(void);
+
+static void prefs_matcher_list_view_insert_matcher	(GtkWidget *list_view,
+							 GtkTreeIter *row_iter,
+							 const gchar *matcher,
+							 gboolean is_valid);
+
+static GtkWidget *prefs_matcher_list_view_create	(void);
+
+static void prefs_matcher_create_list_view_columns	(GtkWidget *list_view);
+
+static gboolean prefs_matcher_selected			(GtkTreeSelection *selector,
+							 GtkTreeModel *model, 
+							 GtkTreePath *path,
+							 gboolean currently_selected,
+							 gpointer data);
 
 /*!
  *\brief	Find index of list selection 
@@ -343,7 +362,7 @@ static void prefs_matcher_create(void)
 
 	GtkWidget *cond_hbox;
 	GtkWidget *cond_scrolledwin;
-	GtkWidget *cond_clist;
+	GtkWidget *cond_list_view;
 
 	GtkWidget *btn_vbox;
 	GtkWidget *up_btn;
@@ -355,8 +374,6 @@ static void prefs_matcher_create(void)
 
 	GList *combo_items;
 	gint i;
-
-	gchar *title[1];
 
 	debug_print("Creating matcher configuration window...\n");
 
@@ -370,8 +387,8 @@ static void prefs_matcher_create(void)
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
-	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
-				&cancel_btn, _("Cancel"), NULL, NULL);
+	gtkut_button_set_create_stock(&confirm_area, &ok_btn, GTK_STOCK_OK,
+				      &cancel_btn, GTK_STOCK_CANCEL, NULL, NULL);
 	gtk_widget_show(confirm_area);
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
@@ -557,7 +574,7 @@ static void prefs_matcher_create(void)
 	gtk_widget_show(btn_hbox);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_with_label(_("Add"));
+	reg_btn = gtk_button_new_from_stock(GTK_STOCK_ADD);
 	gtk_widget_show(reg_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(reg_btn), "clicked",
@@ -570,7 +587,7 @@ static void prefs_matcher_create(void)
 			 G_CALLBACK(prefs_matcher_substitute_cb),
 			 NULL);
 
-	del_btn = gtk_button_new_with_label(_("Delete"));
+	del_btn = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
 	gtk_widget_show(del_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
@@ -617,29 +634,21 @@ static void prefs_matcher_create(void)
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	title[0] = _("Current condition rules");
-	cond_clist = gtk_clist_new_with_titles(1, title);
-	gtk_widget_show(cond_clist);
-	gtk_container_add(GTK_CONTAINER(cond_scrolledwin), cond_clist);
-	gtk_clist_set_column_width(GTK_CLIST(cond_clist), 0, 80);
-	gtk_clist_set_selection_mode(GTK_CLIST(cond_clist),
-				     GTK_SELECTION_BROWSE);
-	GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(cond_clist)->column[0].button,
-			       GTK_CAN_FOCUS);
-	g_signal_connect(G_OBJECT(cond_clist), "select_row",
-			 G_CALLBACK(prefs_matcher_select), NULL);
+	cond_list_view = prefs_matcher_list_view_create(); 				       
+	gtk_widget_show(cond_list_view);
+	gtk_container_add(GTK_CONTAINER(cond_scrolledwin), cond_list_view);
 
 	btn_vbox = gtk_vbox_new(FALSE, 8);
 	gtk_widget_show(btn_vbox);
 	gtk_box_pack_start(GTK_BOX(cond_hbox), btn_vbox, FALSE, FALSE, 0);
 
-	up_btn = gtk_button_new_with_label(_("Up"));
+	up_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
 	gtk_widget_show(up_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_up), NULL);
 
-	down_btn = gtk_button_new_with_label(_("Down"));
+	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
 	gtk_widget_show(down_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(down_btn), "clicked",
@@ -669,7 +678,7 @@ static void prefs_matcher_create(void)
 	matcher.color_optmenu = color_optmenu;
 	matcher.criteria_table = criteria_table;
 
-	matcher.cond_clist = cond_clist;
+	matcher.cond_list_view = cond_list_view;
 }
 
 /*!
@@ -680,26 +689,26 @@ static void prefs_matcher_create(void)
  *
  *\return	gint Row index \a prop has been added
  */
-static gint prefs_matcher_clist_set_row(gint row, MatcherProp *prop)
+static void prefs_matcher_list_view_set_row(GtkTreeIter *row, MatcherProp *prop)
 {
-	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
-	gchar *cond_str[1];
 	gchar *matcher_str;
 
 	if (prop == NULL) {
-		cond_str[0] = _("(New)");
-		return gtk_clist_append(clist, cond_str);
+		prefs_matcher_list_view_insert_matcher(matcher.cond_list_view,
+						       NULL, _("New"), FALSE);
+		return;						       
 	}
 
 	matcher_str = matcherprop_to_string(prop);
-	cond_str[0] = matcher_str;
-	if (row < 0)
-		row = gtk_clist_append(clist, cond_str);
+	if (!row)
+		prefs_matcher_list_view_insert_matcher(matcher.cond_list_view,
+						       NULL, matcher_str,
+						       TRUE);
 	else
-		gtk_clist_set_text(clist, row, 0, cond_str[0]);
+		prefs_matcher_list_view_insert_matcher(matcher.cond_list_view,
+						       row, matcher_str, 
+						       TRUE);
 	g_free(matcher_str);
-
-	return row;
 }
 
 /*!
@@ -714,44 +723,31 @@ static void prefs_matcher_reset_condition(void)
 }
 
 /*!
- *\brief	Update scrollbar
- */
-static void prefs_matcher_update_hscrollbar(void)
-{
-	gint optwidth = gtk_clist_optimal_column_width(GTK_CLIST(matcher.cond_clist), 0);
-	gtk_clist_set_column_width(GTK_CLIST(matcher.cond_clist), 0, optwidth);
-}
-
-/*!
  *\brief	Initializes dialog with a set of conditions
  *
  *\param	matchers List of conditions
  */
 static void prefs_matcher_set_dialog(MatcherList *matchers)
 {
-	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
 	GSList *cur;
 	gboolean bool_op = 1;
+	GtkListStore *store = GTK_LIST_STORE(gtk_tree_view_get_model
+				(GTK_TREE_VIEW(matcher.cond_list_view)));
 
-	gtk_clist_freeze(clist);
-	gtk_clist_clear(clist);
+	gtk_list_store_clear(store);				
 
-	prefs_matcher_clist_set_row(-1, NULL);
+	prefs_matcher_list_view_set_row(NULL, NULL);
 	if (matchers != NULL) {
 		for (cur = matchers->matchers; cur != NULL;
 		     cur = g_slist_next(cur)) {
 			MatcherProp *prop;
 			prop = (MatcherProp *) cur->data;
-			prefs_matcher_clist_set_row(-1, prop);
+			prefs_matcher_list_view_set_row(NULL, prop);
 		}
 
 		bool_op = matchers->bool_and;
 	}
 	
-	prefs_matcher_update_hscrollbar();
-
-	gtk_clist_thaw(clist);
-
 	gtk_list_select_item(GTK_LIST(matcher.bool_op_list), bool_op);
 
 	prefs_matcher_reset_condition();
@@ -767,27 +763,36 @@ static MatcherList *prefs_matcher_get_list(void)
 {
 	gchar *matcher_str;
 	MatcherProp *prop;
-	gint row = 1;
 	gboolean bool_and;
 	GSList *matcher_list;
 	MatcherList *matchers;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(matcher.cond_list_view));
+	if (!gtk_tree_model_get_iter_first(model, &iter))
+		return NULL;
 
 	matcher_list = NULL;
 
-	while (gtk_clist_get_text(GTK_CLIST(matcher.cond_clist),
-				  row, 0, &matcher_str)) {
-
-		if (strcmp(matcher_str, _("(New)")) != 0) {
+	do {
+		gboolean is_valid;
+	
+		gtk_tree_model_get(model, &iter,
+				   PREFS_MATCHER_COND, &matcher_str,
+				   PREFS_MATCHER_COND_VALID, &is_valid,
+				   -1);
+		
+		if (is_valid) {
 			/* tmp = matcher_str; */
 			prop = matcher_parser_get_prop(matcher_str);
-			
+			g_free(matcher_str);
 			if (prop == NULL)
 				break;
 			
 			matcher_list = g_slist_append(matcher_list, prop);
 		}
-		row ++;
-	}
+	} while (gtk_tree_model_iter_next(model, &iter));
 
 	bool_and = get_sel_from_list(GTK_LIST(matcher.bool_op_list));
 
@@ -1207,12 +1212,11 @@ static void prefs_matcher_register_cb(void)
 	if (matcherprop == NULL)
 		return;
 
-	prefs_matcher_clist_set_row(-1, matcherprop);
+	prefs_matcher_list_view_set_row(NULL, matcherprop);
 
 	matcherprop_free(matcherprop);
 
 	prefs_matcher_reset_condition();
-	prefs_matcher_update_hscrollbar();
 }
 
 /*!
@@ -1220,26 +1224,33 @@ static void prefs_matcher_register_cb(void)
  */
 static void prefs_matcher_substitute_cb(void)
 {
-	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
-	gint row;
 	MatcherProp *matcherprop;
+	GtkTreeIter row;
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	gboolean is_valid;
 
-	if (!clist->selection) return;
-	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row == 0)
+	selection = gtk_tree_view_get_selection
+			(GTK_TREE_VIEW(matcher.cond_list_view));
+	
+	if (!gtk_tree_selection_get_selected(selection, &model, &row))
 		return;
 	
+	gtk_tree_model_get(model, &row, 
+			   PREFS_MATCHER_COND_VALID, &is_valid,
+			   -1);
+	if (!is_valid)
+		return;
+
 	matcherprop = prefs_matcher_dialog_to_matcher();
 	if (matcherprop == NULL)
 		return;
 
-	prefs_matcher_clist_set_row(row, matcherprop);
+	prefs_matcher_list_view_set_row(&row, matcherprop);
 
 	matcherprop_free(matcherprop);
 
 	prefs_matcher_reset_condition();
-	
-	prefs_matcher_update_hscrollbar();
 }
 
 /*!
@@ -1247,19 +1258,27 @@ static void prefs_matcher_substitute_cb(void)
  */
 static void prefs_matcher_delete_cb(void)
 {
-	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
-	gint row;
+	GtkTreeIter row;
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	gboolean is_valid;
 
-	if (!clist->selection) return;
-	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row == 0)
+	selection = gtk_tree_view_get_selection
+			(GTK_TREE_VIEW(matcher.cond_list_view));
+	
+	if (!gtk_tree_selection_get_selected(selection, &model, &row))
+		return;
+		
+	gtk_tree_model_get(model, &row, 
+			   PREFS_MATCHER_COND_VALID, &is_valid,
+			   -1);
+
+	if (!is_valid)
 		return;
 
-	gtk_clist_remove(clist, row);
+	gtk_list_store_remove(GTK_LIST_STORE(model), &row);		
 
 	prefs_matcher_reset_condition();
-
-	prefs_matcher_update_hscrollbar();
 }
 
 /*!
@@ -1267,17 +1286,41 @@ static void prefs_matcher_delete_cb(void)
  */
 static void prefs_matcher_up(void)
 {
-	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
-	gint row;
+	GtkTreePath *prev, *sel, *try;
+	GtkTreeIter isel;
+	GtkListStore *store;
+	GtkTreeIter iprev;
+	
+	if (!gtk_tree_selection_get_selected
+		(gtk_tree_view_get_selection
+			(GTK_TREE_VIEW(matcher.cond_list_view)),
+		 (GtkTreeModel **) &store,	
+		 &isel))
+		return;
 
-	if (!clist->selection) return;
-
-	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row > 1) {
-		gtk_clist_row_move(clist, row, row - 1);
-		if (gtk_clist_row_is_visible(clist, row - 1) != GTK_VISIBILITY_FULL)
-			gtk_clist_moveto(clist, row - 1, 0, 0, 0);
+	sel = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &isel);
+	if (!sel)
+		return;
+	
+	/* no move if we're at row 0 or 1, looks phony, but other
+	 * solutions are more convoluted... */
+	try = gtk_tree_path_copy(sel);
+	if (!gtk_tree_path_prev(try) || !gtk_tree_path_prev(try)) {
+		gtk_tree_path_free(try);
+		gtk_tree_path_free(sel);
+		return;
 	}
+
+	prev = gtk_tree_path_copy(sel);		
+	if (gtk_tree_path_prev(prev)) {
+		gtk_tree_model_get_iter(GTK_TREE_MODEL(store),
+					&iprev, prev);
+		gtk_list_store_swap(store, &iprev, &isel);
+		/* XXX: GTK2 select row?? */
+	}
+
+	gtk_tree_path_free(sel);
+	gtk_tree_path_free(prev);
 }
 
 /*!
@@ -1285,162 +1328,29 @@ static void prefs_matcher_up(void)
  */
 static void prefs_matcher_down(void)
 {
-	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
-	gint row;
-
-	if (!clist->selection) return;
-
-	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row >= 1 && row < clist->rows - 1) {
-		gtk_clist_row_move(clist, row, row + 1);
-		if (gtk_clist_row_is_visible(clist, row + 1) != GTK_VISIBILITY_FULL)
-			gtk_clist_moveto(clist, row + 1, 0, 1, 0);
-	}
-}
-
-/*!
- *\brief	Signal handler for select row.
- *
- *\param	clist List widget
- *\param	row Selected row
- *\param	column Selected column
- *\param	event Event information
- */
-static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
-				 GdkEvent *event)
-{
-	gchar *matcher_str;
-	MatcherProp *prop;
-	gboolean negative_cond;
-	gint criteria;
-
-	if (!gtk_clist_get_text(GTK_CLIST(matcher.cond_clist),
-				row, 0, &matcher_str))
-		return;
-
-	negative_cond = FALSE;
-
-	if (row == 0) {
-		prefs_matcher_reset_condition();
-		return;
-	}
-
-	prop = matcher_parser_get_prop(matcher_str);
-	if (prop == NULL)
-		return;
-
-	criteria = prefs_matcher_get_criteria_from_matching(prop->criteria);
-	if (criteria != -1)
-		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
-				     criteria);
-
-	switch(prop->criteria) {
-	case MATCHCRITERIA_NOT_UNREAD:
-	case MATCHCRITERIA_NOT_NEW:
-	case MATCHCRITERIA_NOT_MARKED:
-	case MATCHCRITERIA_NOT_DELETED:
-	case MATCHCRITERIA_NOT_REPLIED:
-	case MATCHCRITERIA_NOT_FORWARDED:
-	case MATCHCRITERIA_NOT_LOCKED:
-	case MATCHCRITERIA_NOT_PARTIAL:
-	case MATCHCRITERIA_NOT_COLORLABEL:
-	case MATCHCRITERIA_NOT_IGNORE_THREAD:
-	case MATCHCRITERIA_NOT_SUBJECT:
-	case MATCHCRITERIA_NOT_FROM:
-	case MATCHCRITERIA_NOT_TO:
-	case MATCHCRITERIA_NOT_CC:
-	case MATCHCRITERIA_NOT_NEWSGROUPS:
-	case MATCHCRITERIA_NOT_INREPLYTO:
-	case MATCHCRITERIA_NOT_REFERENCES:
-	case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
-	case MATCHCRITERIA_NOT_BODY_PART:
-	case MATCHCRITERIA_NOT_MESSAGE:
-	case MATCHCRITERIA_NOT_HEADERS_PART:
-	case MATCHCRITERIA_NOT_HEADER:
-		negative_cond = TRUE;
-		break;
-	}
+	GtkListStore *store;
+	GtkTreeIter next, sel;
+	GtkTreePath *try;
 	
-	switch(prop->criteria) {
-	case MATCHCRITERIA_ALL:
-		break;
+	if (!gtk_tree_selection_get_selected
+		(gtk_tree_view_get_selection
+			(GTK_TREE_VIEW(matcher.cond_list_view)),
+		 (GtkTreeModel **) &store,
+		 &sel))
+		return;
 
-	case MATCHCRITERIA_NOT_SUBJECT:
-	case MATCHCRITERIA_NOT_FROM:
-	case MATCHCRITERIA_NOT_TO:
-	case MATCHCRITERIA_NOT_CC:
-	case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
-	case MATCHCRITERIA_NOT_NEWSGROUPS:
-	case MATCHCRITERIA_NOT_INREPLYTO:
-	case MATCHCRITERIA_NOT_REFERENCES:
-	case MATCHCRITERIA_NOT_HEADERS_PART:
-	case MATCHCRITERIA_NOT_BODY_PART:
-	case MATCHCRITERIA_NOT_MESSAGE:
-	case MATCHCRITERIA_SUBJECT:
-	case MATCHCRITERIA_FROM:
-	case MATCHCRITERIA_TO:
-	case MATCHCRITERIA_CC:
-	case MATCHCRITERIA_TO_OR_CC:
-	case MATCHCRITERIA_NEWSGROUPS:
-	case MATCHCRITERIA_INREPLYTO:
-	case MATCHCRITERIA_REFERENCES:
-	case MATCHCRITERIA_HEADERS_PART:
-	case MATCHCRITERIA_BODY_PART:
-	case MATCHCRITERIA_MESSAGE:
-	case MATCHCRITERIA_TEST:
-		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), prop->expr);
-		break;
-
-	case MATCHCRITERIA_AGE_GREATER:
-	case MATCHCRITERIA_AGE_LOWER:
-	case MATCHCRITERIA_SCORE_GREATER:
-	case MATCHCRITERIA_SCORE_LOWER:
-	case MATCHCRITERIA_SCORE_EQUAL:
-	case MATCHCRITERIA_SIZE_GREATER:
-	case MATCHCRITERIA_SIZE_SMALLER:
-	case MATCHCRITERIA_SIZE_EQUAL:
-		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), itos(prop->value));
-		break;
-
-	case MATCHCRITERIA_NOT_COLORLABEL:
-	case MATCHCRITERIA_COLORLABEL:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(matcher.color_optmenu),
-					    prop->value);
-		break;
-
-	case MATCHCRITERIA_NOT_HEADER:
-	case MATCHCRITERIA_HEADER:
-		gtk_entry_set_text(GTK_ENTRY(matcher.header_entry), prop->header);
-		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), prop->expr);
-		break;
+	try = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &sel);
+	if (!try) 
+		return;
+	
+	/* move when not at row 0 ... */
+	if (gtk_tree_path_prev(try)) {
+		next = sel;
+		if (gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &next))
+			gtk_list_store_swap(store, &next, &sel);
 	}
-
-	if (negative_cond)
-		gtk_list_select_item(GTK_LIST(matcher.predicate_list), 1);
-	else
-		gtk_list_select_item(GTK_LIST(matcher.predicate_list), 0);
-
-	switch(prop->matchtype) {
-	case MATCHTYPE_MATCH:
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), FALSE);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), TRUE);
-		break;
-
-	case MATCHTYPE_MATCHCASE:
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), FALSE);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), FALSE);
-		break;
-
-	case MATCHTYPE_REGEXP:
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), TRUE);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), TRUE);
-		break;
-
-	case MATCHTYPE_REGEXPCASE:
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), TRUE);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), FALSE);
-		break;
-	}
+		
+	gtk_tree_path_free(try);
 }
 
 /*!
@@ -1663,6 +1573,8 @@ static void prefs_matcher_ok(void)
 	gchar *matcher_str = NULL;
 	gchar *str = NULL;
 	gint row = 1;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
 
 	matchers = prefs_matcher_get_list();
 
@@ -1670,22 +1582,33 @@ static void prefs_matcher_ok(void)
 		matcherprop = prefs_matcher_dialog_to_matcher();
 		if (matcherprop != NULL) {
 			str = matcherprop_to_string(matcherprop);
-			if(strcmp(str, "all") != 0) {
-				while (gtk_clist_get_text(GTK_CLIST(matcher.cond_clist),
-						  row, 0, &matcher_str)) {
-					if (matcher_str && strcmp(matcher_str, str) == 0) break;
+			matcherprop_free(matcherprop); /* XXX: was a leak */
+			if (strcmp(str, "all") != 0) {
+				model = gtk_tree_view_get_model(GTK_TREE_VIEW
+						(matcher.cond_list_view));
+
+				while (gtk_tree_model_iter_nth_child(model, &iter, NULL, row)) {
+					gtk_tree_model_get(model, &iter,
+							   PREFS_MATCHER_COND, &matcher_str,
+							   -1);
+					if (matcher_str && strcmp(matcher_str, str) == 0) 
+						break;
 					row++;
+					g_free(matcher_str);
+					matcher_str = NULL;
 				}
 
 				if (!matcher_str || strcmp(matcher_str, str) != 0) {
 	                        	val = alertpanel(_("Entry not saved"),
        		                        	 _("The entry was not saved\nHave you really finished?"),
                		                	 _("Yes"), _("No"), NULL);
+					g_free(matcher_str);						 
 					if (G_ALERTDEFAULT != val) {
 	        	                        g_free(str);
 						return;
 					}
 				}
+				g_free(matcher_str);
 			}
 		}
                 g_free(str);
@@ -1754,5 +1677,232 @@ static DescriptionWindow test_desc_win = {
 void prefs_matcher_test_info(void)
 {
 	description_window_create(&test_desc_win);
+}
+
+/*
+ * list view
+ */
+
+static GtkListStore* prefs_matcher_create_data_store(void)
+{
+	return gtk_list_store_new(N_PREFS_MATCHER_COLUMNS,
+				  G_TYPE_STRING,	
+				  G_TYPE_BOOLEAN,
+				  -1);
+}
+
+static void prefs_matcher_list_view_insert_matcher(GtkWidget *list_view,
+						   GtkTreeIter *row_iter,
+						   const gchar *matcher,
+						   gboolean is_valid) 
+{
+	GtkTreeIter iter;
+	GtkListStore *list_store = GTK_LIST_STORE(gtk_tree_view_get_model
+					(GTK_TREE_VIEW(list_view)));
+
+	if (row_iter == NULL) {
+		/* append new */
+		gtk_list_store_append(list_store, &iter);
+	} else {
+		/* change existing */
+		iter = *row_iter;
+	}
+
+	gtk_list_store_set(list_store, &iter,
+			   PREFS_MATCHER_COND, matcher,
+			   PREFS_MATCHER_COND_VALID, is_valid,
+			   -1);
+}
+
+static GtkWidget *prefs_matcher_list_view_create(void)
+{
+	GtkTreeView *list_view;
+	GtkTreeSelection *selector;
+	GtkTreeModel *model;
+
+	model = GTK_TREE_MODEL(prefs_matcher_create_data_store());
+	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
+	g_object_unref(model);	
+	
+	gtk_tree_view_set_rules_hint(list_view, TRUE);
+	
+	selector = gtk_tree_view_get_selection(list_view);
+	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
+	gtk_tree_selection_set_select_function(selector, prefs_matcher_selected,
+					       NULL, NULL);
+
+	/* create the columns */
+	prefs_matcher_create_list_view_columns(GTK_WIDGET(list_view));
+
+	return GTK_WIDGET(list_view);
+}
+
+static void prefs_matcher_create_list_view_columns(GtkWidget *list_view)
+{
+	GtkTreeViewColumn *column;
+	GtkCellRenderer *renderer;
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes
+		(_("Current condition rules"),
+		 renderer,
+		 "text", PREFS_MATCHER_COND,
+		 NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
+}
+
+static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
+				       GtkTreeModel *model, 
+				       GtkTreePath *path,
+				       gboolean currently_selected,
+				       gpointer data)
+{
+	gchar *matcher_str;
+	MatcherProp *prop;
+	gboolean negative_cond;
+	gint criteria;
+	GtkTreeIter iter;
+	gboolean is_valid;
+
+	if (currently_selected)
+		return TRUE;
+
+	if (!gtk_tree_model_get_iter(model, &iter, path))
+		return TRUE;
+
+	gtk_tree_model_get(model, &iter, 
+			   PREFS_MATCHER_COND_VALID,  &is_valid,
+			   PREFS_MATCHER_COND, &matcher_str,
+			   -1);
+	
+	if (!is_valid) {
+		g_free(matcher_str);
+		prefs_matcher_reset_condition();
+		return TRUE;
+	}
+
+	negative_cond = FALSE;
+
+	prop = matcher_parser_get_prop(matcher_str);
+	if (prop == NULL) {
+		g_free(matcher_str);
+		return TRUE;
+	}		
+
+	criteria = prefs_matcher_get_criteria_from_matching(prop->criteria);
+	if (criteria != -1)
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     criteria);
+
+	switch(prop->criteria) {
+	case MATCHCRITERIA_NOT_UNREAD:
+	case MATCHCRITERIA_NOT_NEW:
+	case MATCHCRITERIA_NOT_MARKED:
+	case MATCHCRITERIA_NOT_DELETED:
+	case MATCHCRITERIA_NOT_REPLIED:
+	case MATCHCRITERIA_NOT_FORWARDED:
+	case MATCHCRITERIA_NOT_LOCKED:
+	case MATCHCRITERIA_NOT_PARTIAL:
+	case MATCHCRITERIA_NOT_COLORLABEL:
+	case MATCHCRITERIA_NOT_IGNORE_THREAD:
+	case MATCHCRITERIA_NOT_SUBJECT:
+	case MATCHCRITERIA_NOT_FROM:
+	case MATCHCRITERIA_NOT_TO:
+	case MATCHCRITERIA_NOT_CC:
+	case MATCHCRITERIA_NOT_NEWSGROUPS:
+	case MATCHCRITERIA_NOT_INREPLYTO:
+	case MATCHCRITERIA_NOT_REFERENCES:
+	case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
+	case MATCHCRITERIA_NOT_BODY_PART:
+	case MATCHCRITERIA_NOT_MESSAGE:
+	case MATCHCRITERIA_NOT_HEADERS_PART:
+	case MATCHCRITERIA_NOT_HEADER:
+		negative_cond = TRUE;
+		break;
+	}
+	
+	switch(prop->criteria) {
+	case MATCHCRITERIA_ALL:
+		break;
+
+	case MATCHCRITERIA_NOT_SUBJECT:
+	case MATCHCRITERIA_NOT_FROM:
+	case MATCHCRITERIA_NOT_TO:
+	case MATCHCRITERIA_NOT_CC:
+	case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
+	case MATCHCRITERIA_NOT_NEWSGROUPS:
+	case MATCHCRITERIA_NOT_INREPLYTO:
+	case MATCHCRITERIA_NOT_REFERENCES:
+	case MATCHCRITERIA_NOT_HEADERS_PART:
+	case MATCHCRITERIA_NOT_BODY_PART:
+	case MATCHCRITERIA_NOT_MESSAGE:
+	case MATCHCRITERIA_SUBJECT:
+	case MATCHCRITERIA_FROM:
+	case MATCHCRITERIA_TO:
+	case MATCHCRITERIA_CC:
+	case MATCHCRITERIA_TO_OR_CC:
+	case MATCHCRITERIA_NEWSGROUPS:
+	case MATCHCRITERIA_INREPLYTO:
+	case MATCHCRITERIA_REFERENCES:
+	case MATCHCRITERIA_HEADERS_PART:
+	case MATCHCRITERIA_BODY_PART:
+	case MATCHCRITERIA_MESSAGE:
+	case MATCHCRITERIA_TEST:
+		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), prop->expr);
+		break;
+
+	case MATCHCRITERIA_AGE_GREATER:
+	case MATCHCRITERIA_AGE_LOWER:
+	case MATCHCRITERIA_SCORE_GREATER:
+	case MATCHCRITERIA_SCORE_LOWER:
+	case MATCHCRITERIA_SCORE_EQUAL:
+	case MATCHCRITERIA_SIZE_GREATER:
+	case MATCHCRITERIA_SIZE_SMALLER:
+	case MATCHCRITERIA_SIZE_EQUAL:
+		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), itos(prop->value));
+		break;
+
+	case MATCHCRITERIA_NOT_COLORLABEL:
+	case MATCHCRITERIA_COLORLABEL:
+		gtk_option_menu_set_history(GTK_OPTION_MENU(matcher.color_optmenu),
+					    prop->value);
+		break;
+
+	case MATCHCRITERIA_NOT_HEADER:
+	case MATCHCRITERIA_HEADER:
+		gtk_entry_set_text(GTK_ENTRY(matcher.header_entry), prop->header);
+		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), prop->expr);
+		break;
+	}
+
+	if (negative_cond)
+		gtk_list_select_item(GTK_LIST(matcher.predicate_list), 1);
+	else
+		gtk_list_select_item(GTK_LIST(matcher.predicate_list), 0);
+
+	switch(prop->matchtype) {
+	case MATCHTYPE_MATCH:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), FALSE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), TRUE);
+		break;
+
+	case MATCHTYPE_MATCHCASE:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), FALSE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), FALSE);
+		break;
+
+	case MATCHTYPE_REGEXP:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), TRUE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), TRUE);
+		break;
+
+	case MATCHTYPE_REGEXPCASE:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), TRUE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), FALSE);
+		break;
+	}
+
+	g_free(matcher_str);
+	return TRUE;
 }
 
