@@ -151,7 +151,7 @@ struct _PrefsAccount
 	/* Privacy */
 	gboolean default_encrypt;
 	gboolean default_sign;
-	gboolean default_gnupg_mode;;
+	gboolean default_gnupg_mode;
 	SignKeyType sign_key;
 	gchar *sign_key_id;
 #endif /* USE_GPGME */
