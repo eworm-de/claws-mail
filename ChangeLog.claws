@@ -1,3 +1,8 @@
+2004-11-19 [paul]	0.9.12cvs159
+
+	* src/prefs_common.c
+		update prefs_keybind_apply_clicked()
+
 2004-11-18 [paul]	0.9.12cvs158
 
 	* src/compose.c
