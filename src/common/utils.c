@@ -1249,6 +1249,8 @@ gchar *get_abbrev_newsgroup_name(const gchar *group, gint len)
 	const gchar *p = group;
 	const gchar *last;
 
+	g_return_val_if_fail(group != NULL, NULL);
+
 	last = group + strlen(group);
 	abbrev_group = ap = g_malloc(strlen(group) + 1);
 

@@ -1934,12 +1934,16 @@ static void summary_status_show(SummaryView *summaryview)
 	}
 
 	if (summaryview->folder_item->folder->type == F_NEWS) {
-		gchar *group;
-		group = get_abbrev_newsgroup_name
-			(g_basename(summaryview->folder_item->path),
-			 prefs_common.ng_abbrev_len);
-		gtk_label_set(GTK_LABEL(summaryview->statlabel_folder), group);
-		g_free(group);
+		if (summaryview->folder_item->path != NULL) {
+			gchar *group;
+			group = get_abbrev_newsgroup_name
+				(g_basename(summaryview->folder_item->path),
+				 prefs_common.ng_abbrev_len);
+			gtk_label_set(GTK_LABEL(summaryview->statlabel_folder), group);
+			g_free(group);
+		} else {
+			gtk_label_set(GTK_LABEL(summaryview->statlabel_folder), "");
+		}
 	} else {
 		gtk_label_set(GTK_LABEL(summaryview->statlabel_folder),
 			      summaryview->folder_item->path);

@@ -1,3 +1,9 @@
+2003-03-03 [christoph]	0.8.10claws77
+
+	* src/summaryview.c
+	* src/common/utils.c
+		fix segfault when opening the root news folder
+
 2003-03-03 [christoph]	0.8.10claws76
 
 	* src/mainwindow.[ch]
