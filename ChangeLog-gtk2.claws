@@ -1,3 +1,8 @@
+2004-08-29 [colin]	0.9.12cvs84.1
+
+	* src/mimeview.c
+		Sync with HEAD
+
 2004-08-27 [colin]	0.9.12cvs83.1
 
 	* ChangeLog

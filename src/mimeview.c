@@ -1102,7 +1102,6 @@ static void mimeview_save_all(MimeView *mimeview)
 static void mimeview_save_as(MimeView *mimeview)
 {
 	gchar *filename;
-	gchar *defname = NULL;
 	gchar *filepath = NULL;
 	gchar *filedir = NULL;
 	MimeInfo *partinfo;
@@ -1121,16 +1120,15 @@ static void mimeview_save_as(MimeView *mimeview)
 	}			 
 	g_return_if_fail(partinfo != NULL);
 	
-	if ((partname = get_part_name(partinfo)) != NULL) {
-		Xstrdup_a(defname, partname, return);
-		subst_for_shellsafe_filename(defname);
+	if ((partname = get_part_name(partinfo)) == NULL) {
+		return;
 	}
 
 	if (prefs_common.attach_save_dir)
 		filepath = g_strconcat(prefs_common.attach_save_dir,
-				       G_DIR_SEPARATOR_S, defname, NULL);
+				       G_DIR_SEPARATOR_S, partname, NULL);
 	else
-		filepath = g_strdup(defname);
+		filepath = g_strdup(partname);
 
 	filename = filesel_select_file_save(_("Save as"), filepath);
 	if (!filename) {
