@@ -1,3 +1,8 @@
+2003-07-10 [paul]	0.9.0claws96
+
+	* ac/missing/gettext.m4
+		update to version 0.12
+
 2003-07-10 [paul]	0.9.0claws95
 
 	* src/plugins/clamav/clamav_plugin.c
