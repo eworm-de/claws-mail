@@ -29,5 +29,7 @@ AM_CPPFLAGS = \
 EXTRA_DIST = \
 	README \
 	newmail.xpm \
+	newmarkedmail.xpm \
 	nomail.xpm \
-	unreadmail.xpm
+	unreadmail.xpm \
+	unreadmarkedmail.xpm

@@ -151,3 +151,8 @@
 ( cvs diff -u -r 1.94 -r 1.95 src/procmime.c; ) > 0.9.12cvs166.patchset
 ( cvs diff -u -r 1.16 -r 1.17 commitHelper; cvs diff -u -r 1.1 -r 1.2 src/partial_download.c; cvs diff -u -r 1.1 -r 1.2 src/partial_download.h; ) > 0.9.12cvs167.patchset
 ( cvs diff -u -r 1.5 -r 1.6 src/plugins/pgpmime/plugin.c; ) > 0.9.12cvs168.patchset
+( cvs diff -u -r 1.6 -r 1.7 src/plugins/pgpmime/plugin.c; cvs diff -u -r 1.5 -r 1.6 src/plugins/trayicon/Makefile.am; cvs diff -u -r 0 -r 1 src/plugins/trayicon/newmarkedmail.xpm; cvs diff -u -r 1.17 -r 1.18 src/plugins/trayicon/trayicon.c; cvs diff -u -r 0 -r 1 src/plugins/trayicon/unreadmarkedmail.xpm; ) > 0.9.12cvs169.patchset
+( cvs diff -u -r 1.12 -r 1.13 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs170.patchset
+( cvs diff -u -r 1.12 -r 1.13 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs171.patchset
+( cvs diff -u -r 1.13 -r 1.14 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs172.patchset
+( cvs diff -u -r 1.18 -r 1.19 src/common/smtp.c; cvs diff -u -r 1.8 -r 1.9 src/common/smtp.h; ) > 0.9.12cvs173.patchset
