@@ -60,6 +60,11 @@ static void key_pressed			(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 MessageView	*messageview);
 
+static void return_receipt_show		(NoticeView     *noticeview, 
+				         MsgInfo        *msginfo);	
+static void return_receipt_send_clicked (NoticeView	*noticeview, 
+                                         MsgInfo        *msginfo);
+
 MessageView *messageview_create(void)
 {
 	MessageView *messageview;
@@ -68,6 +73,7 @@ MessageView *messageview_create(void)
 	TextView *textview;
 	ImageView *imageview;
 	MimeView *mimeview;
+	NoticeView *noticeview;
 
 	debug_print(_("Creating message view...\n"));
 	messageview = g_new0(MessageView, 1);
@@ -75,6 +81,8 @@ MessageView *messageview_create(void)
 	messageview->type = MVIEW_TEXT;
 
 	headerview = headerview_create();
+
+	noticeview = noticeview_create();
 
 	textview = textview_create();
 	textview->messageview = messageview;
@@ -90,6 +98,8 @@ MessageView *messageview_create(void)
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET_PTR(headerview),
+			   FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET_PTR(noticeview),
 			   FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET_PTR(textview),
 			   TRUE, TRUE, 0);
@@ -107,6 +117,7 @@ MessageView *messageview_create(void)
 	messageview->textview   = textview;
 	messageview->imageview  = imageview;
 	messageview->mimeview   = mimeview;
+	messageview->noticeview = noticeview;
 
 	return messageview;
 }
@@ -153,6 +164,8 @@ void messageview_init(MessageView *messageview)
 	imageview_init(messageview->imageview);
 	mimeview_init(messageview->mimeview);
 	/*messageview_set_font(messageview);*/
+
+	noticeview_hide(messageview->noticeview);
 }
 
 static void notification_convert_header(gchar *dest, gint len, 
@@ -280,6 +293,8 @@ static gint disposition_notification_send(MsgInfo * msginfo)
 	    (!msginfo->dispositionnotificationto))
 		return -1;
 
+	procmsg_msginfo_unset_flags(msginfo, MSG_RETRCPT_PENDING, 0);
+
 	/* write to temporary file */
 	g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg%d",
 		   get_rc_dir(), G_DIR_SEPARATOR, (gint)msginfo);
@@ -319,6 +334,7 @@ static gint disposition_notification_send(MsgInfo * msginfo)
 	notification_convert_header(buf, sizeof(buf), msginfo->subject,
 				    strlen("Subject: "));
 	fprintf(fp, "Subject: Disposition notification: %s\n", buf);
+	debug_print("HEADER: Subject Disposition notification: %s\n", buf);
 
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmp, "fclose");
@@ -379,30 +395,7 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		return;
 	}
 
-	/* FIXME - doesn't tmpmsginfo->flags have the value
-	 * of msginfo->flags after procheader_parse()???
-	 * in any case, checking tmpmsginfo->flags for MSG_UNREAD
-	 * fixes the return-receipt-request bug */
-
 	tmpmsginfo = procheader_parse_file(file, msginfo->flags, TRUE, TRUE);
-	if (MSG_IS_MIME(tmpmsginfo->flags))
-		MSG_SET_TMP_FLAGS(msginfo->flags, MSG_MIME);
-
-	if (prefs_common.return_receipt
-	    && (tmpmsginfo->dispositionnotificationto
-		|| tmpmsginfo->returnreceiptto)
-	    && (MSG_IS_UNREAD(tmpmsginfo->flags))
-	    && (MSG_IS_RETRCPT_PENDING(tmpmsginfo->flags))) {
-		gint ok;
-		
-		if (alertpanel(_("Return Receipt"), _("Send return receipt ?"),
-			       _("Yes"), _("No"), NULL) == G_ALERTDEFAULT) {
-			ok = disposition_notification_send(tmpmsginfo);
-			if (ok < 0)
-				alertpanel_error(_("Error occurred while sending notification."));
-		}
-		MSG_UNSET_PERM_FLAGS(tmpmsginfo->flags, MSG_RETRCPT_PENDING);	
-	}
 
 	headerview_show(messageview->headerview, tmpmsginfo);
 	procmsg_msginfo_free(tmpmsginfo);
@@ -419,6 +412,11 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		textview_show_message(messageview->textview, mimeinfo, file);
 		procmime_mimeinfo_free(mimeinfo);
 	}
+
+	if (MSG_IS_RETRCPT_PENDING(msginfo->flags))
+		return_receipt_show(messageview->noticeview, msginfo);
+	else 
+		noticeview_hide(messageview->noticeview);
 
 	g_free(file);
 }
@@ -609,3 +607,21 @@ void messageview_toggle_view_real(MessageView *messageview)
 		gtk_widget_grab_focus(GTK_WIDGET(mainwin->summaryview->ctree));
 	}
 }
+
+static void return_receipt_show(NoticeView *noticeview, MsgInfo *msginfo)
+{
+	noticeview_set_text(noticeview, _("This messages asks for a return receipt."));
+	noticeview_set_button_text(noticeview, _("Send receipt"));
+	noticeview_set_button_press_callback(noticeview,
+					     GTK_SIGNAL_FUNC(return_receipt_send_clicked),
+					     (gpointer) msginfo);
+	noticeview_show(noticeview);
+}
+
+static void return_receipt_send_clicked(NoticeView *noticeview, MsgInfo *msginfo)
+{
+	if (disposition_notification_send(msginfo) >= 0) 
+		noticeview_hide(noticeview);
+}
+
+

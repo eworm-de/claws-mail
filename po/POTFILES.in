@@ -108,3 +108,4 @@ src/uuencode.c
 src/vcard.c
 src/xml.c
 src/xmlprops.c
+src/noticeview.c
