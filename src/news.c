@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -218,8 +218,6 @@ static Session *news_session_new(const gchar *server, gushort port,
 	SESSION(session)->server           = g_strdup(server);
 	session->nntp_sock                 = nntp_sock;
 	SESSION(session)->sock             = nntp_sock->sock;
-	SESSION(session)->connected        = TRUE;
-	SESSION(session)->phase            = SESSION_READY;
 	SESSION(session)->last_access_time = time(NULL);
 	SESSION(session)->data             = NULL;
 

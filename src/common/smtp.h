@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,10 +26,6 @@
 
 #include <glib.h>
 
-#include "socket.h"
-#if USE_OPENSSL
-#  include "ssl.h"
-#endif
 #include "session.h"
 
 typedef struct _SMTPSession	SMTPSession;
@@ -57,66 +53,55 @@ typedef enum
 
 typedef enum
 {
-	SMTP_CONNECT,
+	SMTP_READY,
+	SMTP_CONNECTED,
 	SMTP_HELO,
 	SMTP_EHLO,
 	SMTP_STARTTLS,
 	SMTP_FROM,
 	SMTP_AUTH,
+	SMTP_AUTH_LOGIN_USER,
+	SMTP_AUTH_LOGIN_PASS,
+	SMTP_AUTH_CRAM_MD5,
 	SMTP_RCPT,
 	SMTP_DATA,
+	SMTP_SEND_DATA,
+	SMTP_EOM,
 	SMTP_RSET,
 	SMTP_QUIT,
-	SMTP_EOM,
+	SMTP_ERROR,
+	SMTP_DISCONNECTED,
 
 	N_SMTP_PHASE
-} SMTPPhase;
+} SMTPState;
 
 struct _SMTPSession
 {
 	Session session;
 
-	SMTPAuthType avail_auth_type;
+	SMTPState state;
+
+#if USE_OPENSSL
+	gboolean tls_init_done;
+#endif
+
+	gchar *hostname;
+
 	gchar *user;
 	gchar *pass;
+
+	gchar *from;
+	GSList *to_list;
+	GSList *cur_to;
+
+	guchar *send_data;
+	guint send_data_len;
+
+	SMTPAuthType avail_auth_type;
+	SMTPAuthType forced_auth_type;
+	SMTPAuthType auth_type;
 };
 
 Session *smtp_session_new	(void);
-void smtp_session_destroy	(Session	*session);
-
-#if USE_OPENSSL
-gint smtp_connect		(SMTPSession	*session,
-				 const gchar	*server,
-				 gushort	 port,
-				 const gchar	*domain,
-				 const gchar	*user,
-				 const gchar	*pass,
-				 SSLType	 ssl_type);
-#else
-gint smtp_connect		(SMTPSession	*session,
-				 const gchar	*server,
-				 gushort	 port,
-				 const gchar	*domain,
-				 const gchar	*user,
-				 const gchar	*pass);
-#endif
-
-gint smtp_from			(SMTPSession	*session,
-				 const gchar	*from);
-gint smtp_auth			(SMTPSession	*session,
-				 SMTPAuthType	 forced_auth_type);
-
-gint smtp_ehlo			(SMTPSession	*session,
-				 const gchar	*hostname,
-				 SMTPAuthType	*avail_auth_type);
-
-gint smtp_helo			(SMTPSession	*session,
-				 const gchar	*hostname);
-gint smtp_rcpt			(SMTPSession	*session,
-				 const gchar	*to);
-gint smtp_data			(SMTPSession	*session);
-gint smtp_rset			(SMTPSession	*session);
-gint smtp_quit			(SMTPSession	*session);
-gint smtp_eom			(SMTPSession	*session);
 
 #endif /* __SMTP_H__ */

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -448,7 +448,7 @@ gint sock_printf(SockInfo *sock, const gchar *format, ...)
 	g_vsnprintf(buf, sizeof(buf), format, args);
 	va_end(args);
 
-	return sock_write(sock, buf, strlen(buf));
+	return sock_write_all(sock, buf, strlen(buf));
 }
 
 gint sock_read(SockInfo *sock, gchar *buf, gint len)
@@ -490,6 +490,32 @@ gint sock_write(SockInfo *sock, const gchar *buf, gint len)
 
 gint fd_write(gint fd, const gchar *buf, gint len)
 {
+	if (fd_check_io(fd, G_IO_OUT) < 0)
+		return -1;
+
+	return write(fd, buf, len);
+}
+
+#if USE_OPENSSL
+gint ssl_write(SSL *ssl, const gchar *buf, gint len)
+{
+	return SSL_write(ssl, buf, len);
+}
+#endif
+
+gint sock_write_all(SockInfo *sock, const gchar *buf, gint len)
+{
+	g_return_val_if_fail(sock != NULL, -1);
+
+#if USE_OPENSSL
+	if (sock->ssl)
+		return ssl_write_all(sock->ssl, buf, len);
+#endif
+	return fd_write_all(sock->sock, buf, len);
+}
+
+gint fd_write_all(gint fd, const gchar *buf, gint len)
+{
 	gint n, wrlen = 0;
 
 	while (len) {
@@ -510,7 +536,7 @@ gint fd_write(gint fd, const gchar *buf, gint len)
 }
 
 #if USE_OPENSSL
-gint ssl_write(SSL *ssl, const gchar *buf, gint len)
+gint ssl_write_all(SSL *ssl, const gchar *buf, gint len)
 {
 	gint n, wrlen = 0;
 
@@ -660,9 +686,9 @@ gint sock_puts(SockInfo *sock, const gchar *buf)
 {
 	gint ret;
 
-	if ((ret = sock_write(sock, buf, strlen(buf))) < 0)
+	if ((ret = sock_write_all(sock, buf, strlen(buf))) < 0)
 		return ret;
-	return sock_write(sock, "\r\n", 2);
+	return sock_write_all(sock, "\r\n", 2);
 }
 
 /* peek at the next socket character without actually reading it */

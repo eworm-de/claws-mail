@@ -654,9 +654,9 @@ static gint prohibit_duplicate_launch(void)
 	debug_print("another Sylpheed is already running.\n");
 
 	if (cmd.receive_all)
-		fd_write(uxsock, "receive_all\n", 12);
+		fd_write_all(uxsock, "receive_all\n", 12);
 	else if (cmd.receive)
-		fd_write(uxsock, "receive\n", 8);
+		fd_write_all(uxsock, "receive\n", 8);
 	else if (cmd.compose && cmd.attach_files) {
 		gchar *str, *compose_str;
 		gint i;
@@ -667,16 +667,16 @@ static gint prohibit_duplicate_launch(void)
 		else
 			compose_str = g_strdup("compose_attach\n");
 
-		fd_write(uxsock, compose_str, strlen(compose_str));
+		fd_write_all(uxsock, compose_str, strlen(compose_str));
 		g_free(compose_str);
 
 		for (i = 0; i < cmd.attach_files->len; i++) {
 			str = g_ptr_array_index(cmd.attach_files, i);
-			fd_write(uxsock, str, strlen(str));
-			fd_write(uxsock, "\n", 1);
+			fd_write_all(uxsock, str, strlen(str));
+			fd_write_all(uxsock, "\n", 1);
 		}
 
-		fd_write(uxsock, ".\n", 2);
+		fd_write_all(uxsock, ".\n", 2);
 	} else if (cmd.compose) {
 		gchar *compose_str;
 
@@ -685,10 +685,10 @@ static gint prohibit_duplicate_launch(void)
 		else
 			compose_str = g_strdup("compose\n");
 
-		fd_write(uxsock, compose_str, strlen(compose_str));
+		fd_write_all(uxsock, compose_str, strlen(compose_str));
 		g_free(compose_str);
 	} else if (cmd.send) {
-		fd_write(uxsock, "send\n", 5);
+		fd_write_all(uxsock, "send\n", 5);
 	} else if (cmd.online_mode == ONLINE_MODE_ONLINE) {
 		fd_write(uxsock, "online\n", 6);
 	} else if (cmd.online_mode == ONLINE_MODE_OFFLINE) {
@@ -696,11 +696,11 @@ static gint prohibit_duplicate_launch(void)
 	} else if (cmd.status) {
 		gchar buf[BUFFSIZE];
 
-		fd_write(uxsock, "status\n", 7);
+		fd_write_all(uxsock, "status\n", 7);
 		fd_gets(uxsock, buf, sizeof(buf));
 		fputs(buf, stdout);
 	} else
-		fd_write(uxsock, "popup\n", 6);
+		fd_write_all(uxsock, "popup\n", 6);
 
 	fd_close(uxsock);
 	return -1;
@@ -768,7 +768,7 @@ static void lock_socket_input_cb(gpointer data,
 
 		folder_count_total_msgs(&new, &unread, &unreadmarked, &total);
 		g_snprintf(buf, sizeof(buf), "%d %d %d %d\n", new, unread, unreadmarked, total);
-		fd_write(sock, buf, strlen(buf));
+		fd_write_all(sock, buf, strlen(buf));
 	}
 
 	fd_close(sock);

@@ -559,8 +559,6 @@ Session *imap_session_new(const PrefsAccount *account)
 	SESSION(session)->type             = SESSION_IMAP;
 	SESSION(session)->server           = g_strdup(account->recv_server);
 	SESSION(session)->sock             = imap_sock;
-	SESSION(session)->connected        = TRUE;
-	SESSION(session)->phase            = SESSION_READY;
 	SESSION(session)->last_access_time = time(NULL);
 	SESSION(session)->data             = NULL;
 
@@ -2971,7 +2969,7 @@ static void imap_cmd_gen_send(SockInfo *sock, const gchar *format, ...)
 	} else
 		log_print("IMAP4> %d %s\n", imap_cmd_count, tmp);
 
-	sock_write(sock, buf, strlen(buf));
+	sock_write_all(sock, buf, strlen(buf));
 }
 
 static gint imap_cmd_gen_recv(SockInfo *sock, gchar **buf)

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,6 +72,7 @@ gint sock_printf	(SockInfo *sock, const gchar *format, ...)
 			 G_GNUC_PRINTF(2, 3);
 gint sock_read		(SockInfo *sock, gchar *buf, gint len);
 gint sock_write		(SockInfo *sock, const gchar *buf, gint len);
+gint sock_write_all	(SockInfo *sock, const gchar *buf, gint len);
 gint sock_gets		(SockInfo *sock, gchar *buf, gint len);
 gchar *sock_getline	(SockInfo *sock);
 gint sock_puts		(SockInfo *sock, const gchar *buf);
@@ -90,16 +91,18 @@ gint fd_accept		(gint sock);
 
 gint fd_read		(gint sock, gchar *buf, gint len);
 gint fd_write		(gint sock, const gchar *buf, gint len);
+gint fd_write_all	(gint sock, const gchar *buf, gint len);
 gint fd_gets		(gint sock, gchar *buf, gint len);
 gchar *fd_getline	(gint sock);
 gint fd_close		(gint sock);
 
 /* Functions for SSL */
-#if USE_OPENSSL
-gint ssl_read(SSL *ssl, gchar *buf, gint len);
-gint ssl_write(SSL *ssl, const gchar *buf, gint len);
-gint ssl_gets(SSL *ssl, gchar *buf, gint len);
-gchar *ssl_getline(SSL *ssl);
+#if USE_SSL
+gint ssl_read		(SSL *ssl, gchar *buf, gint len);
+gint ssl_write		(SSL *ssl, const gchar *buf, gint len);
+gint ssl_write_all	(SSL *ssl, const gchar *buf, gint len);
+gint ssl_gets		(SSL *ssl, gchar *buf, gint len);
+gchar *ssl_getline	(SSL *ssl);
 #endif
 
 #endif /* __SOCKET_H__ */

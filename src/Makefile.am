@@ -86,7 +86,7 @@ sylpheed_SOURCES = \
 	pop.c pop.h \
 	mh.c mh.h \
 	mbox.c mbox.h \
-	send.c send.h \
+	send_message.c send_message.h \
 	recv.c recv.h \
 	inc.c inc.h \
 	import.c import.h \

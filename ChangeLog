@@ -1,3 +1,21 @@
+2003-03-20
+
+	* src/session.[ch]: session_start_tls(): new.
+	  session_recv_msg(): made it static.
+
+2003-03-20
+
+	* implemented asynchronous network I/O.
+	* src/session.[ch]: the interface to communicate with servers through
+	  child process.
+	* src/smtp.[ch]
+	  src/send_message.[ch]: rewrote using new I/O system.
+	* src/socket.[ch]: renamed *_write() to *_write_all(), and made
+	  *_write() as just a simple wrapper for write().
+	* src/utils.c: get_outgoing_rfc2822_str(): new. It modifies the
+	  message to send with SMTP or NNTP.
+	  file_read_stream_to_str(): new.
+
 2003-03-12
 
 	* src/textview.c: textview_button_pressed(): corrected the range of

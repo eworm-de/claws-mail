@@ -668,7 +668,7 @@ static void pop3_gen_send(SockInfo *sock, const gchar *format, ...)
 		log_print("POP3> %s\n", buf);
 
 	strcat(buf, "\r\n");
-	sock_write(sock, buf, strlen(buf));
+	sock_write_all(sock, buf, strlen(buf));
 }
 
 static gint pop3_gen_recv(SockInfo *sock, gchar *buf, gint size)
