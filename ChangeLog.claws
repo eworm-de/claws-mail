@@ -1,3 +1,14 @@
+2003-09-03 [christoph]	0.9.4claws64
+
+	* src/folder.c
+	* src/messageview.[ch]
+	* src/procmsg.[ch]
+	* src/summaryview.c
+		extend MSGINFO_UPDATE_HOOK to send delete notifications. Used
+		by MessageView to clear it when the message is deleted. Should
+		work even if messages are deleted in MainWindow or by
+		processing.
+
 2003-09-03 [alfons]	0.9.4claws63
 
 	* src/messageview.c

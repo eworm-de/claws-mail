@@ -60,6 +60,7 @@
 #include "rfc2015.h"
 #include "send_message.h"
 #include "stock_pixmap.h"
+#include "hooks.h"
 
 static GList *messageview_list = NULL;
 
@@ -128,14 +129,11 @@ static void create_filter_cb		(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
 
-static void messageview_menubar_cb	(MessageView 	*msgview,
-					 guint 		 action, 
-					 GtkWidget 	*widget);
 static void about_cb			(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
 static void messageview_update		(MessageView *msgview);
-static void messageview_update_all	(MessageView *msgview);
+static gboolean messageview_update_msg	(gpointer source, gpointer data);
 
 static GList *msgview_list = NULL;
 static GtkItemFactoryEntry msgview_entries[] =
@@ -328,6 +326,8 @@ MessageView *messageview_create(MainWindow *mainwin)
 	messageview->mimeview   = mimeview;
 	messageview->noticeview = noticeview;
 	messageview->mainwin    = mainwin;
+	messageview->msginfo_update_callback_id =
+		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, messageview_update_msg, (gpointer) messageview);
 
 	return messageview;
 }
@@ -736,6 +736,9 @@ void messageview_destroy(MessageView *messageview)
 	debug_print("destroy messageview\n");
 	messageview_list = g_list_remove(messageview_list, messageview);
 
+	hooks_unregister_hook(MSGINFO_UPDATE_HOOKLIST,
+			      messageview->msginfo_update_callback_id);
+
 	headerview_destroy(messageview->headerview);
 	textview_destroy(messageview->textview);
 	mimeview_destroy(messageview->mimeview);
@@ -758,60 +761,19 @@ void messageview_destroy(MessageView *messageview)
 
 void messageview_delete(MessageView *msgview)
 {
-	MsgInfo *msginfo = (MsgInfo*)msgview->msginfo;
+	MsgInfo *msginfo = (MsgInfo *) msgview->msginfo;
 	FolderItem *trash = folder_get_default_trash();
-	GSList *msg_list;
 
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(trash   != NULL);
-	
-	msg_list = folder_item_get_msg_list(msginfo->folder);
-	
-	if (msg_list == NULL) {
-		alertpanel_error(_("Message already removed from folder."));
-		return;
-	}
-	
-	for (; msg_list != NULL; msg_list = msg_list->next) {
-		MsgInfo *msginfo_list = (MsgInfo*)msg_list->data;
-		
-		if (msginfo->msgnum == msginfo_list->msgnum) {
 
-			if (prefs_common.immediate_exec)
-				folder_item_move_msg(trash, msginfo);
-			else {
-				procmsg_msginfo_set_to_folder(msginfo, trash);
-				procmsg_msginfo_set_flags(msginfo, MSG_DELETED, 0);
-				/* NOTE: does not update to next message in summaryview
-				 */
-			}
-				
-			messageview_update_all(msgview);
-			break;
-		}
-	}
-}
-
-/*	
- * scan List of MessageViews checking whether there are any Views holding messages 
- * which need to be updated (another view might have deleted the one this MessagView holds)
- */
-static void messageview_update_all(MessageView *msgview)
-{
-	MsgInfo *msginfo = (MsgInfo*)msgview->msginfo;
-	GList *cur;
-	
-	g_return_if_fail(msginfo != NULL);
-
-	for (cur = msgview_list; cur != NULL; cur = cur->next) {
-		MessageView *msgview = (MessageView*)cur->data;
-		MsgInfo *msginfo_list = (MsgInfo*)msgview->msginfo;
-		
-		g_return_if_fail(msginfo != NULL);
-		g_return_if_fail(msginfo_list);
-
-		if (msginfo->msgnum == msginfo_list->msgnum)
-			messageview_update(msgview);
+	if (prefs_common.immediate_exec)
+		/* TODO: Delete from trash */
+		folder_item_move_msg(trash, msginfo);
+	else {
+		procmsg_msginfo_set_to_folder(msginfo, trash);
+		procmsg_msginfo_set_flags(msginfo, MSG_DELETED, 0);
+		/* NOTE: does not update to next message in summaryview */
 	}
 }
 
@@ -1110,31 +1072,6 @@ gchar *messageview_get_selection(MessageView *msgview)
 	return text;
 }
 
-static void messageview_delete_cb(MessageView *msgview, guint action, GtkWidget *widget)
-{
-	messageview_delete(msgview);
-}
-
-static void messageview_menubar_cb(MessageView *msgview, guint action, GtkWidget *widget)
-{
-	GSList *msginfo_list = NULL;
-	gchar *body;
-	MsgInfo *msginfo;
-
-	g_return_if_fail(msgview != NULL);
-
-	msginfo = (MsgInfo*)msgview->msginfo;
-	g_return_if_fail(msginfo != NULL);
-
-	msginfo_list = g_slist_append(msginfo_list, msginfo);
-	g_return_if_fail(msginfo_list);
-
-	body =  messageview_get_selection(msgview);
-	compose_reply_mode((ComposeMode)action, msginfo_list, body);
-	g_free(body);
-	g_slist_free(msginfo_list);
-}
-
 static void save_as_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	MessageView *messageview = (MessageView *)data;
@@ -1392,4 +1329,17 @@ static void create_filter_cb(gpointer data, guint action, GtkWidget *widget)
 static void about_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	about_show();
+}
+
+static gboolean messageview_update_msg(gpointer source, gpointer data)
+{
+	MsgInfoUpdate *msginfo_update = (MsgInfoUpdate *) source;
+	MessageView *messageview = (MessageView *)data;
+
+	if (msginfo_update->flags & MSGINFO_UPDATE_DELETED) {
+		messageview_clear(messageview);
+		messageview_update(messageview);
+	}
+
+	return FALSE;
 }

@@ -1671,6 +1671,8 @@ static void add_msginfo_to_cache(FolderItem *item, MsgInfo *newmsginfo, MsgInfo 
 
 static void remove_msginfo_from_cache(FolderItem *item, MsgInfo *msginfo)
 {
+	MsgInfoUpdate msginfo_update;
+
 	if (!item->cache)
 		folder_item_read_cache(item);
 
@@ -1681,6 +1683,10 @@ static void remove_msginfo_from_cache(FolderItem *item, MsgInfo *msginfo)
 	if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 		msginfo->folder->unreadmarked_msgs--;
 	msginfo->folder->total_msgs--;
+
+	msginfo_update.msginfo = msginfo;
+	msginfo_update.flags = MSGINFO_UPDATE_DELETED;
+	hooks_invoke(MSGINFO_UPDATE_HOOKLIST, &msginfo_update);
 
 	msgcache_remove_msg(item->cache, msginfo->msgnum);
 	folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
