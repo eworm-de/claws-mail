@@ -1,8 +1,0 @@
-Makefile
-.deps
-.libs
-sylpheed
-Makefile.in
-tags
-*.swp
-TAGS
