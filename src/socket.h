@@ -73,7 +73,7 @@ gboolean sock_is_nonblocking_mode	(SockInfo *sock);
 
 SockInfo *sock_connect_nb		(const gchar *hostname, gushort port);
 SockInfo *sock_connect			(const gchar *hostname, gushort port);
-
+SockInfo *sock_connect_cmd		(const gchar *hostname, const gchar *tunnelcmd);
 
 #if USE_THREADS
 SockInfo *sock_connect_with_thread	(const gchar *hostname, gushort port);

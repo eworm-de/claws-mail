@@ -155,6 +155,8 @@ static struct Advanced {
 	GtkWidget *nntpport_entry;
 	GtkWidget *domain_chkbtn;
 	GtkWidget *domain_entry;
+	GtkWidget *tunnelcmd_chkbtn;
+	GtkWidget *tunnelcmd_entry;
 } advanced;
 
 static void prefs_account_fix_size			(void);
@@ -365,6 +367,14 @@ static PrefParam param[] = {
 
 	{"domain", NULL, &tmp_ac_prefs.domain, P_STRING,
 	 &advanced.domain_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{"set_tunnelcmd", "FALSE", &tmp_ac_prefs.set_tunnelcmd, P_BOOL,
+	 &advanced.tunnelcmd_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"tunnelcmd", NULL, &tmp_ac_prefs.tunnelcmd, P_STRING,
+	 &advanced.tunnelcmd_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
@@ -1401,21 +1411,23 @@ static void prefs_account_advanced_create(void)
 	GtkWidget *entry_nntpport;
 	GtkWidget *checkbtn_domain;
 	GtkWidget *entry_domain;
+	GtkWidget *checkbtn_tunnelcmd;
+	GtkWidget *entry_tunnelcmd;
 
 #define PACK_HBOX(hbox) \
-{ \
+	{ \
 	hbox = gtk_hbox_new (FALSE, 8); \
 	gtk_widget_show (hbox); \
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0); \
-}
+	}
 
 #define PACK_PORT_ENTRY(box, entry) \
-{ \
+	{ \
 	entry = gtk_entry_new_with_max_length (5); \
 	gtk_widget_show (entry); \
 	gtk_box_pack_start (GTK_BOX (box), entry, FALSE, FALSE, 0); \
 	gtk_widget_set_usize (entry, 64, -1); \
-}
+	}
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1457,6 +1469,15 @@ static void prefs_account_advanced_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), entry_domain, TRUE, TRUE, 0);
 	SET_TOGGLE_SENSITIVITY (checkbtn_domain, entry_domain);
 
+	
+	PACK_HBOX (hbox1);
+	PACK_CHECK_BUTTON (hbox1, checkbtn_tunnelcmd,
+			   _("Tunnel command to open connection"));
+	entry_tunnelcmd = gtk_entry_new ();
+	gtk_widget_show (entry_tunnelcmd);
+	gtk_box_pack_start (GTK_BOX (hbox1), entry_tunnelcmd, TRUE, TRUE, 0);
+	SET_TOGGLE_SENSITIVITY (checkbtn_tunnelcmd, entry_tunnelcmd);
+
 #undef PACK_HBOX
 #undef PACK_PORT_ENTRY
 
@@ -1473,6 +1494,8 @@ static void prefs_account_advanced_create(void)
 	advanced.nntpport_entry		= entry_nntpport;
 	advanced.domain_chkbtn		= checkbtn_domain;
 	advanced.domain_entry		= entry_domain;
+	advanced.tunnelcmd_chkbtn	= checkbtn_tunnelcmd;
+	advanced.tunnelcmd_entry	= entry_tunnelcmd;
 }
 
 static gint prefs_account_deleted(GtkWidget *widget, GdkEventAny *event,

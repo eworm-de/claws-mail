@@ -29,6 +29,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <signal.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
@@ -41,6 +42,7 @@
 #endif
 
 #include "socket.h"
+#include "utils.h"
 #if USE_SSL
 #  include "ssl.h"
 #endif
@@ -60,6 +62,9 @@ static gint sock_connect_by_getaddrinfo	(const gchar	*hostname,
 					 gushort	 port);
 #endif
 
+static SockInfo *sockinfo_from_fd(const gchar *hostname,
+				  gushort port,
+				  gint sock);
 
 gint fd_connect_unix(const gchar *path)
 {
@@ -261,10 +266,38 @@ static gint sock_connect_by_getaddrinfo(const gchar *hostname, gushort	port)
 }
 #endif /* !INET6 */
 
+
+/* Open a connection using an external program.  May be useful when
+ * you need to tunnel through a SOCKS or other firewall, or to
+ * establish an IMAP-over-SSH connection. */
+/* TODO: Recreate this for sock_connect_thread() */
+SockInfo *sock_connect_cmd(const gchar *hostname, const gchar *tunnelcmd)
+{
+	gint fd[2];
+	int r;
+		     
+	if ((r = socketpair(AF_UNIX, SOCK_STREAM, 0, fd)) == -1) {
+		perror("socketpair");
+		return NULL;
+	}
+	log_message("launching tunnel command \"%s\"\n", tunnelcmd);
+	if (fork() == 0) {
+		close(fd[0]);
+		close(0);
+		close(1);
+		dup(fd[1]);	/* set onto stdin */
+		dup(fd[1]);
+		execlp("/bin/sh", "/bin/sh", "-c", tunnelcmd, NULL);
+	}
+
+	close(fd[1]);
+	return sockinfo_from_fd(hostname, 0, fd[0]);
+}
+
+
 SockInfo *sock_connect(const gchar *hostname, gushort port)
 {
 	gint sock;
-	SockInfo *sockinfo;
 
 #ifdef INET6
 	if ((sock = sock_connect_by_getaddrinfo(hostname, port)) < 0)
@@ -282,6 +315,16 @@ SockInfo *sock_connect(const gchar *hostname, gushort port)
 	}
 #endif /* INET6 */
 
+	return sockinfo_from_fd(hostname, port, sock);
+}
+
+
+static SockInfo *sockinfo_from_fd(const gchar *hostname,
+				  gushort port,
+				  gint sock)
+{
+	SockInfo *sockinfo;
+	
 	sockinfo = g_new0(SockInfo, 1);
 	sockinfo->sock = sock;
 	sockinfo->hostname = g_strdup(hostname);
@@ -393,9 +436,12 @@ gint fd_write(gint fd, const gchar *buf, gint len)
 	gint n, wrlen = 0;
 
 	while (len) {
+		signal(SIGPIPE, SIG_IGN);
 		n = write(fd, buf, len);
-		if (n <= 0)
+		if (n <= 0) {
+			log_error("write on fd%d: %s\n", fd, strerror(errno));
 			return -1;
+		}
 		len -= n;
 		wrlen += n;
 		buf += n;
@@ -496,6 +542,13 @@ gchar *fd_getline(gint fd)
 		}
 		if (buf[len - 1] == '\n')
 			break;
+	}
+	if (len == -1) {
+		log_error("Read from socket fd%d failed: %s\n",
+			  fd, strerror(errno));
+		if (str)
+			g_free(str);
+		return NULL;
 	}
 
 	return str;

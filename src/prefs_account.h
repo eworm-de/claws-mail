@@ -135,6 +135,17 @@ struct _PrefsAccount
 	gboolean  set_domain;
 	gchar    *domain;
 
+	/* Use this command to open a socket, rather than doing so
+	 * directly.  Good if you want to perhaps use a special socks
+	 * tunnel command, or run IMAP-over-SSH.  In this case the
+	 * server, port etc are only for the user's own information
+	 * and are not used.  username and password are used to
+	 * authenticate the account only if necessary, since some
+	 * tunnels will implicitly authenticate by running e.g. imapd
+	 * as a particular user. */
+	gboolean  set_tunnelcmd;
+	gchar     *tunnelcmd;
+
 	/* Default or not */
 	gboolean is_default;
 	/* Unique account ID */

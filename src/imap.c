@@ -33,6 +33,7 @@
 #include <time.h>
 
 #include "intl.h"
+#include "prefs_account.h"
 #include "imap.h"
 #include "socket.h"
 #include "ssl.h"
@@ -41,7 +42,6 @@
 #include "procheader.h"
 #include "folder.h"
 #include "statusbar.h"
-#include "prefs_account.h"
 #include "codeconv.h"
 #include "utils.h"
 #include "inputdialog.h"
@@ -103,13 +103,16 @@ static void imap_delete_all_cached_messages	(FolderItem	*item);
 #if USE_SSL
 static SockInfo *imap_open		(const gchar	*server,
 					 gushort	 port,
-					 gchar		*buf,
 					 gboolean	 use_ssl);
 #else
 static SockInfo *imap_open		(const gchar	*server,
-					 gushort	 port,
-					 gchar		*buf);
+					 gushort	 port);
 #endif
+
+static SockInfo *imap_open_tunnel(const gchar *server,
+				  const gchar *tunnelcmd);
+
+static SockInfo *imap_init_sock(SockInfo *sock);
 
 static gint imap_set_message_flags	(IMAPSession	*session,
 					 guint32	 first_uid,
@@ -159,6 +162,8 @@ static gchar *imap_parse_address	(SockInfo	*sock,
 static MsgFlags imap_parse_flags	(const gchar	*flag_str);
 static MsgInfo *imap_parse_envelope	(SockInfo	*sock,
 					 GString	*line_str);
+static gint imap_greeting		(SockInfo *sock,
+					 gboolean *is_preauth);
 
 /* low-level IMAP4rev1 commands */
 static gint imap_cmd_login	(SockInfo	*sock,
@@ -238,6 +243,8 @@ static gchar *search_array_contain_str		(GPtrArray	*array,
 						 gchar		*str);
 static gchar *search_array_str			(GPtrArray	*array,
 						 gchar		*str);
+static gchar *search_array_starts		(GPtrArray *array,
+						 const gchar *str);
 static void imap_path_separator_subst		(gchar		*str,
 						 gchar		 separator);
 
@@ -260,16 +267,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 
 	if (!rfolder->session) {
 		rfolder->session =
-#if USE_SSL
-			imap_session_new(folder->account->recv_server, port,
-					 folder->account->userid,
-					 folder->account->passwd,
-					 folder->account->ssl_imap);
-#else
-			imap_session_new(folder->account->recv_server, port,
-					 folder->account->userid,
-					 folder->account->passwd);
-#endif
+			imap_session_new(folder->account);
 		if (rfolder->session) {
 			imap_parse_namespace(IMAP_SESSION(rfolder->session),
 					     IMAP_FOLDER(folder));
@@ -279,6 +277,14 @@ static IMAPSession *imap_session_get(Folder *folder)
 		return IMAP_SESSION(rfolder->session);
 	}
 
+	/* I think the point of this code is to avoid sending a
+	 * keepalive if we've used the session recently and therefore
+	 * think it's still alive.  Unfortunately, most of the code
+	 * does not yet check for errors on the socket, and so if the
+	 * connection drops we don't notice until the timeout expires.
+	 * A better solution than sending a NOOP every time would be
+	 * for every command to be prepared to retry until it is
+	 * successfully sent. -- mbp */
 	if (time(NULL) - rfolder->session->last_access_time < SESSION_TIMEOUT) {
 		rfolder->session->last_access_time = time(NULL);
 		statusbar_pop_all();
@@ -291,16 +297,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 			    folder->account->recv_server, port);
 		session_destroy(rfolder->session);
 		rfolder->session =
-#if USE_SSL
-			imap_session_new(folder->account->recv_server, port,
-					 folder->account->userid,
-					 folder->account->passwd,
-					 folder->account->ssl_imap);
-#else
-			imap_session_new(folder->account->recv_server, port,
-					 folder->account->userid,
-					 folder->account->passwd);
-#endif
+			imap_session_new(folder->account);
 		if (rfolder->session)
 			imap_parse_namespace(IMAP_SESSION(rfolder->session),
 					     IMAP_FOLDER(folder));
@@ -325,49 +322,69 @@ static gchar *imap_query_password(const gchar *server, const gchar *user)
 	return pass;
 }
 
-#if USE_SSL
-Session *imap_session_new(const gchar *server, gushort port,
-			  const gchar *user, const gchar *pass,
-			  gboolean use_ssl)
-#else
-Session *imap_session_new(const gchar *server, gushort port,
-			  const gchar *user, const gchar *pass)
-#endif
+Session *imap_session_new(const PrefsAccount *account)
 {
-	gchar buf[IMAPBUFSIZE];
 	IMAPSession *session;
 	SockInfo *imap_sock;
+	gushort port;
+	gchar *pass;
+	gboolean is_preauth;
 
-	g_return_val_if_fail(server != NULL, NULL);
-	g_return_val_if_fail(user != NULL, NULL);
+#ifdef USE_SSL
+	port = account->set_imapport ? account->imapport
+		: account->ssl_imap ? IMAPS_PORT : IMAP4_PORT;
+#else
+	port = account->set_imapport ? account->imapport
+		: IMAP4_PORT;
+#endif
 
-	if (!pass) {
-		gchar *tmp_pass;
-		tmp_pass = imap_query_password(server, user);
-		if (!tmp_pass)
+	if (account->set_tunnelcmd) {
+		log_message(_("creating tunneled IMAP4 connection\n"));
+		if ((imap_sock = imap_open_tunnel(account->recv_server, 
+						  account->tunnelcmd)) == NULL)
 			return NULL;
-		Xstrdup_a(pass, tmp_pass, {g_free(tmp_pass); return NULL;});
-		g_free(tmp_pass);
+	} else {
+		g_return_val_if_fail(account->recv_server != NULL, NULL);
+
+		log_message(_("creating IMAP4 connection to %s:%d ...\n"),
+			    account->recv_server, port);
+		
+#if USE_SSL
+		if ((imap_sock = imap_open(account->recv_server, port,
+					   account->use_ssl)) == NULL)
+#else
+	       	if ((imap_sock = imap_open(account->recv_server, port)) == NULL)
+#endif
+			return NULL;
 	}
 
-	log_message(_("creating IMAP4 connection to %s:%d ...\n"),
-		    server, port);
+	/* Only need to log in if the connection was not PREAUTH */
+	imap_greeting(imap_sock, &is_preauth);
+	log_message("IMAP connection is %s-authenticated\n",
+		    (is_preauth) ? "pre" : "un");
+	if (!is_preauth) {
+		g_return_val_if_fail(account->userid != NULL, NULL);
 
-#if USE_SSL
-	if ((imap_sock = imap_open(server, port, buf, use_ssl)) == NULL)
-#else
-	if ((imap_sock = imap_open(server, port, buf)) == NULL)
-#endif
-		return NULL;
-	if (imap_cmd_login(imap_sock, user, pass) != IMAP_SUCCESS) {
-		imap_cmd_logout(imap_sock);
-		sock_close(imap_sock);
-		return NULL;
+		pass = account->passwd;
+		if (!pass) {
+			gchar *tmp_pass;
+			tmp_pass = imap_query_password(account->recv_server, account->userid);
+			if (!tmp_pass)
+				return NULL;
+			Xstrdup_a(pass, tmp_pass, {g_free(tmp_pass); return NULL;});
+			g_free(tmp_pass);
+		}
+
+		if (imap_cmd_login(imap_sock, account->userid, pass) != IMAP_SUCCESS) {
+			imap_cmd_logout(imap_sock);
+			sock_close(imap_sock);
+			return NULL;
+		}
 	}
 
 	session = g_new(IMAPSession, 1);
 	SESSION(session)->type             = SESSION_IMAP;
-	SESSION(session)->server           = g_strdup(server);
+	SESSION(session)->server           = g_strdup(account->recv_server);
 	SESSION(session)->sock             = imap_sock;
 	SESSION(session)->connected        = TRUE;
 	SESSION(session)->phase            = SESSION_READY;
@@ -1320,11 +1337,24 @@ static void imap_delete_all_cached_messages(FolderItem *item)
 	debug_print(_("done.\n"));
 }
 
+
+static SockInfo *imap_open_tunnel(const gchar *server,
+			   const gchar *tunnelcmd)
+{
+	SockInfo *sock;
+
+	if ((sock = sock_connect_cmd(server, tunnelcmd)) == NULL)
+		return NULL;
+
+	return imap_init_sock(sock);
+}
+
+
 #if USE_SSL
-static SockInfo *imap_open(const gchar *server, gushort port, gchar *buf,
+static SockInfo *imap_open(const gchar *server, gushort port,
 			   gboolean use_ssl)
 #else
-static SockInfo *imap_open(const gchar *server, gushort port, gchar *buf)
+static SockInfo *imap_open(const gchar *server, gushort port)
 #endif
 {
 	SockInfo *sock;
@@ -1342,15 +1372,17 @@ static SockInfo *imap_open(const gchar *server, gushort port, gchar *buf)
 	}
 #endif
 
+	return imap_init_sock(sock);
+}
+
+
+static SockInfo *imap_init_sock(SockInfo *sock)
+{
 	imap_cmd_count = 0;
-
-	if (imap_cmd_noop(sock) != IMAP_SUCCESS) {
-		sock_close(sock);
-		return NULL;
-	}
-
 	return sock;
 }
+
+
 
 #define THROW goto catch
 
@@ -2003,6 +2035,21 @@ static gint imap_cmd_logout(SockInfo *sock)
 	return imap_cmd_ok(sock, NULL);
 }
 
+/* Send a NOOP, and examine the server's response to see whether this
+ * connection is pre-authenticated or not. */
+static gint imap_greeting(SockInfo *sock, gboolean *is_preauth)
+{
+	GPtrArray *argbuf;
+	gint r;
+
+	imap_cmd_gen_send(sock, "NOOP");
+	argbuf = g_ptr_array_new(); /* will hold messages sent back */
+	r = imap_cmd_ok(sock, argbuf);
+	*is_preauth = search_array_starts(argbuf, "PREAUTH") != NULL;
+	
+	return r;
+}
+
 static gint imap_cmd_noop(SockInfo *sock)
 {
 	imap_cmd_gen_send(sock, "NOOP");
@@ -2275,6 +2322,7 @@ static gint imap_cmd_expunge(SockInfo *sock)
 	return IMAP_SUCCESS;
 }
 
+
 static gint imap_cmd_ok(SockInfo *sock, GPtrArray *argbuf)
 {
 	gint ok;
@@ -2379,6 +2427,22 @@ static gchar *get_quoted(const gchar *src, gchar ch, gchar *dest, gint len)
 
 	*dest = '\0';
 	return (gchar *)(*p == ch ? p + 1 : p);
+}
+
+static gchar *search_array_starts(GPtrArray *array, const gchar *str)
+{
+	gint i;
+	size_t len;
+
+	g_return_val_if_fail(str != NULL, NULL);
+	len = strlen(str);
+	for (i = 0; i < array->len; i++) {
+		gchar *tmp;
+		tmp = g_ptr_array_index(array, i);
+		if (strncmp(tmp, str, len) == 0)
+			return tmp;
+	}
+	return NULL;
 }
 
 static gchar *search_array_contain_str(GPtrArray *array, gchar *str)

@@ -1,3 +1,11 @@
+2001-12-22 [alfons]	0.6.6claws8
+
+	* src/socket.[ch]
+	* src/imap.[ch]
+	* src/prefs_account.[ch]
+		allow IMAP over SSH tunnel (patch submitted by 
+		Martin Pool <mbp@samba.org>)
+
 2001-12-21 [alfons]	0.6.6claws7
 
 	* sync with sylpheed 0.6.6cvs4-9
