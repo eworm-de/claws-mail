@@ -23,7 +23,7 @@
 DEBUGVERSION=1
 
 # GCCVERSION: set to 3 if using gcc3.x (-fnative-struct | -mms-bitfields)
-GCCVERSION=2
+GCCVERSION=3
 
 # CYGWIN: set to 1 if building from cygwin shell (-mno-cygwin)
 CYGWIN=0

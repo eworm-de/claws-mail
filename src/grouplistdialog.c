@@ -170,7 +170,7 @@ static void grouplist_dialog_create(void)
 	gtk_container_set_border_width
 		(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 5);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-	gtk_window_set_title(GTK_WINDOW(dialog), _("Subscribe to newsgroup"));
+	gtk_window_set_title(GTK_WINDOW(dialog), _("Newsgroup subscription"));
 	gtk_signal_connect(GTK_OBJECT(dialog), "delete_event",
 			   GTK_SIGNAL_FUNC(cancel_clicked), NULL);
 	gtk_signal_connect(GTK_OBJECT(dialog), "key_press_event",
@@ -186,7 +186,7 @@ static void grouplist_dialog_create(void)
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
-	msg_label = gtk_label_new(_("Select newsgroups to subscribe."));
+	msg_label = gtk_label_new(_("Select newsgroups for subscription:"));
 	gtk_box_pack_start(GTK_BOX(hbox), msg_label, FALSE, FALSE, 0);
 
 	hbox = gtk_hbox_new(FALSE, 8);

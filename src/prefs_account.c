@@ -823,7 +823,7 @@ static void prefs_account_basic_create(void)
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("Name of this account"));
+	label = gtk_label_new (_("Name of account"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
@@ -1257,7 +1257,7 @@ static void prefs_account_send_create(void)
 	gtk_container_add (GTK_CONTAINER (frame), vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
 
-	PACK_CHECK_BUTTON (vbox2, date_chkbtn, _("Add Date header field"));
+	PACK_CHECK_BUTTON (vbox2, date_chkbtn, _("Add Date"));
 	PACK_CHECK_BUTTON (vbox2, msgid_chkbtn, _("Generate Message-ID"));
 
 	hbox = gtk_hbox_new (FALSE, 12);

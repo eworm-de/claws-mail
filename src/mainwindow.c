@@ -293,13 +293,11 @@ static void toolbar_forward_popup_closed_cb
 					(GtkMenuShell	*menu_shell,
 					 gpointer	 data);
 
-static void activate_compose_button     (MainToolbar       *toolbar,
+static void activate_compose_button     (Toolbar       *toolbar,
 					 ToolbarStyle      style,
 					 ComposeButtonType type);
-static void toolbar_actions_execute_cb  (GtkWidget         *widget,
-					 gpointer           data);
 static void toolbar_buttons_cb          (GtkWidget         *widget, 
-					 ToolbarItem       *toolbar_item);
+					 ToolbarItem       *item);
 static void toolbar_create              (MainWindow        *mainwin,
 					 GtkWidget         *container);
 
@@ -495,8 +493,6 @@ static void scan_tree_func	 (Folder	*folder,
 static void key_pressed (GtkWidget *widget, 
 				GdkEventKey *event,
 				gpointer data);
-
-static void set_toolbar_style(MainWindow *mainwin);
 
 static void toggle_work_offline_cb(MainWindow *mainwin, guint action, GtkWidget *widget);
 
@@ -780,17 +776,19 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Configuration"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Configuration/_Common preferences..."),
 						NULL, prefs_common_open_cb, 0, NULL},
-	{N_("/_Configuration/C_ustomize toolbar"),
+	{N_("/_Configuration/C_ustomize toolbars"),
 						NULL, NULL, 0, "<Branch>"},
-	{N_("/_Configuration/C_ustomize toolbar/_Main toolbar..."),
+	{N_("/_Configuration/C_ustomize toolbars/_Main window..."),
 						NULL, prefs_toolbar_cb, TOOLBAR_MAIN, NULL},
-	{N_("/_Configuration/C_ustomize toolbar/_Compose toolbar..."),
+	{N_("/_Configuration/C_ustomize toolbars/_Compose window..."),
 						NULL, prefs_toolbar_cb, TOOLBAR_COMPOSE, NULL},
+	{N_("/_Configuration/C_ustomize toolbars/M_essageView ..."),
+						NULL, prefs_toolbar_cb, TOOLBAR_MSGVIEW, NULL},
 	{N_("/_Configuration/_Scoring..."),
 						NULL, prefs_scoring_open_cb, 0, NULL},
 	{N_("/_Configuration/_Filtering..."),
 						NULL, prefs_filtering_open_cb, 0, NULL},
-	{N_("/_Configuration/_Template..."),	NULL, prefs_template_open_cb, 0, NULL},
+	{N_("/_Configuration/_Templates..."),	NULL, prefs_template_open_cb, 0, NULL},
 	{N_("/_Configuration/_Actions..."),	NULL, prefs_actions_open_cb, 0, NULL},
 	{N_("/_Configuration/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Configuration/_Preferences for current account..."),
@@ -986,8 +984,6 @@ MainWindow *main_window_create(SeparateType type)
 	summaryview->folderview  = folderview;
 	summaryview->messageview = messageview;
 	summaryview->window      = window;
-
-	messageview->mainwin     = mainwin;
 
 	mainwin->vbox         = vbox;
 	mainwin->menubar      = menubar;
@@ -1205,7 +1201,7 @@ void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
 		/* pixmap themes */
 		if (pixmap_theme_changed) {
 			toolbar_update(mainwin);
-			set_toolbar_style(mainwin);
+			common_toolbar_set_style(mainwin, TOOLBAR_MAIN);
 			folderview_reflect_prefs_pixmap_theme(mainwin->folderview);
 			summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
 
@@ -1301,7 +1297,8 @@ void main_window_separation_change(MainWindow *mainwin, SeparateType type)
 {
 	GtkWidget *folder_wid  = GTK_WIDGET_PTR(mainwin->folderview);
 	GtkWidget *summary_wid = GTK_WIDGET_PTR(mainwin->summaryview);
-	GtkWidget *message_wid = GTK_WIDGET_PTR(mainwin->messageview);
+	//GtkWidget *message_wid = GTK_WIDGET_PTR(mainwin->messageview);
+	GtkWidget *message_wid = mainwin->messageview->vbox;
 
 	debug_print("Changing window separation type from %d to %d\n",
 		    mainwin->type, type);
@@ -2060,8 +2057,8 @@ void main_window_destroy_all(void)
 		
 		/* free toolbar stuff */
 		toolbar_clear_list(TOOLBAR_MAIN);
-		TOOLBAR_DESTROY_ACTIONS(mainwin->toolbar->t_action_list);
-		TOOLBAR_DESTROY_ITEMS(mainwin->toolbar->t_item_list);
+		TOOLBAR_DESTROY_ACTIONS(mainwin->toolbar->action_list);
+		TOOLBAR_DESTROY_ITEMS(mainwin->toolbar->item_list);
 
 		g_free(mainwin->toolbar);
 		g_free(mainwin);
@@ -2520,7 +2517,7 @@ static void toolbar_forward_popup_closed_cb (GtkMenuShell *menu_shell,
 	manage_window_focus_in(mainwin->window, NULL, NULL);
 }
 
-static void activate_compose_button (MainToolbar       *toolbar,
+static void activate_compose_button (Toolbar           *toolbar,
 				     ToolbarStyle      style,
 				     ComposeButtonType type)
 {
@@ -2534,7 +2531,7 @@ static void activate_compose_button (MainToolbar       *toolbar,
 	toolbar->compose_btn_type = type;	
 }
 
-void toolbar_set_compose_button(MainToolbar       *toolbar, 
+void toolbar_set_compose_button(Toolbar            *toolbar, 
 				ComposeButtonType  compose_btn_type)
 {
 	if (toolbar->compose_btn_type != compose_btn_type)
@@ -2544,55 +2541,51 @@ void toolbar_set_compose_button(MainToolbar       *toolbar,
 }
 
 static void toolbar_buttons_cb(GtkWidget         *widget, 
-			       ToolbarItem       *t_item)
+			       ToolbarItem       *item)
 {
 	struct {
 		gint   index;
 		void (*func)(GtkWidget *widget, gpointer data);
 	} toolbar_action[] = {
-		{ A_RECEIVE_ALL,    toolbar_inc_all_cb         },
-		{ A_RECEIVE_CUR,    toolbar_inc_cb             },
-		{ A_SEND_QUEUED,    toolbar_send_cb            },
-		{ A_COMPOSE_EMAIL,  toolbar_compose_cb         },
-		{ A_REPLY_MESSAGE,  toolbar_reply_cb           },
-		{ A_REPLY_SENDER,   toolbar_reply_to_sender_cb },
-		{ A_REPLY_ALL,      toolbar_reply_to_all_cb    },
-		{ A_REPLY_ML,       toolbar_reply_to_list_cb   },
-		{ A_FORWARD,        toolbar_forward_cb         },
-		{ A_DELETE,         toolbar_delete_cb          },
-		{ A_EXECUTE,        toolbar_exec_cb            },
-		{ A_GOTO_NEXT,      toolbar_next_unread_cb     },
-		{ A_SYL_ACTIONS,    toolbar_actions_execute_cb },
+		{ A_RECEIVE_ALL,    toolbar_inc_all_cb			},
+		{ A_RECEIVE_CUR,    toolbar_inc_cb			},
+		{ A_SEND_QUEUED,    toolbar_send_cb			},
+		{ A_COMPOSE_EMAIL,  toolbar_compose_cb			},
+		{ A_REPLY_MESSAGE,  toolbar_reply_cb			},
+		{ A_REPLY_SENDER,   toolbar_reply_to_sender_cb		},
+		{ A_REPLY_ALL,      toolbar_reply_to_all_cb		},
+		{ A_REPLY_ML,       toolbar_reply_to_list_cb		},
+		{ A_FORWARD,        toolbar_forward_cb			},
+		{ A_DELETE,         common_toolbar_delete_cb		},
+		{ A_EXECUTE,        toolbar_exec_cb			},
+		{ A_GOTO_NEXT,      toolbar_next_unread_cb		},
+		{ A_SYL_ACTIONS,    common_toolbar_actions_execute_cb	},
 		
-		{ A_COMPOSE_NEWS,   toolbar_compose_cb         },    
-		{ A_SEPARATOR,      NULL                       }};
+		{ A_COMPOSE_NEWS,   toolbar_compose_cb			},    
+		{ A_SEPARATOR,      NULL				}};
 
 	gint num_items = sizeof(toolbar_action)/sizeof(toolbar_action[0]);
 	gint i;
 
 	for (i = A_RECEIVE_ALL; i < num_items; i++) {
 
-		if (toolbar_action[i].index == t_item->index) {
-			MainWindow *mainwin = (MainWindow*)t_item->parent;
-			toolbar_action[i].func(widget, mainwin);
+		if (toolbar_action[i].index == item->index) {
+			if ((item->index == A_SYL_ACTIONS) || (item->index == A_DELETE))
+				/* the common_toolbar_* stuff takes item->parent as data
+				   pointer */				   
+				toolbar_action[i].func(widget, (gpointer)item->parent);
+			else /* to be removed */
+				toolbar_action[i].func(widget, (gpointer)item->parent->data);
 			break;
 		}
 	}
-}
-
-static void toolbar_actions_execute_cb(GtkWidget *widget,
-				       gpointer   data)
-{
-	MainWindow *mainwin = (MainWindow*)data;
-
-	toolbar_action_execute(widget, mainwin->toolbar->t_action_list, data, TOOLBAR_MAIN);
 }
 
 void toolbar_set_sensitive(MainWindow *mainwin)
 {
 	SensitiveCond state;
 	gboolean sensitive;
-	MainToolbar *toolbar = mainwin->toolbar;
+	Toolbar *toolbar = mainwin->toolbar;
 	GSList *cur;
 	GSList *entry_list = NULL;
 	
@@ -2629,7 +2622,7 @@ void toolbar_set_sensitive(MainWindow *mainwin)
 			M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED);
 	SET_WIDGET_COND(toolbar->exec_btn, M_DELAY_EXEC);
 
-	for (cur = toolbar->t_action_list; cur != NULL;  cur = cur->next) {
+	for (cur = toolbar->action_list; cur != NULL;  cur = cur->next) {
 		ToolbarSylpheedActions *act = (ToolbarSylpheedActions*)cur->data;
 		
 		SET_WIDGET_COND(act->widget, M_TARGET_EXIST|M_UNLOCKED);
@@ -2684,7 +2677,7 @@ static void toolbar_update(MainWindow *mainwin)
 	mainwin->toolbar->exec_btn   = NULL;
 
 	toolbar_clear_list(TOOLBAR_MAIN);
-	TOOLBAR_DESTROY_ACTIONS(mainwin->toolbar->t_action_list);
+	TOOLBAR_DESTROY_ACTIONS(mainwin->toolbar->action_list);
 	toolbar_create(mainwin, mainwin->handlebox);	
 	toolbar_set_sensitive(mainwin);
 
@@ -2701,7 +2694,7 @@ static void toolbar_create(MainWindow *mainwin,
 	GtkWidget *item_news = NULL;
 	GtkWidget *item;
 	GtkTooltips *toolbar_tips;
-	ToolbarSylpheedActions *t_action_item;
+	ToolbarSylpheedActions *action_item;
 	GSList *cur;
 	GSList *toolbar_list;
 
@@ -2716,15 +2709,15 @@ static void toolbar_create(MainWindow *mainwin,
 
 	if (mainwin->toolbar != NULL) {
 		toolbar_clear_list(TOOLBAR_MAIN);
-		TOOLBAR_DESTROY_ACTIONS(mainwin->toolbar->t_action_list);
-		TOOLBAR_DESTROY_ITEMS(mainwin->toolbar->t_item_list);
+		TOOLBAR_DESTROY_ACTIONS(mainwin->toolbar->action_list);
+		TOOLBAR_DESTROY_ITEMS(mainwin->toolbar->item_list);
 		g_free(mainwin->toolbar);
 	}
 
 	toolbar_read_config_file(TOOLBAR_MAIN);
 	toolbar_list = toolbar_get_list(TOOLBAR_MAIN);
 
-	mainwin->toolbar = g_new0(MainToolbar, 1); 
+	mainwin->toolbar = g_new0(Toolbar, 1); 
 
 	toolbar = gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL,
 				  GTK_TOOLBAR_BOTH);
@@ -2745,12 +2738,14 @@ static void toolbar_create(MainWindow *mainwin,
 		toolbar_item->file = g_strdup(((ToolbarItem*)cur->data)->file);
 		toolbar_item->text = g_strdup(((ToolbarItem*)cur->data)->text);
 		toolbar_item->index = ((ToolbarItem*)cur->data)->index;
-
-		toolbar_item->parent = (gpointer)mainwin;
+		
+		toolbar_item->parent = g_new0(ToolbarParent, 1);
+		toolbar_item->parent->data = (gpointer)mainwin;
+		toolbar_item->parent->type = TOOLBAR_MAIN;
 
 		/* collect toolbar items in list to keep track */
-		mainwin->toolbar->t_item_list = g_slist_append(mainwin->toolbar->t_item_list, 
-							      toolbar_item);
+		mainwin->toolbar->item_list = g_slist_append(mainwin->toolbar->item_list, 
+							     toolbar_item);
 		
 		icon_wid = stock_pixmap_widget(container, stock_pixmap_get_icon(toolbar_item->file));
 		item  = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
@@ -2904,17 +2899,17 @@ static void toolbar_create(MainWindow *mainwin,
 					   _("Goto Next Message"), NULL);
 			break;
 		case A_SYL_ACTIONS:
-			t_action_item = g_new0(ToolbarSylpheedActions, 1);
-			t_action_item->widget = item;
-			t_action_item->name   = g_strdup(toolbar_item->text);
+			action_item = g_new0(ToolbarSylpheedActions, 1);
+			action_item->widget = item;
+			action_item->name   = g_strdup(toolbar_item->text);
 
-			mainwin->toolbar->t_action_list = 
-				g_slist_append(mainwin->toolbar->t_action_list,
-					       t_action_item);
+			mainwin->toolbar->action_list = 
+				g_slist_append(mainwin->toolbar->action_list,
+					       action_item);
 
 			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
 					     item,
-					     t_action_item->name, NULL);
+					     action_item->name, NULL);
 
 			gtk_widget_show(item);
 			break;
@@ -3054,9 +3049,9 @@ static void sel_download_cb(MainWindow *mainwin, guint action,
 }
 
 static void prefs_toolbar_cb(MainWindow *mainwin, guint action,
-			       GtkWidget *widget)
+			     GtkWidget *widget)
 {
-	prefs_toolbar(action);
+	prefs_toolbar_open((ToolbarType)action);
 }
 
 
@@ -3580,32 +3575,6 @@ static void key_pressed (GtkWidget *widget, GdkEventKey *event,	gpointer data)
 }
 
 #undef BREAK_ON_MODIFIER_KEY
-
-static void set_toolbar_style(MainWindow *mainwin)
-{
-	switch (prefs_common.toolbar_style) {
-	case TOOLBAR_NONE:
-		gtk_widget_hide(mainwin->handlebox);
-		break;
-	case TOOLBAR_ICON:
-		gtk_toolbar_set_style(GTK_TOOLBAR(mainwin->toolbar->toolbar),
-				      GTK_TOOLBAR_ICONS);
-		break;
-	case TOOLBAR_TEXT:
-		gtk_toolbar_set_style(GTK_TOOLBAR(mainwin->toolbar->toolbar),
-				      GTK_TOOLBAR_TEXT);
-		break;
-	case TOOLBAR_BOTH:
-		gtk_toolbar_set_style(GTK_TOOLBAR(mainwin->toolbar->toolbar),
-				      GTK_TOOLBAR_BOTH);
-		break;
-	}
-	
-	if (prefs_common.toolbar_style != TOOLBAR_NONE) {
-		gtk_widget_show(mainwin->handlebox);
-		gtk_widget_queue_resize(mainwin->handlebox);
-	}
-}
 
 /*
  * Harvest addresses for selected folder.

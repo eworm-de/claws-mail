@@ -1,4 +1,4 @@
-rem @echo off
+@echo off
 rem compile translation files (*.po --> sylpheed.mo)
 rem assumes msgfmt and utf8conv in apps subdir
 

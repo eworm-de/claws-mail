@@ -130,19 +130,23 @@ struct _PrefsCommon
 #ifdef WIN32
 	gchar *spacingfont;
 #endif
+
+	gboolean trans_hdr;
 	gboolean display_folder_unread;
 	gint ng_abbrev_len;
-	ToolbarStyle toolbar_style;
-	gboolean show_statusbar;
+
 	gboolean show_searchbar;
-	gboolean trans_hdr;
-	gboolean enable_thread;
-	gboolean enable_hscrollbar;
-	gboolean expand_thread;
-	gboolean bold_unread;
 	gboolean swap_from;
+	gboolean expand_thread;
 	gboolean use_addr_book;
 	gchar *date_format;
+
+	gboolean enable_hscrollbar;
+	gboolean bold_unread;
+	gboolean enable_thread;
+
+	ToolbarStyle toolbar_style;
+	gboolean show_statusbar;
 
 	gint folderview_vscrollbar_policy;
 
@@ -275,9 +279,9 @@ struct _PrefsCommon
 
 extern PrefsCommon prefs_common;
 
- #ifdef WIN32
- void prefs_common_init_config	(void);
- #endif
+#ifdef WIN32
+void prefs_common_init_config	(void);
+#endif
 void prefs_common_init		();
 void prefs_common_read_config	(void);
 void prefs_common_save_config	(void);

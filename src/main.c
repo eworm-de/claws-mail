@@ -227,6 +227,25 @@ int main(int argc, char *argv[])
 
 	parse_cmd_opt(argc, argv);
 
+#ifdef WIN32
+	{ /* Initialize WinSock Library. */
+		WORD wVersionRequested = MAKEWORD(1, 1);
+		WSADATA	wsaData;
+		if (WSAStartup(wVersionRequested, &wsaData) != 0){
+			perror("WSAStartup");
+			return -1;
+		}
+	}
+#endif
+	/* check and create unix domain socket */
+	lock_socket = prohibit_duplicate_launch();
+	if (lock_socket < 0) return 0;
+
+	if (cmd.status) {
+		puts("0 Sylpheed not running.");
+		return 0;
+	}
+
 	gtk_set_locale();
 	gtk_init(&argc, &argv);
 
@@ -248,17 +267,6 @@ int main(int argc, char *argv[])
 	gdk_imlib_init();
 	gtk_widget_push_visual(gdk_imlib_get_visual());
 	gtk_widget_push_colormap(gdk_imlib_get_colormap());
-#endif
-
-#ifdef WIN32
-	{ /* Initialize WinSock Library. */
-		WORD wVersionRequested = MAKEWORD(1, 1);
-		WSADATA	wsaData;
-		if (WSAStartup(wVersionRequested, &wsaData) != 0){
-			perror("WSAStartup");
-			return -1;
-		}
-	}
 #endif
 
 #if USE_SSL
@@ -299,15 +307,6 @@ int main(int argc, char *argv[])
 	g_free(userrc);
 
 	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), 1);
-
-	/* check and create unix domain socket */
-	lock_socket = prohibit_duplicate_launch();
-	if (lock_socket < 0) return 0;
-
-	if (cmd.status) {
-		puts("0 Sylpheed not running.");
-		return 0;
-	}
 
 	/* backup if old rc file exists */
 	if (is_file_exist(RC_DIR)) {

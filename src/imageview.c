@@ -194,7 +194,7 @@ void imageview_show_image(ImageView *imageview, MimeInfo *mimeinfo,
 }
 #else
 void imageview_show_image(ImageView *imageview, MimeInfo *mimeinfo,
-			  const gchar *file)
+			  const gchar *file, gboolean resize)
 {
 }
 #endif /* HAVE_GDK_IMLIB */

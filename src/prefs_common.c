@@ -189,10 +189,8 @@ GtkWidget *entry_spacingfont;
 	GtkWidget *chkbtn_transhdr;
 
 	GtkWidget *chkbtn_swapfrom;
-	GtkWidget *chkbtn_hscrollbar;
 	GtkWidget *chkbtn_useaddrbook;
 	GtkWidget *chkbtn_expand_thread;
-	GtkWidget *chkbtn_bold_unread;
 	GtkWidget *entry_datefmt;
 } display;
 
@@ -234,7 +232,6 @@ static struct Interface {
 	GtkWidget *checkbtn_mark_as_read_on_newwin;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
-	GtkWidget *checkbtn_addaddrbyclick;
 	GtkWidget *optmenu_recvdialog;
 	GtkWidget *optmenu_senddialog;
 	GtkWidget *checkbtn_no_recv_err_panel;
@@ -251,6 +248,7 @@ static struct Other {
 	GtkWidget *printcmd_entry;
 	GtkWidget *exteditor_combo;
 	GtkWidget *exteditor_entry;
+	GtkWidget *checkbtn_addaddrbyclick;
 	GtkWidget *checkbtn_confonexit;
 	GtkWidget *checkbtn_cleanonexit;
 	GtkWidget *checkbtn_askonclean;
@@ -559,7 +557,6 @@ static PrefParam param[] = {
 	 &prefs_common.display_folder_unread, P_BOOL,
 	 &display.chkbtn_folder_unread,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-
 	{"newsgroup_abbrev_len", "16",
 	 &prefs_common.ng_abbrev_len, P_INT,
 	 &display.spinbtn_ng_abbrev_len,
@@ -573,9 +570,6 @@ static PrefParam param[] = {
 	{"enable_swap_from", "FALSE", &prefs_common.swap_from, P_BOOL,
 	 &display.chkbtn_swapfrom,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"enable_hscrollbar", "TRUE", &prefs_common.enable_hscrollbar, P_BOOL,
-	 &display.chkbtn_hscrollbar,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"use_address_book", "TRUE", &prefs_common.use_addr_book, P_BOOL,
 	 &display.chkbtn_useaddrbook,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -585,9 +579,11 @@ static PrefParam param[] = {
 	{"expand_thread", "TRUE", &prefs_common.expand_thread, P_BOOL,
 	 &display.chkbtn_expand_thread,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"enable_hscrollbar", "TRUE", &prefs_common.enable_hscrollbar, P_BOOL,
+	 NULL, NULL, NULL},
 	{"bold_unread", "TRUE", &prefs_common.bold_unread, P_BOOL,
-	 &display.chkbtn_bold_unread,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 NULL, NULL, NULL},
 
 	{"enable_thread", "TRUE", &prefs_common.enable_thread, P_BOOL,
 	 NULL, NULL, NULL},
@@ -845,9 +841,6 @@ static PrefParam param[] = {
 	 prefs_nextunreadmsgdialog_set_data_from_optmenu,
 	 prefs_nextunreadmsgdialog_set_optmenu},
 
-	{"add_address_by_click", "FALSE", &prefs_common.add_address_by_click,
-	 P_BOOL, &Xinterface.checkbtn_addaddrbyclick,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"pixmap_theme_path", DEFAULT_PIXMAP_THEME, 
 	 &prefs_common.pixmap_theme_path, P_STRING,
 	 &Xinterface.entry_pixmap_theme,	prefs_set_data_from_entry, prefs_set_entry},
@@ -872,6 +865,10 @@ static PrefParam param[] = {
 	 &prefs_common.ext_editor_cmd, P_STRING,
 	 &other.exteditor_entry, prefs_set_data_from_entry, prefs_set_entry},
 #endif
+
+	{"add_address_by_click", "FALSE", &prefs_common.add_address_by_click,
+	 P_BOOL, &other.checkbtn_addaddrbyclick,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"confirm_on_exit", "TRUE", &prefs_common.confirm_on_exit, P_BOOL,
 	 &other.checkbtn_confonexit,
@@ -1426,7 +1423,7 @@ static void prefs_send_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_savemsg,
-			   _("Save sent messages to Sent"));
+			   _("Save sent messages to Sent folder"));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_queuemsg,
 			   _("Queue messages that fail to send"));
 
@@ -1898,7 +1895,9 @@ static void prefs_spelling_create()
 	PACK_CHECK_BUTTON(vbox_spell, checkbtn_use_alternate, 
 			  _("Enable alternate dictionary"));
 
-	help_label = gtk_label_new(_("Enabling alternate dictionary makes switching\nwith the last used dictionary faster."));
+	help_label = gtk_label_new(_("Enabling an alternate dictionary makes switching\n"
+				     "with the last used dictionary faster."));
+	gtk_misc_set_alignment (GTK_MISC (help_label), 0, 0);
 	gtk_widget_show(help_label);
 	gtk_box_pack_start(GTK_BOX(vbox_spell), help_label, FALSE, TRUE, 0);
 	
@@ -2248,7 +2247,7 @@ static void prefs_compose_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox_autosave, FALSE, FALSE, 0);
 	
 	PACK_CHECK_BUTTON (hbox_autosave, checkbtn_autosave,
-			   _("Autosave to drafts every "));
+			   _("Autosave to Drafts folder every "));
 
 	entry_autosave_length = gtk_entry_new();
 	gtk_widget_set_usize (entry_autosave_length, 64, -1);	
@@ -2477,7 +2476,7 @@ static void prefs_quote_create(void)
 
 	/* quote chars */
 
-	PACK_FRAME (vbox1, frame_quote, _("Quoting characters"));
+	PACK_FRAME (vbox1, frame_quote, _("Quotation characters"));
 
 	vbox_quote = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox_quote);
@@ -2528,10 +2527,8 @@ static void prefs_display_create(void)
 	GtkWidget *frame_summary;
 	GtkWidget *vbox2;
 	GtkWidget *chkbtn_swapfrom;
-	GtkWidget *chkbtn_hscrollbar;
 	GtkWidget *chkbtn_useaddrbook;
 	GtkWidget *chkbtn_expand_thread;
-	GtkWidget *chkbtn_bold_unread;
 	GtkWidget *vbox3;
 	GtkWidget *label_datefmt;
 	GtkWidget *button_datefmt;
@@ -2648,7 +2645,7 @@ static void prefs_display_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
 
 	label_ng_abbrev = gtk_label_new
-		(_("Abbreviate newsgroups longer than"));
+		(_("Abbreviate newsgroup names longer than"));
 	gtk_widget_show (label_ng_abbrev);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_ng_abbrev, FALSE, FALSE, 0);
 
@@ -2683,12 +2680,7 @@ static void prefs_display_create(void)
 		(vbox2, chkbtn_useaddrbook,
 		 _("Display sender using address book"));
 	PACK_CHECK_BUTTON
-		(vbox2, chkbtn_hscrollbar, _("Enable horizontal scroll bar"));
-	PACK_CHECK_BUTTON
 		(vbox2, chkbtn_expand_thread, _("Expand threads"));
-	PACK_CHECK_BUTTON
-		(vbox2, chkbtn_bold_unread,
-		 _("Display unread messages with bold font"));
 
 	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
 
@@ -2718,7 +2710,7 @@ static void prefs_display_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
 
 	button_dispitem = gtk_button_new_with_label
-		(_(" Set displayed items of summary... "));
+		(_(" Set displayed items in summary... "));
 	gtk_widget_show (button_dispitem);
 	gtk_box_pack_start (GTK_BOX (hbox1), button_dispitem, FALSE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (button_dispitem), "clicked",
@@ -2734,9 +2726,7 @@ static void prefs_display_create(void)
 	display.spinbtn_ng_abbrev_len_adj = spinbtn_ng_abbrev_len_adj;
 
 	display.chkbtn_swapfrom      = chkbtn_swapfrom;
-	display.chkbtn_hscrollbar    = chkbtn_hscrollbar;
 	display.chkbtn_expand_thread = chkbtn_expand_thread;
-	display.chkbtn_bold_unread   = chkbtn_bold_unread;
 	display.chkbtn_useaddrbook   = chkbtn_useaddrbook;
 	display.entry_datefmt        = entry_datefmt;
 }
@@ -2776,9 +2766,13 @@ static void prefs_message_create(void)
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
+	vbox2 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox2);
+	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
+
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
 
 	PACK_CHECK_BUTTON (hbox1, chkbtn_enablecol,
 			   _("Enable coloration of message"));
@@ -2794,13 +2788,13 @@ static void prefs_message_create(void)
 
 	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, button_edit_col);
 
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox2);
-	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
-
 	PACK_CHECK_BUTTON
 		(vbox2, chkbtn_mbalnum,
-		 _("Display 2-byte alphabet and numeric with 1-byte character"));
+		 _("Display multi-byte alphabet and numeric as\n"
+		   "ASCII character (Japanese only)"));
+	gtk_label_set_justify (GTK_LABEL (GTK_BIN(chkbtn_mbalnum)->child),
+			       GTK_JUSTIFY_LEFT);
+
 	PACK_CHECK_BUTTON(vbox2, chkbtn_disphdrpane,
 			  _("Display header pane above message view"));
 
@@ -3036,6 +3030,8 @@ static void prefs_interface_create(void)
 	GtkWidget *checkbtn_mark_as_read_on_newwin;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
+	GtkWidget *frame_dialogs;
+	GtkWidget *vbox_dialogs;
 	GtkWidget *hbox1;
 	GtkWidget *label;
 	GtkWidget *dialogs_table;
@@ -3045,10 +3041,6 @@ static void prefs_interface_create(void)
 	GtkWidget *menuitem;
 	GtkWidget *checkbtn_no_recv_err_panel;
 	GtkWidget *checkbtn_close_recv_dialog;
-
-	GtkWidget *frame_addr;
-	GtkWidget *vbox_addr;
-	GtkWidget *checkbtn_addaddrbyclick;
 
 	GtkWidget *button_keybind;
 
@@ -3080,7 +3072,7 @@ static void prefs_interface_create(void)
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_show_msg_with_cursor,
-		 _("Open message when cursor keys are pressed on summary"));
+		 _("Open messages in summary with cursor keys"));
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_openunread,
@@ -3113,25 +3105,52 @@ static void prefs_interface_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 8);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 
-	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW);
+	PACK_FRAME (vbox1, frame_dialogs, _("Dialogs"));
+	vbox_dialogs = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox_dialogs);
+	gtk_container_add (GTK_CONTAINER (frame_dialogs), vbox_dialogs);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_dialogs), 8);
 
 	dialogs_table = gtk_table_new (2, 2, FALSE);
 	gtk_widget_show (dialogs_table);
-	gtk_container_add (GTK_CONTAINER (vbox2), dialogs_table);
-	gtk_container_set_border_width (GTK_CONTAINER (dialogs_table), 8);
+	gtk_container_add (GTK_CONTAINER (vbox_dialogs), dialogs_table);
+	gtk_container_set_border_width (GTK_CONTAINER (dialogs_table), 4);
 	gtk_table_set_row_spacings (GTK_TABLE (dialogs_table), VSPACING_NARROW);
 	gtk_table_set_col_spacings (GTK_TABLE (dialogs_table), 8);
 
-	label = gtk_label_new (_("Show send dialog"));
+ 	/* Next Unread Message Dialog */
+	label = gtk_label_new (_("Show no-unread-message dialog"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_widget_show (label);
 	gtk_table_attach (GTK_TABLE (dialogs_table), label, 0, 1, 0, 1,
 			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 
 
+ 	optmenu_nextunreadmsgdialog = gtk_option_menu_new ();
+ 	gtk_widget_show (optmenu_nextunreadmsgdialog);
+	gtk_table_attach (GTK_TABLE (dialogs_table), 
+			  optmenu_nextunreadmsgdialog, 1, 2, 0, 1,
+			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	
+	menu = gtk_menu_new ();
+	MENUITEM_ADD (menu, menuitem, _("Always"), NEXTUNREADMSGDIALOG_ALWAYS);
+	MENUITEM_ADD (menu, menuitem, _("Assume 'Yes'"), 
+		      NEXTUNREADMSGDIALOG_ASSUME_YES);
+	MENUITEM_ADD (menu, menuitem, _("Assume 'No'"), 
+		      NEXTUNREADMSGDIALOG_ASSUME_NO);
+
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_nextunreadmsgdialog), menu);
+
+	label = gtk_label_new (_("Show send dialog"));
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_widget_show (label);
+	gtk_table_attach (GTK_TABLE (dialogs_table), label, 0, 1, 1, 2,
+			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+
 	optmenu_senddialog = gtk_option_menu_new ();
 	gtk_widget_show (optmenu_senddialog);
-	gtk_table_attach (GTK_TABLE (dialogs_table), optmenu_senddialog, 1, 2, 0, 1,
+	gtk_table_attach (GTK_TABLE (dialogs_table), 
+			  optmenu_senddialog, 1, 2, 1, 2,
 			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 	
 	menu = gtk_menu_new ();
@@ -3143,12 +3162,12 @@ static void prefs_interface_create(void)
 	label = gtk_label_new (_("Show receive dialog"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_widget_show (label);
-	gtk_table_attach (GTK_TABLE (dialogs_table), label, 0, 1, 1, 2,
+	gtk_table_attach (GTK_TABLE (dialogs_table), label, 0, 1, 2, 3,
 			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 
 	optmenu_recvdialog = gtk_option_menu_new ();
 	gtk_widget_show (optmenu_recvdialog);
-	gtk_table_attach (GTK_TABLE (dialogs_table), optmenu_recvdialog, 1, 2, 1, 2,
+	gtk_table_attach (GTK_TABLE (dialogs_table), optmenu_recvdialog, 1, 2, 2, 3,
 			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 
 	menu = gtk_menu_new ();
@@ -3159,69 +3178,12 @@ static void prefs_interface_create(void)
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_recvdialog), menu);
 
-	PACK_CHECK_BUTTON (vbox2, checkbtn_no_recv_err_panel,
+	PACK_CHECK_BUTTON (vbox_dialogs, checkbtn_no_recv_err_panel,
 			   _("Don't popup error dialog on receive error"));
 
-	PACK_CHECK_BUTTON (vbox2, checkbtn_close_recv_dialog,
+	PACK_CHECK_BUTTON (vbox_dialogs, checkbtn_close_recv_dialog,
 			   _("Close receive dialog when finished"));
 
-	PACK_FRAME (vbox1, frame_addr, _("Address book"));
-
-	vbox_addr = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox_addr);
-	gtk_container_add (GTK_CONTAINER (frame_addr), vbox_addr);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_addr), 8);
-
-	PACK_CHECK_BUTTON
-		(vbox_addr, checkbtn_addaddrbyclick,
-		 _("Add address to destination when double-clicked"));
-
- 	/* Next Unread Message Dialog */
- 	hbox2 = gtk_hbox_new (FALSE, 8);
- 	gtk_widget_show (hbox2);
- 	gtk_box_pack_start (GTK_BOX (vbox2), hbox2, FALSE, FALSE, 0);
-
- 	label = gtk_label_new (_("Show no-unread-message dialog"));
- 	gtk_widget_show (label);
- 	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 0);
-
- 	optmenu_nextunreadmsgdialog = gtk_option_menu_new ();
- 	gtk_widget_show (optmenu_nextunreadmsgdialog);
- 	gtk_box_pack_start (GTK_BOX (hbox2), optmenu_nextunreadmsgdialog,
-			    FALSE, FALSE, 0);
-
- 	optmenu_nextunreadmsgdialog_menu = gtk_menu_new ();
- 	MENUITEM_ADD (optmenu_nextunreadmsgdialog_menu, nextunreadmsgdialog_menuitem,
-		      _("Always"),  NEXTUNREADMSGDIALOG_ALWAYS);
- 	MENUITEM_ADD (optmenu_nextunreadmsgdialog_menu, nextunreadmsgdialog_menuitem,
-		      _("Assume 'Yes'"),  NEXTUNREADMSGDIALOG_ASSUME_YES);
- 	MENUITEM_ADD (optmenu_nextunreadmsgdialog_menu, nextunreadmsgdialog_menuitem,
-		      _("Assume 'No'"), NEXTUNREADMSGDIALOG_ASSUME_NO);
-
- 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_nextunreadmsgdialog),
-		      		  optmenu_nextunreadmsgdialog_menu);
-
-
-	/* Receive Dialog */
-/*	hbox = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
-
-	label = gtk_label_new (_("Show receive Dialog"));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-
-	recvdialog_optmenu = gtk_option_menu_new ();
-	gtk_widget_show (recvdialog_optmenu);
-	gtk_box_pack_start (GTK_BOX (hbox), recvdialog_optmenu, FALSE, FALSE, 0);
-
-	recvdialog_optmenu_menu = gtk_menu_new ();
-
-	MENUITEM_ADD (recvdialog_optmenu_menu, recvdialog_menuitem, _("Always"),  RECVDIALOG_ALWAYS);
-	MENUITEM_ADD (recvdialog_optmenu_menu, recvdialog_menuitem, _("Only if a sylpheed window is active"),  RECVDIALOG_WINDOW_ACTIVE);
-	MENUITEM_ADD (recvdialog_optmenu_menu, recvdialog_menuitem, _("Never"), RECVDIALOG_NEVER);
-
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (recvdialog_optmenu), recvdialog_optmenu_menu);     */
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -3262,7 +3224,6 @@ static void prefs_interface_create(void)
 	Xinterface.optmenu_senddialog	      = optmenu_senddialog;
 	Xinterface.checkbtn_no_recv_err_panel  = checkbtn_no_recv_err_panel;
 	Xinterface.checkbtn_close_recv_dialog  = checkbtn_close_recv_dialog;
-	Xinterface.checkbtn_addaddrbyclick     = checkbtn_addaddrbyclick;
 	Xinterface.optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
 	Xinterface.combo_pixmap_theme	      = combo_pixmap_theme;
  	Xinterface.entry_pixmap_theme	      = entry_pixmap_theme;
@@ -3287,6 +3248,10 @@ static void prefs_other_create(void)
 	GtkWidget *exteditor_combo;
 	GtkWidget *exteditor_entry;
 
+	GtkWidget *frame_addr;
+	GtkWidget *vbox_addr;
+	GtkWidget *checkbtn_addaddrbyclick;
+	
 	GtkWidget *frame_cliplog;
 	GtkWidget *vbox_cliplog;
 	GtkWidget *hbox_cliplog;
@@ -3401,6 +3366,17 @@ static void prefs_other_create(void)
 			       NULL);
 	exteditor_entry = GTK_COMBO (exteditor_combo)->entry;
 
+	PACK_FRAME (vbox1, frame_addr, _("Address book"));
+
+	vbox_addr = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox_addr);
+	gtk_container_add (GTK_CONTAINER (frame_addr), vbox_addr);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_addr), 8);
+
+	PACK_CHECK_BUTTON
+		(vbox_addr, checkbtn_addaddrbyclick,
+		 _("Add address to destination when double-clicked"));
+
 	/* Clip Log */
 	PACK_FRAME (vbox1, frame_cliplog, _("Log Size"));
 
@@ -3437,7 +3413,7 @@ static void prefs_other_create(void)
 	gtk_container_add (GTK_CONTAINER (frame_ssl), vbox_ssl);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_ssl), 8);
 	PACK_CHECK_BUTTON (vbox_ssl, checkbtn_ssl_ask_unknown_valid, 
-			   _("Confirm acception of all SSL certificates"));
+			   _("Ask before accepting SSL certificates"));
 	hbox_ssl = gtk_hbox_new (FALSE, 3);
 	gtk_container_add (GTK_CONTAINER (vbox_ssl), hbox_ssl);
 	gtk_widget_show (hbox_ssl);
@@ -3475,6 +3451,8 @@ static void prefs_other_create(void)
 	other.exteditor_combo = exteditor_combo;
 	other.exteditor_entry = exteditor_entry;
 
+	other.checkbtn_addaddrbyclick = checkbtn_addaddrbyclick;
+	
 	other.checkbtn_cliplog     = checkbtn_cliplog;
 	other.loglength_entry      = loglength_entry;
 
@@ -4211,9 +4189,7 @@ static void prefs_keybind_select(void)
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
 	label = gtk_label_new
-		(_("Select the preset of key bindings.\n"
-		   "You can also modify each menu's shortcuts by pressing\n"
-		   "any key(s) when placing the mouse pointer on the item."));
+		(_("Select preset:"));
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 
@@ -4229,6 +4205,15 @@ static void prefs_keybind_select(void)
 			       _("Old Sylpheed"),
 			       NULL);
 	gtk_entry_set_editable (GTK_ENTRY (GTK_COMBO (combo)->entry), FALSE);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+
+	label = gtk_label_new
+		(_("You can also modify each menu shortcut by pressing\n"
+		   "any key(s) when placing the mouse pointer on the item."));
+	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);

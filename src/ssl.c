@@ -32,38 +32,33 @@
 #include "ssl.h"
 #include "ssl_certificate.h"
 
-static SSL_CTX *ssl_ctx_SSLv23;
-static SSL_CTX *ssl_ctx_TLSv1;
+static SSL_CTX *ssl_ctx;
 
 void ssl_init(void)
 {
+	SSL_METHOD *meth;
+
+	/* Global system initialization*/
 	SSL_library_init();
 	SSL_load_error_strings();
+	
+	/* Create our context*/
+	meth = SSLv23_client_method();
+	ssl_ctx = SSL_CTX_new(meth);
 
-	ssl_ctx_SSLv23 = SSL_CTX_new(SSLv23_client_method());
-	if (ssl_ctx_SSLv23 == NULL) {
-		debug_print("SSLv23 not available\n");
-	} else {
-		debug_print("SSLv23 available\n");
-	}
-
-	ssl_ctx_TLSv1 = SSL_CTX_new(TLSv1_client_method());
-	if (ssl_ctx_TLSv1 == NULL) {
-		debug_print("TLSv1 not available\n");
-	} else {
-		debug_print("TLSv1 available\n");
-	}
+	/* Set default certificate paths */
+	SSL_CTX_set_default_verify_paths(ssl_ctx);
+#if (OPENSSL_VERSION_NUMBER < 0x0090600fL)
+	SSL_CTX_set_verify_depth(ctx,1);
+#endif
 }
 
 void ssl_done(void)
 {
-	if (ssl_ctx_SSLv23) {
-		SSL_CTX_free(ssl_ctx_SSLv23);
-	}
-
-	if (ssl_ctx_TLSv1) {
-		SSL_CTX_free(ssl_ctx_TLSv1);
-	}
+	if (!ssl_ctx)
+		return;
+	
+	SSL_CTX_free(ssl_ctx);
 }
 
 gboolean ssl_init_socket(SockInfo *sockinfo)
@@ -74,55 +69,55 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 {
 	X509 *server_cert;
-	gboolean ret;
+	SSL *ssl;
 
-	switch (method) {
-	case SSL_METHOD_SSLv23:
-		if (!ssl_ctx_SSLv23) {
-			log_warning(_("SSL method not available\n"));
-			return FALSE;
-		}
-		sockinfo->ssl = SSL_new(ssl_ctx_SSLv23);
-		break;
-	case SSL_METHOD_TLSv1:
-		if (!ssl_ctx_TLSv1) {
-			log_warning(_("SSL method not available\n"));
-			return FALSE;
-		}
-		sockinfo->ssl = SSL_new(ssl_ctx_TLSv1);
-		break;
-	default:
-		log_warning(_("Unknown SSL method *PROGRAM BUG*\n"));
-		return FALSE;
-		break;
-	}
-
-	if (sockinfo->ssl == NULL) {
+	ssl = SSL_new(ssl_ctx);
+	if (ssl == NULL) {
 		log_warning(_("Error creating ssl context\n"));
 		return FALSE;
 	}
 
-	SSL_set_fd(sockinfo->ssl, sockinfo->sock);
-	if ((ret = SSL_connect(sockinfo->ssl)) == -1) {
+	switch (method) {
+	case SSL_METHOD_SSLv23:
+		debug_print("Setting SSLv23 client method\n");
+		SSL_set_ssl_method(ssl, SSLv23_client_method());
+		break;
+	case SSL_METHOD_TLSv1:
+		debug_print("Setting TLSv1 client method\n");
+		SSL_set_ssl_method(ssl, TLSv1_client_method());
+		break;
+	default:
+		break;
+	}
+
+	SSL_set_fd(ssl, sockinfo->sock);
+	if (SSL_connect(ssl) == -1) {
 		log_warning(_("SSL connect failed (%s)\n"),
 			    ERR_error_string(ERR_get_error(), NULL));
+		SSL_free(ssl);
 		return FALSE;
 	}
 
 	/* Get the cipher */
-
-	log_print(_("SSL connection using %s\n"), SSL_get_cipher(sockinfo->ssl));
+	log_print(_("SSL connection using %s\n"), SSL_get_cipher(ssl));
 
 	/* Get server's certificate (note: beware of dynamic allocation) */
-
-	if ((server_cert = SSL_get_peer_certificate(sockinfo->ssl)) != NULL) {
-		ret = ssl_certificate_check (server_cert, sockinfo->hostname, sockinfo->port);
-		X509_free(server_cert);
-	} else {
-		printf("server_cert is NULL ! this _should_not_ happen !\n");
+	if ((server_cert = SSL_get_peer_certificate(ssl)) == NULL) {
+		debug_print("server_cert is NULL ! this _should_not_ happen !\n");
+		SSL_free(ssl);
 		return FALSE;
 	}
-	return ret;
+
+	if (!ssl_certificate_check(server_cert, sockinfo->hostname, sockinfo->port)) {
+		X509_free(server_cert);
+		SSL_free(ssl);
+		return FALSE;
+	}
+	
+	X509_free(server_cert);
+	sockinfo->ssl = ssl;
+
+	return TRUE;
 }
 
 void ssl_done_socket(SockInfo *sockinfo)

@@ -2737,7 +2737,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		}
 		node = gtk_ctree_node_nth(GTK_CTREE(widget), row);
 		item = gtk_ctree_node_get_row_data(GTK_CTREE(widget), node);
-		src_item = folder_find_item_from_path(source);
+		src_item = folder_find_item_from_identifier(source);
 
 		if (!item || !src_item || src_item->stype != F_NORMAL) {
 			gtk_drag_finish(drag_context, FALSE, FALSE, time);			
@@ -2911,7 +2911,7 @@ static void folderview_drag_data_get(GtkWidget        *widget,
 			(GTK_CTREE(folderview->ctree), 
 			 GTK_CTREE_NODE(cur->data));
 		if (item) {
-			source = g_strdup_printf ("FROM_OTHER_FOLDER%s", item->path);
+			source = g_strdup_printf ("FROM_OTHER_FOLDER%s", folder_item_get_identifier(item));
 			gtk_selection_data_set(selection_data,
 					       selection_data->target, 8,
 					       source, strlen(source));

@@ -57,6 +57,7 @@
 #include "procmsg.h"
 #include "gtkstext.h"
 #include "mimeview.h"
+#include "textview.h"
 
 typedef enum
 {
@@ -121,6 +122,7 @@ struct _ChildInfo
 	gint		 new_out;
 	GString		*output;
 	GtkWidget	*text;
+	GdkFont		*msgfont;
 };
 
 /* widget creating functions */
@@ -174,6 +176,8 @@ static gboolean execute_actions		(gchar		*action,
 					 GtkWidget	*window,
 					 GtkCTree	*ctree, 
 					 GtkWidget	*text,
+					 GdkFont 	*msgfont,
+					 gint		 body_pos,
 					 MimeView	*mimeview);
 
 static gchar *parse_action_cmd		(gchar		*action,
@@ -190,6 +194,8 @@ static gboolean parse_append_msgpart	(GString	**cmd,
 ChildInfo *fork_child			(gchar		*cmd,
 					 gint		 action_type,
 					 GtkWidget	*text,
+					 GdkFont 	*msgfont,
+					 gint            body_pos,
 					 Children	*children);
 
 static gint wait_for_children		(gpointer	 data);
@@ -283,7 +289,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 
 	gchar *title[1];
 
-	debug_print("Creating actions setting window...\n");
+	debug_print("Creating actions configuration window...\n");
 
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
 
@@ -303,7 +309,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
 
-	gtk_window_set_title(GTK_WINDOW(window), _("Actions setting"));
+	gtk_window_set_title(GTK_WINDOW(window), _("Actions configuration"));
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
 			   GTK_SIGNAL_FUNC(prefs_actions_deleted), NULL);
 	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
@@ -380,13 +386,13 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_widget_show(btn_hbox);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_with_label(_("Register"));
+	reg_btn = gtk_button_new_with_label(_("Add"));
 	gtk_widget_show(reg_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), reg_btn, FALSE, TRUE, 0);
 	gtk_signal_connect(GTK_OBJECT(reg_btn), "clicked",
 			   GTK_SIGNAL_FUNC(prefs_actions_register_cb), NULL);
 
-	subst_btn = gtk_button_new_with_label(_(" Substitute "));
+	subst_btn = gtk_button_new_with_label(_("  Replace  "));
 	gtk_widget_show(subst_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), subst_btn, FALSE, TRUE, 0);
 	gtk_signal_connect(GTK_OBJECT(subst_btn), "clicked",
@@ -418,7 +424,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	title[0] = _("Registered actions");
+	title[0] = _("Current actions");
 	cond_clist = gtk_clist_new_with_titles(1, title);
 	gtk_widget_show(cond_clist);
 	gtk_container_add(GTK_CONTAINER (cond_scrolledwin), cond_clist);
@@ -1107,14 +1113,15 @@ static void compose_actions_execute_cb(Compose *compose, guint action_nb,
 		return;
 	}
 
-	execute_actions(action, compose->window, NULL, compose->text, NULL);
+	execute_actions(action, compose->window, NULL, compose->text, NULL, 0,
+			NULL);
 }
 
 static void mainwin_actions_execute_cb(MainWindow *mainwin, guint action_nb,
 				       GtkWidget *widget)
 {
 	MessageView *messageview = mainwin->messageview;
-	GtkWidget   *text = NULL;
+	TextView    *textview = NULL;
 	gchar 	    *buf,
 		    *action;
 	MimeView    *mimeview = NULL;
@@ -1132,7 +1139,7 @@ static void mainwin_actions_execute_cb(MainWindow *mainwin, guint action_nb,
 	switch (messageview->type) {
 	case MVIEW_TEXT:
 		if (messageview->textview && messageview->textview->text)
-			text = messageview->textview->text;
+			textview = messageview->textview;
 		break;
 	case MVIEW_MIME:
 		if (messageview->mimeview) {
@@ -1140,17 +1147,19 @@ static void mainwin_actions_execute_cb(MainWindow *mainwin, guint action_nb,
 			if (messageview->mimeview->type == MIMEVIEW_TEXT &&
 					messageview->mimeview->textview &&
 					messageview->mimeview->textview->text)
-				text = messageview->mimeview->textview->text;
+				textview = messageview->mimeview->textview;
 		} 
 		break;
 	}
 
 	execute_actions(action, mainwin->window,
-			GTK_CTREE(mainwin->summaryview->ctree), text, mimeview);
+			GTK_CTREE(mainwin->summaryview->ctree), textview->text,
+			textview->msgfont, textview->body_pos, mimeview);
 }
 
 static gboolean execute_actions(gchar *action, GtkWidget *window,
-				GtkCTree *ctree, GtkWidget *text,
+				GtkCTree *ctree, GtkWidget *text, 
+				GdkFont *msgfont, gint body_pos,
 				MimeView *mimeview)
 {
 	GList *cur, *selection = NULL;
@@ -1204,6 +1213,7 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 				break;
 			}
 			if ((child_info = fork_child(cmd, action_type, text,
+						     msgfont, body_pos,
 						     children))) {
 				children_list = g_slist_append(children_list,
 							       child_info);
@@ -1218,6 +1228,7 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 		cmd = parse_action_cmd(action, NULL, ctree, mimeview);
 		if (cmd) {
 			if ((child_info = fork_child(cmd, action_type, text,
+						     msgfont, body_pos,
 						     children))) {
 				children_list = g_slist_append(children_list,
 							       child_info);
@@ -1266,7 +1277,7 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 }
 
 ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
-		      Children *children)
+		      GdkFont *msgfont, gint body_pos, Children *children)
 {
 	gint chld_in[2], chld_out[2], chld_err[2], chld_status[2];
 	gchar *cmdline[4];
@@ -1470,8 +1481,9 @@ ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 		return child_info;
 
 	child_info->text        = text;
+	child_info->msgfont     = msgfont;
 
-	start = 0;
+	start = body_pos;
 	end   = gtk_stext_get_length(GTK_STEXT(text));
 
 	if (GTK_EDITABLE(text)->has_selection) {
@@ -1892,8 +1904,8 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 #endif
 			if (c == 0)
 				break;
-			gtk_stext_insert(GTK_STEXT(text), NULL, NULL, NULL,
-					 buf, c);
+			gtk_stext_insert(GTK_STEXT(text), child_info->msgfont,
+					 NULL, NULL, buf, c);
 		}
 		if (is_selection) {
 			/* Using the select_region draws things. Should not.

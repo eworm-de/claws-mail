@@ -25,7 +25,6 @@
 #include <gtk/gtkitemfactory.h>
 
 typedef struct _Compose		Compose;
-typedef struct _ComposeToolbar  ComposeToolbar;
 typedef struct _AttachInfo	AttachInfo;
 
 #include "procmsg.h"
@@ -33,6 +32,7 @@ typedef struct _AttachInfo	AttachInfo;
 #include "addressbook.h"
 #include "prefs_account.h"
 #include "undo.h"
+#include "toolbar.h"
 
 #ifdef USE_ASPELL
 #include "gtkaspell.h"
@@ -80,14 +80,15 @@ typedef struct {
 
 struct _Compose
 {
+	/* start with window widget don`t change order */
 	GtkWidget *window;
 	GtkWidget *vbox;
 	GtkWidget *menubar;
-	
+
 	/* Toolbar handlebox */
 	GtkWidget *handlebox;
-	ComposeToolbar *toolbar;
-
+	Toolbar *toolbar;
+	
 	GtkWidget *vbox2;
 
 	/* Header */
@@ -201,24 +202,6 @@ struct _Compose
  	gint priority;
 
 	gchar *redirect_filename;
-};
-
-struct _ComposeToolbar {
-
-	GtkWidget *toolbar;
-
-	GtkWidget *send_btn;
-	GtkWidget *sendl_btn;
-	GtkWidget *draft_btn;
-	GtkWidget *insert_btn;
-	GtkWidget *attach_btn;
-	GtkWidget *sig_btn;
-	GtkWidget *exteditor_btn;
-	GtkWidget *linewrap_btn;
-	GtkWidget *addrbook_btn;
-
-	GSList    *t_action_list;
-	GSList    *t_item_list;
 };
 
 struct _AttachInfo

@@ -1,3 +1,157 @@
+2002-11-28 [Ivan Francolin Martinez (ivanfm@sourceforge.net)]	0.8.6claws31
+	
+	* src/mainwindow.[ch]
+		add patch by Ivan F. Martinez introducing messageview Toolbar
+		some changes and committed by oliver	
+
+2002-11-28 [Ivan Francolin Martinez (ivanfm@sourceforge.net)]	0.8.6claws30
+
+	* src/messageview.[ch]
+		add patch by Ivan F. Martinez introducing messageview Toolbar
+		some changes and committed by oliver	
+
+2002-11-28 [Ivan Francolin Martinez (ivanfm@sourceforge.net)]	0.8.6claws29
+
+	* src/compose.[ch]
+		add patch by Ivan F. Martinez introducing messageview Toolbar
+		some changes and committed by oliver	
+
+2002-11-28 [Ivan Francolin Martinez (ivanfm@sourceforge.net)]	0.8.6claws28
+	
+	* src/toolbar.[ch]
+		add patch by Ivan F. Martinez introducing messageview Toolbar
+		some changes and committed by oliver
+
+2002-11-28 [oliver]	0.8.6claws27
+	
+	* src/prefs_toolbar.[ch]
+		getting ready for messageview toolbar
+		free mem allocated by gettext
+		change prefs_toolbar to prefs_toolbar_open
+ 
+2002-11-28 [thorsten]	0.8.6claws26
+
+	* src/imageview.[ch]
+		cleaned up conflicting declarations of
+		imageview_show_image()
+
+2002-11-28 [paul]	0.8.6claws25
+
+	* src/grouplistdialog.c
+	  src/prefs_common.c
+	  src/prefs_summary_column.c
+	  	a few more improvements to the English
+
+2002-11-28 [colin]	0.8.6claws24
+
+	* man/sylpheed.1
+		A few updates to command-line parameters
+
+2002-11-28 [colin]	0.8.6claws23
+
+	* src/prefs_filtering.c
+		Fix problems with prefs_filtering_delete_path:
+		a) if the first rule is removed, original pointers
+		   weren't updated (leading to segfaults)
+		b) it was always global_processing updated in case
+		   of removed path was parent of rule path
+
+2002-11-27 [paul]	0.8.6claws22
+
+	* src/mainwindow.c
+	  src/prefs_account.c
+	  src/prefs_actions.c
+	  src/prefs_common.c
+	  src/prefs_customheader.c
+	  src/prefs_display_header.c
+	  src/prefs_filtering.c
+	  src/prefs_folder_item.c
+	  src/prefs_matcher.c
+	  src/prefs_scoring.c
+	  src/prefs_summary_column.c
+	  src/prefs_template.c
+	  src/prefs_toolbar.c
+	  	 improve the English in the GUI
+
+2002-11-27 [colin]	0.8.6claws21
+
+	* src/folder.c
+		Fix processing renaming problems happening after
+		last commit
+
+2002-11-27 [colin]	0.8.6claws20
+
+	* src/folder.c
+		recursive move now deletes src each subfolder after 
+		having moved it
+	* src/folderview.c
+		Use identifier instead of path during dnd (enables
+		IMAP folder dnd)
+
+2002-11-27 [paul]	0.8.6claws19
+
+	* src/main.c
+		apply patch that does command-line processing 
+		BEFORE gtk_init, allowing claws to run from 
+		shell-scripts in non-X environment (e.g. crontab 
+		or ip-up, ip-down scripts). Patch submitted by
+		Ruslan N. Balkin <baron@dartel.ru>
+		
+	* po/it.po
+		updated by Alessandro Maestri
+
+2002-11-27 [paul]	0.8.6claws18
+
+	* sync with 0.8.6cvs12
+	  src/prefs_common.c
+		Differences are that main uses a 'Receive dialog'
+		frame on the Interface tab, whereas claws groups all 
+		the dialogs together in a 'Dialogs' frame.
+
+2002-11-27 [colin]	0.8.6claws17
+
+	* src/prefs_matcher.c
+		Fix Execute criteria's NOT flag
+
+
+2002-11-26 [christoph]	0.8.6claws16
+
+	* src/ssl.c
+		rewrite the ssl code a little bit, only use one
+		SSL context, set default certificates' file/path
+
+2002-11-26 [thorsten]	0.8.6claws15
+
+	* src/compose.c
+		default-reply-to didn't work for ml-reply
+
+2002-11-26 [melvin]	0.8.6claws14
+
+	* src/prefs_actions.c
+		Made pipe-actions ignore short headers in message view
+		Made trailing-pipe-actions write in the message view with
+		the same font as the original message
+
+2002-11-26 [paul]	0.8.6claws13
+
+	* src/compose.c
+		this time commit the correct file
+
+2002-11-26 [paul]	0.8.6claws12
+
+	* sync with 0.8.6cvs11
+	  src/quote_fmt_parse.y	 
+	  	no sync needed
+	  src/account.[ch]	 
+	  	not sync'ed
+	  src/compose.c
+	  	compose_write_headers(): add 'X-Sylpheed-Account-Id:' header
+	  	on draft mode.
+	  	compose_reedit(): add check for 'X-Sylpheed-Account-Id:' 
+		header
+		
+	see ChangeLog 2002-11-25 and 2002-11-26
+
 2002-11-26 [colin]	0.8.6claws11
 
 	* src/folderview.c

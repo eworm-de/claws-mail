@@ -327,7 +327,7 @@ static void prefs_filtering_create(void)
 
 	gchar *title[1];
 
-	debug_print("Creating filtering setting window...\n");
+	debug_print("Creating filtering configuration window...\n");
 
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
@@ -346,7 +346,8 @@ static void prefs_filtering_create(void)
 	gtk_widget_grab_default (ok_btn);
 
 	gtk_window_set_title (GTK_WINDOW(window),
-			      _("Filtering setting"));
+			      	    _("Filtering/Processing configuration"));
+
 	gtk_signal_connect (GTK_OBJECT(window), "delete_event",
 			    GTK_SIGNAL_FUNC(prefs_filtering_deleted), NULL);
 	gtk_signal_connect (GTK_OBJECT(window), "key_press_event",
@@ -520,13 +521,13 @@ static void prefs_filtering_create(void)
 	gtk_widget_show (btn_hbox);
 	gtk_box_pack_start (GTK_BOX (reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_with_label (_("Register"));
+	reg_btn = gtk_button_new_with_label (_("Add"));
 	gtk_widget_show (reg_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), reg_btn, FALSE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (reg_btn), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_filtering_register_cb), NULL);
 
-	subst_btn = gtk_button_new_with_label (_(" Substitute "));
+	subst_btn = gtk_button_new_with_label (_("  Replace  "));
 	gtk_widget_show (subst_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), subst_btn, FALSE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (subst_btn), "clicked",
@@ -552,7 +553,7 @@ static void prefs_filtering_create(void)
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 
-	title[0] = _("Registered rules");
+	title[0] = _("Current filtering/processing rules");
 	cond_clist = gtk_clist_new_with_titles(1, title);
 	gtk_widget_show (cond_clist);
 	gtk_container_add (GTK_CONTAINER (cond_scrolledwin), cond_clist);
@@ -770,15 +771,22 @@ static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data)
 
 			if (suffix && !strncmp(path, suffix, pathlen)) {
 				filteringprop_free(filtering);
-				global_processing = 
-					g_slist_remove(global_processing, filtering);
+				orig = g_slist_remove(orig, filtering);
 			}
 		} else if (strcmp(action->destination, path) == 0) {
 			filteringprop_free(filtering);
-			orig = 
-				g_slist_remove(orig, filtering);
+			orig = g_slist_remove(orig, filtering);
 
 		}
+	}
+
+	if (node == NULL)
+		global_processing = orig;
+	else {
+		item = node->data;
+		if (!item || !item->prefs)
+			return FALSE;
+		item->prefs->processing = orig;
 	}
 
 	prefs_matcher_write_config();
@@ -926,7 +934,7 @@ static void prefs_filtering_condition_define(void)
 	if (*cond_str != '\0') {
 		matchers = matcher_parser_get_cond(cond_str);
 		if (matchers == NULL)
-			alertpanel_error(_("Match string is not valid."));
+			alertpanel_error(_("Condition string is not valid."));
 	}
 
 	prefs_matcher_open(matchers, prefs_filtering_condition_define_done);
@@ -954,7 +962,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(void)
 	
 	cond_str = gtk_entry_get_text(GTK_ENTRY(filtering.cond_entry));
 	if (*cond_str == '\0') {
-		alertpanel_error(_("Score is not set."));
+		alertpanel_error(_("Condition string is empty."));
 		return NULL;
 	}
 
@@ -994,7 +1002,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(void)
 	cond = matcher_parser_get_cond(cond_str);
 
 	if (cond == NULL) {
-		alertpanel_error(_("Match string is not valid."));
+		alertpanel_error(_("Condition string is not valid."));
 		filteringaction_free(action);
 		return NULL;
 	}

@@ -198,7 +198,7 @@ static void prefs_display_header_create(void)
 	gtk_widget_grab_default (ok_btn);
 
 	gtk_window_set_title (GTK_WINDOW(window),
-			      _("Display header setting"));
+			      _("Displayed header configuration"));
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 	gtk_signal_connect (GTK_OBJECT(window), "delete_event",
 			    GTK_SIGNAL_FUNC(prefs_display_header_deleted),
