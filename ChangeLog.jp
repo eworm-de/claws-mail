@@ -1,5 +1,13 @@
 2003-09-01
 
+	* src/inc.[ch]
+	  src/main.c
+	  src/mainwindow.c
+	  src/prefs_common.[ch]: 手動受信時のみ受信ダイアログを表示する
+	  オプションを追加し、 RECV_DIALOG_ACTIVE オプションを削除。
+
+2003-09-01
+
 	* src/compose.c: compose_write_headers(): MIME 境界の ':' も '_' に
 	  置換するようにした(broken なサーバへの対処として)。
 

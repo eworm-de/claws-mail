@@ -1,3 +1,8 @@
+2003-09-01 [paul]	0.9.4claws50
+
+	* sync with 0.9.4cvs13
+		see ChangeLog 2003-09-01
+
 2003-09-01 [paul]	0.9.4claws49
 
 	* src/textview.c

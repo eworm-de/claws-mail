@@ -84,7 +84,8 @@ static void inc_finished		(MainWindow		*mainwin,
 static gint inc_account_mail		(PrefsAccount		*account,
 					 MainWindow		*mainwin);
 
-static IncProgressDialog *inc_progress_dialog_create	(void);
+static IncProgressDialog *inc_progress_dialog_create
+					(gboolean		 autocheck);
 static void inc_progress_dialog_set_list(IncProgressDialog	*inc_dialog);
 static void inc_progress_dialog_destroy	(IncProgressDialog	*inc_dialog);
 
@@ -233,7 +234,7 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 		session = inc_session_new(account);
 		if (!session) return 0;
 		
-		inc_dialog = inc_progress_dialog_create();
+		inc_dialog = inc_progress_dialog_create(FALSE);
 		inc_dialog->queue_list = g_list_append(inc_dialog->queue_list,
 						       session);
 		inc_dialog->mainwin = mainwin;
@@ -255,7 +256,8 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 	return 0;
 }
 
-void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
+void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
+			  gboolean notify)
 {
 	GList *list, *queue_list = NULL;
 	IncProgressDialog *inc_dialog;
@@ -322,7 +324,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 		return;
 	}
 
-	inc_dialog = inc_progress_dialog_create();
+	inc_dialog = inc_progress_dialog_create(autocheck);
 	inc_dialog->queue_list = queue_list;
 	inc_dialog->mainwin = mainwin;
 	inc_progress_dialog_set_list(inc_dialog);
@@ -337,7 +339,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 	inc_autocheck_timer_set();
 }
 
-static IncProgressDialog *inc_progress_dialog_create(void)
+static IncProgressDialog *inc_progress_dialog_create(gboolean autocheck)
 {
 	IncProgressDialog *dialog;
 	ProgressDialog *progress;
@@ -363,8 +365,8 @@ static IncProgressDialog *inc_progress_dialog_create(void)
 			 &errorxpm, &errorxpmmask);
 
 	if (prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS ||
-	    (prefs_common.recv_dialog_mode == RECV_DIALOG_ACTIVE &&
-	     manage_window_get_focus_window())) {
+	    (prefs_common.recv_dialog_mode == RECV_DIALOG_MANUAL &&
+	     !autocheck)) {
 		dialog->show_dialog = TRUE;
 		gtk_widget_show_now(progress->window);
 	}
@@ -580,7 +582,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		if (pop3_session->error_val == PS_AUTHFAIL) {
 			if(!prefs_common.no_recv_err_panel) {
 				if((prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS) ||
-				    ((prefs_common.recv_dialog_mode == RECV_DIALOG_ACTIVE) && focus_window)) {
+				    ((prefs_common.recv_dialog_mode == RECV_DIALOG_MANUAL) && focus_window)) {
 					manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
 				}
 				alertpanel_error
@@ -737,7 +739,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 			    server, port);
 		if(!prefs_common.no_recv_err_panel) {
 			if((prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS) ||
-			    ((prefs_common.recv_dialog_mode == RECV_DIALOG_ACTIVE) && focus_window)) {
+			    ((prefs_common.recv_dialog_mode == RECV_DIALOG_MANUAL) && focus_window)) {
 				manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
 			}
 			alertpanel_error(_("Can't connect to POP3 server: %s:%d"),
@@ -1263,7 +1265,7 @@ static gint inc_autocheck_func(gpointer data)
 		return FALSE;
 	}
 
- 	inc_all_account_mail(mainwin, prefs_common.newmail_notify_auto);
+ 	inc_all_account_mail(mainwin, TRUE, prefs_common.newmail_notify_auto);
 
 	return FALSE;
 }

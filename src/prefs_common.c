@@ -1201,8 +1201,8 @@ static void prefs_receive_create(void)
 
 	menu = gtk_menu_new ();
 	MENUITEM_ADD (menu, menuitem, _("Always"), RECV_DIALOG_ALWAYS);
-	MENUITEM_ADD (menu, menuitem, _("Only if a window is active"),
-		      RECV_DIALOG_ACTIVE);
+	MENUITEM_ADD (menu, menuitem, _("Only on manual receiving"),
+		      RECV_DIALOG_MANUAL);
 	MENUITEM_ADD (menu, menuitem, _("Never"), RECV_DIALOG_NEVER);
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_recvdialog), menu);

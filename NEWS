@@ -1,5 +1,44 @@
 Changes of Sylpheed
 
+* 0.9.5
+
+    * The size, the position, and the visibility of separated views are now
+      remembered.
+    * The per-folder settings are now preserved even if a folder tree is
+      rebuilt.
+    * The receive dialog's option to display the dialog only on manual
+      receiving has been added.
+    * 'Top' and 'Bottom' button has been added on the filter setting dialog.
+    * The UIDPLUS extension of IMAP4rev1 has been supported.
+    * The folder system has been cleaned up a bit.
+    * The sylpheed.spec file bundled in the source package has been improved.
+    * The format of MIME boundary has been modified.
+    * A memory leak and a buffer overrun have been fixed.
+
+* 0.9.4
+
+    * The performance of the operation of IMAP4 folders, such as move,
+      copy, delete and mark, has been greatly improved.
+    * The contents of IMAP4 folders are now always synchronized with the
+      server.
+    * Message flags are now properly taken over when copying messages into
+      IMAP4 folders from others.
+    * The CRAM-MD5 authentication mechanism has been supported for IMAP4rev1.
+    * Message move, copy and delete are now possible while receiving mails.
+    * The non-blocking SSL can be turned off as a workaround for the
+      connection problem.
+    * The bug that ran into infinite loop if connection was closed by remote
+      host has been fixed.
+    * The configuration files will not be overwritten on startup anymore.
+
+* 0.9.3
+
+    * The network I/O system has been rewritten to use non-blocking I/O,
+      and the performance of POP3 and SMTP has been improved much.
+    * '--status-full' option has been added. '--status' option now takes
+      arguments for folders.
+    * Minor bugfixes have been made.
+
 * 0.9.2
 
     * The bug that removed messages from server if "Don't receive" action is
