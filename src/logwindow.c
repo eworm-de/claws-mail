@@ -38,14 +38,14 @@
 #include "log.h"
 #include "hooks.h"
 
-static void hide_cb	(GtkWidget	*widget,
-			 LogWindow	*logwin);
-static void key_pressed	(GtkWidget	*widget,
-			 GdkEventKey	*event,
-			 LogWindow	*logwin);
-void log_window_append	(gpointer 	 source,
-			 gpointer   	 data);
-void log_window_clear	(GtkWidget 	*text);
+static void hide_cb			(GtkWidget	*widget,
+					 LogWindow	*logwin);
+static void key_pressed			(GtkWidget	*widget,
+					 GdkEventKey	*event,
+					 LogWindow	*logwin);
+static gboolean log_window_append	(gpointer 	 source,
+					 gpointer   	 data);
+void log_window_clear			(GtkWidget 	*text);
 
 LogWindow *log_window_create(void)
 {
@@ -135,7 +135,7 @@ void log_window_show(LogWindow *logwin)
 	gtk_widget_show(logwin->window);
 }
 
-void log_window_append(gpointer source, gpointer data)
+static gboolean log_window_append(gpointer source, gpointer data)
 {
 	LogText *logtext = (LogText *) source;
 	LogWindow *logwindow = (LogWindow *) data;
@@ -143,12 +143,12 @@ void log_window_append(gpointer source, gpointer data)
 	GdkColor *color = NULL;
 	gchar *head = NULL;
 
-	g_return_if_fail(logtext != NULL);
-	g_return_if_fail(logtext->text != NULL);
-	g_return_if_fail(logwindow != NULL);
+	g_return_val_if_fail(logtext != NULL, TRUE);
+	g_return_val_if_fail(logtext->text != NULL, TRUE);
+	g_return_val_if_fail(logwindow != NULL, FALSE);
 
 	if (prefs_common.cliplog && !prefs_common.loglength)
-		return;
+		return FALSE;
 
 	text = GTK_TEXT(logwindow->text);
 
@@ -173,6 +173,8 @@ void log_window_append(gpointer source, gpointer data)
 	gtk_text_insert(text, NULL, color, NULL, logtext->text, -1);
 	if (prefs_common.cliplog)
 	       log_window_clear (GTK_WIDGET (text));
+
+	return FALSE;
 }
 
 static void hide_cb(GtkWidget *widget, LogWindow *logwin)

@@ -1,3 +1,13 @@
+2002-12-08 [christoph]	0.8.6claws79
+
+	* src/folderview.c
+	* src/logwindow.c
+	* src/statusbar.c
+	* src/summaryview.c
+		only abort hook invokation if required data is missing not
+		if our own data pointer is NULL, update hookfunction for
+		log window
+
 2002-12-08 [paul]	0.8.6claws78
 
 	* src/about.c

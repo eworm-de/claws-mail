@@ -5422,7 +5422,7 @@ static gboolean summary_update_msg(gpointer source, gpointer data) {
 	GtkCTreeNode *node;
 
 	g_return_val_if_fail(msginfo_update != NULL, TRUE);
-	g_return_val_if_fail(summaryview != NULL, TRUE);
+	g_return_val_if_fail(summaryview != NULL, FALSE);
 
 	node = gtk_ctree_find_by_row_data(GTK_CTREE(summaryview->ctree), NULL, msginfo_update->msginfo);
 	

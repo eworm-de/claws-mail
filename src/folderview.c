@@ -1270,7 +1270,7 @@ gboolean folderview_update_item(gpointer source, gpointer data)
 
 	g_return_val_if_fail(update_info != NULL, TRUE);
 	g_return_val_if_fail(update_info->item != NULL, TRUE);
-	g_return_val_if_fail(folderview != NULL, TRUE);
+	g_return_val_if_fail(folderview != NULL, FALSE);
 
     	ctree = GTK_CTREE(folderview->ctree);
 
