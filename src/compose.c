@@ -513,6 +513,9 @@ static GtkItemFactoryEntry compose_popup_entries[] =
 static GtkItemFactoryEntry compose_entries[] =
 {
 	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
+	{N_("/_File/_Save"),
+						"<control>S", compose_draft_cb, 1, NULL},
+	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Attach file"),		"<control>M", compose_attach_cb,      0, NULL},
 	{N_("/_File/_Insert file"),		"<control>I", compose_insert_file_cb, 0, NULL},
 	{N_("/_File/Insert si_gnature"),	"<control>G", compose_insert_sig_cb,  0, NULL},
@@ -646,11 +649,6 @@ static GtkItemFactoryEntry compose_entries[] =
 					compose_send_cb, 0, NULL},
 	{N_("/_Message/Send _later"),	"<shift><control>S",
 					compose_send_later_cb,  0, NULL},
-	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/Save to _draft folder"),
-					"<shift><control>D", compose_draft_cb, 0, NULL},
-	{N_("/_Message/Save and _keep editing"),
-					"<control>S", compose_draft_cb, 1, NULL},
 #if 0 /* NEW COMPOSE GUI */
 	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_To"),		NULL, compose_toggle_to_cb     , 0, "<ToggleItem>"},
@@ -1378,12 +1376,11 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	menu_set_sensitive(ifactory, "/Property...", FALSE);
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
+	menu_set_sensitive(ifactory, "/File/Save", FALSE);
 	menu_set_sensitive(ifactory, "/File/Insert file", FALSE);
 	menu_set_sensitive(ifactory, "/File/Attach file", FALSE);
 	menu_set_sensitive(ifactory, "/File/Insert signature", FALSE);
 	menu_set_sensitive(ifactory, "/Edit", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Save to draft folder", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Save and keep editing", FALSE);
 #if USE_GPGME
 	menu_set_sensitive(ifactory, "/Message/Sign", FALSE);
 	menu_set_sensitive(ifactory, "/Message/Encrypt", FALSE);
@@ -3693,6 +3690,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	gchar *canon_buf;
 	const gchar *out_codeset;
 	EncodingType encoding;
+	gboolean already_encoded = FALSE;
 
 	if ((fp = fopen(file, "wb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
@@ -3736,6 +3734,9 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 		    compose->use_signing && !compose->gnupg_mode &&
 		    encoding == ENC_8BIT)
 			encoding = ENC_BASE64;
+		
+		if (compose->use_encryption && compose->gnupg_mode)
+			encoding = ENC_8BIT; /* this will be encrypted to a 7bit string */
 #endif
 
 		src_codeset = CS_UTF_8;
@@ -3777,6 +3778,17 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 
 #if USE_GPGME
 	if (!is_draft && compose->use_signing && compose->gnupg_mode) {
+		gchar *outbuf;
+
+		if (encoding == ENC_QUOTED_PRINTABLE) {
+			outbuf = g_malloc(strlen(buf) * 4);
+			qp_encode_line(outbuf, buf);
+			g_free(buf);
+			buf = g_strdup(outbuf);
+			already_encoded = TRUE;
+			g_free(outbuf);
+		}
+		
 		if (compose_clearsign_text(compose, &buf) < 0) {
 			g_warning("clearsign failed\n");
 			fclose(fp);
@@ -3833,10 +3845,14 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	} else if (encoding == ENC_QUOTED_PRINTABLE) {
 		gchar *outbuf;
 		size_t outlen;
-
-		outbuf = g_malloc(len * 4);
-		qp_encode_line(outbuf, buf);
-		outlen = strlen(outbuf);
+		if (!already_encoded) {
+			outbuf = g_malloc(len * 4);
+			qp_encode_line(outbuf, buf);
+			outlen = strlen(outbuf);
+		} else {
+			outbuf = g_strdup(buf);
+			outlen = len;
+		}
 		if (fwrite(outbuf, sizeof(gchar), outlen, fp) != outlen) {
 			FILE_OP_ERROR(file, "fwrite");
 			fclose(fp);
@@ -6355,8 +6371,6 @@ static void compose_set_ext_editor_sensitive(Compose *compose,
 
 	menu_set_sensitive(ifactory, "/Message/Send", sensitive);
 	menu_set_sensitive(ifactory, "/Message/Send later", sensitive);
-	menu_set_sensitive(ifactory, "/Message/Save to draft folder",
-			   sensitive);
 	menu_set_sensitive(ifactory, "/File/Insert file", sensitive);
 	menu_set_sensitive(ifactory, "/File/Insert signature", sensitive);
 	menu_set_sensitive(ifactory, "/Edit/Wrap current paragraph", sensitive);

@@ -1,3 +1,10 @@
+2004-08-21 [colin]	0.9.12cvs70.1
+
+	* src/compose.c
+	* src/mainwindow.c
+		Sync with HEAD 0.9.12cvs70
+		
+
 2004-08-21 [paul]	0.9.12cvs66.4
 
 	* src/mainwindow.c

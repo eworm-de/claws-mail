@@ -1,3 +1,39 @@
+2004-08-21 [colin]	0.9.12cvs70
+
+	* src/compose.c
+		When using inline encryption, don't use QP or Base64:
+		the mail will be encrypted to a 7bit string.
+		Fixes bug 197
+
+2004-08-21 [colin]	0.9.12cvs69
+
+	* src/compose.c
+		Fix inline-signing with 8bit chars: data must be 
+		converted to Quoted-printable before signing.
+
+2004-08-21 [colin]	0.9.12cvs68
+
+	* src/compose.c
+		Remove 'Message/Save to draft folder'
+		and 'Message/Save and keep editing' to 
+		put a single 'File/Save' command.
+		Fixes bug 224
+
+2004-08-21 [colin]	0.9.12cvs67
+
+	* src/mainwindow.c
+		Fix bug 222 (Summary view state not retained between sessions)
+
+2004-08-20 [colin]	0.9.12cvs66
+
+	* src/codeconv.c
+		Fix bug 574 (empty cur_locale is not enough)
+
+2004-08-20 [paul]
+
+        * src/plugins/pgpmime/plugin.c
+                modify PGP/MIME plugin's description
+
 2004-08-16 [colin]	0.9.12cvs65
 
 	* src/common/ssl.c
