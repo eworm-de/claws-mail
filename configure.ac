@@ -13,7 +13,7 @@ INTERFACE_AGE=0
 BINARY_AGE=0
 EXTRA_VERSION=32
 EXTRA_RELEASE=
-EXTRA_GTK2_VERSION=.6
+EXTRA_GTK2_VERSION=.7
 
 if test \( $EXTRA_VERSION -eq 0 \) -o \( "x$EXTRA_RELEASE" != "x" \); then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}${EXTRA_RELEASE}${EXTRA_GTK2_VERSION}
@@ -308,23 +308,6 @@ dnl ************************
 dnl Checks for GTK
 AM_PATH_GTK_2_0(2.4.0,,
 	AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
-
-dnl check if gdk / gtk was compiled with USE_XIM
-AC_MSG_CHECKING([whether GTK was compiled with XIM support])
-CFLAGS_SAVE="$CFLAGS"
-LDFLAGS_SAVE="$LDFLAGS"
-CFLAGS="$CFLAGS `$GTK_CONFIG --cflags`"
-LDFLAGS="$LDFLAGS `$GTK_CONFIG --libs`"
-AC_CACHE_VAL(ac_cv_use_xim, [
-	AC_TRY_LINK_FUNC([gdk_ic_attr_new],
-			 ac_cv_use_xim=yes, ac_cv_use_xim=no)
-])
-AC_MSG_RESULT($ac_cv_use_xim)
-if test $ac_cv_use_xim = yes; then
-	AC_DEFINE(USE_XIM, 1, Whether GTK was compiled with XIM support or not)
-fi
-CFLAGS="$CFLAGS_SAVE"
-LDFLAGS="$LDFLAGS_SAVE"
 
 dnl GNU/Aspell is used for spell checking
 AC_ARG_ENABLE(aspell,
