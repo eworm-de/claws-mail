@@ -1,3 +1,8 @@
+2001-06-29 [darko]
+
+	* src/procmime.c
+		make MIME types case insensitive
+
 2001-06-28 [alfons]
 
 	* po/nl.po

@@ -753,6 +753,27 @@ gchar *procmime_get_mime_type(const gchar *filename)
 	return NULL;
 }
 
+static guint procmime_str_hash(gconstpointer gptr)
+{
+	guint hash_result = 0;
+	const char *str;
+
+	for (str = gptr; str && *str; str++) {
+		if (isupper(*str)) hash_result += (*str + ' ');
+		else hash_result += *str;
+	}
+
+	return hash_result;
+}
+
+static gint procmime_str_equal(gconstpointer gptr1, gconstpointer gptr2)
+{
+	const char *str1 = gptr1;
+	const char *str2 = gptr2;
+
+	return !strcasecmp(str1, str2);
+}
+
 static GHashTable *procmime_get_mime_type_table(void)
 {
 	GHashTable *table = NULL;
@@ -765,7 +786,7 @@ static GHashTable *procmime_get_mime_type_table(void)
 		if (!mime_type_list) return NULL;
 	}
 
-	table = g_hash_table_new(g_str_hash, g_str_equal);
+	table = g_hash_table_new(procmime_str_hash, procmime_str_equal);
 
 	for (cur = mime_type_list; cur != NULL; cur = cur->next) {
 		gint i;
