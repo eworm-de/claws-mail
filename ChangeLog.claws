@@ -1,3 +1,9 @@
+2004-12-08 [colin]	0.9.13cvs6
+
+	* src/textview.c
+		Fix possible boundary overrun in
+		get_email_part(). Patch by Alfons
+
 2004-12-08 [hoa]	0.9.13cvs5
 
 	* src/quote_fmt_parse.y

@@ -852,7 +852,7 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 
 	if (!result) return FALSE;
 
-	if (*(bp_ - 1) == '"' && *(ep_) == '"' 
+	if (*ep_ && *(bp_ - 1) == '"' && *(ep_) == '"' 
 	&& *(ep_ + 1) == ' ' && *(ep_ + 2) == '<'
 	&& IS_RFC822_CHAR(*(ep_ + 3))) {
 		/* this informative part with an @ in it is 
