@@ -1349,6 +1349,63 @@ GList *uri_list_extract_filenames(const gchar *uri_list)
 	} \
 }
 
+gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
+		     gchar **subject, gchar **body)
+{
+	gchar *tmp_mailto;
+	gchar *p;
+
+	Xstrdup_a(tmp_mailto, mailto, return -1);
+
+	if (!strncmp(tmp_mailto, "mailto:", 7))
+		tmp_mailto += 7;
+
+	p = strchr(tmp_mailto, '?');
+	if (p) {
+		*p = '\0';
+		p++;
+	}
+
+	if (to && !*to)
+		*to = g_strdup(tmp_mailto);
+
+	while (p) {
+		gchar *field, *value;
+
+		field = p;
+
+		p = strchr(p, '=');
+		if (!p) break;
+		*p = '\0';
+		p++;
+
+		value = p;
+
+		p = strchr(p, '&');
+		if (p) {
+			*p = '\0';
+			p++;
+		}
+
+		if (*value == '\0') continue;
+
+		if (cc && !*cc && !g_strcasecmp(field, "cc")) {
+			*cc = g_strdup(value);
+		} else if (bcc && !*bcc && !g_strcasecmp(field, "bcc")) {
+			*bcc = g_strdup(value);
+		} else if (subject && !*subject &&
+			   !g_strcasecmp(field, "subject")) {
+			*subject = g_malloc(strlen(value) + 1);
+			decode_uri(*subject, value);
+		} else if (body && !*body && !g_strcasecmp(field, "body")) {
+			*body = g_malloc(strlen(value) + 1);
+			decode_uri(*body, value);
+		}
+	}
+
+	return 0;
+}
+
 /*
  * We need this wrapper around g_get_home_dir(), so that
  * we can fix some Windoze things here.  Should be done in glibc of course

@@ -3811,8 +3811,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Message/Get from all accounts\" \"<shift><control>I\")\n"
 		"(menu-path \"<Main>/Message/Compose an email message\" \"<control>M\")\n"
 		"(menu-path \"<Main>/Message/Reply\" \"<control>R\")\n"
-		"(menu-path \"<Main>/Message/Reply to sender\" \"\")\n"
-		"(menu-path \"<Main>/Message/Reply to all\" \"<shift><control>R\")\n"
+		"(menu-path \"<Main>/Message/Reply to/all\" \"<shift><control>R\")\n"
+		"(menu-path \"<Main>/Message/Reply to/sender\" \"\")\n"
+		"(menu-path \"<Main>/Message/Reply to/mailing list\" \"<control>L\")\n"
 		"(menu-path \"<Main>/Message/Forward\" \"<control><alt>F\")\n"
 		/* "(menu-path \"<Main>/Message/Forward as attachment\" \"\")\n" */
 		"(menu-path \"<Main>/Message/Move...\" \"<control>O\")\n"
@@ -3825,7 +3826,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 
 		"(menu-path \"<Main>/Tools/Address book\" \"<shift><control>A\")\n"
 		"(menu-path \"<Main>/Tools/Execute\" \"X\")\n"
-		"(menu-path \"<Main>/Tools/Log window\" \"<control>L\")\n"
+		"(menu-path \"<Main>/Tools/Log window\" \"<shift><control>L\")\n"
 
 		"(menu-path \"<Compose>/File/Close\" \"<control>W\")\n"
 		"(menu-path \"<Compose>/Edit/Select all\" \"<control>A\")\n"
@@ -3863,8 +3864,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Message/Get from all accounts\" \"<shift><control>I\")\n"
 		"(menu-path \"<Main>/Message/Compose an email message\" \"W\")\n"
 		"(menu-path \"<Main>/Message/Reply\" \"<control>R\")\n"
-		"(menu-path \"<Main>/Message/Reply to sender\" \"\")\n"
-		"(menu-path \"<Main>/Message/Reply to all\" \"<shift>A\")\n"
+		"(menu-path \"<Main>/Message/Reply to/all\" \"<shift>A\")\n"
+		"(menu-path \"<Main>/Message/Reply to/sender\" \"\")\n"
+		"(menu-path \"<Main>/Message/Reply to/mailing list\" \"<control>L\")\n"
 		"(menu-path \"<Main>/Message/Forward\" \"F\")\n"
 		/* "(menu-path \"<Main>/Message/Forward as attachment\" \"<shift>F\")\n" */
 		"(menu-path \"<Main>/Message/Move...\" \"O\")\n"
@@ -3877,7 +3879,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 
 		"(menu-path \"<Main>/Tools/Address book\" \"<shift><control>A\")\n"
 		"(menu-path \"<Main>/Tools/Execute\" \"X\")\n"
-		"(menu-path \"<Main>/Tools/Log window\" \"<control>L\")\n"
+		"(menu-path \"<Main>/Tools/Log window\" \"<shift><control>L\")\n"
 
 		"(menu-path \"<Compose>/File/Close\" \"<alt>W\")\n"
 		"(menu-path \"<Compose>/Edit/Select all\" \"\")\n"
@@ -3914,8 +3916,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Message/Get from all accounts\" \"<shift><control>I\")\n"
 		"(menu-path \"<Main>/Message/Compose new message\" \"M\")\n"
 		"(menu-path \"<Main>/Message/Reply\" \"R\")\n"
-		"(menu-path \"<Main>/Message/Reply to all\" \"G\")\n"
-		"(menu-path \"<Main>/Message/Reply to sender\" \"\")\n"
+		"(menu-path \"<Main>/Message/Reply to/all\" \"G\")\n"
+		"(menu-path \"<Main>/Message/Reply to/sender\" \"\")\n"
+		"(menu-path \"<Main>/Message/Reply to/mailing list\" \"<control>L\")\n"
 		"(menu-path \"<Main>/Message/Forward\" \"F\")\n"
 		"(menu-path \"<Main>/Message/Forward as attachment\" \"\")\n"
 		"(menu-path \"<Main>/Message/Move...\" \"<control>O\")\n"
@@ -3928,7 +3931,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 
 		"(menu-path \"<Main>/Tools/Address book\" \"<shift><control>A\")\n"
 		"(menu-path \"<Main>/Tools/Execute\" \"X\")\n"
-		"(menu-path \"<Main>/Tools/Log window\" \"<control>L\")\n"
+		"(menu-path \"<Main>/Tools/Log window\" \"<shift><control>L\")\n"
 
 		"(menu-path \"<Compose>/File/Close\" \"<alt>W\")\n"
 		"(menu-path \"<Compose>/Edit/Select all\" \"\")\n"
@@ -3966,8 +3969,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Message/Get from all accounts\" \"<shift><alt>I\")\n"
 		"(menu-path \"<Main>/Message/Compose an email message\" \"<alt>N\")\n"
 		"(menu-path \"<Main>/Message/Reply\" \"<alt>R\")\n"
-		"(menu-path \"<Main>/Message/Reply to sender\" \"<control><alt>R\")\n"
-		"(menu-path \"<Main>/Message/Reply to all\" \"<shift><alt>R\")\n"
+		"(menu-path \"<Main>/Message/Reply to/all\" \"<shift><alt>R\")\n"
+		"(menu-path \"<Main>/Message/Reply to/sender\" \"<control><alt>R\")\n"
+		"(menu-path \"<Main>/Message/Reply to/mailing list\" \"<control>L\")\n"
 		"(menu-path \"<Main>/Message/Forward\" \"<shift><alt>F\")\n"
 		/* "(menu-path \"<Main>/Message/Forward as attachment\" \"<shift><control>F\")\n" */
 		"(menu-path \"<Main>/Message/Move...\" \"<alt>O\")\n"
@@ -4018,8 +4022,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Message/Get from all accounts\" \"\")\n"
 		"(menu-path \"<Main>/Message/Compose an email message\" \"\")\n"
 		"(menu-path \"<Main>/Message/Reply\" \"\")\n"
-		"(menu-path \"<Main>/Message/Reply to sender\" \"\")\n"
-		"(menu-path \"<Main>/Message/Reply to all\" \"\")\n"
+		"(menu-path \"<Main>/Message/Reply to/all\" \"\")\n"
+		"(menu-path \"<Main>/Message/Reply to/sender\" \"\")\n"
+		"(menu-path \"<Main>/Message/Reply to/mailing list\" \"\")\n"
 		"(menu-path \"<Main>/Message/Forward\" \"\")\n"
 		/* "(menu-path \"<Main>/Message/Forward as attachment\" \"\")\n" */
 		"(menu-path \"<Main>/Message/Move...\" \"\")\n"

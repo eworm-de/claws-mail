@@ -194,6 +194,7 @@ static gchar *compose_quote_fmt			(Compose	*compose,
 static void compose_reply_set_entry		(Compose	*compose,
 						 MsgInfo	*msginfo,
 						 gboolean	 to_all,
+						 gboolean	 to_ml,
 						 gboolean	 to_sender,
 						 gboolean
 						 followup_and_reply_to);
@@ -476,7 +477,7 @@ static void text_inserted		(GtkWidget	*widget,
 					 gint		*position,
 					 Compose	*compose);
 static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
-				  gboolean to_all,
+				  gboolean to_all, gboolean to_ml,
 				  gboolean ignore_replyto,
 				  gboolean followup_and_reply_to,
 				  const gchar *body);
@@ -817,10 +818,11 @@ Compose *compose_new_followup_and_replyto(PrefsAccount *account,
 */
 
 void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
-		   gboolean ignore_replyto, const gchar *body)
+		   gboolean to_ml, gboolean ignore_replyto, 
+		   const gchar *body)
 {
-	compose_generic_reply(msginfo, quote, to_all, ignore_replyto, FALSE,
-			      body);
+	compose_generic_reply(msginfo, quote, to_all, to_ml, 
+			      ignore_replyto, FALSE, body);
 }
 
 void compose_followup_and_reply_to(MsgInfo *msginfo, gboolean quote,
@@ -828,12 +830,12 @@ void compose_followup_and_reply_to(MsgInfo *msginfo, gboolean quote,
 				   gboolean ignore_replyto,
 				   const gchar *body)
 {
-	compose_generic_reply(msginfo, quote, to_all, ignore_replyto, TRUE,
-			      body);
+	compose_generic_reply(msginfo, quote, to_all, FALSE, 
+			      ignore_replyto, TRUE, body);
 }
 
 static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
-				  gboolean to_all,
+				  gboolean to_all, gboolean to_ml,
 				  gboolean ignore_replyto,
 				  gboolean followup_and_reply_to,
 				  const gchar *body)
@@ -919,8 +921,8 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	}
 
 	if (compose_parse_header(compose, msginfo) < 0) return;
-	compose_reply_set_entry(compose, msginfo, to_all, ignore_replyto,
-				followup_and_reply_to);
+	compose_reply_set_entry(compose, msginfo, to_all, to_ml, 
+				ignore_replyto, followup_and_reply_to);
 	compose_show_first_last_header(compose, TRUE);
 
 	text = GTK_STEXT(compose->text);
@@ -1363,97 +1365,58 @@ void compose_entry_select (Compose *compose, const gchar *mailto)
 
 static void compose_entries_set(Compose *compose, const gchar *mailto)
 {
-	gchar *subject = NULL;
 	gchar *to = NULL;
 	gchar *cc = NULL;
 	gchar *bcc = NULL;
+	gchar *subject = NULL;
 	gchar *body = NULL;
-	gchar *p;
-	gchar *tmp_mailto;
 
-	Xstrdup_a(tmp_mailto, mailto, return);
-
-	to = tmp_mailto;
-
-	p = strchr(tmp_mailto, '?');
-	if (p) {
-		*p = '\0';
-		p++;
-	}
-
-	while (p) {
-		gchar *field, *value;
-
-		field = p;
-
-		p = strchr(p, '=');
-		if (!p) break;
-		*p = '\0';
-		p++;
-
-		value = p;
-
-		p = strchr(p, '&');
-		if (p) {
-			*p = '\0';
-			p++;
-		}
-
-		if (*value == '\0') continue;
-
-		if (!g_strcasecmp(field, "subject")) {
-			Xalloca(subject, strlen(value) + 1, return);
-			decode_uri(subject, value);
-		} else if (!g_strcasecmp(field, "cc")) {
-			cc = value;
-		} else if (!g_strcasecmp(field, "bcc")) {
-			bcc = value;
-		} else if (!g_strcasecmp(field, "body")) {
-			Xalloca(body, strlen(value) + 1, return);
-			decode_uri(body, value);
-		}
-	}
+	scan_mailto_url(mailto, &to, &cc, &bcc, &subject, &body);
 
 	if (to)
 		compose_entry_append(compose, to, COMPOSE_TO);
-	if (subject)
-		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), subject);
 	if (cc)
 		compose_entry_append(compose, cc, COMPOSE_CC);
 	if (bcc)
 		compose_entry_append(compose, bcc, COMPOSE_BCC);
+	if (subject)
+		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), subject);
 	if (body) {
 		gtk_stext_insert(GTK_STEXT(compose->text),
 				NULL, NULL, NULL, body, -1);
 		gtk_stext_insert(GTK_STEXT(compose->text),
 				NULL, NULL, NULL, "\n", 1);
 	}
+
+	g_free(to);
+	g_free(cc);
+	g_free(bcc);
+	g_free(subject);
+	g_free(body);
 }
 
 static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 {
-	static HeaderEntry hentry[] = {{"Reply-To:",	   NULL, TRUE},
-				       {"Cc:",		   NULL, FALSE},
-				       {"References:",	   NULL, FALSE},
-				       {"Bcc:",		   NULL, FALSE},
-				       {"Newsgroups:",     NULL, FALSE},
-				       {"Followup-To:",    NULL, FALSE},
-				       {"X-Mailing-List:", NULL, FALSE},
-				       {"X-BeenThere:",    NULL, FALSE},
-				       {"X-Priority:",     NULL, FALSE},
-				       {NULL,		   NULL, FALSE}};
+	static HeaderEntry hentry[] = {{"Reply-To:",	NULL, TRUE},
+				       {"Cc:",		NULL, FALSE},
+				       {"References:",	NULL, FALSE},
+				       {"Bcc:",		NULL, FALSE},
+				       {"Newsgroups:",	NULL, FALSE},
+				       {"Followup-To:",	NULL, FALSE},
+				       {"List-Post:",	NULL, FALSE},
+				       {"X-Priority:",	NULL, FALSE},
+				       {NULL,		NULL, FALSE}};
 
 	enum
 	{
-		H_REPLY_TO	 = 0,
-		H_CC		 = 1,
-		H_REFERENCES	 = 2,
-		H_BCC		 = 3,
-		H_NEWSGROUPS     = 4,
-		H_FOLLOWUP_TO	 = 5,
-		H_X_MAILING_LIST = 6,
-		H_X_BEENTHERE    = 7,
- 		H_X_PRIORITY     = 8
+		H_REPLY_TO	= 0,
+		H_CC		= 1,
+		H_REFERENCES	= 2,
+		H_BCC		= 3,
+		H_NEWSGROUPS	= 4,
+		H_FOLLOWUP_TO	= 5,
+		H_LIST_POST	= 6,
+ 		H_X_PRIORITY	= 7
 	};
 
 	FILE *fp;
@@ -1473,26 +1436,6 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 		conv_unmime_header_overwrite(hentry[H_CC].body);
 		compose->cc = hentry[H_CC].body;
 		hentry[H_CC].body = NULL;
-	}
-	if (hentry[H_X_MAILING_LIST].body != NULL) {
-		/* this is good enough to parse debian-devel */
-		gchar *buf = g_malloc(strlen(hentry[H_X_MAILING_LIST].body) + 1);
-		g_return_val_if_fail(buf != NULL, -1 );
-		if (1 == sscanf(hentry[H_X_MAILING_LIST].body, "<%[^>]>", buf))
-			compose->mailinglist = g_strdup(buf);
-		g_free(buf);
-		g_free(hentry[H_X_MAILING_LIST].body);
-		hentry[H_X_MAILING_LIST].body = NULL ;
-	}
-	if (hentry[H_X_BEENTHERE].body != NULL) {
-		/* this is good enough to parse the sylpheed-claws lists */
-		gchar *buf = g_malloc(strlen(hentry[H_X_BEENTHERE].body) + 1);
-		g_return_val_if_fail(buf != NULL, -1 );
-		if (1 == sscanf(hentry[H_X_BEENTHERE].body, "%[^>]", buf))
-			compose->mailinglist = g_strdup(buf);
-		g_free(buf);
-		g_free(hentry[H_X_BEENTHERE].body);
-		hentry[H_X_BEENTHERE].body = NULL ;
 	}
 	if (hentry[H_REFERENCES].body != NULL) {
 		if (compose->mode == COMPOSE_REEDIT)
@@ -1520,6 +1463,21 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 		conv_unmime_header_overwrite(hentry[H_FOLLOWUP_TO].body);
 		compose->followup_to = hentry[H_FOLLOWUP_TO].body;
 		hentry[H_FOLLOWUP_TO].body = NULL;
+	}
+	if (hentry[H_LIST_POST].body != NULL) {
+		gchar *to = NULL;
+
+		extract_address(hentry[H_LIST_POST].body);
+		if (hentry[H_LIST_POST].body[0] != '\0') {
+			scan_mailto_url(hentry[H_LIST_POST].body,
+					&to, NULL, NULL, NULL, NULL);
+			if (to) {
+				g_free(compose->ml_post);
+				compose->ml_post = to;
+			}
+		}
+		g_free(hentry[H_LIST_POST].body);
+		hentry[H_LIST_POST].body = NULL;
 	}
 
 	if (compose->mode == COMPOSE_REEDIT)
@@ -1667,7 +1625,8 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 }
 
 static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
-				    gboolean to_all, gboolean ignore_replyto,
+				    gboolean to_all, gboolean to_ml,
+				    gboolean ignore_replyto,
 				    gboolean followup_and_reply_to)
 {
 	GSList *cc_list = NULL;
@@ -1679,16 +1638,16 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	g_return_if_fail(compose->account != NULL);
 	g_return_if_fail(msginfo != NULL);
 
-	if ((compose->account->protocol != A_NNTP) || followup_and_reply_to)
+	if (to_ml && compose->ml_post) {
+		compose_entry_append(compose, compose->ml_post,
+				     COMPOSE_TO);
+	} else if ((compose->account->protocol != A_NNTP) || followup_and_reply_to) {
 		compose_entry_append(compose,
 		 		    ((compose->replyto && !ignore_replyto)
 				     ? compose->replyto
-				     : (compose->mailinglist && !ignore_replyto)
-				     ? compose->mailinglist
 				     : msginfo->from ? msginfo->from : ""),
 				     COMPOSE_TO);
-
-	if (compose->account->protocol == A_NNTP) {
+	} else {
 		if (ignore_replyto)
 			compose_entry_append
 				(compose, msginfo->from ? msginfo->from : "",
@@ -1699,8 +1658,6 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 					(compose,
 					((compose->replyto && !ignore_replyto)
 				     	? compose->replyto
-				     	: (compose->mailinglist && !ignore_replyto)
-				     	? compose->mailinglist
 				     	: msginfo->from ? msginfo->from : ""),
 					COMPOSE_TO);				
 			} else {
@@ -1731,6 +1688,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	} else
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), "Re: ");
 
+	if (to_ml && compose->ml_post) return;
 	if (!to_all || compose->account->protocol == A_NNTP) return;
 
 	if (compose->replyto) {
@@ -1742,16 +1700,9 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 		extract_address(from);
 	}
 
-	if (compose->mailinglist && from) {
-		cc_list = address_list_append(cc_list, from);
-	}
-
 	if (replyto && from)
 		cc_list = address_list_append(cc_list, from);
-
-	if (!compose->mailinglist)
-		cc_list = address_list_append(cc_list, msginfo->to);
-
+	cc_list = address_list_append(cc_list, msginfo->to);
 	cc_list = address_list_append(cc_list, compose->cc);
 
 	to_table = g_hash_table_new(g_str_hash, g_str_equal);
@@ -4918,10 +4869,12 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->replyinfo  = NULL;
 
 	compose->replyto     = NULL;
-	compose->mailinglist = NULL;
 	compose->cc	     = NULL;
 	compose->bcc	     = NULL;
 	compose->followup_to = NULL;
+
+	compose->ml_post     = NULL;
+
 	compose->inreplyto   = NULL;
 	compose->references  = NULL;
 	compose->msgid       = NULL;
@@ -5441,6 +5394,8 @@ static void compose_destroy(Compose *compose)
 	g_free(compose->bcc);
 	g_free(compose->newsgroups);
 	g_free(compose->followup_to);
+
+	g_free(compose->ml_post);
 
 	g_free(compose->inreplyto);
 	g_free(compose->references);

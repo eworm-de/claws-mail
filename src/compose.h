@@ -60,6 +60,9 @@ typedef enum
 	COMPOSE_REPLY_TO_ALL,
 	COMPOSE_REPLY_TO_ALL_WITH_QUOTE,
 	COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE,
+	COMPOSE_REPLY_TO_LIST,
+	COMPOSE_REPLY_TO_LIST_WITH_QUOTE,
+	COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE,
 	COMPOSE_FORWARD,
 	COMPOSE_FORWARD_AS_ATTACH,
 	COMPOSE_FORWARD_INLINE,
@@ -147,7 +150,8 @@ struct _Compose
 	gchar	*bcc;
 	gchar	*newsgroups;
 	gchar	*followup_to;
-	gchar	*mailinglist;
+
+	gchar	*ml_post;
 
 	gchar	*inreplyto;
 	gchar	*references;
@@ -159,7 +163,6 @@ struct _Compose
 	gboolean use_bcc;
 	gboolean use_replyto;
 	gboolean use_followupto;
-	gboolean use_mailinglist;
 	gboolean use_attach;
 
 	/* privacy settings */
@@ -240,6 +243,7 @@ void compose_followup_and_reply_to	(MsgInfo	*msginfo,
 void compose_reply			(MsgInfo	*msginfo,
 					 gboolean	 quote,
 					 gboolean	 to_all,
+					 gboolean	 to_ml,
 					 gboolean	 ignore_replyto,
 					 const gchar	*body);
 Compose *compose_forward		(PrefsAccount *account,

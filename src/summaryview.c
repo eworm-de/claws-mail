@@ -387,9 +387,13 @@ GtkTargetEntry summary_drag_types[1] =
 static GtkItemFactoryEntry summary_popup_entries[] =
 {
 	{N_("/_Reply"),			NULL, summary_reply_cb,	COMPOSE_REPLY, NULL},
-	{N_("/Repl_y to sender"),	NULL, summary_reply_cb,	COMPOSE_REPLY_TO_SENDER, NULL},
+	{N_("/Repl_y to"),		NULL, NULL,		0, "<Branch>"},
+	{N_("/Repl_y to/_all"),		NULL, summary_reply_cb,	COMPOSE_REPLY_TO_ALL, NULL},
+	{N_("/Repl_y to/_sender"),	NULL, summary_reply_cb,	COMPOSE_REPLY_TO_SENDER, NULL},
+	{N_("/Repl_y to/mailing _list"),
+					NULL, summary_reply_cb,	COMPOSE_REPLY_TO_LIST, NULL},
 	{N_("/Follow-up and reply to"),	NULL, summary_reply_cb,	COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL},
-	{N_("/Reply to a_ll"),		NULL, summary_reply_cb,	COMPOSE_REPLY_TO_ALL, NULL},
+	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Forward"),		NULL, summary_reply_cb, COMPOSE_FORWARD, NULL},
 	{N_("/Redirect"),	        NULL, summary_reply_cb, COMPOSE_REDIRECT, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
@@ -1155,8 +1159,10 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 
 	sens = (selection == SUMMARY_SELECTED_MULTIPLE) ? FALSE : TRUE;
 	menu_set_sensitive(ifactory, "/Reply",			  sens);
-	menu_set_sensitive(ifactory, "/Reply to sender",	  sens);
-	menu_set_sensitive(ifactory, "/Reply to all",		  sens);
+	menu_set_sensitive(ifactory, "/Reply to",		  sens);
+	menu_set_sensitive(ifactory, "/Reply to/all",		  sens);
+	menu_set_sensitive(ifactory, "/Reply to/sender",	  sens);
+	menu_set_sensitive(ifactory, "/Reply to/mailing list",	  sens);
 	menu_set_sensitive(ifactory, "/Forward",		  TRUE);
 	menu_set_sensitive(ifactory, "/Redirect",		  sens);
 
@@ -4035,17 +4041,17 @@ void summary_reply(SummaryView *summaryview, ComposeMode mode)
 	switch (mode) {
 	case COMPOSE_REPLY:
 		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, FALSE, text);
+			      FALSE, FALSE, FALSE, text);
 		break;
 	case COMPOSE_REPLY_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, FALSE, text);
+		compose_reply(msginfo, TRUE, FALSE, FALSE, FALSE, text);
 		break;
 	case COMPOSE_REPLY_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, FALSE, NULL);
+		compose_reply(msginfo, FALSE, FALSE, FALSE, FALSE, NULL);
 		break;
 	case COMPOSE_REPLY_TO_SENDER:
 		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, TRUE, text);
+			      FALSE, FALSE, TRUE, text);
 		break;
 	case COMPOSE_FOLLOWUP_AND_REPLY_TO:
 		compose_followup_and_reply_to(msginfo,
@@ -4053,20 +4059,30 @@ void summary_reply(SummaryView *summaryview, ComposeMode mode)
 					      FALSE, TRUE, text);
 		break;
 	case COMPOSE_REPLY_TO_SENDER_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, TRUE, text);
+		compose_reply(msginfo, TRUE, FALSE, FALSE, TRUE, text);
 		break;
 	case COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, TRUE, NULL);
+		compose_reply(msginfo, FALSE, FALSE, FALSE, TRUE, NULL);
 		break;
 	case COMPOSE_REPLY_TO_ALL:
 		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      TRUE, FALSE, text);
+			      TRUE, FALSE, FALSE, text);
 		break;
 	case COMPOSE_REPLY_TO_ALL_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, TRUE, FALSE, text);
+		compose_reply(msginfo, TRUE, TRUE, FALSE, FALSE, text);
 		break;
 	case COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, TRUE, FALSE, NULL);
+		compose_reply(msginfo, FALSE, TRUE, FALSE, FALSE, NULL);
+		break;
+	case COMPOSE_REPLY_TO_LIST:
+		compose_reply(msginfo, prefs_common.reply_with_quote,
+			      FALSE, TRUE, FALSE, text);
+		break;
+	case COMPOSE_REPLY_TO_LIST_WITH_QUOTE:
+		compose_reply(msginfo, TRUE, FALSE, TRUE, FALSE, text);
+		break;
+	case COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE:
+		compose_reply(msginfo, FALSE, FALSE, TRUE, FALSE, NULL);
 		break;
 	case COMPOSE_FORWARD:
 		if (prefs_common.forward_as_attachment) {

@@ -292,6 +292,12 @@ gchar *trim_string			(const gchar	*str,
 GList *uri_list_extract_filenames	(const gchar	*uri_list);
 void decode_uri				(gchar		*decoded_uri,
 					 const gchar	*encoded_uri);
+gint scan_mailto_url			(const gchar	*mailto,
+					 gchar	       **to,
+					 gchar	       **cc,
+					 gchar	       **bcc,
+					 gchar	       **subject,
+					 gchar	       **body);
 
 /* return static strings */
 gchar *get_home_dir		(void);
