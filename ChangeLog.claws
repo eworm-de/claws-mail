@@ -1,3 +1,8 @@
+2003-07-13 [christoph]	0.9.3claws5
+
+	* src/mainwindow.c
+		group "Add mailbox *..." menu items in submenu
+
 2003-07-13 [alfons]	0.9.3claws4
 
 	* src/summaryview.c
