@@ -792,6 +792,8 @@ static const struct {
 	{"ru_RU.KOI8-R"	, C_KOI8_R},
 	{"ru_RU.CP1251"	, C_WINDOWS_1251},
 
+	{"bg_BG"	, C_WINDOWS_1251},
+
 	{"en_US"	, C_ISO_8859_1},
 	{"ca_ES"	, C_ISO_8859_1},
 	{"da_DK"	, C_ISO_8859_1},

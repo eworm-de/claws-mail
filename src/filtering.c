@@ -174,25 +174,25 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		return TRUE;
 
 	case MATCHACTION_MARK:
-		MSG_SET_PERM_FLAGS(info->flags, MSG_MARKED);
+		procmsg_msginfo_set_flags(info, MSG_MARKED, 0);
 		return TRUE;
 
 	case MATCHACTION_UNMARK:
-		MSG_UNSET_PERM_FLAGS(info->flags, MSG_MARKED);
+		procmsg_msginfo_unset_flags(info, MSG_MARKED, 0);
 		return TRUE;
 		
 	case MATCHACTION_MARK_AS_READ:
-		MSG_UNSET_PERM_FLAGS(info->flags, MSG_UNREAD | MSG_NEW);
+		procmsg_msginfo_unset_flags(info, MSG_UNREAD | MSG_NEW, 0);
 		return TRUE;
 
 	case MATCHACTION_MARK_AS_UNREAD:
 		debug_print("*** setting unread flags\n");
-		MSG_SET_PERM_FLAGS(info->flags, MSG_UNREAD | MSG_NEW);
+		procmsg_msginfo_set_flags(info, MSG_UNREAD | MSG_NEW, 0);
 		return TRUE;
 	
 	case MATCHACTION_COLOR:
-		MSG_UNSET_PERM_FLAGS(info->flags, MSG_CLABEL_FLAG_MASK); 
-		MSG_SET_COLORLABEL_VALUE(info->flags, action->labelcolor);
+		procmsg_msginfo_unset_flags(info, MSG_CLABEL_FLAG_MASK, 0); 
+		procmsg_msginfo_set_flags(info, MSG_COLORLABEL_TO_FLAGS(action->labelcolor), 0);
 		return TRUE;
 
 	case MATCHACTION_FORWARD:

@@ -271,7 +271,7 @@ void procmime_scan_multipart_message(MimeInfo *mimeinfo, FILE *fp)
 			if (!sub) break;
 
 			sub->level = partinfo->level + 1;
-			sub->parent = partinfo->parent;
+			sub->parent = partinfo;
 			sub->main = partinfo;
 
 			if (sub->level < 8) {

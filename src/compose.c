@@ -217,6 +217,8 @@ static void compose_wrap_line_all		(Compose	*compose);
 static void compose_wrap_line_all_full		(Compose	*compose,
 						 gboolean	 autowrap);
 static void compose_set_title			(Compose	*compose);
+static void compose_select_account		(Compose	*compose,
+						 PrefsAccount	*account);
 
 static PrefsAccount *compose_current_mail_account(void);
 /* static gint compose_send			(Compose	*compose); */
@@ -320,9 +322,6 @@ static void toolbar_linewrap_cb		(GtkWidget	*widget,
 					 gpointer	 data);
 static void toolbar_address_cb		(GtkWidget	*widget,
 					 gpointer	 data);
-
-static void select_account		(Compose	*compose,
-					 PrefsAccount	*ac);
 
 static void account_activated		(GtkMenuItem	*menuitem,
 					 gpointer	 data);
@@ -1215,7 +1214,8 @@ void compose_reedit(MsgInfo *msginfo)
 	compose = compose_create(account, COMPOSE_REEDIT);
 	compose->targetinfo = procmsg_msginfo_copy(msginfo);
 
-        if (msginfo->folder->stype == F_QUEUE) {
+        if (msginfo->folder->stype == F_QUEUE
+	||  msginfo->folder->stype == F_DRAFT) {
 		gchar queueheader_buf[BUFFSIZE];
 
 		/* Set message save folder */
@@ -1750,13 +1750,25 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			compose_entry_append
 				(compose, msginfo->from ? msginfo->from : "",
 				 COMPOSE_TO);
-		else
-			compose_entry_append
-				(compose,
-				 compose->followup_to ? compose->followup_to
-				 : compose->newsgroups ? compose->newsgroups
-				 : "",
-				 COMPOSE_NEWSGROUPS);
+		else {
+			if (compose->followup_to && !strncmp(compose->followup_to,"poster",6)) {
+				compose_entry_append
+					(compose,
+					((compose->replyto && !ignore_replyto)
+				     	? compose->replyto
+				     	: (compose->mailinglist && !ignore_replyto)
+				     	? compose->mailinglist
+				     	: msginfo->from ? msginfo->from : ""),
+					COMPOSE_TO);				
+			} else {
+				compose_entry_append
+					(compose,
+					 compose->followup_to ? compose->followup_to
+					 : compose->newsgroups ? compose->newsgroups
+					 : "",
+					 COMPOSE_NEWSGROUPS);
+			}
+		}
 	}
 
 	if (msginfo->subject && *msginfo->subject) {
@@ -2863,6 +2875,96 @@ compose_current_mail_account(void)
 		}
 	}
 	return ac;
+}
+
+static void compose_select_account(Compose *compose, PrefsAccount *account)
+{
+	GtkWidget *menuitem;
+	GtkItemFactory *ifactory;
+
+	g_return_if_fail(account != NULL);
+
+	compose->account = account;
+
+	compose_set_title(compose);
+
+	ifactory = gtk_item_factory_from_widget(compose->menubar);
+#if 0
+	if (account->protocol == A_NNTP) {
+		gtk_widget_show(compose->newsgroups_hbox);
+		gtk_widget_show(compose->newsgroups_entry);
+		gtk_table_set_row_spacing(GTK_TABLE(compose->table), 2, 4);
+
+		menuitem = gtk_item_factory_get_item(ifactory, "/View/To");
+		gtk_check_menu_item_set_active
+			(GTK_CHECK_MENU_ITEM(menuitem), FALSE);
+		gtk_widget_set_sensitive(menuitem, TRUE);
+		menuitem = gtk_item_factory_get_item(ifactory, "/View/Cc");
+		gtk_check_menu_item_set_active
+			(GTK_CHECK_MENU_ITEM(menuitem), FALSE);
+		gtk_widget_set_sensitive(menuitem, TRUE);
+
+		menu_set_sensitive(ifactory, "/View/Followup to", TRUE);
+	} else {
+		gtk_widget_hide(compose->newsgroups_hbox);
+		gtk_widget_hide(compose->newsgroups_entry);
+		gtk_table_set_row_spacing(GTK_TABLE(compose->table), 2, 0);
+		gtk_widget_queue_resize(compose->table_vbox);
+
+		menuitem = gtk_item_factory_get_item(ifactory, "/View/To");
+		gtk_check_menu_item_set_active
+			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
+		gtk_widget_set_sensitive(menuitem, FALSE);
+		menuitem = gtk_item_factory_get_item(ifactory, "/View/Cc");
+		gtk_check_menu_item_set_active
+			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
+		gtk_widget_set_sensitive(menuitem, FALSE);
+
+		menuitem = gtk_item_factory_get_item(ifactory, "/View/Followup to");
+		gtk_check_menu_item_set_active
+			(GTK_CHECK_MENU_ITEM(menuitem), FALSE);
+		gtk_widget_set_sensitive(menuitem, FALSE);
+	}
+
+	if (account->set_autocc && account->auto_cc &&
+	    compose->mode != COMPOSE_REEDIT) {
+		gtk_entry_set_text
+			(GTK_ENTRY(compose->cc_entry), account->auto_cc);
+		menuitem = gtk_item_factory_get_item(ifactory, "/View/Cc");
+		gtk_check_menu_item_set_active
+			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
+	}
+	if (account->set_autobcc) {
+		menuitem = gtk_item_factory_get_item(ifactory, "/View/Bcc");
+		gtk_check_menu_item_set_active
+			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
+		if (account->auto_bcc && compose->mode != COMPOSE_REEDIT)
+			gtk_entry_set_text(GTK_ENTRY(compose->bcc_entry),
+					   account->auto_bcc);
+	}
+	if (account->set_autoreplyto) {
+		menuitem = gtk_item_factory_get_item(ifactory,
+						     "/View/Reply to");
+		gtk_check_menu_item_set_active
+			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
+		if (account->auto_replyto && compose->mode != COMPOSE_REEDIT)
+			gtk_entry_set_text(GTK_ENTRY(compose->reply_entry),
+					   account->auto_replyto);
+	}
+
+	menuitem = gtk_item_factory_get_item(ifactory, "/View/Ruler");
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
+				       prefs_common.show_ruler);
+#endif
+
+#if USE_GPGME
+	menuitem = gtk_item_factory_get_item(ifactory, "/Message/Sign");
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
+				       account->default_sign);
+	menuitem = gtk_item_factory_get_item(ifactory, "/Message/Encrypt");
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
+				       account->default_encrypt);
+#endif /* USE_GPGME */
 }
 
 gboolean compose_check_for_valid_recipient(Compose *compose) {
@@ -3982,12 +4084,28 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	gchar buf[BUFFSIZE];
 	gchar *str;
 	gchar *name;
+	GSList *list;
+	gchar * std_headers[] = {"To:", "Cc:", "Bcc:", "Newsgroups:", "Reply-To:", "Followup-To:", NULL};
+
 	/* struct utsname utsbuf; */
 
 	g_return_val_if_fail(fp != NULL, -1);
 	g_return_val_if_fail(charset != NULL, -1);
 	g_return_val_if_fail(compose->account != NULL, -1);
 	g_return_val_if_fail(compose->account->address != NULL, -1);
+
+	/* Save copy folder */
+	if(is_draft) {
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
+			gchar *savefolderid;
+
+			savefolderid = gtk_editable_get_chars(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
+			fprintf(fp, "SCF:%s\n\n", savefolderid);
+			g_free(savefolderid);
+		} else {
+			fprintf(fp, " \n\n");
+		}
+	}
 
 	/* Date */
 	if (compose->account->add_date) {
@@ -4297,6 +4415,33 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		}
 	}
 
+	/* get special headers */
+	for (list = compose->header_list; list; list = list->next) {
+    		ComposeHeaderEntry *headerentry;
+		gchar * headerentryname;
+		gchar * trans_headername;
+		gchar * headerentryvalue;
+		gchar **string;
+		gboolean standard_header = FALSE;
+
+		headerentry = ((ComposeHeaderEntry *)list->data);
+		headerentryname = g_strdup(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(headerentry->combo)->entry)));
+		headerentryvalue = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
+		string = std_headers;
+		while (*string != NULL) {
+			if (!strstr(headerentryname,":"))
+				headerentryname = g_strconcat(headerentryname,":",NULL);
+			trans_headername = (prefs_common.trans_hdr ? gettext(*string) : *string);
+			if (!strcmp(trans_headername,headerentryname))
+				standard_header = TRUE;
+			string++;
+		}
+		if (!standard_header && !IS_IN_CUSTOM_HEADER(headerentryname))
+			fprintf(fp,"%s %s\n",headerentryname, headerentryvalue);
+				
+		g_free(headerentryname);
+	}
+
 	/* separator between header and body */
 	fputs("\n", fp);
 
@@ -4363,6 +4508,7 @@ static void compose_create_header_entry(Compose *compose)
 	GList *combo_list = NULL;
 	gchar **string, *header;
 	ComposeHeaderEntry *headerentry;
+	gboolean standard_header = FALSE;
 
 	headerentry = g_new0(ComposeHeaderEntry, 1);
 
@@ -4375,12 +4521,21 @@ static void compose_create_header_entry(Compose *compose)
 	}
 	gtk_combo_set_popdown_strings(GTK_COMBO(combo), combo_list);
 	g_list_free(combo_list);
-	gtk_editable_set_editable(GTK_EDITABLE(GTK_COMBO(combo)->entry), FALSE);
+	gtk_editable_set_editable(GTK_EDITABLE(GTK_COMBO(combo)->entry), TRUE);
 	gtk_widget_show(combo);
 	gtk_table_attach(GTK_TABLE(compose->header_table), combo, 0, 1, compose->header_nextrow, compose->header_nextrow+1, GTK_SHRINK, GTK_FILL, 0, 0);
 	if(compose->header_last) {	
-		header = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry));
-	} else {
+		gchar *last_header_entry = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry));
+		string = headers;
+		while (*string != NULL) {
+			if (!strcmp(*string,last_header_entry))
+				standard_header = TRUE;
+			string++;
+		}
+		if (standard_header)
+			header = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry));
+	}
+	if (!compose->header_last || !standard_header) {
 		switch(compose->account->protocol) {
 			case A_NNTP:
 				header = prefs_common.trans_hdr ? _("Newsgroups:") : "Newsgroups:";
@@ -4721,7 +4876,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	gboolean success[1];
 	GdkFont   *font;
 	GtkWidget *popupmenu;
-	GtkWidget *menuitem;
 	GtkItemFactory *popupfactory;
 	GtkItemFactory *ifactory;
 	GtkWidget *tmpl_menu;
@@ -4976,7 +5130,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 		gtk_widget_hide(newsgroups_hbox);
 		gtk_widget_hide(newsgroups_entry);
 		gtk_table_set_row_spacing(GTK_TABLE(table), 2, 0);
-		menu_set_sensitive(ifactory, "/View/Followup to", FALSE);
 	}
 #endif
 
@@ -4986,8 +5139,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	undostruct = undo_init(text);
 	undo_set_change_state_func(undostruct, &compose_undo_state_changed,
 				   menubar);
-
-	gtk_widget_show(window);
 
 	address_completion_start(window);
 
@@ -5078,113 +5229,33 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
         }
 #endif
 
-	compose_set_title(compose);
-
-#if 0 /* NEW COMPOSE GUI */
-	compose->use_bcc        = FALSE;
-	compose->use_replyto    = FALSE;
-	compose->use_followupto = FALSE;
-#endif
+	compose_select_account(compose, account);
 
 #if USE_ASPELL
         compose->gtkaspell      = gtkaspell;
 #endif
 
-#if 0 /* NEW COMPOSE GUI */
-	if (account->protocol != A_NNTP) {
-		menuitem = gtk_item_factory_get_item(ifactory, "/View/To");
-		gtk_check_menu_item_set_active
-			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-		gtk_widget_set_sensitive(menuitem, FALSE);
-		menuitem = gtk_item_factory_get_item(ifactory, "/View/Cc");
-		gtk_check_menu_item_set_active
-			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-		gtk_widget_set_sensitive(menuitem, FALSE);
-	}
-#endif
-	if (account->set_autocc && account->auto_cc && mode != COMPOSE_REEDIT) {
+	if (account->set_autocc && account->auto_cc && mode != COMPOSE_REEDIT)
 		compose_entry_append(compose, account->auto_cc, COMPOSE_CC);
-#if 0 /* NEW COMPOSE GUI */
-		compose->use_cc = TRUE;
-		gtk_entry_set_text(GTK_ENTRY(cc_entry), account->auto_cc);
-		menuitem = gtk_item_factory_get_item(ifactory, "/View/Cc");
-		gtk_check_menu_item_set_active
-			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-#endif
-	}
-	if (account->set_autobcc) {
+
+	if (account->set_autobcc) 
 		compose_entry_append(compose, account->auto_bcc, COMPOSE_BCC);
-#if 0 /* NEW COMPOSE GUI */
-		menuitem = gtk_item_factory_get_item(ifactory, "/View/Bcc");
-		gtk_check_menu_item_set_active
-			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-		if (account->auto_bcc && mode != COMPOSE_REEDIT)
-			gtk_entry_set_text(GTK_ENTRY(bcc_entry),
-					   account->auto_bcc);
-#endif
-	}
-	if (account->set_autoreplyto && account->auto_replyto && mode != COMPOSE_REEDIT) {
+	
+	if (account->set_autoreplyto && account->auto_replyto && mode != COMPOSE_REEDIT)
 		compose_entry_append(compose, account->auto_replyto, COMPOSE_REPLYTO);
-#if 0 /* NEW COMPOSE GUI */
-		compose->use_replyto = TRUE;
-		menuitem = gtk_item_factory_get_item(ifactory,
-						     "/View/Reply to");
-		gtk_check_menu_item_set_active
-			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-		gtk_entry_set_text(GTK_ENTRY(reply_entry),
-				   account->auto_replyto);
-#endif
-	}
 
-	if (account->protocol != A_NNTP) {
+
+	if (account->protocol != A_NNTP)
 		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry), prefs_common.trans_hdr ? _("To:") : "To:");
-	} else {
+	else
 		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry), prefs_common.trans_hdr ? _("Newsgroups:") : "Newsgroups:");
-	}
-
-#if 0 /* NEW COMPOSE GUI */
-	menuitem = gtk_item_factory_get_item(ifactory, "/View/Ruler");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
-				       prefs_common.show_ruler);
-#endif				       
-
-#if USE_GPGME
-	menuitem = gtk_item_factory_get_item(ifactory, "/Message/Sign");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
-				       account->default_sign);
-	menuitem = gtk_item_factory_get_item(ifactory, "/Message/Encrypt");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
-				       account->default_encrypt);
-#endif /* USE_GPGME */
 
 	addressbook_set_target_compose(compose);
+	update_compose_actions_menu(ifactory, "/Tools/Actions", compose);
 	compose_set_template_menu(compose);
 
 	compose_list = g_list_append(compose_list, compose);
 
-#if 0 /* NEW COMPOSE GUI */
-	compose->use_to         = FALSE;
-	compose->use_cc         = FALSE;
-	compose->use_attach     = TRUE;
-#endif
-
-#if 0 /* NEW COMPOSE GUI */
-	if (!compose->use_bcc) {
-		gtk_widget_hide(bcc_hbox);
-		gtk_widget_hide(bcc_entry);
-		gtk_table_set_row_spacing(GTK_TABLE(table), 4, 0);
-	}
-	if (!compose->use_replyto) {
-		gtk_widget_hide(reply_hbox);
-		gtk_widget_hide(reply_entry);
-		gtk_table_set_row_spacing(GTK_TABLE(table), 5, 0);
-	}
-	if (!compose->use_followupto) {
-		gtk_widget_hide(followup_hbox);
-		gtk_widget_hide(followup_entry);
-		gtk_table_set_row_spacing(GTK_TABLE(table), 6, 0);
-	}
-#endif
 	if (!prefs_common.show_ruler)
 		gtk_widget_hide(ruler_hbox);
 
@@ -5192,9 +5263,10 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->priority = PRIORITY_NORMAL;
 	compose_update_priority_menu_item(compose);
 
-	select_account(compose, account);
 	set_toolbar_style(compose);
 
+	gtk_widget_show(window);
+	
 	return compose;
 }
 
@@ -6419,112 +6491,6 @@ static void toolbar_address_cb(GtkWidget *widget, gpointer data)
 	compose_address_cb(data, 0, NULL);
 }
 
-static void select_account(Compose * compose, PrefsAccount * ac)
-{
-#if USE_GPGME
-	GtkItemFactory *ifactory;
-	GtkWidget *menuitem;
-#endif /* USE_GPGME */
-	compose->account = ac;
-	compose_set_title(compose);
-
-#if 0 /* NEW COMPOSE GUI */
-		if (ac->protocol == A_NNTP) {
-			GtkItemFactory *ifactory;
-			GtkWidget *menuitem;
-
-			ifactory = gtk_item_factory_from_widget(compose->menubar);
-			menu_set_sensitive(ifactory,
-					   "/Message/Followup to", TRUE);
-			gtk_widget_show(compose->newsgroups_hbox);
-			gtk_widget_show(compose->newsgroups_entry);
-			gtk_table_set_row_spacing(GTK_TABLE(compose->table),
-						  1, 4);
-
-			compose->use_to = FALSE;
-			compose->use_cc = FALSE;
-
-			menuitem = gtk_item_factory_get_item(ifactory, "/Message/To");
-			gtk_check_menu_item_set_active
-				(GTK_CHECK_MENU_ITEM(menuitem), FALSE);
-
-			menu_set_sensitive(ifactory,
-					   "/Message/To", TRUE);
-			menuitem = gtk_item_factory_get_item(ifactory, "/Message/Cc");
-			gtk_check_menu_item_set_active
-				(GTK_CHECK_MENU_ITEM(menuitem), FALSE);
-
-			gtk_widget_hide(compose->to_hbox);
-			gtk_widget_hide(compose->to_entry);
-			gtk_widget_hide(compose->cc_hbox);
-			gtk_widget_hide(compose->cc_entry);
-			gtk_table_set_row_spacing(GTK_TABLE(compose->table),
-						  0, 0);
-			gtk_table_set_row_spacing(GTK_TABLE(compose->table),
-						  3, 0);
-		}
-		else {
-			GtkItemFactory *ifactory;
-			GtkWidget *menuitem;
-
-			ifactory = gtk_item_factory_from_widget(compose->menubar);
-			menu_set_sensitive(ifactory,
-					   "/Message/Followup to", FALSE);
-			gtk_entry_set_text(GTK_ENTRY(compose->newsgroups_entry), "");
-			gtk_widget_hide(compose->newsgroups_hbox);
-			gtk_widget_hide(compose->newsgroups_entry);
-			gtk_table_set_row_spacing(GTK_TABLE(compose->table),
-						  1, 0);
-
-			compose->use_to = TRUE;
-			compose->use_cc = TRUE;
-
-			menuitem = gtk_item_factory_get_item(ifactory, "/Message/To");
-			gtk_check_menu_item_set_active
-				(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-			menu_set_sensitive(ifactory,
-					   "/Message/To", FALSE);
-			menuitem = gtk_item_factory_get_item(ifactory, "/Message/Cc");
-			gtk_check_menu_item_set_active
-				(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-			gtk_widget_show(compose->to_hbox);
-			gtk_widget_show(compose->to_entry);
-			gtk_widget_show(compose->cc_hbox);
-			gtk_widget_show(compose->cc_entry);
-
-			gtk_table_set_row_spacing(GTK_TABLE(compose->table),
-						  0, 4);
-			gtk_table_set_row_spacing(GTK_TABLE(compose->table),
-						  3, 4);
-		}
-		gtk_widget_queue_resize(compose->table_vbox);
-#endif
-#if USE_GPGME
-		ifactory = gtk_item_factory_from_widget(compose->menubar);
-			menu_set_sensitive(ifactory,
-					   "/Message/Sign", TRUE);
-			menu_set_sensitive(ifactory,
-					   "/Message/Encrypt", TRUE);
-
-			menuitem = gtk_item_factory_get_item(ifactory, "/Message/Sign");
-		if (ac->default_sign)
-			gtk_check_menu_item_set_active
-				(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-		else
-			gtk_check_menu_item_set_active
-				(GTK_CHECK_MENU_ITEM(menuitem), FALSE);
-
-			menuitem = gtk_item_factory_get_item(ifactory, "/Message/Encrypt");
-		if (ac->default_encrypt)
-			gtk_check_menu_item_set_active
-				(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-		else
-			gtk_check_menu_item_set_active
-				(GTK_CHECK_MENU_ITEM(menuitem), FALSE);
-#endif /* USE_GPGME */
-
-}
-
 static void account_activated(GtkMenuItem *menuitem, gpointer data)
 {
 	Compose *compose = (Compose *)data;
@@ -6535,7 +6501,7 @@ static void account_activated(GtkMenuItem *menuitem, gpointer data)
 	g_return_if_fail(ac != NULL);
 
 	if (ac != compose->account)
-		select_account(compose, ac);
+		compose_select_account(compose, ac);
 }
 
 static void attach_selected(GtkCList *clist, gint row, gint column,
@@ -6656,6 +6622,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 
 	newmsginfo = folder_item_fetch_msginfo(draft, msgnum);
 	procmsg_msginfo_unset_flags(newmsginfo, ~0, ~0);
+	MSG_SET_TMP_FLAGS(newmsginfo->flags, MSG_DRAFT);
 	folderview_update_item(draft, TRUE);
 	procmsg_msginfo_free(newmsginfo);
 	

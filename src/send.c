@@ -365,6 +365,16 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 	clist = GTK_CLIST(dialog->dialog->clist);
 	gtk_clist_append(clist, (gchar **)text);
 
+	if (ac_prefs->pop_before_smtp
+	    && (ac_prefs->protocol == A_APOP || ac_prefs->protocol == A_POP3)) {
+		g_snprintf(buf, sizeof(buf), _("Doing POP before SMTP..."));
+		log_message("%s\n", buf);
+		progress_dialog_set_label(dialog->dialog, buf);
+		gtk_clist_set_text(clist, 0, 2, _("POP before SMTP"));
+		GTK_EVENTS_FLUSH();
+		inc_pop_before_smtp(ac_prefs);
+	}
+	
 	g_snprintf(buf, sizeof(buf), _("Connecting to SMTP server: %s ..."),
 		   ac_prefs->smtp_server);
 	log_message("%s\n", buf);

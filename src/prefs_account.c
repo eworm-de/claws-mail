@@ -1360,7 +1360,6 @@ static void prefs_account_send_create(void)
 
 	PACK_CHECK_BUTTON (vbox3, pop_bfr_smtp_chkbtn,
 		_("Authenticate with POP3 before sending"));
-	gtk_widget_set_sensitive(pop_bfr_smtp_chkbtn, FALSE);
 
 	p_send.date_chkbtn      = date_chkbtn;
 	p_send.msgid_chkbtn     = msgid_chkbtn;
@@ -2273,6 +2272,11 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
 
+		/* update pop_before_smtp sensitivity */
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_chkbtn), FALSE);
+		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_chkbtn, FALSE);
+		
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active
 				(GTK_TOGGLE_BUTTON(receive.recvatgetall_chkbtn),
@@ -2335,6 +2339,11 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, FALSE);
 		prefs_account_mailcmd_toggled
 			(GTK_TOGGLE_BUTTON(basic.mailcmd_chkbtn), NULL);
+
+		/* update pop_before_smtp sensitivity */
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_chkbtn), FALSE);
+		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_chkbtn, FALSE);
 
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active
@@ -2401,6 +2410,11 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
 
+		/* update pop_before_smtp sensitivity */
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_chkbtn), FALSE);
+		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_chkbtn, FALSE);
+		
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active
 				(GTK_TOGGLE_BUTTON(receive.recvatgetall_chkbtn),
@@ -2467,6 +2481,9 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
 
+		/* update pop_before_smtp sensitivity */
+		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_chkbtn, TRUE);
+		
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active
 				(GTK_TOGGLE_BUTTON(receive.recvatgetall_chkbtn),

@@ -77,12 +77,14 @@ void inc_mail			(MainWindow	*mainwin,
 void inc_all_account_mail	(MainWindow	*mainwin,
 				 gboolean notify);
 void inc_selective_download     (MainWindow	*mainwin, 
-				 PrefsAccount *acc,
-				 gint         session);
+				 PrefsAccount 	*acc,
+				 gint         	 session);
 void inc_progress_update	(Pop3State	*state,
 				 Pop3Phase	 phase);
 gint inc_drop_message		(const gchar	*file,
 				 Pop3State	*state);
+
+void inc_pop_before_smtp	(PrefsAccount 	*acc);
 
 gboolean inc_is_active		(void);
 

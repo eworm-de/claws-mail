@@ -1,3 +1,19 @@
+2002-09-15
+
+	* version 0.8.3
+
+2002-09-15
+
+	* src/codeconv.c: ru_RU.CP1251 の charset を Windows-1251 に変更し、
+	  bg_BG locale を追加。
+
+2002-09-11
+
+	* src/compose.c: account_activated(): 選択されたアカウントに応じて
+	  メニュー項目とエントリの状態を変更。
+	  compose_select_account(): 新規。タイトルバー、メニュー項目、
+	  エントリの状態を変更する。
+
 2002-09-11
 
 	* src/inc.c: inc_mail(): inc_spool() がエラーで帰ったときの

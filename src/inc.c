@@ -232,6 +232,12 @@ void inc_selective_download(MainWindow *mainwin, PrefsAccount *acc, gint session
 	}
 }
 
+void inc_pop_before_smtp(PrefsAccount *acc)
+{
+	acc->session = STYPE_POP_BEFORE_SMTP;
+	inc_account_mail(acc, NULL);
+}
+
 static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 {
 	IncProgressDialog *inc_dialog;
@@ -260,9 +266,11 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 		text[2] = _("Standby");
 		gtk_clist_append(GTK_CLIST(inc_dialog->dialog->clist), text);
 		
-		toolbar_set_sensitive(mainwin);
-		main_window_set_menu_sensitive(mainwin);
-		
+		if (mainwin) {
+			toolbar_set_sensitive(mainwin);
+			main_window_set_menu_sensitive(mainwin);
+		}
+			
 		return inc_start(inc_dialog);
 
 	case A_LOCAL:
@@ -405,8 +413,9 @@ static void inc_progress_dialog_clear(IncProgressDialog *inc_dialog)
 {
 	progress_dialog_set_value(inc_dialog->dialog, 0.0);
 	progress_dialog_set_label(inc_dialog->dialog, "");
-	gtk_progress_bar_update
-		(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar), 0.0);
+	if (inc_dialog->mainwin)
+		gtk_progress_bar_update
+			(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar), 0.0);
 }
 
 static void inc_progress_dialog_destroy(IncProgressDialog *inc_dialog)
@@ -414,9 +423,9 @@ static void inc_progress_dialog_destroy(IncProgressDialog *inc_dialog)
 	g_return_if_fail(inc_dialog != NULL);
 
 	inc_dialog_list = g_list_remove(inc_dialog_list, inc_dialog);
-
-	gtk_progress_bar_update
-		(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar), 0.0);
+	if (inc_dialog->mainwin)
+		gtk_progress_bar_update
+			(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar), 0.0);
 	progress_dialog_destroy(inc_dialog->dialog);
 
 	g_free(inc_dialog);
@@ -484,7 +493,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 				(pop3_state->ac_prefs->recv_server,
 				 pop3_state->user);
 
-			if (inc_dialog->show_dialog)
+			if (inc_dialog->mainwin && inc_dialog->show_dialog)
 				manage_window_focus_in
 					(inc_dialog->mainwin->window,
 					 NULL, NULL);
@@ -864,9 +873,10 @@ static gboolean inc_pop3_recv_func(SockInfo *sock, gint count, gint read_bytes,
 
 	progress_dialog_set_percentage
 		(dialog, (gfloat)cur_total / (gfloat)state->total_bytes);
-	gtk_progress_bar_update
-		(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
-		 (gfloat)cur_total / (gfloat)state->total_bytes);
+	if (inc_dialog->mainwin)
+		gtk_progress_bar_update
+			(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
+			 (gfloat)cur_total / (gfloat)state->total_bytes);
 	GTK_EVENTS_FLUSH();
 
 	if (session->inc_state == INC_CANCEL)
@@ -916,10 +926,11 @@ void inc_progress_update(Pop3State *state, Pop3Phase phase)
 			(dialog,
 			 (gfloat)(state->cur_msg) /
 			 (gfloat)(state->count));
-		gtk_progress_bar_update 
-			(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
-			 (gfloat)(state->cur_msg) /
-			 (gfloat)(state->count));
+		if (inc_dialog->mainwin)
+			gtk_progress_bar_update 
+				(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
+				 (gfloat)(state->cur_msg) /
+				 (gfloat)(state->count));
 		break;
 	case POP3_RETR_SEND:
 		Xstrdup_a(total_size, to_human_readable(state->total_bytes), return);
@@ -933,10 +944,11 @@ void inc_progress_update(Pop3State *state, Pop3Phase phase)
 			(dialog,
 			 (gfloat)(state->cur_total_bytes) /
 			 (gfloat)(state->total_bytes));
-		gtk_progress_bar_update
-			(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
-			 (gfloat)(state->cur_total_bytes) /
-			 (gfloat)(state->total_bytes));
+		if (inc_dialog->mainwin)
+			gtk_progress_bar_update
+				(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
+				 (gfloat)(state->cur_total_bytes) /
+				 (gfloat)(state->total_bytes));
 		break;
 	case POP3_DELETE_SEND:
 		if (state->msg[state->cur_msg].recv_time < state->current_time) {

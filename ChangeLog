@@ -1,3 +1,19 @@
+2002-09-15
+
+	* version 0.8.3
+
+2002-09-15
+
+	* src/codeconv.c: changed the charset for ru_RU.CP1251 to
+	  Windows-1251. Added bg_BG locale.
+
+2002-09-11
+
+	* src/compose.c: account_activated(): change the state of menu items
+	  and entries according to the selected account.
+	  compose_select_account(): new. It changes the state of title bar,
+	  menu items and entries.
+
 2002-09-11
 
 	* src/inc.c: inc_mail(): correct new_msgs when inc_spool() returned

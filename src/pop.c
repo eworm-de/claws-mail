@@ -697,6 +697,9 @@ gboolean pop3_sd_state(Pop3State *state, gint cur_state, guint *next_state)
 	switch (cur_state) { 
 	case POP3_GETRANGE_UIDL_RECV:
 		switch (session) {
+		case STYPE_POP_BEFORE_SMTP:
+			goto_state = POP3_LOGOUT_SEND;
+			break;
 		case STYPE_DOWNLOAD:
 		case STYPE_DELETE:
 		case STYPE_PREVIEW_ALL:

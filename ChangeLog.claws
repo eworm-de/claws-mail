@@ -1,3 +1,97 @@
+2002-09-15 [colin]	0.8.2claws52
+
+	* src/compose.c
+		Fix custom headers recognition when
+		prefs_common.trans_hdr is on
+
+2002-09-15 [colin]	0.8.2claws51
+
+	* src/compose.c
+		Allow dynamically-added custom headers
+		Yet not reparsed if reedited
+
+2002-09-15 [alfons]	0.8.2claws50
+
+	* src/prefs_account.c
+		fix warnings
+
+2002-09-15 [colin]	0.8.2claws49
+	
+	* src/prefs_account.c
+		fix pop_before_smtp sensitivity
+
+2002-09-15 [colin]	0.8.2claws48
+
+	* src/inc.[ch]
+		add inc_pop_before_smtp()
+		allow MainWindow to be undefined in 
+		inc_account_mail() and inc_start()
+	* src/pop.c
+	  src/prefs_account.h
+		add STYPE_POP_BEFORE_SMTP session type
+	* src/prefs_account.c
+		activated pop before smtp option
+	* src/send.c
+		do pop before smtp if the relevant option 
+		is set
+
+2002-09-15 [paul]	0.8.2claws47
+
+	* sync with 0.8.3
+		see ChangeLog 2002-09-15
+
+2002-09-14 [paul]	0.8.2claws46
+
+	* po/bg.po
+		updated Bulgarian translation, submitted by
+		George Danchev
+
+2002-09-13 [paul]	0.8.2claws45
+
+	* src/compose.c
+		merge claws' select_account() with main's
+		(new) compose_select_account(). [sync with
+		0.8.2cvs15, see ChangeLog 2002-09-11]
+
+2002-09-12 [christoph]	0.8.2claws44
+
+	* src/filter.c
+		allocate 1 elements of FolderItem not 0
+
+2002-09-12 [colin]	0.8.2claws43
+
+	* src/compose.c
+		Fix bug #590825 (obey Follow-up: poster)
+
+2002-09-12 [colin]	0.8.2claws42
+
+	* src/procmime.c
+		Fix bug #557009 (wrong headers for messages 
+		forwarded as attachments)
+
+2002-09-11 [colin]	0.8.2claws41
+	
+	* src/compose.c
+		Put SCF: pseudo-header on top of message
+		Set draft tmp_flag when saved as draft
+
+	* src/procmsg.c
+	  src/procheader.c
+		Skip after first \n\n for beginning of real message
+		for drafts too
+
+2002-09-11 [christoph]	0.8.2claws40
+
+	* src/filtering.c
+		use procmsg flag functions in filtering or processing
+		will cause incorrect folder message counts
+
+2002-09-11 [colin]	0.8.2claws39
+
+	* src/compose.c
+		Fix bug #550175 - wrong save folder when reediting
+		drafts
+
 2002-09-11 [paul]	0.8.2claws38
 
 	* sync with 0.8.2cvs14
