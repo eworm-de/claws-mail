@@ -110,7 +110,6 @@ static gboolean imp_mutt_import_file( gchar *sName, gchar *sFile ) {
 	mutt_set_file( mdf, sFile );
 	if( mutt_import_data( mdf, abf->addressCache ) == MGU_SUCCESS ) {
 		addrbook_save_data( abf );
-		abf->dirtyFlag = TRUE;
 		_importedBook_ = abf;
 		retVal = TRUE;
 	}

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Match Grun
+ * Copyright (C) 2001-2002 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,12 +25,28 @@
 #include <sys/stat.h>
 #include <glib.h>
 
-/* #include "mgutils.h" */
+#include "mgutils.h"
 #include "addritem.h"
 #include "addrcache.h"
 
 #define ID_TIME_OFFSET             998000000
 #define ADDRCACHE_MAX_SEARCH_COUNT 1000
+
+static int _nextCacheID__ = 0;
+
+/*
+ * Generate next cache ID.
+ */
+static int addrcache_next_cache_id() {
+	int retVal;
+
+	if( _nextCacheID__ == 0 ) {
+		_nextCacheID__ = 1;
+	}
+	retVal = _nextCacheID__;
+	++_nextCacheID__;
+	return retVal;
+}
 
 /*
 * Create new address cache.
@@ -41,9 +57,12 @@ AddressCache *addrcache_create() {
 
 	cache = g_new0( AddressCache, 1 );
 	cache->itemHash = g_hash_table_new( g_str_hash, g_str_equal );
+	cache->cacheID = g_strdup_printf( "%d", addrcache_next_cache_id() );
 
 	cache->dataRead = FALSE;
 	cache->modified = FALSE;
+	cache->dirtyFlag = FALSE;
+	cache->name = NULL;
 	cache->modifyTime = 0;
 
 	/* Generate the next ID using system time */
@@ -75,6 +94,24 @@ GList *addrcache_get_list_person( AddressCache *cache ) {
 	g_return_val_if_fail( cache != NULL, NULL );
 	return cache->rootFolder->listPerson;
 }
+gboolean addrcache_get_dirty( AddressCache *cache ) {
+	g_return_val_if_fail( cache != NULL, FALSE );
+	return cache->dirtyFlag;
+}
+void addrcache_set_dirty( AddressCache *cache, const gboolean value ) {
+	g_return_if_fail( cache != NULL );
+	cache->dirtyFlag = value;
+}
+gchar *addrcache_get_name( AddressCache *cache ) {
+	g_return_val_if_fail( cache != NULL, NULL );
+	return cache->name;
+}
+void addrcache_set_name( AddressCache *cache, const gchar *value ) {
+	g_return_if_fail( cache != NULL );
+	cache->name = mgu_replace_string( cache->name, value );
+	g_strstrip( cache->name );
+	cache->dirtyFlag = TRUE;
+}
 
 /*
 * Generate next ID.
@@ -99,6 +136,7 @@ void addrcache_refresh( AddressCache *cache ) {
 static gint addrcache_free_item_vis( gpointer key, gpointer value, gpointer data ) {
 	AddrItemObject *obj = ( AddrItemObject * ) value;
 	if( ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON ) {
+		/* Free person and their email */
 		addritem_free_item_person( ( ItemPerson * ) obj );
 	}
 	else if( ADDRITEM_TYPE(obj) == ITEMTYPE_GROUP ) {
@@ -173,6 +211,7 @@ void addrcache_clear( AddressCache *cache ) {
 void addrcache_free( AddressCache *cache ) {
 	g_return_if_fail( cache != NULL );
 
+	cache->dirtyFlag = FALSE;
 	addrcache_free_all_folders( cache->rootFolder );
 	addrcache_free_item_hash( cache->itemHash );
 	cache->itemHash = NULL;
@@ -181,6 +220,10 @@ void addrcache_free( AddressCache *cache ) {
 	cache->rootFolder = NULL;
 	g_list_free( cache->tempList );
 	cache->tempList = NULL;
+	g_free( cache->cacheID );
+	cache->cacheID = NULL;
+	g_free( cache->name );
+	cache->name = NULL;
 	g_free( cache );
 }
 
@@ -246,6 +289,9 @@ static void addrcache_print_item_vis( gpointer key, gpointer value, gpointer dat
 	if( ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON ) {
 		addritem_print_item_person( ( ItemPerson * ) obj, stream );
 	}
+	else if( ADDRITEM_TYPE(obj) == ITEMTYPE_EMAIL ) {
+		printf( "addrcache: print email\n" );
+	}
 	else if( ADDRITEM_TYPE(obj) == ITEMTYPE_GROUP ) {
 		addritem_print_item_group( ( ItemGroup * ) obj, stream );
 	}
@@ -260,7 +306,9 @@ static void addrcache_print_item_vis( gpointer key, gpointer value, gpointer dat
 void addrcache_print( AddressCache *cache, FILE *stream ) {
 	g_return_if_fail( cache != NULL );
 	fprintf( stream, "AddressCache:\n" );
+	fprintf( stream, "cache id : %s\n",  cache->cacheID );
 	fprintf( stream, "next id  : %d\n",  cache->nextID );
+	fprintf( stream, "name     : %s\n",  cache->name );
 	fprintf( stream, "mod time : %ld\n", cache->modifyTime );
 	fprintf( stream, "modified : %s\n",  cache->modified ? "yes" : "no" );
 	fprintf( stream, "data read: %s\n",  cache->dataRead ? "yes" : "no" );
@@ -343,6 +391,18 @@ gboolean addrcache_hash_add_person( AddressCache *cache, ItemPerson *person ) {
 }
 
 /*
+* Add email to hash table.
+* return: TRUE if item added.
+*/
+gboolean addrcache_hash_add_email( AddressCache *cache, ItemEMail *email ) {
+	if( g_hash_table_lookup( cache->itemHash, ADDRITEM_ID(email) ) ) {
+		return FALSE;
+	}
+	g_hash_table_insert( cache->itemHash, ADDRITEM_ID(email), email );
+	return TRUE;
+}
+
+/*
 * Add group to hash table.
 * return: TRUE if item added.
 */
@@ -385,6 +445,7 @@ gboolean addrcache_folder_add_person( AddressCache *cache, ItemFolder *folder, I
 	retVal = addrcache_hash_add_person( cache, item );
 	if( retVal ) {
 		addritem_folder_add_person( folder, item );
+		cache->dirtyFlag = TRUE;
 	}
 	return retVal;
 }
@@ -402,6 +463,7 @@ gboolean addrcache_folder_add_folder( AddressCache *cache, ItemFolder *folder, I
 	retVal = addrcache_hash_add_folder( cache, item );
 	if( retVal ) {
 		addritem_folder_add_folder( folder, item );
+		cache->dirtyFlag = TRUE;
 	}
 	return TRUE;
 }
@@ -419,6 +481,7 @@ gboolean addrcache_folder_add_group( AddressCache *cache, ItemFolder *folder, It
 	retVal = addrcache_hash_add_group( cache, item );
 	if( retVal ) {
 		addritem_folder_add_group( folder, item );
+		cache->dirtyFlag = TRUE;
 	}
 	return retVal;
 }
@@ -436,6 +499,7 @@ gboolean addrcache_add_person( AddressCache *cache, ItemPerson *person ) {
 	retVal = addrcache_hash_add_person( cache, person );
 	if( retVal ) {
 		addritem_folder_add_person( cache->rootFolder, person );
+		cache->dirtyFlag = TRUE;
 	}
 	return retVal;
 }
@@ -445,12 +509,18 @@ gboolean addrcache_add_person( AddressCache *cache, ItemPerson *person ) {
 * return: TRUE if item added.
 */
 gboolean addrcache_person_add_email( AddressCache *cache, ItemPerson *person, ItemEMail *email ) {
+	gboolean retVal = FALSE;
+
 	g_return_val_if_fail( cache != NULL, FALSE );
 	g_return_val_if_fail( person != NULL, FALSE );
 	g_return_val_if_fail( email != NULL, FALSE );
 
-	addritem_person_add_email( person, email );
-	return TRUE;
+	retVal = addrcache_hash_add_email( cache, email );
+	if( retVal ) {
+		addritem_person_add_email( person, email );
+		cache->dirtyFlag = TRUE;
+	}
+	return retVal;
 }
 
 /*
@@ -466,6 +536,7 @@ gboolean addrcache_add_group( AddressCache *cache, ItemGroup *group ) {
 	retVal = addrcache_hash_add_group( cache, group );
 	if( retVal ) {
 		addritem_folder_add_group( cache->rootFolder, group );
+		cache->dirtyFlag = TRUE;
 	}
 	return retVal;
 }
@@ -480,6 +551,7 @@ gboolean addrcache_group_add_email( AddressCache *cache, ItemGroup *group, ItemE
 	g_return_val_if_fail( email != NULL, FALSE );
 
 	addritem_group_add_email( group, email );
+	cache->dirtyFlag = TRUE;
 	return TRUE;
 }
 
@@ -496,8 +568,75 @@ gboolean addrcache_add_folder( AddressCache *cache, ItemFolder *folder ) {
 	retVal = addrcache_hash_add_folder( cache, folder );
 	if( retVal ) {
 		addritem_folder_add_folder( cache->rootFolder, folder );
+		cache->dirtyFlag = TRUE;
 	}
 	return retVal;
+}
+
+/*
+* Move person to destination folder.
+* Enter: cache  Cache.
+*        person Person to move.
+*        target Target folder.
+*/
+void addrcache_folder_move_person(
+	AddressCache *cache, ItemPerson *person, ItemFolder *target )
+{
+	ItemFolder *parent;
+
+	g_return_if_fail( cache != NULL );
+	g_return_if_fail( person != NULL );
+
+	parent = ( ItemFolder * ) ADDRITEM_PARENT(person);
+	if( ! parent ) parent = cache->rootFolder;
+	parent->listPerson = g_list_remove( parent->listPerson, person );
+	target->listPerson = g_list_append( target->listPerson, person );
+	ADDRITEM_PARENT(person) = ADDRITEM_OBJECT(target);
+	cache->dirtyFlag = TRUE;
+}
+
+/*
+* Move group to destination folder.
+* Enter: cache  Cache.
+*        group  Group to move.
+*        target Target folder.
+*/
+void addrcache_folder_move_group(
+	AddressCache *cache, ItemGroup *group, ItemFolder *target )
+{
+	ItemFolder *parent;
+
+	g_return_if_fail( cache != NULL );
+	g_return_if_fail( group != NULL );
+
+	parent = ( ItemFolder * ) ADDRITEM_PARENT(group);
+	if( ! parent ) parent = cache->rootFolder;
+	parent->listGroup = g_list_remove( parent->listGroup, group );
+	target->listGroup = g_list_append( target->listGroup, group );
+	ADDRITEM_PARENT(group) = ADDRITEM_OBJECT(target);
+	cache->dirtyFlag = TRUE;
+}
+
+/*
+* Move folder to destination folder.
+* Enter: cache  Cache.
+*        folder Folder to move.
+*        target Target folder.
+*/
+void addrcache_folder_move_folder(
+	AddressCache *cache, ItemFolder *folder, ItemFolder *target )
+{
+	ItemFolder *parent;
+
+	g_return_if_fail( cache != NULL );
+	g_return_if_fail( folder != NULL );
+
+	parent = ( ItemFolder * ) ADDRITEM_PARENT(folder);
+	if( ! parent ) parent = cache->rootFolder;
+	parent->listFolder = g_list_remove( parent->listFolder, folder );
+	target->listFolder = g_list_append( target->listFolder, folder );
+	ADDRITEM_PARENT(folder) = ADDRITEM_OBJECT(target);
+	cache->dirtyFlag = TRUE;
 }
 
 /*
@@ -559,34 +698,19 @@ ItemGroup *addrcache_get_group( AddressCache *cache, const gchar *uid ) {
 
 /*
 * Find email address in address cache.
-* param: uid	Object ID for person.
-*        eid	EMail ID.
+* param: eid	EMail ID.
 * return: email object for specified object ID and email ID, or NULL if not found.
 */
-ItemEMail *addrcache_get_email( AddressCache *cache, const gchar *uid, const gchar *eid ) {
-	AddrItemObject *objP;
+ItemEMail *addrcache_get_email( AddressCache *cache, const gchar *eid ) {
+	ItemEMail *email = NULL;
+	AddrItemObject *obj = addrcache_get_object( cache, eid );
 
-	if( eid == NULL || *eid == '\0' ) return NULL;
-
-	objP = addrcache_get_object( cache, uid );
-	if( objP ) {
-		if( ADDRITEM_TYPE(objP) == ITEMTYPE_PERSON ) {
-			/* Sequential search through email addresses */
-			ItemPerson *person = ( ItemPerson * ) objP;
-			GList *nodeMail = person->listEMail;
-			while( nodeMail ) {
-				AddrItemObject *objE = nodeMail->data;
-				gchar *ide = ADDRITEM_ID(objE);
-				if( ide ) {
-					if( strcmp( ide, eid ) == 0 ) {
-						return ( ItemEMail * ) objE;
-					}
-				}
-				nodeMail = g_list_next( nodeMail );
-			}
+	if( obj ) {
+		if( ADDRITEM_TYPE(obj) == ITEMTYPE_EMAIL ) {
+			email = ( ItemEMail * ) obj;
 		}
 	}
-	return NULL;
+	return email;
 }
 
 /*
@@ -604,6 +728,7 @@ UserAttribute *addrcache_person_remove_attrib_id( AddressCache *cache, const gch
 	person = addrcache_get_person( cache, uid );
 	if( person ) {
 		attrib = addritem_person_remove_attrib_id( person, aid );
+		cache->dirtyFlag = TRUE;
 	}
 	return attrib;
 }
@@ -621,34 +746,9 @@ UserAttribute *addrcache_person_remove_attribute( AddressCache *cache, ItemPerso
 
 	if( person && attrib ) {
 		found = addritem_person_remove_attribute( person, attrib );
+		cache->dirtyFlag = TRUE;
 	}
 	return found;
-}
-
-/*
-* Remove group from address cache for specified ID.
-* param: uid Object ID.
-* return: Group, or NULL if not found. Note that object should still be freed.
-*/
-ItemGroup *addrcache_remove_group_id( AddressCache *cache, const gchar *uid ) {
-	AddrItemObject *obj = NULL;
-
-	g_return_val_if_fail( cache != NULL, NULL );
-
-	if( uid == NULL || *uid == '\0' ) return NULL;
-	obj = ( AddrItemObject * ) g_hash_table_lookup( cache->itemHash, uid );
-	if( obj ) {
-		if( ADDRITEM_TYPE(obj) == ITEMTYPE_GROUP ) {
-			ItemGroup *group = ( ItemGroup * ) obj;
-			ItemFolder *parent = ( ItemFolder * ) ADDRITEM_PARENT(group);
-			if( ! parent ) parent = cache->rootFolder;
-			/* Remove group from parent's list and hash table */
-			parent->listGroup = g_list_remove( parent->listGroup, group );
-			g_hash_table_remove( cache->itemHash, uid );
-			return ( ItemGroup * ) obj;
-		}
-	}
-	return NULL;
 }
 
 /*
@@ -672,6 +772,7 @@ ItemGroup *addrcache_remove_group( AddressCache *cache, ItemGroup *group ) {
 			/* Remove group from parent's list and hash table */
 			parent->listGroup = g_list_remove( parent->listGroup, obj );
 			g_hash_table_remove( cache->itemHash, uid );
+			cache->dirtyFlag = TRUE;
 			return group;
 		}
 	}
@@ -679,81 +780,26 @@ ItemGroup *addrcache_remove_group( AddressCache *cache, ItemGroup *group ) {
 }
 
 /*
-* Remove person's email address from all groups in folder.
+* Remove specified email from address cache. Note that object is only
+* removed from cache and not parent objects.
+* param: email	EMail to remove.
+* return: EMail, or NULL if not found. Note that object should still be freed.
 */
-static void addrcache_foldergrp_rem_person( ItemFolder *folder, ItemPerson *person ) {
-	GList *nodeGrp = folder->listGroup;
-
-	while( nodeGrp ) {
-		ItemGroup *group = nodeGrp->data;
-		if( group ) {
-			/* Remove each email address that belongs to the person from the list */
-			GList *node = person->listEMail;
-			while( node ) {
-				group->listEMail = g_list_remove( group->listEMail, node->data );
-				node = g_list_next( node );
-			}
-		}
-		nodeGrp = g_list_next( nodeGrp );
-	}
-}
-
-/*
-* Remove person from address cache for specified ID. Note that person still retains
-* their EMail addresses. Also, links to these email addresses will be severed from
-* the group.
-* param: uid Object ID.
-* return: Person, or NULL if not found. Note that object should still be freed.
-*/
-ItemPerson *addrcache_remove_person_id( AddressCache *cache, const gchar *uid ) {
+ItemEMail *addrcache_remove_email( AddressCache *cache, ItemEMail *email ) {
 	AddrItemObject *obj = NULL;
 
 	g_return_val_if_fail( cache != NULL, NULL );
 
-	if( uid == NULL || *uid == '\0' ) return NULL;
-	obj = ( AddrItemObject * ) g_hash_table_lookup( cache->itemHash, uid );
-	if( obj ) {
-		if( ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON ) {
-			/* Remove person's email addresses from all groups where */
-			/* referenced and from hash table. */
-			ItemPerson *person = ( ItemPerson * ) obj;
-			ItemFolder *parent = ( ItemFolder * ) ADDRITEM_PARENT(person);
-			if( ! parent ) parent = cache->rootFolder;
-			/* Remove emails from groups, remove from parent's list */
-			/* and hash table */
-			addrcache_foldergrp_rem_person( parent, person );
-			parent->listPerson = g_list_remove( parent->listPerson, person );
-			g_hash_table_remove( cache->itemHash, uid );
-			return person;
-		}
-	}
-	return NULL;
-}
-
-/*
-* Remove specified person from address cache.
-* param: person	Person to remove.
-* return: Person, or NULL if not found. Note that object should still be freed.
-*/
-ItemPerson *addrcache_remove_person( AddressCache *cache, ItemPerson *person ) {
-	AddrItemObject *obj = NULL;
-
-	g_return_val_if_fail( cache != NULL, NULL );
-
-	if( person ) {
-		gchar *uid = ADDRITEM_ID(person);
-		if( uid == NULL || *uid == '\0' ) return NULL;
-		obj = ( AddrItemObject * ) g_hash_table_lookup( cache->itemHash, uid );
+	if( email ) {
+		gchar *eid = ADDRITEM_ID(email);
+		if( eid == NULL || *eid == '\0' ) return NULL;
+		obj = ( AddrItemObject * ) g_hash_table_lookup( cache->itemHash, eid );
 		if( obj ) {
-			if( ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON ) {
-				/* Remove person's email addresses from all groups where */
-				/* referenced and from hash table. */
-				ItemFolder *parent = ( ItemFolder * ) ADDRITEM_PARENT(person);
-				if( ! parent ) parent = cache->rootFolder;
-				addrcache_foldergrp_rem_person( parent, person );
-				parent->listPerson = g_list_remove( parent->listPerson, person );
-				g_hash_table_remove( cache->itemHash, uid );
-				return person;
+			if( ADDRITEM_TYPE(obj) == ITEMTYPE_EMAIL ) {
+				/* Remove email addresses from hash table. */
+				g_hash_table_remove( cache->itemHash, eid );
+				cache->dirtyFlag = TRUE;
+				return email;
 			}
 		}
 	}
@@ -761,13 +807,13 @@ ItemPerson *addrcache_remove_person( AddressCache *cache, ItemPerson *person ) {
 }
 
 /*
-* Remove email from group item hash table visitor function.
+* Hash table visitor function to remove email from group.
 */
 static void addrcache_allgrp_rem_email_vis( gpointer key, gpointer value, gpointer data ) {
 	AddrItemObject *obj = ( AddrItemObject * ) value;
 	ItemEMail *email = ( ItemEMail * ) data;
 
-	if( !email ) return;
+	if( ! email ) return;
 	if( ADDRITEM_TYPE(obj) == ITEMTYPE_GROUP ) {
 		ItemGroup *group = ( ItemGroup * ) value;
 		if( group ) {
@@ -778,33 +824,51 @@ static void addrcache_allgrp_rem_email_vis( gpointer key, gpointer value, gpoint
 }
 
 /*
-* Remove email address in address cache for specified ID.
-* param: uid	Object ID for person.
-*        eid	EMail ID.
-* return: EMail object, or NULL if not found. Note that object should still be freed.
+* Remove specified person from address cache.
+* param: person	Person to remove.
+* return: Person, or NULL if not found. Note that object should still be freed.
 */
-ItemEMail *addrcache_person_remove_email_id( AddressCache *cache, const gchar *uid, const gchar *eid ) {
-	ItemEMail *email = NULL;
-	ItemPerson *person;
+ItemPerson *addrcache_remove_person( AddressCache *cache, ItemPerson *person ) {
+	AddrItemObject *obj = NULL;
+	gchar *uid;
 
-	if( eid == NULL || *eid == '\0' ) return NULL;
+	g_return_val_if_fail( cache != NULL, NULL );
 
-	person = addrcache_get_person( cache, uid );
 	if( person ) {
-		email = addritem_person_remove_email_id( person, eid );
-		if( email ) {
-			/* Remove email from all groups. */
-			g_hash_table_foreach( cache->itemHash, addrcache_allgrp_rem_email_vis, email );
+		uid = ADDRITEM_ID(person);
+		if( uid == NULL || *uid == '\0' ) return NULL;
+		obj = ( AddrItemObject * ) g_hash_table_lookup( cache->itemHash, uid );
+		if( obj ) {
+			if( ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON ) {
+				ItemFolder *parent;
+				GList *node;
 
-			/* Remove email from person's address list */
-			if( person->listEMail ) {
-				person->listEMail = g_list_remove( person->listEMail, email );
+				/* Remove all email addresses for person */
+				/* from groups and from hash table */
+				node = person->listEMail;
+				while( node ) {
+					ItemEMail *email;
+					gchar *eid;
+
+					email = node->data;
+					g_hash_table_foreach( cache->itemHash,
+						addrcache_allgrp_rem_email_vis, email );
+					eid = ADDRITEM_ID( email );
+					g_hash_table_remove( cache->itemHash, eid );
+					node = g_list_next( node );
+				}
+
+				/* Remove person from owning folder */
+				parent = ( ItemFolder * ) ADDRITEM_PARENT(person);
+				if( ! parent ) parent = cache->rootFolder;
+				parent->listPerson = g_list_remove( parent->listPerson, person );
+				g_hash_table_remove( cache->itemHash, uid );
+				cache->dirtyFlag = TRUE;
+				return person;
 			}
-			/* Unlink reference to person. */
-			ADDRITEM_PARENT(email) = NULL;
 		}
 	}
-	return email;
+	return NULL;
 }
 
 /*
@@ -830,9 +894,42 @@ ItemEMail *addrcache_person_remove_email( AddressCache *cache, ItemPerson *perso
 			}
 			/* Unlink reference to person. */
 			ADDRITEM_PARENT(email) = NULL;
+			cache->dirtyFlag = TRUE;
 		}
 	}
 	return found;
+}
+
+/*
+* Move email address in address cache to new person. If member of group, address
+* remains in group.
+* param: cache  Cache.
+*        email  EMail to remove.
+*        target Target person.
+* return: EMail object, or NULL if not found. Note that object should still be freed.
+*/
+void addrcache_person_move_email(
+	AddressCache *cache, ItemEMail *email, ItemPerson *target )
+{
+	ItemPerson *person;
+
+	g_return_if_fail( cache != NULL );
+
+	if( email == NULL ) return;
+	if( target == NULL ) return;
+
+	person = ( ItemPerson * ) ADDRITEM_PARENT(email);
+	if( person ) {
+		ItemEMail *found;
+		found = addritem_person_remove_email( person, email );
+		if( found ) {
+			if( person->listEMail ) {
+				person->listEMail = g_list_remove( person->listEMail, found );
+				addritem_person_add_email( target, found );
+				cache->dirtyFlag = TRUE;
+			}
+		}
+	}
 }
 
 /*
@@ -982,7 +1079,7 @@ static void addrcache_get_grp_person_vis( gpointer key, gpointer value, gpointer
 }
 
 /*
-* Return link list of groups which contain a reference to specified person's email
+* Return linked list of groups which contain a reference to specified person's email
 * address.
 */
 GList *addrcache_get_group_for_person( AddressCache *cache, ItemPerson *person ) {
@@ -1126,6 +1223,7 @@ ItemFolder *addrcache_remove_folder( AddressCache *cache, ItemFolder *folder ) {
 			parent->listFolder = g_list_remove( parent->listFolder, folder );
 			ADDRITEM_PARENT(folder) = NULL;
 			g_hash_table_remove( cache->itemHash, uid );
+			cache->dirtyFlag = TRUE;
 			return folder;
 		}
 	}
@@ -1183,6 +1281,7 @@ ItemFolder *addrcache_remove_folder_delete( AddressCache *cache, ItemFolder *fol
 			parent->listFolder = g_list_remove( parent->listFolder, folder );
 			ADDRITEM_PARENT(folder) = NULL;
 			g_hash_table_remove( cache->itemHash, uid );
+			cache->dirtyFlag = TRUE;
 			return folder;
 		}
 	}
@@ -1222,6 +1321,7 @@ ItemPerson *addrcache_add_contact( AddressCache *cache, ItemFolder *folder, cons
 	addritem_email_set_remarks( email, remarks );
 	addrcache_id_email( cache, email );
 	addritem_person_add_email( person, email );
+	cache->dirtyFlag = TRUE;
 
 	return person;
 }

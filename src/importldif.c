@@ -271,7 +271,6 @@ static gboolean imp_ldif_field_move() {
 	/* Import data into file */
 	if( ldif_import_data( _ldifFile_, abf->addressCache ) == MGU_SUCCESS ) {
 		addrbook_save_data( abf );
-		abf->dirtyFlag = TRUE;
 		_importedBook_ = abf;
 		retVal = TRUE;
 	}

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,12 +84,11 @@ typedef struct _ItemFolder ItemFolder;
 struct _ItemFolder {
 	AddrItemObject obj;
 	gchar    *remarks;
-	gboolean isRoot;
-	GList    *listItems;
-	GList    *listFolder;
-	GList    *listPerson;
-	GList    *listGroup;
-	gpointer userData;
+	gboolean isRoot;	/* TRUE if root folder */
+	GList    *listItems;	/* Used for temporary items only */
+	GList    *listFolder;	/* List of contained (child) folders */
+	GList    *listPerson;	/* List of contained persons */
+	GList    *listGroup;	/* List of contained (child) groups */
 };
 
 typedef struct _ItemGroup ItemGroup;
@@ -102,6 +101,7 @@ struct _ItemGroup {
 /* Function prototypes */
 ItemEMail *addritem_create_item_email	( void );
 ItemEMail *addritem_copy_item_email	( ItemEMail *item );
+ItemEMail *addritem_copyfull_item_email	( ItemEMail *item );
 void addritem_email_set_id		( ItemEMail *email, const gchar *value );
 void addritem_email_set_alias		( ItemEMail *email, const gchar *value );
 void addritem_email_set_address		( ItemEMail *email, const gchar *value );
@@ -116,6 +116,7 @@ void addritem_attrib_set_value		( UserAttribute *item, const gchar *value );
 void addritem_free_attribute		( UserAttribute *item );
 
 ItemPerson *addritem_create_item_person	( void );
+ItemPerson *addritem_copy_item_person	( ItemPerson *item );
 void addritem_person_set_id		( ItemPerson *person, const gchar *value );
 void addritem_person_set_first_name	( ItemPerson *person, const gchar *value );
 void addritem_person_set_last_name	( ItemPerson *person, const gchar *value );
@@ -128,8 +129,8 @@ void addritem_free_list_email		( GList *list );
 void addritem_free_list_attribute	( GList *list );
 
 ItemGroup *addritem_create_item_group	( void );
+ItemGroup *addritem_copy_item_group	( ItemGroup *item );
 void addritem_free_item_group		( ItemGroup *group );
-void addritem_print			( ItemGroup *group, FILE *stream );
 void addritem_group_set_id		( ItemGroup *group, const gchar *value );
 void addritem_group_set_name		( ItemGroup *group, const gchar *value );
 void addritem_group_set_remarks		( ItemGroup *group, const gchar *value );
@@ -139,6 +140,7 @@ void addritem_print_attribute		( UserAttribute *item, FILE *stream );
 void addritem_print_item_person		( ItemPerson *person, FILE *stream );
 void addritem_print_item_group		( ItemGroup *group, FILE *stream );
 void addritem_print_item_folder		( ItemFolder *folder, FILE *stream );
+void addritem_print_item		( AddrItemObject *aio, FILE *stream );
 
 gboolean addritem_person_add_email		( ItemPerson *person, ItemEMail *email );
 ItemEMail *addritem_person_get_email		( ItemPerson *person, const gchar *eid );
@@ -151,6 +153,7 @@ UserAttribute *addritem_person_remove_attrib_id	( ItemPerson *person, const gcha
 UserAttribute *addritem_person_remove_attribute	( ItemPerson *person, UserAttribute *attrib );
 
 ItemFolder *addritem_create_item_folder	( void );
+ItemFolder *addritem_copy_item_folder	( ItemFolder *item );
 void addritem_folder_set_id		( ItemFolder *folder, const gchar *value );
 void addritem_folder_set_name		( ItemFolder *folder, const gchar *value );
 void addritem_folder_set_remarks	( ItemFolder *folder, const gchar *value );

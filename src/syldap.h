@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Match Grun
+ * Copyright (C) 2001-2002 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 
 #include "addritem.h"
 #include "addrcache.h"
+#include "adbookbase.h"
 
 #define SYLDAP_DFL_PORT        389
 #define SYLDAP_MAX_ENTRIES     20
@@ -46,26 +47,25 @@
 
 typedef struct _SyldapServer SyldapServer;
 struct _SyldapServer {
-	gchar        *name;
-	gchar        *hostName;
-	gint         port;
-	gchar        *baseDN;
-	gchar        *bindDN;
-	gchar        *bindPass;
-	gchar        *searchCriteria;
-	gchar        *searchValue;
-	gint         entriesRead;
-	gint         maxEntries;
-	gint         timeOut;
-	gboolean     newSearch;
+	AddressBookType type;
 	AddressCache *addressCache;
-	/* ItemFolder   *rootFolder; */
-	gboolean     accessFlag;
-	gint         retVal;
-	pthread_t    *thread;
-	gboolean     busyFlag;
-	void         (*callBack)( void * );
-	guint        idleId;
+	gboolean  accessFlag;
+	gint      retVal;
+	gchar     *hostName;
+	gint      port;
+	gchar     *baseDN;
+	gchar     *bindDN;
+	gchar     *bindPass;
+	gchar     *searchCriteria;
+	gchar     *searchValue;
+	gint      entriesRead;
+	gint      maxEntries;
+	gint      timeOut;
+	gboolean  newSearch;
+	pthread_t *thread;
+	gboolean  busyFlag;
+	void      (*callBack)( void * );
+	guint     idleId;
 };
 
 /* Function prototypes */
@@ -104,7 +104,7 @@ GList *syldap_read_basedn_s	( const gchar *host, const gint port, const gchar *b
 GList *syldap_read_basedn	( SyldapServer *ldapServer );
 gboolean syldap_test_connect_s	( const gchar *host, const gint port );
 gboolean syldap_test_connect	( SyldapServer *ldapServer );
-/* gboolean syldap_test_ldap_lib	( void ); */
+gboolean syldap_test_ldap_lib	( void );
 
 #endif	/* USE_LDAP */
 

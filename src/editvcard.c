@@ -284,8 +284,8 @@ AdapterDSource *addressbook_edit_vcard( AddressIndex *addrIndex, AdapterDSource 
 	if( ads ) {
 		ds = ads->dataSource;
 		vcf = ds->rawDataSource;
-		if (vcf->name)
-			gtk_entry_set_text(GTK_ENTRY(vcardedit.name_entry), vcf->name);
+		if ( vcard_get_name( vcf ) )
+			gtk_entry_set_text(GTK_ENTRY(vcardedit.name_entry), vcard_get_name( vcf ) );
 		if (vcf->path)
 			gtk_entry_set_text(GTK_ENTRY(vcardedit.file_entry), vcf->path);
 		gtk_window_set_title( GTK_WINDOW(vcardedit.window), _("Edit vCard Entry"));

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Match Grun
+ * Copyright (C) 2001-2002 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 
 #include "addritem.h"
 #include "addrcache.h"
+#include "adbookbase.h"
 
 #define VCARDBUFSIZE       1024
 
@@ -49,37 +50,37 @@
 #define	VCARD_SEP_TYPE     ';'
 
 /*
-// Typical vCard entry:
-//
-// BEGIN:VCARD
-// FN:Axle Rose
-// N:Rose;Axle;D;Ms;Jnr
-// REV:2001-04-22T03:52:05
-// ADR;HOME:;;777 Lexington Avenue;Denver;CO;80299;USA
-// ADR;POSTAL:P O Box 777;;;Denver;CO;80298;Usa
-// TEL;HOME:303-555-1234
-// EMAIL;AOL:axlerose@aol.com
-// EMAIL;INTERNET:axlerose@netscape.net
-// TITLE:Janitor
-// ORG:The Company
-// URL:http://www.axlerose.com
-// END:VCARD
+* Typical vCard entry:
+*
+* BEGIN:VCARD
+* FN:Axle Rose
+* N:Rose;Axle;D;Ms;Jnr
+* REV:2001-04-22T03:52:05
+* ADR;HOME:;;777 Lexington Avenue;Denver;CO;80299;USA
+* ADR;POSTAL:P O Box 777;;;Denver;CO;80298;Usa
+* TEL;HOME:303-555-1234
+* EMAIL;AOL:axlerose@aol.com
+* EMAIL;INTERNET:axlerose@netscape.net
+* TITLE:Janitor
+* ORG:The Company
+* URL:http://www.axlerose.com
+* END:VCARD
 */
 
 /* vCard object */
 typedef struct _VCardFile VCardFile;
 struct _VCardFile {
-	gchar        *name;
-	FILE         *file;
-	gchar        *path;
-	gchar        buffer[ VCARDBUFSIZE ];
-	gchar        *bufptr;
+	AddressBookType type;
 	AddressCache *addressCache;
-	gint         retVal;
-	gboolean     accessFlag;
+	gboolean accessFlag;
+	gint     retVal;
+	FILE     *file;
+	gchar    *path;
+	gchar    buffer[ VCARDBUFSIZE ];
+	gchar    *bufptr;
 };
 
-// Function prototypes
+/* Function prototypes */
 VCardFile *vcard_create			( void );
 VCardFile *vcard_create_path		( const gchar *path );
 void vcard_set_name			( VCardFile* cardFile, const gchar *value );

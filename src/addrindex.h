@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Match Grun
+ * Copyright (C) 2001-2002 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <glib.h>
 #include "addritem.h"
+#include "addrcache.h"
 
 #define ADDRESSBOOK_MAX_IFACE  4
 #define ADDRESSBOOK_INDEX_FILE "addrbook--index.xml"
@@ -54,6 +55,7 @@ struct _AddressIndex {
 	AddressIfType lastType;
 	gboolean dirtyFlag;
 	GList *interfaceList;
+	GHashTable *hashCache;
 };
 
 typedef struct _AddressInterface AddressInterface;
@@ -90,21 +92,39 @@ struct _AddressDataSource {
 	gpointer rawDataSource;
 };
 
-AddressIndex *addrindex_create_index	();
-void addrindex_set_file_path		( AddressIndex *addrIndex, const gchar *value );
-void addrindex_set_file_name		( AddressIndex *addrIndex, const gchar *value );
-void addrindex_set_dirty		( AddressIndex *addrIndex, const gboolean value );
+AddressIndex *addrindex_create_index	( void );
+void addrindex_set_file_path		( AddressIndex *addrIndex,
+					  const gchar *value );
+void addrindex_set_file_name		( AddressIndex *addrIndex,
+					  const gchar *value );
+void addrindex_set_dirty		( AddressIndex *addrIndex,
+					  const gboolean value );
 GList *addrindex_get_interface_list	( AddressIndex *addrIndex );
 void addrindex_free_index		( AddressIndex *addrIndex );
 void addrindex_print_index		( AddressIndex *addrIndex, FILE *stream );
 
-AddressInterface *addrindex_get_interface		( AddressIndex *addrIndex, AddressIfType ifType );
-AddressDataSource *addrindex_index_add_datasource	( AddressIndex *addrIndex, AddressIfType ifType, gpointer dataSource );
-AddressDataSource *addrindex_index_remove_datasource	( AddressIndex *addrIndex, AddressDataSource *dataSource );
-void addrindex_free_datasource				( AddressIndex *addrIndex, AddressDataSource *ds );
+AddressInterface *addrindex_get_interface	( AddressIndex *addrIndex,
+						  AddressIfType ifType );
+
+AddressDataSource *addrindex_create_datasource	( AddressIfType ifType );
+
+AddressDataSource *addrindex_index_add_datasource	( AddressIndex *addrIndex,
+							  AddressIfType ifType,
+							  gpointer dataSource );
+AddressDataSource *addrindex_index_remove_datasource	( AddressIndex *addrIndex,
+							  AddressDataSource *dataSource );
+
+void addrindex_free_datasource		( AddressDataSource *ds );
+gchar *addrindex_get_cache_id		( AddressIndex *addrIndex,
+					  AddressDataSource *ds );
+AddressDataSource *addrindex_get_datasource	( AddressIndex *addrIndex,
+						  const gchar *cacheID );
+AddressCache *addrindex_get_cache	( AddressIndex *addrIndex,
+					  const gchar *cacheID );
 
 gint addrindex_read_data		( AddressIndex *addrIndex );
-gint addrindex_write_to			( AddressIndex *addrIndex, const gchar *newFile );
+gint addrindex_write_to			( AddressIndex *addrIndex,
+					  const gchar *newFile );
 gint addrindex_save_data		( AddressIndex *addrIndex );
 gint addrindex_create_new_books		( AddressIndex *addrIndex );
 gint addrindex_save_all_books		( AddressIndex *addrIndex );
@@ -118,7 +138,8 @@ ItemFolder *addrindex_ds_get_root_folder( AddressDataSource *ds );
 GList *addrindex_ds_get_list_folder	( AddressDataSource *ds );
 GList *addrindex_ds_get_list_person	( AddressDataSource *ds );
 gchar *addrindex_ds_get_name		( AddressDataSource *ds );
-void addrindex_ds_set_access_flag	( AddressDataSource *ds, gboolean *value );
+void addrindex_ds_set_access_flag	( AddressDataSource *ds,
+					  gboolean *value );
 gboolean addrindex_ds_get_readonly	( AddressDataSource *ds );
 GList *addrindex_ds_get_all_persons	( AddressDataSource *ds );
 GList *addrindex_ds_get_all_groups	( AddressDataSource *ds );

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,6 +92,22 @@
 #define ADDRESSBOOK_LDAP_BUSYMSG "Busy"
 #endif
 
+#include "addrselect.h"
+#include "addrclip.h"
+
+/*
+#include "pixmaps/dir-close.xpm"
+#include "pixmaps/dir-open.xpm"
+#include "pixmaps/group.xpm"
+#include "pixmaps/interface.xpm"
+#include "pixmaps/book.xpm"
+#include "pixmaps/address.xpm"
+#include "pixmaps/vcard.xpm"
+#include "pixmaps/jpilot.xpm"
+#include "pixmaps/category.xpm"
+#include "pixmaps/ldap.xpm"
+*/
+
 typedef enum
 {
 	COL_NAME	= 0,
@@ -134,7 +150,8 @@ static GdkBitmap *ldapxpmmask;
 static gchar addressbook_msgbuf[ ADDRESSBOOK_MSGBUF_SIZE ];
 
 /* Address list selection */
-static GList *_addressListSelection_ = NULL;
+static AddrSelectList *_addressSelect_ = NULL;
+static AddressClipboard *_clipBoard_ = NULL;
 
 /* Address index file and interfaces */
 static AddressIndex *_addressIndex_ = NULL;
@@ -265,10 +282,12 @@ void addressbook_read_file			(void);
 
 static GtkCTreeNode *addressbook_add_object	(GtkCTreeNode	*node,
 						 AddressObject	*obj);
+static void addressbook_treenode_remove_item	( void );
+
 static AddressDataSource *addressbook_find_datasource
 						(GtkCTreeNode	*node );
 
-static AddressBookFile *addressbook_get_book_file();
+static AddressBookFile *addressbook_get_book_file(void);
 
 static GtkCTreeNode *addressbook_node_add_folder
 						(GtkCTreeNode	*node,
@@ -278,40 +297,33 @@ static GtkCTreeNode *addressbook_node_add_folder
 static GtkCTreeNode *addressbook_node_add_group (GtkCTreeNode	*node,
 						AddressDataSource *ds,
 						ItemGroup	*itemGroup);
-/* static GtkCTreeNode *addressbook_node_add_category */
-/*						(GtkCTreeNode	*node, */
-/*						 AddressDataSource *ds, */
-/*						 ItemFolder	*itemFolder); */
 static void addressbook_tree_remove_children	(GtkCTree	*ctree,
 						GtkCTreeNode	*parent);
 static void addressbook_move_nodes_up		(GtkCTree	*ctree,
 						GtkCTreeNode	*node);
 static GtkCTreeNode *addressbook_find_group_node (GtkCTreeNode	*parent,
-						ItemGroup	*group);
+						   ItemGroup	*group);
+static GtkCTreeNode *addressbook_find_folder_node( GtkCTreeNode	*parent,
+						   ItemFolder	*folder );
 
 static void addressbook_delete_object		(AddressObject	*obj);
 
 static void key_pressed				(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gpointer	 data);
+static gint addressbook_treenode_compare_func	(GtkCList	*clist,
+						 gconstpointer	 ptr1,
+						 gconstpointer	 ptr2);
 static gint addressbook_list_compare_func	(GtkCList	*clist,
 						 gconstpointer	 ptr1,
 						 gconstpointer	 ptr2);
-/* static gint addressbook_obj_name_compare	(gconstpointer	 a, */
-/*						 gconstpointer	 b); */
 
-static void addressbook_book_show_message	(AddressBookFile *book);
-static void addressbook_vcard_show_message	(VCardFile *vcf);
-#ifdef USE_JPILOT
-static void addressbook_jpilot_show_message	(JPilotFile *jpf);
-#endif
 #ifdef USE_LDAP
 static void addressbook_ldap_show_message	(SyldapServer *server);
 #endif
 
 /* LUT's and IF stuff */
-static void addressbook_free_adapter		(GtkCTreeNode	*node);
-static void addressbook_free_child_adapters	(GtkCTreeNode	*node);
+static void addressbook_free_treenode		( gpointer data );
 AddressTypeControlItem *addrbookctl_lookup	(gint		 ot);
 AddressTypeControlItem *addrbookctl_lookup_iface(AddressIfType	 ifType);
 
@@ -325,12 +337,20 @@ static void addrbookctl_free_datasource		(AdapterDSource	  *adapter);
 static void addrbookctl_free_folder		(AdapterFolder	  *adapter);
 static void addrbookctl_free_group		(AdapterGroup	  *adapter);
 
-static void addressbook_list_select_clear	(void);
-static void addressbook_list_select_add		(AddressObject *obj);
-static void addressbook_list_select_remove	(AddressObject *obj);
+static void addressbook_list_select_clear	( void );
+static void addressbook_list_select_add		( AddrItemObject    *aio,
+						  AddressDataSource *ds );
+static void addressbook_list_select_remove	( AddrItemObject    *aio );
 
-static void addressbook_import_ldif_cb		(void);
-static void addressbook_import_mutt_cb		(void);
+static void addressbook_import_ldif_cb		( void );
+static void addressbook_import_mutt_cb		( void );
+static void addressbook_clip_cut_cb		( void );
+static void addressbook_clip_copy_cb		( void );
+static void addressbook_clip_paste_cb		( void );
+static void addressbook_clip_paste_address_cb	( void );
+static void addressbook_treenode_cut_cb		( void );
+static void addressbook_treenode_copy_cb	( void );
+static void addressbook_treenode_paste_cb	( void );
 
 static GtkItemFactoryEntry addressbook_entries[] =
 {
@@ -348,7 +368,13 @@ static GtkItemFactoryEntry addressbook_entries[] =
 	{N_("/_File/_Delete"),		NULL,		addressbook_treenode_delete_cb, 0, NULL},
 	{N_("/_File/---"),		NULL,		NULL, 0, "<Separator>"},
 	{N_("/_File/_Save"),		"<alt>S",	addressbook_file_save_cb,       0, NULL},
-	{N_("/_File/_Close"),		"<alt>W",	close_cb, 0, NULL},
+	{N_("/_File/_Close"),		"<alt>W",	close_cb,                       0, NULL},
+	{N_("/_Edit"),			NULL,		NULL, 0, "<Branch>"},
+	{N_("/_Edit/C_ut"),		"<ctl>X",	addressbook_clip_cut_cb,        0, NULL},
+	{N_("/_Edit/_Copy"),		"<ctl>C",	addressbook_clip_copy_cb,       0, NULL},
+	{N_("/_Edit/_Paste"),		"<ctl>V",	addressbook_clip_paste_cb,      0, NULL},
+	{N_("/_Edit/---"),		NULL,		NULL, 0, "<Separator>"},
+	{N_("/_Edit/Pa_ste Address"),	NULL,		addressbook_clip_paste_address_cb, 0, NULL},
 	{N_("/_Address"),		NULL,		NULL, 0, "<Branch>"},
 	{N_("/_Address/New _Address"),	"<alt>N",	addressbook_new_address_cb,     0, NULL},
 	{N_("/_Address/New _Group"),	"<alt>G",	addressbook_new_group_cb,       0, NULL},
@@ -357,7 +383,7 @@ static GtkItemFactoryEntry addressbook_entries[] =
 	{N_("/_Address/_Edit"),		"<alt>Return",	addressbook_edit_address_cb,    0, NULL},
 	{N_("/_Address/_Delete"),	NULL,		addressbook_delete_address_cb,  0, NULL},
 	{N_("/_Tools/---"),		NULL,		NULL, 0, "<Separator>"},
-	{N_("/_Tools/Import _LDIF file"), NULL,		addressbook_import_ldif_cb,	0, NULL},
+	{N_("/_Tools/Import _LDIF"),	NULL,           addressbook_import_ldif_cb,	0, NULL},
 	{N_("/_Tools/Import M_utt"),	NULL,           addressbook_import_mutt_cb,	0, NULL},
 	{N_("/_Help"),			NULL,		NULL, 0, "<LastBranch>"},
 	{N_("/_Help/_About"),		NULL,		about_show, 0, NULL}
@@ -365,15 +391,11 @@ static GtkItemFactoryEntry addressbook_entries[] =
 
 /* New options to be added. */
 /*
-	{N_("/_Edit"),			NULL,		NULL, 0, "<Branch>"},
-	{N_("/_Edit/C_ut"),		"<ctl>X",	NULL,				0, NULL},
-	{N_("/_Edit/_Copy"),		"<ctl>C",	NULL,                           0, NULL},
-	{N_("/_Edit/_Paste"),		"<ctl>V",	NULL,                           0, NULL},
 	{N_("/_Tools"),			NULL,		NULL, 0, "<Branch>"},
 	{N_("/_Tools/Import _Mozilla"),	NULL,           NULL,				0, NULL},
 	{N_("/_Tools/Import _vCard"),	NULL,           NULL,				0, NULL},
 	{N_("/_Tools/---"),		NULL,		NULL, 0, "<Separator>"},
-	{N_("/_Tools/Export _LDIF file"), NULL,		NULL,				0, NULL},
+	{N_("/_Tools/Export _LDIF"),	NULL,           NULL,				0, NULL},
 	{N_("/_Tools/Export v_Card"),	NULL,           NULL,				0, NULL},
 */
 
@@ -384,39 +406,59 @@ static GtkItemFactoryEntry addressbook_tree_popup_entries[] =
 	{N_("/New _Folder"),	NULL, addressbook_new_folder_cb,  0, NULL},
 	{N_("/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Edit"),		NULL, addressbook_treenode_edit_cb,   0, NULL},
-	{N_("/_Delete"),	NULL, addressbook_treenode_delete_cb, 0, NULL}
+	{N_("/_Delete"),	NULL, addressbook_treenode_delete_cb, 0, NULL},
+	{N_("/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/C_ut"),		NULL, addressbook_treenode_cut_cb,    0, NULL},
+	{N_("/_Copy"),		NULL, addressbook_treenode_copy_cb,   0, NULL},
+	{N_("/_Paste"),		NULL, addressbook_treenode_paste_cb,  0, NULL}
 };
 
 static GtkItemFactoryEntry addressbook_list_popup_entries[] =
 {
-	{N_("/New _Address"),	NULL, addressbook_new_address_cb,  0, NULL},
-	{N_("/New _Group"),	NULL, addressbook_new_group_cb,    0, NULL},
-	{N_("/New _Folder"),	NULL, addressbook_new_folder_cb,   0, NULL},
+	{N_("/New _Address"),	NULL, addressbook_new_address_cb,    0, NULL},
+	{N_("/New _Group"),	NULL, addressbook_new_group_cb,      0, NULL},
+	{N_("/New _Folder"),	NULL, addressbook_new_folder_cb,     0, NULL},
 	{N_("/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Edit"),		NULL, addressbook_edit_address_cb,   0, NULL},
-	{N_("/_Delete"),	NULL, addressbook_delete_address_cb, 0, NULL}
+	{N_("/_Delete"),	NULL, addressbook_delete_address_cb, 0, NULL},
+	{N_("/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/C_ut"),		NULL, addressbook_clip_cut_cb,       0, NULL},
+	{N_("/_Copy"),		NULL, addressbook_clip_copy_cb,      0, NULL},
+	{N_("/_Paste"),		NULL, addressbook_clip_paste_cb,     0, NULL},
+	{N_("/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/Pa_ste Address"),	NULL, addressbook_clip_paste_address_cb,     0, NULL}
 };
 
 void addressbook_open(Compose *target)
 {
+	/* Initialize all static members */
+	if( _clipBoard_ == NULL ) {
+		_clipBoard_ = addrclip_create();
+	}
+	if( _addressIndex_ != NULL ) {
+		addrclip_set_index( _clipBoard_, _addressIndex_ );
+	}
+	if( _addressSelect_ == NULL ) {
+		_addressSelect_ = addrselect_list_create();
+	}
 	if (!addrbook.window) {
 		addressbook_read_file();
 		addressbook_create();
 		addressbook_load_tree();
 		gtk_ctree_select(GTK_CTREE(addrbook.ctree),
 				 GTK_CTREE_NODE(GTK_CLIST(addrbook.ctree)->row_list));
-	} else
+	}
+	else {
 		gtk_widget_hide(addrbook.window);
+	}
 
 	gtk_widget_show_all(addrbook.window);
-
 	addressbook_set_target_compose(target);
 }
 
 void addressbook_set_target_compose(Compose *target)
 {
 	addrbook.target_compose = target;
-
 	addressbook_button_set_sensitive();
 }
 
@@ -535,7 +577,7 @@ static void addressbook_create(void)
 				     GTK_CTREE_EXPANDER_SQUARE);
 	gtk_ctree_set_indent(GTK_CTREE(ctree), CTREE_INDENT);
 	gtk_clist_set_compare_func(GTK_CLIST(ctree),
-				   addressbook_list_compare_func);
+				   addressbook_treenode_compare_func);
 
 	gtk_signal_connect(GTK_OBJECT(ctree), "tree_select_row",
 			   GTK_SIGNAL_FUNC(addressbook_tree_selected), NULL);
@@ -690,7 +732,9 @@ static void addressbook_create(void)
 					interfacexpm, interfacexpmmask,
 					FALSE, FALSE );
 			menu_set_sensitive( menu_factory, atci->menuCommand, adapter->haveLibrary );
-			gtk_ctree_node_set_row_data( GTK_CTREE(ctree), adapter->treeNode, adapter );
+			gtk_ctree_node_set_row_data_full(
+				GTK_CTREE(ctree), adapter->treeNode, adapter,
+				addressbook_free_treenode );
 		}
 	}
 
@@ -716,7 +760,8 @@ static void addressbook_create(void)
 	addrbook.clist   = clist;
 	addrbook.entry   = entry;
 	addrbook.statusbar = statusbar;
-	addrbook.status_cid = gtk_statusbar_get_context_id( GTK_STATUSBAR(statusbar), "Addressbook Window" );
+	addrbook.status_cid = gtk_statusbar_get_context_id(
+			GTK_STATUSBAR(statusbar), "Addressbook Window" );
 
 	addrbook.del_btn = del_btn;
 	addrbook.reg_btn = reg_btn;
@@ -746,11 +791,29 @@ static gint addressbook_close(void)
 
 static void addressbook_status_show( gchar *msg ) {
 	if( addrbook.statusbar != NULL ) {
-		gtk_statusbar_pop( GTK_STATUSBAR(addrbook.statusbar), addrbook.status_cid );
+		gtk_statusbar_pop(
+			GTK_STATUSBAR(addrbook.statusbar),
+			addrbook.status_cid );
 		if( msg ) {
-			gtk_statusbar_push( GTK_STATUSBAR(addrbook.statusbar), addrbook.status_cid, msg );
+			gtk_statusbar_push(
+				GTK_STATUSBAR(addrbook.statusbar),
+				addrbook.status_cid, msg );
 		}
 	}
+}
+
+static void addressbook_ds_status_message( AddressDataSource *ds, gchar *msg ) {
+	*addressbook_msgbuf = '\0';
+	if( ds ) {
+		gchar *name;
+
+		name = addrindex_ds_get_name( ds );
+		sprintf( addressbook_msgbuf, "%s: %s", name, msg );
+	}
+	else {
+		sprintf( addressbook_msgbuf, "%s", msg );
+	}
+	addressbook_status_show( addressbook_msgbuf );
 }
 
 static void addressbook_ds_show_message( AddressDataSource *ds ) {
@@ -761,17 +824,11 @@ static void addressbook_ds_show_message( AddressDataSource *ds ) {
 		name = addrindex_ds_get_name( ds );
 		retVal = addrindex_ds_get_status_code( ds );
 		if( retVal == MGU_SUCCESS ) {
-			if( ds ) {
-				sprintf( addressbook_msgbuf, "%s", name );
-			}
+			sprintf( addressbook_msgbuf, "%s", name );
 		}
 		else {
-			if( ds == NULL ) {
-				sprintf( addressbook_msgbuf, "%s", mgu_error2string( retVal ) );
-			}
-			else {
-				sprintf( addressbook_msgbuf, "%s: %s", name, mgu_error2string( retVal ) );
-			}
+			sprintf( addressbook_msgbuf, "%s: %s", name,
+				mgu_error2string( retVal ) );
 		}
 	}
 	addressbook_status_show( addressbook_msgbuf );
@@ -804,23 +861,38 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 {
 	GtkCTree *clist = GTK_CTREE(addrbook.clist);
 	GtkCTree *ctree = GTK_CTREE(addrbook.ctree);
-	AddressObject *pobj, *obj;
+	AddressObject *pobj;
 	AdapterDSource *ads = NULL;
 	GtkCTreeNode *nodeList;
 	gboolean procFlag;
 	AlertValue aval;
 	AddressBookFile *abf = NULL;
 	AddressDataSource *ds = NULL;
+	AddressInterface *iface;
+	AddrItemObject *aio;
+	AddrSelectItem *item;
+	GList *list, *node;
 
 	pobj = gtk_ctree_node_get_row_data(ctree, addrbook.opened );
 	g_return_if_fail(pobj != NULL);
 
+	/* Test whether anything selected for deletion */
 	nodeList = addrbook.listSelected;
-	obj = gtk_ctree_node_get_row_data( clist, nodeList );
-	if( obj == NULL) return;
+	aio = gtk_ctree_node_get_row_data( clist, nodeList );
+	if( aio == NULL) return;
 	ds = addressbook_find_datasource( addrbook.treeSelected );
 	if( ds == NULL ) return;
 
+	/* Test for read only */
+	iface = ds->interface;
+	if( iface->readOnly ) {
+		aval = alertpanel( _("Delete address(es)"),
+			_("This address data is readonly and cannot be deleted."),
+			_("Close"), NULL, NULL );
+		return;
+	}
+
+	/* Test whether Ok to proceed */
 	procFlag = FALSE;
 	if( pobj->type == ADDR_DATASOURCE ) {
 		ads = ADAPTER_DSOURCE(pobj);
@@ -845,11 +917,12 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 	/* Process deletions */
 	if( pobj->type == ADDR_DATASOURCE || pobj->type == ADDR_ITEM_FOLDER ) {
 		/* Items inside folders */
-		GList *node;
-		node = _addressListSelection_;
+		list = addrselect_get_list( _addressSelect_ );
+		node = list;
 		while( node ) {
-			AddrItemObject *aio = node->data;
+			item = node->data;
 			node = g_list_next( node );
+			aio = ( AddrItemObject * ) item->addressItem;
 			if( aio->type == ADDR_ITEM_GROUP ) {
 				ItemGroup *item = ( ItemGroup * ) aio;
 				GtkCTreeNode *nd = NULL;
@@ -858,7 +931,6 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 				item = addrbook_remove_group( abf, item );
 				if( item ) {
 					addritem_free_item_group( item );
-					item = NULL;
 				}
 				/* Remove group from parent node */
 				gtk_ctree_remove_node( ctree, nd );
@@ -868,7 +940,6 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 				item = addrbook_remove_person( abf, item );
 				if( item ) {
 					addritem_free_item_person( item );
-					item = NULL;
 				}
 			}
 			else if( aio->type == ADDR_ITEM_EMAIL ) {
@@ -877,32 +948,32 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 				item = addrbook_person_remove_email( abf, person, item );
 				if( item ) {
 					addritem_free_item_email( item );
-					item = NULL;
 				}
 			}
 		}
+		g_list_free( list );
 		addressbook_list_select_clear();
 		gtk_ctree_select( ctree, addrbook.opened);
 		return;
 	}
 	else if( pobj->type == ADDR_ITEM_GROUP ) {
 		/* Items inside groups */
-		GList *node;
-		node = _addressListSelection_;
+		list = addrselect_get_list( _addressSelect_ );
+		node = list;
 		while( node ) {
-			AddrItemObject *aio = node->data;
+			item = node->data;
 			node = g_list_next( node );
+			aio = ( AddrItemObject * ) item->addressItem;
 			if( aio->type == ADDR_ITEM_EMAIL ) {
 				ItemEMail *item = ( ItemEMail * ) aio;
 				ItemPerson *person = ( ItemPerson * ) ADDRITEM_PARENT(item);
 				item = addrbook_person_remove_email( abf, person, item );
 				if( item ) {
-					addritem_print_item_email( item, stdout );
 					addritem_free_item_email( item );
-					item = NULL;
 				}
 			}
 		}
+		g_list_free( list );
 		addressbook_list_select_clear();
 		gtk_ctree_select( ctree, addrbook.opened);
 		return;
@@ -910,7 +981,6 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 
 	gtk_ctree_node_set_row_data( clist, nodeList, NULL );
 	gtk_ctree_remove_node( clist, nodeList );
-	addressbook_list_select_remove( obj );
 
 }
 
@@ -919,14 +989,14 @@ static void addressbook_reg_clicked(GtkButton *button, gpointer data)
 	addressbook_new_address_cb( NULL, 0, NULL );
 }
 
-gchar *addressbook_format_address( AddressObject * obj ) {
+gchar *addressbook_format_address( AddrItemObject * aio ) {
 	gchar *buf = NULL;
 	gchar *name = NULL;
 	gchar *address = NULL;
 
-	if( obj->type == ADDR_ITEM_EMAIL ) {
+	if( aio->type == ADDR_ITEM_EMAIL ) {
 		ItemPerson *person = NULL;
-		ItemEMail *email = ( ItemEMail * ) obj;
+		ItemEMail *email = ( ItemEMail * ) aio;
 
 		person = ( ItemPerson * ) ADDRITEM_PARENT(email);
 		if( email->address ) {
@@ -945,8 +1015,8 @@ gchar *addressbook_format_address( AddressObject * obj ) {
 			address = email->address;
 		}
 	}
-	else if( obj->type == ADDR_ITEM_PERSON ) {
-		ItemPerson *person = ( ItemPerson * ) obj;
+	else if( aio->type == ADDR_ITEM_PERSON ) {
+		ItemPerson *person = ( ItemPerson * ) aio;
 		GList *node = person->listEMail;
 
 		name = ADDRITEM_NAME(person);
@@ -969,43 +1039,54 @@ gchar *addressbook_format_address( AddressObject * obj ) {
 
 static void addressbook_to_clicked(GtkButton *button, gpointer data)
 {
-	GList *node = _addressListSelection_;
-	if (!addrbook.target_compose) return;
+	GList *list, *node;
+	Compose *compose;
+	AddrSelectItem *item;
+	AddrItemObject *aio;
+	gchar *addr;
+
+	compose = addrbook.target_compose;
+	if( ! compose ) return;
+
+	list = addrselect_get_list( _addressSelect_ );
+	node = list;
 	while( node ) {
-		AddressObject *obj = node->data;
-		Compose *compose = addrbook.target_compose;
+		item = node->data;
 		node = g_list_next( node );
-		if( obj->type == ADDR_ITEM_PERSON || obj->type == ADDR_ITEM_EMAIL ) {
-			gchar *addr = addressbook_format_address( obj );
-			compose_entry_append( compose, addr, (ComposeEntryType) data );
+		aio = item->addressItem;
+		if( aio->type == ADDR_ITEM_PERSON ||
+		    aio->type == ADDR_ITEM_EMAIL ) {
+			addr = addressbook_format_address( aio );
+			compose_entry_append(
+				compose, addr, (ComposeEntryType) data );
 			g_free( addr );
-			addr = NULL;
 		}
-		else if( obj->type == ADDR_ITEM_GROUP ) {
-			ItemGroup *group = ( ItemGroup * ) obj;
+		else if( aio->type == ADDR_ITEM_GROUP ) {
+			ItemGroup *group = ( ItemGroup * ) aio;
 			GList *nodeMail = group->listEMail;
 			while( nodeMail ) {
 				ItemEMail *email = nodeMail->data;
-				gchar *addr = addressbook_format_address( ( AddressObject * ) email );
-				compose_entry_append( compose, addr, (ComposeEntryType) data );
+
+				addr = addressbook_format_address(
+						( AddrItemObject * ) email );
+				compose_entry_append(
+					compose, addr, (ComposeEntryType) data );
 				g_free( addr );
 				nodeMail = g_list_next( nodeMail );
 			}
 		}
 	}
+	g_list_free( list );
 }
 
 static void addressbook_menubar_set_sensitive( gboolean sensitive ) {
-	menu_set_sensitive( addrbook.menu_factory, "/File/New Book",    sensitive );
-	menu_set_sensitive( addrbook.menu_factory, "/File/New vCard",  sensitive );
-#ifdef USE_JPILOT
-	menu_set_sensitive( addrbook.menu_factory, "/File/New JPilot", sensitive );
-#endif
-#ifdef USE_LDAP
-	menu_set_sensitive( addrbook.menu_factory, "/File/New Server",  sensitive );
-#endif
-	menu_set_sensitive( addrbook.menu_factory, "/File/Edit",        sensitive );
-	menu_set_sensitive( addrbook.menu_factory, "/File/Delete",      sensitive );
+	menu_set_sensitive( addrbook.menu_factory, "/File/Edit",   sensitive );
+	menu_set_sensitive( addrbook.menu_factory, "/File/Delete", sensitive );
+
+	menu_set_sensitive( addrbook.menu_factory, "/Edit/Cut",    sensitive );
+	menu_set_sensitive( addrbook.menu_factory, "/Edit/Copy",   sensitive );
+	menu_set_sensitive( addrbook.menu_factory, "/Edit/Paste",  sensitive );
+	menu_set_sensitive( addrbook.menu_factory, "/Edit/Paste Address",  sensitive );
 
 	menu_set_sensitive( addrbook.menu_factory, "/Address/New Address", sensitive );
 	menu_set_sensitive( addrbook.menu_factory, "/Address/New Group",   sensitive );
@@ -1051,7 +1132,10 @@ static void addressbook_menuitem_set_sensitive( AddressObject *obj, GtkCTreeNode
 		ds = addressbook_find_datasource( addrbook.treeSelected );
 		if( ds ) {
 			iface = ds->interface;
-			if( ! iface->readOnly ) {
+			if( iface->readOnly ) {
+				canEditTr = FALSE;
+			}
+			else {
 				canAdd = editAddress = TRUE;
 			}
 		}
@@ -1150,6 +1234,96 @@ static void addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
 
 }
 
+/*
+* Setup address list popup menu.
+* Enter: pobj  Parent address object in address tree.
+*        obj   Address object in address list.
+*/
+static void addressbook_list_menu_setup( void ) {
+	GtkCTree *clist = NULL;
+	AddressObject *pobj = NULL;
+	AddressObject *obj = NULL;
+	AdapterDSource *ads = NULL;
+	AddressInterface *iface = NULL;
+	AddressDataSource *ds = NULL;
+	gboolean canEdit = FALSE;
+	gboolean canDelete = FALSE;
+	gboolean canCut = FALSE;
+	gboolean canCopy = FALSE;
+	gboolean canPaste = FALSE;
+
+	pobj = gtk_ctree_node_get_row_data( GTK_CTREE(addrbook.ctree), addrbook.treeSelected );
+	if( pobj == NULL ) return;
+
+	clist = GTK_CTREE(addrbook.clist);
+	obj = gtk_ctree_node_get_row_data( clist, addrbook.listSelected );
+	if( obj == NULL ) canEdit = FALSE;
+
+	menu_set_insensitive_all( GTK_MENU_SHELL(addrbook.list_popup) );
+
+	if( pobj->type == ADDR_DATASOURCE ) {
+		ads = ADAPTER_DSOURCE(pobj);
+		ds = ads->dataSource;
+		iface = ds->interface;
+		if( ! iface->readOnly ) {
+			menu_set_sensitive( addrbook.list_factory, "/New Address", TRUE );
+			menu_set_sensitive( addrbook.list_factory, "/New Folder", TRUE );
+			menu_set_sensitive( addrbook.list_factory, "/New Group", TRUE );
+			gtk_widget_set_sensitive( addrbook.reg_btn, TRUE );
+			if( ! addrclip_is_empty( _clipBoard_ ) ) canPaste = TRUE;
+			if( ! addrselect_test_empty( _addressSelect_ ) ) canCut = TRUE;
+			if( obj ) canEdit = TRUE;
+		}
+	}
+	else if( pobj->type != ADDR_INTERFACE ) {
+		ds = addressbook_find_datasource( addrbook.treeSelected );
+		iface = ds->interface;
+		if( ! iface->readOnly ) {
+			if( pobj->type == ADDR_ITEM_FOLDER || pobj->type == ADDR_ITEM_GROUP ) {
+				menu_set_sensitive( addrbook.list_factory, "/New Address", TRUE );
+				gtk_widget_set_sensitive( addrbook.reg_btn, TRUE );
+				if( obj ) canEdit = TRUE;
+			}
+			if( pobj->type == ADDR_ITEM_FOLDER ) {
+				menu_set_sensitive( addrbook.list_factory, "/New Folder", TRUE );
+				menu_set_sensitive( addrbook.list_factory, "/New Group", TRUE );
+				if( obj ) canEdit = TRUE;
+			}
+			if( ! addrclip_is_empty( _clipBoard_ ) ) canPaste = TRUE;
+			if( ! addrselect_test_empty( _addressSelect_ ) ) canCut = TRUE;
+		}
+	}
+	if( ! addrselect_test_empty( _addressSelect_ ) ) canCopy = TRUE;
+
+	canDelete = canEdit;
+	canDelete = canEdit;
+
+	/* Disable edit if more than one row selected */
+	if( GTK_CLIST(clist)->selection && GTK_CLIST(clist)->selection->next ) canEdit = FALSE;
+
+	menu_set_sensitive( addrbook.list_factory, "/Edit",   canEdit );
+	menu_set_sensitive( addrbook.list_factory, "/Delete", canDelete );
+
+	menu_set_sensitive( addrbook.list_factory, "/Cut",           canCut );
+	menu_set_sensitive( addrbook.list_factory, "/Copy",          canCopy );
+	menu_set_sensitive( addrbook.list_factory, "/Paste",         canPaste );
+	menu_set_sensitive( addrbook.list_factory, "/Paste Address", canPaste );
+
+	menu_set_sensitive( addrbook.menu_factory, "/Edit/Cut",           canCut );
+	menu_set_sensitive( addrbook.menu_factory, "/Edit/Copy",          canCopy );
+	menu_set_sensitive( addrbook.menu_factory, "/Edit/Paste",         canPaste );
+	menu_set_sensitive( addrbook.menu_factory, "/Edit/Paste Address", canPaste );
+
+	menu_set_sensitive( addrbook.tree_factory, "/Cut",           canCut );
+	menu_set_sensitive( addrbook.tree_factory, "/Copy",          canCopy );
+	menu_set_sensitive( addrbook.tree_factory, "/Paste",         canPaste );
+
+	menu_set_sensitive( addrbook.menu_factory, "/Address/Edit",   canEdit );
+	menu_set_sensitive( addrbook.menu_factory, "/Address/Delete", canDelete );
+
+	gtk_widget_set_sensitive( addrbook.del_btn, canDelete );
+}
+
 static void addressbook_list_selected(GtkCList *clist, gint row, gint column,
 				      GdkEvent *event, gpointer data)
 {
@@ -1163,145 +1337,335 @@ static void addressbook_list_selected(GtkCList *clist, gint row, gint column,
 	}
 }
 
-#if 0
-static void addressbook_list_select_show() {
-	GList *node = _addressListSelection_;
-	gchar *addr = NULL;
-	printf( "show selection...>>>\n" );
-	while( node != NULL ) {
-		AddressObject *obj = ( AddressObject * ) node->data;
-		if( obj ) {
-			printf( "- %d : '%s'\n", obj->type, obj->name );
-			if( obj->type == ADDR_ITEM_GROUP ) {
-				ItemGroup *group = ( ItemGroup * ) obj;
-				GList *node = group->listEMail;
-				while( node ) {
-					ItemEMail *email = node->data;
-					addr = addressbook_format_address( ( AddressObject * ) email );
-					if( addr ) {
-						printf( "\tgrp >%s<\n", addr );
-						g_free( addr );
-					}
-					node = g_list_next( node );
-				}
-			}
-			else {
-				addr = addressbook_format_address( obj );
-				if( addr ) {
-					printf( "\t>%s<\n", addr );
-					g_free( addr );
-				}
-			}
+/*
+ * Add list of items into tree node below specified tree node.
+ * Enter: treeNode  Tree node.
+ *        ds        Data source.
+ *        listItems List of items.
+ */
+static void addressbook_treenode_add_list(
+	GtkCTreeNode *treeNode, AddressDataSource *ds, GList *listItems )
+{
+	GList *node;
+
+	node = listItems;
+	while( node ) {
+		AddrItemObject *aio;
+		GtkCTreeNode *nn;
+
+		aio = node->data;
+		if( ADDRESS_OBJECT_TYPE(aio) == ITEMTYPE_GROUP ) {
+			ItemGroup *group;
+
+			group = ( ItemGroup * ) aio;
+			nn = addressbook_node_add_group( treeNode, ds, group );
 		}
-		else {
-			printf( "- NULL" );
+		else if( ADDRESS_OBJECT_TYPE(aio) == ITEMTYPE_FOLDER ) {
+			ItemFolder *folder;
+
+			folder = ( ItemFolder * ) aio;
+			nn = addressbook_node_add_folder(
+				treeNode, ds, folder, ADDR_ITEM_FOLDER );
 		}
 		node = g_list_next( node );
 	}
-	printf( "show selection...<<<\n" );
 }
-#endif
 
-static void addressbook_list_select_clear() {
-	if( _addressListSelection_ ) {
-		g_list_free( _addressListSelection_ );
+/*
+* Cut from address list widget.
+*/
+static void addressbook_clip_cut_cb( void ) {
+	_clipBoard_->cutFlag = TRUE;
+	addrclip_clear( _clipBoard_ );
+	addrclip_add( _clipBoard_, _addressSelect_ );
+	/* addrclip_list_show( _clipBoard_, stdout ); */
+}
+
+/*
+* Copy from address list widget.
+*/
+static void addressbook_clip_copy_cb( void ) {
+	_clipBoard_->cutFlag = FALSE;
+	addrclip_clear( _clipBoard_ );
+	addrclip_add( _clipBoard_, _addressSelect_ );
+	/* addrclip_list_show( _clipBoard_, stdout ); */
+}
+
+/*
+* Paste clipboard into address list widget.
+*/
+static void addressbook_clip_paste_cb( void ) {
+	GtkCTree *ctree = GTK_CTREE( addrbook.ctree );
+	AddressObject *pobj = NULL;
+	AddressDataSource *ds = NULL;
+	AddressBookFile *abf = NULL;
+	ItemFolder *folder = NULL;
+	GList *folderGroup = NULL;
+
+	ds = addressbook_find_datasource( GTK_CTREE_NODE(addrbook.treeSelected) );
+	if( ds == NULL ) return;
+	if( addrindex_ds_get_readonly( ds ) ) {
+		addressbook_ds_status_message(
+			ds, _( "Cannot paste. Target address book is readonly." ) );
+		return;
 	}
-	_addressListSelection_ = NULL;
-}
 
-static void addressbook_list_select_add( AddressObject *obj ) {
-	if( obj ) {
-		if(     obj->type == ADDR_ITEM_PERSON ||
-			obj->type == ADDR_ITEM_EMAIL ||
-			obj->type == ADDR_ITEM_GROUP ) {
-			if( ! g_list_find( _addressListSelection_, obj ) ) {
-				_addressListSelection_ = g_list_append( _addressListSelection_, obj );
-			}
+	pobj = gtk_ctree_node_get_row_data( ctree, addrbook.treeSelected );
+	if( pobj ) {
+		if( pobj->type == ADDR_ITEM_FOLDER ) {
+			folder = ADAPTER_FOLDER(pobj)->itemFolder;
+		}
+		else if( pobj->type == ADDR_ITEM_GROUP ) {
+			addressbook_ds_status_message(
+				ds, _( "Cannot paste into an address group." ) );
+			return;
 		}
 	}
-	/* addressbook_list_select_show(); */
-}
 
-static void addressbook_list_select_remove( AddressObject *obj ) {
-	if( obj == NULL ) return;
-	if( _addressListSelection_ ) {
-		_addressListSelection_ = g_list_remove(	_addressListSelection_, obj );
+	/* Get an address book */
+	abf = addressbook_get_book_file();
+	if( abf == NULL ) return;
+
+	if( _clipBoard_->cutFlag ) {
+		/* Paste/Cut */
+		folderGroup = addrclip_paste_cut( _clipBoard_, abf, folder );
+
+		/* Remove all groups and folders in clipboard from tree node */
+		addressbook_treenode_remove_item();
+
+		/* Remove all "cut" items */
+		addrclip_delete_item( _clipBoard_ );
+
+		/* Clear clipboard - cut items??? */
+		addrclip_clear( _clipBoard_ );
 	}
-	/* addressbook_list_select_show(); */
+	else {
+		/* Paste/Copy */
+		folderGroup = addrclip_paste_copy( _clipBoard_, abf, folder );
+	}
+
+	/* addrclip_list_show( _clipBoard_, stdout ); */
+	if( folderGroup ) {
+		/* Update tree by inserting node for each folder or group */
+		addressbook_treenode_add_list(
+			addrbook.treeSelected, ds, folderGroup );
+		gtk_ctree_expand( ctree, addrbook.treeSelected );
+		g_list_free( folderGroup );
+		folderGroup = NULL;
+	}
+
+	/* Display items pasted */
+	gtk_ctree_select( ctree, addrbook.opened );
+
 }
 
-static void addressbook_list_row_selected( GtkCTree *clist, GtkCTreeNode *node, gint column, gpointer data ) {
-	GtkEntry *entry = GTK_ENTRY(addrbook.entry);
+/*
+* Paste clipboard email addresses only into address list widget.
+*/
+static void addressbook_clip_paste_address_cb( void ) {
+	GtkCTree *clist = GTK_CTREE(addrbook.clist);
+	GtkCTree *ctree;
+	AddressObject *pobj = NULL;
+	AddressDataSource *ds = NULL;
+	AddressBookFile *abf = NULL;
+	ItemFolder *folder = NULL;
+	AddrItemObject *aio;
+	gint cnt;
+
+	if( addrbook.listSelected == NULL ) return;
+
+       	ctree = GTK_CTREE( addrbook.ctree );
+	ds = addressbook_find_datasource( GTK_CTREE_NODE(addrbook.treeSelected) );
+	if( ds == NULL ) return;
+	if( addrindex_ds_get_readonly( ds ) ) {
+		addressbook_ds_status_message(
+			ds, _( "Cannot paste. Target address book is readonly." ) );
+		return;
+	}
+
+	pobj = gtk_ctree_node_get_row_data( ctree, addrbook.treeSelected );
+	if( pobj ) {
+		if( pobj->type == ADDR_ITEM_FOLDER ) {
+			folder = ADAPTER_FOLDER(pobj)->itemFolder;
+		}
+	}
+
+	abf = addressbook_get_book_file();
+	if( abf == NULL ) return;
+
+	cnt = 0;
+	aio = gtk_ctree_node_get_row_data( clist, addrbook.listSelected );
+	if( aio->type == ADDR_ITEM_PERSON ) {
+		ItemPerson *person;
+
+		person = ( ItemPerson * ) aio;
+		if( _clipBoard_->cutFlag ) {
+			/* Paste/Cut */
+			cnt = addrclip_paste_person_cut( _clipBoard_, abf, person );
+
+			/* Remove all "cut" items */
+			addrclip_delete_address( _clipBoard_ );
+
+			/* Clear clipboard */
+			addrclip_clear( _clipBoard_ );
+		}
+		else {
+			/* Paste/Copy */
+			cnt = addrclip_paste_person_copy( _clipBoard_, abf, person );
+		}
+		if( cnt > 0 ) {
+			addritem_person_set_opened( person, TRUE );
+		}
+	}
+
+	/* Display items pasted */
+	if( cnt > 0 ) {
+		gtk_ctree_select( ctree, addrbook.opened );
+	}
+}
+
+/*
+* Add current treenode object to clipboard. Note that widget only allows
+* one entry from the tree list to be selected.
+*/
+static void addressbook_treenode_to_clipboard( void ) {
 	AddressObject *obj = NULL;
+	AddressDataSource *ds = NULL;
+	AddrSelectItem *item;
+	GtkCTree *ctree = GTK_CTREE( addrbook.ctree );
+	GtkCTreeNode *node;
+
+	node = addrbook.treeSelected;
+	if( node == NULL ) return;
+	obj = gtk_ctree_node_get_row_data( ctree, node );
+	if( obj == NULL ) return;
+
+	ds = addressbook_find_datasource( node );
+	if( ds == NULL ) return;
+
+	item = NULL;
+	if( obj->type == ADDR_ITEM_FOLDER ) {
+		AdapterFolder *adapter = ADAPTER_FOLDER(obj);
+		ItemFolder *folder = adapter->itemFolder;
+
+		item = addrselect_create_node( obj );
+		item->uid = g_strdup( ADDRITEM_ID(folder) );
+	}
+	else if( obj->type == ADDR_ITEM_GROUP ) {
+		AdapterGroup *adapter = ADAPTER_GROUP(obj);
+		ItemGroup *group = adapter->itemGroup;
+
+		item = addrselect_create_node( obj );
+		item->uid = g_strdup( ADDRITEM_ID(group) );
+	}
+	else if( obj->type == ADDR_DATASOURCE ) {
+		/* Data source */
+		item = addrselect_create_node( obj );
+		item->uid = NULL;
+	}
+
+	if( item ) {
+		/* Clear existing list and add item into list */
+		gchar *cacheID;
+
+		addressbook_list_select_clear();
+		cacheID = addrindex_get_cache_id( _addressIndex_, ds );
+		addrselect_list_add( _addressSelect_, item, cacheID );
+		g_free( cacheID );
+	}
+}
+
+/*
+* Cut from tree widget.
+*/
+static void addressbook_treenode_cut_cb( void ) {
+	_clipBoard_->cutFlag = TRUE;
+	addressbook_treenode_to_clipboard();
+	addrclip_clear( _clipBoard_ );
+	addrclip_add( _clipBoard_, _addressSelect_ );
+	/* addrclip_list_show( _clipBoard_, stdout ); */
+}
+
+/*
+* Copy from tree widget.
+*/
+static void addressbook_treenode_copy_cb( void ) {
+	_clipBoard_->cutFlag = FALSE;
+	addressbook_treenode_to_clipboard();
+	addrclip_clear( _clipBoard_ );
+	addrclip_add( _clipBoard_, _addressSelect_ );
+	/* addrclip_list_show( _clipBoard_, stdout ); */
+}
+
+/*
+* Paste clipboard into address tree widget.
+*/
+static void addressbook_treenode_paste_cb( void ) {
+	addressbook_clip_paste_cb();
+}
+
+static void addressbook_list_select_clear( void ) {
+	addrselect_list_clear( _addressSelect_ );
+}
+
+static void addressbook_list_select_add( AddrItemObject *aio, AddressDataSource *ds ) {
+	gchar *cacheID;
+
+	if( ds == NULL ) return;
+	cacheID = addrindex_get_cache_id( _addressIndex_, ds );
+	addrselect_list_add_obj( _addressSelect_, aio, cacheID );
+	g_free( cacheID );
+}
+
+static void addressbook_list_select_remove( AddrItemObject *aio ) {
+	addrselect_list_remove( _addressSelect_, aio );
+}
+
+static void addressbook_list_row_selected( GtkCTree *clist,
+					   GtkCTreeNode *node,
+					   gint column,
+					   gpointer data )
+{
+	GtkEntry *entry = GTK_ENTRY(addrbook.entry);
+	AddrItemObject *aio = NULL;
 	AddressObject *pobj = NULL;
 	AdapterDSource *ads = NULL;
-	AddressInterface *iface = NULL;
 	AddressDataSource *ds = NULL;
-	gboolean canEdit = FALSE;
-	gboolean canDelete = FALSE;
 
 	gtk_entry_set_text( entry, "" );
 	addrbook.listSelected = node;
-	obj = gtk_ctree_node_get_row_data( clist, node );
-	if( obj != NULL ) {
-		/* printf( "list select: %d : '%s'\n", obj->type, obj->name ); */
-		addressbook_list_select_add( obj );
-	}
 
 	pobj = gtk_ctree_node_get_row_data( GTK_CTREE(addrbook.ctree), addrbook.treeSelected );
 	if( pobj == NULL ) return;
 
-	menu_set_insensitive_all( GTK_MENU_SHELL(addrbook.list_popup) );
-
 	if( pobj->type == ADDR_DATASOURCE ) {
 		ads = ADAPTER_DSOURCE(pobj);
 		ds = ads->dataSource;
-		iface = ds->interface;
-		if( ! iface->readOnly ) {
-			canEdit = TRUE;
-			menu_set_sensitive( addrbook.list_factory, "/New Address", TRUE );
-			menu_set_sensitive( addrbook.list_factory, "/New Folder", TRUE );
-			menu_set_sensitive( addrbook.list_factory, "/New Group", TRUE );
-			gtk_widget_set_sensitive( addrbook.reg_btn, TRUE );
-		}
 	}
 	else if( pobj->type != ADDR_INTERFACE ) {
 		ds = addressbook_find_datasource( addrbook.treeSelected );
-		iface = ds->interface;
-		if( ! iface->readOnly ) {
-			if( pobj->type == ADDR_ITEM_FOLDER || pobj->type == ADDR_ITEM_GROUP ) {
-				canEdit = TRUE;
-				menu_set_sensitive( addrbook.list_factory, "/New Address", TRUE );
-				gtk_widget_set_sensitive( addrbook.reg_btn, TRUE );
-			}
-			if( pobj->type == ADDR_ITEM_FOLDER ) {
-				canEdit = TRUE;
-				menu_set_sensitive( addrbook.list_factory, "/New Folder", TRUE );
-				menu_set_sensitive( addrbook.list_factory, "/New Group", TRUE );
-			}
-		}
 	}
-	if( obj == NULL ) canEdit = FALSE;
-	canDelete = canEdit;
-	if( GTK_CLIST(clist)->selection && GTK_CLIST(clist)->selection->next ) canEdit = FALSE;
 
-	menu_set_sensitive( addrbook.list_factory, "/Edit",   canEdit );
-	menu_set_sensitive( addrbook.list_factory, "/Delete", canDelete );
+	aio = gtk_ctree_node_get_row_data( clist, node );
+	if( aio ) {
+		/* printf( "list select: %d : '%s'\n", aio->type, aio->name ); */
+		addressbook_list_select_add( aio, ds );
+	}
 
-	menu_set_sensitive( addrbook.menu_factory, "/Address/Edit",   canEdit );
-	menu_set_sensitive( addrbook.menu_factory, "/Address/Delete", canDelete );
-
-	gtk_widget_set_sensitive( addrbook.del_btn, canDelete );
-
+	addressbook_list_menu_setup();
 }
 
-static void addressbook_list_row_unselected( GtkCTree *ctree, GtkCTreeNode *node, gint column, gpointer data ) {
-	AddressObject *obj;
+static void addressbook_list_row_unselected( GtkCTree *ctree,
+					     GtkCTreeNode *node,
+					     gint column,
+					     gpointer data )
+{
+	AddrItemObject *aio;
 
-	obj = gtk_ctree_node_get_row_data( ctree, node );
-	if( obj != NULL ) {
-		/* g_print( "list unselect: %d : '%s'\n", obj->type, obj->name ); */
-		addressbook_list_select_remove( obj );
+	aio = gtk_ctree_node_get_row_data( ctree, node );
+	if( aio != NULL ) {
+		/* printf( "list unselect: %d : '%s'\n", aio->type, aio->name ); */
+		addressbook_list_select_remove( aio );
 	}
 }
 
@@ -1314,6 +1678,9 @@ static void addressbook_list_button_pressed(GtkWidget *widget,
 					    gpointer data)
 {
 	if( ! event ) return;
+
+	addressbook_list_menu_setup();
+
 	if( event->button == 3 ) {
 		gtk_menu_popup( GTK_MENU(addrbook.list_popup), NULL, NULL, NULL, NULL,
 		       event->button, event->time );
@@ -1333,47 +1700,65 @@ static void addressbook_tree_button_pressed(GtkWidget *ctree,
 	GtkCList *clist = GTK_CLIST(ctree);
 	gint row, column;
 	AddressObject *obj = NULL;
-	/* GtkCTreeNode *node; */
 	AdapterDSource *ads = NULL;
 	AddressInterface *iface = NULL;
 	AddressDataSource *ds = NULL;
-	/* AddressTypeControlItem *atci = NULL; */
 	gboolean canEdit = FALSE;
+	gboolean canCut = FALSE;
+	gboolean canCopy = FALSE;
+	gboolean canPaste = FALSE;
+	gboolean canTreeCut = FALSE;
+	gboolean canTreeCopy = FALSE;
+	gboolean canTreePaste = FALSE;
 
 	if( ! event ) return;
 	addressbook_menubar_set_sensitive( FALSE );
-/* */
+
 	if( gtk_clist_get_selection_info( clist, event->x, event->y, &row, &column ) ) {
 		gtk_clist_select_row( clist, row, column );
 		gtkut_clist_set_focus_row(clist, row);
 		obj = gtk_clist_get_row_data( clist, row );
 	}
-/* */
+
 	menu_set_insensitive_all(GTK_MENU_SHELL(addrbook.tree_popup));
 
 	if( obj == NULL ) return;
+
+	if( ! addrclip_is_empty( _clipBoard_ ) ) {
+		canTreePaste = TRUE;
+	}
+
 	if (obj->type == ADDR_DATASOURCE) {
 		ads = ADAPTER_DSOURCE(obj);
 		ds = ads->dataSource;
 		iface = ds->interface;
 		canEdit = TRUE;
-		if( ! iface->readOnly ) {
+		if( iface->readOnly ) {
+			canTreePaste = FALSE;
+		}
+		else {
 			menu_set_sensitive( addrbook.tree_factory, "/New Address", TRUE );
 			menu_set_sensitive( addrbook.tree_factory, "/New Folder", TRUE );
 			menu_set_sensitive( addrbook.tree_factory, "/New Group", TRUE );
 			gtk_widget_set_sensitive( addrbook.reg_btn, TRUE );
 		}
+		canTreeCopy = TRUE;
 	}
 	else if (obj->type == ADDR_ITEM_FOLDER) {
 		ds = addressbook_find_datasource( addrbook.treeSelected );
 		iface = ds->interface;
-		if( ! iface->readOnly ) {
+		if( iface->readOnly ) {
+			canTreePaste = FALSE;
+		}
+		else {
 			canEdit = TRUE;
+			canTreeCut = TRUE;
 			menu_set_sensitive( addrbook.tree_factory, "/New Address", TRUE );
 			menu_set_sensitive( addrbook.tree_factory, "/New Folder", TRUE );
 			menu_set_sensitive( addrbook.tree_factory, "/New Group", TRUE );
 			gtk_widget_set_sensitive( addrbook.reg_btn, TRUE );
 		}
+		canTreeCopy = TRUE;
 	}
 	else if (obj->type == ADDR_ITEM_GROUP) {
 		ds = addressbook_find_datasource( addrbook.treeSelected );
@@ -1384,12 +1769,29 @@ static void addressbook_tree_button_pressed(GtkWidget *ctree,
 			gtk_widget_set_sensitive( addrbook.reg_btn, TRUE );
 		}
 	}
+	else if (obj->type == ADDR_INTERFACE) {
+		canTreePaste = FALSE;
+	}
+
+	if( canEdit ) {
+		if( ! addrselect_test_empty( _addressSelect_ ) ) canCut = TRUE;
+	}
+	if( ! addrselect_test_empty( _addressSelect_ ) ) canCopy = TRUE;
+	if( ! addrclip_is_empty( _clipBoard_ ) ) canPaste = TRUE;
 
 	/* Enable edit */
 	menu_set_sensitive( addrbook.tree_factory, "/Edit",   canEdit );
 	menu_set_sensitive( addrbook.tree_factory, "/Delete", canEdit );
-	menu_set_sensitive( addrbook.menu_factory, "/File/Edit",   canEdit );
-	menu_set_sensitive( addrbook.menu_factory, "/File/Delete", canEdit );
+	menu_set_sensitive( addrbook.tree_factory, "/Cut",    canTreeCut );
+	menu_set_sensitive( addrbook.tree_factory, "/Copy",   canTreeCopy );
+	menu_set_sensitive( addrbook.tree_factory, "/Paste",  canTreePaste );
+
+	menu_set_sensitive( addrbook.menu_factory, "/File/Edit",          canEdit );
+	menu_set_sensitive( addrbook.menu_factory, "/File/Delete",        canEdit );
+	menu_set_sensitive( addrbook.menu_factory, "/Edit/Cut",           canCut );
+	menu_set_sensitive( addrbook.menu_factory, "/Edit/Copy",          canCopy );
+	menu_set_sensitive( addrbook.menu_factory, "/Edit/Paste",         canPaste );
+	menu_set_sensitive( addrbook.menu_factory, "/Edit/Paste Address", canPaste );
 
 	if( event->button == 3 ) {
 		gtk_menu_popup(GTK_MENU(addrbook.tree_popup), NULL, NULL, NULL, NULL,
@@ -1654,10 +2056,11 @@ static void addressbook_treenode_delete_cb(gpointer data, guint action,
 	/* Confirm deletion */
 	if( obj->type == ADDR_ITEM_FOLDER ) {
 		message = g_strdup_printf( _(
-				"Do you want to delete the folder AND all addresses in `%s' ? \n" \
-				"If deleting the folder only, addresses will be moved into parent folder." ),
-				obj->name );
-		aval = alertpanel( _("Delete"), message, _("Folder only"), _("Folder and Addresses"), _("Cancel") );
+			"Do you want to delete the folder AND all addresses in `%s' ? \n" \
+			"If deleting the folder only, addresses will be moved into parent folder." ),
+			obj->name );
+		aval = alertpanel( _("Delete"), message,
+			_("Folder only"), _("Folder and Addresses"), _("Cancel") );
 		g_free(message);
 		if( aval == G_ALERTOTHER ) return;
 	}
@@ -1672,7 +2075,7 @@ static void addressbook_treenode_delete_cb(gpointer data, guint action,
 	if( obj->type == ADDR_DATASOURCE ) {
 		/* Remove data source. */
 		if( addrindex_index_remove_datasource( _addressIndex_, ds ) ) {
-			addressbook_free_child_adapters( node );
+			addrindex_free_datasource( ds );
 			remFlag = TRUE;
 		}
 	}
@@ -1698,7 +2101,6 @@ static void addressbook_treenode_delete_cb(gpointer data, guint action,
 			item = addrbook_remove_folder_delete( abf, item );
 			if( item ) {
 				addritem_free_item_folder( item );
-				addressbook_free_child_adapters( node );
 				remFlag = TRUE;
 			}
 		}
@@ -1715,8 +2117,7 @@ static void addressbook_treenode_delete_cb(gpointer data, guint action,
 	}
 
 	if( remFlag ) {
-		/* Free up adapter and remove node. */
-		addressbook_free_adapter( node );
+		/* Remove node. */
 		gtk_ctree_remove_node(ctree, node );
 	}
 }
@@ -1768,7 +2169,9 @@ static void addressbook_new_address_cb( gpointer data, guint action, GtkWidget *
 }
 
 /*
-* Search for specified group in address index tree.
+* Search for specified child group node in address index tree.
+* Enter: parent Parent node.
+*        group  Group to find.
 */
 static GtkCTreeNode *addressbook_find_group_node( GtkCTreeNode *parent, ItemGroup *group ) {
 	GtkCTreeNode *node = NULL;
@@ -1778,10 +2181,39 @@ static GtkCTreeNode *addressbook_find_group_node( GtkCTreeNode *parent, ItemGrou
 	if( currRow ) {
 		node = currRow->children;
 		while( node ) {
-			AddressObject *obj = gtk_ctree_node_get_row_data( GTK_CTREE(addrbook.ctree), node );
+			AddressObject *obj;
+
+			obj = gtk_ctree_node_get_row_data( GTK_CTREE(addrbook.ctree), node );
 			if( obj->type == ADDR_ITEM_GROUP ) {
 				ItemGroup *g = ADAPTER_GROUP(obj)->itemGroup;
 				if( g == group ) return node;
+			}
+			currRow = GTK_CTREE_ROW(node);
+			node = currRow->sibling;
+		}
+	}
+	return NULL;
+}
+
+/*
+* Search for specified child folder node in address index tree.
+* Enter: parent Parent node.
+*        folder Folder to find.
+*/
+static GtkCTreeNode *addressbook_find_folder_node( GtkCTreeNode *parent, ItemFolder *folder ) {
+	GtkCTreeNode *node = NULL;
+	GtkCTreeRow *currRow;
+
+	currRow = GTK_CTREE_ROW( parent );
+	if( currRow ) {
+		node = currRow->children;
+		while( node ) {
+			AddressObject *obj;
+
+			obj = gtk_ctree_node_get_row_data( GTK_CTREE(addrbook.ctree), node );
+			if( obj->type == ADDR_ITEM_FOLDER ) {
+				ItemFolder *f = ADAPTER_FOLDER(obj)->itemFolder;
+				if( f == folder ) return node;
 			}
 			currRow = GTK_CTREE_ROW(node);
 			node = currRow->sibling;
@@ -1850,7 +2282,6 @@ static void addressbook_edit_address_cb( gpointer data, guint action, GtkWidget 
 	if( abf == NULL ) return;
 	if( obj->type == ADDR_ITEM_EMAIL ) {
 		ItemEMail *email = ( ItemEMail * ) obj;
-		ItemPerson *person;
 		if( email == NULL ) return;
 		if( pobj && pobj->type == ADDR_ITEM_GROUP ) {
 			/* Edit parent group */
@@ -1863,6 +2294,7 @@ static void addressbook_edit_address_cb( gpointer data, guint action, GtkWidget 
 		}
 		else {
 			/* Edit person - email page */
+			ItemPerson *person;
 			person = ( ItemPerson * ) ADDRITEM_PARENT(email);
 			if( addressbook_edit_person( abf, NULL, person, TRUE ) == NULL ) return;
 			gtk_ctree_select( ctree, addrbook.opened );
@@ -1874,7 +2306,7 @@ static void addressbook_edit_address_cb( gpointer data, guint action, GtkWidget 
 		/* Edit person - basic page */
 		ItemPerson *person = ( ItemPerson * ) obj;
 		if( addressbook_edit_person( abf, NULL, person, FALSE ) == NULL ) return;
-		gtk_ctree_select( ctree, addrbook.opened );
+		gtk_ctree_select( ctree, addrbook.opened);
 		invalidate_address_completion();
 		return;
 	}
@@ -1988,7 +2420,6 @@ static void addressbook_folder_load_person( GtkCTree *clist, ItemFolder *itemFol
 		GtkCTreeNode *nodeEMail = NULL;
 		gchar *text[N_COLS];
 		gboolean flgFirst = TRUE, haveAddr = FALSE;
-		/* gint row; */
 		ItemPerson *person;
 		GList *node;
 
@@ -2094,7 +2525,6 @@ static void addressbook_node_load_datasource( GtkCTree *clist, AddressObject *ob
 	AdapterInterface *adapter;
 	AddressInterface *iface;
 	AddressTypeControlItem *atci = NULL;
-	/* AddressDataSource *ds; */
 	GtkCTreeNode *newNode, *node;
 	GtkCTreeRow *row;
 	GtkCell *cell = NULL;
@@ -2111,7 +2541,9 @@ static void addressbook_node_load_datasource( GtkCTree *clist, AddressObject *ob
 	if( row ) {
 		node = row->children;
 		while( node ) {
-			gpointer data = gtk_ctree_node_get_row_data( clist, node );
+			gpointer data;
+
+			data = gtk_ctree_node_get_row_data( clist, node );
 			row = GTK_CTREE_ROW( node );
 			cell = ( ( GtkCListRow * )row )->cell;
 			text[COL_NAME] = cell->u.text;
@@ -2122,14 +2554,108 @@ static void addressbook_node_load_datasource( GtkCTree *clist, AddressObject *ob
 				      atci->iconXpm, atci->maskXpm,
 				      atci->iconXpmOpen, atci->maskXpmOpen,
 				      FALSE, FALSE);
+			/*
 			gtk_ctree_node_set_row_data( clist, newNode, data );
+			gtk_ctree_node_set_row_data_full( clist, newNode, NULL, NULL );
+			*/
 			node = row->sibling;
-
 		}
 	}
 	gtk_ctree_sort_node( clist, NULL );
 }
 
+/*
+* Search ctree widget callback function.
+* Enter: pA Pointer to node.
+*        pB Pointer to data item being sought.
+* Return: Zero (0) if group found.
+*/
+static int addressbook_treenode_find_group_cb( gconstpointer pA, gconstpointer pB ) {
+	AddressObject *aoA;
+
+	aoA = ( AddressObject * ) pA;
+	if( aoA->type == ADDR_ITEM_GROUP ) {
+		ItemGroup *group, *grp;
+
+		grp = ADAPTER_GROUP(aoA)->itemGroup;
+		group = ( ItemGroup * ) pB;
+		if( grp == group ) return 0;	/* Found group */
+	}
+	return 1;
+}
+
+/*
+* Search ctree widget callback function.
+* Enter: pA Pointer to node.
+*        pB Pointer to data item being sought.
+* Return: Zero (0) if folder found.
+*/
+static int addressbook_treenode_find_folder_cb( gconstpointer pA, gconstpointer pB ) {
+	AddressObject *aoA;
+
+	aoA = ( AddressObject * ) pA;
+	if( aoA->type == ADDR_ITEM_FOLDER ) {
+		ItemFolder *folder, *fld;
+
+		fld = ADAPTER_FOLDER(aoA)->itemFolder;
+		folder = ( ItemFolder * ) pB;
+		if( fld == folder ) return 0;	/* Found folder */
+	}
+	return 1;
+}
+
+/*
+* Remove folder and group nodes from tree widget for items contained ("cut")
+* in clipboard.
+*/
+static void addressbook_treenode_remove_item( void ) {
+	GList *node;
+	AddrSelectItem *cutItem;
+	AddressCache *cache;
+	AddrItemObject *aio;
+	GtkCTree *ctree = GTK_CTREE( addrbook.ctree );
+	GtkCTreeNode *tn;
+
+	node = _clipBoard_->objectList;
+	while( node ) {
+		cutItem = node->data;
+		node = g_list_next( node );
+		cache = addrindex_get_cache(
+			_clipBoard_->addressIndex, cutItem->cacheID );
+		if( cache == NULL ) continue;
+		aio = addrcache_get_object( cache, cutItem->uid );
+		if( aio ) {
+			tn = NULL;
+			if( ADDRITEM_TYPE(aio) == ITEMTYPE_FOLDER ) {
+				ItemFolder *folder;
+
+				folder = ( ItemFolder * ) aio;
+				tn = gtk_ctree_find_by_row_data_custom(
+					ctree, NULL, folder,
+					addressbook_treenode_find_folder_cb );
+			}
+			else if( ADDRITEM_TYPE(aio) == ITEMTYPE_GROUP ) {
+				ItemGroup *group;
+
+				group = ( ItemGroup * ) aio;
+				tn = gtk_ctree_find_by_row_data_custom(
+					ctree, NULL, group,
+					addressbook_treenode_find_group_cb );
+			}
+
+			if( tn ) {
+				/* Free up adapter and remove node. */
+				gtk_ctree_remove_node( ctree, tn );
+			}
+		}
+	}
+}
+
+/*
+* Find parent datasource for specified tree node.
+* Enter: node Node to test.
+* Return: Data source, or NULL if not found.
+*/
 static AddressDataSource *addressbook_find_datasource( GtkCTreeNode *node ) {
 	AddressDataSource *ds = NULL;
 	AddressObject *ao;
@@ -2140,10 +2666,10 @@ static AddressDataSource *addressbook_find_datasource( GtkCTreeNode *node ) {
 		if( GTK_CTREE_ROW(node)->level < 2 ) return NULL;
 		ao = gtk_ctree_node_get_row_data( GTK_CTREE(addrbook.ctree), node );
 		if( ao ) {
-/*			printf( "ao->type = %d\n", ao->type ); */
+			/* printf( "ao->type = %d\n", ao->type ); */
 			if( ao->type == ADDR_DATASOURCE ) {
 				AdapterDSource *ads = ADAPTER_DSOURCE(ao);
-/*				printf( "found it\n" ); */
+				/* printf( "found it\n" ); */
 				ds = ads->dataSource;
 				break;
 			}
@@ -2170,7 +2696,7 @@ static void addressbook_set_clist( AddressObject *obj ) {
 
 	if( obj->type == ADDR_INTERFACE ) {
 		/* printf( "set_clist: loading datasource...\n" ); */
-		/* addressbook_node_load_datasource( clist, obj ); */
+		/* addressbook_node_load_datasource( GTK_CTREE(clist), obj ); */
 		return;
 	}
 
@@ -2201,64 +2727,43 @@ static void addressbook_set_clist( AddressObject *obj ) {
 			addressbook_folder_load_group( ctreelist, itemFolder );
 		}
 	}
-
-	gtk_clist_sort(clist);
+	/* gtk_clist_sort(clist); */
 	gtk_clist_thaw(clist);
 }
 
 /*
-* Free adaptor for specified node.
+* Call back function to free adaptor. Call back is setup by function
+* gtk_ctree_node_set_row_data_full() when node is populated. This function is
+* called when the address book tree widget node is removed by calling
+* function gtk_ctree_remove_node().
+* Enter: data Tree node's row data.
 */
-static void addressbook_free_adapter( GtkCTreeNode *node ) {
+static void addressbook_free_treenode( gpointer data ) {
 	AddressObject *ao;
 
-	g_return_if_fail(addrbook.ctree != NULL);
-
-	if( node ) {
-		if( GTK_CTREE_ROW(node)->level < 2 ) return;
-		ao = gtk_ctree_node_get_row_data( GTK_CTREE(addrbook.ctree), node );
-		if( ao == NULL ) return;
-		if( ao->type == ADDR_INTERFACE ) {
-			AdapterInterface *ai = ADAPTER_INTERFACE(ao);
-			addrbookctl_free_interface( ai );
-		}
-		else if( ao->type == ADDR_DATASOURCE ) {
-			AdapterDSource *ads = ADAPTER_DSOURCE(ao);
-			addrbookctl_free_datasource( ads );
-		}
-		else if( ao->type == ADDR_ITEM_FOLDER ) {
-			AdapterFolder *af = ADAPTER_FOLDER(ao);
-			addrbookctl_free_folder( af );
-		}
-		else if( ao->type == ADDR_ITEM_GROUP ) {
-			AdapterGroup *ag = ADAPTER_GROUP(ao);
-			addrbookctl_free_group( ag );
-		}
-		gtk_ctree_node_set_row_data( GTK_CTREE(addrbook.ctree), node, NULL );
+	ao = ( AddressObject * ) data;
+	if( ao == NULL ) return;
+	if( ao->type == ADDR_INTERFACE ) {
+		AdapterInterface *ai = ADAPTER_INTERFACE(ao);
+		addrbookctl_free_interface( ai );
+	}
+	else if( ao->type == ADDR_DATASOURCE ) {
+		AdapterDSource *ads = ADAPTER_DSOURCE(ao);
+		addrbookctl_free_datasource( ads );
+	}
+	else if( ao->type == ADDR_ITEM_FOLDER ) {
+		AdapterFolder *af = ADAPTER_FOLDER(ao);
+		addrbookctl_free_folder( af );
+	}
+	else if( ao->type == ADDR_ITEM_GROUP ) {
+		AdapterGroup *ag = ADAPTER_GROUP(ao);
+		addrbookctl_free_group( ag );
 	}
 }
 
 /*
-* Free all children adapters.
+* Create new adaptor for specified data source.
 */
-static void addressbook_free_child_adapters( GtkCTreeNode *node ) {
-	GtkCTreeNode *parent, *child;
-	GtkCTreeRow *currRow;
-
-	if( node == NULL ) return;
-	currRow = GTK_CTREE_ROW( node );
-	if( currRow ) {
-		parent = currRow->parent;
-		child = currRow->children;
-		while( child ) {
-			addressbook_free_child_adapters( child );
-			addressbook_free_adapter( child );
-			currRow = GTK_CTREE_ROW( child );
-			child = currRow->sibling;
-		}
-	}
-}
-
 AdapterDSource *addressbook_create_ds_adapter( AddressDataSource *ds,
 				AddressObjectType otype, gchar *name )
 {
@@ -2434,121 +2939,6 @@ void addressbook_read_file( void ) {
 	debug_print( "done.\n" );
 }
 
-#if 0
-void addressbook_read_file_old( void ) {
-	AddressIndex *addrIndex = NULL;
-	gboolean errFlag = TRUE;
-	gchar *msg = NULL;
-
-	if( _addressIndex_ ) {
-		debug_print( "address book already read!!!\n" );
-		return;
-	}
-
-	addrIndex = addrindex_create_index();
-
-	/* Use use new address book. */
-	/* addrindex_set_file_path( addrIndex, "/home/match/tmp/empty-dir" ); */
-	addrindex_set_file_path( addrIndex, get_rc_dir() );
-	addrindex_set_file_name( addrIndex, ADDRESSBOOK_INDEX_FILE );
-
-	debug_print( "Reading address index...\n" );
-	addrindex_read_data( addrIndex );
-	if( addrIndex->retVal == MGU_NO_FILE ) {
-		/* Read old address book, performing conversion */
-		debug_print( "Reading and converting old address book...\n" );
-		addrindex_set_file_name( addrIndex, ADDRESSBOOK_OLD_FILE );
-		addrindex_read_data( addrIndex );
-		if( addrIndex->retVal == MGU_NO_FILE ) {
-			/* We do not have a file - new user */
-			debug_print( "New user... create new books...\n" );
-			addrindex_create_new_books( addrIndex );
-			if( addrIndex->retVal == MGU_SUCCESS ) {
-				/* Save index file */
-				addrindex_set_file_name( addrIndex, ADDRESSBOOK_INDEX_FILE );
-				addrindex_save_data( addrIndex );
-				if( addrIndex->retVal == MGU_SUCCESS ) {
-					errFlag = FALSE;
-				}
-				else {
-					msg = g_strdup( _( "New user, could not save index file." ) );
-				}
-			}
-			else {
-				msg = g_strdup( _( "New user, could not save address book files." ) );
-			}
-		}
-		else {
-			/* We have an old file */
-			if( addrIndex->wasConverted ) {
-				/* Converted successfully - save address index */
-				addrindex_set_file_name( addrIndex, ADDRESSBOOK_INDEX_FILE );
-				addrindex_save_data( addrIndex );
-				if( addrIndex->retVal == MGU_SUCCESS ) {
-					msg = g_strdup( _( "Old address book converted successfully." ) );
-					errFlag = FALSE;
-				}
-				else {
-					msg = g_strdup( _(
-						"Old address book converted, " \
-						"could not save new address index file" ) );
-				}
-			}
-			else {
-				/* File conversion failed - just create new books */
-				debug_print( "File conversion failed... just create new books...\n" );
-				addrindex_create_new_books( addrIndex );
-				if( addrIndex->retVal == MGU_SUCCESS ) {
-					/* Save index */
-					addrindex_set_file_name( addrIndex, ADDRESSBOOK_INDEX_FILE );
-					addrindex_save_data( addrIndex );
-					if( addrIndex->retVal == MGU_SUCCESS ) {
-						msg = g_strdup( _(
-							"Could not convert address book, " \
-							"but created empty new address book files." ) );
-						errFlag = FALSE;
-					}
-					else {
-						msg = g_strdup( _(
-							"Could not convert address book, " \
-							"could not create new address book files." ) );
-					}
-				}
-				else {
-					msg = g_strdup( _(
-						"Could not convert address book " \
-						"and could not create new address book files." ) );
-				}
-			}
-		}
-	}
-	else if( addrIndex->retVal == MGU_SUCCESS ) {
-		errFlag = FALSE;
-	}
-	else {
-		debug_print( "Could not read address index.\n" );
-		addrindex_print_index( addrIndex, stdout );
-		msg = g_strdup( _( "Could not read address index" ) );
-	}
-	_addressIndex_ = addrIndex;
-
-	if( errFlag ) {
-		debug_print( "Error\n%s\n", msg );
-		alertpanel( _( "Addressbook Conversion Error" ), msg,
-			    _( "Close" ), NULL, NULL );
-	}
-	else {
-		if( msg ) {
-			debug_print( "Warning\n%s\n", msg );
-			alertpanel( _( "Addressbook Conversion" ), msg,
-				    _( "Close" ), NULL, NULL );
-		}
-	}
-	if( msg ) g_free( msg );
-	debug_print( "done.\n" );
-}
-#endif
-
 /*
 * Add object into the address index tree widget.
 * Enter: node	Parent node.
@@ -2589,7 +2979,8 @@ static GtkCTreeNode *addressbook_add_object(GtkCTreeNode *node,
 			added = gtk_ctree_insert_node( ctree, node, NULL, name, FOLDER_SPACING,
 				atci->iconXpm, atci->maskXpm, atci->iconXpmOpen, atci->maskXpmOpen,
 				atci->treeLeaf, atci->treeExpand );
-			gtk_ctree_node_set_row_data(ctree, added, obj);
+			gtk_ctree_node_set_row_data_full( ctree, added, obj,
+				addressbook_free_treenode );
 		}
 	}
 
@@ -2627,7 +3018,8 @@ static GtkCTreeNode *addressbook_node_add_group( GtkCTreeNode *node, AddressData
 	newNode = gtk_ctree_insert_node( ctree, node, NULL, name, FOLDER_SPACING,
 			atci->iconXpm, atci->maskXpm, atci->iconXpm, atci->maskXpm,
 			atci->treeLeaf, atci->treeExpand );
-	gtk_ctree_node_set_row_data( ctree, newNode, adapter );
+	gtk_ctree_node_set_row_data_full( ctree, newNode, adapter,
+		addressbook_free_treenode );
 	gtk_ctree_sort_node( ctree, node );
 	return newNode;
 }
@@ -2673,7 +3065,8 @@ static GtkCTreeNode *addressbook_node_add_folder(
 		newNode = gtk_ctree_insert_node( ctree, node, NULL, name, FOLDER_SPACING,
 				atci->iconXpm, atci->maskXpm, atci->iconXpm, atci->maskXpm,
 				atci->treeLeaf, atci->treeExpand );
-		gtk_ctree_node_set_row_data( ctree, newNode, adapter );
+		gtk_ctree_node_set_row_data_full( ctree, newNode, adapter,
+			addressbook_free_treenode );
 	}
 
 	listItems = itemFolder->listFolder;
@@ -2707,10 +3100,10 @@ static void addressbook_delete_object(AddressObject *obj) {
 
 	/* Remove data source */
 	if( addrindex_index_remove_datasource( _addressIndex_, ds ) ) {
-		addrindex_free_datasource( _addressIndex_, ds );
+		addrindex_free_datasource( ds );
 	}
 	/* Free up Adapter object */
-	g_free( ADAPTER_DSOURCE(obj) );
+	g_free( ads );
 }
 
 void addressbook_export_to_file( void ) {
@@ -2737,28 +3130,12 @@ static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 }
 
 /*
-* Comparsion using names of AddressItem objects.
+* Comparison using cell contents (text in first column). Used for sort
+* address index widget.
 */
-/*
-static gint addressbook_list_compare_func(GtkCList *clist,
-					  gconstpointer ptr1,
-					  gconstpointer ptr2)
+static gint addressbook_treenode_compare_func(
+	GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2 )
 {
-	AddressObject *obj1 = ((GtkCListRow *)ptr1)->data;
-	AddressObject *obj2 = ((GtkCListRow *)ptr2)->data;
-	gchar *name1 = NULL, *name2 = NULL;
-	if( obj1 ) name1 = obj1->name;
-	if( obj2 ) name2 = obj2->name;
-	if( ! name1 ) return ( name2 != NULL );
-	if( ! name2 ) return -1;
-	return strcasecmp(name1, name2);
-}
-*/
-
-/*
-* Comparison using cell contents (text in first column).
-*/
-static gint addressbook_list_compare_func( GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2 ) {
 	GtkCell *cell1 = ((GtkCListRow *)ptr1)->cell;
 	GtkCell *cell2 = ((GtkCListRow *)ptr2)->cell;
 	gchar *name1 = NULL, *name2 = NULL;
@@ -2769,47 +3146,51 @@ static gint addressbook_list_compare_func( GtkCList *clist, gconstpointer ptr1, 
 	return strcasecmp( name1, name2 );
 }
 
-/* static */ 
-gint addressbook_obj_name_compare(gconstpointer a, gconstpointer b)
+/*
+* Comparison using object names and types.
+*/
+static gint addressbook_list_compare_func(
+	GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2 )
 {
-	const AddressObject *obj = a;
-	const gchar *name = b;
-	AddressTypeControlItem *atci = NULL;
+	AddrItemObject *aio1 = ((GtkCListRow *)ptr1)->data;
+	AddrItemObject *aio2 = ((GtkCListRow *)ptr2)->data;
+	gchar *name1 = NULL, *name2 = NULL;
 
-	if (!obj || !name) return -1;
+	/* Order by cell contents */
+	name1 = ADDRITEM_NAME( aio1 );
+	name2 = ADDRITEM_NAME( aio2 );
 
-	atci = addrbookctl_lookup( obj->type );
-	if( ! atci ) return -1;
-	if( ! obj->name ) return -1;
-	return strcasecmp(obj->name, name);
-}
-
-static void addressbook_book_show_message( AddressBookFile *abf ) {
-	*addressbook_msgbuf = '\0';
-	if( abf ) {
-		if( abf->retVal == MGU_SUCCESS ) {
-			sprintf( addressbook_msgbuf, "%s", abf->name );
-		}
-		else {
-			sprintf( addressbook_msgbuf, "%s: %s", abf->name, mgu_error2string( abf->retVal ) );
-		}
+	if( aio1->type == aio2->type ) {
+		/* Order by name */
+		if( ! name1 ) return ( name2 != NULL );
+		if( ! name2 ) return -1;
+		return strcasecmp( name1, name2 );
 	}
-	addressbook_status_show( addressbook_msgbuf );
+	else {
+		/* Order groups before person */
+		if( aio1->type == ITEMTYPE_GROUP ) {
+			return -1;
+		}
+		else if( aio2->type == ITEMTYPE_GROUP ) {
+			return 1;
+		}
+		return 0;
+	}
 }
 
 static void addressbook_new_book_cb( gpointer data, guint action, GtkWidget *widget ) {
 	AdapterDSource *ads;
 	AdapterInterface *adapter;
+	GtkCTreeNode *newNode;
 
 	adapter = addrbookctl_find_interface( ADDR_IF_BOOK );
 	if( adapter == NULL ) return;
-	if( addrbook.treeSelected == NULL ) return;
-	if( addrbook.treeSelected != adapter->treeNode ) return;
 	ads = addressbook_edit_book( _addressIndex_, NULL );
 	if( ads ) {
-		addressbook_add_object( addrbook.treeSelected, ADDRESS_OBJECT(ads) );
-		if( addrbook.treeSelected == addrbook.opened ) {
-			gtk_ctree_select( GTK_CTREE(addrbook.ctree), addrbook.opened );
+		newNode = addressbook_add_object( adapter->treeNode, ADDRESS_OBJECT(ads) );
+		if( newNode ) {
+			gtk_ctree_select( GTK_CTREE(addrbook.ctree), newNode );
+			addrbook.treeSelected = newNode;
 		}
 	}
 }
@@ -2817,30 +3198,18 @@ static void addressbook_new_book_cb( gpointer data, guint action, GtkWidget *wid
 static void addressbook_new_vcard_cb( gpointer data, guint action, GtkWidget *widget ) {
 	AdapterDSource *ads;
 	AdapterInterface *adapter;
+	GtkCTreeNode *newNode;
 
 	adapter = addrbookctl_find_interface( ADDR_IF_VCARD );
 	if( adapter == NULL ) return;
-	if( addrbook.treeSelected != adapter->treeNode ) return;
 	ads = addressbook_edit_vcard( _addressIndex_, NULL );
 	if( ads ) {
-		addressbook_add_object( addrbook.treeSelected, ADDRESS_OBJECT(ads) );
-		if( addrbook.treeSelected == addrbook.opened ) {
-			gtk_ctree_select( GTK_CTREE(addrbook.ctree), addrbook.opened );
+		newNode = addressbook_add_object( adapter->treeNode, ADDRESS_OBJECT(ads) );
+		if( newNode ) {
+			gtk_ctree_select( GTK_CTREE(addrbook.ctree), newNode );
+			addrbook.treeSelected = newNode;
 		}
 	}
-}
-
-static void addressbook_vcard_show_message( VCardFile *vcf ) {
-	*addressbook_msgbuf = '\0';
-	if( vcf ) {
-		if( vcf->retVal == MGU_SUCCESS ) {
-			sprintf( addressbook_msgbuf, "%s", vcf->name );
-		}
-		else {
-			sprintf( addressbook_msgbuf, "%s: %s", vcf->name, mgu_error2string( vcf->retVal ) );
-		}
-	}
-	addressbook_status_show( addressbook_msgbuf );
 }
 
 #ifdef USE_JPILOT
@@ -2848,34 +3217,21 @@ static void addressbook_new_jpilot_cb( gpointer data, guint action, GtkWidget *w
 	AdapterDSource *ads;
 	AdapterInterface *adapter;
 	AddressInterface *iface;
+	GtkCTreeNode *newNode;
 
 	adapter = addrbookctl_find_interface( ADDR_IF_JPILOT );
 	if( adapter == NULL ) return;
-	if( addrbook.treeSelected != adapter->treeNode ) return;
 	iface = adapter->interface;
 	if( ! iface->haveLibrary ) return;
 	ads = addressbook_edit_jpilot( _addressIndex_, NULL );
 	if( ads ) {
-		addressbook_add_object( addrbook.treeSelected, ADDRESS_OBJECT(ads) );
-		if( addrbook.treeSelected == addrbook.opened ) {
-			gtk_ctree_select( GTK_CTREE(addrbook.ctree), addrbook.opened );
+		newNode = addressbook_add_object( adapter->treeNode, ADDRESS_OBJECT(ads) );
+		if( newNode ) {
+			gtk_ctree_select( GTK_CTREE(addrbook.ctree), newNode );
+			addrbook.treeSelected = newNode;
 		}
 	}
 }
-
-static void addressbook_jpilot_show_message( JPilotFile *jpf ) {
-	*addressbook_msgbuf = '\0';
-	if( jpf ) {
-		if( jpf->retVal == MGU_SUCCESS ) {
-			sprintf( addressbook_msgbuf, "%s", jpf->name );
-		}
-		else {
-			sprintf( addressbook_msgbuf, "%s: %s", jpf->name, mgu_error2string( jpf->retVal ) );
-		}
-	}
-	addressbook_status_show( addressbook_msgbuf );
-}
-
 #endif
 
 #ifdef USE_LDAP
@@ -2883,33 +3239,36 @@ static void addressbook_new_ldap_cb( gpointer data, guint action, GtkWidget *wid
 	AdapterDSource *ads;
 	AdapterInterface *adapter;
 	AddressInterface *iface;
+	GtkCTreeNode *newNode;
 
 	adapter = addrbookctl_find_interface( ADDR_IF_LDAP );
 	if( adapter == NULL ) return;
-	if( addrbook.treeSelected != adapter->treeNode ) return;
 	iface = adapter->interface;
 	if( ! iface->haveLibrary ) return;
 	ads = addressbook_edit_ldap( _addressIndex_, NULL );
 	if( ads ) {
-		addressbook_add_object( addrbook.treeSelected, ADDRESS_OBJECT(ads) );
-		if( addrbook.treeSelected == addrbook.opened ) {
-			gtk_ctree_select( GTK_CTREE(addrbook.ctree), addrbook.opened );
+		newNode = addressbook_add_object( adapter->treeNode, ADDRESS_OBJECT(ads) );
+		if( newNode ) {
+			gtk_ctree_select( GTK_CTREE(addrbook.ctree), newNode );
+			addrbook.treeSelected = newNode;
 		}
 	}
 }
 
 static void addressbook_ldap_show_message( SyldapServer *svr ) {
+	gchar *name;
 	*addressbook_msgbuf = '\0';
 	if( svr ) {
+		name = syldap_get_name( svr );
 		if( svr->busyFlag ) {
-			sprintf( addressbook_msgbuf, "%s: %s", svr->name, ADDRESSBOOK_LDAP_BUSYMSG );
+			sprintf( addressbook_msgbuf, "%s: %s", name, ADDRESSBOOK_LDAP_BUSYMSG );
 		}
 		else {
 			if( svr->retVal == MGU_SUCCESS ) {
-				sprintf( addressbook_msgbuf, "%s", svr->name );
+				sprintf( addressbook_msgbuf, "%s", name );
 			}
 			else {
-				sprintf( addressbook_msgbuf, "%s: %s", svr->name, mgu_error2string( svr->retVal ) );
+				sprintf( addressbook_msgbuf, "%s: %s", name, mgu_error2string( svr->retVal ) );
 			}
 		}
 	}
@@ -3003,6 +3362,25 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 * Build lookup tables.
 * ***********************************************************************
 */
+
+/*
+ * Remap object types.
+ * Enter:  abType AddressObjectType (used in tree node).
+ * Return: ItemObjectType (used in address cache data).
+ */
+ItemObjectType addressbook_type2item( AddressObjectType abType ) {
+	ItemObjectType ioType;
+
+	ioType = ITEMTYPE_NONE;
+	switch( abType ) {
+		case ADDR_ITEM_PERSON: ioType = ITEMTYPE_PERSON;     break;
+		case ADDR_ITEM_EMAIL:  ioType = ITEMTYPE_EMAIL;      break;
+		case ADDR_ITEM_FOLDER: ioType = ITEMTYPE_FOLDER;     break;
+		case ADDR_ITEM_GROUP:  ioType = ITEMTYPE_GROUP;      break;
+		case ADDR_DATASOURCE:  ioType = ITEMTYPE_DATASOURCE; break;
+	}
+	return ioType;
+}
 
 /*
 * Build table that controls the rendering of object types.
@@ -3136,7 +3514,7 @@ void addrbookctl_build_map( GtkWidget *window ) {
 	g_hash_table_insert( _addressBookTypeHash_, &atci->objectType, atci );
 	_addressBookTypeList_ = g_list_append( _addressBookTypeList_, atci );
 
-	/* JPilot */
+	/* J-Pilot */
 	atci = g_new0( AddressTypeControlItem, 1 );
 	atci->objectType = ADDR_JPILOT;
 	atci->interfaceType = ADDR_IF_JPILOT;
@@ -3253,6 +3631,10 @@ void addrbookctl_build_iflist() {
 
 	if( _addressIndex_ == NULL ) {
 		_addressIndex_ = addrindex_create_index();
+		if( _clipBoard_ == NULL ) {
+			_clipBoard_ = addrclip_create();
+		}
+		addrclip_set_index( _clipBoard_, _addressIndex_ );
 	}
 	_addressInterfaceList_ = NULL;
 	list = addrindex_get_interface_list( _addressIndex_ );
@@ -3467,7 +3849,7 @@ static void addressbook_import_ldif_cb() {
 			if( abf ) {
 				ds = addrindex_index_add_datasource( _addressIndex_, ADDR_IF_BOOK, abf );
 				ads = addressbook_create_ds_adapter( ds, ADDR_BOOK, NULL );
-				addressbook_ads_set_name( ads, abf->name );
+				addressbook_ads_set_name( ads, addrbook_get_name( abf ) );
 				newNode = addressbook_add_object( adapter->treeNode, ADDRESS_OBJECT(ads) );
 				if( newNode ) {
 					gtk_ctree_select( GTK_CTREE(addrbook.ctree), newNode );
@@ -3485,7 +3867,7 @@ static void addressbook_import_ldif_cb() {
 /*
 * Import MUTT file.
 */
-static void addressbook_import_mutt_cb(void) {
+static void addressbook_import_mutt_cb() {
 	AddressDataSource *ds = NULL;
 	AdapterDSource *ads = NULL;
 	AddressBookFile *abf = NULL;
@@ -3499,7 +3881,7 @@ static void addressbook_import_mutt_cb(void) {
 			if( abf ) {
 				ds = addrindex_index_add_datasource( _addressIndex_, ADDR_IF_BOOK, abf );
 				ads = addressbook_create_ds_adapter( ds, ADDR_BOOK, NULL );
-				addressbook_ads_set_name( ads, abf->name );
+				addressbook_ads_set_name( ads, addrbook_get_name( abf ) );
 				newNode = addressbook_add_object( adapter->treeNode, ADDRESS_OBJECT(ads) );
 				if( newNode ) {
 					gtk_ctree_select( GTK_CTREE(addrbook.ctree), newNode );
@@ -3517,3 +3899,4 @@ static void addressbook_import_mutt_cb(void) {
 /*
 * End of Source.
 */
+

@@ -44,17 +44,6 @@
 
 #include "prefs_common.h"
 
-/*
-static struct _AddressEdit_dlg {
-	GtkWidget *window;
-	GtkWidget *name_entry;
-	GtkWidget *addr_entry;
-	GtkWidget *rem_entry;
-	GtkWidget *ok_btn;
-	GtkWidget *cancel_btn;
-} addredit;
-*/
-
 static struct _PersonEdit_dlg {
 	GtkWidget *window;
 	GtkWidget *notebook;
@@ -111,170 +100,6 @@ typedef enum {
 #define PAGE_BASIC             0
 #define PAGE_EMAIL             1
 #define PAGE_ATTRIBUTES        2
-
-#if 0
-#define SET_LABEL_AND_ENTRY(str, entry, top) \
-{ \
-	label = gtk_label_new(str); \
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), \
-			 GTK_FILL, 0, 0, 0); \
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5); \
- \
-	entry = gtk_entry_new(); \
-	gtk_table_attach(GTK_TABLE(table), entry, 1, 2, top, (top + 1), \
-			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0); \
-}
-
-static void edit_address_ok(GtkWidget *widget, gboolean *cancelled)
-{
-	*cancelled = FALSE;
-	gtk_main_quit();
-}
-
-static void edit_address_cancel(GtkWidget *widget, gboolean *cancelled)
-{
-	*cancelled = TRUE;
-	gtk_main_quit();
-}
-
-static gint edit_address_delete_event(GtkWidget *widget, GdkEventAny *event,
-				      gboolean *cancelled)
-{
-	*cancelled = TRUE;
-	gtk_main_quit();
-
-	return TRUE;
-}
-
-static void edit_address_key_pressed(GtkWidget *widget, GdkEventKey *event,
-				     gboolean *cancelled)
-{
-	if (event && event->keyval == GDK_Escape) {
-		*cancelled = TRUE;
-		gtk_main_quit();
-	}
-}
-
-static void addressbook_edit_address_create(gboolean *cancelled)
-{
-	GtkWidget *window;
-	GtkWidget *vbox;
-	GtkWidget *table;
-	GtkWidget *label;
-	GtkWidget *name_entry;
-	GtkWidget *addr_entry;
-	GtkWidget *rem_entry;
-	GtkWidget *hbbox;
-	GtkWidget *ok_btn;
-	GtkWidget *cancel_btn;
-
-	debug_print("Creating edit_address window...\n");
-
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_widget_set_usize(window, 400, -1);
-	/* gtk_container_set_border_width(GTK_CONTAINER(window), 8); */
-	gtk_window_set_title(GTK_WINDOW(window), _("Edit address"));
-	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(edit_address_delete_event),
-			   cancelled);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(edit_address_key_pressed),
-			   cancelled);
-
-	vbox = gtk_vbox_new(FALSE, 8);
-	gtk_container_add(GTK_CONTAINER(window), vbox);
-
-	table = gtk_table_new(3, 2, FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
-
-	SET_LABEL_AND_ENTRY(_("Name"),    name_entry, 0);
-	SET_LABEL_AND_ENTRY(_("Address"), addr_entry, 1);
-	SET_LABEL_AND_ENTRY(_("Remarks"), rem_entry,  2);
-
-	gtkut_button_set_create(&hbbox, &ok_btn, _("OK"),
-				&cancel_btn, _("Cancel"), NULL, NULL);
-	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
-	gtk_widget_grab_default(ok_btn);
-
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(edit_address_ok), cancelled);
-	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(edit_address_cancel), cancelled);
-
-	gtk_widget_show_all(vbox);
-
-	addredit.window     = window;
-	addredit.name_entry = name_entry;
-	addredit.addr_entry = addr_entry;
-	addredit.rem_entry  = rem_entry;
-	addredit.ok_btn     = ok_btn;
-	addredit.cancel_btn = cancel_btn;
-}
-
-AddressItem *addressbook_edit_address(AddressItem *item)
-{
-	static gboolean cancelled;
-	const gchar *str;
-
-	if (!addredit.window)
-		addressbook_edit_address_create(&cancelled);
-	gtk_widget_grab_focus(addredit.ok_btn);
-	gtk_widget_grab_focus(addredit.name_entry);
-	gtk_widget_show(addredit.window);
-	manage_window_set_transient(GTK_WINDOW(addredit.window));
-
-	gtk_entry_set_text(GTK_ENTRY(addredit.name_entry), "");
-	gtk_entry_set_text(GTK_ENTRY(addredit.addr_entry), "");
-	gtk_entry_set_text(GTK_ENTRY(addredit.rem_entry),  "");
-
-	if (item) {
-		if (ADDRESS_OBJECT_NAME(item))
-			gtk_entry_set_text(GTK_ENTRY(addredit.name_entry),
-					   ADDRESS_OBJECT_NAME(item));
-		if (item->address)
-			gtk_entry_set_text(GTK_ENTRY(addredit.addr_entry),
-					   item->address);
-		if (item->remarks)
-			gtk_entry_set_text(GTK_ENTRY(addredit.rem_entry),
-					   item->remarks);
-	}
-
-	gtk_main();
-	gtk_widget_hide(addredit.window);
-	if (cancelled == TRUE) return NULL;
-
-	str = gtk_entry_get_text(GTK_ENTRY(addredit.name_entry));
-	if (*str == '\0') return NULL;
-
-	if (!item) {
-		item = mgu_create_address();
-		ADDRESS_OBJECT_TYPE(item) = ADDR_ITEM;
-	}
-
-	g_free(ADDRESS_OBJECT_NAME(item));
-	ADDRESS_OBJECT_NAME(item) = g_strdup(str);
-
-	str = gtk_entry_get_text(GTK_ENTRY(addredit.addr_entry));
-	g_free(item->address);
-	if (*str == '\0')
-		item->address = NULL;
-	else
-		item->address = g_strdup(str);
-
-	str = gtk_entry_get_text(GTK_ENTRY(addredit.rem_entry));
-	g_free(item->remarks);
-	if (*str == '\0')
-		item->remarks = NULL;
-	else
-		item->remarks = g_strdup(str);
-
-	return item;
-}
-#endif /* 0 */
 
 static void edit_person_status_show( gchar *msg ) {
 	if( personeditdlg.statusbar != NULL ) {
@@ -361,13 +186,13 @@ static void edit_person_switch_page( GtkNotebook *notebook, GtkNotebookPage *pag
 /*
 * Load clist with a copy of person's email addresses.
 */
-void edit_person_load_email( ItemPerson *person ) {
+static void edit_person_load_email( ItemPerson *person ) {
 	GList *node = person->listEMail;
 	GtkCList *clist = GTK_CLIST(personeditdlg.clist_email);
 	gchar *text[ EMAIL_N_COLS ];
 	while( node ) {
 		ItemEMail *emorig = ( ItemEMail * ) node->data;
-		ItemEMail *email = addritem_copy_item_email( emorig );
+		ItemEMail *email = addritem_copyfull_item_email( emorig );
 		gint row;
 		text[ EMAIL_COL_EMAIL   ] = email->address;
 		text[ EMAIL_COL_ALIAS   ] = email->obj.name;
@@ -495,9 +320,27 @@ static void edit_person_email_add( gpointer data ) {
 }
 
 /*
+* Comparison using cell contents (text in first column). Used for sort
+* address index widget.
+*/
+static gint edit_person_attrib_compare_func(
+	GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2 )
+{
+	GtkCell *cell1 = ((GtkCListRow *)ptr1)->cell;
+	GtkCell *cell2 = ((GtkCListRow *)ptr2)->cell;
+	gchar *name1 = NULL, *name2 = NULL;
+
+	if( cell1 ) name1 = cell1->u.text;
+	if( cell2 ) name2 = cell2->u.text;
+	if( ! name1 ) return ( name2 != NULL );
+	if( ! name2 ) return -1;
+	return strcasecmp( name1, name2 );
+}
+
+/*
 * Load clist with a copy of person's email addresses.
 */
-void edit_person_load_attrib( ItemPerson *person ) {
+static void edit_person_load_attrib( ItemPerson *person ) {
 	GList *node = person->listAttrib;
 	GtkCList *clist = GTK_CLIST(personeditdlg.clist_attrib);
 	gchar *text[ ATTRIB_N_COLS ];
@@ -672,7 +515,7 @@ static void addressbook_edit_person_dialog_create( gboolean *cancelled ) {
 
 }
 
-void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
+static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *vbox;
 	GtkWidget *table;
 	GtkWidget *label;
@@ -737,7 +580,7 @@ void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	personeditdlg.entry_nick  = entry_nn;
 }
 
-void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
+static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *vbox;
 	GtkWidget *hbox;
 	GtkWidget *vboxl;
@@ -777,12 +620,11 @@ void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	hbox = gtk_hbox_new( FALSE, 0 );
 	gtk_container_add( GTK_CONTAINER( vbox ), hbox );
 
-	/* EMail list */
+	/* Address list */
 	vboxl = gtk_vbox_new( FALSE, 4 );
 	gtk_container_add( GTK_CONTAINER( hbox ), vboxl );
 	gtk_container_set_border_width( GTK_CONTAINER(vboxl), 4 );
 
-	/* Address list */
 	clist_swin = gtk_scrolled_window_new( NULL, NULL );
 	gtk_container_add( GTK_CONTAINER(vboxl), clist_swin );
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(clist_swin),
@@ -885,7 +727,7 @@ void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	personeditdlg.entry_remarks = entry_remarks;
 }
 
-void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) {
+static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *vbox;
 	GtkWidget *hbox;
 	GtkWidget *vboxl;
@@ -927,7 +769,6 @@ void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) {
 	gtk_container_add( GTK_CONTAINER( hbox ), vboxl );
 	gtk_container_set_border_width( GTK_CONTAINER(vboxl), 4 );
 
-	/* Address list */
 	clist_swin = gtk_scrolled_window_new( NULL, NULL );
 	gtk_container_add( GTK_CONTAINER(vboxl), clist_swin );
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(clist_swin),
@@ -939,6 +780,8 @@ void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) {
 	gtk_clist_set_selection_mode( GTK_CLIST(clist), GTK_SELECTION_BROWSE );
 	gtk_clist_set_column_width( GTK_CLIST(clist), ATTRIB_COL_NAME, ATTRIB_COL_WIDTH_NAME );
 	gtk_clist_set_column_width( GTK_CLIST(clist), ATTRIB_COL_VALUE, ATTRIB_COL_WIDTH_VALUE );
+	gtk_clist_set_compare_func( GTK_CLIST(clist), edit_person_attrib_compare_func );
+	gtk_clist_set_auto_sort( GTK_CLIST(clist), TRUE );
 
 	for( i = 0; i < ATTRIB_N_COLS; i++ )
 		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(clist)->column[i].button, GTK_CAN_FOCUS);

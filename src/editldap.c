@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Match Grun
+ * Copyright (C) 2001-2002 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -516,8 +516,9 @@ AdapterDSource *addressbook_edit_ldap( AddressIndex *addrIndex, AdapterDSource *
 	if( ads ) {
 		ds = ads->dataSource;
 		server = ds->rawDataSource;
-		if (server->name)
-			gtk_entry_set_text(GTK_ENTRY(ldapedit.entry_name), server->name);
+		if ( syldap_get_name( server ) )
+			gtk_entry_set_text(GTK_ENTRY(ldapedit.entry_name),
+				syldap_get_name( server ) );
 		if (server->hostName)
 			gtk_entry_set_text(GTK_ENTRY(ldapedit.entry_server), server->hostName);
 		gtk_spin_button_set_value( GTK_SPIN_BUTTON( ldapedit.spinbtn_port ), server->port );

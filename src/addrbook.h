@@ -30,24 +30,24 @@
 
 #include "addritem.h"
 #include "addrcache.h"
+#include "adbookbase.h"
 
 /* Address book file */
 typedef struct _AddressBookFile AddressBookFile;
 
 struct _AddressBookFile {
-	gchar *name;
-	gchar *path;
-	gchar *fileName;
+	AddressBookType type;
 	AddressCache *addressCache;
-	gint  retVal;
-	gint  maxValue;
-	GList *tempList;
+	gboolean   accessFlag;
+	gint       retVal;
+	gchar      *path;
+	gchar      *fileName;
+	gint       maxValue;
+	GList      *tempList;
 	GHashTable *tempHash;
-	gboolean readFlag;
-	gboolean dirtyFlag;
-	gboolean modifyFlag;
-	gboolean accessFlag;
-	jmp_buf jumper;
+	gboolean   readFlag;
+	gboolean   modifyFlag;
+	jmp_buf    jumper;
 };
 
 /* Function prototypes */
@@ -70,6 +70,8 @@ ItemFolder *addrbook_get_root_folder	( AddressBookFile *book );
 GList *addrbook_get_list_folder		( AddressBookFile *book );
 GList *addrbook_get_list_person		( AddressBookFile *book );
 gchar *addrbook_get_name		( AddressBookFile *book );
+gboolean addrbook_get_dirty		( AddressBookFile *book );
+void addrbook_set_dirty			( AddressBookFile *book, const gboolean value );
 
 ItemPerson *addrbook_remove_person	( AddressBookFile *book, ItemPerson *person );
 ItemGroup *addrbook_remove_group	( AddressBookFile *book, ItemGroup *group );

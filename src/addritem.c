@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Match Grun
+ * Copyright (C) 2001-2002 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,13 +44,28 @@ ItemEMail *addritem_create_item_email( void ) {
 }
 
 /*
-* Create copy of specified email address item.
+* Create a shallow copy of specified email address item.
+* Enter: item E-Mail to copy.
 */
 ItemEMail *addritem_copy_item_email( ItemEMail *item ) {
 	ItemEMail *itemNew = NULL;
 	if( item ) {
 		itemNew = addritem_create_item_email();
-		ADDRITEM_TYPE(itemNew) = ADDRITEM_TYPE(item);
+		ADDRITEM_NAME(itemNew) = g_strdup( ADDRITEM_NAME(item) );
+		itemNew->address = g_strdup( item->address );
+		itemNew->remarks = g_strdup( item->remarks );
+	}
+	return itemNew;
+}
+
+/*
+* Create a full copy of specified email address item.
+* Enter: item E-Mail to copy.
+*/
+ItemEMail *addritem_copyfull_item_email( ItemEMail *item ) {
+	ItemEMail *itemNew = NULL;
+	if( item ) {
+		itemNew = addritem_create_item_email();
 		ADDRITEM_ID(itemNew) = g_strdup( ADDRITEM_ID(item) );
 		ADDRITEM_NAME(itemNew) = g_strdup( ADDRITEM_NAME(item) );
 		ADDRITEM_PARENT(itemNew) = ADDRITEM_PARENT(item);
@@ -167,6 +182,25 @@ ItemPerson *addritem_create_item_person( void ) {
 	person->externalID = NULL;
 	person->isOpened = FALSE;
 	return person;
+}
+
+/*
+* Create a shallow copy of address book person.
+* Enter: item Person to copy.
+*/
+ItemPerson *addritem_copy_item_person( ItemPerson *item ) {
+	ItemPerson *itemNew;
+
+	itemNew = NULL;
+	if( item ) {
+		itemNew = addritem_create_item_person();
+		ADDRITEM_NAME(itemNew) = g_strdup( ADDRITEM_NAME(item) );
+		itemNew->firstName = g_strdup( item->firstName );
+		itemNew->lastName = g_strdup( item->lastName );
+		itemNew->nickName = g_strdup( item->nickName );
+		itemNew->externalID = g_strdup( item->externalID );
+	}
+	return itemNew;
 }
 
 void addritem_person_set_id( ItemPerson *person, const gchar *value ) {
@@ -543,6 +577,23 @@ ItemGroup *addritem_create_item_group( void ) {
 }
 
 /*
+* Copy address book group.
+* Enter:  item Group to copy.
+* Return: A copy of the group. 
+*/
+ItemGroup *addritem_copy_item_group( ItemGroup *item ) {
+	ItemGroup *itemNew;
+
+	itemNew = g_new0( ItemGroup, 1 );
+	if( item ) {
+		itemNew = addritem_create_item_group();
+		ADDRITEM_NAME(itemNew) = g_strdup( ADDRITEM_NAME(item) );
+		itemNew->remarks = g_strdup( item->remarks );
+	}
+	return itemNew;
+}
+
+/*
 * Specify name to be used.
 */
 void addritem_group_set_id( ItemGroup *group, const gchar *value ) {
@@ -692,8 +743,23 @@ ItemFolder *addritem_create_item_folder( void ) {
 	folder->listFolder = NULL;
 	folder->listPerson = NULL;
 	folder->listGroup = NULL;
-	folder->userData = NULL;
 	return folder;
+}
+
+/*
+* Copy address book folder.
+* Enter:  item Folder to copy.
+* Return: A copy of the folder. 
+*/
+ItemFolder *addritem_copy_item_folder( ItemFolder *item ) {
+	ItemFolder *itemNew;
+
+	itemNew = g_new0( ItemFolder, 1 );
+	if( item ) {
+		itemNew = addritem_create_item_folder();
+		ADDRITEM_NAME(itemNew) = g_strdup( ADDRITEM_NAME(item) );
+	}
+	return itemNew;
 }
 
 /*
@@ -735,9 +801,6 @@ void addritem_free_item_folder( ItemFolder *folder ) {
 	folder->listFolder = NULL;
 	folder->listGroup = NULL;
 	folder->listPerson = NULL;
-
-	g_free( folder->userData );
-	folder->userData = NULL;
 
 	g_free( folder );
 }
@@ -890,6 +953,30 @@ void addritem_print_item_folder( ItemFolder *folder, FILE *stream ) {
 		node = g_list_next( node );
 	}
 	fprintf( stream, "\t###\n" );
+}
+
+/*
+* Print address item.
+*/
+void addritem_print_item( AddrItemObject *aio, FILE *stream ) {
+	g_return_if_fail( aio != NULL );
+
+	if( aio->type == ITEMTYPE_PERSON ) {
+		ItemPerson *item = ( ItemPerson * ) aio;
+		addritem_print_item_person( item, stream );
+	}
+	else if( aio->type == ITEMTYPE_EMAIL ) {
+		ItemEMail *item = ( ItemEMail * ) aio;
+		addritem_print_item_email( item, stream );
+	}
+	else if( aio->type == ITEMTYPE_GROUP ) {
+		ItemGroup *item = ( ItemGroup * ) aio;
+		addritem_print_item_group( item, stream );
+	}
+	else if( aio->type == ITEMTYPE_FOLDER ) {
+		ItemFolder *item = ( ItemFolder * ) aio;
+		addritem_print_item_folder( item, stream );
+	}
 }
 
 /*

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Match Grun
+ * Copyright (C) 2001-2002 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,13 +35,14 @@
 #include <ldap.h>
 #include <lber.h>
 #include <pthread.h>
-/* #include <dlfcn.h> */
+#include <dlfcn.h>
 
 #include "mgutils.h"
 #include "addritem.h"
 #include "addrcache.h"
 #include "syldap.h"
 #include "utils.h"
+#include "adbookbase.h"
 
 /*
 * Create new LDAP server interface object.
@@ -52,7 +53,10 @@ SyldapServer *syldap_create() {
 	debug_print("Creating LDAP server interface object\n");
 
 	ldapServer = g_new0( SyldapServer, 1 );
-	ldapServer->name = NULL;
+	ldapServer->type = ADBOOKTYPE_LDAP;
+	ldapServer->addressCache = addrcache_create();
+	ldapServer->accessFlag = FALSE;
+	ldapServer->retVal = MGU_SUCCESS;
 	ldapServer->hostName = NULL;
 	ldapServer->port = SYLDAP_DFL_PORT;
 	ldapServer->baseDN = NULL;
@@ -64,12 +68,9 @@ SyldapServer *syldap_create() {
 	ldapServer->maxEntries = SYLDAP_MAX_ENTRIES;
 	ldapServer->timeOut = SYLDAP_DFL_TIMEOUT;
 	ldapServer->newSearch = TRUE;
-	ldapServer->addressCache = addrcache_create();
 	ldapServer->thread = NULL;
 	ldapServer->busyFlag = FALSE;
-	ldapServer->retVal = MGU_SUCCESS;
 	ldapServer->callBack = NULL;
-	ldapServer->accessFlag = FALSE;
 	ldapServer->idleId = 0;
 	return ldapServer;
 }
@@ -78,8 +79,8 @@ SyldapServer *syldap_create() {
 * Specify name to be used.
 */
 void syldap_set_name( SyldapServer* ldapServer, const gchar *value ) {
-	ldapServer->name = mgu_replace_string( ldapServer->name, value );
-	g_strstrip( ldapServer->name );
+	g_return_if_fail( ldapServer != NULL );
+	addrcache_set_name( ldapServer->addressCache, value );
 }
 
 /*
@@ -210,7 +211,7 @@ ItemFolder *syldap_get_root_folder( SyldapServer *ldapServer ) {
 
 gchar *syldap_get_name( SyldapServer *ldapServer ) {
 	g_return_val_if_fail( ldapServer != NULL, NULL );
-	return ldapServer->name;
+	return addrcache_get_name( ldapServer->addressCache );
 }
 
 gboolean syldap_get_accessed( SyldapServer *ldapServer ) {
@@ -228,8 +229,11 @@ void syldap_free( SyldapServer *ldapServer ) {
 
 	ldapServer->callBack = NULL;
 
+	/* Clear cache */
+	addrcache_clear( ldapServer->addressCache );
+	addrcache_free( ldapServer->addressCache );
+
 	/* Free internal stuff */
-	g_free( ldapServer->name );
 	g_free( ldapServer->hostName );
 	g_free( ldapServer->baseDN );
 	g_free( ldapServer->bindDN );
@@ -238,32 +242,31 @@ void syldap_free( SyldapServer *ldapServer ) {
 	g_free( ldapServer->searchValue );
 	g_free( ldapServer->thread );
 
-	ldapServer->port = 0;
-	ldapServer->entriesRead = 0;
-	ldapServer->maxEntries = 0;
-	ldapServer->newSearch = FALSE;
-
-	/* Clear cache */
-	addrcache_clear( ldapServer->addressCache );
-	addrcache_free( ldapServer->addressCache );
 
 	/* Clear pointers */
-	ldapServer->name = NULL;
 	ldapServer->hostName = NULL;
+	ldapServer->port = 0;
 	ldapServer->baseDN = NULL;
 	ldapServer->bindDN = NULL;
 	ldapServer->bindPass = NULL;
 	ldapServer->searchCriteria = NULL;
 	ldapServer->searchValue = NULL;
-	ldapServer->addressCache = NULL;
+	ldapServer->entriesRead = 0;
+	ldapServer->maxEntries = 0;
+	ldapServer->timeOut = 0;
+	ldapServer->newSearch = FALSE;
 	ldapServer->thread = NULL;
 	ldapServer->busyFlag = FALSE;
-	ldapServer->retVal = MGU_SUCCESS;
+	ldapServer->callBack = NULL;
+	ldapServer->idleId = 0;
+
+	ldapServer->type = ADBOOKTYPE_NONE;
+	ldapServer->addressCache = NULL;
 	ldapServer->accessFlag = FALSE;
+	ldapServer->retVal = MGU_SUCCESS;
 
 	/* Now release LDAP object */
 	g_free( ldapServer );
-
 }
 
 /*
@@ -273,7 +276,6 @@ void syldap_print_data( SyldapServer *ldapServer, FILE *stream ) {
 	g_return_if_fail( ldapServer != NULL );
 
 	fprintf( stream, "SyldapServer:\n" );
-	fprintf( stream, "     name: '%s'\n", ldapServer->name );
 	fprintf( stream, "host name: '%s'\n", ldapServer->hostName );
 	fprintf( stream, "     port: %d\n",   ldapServer->port );
 	fprintf( stream, "  base dn: '%s'\n", ldapServer->baseDN );
@@ -295,7 +297,6 @@ void syldap_print_short( SyldapServer *ldapServer, FILE *stream ) {
 	g_return_if_fail( ldapServer != NULL );
 
 	fprintf( stream, "SyldapServer:\n" );
-	fprintf( stream, "     name: '%s'\n", ldapServer->name );
 	fprintf( stream, "host name: '%s'\n", ldapServer->hostName );
 	fprintf( stream, "     port: %d\n",   ldapServer->port );
 	fprintf( stream, "  base dn: '%s'\n", ldapServer->baseDN );
@@ -675,7 +676,8 @@ gint syldap_read_data( SyldapServer *ldapServer ) {
 		/* TODO: really necessary to call gdk_threads_XXX()??? gtk_idle_add()
 		 * should do this - could someone check the GTK sources please? */
 		gdk_threads_enter();
-		ldapServer->idleId = gtk_idle_add((GtkFunction)syldap_display_search_results, ldapServer);
+		ldapServer->idleId = gtk_idle_add((GtkFunction)syldap_display_search_results,
+				ldapServer);
 		gdk_threads_leave();
 	}
 
@@ -1065,7 +1067,6 @@ gboolean syldap_test_connect( SyldapServer *ldapServer ) {
 * Test whether LDAP libraries installed.
 * Return: TRUE if library available.
 */
-#if 0
 gboolean syldap_test_ldap_lib() {
 	void *handle, *fun;
 	
@@ -1118,7 +1119,6 @@ gboolean syldap_test_ldap_lib() {
 
 	return TRUE;
 }
-#endif /* 0 */
 
 #endif	/* USE_LDAP */
 

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Match Grun
+ * Copyright (C) 2001-2002 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,22 +43,23 @@
 
 #include "addritem.h"
 #include "addrcache.h"
+#include "adbookbase.h"
 
 typedef struct _JPilotFile JPilotFile;
 
 struct _JPilotFile {
-	gchar                 *name;
-	FILE                  *file;
-	gchar                 *path;
-	AddressCache          *addressCache;
+	AddressBookType type;
+	AddressCache *addressCache;
+	gboolean accessFlag;
+	gint     retVal;
+	FILE     *file;
+	gchar    *path;
 	struct AddressAppInfo addrInfo;
-	gboolean              readMetadata;
-	GList                 *customLabels;
-	GList                 *labelInd;
-	gint                  retVal;
-	gboolean              accessFlag;
-	gboolean              havePC3;
-	time_t                pc3ModifyTime;
+	gboolean readMetadata;
+	GList    *customLabels;
+	GList    *labelInd;
+	gboolean havePC3;
+	time_t   pc3ModifyTime;
 };
 
 /* Limits */
@@ -67,8 +68,8 @@ struct _JPilotFile {
 #define JPILOT_NUM_CATEG	16	/* Number of categories */
 #define JPILOT_LEN_LABEL	15	/* Max length of label */
 #define JPILOT_LEN_CATEG	15	/* Max length of category */
-#define JPILOT_NUM_ADDR_PHONE	5	/* Number of phone entries a person
-					   can have */
+#define JPILOT_NUM_ADDR_PHONE	5	/* Number of phone entries a person */
+					/* can have */
 
 /* Function prototypes */
 JPilotFile *jpilot_create		( void );
@@ -98,7 +99,7 @@ gchar *jpilot_get_category_name		( JPilotFile *pilotFile, gint catID );
 GList *jpilot_load_phone_label		( JPilotFile *pilotFile, GList *labelList );
 GList *jpilot_load_custom_label		( JPilotFile *pilotFile, GList *labelList );
 
-gboolean jpilot_validate		( const JPilotFile *pilotFile );
+gboolean jpilot_validate		( JPilotFile *pilotFile );
 gchar *jpilot_find_pilotdb		( void );
 
 gint jpilot_test_read_file		( const gchar *fileSpec );
@@ -107,7 +108,7 @@ void jpilot_clear_custom_labels		( JPilotFile *pilotFile );
 void jpilot_add_custom_label		( JPilotFile *pilotFile, const gchar *labelName );
 GList *jpilot_get_custom_labels		( JPilotFile *pilotFile );
 gboolean jpilot_test_custom_label	( JPilotFile *pilotFile, const gchar *labelName );
-/* gboolean jpilot_test_pilot_lib		( void ); */
+gboolean jpilot_test_pilot_lib		( void );
 
 gint jpilot_read_modified		( JPilotFile *pilotFile );
 

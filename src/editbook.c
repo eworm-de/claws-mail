@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Match Grun
+ * Copyright (C) 2001-2002 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,8 +61,6 @@ static struct _AddrBookEdit_Dlg {
 	gint status_cid;
 	AddressBookFile *bookFile;
 } addrbookedit_dlg;
-
-/* static struct _AddressFileSelection vcard_file_selector; */
 
 /*
 * Edit functions.
@@ -247,7 +245,8 @@ static void addressbook_edit_book_create( gboolean *cancelled ) {
 	addrbookedit_dlg.check_btn  = check_btn;
 	/* addrbookedit_dlg.file_btn   = file_btn; */
 	addrbookedit_dlg.statusbar  = statusbar;
-	addrbookedit_dlg.status_cid = gtk_statusbar_get_context_id( GTK_STATUSBAR(statusbar), "Edit Addressbook Dialog" );
+	addrbookedit_dlg.status_cid = gtk_statusbar_get_context_id(
+			GTK_STATUSBAR(statusbar), "Edit Addressbook Dialog" );
 }
 
 AdapterDSource *addressbook_edit_book( AddressIndex *addrIndex, AdapterDSource *ads ) {
@@ -271,8 +270,9 @@ AdapterDSource *addressbook_edit_book( AddressIndex *addrIndex, AdapterDSource *
 	if( ads ) {
 		ds = ads->dataSource;
 		abf = ds->rawDataSource;
-		if (abf->name)
-			gtk_entry_set_text(GTK_ENTRY(addrbookedit_dlg.name_entry), abf->name);
+		if ( addrbook_get_name( abf ) )
+			gtk_entry_set_text(GTK_ENTRY(addrbookedit_dlg.name_entry),
+				addrbook_get_name( abf ) );
 		if( abf->fileName )
 			gtk_label_set_text(GTK_LABEL(addrbookedit_dlg.file_label), abf->fileName);
 		gtk_window_set_title( GTK_WINDOW(addrbookedit_dlg.window), _("Edit Addressbook"));
@@ -332,7 +332,6 @@ AdapterDSource *addressbook_edit_book( AddressIndex *addrIndex, AdapterDSource *
 		}
 		addressbook_ads_set_name( ads, sName );
 		addrbook_set_name( abf, sName );
-		abf->dirtyFlag = TRUE;
 	}
 	g_free( sName );
 

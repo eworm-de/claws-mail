@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Match Grun
+ * Copyright (C) 2001-2002 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-/* #include <dlfcn.h> */
+#include <dlfcn.h>
 #include <netinet/in.h>
 
 #ifdef HAVE_LIBPISOCK_PI_ARGS_H
@@ -52,6 +52,7 @@
 #include "addritem.h"
 #include "addrcache.h"
 #include "jpilot.h"
+#include "adbookbase.h"
 
 #define JPILOT_DBHOME_DIR   ".jpilot"
 #define JPILOT_DBHOME_FILE  "AddressDB.pdb"
@@ -153,15 +154,16 @@ typedef struct {
 JPilotFile *jpilot_create() {
 	JPilotFile *pilotFile;
 	pilotFile = g_new0( JPilotFile, 1 );
-	pilotFile->name = NULL;
+	pilotFile->type = ADBOOKTYPE_JPILOT;
+	pilotFile->addressCache = addrcache_create();
+	pilotFile->accessFlag = FALSE;
+	pilotFile->retVal = MGU_SUCCESS;
+
 	pilotFile->file = NULL;
 	pilotFile->path = NULL;
-	pilotFile->addressCache = addrcache_create();
 	pilotFile->readMetadata = FALSE;
 	pilotFile->customLabels = NULL;
 	pilotFile->labelInd = NULL;
-	pilotFile->retVal = MGU_SUCCESS;
-	pilotFile->accessFlag = FALSE;
 	pilotFile->havePC3 = FALSE;
 	pilotFile->pc3ModifyTime = 0;
 	return pilotFile;
@@ -182,7 +184,7 @@ JPilotFile *jpilot_create_path( const gchar *path ) {
 */
 void jpilot_set_name( JPilotFile* pilotFile, const gchar *value ) {
 	g_return_if_fail( pilotFile != NULL );
-	pilotFile->name = mgu_replace_string( pilotFile->name, value );
+	addrcache_set_name( pilotFile->addressCache, value );
 }
 void jpilot_set_file( JPilotFile* pilotFile, const gchar *value ) {
 	g_return_if_fail( pilotFile != NULL );
@@ -205,7 +207,7 @@ ItemFolder *jpilot_get_root_folder( JPilotFile *pilotFile ) {
 }
 gchar *jpilot_get_name( JPilotFile *pilotFile ) {
 	g_return_val_if_fail( pilotFile != NULL, NULL );
-	return pilotFile->name;
+	return addrcache_get_name( pilotFile->addressCache );
 }
 
 /*
@@ -384,20 +386,26 @@ gboolean jpilot_get_accessed( JPilotFile *pilotFile ) {
 void jpilot_free( JPilotFile *pilotFile ) {
 	g_return_if_fail( pilotFile != NULL );
 
-	/* Free internal stuff */
-	g_free( pilotFile->path );
-
 	/* Release custom labels */
 	jpilot_clear_custom_labels( pilotFile );
 
 	/* Clear cache */
 	addrcache_clear( pilotFile->addressCache );
 	addrcache_free( pilotFile->addressCache );
-	pilotFile->addressCache = NULL;
+
+	/* Free internal stuff */
+	g_free( pilotFile->path );
+
+	pilotFile->file = NULL;
+	pilotFile->path = NULL;
 	pilotFile->readMetadata = FALSE;
-	pilotFile->accessFlag = FALSE;
 	pilotFile->havePC3 = FALSE;
 	pilotFile->pc3ModifyTime = 0;
+
+	pilotFile->type = ADBOOKTYPE_NONE;
+	pilotFile->addressCache = NULL;
+	pilotFile->accessFlag = FALSE;
+	pilotFile->retVal = MGU_SUCCESS;
 
 	/* Now release file object */
 	g_free( pilotFile );
@@ -828,6 +836,7 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 			return MGU_ERROR_READ;
 		}
 		if (feof(in)) {
+			fclose(in);
 			return MGU_EOF;
 		}
 	}
@@ -845,6 +854,7 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 				break;
 			}
 			if (feof(in)) {
+				fclose(in);
 				return MGU_EOF;
 			}
 		}
@@ -1316,6 +1326,7 @@ GList *jpilot_load_phone_label( JPilotFile *pilotFile, GList *labelList ) {
 /*
 * Load list with character strings of label names. Only none blank names
 * are loaded.
+* Return: list of labels. Should by g_free()'d when done.
 */
 GList *jpilot_load_custom_label( JPilotFile *pilotFile, GList *labelList ) {
 	gint i;
@@ -1500,8 +1511,9 @@ gint jpilot_check_label( struct AddressAppInfo *ai, gchar *lblCheck ) {
 * Validate that all parameters specified.
 * Return: TRUE if data is good.
 */
-gboolean jpilot_validate( const JPilotFile *pilotFile ) {
+gboolean jpilot_validate( JPilotFile *pilotFile ) {
 	gboolean retVal;
+	gchar *name;
 
 	g_return_val_if_fail( pilotFile != NULL, FALSE );
 
@@ -1512,8 +1524,9 @@ gboolean jpilot_validate( const JPilotFile *pilotFile ) {
 	else {
 		retVal = FALSE;
 	}
-	if( pilotFile->name ) {
-		if( strlen( pilotFile->name ) < 1 ) retVal = FALSE;
+	name = jpilot_get_name( pilotFile );
+	if( name ) {
+		if( strlen( name ) < 1 ) retVal = FALSE;
 	}
 	else {
 		retVal = FALSE;
@@ -1594,7 +1607,7 @@ gboolean jpilot_test_custom_label( JPilotFile *pilotFile, const gchar *labelName
 	if( labelName ) {
 		node = pilotFile->customLabels;
 		while( node ) {
-			if( g_strcasecmp( labelName, node->data ) == 0 ) {
+			if( g_strcasecmp( labelName, ( gchar * ) node->data ) == 0 ) {
 				retVal = TRUE;
 				break;
 			}
@@ -1608,7 +1621,6 @@ gboolean jpilot_test_custom_label( JPilotFile *pilotFile, const gchar *labelName
 * Test whether pilot link library installed.
 * Return: TRUE if library available.
 */
-#if 0
 gboolean jpilot_test_pilot_lib( void ) {
 	void *handle, *fun;
 
@@ -1632,7 +1644,6 @@ gboolean jpilot_test_pilot_lib( void ) {
 	dlclose( handle );
 	return TRUE;
 }
-#endif /* 0 */
 
 #endif	/* USE_JPILOT */
 

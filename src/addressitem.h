@@ -147,8 +147,10 @@ AdapterDSource *addressbook_create_ds_adapter	( AddressDataSource	*ds,
 						  AddressObjectType	otype,
 						  gchar			*name );
 
-void addressbook_ads_set_name			( AdapterDSource 	*adapter,
-						  gchar *value );
+void addressbook_ads_set_name		( AdapterDSource *adapter,
+					  gchar          *value );
+
+ItemObjectType addressbook_type2item 	( AddressObjectType abType );
 
 #endif /* __ADDRESSITEM_H__ */
 

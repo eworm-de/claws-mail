@@ -40,8 +40,11 @@ sylpheed_SOURCES = \
 	addressbook.c addressbook.h \
 	addr_compl.c addr_compl.h \
 	addressitem.h \
+	adbookbase.h \
 	addritem.c addritem.h \
 	addrcache.c addrcache.h \
+	addrclip.c addrclip.h \
+	addrselect.c addrselect.h \
 	addrbook.c addrbook.h \
 	addrindex.c addrindex.h \
 	mgutils.c mgutils.h \

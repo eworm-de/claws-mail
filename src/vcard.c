@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Match Grun
+ * Copyright (C) 2001-2002 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 #include "vcard.h"
 #include "addritem.h"
 #include "addrcache.h"
+#include "adbookbase.h"
 
 #define GNOMECARD_DIR     ".gnome"
 #define GNOMECARD_FILE    "GnomeCard"
@@ -45,13 +46,14 @@
 VCardFile *vcard_create() {
 	VCardFile *cardFile;
 	cardFile = g_new0( VCardFile, 1 );
-	cardFile->name = NULL;
-	cardFile->path = NULL;
-	cardFile->file = NULL;
-	cardFile->bufptr = cardFile->buffer;
+	cardFile->type = ADBOOKTYPE_VCARD;
 	cardFile->addressCache = addrcache_create();
-	cardFile->retVal = MGU_SUCCESS;
 	cardFile->accessFlag = FALSE;
+	cardFile->retVal = MGU_SUCCESS;
+
+	cardFile->file = NULL;
+	cardFile->path = NULL;
+	cardFile->bufptr = cardFile->buffer;
 	return cardFile;
 }
 
@@ -60,8 +62,7 @@ VCardFile *vcard_create() {
 */
 void vcard_set_name( VCardFile* cardFile, const gchar *value ) {
 	g_return_if_fail( cardFile != NULL );
-	cardFile->name = mgu_replace_string( cardFile->name, value );
-	g_strstrip( cardFile->name );
+	addrcache_set_name( cardFile->addressCache, value );
 }
 void vcard_set_file( VCardFile* cardFile, const gchar *value ) {
 	g_return_if_fail( cardFile != NULL );
@@ -111,7 +112,7 @@ ItemFolder *vcard_get_root_folder( VCardFile *cardFile ) {
 }
 gchar *vcard_get_name( VCardFile *cardFile ) {
 	g_return_val_if_fail( cardFile != NULL, NULL );
-	return cardFile->name;
+	return addrcache_get_name( cardFile->addressCache );
 }
 
 /*
@@ -140,25 +141,25 @@ void vcard_free( VCardFile *cardFile ) {
 	/* Close file */
 	if( cardFile->file ) fclose( cardFile->file );
 
-	/* Free internal stuff */
-	g_free( cardFile->name );
-	g_free( cardFile->path );
-
 	/* Clear cache */
 	addrcache_clear( cardFile->addressCache );
 	addrcache_free( cardFile->addressCache );
 
+	/* Free internal stuff */
+	g_free( cardFile->path );
+
 	/* Clear pointers */
 	cardFile->file = NULL;
-	cardFile->name = NULL;
 	cardFile->path = NULL;
+	cardFile->bufptr = NULL;
+
+	cardFile->type = ADBOOKTYPE_NONE;
 	cardFile->addressCache = NULL;
-	cardFile->retVal = MGU_SUCCESS;
 	cardFile->accessFlag = FALSE;
+	cardFile->retVal = MGU_SUCCESS;
 
 	/* Now release file object */
 	g_free( cardFile );
-
 }
 
 /*
@@ -168,7 +169,6 @@ void vcard_print_file( VCardFile *cardFile, FILE *stream ) {
 	g_return_if_fail( cardFile != NULL );
 
 	fprintf( stream, "VCardFile:\n" );
-	fprintf( stream, "     name: '%s'\n", cardFile->name );
 	fprintf( stream, "file spec: '%s'\n", cardFile->path );
 	fprintf( stream, "  ret val: %d\n",   cardFile->retVal );
 	addrcache_print( cardFile->addressCache, stream );
@@ -270,11 +270,10 @@ static void vcard_free_lists( GSList *listName, GSList *listAddr, GSList *listRe
 * Param: cardFile - object.
 * Param: tagvalue - will be placed into the linked list.
 */
-static gchar *vcard_read_qp( VCardFile *cardFile, gchar *tagvalue ) {
+static gchar *vcard_read_qp( VCardFile *cardFile, char *tagvalue ) {
 	GSList *listQP = NULL;
 	gint len = 0;
 	gchar *line = tagvalue;
-
 	while( line ) {
 		listQP = g_slist_append( listQP, line );
 		len = strlen( line ) - 1;
@@ -298,7 +297,7 @@ static gchar *vcard_read_qp( VCardFile *cardFile, gchar *tagvalue ) {
 * Parse tag name from line buffer.
 * Return: Buffer containing the tag name, or NULL if no delimiter char found.
 */
-static gchar *vcard_get_tagname( gchar* line, gchar dlm ) {
+static gchar *vcard_get_tagname( char* line, gchar dlm ) {
 	gint len = 0;
 	gchar *tag = NULL;
 	gchar *lptr = line;
@@ -469,9 +468,7 @@ static void vcard_read_file( VCardFile *cardFile ) {
 	/* GSList *listQP = NULL; */
 
 	for( ;; ) {
-		gchar *line;
-
-		line = vcard_get_line( cardFile );
+		gchar *line =  vcard_get_line( cardFile );
 		if( line == NULL ) break;
 
 		/* fprintf( stdout, "%s\n", line ); */
@@ -484,7 +481,6 @@ static void vcard_read_file( VCardFile *cardFile ) {
 		}
 
 		/* fprintf( stdout, "\ttemp:  %s\n", tagtemp ); */
-
 		tagvalue = vcard_get_tagvalue( line, VCARD_SEP_TAG );
 		if( tagvalue == NULL ) {
 			g_free( tagtemp );
@@ -544,6 +540,7 @@ static void vcard_read_file( VCardFile *cardFile ) {
 		g_free( tagvalue );
 		g_free( tagtemp );
 		g_free( line );
+		line = NULL;
 	}
 
 	/* Free lists */
@@ -614,6 +611,7 @@ GList *vcard_get_all_persons( VCardFile *cardFile ) {
 */
 gboolean vcard_validate( const VCardFile *cardFile ) {
 	gboolean retVal;
+	gchar *name;
 
 	g_return_val_if_fail( cardFile != NULL, FALSE );
 
@@ -624,8 +622,9 @@ gboolean vcard_validate( const VCardFile *cardFile ) {
 	else {
 		retVal = FALSE;
 	}
-	if( cardFile->name ) {
-		if( strlen( cardFile->name ) < 1 ) retVal = FALSE;
+	name = addrcache_get_name( cardFile->addressCache );
+	if( name ) {
+		if( strlen( name ) < 1 ) retVal = FALSE;
 	}
 	else {
 		retVal = FALSE;
@@ -773,3 +772,4 @@ gint vcard_test_read_file( const gchar *fileSpec ) {
 /*
 * End of Source.
 */
+

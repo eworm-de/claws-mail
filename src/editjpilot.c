@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Match Grun
+ * Copyright (C) 2001-2002 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -393,8 +393,9 @@ AdapterDSource *addressbook_edit_jpilot( AddressIndex *addrIndex, AdapterDSource
 	if( ads ) {
 		ds = ads->dataSource;
 		jpf = ds->rawDataSource;
-		if (jpf->name)
-			gtk_entry_set_text(GTK_ENTRY(jpilotedit.name_entry), jpf->name);
+		if ( jpilot_get_name( jpf ) )
+			gtk_entry_set_text(GTK_ENTRY(jpilotedit.name_entry),
+				jpilot_get_name( jpf ) );
 		if (jpf->path)
 			gtk_entry_set_text(GTK_ENTRY(jpilotedit.file_entry), jpf->path);
 		gtk_window_set_title( GTK_WINDOW(jpilotedit.window), _("Edit JPilot Entry"));
