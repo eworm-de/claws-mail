@@ -110,6 +110,7 @@ GList *addrcache_get_group_for_person		( AddressCache *cache, ItemPerson *person
 
 ItemFolder *addrcache_find_root_folder		( ItemFolder *folder );
 GList *addrcache_get_all_persons		( AddressCache *cache );
+GList *addrcache_get_all_groups			( AddressCache *cache );
 
 ItemFolder *addrcache_remove_folder		( AddressCache *cache, ItemFolder *folder );
 ItemFolder *addrcache_remove_folder_delete	( AddressCache *cache, ItemFolder *folder );
