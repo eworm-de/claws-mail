@@ -4171,7 +4171,7 @@ void summary_reply(SummaryView *summaryview, ComposeMode mode)
 		}
 		break;
 	case COMPOSE_FORWARD_INLINE:
-		if (!sel->next) {
+		if (sel && !sel->next) {
 			compose_forward(NULL, msginfo, FALSE, text);
 			break;
 		}
