@@ -3882,7 +3882,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	gchar *str;
 	gchar *name;
 	GSList *list;
-	gchar * std_headers[] = {"To:", "Cc:", "Bcc:", "Newsgroups:", "Reply-To:", "Followup-To:", NULL};
+	gchar *std_headers[] = {"To:", "Cc:", "Bcc:", "Newsgroups:", "Reply-To:", "Followup-To:", NULL};
 
 	/* struct utsname utsbuf; */
 
@@ -4132,36 +4132,36 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	/* get special headers */
 	for (list = compose->header_list; list; list = list->next) {
     		ComposeHeaderEntry *headerentry;
-		gchar * tmp;
-		gchar * headername;
-		gchar * headername_wcolon;
-		gchar * headername_trans;
-		gchar * headervalue;
+		gchar *tmp;
+		gchar *headername;
+		gchar *headername_wcolon;
+		gchar *headername_trans;
+		gchar *headervalue;
 		gchar **string;
 		gboolean standard_header = FALSE;
 
 		headerentry = ((ComposeHeaderEntry *)list->data);
 		
 		tmp = g_strdup(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(headerentry->combo)->entry)));
-		if (!strstr(tmp,":")) {
-			headername_wcolon = g_strconcat(tmp,":",NULL);
+		if (!strstr(tmp, ":")) {
+			headername_wcolon = g_strconcat(tmp, ":", NULL);
 			headername = g_strdup(tmp);
 		} else {
 			headername_wcolon = g_strdup(tmp);
-			headername = g_strdup(strtok(tmp,":"));
+			headername = g_strdup(strtok(tmp, ":"));
 		}
 		g_free(tmp);
 		
 		headervalue = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
 		string = std_headers;
 		while (*string != NULL) {
-			headername_trans = (prefs_common.trans_hdr ? gettext(*string) : *string);
+			headername_trans = prefs_common.trans_hdr ? gettext(*string) : *string;
 			if (!strcmp(headername_trans,headername_wcolon))
 				standard_header = TRUE;
 			string++;
 		}
 		if (!standard_header && !IS_IN_CUSTOM_HEADER(headername))
-			fprintf(fp,"%s %s\n",headername_wcolon, headervalue);
+			fprintf(fp, "%s %s\n", headername_wcolon, headervalue);
 				
 		g_free(headername);
 		g_free(headername_wcolon);
@@ -4254,7 +4254,7 @@ static void compose_create_header_entry(Compose *compose)
 		gchar *last_header_entry = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry));
 		string = headers;
 		while (*string != NULL) {
-			if (!strcmp(*string,last_header_entry))
+			if (!strcmp(*string, last_header_entry))
 				standard_header = TRUE;
 			string++;
 		}

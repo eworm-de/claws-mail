@@ -1,3 +1,8 @@
+2002-09-17 [alfons]	0.8.2claws55
+	
+	* src/compose.c
+		beautify a little bit
+
 2002-09-17 [christoph]	0.8.2claws54
 
 	* src/folder.c
