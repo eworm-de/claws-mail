@@ -71,7 +71,13 @@ You can sort the summary view in many ways, by clicking the button that is above
 <H2><A NAME="ss7.5">7.5 Setting up an account/changing an account</A>
 </H2>
 
-<P>In order to set up an account in Sylpheed, in the configuration menu you select "Create new account". If you want to change the settings of an existing account, you select the "Edit accounts..." option from the configuration menu, and there you select the account you want to change. After that you press "edit". Then a dialog appears in which you can enter or update the following areas:
+<P>In order to set up an account in Sylpheed, in the configuration
+menu you select "Create new account". If you want to change the 
+settings of an existing account, you select the "Edit accounts..." 
+option from the configuration menu, and there you select the account 
+you want to change. After that you press "edit". Then a dialog 
+appears in which you can enter or update the following areas:
+<P>
 <P>
 <H3><A NAME="Basic"></A> Basic tab</H3>
 
@@ -79,39 +85,107 @@ You can sort the summary view in many ways, by clicking the button that is above
 <P>
 <P>
 <P>
-<P>In the "Basic" tab you name the account. This is to make identifying the account easier.
-<P>Choose a name that tells something about the account, like the name of the ISP, mailbox or news-server you are setting up.  You can select this account to be the default account ("Usually used").
-<P>Enter your name and e-mail address, and if you have one, the organization that you use Sylpheed for.
-In the Protocol box you select the type of service that this account will be using. The flavors you can choose are: POP3 normal, POP3 APOP auth, IMAP4, NNTP news or None (local).
-In the "inbox" field you can enter the mail folder where the mail for this account will be stored in. This option is disabled when you set up an NNTP News account.
-<P>For POP3 and IMAP services you can then specify the server where your mail is stored. Details about this name, and also the name that goes into the field for "SMPT server (send)" should be given to you by your ISP.
-<P>For a local unix mailbox, the "Server for receiving" is disabled, since the mail will be received for you.
-<P>The fields for User ID and Password will also be disabled for accounts that do no deal with POP3 or IMAP services. Otherwise you can enter the login name and password for the e-mail server with your ISP here. Usually these are the same as your login name and password to access the dial-in service, but this is not standard. If in doubt, contact the helpdesk of your ISP.  
-<P>
+<P>In the "Basic" tab you name the account. This is to make identifying 
+the account easier.
+<P>Choose a name that tells something about the account, like the 
+name of the ISP, mailbox or news-server you are setting up.  
+You can select this account to be the default account ("Usually used").
+<P>Enter your name and e-mail address, and if you have one, the 
+organization that you use Sylpheed for.
+In the Protocol box you select the type of service that this 
+account will be using. The flavors you can choose are: POP3 normal, 
+POP3 APOP auth, IMAP4, NNTP news or None (local).
+In the "inbox" field you can enter the mail folder where the mail 
+for this account will be stored in. This option is disabled when 
+you set up an NNTP News account.
+<P>For POP3 and IMAP services you can then specify the server where 
+your mail is stored. Details about this name, and also the name 
+that goes into the field for "SMPT server (send)" should be given 
+to you by your ISP.
+<P>For a local unix mailbox, the "Server for receiving" is disabled, 
+since the mail will be received for you.
+<P>The fields for User ID and Password will also be disabled for 
+accounts that do no deal with POP3 or IMAP services. Otherwise 
+you can enter the login name and password for the e-mail server 
+with your ISP here. Usually these are the same as your login 
+name and password to access the dial-in service, but this is 
+not standard. If in doubt, contact the helpdesk of your ISP.
 <H3><A NAME="Receive"></A> Receive tab</H3>
 
 <P>
 <P>
 <P>
 <P>
-<P>The "Receive" tab is only used for POP3 accounts. Here you specify if the mails that were successfully retrieved should be removed from the server. You can also tell Sylpheed to get all the messages there, not only the ones you already received (in case you leave your messages on the server). The third option enables this account to be included when mail is checked for "all accounts" (see the message menu for this), and if the incoming messages should immediately be filtered when received.
+<P>The "Receive" tab is only used for POP3 accounts. Here you specify 
+if the mails that were successfully retrieved should be removed 
+from the server. You can also tell Sylpheed to get all the 
+messages there, not only the ones you already received (in case 
+you leave your messages on the server).
+<P>You can also define a limit for the size of the messages to
+download. Any message bigger than this limit will not be
+downloaded.
+<P>You can also choose to filter messages on receiving, if not
+set, the messages are only filtered when you use the filter
+entry of the Tools menu.
+<P>The default inbox defines the folder that receives the incoming
+(and not filtered) messages for this account.
+You can define a different folder as inbox for each of your
+accounts.
+<P>If the "Get all checks for messages on this account" is turned
+off, when using the "Get all" menu entry (or toolbar button)
+this account will not be checked. To check for new mails for
+this account, you must select the account, then use the "Get"
+toolbar button (or menu entry).
 <H3><A NAME="Send"></A> Send tab</H3>
 
 <P>
 <P>
 <P>
 <P>
-<P>In the "Send" tab you can set up some more settings.
+<P>In the "Send" tab you can define the settings that apply to sending mails.
+<P>You can choose to add the date field to the messages you send,
+generate a unique message identifier, or add custom header
+fields.
+<P>The user defined header field should be set up to contain your
+X-face picture.
+<P>If your SMTP server needs authentication, define the user ID and
+password to use in this tab.
+<P>
 <H3><A NAME="Compose"></A> Compose tab</H3>
 
 <P>
 <P>
 <P>
 <P>
-<P>In the "Compose" tab you can define your signature file.
+<P>In the "Compose" tab you can define your signature file, 
+choose to always copy someone when sending mails (you can
+choose to always copy your boss, or yourself), and define the
+Reply-To field for the current account.
+<H3><A NAME="Privacy"></A> Privacy</H3>
+
+<P>This tab is only available when Sylpheed has been compiled
+with GPGME and GNUPG (for signature and encryption).
+<P>
+<P>
+<P>
+<P>
+<P>With this tab you can choose the keys to use when signing
+or encrypting mails for this account.
 <H3><A NAME="Advanced"></A> Advanced tab</H3>
 
-<P>In the "Advanced" tab you can edit the portnumbers for the servers you will be using. This normally will need no change.
+<P>The Advanced tab contains some settings you normally do
+not need to change (unless you really know what you are
+doing).
+<P>
+<P>
+<P>
+<P>
+<P>You can change the default SMTP or POP3 ports used when
+connecting to your mail server, define a domain name to
+use when sending a mail.
+<P>The default folders for the sent messages, drafts and
+trash can be defined here. If not changed the current account
+will use the default folders.
 <HR>
 <A HREF="sylpheed-8.html">Next</A>
 <A HREF="sylpheed-6.html">Previous</A>
