@@ -1,3 +1,13 @@
+2003-03-17 [christoph]	0.8.11claws25
+
+	* src/folder.c
+	* src/procmsg.c
+	* src/summaryview.c
+		unset NEW and UNREAD flags when message is ignored, to make
+		sure messages don't show up as unread on other IMAP clients,
+		because the IGNORE_THREAD flag can not be syncronized through
+		the IMAP folder
+
 2003-03-17 [christoph]	0.8.11claws24
 
 	* src/imap.c

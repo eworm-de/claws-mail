@@ -5110,6 +5110,7 @@ static void summary_ignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpoin
 	if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 		summaryview->unreadmarked--;
 
+	procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
 	procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 
 	summary_set_row_marks(summaryview, row);
@@ -5122,9 +5123,13 @@ static void summary_ignore_thread(SummaryView *summaryview)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
 
+	folder_item_update_freeze();
+
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next) {
 		gtk_ctree_pre_recursive(ctree, GTK_CTREE_NODE(cur->data), GTK_CTREE_FUNC(summary_ignore_thread_func), summaryview);
 	}
+
+	folder_item_update_thaw();
 
 	summary_status_show(summaryview);
 }
@@ -5155,9 +5160,13 @@ static void summary_unignore_thread(SummaryView *summaryview)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
 
+	folder_item_update_freeze();
+
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next) {
 		gtk_ctree_pre_recursive(ctree, GTK_CTREE_NODE(cur->data), GTK_CTREE_FUNC(summary_unignore_thread_func), summaryview);
 	}
+
+	folder_item_update_thaw();
 
 	summary_status_show(summaryview);
 }
