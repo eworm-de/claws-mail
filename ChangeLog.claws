@@ -1,3 +1,8 @@
+2001-11-04 [alfons]
+
+	* AUTHORS
+		add Jonathan Ware and close "[ #475955 ] Enhanced Mailto Patch"
+
 2001-11-04 [christoph]	0.6.4claws23
 
 	* src/main.c
