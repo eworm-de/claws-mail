@@ -5247,7 +5247,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose_select_account(compose, account, TRUE);
 
 	menu_set_active(ifactory, "/Edit/Auto wrapping", prefs_common.autowrap);
-	menu_set_active(ifactory, "/View/Ruler", prefs_common.show_ruler);
 	if (account->set_autocc && account->auto_cc && mode != COMPOSE_REEDIT)
 		compose_entry_append(compose, account->auto_cc, COMPOSE_CC);
 
