@@ -1,3 +1,12 @@
+2002-10-07 [paul]	0.8.3claws53
+
+	* po/it.po
+	  po/pt_BR.po
+	  po/sr.po
+	  	updated messages catalogs, submitted by
+		Alessandro Maestri, Fabio Jr.Beneditto 
+		and Urke MMI, respectively.
+
 2002-10-07 [christoph]	0.8.3claws52
 
 	* src/folder.[ch]
