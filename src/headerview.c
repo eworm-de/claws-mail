@@ -135,13 +135,11 @@ void headerview_init(HeaderView *headerview)
 {
 	if (!boldfont)
 #ifdef WIN32
-	if (prefs_common.smallfont)
-		boldfont = gdk_fontset_load(prefs_common.boldfont);
-	else
-		boldfont = gdk_fontset_load(BOLD_FONT);
-#else
-		boldfont = gdk_fontset_load(BOLD_FONT);
+		if (prefs_common.smallfont)
+			boldfont = gtkut_font_load(prefs_common.boldfont);
+		else
 #endif
+		boldfont = gtkut_font_load(BOLD_FONT);
 
 #define SET_FONT_STYLE(wid) \
 { \

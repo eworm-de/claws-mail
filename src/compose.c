@@ -1695,7 +1695,13 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			compose_entry_append(compose,
 					   compose->ml_post,
 					   COMPOSE_TO);
-		else
+		else if (!(to_all || ignore_replyto)
+			 && msginfo->folder
+			 && msginfo->folder->prefs->enable_default_reply_to) {
+			compose_entry_append(compose,
+			    msginfo->folder->prefs->default_reply_to,
+			    COMPOSE_TO);
+		} else
 			compose_entry_append(compose,
 				 (compose->replyto && !ignore_replyto)
 				 ? compose->replyto
@@ -4878,7 +4884,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	GdkColormap *cmap;
 	GdkColor color[1];
 	gboolean success[1];
-	GdkFont   *font;
 	GtkWidget *popupmenu;
 	GtkItemFactory *popupfactory;
 	GtkItemFactory *ifactory;
@@ -5069,20 +5074,9 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 		new_style = gtk_style_copy(style);
 
 	if (prefs_common.textfont) {
-		if (MB_CUR_MAX == 1) {
-			gchar *fontstr, *p;
+		GdkFont *font;
 
-			Xstrdup_a(fontstr, prefs_common.textfont, );
-			if (fontstr && (p = strchr(fontstr, ',')) != NULL)
-				*p = '\0';
-#ifdef WIN32
-			font = gdk_fontset_load(fontstr);
-#else
-			font = gdk_font_load(fontstr);
-#endif
-		} else
-			font = gdk_fontset_load(prefs_common.textfont);
-		if (font) {
+		if ((font = gtkut_font_load(prefs_common.textfont)) != NULL) {
 			gdk_font_unref(new_style->font);
 			new_style->font = font;
 		}
@@ -6702,6 +6696,11 @@ static void compose_send_later_cb(gpointer data, guint action,
 
 	val = compose_queue_sub(compose, NULL, NULL, TRUE);
 	if (!val) gtk_widget_destroy(compose->window);
+}
+
+void compose_draft (gpointer data) 
+{
+	compose_draft_cb(data, 0, NULL);	
 }
 
 static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)

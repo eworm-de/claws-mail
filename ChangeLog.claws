@@ -1,3 +1,52 @@
+2002-11-05 [colin]	0.8.5claws76
+
+	* src/main.c
+		Changes choices if compose windows are opened to
+		Discard, Draft, Don't quit
+
+2002-11-05 [thorsten]	0.8.5claws75
+
+	* src/compose.c
+		reenabled default_reply_to folder option
+
+2002-11-05 [colin]	0.8.5claws74
+
+	* src/compose.[ch] 
+		add compose_draft()
+	* src/crash.c
+		add SIGTERM handler
+	* src/main.[ch]
+		add clean_quit() for the SIGTERM handler
+
+2002-11-05 [paul]	0.8.5claws73
+	
+	* po/es.po
+		updated by Ricardo Mones Lastra
+
+2002-11-05 [melvin]	0.8.5claws72
+
+	* src/logwindow.c
+		Fixed log-clipping bug #616795.
+		To stop logging in the log window use 0 length.
+	* src/prefs_common.c
+		Added a label to inform about the 0 log length behaviour.
+
+2002-11-05 [paul]	0.8.5claws71
+
+	* sync with 0.8.5cvs17
+		see ChangeLog 2002-11-05
+
+2002-11-04 [paul]	0.8.5claws70
+
+	* sylpheed-128x128.png
+	  sylpheed-64x64.png
+	  sylpheed.png
+	  	replace with pngcrushed icons. Submitted by Nicolas Kaiser,
+		<nikai@users.sourceforge.net>
+		
+	* po/bg.po
+		updated by George Danchev
+
 2002-11-03 [thorsten]	0.8.5claws69
 
 	* src/main.c

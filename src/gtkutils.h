@@ -80,6 +80,9 @@
 gint gtkut_get_font_width		(GdkFont	*font);
 gint gtkut_get_font_height		(GdkFont	*font);
 
+GdkFont *gtkut_font_load		(const gchar	*fontset_name);
+GdkFont *gtkut_font_load_from_fontset	(const gchar	*fontset_name);
+
 void gtkut_convert_int_to_gdk_color	(gint		 rgbvalue,
 					 GdkColor	*color);
 

@@ -650,12 +650,10 @@ void summary_init(SummaryView *summaryview)
 		if (!smallfont)
 #ifdef WIN32
 			if (prefs_common.smallfont)
-				smallfont = gdk_fontset_load(prefs_common.smallfont);
+				smallfont = gtkut_font_load(prefs_common.smallfont);
 			else
-				smallfont = gdk_fontset_load(SMALL_FONT);
-#else
-			smallfont = gdk_fontset_load(SMALL_FONT);
 #endif
+			smallfont = gtkut_font_load(SMALL_FONT);
 		small_style->font = smallfont;
 		small_marked_style = gtk_style_copy(small_style);
 		small_marked_style->fg[GTK_STATE_NORMAL] =
@@ -670,12 +668,10 @@ void summary_init(SummaryView *summaryview)
 		if (!boldfont)
 #ifdef WIN32
 			if (prefs_common.boldfont)
-				boldfont = gdk_fontset_load(prefs_common.boldfont);
+				boldfont = gtkut_font_load(prefs_common.boldfont);
 			else
-				boldfont = gdk_fontset_load(BOLD_FONT);
-#else
-			boldfont = gdk_fontset_load(BOLD_FONT);
 #endif
+			boldfont = gtkut_font_load(BOLD_FONT);
 		bold_style->font = boldfont;
 		bold_marked_style = gtk_style_copy(bold_style);
 		bold_marked_style->fg[GTK_STATE_NORMAL] =

@@ -172,6 +172,8 @@ _("File `%s' already exists.\n"
 	} \
 }
 
+static MainWindow *static_mainwindow;
+
 #ifdef WIN32
 int APIENTRY WinMain(HINSTANCE hInstance,
 		     HINSTANCE hPrevInstance,
@@ -460,6 +462,7 @@ int main(int argc, char *argv[])
 	if (cmd.online_mode == ONLINE_MODE_ONLINE)
 		main_window_toggle_work_offline(mainwin, FALSE);
 	
+	static_mainwindow = mainwin;
 	gtk_main();
 
 	addressbook_destroy();
@@ -615,16 +618,52 @@ static void initial_processing(FolderItem *item, gpointer data)
 	main_window_cursor_normal(mainwin);
 }
 
+static void draft_all_messages(void)
+{
+	GList * compose_list = compose_get_compose_list();
+	GList * elem = NULL;
+	if(compose_list) {
+		for (elem = compose_list; elem != NULL && elem->data != NULL; elem = elem->next) {
+			Compose *c = (Compose*)elem->data;
+			compose_draft(c);
+		}
+	}	
+}
+
+void clean_quit(void)	
+{
+	draft_all_messages();
+
+	if (prefs_common.warn_queued_on_exit)
+	{	/* disable the popup */ 
+		prefs_common.warn_queued_on_exit = FALSE;	
+		app_will_exit(NULL, static_mainwindow);
+		prefs_common.warn_queued_on_exit = TRUE;
+		prefs_common_save_config();
+	} else {
+		app_will_exit(NULL, static_mainwindow);
+	}
+	exit(0);
+}
+
 void app_will_exit(GtkWidget *widget, gpointer data)
 {
 	MainWindow *mainwin = data;
 	gchar *filename;
-
+	
 	if (compose_get_compose_list()) {
-		if (alertpanel(_("Notice"),
-			       _("Composing message exists. Really quit?"),
-			       _("OK"), _("Cancel"), NULL) != G_ALERTDEFAULT)
-			return;
+		gint val = alertpanel(_("Notice"),
+			       _("Composing message exists."),
+			       _("Draft them"), _("Discard them"), _("Don't quit"));
+		switch (val) {
+			case G_ALERTOTHER:
+				return;
+			case G_ALERTALTERNATE:
+				break;
+			default:
+				draft_all_messages();
+		}
+		
 		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}
 

@@ -539,21 +539,17 @@ void folderview_init(FolderView *folderview)
 	if (!normalfont)
 #ifdef WIN32
 		if (prefs_common.smallfont)
-			normalfont = gdk_fontset_load(prefs_common.normalfont);
+			normalfont = gtkut_font_load(prefs_common.normalfont);
 		else
-			normalfont = gdk_fontset_load(NORMAL_FONT);
-#else
-		normalfont = gdk_fontset_load(NORMAL_FONT);
 #endif
+		normalfont = gtkut_font_load(NORMAL_FONT);
 	if (!boldfont)
 #ifdef WIN32
 	if (prefs_common.smallfont)
-		boldfont = gdk_fontset_load(prefs_common.boldfont);
+		boldfont = gtkut_font_load(prefs_common.boldfont);
 	else
-		boldfont = gdk_fontset_load(BOLD_FONT);
-#else
-		boldfont = gdk_fontset_load(BOLD_FONT);
 #endif
+		boldfont = gtkut_font_load(BOLD_FONT);
 
 	if (!bold_style) {
 		bold_style = gtk_style_copy(gtk_widget_get_style(ctree));

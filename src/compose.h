@@ -271,5 +271,6 @@ void compose_reflect_prefs_all			(void);
 void compose_reflect_prefs_pixmap_theme	(void);
 
 void compose_destroy_all                (void);
+void compose_draft	                (gpointer data);
 
 #endif /* __COMPOSE_H__ */
