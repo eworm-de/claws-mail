@@ -4216,6 +4216,21 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	if (!event) return;
 
 	switch (event->keyval) {
+	case GDK_Q:             /* Quit */
+		RETURN_IF_LOCKED();
+		BREAK_ON_MODIFIER_KEY();
+
+		if (prefs_common.confirm_on_exit) {
+			if (alertpanel(_("Exit"), _("Exit this program?"),
+			   _("OK"), _("Cancel"), NULL)
+			   == G_ALERTDEFAULT) {
+				manage_window_focus_in
+					(summaryview->mainwin->window,
+					 NULL, NULL);
+					app_will_exit(NULL, summaryview->mainwin);
+			}
+		}
+		return;
 	case GDK_Escape:
 		gtk_widget_grab_focus(summaryview->folderview->ctree);
 		return;
@@ -4265,6 +4280,15 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		RETURN_IF_LOCKED();
 		BREAK_ON_MODIFIER_KEY();
 		summary_delete(summaryview);
+		break;
+	case GDK_asterisk:      /* Mark */
+		summary_mark(summaryview);
+		break;
+	case GDK_exclam:        /* Mark as unread */
+		summary_mark_as_unread(summaryview);
+		break;
+	case GDK_BackSpace:     /* Page up */
+		textview_scroll_page(summaryview->messageview->textview, TRUE);
 		break;
 	default:
 		break;

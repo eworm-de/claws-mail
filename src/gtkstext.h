@@ -245,6 +245,23 @@ void       gtk_stext_set_cursor_type (GtkSText           *text,
 				      GtkSTextCursorType  cursor_type);
 void       gtk_stext_compact_buffer	(GtkSText *text);
 
+/* these are normally not exported! */
+void gtk_stext_move_forward_character    (GtkSText          *text);
+void gtk_stext_move_backward_character   (GtkSText          *text);
+void gtk_stext_move_forward_word         (GtkSText          *text);
+void gtk_stext_move_backward_word        (GtkSText          *text);
+void gtk_stext_move_beginning_of_line    (GtkSText          *text);
+void gtk_stext_move_end_of_line          (GtkSText          *text);
+void gtk_stext_move_next_line            (GtkSText          *text);
+void gtk_stext_move_previous_line        (GtkSText          *text);
+void gtk_stext_delete_forward_character  (GtkSText          *text);
+void gtk_stext_delete_backward_character (GtkSText          *text);
+void gtk_stext_delete_forward_word       (GtkSText          *text);
+void gtk_stext_delete_backward_word      (GtkSText          *text);
+void gtk_stext_delete_line               (GtkSText          *text);
+void gtk_stext_delete_to_line_end        (GtkSText          *text);
+
+
 /* Set the rmargin for the stext. if rmargin is 0, then reset to old 
  * behaviour */
 void	   gtk_stext_set_wrap_rmargin (GtkSText *text, gint rmargin);

@@ -1,3 +1,17 @@
+2002-01-18 [carsten]	0.7.0claws12
+	* src/html.c
+		small hack to fix a segfault with an empty href
+		(reported by Alexandra Walford <deeni@altern.org>)
+	* src/mainwindow.c
+	* src/summaryview.c
+		the shortcuts for Mark und Mark as unread are hardcoded
+		again
+	* src/compose.c
+	* src/gtkstext.[ch]
+		readded the shortcuts in gtkstext but made them
+		customizeable (simply by adding a menu plus a wrapper
+		to compose.c)
+
 2002-01-17 [melvin]	0.7.0claws11
 
 	* src/gtkspell.c
