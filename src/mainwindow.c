@@ -1016,14 +1016,6 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 				       prefs_common.show_statusbar);
 	
-	gtk_widget_hide(GTK_WIDGET(mainwin->summaryview->hbox_search));
-	
-	if (prefs_common.show_searchbar) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mainwin->summaryview->toggle_search), TRUE);
-		if (prefs_common.summary_quicksearch_type != S_SEARCH_EXTENDED)
-			gtk_widget_hide(summaryview->search_description);
-	}
-
 	/* set account selection menu */
 	ac_menu = gtk_item_factory_get_widget
 		(ifactory, "/Configuration/Change current account");
@@ -1042,7 +1034,7 @@ MainWindow *main_window_create(SeparateType type)
 		(GTK_WINDOW(win), 			\
 		 gtk_item_factory_from_widget(menu)->accel_group)		 
 	
-	ADD_MENU_ACCEL_GROUP_TO_WINDOW(summaryview->popupmenu,mainwin->window);
+	ADD_MENU_ACCEL_GROUP_TO_WINDOW(summaryview->popupmenu, mainwin->window);
 	
 	/* connect the accelerators for equivalent 
 	   menu items in different menus             */
@@ -2111,10 +2103,6 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 	else 
 		gtk_widget_hide(mainwin->messageview->mimeview->ctree_mainbox);
 
-	/* rehide quick search if necessary */
-	if (!prefs_common.show_searchbar)
-		gtk_widget_hide(mainwin->summaryview->hbox_search);
-	
 	mainwin->type = type;
 
 

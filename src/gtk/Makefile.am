@@ -22,6 +22,7 @@ libsylpheedgtk_la_SOURCES = \
 	pluginwindow.c \
 	prefswindow.c \
 	progressdialog.c \
+	quicksearch.c \
 	sslcertwindow.c
 
 sylpheedgtkincludedir = $(pkgincludedir)/gtk
@@ -45,6 +46,7 @@ sylpheedgtkinclude_HEADERS = \
 	pluginwindow.h \
 	prefswindow.h \
 	progressdialog.h \
+	quicksearch.h \
 	sslcertwindow.h
 
 AM_CPPFLAGS = \
