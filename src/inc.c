@@ -977,8 +977,6 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 {
 	FolderItem *inbox;
 	FolderItem *dropfolder;
-	IncSession *session = (IncSession *)state->data;
-	gint val;
 	gint msgnum;
 
 	/* CLAWS: get default inbox (perhaps per account) */

@@ -113,6 +113,9 @@ GSList *news_fetch_msginfos		 (Folder 	*folder,
 					  FolderItem 	*item,
 					  GSList 	*msgnum_list);
 
+gint news_post_stream			 (Folder 	*folder, 
+					  FILE 		*fp);
+
 Folder *news_folder_new(const gchar *name, const gchar *path)
 {
 	Folder *folder;

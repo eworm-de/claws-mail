@@ -1,3 +1,9 @@
+2002-10-11 [colin]	0.8.5claws20
+
+	* src/inc.c
+	  src/news.c
+		fix warnings
+
 2002-10-11 [colin]	0.8.5claws19
 
 	* src/mainwindow.c
