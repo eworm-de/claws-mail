@@ -1,3 +1,10 @@
+2002-07-21 [alfons]	0.7.8claws84
+
+	* src/gtkstext.c
+		make enter clear selection
+		(closes "[ 579888 ] Editor selection/entry error"
+		reported by Steve Lamb)
+
 2002-07-21 [alfons]	0.7.8claws83
 	
 	* src/summaryview.c
