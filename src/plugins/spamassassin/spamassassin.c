@@ -234,3 +234,8 @@ const gchar *plugin_desc()
 	       "a User Interface plugin too, otherwise you will have to "
 	       "manually write the plugin configuration.\n";
 }
+
+const gchar *plugin_type()
+{
+	return "Common";
+}

@@ -166,3 +166,8 @@ const gchar *plugin_desc()
 	return "This plugin renders HTML mail using the Dillo "
 		"web browser.";
 }
+
+const gchar *plugin_type()
+{
+	return "GTK";
+}

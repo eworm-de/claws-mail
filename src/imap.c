@@ -556,11 +556,10 @@ Session *imap_session_new(const PrefsAccount *account)
 		    (is_preauth) ? "pre" : "un");
 
 	session = g_new(IMAPSession, 1);
+	session_init(SESSION(session));
 	SESSION(session)->type             = SESSION_IMAP;
 	SESSION(session)->server           = g_strdup(account->recv_server);
 	SESSION(session)->sock             = imap_sock;
-	SESSION(session)->last_access_time = time(NULL);
-	SESSION(session)->data             = NULL;
 
 	SESSION(session)->destroy          = imap_session_destroy;
 

@@ -56,6 +56,21 @@ gboolean session_parent_input_cb	(GIOChannel	*source,
 gboolean session_child_input		(Session	*session);
 
 
+void session_init(Session *session)
+{
+	session->type = 0;
+	session->sock = NULL;
+
+	session->server = NULL;
+	session->port = 0;
+	session->state = SESSION_READY;
+	session->last_access_time = time(NULL);
+	session->data = NULL;
+
+	session->read_ch = NULL;
+	session->write_ch = NULL;
+}
+
 gint session_connect(Session *session, const gchar *server, gushort port)
 {
 	pid_t pid;

@@ -147,3 +147,8 @@ const gchar *plugin_desc()
 {
 	return "";
 }
+
+const gchar *plugin_type()
+{
+	return "GTK";
+}

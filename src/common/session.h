@@ -131,6 +131,7 @@ struct _Session
 	gpointer send_data_notify_data;
 };
 
+void session_init	(Session	*session);
 gint session_connect	(Session	*session,
 			 const gchar	*server,
 			 gushort	 port);

@@ -1,3 +1,37 @@
+2003-03-22 [christoph]	0.8.11claws39
+
+	* src/imap.c
+	* src/common/session.[ch]
+		Init session data to make sure we don't have invalid pointers
+		for read_ch and write_ch when new multi process sessions are
+		not used
+
+	* src/main.c
+	* src/common/plugin.c
+	* src/common/sylpheed.c
+	* src/plugins/demo/demo.c
+	* src/plugins/dillo_viewer/dillo_viewer.c
+	* src/plugins/mathml_viewer/mathml_viewer.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		add plugin types to allow loading plugins at different times
+		(and maybe for different frontends), because it's not good to
+		load GTK-Plugins gefore gtk_init was called
+
+	* configure.ac
+	* src/plugins/Makefile.am
+	* src/plugins/trayicon/.cvsignore		** NEW **
+	* src/plugins/trayicon/Makefile.am		** NEW **
+	* src/plugins/trayicon/eggtrayicon.c		** NEW **
+	* src/plugins/trayicon/eggtrayicon.h		** NEW **
+	* src/plugins/trayicon/gnome-mail.xpm		** NEW **
+	* src/plugins/trayicon/gnome-nomail.xpm		** NEW **
+	* src/plugins/trayicon/trayicon.c		** NEW **
+		New Trayicon plugin that shows an icon in a systray that uses
+		XEMBED protocol like Gnome's systray. Icon shows if there
+		are new mails and a tooltip shows information about new,
+		unread and total messages.
+
 2003-03-22 [paul]	0.8.11claws38
 
 	* src/common/smtp.c

@@ -104,7 +104,7 @@ gboolean sylpheed_init(int *argc, char ***argv)
 	ssl_init();
 #endif
 
-	plugin_load_all();
+	plugin_load_all("Common");
 
 	sylpheed_initialized = TRUE;
 
@@ -113,7 +113,7 @@ gboolean sylpheed_init(int *argc, char ***argv)
 
 void sylpheed_done()
 {
-	plugin_unload_all();
+	plugin_unload_all("Common");
 
 #if USE_OPENSSL
 	ssl_done();

@@ -72,6 +72,7 @@
 #include "gtkutils.h"
 #include "log.h"
 #include "prefs_toolbar.h"
+#include "plugin.h"
 
 #if USE_GPGME
 #  include "rfc2015.h"
@@ -356,9 +357,13 @@ int main(int argc, char *argv[])
 		main_window_toggle_work_offline(mainwin, FALSE);
 
 	prefs_toolbar_init();
+
+	plugin_load_all("GTK");
 	
 	static_mainwindow = mainwin;
 	gtk_main();
+
+	plugin_unload_all("GTK");
 
 	prefs_toolbar_done();
 

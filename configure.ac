@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=11
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws38
+EXTRA_VERSION=claws39
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -415,6 +415,13 @@ if test x"$ac_cv_enable_dillo_plugin" = xyes; then
 	PLUGINS="dillo $PLUGINS"
 fi
 
+AC_ARG_ENABLE(trayicon-plugin,
+	[  --enable-trayicon-plugin   System Tray Icon [default=no]],
+	[ac_cv_enable_trayicon_plugin=$enableval], [ac_cv_enable_trayicon_plugin=no])
+AM_CONDITIONAL(BUILD_TRAYICON_PLUGIN, test x"$ac_cv_enable_trayicon_plugin" = xyes)
+if test x"$ac_cv_enable_trayicon_plugin" = xyes; then
+	PLUGINS="trayicon $PLUGINS"
+fi
 
 dnl ****************************
 dnl ** Final configure output **
@@ -436,6 +443,7 @@ src/plugins/demo/Makefile
 src/plugins/spamassassin/Makefile
 src/plugins/mathml_viewer/Makefile
 src/plugins/dillo_viewer/Makefile
+src/plugins/trayicon/Makefile
 faq/Makefile
 faq/de/Makefile
 faq/en/Makefile
