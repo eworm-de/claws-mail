@@ -134,32 +134,6 @@
 
 -----------------------------------------------------------------------
 
-* ldif-to-xml.py
-
-  WHAT IT DOES
-
-  This python script converts the netscape ldif format address book to
-  the sylpheed xml format.
-
-  HOW TO USE IT
-
-  Inside Netscape export your address book to a file.
-  From the command line, execute:
-
-      ./ldif-to-xml.py <path/filename>
-
-  In case of trouble, just invoke your python interpreter directly:
-
-      python ldif-to-xml.py <path/filename>
-
-  Either way a file called addressbook.xml will be generated in the current
-  directory. This xml file should be merged with or simply placed in the
-  $HOME/.sylpheed directory.
-
-  Any problems, contact Rod Senra <rodrigo.senra@ic.unicamp.br>
-
------------------------------------------------------------------------
-
 * newscache_clean.pl
 
   WHAT IT DOES AND WHY IT DOES IT
