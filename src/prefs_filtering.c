@@ -188,7 +188,7 @@ static gint prefs_filtering_get_matching_from_action(gint action_id)
 	case ACTION_FORWARD_AS_ATTACHMENT:
 		return MATCHING_ACTION_FORWARD_AS_ATTACHMENT;
 	case ACTION_EXECUTE:
-		return MATCHING_ACTION_EXECUTE;
+		return MATCHING_EXECUTE;
 	default:
 		return -1;
 	}
@@ -860,7 +860,7 @@ static void prefs_filtering_select_set(FilteringProp * prop)
 		gtk_list_select_item(GTK_LIST(filtering.account_list),
 				     list_id);
 		break;
-	case MATCHING_ACTION_EXECUTE:
+	case MATCHING_EXECUTE:
 		gtk_list_select_item(GTK_LIST(filtering.action_list),
 				     ACTION_EXECUTE);
 		break;

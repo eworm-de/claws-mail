@@ -2000,7 +2000,7 @@ static gboolean mbox_purge_deleted(gchar * mbox)
 
 	mbox_cache_synchronize_from_file(mbox_fp, mbox, TRUE);
 
-	new = g_strconcat(mbox, ".", itos(mbox), NULL);
+	new = g_strconcat(mbox, ".", itos((int) mbox), NULL);
 	new_fp = fopen(new, "w");
 
 	if (change_file_mode_rw(new_fp, new) < 0) {

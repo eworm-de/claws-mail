@@ -54,7 +54,7 @@ FilteringAction * filteringaction_parse(gchar ** str)
 	switch (key) {
 	case MATCHING_ACTION_MOVE:
 	case MATCHING_ACTION_COPY:
-	case MATCHING_ACTION_EXECUTE:
+	case MATCHING_EXECUTE:
 		destination = matcher_parse_str(&tmp);
 		if (tmp == NULL) {
 			* str = NULL;
@@ -485,7 +485,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		gtk_widget_destroy(compose->window);
 		return FALSE;
 
-	case MATCHING_ACTION_EXECUTE:
+	case MATCHING_EXECUTE:
 
 		cmd = matching_build_command(action->destination, info);
 		if (cmd == NULL)
@@ -536,6 +536,7 @@ static gboolean filteringprop_apply(FilteringProp * filtering, MsgInfo * info,
 		case MATCHING_ACTION_MOVE:
 		case MATCHING_ACTION_DELETE:
 			return TRUE;
+		case MATCHING_EXECUTE:
 		case MATCHING_ACTION_COPY:
 		case MATCHING_ACTION_MARK:
 		case MATCHING_ACTION_MARK_AS_READ:
@@ -690,7 +691,7 @@ gchar * filteringaction_to_string(FilteringAction * action)
 	switch(action->type) {
 	case MATCHING_ACTION_MOVE:
 	case MATCHING_ACTION_COPY:
-	case MATCHING_ACTION_EXECUTE:
+	case MATCHING_EXECUTE:
 		return g_strconcat(command_str, " \"", action->destination,
 				   "\"", NULL);
 

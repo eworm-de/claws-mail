@@ -1,8 +1,25 @@
+2001-06-05 [hoa]
+
+	* src/Makefile.am
+		changed quote_fmt.[ch] into quote_fmt.tab.[ch]
+
+	* src/filtering.c
+	* src/matcher.c
+	* src/matcher.h
+	* src/prefs_filtering.c
+		now keep the configuration for execute action
+
+	* src/mbox_folder.c
+		fixed a warning
+
 2001-06-05 [paul]
 
         * sync with sylpheed 0.4.99cvs5
 
 2001-06-05 [hoa]
+
+	* src/Makefile.am
+		added quote_fmt.[ch]
 
 	* added src/quote_fmt.y
 	* added src/quote_fmt.l
@@ -12,7 +29,6 @@
 		parsing configuration for replying
 		and forwarding
 
-	* src/Makefile.am
 	* src/prefs_common.[ch]
 		added configuration UI for replying
 		and forwarding
