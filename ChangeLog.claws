@@ -1,3 +1,8 @@
+2003-07-28 [christoph]	0.9.3claws67
+
+	* src/procmsg.c
+		fix sync of procmsg_get_message_file_list
+
 2003-07-28 [christoph]	0.9.3claws66
 
 	* sync with 0.9.3cvs14

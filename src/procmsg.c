@@ -382,27 +382,31 @@ gchar *procmsg_get_message_file(MsgInfo *msginfo)
 	return filename;
 }
 
-GSList *procmsg_get_message_file_list(MsgInfoList *mlist)
+GSList *procmsg_get_message_file_list(GSList *mlist)
 {
-	GSList *file_list = NULL;
-	MsgInfo *msginfo;
-	gchar *file;
+        GSList *file_list = NULL;
+        MsgInfo *msginfo;
+        MsgFileInfo *fileinfo;
+        gchar *file;
 
-	while (mlist != NULL) {
-		msginfo = (MsgInfo *)mlist->data;
-		file = procmsg_get_message_file(msginfo);
-		if (!file) {
-			slist_free_strings(file_list);
-			g_slist_free(file_list);
-			return NULL;
-		}
-		file_list = g_slist_prepend(file_list, file);
-		mlist = mlist->next;
-	}
+        while (mlist != NULL) {
+                msginfo = (MsgInfo *)mlist->data;
+                file = procmsg_get_message_file(msginfo);
+                if (!file) {
+                        procmsg_message_file_list_free(file_list);
+                        return NULL;
+                }
+                fileinfo = g_new(MsgFileInfo, 1);
+                fileinfo->file = file;
+                fileinfo->flags = g_new(MsgFlags, 1);
+                *fileinfo->flags = msginfo->flags;
+                file_list = g_slist_prepend(file_list, fileinfo);
+                mlist = mlist->next;
+        }
 
-	file_list = g_slist_reverse(file_list);
+        file_list = g_slist_reverse(file_list);
 
-	return file_list;
+        return file_list;
 }
 
 void procmsg_message_file_list_free(MsgInfoList *file_list)
