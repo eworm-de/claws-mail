@@ -367,7 +367,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 	toolbar_main_set_sensitive(mainwin);
 	main_window_set_menu_sensitive(mainwin);
 
-	new_msgs = inc_start(inc_dialog);
+	new_msgs += inc_start(inc_dialog);
 	inc_finished(mainwin, new_msgs > 0);
 	main_window_unlock(mainwin);
  	inc_notify_cmd(new_msgs, notify);
