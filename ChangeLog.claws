@@ -1,3 +1,9 @@
+2003-01-31 [alfons]	0.8.9claws27
+
+	* src/textview.c
+		tune URI parser to accept mailto URLs with a '?'
+		(patch from Ruslan Balkin)
+
 2003-01-31 [colin]	0.8.9claws26
 
 	* src/summaryview.c
