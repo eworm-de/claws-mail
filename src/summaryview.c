@@ -83,6 +83,7 @@
 #include "description_window.h"
 #include "folderutils.h"
 #include "quicksearch.h"
+#include "partial_download.h"
 
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_STATUS_WIDTH	13
@@ -2956,11 +2957,19 @@ void summary_delete(SummaryView *summaryview)
 	/* if current folder is trash, ask for confirmation */
 	if (item->stype == F_TRASH) {
 		AlertValue aval;
+		MsgInfo *msginfo;
 
 		aval = alertpanel(_("Delete message(s)"),
 				  _("Do you really want to delete message(s) from the trash?"),
 				  _("Yes"), _("No"), NULL);
 		if (aval != G_ALERTDEFAULT) return;
+
+		for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next) {
+			GtkCTreeNode *row = GTK_CTREE_NODE(cur->data);
+			msginfo = gtk_ctree_node_get_row_data(ctree, row);
+			partial_mark_for_delete(msginfo);
+		}
+	
 	}
 
 	main_window_cursor_wait(summaryview->mainwin);

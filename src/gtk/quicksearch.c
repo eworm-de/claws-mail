@@ -170,6 +170,7 @@ static gchar *search_descr_strings[] = {
 	"n S",	 N_("messages which are in newsgroup S"),
 	"N",	 N_("new messages"),
 	"O",	 N_("old messages"),
+	"p",	 N_("incomplete messages (not entirely downloaded)"),
 	"r",	 N_("messages which have been replied to"),
 	"R",	 N_("read messages"),
 	"s S",	 N_("messages which contain S in subject"),
@@ -480,6 +481,7 @@ gchar *expand_search_string(const gchar *search_string)
 		{ "y",	"header \"X-Label\"",		1,	TRUE,	TRUE  },
 		{ "&",	"&",				0,	FALSE,	FALSE },
 		{ "|",	"|",				0,	FALSE,	FALSE },
+		{ "p",	"partial",			0,	FALSE, 	FALSE },
 		{ NULL,	NULL,				0,	FALSE,	FALSE }
 	};
 

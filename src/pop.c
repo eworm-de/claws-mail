@@ -36,7 +36,11 @@
 #include "prefs_account.h"
 #include "utils.h"
 #include "recv.h"
-
+#include "folder.h"
+#include "procmsg.h"
+#include "procheader.h"
+#include "msgcache.h"
+#include "partial_download.h"
 #include "log.h"
 #include "hooks.h"
 
@@ -78,7 +82,8 @@ static void pop3_session_destroy	(Session	*session);
 
 static gint pop3_write_msg_to_file	(const gchar	*file,
 					 const gchar	*data,
-					 guint		 len);
+					 guint		 len,
+					 const gchar 	*prefix);
 
 static Pop3State pop3_lookup_next	(Pop3Session	*session);
 static Pop3ErrorValue pop3_ok		(Pop3Session	*session,
@@ -89,7 +94,6 @@ static gint pop3_session_recv_msg		(Session	*session,
 static gint pop3_session_recv_data_finished	(Session	*session,
 						 guchar		*data,
 						 guint		 len);
-
 
 static gint pop3_greeting_recv(Pop3Session *session, const gchar *msg)
 {
@@ -236,6 +240,7 @@ static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *data,
 	gint buf_len;
 	gint num;
 	time_t recv_time;
+	gint partial_recv;
 	const gchar *p = data;
 	const gchar *lastp = data + len;
 	const gchar *newline;
@@ -257,12 +262,19 @@ static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *data,
 
 		session->msg[num].uidl = g_strdup(id);
 
-		recv_time = (time_t)g_hash_table_lookup(session->uidl_table, id);
+		recv_time = (time_t)g_hash_table_lookup(
+			   		session->uidl_table, id);
 		session->msg[num].recv_time = recv_time;
 
-		if (!session->ac_prefs->getall && recv_time != RECV_TIME_NONE)
-			session->msg[num].received = TRUE;
+		partial_recv = (gint)g_hash_table_lookup(
+					session->partial_recv_table, id);
 
+		if (!session->ac_prefs->getall && recv_time != RECV_TIME_NONE) {
+			session->msg[num].received = 
+				(partial_recv != POP3_MUST_COMPLETE_RECV);
+			session->msg[num].partial_recv = partial_recv;
+
+		}
 		if (!session->new_msg_exist &&
 		    (session->ac_prefs->getall || recv_time == RECV_TIME_NONE ||
 		     session->ac_prefs->rmmail)) {
@@ -335,13 +347,88 @@ static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 
 	file = get_tmp_file();
 	if (pop3_write_msg_to_file(file, mail_receive_data.data,
-		strlen(mail_receive_data.data)) < 0) {
+		strlen(mail_receive_data.data), NULL) < 0) {
 		g_free(file);
 		g_free(mail_receive_data.data);
 		session->error_val = PS_IOERR;
 		return -1;
 	}
 	g_free(mail_receive_data.data);
+
+	if (session->msg[session->cur_msg].partial_recv 
+	    == POP3_MUST_COMPLETE_RECV) {
+		gchar *old_file = partial_get_filename(
+				session->ac_prefs->recv_server,
+				session->ac_prefs->userid,
+				session->msg[session->cur_msg].uidl);
+		
+		if (old_file) {
+			partial_delete_old(old_file);
+			g_free(old_file);
+		}
+	} 
+
+	/* drop_ok: 0: success 1: don't receive -1: error */
+	drop_ok = session->drop_message(session, file);
+
+	g_free(file);
+	if (drop_ok < 0) {
+		session->error_val = PS_IOERR;
+		return -1;
+	}
+	
+	session->cur_total_bytes += session->msg[session->cur_msg].size;
+	session->cur_total_recv_bytes += session->msg[session->cur_msg].size;
+	session->cur_total_num++;
+
+	session->msg[session->cur_msg].received = TRUE;
+	session->msg[session->cur_msg].partial_recv = POP3_TOTALLY_RECEIVED;
+
+	session->msg[session->cur_msg].recv_time =
+		drop_ok == 1 ? RECV_TIME_KEEP : session->current_time;
+
+	return PS_SUCCESS;
+}
+
+static gint pop3_top_send(Pop3Session *session, gint max_size)
+{
+	gint num_lines = (max_size*1024)/82; /* consider lines to be 80 chars */
+	session->state = POP3_TOP;
+	pop3_gen_send(session, "TOP %d %d", session->cur_msg, num_lines);
+	return PS_SUCCESS;
+}
+
+static gint pop3_top_recv(Pop3Session *session, const gchar *data, guint len)
+{
+	gchar *file;
+	gint drop_ok;
+	MailReceiveData mail_receive_data;
+	gchar *partial_notice = NULL;
+	
+	mail_receive_data.session = session;
+	mail_receive_data.data = g_strndup(data, len);
+	hooks_invoke(MAIL_RECEIVE_HOOKLIST, &mail_receive_data);
+
+	partial_notice = g_strdup_printf("SC-Marked-For-Download: 0\n"
+					 "SC-Partially-Retrieved: %s\n"
+					 "SC-Account-Server: %s\n"
+					 "SC-Account-Login: %s\n"
+					 "SC-Message-Size: %d",
+					 session->msg[session->cur_msg].uidl,
+					 session->ac_prefs->recv_server,
+			   		 session->ac_prefs->userid,
+					 session->msg[session->cur_msg].size);
+	file = get_tmp_file();
+	if (pop3_write_msg_to_file(file, mail_receive_data.data,
+		strlen(mail_receive_data.data), partial_notice) < 0) {
+		g_free(file);
+		g_free(mail_receive_data.data);
+		session->error_val = PS_IOERR;
+		g_free(partial_notice);
+		return -1;
+	}
+	g_free(mail_receive_data.data);
+	g_free(partial_notice);
 
 	/* drop_ok: 0: success 1: don't receive -1: error */
 	drop_ok = session->drop_message(session, file);
@@ -356,6 +443,7 @@ static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 	session->cur_total_num++;
 
 	session->msg[session->cur_msg].received = TRUE;
+	session->msg[session->cur_msg].partial_recv = POP3_PARTIALLY_RECEIVED;
 	session->msg[session->cur_msg].recv_time =
 		drop_ok == 1 ? RECV_TIME_KEEP : session->current_time;
 
@@ -420,7 +508,7 @@ Session *pop3_session_new(PrefsAccount *account)
 	session->state = POP3_READY;
 	session->ac_prefs = account;
 	session->pop_before_smtp = FALSE;
-	session->uidl_table = pop3_get_uidl_table(account);
+	pop3_get_uidl_table(account, session);
 	session->current_time = time(NULL);
 	session->error_val = PS_SUCCESS;
 	session->error_msg = NULL;
@@ -444,23 +532,31 @@ static void pop3_session_destroy(Session *session)
 		g_hash_table_destroy(pop3_session->uidl_table);
 	}
 
+	if (pop3_session->partial_recv_table) {
+		hash_free_strings(pop3_session->partial_recv_table);
+		g_hash_table_destroy(pop3_session->partial_recv_table);
+	}
+
 	g_free(pop3_session->greeting);
 	g_free(pop3_session->user);
 	g_free(pop3_session->pass);
 	g_free(pop3_session->error_msg);
 }
 
-GHashTable *pop3_get_uidl_table(PrefsAccount *ac_prefs)
+void pop3_get_uidl_table(PrefsAccount *ac_prefs, Pop3Session *session)
 {
 	GHashTable *table;
+	GHashTable *partial_recv_table;
 	gchar *path;
 	FILE *fp;
 	gchar buf[POPBUFSIZE];
 	gchar uidl[POPBUFSIZE];
 	time_t recv_time;
 	time_t now;
-
+	gint partial_recv;
+	
 	table = g_hash_table_new(g_str_hash, g_str_equal);
+	partial_recv_table = g_hash_table_new(g_str_hash, g_str_equal);
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl", G_DIR_SEPARATOR_S, ac_prefs->recv_server,
@@ -474,7 +570,9 @@ GHashTable *pop3_get_uidl_table(PrefsAccount *ac_prefs)
 		if ((fp = fopen(path, "rb")) == NULL) {
 			if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 			g_free(path);
-			return table;
+			session->uidl_table = table;
+			session->partial_recv_table = partial_recv_table;
+			return;
 		}
 	}
 	g_free(path);
@@ -482,22 +580,36 @@ GHashTable *pop3_get_uidl_table(PrefsAccount *ac_prefs)
 	now = time(NULL);
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		gchar tmp[POPBUFSIZE];
 		strretchomp(buf);
 		recv_time = RECV_TIME_NONE;
-		if (sscanf(buf, "%s\t%ld", uidl, &recv_time) != 2) {
+		partial_recv = POP3_TOTALLY_RECEIVED;
+		
+		if (sscanf(buf, "%s\t%ld\t%s", uidl, &recv_time, &tmp) < 2) {
 			if (sscanf(buf, "%s", uidl) != 1)
 				continue;
-			else
+			else {
 				recv_time = now;
+			}
 		}
 		if (recv_time == RECV_TIME_NONE)
 			recv_time = RECV_TIME_RECEIVED;
 		g_hash_table_insert(table, g_strdup(uidl),
 				    GINT_TO_POINTER(recv_time));
+		if (strlen(tmp) == 1)
+			partial_recv = atoi(tmp); /* totally received ?*/
+		else
+			partial_recv = POP3_MUST_COMPLETE_RECV;
+
+		g_hash_table_insert(partial_recv_table, g_strdup(uidl),
+				    GINT_TO_POINTER(partial_recv));
 	}
 
 	fclose(fp);
-	return table;
+	session->uidl_table = table;
+	session->partial_recv_table = partial_recv_table;
+	
+	return;
 }
 
 gint pop3_write_uidl_list(Pop3Session *session)
@@ -521,8 +633,10 @@ gint pop3_write_uidl_list(Pop3Session *session)
 
 	for (n = 1; n <= session->count; n++) {
 		msg = &session->msg[n];
-		if (msg->uidl && msg->received && !msg->deleted)
-			fprintf(fp, "%s\t%ld\n", msg->uidl, msg->recv_time);
+		if (msg->uidl && msg->received && !msg->deleted) {
+			fprintf(fp, "%s\t%ld\t%d\n", 
+				msg->uidl, msg->recv_time, msg->partial_recv);
+		}
 	}
 
 	if (fclose(fp) == EOF) FILE_OP_ERROR(path, "fclose");
@@ -532,7 +646,7 @@ gint pop3_write_uidl_list(Pop3Session *session)
 }
 
 static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
-				   guint len)
+				   guint len, const gchar *prefix)
 {
 	FILE *fp;
 	const gchar *prev, *cur;
@@ -547,6 +661,11 @@ static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
 	if (change_file_mode_rw(fp, file) < 0)
 		FILE_OP_ERROR(file, "chmod");
 
+	if (prefix != NULL) {
+		fprintf(fp, prefix);
+		fprintf(fp, "\n");
+	}
+	
 	/* +------------------+----------------+--------------------------+ *
 	 * ^data              ^prev            ^cur             data+len-1^ */
 
@@ -623,20 +742,29 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 		if (ac->rmmail &&
 		    msg->recv_time != RECV_TIME_NONE &&
 		    msg->recv_time != RECV_TIME_KEEP &&
+		    msg->partial_recv == POP3_TOTALLY_RECEIVED &&
 		    session->current_time - msg->recv_time >=
 		    ac->msg_leave_time * 24 * 60 * 60) {
 			log_message
-				(_("POP3: Deleting expired message %d\n"),
-				   session->cur_msg);
+				(_("POP3: Deleting expired message "
+				   "%d\n"), session->cur_msg);
 			pop3_delete_send(session);
 			return POP3_DELETE;
 		}
 
-		if (size_limit_over)
+		if (size_limit_over) {
+			if (!msg->received && msg->partial_recv != 
+			    POP3_MUST_COMPLETE_RECV) {
+				pop3_top_send(session, ac->size_limit);
+				return POP3_TOP;
+			} else if (msg->partial_recv == POP3_MUST_COMPLETE_RECV)
+				break;
+
 			log_message
 				(_("POP3: Skipping message %d (%d bytes)\n"),
 				   session->cur_msg, size);
-
+		}
+		
 		if (size == 0 || msg->received || size_limit_over) {
 			session->cur_total_bytes += size;
 			if (session->cur_msg == session->count) {
@@ -686,9 +814,11 @@ static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 				break;
 			case POP3_GETRANGE_LAST:
 			case POP3_GETRANGE_UIDL:
+			case POP3_TOP:
 				log_warning(_("command not supported\n"));
 				ok = PS_NOTSUPPORTED;
 				break;
+				
 			default:
 				log_warning(_("error occurred on POP3 session\n"));
 				ok = PS_ERROR;
@@ -799,6 +929,14 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 		pop3_session->state = POP3_RETR_RECV;
 		session_recv_data(session, 0, ".\r\n");
 		break;
+	case POP3_TOP:
+		if (val == PS_NOTSUPPORTED) {
+			pop3_session->error_val = PS_SUCCESS;
+		} else {
+			pop3_session->state = POP3_TOP_RECV;
+			session_recv_data(session, 0, ".\r\n");
+		}
+		break;
 	case POP3_DELETE:
 		pop3_delete_recv(pop3_session);
 		if (pop3_session->cur_msg == pop3_session->count)
@@ -855,6 +993,28 @@ static gint pop3_session_recv_data_finished(Session *session, guchar *data,
 		    != RECV_TIME_KEEP)
 			pop3_delete_send(pop3_session);
 		else if (pop3_session->cur_msg == pop3_session->count)
+			pop3_logout_send(pop3_session);
+		else {
+			pop3_session->cur_msg++;
+			if (pop3_lookup_next(pop3_session) == POP3_ERROR)
+				return -1;
+		}
+		break;
+	case POP3_TOP_RECV:
+		if (pop3_top_recv(pop3_session, data, len) < 0)
+			return -1;
+
+		if (pop3_session->cur_msg == pop3_session->count)
+			pop3_logout_send(pop3_session);
+		else {
+			pop3_session->cur_msg++;
+			if (pop3_lookup_next(pop3_session) == POP3_ERROR)
+				return -1;
+		}
+		break;
+	case POP3_TOP:
+		log_warning(_("TOP command unsupported\n"));
+		if (pop3_session->cur_msg == pop3_session->count)
 			pop3_logout_send(pop3_session);
 		else {
 			pop3_session->cur_msg++;

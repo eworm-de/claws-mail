@@ -132,7 +132,9 @@ enum {
 
 	CRITERIA_SIZE_GREATER = 28,
 	CRITERIA_SIZE_SMALLER = 29,
-	CRITERIA_SIZE_EQUAL   = 30
+	CRITERIA_SIZE_EQUAL   = 30,
+	
+	CRITERIA_PARTIAL = 31
 };
 
 /*!
@@ -828,6 +830,9 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 	case MATCHCRITERIA_LOCKED:
 	case MATCHCRITERIA_NOT_LOCKED:
 		return CRITERIA_LOCKED;
+	case MATCHCRITERIA_PARTIAL:
+	case MATCHCRITERIA_NOT_PARTIAL:
+		return CRITERIA_PARTIAL;
 	case MATCHCRITERIA_COLORLABEL:
 	case MATCHCRITERIA_NOT_COLORLABEL:
 		return CRITERIA_COLORLABEL;
@@ -922,6 +927,8 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHCRITERIA_FORWARDED;
 	case CRITERIA_LOCKED:
 		return MATCHCRITERIA_LOCKED;
+	case CRITERIA_PARTIAL:
+		return MATCHCRITERIA_PARTIAL;
 	case CRITERIA_COLORLABEL:
 		return MATCHCRITERIA_COLORLABEL;
 	case CRITERIA_IGNORE_THREAD:
@@ -998,6 +1005,8 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 		return MATCHCRITERIA_NOT_FORWARDED;
 	case MATCHCRITERIA_LOCKED:
 		return MATCHCRITERIA_NOT_LOCKED;
+	case MATCHCRITERIA_PARTIAL:
+		return MATCHCRITERIA_NOT_PARTIAL;
 	case MATCHCRITERIA_COLORLABEL:
 		return MATCHCRITERIA_NOT_COLORLABEL;
 	case MATCHCRITERIA_IGNORE_THREAD:
@@ -1072,6 +1081,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_REPLIED:
 	case CRITERIA_FORWARDED:
 	case CRITERIA_LOCKED:
+	case CRITERIA_PARTIAL:
 	case CRITERIA_TEST:
 	case CRITERIA_COLORLABEL:
 	case CRITERIA_IGNORE_THREAD:
@@ -1123,6 +1133,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_REPLIED:
 	case CRITERIA_FORWARDED:
 	case CRITERIA_LOCKED:
+	case CRITERIA_PARTIAL:
 	case CRITERIA_IGNORE_THREAD:
 		break;
 
@@ -1330,6 +1341,7 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 	case MATCHCRITERIA_NOT_REPLIED:
 	case MATCHCRITERIA_NOT_FORWARDED:
 	case MATCHCRITERIA_NOT_LOCKED:
+	case MATCHCRITERIA_NOT_PARTIAL:
 	case MATCHCRITERIA_NOT_COLORLABEL:
 	case MATCHCRITERIA_NOT_IGNORE_THREAD:
 	case MATCHCRITERIA_NOT_SUBJECT:
@@ -1504,6 +1516,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 	case CRITERIA_REPLIED:
 	case CRITERIA_FORWARDED:
 	case CRITERIA_LOCKED:
+	case CRITERIA_PARTIAL:
 	case CRITERIA_IGNORE_THREAD:
 		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
 		gtk_widget_set_sensitive(matcher.header_label, FALSE);

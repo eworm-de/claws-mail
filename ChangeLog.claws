@@ -1,3 +1,28 @@
+2004-07-14 [colin]	0.9.12cvs21
+
+	* src/folder.c
+	* src/inc.c
+	* src/matcher.c
+	* src/matcher.h
+	* src/matcher_parser_parse.y
+	* src/messageview.c
+	* src/msgcache.c
+	* src/noticeview.c
+	* src/noticeview.h
+	* src/pop.c
+	* src/pop.h
+	* src/prefs_matcher.c
+	* src/procheader.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/summaryview.c
+	* src/common/Makefile.am
+	* src/common/defs.h
+	* src/gtk/quicksearch.c
+	* src/common/partial_download.c ** NEW FILES **
+	* src/common/partial_download.h ** NEW FILES **
+		Partial downloading of pop3 mails
+
 2004-07-13 [christoph]	0.9.12cvs20
 
 	* src/mimeview.c

@@ -500,9 +500,14 @@ enum
 	H_STATUS        = 11,
 	H_X_STATUS      = 12,
 	H_FROM_SPACE	= 13,
-	H_X_FACE	= 14,
-	H_DISPOSITION_NOTIFICATION_TO = 15,
-	H_RETURN_RECEIPT_TO = 16
+	H_SC_PLANNED_DOWNLOAD = 14,
+	H_X_FACE	= 15,
+	H_DISPOSITION_NOTIFICATION_TO = 16,
+	H_RETURN_RECEIPT_TO = 17,
+	H_SC_PARTIALLY_RETRIEVED = 18,
+	H_SC_ACCOUNT_SERVER = 19,
+	H_SC_ACCOUNT_LOGIN = 20,
+	H_SC_MESSAGE_SIZE = 21
 };
 
 static HeaderEntry hentry_full[] = {{"Date:",		NULL, FALSE},
@@ -519,9 +524,14 @@ static HeaderEntry hentry_full[] = {{"Date:",		NULL, FALSE},
 				   {"Status:",          NULL, FALSE},
 				   {"X-Status:",        NULL, FALSE},
 				   {"From ",		NULL, FALSE},
+				   {"SC-Marked-For-Download:", NULL, FALSE},
 				   {"X-Face:",		NULL, FALSE},
 				   {"Disposition-Notification-To:", NULL, FALSE},
 				   {"Return-Receipt-To:", NULL, FALSE},
+				   {"SC-Partially-Retrieved:", NULL, FALSE},
+				   {"SC-Account-Server:", NULL, FALSE},
+				   {"SC-Account-Login:",NULL, FALSE},
+				   {"SC-Message-Size:", NULL, FALSE},
 				   {NULL,		NULL, FALSE}};
 
 static HeaderEntry hentry_short[] = {{"Date:",		NULL, FALSE},
@@ -538,6 +548,7 @@ static HeaderEntry hentry_short[] = {{"Date:",		NULL, FALSE},
 				    {"Status:",		NULL, FALSE},
 				    {"X-Status:",	NULL, FALSE},
 				    {"From ",		NULL, FALSE},
+				    {"SC-Marked-For-Download:", NULL, FALSE},
 				    {NULL,		NULL, FALSE}};
 
 HeaderEntry* procheader_get_headernames(gboolean full)
@@ -675,6 +686,25 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 		case H_RETURN_RECEIPT_TO:
 			if (msginfo->returnreceiptto) break;
 			msginfo->returnreceiptto = g_strdup(hp);
+			break;
+		case H_SC_PARTIALLY_RETRIEVED:
+			if (msginfo->partial_recv) break;
+			msginfo->partial_recv = g_strdup(hp);
+			break;
+		case H_SC_ACCOUNT_SERVER:
+			if (msginfo->account_server) break;
+			msginfo->account_server = g_strdup(hp);
+			break;
+		case H_SC_ACCOUNT_LOGIN:
+			if (msginfo->account_login) break;
+			msginfo->account_login = g_strdup(hp);
+			break;
+		case H_SC_MESSAGE_SIZE:
+			if (msginfo->total_size) break;
+			msginfo->total_size = atoi(hp);
+			break;
+		case H_SC_PLANNED_DOWNLOAD:
+			msginfo->planned_download = atoi(hp);
 			break;
 #ifdef ALLOW_HEADER_HINT			
 		case H_STATUS:

@@ -1066,7 +1066,8 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file)
 	dropfolder = folder_get_default_processing();
 
 	/* add msg file to drop folder */
-	if ((msgnum = folder_item_add_msg(dropfolder, file, NULL, TRUE)) < 0) {
+	if ((msgnum = folder_item_add_msg(
+			dropfolder, file, NULL, TRUE)) < 0) {
 		unlink(file);
 		return -1;
 	}

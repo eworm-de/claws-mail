@@ -62,6 +62,7 @@
 #include "stock_pixmap.h"
 #include "hooks.h"
 #include "filtering.h"
+#include "partial_download.h"
 
 static GList *messageview_list = NULL;
 
@@ -76,6 +77,14 @@ static void key_pressed			(GtkWidget	*widget,
 static void return_receipt_show		(NoticeView     *noticeview, 
 				         MsgInfo        *msginfo);	
 static void return_receipt_send_clicked (NoticeView	*noticeview, 
+                                         MsgInfo        *msginfo);
+static void partial_recv_show		(NoticeView     *noticeview, 
+				         MsgInfo        *msginfo);	
+static void partial_recv_dload_clicked 	(NoticeView	*noticeview, 
+                                         MsgInfo        *msginfo);
+static void partial_recv_del_clicked 	(NoticeView	*noticeview, 
+                                         MsgInfo        *msginfo);
+static void partial_recv_unmark_clicked (NoticeView	*noticeview, 
                                          MsgInfo        *msginfo);
 static void save_as_cb			(gpointer	 data,
 					 guint		 action,
@@ -717,10 +726,14 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 
 	mimeview_show_message(messageview->mimeview, mimeinfo, file);
 
-	if ((messageview->msginfo->dispositionnotificationto || 
+	if (messageview->msginfo->partial_recv)
+		partial_recv_show(messageview->noticeview, 
+				  messageview->msginfo);
+	else if ((messageview->msginfo->dispositionnotificationto || 
 	     messageview->msginfo->returnreceiptto) &&
 	    !MSG_IS_RETRCPT_SENT(messageview->msginfo->flags))
-		return_receipt_show(messageview->noticeview, messageview->msginfo);
+		return_receipt_show(messageview->noticeview, 
+				    messageview->msginfo);
 	else 
 		noticeview_hide(messageview->noticeview);
 
@@ -1011,7 +1024,7 @@ void messageview_toggle_view_real(MessageView *messageview)
 
 static void return_receipt_show(NoticeView *noticeview, MsgInfo *msginfo)
 {
-	noticeview_set_text(noticeview, _("This message asks for a return receipt"));
+	noticeview_set_text(noticeview, _("This message asks for a return receipt."));
 	noticeview_set_button_text(noticeview, _("Send receipt"));
 	noticeview_set_button_press_callback(noticeview,
 					     GTK_SIGNAL_FUNC(return_receipt_send_clicked),
@@ -1041,6 +1054,89 @@ static void return_receipt_send_clicked(NoticeView *noticeview, MsgInfo *msginfo
 
 	procmsg_msginfo_free(tmpmsginfo);
 	g_free(file);
+}
+
+static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
+{
+	gchar *text = NULL;
+	gchar *button1 = NULL;
+	gchar *button2 = NULL;
+	void  *button1_cb = NULL;
+	void  *button2_cb = NULL;
+
+	if (!partial_msg_in_uidl_list(msginfo))
+		return;
+
+	switch (msginfo->planned_download) {
+	case POP3_PARTIAL_DLOAD_UNKN:
+		text = g_strdup_printf(_("This message has been partially "
+				"retrieved;\nit is %s."),
+				to_human_readable(
+					(off_t)(msginfo->total_size)));
+		button1 = _("Mark for download");
+		button2 = _("Mark for deletion");
+		button1_cb = partial_recv_dload_clicked;
+		button2_cb = partial_recv_del_clicked;
+		break;
+	case POP3_PARTIAL_DLOAD_DLOAD:
+		text = g_strdup_printf(_("This message has been partially "
+				"retrieved;\nit is %s and will be downloaded."),
+				to_human_readable(
+					(off_t)(msginfo->total_size)));
+		button1 = _("Unmark");
+		button1_cb = partial_recv_unmark_clicked;
+		button2 = _("Mark for deletion");
+		button2_cb = partial_recv_del_clicked;
+		break;
+	case POP3_PARTIAL_DLOAD_DELE:
+		text = g_strdup_printf(_("This message has been partially "
+				"retrieved;\nit is %s and will be deleted."),
+				to_human_readable(
+					(off_t)(msginfo->total_size)));
+		button1 = _("Mark for download");
+		button1_cb = partial_recv_dload_clicked;
+		button2 = _("Unmark");
+		button2_cb = partial_recv_unmark_clicked;
+		break;
+	default:
+		return;
+	}
+	
+	noticeview_set_text(noticeview, text);
+	g_free(text);
+	noticeview_set_button_text(noticeview, button1);
+	noticeview_set_button_press_callback(noticeview,
+		     GTK_SIGNAL_FUNC(button1_cb), (gpointer) msginfo);
+
+	noticeview_set_2ndbutton_text(noticeview, button2);
+	noticeview_set_2ndbutton_press_callback(noticeview,
+		     GTK_SIGNAL_FUNC(button2_cb), (gpointer) msginfo);
+
+	noticeview_show(noticeview);
+}
+
+static void partial_recv_dload_clicked(NoticeView *noticeview, 
+				       MsgInfo *msginfo)
+{
+	if (partial_mark_for_download(msginfo) == 0) {
+		partial_recv_show(noticeview, msginfo);
+	}
+}
+
+static void partial_recv_del_clicked(NoticeView *noticeview, 
+				       MsgInfo *msginfo)
+{
+	if (partial_mark_for_delete(msginfo) == 0) {
+		partial_recv_show(noticeview, msginfo);
+	}
+}
+
+static void partial_recv_unmark_clicked(NoticeView *noticeview, 
+				       MsgInfo *msginfo)
+{
+	if (partial_unmark(msginfo) == 0) {
+		partial_recv_show(noticeview, msginfo);
+	}
 }
 
 static void select_account_cb(GtkWidget *w, gpointer data)

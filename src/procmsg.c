@@ -41,6 +41,7 @@
 #include "news.h"
 #include "hooks.h"
 #include "msgcache.h"
+#include "partial_download.h"
 
 GHashTable *procmsg_msg_hash_table_create(GSList *mlist)
 {
@@ -606,8 +607,17 @@ void procmsg_empty_trash(void)
 
 	for (cur = folder_get_list(); cur != NULL; cur = cur->next) {
 		trash = FOLDER(cur->data)->trash;
-		if (trash && trash->total_msgs > 0)
+		if (trash && trash->total_msgs > 0) {
+			GSList *mlist = folder_item_get_msg_list(trash);
+			GSList *cur;
+			for (cur = mlist ; cur != NULL ; cur = cur->next) {
+				MsgInfo * msginfo = (MsgInfo *) cur->data;
+				partial_mark_for_delete(msginfo);
+				procmsg_msginfo_free(msginfo);
+			}
+
 			folder_item_remove_all_msg(trash);
+		}
 	}
 }
 
@@ -895,6 +905,17 @@ MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 	if (!msginfo->returnreceiptto)
 		msginfo->returnreceiptto = g_strdup
 			(full_msginfo->returnreceiptto);
+	if (!msginfo->partial_recv && full_msginfo->partial_recv)
+		msginfo->partial_recv = g_strdup
+			(full_msginfo->partial_recv);
+	msginfo->total_size = full_msginfo->total_size;
+	if (!msginfo->account_server && full_msginfo->account_server)
+		msginfo->account_server = g_strdup
+			(full_msginfo->account_server);
+	if (!msginfo->account_login && full_msginfo->account_login)
+		msginfo->account_login = g_strdup
+			(full_msginfo->account_login);
+	msginfo->planned_download = full_msginfo->planned_download;
 	procmsg_msginfo_free(full_msginfo);
 
 	return procmsg_msginfo_new_ref(msginfo);
@@ -930,6 +951,10 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	g_free(msginfo->msgid);
 	g_free(msginfo->inreplyto);
 	g_free(msginfo->xref);
+
+	g_free(msginfo->partial_recv);
+	g_free(msginfo->account_server);
+	g_free(msginfo->account_login);
 
 	g_free(msginfo);
 }

@@ -60,6 +60,8 @@ typedef enum {
 	POP3_GETSIZE_LIST_RECV,
 	POP3_RETR,
 	POP3_RETR_RECV,
+	POP3_TOP,
+	POP3_TOP_RECV,
 	POP3_DELETE,
 	POP3_LOGOUT,
 	POP3_ERROR,
@@ -101,8 +103,9 @@ struct _Pop3MsgInfo
 	gint size;
 	gchar *uidl;
 	time_t recv_time;
-	guint received : 1;
-	guint deleted  : 1;
+	guint received     : 1;
+	guint deleted      : 1;
+	guint partial_recv : 2;
 };
 
 struct _Pop3Session
@@ -128,7 +131,8 @@ struct _Pop3Session
 	Pop3MsgInfo *msg;
 
 	GHashTable *uidl_table;
-
+	GHashTable *partial_recv_table;
+	
 	gboolean new_msg_exist;
 	gboolean uidl_is_valid;
 
@@ -149,7 +153,7 @@ struct _Pop3Session
 
 
 Session *pop3_session_new	(PrefsAccount	*account);
-GHashTable *pop3_get_uidl_table	(PrefsAccount	*account);
+void pop3_get_uidl_table	(PrefsAccount	*account, Pop3Session *session);
 gint pop3_write_uidl_list	(Pop3Session	*session);
 
 #endif /* __POP_H__ */

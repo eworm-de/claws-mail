@@ -32,10 +32,13 @@ struct _NoticeView
 	GtkWidget	*icon;
 	GtkWidget	*text;
 	GtkWidget	*button;
+	GtkWidget	*button2;
 	GtkWidget	*window;
 	gboolean	 visible;
 	gpointer	 user_data;
+	gpointer	 user_data2;
 	void		(*press) (NoticeView *, gpointer user_data);
+	void		(*press2) (NoticeView *, gpointer user_data);
 };
 
 NoticeView	*noticeview_create	(MainWindow 	*mainwin);
@@ -48,11 +51,18 @@ void		 noticeview_set_text	(NoticeView	*noticeview,
 void		 noticeview_set_button_text 
 					(NoticeView	*noticeview,
 					 const gchar    *text);
+void		 noticeview_set_2ndbutton_text 
+					(NoticeView	*noticeview,
+					 const gchar    *text);
 gboolean	 noticeview_is_visible  (NoticeView	*noticeview);
 void		 noticeview_show	(NoticeView	*noticeview);
 void		 noticeview_hide	(NoticeView	*noticeview);
 
 void		 noticeview_set_button_press_callback
+					(NoticeView	*noticeview,
+					 GtkSignalFunc   callback,
+					 gpointer	*user_data);
+void		 noticeview_set_2ndbutton_press_callback
 					(NoticeView	*noticeview,
 					 GtkSignalFunc   callback,
 					 gpointer	*user_data);
