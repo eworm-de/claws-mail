@@ -515,6 +515,7 @@ SummaryView *summary_create(void)
  
 	/* toggle view button */
 	toggle_eventbox = gtk_event_box_new();
+	gtk_widget_show(toggle_eventbox);
 	gtk_box_pack_end(GTK_BOX(hbox), toggle_eventbox, FALSE, FALSE, 4);
 	toggle_arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
 	gtk_widget_show(toggle_arrow);

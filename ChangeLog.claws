@@ -1,3 +1,8 @@
+2004-06-15 [christoph]	0.9.11cvs11
+
+	* src/summaryview.c
+		add missing gtk_widget_show()
+
 2004-06-11 [christoph]	0.9.11cvs10
 
 	* src/plugins/spamassassin/spamassassin.c
