@@ -1824,70 +1824,6 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	return TRUE;
 }
 
-/*!
- *\brief    Check to see if a web URL has been disguised as a different
- *          URL (possible with HTML email).
- *
- *\param    uri The uri to check
- *
- *\param    textview The TextView the URL is contained in
- *
- *\return   gboolean TRUE if the URL is ok, or if the user chose to open
- *          it anyway, otherwise FALSE          
- */
-static gboolean uri_security_check(RemoteURI *uri, TextView *textview) 
-{
-	gchar *clicked_str;
-	gboolean retval = TRUE;
-
-	if (g_ascii_strncasecmp(uri->uri, "http:", 5) &&
-	    g_ascii_strncasecmp(uri->uri, "https:", 6) &&
-	    g_ascii_strncasecmp(uri->uri, "www.", 4)) 
-		return retval;
-
-	clicked_str = gtk_editable_get_chars(GTK_EDITABLE(textview->text),
-					     uri->start,
-					     uri->end);
-	if (clicked_str == NULL)
-		return TRUE;
-
-	if (strcmp(clicked_str, uri->uri) &&
-	    (!g_ascii_strncasecmp(clicked_str, "http:",  5) ||
-	     !g_ascii_strncasecmp(clicked_str, "https:", 6) ||
-	     !g_ascii_strncasecmp(clicked_str, "www.",   4))) {
-		gchar *str;
-		retval = FALSE;
-
-		/* allow uri->uri    == http://somewhere.com
-		   and   clicked_str ==        somewhere.com */
-		str = g_strconcat("http://", clicked_str, NULL);
-
-		if (!g_ascii_strcasecmp(str, uri->uri))
-			retval = TRUE;
-		g_free(str);
-	}
-
-	if (retval == FALSE) {
-		gchar *msg = NULL;
-		AlertValue resp;
-
-		msg = g_strdup_printf(_("The real URL (%s) is different from\n"
-					"the apparent URL (%s).  \n"
-					"Open it anyway?"),
-					uri->uri, clicked_str);
-		resp = alertpanel_with_type(_("Warning"), 
-				  msg,
-				  _("Yes"), 
-				  _("No"),
-				  NULL, NULL, ALERT_WARNING);
-		g_free(msg);
-		if (resp == G_ALERTDEFAULT)
-			retval = TRUE;
-	} 
-	g_free(clicked_str);
-	return retval;
-}
-
 static gboolean textview_motion_notify(GtkWidget *widget,
 				       GdkEventMotion *event,
 				       TextView *textview)
@@ -2163,12 +2099,19 @@ static gboolean textview_uri_security_check(TextView *textview, RemoteURI *uri)
 {
 	gchar *visible_str;
 	gboolean retval = TRUE;
+	GtkTextBuffer *buffer;
+	GtkTextIter start, end;
 
 	if (is_uri_string(uri->uri) == FALSE)
 		return TRUE;
 
-	visible_str = gtk_editable_get_chars(GTK_EDITABLE(textview->text),
-					     uri->start, uri->end);
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview->text));
+
+	gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
+	gtk_text_buffer_get_iter_at_offset(buffer, &end,   uri->end);
+
+	visible_str = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
+
 	if (visible_str == NULL)
 		return TRUE;
 

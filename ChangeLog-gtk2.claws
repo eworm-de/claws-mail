@@ -1,3 +1,9 @@
+2004-11-14 [colin]	0.9.12cvs146.9
+
+	* src/textview.c
+		Fix uri_security_check
+		Patch by Alfons
+
 2004-11-13 [paul]	0.9.12cvs146.8
 
 	* src/folder.c
