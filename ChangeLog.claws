@@ -1,3 +1,10 @@
+2002-07-31 [christoph]	0.8.1claws1
+
+	* src/folderview.[ch]
+	* src/mainwindow.c
+		replace "Rescan all folders..." with
+		"Check all folders for new messages..."
+
 2002-07-30 [paul]	0.8.1claws
 
 	* version 0.8.1claws released

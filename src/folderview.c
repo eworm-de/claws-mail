@@ -878,6 +878,28 @@ void folderview_check_new(Folder *folder)
 	folder_write_list();
 }
 
+void folderview_check_new_all()
+{
+	GList *list;
+	GtkWidget *window;
+
+	inc_lock();
+	window = label_window_create(_("Checking all folders for new messages..."));
+
+	list = folder_get_list();
+	for (; list != NULL; list = list->next) {
+		Folder *folder = list->data;
+
+		folderview_check_new(folder);
+	}
+
+	folder_write_list();
+	folderview_set_all();
+
+	gtk_widget_destroy(window);
+	inc_unlock();
+}
+
 static gboolean folderview_search_new_recursive(GtkCTree *ctree,
 						GtkCTreeNode *node)
 {
