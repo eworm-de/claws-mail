@@ -54,6 +54,7 @@
 #include "prefs_account.h"
 #include "account.h"
 #include "folder.h"
+#include "inc.h"
 
 #include "pixmaps/inbox.xpm"
 #include "pixmaps/outbox.xpm"
@@ -237,6 +238,8 @@ static GtkItemFactoryEntry folderview_mail_popup_entries[] =
 	{N_("/_Delete folder"),		NULL, folderview_delete_folder_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Update folder tree"),	NULL, folderview_update_tree_cb, 0, NULL},
+	{N_("/Re_scan folder tree"),	NULL, folderview_update_tree_cb, 1, NULL},
+	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/Remove _mailbox"),	NULL, folderview_remove_mailbox_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Property..."),		NULL, folderview_property_cb, 0, NULL},
@@ -249,7 +252,9 @@ static GtkItemFactoryEntry folderview_imap_popup_entries[] =
 	{N_("/_Rename folder..."),	NULL, NULL, 0, NULL},
 	{N_("/_Delete folder"),		NULL, folderview_rm_imap_folder_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Update folder tree"),	NULL, folderview_update_tree_cb, 0, NULL},
+	{N_("/Re_scan folder tree"),	NULL, folderview_update_tree_cb, 0, NULL},
+	{N_("/_Update folder tree"),	NULL, folderview_update_tree_cb, 1, NULL},
+	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/Remove _IMAP4 account"),	NULL, folderview_rm_imap_server_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Property..."),		NULL, NULL, 0, NULL},
@@ -450,7 +455,6 @@ void folderview_init(FolderView *folderview)
 		normal_color_style = gtk_style_copy(normal_style);
 		normal_color_style->fg[GTK_STATE_NORMAL] = folderview->color_new;
 	}
-
 }
 
 void folderview_set(FolderView *folderview)
@@ -493,7 +497,7 @@ void folderview_select(FolderView *folderview, FolderItem *item)
 	GtkCTreeNode *old_selected = folderview->selected;
 
 	if (!item) return;
-	
+
 	node = gtk_ctree_find_by_row_data(ctree, NULL, item);
 	if (node) folderview_select_node(folderview, node);
 
@@ -665,7 +669,8 @@ void folderview_update_tree(Folder *folder)
 
 	if (!folder->scan_tree) return;
 
-	window = label_window_create(_("Updating folder tree..."));
+	inc_lock();
+	window = label_window_create(_("Rescanning folder tree..."));
 
 	folder_set_ui_func(folder, folderview_scan_tree_func, NULL);
 	folder->scan_tree(folder);
@@ -675,6 +680,7 @@ void folderview_update_tree(Folder *folder)
 	folderview_set_all();
 
 	gtk_widget_destroy(window);
+	inc_unlock();
 }
 
 void folderview_update_all(void)
@@ -682,7 +688,8 @@ void folderview_update_all(void)
 	GList *list;
 	GtkWidget *window;
 
-	window = label_window_create(_("Updating all folders..."));
+	inc_lock();
+	window = label_window_create(_("Rescanning all folder trees..."));
 
 	list = folder_get_list();
 	for (; list != NULL; list = list->next) {
@@ -696,8 +703,8 @@ void folderview_update_all(void)
 
 	folder_write_list();
 	folderview_set_all();
-
 	gtk_widget_destroy(window);
+	inc_unlock();
 }
 
 void folderview_update_all_node(void)
@@ -707,13 +714,14 @@ void folderview_update_all_node(void)
 	FolderView *folderview;
 	GtkCTree *ctree;
 	GtkCTreeNode *node;
-	GtkWidget *window;
-
-	window = label_window_create(_("Updating all folders..."));
 
 	for (list = folderview_list; list != NULL; list = list->next) {
 		folderview = (FolderView *)list->data;
 		ctree = GTK_CTREE(folderview->ctree);
+
+		inc_lock();
+		main_window_lock(folderview->mainwin);
+		gtk_widget_set_sensitive(folderview->ctree, FALSE);
 
 		for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 		     node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
@@ -725,10 +733,13 @@ void folderview_update_all_node(void)
 			folder_item_scan(item);
 			folderview_update_node(folderview, node);
 		}
+
+		gtk_widget_set_sensitive(folderview->ctree, TRUE);
+		main_window_unlock(folderview->mainwin);
+		inc_unlock();
 	}
 
 	folder_write_list();
-	gtk_widget_destroy(window);
 }
 
 static gboolean folderview_search_new_recursive(GtkCTree *ctree,
@@ -1183,6 +1194,15 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	gint prev_row = -1, row = -1, column = -1;
 	FolderItem *item;
 	Folder *folder;
+	GtkWidget *popup;
+	gboolean new_folder      = FALSE;
+	gboolean rename_folder   = FALSE;
+	gboolean delete_folder   = FALSE;
+	gboolean update_tree     = FALSE;
+	gboolean rescan_tree     = FALSE;
+	gboolean remove_tree     = FALSE;
+	gboolean folder_property = FALSE;
+	gboolean folder_scoring  = FALSE;
 
 	if (!event) return;
 
@@ -1224,97 +1244,66 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	g_return_if_fail(item->folder != NULL);
 	folder = item->folder;
 
-	menu_set_insensitive_all(GTK_MENU_SHELL(folderview->mail_popup));
-	menu_set_insensitive_all(GTK_MENU_SHELL(folderview->imap_popup));
-	menu_set_insensitive_all(GTK_MENU_SHELL(folderview->news_popup));
-	menu_set_insensitive_all(GTK_MENU_SHELL(folderview->mbox_popup));
-
-	if (FOLDER_IS_LOCAL(folder) && item->parent == NULL) {
-		menu_set_sensitive(folderview->mail_factory,
-				   "/Create new folder...", TRUE);
-		menu_set_sensitive(folderview->mail_factory,
-				   "/Update folder tree", TRUE);
-		menu_set_sensitive(folderview->mail_factory,
-				   "/Remove mailbox", TRUE);
-	} else if (FOLDER_IS_LOCAL(folder) && item->stype != F_NORMAL) {
-		menu_set_sensitive(folderview->mail_factory,
-				   "/Create new folder...", TRUE);
-		menu_set_sensitive(folderview->mail_factory,
-				   "/Scoring...", TRUE);
-	} else if (FOLDER_IS_LOCAL(folder)) {
-		menu_set_sensitive(folderview->mail_factory,
-				   "/Create new folder...", TRUE);
-		menu_set_sensitive(folderview->mail_factory,
-				   "/Rename folder...", TRUE);
-		menu_set_sensitive(folderview->mail_factory,
-				   "/Delete folder", TRUE);
-		menu_set_sensitive(folderview->mail_factory,
-				   "/Scoring...", TRUE);
-		menu_set_sensitive(folderview->mail_factory,
-				   "/Property...", TRUE);
-	} else if (folder->type == F_IMAP && item->parent == NULL) {
-		menu_set_sensitive(folderview->imap_factory,
-				   "/Create new folder...", TRUE);
-		menu_set_sensitive(folderview->imap_factory,
-				   "/Update folder tree", TRUE);
-		menu_set_sensitive(folderview->imap_factory,
-				   "/Remove IMAP4 account", TRUE);
-	} else if (folder->type == F_IMAP && item->stype != F_NORMAL) {
-		menu_set_sensitive(folderview->imap_factory,
-				   "/Create new folder...", TRUE);
-	} else if (folder->type == F_IMAP) {
-		menu_set_sensitive(folderview->imap_factory,
-				   "/Create new folder...", TRUE);
-		menu_set_sensitive(folderview->imap_factory,
-				   "/Delete folder", TRUE);
-		menu_set_sensitive(folderview->imap_factory,
-				   "/Scoring...", TRUE);
-	} else if (folder->type == F_NEWS && item->parent == NULL) {
-		menu_set_sensitive(folderview->news_factory,
-				   "/Subscribe to newsgroup...", TRUE);
-		menu_set_sensitive(folderview->news_factory,
-				   "/Remove news account", TRUE);
-	} else if (folder->type == F_NEWS) {
-		menu_set_sensitive(folderview->news_factory,
-				   "/Subscribe to newsgroup...", TRUE);
-		menu_set_sensitive(folderview->news_factory,
-				   "/Remove newsgroup", TRUE);
-		menu_set_sensitive(folderview->news_factory,
-				   "/Scoring...", TRUE);
-	}
-	if (folder->type == F_MBOX && item->parent == NULL) {
-		menu_set_sensitive(folderview->mbox_factory,
-				   "/Create new folder...", TRUE);
-		menu_set_sensitive(folderview->mbox_factory,
-				   "/Remove mailbox", TRUE);
-	} else if (folder->type == F_MBOX && item->stype != F_NORMAL) {
-		menu_set_sensitive(folderview->mbox_factory,
-				   "/Create new folder...", TRUE);
-		menu_set_sensitive(folderview->mbox_factory,
-				   "/Scoring...", TRUE);
-	} else if (folder->type == F_MBOX) {
-		menu_set_sensitive(folderview->mbox_factory,
-				   "/Create new folder...", TRUE);
-		menu_set_sensitive(folderview->mbox_factory,
-				   "/Rename folder...", TRUE);
-		menu_set_sensitive(folderview->mbox_factory,
-				   "/Delete folder", TRUE);
-		menu_set_sensitive(folderview->mbox_factory,
-				   "/Scoring...", TRUE);
+	if (folderview->mainwin->lock_count == 0) {
+		new_folder = TRUE;
+		if (item->parent == NULL)
+			update_tree = remove_tree = TRUE;
+		if (FOLDER_IS_LOCAL(folder) || FOLDER_TYPE(folder) == F_IMAP || FOLDER_TYPE(folder) == F_MBOX) {
+			if (item->parent == NULL)
+				update_tree = rescan_tree = TRUE;
+			else if (item->stype == F_NORMAL)
+				rename_folder = delete_folder = folder_property = folder_scoring = TRUE;
+		} else if (FOLDER_TYPE(folder) == F_NEWS) {
+			if (item->parent != NULL)
+				delete_folder = folder_scoring = TRUE;
+		}
 	}
 
-	if (FOLDER_IS_LOCAL(folder))
-		gtk_menu_popup(GTK_MENU(folderview->mail_popup), NULL, NULL,
-			       NULL, NULL, event->button, event->time);
-	else if (folder->type == F_IMAP)
-		gtk_menu_popup(GTK_MENU(folderview->imap_popup), NULL, NULL,
-			       NULL, NULL, event->button, event->time);
-	else if (folder->type == F_NEWS)
-		gtk_menu_popup(GTK_MENU(folderview->news_popup), NULL, NULL,
-			       NULL, NULL, event->button, event->time);
-	else if (folder->type == F_MBOX)
-		gtk_menu_popup(GTK_MENU(folderview->mbox_popup), NULL, NULL,
-			       NULL, NULL, event->button, event->time);
+#define SET_SENS(factory, name, sens) \
+	menu_set_sensitive(folderview->factory, name, sens)
+
+	if (FOLDER_IS_LOCAL(folder)) {
+		popup = folderview->mail_popup;
+		menu_set_insensitive_all(GTK_MENU_SHELL(popup));
+		SET_SENS(mail_factory, "/Create new folder...", new_folder);
+		SET_SENS(mail_factory, "/Rename folder...", rename_folder);
+		SET_SENS(mail_factory, "/Delete folder", delete_folder);
+		SET_SENS(mail_factory, "/Update folder tree", update_tree);
+		SET_SENS(mail_factory, "/Rescan folder tree", rescan_tree);
+		SET_SENS(mail_factory, "/Remove mailbox", remove_tree);
+		SET_SENS(mail_factory, "/Property...", folder_property);
+		SET_SENS(mail_factory, "/Scoring...", folder_scoring);
+	} else if (FOLDER_TYPE(folder) == F_IMAP) {
+		popup = folderview->imap_popup;
+		menu_set_insensitive_all(GTK_MENU_SHELL(popup));
+		SET_SENS(imap_factory, "/Create new folder...", new_folder);
+		SET_SENS(imap_factory, "/Rename folder...", rename_folder);
+		SET_SENS(imap_factory, "/Delete folder", delete_folder);
+		SET_SENS(imap_factory, "/Update folder tree", update_tree);
+		SET_SENS(imap_factory, "/Rescan folder tree", rescan_tree);
+		SET_SENS(imap_factory, "/Remove IMAP4 account", remove_tree);
+		SET_SENS(imap_factory, "/Scoring...", folder_scoring);
+	} else if (FOLDER_TYPE(folder) == F_NEWS) {
+		popup = folderview->news_popup;
+		menu_set_insensitive_all(GTK_MENU_SHELL(popup));
+		SET_SENS(news_factory, "/Subscribe to newsgroup...", new_folder);
+		SET_SENS(news_factory, "/Remove newsgroup", delete_folder);
+		SET_SENS(news_factory, "/Remove news account", remove_tree);
+		SET_SENS(news_factory, "/Scoring...", folder_scoring);
+	} else if (FOLDER_TYPE(folder) == F_MBOX) {
+		popup = folderview->mbox_popup;
+		menu_set_insensitive_all(GTK_MENU_SHELL(popup));
+		SET_SENS(mbox_factory, "/Create new folder...", new_folder);
+		SET_SENS(mbox_factory, "/Rename folder...", rename_folder);
+		SET_SENS(mbox_factory, "/Delete folder", delete_folder);
+		SET_SENS(mbox_factory, "/Scoring...", folder_scoring);
+	} else
+		return;
+
+#undef SET_SENS
+
+	gtk_menu_popup(GTK_MENU(popup), NULL, NULL, NULL, NULL,
+		       event->button, event->time);
 }
 
 static void folderview_button_released(GtkWidget *ctree, GdkEventButton *event,
@@ -1513,7 +1502,10 @@ static void folderview_update_tree_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 
-	folderview_update_tree(item->folder);
+	if (action == 0)
+		folderview_update_all_node();
+	else
+		folderview_update_tree(item->folder);
 }
 
 static void folderview_new_folder_cb(FolderView *folderview, guint action,

@@ -1,3 +1,27 @@
+2001-10-12
+
+	* src/prefs_common.c
+	  src/summaryview.[ch]: initial modification for reorderable columns.
+
+2001-10-12
+
+	* src/procmsg.c: procmsg_get_mark_sum(), mark_sum_func(): fixed a
+	  memory leak.
+	* src/folderview.c: folderview_button_pressed(): code cleanup, and
+	  turn sensitivity off if main window is locked.
+	* src/syldap.c: syldap_read_data(): removed unnecessary and
+	  unportable sched_yield().
+
+2001-10-11
+
+	* src/folderview.c: renamed "Update folder tree" context menu to
+	  "Rescan folder tree", and made "Update folder tree" only updates
+	  folder status.
+	  folderview_update_all_node(): don't show message dialog.
+	* src/gtkutils.c: gtkut_widget_get_uposition()
+	  src/mainwindow.c: main_window_popup(): clip the coordinate to
+	  nonnegative value.
+
 2001-10-10
 
 	* src/utils.c: to_human_readable(): made a bit of optimization.
@@ -14,7 +38,7 @@
 	  infinite loop when failed to convert encoding.
 	* src/codeconv.[ch]: a fix for older version of libjconv
 	  (jconv_info_get_current_codeset() returned "EUCJP" instead of
-	  "EUC-JP".
+	  "EUC-JP").
 
 2001-10-08
 

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -319,8 +319,8 @@ void gtkut_widget_get_uposition(GtkWidget *widget, gint *px, gint *py)
 
 	sx = gdk_screen_width();
 	sy = gdk_screen_height();
-	x %= sx; if (x < 0) x += sx;
-	y %= sy; if (y < 0) y += sy;
+	x %= sx; if (x < 0) x = 0;
+	y %= sy; if (y < 0) y = 0;
 	*px = x;
 	*py = y;
 }

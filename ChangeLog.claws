@@ -1,3 +1,12 @@
+2001-10-12 [paul]	0.6.3claws10
+
+	* sync with sylpheed 0.6.3cvs6
+		see ChangeLog entries 2001-10-11 and 2001-11-12
+
+	* src/folderview.c
+		incorporated mbox folders, scoring, and folder
+		properties into the sync
+
 2001-10-12 [darko]	0.6.3claws9
 
 	* README.claws

@@ -3055,6 +3055,9 @@ void prefs_summary_display_item_set(void)
 	}
 }
 
+#undef SET_ACTIVE
+#undef GET_ACTIVE
+
 #define SET_CHECK_BUTTON(column, label) \
 { \
 	summarydispitem.chkbtn[column] = \
@@ -3118,6 +3121,8 @@ static void prefs_summary_display_item_dialog_create(gboolean *cancelled)
 	summarydispitem.ok_btn = ok_btn;
 	summarydispitem.cancel_btn = cancel_btn;
 }
+
+#undef SET_CHECK_BUTTON
 
 static void display_item_ok(GtkWidget *widget, gboolean *cancelled)
 {

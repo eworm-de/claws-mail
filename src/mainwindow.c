@@ -400,7 +400,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Add mailbox..."),		NULL, add_mailbox_cb, 0, NULL},
 	{N_("/_File/_Add mbox mailbox..."),     NULL, add_mbox_cb, 0, NULL},
-	{N_("/_File/_Update folder tree"),	NULL, update_folderview_cb, 0, NULL},
+	{N_("/_File/_Rescan folder tree"),	NULL, update_folderview_cb, 0, NULL},
 	{N_("/_File/_Folder"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Folder/Create _new folder..."),
 						NULL, new_folder_cb, 0, NULL},
@@ -1313,7 +1313,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	} entry[] = {
 		{"/File/Add mailbox..."        , M_UNLOCKED},
                 {"/File/Add mbox mailbox..."   , M_UNLOCKED},
-		{"/File/Update folder tree"    , M_UNLOCKED},
+		{"/File/Rescan folder tree"    , M_UNLOCKED},
 		{"/File/Folder"                , M_UNLOCKED},
 		{"/File/Import mbox file..."   , M_UNLOCKED},
 		{"/File/Export to mbox file...", M_UNLOCKED},
@@ -1381,8 +1381,8 @@ void main_window_popup(MainWindow *mainwin)
 	gdk_window_get_origin(mainwin->window->window, &x, &y);
 	sx = gdk_screen_width();
 	sy = gdk_screen_height();
-	x %= sx; if (x < 0) x += sx;
-	y %= sy; if (y < 0) y += sy;
+	x %= sx; if (x < 0) x = 0;
+	y %= sy; if (y < 0) y = 0;
 	gdk_window_move(mainwin->window->window, x, y);
 	gdk_window_raise(mainwin->window->window);
 	gdk_window_show(mainwin->window->window);
@@ -1393,30 +1393,30 @@ void main_window_popup(MainWindow *mainwin)
 	case SEPARATE_FOLDER:
 		widget = mainwin->win.sep_folder.folderwin;
 		gdk_window_get_origin(widget->window, &x, &y);
-		x %= sx; if (x < 0) x += sx;
-		y %= sy; if (y < 0) y += sy;
+		x %= sx; if (x < 0) x = 0;
+		y %= sy; if (y < 0) y = 0;
 		gdk_window_move(widget->window, x, y);
 		gdk_window_raise(widget->window);
 		break;
 	case SEPARATE_MESSAGE:
 		widget = mainwin->win.sep_message.messagewin;
 		gdk_window_get_origin(widget->window, &x, &y);
-		x %= sx; if (x < 0) x += sx;
-		y %= sy; if (y < 0) y += sy;
+		x %= sx; if (x < 0) x = 0;
+		y %= sy; if (y < 0) y = 0;
 		gdk_window_move(widget->window, x, y);
 		gdk_window_raise(widget->window);
 		break;
 	case SEPARATE_BOTH:
 		widget = mainwin->win.sep_both.folderwin;
 		gdk_window_get_origin(widget->window, &x, &y);
-		x %= sx; if (x < 0) x += sx;
-		y %= sy; if (y < 0) y += sy;
+		x %= sx; if (x < 0) x = 0;
+		y %= sy; if (y < 0) y = 0;
 		gdk_window_move(widget->window, x, y);
 		gdk_window_raise(widget->window);
 		widget = mainwin->win.sep_both.messagewin;
 		gdk_window_get_origin(widget->window, &x, &y);
-		x %= sx; if (x < 0) x += sx;
-		y %= sy; if (y < 0) y += sy;
+		x %= sx; if (x < 0) x = 0;
+		y %= sy; if (y < 0) y = 0;
 		gdk_window_move(widget->window, x, y);
 		gdk_window_raise(widget->window);
 		break;

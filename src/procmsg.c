@@ -404,6 +404,8 @@ static void mark_sum_func(gpointer key, gpointer value, gpointer data)
 	if (MSG_IS_NEW(*flags) && !MSG_IS_IGNORE_THREAD(*flags)) (*marksum->new)++;
 	if (MSG_IS_UNREAD(*flags) && !MSG_IS_IGNORE_THREAD(*flags)) (*marksum->unread)++;
 	(*marksum->total)++;
+
+	g_free(flags);
 }
 
 void procmsg_get_mark_sum(const gchar *folder,

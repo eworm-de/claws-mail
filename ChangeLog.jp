@@ -1,3 +1,29 @@
+2001-10-12
+
+	* src/prefs_common.c
+	  src/summaryview.[ch]: 順序変更可能なカラムのための最初の修正。
+
+2001-10-12
+
+	* src/procmsg.c: procmsg_get_mark_sum(), mark_sum_func(): メモリ
+	  リークを修正。
+	* src/folderview.c: folderview_button_pressed(): コードの整理と、
+	  メインウィンドウがロックされていたら sensitivity を off にする
+	  ようにした。
+	* src/syldap.c: syldap_read_data(): 不要かつ移植性に問題のある
+	  sched_yield() を削除。
+
+2001-10-11
+
+	* src/folderview.c: 「フォルダツリーを更新」コンテキストメニュー
+	  を「フォルダツリーを再スキャン」に変更し、「フォルダツリーを更新」
+	  をフォルダの状態のみを更新するようにした。
+	  folderview_update_all_node(): メッセージダイアログを表示しない
+	  ようにした。
+	* src/gtkutils.c: gtkut_widget_get_uposition()
+	  src/mainwindow.c: main_window_popup(): 座標を非負の値に
+	  クリッピングするようにした。
+
 2001-10-10
 
 	* src/utils.c: to_human_readable(): 少し最適化。
@@ -12,6 +38,9 @@
 	* いくつかの autotool スクリプトを更新。
 	* src/codeconv.c: conv_encode_header(): エンコーディングの変換に
 	  失敗した場合に無限ループを起こすバグを修正。
+	* src/codeconv.[ch]: 旧バージョンの libjconv のための修正
+	  (jconv_info_get_current_codeset() が "EUC-JP" の代わりに "EUCJP"
+	  を返していた)。
 
 2001-10-08
 

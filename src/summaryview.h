@@ -27,7 +27,8 @@
 #include <gtk/gtkctree.h>
 #include <gtk/gtkdnd.h>
 
-typedef struct _SummaryView	SummaryView;
+typedef struct _SummaryView		SummaryView;
+typedef struct _SummaryColumnState	SummaryColumnState;
 
 #include "mainwindow.h"
 #include "folderview.h"
@@ -39,16 +40,16 @@ typedef struct _SummaryView	SummaryView;
 
 typedef enum
 {
-	S_COL_MARK	= 0,
-	S_COL_UNREAD	= 1,
-	S_COL_MIME	= 2,
-	S_COL_NUMBER	= 3,
-	S_COL_SCORE     = 4,
-	S_COL_SIZE	= 5,
-	S_COL_DATE	= 6,
-	S_COL_FROM	= 7,
-	S_COL_SUBJECT	= 8
-} SummaryColumnPos;
+	S_COL_MARK,
+	S_COL_UNREAD,
+	S_COL_MIME,
+	S_COL_NUMBER,
+	S_COL_SCORE,
+	S_COL_SIZE,
+	S_COL_DATE,
+	S_COL_FROM,
+	S_COL_SUBJECT,
+} SummaryColumnType;
 
 #define N_SUMMARY_COLS	9
 
@@ -83,6 +84,12 @@ typedef enum
 
 extern GtkTargetEntry summary_drag_types[1];
 
+struct _SummaryColumnState
+{
+	SummaryColumnType type;
+	gboolean visible;
+};
+
 struct _SummaryView
 {
 	GtkWidget *vbox;
@@ -108,6 +115,9 @@ struct _SummaryView
 	gboolean display_msg;
 
 	GdkColor color_important;
+	SummaryColumnState col_state[N_SUMMARY_COLS];
+	gint col_pos[N_SUMMARY_COLS];
+
 	GdkColor color_marked;
 	GdkColor color_dim;
 

@@ -187,7 +187,8 @@ static void summary_update_status	(SummaryView		*summaryview);
 static void summary_status_show		(SummaryView		*summaryview);
 static void summary_set_ctree_from_list	(SummaryView		*summaryview,
 					 GSList			*mlist);
-static void summary_set_header		(gchar			*text[],
+static void summary_set_header		(SummaryView		*summaryview,
+					 gchar			*text[],
 					 MsgInfo		*msginfo);
 static void summary_display_msg		(SummaryView		*summaryview,
 					 GtkCTreeNode		*row,
@@ -410,10 +411,35 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/Select _all"),		NULL, summary_select_all, 0, NULL}
 };
 
+static const gchar *const col_label[N_SUMMARY_COLS] = {
+	N_("M"),	/* S_COL_MARK    */
+	N_("U"),	/* S_COL_UNREAD  */
+	"",		/* S_COL_MIME    */
+	N_("No."),	/* S_COL_NUMBER  */
+	N_("Score"),    /* S_COL_SCORE	 */
+	N_("Size"),	/* S_COL_SIZE    */
+	N_("Date"),	/* S_COL_DATE    */
+	N_("From"),	/* S_COL_FROM    */
+	N_("Subject")	/* S_COL_SUBJECT */
+};
+
 SummaryView *summary_create(void)
 {
 	SummaryView *summaryview;
-	gchar *titles[N_SUMMARY_COLS] = {_("M"), _("U")};
+	SummaryColumnState *col_state;
+	gint *col_pos;
+	SummaryColumnType col_default[N_SUMMARY_COLS] = {
+		S_COL_MARK,
+		S_COL_UNREAD,
+		S_COL_MIME,
+		S_COL_NUMBER,
+		S_COL_SCORE,
+		S_COL_SIZE,
+		S_COL_DATE,
+		S_COL_FROM,
+		S_COL_SUBJECT
+	};
+	const gchar *titles[N_SUMMARY_COLS];
 	GtkWidget *vbox;
 	GtkWidget *scrolledwin;
 	GtkWidget *ctree;
@@ -442,56 +468,69 @@ SummaryView *summary_create(void)
 			     prefs_common.summaryview_width,
 			     prefs_common.summaryview_height);
 
-	if (prefs_common.trans_hdr) {
-		titles[S_COL_NUMBER]  = _("No.");
-		titles[S_COL_DATE]    = _("Date");
-		titles[S_COL_FROM]    = _("From");
-		titles[S_COL_SUBJECT] = _("Subject");
-	} else {
-		titles[S_COL_NUMBER]  = "No.";
-		titles[S_COL_DATE]    = "Date";
-		titles[S_COL_FROM]    = "From";
-		titles[S_COL_SUBJECT] = "Subject";
-	}
-	titles[S_COL_SIZE]  = _("Size");
-	titles[S_COL_SCORE] = _("Score");
+	col_state = summaryview->col_state;
+	col_pos = summaryview->col_pos;
 
-	ctree = gtk_sctree_new_with_titles(N_SUMMARY_COLS, S_COL_SUBJECT, titles);
+	for (i = 0; i < N_SUMMARY_COLS; i++) {
+		SummaryColumnType type;
+
+		type = col_state[i].type = col_default[i];
+		col_state[i].visible = TRUE;
+		col_pos[i] = i;
+		switch (type) {
+		case S_COL_SCORE:
+		case S_COL_SIZE:
+		case S_COL_NUMBER:
+		case S_COL_DATE:
+		case S_COL_FROM:
+		case S_COL_SUBJECT:
+			if (prefs_common.trans_hdr)
+				titles[i] = gettext(col_label[type]);
+			else
+				titles[i] = col_label[type];
+			break;
+		default:
+			titles[i] = gettext(col_label[type]);
+		}
+	}
+
+	ctree = gtk_sctree_new_with_titles
+		(N_SUMMARY_COLS, col_pos[S_COL_SUBJECT], (gchar **)titles);
 	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolledwin),
 					    GTK_CLIST(ctree)->hadjustment);
 	gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolledwin),
 					    GTK_CLIST(ctree)->vadjustment);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
 	gtk_clist_set_selection_mode(GTK_CLIST(ctree), GTK_SELECTION_EXTENDED);
-	gtk_clist_set_column_justification(GTK_CLIST(ctree), S_COL_MARK,
+	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_MARK],
 					   GTK_JUSTIFY_CENTER);
-	gtk_clist_set_column_justification(GTK_CLIST(ctree), S_COL_UNREAD,
+	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_UNREAD],
 					   GTK_JUSTIFY_CENTER);
-	gtk_clist_set_column_justification(GTK_CLIST(ctree), S_COL_MIME,
+	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_MIME],
 					   GTK_JUSTIFY_CENTER);
-	gtk_clist_set_column_justification(GTK_CLIST(ctree), S_COL_NUMBER,
+	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_NUMBER],
 					   GTK_JUSTIFY_RIGHT);
-	gtk_clist_set_column_justification(GTK_CLIST(ctree), S_COL_SCORE,
+	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_SCORE],
 					   GTK_JUSTIFY_RIGHT);
-	gtk_clist_set_column_justification(GTK_CLIST(ctree), S_COL_SIZE,
+	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_SIZE],
 					   GTK_JUSTIFY_RIGHT);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), S_COL_MARK,
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_MARK],
 				   SUMMARY_COL_MARK_WIDTH);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), S_COL_UNREAD,
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_UNREAD],
 				   SUMMARY_COL_UNREAD_WIDTH);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), S_COL_MIME,
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_MIME],
 				   SUMMARY_COL_MIME_WIDTH);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), S_COL_NUMBER,
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_NUMBER],
 				   prefs_common.summary_col_number);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), S_COL_SCORE,
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_SCORE],
 				   prefs_common.summary_col_score);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), S_COL_SIZE,
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_SIZE],
 				   prefs_common.summary_col_size);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), S_COL_DATE,
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_DATE],
 				   prefs_common.summary_col_date);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), S_COL_FROM,
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_FROM],
 				   prefs_common.summary_col_from);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), S_COL_SUBJECT,
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_SUBJECT],
 				   prefs_common.summary_col_subject);
 	gtk_ctree_set_line_style(GTK_CTREE(ctree), GTK_CTREE_LINES_DOTTED);
 	gtk_ctree_set_expander_style(GTK_CTREE(ctree),
@@ -512,7 +551,7 @@ SummaryView *summary_create(void)
 	/* connect signal to the buttons for sorting */
 #define CLIST_BUTTON_SIGNAL_CONNECT(col, func) \
 	gtk_signal_connect \
-		(GTK_OBJECT(GTK_CLIST(ctree)->column[col].button), \
+		(GTK_OBJECT(GTK_CLIST(ctree)->column[col_pos[col]].button), \
 		 "clicked", \
 		 GTK_SIGNAL_FUNC(func), \
 		 summaryview)
@@ -633,7 +672,7 @@ void summary_init(SummaryView *summaryview)
 
 	pixmap = gtk_pixmap_new(clipxpm, clipxpmmask);
 	gtk_clist_set_column_widget(GTK_CLIST(summaryview->ctree),
-				    S_COL_MIME, pixmap);
+				    summaryview->col_pos[S_COL_MIME], pixmap);
 	gtk_widget_show(pixmap);
 
 	if (!small_style) {
@@ -1004,8 +1043,13 @@ void summary_clear_list(SummaryView *summaryview)
 	summaryview->sort_type = GTK_SORT_ASCENDING;
 
 	gtk_clist_clear(clist);
-	optimal_width = gtk_clist_optimal_column_width(clist, S_COL_SUBJECT);
-	gtk_clist_set_column_width(clist, S_COL_SUBJECT, optimal_width);
+	if (summaryview->col_pos[S_COL_SUBJECT] == N_SUMMARY_COLS - 1) {
+		optimal_width = gtk_clist_optimal_column_width
+			(clist, summaryview->col_pos[S_COL_SUBJECT]);
+		gtk_clist_set_column_width
+			(clist, summaryview->col_pos[S_COL_SUBJECT],
+			 optimal_width);
+	}
 
 	gtk_clist_thaw(clist);
 }
@@ -1934,7 +1978,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 			msginfo = (MsgInfo *)mlist->data;
 			parent = NULL;
 
-			summary_set_header(text, msginfo);
+			summary_set_header(summaryview, text, msginfo);
 
 			/* search parent node for threading */
 			if (msginfo->inreplyto && *msginfo->inreplyto) {
@@ -2017,7 +2061,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		for (; mlist != NULL; mlist = mlist->next) {
 			msginfo = (MsgInfo *)mlist->data;
 
-			summary_set_header(text, msginfo);
+			summary_set_header(summaryview, text, msginfo);
 
 			node = gtk_ctree_insert_node
 				(ctree, NULL, NULL, text, 2,
@@ -2042,12 +2086,14 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		}
 	}
 
-	if (prefs_common.enable_hscrollbar) {
+	if (prefs_common.enable_hscrollbar &&
+	    summaryview->col_pos[S_COL_SUBJECT] == N_SUMMARY_COLS - 1) {
 		gint optimal_width;
 
 		optimal_width = gtk_clist_optimal_column_width
-			(GTK_CLIST(ctree), S_COL_SUBJECT);
-		gtk_clist_set_column_width(GTK_CLIST(ctree), S_COL_SUBJECT,
+			(GTK_CLIST(ctree), summaryview->col_pos[S_COL_SUBJECT]);
+		gtk_clist_set_column_width(GTK_CLIST(ctree),
+					   summaryview->col_pos[S_COL_SUBJECT],
 					   optimal_width);
 	}
 
@@ -2172,34 +2218,37 @@ static void summary_write_cache_func(GtkCTree *ctree, GtkCTreeNode *node,
 	procmsg_write_flags(msginfo, fps->mark_fp);
 }
 
-static void summary_set_header(gchar *text[], MsgInfo *msginfo)
+static void summary_set_header(SummaryView *summaryview, gchar *text[],
+			       MsgInfo *msginfo)
 {
 	static gchar date_modified[80];
 	static gchar *to = NULL;
 	static gchar *from_name = NULL;
 	static gchar col_number[11];
 	static gchar col_score[11];
+	gint *col_pos = summaryview->col_pos;
 
-	text[S_COL_MARK]   = NULL;
-	text[S_COL_UNREAD] = NULL;
-	text[S_COL_MIME]   = NULL;
-	text[S_COL_NUMBER] = itos_buf(col_number, msginfo->msgnum);
-	text[S_COL_SIZE]   = to_human_readable(msginfo->size);
+	text[col_pos[S_COL_MARK]]   = NULL;
+	text[col_pos[S_COL_UNREAD]] = NULL;
+	text[col_pos[S_COL_MIME]]   = NULL;
+	text[col_pos[S_COL_NUMBER]] = itos(msginfo->msgnum);
+	text[col_pos[S_COL_SIZE]]   = to_human_readable(msginfo->size);
+
 #if 0
-	text[S_COL_SCORE]  = itos_buf(col_score, msginfo->threadscore);
+	text[col_pos[S_COL_SCORE]]  = itos_buf(col_score, msginfo->threadscore);
 #else
-	text[S_COL_SCORE]  = itos_buf(col_score, msginfo->score);
+	text[col_pos[S_COL_SCORE]]  = itos_buf(col_score, msginfo->score);
 #endif
 
 	if (msginfo->date_t) {
 		procheader_date_get_localtime(date_modified,
 					      sizeof(date_modified),
 					      msginfo->date_t);
-		text[S_COL_DATE] = date_modified;
+		text[col_pos[S_COL_DATE]] = date_modified;
 	} else if (msginfo->date)
-		text[S_COL_DATE] = msginfo->date;
+		text[col_pos[S_COL_DATE]] = msginfo->date;
 	else
-		text[S_COL_DATE] = _("(No Date)");
+		text[col_pos[S_COL_DATE]] = _("(No Date)");
 
 	text[S_COL_FROM] = msginfo->fromname ? msginfo->fromname :
 		_("(No From)");
@@ -2213,7 +2262,7 @@ static void summary_set_header(gchar *text[], MsgInfo *msginfo)
 		if (account_find_from_address(from)) {
 			g_free(to);
 			to = g_strconcat("-->", msginfo->to, NULL);
-			text[S_COL_FROM] = to;
+			text[col_pos[S_COL_FROM]] = to;
 		}
 	}
 
@@ -2237,7 +2286,7 @@ static void summary_set_header(gchar *text[], MsgInfo *msginfo)
 		}
 	}
 
-	text[S_COL_SUBJECT] = msginfo->subject ? msginfo->subject :
+	text[col_pos[S_COL_SUBJECT]] = msginfo->subject ? msginfo->subject :
 		_("(No Subject)");
 }
 
@@ -2468,6 +2517,7 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 	GtkStyle *style = NULL;
 	MsgInfo *msginfo;
 	MsgFlags flags;
+	gint *col_pos = summaryview->col_pos;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 	if (!msginfo) return;
@@ -2478,22 +2528,23 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 
 	/* set new/unread column */
 	if (MSG_IS_IGNORE_THREAD(flags)) {
-		gtk_ctree_node_set_pixmap(ctree, row, S_COL_UNREAD,
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_UNREAD],
 					  ignorethreadxpm, ignorethreadxpmmask);
 	} else if (MSG_IS_NEW(flags)) {
-		gtk_ctree_node_set_pixmap(ctree, row, S_COL_UNREAD,
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_UNREAD],
 					  newxpm, newxpmmask);
 	} else if (MSG_IS_UNREAD(flags)) {
-		gtk_ctree_node_set_pixmap(ctree, row, S_COL_UNREAD,
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_UNREAD],
 					  unreadxpm, unreadxpmmask);
 	} else if (MSG_IS_REPLIED(flags)) {
-		gtk_ctree_node_set_pixmap(ctree, row, S_COL_UNREAD,
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_UNREAD],
 					  repliedxpm, repliedxpmmask);
 	} else if (MSG_IS_FORWARDED(flags)) {
-		gtk_ctree_node_set_pixmap(ctree, row, S_COL_UNREAD,
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_UNREAD],
 					  forwardedxpm, forwardedxpmmask);
 	} else {
-		gtk_ctree_node_set_text(ctree, row, S_COL_UNREAD, NULL);
+		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_UNREAD],
+					NULL);
 	}
 
 	if (prefs_common.bold_unread &&
@@ -2505,7 +2556,7 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 
 	/* set mark column */
 	if (MSG_IS_DELETED(flags)) {
-		gtk_ctree_node_set_pixmap(ctree, row, S_COL_MARK,
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MARK],
 					  deletedxpm, deletedxpmmask);
 		if (style)
 			style = bold_deleted_style;
@@ -2515,10 +2566,10 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 			gtk_ctree_node_set_foreground
 				(ctree, row, &summaryview->color_dim);
 	} else if (MSG_IS_MARKED(flags)) {
-        	gtk_ctree_node_set_pixmap(ctree, row, S_COL_MARK,
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MARK],
 					  markxpm, markxpmmask);
 	} else if (MSG_IS_MOVE(flags)) {
-		gtk_ctree_node_set_text(ctree, row, S_COL_MARK, "o");
+		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_MARK], "o");
 		if (style)
 			style = bold_marked_style;
 		else {
@@ -2527,8 +2578,8 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 			gtk_ctree_node_set_foreground
 				(ctree, row, &summaryview->color_marked);
 	} else if (MSG_IS_COPY(flags)) {
-		gtk_ctree_node_set_text(ctree, row, S_COL_MARK, "O");
-                if (style)
+		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_MARK], "O");
+		if (style)
 			style = bold_marked_style;
 		else {
 			style = small_marked_style;
@@ -2544,14 +2595,14 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 		gtk_ctree_node_set_foreground(ctree, row,
 					      &summaryview->color_important);
 	} else {
-		gtk_ctree_node_set_text(ctree, row, S_COL_MARK, NULL);
+		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_MARK], NULL);
 	}
 
 	if (MSG_IS_MIME(flags)) {
-		gtk_ctree_node_set_pixmap(ctree, row, S_COL_MIME,
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
 					  clipxpm, clipxpmmask);
 	} else {
-		gtk_ctree_node_set_text(ctree, row, S_COL_MIME, NULL);
+		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_MIME], NULL);
 	}
         if (!style)
 		style = small_style;
@@ -4086,7 +4137,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 
-	switch (column) {
+	switch (column < 0 ? column : summaryview->col_state[column].type) {
 	case S_COL_MARK:
 		if (MSG_IS_MARKED(msginfo->flags)) {
 			MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_MARKED);
@@ -4118,7 +4169,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 static void summary_col_resized(GtkCList *clist, gint column, gint width,
 				SummaryView *summaryview)
 {
-	switch (column) {
+	switch (summaryview->col_state[column].type) {
 	case S_COL_MARK:
 		prefs_common.summary_col_mark = width;
 		break;
@@ -4290,15 +4341,21 @@ void summary_change_display_item(SummaryView *summaryview)
 {
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
 
-	gtk_clist_set_column_visibility(clist, S_COL_MARK, prefs_common.show_mark);
-	gtk_clist_set_column_visibility(clist, S_COL_UNREAD, prefs_common.show_unread);
-	gtk_clist_set_column_visibility(clist, S_COL_MIME, prefs_common.show_mime);
-	gtk_clist_set_column_visibility(clist, S_COL_NUMBER, prefs_common.show_number);
-	gtk_clist_set_column_visibility(clist, S_COL_SCORE, prefs_common.show_score);
-	gtk_clist_set_column_visibility(clist, S_COL_SIZE, prefs_common.show_size);
-	gtk_clist_set_column_visibility(clist, S_COL_DATE, prefs_common.show_date);
-	gtk_clist_set_column_visibility(clist, S_COL_FROM, prefs_common.show_from);
-	gtk_clist_set_column_visibility(clist, S_COL_SUBJECT, prefs_common.show_subject);
+#define SET_VISIBLE(col, visible) \
+	gtk_clist_set_column_visibility(clist, summaryview->col_pos[col], \
+					prefs_common.visible)
+
+	SET_VISIBLE(S_COL_MARK   , show_mark);
+	SET_VISIBLE(S_COL_UNREAD , show_unread);
+	SET_VISIBLE(S_COL_MIME   , show_mime);
+	SET_VISIBLE(S_COL_NUMBER , show_number);
+	SET_VISIBLE(S_COL_SCORE  , show_score);
+	SET_VISIBLE(S_COL_SIZE   , show_size);
+	SET_VISIBLE(S_COL_DATE   , show_date);
+	SET_VISIBLE(S_COL_FROM   , show_from);
+	SET_VISIBLE(S_COL_SUBJECT, show_subject);
+
+#undef SET_VISIBLE
 }
 
 static void summary_start_drag(GtkWidget *widget, gint button, GdkEvent *event,
