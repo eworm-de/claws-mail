@@ -1,3 +1,8 @@
+2005-01-01 [colin]	0.9.13cvs24.1
+
+	* src/procmime.c
+		Sync with HEAD (leak fix)
+
 2004-12-31 [colin]	0.9.13cvs23.2
 
 	* src/prefs_common.c
