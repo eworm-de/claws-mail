@@ -133,6 +133,7 @@ struct _PrefsAccount
 	gchar	 *default_privacy_system;
 	gboolean  default_encrypt;
 	gboolean  default_sign;
+	gboolean  save_encrypted_as_clear_text;
 
 	/* Advanced */
 	gboolean  set_smtpport;

@@ -140,6 +140,7 @@ static struct Privacy {
 	GtkWidget *default_privacy_system;
 	GtkWidget *default_encrypt_chkbtn;
 	GtkWidget *default_sign_chkbtn;
+	GtkWidget *save_clear_text_chkbtn;
 } privacy;
 
 #if USE_OPENSSL
@@ -408,6 +409,9 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"default_sign", "FALSE", &tmp_ac_prefs.default_sign, P_BOOL,
 	 &privacy.default_sign_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"save_clear_text", "FALSE", &tmp_ac_prefs.save_encrypted_as_clear_text, P_BOOL,
+	 &privacy.save_clear_text_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 #if USE_OPENSSL
@@ -1687,6 +1691,7 @@ static void prefs_account_privacy_create(void)
 	GtkWidget *default_privacy_system;
 	GtkWidget *default_encrypt_chkbtn;
 	GtkWidget *default_sign_chkbtn;
+	GtkWidget *save_clear_text_chkbtn;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1713,10 +1718,13 @@ static void prefs_account_privacy_create(void)
 			   _("Encrypt message by default"));
 	PACK_CHECK_BUTTON (vbox2, default_sign_chkbtn,
 			   _("Sign message by default"));
-			    
+	PACK_CHECK_BUTTON (vbox2, save_clear_text_chkbtn,
+			   _("Save sent encrypted messages as clear text"));
+
 	privacy.default_privacy_system = default_privacy_system;
 	privacy.default_encrypt_chkbtn = default_encrypt_chkbtn;
 	privacy.default_sign_chkbtn    = default_sign_chkbtn;
+	privacy.save_clear_text_chkbtn = save_clear_text_chkbtn;
 }
 
 #if USE_OPENSSL

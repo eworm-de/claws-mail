@@ -1067,6 +1067,9 @@ gint procmsg_send_message_queue(const gchar *file)
 	gchar buf[BUFFSIZE];
 	gint hnum;
 	PrefsAccount *mailac = NULL, *newsac = NULL;
+	gboolean save_clear_text = TRUE;
+	gchar *tmp_enc_file = NULL;
+
 	int local = 0;
 
 	g_return_val_if_fail(file != NULL, -1);
@@ -1132,8 +1135,11 @@ gint procmsg_send_message_queue(const gchar *file)
 	if (encrypt) {
 		MimeInfo *mimeinfo;
 
+		save_clear_text = (mailac != NULL && mailac->save_encrypted_as_clear_text);
+
 		fclose(fp);
-		
+		fp = NULL;
+
 		mimeinfo = procmime_scan_queue_file(file);
 		if (!privacy_encrypt(privacy_system, mimeinfo, encrypt_data)
 		|| (fp = my_tmpfile()) == NULL
@@ -1155,8 +1161,26 @@ gint procmsg_send_message_queue(const gchar *file)
 			return -1;
 		}
 		
-		procmime_mimeinfo_free_all(mimeinfo);
 		rewind(fp);
+		if (!save_clear_text) {
+			gchar *content = NULL;
+			FILE *tmpfp = get_tmpfile_in_dir(get_mime_tmp_dir(), &tmp_enc_file);
+			if (tmpfp) {
+				fclose(tmpfp);
+
+				content = file_read_stream_to_str(fp);
+				rewind(fp);
+
+				get_tmpfile_in_dir(get_mime_tmp_dir(), &tmp_enc_file);
+				str_write_to_file(content, tmp_enc_file);
+				g_free(content);
+			} else {
+				g_warning("couldn't get tempfile\n");
+			}
+		} 
+		
+		procmime_mimeinfo_free_all(mimeinfo);
+		
 		filepos = 0;
     	}
 
@@ -1250,8 +1274,14 @@ gint procmsg_send_message_queue(const gchar *file)
 		outbox = folder_find_item_from_identifier(savecopyfolder);
 		if (!outbox)
 			outbox = folder_get_default_outbox();
-
-		procmsg_save_to_outbox(outbox, file, TRUE);
+			
+		if (save_clear_text || tmp_enc_file == NULL) {
+			procmsg_save_to_outbox(outbox, file, TRUE);
+		} else {
+			procmsg_save_to_outbox(outbox, tmp_enc_file, FALSE);
+			unlink(tmp_enc_file);
+			free(tmp_enc_file);
+		}
 	}
 
 	if (replymessageid != NULL || fwdmessageid != NULL) {
