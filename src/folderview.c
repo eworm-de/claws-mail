@@ -880,8 +880,6 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		gtk_ctree_node_set_text(ctree, node, COL_TOTAL,  itos(item->total));
 	}
 
-	if (item->stype == F_TRASH) return;
-
 	ctree_style = gtk_widget_get_style(GTK_WIDGET(ctree));
 	prev_style = gtk_ctree_node_get_row_style(ctree, node);
 	if (!prev_style)
@@ -892,6 +890,10 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	if (item->stype == F_QUEUE) {
 		/* highlight queue folder if there are any messages */
 		use_bold = use_color = (item->total > 0);
+	} else if (item->stype == F_TRASH) {
+		/* Never highlight trash */
+		use_bold = FALSE;
+		use_color = FALSE;
 	} else {
 		/* if unread messages exist, print with bold font */
 		use_bold = (item->unread > 0) || add_unread_mark;
