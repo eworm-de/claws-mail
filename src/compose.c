@@ -102,12 +102,6 @@
 #include "quote_fmt.h"
 #include "template.h"
 
-/* DINH V. Hoa - waiting for definitive version
-   of undo patch */
-#ifdef USE_UNDO_PATCH
-#include "undo.h"
-#endif
-
 #if USE_GPGME
 #  include "rfc2015.h"
 #endif
@@ -314,10 +308,6 @@ static gint compose_delete_cb		(GtkWidget	*widget,
 static void compose_destroy_cb		(GtkWidget	*widget,
 					 Compose	*compose);
 
-#ifdef USE_UNDO_PATCH /* DINH V. Hoa */
-static void compose_undo_cb		(Compose	*compose);
-static void compose_redo_cb		(Compose	*compose);
-#endif
 static void compose_cut_cb		(Compose	*compose);
 static void compose_copy_cb		(Compose	*compose);
 static void compose_paste_cb		(Compose	*compose);
@@ -326,12 +316,6 @@ static void compose_allsel_cb		(Compose	*compose);
 static void compose_grab_focus_cb	(GtkWidget	*widget,
 					 Compose	*compose);
 
-#ifdef USE_UNDO_PATCH /* DINH V. Hoa */
-static void compose_insert_text_cb(GtkEditable *editable, gchar *new_text,
-		gint new_text_length, gint *position, Compose *compose);
-static void compose_delete_text_cb(GtkEditable *editable, gint start_pos,
-		gint end_pos, Compose *compose);
-#endif
 static void compose_changed_cb		(GtkEditable	*editable,
 					 Compose	*compose);
 static void compose_button_press_cb	(GtkWidget	*widget,
@@ -442,13 +426,8 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_File/_Close"),			"<alt>W", compose_close_cb, 0, NULL},
 
 	{N_("/_Edit"),		   NULL, NULL, 0, "<Branch>"},
-#ifdef USE_UNDO_PATCH /* DINH V. Hoa */
-	{N_("/_Edit/_Undo"),	   "<control>Z", compose_undo_cb, 0, NULL},
-	{N_("/_Edit/_Redo"),	   "<control>Y", compose_redo_cb, 0, NULL},
-#else
-	{N_("/_Edit/_Undo"),       "<control>Z", NULL, 0, NULL},
-	{N_("/_Edit/_Redo"),       "<control>Y", NULL, 0, NULL},
-#endif
+	{N_("/_Edit/_Undo"),	   "<control>Z", NULL, 0, NULL},
+	{N_("/_Edit/_Redo"),	   "<control>Y", NULL, 0, NULL},
 	{N_("/_Edit/---"),	   NULL, NULL, 0, "<Separator>"},
 	{N_("/_Edit/Cu_t"),	   "<control>X", compose_cut_cb,    0, NULL},
 	{N_("/_Edit/_Copy"),	   "<control>C", compose_copy_cb,   0, NULL},
@@ -1696,9 +1675,6 @@ static void compose_insert_sig(Compose *compose)
 		g_free(sigfile);
 		return;
 	}
-
-	gtk_stext_set_point(GTK_STEXT(compose->text),
-			    gtk_stext_get_length(GTK_STEXT(compose->text)));
 
 	gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, "\n\n", 2);
 	if (prefs_common.sig_sep) {
@@ -3763,12 +3739,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 
-#ifdef USE_UNDO_PATCH
-	gtk_signal_connect(GTK_OBJECT(text), "insert-text",
-			   GTK_SIGNAL_FUNC(compose_insert_text_cb), compose);
-	gtk_signal_connect(GTK_OBJECT(text), "delete-text",
-			   GTK_SIGNAL_FUNC(compose_delete_text_cb), compose);
-#endif
 	gtk_signal_connect(GTK_OBJECT(text), "changed",
 			   GTK_SIGNAL_FUNC(compose_changed_cb), compose);
 	gtk_signal_connect(GTK_OBJECT(text), "grab_focus",
@@ -4371,11 +4341,6 @@ static void compose_destroy(Compose *compose)
 	g_free(compose->boundary);
 
 	g_free(compose->exteditor_file);
-
-#ifdef USE_UNDO_PATCH
-	compose_undo_free_list(&compose->undo);
-	compose_undo_free_list(&compose->redo);
-#endif
 
 	for (row = 0; (ainfo = gtk_clist_get_row_data(clist, row)) != NULL;
 	     row++)
@@ -5360,22 +5325,6 @@ static void compose_destroy_cb(GtkWidget *widget, Compose *compose)
 	compose_destroy(compose);
 }
 
-#ifdef USE_UNDO_PATCH
-static void compose_undo_cb(Compose *compose)
-{
-	if (compose->focused_editable &&
-	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable))
-		compose_undo_undo(compose,NULL);
-}
-
-static void compose_redo_cb(Compose *compose)
-{
-	if (compose->focused_editable &&
-	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable))
-		compose_undo_redo(compose,NULL);
-}
-#endif
-
 static void compose_cut_cb(Compose *compose)
 {
 	if (compose->focused_editable &&
@@ -5413,32 +5362,6 @@ static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
 	if (GTK_IS_EDITABLE(widget))
 		compose->focused_editable = widget;
 }
-
-#ifdef USE_UNDO_PATCH
-static void compose_insert_text_cb(GtkEditable *editable, gchar *new_text,
-		gint new_text_length, gint *position, Compose *compose)
-{
-	guchar *text_to_insert;
-
-	text_to_insert = g_strndup (new_text, new_text_length);
-	compose_undo_add (text_to_insert, *position, (*position + new_text_length), UNDO_ACTION_INSERT, compose);
-
-	g_free (text_to_insert);
-}
-
-static void compose_delete_text_cb(GtkEditable *editable, gint start_pos,
-		gint end_pos, Compose *compose)
-{
-        guchar *text_to_delete;
-
-        if (start_pos == end_pos )
-             return;
-        text_to_delete = gtk_editable_get_chars (GTK_EDITABLE(editable), start_pos, end_pos);
-	compose_undo_add (text_to_delete, start_pos, end_pos, UNDO_ACTION_DELETE, compose);
-
-	g_free (text_to_delete);
-}
-#endif
 
 static void compose_changed_cb(GtkEditable *editable, Compose *compose)
 {

@@ -1,3 +1,10 @@
+2001-11-11 [alfons]
+	
+	* src/compose.[ch]
+	* src/undo.[ch]
+	* src/Makefile.am
+		revert the undo stuff (this is 0.6.6claws stuff)
+
 2001-11-11 [hoa]	0.6.5.claws6
 
 	* src/compose.[ch]

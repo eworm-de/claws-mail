@@ -120,8 +120,7 @@ sylpheed_SOURCES = \
 	quote_fmt_lex.l quote_fmt_lex.h \
 	quote_fmt_parse.y quote_fmt.h \
 	gtkspell.c gtkspell.h gtkxtext.h \
-	template_select.c template_select.h \
-	undo.c undo.h
+	template_select.c template_select.h
 
 BUILT_SOURCES = \
 	quote_fmt_lex.c \
