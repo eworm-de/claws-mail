@@ -1,3 +1,30 @@
+2001-08-02
+
+	* src/inc.c: inc_start(): 致命的でないエラーで中断しないようにした。
+
+2001-08-01
+
+	* version 0.5.2
+
+2001-08-01
+
+	* src/mimeview.c: mimeview_view_file(): メインプロセスのサスペンド
+	  を防ぐために metamail に -x オプションを追加。
+	  mimeview_button_pressed(): content-type が application/octet-stream
+	  の場合は `開く' メニュー項目を選択不可にした。
+
+2001-07-31
+
+	* src/imap.c: imap_parse_atom(): エスケープされた文字を正しく処理
+	  するようにした。
+	  get_quoted(): 新規。エスケープ文字 '\' を処理する。
+	* src/folder.c: folder_read_list(): folderlist.xml が存在しない
+	  場合警告を出力しないようにした。
+	* src/main.c: main(): セットアップの後フォルダリストを書き出すよう
+	  にした。
+	* src/textview.c: textview_create()
+	  src/compose.c: compose_create(): デフォルトのタブ幅を8にした。
+
 2001-07-29
 
 	* src/prefs_common.c: date_format_select_row(): リストをキーで選択

@@ -484,9 +484,11 @@ static void inc_start(IncProgressDialog *inc_dialog)
 		inc_write_uidl_list(pop3_state);
 
 		if (inc_state != INC_SUCCESS) {
-			inc_put_error(inc_state);
 			error_num++;
-			if (inc_state == INC_NOSPACE) break;
+			if (inc_state == INC_NOSPACE) {
+				inc_put_error(inc_state);
+				break;
+			}
 		}
 
 		inc_session_destroy(session);

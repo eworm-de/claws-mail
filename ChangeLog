@@ -1,3 +1,11 @@
+2001-08-02
+
+	* src/inc.c: inc_start(): don't abort with non-fatal error.
+
+2001-08-01
+
+	* version 0.5.2
+
 2001-08-01
 
 	* src/mimeview.c: mimeview_view_file(): added -x option to the

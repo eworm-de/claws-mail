@@ -1,3 +1,10 @@
+2001-08-03 [paul]
+
+	* configure.in
+		change to 0.5.2claws1
+
+	* sync with sylpheed 0.5.2cvs1
+
 2001-08-02 [alfons]
 
 	* configure.in
