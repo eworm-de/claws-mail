@@ -141,7 +141,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	GtkWidget *paned;
 	GtkWidget *scrolledwin;
 	GtkWidget *ctree;
-	GtkWidget *mime_vbox;
+	GtkWidget *mime_notebook;
 	GtkWidget *popupmenu;
 	GtkWidget *icon;
 	GtkItemFactory *popupfactory;
@@ -193,12 +193,16 @@ MimeView *mimeview_create(MainWindow *mainwin)
 			   GTK_SIGNAL_FUNC (mimeview_start_drag), mimeview);
 	gtk_signal_connect(GTK_OBJECT(ctree), "drag_data_get",
 			   GTK_SIGNAL_FUNC(mimeview_drag_data_get), mimeview);
-    
-	mime_vbox = gtk_vbox_new(FALSE, 0);
+
+	mime_notebook = gtk_notebook_new();
+        gtk_widget_show(mime_notebook);
+        GTK_WIDGET_UNSET_FLAGS(mime_notebook, GTK_CAN_FOCUS);
+        gtk_notebook_set_show_tabs(GTK_NOTEBOOK(mime_notebook), FALSE);
+        gtk_notebook_set_show_border(GTK_NOTEBOOK(mime_notebook), FALSE);
 
 	paned = gtk_vpaned_new();
 	gtk_paned_add1(GTK_PANED(paned), scrolledwin);
-	gtk_paned_add2(GTK_PANED(paned), mime_vbox);
+	gtk_paned_add2(GTK_PANED(paned), mime_notebook);
 	gtk_container_add(GTK_CONTAINER(notebook), paned);
 	icon = stock_pixmap_widget(mainwin->window, STOCK_PIXMAP_CLIP); 
 	gtk_widget_show(icon);
@@ -214,15 +218,15 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	popupmenu = menu_create_items(mimeview_popup_entries, n_entries,
 				      "<MimeView>", &popupfactory, mimeview);
 
-	mimeview->notebook     = notebook;
-	mimeview->vbox         = vbox;
-	mimeview->paned        = paned;
-	mimeview->scrolledwin  = scrolledwin;
-	mimeview->ctree        = ctree;
-	mimeview->mime_vbox    = mime_vbox;
-	mimeview->popupmenu    = popupmenu;
-	mimeview->popupfactory = popupfactory;
-	mimeview->type         = -1;
+	mimeview->notebook      = notebook;
+	mimeview->vbox          = vbox;
+	mimeview->paned         = paned;
+	mimeview->scrolledwin   = scrolledwin;
+	mimeview->ctree         = ctree;
+	mimeview->mime_notebook = mime_notebook;
+	mimeview->popupmenu     = popupmenu;
+	mimeview->popupfactory  = popupfactory;
+	mimeview->type          = -1;
 
 	mimeviews = g_slist_prepend(mimeviews, mimeview);
 
@@ -232,6 +236,9 @@ MimeView *mimeview_create(MainWindow *mainwin)
 void mimeview_init(MimeView *mimeview)
 {
 	textview_init(mimeview->textview);
+
+	gtk_container_add(GTK_CONTAINER(mimeview->mime_notebook),
+		GTK_WIDGET_PTR(mimeview->textview));
 }
 
 /* 
@@ -350,6 +357,8 @@ void mimeview_destroy(MimeView *mimeview)
 	
 	for (cur = mimeview->viewers; cur != NULL; cur = g_slist_next(cur)) {
 		MimeViewer *viewer = (MimeViewer *) cur->data;
+		gtk_container_remove(GTK_CONTAINER(mimeview->mime_notebook),
+			GTK_WIDGET(viewer->get_widget(viewer)));
 		viewer->destroy_viewer(viewer);
 	}
 	g_slist_free(mimeview->viewers);
@@ -527,6 +536,9 @@ static MimeViewer *get_viewer_for_content_type(MimeView *mimeview, const gchar *
 			return curviewer;
 	}
 	viewer = factory->create_viewer();
+	gtk_container_add(GTK_CONTAINER(mimeview->mime_notebook),
+		GTK_WIDGET(viewer->get_widget(viewer)));
+		
 	mimeview->viewers = g_slist_append(mimeview->viewers, viewer);
 
 	return viewer;
@@ -578,26 +590,20 @@ static gboolean mimeview_show_part(MimeView *mimeview, MimeInfo *partinfo)
 static void mimeview_change_view_type(MimeView *mimeview, MimeViewType type)
 {
 	TextView  *textview  = mimeview->textview;
-	GList *children;
 
 	if ((mimeview->type != MIMEVIEW_VIEWER) && 
 	    (mimeview->type == type)) return;
 
-	children = gtk_container_children(GTK_CONTAINER(mimeview->mime_vbox));
-	if (children) {
-		gtkut_container_remove(GTK_CONTAINER(mimeview->mime_vbox),
-				       GTK_WIDGET(children->data));
-		g_list_free(children);
-	}
-
 	switch (type) {
 	case MIMEVIEW_TEXT:
-		gtk_container_add(GTK_CONTAINER(mimeview->mime_vbox),
-				  GTK_WIDGET_PTR(textview));
+		gtk_notebook_set_page(GTK_NOTEBOOK(mimeview->mime_notebook),
+			gtk_notebook_page_num(GTK_NOTEBOOK(mimeview->mime_notebook), 
+			GTK_WIDGET_PTR(textview)));
 		break;
 	case MIMEVIEW_VIEWER:
-		gtk_container_add(GTK_CONTAINER(mimeview->mime_vbox),
-				  GTK_WIDGET(mimeview->mimeviewer->get_widget(mimeview->mimeviewer)));
+		gtk_notebook_set_page(GTK_NOTEBOOK(mimeview->mime_notebook),
+			gtk_notebook_page_num(GTK_NOTEBOOK(mimeview->mime_notebook), 
+			GTK_WIDGET(mimeview->mimeviewer->get_widget(mimeview->mimeviewer))));
 		break;
 	default:
 		return;

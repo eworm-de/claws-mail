@@ -51,7 +51,7 @@ struct _MimeView
 	GtkWidget *paned;
 	GtkWidget *scrolledwin;
 	GtkWidget *ctree;
-	GtkWidget *mime_vbox;
+	GtkWidget *mime_notebook;
 
 	MimeViewType type;
 
