@@ -400,12 +400,11 @@ static void inc_progress_dialog_clear(IncProgressDialog *inc_dialog)
 {
 	progress_dialog_set_value(inc_dialog->dialog, 0.0);
 	progress_dialog_set_label(inc_dialog->dialog, "");
-	if (inc_dialog->mainwin) {
-		gtk_progress_bar_update
-			(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar), 0.0);
+	if (inc_dialog->mainwin)
 		gtk_progress_set_show_text
 			(GTK_PROGRESS(inc_dialog->mainwin->progressbar), FALSE);
-	}
+	gtk_progress_bar_update
+		(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar), 0.0);
 }
 
 static void inc_progress_dialog_destroy(IncProgressDialog *inc_dialog)
@@ -414,12 +413,12 @@ static void inc_progress_dialog_destroy(IncProgressDialog *inc_dialog)
 
 	inc_dialog_list = g_list_remove(inc_dialog_list, inc_dialog);
 
-	if (inc_dialog->mainwin) {
+	if (inc_dialog->mainwin)
 		gtk_progress_set_show_text
 			(GTK_PROGRESS(inc_dialog->mainwin->progressbar), FALSE);
-		gtk_progress_bar_update
-			(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar), 0.0);
-	}
+	gtk_progress_bar_update
+		(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar), 0.0);
+
 	progress_dialog_destroy(inc_dialog->dialog);
 
 	g_free(inc_dialog);

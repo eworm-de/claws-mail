@@ -1,3 +1,8 @@
+2003-08-08 [paul]	0.9.4claws10
+
+	* src/inc.c
+		clear the progress bar unconditionally
+
 2003-08-08 [paul]	0.9.4claws9
 
 	* sync with 0.9.4cvs4
