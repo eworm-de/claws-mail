@@ -81,7 +81,17 @@ void xml_truncate_buf		(XMLFile	*file);
 gboolean  xml_compare_tag	(XMLFile	*file,
 				 const gchar	*name);
 
-XMLTag	*xml_new_tag		(const gchar	*tag);
+XMLNode *xml_node_new		(XMLTag		*tag,
+				 const gchar	*text);
+
+XMLTag	*xml_tag_new		(const gchar	*tag);
+XMLAttr *xml_attr_new		(const gchar	*name,
+				 const gchar	*value);
+XMLAttr *xml_attr_new_int	(const gchar	*name,
+				 const gint	 value);
+void xml_tag_add_attr		(XMLTag		*tag,
+				 XMLAttr*	attr);
+
 XMLTag  *xml_copy_tag		(XMLTag		*tag);
 XMLAttr *xml_copy_attr		(XMLAttr	*attr);
 
@@ -89,13 +99,14 @@ gint xml_unescape_str		(gchar		*str);
 gint xml_file_put_escape_str	(FILE		*fp,
 				 const gchar	*str);
 
+gint xml_file_put_xml_decl	(FILE		*fp);
+gint xml_file_put_node		(FILE		*fp,
+				 XMLNode	*node);
+
 void xml_free_node		(XMLNode	*node);
 void xml_free_tree		(GNode		*node);
 
 void xml_free_tag		(XMLTag 	*tag);
-void xml_tag_add_attr		(XMLTag 	*tag,
-				 const gchar 	*name, 
-				 gchar 		*value);
 void xml_write_tree		(GNode		*node,
 				 FILE		*fp);
 GNode *xml_copy_tree		(GNode 		*node);

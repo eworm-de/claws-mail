@@ -1,3 +1,10 @@
+2004-08-03 [christoph]	0.9.12cvs41
+
+	* src/folder.c
+	* src/localfolder.c
+	* src/common/xml.[ch]
+		sync with main
+
 2004-08-03 [christoph]
 
 	* configure.ac
