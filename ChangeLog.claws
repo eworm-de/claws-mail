@@ -1,3 +1,12 @@
+2003-03-29 [christoph]	0.8.11claws64
+
+	* src/common/prefs.h
+	* src/plugins/image_viewer/Makefile.am
+	* src/plugins/image_viewer/plugin.c
+	* src/plugins/image_viewer/viewer.[ch]
+	* src/plugins/image_viewer/viewerprefs.[ch]	** NEW **
+		add PrefsPage for ImageViewer
+
 2003-03-28 [thorsten]	0.8.11claws63
 
 	* src/common/session.c

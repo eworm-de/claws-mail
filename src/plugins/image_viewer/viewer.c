@@ -38,7 +38,7 @@
 #include "utils.h"
 #include "mimeview.h"
 
-static gboolean resize = FALSE;
+#include "viewerprefs.h"
 
 typedef struct _ImageViewer ImageViewer;
 
@@ -99,7 +99,7 @@ static void image_viewer_show_mimepart(MimeViewer *_mimeviewer, const gchar *fil
 		return;
 	}
 
-	if (resize) {
+	if (imageviewerprefs.resize_img) {
 		avail_width = imageviewer->scrolledwin->parent->allocation.width;
 		avail_height = imageviewer->scrolledwin->parent->allocation.height;
 		if (avail_width > 8) avail_width -= 8;
@@ -164,7 +164,7 @@ static void image_viewer_show_mimepart(MimeViewer *_mimeviewer, const gchar *fil
 		return;
 	}
 
-	if (resize) {
+	if (imageviewerprefs.resize_img) {
 		avail_width = imageviewer->scrolledwin->parent->allocation.width;
 		avail_height = imageviewer->scrolledwin->parent->allocation.height;
 		if (avail_width > 8) avail_width -= 8;
@@ -286,3 +286,13 @@ MimeViewerFactory image_viewer_factory =
 	
 	image_viewer_create,
 };
+
+void viewer_init()
+{
+	mimeview_register_viewer_factory(&image_viewer_factory);
+}
+
+void viewer_done()
+{
+	mimeview_unregister_viewer_factory(&image_viewer_factory);
+}

@@ -17,17 +17,22 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "prefs.h"
+
 #include "viewer.h"
+#include "viewerprefs.h"
 
 gint plugin_init(gchar **error)
 {
-	mimeview_register_viewer_factory(&image_viewer_factory);
+	prefs_init();
+	viewer_init();
 	return 0;	
 }
 
 void plugin_done()
 {
-	mimeview_unregister_viewer_factory(&image_viewer_factory);
+	viewer_done();
+	prefs_done();
 }
 
 const gchar *plugin_name()

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto and the Sylpheed-Claws Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,29 +17,22 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef PREFS_H
-#define PREFS_H 1
-
-#include <stdio.h>
+#ifndef VIEWERPREFS_H
+#define VIEWERPREFS_H
 
 #include <glib.h>
 
-typedef struct _PrefFile	PrefFile;
+typedef struct _ImageViewerPrefs ImageViewerPrefs;
 
-struct _PrefFile {
-	FILE *fp;
-	FILE *orig_fp;
-	gchar *path;
-	gboolean writing;
+struct _ImageViewerPrefs
+{
+	gboolean	display_img;
+	gboolean	resize_img;
 };
 
-PrefFile *prefs_read_open	(const gchar	*path);
-PrefFile *prefs_write_open	(const gchar	*path);
-gint prefs_file_close		(PrefFile	*pfile);
-gint prefs_file_close_revert	(PrefFile	*pfile);
-gboolean prefs_is_readonly	(const gchar 	*path);
-gboolean prefs_rc_is_readonly	(const gchar 	*rcfile);
-gint prefs_set_block_label	(PrefFile       *pfile,
-				 const gchar	*block_label);
+extern ImageViewerPrefs imageviewerprefs;
+
+void prefs_init();
+void prefs_done();
 
 #endif
