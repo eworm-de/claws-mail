@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed-claw\n"
 "Report-Msgid-Bugs-To: twb@users.sourceforge.net\n"
-"POT-Creation-Date: 2004-03-07 07:12+0000\n"
+"POT-Creation-Date: 2004-03-08 09:05+0000\n"
 "PO-Revision-Date: 2003-09-22 14:05+0000\n"
 "Last-Translator: Hansom Young <glyoung@users.sourceforge.net>\n"
 "Language-Team: Hansom Young <glyoung@users.sourceforge.net> \n"
@@ -818,7 +818,7 @@ msgid ""
 "Please select a folder to process from the folder\n"
 "list. Alternatively, select one or messages from\n"
 "the message list."
-msgstr "请选取一个邮件夹或一项讯息以便执行。"
+msgstr "请选取选择需要处理的邮件夹，或者选择一封或多封邮件。"
 
 #: src/addrgather.c:345
 msgid "Folder :"
@@ -1226,7 +1226,7 @@ msgstr "/查看(_V)"
 
 #: src/compose.c:630
 msgid "/_View/_To"
-msgstr "/查看(_V)/收件者(_T)"
+msgstr "/查看(_V)/收信人(_T)"
 
 #: src/compose.c:631
 msgid "/_View/_Cc"
@@ -1248,7 +1248,7 @@ msgstr "/显示(_V)/---"
 
 #: src/compose.c:635
 msgid "/_View/_Followup to"
-msgstr "/显示(_V)/回应文章(_F)"
+msgstr "/显示(_V)/_Followup to"
 
 #: src/compose.c:637
 msgid "/_View/R_uler"
@@ -1288,7 +1288,7 @@ msgstr "/邮件(_M)/保存并继续编辑(_k)"
 
 #: src/compose.c:653
 msgid "/_Message/_To"
-msgstr "/邮件(_M)/收件者(_T)"
+msgstr "/邮件(_M)/收信人(_T)"
 
 #: src/compose.c:654
 msgid "/_Message/_Cc"
@@ -1304,7 +1304,7 @@ msgstr "/邮件(_M)/回复给(_y)"
 
 #: src/compose.c:658
 msgid "/_Message/_Followup to"
-msgstr "/邮件(_M)/回应文章(_F)"
+msgstr "/邮件(_M)/_Followup to"
 
 #: src/compose.c:660
 msgid "/_Message/_Attach"
@@ -1352,7 +1352,7 @@ msgstr "/邮件(_M)/优先顺序/最低(_L)"
 
 #: src/compose.c:677
 msgid "/_Message/_Request Return Receipt"
-msgstr "/邮件(_M)/要求回函凭证(_R)"
+msgstr "/邮件(_M)/请求回执(_R)"
 
 #: src/compose.c:678
 msgid "/_Message/Remo_ve references"
@@ -1380,16 +1380,16 @@ msgstr "/工具(_T)/执行动作(_n)"
 
 #: src/compose.c:1452
 msgid "Reply-To:"
-msgstr "回复："
+msgstr ""
 
 #: src/compose.c:1455 src/compose.c:4603 src/compose.c:5314
 #: src/headerview.c:54
 msgid "Newsgroups:"
-msgstr "新闻群组："
+msgstr ""
 
 #: src/compose.c:1458
 msgid "Followup-To:"
-msgstr "回应文章："
+msgstr ""
 
 #: src/compose.c:1777
 msgid "Quote mark format error."
@@ -1450,7 +1450,7 @@ msgstr ""
 
 #: src/compose.c:3104
 msgid "Recipient is not specified."
-msgstr "没有指定收件人。"
+msgstr "没有指定收信人。"
 
 #: src/compose.c:3112 src/messageview.c:518 src/prefs_account.c:763
 #: src/prefs_common.c:966 src/toolbar.c:379 src/toolbar.c:426
@@ -1487,8 +1487,8 @@ msgid ""
 "Error occurred while sending the message.\n"
 "Put this message into queue folder?"
 msgstr ""
-"送信时发生错误。\n"
-"要把邮件放进待发送邮件夹中吗？"
+"发送邮件时发生错误。\n"
+"要把该邮件放进待发送邮件夹中吗？"
 
 #: src/compose.c:3243
 msgid "Can't queue the message."
@@ -1496,11 +1496,11 @@ msgstr "无法放进待发送邮件夹。"
 
 #: src/compose.c:3246 src/send_message.c:580 src/send_message.c:599
 msgid "Error occurred while sending the message."
-msgstr "送信时发生错误。"
+msgstr "发送该邮件时发生错误。"
 
 #: src/compose.c:3259
 msgid "Can't save the message to Sent."
-msgstr "无法将邮件送至寄件夹中。"
+msgstr "无法将邮件送至已发送邮件夹中。"
 
 #: src/compose.c:3504
 #, c-format
@@ -1514,8 +1514,8 @@ msgid ""
 "%s to %s.\n"
 "Send it anyway?"
 msgstr ""
-"无法转换邮件的编码设置由 %s 成 %s 。\n"
-"仍旧要传送吗？"
+"无法将邮件的字符编码由 %s 转换为 %s 。\n"
+"仍旧要发送吗？"
 
 #: src/compose.c:3872
 msgid "No account for sending mails available!"
@@ -1527,7 +1527,7 @@ msgstr "没有张贴news所需的帐号！"
 
 #: src/compose.c:4686 src/headerview.c:52 src/summary_search.c:150
 msgid "From:"
-msgstr "发信者:"
+msgstr "发信人:"
 
 #: src/compose.c:4790 src/compose.c:4960 src/compose.c:5844
 msgid "MIME type"
@@ -1562,12 +1562,12 @@ msgstr "其他"
 #: src/compose.c:5031 src/headerview.c:55 src/prefs_template.c:177
 #: src/summary_search.c:164
 msgid "Subject:"
-msgstr "主题："
+msgstr "主题:"
 
 #: src/compose.c:5264 src/exphtmldlg.c:503 src/gtk/colorlabel.c:279
 #: src/gtk/gtkaspell.c:1499 src/gtk/gtkaspell.c:2173 src/summaryview.c:4192
 msgid "None"
-msgstr "没有内容"
+msgstr "无"
 
 #: src/compose.c:5273
 #, c-format
@@ -2082,7 +2082,7 @@ msgstr "用\"Bind DN\"用户连接时的密码"
 
 #: src/editldap.c:719
 msgid "Timeout (secs)"
-msgstr "时间到(秒)"
+msgstr "超时(秒)"
 
 #: src/editldap.c:734
 msgid "The timeout period in seconds."
@@ -2663,7 +2663,7 @@ msgid ""
 "(The messages are NOT deleted from the disk)"
 msgstr ""
 "确定删除邮箱'%s'？\n"
-"(其中的邮件不会至硬碟中删除)"
+"(其中的邮件不会至磁盘中删除)"
 
 #: src/folderview.c:2220
 msgid "Remove mailbox"
@@ -2813,10 +2813,11 @@ msgid ""
 "version.\n"
 "\n"
 msgstr ""
+"本程序为自由软件；你可以任意传播或是修改它，但需遵循自由软件基金会发布的GNU通"
+"用许可协议(可以是第二版或者更高版本)中列出的条款。\n"
+"\n"
 
-# "本程序为免费软体；你可以任意传播或是修改它，但需遵循自由软件基金会发布的GNU通"
-# "用许可协议(可以是第二版或者更高版本)中列出的条款。\n"
-# "\n"
+
 #: src/gtk/about.c:220
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
@@ -2833,8 +2834,8 @@ msgid ""
 "Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr ""
 "您应该随同本程序收到一份GNU通用公共许可。如未收到，请写信给以下地址索取："
-"Free Software Foundation, Inc., 59 Temple Place - Suite 330, "
-"Boston, MA 02111-1307, USA."
+"Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA "
+"02111-1307, USA."
 
 #: src/gtk/colorlabel.c:46
 msgid "Orange"
@@ -3093,7 +3094,7 @@ msgstr "更改SSL认证"
 
 #: src/headerview.c:181 src/summaryview.c:2396
 msgid "(No From)"
-msgstr "(没有寄件者)"
+msgstr "(没有发信人)"
 
 #: src/headerview.c:202 src/summaryview.c:2437 src/summaryview.c:2440
 msgid "(No Subject)"
@@ -3546,7 +3547,7 @@ msgstr ""
 
 #: src/inc.c:1052
 msgid "No disk space left."
-msgstr "硬碟无空间。"
+msgstr "磁盘无空间。"
 
 #: src/inc.c:1057
 msgid "Can't write file."
@@ -3717,7 +3718,7 @@ msgstr "待发送邮件夹内尚有邮件。要退出吗？"
 
 #: src/main.c:897
 msgid "Some errors occurred while sending queued messages."
-msgstr "送信时发生错误。"
+msgstr "发送排队中邮件时发生错误。"
 
 #: src/mainwindow.c:436
 msgid "/_File/_Folder"
@@ -3785,31 +3786,31 @@ msgstr "/编辑(_E)/选择线索(_T)"
 
 #: src/mainwindow.c:463 src/messageview.c:153
 msgid "/_Edit/_Find in current message..."
-msgstr " 编辑(_E)/在邮件中搜寻(_F)..."
+msgstr "/编辑(_E)/在邮件中查找(_F)..."
 
 #: src/mainwindow.c:465
 msgid "/_Edit/_Search folder..."
-msgstr "编辑(_E)/在邮件夹中查找(_S)..."
+msgstr "/编辑(_E)/在邮件夹中搜索(_S)..."
 
 #: src/mainwindow.c:467
 msgid "/_View/Show or hi_de"
-msgstr "查看(_V)/显示或隐藏(_d)"
+msgstr "/查看(_V)/显示或隐藏(_d)"
 
 #: src/mainwindow.c:468
 msgid "/_View/Show or hi_de/_Folder tree"
-msgstr "查看(_V)/ 显示或隐藏(_d)/邮件夹树(_F)"
+msgstr "/查看(_V)/显示或隐藏(_d)/邮件夹树(_F)"
 
 #: src/mainwindow.c:470
 msgid "/_View/Show or hi_de/_Message view"
-msgstr "/查看(_V)/显示或隐藏(_d)/阅读邮件(_M)"
+msgstr "/查看(_V)/显示或隐藏(_d)/邮件内容(_M)"
 
 #: src/mainwindow.c:472
 msgid "/_View/Show or hi_de/_Toolbar"
-msgstr "查看(_V)/ 显示或隐藏(_d)/工具栏(_T)"
+msgstr "/查看(_V)/显示或隐藏(_d)/工具栏(_T)"
 
 #: src/mainwindow.c:474
 msgid "/_View/Show or hi_de/_Toolbar/Icon _and text"
-msgstr "/查看(_V)/显示或隐藏(_d)/工具栏(_T)/图像或文字(_a)"
+msgstr "/查看(_V)/显示或隐藏(_d)/工具栏(_T)/图像和文字(_a)"
 
 #: src/mainwindow.c:476
 msgid "/_View/Show or hi_de/_Toolbar/_Icon"
@@ -3821,7 +3822,7 @@ msgstr "/查看(_V)/显示或隐藏(_d)/工具栏(_T)/文字(_T)"
 
 #: src/mainwindow.c:480
 msgid "/_View/Show or hi_de/_Toolbar/_None"
-msgstr "/查看(_V)/显示或隐藏(_d)/工具栏(_T)/没有(_N)"
+msgstr "/查看(_V)/显示或隐藏(_d)/工具栏(_T)/均不显示(_N)"
 
 #: src/mainwindow.c:482
 msgid "/_View/Show or hi_de/Status _bar"
@@ -3833,7 +3834,7 @@ msgstr "/查看(_V)/用单独窗口显示邮件夹树(_o)"
 
 #: src/mainwindow.c:486
 msgid "/_View/Separate m_essage view"
-msgstr "/ 查看(_V)/用单独窗口中显示邮件内容(_e)"
+msgstr "/查看(_V)/用单独窗口中显示邮件内容(_e)"
 
 #: src/mainwindow.c:488
 msgid "/_View/_Sort"
@@ -3841,7 +3842,7 @@ msgstr "/查看(_V)/排序(_S)"
 
 #: src/mainwindow.c:489
 msgid "/_View/_Sort/by _number"
-msgstr "/查看(_V)/排序(_S)/按顺序(_n)"
+msgstr "/查看(_V)/ 排序(_S)/按顺序(_n)"
 
 #: src/mainwindow.c:490
 msgid "/_View/_Sort/by s_ize"
@@ -3853,11 +3854,11 @@ msgstr "/查看(_V)/ 排序(_S)/按日期(_d)"
 
 #: src/mainwindow.c:492
 msgid "/_View/_Sort/by _from"
-msgstr "/查看(_V)/ 排序(_S)/按寄信者(_f)"
+msgstr "/查看(_V)/ 排序(_S)/按发信人(_f)"
 
 #: src/mainwindow.c:493
 msgid "/_View/_Sort/by _recipient"
-msgstr "/查看(_V)/ 排序(_S)/按收信者(_r)"
+msgstr "/查看(_V)/ 排序(_S)/按收信人(_r)"
 
 #: src/mainwindow.c:494
 msgid "/_View/_Sort/by _subject"
@@ -3885,7 +3886,7 @@ msgstr "/查看(_V)/ 排序(_S)/按得分"
 
 #: src/mainwindow.c:502
 msgid "/_View/_Sort/by locked"
-msgstr "/查看(_V)/ 排序(_S)/按锁住状态"
+msgstr "/查看(_V)/ 排序(_S)/按锁定状态"
 
 #: src/mainwindow.c:503
 msgid "/_View/_Sort/D_on't sort"
@@ -3946,11 +3947,11 @@ msgstr "/查看(_V)/转到(_G)/---"
 
 #: src/mainwindow.c:521
 msgid "/_View/_Go to/P_rev unread message"
-msgstr "/查看(_V)/转到(_G)/上一封未读信(_r)"
+msgstr "/查看(_V)/转到(_G)/上一封未读邮件(_r)"
 
 #: src/mainwindow.c:523
 msgid "/_View/_Go to/N_ext unread message"
-msgstr "/查看(_V)/转到(_G)/下一封未读信(_e)"
+msgstr "/查看(_V)/转到(_G)/下一封未读邮件(_e)"
 
 #: src/mainwindow.c:526
 msgid "/_View/_Go to/Prev ne_w message"
@@ -3958,7 +3959,7 @@ msgstr "/查看(_V)/转到(_G)/前一封新邮件(_w)"
 
 #: src/mainwindow.c:527
 msgid "/_View/_Go to/Ne_xt new message"
-msgstr "/查看(_V)/转到(_G)/下一封新信(_x)"
+msgstr "/查看(_V)/转到(_G)/下一封新邮件(_x)"
 
 #: src/mainwindow.c:529
 msgid "/_View/_Go to/Prev _marked message"
@@ -4106,7 +4107,7 @@ msgstr "/查看(_V)/显示所有信息头(_H)"
 
 #: src/mainwindow.c:629
 msgid "/_View/_Update summary"
-msgstr "/查看(_V)/更新邮件摘要(_U)"
+msgstr "/查看(_V)/更新邮件摘要列表(_U)"
 
 #: src/mainwindow.c:632
 msgid "/_Message/Recei_ve"
@@ -4154,7 +4155,7 @@ msgstr "/邮件(_M)/回信给(_y)/全部人(_a)"
 
 #: src/mainwindow.c:647 src/messageview.c:251
 msgid "/_Message/Repl_y to/_sender"
-msgstr "/邮件(_M)/回信给(_y)/寄信人(_s)"
+msgstr "/邮件(_M)/回信给(_y)/发信人(_s)"
 
 #: src/mainwindow.c:648 src/messageview.c:253
 msgid "/_Message/Repl_y to/mailing _list"
@@ -4226,7 +4227,7 @@ msgstr "/工具(_T)/通讯簿(_A)..."
 
 #: src/mainwindow.c:673 src/messageview.c:265
 msgid "/_Tools/Add sender to address boo_k"
-msgstr "/工具(_T)/加入通讯簿中(_k)"
+msgstr "/工具(_T)/将发信人加入通讯簿中(_k)"
 
 #: src/mainwindow.c:675
 msgid "/_Tools/_Harvest addresses"
@@ -4254,11 +4255,11 @@ msgstr "/工具(_T)/创建过滤规则(_C)/自动产生(_A)"
 
 #: src/mainwindow.c:685 src/messageview.c:272
 msgid "/_Tools/_Create filter rule/by _From"
-msgstr "/工具(_T)/创建过滤规则(_C)/由寄件者(_F)"
+msgstr "/工具(_T)/创建过滤规则(_C)/由发信人(_F)"
 
 #: src/mainwindow.c:687 src/messageview.c:274
 msgid "/_Tools/_Create filter rule/by _To"
-msgstr "/工具(_T)/创建过滤规则(_C)/由收信者(_T)"
+msgstr "/工具(_T)/创建过滤规则(_C)/由收信人(_T)"
 
 #: src/mainwindow.c:689 src/messageview.c:276
 msgid "/_Tools/_Create filter rule/by _Subject"
@@ -4266,23 +4267,23 @@ msgstr "/工具(_T)/创建过滤规则(_C)/由主题(_S)"
 
 #: src/mainwindow.c:691
 msgid "/_Tools/_Create processing rule"
-msgstr "/工具(_T)/创建过滤规则(_C)"
+msgstr "/工具(_T)/创建处理规则(_C)"
 
 #: src/mainwindow.c:692
 msgid "/_Tools/_Create processing rule/_Automatically"
-msgstr "/工具(_T)/创建过滤规则(_C)/自动产生(_A)"
+msgstr "/工具(_T)/创建处理规则(_C)/自动产生(_A)"
 
 #: src/mainwindow.c:694
 msgid "/_Tools/_Create processing rule/by _From"
-msgstr "/工具(_T)/创建过滤规则(_C)/由寄件者(_F)"
+msgstr "/工具(_T)/创建处理规则(_C)/由发信人(_F)"
 
 #: src/mainwindow.c:696
 msgid "/_Tools/_Create processing rule/by _To"
-msgstr "/工具(_T)/创建过滤规则(_C)/由收信者(_T)"
+msgstr "/工具(_T)/创建处理规则(_C)/由收信人(_T)"
 
 #: src/mainwindow.c:698
 msgid "/_Tools/_Create processing rule/by _Subject"
-msgstr "/工具(_T)/创建过滤规则(_C)/由主题(_S)"
+msgstr "/工具(_T)/创建处理规则(_C)/由主题(_S)"
 
 #: src/mainwindow.c:703
 msgid "/_Tools/Delete du_plicated messages"
@@ -4362,7 +4363,7 @@ msgstr "/求助(_H)/联机手册(_M)(本地)"
 
 #: src/mainwindow.c:740
 msgid "/_Help/_Manual (Sylpheed Doc Homepage)"
-msgstr "/求助(_H)/联机手册(_M)(Sylpheed手册网页)"
+msgstr "/求助(_H)/联机手册(_M)(Sylpheed手册主页)"
 
 #: src/mainwindow.c:742
 msgid "/_Help/_FAQ (Local)"
@@ -4370,7 +4371,7 @@ msgstr "/求助(_H)/常见问题(_F)(本地)"
 
 #: src/mainwindow.c:743
 msgid "/_Help/_FAQ (Sylpheed Doc Homepage)"
-msgstr "/求助(_H)/常见问题(_F) (Sylpheed手册网页)"
+msgstr "/求助(_H)/常见问题(_F) (Sylpheed手册主页)"
 
 #: src/mainwindow.c:745
 msgid "/_Help/_Claws FAQ (Claws Documentation)"
@@ -4539,11 +4540,11 @@ msgstr "/工具(_T)/创建过滤规则/自动产生(_A)"
 
 #: src/messageview.c:282
 msgid "/_Tools/Create processing rule/by _From"
-msgstr "/工具(_T)/创建过滤规则/由寄件者(_F)"
+msgstr "/工具(_T)/创建过滤规则/由发信人(_F)"
 
 #: src/messageview.c:284
 msgid "/_Tools/Create processing rule/by _To"
-msgstr "/工具(_T)/创建过滤规则/由收信者(_T)"
+msgstr "/工具(_T)/创建过滤规则/由收信人(_T)"
 
 #: src/messageview.c:286
 msgid "/_Tools/Create processing rule/by _Subject"
@@ -4579,7 +4580,7 @@ msgid ""
 "Receipt notification cancelled."
 msgstr ""
 "该邮件要求返回邮件收到通知。\n"
-"但您的邮件地址并未在来信的'收件人'和'抄送'中被指定。\n"
+"但您的邮件地址并未在来信的'收信人'和'抄送'中被指定。\n"
 "已取消回执。"
 
 #: src/messageview.c:927 src/mimeview.c:1096 src/summaryview.c:3393
@@ -5335,7 +5336,7 @@ msgstr "KB"
 
 #: src/prefs_account.c:1217
 msgid "Default inbox"
-msgstr "缺省收件夹"
+msgstr "缺省收信夹"
 
 #: src/prefs_account.c:1240
 msgid "(Unfiltered messages will be stored in this folder)"
@@ -5693,7 +5694,7 @@ msgstr "菜单项名称中可以用斜线(/)标识子菜单项"
 
 #: src/prefs_actions.c:660
 msgid "COMMAND LINE:"
-msgstr "命令行"
+msgstr "命令行:"
 
 #: src/prefs_actions.c:661
 msgid "Begin with:"
@@ -6020,7 +6021,7 @@ msgstr "块状游标"
 
 #: src/prefs_common.c:1442
 msgid "Keep the original 'From' header when redirecting"
-msgstr "重定向时保持原来的发件人"
+msgstr "重定向时保持原来的发信人"
 
 #: src/prefs_common.c:1450
 msgid "Autosave to Drafts folder every "
@@ -6036,7 +6037,7 @@ msgstr "复原纪录"
 
 #: src/prefs_common.c:1478
 msgid "Message wrapping"
-msgstr "自动换行"
+msgstr "自动折行"
 
 #: src/prefs_common.c:1490
 msgid "Wrap messages at"
@@ -6112,7 +6113,7 @@ msgstr "若发信人是你自己，就在邮件列表的来源中显示收信人"
 
 #: src/prefs_common.c:1787
 msgid "Display sender using address book"
-msgstr "以通讯录中的名字显示发件人"
+msgstr "以通讯录中的名字显示发信人"
 
 #: src/prefs_common.c:1790
 msgid "Thread using subject in addition to standard headers"
@@ -6218,7 +6219,7 @@ msgstr "只在用新窗口打开邮件时标记为已读"
 
 #: src/prefs_common.c:2168
 msgid "Go to inbox after receiving new mail"
-msgstr "接收完新邮件后直接进入收件夹"
+msgstr "接收完新邮件后直接进入收信夹"
 
 #: src/prefs_common.c:2178
 msgid "Execute immediately when moving or deleting messages"
@@ -6246,7 +6247,7 @@ msgstr " 设置键绑定... "
 
 #: src/prefs_common.c:2280
 msgid "Add address to destination when double-clicked"
-msgstr "双击时将地址添加为收件人"
+msgstr "双击时将地址添加为收信人"
 
 #: src/prefs_common.c:2283
 msgid "Log Size"
@@ -6402,7 +6403,7 @@ msgstr "引文 - 第二层"
 
 #: src/prefs_common.c:2784
 msgid "Quoted Text - Third Level"
-msgstr "引文 - 第叁层"
+msgstr "引文 - 第三层"
 
 #: src/prefs_common.c:2790
 msgid "URI link"
@@ -6646,11 +6647,11 @@ msgstr "未指定命令行"
 
 #: src/prefs_filtering_action.c:762
 msgid "Destination is not set."
-msgstr "没有指定收件人。"
+msgstr "没有指定收信人。"
 
 #: src/prefs_filtering_action.c:772
 msgid "Recipient is not set."
-msgstr "没有指定收件人。"
+msgstr "没有指定收信人。"
 
 #: src/prefs_filtering_action.c:786
 msgid "Score is not set"
@@ -6670,12 +6671,12 @@ msgstr "主题"
 #: src/prefs_matcher.c:1712 src/prefs_summary_column.c:71 src/quote_fmt.c:42
 #: src/summaryview.c:471 src/summaryview.c:641
 msgid "From"
-msgstr "发件人"
+msgstr "发信人"
 
 #: src/prefs_filtering_action.c:1115 src/prefs_matcher.c:143
 #: src/prefs_matcher.c:1713 src/quote_fmt.c:48 src/summaryview.c:645
 msgid "To"
-msgstr "收件人"
+msgstr "收信人"
 
 #: src/prefs_filtering_action.c:1117 src/prefs_matcher.c:1715
 #: src/prefs_summary_column.c:72 src/quote_fmt.c:41 src/summaryview.c:472
@@ -6791,7 +6792,7 @@ msgstr "检查新邮件"
 
 #: src/prefs_folder_item.c:332
 msgid "Request Return Receipt"
-msgstr "要求回函凭证"
+msgstr "请求回执"
 
 #: src/prefs_folder_item.c:344
 msgid "Save copy of outgoing messages to this folder instead of Sent"
@@ -6983,7 +6984,7 @@ msgstr "匹配类型"
 
 #: src/prefs_matcher.c:489
 msgid "Predicate"
-msgstr ""
+msgstr "谓词"
 
 #: src/prefs_matcher.c:540
 msgid "Use regexp"
@@ -7087,7 +7088,7 @@ msgid ""
 "the order by using the Up / Down buttons or by dragging the items."
 msgstr ""
 "请选择要在邮件摘要列表栏显示的字段列。\n"
-"你可以用[上移]/[下移]按钮或者直接拖曳来调整顺序。"
+"你可以用 上移/下移 按钮或者直接拖曳来调整顺序。"
 
 #: src/prefs_summary_column.c:222
 msgid "Available items"
@@ -7747,11 +7748,11 @@ msgstr "/回复给(_y)"
 
 #: src/summaryview.c:401
 msgid "/Repl_y to/_all"
-msgstr "/回复给(_y)/所有收件人(_a)"
+msgstr "/回复给(_y)/所有人(_a)"
 
 #: src/summaryview.c:402
 msgid "/Repl_y to/_sender"
-msgstr "/回复给(_y)/原作者(_s)"
+msgstr "/回复给(_y)/发信人(_s)"
 
 #: src/summaryview.c:403
 msgid "/Repl_y to/mailing _list"
@@ -7759,7 +7760,7 @@ msgstr "/回复给(_y)/邮件列表 (_l)"
 
 #: src/summaryview.c:405
 msgid "/Follow-up and reply to"
-msgstr "/回应文章"
+msgstr "/Follow-up and reply to"
 
 #: src/summaryview.c:407 src/toolbar.c:228
 msgid "/_Forward"
@@ -7827,7 +7828,7 @@ msgstr "/标记(_M)/不忽略邮件线索"
 
 #: src/summaryview.c:427
 msgid "/_Mark/Lock"
-msgstr "/标记(_M)/锁住"
+msgstr "/标记(_M)/锁定"
 
 #: src/summaryview.c:428
 msgid "/_Mark/Unlock"
@@ -7839,7 +7840,7 @@ msgstr "/彩色标记(_b)"
 
 #: src/summaryview.c:432
 msgid "/Add sender to address boo_k"
-msgstr "将寄信人加入通讯录中(_k)"
+msgstr "将发信人加入通讯录中(_k)"
 
 #: src/summaryview.c:434
 msgid "/Create f_ilter rule"
@@ -7863,23 +7864,23 @@ msgstr "/创建邮件过滤规则(_i)/按标题(_S)"
 
 #: src/summaryview.c:443
 msgid "/Create processing rule"
-msgstr "/创建处理规则规则"
+msgstr "/创建处理规则"
 
 #: src/summaryview.c:444
 msgid "/Create processing rule/_Automatically"
-msgstr "/创建处理规则规则/自动产生(_A)"
+msgstr "/创建处理规则/自动产生(_A)"
 
 #: src/summaryview.c:446
 msgid "/Create processing rule/by _From"
-msgstr "/创建处理规则规则/按来源(_F)"
+msgstr "/创建处理规则/按来源(_F)"
 
 #: src/summaryview.c:448
 msgid "/Create processing rule/by _To"
-msgstr "/创建处理规则规则/按收信人(_T)"
+msgstr "/创建处理规则/按收信人(_T)"
 
 #: src/summaryview.c:450
 msgid "/Create processing rule/by _Subject"
-msgstr "/创建处理规则规则/按标题(_S)"
+msgstr "/创建处理规则/按标题(_S)"
 
 #: src/summaryview.c:456
 msgid "/_View/_Source"
@@ -7947,7 +7948,7 @@ msgstr "已删除的邮件"
 
 #: src/summaryview.c:493
 msgid "messages which contain S in the Sender field"
-msgstr "在送信栏中包含S的邮件"
+msgstr "在发信人栏中包含S的邮件"
 
 #: src/summaryview.c:494
 msgid "true if execute \"S\" succeeds"
@@ -8071,7 +8072,7 @@ msgstr "用于扩展搜索的符号"
 
 #: src/summaryview.c:580
 msgid "Toggle quick-search bar"
-msgstr "切换快速搜索条"
+msgstr "切换快速搜索条显示状态"
 
 #: src/summaryview.c:664
 msgid "Extended Symbols"
@@ -8083,7 +8084,7 @@ msgstr "邮件标记"
 
 #: src/summaryview.c:932
 msgid "Some marks are left. Process it?"
-msgstr "某些邮件已被标记。要继续吗？"
+msgstr "某些邮件已做了处理标记。是否进行处理？"
 
 #: src/summaryview.c:975
 #, c-format
@@ -8197,7 +8198,7 @@ msgstr "封已选择"
 #: src/summaryview.c:2020
 #, c-format
 msgid "%d new, %d unread, %d total (%s)"
-msgstr "%d 封未读，%d 封已读，共 %d 封 (%s)"
+msgstr "%d 封新邮件，%d 封未读，共 %d 封 (%s)"
 
 #: src/summaryview.c:2194
 msgid "Sorting summary..."
@@ -8278,7 +8279,7 @@ msgstr "无法显示该邮件.\n"
 
 #: src/textview.c:605
 msgid "The following can be performed on this part by "
-msgstr "可对被部分执行以下操作"
+msgstr "可对该部分执行以下操作"
 
 #: src/textview.c:606
 msgid "right-clicking the icon or list item:\n"
@@ -8352,11 +8353,11 @@ msgstr "回应原文"
 
 #: src/toolbar.c:165 src/toolbar.c:1418 src/toolbar.c:1428
 msgid "Reply to Sender"
-msgstr "回复给发信者"
+msgstr "回复给发信人"
 
 #: src/toolbar.c:166 src/toolbar.c:1435 src/toolbar.c:1445
 msgid "Reply to All"
-msgstr "回给所有人"
+msgstr "回复给所有人"
 
 #: src/toolbar.c:167 src/toolbar.c:1452 src/toolbar.c:1462
 msgid "Reply to Mailing-list"
@@ -8376,7 +8377,7 @@ msgstr "下一个"
 
 #: src/toolbar.c:175 src/toolbar.c:1506
 msgid "Send Message"
-msgstr "送信"
+msgstr "发送邮件"
 
 #: src/toolbar.c:176 src/toolbar.c:1512
 msgid "Put into queue folder and send later"
@@ -8404,15 +8405,15 @@ msgstr "以外部编辑器编辑"
 
 #: src/toolbar.c:182 src/toolbar.c:1548
 msgid "Wrap long lines of current paragraph"
-msgstr "当前段落自动换行"
+msgstr "拆分当前段落中超长的行"
 
 #: src/toolbar.c:183 src/toolbar.c:1554
 msgid "Wrap all long lines"
-msgstr "自动断句"
+msgstr "拆分所有超长的行"
 
 #: src/toolbar.c:186 src/toolbar.c:1567
 msgid "Check spelling"
-msgstr "正在检查拼写"
+msgstr "检查拼写"
 
 #: src/toolbar.c:188
 msgid "Sylpheed Actions Feature"
@@ -8480,7 +8481,7 @@ msgstr "全部"
 
 #: src/toolbar.c:384 src/toolbar.c:477
 msgid "Sender"
-msgstr "送件者"
+msgstr "发信人"
 
 #: src/toolbar.c:427
 msgid "Send later"
@@ -8500,13 +8501,12 @@ msgstr "编辑器"
 
 #: src/toolbar.c:435
 msgid "Wrap paragraph"
-msgstr "将当前段落折行"
+msgstr "段落折行"
 
 #: src/toolbar.c:436
 msgid "Wrap all"
-msgstr "全部自动折行"
+msgstr "全部折行"
 
 #: src/toolbar.c:1383
 msgid "News"
 msgstr "新闻群组"
-
