@@ -88,7 +88,7 @@ sylpheed_SOURCES = \
 	prefs_filtering.c prefs_filtering.h \
 	mbox_folder.c mbox_folder.h \
 	quote_fmt_lex.l quote_fmt_lex.h \
-	quote_fmt_parse.y
+	quote_fmt_parse.y quote_fmt.h
 
 EXTRA_DIST = \
 	pixmaps/clip.xpm \

@@ -11,6 +11,7 @@
 #include "utils.h"
 #include "intl.h"
 
+#include "quote_fmt.h"
 #include "quote_fmt_lex.h"
 
 /* decl */
