@@ -973,7 +973,7 @@ void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 	prtmp = g_strdup_printf("%s%cprinttmp.%08x",
 				get_mime_tmp_dir(), G_DIR_SEPARATOR, id++);
 
-	if ((prfp = fopen(prtmp, "wb")) == NULL) {
+	if ((prfp = fopen(prtmp, "w")) == NULL) {	/* translate crlf on dos based systems */
 		FILE_OP_ERROR(prtmp, "fopen");
 		g_free(prtmp);
 		fclose(tmpfp);

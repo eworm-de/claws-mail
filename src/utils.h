@@ -376,6 +376,8 @@ void w32_log_handler(const gchar *log_domain, GLogLevelFlags log_level,
 					 const gchar *message, gpointer user_data);
 void locale_to_utf8(gchar **buf);
 void locale_from_utf8(gchar **buf);
+
+void unlink_tempfiles(void);
 #endif
 
 /* subject threading */

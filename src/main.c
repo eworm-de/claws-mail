@@ -414,6 +414,8 @@ int main(int argc, char *argv[])
 
 	/* De-Initialize WinSock Library. */
 	WSACleanup();
+
+	unlink_tempfiles();
 #endif
 
 	return 0;

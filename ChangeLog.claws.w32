@@ -1,3 +1,11 @@
+2002-07-05 [thorsten]	0.7.8claws48-3
+
+	* src/procmsg.h
+		fix: crlf translation for printing
+	* src/utils.[ch]
+	* src/main.c
+		fix: delete tempfiles on exit
+
 2002-07-05 [thorsten]	0.7.8claws48-2
 
 	* src/socket.c

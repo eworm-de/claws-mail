@@ -53,15 +53,19 @@
 #include "utils.h"
 #include "statusbar.h"
 #include "logwindow.h"
- #ifdef WIN32
+#ifdef WIN32
  #include "codeconv.h"
- #endif
+#endif
 
 #define BUFFSIZE	8192
 
 extern gboolean debug_mode;
 
 static void hash_free_strings_func(gpointer key, gpointer value, gpointer data);
+
+#ifdef WIN32
+static GSList *tempfiles=NULL;
+#endif
 
 void list_free_strings(GList *list)
 {
@@ -2061,6 +2065,20 @@ gint change_file_mode_rw(FILE *fp, const gchar *file)
 #endif
 }
 
+#ifdef WIN32
+void unlink_tempfile_cb(gchar *data, gpointer user_data)
+{
+	chmod(data, _S_IREAD | _S_IWRITE);
+	unlink(data);
+}
+
+void unlink_tempfiles(void)
+{
+	g_slist_foreach(tempfiles, unlink_tempfile_cb, NULL);
+	g_slist_free (tempfiles);
+}
+#endif
+
 FILE *my_tmpfile(void)
 {
 #if HAVE_MKSTEMP
@@ -2101,6 +2119,8 @@ FILE *my_tmpfile(void)
 #ifdef WIN32
 	gchar *name_used = _tempnam( get_rc_dir(), "procmime");
 	int tmpfd = _open(name_used, _O_CREAT | _O_RDWR | _O_BINARY );
+
+	tempfiles=g_slist_append(tempfiles, name_used);
 	if (tmpfd<0) {
 		perror(g_strdup_printf("cant create %s",name_used));
 		return 0;
