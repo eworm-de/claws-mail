@@ -1563,7 +1563,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 				parent = g_hash_table_lookup
 					(msgid_table, msginfo->inreplyto);
 			}
-			if (msginfo->subject) {
+			if (parent == NULL && msginfo->subject) {
 				parent = subject_table_lookup
 					(subject_table, msginfo->subject);
 			}

@@ -1,3 +1,8 @@
+2001-06-18 [hoa]
+
+	* src/summaryview.c
+		fixed some bug when building threads
+
 2001-06-18 [paul]
 
         * src/prefs_account.c
