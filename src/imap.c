@@ -2545,15 +2545,19 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid, const gchar *filen
 		}
 		if (strstr(buf, "FETCH") != NULL)
 			break;
+		g_free(buf);
 	}
-	if (ok != IMAP_SUCCESS)
+	if (ok != IMAP_SUCCESS) {
+		g_free(buf);
 		return ok;
+	}
 
 	cur_pos = strchr(buf, '{');
 	if (cur_pos == NULL) {
 		g_free(buf);
 		return IMAP_ERROR;
 	}
+
 	cur_pos = strchr_cpy(cur_pos + 1, '}', size_str, sizeof(size_str));
 	if (cur_pos == NULL) {
 		g_free(buf);
