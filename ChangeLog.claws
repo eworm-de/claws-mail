@@ -1,3 +1,10 @@
+2004-06-11 [christoph]	0.9.11cvs10
+
+	* src/plugins/spamassassin/spamassassin.c
+		correctly check waitpid return code
+
+	(Closes Bug 396 Zombie process when spamassassin is called)
+
 2004-06-10 [christoph]	0.9.11cvs9
 
 	* src/mainwindow.c
