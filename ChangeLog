@@ -1,3 +1,33 @@
+2001-10-17
+
+	* src/compose.c: changed "Send" shortcut to Ctrl+Enter.
+
+2001-10-16
+
+	* src/inc.c: fixed a bug that crashed sylpheed if Cancel button
+	  was clicked twice.
+
+2001-10-16
+
+	* src/procmsg.c: procmsg_get_thread_tree(): complete the unfinished
+	  threads.
+	* src/summaryview.c:
+	  summary_thread_init(): separated from summary_thread_build(). 
+	  summary_thread_build(): removed the codes for initialization.
+	  summary_set_ctree_from_list(): call summary_thread_init() instead
+	  of summary_thread_build().
+	  summary_filter(): fixed a bug that didn't moved messages despite
+	  of immediate execution setting.
+
+2001-10-14
+
+	* src/procmsg.c: procmsg_get_thread_tree(): new. It generates the
+	  reversed thread tree from message list.
+	* src/summaryview.c: summary_set_ctree_from_list(): prepend the
+	  node to the head instead of appending to the tail. This prevents
+	  the traverse of node list inside of the GtkCTree, and considerably
+	  speeds up the summary display (the order is O(n^2) -> O(n)).
+
 2001-10-12
 
 	* src/prefs_common.c

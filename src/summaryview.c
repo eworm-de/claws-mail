@@ -232,6 +232,8 @@ static void summary_execute_delete	(SummaryView		*summaryview);
 static void summary_execute_delete_func	(GtkCTree		*ctree,
 					 GtkCTreeNode		*node,
 					 gpointer		 data);
+
+static void summary_thread_init		(SummaryView		*summaryview);
 static void summary_ignore_thread(SummaryView *summaryview);
 static void summary_unignore_thread(SummaryView *summaryview);
 
@@ -1913,6 +1915,44 @@ void summary_sort(SummaryView *summaryview, SummarySortType type)
 	main_window_cursor_normal(summaryview->mainwin);
 }
 
+gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
+				   GtkCTreeNode *cnode, gpointer data)
+{
+	SummaryView *summaryview = (SummaryView *)data;
+	MsgInfo *msginfo = (MsgInfo *)gnode->data;
+	gchar *text[N_SUMMARY_COLS];
+	gint *col_pos = summaryview->col_pos;
+	const gchar *msgid = msginfo->msgid;
+	GHashTable *msgid_table = summaryview->msgid_table;
+
+	summary_set_header(summaryview, text, msginfo);
+
+	gtk_ctree_set_node_info(ctree, cnode, text[col_pos[S_COL_SUBJECT]], 2,
+				NULL, NULL, NULL, NULL, FALSE,
+				gnode->parent->parent ? TRUE : FALSE);
+#define SET_TEXT(col) \
+	gtk_ctree_node_set_text(ctree, cnode, col_pos[col], \
+				text[col_pos[col]])
+
+	SET_TEXT(S_COL_NUMBER);
+	SET_TEXT(S_COL_SCORE);
+	SET_TEXT(S_COL_SIZE);
+	SET_TEXT(S_COL_DATE);
+	SET_TEXT(S_COL_FROM);
+	SET_TEXT(S_COL_SUBJECT);
+
+#undef SET_TEXT
+
+	GTKUT_CTREE_NODE_SET_ROW_DATA(cnode, msginfo);
+	summary_set_marks_func(ctree, cnode, summaryview);
+
+	if (msgid)
+	//if (msgid && g_hash_table_lookup(msgid_table, msgid) == NULL)
+		g_hash_table_insert(msgid_table, (gchar *)msgid, cnode);
+
+	return TRUE;
+}
+
 static GtkCTreeNode * subject_table_lookup(GHashTable *subject_table,
 					   gchar * subject)
 {
@@ -1938,8 +1978,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	MsgInfo *msginfo;
 	MsgInfo *parentinfo;
 	MsgInfo *cur_msginfo;
-	GtkCTreeNode *node, *parent;
-	gchar *text[N_SUMMARY_COLS];
+	GtkCTreeNode *node = NULL;
 	GHashTable *msgid_table;
 	GHashTable *subject_table;
 	GSList * cur;
@@ -1974,116 +2013,40 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	}
 	
 	if (summaryview->folder_item->threaded) {
-		for (; mlist != NULL; mlist = mlist->next) {
-			msginfo = (MsgInfo *)mlist->data;
-			parent = NULL;
+		GNode *root, *gnode;
 
-			summary_set_header(summaryview, text, msginfo);
+		root = procmsg_get_thread_tree(mlist);
 
-			/* search parent node for threading */
-			if (msginfo->inreplyto && *msginfo->inreplyto) {
-				parent = g_hash_table_lookup
-					(msgid_table, msginfo->inreplyto);
-			}
-			if (parent == NULL && msginfo->subject &&
-			    g_strncasecmp(msginfo->subject, "Re: ", 4) == 0) {
-				parent = subject_table_lookup
-					(subject_table, msginfo->subject);
-			}
-			if(parent) {
-				parentinfo = gtk_ctree_node_get_row_data(ctree, parent);
-				if(!MSG_IS_IGNORE_THREAD(msginfo->flags) && parentinfo && MSG_IS_IGNORE_THREAD(parentinfo->flags)) {
-					MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
-				}
-			}
-
-			node = gtk_ctree_insert_node
-				(ctree, parent, NULL, text, 2,
-				 NULL, NULL, NULL, NULL, FALSE,
-				 parent ? TRUE : FALSE);
-			GTKUT_CTREE_NODE_SET_ROW_DATA(node, msginfo);
-			summary_set_marks_func(ctree, node, summaryview);
-			
-			if (MSG_GET_COLORLABEL(msginfo->flags))
-				summary_set_colorlabel_color(ctree, node, MSG_GET_COLORLABEL_VALUE(msginfo->flags));
-
-			/* preserve previous node if the message is
-			   duplicated */
-			if (msginfo->msgid && *msginfo->msgid &&
-			    g_hash_table_lookup(msgid_table, msginfo->msgid)
-			    == NULL)
-				g_hash_table_insert(msgid_table,
-						    msginfo->msgid, node);
-			if (msginfo->subject &&
-			    subject_table_lookup(subject_table,
-						 msginfo->subject) == NULL) {
-				subject_table_insert(subject_table,
-						     msginfo->subject, node);
-			}
-
-			cur_parent = parent;
-			cur_msginfo = msginfo;
-			while (cur_parent != NULL) {
-				parentinfo = gtk_ctree_node_get_row_data(ctree, cur_parent);
-
-				if (!parentinfo)
-					break;
-				
-				if (parentinfo->threadscore <
-				    cur_msginfo->threadscore) {
-					gchar * s;
-					parentinfo->threadscore =
-						cur_msginfo->threadscore;
-#if 0
-					s = itos(parentinfo->threadscore);
-					gtk_ctree_node_set_text(ctree, cur_parent, S_COL_SCORE, s);
-#endif
-				}
-				else break;
-				
-				cur_msginfo = parentinfo;
-				if (cur_msginfo->inreplyto &&
-				    *cur_msginfo->inreplyto) {
-					cur_parent = g_hash_table_lookup(msgid_table, cur_msginfo->inreplyto);
-				}
-				if (cur_parent == NULL &&
-				    cur_msginfo->subject &&
-				    g_strncasecmp(cur_msginfo->subject,
-						  "Re: ", 4) == 0) {
-					cur_parent = subject_table_lookup(subject_table, cur_msginfo->subject);
-				}
-			}
+		for (gnode = root->children; gnode != NULL;
+		     gnode = gnode->next) {
+			node = gtk_ctree_insert_gnode
+				(ctree, NULL, node, gnode,
+				 summary_insert_gnode_func, summaryview);
 		}
 
-		/* complete the thread */
-		summary_thread_build(summaryview, TRUE);
+		g_node_destroy(root);
+
+		summary_thread_init(summaryview);
 	} else {
+		gchar *text[N_SUMMARY_COLS];
+
+		mlist = g_slist_reverse(mlist);
 		for (; mlist != NULL; mlist = mlist->next) {
 			msginfo = (MsgInfo *)mlist->data;
 
 			summary_set_header(summaryview, text, msginfo);
 
 			node = gtk_ctree_insert_node
-				(ctree, NULL, NULL, text, 2,
+				(ctree, NULL, node, text, 2,
 				 NULL, NULL, NULL, NULL, FALSE, FALSE);
 			GTKUT_CTREE_NODE_SET_ROW_DATA(node, msginfo);
 			summary_set_marks_func(ctree, node, summaryview);
 
-			if ( MSG_GET_COLORLABEL(msginfo->flags) )
-			  summary_set_colorlabel_color(ctree, node, MSG_GET_COLORLABEL_VALUE(msginfo->flags));
-
-			if (msginfo->msgid && *msginfo->msgid &&
-			    g_hash_table_lookup(msgid_table, msginfo->msgid)
-			    == NULL)
+			if (msginfo->msgid)
 				g_hash_table_insert(msgid_table,
 						    msginfo->msgid, node);
-
-			if (msginfo->subject &&
-			    subject_table_lookup(subject_table,
-						 msginfo->subject) == NULL)
-				subject_table_insert(subject_table,
-						     msginfo->subject, node);
 		}
+		mlist = g_slist_reverse(mlist);
 	}
 
 	if (prefs_common.enable_hscrollbar &&
@@ -3232,7 +3195,7 @@ gboolean summary_execute(SummaryView *summaryview)
 	}
 
 	if (summaryview->folder_item->threaded)
-		summary_thread_build(summaryview, FALSE);
+		summary_thread_build(summaryview);
 
 	summaryview->selected = clist->selection ?
 		GTK_CTREE_NODE(clist->selection->data) : NULL;
@@ -3416,7 +3379,7 @@ static void summary_execute_delete_func(GtkCTree *ctree, GtkCTreeNode *node,
 
 /* thread functions */
 
-void summary_thread_build(SummaryView *summaryview, gboolean init)
+void summary_thread_build(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCTreeNode *node;
@@ -3465,34 +3428,14 @@ void summary_thread_build(SummaryView *summaryview, gboolean init)
 
 	node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 
-	/* for optimization */
-	if (init) {
-		if (prefs_common.expand_thread) {
-			while (node) {
-				next = GTK_CTREE_ROW(node)->sibling;
-				if (GTK_CTREE_ROW(node)->children)
-					gtk_ctree_expand(ctree, node);
-				node = next;
-			}
-		} else if (prefs_common.bold_unread) {
-			while (node) {
-				next = GTK_CTREE_ROW(node)->sibling;
-				if (GTK_CTREE_ROW(node)->children)
-					summary_set_row_marks
-						(summaryview, node);
-				node = next;
-			}
-		}
-	} else {
-		while (node) {
-			next = GTK_CTREE_NODE_NEXT(node);
-			if (prefs_common.expand_thread)
-				gtk_ctree_expand(ctree, node);
-			if (prefs_common.bold_unread &&
-			    GTK_CTREE_ROW(node)->children)
-				summary_set_row_marks(summaryview, node);
-			node = next;
-		}
+	while (node) {
+		next = GTK_CTREE_NODE_NEXT(node);
+		if (prefs_common.expand_thread)
+			gtk_ctree_expand(ctree, node);
+		if (prefs_common.bold_unread &&
+		    GTK_CTREE_ROW(node)->children)
+			summary_set_row_marks(summaryview, node);
+		node = next;
 	}
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
@@ -3504,6 +3447,29 @@ void summary_thread_build(SummaryView *summaryview, gboolean init)
 	main_window_cursor_normal(summaryview->mainwin);
 
 	summary_unlock(summaryview);
+}
+
+static void summary_thread_init(SummaryView *summaryview)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GtkCTreeNode *node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+	GtkCTreeNode *next;
+
+	if (prefs_common.expand_thread) {
+		while (node) {
+			next = GTK_CTREE_ROW(node)->sibling;
+			if (GTK_CTREE_ROW(node)->children)
+				gtk_ctree_expand(ctree, node);
+			node = next;
+		}
+	} else if (prefs_common.bold_unread) {
+		while (node) {
+			next = GTK_CTREE_ROW(node)->sibling;
+			if (GTK_CTREE_ROW(node)->children)
+				summary_set_row_marks(summaryview, node);
+			node = next;
+		}
+	}
 }
 
 void summary_unthread(SummaryView *summaryview)
@@ -3620,10 +3586,12 @@ void summary_filter(SummaryView *summaryview)
 					summaryview);
 		
 		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
-
-		if (prefs_common.immediate_exec)
+		
+		if (prefs_common.immediate_exec) {
+			summary_unlock(summaryview);
 			summary_execute(summaryview);
-		else
+			summary_lock(summaryview);
+		} else
 			summary_status_show(summaryview);
 	}
 	else {

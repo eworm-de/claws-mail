@@ -442,7 +442,7 @@ static GtkItemFactoryEntry compose_entries[] =
 			"<alt>X", compose_ext_editor_cb, 0, NULL},
 
 	{N_("/_Message"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/_Send"),		"<shift><control>S",
+	{N_("/_Message/_Send"),		"<control>Return",
 					compose_send_cb, 0, NULL},
 	{N_("/_Message/Send _later"),	"<shift><alt>S",
 					compose_send_later_cb,  0, NULL},

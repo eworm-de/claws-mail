@@ -1,3 +1,33 @@
+2001-10-17
+
+	* src/compose.c: 「送信」ショートカットを Ctrl+Enter に変更。
+
+2001-10-16
+
+	* src/inc.c: キャンセルボタンが2回押されたら sylpheed がクラッシュ
+	  するバグを修正。
+
+2001-10-16
+
+	* src/procmsg.c: procmsg_get_thread_tree(): 未完成のスレッドを完成
+	  させるようにした。
+	* src/summaryview.c:
+	  summary_thread_init(): summary_thread_build() から分離。
+	  summary_thread_build(): 初期化のためのコードを削除。
+	  summary_set_ctree_from_list(): summary_thread_build() の代わりに
+	  summary_thread_init() を呼ぶようにした。
+	  summary_filter(): 即時実行の設定にも関わらずメッセージを移動しない
+	  バグを修正。
+
+2001-10-14
+
+	* src/procmsg.c: procmsg_get_thread_tree(): 新規。メッセージリスト
+	  から反転したスレッドツリーを生成する。
+	* src/summaryview.c: summary_set_ctree_from_list(): ノードを末尾
+	  に追加する代わりに先頭に追加するようにした。これにより GtkCTree
+	  内部でのノードリストのトラバースを避けることができ、サマリ表示
+	  をかなり高速化できる(O(n^2) -> O(n) のオーダー)。
+
 2001-10-12
 
 	* src/prefs_common.c

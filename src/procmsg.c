@@ -496,6 +496,54 @@ FILE *procmsg_open_mark_file(const gchar *folder, gboolean append)
 	return fp;
 }
 
+/* return the reversed thread tree */
+GNode *procmsg_get_thread_tree(GSList *mlist)
+{
+	GNode *root, *parent, *node, *next;
+	GHashTable *table;
+	MsgInfo *msginfo;
+	const gchar *msgid;
+
+	root = g_node_new(NULL);
+	table = g_hash_table_new(g_str_hash, g_str_equal);
+
+	for (; mlist != NULL; mlist = mlist->next) {
+		msginfo = (MsgInfo *)mlist->data;
+		parent = root;
+
+		if (msginfo->inreplyto) {
+			parent = g_hash_table_lookup(table, msginfo->inreplyto);
+			if (parent == NULL)
+				parent = root;
+		}
+		node = g_node_insert_data_before
+			(parent, parent == root ? parent->children : NULL,
+			 msginfo);
+		if ((msgid = msginfo->msgid) &&
+		    g_hash_table_lookup(table, msgid) == NULL)
+			g_hash_table_insert(table, (gchar *)msgid, node);
+	}
+
+	/* complete the unfinished threads */
+	for (node = root->children; node != NULL; ) {
+		next = node->next;
+		msginfo = (MsgInfo *)node->data;
+		if (msginfo->inreplyto) {
+			parent = g_hash_table_lookup(table, msginfo->inreplyto);
+			if (parent && parent != node) {
+				g_node_unlink(node);
+				g_node_insert_before
+					(parent, parent->children, node);
+			}
+		}
+		node = next;
+	}
+
+	g_hash_table_destroy(table);
+
+	return root;
+}
+
 void procmsg_move_messages(GSList *mlist)
 {
 	GSList *cur, *movelist = NULL;

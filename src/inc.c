@@ -681,6 +681,8 @@ static IncState inc_pop3_session_do(IncSession *session)
 
 static gint pop3_automaton_terminate(SockInfo *source, Automaton *atm)
 {
+	if (atm->terminated) return 0;
+
 	if (atm->tag > 0) {
 		gdk_input_remove(atm->tag);
 		atm->tag = 0;
@@ -782,6 +784,7 @@ static gint connection_check_cb(Automaton *atm)
 			manage_window_focus_out(inc_dialog->dialog->window, NULL, NULL);
 		}
 		pop3_automaton_terminate(sockinfo, atm);
+		state->sockinfo = NULL;
 		return FALSE;
 	} else if (sockinfo->state == CONN_ESTABLISHED) {
 		atm->timeout_tag = 0;
@@ -972,6 +975,8 @@ static void inc_cancel(GtkWidget *widget, gpointer data)
 	IncSession *session = dialog->queue_list->data;
 	SockInfo *sockinfo = session->pop3_state->sockinfo;
 
+	if (!sockinfo || session->atm->terminated == TRUE) return;
+
 #if USE_THREADS
 	if (sockinfo->state == CONN_READY ||
 	    sockinfo->state == CONN_LOOKUPSUCCESS) {
@@ -983,6 +988,7 @@ static void inc_cancel(GtkWidget *widget, gpointer data)
 
 	session->pop3_state->inc_state = INC_CANCEL;
 	pop3_automaton_terminate(sockinfo, session->atm);
+	session->pop3_state->sockinfo = NULL;
 }
 
 static gint inc_spool(void)

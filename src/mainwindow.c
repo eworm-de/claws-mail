@@ -2555,7 +2555,7 @@ static void thread_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 	ifactory = gtk_item_factory_from_widget(widget);
 
 	if (0 == action) {
-		summary_thread_build(mainwin->summaryview, FALSE);
+		summary_thread_build(mainwin->summaryview);
 		mainwin->summaryview->folder_item->threaded = TRUE;
 		menu_set_sensitive(ifactory, "/Summary/Thread view",   FALSE);
 		menu_set_sensitive(ifactory, "/Summary/Unthread view", TRUE);

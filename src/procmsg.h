@@ -217,6 +217,8 @@ void	procmsg_get_mark_sum		(const gchar	*folder,
 FILE   *procmsg_open_mark_file		(const gchar	*folder,
 					 gboolean	 append);
 
+GNode  *procmsg_get_thread_tree		(GSList		*mlist);
+
 void	procmsg_move_messages		(GSList		*mlist);
 void	procmsg_copy_messages		(GSList		*mlist);
 
