@@ -222,3 +222,4 @@
 ( cvs diff -u -r 1.455 -r 1.456 ChangeLog; cvs diff -u -r 1.450 -r 1.451 ChangeLog.jp; cvs diff -u -r 1.128 -r 1.129 src/messageview.c; cvs diff -u -r 1.86 -r 1.87 src/mh.c; cvs diff -u -r 1.61 -r 1.62 src/common/utils.c; ) > 1.0.0cvs12.patchset
 ( cvs diff -u -r 1.456 -r 1.457 src/summaryview.c; ) > 1.0.0cvs13.patchset
 ( cvs diff -u -r 1.466 -r 1.467 src/compose.c; ) > 1.0.0cvs14.patchset
+( cvs diff -u -r 1.456 -r 1.457 ChangeLog; cvs diff -u -r 1.451 -r 1.452 ChangeLog.jp; cvs diff -u -r 1.3 -r 1.4 src/common/template.c; ) > 1.0.0cvs15.patchset

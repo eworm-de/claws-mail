@@ -1,3 +1,12 @@
+2005-01-25
+
+	* src/template.c: template_write_config(): メモリリークを修正。
+
+2005-01-25
+
+	* src/inc.c: inc_finished(): フォルダが選択されていないときに
+	  フォルダアイテムを更新しようとしたときの警告を除去。
+
 2005-01-19
 
 	* src/mh.c

@@ -1,3 +1,11 @@
+2005-01-26 [paul]	1.0.0cvs15
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/common/template.c
+		sync with main, (fix memory leak), see ChangeLog
+		2005-01-25
+
 2005-01-25 [paul]	1.0.0cvs14
 
 	* src/compose.c
