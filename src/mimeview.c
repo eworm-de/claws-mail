@@ -1336,13 +1336,11 @@ static gboolean icon_clicked_cb (GtkWidget *button, GdkEventButton *event, MimeV
 		if (event->button == 2 || event->button == 3)
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
 						     TRUE);
-	} else {
-		gtk_signal_emit_stop_by_name(GTK_OBJECT(button), "button_release_event");
 	}
 
 	part_button_pressed(mimeview, event, partinfo);
 
-	return TRUE;
+	return FALSE;
 }
 
 static void icon_selected (MimeView *mimeview, gint num, MimeInfo *partinfo)
