@@ -130,7 +130,7 @@ char* ssl_certificate_to_string(SSLCertificate *cert)
 				       NID_localityName, buf, 100) >= 0) {
 		issuer_location = g_strdup(buf);
 		if (X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
-				       NID_countryName, buf, 100))
+				       NID_countryName, buf, 100) >= 0)
 			issuer_location = g_strconcat(issuer_location,", ",buf, NULL);
 	} else if (X509_NAME_get_text_by_NID(X509_get_issuer_name(cert->x509_cert), 
 				       NID_countryName, buf, 100) >= 0)

@@ -1,3 +1,8 @@
+2002-11-15 [colin]	0.8.5claws159
+
+	* src/ssl_certificate.c
+		Missed a check
+
 2002-11-16 [melvin]	0.8.5claws158
 
 	* po/fr.po
