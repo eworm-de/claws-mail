@@ -1,3 +1,10 @@
+2003-10-12 [paul]	0.9.6claws16
+
+	* AUTHORS
+	  po/ja.po
+		update Japanese translation. submitted by Rui Hirokawa 
+		<rui_hirokawa@ybb.ne.jp>
+
 2003-10-12 [christoph]	0.9.6claws15
 
 	* src/procmime.c
