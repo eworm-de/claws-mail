@@ -1,3 +1,10 @@
+2004-07-19 [colin]	0.9.12cvs33.1
+
+	* src/folder.h
+	* src/folderview.c
+	* src/summaryview.c
+		Sync with HEAD
+
 2004-07-18 [colin]	0.9.12cvs32.7
 
 	* configure.ac
