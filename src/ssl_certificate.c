@@ -26,14 +26,11 @@
 #include <openssl/ssl.h>
 #include <glib.h>
 #include "ssl_certificate.h"
-#include "alertpanel.h"
+#include "sslcertwindow.h"
 #include "utils.h"
 #include "intl.h"
 #include "prefs_common.h"
-#include "socket.h"
-#include "log.h"
 
-static char *ssl_certificate_check_signer (X509 *cert); 
 static SSLCertificate *ssl_certificate_new_lookup(X509 *x509_cert, gchar *host, gushort port, gboolean lookup);
 
 static char * get_fqdn(char *host)
@@ -50,7 +47,7 @@ static char * get_fqdn(char *host)
 		return g_strdup(hp->h_name);
 }
 
-static char * readable_fingerprint(unsigned char *src, int len) 
+char * readable_fingerprint(unsigned char *src, int len) 
 {
 	int i=0;
 	char * ret;
@@ -115,7 +112,7 @@ static void ssl_certificate_save (SSLCertificate *cert)
 	fp = fopen(file, "wb");
 	if (fp == NULL) {
 		g_free(file);
-		alertpanel_error(_("Can't save certificate !"));
+		debug_print("Can't save certificate !\n");
 		return;
 	}
 	i2d_X509_fp(fp, cert->x509_cert);
@@ -293,7 +290,7 @@ static gboolean ssl_certificate_compare (SSLCertificate *cert_a, SSLCertificate 
 		return FALSE;
 }
 
-static char *ssl_certificate_check_signer (X509 *cert) 
+char *ssl_certificate_check_signer (X509 *cert) 
 {
 	X509_STORE_CTX store_ctx;
 	X509_STORE *store;
@@ -346,7 +343,7 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 	known_cert = ssl_certificate_find (host, port);
 
 	if (known_cert == NULL) {
-		gint val;
+		gboolean val;
 		gchar *err_msg, *cur_cert_str, *sig_status;
 		
 		sig_status = ssl_certificate_check_signer(x509_cert);
@@ -380,24 +377,22 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 			g_free(err_msg);
 			return FALSE;
 		}
-		 
-		val = alertpanel(_("Warning"),
-			       err_msg,
-			       _("Accept and save"), _("Cancel connection"), NULL);
+		
+		/* FIXME: replace this with a hook, then uncomment the check in ssl.c */ 
+		val = sslcertwindow_ask_new_cert(current_cert);
 		g_free(err_msg);
 
-		switch (val) {
-			case G_ALERTALTERNATE:
-				ssl_certificate_destroy(current_cert);
-				return FALSE;
-			default:
-				ssl_certificate_save(current_cert);
-				ssl_certificate_destroy(current_cert);
-				return TRUE;
+		if (!val) {
+			ssl_certificate_destroy(current_cert);
+			return FALSE;
+		} else {
+			ssl_certificate_save(current_cert);
+			ssl_certificate_destroy(current_cert);
+			return TRUE;
 		}
 	}
 	else if (!ssl_certificate_compare (current_cert, known_cert)) {
-		gint val;
+		gboolean val;
 		gchar *err_msg, *known_cert_str, *cur_cert_str;
 		
 		known_cert_str = ssl_certificate_to_string(known_cert);
@@ -417,21 +412,19 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 			return FALSE;
 		}
 
-		val = alertpanel(_("Warning"),
-			       err_msg,
-			       _("Accept and save"), _("Cancel connection"), NULL);
+		/* FIXME: replace this with a hook, then uncomment the check in ssl.c */ 
+		val = sslcertwindow_ask_changed_cert(known_cert, current_cert);
 		g_free(err_msg);
 
-		switch (val) {
-			case G_ALERTALTERNATE:
-				ssl_certificate_destroy(current_cert);
-				ssl_certificate_destroy(known_cert);
-				return FALSE;
-			default:
-				ssl_certificate_save(current_cert);
-				ssl_certificate_destroy(current_cert);
-				ssl_certificate_destroy(known_cert);
-				return TRUE;
+		if (!val) {
+			ssl_certificate_destroy(current_cert);
+			ssl_certificate_destroy(known_cert);
+			return FALSE;
+		} else {
+			ssl_certificate_save(current_cert);
+			ssl_certificate_destroy(current_cert);
+			ssl_certificate_destroy(known_cert);
+			return TRUE;
 		}
 	}
 

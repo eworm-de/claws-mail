@@ -1,3 +1,14 @@
+2002-12-08 [colin] 	0.8.6claws71
+
+	* src/gtk/sslcertwindow.[ch]	** NEW **
+		new certificate presentation
+	* src/gtk/Makefile.am
+		add new files
+	* src/ssl_certificate.[ch]
+		gtk cleanup, made utility functions public
+	* src/ssl_manager.c
+		use new cert presentation
+
 2002-12-07 [christoph]	0.8.6claws70
 
 	* src/Makefile.am

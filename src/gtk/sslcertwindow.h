@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __SSL_CERTIFICATE_H__
-#define __SSL_CERTIFICATE_H__
+#ifndef __SSL_CERTWINDOW_H__
+#define __SSL_CERTWINDOW_H__
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
@@ -29,24 +29,13 @@
 #include <openssl/ssl.h>
 #include <openssl/objects.h>
 #include <glib.h>
+#include <gtk/gtk.h>
+#include "../ssl_certificate.h"
 
-typedef struct _SSLCertificate SSLCertificate;
-
-struct _SSLCertificate
-{
-	X509 *x509_cert;
-	gchar *host;
-	gushort port;
-};
-
-SSLCertificate *ssl_certificate_find (gchar *host, gushort port);
-SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, gboolean lookup);
-gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port);
-char* ssl_certificate_to_string(SSLCertificate *cert);
-void ssl_certificate_destroy(SSLCertificate *cert);
-void ssl_certificate_delete_from_disk(SSLCertificate *cert);
-char * readable_fingerprint(unsigned char *src, int len);
-char *ssl_certificate_check_signer (X509 *cert);
+GtkWidget *cert_presenter(SSLCertificate *cert);
+void sslcertwindow_show_cert(SSLCertificate *cert);
+gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert);
+gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCertificate *new_cert);
 
 #endif /* USE_SSL */
-#endif /* SSL_CERTIFICATE_H */
+#endif /* __SSL_CERTWINDOW_H__ */
