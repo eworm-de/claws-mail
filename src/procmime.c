@@ -619,15 +619,12 @@ FILE *procmime_decode_content(FILE *outfp, FILE *infp, MimeInfo *mimeinfo)
 	}
 
 	if (mimeinfo->encoding_type == ENC_QUOTED_PRINTABLE) {
-		gboolean softline = FALSE;
-
 		while (fgets(buf, sizeof(buf), infp) != NULL &&
 		       (!boundary ||
 			!IS_BOUNDARY(buf, boundary, boundary_len))) {
-			guchar *p = buf;
-
-			softline = DoOneQPLine(&p, FALSE, softline);
-			fwrite(buf, p - (guchar *)buf, 1, outfp);
+			gint len;
+			len = unmime_quoted_printable_line(buf);
+			fwrite(buf, len, 1, outfp);
 		}
 	} else if (mimeinfo->encoding_type == ENC_BASE64) {
 		gchar outbuf[BUFFSIZE];

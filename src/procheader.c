@@ -56,9 +56,8 @@ gint procheader_get_one_field(gchar *buf, gint len, FILE *fp,
 			for (hp = hentry, hnum = 0; hp->name != NULL;
 			     hp++, hnum++) {
 				if (!strncasecmp(hp->name, buf,
-						 strlen(hp->name))) {
+						 strlen(hp->name)))
 					break;
-				}
 			}
 		} while (hp->name == NULL);
 	} else {
@@ -71,6 +70,11 @@ gint procheader_get_one_field(gchar *buf, gint len, FILE *fp,
 		gboolean folded = FALSE;
 		gchar *bufp = buf + strlen(buf);
 
+		for (; bufp > buf &&
+		     (*(bufp - 1) == '\n' || *(bufp - 1) == '\r');
+		     bufp--)
+			*(bufp - 1) = '\0';
+
 		while (1) {
 			nexthead = fgetc(fp);
 
@@ -80,21 +84,27 @@ gint procheader_get_one_field(gchar *buf, gint len, FILE *fp,
 			else if (nexthead == EOF)
 				break;
 			else if (folded == TRUE) {
-				/* concatenate next line */
-				if ((len - (bufp - buf)) <= 2) break;
-
-				/* replace return code on the tail end
-				   with space */
-				*(bufp - 1) = ' ';
-				*bufp++ = nexthead;
-				*bufp = '\0';
 				if (nexthead == '\r' || nexthead == '\n') {
 					folded = FALSE;
 					continue;
 				}
+
+				if ((len - (bufp - buf)) <= 2) break;
+
+				/* replace return code on the tail end
+				   with space */
+				*bufp++ = ' ';
+				*bufp++ = nexthead;
+				*bufp = '\0';
+				/* concatenate next line */
 				if (fgets(bufp, len - (bufp - buf), fp)
 				    == NULL) break;
 				bufp += strlen(bufp);
+
+				for (; bufp > buf &&
+				     (*(bufp - 1) == '\n' || *(bufp - 1) == '\r');
+				     bufp--)
+					*(bufp - 1) = '\0';
 
 				folded = FALSE;
 			} else {
@@ -102,9 +112,6 @@ gint procheader_get_one_field(gchar *buf, gint len, FILE *fp,
 				break;
 			}
 		}
-
-		/* remove trailing return code */
-		strretchomp(buf);
 
 		return hnum;
 	}
@@ -148,6 +155,11 @@ gchar *procheader_get_unfolded_line(gchar *buf, gint len, FILE *fp)
 	if (buf[0] == '\r' || buf[0] == '\n') return NULL;
 	bufp = buf + strlen(buf);
 
+	for (; bufp > buf &&
+	     (*(bufp - 1) == '\n' || *(bufp - 1) == '\r');
+	     bufp--)
+		*(bufp - 1) = '\0';
+
 	while (1) {
 		nexthead = fgetc(fp);
 
@@ -157,21 +169,28 @@ gchar *procheader_get_unfolded_line(gchar *buf, gint len, FILE *fp)
 		else if (nexthead == EOF)
 			break;
 		else if (folded == TRUE) {
-			/* concatenate next line */
-			if ((len - (bufp - buf)) <= 2) break;
-
-			/* replace return code on the tail end
-			   with space */
-			*(bufp - 1) = ' ';
-			*bufp++ = nexthead;
-			*bufp = '\0';
 			if (nexthead == '\r' || nexthead == '\n') {
 				folded = FALSE;
 				continue;
 			}
+
+			if ((len - (bufp - buf)) <= 2) break;
+
+			/* replace return code on the tail end
+			   with space */
+			*bufp++ = ' ';
+			*bufp++ = nexthead;
+			*bufp = '\0';
+
+			/* concatenate next line */
 			if (fgets(bufp, len - (bufp - buf), fp)
 			    == NULL) break;
 			bufp += strlen(bufp);
+
+			for (; bufp > buf &&
+			     (*(bufp - 1) == '\n' || *(bufp - 1) == '\r');
+			     bufp--)
+				*(bufp - 1) = '\0';
 
 			folded = FALSE;
 		} else {
