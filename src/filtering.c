@@ -189,6 +189,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		return TRUE;
 	
 	case MATCHACTION_COLOR:
+		MSG_UNSET_PERM_FLAGS(info->flags, MSG_CLABEL_FLAG_MASK); 
 		MSG_SET_COLORLABEL_VALUE(info->flags, action->labelcolor);
 		return TRUE;
 

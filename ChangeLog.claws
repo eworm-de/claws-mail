@@ -1,3 +1,10 @@
+2002-02-24 [alfons]	0.7.2claws12
+
+	* src/filtering.c
+		clear old color flags first when applying a new color to
+		a message info. 
+		(spotted by Lo'oRiS il Kabukimono <lo_oris@libero.it>)
+
 2002-02-24 [alfons]	0.7.2.claws11
 	
 	* AUTHORS
