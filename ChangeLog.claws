@@ -1,3 +1,10 @@
+2002-03-16 [alfons]	0.7.4claws15
+
+	* src/compose.c
+	* src/prefs_actions.c
+	* src/mainwindow.c
+		move Edit/Actions to Tool/Actions
+
 2002-03-16 [paul]	0.7.4claws14
 
 	* src/messageview.c
