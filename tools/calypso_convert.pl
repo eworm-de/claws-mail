@@ -143,12 +143,15 @@ sub savemail {
 	if (! $testonly ) {
 		if ($create_dirs) {
 			$targetdir = $outdir.'/'.$folder ;
-			( -d $outdir)	 || mkdir $outdir;
-			( -d $targetdir) || mkdir $targetdir;
+			my $curdir = '';
+			foreach (split('/',$targetdir)) {
+				$curdir .= $_ . '/';
+				( -d $curdir) || mkdir $curdir;
+			}
 		}
 
 		open (OUTFILE, ">".$targetdir.'/'.$mailname);
-		foreach (@lines) { printf OUTFILE "$_\n" ; }
+		foreach (@lines) { print OUTFILE "$_\n" ; }
 		close (OUTFILE);
 
 		if ($incl_attach) { 

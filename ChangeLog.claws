@@ -1,3 +1,9 @@
+2005-01-09 [thorsten]	0.9.13cvs31
+
+	* tools/calypso_convert.pl
+		support nested subdirs (possible in recent calypso versions)
+		fix "change of readonly value" error with perl >= 5.8
+
 2005-01-08 [colin]	0.9.13cvs30
 
 	* src/prefs_filtering_action.c
