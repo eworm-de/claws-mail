@@ -677,8 +677,6 @@ static void account_edit_prefs(void)
 	GtkCList *clist = GTK_CLIST(edit_account.clist);
 	PrefsAccount *ac_prefs;
 	gint row;
-	gboolean prev_default;
-	gchar *ac_name;
 
 	if (!clist->selection) return;
 

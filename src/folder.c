@@ -1818,9 +1818,18 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 
 gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
 {
+	Folder *folder;
 	gint ret = 0;
 
 	g_return_val_if_fail(item != NULL, -1);
+	
+	folder = item->folder;
+	if (folder->remove_msgs) {
+		ret = folder->remove_msgs(folder, item, msglist);
+		if (ret == 0)
+			folder->scan(folder);
+		return ret;
+	}
 
 	if (!item->cache) folder_item_read_cache(item);
 

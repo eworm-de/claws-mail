@@ -1,3 +1,25 @@
+2002-10-08
+ 
+	* src/account.c: account_edit_prefs(): removed unused variables.
+	* src/compose.[ch]: separated WITH_QUOTE/WITHOUT_QUOTE flags in
+	  ComposeMode.
+	  compose_reply()
+	  compose_reply_set_entry(): receive reply type with one argument.
+	* src/summaryview.c: summary_reply(): reduced conditional branches.
+
+2002-10-08
+ 
+	* src/compose.c: compose_redirect(), compose_reedit(): strip CR
+	  from line ends (thanks to Sergey Vlasov).
+	* src/folderview.c: renamed 'Rescan folder tree' to 'Rebuild
+	  folder tree'.
+
+2002-10-08
+
+	* src/folder.[ch]: added a virtual method Folder::remove_msgs().
+	* src/imap.[ch]: implemented imap_remove_msgs() which expunges
+	  messages all at once.
+
 2002-10-07
  
 	* src/account.[ch]: account_open(): new. It opens account prefs

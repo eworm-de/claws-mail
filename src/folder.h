@@ -161,6 +161,9 @@ struct _Folder
 	gint     (*remove_msg)		(Folder		*folder,
 					 FolderItem	*item,
 					 gint		 num);
+	gint     (*remove_msgs)		(Folder		*folder,
+					 FolderItem	*item,
+					 GSList		*msglist);
 	gint     (*remove_all_msg)	(Folder		*folder,
 					 FolderItem	*item);
 	gboolean (*is_msg_changed)	(Folder		*folder,

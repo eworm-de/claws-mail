@@ -1,3 +1,26 @@
+2002-10-08
+ 
+	* src/account.c: account_edit_prefs(): 未使用の変数を削除。
+	* src/compose.[ch]: ComposeMode の WITH_QUOTE/WITHOUT_QUOTE フラグ
+	  を分離。
+	  compose_reply()
+	  compose_reply_set_entry(): 返信形式を一つの引数で受け取るように
+	  した。
+	* src/summaryview.c: summary_reply(): 条件分岐を削減。
+
+2002-10-08
+ 
+	* src/compose.c: compose_redirect(), compose_reedit(): strip CR
+	  from line ends (thanks to Sergey Vlasov).
+	* src/folderview.c: 「フォルダツリーを再スキャン」を「フォルダツリー
+	  を再構築」に改名。
+
+2002-10-08
+
+	* src/folder.[ch]: 仮想メソッド Folder::remove_msgs() を追加。
+	* src/imap.[ch]: メッセージを一度に削除する imap_remove_msgs()
+	  を実装。
+
 2002-10-07
  
 	* src/account.[ch]: account_open(): 新規。アカウント設定ダイアログ

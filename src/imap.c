@@ -318,6 +318,7 @@ static void imap_folder_init(Folder *folder, const gchar *name,
 	folder->copy_msg              = imap_copy_msg;
 	folder->copy_msgs_with_dest   = imap_copy_msgs_with_dest;
 	folder->remove_msg            = imap_remove_msg;
+	folder->remove_msgs           = imap_remove_msgs;
 	folder->remove_all_msg        = imap_remove_all_msg;
 	folder->is_msg_changed        = imap_is_msg_changed;
 /*
@@ -998,6 +999,64 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 		remove_numbered_files(dir, uid, uid);
 	g_free(dir);
 
+	return IMAP_SUCCESS;
+}
+
+gint imap_remove_msgs(Folder *folder, FolderItem *item, GSList *msglist)
+{
+	gint exists, recent, unseen;
+	guint32 uid_validity;
+	gint ok;
+	IMAPSession *session;
+	gchar *dir;
+	MsgInfo *msginfo;
+	GSList *cur;
+	guint32 uid;
+
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(folder->type == F_IMAP, -1);
+	g_return_val_if_fail(item != NULL, -1);
+	g_return_val_if_fail(msglist != NULL, -1);
+
+	session = imap_session_get(folder);
+	if (!session) return -1;
+
+	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
+			 &exists, &recent, &unseen, &uid_validity);
+	statusbar_pop_all();
+	if (ok != IMAP_SUCCESS)
+		return ok;
+
+	for (cur = msglist; cur != NULL; cur = cur->next) {
+		msginfo = (MsgInfo *)cur->data;
+		uid = msginfo->msgnum;
+		ok = imap_set_message_flags
+			(IMAP_SESSION(REMOTE_FOLDER(folder)->session),
+			 uid, uid, IMAP_FLAG_DELETED, TRUE);
+		statusbar_pop_all();
+		if (ok != IMAP_SUCCESS) {
+			log_warning(_("can't set deleted flags: %d\n"), uid);
+			return ok;
+		}
+	}
+
+	ok = imap_cmd_expunge(SESSION(session)->sock);
+	statusbar_pop_all();
+	if (ok != IMAP_SUCCESS) {
+		log_warning(_("can't expunge\n"));
+		return ok;
+	}
+
+	dir = folder_item_get_path(item);
+	if (is_dir_exist(dir)) {
+		for (cur = msglist; cur != NULL; cur = cur->next) {
+			msginfo = (MsgInfo *)cur->data;
+			uid = msginfo->msgnum;
+			remove_numbered_files(dir, uid, uid);
+		}
+	}
+	g_free(dir);
+ 
 	return IMAP_SUCCESS;
 }
 
