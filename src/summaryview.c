@@ -2390,9 +2390,6 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 			g_free(to);
 #endif
 			to = from;
-#ifdef WIN32
-			to = g_locale_to_utf8(to, -1, NULL, NULL, NULL);
-#endif
 			text[col_pos[S_COL_FROM]] = to;
 		}			
 	}

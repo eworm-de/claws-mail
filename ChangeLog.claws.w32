@@ -1,3 +1,9 @@
+2005-02-09 [thorsten]	1.0.1cvs0.2
+
+	* src/summaryview.c
+		fix: "sender" displayed from addressbook got utf8 encoded twice
+		Closes bug 685 Umlauts in Message View not displayed correctly
+
 2005-02-08 [thorsten]	1.0.1cvs0.1
 
 	* ChangeLog.claws
