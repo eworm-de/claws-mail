@@ -1,3 +1,9 @@
+2002-09-29 [thorsten]	0.8.3claws36
+
+	* src/compose.c
+	  src/prefs_folder_item.[ch]
+		add default_reply_to folder option (closes patch 581044)
+
 2002-09-29 [christoph]	0.8.3claws35
 
 	* acconfig.h	** REMOVED **

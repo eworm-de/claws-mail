@@ -1638,8 +1638,15 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 		compose_entry_append(compose, compose->ml_post,
 				     COMPOSE_TO);
 	} else if ((compose->account->protocol != A_NNTP) || followup_and_reply_to) {
-		compose_entry_append(compose,
-		 		    ((compose->replyto && !ignore_replyto)
+		if (!(to_all || ignore_replyto)
+		    && msginfo->folder
+		    && msginfo->folder->prefs->enable_default_reply_to) {
+			compose_entry_append(compose,
+			    msginfo->folder->prefs->default_reply_to,
+			    COMPOSE_TO);
+		} else
+			compose_entry_append(compose,
+				    ((compose->replyto && !ignore_replyto)
 				     ? compose->replyto
 				     : msginfo->from ? msginfo->from : ""),
 				     COMPOSE_TO);
