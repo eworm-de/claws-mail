@@ -205,12 +205,12 @@ string:
 		int len;
 		
 		strncpy($$, $1, sizeof($$));
+		$$[sizeof($$) - 1] = '\0';
 		len = strlen($$);
 		if (len + 1 < sizeof($$)) {
 			$$[len + 1] = '\0';
 			$$[len] = $2;
 		}
-		$$[sizeof($$) - 1] = '\0';
 	};
 
 special:
