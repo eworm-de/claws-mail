@@ -74,12 +74,12 @@ main ()
 {
  system ("touch conf.aspelltest");
  if(strcmp("$aspell_version","$min_aspell_version")<0){
-   printf("no\n");
    return 1;
    }
  return 0;
 }
         ],, no_aspell=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
+	rm -f conftest.c
 	if test "x$no_aspell" = x ; then
            AC_MSG_RESULT(yes)
            AC_MSG_CHECKING(for GNU/aspell dictionaries location)
@@ -102,10 +102,10 @@ int
 main()
 {
  AspellConfig * aspellconfig = new_aspell_config();
- system("touch conf.aspelltest");
  return 0;
 }
            ],, aspell_failure=yes,)
+	   rm -f conftest.c
 	   CFLAGS="$ac_save_CFLAGS"
            LIBS="$ac_save_LIBS"
            if test "x$aspell_failure" = x ; then     
@@ -126,6 +126,7 @@ main()
 	      ifelse([$3], , :, [$3])
 	   fi
 	else
+           AC_MSG_RESULT(no)
            ASPELL_CFLAGS=""
            ASPELL_LIBS=""
            ASPELL_PATH=""
@@ -136,6 +137,5 @@ main()
   AC_SUBST(ASPELL_CFLAGS)
   AC_SUBST(ASPELL_LIBS)
   AC_SUBST(ASPELL_PATH)
-  rm -f conf.aspelltest
 ])
 

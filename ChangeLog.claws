@@ -1,3 +1,8 @@
+2002-10-02 [melvin]	0.8.3claws42
+
+	* ac/aspell.m4
+		Behave better and say "no" when test program cannot be run.
+
 2002-10-02 [paul]	0.8.3claws41
 
 	* sync with 0.8.4cvs1
