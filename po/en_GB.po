@@ -120,9 +120,9 @@ msgstr "Creating actions dialogue\n"
 msgid "Creating progress dialog...\n"
 msgstr "Creating progress dialogue...\n"
 
-#: src/selective_download.c:764
-msgid "Exit Dialog"
-msgstr "Exit Dialogue"
+#: src/selective_download.c:669
+msgid "Exit dialog"
+msgstr "Exit dialogue"
 
 #: src/summaryview.c:1321 src/summaryview.c:1346
 msgid "No more labeled messages"
