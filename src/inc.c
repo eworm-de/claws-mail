@@ -81,8 +81,8 @@ static GdkBitmap *okxpmmask;
 
 static void inc_finished		(MainWindow		*mainwin,
 					 gboolean		 new_messages);
-static gint inc_account_mail		(PrefsAccount		*account,
-					 MainWindow		*mainwin);
+static gint inc_account_mail_real	(MainWindow		*mainwin,
+					 PrefsAccount		*account);
 
 static IncProgressDialog *inc_progress_dialog_create
 					(gboolean		 autocheck);
@@ -181,7 +181,7 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 			return;
 		}
 	} else {
-		account_new_msgs = inc_account_mail(cur_account, mainwin);
+		account_new_msgs = inc_account_mail_real(mainwin, cur_account);
 		if (account_new_msgs > 0)
 			new_msgs += account_new_msgs;
 	}
@@ -196,10 +196,10 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 void inc_pop_before_smtp(PrefsAccount *acc)
 {
 	/* FIXME: assumes to attach to first main window */
-	inc_account_mail(acc, mainwindow_get_mainwindow());
+	inc_account_mail(mainwindow_get_mainwindow(), acc);
 }
 
-static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
+static gint inc_account_mail_real(MainWindow *mainwin, PrefsAccount *account)
 {
 	IncProgressDialog *inc_dialog;
 	IncSession *session;
@@ -243,6 +243,30 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 		break;
 	}
 	return 0;
+}
+
+gint inc_account_mail(MainWindow *mainwin, PrefsAccount *account)
+{
+	gint new_msgs;
+
+	if (inc_lock_count) return 0;
+
+	if (prefs_common.work_offline)
+		if (alertpanel(_("Offline warning"), 
+			       _("You're working offline. Override?"),
+			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
+		return;
+
+	inc_autocheck_timer_remove();
+	main_window_lock(mainwin);
+
+	new_msgs = inc_account_mail_real(mainwin, account);
+
+	inc_finished(mainwin, new_msgs > 0);
+	main_window_unlock(mainwin);
+	inc_autocheck_timer_set();
+
+	return new_msgs;
 }
 
 void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,

@@ -1,3 +1,9 @@
+2003-12-17
+
+	* src/inc.[ch]: inc_account_mail() を public にした。
+	* src/mainwindow.c: 受信メニューをサブメニューにし、各アカウントから
+	  の受信のための動的なメニューを追加。
+
 2003-12-15
 
 	* version 0.9.8a

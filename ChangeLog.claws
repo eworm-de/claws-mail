@@ -1,3 +1,8 @@
+2003-12-28 [paul]	0.9.8claws10
+
+	* sync with 0.9.8cvs1
+		see ChangeLog 2003-12-17
+
 2003-12-27 [christoph]	0.9.8claws9
 
 	* src/common/utils.[ch]
