@@ -1812,22 +1812,27 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 
 	to_table = g_hash_table_new(g_str_hash, g_str_equal);
 	if (replyto)
-		g_hash_table_insert(to_table, replyto, GINT_TO_POINTER(1));
+		g_hash_table_insert(to_table, g_strdup(replyto), GINT_TO_POINTER(1));
 	if (compose->account)
-		g_hash_table_insert(to_table, compose->account->address,
+		g_hash_table_insert(to_table, g_strdup(compose->account->address),
 				    GINT_TO_POINTER(1));
 
 	/* remove address on To: and that of current account */
 	for (cur = cc_list; cur != NULL; ) {
 		GSList *next = cur->next;
+		gchar *addr;
 
-		if (g_hash_table_lookup(to_table, cur->data) != NULL)
+		addr = g_strdup(cur->data);
+		extract_address(addr);
+
+		if (GPOINTER_TO_INT(g_hash_table_lookup(to_table, addr)) == 1)
 			cc_list = g_slist_remove(cc_list, cur->data);
 		else
-			g_hash_table_insert(to_table, cur->data, cur);
+			g_hash_table_insert(to_table, addr, GINT_TO_POINTER(1));
 
 		cur = next;
 	}
+	hash_free_strings(to_table);
 	g_hash_table_destroy(to_table);
 
 	if (cc_list) {

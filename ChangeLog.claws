@@ -1,3 +1,11 @@
+2003-03-06 [christoph]	0.8.10claws91
+
+	* src/compose.c
+		ignore address comment in dupe check for Cc-list
+
+	(closes reopened bug 47 Replying to message strips name part of
+	 e-mail addresses of Cc: lines)
+
 2003-03-06 [paul]	0.8.10claws90
 
 	* src/Makefile.am
