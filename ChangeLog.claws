@@ -1,3 +1,8 @@
+2004-01-23 [alfons]	0.9.8claws43
+
+	* src/procmsg.c
+		remove redundant code in procmsg_get_thread_tree()
+
 2004-01-21 [christoph]	0.9.8claws42
 
 	* src/folderview.c
