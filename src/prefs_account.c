@@ -109,6 +109,9 @@ static struct Send {
 	GtkWidget *smtp_auth_chkbtn;
 	GtkWidget *smtp_uid_entry;
 	GtkWidget *smtp_pass_entry;
+	GtkWidget *smtp_auth_enable_login_chkbtn;	/* CLAWS: smtp auth options */
+	GtkWidget *smtp_auth_enable_cram_md5_chkbtn;
+	GtkWidget *smtp_auth_enable_digest_md5_chkbtn;
 	GtkWidget *pop_bfr_smtp_chkbtn;
 } send;
 
@@ -320,6 +323,15 @@ static PrefParam param[] = {
 	 &send.smtp_uid_entry, prefs_set_data_from_entry, prefs_set_entry},
 	{"smtp_password", NULL, &tmp_ac_prefs.smtp_passwd, P_STRING,
 	 &send.smtp_pass_entry, prefs_set_data_from_entry, prefs_set_entry},
+	{"smtp_auth_enable_digest_md5", "TRUE", &tmp_ac_prefs.smtp_auth_enable_digest_md5, P_BOOL,
+	 &send.smtp_auth_enable_digest_md5_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"smtp_auth_enable_cram_md5", "TRUE", &tmp_ac_prefs.smtp_auth_enable_cram_md5, P_BOOL,
+	 &send.smtp_auth_enable_cram_md5_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"smtp_auth_enable_login", "TRUE", &tmp_ac_prefs.smtp_auth_enable_login, P_BOOL,
+	 &send.smtp_auth_enable_login_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"pop_before_smtp", "FALSE", &tmp_ac_prefs.pop_before_smtp, P_BOOL,
 	 &send.pop_bfr_smtp_chkbtn,
@@ -1214,6 +1226,9 @@ static void prefs_account_send_create(void)
 	GtkWidget *smtp_pass_entry;
 	GtkWidget *vbox_spc;
 	GtkWidget *pop_bfr_smtp_chkbtn;
+	GtkWidget *smtp_auth_enable_login_chkbtn;	/* CLAWS: SMTP AUTH */
+	GtkWidget *smtp_auth_enable_cram_md5_chkbtn;
+	GtkWidget *smtp_auth_enable_digest_md5_chkbtn;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1309,6 +1324,15 @@ static void prefs_account_send_create(void)
 
 	SET_TOGGLE_SENSITIVITY (smtp_auth_chkbtn, vbox4);
 
+	PACK_CHECK_BUTTON (vbox4, smtp_auth_enable_login_chkbtn,
+		_("LOGIN Authentication"));
+
+	PACK_CHECK_BUTTON (vbox4, smtp_auth_enable_cram_md5_chkbtn,
+		_("CRAM-MD5 Authentication"));
+
+	PACK_CHECK_BUTTON (vbox4, smtp_auth_enable_digest_md5_chkbtn,
+		_("DIGEST-MD5 Authentication"));	
+
 	PACK_CHECK_BUTTON (vbox3, pop_bfr_smtp_chkbtn,
 		_("Authenticate with POP3 before sending"));
 	gtk_widget_set_sensitive(pop_bfr_smtp_chkbtn, FALSE);
@@ -1321,6 +1345,11 @@ static void prefs_account_send_create(void)
 	send.smtp_uid_entry      = smtp_uid_entry;
 	send.smtp_pass_entry     = smtp_pass_entry;
 	send.pop_bfr_smtp_chkbtn = pop_bfr_smtp_chkbtn;
+	
+	/* CLAWS: SMTP AUTH */
+	send.smtp_auth_enable_login_chkbtn      = smtp_auth_enable_login_chkbtn;
+	send.smtp_auth_enable_cram_md5_chkbtn   = smtp_auth_enable_cram_md5_chkbtn;
+	send.smtp_auth_enable_digest_md5_chkbtn = smtp_auth_enable_digest_md5_chkbtn;
 }
 
 static void prefs_account_compose_create(void)

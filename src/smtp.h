@@ -69,13 +69,15 @@ Session *smtp_session_new	(const gchar	*server,
 				 const gchar	*domain,
 				 const gchar	*user,
 				 const gchar	*pass,
-				 SSLType	 ssl_type);
+				 SSLType	 ssl_type,
+				 SMTPAuthType	 enable_auth_type);
 #else
 Session *smtp_session_new	(const gchar	*server,
 				 gushort	 port,
 				 const gchar	*domain,
 				 const gchar	*user,
-				 const gchar	*pass);
+				 const gchar	*pass,
+				 SMTPAuthType	 enable_auth_type);
 #endif
 void smtp_session_destroy	(SMTPSession	*session);
 
@@ -85,7 +87,8 @@ gint smtp_auth			(SMTPSession	*session);
 
 gint smtp_ehlo			(SockInfo	*sock,
 				 const gchar	*hostname,
-				 SMTPAuthType	*avail_auth_type);
+				 SMTPAuthType	*avail_auth_type,
+				 SMTPAuthType	 enable_auth_type);
 
 gint smtp_helo			(SockInfo	*sock,
 				 const gchar	*hostname);

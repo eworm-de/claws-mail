@@ -371,12 +371,20 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 #if USE_SSL
 	SEND_EXIT_IF_ERROR((session = smtp_session_new
 				(ac_prefs->smtp_server, port, domain,
-				 user, pass, ac_prefs->ssl_smtp)),
+				 user, pass, ac_prefs->ssl_smtp,
+				 0 
+				 | (ac_prefs->smtp_auth_enable_login ? SMTPAUTH_LOGIN : 0) 
+				 | (ac_prefs->smtp_auth_enable_cram_md5 ? SMTPAUTH_CRAM_MD5 : 0) 
+				 | (ac_prefs->smtp_auth_enable_digest_md5 ? SMTPAUTH_DIGEST_MD5 : 0))),
 			   "connecting to server");
 #else
 	SEND_EXIT_IF_ERROR((session = smtp_session_new
 				(ac_prefs->smtp_server, port, domain,
-				 user, pass)),
+				 user, pass,
+				 0
+				 | (ac_prefs->smtp_auth_enable_login ? SMTPAUTH_LOGIN : 0) 
+				 | (ac_prefs->smtp_auth_enable_cram_md5 ? SMTPAUTH_CRAM_MD5 : 0) 
+				 | (ac_prefs->smtp_auth_enable_digest_md5 ? SMTPAUTH_DIGEST_MD5 : 0))),
 			   "connecting to server");
 #endif
 
