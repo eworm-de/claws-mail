@@ -1838,29 +1838,21 @@ gchar *get_domain_name(void)
 
 	if (!domain_name) {
 #ifdef WIN32
-		gchar tmpname[1024];
-		gint i;
+		gchar buf[128] = "";
+		struct hostent *hp;
 
-		if (!gethostname(&tmpname, sizeof(tmpname))) {
-			struct hostent *hp;
-
-			tmpname[sizeof(tmpname) - 1] = '\0';
-			if ((hp = my_gethostbyname(tmpname)) == NULL) {
+		if (gethostname(buf, sizeof(buf)) < 0) {
+			perror("gethostname");
+			domain_name = "unknown";
+		} else {
+			buf[sizeof(buf) - 1] = '\0';
+			if ((hp = my_gethostbyname(buf)) == NULL) {
 				perror("gethostbyname");
-				domain_name = g_strdup(tmpname);
+				domain_name = g_strdup(buf);
 			} else {
-				for (i=0; hp->h_name[i]; i++) {
-					if (hp->h_name[i]=='.') {
-						domain_name = g_strdup(&hp->h_name[i+1]);
-						break;
-					}
-				}
-				if (!domain_name)
-					domain_name = g_strdup(hp->h_name);
+				domain_name = g_strdup(hp->h_name);
 			}
 		}
-		if (!domain_name)
-			domain_name = "";
 #else
 		struct hostent *hp;
 		struct utsname uts;
@@ -1877,8 +1869,8 @@ gchar *get_domain_name(void)
 			}
 		}
 
-		debug_print("domain name = %s\n", domain_name);
 #endif
+		debug_print("domain name = %s\n", domain_name);
 	}
 
 	return domain_name;
