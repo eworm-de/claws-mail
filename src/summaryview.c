@@ -3104,20 +3104,25 @@ static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;
 	if (MSG_IS_MOVE(msginfo->flags)) {
+		if (!prefs_common.immediate_exec) {
+			msginfo->to_folder->op_count--;
+			if (msginfo->to_folder->op_count == 0)
+				folder_update_item(msginfo->to_folder, FALSE);
+		}
 		summaryview->moved--;
 		changed = TRUE;
 	}
 	if (MSG_IS_COPY(msginfo->flags)) {
+		if (!prefs_common.immediate_exec) {
+			msginfo->to_folder->op_count--;
+			if (msginfo->to_folder->op_count == 0)
+				folder_update_item(msginfo->to_folder, FALSE);
+		}
 		summaryview->copied--;
 		changed = TRUE;
 	}
 	changed |= summary_update_unread_children (summaryview, msginfo, FALSE);
 
-	if (changed && !prefs_common.immediate_exec) {
-		msginfo->to_folder->op_count--;
-		if (msginfo->to_folder->op_count == 0)
-			folder_update_item(msginfo->to_folder, FALSE);
-	}
 	msginfo->to_folder = NULL;
 	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_MOVE | MSG_COPY);
 	summary_set_row_marks(summaryview, row);

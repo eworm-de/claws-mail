@@ -1,3 +1,8 @@
+2002-12-24 [darko]	0.8.7claws2
+
+	* src/summaryview.c
+		don't crash when unmarking message with unread children
+
 2002-12-23 [christoph]	0.8.7claws1
 
 	* src/Makefile.am
