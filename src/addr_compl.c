@@ -179,7 +179,8 @@ static void add_address1(const char *str, address_entry *ae)
  * \return <code>0</code> if entry appended successfully, or <code>-1</code>
  *         if failure.
  */
-static gint add_address(const gchar *name, const gchar *address, const gchar *alias)
+static gint add_address(const gchar *name, const gchar *address, 
+			const gchar *nick, const gchar *alias)
 {
 	address_entry    *ae;
 
@@ -196,7 +197,11 @@ static gint add_address(const gchar *name, const gchar *address, const gchar *al
 
 	add_address1(name, ae);
 	add_address1(address, ae);
-	if( alias != NULL ) {
+	
+	if (nick != NULL)
+		add_address1(nick, ae);
+	
+	if ( alias != NULL ) {
 		add_address1(alias, ae);
 	}
 

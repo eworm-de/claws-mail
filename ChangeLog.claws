@@ -1,3 +1,9 @@
+2004-03-21 [alfons]	0.9.10claws27
+
+	* src/addrindex.[ch]
+	  src/addr_compl.c
+		complete addresses on nicks and aliases
+
 2004-03-21 [alfons]	0.9.10claws26
 
 	* src/import.c
