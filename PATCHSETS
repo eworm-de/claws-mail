@@ -160,3 +160,4 @@
 ( cvs diff -u -r 1.95 -r 1.96 src/procmime.c; ) > 0.9.12cvs175.patchset
 ( cvs diff -u -r 1.252 -r 1.253 src/folderview.c; ) > 0.9.12cvs176.patchset
 ( cvs diff -u -r 1.16 -r 1.17 src/gtk/prefswindow.c; cvs diff -u -r 1.8 -r 1.9 src/gtk/pluginwindow.c; ) > 0.9.12cvs177.patchset
+( cvs diff -u -r 1.458 -r 1.459 src/compose.c; ) > 0.9.12cvs178.patchset

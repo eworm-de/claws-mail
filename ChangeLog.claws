@@ -1,3 +1,9 @@
+2004-12-02 [colin]	0.9.12cvs178
+
+	* src/compose.c
+		Fix quote linewrapping ignoring pref
+		Patch by Alfons
+
 2004-11-30 [colin]	0.9.12cvs177
 
 	* src/gtk/prefswindow.c

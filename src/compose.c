@@ -2640,7 +2640,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 	gint ch_len;
 	gboolean is_new_line = TRUE, do_delete = FALSE;
 	guint i_len = 0;
-	gboolean linewrap_quote = TRUE;
+	gboolean linewrap_quote = prefs_common.linewrap_quote;
 	gboolean set_editable_pos = FALSE;
 	gint editable_pos = 0;
 	gboolean frozen = FALSE;
