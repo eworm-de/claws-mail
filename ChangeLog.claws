@@ -1,3 +1,10 @@
+2002-10-14 [christoph]	0.8.5claws36
+
+	* src/folder.[ch]
+	* src/imap.[ch]
+		use virtual functions for folder item new and destroy
+		functions
+
 2002-10-14 [melvin]	0.8.5claws35
 
 	* src/compose.c

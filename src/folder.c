@@ -73,6 +73,7 @@ void folder_item_free_cache		(FolderItem *item);
 Folder *folder_new(FolderType type, const gchar *name, const gchar *path)
 {
 	Folder *folder = NULL;
+	FolderItem *item;
 
 	name = name ? name : path;
 	switch (type) {
@@ -92,13 +93,17 @@ Folder *folder_new(FolderType type, const gchar *name, const gchar *path)
 		return NULL;
 	}
 
+	/* Create root folder item */
+	item = folder_item_new(folder, name, NULL);
+	item->folder = folder;
+	folder->node = g_node_new(item);
+	folder->data = NULL;
+
 	return folder;
 }
 
 static void folder_init(Folder *folder, const gchar *name)
 {
-	FolderItem *item;
-
 	g_return_if_fail(folder != NULL);
 
 	folder_set_name(folder, name);
@@ -112,6 +117,8 @@ static void folder_init(Folder *folder, const gchar *name)
 	folder->trash = NULL;
 
 	/* Init Folder functions */
+	folder->item_new = NULL;
+	folder->item_destroy = NULL;
 	folder->fetch_msg = NULL;
 	folder->fetch_msginfo = NULL;
 	folder->fetch_msginfos = NULL;
@@ -119,12 +126,6 @@ static void folder_init(Folder *folder, const gchar *name)
 	folder->ui_func = NULL;
 	folder->ui_func_data = NULL;
 	folder->check_msgnum_validity = NULL;
-
-	/* Create root folder item */
-	item = folder_item_new(folder, name, NULL);
-	item->folder = folder;
-	folder->node = g_node_new(item);
-	folder->data = NULL;
 }
 
 void folder_local_folder_init(Folder *folder, const gchar *name,
@@ -188,17 +189,10 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 {
 	FolderItem *item = NULL;
 
-	switch (folder->type) {
-	case F_IMAP:
-		item = imap_folder_item_new();
-		break;
-	case F_MH:
-	case F_NEWS:
-	case F_MBOX:
+	if (folder->item_new) {
+		item = folder->item_new(folder);
+	} else {
 		item = g_new0(FolderItem, 1);
-		break;
-	default:
-		return NULL;
 	}
 
 	g_return_val_if_fail(item != NULL, NULL);
@@ -270,21 +264,18 @@ void folder_item_destroy(FolderItem *item)
 
 	debug_print("Destroying folder item %s\n", item->path);
 
-	if (item->folder != NULL) {
-		switch (item->folder->type) {
-		case F_IMAP:
-			imap_folder_item_destroy(item);
-			break;
-		default:
-			break;
-		}
-	}
-
 	if (item->cache)
 		folder_item_free_cache(item);
 	g_free(item->name);
 	g_free(item->path);
-	g_free(item);
+
+	if (item->folder != NULL) {
+		if(item->folder->item_destroy) {
+			item->folder->item_destroy(item->folder, item);
+		} else {
+			g_free(item);
+		}
+	}
 }
 
 void folder_set_ui_func(Folder *folder, FolderUIFunc func, gpointer data)

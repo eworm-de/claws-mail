@@ -69,6 +69,14 @@
 	}							\
 }
 
+struct _IMAPFolderItem
+{
+	FolderItem item;
+
+	guint lastuid;
+	GSList *uid_list;
+};
+
 static GList *session_list = NULL;
 
 static gint imap_cmd_count = 0;
@@ -76,6 +84,10 @@ static gint imap_cmd_count = 0;
 static void imap_folder_init		(Folder		*folder,
 					 const gchar	*name,
 					 const gchar	*path);
+
+static FolderItem *imap_folder_item_new	(Folder		*folder);
+static void imap_folder_item_destroy	(Folder		*folder,
+					 FolderItem	*item);
 
 static IMAPSession *imap_session_get	(Folder		*folder);
 
@@ -311,6 +323,8 @@ static void imap_folder_init(Folder *folder, const gchar *name,
 /*
 	folder->get_msg_list        = imap_get_msg_list;
 */
+	folder->item_new	      = imap_folder_item_new;
+	folder->item_destroy   	      = imap_folder_item_destroy;
 	folder->fetch_msg             = imap_fetch_msg;
 	folder->add_msg               = imap_add_msg;
 	folder->move_msg              = imap_move_msg;
@@ -338,7 +352,7 @@ static void imap_folder_init(Folder *folder, const gchar *name,
 	((IMAPFolder *)folder)->selected_folder = NULL;
 }
 
-FolderItem *imap_folder_item_new()
+static FolderItem *imap_folder_item_new(Folder *folder)
 {
 	IMAPFolderItem *item;
 	
@@ -349,12 +363,14 @@ FolderItem *imap_folder_item_new()
 	return (FolderItem *)item;
 }
 
-void imap_folder_item_destroy(FolderItem *_item)
+static void imap_folder_item_destroy(Folder *folder, FolderItem *_item)
 {
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
 
 	g_return_if_fail(item != NULL);
 	g_slist_free(item->uid_list);
+
+	g_free(_item);
 }
 
 static gboolean imap_reset_uid_lists_func(GNode *node, gpointer data)
