@@ -1,3 +1,17 @@
+2003-05-24 [paul]	0.8.11claws177
+
+	* src/plugins/dillo-viewer/Makefile.am
+	  src/plugins/traycon/Makefile.am
+	  	add missing files
+		
+	* po/es.po
+	  po/it.po
+	  po/ru.po
+	  po/sr.po
+	  	update Spanish, Italian, Russian, and Serbian
+		translations, submitted by Ricardo Mones Lastra,
+		Alessandro Maestri, Ruslan N. Balkin, and Urke MMI
+
 2003-05-23 [melvin]	0.8.11claws176
 
 	* po/fr.po
