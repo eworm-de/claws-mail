@@ -22,6 +22,7 @@
 
 typedef enum
 {
+	MANUAL_LANG_DE,
 	MANUAL_LANG_EN,
 	MANUAL_LANG_ES,
 	MANUAL_LANG_FR,

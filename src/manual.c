@@ -35,6 +35,8 @@ static gchar *get_lang_str(ManualLang lang);
 static gchar *get_lang_str(ManualLang lang)
 {
 	switch (lang) {
+	case MANUAL_LANG_DE:
+		return "de";
 	case MANUAL_LANG_EN:
 		return "en";
 	case MANUAL_LANG_ES:
