@@ -1,3 +1,9 @@
+2003-08-30 [paul]	0.9.4claws45
+
+	* src/compose.c
+		add 'Content-Disposition: inline' to a text/plain
+	  	part when using PGP/MIME signing
+
 2003-08-30 [paul]	0.9.4claws44
 
 	* src/prefs_common.c

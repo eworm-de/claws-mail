@@ -4281,6 +4281,10 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 			" boundary=\"%s\"\n", compose->boundary);
 	} else {
 		fprintf(fp, "Content-Type: text/plain; charset=%s\n", charset);
+#if USE_GPGME
+		if (compose->use_signing && !compose->gnupg_mode)
+			fprintf(fp, "Content-Disposition: inline\n");
+#endif
 		fprintf(fp, "Content-Transfer-Encoding: %s\n",
 			procmime_get_encoding_str(encoding));
 	}
