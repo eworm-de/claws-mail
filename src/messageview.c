@@ -448,9 +448,8 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo)
 			ok = disposition_notification_send(tmpmsginfo);
 			if (ok < 0)
 				alertpanel_error(_("Error occurred while sending notification."));
-			else
-				MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_RETRCPT_PENDING);	
 		}
+		MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_RETRCPT_PENDING);	
 	}
 
 	headerview_show(messageview->headerview, tmpmsginfo);
