@@ -1,3 +1,8 @@
+2004-12-10 [paul]	0.9.13cvs11
+
+	* src/prefs_themes.c
+		use a different set of icons for the Preview
+
 2004-12-09 [colin]	0.9.13cvs10
 
 	* src/procmime.c

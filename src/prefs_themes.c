@@ -116,16 +116,14 @@ typedef struct _CopyInfo {
 static ThemesData *prefs_themes_data;
 
 StockPixmap prefs_themes_icons[PREVIEW_ICONS] = { 
-	STOCK_PIXMAP_MAIL,
+	STOCK_PIXMAP_DIR_CLOSE,
+	STOCK_PIXMAP_MAIL_SEND,
 	STOCK_PIXMAP_MAIL_RECEIVE, 
-	STOCK_PIXMAP_DOWN_ARROW, 
-	STOCK_PIXMAP_MAIL_SEND_QUEUE, 
+	STOCK_PIXMAP_MAIL_ATTACH,
 	STOCK_PIXMAP_BOOK, 
-	STOCK_PIXMAP_MIME_TEXT_HTML, 
-	STOCK_PIXMAP_PRIVACY_PASSED
+	STOCK_PIXMAP_MIME_TEXT_PLAIN, 
+	STOCK_PIXMAP_REPLIED
 };
-
-
 
 static void prefs_themes_btn_use_clicked_cb	(GtkWidget *widget, gpointer data);
 static void prefs_themes_btn_remove_clicked_cb	(GtkWidget *widget, gpointer data);
@@ -153,8 +151,6 @@ static void prefs_themes_foreach_file		(const gchar *dirname, const FileFunc fun
 static void prefs_themes_file_stats		(const gchar *filename, gpointer data);
 static void prefs_themes_file_remove		(const gchar *filename, gpointer data);
 static void prefs_themes_file_install		(const gchar *filename, gpointer data);
-
-
 
 static void prefs_themes_file_stats(const gchar *filename, gpointer data)
 {
