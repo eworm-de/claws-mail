@@ -380,6 +380,7 @@ void toolbar_clear_list()
 			g_free(item->file);
 		if (item->text)
 			g_free(item->text);
+		g_free(item);	
 	}
 	g_slist_free(toolbar_list);
 }
