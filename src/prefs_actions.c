@@ -1245,52 +1245,68 @@ ChildInfo *fork_child(gchar *cmd,
 	gchar *cmdline[4];
 	gint start, end, is_selection;
 	gchar *selection;
-	pid_t pid_c, pid_gc;
+	pid_t pid, gch_pid;
 	ChildInfo *child_info;
+	gint sync;
 
-	if (action_type & ACTION_ASYNC) {
-		execute_command_line(cmd, TRUE);
-		return NULL; /* Asynchronous command */
-	}
+	sync = !(action_type & ACTION_ASYNC);
 
-	if (pipe(chld_in) || pipe(chld_out) || pipe(chld_err) ||
-	    pipe(chld_status)) {
-		alertpanel_error(_("Command could not started. Pipe creation"
-				   " failed.\n%s"), g_strerror(errno));
-		return NULL; /* Pipe error */
-	}
+	chld_in[0] = chld_in[1] = chld_out[0] = chld_out[1] = chld_err[0]
+		= chld_err[1] = chld_status[0] = chld_status[1] = -1;
 	
+	if (sync)
+		if (pipe(chld_status) || pipe(chld_in) || pipe(chld_out)
+				|| pipe(chld_err)) {
+			alertpanel_error(_("Command could not started. "
+						"Pipe creation failed.\n%s"),
+					g_strerror(errno));
+			/* Closing fd = -1 fails silently */
+			close(chld_in[0]);
+			close(chld_in[1]);
+			close(chld_out[0]);
+			close(chld_out[1]);
+			close(chld_err[0]);
+			close(chld_err[1]);
+			close(chld_status[0]);
+			close(chld_status[1]);
+			return NULL; /* Pipe error */
+		}
+
 	debug_print(_("Forking child and grandchild.\n"));
 
-	pid_c = fork();
-	if (pid_c == (pid_t) 0) {/* Child */
+	pid = fork();
+	if (pid == (pid_t) 0) {/* Child */
 		if (setpgid(0, 0))
 			perror("setpgid");
 
 		close(ConnectionNumber(gdk_display));
 
-		pid_gc = fork();
+		gch_pid = fork();
 
-		if (pid_gc == 0) {
+		if (gch_pid == 0) {
 			if (setpgid(0, getppid()))
 				perror("setpgid");
-			if (action_type & 
-			   (ACTION_PIPE_IN | ACTION_OPEN_IN | ACTION_HIDE_IN)) {
-			close(fileno(stdin));
-			dup  (chld_in[0]);
+			if (sync) {
+				if (action_type & 
+						(ACTION_PIPE_IN | 
+						 ACTION_OPEN_IN | 
+						 ACTION_HIDE_IN)) {
+					close(fileno(stdin));
+					dup  (chld_in[0]);
+				}
+				close(chld_in[0]);
+				close(chld_in[1]);
+
+				close(fileno(stdout));
+				dup  (chld_out[1]);
+				close(chld_out[0]);
+				close(chld_out[1]);
+
+				close(fileno(stderr));
+				dup  (chld_err[1]);
+				close(chld_err[0]);
+				close(chld_err[1]);
 			}
-			close(chld_in[0]);
-			close(chld_in[1]);
-
-			close(fileno(stdout));
-			dup  (chld_out[1]);
-			close(chld_out[0]);
-			close(chld_out[1]);
-
-			close(fileno(stderr));
-			dup  (chld_err[1]);
-			close(chld_err[0]);
-			close(chld_err[1]);
 
 			cmdline[0] = "sh";
 			cmdline[1] = "-c";
@@ -1301,33 +1317,41 @@ ChildInfo *fork_child(gchar *cmd,
 			perror("execvp");
 
 			_exit(1);
-		} else if (pid_gc < (pid_t) 0) {/* Fork erro */
-			write(chld_status[1], "1\n", 2);
+		} else if (gch_pid < (pid_t) 0) {/* Fork error */
+			if (sync)
+				write(chld_status[1], "1\n", 2);
 			perror("fork");
 			_exit(1);
 		} else {/* Child */
-			close(chld_in[0]);
-			close(chld_in[1]);
-			close(chld_out[0]);
-			close(chld_out[1]);
-			close(chld_err[0]);
-			close(chld_err[1]);
+			if (sync) {
+				close(chld_in[0]);
+				close(chld_in[1]);
+				close(chld_out[0]);
+				close(chld_out[1]);
+				close(chld_err[0]);
+				close(chld_err[1]);
+				close(chld_status[0]);
+			}
 
-			close(chld_status[0]);
 			debug_print(_("Child: Waiting for grandchild\n"));
-			waitpid(pid_gc, NULL, 0);
+			waitpid(gch_pid, NULL, 0);
 			debug_print(_("Child: grandchild ended\n"));
-			write(chld_status[1], "0\n", 2);
-			close(chld_status[1]);
+			if (sync) {
+				write(chld_status[1], "0\n", 2);
+				close(chld_status[1]);
+			}
 			_exit(0);
 		}
-	} else if (pid_c < (pid_t) 0) {/* Fork error */
+	} else if (pid < (pid_t) 0) {/* Fork error */
 		alertpanel_error(_("Could not fork to execute the following "
 				   "command:\n%s\n%s"), 
 				 cmd, g_strerror(errno));
 		return NULL; 
 	}
 	/* Parent */
+
+	if (!sync) 
+		return NULL;
 
 	close(chld_in[0]);
 	if (!(action_type & (ACTION_PIPE_IN | ACTION_OPEN_IN | ACTION_HIDE_IN)))
@@ -1340,7 +1364,7 @@ ChildInfo *fork_child(gchar *cmd,
 
 	child_info->children = children;
 	
-	child_info->pid      = pid_c;
+	child_info->pid      = pid;
 	child_info->cmd      = g_strdup(cmd);
 	child_info->type     = action_type;
 	child_info->new_out  = FALSE;

@@ -1,8 +1,17 @@
+2002-06-10 [melvin]	0.7.6claws36
+
+	* README.claws
+		Added a hint to ac/README in cvs instructions.
+
+	* src/prefs_actions.c
+		Made it possible to use a more elaborate command line
+		for asynchronous actions, too.
+
 2002-06-10 [melvin]	0.7.6claws35
 	
 	* src/prefs_actions.c
-		Make it possible to use a more elaborate command line
-		(e.g. |foo|bar|cat>there;echo Done|)
+		Made it possible to use a more elaborate command line
+		(e.g. |foo|bar|cat>there;echo Done|).
 		Corrected error message when calling %f, %F and %p commands
 		from the compose window.
 
