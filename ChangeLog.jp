@@ -1,9 +1,19 @@
+2002-05-10
+
+	* src/folderview.c
+	  src/prefs_common.[ch]
+	  src/summaryview.c: ニュースグループ名を簡略表示する最小の文字数
+	  を指定するオプションを追加。
+
 2002-05-09
 
 	* src/folderview.c: folderview_check_new(): 選択できないフォルダを
 	  スキップ。
 	* src/summaryview.c: コンテキストメニューに「振り分けルールを作成」
 	  を追加。
+	* src/imap.c: コードの整理。
+	  imap_scan_tree_recursive(): 各呼び出し時にパス区切りを取得。
+	  imap_get_path_separator(): 新規。
 
 2002-05-08
 

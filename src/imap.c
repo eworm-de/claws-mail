@@ -80,8 +80,7 @@ static void imap_folder_init		(Folder		*folder,
 static IMAPSession *imap_session_get	(Folder		*folder);
 
 static gint imap_scan_tree_recursive	(IMAPSession	*session,
-					 FolderItem	*item,
-					 IMAPNameSpace	*namespace);
+					 FolderItem	*item);
 static GSList *imap_parse_list		(IMAPSession	*session,
 					 const gchar	*real_path);
 
@@ -151,6 +150,8 @@ static gint imap_status			(IMAPSession	*session,
 static void imap_parse_namespace		(IMAPSession	*session,
 						 IMAPFolder	*folder);
 static IMAPNameSpace *imap_find_namespace	(IMAPFolder	*folder,
+						 const gchar	*path);
+static gchar imap_get_path_separator		(IMAPFolder	*folder,
 						 const gchar	*path);
 static gchar *imap_get_real_path		(IMAPFolder	*folder,
 						 const gchar	*path);
@@ -267,6 +268,7 @@ static gchar *imap_locale_to_modified_utf7	(const gchar	*from);
 
 static gboolean imap_rename_folder_func		(GNode		*node,
 						 gpointer	 data);
+
 
 Folder *imap_folder_new(const gchar *name, const gchar *path)
 {
@@ -974,7 +976,6 @@ void imap_scan_tree(Folder *folder)
 	IMAPFolder *imapfolder = IMAP_FOLDER(folder);
 	FolderItem *item;
 	IMAPSession *session;
-	IMAPNameSpace *namespace = NULL;
 	gchar *root_folder = NULL;
 
 	g_return_if_fail(folder != NULL);
@@ -983,13 +984,15 @@ void imap_scan_tree(Folder *folder)
 	session = imap_session_get(folder);
 	if (!session) return;
 
-	if (imapfolder->ns_personal && imapfolder->ns_personal->data)
-		namespace = (IMAPNameSpace *)imapfolder->ns_personal->data;
-
 	if (folder->account->imap_dir && *folder->account->imap_dir) {
 		gchar *imap_dir;
+		IMAPNameSpace *namespace = NULL;
+
 		Xstrdup_a(imap_dir, folder->account->imap_dir, return);
 		strtailchomp(imap_dir, '/');
+
+		if (imapfolder->ns_personal && imapfolder->ns_personal->data)
+			namespace = (IMAPNameSpace *)imapfolder->ns_personal->data;
 		root_folder = g_strconcat
 			(namespace && namespace->name ? namespace->name : "",
 			 imap_dir, NULL);
@@ -1006,13 +1009,12 @@ void imap_scan_tree(Folder *folder)
 	folder->node = g_node_new(item);
 	g_free(root_folder);
 
-	imap_scan_tree_recursive(session, item, namespace);
+	imap_scan_tree_recursive(session, item);
 
 	imap_create_missing_folders(folder);
 }
 
-static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item,
-				     IMAPNameSpace *namespace)
+static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 {
 	Folder *folder;
 	IMAPFolder *imapfolder;
@@ -1020,7 +1022,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item,
 	GSList *item_list, *cur;
 	gchar *real_path;
 	gchar *wildcard_path;
-	gchar separator = '/';
+	gchar separator;
 	gchar wildcard[3];
 
 	g_return_val_if_fail(item != NULL, -1);
@@ -1030,8 +1032,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item,
 	folder = FOLDER(item->folder);
 	imapfolder = IMAP_FOLDER(folder);
 
-	if (namespace && namespace->separator)
-		separator = namespace->separator;
+	separator = imap_get_path_separator(imapfolder, item->path);
 
 	if (item->folder->ui_func)
 		item->folder->ui_func(folder, item, folder->ui_func_data);
@@ -1044,9 +1045,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item,
 	} else {
 		wildcard[0] = '%';
 		wildcard[1] = '\0';
-		real_path = g_strdup(namespace && namespace->name &&
-				     strncmp(namespace->name, "INBOX", 5) != 0
-				     ? namespace->name : "");
+		real_path = g_strdup("");
 	}
 
 	Xstrcat_a(wildcard_path, real_path, wildcard,
@@ -1093,7 +1092,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item,
 		if (new_item->no_select == FALSE)
 			imap_scan_folder(folder, new_item);
 		if (new_item->no_sub == FALSE)
-			imap_scan_tree_recursive(session, new_item, namespace);
+			imap_scan_tree_recursive(session, new_item);
 	}
 
 	return IMAP_SUCCESS;
@@ -1255,8 +1254,8 @@ FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 {
 	gchar *dirpath, *imap_path;
 	IMAPSession *session;
-	IMAPNameSpace *namespace;
 	FolderItem *new_item;
+	gchar separator;
 	gchar *new_name;
 	const gchar *p;
 	gint ok;
@@ -1288,11 +1287,9 @@ FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	imap_path = imap_locale_to_modified_utf7(dirpath);
 	Xstrdup_a(new_name, name, {g_free(dirpath); return NULL;});
 	strtailchomp(new_name, '/');
-	namespace = imap_find_namespace(IMAP_FOLDER(folder), imap_path);
-	if (namespace && namespace->separator) {
-		imap_path_separator_subst(imap_path, namespace->separator);
-		subst_char(new_name, '/', namespace->separator);
-	}
+	separator = imap_get_path_separator(IMAP_FOLDER(folder), imap_path);
+	imap_path_separator_subst(imap_path, separator);
+	subst_char(new_name, '/', separator);
 
 	if (strcmp(name, "INBOX") != 0) {
 		GPtrArray *argbuf;
@@ -1357,7 +1354,7 @@ gint imap_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 	gchar *old_cache_dir;
 	gchar *new_cache_dir;
 	IMAPSession *session;
-	IMAPNameSpace *namespace;
+	gchar separator;
 	gint ok;
 	gint exists, recent, unseen;
 	guint32 uid_validity;
@@ -1382,7 +1379,7 @@ gint imap_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 		return -1;
 	}
 
-	namespace = imap_find_namespace(IMAP_FOLDER(folder), item->path);
+	separator = imap_get_path_separator(IMAP_FOLDER(folder), item->path);
 	if (strchr(item->path, G_DIR_SEPARATOR)) {
 		dirpath = g_dirname(item->path);
 		newpath = g_strconcat(dirpath, G_DIR_SEPARATOR_S, name, NULL);
@@ -1391,8 +1388,7 @@ gint imap_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 		newpath = g_strdup(name);
 
 	real_newpath = imap_locale_to_modified_utf7(newpath);
-	if (namespace && namespace->separator)
-		imap_path_separator_subst(real_newpath, namespace->separator);
+	imap_path_separator_subst(real_newpath, separator);
 
 	ok = imap_cmd_rename(SESSION(session)->sock, real_oldpath, real_newpath);
 	statusbar_pop_all();
@@ -1744,9 +1740,11 @@ static IMAPNameSpace *imap_find_namespace_from_list(GList *ns_list,
 						    const gchar *path)
 {
 	IMAPNameSpace *namespace = NULL;
-	gchar *name;
+	gchar *tmp_path, *name;
 
-	g_return_val_if_fail(path != NULL, NULL);
+	if (!path) path = "";
+
+	Xstrcat_a(tmp_path, path, "/", return NULL);
 
 	for (; ns_list != NULL; ns_list = ns_list->next) {
 		IMAPNameSpace *tmp_ns = ns_list->data;
@@ -1754,7 +1752,7 @@ static IMAPNameSpace *imap_find_namespace_from_list(GList *ns_list,
 		Xstrdup_a(name, tmp_ns->name, return namespace);
 		if (tmp_ns->separator && tmp_ns->separator != '/')
 			subst_char(name, tmp_ns->separator, '/');
-		if (strncmp(path, name, strlen(name)) == 0)
+		if (strncmp(tmp_path, name, strlen(name)) == 0)
 			namespace = tmp_ns;
 	}
 
@@ -1766,6 +1764,8 @@ static IMAPNameSpace *imap_find_namespace(IMAPFolder *folder,
 {
 	IMAPNameSpace *namespace;
 
+	g_return_val_if_fail(folder != NULL, NULL);
+
 	namespace = imap_find_namespace_from_list(folder->ns_personal, path);
 	if (namespace) return namespace;
 	namespace = imap_find_namespace_from_list(folder->ns_others, path);
@@ -1776,18 +1776,29 @@ static IMAPNameSpace *imap_find_namespace(IMAPFolder *folder,
 	return NULL;
 }
 
+static gchar imap_get_path_separator(IMAPFolder *folder, const gchar *path)
+{
+	IMAPNameSpace *namespace;
+	gchar separator = '/';
+
+	namespace = imap_find_namespace(folder, path);
+	if (namespace && namespace->separator)
+		separator = namespace->separator;
+
+	return separator;
+}
+
 static gchar *imap_get_real_path(IMAPFolder *folder, const gchar *path)
 {
 	gchar *real_path;
-	IMAPNameSpace *namespace;
+	gchar separator;
 
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(path != NULL, NULL);
 
 	real_path = imap_locale_to_modified_utf7(path);
-	namespace = imap_find_namespace(folder, path);
-	if (namespace && namespace->separator)
-		imap_path_separator_subst(real_path, namespace->separator);
+	separator = imap_get_path_separator(folder, path);
+	imap_path_separator_subst(real_path, separator);
 
 	return real_path;
 }

@@ -165,6 +165,9 @@ static struct Display {
 
 	GtkWidget *chkbtn_folder_unread;
 	GtkWidget *chkbtn_display_img;
+	GtkWidget *entry_ng_abbrev_len;
+	GtkWidget *spinbtn_ng_abbrev_len;
+	GtkObject *spinbtn_ng_abbrev_len_adj;
 
 	GtkWidget *chkbtn_transhdr;
 
@@ -173,7 +176,6 @@ static struct Display {
 	GtkWidget *chkbtn_useaddrbook;
 	GtkWidget *chkbtn_expand_thread;
 	GtkWidget *chkbtn_bold_unread;
-
 	GtkWidget *entry_datefmt;
 } display;
 
@@ -472,6 +474,10 @@ static PrefParam param[] = {
 	 &prefs_common.display_img, P_BOOL,
 	 &display.chkbtn_display_img,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"newsgroup_abbrev_len", "16",
+	 &prefs_common.ng_abbrev_len, P_INT,
+	 &display.spinbtn_ng_abbrev_len,
+	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 
 	{"translate_header", "TRUE", &prefs_common.trans_hdr, P_BOOL,
 	 &display.chkbtn_transhdr,
@@ -2049,9 +2055,13 @@ static void prefs_display_create(void)
 	GtkWidget *label_textfont;
 	GtkWidget *entry_textfont;
 	GtkWidget *button_textfont;
-	GtkWidget *chkbtn_folder_unread;
 	GtkWidget *chkbtn_display_img;
 	GtkWidget *chkbtn_transhdr;
+	GtkWidget *chkbtn_folder_unread;
+	GtkWidget *hbox1;
+	GtkWidget *label_ng_abbrev;
+	GtkWidget *spinbtn_ng_abbrev_len;
+	GtkObject *spinbtn_ng_abbrev_len_adj;
 	GtkWidget *frame_summary;
 	GtkWidget *vbox2;
 	GtkWidget *chkbtn_swapfrom;
@@ -2060,7 +2070,6 @@ static void prefs_display_create(void)
 	GtkWidget *chkbtn_expand_thread;
 	GtkWidget *chkbtn_bold_unread;
 	GtkWidget *vbox3;
-	GtkWidget *hbox1;
 	GtkWidget *label_datefmt;
 	GtkWidget *button_datefmt;
 	GtkWidget *entry_datefmt;
@@ -2171,6 +2180,29 @@ static void prefs_display_create(void)
 
 	PACK_CHECK_BUTTON (vbox2, chkbtn_display_img,
 			   _("Automatically display images"));
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
+
+	label_ng_abbrev = gtk_label_new
+		(_("Abbreviate newsgroups longer than"));
+	gtk_widget_show (label_ng_abbrev);
+	gtk_box_pack_start (GTK_BOX (hbox1), label_ng_abbrev, FALSE, FALSE, 0);
+
+	spinbtn_ng_abbrev_len_adj = gtk_adjustment_new (16, 0, 999, 1, 10, 10);
+	spinbtn_ng_abbrev_len = gtk_spin_button_new
+		(GTK_ADJUSTMENT (spinbtn_ng_abbrev_len_adj), 1, 0);
+	gtk_widget_show (spinbtn_ng_abbrev_len);
+	gtk_box_pack_start (GTK_BOX (hbox1), spinbtn_ng_abbrev_len,
+			    FALSE, FALSE, 0);
+	gtk_widget_set_usize (spinbtn_ng_abbrev_len, 56, -1);
+	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_ng_abbrev_len),
+				     TRUE);
+
+	label_ng_abbrev = gtk_label_new
+		(_("letters"));
+	gtk_widget_show (label_ng_abbrev);
+	gtk_box_pack_start (GTK_BOX (hbox1), label_ng_abbrev, FALSE, FALSE, 0);
 
 	/* ---- Summary ---- */
 
@@ -2233,9 +2265,11 @@ static void prefs_display_create(void)
 	display.entry_textfont	= entry_textfont;
 	display.button_textfont	= button_textfont;
 
-	display.chkbtn_folder_unread = chkbtn_folder_unread;
 	display.chkbtn_display_img   = chkbtn_display_img;
-	display.chkbtn_transhdr   = chkbtn_transhdr;
+	display.chkbtn_transhdr           = chkbtn_transhdr;
+	display.chkbtn_folder_unread      = chkbtn_folder_unread;
+	display.spinbtn_ng_abbrev_len     = spinbtn_ng_abbrev_len;
+	display.spinbtn_ng_abbrev_len_adj = spinbtn_ng_abbrev_len_adj;
 
 	display.chkbtn_swapfrom      = chkbtn_swapfrom;
 	display.chkbtn_hscrollbar    = chkbtn_hscrollbar;

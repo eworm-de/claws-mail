@@ -1,7 +1,17 @@
+2002-05-10
+
+	* src/folderview.c
+	  src/prefs_common.[ch]
+	  src/summaryview.c: added an option to specify the minimum length
+	  for abbreviated newsgroups name.
+
 2002-05-09
 
 	* src/folderview.c: folderview_check_new(): skip unselectable folders.
 	* src/summaryview.c: added 'Create filter rule' to the context menu.
+	* src/imap.c: some code cleanups.
+	  imap_scan_tree_recursive(): get path separator for each calls.
+	  imap_get_path_separator(): new.
 
 2002-05-08
 

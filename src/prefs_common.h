@@ -114,6 +114,7 @@ struct _PrefsCommon
 	gchar *smallfont;
 	gboolean display_folder_unread;
 	gboolean display_img;
+	gint ng_abbrev_len;
 	ToolbarStyle toolbar_style;
 	gboolean show_statusbar;
 	gboolean trans_hdr;

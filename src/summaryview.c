@@ -1709,7 +1709,8 @@ static void summary_status_show(SummaryView *summaryview)
 		n_selected++;
 	}
 
-	if (summaryview->folder_item->folder->type == F_NEWS) {
+	if (summaryview->folder_item->folder->type == F_NEWS &&
+	    prefs_common.ng_abbrev_len < strlen(summaryview->folder_item->path)) {
 		gchar *group;
 		group = get_abbrev_newsgroup_name
 			(g_basename(summaryview->folder_item->path));
