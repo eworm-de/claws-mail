@@ -50,11 +50,14 @@ gchar *procheader_get_unfolded_line	(gchar		*buf,
 					 gint		 len,
 					 FILE		*fp);
 
+#if 0
 GSList *procheader_get_header_list_from_file	(const gchar	*file);
 GSList *procheader_get_header_list		(FILE		*fp);
 void procheader_header_list_destroy		(GSList		*hlist);
 
 GPtrArray *procheader_get_header_array		(FILE		*fp);
+#endif
+
 GPtrArray *procheader_get_header_array_asis	(FILE		*fp);
 void procheader_header_array_destroy		(GPtrArray	*harray);
 void procheader_header_free			(Header		*header);
@@ -72,10 +75,6 @@ MsgInfo *procheader_parse_str		(const gchar	*str,
 					 gboolean	 full,
 					 gboolean	 decrypted);
 MsgInfo *procheader_parse_stream	(FILE		*fp,
-					 MsgFlags	 flags,
-					 gboolean	 full,
-					 gboolean	 decrypted);
-MsgInfo *procheader_file_parse		(FILE		*fp,
 					 MsgFlags	 flags,
 					 gboolean	 full,
 					 gboolean	 decrypted);
@@ -97,7 +96,5 @@ Header * procheader_parse_header        (gchar * buf);
 gboolean procheader_headername_equal    (char * hdr1, char * hdr2);
 void procheader_header_free             (Header * header);
 
-/* Added by Mel Hadasht on 27 Aug 2001 */
-/* Get a header from msginfo */
-gint get_header_from_msginfo(MsgInfo *msginfo, gchar *buf, gint len,gchar *header);
+gint procheader_get_header_from_msginfo(MsgInfo *msginfo, gchar *buf, gint len,gchar *header);
 #endif /* __PROCHEADER_H__ */

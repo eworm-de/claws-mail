@@ -1,3 +1,19 @@
+2003-10-13 [hoa]	0.9.6claws18
+
+	* src/account.c
+	* src/compose.c
+	* src/messageview.c
+	* src/procheader.c
+	* src/procheader.h
+		rename get_header_from_msginfo() into
+		procheader_get_header_from_msginfo() so that we have a
+		coherent exported naming.
+		avoid parsing of header contained in a string via
+		a newly written temporary file.
+
+	Patch submitted by Simon 'corecode' Schubert
+	        <corecode@corecode.ath.cx>
+
 2003-10-12 [hoa]	0.9.6claws17
 
 	* src/filtering.c

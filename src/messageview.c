@@ -450,7 +450,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	else
 		to = msginfo->returnreceiptto;
 
-	ok = get_header_from_msginfo(msginfo, buf, sizeof(buf),
+	ok = procheader_get_header_from_msginfo(msginfo, buf, sizeof(buf),
 				"Return-Path:");
 	if (ok == 0) {
 		gchar *to_addr = g_strdup(to);

@@ -1033,7 +1033,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 	if (!account && prefs_common.forward_account_autosel) {
 		gchar cc[BUFFSIZE];
-		if (!get_header_from_msginfo(msginfo,cc,sizeof(cc),"CC:")){ /* Found a CC header */
+		if (!procheader_get_header_from_msginfo(msginfo,cc,sizeof(cc),"CC:")){ /* Found a CC header */
 		        extract_address(cc);
 		        account = account_find_from_address(cc);
                 }
@@ -1221,22 +1221,22 @@ void compose_reedit(MsgInfo *msginfo)
 		gint id;
 
 		/* Select Account from queue headers */
-		if (!get_header_from_msginfo(msginfo, queueheader_buf, 
+		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 					     sizeof(queueheader_buf), "X-Sylpheed-Account-Id:")) {
 			id = atoi(&queueheader_buf[22]);
 			account = account_find_from_id(id);
 		}
-		if (!account && !get_header_from_msginfo(msginfo, queueheader_buf, 
+		if (!account && !procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 					     sizeof(queueheader_buf), "NAID:")) {
 			id = atoi(&queueheader_buf[5]);
 			account = account_find_from_id(id);
 		}
-		if (!account && !get_header_from_msginfo(msginfo, queueheader_buf, 
+		if (!account && !procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 		                                    sizeof(queueheader_buf), "MAID:")) {
 			id = atoi(&queueheader_buf[5]);
 			account = account_find_from_id(id);
 		}
-		if (!account && !get_header_from_msginfo(msginfo, queueheader_buf, 
+		if (!account && !procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 		                                                sizeof(queueheader_buf), "S:")) {
 			account = account_find_from_address(queueheader_buf);
 		}
@@ -1245,7 +1245,7 @@ void compose_reedit(MsgInfo *msginfo)
 
 	if (!account && prefs_common.reedit_account_autosel) {
                	gchar from[BUFFSIZE];
-		if (!get_header_from_msginfo(msginfo, from, sizeof(from), "FROM:")){
+		if (!procheader_get_header_from_msginfo(msginfo, from, sizeof(from), "FROM:")){
 		        extract_address(from);
 		        account = account_find_from_address(from);
                 }
@@ -1261,7 +1261,7 @@ void compose_reedit(MsgInfo *msginfo)
 		gchar queueheader_buf[BUFFSIZE];
 
 		/* Set message save folder */
-		if (!get_header_from_msginfo(msginfo, queueheader_buf, sizeof(queueheader_buf), "SCF:")) {
+		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, sizeof(queueheader_buf), "SCF:")) {
 			gint startpos = 0;
 
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), TRUE);
@@ -3280,7 +3280,7 @@ static gint compose_redirect_write_to_file(Compose *compose, const gchar *file)
 		g_warning("can't change file mode\n");
 	}
 
-	while (procheader_get_unfolded_line(buf, sizeof(buf), fp)) {
+	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1) {
 		/* should filter returnpath, delivered-to */
 		if (g_strncasecmp(buf, "Return-Path:",
 				   strlen("Return-Path:")) == 0 ||

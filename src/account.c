@@ -1014,7 +1014,7 @@ PrefsAccount *account_get_reply_account(MsgInfo *msginfo, gboolean reply_autosel
 		}
 		if (!account) {
 			gchar cc[BUFFSIZE];
-			if (!get_header_from_msginfo(msginfo, cc, sizeof(cc), "CC:")) { /* Found a CC header */
+			if (!procheader_get_header_from_msginfo(msginfo, cc, sizeof(cc), "CC:")) { /* Found a CC header */
 				extract_address(cc);
 				account = account_find_from_address(cc);
 			}        
