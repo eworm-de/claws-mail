@@ -1138,7 +1138,6 @@ gchar *get_abbrev_newsgroup_name(const gchar *group)
 		if (strchr(p, '.')) {
 			*ap++ = *p++;
 			while (*p != '.') p++;
-			*ap++ = *p++;
 		} else {
 			strcpy(ap, p);
 			return abbrev_group;

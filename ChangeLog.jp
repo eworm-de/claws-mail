@@ -1,3 +1,19 @@
+2002-03-26
+
+	* src/undo.c: undo_insert_text_cb(): テキストの長さが大きいときに
+	  クラッシュするバグを修正。
+	* src/gtkstext.c: gtk_stext_button_press(): セレクションが増大する
+	  のを防ぐために、中ボタンでペーストした後セレクションをキャンセル
+	  するようにした。
+
+2002-03-25
+
+	* src/folderview.c:
+	  folderview_rename_folder_cb()
+	  folderview_delete_folder_cb(): 対象フォルダがデフォルトのメール
+	  ボックス内にあるときだけ振り分けルールを修正するようにした。
+	* src/utils.c: get_abbrev_newsgroup_name(): 冗長な行を削除。
+
 2002-03-23
 
 	* src/compose.c

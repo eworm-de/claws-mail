@@ -1,3 +1,8 @@
+2002-03-26 [paul]	0.7.4claws46
+
+	* sync with 0.7.4cvs19
+		see ChangeLog entries 2002-03-25 and 2002-03-26
+
 2002-03-25 [hoa]	0.7.4claws45
 
 	* src/matcher.c
@@ -31,7 +36,7 @@
 	  src/quote_fmt_parse.y
 		add Last name (%L) placeholder for quoting. 
 		patch submitted by Thorsten Thielen 
-		<thth@user.sourceforge.net>
+		<thth@users.sourceforge.net>
 
 2002-03-25 [paul]	0.7.4claws41
 

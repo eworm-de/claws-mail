@@ -30,10 +30,6 @@
  * This modification is based on the GtkText of GTK 1.2.10
  */
 
-/* SYLPHEED:
- * comment here
- */
-
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
@@ -1933,6 +1929,12 @@ gtk_stext_button_press (GtkWidget      *widget,
 	  
 	  gtk_selection_convert (widget, GDK_SELECTION_PRIMARY,
 				 ctext_atom, event->time);
+
+	  /* SYLPHEED: cancel current selection after pasting */
+	  gtk_stext_set_selection (GTK_EDITABLE(text),
+				  text->cursor_mark.index,
+				  text->cursor_mark.index);
+	  editable->has_selection = FALSE;
 	}
       else
 	{

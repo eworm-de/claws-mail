@@ -524,8 +524,9 @@ void undo_insert_text_cb(GtkEditable *editable, gchar *new_text,
 	if (MB_CUR_MAX > 1) {
 		wchar_t *wstr;
 
-		Xalloca(wstr, sizeof(wchar_t) * (new_text_length + 1), return);
+		wstr = g_new(wchar_t, new_text_length + 1);
 		wlen = mbstowcs(wstr, text_to_insert, new_text_length + 1);
+		g_free(wstr);
 		if (wlen < 0) return;
 	} else
 		wlen = new_text_length;

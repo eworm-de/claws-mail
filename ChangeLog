@@ -1,3 +1,19 @@
+2002-03-26
+
+	* src/undo.c: undo_insert_text_cb(): fixed a crash bug if the text
+	  length is large.
+	* src/gtkstext.c: gtk_stext_button_press(): cancel current selection
+	  after pasting with middle button to prevent the selection growth.
+
+2002-03-25
+
+	* src/folderview.c:
+	  folderview_rename_folder_cb()
+	  folderview_delete_folder_cb(): modify filter rules only if the
+	  target folder is in the default mailbox.
+	* src/utils.c: get_abbrev_newsgroup_name(): removed a redundant
+	  line.
+
 2002-03-23
 
 	* src/compose.c
