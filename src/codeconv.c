@@ -374,8 +374,12 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 			     &actual_codeset, dest_codeset)
 	    == 0)
 		return buf;
-	else
+	else {
+		g_warning("code conversion from %s to %s failed\n",
+			  codesets && codesets[0] ? codesets[0] : "(unknown)",
+			  dest_codeset);
 		return g_strdup(inbuf);
+	}
 #else /* !HAVE_LIBJCONV */
 	if (src_codeset) {
 		if (!strcasecmp(src_codeset, CS_EUC_JP) ||

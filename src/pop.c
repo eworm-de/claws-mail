@@ -40,21 +40,20 @@
 
 #define LOOKUP_NEXT_MSG() \
 	for (;;) { \
-		gint size = state->sizes[state->cur_msg]; \
- \
-		if (size == 0 || \
+		gint size = state->msg[state->cur_msg].size; \
+		gboolean size_limit_over = \
 		    (state->ac_prefs->enable_size_limit && \
 		     state->ac_prefs->size_limit > 0 && \
-		     size > state->ac_prefs->size_limit * 1024)) { \
-			log_print(_("Skipping message %d\n"), state->cur_msg); \
-			if (size > 0) { \
+		     size > state->ac_prefs->size_limit * 1024); \
+ \
+		if (size_limit_over) \
+			log_print(_("POP3: Skipping message %d (%d bytes)\n"), \
+				  state->cur_msg, size); \
+ \
+		if (size == 0 || state->msg[state->cur_msg].received || \
+		    size_limit_over) { \
+			if (size > 0) \
 				state->cur_total_bytes += size; \
-				state->cur_total_num++; \
-				if (state->new_id_list) { \
-					state->id_list = g_slist_append(state->id_list, state->new_id_list->data); \
-					state->new_id_list = g_slist_remove(state->new_id_list, state->new_id_list->data); \
-				} \
-			} \
 			if (state->cur_msg == state->count) \
 				return POP3_LOGOUT_SEND; \
 			else \
@@ -220,13 +219,10 @@ gint pop3_getrange_stat_recv(SockInfo *sock, gpointer data)
 			if (state->count == 0)
 				return POP3_LOGOUT_SEND;
 			else {
+				state->msg = g_new0
+					(Pop3MsgInfo, state->count + 1);
 				state->cur_msg = 1;
-				state->new = state->count;
-				if (state->ac_prefs->rmmail ||
-				    state->ac_prefs->getall)
-					return POP3_GETSIZE_LIST_SEND;
-				else
-					return POP3_GETRANGE_UIDL_SEND;
+				return POP3_GETRANGE_UIDL_SEND;
 			}
 		}
 	} else if (ok == PS_PROTOCOL)
@@ -261,7 +257,6 @@ gint pop3_getrange_last_recv(SockInfo *sock, gpointer data)
 			if (state->count == last)
 				return POP3_LOGOUT_SEND;
 			else {
-				state->new = state->count - last;
 				state->cur_msg = last + 1;
 				return POP3_GETSIZE_LIST_SEND;
 			}
@@ -285,12 +280,15 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 	gboolean new = FALSE;
+	gboolean get_all = FALSE;
 	gchar buf[POPBUFSIZE];
 	gchar id[IDLEN + 1];
 
 	if (pop3_ok(sock, NULL) != PS_SUCCESS) return POP3_GETRANGE_LAST_SEND;
 
 	if (!state->id_table) new = TRUE;
+	if (state->ac_prefs->rmmail || state->ac_prefs->getall)
+		get_all = TRUE;
 
 	while (sock_gets(sock, buf, sizeof(buf)) >= 0) {
 		gint num;
@@ -298,20 +296,21 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 		if (buf[0] == '.') break;
 		if (sscanf(buf, "%d %" Xstr(IDLEN) "s", &num, id) != 2)
 			continue;
+		if (num <= 0 || num > state->count) continue;
 
-		if (new == FALSE &&
-		    g_hash_table_lookup(state->id_table, id) == NULL) {
-			state->new = state->count - num + 1;
-			state->cur_msg = num;
-			new = TRUE;
+		state->msg[num].uidl = g_strdup(id);
+
+		if (state->id_table) {
+			if (!get_all &&
+			    g_hash_table_lookup(state->id_table, id) != NULL)
+				state->msg[num].received = TRUE;
+			else {
+				if (new == FALSE) {
+					state->cur_msg = num;
+					new = TRUE;
+				}
+			}
 		}
-
-		if (new == TRUE)
-			state->new_id_list = g_slist_append
-				(state->new_id_list, g_strdup(id));
-		else
-			state->id_list = g_slist_append
-				(state->id_list, g_strdup(id));
 	}
 
 	if (new == TRUE)
@@ -338,7 +337,6 @@ gint pop3_getsize_list_recv(SockInfo *sock, gpointer data)
 
 	if (pop3_ok(sock, NULL) != PS_SUCCESS) return POP3_LOGOUT_SEND;
 
-	state->sizes = g_new0(gint, state->count + 1);
 	state->cur_total_bytes = 0;
 
 	while (sock_gets(sock, buf, sizeof(buf)) >= 0) {
@@ -349,7 +347,7 @@ gint pop3_getsize_list_recv(SockInfo *sock, gpointer data)
 			return -1;
 
 		if (num > 0 && num <= state->count)
-			state->sizes[num] = size;
+			state->msg[num].size = size;
 		if (num > 0 && num < state->cur_msg)
 			state->cur_total_bytes += size;
 	}
@@ -400,7 +398,7 @@ gint pop3_top_recv(SockInfo *sock, gpointer data)
 	   note: overwrites first line  --> this is dirty */
 	if ( (fp = fopen(filename, "r+")) != NULL ) {
 		gchar *buf = g_strdup_printf("%s%i", SIZE_HEADER, 
-					     state->sizes[state->cur_msg]);
+					     state->msg[state->cur_msg].size);
 	
 		if (change_file_mode_rw(fp, filename) == 0) 
 			fprintf(fp, "%s\n", buf);
@@ -446,19 +444,13 @@ gint pop3_retr_recv(SockInfo *sock, gpointer data)
 			return -1;
 		}
 
-		state->cur_total_bytes += state->sizes[state->cur_msg];
+		state->cur_total_bytes += state->msg[state->cur_msg].size;
 		state->cur_total_num++;
 
 		if (drop_ok == 0 && state->ac_prefs->rmmail)
 			return POP3_DELETE_SEND;
 
-		if (state->new_id_list) {
-			state->id_list = g_slist_append
-				(state->id_list, state->new_id_list->data);
-			state->new_id_list =
-				g_slist_remove(state->new_id_list,
-					       state->new_id_list->data);
-		}
+		state->msg[state->cur_msg].received = TRUE;
 
 		if (state->cur_msg < state->count) {
 			state->cur_msg++;
@@ -489,7 +481,7 @@ gint pop3_delete_recv(SockInfo *sock, gpointer data)
 	gint ok;
 
 	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
-
+		state->msg[state->cur_msg].deleted = TRUE;
 		if (pop3_delete_header(state) == TRUE) 
 			return POP3_DELETE_SEND;
 

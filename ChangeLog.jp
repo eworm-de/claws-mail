@@ -1,8 +1,22 @@
+2002-02-27
+
+	* src/inc.c: get_spool(): copy_mbox() に失敗したとき mbox をロック
+	  解除していなかったバグを修正(Alexander Kabaev さん thanks)。
+
+2002-02-26
+
+	* src/inc.[ch]
+	  src/pop.[ch]: UIDL 管理のリファクタリング。
+	  メッセージの情報を Pop3MsgInfo 構造体の配列に保持し、未取得
+	  メッセージを完全に調べるようにした。
+
 2002-02-26
 
 	* src/filesel.c
 	  src/foldersel.c
 	  src/mainwindow.c: ウィンドウ/ダイアログの WMCLASS をセット。
+	* src/codeconv.c: conv_codeset_strdup(): jconv_alloc_conv() が
+	  失敗したら元の文字列を返すようにした。
 
 2002-02-25
 

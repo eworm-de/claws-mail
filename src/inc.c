@@ -389,8 +389,6 @@ static Pop3State *inc_pop3_state_new(PrefsAccount *account)
 	state->ac_prefs = account;
 	state->folder_table = g_hash_table_new(NULL, NULL);
 	state->id_table = inc_get_uidl_table(account);
-	state->id_list = NULL;
-	state->new_id_list = NULL;
 	state->inc_state = INC_SUCCESS;
 
 	return state;
@@ -398,17 +396,18 @@ static Pop3State *inc_pop3_state_new(PrefsAccount *account)
 
 static void inc_pop3_state_destroy(Pop3State *state)
 {
+	gint n;
+
 	g_hash_table_destroy(state->folder_table);
-	g_free(state->sizes);
+
+	for (n = 1; n <= state->count; n++)
+		g_free(state->msg[n].uidl);
+	g_free(state->msg);
 
 	if (state->id_table) {
 		hash_free_strings(state->id_table);
 		g_hash_table_destroy(state->id_table);
 	}
-	slist_free_strings(state->id_list);
-	slist_free_strings(state->new_id_list);
-	g_slist_free(state->id_list);
-	g_slist_free(state->new_id_list);
 
 	g_free(state->greeting);
 	g_free(state->user);
@@ -766,9 +765,7 @@ static void inc_write_uidl_list(Pop3State *state)
 {
 	gchar *path;
 	FILE *fp;
-	GSList *cur;
-
-	if (!state->id_list) return;
+	gint n;
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl-", state->ac_prefs->recv_server,
@@ -779,14 +776,17 @@ static void inc_write_uidl_list(Pop3State *state)
 		return;
 	}
 
-	for (cur = state->id_list; cur != NULL; cur = cur->next) {
-		if (fputs((gchar *)cur->data, fp) == EOF) {
-			FILE_OP_ERROR(path, "fputs");
-			break;
-		}
-		if (fputc('\n', fp) == EOF) {
-			FILE_OP_ERROR(path, "fputc");
-			break;
+	for (n = 1; n <= state->count; n++) {
+		if (state->msg[n].uidl && state->msg[n].received &&
+		    !state->msg[n].deleted) {
+			if (fputs(state->msg[n].uidl, fp) == EOF) {
+				FILE_OP_ERROR(path, "fputs");
+				break;
+			}
+			if (fputc('\n', fp) == EOF) {
+				FILE_OP_ERROR(path, "fputc");
+				break;
+			}
 		}
 	}
 
@@ -1065,8 +1065,10 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 	g_snprintf(tmp_mbox, sizeof(tmp_mbox), "%s%ctmpmbox%d",
 		   get_rc_dir(), G_DIR_SEPARATOR, (gint)mbox);
 
-	if (copy_mbox(mbox, tmp_mbox) < 0)
+	if (copy_mbox(mbox, tmp_mbox) < 0) {
+		unlock_mbox(mbox, lockfd, LOCK_FLOCK);
 		return -1;
+	}
 
 	debug_print(_("Getting new messages from %s into %s...\n"),
 		    mbox, dest->path);

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 #include <glib.h>
 
 #include "socket.h"
+
+typedef struct _Pop3MsgInfo	Pop3MsgInfo;
 
 typedef enum {
 	POP3_GREETING_RECV,
@@ -52,7 +54,14 @@ typedef enum {
 	N_POP3_PHASE
 } Pop3Phase;
 
-#define MAX_HEADER_LEN  5000
+struct _Pop3MsgInfo
+{
+	gint size;
+	gchar *uidl;
+	guint received : 1;
+	guint deleted  : 1;
+};
+
 #define POPBUFSIZE	512
 #define IDLEN		128
 

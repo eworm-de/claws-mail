@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,12 +85,10 @@ struct _Pop3State
 	gint cur_msg;
 	gint cur_total_num;
 	gint cur_total_bytes;
-	gint *sizes;
 
-	/* UIDL */
+	Pop3MsgInfo *msg;
+
 	GHashTable *id_table;
-	GSList *id_list;
-	GSList *new_id_list;
 
 	gint error_val;
 	IncState inc_state;

@@ -1,8 +1,22 @@
+2002-02-27
+
+	* src/inc.c: get_spool(): fixed a bug that failed to unlock mbox
+	  if copy_mbox() failed (thanks to Alexander Kabaev).
+
+2002-02-26
+
+	* src/inc.[ch]
+	  src/pop.[ch]: refactored the UIDL management.
+	  store the information of messages into the array of Pop3MsgInfo
+	  structure, and do full scanning of not retrieved messages.
+
 2002-02-26
 
 	* src/filesel.c
 	  src/foldersel.c
 	  src/mainwindow.c: set WMCLASS for window/dialog.
+	* src/codeconv.c: conv_codeset_strdup(): return source string
+	  when jconv_alloc_conv() failed.
 
 2002-02-25
 

@@ -1,3 +1,8 @@
+2002-02-27 [paul]	0.7.2claws18
+
+	* sync with sylpheed 0.7.2cvs18
+		see ChangeLog entries 2002-02-26 and 2002-02-27
+
 2002-02-26 [alfons]	0.7.2claws17
 
 	* src/procheader.c
@@ -18,9 +23,9 @@
 		* the checking of plaintext signatures always comes up in 
 		  a popup box
 		* it doesn't work for multipart messages 
-		* the mail headers and first lines of a pgptext signed message 
-		  (e.g. -----BEGIN PGP SIGNED MESSAGE-----\nHash: SHA1)
-		  are not displayed
+		* all lines above "-----BEGIN PGP SIGNED MESSAGE-----\nHash: SHA1",
+		  including the msg headers and these 2 line themselves, are 
+		  not displayed
 
 	* src/mainwindow.c
 		"View/Folder Tree" becomes "View/Separate Folder View"
