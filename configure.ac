@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=10
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws3
+EXTRA_VERSION=claws18
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -370,6 +370,9 @@ AC_ARG_ENABLE(demo-plugin,
 	[  --enable-demo-plugin    Build demo plugin [default=no]],
 	[ac_cv_enable_demo_plugin=$enableval], [ac_cv_enable_demo_plugin=no])
 AM_CONDITIONAL(BUILD_DEMO_PLUGIN, test x"$ac_cv_enable_demo_plugin" = xyes)
+if test x"$ac_cv_enable_demo_plugin" = xyes; then
+	PLUGINS="demo $PLUGINS"
+fi
 
 AC_ARG_ENABLE(spamassassin-plugin,
 	[  --enable-spamassassin-plugin    Build spamassassin plugin [default=no]],
@@ -377,6 +380,7 @@ AC_ARG_ENABLE(spamassassin-plugin,
 AM_CONDITIONAL(BUILD_SPAMASSASSIN_PLUGIN, test x"$ac_cv_enable_spamassassin_plugin" = xyes)
 if test x"$ac_cv_enable_spamassassin_plugin" = xyes; then
 	AC_SPAMASSASSIN
+	PLUGINS="spamassassin $PLUGINS"
 fi
 
 dnl ****************************

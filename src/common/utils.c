@@ -185,13 +185,13 @@ gchar *to_human_readable(off_t size)
 	static gchar str[10];
 
 	if (size < 1024)
-		g_snprintf(str, sizeof(str), "%dB", (gint)size);
+		g_snprintf(str, sizeof(str), _("%dB"), (gint)size);
 	else if (size >> 10 < 1024)
-		g_snprintf(str, sizeof(str), "%.1fKB", (gfloat)size / (1 << 10));
+		g_snprintf(str, sizeof(str), _("%.1fKB"), (gfloat)size / (1 << 10));
 	else if (size >> 20 < 1024)
-		g_snprintf(str, sizeof(str), "%.2fMB", (gfloat)size / (1 << 20));
+		g_snprintf(str, sizeof(str), _("%.2fMB"), (gfloat)size / (1 << 20));
 	else
-		g_snprintf(str, sizeof(str), "%.2fGB", (gfloat)size / (1 << 30));
+		g_snprintf(str, sizeof(str), _("%.2fGB"), (gfloat)size / (1 << 30));
 
 	return str;
 }

@@ -3375,7 +3375,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 {
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
 	IMAPSession *session;
-	gint ok, i, lastuid_old, nummsgs = 0;
+	gint ok, i, lastuid_old, nummsgs = 0, exists, resent, unseen, uid_val;
 	GPtrArray *argbuf;
 	gchar *cmdbuf = NULL;
 	gchar *dir;
@@ -3390,9 +3390,12 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	g_return_val_if_fail(session != NULL, -1);
 
 	ok = imap_select(session, IMAP_FOLDER(folder), item->item.path,
-			 NULL, NULL, NULL, NULL);
+			 &exists, &resent, &unseen, &uid_val);
 	if (ok != IMAP_SUCCESS)
 		return -1;
+
+	if (exists == 0)
+		return 0;
 
 	argbuf = g_ptr_array_new();
 	if(item->lastuid) {

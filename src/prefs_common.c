@@ -107,9 +107,6 @@ static struct Send {
 } p_send;
 
 static struct Compose {
-	GtkWidget *checkbtn_autosig;
-	GtkWidget *entry_sigsep;
-
 	GtkWidget *entry_fw_quotemark;
 	GtkWidget *text_fw_quotefmt;
 
@@ -372,12 +369,6 @@ static PrefParam param[] = {
 	 prefs_common_encoding_set_optmenu},
 
 	/* Compose */
-	{"auto_signature", "TRUE", &prefs_common.auto_sig, P_BOOL,
-	 &compose.checkbtn_autosig,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"signature_separator", "-- ", &prefs_common.sig_sep, P_STRING,
-	 &compose.entry_sigsep, prefs_set_data_from_entry, prefs_set_entry},
-
 	{"auto_ext_editor", "FALSE", &prefs_common.auto_exteditor, P_BOOL,
 	 &compose.checkbtn_autoextedit,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -1873,12 +1864,6 @@ static void prefs_compose_create(void)
 	GtkWidget *vbox2;
 	GtkWidget *hbox1;
 
-	GtkWidget *frame_sig;
-	GtkWidget *vbox_sig;
-	GtkWidget *checkbtn_autosig;
-	GtkWidget *label_sigsep;
-	GtkWidget *entry_sigsep;
-
 	GtkWidget *checkbtn_autoextedit;
 
 	GtkWidget *frame_autosel;
@@ -1921,29 +1906,6 @@ static void prefs_compose_create(void)
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
-
-	PACK_FRAME(vbox1, frame_sig, _("Signature"));
-
-	vbox_sig = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox_sig);
-	gtk_container_add (GTK_CONTAINER (frame_sig), vbox_sig);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_sig), 8);
-
-	PACK_CHECK_BUTTON (vbox_sig, checkbtn_autosig,
-			   _("Insert signature automatically"));
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox_sig), hbox1, TRUE, TRUE, 0);
-	label_sigsep = gtk_label_new (_("Signature separator"));
-	gtk_widget_show (label_sigsep);
-	gtk_box_pack_start (GTK_BOX (hbox1), label_sigsep, FALSE, FALSE, 0);
-
-	entry_sigsep = gtk_entry_new ();
-	gtk_widget_show (entry_sigsep);
-	gtk_box_pack_start (GTK_BOX (hbox1), entry_sigsep, FALSE, FALSE, 0);
-
-	gtk_widget_set_usize (entry_sigsep, 64, -1);
 
         /* Account autoselection */
 	PACK_FRAME(vbox1, frame_autosel, _("Automatic account selection"));
@@ -2064,8 +2026,6 @@ static void prefs_compose_create(void)
 	compose.entry_quotemark  = entry_quotemark;
 	compose.text_quotefmt    = text_quotefmt;
 	*/
-	compose.checkbtn_autosig = checkbtn_autosig;
-	compose.entry_sigsep     = entry_sigsep;
 
 	compose.checkbtn_autoextedit = checkbtn_autoextedit;
 

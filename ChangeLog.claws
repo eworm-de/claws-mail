@@ -1,3 +1,114 @@
+2003-02-17 [jens]       0.8.10claws18
+
+        * src/common/md5.c
+		fixed a compile problem with gcc 3.3
+		works on 2.95.3 too (testet on PPC as it is big endian)
+
+2003-02-17 [paul]	0.8.10claws17
+
+	* sync with 0.8.10cvs13
+		see ChangeLog 2003-02-17
+
+2003-02-17 [paul]	0.8.10claws16
+
+	* sync with 0.8.10cvs12
+		see ChangeLog 2003-02-17
+
+2003-02-16 [match]	0.8.10claws15
+
+	* src/addressbook.c
+		Eliminates reloading of address data when items
+		deleted or added. Applied submitted by
+		Luke Plant <lukeplant@softhome.net>
+
+2003-02-16 [paul]	0.8.10claws14
+
+	* src/news.c
+		when a 'protocol error' is encountered disconnect from
+		the server. This means that the user can carry on viewing
+		other articles and doesn't have to either wait until the
+		server timesout or quit sylpheed.
+		Fixes bug #53 'Unable to read messages in newsgroups, 
+		displayed message doesn't change'
+
+2003-02-15 [christoph]	0.8.10claws13
+
+	* src/imap.c
+		fix bug that stopped scanning of folders when an
+		IMAP folder was empty
+
+	(closes bug 46 stop scan messages in folders after empty folder)
+
+2003-02-15 [paul]
+
+	* tools/Makefile.am
+	  tools/README
+	  tools/freshmeat_search.pl	** NEW FILE **
+	  tools/google_search.pl	** NEW FILE **
+	  	Add 2 Actions scripts which search freshmeat/google
+		for the selected text using the browser configured
+		in sylpheedrc.
+		
+	Note: These scripts are very dependent on the format of the
+	browser command and may not work on every occasion. Testing
+	is welcome. 
+
+2003-02-14 [alfons]	0.8.10claws12
+
+	* src/compose.c
+		fix breakage because of uninitialized account pointer.
+		please verify.
+
+2003-02-14 [paul]	0.8.10claws11
+
+	* src/compose.c
+	  src/prefs_account.[ch]
+	  src/prefs_common.[ch]
+	  	move signature settings to Account Prefs
+
+2003-02-14 [paul]	0.8.10claws10
+
+	* sync with 0.8.10cvs11
+		see ChangeLog 2003-02-14
+
+2003-02-13 [thorsten]	0.8.10claws9
+
+	* src/news.c
+		revert news progressbar (GUI separation)
+
+2003-02-13 [paul]	0.8.10claws8
+
+	* src/compose.c
+		make replies behave correctly, re: RFC 1036, Section 2.2.3,
+		paragraph 1
+
+2003-02-13 [paul]	0.8.10claws7
+
+	* src/compose.[ch]
+	  src/summaryview.c
+	  	fix 'Follow-up and Reply-to' so that it creates a reply to
+		the newsgroup and the sender. If the message has the keyword
+		'poster' in the Followup-To header, all replies go to the
+		sender, re: RFC 1036, Section 2.2.3
+		rename all instances of 'ignore_replyto' to 'to_sender', both
+		were previously used, now we use just one.
+
+2003-02-13 [paul]	0.8.10claws6
+
+	* sync with 0.8.10cvs9
+		see ChangeLog 2003-02-13
+
+2003-02-13 [paul]	0.8.10claws5
+
+	* configure.ac
+		show which plugins are configured in the configure
+		output.
+
+2003-02-12 [thorsten]	0.8.10claws4
+
+	* src/news.c
+		show progress while fetching news headers
+
 2003-02-12 [christoph]	0.8.10claws3
 
 	* configure.ac

@@ -95,11 +95,7 @@ full_read (int fd, unsigned char *buf, int min, int len)
 
 
   for (total = 0; total < min; ) {
-#ifdef WIN32
-    thistime = timeout_read (socketread, fd, buf+total, len-total);
-#else
     thistime = timeout_read (read, fd, buf+total, len-total);
-#endif
 
     if (thistime < 0) {
       return -1;

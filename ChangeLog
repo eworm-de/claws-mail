@@ -1,3 +1,51 @@
+2003-02-17
+
+	* src/colorlabel.c: don't use pixmaps for label color rect but draw
+	  rectangles so we can respect the color map of palette based visuals
+	  (fixes the long time crashes on Solaris - thanks to Alfons
+	  Hoogervorst).
+
+2003-02-17
+
+	* src/procheader.c: procheader_date_parse(): made month string case
+	  insensitive.
+	* src/prefs_filter.c: prefs_filter_close(): fixed the crash when the
+	  selection list is empty.
+
+2003-02-14
+
+	* src/quote_fmt_parse.y: removed gettext translatable strings.
+	* src/unmime.c: unmime_header(): remove broken characters when
+	  code conversion failed.
+	* src/codeconv.c: conv_encode_header(): fixed a bug that broken
+	  headers if long words more than 75 characters are entered.
+
+2003-02-13
+
+	* src/prefs_account.c: prefs_account_receive_create()
+	  src/utils.c: to_human_readable(): made units translatable.
+
+2003-02-13
+
+	* src/codeconv.c: isprintableeuckanji(): don't allow more than 0xf4
+	  at first byte (fixes abort() problem of glibc).
+	* src/html.c: html_read_line(): remove characters which can't be
+	  displayed on the current locale.
+
+2003-02-11
+
+	* src/utils.[ch]:
+	  trim_subject_for_compare(): renamed from trim_subject().
+	  trim_subject(): new. It removes [...] or (...) at the beginning
+	  of subject.
+	* src/prefs_folder_item.c
+	  src/folder.[ch]:
+	  added options for trimming summary / compose subject.
+	* src/summaryview.c: summary_set_header(): trim subject if the folder
+	  option is set.
+	* src/compose.c: compose_reply_set_entry(): trim subject if the folder
+	  option is set.
+
 2003-02-09
 
 	* src/codeconv.c:

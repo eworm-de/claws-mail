@@ -3,9 +3,11 @@ EXTRA_TOOLS = \
 	calypso_convert.pl \
 	eud2gc.py \
 	filter_conv.pl \
+	freshmeat_search.pl \
 	gif2xface.pl \
 	gpg-sign-syl \
 	google_msgid.pl \
+	google_search.pl \
 	kmail2sylpheed.pl \
 	kmail2sylpheed_v2.pl \
 	launch_phoenix \

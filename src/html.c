@@ -458,7 +458,8 @@ static HTMLState html_read_line(HTMLParser *parser)
 	if (conv_convert(parser->conv, buf2, sizeof(buf2), buf) < 0) {
 		index = parser->bufp - parser->buf->str;
 
-		g_string_append(parser->buf, buf);
+		conv_localetodisp(buf2, sizeof(buf2), buf);
+		g_string_append(parser->buf, buf2);
 
 		parser->bufp = parser->buf->str + index;
 

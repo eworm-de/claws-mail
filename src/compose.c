@@ -169,7 +169,6 @@ static GList *compose_list = NULL;
 Compose *compose_generic_new			(PrefsAccount	*account,
 						 const gchar	*to,
 						 FolderItem	*item,
-						 gboolean	keep_original,
 						 GPtrArray 	*attach_files);
 
 static Compose *compose_create			(PrefsAccount	*account,
@@ -468,7 +467,7 @@ static void text_inserted		(GtkWidget	*widget,
 					 Compose	*compose);
 static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean to_all, gboolean to_ml,
-				  gboolean ignore_replyto,
+				  gboolean to_sender,
 				  gboolean followup_and_reply_to,
 				  const gchar *body);
 
@@ -684,16 +683,16 @@ static GtkTargetEntry compose_mime_types[] =
 Compose *compose_new(PrefsAccount *account, const gchar *mailto,
 		     GPtrArray *attach_files)
 {
-	return compose_generic_new(account, mailto, NULL, FALSE, attach_files);
+	return compose_generic_new(account, mailto, NULL, attach_files);
 }
 
 Compose *compose_new_with_folderitem(PrefsAccount *account, FolderItem *item)
 {
-	return compose_generic_new(account, NULL, item, FALSE, NULL);
+	return compose_generic_new(account, NULL, item, NULL);
 }
 
 Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderItem *item,
-			     gboolean	keep_original, GPtrArray *attach_files)
+			     GPtrArray *attach_files)
 {
 	Compose *compose;
 	GtkSText *text;
@@ -715,7 +714,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	text = GTK_STEXT(compose->text);
 	gtk_stext_freeze(text);
 
-	if (prefs_common.auto_sig && !keep_original)
+	if (account->auto_sig)
 		compose_insert_sig(compose);
 	gtk_editable_set_position(GTK_EDITABLE(text), 0);
 	gtk_stext_set_point(text, 0);
@@ -771,7 +770,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	if (grab_focus_on_last)
 		gtk_widget_grab_focus(compose->header_last->entry);
 
-	if (prefs_common.auto_exteditor && !keep_original)
+	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
 
         return compose;
@@ -803,25 +802,25 @@ Compose *compose_new_followup_and_replyto(PrefsAccount *account,
 */
 
 void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
-		   gboolean to_ml, gboolean ignore_replyto, 
+		   gboolean to_ml, gboolean to_sender, 
 		   const gchar *body)
 {
 	compose_generic_reply(msginfo, quote, to_all, to_ml, 
-			      ignore_replyto, FALSE, body);
+			      to_sender, FALSE, body);
 }
 
 void compose_followup_and_reply_to(MsgInfo *msginfo, gboolean quote,
 				   gboolean to_all,
-				   gboolean ignore_replyto,
+				   gboolean to_sender,
 				   const gchar *body)
 {
 	compose_generic_reply(msginfo, quote, to_all, FALSE, 
-			      ignore_replyto, TRUE, body);
+			      to_sender, TRUE, body);
 }
 
 static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean to_all, gboolean to_ml,
-				  gboolean ignore_replyto,
+				  gboolean to_sender,
 				  gboolean followup_and_reply_to,
 				  const gchar *body)
 {
@@ -837,7 +836,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	
 	g_return_if_fail(account != NULL);
 
-	if (ignore_replyto && account->protocol == A_NNTP &&
+	if (to_sender && account->protocol == A_NNTP &&
 	    !followup_and_reply_to) {
 		reply_account =
 			account_find_from_address(account->address);
@@ -873,7 +872,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 	if (compose_parse_header(compose, msginfo) < 0) return;
 	compose_reply_set_entry(compose, msginfo, to_all, to_ml, 
-				ignore_replyto, followup_and_reply_to);
+				to_sender, followup_and_reply_to);
 	compose_show_first_last_header(compose, TRUE);
 
 	text = GTK_STEXT(compose->text);
@@ -905,7 +904,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 #endif
 	}
 
-	if (prefs_common.auto_sig)
+	if (account->auto_sig)
 		compose_insert_sig(compose);
 
 	if (quote && prefs_common.linewrap_quote)
@@ -1026,7 +1025,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 			procmsg_msginfo_free(full_msginfo);
 		}
 
-	if (prefs_common.auto_sig)
+	if (account->auto_sig)
 		compose_insert_sig(compose);
 
 	if (prefs_common.linewrap_quote)
@@ -1105,7 +1104,7 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 		g_free(msgfile);
 	}
 
-	if (prefs_common.auto_sig)
+	if (account->auto_sig)
 		compose_insert_sig(compose);
 
 	if (prefs_common.linewrap_quote)
@@ -1690,7 +1689,7 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 
 static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				    gboolean to_all, gboolean to_ml,
-				    gboolean ignore_replyto,
+				    gboolean to_sender,
 				    gboolean followup_and_reply_to)
 {
 	GSList *cc_list = NULL;
@@ -1702,13 +1701,13 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	g_return_if_fail(compose->account != NULL);
 	g_return_if_fail(msginfo != NULL);
 
-	if (compose->account->protocol != A_NNTP || followup_and_reply_to) {
+	if (compose->account->protocol != A_NNTP) {
 		if (!compose->replyto && to_ml && compose->ml_post
 		    && !(msginfo->folder && msginfo->folder->prefs->enable_default_reply_to))
 			compose_entry_append(compose,
 					   compose->ml_post,
 					   COMPOSE_TO);
-		else if (!(to_all || ignore_replyto)
+		else if (!(to_all || to_sender)
 			 && msginfo->folder
 			 && msginfo->folder->prefs->enable_default_reply_to) {
 			compose_entry_append(compose,
@@ -1716,31 +1715,38 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			    COMPOSE_TO);
 		} else
 			compose_entry_append(compose,
-				 (compose->replyto && !ignore_replyto)
-				 ? compose->replyto
-				 : msginfo->from ? msginfo->from : "",
-				 COMPOSE_TO);
+				 (compose->replyto && !to_sender)
+				  ? compose->replyto :
+				  msginfo->from ? msginfo->from : "",
+				  COMPOSE_TO);
 	} else {
-		if (ignore_replyto)
+		if (to_sender || (compose->followup_to && 
+			!strncmp(compose->followup_to, "poster", 6)))
 			compose_entry_append
-				(compose, msginfo->from ? msginfo->from : "",
+				(compose, 
+				 ((compose->replyto && !to_sender)
+		    		 ? compose->replyto :
+		    		 msginfo->from ? msginfo->from : ""),
 				 COMPOSE_TO);
-		else {
-			if (compose->followup_to && !strncmp(compose->followup_to, "poster", 6)) {
-				compose_entry_append
-					(compose,
-					((compose->replyto && !ignore_replyto)
-				     	? compose->replyto
-				     	: msginfo->from ? msginfo->from : ""),
-					COMPOSE_TO);				
-			} else {
-				compose_entry_append
-					(compose,
-					 compose->followup_to ? compose->followup_to
-					 : compose->newsgroups ? compose->newsgroups
-					 : "",
-					 COMPOSE_NEWSGROUPS);
-			}
+				 
+		else if (followup_and_reply_to || to_all) {
+			compose_entry_append
+		    		(compose,
+		    		 (compose->replyto ? compose->replyto :
+		    		 msginfo->from ? msginfo->from : ""),
+		    		 COMPOSE_TO);				
+		
+			compose_entry_append
+				(compose,
+			 	 compose->followup_to ? compose->followup_to :
+			 	 compose->newsgroups ? compose->newsgroups : "",
+			 	 COMPOSE_NEWSGROUPS);
+		} else {
+			compose_entry_append
+				(compose,
+			 	 compose->followup_to ? compose->followup_to :
+			 	 compose->newsgroups ? compose->newsgroups : "",
+			 	 COMPOSE_NEWSGROUPS);
 		}
 	}
 
@@ -1988,9 +1994,9 @@ static void compose_insert_sig(Compose *compose)
 	}
 
 	gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, "\n\n", 2);
-	if (prefs_common.sig_sep) {
+	if (compose->account->sig_sep) {
 		gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL,
-				prefs_common.sig_sep, -1);
+				 compose->account->sig_sep, -1);
 		gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL,
 				"\n", 1);
 	}
@@ -4310,7 +4316,8 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 
 	/* Program version and system info */
 	/* uname(&utsbuf); */
-	if (g_slist_length(compose->to_list) && !IS_IN_CUSTOM_HEADER("X-Mailer")) {
+	if (g_slist_length(compose->to_list) && !IS_IN_CUSTOM_HEADER("X-Mailer") &&
+	    !compose->newsgroup_list) {
 		fprintf(fp, "X-Mailer: %s (GTK+ %d.%d.%d; %s)\n",
 			prog_version,
 			gtk_major_version, gtk_minor_version, gtk_micro_version,
@@ -5504,7 +5511,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 			parsed_str = NULL;
 	}
 
-	if (replace && parsed_str && prefs_common.auto_sig)
+	if (replace && parsed_str && compose->account->auto_sig)
 		compose_insert_sig(compose);
 
 	if (replace && parsed_str) {

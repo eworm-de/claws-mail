@@ -392,7 +392,7 @@ static gchar valid_eucjp_tbl[][96] = {
 
 static gboolean isprintableeuckanji(guchar c1, guchar c2)
 {
-	if (c1 <= 0xa0 || c1 == 0xff)
+	if (c1 <= 0xa0 || c1 >= 0xf5)
 		return FALSE;
 	if (c2 <= 0xa0 || c2 == 0xff)
 		return FALSE;
@@ -1318,14 +1318,16 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 	}							\
 								\
 	if ((cond) && *srcp) {					\
-		if (destp > dest && isspace(*(destp - 1)))	\
-			destp--;				\
-		else if (plaintext && isspace(*srcp))		\
-			srcp++;					\
-		if (destp > dest && *srcp) {			\
-			*destp++ = '\n';			\
-			*destp++ = ' ';				\
-			left = MAX_LINELEN - 1;			\
+		if (destp > dest && left < MAX_LINELEN - 1) {	\
+			if (isspace(*(destp - 1)))		\
+				destp--;			\
+			else if (plaintext && isspace(*srcp))	\
+				srcp++;				\
+			if (*srcp) {				\
+				*destp++ = '\n';		\
+				*destp++ = ' ';			\
+				left = MAX_LINELEN - 1;		\
+			}					\
 		}						\
 	}							\
 }

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -114,7 +114,9 @@ static struct Send {
 } p_send;
 
 static struct Compose {
-	GtkWidget *sigpath_entry;
+	GtkWidget *entry_sigpath;
+	GtkWidget *checkbtn_autosig;
+	GtkWidget *entry_sigsep;
 	GtkWidget *autocc_chkbtn;
 	GtkWidget *autocc_entry;
 	GtkWidget *autobcc_chkbtn;
@@ -349,7 +351,15 @@ static PrefParam param[] = {
 
 	/* Compose */
 	{"signature_path", "~/"DEFAULT_SIGNATURE, &tmp_ac_prefs.sig_path, P_STRING,
-	 &compose.sigpath_entry,
+	 &compose.entry_sigpath,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{"auto_signature", "TRUE", &tmp_ac_prefs.auto_sig, P_BOOL,
+	 &compose.checkbtn_autosig,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 
+	{"signature_separator", "-- ", &tmp_ac_prefs.sig_sep, P_STRING,
+	 &compose.entry_sigsep, 
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"set_autocc", "FALSE", &tmp_ac_prefs.set_autocc, P_BOOL,
@@ -1171,7 +1181,7 @@ static void prefs_account_receive_create(void)
 	gtk_widget_set_usize (size_limit_entry, 64, -1);
 	gtk_box_pack_start (GTK_BOX (hbox1), size_limit_entry, FALSE, FALSE, 0);
 
-	label = gtk_label_new ("KB");
+	label = gtk_label_new (_("KB"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
 
@@ -1427,9 +1437,15 @@ static void prefs_account_send_create(void)
 static void prefs_account_compose_create(void)
 {
 	GtkWidget *vbox1;
-	GtkWidget *hbox;
-	GtkWidget *label;
-	GtkWidget *sigpath_entry;
+	GtkWidget *hbox1;
+	GtkWidget *hbox2;
+	GtkWidget *frame_sig;
+	GtkWidget *vbox_sig;
+	GtkWidget *label_sigpath;
+	GtkWidget *entry_sigpath;
+	GtkWidget *checkbtn_autosig;
+	GtkWidget *label_sigsep;
+	GtkWidget *entry_sigsep;
 	GtkWidget *frame;
 	GtkWidget *table;
 	GtkWidget *autocc_chkbtn;
@@ -1444,17 +1460,39 @@ static void prefs_account_compose_create(void)
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	hbox = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox, FALSE, FALSE, 0);
+	PACK_FRAME(vbox1, frame_sig, _("Signature"));
 
-	label = gtk_label_new (_("Signature file"));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	vbox_sig = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox_sig);
+	gtk_container_add (GTK_CONTAINER (frame_sig), vbox_sig);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_sig), 8);
 
-	sigpath_entry = gtk_entry_new ();
-	gtk_widget_show (sigpath_entry);
-	gtk_box_pack_start (GTK_BOX (hbox), sigpath_entry, TRUE, TRUE, 0);
+	PACK_CHECK_BUTTON (vbox_sig, checkbtn_autosig,
+			   _("Insert signature automatically"));
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox_sig), hbox1, TRUE, TRUE, 0);
+	label_sigsep = gtk_label_new (_("Signature separator"));
+	gtk_widget_show (label_sigsep);
+	gtk_box_pack_start (GTK_BOX (hbox1), label_sigsep, FALSE, FALSE, 0);
+
+	entry_sigsep = gtk_entry_new ();
+	gtk_widget_show (entry_sigsep);
+	gtk_box_pack_start (GTK_BOX (hbox1), entry_sigsep, FALSE, FALSE, 0);
+
+	gtk_widget_set_usize (entry_sigsep, 64, -1);
+
+	hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start (GTK_BOX (vbox_sig), hbox2, TRUE, TRUE, 0);
+	label_sigpath = gtk_label_new (_("Signature file"));
+	gtk_widget_show (label_sigpath);
+	gtk_box_pack_start (GTK_BOX (hbox2), label_sigpath, FALSE, FALSE, 0);
+
+	entry_sigpath = gtk_entry_new ();
+	gtk_widget_show (entry_sigpath);
+	gtk_box_pack_start (GTK_BOX (hbox2), entry_sigpath, TRUE, TRUE, 0);
 
 	PACK_FRAME (vbox1, frame, _("Automatically set the following addresses"));
 
@@ -1504,7 +1542,9 @@ static void prefs_account_compose_create(void)
 
 	SET_TOGGLE_SENSITIVITY (autoreplyto_chkbtn, autoreplyto_entry);
 
-	compose.sigpath_entry = sigpath_entry;
+	compose.entry_sigpath      = entry_sigpath;
+	compose.checkbtn_autosig   = checkbtn_autosig;
+	compose.entry_sigsep       = entry_sigsep;
 
 	compose.autocc_chkbtn      = autocc_chkbtn;
 	compose.autocc_entry       = autocc_entry;

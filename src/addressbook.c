@@ -301,6 +301,16 @@ static gint addressbook_treenode_compare_func	(GtkCList	*clist,
 static gint addressbook_list_compare_func	(GtkCList	*clist,
 						 gconstpointer	 ptr1,
 						 gconstpointer	 ptr2);
+static void addressbook_folder_load_one_person	(GtkCTree *clist, 
+						 ItemPerson *person,  
+						 AddressTypeControlItem *atci, 
+						 AddressTypeControlItem *atciMail);
+static void addressbook_folder_refresh_one_person(GtkCTree *clist, 
+						  ItemPerson *person);
+static void addressbook_folder_remove_one_person(GtkCTree *clist, 
+						 ItemPerson *person);
+static void addressbook_folder_remove_node	(GtkCTree *clist, 
+						 GtkCTreeNode *node);
 
 #ifdef USE_LDAP
 static void addressbook_ldap_show_message	(SyldapServer *server);
@@ -902,7 +912,7 @@ static void addressbook_ds_show_message( AddressDataSource *ds ) {
 			desc = addressbook_err2string( _lutErrorsGeneral_, retVal );
 			g_snprintf( addressbook_msgbuf, 
 			    sizeof(addressbook_msgbuf), "%s: %s", name, desc );
-			}
+		}
 	}
 	addressbook_status_show( addressbook_msgbuf );
 }
@@ -947,7 +957,8 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 	AddrItemObject *aio;
 	AddrSelectItem *item;
 	GList *list, *node;
-
+	gboolean refreshList = FALSE;
+	
 	pobj = gtk_ctree_node_get_row_data(ctree, addrbook.opened );
 	g_return_if_fail(pobj != NULL);
 
@@ -1009,9 +1020,11 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 				}
 				/* Remove group from parent node */
 				gtk_ctree_remove_node( ctree, nd );
+				refreshList = TRUE;
 			}
 			else if( aio->type == ADDR_ITEM_PERSON ) {
 				ItemPerson *item = ( ItemPerson * ) aio;
+				addressbook_folder_remove_one_person( clist, item );
 				item = addrbook_remove_person( abf, item );
 				if( item ) {
 					addritem_free_item_person( item );
@@ -1024,11 +1037,12 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 				if( item ) {
 					addritem_free_item_email( item );
 				}
+				addressbook_folder_refresh_one_person( clist, person );
 			}
 		}
 		g_list_free( list );
 		addressbook_list_select_clear();
-		gtk_ctree_select( ctree, addrbook.opened);
+		if( refreshList ) gtk_ctree_select( ctree, addrbook.opened);
 		return;
 	}
 	else if( pobj->type == ADDR_ITEM_GROUP ) {
@@ -2232,10 +2246,9 @@ static void addressbook_new_address_cb( gpointer data, guint action, GtkWidget *
 		if( ADAPTER_DSOURCE(pobj)->subType == ADDR_BOOK ) {
 			/* New address */
 			ItemPerson *person = addressbook_edit_person( abf, NULL, NULL, FALSE );
-			if( person ) {
-				if( addrbook.treeSelected == addrbook.opened ) {
-					gtk_ctree_select( GTK_CTREE(addrbook.ctree), addrbook.opened );
-				}
+			if( person && addrbook.treeSelected == addrbook.opened ) {
+				gtk_clist_unselect_all( GTK_CLIST(addrbook.clist) );
+				addressbook_folder_refresh_one_person( GTK_CTREE(addrbook.clist), person );
 			}
 		}
 	}
@@ -2363,7 +2376,7 @@ static void addressbook_edit_address_cb( gpointer data, guint action, GtkWidget 
 			ItemPerson *person;
 			person = ( ItemPerson * ) ADDRITEM_PARENT(email);
 			if( addressbook_edit_person( abf, NULL, person, TRUE ) == NULL ) return;
-			gtk_ctree_select( ctree, addrbook.opened );
+			addressbook_folder_refresh_one_person( clist, person );
 			invalidate_address_completion();
 			return;
 		}
@@ -2372,8 +2385,8 @@ static void addressbook_edit_address_cb( gpointer data, guint action, GtkWidget 
 		/* Edit person - basic page */
 		ItemPerson *person = ( ItemPerson * ) obj;
 		if( addressbook_edit_person( abf, NULL, person, FALSE ) == NULL ) return;
-		gtk_ctree_select( ctree, addrbook.opened);
 		invalidate_address_completion();
+		addressbook_folder_refresh_one_person( clist, person );
 		return;
 	}
 	else if( obj->type == ADDR_ITEM_GROUP ) {
@@ -2391,7 +2404,7 @@ static void addressbook_edit_address_cb( gpointer data, guint action, GtkWidget 
 	if( node == NULL ) return;
 	addressbook_change_node_name( node, name );
 	gtk_sctree_sort_node( ctree, parentNode );
-	gtk_ctree_select( ctree, addrbook.opened );
+	gtk_ctree_select( ctree, addrbook.opened ); 
 }
 
 static void addressbook_delete_address_cb(gpointer data, guint action,
@@ -2471,6 +2484,78 @@ static void addressbook_load_group( GtkCTree *clist, ItemGroup *itemGroup ) {
 	}
 }
 
+static void addressbook_folder_load_one_person( GtkCTree *clist, ItemPerson *person,  
+						AddressTypeControlItem *atci, AddressTypeControlItem *atciMail) {
+	
+	GtkCTreeNode *nodePerson = NULL;
+	GtkCTreeNode *nodeEMail = NULL;
+	gchar *text[N_COLS];
+	gboolean flgFirst = TRUE, haveAddr = FALSE;
+	GList *node;
+
+	if( person == NULL ) return;
+
+	text[COL_NAME] = NULL;
+	node = person->listEMail;
+	while( node ) {
+		ItemEMail *email = node->data;
+		gchar *eMailAddr = NULL;
+		node = g_list_next( node );
+
+		text[COL_ADDRESS] = email->address;
+		text[COL_REMARKS] = email->remarks;
+		eMailAddr = ADDRITEM_NAME(email);
+		if( eMailAddr && *eMailAddr == '\0' ) eMailAddr = NULL;
+		if( flgFirst ) {
+			/* First email belongs with person */
+			gchar *str = addressbook_format_item_clist( person, email );
+			if( str ) {
+				text[COL_NAME] = str;
+			}
+			else {
+				text[COL_NAME] = ADDRITEM_NAME(person);
+			}
+			nodePerson = gtk_ctree_insert_node(
+					clist, NULL, NULL,
+					text, FOLDER_SPACING,
+					atci->iconXpm, atci->maskXpm,
+					atci->iconXpmOpen, atci->maskXpmOpen,
+					FALSE, person->isOpened );
+			g_free( str );
+			str = NULL;
+			gtk_ctree_node_set_row_data(clist, nodePerson, person );
+		}
+		else {
+			/* Subsequent email is a child node of person */
+			text[COL_NAME] = ADDRITEM_NAME(email);
+			nodeEMail = gtk_ctree_insert_node(
+					clist, nodePerson, NULL,
+					text, FOLDER_SPACING,
+					atciMail->iconXpm, atciMail->maskXpm,
+					atciMail->iconXpmOpen, atciMail->maskXpmOpen,
+					FALSE, TRUE );
+			gtk_ctree_node_set_row_data(clist, nodeEMail, email );
+		}
+		flgFirst = FALSE;
+		haveAddr = TRUE;
+	}
+	if( ! haveAddr ) {
+		/* Have name without EMail */
+		text[COL_NAME] = ADDRITEM_NAME(person);
+		text[COL_ADDRESS] = NULL;
+		text[COL_REMARKS] = NULL;
+		nodePerson = gtk_ctree_insert_node(
+				clist, NULL, NULL,
+				text, FOLDER_SPACING,
+				atci->iconXpm, atci->maskXpm,
+				atci->iconXpmOpen, atci->maskXpmOpen,
+				FALSE, person->isOpened );
+		gtk_ctree_node_set_row_data(clist, nodePerson, person );
+	}
+	gtk_sctree_sort_node(GTK_CTREE(clist), NULL);
+	return;
+}
+
 static void addressbook_folder_load_person( GtkCTree *clist, ItemFolder *itemFolder ) {
 	GList *items;
 	AddressTypeControlItem *atci = addrbookctl_lookup( ADDR_ITEM_PERSON );
@@ -2482,78 +2567,52 @@ static void addressbook_folder_load_person( GtkCTree *clist, ItemFolder *itemFol
 	/* Load email addresses */
 	items = addritem_folder_get_person_list( itemFolder );
 	for( ; items != NULL; items = g_list_next( items ) ) {
-		GtkCTreeNode *nodePerson = NULL;
-		GtkCTreeNode *nodeEMail = NULL;
-		gchar *text[N_COLS];
-		gboolean flgFirst = TRUE, haveAddr = FALSE;
-		ItemPerson *person;
-		GList *node;
-
-		person = ( ItemPerson * ) items->data;
-		if( person == NULL ) continue;
-
-		text[COL_NAME] = NULL;
-		node = person->listEMail;
-		while( node ) {
-			ItemEMail *email = node->data;
-			gchar *eMailAddr = NULL;
-			node = g_list_next( node );
-
-			text[COL_ADDRESS] = email->address;
-			text[COL_REMARKS] = email->remarks;
-			eMailAddr = ADDRITEM_NAME(email);
-			if( eMailAddr && *eMailAddr == '\0' ) eMailAddr = NULL;
-			if( flgFirst ) {
-				/* First email belongs with person */
-				gchar *str = addressbook_format_item_clist( person, email );
-				if( str ) {
-					text[COL_NAME] = str;
-				}
-				else {
-					text[COL_NAME] = ADDRITEM_NAME(person);
-				}
-				nodePerson = gtk_ctree_insert_node(
-						clist, NULL, NULL,
-						text, FOLDER_SPACING,
-						atci->iconXpm, atci->maskXpm,
-						atci->iconXpmOpen, atci->maskXpmOpen,
-						FALSE, person->isOpened );
-				g_free( str );
-				str = NULL;
-				gtk_ctree_node_set_row_data(clist, nodePerson, person );
-			}
-			else {
-				/* Subsequent email is a child node of person */
-				text[COL_NAME] = ADDRITEM_NAME(email);
-				nodeEMail = gtk_ctree_insert_node(
-						clist, nodePerson, NULL,
-						text, FOLDER_SPACING,
-						atciMail->iconXpm, atciMail->maskXpm,
-						atciMail->iconXpmOpen, atciMail->maskXpmOpen,
-						FALSE, TRUE );
-				gtk_ctree_node_set_row_data(clist, nodeEMail, email );
-			}
-			flgFirst = FALSE;
-			haveAddr = TRUE;
-		}
-		if( ! haveAddr ) {
-			/* Have name without EMail */
-			text[COL_NAME] = ADDRITEM_NAME(person);
-			text[COL_ADDRESS] = NULL;
-			text[COL_REMARKS] = NULL;
-			nodePerson = gtk_ctree_insert_node(
-					clist, NULL, NULL,
-					text, FOLDER_SPACING,
-					atci->iconXpm, atci->maskXpm,
-					atci->iconXpmOpen, atci->maskXpmOpen,
-					FALSE, person->isOpened );
-			gtk_ctree_node_set_row_data(clist, nodePerson, person );
-		}
-		gtk_sctree_sort_node(GTK_CTREE(clist), NULL);
+		addressbook_folder_load_one_person( clist, items->data, atci, atciMail );
 	}
 	/* Free up the list */
 	mgu_clear_list( items );
 	g_list_free( items );
+}
+
+static void addressbook_folder_remove_node( GtkCTree *clist, GtkCTreeNode *node ) { 
+	addrbook.listSelected = NULL;
+	gtk_ctree_remove_node( clist, node );
+	addressbook_menubar_set_sensitive( FALSE );
+	addressbook_menuitem_set_sensitive( gtk_ctree_node_get_row_data( 
+						GTK_CTREE(clist), addrbook.treeSelected ), addrbook.treeSelected );
+}
+
+static void addressbook_folder_refresh_one_person( GtkCTree *clist, ItemPerson *person ) {
+	AddressTypeControlItem *atci = addrbookctl_lookup( ADDR_ITEM_PERSON );
+	AddressTypeControlItem *atciMail = addrbookctl_lookup( ADDR_ITEM_EMAIL );
+	GtkCTreeNode *node;
+	if( atci == NULL ) return;
+	if( atciMail == NULL ) return;
+	if( person == NULL ) return;
+	/* unload the person */
+	
+	node = gtk_ctree_find_by_row_data( clist, NULL, person );
+	if( node )
+		addressbook_folder_remove_node( clist, node );
+	addressbook_folder_load_one_person( clist, person, atci, atciMail );
+	node = gtk_ctree_find_by_row_data( clist, NULL, person );
+	if( node ) {
+		gtk_ctree_select( clist, node );
+		if (!gtk_ctree_node_is_visible( clist, node ) ) 
+			gtk_ctree_node_moveto( clist, node, 0, 0, 0 );
+	}
+}
+
+static void addressbook_folder_remove_one_person( GtkCTree *clist, ItemPerson *person ) {
+	GtkCTreeNode *node;
+	gint row;
+	
+	if( person == NULL ) return;
+	node = gtk_ctree_find_by_row_data( clist, NULL, person );
+	row  = gtk_clist_find_row_from_data( GTK_CLIST(clist), person );
+	if( node ) {
+		addressbook_folder_remove_node( clist, node );
+	}
 }
 
 static void addressbook_folder_load_group( GtkCTree *clist, ItemFolder *itemFolder ) {
