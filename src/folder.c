@@ -1540,15 +1540,12 @@ static MsgInfoList *get_msginfos(FolderItem *item, MsgNumberList *numlist)
 
 	for (elem = msglist; elem != NULL; elem = g_slist_next(elem)) {
 		MsgInfo *msginfo = elem->data;
+		MimeInfo *mimeinfo;
 
-		if (MSG_IS_MULTIPART(msginfo->flags)) {
-			MimeInfo *mimeinfo;
-
-			mimeinfo = procmime_scan_message(msginfo);
-			g_node_children_foreach(mimeinfo->node, G_TRAVERSE_ALL, msginfo_set_mime_flags, msginfo);
-			procmime_mimeinfo_free_all(mimeinfo);
-			/* check for attachments */
-		}
+		mimeinfo = procmime_scan_message(msginfo);
+		/* check for attachments */
+		g_node_children_foreach(mimeinfo->node, G_TRAVERSE_ALL, msginfo_set_mime_flags, msginfo);
+		procmime_mimeinfo_free_all(mimeinfo);
 	}
 
 	return msglist;

@@ -1,3 +1,8 @@
+2004-08-24 [colin]	0.9.12cvs80.1
+
+	* src/folder.c
+		Sync with HEAD 0.9.12cvs80
+
 2004-08-24 [colin]	0.9.12cvs79.3
 
 	* src/matcher_parser_lex.l

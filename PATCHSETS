@@ -136,3 +136,4 @@
 ( cvs diff -u -r 1.382.2.44 -r 1.382.2.45 src/compose.c; ) > 0.9.12cvs79.1.patchset
 ( cvs diff -u -r 1.382.2.45 -r 1.382.2.46 src/compose.c; ) > 0.9.12cvs79.2.patchset
 ( cvs diff -u -r 1.16.2.1 -r 1.16.2.2 src/matcher_parser_lex.l; ) > 0.9.12cvs79.3.patchset
+( cvs diff -u -r 1.213.2.13 -r 1.213.2.14 src/folder.c; ) > 0.9.12cvs80.1.patchset
