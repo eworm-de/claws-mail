@@ -1,3 +1,12 @@
+2005-02-03 [paul]	1.0.0cvs25.3
+
+	* src/folderview.c
+	* src/headerview.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/gtk/colorlabel.c
+		third and final part of initial sync with main-gtk2
+
 2005-02-03 [paul]	1.0.0cvs25.2
 
 	* src/jpilot.c

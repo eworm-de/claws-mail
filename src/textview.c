@@ -211,7 +211,6 @@ TextView *textview_create(void)
 	GtkItemFactory *popupfactory;
 	GtkWidget *popupmenu;
 	gint n_entries;
-	PangoFontDescription *font_desc = NULL;
 
 	debug_print("Creating text view...\n");
 	textview = g_new0(TextView, 1);
@@ -239,14 +238,6 @@ TextView *textview_create(void)
 	gtk_text_buffer_add_selection_clipboard(buffer, clipboard);
 
 	gtk_widget_ensure_style(text);
-
-	if (prefs_common.normalfont)
-		font_desc = pango_font_description_from_string
-					(prefs_common.normalfont);
-	if (font_desc) {
-		gtk_widget_modify_font(text, font_desc);
-	}
-	pango_font_description_free(font_desc);
 
 	gtk_widget_ref(scrolledwin);
 
@@ -298,19 +289,34 @@ TextView *textview_create(void)
 
 static void textview_create_tags(GtkTextView *text, TextView *textview)
 {
-	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+	GtkTextBuffer *buffer;
 	GtkTextTag *tag;
+	static PangoFontDescription *font_desc, *bold_font_desc;
+
+	if (!font_desc)
+		font_desc = pango_font_description_from_string
+			(NORMAL_FONT);
+
+	if (!bold_font_desc) {
+		bold_font_desc = pango_font_description_from_string
+			(BOLD_FONT);
+		pango_font_description_set_weight
+			(bold_font_desc, PANGO_WEIGHT_BOLD);
+	}
+
+	buffer = gtk_text_view_get_buffer(text);
 
 	gtk_text_buffer_create_tag(buffer, "header",
 				   "pixels-above-lines", 0,
 				   "pixels-above-lines-set", TRUE,
 				   "pixels-below-lines", 0,
 				   "pixels-below-lines-set", TRUE,
+				   "font-desc", font_desc,
 				   "left-margin", 0,
 				   "left-margin-set", TRUE,
 				   NULL);
 	gtk_text_buffer_create_tag(buffer, "header_title",
-				   "font", prefs_common.boldfont,
+				   "font-desc", bold_font_desc,
 				   NULL);
 	gtk_text_buffer_create_tag(buffer, "quote0",
 				   "foreground-gdk", &quote_colors[0],
@@ -1276,8 +1282,7 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 	if (prefs_common.textfont) {
 		PangoFontDescription *font_desc = NULL;
 
-		if (prefs_common.textfont)
-			font_desc = pango_font_description_from_string
+		font_desc = pango_font_description_from_string
 						(prefs_common.textfont);
 		if (font_desc) {
 			gtk_widget_modify_font(textview->text, font_desc);

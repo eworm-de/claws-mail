@@ -133,20 +133,17 @@ void headerview_init(HeaderView *headerview)
 {
 	static PangoFontDescription *boldfont = NULL;
 
-	if (!boldfont && BOLD_FONT)
-		boldfont = pango_font_description_from_string
-				(BOLD_FONT);
+	if (!boldfont) {
+		boldfont = pango_font_description_from_string(BOLD_FONT);
+		pango_font_description_set_weight(boldfont, PANGO_WEIGHT_BOLD);
+	}
 
-#define SET_FONT_STYLE(wid) \
-{ \
-	if (boldfont) \
-		gtk_widget_modify_font(headerview->wid, boldfont); \
-}
-
-	SET_FONT_STYLE(from_header_label);
-	SET_FONT_STYLE(to_header_label);
-	SET_FONT_STYLE(ng_header_label);
-	SET_FONT_STYLE(subject_header_label);
+	if (boldfont) {
+		gtk_widget_modify_font(headerview->from_header_label, boldfont);
+		gtk_widget_modify_font(headerview->to_header_label, boldfont);
+		gtk_widget_modify_font(headerview->ng_header_label, boldfont);
+		gtk_widget_modify_font(headerview->subject_header_label, boldfont);
+	}
 
 	headerview_clear(headerview);
 	headerview_set_visibility(headerview, prefs_common.display_header_pane);

@@ -25,9 +25,6 @@
 #include "defs.h"
 
 #include <glib.h>
-#ifdef GDK_WINDOWING_X11
-#	include <gdk/gdkx.h>
-#endif /* GDK_WINDOWING_X11 */
 #include <gtk/gtk.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkimage.h>
