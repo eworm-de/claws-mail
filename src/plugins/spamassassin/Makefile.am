@@ -24,6 +24,7 @@ INCLUDES = \
 	-I../../gtk
 
 CPPFLAGS = \
+	$(ASPELL_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS)
 
