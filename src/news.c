@@ -277,7 +277,7 @@ NNTPSession *news_session_get(Folder *folder)
 	RemoteFolder *rfolder = REMOTE_FOLDER(folder);
 
 	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(FOLDER_TYPE(folder) == F_NEWS, NULL);
+	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
 
 	if (!rfolder->session) {
@@ -444,7 +444,7 @@ GSList *news_get_group_list(Folder *folder)
 	gchar buf[NNTPBUFSIZE];
 
 	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(FOLDER_TYPE(folder) == F_NEWS, NULL);
+	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
 
 	path = folder_item_get_path(FOLDER_ITEM(folder->node->data));
 	if (!is_dir_exist(path))
@@ -531,7 +531,7 @@ void news_remove_group_list_cache(Folder *folder)
 	gchar *path, *filename;
 
 	g_return_if_fail(folder != NULL);
-	g_return_if_fail(FOLDER_TYPE(folder) == F_NEWS);
+	g_return_if_fail(FOLDER_CLASS(folder) == &news_class);
 
 	path = folder_item_get_path(FOLDER_ITEM(folder->node->data));
 	filename = g_strconcat(path, G_DIR_SEPARATOR_S, NEWSGROUP_LIST, NULL);
@@ -550,7 +550,7 @@ gint news_post(Folder *folder, const gchar *file)
 	gint ok;
 
 	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(FOLDER_TYPE(folder) == F_NEWS, -1);
+	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, -1);
 	g_return_val_if_fail(file != NULL, -1);
 
 	if ((fp = fopen(file, "rb")) == NULL) {
@@ -571,7 +571,7 @@ gint news_post_stream(Folder *folder, FILE *fp)
 	gint ok;
 
 	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(FOLDER_TYPE(folder) == F_NEWS, -1);
+	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, -1);
 	g_return_val_if_fail(fp != NULL, -1);
 
 	session = news_session_get(folder);
@@ -810,7 +810,7 @@ gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_list)
 
 	g_return_val_if_fail(item != NULL, -1);
 	g_return_val_if_fail(item->folder != NULL, -1);
-	g_return_val_if_fail(FOLDER_TYPE(folder) == F_NEWS, -1);
+	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, -1);
 
 	session = news_session_get(folder);
 	g_return_val_if_fail(session != NULL, -1);
@@ -858,7 +858,7 @@ MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	g_return_val_if_fail(session != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
 	g_return_val_if_fail(item->folder != NULL, NULL);
-	g_return_val_if_fail(FOLDER_TYPE(item->folder) == F_NEWS, NULL);
+	g_return_val_if_fail(FOLDER_CLASS(item->folder) == &news_class, NULL);
 
 	log_message(_("getting xover %d in %s...\n"),
 		    num, item->path);
@@ -1044,7 +1044,7 @@ GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 	guint tofetch, fetched;
 	
 	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(FOLDER_TYPE(folder) == F_NEWS, NULL);
+	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
 	g_return_val_if_fail(msgnum_list != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
 	

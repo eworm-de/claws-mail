@@ -1,3 +1,13 @@
+2003-03-12 [christoph]	0.8.11claws4
+
+	* src/folder.c
+		use folder class idstr when writing folderlist.xml
+
+	* src/folder.h
+	* src/imap.c
+	* src/news.c
+		replace folder type checks with folder class checks
+
 2003-03-12 [christoph]	0.8.11claws3
 
 	* src/folder.[ch]

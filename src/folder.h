@@ -43,6 +43,7 @@ typedef struct _FolderItemUpdateData	FolderItemUpdateData;
 #define FOLDER(obj)		((Folder *)obj)
 #define FOLDER_TYPE(obj)	(FOLDER(obj)->class->type)
 
+#define FOLDER_CLASS(obj)	(FOLDER(obj)->class)
 #define LOCAL_FOLDER(obj)	((LocalFolder *)obj)
 #define REMOTE_FOLDER(obj)	((RemoteFolder *)obj)
 

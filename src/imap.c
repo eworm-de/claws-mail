@@ -410,7 +410,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 	gushort port;
 
 	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(FOLDER_TYPE(folder) == F_IMAP, NULL);
+	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
 
 #if USE_OPENSSL
@@ -696,7 +696,7 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 	gint ok;
     
 	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(FOLDER_TYPE(folder) == F_IMAP, -1);
+	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, -1);
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msginfo != NULL, -1);
 
@@ -940,7 +940,7 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 	gchar *dir;
 
 	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(FOLDER_TYPE(folder) == F_IMAP, -1);
+	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, -1);
 	g_return_val_if_fail(item != NULL, -1);
 
 	session = imap_session_get(folder);
@@ -983,7 +983,7 @@ gint imap_remove_msgs(Folder *folder, FolderItem *item, GSList *msglist)
 	guint32 uid;
 
 	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(FOLDER_TYPE(folder) == F_IMAP, -1);
+	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, -1);
 	g_return_val_if_fail(item != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
 
@@ -1610,7 +1610,7 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 	g_return_val_if_fail(session != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
 	g_return_val_if_fail(item->folder != NULL, NULL);
-	g_return_val_if_fail(FOLDER_TYPE(item->folder) == F_IMAP, NULL);
+	g_return_val_if_fail(FOLDER_CLASS(item->folder) == &imap_class, NULL);
 	g_return_val_if_fail(first_uid <= last_uid, NULL);
 
 	if (imap_cmd_envelope(SESSION(session)->sock, first_uid, last_uid)
@@ -1675,7 +1675,7 @@ static void imap_delete_all_cached_messages(FolderItem *item)
 
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
-	g_return_if_fail(FOLDER_TYPE(item->folder) == F_IMAP);
+	g_return_if_fail(FOLDER_CLASS(item->folder) == &imap_class);
 
 	debug_print("Deleting all cached messages...\n");
 
@@ -2209,7 +2209,7 @@ gint imap_msg_set_perm_flags(MsgInfo *msginfo, MsgPermFlags flags)
 	g_return_val_if_fail(msginfo->folder->folder != NULL, -1);
 
 	folder = msginfo->folder->folder;
-	g_return_val_if_fail(FOLDER_TYPE(folder) == F_IMAP, -1);
+	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, -1);
 
 	session = imap_session_get(folder);
 	if (!session) return -1;
@@ -2245,7 +2245,7 @@ gint imap_msg_unset_perm_flags(MsgInfo *msginfo, MsgPermFlags flags)
 	g_return_val_if_fail(msginfo->folder->folder != NULL, -1);
 
 	folder = msginfo->folder->folder;
-	g_return_val_if_fail(FOLDER_TYPE(folder) == F_IMAP, -1);
+	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, -1);
 
 	session = imap_session_get(folder);
 	if (!session) return -1;
@@ -3302,7 +3302,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(item != NULL, -1);
 	g_return_val_if_fail(item->item.path != NULL, -1);
-	g_return_val_if_fail(FOLDER_TYPE(folder) == F_IMAP, -1);
+	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, -1);
 	g_return_val_if_fail(folder->account != NULL, -1);
 
 	session = imap_session_get(folder);
@@ -3537,7 +3537,7 @@ gboolean imap_check_msgnum_validity(Folder *folder, FolderItem *_item)
 	g_return_val_if_fail(folder != NULL, FALSE);
 	g_return_val_if_fail(item != NULL, FALSE);
 	g_return_val_if_fail(item->item.folder != NULL, FALSE);
-	g_return_val_if_fail(FOLDER_TYPE(item->item.folder) == F_IMAP, FALSE);
+	g_return_val_if_fail(FOLDER_CLASS(item->item.folder) == &imap_class, FALSE);
 
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, FALSE);

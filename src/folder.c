@@ -2378,8 +2378,6 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 	FILE *fp = (FILE *)data;
 	FolderItem *item;
 	gint i, depth;
-	static gchar *folder_type_str[] = {"mh", "mbox", "maildir", "imap",
-					   "news", "unknown"};
 	static gchar *folder_item_stype_str[] = {"normal", "inbox", "outbox",
 						 "draft", "queue", "trash"};
 	static gchar *sort_key_str[] = {"none", "number", "size", "date",
@@ -2398,7 +2396,7 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 	if (depth == 1) {
 		Folder *folder = item->folder;
 
-		fprintf(fp, "<folder type=\"%s\"", folder_type_str[FOLDER_TYPE(folder)]);
+		fprintf(fp, "<folder type=\"%s\"", folder->class->idstr);
 		if (folder->name)
 			PUT_ESCAPE_STR(fp, "name", folder->name);
 		if (FOLDER_TYPE(folder) == F_MH || FOLDER_TYPE(folder) == F_MBOX)
