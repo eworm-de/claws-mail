@@ -4231,6 +4231,7 @@ static void prefs_common_apply(void)
 {
 	gchar *entry_pixmap_theme_str;
 	gboolean update_pixmap_theme;
+	gchar *backup_theme_path;
 	
 	entry_pixmap_theme_str = gtk_entry_get_text(GTK_ENTRY(interface.entry_pixmap_theme));
 	if (entry_pixmap_theme_str && 
@@ -4238,16 +4239,25 @@ static void prefs_common_apply(void)
 		update_pixmap_theme = TRUE;
 	else
 		update_pixmap_theme = FALSE;
-	
+
+	/*!< FIXME: prefs_set_data_from_dialog() clears and frees all strings, 
+	 * but prefs_common.pixmap_theme_path is stored in the StockPixmapData
+	 * in stock_pixmap.c::pixmaps[].icon_path, and used when reflecting
+	 * the pixmap changes. Work around by saving the old one and freeing 
+	 * it later. */
+	backup_theme_path = prefs_common.pixmap_theme_path;
+	prefs_common.pixmap_theme_path = g_strdup(backup_theme_path);
 	prefs_set_data_from_dialog(param);
 	sock_set_io_timeout(prefs_common.io_timeout_secs);
 	
-	if (update_pixmap_theme)
-	{
+	if (update_pixmap_theme) {
 		main_window_reflect_prefs_all_real(TRUE);
 		compose_reflect_prefs_pixmap_theme();
 	} else
 		main_window_reflect_prefs_all_real(FALSE);
+
+	/*!< FIXME: Now it's safe to delete the backup path */
+	g_free(backup_theme_path);
 	
 	prefs_common_save_config();
 

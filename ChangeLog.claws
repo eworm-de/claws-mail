@@ -1,3 +1,9 @@
+2003-06-09 [alfons]	0.9.0claws25
+
+	* src/prefs_common.c
+		fix bug #163 "Icon switching doesnt work properly" by 
+		preventing early freeing of prefs_common.pixmap_theme_path.
+
 2003-06-09 [christoph]	0.9.0claws24
 
 	* src/gtk/gtkaspell.c
