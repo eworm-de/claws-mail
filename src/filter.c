@@ -118,13 +118,15 @@ gboolean filter_match_condition(Filter *filter, GSList *hlist)
 			header = hlist->data;
 
 			if (!match1 &&
-			    !strcasecmp(header->name, filter->name1)) {
+			    procheader_headername_equal(header->name,
+							filter->name1)) {
 				if (!filter->body1 ||
 				    StrFind1(header->body, filter->body1))
 					match1 = TRUE;
 			}
 			if (!match2 &&
-			    !strcasecmp(header->name, filter->name2)) {
+			    procheader_headername_equal(header->name,
+							 filter->name2)) {
 				if (!filter->body2 ||
 				    StrFind2(header->body, filter->body2))
 					match2 = TRUE;
@@ -136,12 +138,14 @@ gboolean filter_match_condition(Filter *filter, GSList *hlist)
 		for (; hlist != NULL; hlist = hlist->next) {
 			header = hlist->data;
 
-			if (!strcasecmp(header->name, filter->name1))
+			if (procheader_headername_equal(header->name,
+							filter->name1))
 				if (!filter->body1 ||
 				    StrFind1(header->body, filter->body1))
 					return TRUE;
 			if (filter->name2 &&
-			    !strcasecmp(header->name, filter->name2))
+			    procheader_headername_equal(header->name,
+							filter->name2))
 				if (!filter->body2 ||
 				    StrFind2(header->body, filter->body2))
 					return TRUE;

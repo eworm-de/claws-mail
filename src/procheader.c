@@ -193,7 +193,8 @@ gchar *procheader_get_unfolded_line(gchar *buf, gint len, FILE *fp)
 }
 
 /*
-  tests whether two headers are equal
+  tests whether two headers' names are equal
+  remove the trailing ':' or ' ' before comparing
 */
 
 gboolean procheader_headername_equal(char * hdr1, char * hdr2)

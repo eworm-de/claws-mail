@@ -42,6 +42,9 @@
 	* src/textview.c
 		use procheader_parse_header(), procheader_headername_equal()
 		removed memory leak in text_scan_header when freeing headers
+	* src/filter.c
+		changed the function to match names of headers
+		using procheader_headername_equal()
 
 	Scoring functions are implemented, an interface is needed
 	to configure that.
