@@ -601,7 +601,9 @@ static IncState inc_pop3_session_do(IncSession *session)
 		if(!ssl_init_socket(sockinfo)) {
 			pop3_automaton_terminate(NULL, atm);
 			automaton_destroy(atm);
+			
 			return INC_ERROR;
+		}
 	} else {
 		sockinfo->ssl = NULL;
 	}
