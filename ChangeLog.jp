@@ -1,5 +1,9 @@
 2003-05-16
 
+	* version 0.9.0
+
+2003-05-16
+
 	* src/session.c: session_recv_msg(): デバッグ出力を削除。
 
 2003-05-15

@@ -15,13 +15,16 @@ Changes of Sylpheed
       usage.
     * The Shift_JIS locale has been supported.
     * The internal MIME structure has been cleaned up.
+    * Address names which have special characters are now correctly quoted.
     * Slovak message catalog has been added.
     * The header corruption bug on reediting has been fixed.
-    * The conversion of UTF-7 encoding has been fixed.
+    * The bug of UTF-7 encoding conversion has been fixed.
     * A workaround for unknown timezones has been made.
     * A workaround for wrapping problem on UTF-8 locale has been made.
     * More workaround for crashes by illegal characters has been made.
+    * The crash bug in IMAP4 parser has been fixed.
     * The crash bug of the composition window has been fixed.
+    * The colormap / visual problem on Solaris has been fixed.
     * Other bugfixes have been made.
 
 * 0.8.11
