@@ -3566,6 +3566,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	const gchar *out_codeset;
 	EncodingType encoding;
 	gboolean already_encoded = FALSE;
+	gchar *header;
 
 	if ((fp = fopen(file, "wb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
@@ -3674,15 +3675,16 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 #endif
 
 	/* write headers */
-	gchar *header;
 	header = compose_get_header(compose, out_codeset, encoding, is_draft);
 	if (header == NULL || fwrite(header, sizeof(gchar), strlen(header), fp) < strlen(header)) {
 		g_warning("can't write headers\n");
 		fclose(fp);
 		/* unlink(file); */
+		g_free(header);
 		g_free(buf);
 		return -1;
 	}
+	g_free(header);
 
 	if (compose_use_attach(compose)) {
 #if USE_GPGME
