@@ -50,6 +50,7 @@ typedef enum
 	P_BOOL,
 	P_ENUM,
 	P_USHORT,
+	P_COLOR,
 	P_OTHER
 } PrefType;
 

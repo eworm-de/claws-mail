@@ -1,3 +1,10 @@
+2003-02-19 [alfons]	0.8.10claws30
+
+	* src/prefs_gtk.[ch]
+	* src/prefs_common.c
+		for color_new accept both plain integers and X11 style color
+		names (as found in /usr/lib/X11/rgb.txt)
+
 2003-02-19 [paul]	0.8.10claws29
 
 	* src/mainwindow.c
