@@ -1,3 +1,8 @@
+2003-03-16 [paul]	0.8.11claws19
+
+	* tools/multiwebsearch.pl
+		fix a fatal typo
+
 2003-03-16 [christoph]	0.8.11claws18
 
 	* src/mimeview.c

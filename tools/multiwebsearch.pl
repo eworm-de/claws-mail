@@ -28,8 +28,8 @@ GetOptions("where=s"	=> \$where,
 chdir($ENV{HOME} . "/.sylpheed") 
 	|| die("Can't find your ~/.sylpheed directory\n");
 
-open (CONF, "<multisearch.conf") 
-	|| die("Can't open ~/.sylpheed/multisearch.conf\n");
+open (CONF, "<multiwebsearch.conf") 
+	|| die("Can't open ~/.sylpheed/multiwebsearch.conf\n");
 	@conflines = <CONF>;
 close CONF;
 
