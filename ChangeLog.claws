@@ -1,3 +1,11 @@
+2002-12-09 [christoph]	0.8.6claws89
+
+	* src/Makefile.am
+	* src/session.[ch]		** REMOVE **
+	* src/common/Makefile.am
+	* src/common/session.[ch]	** NEW **
+		move session files to common directory
+
 2002-12-09 [paul]	0.8.6claws88
 
 	* src/account.c

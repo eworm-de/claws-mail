@@ -6,6 +6,7 @@ libsylpheedcommon_la_SOURCES = \
 	log.c log.h \
 	md5.c md5.h \
 	nntp.c nntp.h \
+	session.c session.h \
 	socket.c socket.h \
 	ssl.c ssl.h \
 	sylpheed.c sylpheed.h \
