@@ -1,3 +1,11 @@
+2003-02-24 [christoph]
+
+	* Makefile.am
+	* configure.ac
+		fix gnome prefix problems, the configure script now removed
+		`gnome-config --prefix` from `gnome-config --datadir`
+		and adds $(prefix} instead
+
 2003-02-24 [christoph]	0.8.10claws49
 
 	* src/news.c
