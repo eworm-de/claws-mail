@@ -973,6 +973,20 @@ MainWindow *main_window_create(SeparateType type)
 	/* create actions menu */
 	update_mainwin_actions_menu(ifactory, mainwin);
 
+	/* attach accel groups to main window */
+#define	ADD_MENU_ACCEL_GROUP_TO_WINDOW(menu,win)	\
+	gtk_window_add_accel_group			\
+		(GTK_WINDOW(win), 			\
+		 gtk_item_factory_from_widget(menu)->accel_group)		 
+	
+	ADD_MENU_ACCEL_GROUP_TO_WINDOW(summaryview->popupmenu,mainwin->window);
+	
+	/* connect the accelerators for equivalent 
+	   menu items in different menus             */
+	menu_connect_identical_items();
+
+
+	
 	/* show main window */
 	gtk_widget_set_uposition(mainwin->window,
 				 prefs_common.mainwin_x,
