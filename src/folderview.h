@@ -83,4 +83,6 @@ void folderview_rename_folder		(FolderView	*folderview);
 void folderview_delete_folder		(FolderView	*folderview);
 
 void folderview_set_target_folder_color (gint		color_op);
+
+void folderview_reflect_prefs_pixmap_theme	(FolderView *folderview);
 #endif /* __FOLDERVIEW_H__ */

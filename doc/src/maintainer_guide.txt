@@ -61,6 +61,7 @@ smtp.c is the handling of the SMTP protocol.
 socket.c is some function to make it easier to use TCP/unix socket.
 sourcewindow.c ********* NO DESCRIPTION *************
 statusbar.c ********* NO DESCRIPTION *************
+stock_pixmap.c handle the pixmaps including pixmap theming
 summaryview.c is the displaying of list of the mail in a folder
 	      (up/right in the main window).
 textview.c is the mail (without MIME part) displaying of the

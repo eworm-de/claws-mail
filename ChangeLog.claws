@@ -1,3 +1,20 @@
+2002-02-11 [carsten]	0.7.0claws59
+	* acconfig.h
+	  configure.in
+	  doc-src/maintainer_guide.txt
+	  src/compose.[ch]
+	  src/defs.h
+	  src/folderview.[ch]
+	  src/gtkutils.[ch]
+	  src/mainwindow.[ch]
+	  src/prefs_common.[ch]
+	  src/stock_pixmap.[ch]
+	  src/summaryview.[ch]
+	  	pixmap theming and related work on pixmap
+		handling on some other places
+		(e.g. hrm features for all folder)
+	  src/pixmap/stock_*.xpm -> the stock_ was removed
+	
 2002-02-11 [paul]	0.7.0claws58
 
 	* sync with sylpheed 0.7.1 release

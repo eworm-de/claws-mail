@@ -94,24 +94,46 @@ static GtkStyle *bold_style;
 static GtkStyle *bold_color_style;
 static GtkStyle *bold_tgtfold_style;
 
-static GdkPixmap *inboxxpm;
+static GdkBitmap *inboxxpm;
 static GdkBitmap *inboxxpmmask;
 static GdkPixmap *inboxhrmxpm;
 static GdkBitmap *inboxhrmxpmmask;
+static GdkPixmap *inboxopenxpm;
+static GdkBitmap *inboxopenxpmmask;
+static GdkPixmap *inboxopenhrmxpm;
+static GdkBitmap *inboxopenhrmxpmmask;
 static GdkPixmap *outboxxpm;
 static GdkBitmap *outboxxpmmask;
 static GdkPixmap *outboxhrmxpm;
 static GdkBitmap *outboxhrmxpmmask;
+static GdkPixmap *outboxopenxpm;
+static GdkBitmap *outboxopenxpmmask;
+static GdkPixmap *outboxopenhrmxpm;
+static GdkBitmap *outboxopenhrmxpmmask;
 static GdkPixmap *folderxpm;
 static GdkBitmap *folderxpmmask;
+static GdkPixmap *folderhrmxpm;
+static GdkBitmap *folderhrmxpmmask;
 static GdkPixmap *folderopenxpm;
 static GdkBitmap *folderopenxpmmask;
 static GdkPixmap *folderopenhrmxpm;
 static GdkBitmap *folderopenhrmxpmmask;
+static GdkPixmap *trashopenxpm;
+static GdkBitmap *trashopenxpmmask;
+static GdkPixmap *trashopenhrmxpm;
+static GdkBitmap *trashopenhrmxpmmask;
 static GdkPixmap *trashxpm;
 static GdkBitmap *trashxpmmask;
 static GdkPixmap *trashhrmxpm;
 static GdkBitmap *trashhrmxpmmask;
+static GdkPixmap *queuexpm;
+static GdkBitmap *queuexpmmask;
+static GdkPixmap *queuehrmxpm;
+static GdkBitmap *queuehrmxpmmask;
+static GdkPixmap *queueopenxpm;
+static GdkBitmap *queueopenxpmmask;
+static GdkPixmap *queueopenhrmxpm;
+static GdkBitmap *queueopenhrmxpmmask;
 static GdkPixmap *newxpm;
 static GdkBitmap *newxpmmask;
 static GdkPixmap *unreadxpm;
@@ -472,22 +494,26 @@ void folderview_init(FolderView *folderview)
 	GtkWidget *hbox_new;
 	GtkWidget *hbox_unread;
 
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX, &inboxxpm, &inboxxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_OUTBOX,
-			 &outboxxpm, &outboxxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DIR_CLOSE,
-			 &folderxpm, &folderxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DIR_OPEN,
-			 &folderopenxpm, &folderopenxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_TRASH, &trashxpm, &trashxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_HRM, 
-			 &inboxhrmxpm, &inboxhrmxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_OUTBOX_HRM, 
-			 &outboxhrmxpm, &outboxhrmxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DIR_OPEN_HRM, 
-			 &folderopenhrmxpm, &folderopenhrmxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_TRASH_HRM, 
-			 &trashhrmxpm, &trashhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE, &inboxxpm, &inboxxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE_HRM, &inboxhrmxpm, &inboxhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_OPEN, &inboxopenxpm, &inboxopenxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_OPEN_HRM, &inboxopenhrmxpm, &inboxopenhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_OUTBOX_CLOSE, &outboxxpm, &outboxxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_OUTBOX_CLOSE_HRM, &outboxhrmxpm, &outboxhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_OUTBOX_OPEN, &outboxopenxpm, &outboxopenxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_OUTBOX_OPEN_HRM, &outboxopenhrmxpm, &outboxopenhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DIR_CLOSE, &folderxpm, &folderxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DIR_CLOSE_HRM, &folderhrmxpm, &folderhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DIR_OPEN, &folderopenxpm, &folderopenxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DIR_OPEN_HRM, &folderopenhrmxpm, &folderopenhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_TRASH_OPEN, &trashopenxpm, &trashopenxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_TRASH_OPEN_HRM, &trashopenhrmxpm, &trashopenhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_TRASH_CLOSE, &trashxpm, &trashxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_TRASH_CLOSE_HRM, &trashhrmxpm, &trashhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_QUEUE_CLOSE, &queuexpm, &queuexpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_QUEUE_CLOSE_HRM, &queuehrmxpm, &queuehrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_QUEUE_OPEN, &queueopenxpm, &queueopenxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_QUEUE_OPEN_HRM, &queueopenhrmxpm, &queueopenhrmxpmmask);
 
 	/* CLAWS: titles for "New" and "Unread" show new & unread pixmaps
 	 * instead text (text overflows making them unreadable and ugly) */
@@ -945,50 +971,58 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 
 	switch (item->stype) {
 	case F_INBOX:
-		xpm = inboxxpm;
-		mask = inboxxpmmask;
 		if (item->hide_read_msgs) {
-			openxpm = inboxhrmxpm;
-			openmask = inboxhrmxpmmask;
+			xpm = inboxhrmxpm;
+			mask = inboxhrmxpmmask;
+			openxpm = inboxopenhrmxpm;
+			openmask = inboxopenhrmxpmmask;
 		} else {
-			openxpm = inboxxpm;
-			openmask = inboxxpmmask;
+			xpm = inboxxpm;
+			mask = inboxxpmmask;
+			openxpm = inboxopenxpm;
+			openmask = inboxopenxpmmask;
 		}
 		name = g_strdup(_("Inbox"));
 		break;
 	case F_OUTBOX:
-		xpm = outboxxpm;
-		mask =outboxxpmmask;
 		if (item->hide_read_msgs) {
-			openxpm = outboxhrmxpm;
-			openmask = outboxhrmxpmmask;
+			xpm = outboxhrmxpm;
+			mask = outboxhrmxpmmask;
+			openxpm = outboxopenhrmxpm;
+			openmask = outboxopenhrmxpmmask;
 		} else {
-			openxpm = outboxxpm;
-			openmask = outboxxpmmask;
+			xpm = outboxxpm;
+			mask = outboxxpmmask;
+			openxpm = outboxopenxpm;
+			openmask = outboxopenxpmmask;
 		}
 		name = g_strdup(_("Outbox"));
 		break;
 	case F_QUEUE:
-		xpm = outboxxpm;
-		mask =outboxxpmmask;
 		if (item->hide_read_msgs) {
-			openxpm = outboxhrmxpm;
-			openmask = outboxhrmxpmmask;
+			xpm = queuehrmxpm;
+			mask = queuehrmxpmmask;
+			openxpm = queueopenhrmxpm;
+			openmask = queueopenhrmxpmmask;
 		} else {
-			openxpm = outboxxpm;
-			openmask = outboxxpmmask;
+			xpm = queuexpm;
+			mask = queuexpmmask;
+			openxpm = queueopenxpm;
+			openmask = queueopenxpmmask;
 		}
 		name = g_strdup(_("Queue"));
 		break;
 	case F_TRASH:
-		xpm = trashxpm;
-		mask = trashxpmmask;
 		if (item->hide_read_msgs) {
-			openxpm = trashhrmxpm;
-			openmask = trashhrmxpmmask;
+			xpm = trashhrmxpm;
+			mask = trashhrmxpmmask;
+			openxpm = trashopenhrmxpm;
+			openmask = trashopenhrmxpmmask;
 		} else {
-			openxpm = trashxpm;
-			openmask = trashxpmmask;
+			xpm = trashxpm;
+			mask = trashxpmmask;
+			openxpm = trashopenxpm;
+			openmask = trashopenxpmmask;
 		}
 		name = g_strdup(_("Trash"));
 		break;
@@ -1005,12 +1039,14 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		name = g_strdup(_("Draft"));
 		break;
 	default:
-		xpm = folderxpm;
-		mask = folderxpmmask;
 		if (item->hide_read_msgs) {
+			xpm = folderhrmxpm;
+			mask = folderhrmxpmmask;
 			openxpm = folderopenhrmxpm;
 			openmask = folderopenhrmxpmmask;
 		} else {
+			xpm = folderxpm;
+			mask = folderxpmmask;
 			openxpm = folderopenxpm;
 			openmask = folderopenxpmmask;
 		}
@@ -2460,4 +2496,11 @@ void folderview_set_target_folder_color(gint color_op)
 			firstone = 0;
 		}
 	}
+}
+
+void folderview_reflect_prefs_pixmap_theme(FolderView *folderview)
+{
+	folderview_init(folderview);
+	folderview_set_all();
+	folderview_select(folderview, folderview->summaryview->folder_item);
 }

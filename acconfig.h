@@ -39,5 +39,7 @@
 
 #undef CLAWS
 
+#undef PACKAGE_DATA_DIR
+
 /* Has ispell path */
 #undef ISPELL_PATH

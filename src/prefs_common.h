@@ -209,6 +209,7 @@ struct _PrefsCommon
 	RecvDialogMode recv_dialog_mode;
 	NextUnreadMsgDialogShow next_unread_msg_dialog;
 	gboolean add_address_by_click;
+	gchar *pixmap_theme_path;
 
 	/* Other */
 	gchar *uri_cmd;

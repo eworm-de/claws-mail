@@ -54,6 +54,16 @@
 	} \
 }
 
+#define PIXMAP_CREATE_FROM_FILE(widget, pixmap, mask, filename) \
+{ \
+	if (!pixmap) { \
+		GtkStyle *style = gtk_widget_get_style(widget); \
+		pixmap = gdk_pixmap_create_from_xpm \
+			(widget->window, &mask, \
+			 &style->bg[GTK_STATE_NORMAL], filename); \
+	} \
+}
+
 #define GTK_WIDGET_PTR(wid)	(*(GtkWidget **)wid)
 
 #define GTKUT_CTREE_NODE_SET_ROW_DATA(node, d) \

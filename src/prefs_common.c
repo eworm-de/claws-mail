@@ -53,6 +53,7 @@
 #include "folder.h"
 #include "filesel.h"
 #include "folderview.h"
+#include "stock_pixmap.h"
 
 #if USE_PSPELL
 #include "gtkspell.h"
@@ -200,6 +201,8 @@ static struct Interface {
 	GtkWidget *checkbtn_addaddrbyclick;
 	GtkWidget *optmenu_recvdialog;
  	GtkWidget *optmenu_nextunreadmsgdialog;
+	GtkWidget *entry_pixmap_theme;
+	GtkWidget *combo_pixmap_theme;
 } interface;
 
 static struct Other {
@@ -687,7 +690,10 @@ static PrefParam param[] = {
 	{"add_address_by_click", "FALSE", &prefs_common.add_address_by_click,
 	 P_BOOL, &interface.checkbtn_addaddrbyclick,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-
+	{"pixmap_theme_path", DEFAULT_PIXMAP_THEME, 
+	 &prefs_common.pixmap_theme_path, P_STRING,
+	 &interface.entry_pixmap_theme,	prefs_set_data_from_entry, prefs_set_entry},
+	
 	/* Other */
 	{"uri_open_command", "netscape -remote 'openURL(%s,raise)'",
 	 &prefs_common.uri_cmd, P_STRING,
@@ -1560,8 +1566,8 @@ static void prefs_spelling_create()
 static void prefs_compose_create(void)
 {
 	GtkWidget *vbox1;
-        GtkWidget *vbox2;
-        GtkWidget *vbox3;
+	GtkWidget *vbox2;
+	GtkWidget *vbox3;
 	GtkWidget *hbox1;
 	GtkWidget *hbox2;
 	GtkWidget *btn_quotefmt;
@@ -1577,8 +1583,8 @@ static void prefs_compose_create(void)
 	GtkWidget *checkbtn_autoextedit;
 
 	GtkWidget *frame_autosel;
-        GtkWidget *hbox_autosel;
-        GtkWidget *vbox_autosel;
+	GtkWidget *hbox_autosel;
+	GtkWidget *vbox_autosel;
 	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *checkbtn_forward_account_autosel;
 	GtkWidget *checkbtn_reedit_account_autosel;
@@ -2389,6 +2395,12 @@ static void prefs_interface_create(void)
  	GtkWidget *optmenu_nextunreadmsgdialog_menu;
  	GtkWidget *nextunreadmsgdialog_menuitem;
 
+	GtkWidget *frame_pixmap_theme;
+	GtkWidget *vbox_pixmap_theme;
+	GtkWidget *entry_pixmap_theme;
+	GtkWidget *combo_pixmap_theme;
+	GList *avail_pixmap_themes = NULL;
+
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
@@ -2521,6 +2533,22 @@ static void prefs_interface_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), button_keybind, FALSE, FALSE, 0);
 	gtk_signal_connect (GTK_OBJECT (button_keybind), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_keybind_select), NULL);
+
+ 	PACK_FRAME(vbox1, frame_pixmap_theme, "Pixmap theme");
+ 	
+ 	vbox_pixmap_theme = gtk_vbox_new(FALSE, 0);
+ 	gtk_widget_show(vbox_pixmap_theme);
+ 	gtk_container_add(GTK_CONTAINER(frame_pixmap_theme), vbox_pixmap_theme);
+ 	gtk_container_set_border_width(GTK_CONTAINER(vbox_pixmap_theme), 8);
+ 
+ 	stock_pixmap_get_themes(&avail_pixmap_themes);
+ 
+ 	combo_pixmap_theme = gtk_combo_new ();
+ 	gtk_widget_show (combo_pixmap_theme);
+ 	gtk_box_pack_start (GTK_BOX (vbox_pixmap_theme), combo_pixmap_theme, TRUE, TRUE, 0);
+ 	gtk_combo_set_popdown_strings(GTK_COMBO(combo_pixmap_theme), avail_pixmap_themes);
+ 	entry_pixmap_theme = GTK_COMBO (combo_pixmap_theme)->entry;
+
 	/* interface.checkbtn_emacs          = checkbtn_emacs; */
 	interface.checkbtn_openunread         = checkbtn_openunread;
 	interface.checkbtn_openinbox          = checkbtn_openinbox;
@@ -2528,6 +2556,8 @@ static void prefs_interface_create(void)
 	interface.optmenu_recvdialog	      = optmenu_recvdialog;
 	interface.checkbtn_addaddrbyclick     = checkbtn_addaddrbyclick;
 	interface.optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
+	interface.combo_pixmap_theme		= combo_pixmap_theme;
+ 	interface.entry_pixmap_theme		= entry_pixmap_theme;
 }
 
 static void prefs_other_create(void)
@@ -3963,6 +3993,8 @@ static void prefs_common_apply(void)
 {
 	prefs_set_data_from_dialog(param);
 	main_window_reflect_prefs_all();
+	main_window_reflect_prefs_pixmap_theme();
+	compose_reflect_prefs_pixmap_theme();
 	prefs_common_save_config();
 
 	inc_autocheck_timer_remove();

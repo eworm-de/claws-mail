@@ -100,6 +100,7 @@ struct _SummaryView
 	GtkWidget *scrolledwin;
 	GtkWidget *ctree;
 	GtkWidget *hbox;
+	GtkWidget *folder_pixmap;
 	GtkWidget *statlabel_folder;
 	GtkWidget *statlabel_select;
 	GtkWidget *statlabel_msgs;
@@ -260,4 +261,5 @@ void summary_toggle_show_read_messages (SummaryView *summaryview);
 
 void summary_toggle_view_real	(SummaryView	*summaryview);
 
+void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview);
 #endif /* __SUMMARY_H__ */

@@ -441,6 +441,8 @@ static void key_pressed (GtkWidget *widget,
 				GdkEventKey *event,
 				gpointer data);
 
+static void set_toolbar_style(MainWindow *mainwin);
+
 #define  SEPARATE_ACTION  667
 
 static GtkItemFactoryEntry mainwin_entries[] =
@@ -767,6 +769,7 @@ MainWindow *main_window_create(SeparateType type)
 
 	gtk_widget_realize(window);
 	gtk_widget_add_events(window, GDK_KEY_PRESS_MASK|GDK_KEY_RELEASE_MASK);
+	
 
 	gtkut_widget_set_app_icon(window);
 
@@ -1089,6 +1092,24 @@ void main_window_reflect_prefs_all(void)
 					  prefs_common.display_header_pane);
 	}
 }
+
+void main_window_reflect_prefs_pixmap_theme(void)
+{
+	GList *cur;
+	MainWindow *mainwin;
+
+	for (cur = mainwin_list; cur != NULL; cur = cur->next) {
+		mainwin = (MainWindow *)cur->data;
+		gtk_container_remove(GTK_CONTAINER(mainwin->handlebox), GTK_WIDGET(mainwin->toolbar));
+		mainwin->toolbar = NULL;
+		main_window_toolbar_create(mainwin, mainwin->handlebox);
+		set_toolbar_style(mainwin);
+		main_window_set_toolbar_sensitive(mainwin);
+		folderview_reflect_prefs_pixmap_theme(mainwin->folderview);
+		summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
+	}
+}
+
 
 void main_window_set_summary_column(void)
 {
@@ -2429,30 +2450,10 @@ static void toggle_toolbar_cb(MainWindow *mainwin, guint action,
 	set_toolbar_replysender_button(mainwin, (ToolbarStyle)action);
 	set_toolbar_forward_button(mainwin, (ToolbarStyle)action);*/
 	
-	switch ((ToolbarStyle)action) {
-	case TOOLBAR_NONE:
-		gtk_widget_hide(mainwin->handlebox);
-	case TOOLBAR_ICON:
-		gtk_toolbar_set_style(GTK_TOOLBAR(mainwin->toolbar),
-				      GTK_TOOLBAR_ICONS);
-		break;
-	case TOOLBAR_TEXT:
-		gtk_toolbar_set_style(GTK_TOOLBAR(mainwin->toolbar),
-				      GTK_TOOLBAR_TEXT);
-		break;
-	case TOOLBAR_BOTH:
-		gtk_toolbar_set_style(GTK_TOOLBAR(mainwin->toolbar),
-				      GTK_TOOLBAR_BOTH);
-		break;
-	}
-
-	if (action != TOOLBAR_NONE) {
-		gtk_widget_show(mainwin->handlebox);
-		gtk_widget_queue_resize(mainwin->handlebox);
-	}
-
 	mainwin->toolbar_style = (ToolbarStyle)action;
 	prefs_common.toolbar_style = (ToolbarStyle)action;
+	
+	set_toolbar_style(mainwin);
 }
 
 static void toggle_statusbar_cb(MainWindow *mainwin, guint action,
@@ -3000,3 +3001,29 @@ static void key_pressed (GtkWidget *widget, GdkEventKey *event,	gpointer data)
 }
 
 #undef BREAK_ON_MODIFIER_KEY
+
+static void set_toolbar_style(MainWindow *mainwin)
+{
+	switch (prefs_common.toolbar_style) {
+	case TOOLBAR_NONE:
+		gtk_widget_hide(mainwin->handlebox);
+		break;
+	case TOOLBAR_ICON:
+		gtk_toolbar_set_style(GTK_TOOLBAR(mainwin->toolbar),
+				      GTK_TOOLBAR_ICONS);
+		break;
+	case TOOLBAR_TEXT:
+		gtk_toolbar_set_style(GTK_TOOLBAR(mainwin->toolbar),
+				      GTK_TOOLBAR_TEXT);
+		break;
+	case TOOLBAR_BOTH:
+		gtk_toolbar_set_style(GTK_TOOLBAR(mainwin->toolbar),
+				      GTK_TOOLBAR_BOTH);
+		break;
+	}
+	
+	if (prefs_common.toolbar_style != TOOLBAR_NONE) {
+		gtk_widget_show(mainwin->handlebox);
+		gtk_widget_queue_resize(mainwin->handlebox);
+	}
+}

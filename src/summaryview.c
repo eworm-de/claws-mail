@@ -596,6 +596,7 @@ void summary_init(SummaryView *summaryview)
 	gtk_box_pack_start(GTK_BOX(summaryview->hbox), pixmap, FALSE, FALSE, 4);
 	gtk_box_reorder_child(GTK_BOX(summaryview->hbox), pixmap, 0);
 	gtk_widget_show(pixmap);
+	summaryview->folder_pixmap = pixmap;
 
 	summary_clear_list(summaryview);
 	summary_set_column_titles(summaryview);
@@ -2690,9 +2691,8 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 
 	gtk_ctree_node_set_row_style(ctree, row, style);
 
-        if (MSG_GET_COLORLABEL(flags))
-		summary_set_colorlabel_color(ctree, row,
-					     MSG_GET_COLORLABEL_VALUE(flags));
+	if (MSG_GET_COLORLABEL(flags))
+		summary_set_colorlabel_color(ctree, row, MSG_GET_COLORLABEL_VALUE(flags));
 }
 
 void summary_set_marks_selected(SummaryView *summaryview)
@@ -5037,6 +5037,36 @@ static void summaryview_subject_filter_init(PrefsFolderItem *prefs)
 			}
 		}
 	}
+}
+
+void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GtkCList *clist = GTK_CLIST(summaryview->ctree);
+	GtkCTreeNode *node;
+	GtkWidget *pixmap;
+
+	gtk_widget_destroy(summaryview->folder_pixmap);
+
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_MARK, &markxpm, &markxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_DELETED, &deletedxpm, &deletedxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_NEW, &newxpm, &newxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_UNREAD, &unreadxpm, &unreadxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_REPLIED, &repliedxpm, &repliedxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_FORWARDED, &forwardedxpm, &forwardedxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP, &clipxpm, &clipxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_LOCKED, &lockedxpm, &lockedxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_IGNORETHREAD, &ignorethreadxpm, &ignorethreadxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP_KEY, &clipkeyxpm, &clipkeyxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_KEY, &keyxpm, &keyxpmmask);
+
+	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_DIR_OPEN);
+	gtk_box_pack_start(GTK_BOX(summaryview->hbox), pixmap, FALSE, FALSE, 4);
+	gtk_box_reorder_child(GTK_BOX(summaryview->hbox), pixmap, 0);
+	gtk_widget_show(pixmap);
+	summaryview->folder_pixmap = pixmap;
+	
+	summary_show(summaryview, summaryview->folder_item, FALSE);
 }
 
 

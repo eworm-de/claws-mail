@@ -20,9 +20,13 @@
 #include <glib.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkpixmap.h>
+#include <string.h>
+#include <dirent.h>
 
 #include "stock_pixmap.h"
 #include "gtkutils.h"
+#include "prefs_common.h"
+#include "defs.h"
 
 #include "pixmaps/address.xpm"
 #include "pixmaps/book.xpm"
@@ -34,14 +38,14 @@
 #include "pixmaps/complete.xpm"
 #include "pixmaps/continue.xpm"
 #include "pixmaps/deleted.xpm"
-#include "pixmaps/dir-close.xpm"
-#include "pixmaps/dir-open.xpm"
-#include "pixmaps/dir-open-hrm.xpm"
+#include "pixmaps/dir_close.xpm"
+#include "pixmaps/dir_open.xpm"
+#include "pixmaps/dir_open_hrm.xpm"
 #include "pixmaps/error.xpm"
 #include "pixmaps/forwarded.xpm"
 #include "pixmaps/group.xpm"
 #include "pixmaps/inbox.xpm"
-#include "pixmaps/inbox-hrm.xpm"
+#include "pixmaps/inbox_hrm.xpm"
 #include "pixmaps/interface.xpm"
 #include "pixmaps/jpilot.xpm"
 #include "pixmaps/key.xpm"
@@ -51,30 +55,30 @@
 #include "pixmaps/locked.xpm"
 #include "pixmaps/new.xpm"
 #include "pixmaps/outbox.xpm"
-#include "pixmaps/outbox-hrm.xpm"
+#include "pixmaps/outbox_hrm.xpm"
 #include "pixmaps/replied.xpm"
-#include "pixmaps/stock_close.xpm"
-#include "pixmaps/stock_down_arrow.xpm"
-#include "pixmaps/stock_exec.xpm"
-#include "pixmaps/stock_mail.xpm"
-#include "pixmaps/stock_mail_attach.xpm"
-#include "pixmaps/stock_mail_compose.xpm"
-#include "pixmaps/stock_mail_forward.xpm"
-#include "pixmaps/stock_mail_receive.xpm"
-#include "pixmaps/stock_mail_receive_all.xpm"
-#include "pixmaps/stock_mail_reply.xpm"
-#include "pixmaps/stock_mail_reply_to_all.xpm"
-#include "pixmaps/stock_mail_reply_to_author.xpm"
-#include "pixmaps/stock_mail_send.xpm"
-#include "pixmaps/stock_mail_send_queue.xpm"
-#include "pixmaps/stock_news_compose.xpm"
-#include "pixmaps/stock_paste.xpm"
-#include "pixmaps/stock_preferences.xpm"
-#include "pixmaps/stock_properties.xpm"
-#include "pixmaps/sylpheed-logo.xpm"
-#include "pixmaps/tb_address_book.xpm"
+#include "pixmaps/close.xpm"
+#include "pixmaps/down_arrow.xpm"
+#include "pixmaps/exec.xpm"
+#include "pixmaps/mail.xpm"
+#include "pixmaps/mail_attach.xpm"
+#include "pixmaps/mail_compose.xpm"
+#include "pixmaps/mail_forward.xpm"
+#include "pixmaps/mail_receive.xpm"
+#include "pixmaps/mail_receive_all.xpm"
+#include "pixmaps/mail_reply.xpm"
+#include "pixmaps/mail_reply_to_all.xpm"
+#include "pixmaps/mail_reply_to_author.xpm"
+#include "pixmaps/mail_send.xpm"
+#include "pixmaps/mail_send_queue.xpm"
+#include "pixmaps/news_compose.xpm"
+#include "pixmaps/paste.xpm"
+#include "pixmaps/preferences.xpm"
+#include "pixmaps/properties.xpm"
+#include "pixmaps/sylpheed_logo.xpm"
+#include "pixmaps/address_book.xpm"
 #include "pixmaps/trash.xpm"
-#include "pixmaps/trash-hrm.xpm"
+#include "pixmaps/trash_hrm.xpm"
 #include "pixmaps/unread.xpm"
 #include "pixmaps/vcard.xpm"
 #include "pixmaps/ignorethread.xpm"
@@ -86,64 +90,83 @@ struct _StockPixmapData
 	gchar **data;
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
+	gchar *file;
+	gchar *icon_path;
 };
+
+static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname);
 
 static StockPixmapData pixmaps[] =
 {
-	{address_xpm			, NULL, NULL},
-	{book_xpm			, NULL, NULL},
-	{category_xpm			, NULL, NULL},
-	{checkbox_off_xpm		, NULL, NULL},
-	{checkbox_on_xpm		, NULL, NULL},
-	{clip_xpm			, NULL, NULL},
-	{clipkey_xpm			, NULL, NULL},
-	{complete_xpm			, NULL, NULL},
-	{continue_xpm			, NULL, NULL},
-	{deleted_xpm			, NULL, NULL},
-	{dir_close_xpm			, NULL, NULL},
-	{dir_open_xpm			, NULL, NULL},
-	{dir_open_hrm_xpm		, NULL, NULL},
-	{error_xpm			, NULL, NULL},
-	{forwarded_xpm			, NULL, NULL},
-	{group_xpm			, NULL, NULL},
-	{inbox_xpm			, NULL, NULL},
-	{inbox_hrm_xpm			, NULL, NULL},
-	{interface_xpm			, NULL, NULL},
-	{jpilot_xpm			, NULL, NULL},
-	{key_xpm			, NULL, NULL},
-	{ldap_xpm			, NULL, NULL},
-	{linewrap_xpm			, NULL, NULL},
-	{mark_xpm			, NULL, NULL},
-	{locked_xpm			, NULL, NULL},
-	{new_xpm			, NULL, NULL},
-	{outbox_xpm			, NULL, NULL},
-	{outbox_hrm_xpm			, NULL, NULL},
-	{replied_xpm			, NULL, NULL},
-	{stock_close_xpm		, NULL, NULL},
-	{stock_down_arrow_xpm		, NULL, NULL},
-	{stock_exec_xpm			, NULL, NULL},
-	{stock_mail_xpm			, NULL, NULL},
-	{stock_mail_attach_xpm		, NULL, NULL},
-	{stock_mail_compose_xpm		, NULL, NULL},
-	{stock_mail_forward_xpm		, NULL, NULL},
-	{stock_mail_receive_xpm		, NULL, NULL},
-	{stock_mail_receive_all_xpm	, NULL, NULL},
-	{stock_mail_reply_xpm		, NULL, NULL},
-	{stock_mail_reply_to_all_xpm	, NULL, NULL},
-	{stock_mail_reply_to_author_xpm , NULL, NULL},
-	{stock_mail_send_xpm		, NULL, NULL},
-	{stock_mail_send_queue_xpm	, NULL, NULL},
-	{stock_news_compose_xpm		, NULL, NULL},
-	{stock_paste_xpm		, NULL, NULL},
-	{stock_preferences_xpm		, NULL, NULL},
-	{stock_properties_xpm		, NULL, NULL},
-	{sylpheed_logo_xpm		, NULL, NULL},
-	{tb_address_book_xpm		, NULL, NULL},
-	{trash_xpm			, NULL, NULL},
-	{trash_hrm_xpm			, NULL, NULL},
-	{unread_xpm			, NULL, NULL},
-	{vcard_xpm			, NULL, NULL},
-	{ignorethread_xpm		, NULL, NULL},
+	{address_xpm			, NULL, NULL, "address", "  "},
+	{address_book_xpm		, NULL, NULL, "address_book", "  "},
+	{book_xpm				, NULL, NULL, "book", "  "},
+	{category_xpm			, NULL, NULL, "category", "  "},
+	{checkbox_off_xpm		, NULL, NULL, "checkbox_off", "  "},
+	{checkbox_on_xpm		, NULL, NULL, "checkbox_on", "  "},
+	{clip_xpm				, NULL, NULL, "clip", "  "},
+	{clipkey_xpm			, NULL, NULL, "clipkey", "  "},
+	{close_xpm				, NULL, NULL, "close", "  "},
+	{complete_xpm			, NULL, NULL, "complete", "  "},
+	{continue_xpm			, NULL, NULL, "continue", "  "},
+	{deleted_xpm			, NULL, NULL, "deleted", "  "},
+	{dir_close_xpm			, NULL, NULL, "dir_close", "  "},
+	{dir_close_xpm			, NULL, NULL, "dir_close_hrm", " "},
+	{dir_open_xpm			, NULL, NULL, "dir_open", "  "},
+	{dir_open_hrm_xpm		, NULL, NULL, "dir_open_hrm", "  "},
+	{down_arrow_xpm			, NULL, NULL, "down_arrow", "  "},
+	{mail_compose_xpm		, NULL, NULL, "edit_extern", "  "},
+	{error_xpm				, NULL, NULL, "error", "  "},
+	{exec_xpm				, NULL, NULL, "exec", "  "},
+	{forwarded_xpm			, NULL, NULL, "forwarded", "  "},
+	{group_xpm				, NULL, NULL, "group", "  "},
+	{ignorethread_xpm		, NULL, NULL, "ignorethread", "  "},
+	{inbox_xpm				, NULL, NULL, "inbox_close", "  "},
+	{inbox_hrm_xpm			, NULL, NULL, "inbox_close_hrm", "  "},
+	{inbox_xpm				, NULL, NULL, "inbox_open", "  "},
+	{inbox_hrm_xpm			, NULL, NULL, "inbox_open_hrm", "  "},
+	{paste_xpm				, NULL, NULL, "insert_file", "  "},
+	{interface_xpm			, NULL, NULL, "interface", "  "},
+	{jpilot_xpm				, NULL, NULL, "jpilot", "  "},
+	{key_xpm				, NULL, NULL, "key", "  "},
+	{ldap_xpm				, NULL, NULL, "ldap", "  "},
+	{linewrap_xpm			, NULL, NULL, "linewrap", "  "},
+	{locked_xpm				, NULL, NULL, "locked", "  "},
+	{mail_xpm				, NULL, NULL, "mail", "  "},
+	{mail_attach_xpm		, NULL, NULL, "mail_attach", "  "},
+	{mail_compose_xpm		, NULL, NULL, "mail_compose", "  "},
+	{mail_forward_xpm		, NULL, NULL, "mail_forward", "  "},
+	{mail_receive_xpm		, NULL, NULL, "mail_receive", "  "},
+	{mail_receive_all_xpm	, NULL, NULL, "mail_receive_all", "  "},
+	{mail_reply_xpm			, NULL, NULL, "mail_reply", "  "},
+	{mail_reply_to_all_xpm	, NULL, NULL, "mail_reply_to_all", "  "},
+	{mail_reply_to_author_xpm
+							, NULL, NULL, "mail_reply_to_author", "  "},
+	{mail_send_xpm			, NULL, NULL, "mail_send", "  "},
+	{mail_send_queue_xpm	, NULL, NULL, "mail_send_queue", "  "},
+	{mail_xpm				, NULL, NULL, "mail_sign", "  "},
+	{mark_xpm				, NULL, NULL, "mark", "  "},
+	{new_xpm				, NULL, NULL, "new", "  "},
+	{news_compose_xpm		, NULL, NULL, "news_compose", "  "},
+	{outbox_xpm				, NULL, NULL, "outbox_close", "  "},
+	{outbox_hrm_xpm			, NULL, NULL, "outbox_close_hrm", "  "},
+	{outbox_xpm				, NULL, NULL, "outbox_open", "  "},
+	{outbox_hrm_xpm			, NULL, NULL, "outbox_open_hrm", "  "},
+	{replied_xpm			, NULL, NULL, "replied", "  "},
+	{paste_xpm				, NULL, NULL, "paste", "  "},
+	{preferences_xpm		, NULL, NULL, "preferences", "  "},
+	{properties_xpm			, NULL, NULL, "properties", "  "},
+	{outbox_xpm				, NULL, NULL, "queue_close", "  "},
+	{outbox_hrm_xpm			, NULL, NULL, "queue_close_hrm", "  "},
+	{outbox_xpm				, NULL, NULL, "queue_open", "  "},
+	{outbox_hrm_xpm			, NULL, NULL, "queue_open_hrm", "  "},
+	{sylpheed_logo_xpm		, NULL, NULL, "sylpheed_logo", "  "},
+	{trash_xpm				, NULL, NULL, "trash_open", "  "},
+	{trash_hrm_xpm			, NULL, NULL, "trash_open_hrm", "  "},
+	{trash_xpm				, NULL, NULL, "trash_close", "  "},
+	{trash_hrm_xpm			, NULL, NULL, "trash_close_hrm", "  "},
+	{unread_xpm				, NULL, NULL, "unread", "  "},
+	{vcard_xpm				, NULL, NULL, "vcard", "  "},
 };
 
 /* return newly constructed GtkPixmap from GdkPixmap */
@@ -173,13 +196,86 @@ gint stock_pixmap_gdk(GtkWidget *window, StockPixmap icon,
 
 	pix_d = &pixmaps[icon];
 
-	if (!pix_d->pixmap) {
-		PIXMAP_CREATE(window, pix_d->pixmap, pix_d->mask,
-			      pix_d->data);
+	if (!pix_d->pixmap || (strcmp(pix_d->icon_path, prefs_common.pixmap_theme_path) != 0)) {
+		GdkPixmap *pix = NULL;
+	
+		if (strcmp(prefs_common.pixmap_theme_path, DEFAULT_PIXMAP_THEME) != 0) {
+			if ( is_dir_exist(prefs_common.pixmap_theme_path) ) {
+				char *icon_file_name = g_strconcat(prefs_common.pixmap_theme_path,
+											 G_DIR_SEPARATOR_S,
+											 pix_d->file,
+											 ".xpm",
+											 NULL);
+				
+				if (file_exist(icon_file_name, FALSE))
+					PIXMAP_CREATE_FROM_FILE(window, pix, pix_d->mask, icon_file_name);
+
+				if (pix) pix_d->icon_path = prefs_common.pixmap_theme_path;
+				g_free(icon_file_name);
+			} else {
+				/* even the path does not exist (deleted between two sessions), so
+				set the preferences to the internal theme */
+				prefs_common.pixmap_theme_path = DEFAULT_PIXMAP_THEME;
+			}
+		}
+		pix_d->pixmap = pix;
 	}
 
+	if (!pix_d->pixmap) {
+		PIXMAP_CREATE(window, pix_d->pixmap, pix_d->mask, pix_d->data);
+		if (pix_d->pixmap) pix_d->icon_path = DEFAULT_PIXMAP_THEME;	
+	}
+
+	g_return_val_if_fail(pix_d->pixmap != NULL, -1);
+	
 	if (pixmap) *pixmap = pix_d->pixmap;
 	if (mask)   *mask   = pix_d->mask;
 
 	return 0;
+}
+
+static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname)
+{
+	struct dirent **namelist;
+	int n;
+
+	n = scandir(dirname, &namelist, 0, alphasort);
+	if (n < 0)
+		g_error("scandir");
+	else {
+		while(n--) {
+			gchar *entry = namelist[n]->d_name;
+			gchar *fullentry = g_strconcat(dirname, G_DIR_SEPARATOR_S, entry, NULL);
+			if ((strcmp(entry, ".") != 0) && (strcmp(entry, "..") != 0) && (is_dir_exist(fullentry))) {
+				gchar *filetoexist;
+				int i;
+				for ( i = 0; i < N_STOCK_PIXMAPS; i++) {
+					filetoexist = g_strconcat(fullentry, G_DIR_SEPARATOR_S, pixmaps[i].file, ".xpm", NULL);
+					if (file_exist(filetoexist, FALSE)) {
+						*list = g_list_append(*list, fullentry);
+						break;
+					}
+					g_free(filetoexist);
+				}
+			}
+			g_free(namelist[n]);
+		}
+	g_free(namelist);
+	}
+}
+
+void stock_pixmap_get_themes(GList **list)
+{
+	gchar *defaulttheme = DEFAULT_PIXMAP_THEME;
+	gchar *userthemes = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
+				     RC_DIR, G_DIR_SEPARATOR_S, PIXMAP_THEME_DIR, NULL);
+	gchar *systemthemes = g_strconcat(PACKAGE_DATA_DIR, G_DIR_SEPARATOR_S,
+					 PIXMAP_THEME_DIR, NULL);
+	
+	*list = g_list_append(*list, defaulttheme);
+	
+	stock_pixmap_find_themes_in_dir(list, userthemes);
+	stock_pixmap_find_themes_in_dir(list, systemthemes);
+	
+	g_free(userthemes);
 }

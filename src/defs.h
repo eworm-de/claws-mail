@@ -104,4 +104,7 @@
 #define BOLD_FONT   prefs_common.boldfont
 #define SMALL_FONT	prefs_common.smallfont
 
+#define DEFAULT_PIXMAP_THEME	"INTERNAL_DEFAULT"
+#define PIXMAP_THEME_DIR		"themes"
+
 #endif /* __DEFS_H__ */
