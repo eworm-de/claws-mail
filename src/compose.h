@@ -33,8 +33,8 @@ typedef struct _AttachInfo	AttachInfo;
 #include "prefs_account.h"
 #include "undo.h"
 
-#ifdef USE_PSPELL
-#include "gtkspell.h"
+#ifdef USE_ASPELL
+#include "gtkaspell.h"
 #endif
 
 typedef enum
@@ -192,9 +192,9 @@ struct _Compose
 	gint   exteditor_readdes;
 	gint   exteditor_tag;
 
-#if USE_PSPELL
-        /* Pspell spell checker */
-        GtkPspell *gtkpspell;
+#if USE_ASPELL
+        /* GNU/aspell spell checker */
+        GtkAspell *gtkaspell;
 #endif
 
  	/* Priority */

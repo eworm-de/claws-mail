@@ -1,3 +1,33 @@
+2002-08-28 [melvin]	0.8.2claws3
+
+	Merged the GNU_aspell_branch:
+		Support of new GNU/aspell is now included and the old pspell
+		is not supported anymore.
+		See README.claws
+
+	* README.claws
+		Updated spell checker text to reflect the switch to GNU/aspell
+
+	* ac/aspell.m4 		*** NEW ***
+	* src/gtkaspell.[ch]	*** NEW *** 
+	* ac/pspell.m4          *** DELETED *** 
+	* src/gtkspell.[ch]     *** DELETED ***
+
+	* ac/Makefile.am
+		Updated for GNU/aspell support
+
+	* po/POTFILES.in
+		Replaced gtkspell.c by gtkaspell.c
+
+	* acconfig.h
+	* src/Makefile.am
+	* src/about.c
+	* src/compose.[ch]
+	* src/crash.c
+	* src/main.c
+	* src/prefs_common.[ch]
+		Updated for GNU/aspell support
+
 2002-08-28 [paul]	0.8.2claws2
 
 	* sync with 0.8.2cvs4

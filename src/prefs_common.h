@@ -96,12 +96,12 @@ struct _PrefsCommon
 	gboolean block_cursor;
 	gchar *quote_chars;
 	
-#if USE_PSPELL
-	gboolean enable_pspell;
-	gchar *pspell_path;
+#if USE_ASPELL
+	gboolean enable_aspell;
+	gchar *aspell_path;
 	gchar *dictionary;
 	gint misspelled_col;
-	gint pspell_sugmode;
+	gint aspell_sugmode;
 	gboolean check_while_typing;
 	gboolean use_alternate;
 #endif

@@ -480,7 +480,7 @@ void compose_headerentry_key_press_event_cb(GtkWidget	       *entry,
 
 static void compose_show_first_last_header (Compose *compose, gboolean show_first);
 
-#if USE_PSPELL
+#if USE_ASPELL
 static void compose_check_all		   (Compose *compose);
 static void compose_highlight_all	   (Compose *compose);
 static void compose_check_backwards	   (Compose *compose);
@@ -599,7 +599,7 @@ static GtkItemFactoryEntry compose_entries[] =
 					"<control><alt>L", compose_wrap_line_all, 0, NULL},
 	{N_("/_Edit/Edit with e_xternal editor"),
 					"<shift><control>X", compose_ext_editor_cb, 0, NULL},
-#if USE_PSPELL
+#if USE_ASPELL
 	{N_("/_Spelling"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Spelling/_Check all or check selection"),
 					NULL, compose_check_all, 0, NULL},
@@ -4412,8 +4412,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	GtkWidget *tmpl_menu;
 	gint n_entries;
 
-#if USE_PSPELL
-        GtkPspell * gtkpspell = NULL;
+#if USE_ASPELL
+        GtkAspell * gtkaspell = NULL;
 #endif
 
 	static GdkGeometry geometry;
@@ -4729,31 +4729,31 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	compose->redirect_filename = NULL;
 	compose->undostruct = undostruct;
-#if USE_PSPELL
+#if USE_ASPELL
 	
 	menu_set_sensitive(ifactory, "/Spelling", FALSE);
-        if (prefs_common.enable_pspell) {
-		gtkpspell = gtkpspell_new((const gchar*)prefs_common.dictionary,
+        if (prefs_common.enable_aspell) {
+		gtkaspell = gtkaspell_new((const gchar*)prefs_common.dictionary,
 					  conv_get_current_charset_str(),
 					  prefs_common.misspelled_col,
 					  prefs_common.check_while_typing,
 					  prefs_common.use_alternate,
 					  GTK_STEXT(text));
-		if (!gtkpspell) {
-			alertpanel_error(_("Spell checker could not be started.\n%s"), gtkpspellcheckers->error_message);
-			gtkpspell_checkers_reset_error();
+		if (!gtkaspell) {
+			alertpanel_error(_("Spell checker could not be started.\n%s"), gtkaspellcheckers->error_message);
+			gtkaspell_checkers_reset_error();
 		} else {
 
 			GtkWidget *menuitem;
 
-			if (!gtkpspell_set_sug_mode(gtkpspell, prefs_common.pspell_sugmode)) {
-				debug_print("Pspell: could not set suggestion mode %s\n",
-				    gtkpspellcheckers->error_message);
-				gtkpspell_checkers_reset_error();
+			if (!gtkaspell_set_sug_mode(gtkaspell, prefs_common.aspell_sugmode)) {
+				debug_print("Aspell: could not set suggestion mode %s\n",
+				    gtkaspellcheckers->error_message);
+				gtkaspell_checkers_reset_error();
 			}
 
 			menuitem = gtk_item_factory_get_item(ifactory, "/Spelling/Spelling Configuration");
-			gtkpspell_populate_submenu(gtkpspell, menuitem);
+			gtkaspell_populate_submenu(gtkaspell, menuitem);
 			menu_set_sensitive(ifactory, "/Spelling", TRUE);
 			}
         }
@@ -4767,8 +4767,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->use_followupto = FALSE;
 #endif
 
-#if USE_PSPELL
-        compose->gtkpspell      = gtkpspell;
+#if USE_ASPELL
+        compose->gtkaspell      = gtkaspell;
 #endif
 
 #if 0 /* NEW COMPOSE GUI */
@@ -5218,9 +5218,9 @@ static void compose_destroy(Compose *compose)
 	if (addressbook_get_target_compose() == compose)
 		addressbook_set_target_compose(NULL);
 
-#if USE_PSPELL
-        if (compose->gtkpspell) {
-	        gtkpspell_delete(compose->gtkpspell);
+#if USE_ASPELL
+        if (compose->gtkaspell) {
+	        gtkaspell_delete(compose->gtkaspell);
         }
 #endif
 
@@ -6878,23 +6878,23 @@ static gboolean compose_send_control_enter(Compose *compose)
 	return FALSE;
 }
 
-#if USE_PSPELL
+#if USE_ASPELL
 static void compose_check_all(Compose *compose)
 {
-	if (compose->gtkpspell)
-		gtkpspell_check_all(compose->gtkpspell);
+	if (compose->gtkaspell)
+		gtkaspell_check_all(compose->gtkaspell);
 }
 
 static void compose_highlight_all(Compose *compose)
 {
-	if (compose->gtkpspell)
-		gtkpspell_highlight_all(compose->gtkpspell);
+	if (compose->gtkaspell)
+		gtkaspell_highlight_all(compose->gtkaspell);
 }
 
 static void compose_check_backwards(Compose *compose)
 {
-	if (compose->gtkpspell)	
-		gtkpspell_check_backwards(compose->gtkpspell);
+	if (compose->gtkaspell)	
+		gtkaspell_check_backwards(compose->gtkaspell);
 	else {
 		GtkItemFactory *ifactory;
 		ifactory = gtk_item_factory_from_widget(compose->popupmenu);
@@ -6905,8 +6905,8 @@ static void compose_check_backwards(Compose *compose)
 
 static void compose_check_forwards_go(Compose *compose)
 {
-	if (compose->gtkpspell)	
-		gtkpspell_check_forwards_go(compose->gtkpspell);
+	if (compose->gtkaspell)	
+		gtkaspell_check_forwards_go(compose->gtkaspell);
 	else {
 		GtkItemFactory *ifactory;
 		ifactory = gtk_item_factory_from_widget(compose->popupmenu);

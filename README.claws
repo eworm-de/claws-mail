@@ -49,7 +49,7 @@ Sylpheed or Main.
   -------------------------------
 
   From the user perspective Claws is just a fancy Sylpheed, so it uses the
-  same sylpheed setting files located in ~/.sylpheed.
+  same Sylpheed setting files located in ~/.sylpheed.
 
   It's always a good idea to back up all files in ~/.sylpheed in case
   you want to switch back to Sylpheed. (You don't have to backup the
@@ -61,7 +61,7 @@ Sylpheed or Main.
   * Why does the advanced filtering system not work?
 
     Claws uses the new filtering system as soon as you define a new rule for it.
-    Your old sylpheed filter rules will not be used. In subdirectory tools/ of
+    Your old Sylpheed filter rules will not be used. In subdirectory tools/ of
     the distribution there is a Perl script called filter_conv.pl which converts
     old filter rules to the claws filtering system.
   
@@ -285,71 +285,59 @@ are hardly noticeable, but deserve mentioning:
   a. Requirements
   ---------------
 
-  The spell checker in sylpheed requires the Portable Spell Checker
-  Interface Library pspell (http://pspell.sourceforge.net), version
-  0.12.2 or newer.
+  The spell checker in sylpheed requires the new GNU/aspell library
+  (http://www.gnu.org/software/aspell), version 0.50 or newer.
 
-  You will need also the actual spell checker.  There are two alternatives:
-
-     i) ispell (http://fmg-www.cs.ucla.edu/fmg-members/geoff/ispell.html),
-        which is found on quasi every distribution.  You have then to
-        install the pspell-ispell module found at the pspell site.
-
-    ii) aspell (http://aspell.sourceforge.net).  This spell checker
-        must be installed after installing pspell.  The version tested
-        is .33.7 alpha. It has three different suggestion modes (fast
-        -default- , normal, bad spellers), has the ability to learn
-        from mistakes (default). 
-
-  And, last but not least, do not forget to install the dictionaries. Check
-  the corresponding spell checker home page for more information on this.
+  You also need the dictionaries. Check GNU/aspell home page for how
+  to download and install them.
 
   b. Configuring Sylpheed
   -----------------------
 
-  Spell checking is enabled if you configure sylpheed appropriately. Add
-  the option '--enable-pspell' when configuring. E.g.:
+  Spell checking is enabled if you configure Sylpheed appropriately. Add
+  the option '--enable-aspell' when configuring. E.g.:
 
-  ./configure --enable-pspell
+  ./configure --enable-aspell
 
-  The configure script needs 'pspell-config' in your path.  If it is
-  in weird places, use '--with-pspell-prefix' to tell the path to
-  pspell-config.  E.g., if pspell-config is really
-  /foo/bar/pspell-config, then use:
+  The configure script needs the 'aspell' executable to be in your path.
+  If it is in unusual places, use '--with-aspell-prefix' to tell the path of
+  the aspell executable.  E.g., if aspell's full path is
+  /foo/bar/bin/aspell, then use:
 
-  ./configure --enable-pspell --with-pspell-prefix=/foo/bar
+  ./configure --enable-aspell --with-aspell-prefix=/foo/bar
 
-  If you have problems with not found includes or libraries, check
-  first where these are located, and add either options:
+  If ./configure cannot find the includes or libraries of aspell,
+  check first where these are located, and add either following options:
 
-  --with-pspell-includes=/foo/bar/include
+  --with-aspell-includes=/foo/bar/include
 
   or 
 
-  --with-pspell-libs=/foo/bar/lib
+  --with-aspell-libs=/foo/bar/lib
 
   as appropriate.
 
-  Configure script summarizes the options compiled in. Check that
-  configure lists 'Pspell = yes'.
+  The configure script summarizes the options compiled in. Check that
+  it lists 'GNU/aspell = yes'.
 
   Then proceed as usual, with 'make' and 'make install'.
 
   c. Usage
   --------
 
-  NOTE: if you upgraded from 0.7.0claws, please reselect your default
-  dictionary in the preferences.
+  NOTE: if you upgraded from 0.8.1claws or earlier, please reselect 
+  your default dictionary in the preferences.
 
-  After successful compiling, you need to tell sylpheed where your
-  dictionaries reside.  First run 'pspell-config pkgdatadir' on the
+  After successful compiling, you need to tell Sylpheed where your
+  dictionaries reside. The configure script should have found it,
+  but in case it did not, run 'aspell config dict-dir' on the
   shell to get their path.
 
-  Then run sylpheed and go to Configuration -> Common preferences ->
-  Spell Checker.  Check the box 'Enable spell checker (EXPERIMENTAL)' and
+  Then run Sylpheed and go to Configuration -> Common preferences ->
+  Spell Checker.  Check the box 'Enable spell checker' and
   use the file selector ('...' button) to select the path where the
   dictionaries reside.  Within the file selector, go to that directory
-  and select *any* file in the file lists.  Click ok. You should then
+  and select *any* file in the file lists.  Click OK. Then, you should 
   be able to select your default dictionary.
 
   When composing, misspelled words are highlighted.  Click on any
@@ -360,20 +348,19 @@ are hardly noticeable, but deserve mentioning:
   it in this message.  Selecting the next entry "Add to dictionary", which
   is bound to MOD1-Enter combination will add the unknown word to the
   dictionary to learn it.  The next entries are the suggested words. 
-  The first 15 suggestions can be accessed typing one of the first letters
+  The first 15 suggestions can be accessed by typing one of the first letters
   of Latin alphabet (if this does not suit your language, please send
-  a mail to melvin.hadasht@free.fr).  If you are using an aspell 
-  dictionary, you can use its 'learn from mistake' feature, by pressing
-  the MOD1 key and selecting the suggestion (with the keyboard or with
-  the mouse).  See pspell manual §4.7.1 for an explanation of this 
-  feature. 
+  a mail to melvin.hadasht@free.fr). Aspell has a 'learn from mistake'
+  function that can be used by pressing the MOD1 key and selecting the 
+  suggestion (with the keyboard or with the mouse).  See GNU/aspell manual
+  §6.3 for an explanation of this feature (also called 'replacement storing'). 
 
   If you click with the right mouse button everywhere else, or if you
   shift-right-click even on a misspelled word, you get the
   configuration menu.  'Check all' highlights all misspelled words.
   With this menu, you can also change the dictionary while editing.
   Finally, you can change the suggestion mode, and the learn from
-  misktakes feature (only when using an aspell dictionary).
+  misktakes feature.
 
   Spell checking can also be done using keyboard shortcuts.  In the
   "Edit" menu of the compose window, there are two menus "Check backwards
@@ -393,33 +380,7 @@ are hardly noticeable, but deserve mentioning:
   d. Known problems
   -----------------
 
-    i) libtool
-
-    The only real known problems until now are configuration and
-    compilation problems  due to libtool interaction with pspell. 
-
-    If you do not compile pspell/aspell/pspell-ispell yourself, you
-    need to install them with their devel packages.
-
-    Pspell work with dynamic linking of libraries and thus uses the
-    libltdl library of libtool.  If you have weird problems when
-    configuring showing 'libtool', chances are the libtool used when
-    compiling the pspell package is not compatible with what you have
-    on your system.  The best solution, is to install the latest
-    libtool AND compile yourself pspell package.  I can't help more
-    than that in this issue.
-
-    After successfully compiled and used sylpheed with spell checking,
-    the same problem can appear if you upgrade your libtool to a
-    version which libltdl is incompatible to your older one.    The
-    symptoms are a crash when starting to compose.  Disabling spell
-    checking avoids the problem. The solution should be to recompile pspell.
-
-    ii) New installed ispell dictionary are not detected
-
-    Installing a new ispell dictionary needs an additional step. Go
-    to the 'pkgdatadir' and run 'make-ispell-pwli'.  You may need to
-    su root.
+    No known problems as the time of this writing.
 
 * simplify subject string
 -----------------------------------

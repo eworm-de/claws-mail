@@ -273,8 +273,8 @@ int main(int argc, char *argv[])
 	gpgme_register_idle(idle_function_for_gpgme);
 #endif
 
-#if USE_PSPELL
-	gtkpspellcheckers = gtkpspell_checkers_new();
+#if USE_ASPELL
+	gtkaspellcheckers = gtkaspell_checkers_new();
 #endif
 	
 
@@ -351,8 +351,8 @@ int main(int argc, char *argv[])
 
 	addressbook_destroy();
 
-#if USE_PSPELL       
-	gtkpspell_checkers_delete();
+#if USE_ASPELL       
+	gtkaspell_checkers_delete();
 #endif
 
 	return 0;

@@ -154,8 +154,8 @@ static void about_create(void)
 #if USE_JPILOT
 		   " JPilot"
 #endif
-#if USE_PSPELL
-		   " pspell"
+#if USE_ASPELL
+		   " GNU/aspell"
 #endif
 	"");
 

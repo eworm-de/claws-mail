@@ -8,7 +8,7 @@ MINOR_VERSION=8
 MICRO_VERSION=2
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws2
+EXTRA_VERSION=claws3
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -286,17 +286,17 @@ else
 	AC_MSG_RESULT(no)
 fi
 
-dnl PSPELL is user for spell checking
-AC_ARG_ENABLE(pspell,
-	[  --enable-pspell           Enable pspell support [default=no]],
-	[ac_cv_enable_pspell=$enableval], [ac_cv_enable_pspell=no])
-AC_MSG_CHECKING([whether to use pspell])
-if test $ac_cv_enable_pspell = yes; then
+dnl ASPELL is user for spell checking
+AC_ARG_ENABLE(aspell,
+	[  --enable-aspell         Enable GNU/aspell support [default=no]],
+	[ac_cv_enable_aspell=$enableval], [ac_cv_enable_aspell=no])
+AC_MSG_CHECKING([whether to use GNU/aspell])
+if test $ac_cv_enable_aspell = yes; then
 	AC_MSG_RESULT(yes)
-	AM_PATH_PSPELL(.12.2, AC_DEFINE(USE_PSPELL), [use_pspell=no
-						    ac_cv_enable_pspell=no])
-	pspell_path="`pspell-config --pkgdatadir`"
-	AC_DEFINE_UNQUOTED(PSPELL_PATH, "${pspell_path}/")
+	AM_PATH_ASPELL(0.50, AC_DEFINE(USE_ASPELL), [use_aspell=no
+						    ac_cv_enable_aspell=no])
+	aspell_path="`$ASPELL config dict-dir`"
+	AC_DEFINE_UNQUOTED(ASPELL_PATH, "${aspell_path}/")
 else
 	AC_MSG_RESULT(no)
 fi
@@ -404,7 +404,7 @@ echo "OpenSSL       : $ac_cv_enable_ssl"
 echo "compface      : $ac_cv_enable_compface"
 echo "libjconv      : $ac_cv_enable_jconv"
 echo "IPv6          : $ac_cv_enable_ipv6"
-echo "Pspell        : $ac_cv_enable_pspell"
+echo "GNU/aspell    : $ac_cv_enable_aspell"
 echo ""
 echo "The binary will be installed in $prefix/bin"
 echo ""

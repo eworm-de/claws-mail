@@ -1,5 +1,5 @@
-/* gtkpspell - a spell-checking addon for GtkText
- * Copyright (c) 2000 Evan Martin.
+/* gtkaspell - a spell-checking addon for GtkText
+ * Copyright (c) 2000 Evan Martin (original code for ispell).
  * Copyright (c) 2002 Melvin Hadasht.
  *
  * This library is free software; you can redistribute it and/or
@@ -21,13 +21,14 @@
  * Adapted for Sylpheed (Claws) (c) 2001-2002 by Hiroyuki Yamamoto & 
  * The Sylpheed Claws Team.
  * Adapted for pspell (c) 2001-2002 Melvin Hadasht
+ * Adapted for GNU/aspell (c) 2002 Melvin Hadasht
  */
  
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
 
-#if USE_PSPELL
+#if USE_ASPELL
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -50,13 +51,11 @@
 #include <gtk/gtkmenuitem.h>
 #include <gdk/gdkkeysyms.h>
 
-#include <pspell/pspell.h>
-
 #include "intl.h"
 #include "gtkstext.h"
 #include "prefs_common.h"
 #include "utils.h"
-#include "gtkspell.h"
+#include "gtkaspell.h"
 
 /* size of the text buffer used in various word-processing routines. */
 #define BUFSIZE 1024
@@ -64,61 +63,61 @@
 /* number of suggestions to display on each menu. */
 #define MENUCOUNT 15
 
-/* 'config' must be defined as a 'PspellConfig *' */
+/* 'config' must be defined as a 'AspellConfig *' */
 #define RETURN_FALSE_IF_CONFIG_ERROR() \
 { \
-	if (pspell_config_error_number(config) != 0) { \
-		gtkpspellcheckers->error_message = \
-			g_strdup(pspell_config_error_message(config)); \
+	if (aspell_config_error_number(config) != 0) { \
+		gtkaspellcheckers->error_message = g_strdup(aspell_config_error_message(config)); \
 		return FALSE; \
 	} \
 }
 
-#define CONFIG_REPLACE_RETURN_FALSE_IF_FAIL(option, value) \
-{ \
-	pspell_config_replace(config, option, value); \
-	RETURN_FALSE_IF_CONFIG_ERROR();	\
-}
+#define CONFIG_REPLACE_RETURN_FALSE_IF_FAIL(option, value) { \
+	aspell_config_replace(config, option, value);        \
+	RETURN_FALSE_IF_CONFIG_ERROR();                      \
+	}
 
-GtkPspellCheckers *gtkpspellcheckers;
+/******************************************************************************/
+
+GtkAspellCheckers *gtkaspellcheckers;
 
 /* Error message storage */
-static void gtkpspell_checkers_error_message	(gchar		*message);
+static void gtkaspell_checkers_error_message	(gchar		*message);
 
 /* Callbacks */
 static void entry_insert_cb			(GtkSText	*gtktext, 
 						 gchar		*newtext, 
 						 guint		 len, 
 						 guint		*ppos, 
-					 	 GtkPspell	*gtkpspell);
+					 	 GtkAspell	*gtkaspell);
 static void entry_delete_cb			(GtkSText	*gtktext, 
 						 gint		 start, 
 						 gint		 end,
-						 GtkPspell	*gtkpspell);
+						 GtkAspell	*gtkaspell);
 static gint button_press_intercept_cb		(GtkSText	*gtktext, 
 						 GdkEvent	*e, 
-						 GtkPspell	*gtkpspell);
+						 GtkAspell	*gtkaspell);
 
 /* Checker creation */
-static GtkPspeller* gtkpspeller_new		(Dictionary	*dict);
-static GtkPspeller* gtkpspeller_real_new	(Dictionary	*dict);
-static GtkPspeller* gtkpspeller_delete		(GtkPspeller	*gtkpspeller);
-static GtkPspeller* gtkpspeller_real_delete	(GtkPspeller	*gtkpspeller);
+static GtkAspeller* gtkaspeller_new		(Dictionary	*dict);
+static GtkAspeller* gtkaspeller_real_new	(Dictionary	*dict);
+static GtkAspeller* gtkaspeller_delete		(GtkAspeller	*gtkaspeller);
+static GtkAspeller* gtkaspeller_real_delete	(GtkAspeller	*gtkaspeller);
 
 /* Checker configuration */
-static gint set_dictionary   			(PspellConfig	*config, 
-						 Dictionary	*dict);
-static void set_sug_mode_cb     		(GtkMenuItem	*w, 
-						 GtkPspell	*gtkpspell);
-static void set_real_sug_mode			(GtkPspell	*gtkpspell, 
-						 const char	*themode);
+static gint 		set_dictionary   		(AspellConfig *config, 
+							 Dictionary *dict);
+static void 		set_sug_mode_cb     		(GtkMenuItem *w, 
+							 GtkAspell *gtkaspell);
+static void 		set_real_sug_mode		(GtkAspell *gtkaspell, 
+							 const char *themode);
 
 /* Checker actions */
-static gboolean check_at			(GtkPspell	*gtkpspell, 
+static gboolean check_at			(GtkAspell	*gtkaspell, 
 						 int		 from_pos);
-static gboolean	check_next_prev			(GtkPspell	*gtkpspell, 
+static gboolean	check_next_prev			(GtkAspell	*gtkaspell, 
 						 gboolean	 forward);
-static GList* misspelled_suggest	 	(GtkPspell	*gtkpspell, 
+static GList* misspelled_suggest	 	(GtkAspell	*gtkaspell, 
 						 guchar		*word);
 static void add_word_to_session_cb		(GtkWidget	*w, 
 						 gpointer	 data);
@@ -127,24 +126,24 @@ static void add_word_to_personal_cb		(GtkWidget	*w,
 static void replace_with_create_dialog_cb	(GtkWidget	*w,
 						 gpointer	 data);
 static void replace_with_supplied_word_cb	(GtkWidget	*w, 
-						 GtkPspell	*gtkpspell);
+						 GtkAspell	*gtkaspell);
 static void replace_word_cb			(GtkWidget	*w, 
 						 gpointer	data); 
-static void replace_real_word			(GtkPspell	*gtkpspell, 
+static void replace_real_word			(GtkAspell	*gtkaspell, 
 						 gchar		*newword);
 static void check_with_alternate_cb		(GtkWidget	*w,
 						 gpointer	 data);
-static void use_alternate_dict			(GtkPspell	*gtkpspell);
+static void use_alternate_dict			(GtkAspell	*gtkaspell);
 static void toggle_check_while_typing_cb	(GtkWidget	*w, 
 						 gpointer	 data);
 
 /* Menu creation */
-static void popup_menu				(GtkPspell	*gtkpspell, 
+static void popup_menu				(GtkAspell	*gtkaspell, 
 						 GdkEventButton	*eb);
-static GtkMenu*	make_sug_menu			(GtkPspell	*gtkpspell);
-static void populate_submenu			(GtkPspell	*gtkpspell, 
+static GtkMenu*	make_sug_menu			(GtkAspell	*gtkaspell);
+static void populate_submenu			(GtkAspell	*gtkaspell, 
 						 GtkWidget	*menu);
-static GtkMenu*	make_config_menu		(GtkPspell	*gtkpspell);
+static GtkMenu*	make_config_menu		(GtkAspell	*gtkaspell);
 static void set_menu_pos			(GtkMenu	*menu, 
 						 gint		*x, 
 						 gint		*y, 
@@ -153,106 +152,110 @@ static void set_menu_pos			(GtkMenu	*menu,
 static gboolean cancel_menu_cb			(GtkMenuShell	*w,
 						 gpointer	 data);
 static void change_dict_cb			(GtkWidget	*w, 
-						 GtkPspell	*gtkpspell);
+						 GtkAspell	*gtkaspell);
 static void switch_to_alternate_cb		(GtkWidget	*w, 
 						 gpointer	 data);
 
 /* Misc. helper functions */
-static void set_point_continue			(GtkPspell	*gtkpspell);
-static void continue_check			(gpointer	*gtkpspell);
-static gboolean iswordsep			(unsigned char	 c);
-static guchar get_text_index_whar		(GtkPspell	*gtkpspell, 
-						 int		 pos);
-static gboolean get_word_from_pos		(GtkPspell	*gtkpspell, 
-						 gint		 pos, 
-						 unsigned char	*buf,
-						 gint		 buflen,
-						 gint		*pstart, 
-						 gint		*pend);
-static void allocate_color			(GtkPspell	*gtkpspell,
-						 gint		 rgbvalue);
-static void change_color			(GtkPspell 	*gtkpspell, 
-		 				 gint		 start, 
-						 gint		 end, 
-						 gchar		*newtext,
-						 GdkColor 	*color);
-static guchar* convert_to_pspell_encoding 	(const guchar 	*encoding);
-static gint compare_dict			(Dictionary 	*a, 
-						 Dictionary	*b);
-static void dictionary_delete			(Dictionary 	*dict);
-static Dictionary *dictionary_dup		(const Dictionary	*dict);
-static void free_suggestions_list		(GtkPspell	*gtkpspell);
-static void reset_theword_data			(GtkPspell 	*gtkpspell);
-static void free_checkers			(gpointer 	 elt, 
-						 gpointer	 data);
-static gint find_gtkpspeller			(gconstpointer	 aa, 
-						 gconstpointer	 bb);
-static void gtkpspell_alert_dialog		(gchar 		*message);
+static void	 	set_point_continue		(GtkAspell *gtkaspell);
+static void 		continue_check			(gpointer *gtkaspell);
+static gboolean 	iswordsep			(unsigned char c);
+static guchar 		get_text_index_whar		(GtkAspell *gtkaspell, 
+							 int pos);
+static gboolean 	get_word_from_pos		(GtkAspell *gtkaspell, 
+							 gint pos, 
+							 unsigned char* buf,
+							 gint buflen,
+							 gint *pstart, 
+							 gint *pend);
+static void 		allocate_color			(GtkAspell *gtkaspell,
+							 gint rgbvalue);
+static void 		change_color			(GtkAspell *gtkaspell, 
+			 				 gint start, 
+							 gint end, 
+							 gchar *newtext,
+							 GdkColor *color);
+static guchar*		convert_to_aspell_encoding 	(const guchar *encoding);
+static gint 		compare_dict			(Dictionary *a, 
+							 Dictionary *b);
+static void 		dictionary_delete		(Dictionary *dict);
+static Dictionary *	dictionary_dup			(const Dictionary *dict);
+static void 		free_suggestions_list		(GtkAspell *gtkaspell);
+static void 		reset_theword_data		(GtkAspell *gtkaspell);
+static void 		free_checkers			(gpointer elt, 
+							 gpointer data);
+static gint 		find_gtkaspeller		(gconstpointer aa, 
+							 gconstpointer bb);
+static void		gtkaspell_alert_dialog		(gchar *message);
+/* gtkspellconfig - only one config per session */
+GtkAspellConfig * gtkaspellconfig;
 
-GtkPspellCheckers *gtkpspell_checkers_new()
+/******************************************************************************/
+
+GtkAspellCheckers *gtkaspell_checkers_new()
 {
-	GtkPspellCheckers *gtkpspellcheckers;
+	GtkAspellCheckers *gtkaspellcheckers;
 	
-	gtkpspellcheckers 		   = g_new(GtkPspellCheckers, 1);
-	gtkpspellcheckers->checkers        = NULL;
-	gtkpspellcheckers->dictionary_list = NULL;
-	gtkpspellcheckers->error_message   = NULL;
+	gtkaspellcheckers 		   = g_new(GtkAspellCheckers, 1);
+	gtkaspellcheckers->checkers        = NULL;
+	gtkaspellcheckers->dictionary_list = NULL;
+	gtkaspellcheckers->error_message   = NULL;
 	
-	return gtkpspellcheckers;
+	return gtkaspellcheckers;
 }
 	
-GtkPspellCheckers *gtkpspell_checkers_delete()
+GtkAspellCheckers *gtkaspell_checkers_delete()
 {
 	GSList *checkers;
 	GSList *dict_list;
 
-	if (gtkpspellcheckers == NULL) 
+	if (gtkaspellcheckers == NULL) 
 		return NULL;
 
-	if ((checkers = gtkpspellcheckers->checkers) != NULL) {
-		debug_print("Pspell: number of running checkers to delete %d\n",
+	if ((checkers  = gtkaspellcheckers->checkers)) {
+		debug_print("Aspell: number of running checkers to delete %d\n",
 				g_slist_length(checkers));
 
 		g_slist_foreach(checkers, free_checkers, NULL);
 		g_slist_free(checkers);
 	}
 
-	if ((dict_list = gtkpspellcheckers->dictionary_list) != NULL) {
-		debug_print("Pspell: number of dictionaries to delete %d\n",
+	if ((dict_list = gtkaspellcheckers->dictionary_list)) {
+		debug_print("Aspell: number of dictionaries to delete %d\n",
 				g_slist_length(dict_list));
 
-		gtkpspell_free_dictionary_list(dict_list);
-		gtkpspellcheckers->dictionary_list = NULL;
+		gtkaspell_free_dictionary_list(dict_list);
+		gtkaspellcheckers->dictionary_list = NULL;
 	}
 
-	g_free(gtkpspellcheckers->error_message);
+	g_free(gtkaspellcheckers->error_message);
 
 	return NULL;
 }
 
-static void gtkpspell_checkers_error_message (gchar *message)
+static void gtkaspell_checkers_error_message (gchar *message)
 {
 	gchar *tmp;
-	if (gtkpspellcheckers->error_message) {
+	if (gtkaspellcheckers->error_message) {
 		tmp = g_strdup_printf("%s\n%s", 
-				      gtkpspellcheckers->error_message, message);
+				      gtkaspellcheckers->error_message, message);
 		g_free(message);
-		g_free(gtkpspellcheckers->error_message);
-		gtkpspellcheckers->error_message = tmp;
+		g_free(gtkaspellcheckers->error_message);
+		gtkaspellcheckers->error_message = tmp;
 	} else 
-		gtkpspellcheckers->error_message = message;
+		gtkaspellcheckers->error_message = message;
 }
 
-void gtkpspell_checkers_reset_error(void)
+void gtkaspell_checkers_reset_error(void)
 {
-	g_return_if_fail(gtkpspellcheckers);
+	g_return_if_fail(gtkaspellcheckers);
 	
-	g_free(gtkpspellcheckers->error_message);
+	g_free(gtkaspellcheckers->error_message);
 	
-	gtkpspellcheckers->error_message = NULL;
+	gtkaspellcheckers->error_message = NULL;
 }
 
-GtkPspell *gtkpspell_new(const gchar *dictionary, 
+GtkAspell *gtkaspell_new(const gchar *dictionary, 
 			 const gchar *encoding,
 			 gint  misspelled_color,
 			 gboolean check_while_typing,
@@ -260,8 +263,8 @@ GtkPspell *gtkpspell_new(const gchar *dictionary,
 			 GtkSText *gtktext)
 {
 	Dictionary 	*dict;
-	GtkPspell 	*gtkpspell;
-	GtkPspeller 	*gtkpspeller;
+	GtkAspell 	*gtkaspell;
+	GtkAspeller 	*gtkaspeller;
 
 	g_return_val_if_fail(gtktext, NULL);
 	
@@ -269,97 +272,97 @@ GtkPspell *gtkpspell_new(const gchar *dictionary,
 	dict->fullname = g_strdup(dictionary);
 	dict->encoding = g_strdup(encoding);
 
-	gtkpspeller    = gtkpspeller_new(dict); 
+	gtkaspeller    = gtkaspeller_new(dict); 
 	dictionary_delete(dict);
 
-	if (!gtkpspeller)
+	if (!gtkaspeller)
 		return NULL;
 	
-	gtkpspell = g_new(GtkPspell, 1);
+	gtkaspell = g_new(GtkAspell, 1);
 
-	gtkpspell->gtkpspeller	      = gtkpspeller;
-	gtkpspell->alternate_speller  = NULL;
-	gtkpspell->theword[0]	      = 0x00;
-	gtkpspell->start_pos	      = 0;
-	gtkpspell->end_pos	      = 0;
-	gtkpspell->orig_pos	      = -1;
-	gtkpspell->end_check_pos      = -1;
-	gtkpspell->misspelled	      = -1;
-	gtkpspell->check_while_typing = check_while_typing;
-	gtkpspell->continue_check     = NULL;
-	gtkpspell->config_menu        = NULL;
-	gtkpspell->popup_config_menu  = NULL;
-	gtkpspell->sug_menu	      = NULL;
-	gtkpspell->replace_entry      = NULL;
-	gtkpspell->gtktext	      = gtktext;
-	gtkpspell->default_sug_mode   = PSPELL_FASTMODE;
-	gtkpspell->max_sug	      = -1;
-	gtkpspell->suggestions_list   = NULL;
-	gtkpspell->use_alternate      = use_alternate;
+	gtkaspell->gtkaspeller	      = gtkaspeller;
+	gtkaspell->alternate_speller  = NULL;
+	gtkaspell->theword[0]	      = 0x00;
+	gtkaspell->start_pos	      = 0;
+	gtkaspell->end_pos	      = 0;
+	gtkaspell->orig_pos	      = -1;
+	gtkaspell->end_check_pos      = -1;
+	gtkaspell->misspelled	      = -1;
+	gtkaspell->check_while_typing = check_while_typing;
+	gtkaspell->continue_check     = NULL;
+	gtkaspell->config_menu        = NULL;
+	gtkaspell->popup_config_menu  = NULL;
+	gtkaspell->sug_menu	      = NULL;
+	gtkaspell->replace_entry      = NULL;
+	gtkaspell->gtktext	      = gtktext;
+	gtkaspell->default_sug_mode   = ASPELL_FASTMODE;
+	gtkaspell->max_sug	      = -1;
+	gtkaspell->suggestions_list   = NULL;
+	gtkaspell->use_alternate      = use_alternate;
 
-	allocate_color(gtkpspell, misspelled_color);
+	allocate_color(gtkaspell, misspelled_color);
 
 	gtk_signal_connect_after(GTK_OBJECT(gtktext), "insert-text",
-		                 GTK_SIGNAL_FUNC(entry_insert_cb), gtkpspell);
+		                 GTK_SIGNAL_FUNC(entry_insert_cb), gtkaspell);
 	gtk_signal_connect_after(GTK_OBJECT(gtktext), "delete-text",
-		                 GTK_SIGNAL_FUNC(entry_delete_cb), gtkpspell);
+		                 GTK_SIGNAL_FUNC(entry_delete_cb), gtkaspell);
 	gtk_signal_connect(GTK_OBJECT(gtktext), "button-press-event",
-		           GTK_SIGNAL_FUNC(button_press_intercept_cb), gtkpspell);
+		           GTK_SIGNAL_FUNC(button_press_intercept_cb), gtkaspell);
 	
-	debug_print("Pspell: created gtkpspell %0x\n", (guint) gtkpspell);
+	debug_print("Aspell: created gtkaspell %0x\n", (guint) gtkaspell);
 
-	return gtkpspell;
+	return gtkaspell;
 }
 
-void gtkpspell_delete(GtkPspell * gtkpspell) 
+void gtkaspell_delete(GtkAspell * gtkaspell) 
 {
-	GtkSText *gtktext = gtkpspell->gtktext;
+	GtkSText *gtktext = gtkaspell->gtktext;
 	
         gtk_signal_disconnect_by_func(GTK_OBJECT(gtktext),
                                       GTK_SIGNAL_FUNC(entry_insert_cb),
-				      gtkpspell);
+				      gtkaspell);
         gtk_signal_disconnect_by_func(GTK_OBJECT(gtktext),
                                       GTK_SIGNAL_FUNC(entry_delete_cb),
-				      gtkpspell);
+				      gtkaspell);
 	gtk_signal_disconnect_by_func(GTK_OBJECT(gtktext),
                                       GTK_SIGNAL_FUNC(button_press_intercept_cb),
-				      gtkpspell);
+				      gtkaspell);
 
-	gtkpspell_uncheck_all(gtkpspell);
+	gtkaspell_uncheck_all(gtkaspell);
 	
-	gtkpspeller_delete(gtkpspell->gtkpspeller);
+	gtkaspeller_delete(gtkaspell->gtkaspeller);
 
-	if (gtkpspell->use_alternate && gtkpspell->alternate_speller)
-		gtkpspeller_delete(gtkpspell->alternate_speller);
+	if (gtkaspell->use_alternate && gtkaspell->alternate_speller)
+		gtkaspeller_delete(gtkaspell->alternate_speller);
 
-	if (gtkpspell->sug_menu)
-		gtk_widget_destroy(gtkpspell->sug_menu);
+	if (gtkaspell->sug_menu)
+		gtk_widget_destroy(gtkaspell->sug_menu);
 
-	if (gtkpspell->popup_config_menu)
-		gtk_widget_destroy(gtkpspell->popup_config_menu);
+	if (gtkaspell->popup_config_menu)
+		gtk_widget_destroy(gtkaspell->popup_config_menu);
 
-	if (gtkpspell->config_menu)
-		gtk_widget_destroy(gtkpspell->config_menu);
+	if (gtkaspell->config_menu)
+		gtk_widget_destroy(gtkaspell->config_menu);
 
-	if (gtkpspell->suggestions_list)
-		free_suggestions_list(gtkpspell);
+	if (gtkaspell->suggestions_list)
+		free_suggestions_list(gtkaspell);
+	
+	debug_print("Aspell: deleting gtkaspell %0x\n", (guint) gtkaspell);
 
-	debug_print("Pspell: deleting gtkpspell %0x\n", (guint) gtkpspell);
+	g_free(gtkaspell);
 
-	g_free(gtkpspell);
-
-	gtkpspell = NULL;
+	gtkaspell = NULL;
 }
 
 static void entry_insert_cb(GtkSText *gtktext,
 			    gchar *newtext, 
 			    guint len,
 			    guint *ppos, 
-                            GtkPspell *gtkpspell) 
+                            GtkAspell *gtkaspell) 
 {
-	g_return_if_fail(gtkpspell->gtkpspeller->checker);
+	g_return_if_fail(gtkaspell->gtkaspeller->checker);
 
-	if (!gtkpspell->check_while_typing)
+	if (!gtkaspell->check_while_typing)
 		return;
 	
 	/* We must insert ourselves the character so the
@@ -375,18 +378,18 @@ static void entry_insert_cb(GtkSText *gtktext,
 	if (iswordsep(newtext[0])) {
 		/* did we just end a word? */
 		if (*ppos >= 2) 
-			check_at(gtkpspell, *ppos - 2);
+			check_at(gtkaspell, *ppos - 2);
 
 		/* did we just split a word? */
 		if (*ppos < gtk_stext_get_length(gtktext))
-			check_at(gtkpspell, *ppos + 1);
+			check_at(gtkaspell, *ppos + 1);
 	} else {
 		/* check as they type, *except* if they're typing at the end (the most
                  * common case).
                  */
 		if (*ppos < gtk_stext_get_length(gtktext) &&
-		    !iswordsep(get_text_index_whar(gtkpspell, *ppos))) {
-			check_at(gtkpspell, *ppos - 1);
+		    !iswordsep(get_text_index_whar(gtkaspell, *ppos))) {
+			check_at(gtkaspell, *ppos - 1);
 		}
 	}
 
@@ -397,19 +400,19 @@ static void entry_insert_cb(GtkSText *gtktext,
 static void entry_delete_cb(GtkSText *gtktext,
 			    gint start, 
 			    gint end, 
-			    GtkPspell *gtkpspell) 
+			    GtkAspell *gtkaspell) 
 {
 	int origpos;
     
-	g_return_if_fail(gtkpspell->gtkpspeller->checker);
+	g_return_if_fail(gtkaspell->gtkaspeller->checker);
 
-	if (!gtkpspell->check_while_typing)
+	if (!gtkaspell->check_while_typing)
 		return;
 
 	origpos = gtk_editable_get_position(GTK_EDITABLE(gtktext));
 	if (start) {
-		check_at(gtkpspell, start - 1);
-		check_at(gtkpspell, start);
+		check_at(gtkaspell, start - 1);
+		check_at(gtkaspell, start);
 	}
 
 	gtk_editable_set_position(GTK_EDITABLE(gtktext), origpos);
@@ -427,12 +430,12 @@ static void entry_delete_cb(GtkSText *gtktext,
  * so what do we do?  forge rightclicks as leftclicks, then popup the menu.
  * HACK HACK HACK.
  */
-static gint button_press_intercept_cb(GtkSText *gtktext, GdkEvent *e, GtkPspell *gtkpspell) 
+static gint button_press_intercept_cb(GtkSText *gtktext, GdkEvent *e, GtkAspell *gtkaspell) 
 {
 	GdkEventButton *eb;
 	gboolean retval;
 
-	g_return_val_if_fail(gtkpspell->gtkpspeller->checker, FALSE);
+	g_return_val_if_fail(gtkaspell->gtkaspeller->checker, FALSE);
 
 	if (e->type != GDK_BUTTON_PRESS) 
 		return FALSE;
@@ -446,35 +449,34 @@ static gint button_press_intercept_cb(GtkSText *gtktext, GdkEvent *e, GtkPspell 
 
         gtk_signal_handler_block_by_func(GTK_OBJECT(gtktext),
 					 GTK_SIGNAL_FUNC(button_press_intercept_cb), 
-					 gtkpspell);
+					 gtkaspell);
 	gtk_signal_emit_by_name(GTK_OBJECT(gtktext), "button-press-event",
 				e, &retval);
 	gtk_signal_handler_unblock_by_func(GTK_OBJECT(gtktext),
 					   GTK_SIGNAL_FUNC(button_press_intercept_cb), 
-					   gtkpspell);
+					   gtkaspell);
 	gtk_signal_emit_stop_by_name(GTK_OBJECT(gtktext), "button-press-event");
     
 	/* now do the menu wackiness */
-	popup_menu(gtkpspell, eb);
+	popup_menu(gtkaspell, eb);
 	gtk_grab_remove(GTK_WIDGET(gtktext));
 	return TRUE;
 }
 
 /* Checker creation */
-static GtkPspeller *gtkpspeller_new(Dictionary *dictionary)
+static GtkAspeller *gtkaspeller_new(Dictionary *dictionary)
 {
 	GSList 		*exist;
-	GtkPspeller	*gtkpspeller = NULL;
-	GtkPspeller	*tmp;
+	GtkAspeller	*gtkaspeller = NULL;
+	GtkAspeller	*tmp;
 	Dictionary	*dict;
-	gint		 ispell;
-		
-	g_return_val_if_fail(gtkpspellcheckers, NULL);
+
+	g_return_val_if_fail(gtkaspellcheckers, NULL);
 
 	g_return_val_if_fail(dictionary, NULL);
 
 	if (dictionary->fullname == NULL)
-		gtkpspell_checkers_error_message(g_strdup(_("No dictionary selected.")));
+		gtkaspell_checkers_error_message(g_strdup(_("No dictionary selected.")));
 	
 	g_return_val_if_fail(dictionary->fullname, NULL);
 	
@@ -491,117 +493,103 @@ static GtkPspeller *gtkpspeller_new(Dictionary *dictionary)
 
 	dict = dictionary_dup(dictionary);
 
-	ispell = (strstr2(dict->dictname, "-ispell") != NULL);
-	
-	tmp = g_new0(GtkPspeller, 1);
+	tmp = g_new0(GtkAspeller, 1);
 	tmp->dictionary = dict;
 
-	exist = g_slist_find_custom(gtkpspellcheckers->checkers, tmp, 
-				    find_gtkpspeller);
+	exist = g_slist_find_custom(gtkaspellcheckers->checkers, tmp, 
+				    find_gtkaspeller);
 	
 	g_free(tmp);
 
-	if (exist && ispell) {
-		gtkpspeller = (GtkPspeller *) exist->data;
+	if ((gtkaspeller = gtkaspeller_real_new(dict)) != NULL) {
+		gtkaspellcheckers->checkers = g_slist_append(
+				gtkaspellcheckers->checkers,
+				gtkaspeller);
+
+		debug_print("Aspell: Created a new gtkaspeller %0x\n",
+				(gint) gtkaspeller);
+	} else {
 		dictionary_delete(dict);
 
-		debug_print("Pspell: Using existing ispell checker %0x\n",
-			    (gint) gtkpspeller);
-	} else {
-		if ((gtkpspeller = gtkpspeller_real_new(dict)) != NULL) {
-			gtkpspellcheckers->checkers = 
-				g_slist_append(gtkpspellcheckers->checkers,
-					       gtkpspeller);
-			debug_print("Pspell: Created a new gtkpspeller %0x\n",
-				    (gint) gtkpspeller);
-		} else {
-			dictionary_delete(dict);
-			debug_print("Pspell: Could not create spell checker.\n");
-		}
+		debug_print("Aspell: Could not create spell checker.\n");
 	}
 
-	debug_print("Pspell: number of existing checkers %d\n", 
-		    g_slist_length(gtkpspellcheckers->checkers));
+	debug_print("Aspell: number of existing checkers %d\n", 
+			g_slist_length(gtkaspellcheckers->checkers));
 
-	return gtkpspeller;
+	return gtkaspeller;
 }
 
-static GtkPspeller *gtkpspeller_real_new(Dictionary *dict)
+static GtkAspeller *gtkaspeller_real_new(Dictionary *dict)
 {
-	GtkPspeller		*gtkpspeller;
-	PspellConfig		*config;
-	PspellCanHaveError 	*ret;
+	GtkAspeller		*gtkaspeller;
+	AspellConfig		*config;
+	AspellCanHaveError 	*ret;
 	
-	g_return_val_if_fail(gtkpspellcheckers, NULL);
+	g_return_val_if_fail(gtkaspellcheckers, NULL);
 	g_return_val_if_fail(dict, NULL);
 
-	config = new_pspell_config();
+	gtkaspeller = g_new(GtkAspeller, 1);
+	
+	gtkaspeller->dictionary = dict;
+	gtkaspeller->sug_mode   = ASPELL_FASTMODE;
+
+	config = new_aspell_config();
 
 	if (!set_dictionary(config, dict))
 		return NULL;
 	
-	ret = new_pspell_manager(config);
-	delete_pspell_config(config);
+	ret = new_aspell_speller(config);
+	delete_aspell_config(config);
 
-	if (pspell_error_number(ret) != 0) {
-		gtkpspellcheckers->error_message = g_strdup(pspell_error_message(ret));
+	if (aspell_error_number(ret) != 0) {
+		gtkaspellcheckers->error_message = g_strdup(aspell_error_message(ret));
 		
-		delete_pspell_can_have_error(ret);
+		delete_aspell_can_have_error(ret);
 		
 		return NULL;
 	}
 
-	gtkpspeller = g_new(GtkPspeller, 1);
-	
-	gtkpspeller->dictionary = dict;
-	gtkpspeller->sug_mode   = PSPELL_FASTMODE;
+	gtkaspeller->checker = to_aspell_speller(ret);
+	gtkaspeller->config  = aspell_speller_config(gtkaspeller->checker);
 
-	gtkpspeller->checker = to_pspell_manager(ret);
-	gtkpspeller->config  = pspell_manager_config(gtkpspeller->checker);
-	gtkpspeller->ispell  = (strstr2(dict->fullname, "-ispell") != NULL);
-
-	return gtkpspeller;
+	return gtkaspeller;
 }
 
-static GtkPspeller *gtkpspeller_delete(GtkPspeller *gtkpspeller)
+static GtkAspeller *gtkaspeller_delete(GtkAspeller *gtkaspeller)
 {
-	g_return_val_if_fail(gtkpspellcheckers, NULL);
+	g_return_val_if_fail(gtkaspellcheckers, NULL);
 	
-	if (gtkpspeller->ispell) 
-		debug_print("Pspell: Won't remove existing ispell checker %0x.\n", 
-			    (gint) gtkpspeller);
-	else {
-		gtkpspellcheckers->checkers = 
-			g_slist_remove(gtkpspellcheckers->checkers, 
-				       gtkpspeller);
+	gtkaspellcheckers->checkers = 
+		g_slist_remove(gtkaspellcheckers->checkers, 
+				gtkaspeller);
 
-		debug_print("Pspell: Deleting gtkpspeller %0x.\n", 
-			    (gint) gtkpspeller);
-		
-		gtkpspeller_real_delete(gtkpspeller);
-	}
+	debug_print("Aspell: Deleting gtkaspeller %0x.\n", 
+			(gint) gtkaspeller);
 
-	debug_print("Pspell: number of existing checkers %d\n", 
-		    g_slist_length(gtkpspellcheckers->checkers));
+	gtkaspeller_real_delete(gtkaspeller);
 
-	return gtkpspeller;
+	debug_print("Aspell: number of existing checkers %d\n", 
+			g_slist_length(gtkaspellcheckers->checkers));
+
+	return gtkaspeller;
 }
 
-static GtkPspeller *gtkpspeller_real_delete(GtkPspeller *gtkpspeller)
+static GtkAspeller *gtkaspeller_real_delete(GtkAspeller *gtkaspeller)
 {
-	g_return_val_if_fail(gtkpspeller,          NULL);
-	g_return_val_if_fail(gtkpspeller->checker, NULL);
+	g_return_val_if_fail(gtkaspeller,          NULL);
+	g_return_val_if_fail(gtkaspeller->checker, NULL);
 
-	pspell_manager_save_all_word_lists(gtkpspeller->checker);
+	aspell_speller_save_all_word_lists(gtkaspeller->checker);
 
-	delete_pspell_manager(gtkpspeller->checker);
+	delete_aspell_speller(gtkaspeller->checker);
 
-	dictionary_delete(gtkpspeller->dictionary);
+	dictionary_delete(gtkaspeller->dictionary);
 
-	debug_print("Pspell: gtkpspeller %0x deleted.\n", 
-		    (gint) gtkpspeller);
+	debug_print("Aspell: gtkaspeller %0x deleted.\n", 
+		    (gint) gtkaspeller);
 
-	g_free(gtkpspeller);
+	g_free(gtkaspeller);
 
 	return NULL;
 }
@@ -609,12 +597,11 @@ static GtkPspeller *gtkpspeller_real_delete(GtkPspeller *gtkpspeller)
 /*****************************************************************************/
 /* Checker configuration */
 
-static gboolean set_dictionary(PspellConfig *config, Dictionary *dict)
+static gboolean set_dictionary(AspellConfig *config, Dictionary *dict)
 {
 	gchar *language = NULL;
-	gchar *spelling = NULL;
-	gchar *jargon   = NULL;
-	gchar *module   = NULL;
+	gchar *jargon = NULL;
+	gchar *size   = NULL;
 	gchar *end      = NULL;
 	gchar  buf[BUFSIZE];
 	
@@ -627,60 +614,40 @@ static gboolean set_dictionary(PspellConfig *config, Dictionary *dict)
 	buf[dict->dictname - dict->fullname] = 0x00;
 
 	CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("rem-all-word-list-path", "");
-	debug_print("Pspell: removed all paths.\n");
+	debug_print("Aspell: removed all paths.\n");
 
-	CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("add-word-list-path", buf);
-	debug_print("Pspell: added path %s.\n", buf);
+	CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("dict-dir", buf);
+	debug_print("Aspell: added path %s.\n", buf);
 
 	strncpy(buf, dict->dictname, BUFSIZE-1);
 	language = buf;
 	
-	if ((module = strrchr(buf, '-')) != NULL) {
-		module++;
-	}
-	if ((spelling = strchr(language, '-')) != NULL) 
-		*spelling++ = 0x00;
-	if (spelling != module) {
-		if ((end = strchr(spelling, '-')) != NULL) {
-			*end++ = 0x00;
-			jargon = end;
-			if (jargon != module)
-				if ((end = strchr(jargon, '-')) != NULL)
-					*end = 0x00;
-				else
-					jargon = NULL;
-			else
-				jargon = NULL;
-		}
-		else
-			spelling = NULL;
-	}
+	if ((size = strrchr(buf, '-')) && isdigit((int) size[1]))
+		*size++ = 0x00;
 	else
-		spelling = NULL;
+		size = NULL;
+				
+	if ((jargon = strchr(language, '-')) != NULL) 
+		*jargon++ = 0x00;
+	
+	if (size != NULL && jargon == size)
+		jargon = NULL;
 
-	debug_print("Pspell: Language: %s, spelling: %s, jargon: %s, module: %s\n",
-		    language, spelling, jargon, module);
+	debug_print("Aspell: language: %s, jargon: %s, size: %s\n",
+		    language, jargon, size);
 	
 	if (language)
-		CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("language-tag", language);
-	
-	if (spelling)
-		CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("spelling",     spelling);
-	
+		CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("lang", language);
 	if (jargon)
-		CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("jargon",       jargon);
-	
-	if (module) {
-		CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("rem-all-module-search-order", "");
-		CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("add-module-search-order", module);
-	}
-	
+		CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("jargon", jargon);
+	if (size)
+		CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("size", size);
 	if (dict->encoding) {
-		gchar *pspell_enc;
+		gchar *aspell_enc;
 	
-		pspell_enc = convert_to_pspell_encoding (dict->encoding);
-		pspell_config_replace(config, "encoding", (const char *) pspell_enc);
-		g_free(pspell_enc);
+		aspell_enc = convert_to_aspell_encoding (dict->encoding);
+		aspell_config_replace(config, "encoding", (const char *) aspell_enc);
+		g_free(aspell_enc);
 
 		RETURN_FALSE_IF_CONFIG_ERROR();
 	}
@@ -688,142 +655,137 @@ static gboolean set_dictionary(PspellConfig *config, Dictionary *dict)
 	return TRUE;
 }
 
-guchar *gtkpspell_get_dict(GtkPspell *gtkpspell)
+guchar *gtkaspell_get_dict(GtkAspell *gtkaspell)
 {
 
-	g_return_val_if_fail(gtkpspell->gtkpspeller->config,     NULL);
-	g_return_val_if_fail(gtkpspell->gtkpspeller->dictionary, NULL);
+	g_return_val_if_fail(gtkaspell->gtkaspeller->config,     NULL);
+	g_return_val_if_fail(gtkaspell->gtkaspeller->dictionary, NULL);
  	
-	return g_strdup(gtkpspell->gtkpspeller->dictionary->dictname);
+	return g_strdup(gtkaspell->gtkaspeller->dictionary->dictname);
 }
   
-guchar *gtkpspell_get_path(GtkPspell *gtkpspell)
+guchar *gtkaspell_get_path(GtkAspell *gtkaspell)
 {
 	guchar *path;
 	Dictionary *dict;
 
-	g_return_val_if_fail(gtkpspell->gtkpspeller->config, NULL);
-	g_return_val_if_fail(gtkpspell->gtkpspeller->dictionary, NULL);
+	g_return_val_if_fail(gtkaspell->gtkaspeller->config, NULL);
+	g_return_val_if_fail(gtkaspell->gtkaspeller->dictionary, NULL);
 
-	dict = gtkpspell->gtkpspeller->dictionary;
+	dict = gtkaspell->gtkaspeller->dictionary;
 	path = g_strndup(dict->fullname, dict->dictname - dict->fullname);
 
 	return path;
 }
 
 /* set_sug_mode_cb() - Menu callback: Set the suggestion mode */
-static void set_sug_mode_cb(GtkMenuItem *w, GtkPspell *gtkpspell)
+static void set_sug_mode_cb(GtkMenuItem *w, GtkAspell *gtkaspell)
 {
 	char *themode;
 	
-	if (gtkpspell->gtkpspeller->ispell) return;
-
 	gtk_label_get(GTK_LABEL(GTK_BIN(w)->child), (gchar **) &themode);
 	
-	set_real_sug_mode(gtkpspell, themode);
+	set_real_sug_mode(gtkaspell, themode);
 
-	if (gtkpspell->config_menu)
-		populate_submenu(gtkpspell, gtkpspell->config_menu);
+	if (gtkaspell->config_menu)
+		populate_submenu(gtkaspell, gtkaspell->config_menu);
 }
 
-static void set_real_sug_mode(GtkPspell *gtkpspell, const char *themode)
+static void set_real_sug_mode(GtkAspell *gtkaspell, const char *themode)
 {
 	gint result;
-	gint mode = PSPELL_FASTMODE;
-
-	g_return_if_fail(gtkpspell);
-	g_return_if_fail(gtkpspell->gtkpspeller);
+	gint mode = ASPELL_FASTMODE;
+	g_return_if_fail(gtkaspell);
+	g_return_if_fail(gtkaspell->gtkaspeller);
 	g_return_if_fail(themode);
 
 	if (!strcmp(themode,_("Normal Mode")))
-		mode = PSPELL_NORMALMODE;
+		mode = ASPELL_NORMALMODE;
 	else if (!strcmp( themode,_("Bad Spellers Mode")))
-		mode = PSPELL_BADSPELLERMODE;
+		mode = ASPELL_BADSPELLERMODE;
 
-	result = gtkpspell_set_sug_mode(gtkpspell, mode);
+	result = gtkaspell_set_sug_mode(gtkaspell, mode);
 
 	if(!result) {
-		debug_print("Pspell: error while changing suggestion mode:%s\n",
-			    gtkpspellcheckers->error_message);
-		gtkpspell_checkers_reset_error();
+		debug_print("Aspell: error while changing suggestion mode:%s\n",
+			    gtkaspellcheckers->error_message);
+		gtkaspell_checkers_reset_error();
 	}
 }
   
-/* gtkpspell_set_sug_mode() - Set the suggestion mode */
-gboolean gtkpspell_set_sug_mode(GtkPspell *gtkpspell, gint themode)
+/* gtkaspell_set_sug_mode() - Set the suggestion mode */
+gboolean gtkaspell_set_sug_mode(GtkAspell *gtkaspell, gint themode)
 {
-	PspellConfig *config;
+	AspellConfig *config;
 
-	g_return_val_if_fail(gtkpspell, FALSE);
-	g_return_val_if_fail(gtkpspell->gtkpspeller, FALSE);
-	g_return_val_if_fail(gtkpspell->gtkpspeller->config, FALSE);
+	g_return_val_if_fail(gtkaspell, FALSE);
+	g_return_val_if_fail(gtkaspell->gtkaspeller, FALSE);
+	g_return_val_if_fail(gtkaspell->gtkaspeller->config, FALSE);
 
-	debug_print("Pspell: setting sug mode of gtkpspeller %0x to %d\n",
-			(guint) gtkpspell->gtkpspeller, themode);
+	debug_print("Aspell: setting sug mode of gtkaspeller %0x to %d\n",
+			(guint) gtkaspell->gtkaspeller, themode);
 
-	config = gtkpspell->gtkpspeller->config;
+	config = gtkaspell->gtkaspeller->config;
 
 	switch (themode) {
-	case PSPELL_FASTMODE: 
-		CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("sug-mode", "fast");
-		break;
-	case PSPELL_NORMALMODE: 
-		CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("sug-mode", "normal");
-		break;
-	case PSPELL_BADSPELLERMODE: 
-		CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("sug-mode", 
-						    "bad-spellers");
-		break;
-	default: 
-		gtkpspellcheckers->error_message = 
-			g_strdup(_("Unknown suggestion mode."));
-		return FALSE;
-	}
+		case ASPELL_FASTMODE: 
+			CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("sug-mode", "fast");
+			break;
+		case ASPELL_NORMALMODE: 
+			CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("sug-mode", "normal");
+			break;
+		case ASPELL_BADSPELLERMODE: 
+			CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("sug-mode", 
+							    "bad-spellers");
+			break;
+		default: 
+			gtkaspellcheckers->error_message = 
+				g_strdup(_("Unknown suggestion mode."));
+			return FALSE;
+		}
 
-	gtkpspell->gtkpspeller->sug_mode = themode;
-	gtkpspell->default_sug_mode      = themode;
+	gtkaspell->gtkaspeller->sug_mode = themode;
+	gtkaspell->default_sug_mode      = themode;
 
 	return TRUE;
 }
 
 /* misspelled_suggest() - Create a suggestion list for  word  */
-static GList *misspelled_suggest(GtkPspell *gtkpspell, guchar *word) 
+static GList *misspelled_suggest(GtkAspell *gtkaspell, guchar *word) 
 {
 	const guchar          *newword;
 	GList                 *list = NULL;
-	const PspellWordList  *suggestions;
-	PspellStringEmulation *elements;
+	const AspellWordList  *suggestions;
+	AspellStringEnumeration *elements;
 
 	g_return_val_if_fail(word, NULL);
 
-	if (!pspell_manager_check(gtkpspell->gtkpspeller->checker, word, -1)) {
-		free_suggestions_list(gtkpspell);
+	if (!aspell_speller_check(gtkaspell->gtkaspeller->checker, word, -1)) {
+		free_suggestions_list(gtkaspell);
 
-		suggestions = 
-			pspell_manager_suggest(gtkpspell->gtkpspeller->checker, 
-					       (const char *)word, -1);
-		elements    = pspell_word_list_elements(suggestions);
+		suggestions = aspell_speller_suggest(gtkaspell->gtkaspeller->checker, 
+						     (const char *)word, -1);
+		elements    = aspell_word_list_elements(suggestions);
 		list        = g_list_append(list, g_strdup(word)); 
 		
-		while ((newword = pspell_string_emulation_next(elements)) != NULL)
+		while ((newword = aspell_string_enumeration_next(elements)) != NULL)
 			list = g_list_append(list, g_strdup(newword));
 
-		gtkpspell->max_sug          = g_list_length(list) - 1;
-		gtkpspell->suggestions_list = list;
+		gtkaspell->max_sug          = g_list_length(list) - 1;
+		gtkaspell->suggestions_list = list;
 
 		return list;
 	}
 
-	free_suggestions_list(gtkpspell);
+	free_suggestions_list(gtkaspell);
 
 	return NULL;
 }
 
 /* misspelled_test() - Just test if word is correctly spelled */  
-static int misspelled_test(GtkPspell *gtkpspell, unsigned char *word) 
+static int misspelled_test(GtkAspell *gtkaspell, unsigned char *word) 
 {
-	return pspell_manager_check(gtkpspell->gtkpspeller->checker, word, -1) ?
-		0 : 1; 
+	return aspell_speller_check(gtkaspell->gtkaspeller->checker, word, -1) ? 0 : 1; 
 }
 
 
@@ -832,12 +794,12 @@ static gboolean iswordsep(unsigned char c)
 	return !isalpha(c) && c != '\'';
 }
 
-static guchar get_text_index_whar(GtkPspell *gtkpspell, int pos) 
+static guchar get_text_index_whar(GtkAspell *gtkaspell, int pos) 
 {
 	guchar a;
 	gchar *text;
 	
-	text = gtk_editable_get_chars(GTK_EDITABLE(gtkpspell->gtktext), pos, 
+	text = gtk_editable_get_chars(GTK_EDITABLE(gtkaspell->gtktext), pos, 
 				      pos + 1);
 	if (text == NULL) 
 		return 0;
@@ -851,7 +813,7 @@ static guchar get_text_index_whar(GtkPspell *gtkpspell, int pos)
 
 /* get_word_from_pos () - return the word pointed to. */
 /* Handles correctly the quotes. */
-static gboolean get_word_from_pos(GtkPspell *gtkpspell, gint pos, 
+static gboolean get_word_from_pos(GtkAspell *gtkaspell, gint pos, 
                                   unsigned char* buf, gint buflen,
                                   gint *pstart, gint *pend) 
 {
@@ -867,8 +829,8 @@ static gboolean get_word_from_pos(GtkPspell *gtkpspell, gint pos,
 	guchar c;
 	GtkSText *gtktext;
 	
-	gtktext = gtkpspell->gtktext;
-	if (iswordsep(get_text_index_whar(gtkpspell, pos))) 
+	gtktext = gtkaspell->gtktext;
+	if (iswordsep(get_text_index_whar(gtkaspell, pos))) 
 		return FALSE;
 	
 	/* The apostrophe character is somtimes used for quotes 
@@ -877,10 +839,10 @@ static gboolean get_word_from_pos(GtkPspell *gtkpspell, gint pos,
 	 */
 	 
 	for (start = pos; start >= 0; --start) {
-		c = get_text_index_whar(gtkpspell, start);
+		c = get_text_index_whar(gtkaspell, start);
 		if (c == '\'') {
 			if (start > 0) {
-				if (!isalpha(get_text_index_whar(gtkpspell,
+				if (!isalpha(get_text_index_whar(gtkaspell,
 								 start - 1))) {
 					/* start_quote = TRUE; */
 					break;
@@ -898,10 +860,10 @@ static gboolean get_word_from_pos(GtkPspell *gtkpspell, gint pos,
 	start++;
 
 	for (end = pos; end < gtk_stext_get_length(gtktext); end++) {
-		c = get_text_index_whar(gtkpspell, end); 
+		c = get_text_index_whar(gtkaspell, end); 
 		if (c == '\'') {
 			if (end < gtk_stext_get_length(gtktext)) {
-				if (!isalpha(get_text_index_whar(gtkpspell,
+				if (!isalpha(get_text_index_whar(gtkaspell,
 								 end + 1))) {
 					/* end_quote = TRUE; */
 					break;
@@ -925,7 +887,7 @@ static gboolean get_word_from_pos(GtkPspell *gtkpspell, gint pos,
 		if (end - start < buflen) {
 			for (pos = start; pos < end; pos++) 
 				buf[pos - start] =
-					get_text_index_whar(gtkpspell, pos);
+					get_text_index_whar(gtkaspell, pos);
 			buf[pos - start] = 0;
 		} else
 			return FALSE;
@@ -934,36 +896,36 @@ static gboolean get_word_from_pos(GtkPspell *gtkpspell, gint pos,
 	return TRUE;
 }
 
-static gboolean check_at(GtkPspell *gtkpspell, gint from_pos) 
+static gboolean check_at(GtkAspell *gtkaspell, gint from_pos) 
 {
 	gint	      start, end;
-	unsigned char buf[GTKPSPELLWORDSIZE];
+	unsigned char buf[GTKASPELLWORDSIZE];
 	GtkSText     *gtktext;
 
 	g_return_val_if_fail(from_pos >= 0, FALSE);
     
-	gtktext = gtkpspell->gtktext;
+	gtktext = gtkaspell->gtktext;
 
-	if (!get_word_from_pos(gtkpspell, from_pos, buf, sizeof(buf), 
+	if (!get_word_from_pos(gtkaspell, from_pos, buf, sizeof(buf), 
 			       &start, &end))
 		return FALSE;
 
-	if (misspelled_test(gtkpspell, buf)) {
-		strncpy(gtkpspell->theword, buf, GTKPSPELLWORDSIZE - 1);
-		gtkpspell->theword[GTKPSPELLWORDSIZE - 1] = 0;
-		gtkpspell->start_pos  = start;
-		gtkpspell->end_pos    = end;
-		free_suggestions_list(gtkpspell);
+	if (misspelled_test(gtkaspell, buf)) {
+		strncpy(gtkaspell->theword, buf, GTKASPELLWORDSIZE - 1);
+		gtkaspell->theword[GTKASPELLWORDSIZE - 1] = 0;
+		gtkaspell->start_pos  = start;
+		gtkaspell->end_pos    = end;
+		free_suggestions_list(gtkaspell);
 
-		change_color(gtkpspell, start, end, buf, &(gtkpspell->highlight));
+		change_color(gtkaspell, start, end, buf, &(gtkaspell->highlight));
 		return TRUE;
 	} else {
-		change_color(gtkpspell, start, end, buf, NULL);
+		change_color(gtkaspell, start, end, buf, NULL);
 		return FALSE;
 	}
 }
 
-static gboolean check_next_prev(GtkPspell *gtkpspell, gboolean forward)
+static gboolean check_next_prev(GtkAspell *gtkaspell, gboolean forward)
 {
 	gint pos;
 	gint minpos;
@@ -972,7 +934,7 @@ static gboolean check_next_prev(GtkPspell *gtkpspell, gboolean forward)
 	gboolean misspelled;
 	
 	minpos = 0;
-	maxpos = gtkpspell->end_check_pos;
+	maxpos = gtkaspell->end_check_pos;
 
 	if (forward) {
 		minpos = -1;
@@ -980,74 +942,74 @@ static gboolean check_next_prev(GtkPspell *gtkpspell, gboolean forward)
 		maxpos--;
 	} 
 
-	pos = gtk_editable_get_position(GTK_EDITABLE(gtkpspell->gtktext));
-	gtkpspell->orig_pos = pos;
-	while (iswordsep(get_text_index_whar(gtkpspell, pos)) &&
+	pos = gtk_editable_get_position(GTK_EDITABLE(gtkaspell->gtktext));
+	gtkaspell->orig_pos = pos;
+	while (iswordsep(get_text_index_whar(gtkaspell, pos)) &&
 	       pos > minpos && pos <= maxpos) 
 		pos += direc;
-	while (!(misspelled = check_at(gtkpspell, pos)) &&
+	while (!(misspelled = check_at(gtkaspell, pos)) &&
 	       pos > minpos && pos <= maxpos) {
 
-		while (!iswordsep(get_text_index_whar(gtkpspell, pos)) &&
+		while (!iswordsep(get_text_index_whar(gtkaspell, pos)) &&
 		       pos > minpos && pos <= maxpos)
 			pos += direc;
 
-		while (iswordsep(get_text_index_whar(gtkpspell, pos)) && 
+		while (iswordsep(get_text_index_whar(gtkaspell, pos)) && 
 		       pos > minpos && pos <= maxpos) 
 			pos += direc;
 	}
 	if (misspelled) {
-		misspelled_suggest(gtkpspell, gtkpspell->theword);
+		misspelled_suggest(gtkaspell, gtkaspell->theword);
 
 		if (forward)
-			gtkpspell->orig_pos = gtkpspell->end_pos;
+			gtkaspell->orig_pos = gtkaspell->end_pos;
 
-		gtk_stext_set_point(GTK_STEXT(gtkpspell->gtktext),
-				gtkpspell->end_pos);
-		gtk_editable_set_position(GTK_EDITABLE(gtkpspell->gtktext),
-				gtkpspell->end_pos);
-		gtk_menu_popup(make_sug_menu(gtkpspell), NULL, NULL, 
-				set_menu_pos, gtkpspell, 0, GDK_CURRENT_TIME);
+		gtk_stext_set_point(GTK_STEXT(gtkaspell->gtktext),
+				gtkaspell->end_pos);
+		gtk_editable_set_position(GTK_EDITABLE(gtkaspell->gtktext),
+				gtkaspell->end_pos);
+		gtk_menu_popup(make_sug_menu(gtkaspell), NULL, NULL, 
+				set_menu_pos, gtkaspell, 0, GDK_CURRENT_TIME);
 	} else {
-		reset_theword_data(gtkpspell);
+		reset_theword_data(gtkaspell);
 
-		gtkpspell_alert_dialog(_("No misspelled word found."));
-		gtk_stext_set_point(GTK_STEXT(gtkpspell->gtktext),
-				    gtkpspell->orig_pos);
-		gtk_editable_set_position(GTK_EDITABLE(gtkpspell->gtktext),
-					  gtkpspell->orig_pos);
+		gtkaspell_alert_dialog(_("No misspelled word found."));
+		gtk_stext_set_point(GTK_STEXT(gtkaspell->gtktext),
+				    gtkaspell->orig_pos);
+		gtk_editable_set_position(GTK_EDITABLE(gtkaspell->gtktext),
+					  gtkaspell->orig_pos);
 
 		
 	}
 	return misspelled;
 }
 
-void gtkpspell_check_backwards(GtkPspell *gtkpspell)
+void gtkaspell_check_backwards(GtkAspell *gtkaspell)
 {
-	gtkpspell->continue_check = NULL;
-	gtkpspell->end_check_pos =
-		gtk_stext_get_length(GTK_STEXT(gtkpspell->gtktext));
-	check_next_prev(gtkpspell, FALSE);
+	gtkaspell->continue_check = NULL;
+	gtkaspell->end_check_pos =
+		gtk_stext_get_length(GTK_STEXT(gtkaspell->gtktext));
+	check_next_prev(gtkaspell, FALSE);
 }
 
-void gtkpspell_check_forwards_go(GtkPspell *gtkpspell)
+void gtkaspell_check_forwards_go(GtkAspell *gtkaspell)
 {
 
-	gtkpspell->continue_check = NULL;
-	gtkpspell->end_check_pos
-		= gtk_stext_get_length(GTK_STEXT(gtkpspell->gtktext));
-	check_next_prev(gtkpspell, TRUE);
+	gtkaspell->continue_check = NULL;
+	gtkaspell->end_check_pos
+		= gtk_stext_get_length(GTK_STEXT(gtkaspell->gtktext));
+	check_next_prev(gtkaspell, TRUE);
 }
 
-void gtkpspell_check_all(GtkPspell *gtkpspell)
+void gtkaspell_check_all(GtkAspell *gtkaspell)
 {	
 	GtkWidget *gtktext;
 	gint start, end;
 
-	g_return_if_fail(gtkpspell);
-	g_return_if_fail(gtkpspell->gtktext);
+	g_return_if_fail(gtkaspell);
+	g_return_if_fail(gtkaspell->gtktext);
 
-	gtktext = (GtkWidget *) gtkpspell->gtktext;
+	gtktext = (GtkWidget *) gtkaspell->gtktext;
 
 	start = 0;	
 	end   = gtk_stext_get_length(GTK_STEXT(gtktext));
@@ -1069,25 +1031,25 @@ void gtkpspell_check_all(GtkPspell *gtkpspell)
 	gtk_editable_set_position(GTK_EDITABLE(gtktext), start);
 	gtk_stext_set_point(GTK_STEXT(gtktext), start);
 
-	gtkpspell->continue_check = continue_check;
-	gtkpspell->end_check_pos  = end;
+	gtkaspell->continue_check = continue_check;
+	gtkaspell->end_check_pos  = end;
 
-	gtkpspell->misspelled = check_next_prev(gtkpspell, TRUE);
+	gtkaspell->misspelled = check_next_prev(gtkaspell, TRUE);
 
 }	
 
 static void continue_check(gpointer *data)
 {
-	GtkPspell *gtkpspell = (GtkPspell *) data;
-	gint pos = gtk_editable_get_position(GTK_EDITABLE(gtkpspell->gtktext));
-	if (pos < gtkpspell->end_check_pos && gtkpspell->misspelled)
-		gtkpspell->misspelled = check_next_prev(gtkpspell, TRUE);
+	GtkAspell *gtkaspell = (GtkAspell *) data;
+	gint pos = gtk_editable_get_position(GTK_EDITABLE(gtkaspell->gtktext));
+	if (pos < gtkaspell->end_check_pos && gtkaspell->misspelled)
+		gtkaspell->misspelled = check_next_prev(gtkaspell, TRUE);
 	else
-		gtkpspell->continue_check = NULL;
+		gtkaspell->continue_check = NULL;
 		
 }
 
-void gtkpspell_highlight_all(GtkPspell *gtkpspell) 
+void gtkaspell_highlight_all(GtkAspell *gtkaspell) 
 {
 	guint     origpos;
 	guint     pos = 0;
@@ -1095,9 +1057,9 @@ void gtkpspell_highlight_all(GtkPspell *gtkpspell)
 	GtkSText *gtktext;
 	gfloat    adj_value;
 
-	g_return_if_fail(gtkpspell->gtkpspeller->checker);	
+	g_return_if_fail(gtkaspell->gtkaspeller->checker);	
 
-	gtktext = gtkpspell->gtktext;
+	gtktext = gtkaspell->gtktext;
 
 	adj_value = gtktext->vadj->value;
 
@@ -1105,112 +1067,109 @@ void gtkpspell_highlight_all(GtkPspell *gtkpspell)
 
 	origpos = gtk_editable_get_position(GTK_EDITABLE(gtktext));
 
-/*	gtk_editable_set_position(GTK_EDITABLE(gtktext), 0);*/
-
 	while (pos < len) {
 		while (pos < len && 
-		       iswordsep(get_text_index_whar(gtkpspell, pos)))
+		       iswordsep(get_text_index_whar(gtkaspell, pos)))
 			pos++;
 		while (pos < len &&
-		       !iswordsep(get_text_index_whar(gtkpspell, pos)))
+		       !iswordsep(get_text_index_whar(gtkaspell, pos)))
 			pos++;
 		if (pos > 0)
-			check_at(gtkpspell, pos - 1);
+			check_at(gtkaspell, pos - 1);
 	}
 	gtk_editable_set_position(GTK_EDITABLE(gtktext), origpos);
 	gtk_stext_set_point(GTK_STEXT(gtktext), origpos);
 	gtk_adjustment_set_value(gtktext->vadj, adj_value);
-/*	gtk_editable_select_region(GTK_EDITABLE(gtktext), origpos, origpos);*/
 }
 
-static void replace_with_supplied_word_cb(GtkWidget *w, GtkPspell *gtkpspell) 
+static void replace_with_supplied_word_cb(GtkWidget *w, GtkAspell *gtkaspell) 
 {
 	unsigned char *newword;
 	GdkEvent *e= (GdkEvent *) gtk_get_current_event();
 	
-	newword = gtk_editable_get_chars(GTK_EDITABLE(gtkpspell->replace_entry),
+	newword = gtk_editable_get_chars(GTK_EDITABLE(gtkaspell->replace_entry),
 					 0, -1);
 	
-	if (strcmp(newword, gtkpspell->theword)) {
-		replace_real_word(gtkpspell, newword);
+	if (strcmp(newword, gtkaspell->theword)) {
+		replace_real_word(gtkaspell, newword);
 
 		if ((e->type == GDK_KEY_PRESS && 
 		    ((GdkEventKey *) e)->state & GDK_MOD1_MASK)) {
-			pspell_manager_store_replacement(gtkpspell->gtkpspeller->checker, 
-							 gtkpspell->theword, -1,
+			aspell_speller_store_replacement(gtkaspell->gtkaspeller->checker, 
+							 gtkaspell->theword, -1, 
 							 newword, -1);
 		}
-		gtkpspell->replace_entry = NULL;
+		gtkaspell->replace_entry = NULL;
 	}
 
 	g_free(newword);
 
-	set_point_continue(gtkpspell);
+	set_point_continue(gtkaspell);
 }
 
 
 static void replace_word_cb(GtkWidget *w, gpointer data)
 {
 	unsigned char *newword;
-	GtkPspell *gtkpspell = (GtkPspell *) data;
+	GtkAspell *gtkaspell = (GtkAspell *) data;
 	GdkEvent *e= (GdkEvent *) gtk_get_current_event();
 
 	gtk_label_get(GTK_LABEL(GTK_BIN(w)->child), (gchar**) &newword);
 
-	replace_real_word(gtkpspell, newword);
+	replace_real_word(gtkaspell, newword);
 
 	if ((e->type == GDK_KEY_PRESS && 
 	    ((GdkEventKey *) e)->state & GDK_MOD1_MASK) ||
 	    (e->type == GDK_BUTTON_RELEASE && 
 	     ((GdkEventButton *) e)->state & GDK_MOD1_MASK)) {
-		pspell_manager_store_replacement(gtkpspell->gtkpspeller->checker, 
-						 gtkpspell->theword, -1, 
+		aspell_speller_store_replacement(gtkaspell->gtkaspeller->checker, 
+						 gtkaspell->theword, -1, 
 						 newword, -1);
 	}
 
 	gtk_menu_shell_deactivate(GTK_MENU_SHELL(w->parent));
 
-	set_point_continue(gtkpspell);
+	set_point_continue(gtkaspell);
 }
 
-static void replace_real_word(GtkPspell *gtkpspell, gchar *newword)
+static void replace_real_word(GtkAspell *gtkaspell, gchar *newword)
 {
 	int		oldlen, newlen, wordlen;
 	gint		origpos;
 	gint		pos;
-	gint 		start = gtkpspell->start_pos;
+	gint 		start = gtkaspell->start_pos;
 	GtkSText       *gtktext;
     
 	if (!newword) return;
 
-	gtktext = gtkpspell->gtktext;
+	gtktext = gtkaspell->gtktext;
 
 	gtk_stext_freeze(GTK_STEXT(gtktext));
-	origpos = gtkpspell->orig_pos;
+	origpos = gtkaspell->orig_pos;
 	pos     = origpos;
-	oldlen  = gtkpspell->end_pos - gtkpspell->start_pos;
-	wordlen = strlen(gtkpspell->theword);
+	oldlen  = gtkaspell->end_pos - gtkaspell->start_pos;
+	wordlen = strlen(gtkaspell->theword);
 
 	newlen = strlen(newword); /* FIXME: multybyte characters? */
 
 	gtk_signal_handler_block_by_func(GTK_OBJECT(gtktext),
 					 GTK_SIGNAL_FUNC(entry_insert_cb), 
-					 gtkpspell);
+					 gtkaspell);
 	gtk_signal_handler_block_by_func(GTK_OBJECT(gtktext),
 					 GTK_SIGNAL_FUNC(entry_delete_cb), 
-					 gtkpspell);
+					 gtkaspell);
 
 	gtk_signal_emit_by_name(GTK_OBJECT(gtktext), "delete-text", 
-				gtkpspell->start_pos, gtkpspell->end_pos);
+				gtkaspell->start_pos, gtkaspell->end_pos);
 	gtk_signal_emit_by_name(GTK_OBJECT(gtktext), "insert-text", 
 				newword, newlen, &start);
 	
 	gtk_signal_handler_unblock_by_func(GTK_OBJECT(gtktext),
 					   GTK_SIGNAL_FUNC(entry_insert_cb), 
-					   gtkpspell);
+					   gtkaspell);
 	gtk_signal_handler_unblock_by_func(GTK_OBJECT(gtktext),
 					   GTK_SIGNAL_FUNC(entry_delete_cb), 
-					   gtkpspell);
+					   gtkaspell);
 	
 	/* Put the point and the position where we clicked with the mouse
 	 * It seems to be a hack, as I must thaw,freeze,thaw the widget
@@ -1219,21 +1178,21 @@ static void replace_real_word(GtkPspell *gtkpspell, gchar *newword)
 	 * If the new word ends before point, put the point at its end.
 	 */
     
-	if (origpos - gtkpspell->start_pos < oldlen && 
-	    origpos - gtkpspell->start_pos >= 0) {
+	if (origpos - gtkaspell->start_pos < oldlen && 
+	    origpos - gtkaspell->start_pos >= 0) {
 		/* Original point was in the word.
 		 * Let it there unless point is going to be outside of the word
 		 */
-		if (origpos - gtkpspell->start_pos >= newlen) {
-			pos = gtkpspell->start_pos + newlen;
+		if (origpos - gtkaspell->start_pos >= newlen) {
+			pos = gtkaspell->start_pos + newlen;
 		}
 	}
-	else if (origpos >= gtkpspell->end_pos) {
+	else if (origpos >= gtkaspell->end_pos) {
 		/* move the position according to the change of length */
 		pos = origpos + newlen - oldlen;
 	}
 	
-	gtkpspell->end_pos = gtkpspell->start_pos + strlen(newword); /* FIXME: multibyte characters? */
+	gtkaspell->end_pos = gtkaspell->start_pos + strlen(newword); /* FIXME: multibyte characters? */
 	
 	gtk_stext_thaw(GTK_STEXT(gtktext));
 	gtk_stext_freeze(GTK_STEXT(gtktext));
@@ -1241,9 +1200,9 @@ static void replace_real_word(GtkPspell *gtkpspell, gchar *newword)
 	if (GTK_STEXT(gtktext)->text_len < pos)
 		pos = gtk_stext_get_length(GTK_STEXT(gtktext));
 
-	gtkpspell->orig_pos = pos;
+	gtkaspell->orig_pos = pos;
 
-	gtk_editable_set_position(GTK_EDITABLE(gtktext), gtkpspell->orig_pos);
+	gtk_editable_set_position(GTK_EDITABLE(gtktext), gtkaspell->orig_pos);
 	gtk_stext_set_point(GTK_STEXT(gtktext), 
 			    gtk_editable_get_position(GTK_EDITABLE(gtktext)));
 
@@ -1255,78 +1214,78 @@ static void add_word_to_session_cb(GtkWidget *w, gpointer data)
 {
 	guint     pos;
 	GtkSText *gtktext;
-   	GtkPspell *gtkpspell = (GtkPspell *) data; 
-	gtktext = gtkpspell->gtktext;
+   	GtkAspell *gtkaspell = (GtkAspell *) data; 
+	gtktext = gtkaspell->gtktext;
 
 	gtk_stext_freeze(GTK_STEXT(gtktext));
 
 	pos = gtk_editable_get_position(GTK_EDITABLE(gtktext));
     
-	pspell_manager_add_to_session(gtkpspell->gtkpspeller->checker,
-				      gtkpspell->theword, 
-				      strlen(gtkpspell->theword));
+	aspell_speller_add_to_session(gtkaspell->gtkaspeller->checker,
+				      gtkaspell->theword, 
+				      strlen(gtkaspell->theword));
 
-	check_at(gtkpspell, gtkpspell->start_pos);
+	check_at(gtkaspell, gtkaspell->start_pos);
 
-	gtk_stext_thaw(gtkpspell->gtktext);
+	gtk_stext_thaw(gtkaspell->gtktext);
 
 	gtk_menu_shell_deactivate(GTK_MENU_SHELL(GTK_WIDGET(w)->parent));
 
-	set_point_continue(gtkpspell);
+	set_point_continue(gtkaspell);
 }
 
 /* add_word_to_personal_cb() - add word to personal dict. */
 static void add_word_to_personal_cb(GtkWidget *w, gpointer data)
 {
-   	GtkPspell *gtkpspell = (GtkPspell *) data; 
-	GtkSText *gtktext    = gtkpspell->gtktext;
+   	GtkAspell *gtkaspell = (GtkAspell *) data; 
+	GtkSText *gtktext    = gtkaspell->gtktext;
 
 	gtk_stext_freeze(GTK_STEXT(gtktext));
     
-	pspell_manager_add_to_personal(gtkpspell->gtkpspeller->checker,
-				       gtkpspell->theword,
-				       strlen(gtkpspell->theword));
+	aspell_speller_add_to_personal(gtkaspell->gtkaspeller->checker,
+				       gtkaspell->theword,
+				       strlen(gtkaspell->theword));
     
-	check_at(gtkpspell, gtkpspell->start_pos);
+	check_at(gtkaspell, gtkaspell->start_pos);
 
-	gtk_stext_thaw(gtkpspell->gtktext);
+	gtk_stext_thaw(gtkaspell->gtktext);
 
 	gtk_menu_shell_deactivate(GTK_MENU_SHELL(GTK_WIDGET(w)->parent));
-	set_point_continue(gtkpspell);
+	set_point_continue(gtkaspell);
 }
 
 static void check_with_alternate_cb(GtkWidget *w, gpointer data)
 {
-	GtkPspell *gtkpspell = (GtkPspell *) data;
+	GtkAspell *gtkaspell = (GtkAspell *) data;
 	gint misspelled;
 
 	gtk_menu_shell_deactivate(GTK_MENU_SHELL(GTK_WIDGET(w)->parent));
 
-	use_alternate_dict(gtkpspell);
-	misspelled = check_at(gtkpspell, gtkpspell->start_pos);
+	use_alternate_dict(gtkaspell);
+	misspelled = check_at(gtkaspell, gtkaspell->start_pos);
 
-	if (!gtkpspell->continue_check) {
+	if (!gtkaspell->continue_check) {
 
-		gtkpspell->misspelled = misspelled;
+		gtkaspell->misspelled = misspelled;
 
-		if (gtkpspell->misspelled) {
+		if (gtkaspell->misspelled) {
 
-			misspelled_suggest(gtkpspell, gtkpspell->theword);
+			misspelled_suggest(gtkaspell, gtkaspell->theword);
 
-			gtk_stext_set_point(GTK_STEXT(gtkpspell->gtktext),
-					    gtkpspell->end_pos);
-			gtk_editable_set_position(GTK_EDITABLE(gtkpspell->gtktext),
-						  gtkpspell->end_pos);
+			gtk_stext_set_point(GTK_STEXT(gtkaspell->gtktext),
+					    gtkaspell->end_pos);
+			gtk_editable_set_position(GTK_EDITABLE(gtkaspell->gtktext),
+						  gtkaspell->end_pos);
 
-			gtk_menu_popup(make_sug_menu(gtkpspell), NULL, NULL, 
-				       set_menu_pos, gtkpspell, 0, 
+			gtk_menu_popup(make_sug_menu(gtkaspell), NULL, NULL, 
+				       set_menu_pos, gtkaspell, 0, 
 				       GDK_CURRENT_TIME);
 			return;
 		}
 	} else
-		gtkpspell->orig_pos = gtkpspell->start_pos;
+		gtkaspell->orig_pos = gtkaspell->start_pos;
 
-	set_point_continue(gtkpspell);
+	set_point_continue(gtkaspell);
 }
 	
 static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
@@ -1339,7 +1298,7 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	GtkWidget *cancel_button;
 	gchar *thelabel;
 	gint xx, yy;
-	GtkPspell *gtkpspell = (GtkPspell *) data;
+	GtkAspell *gtkaspell = (GtkAspell *) data;
 
 	gdk_window_get_origin((GTK_WIDGET(w)->parent)->window, &xx, &yy);
 
@@ -1359,18 +1318,18 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 8);
 
 	thelabel = g_strdup_printf(_("Replace \"%s\" with: "), 
-				   gtkpspell->theword);
+				   gtkaspell->theword);
 	label = gtk_label_new(thelabel);
 	g_free(thelabel);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
 	entry = gtk_entry_new();
-	gtkpspell->replace_entry = entry;
-	gtk_entry_set_text(GTK_ENTRY(entry), gtkpspell->theword);
+	gtkaspell->replace_entry = entry;
+	gtk_entry_set_text(GTK_ENTRY(entry), gtkaspell->theword);
 	gtk_editable_select_region(GTK_EDITABLE(entry), 0, -1);
 	gtk_signal_connect(GTK_OBJECT(entry), "activate",
 			   GTK_SIGNAL_FUNC(replace_with_supplied_word_cb), 
-			   gtkpspell);
+			   gtkaspell);
 	gtk_signal_connect_object(GTK_OBJECT(entry), "activate",
 			   GTK_SIGNAL_FUNC(gtk_widget_destroy), 
 			   GTK_OBJECT(dialog));
@@ -1378,32 +1337,30 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, TRUE, 
 			   TRUE, 0);
-	if (!gtkpspell->gtkpspeller->ispell) {
-		label = gtk_label_new(_("Holding down MOD1 key while pressing "
-					"Enter\nwill learn from mistake.\n"));
-		gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
-		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.0);
-		gtk_misc_set_padding(GTK_MISC(label), 8, 0);
-		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, 
-				   TRUE, TRUE, 0);
-	}
+	label = gtk_label_new(_("Holding down MOD1 key while pressing "
+				"Enter\nwill learn from mistake.\n"));
+	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
+	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.0);
+	gtk_misc_set_padding(GTK_MISC(label), 8, 0);
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, 
+			TRUE, TRUE, 0);
 
 	hbox = gtk_hbox_new(TRUE, 0);
 
 	ok_button = gtk_button_new_with_label(_("OK"));
 	gtk_box_pack_start(GTK_BOX(hbox), ok_button, TRUE, TRUE, 8);
 	gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
-			   GTK_SIGNAL_FUNC(replace_with_supplied_word_cb), 
-			   gtkpspell);
+			GTK_SIGNAL_FUNC(replace_with_supplied_word_cb), 
+			gtkaspell);
 	gtk_signal_connect_object(GTK_OBJECT(ok_button), "clicked",
-				  GTK_SIGNAL_FUNC(gtk_widget_destroy), 
-				  GTK_OBJECT(dialog));
+			GTK_SIGNAL_FUNC(gtk_widget_destroy), 
+			GTK_OBJECT(dialog));
 
 	cancel_button = gtk_button_new_with_label(_("Cancel"));
 	gtk_box_pack_start(GTK_BOX(hbox), cancel_button, TRUE, TRUE, 8);
 	gtk_signal_connect_object(GTK_OBJECT(cancel_button), "clicked",
-				  GTK_SIGNAL_FUNC(gtk_widget_destroy), 
-				  GTK_OBJECT(dialog));
+			GTK_SIGNAL_FUNC(gtk_widget_destroy), 
+			GTK_OBJECT(dialog));
 
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), hbox);
 
@@ -1414,14 +1371,14 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	gtk_widget_show_all(dialog);
 }
 
-void gtkpspell_uncheck_all(GtkPspell * gtkpspell) 
+void gtkaspell_uncheck_all(GtkAspell * gtkaspell) 
 {
 	gint 	  origpos;
 	gchar	 *text;
 	gfloat 	  adj_value;
 	GtkSText *gtktext;
 	
-	gtktext = gtkpspell->gtktext;
+	gtktext = gtkaspell->gtktext;
 
 	adj_value = gtktext->vadj->value;
 
@@ -1447,15 +1404,15 @@ void gtkpspell_uncheck_all(GtkPspell * gtkpspell)
 
 static void toggle_check_while_typing_cb(GtkWidget *w, gpointer data)
 {
-	GtkPspell *gtkpspell = (GtkPspell *) data;
+	GtkAspell *gtkaspell = (GtkAspell *) data;
 
-	gtkpspell->check_while_typing = gtkpspell->check_while_typing == FALSE;
+	gtkaspell->check_while_typing = gtkaspell->check_while_typing == FALSE;
 
-	if (!gtkpspell->check_while_typing)
-		gtkpspell_uncheck_all(gtkpspell);
+	if (!gtkaspell->check_while_typing)
+		gtkaspell_uncheck_all(gtkaspell);
 
-	if (gtkpspell->config_menu)
-		populate_submenu(gtkpspell, gtkpspell->config_menu);
+	if (gtkaspell->config_menu)
+		populate_submenu(gtkaspell, gtkaspell->config_menu);
 }
 
 static GSList *create_empty_dictionary_list(void)
@@ -1471,88 +1428,83 @@ static GSList *create_empty_dictionary_list(void)
 	return g_slist_append(list, dict);
 }
 
-/* gtkpspell_get_dictionary_list() - returns list of dictionary names */
-GSList *gtkpspell_get_dictionary_list(const gchar *pspell_path, gint refresh)
+/* gtkaspell_get_dictionary_list() - returns list of dictionary names */
+GSList *gtkaspell_get_dictionary_list(const gchar *aspell_path, gint refresh)
 {
 	GSList *list;
 	gchar *dict_path, *tmp, *prevdir;
 	gchar tmpname[BUFSIZE];
 	Dictionary *dict;
-	DIR *dir;
+	AspellConfig *config;
+	AspellDictInfoList *dlist;
+	AspellDictInfoEnumeration *dels;
+	const AspellDictInfo *entry;
 	struct dirent *ent;
 
-	if (!gtkpspellcheckers)
-		gtkpspellcheckers = gtkpspell_checkers_new();
+	if (!gtkaspellcheckers)
+		gtkaspellcheckers = gtkaspell_checkers_new();
 
-	if (gtkpspellcheckers->dictionary_list && !refresh)
-		return gtkpspellcheckers->dictionary_list;
+	if (gtkaspellcheckers->dictionary_list && !refresh)
+		return gtkaspellcheckers->dictionary_list;
 	else
-		gtkpspell_free_dictionary_list(gtkpspellcheckers->dictionary_list);
-
+		gtkaspell_free_dictionary_list(gtkaspellcheckers->dictionary_list);
 	list = NULL;
 
-#ifdef USE_THREADS
-#warning TODO: no directory change
-#endif
-	dict_path = g_strdup(pspell_path);
-	prevdir   = g_get_current_dir();
-	if (chdir(dict_path) <0) {
-		debug_print("Pspell: error when searching for dictionaries:\n%s\n",
-			    g_strerror(errno));
-		g_free(prevdir);
-		g_free(dict_path);
-		gtkpspellcheckers->dictionary_list =
+	config = new_aspell_config();
+#if 0 
+	aspell_config_replace(config, "rem-all-word-list-path", "");
+	if (aspell_config_error_number(config) != 0) {
+		gtkaspellcheckers->error_message = g_strdup(
+				aspell_config_error_message(config));
+		gtkaspellcheckers->dictionary_list =
 			create_empty_dictionary_list();
 
-		return gtkpspellcheckers->dictionary_list; 
+		return gtkaspellcheckers->dictionary_list; 
+	}
+#endif
+	aspell_config_replace(config, "dict-dir", aspell_path);
+	if (aspell_config_error_number(config) != 0) {
+		gtkaspellcheckers->error_message = g_strdup(
+				aspell_config_error_message(config));
+		gtkaspellcheckers->dictionary_list =
+			create_empty_dictionary_list();
+
+		return gtkaspellcheckers->dictionary_list; 
 	}
 
-	debug_print("Pspell: checking for dictionaries in %s\n", dict_path);
+	dlist = get_aspell_dict_info_list(config);
+	delete_aspell_config(config);
 
-	if (NULL != (dir = opendir("."))) {
-		while (NULL != (ent = readdir(dir))) {
-			/* search for pwli */
-			if ((NULL != (tmp = strstr2(ent->d_name, ".pwli"))) && 
-			    (tmp[5] == 0x00)) {
-				g_snprintf(tmpname, BUFSIZE, "%s%s", 
-					   G_DIR_SEPARATOR_S, ent->d_name);
-				tmpname[MIN(tmp - ent->d_name + 1, BUFSIZE-1)] =
-					0x00;
-				dict = g_new0(Dictionary, 1);
-				dict->fullname = g_strdup_printf("%s%s", 
-								 dict_path, 
-								 tmpname);
-				dict->dictname = strrchr(dict->fullname, 
-							 G_DIR_SEPARATOR) + 1;
-				dict->encoding = NULL;
-				debug_print("Pspell: found dictionary %s %s\n",
-					    dict->fullname, dict->dictname);
-				list = g_slist_insert_sorted(list, dict,
-						(GCompareFunc) compare_dict);
-			}
-		}			
-		closedir(dir);
+	debug_print("Aspell: checking for dictionaries in %s\n", aspell_path);
+	dels = aspell_dict_info_list_elements(dlist);
+	while ( (entry = aspell_dict_info_enumeration_next(dels)) != 0) 
+	{
+		dict = g_new0(Dictionary, 1);
+		dict->fullname = g_strdup_printf("%s%s", aspell_path, 
+				entry->name);
+		dict->dictname = dict->fullname + strlen(aspell_path);
+		dict->encoding = g_strdup(entry->code);
+		debug_print("Aspell: found dictionary %s %s\n", dict->fullname,
+				dict->dictname);
+		list = g_slist_insert_sorted(list, dict,
+				(GCompareFunc) compare_dict);
 	}
-	else {
-		debug_print("Pspell: error when searching for dictionaries.\nNo dictionary found.\n(%s)", 
-			    g_strerror(errno));
-		list = create_empty_dictionary_list();
-	}
+
+	delete_aspell_dict_info_enumeration(dels);
+	
         if(list==NULL){
 		
-		debug_print("Pspell: error when searching for dictionaries.\nNo dictionary found.\n");
+		debug_print("Aspell: error when searching for dictionaries: "
+			      "No dictionary found.\n");
 		list = create_empty_dictionary_list();
 	}
 
-	chdir(prevdir);
-	g_free(dict_path);
-	g_free(prevdir);
-	gtkpspellcheckers->dictionary_list = list;
+	gtkaspellcheckers->dictionary_list = list;
 
 	return list;
 }
 
-void gtkpspell_free_dictionary_list(GSList *list)
+void gtkaspell_free_dictionary_list(GSList *list)
 {
 	Dictionary *dict;
 	GSList *walk;
@@ -1564,14 +1516,14 @@ void gtkpspell_free_dictionary_list(GSList *list)
 	g_slist_free(list);
 }
 
-GtkWidget *gtkpspell_dictionary_option_menu_new(const gchar *pspell_path)
+GtkWidget *gtkaspell_dictionary_option_menu_new(const gchar *aspell_path)
 {
 	GSList *dict_list, *tmp;
 	GtkWidget *item;
 	GtkWidget *menu;
 	Dictionary *dict;
 
-	dict_list = gtkpspell_get_dictionary_list(pspell_path, TRUE);
+	dict_list = gtkaspell_get_dictionary_list(aspell_path, TRUE);
 	g_return_val_if_fail(dict_list, NULL);
 
 	menu = gtk_menu_new();
@@ -1591,7 +1543,7 @@ GtkWidget *gtkpspell_dictionary_option_menu_new(const gchar *pspell_path)
 	return menu;
 }
 
-gchar *gtkpspell_get_dictionary_menu_active_item(GtkWidget *menu)
+gchar *gtkaspell_get_dictionary_menu_active_item(GtkWidget *menu)
 {
 	GtkWidget *menuitem;
 	gchar *dict_fullname;
@@ -1610,7 +1562,7 @@ gchar *gtkpspell_get_dictionary_menu_active_item(GtkWidget *menu)
   
 }
 
-GtkWidget *gtkpspell_sugmode_option_menu_new(gint sugmode)
+GtkWidget *gtkaspell_sugmode_option_menu_new(gint sugmode)
 {
 	GtkWidget *menu;
 	GtkWidget *item;
@@ -1621,36 +1573,33 @@ GtkWidget *gtkpspell_sugmode_option_menu_new(gint sugmode)
 	item = gtk_menu_item_new_with_label(_("Fast Mode"));
         gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu), item);
-	gtk_object_set_data(GTK_OBJECT(item), "sugmode",
-			    GINT_TO_POINTER(PSPELL_FASTMODE));
+	gtk_object_set_data(GTK_OBJECT(item), "sugmode", GINT_TO_POINTER(ASPELL_FASTMODE));
 
 	item = gtk_menu_item_new_with_label(_("Normal Mode"));
         gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu), item);
-	gtk_object_set_data(GTK_OBJECT(item), "sugmode",
-			    GINT_TO_POINTER(PSPELL_NORMALMODE));
+	gtk_object_set_data(GTK_OBJECT(item), "sugmode", GINT_TO_POINTER(ASPELL_NORMALMODE));
 	
 	item = gtk_menu_item_new_with_label(_("Bad Spellers Mode"));
         gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu), item);
-	gtk_object_set_data(GTK_OBJECT(item), "sugmode",
-			    GINT_TO_POINTER(PSPELL_BADSPELLERMODE));
+	gtk_object_set_data(GTK_OBJECT(item), "sugmode", GINT_TO_POINTER(ASPELL_BADSPELLERMODE));
 
 	return menu;
 }
 	
-void gtkpspell_sugmode_option_menu_set(GtkOptionMenu *optmenu, gint sugmode)
+void gtkaspell_sugmode_option_menu_set(GtkOptionMenu *optmenu, gint sugmode)
 {
 	g_return_if_fail(GTK_IS_OPTION_MENU(optmenu));
 
-	g_return_if_fail(sugmode == PSPELL_FASTMODE ||
-			 sugmode == PSPELL_NORMALMODE ||
-			 sugmode == PSPELL_BADSPELLERMODE);
+	g_return_if_fail(sugmode == ASPELL_FASTMODE ||
+			 sugmode == ASPELL_NORMALMODE ||
+			 sugmode == ASPELL_BADSPELLERMODE);
 
 	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu), sugmode - 1);
 }
 
-gint gtkpspell_get_sugmode_from_option_menu(GtkOptionMenu *optmenu)
+gint gtkaspell_get_sugmode_from_option_menu(GtkOptionMenu *optmenu)
 {
 	gint sugmode;
 	GtkWidget *item;
@@ -1665,34 +1614,34 @@ gint gtkpspell_get_sugmode_from_option_menu(GtkOptionMenu *optmenu)
 	return sugmode;
 }
 
-static void use_alternate_dict(GtkPspell *gtkpspell)
+static void use_alternate_dict(GtkAspell *gtkaspell)
 {
-	GtkPspeller *tmp;
+	GtkAspeller *tmp;
 
-	tmp = gtkpspell->gtkpspeller;
-	gtkpspell->gtkpspeller = gtkpspell->alternate_speller;
-	gtkpspell->alternate_speller = tmp;
+	tmp = gtkaspell->gtkaspeller;
+	gtkaspell->gtkaspeller = gtkaspell->alternate_speller;
+	gtkaspell->alternate_speller = tmp;
 
-	if (gtkpspell->config_menu)
-		populate_submenu(gtkpspell, gtkpspell->config_menu);
+	if (gtkaspell->config_menu)
+		populate_submenu(gtkaspell, gtkaspell->config_menu);
 }
 
-static void popup_menu(GtkPspell *gtkpspell, GdkEventButton *eb) 
+static void popup_menu(GtkAspell *gtkaspell, GdkEventButton *eb) 
 {
 	GtkSText * gtktext;
 	
-	gtktext = gtkpspell->gtktext;
-	gtkpspell->orig_pos = gtk_editable_get_position(GTK_EDITABLE(gtktext));
+	gtktext = gtkaspell->gtktext;
+	gtkaspell->orig_pos = gtk_editable_get_position(GTK_EDITABLE(gtktext));
 
 	if (!(eb->state & GDK_SHIFT_MASK)) {
-		if (check_at(gtkpspell, gtkpspell->orig_pos)) {
+		if (check_at(gtkaspell, gtkaspell->orig_pos)) {
 
 			gtk_editable_set_position(GTK_EDITABLE(gtktext), 
-						  gtkpspell->orig_pos);
-			gtk_stext_set_point(gtktext, gtkpspell->orig_pos);
+						  gtkaspell->orig_pos);
+			gtk_stext_set_point(gtktext, gtkaspell->orig_pos);
 
-			if (misspelled_suggest(gtkpspell, gtkpspell->theword)) {
-				gtk_menu_popup(make_sug_menu(gtkpspell), 
+			if (misspelled_suggest(gtkaspell, gtkaspell->theword)) {
+				gtk_menu_popup(make_sug_menu(gtkaspell), 
 					       NULL, NULL, NULL, NULL,
 					       eb->button, GDK_CURRENT_TIME);
 				
@@ -1700,42 +1649,42 @@ static void popup_menu(GtkPspell *gtkpspell, GdkEventButton *eb)
 			}
 		} else {
 			gtk_editable_set_position(GTK_EDITABLE(gtktext), 
-						  gtkpspell->orig_pos);
-			gtk_stext_set_point(gtktext, gtkpspell->orig_pos);
+						  gtkaspell->orig_pos);
+			gtk_stext_set_point(gtktext, gtkaspell->orig_pos);
 		}
 	}
 
-	gtk_menu_popup(make_config_menu(gtkpspell), NULL, NULL, NULL, NULL,
+	gtk_menu_popup(make_config_menu(gtkaspell), NULL, NULL, NULL, NULL,
 		       eb->button, GDK_CURRENT_TIME);
 }
 
 /* make_sug_menu() - Add menus to accept this word for this session 
  * and to add it to personal dictionary 
  */
-static GtkMenu *make_sug_menu(GtkPspell *gtkpspell) 
+static GtkMenu *make_sug_menu(GtkAspell *gtkaspell) 
 {
 	GtkWidget 	*menu, *item;
 	unsigned char	*caption;
 	GtkSText 	*gtktext;
 	GtkAccelGroup 	*accel;
-	GList 		*l = gtkpspell->suggestions_list;
+	GList 		*l = gtkaspell->suggestions_list;
 
-	gtktext = gtkpspell->gtktext;
+	gtktext = gtkaspell->gtktext;
 
 	accel = gtk_accel_group_new();
 	menu = gtk_menu_new(); 
 
-	if (gtkpspell->sug_menu)
-		gtk_widget_destroy(gtkpspell->sug_menu);
+	if (gtkaspell->sug_menu)
+		gtk_widget_destroy(gtkaspell->sug_menu);
 
-	gtkpspell->sug_menu = menu;	
+	gtkaspell->sug_menu = menu;	
 
 	gtk_signal_connect(GTK_OBJECT(menu), "cancel",
-		GTK_SIGNAL_FUNC(cancel_menu_cb), gtkpspell);
+		GTK_SIGNAL_FUNC(cancel_menu_cb), gtkaspell);
 
 	caption = g_strdup_printf(_("\"%s\" unknown in %s"), 
 				  (unsigned char*) l->data, 
-				  gtkpspell->gtkpspeller->dictionary->dictname);
+				  gtkaspell->gtkaspeller->dictionary->dictname);
 	item = gtk_menu_item_new_with_label(caption);
 	gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu), item);
@@ -1751,7 +1700,7 @@ static GtkMenu *make_sug_menu(GtkPspell *gtkpspell)
 	gtk_menu_append(GTK_MENU(menu), item);
         gtk_signal_connect(GTK_OBJECT(item), "activate",
 			   GTK_SIGNAL_FUNC(add_word_to_session_cb), 
-			   gtkpspell);
+			   gtkaspell);
 	gtk_widget_add_accelerator(item, "activate", accel, GDK_space,
 				   GDK_MOD1_MASK,
 				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
@@ -1761,7 +1710,7 @@ static GtkMenu *make_sug_menu(GtkPspell *gtkpspell)
 	gtk_menu_append(GTK_MENU(menu), item);
         gtk_signal_connect(GTK_OBJECT(item), "activate",
 			   GTK_SIGNAL_FUNC(add_word_to_personal_cb), 
-			   gtkpspell);
+			   gtkaspell);
 	gtk_widget_add_accelerator(item, "activate", accel, GDK_Return,
 				   GDK_MOD1_MASK,
 				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
@@ -1771,20 +1720,20 @@ static GtkMenu *make_sug_menu(GtkPspell *gtkpspell)
 	gtk_menu_append(GTK_MENU(menu), item);
         gtk_signal_connect(GTK_OBJECT(item), "activate",
 			   GTK_SIGNAL_FUNC(replace_with_create_dialog_cb), 
-			   gtkpspell);
+			   gtkaspell);
 	gtk_widget_add_accelerator(item, "activate", accel, GDK_R, 0,
 				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
 
-	if (gtkpspell->use_alternate && gtkpspell->alternate_speller) {
+	if (gtkaspell->use_alternate && gtkaspell->alternate_speller) {
 		caption = g_strdup_printf(_("Check with %s"), 
-			gtkpspell->alternate_speller->dictionary->dictname);
+			gtkaspell->alternate_speller->dictionary->dictname);
 		item = gtk_menu_item_new_with_label(caption);
 		g_free(caption);
 		gtk_widget_show(item);
 		gtk_menu_append(GTK_MENU(menu), item);
 		gtk_signal_connect(GTK_OBJECT(item), "activate",
 				GTK_SIGNAL_FUNC(check_with_alternate_cb),
-				gtkpspell);
+				gtkaspell);
 		gtk_widget_add_accelerator(item, "activate", accel, GDK_X, 0,
 					   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
 	}
@@ -1830,7 +1779,7 @@ static GtkMenu *make_sug_menu(GtkPspell *gtkpspell)
 			gtk_menu_append(GTK_MENU(curmenu), item);
 			gtk_signal_connect(GTK_OBJECT(item), "activate",
 					   GTK_SIGNAL_FUNC(replace_word_cb),
-					   gtkpspell);
+					   gtkaspell);
 
 			if (curmenu == menu && count < MENUCOUNT) {
 				gtk_widget_add_accelerator(item, "activate",
@@ -1856,12 +1805,11 @@ static GtkMenu *make_sug_menu(GtkPspell *gtkpspell)
 	return GTK_MENU(menu);
 }
 
-static void populate_submenu(GtkPspell *gtkpspell, GtkWidget *menu)
+static void populate_submenu(GtkAspell *gtkaspell, GtkWidget *menu)
 {
 	GtkWidget *item, *submenu;
 	gchar *dictname;
-	GtkPspeller *gtkpspeller = gtkpspell->gtkpspeller;
-	gint ispell = gtkpspeller->ispell;
+	GtkAspeller *gtkaspeller = gtkaspell->gtkaspeller;
 
 	if (GTK_MENU_SHELL(menu)->children) {
 		GList *amenu, *alist;
@@ -1870,10 +1818,10 @@ static void populate_submenu(GtkPspell *gtkpspell, GtkWidget *menu)
 			gtk_widget_destroy(GTK_WIDGET(amenu->data));
 			amenu = alist;
 		}
-	}
+}
 	
 	dictname = g_strdup_printf(_("Dictionary: %s"),
-				   gtkpspeller->dictionary->dictname);
+				   gtkaspeller->dictionary->dictname);
 	item = gtk_menu_item_new_with_label(dictname);
 	gtk_misc_set_alignment(GTK_MISC(GTK_BIN(item)->child), 0.5, 0.5);
 	g_free(dictname);
@@ -1884,54 +1832,48 @@ static void populate_submenu(GtkPspell *gtkpspell, GtkWidget *menu)
         gtk_widget_show(item);
         gtk_menu_append(GTK_MENU(menu), item);
 		
-	if (gtkpspell->use_alternate && gtkpspell->alternate_speller) {
+	if (gtkaspell->use_alternate && gtkaspell->alternate_speller) {
 		dictname = g_strdup_printf(_("Use alternate (%s)"), 
-				gtkpspell->alternate_speller->dictionary->dictname);
+				gtkaspell->alternate_speller->dictionary->dictname);
 		item = gtk_menu_item_new_with_label(dictname);
 		g_free(dictname);
 		gtk_signal_connect(GTK_OBJECT(item), "activate",
 				   GTK_SIGNAL_FUNC(switch_to_alternate_cb),
-				   gtkpspell);
-		gtk_widget_show(item);
-		gtk_menu_append(GTK_MENU(menu), item);
-		item = gtk_menu_item_new();
+				   gtkaspell);
 		gtk_widget_show(item);
 		gtk_menu_append(GTK_MENU(menu), item);
 	}
 
       	item = gtk_check_menu_item_new_with_label(_("Fast Mode"));
-	if (ispell || gtkpspell->gtkpspeller->sug_mode == PSPELL_FASTMODE)
-		gtk_widget_set_sensitive(GTK_WIDGET(item),FALSE);
-	if (!ispell && gtkpspell->gtkpspeller->sug_mode == PSPELL_FASTMODE)
+	if (gtkaspell->gtkaspeller->sug_mode == ASPELL_FASTMODE) {
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item),TRUE);
-	else
+		gtk_widget_set_sensitive(GTK_WIDGET(item),FALSE);
+	} else
 		gtk_signal_connect(GTK_OBJECT(item), "activate",
 				   GTK_SIGNAL_FUNC(set_sug_mode_cb),
-				   gtkpspell);
+				   gtkaspell);
 	gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu), item);
 
 	item = gtk_check_menu_item_new_with_label(_("Normal Mode"));
-	if (ispell || gtkpspell->gtkpspeller->sug_mode == PSPELL_NORMALMODE)
+	if (gtkaspell->gtkaspeller->sug_mode == ASPELL_NORMALMODE) {
 		gtk_widget_set_sensitive(GTK_WIDGET(item), FALSE);
-	if (!ispell && gtkpspell->gtkpspeller->sug_mode == PSPELL_NORMALMODE) 
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
-	else
+	} else
 		gtk_signal_connect(GTK_OBJECT(item), "activate",
 				   GTK_SIGNAL_FUNC(set_sug_mode_cb),
-				   gtkpspell);
+				   gtkaspell);
 	gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu),item);
 
 	item = gtk_check_menu_item_new_with_label(_("Bad Spellers Mode"));
-	if (ispell || gtkpspell->gtkpspeller->sug_mode == PSPELL_BADSPELLERMODE)
+	if (gtkaspell->gtkaspeller->sug_mode == ASPELL_BADSPELLERMODE) {
 		gtk_widget_set_sensitive(GTK_WIDGET(item), FALSE);
-	if (!ispell && gtkpspell->gtkpspeller->sug_mode == PSPELL_BADSPELLERMODE)
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
-	else
+	} else
 		gtk_signal_connect(GTK_OBJECT(item), "activate",
 				   GTK_SIGNAL_FUNC(set_sug_mode_cb),
-				   gtkpspell);
+				   gtkaspell);
 	gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu), item);
 	
@@ -1940,13 +1882,13 @@ static void populate_submenu(GtkPspell *gtkpspell, GtkWidget *menu)
         gtk_menu_append(GTK_MENU(menu), item);
 	
 	item = gtk_check_menu_item_new_with_label(_("Check while typing"));
-	if (gtkpspell->check_while_typing)
+	if (gtkaspell->check_while_typing)
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
 	else	
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), FALSE);
 	gtk_signal_connect(GTK_OBJECT(item), "activate",
 			   GTK_SIGNAL_FUNC(toggle_check_while_typing_cb),
-			   gtkpspell);
+			   gtkaspell);
 	gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu), item);
 
@@ -1961,23 +1903,23 @@ static void populate_submenu(GtkPspell *gtkpspell, GtkWidget *menu)
         gtk_menu_append(GTK_MENU(menu), item);
 
 	/* Dict list */
-        if (gtkpspellcheckers->dictionary_list == NULL)
-		gtkpspell_get_dictionary_list(prefs_common.pspell_path, FALSE);
+        if (gtkaspellcheckers->dictionary_list == NULL)
+		gtkaspell_get_dictionary_list(prefs_common.aspell_path, FALSE);
         {
 		GtkWidget * curmenu = submenu;
 		int count = 0;
 		Dictionary *dict;
 		GSList *tmp;
-		tmp = gtkpspellcheckers->dictionary_list;
+		tmp = gtkaspellcheckers->dictionary_list;
 		
-		for (tmp = gtkpspellcheckers->dictionary_list; tmp != NULL; 
+		for (tmp = gtkaspellcheckers->dictionary_list; tmp != NULL; 
 				tmp = g_slist_next(tmp)) {
 			dict = (Dictionary *) tmp->data;
 			item = gtk_check_menu_item_new_with_label(dict->dictname);
 			gtk_object_set_data(GTK_OBJECT(item), "dict_name",
 					    dict->fullname); 
 			if (strcmp2(dict->fullname,
-			    gtkpspell->gtkpspeller->dictionary->fullname))
+			    gtkaspell->gtkaspeller->dictionary->fullname))
 				gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), FALSE);
 			else {
 				gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), TRUE);
@@ -1986,7 +1928,7 @@ static void populate_submenu(GtkPspell *gtkpspell, GtkWidget *menu)
 			}
 			gtk_signal_connect(GTK_OBJECT(item), "activate",
 					   GTK_SIGNAL_FUNC(change_dict_cb),
-					   gtkpspell);
+					   gtkaspell);
 			gtk_widget_show(item);
 			gtk_menu_append(GTK_MENU(curmenu), item);
 			
@@ -2009,42 +1951,42 @@ static void populate_submenu(GtkPspell *gtkpspell, GtkWidget *menu)
         }  
 }
 
-static GtkMenu *make_config_menu(GtkPspell *gtkpspell)
+static GtkMenu *make_config_menu(GtkAspell *gtkaspell)
 {
-	if (!gtkpspell->popup_config_menu)
-		gtkpspell->popup_config_menu = gtk_menu_new();
+	if (!gtkaspell->popup_config_menu)
+		gtkaspell->popup_config_menu = gtk_menu_new();
 
-	debug_print("Pspell: creating/using popup_config_menu %0x\n", 
-			(guint) gtkpspell->popup_config_menu);
-	populate_submenu(gtkpspell, gtkpspell->popup_config_menu);
+	debug_print("Aspell: creating/using popup_config_menu %0x\n", 
+			(guint) gtkaspell->popup_config_menu);
+	populate_submenu(gtkaspell, gtkaspell->popup_config_menu);
 
-        return GTK_MENU(gtkpspell->popup_config_menu);
+        return GTK_MENU(gtkaspell->popup_config_menu);
 }
 
-void gtkpspell_populate_submenu(GtkPspell *gtkpspell, GtkWidget *menuitem)
+void gtkaspell_populate_submenu(GtkAspell *gtkaspell, GtkWidget *menuitem)
 {
 	GtkWidget *menu;
 
 	menu = GTK_WIDGET(GTK_MENU_ITEM(menuitem)->submenu);
 	
-	debug_print("Pspell: using config menu %0x\n", 
-			(guint) gtkpspell->popup_config_menu);
-	populate_submenu(gtkpspell, menu);
+	debug_print("Aspell: using config menu %0x\n", 
+			(guint) gtkaspell->popup_config_menu);
+	populate_submenu(gtkaspell, menu);
 	
-	gtkpspell->config_menu = menu;
+	gtkaspell->config_menu = menu;
 	
 }
 
 static void set_menu_pos(GtkMenu *menu, gint *x, gint *y, gpointer data)
 {
-	GtkPspell 	*gtkpspell = (GtkPspell *) data;
+	GtkAspell 	*gtkaspell = (GtkAspell *) data;
 	gint 		 xx = 0, yy = 0;
 	gint 		 sx,     sy;
 	gint 		 wx,     wy;
-	GtkSText 	*text = GTK_STEXT(gtkpspell->gtktext);
+	GtkSText 	*text = GTK_STEXT(gtkaspell->gtktext);
 	GtkRequisition 	 r;
 
-	gdk_window_get_origin(GTK_WIDGET(gtkpspell->gtktext)->window, &xx, &yy);
+	gdk_window_get_origin(GTK_WIDGET(gtkaspell->gtktext)->window, &xx, &yy);
 	
 	sx = gdk_screen_width();
 	sy = gdk_screen_height();
@@ -2054,16 +1996,16 @@ static void set_menu_pos(GtkMenu *menu, gint *x, gint *y, gpointer data)
 	wx =  r.width;
 	wy =  r.height;
 	
-	*x = gtkpspell->gtktext->cursor_pos_x + xx +
+	*x = gtkaspell->gtktext->cursor_pos_x + xx +
 	     gdk_char_width(GTK_WIDGET(text)->style->font, ' ');
-	*y = gtkpspell->gtktext->cursor_pos_y + yy;
+	*y = gtkaspell->gtktext->cursor_pos_y + yy;
 
 	if (*x + wx > sx)
 		*x = sx - wx;
 	if (*y + wy > sy)
 		*y = *y - wy - 
-		     gdk_string_height((GTK_WIDGET(gtkpspell->gtktext))->style->font, 
-				       gtkpspell->theword);
+		     gdk_string_height((GTK_WIDGET(gtkaspell->gtktext))->style->font, 
+				       gtkaspell->theword);
 
 }
 
@@ -2071,21 +2013,21 @@ static void set_menu_pos(GtkMenu *menu, gint *x, gint *y, gpointer data)
 
 static gboolean cancel_menu_cb(GtkMenuShell *w, gpointer data)
 {
-	GtkPspell *gtkpspell = (GtkPspell *) data;
+	GtkAspell *gtkaspell = (GtkAspell *) data;
 
-	gtkpspell->continue_check = NULL;
-	set_point_continue(gtkpspell);
+	gtkaspell->continue_check = NULL;
+	set_point_continue(gtkaspell);
 
 	return FALSE;
 	
 }
 
 /* change_dict_cb() - Menu callback : change dict */
-static void change_dict_cb(GtkWidget *w, GtkPspell *gtkpspell)
+static void change_dict_cb(GtkWidget *w, GtkAspell *gtkaspell)
 {
 	Dictionary 	*dict;       
 	gchar		*fullname;
-	GtkPspeller 	*gtkpspeller;
+	GtkAspeller 	*gtkaspeller;
 	gint 		 sug_mode;
   
         fullname = (gchar *) gtk_object_get_data(GTK_OBJECT(w), "dict_name");
@@ -2093,79 +2035,79 @@ static void change_dict_cb(GtkWidget *w, GtkPspell *gtkpspell)
 	if (!strcmp2(fullname, _("None")))
 		return;
 
-	sug_mode  = gtkpspell->default_sug_mode;
+	sug_mode  = gtkaspell->default_sug_mode;
 
 	dict = g_new0(Dictionary, 1);
 	dict->fullname = g_strdup(fullname);
-	dict->encoding = g_strdup(gtkpspell->gtkpspeller->dictionary->encoding);
+	dict->encoding = g_strdup(gtkaspell->gtkaspeller->dictionary->encoding);
 
-	if (gtkpspell->use_alternate && gtkpspell->alternate_speller &&
-	    dict == gtkpspell->alternate_speller->dictionary) {
-		use_alternate_dict(gtkpspell);
+	if (gtkaspell->use_alternate && gtkaspell->alternate_speller &&
+	    dict == gtkaspell->alternate_speller->dictionary) {
+		use_alternate_dict(gtkaspell);
 		dictionary_delete(dict);
 		return;
 	}
 	
-	gtkpspeller = gtkpspeller_new(dict);
+	gtkaspeller = gtkaspeller_new(dict);
 
-	if (!gtkpspeller) {
+	if (!gtkaspeller) {
 		gchar *message;
 		message = g_strdup_printf(_("The spell checker could not change dictionary.\n%s"), 
-					  gtkpspellcheckers->error_message);
+					  gtkaspellcheckers->error_message);
 
-		gtkpspell_alert_dialog(message); 
+		gtkaspell_alert_dialog(message); 
 		g_free(message);
 	} else {
-		if (gtkpspell->use_alternate) {
-			if (gtkpspell->alternate_speller)
-				gtkpspeller_delete(gtkpspell->alternate_speller);
-			gtkpspell->alternate_speller = gtkpspell->gtkpspeller;
+		if (gtkaspell->use_alternate) {
+			if (gtkaspell->alternate_speller)
+				gtkaspeller_delete(gtkaspell->alternate_speller);
+			gtkaspell->alternate_speller = gtkaspell->gtkaspeller;
 		} else
-			gtkpspeller_delete(gtkpspell->gtkpspeller);
+			gtkaspeller_delete(gtkaspell->gtkaspeller);
 
-		gtkpspell->gtkpspeller = gtkpspeller;
-		gtkpspell_set_sug_mode(gtkpspell, sug_mode);
+		gtkaspell->gtkaspeller = gtkaspeller;
+		gtkaspell_set_sug_mode(gtkaspell, sug_mode);
 	}
 	
 	dictionary_delete(dict);
 
-	if (gtkpspell->config_menu)
-		populate_submenu(gtkpspell, gtkpspell->config_menu);
+	if (gtkaspell->config_menu)
+		populate_submenu(gtkaspell, gtkaspell->config_menu);
 }
 
 static void switch_to_alternate_cb(GtkWidget *w,
 				   gpointer data)
 {
-	GtkPspell *gtkpspell = (GtkPspell *) data;
-	use_alternate_dict(gtkpspell);
+	GtkAspell *gtkaspell = (GtkAspell *) data;
+	use_alternate_dict(gtkaspell);
 }
 
 /* Misc. helper functions */
 
-static void set_point_continue(GtkPspell *gtkpspell)
+static void set_point_continue(GtkAspell *gtkaspell)
 {
 	GtkSText  *gtktext;
 
-	gtktext = gtkpspell->gtktext;
+	gtktext = gtkaspell->gtktext;
 
 	gtk_stext_freeze(gtktext);
-	gtk_editable_set_position(GTK_EDITABLE(gtktext),gtkpspell->orig_pos);
-	gtk_stext_set_point(gtktext, gtkpspell->orig_pos);
+	gtk_editable_set_position(GTK_EDITABLE(gtktext),gtkaspell->orig_pos);
+	gtk_stext_set_point(gtktext, gtkaspell->orig_pos);
 	gtk_stext_thaw(gtktext);
 
-	if (gtkpspell->continue_check)
-		gtkpspell->continue_check((gpointer *) gtkpspell);
+	if (gtkaspell->continue_check)
+		gtkaspell->continue_check((gpointer *) gtkaspell);
 }
 
-static void allocate_color(GtkPspell *gtkpspell, gint rgbvalue)
+static void allocate_color(GtkAspell *gtkaspell, gint rgbvalue)
 {
 	GdkColormap *gc;
-	GdkColor *color = &(gtkpspell->highlight);
+	GdkColor *color = &(gtkaspell->highlight);
 
-	gc = gtk_widget_get_colormap(GTK_WIDGET(gtkpspell->gtktext));
+	gc = gtk_widget_get_colormap(GTK_WIDGET(gtkaspell->gtktext));
 
-	if (gtkpspell->highlight.pixel)
-		gdk_colormap_free_colors(gc, &(gtkpspell->highlight), 1);
+	if (gtkaspell->highlight.pixel)
+		gdk_colormap_free_colors(gc, &(gtkaspell->highlight), 1);
 
 	/* Shameless copy from Sylpheed's gtkutils.c */
 	color->pixel = 0L;
@@ -2176,10 +2118,10 @@ static void allocate_color(GtkPspell *gtkpspell, gint rgbvalue)
 	color->blue  = (int) (((gdouble) (rgbvalue & 0x0000ff)        / 255.0)
 			* 65535.0);
 
-	gdk_colormap_alloc_color(gc, &(gtkpspell->highlight), FALSE, TRUE);
+	gdk_colormap_alloc_color(gc, &(gtkaspell->highlight), FALSE, TRUE);
 }
 
-static void change_color(GtkPspell * gtkpspell, 
+static void change_color(GtkAspell * gtkaspell, 
 			 gint start, gint end,
 			 gchar *newtext,
                          GdkColor *color) 
@@ -2188,7 +2130,7 @@ static void change_color(GtkPspell * gtkpspell,
 
 	g_return_if_fail(start < end);
     
-	gtktext = gtkpspell->gtktext;
+	gtktext = gtkaspell->gtktext;
     
 	gtk_stext_freeze(gtktext);
 	if (newtext) {
@@ -2200,25 +2142,25 @@ static void change_color(GtkPspell * gtkpspell,
 	gtk_stext_thaw(gtktext);
 }
 
-/* convert_to_pspell_encoding () - converts ISO-8859-* strings to iso8859-* 
- * as needed by pspell. Returns an allocated string.
+/* convert_to_aspell_encoding () - converts ISO-8859-* strings to iso8859-* 
+ * as needed by aspell. Returns an allocated string.
  */
 
-static guchar *convert_to_pspell_encoding (const guchar *encoding)
+static guchar *convert_to_aspell_encoding (const guchar *encoding)
 {
-	guchar * pspell_encoding;
+	guchar * aspell_encoding;
 
 	if (strstr2(encoding, "ISO-8859-")) {
-		pspell_encoding = g_strdup_printf("iso8859%s", encoding + 8);
+		aspell_encoding = g_strdup_printf("iso8859%s", encoding+8);
 	}
 	else {
 		if (!strcmp2(encoding, "US-ASCII"))
-			pspell_encoding = g_strdup("iso8859-1");
+			aspell_encoding = g_strdup("iso8859-1");
 		else
-			pspell_encoding = g_strdup(encoding);
+			aspell_encoding = g_strdup(encoding);
 	}
 
-	return pspell_encoding;
+	return aspell_encoding;
 }
 
 /* compare_dict () - compare 2 dict names */
@@ -2245,7 +2187,6 @@ static gint compare_dict(Dictionary *a, Dictionary *b)
 	}
 }
 
-
 static void dictionary_delete(Dictionary *dict)
 {
 	g_free(dict->fullname);
@@ -2266,43 +2207,43 @@ static Dictionary *dictionary_dup(const Dictionary *dict)
 	return dict2;
 }
 
-static void free_suggestions_list(GtkPspell *gtkpspell)
+static void free_suggestions_list(GtkAspell *gtkaspell)
 {
 	GList *list;
 
-	for (list = gtkpspell->suggestions_list; list != NULL;
+	for (list = gtkaspell->suggestions_list; list != NULL;
 	     list = list->next)
 		g_free(list->data);
 
 	g_list_free(list);
 	
-	gtkpspell->max_sug          = -1;
-	gtkpspell->suggestions_list = NULL;
+	gtkaspell->max_sug          = -1;
+	gtkaspell->suggestions_list = NULL;
 }
 
-static void reset_theword_data(GtkPspell *gtkpspell)
+static void reset_theword_data(GtkAspell *gtkaspell)
 {
-	gtkpspell->start_pos     =  0;
-	gtkpspell->end_pos       =  0;
-	gtkpspell->theword[0]    =  0;
-	gtkpspell->max_sug       = -1;
+	gtkaspell->start_pos     =  0;
+	gtkaspell->end_pos       =  0;
+	gtkaspell->theword[0]    =  0;
+	gtkaspell->max_sug       = -1;
 
-	free_suggestions_list(gtkpspell);
+	free_suggestions_list(gtkaspell);
 }
 
 static void free_checkers(gpointer elt, gpointer data)
 {
-	GtkPspeller *gtkpspeller = elt;
+	GtkAspeller *gtkaspeller = elt;
 
-	g_return_if_fail(gtkpspeller);
+	g_return_if_fail(gtkaspeller);
 
-	gtkpspeller_real_delete(gtkpspeller);
+	gtkaspeller_real_delete(gtkaspeller);
 }
 
-static gint find_gtkpspeller(gconstpointer aa, gconstpointer bb)
+static gint find_gtkaspeller(gconstpointer aa, gconstpointer bb)
 {
-	Dictionary *a = ((GtkPspeller *) aa)->dictionary;
-	Dictionary *b = ((GtkPspeller *) bb)->dictionary;
+	Dictionary *a = ((GtkAspeller *) aa)->dictionary;
+	Dictionary *b = ((GtkAspeller *) bb)->dictionary;
 
 	if (a && b && a->fullname && b->fullname  &&
 	    strcmp(a->fullname, b->fullname) == 0 &&
@@ -2312,7 +2253,7 @@ static gint find_gtkpspeller(gconstpointer aa, gconstpointer bb)
 	return 1;
 }
 
-static void gtkpspell_alert_dialog(gchar *message)
+static void gtkaspell_alert_dialog(gchar *message)
 {
 	GtkWidget *dialog;
 	GtkWidget *hbox;

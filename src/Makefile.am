@@ -130,7 +130,7 @@ sylpheed_SOURCES = \
 	mbox_folder.c mbox_folder.h \
 	quote_fmt_lex.l quote_fmt_lex.h \
 	quote_fmt_parse.y quote_fmt.c quote_fmt.h \
-	gtkspell.c gtkspell.h gtkxtext.h \
+	gtkaspell.c gtkaspell.h gtkxtext.h \
 	matcher_parser_lex.l matcher_parser_lex.h \
 	matcher_parser_parse.y matcher_parser.h matcher_parser_parse.h \
 	string_match.h string_match.c \
@@ -221,20 +221,20 @@ EXTRA_DIST = \
 INCLUDES = \
 	-DG_LOG_DOMAIN=\"Sylpheed\" \
 	-I$(top_srcdir)/intl \
+        $(ASPELL_CFLAGS)    \
 	$(GTK_CFLAGS) \
 	$(GDK_IMLIB_CFLAGS) \
 	$(GDK_PIXBUF_CFLAGS) \
 	$(GPGME_CFLAGS) \
-        $(PSPELL_CFLAGS)    \
 	-I$(includedir)
 
 sylpheed_LDADD = \
 	$(INTLLIBS) \
+	$(ASPELL_LIBS) \
 	$(GTK_LIBS) \
 	$(GDK_IMLIB_LIBS) \
 	$(GDK_PIXBUF_LIBS) \
 	$(GPGME_LIBS) \
-        $(PSPELL_LIBS) \
 	$(LDAP_LIBS)
 
 CPPFLAGS = \
