@@ -1,3 +1,9 @@
+2003-10-28 [christoph]	0.9.6claws57
+
+	* configure.ac
+		make sure MathML-Viewer is not built with the
+		Gtk2 version of GtkMathView
+
 2003-10-28 [paul]	0.9.6claws56
 
 	* sync with 0.9.7cvs1

@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=6
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=56
+EXTRA_VERSION=57
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}claws
 else
@@ -409,7 +409,7 @@ AC_ARG_ENABLE(mathml-viewer-plugin,
 	[  --enable-mathml-viewer-plugin    Build MathML-Viewer plugin [default=no]],
 	[ac_cv_enable_mathml_viewer_plugin=$enableval], [ac_cv_enable_mathml_viewer_plugin=yes])
 if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
-	PKG_CHECK_MODULES(GTK_MATH_VIEW, gtkmathview >= 0.4.2, :, ac_cv_enable_mathml_viewer_plugin=no)
+	PKG_CHECK_MODULES(GTK_MATH_VIEW, gtkmathview >= 0.4.2 gtkmathview < 0.5, :, ac_cv_enable_mathml_viewer_plugin=no)
 
 	if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
 		AC_SUBST(GTK_MATH_VIEW_CFLAGS)
