@@ -27,11 +27,15 @@
 
   This perl script provides easy conversion of your filtering rules
   form sylpheed's old filter system to the new filtering system used
-  in sylpheed-claws. It reads 'filterrc' and outputs 'filteringrc'.
+  in sylpheed-claws. It reads '~/.sylpheed/filterrc' and outputs 
+  '~/.sylpheed/filteringrc'.
+  
+  Your old filter settings are preserved, if you want to go back to
+  the original filter system simply delete ~/.sylpheed/filteringrc
 
   HOW TO USE IT
 
-  Issue the following command:
+  Issue the following command from the 'tools' directory:
 
         perl filter_conv.pl
 

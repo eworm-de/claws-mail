@@ -18,27 +18,22 @@
 #  *
 
 chdir;
-chdir '.sylpheed' || die("You don't appear to have Sylpheed installed");
+chdir '.sylpheed' || die("You don't appear to have Sylpheed installed\n");
 
-open(FOLDERLIST, "<folderlist.xml") || warn("Can't find folderlist.xml, guessing that you use 'Mail'");
+open(FOLDERLIST, "<folderlist.xml") || die("Can't find folderlist.xml\n");
 @folderlist = <FOLDERLIST>;
 close FOLDERLIST;
 
 foreach $folderlist (@folderlist) {
 	if ($folderlist =~ m/<folder type="mh"/) {
-                if ($folderlist =~ m/name="Mailbox"/) {
-                	$TOPBOXIS = "Mailbox";
-                } else {
-                	$TOPBOXIS = "Mail";
-                }
+      		$folderlist =~ s/<folder type="mh" name="//;
+                $folderlist =~ s/" path="[A-Z0-9]+">\n//ig;
+                $folderlist =~ s/^ +//;
+                $mailbox = $folderlist;
         }
 }
 
-if (!$TOPBOXIS) {
-	$TOPBOXIS = "Mail";
-}
-
-open (FILTERRC, "<filterrc") || die("Can't find your old filter rules");
+open (FILTERRC, "<filterrc") || die("Can't find your old filter rules\n");
 @input_file = <FILTERRC>;
 close FILTERRC;
 
@@ -62,7 +57,7 @@ $WRITE_THIS .= "from match \"$split_lines[1]\"";
 if (!$split_lines[5]) {
 $WRITE_THIS .= " delete";
 } elsif ($split_lines[8] == "m"){
-$WRITE_THIS .= " move \"\#mh/$TOPBOXIS/$split_lines[5]\"";
+$WRITE_THIS .= " move \"\#mh/$mailbox/$split_lines[5]\"";
 }
 $WRITE_THIS .= "\n";
 
