@@ -213,20 +213,15 @@ EXTRA_DIST = \
 INCLUDES = \
 	-Icommon \
 	-Igtk \
-	-DG_LOG_DOMAIN=\"Sylpheed\" \
 	-I$(top_srcdir)/intl \
-	$(ASPELL_CFLAGS) \
-	$(GTK_CFLAGS) \
-	$(GPGME_CFLAGS) \
-	$(OPENSSL_CFLAGS) \
 	-I$(includedir)
 
 sylpheed_LDFLAGS = \
 	-export-dynamic
 
 sylpheed_LDADD = \
-	$(ASPELL_LIBS) \
 	gtk/libsylpheedgtk.la \
+	$(ASPELL_LIBS) \
 	$(INTLLIBS) \
 	$(GTK_LIBS) \
 	$(GPGME_LIBS) \
@@ -235,10 +230,15 @@ sylpheed_LDADD = \
 	$(LIBICONV)
 
 CPPFLAGS = \
+	-DG_LOG_DOMAIN=\"Sylpheed\" \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DMANUALDIR=\""$(manualdir)"\" \
 	-DFAQDIR=\""$(faqdir)"\" \
 	-DTARGET_ALIAS=\""$(target_triplet)"\" \
 	-DSYSCONFDIR=\""$(sysconfdir)"\"
+	$(ASPELL_CFLAGS) \
+	$(GTK_CFLAGS) \
+	$(GPGME_CFLAGS) \
+	$(OPENSSL_CFLAGS)
 
 YFLAGS = -d

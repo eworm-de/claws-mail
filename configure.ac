@@ -394,7 +394,7 @@ if test x"$ac_cv_enable_trayicon_plugin" = xyes; then
 fi
 AM_CONDITIONAL(BUILD_TRAYICON_PLUGIN, test x"$ac_cv_enable_trayicon_plugin" = xyes)
 
-dnl --- SpamAssassin
+dnl --- SpamAssassin ---
 AC_ARG_ENABLE(spamassassin-plugin,
 	[  --enable-spamassassin-plugin    Build SpamAssassin plugin [default=no]],
 	[ac_cv_enable_spamassassin_plugin=$enableval], [ac_cv_enable_spamassassin_plugin=no])
@@ -409,7 +409,7 @@ AC_ARG_ENABLE(mathml-viewer-plugin,
 	[  --enable-mathml-viewer-plugin    Build MathML-Viewer plugin [default=no]],
 	[ac_cv_enable_mathml_viewer_plugin=$enableval], [ac_cv_enable_mathml_viewer_plugin=yes])
 if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
-	PKG_CHECK_MODULES(GTK_MATH_VIEW, gtkmathview >= 0.4.2, :, $ac_cv_enable_mathml_viewer_plugin=no)
+	PKG_CHECK_MODULES(GTK_MATH_VIEW, gtkmathview >= 0.4.2, :, ac_cv_enable_mathml_viewer_plugin=no)
 
 	if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
 		AC_SUBST(GTK_MATH_VIEW_CFLAGS)
