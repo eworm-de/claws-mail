@@ -233,10 +233,7 @@ select_row (GtkSCTree *sctree, gint row, gint col, guint state)
 		   (GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_SINGLE) &&
 		   (GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_BROWSE);
 
-	if (additive || range)
-		gtk_clist_freeze (GTK_CLIST (sctree));
-
-	GTK_CLIST(sctree)->focus_row = row;
+	gtk_clist_freeze (GTK_CLIST (sctree));
 
 	if (!additive && GTK_CLIST(sctree)->selection)
 		gtk_clist_unselect_all (GTK_CLIST (sctree));
@@ -264,8 +261,8 @@ select_row (GtkSCTree *sctree, gint row, gint col, guint state)
 		select_range (sctree, row);
 	
 	GTK_CLIST_GET_CLASS(sctree)->refresh(GTK_CLIST(sctree));
-	if (additive || range)
-		gtk_clist_thaw (GTK_CLIST (sctree));
+
+	gtk_clist_thaw (GTK_CLIST (sctree));
 }
 
 /* Our handler for button_press events.  We override all of GtkCList's broken

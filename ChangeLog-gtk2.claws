@@ -1,3 +1,8 @@
+2004-10-03 [colin]	0.9.12cvs119.2
+
+	* src/gtk/gtksctree.c
+		Revert 608 fix that doesn't work that good
+
 2004-10-02 [colin]	0.9.12cvs119.1
 
 	* src/mainwindow.c
