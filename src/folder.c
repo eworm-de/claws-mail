@@ -282,12 +282,14 @@ void folder_item_destroy(FolderItem *item)
 
 	debug_print(_("Destroying folder item %s\n"), item->path);
 
-	switch (item->folder->type) {
-	case F_IMAP:
-		imap_folder_item_destroy(item);
-		break;
-	default:
-		break;
+	if (item->folder != NULL) {
+		switch (item->folder->type) {
+		case F_IMAP:
+			imap_folder_item_destroy(item);
+			break;
+		default:
+			break;
+		}
 	}
 
 	if(item->cache)
