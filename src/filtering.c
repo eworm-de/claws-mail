@@ -612,8 +612,6 @@ static gboolean filteringprop_apply(FilteringProp * filtering, MsgInfo * info,
 			g_warning(_("action %s could not be applied"), action_str);
 		}
 
-		g_free(action_str);
-
 		switch(filtering->action->type) {
 		case MATCHACTION_MOVE:
 		case MATCHACTION_DELETE:

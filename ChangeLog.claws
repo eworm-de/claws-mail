@@ -1,3 +1,8 @@
+2001-11-18 [alfons]	0.6.5claws20
+	
+	* src/filtering.c
+		remove an inadvertent free I forgot in previous clean up 
+
 2001-11-18 [alfons]	0.6.5claws19
 
 	* src/filtering.[ch]
