@@ -137,9 +137,7 @@ static void mh_folder_init(Folder *folder, const gchar *name, const gchar *path)
 
 	folder_local_folder_init(folder, name, path);
 
-/*
-	folder->get_msg_list        = mh_get_msg_list;
-*/
+/*	folder->get_msg_list        = mh_get_msg_list; */
 	folder->fetch_msg           = mh_fetch_msg;
 	folder->fetch_msginfo       = mh_fetch_msginfo;
 	folder->add_msg             = mh_add_msg;
@@ -150,15 +148,14 @@ static void mh_folder_init(Folder *folder, const gchar *name, const gchar *path)
 	folder->remove_msg          = mh_remove_msg;
 	folder->remove_all_msg      = mh_remove_all_msg;
 	folder->is_msg_changed      = mh_is_msg_changed;
-/*
-	folder->scan                = mh_scan_folder;
-*/
+/*	folder->scan                = mh_scan_folder; */
 	folder->get_num_list	    = mh_get_num_list;
 	folder->scan_tree           = mh_scan_tree;
 	folder->create_tree         = mh_create_tree;
 	folder->create_folder       = mh_create_folder;
 	folder->rename_folder       = mh_rename_folder;
 	folder->remove_folder       = mh_remove_folder;
+	folder->destroy             = mh_folder_destroy;
 }
 
 void mh_get_last_num(Folder *folder, FolderItem *item)
@@ -480,17 +477,13 @@ static gint mh_do_move(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	prefs = dest->prefs;
 
 	destfile = mh_get_new_msg_filename(dest);
-	g_return_val_if_fail(destfile != NULL, -1);
+	if (!destfile) return -1;
 
+	srcfile = procmsg_get_message_file(msginfo);
+	
 	debug_print("Moving message %s%c%d to %s ...\n",
 		    msginfo->folder->path, G_DIR_SEPARATOR,
 		    msginfo->msgnum, dest->path);
-	srcfile = procmsg_get_message_file(msginfo);
-
-	destfile = mh_get_new_msg_filename(dest);
-	if(!destfile) return -1;
-
-	srcfile = procmsg_get_message_file(msginfo);
 
 	if (move_file(srcfile, destfile, FALSE) < 0) {
 		g_free(srcfile);
@@ -584,10 +577,8 @@ static gint mh_do_move_msgs_with_dest(Folder *folder, FolderItem *dest,
 			    msginfo->msgnum, dest->path);
 
 		destfile = mh_get_new_msg_filename(dest);
-		if (!destfile) break;
+		if (!destfile) return -1;
 		srcfile = procmsg_get_message_file(msginfo);
-		destfile = mh_get_new_msg_filename(dest);
-		if(!destfile) return -1;
 
 		if (move_file(srcfile, destfile, FALSE) < 0) {
 			g_free(srcfile);
@@ -644,13 +635,6 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 
 	prefs = dest->prefs;
 
-	destfile = mh_get_new_msg_filename(dest);
-	g_return_val_if_fail(destfile != NULL, -1);
-
-	debug_print("Copying message %s%c%d to %s ...\n",
-		    msginfo->folder->path, G_DIR_SEPARATOR,
-		    msginfo->msgnum, dest->path);
-
 	srcfile = procmsg_get_message_file(msginfo);
 #ifdef WIN32
 	/* after a crash/kill, folderdata (cache?) can be wrong */
@@ -660,10 +644,15 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	}
 #endif
 	destfile = mh_get_new_msg_filename(dest);
-	if(!destfile) {
+	if (!destfile) {
 		g_free(srcfile);
 		return -1;
 	}
+	
+	debug_print("Copying message %s%c%d to %s ...\n",
+		    msginfo->folder->path, G_DIR_SEPARATOR,
+		    msginfo->msgnum, dest->path);
+	
 
 	if (copy_file(srcfile, destfile, TRUE) < 0) {
 		FILE_OP_ERROR(srcfile, "copy");

@@ -46,6 +46,7 @@ struct _Automaton
 	gint tag;
 	guint timeout_tag;
 	guint elapsed;
+	gboolean cancelled;
 	gboolean terminated;
 
 	gpointer data;

@@ -96,15 +96,10 @@ static void inc_progress_dialog_destroy	(IncProgressDialog	*inc_dialog);
 
 static IncSession *inc_session_new	(PrefsAccount		*account);
 static void inc_session_destroy		(IncSession		*session);
-static Pop3State *inc_pop3_state_new	(PrefsAccount		*account);
-static void inc_pop3_state_destroy	(Pop3State		*state);
 static gint inc_start			(IncProgressDialog	*inc_dialog);
 static IncState inc_pop3_session_do	(IncSession		*session);
 static gint pop3_automaton_terminate	(SockInfo		*source,
 					 Automaton		*atm);
-
-static GHashTable *inc_get_uidl_table	(PrefsAccount		*ac_prefs);
-static void inc_write_uidl_list		(Pop3State		*state);
 
 static gboolean inc_pop3_recv_func	(SockInfo	*sock,
 					 gint		 count,
@@ -436,8 +431,9 @@ static IncSession *inc_session_new(PrefsAccount *account)
 		return NULL;
 
 	session = g_new0(IncSession, 1);
-	session->pop3_state = inc_pop3_state_new(account);
-	session->pop3_state->session = session;
+	session->pop3_state = pop3_state_new(account);
+	session->pop3_state->data = session;
+	session->folder_table = g_hash_table_new(NULL, NULL);
 
 	return session;
 }
@@ -446,47 +442,9 @@ static void inc_session_destroy(IncSession *session)
 {
 	g_return_if_fail(session != NULL);
 
-	inc_pop3_state_destroy(session->pop3_state);
+	pop3_state_destroy(session->pop3_state);
+	g_hash_table_destroy(session->folder_table);
 	g_free(session);
-}
-
-static Pop3State *inc_pop3_state_new(PrefsAccount *account)
-{
-	Pop3State *state;
-
-	state = g_new0(Pop3State, 1);
-
-	state->ac_prefs = account;
-	state->folder_table = g_hash_table_new(NULL, NULL);
-	state->uidl_todelete_list = NULL;
-	state->uidl_table = inc_get_uidl_table(account);
-	state->inc_state = INC_SUCCESS;
-	state->current_time = time(NULL);
-
-	return state;
-}
-
-static void inc_pop3_state_destroy(Pop3State *state)
-{
-	gint n;
-
-	g_hash_table_destroy(state->folder_table);
-
-	for (n = 1; n <= state->count; n++)
-		g_free(state->msg[n].uidl);
-	g_free(state->msg);
-
-	if (state->uidl_table) {
-		hash_free_strings(state->uidl_table);
-		g_hash_table_destroy(state->uidl_table);
-	}
-	g_slist_free(state->uidl_todelete_list);
-	g_free(state->greeting);
-	g_free(state->user);
-	g_free(state->pass);
-	g_free(state->prev_folder);
-
-	g_free(state);
 }
 
 static gint inc_start(IncProgressDialog *inc_dialog)
@@ -498,6 +456,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 	gint num = 0;
 	gint error_num = 0;
 	gint new_msgs = 0;
+	gchar *msg;
 	gchar *fin_msg;
 
 	while (inc_dialog->queue_list != NULL) {
@@ -543,9 +502,8 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		/* begin POP3 session */
 		inc_state = inc_pop3_session_do(session);
 
-		if (inc_state == INC_SUCCESS) {
-			gchar *msg;
-
+		switch (inc_state) {
+		case INC_SUCCESS:
 			if (pop3_state->cur_total_num > 0)
 				msg = g_strdup_printf
 					(_("Done (%d message(s) (%s) received)"),
@@ -556,21 +514,32 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			gtk_clist_set_pixmap(clist, num, 0, okxpm, okxpmmask);
 			gtk_clist_set_text(clist, num, 2, msg);
 			g_free(msg);
-		} else if (inc_state == INC_CANCEL) {
+			break;
+		case INC_CONNECT_ERROR:
+			gtk_clist_set_pixmap(clist, num, 0, errorxpm, errorxpmmask);
+			gtk_clist_set_text(clist, num, 2, _("Connection failed"));
+			break;
+		case INC_AUTH_FAILED:
+			gtk_clist_set_pixmap(clist, num, 0, errorxpm, errorxpmmask);
+			gtk_clist_set_text(clist, num, 2, _("Auth failed"));
+			break;
+		case INC_LOCKED:
+			gtk_clist_set_pixmap(clist, num, 0, errorxpm, errorxpmmask);
+			gtk_clist_set_text(clist, num, 2, _("Locked"));
+			break;
+		case INC_ERROR:
+		case INC_NOSPACE:
+			gtk_clist_set_pixmap(clist, num, 0, errorxpm, errorxpmmask);
+			gtk_clist_set_text(clist, num, 2, _("Error"));
+			break;
+		case INC_CANCEL:
 			gtk_clist_set_pixmap(clist, num, 0, okxpm, okxpmmask);
 			gtk_clist_set_text(clist, num, 2, _("Cancelled"));
-		} else {
-			gtk_clist_set_pixmap(clist, num, 0, errorxpm, errorxpmmask);
-			if (inc_state == INC_CONNECT_ERROR)
-				gtk_clist_set_text(clist, num, 2,
-						   _("Connection failed"));
-			else if (inc_state == INC_AUTH_FAILED)
-				gtk_clist_set_text(clist, num, 2,
-						   _("Auth failed"));
-			else
-				gtk_clist_set_text(clist, num, 2, _("Error"));
+			break;
+		default:
+			break;
 		}
-
+		
 		if (pop3_state->error_val == PS_AUTHFAIL) {
 			if(!prefs_common.no_recv_err_panel) {
 				if((prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS) ||
@@ -612,11 +581,11 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 				/* filter if enabled in prefs or move to inbox if not */
 				if(pop3_state->ac_prefs->filter_on_recv) {
 					filter_message_by_msginfo_with_inbox(global_processing, msginfo,
-						    			     pop3_state->folder_table,
+						    			     session->folder_table,
 									     inbox);
 				} else {
 					folder_item_move_msg(inbox, msginfo);
-					g_hash_table_insert(pop3_state->folder_table, inbox,
+					g_hash_table_insert(session->folder_table, inbox,
 							    GINT_TO_POINTER(1));
 				}
 				procmsg_msginfo_free(msginfo);
@@ -627,8 +596,11 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 		new_msgs += pop3_state->cur_total_num;
 
-		folderview_update_item_foreach
-			(pop3_state->folder_table, TRUE);
+		if (!prefs_common.scan_all_after_inc) {
+			folder_item_scan_foreach(session->folder_table);
+			folderview_update_item_foreach
+				(session->folder_table, TRUE);
+		}
 
 		if (pop3_state->error_val == PS_AUTHFAIL &&
 		    pop3_state->ac_prefs->tmp_pass) {
@@ -636,7 +608,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			pop3_state->ac_prefs->tmp_pass = NULL;
 		}
 
-		inc_write_uidl_list(pop3_state);
+		pop3_write_uidl_list(pop3_state);
 
 		if (inc_state != INC_SUCCESS && inc_state != INC_CANCEL) {
 			error_num++;
@@ -777,6 +749,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 		}
 		pop3_automaton_terminate(NULL, atm);
 		automaton_destroy(atm);
+		session->inc_state = INC_CONNECT_ERROR;
 		return INC_CONNECT_ERROR;
 	}
 
@@ -785,6 +758,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	    !ssl_init_socket(sockinfo)) {
 		pop3_automaton_terminate(NULL, atm);
 		automaton_destroy(atm);
+		session->inc_state = INC_CONNECT_ERROR;
 		return INC_CONNECT_ERROR;
 	}
 #endif
@@ -817,7 +791,28 @@ static IncState inc_pop3_session_do(IncSession *session)
 
 	automaton_destroy(atm);
 
-	return pop3_state->inc_state;
+	if (session->inc_state != INC_SUCCESS)
+		return session->inc_state;
+
+	switch (pop3_state->error_val) {
+	case PS_SUCCESS:
+		session->inc_state = INC_SUCCESS;
+		break;
+	case PS_AUTHFAIL:
+		session->inc_state = INC_AUTH_FAILED;
+		break;
+	case PS_IOERR:
+		session->inc_state = INC_NOSPACE;
+		break;
+	case PS_LOCKBUSY:
+		session->inc_state = INC_LOCKED;
+		break;
+	default:
+		session->inc_state = INC_ERROR;
+		break;
+	}
+
+	return session->inc_state;
 }
 
 static gint pop3_automaton_terminate(SockInfo *source, Automaton *atm)
@@ -840,92 +835,13 @@ static gint pop3_automaton_terminate(SockInfo *source, Automaton *atm)
 	return 0;
 }
 
-static GHashTable *inc_get_uidl_table(PrefsAccount *ac_prefs)
-{
-	GHashTable *table;
-	gchar *path;
-	FILE *fp;
-	gchar buf[IDLEN + 3];
-	gchar uidl[IDLEN + 3];
-	time_t recv_time;
-	time_t now;
-
-	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-			   "uidl", G_DIR_SEPARATOR_S, ac_prefs->recv_server,
-			   "-", ac_prefs->userid, NULL);
-	if ((fp = fopen(path, "rb")) == NULL) {
-		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
-		g_free(path);
-		path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-				   "uidl-", ac_prefs->recv_server,
-				   "-", ac_prefs->userid, NULL);
-		if ((fp = fopen(path, "rb")) == NULL) {
-			if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
-			g_free(path);
-			return NULL;
-		}
-	}
-	g_free(path);
-
-	table = g_hash_table_new(g_str_hash, g_str_equal);
-
-	now = time(NULL);
-
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		strretchomp(buf);
-		recv_time = 0;
-		if (sscanf(buf, "%s\t%ld", uidl, &recv_time) != 2) {
-			if (sscanf(buf, "%s", uidl) != 1)
-				continue;
-			else
-				recv_time = now;
-		}
-		if (recv_time == 0)
-			recv_time = 1;
-		g_hash_table_insert(table, g_strdup(uidl),
-				    GINT_TO_POINTER(recv_time));
-	}
-
-	fclose(fp);
-	return table;
-}
-
-static void inc_write_uidl_list(Pop3State *state)
-{
-	gchar *path;
-	FILE *fp;
-	Pop3MsgInfo *msg;
-	gint n;
-
-	if (!state->uidl_is_valid) return;
-
-	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-			   "uidl", G_DIR_SEPARATOR_S,
-			   state->ac_prefs->recv_server,
-			   "-", state->ac_prefs->userid, NULL);
-	if ((fp = fopen(path, "wb")) == NULL) {
-		FILE_OP_ERROR(path, "fopen");
-		g_free(path);
-		return;
-	}
-
-	for (n = 1; n <= state->count; n++) {
-		msg = &state->msg[n];
-		if (msg->uidl && msg->received && !msg->deleted)
-			fprintf(fp, "%s\t%ld\n", msg->uidl, msg->recv_time);
-	}
-
-	if (fclose(fp) == EOF) FILE_OP_ERROR(path, "fclose");
-	g_free(path);
-}
-
 static gboolean inc_pop3_recv_func(SockInfo *sock, gint count, gint read_bytes,
 				   gpointer data)
 {
 	gchar buf[MSGBUFSIZE];
 	IncSession *session = (IncSession *)data;
 	Pop3State *state = session->pop3_state;
-	IncProgressDialog *inc_dialog = session->data;
+	IncProgressDialog *inc_dialog = (IncProgressDialog *)session->data;
 	ProgressDialog *dialog = inc_dialog->dialog;
 	gint cur_total;
 	gchar *total_size;
@@ -949,7 +865,7 @@ static gboolean inc_pop3_recv_func(SockInfo *sock, gint count, gint read_bytes,
 		 (gfloat)cur_total / (gfloat)state->total_bytes);
 	GTK_EVENTS_FLUSH();
 
-	if (state->inc_state == INC_CANCEL)
+	if (session->inc_state == INC_CANCEL)
 		return FALSE;
 	else
 		return TRUE;
@@ -958,7 +874,8 @@ static gboolean inc_pop3_recv_func(SockInfo *sock, gint count, gint read_bytes,
 void inc_progress_update(Pop3State *state, Pop3Phase phase)
 {
 	gchar buf[MSGBUFSIZE];
-	IncProgressDialog *inc_dialog = state->session->data;
+	IncSession *session = (IncSession *)state->data;
+	IncProgressDialog *inc_dialog = (IncProgressDialog *)session->data;
 	ProgressDialog *dialog = inc_dialog->dialog;
 	gchar *total_size;
 
@@ -1036,6 +953,7 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 {
 	FolderItem *inbox;
 	FolderItem *dropfolder;
+	IncSession *session = (IncSession *)state->data;
 	gint val;
 	gint msgnum;
 
@@ -1070,13 +988,13 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 	}
 
 	val = GPOINTER_TO_INT(g_hash_table_lookup
-			      (state->folder_table, dropfolder));
+			      (session->folder_table, dropfolder));
 	if (val == 0) {
 		folder_item_scan(dropfolder);
 		/* force updating */
 		if (FOLDER_IS_LOCAL(dropfolder->folder))
 			dropfolder->mtime = 0;
-		g_hash_table_insert(state->folder_table, dropfolder,
+		g_hash_table_insert(session->folder_table, dropfolder,
 				    GINT_TO_POINTER(1));
 	}
 	
@@ -1100,6 +1018,10 @@ static void inc_put_error(IncState istate)
 	case INC_NOSPACE:
 		alertpanel_error(_("No disk space left."));
 		break;
+	case INC_LOCKED:
+		if (!prefs_common.no_recv_err_panel)
+			alertpanel_error(_("Mailbox is locked."));
+		break;
 	default:
 		break;
 	}
@@ -1122,9 +1044,11 @@ static void inc_cancel(IncProgressDialog *dialog)
 
 	if (!sockinfo || session->atm->terminated == TRUE) return;
 
-	session->pop3_state->inc_state = INC_CANCEL;
-	pop3_automaton_terminate(sockinfo, session->atm);
-	session->pop3_state->sockinfo = NULL;
+	session->pop3_state->cancelled = TRUE;
+	session->inc_state = INC_CANCEL;
+	session->atm->cancelled = TRUE;
+
+	log_message(_("Incorporation cancelled\n"));
 }
 
 gboolean inc_is_active(void)

@@ -1,3 +1,91 @@
+2002-09-02 [melvin]	0.8.2claws22
+
+	* src/gtkaspell.m4
+		removed some obsolete code
+
+2002-09-02 [melvin]	0.8.2claws21
+
+	* ac/aspell.m4
+		fixed test's equality sign (== to =)
+
+2002-09-02 [alfons]	0.8.2claws20
+
+	* src/folder.c
+	* src/mh.c
+		revert change of 0.8.2claws16 and use the mh_folder_destroy
+		as folder->destroy virtual as suggested by Hiro
+		(the mh.c code seems to have been lost around mh.c.1.21)
+
+2002-09-02 [paul]	0.8.2claws19
+
+	* po/pt_BR.po
+		updated by Fabio Jr. Beneditto
+		
+	* src/defs.h
+		use 'http://claws.sylpheed.org' for homepage link. 
+		Domain provided by Oktay Altunergil <oktay@freelinuxcd.org>
+
+2002-09-01 [alfons]	0.8.2claws18
+
+	* src/mh.c
+		plug memleak related to one Martin Kluge found
+
+2002-08-31 [paul]	0.8.2claws17
+
+	* sync with 0.8.2cvs6
+		see ChangeLog 2002-08-30
+
+2002-08-31 [alfons]	0.8.2claws16
+
+	* src/folder.c
+		folder_destroy(): remove mailbox from folderlist even if it has
+		no destroy virtual
+
+2002-08-31 [alfons]	0.8.2claws15
+
+	* src/folder.c
+		:%sno/if(/if (/gc
+		:%sno/for(/for (/gc
+		(being pedantic I know)
+
+2002-08-31 [alfons]	0.8.2claws14
+
+	* src/folder.c
+		check for NULL pointers returned from folder->fetch_msginfo virtual
+		(should solve some reported crashes)
+
+2002-08-30 [alfons]	0.8.2claws13
+
+	* acconfig.h
+	* configure.in
+	* src/crash.c
+		enable crash dialog on compilation time
+		(--enable-crash-dialog configure option)
+
+2002-08-30 [alfons]	0.8.2claws12
+
+	* AUTHORS
+		add Martin Kluge
+	* src/mh.c
+		apply memory leak plug patch by Martin Kluge
+		(closes patch "[ 602568 ] patch for 602441 little memory leak",
+		bug "[ 599677 ] Very small memory leak in 0.81claws115",
+		and bug "[ 602441 ] memoryleak in filtering 0.8.2claws9?")
+
+2002-08-30 [darko]	0.8.2claws11
+
+	* src/folderview.c
+		copy Gtk style from normal style to match
+		font size for coloured folders
+
+2002-08-29 [alfons]	0.8.2claws10
+
+	* sylpheed.desktop
+		Type=Internet <- Type=Application
+		(reported by Michael Schwendt, see:
+		http://sourceforge.net/tracker/index.php?func=detail&aid=599765&group_id=25528&atid=384600
+		http://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=72882)
+
 2002-08-29 [paul]	0.8.2claws9
 
 	* sync with 0.8.2cvs5

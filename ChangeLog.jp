@@ -1,3 +1,26 @@
+2002-08-30
+
+	* 主要な POP3 のリファクタリング。
+	* src/inc.[ch]: Pop3State, inc_pop3_state_new(),
+	  inc_pop3_state_destroy(), inc_get_uidl_table(), そして
+	  inc_write_uidl_list() を pop.c に移動。
+	  Pop3State::folder_table と Pop3State::inc_state を IncSession
+	  に移動。
+	  inc_start()
+	  inc_put_error(): lockbusy 状態を追加。
+	  inc_pop3_session_do(): inc_state を Pop3State::error_val から得る
+	  ようにした。
+	  inc_cancel(): ここで automaton を terminate せずにフラグをセット
+	  するだけにしてクラッシュを回避。
+	* src/pop.[ch]
+	  pop3_getauth_pass_recv()
+	  pop3_getauth_apop_recv(): lockbusy 状態をチェック。
+	  pop3_retr_recv(): Pop3State::cancelled フラグをチェック。
+	* src/automaton.[ch]: Automaton に 'cancelled' フラグを追加。
+	  automaton_input_cb(): cancelled フラグが真の場合 terminate 。
+	* sylpheed.desktop: Type=Internet を Type=Application に修正。
+	  Categories=Application;Network; を追加。
+
 2002-08-29
 
 	* src/inc.[ch]

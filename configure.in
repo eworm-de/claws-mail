@@ -8,7 +8,7 @@ MINOR_VERSION=8
 MICRO_VERSION=2
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws9
+EXTRA_VERSION=claws22
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -318,10 +318,18 @@ fi
 CFLAGS="$CFLAGS_SAVE"
 LDFLAGS="$LDFLAGS_SAVE"
 
+dnl want crash dialog
+AC_ARG_ENABLE(crash-dialog,
+	[  --enable-crash-dialog   Enable crash dialog [default=no]],
+	[ac_cv_enable_crash_dialog=$enableval], [ac_cv_enable_crash_dialog=no])
+if test $ac_cv_enable_crash_dialog = yes; then
 dnl check if GDB is somewhere
-AC_CHECK_PROG(HAVE_GDB, gdb, yes, no)
-if test $HAVE_GDB = yes; then
-	AC_DEFINE(HAVE_GDB)
+	AC_CHECK_PROG(ac_cv_enable_crash_dialog, gdb, yes, no)
+	AC_MSG_CHECKING([whether to use crash dialog])
+	if test $ac_cv_enable_crash_dialog = yes; then
+		AC_DEFINE(CRASH_DIALOG)
+	fi
+	AC_MSG_RESULT($ac_cv_enable_crash_dialog)
 fi
 
 dnl Checks for header files.
@@ -405,6 +413,7 @@ echo "compface      : $ac_cv_enable_compface"
 echo "libjconv      : $ac_cv_enable_jconv"
 echo "IPv6          : $ac_cv_enable_ipv6"
 echo "GNU/aspell    : $ac_cv_enable_aspell"
+echo "Crash dialog  : $ac_cv_enable_crash_dialog"
 echo ""
 echo "The binary will be installed in $prefix/bin"
 echo ""

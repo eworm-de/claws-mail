@@ -36,13 +36,13 @@
 
 typedef struct _IncProgressDialog	IncProgressDialog;
 typedef struct _IncSession		IncSession;
-typedef struct _Pop3State		Pop3State;
 
 typedef enum
 {
 	INC_SUCCESS,
 	INC_CONNECT_ERROR,
 	INC_AUTH_FAILED,
+	INC_LOCKED,
 	INC_ERROR,
 	INC_NOSPACE,
 	INC_CANCEL
@@ -63,44 +63,11 @@ struct _IncSession
 {
 	Pop3State *pop3_state;
 	Automaton *atm;
-
-	gpointer data;
-};
-
-struct _Pop3State
-{
-	gboolean cancelled;
-	PrefsAccount *ac_prefs;
-	GHashTable *folder_table;
-
-	gchar *prev_folder;
-
-	SockInfo *sockinfo;
-
-	gchar *greeting;
-	gchar *user;
-	gchar *pass;
-	gint count;
-	gint new;
-	gint total_bytes;
-	gint cur_msg;
-	gint cur_total_num;
-	gint cur_total_bytes;
-	gint cur_total_recv_bytes;
-
-	Pop3MsgInfo *msg;
-
-	GHashTable *uidl_table;
-	GSList *uidl_todelete_list;
-	
-	gboolean uidl_is_valid;
-
-	time_t current_time;
-
-	gint error_val;
 	IncState inc_state;
 
-	IncSession *session;
+	GHashTable *folder_table;	/* table of destination folders */
+
+	gpointer data;
 };
 
 #define TIMEOUT_ITV	200

@@ -613,11 +613,8 @@ static gboolean set_dictionary(AspellConfig *config, Dictionary *dict)
 
 	buf[dict->dictname - dict->fullname] = 0x00;
 
-	CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("rem-all-word-list-path", "");
-	debug_print("Aspell: removed all paths.\n");
-
 	CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("dict-dir", buf);
-	debug_print("Aspell: added path %s.\n", buf);
+	debug_print("Aspell: looking for dictionaries in path %s.\n", buf);
 
 	strncpy(buf, dict->dictname, BUFSIZE-1);
 	language = buf;

@@ -62,7 +62,7 @@
 #define ADDRESS_BOOK		"addressbook.xml"
 #define MANUAL_HTML_INDEX	"sylpheed.html"
 #define FAQ_HTML_INDEX		"sylpheed-faq.html"
-#define HOMEPAGE_URI		"http://sylpheed.good-day.net/"
+#define HOMEPAGE_URI		"http://claws.sylpheed.org/"
 #define FOLDER_LIST		"folderlist.xml"
 #define CACHE_FILE		".sylpheed_cache"
 #define MARK_FILE		".sylpheed_mark"
