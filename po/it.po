@@ -1,13 +1,13 @@
 # Italian translation of Sylpheed
-# Copyright (C) 2002 Alessandro Maestri, Andrea Spadaccini
+# Copyright (C) 2004 Alessandro Maestri, Andrea Spadaccini
 # Alessandro Maestri <a.maestri@tiscalinet.it>, 2002
 # Andrea Spadaccini <lupin85@email.it>, 2004
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed-claws\n"
-"POT-Creation-Date: 2004-03-10 20:41+0100\n"
-"PO-Revision-Date: 2004-03-09 16:09+0100\n"
+"POT-Creation-Date: 2004-03-08 09:05+0000\n"
+"PO-Revision-Date: 2004-03-10 15:29+0100\n"
 "Last-Translator: Andrea Spadaccini <lupin85@email.it>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -57,7 +57,7 @@ msgstr "Server"
 #: src/account.c:632 src/addressbook.c:784 src/editaddress.c:722
 #: src/editaddress.c:856 src/prefs_actions.c:221 src/prefs_customheader.c:234
 #: src/prefs_display_header.c:275 src/prefs_display_header.c:330
-#: src/prefs_filtering.c:280 src/prefs_filtering_action.c:449
+#: src/prefs_filtering_action.c:449 src/prefs_filtering.c:280
 #: src/prefs_matcher.c:557 src/prefs_template.c:216 src/prefs_toolbar.c:769
 msgid "Add"
 msgstr "Aggiungi"
@@ -71,20 +71,19 @@ msgid " Delete "
 msgstr "Elimina"
 
 #: src/account.c:650
-#, fuzzy
 msgid " Clone "
-msgstr "Chiudi"
+msgstr " Clona "
 
 #: src/account.c:656 src/prefs_actions.c:284 src/prefs_customheader.c:289
-#: src/prefs_display_header.c:294 src/prefs_filtering.c:342
-#: src/prefs_filtering_action.c:503 src/prefs_matcher.c:639
+#: src/prefs_display_header.c:294 src/prefs_filtering_action.c:503
+#: src/prefs_filtering.c:342 src/prefs_matcher.c:639
 #: src/prefs_summary_column.c:289 src/prefs_toolbar.c:830
 msgid "Down"
 msgstr "Giù"
 
 #: src/account.c:662 src/prefs_actions.c:278 src/prefs_customheader.c:283
-#: src/prefs_display_header.c:288 src/prefs_filtering.c:336
-#: src/prefs_filtering_action.c:497 src/prefs_matcher.c:633
+#: src/prefs_display_header.c:288 src/prefs_filtering_action.c:497
+#: src/prefs_filtering.c:336 src/prefs_matcher.c:633
 #: src/prefs_summary_column.c:285 src/prefs_toolbar.c:826
 msgid "Up"
 msgstr "Su"
@@ -105,10 +104,11 @@ msgstr "Chiudi"
 msgid "Accounts with remote folders cannot be cloned"
 msgstr "Gli account con cartelle remote non possono essere clonati"
 
+# c-format
 #: src/account.c:764
-#, fuzzy, c-format
+#, c-format
 msgid "Cloned %s"
-msgstr "impossibile leggere %s."
+msgstr "%s (clonato)"
 
 #: src/account.c:906
 msgid "Delete account"
@@ -144,25 +144,25 @@ msgid "+No"
 msgstr "+No"
 
 #: src/action.c:346
-#, fuzzy, c-format
+#, c-format
 msgid "Could not get message file %d"
-msgstr "Non posso accodare il messaggio per l'invio"
+msgstr "Impossibile accedere al file di messaggio %d"
 
 #: src/action.c:365
-#, fuzzy
 msgid "Could not get message part."
-msgstr "Non posso accodare il messaggio per l'invio"
+msgstr "Impossibile accedere ad una parte del messaggio."
 
 #: src/action.c:382
-#, fuzzy
 msgid "Can't get part of multipart message"
-msgstr "Impossibile salvare parte del messaggio composto."
+msgstr "Impossibile accedere a parte del messaggio composto."
 
 #: src/action.c:495
+#, c-format
 msgid ""
 "The selected action cannot be used in the compose window\n"
 "because it contains %%f, %%F, %%as or %%p."
-msgstr "L'azione selezionata non può essere usata nella finestra di composizione\n"
+msgstr ""
+"L'azione selezionata non può essere usata nella finestra di composizione\n"
 "perché contiene %%f, %%F, %%as o %%p"
 
 #: src/action.c:783
@@ -170,7 +170,8 @@ msgstr "L'azione selezionata non può essere usata nella finestra di composizione
 msgid ""
 "Command could not be started. Pipe creation failed.\n"
 "%s"
-msgstr "Impossibile eseguire il programma. La creazione della pipe è fallita.\n"
+msgstr ""
+"Impossibile eseguire il programma. La creazione della pipe è fallita.\n"
 "%s"
 
 #: src/action.c:868
@@ -179,7 +180,8 @@ msgid ""
 "Could not fork to execute the following command:\n"
 "%s\n"
 "%s"
-msgstr "Impossibile fare il fork per eseguire il seguente comando:\n"
+msgstr ""
+"Impossibile fare il fork per eseguire il seguente comando:\n"
 "%s\n"
 "%s"
 
@@ -198,7 +200,6 @@ msgid "Action's input/output"
 msgstr "Input/output dell'azione"
 
 #: src/action.c:1181
-#, fuzzy
 msgid " Send "
 msgstr "Invia"
 
@@ -207,38 +208,38 @@ msgid "Completed %v/%u"
 msgstr "Completato %v%u"
 
 #: src/action.c:1211
-#, fuzzy
 msgid "Abort"
-msgstr "Informazioni su..."
+msgstr "Termina"
 
 #: src/action.c:1360
-#, fuzzy
+#, c-format
 msgid ""
 "Enter the argument for the following action:\n"
 "(`%%h' will be replaced with the argument)\n"
 "  %s"
 msgstr ""
-"Inserite la riga di comando per la stampa:\n"
-"(`%s' verrà sostituito col nome del file)"
+"Inserite il parametro per l'azione seguente:\n"
+"(`%%h' verrà sostituito con il testo inserito)\n"
+"  %s"
 
 #: src/action.c:1365
 msgid "Action's hidden user argument"
 msgstr "Parametro nascosto dell'azione"
 
 #: src/action.c:1369
-#, fuzzy
+#, c-format
 msgid ""
 "Enter the argument for the following action:\n"
 "(`%%u' will be replaced with the argument)\n"
 "  %s"
 msgstr ""
-"Inserite la riga di comando per la stampa:\n"
-"(`%s' verrà sostituito col nome del file)"
+"Inserite il parametro per l'azione seguente:\n"
+"(`%%u' verrà sostituito con il testo inserito)\n"
+"  %s"
 
 #: src/action.c:1374
-#, fuzzy
 msgid "Action's user argument"
-msgstr "per un argomento provvisto dall'utente"
+msgstr "Parametro utente per l'azione"
 
 #: src/addressadd.c:162
 msgid "Add to address book"
@@ -260,7 +261,7 @@ msgstr "Seleziona l'indirizzo, il quaderno, la cartella"
 #: src/addressadd.c:240 src/addrgather.c:506 src/alertpanel.c:190
 #: src/alertpanel.c:324 src/compose.c:3239 src/compose.c:5905
 #: src/editaddress.c:513 src/editbook.c:204 src/editgroup.c:369
-#: src/editjpilot.c:344 src/editldap.c:342 src/editldap_basedn.c:212
+#: src/editjpilot.c:344 src/editldap_basedn.c:212 src/editldap.c:342
 #: src/editvcard.c:239 src/export.c:188 src/foldersel.c:204
 #: src/grouplistdialog.c:244 src/gtk/about.c:233
 #: src/gtk/description_window.c:121 src/gtk/gtkaspell.c:1425
@@ -271,7 +272,7 @@ msgstr "Seleziona l'indirizzo, il quaderno, la cartella"
 #: src/passphrase.c:130 src/prefs_actions.c:161 src/prefs_common.c:2642
 #: src/prefs_common.c:2811 src/prefs_common.c:3069
 #: src/prefs_customheader.c:157 src/prefs_display_header.c:194
-#: src/prefs_filtering.c:199 src/prefs_filtering_action.c:278
+#: src/prefs_filtering_action.c:278 src/prefs_filtering.c:199
 #: src/prefs_gtk.c:451 src/prefs_matcher.c:370 src/prefs_summary_column.c:313
 #: src/prefs_template.c:263 src/ssl_manager.c:98
 msgid "OK"
@@ -280,7 +281,7 @@ msgstr "Ok"
 #: src/addressadd.c:241 src/addressbook.c:2320 src/addrgather.c:507
 #: src/compose.c:3239 src/compose.c:5906 src/compose.c:6611 src/compose.c:6649
 #: src/editaddress.c:514 src/editbook.c:205 src/editgroup.c:370
-#: src/editjpilot.c:345 src/editldap.c:343 src/editldap_basedn.c:213
+#: src/editjpilot.c:345 src/editldap_basedn.c:213 src/editldap.c:343
 #: src/editvcard.c:240 src/exphtmldlg.c:725 src/expldifdlg.c:746
 #: src/export.c:189 src/foldersel.c:205 src/grouplistdialog.c:245
 #: src/gtk/gtkaspell.c:1434 src/gtk/prefswindow.c:319
@@ -290,7 +291,7 @@ msgstr "Ok"
 #: src/mimeview.c:1012 src/passphrase.c:134 src/prefs_actions.c:162
 #: src/prefs_common.c:2643 src/prefs_common.c:3070
 #: src/prefs_customheader.c:158 src/prefs_display_header.c:195
-#: src/prefs_filtering.c:200 src/prefs_filtering_action.c:279
+#: src/prefs_filtering_action.c:279 src/prefs_filtering.c:200
 #: src/prefs_gtk.c:452 src/prefs_matcher.c:371 src/prefs_summary_column.c:314
 #: src/prefs_template.c:264 src/prefs_themes.c:422 src/prefs_themes.c:472
 #: src/prefs_themes.c:479 src/select-keys.c:332 src/summaryview.c:933
@@ -397,9 +398,8 @@ msgid "/_Address/_Delete"
 msgstr "/_Indirizzo/_Elimina"
 
 #: src/addressbook.c:396
-#, fuzzy
 msgid "/_Address/_Mail To"
-msgstr "/_Indirizzo/_Modifica"
+msgstr "/_Indirizzo/_Scrivi a"
 
 #: src/addressbook.c:397 src/addressbook.c:401 src/mainwindow.c:680
 #: src/mainwindow.c:700 src/mainwindow.c:702 src/mainwindow.c:705
@@ -425,9 +425,8 @@ msgid "/_Tools/Export _HTML..."
 msgstr "/St_rumenti/Esporta _HTML..."
 
 #: src/addressbook.c:403
-#, fuzzy
 msgid "/_Tools/Export LDI_F..."
-msgstr "/St_rumenti/Esporta _HTML..."
+msgstr "/St_rumenti/Esporta LDI_F..."
 
 #: src/addressbook.c:404 src/compose.c:684 src/mainwindow.c:738
 #: src/messageview.c:291
@@ -485,16 +484,16 @@ msgid "/Pa_ste Address"
 msgstr "/_Incolla indirizzo"
 
 #: src/addressbook.c:436
-#, fuzzy
 msgid "/_Mail To"
-msgstr "Mailbox"
+msgstr "/_Scrivi a"
 
 #: src/addressbook.c:439
 msgid "/_Browse Entry"
 msgstr "/Sf_oglia l'elemento"
 
 #: src/addressbook.c:452 src/crash.c:444 src/crash.c:463 src/importldif.c:118
-#: src/prefs_themes.c:656 src/prefs_themes.c:657 src/sgpgme.c:95
+#: src/prefs_themes.c:624 src/prefs_themes.c:656 src/prefs_themes.c:657
+#: src/sgpgme.c:95
 msgid "Unknown"
 msgstr "Sconosciuto"
 
@@ -536,7 +535,7 @@ msgstr "Errore scrivendo il file"
 
 #: src/addressbook.c:468 src/importldif.c:134
 msgid "Error opening directory"
-msgstr "Errore mentre apro la directory"
+msgstr "Errore aprendo la directory"
 
 #: src/addressbook.c:469 src/importldif.c:135
 msgid "No path specified"
@@ -575,9 +574,8 @@ msgid "LDAP search terminated on request"
 msgstr "Ricerca LDAP terminata su richiesta"
 
 #: src/addressbook.c:487
-#, fuzzy
 msgid "Error starting TLS connection"
-msgstr "Errore creando il contesto ssl\n"
+msgstr "Errore durante la connessione TLS"
 
 #: src/addressbook.c:643
 msgid "E-Mail address"
@@ -595,8 +593,8 @@ msgstr "Nome:"
 #: src/addressbook.c:781 src/addressbook.c:2303 src/addressbook.c:2317
 #: src/addressbook.c:2332 src/editaddress.c:716 src/editaddress.c:850
 #: src/prefs_actions.c:234 src/prefs_display_header.c:281
-#: src/prefs_display_header.c:337 src/prefs_filtering.c:293
-#: src/prefs_filtering_action.c:135 src/prefs_filtering_action.c:462
+#: src/prefs_display_header.c:337 src/prefs_filtering_action.c:135
+#: src/prefs_filtering_action.c:462 src/prefs_filtering.c:293
 #: src/prefs_matcher.c:570 src/prefs_template.c:229 src/prefs_toolbar.c:781
 #: src/ssl_manager.c:92 src/toolbar.c:387 src/toolbar.c:480
 msgid "Delete"
@@ -658,9 +656,9 @@ msgid "Cannot paste into an address group."
 msgstr "Non posso incollare in un gruppo di indirizzi."
 
 #: src/addressbook.c:2300
-#, fuzzy, c-format
+#, c-format
 msgid "Do you want to delete the query results and addresses in `%s' ?"
-msgstr "Vuoi applicare il modello `%s' ?"
+msgstr "Vuoi cancellare i risultati della query e gli indirizzi in `%s' ?"
 
 #: src/addressbook.c:2312
 #, c-format
@@ -750,9 +748,9 @@ msgid "Busy searching..."
 msgstr "Sto cercando..."
 
 #: src/addressbook.c:3635
-#, fuzzy, c-format
+#, c-format
 msgid "Search '%s'"
-msgstr " Cerca "
+msgstr "Cerca '%s'"
 
 #: src/addressbook.c:3856 src/prefs_common.c:980
 msgid "Interface"
@@ -793,9 +791,8 @@ msgid "LDAP Server"
 msgstr "Server LDAP"
 
 #: src/addressbook.c:4016
-#, fuzzy
 msgid "LDAP Query"
-msgstr "Server LDAP"
+msgstr "Richiesta LDAP"
 
 #: src/addrgather.c:156
 msgid "Please specify name for address book."
@@ -878,11 +875,11 @@ msgstr "Raccolta Indirizzi E-Mail - dai Messaggi Selezionati"
 msgid "Harvest E-Mail Addresses - from Folder"
 msgstr "Raccolta Indirizzi E-Mail - dalla Cartella"
 
-#: src/addrindex.c:113
+#: src/addrindex.c:113 src/addrindex.c:117 src/addrindex.c:124
 msgid "Common address"
 msgstr "Indirizzi comuni"
 
-#: src/addrindex.c:114
+#: src/addrindex.c:114 src/addrindex.c:118 src/addrindex.c:125
 msgid "Personal address"
 msgstr "Indirizzi personali"
 
@@ -904,28 +901,24 @@ msgid "Show this message next time"
 msgstr "Mostra questo messaggio la prossima volta"
 
 #: src/browseldap.c:238
-#, fuzzy
 msgid "Browse Directory Entry"
-msgstr "Cambia Directory"
+msgstr "Sfoglia Directory"
 
 #: src/browseldap.c:258
-#, fuzzy
 msgid "Server Name :"
-msgstr "Nome Intestazione"
+msgstr "Nome Server :"
 
 #: src/browseldap.c:268
 msgid "Distinguished Name (dn) :"
 msgstr "Nome distinto (dn) :"
 
 #: src/browseldap.c:291
-#, fuzzy
 msgid "LDAP Name"
-msgstr "Cognome"
+msgstr "Nome LDAP"
 
 #: src/browseldap.c:293
-#, fuzzy
 msgid "Attribute Value"
-msgstr "Nome attributo"
+msgstr "Valore dell'attributo"
 
 #: src/common/nntp.c:68
 #, c-format
@@ -1128,67 +1121,67 @@ msgstr "/_Modifica/_Seleziona tutto"
 
 #: src/compose.c:531
 msgid "/_Edit/A_dvanced"
-msgstr "/_Modifica/_Avanzata"
+msgstr "/_Modifica/_Avanzate"
 
 #: src/compose.c:532
 msgid "/_Edit/A_dvanced/Move a character backward"
-msgstr "/_Modifica/_Avanzata/Muovi un carattere indietro"
+msgstr "/_Modifica/_Avanzate/Muovi un carattere indietro"
 
 #: src/compose.c:537
 msgid "/_Edit/A_dvanced/Move a character forward"
-msgstr "/_Modifica/_Avanzata/Muovi un carattere avanti"
+msgstr "/_Modifica/_Avanzate/Muovi un carattere avanti"
 
 #: src/compose.c:542
 msgid "/_Edit/A_dvanced/Move a word backward"
-msgstr "/_Modifica/_Avanzata/Muovi una parola indietro"
+msgstr "/_Modifica/_Avanzate/Muovi una parola indietro"
 
 #: src/compose.c:547
 msgid "/_Edit/A_dvanced/Move a word forward"
-msgstr "/_Modifica/_Avanzata/Muovi una parola avanti"
+msgstr "/_Modifica/_Avanzate/Muovi una parola avanti"
 
 #: src/compose.c:552
 msgid "/_Edit/A_dvanced/Move to beginning of line"
-msgstr "/_Modifica/_Avanzata/Muovi all'inizio della linea"
+msgstr "/_Modifica/_Avanzate/Muovi all'inizio della linea"
 
 #: src/compose.c:557
 msgid "/_Edit/A_dvanced/Move to end of line"
-msgstr "/_Modifica/_Avanzata/Muovi alla fine della linea"
+msgstr "/_Modifica/_Avanzate/Muovi alla fine della linea"
 
 #: src/compose.c:562
 msgid "/_Edit/A_dvanced/Move to previous line"
-msgstr "/_Modifica/_Avanzata/Muovi alla linea precedente"
+msgstr "/_Modifica/_Avanzate/Muovi alla linea precedente"
 
 #: src/compose.c:567
 msgid "/_Edit/A_dvanced/Move to next line"
-msgstr "/_Modifica/_Avanzata/Muovi alla linea successiva"
+msgstr "/_Modifica/_Avanzate/Muovi alla linea successiva"
 
 #: src/compose.c:572
 msgid "/_Edit/A_dvanced/Delete a character backward"
-msgstr "/_Modifica/_Avanzata/Cancella un carattere indietro"
+msgstr "/_Modifica/_Avanzate/Cancella un carattere indietro"
 
 #: src/compose.c:577
 msgid "/_Edit/A_dvanced/Delete a character forward"
-msgstr "/_Modifica/_Avanzata/Cancella un carattere avanti"
+msgstr "/_Modifica/_Avanzate/Cancella un carattere avanti"
 
 #: src/compose.c:582
 msgid "/_Edit/A_dvanced/Delete a word backward"
-msgstr "/_Modifica/_Avanzata/Cancella una parola indietro"
+msgstr "/_Modifica/_Avanzate/Cancella una parola indietro"
 
 #: src/compose.c:587
 msgid "/_Edit/A_dvanced/Delete a word forward"
-msgstr "/_Modifica/_Avanzata/Cancella una parola avanti"
+msgstr "/_Modifica/_Avanzate/Cancella una parola avanti"
 
 #: src/compose.c:592
 msgid "/_Edit/A_dvanced/Delete line"
-msgstr "/_Modifica/_Avanzata/Cancella la linea"
+msgstr "/_Modifica/_Avanzate/Cancella la linea"
 
 #: src/compose.c:597
 msgid "/_Edit/A_dvanced/Delete entire line"
-msgstr "/_Modifica/_Avanzata/Cancella la linea interamente"
+msgstr "/_Modifica/_Avanzate/Cancella la linea interamente"
 
 #: src/compose.c:602
 msgid "/_Edit/A_dvanced/Delete to end of line"
-msgstr "/_Modifica/_Avanzata/Cancella fino alla fine della linea"
+msgstr "/_Modifica/_Avanzate/Cancella fino alla fine della linea"
 
 #: src/compose.c:608
 msgid "/_Edit/_Wrap current paragraph"
@@ -1366,9 +1359,8 @@ msgid "/_Message/_Request Return Receipt"
 msgstr "/M_esssaggio/Richiesta di rice_vuta di ritorno"
 
 #: src/compose.c:678
-#, fuzzy
 msgid "/_Message/Remo_ve references"
-msgstr "/M_essaggio/Redireziona"
+msgstr "/M_essaggio/R_imuovi riferimenti"
 
 #: src/compose.c:679 src/mainwindow.c:671 src/messageview.c:263
 msgid "/_Tools"
@@ -1427,9 +1419,8 @@ msgid "Message: %s"
 msgstr "Messaggio: %s"
 
 #: src/compose.c:2266
-#, fuzzy
 msgid "Encrypted message"
-msgstr "messaggi non letti"
+msgstr "Messaggio crittato"
 
 #: src/compose.c:2267
 msgid ""
@@ -1520,8 +1511,8 @@ msgstr "Impossibile salvare il messaggio nella posta in uscita."
 #, c-format
 msgid "Could not find any key associated with currently selected key id `%s'."
 msgstr ""
-"Impossibile trovare nessuna chiave associata con la chiave id selezionata "
-"`%s'."
+"Impossibile trovare nessuna chiave associata con la chiave id selezionata `%"
+"s'."
 
 #: src/compose.c:3609
 #, c-format
@@ -1645,9 +1636,9 @@ msgid "Select file"
 msgstr "Seleziona il file"
 
 #: src/compose.c:6562
-#, fuzzy, c-format
+#, c-format
 msgid "File '%s' could not be read."
-msgstr "La cartella non può essere aperta."
+msgstr "Impossibile leggere il file '%s'."
 
 #: src/compose.c:6564
 #, c-format
@@ -1903,7 +1894,8 @@ msgstr "Modifica il record JPilot"
 
 #: src/editjpilot.c:314 src/editldap.c:481 src/editvcard.c:229
 #: src/exphtmldlg.c:444 src/expldifdlg.c:456 src/importldif.c:721
-#: src/importmutt.c:277 src/importpine.c:277 src/prefs_spelling.c:244
+#: src/importmutt.c:277 src/importpine.c:277 src/prefs_account.c:2151
+#: src/prefs_spelling.c:244
 msgid " ... "
 msgstr " ... "
 
@@ -1919,15 +1911,15 @@ msgstr "Aggiungi nuovo record JPilot"
 msgid "Edit LDAP - Select Search Base"
 msgstr "Modifica LDAP - Seleziona ricerca generica"
 
-#: src/editldap.c:415 src/editldap_basedn.c:161
+#: src/editldap_basedn.c:161 src/editldap.c:415
 msgid "Hostname"
 msgstr "Nome host"
 
-#: src/editldap.c:434 src/editldap_basedn.c:171 src/ssl_manager.c:106
+#: src/editldap_basedn.c:171 src/editldap.c:434 src/ssl_manager.c:106
 msgid "Port"
 msgstr "Porta"
 
-#: src/editldap.c:463 src/editldap_basedn.c:181
+#: src/editldap_basedn.c:181 src/editldap.c:463
 msgid "Search Base"
 msgstr "Ricerca generica"
 
@@ -1941,19 +1933,17 @@ msgstr ""
 "Non posso leggere la(e) ricerca(he) generica(he) dal server - inserisci "
 "manualmente"
 
-#: src/editldap.c:267 src/editldap_basedn.c:295
+#: src/editldap_basedn.c:295 src/editldap.c:267
 msgid "Could not connect to server"
 msgstr "Impossibile connettersi al server"
 
 #: src/editldap.c:149
-#, fuzzy
 msgid "A Name must be supplied."
-msgstr "Un nome di gruppo deve essere specificato."
+msgstr "Bisogna fornire un nome."
 
 #: src/editldap.c:161
-#, fuzzy
 msgid "A Hostname must be supplied for the server."
-msgstr "Un nome di gruppo deve essere specificato."
+msgstr "Bisogna fornire un hostname per il server."
 
 #: src/editldap.c:174
 msgid "At least one LDAP search attribute should be supplied."
@@ -1977,10 +1967,11 @@ msgid ""
 "be appropriate for the \"mydomain.com\" organization. An IP address may also "
 "be used. You may specify \"localhost\" if running an LDAP server on the same "
 "computer as Sylpheed."
-msgstr "Questo è l'hostname del server. Per esempio,\"ldap.miodominio.it\" potrebbe "
-"essere appropriato per l'organizzazione \"miodominio.it\". Può essere usato anche "
-"un IP. Potete inserire \"localhost\" se il server LDAP funziona sullo stesso computer "
-"di Sylpheed."
+msgstr ""
+"Questo è l'hostname del server. Per esempio,\"ldap.miodominio.it\" potrebbe "
+"essere appropriato per l'organizzazione \"miodominio.it\". Può essere usato "
+"anche un IP. Potete inserire \"localhost\" se il server LDAP funziona sullo "
+"stesso computer di Sylpheed."
 
 #: src/editldap.c:449
 msgid "The port number that the server listens on. Port 389 is the default."
@@ -2002,20 +1993,18 @@ msgid ""
 "  ou=people,dc=domainname,dc=com\n"
 "  o=Organization Name,c=Country\n"
 msgstr ""
-"Questo specifica il nome della directory da cercare sul server. "
-"Tra gli esempi:\n"
+"Questo specifica il nome della directory da cercare sul server. Tra gli "
+"esempi:\n"
 "  dc=sylpheed,dc=org\n"
 "  ou=people,dc=nomedominio,dc=it\n"
 "  o=Nome organizzazione,c=Stato\n"
-
 
 #: src/editldap.c:486
 msgid ""
 "Press this button to lookup the name of available directory names on the "
 "server."
 msgstr ""
-"Premere questo tasto per cercare i nomi di directory disponibili sul "
-"server."
+"Premere questo tasto per cercare i nomi di directory disponibili sul server."
 
 #: src/editldap.c:493
 msgid "Enable TLS"
@@ -2026,21 +2015,20 @@ msgid "Connect to the server using TLS encrypted connection."
 msgstr "Connettersi al server utilizzando la connessione crittata TLS"
 
 #: src/editldap.c:551
-#, fuzzy
 msgid "Search Attributes"
-msgstr "Attributi utente"
+msgstr "Ricerca tra gli attributi"
 
 #: src/editldap.c:561
 msgid ""
 "A list of LDAP attribute names that should be searched when attempting to "
 "find a name or address."
-msgstr "Una lista di attributi LDAP che dovrebbero essere utilizzati quando "
-"si prova a trovare un nome o un indirizzo."
+msgstr ""
+"Una lista di attributi LDAP che dovrebbero essere utilizzati quando si prova "
+"a trovare un nome o un indirizzo."
 
 #: src/editldap.c:565
-#, fuzzy
 msgid " Defaults "
-msgstr " Predefinito "
+msgstr "Predefinito"
 
 #: src/editldap.c:570
 msgid ""
@@ -2051,9 +2039,8 @@ msgstr ""
 "trovare la maggior parte dei nomi e degli indirizzi durante una ricerca."
 
 #: src/editldap.c:577
-#, fuzzy
 msgid "Max Query Age (secs)"
-msgstr "Massima età della ricerca (secondi)"
+msgstr "Durata max. della ricerca (sec)"
 
 #: src/editldap.c:593
 msgid ""
@@ -2068,16 +2055,17 @@ msgid ""
 "This is useful for servers that have slow response times at the expense of "
 "more memory to cache results."
 msgstr ""
-"Questo definisce il massimo periodo di tempo (in secondi) per cui il risultato "
-"di una ricerca d'indirizzo è valido per il completamento. I risultati della ricerca "
-"sono conservati in una cache fino alla scadenza di questo periodo. Questo "
-"migliorerà il tempo di risposta quando si cerca lo stesso nome o indirizzo, grazie "
-"al completamento. Si cerca prima nella cache, prima di fare una nuova richiesta di "
-"ricerca al server. Il valore di default di 600 secondi (10 minuti) dovrebbe essere "
-"sufficiente per la maggior parte dei servers. Un valore più alto ridurrebbe il tempo "
-"di ricerca per ricerche analoghe. Questo è utile per servers che hanno un tempo di "
-"risposta abbastanza lento, anche se si ha questo miglioramento a discapito di un po' "
-"di memoria per conservare i valori nella cache."
+"Questo definisce il massimo periodo di tempo (in secondi) per cui il "
+"risultato di una ricerca d'indirizzo è valido per il completamento. I "
+"risultati della ricerca sono conservati in una cache fino alla scadenza di "
+"questo periodo. Questo migliorerà il tempo di risposta quando si cerca lo "
+"stesso nome o indirizzo, grazie al completamento. Si cerca prima nella "
+"cache, prima di fare una nuova richiesta di ricerca al server. Il valore di "
+"default di 600 secondi (10 minuti) dovrebbe essere sufficiente per la "
+"maggior parte dei servers. Un valore più alto ridurrebbe il tempo di ricerca "
+"per ricerche analoghe. Questo è utile per servers che hanno un tempo di "
+"risposta abbastanza lento, anche se si ha questo miglioramento a discapito "
+"di un po' di memoria per conservare i valori nella cache."
 
 #: src/editldap.c:611
 msgid "Include server in dynamic search"
@@ -2097,17 +2085,18 @@ msgstr "Trova i nomi 'contenenti' i termini di ricerca"
 
 #: src/editldap.c:630
 msgid ""
-"Searches for names and addresses can be performed either using "
-"\"begins-with\" or \"contains\" search term. Check this option to perform a "
-"\"contains\" search; this type of search usually takes longer to complete. "
-"Note that for performance reasons, address completion uses \"begins-with\" "
-"for all searches against other address interfaces."
+"Searches for names and addresses can be performed either using \"begins-with"
+"\" or \"contains\" search term. Check this option to perform a \"contains\" "
+"search; this type of search usually takes longer to complete. Note that for "
+"performance reasons, address completion uses \"begins-with\" for all "
+"searches against other address interfaces."
 msgstr ""
 "Le ricerche per i nomi e gli indirizzi possono essere effettuati sia usando "
-"la modalità \"comincia-con\" sia \"contiene\". Segna quest'opzione per effettuare "
-"una ricerca con \"contiene\"; questo tipo di ricerca normalmente è più lenta. "
-"Nota che per motivi di velocità, il completamento degli indirizzi usa \"comincia-con\""
-"per tutte le ricerche su altre interfacce d'indirizzi"
+"la modalità \"comincia-con\" sia \"contiene\". Segna quest'opzione per "
+"effettuare una ricerca con \"contiene\"; questo tipo di ricerca normalmente "
+"è più lenta. Nota che per motivi di velocità, il completamento degli "
+"indirizzi usa \"comincia-con\"per tutte le ricerche su altre interfacce "
+"d'indirizzi"
 
 #: src/editldap.c:685
 msgid "Bind DN"
@@ -2121,9 +2110,9 @@ msgid ""
 "performing a search."
 msgstr ""
 "Il nome utente dell'account LDAP da usare per connettersi al server. Questo "
-"è normalmente utilizzato solo per i server protetti. Generalmente questo nome "
-"è formattato come \"cn=utente,dc=sylpheed,dc=com\". Normalmente viene lasciato "
-"vuoto quando si fa una ricerca."
+"è normalmente utilizzato solo per i server protetti. Generalmente questo "
+"nome è formattato come \"cn=utente,dc=sylpheed,dc=com\". Normalmente viene "
+"lasciato vuoto quando si fa una ricerca."
 
 #: src/editldap.c:703
 msgid "Bind Password"
@@ -2148,8 +2137,7 @@ msgstr "Num. Max di record"
 #: src/editldap.c:753
 msgid ""
 "The maximum number of entries that should be returned in the search result."
-msgstr ""
-"Massimo numero di elementi da tornare in una ricerca."
+msgstr "Massimo numero di elementi da tornare in una ricerca."
 
 #: src/editldap.c:769 src/prefs_account.c:759
 msgid "Basic"
@@ -2222,9 +2210,8 @@ msgid "Failed to Create Directory"
 msgstr "Creazione diretory fallita"
 
 #: src/exphtmldlg.c:241
-#, fuzzy
 msgid "Error creating HTML file"
-msgstr "Errore leggendo il file"
+msgstr "Errore creando il file HTML"
 
 #: src/exphtmldlg.c:361
 msgid "Select HTML Output File"
@@ -2316,30 +2303,29 @@ msgid "Format"
 msgstr "Formato"
 
 #: src/expldifdlg.c:110
-#, fuzzy
 msgid "Please specify output directory and LDIF filename to create."
-msgstr "Specifica la directory di output e il file da creare."
+msgstr "Specifica la directory di output e il file LDIF da creare."
 
 #: src/expldifdlg.c:113
 msgid "Specify parameters to format distinguished name."
 msgstr "Specifica i parametri per formattare i nomi distinti (DN)."
 
 #: src/expldifdlg.c:188
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "LDIF Output Directory '%s'\n"
 "does not exist. OK to create new directory?"
 msgstr ""
-"La directory dell'output HTML '%s'\n"
-"non esiste. OK per creare la nuova directory?"
+"La directory dell'output LDIF '%s'\n"
+"non esiste. OK per creare la nuova directory"
 
 #: src/expldifdlg.c:200
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Could not create output directory for LDIF file:\n"
 "%s"
 msgstr ""
-"Non posso creare la directory di output per il file HTML:\n"
+"Non posso creare la directory di output per il file LDIF:\n"
 "%s"
 
 #: src/expldifdlg.c:244
@@ -2351,23 +2337,20 @@ msgid ""
 "A suffix is required if data is to be used for an LDAP server. Are you sure "
 "you wish to proceed without a suffix?"
 msgstr ""
-"Un suffisso è necessario se i dati devono essere utilizzati per un server LDAP. "
-"Sicuro di voler continuare senza un suffisso?"
+"Un suffisso è necessario se i dati devono essere utilizzati per un server "
+"LDAP. Sicuro di voler continuare senza un suffisso?"
 
 #: src/expldifdlg.c:264
-#, fuzzy
 msgid "Error creating LDIF file"
-msgstr "Errore leggendo i campi LDIF."
+msgstr "Errore creando il file LDIF."
 
 #: src/expldifdlg.c:373
-#, fuzzy
 msgid "Select LDIF Output File"
-msgstr "Seleziona il file HTML di output"
+msgstr "Seleziona il file di output LDIF"
 
 #: src/expldifdlg.c:447
-#, fuzzy
 msgid "LDIF Output File"
-msgstr "File di output HTML"
+msgstr "File di output LDIF"
 
 #: src/expldifdlg.c:508
 msgid "Suffix"
@@ -2381,31 +2364,27 @@ msgid ""
 "  ou=people,dc=domainname,dc=com\n"
 "  o=Organization Name,c=Country\n"
 msgstr ""
-"Il suffisso viene usato per creare un \"Nome Distinto\" (o DN) per un elemento "
-"LDAP. Tra gli esempi:\n"
+"Il suffisso viene usato per creare un \"Nome Distinto\" (o DN) per un "
+"elemento LDAP. Tra gli esempi:\n"
 "  dc=sylpheed,dc=org\n"
 "  ou=people,dc=nomedominio,dc=com\n"
 "  o=Nome Organizzazione,c=Stato\n"
 
 #: src/expldifdlg.c:529
-#, fuzzy
 msgid "Relative DN"
-msgstr " Rimpiazza "
+msgstr "DN Relativo"
 
 #: src/expldifdlg.c:536
-#, fuzzy
 msgid "Unique ID"
-msgstr "User ID"
+msgstr "ID Univoco"
 
 #: src/expldifdlg.c:544
-#, fuzzy
 msgid ""
 "The address book Unique ID is used to create a DN that is formatted similar "
 "to:\n"
 "  uid=102376,ou=people,dc=sylpheed,dc=org"
 msgstr ""
-"Lo User ID della rubrica è utilizzato per creare un DN che è formattato "
-"come:\n"
+"Lo User ID univoco è utilizzato per creare un DN che è formattato come:\n"
 "  uid=102376,ou=people,dc=sylpheed,dc=org"
 
 #: src/expldifdlg.c:557
@@ -2417,7 +2396,6 @@ msgstr ""
 "Il Nome Visualizzato nella rubrica è usato per creare un DN che è formattato "
 "come:\n"
 "  cn=John Doe,ou=people,dc=sylpheed,dc=org"
-
 
 #: src/expldifdlg.c:570
 msgid ""
@@ -2439,9 +2417,9 @@ msgid ""
 msgstr ""
 "Il file LDIF contiene diversi campi che sono normalmente caricati su un "
 "server LDAP. Ogni record nel file LDIF è univocamente identificato da un "
-"\"Nome Distinto\" (o DN). Il suffisso è aggiungo al \"Nome Distinto Relativo\" "
-"(o RDN) per creare il DN. Selezionate una delle opzioni disponibili che saranno "
-"utilizzate per creare il DN"
+"\"Nome Distinto\" (o DN). Il suffisso è aggiungo al \"Nome Distinto Relativo"
+"\" (o RDN) per creare il DN. Selezionate una delle opzioni disponibili che "
+"saranno utilizzate per creare il DN"
 
 #: src/expldifdlg.c:597
 msgid "Use DN attribute if present in data"
@@ -2455,9 +2433,9 @@ msgid ""
 "above will be used if the DN user attribute is not found."
 msgstr ""
 "La rubrica potrebbe contenere elementi precedentemente importati da un file "
-"LDIF. L'attributo \"Nome Distinto\" (DN), se presente nei dati della rubrica, "
-"può essere utilizzato nel file LDIF espostato. L'RDN selezionato sarà usato "
-"se l'attributo DN non fosse trovato."
+"LDIF. L'attributo \"Nome Distinto\" (DN), se presente nei dati della "
+"rubrica, può essere utilizzato nel file LDIF espostato. L'RDN selezionato "
+"sarà usato se l'attributo DN non fosse trovato."
 
 #: src/expldifdlg.c:615
 msgid "Exclude record if no E-Mail Address"
@@ -2472,14 +2450,12 @@ msgstr ""
 "quest'opzione per ignorare questi campi."
 
 #: src/expldifdlg.c:710
-#, fuzzy
 msgid "Export Address Book to LDIF File"
-msgstr "Esporto la rubrica nel file HTML"
+msgstr "Esporta la rubrica in formato LDIF"
 
 #: src/expldifdlg.c:777
-#, fuzzy
 msgid "Distguished Name"
-msgstr "Nome"
+msgstr "Nome Distinto"
 
 #: src/export.c:128
 msgid "Export"
@@ -2692,24 +2668,22 @@ msgid "Folder could not be opened."
 msgstr "La cartella non può essere aperta."
 
 #: src/folderview.c:1888
-#, fuzzy, c-format
+#, c-format
 msgid "Downloading messages in %s ..."
-msgstr "Preleva tutti i messaggi sul server"
+msgstr "Scarico i messaggi da %s ..."
 
 #: src/folderview.c:1911
-#, fuzzy
 msgid "Offline"
-msgstr "Vai in modalità offline"
+msgstr "Offline"
 
 #: src/folderview.c:1912
-#, fuzzy
 msgid "You are offline. Go online?"
-msgstr "Stai lavorando offline. Sovrascrivo?"
+msgstr "Stai lavorando offline. Vado online?"
 
 #: src/folderview.c:1930
-#, fuzzy, c-format
+#, c-format
 msgid "Error occurred while downloading messages in `%s'."
-msgstr "Errore durante l'invio del messaggio a %s."
+msgstr "Errore scaricando i messaggi da `%s'."
 
 #: src/folderview.c:2027
 msgid ""
@@ -2812,9 +2786,8 @@ msgid "Move failed!"
 msgstr "Spostamento fallito!"
 
 #: src/folderview.c:2583 src/summaryview.c:3995
-#, fuzzy
 msgid "Processing configuration"
-msgstr "Configurazione filtraggio/esecuzione"
+msgstr "Configurazione regole filtro"
 
 #: src/grouplistdialog.c:176
 msgid "Newsgroup subscription"
@@ -3201,14 +3174,14 @@ msgid "(No Subject)"
 msgstr "(Nessun Oggetto)"
 
 #: src/imap.c:663
-#, fuzzy, c-format
+#, c-format
 msgid "Connecting %s failed"
-msgstr "Connessione a %s:%d fallita"
+msgstr "Connessione a %s fallita"
 
 #: src/imap.c:668
-#, fuzzy, c-format
+#, c-format
 msgid "IMAP4 connection to %s has been disconnected. Reconnecting...\n"
-msgstr "La connessione IMAP4 a %s:%d è stata interrotta. Mi riconnetto...\n"
+msgstr "La connessione IMAP4 a %s è stata interrotta. Mi riconnetto...\n"
 
 #: src/imap.c:708
 msgid "creating tunneled IMAP4 connection\n"
@@ -3233,14 +3206,12 @@ msgid "can't expunge\n"
 msgstr "Impossibile cancellare\n"
 
 #: src/imap.c:1142
-#, fuzzy
 msgid "can't set deleted flags: 1:*\n"
-msgstr "Impossibile impostare i flag di eliminazione: 1:%d\n"
+msgstr "Impossibile impostare i flag eliminati: 1:*\n"
 
 #: src/imap.c:1184
-#, fuzzy
 msgid "can't close folder\n"
-msgstr "Impossibile selezionare la cartella: %s\n"
+msgstr "Impossibile chiudere la cartella\n"
 
 #: src/imap.c:1236
 #, c-format
@@ -3306,9 +3277,8 @@ msgid "can't select folder: %s\n"
 msgstr "Impossibile selezionare la cartella: %s\n"
 
 #: src/imap.c:2620
-#, fuzzy
 msgid "IMAP4 authentication failed.\n"
-msgstr "Autenticazione fallita."
+msgstr "Autenticazione IMAP4 fallita.\n"
 
 #: src/imap.c:2637
 msgid "IMAP4 login failed.\n"
@@ -3329,9 +3299,9 @@ msgid "can't append message to %s\n"
 msgstr "impossibile aggiungere il messaggio a %s\n"
 
 #: src/imap.c:3084
-#, fuzzy, c-format
+#, c-format
 msgid "can't copy %s to %s\n"
-msgstr "Impossibile copiare %d in %s\n"
+msgstr "Impossibile copiare %s in %s\n"
 
 #: src/imap.c:3134
 #, c-format
@@ -3343,9 +3313,8 @@ msgid "error while imap command: EXPUNGE\n"
 msgstr "errore nell'esecuzione del comando IMAP: EXPUNGE\n"
 
 #: src/imap.c:3164
-#, fuzzy
 msgid "error while imap command: CLOSE\n"
-msgstr "errore nell'esecuzione del comando IMAP: EXPUNGE\n"
+msgstr "errore nell'esecuzione del comando IMAP: CLOSE\n"
 
 #: src/imap.c:3419
 #, c-format
@@ -3421,9 +3390,8 @@ msgid "The full file specification of the LDIF file to import."
 msgstr "Specifica completa del file LDIF da importare."
 
 #: src/importldif.c:727
-#, fuzzy
 msgid "Select the LDIF file to import."
-msgstr "Seleziona e rinomina i nomi dei campi LDIF da importare."
+msgstr "Seleziona il file LDIF da importare."
 
 #: src/importldif.c:764
 msgid "R"
@@ -3434,9 +3402,8 @@ msgid "S"
 msgstr "S"
 
 #: src/importldif.c:766
-#, fuzzy
 msgid "LDIF Field Name"
-msgstr "Campo LDIF"
+msgstr "Nome del campo LDIF"
 
 #: src/importldif.c:767
 msgid "Attribute Name"
@@ -3452,7 +3419,8 @@ msgstr "Attributo"
 
 #: src/importldif.c:845
 msgid "The LDIF field can be renamed to the User Attribute name."
-msgstr "Il campo LDIF può essere rinominato secondo il nome dell'Attributo Utente "
+msgstr ""
+"Il campo LDIF può essere rinominato secondo il nome dell'Attributo Utente "
 
 #: src/importldif.c:850
 msgid "???"
@@ -3468,25 +3436,23 @@ msgid ""
 "below the list. A double click anywhere in the row will also select the "
 "field for import."
 msgstr ""
-"Selezionare il campo LDIF che verrà rinominato o selezionato per l'importazione "
-"nella lista qui sopra. I campi riservati (segnati nella colonna \"R\") sono "
-"automaticamente importati e non possono essere rinominati. Un singolo click nella "
-"colonna Selezione (\"S\") selezionerà il campo da importare. Un singolo click "
-"ovunque nella riga selezionerà quel campo come da rinominare nell'area di input "
-"sotto la lista. Un doppio click nella riga selezionerà inoltre il campo per "
-"l'importazione."
+"Selezionare il campo LDIF che verrà rinominato o selezionato per "
+"l'importazione nella lista qui sopra. I campi riservati (segnati nella "
+"colonna \"R\") sono automaticamente importati e non possono essere "
+"rinominati. Un singolo click nella colonna Selezione (\"S\") selezionerà il "
+"campo da importare. Un singolo click ovunque nella riga selezionerà quel "
+"campo come da rinominare nell'area di input sotto la lista. Un doppio click "
+"nella riga selezionerà inoltre il campo per l'importazione."
 
 #: src/importldif.c:880
-#, fuzzy
 msgid "Select for Import"
-msgstr "Seleziona la cartella"
+msgstr "Selezionare per l'importazione"
 
 #: src/importldif.c:886
 msgid "Select the LDIF field for import into the address book."
 msgstr "Seleziona il campo LDIF per l'importazione nella rubrica."
 
 #: src/importldif.c:889
-#, fuzzy
 msgid " Modify "
 msgstr "Modifica"
 
@@ -3495,9 +3461,8 @@ msgid "This button will update the list above with the data supplied."
 msgstr "Questo tasto aggiornerà la lista qui sopra con i dati forniti."
 
 #: src/importldif.c:968
-#, fuzzy
 msgid "Records Imported :"
-msgstr "Records :"
+msgstr "Records Importati :"
 
 #: src/importldif.c:999
 msgid "Import LDIF file into Address Book"
@@ -3588,9 +3553,9 @@ msgid "%s: Retrieving new messages"
 msgstr "%s: Prelevo i nuovi messaggi"
 
 #: src/inc.c:732
-#, fuzzy, c-format
+#, c-format
 msgid "Connecting to POP3 server: %s..."
-msgstr "Mi connetto al server POP3: %s..."
+msgstr "Connessione al server POP3 %s in corso..."
 
 #: src/inc.c:739
 #, c-format
@@ -3607,9 +3572,9 @@ msgid "Authenticating..."
 msgstr "Autenticazione..."
 
 #: src/inc.c:818
-#, fuzzy, c-format
+#, c-format
 msgid "Retrieving messages from %s..."
-msgstr "Prelevo i nuovi messaggi"
+msgstr "Sto prelevando i messaggi da %s..."
 
 #: src/inc.c:823
 msgid "Getting the number of new messages (STAT)..."
@@ -3642,14 +3607,13 @@ msgid "Retrieving message (%d / %d) (%s / %s)"
 msgstr "Prelevo il messaggio (%d / %d) (%s / %s)"
 
 #: src/inc.c:955
-#, fuzzy, c-format
+#, c-format
 msgid "Retrieving (%d message(s) (%s) received)"
-msgstr "Fatto (%d messaggi (%s) ricevuti)"
+msgstr "Prelievo in corso (%d messaggi (%s) ricevuti)"
 
 #: src/inc.c:1035
-#, fuzzy
 msgid "Connection failed."
-msgstr "Connessione fallita"
+msgstr "Connessione fallita."
 
 #: src/inc.c:1041
 msgid "Error occurred while processing mail."
@@ -3724,7 +3688,7 @@ msgstr "Inserire la password"
 msgid "Nick Name"
 msgstr "Soprannome"
 
-#: src/main.c:145
+#: src/main.c:145 src/main.c:154
 #, c-format
 msgid ""
 "File `%s' already exists.\n"
@@ -3766,27 +3730,27 @@ msgstr "  --receive-all          riceve nuovi messaggi da tutti gli account"
 
 #: src/main.c:522
 msgid "  --send                 send all queued messages"
-msgstr " --send                 spedisce tutti i messaggi in coda"
+msgstr "  --send                 spedisce tutti i messaggi in coda"
 
 #: src/main.c:523
-#, fuzzy
 msgid "  --status [folder]...   show the total number of messages"
-msgstr "  --status               mostra il numero totale di messaggi"
+msgstr "  --status [cartella]... mostra il numero totale di messaggi"
 
 #: src/main.c:524
-#, fuzzy
 msgid ""
 "  --status-full [folder]...\n"
 "                         show the status of each folder"
-msgstr "  --status               mostra il numero totale di messaggi"
+msgstr ""
+"  --status-full [cartella]...\n"
+"                         mostra lo stato di ogni cartella"
 
 #: src/main.c:526
 msgid "  --online               switch to online mode"
-msgstr "  --online                passa alla modalità online"
+msgstr "  --online               passa alla modalità online"
 
 #: src/main.c:527
 msgid "  --offline              switch to offline mode"
-msgstr "  --offline                passa alla modalità offline"
+msgstr "  --offline              passa alla modalità offline"
 
 #: src/main.c:528
 msgid "  --debug                debug mode"
@@ -3801,9 +3765,8 @@ msgid "  --version              output version information and exit"
 msgstr "  --version              mostra informazioni sulla versione ed esce"
 
 #: src/main.c:531
-#, fuzzy
 msgid "  --config-dir           output configuration directory"
-msgstr "  --version              mostra informazioni sulla versione ed esce"
+msgstr "  --config-dir           stampa la directory di configurazione"
 
 #: src/main.c:568 src/summaryview.c:5149
 #, c-format
@@ -3867,14 +3830,12 @@ msgid "/_File/_Folder/_Check for new messages in all folders"
 msgstr "/_File/Ca_rtella/_Verifica per nuovi messaggi in tutte le cartelle"
 
 #: src/mainwindow.c:444
-#, fuzzy
 msgid "/_File/_Add mailbox"
-msgstr "/_File/_Aggiungi mailbox..."
+msgstr "/_File/_Aggiungi mailbox"
 
 #: src/mainwindow.c:445
-#, fuzzy
 msgid "/_File/_Add mailbox/MH..."
-msgstr "/_File/_Aggiungi mailbox..."
+msgstr "/_File/_Aggiungi mailbox/MH..."
 
 #: src/mainwindow.c:446
 msgid "/_File/_Import mbox file..."
@@ -3898,7 +3859,7 @@ msgstr "/_File/S_tampa..."
 
 #: src/mainwindow.c:453
 msgid "/_File/_Work offline"
-msgstr "/_File/Lavoro o_ffline"
+msgstr "/_File/Lavora o_ffline"
 
 #: src/mainwindow.c:456
 msgid "/_File/E_xit"
@@ -4105,6 +4066,10 @@ msgstr "/_Vista/V_ai a/Mesaggio success_ivo etichettato"
 msgid "/_View/_Go to/Other _folder..."
 msgstr "/_Vista/V_ai a/_Altra cartella..."
 
+#: src/mainwindow.c:543 src/mainwindow.c:550 src/messageview.c:159
+msgid "/_View/_Code set/---"
+msgstr "/_Vista/Co_difica/---"
+
 #: src/mainwindow.c:547 src/messageview.c:163
 msgid "/_View/_Code set"
 msgstr "/_Vista/Co_difica"
@@ -4112,10 +4077,6 @@ msgstr "/_Vista/Co_difica"
 #: src/mainwindow.c:548 src/messageview.c:164
 msgid "/_View/_Code set/_Auto detect"
 msgstr "/_Vista/Co_difica/_Automatica"
-
-#: src/mainwindow.c:550
-msgid "/_View/_Code set/---"
-msgstr "/_Vista/Co_difica/---"
 
 #: src/mainwindow.c:551 src/messageview.c:167
 msgid "/_View/_Code set/7bit ascii (US-ASC_II)"
@@ -4162,9 +4123,8 @@ msgid "/_View/_Code set/Cyrillic (KOI8-_R)"
 msgstr "/_Vista/Co_difica/Cirillico (KOI8-_R)"
 
 #: src/mainwindow.c:583 src/messageview.c:199
-#, fuzzy
 msgid "/_View/_Code set/Cyrillic (KOI8-U)"
-msgstr "/_Vista/Co_difica/Cirillico (KOI8-_R)"
+msgstr "/_Vista/Co_difica/Cirillico (KOI8-U)"
 
 #: src/mainwindow.c:585 src/messageview.c:201
 msgid "/_View/_Code set/Cyrillic (Windows-1251)"
@@ -4235,29 +4195,24 @@ msgid "/_View/_Update summary"
 msgstr "/_Vista/_Aggiorna sommario"
 
 #: src/mainwindow.c:632
-#, fuzzy
 msgid "/_Message/Recei_ve"
-msgstr "/M_essaggio/Redireziona"
+msgstr "/M_essaggio/R_icevi"
 
 #: src/mainwindow.c:633
-#, fuzzy
 msgid "/_Message/Recei_ve/Get from _current account"
-msgstr "/M_essaggio/Ricevi da _tutti gli account"
+msgstr "/M_essaggio/R_icevi/Ricevi dall'account _corrente"
 
 #: src/mainwindow.c:635
-#, fuzzy
 msgid "/_Message/Recei_ve/Get from _all accounts"
-msgstr "/M_essaggio/Ricevi da _tutti gli account"
+msgstr "/M_essaggio/R_icevi/Ricevi da _tutti gli account"
 
 #: src/mainwindow.c:637
-#, fuzzy
 msgid "/_Message/Recei_ve/Cancel receivin_g"
-msgstr "/M_essaggio/Cancella la ri_cezione"
+msgstr "/M_essaggio/R_icevi/Cancella la ri_cezione"
 
 #: src/mainwindow.c:639
-#, fuzzy
 msgid "/_Message/Recei_ve/---"
-msgstr "/M_essaggio/---"
+msgstr "/M_essaggio/R_icevi/---"
 
 #: src/mainwindow.c:640
 msgid "/_Message/_Send queued messages"
@@ -4377,46 +4332,41 @@ msgstr "/St_rumenti/_Filtra messaggi"
 
 #: src/mainwindow.c:682 src/messageview.c:268
 msgid "/_Tools/_Create filter rule"
-msgstr "/St_rumenti/Crea re_gola filtro"
+msgstr "/St_rumenti/Crea _filtro"
 
 #: src/mainwindow.c:683 src/messageview.c:270
 msgid "/_Tools/_Create filter rule/_Automatically"
-msgstr "/St_rumenti/Crea re_gola filtro/_Automaticamente"
+msgstr "/St_rumenti/Crea _filtro/_Automaticamente"
 
 #: src/mainwindow.c:685 src/messageview.c:272
 msgid "/_Tools/_Create filter rule/by _From"
-msgstr "/St_rumenti/Crea re_gola filtro/dal _mittente"
+msgstr "/St_rumenti/Crea _filtro/dal _mittente"
 
 #: src/mainwindow.c:687 src/messageview.c:274
 msgid "/_Tools/_Create filter rule/by _To"
-msgstr "/St_rumenti/Crea re_gola filtro/dal _destinatario"
+msgstr "/St_rumenti/Crea _filtro/dal _destinatario"
 
 #: src/mainwindow.c:689 src/messageview.c:276
 msgid "/_Tools/_Create filter rule/by _Subject"
-msgstr "/St_rumenti/Crea re_gola filtro/dall'_oggetto"
+msgstr "/St_rumenti/Crea _filtro/dall'_oggetto"
 
 #: src/mainwindow.c:691
-#, fuzzy
 msgid "/_Tools/_Create processing rule"
 msgstr "/St_rumenti/Crea re_gola filtro"
 
 #: src/mainwindow.c:692
-#, fuzzy
 msgid "/_Tools/_Create processing rule/_Automatically"
 msgstr "/St_rumenti/Crea re_gola filtro/_Automaticamente"
 
 #: src/mainwindow.c:694
-#, fuzzy
 msgid "/_Tools/_Create processing rule/by _From"
 msgstr "/St_rumenti/Crea re_gola filtro/dal _mittente"
 
 #: src/mainwindow.c:696
-#, fuzzy
 msgid "/_Tools/_Create processing rule/by _To"
 msgstr "/St_rumenti/Crea re_gola filtro/dal _destinatario"
 
 #: src/mainwindow.c:698
-#, fuzzy
 msgid "/_Tools/_Create processing rule/by _Subject"
 msgstr "/St_rumenti/Crea re_gola filtro/dall'_oggetto"
 
@@ -4602,16 +4552,15 @@ msgstr "Elimino i messaggi duplicati..."
 
 #: src/mainwindow.c:2865 src/summaryview.c:3991
 msgid "Processing rules to apply before folder rules"
-msgstr "Regole di elaborazione da applicare prima delle regole di cartella"
+msgstr "Regole filtro da applicare prima dei filtri di cartella"
 
 #: src/mainwindow.c:2873
 msgid "Processing rules to apply after folder rules"
-msgstr "Regole di elaborazione da applicare dopo le regole di cartella"
+msgstr "Regole filtro da applicare dopo i filtri di cartella"
 
 #: src/mainwindow.c:2881 src/summaryview.c:4000
-#, fuzzy
 msgid "Filtering configuration"
-msgstr "Configurazione Score"
+msgstr "Configurazione filtri"
 
 #: src/matcher.c:1178 src/matcher.c:1179 src/matcher.c:1180 src/matcher.c:1181
 #: src/matcher.c:1182 src/matcher.c:1183 src/matcher.c:1184 src/matcher.c:1185
@@ -4671,27 +4620,22 @@ msgid "/_Message/Redirec_t"
 msgstr "/M_essaggio/Redire_ziona"
 
 #: src/messageview.c:278
-#, fuzzy
 msgid "/_Tools/Create processing rule/"
 msgstr "/St_rumenti/Crea re_gola filtro"
 
 #: src/messageview.c:280
-#, fuzzy
 msgid "/_Tools/Create processing rule/_Automatically"
 msgstr "/St_rumenti/Crea re_gola filtro/_Automaticamente"
 
 #: src/messageview.c:282
-#, fuzzy
 msgid "/_Tools/Create processing rule/by _From"
 msgstr "/St_rumenti/Crea re_gola filtro/dal _mittente"
 
 #: src/messageview.c:284
-#, fuzzy
 msgid "/_Tools/Create processing rule/by _To"
 msgstr "/St_rumenti/Crea re_gola filtro/dal _destinatario"
 
 #: src/messageview.c:286
-#, fuzzy
 msgid "/_Tools/Create processing rule/by _Subject"
 msgstr "/St_rumenti/Crea re_gola filtro/dall'_oggetto"
 
@@ -4800,9 +4744,9 @@ msgstr ""
 "`%s'"
 
 #: src/mh.c:349
-#, fuzzy, c-format
+#, c-format
 msgid "can't copy message %s to %s\n"
-msgstr "impossibile aggiungere il messaggio a %s\n"
+msgstr "impossibile copiare il messaggio %s in %s\n"
 
 #: src/mimeview.c:154
 msgid "/_Open"
@@ -4833,14 +4777,12 @@ msgid "Check"
 msgstr "Controlla"
 
 #: src/mimeview.c:646 src/mimeview.c:651 src/mimeview.c:656
-#, fuzzy
 msgid "Full info"
-msgstr "Informazioni file"
+msgstr "Tutte le informazioni"
 
 #: src/mimeview.c:661
-#, fuzzy
 msgid "Check again"
-msgstr "Cerca ancora"
+msgstr "Controlla nuovamente"
 
 #: src/mimeview.c:953 src/mimeview.c:1019 src/mimeview.c:1143
 #: src/mimeview.c:1173
@@ -4853,14 +4795,13 @@ msgid "Overwrite existing file '%s'?"
 msgstr "Sovrascrivo il file esistente '%s'?"
 
 #: src/mimeview.c:1041
-#, fuzzy
 msgid "Select destination folder"
-msgstr "Seleziona la cartella"
+msgstr "Seleziona la cartella "
 
 #: src/mimeview.c:1045
-#, fuzzy, c-format
+#, c-format
 msgid "`%s' is not a directory."
-msgstr "Nome già esistente ma non è una directory."
+msgstr "`%s' non è una directory"
 
 #: src/mimeview.c:1183
 msgid "Open with"
@@ -4889,6 +4830,11 @@ msgstr "impossibile impostare il gruppo: %s\n"
 #, c-format
 msgid "invalid article range: %d - %d\n"
 msgstr "intervallo di articoli non valido: %d - %d\n"
+
+#: src/news.c:812
+#, c-format
+msgid "error occurred while getting %s.\n"
+msgstr "errore ricevendo %s.\n"
 
 #: src/news.c:829
 #, c-format
@@ -4951,16 +4897,14 @@ msgstr ""
 "\n"
 
 #: src/plugins/clamav/clamav_plugin.c:116
-#, fuzzy
 msgid "ClamAV: scanning message..."
-msgstr "Seleziono tutti i messaggi..."
+msgstr "ClamAV: sto controllando il messaggio..."
 
 #: src/plugins/clamav/clamav_plugin.c:226
 msgid "Clam AntiVirus"
 msgstr "Clam AntiVirus"
 
 #: src/plugins/clamav/clamav_plugin.c:231
-#, fuzzy
 msgid ""
 "This plugin uses Clam AntiVirus to scan all messages that are received from "
 "an IMAP, LOCAL or POP account.\n"
@@ -4973,23 +4917,23 @@ msgid ""
 "too, otherwise you will have to manually write the plugin configuration.\n"
 msgstr ""
 "Questo plugin utilizza Clam Antivirus per controllare tutti gli allegati che "
-"vengono scaricati da un account di tipo POP.\n"
+"vengono scaricati da un account di tipo POP, IMAP o locale.\n"
 "\n"
 "Quando un allegato è infettato da un virus può essere cancellato oppure "
-"salvato in una cartella speciale creata appositamente.\n"
+"salvato in un'apposita cartella.\n"
 "\n"
-"Questo plugin contiene le funzioni attuali di controllo e cancella o sposta "
-"il messaggio. Probabilmente vuoi anche caricare l'interfaccia utente Gtk+ "
-"del plugin, altrimenti dovrai scrivere a mano la configurazione del plugin.\n"
+"Questo plugin contiene le funzioni attuali di controllo, rimozione o "
+"spostamento del messaggio. Probabilmente vuoi anche caricare l'interfaccia "
+"utente Gtk+ del plugin, altrimenti dovrai configurare il plugin "
+"manualmente.\n"
 
 #: src/plugins/clamav/clamav_plugin_gtk.c:93
 msgid "Enable virus scanning"
 msgstr "Abilita scanning dei virus"
 
 #: src/plugins/clamav/clamav_plugin_gtk.c:107
-#, fuzzy
 msgid "Scan archive contents"
-msgstr "Abilita scanning contenuto dei file archivio"
+msgstr "Controlla il contenuto degli archivi"
 
 #: src/plugins/clamav/clamav_plugin_gtk.c:120
 msgid "Maximum attachment size"
@@ -5000,9 +4944,8 @@ msgid "MB"
 msgstr "MB"
 
 #: src/plugins/clamav/clamav_plugin_gtk.c:142
-#, fuzzy
 msgid "Save infected messages"
-msgstr "Ricevo messaggi infettati"
+msgstr "Salva i messaggi infettati"
 
 #: src/plugins/clamav/clamav_plugin_gtk.c:155
 msgid "Save folder"
@@ -5025,8 +4968,8 @@ msgstr "Clam AntiVirus GTK"
 msgid ""
 "This plugin provides a Preferences page for the Clam AntiVirus plugin.\n"
 "\n"
-"You will find the options in the Other Preferences window under "
-"Filtering/Clam AntiVirus.\n"
+"You will find the options in the Other Preferences window under Filtering/"
+"Clam AntiVirus.\n"
 "\n"
 "With this plugin you can enable the scanning, enable archive content "
 "scanning, set the maximum size of an attachment to be checked, (if the "
@@ -5063,25 +5006,20 @@ msgstr ""
 "Non è realmente utile"
 
 #: src/plugins/dillo_viewer/dillo_prefs.c:106
-#, fuzzy
 msgid "Do not load remote links in mails"
-msgstr "Non aprire i link in Mails"
+msgstr "Non aprire i link remoti nelle mails"
 
 #: src/plugins/dillo_viewer/dillo_prefs.c:112
 msgid "Equivalent to Dillo's '--local' option"
 msgstr "Equivalente all'opzione di dillo '--local'"
 
 #: src/plugins/dillo_viewer/dillo_prefs.c:114
-#, fuzzy
 msgid "You can still load remote links by reloading the page"
-msgstr ""
-"(Puoi rendere disponibili i link\n"
-"rigenerando la pagina)"
+msgstr "Puoi rendere disponibili i link rigenerando la pagina)"
 
 #: src/plugins/dillo_viewer/dillo_prefs.c:121
-#, fuzzy
 msgid "Full window mode (hide controls)"
-msgstr "Modilità Full Window (Controlli Nascosti)"
+msgstr "Modilità finestra intera (nasconde i controlli)"
 
 #: src/plugins/dillo_viewer/dillo_prefs.c:127
 msgid "Equivalent to Dillo's '--fullwindow' option"
@@ -5142,20 +5080,18 @@ msgid ""
 "This plugin uses the GtkMathView widget to render MathML attachments "
 "(Content-Type: text/mathml)"
 msgstr ""
-"Questo plugin utilizza GtkMathView per renderizzare allegati MathML "
-"(Content-Type: text/mathml)"
+"Questo plugin utilizza GtkMathView per renderizzare allegati MathML (Content-"
+"Type: text/mathml)"
 
 #: src/plugins/spamassassin/spamassassin.c:181
-#, fuzzy
 msgid "SpamAssassin: filtering message..."
-msgstr "Abilita il filtraggio di SpamAssassin"
+msgstr "SpamAssassin: filtraggio in corso..."
 
 #: src/plugins/spamassassin/spamassassin.c:310
 msgid "SpamAssassin"
 msgstr "SpamAssassin"
 
 #: src/plugins/spamassassin/spamassassin.c:315
-#, fuzzy
 msgid ""
 "This plugin checks all messages that are received from an IMAP, LOCAL or POP "
 "account for spam using a SpamAssassin server. You will need a SpamAssassin "
@@ -5168,27 +5104,24 @@ msgid ""
 "moving the message. You probably want to load a User Interface plugin too, "
 "otherwise you will have to manually write the plugin configuration.\n"
 msgstr ""
-"Questo plugin controlla tutti i messaggi che vengono scaricati da un account "
-"POP per spam utilizzando un server SpamAssassin. Avrai bisogno di un server "
-"SpamAssassin (spamd) in esecuzione da qualche parte.\n"
+"Questo plugin controlla tutti i messaggi ricevuti da un account POP, IMAP o "
+"locale, e verifica se sono messaggi di SPAM utilizzando un server "
+"SpamAssassin. E' necessario un server SpamAssassin (spamd) funzionante.\n"
 "\n"
 "Quando un messaggio è identificato come spam può essere cancellato o salvato "
 "in una speciale cartella.\n"
 "\n"
-"Questo plugin contiene le attuali funzioni di filtraggio e cancellazione o "
-"spostamento del messaggio. Probabilmente vorrai anche caricare "
-"un'interfaccia utente del plugin, altrimenti dovrai scrivere manualmente la "
-"configuratione del plugin.\n"
+"Questo plugin contiene soltanto le funzioni di filtraggio, cancellazione o "
+"spostamento dei messaggi. Probabilmente vorrai caricare anche una GUI come "
+"plugin, o dovrai configurare manualmente il plugin.\n"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:76
-#, fuzzy
 msgid "Disabled"
-msgstr "Scarta"
+msgstr "Disabilitato"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:77
-#, fuzzy
 msgid "Localhost"
-msgstr "Spool locale"
+msgstr "Localhost"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:78
 msgid "TCP"
@@ -5223,9 +5156,8 @@ msgid "Path of Unix socket"
 msgstr "Percorso del socket Unix"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:243
-#, fuzzy
 msgid "Timeout"
-msgstr "Timeout (secs)"
+msgstr "Timeout (sec)"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:263
 msgid ""
@@ -5240,9 +5172,8 @@ msgid "s"
 msgstr "s"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:274
-#, fuzzy
 msgid "Save Spam"
-msgstr "Salva come..."
+msgstr "Salva lo spam"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:288
 msgid "Save mails that where identified as spam to a folder"
@@ -5257,30 +5188,28 @@ msgid "kB"
 msgstr "kB"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:315
-#, fuzzy
 msgid "Save Folder"
-msgstr "Cartella di salvataggio"
+msgstr "Destinazione"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:330
-#, fuzzy
 msgid ""
 "Folder that will be used to save spam. Leave empty to use the default trash "
 "folder"
-msgstr "Lascia vuoto per utilizzare la cartella cestino di default"
+msgstr ""
+"Cartella che verrà utilizzata per salvare lo spam. Lasciare vuoto per "
+"utilizzare il Cestino"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:333
 msgid "..."
 msgstr "..."
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:339
-#, fuzzy
 msgid "Maximum Size"
-msgstr "Dimensione massima del messaggio"
+msgstr "Dimensione massima"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:453
-#, fuzzy
 msgid "Filtering/SpamAssassin"
-msgstr "SpamAssassin"
+msgstr "Filtraggio/SpamAssassin"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:474
 msgid "SpamAssassin GTK"
@@ -5290,8 +5219,8 @@ msgstr "SpamAssassin GTK"
 msgid ""
 "This plugin provides a Preferences page for the SpamAssassin plugin.\n"
 "\n"
-"You will find the options in the Other Preferences window under "
-"Filtering/SpamAssassin.\n"
+"You will find the options in the Other Preferences window under Filtering/"
+"SpamAssassin.\n"
 "\n"
 "With this plugin you can enable the filtering, change the SpamAssassin "
 "server host and port, set the maximum size of messages to be checked, (if "
@@ -5313,7 +5242,7 @@ msgstr ""
 
 #: src/plugins/trayicon/trayicon.c:217
 msgid "Trayicon"
-msgstr "IconaCestino"
+msgstr "Icona di sistema"
 
 #: src/plugins/trayicon/trayicon.c:222
 msgid ""
@@ -5445,15 +5374,13 @@ msgid "News (NNTP)"
 msgstr "News (NNTP)"
 
 #: src/prefs_account.c:941
-#, fuzzy
 msgid "Local mbox file"
-msgstr "File della mailbox locale"
+msgstr "File mbox locale"
 
 # src/prefs_account.c:634
 #: src/prefs_account.c:943
-#, fuzzy
 msgid "None (SMTP only)"
-msgstr "Nessuno (locale)"
+msgstr "Nessuno (solo SMTP)"
 
 #: src/prefs_account.c:963
 msgid "This server requires authentication"
@@ -5472,9 +5399,8 @@ msgid "Server for receiving"
 msgstr "Server per la ricezione"
 
 #: src/prefs_account.c:1027
-#, fuzzy
 msgid "Local mailbox"
-msgstr "File della mailbox locale"
+msgstr "Mailbox locale"
 
 #: src/prefs_account.c:1034
 msgid "SMTP server (send)"
@@ -5565,7 +5491,6 @@ msgid "Add Date"
 msgstr "Data Inserimento"
 
 #: src/prefs_account.c:1361
-#, fuzzy
 msgid "Generate Message-Id"
 msgstr "Genera ID messaggio"
 
@@ -5836,9 +5761,9 @@ msgstr " Help sulla sintassi "
 msgid "Current actions"
 msgstr "Azione corrente"
 
-#: src/prefs_actions.c:382 src/prefs_filtering.c:593 src/prefs_filtering.c:653
-#: src/prefs_filtering.c:672 src/prefs_filtering_action.c:546
-#: src/prefs_filtering_action.c:619 src/prefs_matcher.c:687
+#: src/prefs_actions.c:382 src/prefs_filtering_action.c:546
+#: src/prefs_filtering_action.c:619 src/prefs_filtering.c:593
+#: src/prefs_filtering.c:653 src/prefs_filtering.c:672 src/prefs_matcher.c:687
 #: src/prefs_matcher.c:777 src/prefs_template.c:309
 msgid "(New)"
 msgstr "(Nuovo)"
@@ -5949,11 +5874,11 @@ msgstr "per il file della parte MIME decodificata del messaggio selezionato"
 
 #: src/prefs_actions.c:673
 msgid "for a user provided argument"
-msgstr "per un argomento provvisto dall'utente"
+msgstr "per un argomento fornito dall'utente"
 
 #: src/prefs_actions.c:674
 msgid "for a user provided hidden argument (e.g. password)"
-msgstr "per un argomento nascosto provvisto dall'utente (es. password)"
+msgstr "per un argomento nascosto fornito dall'utente (es. password)"
 
 #: src/prefs_actions.c:675
 msgid "for the text selection"
@@ -6078,13 +6003,12 @@ msgid "Outgoing codeset"
 msgstr "Codifica usata in uscita"
 
 #: src/prefs_common.c:1253
-#, fuzzy
 msgid ""
 "If `Automatic' is selected, the optimal encoding for the current locale will "
 "be used"
 msgstr ""
-"Se è selezionato `Automatico', sarà utilizzata\n"
-"la codifica ottimale per la locazione geografica corrente."
+"Se è selezionato `Automatico', sarà utilizzata la codifica ottimale per la "
+"il locale corrente"
 
 #: src/prefs_common.c:1265
 msgid "Automatic (Recommended)"
@@ -6187,13 +6111,12 @@ msgid "Transfer encoding"
 msgstr "Codifica Trasmissione"
 
 #: src/prefs_common.c:1320
-#, fuzzy
 msgid ""
 "Specify Content-Transfer-Encoding used when message body contains non-ASCII "
 "characters"
 msgstr ""
-"Specifica Content-Transfer-Encoding utilizzato quando\n"
-"il corpo del messaggio contiene caratteri non-ASCII."
+"Specifica Content-Transfer-Encoding utilizzato quando il corpo del messaggio "
+"contiene caratteri non-ASCII."
 
 #: src/prefs_common.c:1407
 msgid "Automatic account selection"
@@ -6401,11 +6324,8 @@ msgid "Expire after"
 msgstr "Elimina dopo"
 
 #: src/prefs_common.c:2071
-#, fuzzy
 msgid "Setting to '0' will store the passphrase for the whole session"
-msgstr ""
-"(Specificare il valore '0' memorizzerà la passphrase\n"
-" per l'intera sessione)"
+msgstr "Settare a '0' farà memorizzare la passphrase per l'intera sessione"
 
 #: src/prefs_common.c:2079
 msgid "minute(s) "
@@ -6441,11 +6361,10 @@ msgid "Execute immediately when moving or deleting messages"
 msgstr "Esegui immediatamente quando sposti o elimini dei messaggi"
 
 #: src/prefs_common.c:2180
-#, fuzzy
 msgid "Messages will be marked until execution if this is turned off"
 msgstr ""
-"(I messaggi verranno solo segnati fino all'esecuzione\n"
-" delle operazioni se questa è inattiva)"
+"I messaggi verranno segnati fino all'esecuzione se quest'opzione è "
+"disattivata"
 
 #: src/prefs_common.c:2193
 msgid "Show no-unread-message dialog"
@@ -6480,9 +6399,8 @@ msgid "Log window length"
 msgstr "Lunghezza della finestra di log"
 
 #: src/prefs_common.c:2308
-#, fuzzy
 msgid "0 to stop logging in the log window"
-msgstr "(0 per fermare il monitoraggio nella finestra del log)"
+msgstr "0 per fermare il monitoraggio nella finestra del log"
 
 #: src/prefs_common.c:2317
 msgid "Security"
@@ -6517,9 +6435,8 @@ msgid "Socket I/O timeout:"
 msgstr "Timeout I/O del socket:"
 
 #: src/prefs_common.c:2372
-#, fuzzy
 msgid "seconds"
-msgstr "Records :"
+msgstr "secondi"
 
 #: src/prefs_common.c:2549
 msgid "the full abbreviated weekday name"
@@ -6700,7 +6617,8 @@ msgstr "Il nome intestazione non è impostato."
 
 #: src/prefs_customheader.c:487
 msgid "This Header name is not allowed as a custom header."
-msgstr "Non è permesso usare questo nome di intestazione tra quelle personalizzate."
+msgstr ""
+"Non è permesso usare questo nome di intestazione tra quelle personalizzate."
 
 #: src/prefs_customheader.c:545
 msgid "Delete header"
@@ -6735,25 +6653,23 @@ msgid "This header is already in the list."
 msgstr "Questa intestazione è già nella lista."
 
 #: src/prefs_ext_prog.c:102
-#, fuzzy, c-format
+#, c-format
 msgid "%s will be replaced with file name / URI"
-msgstr "Comandi esterni (%s verrà sostituito con il nome del file / URI)"
+msgstr "%s verrà sostituito con il nome del file / URI"
 
 #: src/prefs_ext_prog.c:118
 msgid "Web browser"
 msgstr "Web browser"
 
 #: src/prefs_ext_prog.c:147
-#, fuzzy
 msgid "Print command"
-msgstr "Comando"
+msgstr "Comando di stampa"
 
 #: src/prefs_ext_prog.c:163
 msgid "Text editor"
 msgstr "Editor di testo"
 
 #: src/prefs_ext_prog.c:190
-#, fuzzy
 msgid "Image viewer"
 msgstr "Visualizzatore Immagini"
 
@@ -6762,9 +6678,8 @@ msgid "Audio player"
 msgstr "Riproduttore di suoni"
 
 #: src/prefs_ext_prog.c:265
-#, fuzzy
 msgid "Message View/External Programs"
-msgstr "Programma esterno"
+msgstr "Visualizzazione messaggio/Programma esterni"
 
 #: src/prefs_filtering_action.c:133
 msgid "Move"
@@ -6783,14 +6698,12 @@ msgid "Unmark"
 msgstr "Togli contrassegno"
 
 #: src/prefs_filtering_action.c:138
-#, fuzzy
 msgid "Lock"
-msgstr "Lockato"
+msgstr "Blocca (Lock)"
 
 #: src/prefs_filtering_action.c:139
-#, fuzzy
 msgid "Unlock"
-msgstr "/Contrasseg_na/Sblocca"
+msgstr "Sblocca (Unlock)"
 
 #: src/prefs_filtering_action.c:140
 msgid "Mark as read"
@@ -6818,31 +6731,26 @@ msgid "Color"
 msgstr "Colori"
 
 #: src/prefs_filtering_action.c:147
-#, fuzzy
 msgid "Change score"
-msgstr "Cambia dizionario"
+msgstr "Cambia il punteggio"
 
 #: src/prefs_filtering_action.c:148
-#, fuzzy
 msgid "Set score"
-msgstr "Nascondi score"
+msgstr "Imposta il punteggio"
 
 #: src/prefs_filtering_action.c:149
-#, fuzzy
 msgid "Hide"
-msgstr "Intestazione"
+msgstr "Nascondi"
 
 #: src/prefs_filtering_action.c:150
-#, fuzzy
 msgid "Stop filter"
-msgstr "Seleziona il file"
+msgstr "Ferma il filtro"
 
 #: src/prefs_filtering_action.c:285
-#, fuzzy
 msgid "Filtering action configuration"
-msgstr "Configurazione filtraggio/esecuzione"
+msgstr "Configurazione dell'azione di filtraggio"
 
-#: src/prefs_filtering.c:244 src/prefs_filtering_action.c:308
+#: src/prefs_filtering_action.c:308 src/prefs_filtering.c:244
 msgid "Action"
 msgstr "Azione"
 
@@ -6863,18 +6771,16 @@ msgstr "Score"
 msgid "Info ..."
 msgstr "Info ..."
 
-#: src/prefs_filtering.c:286 src/prefs_filtering_action.c:455
+#: src/prefs_filtering_action.c:455 src/prefs_filtering.c:286
 #: src/prefs_matcher.c:563 src/prefs_template.c:222 src/prefs_toolbar.c:775
 msgid "  Replace  "
 msgstr "  Rimpiazza  "
 
 #: src/prefs_filtering_action.c:481
-#, fuzzy
 msgid "Current action list"
-msgstr "Azione corrente"
+msgstr "Lista attuale delle azioni"
 
 #: src/prefs_filtering_action.c:761
-#, fuzzy
 msgid "Command line not set"
 msgstr "La linea di comando non è specificata."
 
@@ -6887,14 +6793,12 @@ msgid "Recipient is not set."
 msgstr "Il recipiente non è impostato."
 
 #: src/prefs_filtering_action.c:786
-#, fuzzy
 msgid "Score is not set"
 msgstr "Lo score non è impostato."
 
 #: src/prefs_filtering_action.c:1075
-#, fuzzy
 msgid "No action was defined."
-msgstr "Nessuna regola di filtro definita."
+msgstr "Nessun'azione definita."
 
 #: src/prefs_filtering_action.c:1113 src/prefs_matcher.c:142
 #: src/prefs_matcher.c:1711 src/prefs_summary_column.c:70 src/quote_fmt.c:47
@@ -6966,31 +6870,28 @@ msgid "Current filtering/processing rules"
 msgstr "Regole di filtraggio/esecuzione correnti"
 
 #: src/prefs_filtering.c:328
-#, fuzzy
 msgid "Top"
-msgstr "A"
+msgstr "Prima"
 
 #: src/prefs_filtering.c:350
 msgid "Bottom"
-msgstr "Basso"
+msgstr "Ultima"
 
 #: src/prefs_filtering.c:716 src/prefs_filtering.c:791
 msgid "Condition string is not valid."
 msgstr "La condizione non è valida."
 
 #: src/prefs_filtering.c:750 src/prefs_filtering.c:798
-#, fuzzy
 msgid "Action string is not valid."
-msgstr "La condizione non è valida."
+msgstr "Stringa di azione non valida"
 
 #: src/prefs_filtering.c:778
 msgid "Condition string is empty."
 msgstr "La condizione è vuota."
 
 #: src/prefs_filtering.c:784
-#, fuzzy
 msgid "Action string is empty."
-msgstr "La condizione è vuota."
+msgstr "Stringa di azione vuota"
 
 #: src/prefs_filtering.c:851
 msgid "Delete rule"
@@ -7021,14 +6922,12 @@ msgid "Folder color: "
 msgstr "Colore cartella: "
 
 #: src/prefs_folder_item.c:201
-#, fuzzy
 msgid "Process at startup"
-msgstr "Segno del processo"
+msgstr "Processa all'avvio"
 
 #: src/prefs_folder_item.c:212
-#, fuzzy
 msgid "Scan for new mail"
-msgstr "Comando per spedire mail"
+msgstr "Controlla se c'è posta"
 
 #: src/prefs_folder_item.c:332
 msgid "Request Return Receipt"
@@ -7054,37 +6953,32 @@ msgid "Default account: "
 msgstr "Account predefinito: "
 
 #: src/prefs_folder_item.c:430
-#, fuzzy
 msgid "Default dictionary: "
-msgstr "Dizionario predefinito:"
+msgstr "Dizionario predefinito: "
 
 #: src/prefs_folder_item.c:553
 msgid "Pick color for folder"
 msgstr "Selezione colore per la cartella"
 
 #: src/prefs_folder_item.c:563
-#, fuzzy
 msgid "General"
-msgstr "Mittente"
+msgstr "Generale"
 
 #: src/prefs_folder_item.c:592
-#, fuzzy
 msgid "Settings for folder"
-msgstr "Impostazione informazioni della cartella..."
+msgstr "Impostazioni per la cartella"
 
 #: src/prefs_fonts.c:73
 msgid "Font selection"
 msgstr "Selezione carattere"
 
 #: src/prefs_fonts.c:153
-#, fuzzy
 msgid "Folder List"
-msgstr "Cartella :"
+msgstr "Elenco cartelle"
 
 #: src/prefs_fonts.c:175
-#, fuzzy
 msgid "Message List"
-msgstr "Messaggi"
+msgstr "Elenco messaggi"
 
 #: src/prefs_fonts.c:219
 msgid "Bold"
@@ -7095,9 +6989,8 @@ msgid "You will need to restart for the changes to take effect"
 msgstr "E' necessario riavviare per applicare i cambiamenti"
 
 #: src/prefs_fonts.c:290
-#, fuzzy
 msgid "Display/Fonts"
-msgstr "Visualizzazione"
+msgstr "Grafica/Fonts"
 
 #: src/prefs_gtk.c:777
 msgid "Preferences"
@@ -7184,9 +7077,8 @@ msgid "Score equal to"
 msgstr "Score uguale a"
 
 #: src/prefs_matcher.c:156
-#, fuzzy
 msgid "Test"
-msgstr "Testo"
+msgstr "Testa"
 
 #: src/prefs_matcher.c:157
 msgid "Size greater than"
@@ -7265,23 +7157,20 @@ msgid "'Test' allows you to test a message or message element"
 msgstr "'Test' permette di testare un messaggio o una sua parte"
 
 #: src/prefs_matcher.c:1707
-#, fuzzy
 msgid "using an external program or script. The program will"
-msgstr "Usa un programma esterno per incorporare la posta"
+msgstr "utilizzando un programma o script esterno. Il programma"
 
 #: src/prefs_matcher.c:1708
-#, fuzzy
 msgid "return either 0 or 1"
-msgstr "AM o PM"
+msgstr "tornerà 0 o 1"
 
 #: src/prefs_matcher.c:1709
 msgid "The following symbols can be used:"
 msgstr "I simboli seguenti possono essere usati:"
 
 #: src/prefs_matcher.c:1729
-#, fuzzy
 msgid "Match Type: 'Test'"
-msgstr "Tipo corrispondente"
+msgstr "Tipo di corrispondenza: 'Test'"
 
 #: src/prefs_spelling.c:95
 msgid "Select dictionaries location"
@@ -7315,18 +7204,16 @@ msgid "Default dictionary:"
 msgstr "Dizionario predefinito:"
 
 #: src/prefs_spelling.c:219
-#, fuzzy
 msgid "Default suggestion mode:"
-msgstr "Modo suggerimento predefinito"
+msgstr "Modo suggerimento predefinito:"
 
 #: src/prefs_spelling.c:236
 msgid "Misspelled word color:"
 msgstr "Colore delle parole sbagliate:"
 
 #: src/prefs_spelling.c:361
-#, fuzzy
 msgid "Compose/Spell Checker"
-msgstr "Controllore ortografico"
+msgstr "Componi/Controllo ortografico"
 
 #: src/prefs_summary_column.c:69
 msgid "Attachment"
@@ -7405,9 +7292,8 @@ msgid "Default internal theme"
 msgstr "Tema interno di default"
 
 #: src/prefs_themes.c:337
-#, fuzzy
 msgid "Display/Themes"
-msgstr "Nome visualizzato"
+msgstr "Grafica/Temi"
 
 #: src/prefs_themes.c:410
 msgid "Only root can remove system themes"
@@ -7419,14 +7305,13 @@ msgid "Remove system theme '%s'"
 msgstr "Rimuovere tema di sistema '%s'"
 
 #: src/prefs_themes.c:417
-#, fuzzy, c-format
+#, c-format
 msgid "Remove theme '%s'"
-msgstr "Elimina dopo"
+msgstr "Elimina il tema '%s'"
 
 #: src/prefs_themes.c:421
-#, fuzzy
 msgid "Are you sure you want to remove this theme?"
-msgstr "Volete veramente eliminare questo modello?"
+msgstr "Volete veramente eliminare questo tema?"
 
 #: src/prefs_themes.c:430
 #, c-format
@@ -7442,14 +7327,12 @@ msgid "Removing theme directory failed."
 msgstr "Rimozione della directory dei temi fallita."
 
 #: src/prefs_themes.c:437
-#, fuzzy
 msgid "Theme removed succesfully"
-msgstr "File esportato con successo."
+msgstr "Tema eliminato con successo"
 
 #: src/prefs_themes.c:458
-#, fuzzy
 msgid "Select theme folder"
-msgstr "Seleziona la cartella"
+msgstr "Selezionare la cartella del tema"
 
 #: src/prefs_themes.c:468
 #, c-format
@@ -7465,9 +7348,8 @@ msgstr ""
 "Installare comunque?"
 
 #: src/prefs_themes.c:478
-#, fuzzy
 msgid "Do you want to install theme for system's all users?"
-msgstr "Vuoi applicare il modello `%s' ?"
+msgstr "Vuoi installare il tema per tutti gli utenti?"
 
 #: src/prefs_themes.c:499
 msgid ""
@@ -7478,16 +7360,12 @@ msgstr ""
 "già installato in quel posto"
 
 #: src/prefs_themes.c:503
-#, fuzzy
 msgid "Couldn't create destination directory"
-msgstr ""
-"Non posso creare la directory di output per il file HTML:\n"
-"%s"
+msgstr "Non posso creare la directory di destinazione"
 
 #: src/prefs_themes.c:516
-#, fuzzy
 msgid "Theme installed succesfully"
-msgstr "File esportato con successo."
+msgstr "Tema installato con successo"
 
 #: src/prefs_themes.c:523
 msgid "Failed installing theme"
@@ -7508,9 +7386,8 @@ msgid "%d themes available (%d user, %d system, 1 internal)"
 msgstr "%d temi disponibili (%d utente, %d sistema, 1 interno)"
 
 #: src/prefs_themes.c:647
-#, fuzzy
 msgid "The Sylpheed Claws Team"
-msgstr "Sylpheed è crashato"
+msgstr "Il Team di Sylpheed Claws"
 
 #: src/prefs_themes.c:649
 #, c-format
@@ -7522,9 +7399,8 @@ msgid "No info file available for this theme"
 msgstr "Nessuna info disponibile per questo tema"
 
 #: src/prefs_themes.c:673
-#, fuzzy
 msgid "Error: can't get theme status"
-msgstr "Errore: Stato sconosciuto"
+msgstr "Errore: impossibile controllare lo stato del tema"
 
 #: src/prefs_themes.c:697
 #, c-format
@@ -7532,7 +7408,6 @@ msgid "%d files (%d icons), size is %s"
 msgstr "%d files (%d icone), dimensione: %s"
 
 #: src/prefs_themes.c:788
-#, fuzzy
 msgid "Selector"
 msgstr "Seleziona"
 
@@ -7541,14 +7416,12 @@ msgid "Install new..."
 msgstr "Installa nuovo..."
 
 #: src/prefs_themes.c:815
-#, fuzzy
 msgid "Get more..."
 msgstr "Ancora..."
 
 #: src/prefs_themes.c:847
-#, fuzzy
 msgid "Information"
-msgstr "Informazioni server"
+msgstr "Informazioni"
 
 #: src/prefs_themes.c:863
 msgid "Author: "
@@ -7559,29 +7432,33 @@ msgid "URL:"
 msgstr "URL:"
 
 #: src/prefs_themes.c:899
-#, fuzzy
 msgid "Status:"
-msgstr "Stato"
+msgstr "Stato:"
 
 #: src/prefs_themes.c:913
-#, fuzzy
 msgid "Preview"
-msgstr "Precedente"
+msgstr "Anteprima"
 
 #: src/prefs_themes.c:956
-#, fuzzy
 msgid "Actions"
-msgstr "Azione"
+msgstr "Azioni"
 
 #: src/prefs_themes.c:968
-#, fuzzy
 msgid "Use this"
-msgstr "Attributi utente"
+msgstr "Usa questo"
 
 #: src/prefs_themes.c:973
 #, fuzzy
 msgid "Remove"
-msgstr "/_Rimuovi"
+msgstr "Rimuovi"
+
+#: src/prefs_toolbar.c:86
+msgid ""
+"Selected Action already set.\n"
+"Please choose another Action from List"
+msgstr ""
+"L'azione selezionata è già abilitata.\n"
+"Sceglierne un'altra dalla lista"
 
 #: src/prefs_toolbar.c:127
 msgid "Main toolbar configuration"
@@ -7650,7 +7527,7 @@ msgstr "Firma non trovata"
 #: src/privacy.c:154 src/privacy.c:173
 #, fuzzy
 msgid "No information available"
-msgstr "Nessun account per la spedizione di articoli disponibile!"
+msgstr "Nessuna informazione disponibile"
 
 #: src/procmsg.c:1117
 msgid "Could not create temporary file for news sending."
@@ -7700,10 +7577,9 @@ msgstr "Corpo messaggio citato senza firma"
 #: src/quote_fmt.c:57
 #, fuzzy
 msgid "Cursor position"
-msgstr "Azione corrente"
+msgstr "Posizione del cursore"
 
 #: src/quote_fmt.c:59
-#, c-format
 msgid ""
 "Insert expr if x is set\n"
 "x is one of the characters above after %"
@@ -7712,7 +7588,6 @@ msgstr ""
 "x è uno dei caratteri prima citati dopo il carattere %"
 
 #: src/quote_fmt.c:61
-#, c-format
 msgid "Literal %"
 msgstr "Carattere %"
 
@@ -7805,12 +7680,11 @@ msgstr "Invio HELO..."
 
 #: src/send_message.c:452 src/send_message.c:457 src/send_message.c:462
 msgid "Authenticating"
-msgstr "Sto autenticando"
+msgstr "Autenticazione in corso..."
 
 #: src/send_message.c:453 src/send_message.c:458
-#, fuzzy
 msgid "Sending message..."
-msgstr "Invia il messaggio"
+msgstr "Sto inviando il messaggio..."
 
 #: src/send_message.c:456
 msgid "Sending EHLO..."
@@ -7822,7 +7696,7 @@ msgstr "Invio MAIL FROM..."
 
 #: src/send_message.c:466 src/send_message.c:470 src/send_message.c:475
 msgid "Sending"
-msgstr "Invia"
+msgstr "Sto inviando il messaggio"
 
 #: src/send_message.c:469
 msgid "Sending RCPT TO..."
@@ -7839,7 +7713,7 @@ msgstr "Esco..."
 #: src/send_message.c:506
 #, c-format
 msgid "Sending message (%d / %d bytes)"
-msgstr "Invio il messaggio (%d di %d bytes)"
+msgstr "Sto inviando il messaggio (%d di %d bytes)"
 
 #: src/send_message.c:534
 msgid "Sending message"
@@ -7883,33 +7757,29 @@ msgid "Ultimate"
 msgstr "Senza titolo"
 
 #: src/sgpgme.c:125
-#, fuzzy, c-format
+#, c-format
 msgid "Valid signature by %s (Trust: %s)"
-msgstr "Stato della firma: %s"
+msgstr "Firma valida, da: %s (Trust: %s)"
 
 #: src/sgpgme.c:130
-#, fuzzy
 msgid "The signature has expired"
-msgstr "Firma corretta ma è scaduta"
+msgstr "La firma è scaduta"
 
 #: src/sgpgme.c:132
 msgid "The key that was used to sign this part has expired"
 msgstr "La chiave usata per firmare questa parte è scaduta"
 
 #: src/sgpgme.c:134
-#, fuzzy
 msgid "Not all signatures are valid"
-msgstr "Firma non trovata"
+msgstr "Non tutte le firme sono valide"
 
 #: src/sgpgme.c:136
-#, fuzzy
 msgid "This signature is invalid"
-msgstr "Firma non trovata"
+msgstr "Firma non valida"
 
 #: src/sgpgme.c:138
-#, fuzzy
 msgid "You have no key to verify this signature"
-msgstr "Nessuna chiave pubblica per verificare la firma"
+msgstr "Nessuna chiave disponibile per verificare la firma"
 
 #: src/sgpgme.c:142
 msgid "An error occured"
@@ -7920,24 +7790,24 @@ msgid "The signature has not been checked"
 msgstr "La firma non è stata controllata"
 
 #: src/sgpgme.c:168
-#, fuzzy, c-format
+#, c-format
 msgid "Signature made %s using %s key ID %s\n"
-msgstr "Firma fatta da %s\n"
+msgstr "Firma fatta da %s usando %s ID chiave %s\n"
 
 #: src/sgpgme.c:177
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\"\n"
-msgstr "Firma corretta da \"%s\""
+msgstr "Firma corretta, da \"%s\"\n"
 
 #: src/sgpgme.c:182
-#, fuzzy, c-format
+#, c-format
 msgid "Expired signature from \"%s\"\n"
-msgstr "Firma corretta da \"%s\""
+msgstr "Firma scaduta, da \"%s\"\n"
 
 #: src/sgpgme.c:187
-#, fuzzy, c-format
+#, c-format
 msgid "BAD signature from \"%s\"\n"
-msgstr "Firma ERRATA da \"%s\""
+msgstr "Firma ERRATA, da \"%s\"\n"
 
 #: src/sgpgme.c:198
 #, c-format
@@ -7945,19 +7815,19 @@ msgid "                aka \"%s\"\n"
 msgstr "                o \"%s\"\n"
 
 #: src/sgpgme.c:203
-#, fuzzy, c-format
+#, c-format
 msgid "Primary key fingerprint: %s\n"
-msgstr "Impronta digitale della chiave: %s\n"
+msgstr "Impronta primaria della chiave: %s\n"
 
 #: src/sgpgme.c:214
-#, fuzzy, c-format
+#, c-format
 msgid "Signature expires %s\n"
-msgstr "Firma scaduta %s"
+msgstr "La firma scade il  %s\n"
 
 #: src/sgpgme.c:216
-#, fuzzy, c-format
+#, c-format
 msgid "Signature expired %s\n"
-msgstr "Firma scaduta %s"
+msgstr "La firma è scaduta il %s\n"
 
 #: src/sgpgme.c:289
 msgid ""
@@ -8002,7 +7872,7 @@ msgstr "Corpo:"
 
 #: src/summary_search.c:195
 msgid "Select all matched"
-msgstr "Seleziona tutte le corrispondenze"
+msgstr "Evid. tutte le corrispondenze"
 
 #: src/summary_search.c:203
 msgid "AND search"
@@ -8122,46 +7992,41 @@ msgstr "/Aggiungi mittente alla _rubrica"
 
 #: src/summaryview.c:434
 msgid "/Create f_ilter rule"
-msgstr "/Crea re_gola filtro"
+msgstr "/Crea _filtro"
 
 #: src/summaryview.c:435
 msgid "/Create f_ilter rule/_Automatically"
-msgstr "/Crea re_gola filtro/_Automaticamente"
+msgstr "/Crea _filtro/_Automaticamente"
 
 #: src/summaryview.c:437
 msgid "/Create f_ilter rule/by _From"
-msgstr "/Crea re_gola filtro/dal _mittente"
+msgstr "/Crea _filtro/dal _mittente"
 
 #: src/summaryview.c:439
 msgid "/Create f_ilter rule/by _To"
-msgstr "/Crea re_gola filtro/dal _destinatario"
+msgstr "/Crea _filtro/dal _destinatario"
 
 #: src/summaryview.c:441
 msgid "/Create f_ilter rule/by _Subject"
-msgstr "/Crea re_gola filtro/dall'_oggetto"
+msgstr "/Crea _filtro/dall'_oggetto"
 
 #: src/summaryview.c:443
-#, fuzzy
 msgid "/Create processing rule"
-msgstr "Regole di filtraggio/esecuzione correnti"
+msgstr "/Crea re_gola filtro"
 
 #: src/summaryview.c:444
-#, fuzzy
 msgid "/Create processing rule/_Automatically"
 msgstr "/Crea re_gola filtro/_Automaticamente"
 
 #: src/summaryview.c:446
-#, fuzzy
 msgid "/Create processing rule/by _From"
 msgstr "/Crea re_gola filtro/dal _mittente"
 
 #: src/summaryview.c:448
-#, fuzzy
 msgid "/Create processing rule/by _To"
 msgstr "/Crea re_gola filtro/dal _destinatario"
 
 #: src/summaryview.c:450
-#, fuzzy
 msgid "/Create processing rule/by _Subject"
 msgstr "/Crea re_gola filtro/dall'_oggetto"
 
@@ -8171,7 +8036,7 @@ msgstr "/Vista/So_rgente"
 
 #: src/summaryview.c:457
 msgid "/_View/All _header"
-msgstr "/_View/Tutte _le intestazioni"
+msgstr "/_Vista/Tutte _le intestazioni"
 
 #: src/summaryview.c:460
 msgid "/_Print..."
@@ -8202,14 +8067,12 @@ msgid "all messages"
 msgstr "tutti i messaggi"
 
 #: src/summaryview.c:486
-#, fuzzy
 msgid "messages whose age is greater than #"
 msgstr "messaggi che hanno un età superiore a #"
 
 #: src/summaryview.c:487
-#, fuzzy
 msgid "messages whose age is less than #"
-msgstr "messaggi che hanno un età superiore a #"
+msgstr "messaggi che hanno un età inferiore a #"
 
 #: src/summaryview.c:488
 msgid "messages which contain S in the message body"
@@ -8562,9 +8425,8 @@ msgstr ""
 "%s"
 
 #: src/textview.c:588
-#, fuzzy
 msgid "This message can't be displayed.\n"
-msgstr "Questo messaggio è stato modificato. Lo scarto?"
+msgstr "Questo messaggio non può essere visualizzato.\n"
 
 #: src/textview.c:605
 msgid "The following can be performed on this part by "
@@ -8572,15 +8434,16 @@ msgstr "Le seguenti possono essere effettuate su questa parte da "
 
 #: src/textview.c:606
 msgid "right-clicking the icon or list item:\n"
-msgstr "cliccando con il tasto destro sull'icona o sull'elemento della lista:\n"
+msgstr ""
+"cliccando con il tasto destro sull'icona o sull'elemento della lista:\n"
 
 #: src/textview.c:608
 msgid "    To save select 'Save as...' (Shortcut key: 'y')\n"
-msgstr "	Per salvare selezionate 'Salva come...'(Scorciatoia: 'y')\n"
+msgstr "\tPer salvare selezionate 'Salva come...'(Scorciatoia: 'y')\n"
 
 #: src/textview.c:609
 msgid "    To display as text select 'Display as text' "
-msgstr "	Per mostrare come testo selezionare 'Mostra come testo' "
+msgstr "\tPer mostrare come testo selezionare 'Mostra come testo' "
 
 #: src/textview.c:610
 msgid "(Shortcut key: 't')\n"
@@ -8588,7 +8451,7 @@ msgstr "(Scorciatoia: 't')\n"
 
 #: src/textview.c:611
 msgid "    To open with an external program select 'Open' "
-msgstr "	Per aprire con un programma esterno selezionare 'Apri' "
+msgstr "\tPer aprire con un programma esterno selezionare 'Apri' "
 
 #: src/textview.c:612
 msgid "(Shortcut key: 'l'),\n"
@@ -8596,7 +8459,7 @@ msgstr "(Scorciatoia: 'l').\n"
 
 #: src/textview.c:613
 msgid "    (alternately double-click, or click the middle "
-msgstr "	(altrimenti doppio-click, o click con il tasto "
+msgstr "\t(altrimenti doppio-click, o click con il tasto "
 
 #: src/textview.c:614
 msgid "mouse button),\n"
@@ -8604,7 +8467,7 @@ msgstr "centrale del mouse),\n"
 
 #: src/textview.c:615
 msgid "    or 'Open with...' (Shortcut key: 'o')\n"
-msgstr "	o 'Apri con...' (Scorciatoia: 'o')\n"
+msgstr "\to 'Apri con...' (Scorciatoia: 'o')\n"
 
 #: src/textview.c:1959
 #, c-format
@@ -8694,18 +8557,16 @@ msgid "Edit with external editor"
 msgstr "Modifica con un editor esterno"
 
 #: src/toolbar.c:182 src/toolbar.c:1548
-#, fuzzy
 msgid "Wrap long lines of current paragraph"
-msgstr "/_Modifica/A capo il _paragrafo corrente"
+msgstr "A capo tutte le linee lunghe del paragrafo"
 
 #: src/toolbar.c:183 src/toolbar.c:1554
 msgid "Wrap all long lines"
 msgstr "A capo tutte le linee lunghe"
 
 #: src/toolbar.c:186 src/toolbar.c:1567
-#, fuzzy
 msgid "Check spelling"
-msgstr "Verifica mentre scrivi"
+msgstr "Controlla l'ortografia"
 
 #: src/toolbar.c:188
 msgid "Sylpheed Actions Feature"
@@ -8744,12 +8605,10 @@ msgid "/_Reply to sender without quote"
 msgstr "/Rispondi al mittente senza citazione"
 
 #: src/toolbar.c:229
-#, fuzzy
 msgid "/For_ward as attachment"
-msgstr "Inoltra come allegato"
+msgstr "/_Inoltra come allegato"
 
 #: src/toolbar.c:230
-#, fuzzy
 msgid "/Redirec_t"
 msgstr "/Re_direziona"
 
@@ -8794,9 +8653,8 @@ msgid "Editor"
 msgstr "Editor"
 
 #: src/toolbar.c:435
-#, fuzzy
 msgid "Wrap paragraph"
-msgstr "/_Modifica/A capo il _paragrafo corrente"
+msgstr "A capo il _paragrafo corrente"
 
 #: src/toolbar.c:436
 msgid "Wrap all"
@@ -8805,174 +8663,3 @@ msgstr "A capo tutto"
 #: src/toolbar.c:1383
 msgid "News"
 msgstr "News"
-
-#~ msgid "Search Criteria"
-#~ msgstr "Criteri di Ricerca"
-
-#~ msgid " Reset "
-#~ msgstr " Reset "
-
-#~ msgid "/_Scoring..."
-#~ msgstr "/_Scoring..."
-
-#~ msgid "/S_coring..."
-#~ msgstr "/S_coring..."
-
-#~ msgid "Authorization for %s on %s failed"
-#~ msgstr "Autorizzazione non concessa per %s su %s"
-
-#~ msgid "/_File/_Add mbox mailbox..."
-#~ msgstr "/_File/_Aggiungi mailbox mbox..."
-
-#~ msgid "/_Message/Get new ma_il"
-#~ msgstr "/M_essaggio/Ricevi nuova _posta"
-
-#~ msgid "Go online"
-#~ msgstr "Vai in modalità online"
-
-#~ msgid "Add mbox mailbox"
-#~ msgstr "Aggiungi mailbox di tipo mbox"
-
-#~ msgid "Input the location of mailbox."
-#~ msgstr "Specifica dove mettere la mailbox."
-
-#~ msgid "Creation of the mailbox failed."
-#~ msgstr "Creazione della mailbox fallita."
-
-#~ msgid ""
-#~ "Error occurred while sending the notification.\n"
-#~ "Put this notification into queue folder?"
-#~ msgstr ""
-#~ "Errore durante l'invio della notifica.\n"
-#~ "La metto in coda per la spedizione?"
-
-#~ msgid "Can't queue the notification."
-#~ msgstr "Impossibile accodare la notifica."
-
-#~ msgid "Error occurred while sending the notification."
-#~ msgstr "Errore durante l'invio della notifica."
-
-#~ msgid "Message already removed from folder."
-#~ msgstr "Messagio già rimosso dalla cartella."
-
-#~ msgid "/_Check signature"
-#~ msgstr "/_Controlla firma"
-
-#~ msgid "Right-click here to verify the signature"
-#~ msgstr "Tasto destro qui per verificare la firma"
-
-#~ msgid "error occurred while getting %s.\n"
-#~ msgstr "si è verificato un errore ricevendo %s.\n"
-
-#~ msgid "Incorporate from spool"
-#~ msgstr "Incorpora da spool"
-
-#~ msgid "Filter on incorporation"
-#~ msgstr "Filtra quando incorpori"
-
-#~ msgid "Spool directory"
-#~ msgstr "Directory di spool"
-
-#~ msgid "Only if a window is active"
-#~ msgstr "Solo a finestra attiva"
-
-#~ msgid "Use external program for sending"
-#~ msgstr "Usa programma esterno per l'invio"
-
-#~ msgid "Global spelling checker settings"
-#~ msgstr "Impostazioni globali controllore ortografico"
-
-#~ msgid "Font"
-#~ msgstr "Carattere"
-
-#~ msgid "Small"
-#~ msgstr "Piccolo"
-
-#~ msgid "Normal"
-#~ msgstr "Normale"
-
-#~ msgid "Show signature check result in a popup window"
-#~ msgstr ""
-#~ "Mostra il risultato del controllo della firma in una finestra di popup"
-
-#~ msgid "Icon theme"
-#~ msgstr "Tema icona"
-
-#~ msgid "Folder Properties"
-#~ msgstr "Proprietà cartella"
-
-#~ msgid "Folder Properties for "
-#~ msgstr "Proprietà cartella per "
-
-#~ msgid "Current scoring rules"
-#~ msgstr "Regola di score corrente"
-
-#~ msgid "Important score"
-#~ msgstr "Score importante"
-
-#~ msgid "Match string is not valid."
-#~ msgstr "La stringa corrispondente non è valida."
-
-#~ msgid ""
-#~ "Selected Action already set.\n"
-#~ "Please choose another Action from List"
-#~ msgstr ""
-#~ "Azione selezionata già impostata.\n"
-#~ "Seleziona un altra azione dalla Lista"
-
-#~ msgid "Oops: Signature not verified"
-#~ msgstr "Oops: Firma non verificata"
-
-#~ msgid "Good signature"
-#~ msgstr "Firma corretta"
-
-#~ msgid "Good signature but the key has expired"
-#~ msgstr "Firma corretta ma la chiave è scaduta"
-
-#~ msgid "BAD signature"
-#~ msgstr "Firma DIFETTOSA"
-
-#~ msgid "Error verifying the signature"
-#~ msgstr "Errore verificando la firma"
-
-#~ msgid "Different results for signatures"
-#~ msgstr "Risultati differenti per le firme"
-
-#~ msgid "Good signature from \"%s\" but it has expired"
-#~ msgstr "Firma corretta da \"%s\" ma è scaduta"
-
-#~ msgid "Good signature from \"%s\" but the key has expired"
-#~ msgstr "Firma corretta da \"%s\" ma la chiave è scaduta"
-
-#~ msgid "Cannot find user ID for this key."
-#~ msgstr "Non trovo il nome utente per questa chiave."
-
-#~ msgid "Key expired %s"
-#~ msgstr "Chiave scaduta %s"
-
-#~ msgid "Checking signature"
-#~ msgstr "Controllo la firma"
-
-#~ msgid "%s%s%s from \"%s\""
-#~ msgstr "%s%s%s da \"%s\""
-
-#~ msgid "/_Forward message (inline style)"
-#~ msgstr "/_Inoltra messaggio (stile in linea)"
-
-#~ msgid "/Forward message as _attachment"
-#~ msgstr "/Inoltra messaggio come a_llegato"
-
-#~ msgid "Linewrap"
-#~ msgstr "A capo"
-
-#~ msgid "Resize attached images"
-#~ msgstr "Ridimensiona le immagini allegate"
-
-#~ msgid "SpamAssassin Server (spamd)"
-#~ msgstr "SpamAssassin Server (spamd)"
-
-#~ msgid "Folder for saved Spam"
-#~ msgstr "Cartella per lo Spam salvato"
-
-#~ msgid "Receive Spam"
-#~ msgstr "Ricevi lo Spam"

@@ -1,10 +1,15 @@
-2004-04-12 [alfons]	0.9.10claws7
+2004-03-12 [paul]	0.9.10claws8
+
+	* po/it.po
+		update. submitted by Andrea Spadaccini <lupin85@email.it>
+
+2004-03-12 [alfons]	0.9.10claws7
 
 	* src/imap.c
 		o quiet compiler and typecast Folder * to IMAP Folder *
 		o wake up and fix my previous incompatible type assignment bug
 
-2004-04-12 [alfons]	0.9.10claws6
+2004-03-12 [alfons]	0.9.10claws6
 
 	* src/imap.c
 		don't mix up pointers to int, guint32 _and_ 
