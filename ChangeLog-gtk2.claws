@@ -1,3 +1,12 @@
+2004-11-24 [colin]	0.9.12cvs169.1
+
+	* src/plugins/pgpmime/plugin.c
+	* src/plugins/trayicon/Makefile.am
+	* src/plugins/trayicon/newmarkedmail.xpm
+	* src/plugins/trayicon/trayicon.c
+	* src/plugins/trayicon/unreadmarkedmail.xpm
+		Sync with HEAD
+
 2004-11-23 [colin]	0.9.12cvs168.1
 
 	* src/partial_download.c

@@ -43,6 +43,8 @@
 #include "gtk/manage_window.h"
 
 #include "eggtrayicon.h"
+#include "newmarkedmail.xpm"
+#include "unreadmarkedmail.xpm"
 #include "newmail.xpm"
 #include "unreadmail.xpm"
 #include "nomail.xpm"
@@ -53,6 +55,10 @@ static GdkPixmap *newmail_pixmap;
 static GdkPixmap *newmail_bitmap;
 static GdkPixmap *unreadmail_pixmap;
 static GdkPixmap *unreadmail_bitmap;
+static GdkPixmap *newmarkedmail_pixmap;
+static GdkPixmap *newmarkedmail_bitmap;
+static GdkPixmap *unreadmarkedmail_pixmap;
+static GdkPixmap *unreadmarkedmail_bitmap;
 static GdkPixmap *nomail_pixmap;
 static GdkPixmap *nomail_bitmap;
 
@@ -67,6 +73,7 @@ guint destroy_signal_id;
 typedef enum
 {
 	TRAYICON_NEW,
+	TRAYICON_NEWMARKED,
 	TRAYICON_UNREAD,
 	TRAYICON_UNREADMARKED,
 	TRAYICON_NOTHING,
@@ -100,10 +107,17 @@ static void set_trayicon_pixmap(TrayIconType icontype)
 		pixmap = newmail_pixmap;
 		bitmap = newmail_bitmap;
 		break;
+	case TRAYICON_NEWMARKED:
+		pixmap = newmarkedmail_pixmap;
+		bitmap = newmarkedmail_bitmap;
+		break;
 	case TRAYICON_UNREAD:
-	case TRAYICON_UNREADMARKED:
 		pixmap = unreadmail_pixmap;
 		bitmap = unreadmail_bitmap;
+		break;
+	case TRAYICON_UNREADMARKED:
+		pixmap = unreadmarkedmail_pixmap;
+		bitmap = unreadmarkedmail_bitmap;
 		break;
 	default:
 		pixmap = nomail_pixmap;
@@ -120,14 +134,24 @@ static void update(void)
 {
 	gint new, unread, unreadmarked, total;
 	gchar *buf;
+	TrayIconType icontype = TRAYICON_NOTHING;
 
 	folder_count_total_msgs(&new, &unread, &unreadmarked, &total);
 	buf = g_strdup_printf("New %d, Unread: %d, Total: %d", new, unread, total);
 
         gtk_tooltips_set_tip(tooltips, eventbox, buf, "");
 	g_free(buf);
+	
+	if (new > 0 && unreadmarked > 0)
+		icontype = TRAYICON_NEWMARKED;
+	else if (new > 0)
+		icontype = TRAYICON_NEW;
+	else if (unreadmarked > 0)
+		icontype = TRAYICON_UNREADMARKED;
+	else if (unread > 0)
+		icontype = TRAYICON_UNREAD;
 
-	set_trayicon_pixmap(new > 0 ? TRAYICON_NEW : (unread > 0 ? TRAYICON_UNREAD : TRAYICON_NOTHING));
+	set_trayicon_pixmap(icontype);
 }
 
 static gboolean folder_item_update_hook(gpointer source, gpointer data)
@@ -196,6 +220,8 @@ static void create_trayicon()
         PIXMAP_CREATE(GTK_WIDGET(trayicon), nomail_pixmap, nomail_bitmap, nomail_xpm);
         PIXMAP_CREATE(GTK_WIDGET(trayicon), unreadmail_pixmap, unreadmail_bitmap, unreadmail_xpm);
         PIXMAP_CREATE(GTK_WIDGET(trayicon), newmail_pixmap, newmail_bitmap, newmail_xpm);
+        PIXMAP_CREATE(GTK_WIDGET(trayicon), unreadmarkedmail_pixmap, unreadmarkedmail_bitmap, unreadmarkedmail_xpm);
+        PIXMAP_CREATE(GTK_WIDGET(trayicon), newmarkedmail_pixmap, newmarkedmail_bitmap, newmarkedmail_xpm);
 
         eventbox = gtk_event_box_new();
         gtk_container_set_border_width(GTK_CONTAINER(eventbox), 0);
