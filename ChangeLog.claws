@@ -1,3 +1,8 @@
+2002-07-21 [alfons]	0.7.8claws92
+	
+	* src/prefs_common.[ch]
+		remove option "Send return receipt on request"
+
 2002-07-21 [thorsten]	0.7.8claws91
 
 	* src/mimeview.c

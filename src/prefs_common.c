@@ -99,8 +99,6 @@ static struct Send {
 	GtkWidget *checkbtn_queuemsg;
 
 	GtkWidget *optmenu_charset;
-	
-	GtkWidget *checkbtn_returnreceipt;
 } send;
 
 static struct Compose {
@@ -766,9 +764,6 @@ static PrefParam param[] = {
 	{"confirm_on_exit", "TRUE", &prefs_common.confirm_on_exit, P_BOOL,
 	 &other.checkbtn_confonexit,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"send_return_receipt", "TRUE", &prefs_common.return_receipt, P_BOOL,
-	 &send.checkbtn_returnreceipt,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"clean_trash_on_exit", "FALSE", &prefs_common.clean_on_exit, P_BOOL,
 	 &other.checkbtn_cleanonexit,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -1264,7 +1259,6 @@ static void prefs_send_create(void)
 	GtkWidget *optmenu;
 	GtkWidget *optmenu_menu;
 	GtkWidget *menuitem;
-	GtkWidget *checkbtn_returnreceipt;
 	GtkWidget *label_charset_desc;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
@@ -1309,8 +1303,6 @@ static void prefs_send_create(void)
 			   _("Save sent messages to Sent"));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_queuemsg,
 			   _("Queue messages that fail to send"));
-	PACK_CHECK_BUTTON (vbox2, checkbtn_returnreceipt,
-			   _("Send return receipt on request"));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -1386,7 +1378,6 @@ static void prefs_send_create(void)
 
 	send.checkbtn_savemsg  = checkbtn_savemsg;
 	send.checkbtn_queuemsg = checkbtn_queuemsg;
-	send.checkbtn_returnreceipt = checkbtn_returnreceipt;
 
 	send.optmenu_charset = optmenu;
 }
