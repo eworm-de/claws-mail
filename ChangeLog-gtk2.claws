@@ -1,3 +1,9 @@
+2005-02-09 [colin]	1.0.1cvs1.3
+
+	* src/textview.c
+	* src/textview.h
+		Add contextual menu on emails
+
 2005-02-09 [colin]	1.0.1cvs1.2
 
 	* src/codeconv.c

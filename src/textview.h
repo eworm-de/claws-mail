@@ -40,8 +40,10 @@ struct _TextView
 	GtkWidget *scrolledwin;
 	GtkWidget *text;
 
-	GtkWidget *popup_menu;
-	GtkItemFactory *popup_factory;
+	GtkWidget *link_popup_menu;
+	GtkItemFactory *link_popup_factory;
+	GtkWidget *mail_popup_menu;
+	GtkItemFactory *mail_popup_factory;
 
 	gboolean default_text;
 	gboolean is_in_signature;

@@ -192,11 +192,23 @@ static void open_uri_cb				(TextView 	*textview,
 static void copy_uri_cb				(TextView 	*textview,
 						 guint		 action,
 						 void		*data);
+static void add_uri_to_addrbook_cb 		(TextView 	*textview, 
+						 guint 		 action, 
+						 void 		*data);
+static void mail_to_uri_cb 			(TextView 	*textview, 
+						 guint 		 action, 
+						 void 		*data);
 
-static GtkItemFactoryEntry textview_popup_entries[] = 
+static GtkItemFactoryEntry textview_link_popup_entries[] = 
 {
 	{N_("/_Open link"),		NULL, open_uri_cb, 0, NULL},
 	{N_("/_Copy link location"),	NULL, copy_uri_cb, 0, NULL},
+};
+
+static GtkItemFactoryEntry textview_mail_popup_entries[] = 
+{
+	{N_("/_Add to addressbook"),	NULL, add_uri_to_addrbook_cb, 0, NULL},
+	{N_("/_Email"),			NULL, mail_to_uri_cb, 0, NULL},
 };
 
 
@@ -208,8 +220,8 @@ TextView *textview_create(void)
 	GtkWidget *text;
 	GtkTextBuffer *buffer;
 	GtkClipboard *clipboard;
-	GtkItemFactory *popupfactory;
-	GtkWidget *popupmenu;
+	GtkItemFactory *link_popupfactory, *mail_popupfactory;
+	GtkWidget *link_popupmenu, *mail_popupmenu;
 	gint n_entries;
 
 	debug_print("Creating text view...\n");
@@ -268,21 +280,29 @@ TextView *textview_create(void)
 
 	gtk_widget_show(vbox);
 
-	n_entries = sizeof(textview_popup_entries) /
-		sizeof(textview_popup_entries[0]);
-	popupmenu = menu_create_items(textview_popup_entries, n_entries,
-				      "<UriPopupMenu>", &popupfactory,
+	n_entries = sizeof(textview_link_popup_entries) /
+		sizeof(textview_link_popup_entries[0]);
+	link_popupmenu = menu_create_items(textview_link_popup_entries, n_entries,
+				      "<UriPopupMenu>", &link_popupfactory,
 				      textview);
 
-	textview->vbox             = vbox;
-	textview->scrolledwin      = scrolledwin;
-	textview->text             = text;
-	textview->uri_list         = NULL;
-	textview->body_pos         = 0;
-	textview->show_all_headers = FALSE;
-	textview->last_buttonpress = GDK_NOTHING;
-	textview->popup_menu	   = popupmenu;
-	textview->popup_factory	   = popupfactory;
+	n_entries = sizeof(textview_mail_popup_entries) /
+		sizeof(textview_mail_popup_entries[0]);
+	mail_popupmenu = menu_create_items(textview_mail_popup_entries, n_entries,
+				      "<UriPopupMenu>", &mail_popupfactory,
+				      textview);
+
+	textview->vbox               = vbox;
+	textview->scrolledwin        = scrolledwin;
+	textview->text               = text;
+	textview->uri_list           = NULL;
+	textview->body_pos           = 0;
+	textview->show_all_headers   = FALSE;
+	textview->last_buttonpress   = GDK_NOTHING;
+	textview->link_popup_menu    = link_popupmenu;
+	textview->link_popup_factory = link_popupfactory;
+	textview->mail_popup_menu    = mail_popupmenu;
+	textview->mail_popup_factory = mail_popupfactory;
 
 	return textview;
 }
@@ -2040,19 +2060,12 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 		bevent->button == 2 || bevent->button == 3) {
 		if (!g_ascii_strncasecmp(uri->uri, "mailto:", 7)) {
 			if (bevent->button == 3) {
-				gchar *fromname, *fromaddress;
-						
-				/* extract url */
-				fromaddress = g_strdup(uri->uri + 7);
-				/* Hiroyuki: please put this function in utils.c! */
-				fromname = procheader_get_fromname(fromaddress);
-				extract_address(fromaddress);
-				g_message("adding from textview %s <%s>", fromname, fromaddress);
-				/* Add to address book - Match */
-				addressbook_add_contact( fromname, fromaddress, NULL );
-						
-				g_free(fromaddress);
-				g_free(fromname);
+				g_object_set_data(
+					G_OBJECT(textview->mail_popup_menu),
+					"menu_button", uri);
+				gtk_menu_popup(GTK_MENU(textview->mail_popup_menu), 
+					       NULL, NULL, NULL, NULL, 
+					       bevent->button, bevent->time);
 			} else {
 				PrefsAccount *account = NULL;
 
@@ -2074,9 +2087,9 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 						 prefs_common.uri_cmd);
 			else if (bevent->button == 3) {
 				g_object_set_data(
-					G_OBJECT(textview->popup_menu),
+					G_OBJECT(textview->link_popup_menu),
 					"menu_button", uri);
-				gtk_menu_popup(GTK_MENU(textview->popup_menu), 
+				gtk_menu_popup(GTK_MENU(textview->link_popup_menu), 
 					       NULL, NULL, NULL, NULL, 
 					       bevent->button, bevent->time);
 			}
@@ -2165,7 +2178,7 @@ static void textview_uri_list_remove_all(GSList *uri_list)
 
 static void open_uri_cb (TextView *textview, guint action, void *data)
 {
-	RemoteURI *uri = g_object_get_data(G_OBJECT(textview->popup_menu),
+	RemoteURI *uri = g_object_get_data(G_OBJECT(textview->link_popup_menu),
 					   "menu_button");
 	if (uri == NULL)
 		return;
@@ -2173,18 +2186,60 @@ static void open_uri_cb (TextView *textview, guint action, void *data)
 	if (textview_uri_security_check(textview, uri) == TRUE) 
 		open_uri(uri->uri,
 			 prefs_common.uri_cmd);
-	g_object_set_data(G_OBJECT(textview->popup_menu), "menu_button",
+	g_object_set_data(G_OBJECT(textview->link_popup_menu), "menu_button",
 			  NULL);
 }
 
 static void copy_uri_cb	(TextView *textview, guint action, void *data)
 {
-	RemoteURI *uri = g_object_get_data(G_OBJECT(textview->popup_menu),
+	RemoteURI *uri = g_object_get_data(G_OBJECT(textview->link_popup_menu),
 					   "menu_button");
 	if (uri == NULL)
 		return;
 
 	gtk_clipboard_set_text(gtk_clipboard_get(GDK_NONE), uri->uri, -1);
-	g_object_set_data(G_OBJECT(textview->popup_menu), "menu_button",
+	g_object_set_data(G_OBJECT(textview->link_popup_menu), "menu_button",
 			  NULL);
 }
+
+static void add_uri_to_addrbook_cb (TextView *textview, guint action, void *data)
+{
+	gchar *fromname, *fromaddress;
+	RemoteURI *uri = g_object_get_data(G_OBJECT(textview->mail_popup_menu),
+					   "menu_button");
+	if (uri == NULL)
+		return;
+
+	/* extract url */
+	fromaddress = g_strdup(uri->uri + 7);
+	/* Hiroyuki: please put this function in utils.c! */
+	fromname = procheader_get_fromname(fromaddress);
+	extract_address(fromaddress);
+	g_message("adding from textview %s <%s>", fromname, fromaddress);
+	/* Add to address book - Match */
+	addressbook_add_contact( fromname, fromaddress, NULL );
+
+	g_free(fromaddress);
+	g_free(fromname);
+}
+
+static void mail_to_uri_cb (TextView *textview, guint action, void *data)
+{
+	PrefsAccount *account = NULL;
+	RemoteURI *uri = g_object_get_data(G_OBJECT(textview->mail_popup_menu),
+					   "menu_button");
+	if (uri == NULL)
+		return;
+
+	if (textview->messageview && textview->messageview->msginfo &&
+	    textview->messageview->msginfo->folder) {
+		FolderItem   *folder_item;
+
+		folder_item = textview->messageview->msginfo->folder;
+		if (folder_item->prefs && folder_item->prefs->enable_default_account)
+			account = account_find_from_id(folder_item->prefs->default_account);
+	}
+	compose_new(account, uri->uri + 7, NULL);
+}
+
+

@@ -365,3 +365,4 @@
 ( cvs diff -u -r 1.2504.2.46 -r 1.2504.2.47 ChangeLog.claws; cvs diff -u -r 1.50.2.5 -r 1.50.2.6 po/pt_BR.po; ) > 1.0.1.1.patchset
 ( cvs diff -u -r 1.94.2.42 -r 1.94.2.43 src/messageview.c; cvs diff -u -r 1.83.2.27 -r 1.83.2.28 src/mimeview.c; cvs diff -u -r 1.20.2.2 -r 1.20.2.3 src/mimeview.h; ) > 1.0.1cvs1.1.patchset
 ( cvs diff -u -r 1.65.2.21 -r 1.65.2.22 src/codeconv.c; ) > 1.0.1cvs1.2.patchset
+( cvs diff -u -r 1.96.2.42 -r 1.96.2.43 src/textview.c; cvs diff -u -r 1.12.2.3 -r 1.12.2.4 src/textview.h; ) > 1.0.1cvs1.3.patchset
