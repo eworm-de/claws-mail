@@ -1,3 +1,10 @@
+2002-10-18 [melvin]	0.8.5claws45
+
+	* src/prefs_actions.c
+		Fixed bug #622275 where asynchroneous actions left 
+		zombies processes
+		Made (synchroneous) actions' input be displayed live.
+
 2002-10-18 [christoph]	0.8.5claws44
 
 	* src/textview.c

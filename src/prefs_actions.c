@@ -1324,11 +1324,10 @@ ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 				close(chld_err[1]);
 				close(chld_status[0]);
 			}
-
-			debug_print("Child: Waiting for grandchild\n");
-			waitpid(gch_pid, NULL, 0);
-			debug_print("Child: grandchild ended\n");
 			if (sync) {
+				debug_print("Child: Waiting for grandchild\n");
+				waitpid(gch_pid, NULL, 0);
+				debug_print("Child: grandchild ended\n");
 				write(chld_status[1], "0\n", 2);
 				close(chld_status[1]);
 			}
@@ -1343,8 +1342,10 @@ ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 
 	/* Parent */
 
-	if (!sync)
+	if (!sync) {
+		waitpid(pid, NULL, 0);
 		return NULL;
+	}
 
 	close(chld_in[0]);
 	if (!(action_type & (ACTION_PIPE_IN | ACTION_OPEN_IN | ACTION_HIDE_IN)))
@@ -1764,4 +1765,5 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 		if (c > 0)
 			child_info->new_out = TRUE;
 	}
+	wait_for_children(child_info->children);
 }
