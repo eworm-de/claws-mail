@@ -25,7 +25,9 @@
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkctree.h>
 
-typedef struct _MimeView	MimeView;
+typedef struct _MimeView		MimeView;
+typedef struct _MimeViewerFactory 	MimeViewerFactory;
+typedef struct _MimeViewer 		MimeViewer;
 
 #include "textview.h"
 #include "imageview.h"
@@ -35,7 +37,8 @@ typedef struct _MimeView	MimeView;
 typedef enum
 {
 	MIMEVIEW_TEXT,
-	MIMEVIEW_IMAGE
+	MIMEVIEW_IMAGE,
+	MIMEVIEW_VIEWER,
 } MimeViewType;
 
 struct _MimeView
@@ -57,12 +60,33 @@ struct _MimeView
 
 	TextView *textview;
 	ImageView *imageview;
+	MimeViewer *mimeviewer;
 
 	MessageView *messageview;
 
 	MimeInfo *mimeinfo;
 
 	gchar *file;
+
+	GSList *viewers;
+};
+
+struct _MimeViewerFactory
+{
+	gchar *content_type;
+	gint priority;
+	
+	MimeViewer *(*create_viewer) ();
+};
+
+struct _MimeViewer
+{
+	MimeViewerFactory *factory;
+    
+	GtkWidget 	*(*get_widget)		(MimeViewer *);
+	void 	 	(*show_mimepart)	(MimeViewer *, const gchar *infile, MimeInfo *);
+	void		(*clear_viewer)		(MimeViewer *);
+	void		(*destroy_viewer)	(MimeViewer *);
 };
 
 MimeView *mimeview_create	(void);
@@ -77,5 +101,8 @@ void mimeview_check_signature	(MimeView 	*mimeview);
 #endif
 void mimeview_pass_key_press_event	(MimeView	*mimeview,
 					 GdkEventKey	*event);
+
+void mimeview_register_viewer_factory	(MimeViewerFactory *factory);
+void mimeview_unregister_viewer_factory	(MimeViewerFactory *factory);
 
 #endif /* __MIMEVIEW_H__ */

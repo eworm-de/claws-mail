@@ -3350,7 +3350,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	}
 
 	ok = imap_select(session, IMAP_FOLDER(folder), item->item.path,
-			 &exists, &recent, &unseen, &uid_val);
+			 NULL, NULL, NULL, NULL);
 	if (ok != IMAP_SUCCESS)
 		return -1;
 

@@ -1,3 +1,20 @@
+2003-03-15 [christoph]	0.8.11claws13
+
+	* src/imap.c
+		don't query imap folder for attributes because we already
+		for them from imap_status
+
+	* src/mimeview.[ch]
+		add support for plugable MimeViewers (unloading Viewers
+		not yet complete)
+
+	* src/plugins/Makefile.am
+	* src/plugins/mathml_viewer/.cvsignore		** NEW **
+	* src/plugins/mathml_viewer/Makefile.am		** NEW **
+	* src/plugins/mathml_viewer/mathml_viewer.c	** NEW **
+		add MathML Viewer (Content-Type text/mathml) using GtkMathView
+		widget from http://helm.cs.unibo.it/mml-widget/
+
 2003-03-14 [christoph]	0.8.11claws12
 
 	* src/folder.[ch]
