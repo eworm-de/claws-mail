@@ -1512,6 +1512,9 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 		alertpanel_error(_("Folder could not be opened."));
 
+		folderview->open_folder = FALSE;
+		can_select = TRUE;
+
 		return;
         }
 
