@@ -117,6 +117,15 @@ static MatchParser matchparser_tab[] = {
 	{MATCHACTION_BOUNCE, "bounce"}
 };
 
+/*
+  syntax for matcher
+
+  header "x-mailing" match "toto" score -10
+  subject match "regexp" & to regexp "regexp" score 50
+  subject match "regexp" | to regexpcase "regexp" | age_sup 5 score 30
+
+*/
+
 gchar * get_matchparser_tab_str(gint id)
 {
 	gint i;
@@ -130,331 +139,6 @@ gchar * get_matchparser_tab_str(gint id)
 }
 
 
-
-/*
-  syntax for matcher
-
-  header "x-mailing" match "toto"
-  subject match "regexp" & to regexp "regexp"
-  subject match "regexp" | to regexpcase "regexp" | age_sup 5
- */
-
-#if 0
-static gboolean matcher_is_blank(gchar ch);
-
-/* ******************* parser *********************** */
-
-static gboolean matcher_is_blank(gchar ch)
-{
-	return (ch == ' ') || (ch == '\t');
-}
-
-/* parse for one condition */
-
-MatcherProp * matcherprop_parse(gchar ** str)
-{
-	MatcherProp * prop;
-	gchar * tmp;
-	gint key;
-	gint value;
-	gchar * expr;
-	gint match;
-	gchar * header = NULL;
-	
-	tmp = * str;
-	key = matcher_parse_keyword(&tmp);
-	if (tmp == NULL) {
-		* str = NULL;
-		return NULL;
-	}
-
-	switch (key) {
-	case MATCHCRITERIA_AGE_LOWER:
-	case MATCHCRITERIA_AGE_GREATER:
-	case MATCHCRITERIA_SCORE_LOWER:
-	case MATCHCRITERIA_SCORE_GREATER:
-	case MATCHCRITERIA_SCORE_EQUAL:
-		value = matcher_parse_number(&tmp);
-		if (tmp == NULL) {
-			* str = NULL;
-			return NULL;
-		}
-		*str = tmp;
-
-		prop = matcherprop_new(key, NULL, 0, NULL, value);
-
-		return prop;
-
-	case MATCHCRITERIA_ALL:
-	case MATCHCRITERIA_UNREAD:
-	case MATCHCRITERIA_NOT_UNREAD:
-	case MATCHCRITERIA_NEW:
-	case MATCHCRITERIA_NOT_NEW:
-	case MATCHCRITERIA_MARKED:
-	case MATCHCRITERIA_NOT_MARKED:
-	case MATCHCRITERIA_DELETED:
-	case MATCHCRITERIA_NOT_DELETED:
-	case MATCHCRITERIA_REPLIED:
-	case MATCHCRITERIA_NOT_REPLIED:
-	case MATCHCRITERIA_FORWARDED:
-	case MATCHCRITERIA_NOT_FORWARDED:
-		prop = matcherprop_new(key, NULL, 0, NULL, 0);
-		*str = tmp;
-
-		return prop;
-
-	case MATCHCRITERIA_SUBJECT:
-	case MATCHCRITERIA_NOT_SUBJECT:
-	case MATCHCRITERIA_FROM:
-	case MATCHCRITERIA_NOT_FROM:
-	case MATCHCRITERIA_TO:
-	case MATCHCRITERIA_NOT_TO:
-	case MATCHCRITERIA_CC:
-	case MATCHCRITERIA_NOT_CC:
-	case MATCHCRITERIA_TO_OR_CC:
-	case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
-	case MATCHCRITERIA_NEWSGROUPS:
-	case MATCHCRITERIA_NOT_NEWSGROUPS:
-	case MATCHCRITERIA_INREPLYTO:
-	case MATCHCRITERIA_NOT_REFERENCES:
-	case MATCHCRITERIA_REFERENCES:
-	case MATCHCRITERIA_NOT_INREPLYTO:
-	case MATCHCRITERIA_MESSAGE:
-	case MATCHCRITERIA_NOT_MESSAGE:
-	case MATCHCRITERIA_EXECUTE:
-	case MATCHCRITERIA_NOT_EXECUTE:
-	case MATCHCRITERIA_HEADERS_PART:
-	case MATCHCRITERIA_NOT_HEADERS_PART:
-	case MATCHCRITERIA_BODY_PART:
-	case MATCHCRITERIA_NOT_BODY_PART:
-	case MATCHCRITERIA_HEADER:
-	case MATCHCRITERIA_NOT_HEADER:
-		if ((key == MATCHCRITERIA_HEADER) || (key == MATCHCRITERIA_NOT_HEADER)) {
-			header = matcher_parse_str(&tmp);
-			if (tmp == NULL) {
-				* str = NULL;
-				return NULL;
-			}
-		}
-
-		match = matcher_parse_keyword(&tmp);
-		if (tmp == NULL) {
-			if (header)
-				g_free(header);
-			* str = NULL;
-			return NULL;
-		}
-
-		switch(match) {
-		case MATCHCRITERIA_REGEXP:
-		case MATCHCRITERIA_REGEXPCASE:
-			expr = matcher_parse_regexp(&tmp);
-			if (tmp == NULL) {
-				if (header)
-					g_free(header);
-				* str = NULL;
-				return NULL;
-			}
- 			*str = tmp;
-			prop = matcherprop_new(key, header, match, expr, 0);
-			g_free(expr);
-
-			return prop;
-		case MATCHCRITERIA_MATCH:
-		case MATCHCRITERIA_MATCHCASE:
-			expr = matcher_parse_str(&tmp);
-			if (tmp == NULL) {
-				if (header)
-					g_free(header);
-				* str = NULL;
-				return NULL;
-			}
-			*str = tmp;
-			prop = matcherprop_new(key, header, match, expr, 0);
-			g_free(expr);
-
-			return prop;
-		default:
-			if (header)
-				g_free(header);
-			* str = NULL;
-			return NULL;
-		}
-	default:
-		* str = NULL;
-		return NULL;
-	}
-}
-
-gint matcher_parse_keyword(gchar ** str)
-{
-	gchar * p;
-	gchar * dup;
-	gchar * start;
-	gint i;
-	gint match;
-
-	dup = alloca(strlen(* str) + 1);
-	p = dup;
-	strcpy(dup, * str);
-
-	while (matcher_is_blank(*p))
-		p++;
-
-	start = p;
-
-	while (!matcher_is_blank(*p) && (*p != '\0'))
-		p++;
-	
-	match = -1;
-	for(i = 0 ; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)) ;
-	    i++) {
-		if ((strlen(matchparser_tab[i].str) == p - start) &&
-		    (strncasecmp(matchparser_tab[i].str, start,
-				 p - start) == 0)) {
-				match = i;
-				break;
-			}
-	}
-
-	if (match == -1) {
-		* str = NULL;
-		return 0;
-	}
-
-	*p = '\0';
-
-	*str += p - dup + 1;
-	return matchparser_tab[match].id;
-}
-
-gint matcher_parse_number(gchar ** str)
-{
-	gchar * p;
-	gchar * dup;
-	gchar * start;
-
-	dup = alloca(strlen(* str) + 1);
-	p = dup;
-	strcpy(dup, * str);
-
-	while (matcher_is_blank(*p))
-		p++;
-
-	start = p;
-
-	if (!isdigit(*p) && *p != '-' && *p != '+') {
-		*str = NULL;
-		return 0;
-	}
-	if (*p == '-' || *p == '+')
-		p++;
-	while (isdigit(*p))
-		p++;
-
-	*p = '\0';
-
-	*str += p - dup + 1;
-	return atoi(start);
-}
-
-gboolean matcher_parse_boolean_op(gchar ** str)
-{
-	gchar * p;
-
-	p = * str;
-
-	while (matcher_is_blank(*p))
-		p++;
-
-	if (*p == '|') {
-		*str += p - * str + 1;
-		return FALSE;
-	}
-	else if (*p == '&') {
-		*str += p - * str + 1;
-		return TRUE;
-	}
-	else {
-		*str = NULL;
-		return FALSE;
-	}
-}
-
-gchar * matcher_parse_regexp(gchar ** str)
-{
-	gchar * p;
-	gchar * dup;
-	gchar * start;
-
-	dup = alloca(strlen(* str) + 1);
-	p = dup;
-	strcpy(dup, * str);
-
-	while (matcher_is_blank(*p))
-		p++;
-
-	if (*p != '/') {
-		* str = NULL;
-		return NULL;
-	}
-
-	p ++;
-	start = p;
-	while (*p != '/') {
-		if (*p == '\\')
-			p++;
-		p++;
-	}
-	*p = '\0';
-
-	*str += p - dup + 2;
-	return g_strdup(start);
-}
-#endif
-
-/* matcher_parse_str() - parses a string until it hits a 
- * terminating \". to unescape characters use \. The string
- * should not be used directly: matcher_unescape_str() 
- * returns a string that can be used directly. */
-#if 0
-gchar * matcher_parse_str(gchar ** str)
-{
-	gchar * p;
-	gchar * dup;
-	gchar * start;
-	gchar * dest;
-
-	dup = alloca(strlen(* str) + 1);
-	p = dup;
-	strcpy(dup, * str);
-
-	while (matcher_is_blank(*p))
-		p++;
-
-	if (*p != '"') {
-		* str = NULL;
-		return NULL;
-	}
-	
-	p ++;
-	start = p;
-	dest = p;
-
-	for ( ; *p && *p != '\"'; p++, dest++) {
-		if (*p == '\\') {
-			*dest++ = *p++;
-			*dest = *p;
-		}
-		else 
-			*dest = *p;
-	}
-	*dest = '\0';
-	
-	*str += dest - dup + 2;
-	return g_strdup(start);
-}
-#endif
 
 gchar *matcher_unescape_str(gchar *str)
 {
@@ -678,63 +362,6 @@ gboolean matcherprop_match(MatcherProp * prop, MsgInfo * info)
 
 /* ********************* MatcherList *************************** */
 
-
-/* parse for a list of conditions */
-
-/*
-MatcherList * matcherlist_parse(gchar ** str)
-{
-	gchar * tmp;
-	MatcherProp * matcher;
-	GSList * matchers_list = NULL;
-	gboolean bool_and = TRUE;
-	gchar * save;
-	MatcherList * cond;
-	gboolean main_bool_and = TRUE;
-	GSList * l;
-
-	tmp = * str;
-
-	matcher = matcherprop_parse(&tmp);
-
-	if (tmp == NULL) {
-		* str = NULL;
-		return NULL;
-	}
-	matchers_list = g_slist_append(matchers_list, matcher);
-	while (matcher) {
-		save = tmp;
-		bool_and = matcher_parse_boolean_op(&tmp);
-		if (tmp == NULL) {
-			tmp = save;
-			matcher = NULL;
-		}
-		else {
-			main_bool_and = bool_and;
-			matcher = matcherprop_parse(&tmp);
-			if (tmp != NULL) {
-				matchers_list =
-					g_slist_append(matchers_list, matcher);
-			}
-			else {
-				for(l = matchers_list ; l != NULL ;
-				    l = g_slist_next(l))
-					matcherprop_free((MatcherProp *)
-							 l->data);
-				g_slist_free(matchers_list);
-				* str = NULL;
-				return NULL;
-			}
-		}
-	}
-
-	cond = matcherlist_new(matchers_list, main_bool_and);
-
-	* str = tmp;
-
-	return cond;
-}
-*/
 
 MatcherList * matcherlist_new(GSList * matchers, gboolean bool_and)
 {
@@ -1129,46 +756,6 @@ gboolean matcherlist_match(MatcherList * matchers, MsgInfo * info)
 	return result;
 }
 
-#if 0
-static void matcherprop_print(MatcherProp * matcher)
-{
-  int i;
-
-	if (matcher == NULL) {
-		printf("no matcher\n");
-		return;
-	}
-
-	switch (matcher->matchtype) {
-	case MATCHCRITERIA_MATCH:
-		printf("match\n");
-		break;
-	case MATCHCRITERIA_REGEXP:
-		printf("regexp\n");
-		break;
-	case MATCHCRITERIA_MATCHCASE:
-		printf("matchcase\n");
-		break;
-	case MATCHCRITERIA_REGEXPCASE:
-		printf("regexpcase\n");
-		break;
-	}
-
-	for(i = 0 ; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)) ;
-	    i++) {
-		if (matchparser_tab[i].id == matcher->criteria)
-			printf("%s\n", matchparser_tab[i].str);
-	}
-
-	if (matcher->expr)
-		printf("expr : %s\n", matcher->expr);
-
-	printf("age: %i\n", matcher->value;
-
-	printf("compiled : %s\n", matcher->preg != NULL ? "yes" : "no");
-	printf("error: %i\n",  matcher->error);
-}
-#endif
 
 gchar * matcherprop_to_string(MatcherProp * matcher)
 {
@@ -1227,6 +814,8 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 	switch (matcher->matchtype) {
 	case MATCHTYPE_MATCH:
 	case MATCHTYPE_MATCHCASE:
+	case MATCHTYPE_REGEXP:
+	case MATCHTYPE_REGEXPCASE:
 		count = 0;
 		for(p = matcher->expr; *p != 0 ; p++)
 			if (*p == '\"') count ++;
@@ -1257,6 +846,7 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 		
 		break;
 
+		/*
 	case MATCHTYPE_REGEXP:
 	case MATCHTYPE_REGEXPCASE:
 
@@ -1271,6 +861,7 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 						matchtype_str, matcher->expr);
 
 		break;
+		*/
 	}
 
 	return matcher_str;

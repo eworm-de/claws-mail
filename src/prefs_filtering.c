@@ -127,7 +127,8 @@ enum {
 	ACTION_FORWARD = 7,
 	ACTION_FORWARD_AS_ATTACHMENT = 8,
 	ACTION_EXECUTE = 9,
-	ACTION_COLOR = 10
+	ACTION_COLOR = 10,
+	ACTION_BOUNCE = 11
 };
 
 static gint get_sel_from_list(GtkList * list)
@@ -221,6 +222,7 @@ static gchar * action_text [] = {
 	N_("Mark as unread"),
 	N_("Forward"), 
 	N_("Forward as attachment"), 
+	N_("Bounce"), 
 	N_("Execute"),
 	N_("Color")
 };
@@ -773,6 +775,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(void)
 	case ACTION_COPY:
 	case ACTION_FORWARD:
 	case ACTION_FORWARD_AS_ATTACHMENT:
+	case ACTION_BOUNCE:
 	case ACTION_EXECUTE:
 		destination = gtk_entry_get_text(GTK_ENTRY(filtering.dest_entry));
 		if (*destination == '\0') {
@@ -792,7 +795,6 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(void)
 	
 	action = filteringaction_new(action_type, account_id, destination, labelcolor);
 
-	/* tmp = cond_str; */
 	cond = matcher_parser_get_cond(cond_str);
 
 	if (cond == NULL) {
@@ -958,6 +960,13 @@ static void prefs_filtering_select_set(FilteringProp * prop)
 		gtk_list_select_item(GTK_LIST(filtering.account_list),
 				     list_id);
 		break;
+	case MATCHACTION_BOUNCE:
+		gtk_list_select_item(GTK_LIST(filtering.action_list),
+				     ACTION_BOUNCE);
+		list_id = get_list_id_from_account_id(action->account_id);
+		gtk_list_select_item(GTK_LIST(filtering.account_list),
+				     list_id);
+		break;
 	case MATCHACTION_EXECUTE:
 		gtk_list_select_item(GTK_LIST(filtering.action_list),
 				     ACTION_EXECUTE);
@@ -988,7 +997,6 @@ static void prefs_filtering_select(GtkCList *clist, gint row, gint column,
 				row, 0, &filtering_str))
 		return;
 	
-	/* tmp = filtering_str; */
 	prop = matcher_parser_get_filtering(filtering_str);
 	if (prop == NULL)
 		return;
@@ -1141,6 +1149,17 @@ static void prefs_filtering_action_select(GtkList *list,
 		gtk_widget_hide(filtering.color_optmenu);
 		gtk_widget_hide(filtering.color_label);
 		break;
+	case ACTION_BOUNCE:
+		gtk_widget_set_sensitive(filtering.account_combo, TRUE);
+		gtk_widget_show(filtering.dest_entry);
+		gtk_widget_set_sensitive(filtering.dest_entry, TRUE);
+		gtk_widget_hide(filtering.dest_btn);
+		gtk_widget_show(filtering.dest_label);
+		gtk_widget_hide(filtering.exec_label);
+		gtk_widget_hide(filtering.exec_btn);
+		gtk_widget_hide(filtering.color_optmenu);
+		gtk_widget_hide(filtering.color_label);
+		break;
 	case ACTION_EXECUTE:
 		gtk_widget_set_sensitive(filtering.account_combo, FALSE);
 		gtk_widget_show(filtering.dest_entry);
@@ -1184,18 +1203,12 @@ static void prefs_filtering_key_pressed(GtkWidget *widget, GdkEventKey *event,
 static void prefs_filtering_ok(void)
 {
 	prefs_filtering_set_list();
-	/*
-	prefs_filtering_write_config();
-	*/
 	prefs_matcher_write_config();
 	prefs_filtering_close();
 }
 
 static void prefs_filtering_cancel(void)
 {
-	/*
-	prefs_filtering_read_config();
-	*/
 	prefs_matcher_read_config();
 	prefs_filtering_close();
 }

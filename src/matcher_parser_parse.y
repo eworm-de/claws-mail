@@ -784,6 +784,17 @@ MATCHER_EXECUTE MATCHER_STRING
 	destination = $3;
 	action = filteringaction_new(action_type, account_id, destination, 0);
 }
+| MATCHER_BOUNCE MATCHER_INTEGER MATCHER_STRING
+{
+	gchar * destination = NULL;
+	gint action_type = 0;
+	gint account_id = 0;
+
+	action_type = MATCHACTION_BOUNCE;
+	account_id = $2;
+	destination = $3;
+	action = filteringaction_new(action_type, account_id, destination, 0);
+}
 | MATCHER_COLOR MATCHER_INTEGER
 {
 	gint action_type = 0;

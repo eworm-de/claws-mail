@@ -1,3 +1,15 @@
+2001-11-19 [hoa]	0.6.5claws23
+
+	* src/filtering.c
+	* src/prefs_scoring.c
+	* src/matcher.[ch]
+	* src/scoring.c
+		cleaning code
+
+	* src/matcher_parser_parse.y
+	* src/prefs_filtering.c
+		bouncing
+
 2001-11-19 [alfons]	0.6.5claws22
 
 	more of my old things into claws
