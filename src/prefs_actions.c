@@ -1199,11 +1199,13 @@ ChildInfo *fork_child(gchar *cmd,
 			cmdline = strsplit_with_quote(cmd, " ", 1024);
 
 			execvp(cmdline[0], cmdline);
+			perror("execvp");
 			g_strfreev(cmdline);
 
 			_exit(1);
 		} else if (pid_gc < (pid_t) 0) {/* Fork erro */
 			write(chld_status[1], "1\n", 2);
+			perror("fork");
 			_exit(1);
 		} else {/* Child */
 			close(chld_in[0]);
