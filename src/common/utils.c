@@ -75,7 +75,8 @@ gint mkstemp(const gchar const *template)
 {
 	static gulong count=0; /* W32-_mktemp only supports up to 27 tempfiles... */
 	gchar *name_used = g_strdup_printf("%s.%d",_mktemp(template),count++);
-	int tmpfd = _open(name_used, _O_CREAT | _O_RDWR | _O_BINARY );
+	int tmpfd = _open(name_used, _O_CREAT | _O_RDWR | _O_BINARY
+	    			   | _S_IREAD | _S_IWRITE);
 
 	tempfiles=g_slist_append(tempfiles, name_used);
 	if (tmpfd<0) {

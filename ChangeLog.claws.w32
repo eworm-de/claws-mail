@@ -1,3 +1,8 @@
+2003-10-05 [thorsten]	0.9.6claws7-1
+
+	* src/common/utils.c
+		fix: tempfiles were created readonly, thus not deleted
+
 2003-10-03 [thorsten]	0.9.6claws2-1
 
 	* win32/sylpheed_dll[_d].dsp
