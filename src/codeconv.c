@@ -588,7 +588,9 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 
 		func = conv_get_code_conv_func(src_codeset);
 		if (func != conv_noconv) {
-			if (func == conv_jistodisp || func == conv_sjistodisp)
+			if (func == conv_jistodisp ||
+			    func == conv_sjistodisp ||
+			    func == conv_anytodisp)
 				len = strlen(inbuf) * 2 + 1;
 			else
 				len = strlen(inbuf) + 1;
@@ -663,10 +665,12 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 CodeConvFunc conv_get_code_conv_func(const gchar *charset)
 {
 	CodeConvFunc code_conv;
+	CharSet cur_charset;
 
 	if (!charset) {
-		if (conv_get_outgoing_charset() == C_ISO_2022_JP)
-			return conv_jistodisp;
+		cur_charset = conv_get_current_charset();
+		if (cur_charset == C_EUC_JP || cur_charset == C_SHIFT_JIS)
+			return conv_anytodisp;
 		else
 			return conv_noconv;
 	}
@@ -984,32 +988,39 @@ const gchar *conv_get_current_locale(void)
 void conv_unmime_header_overwrite(gchar *str)
 {
 	gchar *buf;
-	gint outlen;
-	CharSet cur_charset;
-
-	cur_charset = conv_get_current_charset();
-
-	outlen = strlen(str) + 1;
-	Xalloca(buf, outlen, return);
-	unmime_header(buf, str);
-	if (cur_charset == C_EUC_JP)
-		conv_jistodisp(str, outlen, buf);
-	else
-		strncpy2(str, buf, outlen);
-}
-
-void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
-			const gchar *charset)
-{
-	gchar *buf;
+	gint buflen;
 	CharSet cur_charset;
 
 	cur_charset = conv_get_current_charset();
 
 	if (cur_charset == C_EUC_JP) {
-		Xalloca(buf, outlen, return);
+		buflen = strlen(str) * 2 + 1;
+		Xalloca(buf, buflen, return);
+		conv_anytodisp(buf, buflen, str);
+		unmime_header(str, buf);
+	} else {
+		buflen = strlen(str) + 1;
+		Xalloca(buf, buflen, return);
 		unmime_header(buf, str);
-		conv_jistodisp(outbuf, outlen, buf);
+		strncpy2(str, buf, buflen);
+	}
+}
+
+void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
+			const gchar *charset)
+{
+	CharSet cur_charset;
+
+	cur_charset = conv_get_current_charset();
+
+	if (cur_charset == C_EUC_JP) {
+		gchar *buf;
+		gint buflen;
+
+		buflen = strlen(str) * 2 + 1;
+		Xalloca(buf, buflen, return);
+		conv_anytodisp(buf, buflen, str);
+		unmime_header(outbuf, buf);
 	} else
 		unmime_header(outbuf, str);
 }

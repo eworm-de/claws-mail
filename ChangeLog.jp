@@ -1,3 +1,14 @@
+2002-07-23
+
+	* src/utils.c: remove_numbered_files(): ディレクトリを unlink()
+	  しないようにした。
+	* src/codeconv.c:
+	  conv_get_code_conv_func(): charset が指定されていなければ
+	  conv_anytodisp() を返すようにした。
+	  conv_unmime_header_overwrite()
+	  conv_unmime_header(): ヘッダをデコードする前に conv_anytodisp()
+	  するようにした。
+
 2002-07-14
 
 	* version 0.8.0
