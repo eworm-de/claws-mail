@@ -1,3 +1,10 @@
+2004-07-18 [colin]	0.9.12cvs31.2
+
+	* src/textview.c
+		return FALSE on GDK_MOTION_NOTIFY
+	(Fix Bug 535 Hyperlinks/addresses are not selectable 
+	 (unable to highlight))
+
 2004-07-18 [colin]	0.9.12cvs31.1
 
 	* src/folderview.c

@@ -1870,7 +1870,6 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 	GdkEventButton *bevent;
 	GSList *cur;
 	gchar *trimmed_uri;
-
 	if (event->type != GDK_BUTTON_PRESS && event->type != GDK_2BUTTON_PRESS
 		&& event->type != GDK_MOTION_NOTIFY)
 		return FALSE;
@@ -1909,7 +1908,7 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 				textview->show_url_timeout_tag = gtk_timeout_add
 					(4000, show_url_timeout_cb, textview);
 			}
-			return TRUE;
+			return FALSE;
 		}
 		/* doubleclick: open compose / add address / browser */
 		if ((event->type == GDK_2BUTTON_PRESS && bevent->button == 1) ||
