@@ -1,3 +1,8 @@
+2003-03-26 [christoph]	0.8.11claws50
+
+	* src/news.c
+		fix NEWS that got broken by a sync with sylpheed-main
+
 2003-03-26 [christoph]	0.8.11claws49
 
 	* src/mimeview.c
