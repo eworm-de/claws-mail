@@ -1,3 +1,8 @@
+2002-11-15 [colin]	0.8.5claws162
+
+	* src/summaryview.c
+		Revert too-soon integration of a feature
+
 2002-11-15 [christoph]	0.8.5claws161
 
 	* src/imap.c
