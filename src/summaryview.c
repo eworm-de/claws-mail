@@ -83,7 +83,6 @@
 #include "matcher_parser.h"
 #include "hooks.h"
 #include "description_window.h"
-#include "folder.h"
 
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_STATUS_WIDTH	13
@@ -5019,7 +5018,7 @@ static void news_flag_crosspost(MsgInfo *msginfo)
 	g_return_if_fail(msginfo->folder != NULL);
 	g_return_if_fail(msginfo->folder->folder != NULL);
 	mff = msginfo->folder->folder;
-	g_return_if_fail(mff->klass->type != F_NEWS);
+	g_return_if_fail(mff->klass->type == F_NEWS);
 
 	if (mff->account->mark_crosspost_read) {
 		line = g_string_sized_new(128);

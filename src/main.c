@@ -541,8 +541,14 @@ static void draft_all_messages(void)
 	}	
 }
 
-void clean_quit(void)	
+gboolean clean_quit(gpointer data)
 {
+	static gboolean firstrun = TRUE;
+
+	if (!firstrun)
+		return FALSE;
+	firstrun = FALSE;
+
 	/*!< Good idea to have the main window stored in a 
 	 *   static variable so we can check that variable
 	 *   to see if we're really allowed to do things
@@ -556,7 +562,7 @@ void clean_quit(void)
 	 * in the original spawner, and not in a spawned
 	 * child. */
 	if (!static_mainwindow) 
-		return;
+		return FALSE;
 		
 	draft_all_messages();
 
@@ -569,7 +575,8 @@ void clean_quit(void)
 	} else {
 		app_will_exit(NULL, static_mainwindow);
 	}
-	exit(0);
+
+	return FALSE;
 }
 
 void app_will_exit(GtkWidget *widget, gpointer data)
@@ -896,7 +903,8 @@ static void send_queue(void)
 static void quit_signal_handler(int sig)
 {
 	debug_print("Quitting on signal %d\n", sig);
-	clean_quit();
+
+	g_timeout_add(0, clean_quit, NULL);
 }
 
 static void install_basic_sighandlers()

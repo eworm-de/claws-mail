@@ -1,3 +1,13 @@
+2003-12-11 [christoph]	0.9.7claws38
+
+	* src/crash.c
+	* src/main.[ch]
+		make sure the clean_exit() funtion is not called again by the
+		signal handler while it is already running
+
+	* src/summaryview.c
+		fix wrong assertion
+
 2003-12-11 [paul]	0.9.7claws37
 
 	* src/compose.c
@@ -8,7 +18,6 @@
 	* src/plugins/clamav/clamav_plugin.c
 		fix (don't break) signature count
 		use cl_strerror() instead of deprecated cl_perror()
-		
 	
 2003-12-11 [darko]	0.9.7claws35
 

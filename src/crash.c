@@ -502,7 +502,7 @@ static void crash_handler(int sig)
 
 #ifdef SIGTERM
 	if (sig == SIGTERM) 
-		clean_quit();
+		clean_quit(NULL);
 #endif
 
 	/*
