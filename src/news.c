@@ -509,20 +509,6 @@ static gint news_get_article_cmd(NNTPSession *session, const gchar *cmd,
 
 static gint news_remove_msg(Folder *folder, FolderItem *item, gint num)
 {
-	gchar *file;
-
-	g_return_val_if_fail(item != NULL, -1);
-
-	file = news_fetch_msg(folder, item, num);
-	g_return_val_if_fail(file != NULL, -1);
-
-	if (unlink(file) < 0) {
-		FILE_OP_ERROR(file, "unlink");
-		g_free(file);
-		return -1;
-	}
-
-	g_free(file);
 	return 0;
 }
 

@@ -1,3 +1,10 @@
+2002-01-27 [alfons]	0.7.0claws34
+	
+	* src/news.c
+		make sylpheed believe it can delete a news message...
+		(messages are NOT deleted, maybe we should remove
+		processing from the folder properties after all.)
+
 2002-01-27 [alfons]	0.7.0claws33
 
 	* src/folder.c
