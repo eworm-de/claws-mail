@@ -489,7 +489,7 @@ static void compose_check_forwards_go	   (Compose *compose);
 #endif
 
 #ifdef WIN32
-static gint ext_editor_timeout_cb(EditorThreadData data);
+static gint ext_editor_timeout_cb(Compose *compose);
 #endif
 
 static gboolean compose_send_control_enter (Compose *compose);
@@ -5877,31 +5877,24 @@ static void compose_exec_ext_editor(Compose *compose)
 }
 
 #ifdef WIN32
-static gint ext_editor_timeout_cb(EditorThreadData *data) {
-  HANDLE hProcess;         // specifies the process of interest
-  FILETIME lpCreationTime; // when the process was created
-  FILETIME lpExitTime;     // when the process exited
-  FILETIME lpKernelTime;   // time the process has spent in kernel mode
-  FILETIME lpUserTime;     // time the process has spent in user mode
+static gint ext_editor_timeout_cb(Compose *compose) {
   gint result = TRUE;
+  int ExitCode;
 
-  if (GetProcessTimes(data->Handle,
-						&lpCreationTime,
-						&lpExitTime,
-						&lpKernelTime,
-						&lpUserTime)) {
-	  if (lpExitTime.dwHighDateTime || lpExitTime.dwLowDateTime) {
+  /* Process killed ? */
+  if (compose->exteditor_pid < 0) return FALSE;
+
+  if (GetExitCodeProcess(compose->exteditor_pid,&ExitCode)) {
+  	  if (ExitCode != STILL_ACTIVE) {
 			/* Process terminated */
 			gint source;
 			GdkInputCondition condition;
-			compose_input_cb( data->compose , source , condition );
-			g_free(data);
-			return(0); // stop timer
+			compose_input_cb( compose , source , condition );
+			return(FALSE);	/* stop timer */
 	  }
 	  else {	/* Process still active */
 	  }
-  } else {
-	  /* Error GetProcessTimes */
+  } else {		/* Error GetExitCodeProcess */
   }
   return( result );
 }
@@ -5953,7 +5946,6 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 //XXX:tm ed7
 	{
 		gchar *fullname;
-		EditorThreadData *data;
 		int hEditor;
 
 		fullname = g_strdup(cmdline[0]);
@@ -5962,11 +5954,8 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 			perror("spawnv");
 			return -1;
 		}
-
-		data = g_malloc(sizeof(EditorThreadData));
-		data->compose = compose;
-		data->Handle = hEditor;
-		gtk_timeout_add( 50, ext_editor_timeout_cb, data );
+		compose->exteditor_pid = hEditor;
+		gtk_timeout_add( 50, ext_editor_timeout_cb, compose );
 
 		g_free(fullname);
 	}
@@ -5989,6 +5978,13 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 	pid_t pgid = compose->exteditor_pid * -1;
 	gint ret;
 
+#ifdef WIN32
+	compose->exteditor_pid = -1 ;	/* reset state for ext_editor_timeout_cb */
+	if (TerminateProcess(pgid * -1,0))
+		return TRUE;
+	else
+		return FALSE;
+#else
 	ret = kill(pgid, 0);
 
 	if (ret == 0 || (ret == -1 && EPERM == errno)) {
@@ -6025,6 +6021,7 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 	}
 
 	return TRUE;
+#endif
 }
 
 static void compose_input_cb(gpointer data, gint source,
