@@ -1334,7 +1334,7 @@ static void prefs_send_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_savemsg,
-			   _("Save sent messages to Sent"));
+			   _("Save sent messages to Sent folder"));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_queuemsg,
 			   _("Queue messages that fail to send"));
 
@@ -1609,7 +1609,9 @@ static void prefs_spelling_create()
 	PACK_CHECK_BUTTON(vbox_spell, checkbtn_use_alternate, 
 			  _("Enable alternate dictionary"));
 
-	help_label = gtk_label_new(_("Enabling alternate dictionary makes switching\nwith the last used dictionary faster."));
+	help_label = gtk_label_new(_("Enabling an alternate dictionary makes switching\n"
+				     "with the last used dictionary faster."));
+	gtk_misc_set_alignment (GTK_MISC (help_label), 0, 0);
 	gtk_widget_show(help_label);
 	gtk_box_pack_start(GTK_BOX(vbox_spell), help_label, FALSE, TRUE, 0);
 	
@@ -1833,7 +1835,7 @@ static void prefs_compose_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox_autosave, FALSE, FALSE, 0);
 	
 	PACK_CHECK_BUTTON (hbox_autosave, checkbtn_autosave,
-			   _("Autosave to drafts every "));
+			   _("Autosave to Drafts folder every "));
 
 	entry_autosave_length = gtk_entry_new();
 	gtk_widget_set_usize (entry_autosave_length, 64, -1);	
@@ -2062,7 +2064,7 @@ static void prefs_quote_create(void)
 
 	/* quote chars */
 
-	PACK_FRAME (vbox1, frame_quote, _("Quoting characters"));
+	PACK_FRAME (vbox1, frame_quote, _("Quotation characters"));
 
 	vbox_quote = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox_quote);
@@ -2231,7 +2233,7 @@ static void prefs_display_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
 
 	label_ng_abbrev = gtk_label_new
-		(_("Abbreviate newsgroups longer than"));
+		(_("Abbreviate newsgroup names longer than"));
 	gtk_widget_show (label_ng_abbrev);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_ng_abbrev, FALSE, FALSE, 0);
 
@@ -2296,7 +2298,7 @@ static void prefs_display_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
 
 	button_dispitem = gtk_button_new_with_label
-		(_(" Set displayed items of summary... "));
+		(_(" Set displayed items in summary... "));
 	gtk_widget_show (button_dispitem);
 	gtk_box_pack_start (GTK_BOX (hbox1), button_dispitem, FALSE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (button_dispitem), "clicked",
@@ -2658,7 +2660,7 @@ static void prefs_interface_create(void)
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_show_msg_with_cursor,
-		 _("Open message when cursor keys are pressed on summary"));
+		 _("Open messages with cursor keys in summary"));
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_openunread,
@@ -2973,7 +2975,7 @@ static void prefs_other_create(void)
 	gtk_container_add (GTK_CONTAINER (frame_ssl), vbox_ssl);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_ssl), 8);
 	PACK_CHECK_BUTTON (vbox_ssl, checkbtn_ssl_ask_unknown_valid, 
-			   _("Confirm acception of all SSL certificates"));
+			   _("Ask before accepting SSL certificates"));
 	hbox_ssl = gtk_hbox_new (FALSE, 3);
 	gtk_container_add (GTK_CONTAINER (vbox_ssl), hbox_ssl);
 	gtk_widget_show (hbox_ssl);
@@ -3748,9 +3750,7 @@ static void prefs_keybind_select(void)
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
 	label = gtk_label_new
-		(_("Select the preset of key bindings.\n"
-		   "You can also modify each menu's shortcuts by pressing\n"
-		   "any key(s) when placing the mouse pointer on the item."));
+		(_("Select preset:"));
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 
@@ -3766,6 +3766,15 @@ static void prefs_keybind_select(void)
 			       _("Old Sylpheed"),
 			       NULL);
 	gtk_entry_set_editable (GTK_ENTRY (GTK_COMBO (combo)->entry), FALSE);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+
+	label = gtk_label_new
+		(_("You can also modify each menu shortcut by pressing\n"
+		   "any key(s) when placing the mouse pointer on the item."));
+	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);

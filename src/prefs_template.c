@@ -213,13 +213,13 @@ static void prefs_template_window_create(void)
 	gtk_widget_show(hbox3);
 	gtk_box_pack_start(GTK_BOX(hbox2), hbox3, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_with_label(_("Register"));
+	reg_btn = gtk_button_new_with_label(_("Add"));
 	gtk_widget_show(reg_btn);
 	gtk_box_pack_start(GTK_BOX(hbox3), reg_btn, FALSE, TRUE, 0);
 	gtk_signal_connect(GTK_OBJECT (reg_btn), "clicked",
 			   GTK_SIGNAL_FUNC (prefs_template_register_cb), NULL);
 
-	subst_btn = gtk_button_new_with_label(_(" Substitute "));
+	subst_btn = gtk_button_new_with_label(_("  Replace  "));
 	gtk_widget_show(subst_btn);
 	gtk_box_pack_start(GTK_BOX(hbox3), subst_btn, FALSE, TRUE, 0);
 	gtk_signal_connect(GTK_OBJECT(subst_btn), "clicked",
@@ -246,7 +246,7 @@ static void prefs_template_window_create(void)
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	title[0] = _("Registered templates");
+	title[0] = _("Current templates");
 	clist_tmpls = gtk_clist_new_with_titles(1, title);
 	gtk_widget_show(clist_tmpls);
 	gtk_widget_set_usize(scroll1, -1, 140);
@@ -266,7 +266,7 @@ static void prefs_template_window_create(void)
 	gtk_box_pack_end(GTK_BOX(vbox2), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
 
-	gtk_window_set_title(GTK_WINDOW(window), _("Templates"));
+	gtk_window_set_title(GTK_WINDOW(window), _("Template configuration"));
 
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
 			   GTK_SIGNAL_FUNC(prefs_template_deleted_cb), NULL);

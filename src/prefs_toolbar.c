@@ -814,13 +814,13 @@ static void prefs_toolbar_create(void)
 	btn_hbox = gtk_hbox_new(TRUE, 4);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_with_label(_("Register"));
+	reg_btn = gtk_button_new_with_label(_("Add"));
 	gtk_box_pack_start(GTK_BOX(btn_hbox), reg_btn, FALSE, TRUE, 0);
 	gtk_signal_connect(GTK_OBJECT(reg_btn), "clicked",
 			    GTK_SIGNAL_FUNC(prefs_toolbar_register), 
 			    NULL);
 
-	subst_btn = gtk_button_new_with_label(_(" Substitute "));
+	subst_btn = gtk_button_new_with_label(_("  Replace  "));
 	gtk_box_pack_start(GTK_BOX(btn_hbox), subst_btn, FALSE, TRUE, 0);
 	gtk_signal_connect(GTK_OBJECT(subst_btn), "clicked",
 			    GTK_SIGNAL_FUNC(prefs_toolbar_substitute),

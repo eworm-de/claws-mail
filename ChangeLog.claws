@@ -1,3 +1,20 @@
+2002-11-27 [paul]	0.8.6claws22
+
+	* src/mainwindow.c
+	  src/prefs_account.c
+	  src/prefs_actions.c
+	  src/prefs_common.c
+	  src/prefs_customheader.c
+	  src/prefs_display_header.c
+	  src/prefs_filtering.c
+	  src/prefs_folder_item.c
+	  src/prefs_matcher.c
+	  src/prefs_scoring.c
+	  src/prefs_summary_column.c
+	  src/prefs_template.c
+	  src/prefs_toolbar.c
+	  	 improve the English in the GUI
+
 2002-11-27 [colin]	0.8.6claws21
 
 	* src/folder.c

@@ -368,8 +368,8 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 
 	rowcount++;
 
-	/* Default Reply-To */
-	checkbtn_default_reply_to = gtk_check_button_new_with_label(_("Default Reply-To: "));
+	/* Default address to reply to */
+	checkbtn_default_reply_to = gtk_check_button_new_with_label(_("Send replies to: "));
 	gtk_widget_show(checkbtn_default_reply_to);
 	gtk_table_attach(GTK_TABLE(table), checkbtn_default_reply_to, 0, 1, 
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);

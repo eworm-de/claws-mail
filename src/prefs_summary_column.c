@@ -175,7 +175,7 @@ static void prefs_summary_column_create(void)
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
 	gtk_window_set_title(GTK_WINDOW(window),
-			     _("Summary displayed items setting"));
+			     _("Summary displayed items configuration"));
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
 			   GTK_SIGNAL_FUNC(prefs_summary_column_delete_event),
 			   NULL);
@@ -192,7 +192,7 @@ static void prefs_summary_column_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox), label_hbox, FALSE, FALSE, 4);
 
 	label = gtk_label_new
-		(_("Select items to be displayed on the summary view. You can modify\n"
+		(_("Select items to be displayed in the summary view. You can modify\n"
 		   "the order by using the Up / Down button, or dragging the items."));
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(label_hbox), label, FALSE, FALSE, 4);

@@ -292,7 +292,7 @@ static void prefs_matcher_create(void)
 
 	gchar *title[1];
 
-	debug_print("Creating matcher setting window...\n");
+	debug_print("Creating matcher configuration window...\n");
 
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
@@ -311,7 +311,7 @@ static void prefs_matcher_create(void)
 	gtk_widget_grab_default (ok_btn);
 
 	gtk_window_set_title (GTK_WINDOW(window),
-			      _("Condition setting"));
+			      _("Condition configuration"));
 	gtk_signal_connect (GTK_OBJECT(window), "delete_event",
 			    GTK_SIGNAL_FUNC(prefs_matcher_deleted), NULL);
 	gtk_signal_connect (GTK_OBJECT(window), "key_press_event",
@@ -490,13 +490,13 @@ static void prefs_matcher_create(void)
 	gtk_widget_show (btn_hbox);
 	gtk_box_pack_start (GTK_BOX (reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_with_label (_("Register"));
+	reg_btn = gtk_button_new_with_label (_("Add"));
 	gtk_widget_show (reg_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), reg_btn, FALSE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (reg_btn), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_matcher_register_cb), NULL);
 
-	subst_btn = gtk_button_new_with_label (_(" Substitute "));
+	subst_btn = gtk_button_new_with_label (_("  Replace  "));
 	gtk_widget_show (subst_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), subst_btn, FALSE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (subst_btn), "clicked",
@@ -551,7 +551,7 @@ static void prefs_matcher_create(void)
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 
-	title[0] = _("Registered rules");
+	title[0] = _("Current condition rules");
 	cond_clist = gtk_clist_new_with_titles(1, title);
 	gtk_widget_show (cond_clist);
 	gtk_container_add (GTK_CONTAINER (cond_scrolledwin), cond_clist);
@@ -993,13 +993,6 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 	case CRITERIA_MESSAGE:
 	case CRITERIA_EXECUTE:
 		expr = gtk_entry_get_text(GTK_ENTRY(matcher.value_entry));
-
-		/*
-		if (*expr == '\0') {
-		    alertpanel_error(_("Match string is not set."));
-		    return NULL;
-		}
-		*/
 		break;
 
 	case CRITERIA_AGE_GREATER:
@@ -1030,12 +1023,6 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 		    alertpanel_error(_("Header name is not set."));
 		    return NULL;
 		}
-		/*
-		if (*expr == '\0') {
-		    alertpanel_error(_("Match string is not set."));
-		    return NULL;
-		}
-		*/
 		break;
 	}
 

@@ -270,7 +270,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 
 	gchar *title[1];
 
-	debug_print("Creating actions setting window...\n");
+	debug_print("Creating actions configuration window...\n");
 
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
 
@@ -290,7 +290,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
 
-	gtk_window_set_title(GTK_WINDOW(window), _("Actions setting"));
+	gtk_window_set_title(GTK_WINDOW(window), _("Actions configuration"));
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
 			   GTK_SIGNAL_FUNC(prefs_actions_deleted), NULL);
 	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
@@ -367,13 +367,13 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_widget_show(btn_hbox);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_with_label(_("Register"));
+	reg_btn = gtk_button_new_with_label(_("Add"));
 	gtk_widget_show(reg_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), reg_btn, FALSE, TRUE, 0);
 	gtk_signal_connect(GTK_OBJECT(reg_btn), "clicked",
 			   GTK_SIGNAL_FUNC(prefs_actions_register_cb), NULL);
 
-	subst_btn = gtk_button_new_with_label(_(" Substitute "));
+	subst_btn = gtk_button_new_with_label(_("  Replace  "));
 	gtk_widget_show(subst_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), subst_btn, FALSE, TRUE, 0);
 	gtk_signal_connect(GTK_OBJECT(subst_btn), "clicked",
@@ -405,7 +405,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	title[0] = _("Registered actions");
+	title[0] = _("Current actions");
 	cond_clist = gtk_clist_new_with_titles(1, title);
 	gtk_widget_show(cond_clist);
 	gtk_container_add(GTK_CONTAINER (cond_scrolledwin), cond_clist);

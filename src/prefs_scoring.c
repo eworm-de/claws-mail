@@ -181,7 +181,7 @@ static void prefs_scoring_create(void)
 
 	gchar *title[1];
 
-	debug_print("Creating scoring setting window...\n");
+	debug_print("Creating scoring configuration window...\n");
 
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
@@ -200,7 +200,7 @@ static void prefs_scoring_create(void)
 	gtk_widget_grab_default (ok_btn);
 
 	gtk_window_set_title (GTK_WINDOW(window),
-			      _("Scoring setting"));
+			      _("Scoring configuration"));
 	gtk_signal_connect (GTK_OBJECT(window), "delete_event",
 			    GTK_SIGNAL_FUNC(prefs_scoring_deleted), NULL);
 	gtk_signal_connect (GTK_OBJECT(window), "key_press_event",
@@ -268,13 +268,13 @@ static void prefs_scoring_create(void)
 	gtk_widget_show (btn_hbox);
 	gtk_box_pack_start (GTK_BOX (reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_with_label (_("Register"));
+	reg_btn = gtk_button_new_with_label (_("Add"));
 	gtk_widget_show (reg_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), reg_btn, FALSE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (reg_btn), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_scoring_register_cb), NULL);
 
-	subst_btn = gtk_button_new_with_label (_(" Substitute "));
+	subst_btn = gtk_button_new_with_label (_("  Replace  "));
 	gtk_widget_show (subst_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), subst_btn, FALSE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (subst_btn), "clicked",
@@ -300,7 +300,7 @@ static void prefs_scoring_create(void)
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 
-	title[0] = _("Registered rules");
+	title[0] = _("Current scoring rules");
 	cond_clist = gtk_clist_new_with_titles(1, title);
 	gtk_widget_show (cond_clist);
 	gtk_container_add (GTK_CONTAINER (cond_scrolledwin), cond_clist);
@@ -547,13 +547,13 @@ static void prefs_scoring_register_cb(void)
 
 	cond_str = gtk_entry_get_text(GTK_ENTRY(scoring.cond_entry));
 	if (*cond_str == '\0') {
-		alertpanel_error(_("Score is not set."));
+		alertpanel_error(_("Condition string is empty."));
 		return;
 	}
 
 	score_str = gtk_entry_get_text(GTK_ENTRY(scoring.score_entry));
 	if (*score_str == '\0') {
-		alertpanel_error(_("Match string is not set."));
+		alertpanel_error(_("Score is not set."));
 		return;
 	}
 
@@ -561,7 +561,7 @@ static void prefs_scoring_register_cb(void)
 	cond = matcher_parser_get_cond(cond_str);
 
 	if (cond == NULL) {
-		alertpanel_error(_("Match string is not valid."));
+		alertpanel_error(_("Condition string is not valid."));
 		return;
 	}
 
@@ -591,13 +591,13 @@ static void prefs_scoring_substitute_cb(void)
 
 	cond_str = gtk_entry_get_text(GTK_ENTRY(scoring.cond_entry));
 	if (*cond_str == '\0') {
-		alertpanel_error(_("Score is not set."));
+		alertpanel_error(_("Condition string is empty."));
 		return;
 	}
 
 	score_str = gtk_entry_get_text(GTK_ENTRY(scoring.score_entry));
 	if (*score_str == '\0') {
-		alertpanel_error(_("Match string is not set."));
+		alertpanel_error(_("Score is not set."));
 		return;
 	}
 
@@ -605,7 +605,7 @@ static void prefs_scoring_substitute_cb(void)
 	cond = matcher_parser_get_cond(cond_str);
 
 	if (cond == NULL) {
-		alertpanel_error(_("Match string is not valid."));
+		alertpanel_error(_("Condition string is not valid."));
 		return;
 	}
 
