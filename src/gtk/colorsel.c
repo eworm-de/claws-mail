@@ -18,6 +18,7 @@
  */
 
 #include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
 
 #include "colorsel.h"
 #include "manage_window.h"
@@ -38,8 +39,16 @@ static gboolean quote_colors_set_dialog_key_pressed(GtkWidget *widget,
 						GdkEventKey *event,
 						gpointer data)
 {
-	*((gint *) data) = 1;
-	gtk_main_quit();
+	if (event && event->keyval == GDK_Escape) {
+		*((gint *) data) = 1;
+		gtk_main_quit();
+		return TRUE;
+	} else if (event && event->keyval == GDK_Return) {
+		*((gint *) data) = 0;
+		gtk_main_quit();
+		return FALSE;
+	}
+	return FALSE;
 }
 
 gint colorsel_select_color_rgb(gchar *title, gint rgbvalue)

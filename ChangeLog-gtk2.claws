@@ -1,3 +1,9 @@
+2004-08-21 [colin]	0.9.12cvs74.2
+
+	* src/gtk/colorsel.c
+		Fix bug 564 (Folder color selection window exits on any
+		keypress)
+
 2004-08-21 [colin]	0.9.12cvs74.1
 
 	* ChangeLog.claws
