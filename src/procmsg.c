@@ -1121,6 +1121,9 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 		hooks_invoke(MSGINFO_UPDATE_HOOKLIST, &msginfo_update);
 		folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT);
 	}
+
+	/* Tmp flags hanlding */
+	msginfo->flags.tmp_flags |= tmp_flags;
 }
 
 void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
@@ -1148,6 +1151,9 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 		hooks_invoke(MSGINFO_UPDATE_HOOKLIST, &msginfo_update);
 		folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT);
 	}
+
+	/* Tmp flags hanlding */
+	msginfo->flags.tmp_flags &= ~tmp_flags;
 }
 
 /*!

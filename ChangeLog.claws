@@ -1,4 +1,14 @@
+2003-03-19 [christoph]	0.8.11claws29
+
+	* src/procmsg.c
+		add temp flag handling, will make moving and copying
+		messages possible again
+
+	* src/folder.c
+		correct calulation of folder stats
+
 2003-03-18 [match]	0.8.11claws28
+
 	* src/editgroup.h
 		remove case sensitive comparison (closes bug 80).
 

@@ -1223,18 +1223,18 @@ gint folder_item_scan(FolderItem *item)
 		MsgInfo *msginfo;
 
 		msginfo = elem->data;
+		if (MSG_IS_IGNORE_THREAD(msginfo->flags) && (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)))
+			procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
+		if (!MSG_IS_IGNORE_THREAD(msginfo->flags) && procmsg_msg_has_flagged_parent(msginfo, MSG_IGNORE_THREAD)) {
+			procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
+			procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
+		}
 		if (MSG_IS_NEW(msginfo->flags))
 			newcnt++;
 		if (MSG_IS_UNREAD(msginfo->flags))
 			unreadcnt++;
 		if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 			unreadmarkedcnt++;
-		if (MSG_IS_IGNORE_THREAD(msginfo->flags) && (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)))
-			procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
-		if (procmsg_msg_has_flagged_parent(msginfo, MSG_IGNORE_THREAD)) {
-			procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
-			procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
-		}
 		totalcnt++;
 
 		procmsg_msginfo_free(msginfo);
