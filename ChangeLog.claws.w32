@@ -1,3 +1,8 @@
+2004-02-01 [thorsten]	0.9.8claws59-6
+
+	* src/mimeview.c
+		change: make executing attachments more difficult
+
 2004-02-01 [thorsten]	0.9.8claws59-5
 
 	* src/compose.c

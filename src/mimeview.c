@@ -150,9 +150,14 @@ static void icon_scroll_size_allocate_cb(GtkWidget 	*widget,
 
 static GtkItemFactoryEntry mimeview_popup_entries[] =
 {
+#ifdef WIN32 /* prevent accidental click if popup opens delayed */
+	{N_("/_Display as text"), NULL, mimeview_display_as_text, 0, NULL},
+#endif
 	{N_("/_Open"),		  NULL, mimeview_launch,	  0, NULL},
 	{N_("/Open _with..."),	  NULL, mimeview_open_with,	  0, NULL},
+#ifndef WIN32
 	{N_("/_Display as text"), NULL, mimeview_display_as_text, 0, NULL},
+#endif
 	{N_("/_Save as..."),	  NULL, mimeview_save_as,	  0, NULL},
 	{N_("/Save _all..."),	  NULL, mimeview_save_all,	  0, NULL},
 };
@@ -812,6 +817,9 @@ static void part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 				MimeInfo *partinfo)
 {
 	if (event->button == 2 ||
+#ifdef WIN32 /* safer clicks: shift required */
+	    (event->state & GDK_SHIFT_MASK) &&
+#endif
 	    (event->button == 1 && event->type == GDK_2BUTTON_PRESS)) {
 		/* call external program for image, audio or html */
 		mimeview_launch(mimeview);
