@@ -1,3 +1,20 @@
+2003-09-07 [match]	0.9.4claws70
+	* src/Makefile.am
+	* src/addr_compl.c
+	* src/addressbook.c
+	* src/addressitem.h
+	* src/addrindex.c
+	* src/addritem.c
+	* src/addritem.h
+	* src/addrquery.c			** NEW **
+	* src/addrquery.h
+	* src/ldapquery.c
+	* src/ldapserver.c
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/pixmaps/address_search.xpm	** NEW **
+		re-introduce Lookup button for LDAP 'static' searches.
+
 2003-09-07 [alfons]	0.9.4claws69
 	
 	* src/summaryview.c

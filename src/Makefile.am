@@ -15,6 +15,7 @@ sylpheed_SOURCES = \
 	addrharvest.c \
 	addrindex.c \
 	addritem.c \
+	addrquery.c \
 	addrselect.c \
 	alertpanel.c \
 	codeconv.c \
