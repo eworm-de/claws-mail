@@ -1,3 +1,8 @@
+2002-05-14 [paul]	0.7.5claws26
+
+	* sync with 0.7.6cvs1
+		see ChangeLog 2002-05-13
+
 2002-05-13 [thorsten]	0.7.5claws25
 
 	* src/messageview.c

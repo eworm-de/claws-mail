@@ -1879,6 +1879,8 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 
 	compose_update_priority_menu_item(compose);
 
+	compose_update_priority_menu_item(compose);
+
 	compose_show_first_last_header(compose, TRUE);
 
 #if 0 /* NEW COMPOSE GUI */
@@ -5180,8 +5182,13 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 
 		if (ac == compose->account) def_menu = num;
 
-		name = g_strdup_printf("%s: %s <%s>",
-				       ac->account_name, ac->name, ac->address);
+		if (ac->name)
+			name = g_strdup_printf("%s: %s <%s>",
+					       ac->account_name,
+					       ac->name, ac->address);
+		else
+			name = g_strdup_printf("%s: %s",
+					       ac->account_name, ac->address);
 		MENUITEM_ADD(menu, menuitem, name, ac);
 		g_free(name);
 		gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
