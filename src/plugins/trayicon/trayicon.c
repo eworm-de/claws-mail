@@ -222,12 +222,12 @@ void plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return gettext("Trayicon");
+	return _("Trayicon");
 }
 
 const gchar *plugin_desc(void)
 {
-	return gettext("This plugin places a mailbox icon in the system tray that "
+	return _("This plugin places a mailbox icon in the system tray that "
 	         "indicates if you have new or unread mail.\n"
 	         "\n"
 	         "The mailbox is empty if you have no unread mail, otherwise "
