@@ -1,3 +1,8 @@
+2004-12-02 [colin]	0.9.12cvs178.1
+
+	* src/compose.c
+		Sync with HEAD (linewrap_quote fix)
+
 2004-12-01 [colin]	0.9.12cvs177.3
 
 	* src/addrharvest.c
