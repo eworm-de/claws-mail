@@ -1,3 +1,8 @@
+2005-01-16 [colin]	0.9.13cvs33.2
+
+	* src/prefs_toolbar.c
+		GTK2ize prefs_toolbar, by Alfons.
+
 2005-01-14 [colin]	0.9.13cvs33.1
 
 	* src/html.c

@@ -49,15 +49,16 @@
 #include "prefswindow.h"
 #include "prefs_gtk.h"
 
-typedef enum
+enum
 {
-	COL_ICON	= 0,
-	COL_FILENAME	= 1,
-	COL_TEXT	= 2,
-	COL_EVENT	= 3
-} DisplayedItemsColumnPos;
-
-# define N_DISPLAYED_ITEMS_COLS	4
+	SET_ICON	  = 0,
+	SET_FILENAME	  = 1,
+	SET_TEXT	  = 2,
+	SET_EVENT	  = 3,
+	SET_ICON_TEXT	  = 4,		/*!< "icon" text (separator) */ 
+	SET_ICON_IS_TEXT  = 5,		/*!< icon is text representation */
+	N_SET_COLUMNS
+};
 
 typedef struct _ToolbarPage
 {
@@ -65,8 +66,8 @@ typedef struct _ToolbarPage
 
 	GtkWidget *window;		/* do not modify */
 
-	GtkWidget *clist_icons;
-	GtkWidget *clist_set;
+	GtkWidget *list_view_icons;
+	GtkWidget *list_view_set;
 	GtkWidget *combo_action;
 	GtkWidget *combo_entry;
 	GtkWidget *combo_list;
@@ -82,7 +83,6 @@ typedef struct _ToolbarPage
 
 } ToolbarPage;
 
-#define CELL_SPACING 24
 #define ERROR_MSG _("Selected Action already set.\nPlease choose another Action from List")
 
 static void prefs_toolbar_populate               (ToolbarPage *prefs_toolbar);
@@ -103,21 +103,25 @@ static void prefs_toolbar_up                     (GtkButton        *button,
 static void prefs_toolbar_down                   (GtkButton        *button,
 						  ToolbarPage *prefs_toolbar);
 
-static void prefs_toolbar_select_row_set         (GtkCList *clist, 
-						  gint row, 
-						  gint column,
-						  GdkEvent *event, 
-						  ToolbarPage *prefs_toolbar);
-
-static void prefs_toolbar_select_row_icons       (GtkCList *clist, 
-						  gint row, 
-						  gint column,
-						  GdkEvent *event, 
-						  ToolbarPage *prefs_toolbar);
-
 static void prefs_toolbar_create                 (ToolbarPage *prefs_toolbar);
 
 static void prefs_toolbar_selection_changed      (GtkList *list, 
+						  ToolbarPage *prefs_toolbar);
+
+static GtkWidget *create_icon_list_view		 (ToolbarPage *prefs_toolbar);
+
+static GtkWidget *create_set_list_view		 (ToolbarPage *prefs_toolbar);
+
+static gboolean icon_list_selected		 (GtkTreeSelection *selector,
+						  GtkTreeModel *model, 
+						  GtkTreePath *path,
+						  gboolean currently_selected,
+						  ToolbarPage *prefs_toolbar);
+
+static gboolean set_list_selected		 (GtkTreeSelection *selector,
+						  GtkTreeModel *model, 
+						  GtkTreePath *path,
+						  gboolean currently_selected,
 						  ToolbarPage *prefs_toolbar);
 
 void prefs_toolbar_create_widget(PrefsPage *_page, GtkWindow *window, gpointer data)
@@ -139,28 +143,34 @@ void prefs_toolbar_create_widget(PrefsPage *_page, GtkWindow *window, gpointer d
 void prefs_toolbar_save(PrefsPage *_page)
 {
 	ToolbarPage *prefs_toolbar = (ToolbarPage *) _page;
-	gint row = 0;
-	GtkCList *clist = GTK_CLIST(prefs_toolbar->clist_set);
-	gchar *entry = NULL;
-	ToolbarItem *item;
-
+	GtkTreeView *list_view = GTK_TREE_VIEW(prefs_toolbar->list_view_set);
+	GtkTreeModel *model = gtk_tree_view_get_model(list_view);
+	GtkTreeIter iter;
+	
 	toolbar_clear_list(prefs_toolbar->source);
 
-	if (clist->rows == 0) {
+	if (!gtk_tree_model_iter_n_children(model, NULL)
+	||  !gtk_tree_model_get_iter_first(model, &iter))
 		toolbar_set_default(prefs_toolbar->source);
-	}
 	else {
 		do {
+			ToolbarItem *item;
+			gchar *fname, *text, *event; 
+			
 			item = g_new0(ToolbarItem, 1);
-			
-			gtk_clist_get_text(clist, row, 1, &entry);
-			item->file = g_strdup(entry);
-			
-			gtk_clist_get_text(clist, row, 2, &entry);
-			item->text = g_strdup(entry);
-			
-			gtk_clist_get_text(clist, row, 3, &entry);	
-			item->index = toolbar_ret_val_from_descr(entry);
+
+			gtk_tree_model_get(model, &iter,
+					   SET_FILENAME, &fname,
+					   SET_TEXT, &text,
+					   SET_EVENT, &event,
+					   -1);
+
+			/* XXX: remember that G_TYPE_STRING returned by model
+			 * is owned by caller of gtk_tree_model_get() */
+			item->file  = fname;
+			item->text  = text;
+			item->index = toolbar_ret_val_from_descr(event);
+			g_free(event);
 
 			/* TODO: save A_SYL_ACTIONS only if they are still active */
 			toolbar_set_list_item(item, prefs_toolbar->source);
@@ -168,9 +178,7 @@ void prefs_toolbar_save(PrefsPage *_page)
 			g_free(item->file);
 			g_free(item->text);
 			g_free(item);
-			row++;
-			
-		} while(gtk_clist_get_text(clist, row, 3, &entry));
+		} while (gtk_tree_model_iter_next(model, &iter));
 	}
 
 	toolbar_save_config_file(prefs_toolbar->source);
@@ -193,52 +201,52 @@ static void prefs_toolbar_destroy_widget(PrefsPage *_page)
 
 static void prefs_toolbar_set_displayed(ToolbarPage *prefs_toolbar)
 {
-	GdkPixmap *xpm;
-	GdkBitmap *xpmmask;
-	gchar *activ[4];
 	GSList *cur;
-	GtkCList *clist_set = GTK_CLIST(prefs_toolbar->clist_set);
+	GtkTreeView *list_view_set = GTK_TREE_VIEW(prefs_toolbar->list_view_set);
+	GtkListStore *store = GTK_LIST_STORE(gtk_tree_view_get_model
+						(list_view_set));
 	GSList *toolbar_list = toolbar_get_list(prefs_toolbar->source);
+	GtkTreeIter iter;
 
-	gtk_clist_clear(clist_set);
-	gtk_clist_freeze(clist_set);
+	gtk_list_store_clear(store);
 
 	/* set currently active toolbar entries */
 	for (cur = toolbar_list; cur != NULL; cur = cur->next) {
 		ToolbarItem *item = (ToolbarItem*) cur->data;
+
+		gtk_list_store_append(store, &iter);
 	
 		if (item->index != A_SEPARATOR) {
-			gint row_num;
+			GdkPixbuf *pix;
 			StockPixmap icon = stock_pixmap_get_icon(item->file);
 			
-			stock_pixmap_gdk(prefs_toolbar->window, icon,
-					  &xpm, &xpmmask);
-			activ[0] = g_strdup("");
-			activ[1] = g_strdup(item->file);
-			activ[2] = g_strdup(item->text);
-			activ[3] = g_strdup(toolbar_ret_descr_from_val(item->index));
-			row_num  = gtk_clist_append(clist_set, activ);
-			gtk_clist_set_pixmap(clist_set, 
-					      row_num, 0, xpm, xpmmask);
+			stock_pixbuf_gdk(prefs_toolbar->window, icon, &pix);
 
+			gtk_list_store_set(store, &iter, 
+					   SET_ICON, pix,
+					   SET_FILENAME, item->file,
+					   SET_TEXT, item->text,
+					   SET_EVENT, toolbar_ret_descr_from_val(item->index),
+					   SET_ICON_TEXT, NULL,	
+					   SET_ICON_IS_TEXT, FALSE,
+					   -1);
 		} else {
-			activ[0] = g_strdup(SEPARATOR_PIXMAP);
-			activ[1] = g_strdup(toolbar_ret_descr_from_val(A_SEPARATOR));
-			activ[2] = g_strdup("");
-			activ[3] = g_strdup(toolbar_ret_descr_from_val(A_SEPARATOR));
-			gtk_clist_append(clist_set, activ);
+			gtk_list_store_set(store, &iter,
+					   SET_ICON, NULL,
+					   SET_FILENAME, toolbar_ret_descr_from_val(A_SEPARATOR),
+					   SET_TEXT, (const gchar *) "", 
+					   SET_EVENT, toolbar_ret_descr_from_val(A_SEPARATOR),
+					   SET_ICON_TEXT, (const gchar *) SEPARATOR_PIXMAP,
+					   SET_ICON_IS_TEXT, TRUE,
+					   -1);
 		}
-
-		g_free(activ[0]);
-		g_free(activ[1]);
-		g_free(activ[2]);
-		g_free(activ[3]);
 	}
 
-	gtk_clist_thaw(clist_set);
-	gtk_clist_columns_autosize(clist_set);
-	gtk_clist_set_row_height(clist_set, CELL_SPACING);
-	gtk_clist_select_row(clist_set, 0, 0);
+	/* select first */
+	gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter);
+	gtk_tree_selection_select_iter(gtk_tree_view_get_selection
+						(list_view_set),
+				       &iter);	
 }
 
 static void prefs_toolbar_populate(ToolbarPage *prefs_toolbar)
@@ -246,24 +254,27 @@ static void prefs_toolbar_populate(ToolbarPage *prefs_toolbar)
 	gint i;
 	GSList *cur;
 	GList *syl_actions = NULL;
-	GtkCList *clist_icons = GTK_CLIST(prefs_toolbar->clist_icons);
-	GdkPixmap *xpm;
-	GdkBitmap *xpmmask;
-	gchar *avail[2];
+	GtkTreeView *list_view_icons = GTK_TREE_VIEW
+			(prefs_toolbar->list_view_icons);
+	GtkListStore *store = GTK_LIST_STORE(gtk_tree_view_get_model
+						(list_view_icons));			
 	gchar *act;
+	GtkTreeIter iter;
 	
-	gtk_clist_clear(clist_icons);
-	gtk_clist_freeze(clist_icons);
+	gtk_list_store_clear(store);
 
 	/* set available icons */
-	avail[0] = g_strdup(SEPARATOR_PIXMAP);
-	avail[1] = g_strdup(toolbar_ret_descr_from_val(A_SEPARATOR));
-	gtk_clist_append(clist_icons, avail);
-	g_free(avail[0]);
-	g_free(avail[1]);
+	gtk_list_store_append(store, &iter);
+	gtk_list_store_set(store, &iter,
+			   SET_ICON, NULL,
+			   SET_ICON_TEXT, SEPARATOR_PIXMAP,
+			   SET_ICON_IS_TEXT, TRUE,
+			   SET_FILENAME, toolbar_ret_descr_from_val(A_SEPARATOR),
+			   -1);
 
 	prefs_toolbar->combo_action_list = toolbar_get_action_items(prefs_toolbar->source);
-	gtk_combo_set_popdown_strings(GTK_COMBO(prefs_toolbar->combo_action), prefs_toolbar->combo_action_list);
+	gtk_combo_set_popdown_strings(GTK_COMBO(prefs_toolbar->combo_action),	
+				      prefs_toolbar->combo_action_list);
 	gtk_combo_set_value_in_list(GTK_COMBO(prefs_toolbar->combo_action), 0, FALSE);
 	gtk_entry_set_text(GTK_ENTRY(prefs_toolbar->combo_entry), prefs_toolbar->combo_action_list->data);
 
@@ -283,24 +294,23 @@ static void prefs_toolbar_populate(ToolbarPage *prefs_toolbar)
 	}
 
 	for (i = 0; i < STOCK_PIXMAP_SYLPHEED_LOGO; i++) {
+		GdkPixbuf *pixbuf;
 
-		avail[0] = g_strdup("");
-		avail[1] = g_strdup(stock_pixmap_get_name((StockPixmap)i));
-
-		stock_pixmap_gdk(prefs_toolbar->window, i,
-				  &xpm, &xpmmask);
-		gtk_clist_append(clist_icons, avail);
-		gtk_clist_set_pixmap(clist_icons, 
-				       i + 1, 0, xpm, xpmmask);
+		stock_pixbuf_gdk(prefs_toolbar->window, i, &pixbuf);
 		
-		g_free(avail[0]);
-		g_free(avail[1]);
+		gtk_list_store_append(store, &iter);
+		gtk_list_store_set(store, &iter,
+				   SET_ICON, pixbuf,
+				   SET_FILENAME, stock_pixmap_get_name((StockPixmap) i),
+				   SET_ICON_TEXT, NULL,
+				   SET_ICON_IS_TEXT, FALSE,
+				   -1);
  	}
 
-	gtk_clist_thaw(clist_icons);
-	gtk_clist_columns_autosize(clist_icons);
-	gtk_clist_set_row_height(clist_icons, CELL_SPACING);
-	gtk_clist_select_row(clist_icons, 0, 0);
+	gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter);
+	gtk_tree_selection_select_iter(gtk_tree_view_get_selection
+						(list_view_icons),
+				       &iter);		
 
 	prefs_toolbar_set_displayed(prefs_toolbar);
 
@@ -309,27 +319,37 @@ static void prefs_toolbar_populate(ToolbarPage *prefs_toolbar)
 
 static gboolean is_duplicate(ToolbarPage *prefs_toolbar, gchar *chosen_action)
 {
-	GtkCList *clist = GTK_CLIST(prefs_toolbar->clist_set);
+	GtkTreeView *list_view_set = GTK_TREE_VIEW
+					(prefs_toolbar->list_view_set);
+	GtkTreeModel *model_set = gtk_tree_view_get_model(list_view_set);					
 	gchar *entry;
-	gint row = 0;
 	gchar *syl_act = toolbar_ret_descr_from_val(A_SYL_ACTIONS);
+	GtkTreeIter iter;
+	gboolean result;
 
 	g_return_val_if_fail(chosen_action != NULL, TRUE);
-	if (clist->rows == 0) 
+
+	if (!gtk_tree_model_iter_n_children(model_set, NULL))
 		return FALSE;
 	
 	/* allow duplicate entries (A_SYL_ACTIONS) */
 	if (g_utf8_collate(syl_act, chosen_action) == 0)
 		return FALSE;
 
+	if (!gtk_tree_model_get_iter_first(model_set, &iter))
+		return FALSE;
+
+	result = FALSE;
 	do {
-		gtk_clist_get_text(clist, row, 3, &entry);
-		if ( g_utf8_collate(chosen_action, entry) == 0)
-			return TRUE;
-		row++;
-	} while ((gtk_clist_get_text(clist, row, 3, &entry)) && (row <= clist->rows));
-	
-	return FALSE;
+		gtk_tree_model_get(model_set, &iter,
+				   SET_EVENT, &entry, 
+				   -1);
+		if (g_utf8_collate(chosen_action, entry) == 0) 
+			result = TRUE;
+		g_free(entry);			
+	} while (!result && gtk_tree_model_iter_next(model_set, &iter));
+
+	return result;
 }
 
 static void prefs_toolbar_default(GtkButton *button, ToolbarPage *prefs_toolbar)
@@ -339,6 +359,9 @@ static void prefs_toolbar_default(GtkButton *button, ToolbarPage *prefs_toolbar)
 	prefs_toolbar_set_displayed(prefs_toolbar);
 }
 
+/*!
+ *\return	String that should be freed by caller.
+ */
 static void get_action_name(const gchar *entry, gchar **menu)
 {
 	gchar *act, *act_p;
@@ -356,253 +379,248 @@ static void get_action_name(const gchar *entry, gchar **menu)
 
 static void prefs_toolbar_register(GtkButton *button, ToolbarPage *prefs_toolbar)
 {
-	GtkCList *clist_set   = GTK_CLIST(prefs_toolbar->clist_set);
-	GtkCList *clist_icons = GTK_CLIST(prefs_toolbar->clist_icons);
+	GtkTreeView *list_view_set   = GTK_TREE_VIEW(prefs_toolbar->list_view_set);
+	GtkTreeView *list_view_icons = GTK_TREE_VIEW(prefs_toolbar->list_view_icons);
+	GtkTreeModel *model_icons = gtk_tree_view_get_model(list_view_icons);
 	gchar *syl_act = toolbar_ret_descr_from_val(A_SYL_ACTIONS);
-	gint row_icons = 0;
-	gint row_set = 0;
-	GdkPixmap *xpm;
-	GdkBitmap *xpmmask;
-	gchar *item[4] = {NULL, NULL, NULL, NULL};
+	GtkListStore *store_set;
+	GtkTreeIter iter;
+	gchar *fname;
 
-	if (clist_icons->rows == 0) return; 
+	/* move selection in icon list view to set list view */
 
-	if (clist_icons->selection) {
-		if (clist_icons->selection->data) 
-			row_icons = GPOINTER_TO_INT(clist_icons->selection->data);
-	} else
+	if (!gtk_tree_model_iter_n_children(model_icons, NULL))
+		return;
+	
+	if (!gtk_tree_selection_get_selected
+			(gtk_tree_view_get_selection(list_view_icons),
+			 NULL, &iter))
 		return;
 
-	gtk_clist_get_text(clist_icons, row_icons, 1, &item[1]);
-	item[3] = g_strdup(gtk_entry_get_text(GTK_ENTRY(prefs_toolbar->combo_entry)));
-	
+	gtk_tree_model_get(model_icons, &iter,
+			   SET_FILENAME, &fname,
+			   -1);
+
+	store_set = GTK_LIST_STORE(gtk_tree_view_get_model(list_view_set));
+
 	/* SEPARATOR or other ? */
-	if (g_utf8_collate(item[1], toolbar_ret_descr_from_val(A_SEPARATOR)) == 0) {
-		item[0] = g_strdup(SEPARATOR_PIXMAP);
-		item[2] = g_strdup("");
-		item[3] = g_strdup(toolbar_ret_descr_from_val(A_SEPARATOR));
-		
-		row_set = gtk_clist_append(GTK_CLIST(prefs_toolbar->clist_set), item);
-
-		g_free(item[0]);
+	if (g_utf8_collate(fname, toolbar_ret_descr_from_val(A_SEPARATOR)) == 0) {
+		gtk_list_store_append(store_set, &iter);
+		gtk_list_store_set(store_set, &iter,
+				   SET_ICON, NULL,
+				   SET_FILENAME, NULL,
+				   SET_TEXT, NULL,
+				   SET_EVENT, toolbar_ret_descr_from_val(A_SEPARATOR),
+				   SET_ICON_TEXT, (const gchar *) SEPARATOR_PIXMAP,
+				   SET_ICON_IS_TEXT, TRUE,
+				   -1);
 	} else {
+		GdkPixbuf *pixbuf;
+		gchar *event, *text;
+		
+		event = g_strdup(gtk_entry_get_text
+				(GTK_ENTRY(prefs_toolbar->combo_entry)));
 
-		if (is_duplicate(prefs_toolbar, item[3])) {
+		if (is_duplicate(prefs_toolbar, event)) {
 			alertpanel_error(ERROR_MSG);
-			g_free(item[3]);
+			g_free(event);
+			g_free(fname);
 			return;
 		}
 
-		stock_pixmap_gdk(prefs_toolbar->window, stock_pixmap_get_icon(item[1]),
-				  &xpm, &xpmmask);
+		stock_pixbuf_gdk(prefs_toolbar->window, 
+				 stock_pixmap_get_icon(fname),
+				 &pixbuf);
 
-		if (g_utf8_collate(item[3], syl_act) == 0) {
-
+		if (g_utf8_collate(event, syl_act) == 0) {
 			const gchar *entry = gtk_entry_get_text(GTK_ENTRY(prefs_toolbar->combo_syl_entry));
-			get_action_name(entry, &item[2]);
-		}
-		else {
-			item[2] = g_strdup(gtk_entry_get_text(GTK_ENTRY(prefs_toolbar->entry_icon_text)));
-		}
+			get_action_name(entry, &text);
+		} else
+			text = gtk_editable_get_chars
+				(GTK_EDITABLE(prefs_toolbar->entry_icon_text), 0, -1);
 
-		row_set = gtk_clist_append(GTK_CLIST(prefs_toolbar->clist_set), item);
-		gtk_clist_set_pixmap(clist_set, row_set, 0, xpm, xpmmask);
+		gtk_list_store_append(store_set, &iter);
+		gtk_list_store_set(store_set, &iter,
+				   SET_ICON, pixbuf,
+				   SET_FILENAME, fname,
+				   SET_TEXT, text,
+				   SET_EVENT, event,
+				   SET_ICON_TEXT, NULL,
+				   SET_ICON_IS_TEXT, FALSE,
+				   -1);
+		g_free(text);
+		g_free(event);
 	}
 
-	gtk_clist_moveto(clist_set, row_set, 0, row_set/clist_set->rows, 0);
-	gtk_clist_select_row(clist_set, row_set, 0);
-
-	g_free(item[2]);
-	g_free(item[3]);
+	g_free(fname);
+	
+	gtk_tree_selection_select_iter(gtk_tree_view_get_selection
+						(list_view_set),
+				       &iter);
 }
 
 static void prefs_toolbar_substitute(GtkButton *button, ToolbarPage *prefs_toolbar)
 {
-	GtkCList *clist_set   = GTK_CLIST(prefs_toolbar->clist_set);
-	GtkCList *clist_icons = GTK_CLIST(prefs_toolbar->clist_icons);
+	GtkTreeView *list_view_set   = GTK_TREE_VIEW(prefs_toolbar->list_view_set);
+	GtkTreeView *list_view_icons = GTK_TREE_VIEW(prefs_toolbar->list_view_icons);
+	GtkTreeModel *model_icons = gtk_tree_view_get_model(list_view_icons);
+	GtkListStore *store_set   = GTK_LIST_STORE(gtk_tree_view_get_model(list_view_set));
 	gchar *syl_act = toolbar_ret_descr_from_val(A_SYL_ACTIONS);
-	gint row_icons = 0;
-	gint row_set = 0;
-	GdkPixmap *xpm;
-	GdkBitmap *xpmmask;
-	gchar *item[4] = {NULL, NULL, NULL, NULL};
-	gchar *ac_set;
+	GtkTreeSelection *sel_icons;
+	GtkTreeSelection *sel_set;
+	GtkTreeIter iter_icons;
+	GtkTreeIter iter_set;
+	gchar *icon_fname;
 
-	/* no rows or nothing selected */
-	if ((clist_set->rows == 0) || (clist_set->selection == 0)) return; 
+	/* replace selection in set list with the one in icon list */
 
-	if (clist_icons->selection) {
-		if (clist_icons->selection->data) 
-			row_icons = GPOINTER_TO_INT(clist_icons->selection->data);
-	} else
+	if (!gtk_tree_model_iter_n_children(GTK_TREE_MODEL(store_set), NULL))
 		return;
-	
-	if (clist_set->selection) {
-		if (clist_set->selection->data) 
-			row_set = GPOINTER_TO_INT(clist_set->selection->data);
-	} else
+		
+	sel_icons = gtk_tree_view_get_selection(list_view_icons);
+	if (!gtk_tree_selection_get_selected(sel_icons, NULL, &iter_icons))
 		return;
+		
+	sel_set = gtk_tree_view_get_selection(list_view_set);		
+	if (!gtk_tree_selection_get_selected(sel_set, NULL, &iter_set))
+		return;
+
+	gtk_tree_model_get(model_icons, &iter_icons, 
+			   SET_FILENAME, &icon_fname, 
+			   -1);
 	
-	gtk_clist_get_text(clist_icons, row_icons, 1, &item[1]);
-	gtk_clist_get_text(clist_set, row_set, 3, &ac_set);
-	item[3] = g_strdup(gtk_entry_get_text(GTK_ENTRY(prefs_toolbar->combo_entry)));
-
-	if (g_utf8_collate(item[1], toolbar_ret_descr_from_val(A_SEPARATOR)) == 0) {
-		item[0] = g_strdup(SEPARATOR_PIXMAP);
-		item[2] = g_strdup("");
-		item[3] = g_strdup(toolbar_ret_descr_from_val(A_SEPARATOR));
-
-		gtk_clist_remove(clist_set, row_set);
-		row_set = gtk_clist_insert(clist_set, row_set, item);
-
-		g_free(item[0]);
+	if (g_utf8_collate(icon_fname, toolbar_ret_descr_from_val(A_SEPARATOR)) == 0) {
+		gtk_list_store_set(store_set, &iter_set, 
+				   SET_ICON, NULL,
+				   SET_TEXT, NULL,
+				   SET_EVENT, toolbar_ret_descr_from_val(A_SEPARATOR),
+				   SET_FILENAME, icon_fname,
+				   SET_ICON_TEXT, (const gchar *) SEPARATOR_PIXMAP,
+				   SET_ICON_IS_TEXT, TRUE,
+				   -1);
 	} else {
+		GdkPixbuf *pixbuf;
+		gchar *icon_event, *set_event, *text;
 
-		if ((is_duplicate(prefs_toolbar, item[3])) && (g_utf8_collate(item[3], ac_set) != 0)){
+		icon_event = gtk_editable_get_chars
+				(GTK_EDITABLE(prefs_toolbar->combo_entry), 
+				 0, -1);
+
+		gtk_tree_model_get(GTK_TREE_MODEL(store_set), &iter_set, 
+						  SET_EVENT, &set_event,
+						  -1);
+
+		if (is_duplicate(prefs_toolbar, icon_event) 
+		&&  g_utf8_collate(icon_event, set_event) != 0){
 			alertpanel_error(ERROR_MSG);
-			g_free(item[3]);
+			g_free(set_event);
+			g_free(icon_event);
+			g_free(icon_fname);
 			return;
 		}
 
-		stock_pixmap_gdk(prefs_toolbar->window, stock_pixmap_get_icon(item[1]),
-				  &xpm, &xpmmask);
+		stock_pixbuf_gdk(prefs_toolbar->window, 
+				 stock_pixmap_get_icon(icon_fname),
+				 &pixbuf);
 
-		if (g_utf8_collate(item[3], syl_act) == 0) {
+		if (g_utf8_collate(icon_event, syl_act) == 0) {
 			const gchar *entry = gtk_entry_get_text(GTK_ENTRY(prefs_toolbar->combo_syl_entry));
-			get_action_name(entry, &item[2]);
+			get_action_name(entry, &text);
 		} else {
-			item[2] = g_strdup(gtk_entry_get_text(GTK_ENTRY(prefs_toolbar->entry_icon_text)));
+			text = gtk_editable_get_chars(GTK_EDITABLE(prefs_toolbar->entry_icon_text),
+						      0, -1);
 		}
 
-		gtk_clist_remove(clist_set, row_set);
-		row_set = gtk_clist_insert(clist_set, row_set, item);
-		gtk_clist_set_pixmap(clist_set, row_set, 0, xpm, xpmmask);
+		/* change the row */
+		gtk_list_store_set(store_set, &iter_set,
+				   SET_ICON, pixbuf,
+				   SET_FILENAME, icon_fname,
+				   SET_TEXT, text,
+				   SET_EVENT, icon_event,
+				   SET_ICON_TEXT, NULL,
+				   SET_ICON_IS_TEXT, FALSE,
+				   -1);
+	
+		g_free(icon_event);
+		g_free(set_event);
+		g_free(text);
 	}
 	
-	gtk_clist_moveto(clist_set, row_set, 0, row_set/clist_set->rows, 0);
-	gtk_clist_select_row(clist_set, row_set, 0);
-
-	g_free(item[2]);
-	g_free(item[3]);
+	g_free(icon_fname);
 }
 
 static void prefs_toolbar_delete(GtkButton *button, ToolbarPage *prefs_toolbar)
 {
-	GtkCList *clist_set = GTK_CLIST(prefs_toolbar->clist_set);
-	gint row_set = 0;
+	GtkTreeView *list_view_set = GTK_TREE_VIEW(prefs_toolbar->list_view_set);
+	GtkListStore *store_set = GTK_LIST_STORE(gtk_tree_view_get_model
+							(list_view_set));
+	GtkTreeIter iter_set;							
 
-	if (clist_set->rows == 0) return; 
-	if (clist_set->selection) {
-		if (clist_set->selection->data) 
-			row_set = GPOINTER_TO_INT(clist_set->selection->data);
-	} else
+	if (!gtk_tree_model_iter_n_children(GTK_TREE_MODEL(store_set), NULL))
 		return;
 	
-	if (clist_set->row_list != NULL) {
-			
-		row_set = GPOINTER_TO_INT(clist_set->selection->data);
-		gtk_clist_remove(clist_set, row_set);
-		gtk_clist_columns_autosize(clist_set);
-		
-		if (clist_set->rows > 0)
-			gtk_clist_select_row(clist_set,(row_set == 0) ? 0:row_set - 1, 0);
-	}
+	if (!gtk_tree_selection_get_selected(gtk_tree_view_get_selection
+							(list_view_set),
+					     NULL,
+					     &iter_set))
+		return;					     
+	
+	gtk_list_store_remove(store_set, &iter_set);
+
+	/* XXX: may need to select a list item */
 }
 
 static void prefs_toolbar_up(GtkButton *button, ToolbarPage *prefs_toolbar)
 {
-	GtkCList *clist = GTK_CLIST(prefs_toolbar->clist_set);
-	gint row = 0;
+	GtkTreePath *prev, *sel;
+	GtkTreeIter isel;
+	GtkListStore *store;
+	GtkTreeIter iprev;
+	
+	if (!gtk_tree_selection_get_selected
+		(gtk_tree_view_get_selection
+			(GTK_TREE_VIEW(prefs_toolbar->list_view_set)),
+		 (GtkTreeModel **) &store,	
+		 &isel))
+		return;
 
-	if (!clist->selection) return;
-	if (clist->selection->data)
-		row = GPOINTER_TO_INT(clist->selection->data);
-
-	if (row >= 0) {
-		gtk_clist_row_move(clist, row, row - 1);
-		if(gtk_clist_row_is_visible(clist, row - 1) != GTK_VISIBILITY_FULL) {
-			gtk_clist_moveto(clist, row - 1, 0, 0, 0);
-		} 
+	sel = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &isel);
+	if (!sel)
+		return;
+	
+	/* no move if we're at row 0... */
+	prev = gtk_tree_path_copy(sel);
+	if (!gtk_tree_path_prev(prev)) {
+		gtk_tree_path_free(prev);
+		gtk_tree_path_free(sel);
+		return;
 	}
+
+	gtk_tree_model_get_iter(GTK_TREE_MODEL(store),
+				&iprev, prev);
+	gtk_tree_path_free(sel);
+	gtk_tree_path_free(prev);
+
+	gtk_list_store_swap(store, &iprev, &isel);
 }
 
 static void prefs_toolbar_down(GtkButton *button, ToolbarPage *prefs_toolbar)
 {
-	GtkCList *clist = GTK_CLIST(prefs_toolbar->clist_set);
-	gint row = 0;
-
-	if (!clist->selection) return;
-	if (clist->selection->data)
-		row = GPOINTER_TO_INT(clist->selection->data);
-
-	if (row >= 0 && row < clist->rows - 1) {
-		gtk_clist_row_move(clist, row, row + 1);
-		if(gtk_clist_row_is_visible(clist, row + 1) != GTK_VISIBILITY_FULL) {
-			gtk_clist_moveto(clist, row + 1, 0, 1, 0);
-		} 
-	}
-}
-
-static void prefs_toolbar_select_row_set(GtkCList *clist, gint row, gint column,
-					 GdkEvent *event, ToolbarPage *prefs_toolbar)
-{
-	GtkCList *clist_ico = GTK_CLIST(prefs_toolbar->clist_icons);
-	gchar *syl_act = toolbar_ret_descr_from_val(A_SYL_ACTIONS);
-	gint row_set = 0;
-	gint row_ico = 0;
-	gint item_num = 0;
-	gchar *file, *icon_text, *descr, *entry;
-	GList *cur;
-
-	if (clist->selection->data) 
-		row_set = GPOINTER_TO_INT(clist->selection->data);	
-
-	gtk_clist_get_text(clist, row_set, 1, &file);
-	gtk_clist_get_text(clist, row_set, 2, &icon_text);
-	gtk_clist_get_text(clist, row_set, 3, &descr);
-
-	if (g_utf8_collate(descr, syl_act) != 0)
-		gtk_entry_set_text(GTK_ENTRY(prefs_toolbar->entry_icon_text), icon_text);
+	GtkListStore *store;
+	GtkTreeIter next, sel;
 	
-	/* scan combo list for selected description an set combo item accordingly */
-	for (cur = prefs_toolbar->combo_action_list; cur != NULL; cur = cur->next) {
-		gchar *item_str = (gchar*)cur->data;
-		if (g_utf8_collate(item_str, descr) == 0) {
-			gtk_list_select_item(GTK_LIST(prefs_toolbar->combo_list), item_num);
-			break;
-		}
-		else
-			item_num++;
-	}
+	if (!gtk_tree_selection_get_selected
+		(gtk_tree_view_get_selection
+			(GTK_TREE_VIEW(prefs_toolbar->list_view_set)),
+		 (GtkTreeModel **) &store,
+		 &sel))
+		return;
 
-	do {
-		gtk_clist_get_text(clist_ico, row_ico, 1, &entry);
-		row_ico++;
-	} while(g_utf8_collate(entry, file) != 0);
-	
-	gtk_clist_select_row(clist_ico, row_ico - 1, 0);
-	gtk_clist_moveto(clist_ico, row_ico - 1, 0, row_ico/clist_ico->rows, 0);
-}
+	next = sel;
+	if (!gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &next)) 
+		return;
 
-static void prefs_toolbar_select_row_icons(GtkCList *clist, gint row, gint column,
-					   GdkEvent *event, ToolbarPage *prefs_toolbar)
-{
-	GtkCList *clist_icons = GTK_CLIST(prefs_toolbar->clist_icons);
-	gchar *text;
-	
-	gtk_clist_get_text(clist_icons, row, 1, &text);
-
-	if (!text) return;
-
-	if (g_utf8_collate(toolbar_ret_descr_from_val(A_SEPARATOR), text) == 0) {
-		gtk_widget_set_sensitive(prefs_toolbar->combo_action,     FALSE);
-		gtk_widget_set_sensitive(prefs_toolbar->entry_icon_text,  FALSE);
-		gtk_widget_set_sensitive(prefs_toolbar->combo_syl_action, FALSE);
-	} else {
-		gtk_widget_set_sensitive(prefs_toolbar->combo_action,     TRUE);
-		gtk_widget_set_sensitive(prefs_toolbar->entry_icon_text,  TRUE);
-		gtk_widget_set_sensitive(prefs_toolbar->combo_syl_action, TRUE);
-	}
+	gtk_list_store_swap(store, &next, &sel);
 }
 
 static void prefs_toolbar_selection_changed(GtkList *list,
@@ -647,8 +665,8 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	GtkWidget *default_btn;
 	GtkWidget *vbox_frame;
 	GtkWidget *table;
-	GtkWidget *scrolledwindow_clist_icon;
-	GtkWidget *clist_icons;
+	GtkWidget *scrolledwindow_list_view_icons;
+	GtkWidget *list_view_icons;
 	GtkWidget *label_icon_text;
 	GtkWidget *entry_icon_text;
 	GtkWidget *label_action_sel;
@@ -661,14 +679,12 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	GtkWidget *combo_syl_list;
 	GtkWidget *frame_toolbar_items;
 	GtkWidget *hbox_bottom;
-	GtkWidget *scrolledwindow_clist_set;
-	GtkWidget *clist_set;
+	GtkWidget *scrolledwindow_list_view_set;
+	GtkWidget *list_view_set;
 
 	GtkWidget *btn_vbox;
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
-	
-	gchar *titles[N_DISPLAYED_ITEMS_COLS];
  
 	debug_print("Creating custom toolbar window...\n");
 
@@ -686,19 +702,17 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	gtk_container_add(GTK_CONTAINER(compose_frame), vbox_frame);
 	
 	/* available icons */
-	scrolledwindow_clist_icon = gtk_scrolled_window_new(NULL, NULL);
-	gtk_container_set_border_width(GTK_CONTAINER(scrolledwindow_clist_icon), 5);
-	gtk_container_add(GTK_CONTAINER(vbox_frame), scrolledwindow_clist_icon);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow_clist_icon), 
-					GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	scrolledwindow_list_view_icons = gtk_scrolled_window_new(NULL, NULL);
+	gtk_container_set_border_width(GTK_CONTAINER(scrolledwindow_list_view_icons), 5);
+	gtk_container_add(GTK_CONTAINER(vbox_frame), scrolledwindow_list_view_icons);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow_list_view_icons), 
+				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	
-	clist_icons = gtk_clist_new(2);
-	gtk_container_add(GTK_CONTAINER(scrolledwindow_clist_icon), clist_icons);
-	gtk_container_set_border_width(GTK_CONTAINER(clist_icons), 1);
-	gtk_clist_set_column_width(GTK_CLIST(clist_icons), 0, 35);
-	gtk_clist_set_column_width(GTK_CLIST(clist_icons), 1, 200);
-	gtk_clist_column_titles_hide(GTK_CLIST(clist_icons));
-	gtk_widget_set_usize(clist_icons, 225, 108); 
+	list_view_icons = create_icon_list_view(prefs_toolbar);
+	gtk_widget_show(list_view_icons);
+	gtk_container_add(GTK_CONTAINER(scrolledwindow_list_view_icons), list_view_icons);
+	gtk_container_set_border_width(GTK_CONTAINER(list_view_icons), 1);
+	gtk_widget_set_usize(list_view_icons, 225, 108); 
 
 	table = gtk_table_new (2, 3, FALSE);
 	gtk_container_add (GTK_CONTAINER (vbox_frame), table);
@@ -765,7 +779,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	btn_hbox = gtk_hbox_new(TRUE, 4);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_with_label(_("Add"));
+	reg_btn = gtk_button_new_from_stock(GTK_STOCK_ADD);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(reg_btn), "clicked",
 			 G_CALLBACK(prefs_toolbar_register), 
@@ -777,7 +791,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 			 G_CALLBACK(prefs_toolbar_substitute),
 			 prefs_toolbar);
 
-	del_btn = gtk_button_new_with_label(_("Delete"));
+	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
 			 G_CALLBACK(prefs_toolbar_delete), 
@@ -797,45 +811,29 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	hbox_bottom = gtk_hbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(frame_toolbar_items), hbox_bottom);
 	
-	scrolledwindow_clist_set = gtk_scrolled_window_new(NULL, NULL);
-	gtk_box_pack_start(GTK_BOX(hbox_bottom), scrolledwindow_clist_set, TRUE, TRUE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(scrolledwindow_clist_set), 1);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow_clist_icon), 
+	scrolledwindow_list_view_set = gtk_scrolled_window_new(NULL, NULL);
+	gtk_box_pack_start(GTK_BOX(hbox_bottom), scrolledwindow_list_view_set, TRUE, TRUE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(scrolledwindow_list_view_set), 1);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow_list_view_icons), 
 					GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-	titles[COL_ICON]     = _("Icon");
-	titles[COL_FILENAME] = _("File name");
-	titles[COL_TEXT]     = _("Icon text");
-	titles[COL_EVENT]    = _("Mapped event");
-	
-	clist_set = gtk_clist_new_with_titles(N_DISPLAYED_ITEMS_COLS, titles);
-	gtk_widget_show(clist_set);
-	gtk_container_add(GTK_CONTAINER(scrolledwindow_clist_set), clist_set);
-	gtk_clist_set_column_width(GTK_CLIST(clist_set), COL_ICON    , 80);
-	gtk_clist_set_column_width(GTK_CLIST(clist_set), COL_FILENAME, 80);
-	gtk_clist_set_column_width(GTK_CLIST(clist_set), COL_TEXT    , 80);
-	gtk_clist_set_column_width(GTK_CLIST(clist_set), COL_EVENT   , 80);
-	gtk_clist_column_titles_show(GTK_CLIST(clist_set));
-	gtk_widget_set_usize(clist_set, 225, 120);
+	list_view_set = create_set_list_view(prefs_toolbar); 
+	gtk_widget_show(list_view_set);
+	gtk_container_add(GTK_CONTAINER(scrolledwindow_list_view_set), list_view_set);
+	gtk_widget_set_usize(list_view_set, 225, 120);
 
 	btn_vbox = gtk_vbox_new(FALSE, 8);
 	gtk_widget_show(btn_vbox);
 	gtk_box_pack_start(GTK_BOX(hbox_bottom), btn_vbox, FALSE, FALSE, 5);
 
-	up_btn = gtk_button_new_with_label(_("Up"));
+	up_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
 	gtk_widget_show(up_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, FALSE, 2);
 
-	down_btn = gtk_button_new_with_label(_("Down"));
+	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
 	gtk_widget_show(down_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
 
-	g_signal_connect(G_OBJECT(clist_set), "select_row",
-			 G_CALLBACK(prefs_toolbar_select_row_set),
-			 prefs_toolbar);
-	g_signal_connect(G_OBJECT(clist_icons), "select_row",
-			 G_CALLBACK(prefs_toolbar_select_row_icons),
-			 prefs_toolbar);
 	g_signal_connect(G_OBJECT(combo_list), "selection-changed",
 			 G_CALLBACK(prefs_toolbar_selection_changed),
 			 prefs_toolbar);
@@ -846,8 +844,8 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	
 	gtk_widget_show_all(main_vbox);
 
-	prefs_toolbar->clist_icons      = clist_icons;
-	prefs_toolbar->clist_set        = clist_set;
+	prefs_toolbar->list_view_icons  = list_view_icons;
+	prefs_toolbar->list_view_set    = list_view_set;
 	prefs_toolbar->combo_action     = combo_action;
 	prefs_toolbar->combo_entry      = combo_entry;
 	prefs_toolbar->combo_list       = combo_list;
@@ -919,4 +917,287 @@ void prefs_toolbar_done(void)
 	g_free(prefs_toolbar_composewindow);
 	prefs_gtk_unregister_page((PrefsPage *) prefs_toolbar_messageview);
 	g_free(prefs_toolbar_messageview);
+}
+
+static void set_visible_if_not_text(GtkTreeViewColumn *col,
+				    GtkCellRenderer   *renderer,
+			            GtkTreeModel      *model,
+				    GtkTreeIter       *iter,
+				    gpointer           user_data)
+{
+	gboolean is_text;
+	GdkPixbuf *pixbuf;
+
+	gtk_tree_model_get(model, iter, SET_ICON_IS_TEXT, &is_text, -1);
+	if (is_text) {
+		g_object_set(renderer, "visible", FALSE, NULL); 
+	} else {
+		pixbuf = NULL;
+		gtk_tree_model_get(model, iter, 
+				   SET_ICON, &pixbuf,
+				   -1);
+		/* note getting a pixbuf from a tree model increases
+		 * its refcount ... */
+		g_object_unref(pixbuf);
+		
+		g_object_set(renderer, "visible", TRUE, NULL);
+		g_object_set(renderer, "pixbuf",  pixbuf, NULL);
+	}
+}
+
+static GtkWidget *create_icon_list_view(ToolbarPage *prefs_toolbar)
+{
+	GtkTreeView *list_view;
+	GtkListStore *store;
+	GtkCellRenderer *renderer;
+	GtkTreeViewColumn *column;
+	GtkTreeSelection *selector;
+
+	/* XXX: for icon list we don't need SET_TEXT, and SET_EVENT */
+	store = gtk_list_store_new(N_SET_COLUMNS, 
+				   GDK_TYPE_PIXBUF,
+				   G_TYPE_STRING,
+				   G_TYPE_STRING,
+				   G_TYPE_STRING,
+				   G_TYPE_STRING,
+				   G_TYPE_BOOLEAN,
+				   -1);
+	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(GTK_TREE_MODEL(store)));
+	g_object_unref(G_OBJECT(store));
+
+	column = gtk_tree_view_column_new();
+	renderer = gtk_cell_renderer_pixbuf_new();
+	gtk_tree_view_column_pack_start(column, renderer, FALSE);
+	
+	/* tell pixbuf renderer it is only visible if 
+	 * the icon is not represented by text */
+	gtk_tree_view_column_set_cell_data_func(column, renderer,
+						set_visible_if_not_text,
+						NULL, NULL);
+	
+	renderer = gtk_cell_renderer_text_new();
+	gtk_tree_view_column_pack_start(column, renderer, FALSE);
+	
+	/* tell the text renderer it is only visible if the icon
+	 * is represented by an image */
+	gtk_tree_view_column_set_attributes(column, renderer,
+					    "visible", SET_ICON_IS_TEXT, 
+					    "text", SET_ICON_TEXT,
+					    NULL);
+
+	gtk_tree_view_append_column(list_view, column);
+
+	column = gtk_tree_view_column_new();
+	renderer = gtk_cell_renderer_text_new();
+	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_set_attributes(column, renderer,
+					    "text", SET_FILENAME,
+					    NULL);
+	
+	gtk_tree_view_append_column(list_view, column);
+
+	/* various other tree view attributes */
+	gtk_tree_view_set_rules_hint(list_view, TRUE);
+	gtk_tree_view_set_headers_visible(list_view, FALSE);
+	
+	selector = gtk_tree_view_get_selection(list_view);
+	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
+	gtk_tree_selection_set_select_function
+		(selector, (GtkTreeSelectionFunc) icon_list_selected,
+	         prefs_toolbar, NULL);
+
+	return GTK_WIDGET(list_view);	
+}
+
+static GtkWidget *create_set_list_view(ToolbarPage *prefs_toolbar)
+{
+	GtkTreeView *list_view;
+	GtkListStore *store;
+	GtkCellRenderer *renderer;
+	GtkTreeViewColumn *column;
+	GtkTreeSelection *selector;
+
+	store = gtk_list_store_new(N_SET_COLUMNS, 
+				   GDK_TYPE_PIXBUF,
+				   G_TYPE_STRING,
+				   G_TYPE_STRING,
+				   G_TYPE_STRING,
+				   G_TYPE_STRING,
+				   G_TYPE_BOOLEAN,
+				   -1);
+	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(GTK_TREE_MODEL(store)));
+	g_object_unref(G_OBJECT(store));
+
+	column = gtk_tree_view_column_new();
+	gtk_tree_view_column_set_title(column, _("Icon"));
+	renderer = gtk_cell_renderer_pixbuf_new();
+	gtk_tree_view_column_pack_start(column, renderer, FALSE);
+	
+	/* tell pixbuf renderer it is only visible if 
+	 * the icon is not represented by text */
+	gtk_tree_view_column_set_cell_data_func(column, renderer,
+						set_visible_if_not_text,
+						NULL, NULL);
+	
+	renderer = gtk_cell_renderer_text_new();
+	gtk_tree_view_column_pack_start(column, renderer, FALSE);
+	
+	/* tell the text renderer it is only visible if the icon
+	 * is represented by an image */
+	gtk_tree_view_column_set_attributes(column, renderer,
+					    "visible", SET_ICON_IS_TEXT,
+					    "text", SET_ICON_TEXT,
+					    NULL);
+
+	gtk_tree_view_append_column(list_view, column);
+
+	column = gtk_tree_view_column_new();
+	gtk_tree_view_column_set_title(column, _("File name"));
+	renderer = gtk_cell_renderer_text_new();
+	gtk_tree_view_column_pack_start(column, renderer, FALSE);
+	gtk_tree_view_column_set_attributes(column, renderer,
+					    "text", SET_FILENAME,
+					    NULL);
+	
+	gtk_tree_view_append_column(list_view, column);
+
+	column = gtk_tree_view_column_new();
+	gtk_tree_view_column_set_title(column, _("Icon text"));
+	renderer = gtk_cell_renderer_text_new();
+	gtk_tree_view_column_pack_start(column, renderer, FALSE);
+	gtk_tree_view_column_set_attributes(column, renderer,
+					    "text", SET_TEXT,
+					    NULL);
+	gtk_tree_view_append_column(list_view, column);
+
+	column = gtk_tree_view_column_new();
+	gtk_tree_view_column_set_title(column, _("Mapped event"));
+	renderer = gtk_cell_renderer_text_new();
+	gtk_tree_view_column_pack_start(column, renderer, FALSE);
+	gtk_tree_view_column_set_attributes(column, renderer,
+					    "text", SET_EVENT,
+					    NULL);
+	gtk_tree_view_append_column(list_view, column);
+
+	/* various other tree view attributes */
+	gtk_tree_view_set_rules_hint(list_view, TRUE);
+	
+	selector = gtk_tree_view_get_selection(list_view);
+	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
+	gtk_tree_selection_set_select_function
+		(selector, (GtkTreeSelectionFunc) set_list_selected,
+	         prefs_toolbar, NULL);
+
+	return GTK_WIDGET(list_view);	
+
+}
+
+static gboolean icon_list_selected(GtkTreeSelection *selector,
+			           GtkTreeModel *model, 
+				   GtkTreePath *path,
+				   gboolean currently_selected,
+				   ToolbarPage *prefs_toolbar)
+{
+	GtkTreeIter iter;
+	GtkTreeView *list_ico = gtk_tree_selection_get_tree_view(selector);
+	gchar *text;
+	
+	if (currently_selected ||!gtk_tree_model_get_iter(model, &iter, path))
+		return TRUE;
+
+	text = NULL;
+	gtk_tree_model_get(model, &iter, 
+			   SET_FILENAME, &text,
+			   -1);
+	if (!text) 
+		return TRUE;
+
+	if (g_utf8_collate(toolbar_ret_descr_from_val(A_SEPARATOR), text) == 0) {
+		gtk_widget_set_sensitive(prefs_toolbar->combo_action,     FALSE);
+		gtk_widget_set_sensitive(prefs_toolbar->entry_icon_text,  FALSE);
+		gtk_widget_set_sensitive(prefs_toolbar->combo_syl_action, FALSE);
+	} else {
+		gtk_widget_set_sensitive(prefs_toolbar->combo_action,     TRUE);
+		gtk_widget_set_sensitive(prefs_toolbar->entry_icon_text,  TRUE);
+		gtk_widget_set_sensitive(prefs_toolbar->combo_syl_action, TRUE);
+	}
+	
+	g_free(text);
+
+	return TRUE;
+}
+
+static gboolean set_list_selected(GtkTreeSelection *selector,
+			          GtkTreeModel *model, 
+				  GtkTreePath *path,
+				  gboolean currently_selected,
+				  ToolbarPage *prefs_toolbar)
+{
+	GtkTreeIter iter;
+	GtkTreeView *list_ico = GTK_TREE_VIEW(prefs_toolbar->list_view_icons);
+	GtkTreeView *list_set = GTK_TREE_VIEW(prefs_toolbar->list_view_set);
+	gchar *syl_act;
+	gchar *file, *icon_text, *descr;
+	GList *cur;
+	gint item_num;
+	GtkTreeModel *model_ico;
+	
+	if (currently_selected ||!gtk_tree_model_get_iter(model, &iter, path))
+		return TRUE;
+	
+	gtk_tree_model_get(model, &iter,
+			   SET_FILENAME, &file,
+			   SET_TEXT, &icon_text,
+			   SET_EVENT, &descr,
+			   -1);
+
+	if (g_utf8_collate(descr, syl_act)) 
+		gtk_entry_set_text(GTK_ENTRY(prefs_toolbar->entry_icon_text), 
+				   icon_text);
+	
+	/* scan combo list for selected description an set combo item accordingly */
+	for (cur = prefs_toolbar->combo_action_list, item_num = 0; cur != NULL; 
+	     cur = cur->next) {
+		gchar *item_str = (gchar*)cur->data;
+		if (g_utf8_collate(item_str, descr) == 0) {
+			gtk_list_select_item(GTK_LIST(prefs_toolbar->combo_list), item_num);
+			break;
+		}
+		else
+			item_num++;
+	}
+
+	model_ico = gtk_tree_view_get_model(list_ico);
+	if (gtk_tree_model_get_iter_first(model_ico, &iter)) {
+		gchar *entry;
+		gboolean found = FALSE;
+		
+		/* find in icon list, scroll to item */
+		do {
+			entry = NULL;
+			gtk_tree_model_get(model_ico, &iter,
+					   SET_FILENAME, &entry,
+					   -1);
+			found = entry && !g_utf8_collate(entry, file);
+			g_free(entry);
+			if (found) 
+				break;
+		} while(gtk_tree_model_iter_next(model_ico, &iter));
+
+		if (found) {
+			GtkTreePath *path;
+
+			gtk_tree_selection_select_iter
+				(gtk_tree_view_get_selection(list_ico), &iter);	
+			path = gtk_tree_model_get_path(model_ico, &iter); 
+			gtk_tree_view_set_cursor(list_ico, path, NULL, FALSE);
+			gtk_tree_path_free(path);
+		}
+	}
+
+	g_free(file);
+	g_free(icon_text);
+	g_free(descr);
+
+	return TRUE;
 }

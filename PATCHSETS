@@ -320,3 +320,4 @@
 ( cvs diff -u -r 1.1.4.9 -r 1.1.4.10 src/prefs_filtering_action.c; cvs diff -u -r 1.59.2.12 -r 1.59.2.13 src/prefs_filtering.c; ) > 0.9.13cvs29.2.patchset
 ( cvs diff -u -r 1.12.2.3 -r 1.12.2.4 src/html.c; cvs diff -u -r 1.3 -r 1.4 src/html.h; cvs diff -u -r 1.16.2.11 -r 1.16.2.12 src/msgcache.c; cvs diff -u -r 1.100.2.10 -r 1.100.2.11 AUTHORS; cvs diff -u -r 1.1 -r 1.2 tools/calypso_convert.pl; ) > 0.9.13cvs32.1.patchset
 ( cvs diff -u -r 1.12.2.4 -r 1.12.2.5 src/html.c; cvs diff -u -r 1.16.2.12 -r 1.16.2.13 src/msgcache.c; ) > 0.9.13cvs33.1.patchset
+( cvs diff -u -r 1.30.2.7 -r 1.30.2.8 src/prefs_toolbar.c; ) > 0.9.13cvs33.2.patchset
