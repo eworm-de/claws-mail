@@ -294,6 +294,7 @@ gboolean matcherprop_match_execute(MatcherProp * prop, MsgInfo * info)
 {
 	gchar * file;
 	gchar * cmd;
+	gint retval;
 
 	file = procmsg_get_message_file(info);
 	if (file == NULL)
@@ -303,7 +304,10 @@ gboolean matcherprop_match_execute(MatcherProp * prop, MsgInfo * info)
 	if (cmd == NULL)
 		return FALSE;
 
-	return (system(cmd) == 0);
+	retval = system(cmd);
+	debug_print(_("Command exit code: %i\n"), retval);
+
+	return (retval == 0);
 }
 
 /* match a message and his headers, hlist can be NULL if you don't
@@ -846,6 +850,9 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 	case MATCHCRITERIA_FORWARDED:
 	case MATCHCRITERIA_NOT_FORWARDED:
 		return g_strdup(criteria_str);
+	case MATCHCRITERIA_EXECUTE:
+	case MATCHCRITERIA_NOT_EXECUTE:
+		return g_strdup_printf("%s \"%s\"", criteria_str, matcher->expr);
 	}
 
 	matchtype_str = NULL;
