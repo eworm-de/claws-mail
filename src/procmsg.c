@@ -639,7 +639,7 @@ void procmsg_empty_all_trash(void)
  */
 gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 {
-	gint ret = 1, count = 0;
+	gint sent = 0, err = 0;
 	GSList *list, *elem;
 
 	if (!queue)
@@ -660,7 +660,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 				if (procmsg_send_message_queue(file) < 0) {
 					g_warning("Sending queued message %d failed.\n", 
 						  msginfo->msgnum);
-					ret = -1;
+					err++;
 				} else {
 					/* CLAWS: 
 					 * We save in procmsg_send_message_queue because
@@ -672,7 +672,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 							(queue->folder->outbox,
 							 file, TRUE);
 					 */
-					count++; 
+					sent++; 
 					folder_item_remove_msg(queue, msginfo->msgnum);
 				}
 				g_free(file);
@@ -684,7 +684,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 		procmsg_msginfo_free(msginfo);
 	}
 
-	return ret * count;
+	return (err != 0 ? -err : sent);
 }
 
 gint procmsg_remove_special_headers(const gchar *in, const gchar *out)

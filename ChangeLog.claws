@@ -1,3 +1,13 @@
+2004-11-17 [colin]	0.9.12cvs155
+
+	* src/compose.c
+	* src/toolbar.c
+		Be verbose when sending fails
+	* src/procmsg.c
+		Fix procmsg_send_queue returning 0 when there's an error
+		Don't send messages to be encrypted to nobody 
+
+
 2004-11-17 [colin]	0.9.12cvs154
 
 	* src/privacy.c

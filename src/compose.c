@@ -3138,7 +3138,16 @@ gint compose_send(Compose *compose)
 		folder_item_scan(folder);
 		if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS)
 			gtk_widget_destroy(compose->window);
-	}
+	} else {
+		alertpanel_error(_("The message was queued but could not be "
+				   "sent.\nUse \"Send queued messages\" from "
+				   "the main window to retry."));
+		if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS) {
+			compose_allow_user_actions (compose, TRUE);
+			compose->sending = FALSE;		
+		}
+		return -1;
+ 	}
 
 	return 0;
 
@@ -3652,7 +3661,9 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 			gchar *encdata;
 
 			encdata = privacy_get_encrypt_data(compose->privacy_system, compose->to_list);
-			fprintf(fp, "X-Sylpheed-Encrypt-Data:%s\n", encdata);
+			if (encdata != NULL)
+				fprintf(fp, "X-Sylpheed-Encrypt-Data:%s\n", 
+					encdata);
 			g_free(encdata);
 		}
 	}
