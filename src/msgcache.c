@@ -398,6 +398,7 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *c
 	cache->last_access = time(NULL);
 
 	debug_print(_("done.\n"));
+	return 0;
 }
 
 MsgInfo *msgcache_get_msg(MsgCache *cache, guint num)

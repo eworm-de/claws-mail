@@ -3049,7 +3049,7 @@ GSList *imap_get_num_list(Folder *folder, FolderItem *item)
 	gint i;
 	gint ok, exists = 0, recent = 0, unseen = 0;
 	guint32 uid_validity = 0;
-	guint32 uid = 0;
+	GPtrArray *argbuf;
 	
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
@@ -3065,17 +3065,27 @@ GSList *imap_get_num_list(Folder *folder, FolderItem *item)
 	if (ok != IMAP_SUCCESS)
 		return NULL;
 
-	for(i = 1; i <= exists; i++) {
-		ok = imap_get_uid(session, i, &uid);
-		if (ok != IMAP_SUCCESS)
-			return msgnum_list;
-		msgnum_list = g_slist_prepend(msgnum_list, GINT_TO_POINTER(uid));
+	argbuf = g_ptr_array_new();
+	imap_cmd_gen_send(SESSION(session)->sock, "FETCH 1:* (UID)");
+	ok = imap_cmd_ok(SESSION(session)->sock, argbuf);
+	if (ok != IMAP_SUCCESS) {
+		ptr_array_free_strings(argbuf);
+		g_ptr_array_free(argbuf, TRUE);
+		return NULL;
+	}
+
+	for(i = 0; i < argbuf->len; i++) {
+		int ret, msgidx, msgnum;
+	
+		if((ret = sscanf(g_ptr_array_index(argbuf, i), "%d FETCH (UID %d)", &msgidx, &msgnum)) == 2) {
+			msgnum_list = g_slist_prepend(msgnum_list, GINT_TO_POINTER(msgnum));
+		}
 	}
 	
 	return msgnum_list;
 }
 
-MsgInfo *imap_fetch_msginfo (Folder *folder, FolderItem *item, gint num)
+MsgInfo *imap_fetch_msginfo(Folder *folder, FolderItem *item, gint num)
 {
 	gchar *tmp;
 	IMAPSession *session;
@@ -3083,7 +3093,6 @@ MsgInfo *imap_fetch_msginfo (Folder *folder, FolderItem *item, gint num)
 	MsgInfo *msginfo;
 	gint ok, exists = 0, recent = 0, unseen = 0;
 	guint32 uid_validity = 0;
-	guint32 uid = 0;
 	
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
