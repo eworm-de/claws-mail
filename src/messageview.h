@@ -35,8 +35,7 @@ typedef struct _MessageView	MessageView;
 typedef enum
 {
 	MVIEW_TEXT,
-	MVIEW_MIME,
-	MVIEW_PLUG
+	MVIEW_MIME
 } MessageType;
 
 struct _MessageView
@@ -51,7 +50,6 @@ struct _MessageView
 	TextView *textview;
 	ImageView *imageview;
 	MimeView *mimeview;
-	GtkWidget *plugview;
 
 	MainWindow *mainwin;
 

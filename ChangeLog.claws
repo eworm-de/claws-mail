@@ -1,3 +1,9 @@
+2002-06-23 [paul]	0.7.8claws17
+
+	* src/messageview.[ch]
+		remove code committed in error from locally patched
+		source
+
 2002-06-23 [colin]	0.7.8claws16
 
 	* src/compose.[ch]
