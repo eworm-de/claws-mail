@@ -1,3 +1,8 @@
+2003-03-22 [christoph]	0.8.11claws43
+
+	* src/folder.c
+		code cleanup for flags copying
+
 2003-03-22 [christoph]	0.8.11claws42
 
 	* src/plugins/trayicon/trayicon.c

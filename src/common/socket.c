@@ -427,7 +427,7 @@ static SockInfo *sockinfo_from_fd(const gchar *hostname,
 				  gint sock)
 {
 	SockInfo *sockinfo;
-	
+
 	sockinfo = g_new0(SockInfo, 1);
 	sockinfo->sock = sock;
 	sockinfo->hostname = g_strdup(hostname);
