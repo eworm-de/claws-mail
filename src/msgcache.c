@@ -116,11 +116,13 @@ void msgcache_update_msg(MsgCache *cache, MsgInfo *msginfo)
 	g_return_if_fail(msginfo != NULL);
 
 	oldmsginfo = g_hash_table_lookup(cache->msgnum_table, &msginfo->msgnum);
-	if(msginfo) {
+	if(oldmsginfo && oldmsginfo->msgid) {
 		g_hash_table_remove(cache->msgid_table, oldmsginfo->msgid);
 		g_hash_table_remove(cache->msgnum_table, &oldmsginfo->msgnum);
+	} 
+	if (oldmsginfo) 
 		procmsg_msginfo_free(oldmsginfo);
-	}
+	
 	cache->memusage -= procmsg_msginfo_memusage(oldmsginfo);
 
 	newmsginfo = procmsg_msginfo_new_ref(msginfo);

@@ -1,3 +1,8 @@
+2004-07-27 [colin]	0.9.12cvs35.3
+
+	* src/msgcache.c
+		Fix wrong test
+
 2004-07-27 [colin]	0.9.12cvs35.2
 
 	* src/mimeview.c
