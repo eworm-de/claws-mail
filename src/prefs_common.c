@@ -3092,8 +3092,9 @@ static void prefs_quote_description_create(void)
 {
 	GtkWidget *vbox;
 	GtkWidget *hbox;
-	GtkWidget *hbbox;
+	GtkWidget *vbox2;
 	GtkWidget *label;
+	GtkWidget *hbbox;
 	GtkWidget *ok_btn;
 
 	quote_desc_win = gtk_window_new(GTK_WINDOW_DIALOG);
@@ -3102,17 +3103,24 @@ static void prefs_quote_description_create(void)
 	gtk_container_set_border_width(GTK_CONTAINER(quote_desc_win), 8);
 	gtk_window_set_position(GTK_WINDOW(quote_desc_win), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(quote_desc_win), TRUE);
-	gtk_window_set_policy(GTK_WINDOW(quote_desc_win), FALSE, TRUE, FALSE);
+	gtk_window_set_policy(GTK_WINDOW(quote_desc_win), FALSE, FALSE, FALSE);
 
 	vbox = gtk_vbox_new(FALSE, 8);
 	gtk_container_add(GTK_CONTAINER(quote_desc_win), vbox);
 
-	hbox = gtk_hbox_new(FALSE, 4);
+	hbox = gtk_hbox_new(FALSE, 8);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
 
+	vbox2 = gtk_vbox_new(FALSE, 8);
+	gtk_box_pack_start(GTK_BOX(hbox), vbox2, TRUE, TRUE, 0);
+
+#define PACK_LABEL() \
+	gtk_box_pack_start(GTK_BOX(vbox2), label, TRUE, TRUE, 0); \
+	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT); \
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+
 	label = gtk_label_new
-		("SYMBOL\n\n"
-                 "%d\n"		/* date */
+		("%d\n"		/* date */
 		 "%f\n"		/* from */
 		 "%N\n"		/* full name of sender */
 		 "%F\n"		/* first name of sender */
@@ -3121,24 +3129,34 @@ static void prefs_quote_description_create(void)
 		 "%t\n"		/* to */
 		 "%c\n"		/* cc */
 		 "%n\n"		/* newsgroups */
-		 "%i\n"		/* message id */
 		 "%r\n"		/* references */
-		 "\n"
-		 "%x\n"
-		 "?x(expr)\n"	/* condition */
-		 "\n"
-		 "%M\n"		/* message body */
+		 "%i");		/* message id */
+	PACK_LABEL();
+
+	label = gtk_label_new
+		("?x(expr)");	/* condition */
+	PACK_LABEL();
+
+	label = gtk_label_new
+		("%M\n"		/* message body */
 		 "%Q\n"		/* quoted message body */
 		 "%m\n"		/* message body without signature */
 		 "%q\n"		/* quoted message body without signature */
 		 "%%");		/* literal percent */
-
-	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
-	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
+	PACK_LABEL();
 
 	label = gtk_label_new
-		(_("DESCRIPTION\n\n"
-                   "Date\n"
+		("\\\\\n"	/* literal backslash */
+		 "\\?\n"	/* literal question mark */
+		 "\\(\n"	/* literal opening parenthesis */
+		 "\\)");	/* literal closing parenthesis */
+	PACK_LABEL();
+
+	vbox2 = gtk_vbox_new(FALSE, 8);
+	gtk_box_pack_start(GTK_BOX(hbox), vbox2, TRUE, TRUE, 0);
+
+	label = gtk_label_new
+		(_("Date\n"
 		   "From\n"
 		   "Full Name of Sender\n"
 		   "First Name of Sender\n"
@@ -3147,20 +3165,30 @@ static void prefs_quote_description_create(void)
 		   "To\n"
 		   "Cc\n"
 		   "Newsgroups\n"
-		   "Message-ID\n"
 		   "References\n"
-		   "\n"
-		   "Display the information\n"
-		   "If the information x is set, displays expr\n"
-		   "\n"
-		   "Message body\n"
+		   "Message-ID"));
+	PACK_LABEL();
+
+	label = gtk_label_new
+		(_("If x is set, displays expr"));
+	PACK_LABEL();
+
+	label = gtk_label_new
+		(_("Message body\n"
 		   "Quoted message body\n"
 		   "Message body without signature\n"
 		   "Quoted message body without signature\n"
 		   "Literal %"));
+	PACK_LABEL();
 
-	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
-	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
+	label = gtk_label_new
+		(_("Literal backslash\n"
+		   "Literal question mark\n"
+		   "Literal opening parenthesis\n"
+		   "Literal closing parenthesis"));
+	PACK_LABEL();
+
+#undef PACK_LABEL
 
 	gtkut_button_set_create(&hbbox, &ok_btn, _("OK"),
 				NULL, NULL, NULL, NULL);

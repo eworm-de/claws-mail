@@ -1,3 +1,8 @@
+2001-11-28 [paul]	0.6.5claws41
+
+	* more sync with sylpheed 0.6.5cvs18
+        	see ChangeLog entry 2001-11-27 (src/prefs_common.c)
+
 2001-11-27 [paul]	0.6.5claws40
 	
         * po/pt_BR.po

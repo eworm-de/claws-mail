@@ -4,6 +4,8 @@
 	  message/rfc822 ヘッダを使用。
 	* src/folderview.c: 「メッセージを検索...」をコンテキストメニュー
 	  に追加。
+	* src/prefs_common.c: prefs_quote_description_create(): エスケープ
+	  する必要のある文字の説明を追加。
 
 2001-11-26
 
