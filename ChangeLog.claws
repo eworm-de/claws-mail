@@ -1,3 +1,8 @@
+2002-11-10 [colin]	0.8.5claws117
+
+	* src/summaryview.c
+		a STATUSBAR_PUSH/POP fix
+
 2002-11-10 [colin]	0.8.5claws116
 
 	* src/prefs_folder_item.c

@@ -788,7 +788,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		gtk_entry_set_text(GTK_ENTRY(summaryview->search_string), "");
 	}
 	
-	STATUSBAR_POP(summaryview->mainwin);
+	/* STATUSBAR_POP(summaryview->mainwin); */
 
 	is_refresh = (item == summaryview->folder_item) ? TRUE : FALSE;
 	if (is_refresh) {
@@ -1020,7 +1020,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	debug_print("\n");
 	STATUSBAR_PUSH(summaryview->mainwin, _("Done."));
-
+	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
 	summary_unlock(summaryview);
 	inc_unlock();
