@@ -2342,16 +2342,6 @@ static gchar *imap_get_header(SockInfo *sock, gchar *cur_pos, gchar **headers,
 	do {
 		if ((nextline = sock_getline(sock)) == NULL)
 			return cur_pos;
-#ifdef WIN32
-#ifdef USE_OPENSSL
-		if (!sock->ssl)
-#endif /* USE_OPENSSL */
-		{
-			gchar *newstr = g_strdup_printf("%s%c", nextline, 0x0a);
-			g_free(nextline);
-			nextline=newstr;
-		}
-#endif /* WIN32 */
 		block_len += strlen(nextline);
 		g_string_append(str, nextline);
 		cur_pos = str->str;

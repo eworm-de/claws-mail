@@ -420,6 +420,11 @@ static gboolean sock_check(gpointer source_data, GTimeVal *current_time,
 	fd_set fds;
 	GIOCondition condition = sock->condition;
 
+#ifdef WIN32 /* glib2 */
+	if (!sock || !sock->sock)
+		return FALSE;
+#endif
+
 #if USE_OPENSSL
 	if (sock->ssl) {
 		if (condition & G_IO_IN) {
@@ -452,6 +457,11 @@ static gboolean sock_dispatch(gpointer source_data, GTimeVal *current_time,
 {
 	SockInfo *sock = (SockInfo *)source_data;
 
+#ifdef WIN32 /* glib2 */
+	if (!sock || !sock->callback || !sock->data)
+		return FALSE;
+#endif
+
 	return sock->callback(sock, sock->condition, user_data);
 }
 
@@ -460,6 +470,11 @@ static gboolean sock_watch_cb(GIOChannel *source, GIOCondition condition,
 {
 	SockInfo *sock = (SockInfo *)data;
 
+#ifdef WIN32 /* glib2 */
+	if (!sock || !sock->callback || !sock->data) {
+		return FALSE;
+	}
+#endif
 	return sock->callback(sock, condition, sock->data);
 }
 
@@ -476,9 +491,9 @@ guint sock_add_watch(SockInfo *sock, GIOCondition condition, SockFunc func,
 	{
 		SockSource *src;
 		src = g_source_new(&sock_watch_funcs, sizeof(SockSource));
+		src->sock = sock;
 		g_source_set_priority(src, G_PRIORITY_DEFAULT);
 		g_source_set_can_recurse(src, FALSE);
-		src->sock = sock;
 		return g_source_attach(src, NULL);
 	}
 #else /* !WIN32 */
@@ -1413,8 +1428,10 @@ Single-byte send() and recv().
 */
 		if (recv(fd, bp, 1, 0) <= 0)
 			return -1;
-		if (*bp == '\n')
+		if (*bp == '\n') {
+			bp++;
 			break;
+		}
 		bp++;
 		len--;
 	} while (0 < len);
@@ -1491,11 +1508,7 @@ gint fd_getline(gint fd, gchar **str)
 			*str = g_realloc(*str, size);
 			strcat(*str, buf);
 		}
-		if ((buf[len - 1] == '\n')
-#ifdef WIN32
-			|| (buf[len - 1] == '\r')
-#endif
-			)
+		if (buf[len - 1] == '\n')
 			break;
 	}
 	if (len == -1 && *str)

@@ -1,3 +1,11 @@
+2005-01-10 [thorsten]	0.9.13cvs31.2
+
+	* src/imap.c
+	* src/recv.c
+	* src/common/socket.c
+		fix: LF got stripped from socket input, remove old workarounds
+		fix: add NULL check for sock and members (as in gtk2 branch)
+
 2005-01-09 [thorsten]	0.9.13cvs31.1
 
 	* AUTHORS
