@@ -40,10 +40,13 @@ static gchar *_headerErrorsTo_ = HEADER_ERRORS_TO;
 static gchar *_headerCC_       = HEADER_CC;
 static gchar *_headerTo_       = HEADER_TO;
 
-static gchar *_emptyString_ = "";
+#define ADDR_BUFFSIZE    1024
+#define MSG_BUFFSIZE     16384
+#define DFL_FOLDER_SIZE  20
 
-#define MSG_BUFFSIZE    8192
-#define DFL_FOLDER_SIZE 20
+/* Noise strings included by some other E-Mail clients */
+#define REM_NAME_STRING  "(E-mail)"
+#define REM_NAME_STRING2 "(E-mail 2)"
 
 /*
  * Header entry.
@@ -128,7 +131,6 @@ AddressHarvester *addrharvest_create( void ) {
 
 	harvester = g_new0( AddressHarvester, 1 );
 	harvester->path = NULL;
-	harvester->bufptr = harvester->buffer;
 	harvester->dupTable = g_hash_table_new( g_str_hash, g_str_equal );
 	harvester->folderSize = DFL_FOLDER_SIZE;
 	harvester->retVal = MGU_SUCCESS;
@@ -164,7 +166,9 @@ void addrharvest_set_path( AddressHarvester* harvester, const gchar *value ) {
  * Entry: harvester Harvester object.
  *        value     Folder size.
  */
-void addrharvest_set_folder_size( AddressHarvester* harvester, const gint value ) {
+void addrharvest_set_folder_size(
+	AddressHarvester* harvester, const gint value )
+{
 	g_return_if_fail( harvester != NULL );
 	if( value > 0 ) {
 		harvester->folderSize = value;
@@ -221,9 +225,7 @@ void addrharvest_set_header(
  *        name      Header name.
  * Return: Address count, or -1 if header not found.
  */
-gint addrharvest_get_count(
-	AddressHarvester* harvester, const gchar *name )
-{
+gint addrharvest_get_count( AddressHarvester* harvester, const gchar *name ) {
 	HeaderEntry *entry;
 	gint count;
 
@@ -283,157 +285,6 @@ void addrharvest_print( AddressHarvester *harvester, FILE *stream ) {
 	fprintf( stream, "  ret val: %d\n", harvester->retVal );
 }
 
-#ifdef STANDALONE
-gint to_number(const gchar *nstr) {
-	register const gchar *p;
-	if (*nstr == '\0') return -1;
-	for( p = nstr; *p != '\0'; p++ )
-		if (!isdigit(*p)) return -1;
-	return atoi(nstr);
-}
-#endif
-
-/*
- * Replace leading and trailing characters (quotes) in input string
- * with spaces. Only matching non-blank characters that appear at both
- * start and end of string are replaces. Control characters are also
- * replaced with spaces.
- * Enter: str String to process.
- *        ch  Character to remove.
- */
-static void addrutil_strip_char( gchar *str, gchar ch ) {
-	gchar *as;
-	gchar *ae;
-
-	/* Search forwards for first non-space match */
-	as = str;
-	ae = -1 + str + strlen( str );
-	while( as < ae ) {
-		if( *as != ' ' ) {
-			if( *as == ch ) {
-				/* Search backwards from end for match */
-				while( ae > as ) {
-					if( *ae != ' ' ) {
-						if( *ae == ch ) {
-							*as = ' ';
-							*ae = ' ';
-							return;
-						}
-						if( *ae < 32 ) {
-							*ae = ' ';
-						}
-						else if( *ae == 127 ) {
-							*ae = ' ';
-						}
-						else {
-							return;
-						}
-					}
-					ae--;
-				}
-			}
-			if( *as < 32 ) {
-				*as = ' ';
-			}
-			else if( *as == 127 ) {
-				*as = ' ';
-			}
-			else {
-				return;
-			}
-		}
-		as++;
-	}
-	return;
-}
-
-/*
- * Remove backslash character from input string.
- * Enter: str String to process.
- */
-static void addrutil_unescape( gchar *str ) {
-	gchar *p;
-	gint ilen;
-
-	p = str;
-	while( *p ) {
-		if( *p == '\\' ) {
-			ilen = strlen( p + 1 );
-			memmove( p, p + 1, ilen );
-		}
-		p++;
-	}
-}
-
-/*
- * Parse name from email address string.
- * Enter: buf Start address of buffer to process (not modified).
- *        atp Pointer to email at (@) character.
- *        ap  Pointer to start of email address returned.
- *        ep  Pointer to end of email address returned.
- * Return: Parsed name or NULL if not present. This should be g_free'd
- * when done.
- */
-static gchar *addrutil_parse_name(
-		const gchar *buf, const gchar *atp, const gchar **ap,
-		const gchar **ep )
-{
-	gchar *name;
-	const gchar *pos;
-	const gchar *tmp;
-	const gchar *bp;
-	gint ilen;
-
-	name = NULL;
-	*ap = NULL;
-	*ep = NULL;
-
-	/* Find first non-separator char */
-	bp = buf;
-	while( TRUE ) {
-		if( strchr( ",; \n\r", *bp ) == NULL ) break;
-		bp++;
-	}
-
-	/* Search back for start of name */
-	tmp = atp;
-	pos = atp;
-	while( pos >= bp ) {
-		tmp = pos;
-		if( *pos == '<' ) {
-			/* Found start of address/end of name part */
-			ilen = -1 + ( size_t ) ( pos - bp );
-			name = g_strndup( bp, ilen + 1 );
-			*(name + ilen + 1) = '\0';
-
-			/* Remove leading trailing quotes and spaces */
-			addrutil_strip_char( name, '\"' );
-			addrutil_strip_char( name, '\'' );
-			addrutil_strip_char( name, '\"' );
-			addrutil_unescape( name );
-			g_strstrip( name );
-			break;
-		}
-		pos--;
-	}
-	*ap = tmp;
-
-	/* Search forward for end of address */
-	pos = atp + 1;
-	while( TRUE ) {
-		if( *pos == '>' ) {
-			pos++;
-			break;
-		}
-		if( strchr( ",; \'\n\r", *pos ) ) break;
-		pos++;
-	}
-	*ep = pos;
-
-	return name;
-
-}
-
 /*
  * Insert address into cache.
  * Enter: harvester Harvester object.
@@ -441,9 +292,8 @@ static gchar *addrutil_parse_name(
  *        cache     Address cache to load.
  *        name      Name.
  *        address   eMail address.
- * Return: Person inserted.
  */
-static ItemPerson *addrharvest_insert_cache(
+static void addrharvest_insert_cache(
 		AddressHarvester *harvester, HeaderEntry *entry,
 		AddressCache *cache, const gchar *name,
 		const gchar *address )
@@ -453,6 +303,7 @@ static ItemPerson *addrharvest_insert_cache(
 	gchar *folderName;
 	gboolean newFolder;
 	gint cnt;
+	gchar *key, *value;
 
 	newFolder = FALSE;
 	folder = entry->folder;
@@ -475,12 +326,167 @@ static ItemPerson *addrharvest_insert_cache(
 		g_free( folderName );
 	}
 
-	person = addrcache_add_contact( cache, folder, name, address, "" );
-	entry->count++;
-	return person;
+	/* Insert address */
+	key = g_strdup( address );
+	g_strdown( key );
+	person = g_hash_table_lookup( harvester->dupTable, key );
+	if( person ) {
+		/* Use longest name */
+		value = ADDRITEM_NAME(person);
+		if( strlen( name ) > strlen( value ) ) {
+			addritem_person_set_common_name( person, name );
+		}
+		g_free( key );
+	}
+	else {
+		/* Insert entry */
+		person = addrcache_add_contact(
+				cache, folder, name, address, "" );
+		g_hash_table_insert( harvester->dupTable, key, person );
+		entry->count++;
+	}
 }
 
-#define ATCHAR "@"
+/*
+ * Remove specified string from name.
+ * Enter: name Name.
+ *        em   String to remove.
+ */
+static void addrharvest_del_email( gchar *name, gchar *em ) {
+	gchar *p;
+	gint ilen;
+
+	ilen = strlen( em );
+	while( p = strcasestr( name, em )  ) {
+		memmove( p, p + ilen, ilen + 1 );
+	}
+}
+
+/*
+ * Find position of at (@) character in buffer.
+ * Enter:  buffer Start of buffer.
+ * Return: Position of at character, or NULL if not found.
+ * Note: This function searches for the last occurrence of an 'at' character
+ * prior to a valid delimiter character for the end of address. This enables
+ * an address to be found where it is also used as the name of the
+ * recipient. For example:
+ *     "axle.rose@netscape.com" <axle.rose@netscape.com>
+ * The last occurrence of the at character is detected.
+ */
+static gchar *addrharvest_find_at( const gchar *buffer ) {
+	gchar *atCh;
+	gchar *p;
+
+	atCh = strchr( buffer, '@' );
+	if( atCh ) {
+		/* Search forward for another one */
+		p = atCh + 1;
+		while( *p ) {
+			if( *p == '>' ) {
+				break;
+			}
+			if( *p == ',' ) {
+				break;
+			}
+			if( *p == '\n' ) {
+				break;
+			}
+			if( *p == '@' ) {
+				atCh = p;
+				break;
+			}
+			p++;
+		}
+	}
+	return atCh;
+}
+
+/*
+ * Find start and end of address string.
+ * Enter: buf Start address of buffer to process (not modified).
+ *        atp Pointer to email at (@) character.
+ *        bp  Pointer to start of email address (returned).
+ *        ep  Pointer to end of email address (returned).
+ */
+static void addrharvest_find_address(
+		const gchar *buf, const gchar *atp, const gchar **bp,
+		const gchar **ep )
+{
+	const gchar *p;
+
+	/* Find first non-separator char */
+	*bp = NULL;
+	p = buf;
+	while( TRUE ) {
+		if( strchr( ",; \n\r", *p ) == NULL ) break;
+		p++;
+	}
+	*bp = p;
+
+	/* Search forward for end of address */
+	*ep = NULL;
+	p = atp + 1;
+	while( TRUE ) {
+		if( strchr( ",;", *p ) ) break;
+		p++;
+	}
+	*ep = p;
+}
+
+/*
+ * Extract E-Mail address from buffer. If found, address is removed from
+ * buffer.
+ * Enter:  buffer Address buffer.
+ * Return: E-Mail address, or NULL if none found. Must g_free() when done.
+ */
+static gchar *addrharvest_extract_address( gchar *buffer ) {
+	gchar *addr;
+	gchar *atCh, *p, *bp, *ep;
+	gint len;
+
+	addr = NULL;
+	atCh = addrharvest_find_at( buffer );
+	if( atCh ) {
+		/* Search back for start of address */
+		bp = NULL;
+		p = atCh;
+		while( p >= buffer ) {
+			bp = p;
+			if( *p == '<' ) {
+				*p = ' ';
+				bp++;
+				break;
+			}
+			p--;
+		}
+
+		/* Search fwd for end */
+		ep = NULL;
+		ep = p = atCh;
+		while( *p ) {
+			if( *p == '>' ) {
+				*p = ' ';
+				break;
+			}
+			else if( *p == ' ' ) {
+				break;
+			}
+			ep = p;
+			p++;
+		}
+
+		/* Extract email */
+		if( bp != NULL ) {
+			len = ( ep - bp );
+			if( len > 0 ) {
+				addr = g_strndup( bp, len + 1 );
+				memmove( bp, ep, len );
+				*bp = ' ';
+			}
+		}	
+	}
+	return addr;
+}
 
 /*
  * Parse address from header buffer creating address in cache.
@@ -493,55 +499,57 @@ static void addrharvest_parse_address(
 		AddressHarvester *harvester, HeaderEntry *entry,
 		AddressCache *cache, const gchar *hdrBuf )
 {
-	gchar addr[ MSG_BUFFSIZE ];
+	gchar buffer[ ADDR_BUFFSIZE + 2 ];
 	const gchar *bp;
 	const gchar *ep;
-	gchar *atCh;
-	gchar *name;
-	gchar *value;
-	gchar *key;
-	gint addrLen;
-	ItemPerson *person;
+	gchar *atCh, *email, *p;
+	gint bufLen;
 
-	/* printf( "hdrBuf    :%s:\n", hdrBuf ); */
 	/* Search for an address */
-	while( atCh = strcasestr( hdrBuf, ATCHAR ) ) {
-		name = addrutil_parse_name( hdrBuf, atCh, &bp, &ep );
-		addrLen = ( size_t ) ( ep - bp );
-		strncpy( addr, bp, addrLen );
-		addr[ addrLen ] = '\0';
-		extract_address( addr );
-		/* printf( "name/addr :%s:\t:%s:\n", addr, name ); */
+	while( atCh = addrharvest_find_at( hdrBuf ) ) {
+		/* Find addres string */
+		addrharvest_find_address( hdrBuf, atCh, &bp, &ep );
+
+		/* Copy into buffer */
+		bufLen = ( size_t ) ( ep - bp );
+		if( bufLen > ADDR_BUFFSIZE ) {
+			bufLen = ADDR_BUFFSIZE;
+		}
+		strncpy( buffer, bp, bufLen );
+		buffer[ bufLen ] = '\0';
+		buffer[ bufLen + 1 ] = '\0';
+		buffer[ bufLen + 2 ] = '\0';
+
+		/* Make whitespace */
+		p = buffer;
+		while( *p ) {
+			if( *p == '\r' || *p == '\n' || *p == '\t' ) *p = ' ';
+			p++;
+		}
+
+		/* Extract address from buffer */
+		email = addrharvest_extract_address( buffer );
+		if( email ) {
+			/* Unescape characters */
+			mgu_str_unescape( buffer );
+
+			/* Remove noise characaters */
+			addrharvest_del_email( buffer, REM_NAME_STRING );
+			addrharvest_del_email( buffer, REM_NAME_STRING2 );
+
+			/* Remove leading trailing quotes and spaces */
+			mgu_str_ltc2space( buffer, '\"', '\"' );
+			mgu_str_ltc2space( buffer, '\'', '\'' );
+			mgu_str_ltc2space( buffer, '\"', '\"' );
+			mgu_str_ltc2space( buffer, '(', ')' );
+			g_strstrip( buffer );
+
+			/* Insert into address book */
+			addrharvest_insert_cache(
+				harvester, entry, cache, buffer, email );
+			g_free( email );
+		}
 		hdrBuf = ep;
-		if( atCh == ep ) {
-			hdrBuf++;
-		}
-		if( strlen( addr ) > 0 ) {
-			if( name == NULL ) {
-				name = g_strdup( _emptyString_ );
-			}
-			g_strdown( addr );
-			/* printf( "name/addr :%s:\t:%s:\n", addr, name ); */
-			person = g_hash_table_lookup(
-					harvester->dupTable, addr );
-			if( person ) {
-				/* Use longest name */
-				value = ADDRITEM_NAME(person);
-				if( strlen( name ) > strlen( value ) ) {
-					addritem_person_set_common_name(
-						person, name );
-				}
-			}
-			else {
-				/* Insert entry */
-				key = g_strdup( addr );
-				person = addrharvest_insert_cache(
-					harvester, entry, cache, name, addr );
-				g_hash_table_insert(
-					harvester->dupTable, key, person );
-			}
-		}
-		g_free( name );
 	}
 }
 
@@ -561,7 +569,7 @@ static gint addrharvest_readfile(
 	gchar buf[ MSG_BUFFSIZE ], tmp[ MSG_BUFFSIZE ];
 	HeaderEntry *entry;
 
-	msgFile = fopen( fileName, "r" );
+	msgFile = fopen( fileName, "rb" );
 	if( ! msgFile ) {
 		/* Cannot open file */
 		retVal = MGU_OPEN_FILE;
@@ -572,7 +580,8 @@ static gint addrharvest_readfile(
 		gint val;
 		gchar *p;
 
-		val = procheader_get_one_field( buf, sizeof(buf), msgFile, NULL );
+		val = procheader_get_one_field(
+			buf, sizeof(buf), msgFile, NULL );
 		if( val == -1 ) {
 			break;
 		}
@@ -593,8 +602,6 @@ static gint addrharvest_readfile(
 	fclose( msgFile );
 	return MGU_SUCCESS;
 }
-
-#undef ATCHAR
 
 /*
  * ============================================================================
@@ -621,12 +628,12 @@ gint addrharvest_harvest( AddressHarvester *harvester, AddressCache *cache ) {
 	cache->dataRead = FALSE;
 
 	if( chdir( harvester->path ) < 0 ) {
-		printf( "Error changing dir\n" );
+		/* printf( "Error changing dir\n" ); */
 		return retVal;
 	}
 
 	if( ( dp = opendir( harvester->path ) ) == NULL ) {
-		printf( "Error opening dir\n" );
+		/* printf( "Error opening dir\n" ); */
 		return retVal;
 	}
 
@@ -634,7 +641,8 @@ gint addrharvest_harvest( AddressHarvester *harvester, AddressCache *cache ) {
 		stat( d->d_name, &s );
 		if( S_ISREG( s.st_mode ) ) {
 			if( ( num = to_number( d->d_name ) ) >= 0 ) {
-				addrharvest_readfile( harvester, d->d_name, cache );
+				addrharvest_readfile(
+					harvester, d->d_name, cache );
 			}
 		}
 	}

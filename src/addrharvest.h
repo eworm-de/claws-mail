@@ -36,17 +36,13 @@
 #define HEADER_CC        "Cc"
 #define HEADER_TO        "To"
 
-#define MESSAGEBUFSIZE   2048
-
 /* Harvester file object */
 typedef struct _AddressHarvester AddressHarvester;
 struct _AddressHarvester {
 	GList      *headerTable;
 	gchar      *path;
-	gchar      *bufptr;
 	GHashTable *dupTable;
 	gint       folderSize;
-	gchar      buffer[ MESSAGEBUFSIZE ];
 	gint       retVal;
 };
 

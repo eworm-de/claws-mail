@@ -1,3 +1,8 @@
+2002-04-01 [match]	0.7.4claws60
+
+	* src/addrharvest.[ch]
+		improve address parsing of funky addresses.
+
 2002-04-02 [darko]	0.7.4claws59
 
 	* src/compoce.c
