@@ -1,0 +1,40 @@
+sylpheed-kdeservicemenu.pl 
+Version: 1.0
+Sylpheed servicemenu for Konqueror
+
+FILES
+o README			You're reading it
+o install.sh			installer script
+o sylpheed-kdeservicemenu.pl	perl program
+o template_sylpheed-attach-files.desktop
+o template_sylpheed-compress-attach.desktop
+				.desktop file templates
+
+DESCRIPTION
+Enables attaching files from Konqueror to a new compose window
+or compression of files/directories and then attaching of
+the archive to a new compose window.
+
+Adds the following menu items to Konqueror's 'Actions' menu:
+/Actions/Sylpheed/Attach file(s)
+/Actions/Sylpheed/Attach as GZip File(s)
+/Actions/Sylpheed/Attach as BZip File(s)
+/Actions/Sylpheed/Attach as Tar Archive
+/Actions/Sylpheed/Attach as Bzipped Tar Archive
+/Actions/Sylpheed/Attach as Gzipped Tar Archive
+/Actions/Sylpheed/Attach as Zip Archive
+
+INSTALL
+o cd sylpheed-claws/tools/kdeservicemenu
+o ./install.sh --global
+  ./install.sh --local
+  	(systemwide or home directory installation)
+
+LICENSE
+GPL
+		
+THANKS
+install.sh was written by Dylan Schrader (dschrader@conception.edu) 
+and is released under the GPL. It was originally part of his
+'Attach to email' service Menu for Konqueror, version 0.6.13 
+<http://themes.kde.org/content/show.php?content=11234>

@@ -1,0 +1,20 @@
+[Desktop Entry]
+Actions=AttachFiles;GZipAndAttach;BZipAndAttach;
+Encoding=UTF8
+X-KDE-Submenu=Sylpheed
+ServiceTypes=all/allfiles
+
+[Desktop Action AttachFiles]
+Name=Attach File(s)
+Icon=sylpheed
+Exec=SCRIPT_PATH attachfile %F
+
+[Desktop Action GZipAndAttach]
+Name=Attach as GZip File(s)
+Icon=sylpheed
+Exec=SCRIPT_PATH gzip %F
+
+[Desktop Action BZipAndAttach]
+Name=Attach as BZip File(s)
+Icon=sylpheed
+Exec=SCRIPT_PATH bzip2 %F

@@ -1,0 +1,25 @@
+[Desktop Entry]
+Actions=TarAndAttach;TarBzipAndAttach;TarGzipAndAttach;ZipAndAttach;
+Encoding=UTF8
+X-KDE-Submenu=Sylpheed
+ServiceTypes=all/all
+
+[Desktop Action TarAndAttach]
+Name=Attach as Tar Archive
+Icon=sylpheed
+Exec=SCRIPT_PATH tar %F
+
+[Desktop Action TarBzipAndAttach]
+Name=Attach as Bzipped Tar Archive
+Icon=sylpheed
+Exec=SCRIPT_PATH tarbzip2 %F
+
+[Desktop Action TarGzipAndAttach]
+Name=Attach as Gzipped Tar Archive
+Icon=sylpheed
+Exec=SCRIPT_PATH targz %F
+
+[Desktop Action ZipAndAttach]
+Name=Attach as Zip Archive
+Icon=sylpheed
+Exec=SCRIPT_PATH zip %F
