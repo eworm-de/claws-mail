@@ -1310,7 +1310,7 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 
 void textview_set_text(TextView *textview, const gchar *text)
 {
-	GtkTextView *text;
+	GtkTextView *view;
 	GtkTextBuffer *buffer;
 
 	g_return_if_fail(textview != NULL);
@@ -1318,8 +1318,8 @@ void textview_set_text(TextView *textview, const gchar *text)
 
 	textview_clear(textview);
 
-	text = GTK_TEXT_VIEW(textview->text);
-	buffer = gtk_text_view_get_buffer(text);
+	view = GTK_TEXT_VIEW(textview->text);
+	buffer = gtk_text_view_get_buffer(view);
 	gtk_text_buffer_set_text(buffer, text, strlen(text));
 }
 

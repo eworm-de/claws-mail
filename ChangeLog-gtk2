@@ -1,3 +1,7 @@
+2004-01-18 Thorsten Maerz <torte@netztorte.de>
+	* src/textview.c
+		variable names messed up
+
 2004-01-17 Colin Leroy <colin@colino.net>
 	* src/addr_compl.c
 		Fix completion address too thin
