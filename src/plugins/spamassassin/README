@@ -7,17 +7,47 @@ spamd server that decides if the message is spam or not.
 
 To build the plugin run configure with --enable-spamassassin-plugin
 
-The spamd server localtion is currently fixed to localhost:783. If you
-want to change that spamd's location you have to edit the lines in the
-spamassassin_read_config function in spamassassin.c until a configuration
-for the plugin is available. The plugin is also configured to filter
-only messages that are smaller then 250kB.
-
-Message that are classified as spam will be moved to the default trash
-folder.
+Message that are classified as spam can be deleted or moved to a folder
+that can be specified in the configuration, if the folder is not
+specified or not found the default trash folder will be used.
 
 libspamc.[ch] and utils.[ch] are copied from the SpamAssassin package. I
 hope SpamAssassin will provide their functions as a library with the
 required includes files in the future for easier building. Building the
 library as a shared object is already possible, but it is not installable
 with the package and the includes are also not available.
+
+Please note that the spamassassin.so plugin only provides the actual
+filtering. By default it is not enabled. You probably want to load the
+spamassassin_gtk.so plugin too to get a configuration page under
+"Configuration/Other Preferences..." for the SpamAssassin plugin.
+
+The SpamAssassin plugin uses it's own block in the sylpheedrc file in your
+~/.sylpheed directory. If you really want to configure it without the GTK
+plugin you can specify the following options:
+
+[SpamAssassin]
+enable=1				enable filtering with SpamAssassin
+					[default: 0]
+
+hostname=localhost			hostname of the spamd server
+					[default: localhost]
+
+port=783				port the spamd server uses
+					[default: 783]
+
+max_size=250				maximum size a mail can have (in kB)
+					larger mails will not be filtered
+					[default: 250]
+
+receive_spam=1				enable to save spam to a mailfolder
+					if not enabled the mails will be deleted,
+					please note that this is dangerout and you
+					might lose an important mail that is
+					classified as spam by mistake
+					[default: 1]
+
+save_folder=#mh/Mail/trash/Spam		the folder that should be used to save
+					spam mails, if empty the default trash
+					folder is used
+					[default: none, use default trash]
