@@ -48,7 +48,10 @@ static void alertpanel_create		(const gchar	*title,
 					 const gchar	*message,
 					 const gchar	*button1_label,
 					 const gchar	*button2_label,
-					 const gchar	*button3_label);
+					 const gchar	*button3_label,
+					 gboolean	 can_disable);
+static void alertpanel_button_toggled	(GtkToggleButton *button,
+					 gpointer	 data);
 static void alertpanel_button_clicked	(GtkWidget	*widget,
 					 gpointer	 data);
 static void alertpanel_close		(GtkWidget	*widget,
@@ -67,7 +70,7 @@ AlertValue alertpanel(const gchar *title,
 		alertpanel_is_open = TRUE;
 
 	alertpanel_create(title, message, button1_label, button2_label,
-			  button3_label);
+			  button3_label, FALSE);
 	alertpanel_show();
 
 	debug_print("return value = %d\n", value);
@@ -81,8 +84,21 @@ void alertpanel_message(const gchar *title, const gchar *message)
 	else
 		alertpanel_is_open = TRUE;
 
-	alertpanel_create(title, message, NULL, NULL, NULL);
+	alertpanel_create(title, message, NULL, NULL, NULL, FALSE);
 	alertpanel_show();
+}
+
+AlertValue alertpanel_message_with_disable(const gchar	*title,
+					   const gchar	*message)
+{
+	if (alertpanel_is_open)
+		return;
+	else
+		alertpanel_is_open = TRUE;
+
+	alertpanel_create(title, message, NULL, NULL, NULL, TRUE);
+	alertpanel_show();
+	return value;
 }
 
 void alertpanel_notice(const gchar *format, ...)
@@ -130,7 +146,7 @@ static void alertpanel_show(void)
 	manage_window_set_transient(GTK_WINDOW(dialog));
 	value = G_ALERTWAIT;
 
-	while (value == G_ALERTWAIT)
+	while ((value & G_ALERT_VALUE_MASK) == G_ALERTWAIT)
 		gtk_main_iteration();
 
 	gtk_widget_destroy(dialog);
@@ -143,7 +159,8 @@ static void alertpanel_create(const gchar *title,
 			      const gchar *message,
 			      const gchar *button1_label,
 			      const gchar *button2_label,
-			      const gchar *button3_label)
+			      const gchar *button3_label,
+			      gboolean	   can_disable)
 {
 	static GdkFont *titlefont;
 	GtkStyle *style;
@@ -156,6 +173,9 @@ static void alertpanel_create(const gchar *title,
 	GtkWidget *button3;
 	const gchar *label2;
 	const gchar *label3;
+	GtkWidget *hbox2;
+	GtkWidget *disable_chkbtn;
+	GtkWidget *box_for_buttons;
 
 	debug_print(_("Creating alert panel dialog...\n"));
 
@@ -217,7 +237,24 @@ static void alertpanel_create(const gchar *title,
 				button2_label ? &button2 : NULL, label2,
 				button3_label ? &button3 : NULL, label3);
 
-	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
+	if (can_disable) {
+		hbox2 = gtk_hbox_new(FALSE, 8);
+		gtk_box_pack_end(GTK_BOX(vbox), hbox2, FALSE, FALSE, 0);
+		disable_chkbtn = gtk_check_button_new_with_label
+			(_("Show this message next time"));
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(disable_chkbtn),
+					     TRUE);
+		gtk_signal_connect(GTK_OBJECT(disable_chkbtn), "toggled",
+				   GTK_SIGNAL_FUNC(alertpanel_button_toggled),
+				   GUINT_TO_POINTER(G_ALERTDISABLE));
+		gtk_box_pack_start(GTK_BOX(hbox2), disable_chkbtn,
+				   TRUE, TRUE, 0);
+		box_for_buttons = hbox2;
+	} else
+		box_for_buttons = vbox;
+
+	gtk_box_pack_end(GTK_BOX(box_for_buttons), confirm_area,
+			 FALSE, FALSE, 0);
 	gtk_widget_grab_default(button1);
 	gtk_widget_grab_focus(button1);
 	if (button2_label && *button2_label == '+') {
@@ -244,9 +281,18 @@ static void alertpanel_create(const gchar *title,
 	gtk_widget_show_all(dialog);
 }
 
+static void alertpanel_button_toggled(GtkToggleButton *button,
+				      gpointer data)
+{
+	if (gtk_toggle_button_get_active(button))
+		value &= ~GPOINTER_TO_UINT(data);
+	else
+		value |= GPOINTER_TO_UINT(data);
+}
+
 static void alertpanel_button_clicked(GtkWidget *widget, gpointer data)
 {
-	value = (AlertValue)data;
+	value = (value & ~G_ALERT_VALUE_MASK) | (AlertValue)data;
 }
 
 static void alertpanel_close(GtkWidget *widget, GdkEventAny *event,
@@ -256,5 +302,5 @@ static void alertpanel_close(GtkWidget *widget, GdkEventAny *event,
 		if (((GdkEventKey *)event)->keyval != GDK_Escape)
 			return;
 
-	value = (AlertValue)data;
+	value = (value & ~G_ALERT_VALUE_MASK) | (AlertValue)data;
 }

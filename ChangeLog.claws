@@ -1,3 +1,27 @@
+2001-05-02 [sergey]
+
+	* src/alertpanel.h (AlertValue): added G_ALERT_VALUE_MASK,
+	G_ALERTDISABLE.
+
+	* src/alertpanel.c (alertpanel_create): new argument can_disable,
+	all existing callers changed to pass FALSE; create a check button
+	to disable the message.
+	(alertpanel_message_with_disable): new function.
+	(alertpanel_show): mask value with G_ALERT_VALUE_MASK.
+	(alertpanel_button_toggled): new function.
+	(alertpanel_button_clicked, alertpanel_close): set value using
+	G_ALERT_VALUE_MASK.
+
+	* src/prefs_common.h (PrefsCommon): new field gpgme_warning.
+
+	* src/prefs_common.c (prefs_privacy_create): new check button
+	checkbtn_gpgme_warning.
+
+	* src/main.c (main): moved preferences reading before gpgme
+	initialization; check prefs_common.gpgme_warning before giving the
+	GnuPG warning and set it to FALSE if the user wants to disable the
+	warning.
+
 2001-05-02 [hiroyuki]
 
 	* src/prefs_display_headers.c: modified the layout and some labels.

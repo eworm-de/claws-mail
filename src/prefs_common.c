@@ -127,6 +127,7 @@ static struct Message {
 
 #if USE_GPGME
 static struct Privacy {
+	GtkWidget *checkbtn_gpgme_warning;
 	GtkWidget *checkbtn_default_encrypt;
 	GtkWidget *checkbtn_default_sign;
 	GtkWidget *checkbtn_auto_check_signatures;
@@ -426,6 +427,9 @@ static PrefParam param[] = {
 
 #if USE_GPGME
 	/* Privacy */
+	{"gpgme_warning", "TRUE", &prefs_common.gpgme_warning, P_BOOL,
+	 &privacy.checkbtn_gpgme_warning,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"default_encrypt", "FALSE", &prefs_common.default_encrypt, P_BOOL,
 	 &privacy.checkbtn_default_encrypt,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -1543,6 +1547,7 @@ static void prefs_privacy_create(void)
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
 	GtkWidget *hbox1;
+	GtkWidget *checkbtn_gpgme_warning;
 	GtkWidget *checkbtn_default_encrypt;
 	GtkWidget *checkbtn_default_sign;
 	GtkWidget *checkbtn_auto_check_signatures;
@@ -1560,6 +1565,10 @@ static void prefs_privacy_create(void)
 	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
+
+	PACK_CHECK_BUTTON
+		(vbox2, checkbtn_gpgme_warning,
+		 _("Display warning on startup if GnuPG does not work"));
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_default_encrypt,
 			   _("Encrypt message by default"));
@@ -1594,6 +1603,7 @@ static void prefs_privacy_create(void)
 	/* FIXME: disabled because not implemented */
 	gtk_widget_set_sensitive(optmenu, FALSE);
 
+	privacy.checkbtn_gpgme_warning   = checkbtn_gpgme_warning;
 	privacy.checkbtn_default_encrypt = checkbtn_default_encrypt;
 	privacy.checkbtn_default_sign    = checkbtn_default_sign;
 	privacy.checkbtn_auto_check_signatures

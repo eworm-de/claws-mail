@@ -147,6 +147,7 @@ struct _PrefsCommon
 	gchar *mime_audio_player;
 
 	/* Privacy */
+	gboolean gpgme_warning;
 	gboolean default_encrypt;
 	gboolean default_sign;
         gboolean auto_check_signatures;

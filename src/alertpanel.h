@@ -28,7 +28,10 @@ typedef enum
 	G_ALERTDEFAULT,
 	G_ALERTALTERNATE,
 	G_ALERTOTHER,
-	G_ALERTWAIT
+	G_ALERTWAIT,
+
+	G_ALERT_VALUE_MASK	= 0x0000FFFF,
+	G_ALERTDISABLE		= 0x00010000
 } AlertValue;
 
 AlertValue alertpanel	(const gchar	*title,
@@ -39,6 +42,9 @@ AlertValue alertpanel	(const gchar	*title,
 
 void alertpanel_message	(const gchar	*title,
 			 const gchar	*message);
+
+AlertValue alertpanel_message_with_disable(const gchar	*title,
+					   const gchar	*message);
 
 void alertpanel_notice	(const gchar	*format,
 			 ...) G_GNUC_PRINTF(1, 2);

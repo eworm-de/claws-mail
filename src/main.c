@@ -198,23 +198,32 @@ int main(int argc, char *argv[])
 
 	srandom((gint)time(NULL));
 
-#if USE_GPGME
-	if (gpgme_check_engine()) {  /* Also does some gpgme init */
-		rfc2015_disable_all();
-		debug_print("gpgme_engine_version:\n%s\n",
-			    gpgme_get_engine_info());
-		alertpanel_warning(_("GnuPG is not installed properly.\n"
-				     "OpenPGP support disabled."));
-	}
-	gpgme_register_idle(idle_function_for_gpgme);
-#endif
-
 	prefs_common_read_config();
 	prefs_common_save_config();
 	prefs_filter_read_config();
 	prefs_filter_write_config();
 	prefs_display_headers_read_config();
 	prefs_display_headers_write_config();
+
+#if USE_GPGME
+	if (gpgme_check_engine()) {  /* Also does some gpgme init */
+		rfc2015_disable_all();
+		debug_print("gpgme_engine_version:\n%s\n",
+			    gpgme_get_engine_info());
+
+		if (prefs_common.gpgme_warning) {
+			AlertValue v = alertpanel_message_with_disable
+				(_("Warning"),
+				 _("GnuPG is not installed properly.\n"
+				   "OpenPGP support disabled."));
+			if (v & G_ALERTDISABLE) {
+				prefs_common.gpgme_warning = FALSE;
+				prefs_common_save_config();
+			}
+		}
+	}
+	gpgme_register_idle(idle_function_for_gpgme);
+#endif
 
 	gtkut_widget_init();
 
