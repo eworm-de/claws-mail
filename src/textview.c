@@ -1459,8 +1459,8 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 		gchar *text = NULL;
 		int i = 0;
 		gtk_text_buffer_get_end_iter(buffer, &real_end);
-		text = strdup(gtk_text_buffer_get_text(buffer, &iter, 
-						       &real_end, FALSE));
+		text = gtk_text_buffer_get_text(buffer, &iter, 
+						&real_end, FALSE);
 		
 		while (!found && i++ < strlen(text) - 1) {
 			found = (strncasecmp(text+i, str, strlen(str)) == 0);
@@ -1525,8 +1525,8 @@ gboolean textview_search_string_backward(TextView *textview, const gchar *str,
 		i = gtk_text_iter_get_offset(&iter) - strlen(str) - 1;
 		gtk_text_buffer_get_start_iter(buffer, &real_start);
 		
-		text = strdup(gtk_text_buffer_get_text(buffer, &real_start, 
-						       &iter, FALSE));
+		text = gtk_text_buffer_get_text(buffer, &real_start, 
+					        &iter, FALSE);
 
 		while (!found && i-- > 0) {
 			found = (strncasecmp(text+i, str, strlen(str)) == 0);
