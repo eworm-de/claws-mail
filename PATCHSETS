@@ -59,3 +59,4 @@
 ( cvs diff -u -r 1.437 -r 1.438 src/compose.c; ) > 0.9.12cvs74.patchset
 ( cvs diff -u -r 1.1 -r 1.2 m4/Makefile.am; ) > 0.9.12cvs75.patchset
 ( cvs diff -u -r 1.15 -r 1.16 src/plugins/trayicon/trayicon.c; ) > 0.9.12cvs76.patchset
+( cvs diff -u -r 1.205 -r 1.206 src/imap.c; ) > 0.9.12cvs77.patchset

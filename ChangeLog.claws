@@ -1,3 +1,9 @@
+2004-08-23 [colin]	0.9.12cvs77
+
+	* src/imap.c
+		Try and fix bug 577 (session->last_access_time is broken since 
+		sync with main 0.9.12cvs2)
+
 2004-08-23 [paul]
 
 	* po/es.po

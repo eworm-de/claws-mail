@@ -92,7 +92,6 @@ struct _IMAPSession
 	guint cmd_count;
 
 	/* CLAWS */
-	time_t last_access_time;
 	gboolean folder_content_changed;
 	guint exists;
 };
@@ -659,7 +658,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 	 * A better solution than sending a NOOP every time would be
 	 * for every command to be prepared to retry until it is
 	 * successfully sent. -- mbp */
-	if (time(NULL) - session->last_access_time > SESSION_TIMEOUT_INTERVAL) {
+	if (time(NULL) - SESSION(session)->last_access_time > SESSION_TIMEOUT_INTERVAL) {
 		/* verify that the session is still alive */
 		if (imap_cmd_noop(session) != IMAP_SUCCESS) {
 			/* Check if this is the first try to establish a
