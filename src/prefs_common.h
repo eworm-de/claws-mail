@@ -108,12 +108,6 @@ struct _PrefsCommon
 #if USE_ASPELL
 	gboolean enable_aspell;
 	gchar *aspell_path;
-#ifdef WIN32
-	gchar *aspell_prefix;
-	gchar *aspell_data_path;
-	gchar *aspell_common_lib;
-	gchar *aspell_lib;
-#endif /* WIN32 */
 	gchar *dictionary;
 	gint misspelled_col;
 	gint aspell_sugmode;

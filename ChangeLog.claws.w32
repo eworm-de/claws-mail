@@ -1,3 +1,15 @@
+2002-12-22 [thorsten]	0.8.5claws121-1
+
+	* src/gtkaspell.c
+	  src/prefs_common.[ch]
+	  src/w32_aspell_init.c
+	  win32/config.h
+		fix: removed win32 specific aspell options, obsoleted
+		     by official aspell installer
+	* win32/utils/sylpheed-setup.iss
+		add: auto-uninstall, gpg and aspell check, version, 
+		     app-paths, select HomeDir
+
 2002-12-03 [thorsten]	0.8.6claws50-1
 
 	* src/rfc2015.c

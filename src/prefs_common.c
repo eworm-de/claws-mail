@@ -142,16 +142,6 @@ static struct Spelling {
 	GtkWidget *checkbtn_enable_aspell;
 	GtkWidget *entry_aspell_path;
 	GtkWidget *btn_aspell_path;
-#ifdef WIN32
-	GtkWidget *entry_aspell_prefix;
-	GtkWidget *btn_aspell_prefix;
-	GtkWidget *entry_aspell_data_path;
-	GtkWidget *btn_aspell_data_path;
-	GtkWidget *entry_aspell_common_lib;
-	GtkWidget *btn_aspell_common_lib;
-	GtkWidget *entry_aspell_lib;
-	GtkWidget *btn_aspell_lib;
-#endif /* WIN32 */
 	GtkWidget *optmenu_dictionary;
 	GtkWidget *optmenu_sugmode;
 	GtkWidget *misspelled_btn;
@@ -178,7 +168,7 @@ static struct Display {
 	GtkWidget *entry_normalfont;
 	GtkWidget *entry_boldfont;
 #ifdef WIN32
-GtkWidget *entry_spacingfont;
+	GtkWidget *entry_spacingfont;
 #endif
 
 	GtkWidget *chkbtn_folder_unread;
@@ -425,20 +415,6 @@ static PrefParam param[] = {
 	{"aspell_path", ASPELL_PATH, &prefs_common.aspell_path, 
 	 P_STRING, &spelling.entry_aspell_path, 
 	 prefs_set_data_from_entry, prefs_set_entry},
-# ifdef WIN32
-	{"aspell_prefix", ASPELL_PREFIX, &prefs_common.aspell_prefix, 
-	 P_STRING, &spelling.entry_aspell_prefix, 
-	 prefs_set_data_from_entry, prefs_set_entry},
-	{"aspell_data_path", ASPELL_DATA_PATH, &prefs_common.aspell_data_path, 
-	 P_STRING, &spelling.entry_aspell_data_path, 
-	 prefs_set_data_from_entry, prefs_set_entry},
-	{"aspell_common_lib", ASPELL_COMMON_LIB, &prefs_common.aspell_common_lib, 
-	 P_STRING, &spelling.entry_aspell_common_lib, 
-	 prefs_set_data_from_entry, prefs_set_entry},
-	{"aspell_lib", ASPELL_LIB, &prefs_common.aspell_lib, 
-	 P_STRING, &spelling.entry_aspell_lib, 
-	 prefs_set_data_from_entry, prefs_set_entry},
-# endif /* WIN32 */
 	{"dictionary",  "", &prefs_common.dictionary,
 	 P_STRING, &spelling.optmenu_dictionary, 
 	 prefs_dictionary_set_data_from_optmenu, prefs_dictionary_set_optmenu },
@@ -1553,6 +1529,9 @@ static void prefs_dictionary_set_optmenu(PrefParam *pparam)
 
 	if (*(gchar **) pparam->data) {
 		menu = gtk_option_menu_get_menu(optmenu);
+#ifdef WIN32
+		g_return_if_fail(menu);
+#endif
 		for (cur = GTK_MENU_SHELL(menu)->children;
 		     cur != NULL; cur = cur->next) {
 			menuitem = GTK_WIDGET(cur->data);
@@ -1612,14 +1591,27 @@ static void prefs_spelling_checkbtn_enable_aspell_toggle_cb
 	gtk_widget_set_sensitive(spelling.checkbtn_use_alternate,      toggled);
 	gtk_widget_set_sensitive(spelling.checkbtn_check_while_typing, toggled);
 #ifdef WIN32
-	gtk_widget_set_sensitive(spelling.entry_aspell_prefix,   toggled);
-	gtk_widget_set_sensitive(spelling.btn_aspell_prefix,     toggled);
-	gtk_widget_set_sensitive(spelling.entry_aspell_data_path,   toggled);
-	gtk_widget_set_sensitive(spelling.btn_aspell_data_path,     toggled);
-	gtk_widget_set_sensitive(spelling.entry_aspell_common_lib,   toggled);
-	gtk_widget_set_sensitive(spelling.btn_aspell_common_lib,     toggled);
-	gtk_widget_set_sensitive(spelling.entry_aspell_lib,   toggled);
-	gtk_widget_set_sensitive(spelling.btn_aspell_lib,     toggled);
+	/* enabling checks with empty dict-dir field: propose install path */
+#if 0
+	if (toggled) {
+		gchar *tmppath = gtk_entry_get_text(spelling.entry_aspell_path);
+		if (!tmppath || !strlen(tmppath)) {
+			tmppath = g_strdup_printf("%s%c%s%c",
+				read_w32_registry_string("HKLM", "Software\\Aspell", NULL),
+				G_DIR_SEPARATOR, "dict", G_DIR_SEPARATOR);
+			subst_char(tmppath, G_DIR_SEPARATOR, '/');
+			gtk_entry_set_text(GTK_ENTRY(spelling.entry_aspell_path), tmppath);
+			g_free(tmppath);
+		}
+		if (!w32_aspell_loaded())
+			alertpanel_message(_("Restart required."),
+				_("Please restart Sylpheed to load Aspell.\n"));
+	}
+#endif
+	if (toggled && !w32_aspell_loaded())
+		alertpanel_message(_("Restart required."),
+			_("Please restart Sylpheed to load Aspell.\n"
+			  "You can clear the dictionaries path entry for autodetection"));
 #endif /* WIN32 */
 }
 
@@ -1665,175 +1657,6 @@ static void prefs_spelling_btn_aspell_path_clicked_cb(GtkWidget *widget,
 	}
 }
 
-#ifdef WIN32
-static void prefs_spelling_btn_aspell_prefix_clicked_cb(GtkWidget *widget,
-						     gpointer data)
-{
-	gchar *file_path, *tmp;
-	GtkWidget *new_menu;
-
-	file_path = filesel_select_file(_("Select dictionaries location"),
-					prefs_common.aspell_prefix);
-	if (file_path == NULL) {
-		/* don't change */	
-	}
-	else {
-	  tmp=g_dirname(file_path);
-	  
-		if (prefs_common.aspell_prefix)
-			g_free(prefs_common.aspell_prefix);
-		prefs_common.aspell_prefix = g_strdup_printf("%s%s",tmp,
-							   G_DIR_SEPARATOR_S);
-
-		new_menu = gtkaspell_dictionary_option_menu_new(prefs_common.aspell_prefix);
-		gtk_option_menu_set_menu(GTK_OPTION_MENU(spelling.optmenu_dictionary),
-					 new_menu);
-
-		gtk_entry_set_text(GTK_ENTRY(spelling.entry_aspell_prefix), 
-				   prefs_common.aspell_prefix);					 
-		/* select first one */
-		gtk_option_menu_set_history(GTK_OPTION_MENU(
-					spelling.optmenu_dictionary), 0);
-	
-		if (prefs_common.dictionary)
-			g_free(prefs_common.dictionary);
-
-		prefs_common.dictionary = 
-			gtkaspell_get_dictionary_menu_active_item(
-				gtk_option_menu_get_menu(
-					GTK_OPTION_MENU(
-						spelling.optmenu_dictionary)));
-		g_free(tmp);
-
-	}
-}
-
-static void prefs_spelling_btn_aspell_data_path_clicked_cb(GtkWidget *widget,
-						     gpointer data)
-{
-	gchar *file_path, *tmp;
-	GtkWidget *new_menu;
-
-	file_path = filesel_select_file(_("Select dictionaries location"),
-					prefs_common.aspell_data_path);
-	if (file_path == NULL) {
-		/* don't change */	
-	}
-	else {
-	  tmp=g_dirname(file_path);
-	  
-		if (prefs_common.aspell_data_path)
-			g_free(prefs_common.aspell_data_path);
-		prefs_common.aspell_data_path = g_strdup_printf("%s%s",tmp,
-							   G_DIR_SEPARATOR_S);
-
-		new_menu = gtkaspell_dictionary_option_menu_new(prefs_common.aspell_data_path);
-		gtk_option_menu_set_menu(GTK_OPTION_MENU(spelling.optmenu_dictionary),
-					 new_menu);
-
-		gtk_entry_set_text(GTK_ENTRY(spelling.entry_aspell_data_path), 
-				   prefs_common.aspell_data_path);					 
-		/* select first one */
-		gtk_option_menu_set_history(GTK_OPTION_MENU(
-					spelling.optmenu_dictionary), 0);
-	
-		if (prefs_common.dictionary)
-			g_free(prefs_common.dictionary);
-
-		prefs_common.dictionary = 
-			gtkaspell_get_dictionary_menu_active_item(
-				gtk_option_menu_get_menu(
-					GTK_OPTION_MENU(
-						spelling.optmenu_dictionary)));
-		g_free(tmp);
-
-	}
-}
-static void prefs_spelling_btn_aspell_common_lib_clicked_cb(GtkWidget *widget,
-						     gpointer data)
-{
-	gchar *file_path, *tmp;
-	GtkWidget *new_menu;
-
-	file_path = filesel_select_file(_("Select aspell-common DLL"),
-					prefs_common.aspell_common_lib);
-	if (file_path == NULL) {
-		/* don't change */	
-	}
-	else {
-	  tmp=g_dirname(file_path);
-	  
-		if (prefs_common.aspell_common_lib)
-			g_free(prefs_common.aspell_common_lib);
-		prefs_common.aspell_common_lib = g_strdup_printf("%s%s",tmp,
-							   G_DIR_SEPARATOR_S);
-
-		new_menu = gtkaspell_dictionary_option_menu_new(prefs_common.aspell_common_lib);
-		gtk_option_menu_set_menu(GTK_OPTION_MENU(spelling.optmenu_dictionary),
-					 new_menu);
-
-		gtk_entry_set_text(GTK_ENTRY(spelling.entry_aspell_common_lib), 
-				   prefs_common.aspell_common_lib);					 
-		/* select first one */
-		gtk_option_menu_set_history(GTK_OPTION_MENU(
-					spelling.optmenu_dictionary), 0);
-	
-		if (prefs_common.dictionary)
-			g_free(prefs_common.dictionary);
-
-		prefs_common.dictionary = 
-			gtkaspell_get_dictionary_menu_active_item(
-				gtk_option_menu_get_menu(
-					GTK_OPTION_MENU(
-						spelling.optmenu_dictionary)));
-		g_free(tmp);
-
-	}
-}
-
-static void prefs_spelling_btn_aspell_lib_clicked_cb(GtkWidget *widget,
-						     gpointer data)
-{
-	gchar *file_path, *tmp;
-	GtkWidget *new_menu;
-
-	file_path = filesel_select_file(_("Select aspell DLL"),
-					prefs_common.aspell_lib);
-	if (file_path == NULL) {
-		/* don't change */	
-	}
-	else {
-	  tmp=g_dirname(file_path);
-	  
-		if (prefs_common.aspell_lib)
-			g_free(prefs_common.aspell_lib);
-		prefs_common.aspell_lib = g_strdup_printf("%s%s",tmp,
-							   G_DIR_SEPARATOR_S);
-
-		new_menu = gtkaspell_dictionary_option_menu_new(prefs_common.aspell_lib);
-		gtk_option_menu_set_menu(GTK_OPTION_MENU(spelling.optmenu_dictionary),
-					 new_menu);
-
-		gtk_entry_set_text(GTK_ENTRY(spelling.entry_aspell_lib), 
-				   prefs_common.aspell_lib);					 
-		/* select first one */
-		gtk_option_menu_set_history(GTK_OPTION_MENU(
-					spelling.optmenu_dictionary), 0);
-	
-		if (prefs_common.dictionary)
-			g_free(prefs_common.dictionary);
-
-		prefs_common.dictionary = 
-			gtkaspell_get_dictionary_menu_active_item(
-				gtk_option_menu_get_menu(
-					GTK_OPTION_MENU(
-						spelling.optmenu_dictionary)));
-		g_free(tmp);
-
-	}
-}
-#endif /* WIN32 */
-
 static void prefs_spelling_create()
 {
 	GtkWidget *vbox1;
@@ -1854,24 +1677,6 @@ static void prefs_spelling_create()
 	GtkWidget *checkbtn_check_while_typing;
 	GtkWidget *color_label;
 	GtkWidget *col_align;
-#ifdef WIN32
-	GtkWidget *hbox_aspell_prefix;
-	GtkWidget *label_aspell_prefix;
-	GtkWidget *entry_aspell_prefix;
-	GtkWidget *btn_aspell_prefix;
-	GtkWidget *hbox_aspell_data_path;
-	GtkWidget *label_aspell_data_path;
-	GtkWidget *entry_aspell_data_path;
-	GtkWidget *btn_aspell_data_path;
-	GtkWidget *hbox_aspell_common_lib;
-	GtkWidget *label_aspell_common_lib;
-	GtkWidget *entry_aspell_common_lib;
-	GtkWidget *btn_aspell_common_lib;
-	GtkWidget *hbox_aspell_lib;
-	GtkWidget *label_aspell_lib;
-	GtkWidget *entry_aspell_lib;
-	GtkWidget *btn_aspell_lib;
-#endif /* WIN32 */
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1905,11 +1710,7 @@ static void prefs_spelling_create()
 	gtk_widget_show(help_label);
 	gtk_box_pack_start(GTK_BOX(vbox_spell), help_label, FALSE, TRUE, 0);
 	
-#ifdef WIN32
-	spell_table = gtk_table_new(8, 3, FALSE);
-#else
 	spell_table = gtk_table_new(4, 3, FALSE);
-#endif /* WIN32 */
 	gtk_container_set_border_width (GTK_CONTAINER (spell_table), VSPACING);
 	gtk_table_set_row_spacings(GTK_TABLE(spell_table), 8);
 	gtk_table_set_col_spacings(GTK_TABLE(spell_table), 8);
@@ -1994,119 +1795,6 @@ static void prefs_spelling_create()
 			    GTK_SIGNAL_FUNC(quote_color_set_dialog), "Misspelled word");
 	gtk_container_add(GTK_CONTAINER(col_align), spelling.misspelled_btn);
 
-#ifdef WIN32
-/* prefix */
-	label_aspell_prefix = gtk_label_new (_("Aspell prefix:"));
-	gtk_misc_set_alignment(GTK_MISC(label_aspell_prefix), 1.0, 0.5);
-	gtk_widget_show(label_aspell_prefix);
-	gtk_table_attach (GTK_TABLE (spell_table), label_aspell_prefix, 0, 1, 4,
-			  5, GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-	
-	hbox_aspell_prefix = gtk_hbox_new (FALSE, 8);
-	gtk_table_attach (GTK_TABLE (spell_table), hbox_aspell_prefix, 1, 2, 4,
-			  5, GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-	gtk_widget_show(hbox_aspell_prefix);
-
-	entry_aspell_prefix = gtk_entry_new();
-	gtk_widget_show(entry_aspell_prefix);
-	gtk_box_pack_start(GTK_BOX(hbox_aspell_prefix), entry_aspell_prefix, TRUE,
-			   TRUE, 0);	
-	
-	gtk_widget_set_sensitive(entry_aspell_prefix, prefs_common.enable_aspell);
-
-	btn_aspell_prefix = gtk_button_new_with_label(" ... ");
-	gtk_widget_show(btn_aspell_prefix);
-	gtk_box_pack_start(GTK_BOX(hbox_aspell_prefix), btn_aspell_prefix, FALSE, FALSE, 0);
-	gtk_widget_set_sensitive(btn_aspell_prefix, prefs_common.enable_aspell);
-
-	gtk_signal_connect(GTK_OBJECT(btn_aspell_prefix), "clicked", 
-			   GTK_SIGNAL_FUNC(prefs_spelling_btn_aspell_prefix_clicked_cb),
-			   NULL);
-/* data_path */
-	label_aspell_data_path = gtk_label_new (_("Aspell data path:"));
-	gtk_misc_set_alignment(GTK_MISC(label_aspell_data_path), 1.0, 0.5);
-	gtk_widget_show(label_aspell_data_path);
-	gtk_table_attach (GTK_TABLE (spell_table), label_aspell_data_path, 0, 1, 5,
-			  6, GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-	
-	hbox_aspell_data_path = gtk_hbox_new (FALSE, 8);
-	gtk_table_attach (GTK_TABLE (spell_table), hbox_aspell_data_path, 1, 2, 5,
-			  6, GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-	gtk_widget_show(hbox_aspell_data_path);
-
-	entry_aspell_data_path = gtk_entry_new();
-	gtk_widget_show(entry_aspell_data_path);
-	gtk_box_pack_start(GTK_BOX(hbox_aspell_data_path), entry_aspell_data_path, TRUE,
-			   TRUE, 0);	
-	
-	gtk_widget_set_sensitive(entry_aspell_data_path, prefs_common.enable_aspell);
-
-	btn_aspell_data_path = gtk_button_new_with_label(" ... ");
-	gtk_widget_show(btn_aspell_data_path);
-	gtk_box_pack_start(GTK_BOX(hbox_aspell_data_path), btn_aspell_data_path, FALSE, FALSE, 0);
-	gtk_widget_set_sensitive(btn_aspell_data_path, prefs_common.enable_aspell);
-
-	gtk_signal_connect(GTK_OBJECT(btn_aspell_data_path), "clicked", 
-			   GTK_SIGNAL_FUNC(prefs_spelling_btn_aspell_data_path_clicked_cb),
-			   NULL);
-
-/* common_lib */
-	label_aspell_common_lib = gtk_label_new (_("Aspell common DLL:"));
-	gtk_misc_set_alignment(GTK_MISC(label_aspell_common_lib), 1.0, 0.5);
-	gtk_widget_show(label_aspell_common_lib);
-	gtk_table_attach (GTK_TABLE (spell_table), label_aspell_common_lib, 0, 1, 6,
-			  7, GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-	
-	hbox_aspell_common_lib = gtk_hbox_new (FALSE, 8);
-	gtk_table_attach (GTK_TABLE (spell_table), hbox_aspell_common_lib, 1, 2, 6,
-			  7, GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-	gtk_widget_show(hbox_aspell_common_lib);
-
-	entry_aspell_common_lib = gtk_entry_new();
-	gtk_widget_show(entry_aspell_common_lib);
-	gtk_box_pack_start(GTK_BOX(hbox_aspell_common_lib), entry_aspell_common_lib, TRUE,
-			   TRUE, 0);	
-	
-	gtk_widget_set_sensitive(entry_aspell_common_lib, prefs_common.enable_aspell);
-
-	btn_aspell_common_lib = gtk_button_new_with_label(" ... ");
-	gtk_widget_show(btn_aspell_common_lib);
-	gtk_box_pack_start(GTK_BOX(hbox_aspell_common_lib), btn_aspell_common_lib, FALSE, FALSE, 0);
-	gtk_widget_set_sensitive(btn_aspell_common_lib, prefs_common.enable_aspell);
-
-	gtk_signal_connect(GTK_OBJECT(btn_aspell_common_lib), "clicked", 
-			   GTK_SIGNAL_FUNC(prefs_spelling_btn_aspell_common_lib_clicked_cb),
-			   NULL);
-/* lib */
-	label_aspell_lib = gtk_label_new (_("Aspell DLL:"));
-	gtk_misc_set_alignment(GTK_MISC(label_aspell_lib), 1.0, 0.5);
-	gtk_widget_show(label_aspell_lib);
-	gtk_table_attach (GTK_TABLE (spell_table), label_aspell_lib, 0, 1, 7,
-			  8, GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-	
-	hbox_aspell_lib = gtk_hbox_new (FALSE, 8);
-	gtk_table_attach (GTK_TABLE (spell_table), hbox_aspell_lib, 1, 2, 7,
-			  8, GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-	gtk_widget_show(hbox_aspell_lib);
-
-	entry_aspell_lib = gtk_entry_new();
-	gtk_widget_show(entry_aspell_lib);
-	gtk_box_pack_start(GTK_BOX(hbox_aspell_lib), entry_aspell_lib, TRUE,
-			   TRUE, 0);	
-	
-	gtk_widget_set_sensitive(entry_aspell_lib, prefs_common.enable_aspell);
-
-	btn_aspell_lib = gtk_button_new_with_label(" ... ");
-	gtk_widget_show(btn_aspell_lib);
-	gtk_box_pack_start(GTK_BOX(hbox_aspell_lib), btn_aspell_lib, FALSE, FALSE, 0);
-	gtk_widget_set_sensitive(btn_aspell_lib, prefs_common.enable_aspell);
-
-	gtk_signal_connect(GTK_OBJECT(btn_aspell_lib), "clicked", 
-			   GTK_SIGNAL_FUNC(prefs_spelling_btn_aspell_lib_clicked_cb),
-			   NULL);
-
-#endif /* WIN32 */
-
 	spelling.checkbtn_enable_aspell = checkbtn_enable_aspell;
 	spelling.entry_aspell_path      = entry_aspell_path;
 	spelling.btn_aspell_path	= btn_aspell_path;
@@ -2114,16 +1802,6 @@ static void prefs_spelling_create()
 	spelling.optmenu_sugmode        = sugmode_optmenu;
 	spelling.checkbtn_use_alternate = checkbtn_use_alternate;
 	spelling.checkbtn_check_while_typing = checkbtn_check_while_typing;
-#ifdef WIN32
-	spelling.entry_aspell_prefix      = entry_aspell_prefix;
-	spelling.btn_aspell_prefix	= btn_aspell_prefix;
-	spelling.entry_aspell_data_path      = entry_aspell_data_path;
-	spelling.btn_aspell_data_path	= btn_aspell_data_path;
-	spelling.entry_aspell_common_lib      = entry_aspell_common_lib;
-	spelling.btn_aspell_common_lib	= btn_aspell_common_lib;
-	spelling.entry_aspell_lib      = entry_aspell_lib;
-	spelling.btn_aspell_lib	= btn_aspell_lib;
-#endif /* WIN32 */
 }
 
 #endif

@@ -3,12 +3,12 @@
 
 [Setup]
 AppName=Sylpheed-Claws
-AppVerName=Sylpheed-0.8.6-Claws (Win32)
+AppVerName=Sylpheed-0.8.6-Claws121 (Win32)
 AppPublisher=The friendly Sylpheed hackers
 AppPublisherURL=http://claws-w32.sourceforge.net
 AppSupportURL=http://claws-w32.sourceforge.net
 AppUpdatesURL=http://claws-w32.sourceforge.net
-DefaultDirName={pf}\Sylpheed-Claws
+DefaultDirName={code:GetInstalledDir}
 DefaultGroupName=Sylpheed-Claws
 AllowNoIcons=yes
 ;AlwaysCreateUninstallIcon=yes
@@ -16,6 +16,9 @@ LicenseFile=D:\_pak\Sylpheed.086.claws\doc\COPYING
 InfoAfterFile=D:\_pak\Sylpheed.086.claws\doc\README
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
 ; MinVersion=4,3.51
+DisableStartupPrompt  =yes
+OutputBaseFilename    =Sylpheed-0.8.6-Claws
+Compression=none
 
 [Types]
 Name: "full";                   Description: "Full installation"
@@ -45,7 +48,6 @@ Source: "D:\_pak\Sylpheed.086.claws\bin\libkcc.dll";            DestDir: "{app}\
 Source: "D:\_pak\Sylpheed.086.claws\bin\regex.dll";             DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 Source: "D:\_pak\Sylpheed.086.claws\bin\w32lib.dll";            DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 Source: "D:\_pak\Sylpheed.086.claws\bin\iconv.dll";             DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
-
 
 Source: "D:\_pak\Sylpheed.086.claws\bin\gspawn-win32-helper.exe";  DestDir: "{app}\bin";                CopyMode: alwaysoverwrite; Components: gtk
 Source: "D:\_pak\Sylpheed.086.claws\bin\libgthread-2.0-0.dll";  DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite; Components: gtk
@@ -99,9 +101,20 @@ Name: "{group}\links\Sylpheed-Claws CVS tree (Win32)";          Filename: "{app}
 Name: "{group}\links\Sylpheed-patches";                         Filename: "{app}\doc\claws-patches.url"
 
 [Registry]
-Root: HKCU; Subkey: "Software\Sylpheed";                        Flags: uninsdeletekey; Tasks: reg_sylpheed
-Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: string;      ValueName: "InstalledDir";      ValueData: "{app}";             Tasks: reg_sylpheed
-Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: string;      ValueName: "HomeDir";           ValueData: "{userappdata}";             Tasks: reg_sylpheed
+Root: HKCU; Subkey: "Software\Sylpheed";                        Flags: uninsdeletekeyifempty; Tasks: reg_sylpheed
+Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: string;      ValueName: "InstalledDir";      ValueData: "{app}";                     Tasks: reg_sylpheed
+Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: string;      ValueName: "HomeDir";           ValueData: "{code:GetHomeDir}";         Tasks: reg_sylpheed
+Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: dword;       ValueName: "MajorVersion";      ValueData: "0";                         Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: dword;       ValueName: "MinorVersion";      ValueData: "8";                         Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: dword;       ValueName: "MicroVersion";      ValueData: "6";                         Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: string;      ValueName: "UninstallString";   ValueData: "{uninstallexe}";            Flags: uninsdeletekey
+
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\Sylpheed.exe";     Flags: uninsdeletekey; Tasks: reg_sylpheed
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\Sylpheed_d.exe";   Flags: uninsdeletekey; Tasks: reg_sylpheed
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\Sylpheed.exe";         ValueType: string;      ValueName: "{app}\bin\Sylpheed.exe";          ValueData: "{app}\bin\Sylpheed.exe";    Tasks: reg_sylpheed
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\Sylpheed_d.exe";       ValueType: string;      ValueName: "{app}\bin\Sylpheed_d.exe";        ValueData: "{app}\bin\Sylpheed.exe";    Tasks: reg_sylpheed
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\Sylpheed.exe";         ValueType: string;      ValueName: "Path";              ValueData: "{app}\bin;{code:AspellDir};"; Tasks: reg_sylpheed
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\Sylpheed_d.exe";       ValueType: string;      ValueName: "Path";              ValueData: "{app}\bin;{code:AspellDir};"; Tasks: reg_sylpheed
 
 Root: HKCR; Subkey: "mailto";                                   Flags: uninsclearvalue; Tasks: reg_defaultmailer
 Root: HKCR; Subkey: "mailto";                                                                   ValueType: string;      ValueName: "";                  ValueData: "URL:MailTo-Protocol";                       Flags: uninsclearvalue; Tasks: reg_defaultmailer
@@ -137,4 +150,176 @@ Type: files; Name: "{app}\doc\gtk-w32.url"
 Type: dirifempty; Name: "{app}\bin\"
 Type: dirifempty; Name: "{app}\doc\"
 Type: dirifempty; Name: "{app}"
+
+[Dirs]
+Name: {code:GetHomeDir}
+
+[Code]
+var
+  SylpheedHomeDir : string;
+  SylpheedInstalledDir : string;
+
+function GetHomeDir(default:string):string;
+begin
+  { try to re-use last home dir }
+  if SylpheedHomeDir = ''
+  then RegQueryStringValue(HKCU, 'Software\Sylpheed', 'HomeDir', SylpheedHomeDir);
+  { otherwise use application data folder }
+  if (SylpheedHomeDir = '')
+  then SylpheedHomeDir := ExpandConstant('{userappdata}');
+  Result := SylpheedHomeDir ;
+end;
+
+function GetInstalledDir(dummydefault:string):string;
+begin
+  { try to re-use last install dir }
+  if SylpheedInstalledDir = ''
+  then RegQueryStringValue(HKCU, 'Software\Sylpheed', 'InstalledDir', SylpheedInstalledDir);
+  { otherwise use program files dir }
+  if (SylpheedInstalledDir = '')
+  then SylpheedInstalledDir := ExpandConstant('{pf}\Sylpheed-Claws');
+  Result := SylpheedInstalledDir
+end;
+
+function SelectHomeDir(var home:string):boolean;
+begin
+  ScriptDlgPageSetCaption('Select HOME directory');
+  ScriptDlgPageSetSubCaption1('Where should the configuration an mailbox folders be stored?');
+  ScriptDlgPageSetSubCaption2('(Read the Readme.txt on how to change this locations later)');
+  ScriptDlgPageShowBackButton(true);
+  Result := InputDir('', home);
+  ScriptDlgPageClose(true);
+end;
+
+function SylpheedInstalled(var version,uninstallcmd:string):boolean;
+var maj,min,mic:Cardinal;
+begin
+  Result := RegQueryDWordValue(HKCU, 'Software\Sylpheed', 'MajorVersion', maj)
+        and RegQueryDWordValue(HKCU, 'Software\Sylpheed', 'MinorVersion', min)
+        and RegQueryDWordValue(HKCU, 'Software\Sylpheed', 'MicroVersion', mic);
+  RegQueryStringValue(HKCU, 'Software\Sylpheed', 'UninstallString', uninstallcmd)
+  version:=IntToStr(maj)+'.'+IntToStr(min)+'.'+IntToStr(mic);
+end;
+
+function AspellDir(default:string):string;
+var dir:string;
+begin
+  RegQueryStringValue(HKLM, 'Software\Aspell', '', dir)
+  Result := dir;
+end;
+
+function AspellInstalled():boolean;
+begin
+  Result:=AspellDir('')<>'';
+end;
+
+function GPGInstalled(var HomeDir,gpgProgram,InstalledDir:string):boolean;
+var
+    HomeSet,
+    InstSet,
+    ProgSet:boolean;
+begin
+  HomeSet := RegQueryStringValue(HKCU, 'Software\GNU\GNUPG',         'HomeDir',      HomeDir);
+  ProgSet := RegQueryStringValue(HKCU, 'Software\GNU\GNUPG',         'gpgProgram',   gpgProgram);
+  InstSet := RegQueryStringValue(HKCU, 'Software\GNU\GNUPG\HomeDir', 'InstalledDir', InstalledDir);
+  if (not ProgSet)
+  then
+  begin
+    ProgSet:=true;
+    if InstSet
+    then gpgProgram:=InstalledDir+'\gpg.exe'
+    else if HomeSet
+    then gpgProgram:=HomeDir+'\gpg.exe'
+    else ProgSet := false;
+    if ProgSet
+    then RegWriteStringValue(HKCU, 'Software\GNU\GNUPG', 'gpgProgram', gpgProgram);
+  end;
+  Result := ProgSet;
+end;
+
+function InitializeSetup(): Boolean;
+var version,
+    uninst    :string;
+    msgres,
+    execres   :integer;
+    s1,s2,s3:string;
+begin
+  Result:=true;
+  GetInstalledDir('');
+  GetHomeDir('');
+
+  if SylpheedInstalled(version,uninst)
+  then
+  begin
+    msgres:=MsgBox('Sylpheed-'+version+' is currently installed.'+#13#13
+                   +'Do you want to uninstall it first?.',
+                   mbError, MB_YESNOCANCEL);
+    case msgres of
+      IdYes:      begin
+                    InstExec(uninst, '', '', true, true, SW_SHOWNORMAL, execres);
+                    Result:=InitializeSetup();
+                  end;
+      IdCancel:   Result:=false;
+      IdNo:       ;
+    end;
+    
+    if Result and not GPGInstalled(s1,s2,s3)
+    then if MsgBox('GPG was not found on your system.'+#13#13
+                   +'If you want to use encrypted mails,'+#13
+                   +'you should install GnuPG first.'+#13#13
+                   +'http://www.gnupg.org (original)'+#13
+                   +'http://www.nullify.org (patched)'+#13#13
+                   +'Do you want to abort?'+#13,
+                   mbError, MB_YESNO) = idNo
+         then Result := true
+         else Result := false;
+    
+    if Result and not AspellInstalled()
+    then if MsgBox('Aspell was not found on your system.'+#13#13
+                   +'If you want to use spellchecking,'+#13
+                   +'you should download and install it first.'+#13#13
+                   +'GNU-Aspell/Win32'+#13
+                   +'http://aspell.net/win32'+#13#13
+                   +'Do you want to abort?'+#13,
+                   mbError, MB_YESNO) = idNo
+         then Result:=true
+         else Result:=false;
+  end;
+end;
+
+const CR = #13 ;
+function UpdateReadyMemo(Space, NewLine, MemoUserInfoInfo, MemoDirInfo, MemoTypeInfo, MemoComponentsInfo, MemoGroupInfo, MemoTasksInfo: String): String;
+begin
+  { also display chosen HOME directory }
+  if MemoUserInfoInfo <> ''
+  then Result := MemoUserInfoInfo + CR + CR ;
+  Result := Result + MemoDirInfo + CR + CR
+                   + 'Home directory:' + CR
+                   + Space + SylpheedHomeDir + CR + CR;
+  if MemoTypeInfo <> ''
+  then Result := Result + MemoTypeInfo + CR + CR ;
+  if MemoComponentsInfo <> ''
+  then Result := Result + MemoComponentsInfo + CR + CR ;
+  if MemoGroupInfo <> ''
+  then Result := Result + MemoGroupInfo + CR + CR ;
+  if MemoTasksInfo <> ''
+  then Result := Result + MemoTasksInfo + CR + CR ;
+end;
+
+function NextButtonClick(CurPage: Integer): Boolean;
+begin
+  { insert home-dir query between install-dir and components page }
+  if CurPage = wpSelectDir
+  then Result := SelectHomeDir(SylpheedHomeDir)
+  else Result := true;
+end;
+
+function BackButtonClick(CurPage: Integer): Boolean;
+begin
+  { insert home-dir query between install-dir and components page }
+  if CurPage = wpSelectComponents
+  then Result := not SelectHomeDir(SylpheedHomeDir)
+  else Result := true;
+end;
+
 

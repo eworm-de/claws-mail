@@ -487,6 +487,9 @@ static GtkAspeller *gtkaspeller_new(Dictionary *dictionary)
 	g_return_val_if_fail(gtkaspellcheckers, NULL);
 
 	g_return_val_if_fail(dictionary, NULL);
+#ifdef WIN32
+	g_return_val_if_fail(w32_aspell_loaded(), NULL);
+#endif
 
 	if (dictionary->fullname == NULL)
 		gtkaspell_checkers_error_message(g_strdup(_("No dictionary selected.")));
@@ -498,7 +501,7 @@ static GtkAspeller *gtkaspeller_new(Dictionary *dictionary)
 
 		tmp = strrchr(dictionary->fullname, G_DIR_SEPARATOR);
 #ifdef WIN32
-	if (!tmp) tmp = strrchr(dictionary->fullname, '/');
+		if (!tmp) tmp = strrchr(dictionary->fullname, '/');
 #endif
 
 		if (tmp == NULL)
@@ -555,10 +558,6 @@ static GtkAspeller *gtkaspeller_real_new(Dictionary *dict)
 	if (!set_dictionary(config, dict))
 		return NULL;
 	
-#ifdef WIN32
-	aspell_config_replace(config, "prefix", prefs_common.aspell_prefix);
-	aspell_config_replace(config, "data-dir", prefs_common.aspell_data_path);
-#endif /* WIN32 */
 	ret = new_aspell_speller(config);
 	delete_aspell_config(config);
 
@@ -1473,6 +1472,12 @@ GSList *gtkaspell_get_dictionary_list(const gchar *aspell_path, gint refresh)
 		gtkaspell_free_dictionary_list(gtkaspellcheckers->dictionary_list);
 	list = NULL;
 
+#ifdef WIN32
+	g_return_val_if_fail(w32_aspell_loaded(), NULL);
+	if (!aspell_path)
+		aspell_path = "";
+#endif /* WIN32 */
+
 	config = new_aspell_config();
 #if 0 
 	aspell_config_replace(config, "rem-all-word-list-path", "");
@@ -1485,10 +1490,6 @@ GSList *gtkaspell_get_dictionary_list(const gchar *aspell_path, gint refresh)
 		return gtkaspellcheckers->dictionary_list; 
 	}
 #endif
-#ifdef WIN32
-	aspell_config_replace(config, "prefix", prefs_common.aspell_prefix);
-	aspell_config_replace(config, "data-dir", prefs_common.aspell_data_path);
-#endif /* WIN32 */
 	aspell_config_replace(config, "dict-dir", aspell_path);
 	if (aspell_config_error_number(config) != 0) {
 		gtkaspellcheckers->error_message = g_strdup(

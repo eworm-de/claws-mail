@@ -1,6 +1,7 @@
 #include <windows.h>
 #include "w32_aspell_init.h"
 #include "prefs_common.h"
+#include "utils.h"
 
 HMODULE hMod_aspell_common;
 HMODULE hMod_aspell;
@@ -15,16 +16,36 @@ int w32_aspell_null(void);
 	;
 
 int w32_aspell_init(void) {
-	/* compatibility for aspell-0-50-2 (static in 0-50-3) */
-	hMod_aspell_common = LoadLibrary(prefs_common.aspell_common_lib);
-	hMod_aspell = LoadLibrary(prefs_common.aspell_lib);
+  	gchar *aspell_dll;
+	gchar *path, *ver;
+
+	g_return_val_if_fail(prefs_common.enable_aspell, 0);
+
+	ver  = read_w32_registry_string("HKLM", "SOFTWARE\\Aspell", "AspellVersion");
+	path = read_w32_registry_string("HKLM", "SOFTWARE\\Aspell", "Path");
+	g_return_val_if_fail(ver || path, 0);
+
+	aspell_dll = g_strdup_printf("%s%c%s%d%s",
+	    path, G_DIR_SEPARATOR, "aspell-", ver[0], ".dll");
+	hMod_aspell = LoadLibrary(aspell_dll);
+	g_free(ver);
+	g_free(path);
+	g_free(aspell_dll);
+
 	w32_aspell_assign();
 	if (!w32_aspell_loaded()) {
 		FreeLibrary(hMod_aspell);
 		return 0 ;
-	} else {
-		return 1 ;
+	} else if (!prefs_common.aspell_path) {
+		/* get dict-dir from registry */
+		gchar * tmppath;
+		tmppath = g_strdup_printf("%s%c%s%c",
+			read_w32_registry_string("HKLM", "Software\\Aspell", NULL),
+			G_DIR_SEPARATOR, "dict", G_DIR_SEPARATOR);
+		subst_char(tmppath, G_DIR_SEPARATOR, '/');
+		prefs_common.aspell_path=tmppath;
 	}
+	return 1 ;
 }
 
 int w32_aspell_loaded(void) {
