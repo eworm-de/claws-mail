@@ -1258,6 +1258,7 @@ static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	if (selection == SUMMARY_SELECTED_SINGLE &&
 	    (mainwin->summaryview->folder_item &&
 	     (mainwin->summaryview->folder_item->stype == F_DRAFT ||
+	      mainwin->summaryview->folder_item->stype == F_OUTBOX ||
 	      mainwin->summaryview->folder_item->stype == F_QUEUE)))
 		state |= M_ALLOW_REEDIT;
 	if (cur_account)
