@@ -1,3 +1,8 @@
+2003-01-24 [thorsten]	0.8.9claws-1
+
+	* win32/utils/sylpheed-setup.iss.in
+		install plugins into subdir
+
 2003-01-24 [thorsten]	0.8.8claws127-1
 
 	* win32/Makefile

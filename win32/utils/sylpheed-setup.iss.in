@@ -70,9 +70,9 @@ Source: "@PAKDIR@\themes\*.*";                DestDir: "{app}\themes";          
 Source: "@PAKDIR@\bin\libeay32.dll";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 Source: "@PAKDIR@\bin\ssleay32.dll";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 ; Plugins
-Source: "@PAKDIR@\bin\demo.dll";              DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
-Source: "@PAKDIR@\bin\spamassassin.dll";      DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
-Source: "@PAKDIR@\bin\spamassassin_gtk.dll";  DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
+Source: "@PAKDIR@\bin\plugins\demo.dll";              DestDir: "{app}\bin\plugins";   CopyMode: alwaysoverwrite;
+Source: "@PAKDIR@\bin\plugins\spamassassin.dll";      DestDir: "{app}\bin\plugins";   CopyMode: alwaysoverwrite;
+Source: "@PAKDIR@\bin\plugins\spamassassin_gtk.dll";  DestDir: "{app}\bin\plugins";   CopyMode: alwaysoverwrite;
 
 [INI]
 Filename: "{app}\doc\gtk-w32.url";                              Section: "InternetShortcut"; Key: "URL"; String: "http://www.gimp.org/~tml/gimp/win32/"
