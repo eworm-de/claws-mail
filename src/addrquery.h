@@ -1,7 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * 
- * Copyright (c) 2000-2003 by Alfons Hoogervorst <alfons@proteus.demon.nl>
+ * Copyright (C) 2003 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,22 +16,24 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
- 
-#ifndef __ADDR_COMPL_H__
-#define __ADDR_COMPL_H__
 
-gint start_address_completion		(void);
-guint complete_address			(const gchar *str);
-gchar *get_complete_address		(gint        index);
-gint end_address_completion		(void);
+/*
+ * Functions to define an address query (a request).
+ */
 
-/* ui functions */
-void address_completion_start		(GtkWidget *mainwindow);
-void address_completion_register_entry	(GtkEntry  *entry);
-void address_completion_unregister_entry(GtkEntry  *entry);
-void address_completion_end		(GtkWidget *mainwindow);
+#ifndef __ADDRQUERY_H__
+#define __ADDRQUERY_H__
 
-void addrcompl_initialize	( void );
-void addrcompl_teardown		( void );
+#include <glib.h>
+// #include <stdio.h>
 
-#endif /* __ADDR_COMPL_H__ */
+/* Address search call back function */
+typedef gint ( AddrSearchCallbackFunc ) ( gint cacheID,
+					  GList *listEMail,
+					  gpointer target );
+
+#endif /* __ADDRQUERY_H__ */
+
+/*
+ * End of Source.
+ */

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,8 @@
 #include <gtk/gtkwidget.h>
 
 #include "compose.h"
+#include "addrquery.h"
+#include "addritem.h"
 
 void addressbook_open			(Compose	*target);
 void addressbook_set_target_compose	(Compose	*target);
@@ -38,13 +40,21 @@ gboolean addressbook_add_contact	( const gchar	*name,
 					  const gchar	*address,
 					  const gchar	*remarks );
 
-gboolean addressbook_load_completion	( gint (*callBackFunc) ( const gchar *, const gchar *, const gchar * ) );
-
 void addressbook_gather			( FolderItem *folderItem,
 					  gboolean sourceInd,
 					  GList *msgList );
 void addressbook_harvest		(FolderItem 	*folderItem,
 					 gboolean sourceInd,
 					 GList *msgList);
+
+gint addressbook_setup_search		( const gchar *searchTerm,
+					  const gpointer target,
+					  AddrSearchCallbackFunc callback );
+gboolean addressbook_start_search	( const gint queryID );
+void addressbook_stop_search		( const gint queryID );
+
+void addressbook_read_all		( void );
+GList *addressbook_quick_search_list	( const gchar *searchTerm );
+ItemEMail *addressbook_quick_search_single( const gchar *searchTerm );
 
 #endif /* __ADDRESSBOOK_H__ */

@@ -85,7 +85,7 @@
 
 #ifdef USE_LDAP
 #include <pthread.h>
-#include "syldap.h"
+#include "ldapserver.h"
 #include "editldap.h"
 
 #define ADDRESSBOOK_LDAP_BUSYMSG "Busy"
@@ -313,7 +313,7 @@ static void addressbook_folder_remove_node	(GtkCTree *clist,
 						 GtkCTreeNode *node);
 
 #ifdef USE_LDAP
-static void addressbook_ldap_show_message	(SyldapServer *server);
+static void addressbook_ldap_show_message	( LdapServer *server );
 #endif
 
 /* LUT's and IF stuff */
@@ -526,6 +526,7 @@ void addressbook_destroy() {
 	if( _clipBoard_ != NULL ) {
 		addrclip_free( _clipBoard_ );
 	}
+	addrcompl_teardown();
 	if( _addressIndex_ != NULL ) {
 	       addrindex_free_index( _addressIndex_ );
 	}
@@ -2377,7 +2378,6 @@ static void addressbook_edit_address_cb( gpointer data, guint action, GtkWidget 
 			person = ( ItemPerson * ) ADDRITEM_PARENT(email);
 			if( addressbook_edit_person( abf, NULL, person, TRUE ) == NULL ) return;
 			addressbook_folder_refresh_one_person( clist, person );
-			invalidate_address_completion();
 			return;
 		}
 	}
@@ -2385,7 +2385,6 @@ static void addressbook_edit_address_cb( gpointer data, guint action, GtkWidget 
 		/* Edit person - basic page */
 		ItemPerson *person = ( ItemPerson * ) obj;
 		if( addressbook_edit_person( abf, NULL, person, FALSE ) == NULL ) return;
-		invalidate_address_completion();
 		addressbook_folder_refresh_one_person( clist, person );
 		return;
 	}
@@ -2992,6 +2991,7 @@ void addressbook_read_file( void ) {
 	}
 
 	addrIndex = addrindex_create_index();
+	addrcompl_initialize();
 
 	/* Use new address book index. */
 	addrindex_set_file_path( addrIndex, get_rc_dir() );
@@ -3112,7 +3112,8 @@ static GtkCTreeNode *addressbook_node_add_group( GtkCTreeNode *node, AddressData
 * Return: Inserted node.
 */
 static GtkCTreeNode *addressbook_node_add_folder(
-		GtkCTreeNode *node, AddressDataSource *ds, ItemFolder *itemFolder, AddressObjectType otype )
+		GtkCTreeNode *node, AddressDataSource *ds,
+		ItemFolder *itemFolder, AddressObjectType otype )
 {
 	GtkCTree *ctree = GTK_CTREE(addrbook.ctree);
 	GtkCTreeNode *newNode = NULL;
@@ -3144,8 +3145,9 @@ static GtkCTreeNode *addressbook_node_add_folder(
 		newNode = gtk_ctree_insert_node( ctree, node, NULL, name, FOLDER_SPACING,
 				atci->iconXpm, atci->maskXpm, atci->iconXpm, atci->maskXpm,
 				atci->treeLeaf, atci->treeExpand );
-		gtk_ctree_node_set_row_data_full( ctree, newNode, adapter,
-			addressbook_free_treenode );
+		if( newNode )
+			gtk_ctree_node_set_row_data_full( ctree, newNode, adapter,
+				addressbook_free_treenode );
 	}
 
 	listItems = itemFolder->listFolder;
@@ -3175,9 +3177,6 @@ void addressbook_export_to_file( void ) {
 		if( _addressIndex_->retVal != MGU_SUCCESS ) {
 			addrindex_print_index( _addressIndex_, stdout );
 		}
-
-		/* Notify address completion of new data */
-		invalidate_address_completion();
 	}
 }
 
@@ -3313,43 +3312,36 @@ static void addressbook_new_ldap_cb( gpointer data, guint action, GtkWidget *wid
 	}
 }
 
-static void addressbook_ldap_show_message( SyldapServer *svr ) {
+static void addressbook_ldap_show_message( LdapServer *svr ) {
 	gchar *name;
 	gchar *desc;
 	*addressbook_msgbuf = '\0';
 	if( svr ) {
-		name = syldap_get_name( svr );
-		if( svr->busyFlag ) {
+		name = ldapsvr_get_name( svr );
+		if( svr->retVal == MGU_SUCCESS ) {
 			g_snprintf( addressbook_msgbuf,
-				    sizeof(addressbook_msgbuf), "%s: %s", name,
-				    ADDRESSBOOK_LDAP_BUSYMSG );
+				    sizeof(addressbook_msgbuf), "%s",
+				    name );
 		}
 		else {
-			if( svr->retVal == MGU_SUCCESS ) {
-				g_snprintf( addressbook_msgbuf,
-					    sizeof(addressbook_msgbuf), "%s",
-					    name );
-			}
-			else {
-				desc = addressbook_err2string(
-						_lutErrorsLDAP_, svr->retVal );
-				g_snprintf( addressbook_msgbuf,
-					    sizeof(addressbook_msgbuf),
-					    "%s: %s", name, desc );
-			}
+			desc = addressbook_err2string(
+					_lutErrorsLDAP_, svr->retVal );
+			g_snprintf( addressbook_msgbuf,
+				    sizeof(addressbook_msgbuf),
+				    "%s: %s", name, desc );
 		}
 	}
 	addressbook_status_show( addressbook_msgbuf );
 }
 
-static void addressbook_ldap_show_results( SyldapServer *sls ) {
+static void addressbook_ldap_show_results( LdapServer *server ) {
 	GtkCTree *ctree = GTK_CTREE(addrbook.ctree);
 	AddressObject *obj;
 	AdapterDSource *ads = NULL;
 	AddressDataSource *ds = NULL;
 	AddressInterface *iface = NULL;
 
-	if( sls == NULL ) return;
+	if( server == NULL ) return;
 	if( ! addrbook.treeSelected ) return;
 	if( GTK_CTREE_ROW( addrbook.treeSelected )->level == 1 ) return;
 
@@ -3358,18 +3350,18 @@ static void addressbook_ldap_show_results( SyldapServer *sls ) {
 	if( obj->type == ADDR_DATASOURCE ) {
 		ads = ADAPTER_DSOURCE(obj);
 		if( ads->subType == ADDR_LDAP ) {
-			SyldapServer *server;
+			LdapServer *ldapSvr;
 
 			ds = ads->dataSource;
 			if( ds == NULL ) return;
 			iface = ds->interface;
 			if( ! iface->haveLibrary ) return;
 			server = ds->rawDataSource;
-			if( server == sls ) {
+			if( ldapSvr == server ) {
 				/* Read from cache */
 				gtk_widget_show_all(addrbook.window);
 				addressbook_set_clist( obj );
-				addressbook_ldap_show_message( sls );
+				addressbook_ldap_show_message( server );
 				gtk_widget_show_all(addrbook.window);
 				gtk_entry_set_text( GTK_ENTRY(addrbook.entry), "" );
 			}
@@ -3377,24 +3369,27 @@ static void addressbook_ldap_show_results( SyldapServer *sls ) {
 	}
 }
 
+static gint _idleID_ = 0;
+static gchar *_tempMessage_ = "Busy searching LDAP...";
+
 /*
  * LDAP idle function. This function is called during UI idle time while
  * an LDAP search is in progress.
  * Enter: data Reference to LDAP server object.
  */
 static void addressbook_ldap_idle( gpointer data ) {
-	SyldapServer *server;
+}
 
-	server = ( SyldapServer * ) data;	
-	if( ! server->busyFlag ) {
-		/* Server has completed search - remove from idle list */
-		gtk_idle_remove( server->idleId );
-
-		/* Process callback and free up the thread */
-		addressbook_ldap_show_results( server );
-		g_free( server->thread );
-		server->thread = NULL;
+/*
+ * LDAP search completion function.
+ */
+static void addressbook_ldap_idle_end( void ) {
+	/* Server has completed search - remove from idle list */
+	printf( "addressbook_ldap_idle_end... completed" );
+	if( _idleID_ != 0 ) {
+		gtk_idle_remove( _idleID_ );
 	}
+	_idleID_ = 0;
 }
 
 /*
@@ -3405,21 +3400,26 @@ static void addressbook_ldap_idle( gpointer data ) {
 static void addressbook_ldap_lookup( AdapterDSource *ads, gchar *sLookup ) {
 	AddressDataSource *ds = NULL;
 	AddressInterface *iface = NULL;
-	SyldapServer *server;
+	LdapServer *server;
 
+	printf( "addressbook_ldap_lookup/Searching for '%s'\n", sLookup );
 	ds = ads->dataSource;
 	if( ds == NULL ) return;
 	iface = ds->interface;
 	if( ! iface->haveLibrary ) return;
 	server = ds->rawDataSource;
 	if( server ) {
-		syldap_cancel_read( server );
+		printf( "addressbook_ldap_lookup/Starting.../1\n" );
 		if( *sLookup == '\0' || strlen( sLookup ) < 1 ) return;
-		syldap_set_search_value( server, sLookup );
-		server->idleId = gtk_idle_add(
-			( GtkFunction ) addressbook_ldap_idle, server );
-		syldap_read_data_th( server );
-		addressbook_ldap_show_message( server );
+
+		/* Setup a query */
+		printf( "addressbook_ldap_lookup/Starting.../2\n" );
+
+		/* Sit back and wait for something to happen */
+		_idleID_ = gtk_idle_add(
+			( GtkFunction ) addressbook_ldap_idle, NULL );
+		addrindex_search_ldap_noid( server, sLookup, addressbook_ldap_idle_end  );
+		addressbook_status_show( _tempMessage_ );
 	}
 }
 #endif
@@ -3429,9 +3429,11 @@ static void addressbook_ldap_lookup( AdapterDSource *ads, gchar *sLookup ) {
  */
 static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 	GtkCTree *ctree = GTK_CTREE(addrbook.ctree);
+	AddressObject *pobj;
 	AddressObject *obj;
 	AdapterDSource *ads = NULL;
 	gchar *sLookup;
+	GtkCTreeNode *node = NULL, *parentNode = NULL;
 
 	if( ! addrbook.treeSelected ) return;
 	if( GTK_CTREE_ROW( addrbook.treeSelected )->level == 1 ) return;
@@ -3441,16 +3443,25 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 
 	sLookup = gtk_editable_get_chars( GTK_EDITABLE(addrbook.entry), 0, -1 );
 	g_strchomp( sLookup );
+	/* printf( "addressbook_lup_clicked/Lookup: '%s'\n", sLookup ); */
 
 	if( obj->type == ADDR_DATASOURCE ) {
+		/* printf( "I am a datasource\n" ); */
 		ads = ADAPTER_DSOURCE(obj);
-#ifdef USE_LDAP
-		if( ads->subType == ADDR_LDAP ) {
-			addressbook_ldap_lookup( ads, sLookup );
-		}
-#endif /* USE_LDAP */
 	}
-
+	else {
+		/* printf( "Test my parent\n" ); */
+		parentNode = GTK_CTREE_ROW(addrbook.treeSelected)->parent;
+		obj = gtk_ctree_node_get_row_data( ctree, parentNode );
+		if( obj->type == ADDR_DATASOURCE ) {
+			ads = ADAPTER_DSOURCE(obj);
+		}
+	}
+#ifdef USE_LDAP
+	if( ads && ads->subType == ADDR_LDAP ) {
+		addressbook_ldap_lookup( ads, sLookup );
+	}
+#endif
 	g_free( sLookup );
 }
 
@@ -3845,88 +3856,6 @@ gboolean addressbook_add_contact( const gchar *name, const gchar *address, const
 }
 
 /* **********************************************************************
-* Address completion support.
-* ***********************************************************************
-*/
-
-/*
-* This function is used by the address completion function to load
-* addresses.
-* Enter: callBackFunc Function to be called when an address is
-*                     to be loaded.
-* Return: TRUE if data loaded, FALSE if address index not loaded.
-*/
-gboolean addressbook_load_completion( gint (*callBackFunc) ( const gchar *, const gchar *, const gchar * ) ) {
-	AddressDataSource *ds;
-	GList *nodeIf, *nodeDS;
-	GList *listP, *nodeP;
-	GList *nodeM;
-	gchar *sName, *sAddress, *sAlias, *sFriendly;
-
-	debug_print( "addressbook_load_completion\n" );
-
-	if( _addressIndex_ == NULL ) return FALSE;
-
-	nodeIf = addrindex_get_interface_list( _addressIndex_ );
-	while( nodeIf ) {
-		AddressInterface *interface = nodeIf->data;
-		nodeDS = interface->listSource;
-		while( nodeDS ) {
-			ds = nodeDS->data;
-
-			/* Read address book */
-			if( addrindex_ds_get_modify_flag( ds ) ) {
-				addrindex_ds_read_data( ds );
-			}
-
-			if( ! addrindex_ds_get_read_flag( ds ) ) {
-				addrindex_ds_read_data( ds );
-			}
-
-			/* Get all persons */
-			listP = addrindex_ds_get_all_persons( ds );
-			nodeP = listP;
-			while( nodeP ) {
-				ItemPerson *person = nodeP->data;
-				nodeM = person->listEMail;
-
-				/* Figure out name to use */
-				sName = person->nickName;
-				if( sName == NULL || *sName == '\0' ) {
-					sName = ADDRITEM_NAME(person);
-				}
-
-				/* Process each E-Mail address */
-				while( nodeM ) {
-					ItemEMail *email = nodeM->data;
-					/* Have mail */
-					sFriendly = sName;
-					sAddress = email->address;
-					if( sAddress || *sAddress != '\0' ) {
-						sAlias = ADDRITEM_NAME(email);
-						if( sAlias && *sAlias != '\0' ) {
-							sFriendly = sAlias;
-						}
-						( callBackFunc ) ( sFriendly, sAddress, sName );
-					}
-
-					nodeM = g_list_next( nodeM );
-				}
-				nodeP = g_list_next( nodeP );
-			}
-			/* Free up the list */
-			g_list_free( listP );
-
-			nodeDS = g_list_next( nodeDS );
-		}
-		nodeIf = g_list_next( nodeIf );
-	}
-	debug_print( "addressbook_load_completion... done\n" );
-
-	return TRUE;
-}
-
-/* **********************************************************************
 * Address Import.
 * ***********************************************************************
 */
@@ -3961,9 +3890,6 @@ static void addressbook_import_ldif_cb() {
 						newNode );
 					addrbook.treeSelected = newNode;
 				}
-
-				/* Notify address completion */
-				invalidate_address_completion();
 			}
 		}
 	}
@@ -3999,9 +3925,6 @@ static void addressbook_import_mutt_cb() {
 						newNode );
 					addrbook.treeSelected = newNode;
 				}
-
-				/* Notify address completion */
-				invalidate_address_completion();
 			}
 		}
 	}
@@ -4037,9 +3960,6 @@ static void addressbook_import_pine_cb() {
 						newNode );
 					addrbook.treeSelected = newNode;
 				}
-
-				/* Notify address completion */
-				invalidate_address_completion();
 			}
 		}
 	}
@@ -4076,9 +3996,6 @@ void addressbook_harvest(
 						ADDRESS_OBJECT(ads) );
 			}
 		}
-
-		/* Notify address completion */
-		invalidate_address_completion();
 	}
 }
 
@@ -4106,6 +4023,118 @@ static void addressbook_export_html_cb( void ) {
 	addressbook_exp_html( cache );
 }
 
+/*
+* End of Source.
+*/
+/* **********************************************************************
+* Address completion and search support.
+* ***********************************************************************
+*/
+
+/**
+ * Setup search for specified search string.
+ * \param searchTerm Search string.
+ * \param target     Target data.
+ * \param callBack   Call back function.
+ * \return ID allotcated to this query, or 0 if none.
+ */
+gint addressbook_setup_search(
+	const gchar *searchTerm, const gpointer target,
+	AddrSearchCallbackFunc callback )
+{
+	if( _addressIndex_ == NULL ) {
+		printf( "address index not loaded\n" );
+		return 0;
+	}
+	return addrindex_setup_search( _addressIndex_, searchTerm, target, callback );
+}
+
+/**
+ * Perform the previously registered search.
+ * \param  queryID ID of search query to be executed.
+ * \return <i>TRUE</i> if search started successfully, or <i>FALSE</i> if
+ *         failed.
+ */
+gboolean addressbook_start_search( const gint queryID ) {
+	if( _addressIndex_ == NULL ) {
+		printf( "address index not loaded\n" );
+		return FALSE;
+	}
+	return addrindex_start_search( _addressIndex_, queryID );
+}
+
+/**
+ * Stop the previously registered search.
+ * \param queryID ID of search query to stop.
+ */
+void addressbook_stop_search( const gint queryID ){
+	if( _addressIndex_ == NULL ) {
+		/* printf( "address index not loaded\n" ); */
+		return;
+	}
+	addrindex_stop_search( _addressIndex_, queryID );
+}
+
+/**
+ * Read all address interfaces and data sources.
+ */
+void addressbook_read_all( void ) {
+	if( _addressIndex_ == NULL ) {
+		/* Load index file */
+		/* printf( "address index not loaded\n" ); */
+		/* addressbook_read_file(); */
+	}
+
+	if( ! addrindex_get_loaded( _addressIndex_ ) ) {
+		/* Read all address books */
+		addrindex_read_all( _addressIndex_ );
+	}
+	/*
+	else {
+		printf( "Address data already loaded!!!!!!!!!!!!!!!\n" );
+	}
+	*/
+}
+
+/**
+ * Perform a simple search of all non-query type data sources for specified
+ * search term. If several entries are found, only the first item is
+ * returned. Interfaces that require a time-consuming "query" are ignored for
+ * this search.
+ *
+ * \param  searchTerm Search term to find. Typically an email address.
+ * \return Reference to a single E-Mail object that was found in the address
+ *         book, or <i>NULL</i> if nothing found. This should *NOT* be freed
+ *         when done.
+ */
+ItemEMail *addressbook_quick_search_single( const gchar *searchTerm ) {
+	if( _addressIndex_ == NULL ) {
+		/* printf( "address index not loaded\n" ); */
+		return NULL;
+	}
+	return addrindex_quick_search_single( _addressIndex_, searchTerm );
+}
+
+/**
+ * Perform a simple search of all non-query type data sources for specified
+ * search term. If several entries are found, only the first item is
+ * returned. Interfaces that require a time-consuming "query" are ignored for
+ * this search.
+ *
+ * \param  addrIndex  Address index object.
+ * \param  searchTerm Search term to find. Typically an email address.
+ * \return List of references to zero or mail E-Mail object that was found in
+ *         the address books, or <i>NULL</i> if nothing found. This list
+ *         *SHOULD* be freed when done.
+ */
+GList *addressbook_quick_search_list( const gchar *searchTerm )
+{
+	if( _addressIndex_ == NULL ) {
+		printf( "address index not loaded\n" );
+		return NULL;
+	}
+	return addrindex_quick_search_list( _addressIndex_, searchTerm );
+}
 /*
 * End of Source.
 */

@@ -778,6 +778,8 @@ ItemFolder *addritem_create_item_folder( void ) {
 	folder->listFolder = NULL;
 	folder->listPerson = NULL;
 	folder->listGroup = NULL;
+	folder->folderType = ADDRFOLDER_NONE;
+	folder->folderData = NULL;
 	return folder;
 }
 
@@ -793,6 +795,7 @@ ItemFolder *addritem_copy_item_folder( ItemFolder *item ) {
 	if( item ) {
 		itemNew = addritem_create_item_folder();
 		ADDRITEM_NAME(itemNew) = g_strdup( ADDRITEM_NAME(item) );
+		itemNew->folderType = item->folderType;
 	}
 	return itemNew;
 }
@@ -836,6 +839,8 @@ void addritem_free_item_folder( ItemFolder *folder ) {
 	folder->listFolder = NULL;
 	folder->listGroup = NULL;
 	folder->listPerson = NULL;
+	folder->folderType = ADDRFOLDER_NONE;
+	folder->folderData = NULL;
 
 	g_free( folder );
 }
@@ -933,6 +938,7 @@ void addritem_print_item_folder( ItemFolder *folder, FILE *stream ) {
 	fprintf( stream, "\tsub: %d\n", ADDRITEM_SUBTYPE(folder) );
 	fprintf( stream, "\tnam: '%s'\n", ADDRITEM_NAME(folder) );
 	fprintf( stream, "\trem: '%s'\n", folder->remarks );
+	fprintf( stream, "\ttyp: %d\n", folder->folderType );
 	fprintf( stream, "\t---\n" );
 	parent = ( ItemFolder * ) ADDRITEM_PARENT(folder);
 	if( parent ) {

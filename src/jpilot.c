@@ -165,6 +165,10 @@ JPilotFile *jpilot_create() {
 	pilotFile->labelInd = NULL;
 	pilotFile->havePC3 = FALSE;
 	pilotFile->pc3ModifyTime = 0;
+
+	/* We want to use an address completion index */
+	addrcache_use_index( pilotFile->addressCache, TRUE );
+
 	return pilotFile;
 }
 
@@ -404,7 +408,6 @@ void jpilot_free( JPilotFile *pilotFile ) {
 	jpilot_clear_custom_labels( pilotFile );
 
 	/* Clear cache */
-	addrcache_clear( pilotFile->addressCache );
 	addrcache_free( pilotFile->addressCache );
 
 	/* Free internal stuff */
@@ -1612,6 +1615,9 @@ gint jpilot_read_data( JPilotFile *pilotFile ) {
 			if( pilotFile->retVal == MGU_SUCCESS ) {
 				pilotFile->addressCache->modified = FALSE;
 				pilotFile->addressCache->dataRead = TRUE;
+
+				/* Build address completion index */
+				addrcache_build_index( pilotFile->addressCache );
 			}
 		}
 	}

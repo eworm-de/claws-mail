@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <glib.h>
 #include "addritem.h"
+#include "addrcindex.h"
 
 /* Address cache */
 typedef struct _AddressCache AddressCache;
@@ -44,6 +45,7 @@ struct _AddressCache {
 	gboolean   dirtyFlag;
 	gboolean   accessFlag;
 	gchar      *name;
+	AddrCacheIndex *searchIndex;
 };
 
 /* Function prototypes */
@@ -169,5 +171,11 @@ ItemPerson *addrcache_add_contact	( AddressCache *cache,
 					  const gchar *name,
 					  const gchar *address,
 					  const gchar *remarks ); 
+
+void addrcache_clear_index	( AddressCache *cache );
+void addrcache_create_index	( AddressCache *cache,
+				  gboolean value );
+void addrcache_build_index	( AddressCache *cache );
+void addrcache_invalidate	( AddressCache *cache );
 
 #endif /* __ADDRCACHE_H__ */
