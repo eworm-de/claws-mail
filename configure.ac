@@ -77,7 +77,7 @@ AM_PROG_LEX
 AC_PROG_YACC
 AC_PROG_LIBTOOL
 
-SYLPHEED_ACLOCAL_INCLUDE(ac)
+SYLPHEED_ACLOCAL_INCLUDE(m4)
   
 dnl ******************************
 dnl Checks for host
