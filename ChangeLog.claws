@@ -1,3 +1,20 @@
+2003-08-04 [match]	0.9.4claws2
+
+	* src/ldif.[ch]
+		support for export LDIF. documented.
+	* src/importldif.[ch]
+	* src/exportldif.[ch]
+		add tooltips. documented.
+	* src/exphtmldlg.[ch]
+	* src/common/xmlprops.[ch]
+		documented.
+	* src/exportldif.[ch]			** NEW **
+	* src/expldifdlg.[ch]			** NEW **
+	* src/addressbook.[ch]
+	* po/Makefile.in
+		export of LDIF files.
+		documented.
+
 2003-08-04 [christoph]	0.9.4claws1
 
 	* .cvsignore
@@ -80,7 +97,7 @@
 	
 	* src/messageview.c
 		o fixed bug 4 - focus lost when changing messageview view type
-	
+
 2003-08-02 [christoph]	0.9.3claws90
 
 	* src/common/hooks.c
@@ -572,7 +589,7 @@
 	* src/gtk/gtkvscrollbutton.[ch]  	** NEW **
 	* src/pixmaps/mime_*.xpm         	** NEW **
 		o mimeview rearrangement with a new icon shortcut bar
-	
+
 2003-07-19 [alfons]	0.9.3claws27
 
 	* src/folderview.c
