@@ -184,6 +184,8 @@ struct _MaildirFolder
 struct _IMAPFolder
 {
 	RemoteFolder rfolder;
+
+	GList *namespace;	/* list of IMAPNameSpace */
 };
 
 struct _NewsFolder

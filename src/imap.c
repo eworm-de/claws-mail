@@ -46,6 +46,17 @@ static GList *session_list = NULL;
 
 static gint imap_cmd_count = 0;
 
+static IMAPSession *imap_session_connect_if_not	(Folder		*folder);
+
+static gint imap_do_copy		(Folder		*folder,
+					 FolderItem	*dest,
+					 MsgInfo	*msginfo,
+					 gboolean	 remove_source);
+static gint imap_do_copy_msgs_with_dest	(Folder		*folder,
+					 FolderItem	*dest,
+					 GSList		*msglist,
+					 gboolean	 remove_source);
+
 static GSList *imap_get_uncached_messages	(IMAPSession	*session,
 						 FolderItem	*item,
 						 gint		 first,
@@ -55,51 +66,15 @@ static GSList *imap_delete_cached_messages	(GSList		*mlist,
 						 gint		 last);
 static void imap_delete_all_cached_messages	(FolderItem	*item);
 
-static SockInfo *imap_open	(const gchar	*server,
-				 gushort	 port,
-				 gchar		*buf);
-static gint imap_auth		(SockInfo	*sock,
-				 const gchar	*user,
-				 const gchar	*pass);
-static gint imap_logout		(SockInfo	*sock);
-static gint imap_noop		(SockInfo	*sock);
-static gint imap_select		(SockInfo	*sock,
-				 const gchar	*folder,
-				 gint		*exists,
-				 gint		*recent,
-				 gint		*unseen,
-				 gulong		*uid);
-static gint imap_create		(SockInfo	*sock,
-				 const gchar	*folder);
-static gint imap_delete		(SockInfo	*sock,
-				 const gchar	*folder);
-static gint imap_get_envelope	(SockInfo	*sock,
-				 gint		 first,
-				 gint		 last);
-#if 0
-static gint imap_search		(SockInfo	*sock,
-				 GSList		*numlist);
-#endif
-static gint imap_get_message	(SockInfo	*sock,
-				 gint		 num,
-				 const gchar	*filename);
-static gint imap_append_message	(SockInfo	*sock,
-				 const gchar	*destfolder,
-				 const gchar	*file);
-static gint imap_copy_message	(SockInfo	*sock,
-				 gint		 num,
-				 const gchar	*destfolder);
-static gint imap_store		(SockInfo	*sock,
-				 gint		 first,
-				 gint		 last,
-				 gchar		*sub_cmd);
+static SockInfo *imap_open		(const gchar	*server,
+					 gushort	 port,
+					 gchar		*buf);
 
 static gint imap_set_article_flags	(IMAPSession	*session,
 					 gint		 first,
 					 gint		 last,
 					 IMAPFlags	 flag,
 					 gboolean	 is_set);
-static gint imap_expunge		(IMAPSession	*session);
 
 static gchar *imap_parse_atom		(SockInfo *sock,
 					 gchar	  *src,
@@ -119,14 +94,60 @@ static MsgFlags imap_parse_flags	(const gchar	*flag_str);
 static MsgInfo *imap_parse_envelope	(SockInfo *sock,
 					 gchar	  *line_str);
 
-static gint imap_ok		(SockInfo	*sock,
+/* low-level IMAP4rev1 commands */
+static gint imap_cmd_login	(SockInfo	*sock,
+				 const gchar	*user,
+				 const gchar	*pass);
+static gint imap_cmd_logout	(SockInfo	*sock);
+static gint imap_cmd_noop	(SockInfo	*sock);
+static gint imap_cmd_select	(SockInfo	*sock,
+				 const gchar	*folder,
+				 gint		*exists,
+				 gint		*recent,
+				 gint		*unseen,
+				 gulong		*uid);
+static gint imap_cmd_status	(SockInfo	*sock,
+				 const gchar	*folder,
+				 const gchar	*status);
+static gint imap_cmd_create	(SockInfo	*sock,
+				 const gchar	*folder);
+static gint imap_cmd_delete	(SockInfo	*sock,
+				 const gchar	*folder);
+static gint imap_cmd_envelope	(SockInfo	*sock,
+				 gint		 first,
+				 gint		 last);
+#if 0
+static gint imap_cmd_search	(SockInfo	*sock,
+				 GSList		*numlist);
+#endif
+static gint imap_cmd_fetch	(SockInfo	*sock,
+				 gint		 num,
+				 const gchar	*filename);
+static gint imap_cmd_append	(SockInfo	*sock,
+				 const gchar	*destfolder,
+				 const gchar	*file);
+static gint imap_cmd_copy	(SockInfo	*sock,
+				 gint		 num,
+				 const gchar	*destfolder);
+static gint imap_cmd_store	(SockInfo	*sock,
+				 gint		 first,
+				 gint		 last,
+				 gchar		*sub_cmd);
+static gint imap_cmd_expunge	(SockInfo	*sock);
+
+static gint imap_cmd_ok		(SockInfo	*sock,
 				 GPtrArray	*argbuf);
-static void imap_gen_send	(SockInfo	*sock,
+static void imap_cmd_gen_send	(SockInfo	*sock,
 				 const gchar	*format, ...);
-static gint imap_gen_recv	(SockInfo	*sock,
+static gint imap_cmd_gen_recv	(SockInfo	*sock,
 				 gchar		*buf,
 				 gint		 size);
 
+/* misc utility functions */
+static gchar *strchr_cpy		(const gchar	*src,
+					 gchar		 ch,
+					 gchar		*dest,
+					 gint		 len);
 static gchar *search_array_contain_str	(GPtrArray	*array,
 					 gchar		*str);
 static void imap_path_subst_slash_to_dot(gchar *str);
@@ -146,10 +167,11 @@ static IMAPSession *imap_session_connect_if_not(Folder *folder)
 					 IMAP4_PORT,
 					 folder->account->userid,
 					 folder->account->passwd);
+		statusbar_pop_all();
 		return IMAP_SESSION(rfolder->session);
 	}
 
-	if (imap_noop(rfolder->session->sock) != IMAP_SUCCESS) {
+	if (imap_cmd_noop(rfolder->session->sock) != IMAP_SUCCESS) {
 		log_warning(_("IMAP4 connection to %s:%d has been"
 			      " disconnected. Reconnecting...\n"),
 			    folder->account->recv_server, IMAP4_PORT);
@@ -161,7 +183,6 @@ static IMAPSession *imap_session_connect_if_not(Folder *folder)
 	}
 
 	statusbar_pop_all();
-
 	return IMAP_SESSION(rfolder->session);
 }
 
@@ -179,8 +200,8 @@ Session *imap_session_new(const gchar *server, gushort port,
 
 	if ((imap_sock = imap_open(server, port, buf)) == NULL)
 		return NULL;
-	if (imap_auth(imap_sock, user, pass) != IMAP_SUCCESS) {
-		imap_logout(imap_sock);
+	if (imap_cmd_login(imap_sock, user, pass) != IMAP_SUCCESS) {
+		imap_cmd_logout(imap_sock);
 		sock_close(imap_sock);
 		return NULL;
 	}
@@ -214,7 +235,7 @@ void imap_session_destroy_all(void)
 	while (session_list != NULL) {
 		IMAPSession *session = (IMAPSession *)session_list->data;
 
-		imap_logout(SESSION(session)->sock);
+		imap_cmd_logout(SESSION(session)->sock);
 		imap_session_destroy(session);
 	}
 }
@@ -243,8 +264,8 @@ GSList *imap_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 
 	last_uid = item->mtime;
 
-	ok = imap_select(SESSION(session)->sock, item->path,
-			 &exists, &recent, &unseen, &uid);
+	ok = imap_cmd_select(SESSION(session)->sock, item->path,
+			     &exists, &recent, &unseen, &uid);
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't select folder: %s\n"), item->path);
 		statusbar_pop_all();
@@ -291,7 +312,9 @@ GSList *imap_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 		imap_delete_cached_messages(mlist, begin, INT_MAX);
 		mlist = g_slist_concat(mlist, newlist);
 	} else if (begin == 1) {
-		mlist = imap_get_uncached_messages(session, item, 1, exists);
+		if (begin <= exists)
+			mlist = imap_get_uncached_messages
+				(session, item, begin, exists);
 		imap_delete_all_cached_messages(item);
 	}
 
@@ -328,7 +351,7 @@ gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	}
 
 	debug_print(_("getting message %d...\n"), num);
-	ok = imap_get_message(SESSION(session)->sock, num, filename);
+	ok = imap_cmd_fetch(SESSION(session)->sock, num, filename);
 
 	statusbar_pop_all();
 
@@ -360,7 +383,7 @@ gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 		if (dest->last_num < 0) return -1;
 	}
 
-	ok = imap_append_message(SESSION(session)->sock, dest->path, file);
+	ok = imap_cmd_append(SESSION(session)->sock, dest->path, file);
 	if (ok != IMAP_SUCCESS) {
 		g_warning(_("can't append message %s\n"), file);
 		return -1;
@@ -400,19 +423,20 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 		    msginfo->folder->path, G_DIR_SEPARATOR,
 		    msginfo->msgnum, destdir);
 
-	imap_copy_message(SESSION(session)->sock, msginfo->msgnum, destdir);
+	imap_cmd_copy(SESSION(session)->sock, msginfo->msgnum, destdir);
 
 	if (remove_source) {
 		imap_set_article_flags(session, msginfo->msgnum, msginfo->msgnum,
 				       IMAP_FLAG_DELETED, TRUE);
-		imap_expunge(session);
+		imap_cmd_expunge(SESSION(session)->sock);
 	}
 
 	return IMAP_SUCCESS;
 }
 
-gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
-				 GSList *msglist, gboolean remove_source)
+static gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
+					GSList *msglist,
+					gboolean remove_source)
 {
 	gchar *destdir;
 	GSList *cur;
@@ -442,8 +466,8 @@ gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
 			    msginfo->folder->path, G_DIR_SEPARATOR,
 			    msginfo->msgnum, destdir);
 
-		imap_copy_message(SESSION(session)->sock,
-				  msginfo->msgnum, destdir);
+		imap_cmd_copy(SESSION(session)->sock, msginfo->msgnum,
+			      destdir);
 
 		if (remove_source) {
 			imap_set_article_flags
@@ -453,7 +477,7 @@ gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
 	}
 
 	if (remove_source)
-		imap_expunge(session);
+		imap_cmd_expunge(SESSION(session)->sock);
 
 	return IMAP_SUCCESS;
 
@@ -495,8 +519,8 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint num)
 	session = imap_session_connect_if_not(folder);
 	if (!session) return -1;
 
-	ok = imap_select(SESSION(session)->sock, item->path,
-			 &exists, &recent, &unseen, &uid);
+	ok = imap_cmd_select(SESSION(session)->sock, item->path,
+			     &exists, &recent, &unseen, &uid);
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't select folder: %s\n"), item->path);
 		return ok;
@@ -509,7 +533,7 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint num)
 		return ok;
 	}
 
-	ok = imap_expunge(session);
+	ok = imap_cmd_expunge(SESSION(session)->sock);
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't expunge\n"));
 		return ok;
@@ -531,8 +555,8 @@ gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 	session = imap_session_connect_if_not(folder);
 	if (!session) return -1;
 
-	ok = imap_select(SESSION(session)->sock, item->path,
-			 &exists, &recent, &unseen, &uid);
+	ok = imap_cmd_select(SESSION(session)->sock, item->path,
+			     &exists, &recent, &unseen, &uid);
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't select folder: %s\n"), item->path);
 		return ok;
@@ -545,7 +569,7 @@ gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 		return ok;
 	}
 
-	ok = imap_expunge(session);
+	ok = imap_cmd_expunge(SESSION(session)->sock);
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't expunge\n"));
 		return ok;
@@ -564,6 +588,7 @@ FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	gchar *dirpath, *imappath;
 	IMAPSession *session;
 	FolderItem *new_item;
+	gint ok;
 
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(parent != NULL, NULL);
@@ -581,16 +606,20 @@ FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	imappath = g_strdup(dirpath);
 	/* imap_path_subst_slash_to_dot(imappath); */
 
-	if (strcasecmp(name, "INBOX") != 0) {
-		gint ok;
-
-		ok = imap_create(SESSION(session)->sock, imappath);
+	if (strcmp(name, "INBOX") != 0) {
+		ok = imap_cmd_status(SESSION(session)->sock, imappath,
+				     "MESSAGES");
 		if (ok != IMAP_SUCCESS) {
-			log_warning(_("can't create mailbox\n"));
-			g_free(imappath);
-			g_free(dirpath);
-			return NULL;
+			ok = imap_cmd_create(SESSION(session)->sock, imappath);
+			statusbar_pop_all();
+			if (ok != IMAP_SUCCESS) {
+				log_warning(_("can't create mailbox\n"));
+				g_free(imappath);
+				g_free(dirpath);
+				return NULL;
+			}
 		}
+		statusbar_pop_all();
 	}
 
 	new_item = folder_item_new(name, dirpath);
@@ -613,7 +642,8 @@ gint imap_remove_folder(Folder *folder, FolderItem *item)
 	session = imap_session_connect_if_not(folder);
 	if (!session) return -1;
 
-	ok = imap_delete(SESSION(session)->sock, item->path);
+	ok = imap_cmd_delete(SESSION(session)->sock, item->path);
+	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't delete mailbox\n"));
 		return -1;
@@ -639,7 +669,7 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 	g_return_val_if_fail(item->folder->type == F_IMAP, NULL);
 	g_return_val_if_fail(first <= last, NULL);
 
-	if (imap_get_envelope(SESSION(session)->sock, first, last)
+	if (imap_cmd_envelope(SESSION(session)->sock, first, last)
 	    != IMAP_SUCCESS) {
 		log_warning(_("can't get envelope\n"));
 		return NULL;
@@ -731,198 +761,12 @@ static SockInfo *imap_open(const gchar *server, gushort port, gchar *buf)
 
 	imap_cmd_count = 0;
 
-	if (imap_noop(sock) != IMAP_SUCCESS) {
+	if (imap_cmd_noop(sock) != IMAP_SUCCESS) {
 		sock_close(sock);
 		return NULL;
 	}
 
 	return sock;
-}
-
-static gint imap_auth(SockInfo *sock, const gchar *user, const gchar *pass)
-{
-	gint ok;
-	GPtrArray *argbuf;
-
-	imap_gen_send(sock, "LOGIN \"%s\" %s", user, pass);
-	argbuf = g_ptr_array_new();
-	ok = imap_ok(sock, argbuf);
-	if (ok != IMAP_SUCCESS) log_warning(_("IMAP4 login failed.\n"));
-	ptr_array_free_strings(argbuf);
-	g_ptr_array_free(argbuf, TRUE);
-
-	return ok;
-}
-
-static gint imap_logout(SockInfo *sock)
-{
-	imap_gen_send(sock, "LOGOUT");
-	return imap_ok(sock, NULL);
-}
-
-static gint imap_noop(SockInfo *sock)
-{
-	imap_gen_send(sock, "NOOP");
-	return imap_ok(sock, NULL);
-}
-
-static gint imap_select(SockInfo *sock, const gchar *folder,
-			gint *exists, gint *recent, gint *unseen, gulong *uid)
-{
-	gint ok;
-	gchar *resp_str;
-	GPtrArray *argbuf;
-	gchar *imappath;
-
-	*exists = *recent = *unseen = *uid = 0;
-	argbuf = g_ptr_array_new();
-
-	Xstrdup_a(imappath, folder, return -1);
-	/* imap_path_subst_slash_to_dot(imappath); */
-
-	imap_gen_send(sock, "SELECT \"%s\"", imappath);
-	if ((ok = imap_ok(sock, argbuf)) != IMAP_SUCCESS)
-		goto bail;
-
-	resp_str = search_array_contain_str(argbuf, "EXISTS");
-	if (resp_str) {
-		if (sscanf(resp_str,"%d EXISTS", exists) != 1) {
-			g_warning("imap_select(): invalid EXISTS line.\n");
-			goto bail;
-		}
-	}
-
-	resp_str = search_array_contain_str(argbuf, "RECENT");
-	if (resp_str) {
-		if (sscanf(resp_str, "%d RECENT", recent) != 1) {
-			g_warning("imap_select(): invalid RECENT line.\n");
-			goto bail;
-		}
-	}
-
-	resp_str = search_array_contain_str(argbuf, "UIDVALIDITY");
-	if (resp_str) {
-		if (sscanf(resp_str, "OK [UIDVALIDITY %lu] ", uid) != 1) {
-			g_warning("imap_select(): invalid UIDVALIDITY line.\n");
-			goto bail;
-		}
-	}
-
-	resp_str = search_array_contain_str(argbuf, "UNSEEN");
-	if (resp_str) {
-		if (sscanf(resp_str, "OK [UNSEEN %d] ", unseen) != 1) {
-			g_warning("imap_select(): invalid UNSEEN line.\n");
-			goto bail;
-		}
-	}
-
-bail:
-	ptr_array_free_strings(argbuf);
-	g_ptr_array_free(argbuf, TRUE);
-
-	return ok;
-}
-
-static gint imap_create(SockInfo *sock, const gchar *folder)
-{
-	imap_gen_send(sock, "CREATE \"%s\"", folder);
-	return imap_ok(sock, NULL);
-}
-
-static gint imap_delete(SockInfo *sock, const gchar *folder)
-{
-	imap_gen_send(sock, "DELETE \"%s\"", folder);
-	return imap_ok(sock, NULL);
-}
-
-static gchar *strchr_cpy(const gchar *src, gchar ch, gchar *dest, gint len)
-{
-	gchar *tmp;
-
-	dest[0] = '\0';
-	tmp = strchr(src, ch);
-	if (!tmp || tmp == src)
-		return NULL;
-
-	memcpy(dest, src, MIN(tmp - src, len - 1));
-	dest[MIN(tmp - src, len - 1)] = '\0';
-
-	return tmp + 1;
-}
-
-static gint imap_get_message(SockInfo *sock, gint num, const gchar *filename)
-{
-	gint ok;
-	gchar buf[IMAPBUFSIZE];
-	gchar *cur_pos;
-	gchar size_str[32];
-	glong size_num;
-
-	g_return_val_if_fail(filename != NULL, IMAP_ERROR);
-
-	imap_gen_send(sock, "FETCH %d BODY[]", num);
-
-	if (sock_gets(sock, buf, sizeof(buf)) < 0)
-		return IMAP_ERROR;
-	strretchomp(buf);
-	if (buf[0] != '*' || buf[1] != ' ')
-		return IMAP_ERROR;
-	log_print("IMAP4< %s\n", buf);
-
-	cur_pos = strchr(buf, '{');
-	g_return_val_if_fail(cur_pos != NULL, IMAP_ERROR);
-	cur_pos = strchr_cpy(cur_pos + 1, '}', size_str, sizeof(size_str));
-	g_return_val_if_fail(cur_pos != NULL, IMAP_ERROR);
-	size_num = atol(size_str);
-
-	if (*cur_pos != '\0') return IMAP_ERROR;
-
-	if (recv_bytes_write_to_file(sock, size_num, filename) != 0)
-		return IMAP_ERROR;
-
-	if (imap_gen_recv(sock, buf, sizeof(buf)) != IMAP_SUCCESS)
-		return IMAP_ERROR;
-
-	if (buf[0] != ')')
-		return IMAP_ERROR;
-
-	ok = imap_ok(sock, NULL);
-
-	return ok;
-}
-
-static gint imap_append_message(SockInfo *sock, const gchar *destfolder,
-				const gchar *file)
-{
-	gint ok;
-	gint size;
-
-	g_return_val_if_fail(file != NULL, IMAP_ERROR);
-
-	imap_gen_send(sock, "APPEND %s () {%d}", destfolder, size);
-	ok = imap_ok(sock, NULL);
-	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't append %s to %s\n"), file, destfolder);
-		return -1;
-	}
-
-	return ok;
-}
-
-static gint imap_copy_message(SockInfo *sock, gint num, const gchar *destfolder)
-{
-	gint ok;
-
-	g_return_val_if_fail(destfolder != NULL, IMAP_ERROR);
-
-	imap_gen_send(sock, "COPY %d %s", num, destfolder);
-	ok = imap_ok(sock, NULL);
-	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't copy %d to %s\n"), num, destfolder);
-		return -1;
-	}
-
-	return ok;
 }
 
 static gchar *imap_parse_atom(SockInfo *sock, gchar *src, gchar *dest,
@@ -1206,35 +1050,6 @@ static MsgInfo *imap_parse_envelope(SockInfo *sock, gchar *line_str)
 	return msginfo;
 }
 
-gint imap_get_envelope(SockInfo *sock, gint first, gint last)
-{
-	imap_gen_send(sock, "FETCH %d:%d (FLAGS RFC822.SIZE ENVELOPE)",
-		      first, last);
-
-	return IMAP_SUCCESS;
-}
-
-static gint imap_store(SockInfo *sock, gint first, gint last, gchar *sub_cmd)
-{
-	gint ok;
-	GPtrArray *argbuf;
-
-	argbuf = g_ptr_array_new();
-
-	imap_gen_send(sock, "STORE %d:%d %s", first, last, sub_cmd);
-	
-	if ((ok = imap_ok(sock, argbuf)) != IMAP_SUCCESS) {
-		g_ptr_array_free(argbuf, TRUE);
-		log_warning(_("error while imap command: STORE %d:%d %s\n"),
-			    first, last, sub_cmd);
-		return ok;
-	}
-
-	g_ptr_array_free(argbuf, TRUE);
-
-	return IMAP_SUCCESS;
-}
-
 static gint imap_set_article_flags(IMAPSession *session,
 				   gint first,
 				   gint last,
@@ -1257,75 +1072,259 @@ static gint imap_set_article_flags(IMAPSession *session,
 
 	g_string_append_c(buf, ')');
 
-	ok = imap_store(SESSION(session)->sock, first, last, buf->str);
+	ok = imap_cmd_store(SESSION(session)->sock, first, last, buf->str);
 	g_string_free(buf, TRUE);
 
 	return ok;
 }
 
-static gint imap_expunge(IMAPSession *session)
+
+
+static gint imap_cmd_login(SockInfo *sock,
+			   const gchar *user, const gchar *pass)
 {
 	gint ok;
-	GPtrArray *argbuf;
 
+	imap_cmd_gen_send(sock, "LOGIN \"%s\" %s", user, pass);
+	ok = imap_cmd_ok(sock, NULL);
+	if (ok != IMAP_SUCCESS)
+		log_warning(_("IMAP4 login failed.\n"));
+
+	return ok;
+}
+
+static gint imap_cmd_logout(SockInfo *sock)
+{
+	imap_cmd_gen_send(sock, "LOGOUT");
+	return imap_cmd_ok(sock, NULL);
+}
+
+static gint imap_cmd_noop(SockInfo *sock)
+{
+	imap_cmd_gen_send(sock, "NOOP");
+	return imap_cmd_ok(sock, NULL);
+}
+
+static gint imap_cmd_select(SockInfo *sock, const gchar *folder,
+			    gint *exists, gint *recent, gint *unseen,
+			    gulong *uid)
+{
+	gint ok;
+	gchar *resp_str;
+	GPtrArray *argbuf;
+	gchar *imappath;
+
+	*exists = *recent = *unseen = *uid = 0;
 	argbuf = g_ptr_array_new();
 
-	imap_gen_send(SESSION(session)->sock, "EXPUNGE");
+	Xstrdup_a(imappath, folder, return -1);
+	/* imap_path_subst_slash_to_dot(imappath); */
 
-	if ((ok = imap_ok(SESSION(session)->sock, argbuf)) != IMAP_SUCCESS) {
-		log_warning(_("error while imap command: EXPUNGE\n"));
-		g_ptr_array_free(argbuf, TRUE);
-		return ok;
+	imap_cmd_gen_send(sock, "SELECT \"%s\"", imappath);
+	if ((ok = imap_cmd_ok(sock, argbuf)) != IMAP_SUCCESS)
+		goto bail;
+
+	resp_str = search_array_contain_str(argbuf, "EXISTS");
+	if (resp_str) {
+		if (sscanf(resp_str,"%d EXISTS", exists) != 1) {
+			g_warning("imap_select(): invalid EXISTS line.\n");
+			goto bail;
+		}
 	}
 
+	resp_str = search_array_contain_str(argbuf, "RECENT");
+	if (resp_str) {
+		if (sscanf(resp_str, "%d RECENT", recent) != 1) {
+			g_warning("imap_select(): invalid RECENT line.\n");
+			goto bail;
+		}
+	}
+
+	resp_str = search_array_contain_str(argbuf, "UIDVALIDITY");
+	if (resp_str) {
+		if (sscanf(resp_str, "OK [UIDVALIDITY %lu] ", uid) != 1) {
+			g_warning("imap_select(): invalid UIDVALIDITY line.\n");
+			goto bail;
+		}
+	}
+
+	resp_str = search_array_contain_str(argbuf, "UNSEEN");
+	if (resp_str) {
+		if (sscanf(resp_str, "OK [UNSEEN %d] ", unseen) != 1) {
+			g_warning("imap_select(): invalid UNSEEN line.\n");
+			goto bail;
+		}
+	}
+
+bail:
+	ptr_array_free_strings(argbuf);
 	g_ptr_array_free(argbuf, TRUE);
+
+	return ok;
+}
+
+static gint imap_cmd_status(SockInfo *sock, const gchar *folder,
+			    const gchar *status)
+{
+	imap_cmd_gen_send(sock, "STATUS \"%s\" (%s)", folder, status);
+	return imap_cmd_ok(sock, NULL);
+}
+
+static gint imap_cmd_create(SockInfo *sock, const gchar *folder)
+{
+	imap_cmd_gen_send(sock, "CREATE \"%s\"", folder);
+	return imap_cmd_ok(sock, NULL);
+}
+
+static gint imap_cmd_delete(SockInfo *sock, const gchar *folder)
+{
+	imap_cmd_gen_send(sock, "DELETE \"%s\"", folder);
+	return imap_cmd_ok(sock, NULL);
+}
+
+static gint imap_cmd_fetch(SockInfo *sock, gint num, const gchar *filename)
+{
+	gint ok;
+	gchar buf[IMAPBUFSIZE];
+	gchar *cur_pos;
+	gchar size_str[32];
+	glong size_num;
+
+	g_return_val_if_fail(filename != NULL, IMAP_ERROR);
+
+	imap_cmd_gen_send(sock, "FETCH %d BODY[]", num);
+
+	if (sock_gets(sock, buf, sizeof(buf)) < 0)
+		return IMAP_ERROR;
+	strretchomp(buf);
+	if (buf[0] != '*' || buf[1] != ' ')
+		return IMAP_ERROR;
+	log_print("IMAP4< %s\n", buf);
+
+	cur_pos = strchr(buf, '{');
+	g_return_val_if_fail(cur_pos != NULL, IMAP_ERROR);
+	cur_pos = strchr_cpy(cur_pos + 1, '}', size_str, sizeof(size_str));
+	g_return_val_if_fail(cur_pos != NULL, IMAP_ERROR);
+	size_num = atol(size_str);
+
+	if (*cur_pos != '\0') return IMAP_ERROR;
+
+	if (recv_bytes_write_to_file(sock, size_num, filename) != 0)
+		return IMAP_ERROR;
+
+	if (imap_cmd_gen_recv(sock, buf, sizeof(buf)) != IMAP_SUCCESS)
+		return IMAP_ERROR;
+
+	if (buf[0] != ')')
+		return IMAP_ERROR;
+
+	ok = imap_cmd_ok(sock, NULL);
+
+	return ok;
+}
+
+static gint imap_cmd_append(SockInfo *sock, const gchar *destfolder,
+			    const gchar *file)
+{
+	gint ok;
+	gint size;
+
+	g_return_val_if_fail(file != NULL, IMAP_ERROR);
+
+	imap_cmd_gen_send(sock, "APPEND %s {%d}", destfolder, size);
+	ok = imap_cmd_ok(sock, NULL);
+	if (ok != IMAP_SUCCESS) {
+		log_warning(_("can't append %s to %s\n"), file, destfolder);
+		return -1;
+	}
+
+	return ok;
+}
+
+static gint imap_cmd_copy(SockInfo *sock, gint num, const gchar *destfolder)
+{
+	gint ok;
+
+	g_return_val_if_fail(destfolder != NULL, IMAP_ERROR);
+
+	imap_cmd_gen_send(sock, "COPY %d %s", num, destfolder);
+	ok = imap_cmd_ok(sock, NULL);
+	if (ok != IMAP_SUCCESS) {
+		log_warning(_("can't copy %d to %s\n"), num, destfolder);
+		return -1;
+	}
+
+	return ok;
+}
+
+
+gint imap_cmd_envelope(SockInfo *sock, gint first, gint last)
+{
+	imap_cmd_gen_send(sock, "FETCH %d:%d (FLAGS RFC822.SIZE ENVELOPE)",
+			  first, last);
 
 	return IMAP_SUCCESS;
 }
 
-static gint imap_ok(SockInfo *sock, GPtrArray *argbuf)
+static gint imap_cmd_store(SockInfo *sock, gint first, gint last,
+			   gchar *sub_cmd)
+{
+	gint ok;
+
+	imap_cmd_gen_send(sock, "STORE %d:%d %s", first, last, sub_cmd);
+
+	if ((ok = imap_cmd_ok(sock, NULL)) != IMAP_SUCCESS) {
+		log_warning(_("error while imap command: STORE %d:%d %s\n"),
+			    first, last, sub_cmd);
+		return ok;
+	}
+
+	return IMAP_SUCCESS;
+}
+
+static gint imap_cmd_expunge(SockInfo *sock)
+{
+	gint ok;
+
+	imap_cmd_gen_send(sock, "EXPUNGE");
+	if ((ok = imap_cmd_ok(sock, NULL)) != IMAP_SUCCESS) {
+		log_warning(_("error while imap command: EXPUNGE\n"));
+		return ok;
+	}
+
+	return IMAP_SUCCESS;
+}
+
+static gint imap_cmd_ok(SockInfo *sock, GPtrArray *argbuf)
 {
 	gint ok;
 	gchar buf[IMAPBUFSIZE];
 	gint cmd_num;
 	gchar cmd_status[IMAPBUFSIZE];
 
-	while ((ok = imap_gen_recv(sock, buf, sizeof(buf))) == IMAP_SUCCESS) {
+	while ((ok = imap_cmd_gen_recv(sock, buf, sizeof(buf)))
+	       == IMAP_SUCCESS) {
 		if (buf[0] == '*' && buf[1] == ' ') {
 			if (argbuf)
 				g_ptr_array_add(argbuf, g_strdup(&buf[2]));
-		} else {
-			if (sscanf(buf, "%d %s", &cmd_num, cmd_status) < 2)
-				return IMAP_ERROR;
-			else if (cmd_num == imap_cmd_count &&
-				 !strcmp(cmd_status, "OK")) {
-				if (argbuf)
-					g_ptr_array_add(argbuf, g_strdup(buf));
-				return IMAP_SUCCESS;
-			} else
-				return IMAP_ERROR;
+			continue;
 		}
+
+		if (sscanf(buf, "%d %s", &cmd_num, cmd_status) < 2)
+			return IMAP_ERROR;
+		else if (cmd_num == imap_cmd_count &&
+			 !strcmp(cmd_status, "OK")) {
+			if (argbuf)
+				g_ptr_array_add(argbuf, g_strdup(buf));
+			return IMAP_SUCCESS;
+		} else
+			return IMAP_ERROR;
 	}
 
 	return ok;
 }
 
-static gchar *search_array_contain_str(GPtrArray *array, gchar *str)
-{
-	gint i;
-
-	for (i = 0; i < array->len; i++) {
-		gchar *tmp;
-
-		tmp = g_ptr_array_index(array, i);
-		if (strstr(tmp, str) != NULL)
-			return tmp;
-	}
-
-	return NULL;
-}
-
-static void imap_gen_send(SockInfo *sock, const gchar *format, ...)
+static void imap_cmd_gen_send(SockInfo *sock, const gchar *format, ...)
 {
 	gchar buf[IMAPBUFSIZE];
 	gchar tmp[IMAPBUFSIZE];
@@ -1348,7 +1347,7 @@ static void imap_gen_send(SockInfo *sock, const gchar *format, ...)
 	sock_write(sock, buf, strlen(buf));
 }
 
-static gint imap_gen_recv(SockInfo *sock, gchar *buf, gint size)
+static gint imap_cmd_gen_recv(SockInfo *sock, gchar *buf, gint size)
 {
 	if (sock_gets(sock, buf, size) == -1)
 		return IMAP_SOCKET;
@@ -1360,7 +1359,40 @@ static gint imap_gen_recv(SockInfo *sock, gchar *buf, gint size)
 	return IMAP_SUCCESS;
 }
 
+
+/* misc utility functions */
+
+static gchar *strchr_cpy(const gchar *src, gchar ch, gchar *dest, gint len)
+{
+	gchar *tmp;
+
+	dest[0] = '\0';
+	tmp = strchr(src, ch);
+	if (!tmp || tmp == src)
+		return NULL;
+
+	memcpy(dest, src, MIN(tmp - src, len - 1));
+	dest[MIN(tmp - src, len - 1)] = '\0';
+
+	return tmp + 1;
+}
+
+static gchar *search_array_contain_str(GPtrArray *array, gchar *str)
+{
+	gint i;
+
+	for (i = 0; i < array->len; i++) {
+		gchar *tmp;
+
+		tmp = g_ptr_array_index(array, i);
+		if (strstr(tmp, str) != NULL)
+			return tmp;
+	}
+
+	return NULL;
+}
+
 static void imap_path_subst_slash_to_dot(gchar *str)
-{	
+{
 	subst_char(str, '/', '.');
 }

@@ -2,6 +2,12 @@
 
 	* src/imap.[ch]: added imap_add_msg(), and imap_append_message(),
 	  which appends file into IMAP4 folder.
+	  imap_status(): new.
+	  imap_create_folder(): check the existence of a folder before
+	  create it.
+	  renamed the prefix of low-level IMAP4rev1 functions to imap_cmd.
+	* src/account.c: account_add(), account_set_missing_folder():
+	  create INBOX automatically when creating IMAP4 account.
 
 2001-06-07
 

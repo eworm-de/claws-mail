@@ -2,6 +2,13 @@
 
 	* src/imap.[ch]: ファイルを IMAP4 フォルダに追加する
 	  imap_add_msg() と imap_append_message() を追加。
+	  imap_status(): 新規。
+	  imap_create_folder(): フォルダを作成する前にその存在をチェック
+	  するようにした。
+	  低レベル IMAP4rev1 関数のプレフィクスを imap_cmd に変更。
+	* src/account.c: account_add(), account_set_missing_folder():
+	  IMAP4 アカウントを作成するときに INBOX を自動的に作成するように
+	  した。
 
 2001-06-07
 

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -226,11 +226,11 @@ GList *account_get_list(void)
 void account_edit_open(void)
 {
 	inc_autocheck_timer_remove();
-	
+
 	if (compose_get_compose_list()) {
 		alertpanel_notice(_("Some composing windows are open.\n"
 				    "Please close all the composing windows before editing the accounts."));
-		inc_autocheck_timer_set();					
+		inc_autocheck_timer_set();
 		return;
 	}
 
@@ -270,10 +270,13 @@ void account_add(void)
 		if (ac_prefs->protocol == A_IMAP4) {
 			folder = folder_new(F_IMAP, ac_prefs->account_name,
 					    ac_prefs->recv_server);
+			folder_item_append(FOLDER_ITEM(folder->node->data),
+					   folder_item_new("INBOX", "INBOX"));
 		} else {
 			folder = folder_new(F_NEWS, ac_prefs->account_name,
 					    ac_prefs->nntp_server);
 		}
+
 		folder->account = ac_prefs;
 		ac_prefs->folder = REMOTE_FOLDER(folder);
 		folder_add(folder);
@@ -323,6 +326,9 @@ void account_set_missing_folder(void)
 			if (ap->protocol == A_IMAP4) {
 				folder = folder_new(F_IMAP, ap->account_name,
 						    ap->recv_server);
+				folder_item_append
+					(FOLDER_ITEM(folder->node->data),
+					 folder_item_new("INBOX", "INBOX"));
 			} else {
 				folder = folder_new(F_NEWS, ap->account_name,
 						    ap->nntp_server);

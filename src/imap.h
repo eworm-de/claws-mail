@@ -26,6 +26,7 @@
 #include "session.h"
 
 typedef struct _IMAPSession	IMAPSession;
+typedef struct _IMAPNameSpace	IMAPNameSpace;
 
 #include "prefs_account.h"
 
@@ -36,6 +37,12 @@ struct _IMAPSession
 	Session session;
 
 	gchar *mbox;
+};
+
+struct _IMAPNameSpace
+{
+	gchar *name;
+	gchar separator;
 };
 
 #define IMAP_SUCCESS	0

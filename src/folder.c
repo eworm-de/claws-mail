@@ -924,6 +924,7 @@ static void folder_init(Folder *folder, FolderType type, const gchar *name)
 	case F_IMAP:
 		folder->get_msg_list        = imap_get_msg_list;
 		folder->fetch_msg           = imap_fetch_msg;
+		folder->add_msg             = imap_add_msg;
 		folder->move_msg            = imap_move_msg;
 		folder->move_msgs_with_dest = imap_move_msgs_with_dest;
 		folder->copy_msg            = imap_copy_msg;
@@ -975,7 +976,7 @@ static void folder_init(Folder *folder, FolderType type, const gchar *name)
 		break;
 	case F_IMAP:
 	case F_NEWS:
-		REMOTE_FOLDER(folder)->session   = NULL;
+		REMOTE_FOLDER(folder)->session = NULL;
 		break;
 	default:
 	}
