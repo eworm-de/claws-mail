@@ -492,6 +492,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Edit/_Find in current message..."),
 						"<control>F", search_cb, 0, NULL},
 	{N_("/_Edit/_Search folder..."),	"<shift><control>F", search_cb, 1, NULL},
+	{N_("/_Edit/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Edit/Actio_ns"),			NULL, NULL, 0, "<Branch>"},
 
 	{N_("/_View"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/Separate _Folder Tree"),	NULL, NULL, SEPARATE_ACTION + SEPARATE_FOLDER,  "<ToggleItem>"},
@@ -683,9 +685,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, create_filter_cb, FILTER_BY_TO, NULL},
 	{N_("/_Tool/_Create filter rule/by _Subject"),
 						NULL, create_filter_cb, FILTER_BY_SUBJECT, NULL},
-	
-	{N_("/_Tool/Actio_ns"),			NULL, NULL, 0, "<Branch>"},
-	
 	{N_("/_Tool/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tool/E_xecute"),			"X", execute_summary_cb, 0, NULL},
 	{N_("/_Tool/---"),			NULL, NULL, 0, "<Separator>"},
@@ -1560,7 +1559,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		/* {"/File/Close", M_UNLOCKED}, */
 		{"/File/Exit" , M_UNLOCKED},
 
-		{"/Tool/Actions"		   , M_MSG_EXIST},
+		{"/Edit/Actions"		   , M_MSG_EXIST},
 		{"/Edit/Select thread"		   , M_SINGLE_TARGET_EXIST},
 		{"/View/Sort"                      , M_MSG_EXIST},
 		{"/View/Thread view"               , M_EXEC},

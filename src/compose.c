@@ -4472,7 +4472,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	}
 #endif
 
-	update_compose_actions_menu(ifactory, "/Tool/Actions", compose);
+	update_compose_actions_menu(ifactory, "/Edit/Actions", compose);
 
 
 	undostruct = undo_init(text);
