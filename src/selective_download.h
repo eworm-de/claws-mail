@@ -22,20 +22,26 @@
 
 #include "mainwindow.h"
 
-#define SIZE_HEADER "Complete-Size: "
-#define SIZE_HEADER_LEN strlen(SIZE_HEADER)
-
-#define CHECKED    TRUE
-#define UNCHECKED  FALSE
-
 typedef struct _HeaderItems HeaderItems;
 
+typedef enum {
+	SD_CHECKED,      /* checkbox selected for action */ 
+	SD_UNCHECKED,    /* checkbox untouched */
+	SD_REMOVE,       /* ask server to delete msg */
+	SD_REMOVED,      /* msg successfully removed from server */
+	SD_DOWNLOAD,     /* ask to download msg */
+	SD_DOWNLOADED,   /* msg successfully received + removed from server */
+} SD_State;
+
 struct _HeaderItems {
-	gint     index;
-	gboolean state;
-	gchar    *from;
-	gchar    *subject;
-	gchar    *size;
+	gint        index;     /* msg reference number on server */
+	SD_State    state;
+	gchar       *from;
+	gchar       *subject;
+	gchar       date[80];
+	gint        size;
+	guint       received : 1;
+	guint       del_by_old_session : 1;
 };
 
 void selective_download(MainWindow *mainwin);

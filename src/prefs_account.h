@@ -46,11 +46,15 @@ typedef enum {
 
 typedef enum {
 	/* login and retrieve messages, as before */
-	RETR_NORMAL,
-	/* send TOP to server and retrieve Header */
-	RETR_HEADER, 
+	STYPE_NORMAL,
+	/* send TOP to server and retrieve all available Headers */
+	STYPE_PREVIEW_ALL,
+	/* send TOP to server and retrieve new Headers */
+	STYPE_PREVIEW_NEW,
 	/* delete selected Headers on Server */
-	DELE_HEADER 
+	STYPE_DELETE, 
+	/* download + remove Mail from Server */
+	STYPE_DOWNLOAD,
 } Pop3SessionType;
 
 #if USE_GPGME
@@ -98,14 +102,16 @@ struct _PrefsAccount
 	gchar *leave_time;	
 	gboolean getall;
 	gboolean recv_at_getall;
+	gboolean sd_rmmail_on_download;
+	gboolean sd_filter_on_recv;
 	gboolean enable_size_limit;
 	gint size_limit;
 	gboolean filter_on_recv;
 	gchar *inbox;
 
 	/* selective Download */
-	gint   session_type;
-	GSList *to_delete;
+	gint   session;
+	GSList *msg_list;
 
 	/* Send */
 	gboolean add_date;

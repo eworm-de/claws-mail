@@ -508,7 +508,7 @@ sourceforge project page.
   make install		[as root]
 
   You will need a full set of development tools installed to be able to run
-  autogen.sh.
+  autogen.sh. See also ac/README.
 
 7. History
 ----------

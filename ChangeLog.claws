@@ -1,6 +1,52 @@
-2002-06-09 [colin]	0.7.6claws34
+2002-06-10 [paul]	0.7.6claws37
+
+	* src/inc.[ch]
+	  src/pop.c
+	  src/prefs_account.[ch]
+	  src/selective_download.[ch]
+		apply PATCH #561712
+		 NEW:
+		- check if POP Account
+		- Receive Button renamed to Preview
+		- Preview Button Popup: preview new/all messages
+		- Download Button
+		- Account Preferences-->Receive tab checkbutton if you
+		  want to remove Mail after Download
+		-: default YES
+		- Account Preferences-->Receive tab checkbutton use
+		  filtering rules on preview
+		  (think of delete_on_server)
+		-: default YES
+		- Account selectable from SD dialog
+		- checkbutton to show already downloaded messages if
+		  all messages are previewed
+		- new clist column showing Date
+		- ESC KEY close
+		FIXES:
+		- play ball with UIDL
+		- fault tolerant (?) 
+		Patch submitted by Oliver Haertel <oha@users.sourceforge.net>
+
+2002-06-10 [melvin]	0.7.6claws36
+
+	* README.claws
+		Added a hint to ac/README in cvs instructions.
+
+	* src/prefs_actions.c
+		Made it possible to use a more elaborate command line
+		for asynchronous actions, too.
+
+2002-06-10 [melvin]	0.7.6claws35
 	
-	*src/summaryview.c
+	* src/prefs_actions.c
+		Make it possible to use a more elaborate command line
+		(e.g. |foo|bar|cat>there;echo Done|)
+		Corrected error message when calling %f, %F and %p commands
+		from the compose window.
+
+2002-06-09 [colin]	0.7.6claws34
+
+	* src/summaryview.c
 		Automatically find unread messages in current folder
 		before annoying the user.
 
