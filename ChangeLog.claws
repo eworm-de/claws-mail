@@ -1,3 +1,8 @@
+2003-10-24 [thorsten]	0.9.6claws51
+
+	* src/compose.c
+		use g_basename rather than basename
+
 2003-10-24 [paul]	0.9.6claws50
 
 	* src/sgpgme.c
