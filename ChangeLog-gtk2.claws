@@ -3,6 +3,25 @@
 	* src/gtk/quicksearch.c
 		Fix missing status update in quicksearch
 
+2004-07-12 [paul]	0.9.12cvs18.1
+
+	* po/POTFILES.in
+	* src/Makefile.am
+	* src/account.c
+	* src/codeconv.c
+	* src/compose.c
+	* src/inc.c
+	* src/main.c
+	* src/prefs_common.c
+	* src/procmsg.h
+	* src/toolbar.c
+	* src/prefs_msg_colors.[ch]	** NEW FILES **
+	* src/prefs_wrapping.[ch]	** NEW FILES **
+	* src/common/intl.h
+	* src/common/utils.[ch]
+	* src/gtk/quicksearch.[ch]
+		sync with 0.9.12cvs18 HEAD
+
 2004-07-12 [colin]	0.9.11cvs17.25
 
 	* src/folder.c
