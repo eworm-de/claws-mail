@@ -1,3 +1,8 @@
+2004-11-08 [colin]	0.9.12cvs142
+
+	* src/textview.c
+		Really fix these mail URIs
+
 2004-11-08 [colin]	0.9.12cvs141
 
 	* src/textview.c

@@ -124,3 +124,4 @@
 ( cvs diff -u -r 1.3087 -r 1.3088 ChangeLog.claws; cvs diff -u -r 1.451 -r 1.452 src/compose.c; cvs diff -u -r 1.90 -r 1.91 src/procmime.c; cvs diff -u -r 1.1 -r 1.2 src/plugins/trayicon/README; ) > 0.9.12cvs139.patchset
 ( cvs diff -u -r 1.452 -r 1.453 src/compose.c; ) > 0.9.12cvs140.patchset
 ( cvs diff -u -r 1.126 -r 1.127 src/textview.c; ) > 0.9.12cvs141.patchset
+( cvs diff -u -r 1.127 -r 1.128 src/textview.c; ) > 0.9.12cvs142.patchset

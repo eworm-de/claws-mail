@@ -784,7 +784,7 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 	const gchar *last_dot = NULL;
 	const gchar *prelast_dot = NULL;
 	const gchar *last_tld_char = NULL;
-
+	
 	/* the informative part of the email address (describing the name
 	 * of the email address owner) may contain quoted parts. the
 	 * closure stack stores the last encountered quotes. */
@@ -852,8 +852,30 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 
 	if (!result) return FALSE;
 
+	if (*(bp_ - 1) == '"' && *(ep_) == '"' 
+	&& *(ep_ + 1) == ' ' && *(ep_ + 2) == '<'
+	&& IS_RFC822_CHAR(*(ep_ + 3))) {
+		/* this informative part with an @ in it is 
+		 * followed by the email address */
+		ep_ += 3;
+		
+		/* go to matching '>' (or next non-rfc822 char, like \n) */
+		for (; *ep_ != '>' && *ep != '\0' && IS_RFC822_CHAR(*ep_); ep_++)
+			;
+			
+		/* include the bracket */
+		if (*ep_ == '>') ep_++;
+		
+		/* include the leading quote */		
+		bp_--;
+
+		*ep = ep_;
+		*bp = bp_;
+		return TRUE;
+	}
+
 	/* skip if it's between quotes "'alfons@proteus.demon.nl'" <alfons@proteus.demon.nl> */
-	if (bp_ - 1 > start && IS_QUOTE(*(bp_ - 1)) && IS_QUOTE(*ep_)) 
+	if (bp_ - 1 > start && IS_QUOTE(*(bp_ - 1)) && IS_QUOTE(*ep_))
 		return FALSE;
 
 	/* see if this is <bracketed>; in this case we also scan for the informative part. */
@@ -916,7 +938,7 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 
 	*ep = ep_;
 	*bp = bp_;
-
+	
 	return result;
 }
 
@@ -1004,7 +1026,7 @@ static void textview_make_clickable_parts(TextView *textview,
 		const gchar	*bp, *ep;	/* text position */
 		gint		 pti;		/* index in parse table */
 		struct txtpos	*next;		/* next */
-	} head = {NULL, NULL, 0,  NULL}, *last = &head, *next = NULL;
+	} head = {NULL, NULL, 0,  NULL}, *last = &head;
 
 	GtkSText *text = GTK_STEXT(textview->text);
 
@@ -1047,15 +1069,6 @@ static void textview_make_clickable_parts(TextView *textview,
 		for (last = head.next; last != NULL;
 		     normal_text = last->ep, last = last->next) {
 			RemoteURI *uri;
-			next = last->next;
-			/* fix "colin@colino.net" <colin@colino.net> types of URIs
-			/* FIXME would be better to fix it in the email parser */
-			if (next && next->bp == last->ep) {
-				next->bp = last->bp;
-				if (*(next->bp -1 )=='"' && strchr(next->bp, '"'))
-					next->bp--;
-				continue;
-			}
 			uri = g_new(RemoteURI, 1);
 			if (last->bp - normal_text > 0)
 				gtk_stext_insert(text, font,
