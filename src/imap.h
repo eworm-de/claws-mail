@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,12 @@
 #define __IMAP_H__
 
 #include "folder.h"
+
+typedef enum
+{
+	IMAP_AUTH_LOGIN		= 1 << 0,
+	IMAP_AUTH_CRAM_MD5	= 1 << 1,
+} IMAPAuthType;
 
 FolderClass *imap_get_class		(void);
 

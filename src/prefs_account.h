@@ -110,6 +110,8 @@ struct _PrefsAccount
 	gchar *inbox;
 	gint max_articles;
 
+	gint imap_auth_type;
+
 	/* Send */
 	gboolean add_date;
 	gboolean gen_msgid;

@@ -49,6 +49,8 @@
 #include "procheader.h"
 #include "prefs_account.h"
 #include "codeconv.h"
+#include "md5.h"
+#include "base64.h"
 #include "utils.h"
 #include "inputdialog.h"
 #include "log.h"
@@ -194,6 +196,11 @@ static void imap_folder_item_destroy	(Folder		*folder,
 
 static IMAPSession *imap_session_get	(Folder		*folder);
 
+static gint imap_auth			(IMAPSession	*session,
+					 const gchar	*user,
+					 const gchar	*pass,
+					 IMAPAuthType	 type);
+
 static gint imap_scan_tree_recursive	(IMAPSession	*session,
 					 FolderItem	*item);
 static GSList *imap_parse_list		(IMAPFolder	*folder,
@@ -286,6 +293,11 @@ static const IMAPSet numberlist_to_imapset
 					(MsgNumberList *list);
 
 /* low-level IMAP4rev1 commands */
+static gint imap_cmd_authenticate
+				(IMAPSession	*session,
+				 const gchar	*user,
+				 const gchar	*pass,
+				 IMAPAuthType	 type);
 static gint imap_cmd_login	(IMAPSession	*sock,
 				 const gchar	*user,
 				 const gchar	*pass);
@@ -503,24 +515,23 @@ static void imap_reset_uid_lists(Folder *folder)
 	g_node_traverse(folder->node, G_IN_ORDER, G_TRAVERSE_ALL, -1, imap_reset_uid_lists_func, NULL);	
 }
 
+static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass,
+		      IMAPAuthType type)
+{
+	if (type == 0 || type == IMAP_AUTH_LOGIN)
+		return imap_cmd_login(session, user, pass);
+	else
+		return imap_cmd_authenticate(session, user, pass, type);
+}
+
 static IMAPSession *imap_session_get(Folder *folder)
 {
 	RemoteFolder *rfolder = REMOTE_FOLDER(folder);
 	IMAPSession *session = NULL;
-	gushort port;
 
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
-
-#if USE_OPENSSL
-	port = folder->account->set_imapport ? folder->account->imapport
-		: folder->account->ssl_imap == SSL_TUNNEL
-		? IMAPS_PORT : IMAP4_PORT;
-#else
-	port = folder->account->set_imapport ? folder->account->imapport
-		: IMAP4_PORT;
-#endif
 
 	/* Make sure we have a session */
 	if (rfolder->session != NULL) {
@@ -566,14 +577,14 @@ static IMAPSession *imap_session_get(Folder *folder)
 			/* Check if this is the first try to establish a
 			   connection, if yes we don't try to reconnect */
 			if (rfolder->session == NULL) {
-				log_warning(_("Connecting %s:%d failed"),
-					    folder->account->recv_server, port);
+				log_warning(_("Connecting %s failed"),
+					    folder->account->recv_server);
 				session_destroy(SESSION(session));
 				session = NULL;
 			} else {
-				log_warning(_("IMAP4 connection to %s:%d has been"
+				log_warning(_("IMAP4 connection to %s has been"
 					      " disconnected. Reconnecting...\n"),
-					    folder->account->recv_server, port);
+					    folder->account->recv_server);
 				session_destroy(SESSION(session));
 				/* Clear folders session to make imap_session_get create
 				   a new session, because of rfolder->session == NULL
@@ -703,7 +714,7 @@ void imap_session_authenticate(IMAPSession *session, const PrefsAccount *account
 		g_free(tmp_pass);
 	}
 
-	if (imap_cmd_login(session, account->userid, pass) != IMAP_SUCCESS) {
+	if (imap_auth(session, account->userid, pass, account->imap_auth_type) != IMAP_SUCCESS) {
 		imap_cmd_logout(session);
 		return;
 	}
@@ -2231,6 +2242,51 @@ catch:
 
 
 /* low-level IMAP4rev1 commands */
+
+static gint imap_cmd_authenticate(IMAPSession *session, const gchar *user,
+				  const gchar *pass, IMAPAuthType type)
+{
+	gchar *auth_type;
+	gint ok;
+	gchar *buf;
+	gchar *challenge;
+	gint challenge_len;
+	gchar hexdigest[33];
+	gchar *response;
+	gchar *response64;
+
+	auth_type = "CRAM-MD5";
+
+	imap_gen_send(session, "AUTHENTICATE %s", auth_type);
+	ok = imap_gen_recv(session, &buf);
+	if (ok != IMAP_SUCCESS || buf[0] != '+' || buf[1] != ' ') {
+		g_free(buf);
+		return IMAP_ERROR;
+	}
+
+	challenge = g_malloc(strlen(buf + 2) + 1);
+	challenge_len = base64_decode(challenge, buf + 2, -1);
+	challenge[challenge_len] = '\0';
+	log_print("IMAP< [Decoded: %s]\n", challenge);
+	g_free(buf);
+
+	md5_hex_hmac(hexdigest, challenge, challenge_len, pass, strlen(pass));
+	g_free(challenge);
+
+	response = g_strdup_printf("%s %s", user, hexdigest);
+	log_print("IMAP> [Encoded: %s]\n", response);
+	response64 = g_malloc((strlen(response) + 3) * 2 + 1);
+	base64_encode(response64, response, strlen(response));
+	g_free(response);
+
+	log_print("IMAP> %s\n", response64);
+	sock_puts(SESSION(session)->sock, response64);
+	ok = imap_cmd_ok(session, NULL);
+	if (ok != IMAP_SUCCESS)
+		log_warning(_("IMAP4 authentication failed.\n"));
+
+	return ok;
+}
 
 static gint imap_cmd_login(IMAPSession *session,
 			   const gchar *user, const gchar *pass)

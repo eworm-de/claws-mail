@@ -47,6 +47,8 @@
 #include "utils.h"
 #include "alertpanel.h"
 #include "colorlabel.h"
+#include "smtp.h"
+#include "imap.h"
 
 static gboolean cancelled;
 
@@ -97,6 +99,9 @@ static struct Receive {
 
 	GtkWidget *filter_on_recv_chkbtn;
 	GtkWidget *recvatgetall_chkbtn;
+	
+	GtkWidget *imap_frame;
+	GtkWidget *imap_auth_type_optmenu;
 
 	GtkWidget *frame_maxarticle;
 	GtkWidget *label_maxarticle;
@@ -201,6 +206,9 @@ static void prefs_account_protocol_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_account_protocol_set_optmenu		(PrefParam *pparam);
 static void prefs_account_protocol_activated		(GtkMenuItem *menuitem);
 
+static void prefs_account_imap_auth_type_set_data_from_optmenu
+							(PrefParam *pparam);
+static void prefs_account_imap_auth_type_set_optmenu	(PrefParam *pparam);
 static void prefs_account_smtp_auth_type_set_data_from_optmenu
 							(PrefParam *pparam);
 static void prefs_account_smtp_auth_type_set_optmenu	(PrefParam *pparam);
@@ -301,6 +309,11 @@ static PrefParam param[] = {
 	{"filter_on_receive", "TRUE", &tmp_ac_prefs.filter_on_recv, P_BOOL,
 	 &receive.filter_on_recv_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"imap_auth_method", "0", &tmp_ac_prefs.imap_auth_type, P_ENUM,
+	 &receive.imap_auth_type_optmenu,
+	 prefs_account_imap_auth_type_set_data_from_optmenu,
+	 prefs_account_imap_auth_type_set_optmenu},
 
 	{"receive_at_get_all", "TRUE", &tmp_ac_prefs.recv_at_getall, P_BOOL,
 	 &receive.recvatgetall_chkbtn,
@@ -1103,6 +1116,10 @@ static void prefs_account_receive_create(void)
 	GtkWidget *inbox_label;
 	GtkWidget *inbox_entry;
 	GtkWidget *inbox_btn;
+	GtkWidget *imap_frame;
+	GtkWidget *optmenu;
+	GtkWidget *optmenu_menu;
+	GtkWidget *menuitem;
 	GtkWidget *recvatgetall_chkbtn;
 
 	GtkWidget *hbox2;
@@ -1245,6 +1262,33 @@ static void prefs_account_receive_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox2), label_maxarticle, FALSE, FALSE, 0);
 	gtk_label_set_justify (GTK_LABEL (label_maxarticle), GTK_JUSTIFY_LEFT);
 
+	PACK_FRAME (vbox1, imap_frame, _("IMAP4"));
+
+	vbox2 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox2);
+	gtk_container_add (GTK_CONTAINER (imap_frame), vbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
+
+	label = gtk_label_new (_("Authentication method"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
+
+	optmenu = gtk_option_menu_new ();
+	gtk_widget_show (optmenu);
+	gtk_box_pack_start (GTK_BOX (hbox1), optmenu, FALSE, FALSE, 0);
+
+	optmenu_menu = gtk_menu_new ();
+
+	MENUITEM_ADD (optmenu_menu, menuitem, _("Automatic"), 0);
+	MENUITEM_ADD (optmenu_menu, menuitem, "LOGIN", IMAP_AUTH_LOGIN);
+	MENUITEM_ADD (optmenu_menu, menuitem, "CRAM-MD5", IMAP_AUTH_CRAM_MD5);
+
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu), optmenu_menu);
+
 	PACK_CHECK_BUTTON (vbox1, filter_on_recv_chkbtn,
 			   _("Filter messages on receiving"));
 
@@ -1262,6 +1306,9 @@ static void prefs_account_receive_create(void)
 	receive.inbox_label              = inbox_label;
 	receive.inbox_entry              = inbox_entry;
 	receive.inbox_btn                = inbox_btn;
+
+	receive.imap_frame               = imap_frame;
+	receive.imap_auth_type_optmenu   = optmenu;
 
 	receive.recvatgetall_chkbtn      = recvatgetall_chkbtn;
 
@@ -2336,6 +2383,41 @@ static void prefs_account_protocol_set_optmenu(PrefParam *pparam)
 	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
 }
 
+static void prefs_account_imap_auth_type_set_data_from_optmenu(PrefParam *pparam)
+{
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	*((RecvProtocol *)pparam->data) = GPOINTER_TO_INT
+		(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+}
+
+static void prefs_account_imap_auth_type_set_optmenu(PrefParam *pparam)
+{
+	IMAPAuthType type = *((IMAPAuthType *)pparam->data);
+	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	switch (type) {
+	case IMAP_AUTH_LOGIN:
+		gtk_option_menu_set_history(optmenu, 1);
+		break;
+	case IMAP_AUTH_CRAM_MD5:
+		gtk_option_menu_set_history(optmenu, 2);
+		break;
+	case 0:
+	default:
+		gtk_option_menu_set_history(optmenu, 0);
+	}
+
+	menu = gtk_option_menu_get_menu(optmenu);
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
+}
+
 static void prefs_account_smtp_auth_type_set_data_from_optmenu(PrefParam *pparam)
 {
 	GtkWidget *menu;
@@ -2432,6 +2514,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		prefs_account_nntpauth_toggled
 			(GTK_TOGGLE_BUTTON(basic.nntpauth_chkbtn), NULL);
 		gtk_widget_hide(receive.pop3_frame);
+		gtk_widget_hide(receive.imap_frame);
 		gtk_widget_show(receive.frame_maxarticle);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
 		/* update pop_before_smtp sensitivity */
@@ -2505,6 +2588,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
 		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
 		gtk_widget_hide(receive.pop3_frame);
+		gtk_widget_hide(receive.imap_frame);
 		gtk_widget_hide(receive.frame_maxarticle);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
 		prefs_account_mailcmd_toggled
@@ -2584,6 +2668,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
 		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
 		gtk_widget_hide(receive.pop3_frame);
+		gtk_widget_show(receive.imap_frame);
 		gtk_widget_hide(receive.frame_maxarticle);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
@@ -2665,6 +2750,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
 		gtk_widget_set_sensitive(receive.pop3_frame, TRUE);
 		gtk_widget_show(receive.pop3_frame);
+		gtk_widget_hide(receive.imap_frame);
 		gtk_widget_hide(receive.frame_maxarticle);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
 
