@@ -1,3 +1,8 @@
+2005-02-03 [paul]	1.0.0cvs25.2
+
+	* src/jpilot.c
+		fix building with jpilot support
+
 2005-02-02 [colin]	1.0.0cvs25.1
 
 	* src/messageview.c

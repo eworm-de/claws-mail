@@ -1101,7 +1101,7 @@ static void jpilot_parse_label( JPilotFile *pilotFile, gchar *labelEntry, ItemPe
 			addritem_email_set_address( email, node->data );
 			if (convert_charcode) {
 				gchar *convertBuff;
-				convertBuff = conv_codeset_strdup( ai->labels[ind], CS_SHIFT_JIS, CS_INTERNAL );
+				convertBuff = conv_codeset_strdup( labelEntry, CS_SHIFT_JIS, CS_INTERNAL );
 				addritem_email_set_remarks( email, convertBuff );
 				g_free( convertBuff );
 			}
@@ -1665,7 +1665,7 @@ gint jpilot_read_data( JPilotFile *pilotFile ) {
 		name_order = FAMILY_FIRST;
 	}
 
-	if( conv_get_current_charset() == C_EUC_JP ) {
+	if( conv_get_locale_charset() == C_EUC_JP ) {
 		convert_charcode = TRUE;
 	}
 
