@@ -1,3 +1,9 @@
+2004-07-26 [colin]	0.9.12cvs33.26
+
+	* src/pop.c
+		Fix uidl-file parsing when not in new
+		format
+
 2004-07-26 [colin]	0.9.12cvs33.25
 
 	* src/gtk/menu.c
