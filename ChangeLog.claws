@@ -1,3 +1,13 @@
+2001-10-31 [match]	0.6.4claws17
+
+		* src/vcard.c
+			fix memory leak.
+		* src/addrbook.c
+			fix generation of spurious address book file names.
+			remove redundant functions.
+		* po/POTFILES.in
+			added missing file names.
+
 2001-10-30 [paul]	0.6.4claws16
 
 		* sync with sylpheed 0.6.4cvs6
