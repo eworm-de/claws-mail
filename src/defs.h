@@ -66,8 +66,8 @@
 #define FOLDER_LIST		"folderlist.xml"
 #define CACHE_FILE		".sylpheed_cache"
 #define MARK_FILE		".sylpheed_mark"
-#define CACHE_VERSION		21
-#define MARK_VERSION		3
+#define CACHE_VERSION		20
+#define MARK_VERSION		2
 
 #define DEFAULT_SIGNATURE	".signature"
 #define DEFAULT_INC_PATH	"/usr/bin/mh/inc"

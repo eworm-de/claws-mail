@@ -143,20 +143,9 @@ typedef enum
 #define MSG_IS_IGNORE_THREAD(msg)	(((msg).perm_flags & MSG_IGNORE_THREAD) != 0)
 #define MSG_IS_RETRCPT_PENDING(msg)	(((msg).perm_flags & MSG_RETRCPT_PENDING) != 0)
 
-/* code from bits/byteswap.h (C) 1997, 1998 Free Software Foundation, Inc. */
-#ifdef BIG_ENDIAN_HOST
-#define me2ne_32(x) (x)
-#else
-#define me2ne_32(x) \
-     ((((x) & 0xff000000) >> 24) | (((x) & 0x00ff0000) >>  8) | \
-      (((x) & 0x0000ff00) <<  8) | (((x) & 0x000000ff) << 24))
 
-#endif
-
-#define WRITE_CACHE_DATA_INT(n, fp) { \
-	int i = n; i = me2ne_32(i); \
-	fwrite(&i, sizeof(n), 1, fp); \
-}
+#define WRITE_CACHE_DATA_INT(n, fp) \
+	fwrite(&n, sizeof(n), 1, fp)
 
 #define WRITE_CACHE_DATA(data, fp) \
 { \

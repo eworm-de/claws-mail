@@ -1,3 +1,10 @@
+2002-11-13 [colin]	0.8.5claws137
+	
+	* src/msgcache.c
+	  src/defs.h
+	  src/procmsg.[ch]
+		Revert last commit, problem
+
 2002-11-13 [colin]	0.8.5claws136
 
 	* src/msgcache.c
