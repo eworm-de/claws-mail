@@ -1,3 +1,8 @@
+2003-01-02 [thorsten]	0.8.8claws40
+
+	* src/procmsg.c
+		fixed wrong return value
+
 2003-01-02 [thorsten]	0.8.8claws39
 
 	* src/prefs.c

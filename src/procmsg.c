@@ -1631,9 +1631,8 @@ gboolean procmsg_msg_has_flagged_parent_real(MsgInfo *info,
 				result = FALSE;
 			} else {
 				g_hash_table_insert(parentmsgs, info, "1");
-				procmsg_msg_has_flagged_parent_real(tmp,
-						perm_flags, parentmsgs);
-				result = TRUE;
+				result = procmsg_msg_has_flagged_parent_real(
+				    tmp, perm_flags, parentmsgs);
 			}
 			procmsg_msginfo_free(tmp);
 			return result;
