@@ -947,7 +947,6 @@ gint folder_item_scan(FolderItem *item)
 		folder_cur_num = G_MAXINT;
 
 	while ((cache_cur_num != G_MAXINT) || (folder_cur_num != G_MAXINT)) {
-		printf("%d %d\n", cache_cur_num, folder_cur_num);
 		/*
 		 *  Message only exists in the folder
 		 *  Remember message for fetching
