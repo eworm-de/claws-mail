@@ -1,3 +1,19 @@
+2001-05-02 [sergey]
+
+	* src/prefs_account.c (prefs_account_fix_size): new function.
+	(prefs_account_create): call prefs_account_fix_size(); use
+	gtk_widget_show instead of gtk_widget_show_all (fixes too large
+	size when the window is shown for the first time).
+	(prefs_account_basic_create): changed layout of serv_table; moved
+	localmbox_entry above smtpserv_entry (logically it replaces
+	POP3/IMAP server).
+	(prefs_account_protocol_activated): set sensitivity of
+	nntpauth_chkbtn according to the protocol (in addition to
+	hide/show); commented out gtk_table_set_row_spacing() calls.
+	(prefs_account_nntpauth_toggled): do nothing if nntpauth_chkbtn is
+	not sensitive (fixes a bug with disabled username/password boxes
+	when editing POP3 account after NNTP with authentication).
+
 2001-05-02 [hoa]
 
 	* src/account.c
