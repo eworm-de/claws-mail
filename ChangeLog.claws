@@ -1,3 +1,8 @@
+2004-11-17 [colin]	0.9.12cvs154
+
+	* src/privacy.c
+		Fix more pointer confusion
+
 2004-11-17 [paul]	0.9.12cvs153
 
 	* src/procmime.h

@@ -136,3 +136,4 @@
 ( cvs diff -u -r 1.10 -r 1.11 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs151.patchset
 ( cvs diff -u -r 1.446 -r 1.447 ChangeLog; cvs diff -u -r 1.441 -r 1.442 ChangeLog.jp; cvs diff -u -r 1.51 -r 1.52 NEWS; cvs diff -u -r 1.454 -r 1.455 src/compose.c; cvs diff -u -r 1.20 -r 1.21 src/jpilot.c; cvs diff -u -r 1.92 -r 1.93 src/procmime.c; ) > 0.9.12cvs152.patchset
 ( cvs diff -u -r 1.33 -r 1.34 src/procmime.h; ) > 0.9.12cvs153.patchset
+( cvs diff -u -r 1.11 -r 1.12 src/privacy.c; ) > 0.9.12cvs154.patchset
