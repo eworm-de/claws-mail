@@ -22,6 +22,8 @@
 
 #include <glib.h>
 
+#define B64LEN(len)	((len) / 3 * 4 + ((len) % 3 ? 4 : 0))
+
 typedef struct _Base64Decoder	Base64Decoder;
 
 struct _Base64Decoder

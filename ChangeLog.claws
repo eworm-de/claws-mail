@@ -1,3 +1,34 @@
+2004-11-23 [christoph]	0.9.12cvs164
+
+	* src/common/Makefile.am
+	* src/common/partial_download.[ch]
+	* src/Makefile.am
+	* src/partial_download.[ch]
+	* src/folderview.c
+		move to src because it depends on src stuff
+
+	* src/codeconv.c
+	* src/common/base64.h
+		move B64LEN macro to base64.h
+
+	* src/compose.c
+	* src/privacy.[ch]
+		add PrefsAccount to sign-function parameters
+
+	* src/main.c
+	* src/prefs_account.[ch]
+	* src/gtk/prefswindow.[ch]
+		o use new prefswindow for account prefs
+		o add possibility to add new pages to account prefs
+
+	* src/plugins/pgpmime/prefs_gpg.[ch]
+	* src/plugins/pgpmime/prefs_gpg.glade
+		add account prefs for GPG
+
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/sgpgme.[ch]
+		create signers list based on the GPG account prefs
+
 2004-11-23 [colin]	0.9.12cvs163
 
 	* src/main.c

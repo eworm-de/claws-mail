@@ -41,5 +41,6 @@ GpgmeData sgpgme_data_from_mimeinfo	(MimeInfo *mimeinfo);
 GpgmeData sgpgme_decrypt_verify		(GpgmeData cipher, GpgmeSigStat *status,
 					 GpgmeCtx ctx);
 gchar *sgpgme_get_encrypt_data		(GSList *recp_names);
+gboolean sgpgme_setup_signers		(GpgmeCtx ctx, PrefsAccount *account);
 
 #endif /* SGPGME_H */

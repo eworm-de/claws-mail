@@ -18,17 +18,35 @@
  */
 
 typedef struct GPGConfig GPGConfig;
+typedef struct GPGAccountConfig GPGAccountConfig;
+
+typedef enum {
+	SIGN_KEY_DEFAULT,
+	SIGN_KEY_BY_FROM,
+	SIGN_KEY_CUSTOM,
+} SignKeyType;
+
+#include "prefs_account.h"
 
 struct GPGConfig
 {
-	gboolean auto_check_signatures;
-	gboolean store_passphrase;
-	gint store_passphrase_timeout;
-	gboolean passphrase_grab;
-	gboolean gpg_warning;
+	gboolean	 auto_check_signatures;
+	gboolean	 store_passphrase;
+	gint		 store_passphrase_timeout;
+	gboolean	 passphrase_grab;
+	gboolean	 gpg_warning;
+};
+
+struct GPGAccountConfig
+{
+	SignKeyType	 sign_key;
+	gchar 		*sign_key_id;
 };
 
 void prefs_gpg_init(void);
 void prefs_gpg_done(void);
 void prefs_gpg_save_config(void);
-struct GPGConfig *prefs_gpg_get_config();
+struct GPGConfig *prefs_gpg_get_config(void);
+struct GPGAccountConfig *prefs_gpg_account_get_config(PrefsAccount *account);
+void prefs_gpg_account_set_config(PrefsAccount *account, GPGAccountConfig *config);
+void prefs_gpg_account_free_config(GPGAccountConfig *config);

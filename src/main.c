@@ -343,6 +343,7 @@ int main(int argc, char *argv[])
 					lock_socket_input_cb,
 					mainwin);
 
+	prefs_account_init();
 	account_read_config_all();
 
 	if (folder_read_list() < 0) {

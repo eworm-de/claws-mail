@@ -34,6 +34,7 @@ typedef enum {
 #include <glib.h>
 
 #include "procmime.h"
+#include "prefs_account.h"
 
 void privacy_register_system			(PrivacySystem *system);
 void privacy_unregister_system			(PrivacySystem *system);
@@ -54,13 +55,14 @@ const gchar *privacy_system_get_name		(const gchar *);
 gboolean privacy_system_can_sign		(const gchar *);
 gboolean privacy_system_can_encrypt		(const gchar *);
 
-gboolean privacy_sign				(const gchar *system,
-						 MimeInfo    *mimeinfo);
-gchar *privacy_get_encrypt_data			(const gchar *system,
-						 GSList      *recp_names);
-gboolean privacy_encrypt			(const gchar *system,
-						 MimeInfo    *mimeinfo,
-						 const gchar *encdata);
+gboolean privacy_sign				(const gchar  *system,
+						 MimeInfo     *mimeinfo,
+						 PrefsAccount *account);
+gchar *privacy_get_encrypt_data			(const gchar  *system,
+						 GSList       *recp_names);
+gboolean privacy_encrypt			(const gchar  *system,
+						 MimeInfo     *mimeinfo,
+						 const gchar  *encdata);
 
 struct _PrivacySystem {
 	/** Identifier for the PrivacySystem that can use in config files */
@@ -80,7 +82,8 @@ struct _PrivacySystem {
 	MimeInfo	*(*decrypt)		(MimeInfo *mimeinfo);
 
 	gboolean	   can_sign;
-	gboolean	 (*sign)		(MimeInfo *mimeinfo);
+	gboolean	 (*sign)		(MimeInfo *mimeinfo,
+						 PrefsAccount *account);
 
 	gboolean	   can_encrypt;
 	gchar		*(*get_encrypt_data)	(GSList *recp_names);

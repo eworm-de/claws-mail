@@ -303,6 +303,40 @@ gchar *sgpgme_get_encrypt_data(GSList *recp_names)
 	return data;
 }
 
+gboolean sgpgme_setup_signers(GpgmeCtx ctx, PrefsAccount *account)
+{
+	GPGAccountConfig *config;
+
+	gpgme_signers_clear(ctx);
+
+	config = prefs_gpg_account_get_config(account);
+
+	if (config->sign_key != SIGN_KEY_DEFAULT) {
+		gchar *keyid;
+		GpgmeKey key;
+
+		if (config->sign_key == SIGN_KEY_BY_FROM)
+			keyid = account->address;
+		else if (config->sign_key == SIGN_KEY_CUSTOM)
+			keyid = config->sign_key_id;
+		else
+			return FALSE;
+
+		gpgme_op_keylist_start(ctx, keyid, 1);
+		while (!gpgme_op_keylist_next(ctx, &key)) {
+			debug_print("adding key: %s\n", 
+				gpgme_key_get_string_attr(key, GPGME_ATTR_KEYID, NULL, 0));
+			gpgme_signers_add(ctx, key);
+			gpgme_key_release(key);
+		}
+		gpgme_op_keylist_end(ctx);
+	}
+
+	prefs_gpg_account_free_config(config);
+
+	return TRUE;
+}
+
 void sgpgme_init()
 {
 	if (gpgme_engine_check_version(GPGME_PROTOCOL_OpenPGP) != 

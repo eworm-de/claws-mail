@@ -7,7 +7,6 @@ libsylpheedcommon_la_SOURCES = \
 	md5.c \
 	mgutils.c \
 	nntp.c \
-	partial_download.c \
 	passcrypt.c \
 	plugin.c \
 	prefs.c \
@@ -37,7 +36,6 @@ sylpheedcommoninclude_HEADERS = \
 	md5.h \
 	mgutils.h \
 	nntp.h \
-	partial_download.h \
 	passcrypt.h \
 	plugin.h \
 	prefs.h \

@@ -78,6 +78,7 @@ sylpheed_SOURCES = \
 	news.c \
 	news_gtk.c \
 	noticeview.c \
+	partial_download.c \
 	pine.c \
 	pop.c \
 	prefs_account.c \
@@ -204,6 +205,7 @@ sylpheedinclude_HEADERS = \
 	news.h \
 	news_gtk.h \
 	noticeview.h \
+	partial_download.h \
 	pine.h \
 	pop.h \
 	prefs_account.h \

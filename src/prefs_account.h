@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __PREFS_ACCOUNT_H__
-#define __PREFS_ACCOUNT_H__
+#ifndef PREFS_ACCOUNT_H
+#define PREFS_ACCOUNT_H
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
@@ -46,8 +46,7 @@ typedef enum {
 
 #include "smtp.h"
 #include "folder.h"
-
-
+#include "gtk/prefswindow.h"
 
 struct _PrefsAccount
 {
@@ -175,7 +174,11 @@ struct _PrefsAccount
 	gint account_id;
 
 	Folder *folder;
+
+	GHashTable *privacy_prefs;
 };
+
+void prefs_account_init			(void);
 
 PrefsAccount *prefs_account_new		(void);
 
@@ -187,4 +190,10 @@ void prefs_account_free			(PrefsAccount	*ac_prefs);
 
 PrefsAccount *prefs_account_open	(PrefsAccount	*ac_prefs);
 
-#endif /* __PREFS_ACCOUNT_H__ */
+const gchar *prefs_account_get_privacy_prefs(PrefsAccount *account, gchar *id);
+void prefs_account_set_privacy_prefs(PrefsAccount *account, gchar *id, gchar *new_value);
+
+void prefs_account_register_page	(PrefsPage 	*page);
+void prefs_acount_unregister_page	(PrefsPage 	*page);
+
+#endif /* PREFS_ACCOUNT_H */

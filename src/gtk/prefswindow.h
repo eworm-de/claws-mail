@@ -41,6 +41,10 @@ struct _PrefsPage
 	PrefsSavePageFunc	  save_page;
 };
 
+void prefswindow_open_full		(const gchar *title, 
+					 GSList *prefs_pages,
+					 gpointer data,
+					 GtkDestroyNotify func);
 void prefswindow_open			(const gchar *title, 
 					 GSList *prefs_pages,
 					 gpointer data);
