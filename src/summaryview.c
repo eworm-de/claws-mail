@@ -3436,7 +3436,10 @@ static void summary_unthread_for_exec_func(GtkCTree *ctree, GtkCTreeNode *node,
 
 void summary_filter(SummaryView *summaryview)
 {
-	if (!prefs_common.fltlist) return;
+	if (!prefs_common.fltlist && !prefs_filtering) {
+		alertpanel_error(_("No filter rules defined."));
+		return;
+	}
 
 	summary_lock(summaryview);
 

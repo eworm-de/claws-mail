@@ -1,3 +1,11 @@
+2001-10-28 [christoph]	0.6.4claws12
+
+	* src/summaryview.c
+		fixed that filtering did not work if there
+		were no filter rules
+		(closes bug #472003 and better implementation
+		 of patch #474644)
+
 2001-10-27 [christoph]	0.6.4claws11
 
 	* src/compose.c
