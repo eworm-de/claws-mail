@@ -3398,6 +3398,9 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 
 	for (row = 0; (ainfo = gtk_clist_get_row_data(clist, row)) != NULL;
 	     row++) {
+		gchar buf[BUFFSIZE];
+		gchar inbuf[B64_LINE_SIZE], outbuf[B64_BUFFSIZE];
+
 		if ((attach_fp = fopen(ainfo->file, "r")) == NULL) {
 			g_warning(_("Can't open file %s\n"), ainfo->file);
 			continue;
@@ -3421,15 +3424,19 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 		fprintf(fp, "Content-Transfer-Encoding: %s\n\n",
 			procmime_get_encoding_str(ainfo->encoding));
 
-		if (ainfo->encoding == ENC_7BIT) {
-			gchar buf[BUFFSIZE];
+		switch (ainfo->encoding) {
+
+		case ENC_7BIT:
+		case ENC_8BIT:
+			/* if (ainfo->encoding == ENC_7BIT) { */
 
 			while (fgets(buf, sizeof(buf), attach_fp) != NULL) {
 				strcrchomp(buf);
 				fputs(buf, fp);
 			}
-		} else {
-			gchar inbuf[B64_LINE_SIZE], outbuf[B64_BUFFSIZE];
+			break;
+			/* } else { */
+		case ENC_BASE64:
 
 			while ((len = fread(inbuf, sizeof(gchar),
 					    B64_LINE_SIZE, attach_fp))
@@ -3443,6 +3450,7 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 				fputs(outbuf, fp);
 				fputc('\n', fp);
 			}
+			break;
 		}
 
 		fclose(attach_fp);
@@ -5218,9 +5226,15 @@ static void compose_attach_property_create(gboolean *cancelled)
 
 	optmenu_menu = gtk_menu_new();
 	MENUITEM_ADD(optmenu_menu, menuitem, "7bit", ENC_7BIT);
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu), optmenu_menu);
+#if 0
 	gtk_widget_set_sensitive(menuitem, FALSE);
+#endif
 	MENUITEM_ADD(optmenu_menu, menuitem, "8bit", ENC_8BIT);
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu), optmenu_menu);
+#if 0
 	gtk_widget_set_sensitive(menuitem, FALSE);
+#endif
 	MENUITEM_ADD(optmenu_menu, menuitem, "quoted-printable", ENC_QUOTED_PRINTABLE);
 	gtk_widget_set_sensitive(menuitem, FALSE);
 	MENUITEM_ADD(optmenu_menu, menuitem, "base64", ENC_BASE64);
