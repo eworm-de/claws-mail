@@ -220,6 +220,7 @@ int matcher_parserwrap(void)
 %token MATCHER_SIZE_GREATER MATCHER_SIZE_SMALLER MATCHER_SIZE_EQUAL
 %token MATCHER_LOCKED MATCHER_NOT_LOCKED
 %token MATCHER_COLORLABEL MATCHER_NOT_COLORLABEL
+%token MATCHER_IGNORE_THREAD MATCHER_NOT_IGNORE_THREAD
 
 %start file
 
@@ -504,6 +505,20 @@ MATCHER_ALL
 	if (value < 1) value = 1;
 	else if (value > MAX_COLORLABELS) value = MAX_COLORLABELS;
 	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
+}
+| MATCHER_IGNORE_THREAD
+{
+	gint criteria = 0;
+
+	criteria = MATCHCRITERIA_IGNORE_THREAD;
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+}
+| MATCHER_NOT_IGNORE_THREAD
+{
+	gint criteria = 0;
+
+	criteria = MATCHCRITERIA_NOT_IGNORE_THREAD;
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_SUBJECT match_type MATCHER_STRING
 {

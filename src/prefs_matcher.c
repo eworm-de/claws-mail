@@ -112,16 +112,17 @@ enum {
 	CRITERIA_FORWARDED = 20,
 	CRITERIA_LOCKED = 21,
 	CRITERIA_COLORLABEL = 22,
+	CRITERIA_IGNORE_THREAD = 23,
 
-	CRITERIA_SCORE_GREATER = 23,
-	CRITERIA_SCORE_LOWER = 24,
-	CRITERIA_SCORE_EQUAL = 25,
+	CRITERIA_SCORE_GREATER = 24,
+	CRITERIA_SCORE_LOWER = 25,
+	CRITERIA_SCORE_EQUAL = 26,
 
-	CRITERIA_EXECUTE = 26,
+	CRITERIA_EXECUTE = 27,
 
-	CRITERIA_SIZE_GREATER = 27,
-	CRITERIA_SIZE_SMALLER = 28,
-	CRITERIA_SIZE_EQUAL   = 29
+	CRITERIA_SIZE_GREATER = 28,
+	CRITERIA_SIZE_SMALLER = 29,
+	CRITERIA_SIZE_EQUAL   = 30
 };
 
 enum {
@@ -163,6 +164,7 @@ static gchar *criteria_text [] = {
 	N_("Replied flag"), N_("Forwarded flag"),
 	N_("Locked flag"),
 	N_("Color label"),
+	N_("Ignore thread"),
 	N_("Score greater than"), N_("Score lower than"),
 	N_("Score equal to"),
 	N_("Execute"),
@@ -738,6 +740,9 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 	case MATCHCRITERIA_COLORLABEL:
 	case MATCHCRITERIA_NOT_COLORLABEL:
 		return CRITERIA_COLORLABEL;
+	case MATCHCRITERIA_IGNORE_THREAD:
+	case MATCHCRITERIA_NOT_IGNORE_THREAD:
+		return CRITERIA_IGNORE_THREAD;
 	case MATCHCRITERIA_NOT_SUBJECT:
 	case MATCHCRITERIA_SUBJECT:
 		return CRITERIA_SUBJECT;
@@ -820,6 +825,8 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHCRITERIA_LOCKED;
 	case CRITERIA_COLORLABEL:
 		return MATCHCRITERIA_COLORLABEL;
+	case CRITERIA_IGNORE_THREAD:
+		return MATCHCRITERIA_IGNORE_THREAD;
 	case CRITERIA_SUBJECT:
 		return MATCHCRITERIA_SUBJECT;
 	case CRITERIA_FROM:
@@ -886,6 +893,8 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 		return MATCHCRITERIA_NOT_LOCKED;
 	case MATCHCRITERIA_COLORLABEL:
 		return MATCHCRITERIA_NOT_COLORLABEL;
+	case MATCHCRITERIA_IGNORE_THREAD:
+		return MATCHCRITERIA_NOT_IGNORE_THREAD;
 	case MATCHCRITERIA_SUBJECT:
 		return MATCHCRITERIA_NOT_SUBJECT;
 	case MATCHCRITERIA_FROM:
@@ -952,6 +961,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_LOCKED:
 	case CRITERIA_EXECUTE:
 	case CRITERIA_COLORLABEL:
+	case CRITERIA_IGNORE_THREAD:
 		if (value_pred_flag == PREDICATE_FLAG_DISABLED)
 			criteria = prefs_matcher_not_criteria(criteria);
 		break;
@@ -1000,6 +1010,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_REPLIED:
 	case CRITERIA_FORWARDED:
 	case CRITERIA_LOCKED:
+	case CRITERIA_IGNORE_THREAD:
 		break;
 
 	case CRITERIA_SUBJECT:
@@ -1181,6 +1192,7 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 	case MATCHCRITERIA_NOT_FORWARDED:
 	case MATCHCRITERIA_NOT_LOCKED:
 	case MATCHCRITERIA_NOT_COLORLABEL:
+	case MATCHCRITERIA_NOT_IGNORE_THREAD:
 	case MATCHCRITERIA_NOT_SUBJECT:
 	case MATCHCRITERIA_NOT_FROM:
 	case MATCHCRITERIA_NOT_TO:
@@ -1336,6 +1348,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 	case CRITERIA_REPLIED:
 	case CRITERIA_FORWARDED:
 	case CRITERIA_LOCKED:
+	case CRITERIA_IGNORE_THREAD:
 		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
 		gtk_widget_set_sensitive(matcher.header_label, FALSE);
 		gtk_widget_set_sensitive(matcher.value_label, FALSE);

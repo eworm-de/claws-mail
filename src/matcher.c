@@ -55,6 +55,8 @@ static MatchParser matchparser_tab[] = {
 	{MATCHCRITERIA_NOT_LOCKED, "~locked"},
 	{MATCHCRITERIA_COLORLABEL, "colorlabel"},
 	{MATCHCRITERIA_NOT_COLORLABEL, "~colorlabel"},
+	{MATCHCRITERIA_IGNORE_THREAD, "ignore_thread"},
+	{MATCHCRITERIA_NOT_IGNORE_THREAD, "~ignore_thread"},
 
 	/* msginfo headers */
 	{MATCHCRITERIA_SUBJECT, "subject"},
@@ -419,7 +421,11 @@ gboolean matcherprop_match(MatcherProp *prop, MsgInfo *info)
 	case MATCHCRITERIA_COLORLABEL:
 		return MSG_GET_COLORLABEL_VALUE(info->flags) == prop->value; 
 	case MATCHCRITERIA_NOT_COLORLABEL:
-		return MSG_GET_COLORLABEL_VALUE(info->flags) != prop->value; 
+		return MSG_GET_COLORLABEL_VALUE(info->flags) != prop->value;
+	case MATCHCRITERIA_IGNORE_THREAD:
+		return MSG_IS_IGNORE_THREAD(info->flags);
+	case MATCHCRITERIA_NOT_IGNORE_THREAD:
+		return !MSG_IS_IGNORE_THREAD(info->flags);
 	case MATCHCRITERIA_SUBJECT:
 		return matcherprop_string_match(prop, info->subject);
 	case MATCHCRITERIA_NOT_SUBJECT:
@@ -832,6 +838,8 @@ gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 		case MATCHCRITERIA_NOT_LOCKED:
 		case MATCHCRITERIA_COLORLABEL:
 		case MATCHCRITERIA_NOT_COLORLABEL:
+		case MATCHCRITERIA_IGNORE_THREAD:
+		case MATCHCRITERIA_NOT_IGNORE_THREAD:
 		case MATCHCRITERIA_SUBJECT:
 		case MATCHCRITERIA_NOT_SUBJECT:
 		case MATCHCRITERIA_FROM:
@@ -930,6 +938,8 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 	case MATCHCRITERIA_NOT_FORWARDED:
 	case MATCHCRITERIA_LOCKED:
 	case MATCHCRITERIA_NOT_LOCKED:
+	case MATCHCRITERIA_IGNORE_THREAD:
+	case MATCHCRITERIA_NOT_IGNORE_THREAD:
 		return g_strdup(criteria_str);
 	case MATCHCRITERIA_EXECUTE:
 	case MATCHCRITERIA_NOT_EXECUTE:
