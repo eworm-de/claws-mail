@@ -1,6 +1,13 @@
+2002-08-21 [alfons]	0.8.1claws97
+
+	* src/crash.c
+		use bt instead of bt full which seems to work 
+		better, and bt full doesn't give a great deal 
+		of information anyway
+
 2002-08-21 [colin]	0.8.1claws96
 
-	*src/summaryview.c
+	* src/summaryview.c
 		fix summaryview_searchtype_changed prototype
 
 2002-08-21 [christoph]	0.8.1claws95

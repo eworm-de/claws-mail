@@ -72,7 +72,7 @@ static const gchar	*get_operating_system		(void);
 
 /***/
 
-static const gchar *DEBUG_SCRIPT = "bt full\nq";
+static const gchar *DEBUG_SCRIPT = "bt\nq";
 
 /***/
 
