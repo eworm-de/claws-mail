@@ -187,8 +187,11 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 		if (new_msgs <= 0)
 			new_msgs = 1;
 	} else {
-		if (prefs_common.inc_local)
+		if (prefs_common.inc_local) {
 			new_msgs = inc_spool();
+			if (new_msgs < 0)
+				new_msgs = 0;
+		}
 
 		new_msgs += inc_account_mail(cur_account, mainwin);
 	}
@@ -593,7 +596,8 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		if (!prefs_common.scan_all_after_inc) {
 			folder_item_scan_foreach(session->folder_table);
 			folderview_update_item_foreach
-				(session->folder_table, TRUE);
+				(session->folder_table,
+				 !prefs_common.open_inbox_on_inc);
 		}
 
 		if (pop3_state->error_val == PS_AUTHFAIL &&
@@ -1161,7 +1165,8 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 		if (!prefs_common.scan_all_after_inc) {
 		g_hash_table_insert(folder_table, dest,
 				    GINT_TO_POINTER(1));
-			folderview_update_item_foreach(folder_table, TRUE);
+			folderview_update_item_foreach
+				(folder_table, !prefs_common.open_inbox_on_inc);
 		}
 		g_hash_table_destroy(folder_table);
 	} else if (!prefs_common.scan_all_after_inc) {

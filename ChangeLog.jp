@@ -1,3 +1,10 @@
+2002-09-11
+
+	* src/inc.c: inc_mail(): inc_spool() がエラーで帰ったときの
+	  new_msgs を訂正。
+	  open_inbox_on_inc がセットされているとき、受信中にサマリビューを
+	  リフレッシュしないようにした。
+
 2002-09-10
 
 	* src/summaryview.c: summary_show(): open_inbox_on_inc がセット
