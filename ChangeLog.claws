@@ -1,3 +1,9 @@
+2002-05-12 [melvin]	0.7.5claws20
+
+	* src/prefs_actions.c
+		Removed implicitely added quotes around the name
+		of the temporary files of mime parts.
+
 2002-05-12 [paul]	0.7.5claws19
 
 	* sync with 0.7.5cvs20
