@@ -1837,16 +1837,20 @@ void folder_item_read_cache(FolderItem *item)
 	
 	g_return_if_fail(item != NULL);
 
-	cache_file = folder_item_get_cache_file(item);
-	mark_file = folder_item_get_mark_file(item);
-	item->cache = msgcache_read_cache(item, cache_file);
-	if (!item->cache) {
+	if (item->path != NULL) {
+	        cache_file = folder_item_get_cache_file(item);
+		mark_file = folder_item_get_mark_file(item);
+		item->cache = msgcache_read_cache(item, cache_file);
+		if (!item->cache) {
+			item->cache = msgcache_new();
+			folder_item_scan_full(item, TRUE);
+		}
+		msgcache_read_mark(item->cache, mark_file);
+		g_free(cache_file);
+		g_free(mark_file);
+	} else {
 		item->cache = msgcache_new();
-		folder_item_scan_full(item, TRUE);
 	}
-	msgcache_read_mark(item->cache, mark_file);
-	g_free(cache_file);
-	g_free(mark_file);
 
 	folder_clean_cache_memory();
 }

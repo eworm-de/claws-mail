@@ -1,3 +1,9 @@
+2004-04-14 [christoph]	0.9.10claws45
+
+	* src/folder.c
+	* src/plugins/image_viewer/viewer.c
+		fix g_warnings
+
 2004-04-10 [alfons]	0.9.10claws44
 	
 	* src/compose.c
