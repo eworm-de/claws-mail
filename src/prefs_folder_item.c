@@ -169,15 +169,14 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * _page,
 	gtk_table_attach_defaults(GTK_TABLE(table), folder_color, 0, 1, 
 			 rowcount, rowcount + 1);
 
-	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox);
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(hbox);
 	gtk_table_attach_defaults(GTK_TABLE(table), hbox, 1, 2, 
 				  rowcount, rowcount + 1);
 
 	folder_color_btn = gtk_button_new_with_label("");
-	gtk_widget_show (hbox);
 	gtk_widget_set_usize(folder_color_btn, 36, 26);
-  	gtk_box_pack_start (GTK_BOX (hbox), folder_color_btn, FALSE, FALSE, 0);
+  	gtk_box_pack_start (GTK_BOX(hbox), folder_color_btn, FALSE, FALSE, 0);
 
 	page->item->prefs->color = item->prefs->color;
 
