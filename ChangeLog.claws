@@ -1,4 +1,9 @@
-2004-01-23 [paul]	0.9.8.claws44
+2004-01-23 [christoph]	0.9.8claws45
+
+	* src/summaryview.c
+		set ctree widget style
+
+2004-01-23 [paul]	0.9.8claws44
 
 	* sync with 0.9.8cvs5
 		see ChangeLog 2004-01-22

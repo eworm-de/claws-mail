@@ -790,6 +790,8 @@ void summary_init(SummaryView *summaryview)
 		small_deleted_style = gtk_style_copy(small_style);
 		small_deleted_style->fg[GTK_STATE_NORMAL] =
 			summaryview->color_dim;
+
+		gtk_widget_set_style(summaryview->ctree, small_style);
 	}
 
 	style = gtk_style_copy(gtk_widget_get_style
