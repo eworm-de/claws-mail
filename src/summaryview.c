@@ -1913,7 +1913,7 @@ void summary_sort(SummaryView *summaryview, SummarySortType type)
 
 	summary_set_column_titles(summaryview);
 
-	gtk_ctree_sort_node(ctree, NULL);
+	gtk_ctree_sort_recursive(ctree, NULL);
 
 	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
 	prefs_folder_item_set_config(summaryview->folder_item,
