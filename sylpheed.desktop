@@ -1,7 +1,0 @@
-[desktop Entry]
-Name=Sylpheed
-Comment=Sylpheed Mail
-Exec=sylpheed
-Icon=sylpheed.png
-Terminal=0
-Type=Application
