@@ -160,7 +160,7 @@ character_or_special_or_insert_or_query:
 	{
 		INSERT_CHARACTER($1);
 	}
-	| query ;
+	| query
 	| insert ;
 
 character:
