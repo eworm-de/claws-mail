@@ -47,7 +47,7 @@ static gchar * mbox_get_new_path(FolderItem * parent, gchar * name);
 static gchar * mbox_get_folderitem_name(gchar * name);
 
 MsgInfo *mbox_fetch_msginfo(Folder *folder, FolderItem *item, gint num);
-GSList *mbox_get_num_list(Folder *folder, FolderItem *item);
+gint mbox_get_num_list(Folder *folder, FolderItem *item, GSList **list);
 gboolean mbox_check_msgnum_validity(Folder *folder, FolderItem *item);
 
 Folder *mbox_folder_new(const gchar *name, const gchar *path)
@@ -2248,19 +2248,17 @@ gint mbox_remove_folder(Folder *folder, FolderItem *item)
 	return 0;
 }
 
-GSList *mbox_get_num_list(Folder *folder, FolderItem *item)
+gint mbox_get_num_list(Folder *folder, FolderItem *item, GSList **mlist)
 {
-	GSList *mlist;
 	GList * l;
 	FILE * fp;
 	gchar * mbox_path;
-
-	mlist = NULL;
+	gint nummsgs = 0;
 
 	mbox_path = mbox_folder_get_path(item);
 
 	if (mbox_path == NULL)
-		return NULL;
+		return -1;
 
 	mbox_purge_deleted(mbox_path);
 
@@ -2268,7 +2266,7 @@ GSList *mbox_get_num_list(Folder *folder, FolderItem *item)
 	
 	if (fp == NULL) {
 		g_free(mbox_path);
-		return NULL;
+		return -1;
 	}
 
 	mbox_lockread_file(fp, mbox_path);
@@ -2284,7 +2282,8 @@ GSList *mbox_get_num_list(Folder *folder, FolderItem *item)
 		msg = (struct _message *) l->data;
 
 		if (MSG_IS_INVALID(msg->flags) || !MSG_IS_REALLY_DELETED(msg->flags)) {
-			mlist = g_slist_append(mlist, GINT_TO_POINTER(msg->msgnum));
+			*mlist = g_slist_append(*mlist, GINT_TO_POINTER(msg->msgnum));
+			nummsgs++;
 		} else {
 			MSG_SET_PERM_FLAGS(msg->flags, MSG_REALLY_DELETED);
 		}
@@ -2296,7 +2295,7 @@ GSList *mbox_get_num_list(Folder *folder, FolderItem *item)
 
 	fclose(fp);
 
-	return mlist;
+	return nummsgs;
 }
 
 MsgInfo *mbox_fetch_msginfo(Folder *folder, FolderItem *item, gint num)

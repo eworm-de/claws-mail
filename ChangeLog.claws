@@ -1,3 +1,13 @@
+2002-10-18 [christoph]	0.8.5claws43
+
+	* src/folder.[ch]
+	* src/imap.c
+	* src/mbox_folder.c
+	* src/mh.c
+	* src/news.c
+		folder->get_num_list now returns an error code
+		(closes bug [ 609424 ] News cache cleared on failure)
+		
 2002-10-17 [colin] 	0.8.5claws42
 	
 	* src/news.c

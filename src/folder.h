@@ -173,8 +173,9 @@ struct _Folder
 					 FolderItem	*item,
 					 MsgInfo	*msginfo);
 	gint     (*scan)		(Folder		*folder);
-	GSList	* (*get_num_list)	(Folder		*folder,
-					 FolderItem	*item);
+	gint	 (*get_num_list)	(Folder		*folder,
+					 FolderItem	*item,
+					 GSList	       **list);
 	void     (*scan_tree)		(Folder		*folder);
 
 	gint     (*create_tree)		(Folder		*folder);

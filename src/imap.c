@@ -283,8 +283,9 @@ static gchar *imap_locale_to_modified_utf7	(const gchar	*from);
 
 static gboolean imap_rename_folder_func		(GNode		*node,
 						 gpointer	 data);
-GSList *imap_get_num_list			(Folder 	*folder,
-						 FolderItem 	*item);
+gint imap_get_num_list				(Folder 	*folder,
+						 FolderItem 	*item,
+						 GSList	       **list);
 MsgInfo *imap_fetch_msginfo 			(Folder 	*folder,
 						 FolderItem 	*item,
 						 gint 		 num);
@@ -3201,31 +3202,30 @@ static gboolean imap_rename_folder_func(GNode *node, gpointer data)
 	return FALSE;
 }
 
-GSList *imap_get_num_list(Folder *folder, FolderItem *_item)
+gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 {
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
 	IMAPSession *session;
-	GSList *msgnum_list = NULL;
-	gint i, lastuid_old;
+	gint i, lastuid_old, nummsgs = 0;
 	gint ok, exists = 0, recent = 0, unseen = 0;
 	guint32 uid_validity = 0;
 	GPtrArray *argbuf;
 	gchar *cmdbuf = NULL;
 	gchar *dir;
 	
-	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(item->item.path != NULL, NULL);
-	g_return_val_if_fail(folder->type == F_IMAP, NULL);
-	g_return_val_if_fail(folder->account != NULL, NULL);
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(item != NULL, -1);
+	g_return_val_if_fail(item->item.path != NULL, -1);
+	g_return_val_if_fail(folder->type == F_IMAP, -1);
+	g_return_val_if_fail(folder->account != NULL, -1);
 
 	session = imap_session_get(folder);
-	g_return_val_if_fail(session != NULL, NULL);
+	g_return_val_if_fail(session != NULL, -1);
 
 	ok = imap_select(session, IMAP_FOLDER(folder), item->item.path,
 			 &exists, &recent, &unseen, &uid_validity);
 	if (ok != IMAP_SUCCESS)
-		return NULL;
+		return -1;
 
 	argbuf = g_ptr_array_new();
 	if(item->lastuid) {
@@ -3239,19 +3239,20 @@ GSList *imap_get_num_list(Folder *folder, FolderItem *_item)
 	if (ok != IMAP_SUCCESS) {
 		ptr_array_free_strings(argbuf);
 		g_ptr_array_free(argbuf, TRUE);
-		return NULL;
+		return -1;
 	}
 
 	lastuid_old = item->lastuid;
-	msgnum_list = g_slist_copy(item->uid_list);
-	debug_print("Got %d uids from cache\n", g_slist_length(msgnum_list));
+	*msgnum_list = g_slist_copy(item->uid_list);
+	debug_print("Got %d uids from cache\n", g_slist_length(item->uid_list));
 	for(i = 0; i < argbuf->len; i++) {
 		int ret, msgidx, msgnum;
 	
 		if((ret = sscanf(g_ptr_array_index(argbuf, i), "%d FETCH (UID %d)", &msgidx, &msgnum)) == 2) {
 			if(msgnum > lastuid_old) {
-				msgnum_list = g_slist_prepend(msgnum_list, GINT_TO_POINTER(msgnum));
+				*msgnum_list = g_slist_prepend(*msgnum_list, GINT_TO_POINTER(msgnum));
 				item->uid_list = g_slist_prepend(item->uid_list, GINT_TO_POINTER(msgnum));
+				nummsgs++;
 
 				if(msgnum > item->lastuid)
 					item->lastuid = msgnum;
@@ -3261,10 +3262,10 @@ GSList *imap_get_num_list(Folder *folder, FolderItem *_item)
 
 	dir = folder_item_get_path((FolderItem *)item);
 	debug_print("removing old messages from %s\n", dir);
-	remove_numbered_files_not_in_list(dir, msgnum_list);
+	remove_numbered_files_not_in_list(dir, *msgnum_list);
 	g_free(dir);
 
-	return msgnum_list;
+	return nummsgs;
 }
 
 MsgInfo *imap_fetch_msginfo(Folder *_folder, FolderItem *item, gint num)

@@ -938,7 +938,7 @@ static gint folder_sort_folder_list(gconstpointer a, gconstpointer b)
 gint folder_item_scan(FolderItem *item)
 {
 	Folder *folder;
-	GSList *folder_list, *cache_list, *folder_list_cur, *cache_list_cur, *new_list = NULL;
+	GSList *folder_list = NULL, *cache_list = NULL, *folder_list_cur, *cache_list_cur, *new_list = NULL;
 	guint newcnt = 0, unreadcnt = 0, totalcnt = 0;
 	guint cache_max_num, folder_max_num, cache_cur_num, folder_cur_num;
 
@@ -953,8 +953,13 @@ gint folder_item_scan(FolderItem *item)
 	debug_print("Scanning folder %s for cache changes.\n", item->path);
 
 	/* Get list of messages for folder and cache */
+	if (folder->get_num_list(item->folder, item, &folder_list) < 0) {
+		debug_print("Error fetching list of message numbers\n");
+		return(-1);
+	}
+
 	if (!folder->check_msgnum_validity || 
-	   folder->check_msgnum_validity(folder, item)) {
+	    folder->check_msgnum_validity(folder, item)) {
 		if (!item->cache)
 			folder_item_read_cache(item);
 		cache_list = msgcache_get_msg_list(item->cache);
@@ -964,7 +969,6 @@ gint folder_item_scan(FolderItem *item)
 		item->cache = msgcache_new();
 		cache_list = NULL;
 	}
-	folder_list = folder->get_num_list(item->folder, item);
 
 	/* Sort both lists */
     	cache_list = g_slist_sort(cache_list, folder_sort_cache_list_by_msgnum);
