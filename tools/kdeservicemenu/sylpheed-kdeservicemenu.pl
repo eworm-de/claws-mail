@@ -28,7 +28,7 @@ if ($ARGV[0] eq "zip") {
 } elsif ($ARGV[0] eq "tar") {
 	exec "tar -c -f archive.tar $str;"
 	    ."sylpheed --compose --attach \"archive.tar\"";
-} elsif ($ARGV[0] eq "tarbz2") {
+} elsif ($ARGV[0] eq "tarbzip2") {
 	exec "tar -cj -f archive.tar.bz2 $str;"
 	    ."sylpheed --compose --attach \"archive.tar.bz2\"";
 } elsif ($ARGV[0] eq "targz") {
