@@ -656,7 +656,7 @@ static gint news_remove_msg(Folder *folder, FolderItem *item, gint num)
 	gint r;
 
 	dir = folder_item_get_path(item);
-	printf("removing %d in %s\n",num,dir);
+	debug_print("news_remove_msg: removing msg %d in %s\n",num,dir);
 	r = remove_numbered_files(dir, num, num);
 	g_free(dir);
 
