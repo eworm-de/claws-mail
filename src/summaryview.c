@@ -2536,6 +2536,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 
 	summary_set_menu_sensitive(summaryview);
 	toolbar_main_set_sensitive(summaryview->mainwin);
+	messageview_set_menu_sensitive(summaryview->messageview);
 
 	summary_unlock(summaryview);
 }

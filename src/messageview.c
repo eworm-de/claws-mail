@@ -239,7 +239,7 @@ static GtkItemFactoryEntry msgview_entries[] =
 
 	{N_("/_View/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Mess_age source"),	NULL, view_source_cb, 0, NULL},
-	{N_("/_View/Show all _header"),	NULL, show_all_header_cb, 0, "<ToggleItem>"},
+	{N_("/_View/Show all _headers"),NULL, show_all_header_cb, 0, "<ToggleItem>"},
 
 	{N_("/_Message"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Message/Compose _new message"),
@@ -1203,6 +1203,7 @@ static void show_all_header_cb(gpointer data, guint action, GtkWidget *widget)
 	messageview_show(messageview, msginfo,
 			 GTK_CHECK_MENU_ITEM(widget)->active);
 	procmsg_msginfo_free(msginfo);
+	main_window_set_menu_sensitive(messageview->mainwin);
 }
 
 static void compose_cb(gpointer data, guint action, GtkWidget *widget)
@@ -1397,4 +1398,23 @@ static gboolean messageview_update_msg(gpointer source, gpointer data)
 	}
 
 	return FALSE;
+}
+
+void messageview_set_menu_sensitive(MessageView *messageview)
+{
+	GtkItemFactory *ifactory;
+	GtkWidget *menuitem;
+
+	if (!messageview && !messageview->new_window) 
+		return;
+	/* do some smart things */
+	if (!messageview->menubar) return;
+	ifactory = gtk_item_factory_from_widget(messageview->menubar);
+	if (!ifactory) return;
+	if (messageview->mainwin->type == SEPARATE_MESSAGE) {
+		menuitem = gtk_item_factory_get_widget(ifactory, "/View/Show all headers");
+		gtk_check_menu_item_set_active
+			(GTK_CHECK_MENU_ITEM(menuitem),
+			 messageview->mimeview->textview->show_all_headers);
+	}
 }

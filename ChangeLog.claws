@@ -1,3 +1,12 @@
+2004-04-06 [alfons]	0.9.10claws40
+
+	* src/messageview.[ch]
+	  src/summaryview.c
+		reflect changes to Show all headers to main view
+		and message view (only affects detached message
+		view). see also bug #473, 'Show All Headers 
+		"problem"'.
+
 2004-04-03 [alfons]	0.9.10claws39
 
 	* src/matcher.c

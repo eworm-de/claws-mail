@@ -106,4 +106,7 @@ void messageview_add_toolbar			(MessageView 	*msgview,
 						 GtkWidget 	*vbox);
 void messageview_reflect_prefs_pixmap_theme	(void);
 gchar *messageview_get_selection		(MessageView 	*msgview);
+
+void messageview_set_menu_sensitive		(MessageView	*msgview);
+
 #endif /* __MESSAGEVIEW_H__ */
