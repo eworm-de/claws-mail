@@ -1,3 +1,10 @@
+2004-01-05
+
+	* src/codeconv.c: conv_iconv_strdup(): LP64 環境でのクラッシュを修正
+	  (James Noyes さん thanks)。
+	* src/compose.c: compose_select_account(): 自動的に署名/暗号化
+	  オプションをオフにしないようにした。
+
 2003-12-17
 
 	* src/inc.[ch]: inc_account_mail() を public にした。
