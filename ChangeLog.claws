@@ -1,3 +1,10 @@
+2003-01-11 [alfons]	0.8.8claws83
+
+	* src/addressadd.c
+		fix crash when adding sender to addressbook because status bar
+		isn't there (the status bar doesn't seem to be used though,
+		but I'll let Match decide what to do with it)
+
 2003-01-11 [colin]	0.8.8claws82
 
 	* src/main.c
