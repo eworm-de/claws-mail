@@ -512,8 +512,7 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 		insted = g_list_find_custom(tdata->themes, 
 					    (gpointer)(cinfo->dest), 
 					    (GCompareFunc)strcmp2);
-		if (NULL != insted)
-		{
+		if (NULL != insted) {
 			alertpanel_notice(_("Theme installed succesfully"));
 			tdata->displayed = (gchar *)(insted->data);
 			prefs_themes_set_themes_menu(GTK_OPTION_MENU(tdata->page->op_menu), tdata);
