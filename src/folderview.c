@@ -2208,11 +2208,17 @@ static void folderview_property_cb(FolderView *folderview, guint action, GtkWidg
 }
 
 void folderview_set_target_folder_color(gint color_op) {
+	gint firstone = 1;
 	GList *list;
 	FolderView *folderview;
 
 	for (list = folderview_list; list != NULL; list = list->next) {
 		folderview = (FolderView *)list->data;
 		gtkut_convert_int_to_gdk_color(color_op, &folderview->color_op);
+		if (firstone) {
+			bold_tgtfold_style->fg[GTK_STATE_NORMAL] =
+				folderview->color_op;
+			firstone = 0;
+		}
 	}
 }
