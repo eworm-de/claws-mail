@@ -1,3 +1,18 @@
+2003-06-13 [christoph]	0.9.0claws35
+
+	* configure.ac
+	* src/plugins/trayicon/Makefile.am
+	* src/plugins/trayicon/eggtrayicon.[ch]				** REMOVE **
+	* src/plugins/trayicon/trayicon.c
+	* src/plugins/trayicon/libeggtrayicon/.cvsignore		** NEW **
+	* src/plugins/trayicon/libeggtrayicon/Makefile.am		** NEW **
+	* src/plugins/trayicon/libeggtrayicon/eggtrayicon.[ch]		** NEW **
+	* src/plugins/trayicon/libeggtrayicon/gtk2-funcs.[ch]		** NEW **
+	* src/plugins/trayicon/libeggtrayicon/gtkplugxembed.[ch]	** NEW **
+	* src/plugins/trayicon/libeggtrayicon/xembed.h			** NEW **
+		replace my own EggTrayIcon backport with the backport
+		used by (l|x)mule and gabber.
+
 2003-06-13 [alfons]	0.9.0claws34
 
 	* AUTHORS

@@ -26,19 +26,12 @@
 #define SYSTEM_TRAY_BEGIN_MESSAGE   1
 #define SYSTEM_TRAY_CANCEL_MESSAGE  2
          
-static GtkPlugClass *parent_class = NULL;
+static GtkPlugXEmbedClass *parent_class = NULL;
 
 static void egg_tray_icon_init (EggTrayIcon *icon);
 static void egg_tray_icon_class_init (EggTrayIconClass *klass);
 
-static void egg_tray_icon_unrealize (GtkWidget *widget);
-
 static void egg_tray_icon_update_manager_window (EggTrayIcon *icon);
-
-Window gtk_plug_get_id(GtkPlug *widget)
-{
-    return (guint32) GDK_WINDOW_XWINDOW(GTK_WIDGET(widget)->window);
-}
 
 GtkType
 egg_tray_icon_get_type (void)
@@ -47,19 +40,17 @@ egg_tray_icon_get_type (void)
 
   if (our_type == 0)
     {
-      GtkTypeInfo our_info =
+      static const GtkTypeInfo our_info =
       {
 	"EggTrayIcon",
 	sizeof (EggTrayIcon),
 	sizeof (EggTrayIconClass),
 	(GtkClassInitFunc) egg_tray_icon_class_init,
 	(GtkObjectInitFunc) egg_tray_icon_init,
-	NULL, /* class_finalize */
-	NULL, /* class_data */
-	0,    /* n_preallocs */
+	NULL, NULL, NULL
       };
 
-      our_type = gtk_type_unique (gtk_plug_get_type(), &our_info);
+      our_type = gtk_type_unique (GTK_TYPE_PLUG_XEMBED, &our_info);
     }
 
   return our_type;
@@ -76,11 +67,8 @@ egg_tray_icon_init (EggTrayIcon *icon)
 static void
 egg_tray_icon_class_init (EggTrayIconClass *klass)
 {
-  GtkWidgetClass *widget_class = (GtkWidgetClass *)klass;
-
-  parent_class = gtk_type_class(gtk_plug_get_type());
-
-  widget_class->unrealize = egg_tray_icon_unrealize;
+	//parent_class = g_type_class_peek_parent (klass);
+	parent_class = gtk_type_class(gtk_plug_xembed_get_type());
 }
 
 static GdkFilterReturn
@@ -107,38 +95,6 @@ egg_tray_icon_manager_filter (GdkXEvent *xevent, GdkEvent *event, gpointer user_
 }
 
 static void
-egg_tray_icon_unrealize (GtkWidget *widget)
-{
-  EggTrayIcon *icon = EGG_TRAY_ICON (widget);
-  GdkWindow *root_window;
-
-  if (icon->manager_window != None)
-    {
-      GdkWindow *gdkwin;
-
-#if HAVE_GTK_MULTIHEAD
-      gdkwin = gdk_window_lookup_for_display (gtk_widget_get_display (widget),
-                                              icon->manager_window);
-#else
-      gdkwin = gdk_window_lookup (icon->manager_window);
-#endif
-
-      gdk_window_remove_filter (gdkwin, egg_tray_icon_manager_filter, icon);
-    }
-
-#if HAVE_GTK_MULTIHEAD
-  root_window = gdk_screen_get_root_window (gtk_widget_get_screen (widget));
-#else
-  root_window = gdk_window_lookup (GDK_ROOT_WINDOW());
-#endif
-
-  gdk_window_remove_filter (root_window, egg_tray_icon_manager_filter, icon);
-
-  if (GTK_WIDGET_CLASS (parent_class)->unrealize)
-    (* GTK_WIDGET_CLASS (parent_class)->unrealize) (widget);
-}
-
-static void
 egg_tray_icon_send_manager_message (EggTrayIcon *icon,
 				    long         message,
 				    Window       window,
@@ -148,12 +104,17 @@ egg_tray_icon_send_manager_message (EggTrayIcon *icon,
 {
   XClientMessageEvent ev;
   Display *display;
+  
+#ifdef DEBUG
+  g_print("Sending message %lx to %ld. data=(%ld, %ld, %ld)\n", message, window,
+	  data1, data2, data3);
+#endif
 
   ev.type = ClientMessage;
   ev.window = window;
   ev.message_type = icon->system_tray_opcode_atom;
   ev.format = 32;
-  ev.data.l[0] = gdk_time_get(); /* gdk_x11_get_server_time (GTK_WIDGET (icon)->window); */
+  ev.data.l[0] = GDK_CURRENT_TIME; //gdk_x11_get_server_time (GTK_WIDGET (icon)->window);
   ev.data.l[1] = message;
   ev.data.l[2] = data1;
   ev.data.l[3] = data2;
@@ -178,7 +139,7 @@ egg_tray_icon_send_dock_request (EggTrayIcon *icon)
   egg_tray_icon_send_manager_message (icon,
 				      SYSTEM_TRAY_REQUEST_DOCK,
 				      icon->manager_window,
-				      gtk_plug_get_id (GTK_PLUG (icon)),
+				      gtk_plug_xembed_get_id (GTK_PLUG_XEMBED (icon)),
 				      0, 0);
 }
 
@@ -198,7 +159,7 @@ egg_tray_icon_update_manager_window (EggTrayIcon *icon)
       GdkWindow *gdkwin;
 
 #if HAVE_GTK_MULTIHEAD
-      gdkwin = gdk_window_lookup_for_display (gtk_widget_get_display (GTK_WIDGET (icon)),
+      gdkwin = gdk_window_lookup_for_display (display,
 					      icon->manager_window);
 #else
       gdkwin = gdk_window_lookup (icon->manager_window);
@@ -246,21 +207,16 @@ egg_tray_icon_new_for_xscreen (Screen *xscreen, const char *name)
 
   g_return_val_if_fail (xscreen != NULL, NULL);
   
-  icon = gtk_type_new (EGG_TYPE_TRAY_ICON);
+  icon = (EggTrayIcon*)gtk_object_new (EGG_TYPE_TRAY_ICON, NULL);
   gtk_window_set_title (GTK_WINDOW (icon), name);
 
 #if HAVE_GTK_MULTIHEAD
-  /* FIXME: this code does not compile, screen is undefined. Now try
-   * getting the GdkScreen from xscreen (:. Dunno how to solve this
-   * (there is prolly some easy way I cant think of right now)
-   */
-  gtk_plug_construct_for_display (GTK_PLUG (icon),
+  gtk_plug_construct_for_display (GTK_PLUG_XEMBED (icon),
 				  gdk_screen_get_display (screen), 0);
 #else
-  gtk_plug_construct (GTK_PLUG (icon), 0);
+  gtk_plug_xembed_construct (GTK_PLUG_XEMBED (icon), 0);
 #endif
   
-  gtk_widget_set_events(GTK_WIDGET(icon), GDK_ALL_EVENTS_MASK);
   gtk_widget_realize (GTK_WIDGET (icon));
 
   /* Now see if there's a manager window around */
@@ -280,9 +236,9 @@ egg_tray_icon_new_for_xscreen (Screen *xscreen, const char *name)
   egg_tray_icon_update_manager_window (icon);
 
 #if HAVE_GTK_MULTIHEAD
-  root_window = gdk_screen_get_root_window (gtk_widget_get_screen (screen));
+  root_window = gdk_screen_get_root_window (screen);
 #else
-  root_window = gdk_window_lookup (GDK_ROOT_WINDOW ());
+  root_window = GDK_ROOT_PARENT(); //gdk_window_lookup (gdk_x11_get_default_root_xwindow ());
 #endif
   
   /* Add a root window filter so that we get changes on MANAGER */
@@ -333,7 +289,7 @@ egg_tray_icon_send_message (EggTrayIcon *icon,
   
   /* Get ready to send the message */
   egg_tray_icon_send_manager_message (icon, SYSTEM_TRAY_BEGIN_MESSAGE,
-				      (Window)gtk_plug_get_id (GTK_PLUG (icon)),
+				      (Window)gtk_plug_xembed_get_id (GTK_PLUG_XEMBED (icon)),
 				      timeout, len, stamp);
 
   /* Now to send the actual message */
@@ -350,7 +306,7 @@ egg_tray_icon_send_message (EggTrayIcon *icon,
 #endif
       
       ev.type = ClientMessage;
-      ev.window = (Window)gtk_plug_get_id (GTK_PLUG (icon));
+      ev.window = (Window)gtk_plug_xembed_get_id (GTK_PLUG_XEMBED (icon));
       ev.format = 8;
       ev.message_type = XInternAtom (xdisplay,
 				     "_NET_SYSTEM_TRAY_MESSAGE_DATA", False);
@@ -383,6 +339,6 @@ egg_tray_icon_cancel_message (EggTrayIcon *icon,
   g_return_if_fail (id > 0);
   
   egg_tray_icon_send_manager_message (icon, SYSTEM_TRAY_CANCEL_MESSAGE,
-				      (Window)gtk_plug_get_id (GTK_PLUG (icon)),
+				      (Window)gtk_plug_xembed_get_id (GTK_PLUG_XEMBED (icon)),
 				      id, 0, 0);
 }
