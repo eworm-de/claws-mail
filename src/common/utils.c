@@ -3855,6 +3855,7 @@ gchar *generate_msgid(gchar *buf, gint len)
 gint quote_cmd_argument(gchar * result, guint size,
 			const gchar * path)
 {
+#ifndef WIN32
 	const gchar * p;
 	gchar * result_p;
 	guint remaining;
@@ -3898,6 +3899,12 @@ gint quote_cmd_argument(gchar * result, guint size,
 	}
   
 	return 0;
+#else /* WIN32 */
+	if (_snprintf(result, size, "\"%s\"", path) < 0)
+		return -1;
+	else
+		return 0;
+#endif
 }
 
 typedef struct 
