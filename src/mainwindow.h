@@ -159,4 +159,8 @@ void main_window_set_menu_sensitive	(MainWindow	*mainwin);
 
 void main_window_popup			(MainWindow	*mainwin);
 
+void main_window_toolbar_set_compose_button	
+					(MainWindow *mainwin, 
+					 ComposeButtonType compose_btn_type);
+
 #endif /* __MAINWINDOW_H__ */

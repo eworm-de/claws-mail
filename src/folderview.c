@@ -493,7 +493,7 @@ void folderview_select(FolderView *folderview, FolderItem *item)
 	GtkCTreeNode *old_selected = folderview->selected;
 
 	if (!item) return;
-
+	
 	node = gtk_ctree_find_by_row_data(ctree, NULL, item);
 	if (node) folderview_select_node(folderview, node);
 
@@ -1388,6 +1388,14 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 	can_select = FALSE;
 
+	/* CLAWS: set compose button type: news folder items 
+	 * always have a news folder as parent */
+	if (item->folder) 
+		main_window_toolbar_set_compose_button
+			(folderview->mainwin,
+			 item->folder->type == F_NEWS ? 
+			 COMPOSEBUTTON_NEWS : COMPOSEBUTTON_MAIL);
+	 
 	if (item->path)
 		debug_print(_("Folder %s is selected\n"), item->path);
 

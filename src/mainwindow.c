@@ -2777,7 +2777,9 @@ static void activate_compose_button (MainWindow *mainwin,
 	if (style == TOOLBAR_NONE) 
 		return;
 
-	if (style == TOOLBAR_BOTH) {	
+	if (style == TOOLBAR_BOTH) {
+		debug_print("preferring %s\n",
+			    type == COMPOSEBUTTON_NEWS ? "news" : "mail");
 		gtk_widget_hide(mainwin->compose_mail_btn_plain);
 		gtk_widget_hide(mainwin->compose_news_btn_plain);
 		gtk_widget_hide(type == COMPOSEBUTTON_NEWS ? mainwin->compose_mail_btn 
@@ -2795,6 +2797,14 @@ static void activate_compose_button (MainWindow *mainwin,
 			: mainwin->compose_mail_btn_plain);
 		mainwin->compose_btn_type = type;		
 	}
+}
+
+void main_window_toolbar_set_compose_button(MainWindow *mainwin, ComposeButtonType compose_btn_type)
+{
+	if (mainwin->compose_btn_type != compose_btn_type)
+		activate_compose_button(mainwin, 
+					prefs_common.toolbar_style,
+					compose_btn_type);
 }
 
 static void prefs_templates_open_cb(MainWindow *mainwin, guint action,

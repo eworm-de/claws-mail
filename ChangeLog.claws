@@ -1,3 +1,10 @@
+2001-10-05 [alfons]	0.6.2claws20
+
+	* src/mainwindow.[ch], src/folderview.c
+		make composite tool button switch between "Compose News"
+		and "Compose Mail" depending on selected folder
+		(nifty idea by Kim Schulz <kim@schulz.dk>)
+
 2001-10-05 [paul]	0.6.2claws19
 
 	* src/mainwindow.c, src/summaryview.c
