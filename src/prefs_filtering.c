@@ -771,15 +771,22 @@ static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data)
 
 			if (suffix && !strncmp(path, suffix, pathlen)) {
 				filteringprop_free(filtering);
-				global_processing = 
-					g_slist_remove(global_processing, filtering);
+				orig = g_slist_remove(orig, filtering);
 			}
 		} else if (strcmp(action->destination, path) == 0) {
 			filteringprop_free(filtering);
-			orig = 
-				g_slist_remove(orig, filtering);
+			orig = g_slist_remove(orig, filtering);
 
 		}
+	}
+
+	if (node == NULL)
+		global_processing = orig;
+	else {
+		item = node->data;
+		if (!item || !item->prefs)
+			return FALSE;
+		item->prefs->processing = orig;
 	}
 
 	prefs_matcher_write_config();
