@@ -1,3 +1,9 @@
+2003-07-18 [alfons]	0.9.3claws22
+	
+	* src/folderview.c
+		delay expanding folder tree during drags until timeout triggered
+		(needs perhaps some tweaking, so testing is welcome)
+
 2003-07-17 [alfons]	0.9.3claws21
 
 	* src/folderview.c

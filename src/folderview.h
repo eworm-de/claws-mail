@@ -59,8 +59,12 @@ struct _FolderView
 	gint folder_update_callback_id;
 	gint folder_item_update_callback_id;
 	
-	/* for drag and drop */
+	/* DND states */
 	GSList *nodes_to_recollapse;
+	guint   drag_timer;		/* timer id */
+	FolderItem *drag_item;		/* dragged item */
+	GtkCTreeNode *drag_node;	/* drag node */
+	
 	GtkTargetList *target_list; /* DnD */
 };
 
