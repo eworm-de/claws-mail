@@ -24,6 +24,16 @@
 void prefs_scoring_read_config	(void);
 void prefs_scoring_write_config	(void);
 */
+
+typedef enum
+{
+	FILTER_BY_NONE,
+	FILTER_BY_AUTO,
+	FILTER_BY_FROM,
+	FILTER_BY_TO,
+	FILTER_BY_SUBJECT
+} PrefsFilterType;
+
 void prefs_filtering_open		(FolderItem * item,
 					 const gchar	*header,
 					 const gchar	*key);

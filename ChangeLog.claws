@@ -1,3 +1,19 @@
+2002-10-31 [paul]	0.8.5claws61
+
+	* src/prefs_filter.[ch]	** REMOVED **
+	  src/filter.[ch]	** REMOVED **
+	  
+	* src/Makefile.am
+	  src/folderview.c
+	  src/inc.c
+	  src/main.c
+	  src/mainwindow.c
+	  src/mbox.c
+	  src/prefs_common.c
+	  src/prefs_filtering.c
+	  src/summaryview.[ch]
+	  	remove main's 'filter' code
+
 2002-10-31 [paul]	0.8.5claws60
 
 	* src/summaryview.c

@@ -37,9 +37,9 @@ typedef struct _SummaryColumnState	SummaryColumnState;
 #include "headerview.h"
 #include "messageview.h"
 #include "compose.h"
-#include "prefs_filter.h"
 #include "folder.h"
 #include "gtksctree.h"
+#include "prefs_filtering.h"
 
 typedef enum
 {

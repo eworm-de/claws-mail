@@ -19,7 +19,6 @@ sylpheed_SOURCES = \
 	folder.c folder.h \
 	procmsg.c procmsg.h \
 	procheader.c procheader.h \
-	filter.c filter.h \
 	compose.c compose.h \
 	gtkshruler.c gtkshruler.h \
 	gtksctree.c gtksctree.h \
@@ -28,7 +27,6 @@ sylpheed_SOURCES = \
 	stock_pixmap.c stock_pixmap.h \
 	prefs.c prefs.h \
 	prefs_common.c prefs_common.h \
-	prefs_filter.c prefs_filter.h \
 	prefs_account.c prefs_account.h \
 	prefs_folder_item.c prefs_folder_item.h \
 	prefs_display_header.c prefs_display_header.h \

@@ -54,7 +54,6 @@
 #include "gtkutils.h"
 #include "prefs_common.h"
 #include "prefs_account.h"
-#include "prefs_filter.h"
 #include "prefs_filtering.h"
 #include "prefs_scoring.h"
 #include "prefs_folder_item.h"
@@ -2027,17 +2026,11 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 	}
 	g_free(new_folder);
 
-	if (prefs_common.fltlist) {
-		if (folder_get_default_folder() == item->folder)
-			prefs_filter_rename_path(old_path, item->path);
-		new_id = folder_item_get_identifier(item);
-		prefs_filter_rename_path(old_id, new_id);
-	} else {
-		if (FOLDER_TYPE(item->folder) == F_MH)
-			prefs_filtering_rename_path(old_path, item->path);
-		new_id = folder_item_get_identifier(item);
-		prefs_filtering_rename_path(old_id, new_id);
-	}
+	if (FOLDER_TYPE(item->folder) == F_MH)
+		prefs_filtering_rename_path(old_path, item->path);
+	new_id = folder_item_get_identifier(item);
+	prefs_filtering_rename_path(old_id, new_id);
+
 	g_free(old_id);
 	g_free(new_id);
 
@@ -2156,17 +2149,11 @@ static void folderview_delete_folder_cb(FolderView *folderview, guint action,
 		return;
 	}
 
-	if (prefs_common.fltlist) {
-		if (folder_get_default_folder() == item->folder)
-			prefs_filter_delete_path(old_path);
-		prefs_filter_delete_path(old_id);
-		g_free(old_id);
-	} else {
-		if (FOLDER_TYPE(item->folder) == F_MH)
-			prefs_filtering_delete_path(old_path);
-		prefs_filtering_delete_path(old_id);
-		g_free(old_id);
-	}
+	if (FOLDER_TYPE(item->folder) == F_MH)
+		prefs_filtering_delete_path(old_path);
+	prefs_filtering_delete_path(old_id);
+	g_free(old_id);
+
 	if (folderview->opened == folderview->selected ||
 	    gtk_ctree_is_ancestor(ctree,
 				  folderview->selected,
