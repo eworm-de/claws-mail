@@ -1,3 +1,8 @@
+2003-04-30 [paul]	0.8.11claws133
+
+	* src/addrindex.c
+		revert the 'fix' of 0.8.11claws128 because it doesn't fix it
+	
 2003-04-30 [melvin]	0.8.11claws132
 
 	New: Dillo plugin preferences (patch by Dimitar Haralanov)

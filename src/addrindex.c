@@ -1520,11 +1520,9 @@ static void addrindex_read_index( AddressIndex *addrIndex, XMLFile *file ) {
 				else if( addrIndex->lastType == ADDR_IF_JPILOT ) {
 					ds = addrindex_parse_jpilot( file );
 				}
-#ifdef USE_LDAP
 				else if( addrIndex->lastType == ADDR_IF_LDAP ) {
 					ds = addrindex_parse_ldap( file );
 				}
-#endif
 				if( ds ) {
 					ds->interface = dsIFace;
 					addrindex_hash_add_cache( addrIndex, ds );
@@ -1637,11 +1635,9 @@ static void addrindex_write_index( AddressIndex *addrIndex, FILE *fp ) {
 					if( iface->type == ADDR_IF_JPILOT ) {
 						addrindex_write_jpilot( fp, ds, lvlItem );
 					}
-#ifdef USE_LDAP
 					if( iface->type == ADDR_IF_LDAP ) {
 						addrindex_write_ldap( fp, ds, lvlItem );
 					}
-#endif
 				}
 				nodeDS = g_list_next( nodeDS );
 			}
