@@ -1,3 +1,8 @@
+2002-10-07 [christoph]	0.8.3claws51
+
+	* src/compose.c
+		fix news posting problem
+
 2002-10-07 [melvin]	0.8.3claws50
 
 	* po/fr.po

@@ -3627,16 +3627,15 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		     cur = cur->next)
 			fprintf(fp, ",<%s>", (gchar *)cur->data);
 		fprintf(fp, "\n");
-	} else
-	fprintf(fp, "\n");
+	}
 	/* write newsgroup list */
-	fprintf(fp, "NG:");
 	if (compose->newsgroup_list) {
+		fprintf(fp, "NG:");
 		fprintf(fp, "%s", (gchar *)compose->newsgroup_list->data);
 		for (cur = compose->newsgroup_list->next; cur != NULL; cur = cur->next)
 			fprintf(fp, ",%s", (gchar *)cur->data);
+		fprintf(fp, "\n");
 	}
-	fprintf(fp, "\n");
 	/* Sylpheed account IDs */
 	if (mailac) {
 		fprintf(fp, "MAID:%d\n", mailac->account_id);
