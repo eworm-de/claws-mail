@@ -1,3 +1,9 @@
+2002-04-07 [paul]	0.7.4claws70
+
+	* src/nntp.c
+		fix missing MODE_READER bug. patch submitted by
+		Colin Leroy <colin@colino.net>
+
 2002-04-07 [alfons]	0.7.4claws69
 
 	* src/matcher.[ch]
