@@ -1,3 +1,8 @@
+2003-02-22 [thorsten]	0.8.10claws43-1
+
+	* src/mimeview.diff
+		add: use mailcap entry for "open with"
+
 2003-02-18 [thorsten]	0.8.10claws18-1
 
 	* win32/Makefile
