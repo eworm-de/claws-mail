@@ -1347,7 +1347,7 @@ gchar *matching_build_command(const gchar *cmd, MsgInfo *info)
 				size += STRLEN_DEFAULT(info->references, no_references) - 2;
 				break;
 			case 'F': /* file */
-				if (filename != NULL)
+				if (filename == NULL)
 					filename = folder_item_fetch_msg(info->folder, info->msgnum);
 				
 				if (filename == NULL) {

@@ -1,3 +1,9 @@
+2003-12-05 [alfons]	0.9.7claws24
+
+	* src/matcher.c
+		fix comparison buglet ;-) and make `test` matcher
+		work again
+
 2003-12-05 [alfons]	0.9.7claws23
 
 	* src/prefs_folder_item.c
