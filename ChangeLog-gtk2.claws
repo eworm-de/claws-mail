@@ -1,3 +1,10 @@
+2004-12-10 [colin]	0.9.13cvs12.1
+
+	* src/prefs_themes.c
+	* src/mainwindow.c
+	* src/messageview.c
+		Sync with HEAD
+
 2004-12-09 [colin]	0.9.13cvs10.1
 
 	* src/procmime.c

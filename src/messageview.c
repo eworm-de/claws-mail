@@ -1553,7 +1553,7 @@ void messageview_set_menu_sensitive(MessageView *messageview)
 	GtkItemFactory *ifactory;
 	GtkWidget *menuitem;
 
-	if (!messageview && !messageview->new_window) 
+	if (!messageview || !messageview->new_window) 
 		return;
 	/* do some smart things */
 	if (!messageview->menubar) return;

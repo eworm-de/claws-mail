@@ -2014,6 +2014,9 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 				 mainwin);
 		if (messageview_is_visible(mainwin->messageview))
 			gtk_widget_show(messagewin);
+	} else {
+		mainwin->messageview->statusbar = mainwin->statusbar;
+		mainwin->messageview->statusbar_cid = mainwin->messageview_cid;
 	}
 
 	gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->folderview),
@@ -2303,6 +2306,9 @@ static gint message_window_close_cb(GtkWidget *widget, GdkEventAny *event,
 	menuitem = gtk_item_factory_get_item
 		(mainwin->menu_factory, "/View/Show or hide/Message view");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), FALSE);
+
+	mainwin->messageview->statusbar = mainwin->statusbar;
+	mainwin->messageview->statusbar_cid = mainwin->messageview_cid;
 
 	return TRUE;
 }
