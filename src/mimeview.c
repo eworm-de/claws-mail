@@ -532,6 +532,8 @@ static MimeViewer *get_viewer_for_mimeinfo(MimeView *mimeview, MimeInfo *partinf
 		const gchar *filename;
 
 		filename = procmime_mimeinfo_get_parameter(partinfo, "filename");
+		if (filename == NULL)
+			filename = procmime_mimeinfo_get_parameter(partinfo, "name");
 		if (filename != NULL)
 			content_type = procmime_get_mime_type(filename);
 	} else {
