@@ -80,3 +80,4 @@
 ( cvs diff -u -r 1.17.2.2 -r 1.17.2.3 src/alertpanel.c; ) > 0.9.12cvs33.24.patchset
 ( cvs diff -u -r 1.5.2.8 -r 1.5.2.9 src/gtk/menu.c; cvs diff -u -r 1.274.2.12 -r 1.274.2.13 src/mainwindow.c; ) > 0.9.12cvs33.25.patchset
 ( cvs diff -u -r 1.56.2.20 -r 1.56.2.21 src/pop.c; ) > 0.9.12cvs33.26.patchset
+( cvs diff -u -r 1.17.2.3 -r 1.17.2.4 src/alertpanel.c; cvs diff -u -r 1.12.2.2 -r 1.12.2.3 src/passphrase.c; ) > 0.9.12cvs35.1.patchset

@@ -1,3 +1,13 @@
+2004-07-27 [colin]	0.9.12cvs35.1
+
+	* src/alertpanel.c
+		Add an icon
+	* src/passphrase.c
+		Add debug output - maybe someone will
+		want to look at the problem with Grab
+		Input :)
+	Bump version as we're synced with HEAD
+
 2004-07-26 [colin]	0.9.12cvs33.26
 
 	* src/pop.c

@@ -222,6 +222,7 @@ static void alertpanel_create(const gchar *title,
 {
 	static PangoFontDescription *font_desc;
 	GtkWidget *label;
+	GtkWidget *w_hbox;
 	GtkWidget *hbox;
 	GtkWidget *vbox;
 	GtkWidget *spc_vbox;
@@ -231,6 +232,7 @@ static void alertpanel_create(const gchar *title,
 	GtkWidget *button1;
 	GtkWidget *button2;
 	GtkWidget *button3;
+	GtkWidget *icon;
 	const gchar *label2;
 	const gchar *label3;
 
@@ -251,15 +253,19 @@ static void alertpanel_create(const gchar *title,
 	gtk_widget_realize(dialog);
 
 	/* for title label */
+	w_hbox = gtk_hbox_new(FALSE, 0);
+	icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_WARNING,
+        				GTK_ICON_SIZE_DIALOG); 
+	gtk_box_pack_start(GTK_BOX(w_hbox), icon, FALSE, FALSE, 16);
 	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(w_hbox), hbox, FALSE, FALSE, 2);
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox),
-			   hbox, TRUE, TRUE, 16);
+			   w_hbox, TRUE, TRUE, 16);
 
-	/* title label */
-	/* pixmapwid = create_pixmapwid(dialog, GNUstep_xpm); */
-	/* gtk_box_pack_start(GTK_BOX(hbox), pixmapwid, FALSE, FALSE, 16); */
+
 	label = gtk_label_new(title);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 	if (!font_desc) {
 		gchar *fontstr = prefs_common.titlefont
 					? prefs_common.titlefont

@@ -82,6 +82,7 @@ passphrase_mbox (const gchar *desc)
     GtkWidget *pass_entry;
     GtkWidget *ok_button;
     GtkWidget *cancel_button;
+    gint       grab_result;
 
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), _("Passphrase"));
@@ -162,21 +163,24 @@ passphrase_mbox (const gchar *desc)
 #ifdef GDK_WINDOWING_X11
         XGrabServer(GDK_DISPLAY());
 #endif /* GDK_WINDOWING_X11 */
-        if ( gdk_pointer_grab ( window->window, TRUE, 0,
+        if ( grab_result = gdk_pointer_grab ( window->window, TRUE, 0,
                                 NULL, NULL, GDK_CURRENT_TIME)) {
 #ifdef GDK_WINDOWING_X11
             XUngrabServer ( GDK_DISPLAY() );
 #endif /* GDK_WINDOWING_X11 */
-            g_warning ("OOPS: Could not grab mouse\n");
+            g_warning ("OOPS: Could not grab mouse (grab status %d)\n",
+	    		grab_result);
             gtk_widget_destroy (window);
             return NULL;
         }
-        if ( gdk_keyboard_grab( window->window, FALSE, GDK_CURRENT_TIME )) {
+        if ( grab_result = gdk_keyboard_grab( window->window, FALSE, 
+						GDK_CURRENT_TIME )) {
             gdk_pointer_ungrab (GDK_CURRENT_TIME);
 #ifdef GDK_WINDOWING_X11
             XUngrabServer ( GDK_DISPLAY() );
 #endif /* GDK_WINDOWING_X11 */
-            g_warning ("OOPS: Could not grab keyboard\n");
+            g_warning ("OOPS: Could not grab keyboard (grab status %d)\n",
+	    		grab_result);
             gtk_widget_destroy (window);
             return NULL;
         }
