@@ -3,6 +3,9 @@
 	* src/gtksctree.[ch]: changed GtkSCTree::anchor_row from gint to
 	  GtkCTreeNode* so that it won't become invalid after the row move.
 	  Removed dependency to gtkutils.c.
+	* src/prefs_common.[ch]
+	  src/summaryview.c: summary_selected(): added an option to show
+	  message when cursor keys are pressed on summary view.
 
 2002-06-28
 

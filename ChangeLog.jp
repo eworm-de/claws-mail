@@ -3,6 +3,9 @@
 	* src/gtksctree.[ch]: 行の移動後に無効にならないように
 	  GtkSCTree::anchor_row を gint から GtkCTreeNode* に変更。
 	  gtkutils.c に依存しないようにした。
+	* src/prefs_common.[ch]
+	  src/summaryview.c: summary_selected(): サマリビューでカーソルキー
+	  を押したときメッセージを表示するオプションを追加。
 
 2002-06-28
 
