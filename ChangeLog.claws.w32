@@ -1,3 +1,17 @@
+2005-02-08 [thorsten]	1.0.1cvs0.1
+
+	* ChangeLog.claws
+	* PATCHSETS
+	* configure.ac
+	* po/de.po
+	* po/es.po
+	* po/fr.po
+	* po/it.po
+	* po/pt_BR.po
+	* po/sk.po
+	* po/sr.po
+		sync 1.0.1
+
 2005-02-05 [thorsten]	1.0.0cvs28.1
 
 	* ChangeLog.claws
