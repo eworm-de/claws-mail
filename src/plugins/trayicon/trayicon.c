@@ -71,11 +71,12 @@ typedef enum
 	TRAYICON_NOTHING,
 } TrayIconType;
 
-static void trayicon_get_cb	    ( gpointer data, guint action, GtkWidget *widget );
-static void trayicon_get_all_cb	    ( gpointer data, guint action, GtkWidget *widget );
-static void trayicon_compose_cb	    ( gpointer data, guint action, GtkWidget *widget );
-static void trayicon_addressbook_cb ( gpointer data, guint action, GtkWidget *widget );
-static void trayicon_exit_cb	    ( gpointer data, guint action, GtkWidget *widget );
+static void trayicon_get_cb	    (gpointer data, guint action, GtkWidget *widget);
+static void trayicon_get_all_cb	    (gpointer data, guint action, GtkWidget *widget);
+static void trayicon_compose_cb	    (gpointer data, guint action, GtkWidget *widget);
+static void trayicon_addressbook_cb (gpointer data, guint action, GtkWidget *widget);
+static void trayicon_exit_cb	    (gpointer data, guint action, GtkWidget *widget);
+static void resize_cb		    (GtkWidget *widget, GtkRequisition *req, gpointer user_data);
 
 static GtkItemFactoryEntry trayicon_popup_menu_entries[] =
 {
@@ -111,6 +112,7 @@ static void set_trayicon_pixmap(TrayIconType icontype)
 
 	gtk_image_set_from_pixmap(GTK_IMAGE(image), pixmap, bitmap);
 	gtk_widget_shape_combine_mask(GTK_WIDGET(trayicon), bitmap, GTK_WIDGET(image)->allocation.x, GTK_WIDGET(image)->allocation.y);
+
 }
 
 static void update(void)
@@ -132,6 +134,12 @@ static gboolean folder_item_update_hook(gpointer source, gpointer data)
 	update();
 
 	return FALSE;
+}
+
+static void resize_cb(GtkWidget *widget, GtkRequisition *req,
+		      gpointer user_data)
+{
+	update();
 }
 
 static gboolean click_cb(GtkWidget * widget,
@@ -198,6 +206,8 @@ static void create_trayicon()
 	destroy_signal_id =
 	g_signal_connect(G_OBJECT(trayicon), "destroy",
                      	 G_CALLBACK(destroy_cb), NULL);
+	g_signal_connect(GTK_OBJECT(trayicon), "size-request",
+		    	 G_CALLBACK(resize_cb), NULL);
 	g_signal_connect(G_OBJECT(eventbox), "button-press-event",
 		    	 G_CALLBACK(click_cb), NULL);
 

@@ -1,3 +1,10 @@
+2004-08-14 [colin]	0.9.12cvs60.3
+
+	* src/plugins/trayicon/trayicon.c
+		Put back resize callback, on size-request signal
+		rather than size-allocate to avoid infinite 
+		callback loop
+
 2004-08-13 [colin]	0.9.12cvs60.2
 
 	* src/common/defs.h
