@@ -2,6 +2,8 @@
 
 	* src/quote_fmt_parse.y
 		Fixed a yacc/bison syntax error
+	* src/matcher.c
+		Escaping of string is fixed.
 
 2002-10-11 [colin]	0.8.5claws12
 
