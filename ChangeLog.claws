@@ -1,3 +1,8 @@
+2003-07-15 [alfons]	0.9.3claws7
+
+	* src/mainwindow.c
+		make correct menu items sensitive	
+
 2003-07-14 [alfons]	0.9.3claws6
 
 	* src/procmsg.c

@@ -1531,8 +1531,9 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	} entry[] = {
 		{"/File/Folder"                               , M_UNLOCKED},
 		{"/File/Add mailbox..."                       , M_UNLOCKED},
-                {"/File/Add mbox mailbox..."   		      , M_UNLOCKED},
-		{"/File/Import mbox file..."                  , M_UNLOCKED},
+
+                {"/File/Add mailbox/MH..."   		      , M_UNLOCKED},
+		{"/File/Add mailbox/mbox..."                  , M_UNLOCKED},
 		{"/File/Export to mbox file..."               , M_UNLOCKED},
 		{"/File/Empty trash"                          , M_UNLOCKED},
 		{"/File/Work offline"	       		      , M_UNLOCKED},
@@ -2657,6 +2658,9 @@ static void account_menu_cb(GtkMenuItem	*menuitem, gpointer data)
 {
 	cur_account = (PrefsAccount *)data;
 	main_window_reflect_prefs_all();
+	debug_print("XXX set account %s\n", cur_account == NULL ? 
+		    (const gchar *) "NULL ACCOUNT POINTER" : 
+		    cur_account->account_name); 	
 }
 
 static void prefs_open_cb(GtkMenuItem *menuitem, gpointer data)
