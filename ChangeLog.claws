@@ -1,3 +1,8 @@
+2004-06-25 [christoph]	0.9.11cvs18
+
+	* src/procmsg.h
+		add MSG_HAS_ATTACHMENT to MSG_CACHED_FLAG_MASK
+
 2004-06-25 [paul]	0.9.11cvs17
 
 	* sync with main 0.9.12cvs1
@@ -15,6 +20,8 @@
 		scan the mime structure of multipart mails for correct
 		attachment, encryped and signed (with privacy API) part
 		detection
+
+	(Closes Feature Request [ 961428 ] No paperclip for HTML mails)
 
 2004-06-22 [paul]
 

@@ -97,7 +97,7 @@ typedef guint32 MsgPermFlags;
 
 typedef guint32 MsgTmpFlags;
 
-#define MSG_CACHED_FLAG_MASK	(MSG_MULTIPART | MSG_ENCRYPTED | MSG_SIGNED)
+#define MSG_CACHED_FLAG_MASK	(MSG_MULTIPART | MSG_ENCRYPTED | MSG_SIGNED | MSG_HAS_ATTACHMENT)
 
 #define MSG_SET_FLAGS(msg, flags)	{ (msg) |= (flags); }
 #define MSG_UNSET_FLAGS(msg, flags)	{ (msg) &= ~(flags); }
