@@ -963,9 +963,11 @@ gint procheader_get_header_from_msginfo(MsgInfo *msginfo, gchar *buf, gint len, 
 {
 	gchar *file;
 	FILE *fp;
-	HeaderEntry hentry[]={ { header, NULL, TRUE  },
-                               { NULL,   NULL, FALSE } };
+	HeaderEntry hentry[]={ { NULL, NULL, TRUE  },
+                               { NULL, NULL, FALSE } };
 	gint val;
+
+        hentry[0].name = header;
        
 	g_return_val_if_fail(msginfo != NULL, -1);
 	file = procmsg_get_message_file_path(msginfo);
