@@ -241,6 +241,7 @@ struct _FolderItem
 
 	gint op_count;
 	guint opened    : 1; /* opened by summary view */
+	guint need_update    : 1; /* folderview for this folder should be updated */
 
 	FolderSortKey sort_key;
 	FolderSortType sort_type;

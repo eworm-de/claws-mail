@@ -30,8 +30,7 @@ typedef enum {
 } LockType;
 
 gint proc_mbox		(FolderItem	*dest,
-			 const gchar	*mbox,
-			 GHashTable	*folder_table);
+			 const gchar	*mbox);
 gint lock_mbox		(const gchar	*base,
 			 LockType	 type);
 gint unlock_mbox	(const gchar	*base,

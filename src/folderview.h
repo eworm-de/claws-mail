@@ -74,6 +74,8 @@ void folderview_check_new_all		(void);
 
 void folderview_update_item		(FolderItem	*item,
 					 gboolean	 update_summary);
+void folderview_update_items_when_required
+					(gboolean        update_summary);
 void folderview_update_item_foreach	(GHashTable	*table,
 					 gboolean	 update_summary);
 

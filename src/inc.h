@@ -66,8 +66,6 @@ struct _IncSession
 	Automaton *atm;
 	IncState inc_state;
 
-	GHashTable *folder_table;	/* table of destination folders */
-
 	gpointer data;
 };
 

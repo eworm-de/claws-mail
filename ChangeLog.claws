@@ -1,3 +1,25 @@
+2002-10-10 [christoph]	0.8.5claws8
+
+	* config/.cvsignore
+		added Makefile
+	* src/filtering.[ch]
+	* src/folder.[ch]
+	* src/folderview.[ch]
+	* src/import.c
+	* src/inc.[ch]
+	* src/mbox.[ch]
+	* src/procmsg.c
+	* src/summaryview.[ch]
+		o added new flag need_update to FolderItem
+		o removed folder_table from various functions from tracking
+		  folder updates
+		o set need_update flags in folder.c's move, copy and delete
+		  functions and procmsg's flags functions
+		o added function folderview_update_items_when_required that
+		  updates all folders with need_update set
+		o call folderview_update_items_when_required instead of
+		  folderview_update_item_foreach
+
 2002-10-09 [sergey]	0.8.5claws7
 
 	* src/compose.c

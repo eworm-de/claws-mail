@@ -57,15 +57,12 @@ void filteringprop_free(FilteringProp *prop);
 
 FilteringProp * filteringprop_parse(gchar **str);
 
-void filter_msginfo_move_or_delete(GSList *filtering_list, MsgInfo *info,
-				   GHashTable *folder_table);
+void filter_msginfo_move_or_delete(GSList *filtering_list, MsgInfo *info);
 void filter_message_by_msginfo_with_inbox(GSList *flist, MsgInfo *info, 
-					  GHashTable *ftable,
 					  FolderItem *def_inbox);
-void filter_message_by_msginfo(GSList *flist, MsgInfo *info, 
-			       GHashTable *ftable);
+void filter_message_by_msginfo(GSList *flist, MsgInfo *info);
 void filter_message(GSList *filtering_list, FolderItem *inbox,
-		    gint msgnum, GHashTable *folder_table);
+		    gint msgnum);
 
 gchar * filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *action);
 void prefs_filtering_write_config(void);

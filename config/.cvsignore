@@ -2,6 +2,7 @@ config.guess
 config.sub
 install-sh
 ltmain.sh
+Makefile
 Makefile.in
 missing
 mkinstalldirs

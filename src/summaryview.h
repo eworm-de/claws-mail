@@ -160,8 +160,6 @@ private:
 
 	/* list for moving/deleting messages */
 	GSList *mlist;
-	/* table for updating folder tree */
-	GHashTable *folder_table;
 };
 
 SummaryView	*summary_create(void);
