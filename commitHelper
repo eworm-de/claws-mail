@@ -1,8 +1,13 @@
 #!/bin/sh
-head -15 configure.ac | grep VERSION > /tmp/commitTool.tmp
+head -16 configure.ac | grep VERSION= > /tmp/commitTool.tmp
 source /tmp/commitTool.tmp
-EXTRA_VERSION=`echo $EXTRA_VERSION | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
-nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}"
+if [ -z "$EXTRA_GTK2_VERSION" ]; then
+	EXTRA_VERSION=`echo $EXTRA_VERSION | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
+	nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}"
+else
+	EXTRA_GTK2_VERSION=`echo $EXTRA_GTK2_VERSION | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
+	nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}${EXTRA_GTK2_VERSION}"
+fi
 rm /tmp/commitTool.tmp
 
 IFS='
