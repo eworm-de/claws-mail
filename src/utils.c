@@ -28,6 +28,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <netdb.h>
 
 #if (HAVE_WCTYPE_H && HAVE_WCHAR_H)
 #  include <wchar.h>
@@ -1318,6 +1319,7 @@ gchar *get_tmp_file(void)
 gchar *get_domain_name(void)
 {
 	static gchar *domain_name = NULL;
+        struct hostent *myfqdn = NULL;
 
 	if (!domain_name) {
 		gchar buf[BUFFSIZE] = "";
@@ -1325,7 +1327,16 @@ gchar *get_domain_name(void)
 		if (gethostname(buf, sizeof(buf)) < 0) {
 			perror("gethostname");
 			strcpy(buf, "unknown");
-		}
+		}  else  {
+                myfqdn = gethostbyname(buf);
+                if (myfqdn != NULL)  {
+                  memset(buf, '\0', strlen(buf));
+                  strcpy(buf, myfqdn->h_name);
+                  }  else  {
+                  perror("gethostbyname");
+                  strcpy(buf, "unknown");
+                  }
+                }
 
 		domain_name = g_strdup(buf);
 	}
