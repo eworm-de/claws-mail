@@ -1260,6 +1260,8 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 
 	gtk_ctree_node_set_row_style(ctree, node, style);
 
+	item->need_update = FALSE;
+
 	if ((node = gtkut_ctree_find_collapsed_parent(ctree, node)) != NULL)
 		folderview_update_node(folderview, node);
 }
@@ -1282,6 +1284,31 @@ void folderview_update_item(FolderItem *item, gboolean update_summary)
 			folderview_update_node(folderview, node);
 			if (update_summary && folderview->opened == node)
 				summary_show(folderview->summaryview, item);
+		}
+	}
+}
+
+void folderview_update_items_when_required(gboolean update_summary)
+{
+	GList *list;
+	FolderView *folderview;
+	GtkCTree *ctree;
+	GtkCTreeNode *node;
+	FolderItem *item;
+
+	for (list = folderview_list; list != NULL; list = list->next) {
+		folderview = (FolderView *)list->data;
+		ctree = GTK_CTREE(folderview->ctree);
+
+		for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+		     node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
+			item = gtk_ctree_node_get_row_data(ctree, node);
+
+			if (item->need_update) {
+				folderview_update_node(folderview, node);
+				if (update_summary && folderview->opened == node)
+					summary_show(folderview->summaryview, item);
+			}
 		}
 	}
 }

@@ -1206,7 +1206,6 @@ gint folder_item_scan(FolderItem *item)
 				procmsg_msginfo_free(msginfo);
 			}
 			g_slist_free(newmsg_list);
-			folderview_update_item(item, FALSE);
 		}
 	} else if (folder->fetch_msginfo) {
 		GSList *elem;
@@ -1228,7 +1227,6 @@ gint folder_item_scan(FolderItem *item)
 				debug_print("Added newly found message %d to cache.\n", num);
 			}
 		}
-		folderview_update_item(item, FALSE);
 	}
 
 	item->new = newcnt;
@@ -1528,7 +1526,8 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 	
 	if (num != -1) {
 		MsgInfo *newmsginfo;
-
+    
+		/* Add new msginfo to dest folder */
 		if (NULL != (newmsginfo = folder->fetch_msginfo(folder, dest, num))) {
 			newmsginfo->flags.perm_flags = msginfo->flags.perm_flags;
 			
@@ -1538,25 +1537,28 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 						     MSG_NEW|MSG_UNREAD|MSG_DELETED);
 			msgcache_add_msg(dest->cache, newmsginfo);
 
-			/* CLAWS */
-			if (src_folder->remove_msg)
-				src_folder->remove_msg(src_folder, msginfo->folder,
-						       msginfo->msgnum);
-			
+			if (MSG_IS_NEW(newmsginfo->flags))
+				dest->new++;
+			if (MSG_IS_UNREAD(newmsginfo->flags))
+				dest->unread++;
+			dest->total++;
+			dest->need_update = TRUE;
+
+			procmsg_msginfo_free(newmsginfo);
+		}
+
+		/* remove source message from it's folder */
+		if (src_folder->remove_msg) {
+			src_folder->remove_msg(src_folder, msginfo->folder,
+					       msginfo->msgnum);
 			msgcache_remove_msg(msginfo->folder->cache, msginfo->msgnum);
 
 			if (MSG_IS_NEW(msginfo->flags))
 				msginfo->folder->new--;
-			if (MSG_IS_NEW(newmsginfo->flags))
-				dest->new++;
 			if (MSG_IS_UNREAD(msginfo->flags))
 				msginfo->folder->unread--;
-			if (MSG_IS_UNREAD(newmsginfo->flags))
-				dest->unread++;
 			msginfo->folder->total--;
-			dest->total++;
-
-			procmsg_msginfo_free(newmsginfo);
+			msginfo->folder->need_update = TRUE;
 		}
 	}
 	
@@ -1649,6 +1651,7 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 				if (MSG_IS_UNREAD(newmsginfo->flags))
 					dest->unread++;
 				dest->total++;
+				dest->need_update = TRUE;
 
 				procmsg_msginfo_free(newmsginfo);
 			}
@@ -1680,6 +1683,7 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 			if (MSG_IS_UNREAD(msginfo->flags))
 				msginfo->folder->unread--;
 			msginfo->folder->total--;			
+			msginfo->folder->need_update = TRUE;
 		}
 
 		l2 = g_slist_next(l2);
@@ -1745,6 +1749,7 @@ gint folder_item_copy_msg(FolderItem *dest, MsgInfo *msginfo)
 			if (MSG_IS_UNREAD(newmsginfo->flags))
 				dest->unread++;
 			dest->total++;
+			dest->need_update = TRUE;
 
 			procmsg_msginfo_free(newmsginfo);
 		}			
@@ -1833,6 +1838,7 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 				if (MSG_IS_UNREAD(newmsginfo->flags))
 					dest->unread++;
 				dest->total++;
+				dest->need_update = TRUE;
 
 				procmsg_msginfo_free(newmsginfo);
 			}
@@ -1870,6 +1876,7 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 		msgcache_remove_msg(item->cache, num);
 	}
 	item->total--;
+	item->need_update = TRUE;
 
 	return ret;
 }
@@ -1917,6 +1924,7 @@ gint folder_item_remove_all_msg(FolderItem *item)
 		item->new = 0;
 		item->unread = 0;
 		item->total = 0;
+		item->need_update = TRUE;
 	}
 
 	return result;
@@ -2552,14 +2560,12 @@ void folder_item_apply_processing(FolderItem *item)
 {
 	GSList *processing_list;
 	GSList *mlist, *cur;
-	GHashTable *folder_table;
 	
 	g_return_if_fail(item != NULL);
 	
 	processing_list = item->prefs->processing;
 	if (processing_list == NULL)
 		return;
-	folder_table = g_hash_table_new(NULL, NULL);
 
 	mlist = folder_item_get_msg_list(item);
 	
@@ -2567,15 +2573,11 @@ void folder_item_apply_processing(FolderItem *item)
 		MsgInfo * msginfo;
 
 		msginfo = (MsgInfo *) cur->data;
-		filter_message_by_msginfo(processing_list, msginfo,
-					  folder_table);
+		filter_message_by_msginfo(processing_list, msginfo);
 		procmsg_msginfo_free(msginfo);
 	}
 	
-	/* folder_item_scan_foreach(summaryview->folder_table); */
-	folderview_update_item_foreach(folder_table, FALSE);
+	folderview_update_items_when_required(FALSE);
 
 	g_slist_free(mlist);
-	
-	g_hash_table_destroy(folder_table);
 }

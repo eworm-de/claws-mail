@@ -45,6 +45,7 @@ typedef enum
 	INC_LOCKED,
 	INC_ERROR,
 	INC_NOSPACE,
+	INC_SOCKERR,
 	INC_CANCEL
 } IncState;
 
@@ -64,8 +65,6 @@ struct _IncSession
 	Pop3State *pop3_state;
 	Automaton *atm;
 	IncState inc_state;
-
-	GHashTable *folder_table;	/* table of destination folders */
 
 	gpointer data;
 };

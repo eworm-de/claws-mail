@@ -466,7 +466,7 @@ gint pop3_top_recv(SockInfo *sock, gpointer data)
 	Pop3State *state = (Pop3State *)data;
 	gchar *filename, *path;
 	gint next_state;
-	
+	gint write_val;
 	if (pop3_ok(sock, NULL) != PS_SUCCESS) 
 		return POP3_LOGOUT_SEND;
 
@@ -477,8 +477,8 @@ gint pop3_top_recv(SockInfo *sock, gpointer data)
 	
 	filename = g_strdup_printf("%s%i", path, state->cur_msg);
 				   
-	if (recv_write_to_file(sock, filename) < 0) {
-		state->error_val = PS_IOERR;
+	if ( (write_val = recv_write_to_file(sock, filename)) < 0) {
+		state->error_val = (write_val == -1 ? PS_IOERR : PS_SOCKET);
 		return -1;
 	}
 
@@ -506,12 +506,13 @@ gint pop3_retr_recv(SockInfo *sock, gpointer data)
 	gchar *file;
 	gint ok, drop_ok;
 	gint next_state;
+	gint write_val;
 	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
 		file = get_tmp_file();
-		if (recv_write_to_file(sock, file) < 0) {
+		if ( (write_val = recv_write_to_file(sock, file)) < 0) {
 			g_free(file);
 			if (!state->cancelled)
-				state->error_val = PS_IOERR;
+				state->error_val = (write_val == -1 ? PS_IOERR : PS_SOCKET);
 			return -1;
 		}
 

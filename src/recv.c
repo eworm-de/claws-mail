@@ -43,7 +43,7 @@ static gpointer		recv_ui_func_data;
 gint recv_write_to_file(SockInfo *sock, const gchar *filename)
 {
 	FILE *fp;
-
+	int write_val;
 	g_return_val_if_fail(filename != NULL, -1);
 
 	if ((fp = fopen(filename, "wb")) == NULL) {
@@ -55,10 +55,10 @@ gint recv_write_to_file(SockInfo *sock, const gchar *filename)
 	if (change_file_mode_rw(fp, filename) < 0)
 		FILE_OP_ERROR(filename, "chmod");
 
-	if (recv_write(sock, fp) < 0) {
+	if ( (write_val = recv_write(sock, fp)) < 0) {
 		fclose(fp);
 		unlink(filename);
-		return -1;
+		return write_val;
 	}
 
 	if (fclose(fp) == EOF) {
@@ -113,7 +113,7 @@ gint recv_write(SockInfo *sock, FILE *fp)
 	for (;;) {
 		if (sock_gets(sock, buf, sizeof(buf)) < 0) {
 			g_warning(_("error occurred while retrieving data.\n"));
-			return -1;
+			return -2;
 		}
 
 		len = strlen(buf);

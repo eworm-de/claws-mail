@@ -69,7 +69,6 @@ void gtk_sctree_sort_node (GtkCTree *ctree, GtkCTreeNode *node);
 
 void gtk_sctree_sort_recursive (GtkCTree *ctree, GtkCTreeNode *node);
 
-
-
+void gtk_sctree_reanchor (GtkSCTree *sctree, GtkCTreeNode *node);
 
 #endif /* __GTK_SCTREE_H__ */

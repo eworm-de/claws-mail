@@ -117,8 +117,7 @@ msginfo->folder->folder->change_flags(msginfo->folder->folder, \
 				      msginfo); \
 }
 
-static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
-				      GHashTable *folder_table)
+static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 {
 	FolderItem * dest_folder;
 	gint val;
@@ -138,14 +137,6 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 			return FALSE;
 		}	
 
-		if (folder_table) {
-			val = GPOINTER_TO_INT(g_hash_table_lookup
-					      (folder_table, dest_folder));
-			if (val == 0) {
-				g_hash_table_insert(folder_table, dest_folder,
-						    GINT_TO_POINTER(1));
-			}
-		}
 		return TRUE;
 
 	case MATCHACTION_COPY:
@@ -158,14 +149,6 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		if (folder_item_copy_msg(dest_folder, info) == -1)
 			return FALSE;
 
-		if (folder_table) {
-			val = GPOINTER_TO_INT(g_hash_table_lookup
-					      (folder_table, dest_folder));
-			if (val == 0) {
-				g_hash_table_insert(folder_table, dest_folder,
-						    GINT_TO_POINTER(1));
-			}
-		}
 		return TRUE;
 
 	case MATCHACTION_DELETE:
@@ -272,13 +255,12 @@ static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *inf
 	return matcherlist_match(filtering->matchers, info);
 }
 
-static gboolean filtering_apply_rule(FilteringProp *filtering, MsgInfo *info, 
-				     GHashTable *foldertable)
+static gboolean filtering_apply_rule(FilteringProp *filtering, MsgInfo *info)
 {
 	gboolean result;
 	gchar    buf[50];
 
-	if (FALSE == (result = filteringaction_apply(filtering->action, info, foldertable))) {
+	if (FALSE == (result = filteringaction_apply(filtering->action, info))) {
 		g_warning(_("action %s could not be applied"), 
 		filteringaction_to_string(buf, sizeof buf, filtering->action));
 	}
@@ -307,7 +289,7 @@ static gboolean filtering_is_final_action(FilteringProp *filtering)
 }
 
 static void filter_msginfo(GSList * filtering_list, FolderItem *inbox,
-			   MsgInfo * info, GHashTable *folder_table)
+			   MsgInfo * info)
 {
 	GSList	*l;
 	gboolean final;
@@ -323,7 +305,7 @@ static void filter_msginfo(GSList * filtering_list, FolderItem *inbox,
 		FilteringProp * filtering = (FilteringProp *) l->data;
 
 		if (filtering_match_condition(filtering, info)) {
-			applied = filtering_apply_rule(filtering, info, folder_table);
+			applied = filtering_apply_rule(filtering, info);
 			if (TRUE == (final = filtering_is_final_action(filtering)))
 				break;
 		}		
@@ -337,15 +319,6 @@ static void filter_msginfo(GSList * filtering_list, FolderItem *inbox,
 				debug_print("*** Could not drop message in inbox; check .processing\n");
 				return;
 			}	
-			if (folder_table) {
-				val = GPOINTER_TO_INT(g_hash_table_lookup
-						      (folder_table, inbox));
-				if (val == 0) {
-					folder_item_scan(inbox);
-					g_hash_table_insert(folder_table, inbox,
-							    GINT_TO_POINTER(1));
-				}
-			}
 		}	
 	}
 }
@@ -355,9 +328,8 @@ static void filter_msginfo(GSList * filtering_list, FolderItem *inbox,
  *
  *\param	flist filter and actions list
  *\param	info message
- *\param	ftable table with changed folders after call
  */
-void filter_message_by_msginfo_with_inbox(GSList *flist, MsgInfo *info, GHashTable *ftable, FolderItem *def_inbox)
+void filter_message_by_msginfo_with_inbox(GSList *flist, MsgInfo *info, FolderItem *def_inbox)
 {
 	FolderItem *inbox;
 
@@ -371,12 +343,12 @@ void filter_message_by_msginfo_with_inbox(GSList *flist, MsgInfo *info, GHashTab
 	 * message is already in a folder. the filtering code will
 	 * handle duplicate moves and copies.
 	 */
-	filter_msginfo(flist, inbox, info, ftable);
+	filter_msginfo(flist, inbox, info);
 }
 
-void filter_message_by_msginfo(GSList *flist, MsgInfo *info, GHashTable *ftable)
+void filter_message_by_msginfo(GSList *flist, MsgInfo *info)
 {
-	filter_message_by_msginfo_with_inbox(flist, info, ftable, info->folder);
+	filter_message_by_msginfo_with_inbox(flist, info, info->folder);
 }
 
 /*!
@@ -386,11 +358,10 @@ void filter_message_by_msginfo(GSList *flist, MsgInfo *info, GHashTable *ftable)
   *\param	filtering_list list of filters and actions
   *\param	inbox default inbox when no filter could be applied
   *\param	msgnum message number in processing folder
-  *\param	folder_table table with folders that have been
   *		changed after the call to this function
   */
 void filter_message(GSList *filtering_list, FolderItem *inbox,
-		    gint msgnum, GHashTable *folder_table)
+		    gint msgnum)
 {
 	MsgInfo *msginfo;
 	gchar *filename;
@@ -421,7 +392,7 @@ void filter_message(GSList *filtering_list, FolderItem *inbox,
 	msginfo->folder = item;
 	msginfo->msgnum = msgnum;
 
-	filter_msginfo(filtering_list, inbox, msginfo, folder_table);
+	filter_msginfo(filtering_list, inbox, msginfo);
 
 	procmsg_msginfo_free(msginfo);
 }

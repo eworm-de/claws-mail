@@ -3572,6 +3572,10 @@ static void key_pressed (GtkWidget *widget, GdkEventKey *event,	gpointer data)
 
 		app_exit_cb(mainwin, 0, NULL);
 		return;
+	case GDK_space:
+		if (mainwin->summaryview && !mainwin->summaryview->selected) 
+			summary_select_next_unread(mainwin->summaryview);
+		break;
 	default:
 		break;
 	}

@@ -1436,7 +1436,6 @@ msginfo->folder->folder->change_flags(msginfo->folder->folder, \
 
 void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
 {
-	gboolean changed = FALSE;
 	FolderItem *item = msginfo->folder;
 
 	debug_print("Setting flags for message %d in folder %s\n", msginfo->msgnum, item->path);
@@ -1445,25 +1444,25 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 	if ((perm_flags & MSG_NEW) && !MSG_IS_NEW(msginfo->flags) &&
 	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 		item->new++;
-		changed = TRUE;
+		item->need_update = TRUE;
 	}
 
 	/* if unread flag is set */
 	if ((perm_flags & MSG_UNREAD) && !MSG_IS_UNREAD(msginfo->flags) &&
 	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 		item->unread++;
-		changed = TRUE;
+		item->need_update = TRUE;
 	}
 
 	/* if ignore thread flag is set */
 	if ((perm_flags & MSG_IGNORE_THREAD) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 		if (MSG_IS_NEW(msginfo->flags) || (perm_flags & MSG_NEW)) {
 			item->new--;
-			changed = TRUE;
+			item->need_update = TRUE;
 		}
 		if (MSG_IS_UNREAD(msginfo->flags) || (perm_flags & MSG_UNREAD)) {
 			item->unread--;
-			changed = TRUE;
+			item->need_update = TRUE;
 		}
 	}
 
@@ -1473,16 +1472,12 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 	msginfo->flags.perm_flags |= perm_flags;
 	msginfo->flags.tmp_flags |= tmp_flags;
 
-	if (changed) {
-		folderview_update_item(item, FALSE);
-	}
 	CHANGE_FLAGS(msginfo);
 	procmsg_msginfo_write_flags(msginfo);
 }
 
 void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
 {
-	gboolean changed = FALSE;
 	FolderItem *item = msginfo->folder;
 	
 	debug_print("Unsetting flags for message %d in folder %s\n", msginfo->msgnum, item->path);
@@ -1491,25 +1486,25 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 	if ((perm_flags & MSG_NEW) && MSG_IS_NEW(msginfo->flags) &&
 	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 		item->new--;
-		changed = TRUE;
+		item->need_update = TRUE;
 	}
 
 	/* if unread flag is unset */
 	if ((perm_flags & MSG_UNREAD) && MSG_IS_UNREAD(msginfo->flags) &&
 	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 		item->unread--;
-		changed = TRUE;
+		item->need_update = TRUE;
 	}
 
 	/* if ignore thread flag is unset */
 	if ((perm_flags & MSG_IGNORE_THREAD) && MSG_IS_IGNORE_THREAD(msginfo->flags)) {
 		if (MSG_IS_NEW(msginfo->flags) && !(perm_flags & MSG_NEW)) {
 			item->new++;
-			changed = TRUE;
+			item->need_update = TRUE;
 		}
 		if (MSG_IS_UNREAD(msginfo->flags) && !(perm_flags & MSG_UNREAD)) {
 			item->unread++;
-			changed = TRUE;
+			item->need_update = TRUE;
 		}
 	}
 
@@ -1519,8 +1514,6 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 	msginfo->flags.perm_flags &= ~perm_flags;
 	msginfo->flags.tmp_flags &= ~tmp_flags;
 
-	if (changed) 
-		folderview_update_item(item, FALSE);
 	CHANGE_FLAGS(msginfo);
 	procmsg_msginfo_write_flags(msginfo);
 }
