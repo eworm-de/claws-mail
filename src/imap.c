@@ -3292,7 +3292,7 @@ GSList *imap_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 
 MsgInfo *imap_get_msginfo(Folder *folder, FolderItem *item, gint uid)
 {
-	MsgInfo *msginfo;
+	MsgInfo *msginfo = NULL;
 	MsgInfoList *msginfolist;
 	MsgNumberList numlist;
 
@@ -3300,8 +3300,10 @@ MsgInfo *imap_get_msginfo(Folder *folder, FolderItem *item, gint uid)
 	numlist.data = GINT_TO_POINTER(uid);
 
 	msginfolist = imap_get_msginfos(folder, item, &numlist);
-	msginfo = msginfolist->data;
-	g_slist_free(msginfolist);
+	if (msginfolist != NULL) {
+		msginfo = msginfolist->data;
+		g_slist_free(msginfolist);
+	}
 
 	return msginfo;
 }

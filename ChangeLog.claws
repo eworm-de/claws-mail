@@ -1,3 +1,11 @@
+2003-04-09 [christoph]	0.8.11claws80
+
+	* src/imap.c
+		fix crash in imap_get_msginfo() when then fetched message
+		is not found
+
+	(closes Bug 110 Crash during mail composition)
+
 2003-04-08 [christoph]	0.8.11claws79
 
 	* src/folder.c
