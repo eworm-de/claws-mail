@@ -3156,8 +3156,10 @@ static GtkCTreeNode *addressbook_node_add_folder(
 		newNode = gtk_ctree_insert_node( ctree, node, NULL, name, FOLDER_SPACING,
 				atci->iconXpm, atci->maskXpm, atci->iconXpm, atci->maskXpm,
 				atci->treeLeaf, atci->treeExpand );
-		gtk_ctree_node_set_row_data_full( ctree, newNode, adapter,
-			addressbook_free_treenode );
+		if( newNode ) {
+			gtk_ctree_node_set_row_data_full( ctree, newNode, adapter,
+				addressbook_free_treenode );
+		}
 	}
 
 	listItems = itemFolder->listFolder;
