@@ -1,3 +1,8 @@
+2004-08-24 [colin]	0.9.12cvs80
+
+	* src/folder.c
+		Set mime flags on non multipart messages too
+
 2004-08-23 [christoph]	0.9.12cvs79
 
 	* src/compose.c
