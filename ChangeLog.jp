@@ -1,3 +1,10 @@
+2003-03-27
+
+	* src/inc.c: inc_pop3_session_do(): Session::state == SESSION_ERROR
+	  の場合は適切なエラーを返すようにした。
+	* po/POTFILES.in: src/automaton.c, src/send.c を削除。
+	  src/send_message.c を追加。
+
 2003-03-26
 
 	* src/pop.[ch]

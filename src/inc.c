@@ -735,7 +735,13 @@ static IncState inc_pop3_session_do(IncSession *session)
 	if (session->inc_state == INC_SUCCESS) {
 		switch (pop3_session->error_val) {
 		case PS_SUCCESS:
-			session->inc_state = INC_SUCCESS;
+			if (SESSION(pop3_session)->state == SESSION_ERROR) {
+				if (pop3_session->state == POP3_READY)
+					session->inc_state = INC_CONNECT_ERROR;
+				else
+					session->inc_state = INC_ERROR;
+			} else
+				session->inc_state = INC_SUCCESS;
 			break;
 		case PS_AUTHFAIL:
 			session->inc_state = INC_AUTH_FAILED;
