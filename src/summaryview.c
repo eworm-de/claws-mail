@@ -1335,7 +1335,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 		{"/View/Source"			, M_SINGLE_TARGET_EXIST},
 		{"/View/All header"		, M_SINGLE_TARGET_EXIST},
 
-		{"/Save as..."			, M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+		{"/Save as..."			, M_TARGET_EXIST|M_UNLOCKED},
 		{"/Print..."			, M_TARGET_EXIST|M_UNLOCKED},
 
 		{"/Select thread"		, M_SINGLE_TARGET_EXIST},
