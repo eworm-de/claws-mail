@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed\n"
-"POT-Creation-Date: 2003-03-11 08:51+0200\n"
+"POT-Creation-Date: 2003-05-01 09:35+0300\n"
 "PO-Revision-Date: 2002-04-13 14:26GMT\n"
 "Last-Translator: George Danchev <danchev@spnet.net>\n"
 "Language-Team: Bulgarian <dict@linux.zonebg.com>\n"
@@ -33,16 +33,16 @@ msgstr ""
 "Новите съобщения ще бъдат проверявани в този ред. Изберете кутийките\n"
 "в `G' колоната за да включите получаването на съобщения чрез 'Вземи всички'."
 
-#: src/account.c:593 src/addressadd.c:182 src/addressbook.c:612
-#: src/compose.c:4561 src/compose.c:4731 src/editaddress.c:774
+#: src/account.c:593 src/addressadd.c:182 src/addressbook.c:613
+#: src/compose.c:4611 src/compose.c:4781 src/editaddress.c:774
 #: src/editaddress.c:823 src/editbook.c:174 src/editgroup.c:257
-#: src/editjpilot.c:295 src/editldap.c:298 src/editvcard.c:210
-#: src/importmutt.c:261 src/importpine.c:261 src/mimeview.c:152
+#: src/editjpilot.c:295 src/editldap.c:394 src/editvcard.c:210
+#: src/importmutt.c:261 src/importpine.c:261 src/mimeview.c:151
 #: src/select-keys.c:301
 msgid "Name"
 msgstr "Име"
 
-#: src/account.c:594 src/prefs_account.c:918
+#: src/account.c:594 src/prefs_account.c:908
 msgid "Protocol"
 msgstr "Протокол"
 
@@ -50,11 +50,11 @@ msgstr "Протокол"
 msgid "Server"
 msgstr "Сървър"
 
-#: src/account.c:624 src/addressbook.c:751 src/editaddress.c:722
-#: src/editaddress.c:856 src/prefs_actions.c:354 src/prefs_customheader.c:234
+#: src/account.c:624 src/addressbook.c:752 src/editaddress.c:722
+#: src/editaddress.c:856 src/prefs_actions.c:221 src/prefs_customheader.c:234
 #: src/prefs_display_header.c:275 src/prefs_display_header.c:330
-#: src/prefs_filtering.c:525 src/prefs_matcher.c:557 src/prefs_scoring.c:271
-#: src/prefs_template.c:216 src/prefs_toolbar.c:770
+#: src/prefs_filtering.c:521 src/prefs_matcher.c:557 src/prefs_scoring.c:271
+#: src/prefs_template.c:216 src/prefs_toolbar.c:769
 msgid "Add"
 msgstr "Добави"
 
@@ -66,17 +66,17 @@ msgstr "Промени"
 msgid " Delete "
 msgstr "Изтрий"
 
-#: src/account.c:642 src/prefs_actions.c:417 src/prefs_customheader.c:289
-#: src/prefs_display_header.c:294 src/prefs_filtering.c:579
+#: src/account.c:642 src/prefs_actions.c:284 src/prefs_customheader.c:289
+#: src/prefs_display_header.c:294 src/prefs_filtering.c:575
 #: src/prefs_matcher.c:639 src/prefs_scoring.c:325
-#: src/prefs_summary_column.c:289 src/prefs_toolbar.c:825
+#: src/prefs_summary_column.c:289 src/prefs_toolbar.c:830
 msgid "Down"
 msgstr "Надолу"
 
-#: src/account.c:648 src/prefs_actions.c:411 src/prefs_customheader.c:283
-#: src/prefs_display_header.c:288 src/prefs_filtering.c:573
+#: src/account.c:648 src/prefs_actions.c:278 src/prefs_customheader.c:283
+#: src/prefs_display_header.c:288 src/prefs_filtering.c:569
 #: src/prefs_matcher.c:633 src/prefs_scoring.c:319
-#: src/prefs_summary_column.c:285 src/prefs_toolbar.c:821
+#: src/prefs_summary_column.c:285 src/prefs_toolbar.c:826
 msgid "Up"
 msgstr "Нагоре"
 
@@ -84,10 +84,10 @@ msgstr "Нагоре"
 msgid " Set as default account "
 msgstr "Избери като подразбиращ се акаунт "
 
-#: src/account.c:668 src/addressbook.c:977 src/addressbook.c:2975
-#: src/addressbook.c:2979 src/addressbook.c:3016 src/crash.c:245
-#: src/exphtmldlg.c:169 src/gtk/pluginwindow.c:224 src/inc.c:679
-#: src/message_search.c:135 src/prefs_actions.c:1696 src/summary_search.c:208
+#: src/account.c:668 src/addressbook.c:978 src/addressbook.c:2983
+#: src/addressbook.c:2987 src/addressbook.c:3025 src/crash.c:245
+#: src/exphtmldlg.c:169 src/gtk/pluginwindow.c:224 src/inc.c:659
+#: src/message_search.c:135 src/summary_search.c:208
 msgid "Close"
 msgstr "Затвори"
 
@@ -99,25 +99,25 @@ msgstr "Изтрий акаунта"
 msgid "Do you really want to delete this account?"
 msgstr "Наистина ли искаш да изтриеш този акаунт?"
 
-#: src/account.c:738 src/addressbook.c:1000 src/addressbook.c:2176
-#: src/compose.c:2906 src/compose.c:3388 src/compose.c:5834 src/compose.c:6140
-#: src/exphtmldlg.c:158 src/folderview.c:2187 src/folderview.c:2246
-#: src/folderview.c:2338 src/folderview.c:2473 src/folderview.c:2512
-#: src/inc.c:167 src/inc.c:298 src/mainwindow.c:1367 src/message_search.c:198
-#: src/prefs_actions.c:869 src/prefs_customheader.c:543
-#: src/prefs_filtering.c:1063 src/prefs_filtering.c:1494
-#: src/prefs_matcher.c:1665 src/prefs_scoring.c:632 src/prefs_scoring.c:769
+#: src/account.c:738 src/addressbook.c:1001 src/addressbook.c:2177
+#: src/compose.c:2948 src/compose.c:3431 src/compose.c:5890 src/compose.c:6196
+#: src/exphtmldlg.c:158 src/folderview.c:2124 src/folderview.c:2183
+#: src/folderview.c:2275 src/folderview.c:2410 src/folderview.c:2449
+#: src/inc.c:170 src/inc.c:276 src/mainwindow.c:1363 src/message_search.c:198
+#: src/prefs_actions.c:525 src/prefs_customheader.c:543
+#: src/prefs_filtering.c:1056 src/prefs_filtering.c:1467
+#: src/prefs_matcher.c:1665 src/prefs_scoring.c:623 src/prefs_scoring.c:760
 #: src/prefs_template.c:544 src/ssl_manager.c:271 src/summary_search.c:324
-#: src/summaryview.c:912 src/summaryview.c:1356 src/summaryview.c:1400
-#: src/summaryview.c:1443 src/summaryview.c:1467 src/summaryview.c:1499
-#: src/summaryview.c:1524 src/summaryview.c:1549 src/summaryview.c:1574
-#: src/summaryview.c:3064 src/toolbar.c:1980
+#: src/summaryview.c:915 src/summaryview.c:1378 src/summaryview.c:1422
+#: src/summaryview.c:1465 src/summaryview.c:1489 src/summaryview.c:1521
+#: src/summaryview.c:1546 src/summaryview.c:1571 src/summaryview.c:1596
+#: src/summaryview.c:3098 src/toolbar.c:1981
 msgid "Yes"
 msgstr "Да"
 
-#: src/account.c:738 src/compose.c:3388 src/compose.c:5834
-#: src/folderview.c:2187 src/folderview.c:2246 src/folderview.c:2338
-#: src/folderview.c:2473 src/folderview.c:2512 src/ssl_manager.c:271
+#: src/account.c:738 src/compose.c:3431 src/compose.c:5890
+#: src/folderview.c:2124 src/folderview.c:2183 src/folderview.c:2275
+#: src/folderview.c:2410 src/folderview.c:2449 src/ssl_manager.c:271
 msgid "+No"
 msgstr "+Не"
 
@@ -125,11 +125,11 @@ msgstr "+Не"
 msgid "Add to address book"
 msgstr "Добави в Адресника"
 
-#: src/addressadd.c:194 src/select-keys.c:302 src/toolbar.c:408
+#: src/addressadd.c:194 src/select-keys.c:302 src/toolbar.c:409
 msgid "Address"
 msgstr "Адрес"
 
-#: src/addressadd.c:204 src/addressbook.c:614 src/editaddress.c:628
+#: src/addressadd.c:204 src/addressbook.c:615 src/editaddress.c:628
 #: src/editaddress.c:692 src/editgroup.c:259
 msgid "Remarks"
 msgstr "Бележки"
@@ -139,47 +139,48 @@ msgid "Select Address Book Folder"
 msgstr "Избери папка за Адресника"
 
 #: src/addressadd.c:240 src/addrgather.c:506 src/alertpanel.c:190
-#: src/alertpanel.c:324 src/compose.c:3029 src/compose.c:5656
+#: src/alertpanel.c:324 src/compose.c:3071 src/compose.c:5712
 #: src/editaddress.c:513 src/editbook.c:204 src/editgroup.c:369
-#: src/editjpilot.c:344 src/editldap.c:243 src/editldap_basedn.c:212
+#: src/editjpilot.c:344 src/editldap.c:340 src/editldap_basedn.c:212
 #: src/editvcard.c:239 src/export.c:187 src/foldersel.c:191
-#: src/grouplistdialog.c:241 src/gtk/about.c:243 src/gtk/prefswindow.c:258
+#: src/grouplistdialog.c:241 src/gtk/about.c:233 src/gtk/prefswindow.c:260
 #: src/gtk/sslcertwindow.c:230 src/gtkaspell.c:1346 src/gtkaspell.c:2259
 #: src/import.c:190 src/importmutt.c:287 src/importpine.c:287
-#: src/inputdialog.c:202 src/main.c:548 src/mainwindow.c:2096
-#: src/messageview.c:490 src/mimeview.c:856 src/mimeview.c:917
-#: src/passphrase.c:130 src/prefs_gtk.c:448 src/prefs_actions.c:294
-#: src/prefs_common.c:3279 src/prefs_common.c:3448 src/prefs_common.c:3785
-#: src/prefs_customheader.c:157 src/prefs_display_header.c:194
-#: src/prefs_filtering.c:343 src/prefs_folder_item.c:499
-#: src/prefs_matcher.c:370 src/prefs_scoring.c:196
+#: src/inputdialog.c:202 src/main.c:572 src/mainwindow.c:2084
+#: src/messageview.c:656 src/messageview.c:991 src/mimeview.c:903
+#: src/mimeview.c:952 src/passphrase.c:130 src/prefs_gtk.c:448
+#: src/prefs_actions.c:161 src/prefs_common.c:3256 src/prefs_common.c:3425
+#: src/prefs_common.c:3762 src/prefs_customheader.c:157
+#: src/prefs_display_header.c:194 src/prefs_filtering.c:339
+#: src/prefs_folder_item.c:499 src/prefs_matcher.c:370 src/prefs_scoring.c:196
 #: src/prefs_summary_column.c:313 src/prefs_template.c:263 src/sigstatus.c:134
 #: src/ssl_manager.c:98
 msgid "OK"
 msgstr "OK"
 
-#: src/addressadd.c:241 src/addressbook.c:2170 src/addrgather.c:507
-#: src/compose.c:3029 src/compose.c:5657 src/compose.c:6311 src/compose.c:6349
+#: src/addressadd.c:241 src/addressbook.c:2171 src/addrgather.c:507
+#: src/compose.c:3071 src/compose.c:5713 src/compose.c:6375 src/compose.c:6413
 #: src/editaddress.c:514 src/editbook.c:205 src/editgroup.c:370
-#: src/editjpilot.c:345 src/editldap.c:244 src/editldap_basedn.c:213
+#: src/editjpilot.c:345 src/editldap.c:341 src/editldap_basedn.c:213
 #: src/editvcard.c:240 src/exphtmldlg.c:664 src/export.c:188
-#: src/foldersel.c:192 src/grouplistdialog.c:242 src/gtk/prefswindow.c:259
+#: src/foldersel.c:192 src/grouplistdialog.c:242 src/gtk/prefswindow.c:261
 #: src/gtkaspell.c:1355 src/import.c:191 src/importldif.c:825
 #: src/importmutt.c:288 src/importpine.c:288 src/inputdialog.c:203
-#: src/main.c:548 src/mainwindow.c:2096 src/messageview.c:490
-#: src/mimeview.c:857 src/mimeview.c:918 src/passphrase.c:134
-#: src/prefs_gtk.c:449 src/prefs_actions.c:295 src/prefs_common.c:3280
-#: src/prefs_common.c:3786 src/prefs_customheader.c:158
-#: src/prefs_display_header.c:195 src/prefs_filtering.c:344
-#: src/prefs_folder_item.c:500 src/prefs_matcher.c:371 src/prefs_scoring.c:197
+#: src/main.c:572 src/mainwindow.c:2084 src/messageview.c:656
+#: src/messageview.c:991 src/mimeview.c:904 src/mimeview.c:953
+#: src/passphrase.c:134 src/prefs_gtk.c:449 src/prefs_actions.c:162
+#: src/prefs_common.c:3257 src/prefs_common.c:3763
+#: src/prefs_customheader.c:158 src/prefs_display_header.c:195
+#: src/prefs_filtering.c:340 src/prefs_folder_item.c:500
+#: src/prefs_matcher.c:371 src/prefs_scoring.c:197
 #: src/prefs_summary_column.c:314 src/prefs_template.c:264
-#: src/progressdialog.c:77 src/select-keys.c:332 src/summaryview.c:912
-#: src/summaryview.c:3412
+#: src/progressdialog.c:77 src/select-keys.c:332 src/summaryview.c:915
+#: src/summaryview.c:3436
 msgid "Cancel"
 msgstr "Отказ"
 
-#: src/addressbook.c:353 src/compose.c:491 src/mainwindow.c:411
-#: src/messageview.c:149
+#: src/addressbook.c:353 src/compose.c:496 src/mainwindow.c:408
+#: src/messageview.c:143
 msgid "/_File"
 msgstr "/Файл"
 
@@ -199,8 +200,8 @@ msgstr "/Файл/Нов _JPilot"
 msgid "/_File/New _Server"
 msgstr "/Файл/Нов Сървър"
 
-#: src/addressbook.c:362 src/addressbook.c:365 src/compose.c:495
-#: src/mainwindow.c:425 src/mainwindow.c:428 src/messageview.c:150
+#: src/addressbook.c:362 src/addressbook.c:365 src/compose.c:500
+#: src/mainwindow.c:423 src/mainwindow.c:426 src/messageview.c:146
 msgid "/_File/---"
 msgstr "/Файл/---"
 
@@ -216,12 +217,12 @@ msgstr "/Файл/Изтрий"
 msgid "/_File/_Save"
 msgstr "/Файл/Запази"
 
-#: src/addressbook.c:367 src/compose.c:496 src/messageview.c:151
+#: src/addressbook.c:367 src/compose.c:501 src/messageview.c:147
 msgid "/_File/_Close"
 msgstr "/Файл/Затвори"
 
 #: src/addressbook.c:368 src/addressbook.c:397 src/addressbook.c:411
-#: src/compose.c:498 src/mainwindow.c:432
+#: src/compose.c:503 src/mainwindow.c:430 src/messageview.c:149
 msgid "/_Edit"
 msgstr "/Редактирай"
 
@@ -229,16 +230,17 @@ msgstr "/Редактирай"
 msgid "/_Edit/C_ut"
 msgstr "/Редактирай/Изрежи"
 
-#: src/addressbook.c:370 src/compose.c:503 src/mainwindow.c:433
+#: src/addressbook.c:370 src/compose.c:508 src/mainwindow.c:431
+#: src/messageview.c:150
 msgid "/_Edit/_Copy"
 msgstr "/Редактирай/Копирай"
 
-#: src/addressbook.c:371 src/compose.c:504
+#: src/addressbook.c:371 src/compose.c:509
 msgid "/_Edit/_Paste"
 msgstr "/Редактирай/Постави"
 
-#: src/addressbook.c:372 src/compose.c:501 src/compose.c:584
-#: src/mainwindow.c:436
+#: src/addressbook.c:372 src/compose.c:506 src/compose.c:589
+#: src/mainwindow.c:434 src/messageview.c:152
 msgid "/_Edit/---"
 msgstr "/Редактирай/---"
 
@@ -274,9 +276,10 @@ msgstr "/Адрес/Редактирай"
 msgid "/_Address/_Delete"
 msgstr "/Адрес/Изтрий"
 
-#: src/addressbook.c:381 src/addressbook.c:385 src/mainwindow.c:642
-#: src/mainwindow.c:651 src/mainwindow.c:662 src/mainwindow.c:664
-#: src/mainwindow.c:667 src/mainwindow.c:670 src/mainwindow.c:674
+#: src/addressbook.c:381 src/addressbook.c:385 src/mainwindow.c:647
+#: src/mainwindow.c:658 src/mainwindow.c:660 src/mainwindow.c:663
+#: src/mainwindow.c:666 src/mainwindow.c:670 src/messageview.c:265
+#: src/messageview.c:276
 msgid "/_Tools/---"
 msgstr "/Инструменти/---"
 
@@ -296,13 +299,13 @@ msgstr "/Иструменти/Внеси _Pine файл..."
 msgid "/_Tools/Export _HTML..."
 msgstr "/Иструменти/Изнеси _HTML файл..."
 
-#: src/addressbook.c:387 src/compose.c:660 src/mainwindow.c:698
-#: src/messageview.c:167
+#: src/addressbook.c:387 src/compose.c:665 src/mainwindow.c:694
+#: src/messageview.c:279
 msgid "/_Help"
 msgstr "/Помощ"
 
-#: src/addressbook.c:388 src/compose.c:661 src/mainwindow.c:706
-#: src/messageview.c:168
+#: src/addressbook.c:388 src/compose.c:666 src/mainwindow.c:702
+#: src/messageview.c:280
 msgid "/_Help/_About"
 msgstr "/Помощ/Относно"
 
@@ -319,19 +322,19 @@ msgid "/New _Folder"
 msgstr "/Нова Папка"
 
 #: src/addressbook.c:396 src/addressbook.c:399 src/addressbook.c:410
-#: src/addressbook.c:413 src/addressbook.c:417 src/compose.c:485
+#: src/addressbook.c:413 src/addressbook.c:417 src/compose.c:490
 #: src/folderview.c:284 src/folderview.c:286 src/folderview.c:295
 #: src/folderview.c:300 src/folderview.c:304 src/folderview.c:306
 #: src/folderview.c:316 src/folderview.c:321 src/folderview.c:325
 #: src/folderview.c:327 src/folderview.c:337 src/folderview.c:341
-#: src/folderview.c:344 src/folderview.c:346 src/summaryview.c:412
-#: src/summaryview.c:415 src/summaryview.c:417 src/summaryview.c:423
-#: src/summaryview.c:435 src/summaryview.c:447 src/summaryview.c:453
-#: src/summaryview.c:456
+#: src/folderview.c:344 src/folderview.c:346 src/summaryview.c:413
+#: src/summaryview.c:416 src/summaryview.c:418 src/summaryview.c:424
+#: src/summaryview.c:438 src/summaryview.c:450 src/summaryview.c:456
+#: src/summaryview.c:459
 msgid "/---"
 msgstr "/---"
 
-#: src/addressbook.c:398 src/addressbook.c:412 src/summaryview.c:420
+#: src/addressbook.c:398 src/addressbook.c:412 src/summaryview.c:421
 msgid "/_Delete"
 msgstr "/Изтрий"
 
@@ -427,81 +430,81 @@ msgstr "Грешка в LDAP критерия за търсене"
 msgid "No LDAP entries found for search criteria"
 msgstr "Няма намерени LDAP данни по търсения критерий"
 
-#: src/addressbook.c:613
+#: src/addressbook.c:614
 msgid "E-Mail address"
 msgstr "E-Mail адрес"
 
-#: src/addressbook.c:617 src/prefs_common.c:2930 src/toolbar.c:169
-#: src/toolbar.c:1689
+#: src/addressbook.c:618 src/prefs_common.c:2907 src/toolbar.c:170
+#: src/toolbar.c:1690
 msgid "Address book"
 msgstr "Адресник"
 
-#: src/addressbook.c:716
+#: src/addressbook.c:717
 msgid "Name:"
 msgstr "Име:"
 
-#: src/addressbook.c:748 src/addressbook.c:2169 src/addressbook.c:2176
-#: src/editaddress.c:716 src/editaddress.c:850 src/prefs_actions.c:367
+#: src/addressbook.c:749 src/addressbook.c:2170 src/addressbook.c:2177
+#: src/editaddress.c:716 src/editaddress.c:850 src/prefs_actions.c:234
 #: src/prefs_display_header.c:281 src/prefs_display_header.c:337
-#: src/prefs_filtering.c:228 src/prefs_filtering.c:538 src/prefs_matcher.c:570
-#: src/prefs_scoring.c:284 src/prefs_template.c:229 src/prefs_toolbar.c:782
-#: src/ssl_manager.c:92 src/toolbar.c:358 src/toolbar.c:450
+#: src/prefs_filtering.c:225 src/prefs_filtering.c:534 src/prefs_matcher.c:570
+#: src/prefs_scoring.c:284 src/prefs_template.c:229 src/prefs_toolbar.c:781
+#: src/ssl_manager.c:92 src/toolbar.c:359 src/toolbar.c:451
 msgid "Delete"
 msgstr "Изтрий"
 
-#: src/addressbook.c:754
+#: src/addressbook.c:755
 msgid "Lookup"
 msgstr "Потърси"
 
-#: src/addressbook.c:766 src/compose.c:1392 src/compose.c:3078
-#: src/compose.c:4378 src/compose.c:5077 src/headerview.c:55
+#: src/addressbook.c:767 src/compose.c:1397 src/compose.c:3120
+#: src/compose.c:4428 src/compose.c:5129 src/headerview.c:55
 #: src/prefs_template.c:173 src/summary_search.c:156
 msgid "To:"
 msgstr "До:"
 
-#: src/addressbook.c:770 src/compose.c:1376 src/compose.c:3077
+#: src/addressbook.c:771 src/compose.c:1381 src/compose.c:3119
 #: src/prefs_template.c:175
 msgid "Cc:"
 msgstr "Cc:"
 
-#: src/addressbook.c:774 src/compose.c:1379 src/prefs_template.c:176
+#: src/addressbook.c:775 src/compose.c:1384 src/prefs_template.c:176
 msgid "Bcc:"
 msgstr "Bcc:"
 
-#: src/addressbook.c:975 src/addressbook.c:998
+#: src/addressbook.c:976 src/addressbook.c:999
 msgid "Delete address(es)"
 msgstr "Изтрий адрес(и)"
 
-#: src/addressbook.c:976
+#: src/addressbook.c:977
 msgid "This address data is readonly and cannot be deleted."
 msgstr "Тези адресни данни са само за четене и не могат да бъдат изтрити."
 
-#: src/addressbook.c:999
+#: src/addressbook.c:1000
 msgid "Really delete the address(es)?"
 msgstr "Наистина ли да изтрия адреса/адресите"
 
-#: src/addressbook.c:1000 src/addressbook.c:2176 src/compose.c:2906
-#: src/compose.c:6140 src/exphtmldlg.c:158 src/inc.c:167 src/inc.c:298
-#: src/mainwindow.c:1367 src/message_search.c:198 src/prefs_actions.c:869
-#: src/prefs_customheader.c:543 src/prefs_filtering.c:1063
-#: src/prefs_filtering.c:1494 src/prefs_matcher.c:1665 src/prefs_scoring.c:632
-#: src/prefs_scoring.c:769 src/prefs_template.c:544 src/summary_search.c:324
-#: src/summaryview.c:912 src/summaryview.c:1356 src/summaryview.c:1400
-#: src/summaryview.c:1443 src/summaryview.c:1467 src/summaryview.c:1499
-#: src/summaryview.c:1524 src/summaryview.c:1549 src/summaryview.c:1574
-#: src/summaryview.c:3064 src/toolbar.c:1980
+#: src/addressbook.c:1001 src/addressbook.c:2177 src/compose.c:2948
+#: src/compose.c:6196 src/exphtmldlg.c:158 src/inc.c:170 src/inc.c:276
+#: src/mainwindow.c:1363 src/message_search.c:198 src/prefs_actions.c:525
+#: src/prefs_customheader.c:543 src/prefs_filtering.c:1056
+#: src/prefs_filtering.c:1467 src/prefs_matcher.c:1665 src/prefs_scoring.c:623
+#: src/prefs_scoring.c:760 src/prefs_template.c:544 src/summary_search.c:324
+#: src/summaryview.c:915 src/summaryview.c:1378 src/summaryview.c:1422
+#: src/summaryview.c:1465 src/summaryview.c:1489 src/summaryview.c:1521
+#: src/summaryview.c:1546 src/summaryview.c:1571 src/summaryview.c:1596
+#: src/summaryview.c:3098 src/toolbar.c:1981
 msgid "No"
 msgstr "Не"
 
-#: src/addressbook.c:1512 src/addressbook.c:1585
+#: src/addressbook.c:1513 src/addressbook.c:1586
 msgid "Cannot paste. Target address book is readonly."
 msgstr "Не мога да поставям. Избрания адресник е само за четене."
 
-#: src/addressbook.c:1523
+#: src/addressbook.c:1524
 msgid "Cannot paste into an address group."
 msgstr "Не мога да поставям в адресната група."
 
-#: src/addressbook.c:2166
+#: src/addressbook.c:2167
 #, c-format
 msgid ""
 "Do you want to delete the folder AND all addresses in `%s' ? \n"
@@ -510,32 +513,32 @@ msgstr ""
 "Искате ли да изтриете папката '%s' И всички адреси в нея ? \n"
 "ако изтриете само папката, адресите ще бъдат преместени в по горната папка."
 
-#: src/addressbook.c:2170
+#: src/addressbook.c:2171
 msgid "Folder only"
 msgstr "Папка само"
 
-#: src/addressbook.c:2170
+#: src/addressbook.c:2171
 msgid "Folder and Addresses"
 msgstr "Папка и адреси"
 
-#: src/addressbook.c:2175
+#: src/addressbook.c:2176
 #, c-format
 msgid "Really delete `%s' ?"
 msgstr "Наистина ли да изтрия `%s' ?"
 
-#: src/addressbook.c:2925
+#: src/addressbook.c:2933
 msgid "New user, could not save index file."
 msgstr "Нов потребител, не мога да запазя индексен файл."
 
-#: src/addressbook.c:2929
+#: src/addressbook.c:2937
 msgid "New user, could not save address book files."
 msgstr "Нов потребител, не мога да запазя файловете на адресника."
 
-#: src/addressbook.c:2939
+#: src/addressbook.c:2947
 msgid "Old address book converted successfully."
 msgstr "Стария адресник е преобразуван успешно"
 
-#: src/addressbook.c:2944
+#: src/addressbook.c:2952
 msgid ""
 "Old address book converted,\n"
 "could not save new address index file"
@@ -543,7 +546,7 @@ msgstr ""
 "Стария адресник е преобразуван,\n"
 "не мога да запазя новия индекс файл"
 
-#: src/addressbook.c:2957
+#: src/addressbook.c:2965
 msgid ""
 "Could not convert address book,\n"
 "but created empty new address book files."
@@ -551,7 +554,7 @@ msgstr ""
 "Не мога да преобразувам адресника,\n"
 "но създадох нови празни файлове за адресника."
 
-#: src/addressbook.c:2963
+#: src/addressbook.c:2971
 msgid ""
 "Could not convert address book,\n"
 "could not create new address book files."
@@ -559,7 +562,7 @@ msgstr ""
 "Не мога да преобразувам адресника,\n"
 "не мога да създам нови файлове за адресника."
 
-#: src/addressbook.c:2968
+#: src/addressbook.c:2976
 msgid ""
 "Could not convert address book\n"
 "and could not create new address book files."
@@ -567,57 +570,57 @@ msgstr ""
 "Не мога да конвертирам Адресника\n"
 "и не мога да създам нови файлове за него."
 
-#: src/addressbook.c:2975
+#: src/addressbook.c:2983
 msgid "Addressbook conversion error"
 msgstr "Грешка при преобразуването на адресника"
 
-#: src/addressbook.c:2979
+#: src/addressbook.c:2987
 msgid "Addressbook conversion"
 msgstr "Преобразуване на адресник"
 
-#: src/addressbook.c:3014
+#: src/addressbook.c:3023
 msgid "Addressbook Error"
 msgstr "Адресник Грешка"
 
-#: src/addressbook.c:3015
+#: src/addressbook.c:3024
 msgid "Could not read address index"
 msgstr "Не мога да чета адресния индекс"
 
-#: src/addressbook.c:3508 src/prefs_common.c:1050
+#: src/addressbook.c:3528 src/prefs_common.c:1045
 msgid "Interface"
 msgstr "Интерфейс"
 
-#: src/addressbook.c:3524 src/exphtmldlg.c:375 src/exphtmldlg.c:579
+#: src/addressbook.c:3544 src/exphtmldlg.c:375 src/exphtmldlg.c:579
 #: src/exporthtml.c:1011 src/importldif.c:560
 msgid "Address Book"
 msgstr "Адресник"
 
-#: src/addressbook.c:3540
+#: src/addressbook.c:3560
 msgid "Person"
 msgstr "Лице"
 
-#: src/addressbook.c:3556
+#: src/addressbook.c:3576
 msgid "EMail Address"
 msgstr "EMail Адрес"
 
-#: src/addressbook.c:3572
+#: src/addressbook.c:3592
 msgid "Group"
 msgstr "Група"
 
-#: src/addressbook.c:3588 src/exporthtml.c:913 src/folderview.c:374
-#: src/prefs_account.c:2073
+#: src/addressbook.c:3608 src/exporthtml.c:913 src/folderview.c:374
+#: src/prefs_account.c:2043
 msgid "Folder"
 msgstr "Папка"
 
-#: src/addressbook.c:3604
+#: src/addressbook.c:3624
 msgid "vCard"
 msgstr "vCard"
 
-#: src/addressbook.c:3620 src/addressbook.c:3636
+#: src/addressbook.c:3640 src/addressbook.c:3656
 msgid "JPilot"
 msgstr "JPilot"
 
-#: src/addressbook.c:3652
+#: src/addressbook.c:3672
 msgid "LDAP Server"
 msgstr "LDAP Сървър"
 
@@ -679,8 +682,8 @@ msgstr "Име на заглавка"
 msgid "Address Count"
 msgstr "Брой Адреси"
 
-#: src/addrgather.c:527 src/alertpanel.c:155 src/main.c:260
-#: src/messageview.c:410
+#: src/addrgather.c:527 src/alertpanel.c:155 src/main.c:263
+#: src/messageview.c:576
 msgid "Warning"
 msgstr "Предупреждение"
 
@@ -700,19 +703,19 @@ msgstr "Събирам адреси - от избраните съобщения"
 msgid "Harvest E-Mail Addresses - from Folder"
 msgstr "Събирам адреси - от папка"
 
-#: src/addrindex.c:93 src/addrindex.c:97 src/addrindex.c:104
+#: src/addrindex.c:104 src/addrindex.c:108 src/addrindex.c:115
 msgid "Common address"
 msgstr "Общи адреси"
 
-#: src/addrindex.c:94 src/addrindex.c:98 src/addrindex.c:105
+#: src/addrindex.c:105 src/addrindex.c:109 src/addrindex.c:116
 msgid "Personal address"
 msgstr "Лични адреси"
 
-#: src/alertpanel.c:142 src/compose.c:5834 src/main.c:530
+#: src/alertpanel.c:142 src/compose.c:5890 src/main.c:554
 msgid "Notice"
 msgstr "Съобщение"
 
-#: src/alertpanel.c:168 src/alertpanel.c:190 src/compose.c:3388 src/inc.c:556
+#: src/alertpanel.c:168 src/alertpanel.c:190 src/compose.c:3431 src/inc.c:543
 msgid "Error"
 msgstr "Грешка"
 
@@ -724,53 +727,43 @@ msgstr "Виж лог"
 msgid "Show this message next time"
 msgstr "Покажи това съобщение следващия път"
 
-#: src/common/nntp.c:61
+#: src/common/nntp.c:68
 #, c-format
 msgid "Can't connect to NNTP server: %s:%d\n"
 msgstr "Не мога да се свържа с NNTP сървъра: %s:%d\n"
 
-#: src/common/nntp.c:149 src/common/nntp.c:212
+#: src/common/nntp.c:145 src/common/nntp.c:208
 #, c-format
 msgid "protocol error: %s\n"
 msgstr "грешка в протокола: %s\n"
 
-#: src/common/nntp.c:172 src/common/nntp.c:218
+#: src/common/nntp.c:168 src/common/nntp.c:214
 msgid "protocol error\n"
 msgstr "грешка в протокола\n"
 
-#: src/common/nntp.c:268 src/common/nntp.c:274
+#: src/common/nntp.c:264
 msgid "Error occurred while posting\n"
 msgstr "Появи се грешка докато публикувах\n"
 
-#: src/common/smtp.c:112
-#, c-format
-msgid "Can't connect to SMTP server: %s:%d\n"
-msgstr "Не мога да се свържа с SMTP сървъра: %s:%d\n"
-
-#: src/common/smtp.c:119
-msgid "SSL connection failed"
-msgstr "SSL връзката се провали"
-
-#: src/common/smtp.c:126
-#, c-format
-msgid "Error occurred while connecting to %s:%d\n"
-msgstr "Появи се грешка докато се свързвах с %s:%d\n"
-
-#: src/common/smtp.c:143 src/common/smtp.c:166
-msgid "Error occurred while sending EHLO\n"
-msgstr "Появи се грешка докато изпращах EHLO\n"
-
-#: src/common/smtp.c:144
-msgid "Error occurred while sending HELO\n"
-msgstr "Появи се грешка докато изпращах HELO\n"
-
-#: src/common/smtp.c:158
-msgid "Error occurred while sending STARTTLS\n"
-msgstr "Появи се грешка докато изпращах STARTTLS\n"
-
-#: src/common/smtp.c:225
+#: src/common/smtp.c:154
 msgid "SMTP AUTH not available\n"
 msgstr "SMTP AUTH не е на разположение\n"
+
+#: src/common/smtp.c:417 src/common/smtp.c:466
+msgid "bad SMTP response\n"
+msgstr "лош SMTP отговор\n"
+
+#: src/common/smtp.c:437 src/common/smtp.c:455 src/common/smtp.c:551
+msgid "error occurred on SMTP session\n"
+msgstr "появи се грешка при SMTP сесията\n"
+
+#: src/common/smtp.c:446 src/pop.c:644
+msgid "error occurred on authentication\n"
+msgstr "появи се грешка при аутентификацията\n"
+
+#: src/common/smtp.c:511 src/pop.c:637
+msgid "can't start TLS session\n"
+msgstr "не мога да започна TLS сесия\n"
 
 #: src/common/ssl.c:88
 msgid "Error creating ssl context\n"
@@ -835,7 +828,7 @@ msgstr ""
 "(Отмаркирайте опция \"%s\").\n"
 
 #: src/common/ssl_certificate.c:371 src/common/ssl_certificate.c:409
-#: src/prefs_common.c:2765
+#: src/prefs_common.c:1219
 msgid "Don't popup error dialog on receive error"
 msgstr "Не изкарвай скачащо съобщение за грешка при получаване"
 
@@ -860,360 +853,361 @@ msgstr ""
 "\n"
 "Това може да означава, че отговарящия сървър не е този който знаем."
 
-#: src/compose.c:483
+#: src/compose.c:488
 msgid "/_Add..."
 msgstr "/Добави..."
 
-#: src/compose.c:484
+#: src/compose.c:489
 msgid "/_Remove"
 msgstr "/Махни"
 
-#: src/compose.c:486 src/folderview.c:287 src/folderview.c:308
+#: src/compose.c:491 src/folderview.c:287 src/folderview.c:308
 #: src/folderview.c:329 src/folderview.c:348
 msgid "/_Properties..."
 msgstr "/Свойства..."
 
-#: src/compose.c:492
+#: src/compose.c:497
 msgid "/_File/_Attach file"
 msgstr "/Файл/Прикрепи файл"
 
-#: src/compose.c:493
+#: src/compose.c:498
 msgid "/_File/_Insert file"
 msgstr "/Файл/Вмъкни файл"
 
-#: src/compose.c:494
+#: src/compose.c:499
 msgid "/_File/Insert si_gnature"
 msgstr "/Файл/Вмъкни _подпис"
 
-#: src/compose.c:499
+#: src/compose.c:504
 msgid "/_Edit/_Undo"
 msgstr "/Редактирай/Отмяна"
 
-#: src/compose.c:500
+#: src/compose.c:505
 msgid "/_Edit/_Redo"
 msgstr "/Редактирай/_Redo"
 
-#: src/compose.c:502
+#: src/compose.c:507
 msgid "/_Edit/Cu_t"
 msgstr "/Редактирай/Изрежи"
 
-#: src/compose.c:505
+#: src/compose.c:510
 msgid "/_Edit/Paste as _quotation"
 msgstr "/Редактирай/Постави като цитат"
 
-#: src/compose.c:507 src/mainwindow.c:434
+#: src/compose.c:512 src/mainwindow.c:432 src/messageview.c:151
 msgid "/_Edit/Select _all"
 msgstr "/Редактирай/Избери всичко"
 
-#: src/compose.c:508
+#: src/compose.c:513
 msgid "/_Edit/A_dvanced"
 msgstr "/Редактирай/Напредничав"
 
-#: src/compose.c:509
+#: src/compose.c:514
 msgid "/_Edit/A_dvanced/Move a character backward"
 msgstr "/Редактирай/Напредничав/Премести се един знак назад"
 
-#: src/compose.c:514
+#: src/compose.c:519
 msgid "/_Edit/A_dvanced/Move a character forward"
 msgstr "/Редактирай/Напредничав/Премести се един знак напред"
 
-#: src/compose.c:519
+#: src/compose.c:524
 msgid "/_Edit/A_dvanced/Move a word backward"
 msgstr "/Редактирай/Напредничав/Премести се една дума назад"
 
-#: src/compose.c:524
+#: src/compose.c:529
 msgid "/_Edit/A_dvanced/Move a word forward"
 msgstr "/Редактирай/Напредничав/Премести се една дума напред"
 
-#: src/compose.c:529
+#: src/compose.c:534
 msgid "/_Edit/A_dvanced/Move to beginning of line"
 msgstr "/Редактирай/Напредничав/Премести се в началото на реда"
 
-#: src/compose.c:534
+#: src/compose.c:539
 msgid "/_Edit/A_dvanced/Move to end of line"
 msgstr "/Редактирай/Напредничав/Премести се в края на реда"
 
-#: src/compose.c:539
+#: src/compose.c:544
 msgid "/_Edit/A_dvanced/Move to previous line"
 msgstr "/Редактирай/Напредничав/Премести се на предишния ред"
 
-#: src/compose.c:544
+#: src/compose.c:549
 msgid "/_Edit/A_dvanced/Move to next line"
 msgstr "/Редактирай/Напредничав/Премести се на следващия ред"
 
-#: src/compose.c:549
+#: src/compose.c:554
 msgid "/_Edit/A_dvanced/Delete a character backward"
 msgstr "/Редактирай/Напредничав/Изтрий един знак назад"
 
-#: src/compose.c:554
+#: src/compose.c:559
 msgid "/_Edit/A_dvanced/Delete a character forward"
 msgstr "/Редактирай/Напредничав/Изтрий един знак напред"
 
-#: src/compose.c:559
+#: src/compose.c:564
 msgid "/_Edit/A_dvanced/Delete a word backward"
 msgstr "/Редактирай/Напредничав/Изтрий една дума назад"
 
-#: src/compose.c:564
+#: src/compose.c:569
 msgid "/_Edit/A_dvanced/Delete a word forward"
 msgstr "/Редактирай/Напредничав/Изтрий една дума напред"
 
-#: src/compose.c:569
+#: src/compose.c:574
 msgid "/_Edit/A_dvanced/Delete line"
 msgstr "/Редактирай/Напредничав/Изтрий реда"
 
-#: src/compose.c:574
+#: src/compose.c:579
 msgid "/_Edit/A_dvanced/Delete entire line"
 msgstr "/Редактирай/Напредничав/Изтрий реда"
 
-#: src/compose.c:579
+#: src/compose.c:584
 msgid "/_Edit/A_dvanced/Delete to end of line"
 msgstr "/Редактирай/Напредничав/Изтрий до края на реда"
 
-#: src/compose.c:585
+#: src/compose.c:590
 msgid "/_Edit/_Wrap current paragraph"
 msgstr "/Редактирай/Пренеси текущия абзац"
 
-#: src/compose.c:587
+#: src/compose.c:592
 msgid "/_Edit/Wrap all long _lines"
 msgstr "/Редактирай/Пренеси всички дълги редове"
 
-#: src/compose.c:589
+#: src/compose.c:594
 msgid "/_Edit/Edit with e_xternal editor"
 msgstr "/Редактирай/Редактирай с външен редактор"
 
-#: src/compose.c:592
+#: src/compose.c:597
 msgid "/_Spelling"
 msgstr "/Спелинг"
 
-#: src/compose.c:593
+#: src/compose.c:598
 msgid "/_Spelling/_Check all or check selection"
 msgstr "/Спелинг/Провери всичко или само посоченото"
 
-#: src/compose.c:595
+#: src/compose.c:600
 msgid "/_Spelling/_Highlight all misspelled words"
 msgstr "/Спелинг/Повдигни всички неправилно изписани думи"
 
-#: src/compose.c:597
+#: src/compose.c:602
 msgid "/_Spelling/Check _backwards misspelled word"
 msgstr "/Спелинг/Проверяви в обратен ред неправилно изписаните думи"
 
-#: src/compose.c:599
+#: src/compose.c:604
 msgid "/_Spelling/_Forward to next misspelled word"
 msgstr "/Спелинг/Прескочи към следващата неправилно изписана дума"
 
-#: src/compose.c:601
+#: src/compose.c:606
 msgid "/_Spelling/---"
 msgstr "/Спелинг/---"
 
-#: src/compose.c:602
+#: src/compose.c:607
 msgid "/_Spelling/_Spelling Configuration"
 msgstr "/Спелинг/Спелинг Настройки"
 
-#: src/compose.c:606 src/mainwindow.c:440 src/summaryview.c:448
+#: src/compose.c:611 src/mainwindow.c:438 src/messageview.c:156
+#: src/summaryview.c:451
 msgid "/_View"
 msgstr "/Изглед"
 
-#: src/compose.c:607
+#: src/compose.c:612
 msgid "/_View/_To"
 msgstr "/Изглед/До"
 
-#: src/compose.c:608
+#: src/compose.c:613
 msgid "/_View/_Cc"
 msgstr "/Изглед/_Cc"
 
-#: src/compose.c:609
+#: src/compose.c:614
 msgid "/_View/_Bcc"
 msgstr "/Изглед/_Bcc"
 
-#: src/compose.c:610
+#: src/compose.c:615
 msgid "/_View/_Reply to"
 msgstr "/Изглед/Отговори на"
 
-#: src/compose.c:611 src/compose.c:613 src/compose.c:615 src/mainwindow.c:458
-#: src/mainwindow.c:461 src/mainwindow.c:490 src/mainwindow.c:514
-#: src/mainwindow.c:596 src/mainwindow.c:600
+#: src/compose.c:616 src/compose.c:618 src/compose.c:620 src/mainwindow.c:456
+#: src/mainwindow.c:459 src/mainwindow.c:488 src/mainwindow.c:512
+#: src/mainwindow.c:594 src/mainwindow.c:598 src/messageview.c:238
 msgid "/_View/---"
 msgstr "/Изглед/---"
 
-#: src/compose.c:612
+#: src/compose.c:617
 msgid "/_View/_Followup to"
 msgstr "/Изглед/Продължи до"
 
-#: src/compose.c:614
+#: src/compose.c:619
 msgid "/_View/R_uler"
 msgstr "/Изглед/Линия"
 
-#: src/compose.c:616
+#: src/compose.c:621
 msgid "/_View/_Attachment"
 msgstr "/Изглед/Прикрепки"
 
-#: src/compose.c:618 src/mainwindow.c:603 src/messageview.c:153
+#: src/compose.c:623 src/mainwindow.c:601 src/messageview.c:242
 msgid "/_Message"
 msgstr "/Съобщение"
 
-#: src/compose.c:619
+#: src/compose.c:624
 msgid "/_Message/_Send"
 msgstr "/Съобщение/Изпрати"
 
-#: src/compose.c:621
+#: src/compose.c:626
 msgid "/_Message/Send _later"
 msgstr "/Съобщение/По-късно"
 
-#: src/compose.c:623 src/compose.c:629 src/compose.c:634 src/compose.c:636
-#: src/compose.c:640 src/compose.c:646 src/compose.c:653 src/mainwindow.c:608
-#: src/mainwindow.c:610 src/mainwindow.c:620 src/mainwindow.c:623
-#: src/mainwindow.c:625 src/mainwindow.c:630 src/messageview.c:161
-#: src/messageview.c:164
+#: src/compose.c:628 src/compose.c:634 src/compose.c:639 src/compose.c:641
+#: src/compose.c:645 src/compose.c:651 src/compose.c:658 src/mainwindow.c:606
+#: src/mainwindow.c:608 src/mainwindow.c:618 src/mainwindow.c:621
+#: src/mainwindow.c:623 src/mainwindow.c:628 src/messageview.c:245
+#: src/messageview.c:253 src/messageview.c:258
 msgid "/_Message/---"
 msgstr "/Съобщение/---"
 
-#: src/compose.c:624
+#: src/compose.c:629
 msgid "/_Message/Save to _draft folder"
 msgstr "/Съобщение/Запази при черновите"
 
-#: src/compose.c:626
+#: src/compose.c:631
 msgid "/_Message/Save and _keep editing"
 msgstr "/Съобщение/Запази и продължи редактирането"
 
-#: src/compose.c:630
+#: src/compose.c:635
 msgid "/_Message/_To"
 msgstr "/Съобщение/До"
 
-#: src/compose.c:631
+#: src/compose.c:636
 msgid "/_Message/_Cc"
 msgstr "/Съобщение/_Cc"
 
-#: src/compose.c:632
+#: src/compose.c:637
 msgid "/_Message/_Bcc"
 msgstr "/Съобщение/_Bcc"
 
-#: src/compose.c:633
+#: src/compose.c:638
 msgid "/_Message/_Reply to"
 msgstr "/Съобщение/Отговори на"
 
-#: src/compose.c:635
+#: src/compose.c:640
 msgid "/_Message/_Followup to"
 msgstr "/Изглед/Продължи до"
 
-#: src/compose.c:637
+#: src/compose.c:642
 msgid "/_Message/_Attach"
 msgstr "/Съобщение/Прикрепяне"
 
-#: src/compose.c:641
+#: src/compose.c:646
 msgid "/_Message/Si_gn"
 msgstr "/Съобщение/Подпиши"
 
-#: src/compose.c:642
+#: src/compose.c:647
 msgid "/_Message/_Encrypt"
 msgstr "/Съобщение/Криптирай"
 
-#: src/compose.c:643
+#: src/compose.c:648
 msgid "/_Message/Mode/MIME"
 msgstr "/_Съобщение/Режим/MIME"
 
-#: src/compose.c:644
+#: src/compose.c:649
 msgid "/_Message/Mode/Inline"
 msgstr "/_Съобщение/Режим/Inline"
 
-#: src/compose.c:647
+#: src/compose.c:652
 msgid "/_Message/_Priority"
 msgstr "/Съобщение/Приоритет"
 
-#: src/compose.c:648
+#: src/compose.c:653
 msgid "/_Message/Priority/_Highest"
 msgstr "/Съобщение/Приоритет/Най-висок"
 
-#: src/compose.c:649
+#: src/compose.c:654
 msgid "/_Message/Priority/Hi_gh"
 msgstr "/Съобщение/Приоритет/Висок"
 
-#: src/compose.c:650
+#: src/compose.c:655
 msgid "/_Message/Priority/_Normal"
 msgstr "/Съобщение/Приоритет/Нормален"
 
-#: src/compose.c:651
+#: src/compose.c:656
 msgid "/_Message/Priority/Lo_w"
 msgstr "/Съобщение/Приоритет/Нисък"
 
-#: src/compose.c:652
+#: src/compose.c:657
 msgid "/_Message/Priority/_Lowest"
 msgstr "/Съобщение/Приоритет/Най-нисък"
 
-#: src/compose.c:654
+#: src/compose.c:659
 msgid "/_Message/_Request Return Receipt"
 msgstr "/Съобщение/Поискай потвърждение"
 
-#: src/compose.c:655 src/mainwindow.c:640
+#: src/compose.c:660 src/mainwindow.c:638 src/messageview.c:261
 msgid "/_Tools"
 msgstr "/Инструменти"
 
-#: src/compose.c:656
+#: src/compose.c:661
 msgid "/_Tools/Show _ruler"
 msgstr "/Инструменти/Покажи линийката"
 
-#: src/compose.c:657
+#: src/compose.c:662 src/messageview.c:262
 msgid "/_Tools/_Address book"
 msgstr "/Инструменти/_Адресник"
 
-#: src/compose.c:658
+#: src/compose.c:663
 msgid "/_Tools/_Template"
 msgstr "/Инструменти/_Шаблон"
 
-#: src/compose.c:659 src/mainwindow.c:663
+#: src/compose.c:664 src/mainwindow.c:659 src/messageview.c:277
 msgid "/_Tools/Actio_ns"
 msgstr "/Иструменти/Действия"
 
-#: src/compose.c:1382
+#: src/compose.c:1387
 msgid "Reply-To:"
 msgstr "Reply-To:"
 
-#: src/compose.c:1385 src/compose.c:4375 src/compose.c:5079
+#: src/compose.c:1390 src/compose.c:4425 src/compose.c:5131
 #: src/headerview.c:56
 msgid "Newsgroups:"
 msgstr "Новинарски групи:"
 
-#: src/compose.c:1388
+#: src/compose.c:1393
 msgid "Followup-To:"
 msgstr "Followup-To:"
 
-#: src/compose.c:1682
+#: src/compose.c:1688
 msgid "Quote mark format error."
 msgstr "Грешка при формата на знака за цитиране."
 
-#: src/compose.c:1694
+#: src/compose.c:1704
 msgid "Message reply/forward format error."
 msgstr "Грешка при reply/forward формата."
 
-#: src/compose.c:2006
+#: src/compose.c:2040
 #, c-format
 msgid "File %s is empty."
 msgstr "Файла %s е празен."
 
-#: src/compose.c:2010
+#: src/compose.c:2044
 #, c-format
 msgid "Can't read %s."
 msgstr "Не мога да чета %s."
 
-#: src/compose.c:2038
+#: src/compose.c:2072
 #, c-format
 msgid "Message: %s"
 msgstr "Съобщение: %s"
 
-#: src/compose.c:2724
+#: src/compose.c:2762
 msgid " [Edited]"
 msgstr "[Редактирано]"
 
-#: src/compose.c:2726
+#: src/compose.c:2764
 #, c-format
 msgid "%s - Compose message%s"
 msgstr "%s - Съчини съобщение%s"
 
-#: src/compose.c:2729
+#: src/compose.c:2767
 #, c-format
 msgid "Compose message%s"
 msgstr "Съчини съобщение%s"
 
-#: src/compose.c:2753 src/compose.c:2996
+#: src/compose.c:2791 src/compose.c:3038
 msgid ""
 "Account for sending mail is not specified.\n"
 "Please select a mail account before sending."
@@ -1221,39 +1215,39 @@ msgstr ""
 "Акаунта за изпращане на поща не е уточнен.\n"
 "Моля изберете изберете акаунт преди изпращането."
 
-#: src/compose.c:2896
+#: src/compose.c:2938
 msgid "Recipient is not specified."
 msgstr "Получателя не е посочен"
 
-#: src/compose.c:2904 src/messageview.c:410 src/prefs_account.c:758
-#: src/prefs_common.c:1032 src/toolbar.c:350 src/toolbar.c:397
+#: src/compose.c:2946 src/messageview.c:576 src/prefs_account.c:748
+#: src/prefs_common.c:1027 src/toolbar.c:351 src/toolbar.c:398
 msgid "Send"
 msgstr "Изпрати"
 
-#: src/compose.c:2905
+#: src/compose.c:2947
 msgid "Subject is empty. Send it anyway?"
 msgstr "Няма Тема. Да пращам ли без Тема?"
 
-#: src/compose.c:2926
+#: src/compose.c:2968
 msgid "Could not queue message for sending"
 msgstr "Не мога да поставя съобщението в опашката за изпращане"
 
-#: src/compose.c:2931
+#: src/compose.c:2973
 msgid ""
 "The message was queued but could not be sent.\n"
 "Use \"Send queued messages\" from the main window to retry."
 msgstr ""
 
-#: src/compose.c:3012 src/procmsg.c:985
+#: src/compose.c:3054 src/procmsg.c:1097 src/send_message.c:235
 #, c-format
 msgid "Error occurred while posting the message to %s ."
 msgstr "Появи се грешка докато пращах съобщението до %s ."
 
-#: src/compose.c:3026 src/messageview.c:487
+#: src/compose.c:3068 src/messageview.c:653
 msgid "Queueing"
 msgstr "Изчаквам"
 
-#: src/compose.c:3027
+#: src/compose.c:3069
 msgid ""
 "Error occurred while sending the message.\n"
 "Put this message into queue folder?"
@@ -1261,24 +1255,24 @@ msgstr ""
 "Появи се грешка докато изпращах съобщението.\n"
 "Да сложа ли съобщението в папката на чакащите?"
 
-#: src/compose.c:3033
+#: src/compose.c:3075
 msgid "Can't queue the message."
 msgstr "Не мога да наредя съобщението."
 
-#: src/compose.c:3036
+#: src/compose.c:3078 src/send_message.c:582 src/send_message.c:594
 msgid "Error occurred while sending the message."
 msgstr "Появи се грешка докато изпращах съобщението."
 
-#: src/compose.c:3049
+#: src/compose.c:3091
 msgid "Can't save the message to Sent."
 msgstr "Не мога да запазя съобщението в папка Изпратени."
 
-#: src/compose.c:3278
+#: src/compose.c:3321
 #, c-format
 msgid "Could not find any key associated with currently selected key id `%s'."
 msgstr ""
 
-#: src/compose.c:3384
+#: src/compose.c:3427
 #, c-format
 msgid ""
 "Can't convert the character encoding of the message from\n"
@@ -1289,60 +1283,59 @@ msgstr ""
 "%s към %s.\n"
 "Да го изпратя ли все пак?"
 
-#: src/compose.c:3643
+#: src/compose.c:3686
 msgid "No account for sending mails available!"
 msgstr "Няма акаунт за изпращаня на мейл!"
 
-#: src/compose.c:3653
+#: src/compose.c:3696
 msgid "No account for posting news available!"
 msgstr "Няма акаунт за изпращане на новини!"
 
-#: src/compose.c:4455 src/headerview.c:54 src/summary_search.c:149
+#: src/compose.c:4505 src/headerview.c:54 src/summary_search.c:149
 msgid "From:"
 msgstr "От"
 
-#: src/compose.c:4559 src/compose.c:4729 src/compose.c:5595
+#: src/compose.c:4609 src/compose.c:4779 src/compose.c:5651
 msgid "MIME type"
 msgstr "MIME тип"
 
-#: src/compose.c:4560 src/compose.c:4730 src/mimeview.c:151
-#: src/prefs_summary_column.c:73 src/select-keys.c:299
-#: src/selective_download.c:812 src/summaryview.c:468
+#: src/compose.c:4610 src/compose.c:4780 src/mimeview.c:150
+#: src/prefs_summary_column.c:73 src/select-keys.c:299 src/summaryview.c:471
 msgid "Size"
 msgstr "Размер"
 
-#: src/compose.c:4624
+#: src/compose.c:4674
 msgid "Save Message to "
 msgstr "Запази съобщението в"
 
-#: src/compose.c:4644 src/prefs_filtering.c:496
+#: src/compose.c:4694 src/prefs_filtering.c:492
 msgid "Select ..."
 msgstr " Избери ... "
 
-#: src/compose.c:4780 src/prefs_account.c:1321 src/prefs_customheader.c:188
+#: src/compose.c:4830 src/prefs_account.c:1302 src/prefs_customheader.c:188
 #: src/prefs_matcher.c:146
 msgid "Header"
 msgstr "Заглавка"
 
-#: src/compose.c:4782 src/mimeview.c:198
+#: src/compose.c:4832 src/mimeview.c:197
 msgid "Attachments"
 msgstr "Прикрепки"
 
-#: src/compose.c:4784
+#: src/compose.c:4834
 msgid "Others"
 msgstr "Други"
 
-#: src/compose.c:4799 src/headerview.c:57 src/prefs_template.c:177
+#: src/compose.c:4849 src/headerview.c:57 src/prefs_template.c:177
 #: src/summary_search.c:163
 msgid "Subject:"
 msgstr "Тема:"
 
-#: src/compose.c:5032 src/exphtmldlg.c:450 src/gtk/colorlabel.c:279
-#: src/gtkaspell.c:1420 src/gtkaspell.c:2017 src/summaryview.c:4277
+#: src/compose.c:5084 src/exphtmldlg.c:450 src/gtk/colorlabel.c:279
+#: src/gtkaspell.c:1420 src/gtkaspell.c:2017 src/summaryview.c:4204
 msgid "None"
 msgstr "Никой"
 
-#: src/compose.c:5040
+#: src/compose.c:5092
 #, c-format
 msgid ""
 "Spell checker could not be started.\n"
@@ -1351,31 +1344,31 @@ msgstr ""
 "Проверката на правописа не може да бъде стартирана.\n"
 "%s"
 
-#: src/compose.c:5490
+#: src/compose.c:5546
 msgid "Invalid MIME type."
 msgstr "Невалиден MIME тип."
 
-#: src/compose.c:5508
+#: src/compose.c:5564
 msgid "File doesn't exist or is empty."
 msgstr "Файла не съществува или е празен."
 
-#: src/compose.c:5577
+#: src/compose.c:5633
 msgid "Properties"
 msgstr "Свойства"
 
-#: src/compose.c:5622
+#: src/compose.c:5678
 msgid "Encoding"
 msgstr "Енкодинг"
 
-#: src/compose.c:5653
+#: src/compose.c:5709
 msgid "Path"
 msgstr "Път"
 
-#: src/compose.c:5654 src/prefs_toolbar.c:803
+#: src/compose.c:5710 src/prefs_toolbar.c:808
 msgid "File name"
 msgstr "Име на файла"
 
-#: src/compose.c:5831
+#: src/compose.c:5887
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -1386,48 +1379,48 @@ msgstr ""
 "Принудително да прекратя процеса?\n"
 "process group id: %d"
 
-#: src/compose.c:6138 src/inc.c:165 src/inc.c:296 src/toolbar.c:1978
+#: src/compose.c:6194 src/inc.c:168 src/inc.c:274 src/toolbar.c:1979
 msgid "Offline warning"
 msgstr "Офлайн предупреждение"
 
-#: src/compose.c:6139 src/inc.c:166 src/inc.c:297 src/toolbar.c:1979
+#: src/compose.c:6195 src/inc.c:169 src/inc.c:275 src/toolbar.c:1980
 msgid "You're working offline. Override?"
 msgstr "Работите офлайн. Отмяна?"
 
-#: src/compose.c:6253 src/compose.c:6274
+#: src/compose.c:6309 src/compose.c:6330
 msgid "Select file"
 msgstr "Избери файл"
 
-#: src/compose.c:6309
+#: src/compose.c:6373
 msgid "Discard message"
 msgstr "Отхвърли съобщението"
 
-#: src/compose.c:6310
+#: src/compose.c:6374
 msgid "This message has been modified. discard it?"
 msgstr "Това съобщение беше променено. Да го отхвърля?"
 
-#: src/compose.c:6311
+#: src/compose.c:6375
 msgid "Discard"
 msgstr "Отхвърли"
 
-#: src/compose.c:6311
+#: src/compose.c:6375
 msgid "to Draft"
 msgstr "При Черновите"
 
-#: src/compose.c:6346
+#: src/compose.c:6410
 #, c-format
 msgid "Do you want to apply the template `%s' ?"
 msgstr "Искате да приложите този шаблона `%s' ?"
 
-#: src/compose.c:6348
+#: src/compose.c:6412
 msgid "Apply template"
 msgstr "Приложи шаблон"
 
-#: src/compose.c:6349
+#: src/compose.c:6413
 msgid "Replace"
 msgstr "Замени"
 
-#: src/compose.c:6349 src/toolbar.c:401
+#: src/compose.c:6413 src/toolbar.c:402
 msgid "Insert"
 msgstr "Вмъкни"
 
@@ -1561,7 +1554,7 @@ msgid " Check File "
 msgstr "Провери Файл "
 
 #: src/editbook.c:186 src/editjpilot.c:307 src/editvcard.c:222
-#: src/importmutt.c:270 src/importpine.c:270 src/prefs_account.c:1538
+#: src/importmutt.c:270 src/importpine.c:270 src/prefs_account.c:1519
 msgid "File"
 msgstr "Файл"
 
@@ -1609,20 +1602,20 @@ msgstr "Редактирай подробностите за Група"
 msgid "Add New Group"
 msgstr "Добави Нова Група"
 
-#: src/editgroup.c:503
+#: src/editgroup.c:504
 msgid "Edit folder"
 msgstr "Редактирай папка"
 
-#: src/editgroup.c:503
+#: src/editgroup.c:504
 msgid "Input the new name of folder:"
 msgstr "Въведи ново име за папката:"
 
-#: src/editgroup.c:506 src/folderview.c:1951 src/folderview.c:2003
-#: src/folderview.c:2276
+#: src/editgroup.c:507 src/folderview.c:1888 src/folderview.c:1940
+#: src/folderview.c:2213
 msgid "New folder"
 msgstr "Нова папка"
 
-#: src/editgroup.c:507 src/folderview.c:1952 src/folderview.c:2004
+#: src/editgroup.c:508 src/folderview.c:1889 src/folderview.c:1941
 msgid "Input the name of new folder:"
 msgstr "Въведи име за новата папка:"
 
@@ -1638,9 +1631,9 @@ msgstr "Избери JPilot файл"
 msgid "Edit JPilot Entry"
 msgstr "Редактирай JPilot данни"
 
-#: src/editjpilot.c:314 src/editldap.c:340 src/editvcard.c:229
+#: src/editjpilot.c:314 src/editldap.c:440 src/editvcard.c:229
 #: src/exphtmldlg.c:396 src/importldif.c:580 src/importmutt.c:277
-#: src/importpine.c:277 src/prefs_account.c:2101
+#: src/importpine.c:277 src/prefs_account.c:2071
 msgid " ... "
 msgstr " ... "
 
@@ -1652,67 +1645,91 @@ msgstr "Допълнителни e-Mail адрес атрибути"
 msgid "Add New JPilot Entry"
 msgstr "Add New JPilot Entry"
 
-#: src/editldap.c:164
+#: src/editldap.c:147
+msgid "A Name must be supplied."
+msgstr "Името трябва да се попълни."
+
+#: src/editldap.c:159
+msgid "A Hostname must be supplied for the server."
+msgstr "Името на хоста трябва да е попълнено."
+
+#: src/editldap.c:172
+msgid "At least one LDAP search attribute should be supplied."
+msgstr "Поне един LDAP атрибут трябва да се въведе."
+
+#: src/editldap.c:262
 msgid "Connected successfully to server"
 msgstr "Успешно се свърза със сървъра"
 
-#: src/editldap.c:167 src/editldap_basedn.c:290
+#: src/editldap.c:265 src/editldap_basedn.c:295
 msgid "Could not connect to server"
 msgstr "Не мога да се свържа със сървъра"
 
-#: src/editldap.c:215 src/editldap.c:535
+#: src/editldap.c:313 src/editldap.c:824
 msgid "Edit LDAP Server"
 msgstr "Редактирай LDAP Сървър"
 
-#: src/editldap.c:307 src/editldap_basedn.c:161
+#: src/editldap.c:404 src/editldap_basedn.c:161
 msgid "Hostname"
 msgstr "Hostname"
 
-#: src/editldap.c:316 src/editldap_basedn.c:171 src/ssl_manager.c:106
+#: src/editldap.c:414 src/editldap_basedn.c:171 src/ssl_manager.c:106
 msgid "Port"
 msgstr "Порт"
 
-#: src/editldap.c:328
+#: src/editldap.c:427
 msgid " Check Server "
 msgstr "Провери сървъра"
 
-#: src/editldap.c:333 src/editldap_basedn.c:181
+#: src/editldap.c:432 src/editldap_basedn.c:181
 msgid "Search Base"
 msgstr "Търси Основно"
 
-#: src/editldap.c:390
-msgid "Search Criteria"
-msgstr "Търси Критерий"
+#: src/editldap.c:488
+msgid "Search Attributes"
+msgstr "Атрибути за търсене"
 
-#: src/editldap.c:397
-msgid " Reset "
-msgstr " Промени "
+#: src/editldap.c:496
+msgid " Defaults "
+msgstr " По подразбиране "
 
-#: src/editldap.c:402
+#: src/editldap.c:501
+msgid "Max Query Age (secs)"
+msgstr ""
+
+#: src/editldap.c:518
+msgid "Include server in dynamic search"
+msgstr "Включи сървъра в динамичното търсене"
+
+#: src/editldap.c:565
 msgid "Bind DN"
 msgstr "Bind DN"
 
-#: src/editldap.c:411
+#: src/editldap.c:575
 msgid "Bind Password"
 msgstr "Bind Password"
 
-#: src/editldap.c:420
+#: src/editldap.c:585
 msgid "Timeout (secs)"
 msgstr "Прекъсване (секунди)"
 
-#: src/editldap.c:434
+#: src/editldap.c:600
 msgid "Maximum Entries"
 msgstr "Максимум Entries"
 
-#: src/editldap.c:461 src/prefs_account.c:754
+#: src/editldap.c:625 src/prefs_account.c:744
 msgid "Basic"
 msgstr "Основни"
 
-#: src/editldap.c:462 src/summaryview.c:642
+#: src/editldap.c:626 src/message_search.c:133 src/summary_search.c:206
+msgid "Search"
+msgstr "Търсене"
+
+#: src/editldap.c:627 src/summaryview.c:645
 msgid "Extended"
 msgstr "Разширени"
 
-#: src/editldap.c:547
+#: src/editldap.c:829
 msgid "Add New LDAP Server"
 msgstr "Добаво нов LDAP Сървър"
 
@@ -1724,7 +1741,7 @@ msgstr "Редактирай LDAP - Избери Search Base"
 msgid "Available Search Base(s)"
 msgstr "Възможни Search Base(s)"
 
-#: src/editldap_basedn.c:286
+#: src/editldap_basedn.c:291
 msgid "Could not read Search Base(s) from server - please set manually"
 msgstr "Could not read Search Base(s) from server - моля въведете ръчно"
 
@@ -1794,7 +1811,7 @@ msgstr "HTML Output Файл"
 msgid "Stylesheet"
 msgstr "Stylesheet"
 
-#: src/exphtmldlg.c:456 src/prefs_common.c:3766 src/prefs_common.c:4101
+#: src/exphtmldlg.c:456 src/prefs_common.c:3743 src/prefs_common.c:4025
 msgid "Default"
 msgstr "По подразбиране"
 
@@ -1858,8 +1875,8 @@ msgstr "Изнеси Адресника в HTML файл"
 msgid "Prev"
 msgstr "Предишен"
 
-#: src/exphtmldlg.c:663 src/importldif.c:824 src/toolbar.c:360
-#: src/toolbar.c:451
+#: src/exphtmldlg.c:663 src/importldif.c:824 src/toolbar.c:361
+#: src/toolbar.c:452
 msgid "Next"
 msgstr "Следващ"
 
@@ -1888,7 +1905,7 @@ msgid "Exporting file:"
 msgstr "Изнасям файл:"
 
 #: src/export.c:174 src/export.c:180 src/import.c:177 src/import.c:183
-#: src/prefs_account.c:1224
+#: src/prefs_account.c:1205
 msgid " Select... "
 msgstr " Избери... "
 
@@ -1924,40 +1941,40 @@ msgstr "Името е твърде дълго."
 msgid "Not specified."
 msgstr "Не е посочен."
 
+#: src/folder.c:679
+msgid "Inbox"
+msgstr "Входящи"
+
+#: src/folder.c:683
+msgid "Sent"
+msgstr "Изпратени"
+
+#: src/folder.c:687
+msgid "Queue"
+msgstr "Чакащи"
+
+#: src/folder.c:691
+msgid "Trash"
+msgstr "Кошче"
+
+#: src/folder.c:695
+msgid "Drafts"
+msgstr "Чернови"
+
 # c-format
-#: src/folder.c:960
+#: src/folder.c:976
 #, c-format
 msgid "Processing (%s)...\n"
 msgstr "Обработвам (%s)...\n"
 
-#: src/folder.c:1572
+#: src/folder.c:1665
 #, c-format
-msgid "Moving %s to %s (%d%%)...\n"
-msgstr "Местя %s в %s (%d%%)...\n"
+msgid "Moving %s to %s...\n"
+msgstr "Местя %s в %s...\n"
 
 #: src/foldersel.c:146
 msgid "Select folder"
 msgstr "Избери папка"
-
-#: src/foldersel.c:223 src/folderview.c:1107
-msgid "Inbox"
-msgstr "Входящи"
-
-#: src/foldersel.c:226 src/folderview.c:1123
-msgid "Sent"
-msgstr "Изпратени"
-
-#: src/foldersel.c:229 src/folderview.c:1139
-msgid "Queue"
-msgstr "Чакащи"
-
-#: src/foldersel.c:232 src/folderview.c:1155
-msgid "Trash"
-msgstr "Кошче"
-
-#: src/foldersel.c:235 src/folderview.c:1164
-msgid "Drafts"
-msgstr "Чернови"
 
 #: src/folderview.c:280 src/folderview.c:296 src/folderview.c:317
 msgid "/Create _new folder..."
@@ -2032,7 +2049,7 @@ msgstr "Нови"
 msgid "Unread"
 msgstr "Непрочетени"
 
-#: src/folderview.c:377 src/selective_download.c:800
+#: src/folderview.c:377
 msgid "#"
 msgstr "#"
 
@@ -2040,67 +2057,67 @@ msgstr "#"
 msgid "Setting folder info..."
 msgstr "Настройвам информацията за папка..."
 
-#: src/folderview.c:805 src/mainwindow.c:2659 src/setup.c:81
+#: src/folderview.c:780 src/mainwindow.c:2641 src/setup.c:79
 #, c-format
 msgid "Scanning folder %s%c%s ..."
 msgstr "Сканирам папка %s%c%s ..."
 
-#: src/folderview.c:809 src/mainwindow.c:2664 src/setup.c:86
+#: src/folderview.c:784 src/mainwindow.c:2646 src/setup.c:84
 #, c-format
 msgid "Scanning folder %s ..."
 msgstr "Сканирам папка %s ..."
 
-#: src/folderview.c:850
+#: src/folderview.c:825
 msgid "Rebuilding folder tree..."
 msgstr "Генерирам отново дървото на папката..."
 
-#: src/folderview.c:871
+#: src/folderview.c:846
 msgid "Rescanning all folder trees..."
 msgstr "Препрочитам всички папки..."
 
-#: src/folderview.c:968
+#: src/folderview.c:943
 msgid "Checking for new messages in all folders..."
 msgstr "Проверявам за нови съобщения във всички папки..."
 
-#: src/folderview.c:1756
+#: src/folderview.c:1693
 #, c-format
 msgid "Opening Folder %s..."
 msgstr "Отварям папка %s ..."
 
-#: src/folderview.c:1768
+#: src/folderview.c:1705
 msgid "Folder could not be opened."
 msgstr "Папката ме може да бъде отворена."
 
-#: src/folderview.c:1953 src/folderview.c:2005 src/folderview.c:2280
+#: src/folderview.c:1890 src/folderview.c:1942 src/folderview.c:2217
 msgid "NewFolder"
 msgstr "НоваПапка"
 
-#: src/folderview.c:1958 src/folderview.c:2054 src/folderview.c:2285
+#: src/folderview.c:1895 src/folderview.c:1991 src/folderview.c:2222
 #, c-format
 msgid "`%c' can't be included in folder name."
 msgstr "`%c' не може да се съдържа в името на папка."
 
-#: src/folderview.c:1971 src/folderview.c:2010 src/folderview.c:2064
-#: src/folderview.c:2134 src/folderview.c:2297
+#: src/folderview.c:1908 src/folderview.c:1947 src/folderview.c:2001
+#: src/folderview.c:2071 src/folderview.c:2234
 #, c-format
 msgid "The folder `%s' already exists."
 msgstr "Папката `%s' вече съществува."
 
-#: src/folderview.c:1978 src/folderview.c:2304
+#: src/folderview.c:1915 src/folderview.c:2241
 #, c-format
 msgid "Can't create the folder `%s'."
 msgstr "Не мога да създам папка `%s'."
 
-#: src/folderview.c:2047 src/folderview.c:2124
+#: src/folderview.c:1984 src/folderview.c:2061
 #, c-format
 msgid "Input new name for `%s':"
 msgstr "Въведи ново име за `%s':"
 
-#: src/folderview.c:2048 src/folderview.c:2126
+#: src/folderview.c:1985 src/folderview.c:2063
 msgid "Rename folder"
 msgstr "Преименуваи папка"
 
-#: src/folderview.c:2184
+#: src/folderview.c:2121
 #, c-format
 msgid ""
 "All folder(s) and message(s) under `%s' will be deleted.\n"
@@ -2109,16 +2126,16 @@ msgstr ""
 "Всички папки и съобщения под `%s' ще бъдат изтрити.\n"
 "Наистина ли искате да ги изтрия?"
 
-#: src/folderview.c:2186
+#: src/folderview.c:2123
 msgid "Delete folder"
 msgstr "Изтривам папка"
 
-#: src/folderview.c:2195
+#: src/folderview.c:2132
 #, c-format
 msgid "Can't remove the folder `%s'."
 msgstr "Не мога да махна папка `%s'."
 
-#: src/folderview.c:2243
+#: src/folderview.c:2180
 #, c-format
 msgid ""
 "Really remove the mailbox `%s' ?\n"
@@ -2127,11 +2144,11 @@ msgstr ""
 "Наистина ли да махна пощенската кутия `%s' ?\n"
 "(Съобщенията НЕ са изтрити от диска)"
 
-#: src/folderview.c:2245
+#: src/folderview.c:2182
 msgid "Remove mailbox"
 msgstr "Махни пощенска кутия"
 
-#: src/folderview.c:2277
+#: src/folderview.c:2214
 msgid ""
 "Input the name of new folder:\n"
 "(if you want to create a folder to store subfolders,\n"
@@ -2141,51 +2158,51 @@ msgstr ""
 "(ако искате да създадете папка която да съдържа подпапки,\n"
 " добавете `/' на края на името)"
 
-#: src/folderview.c:2336
+#: src/folderview.c:2273
 #, c-format
 msgid "Really delete IMAP4 account `%s'?"
 msgstr "Наистина ли да изтрия IMAP4 акунта `%s'?"
 
-#: src/folderview.c:2337
+#: src/folderview.c:2274
 msgid "Delete IMAP4 account"
 msgstr "Изтрий IMAP4 акаунт"
 
-#: src/folderview.c:2471
+#: src/folderview.c:2408
 #, c-format
 msgid "Really delete newsgroup `%s'?"
 msgstr "Наистина ли да изтрия новинарската група `%s'?"
 
-#: src/folderview.c:2472
+#: src/folderview.c:2409
 msgid "Delete newsgroup"
 msgstr "Изтрий новинарската група"
 
-#: src/folderview.c:2510
+#: src/folderview.c:2447
 #, c-format
 msgid "Really delete news account `%s'?"
 msgstr "Наистина ли да изтрия новинарския акаунт `%s'?"
 
-#: src/folderview.c:2511
+#: src/folderview.c:2448
 msgid "Delete news account"
 msgstr "Изтрий новинарския акаунт"
 
-#: src/folderview.c:2608
+#: src/folderview.c:2545
 #, c-format
 msgid "Moving %s to %s..."
 msgstr "Местя %s в %s..."
 
-#: src/folderview.c:2638
+#: src/folderview.c:2581
 msgid "Source and destination are the same."
 msgstr "Източника и дестинацията са едни и същи."
 
-#: src/folderview.c:2641
+#: src/folderview.c:2584
 msgid "Can't move a folder to one of its children."
 msgstr "Не мога да преместя папка в нейна под-папка."
 
-#: src/folderview.c:2644
+#: src/folderview.c:2587
 msgid "Folder moving cannot be done between different mailboxes."
 msgstr "Местенето на директории от различни пощенски кутии е невъзможно."
 
-#: src/folderview.c:2647
+#: src/folderview.c:2590
 msgid "Move failed!"
 msgstr "Местенето не завърши с успех!"
 
@@ -2262,12 +2279,7 @@ msgstr ""
 msgid "Compiled-in features:%s"
 msgstr ""
 
-#: src/gtk/about.c:166
-#, c-format
-msgid "Compiled plugins:%s"
-msgstr ""
-
-#: src/gtk/about.c:220
+#: src/gtk/about.c:210
 msgid ""
 "GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>\n"
 "\n"
@@ -2275,7 +2287,7 @@ msgstr ""
 "GPGME е запазена марка на Werner Koch <dd9jn@gnu.org>\n"
 "\n"
 
-#: src/gtk/about.c:224
+#: src/gtk/about.c:214
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License as published by the Free "
@@ -2288,7 +2300,7 @@ msgstr ""
 "от Free Software Foundation; версия 2 или по-нова.\n"
 "\n"
 
-#: src/gtk/about.c:230
+#: src/gtk/about.c:220
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -2301,7 +2313,7 @@ msgstr ""
 "за повече подробности.\n"
 "\n"
 
-#: src/gtk/about.c:236
+#: src/gtk/about.c:226
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "this program; if not, write to the Free Software Foundation, Inc., 59 Temple "
@@ -2351,7 +2363,7 @@ msgstr "Избири плъгин за зареждане"
 msgid "Plugins"
 msgstr "Плъгини"
 
-#: src/gtk/pluginwindow.c:190 src/prefs_common.c:3226
+#: src/gtk/pluginwindow.c:190 src/prefs_common.c:3203
 msgid "Description"
 msgstr "Описание"
 
@@ -2363,15 +2375,15 @@ msgstr "Зареди плъгин"
 msgid "Unload Plugin"
 msgstr "Разреди плъгин"
 
-#: src/gtk/prefswindow.c:173
+#: src/gtk/prefswindow.c:178
 msgid "Page Index"
 msgstr ""
 
-#: src/gtk/prefswindow.c:184
+#: src/gtk/prefswindow.c:186
 msgid "Preferences"
 msgstr "Предпочитания"
 
-#: src/gtk/prefswindow.c:260 src/prefs_gtk.c:450
+#: src/gtk/prefswindow.c:262 src/prefs_gtk.c:450
 msgid "Apply"
 msgstr "Приложи"
 
@@ -2544,7 +2556,7 @@ msgstr "Речник: %s"
 msgid "Use alternate (%s)"
 msgstr "Ползвай заместител (%s)"
 
-#: src/gtkaspell.c:1867 src/prefs_common.c:1628
+#: src/gtkaspell.c:1867 src/prefs_common.c:1685
 msgid "Check while typing"
 msgstr "Проверявай докато се пише"
 
@@ -2561,144 +2573,145 @@ msgstr ""
 "Този спелчекър не може да сменя речника.\n"
 "%s"
 
-#: src/headerview.c:181 src/summaryview.c:2372
+#: src/headerview.c:181 src/summaryview.c:2370
 msgid "(No From)"
 msgstr "(Няма ОТ)"
 
-#: src/headerview.c:202 src/summaryview.c:2415 src/summaryview.c:2418
+#: src/headerview.c:202 src/summaryview.c:2412 src/summaryview.c:2415
 msgid "(No Subject)"
 msgstr "(Няма Тема)"
 
-#: src/imap.c:461
+#: src/imap.c:501
 #, c-format
 msgid "Connecting %s:%d failed"
 msgstr "Връзката към %s:%d неуспешна"
 
-#: src/imap.c:466
+#: src/imap.c:506
 #, c-format
 msgid "IMAP4 connection to %s:%d has been disconnected. Reconnecting...\n"
 msgstr "IMAP4 връзката с %s:%d беше прекратена. Повторно свързване...\n"
 
-#: src/imap.c:507
+#: src/imap.c:547
 msgid "creating tunneled IMAP4 connection\n"
 msgstr "създавам тунелна IMAP4 връзка\n"
 
-#: src/imap.c:520
+#: src/imap.c:560
 #, c-format
 msgid "creating IMAP4 connection to %s:%d ...\n"
 msgstr "създавам IMAP4 връзка с %s:%d ... \n"
 
-#: src/imap.c:954 src/imap.c:1001
+#: src/imap.c:815
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "не мога да сетна изтритите флагове: %d\n"
 
-#: src/imap.c:960 src/imap.c:1008 src/imap.c:1056
+#: src/imap.c:821 src/imap.c:864
 msgid "can't expunge\n"
 msgstr "не мога да залича\n"
 
-#: src/imap.c:1050
+#: src/imap.c:858
 #, c-format
 msgid "can't set deleted flags: 1:%d\n"
 msgstr "не мога да сетна изтритите флагове: 1:%d\n"
 
-#: src/imap.c:1240
-msgid "error occured while getting LIST.\n"
-msgstr "Появи се грешка докато получавах LIST.\n"
+#: src/imap.c:1048
+msgid "error occurred while getting LIST.\n"
+msgstr "появи се грешка докато получавах LIST.\n"
 
-#: src/imap.c:1426
+#: src/imap.c:1234
 msgid "can't create mailbox: LIST failed\n"
 msgstr "не мога да създам пощенска кутия: LIST се издъни\n"
 
-#: src/imap.c:1448
+#: src/imap.c:1256
 msgid "can't create mailbox\n"
 msgstr "не мога да създам пощенска кутия\n"
 
-#: src/imap.c:1517
+#: src/imap.c:1325
 #, c-format
 msgid "can't rename mailbox: %s to %s\n"
 msgstr "не мога да преименувам пощенска кутия: %s в %s\n"
 
-#: src/imap.c:1581
+#: src/imap.c:1389
 msgid "can't delete mailbox\n"
 msgstr "не мога да изтрия пощенска кутия\n"
 
-#: src/imap.c:1614
+#: src/imap.c:1421
 msgid "can't get envelope\n"
 msgstr "не мога да взема обвивката.\n"
 
-#: src/imap.c:1622
+#: src/imap.c:1429
 msgid "error occurred while getting envelope.\n"
 msgstr "появи се грешка докато получавах обвивката.\n"
 
-#: src/imap.c:1644
+#: src/imap.c:1451
 #, c-format
 msgid "can't parse envelope: %s\n"
 msgstr "не мога да разбера обвивката: %s\n"
 
-#: src/imap.c:1698
+#: src/imap.c:1505
 #, c-format
 msgid "Can't establish IMAP4 session with: %s\n"
 msgstr "Не мога да установя IMAP4 сесия с: %s\n"
 
-#: src/imap.c:1719
+#: src/imap.c:1527
 #, c-format
 msgid "Can't connect to IMAP4 server: %s:%d\n"
 msgstr "Не мога да се свържа с IMAP4 сървъра: %s:%d\n"
 
-#: src/imap.c:1726
+#: src/imap.c:1534
 #, c-format
 msgid "Can't establish IMAP4 session with: %s:%d\n"
 msgstr "Не мога да установя IMAP4 сесия с: %s:%d\n"
 
-#: src/imap.c:1750
+#: src/imap.c:1558
 msgid "Can't start TLS session.\n"
 msgstr "Не мога да стартирам TLS сесия.\n"
 
-#: src/imap.c:1762
-msgid "Can't establish IMAP4 session.\n"
-msgstr "Не мога да установя IMAP4 сесия.\n"
-
-#: src/imap.c:1841
+#: src/imap.c:1643
 msgid "can't get namespace\n"
 msgstr "не мога да взема namespace\n"
 
-#: src/imap.c:2318
+#: src/imap.c:2051
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "не мога да избера папка: %s\n"
 
-#: src/imap.c:2408
+#: src/imap.c:2141
 msgid "IMAP4 login failed.\n"
 msgstr "IMAP4 логването се провали.\n"
 
-#: src/imap.c:2767
+#: src/imap.c:2544
 #, c-format
 msgid "can't append %s to %s\n"
 msgstr "не мога да прикрепа %s към %s\n"
 
-#: src/imap.c:2774
+#: src/imap.c:2551
 msgid "(sending file...)"
 msgstr "(изпращам файла...)"
 
-#: src/imap.c:2851
+#: src/imap.c:2576
+#, c-format
+msgid "can't append message to %s\n"
+msgstr "не мога да прикрепя съобщението към %s\n"
+
+#: src/imap.c:2613
 #, c-format
 msgid "can't copy %d to %s\n"
 msgstr "не мога да копирам %d в %s\n"
 
-#: src/imap.c:2910
+#: src/imap.c:2671
 #, c-format
-msgid "error while imap command: STORE %d:%d %s\n"
-msgstr "грешка при imap команда: STORE %d:%d %s\n"
+msgid "error while imap command: STORE %s %s\n"
+msgstr "грешка при imap команда: STORE %s %s\n"
 
-#: src/imap.c:2924
+#: src/imap.c:2685
 msgid "error while imap command: EXPUNGE\n"
 msgstr "грешка при imap команда: EXPUNGE\n"
 
-#: src/imap.c:3149
+#: src/imap.c:2911
 #, c-format
 msgid "iconv cannot convert UTF-7 to %s\n"
-msgstr ""
+msgstr "iconv не може да конвертира UTF-7 към %s\n"
 
 #: src/import.c:130
 msgid "Import"
@@ -2752,7 +2765,7 @@ msgstr "LDIF файла е внесен успешно."
 msgid "Select LDIF File"
 msgstr "Избери LDIF Файл"
 
-#: src/importldif.c:612 src/summaryview.c:463
+#: src/importldif.c:612 src/summaryview.c:466
 msgid "S"
 msgstr "S"
 
@@ -2813,141 +2826,164 @@ msgstr "Избери Pine файл"
 msgid "Import Pine file into Address Book"
 msgstr "Внеси Pine файл в Адресника"
 
-#: src/inc.c:269 src/inc.c:366 src/send.c:396
+#: src/inc.c:247 src/inc.c:345
 msgid "Standby"
 msgstr "Готовност"
 
-#: src/inc.c:389
+#: src/inc.c:368
 msgid "Retrieving new messages"
 msgstr "Получавам нови съобщения"
 
-#: src/inc.c:521
+#: src/inc.c:501
 msgid "Retrieving"
 msgstr "Получавам"
 
-#: src/inc.c:530
+#: src/inc.c:517
 #, c-format
 msgid "Done (%d message(s) (%s) received)"
 msgstr "Готово (%d съобщение(я) (%s) получени)"
 
-#: src/inc.c:534
+#: src/inc.c:521
 msgid "Done (no new messages)"
 msgstr "Готово (няма нови съобщения)"
 
-#: src/inc.c:541
+#: src/inc.c:528
 msgid "Connection failed"
 msgstr "Връзката се разпадна"
 
-#: src/inc.c:545
+#: src/inc.c:532
 msgid "Auth failed"
 msgstr "Аутентификацията не беше успешна"
 
-#: src/inc.c:549 src/prefs_summary_column.c:76
+#: src/inc.c:536 src/prefs_summary_column.c:76
 msgid "Locked"
 msgstr "Заключен"
 
-#: src/inc.c:560
+#: src/inc.c:547
 msgid "Cancelled"
 msgstr "Отказано"
 
-#: src/inc.c:573
+#: src/inc.c:560
 #, c-format
 msgid "Authorization for %s on %s failed"
 msgstr "Ауторизацията за %s на %s se провали"
 
-#: src/inc.c:649
+#: src/inc.c:629
 #, c-format
 msgid "Finished (%d new message(s))"
 msgstr "Завърших (%d нови съобщения)"
 
-#: src/inc.c:652
+#: src/inc.c:632
 msgid "Finished (no new messages)"
 msgstr "Завърших (няма нови съобщения)"
 
-#: src/inc.c:660
+#: src/inc.c:640
 msgid "Some errors occurred while getting mail."
 msgstr "Някои грешки възникнаха докато получавах поща."
 
-#: src/inc.c:724
+#: src/inc.c:678
 #, c-format
 msgid "%s: Retrieving new messages"
 msgstr "%s: Получавам нови съобщения"
 
-#: src/inc.c:753
+#: src/inc.c:695
 #, c-format
 msgid "Connecting to POP3 server: %s ..."
 msgstr "Свързвам се с POP3 сървъра: %s ..."
 
-#: src/inc.c:765
+#: src/inc.c:705
 #, c-format
 msgid "Can't connect to POP3 server: %s:%d\n"
 msgstr "Не мога да се свържа с POP3 сървъра: %s:%d\n"
 
-#: src/inc.c:772
+#: src/inc.c:712
 #, c-format
 msgid "Can't connect to POP3 server: %s:%d"
 msgstr "Не мога да се свържа с POP3 сървъра: %s:%d"
 
-#: src/inc.c:888 src/inc.c:957
+#: src/inc.c:784
 #, c-format
 msgid "Retrieving message (%d / %d) (%s / %s)"
 msgstr "Получавам съобщение (%d / %d) (%s / %s)"
 
-#: src/inc.c:921 src/send.c:631
+#: src/inc.c:828 src/send_message.c:463
 msgid "Authenticating..."
 msgstr "Удостоверявам..."
 
-#: src/inc.c:925
+#: src/inc.c:832
 msgid "Getting the number of new messages (STAT)..."
 msgstr "Взимам бройката на новите съобщения (STAT)..."
 
-#: src/inc.c:929
+#: src/inc.c:836
 msgid "Getting the number of new messages (LAST)..."
 msgstr "Взимам бройката на новите съобщения (LAST)..."
 
-#: src/inc.c:933
+#: src/inc.c:840
 msgid "Getting the number of new messages (UIDL)..."
 msgstr "Взимам бройката на новите съобщения (UIDL)..."
 
-#: src/inc.c:937
+#: src/inc.c:844
 msgid "Getting the size of messages (LIST)..."
 msgstr "Взимам размера на съобщенията (LIST)..."
 
-#: src/inc.c:941
-#, c-format
-msgid "Retrieving header (%d / %d)"
-msgstr "Получавам заглавка (%d / %d)"
-
-#: src/inc.c:974
+#: src/inc.c:854
 #, c-format
 msgid "Deleting message %d"
 msgstr "Изтривам съобщение %d"
 
-#: src/inc.c:980 src/send.c:649
+#: src/inc.c:860 src/send_message.c:481
 msgid "Quitting"
 msgstr "Прекъсвам"
 
-#: src/inc.c:1025
+#: src/inc.c:908
+#, c-format
+msgid ""
+"Error occurred while processing mail:\n"
+"%s"
+msgstr "Получи се грешка докато обработвах пощата:\n."
+"%s"
+
+#: src/inc.c:910
 msgid "Error occurred while processing mail."
 msgstr "Получи се грешка докато обработвах пощата."
 
-#: src/inc.c:1028
+#: src/inc.c:913
 msgid "No disk space left."
 msgstr "Няма свободно място на диска."
 
-#: src/inc.c:1031
+#: src/inc.c:916
 msgid "Can't write file."
 msgstr "Не мога да запиша във файл."
 
-#: src/inc.c:1034
+#: src/inc.c:921
 msgid "Socket error."
 msgstr "Socket error."
 
-#: src/inc.c:1038
+#: src/inc.c:927
+#, c-format
+msgid ""
+"Mailbox is locked:\n"
+"%s"
+msgstr "Пощенската кутия е заключена:\n"
+"%s"
+
+#: src/inc.c:929
 msgid "Mailbox is locked."
 msgstr "Пощенската кутия е заключена."
 
-#: src/inc.c:1066
+#: src/inc.c:935 src/send_message.c:587
+#, c-format
+msgid ""
+"Authentication failed:\n"
+"%s"
+msgstr "Аутентификация е неуспешна:\n"
+"%s"
+
+#: src/inc.c:938 src/send_message.c:590
+msgid "Authentication failed."
+msgstr "Аутентификация е неуспешна"
+
+#: src/inc.c:960
 msgid "Incorporation cancelled\n"
 msgstr "Обединяването е прекратено\n"
 
@@ -2964,7 +3000,7 @@ msgstr "Въведи парола"
 msgid "Protocol log"
 msgstr "Protocol лог"
 
-#: src/main.c:142 src/main.c:151
+#: src/main.c:143 src/main.c:152
 #, c-format
 msgid ""
 "File `%s' already exists.\n"
@@ -2973,11 +3009,11 @@ msgstr ""
 "Файла '%s' вече съществува.\n"
 "Не мога да създам папка."
 
-#: src/main.c:206
+#: src/main.c:208
 msgid "g_thread is not supported by glib.\n"
 msgstr "g_thread не се поддържа от glib.\n"
 
-#: src/main.c:261
+#: src/main.c:264
 msgid ""
 "GnuPG is not installed properly, or needs to be upgraded.\n"
 "OpenPGP support disabled."
@@ -2985,16 +3021,16 @@ msgstr ""
 "GnuPG не е инсталиран правилно, или трябва да се обнови.\n"
 "OpenPGP подръжката не е активирана."
 
-#: src/main.c:424
+#: src/main.c:431
 #, c-format
 msgid "Usage: %s [OPTION]...\n"
 msgstr "Ползване: %s [Опция]....\n"
 
-#: src/main.c:427
+#: src/main.c:434
 msgid "  --compose [address]    open composition window"
 msgstr " --compose [адрес]\t\tотваря прозорец за композиране"
 
-#: src/main.c:428
+#: src/main.c:435
 msgid ""
 "  --attach file1 [file2]...\n"
 "                         open composition window with specified files\n"
@@ -3004,734 +3040,733 @@ msgstr ""
 "                         отваря прозорец за композиране със зададените\n"
 "                         прикачени файлове"
 
-#: src/main.c:431
+#: src/main.c:438
 msgid "  --receive              receive new messages"
 msgstr "  --receive\t\tполучаване на нови съобщения"
 
-#: src/main.c:432
+#: src/main.c:439
 msgid "  --receive-all          receive new messages of all accounts"
 msgstr "  --receive-all\t\tполучаване на новите съобщения от всички акаунти"
 
-#: src/main.c:433
+#: src/main.c:440
 msgid "  --send                 send all queued messages"
 msgstr "  --send\t\tизпраща всички чакащи съобщения"
 
-#: src/main.c:434
+#: src/main.c:441
 msgid "  --status               show the total number of messages"
 msgstr "  --status\t\tпоказва общия брой на съобщенията"
 
-#: src/main.c:435
+#: src/main.c:442
 msgid "  --online               switch to online mode"
 msgstr "  --debug\t\tпреминава в онлайн режим"
 
-#: src/main.c:436
+#: src/main.c:443
 msgid "  --offline              switch to offline mode"
 msgstr "  --debug\t\tпреминава в офлайн режим"
 
-#: src/main.c:437
+#: src/main.c:444
 msgid "  --debug                debug mode"
 msgstr "  --debug\t\tдебъг режим"
 
-#: src/main.c:438
+#: src/main.c:445
 msgid "  --help                 display this help and exit"
 msgstr "  --help\t\tпокажи тази помощ и излез"
 
-#: src/main.c:439
+#: src/main.c:446
 msgid "  --version              output version information and exit"
 msgstr "  --version\t\tотпечатай информация за версията и излез"
 
-#: src/main.c:480 src/summaryview.c:5209
+#: src/main.c:487 src/summaryview.c:5145
 #, c-format
 msgid "Processing (%s)..."
 msgstr "Обработвам (%s)..."
 
-#: src/main.c:483
+#: src/main.c:490
 msgid "top level folder"
 msgstr "Главна папка"
 
-#: src/main.c:531
+#: src/main.c:555
 msgid "Composing message exists."
 msgstr "Съставяното съобщение съществува."
 
-#: src/main.c:532
+#: src/main.c:556
 msgid "Draft them"
 msgstr "Постави като Чернови"
 
-#: src/main.c:532
+#: src/main.c:556
 msgid "Discard them"
 msgstr "Отхвърли"
 
-#: src/main.c:532
+#: src/main.c:556
 msgid "Don't quit"
 msgstr "Не излизай"
 
-#: src/main.c:546
+#: src/main.c:570
 msgid "Queued messages"
 msgstr "Съобщения на опашка"
 
-#: src/main.c:547
+#: src/main.c:571
 msgid "Some unsent messages are queued. Exit now?"
 msgstr "Някои неизпратени съобщения за чакащи. Да излезна сега?"
 
-#: src/main.c:801 src/toolbar.c:1989
+#: src/main.c:827
 msgid "Some errors occurred while sending queued messages."
 msgstr "Появиха се някои грешки докато изпращам чакащите съобщения."
 
-#: src/mainwindow.c:412
-msgid "/_File/_Add mailbox..."
-msgstr "/Файл/Добави пощенска кутия.."
-
-#: src/mainwindow.c:413
-msgid "/_File/_Add mbox mailbox..."
-msgstr "/Файл/Добави mbox пощенска кутия..."
-
-#: src/mainwindow.c:414
-msgid "/_File/_Check for new messages in all folders"
-msgstr "/Файл/Провери за нови съобщения във всички папки"
-
-#: src/mainwindow.c:416
+#: src/mainwindow.c:409
 msgid "/_File/_Folder"
 msgstr "/Файл/Папка"
 
-#: src/mainwindow.c:417
+#: src/mainwindow.c:410
 msgid "/_File/_Folder/Create _new folder..."
 msgstr "/Файл/Папка/Създай нова папка..."
 
-#: src/mainwindow.c:419
+#: src/mainwindow.c:412
 msgid "/_File/_Folder/_Rename folder..."
 msgstr "/Файл/Папка/Преименувай папка..."
 
-#: src/mainwindow.c:420
+#: src/mainwindow.c:413
 msgid "/_File/_Folder/_Delete folder"
 msgstr "/Файл/Папка/Изтрий папка"
 
-#: src/mainwindow.c:421
+#: src/mainwindow.c:414
+msgid "/_File/_Folder/---"
+msgstr "/Файл/Папка/---"
+
+#: src/mainwindow.c:415
+msgid "/_File/_Folder/_Check for new messages in all folders"
+msgstr "/Файл/Папка/Провери за нови съобщения във всички папки"
+
+#: src/mainwindow.c:417
+msgid "/_File/_Add mailbox..."
+msgstr "/Файл/Добави пощенска кутия..."
+
+#: src/mainwindow.c:418
+msgid "/_File/_Add mbox mailbox..."
+msgstr "/Файл/Добави mbox пощенска кутия..."
+
+#: src/mainwindow.c:419
 msgid "/_File/_Import mbox file..."
 msgstr "/Файл/Внеси mbox файл..."
 
-#: src/mainwindow.c:422
+#: src/mainwindow.c:420
 msgid "/_File/_Export to mbox file..."
 msgstr "/Файл/Изнеси файл в mbox..."
 
-#: src/mainwindow.c:423
+#: src/mainwindow.c:421
 msgid "/_File/Empty _trash"
 msgstr "/Файл/Изпразни Кошчето"
 
-#: src/mainwindow.c:424
+#: src/mainwindow.c:422
 msgid "/_File/_Work offline"
 msgstr "/Файл/Работа офлайн"
 
-#: src/mainwindow.c:426
+#: src/mainwindow.c:424 src/messageview.c:144
 msgid "/_File/_Save as..."
 msgstr "/Файл/Запази като..."
 
-#: src/mainwindow.c:427
+#: src/mainwindow.c:425 src/messageview.c:145
 msgid "/_File/_Print..."
 msgstr "/Файл/Отпечатай..."
 
-#: src/mainwindow.c:430
+#: src/mainwindow.c:428
 msgid "/_File/E_xit"
 msgstr "/Файл/Изход"
 
-#: src/mainwindow.c:435
+#: src/mainwindow.c:433
 msgid "/_Edit/Select _thread"
 msgstr "/Редактирай/Избери нишка"
 
-#: src/mainwindow.c:437
+#: src/mainwindow.c:435 src/messageview.c:153
 msgid "/_Edit/_Find in current message..."
 msgstr "/Редактирай/Намери текущо съобщение..."
 
-#: src/mainwindow.c:439
+#: src/mainwindow.c:437
 msgid "/_Edit/_Search folder..."
 msgstr "/Редактирай/Търси папка..."
 
-#: src/mainwindow.c:441
+#: src/mainwindow.c:439
 msgid "/_View/Show or hi_de"
 msgstr "/Изглед/Покажи или скрии"
 
-#: src/mainwindow.c:442
+#: src/mainwindow.c:440
 msgid "/_View/Show or hi_de/_Folder tree"
 msgstr "/Изглед/Покажи или скрии/Дърво на папката"
 
-#: src/mainwindow.c:444
+#: src/mainwindow.c:442
 msgid "/_View/Show or hi_de/_Message view"
 msgstr "/Изглед/Покажи или скрии/Покажи съобщенивто"
 
-#: src/mainwindow.c:446
+#: src/mainwindow.c:444
 msgid "/_View/Show or hi_de/_Toolbar"
 msgstr "/Изглед/Покажи или скрии/Инструментариум"
 
-#: src/mainwindow.c:448
+#: src/mainwindow.c:446
 msgid "/_View/Show or hi_de/_Toolbar/Icon _and text"
 msgstr "/Изглед/Покажи или скрии/Инструментариум/Икони и текст"
 
-#: src/mainwindow.c:450
+#: src/mainwindow.c:448
 msgid "/_View/Show or hi_de/_Toolbar/_Icon"
 msgstr "/Изглед/Покажи или скрии/Инструментариум/Икони"
 
-#: src/mainwindow.c:452
+#: src/mainwindow.c:450
 msgid "/_View/Show or hi_de/_Toolbar/_Text"
 msgstr "/Изглед/Покажи или скрии/Инструментариум/Текст"
 
-#: src/mainwindow.c:454
+#: src/mainwindow.c:452
 msgid "/_View/Show or hi_de/_Toolbar/_None"
 msgstr "/Изглед/Покажи или скрии/Инструментариум/Нищо"
 
-#: src/mainwindow.c:456
+#: src/mainwindow.c:454
 msgid "/_View/Show or hi_de/Status _bar"
 msgstr "/Изглед/Покажи или скрии/Статус бар"
 
-#: src/mainwindow.c:459
+#: src/mainwindow.c:457
 msgid "/_View/Separate f_older tree"
 msgstr "/Изглед/Самостоятелно дърво на папка"
 
-#: src/mainwindow.c:460
+#: src/mainwindow.c:458
 msgid "/_View/Separate m_essage view"
 msgstr "/Изглед/Самостоятелно показване на съобщение"
 
-#: src/mainwindow.c:462
+#: src/mainwindow.c:460
 msgid "/_View/_Sort"
 msgstr "/Изглед/Сортиране"
 
-#: src/mainwindow.c:463
+#: src/mainwindow.c:461
 msgid "/_View/_Sort/by _number"
 msgstr "/Изглед/Сортиране/Сортирай по номер"
 
-#: src/mainwindow.c:464
+#: src/mainwindow.c:462
 msgid "/_View/_Sort/by s_ize"
 msgstr "/Изглед/Сортиране/Сортирай по размер"
 
-#: src/mainwindow.c:465
+#: src/mainwindow.c:463
 msgid "/_View/_Sort/by _date"
 msgstr "/Изглед/Сортиране/Сортирай по дата"
 
-#: src/mainwindow.c:466
+#: src/mainwindow.c:464
 msgid "/_View/_Sort/by _from"
 msgstr "/Изглед/Сортиране/Сортирай по ОТ"
 
-#: src/mainwindow.c:467
+#: src/mainwindow.c:465
 msgid "/_View/_Sort/by _recipient"
 msgstr "/Изглед/Сортиране/Сортирай по получател"
 
-#: src/mainwindow.c:468
+#: src/mainwindow.c:466
 msgid "/_View/_Sort/by _subject"
 msgstr "/Изглед/Сортиране/Сортирай по тема"
 
-#: src/mainwindow.c:469
+#: src/mainwindow.c:467
 msgid "/_View/_Sort/by _color label"
 msgstr "/Изглед/Сортиране/Сортирай по цвят"
 
-#: src/mainwindow.c:471
+#: src/mainwindow.c:469
 msgid "/_View/_Sort/by _mark"
 msgstr "/Изглед/Сортиране/Сортирай по белег"
 
-#: src/mainwindow.c:472
+#: src/mainwindow.c:470
 msgid "/_View/_Sort/by _status"
 msgstr "/Изглед/Сортиране/Сортирай по статус"
 
-#: src/mainwindow.c:473
+#: src/mainwindow.c:471
 msgid "/_View/_Sort/by a_ttachment"
 msgstr "/Изглед/Сортиране/Сортиране по прикрепка"
 
-#: src/mainwindow.c:475
+#: src/mainwindow.c:473
 msgid "/_View/_Sort/by score"
 msgstr "/Изглед/Сортиране/Сортирай по размер"
 
-#: src/mainwindow.c:476
+#: src/mainwindow.c:474
 msgid "/_View/_Sort/by locked"
 msgstr "/Изглед/Сортиране/по заключен"
 
-#: src/mainwindow.c:477
+#: src/mainwindow.c:475
 msgid "/_View/_Sort/D_on't sort"
 msgstr "/Изглед/Сортиране/Не сортирай"
 
-#: src/mainwindow.c:478 src/mainwindow.c:481
+#: src/mainwindow.c:476 src/mainwindow.c:479
 msgid "/_View/_Sort/---"
 msgstr "/Изглед/Сортиране/---"
 
-#: src/mainwindow.c:479
+#: src/mainwindow.c:477
 msgid "/_View/_Sort/Ascending"
 msgstr "/Изглед/Сортиране/Нарастване"
 
-#: src/mainwindow.c:480
+#: src/mainwindow.c:478
 msgid "/_View/_Sort/Descending"
 msgstr "/Изглед/Сортиране/Намаляване"
 
-#: src/mainwindow.c:482
+#: src/mainwindow.c:480
 msgid "/_View/_Sort/_Attract by subject"
 msgstr "/Изглед/Сортиране/Притегляй по тема"
 
-#: src/mainwindow.c:484
+#: src/mainwindow.c:482
 msgid "/_View/Th_read view"
 msgstr "/Изглед/Нишков изглед"
 
-#: src/mainwindow.c:485
+#: src/mainwindow.c:483
 msgid "/_View/E_xpand all threads"
 msgstr "/Изглед/Разширени нишки"
 
-#: src/mainwindow.c:486
+#: src/mainwindow.c:484
 msgid "/_View/Co_llapse all threads"
 msgstr "/Изглед/Прибери всички нишки"
 
-#: src/mainwindow.c:487
+#: src/mainwindow.c:485
 msgid "/_View/_Hide read messages"
 msgstr "/Изглед/Скрий прочетените съобщения"
 
-#: src/mainwindow.c:488
+#: src/mainwindow.c:486
 msgid "/_View/Set displayed _items..."
 msgstr "/Изглед/Избери показваните _items..."
 
-#: src/mainwindow.c:491
+#: src/mainwindow.c:489
 msgid "/_View/_Go to"
 msgstr "/Изглед/Отиди на"
 
-#: src/mainwindow.c:492
+#: src/mainwindow.c:490
 msgid "/_View/_Go to/_Prev message"
 msgstr "/Изглед/Отиди на/Предишно съобщение"
 
-#: src/mainwindow.c:493
+#: src/mainwindow.c:491
 msgid "/_View/_Go to/_Next message"
 msgstr "/Изглед/Отиди на/Следващо съобщение"
 
-#: src/mainwindow.c:494 src/mainwindow.c:499 src/mainwindow.c:502
-#: src/mainwindow.c:507 src/mainwindow.c:512
+#: src/mainwindow.c:492 src/mainwindow.c:497 src/mainwindow.c:500
+#: src/mainwindow.c:505 src/mainwindow.c:510
 msgid "/_View/_Go to/---"
 msgstr "/Изглед/Отиди на/---"
 
-#: src/mainwindow.c:495
+#: src/mainwindow.c:493
 msgid "/_View/_Go to/P_rev unread message"
 msgstr "/Изглед/Отиди на/Предишно непрочетено съобщение"
 
-#: src/mainwindow.c:497
+#: src/mainwindow.c:495
 msgid "/_View/_Go to/N_ext unread message"
 msgstr "/Изглед/Отиди на/Следващо непрочетено съобщение"
 
-#: src/mainwindow.c:500
+#: src/mainwindow.c:498
 msgid "/_View/_Go to/Prev ne_w message"
 msgstr "/Изглед/Отиди на/Предишно ново съобщение"
 
-#: src/mainwindow.c:501
+#: src/mainwindow.c:499
 msgid "/_View/_Go to/Ne_xt new message"
 msgstr "/Изглед/Отиди на/Следващо ново съобщение"
 
-#: src/mainwindow.c:503
+#: src/mainwindow.c:501
 msgid "/_View/_Go to/Prev _marked message"
 msgstr "/Изглед/Отиди на/Предишно маркирано съобщение"
 
-#: src/mainwindow.c:505
+#: src/mainwindow.c:503
 msgid "/_View/_Go to/Next m_arked message"
 msgstr "/Изглед/Отиди на/Следващо маркирано съобщение"
 
-#: src/mainwindow.c:508
+#: src/mainwindow.c:506
 msgid "/_View/_Go to/Prev _labeled message"
 msgstr "/Изглед/Отиди на/Предишно надписано съобщение"
 
-#: src/mainwindow.c:510
+#: src/mainwindow.c:508
 msgid "/_View/_Go to/Next la_beled message"
 msgstr "/Изглед/Отиди на/Следващо надписано съобщение"
 
-#: src/mainwindow.c:513
+#: src/mainwindow.c:511
 msgid "/_View/_Go to/Other _folder..."
 msgstr "/Изглед/Отиди на/Друга папка..."
 
-#: src/mainwindow.c:517 src/mainwindow.c:524
+#: src/mainwindow.c:515 src/mainwindow.c:522 src/messageview.c:159
 msgid "/_View/_Code set/---"
 msgstr "/Изглед/Кодиране/---"
 
-#: src/mainwindow.c:521
+#: src/mainwindow.c:519 src/messageview.c:163
 msgid "/_View/_Code set"
 msgstr "/Изглед/Кодиране"
 
-#: src/mainwindow.c:522
+#: src/mainwindow.c:520 src/messageview.c:164
 msgid "/_View/_Code set/_Auto detect"
 msgstr "/Изглед/Кодиране/Автоматично откриване"
 
-#: src/mainwindow.c:525
+#: src/mainwindow.c:523 src/messageview.c:167
 msgid "/_View/_Code set/7bit ascii (US-ASC_II)"
 msgstr "/Изглед/Кодиране/7bit ascii (US-ASC_II)"
 
-#: src/mainwindow.c:529
+#: src/mainwindow.c:527 src/messageview.c:171
 msgid "/_View/_Code set/Unicode (_UTF-8)"
 msgstr "/Изглед/Кодиране/Уникод (_UTF-8)"
 
-#: src/mainwindow.c:533
+#: src/mainwindow.c:531 src/messageview.c:175
 msgid "/_View/_Code set/Western European (ISO-8859-_1)"
 msgstr "/Изглед/Кодиране/Западно европейски (ISO-8859-_1)"
 
-#: src/mainwindow.c:535
+#: src/mainwindow.c:533 src/messageview.c:177
 msgid "/_View/_Code set/Western European (ISO-8859-15)"
 msgstr "/Изглед/Кодиране/Западно европейски (ISO-8859-15)"
 
-#: src/mainwindow.c:539
+#: src/mainwindow.c:537 src/messageview.c:181
 msgid "/_View/_Code set/Central European (ISO-8859-_2)"
 msgstr "/Изглед/Кодиране/Централно европейски (ISO-8859-_2)"
 
-#: src/mainwindow.c:542
+#: src/mainwindow.c:540 src/messageview.c:184
 msgid "/_View/_Code set/_Baltic (ISO-8859-13)"
 msgstr "/Изглед/Кодиране/Балтийски (ISO-8859-13)"
 
-#: src/mainwindow.c:544
+#: src/mainwindow.c:542 src/messageview.c:186
 msgid "/_View/_Code set/Baltic (ISO-8859-_4)"
 msgstr "/Изглед/Кодиране/Балтийски (ISO-8859-_4)"
 
-#: src/mainwindow.c:547
+#: src/mainwindow.c:545 src/messageview.c:189
 msgid "/_View/_Code set/Greek (ISO-8859-_7)"
 msgstr "/Изглед/Кодиране/Гръцки (ISO-8859-_7)"
 
-#: src/mainwindow.c:550
+#: src/mainwindow.c:548 src/messageview.c:192
 msgid "/_View/_Code set/Turkish (ISO-8859-_9)"
 msgstr "/Изглед/Кодиране/Турски (ISO-8859-_9)"
 
-#: src/mainwindow.c:553
+#: src/mainwindow.c:551 src/messageview.c:195
 msgid "/_View/_Code set/Cyrillic (ISO-8859-_5)"
 msgstr "/Изглед/Кодиране/Кирилица (ISO-8859-_5)"
 
-#: src/mainwindow.c:555
+#: src/mainwindow.c:553 src/messageview.c:197
 msgid "/_View/_Code set/Cyrillic (KOI8-_R)"
 msgstr "/Изглед/Кодиране/Кирилица (KOI8-_R)"
 
-#: src/mainwindow.c:557
+#: src/mainwindow.c:555 src/messageview.c:199
 msgid "/_View/_Code set/Cyrillic (Windows-1251)"
 msgstr "/Изглед/Кодиране/Кирилица (Windows-1251)"
 
-#: src/mainwindow.c:561
+#: src/mainwindow.c:559 src/messageview.c:203
 msgid "/_View/_Code set/Japanese (ISO-2022-_JP)"
 msgstr "/Изглед/Кодиране/Японски (ISO-2022-_JP)"
 
-#: src/mainwindow.c:564
+#: src/mainwindow.c:562 src/messageview.c:206
 msgid "/_View/_Code set/Japanese (ISO-2022-JP-2)"
 msgstr "/Изглед/Кодиране/Японски (ISO-2022-JP-2)"
 
-#: src/mainwindow.c:567
+#: src/mainwindow.c:565 src/messageview.c:209
 msgid "/_View/_Code set/Japanese (_EUC-JP)"
 msgstr "/Изглед/Кодиране/Японски (_EUC-JP)"
 
-#: src/mainwindow.c:569
+#: src/mainwindow.c:567 src/messageview.c:211
 msgid "/_View/_Code set/Japanese (_Shift__JIS)"
 msgstr "/Изглед/Кодиране/Японски (_Shift__JIS)"
 
-#: src/mainwindow.c:573
+#: src/mainwindow.c:571 src/messageview.c:215
 msgid "/_View/_Code set/Simplified Chinese (_GB2312)"
 msgstr "/Изглед/Кодиране/Опростен китайски (_GB2312)"
 
-#: src/mainwindow.c:575
+#: src/mainwindow.c:573 src/messageview.c:217
 msgid "/_View/_Code set/Traditional Chinese (_Big5)"
 msgstr "/Изглед/Кодиране/Традиционен китайски (_Big5)"
 
-#: src/mainwindow.c:577
+#: src/mainwindow.c:575 src/messageview.c:219
 msgid "/_View/_Code set/Traditional Chinese (EUC-_TW)"
 msgstr "/Изглед/Кодиране/Традиционен китайски (EUC-_TW)"
 
-#: src/mainwindow.c:579
+#: src/mainwindow.c:577 src/messageview.c:221
 msgid "/_View/_Code set/Chinese (ISO-2022-_CN)"
 msgstr "/Изглед/Кодиране/Китайски (ISO-2022-_CN)"
 
-#: src/mainwindow.c:582
+#: src/mainwindow.c:580 src/messageview.c:224
 msgid "/_View/_Code set/Korean (EUC-_KR)"
 msgstr "/Изглед/Кодиране/Корейски (EUC-_KR)"
 
-#: src/mainwindow.c:584
+#: src/mainwindow.c:582 src/messageview.c:226
 msgid "/_View/_Code set/Korean (ISO-2022-KR)"
 msgstr "/Изглед/Кодиране/Корейски (ISO-2022-KR)"
 
-#: src/mainwindow.c:587
+#: src/mainwindow.c:585 src/messageview.c:229
 msgid "/_View/_Code set/Thai (TIS-620)"
 msgstr "/Изглед/Кодиране/Тайландски (TIS-620)"
 
-#: src/mainwindow.c:589
+#: src/mainwindow.c:587 src/messageview.c:231
 msgid "/_View/_Code set/Thai (Windows-874)"
 msgstr "/Изглед/Кодиране/Тайландски (Windows-874)"
 
-#: src/mainwindow.c:597 src/summaryview.c:449
+#: src/mainwindow.c:595 src/summaryview.c:452
 msgid "/_View/Open in new _window"
 msgstr "/Изглед/Отвори в нов прозорец"
 
-#: src/mainwindow.c:598
+#: src/mainwindow.c:596 src/messageview.c:239
 msgid "/_View/Mess_age source"
 msgstr "/Изглед/Източник на съобщението"
 
-#: src/mainwindow.c:599
+#: src/mainwindow.c:597
 msgid "/_View/Show all _headers"
 msgstr "/Изглед/Покажи всички заглавки"
 
-#: src/mainwindow.c:601
+#: src/mainwindow.c:599
 msgid "/_View/_Update summary"
 msgstr "/Изглед/Осъвремени извлечението"
 
-#: src/mainwindow.c:604
+#: src/mainwindow.c:602
 msgid "/_Message/Get new ma_il"
 msgstr "/Съобщение/Вземи новата поща"
 
-#: src/mainwindow.c:605
+#: src/mainwindow.c:603
 msgid "/_Message/Get from _all accounts"
 msgstr "/Съобщение/Вземи от всички акаунти"
 
-#: src/mainwindow.c:607
+#: src/mainwindow.c:605
 msgid "/_Message/Cancel receivin_g"
 msgstr "/Съобщение/Откажи получаването"
 
-#: src/mainwindow.c:609
+#: src/mainwindow.c:607
 msgid "/_Message/_Send queued messages"
 msgstr "/Съобщение/_Изпрати чакащите съобщения"
 
-#: src/mainwindow.c:611
+#: src/mainwindow.c:609
 msgid "/_Message/Compose a_n email message"
 msgstr "/Съобщение/Съчини ново съобщение"
 
-#: src/mainwindow.c:612
+#: src/mainwindow.c:610
 msgid "/_Message/Compose a news message"
 msgstr "/Съобщение/Съчини ново съобщение"
 
-#: src/mainwindow.c:613 src/messageview.c:154
+#: src/mainwindow.c:611 src/messageview.c:246
 msgid "/_Message/_Reply"
 msgstr "/Съобщение/Отговори"
 
-#: src/mainwindow.c:614 src/messageview.c:155
+#: src/mainwindow.c:612
 msgid "/_Message/Repl_y to"
 msgstr "/Съобщение/Отговори на"
 
-#: src/mainwindow.c:615 src/messageview.c:156
+#: src/mainwindow.c:613 src/messageview.c:247
 msgid "/_Message/Repl_y to/_all"
 msgstr "/Съобщение/Отговори на/всички"
 
-#: src/mainwindow.c:616 src/messageview.c:157
+#: src/mainwindow.c:614 src/messageview.c:249
 msgid "/_Message/Repl_y to/_sender"
 msgstr "/Съобщение/Отговори на /изпращача"
 
-#: src/mainwindow.c:617 src/messageview.c:158
+#: src/mainwindow.c:615 src/messageview.c:251
 msgid "/_Message/Repl_y to/mailing _list"
 msgstr "/Съобщение/Отговори на всички"
 
-#: src/mainwindow.c:619
+#: src/mainwindow.c:617
 msgid "/_Message/Follow-up and reply to"
 msgstr "/Съобщение/Отговори на всички"
 
-#: src/mainwindow.c:621 src/messageview.c:162
+#: src/mainwindow.c:619 src/messageview.c:254
 msgid "/_Message/_Forward"
 msgstr "/Съобщение/Препрати"
 
-#: src/mainwindow.c:622 src/messageview.c:163
+#: src/mainwindow.c:620
 msgid "/_Message/Redirect"
 msgstr "/Съобщение/Пренасочи"
 
-#: src/mainwindow.c:624
+#: src/mainwindow.c:622 src/messageview.c:259
 msgid "/_Message/Re-_edit"
 msgstr "/Съобщение/Редактирай отново"
 
-#: src/mainwindow.c:626
+#: src/mainwindow.c:624
 msgid "/_Message/M_ove..."
 msgstr "/Съобщение/Премести..."
 
-#: src/mainwindow.c:627
+#: src/mainwindow.c:625
 msgid "/_Message/_Copy..."
 msgstr "/Съобщение/Копирай..."
 
-#: src/mainwindow.c:628 src/messageview.c:165
+#: src/mainwindow.c:626
 msgid "/_Message/_Delete"
 msgstr "/Съобщение/Изтрий"
 
-#: src/mainwindow.c:629
+#: src/mainwindow.c:627
 msgid "/_Message/Cancel a news message"
 msgstr "/Съобщение/Отмени ново съобщение"
 
-#: src/mainwindow.c:631
+#: src/mainwindow.c:629
 msgid "/_Message/_Mark"
 msgstr "/Съобщение/Маркиране"
 
-#: src/mainwindow.c:632
+#: src/mainwindow.c:630
 msgid "/_Message/_Mark/_Mark"
 msgstr "/Съобщение/Маркиране/Маркирай"
 
-#: src/mainwindow.c:633
+#: src/mainwindow.c:631
 msgid "/_Message/_Mark/_Unmark"
 msgstr "/Съобщение/Маркиране/Отмаркирай"
 
-#: src/mainwindow.c:634
+#: src/mainwindow.c:632
 msgid "/_Message/_Mark/---"
 msgstr "/Съобщение/Маркиране/---"
 
-#: src/mainwindow.c:635
+#: src/mainwindow.c:633
 msgid "/_Message/_Mark/Mark as unr_ead"
 msgstr "/Съобщение/Маркиране/Маркирай като непрочетено"
 
-#: src/mainwindow.c:636
+#: src/mainwindow.c:634
 msgid "/_Message/_Mark/Mark as rea_d"
 msgstr "/Съобщение/Маркиране/Маркирай като прочетено"
 
-#: src/mainwindow.c:638
+#: src/mainwindow.c:636
 msgid "/_Message/_Mark/Mark all _read"
 msgstr "/Съобщение/Маркиране/Маркирай всички като прочетени"
 
-#: src/mainwindow.c:641
-msgid "/_Tools/_Selective download..."
-msgstr "/Инструменти/Избирателно изтегляне..."
-
-#: src/mainwindow.c:643
+#: src/mainwindow.c:639
 msgid "/_Tools/_Address book..."
 msgstr "/Инструменти/_Адресник..."
 
-#: src/mainwindow.c:644
+#: src/mainwindow.c:640 src/messageview.c:263
 msgid "/_Tools/Add sender to address boo_k"
 msgstr "/Инструменти/Добави изпращача в Адресника"
 
-#: src/mainwindow.c:646
+#: src/mainwindow.c:642
 msgid "/_Tools/_Harvest addresses"
 msgstr "/Инструменти/Събери адресите"
 
-#: src/mainwindow.c:647
+#: src/mainwindow.c:643
 msgid "/_Tools/_Harvest addresses/from _Folder..."
 msgstr "/Инструменти/Събери адресите/От Папка..."
 
-#: src/mainwindow.c:649
+#: src/mainwindow.c:645
 msgid "/_Tools/_Harvest addresses/from _Messages..."
 msgstr "/Инструменти/Събери адресите/От Съобщения..."
 
-#: src/mainwindow.c:652
+#: src/mainwindow.c:648
 msgid "/_Tools/_Filter messages"
 msgstr "/Инструменти/Филтрирай съобщенията"
 
-#: src/mainwindow.c:653
+#: src/mainwindow.c:649 src/messageview.c:266
 msgid "/_Tools/_Create filter rule"
 msgstr "/Инструменти/Създай правило за филтриране"
 
-#: src/mainwindow.c:654
+#: src/mainwindow.c:650 src/messageview.c:268
 msgid "/_Tools/_Create filter rule/_Automatically"
 msgstr "/Инструменти/Създай правило за филтриране/Автоматично"
 
-#: src/mainwindow.c:656
+#: src/mainwindow.c:652 src/messageview.c:270
 msgid "/_Tools/_Create filter rule/by _From"
 msgstr "/Инструменти/Създай правило за филтриране/по От"
 
-#: src/mainwindow.c:658
+#: src/mainwindow.c:654 src/messageview.c:272
 msgid "/_Tools/_Create filter rule/by _To"
 msgstr "/Инструменти/Създай правило за филтриране/по До"
 
-#: src/mainwindow.c:660
+#: src/mainwindow.c:656 src/messageview.c:274
 msgid "/_Tools/_Create filter rule/by _Subject"
 msgstr "/Инструменти/Създай правило за филтриране/по Tема"
 
-#: src/mainwindow.c:665
+#: src/mainwindow.c:661
 msgid "/_Tools/Delete du_plicated messages"
 msgstr "/Инструменти/Изтрий повтарящите се съобщения"
 
-#: src/mainwindow.c:668
+#: src/mainwindow.c:664
 msgid "/_Tools/E_xecute"
 msgstr "/Инструменти/Изпълни"
 
-#: src/mainwindow.c:671
+#: src/mainwindow.c:667
 msgid "/_Tools/SSL certi_ficates..."
 msgstr "/Иструменти/SSL сертификати..."
 
-#: src/mainwindow.c:675
+#: src/mainwindow.c:671
 msgid "/_Tools/_Log window"
 msgstr "/Инструменти/Лог прозорец"
 
-#: src/mainwindow.c:677
+#: src/mainwindow.c:673
 msgid "/_Configuration"
 msgstr "/Настройки"
 
-#: src/mainwindow.c:678
+#: src/mainwindow.c:674
 msgid "/_Configuration/C_hange current account"
 msgstr "/Настройки/Промени текущия акаунт"
 
-#: src/mainwindow.c:680
+#: src/mainwindow.c:676
 msgid "/_Configuration/_Preferences for current account..."
 msgstr "/Настройки/Настройки на текущия акаунт..."
 
-#: src/mainwindow.c:682
+#: src/mainwindow.c:678
 msgid "/_Configuration/Create _new account..."
 msgstr "/Настройки/Създай нов акаунт..."
 
-#: src/mainwindow.c:684
+#: src/mainwindow.c:680
 msgid "/_Configuration/_Edit accounts..."
 msgstr "/Настройки/Редактирай акаунтите..."
 
-#: src/mainwindow.c:686
+#: src/mainwindow.c:682
 msgid "/_Configuration/---"
 msgstr "/Настройки/---"
 
-#: src/mainwindow.c:687
+#: src/mainwindow.c:683
 msgid "/_Configuration/_Common preferences..."
 msgstr "/Настройки/Общи настройки"
 
-#: src/mainwindow.c:689
+#: src/mainwindow.c:685
 msgid "/_Configuration/_Scoring..."
 msgstr "/Настройки/Отбелязване..."
 
-#: src/mainwindow.c:691
+#: src/mainwindow.c:687
 msgid "/_Configuration/_Filtering..."
 msgstr "/Настройки/Филтриране..."
 
-#: src/mainwindow.c:693
+#: src/mainwindow.c:689
 msgid "/_Configuration/_Templates..."
 msgstr "/Настройки/Шаблони..."
 
-#: src/mainwindow.c:694
+#: src/mainwindow.c:690
 msgid "/_Configuration/_Actions..."
 msgstr "/Настройки/Действия..."
 
-#: src/mainwindow.c:695
+#: src/mainwindow.c:691
 msgid "/_Configuration/_Other Preferences..."
 msgstr "/Настройки/Други настройки..."
 
-#: src/mainwindow.c:696
+#: src/mainwindow.c:692
 msgid "/_Configuration/Plugins..."
 msgstr "/Настройки/Плъгини..."
 
-#: src/mainwindow.c:699
+#: src/mainwindow.c:695
 msgid "/_Help/_Manual (Local)"
 msgstr "/Помощ/Ръководство (Local)"
 
-#: src/mainwindow.c:700
+#: src/mainwindow.c:696
 msgid "/_Help/_Manual (Sylpheed Doc Homepage)"
 msgstr "/Помощ/Наръчник (Sylpheed Doc Homepage)"
 
-#: src/mainwindow.c:702
+#: src/mainwindow.c:698
 msgid "/_Help/_FAQ (Local)"
 msgstr "/Помощ/_Често задавани въпроси (Local)"
 
-#: src/mainwindow.c:703
+#: src/mainwindow.c:699
 msgid "/_Help/_FAQ (Sylpheed Doc Homepage)"
 msgstr "/Помощ/_Често задавани въпроси (Sylpheed Doc Homepage)"
 
-#: src/mainwindow.c:705
+#: src/mainwindow.c:701
 msgid "/_Help/---"
 msgstr "/Помощ/---"
 
-#: src/mainwindow.c:824
+#: src/mainwindow.c:820
 msgid "Go offline"
 msgstr "Офлайн"
 
-#: src/mainwindow.c:828
+#: src/mainwindow.c:824
 msgid "Go online"
 msgstr "Офлайн"
 
-#: src/mainwindow.c:844
+#: src/mainwindow.c:840
 msgid "Select account"
 msgstr "Избери акаунт"
 
-#: src/mainwindow.c:1169 src/mainwindow.c:1186 src/prefs_folder_item.c:450
-#: src/selective_download.c:591
+#: src/mainwindow.c:1165 src/mainwindow.c:1182 src/prefs_folder_item.c:450
 msgid "Untitled"
 msgstr "Неозаглавен"
 
-#: src/mainwindow.c:1187
+#: src/mainwindow.c:1183
 msgid "none"
 msgstr "нищо"
 
-#: src/mainwindow.c:1365
+#: src/mainwindow.c:1361
 msgid "Empty trash"
 msgstr "Изпразни Кошчето"
 
-#: src/mainwindow.c:1366
+#: src/mainwindow.c:1362
 msgid "Empty all messages in trash?"
 msgstr "Да изхвърля всички съобщения от Кошчето?"
 
-#: src/mainwindow.c:1384
+#: src/mainwindow.c:1380
 msgid "Add mailbox"
 msgstr "Добави пощенска кутия"
 
-#: src/mainwindow.c:1385
+#: src/mainwindow.c:1381
 msgid ""
 "Input the location of mailbox.\n"
 "If the existing mailbox is specified, it will be\n"
@@ -3741,16 +3776,16 @@ msgstr ""
 "ако е определена съществуваща пощенска кутия,\n"
 "то тя ще бъде сканирана автоматично."
 
-#: src/mainwindow.c:1391 src/mainwindow.c:1429
+#: src/mainwindow.c:1387 src/mainwindow.c:1424
 #, c-format
 msgid "The mailbox `%s' already exists."
 msgstr "Пощенската кутия '%s' вече съществува."
 
-#: src/mainwindow.c:1396 src/setup.c:57
+#: src/mainwindow.c:1392 src/setup.c:57
 msgid "Mailbox"
 msgstr "Пощенска Кутия"
 
-#: src/mainwindow.c:1402 src/setup.c:63
+#: src/mainwindow.c:1397 src/setup.c:61
 msgid ""
 "Creation of the mailbox failed.\n"
 "Maybe some files already exist, or you don't have the permission to write "
@@ -3759,36 +3794,36 @@ msgstr ""
 "Създаването на пощенската кутия се провали.\n"
 "Може би някои файлове съществуват или нямата права за запис там."
 
-#: src/mainwindow.c:1422
+#: src/mainwindow.c:1417
 msgid "Add mbox mailbox"
 msgstr "Добави mbox пощенска кутия"
 
-#: src/mainwindow.c:1423
+#: src/mainwindow.c:1418
 msgid "Input the location of mailbox."
 msgstr "Укажете мястото на пощенската кутия."
 
-#: src/mainwindow.c:1444
+#: src/mainwindow.c:1434
 msgid "Creation of the mailbox failed."
 msgstr "Създаването на пощенската кутия е неуспешно."
 
-#: src/mainwindow.c:1718
+#: src/mainwindow.c:1706
 msgid "Sylpheed - Folder View"
 msgstr "Sylpheed - Показване на Папка"
 
-#: src/mainwindow.c:1734 src/messageview.c:212
+#: src/mainwindow.c:1722 src/messageview.c:379
 msgid "Sylpheed - Message View"
 msgstr "Sylpheed - Показване на Съобщение"
 
-#: src/mainwindow.c:2095
+#: src/mainwindow.c:2083
 msgid "Exit"
 msgstr "Изход"
 
-#: src/mainwindow.c:2095
+#: src/mainwindow.c:2083
 msgid "Exit this program?"
 msgstr "Изход от програмата?"
 
-#: src/matcher.c:1210 src/matcher.c:1211 src/matcher.c:1212 src/matcher.c:1213
-#: src/matcher.c:1214 src/matcher.c:1215 src/matcher.c:1216 src/matcher.c:1217
+#: src/matcher.c:1209 src/matcher.c:1210 src/matcher.c:1211 src/matcher.c:1212
+#: src/matcher.c:1213 src/matcher.c:1214 src/matcher.c:1215 src/matcher.c:1216
 msgid "(none)"
 msgstr "(няма)"
 
@@ -3807,10 +3842,6 @@ msgstr "Отчита размера на символите"
 #: src/message_search.c:127 src/summary_search.c:188
 msgid "Backward search"
 msgstr "Търсене назад"
-
-#: src/message_search.c:133 src/summary_search.c:206
-msgid "Search"
-msgstr "Търсене"
 
 #: src/message_search.c:183 src/summary_search.c:313
 msgid "Search failed"
@@ -3832,11 +3863,27 @@ msgstr "Достигнах края на съобщението; да продължа от началото?"
 msgid "Search finished"
 msgstr "Търсенето приключи"
 
-#: src/messageview.c:395
+#: src/messageview.c:240
+msgid "/_View/Show all _header"
+msgstr "/Изглед/Покажи всички заглавки"
+
+#: src/messageview.c:243
+msgid "/_Message/Compose _new message"
+msgstr "/Съобщение/Съчини ново съобщение"
+
+#: src/messageview.c:255
+msgid "/_Message/For_ward as attachment"
+msgstr "/Съобщение/Препрати като прикрепка"
+
+#: src/messageview.c:257
+msgid "/_Message/Redirec_t"
+msgstr "/Съобщение/Пренасочи"
+
+#: src/messageview.c:561
 msgid "<No Return-Path found>"
 msgstr "<Няма намерен Return-Path>"
 
-#: src/messageview.c:403
+#: src/messageview.c:569
 #, c-format
 msgid ""
 "The notification address to which the return receipt is to be sent\n"
@@ -3846,11 +3893,11 @@ msgid ""
 "It is advised to not to send the return receipt."
 msgstr ""
 
-#: src/messageview.c:411
+#: src/messageview.c:577
 msgid "+Don't Send"
 msgstr "+Не изпращай"
 
-#: src/messageview.c:420
+#: src/messageview.c:586
 msgid ""
 "This message is asking for a return receipt notification\n"
 "but according to its 'To:' and 'CC:' headers it was not\n"
@@ -3858,7 +3905,7 @@ msgid ""
 "Receipt notification cancelled."
 msgstr ""
 
-#: src/messageview.c:488
+#: src/messageview.c:654
 msgid ""
 "Error occurred while sending the notification.\n"
 "Put this notification into queue folder?"
@@ -3866,31 +3913,51 @@ msgstr ""
 "Появи се грешка докато изпращах съобщението.\n"
 "Да сложа ли съобщението в папката на чакащите?"
 
-#: src/messageview.c:494
+#: src/messageview.c:660
 msgid "Can't queue the notification."
 msgstr "Не мога да наредя съобщението."
 
-#: src/messageview.c:497
+#: src/messageview.c:663
 msgid "Error occurred while sending the notification."
 msgstr "Появи се грешка докато изпращах съобщението."
 
-#: src/messageview.c:654
+#: src/messageview.c:825
 msgid "Message already removed from folder."
 msgstr "Съобщението вече е премахнато от папката."
 
-#: src/messageview.c:852
-msgid "This messages asks for a return receipt."
-msgstr "Това съобщение пита за обратно потвъждение."
+#: src/messageview.c:984 src/mimeview.c:873 src/mimeview.c:946
+#: src/summaryview.c:3431
+msgid "Save as"
+msgstr "Запази като"
 
-#: src/messageview.c:853
+#: src/messageview.c:989 src/mimeview.c:903 src/mimeview.c:952
+#: src/summaryview.c:3436
+msgid "Overwrite"
+msgstr "Презапиши"
+
+#: src/messageview.c:990
+msgid "Overwrite existing file?"
+msgstr "Да презапиша ли съществуващия файл?"
+
+#: src/messageview.c:997 src/summaryview.c:3444 src/summaryview.c:3448
+#: src/summaryview.c:3465
+#, c-format
+msgid "Can't save the file `%s'."
+msgstr "Не мога да запазя файла `%s'."
+
+#: src/messageview.c:1063
+msgid "This message asks for a return receipt"
+msgstr "Това съобщение пита за обратно потвъждение"
+
+#: src/messageview.c:1064
 msgid "Send receipt"
 msgstr "Изпрати обратно потвъждение"
 
-#: src/messageview.c:906
+#: src/messageview.c:1117
 msgid "Return Receipt Notification"
 msgstr "Обявление за обратно потвърждение"
 
-#: src/messageview.c:907
+#: src/messageview.c:1118
 msgid ""
 "The message was sent to several of your accounts.\n"
 "Please choose which account do you want to use for sending the receipt "
@@ -3900,81 +3967,87 @@ msgstr ""
 "Моля изберете с кой от тях бихте искали да изпращате потвърждение за "
 "получаване:"
 
-#: src/messageview.c:911
+#: src/messageview.c:1122
 msgid "Send Notification"
 msgstr "Изпрати обявление"
 
-#: src/messageview.c:911
+#: src/messageview.c:1122
 msgid "+Cancel"
 msgstr "+Отказ"
 
-#: src/mimeview.c:114
+#: src/messageview.c:1196 src/prefs_common.c:2875 src/summaryview.c:3483
+msgid "Print"
+msgstr "Принтиране"
+
+#: src/messageview.c:1197 src/summaryview.c:3484
+#, c-format
+msgid ""
+"Enter the print command line:\n"
+"(`%s' will be replaced with file name)"
+msgstr ""
+"Въведи команда за принтиране:\n"
+"(%s ще бъде заменено с името на файл)"
+
+#: src/messageview.c:1203 src/summaryview.c:3490
+#, c-format
+msgid ""
+"Print command line is invalid:\n"
+"`%s'"
+msgstr ""
+"Командата за принтиране е невалидна:\n"
+"'%s'"
+
+#: src/mimeview.c:111
 msgid "/_Open"
 msgstr "/_Отвори"
 
-#: src/mimeview.c:115
+#: src/mimeview.c:112
 msgid "/Open _with..."
 msgstr "/_Отвори със..."
 
-#: src/mimeview.c:116
+#: src/mimeview.c:113
 msgid "/_Display as text"
 msgstr "/_Покажи като текст"
 
-#: src/mimeview.c:117
-msgid "/_Display image"
-msgstr "/_Покажи картинката"
-
-#: src/mimeview.c:118 src/summaryview.c:454
+#: src/mimeview.c:114 src/summaryview.c:457
 msgid "/_Save as..."
 msgstr "/_Запази като..."
 
-#: src/mimeview.c:119
+#: src/mimeview.c:115
 msgid "/Save _all..."
 msgstr "/_Запази всичко..."
 
-#: src/mimeview.c:122
+#: src/mimeview.c:118
 msgid "/_Check signature"
 msgstr "/_Провери подписа"
 
-#: src/mimeview.c:150
+#: src/mimeview.c:149
 msgid "MIME Type"
 msgstr "MIME Тип"
 
-#: src/mimeview.c:160 src/prefs_common.c:2131
+#: src/mimeview.c:159 src/prefs_common.c:2188
 msgid "Text"
 msgstr "Текст"
 
-#: src/mimeview.c:269
-msgid "Select \"Check signature\" to check"
-msgstr "Избери \"Провери подписа\" за да провериш"
+#: src/mimeview.c:270
+msgid "Right-click here to verify the signature"
+msgstr "Right-click за верифициране на подписа"
 
-#: src/mimeview.c:480
-msgid "Can't get the part of multipart message."
-msgstr "Не мога да взема част от разчленено съобщение."
-
-#: src/mimeview.c:801 src/mimeview.c:863 src/mimeview.c:925 src/mimeview.c:944
-#: src/mimeview.c:968
+#: src/mimeview.c:849 src/mimeview.c:910 src/mimeview.c:960 src/mimeview.c:978
+#: src/mimeview.c:1001
 msgid "Can't save the part of multipart message."
 msgstr "Не мога да запазя част от разчленено съобщение."
 
-#: src/mimeview.c:826 src/mimeview.c:911 src/summaryview.c:3407
-msgid "Save as"
-msgstr "Запази като"
-
-#: src/mimeview.c:854 src/mimeview.c:915
+#: src/mimeview.c:901 src/mimeview.c:950
 #, c-format
 msgid "Overwrite existing file '%s'?"
 msgstr "Да презапиша ли съществуващия файл '%s'?"
 
-#: src/mimeview.c:856 src/mimeview.c:917 src/summaryview.c:3412
-msgid "Overwrite"
-msgstr "Презапиши"
-
-#: src/mimeview.c:978
+#: src/mimeview.c:1011
 msgid "Open with"
 msgstr "Отвори с"
 
-#: src/mimeview.c:979
+#: src/mimeview.c:1012
 #, c-format
 msgid ""
 "Enter the command line to open file:\n"
@@ -3983,7 +4056,7 @@ msgstr ""
 "Въведете команда за отвряне на файл:\n"
 "(`%s' ще бъде заменено с името на файла)"
 
-#: src/news.c:167
+#: src/news.c:200
 #, c-format
 msgid "creating NNTP connection to %s:%d ...\n"
 msgstr "създавам NNTP връзка с %s:%d ...\n"
@@ -4057,262 +4130,246 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/pop.c:67
+#: src/pop.c:147
+msgid "Required APOP timestamp not found in greeting\n"
+msgstr "Няма необходимия APOP timestamp при поздрава\n"
+
+#: src/pop.c:154
+msgid "Timestamp syntax error in greeting\n"
+msgstr "Timestamp синтактична грешка при поздрава\n"
+
+#: src/pop.c:180 src/pop.c:207
+msgid "POP3 protocol error\n"
+msgstr "POP3 грешка\n"
+
+#: src/pop.c:592
 #, c-format
 msgid "POP3: Deleting expired message %d\n"
 msgstr "POP3: Изтривам невалидно съобщение %d\n"
 
-#: src/pop.c:73
+#: src/pop.c:600
 #, c-format
 msgid "POP3: Skipping message %d (%d bytes)\n"
 msgstr "POP3: Пропускам съобщение %d (%d байта)\n"
 
-#: src/pop.c:139
-msgid "can't start TLS session\n"
-msgstr "не мога да започна TLS сесия\n"
-
-#: src/pop.c:167 src/pop.c:196 src/pop.c:248
-msgid "error occurred on authentication\n"
-msgstr "появи се грешка при аутентификацията\n"
-
-#: src/pop.c:192 src/pop.c:244
+#: src/pop.c:631
 msgid "mailbox is locked\n"
 msgstr "mailbox заключен\n"
 
-#: src/pop.c:213
-msgid "Required APOP timestamp not found in greeting\n"
-msgstr "Няма необходимия APOP timestamp при поздрава\n"
+#: src/pop.c:648
+msgid "error occurred on POP3 session\n"
+msgstr "появи се грешка при POP3 сесията\n"
 
-#: src/pop.c:220
-msgid "Timestamp syntax error in greeting\n"
-msgstr "Timestamp синтактична грешка при поздрава\n"
-
-#: src/pop.c:270 src/pop.c:309
-msgid "POP3 protocol error\n"
-msgstr "POP3 грешка\n"
-
-#: src/pop.c:388 src/pop.c:438
-msgid "Socket error\n"
-msgstr "Сокет грешка\n"
-
-#: src/prefs_account.c:682
+#: src/prefs_account.c:672
 #, c-format
 msgid "Account%d"
 msgstr "Акаунт%d"
 
-#: src/prefs_account.c:701
+#: src/prefs_account.c:691
 msgid "Preferences for new account"
 msgstr "Предпочитания за нов акаунт"
 
-#: src/prefs_account.c:706
+#: src/prefs_account.c:696
 msgid "Account preferences"
 msgstr "Предпочитания за акаунта"
 
-#: src/prefs_account.c:756 src/prefs_common.c:1030
+#: src/prefs_account.c:746 src/prefs_common.c:1025
 msgid "Receive"
 msgstr "Получаване"
 
-#: src/prefs_account.c:760 src/prefs_common.c:1034
+#: src/prefs_account.c:750 src/prefs_common.c:1029
 msgid "Compose"
 msgstr "Съчини"
 
-#: src/prefs_account.c:763 src/prefs_common.c:1047
+#: src/prefs_account.c:753 src/prefs_common.c:1042
 msgid "Privacy"
 msgstr "Поверително"
 
-#: src/prefs_account.c:767
+#: src/prefs_account.c:757
 msgid "SSL"
 msgstr "SSL"
 
-#: src/prefs_account.c:770
+#: src/prefs_account.c:760
 msgid "Advanced"
 msgstr "Напредничав"
 
-#: src/prefs_account.c:849
+#: src/prefs_account.c:839
 msgid "Name of account"
 msgstr "Име на акаунт"
 
-#: src/prefs_account.c:858
+#: src/prefs_account.c:848
 msgid "Set as default"
 msgstr "Избери като подразбиращ се"
 
-#: src/prefs_account.c:862
+#: src/prefs_account.c:852
 msgid "Personal information"
 msgstr "Лична информация"
 
-#: src/prefs_account.c:871
+#: src/prefs_account.c:861
 msgid "Full name"
 msgstr "Пълно име"
 
-#: src/prefs_account.c:877
+#: src/prefs_account.c:867
 msgid "Mail address"
 msgstr "E-mail адрес"
 
-#: src/prefs_account.c:883
+#: src/prefs_account.c:873
 msgid "Organization"
 msgstr "Организация"
 
-#: src/prefs_account.c:907
+#: src/prefs_account.c:897
 msgid "Server information"
 msgstr "Информация за сървъра"
 
-#: src/prefs_account.c:928
+#: src/prefs_account.c:918
 msgid "POP3 (normal)"
 msgstr "POP3 (нормален)"
 
-#: src/prefs_account.c:930
+#: src/prefs_account.c:920
 msgid "POP3 (APOP auth)"
 msgstr "POP3 (APOP аутентификация)"
 
-#: src/prefs_account.c:932 src/prefs_account.c:1825 src/prefs_account.c:2049
+#: src/prefs_account.c:922 src/prefs_account.c:1806
 msgid "IMAP4"
 msgstr "IMAP4"
 
-#: src/prefs_account.c:934
+#: src/prefs_account.c:924
 msgid "News (NNTP)"
 msgstr "Новини (NNTP)"
 
-#: src/prefs_account.c:936
+#: src/prefs_account.c:926
 msgid "None (local)"
 msgstr "Без (локално)"
 
-#: src/prefs_account.c:956
+#: src/prefs_account.c:946
 msgid "This server requires authentication"
 msgstr "Сървъра изисква аутентификация"
 
-#: src/prefs_account.c:963
+#: src/prefs_account.c:953
 msgid "Authenticate on connect"
 msgstr "Аутентифицирай при връзка"
 
-#: src/prefs_account.c:1008
+#: src/prefs_account.c:998
 msgid "News server"
 msgstr "Новинарски сървър"
 
-#: src/prefs_account.c:1014
+#: src/prefs_account.c:1004
 msgid "Server for receiving"
 msgstr "Сървър за получаване"
 
-#: src/prefs_account.c:1020
+#: src/prefs_account.c:1010
 msgid "Local mailbox file"
 msgstr "Локален mailbox файла"
 
-#: src/prefs_account.c:1027
+#: src/prefs_account.c:1017
 msgid "SMTP server (send)"
 msgstr "SMTP сървър (изпращане)"
 
-#: src/prefs_account.c:1035
+#: src/prefs_account.c:1025
 msgid "Use mail command rather than SMTP server"
 msgstr "Използвай пощенска команда вместо SMTP сървър"
 
-#: src/prefs_account.c:1044
+#: src/prefs_account.c:1034
 msgid "command to send mails"
 msgstr "команда за изпращане на съобщения"
 
-#: src/prefs_account.c:1051 src/prefs_account.c:1400
+#: src/prefs_account.c:1041 src/prefs_account.c:1381
 msgid "User ID"
 msgstr "Потребителски ID"
 
-#: src/prefs_account.c:1057 src/prefs_account.c:1409
+#: src/prefs_account.c:1047 src/prefs_account.c:1390
 msgid "Password"
 msgstr "Парола"
 
-#: src/prefs_account.c:1131 src/prefs_account.c:1808
+#: src/prefs_account.c:1119 src/prefs_account.c:1789
 msgid "POP3"
 msgstr "POP3"
 
-#: src/prefs_account.c:1139
+#: src/prefs_account.c:1127
 msgid "Remove messages on server when received"
 msgstr "Изтрий съобщенията от сървъра когато ги получиш"
 
-#: src/prefs_account.c:1150
+#: src/prefs_account.c:1138
 msgid "Remove after"
 msgstr "Махни след"
 
-#: src/prefs_account.c:1159
+#: src/prefs_account.c:1147
 msgid "days"
 msgstr "дни"
 
-#: src/prefs_account.c:1176
+#: src/prefs_account.c:1164
 msgid "(0 days: remove immediately)"
 msgstr "(0 дни: премахни незабавно)"
 
-#: src/prefs_account.c:1183
+#: src/prefs_account.c:1171
 msgid "Download all messages on server"
 msgstr "Свали всички съобщения от сървъра"
 
-#: src/prefs_account.c:1185
-msgid "Use filtering rules with Selective Download"
-msgstr "Използвай правилата за филтриране при Избирателно изтегляне"
-
-#: src/prefs_account.c:1187
-msgid "Remove mail after downloading with Selective Download"
-msgstr "Изтрий след изтегляне при Избирателно изтегляне"
-
-#: src/prefs_account.c:1193
+#: src/prefs_account.c:1177
 msgid "Receive size limit"
 msgstr "Получи ограничението на размера"
 
-#: src/prefs_account.c:1200
+#: src/prefs_account.c:1184
 msgid "KB"
 msgstr ""
 
-#: src/prefs_account.c:1207
-msgid "Filter messages on receiving"
-msgstr "Филтрирай съобщенията при получаване"
-
-#: src/prefs_account.c:1215
+#: src/prefs_account.c:1196
 msgid "Default inbox"
 msgstr "Подразбиращ се inbox"
 
-#: src/prefs_account.c:1238
+#: src/prefs_account.c:1219
 msgid "(Unfiltered messages will be stored in this folder)"
 msgstr "(Нефилтрираните съобщения ще бъдат съхранявани в тази папка)"
 
-#: src/prefs_account.c:1243
+#: src/prefs_account.c:1224
 msgid "Maximum number of articles to download"
 msgstr "Максимален брой статии за сваляне"
 
-#: src/prefs_account.c:1262
+#: src/prefs_account.c:1243
 msgid "unlimited if 0 is specified"
 msgstr ""
 
-#: src/prefs_account.c:1270
+#: src/prefs_account.c:1249
+msgid "Filter messages on receiving"
+msgstr "Филтрирай съобщенията при получаване"
+
+#: src/prefs_account.c:1253
 msgid "`Get all' checks for new messages on this account"
 msgstr "'Вземи всички' проверява за нови съобщения в този акаунт"
 
-#: src/prefs_account.c:1328
+#: src/prefs_account.c:1309
 msgid "Add Date"
 msgstr "Добави дата"
 
-#: src/prefs_account.c:1329
+#: src/prefs_account.c:1310
 msgid "Generate Message-ID"
 msgstr "Генерирай ID на съобщението"
 
-#: src/prefs_account.c:1336
+#: src/prefs_account.c:1317
 msgid "Add user-defined header"
 msgstr "Добави определена от потребителя заглавка"
 
-#: src/prefs_account.c:1338 src/prefs_common.c:2363 src/prefs_common.c:2388
+#: src/prefs_account.c:1319 src/prefs_common.c:2417 src/prefs_common.c:2442
 msgid " Edit... "
 msgstr " Редактирай... "
 
-#: src/prefs_account.c:1348
+#: src/prefs_account.c:1329
 msgid "Authentication"
 msgstr "Аутентификация"
 
-#: src/prefs_account.c:1356
+#: src/prefs_account.c:1337
 msgid "SMTP Authentication (SMTP AUTH)"
 msgstr "SMTP Аутентификация (SMTP AUTH)"
 
-#: src/prefs_account.c:1371
+#: src/prefs_account.c:1352
 msgid "Authentication method"
 msgstr "Метод на Аутентификация"
 
-#: src/prefs_account.c:1381 src/prefs_common.c:1408
+#: src/prefs_account.c:1362 src/prefs_common.c:1464
 msgid "Automatic"
 msgstr "Автоматично"
 
-#: src/prefs_account.c:1431
+#: src/prefs_account.c:1412
 msgid ""
 "If you leave these entries empty, the same\n"
 "user ID and password as receiving will be used."
@@ -4320,208 +4377,208 @@ msgstr ""
 "Ако ако оставите тези полета празни, ще бъдат използвани\n"
 "същите user ID и парола като за получаването."
 
-#: src/prefs_account.c:1440
+#: src/prefs_account.c:1421
 msgid "Authenticate with POP3 before sending"
 msgstr "Идентифицирай с POP3 преди изпращане"
 
-#: src/prefs_account.c:1455
+#: src/prefs_account.c:1436
 msgid "POP authentication timeout: "
 msgstr "POP aутентификация timeout: "
 
-#: src/prefs_account.c:1464
+#: src/prefs_account.c:1445
 msgid "minutes"
 msgstr "минути"
 
-#: src/prefs_account.c:1511 src/prefs_account.c:1556 src/toolbar.c:403
+#: src/prefs_account.c:1492 src/prefs_account.c:1537 src/toolbar.c:404
 msgid "Signature"
 msgstr "Подпис"
 
-#: src/prefs_account.c:1519
+#: src/prefs_account.c:1500
 msgid "Insert signature automatically"
 msgstr "Вмъкни автоматично подписа"
 
-#: src/prefs_account.c:1524
+#: src/prefs_account.c:1505
 msgid "Signature separator"
 msgstr "Разделител за подписа"
 
-#: src/prefs_account.c:1546
+#: src/prefs_account.c:1527
 msgid "Command output"
 msgstr "Изход на команда"
 
-#: src/prefs_account.c:1564
+#: src/prefs_account.c:1545
 msgid "Automatically set the following addresses"
 msgstr "Автоматично избери следните адреси"
 
-#: src/prefs_account.c:1573 src/prefs_matcher.c:143 src/prefs_matcher.c:1708
+#: src/prefs_account.c:1554 src/prefs_matcher.c:143 src/prefs_matcher.c:1708
 #: src/quote_fmt.c:49
 msgid "Cc"
 msgstr "Cc"
 
-#: src/prefs_account.c:1586
+#: src/prefs_account.c:1567
 msgid "Bcc"
 msgstr "Bcc"
 
-#: src/prefs_account.c:1599
+#: src/prefs_account.c:1580
 msgid "Reply-To"
 msgstr "Reply-To"
 
-#: src/prefs_account.c:1654
+#: src/prefs_account.c:1635
 msgid "Encrypt message by default"
 msgstr "Криптирай съобщението по подразбиране"
 
-#: src/prefs_account.c:1656
+#: src/prefs_account.c:1637
 msgid "Sign message by default"
 msgstr "Подписвай съобщението по подразбиране"
 
-#: src/prefs_account.c:1658
+#: src/prefs_account.c:1639
 msgid "Default mode"
 msgstr "Режим по подразбиране"
 
-#: src/prefs_account.c:1666
+#: src/prefs_account.c:1647
 msgid "Use PGP/MIME"
 msgstr "Използвай PGP/MIME"
 
-#: src/prefs_account.c:1675
+#: src/prefs_account.c:1656
 msgid "Use Inline"
 msgstr "Използвай Inline"
 
-#: src/prefs_account.c:1685
+#: src/prefs_account.c:1666
 msgid "Sign key"
 msgstr "Подпиши ключ"
 
-#: src/prefs_account.c:1693
+#: src/prefs_account.c:1674
 msgid "Use default GnuPG key"
 msgstr "Ползвай подразбиращ се GnuPG ключ"
 
-#: src/prefs_account.c:1702
+#: src/prefs_account.c:1683
 msgid "Select key by your email address"
 msgstr "Избери ключ по твоя email адрес"
 
-#: src/prefs_account.c:1711
+#: src/prefs_account.c:1692
 msgid "Specify key manually"
 msgstr "Определи ключа ръчно"
 
-#: src/prefs_account.c:1727
+#: src/prefs_account.c:1708
 msgid "User or key ID:"
 msgstr "ID на потребителя или ключа:"
 
-#: src/prefs_account.c:1816 src/prefs_account.c:1833 src/prefs_account.c:1849
+#: src/prefs_account.c:1797 src/prefs_account.c:1814 src/prefs_account.c:1830
 msgid "Don't use SSL"
 msgstr "Не ползвай SSL"
 
-#: src/prefs_account.c:1819
+#: src/prefs_account.c:1800
 msgid "Use SSL for POP3 connection"
 msgstr "Ползвай SSL за POP3 връзката"
 
-#: src/prefs_account.c:1822 src/prefs_account.c:1839 src/prefs_account.c:1873
+#: src/prefs_account.c:1803 src/prefs_account.c:1820 src/prefs_account.c:1854
 msgid "Use STARTTLS command to start SSL session"
 msgstr "Използвай STARTTLS команда за започване на SSL сесия"
 
-#: src/prefs_account.c:1836
+#: src/prefs_account.c:1817
 msgid "Use SSL for IMAP4 connection"
 msgstr "Ползвай SSL за IMAP4 връзката"
 
-#: src/prefs_account.c:1842
+#: src/prefs_account.c:1823
 msgid "NNTP"
 msgstr "NNTP"
 
-#: src/prefs_account.c:1857
+#: src/prefs_account.c:1838
 msgid "Use SSL for NNTP connection"
 msgstr "Ползвай SSL за NNTP връзката"
 
-#: src/prefs_account.c:1859
+#: src/prefs_account.c:1840
 msgid "Send (SMTP)"
 msgstr "Изпращане (SMTP)"
 
-#: src/prefs_account.c:1867
+#: src/prefs_account.c:1848
 msgid "Don't use SSL (but, if necessary, use STARTTLS)"
 msgstr ""
 
-#: src/prefs_account.c:1870
+#: src/prefs_account.c:1851
 msgid "Use SSL for SMTP connection"
 msgstr "Ползвай SSL за SMTP връзката"
 
-#: src/prefs_account.c:1995
+#: src/prefs_account.c:1975
 msgid "Specify SMTP port"
 msgstr "Определи SMTP порт"
 
-#: src/prefs_account.c:2001
+#: src/prefs_account.c:1981
 msgid "Specify POP3 port"
 msgstr "Определи POP3 порт"
 
-#: src/prefs_account.c:2007
+#: src/prefs_account.c:1987
 msgid "Specify IMAP4 port"
 msgstr "Определи IMAP4 порт"
 
-#: src/prefs_account.c:2013
+#: src/prefs_account.c:1993
 msgid "Specify NNTP port"
 msgstr "Определи NNTP порт"
 
-#: src/prefs_account.c:2018
+#: src/prefs_account.c:1998
 msgid "Specify domain name"
 msgstr "Определи име на домейна"
 
-#: src/prefs_account.c:2028
-msgid "Tunnel command to open connection"
-msgstr "Тунелирай команда за отваряне на връзка"
+#: src/prefs_account.c:2008
+msgid "Use command to communicate with server"
+msgstr "Използвай команда за комуникация със сървъра"
 
-#: src/prefs_account.c:2036
+#: src/prefs_account.c:2016
 msgid "Mark cross-posted messages as read and color:"
 msgstr "Маркирай cross-posted съобщенията като прочетени и оцвети:"
 
-#: src/prefs_account.c:2060
+#: src/prefs_account.c:2030
 msgid "IMAP server directory"
 msgstr "IMAP сървър папка"
 
-#: src/prefs_account.c:2114
+#: src/prefs_account.c:2084
 msgid "Put sent messages in"
 msgstr "Постави изпратените съобщения в"
 
-#: src/prefs_account.c:2116
+#: src/prefs_account.c:2086
 msgid "Put draft messages in"
 msgstr "Постави черновите съобщения в"
 
-#: src/prefs_account.c:2118
+#: src/prefs_account.c:2088
 msgid "Put deleted messages in"
 msgstr "Постави изтритите съобщения в"
 
-#: src/prefs_account.c:2182
+#: src/prefs_account.c:2152
 msgid "Account name is not entered."
 msgstr "Името на акаунта не е вкарано."
 
-#: src/prefs_account.c:2186
+#: src/prefs_account.c:2156
 msgid "Mail address is not entered."
 msgstr "E-mail адреса не е въведен."
 
-#: src/prefs_account.c:2191
+#: src/prefs_account.c:2161
 msgid "SMTP server is not entered."
 msgstr "SMTP сървъра не е въведен."
 
-#: src/prefs_account.c:2196
+#: src/prefs_account.c:2166
 msgid "User ID is not entered."
 msgstr "Потребителския ID не е въведен."
 
-#: src/prefs_account.c:2201
+#: src/prefs_account.c:2171
 msgid "POP3 server is not entered."
 msgstr "POP3 сървъра не е въведен."
 
-#: src/prefs_account.c:2206
+#: src/prefs_account.c:2176
 msgid "IMAP4 server is not entered."
 msgstr "IMAP4 сървъра не е въведен."
 
-#: src/prefs_account.c:2211
+#: src/prefs_account.c:2181
 msgid "NNTP server is not entered."
 msgstr "NNTP сървъра не е въведен."
 
-#: src/prefs_account.c:2217
+#: src/prefs_account.c:2187
 msgid "local mailbox filename is not entered."
 msgstr "локалния mailbox файл не е въведен."
 
-#: src/prefs_account.c:2223
+#: src/prefs_account.c:2193
 msgid "mail command is not entered."
 msgstr "командата за майл не е въведена."
 
-#: src/prefs_account.c:2307
+#: src/prefs_account.c:2277
 msgid ""
 "Its not recommended to use the old style Inline\n"
 "mode for GnuPG messages. It doesn't comply with\n"
@@ -4531,84 +4588,57 @@ msgstr ""
 "за GnuPG съобщения. Не е в съответствие с\n"
 "RFC 3156 - MIME Security with OpenPGP."
 
-#: src/prefs_actions.c:300
+#: src/prefs_actions.c:167
 msgid "Actions configuration"
 msgstr "Настройка на действията"
 
-#: src/prefs_actions.c:322
+#: src/prefs_actions.c:189
 msgid "Menu name:"
 msgstr "Име на меню:"
 
-#: src/prefs_actions.c:331
+#: src/prefs_actions.c:198
 msgid "Command line:"
 msgstr "Команда:"
 
-#: src/prefs_actions.c:360 src/prefs_filtering.c:531 src/prefs_matcher.c:563
-#: src/prefs_scoring.c:277 src/prefs_template.c:222 src/prefs_toolbar.c:776
-msgid "  Replace  "
+#: src/prefs_actions.c:227
+msgid " Replace "
 msgstr " Замени "
 
-#: src/prefs_actions.c:373
+#: src/prefs_actions.c:240
 msgid " Syntax help "
 msgstr " Помощ за синтаксиса"
 
-#: src/prefs_actions.c:392
+#: src/prefs_actions.c:259
 msgid "Current actions"
 msgstr "Настоящи действия"
 
-# c-format
-#: src/prefs_actions.c:641
-#, c-format
-msgid "Could not get message file %d"
-msgstr "Не мога да получа файла на съобщението %d"
-
-#: src/prefs_actions.c:662 src/prefs_actions.c:667
-msgid "Could not get message file."
-msgstr "Не мога да получа файла на съобщението."
-
-#: src/prefs_actions.c:675
-msgid "Could not get message part."
-msgstr "Не мога да получа частта със съобщението."
-
-#: src/prefs_actions.c:681
-msgid "No message part selected."
-msgstr "Няма избрана част на съобщението."
-
-#: src/prefs_actions.c:685
-msgid "No message file selected."
-msgstr "Няма избран файл на съобщението."
-
-#: src/prefs_actions.c:704
-msgid "Can't get part of multipart message"
-msgstr "Не мога да взема част от разчленено съобщение"
-
-#: src/prefs_actions.c:726 src/prefs_filtering.c:810 src/prefs_filtering.c:872
-#: src/prefs_filtering.c:895 src/prefs_matcher.c:687 src/prefs_matcher.c:777
-#: src/prefs_scoring.c:453 src/prefs_scoring.c:484 src/prefs_template.c:309
+#: src/prefs_actions.c:382 src/prefs_filtering.c:806 src/prefs_filtering.c:868
+#: src/prefs_filtering.c:891 src/prefs_matcher.c:687 src/prefs_matcher.c:777
+#: src/prefs_scoring.c:444 src/prefs_scoring.c:475 src/prefs_template.c:309
 msgid "(New)"
 msgstr "(Нов)"
 
-#: src/prefs_actions.c:772
+#: src/prefs_actions.c:428
 msgid "Menu name is not set."
 msgstr "Името на менюто не е посочено."
 
-#: src/prefs_actions.c:777
+#: src/prefs_actions.c:433
 msgid "Colon ':' is not allowed in the menu name."
 msgstr "Знака ':' не е позволен в името на менюто."
 
-#: src/prefs_actions.c:787
+#: src/prefs_actions.c:443
 msgid "Menu name is too long."
 msgstr "Името на менюто е твърде дълго."
 
-#: src/prefs_actions.c:796
+#: src/prefs_actions.c:452
 msgid "Command line not set."
 msgstr "Командата не е посочена."
 
-#: src/prefs_actions.c:801
+#: src/prefs_actions.c:457
 msgid "Menu name and command are too long."
 msgstr "Името на менюто и командата за твърде дълги."
 
-#: src/prefs_actions.c:806
+#: src/prefs_actions.c:462
 #, c-format
 msgid ""
 "The command\n"
@@ -4619,214 +4649,197 @@ msgstr ""
 "%s\n"
 "има синтактична грешка."
 
-#: src/prefs_actions.c:867
+#: src/prefs_actions.c:523
 msgid "Delete action"
 msgstr "Изтрий действието"
 
-#: src/prefs_actions.c:868
+#: src/prefs_actions.c:524
 msgid "Do you really want to delete this action?"
 msgstr "Наистина ли искате да изтриете това действие?"
 
-#: src/prefs_actions.c:1073
-#, c-format
-msgid ""
-"The selected action cannot be used in the compose window\n"
-"because it contains %%f, %%F or %%p."
-msgstr ""
-"Избраното действие не може да се ползва в compose\n"
-"прозореца защото съдържа %%f, %%F или %%p."
-
-#: src/prefs_actions.c:1271
-#, c-format
-msgid ""
-"Command could not be started. Pipe creation failed.\n"
-"%s"
-msgstr ""
-"Командата не е изпълнена. Не е създаден поток (pipe).\n"
-"%s"
-
-#: src/prefs_actions.c:1356
-#, c-format
-msgid ""
-"Could not fork to execute the following command:\n"
-"%s\n"
-"%s"
-msgstr ""
-"Не мога да изпълня въшната команда:\n"
-"%s\n"
-"%s"
-
-#: src/prefs_actions.c:1600
-#, c-format
-msgid "--- Running: %s\n"
-msgstr "--- Стартирам: %s\n"
-
-#: src/prefs_actions.c:1604
-#, c-format
-msgid "--- Ended: %s\n"
-msgstr "--- Завърших: %s\n"
-
-#: src/prefs_actions.c:1638
-msgid "Action's input/output"
-msgstr "Вход/Изход на действието"
-
-#: src/prefs_actions.c:1684
-msgid " Send "
-msgstr "Изпращане"
-
-#: src/prefs_actions.c:1695
-msgid "Abort"
-msgstr "Прекратяване"
-
-#: src/prefs_actions.c:1822
+#: src/prefs_actions.c:638
 msgid "MENU NAME:"
 msgstr ""
 
-#: src/prefs_actions.c:1823
+#: src/prefs_actions.c:639
 msgid "Use / in menu name to make submenus."
 msgstr "Използвайте / в менюто за да създадете подменюта."
 
-#: src/prefs_actions.c:1825
+#: src/prefs_actions.c:641
 msgid "COMMAND LINE:"
 msgstr ""
 
-#: src/prefs_actions.c:1826
+#: src/prefs_actions.c:642
 msgid "Begin with:"
 msgstr "Започни с:"
 
-#: src/prefs_actions.c:1827
-msgid "to send message body or selection to command"
-msgstr "за пращане тялото на съобщението или селекция към команда"
+#: src/prefs_actions.c:643
+msgid "to send message body or selection to command's standard input"
+msgstr "пращане тялото на съобщението или селекция към стандартния вход на команда"
 
-#: src/prefs_actions.c:1828
-msgid "to send user provided text to command"
-msgstr "за пращане на потребителски текст към команда"
+#: src/prefs_actions.c:644
+msgid "to send user provided text to command's standard input"
+msgstr "пращане на потребителски текст към стандартния вход на команда"
 
-#: src/prefs_actions.c:1829
-msgid "to send user provided hidden text to command"
-msgstr "за пращане на скрит потребителски текст към команда"
+#: src/prefs_actions.c:645
+msgid "to send user provided hidden text to command's standard input"
+msgstr "пращане на скрит потребителски текст към стандартния вход на команда"
 
-#: src/prefs_actions.c:1830
+#: src/prefs_actions.c:646
 msgid "End with:"
 msgstr "Завърши с:"
 
-#: src/prefs_actions.c:1831
-msgid "to replace message body or selection with command output"
-msgstr "за заместване тялото на съобщението или селекция с изхода на команда"
+#: src/prefs_actions.c:647
+msgid "to replace message body or selection with command's standard output"
+msgstr "заместване тялото на съобщението или селекция със стандартния изход на команда"
 
-#: src/prefs_actions.c:1832
-msgid "to insert command's output without replacing old text"
-msgstr "за вмъкване изхода от команда без заместване на стария текст"
+#: src/prefs_actions.c:648
+msgid "to insert command's standard output without replacing old text"
+msgstr "вмъкване стандартния изход от команда без заместване на стария текст"
 
-#: src/prefs_actions.c:1833
+#: src/prefs_actions.c:649
 msgid "to run command asynchronously"
 msgstr "за асинхронно изпълнение на команда"
 
-#: src/prefs_actions.c:1834
+#: src/prefs_actions.c:650
 msgid "Use:"
 msgstr "Използвай:"
 
-#: src/prefs_actions.c:1835
-msgid "for message file name"
-msgstr "за файловото име на съобщението"
+#: src/prefs_actions.c:651
+msgid "for the file of the selected message in RFC822/2822 format "
+msgstr "за файл от избраните съобщения в RFC822/2822 формат"
 
-#: src/prefs_actions.c:1836
-msgid "for the list of the file names of selected messages"
-msgstr "за списъка с файловите имена на избраните съобщения"
+#: src/prefs_actions.c:652
+msgid ""
+"for the list of the files of the selected messages in RFC822/2822 format"
+msgstr ""
+"за списъка с файлове на избраните съобщения в RFC822/2822 формат"
 
-#: src/prefs_actions.c:1837
-msgid "for the selected message MIME part."
-msgstr "за избраната MIME част на съобщението. "
+#: src/prefs_actions.c:653
+msgid "for the file of the selected decoded message MIME part"
+msgstr "за файл на избраната MIME част на съобщението"
 
-#: src/prefs_actions.c:1845 src/prefs_matcher.c:1723 src/quote_fmt.c:75
+#: src/prefs_actions.c:654
+msgid "for a user provided argument"
+msgstr "за аргумент предоставен от потребилеля"
+
+#: src/prefs_actions.c:655
+msgid "for a user provided hidden argument (e.g. password)"
+msgstr "за скрит аргумент предоставен от потребителя (като парола)"
+
+#: src/prefs_actions.c:656
+msgid "for the text selection"
+msgstr "за избраният текст"
+
+#: src/prefs_actions.c:664 src/prefs_matcher.c:1723 src/quote_fmt.c:75
 msgid "Description of symbols"
 msgstr "Описание на символите"
 
-#: src/prefs_common.c:1013
+#: src/prefs_common.c:1008
 msgid "Common Preferences"
 msgstr "Общи Настройки"
 
-#: src/prefs_common.c:1037
+#: src/prefs_common.c:1032
 msgid "Spell Checker"
 msgstr "Проверка на правописа"
 
-#: src/prefs_common.c:1040
+#: src/prefs_common.c:1035
 msgid "Quote"
 msgstr "Цитати"
 
-#: src/prefs_common.c:1042
+#: src/prefs_common.c:1037
 msgid "Display"
 msgstr "Показване"
 
-#: src/prefs_common.c:1044
+#: src/prefs_common.c:1039
 msgid "Message"
 msgstr "Съобщение"
 
-#: src/prefs_common.c:1052 src/select-keys.c:333
+#: src/prefs_common.c:1047 src/select-keys.c:333
 msgid "Other"
 msgstr "Други"
 
-#: src/prefs_common.c:1096 src/prefs_common.c:1286
+#: src/prefs_common.c:1099 src/prefs_common.c:1324
 msgid "External program"
 msgstr "Външна програма"
 
-#: src/prefs_common.c:1105
+#: src/prefs_common.c:1108
 msgid "Use external program for incorporation"
 msgstr "Ползвай външна програма за вклчване"
 
-#: src/prefs_common.c:1112 src/prefs_common.c:1301
+#: src/prefs_common.c:1115 src/prefs_common.c:1339
 msgid "Command"
 msgstr "Команда"
 
-#: src/prefs_common.c:1126
+#: src/prefs_common.c:1129
 msgid "Local spool"
 msgstr "Локална опашка"
 
-#: src/prefs_common.c:1137
+#: src/prefs_common.c:1140
 msgid "Incorporate from spool"
 msgstr "Включи от опашката"
 
-#: src/prefs_common.c:1139
+#: src/prefs_common.c:1142
 msgid "Filter on incorporation"
 msgstr "Филтрирай при включване"
 
-#: src/prefs_common.c:1147
+#: src/prefs_common.c:1150
 msgid "Spool directory"
 msgstr "Папка на опашката"
 
-#: src/prefs_common.c:1165
+#: src/prefs_common.c:1168
 msgid "Auto-check new mail"
 msgstr "Автоматично проверявай за нова поща"
 
-#: src/prefs_common.c:1167
+#: src/prefs_common.c:1170
 msgid "every"
 msgstr "всеки"
 
-#: src/prefs_common.c:1179
+#: src/prefs_common.c:1182
 msgid "minute(s)"
 msgstr "минути"
 
-#: src/prefs_common.c:1188
+#: src/prefs_common.c:1191
 msgid "Check new mail on startup"
 msgstr "Проверявай за нова поща при стартиране"
 
-#: src/prefs_common.c:1190
+#: src/prefs_common.c:1193
 msgid "Update all local folders after incorporation"
 msgstr "Обнови всички локални папки след включване"
 
-#: src/prefs_common.c:1193
+#: src/prefs_common.c:1201
+msgid "Show receive dialog"
+msgstr "Показвай диалог за получаване"
+
+#: src/prefs_common.c:1211 src/prefs_common.c:1375 src/prefs_common.c:2744
+msgid "Always"
+msgstr "Винаги"
+
+#: src/prefs_common.c:1212
+msgid "Only if a window is active"
+msgstr "Само когато прозореца е активен"
+
+#: src/prefs_common.c:1214 src/prefs_common.c:1376
+msgid "Never"
+msgstr "Никога"
+
+#: src/prefs_common.c:1222
+msgid "Close receive dialog when finished"
+msgstr "Затвори диалога за получаване когато завършиш"
+
+#: src/prefs_common.c:1224
 msgid "Run command when new mail arrives"
 msgstr "Стартирай команда когато пристига нова поща"
 
-#: src/prefs_common.c:1203
+#: src/prefs_common.c:1234
 msgid "after autochecking"
 msgstr "след автоматична проверка"
 
-#: src/prefs_common.c:1205
+#: src/prefs_common.c:1236
 msgid "after manual checking"
 msgstr "след ръчна проверка"
 
-#: src/prefs_common.c:1219
+#: src/prefs_common.c:1250
 #, c-format
 msgid ""
 "Command to execute:\n"
@@ -4835,119 +4848,123 @@ msgstr ""
 "Команда за изпълнение:\n"
 "(исползвай %d за броя на новите съобщения)"
 
-#: src/prefs_common.c:1294
+#: src/prefs_common.c:1332
 msgid "Use external program for sending"
 msgstr "Ползвай външна програма за изпращане"
 
-#: src/prefs_common.c:1320
+#: src/prefs_common.c:1358
 msgid "Save sent messages to Sent folder"
 msgstr "Запазвай изпратените съобщения в папка Изпратени"
 
-#: src/prefs_common.c:1322
+#: src/prefs_common.c:1360
 msgid "Queue messages that fail to send"
 msgstr "Нареждай при чакащите съобщенията които не са изпратени успешно"
 
-#: src/prefs_common.c:1328
+#: src/prefs_common.c:1366
+msgid "Show send dialog"
+msgstr "Показвай диалог за изпращане"
+
+#: src/prefs_common.c:1384
 msgid "Outgoing codeset"
 msgstr "charset в хедъра на изпращаните"
 
-#: src/prefs_common.c:1343
+#: src/prefs_common.c:1399
 msgid "Automatic (Recommended)"
 msgstr "Автоматично (Препоръчително)"
 
-#: src/prefs_common.c:1344
+#: src/prefs_common.c:1400
 msgid "7bit ascii (US-ASCII)"
 msgstr "7bit ascii (US-ASCII)"
 
-#: src/prefs_common.c:1346
+#: src/prefs_common.c:1402
 msgid "Unicode (UTF-8)"
 msgstr "Уникод (UTF-8)"
 
-#: src/prefs_common.c:1348
+#: src/prefs_common.c:1404
 msgid "Western European (ISO-8859-1)"
 msgstr "Западно европейски (ISO-8859-1)"
 
-#: src/prefs_common.c:1349
+#: src/prefs_common.c:1405
 msgid "Western European (ISO-8859-15)"
 msgstr "Западно европейски (ISO-8859-15)"
 
-#: src/prefs_common.c:1350
+#: src/prefs_common.c:1406
 msgid "Central European (ISO-8859-2)"
 msgstr "Централно европейски (ISO-8859-2)"
 
-#: src/prefs_common.c:1351
+#: src/prefs_common.c:1407
 msgid "Baltic (ISO-8859-13)"
 msgstr "Балтийски (ISO-8859-13)"
 
-#: src/prefs_common.c:1352
+#: src/prefs_common.c:1408
 msgid "Baltic (ISO-8859-4)"
 msgstr "Балтийски (ISO-8859-4)"
 
-#: src/prefs_common.c:1353
+#: src/prefs_common.c:1409
 msgid "Greek (ISO-8859-7)"
 msgstr "Гръцки (ISO-8859-7)"
 
-#: src/prefs_common.c:1354
+#: src/prefs_common.c:1410
 msgid "Turkish (ISO-8859-9)"
 msgstr "Турски (ISO-8859-9)"
 
-#: src/prefs_common.c:1356
+#: src/prefs_common.c:1412
 msgid "Cyrillic (ISO-8859-5)"
 msgstr "Кирилица (ISO-8859-5)"
 
-#: src/prefs_common.c:1358
+#: src/prefs_common.c:1414
 msgid "Cyrillic (KOI8-R)"
 msgstr "Кирилица (KOI8-R)"
 
-#: src/prefs_common.c:1360
+#: src/prefs_common.c:1416
 msgid "Cyrillic (Windows-1251)"
 msgstr "Кирилица (Windows-1251)"
 
-#: src/prefs_common.c:1361
+#: src/prefs_common.c:1417
 msgid "Cyrillic (KOI8-U)"
 msgstr "Кирилица (KOI8-U)"
 
-#: src/prefs_common.c:1363
+#: src/prefs_common.c:1419
 msgid "Japanese (ISO-2022-JP)"
 msgstr "Японски (ISO-2022-JP)"
 
-#: src/prefs_common.c:1365
+#: src/prefs_common.c:1421
 msgid "Japanese (EUC-JP)"
 msgstr "Японски (EUC-JP)"
 
-#: src/prefs_common.c:1366
+#: src/prefs_common.c:1422
 msgid "Japanese (Shift_JIS)"
 msgstr "Японски (Shift_JIS)"
 
-#: src/prefs_common.c:1368
+#: src/prefs_common.c:1424
 msgid "Simplified Chinese (GB2312)"
 msgstr "Опростен китайски (GB2312)"
 
-#: src/prefs_common.c:1369
+#: src/prefs_common.c:1425
 msgid "Traditional Chinese (Big5)"
 msgstr "Традиционен китайски (Big5)"
 
-#: src/prefs_common.c:1371
+#: src/prefs_common.c:1427
 msgid "Traditional Chinese (EUC-TW)"
 msgstr "Традиционен китайски (EUC-TW)"
 
-#: src/prefs_common.c:1372
+#: src/prefs_common.c:1428
 msgid "Chinese (ISO-2022-CN)"
 msgstr "Китайски (ISO-2022-CN)"
 
-#: src/prefs_common.c:1374
+#: src/prefs_common.c:1430
 msgid "Korean (EUC-KR)"
 msgstr "Корейски (EUC-KR)"
 
-#: src/prefs_common.c:1375
+#: src/prefs_common.c:1431
 msgid "Thai (TIS-620)"
 msgstr "Тайландски (TIS-620)"
 
-#: src/prefs_common.c:1376
+#: src/prefs_common.c:1432
 msgid "Thai (Windows-874)"
 msgstr "Тайландски (Windows-874)"
 
-#: src/prefs_common.c:1386
+#: src/prefs_common.c:1442
 msgid ""
 "If `Automatic' is selected, the optimal encoding\n"
 "for the current locale will be used."
@@ -4955,33 +4972,33 @@ msgstr ""
 "Ако 'Автоматично' е избрано, ще бъде използвано\n"
 "кодирането на текущия локал."
 
-#: src/prefs_common.c:1398
+#: src/prefs_common.c:1454
 msgid "Transfer encoding"
 msgstr ""
 
-#: src/prefs_common.c:1421
+#: src/prefs_common.c:1477
 msgid ""
 "Specify Content-Transfer-Encoding used when\n"
 "message body contains non-ASCII characters."
 msgstr ""
 
-#: src/prefs_common.c:1550
+#: src/prefs_common.c:1607
 msgid "Select dictionaries location"
 msgstr "Избери местоположението на речниците"
 
-#: src/prefs_common.c:1613
+#: src/prefs_common.c:1670
 msgid "Global spelling checker settings"
 msgstr "Глобални настройки на проверката на правописа"
 
-#: src/prefs_common.c:1620
+#: src/prefs_common.c:1677
 msgid "Enable spell checker"
 msgstr "Активирай проверка на превописа"
 
-#: src/prefs_common.c:1631
+#: src/prefs_common.c:1688
 msgid "Enable alternate dictionary"
 msgstr "Активирай алтернативен речник"
 
-#: src/prefs_common.c:1633
+#: src/prefs_common.c:1690
 msgid ""
 "Enabling an alternate dictionary makes switching\n"
 "with the last used dictionary faster."
@@ -4989,183 +5006,183 @@ msgstr ""
 "Активирането на алтернативен речник ускорява\n"
 "смяната с последния ползван речник."
 
-#: src/prefs_common.c:1646
+#: src/prefs_common.c:1703
 msgid "Dictionaries path:"
 msgstr "Път до речниците:"
 
-#: src/prefs_common.c:1673
+#: src/prefs_common.c:1730
 msgid "Default dictionary:"
 msgstr "Подразбиращ се речник:"
 
-#: src/prefs_common.c:1689
+#: src/prefs_common.c:1746
 msgid "Default suggestion mode"
 msgstr "Подразбиращ се режим на подсказване"
 
-#: src/prefs_common.c:1704
+#: src/prefs_common.c:1761
 msgid "Misspelled word color:"
 msgstr "Цвят на грешната дума:"
 
-#: src/prefs_common.c:1786
+#: src/prefs_common.c:1843
 msgid "Automatic account selection"
 msgstr "Автоматичен избор на акаунт"
 
-#: src/prefs_common.c:1794
+#: src/prefs_common.c:1851
 msgid "when replying"
 msgstr "когато отговаряш"
 
-#: src/prefs_common.c:1796
+#: src/prefs_common.c:1853
 msgid "when forwarding"
 msgstr "когато препращаш"
 
-#: src/prefs_common.c:1798
+#: src/prefs_common.c:1855
 msgid "when re-editing"
 msgstr "когато редактираш повторно"
 
-#: src/prefs_common.c:1805
+#: src/prefs_common.c:1862
 msgid "Reply button invokes mailing list reply"
 msgstr "Reply бутона да изпълнява отговор на пощенски списък"
 
-#: src/prefs_common.c:1808
+#: src/prefs_common.c:1865
 msgid "Automatically launch the external editor"
 msgstr "Автоматично стартирай външния редактор"
 
-#: src/prefs_common.c:1815 src/prefs_filtering.c:234
+#: src/prefs_common.c:1872 src/prefs_filtering.c:231
 msgid "Forward as attachment"
 msgstr "Препрати като прикрепка"
 
-#: src/prefs_common.c:1818
+#: src/prefs_common.c:1875
 msgid "Block cursor"
 msgstr "Блоков курсор"
 
-#: src/prefs_common.c:1821
+#: src/prefs_common.c:1878
 msgid "Keep the original 'From' header when redirecting"
 msgstr "Запази оригиналния 'From' когато пренасочваш"
 
-#: src/prefs_common.c:1829
+#: src/prefs_common.c:1886
 msgid "Autosave to Drafts folder every "
 msgstr "Автоматично запазвай в папката с черновите всеки "
 
-#: src/prefs_common.c:1836 src/prefs_common.c:1881
+#: src/prefs_common.c:1893 src/prefs_common.c:1938
 msgid "characters"
 msgstr "знака"
 
-#: src/prefs_common.c:1844
+#: src/prefs_common.c:1901
 msgid "Undo level"
 msgstr "Ниво на отмяна"
 
-#: src/prefs_common.c:1857
+#: src/prefs_common.c:1914
 msgid "Message wrapping"
 msgstr "пренасяне в съобщенията"
 
-#: src/prefs_common.c:1869
+#: src/prefs_common.c:1926
 msgid "Wrap messages at"
 msgstr "Пренасяй съобщенията на"
 
-#: src/prefs_common.c:1889
+#: src/prefs_common.c:1946
 msgid "Wrap quotation"
 msgstr "Пренасяй цитираните"
 
-#: src/prefs_common.c:1891
+#: src/prefs_common.c:1948
 msgid "Wrap on input"
 msgstr "Пренасяй при вкарване"
 
-#: src/prefs_common.c:1894
+#: src/prefs_common.c:1951
 msgid "Wrap before sending"
 msgstr "Пренеси преди изпращане"
 
-#: src/prefs_common.c:1897
+#: src/prefs_common.c:1954
 msgid "Smart wrapping (EXPERIMENTAL)"
 msgstr "'Умно' пренасяне (ЕКСПЕРИМЕНТАЛНО)"
 
-#: src/prefs_common.c:1963
+#: src/prefs_common.c:2020
 msgid "Reply will quote by default"
 msgstr "Отговорът ще бъде цитиран по подразбиране"
 
-#: src/prefs_common.c:1965
+#: src/prefs_common.c:2022
 msgid "Reply format"
 msgstr "Формат на отговора"
 
-#: src/prefs_common.c:1980 src/prefs_common.c:2019
+#: src/prefs_common.c:2037 src/prefs_common.c:2076
 msgid "Quotation mark"
 msgstr "Маркиране на цитата"
 
-#: src/prefs_common.c:2004
+#: src/prefs_common.c:2061
 msgid "Forward format"
 msgstr "Формат на препращане"
 
-#: src/prefs_common.c:2048
+#: src/prefs_common.c:2105
 msgid " Description of symbols "
 msgstr " Описание на символите "
 
-#: src/prefs_common.c:2056
+#: src/prefs_common.c:2113
 msgid "Quotation characters"
 msgstr "Знаци за цитиране"
 
-#: src/prefs_common.c:2071
+#: src/prefs_common.c:2128
 msgid "Treat these characters as quotation marks: "
 msgstr "Разбирай тези символи като такива за цитиране: "
 
-#: src/prefs_common.c:2121
+#: src/prefs_common.c:2178
 msgid "Font"
 msgstr "Шрифт"
 
-#: src/prefs_common.c:2150
+#: src/prefs_common.c:2207
 msgid "Small"
 msgstr "Мялък"
 
-#: src/prefs_common.c:2169
+#: src/prefs_common.c:2226
 msgid "Normal"
 msgstr "Нормален"
 
-#: src/prefs_common.c:2188
+#: src/prefs_common.c:2245
 msgid "Bold"
 msgstr "Удебелен"
 
-#: src/prefs_common.c:2213
+#: src/prefs_common.c:2270
 msgid "Translate header name (such as `From:', `Subject:')"
 msgstr "Превеждай името на заглавка (също като 'От:', 'Тема:')"
 
-#: src/prefs_common.c:2216
+#: src/prefs_common.c:2273
 msgid "Display unread number next to folder name"
 msgstr "Показвай броя на непрочетените след името на папката"
 
-#: src/prefs_common.c:2225
+#: src/prefs_common.c:2282
 msgid "Abbreviate newsgroup names longer than"
 msgstr "Съкращавай нюз групи по дълги от"
 
-#: src/prefs_common.c:2240
+#: src/prefs_common.c:2297
 msgid "letters"
 msgstr "букви"
 
-#: src/prefs_common.c:2246
+#: src/prefs_common.c:2303
 msgid "Summary View"
 msgstr "Общ изглед"
 
-#: src/prefs_common.c:2255
+#: src/prefs_common.c:2312
 msgid "Display recipient in `From' column if sender is yourself"
 msgstr "Показвай получателя в `От' колоната, ако изпращача сте вие"
 
-#: src/prefs_common.c:2258
+#: src/prefs_common.c:2315
 msgid "Display sender using address book"
 msgstr "Покажи изпращача ползвайки Адресника"
 
-#: src/prefs_common.c:2261
+#: src/prefs_common.c:2318
 msgid "Thread using subject in addition to standard headers"
 msgstr ""
 
-#: src/prefs_common.c:2269 src/prefs_common.c:3210 src/prefs_common.c:3248
+#: src/prefs_common.c:2326 src/prefs_common.c:3187 src/prefs_common.c:3225
 msgid "Date format"
 msgstr "Формат на Датата"
 
-#: src/prefs_common.c:2291
+#: src/prefs_common.c:2348
 msgid " Set displayed items in summary... "
 msgstr " Настрой показваните атрибути в общия изглед... "
 
-#: src/prefs_common.c:2358
+#: src/prefs_common.c:2412
 msgid "Enable coloration of message"
 msgstr "Позволи оцветяване на съобщенията"
 
-#: src/prefs_common.c:2373
+#: src/prefs_common.c:2427
 msgid ""
 "Display multi-byte alphanumeric as\n"
 "ASCII character (Japanese only)"
@@ -5173,75 +5190,67 @@ msgstr ""
 "Показвай мултибайтови букви и цифри\n"
 "като ASCII символи (само Японски)"
 
-#: src/prefs_common.c:2379
+#: src/prefs_common.c:2433
 msgid "Display header pane above message view"
 msgstr "Показвай таблица със заглавки отгоре в изгледа на съобщението"
 
-#: src/prefs_common.c:2386
+#: src/prefs_common.c:2440
 msgid "Display short headers on message view"
 msgstr "Показвай къси заглавки в изгледа на съобщението"
 
-#: src/prefs_common.c:2408
+#: src/prefs_common.c:2462
 msgid "Line space"
 msgstr "Разстояние м/у редовете"
 
-#: src/prefs_common.c:2422 src/prefs_common.c:2462
+#: src/prefs_common.c:2476 src/prefs_common.c:2516
 msgid "pixel(s)"
 msgstr "пиксел(а)"
 
-#: src/prefs_common.c:2427
+#: src/prefs_common.c:2481
 msgid "Leave space on head"
 msgstr "Остави пространство най-отгоре"
 
-#: src/prefs_common.c:2429
+#: src/prefs_common.c:2483
 msgid "Scroll"
 msgstr "Превъртане"
 
-#: src/prefs_common.c:2436
+#: src/prefs_common.c:2490
 msgid "Half page"
 msgstr "Половин страница"
 
-#: src/prefs_common.c:2442
+#: src/prefs_common.c:2496
 msgid "Smooth scroll"
 msgstr "Плавно превъртане"
 
-#: src/prefs_common.c:2448
+#: src/prefs_common.c:2502
 msgid "Step"
 msgstr "Стъпка"
 
-#: src/prefs_common.c:2473
-msgid "Automatically display attached images"
-msgstr "Автоматично показвай прикачените картинки"
-
-#: src/prefs_common.c:2476
-msgid "Resize attached images"
-msgstr "Промени мащаба на прикачените картинки"
-
-#: src/prefs_common.c:2479
+#: src/prefs_common.c:2527
 msgid "Show attachment descriptions (rather than names)"
 msgstr ""
 
-#: src/prefs_common.c:2528
+#: src/prefs_common.c:2573
 msgid "Automatically check signatures"
 msgstr "Автоматично проверявай подписите"
 
-#: src/prefs_common.c:2531
+#: src/prefs_common.c:2576
 msgid "Show signature check result in a popup window"
 msgstr "Покажи резултата от проверката на подписа в изкачащ прозорец"
 
-#: src/prefs_common.c:2534
+#: src/prefs_common.c:2579
 msgid "Store passphrase in memory temporarily"
 msgstr "Съхранявай пасфразата временно в паметта"
 
-#: src/prefs_common.c:2549
+#: src/prefs_common.c:2594
 msgid "Expire after"
 msgstr "Изтича след"
 
-#: src/prefs_common.c:2562
+#: src/prefs_common.c:2607
 msgid "minute(s) "
 msgstr "минути"
 
-#: src/prefs_common.c:2575
+#: src/prefs_common.c:2620
 msgid ""
 "(Setting to '0' will store the passphrase\n"
 " for the whole session)"
@@ -5249,36 +5258,36 @@ msgstr ""
 "(Указването на '0' ще съхранява пасфразата\n"
 " по време на цялата сесия)"
 
-#: src/prefs_common.c:2585
+#: src/prefs_common.c:2630
 msgid "Grab input while entering a passphrase"
-msgstr ""
+msgstr "Прехвани входа докато се въвежда passphrase"
 
-#: src/prefs_common.c:2590
+#: src/prefs_common.c:2635
 msgid "Display warning on startup if GnuPG doesn't work"
 msgstr "Покажи предупреждение при стартиране, ако GnuPG не работи"
 
-#: src/prefs_common.c:2658
-msgid "Open messages in summary with cursor keys"
-msgstr ""
+#: src/prefs_common.c:2697
+msgid "Always open messages in summary when selected"
+msgstr "Винаги отваряй съобщенията в summary когато са избрани"
 
-#: src/prefs_common.c:2662
+#: src/prefs_common.c:2701
 msgid "Open first unread message when entering a folder"
 msgstr "Отвори първото непрочетено съобщение когато влизаш в папка"
 
-#: src/prefs_common.c:2666
+#: src/prefs_common.c:2705
 msgid "Only mark message as read when opened in new window"
 msgstr ""
 "Само маркирай съобщението като прочетено когато е отворено в нов прозорец"
 
-#: src/prefs_common.c:2670
+#: src/prefs_common.c:2709
 msgid "Go to inbox after receiving new mail"
 msgstr "Отиди в inbox след получаване на нови съобщения"
 
-#: src/prefs_common.c:2678
+#: src/prefs_common.c:2717
 msgid "Execute immediately when moving or deleting messages"
 msgstr "Изпълнявай незабавно при местене или триене на съобщения"
 
-#: src/prefs_common.c:2685
+#: src/prefs_common.c:2724
 msgid ""
 "(Messages will be marked until execution\n"
 " if this is turned off)"
@@ -5286,284 +5295,252 @@ msgstr ""
 "(Съобщенията ще бъдат маркирани по време\n"
 " на изпълнението ако това е изключено)"
 
-#: src/prefs_common.c:2691
-msgid "Dialogs"
-msgstr "Диалози"
-
-#: src/prefs_common.c:2705
+#: src/prefs_common.c:2735
 msgid "Show no-unread-message dialog"
 msgstr "Показвай диалога 'Няма непрочетени'"
 
-#: src/prefs_common.c:2719 src/prefs_common.c:2740 src/prefs_common.c:2757
-msgid "Always"
-msgstr "Винаги"
-
-#: src/prefs_common.c:2720
+#: src/prefs_common.c:2745
 msgid "Assume 'Yes'"
 msgstr "Да"
 
-#: src/prefs_common.c:2722
+#: src/prefs_common.c:2747
 msgid "Assume 'No'"
 msgstr "Не"
 
-#: src/prefs_common.c:2727
-msgid "Show send dialog"
-msgstr "Показвай диалог за изпращане"
-
-#: src/prefs_common.c:2741 src/prefs_common.c:2760
-msgid "Never"
-msgstr "Никога"
-
-#: src/prefs_common.c:2745
-msgid "Show receive dialog"
-msgstr "Показвай диалог за получаване"
-
-#: src/prefs_common.c:2758
-msgid "Only if a window is active"
-msgstr "Само когато прозореца е активен"
-
-#: src/prefs_common.c:2768
-msgid "Close receive dialog when finished"
-msgstr "Затвори диалога за получаване когато завършиш"
-
-#: src/prefs_common.c:2775
+#: src/prefs_common.c:2756
 msgid " Set key bindings... "
 msgstr "Настрой съкратените клавиши"
 
-#: src/prefs_common.c:2781
+#: src/prefs_common.c:2762
 msgid "Icon theme"
 msgstr "Тема на икона"
 
-#: src/prefs_common.c:2864
+#: src/prefs_common.c:2841
 #, c-format
 msgid "External commands (%s will be replaced with file name / URI)"
 msgstr "Външни команди (%s ще бъде заменено с име на файл / URL)"
 
-#: src/prefs_common.c:2873
+#: src/prefs_common.c:2850
 msgid "Web browser"
 msgstr "Уеб браузър"
 
-#: src/prefs_common.c:2898 src/summaryview.c:3459
-msgid "Print"
-msgstr "Принтиране"
-
-#: src/prefs_common.c:2909 src/toolbar.c:405
+#: src/prefs_common.c:2886 src/toolbar.c:406
 msgid "Editor"
 msgstr "Редактор"
 
-#: src/prefs_common.c:2939
+#: src/prefs_common.c:2916
 msgid "Add address to destination when double-clicked"
 msgstr "Добави адрес до предназначението когато се кликне два пъти"
 
-#: src/prefs_common.c:2942
+#: src/prefs_common.c:2919
 msgid "Log Size"
 msgstr "Размер на лога"
 
-#: src/prefs_common.c:2949
+#: src/prefs_common.c:2926
 msgid "Clip the log size"
 msgstr "Ограничи размера на лога"
 
-#: src/prefs_common.c:2954
+#: src/prefs_common.c:2931
 msgid "Log window length"
 msgstr "Дължина на лог прозореца"
 
-#: src/prefs_common.c:2963
+#: src/prefs_common.c:2940
 msgid "(0 to stop logging in the log window)"
 msgstr "(0 за да спра са логвам в прозореца)"
 
-#: src/prefs_common.c:2971
+#: src/prefs_common.c:2948
 msgid "Security"
 msgstr "Сигурност"
 
-#: src/prefs_common.c:2978
+#: src/prefs_common.c:2955
 msgid "Ask before accepting SSL certificates"
 msgstr "Питай преди да приемеш SSL сертификат"
 
-#: src/prefs_common.c:2986
+#: src/prefs_common.c:2963
 msgid "On exit"
 msgstr "При излизане"
 
-#: src/prefs_common.c:2994
+#: src/prefs_common.c:2971
 msgid "Confirm on exit"
 msgstr "Потвъждавай излизането"
 
-#: src/prefs_common.c:3001
+#: src/prefs_common.c:2978
 msgid "Empty trash on exit"
 msgstr "Изпразвай Кошчето на излизане"
 
-#: src/prefs_common.c:3003
+#: src/prefs_common.c:2980
 msgid "Ask before emptying"
 msgstr "Питай преди да го изпразниш"
 
-#: src/prefs_common.c:3007
+#: src/prefs_common.c:2984
 msgid "Warn if there are queued messages"
 msgstr "Предупреждавай ако има чакащи съобщения"
 
-#: src/prefs_common.c:3186
+#: src/prefs_common.c:3163
 msgid "the full abbreviated weekday name"
 msgstr "напълно съкратеното име на делника"
 
-#: src/prefs_common.c:3187
+#: src/prefs_common.c:3164
 msgid "the full weekday name"
 msgstr "пълното име на делника"
 
-#: src/prefs_common.c:3188
+#: src/prefs_common.c:3165
 msgid "the abbreviated month name"
 msgstr "съкратеното име на месеца"
 
-#: src/prefs_common.c:3189
+#: src/prefs_common.c:3166
 msgid "the full month name"
 msgstr "пълното име на месеца"
 
-#: src/prefs_common.c:3190
+#: src/prefs_common.c:3167
 msgid "the preferred date and time for the current locale"
 msgstr "предпочитаната дата и час за текущия локал"
 
-#: src/prefs_common.c:3191
+#: src/prefs_common.c:3168
 msgid "the century number (year/100)"
 msgstr "брой векове (години/100)"
 
-#: src/prefs_common.c:3192
+#: src/prefs_common.c:3169
 msgid "the day of the month as a decimal number"
 msgstr "денят от месеца като десетично число"
 
-#: src/prefs_common.c:3193
+#: src/prefs_common.c:3170
 msgid "the hour as a decimal number using a 24-hour clock"
 msgstr "часа като десетично число ползвайки 24-часов часовник"
 
-#: src/prefs_common.c:3194
+#: src/prefs_common.c:3171
 msgid "the hour as a decimal number using a 12-hour clock"
 msgstr "часа като десетично число ползвайки 12-часов часовник"
 
-#: src/prefs_common.c:3195
+#: src/prefs_common.c:3172
 msgid "the day of the year as a decimal number"
 msgstr "деня от годината като десетично число"
 
-#: src/prefs_common.c:3196
+#: src/prefs_common.c:3173
 msgid "the month as a decimal number"
 msgstr "месеца като десетично число"
 
-#: src/prefs_common.c:3197
+#: src/prefs_common.c:3174
 msgid "the minute as a decimal number"
 msgstr "минутата като десетично число"
 
-#: src/prefs_common.c:3198
+#: src/prefs_common.c:3175
 msgid "either AM or PM"
 msgstr "или AM или PM"
 
-#: src/prefs_common.c:3199
+#: src/prefs_common.c:3176
 msgid "the second as a decimal number"
 msgstr "второто като десетично число"
 
-#: src/prefs_common.c:3200
+#: src/prefs_common.c:3177
 msgid "the day of the week as a decimal number"
 msgstr "деня от седмицата като десетично число"
 
-#: src/prefs_common.c:3201
+#: src/prefs_common.c:3178
 msgid "the preferred date for the current locale"
 msgstr "предпочитаната дата за текущия локал"
 
-#: src/prefs_common.c:3202
+#: src/prefs_common.c:3179
 msgid "the last two digits of a year"
 msgstr "последните две цифри от годината"
 
-#: src/prefs_common.c:3203
+#: src/prefs_common.c:3180
 msgid "the year as a decimal number"
 msgstr "годината като десетично число"
 
-#: src/prefs_common.c:3204
+#: src/prefs_common.c:3181
 msgid "the time zone or name or abbreviation"
 msgstr "времевата зона или име или съкращение"
 
-#: src/prefs_common.c:3225
+#: src/prefs_common.c:3202
 msgid "Specifier"
 msgstr "Определител"
 
-#: src/prefs_common.c:3265
+#: src/prefs_common.c:3242
 msgid "Example"
 msgstr "Пример"
 
-#: src/prefs_common.c:3354
+#: src/prefs_common.c:3331
 msgid "Set message colors"
 msgstr "Настрой цветове на съобщението"
 
-#: src/prefs_common.c:3362
+#: src/prefs_common.c:3339
 msgid "Colors"
 msgstr "Цветове"
 
-#: src/prefs_common.c:3409
+#: src/prefs_common.c:3386
 msgid "Quoted Text - First Level"
 msgstr "Цитиран Текст - Първо Ниво"
 
-#: src/prefs_common.c:3415
+#: src/prefs_common.c:3392
 msgid "Quoted Text - Second Level"
 msgstr "Цитиран Текст - Второ Ниво"
 
-#: src/prefs_common.c:3421
+#: src/prefs_common.c:3398
 msgid "Quoted Text - Third Level"
 msgstr "Цитиран Текст - Трето Ниво"
 
-#: src/prefs_common.c:3427
+#: src/prefs_common.c:3404
 msgid "URI link"
 msgstr "URL връзка"
 
-#: src/prefs_common.c:3433
+#: src/prefs_common.c:3410
 msgid "Target folder"
 msgstr ""
 
-#: src/prefs_common.c:3439
+#: src/prefs_common.c:3416
 msgid "Signatures"
 msgstr "Подписи"
 
-#: src/prefs_common.c:3446
+#: src/prefs_common.c:3423
 msgid "Recycle quote colors"
 msgstr "Преработи цитираните цветове"
 
-#: src/prefs_common.c:3513
+#: src/prefs_common.c:3490
 msgid "Pick color for quotation level 1"
 msgstr "Избери цвят за ниво на цититане 1"
 
-#: src/prefs_common.c:3516
+#: src/prefs_common.c:3493
 msgid "Pick color for quotation level 2"
 msgstr "Избери цвят за ниво на цититане 2"
 
-#: src/prefs_common.c:3519
+#: src/prefs_common.c:3496
 msgid "Pick color for quotation level 3"
 msgstr "Избери цвят за ниво на цититане 3"
 
-#: src/prefs_common.c:3522
+#: src/prefs_common.c:3499
 msgid "Pick color for URI"
 msgstr "Избери цвят за URL"
 
-#: src/prefs_common.c:3525
+#: src/prefs_common.c:3502
 msgid "Pick color for target folder"
 msgstr "Избери цвят за target папката"
 
-#: src/prefs_common.c:3528
+#: src/prefs_common.c:3505
 msgid "Pick color for signatures"
 msgstr "Избери цвят за подписите"
 
-#: src/prefs_common.c:3532
+#: src/prefs_common.c:3509
 msgid "Pick color for misspelled word"
 msgstr "Избери цвят за згрешените думи"
 
-#: src/prefs_common.c:3668
+#: src/prefs_common.c:3645
 msgid "Font selection"
 msgstr "Избор на шрифт"
 
-#: src/prefs_common.c:3742
+#: src/prefs_common.c:3719
 msgid "Key bindings"
 msgstr "Съкратени клавиши"
 
-#: src/prefs_common.c:3756
+#: src/prefs_common.c:3733
 msgid "Select preset:"
 msgstr "Избери preset:"
 
-#: src/prefs_common.c:3769 src/prefs_common.c:4107
+#: src/prefs_common.c:3746 src/prefs_common.c:4031
 msgid "Old Sylpheed"
 msgstr "Стар Sylpheed"
 
-#: src/prefs_common.c:3777
+#: src/prefs_common.c:3754
 msgid ""
 "You can also modify each menu shortcut by pressing\n"
 "any key(s) when placing the mouse pointer on the item."
@@ -5616,109 +5593,110 @@ msgstr "Покажи всички неопределени заглавки"
 msgid "This header is already in the list."
 msgstr "Тази заглавка вече съществува в списъка."
 
-#: src/prefs_filtering.c:226
+#: src/prefs_filtering.c:223
 msgid "Move"
 msgstr "Мести"
 
-#: src/prefs_filtering.c:227
+#: src/prefs_filtering.c:224
 msgid "Copy"
 msgstr "Копирай"
 
-#: src/prefs_filtering.c:229 src/prefs_summary_column.c:67
+#: src/prefs_filtering.c:226 src/prefs_summary_column.c:67
 msgid "Mark"
 msgstr "Макиране"
 
-#: src/prefs_filtering.c:230
+#: src/prefs_filtering.c:227
 msgid "Unmark"
 msgstr "Отмаркиране"
 
-#: src/prefs_filtering.c:231
+#: src/prefs_filtering.c:228
 msgid "Mark as read"
 msgstr "Маркирай като прочетено"
 
-#: src/prefs_filtering.c:232
+#: src/prefs_filtering.c:229
 msgid "Mark as unread"
 msgstr "Маркирай като непрочетено"
 
-#: src/prefs_filtering.c:233 src/toolbar.c:356 src/toolbar.c:448
+#: src/prefs_filtering.c:230 src/toolbar.c:357 src/toolbar.c:449
 msgid "Forward"
 msgstr "Препрати"
 
-#: src/prefs_filtering.c:235
+#: src/prefs_filtering.c:232
 msgid "Redirect"
 msgstr "Пренасочи"
 
-#: src/prefs_filtering.c:236 src/prefs_filtering.c:477 src/prefs_matcher.c:156
-#: src/toolbar.c:158 src/toolbar.c:359 src/toolbar.c:1627
+#: src/prefs_filtering.c:233 src/prefs_filtering.c:473 src/prefs_matcher.c:156
+#: src/toolbar.c:159 src/toolbar.c:360 src/toolbar.c:1628
 msgid "Execute"
 msgstr "Изпълни"
 
-#: src/prefs_filtering.c:237 src/prefs_filtering.c:482
+#: src/prefs_filtering.c:234 src/prefs_filtering.c:478
 msgid "Color"
 msgstr "Цвят"
 
-#: src/prefs_filtering.c:238
-msgid "Delete on Server"
-msgstr "Изтрий на сървъра"
-
-#: src/prefs_filtering.c:350
+#: src/prefs_filtering.c:346
 msgid "Filtering/Processing configuration"
 msgstr "Филтриране/Конфигурация на процедиране"
 
-#: src/prefs_filtering.c:367 src/prefs_scoring.c:219
+#: src/prefs_filtering.c:363 src/prefs_scoring.c:219
 msgid "Condition"
 msgstr "Условие"
 
-#: src/prefs_filtering.c:381 src/prefs_scoring.c:234
+#: src/prefs_filtering.c:377 src/prefs_scoring.c:234
 msgid "Define ..."
 msgstr "Определи ..."
 
-#: src/prefs_filtering.c:393
+#: src/prefs_filtering.c:389
 msgid "Action"
 msgstr "Действие"
 
-#: src/prefs_filtering.c:432 src/progressdialog.c:52
+#: src/prefs_filtering.c:428 src/progressdialog.c:52
 msgid "Account"
 msgstr "Акаунт"
 
-#: src/prefs_filtering.c:472
+#: src/prefs_filtering.c:468
 msgid "Destination"
 msgstr "Предназначение"
 
-#: src/prefs_filtering.c:503 src/prefs_matcher.c:467
+#: src/prefs_filtering.c:499 src/prefs_matcher.c:467
 msgid "Info ..."
 msgstr "Информация ... "
 
-#: src/prefs_filtering.c:557
+#: src/prefs_filtering.c:527 src/prefs_matcher.c:563 src/prefs_scoring.c:277
+#: src/prefs_template.c:222 src/prefs_toolbar.c:775
+msgid "  Replace  "
+msgstr " Замени "
+
+#: src/prefs_filtering.c:553
 msgid "Current filtering/processing rules"
 msgstr "Текущи filtering/processing правила"
 
-#: src/prefs_filtering.c:939 src/prefs_filtering.c:1007
-#: src/prefs_scoring.c:564 src/prefs_scoring.c:608
+#: src/prefs_filtering.c:935 src/prefs_filtering.c:1000
+#: src/prefs_scoring.c:555 src/prefs_scoring.c:599
 msgid "Condition string is not valid."
 msgstr "Зададения низ не е валиден."
 
-#: src/prefs_filtering.c:967 src/prefs_scoring.c:550 src/prefs_scoring.c:594
+#: src/prefs_filtering.c:963 src/prefs_scoring.c:541 src/prefs_scoring.c:585
 msgid "Condition string is empty."
 msgstr "Зададения низ не е валиден."
 
-#: src/prefs_filtering.c:985
+#: src/prefs_filtering.c:981
 msgid "Destination is not set."
 msgstr "Предназначението не е посочено."
 
-#: src/prefs_filtering.c:1061 src/prefs_scoring.c:630
+#: src/prefs_filtering.c:1054 src/prefs_scoring.c:621
 msgid "Delete rule"
 msgstr "Изтриване на правило"
 
-#: src/prefs_filtering.c:1062 src/prefs_scoring.c:631
+#: src/prefs_filtering.c:1055 src/prefs_scoring.c:622
 msgid "Do you really want to delete this rule?"
 msgstr "Наистина ли искате да изтрите това правило?"
 
-#: src/prefs_filtering.c:1492 src/prefs_matcher.c:1663 src/prefs_scoring.c:767
+#: src/prefs_filtering.c:1465 src/prefs_matcher.c:1663 src/prefs_scoring.c:758
 msgid "Entry not saved"
 msgstr "Въведеното не е запазено"
 
-#: src/prefs_filtering.c:1493
+#: src/prefs_filtering.c:1466
 msgid "The entry was not saved. Close anyway?"
 msgstr "Въведеното не е запазено. Затварям?"
 
@@ -5772,19 +5750,19 @@ msgid "All messages"
 msgstr "Всички съобщения"
 
 #: src/prefs_matcher.c:142 src/prefs_matcher.c:1705
-#: src/prefs_summary_column.c:70 src/quote_fmt.c:47
-#: src/selective_download.c:806 src/summaryview.c:465 src/summaryview.c:630
+#: src/prefs_summary_column.c:70 src/quote_fmt.c:47 src/summaryview.c:468
+#: src/summaryview.c:633
 msgid "Subject"
 msgstr "Тема"
 
 #: src/prefs_matcher.c:143 src/prefs_matcher.c:1706
-#: src/prefs_summary_column.c:71 src/quote_fmt.c:42
-#: src/selective_download.c:803 src/summaryview.c:466 src/summaryview.c:634
+#: src/prefs_summary_column.c:71 src/quote_fmt.c:42 src/summaryview.c:469
+#: src/summaryview.c:637
 msgid "From"
 msgstr "От"
 
 #: src/prefs_matcher.c:143 src/prefs_matcher.c:1707 src/quote_fmt.c:48
-#: src/summaryview.c:638
+#: src/summaryview.c:641
 msgid "To"
 msgstr "До:"
 
@@ -5936,7 +5914,7 @@ msgstr "Текущи условни правила"
 msgid "Value is not set."
 msgstr "Стойността не е посочена."
 
-#: src/prefs_matcher.c:1664 src/prefs_scoring.c:768
+#: src/prefs_matcher.c:1664 src/prefs_scoring.c:759
 msgid ""
 "The entry was not saved\n"
 "Have you really finished?"
@@ -5945,7 +5923,7 @@ msgstr ""
 "Наистина ли завършихте?"
 
 #: src/prefs_matcher.c:1709 src/prefs_summary_column.c:72 src/quote_fmt.c:41
-#: src/selective_download.c:809 src/summaryview.c:467
+#: src/summaryview.c:470
 msgid "Date"
 msgstr "Дата"
 
@@ -5973,7 +5951,7 @@ msgstr "знак за цитиране"
 msgid "Scoring configuration"
 msgstr ""
 
-#: src/prefs_scoring.c:246 src/prefs_summary_column.c:75 src/summaryview.c:470
+#: src/prefs_scoring.c:246 src/prefs_summary_column.c:75 src/summaryview.c:473
 msgid "Score"
 msgstr ""
 
@@ -5989,11 +5967,11 @@ msgstr ""
 msgid "Important score"
 msgstr ""
 
-#: src/prefs_scoring.c:528
+#: src/prefs_scoring.c:519
 msgid "Match string is not valid."
 msgstr "Търсеният текст не е валиден."
 
-#: src/prefs_scoring.c:556 src/prefs_scoring.c:600
+#: src/prefs_scoring.c:547 src/prefs_scoring.c:591
 msgid "Score is not set."
 msgstr ""
 
@@ -6090,65 +6068,59 @@ msgstr "Състави Toolbar конфигурация"
 msgid "Message view toolbar configuration"
 msgstr ""
 
-#: src/prefs_toolbar.c:622
+#: src/prefs_toolbar.c:620
 msgid "Sylpheed Action"
 msgstr "Sylpheed Действия"
 
-#: src/prefs_toolbar.c:631
+#: src/prefs_toolbar.c:629
 msgid "Toolbar text"
 msgstr "Текст на Toolbar"
 
-#: src/prefs_toolbar.c:683
+#: src/prefs_toolbar.c:682
 msgid "Available toolbar items"
 msgstr "Налични цветове за Toolbar"
 
-#: src/prefs_toolbar.c:738
+#: src/prefs_toolbar.c:737
 msgid "Event executed on click"
 msgstr "Събитие изпълнявано при клик"
 
-#: src/prefs_toolbar.c:789
+#: src/prefs_toolbar.c:787
+msgid " Default "
+msgstr " По подразбиране "
+
+#: src/prefs_toolbar.c:794
 msgid "Displayed toolbar items"
 msgstr "Покажи Toolbar items"
 
-#: src/prefs_toolbar.c:802
+#: src/prefs_toolbar.c:807
 msgid "Icon"
 msgstr "Икона"
 
-#: src/prefs_toolbar.c:804
+#: src/prefs_toolbar.c:809
 msgid "Icon text"
 msgstr "Текст на икона"
 
-#: src/prefs_toolbar.c:805
+#: src/prefs_toolbar.c:810
 msgid "Mapped event"
 msgstr ""
 
-#: src/prefs_toolbar.c:868
+#: src/prefs_toolbar.c:873
 msgid "Customize Toolbars/Main Window"
 msgstr "Потребителска лента/Основен прозорец"
 
-#: src/prefs_toolbar.c:877
+#: src/prefs_toolbar.c:882
 msgid "Customize Toolbars/Message Window"
 msgstr "Потребителска лента/Прозорец на съобщението"
 
-#: src/prefs_toolbar.c:886
+#: src/prefs_toolbar.c:891
 msgid "Customize Toolbars/Compose Window"
 msgstr "Потребителска лента/Compose прозорец"
 
-#: src/procmsg.c:939
-#, c-format
-msgid "Error occurred while sending the message to `%s'."
-msgstr "Появи се грешка докато изпращах съобщението на `%s'."
-
-#: src/procmsg.c:943
-#, c-format
-msgid "Error occurred while sending the message with command `%s'."
-msgstr "Появи се грешка докато пращах съобщението с команда `%s'."
-
-#: src/procmsg.c:962
+#: src/procmsg.c:1074
 msgid "Could not create temporary file for news sending."
 msgstr "Не мога да създам временен файл за изпращане на новини."
 
-#: src/procmsg.c:973
+#: src/procmsg.c:1085
 msgid "Error when writing temporary file for news sending."
 msgstr "Появи се грешка докато записвах временен файл за изпращане на новини."
 
@@ -6349,159 +6321,78 @@ msgstr "Добави ключ"
 msgid "Enter another user or key ID:"
 msgstr "Въведи друг потребител или ключ ID:"
 
-#: src/selective_download.c:134
-msgid "/Preview _new messages"
-msgstr "/Преглед на нови съобщения"
+#: src/send_message.c:377
+msgid "Connecting"
+msgstr "Свързвам се"
 
-#: src/selective_download.c:135
-msgid "/Preview _all messages"
-msgstr "Преглед на всички съобщения"
-
-#: src/selective_download.c:290
-msgid "(No date)"
-msgstr "(Няма Дата)"
-
-#: src/selective_download.c:292
-msgid "(No sender)"
-msgstr "(Няма Изпращач)"
-
-#: src/selective_download.c:294
-msgid "(No subject)"
-msgstr "(Няма Тема)"
-
-#: src/selective_download.c:391
-#, c-format
-msgid "%i Messages"
-msgstr "%i Съобщения"
-
-#: src/selective_download.c:448
-#, c-format
-msgid ""
-"Selected account \"%s\" is not a POP mail server.\n"
-"Please select a different account"
-msgstr ""
-"Избрания акаунт  \"%s\" не е на POP мейл сървър.\n"
-"Моля изберете друг акаунт"
-
-#: src/selective_download.c:645
-msgid "Preview mail"
-msgstr "Преглед"
-
-#: src/selective_download.c:646
-msgid "Preview old/new mail on account"
-msgstr "Преглед на стара/нова поща от акаунт"
-
-#: src/selective_download.c:662
-msgid "Remove"
-msgstr "Премахни"
-
-#: src/selective_download.c:663
-msgid "Remove selected mail"
-msgstr "Премахни избраната поща"
-
-#: src/selective_download.c:672
-msgid "Download"
-msgstr "Изтегли"
-
-#: src/selective_download.c:673
-msgid "Download selected mail"
-msgstr "Теглене на избраната поща"
-
-#: src/selective_download.c:685
-msgid "Done"
-msgstr "Готово"
-
-#: src/selective_download.c:686
-msgid "Exit dialog"
-msgstr ""
-
-#: src/selective_download.c:732
-msgid "Selective download"
-msgstr "Избирателно изтегляне"
-
-#: src/selective_download.c:742
-msgid "0 messages"
-msgstr "0 съобщения"
-
-#: src/selective_download.c:753
-msgid "Show only old messages"
-msgstr "Показвай само стари съобщения"
-
-#: src/selective_download.c:764
-msgid " contains "
-msgstr "съдържа"
-
-#: src/send.c:311
-msgid "SMTP AUTH failed\n"
-msgstr "SMTP AUTH неуспешен\n"
-
-#: src/send.c:323
-msgid "Error occurred while sending QUIT\n"
-msgstr "Появи се грешка докато изпращах QUIT\n"
-
-#: src/send.c:403
+#: src/send_message.c:384
 msgid "Doing POP before SMTP..."
 msgstr "Правя POP преди SMTP..."
 
-#: src/send.c:406
+#: src/send_message.c:387
 msgid "POP before SMTP"
 msgstr "POP преди SMTP"
 
-#: src/send.c:449 src/send.c:450 src/send.c:648
-msgid "Quitting..."
-msgstr "Приключвам..."
-
-#: src/send.c:484 src/send.c:548
-#, c-format
-msgid "Sending message (%d / %d bytes)"
-msgstr "Изпращам съобщение (%d / %d байта)"
-
-#: src/send.c:571
-msgid "Sending message"
-msgstr "Изпращам съобшение"
-
-#: src/send.c:617
+#: src/send_message.c:392
 #, c-format
 msgid "Connecting to SMTP server: %s ..."
 msgstr "Свързвам се с SMTP сървъра: %s ..."
 
-#: src/send.c:619
-msgid "Connecting"
-msgstr "Свързвам се"
-
-#: src/send.c:623
+#: src/send_message.c:455
 msgid "Sending HELO..."
 msgstr "Пращам HELO..."
 
-#: src/send.c:624 src/send.c:628 src/send.c:632
+#: src/send_message.c:456 src/send_message.c:460 src/send_message.c:464
 msgid "Authenticating"
 msgstr "Аутентифицирам"
 
-#: src/send.c:627
+#: src/send_message.c:459
 msgid "Sending EHLO..."
 msgstr "Пращам EHLO..."
 
-#: src/send.c:635
+#: src/send_message.c:467
 msgid "Sending MAIL FROM..."
 msgstr "Пращам ПОЩА ОТ..."
 
-#: src/send.c:636 src/send.c:640 src/send.c:645
+#: src/send_message.c:468 src/send_message.c:472 src/send_message.c:477
 msgid "Sending"
 msgstr "Изпращам"
 
-#: src/send.c:639
+#: src/send_message.c:471
 msgid "Sending RCPT TO..."
 msgstr "Изпращам RCPT ДО..."
 
-#: src/send.c:644
+#: src/send_message.c:476
 msgid "Sending DATA..."
 msgstr "Изпращам ДАННИ..."
 
-#: src/setup.c:43
+#: src/send_message.c:480
+msgid "Quitting..."
+msgstr "Приключвам..."
+
+#: src/send_message.c:504
+#, c-format
+msgid "Sending message (%d / %d bytes)"
+msgstr "Изпращам съобщение (%d / %d байта)"
+
+#: src/send_message.c:532
+msgid "Sending message"
+msgstr "Изпращам съобшение"
+
+#: src/send_message.c:578
+#, c-format
+msgid ""
+"Error occurred while sending the message:\n"
+"%s"
+msgstr 
+"Появи се грешка докато изпращах съобщението:\n"
+"%s"
+
+#: src/setup.c:44
 msgid "Mailbox setting"
 msgstr "Настройки на пощенската кутия"
 
-#: src/setup.c:44
+#: src/setup.c:45
 msgid ""
 "First, you have to set the location of mailbox.\n"
 "You can use existing mailbox in MH format\n"
@@ -6575,315 +6466,323 @@ msgstr "Достигнах началото; да продължа от края?"
 msgid "End of list reached; continue from beginning?"
 msgstr "Достигнах края; да продължа от началото?"
 
-#: src/summaryview.c:405
+#: src/summaryview.c:406
 msgid "/_Reply"
 msgstr "/_Отговори"
 
-#: src/summaryview.c:406
+#: src/summaryview.c:407
 msgid "/Repl_y to"
 msgstr "/Отговори на"
 
-#: src/summaryview.c:407
+#: src/summaryview.c:408
 msgid "/Repl_y to/_all"
 msgstr "/Отговори на/всички"
 
-#: src/summaryview.c:408
+#: src/summaryview.c:409
 msgid "/Repl_y to/_sender"
 msgstr "/Отговори на/изпращача"
 
-#: src/summaryview.c:409
+#: src/summaryview.c:410
 msgid "/Repl_y to/mailing _list"
 msgstr "/Отговори на/пощенския списък"
 
-#: src/summaryview.c:411
+#: src/summaryview.c:412
 msgid "/Follow-up and reply to"
 msgstr ""
 
-#: src/summaryview.c:413
+#: src/summaryview.c:414
 msgid "/_Forward"
 msgstr "/Препрати"
 
-#: src/summaryview.c:414
+#: src/summaryview.c:415
 msgid "/Redirect"
 msgstr "Пренасочи"
 
-#: src/summaryview.c:416
+#: src/summaryview.c:417
 msgid "/Re-_edit"
 msgstr "/Редактирай отново"
 
-#: src/summaryview.c:418
+#: src/summaryview.c:419
 msgid "/M_ove..."
 msgstr "/Премести..."
 
-#: src/summaryview.c:419
+#: src/summaryview.c:420
 msgid "/_Copy..."
 msgstr "/Копирай..."
 
-#: src/summaryview.c:421
+#: src/summaryview.c:422
 msgid "/Cancel a news message"
 msgstr "/Отмени съобщение за новини"
 
-#: src/summaryview.c:422
+#: src/summaryview.c:423
 msgid "/E_xecute"
 msgstr "/Изпълни"
 
-#: src/summaryview.c:424
+#: src/summaryview.c:425
 msgid "/_Mark"
 msgstr "/_Маркиране"
 
-#: src/summaryview.c:425
+#: src/summaryview.c:426
 msgid "/_Mark/_Mark"
 msgstr "/_Маркиране/Маркирай"
 
-#: src/summaryview.c:426
+#: src/summaryview.c:427
 msgid "/_Mark/_Unmark"
 msgstr "/_Маркиране/Отмаркирай"
 
-#: src/summaryview.c:427
+#: src/summaryview.c:428
 msgid "/_Mark/---"
 msgstr "/_Маркиране/---"
 
-#: src/summaryview.c:428
+#: src/summaryview.c:429
 msgid "/_Mark/Mark as unr_ead"
 msgstr "/_Маркиране/Маркирай като непрочетено"
 
-#: src/summaryview.c:429
+#: src/summaryview.c:430
 msgid "/_Mark/Mark as rea_d"
 msgstr "/_Маркиране/Маркирай като прочетено"
 
-#: src/summaryview.c:430
+#: src/summaryview.c:431
 msgid "/_Mark/Mark all read"
 msgstr "/_Маркиране/Маркирай всички като прочетени"
 
-#: src/summaryview.c:431
+#: src/summaryview.c:432
 msgid "/_Mark/Ignore thread"
 msgstr "/_Маркиране/Игнорирай Нишката"
 
-#: src/summaryview.c:432
+#: src/summaryview.c:433
 msgid "/_Mark/Unignore thread"
 msgstr "/_Маркиране/НеИгнорирай Нишката"
 
-#: src/summaryview.c:433
+#: src/summaryview.c:434
+msgid "/_Mark/Lock"
+msgstr "/_Маркиране/Заключване"
+
+#: src/summaryview.c:435
+msgid "/_Mark/Unlock"
+msgstr "/_Маркиране/Отключване"
+
+#: src/summaryview.c:436
 msgid "/Color la_bel"
 msgstr "/Цвят на етикета"
 
-#: src/summaryview.c:436
+#: src/summaryview.c:439
 msgid "/Add sender to address boo_k"
 msgstr "/Добави изпращача в адресника"
 
-#: src/summaryview.c:438
+#: src/summaryview.c:441
 msgid "/Create f_ilter rule"
 msgstr "/Създай правило за филтриране"
 
-#: src/summaryview.c:439
+#: src/summaryview.c:442
 msgid "/Create f_ilter rule/_Automatically"
 msgstr "/Създай правило за филтриране/Автоматично"
 
-#: src/summaryview.c:441
+#: src/summaryview.c:444
 msgid "/Create f_ilter rule/by _From"
 msgstr "/Създай правило за филтриране/по От"
 
-#: src/summaryview.c:443
+#: src/summaryview.c:446
 msgid "/Create f_ilter rule/by _To"
 msgstr "/Създай правило за филтриране/по До"
 
-#: src/summaryview.c:445
+#: src/summaryview.c:448
 msgid "/Create f_ilter rule/by _Subject"
 msgstr "/Създай правило за филтриране/по Tема"
 
-#: src/summaryview.c:451
+#: src/summaryview.c:454
 msgid "/_View/_Source"
 msgstr "/_Изглед/Изходен код"
 
-#: src/summaryview.c:452
+#: src/summaryview.c:455
 msgid "/_View/All _header"
 msgstr "/_Изглед/Цялата заглавна част"
 
-#: src/summaryview.c:455
+#: src/summaryview.c:458
 msgid "/_Print..."
 msgstr "/_Принтирай..."
 
-#: src/summaryview.c:457
+#: src/summaryview.c:460
 msgid "/Select _all"
 msgstr "/Избери всички"
 
-#: src/summaryview.c:458
+#: src/summaryview.c:461
 msgid "/Select t_hread"
 msgstr "/Избери нишка"
 
-#: src/summaryview.c:462
+#: src/summaryview.c:465
 msgid "M"
 msgstr "M"
 
-#: src/summaryview.c:469
+#: src/summaryview.c:472
 msgid "No."
 msgstr "No."
 
-#: src/summaryview.c:471
+#: src/summaryview.c:474
 msgid "L"
 msgstr "L"
 
-#: src/summaryview.c:480
+#: src/summaryview.c:483
 msgid "all messages"
 msgstr "всички съобщения"
 
-#: src/summaryview.c:481 src/summaryview.c:482
+#: src/summaryview.c:484 src/summaryview.c:485
 msgid "messages whose age is greather than #"
 msgstr "съобщения по-стари от #"
 
-#: src/summaryview.c:483
+#: src/summaryview.c:486
 msgid "messages which contain S in the message body"
 msgstr "съобщения съдържащи S в тялото"
 
-#: src/summaryview.c:484
+#: src/summaryview.c:487
 msgid "messages which contain S in the whole message"
 msgstr "съобщения съдържащи S където и да е"
 
-#: src/summaryview.c:485
+#: src/summaryview.c:488
 msgid "messages carbon-copied to S"
 msgstr "съобщения carbon-copied to S"
 
-#: src/summaryview.c:486
+#: src/summaryview.c:489
 msgid "message is either to: or cc: to S"
 msgstr "съобщението е или to: или cc: to S"
 
-#: src/summaryview.c:487
+#: src/summaryview.c:490
 msgid "deleted messages"
 msgstr "изтрити съобщения"
 
-#: src/summaryview.c:488
+#: src/summaryview.c:491
 msgid "messages which contain S in the Sender field"
 msgstr "съобщения съдържащи S в Sender полето"
 
-#: src/summaryview.c:489
+#: src/summaryview.c:492
 msgid "true if execute \"S\" succeeds"
 msgstr "вярно при успешно изпълнение на \"S\" "
 
-#: src/summaryview.c:490
+#: src/summaryview.c:493
 msgid "messages originating from user S"
 msgstr "съобщения идващи от потребител S"
 
-#: src/summaryview.c:491
+#: src/summaryview.c:494
 msgid "forwarded messages"
 msgstr "препратени съобщения"
 
-#: src/summaryview.c:492
+#: src/summaryview.c:495
 msgid "messages which contain header S"
 msgstr "съобщения съдържащи заглавка S"
 
-#: src/summaryview.c:493
+#: src/summaryview.c:496
 msgid "messages which contain S in Message-Id header"
 msgstr "съобщения съдържащи S в Message-Id полето от заглавката"
 
-#: src/summaryview.c:494
+#: src/summaryview.c:497
 msgid "messages which contain S in inreplyto header"
 msgstr "съобщения съдържащи S в inreplyto хедъра"
 
-#: src/summaryview.c:495
+#: src/summaryview.c:498
 msgid "locked messages"
 msgstr "заключени съобщения"
 
-#: src/summaryview.c:496
+#: src/summaryview.c:499
 msgid "messages which are in newsgroup S"
 msgstr "съобщения които са в нюзгрупа S"
 
-#: src/summaryview.c:497
+#: src/summaryview.c:500
 msgid "new messages"
 msgstr "нови съобщения"
 
-#: src/summaryview.c:498
+#: src/summaryview.c:501
 msgid "old messages"
 msgstr "стари съобщения"
 
-#: src/summaryview.c:499
+#: src/summaryview.c:502
 msgid "messages which have been replied to"
 msgstr "съобщения на които е било отговорено"
 
-#: src/summaryview.c:500
+#: src/summaryview.c:503
 msgid "read messages"
 msgstr "прочетени съобщения"
 
-#: src/summaryview.c:501
+#: src/summaryview.c:504
 msgid "messages which contain S in subject"
 msgstr "съобщения съдържащи S в subject"
 
-#: src/summaryview.c:502
+#: src/summaryview.c:505
 msgid "messages whose score is equal to #"
 msgstr ""
 
-#: src/summaryview.c:503
+#: src/summaryview.c:506
 msgid "messages whose score is greater than #"
 msgstr ""
 
-#: src/summaryview.c:504
+#: src/summaryview.c:507
 msgid "messages whose score is lower than #"
 msgstr ""
 
-#: src/summaryview.c:505
+#: src/summaryview.c:508
 msgid "messages whose size is equal to #"
 msgstr "съобщения с размер равен на #"
 
-#: src/summaryview.c:506
+#: src/summaryview.c:509
 msgid "messages whose size is greater than #"
 msgstr "съобщения с размер по-голям от #"
 
-#: src/summaryview.c:507
+#: src/summaryview.c:510
 msgid "messages whose size is smaller than #"
 msgstr "съобщение с размер по-малък от #"
 
-#: src/summaryview.c:508
+#: src/summaryview.c:511
 msgid "messages which have been sent to S"
 msgstr "съобщения изпратени до S"
 
-#: src/summaryview.c:509
+#: src/summaryview.c:512
 msgid "marked messages"
 msgstr "маркирани съобщения"
 
-#: src/summaryview.c:510
+#: src/summaryview.c:513
 msgid "unread messages"
 msgstr "непрочетени съобщения"
 
-#: src/summaryview.c:511
+#: src/summaryview.c:514
 msgid "messages which contain S in References header"
 msgstr "съобщения съдържащи S в References хедъра"
 
-#: src/summaryview.c:512
+#: src/summaryview.c:515
 msgid "messages which contain S in X-Label header"
 msgstr "съобщения съдържащи S в X-Label хедъра"
 
-#: src/summaryview.c:514
+#: src/summaryview.c:517
 msgid "logical AND operator"
 msgstr "логически AND оператор"
 
-#: src/summaryview.c:515
+#: src/summaryview.c:518
 msgid "logical OR operator"
 msgstr "логически OR оператор"
 
-#: src/summaryview.c:516
+#: src/summaryview.c:519
 msgid "logical NOT operator"
 msgstr "логически NOT оператор"
 
-#: src/summaryview.c:517
+#: src/summaryview.c:520
 msgid "case sensitive search"
 msgstr "търсене с отчитане на големи и малки букви"
 
-#: src/summaryview.c:524
+#: src/summaryview.c:527
 msgid "Extended Search symbols"
 msgstr "Символи за разширено търсене"
 
-#: src/summaryview.c:573
+#: src/summaryview.c:576
 msgid "Toggle quick-search bar"
 msgstr "Лента за бързо търсене"
 
-#: src/summaryview.c:657
+#: src/summaryview.c:660
 msgid "Extended Symbols"
 msgstr "Символи за разширение"
 
-#: src/summaryview.c:910
+#: src/summaryview.c:913
 msgid "Process mark"
 msgstr "Обработване на маркер"
 
-#: src/summaryview.c:911
+#: src/summaryview.c:914
 msgid "Some marks are left. Process it?"
 msgstr "Има останали маркери. Да ги обработя ли?"
 
@@ -6892,213 +6791,185 @@ msgstr "Има останали маркери. Да ги обработя ли?"
 msgid "Scanning folder (%s)..."
 msgstr "Сканирам папка (%s)..."
 
-#: src/summaryview.c:1353 src/summaryview.c:1397
+#: src/summaryview.c:1375 src/summaryview.c:1419
 msgid "No more unread messages"
 msgstr "Няма повече непрочетени съобщения"
 
-#: src/summaryview.c:1354
+#: src/summaryview.c:1376
 msgid "No unread message found. Search from the end?"
 msgstr "Няма намрени непрочетени съобщения. Да търся от края?"
 
-#: src/summaryview.c:1366 src/summaryview.c:1410
+#: src/summaryview.c:1388 src/summaryview.c:1432
 msgid ""
 "Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"
 msgstr ""
 "Вътрешна грешка: неочаквана стойност за prefs_common.next_unread_msg_dialog\n"
 
-#: src/summaryview.c:1374
+#: src/summaryview.c:1396
 msgid "No unread messages."
 msgstr "Няма непрочетени съобщения."
 
-#: src/summaryview.c:1398
+#: src/summaryview.c:1420
 msgid "No unread message found. Go to next folder?"
 msgstr "Няма намерени непрочетени съобщения. Да отида в следващата папка?"
 
-#: src/summaryview.c:1440 src/summaryview.c:1464
+#: src/summaryview.c:1462 src/summaryview.c:1486
 msgid "No more new messages"
 msgstr "Няма повече нови съобщения"
 
-#: src/summaryview.c:1441
+#: src/summaryview.c:1463
 msgid "No new message found. Search from the end?"
 msgstr "Няма намерено ново съобщение. Да търся от края?"
 
-#: src/summaryview.c:1450
+#: src/summaryview.c:1472
 msgid "No new messages."
 msgstr "Няма нови съобщения."
 
-#: src/summaryview.c:1465
+#: src/summaryview.c:1487
 msgid "No new message found. Go to next folder?"
 msgstr "Няма намрено ново съобщение. Да отида в следващата папка?"
 
-#: src/summaryview.c:1467
+#: src/summaryview.c:1489
 msgid "Search again"
 msgstr "Търси отново"
 
-#: src/summaryview.c:1496 src/summaryview.c:1521
+#: src/summaryview.c:1518 src/summaryview.c:1543
 msgid "No more marked messages"
 msgstr "Няма повече маркирани съобщения"
 
-#: src/summaryview.c:1497
+#: src/summaryview.c:1519
 msgid "No marked message found. Search from the end?"
 msgstr "Няма намерени маркирани съобщения. Да търся от края?"
 
-#: src/summaryview.c:1506 src/summaryview.c:1531
+#: src/summaryview.c:1528 src/summaryview.c:1553
 msgid "No marked messages."
 msgstr "Няма маркирани съобщения."
 
-#: src/summaryview.c:1522
+#: src/summaryview.c:1544
 msgid "No marked message found. Search from the beginning?"
 msgstr "Няма намерени маркирани съобщения. Да търся от началото?"
 
-#: src/summaryview.c:1546 src/summaryview.c:1571
+#: src/summaryview.c:1568 src/summaryview.c:1593
 msgid "No more labeled messages"
 msgstr "Няма повече етикирани съобщения"
 
-#: src/summaryview.c:1547
+#: src/summaryview.c:1569
 msgid "No labeled message found. Search from the end?"
 msgstr "Няма намерено етикирано съобщение. Търсене от края?"
 
-#: src/summaryview.c:1556 src/summaryview.c:1581
+#: src/summaryview.c:1578 src/summaryview.c:1603
 msgid "No labeled messages."
 msgstr "Няма етикирани съобщения"
 
-#: src/summaryview.c:1572
+#: src/summaryview.c:1594
 msgid "No labeled message found. Search from the beginning?"
 msgstr "Няма намерено етикирано съобщение. Търсене отначало?"
 
-#: src/summaryview.c:1785
+#: src/summaryview.c:1807
 msgid "Attracting messages by subject..."
 msgstr "Притеглям съобщенията по Тема..."
 
-#: src/summaryview.c:1953
+#: src/summaryview.c:1964
 #, c-format
 msgid "%d deleted"
 msgstr "%d изтрити"
 
-#: src/summaryview.c:1957
+#: src/summaryview.c:1968
 #, c-format
 msgid "%s%d moved"
 msgstr "%s%d преместени"
 
-#: src/summaryview.c:1958 src/summaryview.c:1965
+#: src/summaryview.c:1969 src/summaryview.c:1976
 msgid ", "
 msgstr ", "
 
-#: src/summaryview.c:1963
+#: src/summaryview.c:1974
 #, c-format
 msgid "%s%d copied"
 msgstr "%s%d копирани"
 
-#: src/summaryview.c:1978
+#: src/summaryview.c:1989
 msgid " item selected"
 msgstr "избран атрибут"
 
-#: src/summaryview.c:1980
+#: src/summaryview.c:1991
 msgid " items selected"
 msgstr "избрани атрибути"
 
-#: src/summaryview.c:1997
+#: src/summaryview.c:2007
 #, c-format
 msgid "%d new, %d unread, %d total (%s)"
 msgstr "%d нови, %d непрочетени, %d общо (%s)"
 
-#: src/summaryview.c:2003
-#, c-format
-msgid "%d new, %d unread, %d total"
-msgstr "%d нови, %d непрочетени, %d общо"
-
-#: src/summaryview.c:2172
+#: src/summaryview.c:2177
 msgid "Sorting summary..."
 msgstr "Сортиране на извлечението..."
 
-#: src/summaryview.c:2242
+#: src/summaryview.c:2247
 msgid "Setting summary from message data..."
 msgstr "Извлечение от данните на съобщението..."
 
-#: src/summaryview.c:2369
+#: src/summaryview.c:2367
 msgid "(No Date)"
 msgstr "(Няма Дата)"
 
-#: src/summaryview.c:2972
+#: src/summaryview.c:3006
 msgid "You're not the author of the article\n"
 msgstr "Не сте Автор на статията\n"
 
-#: src/summaryview.c:3062
+#: src/summaryview.c:3096
 msgid "Delete message(s)"
 msgstr "Изтрий съобщението(та)"
 
-#: src/summaryview.c:3063
+#: src/summaryview.c:3097
 msgid "Do you really want to delete message(s) from the trash?"
 msgstr "Наистина ли искате да изтриете съобщението(та) от Кошчето?"
 
-#: src/summaryview.c:3115
+#: src/summaryview.c:3139
 msgid "Deleting duplicated messages..."
 msgstr "Изтривам повтарящите се съобщения..."
 
-#: src/summaryview.c:3227
+#: src/summaryview.c:3251
 msgid "Destination is same as current folder."
 msgstr "Предназначението е същото като текущата папка."
 
-#: src/summaryview.c:3304
+#: src/summaryview.c:3328
 msgid "Destination to copy is same as current folder."
 msgstr "Мястото за копиране е същото като текущата папка."
 
-#: src/summaryview.c:3352
+#: src/summaryview.c:3376
 msgid "Selecting all messages..."
 msgstr "Избирам всички съобщения..."
 
-#: src/summaryview.c:3410
+#: src/summaryview.c:3434
 msgid "Append or Overwrite"
 msgstr "Приложи или Презапиши"
 
-#: src/summaryview.c:3411
+#: src/summaryview.c:3435
 msgid "Append or overwrite existing file?"
 msgstr "Добавяне към съществуващия файл или презаписване?"
 
-#: src/summaryview.c:3412
+#: src/summaryview.c:3436
 msgid "Append"
 msgstr "Прилагане"
 
-#: src/summaryview.c:3420 src/summaryview.c:3424 src/summaryview.c:3441
-#, c-format
-msgid "Can't save the file `%s'."
-msgstr "Не мога да запазя файла `%s'."
-
-#: src/summaryview.c:3460
-#, c-format
-msgid ""
-"Enter the print command line:\n"
-"(`%s' will be replaced with file name)"
-msgstr ""
-"Въведи команда за принтиране:\n"
-"(%s ще бъде заменено с името на файл)"
-
-#: src/summaryview.c:3466
-#, c-format
-msgid ""
-"Print command line is invalid:\n"
-"`%s'"
-msgstr ""
-"Командата за принтиране е невалидна:\n"
-"'%s'"
-
-#: src/summaryview.c:3705
+#: src/summaryview.c:3726
 msgid "Building threads..."
 msgstr "Изграждам нишките..."
 
-#: src/summaryview.c:3803
+#: src/summaryview.c:3824
 msgid "Unthreading..."
 msgstr "Махам нишките..."
 
-#: src/summaryview.c:3936
+#: src/summaryview.c:3957
 msgid "No filter rules defined."
 msgstr "Не са зададени правила за филтриране."
 
-#: src/summaryview.c:3945
+#: src/summaryview.c:3966
 msgid "Filtering..."
 msgstr "Филтрирам..."
 
-#: src/summaryview.c:5341
+#: src/summaryview.c:5277
 #, c-format
 msgid ""
 "Regular expression (regexp) error:\n"
@@ -7107,171 +6978,170 @@ msgstr ""
 "Грешка в Регулярен израз (regexp):\n"
 " %s"
 
-#: src/toolbar.c:147 src/toolbar.c:1481
+#: src/toolbar.c:148 src/toolbar.c:1482
 msgid "Receive Mail on all Accounts"
 msgstr "Вземи Пощата за Всички акаунти"
 
-#: src/toolbar.c:148 src/toolbar.c:1487
+#: src/toolbar.c:149 src/toolbar.c:1488
 msgid "Receive Mail on current Account"
 msgstr "Изтегли Пощата за текущия акаунт"
 
-#: src/toolbar.c:149 src/toolbar.c:1493
+#: src/toolbar.c:150 src/toolbar.c:1494
 msgid "Send Queued Message(s)"
 msgstr "Изпрати Чакащите Съобщения"
 
-#: src/toolbar.c:150 src/toolbar.c:1506
+#: src/toolbar.c:151 src/toolbar.c:1507
 msgid "Compose Email"
 msgstr "Съчини Съобщение"
 
-#: src/toolbar.c:151 src/toolbar.c:1510
+#: src/toolbar.c:152 src/toolbar.c:1511
 msgid "Compose News"
 msgstr "Съчини Новини"
 
-#: src/toolbar.c:152 src/toolbar.c:1516
+#: src/toolbar.c:153 src/toolbar.c:1517
 msgid "Reply to Message"
 msgstr "Отговори на Съобщението"
 
-#: src/toolbar.c:153 src/toolbar.c:1537
+#: src/toolbar.c:154 src/toolbar.c:1538
 msgid "Reply to Sender"
 msgstr "Отговори на Изпращача"
 
-#: src/toolbar.c:154 src/toolbar.c:1558
+#: src/toolbar.c:155 src/toolbar.c:1559
 msgid "Reply to All"
 msgstr "Отговори на Всички"
 
-#: src/toolbar.c:155 src/toolbar.c:1579
+#: src/toolbar.c:156 src/toolbar.c:1580
 msgid "Reply to Mailing-list"
 msgstr "Отговори на Пощенски списък"
 
-#: src/toolbar.c:156 src/toolbar.c:1600
+#: src/toolbar.c:157 src/toolbar.c:1601
 msgid "Forward Message"
 msgstr "Препрати Съобщението"
 
-#: src/toolbar.c:157 src/toolbar.c:1621
+#: src/toolbar.c:158 src/toolbar.c:1622
 msgid "Delete Message"
 msgstr "Изтрий Съобщението"
 
-#: src/toolbar.c:159 src/toolbar.c:1633
+#: src/toolbar.c:160 src/toolbar.c:1634
 msgid "Goto Next Message"
 msgstr "Отиди на Следващо Съобщение"
 
-#: src/toolbar.c:161 src/toolbar.c:1641
+#: src/toolbar.c:162 src/toolbar.c:1642
 msgid "Send Message"
 msgstr "Изпрати Съобщението"
 
-#: src/toolbar.c:162 src/toolbar.c:1647
+#: src/toolbar.c:163 src/toolbar.c:1648
 msgid "Put into queue folder and send later"
 msgstr "Сложи го в папката с чакащите и го изпрати по-късно"
 
-#: src/toolbar.c:163 src/toolbar.c:1653
+#: src/toolbar.c:164 src/toolbar.c:1654
 msgid "Save to draft folder"
 msgstr "Запази в папката с черновите"
 
-#: src/toolbar.c:164 src/toolbar.c:1659
+#: src/toolbar.c:165 src/toolbar.c:1660
 msgid "Insert file"
 msgstr "Вмъкни файл"
 
-#: src/toolbar.c:165 src/toolbar.c:1665
+#: src/toolbar.c:166 src/toolbar.c:1666
 msgid "Attach file"
 msgstr "Прикрепи файл"
 
-#: src/toolbar.c:166 src/toolbar.c:1671
+#: src/toolbar.c:167 src/toolbar.c:1672
 msgid "Insert signature"
 msgstr "Вмъкни подпис"
 
-#: src/toolbar.c:167 src/toolbar.c:1677
+#: src/toolbar.c:168 src/toolbar.c:1678
 msgid "Edit with external editor"
 msgstr "Редактирай с външен редактор"
 
-#: src/toolbar.c:168 src/toolbar.c:1683
+#: src/toolbar.c:169 src/toolbar.c:1684
 msgid "Wrap all long lines"
 msgstr "Пренасяй всички дълги редове"
 
-#: src/toolbar.c:171
+#: src/toolbar.c:172
 msgid "Sylpheed Actions Feature"
 msgstr "Свойства на Действията"
 
-#: src/toolbar.c:191
+#: src/toolbar.c:192
 msgid "/Reply with _quote"
 msgstr "/Отговори с цитат"
 
-#: src/toolbar.c:192
+#: src/toolbar.c:193
 msgid "/_Reply without quote"
 msgstr "/Отговори без цитат"
 
-#: src/toolbar.c:196
+#: src/toolbar.c:197
 msgid "/Reply to all with _quote"
 msgstr "/Отговори на всички с цитат"
 
-#: src/toolbar.c:197
+#: src/toolbar.c:198
 msgid "/_Reply to all without quote"
 msgstr "/Отговори на всички без цитат"
 
-#: src/toolbar.c:201
+#: src/toolbar.c:202
 msgid "/Reply to list with _quote"
 msgstr "/Отговори на всички с цитат"
 
-#: src/toolbar.c:202
+#: src/toolbar.c:203
 msgid "/_Reply to list without quote"
 msgstr "/Отговори на всички без цитат"
 
-#: src/toolbar.c:206
+#: src/toolbar.c:207
 msgid "/Reply to sender with _quote"
 msgstr "/Отговори на изпращача с цитат"
 
-#: src/toolbar.c:207
+#: src/toolbar.c:208
 msgid "/_Reply to sender without quote"
 msgstr "/Отговори на изпращача без цитат"
 
-#: src/toolbar.c:211
+#: src/toolbar.c:212
 msgid "/_Forward message (inline style)"
 msgstr "/Препрати съобщението (inline style)"
 
-#: src/toolbar.c:212
+#: src/toolbar.c:213
 msgid "/Forward message as _attachment"
 msgstr "/Препрати съобщението като прикрепка"
 
-#: src/toolbar.c:347
+#: src/toolbar.c:348
 msgid "Get"
 msgstr "Вземи"
 
-#: src/toolbar.c:348
+#: src/toolbar.c:349
 msgid "Get All"
 msgstr "Всички"
 
-#: src/toolbar.c:351
+#: src/toolbar.c:352
 msgid "Email"
 msgstr "Напиши"
 
-#: src/toolbar.c:353 src/toolbar.c:445
+#: src/toolbar.c:354 src/toolbar.c:446
 msgid "Reply"
 msgstr "Отговори"
 
-#: src/toolbar.c:354 src/toolbar.c:446
+#: src/toolbar.c:355 src/toolbar.c:447
 msgid "All"
 msgstr "Всички"
 
-#: src/toolbar.c:355 src/toolbar.c:447
+#: src/toolbar.c:356 src/toolbar.c:448
 msgid "Sender"
 msgstr "Изпращач"
 
-#: src/toolbar.c:398
+#: src/toolbar.c:399
 msgid "Send later"
 msgstr "По-късно"
 
-#: src/toolbar.c:399
+#: src/toolbar.c:400
 msgid "Draft"
 msgstr "Чернови"
 
-#: src/toolbar.c:402
+#: src/toolbar.c:403
 msgid "Attach"
 msgstr "Прикрепка"
 
-#: src/toolbar.c:406
+#: src/toolbar.c:407
 msgid "Linewrap"
 msgstr "Пренеси"
 
-#: src/toolbar.c:1498
+#: src/toolbar.c:1499
 msgid "News"
 msgstr "Новини"
-
