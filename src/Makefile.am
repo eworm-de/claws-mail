@@ -368,6 +368,7 @@ sylpheed_LDADD = \
 	$(OPENSSL_LIBS) \
 	$(COMPFACE_LIBS) \
 	$(JPILOT_LIBS) \
+	$(PTHREAD_LIBS) \
 	$(LIBICONV)
 
 AM_CPPFLAGS = \

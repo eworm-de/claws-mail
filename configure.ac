@@ -13,7 +13,7 @@ INTERFACE_AGE=0
 BINARY_AGE=0
 EXTRA_VERSION=55
 EXTRA_RELEASE=
-EXTRA_GTK2_VERSION=.2
+EXTRA_GTK2_VERSION=.3
 
 if test \( $EXTRA_VERSION -eq 0 \) -o \( "x$EXTRA_RELEASE" != "x" \); then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}${EXTRA_RELEASE}${EXTRA_GTK2_VERSION}
@@ -366,13 +366,40 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+dnl check for pthread support
+AC_ARG_ENABLE(pthread,
+	[  --disable-pthread           Disable pthread support],
+	[ac_cv_enable_pthread=$enableval], [ac_cv_enable_pthread=yes])
+AC_MSG_CHECKING([whether to use pthread])
+if test x$ac_cv_enable_pthread = xno; then
+	AC_MSG_RESULT(no)
+else
+	AC_MSG_RESULT(yes)
+
+	AC_CHECK_LIB(pthread, pthread_create, :, ac_cv_enable_pthread=no)
+	AC_CHECK_HEADERS(pthread.h, :, ac_cv_enable_pthread=no)
+
+	if test x$ac_cv_enable_pthread = xyes; then
+		AC_DEFINE(USE_PTHREAD, 1, Define if you have pthread)
+		PTHREAD_LIBS="-lpthread"
+	fi
+
+fi
+AC_SUBST(PTHREAD_LIBS)
+
 dnl for LDAP support in addressbook
 dnl no check for libraries; dynamically loaded
 AC_ARG_ENABLE(ldap,
 	[  --enable-ldap           Enable LDAP support [default=no]],
 	[ac_cv_enable_ldap=$enableval], [ac_cv_enable_ldap=no])
 AC_MSG_CHECKING([whether to use LDAP])
-if test "$ac_cv_enable_ldap" = yes; then
+if test x"$ac_cv_enable_ldap" = xno; then
+	AC_MSG_RESULT(no)
+elif test x"$ac_cv_enable_ldap" = xyes -a x"$ac_cv_enable_pthread" = xno; then
+	AC_MSG_RESULT(no - LDAP support needs pthread support)
+
+	ac_cv_enable_ldap=no
+else
 	AC_MSG_RESULT(yes)
 
 	dnl check for available libraries, and pull them in
@@ -382,11 +409,7 @@ if test "$ac_cv_enable_ldap" = yes; then
 	AC_CHECK_LIB(lber, ber_get_tag, LDAP_LIBS="$LDAP_LIBS -llber",,
 		     $LDAP_LIBS)
 
-	dnl we need libpthread for sylpheed ldap,  until we find
-	dnl a better way to handle ldap requests asynchronously...
-	AC_CHECK_LIB(pthread, pthread_create, LDAP_LIBS="$LDAP_LIBS -lpthread")
-
-	AC_CHECK_HEADERS(ldap.h lber.h pthread.h,
+	AC_CHECK_HEADERS(ldap.h lber.h,
 			 [ ac_cv_enable_ldap=yes ],
 			 [ ac_cv_enable_ldap=no ])
 
@@ -417,8 +440,6 @@ if test "$ac_cv_enable_ldap" = yes; then
 			AC_DEFINE(USE_LDAP_TLS, 1, Define if you want LDAP TLS support in addressbook.)
 		fi
 	fi
-else
-	AC_MSG_RESULT(no)
 fi
 
 dnl for JPilot support in addressbook
@@ -575,9 +596,6 @@ if test x"$ac_cv_enable_clamav_plugin" = xyes; then
 fi
 AC_SUBST(CLAMAV_LIBS)
 AM_CONDITIONAL(BUILD_CLAMAV_PLUGIN, test x"$ac_cv_enable_clamav_plugin" = xyes)
-
-AC_CHECK_LIB(pthread, pthread_create,
-	[ OPENSSL_LIBS="$OPENSSL_LIBS -lpthread" AC_DEFINE(USE_PTHREAD, 1, Define if you have lpthread) ])
 
 dnl ****************************
 dnl ** Final configure output **
