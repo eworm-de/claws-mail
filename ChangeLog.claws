@@ -1,3 +1,8 @@
+2002-10-02 [christoph]	0.8.3claws43
+
+	* po/de.po
+		fix small spelling error
+
 2002-10-02 [melvin]	0.8.3claws42
 
 	* ac/aspell.m4

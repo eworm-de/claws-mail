@@ -5937,7 +5937,7 @@ msgstr " Zurücksetzen zu Default"
 
 #: src/prefs_template.c:154
 msgid "Template name"
-msgstr "Vorlagnename"
+msgstr "Vorlagenname"
 
 #: src/prefs_template.c:229
 msgid " Symbols "
