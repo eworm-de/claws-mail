@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Hiroyuki Yamamoto
+ * Copyright (C) 2001-2003 Hiroyuki Yamamoto and the Sylpheed-Claws team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -166,7 +166,7 @@ struct {
 	{ "A_ADDRBOOK",      N_("Address book")                         },
 
 	{ "A_SYL_ACTIONS",   N_("Sylpheed Actions Feature")             }, 
-	{ "A_SEPARATOR",     N_("Separator")				}
+	{ "A_SEPARATOR",     "Separator"				}
 };
 
 /* struct holds configuration files and a list of
