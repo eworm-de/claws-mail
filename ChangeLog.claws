@@ -1,3 +1,9 @@
+2003-07-27 [alfons]	0.9.3claws58
+
+	* src/procmsg.c
+		add missing header members to MsgInfo; fixes the problem of 
+		not displaying X-Faces, as noticed by Ricardo Mones
+
 2003-07-26 [christoph]	0.9.3claws57
 
 	* sync with 0.9.3cvs18
