@@ -1,3 +1,13 @@
+2003-02-20 [colin]	0.8.10claws33
+	
+	* src/prefs_account.c
+		Better wording
+
+2003-02-20 [colin]	0.8.10claws32
+
+	* src/compose.c
+		Remove useless '&& !to_sender' 
+
 2003-02-20 [darko]
 
 	* AUTHORS

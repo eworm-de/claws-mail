@@ -1664,9 +1664,8 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			!strncmp(compose->followup_to, "poster", 6)))
 			compose_entry_append
 				(compose, 
-				 ((compose->replyto && !to_sender)
-		    		 ? compose->replyto :
-		    		 msginfo->from ? msginfo->from : ""),
+				 (compose->replyto ? compose->replyto :
+		    		 	msginfo->from ? msginfo->from : ""),
 				 COMPOSE_TO);
 				 
 		else if (followup_and_reply_to || to_all) {
