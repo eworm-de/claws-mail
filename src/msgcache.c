@@ -434,6 +434,7 @@ MsgInfo *msgcache_get_msg_by_id(MsgCache *cache, const gchar *msgid)
 	MsgInfo *msginfo;
 	
 	g_return_val_if_fail(cache != NULL, NULL);
+	g_return_val_if_fail(msgid != NULL, NULL);
 
 	msginfo = g_hash_table_lookup(cache->msgid_table, msgid);
 	if(!msginfo)

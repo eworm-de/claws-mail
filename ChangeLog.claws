@@ -1,3 +1,9 @@
+2003-09-26 [christoph]	0.9.5claws30
+
+	* src/folder.c
+	* src/msgcache.c
+		add more NULL pointer checks
+
 2003-09-25 [christoph]	0.9.5claws29
 
 	* src/folder.c

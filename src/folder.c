@@ -1573,6 +1573,7 @@ MsgInfo *folder_item_get_msginfo_by_msgid(FolderItem *item, const gchar *msgid)
 	MsgInfo *msginfo;
 	
 	g_return_val_if_fail(item != NULL, NULL);
+	g_return_val_if_fail(msgid != NULL, NULL);
 	
 	folder = item->folder;
 	if (!item->cache)
@@ -2031,14 +2032,20 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 			MsgInfo *newmsginfo;
 
 			if (folderscan) {
-				newmsginfo = folder_item_get_msginfo_by_msgid(dest, msginfo->msgid);
-				copy_msginfo_flags(msginfo, newmsginfo);
-				num = newmsginfo->msgnum;
-				procmsg_msginfo_free(newmsginfo);				
+				if (msginfo->msgid != NULL) {
+					newmsginfo = folder_item_get_msginfo_by_msgid(dest, msginfo->msgid);
+					if (newmsginfo != NULL) {
+						copy_msginfo_flags(msginfo, newmsginfo);
+						num = newmsginfo->msgnum;
+						procmsg_msginfo_free(newmsginfo);
+					}
+				}
 			} else {
 				newmsginfo = folder->klass->get_msginfo(folder, dest, num);
-				add_msginfo_to_cache(dest, newmsginfo, msginfo);
-				procmsg_msginfo_free(newmsginfo);
+				if (newmsginfo != NULL) {
+					add_msginfo_to_cache(dest, newmsginfo, msginfo);
+					procmsg_msginfo_free(newmsginfo);
+				}
 			}
 
 			if (num > lastnum)
