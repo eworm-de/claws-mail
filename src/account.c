@@ -46,10 +46,6 @@
 #include "utils.h"
 #include "alertpanel.h"
 
-#include "pixmaps/mark.xpm"
-#include "pixmaps/checkbox_on.xpm"
-#include "pixmaps/checkbox_off.xpm"
-
 typedef enum
 {
 	COL_DEFAULT	= 0,
