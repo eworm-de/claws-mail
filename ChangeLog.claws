@@ -1,3 +1,8 @@
+2001-11-26 [paul]
+
+	* po/es.po
+        	updated translation, submitted by Ricardo Mones Lastra
+
 2001-11-26 [alfons]
 
 	* src/matcher.c
