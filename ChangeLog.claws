@@ -1,3 +1,10 @@
+2001-12-23 [alfons]	0.6.6claws14
+
+	* src/filesel.c
+		accept file name typed in entry in multi file
+		selector (patch submitted by Gustavo Noronha Silva 
+		<kov@debian.org>)
+
 2001-12-23 [alfons]	0.6.6claws13
 
 	* src/prefs_filter.c
