@@ -85,5 +85,18 @@ are hardly noticable, but deserve mentioning:
   Folders can have their own threading and sorting mode. Just select a 
   folder, and set their threading and sorting mode.
 
-There are a lot more options. If you find one, don't hesitate to mention
-it.
+* spell checking
+  Spell checking using pspell library (http://pspell.sourceforge.net)
+  can can be compiled in. You must have dictionaries available. You can
+  use aspell (http://aspell.sourceforge.net) or ispell dictionaries. For
+  the former, you have to install aspell. For the latter, you have to
+  install the pspell-ispell module (see pspell home page) in addition
+  to ispell.  Spell checking can then enabled in Configuration |Common
+  Preferences | Compose. Use the file selector and select any file in
+  the directory where the dictionaries (*.pwli) are. Do not simply enter
+  the path in the text entry. You can select the default dictionary.
+  When composing, use the right-button click.
+
+
+There are a lot more options. If you find one, don't hesitate to
+mention it.

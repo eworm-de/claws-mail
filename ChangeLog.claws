@@ -1,3 +1,13 @@
+2001-09-27 [melvin]	0.6.2claws10
+	
+	* src/gtkspell.c
+		fixed bug where gtkpspell didn't set the path correctly
+
+	* README.claws
+		added a paragraph about spell checking
+		
+
+
 2001-09-27 [paul]	0.6.2claws9
 
 	* src/addrbook.c, src/addrcache.c, src/addritem.c, src/jpilot.c
