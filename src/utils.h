@@ -410,7 +410,7 @@ const gchar * line_has_quote_char_last	(const gchar *str,
 gint mswin_helper_timeout_tag;
 void start_mswin_helper(void);
 void stop_mswin_helper(void);
-static gint mswin_helper_timeout_cb(gpointer);
+static gint mswin_helper_timeout_cb(gpointer *data);
 
 wchar_t  *gtkwcs2winwcs(wchar_t *gtkwcs);
 

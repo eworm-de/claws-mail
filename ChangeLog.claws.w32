@@ -1,3 +1,11 @@
+2002-09-21 [thorsten]	0.8.2claws54-1
+
+	* Readme-w32.txt
+	  src/utils.[ch]
+	  win32/Make-ming.mak	** NEW FILE **
+	  win32/appicon.rc	** NEW FILE **
+	  	add: support for mingw-gcc compiler
+
 2002-09-17 [thorsten]	0.8.2claws52-1
 
 	* src/foldersel.c

@@ -3140,7 +3140,11 @@ gchar *w32_parse_path(gchar* const src)
 				case 'w' : 
 					REPLACE_PATHNAME( windir );
 					continue;
+#ifdef __MINGW32__
+				case 0 :
+#else	
 				case NULL :
+#endif
 					continue;
 			}
 		else
