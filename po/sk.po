@@ -8270,7 +8270,7 @@ msgstr " položiek zvolených"
 #: src/summaryview.c:2025
 #, c-format
 msgid "%d new, %d unread, %d total (%s)"
-msgstr "%d novýcvh, %d neprečítaných, %d celkovo (%s)"
+msgstr "%d nových, %d neprečítaných, %d celkovo (%s)"
 
 #: src/summaryview.c:2199
 msgid "Sorting summary..."
