@@ -1,6 +1,6 @@
 dnl check for libspamc required includes
 
-AC_DEFUN(AC_SPAMASSASSIN,
+AC_DEFUN([AC_SPAMASSASSIN],
 [dnl
 
 AC_CHECK_HEADERS(sys/time.h syslog.h unistd.h errno.h sys/errno.h)

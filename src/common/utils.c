@@ -3386,7 +3386,8 @@ int subject_get_prefix_length(const gchar *subject)
 		"Antwort\\:",			/* "Antwort:" (German Lotus Notes) */
 		"Res\\:",			/* "Res:" (Brazilian Outlook) */
 		"Fw\\:",			/* "Fw:" Forward */
-		"Enc\\:"			/* "Enc:" Forward (Brazilian Outlook) */
+		"Enc\\:",			/* "Enc:" Forward (Brazilian Outlook) */
+		"Odp\\:"			/* "Odp:" Re (Polish Outlook) */
 		/* add more */
 	};
 	const int PREFIXES = sizeof prefixes / sizeof prefixes[0];

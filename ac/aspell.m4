@@ -9,7 +9,7 @@ dnl AM_PATH_ASPELL([MINIMUM-VERSION,
 dnl               [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND ]]])
 dnl Test for aspell, and define ASPELL_CFLAGS, ASPELL_LIBS and ASPELL_PATH
 dnl
-AC_DEFUN(AM_PATH_ASPELL,
+AC_DEFUN([AM_PATH_ASPELL],
 [dnl
 dnl Get the cflags and libraries from the aspell-config script
 dnl

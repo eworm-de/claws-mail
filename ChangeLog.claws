@@ -1,3 +1,17 @@
+2003-12-28 [paul]	0.9.8claws11
+
+	* ac/aspell.m4
+	  ac/check-type.m4
+	  ac/gnupg-check-typedef.m4
+	  ac/openssl.m4
+	  ac/spamassassin.m4
+	  	fix 'underquoted definition' warnings, patch submitted by
+		David Relson <relson@osagesoftware.com>
+		
+	* src/common/utils.c
+		subject_get_prefix_length(): add "Odp\\:" to reply prefixes,
+		patch submitted by Jan Alboszta <J.Alboszta@students.mimuw.edu.pl>
+
 2003-12-28 [paul]	0.9.8claws10
 
 	* sync with 0.9.8cvs1
