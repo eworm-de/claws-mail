@@ -83,6 +83,7 @@ struct _MainWindow
 	GtkWidget *compose_btn;
 	GtkWidget *reply_btn;
 	GtkWidget *replyall_btn;
+	GtkWidget *replyauthor_btn;
 	GtkWidget *fwd_btn;
 	GtkWidget *send_btn;
 	/*

@@ -1,3 +1,13 @@
+2001-05-20 [sergey]
+
+	* src/pixmaps/stock_mail_reply_to_author.xpm: new file.
+
+	* src/mainwindow.h (main_window_toolbar_create): created a button
+	for "Reply to all".
+	(main_window_set_toolbar_sensitive): enable/disable the new button
+	appropriately.
+	(toolbar_reply_to_author_cb): handle the new button.
+
 2001-05-19 [sergey]
 
 	* src/compose.h (ComposeReplyMode): new modes

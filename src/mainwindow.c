@@ -115,6 +115,8 @@ static void toolbar_reply_cb		(GtkWidget	*widget,
 					 gpointer	 data);
 static void toolbar_reply_to_all_cb	(GtkWidget	*widget,
 					 gpointer	 data);
+static void toolbar_reply_to_author_cb	(GtkWidget	*widget,
+					 gpointer	 data);
 static void toolbar_forward_cb		(GtkWidget	*widget,
 					 gpointer	 data);
 
@@ -1030,11 +1032,12 @@ void main_window_add_mailbox(MainWindow *mainwin)
 
 void main_window_set_toolbar_sensitive(MainWindow *mainwin, gboolean sensitive)
 {
-	gtk_widget_set_sensitive(mainwin->reply_btn,    sensitive);
-	gtk_widget_set_sensitive(mainwin->replyall_btn, sensitive);
-	gtk_widget_set_sensitive(mainwin->fwd_btn,      sensitive);
-	gtk_widget_set_sensitive(mainwin->exec_btn,     sensitive);
-	gtk_widget_set_sensitive(mainwin->next_btn,     sensitive);
+	gtk_widget_set_sensitive(mainwin->reply_btn,       sensitive);
+	gtk_widget_set_sensitive(mainwin->replyall_btn,    sensitive);
+	gtk_widget_set_sensitive(mainwin->replyauthor_btn, sensitive);
+	gtk_widget_set_sensitive(mainwin->fwd_btn,         sensitive);
+	gtk_widget_set_sensitive(mainwin->exec_btn,        sensitive);
+	gtk_widget_set_sensitive(mainwin->next_btn,        sensitive);
 
 	if (!mainwin->summaryview->folder_item ||
 	    mainwin->summaryview->folder_item->folder->type == F_NEWS)
@@ -1315,6 +1318,7 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 #include "pixmaps/stock_mail_compose.xpm"
 #include "pixmaps/stock_mail_reply.xpm"
 #include "pixmaps/stock_mail_reply_to_all.xpm"
+#include "pixmaps/stock_mail_reply_to_author.xpm"
 #include "pixmaps/stock_mail_forward.xpm"
 #include "pixmaps/stock_mail_send.xpm"
 #include "pixmaps/stock_preferences.xpm"
@@ -1343,6 +1347,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	GtkWidget *compose_btn;
 	GtkWidget *reply_btn;
 	GtkWidget *replyall_btn;
+	GtkWidget *replyauthor_btn;
 	GtkWidget *fwd_btn;
 	GtkWidget *send_btn;
 	/*
@@ -1413,6 +1418,14 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 					       icon_wid,
 					       toolbar_reply_to_all_cb,
 					       mainwin);
+	CREATE_TOOLBAR_ICON(stock_mail_reply_to_author_xpm);
+	replyauthor_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
+						  _("Reply author"),
+						  _("Reply to author"),
+						  "Reply to author",
+						  icon_wid,
+						  toolbar_reply_to_author_cb,
+						  mainwin);
 	CREATE_TOOLBAR_ICON(stock_mail_forward_xpm);
 	fwd_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					  _("Forward"),
@@ -1477,21 +1490,22 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 			   mainwin);
 	*/
 
-	mainwin->toolbar      = toolbar;
-	mainwin->get_btn      = get_btn;
-	mainwin->getall_btn   = getall_btn;
-	mainwin->compose_btn  = compose_btn;
-	mainwin->reply_btn    = reply_btn;
-	mainwin->replyall_btn = replyall_btn;
-	mainwin->fwd_btn      = fwd_btn;
-	mainwin->send_btn     = send_btn;
+	mainwin->toolbar         = toolbar;
+	mainwin->get_btn         = get_btn;
+	mainwin->getall_btn      = getall_btn;
+	mainwin->compose_btn     = compose_btn;
+	mainwin->reply_btn       = reply_btn;
+	mainwin->replyall_btn    = replyall_btn;
+	mainwin->replyauthor_btn = replyauthor_btn;
+	mainwin->fwd_btn         = fwd_btn;
+	mainwin->send_btn        = send_btn;
 	/*
-	mainwin->prefs_btn    = prefs_btn;
-	mainwin->account_btn  = account_btn;
+	mainwin->prefs_btn       = prefs_btn;
+	mainwin->account_btn     = account_btn;
 	*/
-	mainwin->next_btn     = next_btn;
-	mainwin->delete_btn   = delete_btn;
-	mainwin->exec_btn     = exec_btn;
+	mainwin->next_btn        = next_btn;
+	mainwin->delete_btn      = delete_btn;
+	mainwin->exec_btn        = exec_btn;
 
 	gtk_widget_show_all(toolbar);
 }
@@ -1544,6 +1558,14 @@ static void toolbar_reply_to_all_cb	(GtkWidget	*widget,
 	MainWindow *mainwin = (MainWindow *)data;
 
 	reply_cb(mainwin, COMPOSE_REPLY_TO_ALL, NULL);
+}
+
+static void toolbar_reply_to_author_cb	(GtkWidget	*widget,
+					 gpointer	 data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+
+	reply_cb(mainwin, COMPOSE_REPLY_TO_AUTHOR, NULL);
 }
 
 static void toolbar_forward_cb	(GtkWidget	*widget,
