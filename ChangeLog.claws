@@ -1,3 +1,9 @@
+2004-11-17 [paul]	0.9.12cvs153
+
+	* src/procmime.h
+		forgotten in sync with main 1.0.0beta3
+
+
 2004-11-17 [paul]	0.9.12cvs152
 
 	* ChangeLog
