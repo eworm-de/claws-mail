@@ -6,4 +6,4 @@ Comment[ja]=電子メールクライアント
 Exec=sylpheed
 Icon=sylpheed.png
 Terminal=0
-Type=Internet
+Type=Application

@@ -1,3 +1,11 @@
+2002-08-29 [alfons]
+
+	* sylpheed.desktop
+		Type=Internet <- Type=Application
+		(reported by Michael Schwendt, see:
+		http://sourceforge.net/tracker/index.php?func=detail&aid=599765&group_id=25528&atid=384600
+		http://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=72882)
+
 2002-08-29 [paul]	0.8.2claws9
 
 	* sync with 0.8.2cvs5
