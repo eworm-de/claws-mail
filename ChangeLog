@@ -1,3 +1,8 @@
+2001-06-29
+
+	* src/imap.c: imap_scan_tree(): fixed a bug that didn't set the
+	  root folder correctly.
+
 2001-06-28
 
 	* src/folderview.[ch]:

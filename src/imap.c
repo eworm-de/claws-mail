@@ -686,7 +686,6 @@ void imap_scan_tree(Folder *folder)
 	FolderItem *item, *inbox;
 	IMAPSession *session;
 	IMAPNameSpace *namespace = NULL;
-	gchar *imap_dir = "";
 	gchar *root_folder = NULL;
 
 	g_return_if_fail(folder != NULL);
@@ -699,16 +698,18 @@ void imap_scan_tree(Folder *folder)
 		namespace = (IMAPNameSpace *)imapfolder->namespace->data;
 
 	if (folder->account->imap_dir && *folder->account->imap_dir) {
-		gchar *tmpdir;
-		Xstrdup_a(tmpdir, folder->account->imap_dir, return);
-		strtailchomp(tmpdir, '/');
-		Xalloca(imap_dir, strlen(tmpdir) + 2, return);
+		gchar *imap_dir;
+		Xstrdup_a(imap_dir, folder->account->imap_dir, return);
+		strtailchomp(imap_dir, '/');
 		root_folder = g_strconcat
 			(namespace && namespace->name ? namespace->name : "",
 			 imap_dir, NULL);
 		if (namespace && namespace->separator)
 			subst_char(root_folder, namespace->separator, '/');
 	}
+
+	if (root_folder)
+		debug_print("IMAP root directory: %s\n", root_folder);
 
 	folder_tree_destroy(folder);
 	item = folder_item_new(folder->name, root_folder);

@@ -1,3 +1,8 @@
+2001-06-29
+
+	* src/imap.c: imap_scan_tree(): ルートフォルダを正しくセットして
+	  いなかったバグを修正。
+
 2001-06-28
 
 	* src/folderview.[ch]:
