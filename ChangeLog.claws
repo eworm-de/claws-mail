@@ -1,6 +1,10 @@
 2002-12-23 [paul]	0.8.7claws
 
 	* Santa-Claws released
+	
+	* po/ru.po
+		squeeze in an updated Russian translation.
+		Submitted by Ruslan N. Balkin <baron@voices.ru>
 
 2002-12-23 [paul]	0.8.6claws129
 
