@@ -269,7 +269,7 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 	}
 	mimeview->file = g_strdup(file);
 
-	/* skip headers */
+	/* skip MIME part headers */
 	if (mimeinfo->mime_type == MIME_MULTIPART) {
 		if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0)
 		perror("fseek");
@@ -294,8 +294,21 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 	gtk_signal_handler_unblock_by_func(GTK_OBJECT(ctree),
 					   mimeview_selected, mimeview);
 
-	if ((node = gtk_ctree_node_nth(ctree, 0))) {
+	/* search first text part */
+	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+	     node != NULL; node = GTK_CTREE_NODE_NEXT(node)) {
+		MimeInfo *partinfo;
+
+		partinfo = gtk_ctree_node_get_row_data(ctree, node);
+		if (partinfo && partinfo->mime_type == MIME_TEXT)
+			break;
+	}
+	if (!node)
+		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+
+	if (node) {
 		gtk_ctree_select(ctree, node);
+		gtkut_ctree_set_focus_row(ctree, node);
 		gtk_widget_grab_focus(mimeview->ctree);
 	}
 }

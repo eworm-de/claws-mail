@@ -689,7 +689,7 @@ void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 
 	g_return_if_fail(msginfo);
 
-	if ((tmpfp = procmime_get_text_part(msginfo)) == NULL) {
+	if ((tmpfp = procmime_get_first_text_content(msginfo)) == NULL) {
 		g_warning(_("Can't get text part\n"));
 		return;
 	}

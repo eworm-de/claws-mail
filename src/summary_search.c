@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,7 @@ static GtkWidget *window;
 static GtkWidget *from_entry;
 static GtkWidget *to_entry;
 static GtkWidget *subject_entry;
+static GtkWidget *body_entry;
 static GtkWidget *case_checkbtn;
 static GtkWidget *backward_checkbtn;
 static GtkWidget *all_checkbtn;
@@ -66,6 +67,7 @@ static void summary_search_clear(GtkButton *button, gpointer data);
 static void from_activated(void);
 static void to_activated(void);
 static void subject_activated(void);
+static void body_activated(void);
 static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
 
 void summary_search(SummaryView *summaryview)
@@ -92,6 +94,7 @@ static void summary_search_create(SummaryView *summaryview)
 	GtkWidget *from_label;
 	GtkWidget *to_label;
 	GtkWidget *subject_label;
+	GtkWidget *body_label;
 	GtkWidget *checkbtn_hbox;
 	GtkWidget *confirm_area;
 
@@ -114,7 +117,7 @@ static void summary_search_create(SummaryView *summaryview)
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (window), vbox1);
 
-	table1 = gtk_table_new (3, 3, FALSE);
+	table1 = gtk_table_new (4, 3, FALSE);
 	gtk_widget_show (table1);
 	gtk_box_pack_start (GTK_BOX (vbox1), table1, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (table1), 4);
@@ -142,6 +145,13 @@ static void summary_search_create(SummaryView *summaryview)
 	gtk_signal_connect(GTK_OBJECT(subject_entry), "activate",
 			   GTK_SIGNAL_FUNC(subject_activated), summaryview);
 
+	body_entry = gtk_entry_new ();
+	gtk_widget_show (body_entry);
+	gtk_table_attach (GTK_TABLE (table1), body_entry, 1, 3, 3, 4,
+			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_signal_connect(GTK_OBJECT(body_entry), "activate",
+			   GTK_SIGNAL_FUNC(body_activated), summaryview);
+
 	from_label = gtk_label_new (_("From:"));
 	gtk_widget_show (from_label);
 	gtk_table_attach (GTK_TABLE (table1), from_label, 0, 1, 0, 1,
@@ -158,11 +168,17 @@ static void summary_search_create(SummaryView *summaryview)
 
 	subject_label = gtk_label_new (_("Subject:"));
 	gtk_widget_show (subject_label);
-
 	gtk_table_attach (GTK_TABLE (table1), subject_label, 0, 1, 2, 3,
 			  GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (subject_label), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment (GTK_MISC (subject_label), 1, 0.5);
+
+	body_label = gtk_label_new (_("Body"));
+	gtk_widget_show (body_label);
+	gtk_table_attach (GTK_TABLE (table1), body_label, 0, 1, 3, 4,
+			  GTK_FILL, 0, 0, 0);
+	gtk_label_set_justify (GTK_LABEL (body_label), GTK_JUSTIFY_RIGHT);
+	gtk_misc_set_alignment (GTK_MISC (body_label), 1, 0.5);
 
 	checkbtn_hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (checkbtn_hbox);
@@ -225,6 +241,8 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 	gboolean from_matched;
 	gboolean   to_matched;
 	gboolean subj_matched;
+	gboolean body_matched;
+	gchar *body_str;
 	wchar_t *wcs_hs, *fromwcs, *towcs, *subjwcs;
 	wchar_t *(* WCSFindFunc) (const wchar_t *haystack,
 				  const wchar_t *needle);
@@ -252,6 +270,7 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 	fromwcs = (wchar_t *)GTK_ENTRY(from_entry)->text;
 	towcs   = (wchar_t *)GTK_ENTRY(to_entry)->text;
 	subjwcs = (wchar_t *)GTK_ENTRY(subject_entry)->text;
+	body_str = gtk_entry_get_text(GTK_ENTRY(body_entry));
 
 	if (search_all) {
 		gtk_clist_freeze(GTK_CLIST(ctree));
@@ -310,7 +329,7 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 				break;
 		}
 
-		from_matched = to_matched = subj_matched = FALSE;
+		from_matched = to_matched = subj_matched = body_matched = FALSE;
 
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
 
@@ -332,8 +351,12 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 				subj_matched = TRUE;
 			g_free(wcs_hs);
 		}
+		if (*body_str) {
+			if (procmime_find_string(msginfo, body_str, case_sens))
+				body_matched = TRUE;
+		}
 
-		if (from_matched || to_matched || subj_matched) {
+		if (from_matched || to_matched || subj_matched || body_matched) {
 			if (search_all)
 				gtk_ctree_select(ctree, node);
 			else {
@@ -357,6 +380,7 @@ static void summary_search_clear(GtkButton *button, gpointer data)
 	gtk_editable_delete_text(GTK_EDITABLE(from_entry),    0, -1);
 	gtk_editable_delete_text(GTK_EDITABLE(to_entry),      0, -1);
 	gtk_editable_delete_text(GTK_EDITABLE(subject_entry), 0, -1);
+	gtk_editable_delete_text(GTK_EDITABLE(body_entry),    0, -1);
 }
 
 static void from_activated(void)
@@ -370,6 +394,11 @@ static void to_activated(void)
 }
 
 static void subject_activated(void)
+{
+	gtk_button_clicked(GTK_BUTTON(search_btn));
+}
+
+static void body_activated(void)
 {
 	gtk_button_clicked(GTK_BUTTON(search_btn));
 }

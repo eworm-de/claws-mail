@@ -661,7 +661,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		FILE *fp;
 		gchar *quote_str;
 
-		if ((fp = procmime_get_text_part(msginfo)) == NULL)
+		if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
 			g_warning(_("Can't get text part\n"));
 		else {
 			gchar * qmark;
@@ -990,8 +990,7 @@ Compose *compose_forward(PrefsAccount * account, MsgInfo *msginfo,
 	} else {
 		FILE *fp;
 		gchar *quote_str;
-
-		if ((fp = procmime_get_text_part(msginfo)) == NULL)
+		if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
 			g_warning(_("Can't get text part\n"));
 		else {
 			gchar * qmark;
@@ -1124,7 +1123,7 @@ void compose_reedit(MsgInfo *msginfo)
 	text = GTK_STEXT(compose->text);
 	gtk_stext_freeze(text);
 
-	if ((fp = procmime_get_text_part(msginfo)) == NULL)
+	if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
 		g_warning(_("Can't get text part\n"));
 	else {
 		while (fgets(buf, sizeof(buf), fp) != NULL)

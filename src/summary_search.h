@@ -28,4 +28,4 @@
 void summary_search(SummaryView *summaryview);
 void summary_search_cb(gpointer data, guint action, GtkWidget *widget);
 
-#endif __SUMMARY_SEARCH_H__
+#endif /* __SUMMARY_SEARCH_H__ */

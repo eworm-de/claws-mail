@@ -1,3 +1,31 @@
+2001-09-20
+
+	* src/inc.c: バックグラウンドの POP3 プロセスのハングまたはクラッシュ
+	  を修正(Sergey Vlasov さん thanks)。
+	* src/summary_search.c: 本文検索機能を追加。
+	* src/procmime.[ch]: procmime_find_string(): 引数と戻り値を変更。
+	  大小文字の区別のオプションを追加。
+
+2001-09-20
+
+	* src/procmime.[ch]:
+	  procmime_find_string()
+	  procmime_find_string_part(): 新規。メッセージから文字列を検索する。
+	  procmime_get_text_part() を procmime_get_first_text_content() に
+	  名称変更。
+	  procmime_get_text_content(): 新規。指定した MIME パートのテキスト
+	  内容を返す。
+	  procmime_mimeinfo_next(): 新規。 MimeInfo ツリーの次のノードを
+	  返す。
+
+2001-09-19
+
+	* src/procmime.c: procmime_get_text_part(): 入れ子状のマルチパート
+	  メッセージのテキストパートを正しく見つけるように修正。
+	* src/procmime.h: MimeInfo 構造体の例を追加。
+	* src/mimeview.c: mimeview_show_message(): 最初のテキストパートを
+	  探すようにした。
+
 2001-09-17
 
 	* src/mainwindow.c: ac_menu_popup_closed(): segfault を起こすバグ

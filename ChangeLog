@@ -1,3 +1,32 @@
+2001-09-20
+
+	* src/inc.c: fix for background POP3 hangs and crashes (thanks to
+	  Sergey Vlasov).
+	* src/summary_search.c: added body searching function.
+	* src/procmime.[ch]: procmime_find_string(): changed arguments
+	  and return value. Added case sensitivity option.
+
+2001-09-20
+
+	* src/procmime.[ch]:
+	  procmime_find_string()
+	  procmime_find_string_part(): new. It searchs the string from
+	  messages.
+	  Renamed procmime_get_text_part() to
+	  procmime_get_first_text_content().
+	  procmime_get_text_content(): new. It returns the text contents
+	  of the specified MIME part.
+	  procmime_mimeinfo_next(): new. It returns the next node of
+	  MimeInfo tree.
+
+2001-09-19
+
+	* src/procmime.c: procmime_get_text_part(): modified so that it
+	  finds a text part in nested multipart message correctly.
+	* src/procmime.h: added an example of MimeInfo structure.
+	* src/mimeview.c: mimeview_show_message(): search the first text
+	  part.
+
 2001-09-17
 
 	* src/mainwindow.c: ac_menu_popup_closed(): fixed the bug that

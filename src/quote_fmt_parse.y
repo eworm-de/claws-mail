@@ -264,7 +264,7 @@ special:
 		gchar buf[BUFFSIZE];
 		FILE * fp;
 
-		if ((fp = procmime_get_text_part(msginfo)) == NULL)
+		if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
 			g_warning(_("Can't get text part\n"));
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
 			INSERT(buf);
@@ -276,7 +276,7 @@ special:
 		gchar buf[BUFFSIZE];
 		FILE * fp;
 
-		if ((fp = procmime_get_text_part(msginfo)) == NULL)
+		if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
 			g_warning(_("Can't get text part\n"));
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
 			if (quote_str)
@@ -290,7 +290,7 @@ special:
 		gchar buf[BUFFSIZE];
 		FILE * fp;
 
-		if ((fp = procmime_get_text_part(msginfo)) == NULL)
+		if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
 			g_warning(_("Can't get text part\n"));
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
 			if (strncmp(buf, "-- ", 3) == 0)
@@ -304,7 +304,7 @@ special:
 		gchar buf[BUFFSIZE];
 		FILE * fp;
 
-		if ((fp = procmime_get_text_part(msginfo)) == NULL)
+		if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
 			g_warning(_("Can't get text part\n"));
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
 			if (strncmp(buf, "-- ", 3) == 0)

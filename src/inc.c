@@ -665,7 +665,8 @@ static IncState inc_pop3_session_do(IncSession *session)
 				      automaton_input_cb, atm);
 #endif
 
-	gtk_main();
+	while (!atm->terminated)
+		gtk_main_iteration();
 
 	log_verbosity_set(FALSE);
 	recv_set_ui_func(NULL, NULL);
@@ -688,10 +689,8 @@ static gint pop3_automaton_terminate(SockInfo *source, Automaton *atm)
 		gtk_timeout_remove(atm->timeout_tag);
 		atm->timeout_tag = 0;
 	}
-	if (source) {
+	if (source)
 		sock_close(source);
-		gtk_main_quit();
-	}
 
 	atm->terminated = TRUE;
 

@@ -63,6 +63,24 @@ struct _MimeType
 	gchar *extension;
 };
 
+/*
+ * An example of MimeInfo structure:
+ *
+ * multipart/mixed            root  <-+ parent
+ *                                    |
+ *   multipart/alternative      children <-+ parent
+ *                                         |
+ *     text/plain                 children  --+
+ *                                            |
+ *     text/html                  next      <-+
+ *
+ *   message/rfc822             next  <-+ main
+ *                                      |
+ *                                sub (capsulated message)
+ *
+ *   image/jpeg                 next
+ */
+
 struct _MimeInfo
 {
 	gchar *encoding;
@@ -109,6 +127,10 @@ void procmime_mimeinfo_free_all		(MimeInfo	*mimeinfo);
 
 MimeInfo *procmime_mimeinfo_insert	(MimeInfo	*parent,
 					 MimeInfo	*mimeinfo);
+void procmime_mimeinfo_replace		(MimeInfo	*old,
+					 MimeInfo	*new);
+
+MimeInfo *procmime_mimeinfo_next	(MimeInfo	*mimeinfo);
 
 MimeInfo *procmime_scan_message		(MsgInfo	*msginfo);
 void procmime_scan_multipart_message	(MimeInfo	*mimeinfo,
@@ -130,7 +152,17 @@ FILE *procmime_decode_content		(FILE		*outfp,
 gint procmime_get_part			(const gchar	*outfile,
 					 const gchar	*infile,
 					 MimeInfo	*mimeinfo);
-FILE *procmime_get_text_part		(MsgInfo	*msginfo);
+FILE *procmime_get_text_content		(MimeInfo	*mimeinfo,
+					 FILE		*infp);
+FILE *procmime_get_first_text_content	(MsgInfo	*msginfo);
+
+gboolean procmime_find_string_part	(MimeInfo	*mimeinfo,
+					 const gchar	*filename,
+					 const gchar	*str,
+					 gboolean	 case_sens);
+gboolean procmime_find_string		(MsgInfo	*msginfo,
+					 const gchar	*str,
+					 gboolean	 case_sens);
 
 gchar *procmime_get_tmp_file_name	(MimeInfo	*mimeinfo);
 

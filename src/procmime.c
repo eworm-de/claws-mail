@@ -159,6 +159,31 @@ void procmime_mimeinfo_replace(MimeInfo *old, MimeInfo *new)
 	}
 }
 
+MimeInfo *procmime_mimeinfo_next(MimeInfo *mimeinfo)
+{
+	if (!mimeinfo) return NULL;
+
+	if (mimeinfo->children)
+		return mimeinfo->children;
+	if (mimeinfo->sub)
+		return mimeinfo->sub;
+	if (mimeinfo->next)
+		return mimeinfo->next;
+
+	for (mimeinfo = mimeinfo->parent; mimeinfo != NULL;
+	     mimeinfo = mimeinfo->parent) {
+		if (mimeinfo->next)
+			return mimeinfo->next;
+		if (mimeinfo->main) {
+			mimeinfo = mimeinfo->main;
+			if (mimeinfo->next)
+				return mimeinfo->next;
+		}
+	}
+
+	return NULL;
+}
+
 MimeInfo *procmime_scan_message(MsgInfo *msginfo)
 {
 	FILE *fp;
@@ -611,7 +636,62 @@ gint procmime_get_part(const gchar *outfile, const gchar *infile,
 	return 0;
 }
 
-FILE *procmime_get_text_part(MsgInfo *msginfo)
+FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
+{
+	FILE *tmpfp, *outfp;
+	gchar *src_codeset;
+	gboolean conv_fail = FALSE;
+	gchar buf[BUFFSIZE];
+
+	g_return_val_if_fail(mimeinfo != NULL, NULL);
+	g_return_val_if_fail(infp != NULL, NULL);
+	g_return_val_if_fail(mimeinfo->mime_type == MIME_TEXT ||
+			     mimeinfo->mime_type == MIME_TEXT_HTML, NULL);
+
+	if (fseek(infp, mimeinfo->fpos, SEEK_SET) < 0) {
+		perror("fseek");
+		return NULL;
+	}
+
+	while (fgets(buf, sizeof(buf), infp) != NULL)
+		if (buf[0] == '\r' || buf[0] == '\n') break;
+
+	tmpfp = procmime_decode_content(NULL, infp, mimeinfo);
+	if (!tmpfp)
+		return NULL;
+
+	if ((outfp = my_tmpfile()) == NULL) {
+		perror("tmpfile");
+		fclose(tmpfp);
+		return NULL;
+	}
+
+	src_codeset = prefs_common.force_charset
+		? prefs_common.force_charset : mimeinfo->charset;
+
+	while (fgets(buf, sizeof(buf), tmpfp) != NULL) {
+		gchar *str;
+
+		str = conv_codeset_strdup(buf, src_codeset, NULL);
+		if (str) {
+			fputs(str, outfp);
+			g_free(str);
+		} else {
+			conv_fail = TRUE;
+			fputs(buf, outfp);
+		}
+	}
+	if (conv_fail) g_warning(_("Code conversion failed.\n"));
+
+	fclose(tmpfp);
+	rewind(outfp);
+
+	return outfp;
+}
+
+/* search the first text part of (multipart) MIME message,
+   decode, convert it and output to outfp. */
+FILE *procmime_get_first_text_content(MsgInfo *msginfo)
 {
 	FILE *infp, *tmpfp, *outfp;
 	MimeInfo *mimeinfo, *partinfo = NULL;
@@ -629,17 +709,11 @@ FILE *procmime_get_text_part(MsgInfo *msginfo)
 		return NULL;
 	}
 
-	if (mimeinfo->mime_type == MIME_MULTIPART) {
-		partinfo = mimeinfo->children;
-		if (partinfo && partinfo->mime_type == MIME_TEXT) {
-			if (fseek(infp, partinfo->fpos, SEEK_SET) < 0) {
-				perror("fseek");
-				partinfo = NULL;
-			}
-		} else
-			partinfo = NULL;
-	} else if (mimeinfo->mime_type == MIME_TEXT) {
-		partinfo = mimeinfo;
+	partinfo = mimeinfo;
+	while (partinfo && partinfo->mime_type == MIME_MULTIPART)
+		partinfo = partinfo->children;
+
+	if (partinfo && partinfo->mime_type == MIME_TEXT) {
 		if (fseek(infp, partinfo->fpos, SEEK_SET) < 0) {
 			perror("fseek");
 			partinfo = NULL;
@@ -689,6 +763,80 @@ FILE *procmime_get_text_part(MsgInfo *msginfo)
 	rewind(outfp);
 
 	return outfp;
+}
+
+gboolean procmime_find_string_part(MimeInfo *mimeinfo, const gchar *filename,
+				   const gchar *str, gboolean case_sens)
+{
+
+	FILE *infp, *outfp;
+	gchar buf[BUFFSIZE];
+	gchar *(* StrFindFunc) (const gchar *haystack, const gchar *needle);
+
+	g_return_val_if_fail(mimeinfo != NULL, FALSE);
+	g_return_val_if_fail(mimeinfo->mime_type == MIME_TEXT ||
+			     mimeinfo->mime_type == MIME_TEXT_HTML, FALSE);
+	g_return_val_if_fail(str != NULL, FALSE);
+
+	if ((infp = fopen(filename, "r")) == NULL) {
+		FILE_OP_ERROR(filename, "fopen");
+		return FALSE;
+	}
+
+	outfp = procmime_get_text_content(mimeinfo, infp);
+	fclose(infp);
+
+	if (!outfp)
+		return FALSE;
+
+	if (case_sens)
+		StrFindFunc = strstr;
+	else
+		StrFindFunc = strcasestr;
+
+	while (fgets(buf, sizeof(buf), outfp) != NULL) {
+		if (StrFindFunc(buf, str) != NULL) {
+			fclose(outfp);
+			return TRUE;
+		}
+	}
+
+	fclose(outfp);
+
+	return FALSE;
+}
+
+gboolean procmime_find_string(MsgInfo *msginfo, const gchar *str,
+			      gboolean case_sens)
+{
+	MimeInfo *mimeinfo;
+	MimeInfo *partinfo;
+	gchar *filename;
+	gboolean found = FALSE;
+
+	g_return_val_if_fail(msginfo != NULL, NULL);
+	g_return_val_if_fail(str != NULL, NULL);
+
+	filename = procmsg_get_message_file(msginfo);
+	if (!filename) return FALSE;
+	mimeinfo = procmime_scan_message(msginfo);
+
+	for (partinfo = mimeinfo; partinfo != NULL;
+	     partinfo = procmime_mimeinfo_next(partinfo)) {
+		if (partinfo->mime_type == MIME_TEXT ||
+		    partinfo->mime_type == MIME_TEXT_HTML) {
+			if (procmime_find_string_part
+				(partinfo, filename, str, case_sens) == TRUE) {
+				found = TRUE;
+				break;
+			}
+		}
+	}
+
+	procmime_mimeinfo_free_all(mimeinfo);
+	g_free(filename);
+
+	return found;
 }
 
 gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
