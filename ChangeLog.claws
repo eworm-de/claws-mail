@@ -1,3 +1,8 @@
+2002-12-21 [paul]	0.8.6claws123
+
+	* src/addrbook.c
+		fix coding style
+
 2002-12-21 [paul]	0.8.6claws122
 
 	* src/addrbook.c
