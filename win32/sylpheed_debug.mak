@@ -95,6 +95,7 @@ CLEAN :
 	-@erase "$(INTDIR)\inputdialog.obj"
 	-@erase "$(INTDIR)\jpilot.obj"
 	-@erase "$(INTDIR)\ldif.obj"
+	-@erase "$(INTDIR)\log.obj"
 	-@erase "$(INTDIR)\logwindow.obj"
 	-@erase "$(INTDIR)\main.obj"
 	-@erase "$(INTDIR)\mainwindow.obj"
@@ -284,6 +285,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\inputdialog.obj" \
 	"$(INTDIR)\jpilot.obj" \
 	"$(INTDIR)\ldif.obj" \
+	"$(INTDIR)\log.obj" \
 	"$(INTDIR)\logwindow.obj" \
 	"$(INTDIR)\main.obj" \
 	"$(INTDIR)\mainwindow.obj" \
@@ -511,6 +513,8 @@ CLEAN :
 	-@erase "$(INTDIR)\jpilot.sbr"
 	-@erase "$(INTDIR)\ldif.obj"
 	-@erase "$(INTDIR)\ldif.sbr"
+	-@erase "$(INTDIR)\log.obj"
+	-@erase "$(INTDIR)\log.sbr"
 	-@erase "$(INTDIR)\logwindow.obj"
 	-@erase "$(INTDIR)\logwindow.sbr"
 	-@erase "$(INTDIR)\main.obj"
@@ -683,7 +687,7 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /Gm /GX /ZI /Od /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /I "\dev\proj\aspell\interfaces\cc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\sylpheed_debug.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP_PROJ=/nologo /MD /Gm /GX /ZI /Od /I "..\src" /I "..\src\common" /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /I "\dev\proj\aspell\interfaces\cc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\sylpheed_debug.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -780,6 +784,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\inputdialog.sbr" \
 	"$(INTDIR)\jpilot.sbr" \
 	"$(INTDIR)\ldif.sbr" \
+	"$(INTDIR)\log.sbr" \
 	"$(INTDIR)\logwindow.sbr" \
 	"$(INTDIR)\main.sbr" \
 	"$(INTDIR)\mainwindow.sbr" \
@@ -927,6 +932,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\inputdialog.obj" \
 	"$(INTDIR)\jpilot.obj" \
 	"$(INTDIR)\ldif.obj" \
+	"$(INTDIR)\log.obj" \
 	"$(INTDIR)\logwindow.obj" \
 	"$(INTDIR)\main.obj" \
 	"$(INTDIR)\mainwindow.obj" \
@@ -1309,7 +1315,7 @@ SOURCE=..\src\automaton.c
 
 !ENDIF 
 
-SOURCE=..\src\base64.c
+SOURCE=..\src\common\base64.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 
@@ -2078,6 +2084,24 @@ SOURCE=..\src\ldif.c
 
 
 "$(INTDIR)\ldif.obj"	"$(INTDIR)\ldif.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=..\src\common\log.c
+
+!IF  "$(CFG)" == "sylpheed - Win32 Release"
+
+
+"$(INTDIR)\log.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
+
+
+"$(INTDIR)\log.obj"	"$(INTDIR)\log.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -3091,7 +3115,7 @@ SOURCE=..\src\smtp.c
 
 !ENDIF 
 
-SOURCE=..\src\socket.c
+SOURCE=..\src\common\socket.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 
@@ -3127,7 +3151,7 @@ SOURCE=..\src\sourcewindow.c
 
 !ENDIF 
 
-SOURCE=..\src\ssl.c
+SOURCE=..\src\common\ssl.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 
@@ -3403,7 +3427,7 @@ SOURCE=..\src\unmime.c
 
 !ENDIF 
 
-SOURCE=..\src\utils.c
+SOURCE=..\src\common\utils.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 
@@ -3421,7 +3445,7 @@ SOURCE=..\src\utils.c
 
 !ENDIF 
 
-SOURCE=..\src\uuencode.c
+SOURCE=..\src\common\uuencode.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 

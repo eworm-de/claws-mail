@@ -1492,8 +1492,8 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 			item->unreadmarked--;
 			item->need_update = TRUE;
 		}
-		if ((perm_flags & MSG_MARKED) || MSG_IS_MARKED(msginfo->flags)
-		&& !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
+		if ((perm_flags & MSG_MARKED) || (MSG_IS_MARKED(msginfo->flags)
+		&& !MSG_IS_IGNORE_THREAD(msginfo->flags))) {
 			procmsg_update_unread_children(msginfo, FALSE);
 		}
 

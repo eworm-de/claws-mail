@@ -1,3 +1,224 @@
+2002-11-30 [christoph]	0.8.6claws49
+
+	* doc-src/ui_seperation.txt	** NEW **
+		information for ui seperation
+
+	* src/Makefile.am
+		remove files that were moved to common
+		include common directory by default for the header files
+
+	* src/inc.c
+	* src/common/socket.c
+	* src/automaton.[ch]
+		implement automaton using g_io_*-functions instead of
+		gdk_input_add to make it ui independent
+
+	* src/codeconv.c
+	* src/compose.c
+	* src/ldif.c
+	* src/pgptext.c
+	* src/procmime.c
+	* src/rfc2015.c
+	* src/smtp.c
+	* src/unmime.c
+		remove common/ prefix because directory is now in
+		include path
+
+	* src/compose.c
+	* src/folder.c
+	* src/folderview.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/prefs_common.c
+	* src/procmsg.c
+	* src/rfc2015.c
+		fix warnings
+
+	* src/imap.c
+	* src/inc.c
+	* src/news.c
+	* src/pop.c
+	* src/send.c
+	* src/smtp.c
+	* src/ssl_certificate.c
+		add log.h header file for logging functions
+
+	* src/main.c
+	* src/common/utils.c
+	* src/summaryview.c
+	* src/xml.c
+		o move debug_mode to commno/utils.c
+		o add functions to set and get debug_mode
+
+	* src/defs.h			** REMOVE **
+	* src/intl.h			** REMOVE **
+	* src/socket.[ch]		** REMOVE **
+	* src/ssl.[ch]			** REMOVE **
+	* src/utils.[ch]		** REMOVE **
+		replaced by new files in src/common/
+	
+	* src/common/Makefile.am
+		add new files in src/common/
+
+	* src/common/defs.h		** NEW **
+	* src/common/intl.h		** NEW **
+	* src/common/log.[ch]		** NEW **
+	* src/common/socket.[ch]	** NEW **
+	* src/common/ssl.[ch]		** NEW **
+	* src/common/utils.[ch]		** NEW **
+		replacement for files in src/
+
+2002-11-30 [colin]	0.8.6claws48
+
+	* src/folderview.c
+		Scroll folderview if necessary during dnd
+
+2002-11-30 [colin]	0.8.6claws47
+
+	* src/folder.[ch]
+		Add check to verify a move is within a single mailbox
+	* src/folderview.c
+		Add specific error string for this check
+
+2002-11-30 [colin]	0.8.6claws46
+
+	* src/folder.c
+		Add a test to folder moving, remove a statusbar_print
+	* src/folderview.c
+		Add Move folder... context-menu item
+		Factorize folder moving code
+		Enable folder DND for mbox
+
+2002-11-30 [christoph]	0.8.6claws45
+
+	* ac/aspell.m4
+		remove conf.aspelltest if the version check fails
+
+2002-11-30 [christoph]	0.8.6claws44
+
+	* autogen.sh
+		run libtoolize --force in autogen to create missing
+		libtool scripts
+
+2002-11-30 [christoph]	0.8.6claws43
+
+	* src/Makefile.am
+	* src/pgptext.c
+	* src/procmime.c
+	* src/rfc2015.c
+	* src/uuencode.[ch]		** REMOVED **
+	* src/common/Makefile.am
+	* src/common/uuencode.[ch]	** NEW **
+		move uuen/decoder to common directory
+
+2002-11-30 [christoph]	0.8.6claws42
+
+	* src/Makefile.am
+	* src/base64.[ch]		** REMOVED **
+	* src/codeconv.c
+	* src/compose.c
+	* src/ldif.c
+	* src/pgptext.c
+	* src/procmime.c
+	* src/rfc2015.c
+	* src/smtp.c
+	* src/unmime.c
+	* src/common/Makefile.am
+	* src/common/base64.[ch]	** NEW **
+		move base64 en/decoder to common directory
+
+2002-11-30 [christoph]	0.8.6claws41
+
+	* src/common			** NEW **
+		new directory for UI independent code
+	* src/gtk			** NEW **
+		new directory for GTK frontend
+	* src/common/.cvsignore		** NEW **
+	* src/gtk/.cvsignore		** NEW **
+		ignore build files
+	* src/common/Makefile.am	** NEW **
+	* src/gtk/Makefile.am		** NEW **
+		automake files to build new seperated stuff
+	* src/Makefile.am
+		the binary will currently still be build with the
+		files in src, so we include the code from the
+		subdirs for now after building the libs there
+
+2002-11-30 [paul]	0.8.6claws40
+
+	* src/compose.c
+		fix bug [642731] 'Wrong selected account with drafted mail'
+
+2002-11-29 [oliver]	0.8.6claws39
+	
+	* src/messageview.c
+		o update summaryview when switching between different
+		  messageviews		
+	* src/toolbar.c	 
+		o check if messageview holds already removed msg
+		  from summaryview
+		
+
+2002-11-29 [oliver]	0.8.6claws38
+
+	* src/toolbar.c 
+		remove not needed variables and includes
+		make messageview stay opened and move to next when msgs are deleted 
+
+2002-11-29 [oliver]	0.8.6claws37
+	
+	* src/toolbar.c 
+		disable compose button (messageview toolbar) by default
+		deleted msgs are moved to trash
+	
+2002-11-29 [melvin]	0.8.6claws36
+
+	* configure.in
+		Increased minimal gpgme version to 0.3.10 (Zombies out)
+		and to detect signatures expirations (gpgme 0.3.6)
+
+	* src/main.c
+		Use non obsolescent function for Gpgme engine checking.
+
+	* src/rfc2015.c
+		Inform about expired signatures or signatures which key
+		has expired. Expiration date is displayed.
+
+	* src/sigstatus.c
+		Inform about expired signatures or signatures which key
+		has expired.
+
+2002-11-28 [paul]	0.8.6claws35
+
+	* src/folderview.c
+		re-instate 'Check for new messages' in Newsgroup
+		folders right-click menu, after a suggestion from
+		Tim Mann <timmann@users.sourceforge.net>
+
+	* src/main.c
+		after a crash check only local folders for new
+		messages
+
+2002-11-28 [paul]	0.8.6claws34
+
+	* configure.in
+		apply patch that fixes the checking of GTK with XIM 
+		support on different OSs, such as FreeBSD. Patch 
+		submitted by Topia <topia@users.sourceforge.net>
+		
+2002-11-28 [paul]	0.8.6claws33
+
+	* src/mainwindow.c
+	  src/prefs_common.c
+	  src/prefs_toolbar.c
+		more changes to the English
+
+2002-11-28 [paul]	0.8.6claws32
+
+	* sync with 0.8.6cvs13
+		see ChangeLog 2002-11-28 (no sync needed
+		for src/compose.c)
+
 2002-11-28 [Ivan Francolin Martinez (ivanfm@sourceforge.net)]	0.8.6claws31
 	
 	* src/mainwindow.[ch]

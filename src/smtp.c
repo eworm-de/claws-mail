@@ -31,6 +31,7 @@
 #include "md5.h"
 #include "base64.h"
 #include "utils.h"
+#include "log.h"
 
 static gint verbose = 1;
 

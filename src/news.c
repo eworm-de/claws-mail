@@ -51,6 +51,7 @@
 #include "prefs_account.h"
 #include "inputdialog.h"
 #include "alertpanel.h"
+#include "log.h"
 #if USE_SSL
 #  include "ssl.h"
 #endif

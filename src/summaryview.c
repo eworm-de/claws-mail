@@ -2257,7 +2257,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 
 	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
-	if (debug_mode) {
+	if (debug_get_mode()) {
 		debug_print("\tmsgid hash table size = %d\n",
 			    g_hash_table_size(msgid_table));
 		debug_print("\tsubject hash table size = %d\n",

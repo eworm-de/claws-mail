@@ -22,14 +22,19 @@
 #endif
 
 #include <glib.h>
-#include <sys/time.h>
+#ifdef WIN32
+# include <w32lib.h>
+# include <sys/stat.h>
+#else
+# include <sys/time.h>
+# include <sys/socket.h>
+# include <sys/un.h>
+# include <netinet/in.h>
+# include <arpa/inet.h>
+# include <netdb.h>
+# include <unistd.h>
+#endif
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
@@ -52,7 +57,17 @@
 #error USE_GIO is currently not supported
 #endif
 
+#ifdef WIN32 /* from Winsock2.h */
+# define SD_RECEIVE      0x00
+# define SD_SEND         0x01
+# define SD_BOTH         0x02
+#endif
+
+#ifdef WIN32
+#define BUFFSIZE	8191
+#else
 #define BUFFSIZE	8192
+#endif
 #define IO_TIMEOUT	60
 
 static gint sock_connect_with_timeout	(gint			 sock,
@@ -75,6 +90,10 @@ static SockInfo *sockinfo_from_fd(const gchar *hostname,
 
 gint fd_connect_unix(const gchar *path)
 {
+#ifdef WIN32
+	perror("unixsocket not on win32");
+	return -1;
+#else
 	gint sock;
 	struct sockaddr_un addr;
 
@@ -94,10 +113,14 @@ gint fd_connect_unix(const gchar *path)
 	}
 
 	return sock;
+#endif
 }
 
 gint fd_open_unix(const gchar *path)
 {
+#ifdef WIN32
+	return -1;
+#else
 	gint sock;
 	struct sockaddr_un addr;
 
@@ -125,7 +148,42 @@ gint fd_open_unix(const gchar *path)
 	}
 
 	return sock;
+#endif
 }
+
+#ifdef WIN32
+gint fd_open_lock_service(const gushort port)
+{
+	gint sock;
+	struct sockaddr_in sin;
+
+	sock = socket(AF_INET, SOCK_STREAM, 0);
+
+	if (sock < 0) {
+		perror("sock_open_lock_service(): socket");
+		return -1;
+	}
+
+	memset(&sin, 0, sizeof(sin));
+	sin.sin_family = AF_INET;
+	sin.sin_port   = htons(port);
+	sin.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+
+	if (bind(sock, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
+		perror("bind");
+		close(sock);
+		return -1;
+	}
+
+	if (listen(sock, 1) < 0) {
+		perror("listen");
+		close(sock);
+		return -1;
+	}
+
+	return sock;
+}
+#endif
 
 gint fd_accept(gint sock)
 {
@@ -139,6 +197,9 @@ gint fd_accept(gint sock)
 
 static gint set_nonblocking_mode(gint fd, gboolean nonblock)
 {
+#ifdef WIN32
+	return -1;
+#else
 	gint flags;
 
 	flags = fcntl(fd, F_GETFL, 0);
@@ -153,6 +214,7 @@ static gint set_nonblocking_mode(gint fd, gboolean nonblock)
 		flags &= ~O_NONBLOCK;
 
 	return fcntl(fd, F_SETFL, flags);
+#endif
 }
 
 gint sock_set_nonblocking_mode(SockInfo *sock, gboolean nonblock)
@@ -165,6 +227,9 @@ gint sock_set_nonblocking_mode(SockInfo *sock, gboolean nonblock)
 
 static gboolean is_nonblocking_mode(gint fd)
 {
+#ifdef WIN32
+	return 0;
+#else
 	gint flags;
 
 	flags = fcntl(fd, F_GETFL, 0);
@@ -174,6 +239,7 @@ static gboolean is_nonblocking_mode(gint fd)
 	}
 
 	return ((flags & O_NONBLOCK) != 0);
+#endif
 }
 
 gboolean sock_is_nonblocking_mode(SockInfo *sock)
@@ -208,11 +274,15 @@ static gint fd_check_io(gint fd, GIOCondition cond)
 	}
 }
 
+#ifndef WIN32
 static sigjmp_buf jmpenv;
+#endif
 
 static void timeout_handler(gint sig)
 {
+#ifndef WIN32
 	siglongjmp(jmpenv, 1);
+#endif
 }
 
 static gint sock_connect_with_timeout(gint sock,
@@ -223,6 +293,7 @@ static gint sock_connect_with_timeout(gint sock,
 	gint ret;
 	void (*prev_handler)(gint);
 
+#ifndef WIN32
 	alarm(0);
 	prev_handler = signal(SIGALRM, timeout_handler);
 	if (sigsetjmp(jmpenv, 1)) {
@@ -232,12 +303,15 @@ static gint sock_connect_with_timeout(gint sock,
 		return -1;
 	}
 	alarm(timeout_secs);
-
+#endif
+	
 	ret = connect(sock, serv_addr, addrlen);
-
+	
+#ifndef WIN32
 	alarm(0);
 	signal(SIGALRM, prev_handler);
-
+#endif
+	
 	return ret;
 }
 
@@ -247,6 +321,7 @@ struct hostent *my_gethostbyname(const gchar *hostname)
 	void (*prev_handler)(gint);
 	guint timeout_secs = IO_TIMEOUT;
 
+#ifndef WIN32
 	alarm(0);
 	prev_handler = signal(SIGALRM, timeout_handler);
 	if (sigsetjmp(jmpenv, 1)) {
@@ -257,17 +332,22 @@ struct hostent *my_gethostbyname(const gchar *hostname)
 		return NULL;
 	}
 	alarm(timeout_secs);
+#endif
 
 	if ((hp = gethostbyname(hostname)) == NULL) {
+#ifndef WIN32
 		alarm(0);
 		signal(SIGALRM, prev_handler);
+#endif
 		fprintf(stderr, "%s: unknown host.\n", hostname);
 		errno = 0;
 		return NULL;
 	}
 
+#ifndef WIN32
 	alarm(0);
 	signal(SIGALRM, prev_handler);
+#endif
 
 	return hp;
 }
@@ -378,7 +458,10 @@ SockInfo *sock_connect_cmd(const gchar *hostname, const gchar *tunnelcmd)
 {
 	gint fd[2];
 	int r;
-		     
+#ifdef WIN32
+	perror("socketpair not under WIN32");
+	return NULL;
+#else
 	if ((r = socketpair(AF_UNIX, SOCK_STREAM, 0, fd)) == -1) {
 		perror("socketpair");
 		return NULL;
@@ -395,6 +478,7 @@ SockInfo *sock_connect_cmd(const gchar *hostname, const gchar *tunnelcmd)
 
 	close(fd[1]);
 	return sockinfo_from_fd(hostname, 0, fd[0]);
+#endif
 }
 
 
@@ -467,7 +551,11 @@ gint fd_read(gint fd, gchar *buf, gint len)
 	if (fd_check_io(fd, G_IO_IN) < 0)
 		return -1;
 
+#ifdef WIN32
+	return recv(fd, buf, len, 0);
+#else
 	return read(fd, buf, len);
+#endif
 }
 
 #if USE_SSL
@@ -496,7 +584,11 @@ gint fd_write(gint fd, const gchar *buf, gint len)
 		if (fd_check_io(fd, G_IO_OUT) < 0)
 			return -1;
 		signal(SIGPIPE, SIG_IGN);
+#ifdef WIN32
+		n = send(fd, buf, len, 0);
+#else
 		n = write(fd, buf, len);
+#endif
 		if (n <= 0) {
 			log_error("write on fd%d: %s\n", fd, strerror(errno));
 			return -1;
@@ -542,6 +634,29 @@ gint fd_gets(gint fd, gchar *buf, gint len)
 
 	if (--len < 1)
 		return -1;
+#ifdef WIN32
+	do {
+/*
+XXX:tm try nonblock
+MSKB Article ID: Q147714 
+Windows Sockets 2 Service Provider Interface Limitations
+Polling with recv(MSG_PEEK) to determine when a complete message 
+has arrived.
+    Reason and Workaround not available.
+
+Single-byte send() and recv(). 
+    Reason: Couple one-byte sends with Nagle disabled.
+    Workaround: Send modest amounts and receive as much as possible.
+(still unused)
+*/
+		if (recv(fd, bp, 1, 0) <= 0)
+			return -1;
+		if (*bp == '\n')
+			break;
+		bp++;
+		len--;
+	} while (0 < len);
+#else
 	do {
 		if ((n = fd_recv(fd, bp, len, MSG_PEEK)) <= 0)
 			return -1;
@@ -552,6 +667,7 @@ gint fd_gets(gint fd, gchar *buf, gint len)
 		bp += n;
 		len -= n;
 	} while (!newline && len);
+#endif
 
 	*bp = '\0';
 	return bp - buf;
@@ -607,7 +723,11 @@ gchar *fd_getline(gint fd)
 			str = g_realloc(str, size);
 			strcat(str, buf);
 		}
-		if (buf[len - 1] == '\n')
+		if ((buf[len - 1] == '\n')
+#ifdef WIN32
+			|| (buf[len - 1] == '\r')
+#endif
+			)
 			break;
 	}
 	if (len == -1) {
@@ -698,6 +818,9 @@ gint sock_close(SockInfo *sock)
 	if (sock->ssl)
 		ssl_done_socket(sock);
 #endif
+#ifdef WIN32
+	shutdown(sock->sock,SD_SEND); /* complete transfer before close */
+#endif 
 	ret = fd_close(sock->sock); 
 	g_free(sock->hostname);
 	g_free(sock);

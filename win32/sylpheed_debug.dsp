@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /GX /O2 /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /YX /FD /c
+# ADD CPP /nologo /GX /O2 /I "..\src" /I "..\src\common" /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x411 /d "NDEBUG"
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MD /Gm /GX /ZI /Od /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /I "\dev\proj\aspell\interfaces\cc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MD /Gm /GX /ZI /Od /I "..\src" /I "..\src\common" /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /I "\dev\proj\aspell\interfaces\cc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x411 /d "_DEBUG"
@@ -153,7 +153,7 @@ SOURCE=..\src\automaton.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\base64.c
+SOURCE=..\src\common\base64.c
 # End Source File
 # Begin Source File
 
@@ -322,6 +322,10 @@ SOURCE=..\src\jpilot.c
 # Begin Source File
 
 SOURCE=..\src\ldif.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\common\log.c
 # End Source File
 # Begin Source File
 
@@ -549,7 +553,7 @@ SOURCE=..\src\smtp.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\socket.c
+SOURCE=..\src\common\socket.c
 # End Source File
 # Begin Source File
 
@@ -557,7 +561,7 @@ SOURCE=..\src\sourcewindow.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\ssl.c
+SOURCE=..\src\common\ssl.c
 # End Source File
 # Begin Source File
 
@@ -621,11 +625,11 @@ SOURCE=..\src\unmime.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\utils.c
+SOURCE=..\src\common\utils.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\uuencode.c
+SOURCE=..\src\common\uuencode.c
 # End Source File
 # Begin Source File
 
@@ -701,7 +705,7 @@ SOURCE=..\src\automaton.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\base64.h
+SOURCE=..\src\common\base64.h
 # End Source File
 # Begin Source File
 
@@ -725,7 +729,7 @@ SOURCE=..\src\customheader.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\defs.h
+SOURCE=..\src\common\defs.h
 # End Source File
 # Begin Source File
 
@@ -858,6 +862,10 @@ SOURCE=..\src\jpilot.h
 # Begin Source File
 
 SOURCE=..\src\ldif.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\common\log.h
 # End Source File
 # Begin Source File
 
@@ -1033,7 +1041,7 @@ SOURCE=..\src\smtp.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\socket.h
+SOURCE=..\src\common\socket.h
 # End Source File
 # Begin Source File
 
@@ -1041,7 +1049,7 @@ SOURCE=..\src\sourcewindow.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\ssl.h
+SOURCE=..\src\common\ssl.h
 # End Source File
 # Begin Source File
 
@@ -1097,11 +1105,11 @@ SOURCE=..\src\unmime.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\utils.h
+SOURCE=..\src\common\utils.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\uuencode.h
+SOURCE=..\src\common\uuencode.h
 # End Source File
 # Begin Source File
 

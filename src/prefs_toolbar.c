@@ -128,9 +128,9 @@ static gint prefs_toolbar_key_pressed            (GtkWidget *widget,
 void prefs_toolbar_open(ToolbarType source)
 {
 	gchar *win_titles[3];
-	win_titles[TOOLBAR_MAIN]    = _("Main Toolbar Configuration");
-	win_titles[TOOLBAR_COMPOSE] = _("Compose Toolbar Configuration");  
-	win_titles[TOOLBAR_MSGVIEW] = _("Message View Toolbar Configuration");  
+	win_titles[TOOLBAR_MAIN]    = _("Main toolbar configuration");
+	win_titles[TOOLBAR_COMPOSE] = _("Compose toolbar configuration");  
+	win_titles[TOOLBAR_MSGVIEW] = _("Message view toolbar configuration");  
 
 	prefs_toolbar.source = source;
 

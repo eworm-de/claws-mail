@@ -28,7 +28,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
+#ifdef WIN32
+ #include <w32lib.h>
+#else
+ #include <unistd.h>
+#endif
 #include <sys/types.h>
 #include <time.h>
 #if HAVE_ALLOCA_H
@@ -202,7 +206,9 @@ wchar_t *wcsncpy	(wchar_t       *dest,
 			 size_t		n);
 #endif
 
+#ifndef WIN32	/* MSVCRT */
 wchar_t *wcsdup			(const wchar_t *s);
+#endif
 wchar_t *wcsndup		(const wchar_t *s,
 				 size_t		n);
 wchar_t *strdup_mbstowcs	(const gchar   *s);
@@ -388,6 +394,20 @@ void get_rfc822_date		(gchar		*buf,
 /* debugging */
 void debug_print_real	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
 
+#ifdef WIN32
+gchar *w32_parse_path(gchar *const);
+gchar *get_installed_dir(void);
+void translate_strs(gchar *str, gchar *str_src, gchar *str_dst);
+int calc_child(const gchar *path);
+int Xrename(const char *oldpath, const char *newpath);
+void w32_log_handler(const gchar *log_domain, GLogLevelFlags log_level,
+					 const gchar *message, gpointer user_data);
+void locale_to_utf8(gchar **buf);
+void locale_from_utf8(gchar **buf);
+
+void unlink_tempfiles(void);
+#endif
+
 /* subject threading */
 void * subject_table_lookup(GHashTable *subject_table, gchar * subject);
 void subject_table_insert(GHashTable *subject_table, gchar * subject,
@@ -401,5 +421,15 @@ const gchar * line_has_quote_char	(const gchar *str,
 const gchar * line_has_quote_char_last	(const gchar *str,
 					 const gchar *quote_chars);
 
+/* timer needed for socket(gdk_input) */
+gint mswin_helper_timeout_tag;
+void start_mswin_helper(void);
+void stop_mswin_helper(void);
+static gint mswin_helper_timeout_cb(gpointer *data);
+
+wchar_t  *gtkwcs2winwcs(wchar_t *gtkwcs);
+
+#undef isspace
+#define isspace iswspace
 
 #endif /* __UTILS_H__ */

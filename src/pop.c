@@ -43,6 +43,7 @@
 #include "inc.h"
 #include "recv.h"
 #include "selective_download.h"
+#include "log.h"
 #if USE_SSL
 #  include "ssl.h"
 #endif

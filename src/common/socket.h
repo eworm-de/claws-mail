@@ -25,7 +25,9 @@
 #endif
 
 #include <glib.h>
+#ifndef WIN32
 #include <netdb.h>
+#endif
 
 typedef struct _SockInfo	SockInfo;
 
@@ -100,6 +102,10 @@ gint ssl_read(SSL *ssl, gchar *buf, gint len);
 gint ssl_write(SSL *ssl, const gchar *buf, gint len);
 gint ssl_gets(SSL *ssl, gchar *buf, gint len);
 gchar *ssl_getline(SSL *ssl);
+#endif
+
+#ifdef WIN32
+gint fd_open_lock_service(const gushort port);
 #endif
 
 #endif /* __SOCKET_H__ */

@@ -2790,7 +2790,7 @@ static void prefs_message_create(void)
 
 	PACK_CHECK_BUTTON
 		(vbox2, chkbtn_mbalnum,
-		 _("Display multi-byte alphabet and numeric as\n"
+		 _("Display multi-byte alphanumeric as\n"
 		   "ASCII character (Japanese only)"));
 	gtk_label_set_justify (GTK_LABEL (GTK_BIN(chkbtn_mbalnum)->child),
 			       GTK_JUSTIFY_LEFT);
@@ -3044,10 +3044,7 @@ static void prefs_interface_create(void)
 
 	GtkWidget *button_keybind;
 
- 	GtkWidget *hbox2;
  	GtkWidget *optmenu_nextunreadmsgdialog;
- 	GtkWidget *optmenu_nextunreadmsgdialog_menu;
- 	GtkWidget *nextunreadmsgdialog_menuitem;
 
 	GtkWidget *frame_pixmap_theme;
 	GtkWidget *vbox_pixmap_theme;

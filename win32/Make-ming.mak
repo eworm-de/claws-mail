@@ -23,7 +23,7 @@
 DEBUGVERSION=1
 
 # GCCVERSION: set to 3 if using gcc3.x (-fnative-struct | -mms-bitfields)
-GCCVERSION=3
+GCCVERSION=2
 
 # CYGWIN: set to 1 if building from cygwin shell (-mno-cygwin)
 CYGWIN=0
@@ -95,7 +95,7 @@ RM=rm
 
 ###
 
-VPATH=$(SRCDIR):$(PODIR):$(LIBJCONVDIR)
+VPATH=$(SRCDIR):$(SRCDIR)/common:$(SRCDIR)/gtk:$(PODIR):$(LIBJCONVDIR)
 DEFINES=-DHAVE_CONFIG_H -DHAVE_BYTE_TYPEDEF $(DEBUGDEF)
 EXTRALIBS=-lwsock32
 RESOURCE=appicon
@@ -142,6 +142,8 @@ CHARSET_RE=\(.*Content-Type: text\/plain; charset=\)\([-a-zA-Z0-9]*\)\(.*\)
 INCLUDES= \
 	-I. \
 	-I$(SRCDIR) \
+	-I$(SRCDIR)/common \
+	-I$(SRCDIR)/gtk \
 	-I$(LIBJCONVDIR) \
 	-I$(INCLUDEDIR) \
 	-I$(GLIBDIR) \
@@ -233,6 +235,7 @@ OBJECTS= \
 	inputdialog.o \
 	jpilot.o \
 	ldif.o \
+	log.o \
 	logwindow.o \
 	main.o \
 	mainwindow.o \
@@ -417,6 +420,7 @@ inc.o: 	inc.c inc.h
 inputdialog.o: 	inputdialog.c inputdialog.h
 jpilot.o: 	jpilot.c jpilot.h
 ldif.o: 	ldif.c ldif.h
+log.o:	log.c log.h
 logwindow.o: 	logwindow.c logwindow.h
 main.o: 	main.c main.h
 mainwindow.o: 	mainwindow.c mainwindow.h

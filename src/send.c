@@ -53,6 +53,8 @@
 #include "utils.h"
 #include "gtkutils.h"
 #include "statusbar.h"
+#include "inc.h"
+#include "log.h"
 
 typedef struct _SendProgressDialog	SendProgressDialog;
 

@@ -59,6 +59,7 @@
 #include "prefs_folder_item.h"
 #include "account.h"
 #include "folder.h"
+#include "foldersel.h"
 #include "inc.h"
 #include "statusbar.h"
 
@@ -266,10 +267,15 @@ static void folderview_scoring_cb(FolderView *folderview, guint action,
 				  GtkWidget *widget);
 static void folderview_processing_cb(FolderView *folderview, guint action,
 				     GtkWidget *widget);
+static void folderview_move_to(FolderView *folderview, FolderItem *from_folder,
+			       FolderItem *to_folder);
+static void folderview_move_to_cb(FolderView *folderview);
+
 static GtkItemFactoryEntry folderview_mbox_popup_entries[] =
 {
 	{N_("/Create _new folder..."),	NULL, folderview_new_mbox_folder_cb,    0, NULL},
 	{N_("/_Rename folder..."),	NULL, folderview_rename_mbox_folder_cb, 0, NULL},
+	{N_("/M_ove folder..."),	NULL, folderview_move_to_cb, 0, NULL},
 	{N_("/_Delete folder"),		NULL, folderview_delete_folder_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/Remove _mailbox"),	NULL, folderview_remove_mailbox_cb, 0, NULL},
@@ -285,6 +291,7 @@ static GtkItemFactoryEntry folderview_mail_popup_entries[] =
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/Create _new folder..."),	NULL, folderview_new_folder_cb,    0, NULL},
 	{N_("/_Rename folder..."),	NULL, folderview_rename_folder_cb, 0, NULL},
+	{N_("/M_ove folder..."),	NULL, folderview_move_to_cb, 0, NULL},
 	{N_("/_Delete folder"),		NULL, folderview_delete_folder_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Check for new messages"),
@@ -305,6 +312,7 @@ static GtkItemFactoryEntry folderview_imap_popup_entries[] =
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/Create _new folder..."),	NULL, folderview_new_imap_folder_cb, 0, NULL},
 	{N_("/_Rename folder..."),	NULL, folderview_rename_folder_cb,   0, NULL},
+	{N_("/M_ove folder..."),	NULL, folderview_move_to_cb, 0, NULL},
 	{N_("/_Delete folder"),		NULL, folderview_delete_folder_cb,   0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Check for new messages"),
@@ -324,14 +332,17 @@ static GtkItemFactoryEntry folderview_news_popup_entries[] =
 	{N_("/Mark all _read"),		NULL, mark_all_read_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Subscribe to newsgroup..."),
-					 NULL, folderview_new_news_group_cb, 0, NULL},
-	{N_("/_Remove newsgroup"),	 NULL, folderview_rm_news_group_cb, 0, NULL},
-	{N_("/---"),			 NULL, NULL, 0, "<Separator>"},
-	{N_("/Remove _news account"),	 NULL, folderview_rm_news_server_cb, 0, NULL},
-	{N_("/---"),			 NULL, NULL, 0, "<Separator>"},
-	{N_("/_Search folder..."),	 NULL, folderview_search_cb, 0, NULL},
-	{N_("/_Properties..."),		 NULL, folderview_property_cb, 0, NULL},
-	{N_("/_Processing..."),		 NULL, folderview_processing_cb, 0, NULL},
+					NULL, folderview_new_news_group_cb, 0, NULL},
+	{N_("/_Remove newsgroup"),	NULL, folderview_rm_news_group_cb, 0, NULL},
+	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Check for new messages"),
+					NULL, folderview_update_tree_cb, 0, NULL},
+	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/Remove _news account"),	NULL, folderview_rm_news_server_cb, 0, NULL},
+	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Search folder..."),	NULL, folderview_search_cb, 0, NULL},
+	{N_("/_Properties..."),		NULL, folderview_property_cb, 0, NULL},
+	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
 	{N_("/S_coring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
 
@@ -1479,6 +1490,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	gboolean mark_all_read   = FALSE;
 	gboolean new_folder      = FALSE;
 	gboolean rename_folder   = FALSE;
+	gboolean move_folder	 = FALSE;
 	gboolean delete_folder   = FALSE;
 	gboolean update_tree     = FALSE;
 	gboolean rescan_tree     = FALSE;
@@ -1541,7 +1553,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 			if (item->parent == NULL)
 				update_tree = rescan_tree = TRUE;
 			else if (item->stype == F_NORMAL)
-				rename_folder = delete_folder = folder_scoring = folder_processing = TRUE;
+				move_folder = rename_folder = delete_folder = folder_scoring = folder_processing = TRUE;
 			else if (item->stype == F_INBOX)
 				folder_scoring = folder_processing = TRUE;
 			else if (item->stype == F_TRASH)
@@ -1568,6 +1580,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(mail_factory, "/Mark all read", mark_all_read);
 		SET_SENS(mail_factory, "/Create new folder...", new_folder);
 		SET_SENS(mail_factory, "/Rename folder...", rename_folder);
+		SET_SENS(mail_factory, "/Move folder...", move_folder);
 		SET_SENS(mail_factory, "/Delete folder", delete_folder);
 		SET_SENS(mail_factory, "/Check for new messages", update_tree);
 		SET_SENS(mail_factory, "/Rebuild folder tree", rescan_tree);
@@ -1582,6 +1595,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(imap_factory, "/Mark all read", mark_all_read);
 		SET_SENS(imap_factory, "/Create new folder...", new_folder);
 		SET_SENS(imap_factory, "/Rename folder...", rename_folder);
+		SET_SENS(imap_factory, "/Move folder...", move_folder);
 		SET_SENS(imap_factory, "/Delete folder", delete_folder);
 		SET_SENS(imap_factory, "/Check for new messages", update_tree);
 		SET_SENS(imap_factory, "/Rebuild folder tree", rescan_tree);
@@ -1596,9 +1610,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(news_factory, "/Mark all read", mark_all_read);
 		SET_SENS(news_factory, "/Subscribe to newsgroup...", new_folder);
 		SET_SENS(news_factory, "/Remove newsgroup", delete_folder);
-#if 0
 		SET_SENS(news_factory, "/Check for new messages", update_tree);
-#endif
 		SET_SENS(news_factory, "/Remove news account", remove_tree);
 		SET_SENS(news_factory, "/Search folder...", search_folder);
 		SET_SENS(news_factory, "/Properties...", folder_property);
@@ -1609,6 +1621,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		menu_set_insensitive_all(GTK_MENU_SHELL(popup));
 		SET_SENS(mbox_factory, "/Create new folder...", new_folder);
 		SET_SENS(mbox_factory, "/Rename folder...", rename_folder);
+		SET_SENS(mbox_factory, "/Move folder...", move_folder);
 		SET_SENS(mbox_factory, "/Delete folder", delete_folder);
 		SET_SENS(news_factory, "/Properties...", folder_property);
 		SET_SENS(mbox_factory, "/Processing...", folder_processing);
@@ -2598,6 +2611,80 @@ static void folderview_recollapse_nodes(FolderView *folderview, GtkCTreeNode *no
 	g_slist_free(done);
 }
 
+static void folderview_move_to_cb(FolderView *folderview) 
+{
+	FolderItem *from_folder = NULL, *to_folder = NULL;
+
+	if (folderview->selected)
+		from_folder = gtk_ctree_node_get_row_data(GTK_CTREE(folderview->ctree), folderview->selected);
+	if (!from_folder || from_folder->folder->type == F_NEWS)
+		return;
+
+	to_folder = foldersel_folder_sel(from_folder->folder, FOLDER_SEL_MOVE, NULL);
+	
+	if (!to_folder || to_folder->folder->type == F_NEWS)
+		return;
+
+	folderview_move_to(folderview, from_folder, to_folder);
+}
+
+static void folderview_move_to(FolderView *folderview, FolderItem *from_folder,
+			       FolderItem *to_folder)
+{
+	FolderItem *from_parent = NULL;
+	FolderItem *new_folder = NULL;
+	GtkCTreeNode *src_node = NULL;
+	gchar *buf;
+	gint status;
+
+	src_node = gtk_ctree_find_by_row_data(GTK_CTREE(folderview->ctree), NULL, from_folder);
+	from_parent = from_folder->parent;
+	buf = g_strdup_printf(_("Moving %s to %s..."), from_folder->name, to_folder->name);
+	STATUSBAR_PUSH(folderview->mainwin, buf);
+	g_free(buf);
+	summary_clear_all(folderview->summaryview);
+	folderview->opened = NULL;
+	folderview->selected = NULL;
+	gtk_widget_set_sensitive(GTK_WIDGET(folderview->ctree), FALSE);
+	inc_lock();
+	main_window_cursor_wait(folderview->mainwin);
+	if ((status = folder_item_move_to(from_folder, to_folder, &new_folder)) == F_MOVE_OK) {
+		main_window_cursor_normal(folderview->mainwin);
+		STATUSBAR_POP(folderview->mainwin);
+		if (src_node)
+			gtk_ctree_remove_node(GTK_CTREE(folderview->ctree), src_node);
+		else 
+			debug_print("can't remove src node: is null\n");
+
+		folderview_create_folder_node_recursive(folderview, new_folder);
+		folder_update_item(from_parent, TRUE);
+		folder_update_item_recursive(new_folder, TRUE); 
+		folderview_sort_folders(folderview, 
+			gtk_ctree_find_by_row_data(GTK_CTREE(folderview->ctree), 
+				NULL, new_folder->parent), new_folder->folder);
+		folderview_select(folderview, new_folder);
+	} else {
+		main_window_cursor_normal(folderview->mainwin);
+		STATUSBAR_POP(folderview->mainwin);
+		switch (status) {
+		case F_MOVE_FAILED_DEST_IS_PARENT:
+			alertpanel_error(_("Source and destination are the same."));
+			break;
+		case F_MOVE_FAILED_DEST_IS_CHILD:
+			alertpanel_error(_("Can't move a folder to one of its children."));
+			break;
+		case F_MOVE_FAILED_DEST_OUTSIDE_MAILBOX:
+			alertpanel_error(_("Folder moving cannot be done between different mailboxes."));
+			break;
+		default:
+			alertpanel_error(_("Move failed!"));
+			break;
+		}
+	}	
+	inc_unlock();		
+	gtk_widget_set_sensitive(GTK_WIDGET(folderview->ctree), TRUE);
+}
+
 static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 					  GdkDragContext *context,
 					  gint            x,
@@ -2609,9 +2696,20 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 	FolderItem *item, *src_item;
 	GtkCTreeNode *node = NULL;
 	gboolean acceptable = FALSE;
+	gint height = folderview->ctree->allocation.height;
+	gint total_height = folderview->ctree->requisition.height;
+	GtkAdjustment *pos = gtk_scrolled_window_get_vadjustment(
+				GTK_SCROLLED_WINDOW(folderview->scrolledwin));
+	gfloat vpos = pos->value;
 
 	if (gtk_clist_get_selection_info
 		(GTK_CLIST(widget), x - 24, y - 24, &row, &column)) {
+		if (y > height - 24 && height + vpos < total_height)
+			gtk_adjustment_set_value(pos, (vpos+5 > height ? height : vpos+5));
+
+		if (y < 24 && y > 0)
+			gtk_adjustment_set_value(pos, (vpos-5 < 0 ? 0 : vpos-5));
+
 		node = gtk_ctree_node_nth(GTK_CTREE(widget), row);
 		item = gtk_ctree_node_get_row_data(GTK_CTREE(widget), node);
 		src_item = folderview->summaryview->folder_item;
@@ -2620,6 +2718,7 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 		    src_item && src_item != item) {
 			switch (item->folder->type) {
 			case F_MH:
+			case F_MBOX:
 			case F_IMAP:
 				acceptable = TRUE;
 				break;
@@ -2723,10 +2822,6 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 	} else {
 		/* comes from folderview */
 		char *source;
-		char *buf;
-		gint status;
-		GtkCTreeNode *src_node;
-		FolderItem *new_item, *src_parent;
 		
 		source = data->data + 17;
 		if (gtk_clist_get_selection_info
@@ -2743,53 +2838,9 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 			gtk_drag_finish(drag_context, FALSE, FALSE, time);			
 			return;
 		}
-		src_parent = src_item->parent;
-		src_node = gtk_ctree_find_by_row_data(GTK_CTREE(widget), NULL, src_item);
 
-		buf = g_strdup_printf(_("Moving %s to %s..."), src_item->name, item->name);
-		STATUSBAR_PUSH(folderview->mainwin, buf);
-		g_free(buf);
-		summary_clear_all(folderview->summaryview);
-		folderview->opened = NULL;
-		folderview->selected = NULL;
-		gtk_widget_set_sensitive(folderview->ctree, FALSE);
-		inc_lock();
-		main_window_cursor_wait(folderview->mainwin);
-		if ((status = folder_item_move_to(src_item, item, &new_item)) == F_MOVE_OK) {
-			main_window_cursor_normal(folderview->mainwin);
-			gtk_drag_finish(drag_context, TRUE, TRUE, time);
-		
-			if (src_node)
-				gtk_ctree_remove_node(GTK_CTREE(widget), src_node);
-			else 
-				debug_print("can't remove src node: is null\n");
-
-			STATUSBAR_POP(folderview->mainwin);
-			folderview_create_folder_node_recursive(folderview, new_item);
-			folder_update_item(src_parent, TRUE);
-			folder_update_item_recursive(new_item, TRUE); 
-			folderview_sort_folders(folderview, 
-				gtk_ctree_find_by_row_data(GTK_CTREE(widget), 
-					NULL, new_item->parent), new_item->folder);
-			folderview_select(folderview, new_item);
-		} else {
-			main_window_cursor_normal(folderview->mainwin);
-			gtk_drag_finish(drag_context, FALSE, FALSE, time);
-			STATUSBAR_POP(folderview->mainwin);
-			switch (status) {
-			case F_MOVE_FAILED_DEST_IS_PARENT:
-				alertpanel_error(_("Source and destination are the same."));
-				break;
-			case F_MOVE_FAILED_DEST_IS_CHILD:
-				alertpanel_error(_("Can't move a folder to one of its children."));
-				break;
-			default:
-				alertpanel_error(_("Move failed!"));
-				break;
-			}
-		}	
-		inc_unlock();		
-		gtk_widget_set_sensitive(folderview->ctree, TRUE);
+		folderview_move_to(folderview, src_item, item);
+		gtk_drag_finish(drag_context, TRUE, TRUE, time);
 	}
 	folderview->nodes_to_recollapse = NULL;
 }

@@ -61,7 +61,19 @@ static char *mime_version_name[] = {
     NULL
 };
 
-static char *create_boundary (void);
+static char *create_boundary		(void);
+
+static void sig_expiration_check	(GString 	*str,
+					 GpgmeCtx	 ctx,
+					 GpgmeKey	 key, 
+					 GpgmeSigStat	 status,
+					 int		 idx);
+static void sig_expired			(GString 	*str,
+					 GpgmeCtx	 ctx,
+					 int		 idx);
+static void sig_key_expired		(GString	*str,
+					 GpgmeKey	 key,
+					 int		 idx);
 
 #if 0
 static void dump_mimeinfo (const char *text, MimeInfo *x)
@@ -123,6 +135,11 @@ rfc2015_secure_remove (const char *fname)
 }
 
 
+#ifdef WIN32
+/* XXX:tm gpgme */
+#define GPGME_SIG_STAT_GOOD_EXP     7
+#define GPGME_SIG_STAT_GOOD_EXPKEY  8
+#endif
 static const gchar *
 sig_status_to_string (GpgmeSigStat status)
 {
@@ -138,6 +155,12 @@ sig_status_to_string (GpgmeSigStat status)
       case GPGME_SIG_STAT_GOOD:
         result = _("Good signature");
         break;
+      case GPGME_SIG_STAT_GOOD_EXP:	
+	result = _("Good signature but it has expired");
+	break;
+      case GPGME_SIG_STAT_GOOD_EXPKEY:
+	result = _("Good signature but the key has expired");
+	break;
       case GPGME_SIG_STAT_BAD:
         result = _("BAD signature");
         break;
@@ -173,6 +196,12 @@ sig_status_with_name (GpgmeSigStat status)
       case GPGME_SIG_STAT_GOOD:
         result = _("Good signature from \"%s\"");
         break;
+      case GPGME_SIG_STAT_GOOD_EXP:
+        result = _("Good signature from \"%s\" but it has expired");
+        break;
+      case GPGME_SIG_STAT_GOOD_EXPKEY:
+        result = _("Good signature from \"%s\" but the key has expired");
+        break;
       case GPGME_SIG_STAT_BAD:
         result = _("BAD signature from \"%s\"");
         break;
@@ -207,6 +236,7 @@ sig_status_for_key(GString *str, GpgmeCtx ctx, GpgmeSigStat status,
 		if ((fpr != NULL) && (*fpr != '\0'))
 			g_string_sprintfa (str, "Key fingerprint: %s\n", fpr);
 		g_string_append (str, _("Cannot find user ID for this key."));
+		sig_expiration_check(str, ctx, key, status, 0);
 		return;
 	}
 	g_string_sprintfa (str, sig_status_with_name (status), uid);
@@ -220,6 +250,38 @@ sig_status_for_key(GString *str, GpgmeCtx ctx, GpgmeSigStat status,
 		g_string_sprintfa (str, _("                aka \"%s\"\n"),
 				   uid);
 	}
+	sig_expiration_check(str, ctx, key, status, 0);
+}
+
+static void
+sig_expiration_check(GString *str, GpgmeCtx ctx, GpgmeKey key, 
+		     GpgmeSigStat status, int idx)
+{
+	if (status == GPGME_SIG_STAT_GOOD_EXP)
+		sig_expired(str, ctx, idx);
+	else if (status == GPGME_SIG_STAT_GOOD_EXPKEY)
+		sig_key_expired(str, key, idx);
+}
+
+static void
+sig_expired(GString *str, GpgmeCtx ctx, int idx)
+{
+#ifdef WIN32
+/* XXX:tm gpgme */
+	g_string_sprintfa(str, _("Signature expiration unchecked"));
+#else
+	unsigned long exp_time;
+	exp_time = gpgme_get_sig_ulong_attr(ctx, idx, GPGME_ATTR_EXPIRE, 0);
+	g_string_sprintfa(str, _("Signature expired %s"), ctime(&exp_time));	
+#endif
+}
+
+static void
+sig_key_expired(GString *str, GpgmeKey key, int idx)
+{
+	unsigned long exp_time;
+	exp_time = gpgme_key_get_ulong_attr(key, GPGME_ATTR_EXPIRE, NULL, idx);
+	g_string_sprintfa(str, _("Key expired %s"), ctime(&exp_time));	
 }
 
 static gchar *

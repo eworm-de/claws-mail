@@ -53,7 +53,6 @@
 #include "prefs_actions.h"
 #include "manage_window.h"
 #include "gtkutils.h"
-
 #include "toolbar.h"
 #include "prefs_toolbar.h"
 
@@ -357,8 +356,8 @@ static void toolbar_set_default_msgview(void)
 		gint icon;
 		gchar *text;
 	} default_toolbar[] = {
-		{ A_COMPOSE_EMAIL, STOCK_PIXMAP_MAIL_COMPOSE,         _("Email")   },
-		{ A_SEPARATOR,     0,                                 ("")         },
+		/*{ A_COMPOSE_EMAIL, STOCK_PIXMAP_MAIL_COMPOSE,         _("Email")   },
+		  { A_SEPARATOR,     0,                                 ("")         },*/
 		{ A_REPLY_MESSAGE, STOCK_PIXMAP_MAIL_REPLY,           _("Reply")   }, 
 		{ A_REPLY_ALL,     STOCK_PIXMAP_MAIL_REPLY_TO_ALL,    _("All")     },
 		{ A_REPLY_SENDER,  STOCK_PIXMAP_MAIL_REPLY_TO_AUTHOR, _("Sender")  },
@@ -613,13 +612,6 @@ void toolbar_action_execute(GtkWidget    *widget,
 		g_warning ("Error: did not find Sylpheed Action to execute");
 }
 
-static ToolbarType detect_window(gpointer data) 
-{
-	g_return_val_if_fail(data != NULL, -1);
-	
-	return ((ToolbarParent*)data)->type;
-}
-
 /*
  * Change the style of toolbar
  */
@@ -693,10 +685,36 @@ void common_toolbar_delete_cb(GtkWidget	  *widget,
 	switch (parent->type) {
 	case TOOLBAR_MSGVIEW:
 		msgview = (MessageView*)parent->data;
-		folder_item_remove_msg(msgview->msginfo->folder,
-				       msgview->msginfo->msgnum); 
-/** TODO: The summaryview must be updated.... **/
-		gtk_widget_destroy(msgview->window);
+		
+		/* make sure the selected msg in summaryview is 
+		   the one we are asked to delete
+		*/
+		if (msgview->mainwin->summaryview->selected) {
+			SummaryView *summaryview = msgview->mainwin->summaryview;
+			GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+			MsgInfo *msginfo = gtk_ctree_node_get_row_data(ctree, 
+								       summaryview->selected);	
+			if (msginfo->msgnum != msgview->msginfo->msgnum) {
+				alertpanel_error(_("Message already removed from folder."));
+				return;
+			}
+		}
+		
+		summary_delete(msgview->mainwin->summaryview);	
+
+		if (msgview->mainwin->summaryview->selected) {
+			SummaryView *summaryview = msgview->mainwin->summaryview;
+			GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+			MsgInfo *msginfo = gtk_ctree_node_get_row_data(ctree, 
+								       summaryview->selected);
+			messageview_show(msgview, msginfo, 
+					 msgview->all_headers);
+		} else {
+			toolbar_clear_list(TOOLBAR_MSGVIEW);
+			TOOLBAR_DESTROY_ITEMS(msgview->toolbar->item_list);	
+			TOOLBAR_DESTROY_ACTIONS(msgview->toolbar->action_list);
+			gtk_widget_destroy(msgview->window);
+		}
         	break;
         case TOOLBAR_MAIN:
 		mainwin = (MainWindow*)parent->data;

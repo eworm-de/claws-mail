@@ -79,6 +79,7 @@
 #include "setup.h"
 #include "utils.h"
 #include "gtkutils.h"
+#include "log.h"
 
 #if USE_GPGME
 #  include "rfc2015.h"
@@ -96,11 +97,6 @@
 gchar *prog_version;
 gchar *startup_dir;
 gchar *argv0;
-#ifdef _DEBUG   /* WIN32 */
-gboolean debug_mode = TRUE ;
-#else
-gboolean debug_mode = FALSE ;
-#endif
 
 static gint lock_socket = -1;
 static gint lock_socket_tag = 0;
@@ -338,7 +334,8 @@ int main(int argc, char *argv[])
 
 #if USE_GPGME
 	gpg_started = FALSE;
-	if (gpgme_check_engine()) {  /* Also does some gpgme init */
+	if (gpgme_engine_check_version(GPGME_PROTOCOL_OpenPGP) != 
+			GPGME_No_Error) {  /* Also does some gpgme init */
 		rfc2015_disable_all();
 		debug_print("gpgme_engine_version:\n%s\n",
 			    gpgme_get_engine_info());
@@ -416,8 +413,8 @@ int main(int argc, char *argv[])
 #else
 	if (!cmd.crash && is_file_exist(get_crashfile_name())) {
 #endif
-		debug_print("Sylpheed crashed, checking for new messages\n");
-		folderview_check_new_all();
+		debug_print("Sylpheed crashed, checking for new messages in local folders\n");
+		folderview_check_new(NULL);
 	}
 	/* make the crash-indicator file */
 	str_write_to_file("foo", get_crashfile_name());
@@ -482,7 +479,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 
 	for (i = 1; i < argc; i++) {
 		if (!strncmp(argv[i], "--debug", 7))
-			debug_mode = TRUE;
+			debug_set_mode(TRUE);
 		else if (!strncmp(argv[i], "--receive-all", 13))
 			cmd.receive_all = TRUE;
 		else if (!strncmp(argv[i], "--receive", 9))

@@ -151,7 +151,7 @@ GNode *xml_parse_file(const gchar *path)
 	xml_close_file(file);
 
 #if defined(SPARSE_MEMORY)
-	if (debug_mode)
+	if (debug_get_mode())
 		string_table_get_stats(xml_string_table);
 #endif
 

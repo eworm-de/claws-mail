@@ -1,3 +1,11 @@
+2002-11-28
+
+	* src/compose.c: compose_entry_append(): サブジェクトエントリで
+	  ", " を追加しないようにした。
+	* src/codeconv.c: conv_get_outgoing_charset(): テーブルから送信
+	  文字コードを得るようにした(日本語以外の locale では現在無効)。
+	  conv_get_current_locale(): LC_CTYPE も参照するようにした。
+
 2002-11-27
 
 	* README: 隠し設定の説明を追加。
