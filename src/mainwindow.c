@@ -175,6 +175,9 @@ static void toggle_toolbar_cb	 (MainWindow	*mainwin,
 static void toggle_statusbar_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void toggle_searchbar_cb	 (MainWindow 	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
 static void separate_widget_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -444,6 +447,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, toggle_toolbar_cb, TOOLBAR_NONE, "/View/Show or hide/Toolbar/Icon and text"},
 	{N_("/_View/Show or hi_de/Status _bar"),
 						NULL, toggle_statusbar_cb, 0, "<ToggleItem>"},
+	{N_("/_View/Show or hi_de/Quick _search"),
+						NULL, toggle_searchbar_cb, 0, "<ToggleItem>"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Separate f_older tree"),	NULL, separate_widget_cb, SEPARATE_FOLDER, "<ToggleItem>"},
 	{N_("/_View/Separate m_essage view"),	NULL, separate_widget_cb, SEPARATE_MESSAGE, "<ToggleItem>"},
@@ -769,8 +774,7 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_widget_show(handlebox);
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 
-	/* create the popup menus for the reply buttons specials */
-	toolbar_popups_create(mainwin, window);
+	/* create toolbar */
 	toolbar_create(mainwin, handlebox);
 
 	/* vbox that contains body */
@@ -923,6 +927,12 @@ MainWindow *main_window_create(SeparateType type)
 		(ifactory, "/View/Show or hide/Status bar");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 				       prefs_common.show_statusbar);
+
+	gtk_widget_hide(mainwin->summaryview->hbox_search);
+	menuitem = gtk_item_factory_get_item
+		(ifactory, "/View/Show or hide/Quick search");
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
+				       prefs_common.show_searchbar);
 
 	/* set account selection menu */
 	ac_menu = gtk_item_factory_get_widget
@@ -1777,6 +1787,11 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		mainwin->win.sep_folder.vpaned    = vpaned;
 
 		gtk_widget_show_all(folderwin);
+		
+		/* CLAWS: previous "gtk_widget_show_all" makes noticeview
+		 * lose track of its visibility state */
+		if (!noticeview_is_visible(mainwin->messageview->noticeview)) 
+			gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->noticeview));
 		break;
 	case SEPARATE_MESSAGE:
 		hpaned = gtk_hpaned_new();
@@ -2111,6 +2126,18 @@ static void toggle_statusbar_cb(MainWindow *mainwin, guint action,
 	} else {
 		gtk_widget_hide(mainwin->hbox_stat);
 		prefs_common.show_statusbar = FALSE;
+	}
+}
+
+static void toggle_searchbar_cb(MainWindow *mainwin, guint action,
+				GtkWidget *widget)
+{
+	if (GTK_CHECK_MENU_ITEM(widget)->active) {
+		gtk_widget_show(mainwin->summaryview->hbox_search);
+		prefs_common.show_searchbar = TRUE;
+	} else {
+		gtk_widget_hide(mainwin->summaryview->hbox_search);
+		prefs_common.show_searchbar = FALSE;
 	}
 }
 

@@ -20,6 +20,8 @@
 #ifndef __SUMMARY_H__
 #define __SUMMARY_H__
 
+#include <regex.h>
+
 #include <glib.h>
 #include <gdk/gdk.h>
 #include <gtk/gtkwidget.h>
@@ -69,6 +71,13 @@ typedef enum
 	TARGET_DUMMY
 } TargetInfo;
 
+typedef enum
+{
+	S_SEARCH_SUBJECT,
+	S_SEARCH_FROM,
+	S_SEARCH_TO
+} SummarySearchType;
+
 extern GtkTargetEntry summary_drag_types[1];
 
 struct _SummaryColumnState
@@ -84,6 +93,7 @@ struct _SummaryView
 	GtkWidget *ctree;
 	GtkWidget *hbox;
 	GtkWidget *hbox_l;
+	GtkWidget *hbox_search;
 	GtkWidget *folder_pixmap;
 	GtkWidget *statlabel_folder;
 	GtkWidget *statlabel_select;
@@ -92,6 +102,9 @@ struct _SummaryView
 	GtkWidget *toggle_arrow;
 	GtkWidget *popupmenu;
 	GtkWidget *colorlabel_menu;
+	GtkWidget *search_type_opt;
+	GtkWidget *search_type;
+	GtkWidget *search_string;
 
 	GtkItemFactory *popupfactory;
 
@@ -118,7 +131,13 @@ struct _SummaryView
 
 	FolderItem *folder_item;
 
+	/* summaryview prefs */
 	gint important_score;
+	FolderSortKey sort_key;
+	FolderSortType sort_type;
+
+	/* Extra data for summaryview */
+	regex_t *simplify_subject_preg;
 
 	/* current message status */
 	gint   newmsgs;
@@ -242,12 +261,18 @@ void summary_set_column_order	  (SummaryView		*summaryview);
 void processing_apply();
 #endif
 
-void summary_toggle_show_read_messages (SummaryView *summaryview);
+void summary_toggle_show_read_messages
+				  (SummaryView *summaryview);
 
-void summary_toggle_view_real	(SummaryView	*summaryview);
+void summary_toggle_view_real	  (SummaryView	*summaryview);
 
-void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview);
+void summary_reflect_prefs_pixmap_theme
+                                  (SummaryView *summaryview);
 
-void summary_harvest_address	( SummaryView *summaryview );
+void summary_harvest_address      (SummaryView *summaryview);
+void summary_set_prefs_from_folderitem
+                                  (SummaryView *summaryview, FolderItem *item);
+void summary_save_prefs_to_folderitem
+                                  (SummaryView *summaryview, FolderItem *item);
 
 #endif /* __SUMMARY_H__ */

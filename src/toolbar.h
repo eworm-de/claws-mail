@@ -39,13 +39,12 @@ typedef enum
 	A_EXECUTE,
 	A_GOTO_NEXT,
 	A_SYL_ACTIONS,
-	A_COMPOSE_NEWS, 
 	
 	N_ACTION_VAL
 } CTActionVal;
 
-#define A_SEPARATOR    N_ACTION_VAL + 1
-
+#define A_COMPOSE_NEWS N_ACTION_VAL + 1
+#define A_SEPARATOR    N_ACTION_VAL + 2
 
 typedef struct _ToolbarAction ToolbarAction;
 struct _ToolbarAction
@@ -100,11 +99,10 @@ struct _MainToolbar {
 
 	GtkWidget *delete_btn;
 	GtkWidget *next_btn;
+	GtkWidget *exec_btn;
 
 	GSList    *syl_action;
 	GtkWidget *separator;
-
-	GtkWidget *exec_btn;
 
 	/* for the reply buttons */
 	GtkWidget *reply_popup;
@@ -135,9 +133,6 @@ gchar    *toolbar_ret_descr_from_val       (gint               val);
 gchar    *toolbar_ret_text_from_val        (gint               val);
 void      toolbar_create                   (MainWindow         *mainwin,
 					    GtkWidget          *container);
-
-void      toolbar_popups_create            (MainWindow         *mainwin, 
-					    GtkWidget          *window);
 
 void      toolbar_set_sensitive            (MainWindow         *mainwin);
 void      toolbar_set_compose_button       (MainToolbar        *toolbar, 

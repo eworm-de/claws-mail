@@ -1047,6 +1047,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	GtkStyle *style = NULL;
+	GtkStyle *color_style = NULL;
 	FolderItem *item;
 	GdkPixmap *xpm, *openxpm;
 	GdkBitmap *mask, *openmask;
@@ -1234,21 +1235,26 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 
 	gtk_ctree_node_set_foreground(ctree, node, NULL);
 
-	if (use_bold && use_color)
+	if (use_bold && use_color) {
 		style = bold_color_style;
-	else if (use_bold) {
+	} else if (use_bold) {
 		style = bold_style;
 		if (item->op_count > 0) {
 			style = bold_tgtfold_style;
 		}
-	}
-	else if (use_color) {
+	} else if (use_color) {
 		style = normal_color_style;
 		gtk_ctree_node_set_foreground(ctree, node,
 					      &folderview->color_new);
-	}
-	else if (item->op_count > 0) {
+	} else if (item->op_count > 0) {
 		style = bold_tgtfold_style;
+	} else if (item->prefs->color > 0) {
+		GdkColor gdk_color;
+
+		gtkut_convert_int_to_gdk_color(item->prefs->color, &gdk_color);
+		color_style = gtk_style_copy(gtk_widget_get_style(GTK_WIDGET(ctree)));
+		color_style->fg[GTK_STATE_NORMAL] = gdk_color;
+		style = color_style;
 	} else {
 		style = normal_style;
 	}
@@ -1687,6 +1693,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		
 		olditem = gtk_ctree_node_get_row_data(ctree, folderview->opened);
 		folder_item_write_cache(olditem);
+		summary_save_prefs_to_folderitem(folderview->summaryview, olditem);
 	}
 
 	/* CLAWS: set compose button type: news folder items 
@@ -1736,6 +1743,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	}
 		
 	/* Show messages */
+	summary_set_prefs_from_folderitem(folderview->summaryview, item);
 	opened = summary_show(folderview->summaryview, item);
 
 	folder_clean_cache_memory();

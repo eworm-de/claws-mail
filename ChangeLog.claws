@@ -1,3 +1,124 @@
+2002-08-20 [christoph]	0.8.1claws86
+
+	* src/folderview.c
+	* src/main.c
+	* src/summaryview.[ch]
+		more summaryview/folderitem seperation for
+		sort_key and sort_type
+	* src/procmsg.c
+		added missing return statement
+
+2002-08-20 [colin]	0.8.1claws85
+
+        * src/summaryview.[ch]
+                Added a quick search box
+        * src/mainwindow.c
+        * src/prefs_common.[ch]
+                Added a show/hide option for the quick search
+
+2002-08-20 [oliver]	0.8.1claws84
+	
+	* src/mainwindow.c
+		remove toolbar_create_popups
+	* src/toolbar.[ch]
+		o remove toolbar_create_popups
+		o fix toolbar_set_sensitive 
+		  (Bug reports #596834 and #596832)	
+	* src/prefs_toolbar.c
+		o add "Set default" button
+		o align label and text + combo widgets
+
+2002-08-20 [hoa]	0.8.1claws84
+
+	* src/imap.c
+		fixed a bug in imap_fetch_msginfo() in case there is no
+		current folder.
+
+2002-08-20 [darko]	0.8.1claws83
+
+	* src/folderview.c
+		copy the color style of folder view so it
+		works with GTK themes
+
+2002-08-20 [darko]	0.8.1claws82
+
+	* src/folder.h
+	* src/folderview.c
+	* src/prefs_folder_item.[hc]
+		don't use UI stuff in folder.h
+
+2002-08-20 [darko]	0.8.1claws81
+
+	* src/folder.h
+	* src/prefs_folder_item.h
+	* src/folderview.c
+	* src/prefs_folder_item.c
+		ability to set folder color in folderview
+
+2002-08-19 [alfons]	0.8.1claws80
+
+	* src/summaryview.c
+		fix one of the earlier memleaks reported by Martin Kluge
+
+2002-08-19 [alfons]	0.8.1claws79
+
+	* src/mainwindow.c
+		hide notice view when selecting seperate folder
+		view (reported by Urke MMI)
+
+2002-08-19 [christoph]	0.8.1claws78
+
+	* src/folderview.c
+	* src/prefs_folder_item.h
+	* src/summaryview.[ch]
+		o add summary_set_prefs_from_folderitem to set
+		  summaryview prefs (first step to remove all
+		  references to the folderitem in summaryview)
+		o moved compiled regex stuff from folderitem prefs
+		  to summaryview code
+
+2002-08-19 [paul]	0.8.1claws77
+
+	* src/compose.c
+		add check for '.' to QUOTE_IF_REQUIRED
+
+2002-08-19 [paul]	0.8.1claws76
+
+	* src/inc.c
+		sync with 0.8.1cvs25 (plug memory leak)
+
+	* src/prefs_toolbar.c
+		re-order prefs_toolbar_cancel()
+
+2002-08-18 [alfons]	0.8.1claws75
+
+	* src/inc.c
+	* src/matcher.c
+		plug other memleaks reported by Martin Kluge
+
+2002-08-18 [paul]	0.8.1claws74
+
+	* po/pt_BR.po
+		updated by Fabio Jr. Beneditto
+
+2002-08-18 [paul]	0.8.1claws73
+
+	* src/toolbar.[ch]
+		fix bug where tooltips were displayed untranslated		
+
+	* src/prefs_toolbar.c
+		fix bug where clicking 'Cancel' creates an icon & text
+		toolbar regardless of prefs
+	
+
+2002-08-17 [oliver]	0.8.1claws72
+
+	* src/prefs_toolbar.c
+		update toolbar on CANCEL
+		bug reported by Martin Kluge
+	* src/toolbar.c
+		toolbar_destroy memleak fixed		
+
 2002-08-17 [alfons]	0.8.1claws71
 
 	* src/toolbar.c

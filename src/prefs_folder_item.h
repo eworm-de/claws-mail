@@ -24,7 +24,6 @@
 #include "folder.h"
 #include <glib.h>
 #include <sys/types.h>
-#include <regex.h>
 
 struct _PrefsFolderItem {
 	gchar * directory;
@@ -53,12 +52,12 @@ struct _PrefsFolderItem {
 	gchar *default_reply_to;
 	gboolean enable_simplify_subject;
 	gchar *simplify_subject_regexp;
-	regex_t *simplify_subject_preg;
 	gboolean enable_folder_chmod;
 	gint folder_chmod;
 	gboolean enable_default_account;
 	gint default_account;
 	gboolean save_copy_to_folder;
+	guint color;
 };
 
 typedef struct _PrefsFolderItem PrefsFolderItem;

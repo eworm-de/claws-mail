@@ -3187,6 +3187,7 @@ MsgInfo *imap_fetch_msginfo(Folder *_folder, FolderItem *item, gint num)
 	IMAPSession *session;
 	GString *str;
 	MsgInfo *msginfo;
+	int same_folder;
 	
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
@@ -3196,7 +3197,12 @@ MsgInfo *imap_fetch_msginfo(Folder *_folder, FolderItem *item, gint num)
 	session = imap_session_get(_folder);
 	g_return_val_if_fail(session != NULL, NULL);
 
-	if(strcmp(folder->selected_folder, item->path) != 0) {
+	same_folder = FALSE;
+	if (folder->selected_folder != NULL)
+		if (strcmp(folder->selected_folder, item->path) == 0)
+			same_folder = TRUE;
+	
+	if (!same_folder) {
 		gint ok, exists = 0, recent = 0, unseen = 0;
 		guint32 uid_validity = 0;
 
@@ -3205,7 +3211,7 @@ MsgInfo *imap_fetch_msginfo(Folder *_folder, FolderItem *item, gint num)
 		if (ok != IMAP_SUCCESS)
 			return NULL;
 	}
-		
+	
 	if (imap_cmd_envelope(SESSION(session)->sock, num, num)
 	    != IMAP_SUCCESS) {
 		log_warning(_("can't get envelope\n"));

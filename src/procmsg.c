@@ -536,6 +536,8 @@ static gboolean procmsg_ignore_node(GNode *node, gpointer data)
 	MsgInfo *msginfo = (MsgInfo *)node->data;
 	
 	procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
+
+	return FALSE;
 }
 
 /* return the reversed thread tree */

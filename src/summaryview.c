@@ -183,7 +183,6 @@ static void summary_display_msg_full	(SummaryView		*summaryview,
 					 gboolean		 all_headers);
 static void summary_set_row_marks	(SummaryView		*summaryview,
 					 GtkCTreeNode		*row);
-static void summaryview_subject_filter_init (PrefsFolderItem    *prefs);
 
 /* message handling */
 static void summary_mark_row		(SummaryView		*summaryview,
@@ -264,6 +263,12 @@ static void summary_button_released	(GtkWidget		*ctree,
 					 SummaryView		*summaryview);
 static void summary_key_pressed		(GtkWidget		*ctree,
 					 GdkEventKey		*event,
+					 SummaryView		*summaryview);
+static void summary_searchbar_pressed	(GtkWidget		*ctree,
+					 GdkEventKey		*event,
+					 SummaryView		*summaryview);
+static void summary_searchtype_changed	(GtkWidget		*ctree,
+					 GdkEventAny		*event,
 					 SummaryView		*summaryview);
 static void summary_open_row		(GtkSCTree		*sctree,
 					 SummaryView		*summaryview);
@@ -450,6 +455,7 @@ SummaryView *summary_create(void)
 	GtkWidget *ctree;
 	GtkWidget *hbox;
 	GtkWidget *hbox_l;
+	GtkWidget *hbox_search;
 	GtkWidget *statlabel_folder;
 	GtkWidget *statlabel_select;
 	GtkWidget *statlabel_msgs;
@@ -457,34 +463,20 @@ SummaryView *summary_create(void)
 	GtkWidget *toggle_eventbox;
 	GtkWidget *toggle_arrow;
 	GtkWidget *popupmenu;
+	GtkWidget *search_type_opt;
+	GtkWidget *search_type;
+	GtkWidget *search_string;
+	GtkWidget *menuitem;
 	GtkItemFactory *popupfactory;
 	gint n_entries;
 
 	debug_print("Creating summary view...\n");
 	summaryview = g_new0(SummaryView, 1);
 
-	vbox = gtk_vbox_new(FALSE, 2);
-
-	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
-				       GTK_POLICY_AUTOMATIC,
-				       GTK_POLICY_ALWAYS);
-	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 0);
-	gtk_widget_set_usize(vbox,
-			     prefs_common.summaryview_width,
-			     prefs_common.summaryview_height);
-
-	ctree = summary_ctree_create(summaryview);
-
-	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolledwin),
-					    GTK_CLIST(ctree)->hadjustment);
-	gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolledwin),
-					    GTK_CLIST(ctree)->vadjustment);
-	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
-
+	vbox = gtk_vbox_new(FALSE, 3);
+	
 	/* create status label */
 	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_end(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 	hbox_l = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), hbox_l, TRUE, TRUE, 0);
@@ -509,6 +501,62 @@ SummaryView *summary_create(void)
 	hbox_spc = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(hbox), hbox_spc, FALSE, FALSE, 6);
 
+	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
+				       GTK_POLICY_AUTOMATIC,
+				       GTK_POLICY_ALWAYS);
+	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 0);
+	gtk_widget_set_usize(vbox,
+			     prefs_common.summaryview_width,
+			     prefs_common.summaryview_height);
+
+	ctree = summary_ctree_create(summaryview);
+
+	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolledwin),
+					    GTK_CLIST(ctree)->hadjustment);
+	gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolledwin),
+					    GTK_CLIST(ctree)->vadjustment);
+	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
+
+	/* status label */
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+
+	/* quick search */
+	hbox_search = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox_search, FALSE, FALSE, 0);
+
+	search_type_opt = gtk_option_menu_new();
+	gtk_widget_show(search_type_opt);
+	gtk_box_pack_start(GTK_BOX(hbox_search), search_type_opt, FALSE, FALSE, 0);
+
+	search_type = gtk_menu_new();
+	MENUITEM_ADD (search_type, menuitem, _("Subject"), S_SEARCH_SUBJECT);
+	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+			   GTK_SIGNAL_FUNC(summary_searchtype_changed),
+			   summaryview);
+	MENUITEM_ADD (search_type, menuitem, _("From"), S_SEARCH_FROM);
+	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+			   GTK_SIGNAL_FUNC(summary_searchtype_changed),
+			   summaryview);
+	MENUITEM_ADD (search_type, menuitem, _("To"), S_SEARCH_TO);
+	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+			   GTK_SIGNAL_FUNC(summary_searchtype_changed),
+			   summaryview);
+
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(search_type_opt), search_type);
+	gtk_widget_show(search_type);
+	
+	search_string = gtk_entry_new();
+	
+	gtk_box_pack_start(GTK_BOX(hbox_search), search_string, FALSE, FALSE, 2);
+	
+	gtk_widget_show(search_string);
+	gtk_widget_show(hbox_search);
+
+	gtk_signal_connect(GTK_OBJECT(search_string), "key_press_event",
+			   GTK_SIGNAL_FUNC(summary_searchbar_pressed),
+			   summaryview);
+
 	/* create popup menu */
 	n_entries = sizeof(summary_popup_entries) /
 		sizeof(summary_popup_entries[0]);
@@ -521,6 +569,7 @@ SummaryView *summary_create(void)
 	summaryview->ctree = ctree;
 	summaryview->hbox = hbox;
 	summaryview->hbox_l = hbox_l;
+	summaryview->hbox_search = hbox_search;
 	summaryview->statlabel_folder = statlabel_folder;
 	summaryview->statlabel_select = statlabel_select;
 	summaryview->statlabel_msgs = statlabel_msgs;
@@ -529,6 +578,9 @@ SummaryView *summary_create(void)
 	summaryview->popupmenu = popupmenu;
 	summaryview->popupfactory = popupfactory;
 	summaryview->lock_count = 0;
+	summaryview->search_type_opt = search_type_opt;
+	summaryview->search_type = search_type;
+	summaryview->search_string = search_string;
 
 	/* CLAWS: need this to get the SummaryView * from
 	 * the CList */
@@ -621,6 +673,13 @@ void summary_init(SummaryView *summaryview)
 	gtk_widget_show(pixmap);
 	summaryview->folder_pixmap = pixmap;
 
+	/* Init summaryview prefs */
+	summaryview->sort_key = SORT_BY_NONE;
+	summaryview->sort_type = SORT_ASCENDING;
+
+	/* Init summaryview extra data */
+	summaryview->simplify_subject_preg = NULL;
+
 	summary_clear_list(summaryview);
 	summary_set_column_titles(summaryview);
 	summary_colorlabel_menu_create(summaryview);
@@ -706,6 +765,11 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	inc_lock();
 	summary_lock(summaryview);
 
+	if (item != summaryview->folder_item) {
+		/* changing folder, reset search */
+		gtk_entry_set_text(GTK_ENTRY(summaryview->search_string), "");
+	}
+	
 	STATUSBAR_POP(summaryview->mainwin);
 
 	is_refresh = (!prefs_common.open_inbox_on_inc &&
@@ -832,6 +896,44 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		summary_set_hide_read_msgs_menu(summaryview, FALSE);
 	}
 
+	if (strlen(gtk_entry_get_text(GTK_ENTRY(summaryview->search_string))) > 0) {
+		GSList *not_killed;
+		gint search_type = GPOINTER_TO_INT(gtk_object_get_user_data(
+				   GTK_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
+				   GTK_MENU(summaryview->search_type))))));
+		gchar *search_string = g_strdup(gtk_entry_get_text(
+				       GTK_ENTRY(summaryview->search_string)));
+		gchar *searched_header = NULL;
+		
+		not_killed = NULL;
+		for(cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
+			MsgInfo * msginfo = (MsgInfo *) cur->data;
+			switch (search_type) {
+				case S_SEARCH_SUBJECT:
+					searched_header = g_strdup(msginfo->subject);
+					break;
+				case S_SEARCH_FROM:
+					searched_header = g_strdup(msginfo->from);
+					break;
+				case S_SEARCH_TO:
+					searched_header = g_strdup(msginfo->to);
+					break;
+				default:
+					printf("bug in search_type (=%d)\n",search_type);
+			}
+			
+			if (searched_header != NULL
+			    && strstr(searched_header, search_string) != NULL)
+				not_killed = g_slist_append(not_killed, msginfo);
+			else
+				procmsg_msginfo_free(msginfo);
+		}
+		g_slist_free(mlist);
+		g_free(search_string);
+		g_free(searched_header);
+		mlist = not_killed;
+	}
+	
 	if ((global_scoring || item->prefs->scoring)) {
 		GSList *not_killed;
 		gint kill_score;
@@ -860,11 +962,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	g_slist_free(mlist);
 
-	folderview_update_msg_num(summaryview->folderview,
-				  summaryview->folderview->opened);
-
-	if (item->sort_key != SORT_BY_NONE)
-		summary_sort(summaryview, item->sort_key, item->sort_type);
+	if (summaryview->sort_key != SORT_BY_NONE)
+		summary_sort(summaryview, summaryview->sort_key, summaryview->sort_type);
 
 	gtk_signal_handler_unblock_by_data(GTK_OBJECT(ctree), summaryview);
 
@@ -891,7 +990,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		}
 	} else {
 		/* select first unread message */
-		if (item->sort_key == SORT_BY_SCORE)
+		if (summaryview->sort_key == SORT_BY_SCORE)
 			node = summary_find_next_important_score(summaryview,
 								 NULL);
 		else
@@ -1779,7 +1878,6 @@ static void summary_set_column_titles(SummaryView *summaryview)
 	SummaryColumnType type;
 	gboolean single_char;
 	GtkJustification justify;
-	FolderItem *item = summaryview->folder_item;
 
 	static FolderSortKey sort_by[N_SUMMARY_COLS] = {
 		SORT_BY_MARK,
@@ -1850,9 +1948,9 @@ static void summary_set_column_titles(SummaryView *summaryview)
 			gtk_box_pack_start(GTK_BOX(hbox), label,
 					   FALSE, FALSE, 0);
 
-		if (item && item->sort_key == sort_by[type]) {
+		if (summaryview->sort_key == sort_by[type]) {
 			arrow = gtk_arrow_new
-				(item->sort_type == SORT_ASCENDING
+				(summaryview->sort_type == SORT_ASCENDING
 				 ? GTK_ARROW_DOWN : GTK_ARROW_UP,
 				 GTK_SHADOW_IN);
 			if (justify == GTK_JUSTIFY_RIGHT)
@@ -1873,10 +1971,7 @@ void summary_sort(SummaryView *summaryview,
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
-	GtkCListCompareFunc cmp_func;
-	FolderItem *item = summaryview->folder_item;
-
-	if (!item || !item->path || !item->parent || item->no_select) return;
+	GtkCListCompareFunc cmp_func = NULL;
 
 	switch (sort_key) {
 	case SORT_BY_MARK:
@@ -1901,15 +1996,10 @@ void summary_sort(SummaryView *summaryview,
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_from;
 		break;
 	case SORT_BY_SUBJECT:
-		{
-			PrefsFolderItem *prefs = summaryview->folder_item->prefs;
-
-			if (prefs && prefs->enable_simplify_subject
-			&&  prefs->simplify_subject_regexp && prefs->simplify_subject_regexp[0])
-				cmp_func = (GtkCListCompareFunc)summary_cmp_by_simplified_subject;
-			else
-				cmp_func = (GtkCListCompareFunc)summary_cmp_by_subject;
-		}				
+		if (summaryview->simplify_subject_preg)
+			cmp_func = (GtkCListCompareFunc)summary_cmp_by_simplified_subject;
+		else
+			cmp_func = (GtkCListCompareFunc)summary_cmp_by_subject;
 		break;
 	case SORT_BY_SCORE:
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_score;
@@ -1921,37 +2011,36 @@ void summary_sort(SummaryView *summaryview,
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_label;
 		break;
 	case SORT_BY_NONE:
-		item->sort_key = sort_key;
-		item->sort_type = SORT_ASCENDING;
-		summary_set_column_titles(summaryview);
-		summary_set_menu_sensitive(summaryview);
+		cmp_func = NULL;
 		return;
 	default:
 		return;
 	}
 
-	debug_print("Sorting summary...");
-	STATUSBAR_PUSH(summaryview->mainwin, _("Sorting summary..."));
-
-	main_window_cursor_wait(summaryview->mainwin);
-
-	gtk_clist_set_compare_func(clist, cmp_func);
-
-	gtk_clist_set_sort_type(clist, (GtkSortType)sort_type);
-	item->sort_key = sort_key;
-	item->sort_type = sort_type;
+	summaryview->sort_key = sort_key;
+	summaryview->sort_type = sort_type;
 
 	summary_set_column_titles(summaryview);
 	summary_set_menu_sensitive(summaryview);
+	if(cmp_func != NULL) {
+		debug_print("Sorting summary...");
+		STATUSBAR_PUSH(summaryview->mainwin, _("Sorting summary..."));
 
-	gtk_sctree_sort_recursive(ctree, NULL);
+		main_window_cursor_wait(summaryview->mainwin);
 
-	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
+		gtk_clist_set_compare_func(clist, cmp_func);
 
-	debug_print("done.\n");
-	STATUSBAR_POP(summaryview->mainwin);
+		gtk_clist_set_sort_type(clist, (GtkSortType)sort_type);
 
-	main_window_cursor_normal(summaryview->mainwin);
+		gtk_sctree_sort_recursive(ctree, NULL);
+
+		gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
+
+		main_window_cursor_normal(summaryview->mainwin);
+
+		debug_print("done.\n");
+		STATUSBAR_POP(summaryview->mainwin);
+	}
 }
 
 gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
@@ -2029,8 +2118,6 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 				summaryview->folder_item->prefs->important_score;
 	}
 
-	summaryview_subject_filter_init(summaryview->folder_item->prefs);
-	
 	if (summaryview->folder_item->threaded) {
 		GNode *root, *gnode;
 
@@ -2123,9 +2210,9 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 {
 	static gchar date_modified[80];
 	static gchar *to = NULL;
+	static gchar *from = NULL;
 	static gchar col_score[11];
 	static gchar buf[BUFFSIZE];
-	PrefsFolderItem *prefs = summaryview->folder_item->prefs;
 	gint *col_pos = summaryview->col_pos;
 
 	text[col_pos[S_COL_MARK]]   = NULL;
@@ -2208,24 +2295,16 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	 * the --> in sent boxes) was executed.
 	 */
 	if (text[col_pos[S_COL_FROM]] != to && prefs_common.use_addr_book && msginfo->from) {
-		gchar *from;
+		g_free(from);
 		from = summary_complete_address(msginfo->from);
-		if (from) {
-			/*
-			 * FIXME: this text[col_pos[S_COL_FROM]] should be freed
-			 * but may have been assigned _("No From"). Should be
-			 * freed??? 
-			 */
+		if (from)
 			text[col_pos[S_COL_FROM]] = from;
-		}	
 	}
 
-	if (prefs->enable_simplify_subject 
-	    && prefs->simplify_subject_preg != NULL )
+	if (summaryview->simplify_subject_preg != NULL)
 		text[col_pos[S_COL_SUBJECT]] = msginfo->subject ? 
 			string_remove_match(buf, BUFFSIZE, msginfo->subject, 
-					prefs->simplify_subject_preg) : 
-			
+					summaryview->simplify_subject_preg) : 
 			_("(No Subject)");
 	else 
 #ifdef WIN32
@@ -4461,6 +4540,20 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	}
 }
 
+static void summary_searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
+				SummaryView *summaryview)
+{
+	if (event != NULL && event->keyval == GDK_Return)
+	 	summary_show(summaryview, summaryview->folder_item);
+}
+
+static void summary_searchtype_changed(GtkWidget *widget, GdkEventAny *event,
+				SummaryView *summaryview)
+{
+	if (strlen(gtk_entry_get_text(GTK_ENTRY(summaryview->search_string))) > 0)
+	 	summary_show(summaryview, summaryview->folder_item);
+}
+
 static void summary_open_row(GtkSCTree *sctree, SummaryView *summaryview)
 {
 	if (summaryview->folder_item->stype == F_OUTBOX ||
@@ -4587,13 +4680,9 @@ static void summary_create_filter_cb(SummaryView *summaryview,
 static void summary_sort_by_column_click(SummaryView *summaryview,
 					 FolderSortKey sort_key)
 {
-	FolderItem *item = summaryview->folder_item;
-
-	if (!item) return;
-
-	if (item->sort_key == sort_key)
+	if (summaryview->sort_key == sort_key)
 		summary_sort(summaryview, sort_key,
-			     item->sort_type == SORT_ASCENDING
+			     summaryview->sort_type == SORT_ASCENDING
 			     ? SORT_DESCENDING : SORT_ASCENDING);
 	else
 		summary_sort(summaryview, sort_key, SORT_ASCENDING);
@@ -5070,36 +5159,6 @@ static void summary_set_hide_read_msgs_menu (SummaryView *summaryview,
  	gtk_object_set_data(GTK_OBJECT(widget), "dont_toggle",
  			    GINT_TO_POINTER(0));
 }
-static void summaryview_subject_filter_init(PrefsFolderItem *prefs)
-{
-	int err;
-	gchar buf[BUFFSIZE];
-	if (prefs->enable_simplify_subject) {
-		if (prefs->simplify_subject_regexp && 
-				*prefs->simplify_subject_regexp != 0x00) {
-
-			if (!prefs->simplify_subject_preg) 
-				prefs->simplify_subject_preg = g_new(regex_t, 1);
-			else
-				regfree(prefs->simplify_subject_preg);
-
-			err = string_match_precompile(prefs->simplify_subject_regexp, 
-					prefs->simplify_subject_preg, REG_EXTENDED);
-			if (err) {
-				regerror(err, prefs->simplify_subject_preg, buf, BUFFSIZE);
-				alertpanel_error(_("Regular expression (regexp) error:\n%s"), buf);
-				g_free(prefs->simplify_subject_preg);
-				prefs->simplify_subject_preg = NULL;
-			}
-		} else {
-			if (prefs->simplify_subject_preg) {
-				regfree(prefs->simplify_subject_preg);
-				g_free(prefs->simplify_subject_preg);
-				prefs->simplify_subject_preg = NULL;
-			}
-		}
-	}
-}
 
 void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 {
@@ -5133,7 +5192,8 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 /*
  * Harvest addresses for selected messages in summary view.
  */
-void summary_harvest_address( SummaryView *summaryview ) {
+void summary_harvest_address(SummaryView *summaryview)
+{
 	GtkCTree *ctree = GTK_CTREE( summaryview->ctree );
 	GList *cur;
 	GList *msgList;
@@ -5148,7 +5208,52 @@ void summary_harvest_address( SummaryView *summaryview ) {
 	g_list_free( msgList );
 }
 
+static regex_t *summary_compile_simplify_regexp(gchar *simplify_subject_regexp)
+{
+	int err;
+	gchar buf[BUFFSIZE];
+	regex_t *preg = NULL;
+	
+	preg = g_new0(regex_t, 1);
+
+	err = string_match_precompile(simplify_subject_regexp, 
+				      preg, REG_EXTENDED);
+	if (err) {
+		regerror(err, preg, buf, BUFFSIZE);
+		alertpanel_error(_("Regular expression (regexp) error:\n%s"), buf);
+		g_free(preg);
+		preg = NULL;
+	}
+	
+	return preg;
+}
+
+void summary_set_prefs_from_folderitem(SummaryView *summaryview, FolderItem *item)
+{
+	g_return_if_fail(summaryview != NULL);
+	g_return_if_fail(item != NULL);
+
+	/* Subject simplification */
+	if(summaryview->simplify_subject_preg) {
+		regfree(summaryview->simplify_subject_preg);
+		g_free(summaryview->simplify_subject_preg);
+		summaryview->simplify_subject_preg = NULL;
+	}
+	if(item->prefs && item->prefs->simplify_subject_regexp && 
+	   item->prefs->simplify_subject_regexp[0] && item->prefs->enable_simplify_subject)
+		summaryview->simplify_subject_preg = summary_compile_simplify_regexp(item->prefs->simplify_subject_regexp);
+
+	/* Sorting */
+	summaryview->sort_key = item->sort_key;
+	summaryview->sort_type = item->sort_type;
+}
+
+void summary_save_prefs_to_folderitem(SummaryView *summaryview, FolderItem *item)
+{
+	item->sort_key = summaryview->sort_key;
+	item->sort_type = summaryview->sort_type;
+}
+
 /*
  * End of Source.
  */
-

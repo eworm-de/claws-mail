@@ -59,7 +59,11 @@ struct PrefsFolderItemDialog
 	GtkWidget *entry_folder_chmod;
 	GtkWidget *checkbtn_enable_default_account;
 	GtkWidget *optmenu_default_account;
+	GtkWidget *folder_color;
+	GtkWidget *folder_color_btn;
 };
+
+static GtkWidget *color_dialog;
 
 static PrefParam param[] = {
 	{"sort_by_number", "FALSE", &tmp_prefs.sort_by_number, P_BOOL,
@@ -107,6 +111,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"save_copy_to_folder", NULL, &tmp_prefs.save_copy_to_folder, P_BOOL,
 	 NULL, NULL, NULL},
+	{"folder_color", "", &tmp_prefs.color, P_INT,
+	 NULL, NULL, NULL},
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
@@ -117,6 +123,14 @@ void prefs_folder_item_cancel_cb		(GtkWidget *widget,
 void prefs_folder_item_ok_cb			(GtkWidget *widget, 
 						 struct PrefsFolderItemDialog *dialog);
 gint prefs_folder_item_chmod_mode		(gchar *folder_chmod);
+
+static void set_button_color(guint rgbvalue, GtkWidget *button);
+static void folder_color_set_dialog(GtkWidget *widget, gpointer data);
+static void folder_color_set_dialog_ok(GtkWidget *widget, gpointer data);
+static void folder_color_set_dialog_cancel(GtkWidget *widget, gpointer data);
+static void folder_color_set_dialog_key_pressed(GtkWidget *widget,
+						GdkEventKey *event,
+						gpointer data);
 
 
 void prefs_folder_item_read_config(FolderItem * item)
@@ -207,6 +221,7 @@ PrefsFolderItem * prefs_folder_item_new(void)
 	tmp_prefs.enable_default_account = FALSE;
 	tmp_prefs.default_account = 0;
 	tmp_prefs.save_copy_to_folder = FALSE;
+	tmp_prefs.color = 0;
 
 	tmp_prefs.scoring = NULL;
 	tmp_prefs.processing = NULL;
@@ -271,6 +286,8 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 	GtkWidget *optmenu_default_account;
 	GtkWidget *optmenu_default_account_menu;
 	GtkWidget *optmenu_default_account_menuitem;
+	GtkWidget *folder_color;
+	GtkWidget *folder_color_btn;
 	GList *cur_ac;
 	GList *account_list;
 	PrefsAccount *ac_prefs;
@@ -295,7 +312,7 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
 
 	/* Table */
-	table = gtk_table_new(4, 2, FALSE);
+	table = gtk_table_new(8, 2, FALSE);
 	gtk_widget_show(table);
 	gtk_table_set_row_spacings(GTK_TABLE(table), VSPACING_NARROW);
 	gtk_container_add(GTK_CONTAINER (window), table);
@@ -452,6 +469,31 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 
 	rowcount++;
 
+	/* Folder color */
+	folder_color = gtk_label_new(_("Folder color"));
+	gtk_misc_set_alignment(GTK_MISC(folder_color), 0, 0.5);
+	gtk_widget_show(folder_color);
+	gtk_table_attach_defaults(GTK_TABLE(table), folder_color, 0, 1, 
+			 rowcount, rowcount + 1);
+
+	folder_color_btn = gtk_button_new_with_label("");
+	gtk_widget_set_usize(folder_color_btn, 36, 26);
+	gtk_container_set_border_width(GTK_CONTAINER(folder_color_btn), 2);
+	gtk_widget_show(folder_color_btn);
+	gtk_table_attach(GTK_TABLE(table), folder_color_btn,
+			 1, 2, rowcount, rowcount + 1,
+			 GTK_SHRINK, 0, 0, 0);
+
+	dialog->item->prefs->color = item->prefs->color;
+
+	gtk_signal_connect(GTK_OBJECT(folder_color_btn), "clicked",
+			   GTK_SIGNAL_FUNC(folder_color_set_dialog),
+			   dialog);
+
+	set_button_color(item->prefs->color, folder_color_btn);
+
+	rowcount++;
+
 	/* Ok and Cancle Buttons */
 	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
 				&cancel_btn, _("Cancel"), NULL, NULL);
@@ -477,6 +519,8 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 	dialog->entry_folder_chmod = entry_folder_chmod;
 	dialog->checkbtn_enable_default_account = checkbtn_enable_default_account;
 	dialog->optmenu_default_account = optmenu_default_account;
+	dialog->folder_color = folder_color;
+	dialog->folder_color_btn = folder_color_btn;
 
 	g_free(infotext);
 
@@ -565,6 +609,10 @@ void prefs_folder_item_ok_cb(GtkWidget *widget,
  	menuitem = gtk_menu_get_active(GTK_MENU(menu));
  	prefs->default_account = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
 
+	prefs->color = dialog->item->prefs->color;
+	/* update folder view */
+	if (prefs->color > 0)
+		folderview_update_item(dialog->item, FALSE);
 
 	prefs_folder_item_save_config(dialog->item);
 	prefs_folder_item_destroy(dialog);
@@ -583,3 +631,82 @@ gint prefs_folder_item_chmod_mode(gchar *folder_chmod)
 
 	return newmode;
 }
+
+static void set_button_color(guint rgbvalue, GtkWidget *button)
+{
+	GtkStyle *newstyle;
+	GdkColor gdk_color;
+
+	gtkut_convert_int_to_gdk_color(rgbvalue, &gdk_color);
+	newstyle = gtk_style_copy(gtk_widget_get_default_style());
+	newstyle->bg[GTK_STATE_NORMAL]   = gdk_color;
+	newstyle->bg[GTK_STATE_PRELIGHT] = gdk_color;
+	newstyle->bg[GTK_STATE_ACTIVE]   = gdk_color;
+	gtk_widget_set_style(GTK_WIDGET(button), newstyle);
+}
+
+static void folder_color_set_dialog(GtkWidget *widget, gpointer data)
+{
+	struct PrefsFolderItemDialog *folder_dialog = data;
+	GtkColorSelectionDialog *dialog;
+	gdouble color[4] = {0.0, 0.0, 0.0, 0.0};
+	guint rgbcolor;
+
+	color_dialog = gtk_color_selection_dialog_new(_("Pick color for folder"));
+	gtk_window_set_position(GTK_WINDOW(color_dialog), GTK_WIN_POS_CENTER);
+	gtk_window_set_modal(GTK_WINDOW(color_dialog), TRUE);
+	gtk_window_set_policy(GTK_WINDOW(color_dialog), FALSE, FALSE, FALSE);
+	manage_window_set_transient(GTK_WINDOW(color_dialog));
+
+	gtk_signal_connect(GTK_OBJECT(GTK_COLOR_SELECTION_DIALOG(color_dialog)->ok_button),
+			   "clicked", GTK_SIGNAL_FUNC(folder_color_set_dialog_ok), data);
+	gtk_signal_connect(GTK_OBJECT(GTK_COLOR_SELECTION_DIALOG(color_dialog)->cancel_button),
+			   "clicked", GTK_SIGNAL_FUNC(folder_color_set_dialog_cancel), data);
+	gtk_signal_connect(GTK_OBJECT(color_dialog), "key_press_event",
+			   GTK_SIGNAL_FUNC(folder_color_set_dialog_key_pressed),
+			   data);
+
+	rgbcolor = folder_dialog->item->prefs->color;
+	color[0] = (gdouble) ((rgbcolor & 0xff0000) >> 16) / 255.0;
+	color[1] = (gdouble) ((rgbcolor & 0x00ff00) >>  8) / 255.0;
+	color[2] = (gdouble)  (rgbcolor & 0x0000ff)        / 255.0;
+
+	dialog = GTK_COLOR_SELECTION_DIALOG(color_dialog);
+	gtk_color_selection_set_color(GTK_COLOR_SELECTION(dialog->colorsel), color);
+
+	gtk_widget_show(color_dialog);
+}
+
+static void folder_color_set_dialog_ok(GtkWidget *widget, gpointer data)
+{
+	struct PrefsFolderItemDialog *folder_dialog = data;
+	GtkColorSelection *colorsel = (GtkColorSelection *)
+				((GtkColorSelectionDialog *) color_dialog)->colorsel;
+	gdouble color[4];
+	guint red, green, blue, rgbvalue;
+
+	gtk_color_selection_get_color(colorsel, color);
+
+	red      = (guint) (color[0] * 255.0);
+	green    = (guint) (color[1] * 255.0);
+	blue     = (guint) (color[2] * 255.0);
+	rgbvalue = (guint) ((red * 0x10000) | (green * 0x100) | blue);
+
+	folder_dialog->item->prefs->color = rgbvalue;
+	set_button_color(rgbvalue, folder_dialog->folder_color_btn);
+
+	gtk_widget_destroy(color_dialog);
+}
+
+static void folder_color_set_dialog_cancel(GtkWidget *widget, gpointer data)
+{
+	gtk_widget_destroy(color_dialog);
+}
+
+static void folder_color_set_dialog_key_pressed(GtkWidget *widget,
+						GdkEventKey *event,
+						gpointer data)
+{
+	gtk_widget_destroy(color_dialog);
+}
+
