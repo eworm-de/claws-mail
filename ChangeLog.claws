@@ -1,3 +1,13 @@
+2003-02-16 [paul]	0.8.10claws14
+
+	* src/news.c
+		when a 'protocol error' is encountered disconnect from
+		the server. This means that the user can carry on viewing
+		other articles and doesn't have to either wait until the
+		server timesout or quit sylpheed.
+		Fixes bug #53 'Unable to read messages in newsgroups, 
+		displayed message doesn't change'
+
 2003-02-15 [christoph]	0.8.10claws13
 
 	* src/imap.c

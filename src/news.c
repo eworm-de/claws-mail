@@ -382,6 +382,8 @@ gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 			      num, filename);
 	if (ok < 0) {
 		g_warning("can't read article %d\n", num);
+		session_destroy(SESSION(session));
+		REMOTE_FOLDER(folder)->session = NULL;
 		g_free(filename);
 		return NULL;
 	}
