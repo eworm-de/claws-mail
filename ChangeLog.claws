@@ -1,3 +1,11 @@
+2002-12-08 [colin] 	0.8.6claws73
+
+	* src/statusbar.c
+	  src/common/log.h
+		Register a hook for statusbar_puts_all
+	* src/common/log.c
+		invoke statusbar_puts_all's hook
+	
 2002-12-08 [colin] 	0.8.6claws72
 
 	* src/ssl_certificate.c

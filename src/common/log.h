@@ -27,6 +27,7 @@
 #include <glib.h>
 
 #define LOG_APPEND_TEXT_HOOKLIST "log_append_text"
+#define STATUSBAR_PUTS_ALL_HOOKLIST "statusbar_puts_all"
 
 typedef enum
 {

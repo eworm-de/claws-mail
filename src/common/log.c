@@ -81,11 +81,10 @@ void log_print(const gchar *format, ...)
 		fputs(buf, log_fp);
 		fflush(log_fp);
 	}
-/*	FIXME:
-	callback for gui logging
 
+	logtext.text = buf + TIME_LEN;
 	if (log_verbosity_count)
-		statusbar_puts_all(buf + TIME_LEN); */
+		hooks_invoke(STATUSBAR_PUTS_ALL_HOOKLIST, &logtext);
 }
 
 void log_message(const gchar *format, ...)
@@ -112,10 +111,9 @@ void log_message(const gchar *format, ...)
 		fputs(buf + TIME_LEN, log_fp);
 		fflush(log_fp);
 	}
-/*	FIXME:
-	callback for gui logging
 
-	statusbar_puts_all(buf + TIME_LEN); */
+	logtext.text = buf + TIME_LEN;
+	hooks_invoke(STATUSBAR_PUTS_ALL_HOOKLIST, &logtext);
 }
 
 void log_warning(const gchar *format, ...)

@@ -29,19 +29,32 @@
 #include "statusbar.h"
 #include "gtkutils.h"
 #include "utils.h"
+#include "log.h"
+#include "hooks.h"
 
 #define BUFFSIZE 1024
 
 static GList *statusbar_list = NULL;
+void statusbar_puts_all_hook (gpointer source, gpointer data);
 
 GtkWidget *statusbar_create(void)
 {
 	GtkWidget *statusbar;
 
 	statusbar = gtk_statusbar_new();
+	
+	if(statusbar_list == NULL)
+		hooks_register_hook(STATUSBAR_PUTS_ALL_HOOKLIST, statusbar_puts_all_hook, NULL);
+
 	statusbar_list = g_list_append(statusbar_list, statusbar);
 
 	return statusbar;
+}
+
+void statusbar_puts_all_hook (gpointer source, gpointer data)
+{
+	LogText *logtext = (LogText *) source;
+	statusbar_puts_all(logtext->text);
 }
 
 void statusbar_puts(GtkStatusbar *statusbar, const gchar *str)
