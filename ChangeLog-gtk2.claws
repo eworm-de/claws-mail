@@ -1,3 +1,10 @@
+2005-01-19 [colin]	1.0.0cvs2.2
+
+	* src/plugins/trayicon/trayicon.c
+		Fix freeze with gtk-2.6, the easy way
+		(signal blocking helpless there...)
+		Closes bug #668.
+
 2005-01-19 [colin]	1.0.0cvs2.1
 
 	* src/mbox.c

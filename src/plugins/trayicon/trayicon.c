@@ -101,6 +101,7 @@ static void set_trayicon_pixmap(TrayIconType icontype)
 {
 	GdkPixmap *pixmap = NULL;
 	GdkBitmap *bitmap = NULL;
+	static GdkPixmap *last_pixmap = NULL;
 
 	switch(icontype) {
 	case TRAYICON_NEW:
@@ -125,9 +126,13 @@ static void set_trayicon_pixmap(TrayIconType icontype)
 		break;
 	}
 
+	if (pixmap == last_pixmap)
+		return;
+
 	gtk_image_set_from_pixmap(GTK_IMAGE(image), pixmap, bitmap);
 	gtk_widget_shape_combine_mask(GTK_WIDGET(trayicon), bitmap, GTK_WIDGET(image)->allocation.x, GTK_WIDGET(image)->allocation.y);
 
+	last_pixmap = pixmap;
 }
 
 static void update(void)
