@@ -375,3 +375,4 @@
 ( cvs diff -u -r 1.96.2.44 -r 1.96.2.45 src/textview.c; ) > 1.0.1cvs4.4.patchset
 ( cvs diff -u -r 1.96.2.45 -r 1.96.2.46 src/textview.c; ) > 1.0.1cvs4.5.patchset
 ( cvs diff -u -r 1.60.2.4 -r 1.60.2.5 src/filtering.c; ) > 1.0.1cvs5.1.patchset
+( cvs diff -u -r 1.96.2.46 -r 1.96.2.47 src/textview.c; ) > 1.0.1cvs5.2.patchset

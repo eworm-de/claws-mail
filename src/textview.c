@@ -985,7 +985,7 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 			&& (((bp_ + 1) < ep_)    && isalnum(*(bp_ + 1)))) {
 				/* hyphens are allowed, but only in
 				   between alnums */
-			} else if (!ispunct(*bp_)) {
+			} else if (!strchr(",;:=?./+<>!&", *bp_)) {
 				/* but anything not being a punctiation
 				   is ok */
 			} else {
