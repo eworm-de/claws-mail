@@ -2042,7 +2042,7 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 
 	g_free(compose->sig_str);
 	compose->sig_str = compose_get_signature_str(compose);
-	if (!compose->sig_str)
+	if (!compose->sig_str || !compose->account->auto_sig)
 		compose->sig_str = g_strdup("");
 
 	gtk_stext_insert(text, NULL, NULL, NULL, compose->sig_str, -1);
@@ -2835,7 +2835,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 			STEXT_FREEZE();
 			gtk_stext_set_point(text, line_pos);
 			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
-			/* gtk_stext_compact_buffer(text); */
+			gtk_stext_compact_buffer(text);
 			tlen++;
 			line_pos++;
 			/* for loop will increase it */
