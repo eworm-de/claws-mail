@@ -1,6 +1,6 @@
 diff -urN empty/config.h src/config.h
 --- empty/config.h	Thu Jan  1 00:00:00 1970
-+++ src/config.h	Tue May 14 23:13:42 2002
++++ src/config.h	Fri May 17 20:57:36 2002
 @@ -0,0 +1,389 @@
 +/* config.h.in.  Generated automatically from configure.in by autoheader 2.13.  */
 +
@@ -393,7 +393,7 @@ diff -urN empty/config.h src/config.h
 +#define FAQDIR				"doc\\faq"
 diff -urN empty/matcher_parser_lex.c src/matcher_parser_lex.c
 --- empty/matcher_parser_lex.c	Thu Jan  1 00:00:00 1970
-+++ src/matcher_parser_lex.c	Sun May 12 14:42:12 2002
++++ src/matcher_parser_lex.c	Fri May 17 18:29:48 2002
 @@ -0,0 +1,2187 @@
 +#define yy_create_buffer matcher_parser_create_buffer
 +#define yy_delete_buffer matcher_parser_delete_buffer
@@ -2584,7 +2584,7 @@ diff -urN empty/matcher_parser_lex.c src/matcher_parser_lex.c
 +
 diff -urN empty/matcher_parser_parse.c src/matcher_parser_parse.c
 --- empty/matcher_parser_parse.c	Thu Jan  1 00:00:00 1970
-+++ src/matcher_parser_parse.c	Sun May 12 14:42:12 2002
++++ src/matcher_parser_parse.c	Fri May 17 18:29:48 2002
 @@ -0,0 +1,2266 @@
 +/* A Bison parser, made from /src/sylpheed-claws-w32/sylpheed-claws-head/sylpheed-claws/src/matcher_parser_parse.y
 +   by GNU bison 1.31.  */
@@ -4854,7 +4854,7 @@ diff -urN empty/matcher_parser_parse.c src/matcher_parser_parse.c
 +#line 848 "matcher_parser_parse.y"
 diff -urN empty/matcher_parser_parse.h src/matcher_parser_parse.h
 --- empty/matcher_parser_parse.h	Thu Jan  1 00:00:00 1970
-+++ src/matcher_parser_parse.h	Sun May 12 14:42:12 2002
++++ src/matcher_parser_parse.h	Fri May 17 18:29:48 2002
 @@ -0,0 +1,85 @@
 +#ifndef BISON_Y_TAB_H
 +# define BISON_Y_TAB_H
@@ -4943,7 +4943,7 @@ diff -urN empty/matcher_parser_parse.h src/matcher_parser_parse.h
 +#endif /* not BISON_Y_TAB_H */
 diff -urN empty/quote_fmt_lex.c src/quote_fmt_lex.c
 --- empty/quote_fmt_lex.c	Thu Jan  1 00:00:00 1970
-+++ src/quote_fmt_lex.c	Sun May 12 14:42:10 2002
++++ src/quote_fmt_lex.c	Fri May 17 18:29:48 2002
 @@ -0,0 +1,1809 @@
 +#define yy_create_buffer quote_fmt_create_buffer
 +#define yy_delete_buffer quote_fmt_delete_buffer
@@ -6756,7 +6756,7 @@ diff -urN empty/quote_fmt_lex.c src/quote_fmt_lex.c
 +
 diff -urN empty/quote_fmt_parse.c src/quote_fmt_parse.c
 --- empty/quote_fmt_parse.c	Thu Jan  1 00:00:00 1970
-+++ src/quote_fmt_parse.c	Sun May 12 14:42:10 2002
++++ src/quote_fmt_parse.c	Fri May 17 18:29:48 2002
 @@ -0,0 +1,1821 @@
 +/* A Bison parser, made from /src/sylpheed-claws-w32/sylpheed-claws-head/sylpheed-claws/src/quote_fmt_parse.y
 +   by GNU bison 1.31.  */
@@ -8581,7 +8581,7 @@ diff -urN empty/quote_fmt_parse.c src/quote_fmt_parse.c
 +#line 553 "quote_fmt_parse.y"
 diff -urN empty/quote_fmt_parse.h src/quote_fmt_parse.h
 --- empty/quote_fmt_parse.h	Thu Jan  1 00:00:00 1970
-+++ src/quote_fmt_parse.h	Sun May 12 14:42:10 2002
++++ src/quote_fmt_parse.h	Fri May 17 18:29:48 2002
 @@ -0,0 +1,54 @@
 +#ifndef BISON_Y_TAB_H
 +# define BISON_Y_TAB_H

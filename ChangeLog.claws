@@ -1,3 +1,58 @@
+2002-05-18 [melvin]	0.7.6claws2
+
+	* README.claws
+		Corrected an action's definition and fixed some misspellings.
+	* tools/newscache_clean.pl 
+	  tools/sylprint.pl 
+	  tools/filter_conv.pl 
+	  tools/eud2gc.py 
+	  tools/gif2xface.pl
+	  tools/gpg-sign
+	  tools/uudec
+		Made scripts have execution permission.
+	
+2002-05-18 [paul]	0.7.6claws1
+
+	* tools/Makefile.am
+	  tools/gpg-sign	** new file **
+	  tools/uudec		** new file **
+		add Melvin's Actions scripts
+
+	* README.claws
+		add Melvin's descriptions for Actions
+
+2002-05-18 [paul]	0.7.6claws
+
+	* Version 0.7.6claws released
+
+2002-05-17 [paul]	0.7.5claws32
+
+	* po/es.po
+		updated by Ricardo Mones Lastra
+
+2002-05-17 [paul]	0.7.5claws31
+
+	* src/compose.c
+		fix Account prefs default folder for sent/draft/deleted
+		messages bug
+
+	* po/it.po
+	  po/nl.po
+		updated translation by Alessandro Maestri and
+		Wilbert Berendsen
+
+2002-05-17 [melvin]	0.7.5claws30
+
+	* src/prefs_actions.c
+		Fixed bug where using %F not at the end of the command 
+		resulted in an additional empty argument being created.
+		Thanks to Darko Koruga for reporting the bug.
+
+2002-05-17 [melvin]	0.7.5claws29
+
+	* po/fr.po
+		Updated French translations.
+
 2002-05-15 [paul]	0.7.5claws28
 	
 	* po/es.po

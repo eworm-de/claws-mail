@@ -60,7 +60,7 @@ Sylpheed or Main.
 
     Claws uses the new filtering system as soon as you define a new rule for it.
     Your old sylpheed filter rules will not be used. In subdirectory tools/ of
-    the distribution there is a Perl script called filter_conv.pl which convers
+    the distribution there is a Perl script called filter_conv.pl which converts
     old filter rules to the claws filtering system.
   
 
@@ -95,27 +95,31 @@ Sylpheed or Main.
 ------------------------------
 
 Claws does a lot of things different. Here a quick run-down of things that
-are hardly noticable, but deserve mentioning:
+are hardly noticeable, but deserve mentioning:
 
 * auto address replacement in summary view
+-----------------------------------
   This matches a plain email address with a person in the address book. This
   feature is enabled in Common Preferences | Tab Display | SummaryView Group |
   Display sender using addressbook
 
 * manual selection of MIME types for attachments
+-----------------------------------
   You can change the MIME type of an attachment by right-clicking in the
   attachment list, selecting Property in the menu. The MIME type list
   is a combo box with the known MIME types.
 
 * sharing mail folders   
-  You can also share or use shared mail folders. Right-click a folder and
+ -----------------------------------
+ You can also share or use shared mail folders. Right-click a folder and
   select Property. Change the Folder chmod setting.
 
 * default to address for folders
-  Most people filter mailing list mails to separate folders. Claws allows
+ -----------------------------------
+ Most people filter mailing list mails to separate folders. Claws allows
   you to associate a folder with a mailing list or a person. Right-click a
   folder, select Property and change the Default To setting. When you
-  compose a new mail, when this folder is selected the recepient address
+  compose a new mail, when this folder is selected the recipient address
   will be set to this address.
 
   (NOTE: this is also a shoot-yourself-in-the-foot-setting! If you want
@@ -123,6 +127,7 @@ are hardly noticable, but deserve mentioning:
    set.)
 
 * pixmap themes
+-----------------------------------
   To use different icon sets you need to create a directory: 
 	mkdir ~/.sylpheed/themes
   Icon sets should be placed in this directory in their own sub-directory. 
@@ -130,12 +135,142 @@ are hardly noticable, but deserve mentioning:
   Preferences. 
 
 * user definable actions
-  Actions can be executed on message text view, or on the message's file.
-  To configure new actions use Configuartion->Actions. Your actions are
-  then available from Edit->Actions in the main window and compose window.
+-----------------------------------
+  The "actions" feature is a convenient way for the user to launch external 
+  commands to process a complete message file including headers and body or 
+  just one of its parts. It allows also the use of an external command to 
+  filter the whole text or just a selected part in the message window or in 
+  the compose window. This is a generic tool that allows to do any uncommon 
+  actions on the messages, and thus extends the possibilities of Sylpheed. 
+  For example, Sylpheed does not include the rot13 cyphering algorithm 
+  popular in some newsgroups. It does not support natively armored 
+  encryption or clear signing. It does not support uuencoded messages. As 
+  all these features can be handled by external programs, the actions 
+  provide a convenient way to use them from the menu bar.
+
+  a. Usage
+  --------
+
+  To create a new action, go to Configuration -> Actions.... The "Action
+  Creation" dialog offers to enter the Menu name that will trigger the 
+  command. The created menu will be found in the Tools -> Actions submenu. 
+  By inserting a slash / in the menu name, you create a submenu.
+
+  The command is entered in the Command line entry. Note that Sylpheed 
+  stores every single email in a separate file. This allows to use the 
+  following syntax for the command:
+
+    * %f denotes the file name of the selected message. If you selected more
+	 than one, then the command will be launched for each message with 
+	 the appropriate file name
+    * %F denotes the list of the file names of the selected message. If only
+	 one message is selected, this amounts to %f, but if more messages 
+	 are selected, then the command will be launched only once with the 
+	 list of the file names. (You can use both %f and %F in one command: 
+	 then the command will be launched for each selected message with 
+	 the name of this message and with the list of all selected 
+	 messages. I did not find a practical example for this.)
+    * %p denotes the current selected message part of a multipart message. 
+	 The part is decoded accordingly. If the message is not a multipart 
+	 message, it denotes the message body.
+    * Prepending >: this will allow you to send to the command's standard 
+	 input a text that you will enter in a dialog window.
+    * Prepending *: this will allow you to send to the command's standard 
+	 input a text that you will enter in a dialog window. But in 
+	 contrast to prepending >, the entered text is hidden (useful when 
+	 entering passwords).
+    * Appending an ampersand &: this will run the command asynchronously. 
+	 That means "fire and forget". Sylpheed won't wait for the command 
+	 to finish, nor will it catch its output or its error messages.
+    * Prepending the vertical bar | (pipe-in): this will send the current 
+	 displayed text or the current selected text from the message view 
+	 or the compose window to the command standard input. The command 
+	 will silently fail if more than one message is selected.
+    * Appending the vertical bar | (pipe-out): this will replace the current 
+	 displayed text or the current selected text from the message window
+	 or the compose window by the command standard output. The command
+	 will silently fail if more than one message is selected.
+
+  Note: It is not possible to use actions containing %f, %F or %p from the
+  compose window. 
+
+  When a command is run, and unless it is run asynchronously, Sylpheed will
+  be insensitive to any interaction and it will wait for the command to 
+  finish. If the command takes too long (5 seconds), it will popup a dialog 
+  window allowing to stop it. This dialog will also be displayed as soon as
+  the command has some output: error messages or even its standard output 
+  when the command is not a "pipe-out" command. When multiple commands are 
+  being run, they are run in parallel and each command output is separated 
+  from the outputs of the others.
+
+  a. Examples
+  -----------
+
+  Here are some examples that are listed in the same syntax as used for 
+  storing the actions list. You can copy and past the definition in your 
+  ~/.sylpheed/actionsrc file (exit Sylpheed before). The syntax is very 
+  simple: one line per action, each action contains the menu name and the 
+  command line separated by a colon and a space ": "
+
+  Purpose:	rot13 cyphering
+  Definition:	Rot13: |tr a-zA-Z n-za-mN-ZA-M|
+  Details:	This will apply the rot13 cyphering algorithm to the 
+		(selected) text in the message/compose view.
+
+  Purpose:	Decoding uuencoded messages
+  Definition:	UUdeview: xdeview %F&
+  Details:	xdeview comes with uudeview. If an encoded file is split in 
+		multiple messages, just select them all and run the command.
+
+  Purpose:	Display uuencoded image
+  Definition:	Display uuencoded: uudec %f&
+  Details:	Displays uuencoded files. The uudec script can be found in 
+		the 'tools' directory of the distribution package.
+ 
+  Purpose:	Alter messages
+  Definition:	Edit message: gvim -f %F
+  Details:	Allows editing of any received message. Can be used to remove 
+		unneeded message parts, etc.
+
+  Purpose:	Pretty format
+  Definition:	Par: |par 72Tbgjqw74bEe B=._A_a 72bg|
+  Details:	par is a utility that can pretty format any text. It does a 
+		very good job in indenting quoted messages, and justifying 
+		text. Used when composing a message
+
+  Purpose:	Browse
+  Definition:	Part/Dillo: dillo %p&
+  Details:	Browse the selected message part in Dillo.
+
+  Purpose:	Clear Sign
+  Definition:	GnuPG/Clear Sign: |gpg-sign|
+  Details:	Clear sign a message. The gpg-sign script is responsible for 
+		asking the passphrase and for running gnupg. 
+
+  Purpose:	Verify Clear Signed
+  Definition:	GnuPG/Verify: |gpg --no-tty --verify %f&
+  Details:	Verify clear signed messages. The result is displayed in the
+	 	actions output dialog.
+
+  Purpose:	Decrypt ASCII Armored
+  Definition:	GnuPG/Decrypt: *gpg --no-tty --command-fd 0 --passphrase-fd 0 --decrypt %f|
+  Details:	Decrypt ASCII armored messages. The passphrase is entered 
+		into the opened action's input dialog.
+
+  The gpg-sign script can be found in the 'tools' directory of the 
+  distribution package. It needs the ssh-askpass utility found in OpenSSH. 
+  It can be replaced by any X11 tool that asks some (hidden) text which is 
+  then sent to standard output.
+
+  The uudec script can be found in the 'tools' directory of the 
+  distribution package. It needs uudecode and ImageMagick's display. The 
+  latter can be replaced by any image viewer that can get input from 
+  standard input. The script could also be modified to use temporary files 
+  instead of standard input. 
+
 
 * Spell checker for Sylpheed-Claws
-  
+-----------------------------------
   a. Requirements
   b. Configuration and installation
   c. Usage
@@ -220,7 +355,7 @@ are hardly noticable, but deserve mentioning:
   is bound to MOD1-Enter combination will add the unknown word to the
   dictionary to learn it.  The next entries are the suggested words. 
   The first 15 suggestions can be accessed typing one of the first letters
-  of latin alphabet (if this does not suit your language, please send
+  of Latin alphabet (if this does not suit your language, please send
   a mail to melvin.hadasht@free.fr).  If you are using an aspell 
   dictionary, you can use its 'learn from mistake' feature, by pressing
   the MOD1 key and selecting the suggestion (with the keyboard or with
@@ -229,10 +364,10 @@ are hardly noticable, but deserve mentioning:
 
   If you click with the right mouse button everywhere else, or if you
   shift-right-click even on a misspelled word, you get the
-  configuration  menu.  'Check all' highlights all misspelled words.
+  configuration menu.  'Check all' highlights all misspelled words.
   With this menu, you can also change the dictionary while editing.
-  FInally, you can change the suggestion mode misktakes 'feature' 
-  (useful only with aspell).
+  Finally, you can change the suggestion mode, and the learn from
+  misktakes feature (only when using an aspell dictionary).
 
   Spell checking can also be done using keyboard shortcuts.  In the
   "Edit" menu of the compose window, there are two menus "Check backwards
@@ -301,7 +436,8 @@ mention it.
 Sylpheed Main: 
 
 	submit it to the Sylpheed ML, Hiroyuki, or Paul Mangan
-	(for incorporation on the Sylpheed Patches page)
+	(for incorporation on the Sylpheed Patches page,
+	 <http://www.thewildbeast.co.uk/sylpheed/>)
 
 Sylpheed Claws:
 
@@ -315,7 +451,7 @@ Sylpheed Claws:
 	Bugs can be reported in the same way; the recommended web page:
 	http://sourceforge.net/tracker/?group_id=25528&atid=384598
 
-	Ofcourse you can also post to the sylpheed claws users
+	Of course you can also post to the sylpheed claws users
 	mailing list.
 
 Also, we really try to incorporate good contributions, but sometimes we
@@ -338,7 +474,36 @@ sourceforge project page.
 
 
 
-6. History
+6. Installing Claws from CVS
+----------------------------
+
+  a. Downloading
+  --------------
+
+  To download the latest cvs cd to the directory where you wish to download
+  to and type the following information:
+
+  cvs -d:pserver:anonymous@cvs.sylpheed-claws.sourceforge.net:/cvsroot/sylpheed-claws login
+
+  When prompted for a password press the RETURN key.
+  After anonymously logging in:
+
+  cvs -z3 -d:pserver:anonymous@cvs.sylpheed-claws.sourceforge.net:/cvsroot/sylpheed-claws co sylpheed-claws 
+
+
+  b. Installing
+  -------------
+
+  To compile and install use the following commands:
+
+  ./autogen.sh		[add configure options as required]
+  make
+  make install		[as root]
+
+  You will need a full set of development tools installed to be able to run
+  autogen.sh.
+
+7. History
 ----------
 
 TODO
