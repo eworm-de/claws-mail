@@ -69,6 +69,8 @@ gint sock_set_io_timeout		(guint sec);
 gint sock_set_nonblocking_mode		(SockInfo *sock, gboolean nonblock);
 gboolean sock_is_nonblocking_mode	(SockInfo *sock);
 
+gboolean sock_has_pending_data		(SockInfo *sock);
+
 struct hostent *my_gethostbyname	(const gchar *hostname);
 
 SockInfo *sock_connect			(const gchar *hostname, gushort port);

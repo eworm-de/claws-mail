@@ -251,6 +251,31 @@ gboolean sock_is_nonblocking_mode(SockInfo *sock)
 	return is_nonblocking_mode(sock->sock);
 }
 
+gboolean sock_has_pending_data(SockInfo *sock)
+{
+	struct timeval timeout = {0, 0};
+	fd_set fds;
+
+#if USE_OPENSSL
+	if (sock->ssl) {
+		if (SSL_pending(sock->ssl) > 0)
+			g_print("socket has pending data\n");
+
+		return SSL_pending(sock->ssl) > 0;
+	}
+#endif
+
+	FD_ZERO(&fds);
+	FD_SET(sock->sock, &fds);
+
+	select(sock->sock + 1, &fds, NULL, NULL, &timeout);
+
+	if (FD_ISSET(sock->sock, &fds))
+		g_print("socket has pending data\n");
+
+	return FD_ISSET(sock->sock, &fds);
+}
+
 static gint fd_check_io(gint fd, GIOCondition cond)
 {
 	struct timeval timeout;

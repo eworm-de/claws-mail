@@ -1,3 +1,11 @@
+2003-07-01
+
+	* src/socket.[ch]: added sock_has_pending_data() which returns TRUE
+	  if socket has pending data.
+	* src/session.c: session_recv_msg(), session_recv_data(): check if
+	  socket has pending data and call the callbacks immediately in that
+	  case (fixes the hang at ESMTP EHLO on SSL).
+
 2003-06-30
 
 	* src/socket.c: check return value in SSL functions.

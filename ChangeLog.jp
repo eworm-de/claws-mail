@@ -1,3 +1,11 @@
+2003-07-01
+
+	* src/socket.[ch]: ソケットに未処理のデータが存在する場合 TRUE を
+	  返す sock_has_pending_data() を追加。
+	* src/session.c: session_recv_msg(), session_recv_data(): ソケットに
+	  未処理のデータがあるかどうかを調べ、ある場合はコールバックをすぐに
+	  呼ぶようにした(SSL での ESMTP EHLO 時に固まるのを修正)。
+
 2003-06-30
 
 	* src/socket.c: SSL 関数で戻り値をチェック。

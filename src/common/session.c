@@ -42,6 +42,9 @@ static gint session_connect_cb		(SockInfo	*sock,
 					 gpointer	 data);
 static gint session_close		(Session	*session);
 
+static gboolean session_read_msg_idle_cb	(gpointer	 data);
+static gboolean session_read_data_idle_cb	(gpointer	 data);
+
 static gboolean session_read_msg_cb	(GIOChannel	*source,
 					 GIOCondition	 condition,
 					 gpointer	 data);
@@ -313,10 +316,27 @@ gint session_recv_msg(Session *session)
 
 	session->state = SESSION_RECV;
 
-	session->io_tag = g_io_add_watch(session->sock_ch, G_IO_IN,
-					 session_read_msg_cb, session);
+	if (sock_has_pending_data(session->sock))
+		g_idle_add(session_read_msg_idle_cb, session);
+	else
+		session->io_tag = g_io_add_watch(session->sock_ch, G_IO_IN,
+						 session_read_msg_cb, session);
 
 	return 0;
+}
+
+static gboolean session_read_msg_idle_cb(gpointer data)
+{
+	Session *session = SESSION(data);
+	gboolean ret;
+
+	ret = session_read_msg_cb(session->sock_ch, G_IO_IN, data);
+
+	if (ret == TRUE)
+		session->io_tag = g_io_add_watch(session->sock_ch, G_IO_IN,
+						 session_read_msg_cb, session);
+
+	return FALSE;
 }
 
 /*!
@@ -367,10 +387,27 @@ gint session_recv_data(Session *session, guint size, const gchar *terminator)
 	session->read_data_terminator = g_strdup(terminator);
 	gettimeofday(&session->tv_prev, NULL);
 
-	session->io_tag = g_io_add_watch(session->sock_ch, G_IO_IN,
-					 session_read_data_cb, session);
+	if (sock_has_pending_data(session->sock))
+		g_idle_add(session_read_data_idle_cb, session);
+	else
+		session->io_tag = g_io_add_watch(session->sock_ch, G_IO_IN,
+						 session_read_data_cb, session);
 
 	return 0;
+}
+
+static gboolean session_read_data_idle_cb(gpointer data)
+{
+	Session *session = SESSION(data);
+	gboolean ret;
+
+	ret = session_read_data_cb(session->sock_ch, G_IO_IN, data);
+
+	if (ret == TRUE)
+		session->io_tag = g_io_add_watch(session->sock_ch, G_IO_IN,
+						 session_read_data_cb, session);
+
+	return FALSE;
 }
 
 static gboolean session_read_msg_cb(GIOChannel *source, GIOCondition condition,
@@ -477,6 +514,8 @@ static gboolean session_read_data_cb(GIOChannel	*source, GIOCondition condition,
 			return FALSE;
 		}
 	}
+
+	g_print("session_read_data_cb(): read %d bytes\n", read_len);
 
 	data_buf = session->read_data_buf;
 
