@@ -1,3 +1,7 @@
+2004-02-09 Thorsten Maerz <torte@netztorte.de>
+	* src/main.c
+		enable customizable accelerators
+
 2004-02-08 Thorsten Maerz <torte@netztorte.de>
 	* src/prefs_common.c
 		re-enable different font settings for gtk1/2

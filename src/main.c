@@ -231,6 +231,10 @@ int main(int argc, char *argv[])
 	gtk_accel_map_load (userrc);
 	g_free(userrc);
 
+	gtk_settings_set_long_property(gtk_settings_get_default(), 
+				       "gtk-can-change-accels",
+				       (glong)TRUE, "XProperty");
+
 	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), 1);
 
 	MAKE_DIR_IF_NOT_EXIST(RC_DIR);
