@@ -60,7 +60,7 @@ typedef struct _MsgColorsPage
 
 static GtkWidget *color_dialog;
 
-static void prefs_quote_colors_key_pressed	(GtkWidget	*widget,
+static gboolean prefs_quote_colors_key_pressed	(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gpointer	 data);
 static void quote_color_set_dialog		(GtkWidget	*widget,
@@ -69,7 +69,7 @@ static void quote_colors_set_dialog_ok		(GtkWidget	*widget,
 						 gpointer	 data);
 static void quote_colors_set_dialog_cancel	(GtkWidget	*widget,
 						 gpointer	 data);
-static void quote_colors_set_dialog_key_pressed	(GtkWidget	*widget,
+static gboolean quote_colors_set_dialog_key_pressed	(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gpointer	 data);
 static void set_button_bg_color			(GtkWidget	*widget,
@@ -224,7 +224,7 @@ void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_msg_colors->page.widget = table;
 }
 
-static void prefs_quote_colors_key_pressed(GtkWidget *widget,
+static gboolean prefs_quote_colors_key_pressed(GtkWidget *widget,
 					   GdkEventKey *event, gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
@@ -338,7 +338,7 @@ static void quote_colors_set_dialog_cancel(GtkWidget *widget, gpointer data)
 	gtk_widget_destroy(color_dialog);
 }
 
-static void quote_colors_set_dialog_key_pressed(GtkWidget *widget,
+static gboolean quote_colors_set_dialog_key_pressed(GtkWidget *widget,
 						GdkEventKey *event,
 						gpointer data)
 {
