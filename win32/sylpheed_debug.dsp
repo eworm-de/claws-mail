@@ -409,6 +409,10 @@ SOURCE=..\src\nntp.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\noticeview.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\passphrase.c
 # End Source File
 # Begin Source File
@@ -902,6 +906,10 @@ SOURCE=..\src\news.h
 # Begin Source File
 
 SOURCE=..\src\nntp.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\noticeview.h
 # End Source File
 # Begin Source File
 

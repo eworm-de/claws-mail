@@ -103,6 +103,11 @@ NoticeView *noticeview_create(void)
 	return noticeview;
 }
 
+void noticeview_destroy(NoticeView *noticeview)
+{
+	g_free(noticeview);
+}
+
 gboolean noticeview_is_visible(NoticeView *noticeview)
 {
 	return noticeview->visible;
