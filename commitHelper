@@ -8,6 +8,7 @@ if [ "$1" == "--syncgtk2" ]; then
 	cat configure.ac | sed "s/^EXTRA_GTK2_VERSION=.*/EXTRA_GTK2_VERSION=.0/" > configure.ac.new \
 		&& mv configure.ac.new configure.ac ;	
 fi;
+args=`echo $@`
 
 head -16 configure.ac | grep VERSION= > /tmp/commitTool.tmp
 source /tmp/commitTool.tmp
@@ -111,7 +112,7 @@ if [ "$ans" == "y" ]; then
 	
 	echo "$patchset" >> PATCHSETS
 
-	if [ "$@" != "" ]; then
+	if [ "$args" != "" ]; then
 		echo commiting $@ PATCHSETS $chlog configure.ac
 		cvs commit -m "`cat /tmp/logentry`" $@ PATCHSETS $chlog configure.ac
 	else
