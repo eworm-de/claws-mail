@@ -283,7 +283,7 @@ static gint disposition_notification_queue(PrefsAccount * account,
 	return 0;
 }
 
-static gint disposition_notification_send(MsgInfo	*msginfo)
+static gint disposition_notification_send(MsgInfo *msginfo)
 {
 	gchar buf[BUFFSIZE];
 	gchar tmp[MAXPATHLEN + 1];

@@ -1,3 +1,11 @@
+2002-10-18 [christoph]	0.8.5claws44
+
+	* src/textview.c
+		don't add a newline in the textview in front of the
+		first textpart if header display is disabled
+		(closes bug [ 603385 ] disabled header display leaves blank
+		 lin)
+
 2002-10-18 [christoph]	0.8.5claws43
 
 	* src/folder.[ch]
