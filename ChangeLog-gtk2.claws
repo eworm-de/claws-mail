@@ -1,3 +1,9 @@
+2004-09-14 [colin]	0.9.12cvs99.4
+
+	* src/action.c
+		Fix action output with utf8 
+		Patch by Alfons.
+
 2004-09-14 [colin]	0.9.12cvs99.3
 
 	* ChangeLog.claws

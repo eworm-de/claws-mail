@@ -1309,7 +1309,18 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 			c = read(source, buf, sizeof(buf) - 1);
 			if (c == 0)
 				break;
- 			gtk_text_buffer_insert(textbuf, &iter2, buf, c);
+			else {
+				gssize by_read = 0, by_written = 0;
+				gchar *ret_str = g_locale_to_utf8(buf, c, &by_read,
+								  &by_written, NULL);
+								  
+				if (ret_str && by_written) {
+					gtk_text_buffer_insert(textbuf, &iter2, 
+							       ret_str, by_written);
+					g_free(ret_str);
+				} else
+					gtk_text_buffer_insert(textbuf, &iter2, buf, c);
+			}				
 		}
  		if (child_info->children->is_selection) {
  			gtk_text_buffer_place_cursor(textbuf, &iter1);
@@ -1318,8 +1329,20 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 		}
 	} else {
 		c = read(source, buf, sizeof(buf) - 1);
-		for (i = 0; i < c; i++)
-			g_string_append_c(child_info->output, buf[i]);
+		
+		if (c > 0) {
+			gssize by_read = 0, by_written = 0;
+			gchar *ret_str = g_locale_to_utf8(buf, c, &by_read,
+							  &by_written, NULL);
+							  
+			if (ret_str && by_written) {
+				g_string_append_len(child_info->output,
+						    ret_str, by_written);
+				g_free(ret_str);						    
+			} else
+				g_string_append_len(child_info->output, buf, c);
+		}
+		
 		if (c > 0)
 			child_info->new_out = TRUE;
 	}
