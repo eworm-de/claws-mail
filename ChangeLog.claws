@@ -1,4 +1,9 @@
-2003-06-21 [christoph]	0.9.0.claws52
+2003-06-21 [alfons]	0.9.0claws53
+
+	* src/summaryview.c
+		quiet little compiler
+
+2003-06-21 [christoph]	0.9.0claws52
 
 	update gettext stuff to version 0.12
 
