@@ -178,6 +178,8 @@ int main(int argc, char *argv[])
 
 #ifdef CRASH_DIALOG
 	if (cmd.crash) {
+		gtk_set_locale();
+		gtk_init(&argc, &argv);
 		crash_main(cmd.crash_params);
 		return 0;
 	}
