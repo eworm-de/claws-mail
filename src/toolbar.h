@@ -39,13 +39,12 @@ typedef enum
 	A_EXECUTE,
 	A_GOTO_NEXT,
 	A_SYL_ACTIONS,
-	A_COMPOSE_NEWS, 
 	
 	N_ACTION_VAL
 } CTActionVal;
 
-#define A_SEPARATOR    N_ACTION_VAL + 1
-
+#define A_COMPOSE_NEWS N_ACTION_VAL + 1
+#define A_SEPARATOR    N_ACTION_VAL + 2
 
 typedef struct _ToolbarAction ToolbarAction;
 struct _ToolbarAction

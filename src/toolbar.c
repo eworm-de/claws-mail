@@ -858,8 +858,11 @@ void toolbar_create(MainWindow *mainwin,
 	GtkWidget *icon_news = NULL;
 	GtkWidget *item_news = NULL;
 	GtkWidget *item;
+	GtkTooltips *toolbar_tips;
 	ToolbarSylpheedActions *syl_action;
 	GSList *cur;
+
+ 	toolbar_tips = gtk_tooltips_new();
 
 	toolbar_destroy(mainwin);
 	toolbar_read_config_file();
@@ -894,12 +897,21 @@ void toolbar_create(MainWindow *mainwin,
 		switch (toolbar_item->action) {
 		case A_RECEIVE_ALL:
 			mainwin->toolbar->getall_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     mainwin->toolbar->getall_btn, 
+					   _("Receive Mail on all Accounts"), NULL);
 			break;
 		case A_RECEIVE_CUR:
 			mainwin->toolbar->get_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     mainwin->toolbar->get_btn,
+					   _("Receive Mail on current Account"), NULL);
 			break;
 		case A_SEND_QUEUED:
 			mainwin->toolbar->send_btn = item; 
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     mainwin->toolbar->send_btn,
+					   _("Send Queued Message(s)"), NULL);
 			break;
 		case A_COMPOSE_EMAIL:
 			icon_news = stock_pixmap_widget(container, STOCK_PIXMAP_NEWS_COMPOSE);
@@ -910,10 +922,19 @@ void toolbar_create(MainWindow *mainwin,
 							    icon_news, toolbar_actions_cb, 
 							    toolbar_item);
 			mainwin->toolbar->compose_mail_btn = item; 
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     mainwin->toolbar->compose_mail_btn,
+					   _("Compose Email"), NULL);
 			mainwin->toolbar->compose_news_btn = item_news;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     mainwin->toolbar->compose_news_btn,
+					   _("Compose News"), NULL);
 			break;
 		case A_REPLY_MESSAGE:
 			mainwin->toolbar->reply_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     mainwin->toolbar->reply_btn,
+					   _("Reply to Message"), NULL);
 			gtk_signal_connect(GTK_OBJECT(mainwin->toolbar->reply_btn), 
 					   "button_press_event",
 					   GTK_SIGNAL_FUNC(toolbar_reply_popup_cb),
@@ -921,6 +942,9 @@ void toolbar_create(MainWindow *mainwin,
 			break;
 		case A_REPLY_SENDER:
 			mainwin->toolbar->replysender_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     mainwin->toolbar->replysender_btn,
+					   _("Reply to Sender"), NULL);
 			gtk_signal_connect(GTK_OBJECT(mainwin->toolbar->replysender_btn), 
 					   "button_press_event",
 					   GTK_SIGNAL_FUNC(toolbar_reply_to_sender_popup_cb),
@@ -928,6 +952,9 @@ void toolbar_create(MainWindow *mainwin,
 			break;
 		case A_REPLY_ALL:
 			mainwin->toolbar->replyall_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     mainwin->toolbar->replyall_btn,
+					   _("Reply to All"), NULL);
 			gtk_signal_connect(GTK_OBJECT(mainwin->toolbar->replyall_btn), 
 					   "button_press_event",
 					   GTK_SIGNAL_FUNC(toolbar_reply_to_all_popup_cb),
@@ -935,6 +962,9 @@ void toolbar_create(MainWindow *mainwin,
 			break;
 		case A_FORWARD:
 			mainwin->toolbar->fwd_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     mainwin->toolbar->fwd_btn,
+					   _("Forward Message"), NULL);
 			gtk_signal_connect(GTK_OBJECT(mainwin->toolbar->fwd_btn), 
 					   "button_press_event",
 					   GTK_SIGNAL_FUNC(toolbar_forward_popup_cb),
@@ -942,12 +972,21 @@ void toolbar_create(MainWindow *mainwin,
 			break;
 		case A_DELETE:
 			mainwin->toolbar->delete_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     mainwin->toolbar->delete_btn,
+					   _("Delete Message"), NULL);
 			break;
 		case A_EXECUTE:
 			mainwin->toolbar->exec_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     mainwin->toolbar->exec_btn,
+					   _("Execute"), NULL);
 			break;
 		case A_GOTO_NEXT:
 			mainwin->toolbar->next_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     mainwin->toolbar->next_btn,
+					   _("Goto Next Message"), NULL);
 			break;
 		case A_SYL_ACTIONS:
 			syl_action = g_new0(ToolbarSylpheedActions, 1);
@@ -963,24 +1002,6 @@ void toolbar_create(MainWindow *mainwin,
 		}
 	}
 
-	/* we always create an exec button, if there isn't one yet */
-	if (!mainwin->toolbar->exec_btn) {
-		toolbar_item = g_new0(ToolbarItem, 1);
-		toolbar_item->action = A_EXECUTE;
-		toolbar_item->file   = stock_pixmap_get_name(STOCK_PIXMAP_EXEC);
-		toolbar_item->text   = toolbar_ret_text_from_val(A_EXECUTE);
-
-		icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_EXEC);
-		item = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-					       _("Execute"),
-					       toolbar_ret_descr_from_val(A_EXECUTE),
-					       (""),
-					       icon_wid, toolbar_actions_cb,
-					       toolbar_item);
-		mainwin->toolbar->exec_btn = item;
-		g_free(toolbar_item);
-	}
-	
 	mainwin->toolbar->toolbar = toolbar;
 	
 	activate_compose_button(mainwin->toolbar, 
