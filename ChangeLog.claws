@@ -1,3 +1,12 @@
+2002-11-09 [christoph]	0.8.5claws109
+
+	* src/folder.[ch]
+	* src/folderview.c
+		add functions to open and close a folder
+		o opending call execute scanning for remote folders
+		  and processing
+		o closing will unset new flag for messages
+
 2002-11-09 [colin]	0.8.5claws108
 
 	* src/folder.c

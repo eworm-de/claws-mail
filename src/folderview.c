@@ -1632,6 +1632,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	static gboolean can_select = TRUE;	/* exclusive lock */
 	gboolean opened;
 	FolderItem *item;
+	gchar *buf;
 
 	folderview->selected = row;
 
@@ -1663,6 +1664,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			/* will be null if we just moved the previously opened folder */
 			folder_item_write_cache(olditem);
 			summary_save_prefs_to_folderitem(folderview->summaryview, olditem);
+			folder_item_close(olditem);
 		}
 	}
 
@@ -1690,28 +1692,23 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			gdk_pointer_ungrab(GDK_CURRENT_TIME);
 	}
 
-	if(((item->folder->type == F_IMAP) && !item->no_select) || (item->folder->type == F_NEWS)) {
-		folder_item_scan(item);
-	}
+	/* Open Folder */
+	buf = g_strdup_printf(_("Opening Folder %s..."), item->path);
+	debug_print("%s\n", buf);
+	STATUSBAR_PUSH(folderview->mainwin, buf);
+	g_free(buf);
 
-	/* Processing */
-	if(item->prefs->processing != NULL) {
-		gchar *buf;
-		
-		buf = g_strdup_printf(_("Processing (%s)..."), item->path);
-		debug_print("%s\n", buf);
-		STATUSBAR_PUSH(folderview->mainwin, buf);
-		g_free(buf);
+	main_window_cursor_wait(folderview->mainwin);
 	
-		main_window_cursor_wait(folderview->mainwin);
-	
-		folder_item_apply_processing(item);
-
-		debug_print("done.\n");
+	if (folder_item_open(item) != 0) {
 		STATUSBAR_POP(folderview->mainwin);
 		main_window_cursor_normal(folderview->mainwin);
-	}
-		
+
+		alertpanel_error(_("Folder cound not be opened."));
+
+		return;
+        }
+
 	/* Show messages */
 	summary_set_prefs_from_folderitem(folderview->summaryview, item);
 	opened = summary_show(folderview->summaryview, item);
@@ -1727,6 +1724,9 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		    != GTK_VISIBILITY_FULL)
 			gtk_ctree_node_moveto(ctree, row, -1, 0.5, 0);
 	}
+
+	STATUSBAR_POP(folderview->mainwin);
+	main_window_cursor_normal(folderview->mainwin);
 
 	folderview->open_folder = FALSE;
 	can_select = TRUE;

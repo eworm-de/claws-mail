@@ -941,6 +941,50 @@ static gint folder_sort_folder_list(gconstpointer a, gconstpointer b)
 	return (gint_a - gint_b);
 }
 
+gint folder_item_open(FolderItem *item)
+{
+	if(((item->folder->type == F_IMAP) && !item->no_select) || (item->folder->type == F_NEWS)) {
+		folder_item_scan(item);
+	}
+
+	/* Processing */
+	if(item->prefs->processing != NULL) {
+		gchar *buf;
+		
+		buf = g_strdup_printf(_("Processing (%s)...\n"), item->path);
+		debug_print("%s\n", buf);
+		g_free(buf);
+	
+		folder_item_apply_processing(item);
+
+		debug_print("done.\n");
+	}
+
+	return 0;
+}
+
+void folder_item_close(FolderItem *item)
+{
+	GSList *mlist, *cur;
+	
+	g_return_if_fail(item != NULL);
+	
+	mlist = folder_item_get_msg_list(item);
+	
+	for (cur = mlist ; cur != NULL ; cur = cur->next) {
+		MsgInfo * msginfo;
+
+		msginfo = (MsgInfo *) cur->data;
+		if (MSG_IS_NEW(msginfo->flags))
+			procmsg_msginfo_unset_flags(msginfo, MSG_NEW, 0);
+		procmsg_msginfo_free(msginfo);
+	}
+	
+	folder_update_item(item, FALSE);
+
+	g_slist_free(mlist);
+}
+
 gint folder_item_scan(FolderItem *item)
 {
 	Folder *folder;

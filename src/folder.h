@@ -343,6 +343,8 @@ void folder_unref_account_all		(PrefsAccount	*account);
 gchar *folder_get_path			(Folder		*folder);
 gchar *folder_item_get_path		(FolderItem	*item);
 
+gint   folder_item_open			(FolderItem	*item);
+void   folder_item_close		(FolderItem	*item);
 gint   folder_item_scan			(FolderItem	*item);
 void   folder_item_scan_foreach		(GHashTable	*table);
 MsgInfo *folder_item_fetch_msginfo	(FolderItem 	*item,
