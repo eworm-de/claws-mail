@@ -263,7 +263,6 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 		return NULL;
     	}
 
-	fprintf(dstfp, "MIME-Version: 1.0\n");
 	gpgme_data_rewind (plain);
 	while (gpgme_data_read(plain, buf, sizeof(buf), &nread) == GPGME_No_Error) {
       		fwrite (buf, nread, 1, dstfp);

@@ -64,6 +64,8 @@ static struct Filtering {
 	GtkWidget *cond_clist;
 } filtering;
 
+static GSList ** p_processing_list = NULL;
+
 /* widget creating functions */
 static void prefs_filtering_create		(void);
 
@@ -87,7 +89,7 @@ static void prefs_filtering_select	(GtkCList	*clist,
 static gint prefs_filtering_deleted	(GtkWidget	*widget,
 					 GdkEventAny	*event,
 					 gpointer	 data);
-static gboolean prefs_filtering_key_pressed	(GtkWidget	*widget,
+static gboolean prefs_filtering_key_pressed(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
 static void prefs_filtering_cancel	(void);
@@ -101,32 +103,13 @@ static void prefs_filtering_reset_dialog	(void);
 static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data);
 static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data);
 
-static FolderItem * cur_item = NULL; /* folder (if dialog opened for processing) */
+static void delete_path(GSList ** p_filters, const gchar * path);
 
-typedef enum Action_ {
-	ACTION_MOVE,
-	ACTION_COPY,
-	ACTION_DELETE,
-	ACTION_MARK,
-	ACTION_UNMARK,
-	ACTION_LOCK,
-	ACTION_UNLOCK,
-	ACTION_MARK_AS_READ,
-	ACTION_MARK_AS_UNREAD,
-	ACTION_FORWARD,
-	ACTION_FORWARD_AS_ATTACHMENT,
-	ACTION_REDIRECT,
-	ACTION_EXECUTE,
-	ACTION_COLOR,
-	/* add other action constants */
-} Action;
-
-void prefs_filtering_open(FolderItem * item,
+void prefs_filtering_open(GSList ** p_processing,
+			  const gchar * title,
 			  const gchar *header,
 			  const gchar *key)
 {
-	gchar *esckey;
-
 	if (prefs_rc_is_readonly(FILTERING_RC))
 		return;
 
@@ -138,12 +121,16 @@ void prefs_filtering_open(FolderItem * item,
 
 	manage_window_set_transient(GTK_WINDOW(filtering.window));
 	gtk_widget_grab_focus(filtering.ok_btn);
-
-	cur_item = item;
-
-	esckey = matcher_escape_str(key);
-	prefs_filtering_set_dialog(header, esckey);
-	g_free(esckey);
+	
+	if (title != NULL)
+		gtk_window_set_title(GTK_WINDOW(filtering.window), title);
+	else
+		gtk_window_set_title (GTK_WINDOW(filtering.window),
+				      _("Filtering/Processing configuration"));
+	
+        p_processing_list = p_processing;
+        
+	prefs_filtering_set_dialog(header, key);
 
 	gtk_widget_show(filtering.window);
 
@@ -384,25 +371,32 @@ static void prefs_filtering_update_hscrollbar(void)
 	gtk_clist_set_column_width(GTK_CLIST(filtering.cond_clist), 0, optwidth);
 }
 
+static void rename_path(GSList * filters,
+			const gchar * old_path, const gchar * new_path);
+
 void prefs_filtering_rename_path(const gchar *old_path, const gchar *new_path)
 {
 	GList * cur;
-	gchar *paths[2] = {NULL, NULL};
-	paths[0] = (gchar*)old_path;
-	paths[1] = (gchar*)new_path;
+	const gchar *paths[2] = {NULL, NULL};
+	paths[0] = old_path;
+	paths[1] = new_path;
 	for (cur = folder_get_list() ; cur != NULL ; cur = g_list_next(cur)) {
 		Folder *folder;
 		folder = (Folder *) cur->data;
 		g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
 				prefs_filtering_rename_path_func, paths);
 	}
-	prefs_filtering_rename_path_func(NULL, paths);
+        
+	rename_path(pre_global_processing, old_path, new_path);
+	rename_path(post_global_processing, old_path, new_path);
+	rename_path(filtering_rules, old_path, new_path);
+        
+	prefs_matcher_write_config();
 }
 
-static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data)
+static void rename_path(GSList * filters,
+			const gchar * old_path, const gchar * new_path)
 {
-	GSList *cur;
-	gchar *old_path, *new_path;
 	gchar *base;
 	gchar *prefix;
 	gchar *suffix;
@@ -413,26 +407,12 @@ static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data)
 	gint oldpathlen;
 	FolderItem *item;
         GSList * action_cur;
-
-	old_path = ((gchar **)data)[0];
-	new_path = ((gchar **)data)[1];
-
-	g_return_val_if_fail(old_path != NULL, FALSE);
-	g_return_val_if_fail(new_path != NULL, FALSE);
+        GSList * cur;
 
 	oldpathlen = strlen(old_path);
 	old_path_with_sep = g_strconcat(old_path,G_DIR_SEPARATOR_S,NULL);
-	if (node == NULL)
-		cur = global_processing;
-	else {
-		item = node->data;
-		if (!item || !item->prefs) 
-			return FALSE;
-		cur = item->prefs->processing;
-	}
 
-
-	for (; cur != NULL; cur = cur->next) {
+	for (cur = filters; cur != NULL; cur = cur->next) {
 		FilteringProp   *filtering = (FilteringProp *)cur->data;
                 
                 for(action_cur = filtering->action_list ; action_cur != NULL ;
@@ -482,7 +462,7 @@ static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data)
                                 }
                         } else {
                                 /* folder-moving a leaf */
-                                if (!strcmp(old_path, action->destination)) {		
+                                if (!strcmp(old_path, action->destination)) {
                                         dest_path = g_strdup(new_path);
                                         g_free(action->destination);
                                         action->destination = dest_path;
@@ -490,9 +470,30 @@ static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data)
                         }
                 }
         }
+}
+
+static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data)
+{
+	GSList *filters;
+	const gchar * old_path;
+        const gchar * new_path;
+        const gchar ** paths;
+	FolderItem *item;
         
-	g_free(old_path_with_sep);
-	prefs_matcher_write_config();
+        paths = data;
+	old_path = paths[0];
+	new_path = paths[1];
+
+	g_return_val_if_fail(old_path != NULL, FALSE);
+	g_return_val_if_fail(new_path != NULL, FALSE);
+	g_return_val_if_fail(node != NULL, FALSE);
+
+        item = node->data;
+        if (!item || !item->prefs)
+                return FALSE;
+        filters = item->prefs->processing;
+
+        rename_path(filters, old_path, new_path);
 
 	return FALSE;
 }
@@ -506,32 +507,27 @@ void prefs_filtering_delete_path(const gchar *path)
 		g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
 				prefs_filtering_delete_path_func, (gchar *)path);
 	}
-	prefs_filtering_delete_path_func(NULL, (gchar *)path);
+        delete_path(&pre_global_processing, path);
+        delete_path(&post_global_processing, path);
+        delete_path(&filtering_rules, path);
+        
+	prefs_matcher_write_config();
 }
 
-static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data)
+static void delete_path(GSList ** p_filters, const gchar * path)
 {
-	GSList *cur, *filters, *duplist;
-	gchar *path = (gchar *) data;
+        GSList * filters;
+        GSList * duplist;
 	gchar *suffix;
 	gint destlen;
 	gint prefixlen;
 	gint pathlen;
 	FolderItem *item;
         GSList * action_cur;
-	
-	g_return_val_if_fail(path != NULL, FALSE);
-
+	GSList * cur;
+        
+	filters = *p_filters;
 	pathlen = strlen(path);
-	if (node == NULL)
-		filters = global_processing;
-	else {
-		item = node->data;
-		if (!item || !item->prefs)
-			return FALSE;
-		filters = item->prefs->processing;
-	}
-
 	duplist = g_slist_copy(filters);
 	for (cur = duplist ; cur != NULL; cur = g_slist_next(cur)) {
 		FilteringProp *filtering = (FilteringProp *) cur->data;
@@ -562,17 +558,25 @@ static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data)
                 }
         }                
 	g_slist_free(duplist);
-
-        if (node == NULL)
-                global_processing = filters;
-        else {
-                item = node->data;
-                if (!item || !item->prefs)
-			return FALSE;
-                item->prefs->processing = filters;
-        }
         
-	prefs_matcher_write_config();
+        * p_filters = filters;
+}
+
+static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data)
+{
+	const gchar *path = data;
+	FolderItem *item;
+        GSList ** p_filters;
+	
+	g_return_val_if_fail(path != NULL, FALSE);
+	g_return_val_if_fail(node != NULL, FALSE);
+
+        item = node->data;
+        if (!item || !item->prefs)
+                return FALSE;
+        p_filters = &item->prefs->processing;
+        
+        delete_path(p_filters, path);
 
 	return FALSE;
 }
@@ -592,10 +596,7 @@ static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 	row = gtk_clist_append(clist, cond_str);
 	gtk_clist_set_row_data(clist, row, NULL);
 
-	if (cur_item == NULL)
-		prefs_filtering = global_processing;
-	else
-		prefs_filtering = cur_item->prefs->processing;
+        prefs_filtering = * p_processing_list;
 
 	for(cur = prefs_filtering ; cur != NULL ; cur = g_slist_next(cur)) {
 		FilteringProp * prop = (FilteringProp *) cur->data;
@@ -614,9 +615,15 @@ static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 	prefs_filtering_reset_dialog();
 
 	if (header && key) {
-		gchar *match_str = g_strconcat(header, " ",
-			get_matchparser_tab_str(MATCHTYPE_MATCHCASE),
-			" \"", key, "\"", NULL);
+		gchar * quoted_key;
+		gchar *match_str;
+
+		quoted_key = matcher_quote_str(key);
+		
+		match_str = g_strconcat(header, " ", get_matchparser_tab_str(MATCHTYPE_MATCHCASE),
+					" \"", quoted_key, "\"", NULL);
+		g_free(quoted_key);
+		
 		gtk_entry_set_text(GTK_ENTRY(filtering.cond_entry), match_str);
 		g_free(match_str);
 	}
@@ -636,10 +643,7 @@ static void prefs_filtering_set_list(void)
 	gchar * filtering_str;
 	GSList * prefs_filtering;
 
-	if (cur_item == NULL)
-		prefs_filtering = global_processing;
-	else
-		prefs_filtering = cur_item->prefs->processing;
+        prefs_filtering = * p_processing_list;
 
 	for(cur = prefs_filtering ; cur != NULL ; cur = g_slist_next(cur))
 		filteringprop_free((FilteringProp *) cur->data);
@@ -657,10 +661,7 @@ static void prefs_filtering_set_list(void)
 		row++;
 	}
 
-	if (cur_item == NULL)
-		global_processing = prefs_filtering;
-	else
-		cur_item->prefs->processing = prefs_filtering;
+        * p_processing_list = prefs_filtering;
 }
 
 static gint prefs_filtering_clist_set_row(gint row, FilteringProp * prop)
@@ -976,7 +977,7 @@ static gboolean prefs_filtering_key_pressed(GtkWidget *widget, GdkEventKey *even
 {
 	if (event && event->keyval == GDK_Escape)
 		prefs_filtering_cancel();
-	return FALSE;
+	return TRUE;			
 }
 
 static void prefs_filtering_ok(void)

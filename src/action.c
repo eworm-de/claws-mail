@@ -50,6 +50,8 @@
 #include "compose.h"
 #include "procmsg.h"
 #include "textview.h"
+#include "matcher_parser.h" /* CLAWS */
+#include "filtering.h"
 
 typedef struct _Children		Children;
 typedef struct _ChildInfo		ChildInfo;
@@ -113,6 +115,9 @@ static void msgview_actions_execute_cb	(MessageView	*msgview,
 static void message_actions_execute	(MessageView	*msgview,
 					 guint		 action_nb,
 					 GSList		*msg_list);
+
+static gboolean execute_filtering_actions(gchar		*action, 
+					  GSList	*msglist);
 
 static gboolean execute_actions		(gchar		*action, 
 					 GSList		*msg_list, 
@@ -192,8 +197,18 @@ ActionType action_get_type(const gchar *action_str)
 		return ACTION_ERROR;
 
 	while (*p && action_type != ACTION_ERROR) {
-		if (p[0] == '%') {
+		if (p[0] == '%' && p[1]) {
 			switch (p[1]) {
+			case 'a':
+				/* CLAWS: filtering action is a mutually exclusive
+				 * action. we can enable others if needed later. we
+				 * add ACTION_SINGLE | ACTION_MULTIPLE so it will
+				 * only be executed from the main window toolbar */
+				if (p[2] == 's')  /* source messages */
+					action_type = ACTION_FILTERING_ACTION 
+						    | ACTION_SINGLE 
+						    | ACTION_MULTIPLE;
+				break;
 			case 'f':
 				action_type |= ACTION_SINGLE;
 				break;
@@ -358,7 +373,7 @@ static gboolean parse_append_msgpart(GString *cmd, MsgInfo *msginfo,
 	filename = procmsg_get_message_file_path(msginfo);
 	part_filename = procmime_get_tmp_file_name(partinfo);
 
-	ret = procmime_get_part(part_filename, filename, partinfo); 
+	ret = procmime_get_part(part_filename, partinfo);
 
 	if (single_part)
 		procmime_mimeinfo_free_all(partinfo);
@@ -472,7 +487,7 @@ static void compose_actions_execute_cb(Compose *compose, guint action_nb,
 	if (action_type & (ACTION_SINGLE | ACTION_MULTIPLE)) {
 		alertpanel_warning
 			(_("The selected action cannot be used in the compose window\n"
-			   "because it contains %%f, %%F or %%p."));
+			   "because it contains %%f, %%F, %%as or %%p."));
 		return;
 	}
 
@@ -533,7 +548,39 @@ static void message_actions_execute(MessageView *msgview, guint action_nb,
 	if (action_type & (ACTION_PIPE_OUT | ACTION_INSERT))
 		msgview->filtered = TRUE;
 
-	execute_actions(action, msg_list, text, body_pos, partinfo);
+	if (action_type & ACTION_FILTERING_ACTION) 
+		/* CLAWS: most of the above code is not necessary for applying
+		 * filtering */
+		execute_filtering_actions(action, msg_list);
+	else
+		execute_actions(action, msg_list, text, body_pos, partinfo);
+}
+
+static gboolean execute_filtering_actions(gchar *action, GSList *msglist)
+{
+	GSList *action_list, *p;
+	const gchar *sbegin, *send;
+	gchar *action_string;
+	
+	if (NULL == (sbegin = strstr2(action, "%as{")))
+		return FALSE;
+	sbegin += sizeof "%as{" - 1;
+	if (NULL == (send = strrchr(sbegin, '}')))
+		return FALSE;
+	action_string = g_strndup(sbegin, send - sbegin);
+	
+	action_list = matcher_parser_get_action_list(action_string);
+	g_free(action_string);
+	if (action_list == NULL) return FALSE;
+	
+	/* apply actions on each message info */
+	for (p = msglist; p && p->data; p = g_slist_next(p))
+		filteringaction_apply_action_list(action_list, (MsgInfo *) p->data);
+		
+	for (p = action_list; p; p = g_slist_next(p))
+		if (p->data) filteringaction_free(p->data);	
+	g_slist_free(action_list);		
+	return TRUE;	
 }
 
 static gboolean execute_actions(gchar *action, GSList *msg_list,
@@ -1017,7 +1064,10 @@ static void update_io_dialog(Children *children)
 		ChildInfo *child_info;
 		GtkTextBuffer *textbuf;
 		GtkTextIter iter, start_iter, end_iter;
+		GdkFont *font;
 
+		font = gtk_object_get_data(GTK_OBJECT(children->dialog), 
+					   "s_txtfont");
 		gtk_widget_show(children->scrolledwin);
 		textbuf = gtk_text_view_get_buffer (GTK_TEXT_VIEW(text));
 		gtk_text_buffer_get_start_iter (textbuf, &start_iter);
@@ -1058,6 +1108,7 @@ static void create_io_dialog(Children *children)
 	GtkWidget *progress_bar = NULL;
 	GtkWidget *abort_button;
 	GtkWidget *close_button;
+	GdkFont   *output_font;
 
 	debug_print("Creating action IO dialog\n");
 
@@ -1134,7 +1185,7 @@ static void create_io_dialog(Children *children)
 				children->initial_nb -children->nb,
 				0.0, children->initial_nb);
 
-		gtk_box_pack_start(GTK_BOX(vbox), progress_bar, TRUE, TRUE, 0);
+		gtk_box_pack_start(GTK_BOX(vbox), progress_bar, FALSE, FALSE, 0);
 		gtk_widget_show(progress_bar);
 	}
 
@@ -1160,6 +1211,13 @@ static void create_io_dialog(Children *children)
 	children->abort_btn    = abort_button;
 	children->close_btn    = close_button;
 
+#warning FIXME_GTK2 convert to Pango / FontDesc?
+#if 0
+	output_font = gtkut_font_load_from_fontset(prefs_common.textfont);
+	gtk_object_set_data_full(GTK_OBJECT(dialog), "s_txtfont",
+				 output_font, 
+				 (GtkDestroyNotify)gdk_font_unref); 
+#endif
 	gtk_widget_show(dialog);
 }
 

@@ -55,7 +55,6 @@
 #include "prefs_common.h"
 #include "prefs_account.h"
 #include "prefs_filtering.h"
-#include "prefs_scoring.h"
 #include "prefs_folder_item.h"
 #include "account.h"
 #include "folder.h"
@@ -191,15 +190,19 @@ static void mark_all_read_cb            (FolderView    *folderview,
 static void folderview_new_folder_cb	(FolderView	*folderview,
 					 guint		 action,
 					 GtkWidget	*widget);
+#if 0
 static void folderview_new_mbox_folder_cb(FolderView *folderview,
 					  guint action,
 					  GtkWidget *widget);
+#endif
 static void folderview_rename_folder_cb	(FolderView	*folderview,
 					 guint		 action,
 					 GtkWidget	*widget);
+#if 0
 static void folderview_rename_mbox_folder_cb(FolderView *folderview,
 					     guint action,
 					     GtkWidget *widget);
+#endif
 static void folderview_delete_folder_cb	(FolderView	*folderview,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -269,14 +272,13 @@ gboolean folderview_update_folder	 (gpointer 	    source,
 gboolean folderview_update_item		 (gpointer 	    source,
 					  gpointer	    data);
 
-static void folderview_scoring_cb(FolderView *folderview, guint action,
-				  GtkWidget *widget);
 static void folderview_processing_cb(FolderView *folderview, guint action,
 				     GtkWidget *widget);
 static void folderview_move_to(FolderView *folderview, FolderItem *from_folder,
 			       FolderItem *to_folder);
 static void folderview_move_to_cb(FolderView *folderview);
 
+#if 0
 static GtkItemFactoryEntry folderview_mbox_popup_entries[] =
 {
 	{N_("/Create _new folder..."),	NULL, folderview_new_mbox_folder_cb,    0, NULL},
@@ -290,6 +292,7 @@ static GtkItemFactoryEntry folderview_mbox_popup_entries[] =
 	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
 	{N_("/_Scoring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
+#endif
 
 static GtkItemFactoryEntry folderview_mail_popup_entries[] =
 {
@@ -309,7 +312,6 @@ static GtkItemFactoryEntry folderview_mail_popup_entries[] =
 	{N_("/_Search folder..."),	NULL, folderview_search_cb, 0, NULL},
 	{N_("/_Properties..."),		NULL, folderview_property_cb, 0, NULL},
 	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
-	{N_("/S_coring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
 
 static GtkItemFactoryEntry folderview_imap_popup_entries[] =
@@ -330,7 +332,6 @@ static GtkItemFactoryEntry folderview_imap_popup_entries[] =
 	{N_("/_Search folder..."),	NULL, folderview_search_cb, 0, NULL},
 	{N_("/_Properties..."),		NULL, folderview_property_cb, 0, NULL},
 	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
-	{N_("/S_coring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
 
 static GtkItemFactoryEntry folderview_news_popup_entries[] =
@@ -349,7 +350,6 @@ static GtkItemFactoryEntry folderview_news_popup_entries[] =
 	{N_("/_Search folder..."),	NULL, folderview_search_cb, 0, NULL},
 	{N_("/_Properties..."),		NULL, folderview_property_cb, 0, NULL},
 	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
-	{N_("/S_coring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
 
 GtkTargetEntry folderview_drag_types[] =
@@ -366,11 +366,15 @@ FolderView *folderview_create(void)
 	GtkWidget *mail_popup;
 	GtkWidget *news_popup;
 	GtkWidget *imap_popup;
+#if 0
 	GtkWidget *mbox_popup;
+#endif
 	GtkItemFactory *mail_factory;
 	GtkItemFactory *news_factory;
 	GtkItemFactory *imap_factory;
+#if 0
 	GtkItemFactory *mbox_factory;
+#endif
 	gint n_entries;
 	gint i;
 
@@ -441,12 +445,14 @@ FolderView *folderview_create(void)
 				       n_entries,
 				       "<NewsFolder>", &news_factory,
 				       folderview);
+#if 0
 	n_entries = sizeof(folderview_mbox_popup_entries) /
 		sizeof(folderview_mbox_popup_entries[0]);
 	mbox_popup = menu_create_items(folderview_mbox_popup_entries,
 				       n_entries,
 				       "<MboxFolder>", &mbox_factory,
 				       folderview);
+#endif
 
 	g_signal_connect(G_OBJECT(ctree), "key_press_event",
 			 G_CALLBACK(folderview_key_pressed),
@@ -485,9 +491,11 @@ FolderView *folderview_create(void)
 	g_signal_connect(G_OBJECT(news_popup), "selection_done",
 			 G_CALLBACK(folderview_popup_close),
 			 folderview);
+#if 0
 	g_signal_connect(G_OBJECT(mbox_popup), "selection_done",
 			 G_CALLBACK(folderview_popup_close),
 			 folderview);
+#endif
 
         /* drop callback */
 	gtk_drag_dest_set(ctree, GTK_DEST_DEFAULT_ALL & ~GTK_DEST_DEFAULT_HIGHLIGHT,
@@ -514,8 +522,10 @@ FolderView *folderview_create(void)
 	folderview->imap_factory = imap_factory;
 	folderview->news_popup   = news_popup;
 	folderview->news_factory = news_factory;
+#if 0
 	folderview->mbox_popup   = mbox_popup;
 	folderview->mbox_factory = mbox_factory;
+#endif
 
 	folderview->folder_update_callback_id =
 		hooks_register_hook(FOLDER_UPDATE_HOOKLIST, folderview_update_folder, (gpointer) folderview);
@@ -532,6 +542,8 @@ FolderView *folderview_create(void)
 
 void folderview_init(FolderView *folderview)
 {
+	static GdkFont *boldfont = NULL;
+	static GdkFont *normalfont = NULL;
 	GtkWidget *ctree = folderview->ctree;
 	GtkWidget *label_new;
 	GtkWidget *label_unread;
@@ -585,46 +597,6 @@ void folderview_init(FolderView *folderview)
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),COL_NEW,hbox_new);
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),COL_UNREAD,hbox_unread);
 			
-#if 0
-	if (!normalfont) {
-		if (gtkut_font_load(NORMAL_FONT) == NULL) {
-			GtkStyle *style = gtk_style_new();
-			normalfont = style->font;
-			gdk_font_ref(normalfont);
-			gtk_style_unref(style);
-		} 
-		else 
-			normalfont = gtkut_font_load(NORMAL_FONT);
-	}
-	
-	if (!boldfont) {
-		if (gtkut_font_load(BOLD_FONT) == NULL) {
-			GtkStyle *style = gtk_style_new();
-			boldfont = style->font;
-			gdk_font_ref(boldfont);
-			gtk_style_unref(style);
-		}
-		else
-			boldfont = gtkut_font_load(BOLD_FONT);
-	}
-#endif
-	
-	if (!bold_style) {
-		PangoFontDescription *font_desc;
-		bold_style = gtk_style_copy(gtk_widget_get_style(ctree));
-		font_desc = pango_font_description_from_string(BOLD_FONT);
-		if (font_desc) {
-			if (bold_style->font_desc)
-				pango_font_description_free
-					(bold_style->font_desc);
-			bold_style->font_desc = font_desc;
-		}
-		bold_color_style = gtk_style_copy(bold_style);
-		bold_color_style->fg[GTK_STATE_NORMAL] = folderview->color_new;
-
-		bold_tgtfold_style = gtk_style_copy(bold_style);
-		bold_tgtfold_style->fg[GTK_STATE_NORMAL] = folderview->color_op;
-	}
 	if (!normal_style) {
 		PangoFontDescription *font_desc;
 		normal_style = gtk_style_copy(gtk_widget_get_style(ctree));
@@ -637,6 +609,23 @@ void folderview_init(FolderView *folderview)
 		}
 		normal_color_style = gtk_style_copy(normal_style);
 		normal_color_style->fg[GTK_STATE_NORMAL] = folderview->color_new;
+	}
+
+	if (!bold_style) {
+		PangoFontDescription *font_desc;
+		bold_style = gtk_style_copy(gtk_widget_get_style(ctree));
+		font_desc = pango_font_description_from_string(prefs_common.boldfont);
+		if (font_desc) {
+			if (bold_style->font_desc)
+				pango_font_description_free
+					(bold_style->font_desc);
+			bold_style->font_desc = font_desc;
+		}
+		bold_color_style = gtk_style_copy(bold_style);
+		bold_color_style->fg[GTK_STATE_NORMAL] = folderview->color_new;
+
+		bold_tgtfold_style = gtk_style_copy(bold_style);
+		bold_tgtfold_style->fg[GTK_STATE_NORMAL] = folderview->color_op;
 	}
 }
 
@@ -895,6 +884,7 @@ gint folderview_check_new(Folder *folder)
 			if (item->no_select) continue;
 			if (folder && folder != item->folder) continue;
 			if (!folder && !FOLDER_IS_LOCAL(item->folder)) continue;
+			if (!item->prefs->newmailcheck) continue;
 
 			folderview_scan_tree_func(item->folder, item, NULL);
 			former_new = item->new_msgs;
@@ -1367,9 +1357,11 @@ void folderview_new_folder(FolderView *folderview)
 	g_return_if_fail(item->folder != NULL);
 
 	switch (FOLDER_TYPE(item->folder)) {
+#if 0
 	case F_MBOX:
 		folderview_new_mbox_folder_cb(folderview, 0, NULL);
 		break;
+#endif
 	case F_MH:
 	case F_MAILDIR:
 		folderview_new_folder_cb(folderview, 0, NULL);
@@ -1397,9 +1389,11 @@ void folderview_rename_folder(FolderView *folderview)
 	if (item->stype != F_NORMAL) return;
 
 	switch (FOLDER_TYPE(item->folder)) {
+#if 0
 	case F_MBOX:
 		folderview_rename_mbox_folder_cb(folderview, 0, NULL);
 		break;
+#endif
 	case F_MH:
 	case F_MAILDIR:
 	case F_IMAP:
@@ -1426,7 +1420,9 @@ void folderview_delete_folder(FolderView *folderview)
 
 	switch (FOLDER_TYPE(item->folder)) {
 	case F_MH:
+#if 0
 	case F_MBOX:
+#endif
 	case F_MAILDIR:
 	case F_IMAP:
 		folderview_delete_folder_cb(folderview, 0, NULL);
@@ -1510,7 +1506,7 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 		} else
 			mark_all_read = search_folder = folder_property = TRUE;
 			
-		if (FOLDER_IS_LOCAL(folder) || FOLDER_TYPE(folder) == F_IMAP || FOLDER_TYPE(folder) == F_MBOX) {
+		if (FOLDER_IS_LOCAL(folder) || FOLDER_TYPE(folder) == F_IMAP /* || FOLDER_TYPE(folder) == F_MBOX */) {
 			if (item->parent == NULL)
 				update_tree = rescan_tree = TRUE;
 			else if (item->stype == F_NORMAL)
@@ -1577,6 +1573,7 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 		SET_SENS(news_factory, "/Properties...", folder_property);
 		SET_SENS(news_factory, "/Processing...", folder_processing);
 		SET_SENS(news_factory, "/Scoring...", folder_scoring);
+#if 0
 	} else if (FOLDER_TYPE(folder) == F_MBOX) {
 		popup = folderview->mbox_popup;
 		menu_set_insensitive_all(GTK_MENU_SHELL(popup));
@@ -1587,6 +1584,7 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 		SET_SENS(news_factory, "/Properties...", folder_property);
 		SET_SENS(mbox_factory, "/Processing...", folder_processing);
 		SET_SENS(mbox_factory, "/Scoring...", folder_scoring);
+#endif
 	} else
 		return FALSE;
 
@@ -1942,6 +1940,7 @@ static void folderview_new_folder_cb(FolderView *folderview, guint action,
 	folder_write_list();
 }
 
+#if 0
 static void folderview_new_mbox_folder_cb(FolderView *folderview, guint action,
 					  GtkWidget *widget)
 {
@@ -1975,6 +1974,7 @@ static void folderview_new_mbox_folder_cb(FolderView *folderview, guint action,
 
 	folder_write_list();
 }
+#endif
 
 static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 					GtkWidget *widget)
@@ -2059,6 +2059,7 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 	folder_write_list();
 }
 
+#if 0
 static void folderview_rename_mbox_folder_cb(FolderView *folderview,
 					     guint action,
 					     GtkWidget *widget)
@@ -2113,6 +2114,7 @@ static void folderview_rename_mbox_folder_cb(FolderView *folderview,
 
 	folder_write_list();
 }
+#endif
 
 static void folderview_delete_folder_cb(FolderView *folderview, guint action,
 					GtkWidget *widget)
@@ -2360,8 +2362,8 @@ static void folderview_new_news_group_cb(FolderView *folderview, guint action,
 			folderview->opened = NULL;
 		}
 
-		folder_item_remove(item);
 		gtk_ctree_remove_node(ctree, node);
+		folder_item_remove(item);
 
 		gnode = next;
 	}
@@ -2429,7 +2431,6 @@ static void folderview_rm_news_group_cb(FolderView *folderview, guint action,
 	}
 
 	folder_item_remove(item);
-	gtk_ctree_remove_node(ctree, folderview->selected);
 	folder_write_list();
 	
 	prefs_filtering_delete_path(name);
@@ -2523,18 +2524,6 @@ static void folderview_recollapse_nodes(FolderView *folderview, GtkCTreeNode *no
 								 list->data);
 	}
 	g_slist_free(done);
-}
-
-static void folderview_recollapse_all_nodes(FolderView *folderview)
-{
-	GSList *list = folderview->nodes_to_recollapse;
-	if (!list) return;
-	for (; list != NULL; list = g_slist_next(list))
-		if (list->data) 
-			gtk_ctree_collapse(GTK_CTREE(folderview->ctree), 
-					   GTK_CTREE_NODE(list->data));
-	g_slist_free(folderview->nodes_to_recollapse);	
-	folderview->nodes_to_recollapse = NULL;
 }
 
 static void folderview_move_to_cb(FolderView *folderview) 
@@ -2634,21 +2623,6 @@ static gint folderview_compare_name(gconstpointer a, gconstpointer b)
 	return strcmp2(g_basename(item->path), name);
 }
 
-static void folderview_scoring_cb(FolderView *folderview, guint action,
-				   GtkWidget *widget)
-{
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
-	FolderItem *item;
-
-	if (!folderview->selected) return;
-
-	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
-
-	prefs_scoring_open(item);
-}
-
 static void folderview_processing_cb(FolderView *folderview, guint action,
 				     GtkWidget *widget)
 {
@@ -2661,7 +2635,8 @@ static void folderview_processing_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 
-	prefs_filtering_open(item, NULL, NULL);
+	prefs_filtering_open(&item->prefs->processing,
+			     _("Processing configuration"), NULL, NULL);
 }
 
 void folderview_set_target_folder_color(gint color_op) 
@@ -2829,7 +2804,9 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 		    src_item && src_item != item) {
 			switch (FOLDER_TYPE(item->folder)) {
 			case F_MH:
+#if 0
 			case F_MBOX:
+#endif
 			case F_IMAP:
 				acceptable = TRUE;
 				break;

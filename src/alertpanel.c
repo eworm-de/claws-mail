@@ -21,6 +21,7 @@
 #  include "config.h"
 #endif
 
+#include <stddef.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
@@ -31,7 +32,6 @@
 #include "utils.h"
 #include "gtkutils.h"
 #include "inc.h"
-#include "log.h"
 #include "logwindow.h"
 #include "prefs_common.h"
 

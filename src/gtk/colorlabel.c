@@ -323,8 +323,6 @@ guint colorlabel_get_color_menu_active_item(GtkWidget *menu)
 	GtkWidget *menuitem;
 	guint      color;
 
-	g_return_val_if_fail
-		(g_object_get_data(G_OBJECT(menu), "label_color_menu"), 0);
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	color = GPOINTER_TO_UINT
 		(g_object_get_data(G_OBJECT(menuitem), "color"));

@@ -55,7 +55,7 @@ ProgressDialog *progress_dialog_create(void)
 	debug_print("Creating progress dialog...\n");
 	progress = g_new0(ProgressDialog, 1);
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_widget_set_usize(window, 460, -1);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);

@@ -21,6 +21,7 @@
 #include <string.h>
 #include <glib.h>
 
+#include "matcher.h"
 #include "matcher_parser_lex.h"
 #include "matcher_parser_parse.h"
 
@@ -75,15 +76,6 @@ void matcher_parser_init(void)
 		BEGIN(string);
 		string_buf_ptr = string_buf;
 		}
-		/* alfons - OK, the new attempt is to just swallow 
-		 * *EVERYTHING* and make sure everything is escaped
-		 * when actually performing things. */
-<string>\\\"	{
-		/* take care of escaped \" because this means the
-		 * quote char should be skipped */
-		add_char('\\');
-		add_char('\"');
-		}
 <string>\"	{
 		/* get out of the state: string ends. */
 		BEGIN(0);
@@ -91,11 +83,15 @@ void matcher_parser_init(void)
 		yylval.str = string_buf;
 		return MATCHER_STRING;
 		}
-		/* put everything else in the output. */
+<string>\\.	{
+                /* take care of quoted characters */
+		add_char(yytext[1]);
+		}
 <string>.	{
 		add_char(yytext[0]);
 		}
 \[[^\[\]]*\]	{
+                /* for section name in configuration file */
 		BEGIN(0);
 		yylval.str = yytext + 1;
 		yytext[strlen(yytext) - 1] = '\0';

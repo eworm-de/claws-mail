@@ -38,8 +38,6 @@ AC_DEFUN([AM_PATH_OPENSSL],
 		AC_ARG_WITH(openssl-libs, [  --with-openssl-libs=PREFIX         Location of OpenSSL libs.],
 			with_openssl_libs="$withval")
 		if test "x${with_openssl_libs}" != "xno" -a "x${have_openssl_includes}" != "xno"; then
-			LIBS_save="$LIBS"
-	
 			case $with_openssl_libs in
 			""|-L*) ;;
 			*) with_openssl_libs="-L$with_openssl_libs" ;;
@@ -48,6 +46,7 @@ AC_DEFUN([AM_PATH_OPENSSL],
 			AC_CHECK_LIB(dl, dlopen, DL_LIBS="-ldl", DL_LIBS="")
 			AC_CACHE_CHECK([for OpenSSL libraries], openssl_libs,
 			[
+				LIBS_save="$LIBS"
 				LIBS="$LIBS $with_openssl_libs -lssl -lcrypto $DL_LIBS"
 				AC_TRY_LINK_FUNC(SSL_read, openssl_libs="yes", openssl_libs="no")
 				LIBS="$LIBS_save"

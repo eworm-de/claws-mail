@@ -19,10 +19,10 @@ bin_PROGRAMS = sylpheed
 sylpheed_SOURCES = \
 	account.c \
 	action.c \
-	addr_compl.c \
 	addrbook.c \
 	addrcache.c \
 	addrclip.c \
+	addr_compl.c \
 	addressadd.c \
 	addressbook.c \
 	addrgather.c \
@@ -32,6 +32,7 @@ sylpheed_SOURCES = \
 	addrquery.c \
 	addrselect.c \
 	alertpanel.c \
+	browseldap.c \
 	codeconv.c \
 	compose.c \
 	crash.c \
@@ -41,8 +42,8 @@ sylpheed_SOURCES = \
 	editbook.c \
 	editgroup.c \
 	editjpilot.c \
-	editldap.c \
 	editldap_basedn.c \
+	editldap.c \
 	editvcard.c \
 	enriched.c \
 	exphtmldlg.c \
@@ -67,11 +68,11 @@ sylpheed_SOURCES = \
 	inputdialog.c \
 	jpilot.c \
 	ldapctrl.c \
+	ldaplocate.c \
 	ldapquery.c \
 	ldapserver.c \
 	ldaputil.c \
 	ldif.c \
-	logwindow.c \
 	main.c \
 	mainwindow.c \
 	manual.c \
@@ -79,7 +80,6 @@ sylpheed_SOURCES = \
 	matcher_parser_lex.l \
 	matcher_parser_parse.y \
 	mbox.c \
-	mbox_folder.c \
 	message_search.c \
 	messageview.c \
 	mh.c \
@@ -89,6 +89,7 @@ sylpheed_SOURCES = \
 	news.c \
 	noticeview.c \
 	passphrase.c \
+	pgpmime.c \
 	pine.c \
 	pop.c \
 	prefs_account.c \
@@ -96,30 +97,29 @@ sylpheed_SOURCES = \
 	prefs_common.c \
 	prefs_customheader.c \
 	prefs_display_header.c \
-	prefs_filtering.c \
 	prefs_filtering_action.c \
+	prefs_filtering.c \
 	prefs_folder_item.c \
+	prefs_fonts.c \
 	prefs_gtk.c \
 	prefs_matcher.c \
-	prefs_scoring.c \
 	prefs_spelling.c \
 	prefs_summary_column.c \
 	prefs_template.c \
 	prefs_toolbar.c \
+	privacy.c \
 	procheader.c \
 	procmime.c \
 	procmsg.c \
-	progressdialog.c \
 	quote_fmt.c \
 	quote_fmt_lex.l \
 	quote_fmt_parse.y \
 	recv.c \
 	rfc2015.c \
-	scoring.c \
 	select-keys.c \
 	send_message.c \
 	setup.c \
-	sigstatus.c \
+	sgpgme.c \
 	simple-gettext.c \
 	sourcewindow.c \
 	ssl_manager.c \
@@ -132,6 +132,8 @@ sylpheed_SOURCES = \
 	toolbar.c \
 	undo.c \
 	unmime.c \
+	localfolder.c \
+	remotefolder.c \
 	vcard.c
 
 sylpheedincludedir = $(pkgincludedir)
@@ -139,10 +141,11 @@ sylpheedinclude_HEADERS = \
 	account.h \
 	action.h \
 	adbookbase.h \
-	addr_compl.h \
 	addrbook.h \
 	addrcache.h \
 	addrclip.h \
+	addr_compl.h \
+	addrdefs.h \
 	addressadd.h \
 	addressbook.h \
 	addressitem.h \
@@ -153,6 +156,7 @@ sylpheedinclude_HEADERS = \
 	addrquery.h \
 	addrselect.h \
 	alertpanel.h \
+	browseldap.h \
 	codeconv.h \
 	compose.h \
 	crash.h \
@@ -162,8 +166,8 @@ sylpheedinclude_HEADERS = \
 	editbook.h \
 	editgroup.h \
 	editjpilot.h \
-	editldap.h \
 	editldap_basedn.h \
+	editldap.h \
 	editvcard.h \
 	enriched.h \
 	exphtmldlg.h \
@@ -188,11 +192,11 @@ sylpheedinclude_HEADERS = \
 	inputdialog.h \
 	jpilot.h \
 	ldapctrl.h \
+	ldaplocate.h \
 	ldapquery.h \
 	ldapserver.h \
 	ldaputil.h \
 	ldif.h \
-	logwindow.h \
 	main.h \
 	mainwindow.h \
 	manual.h \
@@ -201,7 +205,6 @@ sylpheedinclude_HEADERS = \
 	matcher_parser_lex.h \
 	matcher_parser_parse.h \
 	mbox.h \
-	mbox_folder.h \
 	message_search.h \
 	messageview.h \
 	mh.h \
@@ -211,6 +214,7 @@ sylpheedinclude_HEADERS = \
 	news.h \
 	noticeview.h \
 	passphrase.h \
+	pgpmime.h \
 	pine.h \
 	pop.h \
 	prefs_account.h \
@@ -218,30 +222,29 @@ sylpheedinclude_HEADERS = \
 	prefs_common.h \
 	prefs_customheader.h \
 	prefs_display_header.h \
-	prefs_filtering.h \
 	prefs_filtering_action.h \
+	prefs_filtering.h \
 	prefs_folder_item.h \
+	prefs_fonts.h \
 	prefs_gtk.h \
 	prefs_matcher.h \
-	prefs_scoring.h \
 	prefs_spelling.h \
 	prefs_summary_column.h \
 	prefs_template.h \
 	prefs_toolbar.h \
+	privacy.h \
 	procheader.h \
 	procmime.h \
 	procmsg.h \
-	progressdialog.h \
 	quote_fmt.h \
 	quote_fmt_lex.h \
 	quote_fmt_parse.h \
 	recv.h \
 	rfc2015.h \
-	scoring.h \
 	select-keys.h \
 	send_message.h \
 	setup.h \
-	sigstatus.h \
+	sgpgme.h \
 	sourcewindow.h \
 	ssl_manager.h \
 	statusbar.h \
@@ -253,6 +256,8 @@ sylpheedinclude_HEADERS = \
 	toolbar.h \
 	undo.h \
 	unmime.h \
+	localfolder.h \
+	remotefolder.h \
 	vcard.h
 
 BUILT_SOURCES = \
@@ -268,6 +273,7 @@ EXTRA_DIST = \
 	pixmaps/category.xpm \
 	pixmaps/checkbox_off.xpm \
 	pixmaps/checkbox_on.xpm \
+	pixmaps/check_spelling.xpm \
 	pixmaps/clipkey.xpm \
 	pixmaps/clip.xpm \
 	pixmaps/close.xpm \
@@ -307,16 +313,10 @@ EXTRA_DIST = \
 	pixmaps/mail_send.xpm \
 	pixmaps/mail.xpm \
 	pixmaps/mark.xpm \
-	pixmaps/messageview_text.xpm \
-	pixmaps/mime_application_octet_stream.xpm \
 	pixmaps/mime_application.xpm \
 	pixmaps/mime_audio.xpm \
-	pixmaps/mime_gpg_expired.xpm \
-	pixmaps/mime_gpg_failed.xpm \
-	pixmaps/mime_gpg_passed.xpm \
-	pixmaps/mime_gpg_signed.xpm \
-	pixmaps/mime_gpg_unknown.xpm \
 	pixmaps/mime_image.xpm \
+	pixmaps/mime_message.xpm \
 	pixmaps/mime_text_enriched.xpm \
 	pixmaps/mime_text_html.xpm \
 	pixmaps/mime_text_plain.xpm \
@@ -326,10 +326,18 @@ EXTRA_DIST = \
 	pixmaps/notice_error.xpm \
 	pixmaps/notice_note.xpm \
 	pixmaps/notice_warn.xpm \
+	pixmaps/offline.xpm \
+	pixmaps/online.xpm \
 	pixmaps/outbox_hrm.xpm \
 	pixmaps/outbox.xpm \
 	pixmaps/paste.xpm \
 	pixmaps/preferences.xpm \
+	pixmaps/privacy_expired.xpm \
+	pixmaps/privacy_failed.xpm \
+	pixmaps/privacy_passed.xpm \
+	pixmaps/privacy_signed.xpm \
+	pixmaps/privacy_unknown.xpm \
+	pixmaps/privacy_warn.xpm \
 	pixmaps/properties.xpm \
 	pixmaps/quicksearch.xpm \
 	pixmaps/regular.xpm \
@@ -341,9 +349,7 @@ EXTRA_DIST = \
 	pixmaps/trash.xpm \
 	pixmaps/unread.xpm \
 	pixmaps/up_arrow.xpm \
-	pixmaps/vcard.xpm \
-	pixmaps/work_offline.xpm \
-	pixmaps/work_online.xpm
+	pixmaps/vcard.xpm
 
 INCLUDES = \
 	-Icommon \
@@ -361,6 +367,8 @@ sylpheed_LDADD = \
 	$(GPGME_LIBS) \
 	$(LDAP_LIBS) \
 	$(OPENSSL_LIBS) \
+	$(COMPFACE_LIBS) \
+	$(JPILOT_LIBS) \
 	$(LIBICONV) \
 	$(SYLPHEED_RES)
 

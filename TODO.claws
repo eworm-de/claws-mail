@@ -17,20 +17,15 @@ win32 0.8.0claws+
 [hoa]
 
 	o work on sylpheed :)
-	o several actions on filtering condition
 	o separate code of compose dialog and building of message
 	  compose should return some kind of MIME structure so that
     	  a message can be built.
-	o use libEtPan! in sylpheed
 
 [christoph]
 
 	o Maildir support
-	o complete UIDPLUS IMAP support
 	o make summaryview display any list of messages,
 	  fix processing rules by score
-	o privacy api that is independent from the crypto system
-	o rewrite mime message parsing (maybe required for privacy stuff)
 	o PEM support (S/MIME)
 	o add new messages to the summaryview without reloading the
 	  whole list
@@ -56,3 +51,11 @@ win32 0.8.0claws+
 	o Selective Download: 
 		- pluginify selective download (separate filtering rules)
 		- create pop3 preview Folder as a part of the plugin
+
+[luke]
+	o Content-Disposition header
+		- re-add parsing of Content-Disposition, to get names
+		  for attachments (some MUAs do not set the Content-Type
+		  'name' parameter)
+	o option to use KDE/GNOME for opening attachments
+

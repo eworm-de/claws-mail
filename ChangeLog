@@ -1,3 +1,287 @@
+2003-12-15
+
+	* version 0.9.8a
+
+2003-12-15
+
+	* src/procmsg.c: procmsg_open_data_file(): set buffer if DATA_READ
+	  is specified and a buffer is given.
+	  procmsg_open_cache_file_with_buffer(): new.
+	  procmsg_read_cache(): fixed a bug that called setvbuf() after an
+	  file I/O which caused buffer read error.
+
+2003-12-12
+
+	* version 0.9.8
+
+2003-12-12
+
+	* configure.in: enable IPv6 support by default.
+
+2003-12-11
+
+	* src/inc.c: inc_mail(), inc_all_account_mail(): ask user to switch
+	  to online when in offline mode.
+	* src/mainwindow.h: added main_window_toggle_online().
+
+2003-12-11
+
+	* src/foldersel.c
+	  src/folderview.[ch]
+	  src/mainwindow.c
+	  src/stock_pixmap.[ch]
+	  src/pixmap/dir-noselect.xpm: made no-select folders display with
+	  dim icon and string.
+	* src/Makefile.am: added offline.xpm, online.xpm, and
+	  dir-noselect.xpm to EXTRA_DIST.
+
+2003-12-11
+
+	* src/folder.h: added macro FOLDER_ITEM_CAN_ADD().
+	* src/folderview.c: folderview_drag_motion_cb(): code cleanup.
+	  folderview_drag_received_cb(): don't accept at no_select folder or
+	  from itself.
+	* src/foldersel.c: made folders on which no_select flag is set not
+	  selectable.
+
+2003-12-10
+
+	* src/imap.c: imap_do_copy_msgs(), imap_remove_msgs(): code cleanup.
+	  set MSG_INVALID flag when messages are deleted.
+	* src/mh.c: mh_do_move_msgs(), mh_remove_msg(): set MSG_INVALID flag
+	  when messages are deleted.
+	* src/procmsg.[ch]:
+	  procmsg_move_messages()
+	  procmsg_copy_messages(): return error status.
+	  Added MSG_INVALID to MsgTmpFlags.
+	* src/summaryview.c: summary_execute(): detect errors and only remove
+	  nodes that are invalidated.
+	  summary_unthread_for_exec(): fixed a bug that didn't remove nodes
+	  in collapsed trees.
+
+2003-12-06
+
+	* src/mainwindow.[ch]: added online switch button to the statusbar,
+	  and "/File/Work offline" in the menu.
+	* src/pixmaps/offline.xpm
+	  src/pixmaps/online.xpm: new (borrowed from
+	  themes/classic/communicator/icons/ in Mozilla).
+	* src/stock_pixmap.[ch]: added online.xpm and offline.xpm.
+	* src/textview.[ch]: textview_show_error(): new.
+	* src/summaryview.c: summary_display_msg_full(): update marks only
+	  if messages are displayed.
+	* src/prefs_common.[ch]: added PrefsCommon::online_mode.
+	* src/news.c: news_session_get()
+	  src/imap.c: imap_session_get(): return NULL when in offline mode.
+	* src/messageview.[ch]: messageview_show(): return status whether
+	  messages are successfully displayed. Display error messages in
+	  the view when failed.
+	* src/procmsg.c:
+	  procmsg_get_message_file()
+	  procmsg_open_message(): don't output warnings when fetch failed.
+
+2003-12-04
+
+	* src/html.c: html_get_tag(): support attributes which don't have
+	  values.
+
+2003-12-04
+
+	* src/codeconv.c: conv_get_code_conv_func(): return conv_latintodisp
+	  only if src_charset and current charset is identical or current
+	  one is multibyte (fixes display of ISO-8859-5 on KOI8-R locale etc.).
+
+2003-11-25
+
+	* autogen.sh: don't include m4 directory in aclocal.
+	* intl/libgnuintl.h: removed from cvs.
+	* po/.cvsignore: added stamp-po and remove-potcdate.sed.
+
+2003-11-24
+
+	* upgraded to gettext-0.12.1.
+
+2003-11-24  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.am (SUBDIRS): Add m4.
+	(ACLOCAL_AMFLAGS): New variable.
+	(EXTRA_DIST): Add config.rpath.
+	* configure.in (AC_OUTPUT): Add m4/Makefile.
+
+2003-11-21
+
+	* configure.in: added check for d_type member in struct dirent.
+	* src/mh.c: mh_scan_folder(): use d->d_type if available.
+	  mh_get_uncached_msgs(): removed redundant stat().
+	  mh_parse_msg(): return NULL if not a regular file.
+	  mh_scan_tree_recursive(): use d->d_type if available.
+	* src/utils.[ch]:
+	  dirent_is_regular_file()
+	  dirent_is_directory(): new. Use d->d_type to determine the type
+	  of entry if available.
+	  remove_dir_recursive(): use dirent_is_directory().
+
+2003-11-14
+
+	* src/folder.h: added 'updated' flag to FolderItem.
+	* src/folderview.[ch]: folderview_update_all_updated(): new. It
+	  updates all updated folders.
+	* src/imap.c: set FolderView::update flag on changes of contents.
+	* src/main.c: send_queue()
+	  src/mainwindow.c: send_queue_cb(): code cleanup.
+	* src/mh.c: code cleanup.
+	  mh_scan_folder(): correctly count new messages.
+	* src/procmsg.[ch]: code cleanup.
+	  procmsg_open_cache_file(): new.
+	  procmsg_open_mark_file(): enable read/write/append.
+	  procmsg_send_queue(): correctly choose outbox for accounts.
+	* src/send_message.[ch]: send_get_queue_info(): get a queue
+	  information from queued messages.
+	  send_queue_info_free(): free QueueInfo.
+	  send_message_queue(): take QueueInfo as an argument instead of file.	
+	* src/summaryview.c: summary_write_cache(): code cleanup.
+
+2003-11-10
+
+	* src/compose.c: compose_redirect_write_headers(): correctly add
+	  Resent-Cc: header.
+
+2003-11-05
+
+	* src/imap.c: imap_get_msg_list(): fallback to FETCH command if SEARCH
+	  command to get flags failed.
+	  imap_search_flags(): returns UID array and flags hash table using
+	  SEARCH command.
+	  imap_fetch_flags(): returns UID array and flags hash table using
+	  FETCH command.
+
+2003-10-28
+
+	* src/summary_search.c: summary_search_execute(): fixed 'Select all
+	  matched' when backward search is enabled.
+	  Made the backward search button insensitive when 'select all
+	  matched' is enabled.
+
+2003-10-15
+
+	* version 0.9.7
+
+2003-10-15
+
+	* src/imap.c: imap_scan_tree(): check the existence of root directory
+	  with LIST instead of STATUS.
+
+2003-10-07
+
+	* src/send_message.c: fixed format string bug (exploitable by
+	  malicious SMTP server) when calling alertpanel_error()
+	  (thanks to Georgi Guninski).
+
+2003-10-03
+
+	* src/folder.[ch]
+	  src/imap.[ch]
+	  src/mh.[ch]
+	  src/news.[ch]: refactoring of the folder system (based on the claws'
+	  implementation).
+	* src/account.c
+	  src/foldersel.c
+	  src/folderview.c
+	  src/mainwindow.c
+	  src/messageview.c
+	  src/procmsg.c
+	  src/setup.c
+	  src/summaryview.c: use FOLDER_TYPE() macro at every place.
+
+2003-09-17
+
+	* version 0.9.6
+
+2003-09-17
+
+	* src/addressbook.c:
+	  addressbook_folder_load_person()
+	  addressbook_folder_load_group(): sort the ctree after the end of
+	  the loop (fixes performance issue when many addresses are in one
+	  folder) (thanks to christian mock).
+
+2003-09-16
+
+	* src/folderview.c: folder_init(): code cleanup.
+	* src/summaryview.c: summary_init(): check if boldfont is
+	  successfully loaded.
+	* src/grouplistdialog.c: use proper callback for delete_event (thanks
+	  to Takuro Ashie).
+	* src/imap.c: allow zero-length messages.
+	* src/recv.c: recv_bytes_write(): return immediately if size == 0.
+
+2003-09-16
+
+	* src/folderview.c: folderview_init(): if font can't be loaded, fall
+	  back to gtk default (fixes crashes on startup). Also removed the
+	  redundant code.
+
+2003-09-15
+
+	* src/compose.c: compose_insert_sig(): insert signature at the
+	  current cursor position on manual operation.
+
+2003-09-11
+
+	* src/summaryview.c: summary_key_pressed(): don't ignore delete key
+	  even if the main window is locked.
+
+2003-09-10
+
+	* src/action.c: improved synchronous action exit code (fixes long
+	  delay after action exit on RH9) (thanks to Melvin).
+	* src/stringtable.[ch]: string_table_insert_string(): modified the
+	  code to remove the warning "dereferencing type-punned pointer will
+	  break strict-aliasing rules".
+	  Use const gchar * instead of gchar * for arguments.
+
+2003-09-05
+
+	* src/utils.[ch]: generate_mime_boundary(): a new function to create
+	  MIME boundary (moved from rfc2015.c).
+	  Removed more special characters.
+	  Use random() instead of lrand48() which is obsolete.
+	  Added an argument for prefix to prevent duplication.
+	  Always add "=_" as a counter-QP sequence to simplify the code.
+	* src/rfc2015.c:
+	  rfc2015_decrypt_message()
+	  rfc2015_encrypt()
+	  rfc2015_sign(): fixed a bug that didn't handle continuous content
+	  lines correctly.
+	* src/compose.c
+	  src/rfc2015.c: use generate_mime_boundary().
+
+2003-09-05
+
+	* src/folderview.c:
+	  folderview_delete_folder_cb()
+	  folderview_remove_mailbox_cb(): close currently displayed folder
+	  before removing FolderItem (fixes crash on deleting folder).
+	* src/folder.h
+	  src/imap.[ch]: imap_scan_tree()
+	  src/mh.[ch]: mh_scan_tree(): return -1 when scanning failed.
+	* src/summaryview.c: summary_clear_all(): also clear the message view.
+	* src/imap.c: imap_close(): fail if the specified folder is not
+	  selected.
+	  imap_scan_tree(): check if the specified root directory exist, and
+	  try creating it if not.
+	  imap_parse_list(): output warning if a server returns error.
+	  imap_find_namespace_from_list(): support not slash-delimited path.
+	  imap_status(): don't return values if they're not specified.
+
+2003-09-02
+
+	* sylpheed.spec.in: fixed a typo.
+
+2003-09-02
+
+	* version 0.9.5
+
 2003-09-01
 
 	* src/inc.[ch]

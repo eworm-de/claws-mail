@@ -78,6 +78,7 @@ static struct _LDAPEdit {
 	GtkWidget *entry_criteria;
 	GtkWidget *spinbtn_queryage;
 	GtkWidget *check_dynsearch;
+	GtkWidget *check_matchoption;
 } ldapedit;
 
 /**
@@ -372,6 +373,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *entry_baseDN;
 	GtkWidget *check_btn;
 	GtkWidget *lookdn_btn;
+	GtkTooltips *toolTip;
 	gint top;
 
 	vbox = gtk_vbox_new( FALSE, 8 );
@@ -400,6 +402,11 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), entry_name, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, entry_name, _( 
+		"A name that you wish to call the server." ),
+		NULL );
+
 	/* Next row */
 	++top;
 	label = gtk_label_new(_("Hostname"));
@@ -409,6 +416,15 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	entry_server = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), entry_server, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, entry_server, _( 
+		"This is the hostname of the server. For example, " \
+		"\"ldap.mydomain.com\" may be appropriate for the " \
+		"\"mydomain.com\" organization. An IP address may also be " \
+		"used. You may specify \"localhost\" if running an LDAP " \
+		"server on the same computer as Sylpheed." ),
+		NULL );
 
 	/* Next row */
 	++top;
@@ -425,8 +441,19 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), hbox_spin, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, spinbtn_port, _( 
+		"The port number that the server listens on. Port 389 is " \
+		"the default." ),
+		NULL );
+
 	check_btn = gtk_button_new_with_label( _(" Check Server "));
 	gtk_table_attach(GTK_TABLE(table), check_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0);
+
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, check_btn, _( 
+		"Press this button to test the connection to the server." ),
+		NULL );
 
 	/* Next row */
 	++top;
@@ -438,8 +465,24 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), entry_baseDN, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, entry_baseDN, _( 
+		"This specifies the name of the directory to be searched " \
+		"on the server. Examples include:\n" \
+		"  dc=sylpheed,dc=org\n" \
+		"  ou=people,dc=domainname,dc=com\n" \
+		"  o=Organization Name,c=Country\n"
+		),
+		NULL );
+
 	lookdn_btn = gtk_button_new_with_label( _(" ... "));
 	gtk_table_attach(GTK_TABLE(table), lookdn_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0);
+
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, lookdn_btn, _( 
+		"Press this button to lookup the name of available " \
+		"directory names on the server." ),
+		NULL );
 
 	/* Signal handlers */
 	g_signal_connect(G_OBJECT(check_btn), "clicked",
@@ -465,7 +508,9 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 	GtkObject *spinbtn_queryage_adj;
 	GtkWidget *spinbtn_queryage;
 	GtkWidget *check_dynsearch;
+	GtkWidget *check_matchoption;
 	GtkWidget *reset_btn;
+	GtkTooltips *toolTip;
 	gint top;
 
 	vbox = gtk_vbox_new( FALSE, 8 );
@@ -494,8 +539,21 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), entry_criteria, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, entry_criteria, _( 
+		"A list of LDAP attribute names that should be searched " \
+		"when attempting to find a name or address." ),
+		NULL );
+
 	reset_btn = gtk_button_new_with_label( _(" Defaults "));
 	gtk_table_attach(GTK_TABLE(table), reset_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0);
+
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, reset_btn, _( 
+		"This resets the attribute names to a default value " \
+		"that should find most names and addresses during a " \
+		"name or address search process." ),
+		NULL );
 
 	/* Next row */
 	++top;
@@ -513,12 +571,54 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), hbox_spin, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, spinbtn_queryage, _( 
+		"This defines the maximum period of time (in seconds) that " \
+		"an address search result is valid for address completion " \
+		"purposes. Search results are stored in a cache until this " \
+		"period of time has passed and then retired. This will " \
+		"improve the response time when attempting to search for " \
+		"the same name or address on subsequent address completion " \
+		"requests. The cache will be searched in preference to " \
+		"performing a new server search request. The default value " \
+		"of 600 seconds (10 minutes), should be sufficient for most " \
+		"servers. A larger value will reduce the search time for " \
+		"subsequent searches. This is useful for servers that have " \
+		"slow response times at the expense of more memory to cache " \
+		"results." ),
+		NULL );
+
 	/* Next row */
 	++top;
 	check_dynsearch = gtk_check_button_new_with_label(
 				_("Include server in dynamic search") );
 	gtk_table_attach(GTK_TABLE(table), check_dynsearch, 1, 3, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, check_dynsearch, _( 
+		"Check this option to include this server for dynamic " \
+		"searches when using address completion." ),
+		NULL );
+
+	/* Next row */
+	++top;
+	check_matchoption = gtk_check_button_new_with_label(
+				_("Match names 'containing' search term") );
+	gtk_table_attach(GTK_TABLE(table), check_matchoption, 1, 3, top, (top + 1),
+		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, check_matchoption, _( 
+		"Searches for names and addresses can be performed either " \
+		"using \"begins-with\" or \"contains\" search term. Check " \
+		"this option to perform a \"contains\" search; this type of " \
+		"search usually takes longer to complete. Note that for " \
+		"performance reasons, address completion uses " \
+		"\"begins-with\" for all searches against other address " \
+		"interfaces." \
+		),
+		NULL );
 
 	/* Signal handlers */
 	g_signal_connect(G_OBJECT(reset_btn), "clicked",
@@ -527,9 +627,10 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 	/* Done */
 	gtk_widget_show_all(vbox);
 
-	ldapedit.entry_criteria   = entry_criteria;
-	ldapedit.spinbtn_queryage = spinbtn_queryage;
-	ldapedit.check_dynsearch  = check_dynsearch;
+	ldapedit.entry_criteria    = entry_criteria;
+	ldapedit.spinbtn_queryage  = spinbtn_queryage;
+	ldapedit.check_dynsearch   = check_dynsearch;
+	ldapedit.check_matchoption = check_matchoption;
 }
 
 static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) {
@@ -543,6 +644,7 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	GtkWidget *spinbtn_timeout;
 	GtkObject *spinbtn_maxentry_adj;
 	GtkWidget *spinbtn_maxentry;
+	GtkTooltips *toolTip;
 	gint top;
 
 	vbox = gtk_vbox_new( FALSE, 8 );
@@ -571,6 +673,14 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	gtk_table_attach(GTK_TABLE(table), entry_bindDN, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, entry_bindDN, _( 
+		"The LDAP user account name to be used to connect to the server. " \
+		"This is usually only used for protected servers. This name " \
+		"is typically formatted as: \"cn=user,dc=sylpheed,dc=com\". " \
+		"This is usually left empty when performing a search." ),
+		NULL );
+
 	/* Next row */
 	++top;
 	label = gtk_label_new(_("Bind Password"));
@@ -580,6 +690,12 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	entry_bindPW = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), entry_bindPW, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, entry_bindPW, _( 
+		"The password to be used when connecting as the \"Bind DN\" " \
+		"user." ),
+		NULL );
 
 	/* Next row */
 	++top;
@@ -596,6 +712,10 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	gtk_table_attach(GTK_TABLE(table), hbox_spin, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, spinbtn_timeout, _( 
+		"The timeout period in seconds." ), NULL );
+
 	/* Next row */
 	++top;
 	label = gtk_label_new(_("Maximum Entries"));
@@ -610,6 +730,12 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_maxentry), TRUE);
 	gtk_table_attach(GTK_TABLE(table), hbox_spin, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+
+	toolTip = gtk_tooltips_new();
+	gtk_tooltips_set_tip( toolTip, spinbtn_maxentry, _( 
+		"The maximum number of entries that should be returned " \
+		"in the search result." ),
+		NULL );
 
 	/* Done */
 	gtk_widget_show_all(vbox);
@@ -749,6 +875,8 @@ static void edit_ldap_clear_fields( void ) {
 		GTK_SPIN_BUTTON(ldapedit.spinbtn_queryage), LDAPCTL_DFL_QUERY_AGE );
 	gtk_toggle_button_set_active(
 		GTK_TOGGLE_BUTTON( ldapedit.check_dynsearch), TRUE );
+	gtk_toggle_button_set_active(
+		GTK_TOGGLE_BUTTON( ldapedit.check_matchoption), FALSE );
 }
 
 /**
@@ -796,13 +924,25 @@ static void edit_ldap_set_fields( LdapServer *server ) {
 		GTK_SPIN_BUTTON(ldapedit.spinbtn_queryage), ctl->maxQueryAge );
 	gtk_toggle_button_set_active(
 		GTK_TOGGLE_BUTTON( ldapedit.check_dynsearch), server->searchFlag );
+	gtk_toggle_button_set_active(
+		GTK_TOGGLE_BUTTON( ldapedit.check_matchoption),
+		( ctl->matchingOption == LDAPCTL_MATCH_CONTAINS ) );
 }
 
-AdapterDSource *addressbook_edit_ldap( AddressIndex *addrIndex, AdapterDSource *ads ) {
+/**
+ * Edit LDAP server datasource that appears addressbook.
+ * \param addrIndex Address index object.
+ * \param ads       Data source adapter.
+ * \return Update data source adapter, or <code>NULL</code> if user cancelled
+ *         edit with dialog.
+ */
+AdapterDSource *addressbook_edit_ldap(
+	AddressIndex *addrIndex, AdapterDSource *ads )
+{
 	static gboolean cancelled;
 	gchar *sName, *sHost, *sBase, *sBind, *sPass, *sCrit;
 	gint iPort, iMaxE, iTime, iAge;
-	gboolean bSrch;
+	gboolean bSrch, bMatch;
 	AddressDataSource *ds = NULL;
 	LdapServer *server = NULL;
 	LdapControl *ctl = NULL;
@@ -834,17 +974,30 @@ AdapterDSource *addressbook_edit_ldap( AddressIndex *addrIndex, AdapterDSource *
 	gtk_widget_hide(ldapedit.window);
 	if (cancelled == TRUE) return NULL;
 
-	sName = gtk_editable_get_chars( GTK_EDITABLE(ldapedit.entry_name), 0, -1 );
-	sHost = gtk_editable_get_chars( GTK_EDITABLE(ldapedit.entry_server), 0, -1 );
-	sBase = gtk_editable_get_chars( GTK_EDITABLE(ldapedit.entry_baseDN), 0, -1 );
-	sCrit = gtk_editable_get_chars( GTK_EDITABLE(ldapedit.entry_criteria), 0, -1 );
-	sBind = gtk_editable_get_chars( GTK_EDITABLE(ldapedit.entry_bindDN), 0, -1 );
-	sPass = gtk_editable_get_chars( GTK_EDITABLE(ldapedit.entry_bindPW), 0, -1 );
-	iPort = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON( ldapedit.spinbtn_port ) );
-	iTime = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON( ldapedit.spinbtn_timeout ) );
-	iMaxE = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON( ldapedit.spinbtn_maxentry ) );
-	iAge  = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON( ldapedit.spinbtn_queryage ) );
-	bSrch = gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( ldapedit.check_dynsearch ) );
+	sName = gtk_editable_get_chars(
+			GTK_EDITABLE(ldapedit.entry_name), 0, -1 );
+	sHost = gtk_editable_get_chars(
+			GTK_EDITABLE(ldapedit.entry_server), 0, -1 );
+	sBase = gtk_editable_get_chars(
+			GTK_EDITABLE(ldapedit.entry_baseDN), 0, -1 );
+	sCrit = gtk_editable_get_chars(
+			GTK_EDITABLE(ldapedit.entry_criteria), 0, -1 );
+	sBind = gtk_editable_get_chars(
+			GTK_EDITABLE(ldapedit.entry_bindDN), 0, -1 );
+	sPass = gtk_editable_get_chars(
+			GTK_EDITABLE(ldapedit.entry_bindPW), 0, -1 );
+	iPort = gtk_spin_button_get_value_as_int(
+			GTK_SPIN_BUTTON( ldapedit.spinbtn_port ) );
+	iTime = gtk_spin_button_get_value_as_int(
+			GTK_SPIN_BUTTON( ldapedit.spinbtn_timeout ) );
+	iMaxE = gtk_spin_button_get_value_as_int(
+			GTK_SPIN_BUTTON( ldapedit.spinbtn_maxentry ) );
+	iAge  = gtk_spin_button_get_value_as_int(
+			GTK_SPIN_BUTTON( ldapedit.spinbtn_queryage ) );
+	bSrch = gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON( ldapedit.check_dynsearch ) );
+	bMatch = gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON( ldapedit.check_matchoption ) );
 
 	fin = FALSE;
 	if( *sName == '\0' ) fin = TRUE;
@@ -855,8 +1008,10 @@ AdapterDSource *addressbook_edit_ldap( AddressIndex *addrIndex, AdapterDSource *
 		if( ! ads ) {
 			/* New server */
 			server = ldapsvr_create();
-			ds = addrindex_index_add_datasource( addrIndex, ADDR_IF_LDAP, server );
-			ads = addressbook_create_ds_adapter( ds, ADDR_LDAP, NULL );
+			ds = addrindex_index_add_datasource(
+				addrIndex, ADDR_IF_LDAP, server );
+			ads = addressbook_create_ds_adapter(
+				ds, ADDR_LDAP, NULL );
 		}
 		ctl = server->control;
 		addressbook_ads_set_name( ads, sName );
@@ -870,6 +1025,9 @@ AdapterDSource *addressbook_edit_ldap( AddressIndex *addrIndex, AdapterDSource *
 		ldapctl_set_max_entries( ctl, iMaxE );
 		ldapctl_set_timeout( ctl, iTime );
 		ldapctl_set_max_query_age( ctl, iAge );
+		ldapctl_set_matching_option(
+			ctl, bMatch ?
+			LDAPCTL_MATCH_CONTAINS : LDAPCTL_MATCH_BEGINWITH );
 
 		/* Save attributes */
 		editldap_parse_criteria( sCrit, ctl );

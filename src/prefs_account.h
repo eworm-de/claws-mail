@@ -24,16 +24,7 @@
 #  include "config.h"
 #endif
 
-#include <glib.h>
-
 typedef struct _PrefsAccount	PrefsAccount;
-
-#include "folder.h"
-#include "smtp.h"
-
-#ifdef USE_GPGME
-#  include "rfc2015.h"
-#endif
 
 typedef enum {
 	A_POP3,
@@ -63,6 +54,16 @@ typedef enum {
 	GNUPG_MODE_INLINE
 } DefaultGnuPGMode;
 #endif /* USE_GPGME */
+
+#include <glib.h>
+
+#include "smtp.h"
+#include "folder.h"
+
+#ifdef USE_GPGME
+#  include "rfc2015.h"
+#endif
+
 
 struct _PrefsAccount
 {
@@ -191,7 +192,7 @@ struct _PrefsAccount
 	/* Unique account ID */
 	gint account_id;
 
-	RemoteFolder *folder;
+	Folder *folder;
 };
 
 PrefsAccount *prefs_account_new		(void);

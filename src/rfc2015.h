@@ -25,6 +25,9 @@
 
 #include "procmime.h"
 
+void rfc2015_init			(void);
+void rfc2015_done			(void);
+
 void rfc2015_disable_all		(void);
 void rfc2015_secure_remove		(const gchar	*fname);
 MimeInfo *rfc2015_find_signature	(MimeInfo	*mimeinfo);
@@ -44,6 +47,4 @@ gint rfc2015_sign			(const gchar	*file,
 					 GSList		*key_list);
 gint rfc2015_clearsign			(const gchar	*file,
 					 GSList		*key_list);
-
-gboolean gpg_started;
 #endif /* __RFC2015_H__ */

@@ -38,7 +38,6 @@
 #include "utils.h"
 #include "addr_compl.h"
 #include "prefs_common.h"
-#include "prefs_scoring.h"
 #include "gtkutils.h"
 #include "filtering.h"
 #include "folder_item_prefs.h"
@@ -66,6 +65,8 @@ struct FolderItemGeneralPage
 	GtkWidget *checkbtn_folder_chmod;
 	GtkWidget *entry_folder_chmod;
 	GtkWidget *folder_color_btn;
+	GtkWidget *checkbtn_enable_processing;
+	GtkWidget *checkbtn_newmailcheck;
 
 	gint	   folder_color;
 };
@@ -100,11 +101,11 @@ static void folder_color_set_dialog(GtkWidget *widget, gpointer data);
 #define SAFE_STRING(str) \
 	(str) ? (str) : ""
 
-void prefs_folder_item_general_create_widget_func(PrefsPage * _page,
+void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 						   GtkWindow * window,
                                 		   gpointer data)
 {
-	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) _page;
+	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) page_;
 	FolderItem *item = (FolderItem *) data;
 	guint rowcount;
 
@@ -117,11 +118,13 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * _page,
 	GtkWidget *entry_folder_chmod;
 	GtkWidget *folder_color;
 	GtkWidget *folder_color_btn;
+	GtkWidget *checkbtn_enable_processing;
+	GtkWidget *checkbtn_newmailcheck;
 
 	page->item	   = item;
 
 	/* Table */
-	table = gtk_table_new(3, 2, FALSE);
+	table = gtk_table_new(4, 2, FALSE);
 	gtk_widget_show(table);
 	gtk_table_set_row_spacings(GTK_TABLE(table), -1);
 	rowcount = 0;
@@ -167,7 +170,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * _page,
 	}
 	
 	rowcount++;
-
+	
 	/* Folder color */
 	folder_color = gtk_label_new(_("Folder color: "));
 	gtk_misc_set_alignment(GTK_MISC(folder_color), 0, 0.5);
@@ -194,28 +197,50 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * _page,
 
 	rowcount++;
 
+	/* Enable processing at startup */
+	checkbtn_enable_processing = gtk_check_button_new_with_label(_("Process at startup"));
+	gtk_widget_show(checkbtn_enable_processing);
+	gtk_table_attach(GTK_TABLE(table), checkbtn_enable_processing, 0, 2, 
+			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_processing), 
+				     item->prefs->enable_processing);
+
+	rowcount++;
+
+	/* Check folder for new mail */
+	checkbtn_newmailcheck = gtk_check_button_new_with_label(_("Scan for new mail"));
+	gtk_widget_show(checkbtn_newmailcheck);
+	gtk_table_attach(GTK_TABLE(table), checkbtn_newmailcheck, 0, 2,
+					 rowcount, rowcount+1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
+	
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_newmailcheck),
+								 item->prefs->newmailcheck);
+	
+	rowcount++;
+
 	page->table = table;
 	page->checkbtn_simplify_subject = checkbtn_simplify_subject;
 	page->entry_simplify_subject = entry_simplify_subject;
 	page->checkbtn_folder_chmod = checkbtn_folder_chmod;
 	page->entry_folder_chmod = entry_folder_chmod;
 	page->folder_color_btn = folder_color_btn;
+	page->checkbtn_enable_processing = checkbtn_enable_processing;
+	page->checkbtn_newmailcheck = checkbtn_newmailcheck;
 
 	page->page.widget = table;
 }
 
-void prefs_folder_item_general_destroy_widget_func(PrefsPage *_page) 
+void prefs_folder_item_general_destroy_widget_func(PrefsPage *page_) 
 {
-	/* struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) _page; */
+	/* struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) page_; */
 }
 
-void prefs_folder_item_general_save_func(PrefsPage *_page) 
+void prefs_folder_item_general_save_func(PrefsPage *page_) 
 {
 	gchar *buf;
-	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) _page;
+	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) page_;
 	FolderItemPrefs *prefs = page->item->prefs;
-	gboolean   old_simplify_val;
-	gchar     *old_simplify_str;
 
 	g_return_if_fail(prefs != NULL);
 
@@ -245,14 +270,20 @@ void prefs_folder_item_general_save_func(PrefsPage *_page)
 	if (prefs->color > 0)
 		folder_item_update(page->item, F_ITEM_UPDATE_MSGCNT);
 
+	prefs->enable_processing = 
+	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_enable_processing));
+
+	prefs->newmailcheck = 
+	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_newmailcheck));
+
 	folder_item_prefs_save_config(page->item);
 }
 
-void prefs_folder_item_compose_create_widget_func(PrefsPage * _page,
+void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 						   GtkWindow * window,
                                 		   gpointer data)
 {
-	struct FolderItemComposePage *page = (struct FolderItemComposePage *) _page;
+	struct FolderItemComposePage *page = (struct FolderItemComposePage *) page_;
 	FolderItem *item = (FolderItem *) data;
 	guint rowcount;
 
@@ -271,8 +302,6 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * _page,
 #if USE_ASPELL
 	GtkWidget *checkbtn_enable_default_dictionary;
 	GtkWidget *optmenu_default_dictionary;
-	GtkWidget *optmenu_default_dictionary_menu;
-	GtkWidget *opemenu_default_dictionary_menuitem;
 #endif
 	GList *cur_ac;
 	GList *account_list;
@@ -449,18 +478,18 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * _page,
 	page->page.widget = table;
 }
 
-void prefs_folder_item_compose_destroy_widget_func(PrefsPage *_page) 
+void prefs_folder_item_compose_destroy_widget_func(PrefsPage *page_) 
 {
-	struct FolderItemComposePage *page = (struct FolderItemComposePage *) _page;
+	struct FolderItemComposePage *page = (struct FolderItemComposePage *) page_;
 
 	address_completion_unregister_entry(GTK_ENTRY(page->entry_default_to));
 	address_completion_unregister_entry(GTK_ENTRY(page->entry_default_reply_to));
 	address_completion_end(page->window);
 }
 
-void prefs_folder_item_compose_save_func(PrefsPage *_page) 
+void prefs_folder_item_compose_save_func(PrefsPage *page_) 
 {
-	struct FolderItemComposePage *page = (struct FolderItemComposePage *) _page;
+	struct FolderItemComposePage *page = (struct FolderItemComposePage *) page_;
 	FolderItemPrefs *prefs = page->item->prefs;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
@@ -541,7 +570,7 @@ static void register_general_page()
 
 struct FolderItemComposePage folder_item_compose_page;
 
-static void register_compose_page()
+static void register_compose_page(void)
 {
         folder_item_compose_page.page.path = _("Compose");
         folder_item_compose_page.page.create_widget = prefs_folder_item_compose_create_widget_func;

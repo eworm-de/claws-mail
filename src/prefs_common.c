@@ -66,10 +66,6 @@ static struct Receive {
 	GtkWidget *entry_incext;
 	GtkWidget *button_incext;
 
-	GtkWidget *checkbtn_local;
-	GtkWidget *checkbtn_filter_on_inc;
-	GtkWidget *entry_spool;
-
 	GtkWidget *checkbtn_autochk;
 	GtkWidget *spinbtn_autochk;
 	GtkObject *spinbtn_autochk_adj;
@@ -88,10 +84,6 @@ static struct Receive {
 } receive;
 
 static struct Send {
-	GtkWidget *checkbtn_extsend;
-	GtkWidget *entry_extsend;
-	GtkWidget *button_extsend;
-
 	GtkWidget *checkbtn_savemsg;
 	GtkWidget *checkbtn_queuemsg;
 	GtkWidget *optmenu_senddialog;
@@ -139,13 +131,6 @@ static struct Quote {
 } quote;
 
 static struct Display {
-	GtkWidget *entry_textfont;
-	GtkWidget *button_textfont;
-
-	GtkWidget *entry_smallfont;
-	GtkWidget *entry_normalfont;
-	GtkWidget *entry_boldfont;
-
 	GtkWidget *chkbtn_folder_unread;
 	GtkWidget *entry_ng_abbrev_len;
 	GtkWidget *spinbtn_ng_abbrev_len;
@@ -180,7 +165,6 @@ static struct Message {
 #if USE_GPGME
 static struct Privacy {
 	GtkWidget *checkbtn_auto_check_signatures;
-	GtkWidget *checkbtn_gpg_signature_popup;
 	GtkWidget *checkbtn_store_passphrase;
 	GtkWidget *spinbtn_store_passphrase;
 	GtkObject *spinbtn_store_passphrase_adj;
@@ -239,8 +223,6 @@ static struct KeybindDialog {
 	GtkWidget *combo;
 } keybind;
 
-static GtkWidget *font_sel_win;
-static guint font_sel_conn_id; 
 static GtkWidget *quote_color_win;
 static GtkWidget *color_dialog;
 
@@ -273,16 +255,6 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"ext_inc_path", DEFAULT_INC_PATH, &prefs_common.extinc_cmd, P_STRING,
 	 &receive.entry_incext,
-	 prefs_set_data_from_entry, prefs_set_entry},
-
-	{"inc_local", "TRUE", &prefs_common.inc_local, P_BOOL,
-	 &receive.checkbtn_local,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"filter_on_inc_local", "TRUE", &prefs_common.filter_on_inc, P_BOOL,
-	 &receive.checkbtn_filter_on_inc,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"spool_path", DEFAULT_SPOOL_PATH, &prefs_common.spool_path, P_STRING,
-	 &receive.entry_spool,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"autochk_newmail", "FALSE", &prefs_common.autochk_newmail, P_BOOL,
@@ -318,12 +290,6 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
  
 	/* Send */
-	{"use_ext_sendmail", "FALSE", &prefs_common.use_extsend, P_BOOL,
-	 &p_send.checkbtn_extsend,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"ext_sendmail_cmd", DEFAULT_SENDMAIL_CMD,
-	 &prefs_common.extsend_cmd, P_STRING,
-	 &p_send.entry_extsend, prefs_set_data_from_entry, prefs_set_entry},
 	{"save_message", "TRUE", &prefs_common.savemsg, P_BOOL,
 	 &p_send.checkbtn_savemsg,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -447,21 +413,13 @@ static PrefParam param[] = {
 	{"widget_font", NULL, &prefs_common.widgetfont, P_STRING,
 	 NULL, NULL, NULL},
 	{"message_font", "Helvetica 14",
-	 &prefs_common.textfont, P_STRING,
-	 &display.entry_textfont,
-	 prefs_set_data_from_entry, prefs_set_entry},
+	 &prefs_common.textfont, P_STRING, NULL, NULL, NULL},
 	{"small_font",   "Helvetica 10",
-	 &prefs_common.smallfont,   P_STRING,
-	 &display.entry_smallfont,
-	 prefs_set_data_from_entry, prefs_set_entry},
+	 &prefs_common.smallfont,   P_STRING, NULL, NULL, NULL},
 	{"bold_font",    "Helvetica Bold 14",
-	 &prefs_common.boldfont,    P_STRING,
-	 &display.entry_boldfont,
-	 prefs_set_data_from_entry, prefs_set_entry},
+	 &prefs_common.boldfont,    P_STRING, NULL, NULL, NULL},
 	{"normal_font",  "Helvetica 14",
-	 &prefs_common.normalfont,  P_STRING,
-	 &display.entry_normalfont, 
-	 prefs_set_data_from_entry, prefs_set_entry},
+	 &prefs_common.normalfont,  P_STRING, NULL, NULL, NULL},
 
 #if 0 /* sylpheed-gtk2(original) separate font setting with gtk+-1.2 version */
 	/* Obsolete fonts. For coexisting with Gtk+-1.2 version */
@@ -739,10 +697,6 @@ static PrefParam param[] = {
 	 &prefs_common.auto_check_signatures, P_BOOL,
 	 &privacy.checkbtn_auto_check_signatures,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"gpg_signature_popup", "FALSE",
-	 &prefs_common.gpg_signature_popup, P_BOOL,
-	 &privacy.checkbtn_gpg_signature_popup,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"store_passphrase", "FALSE", &prefs_common.store_passphrase, P_BOOL,
 	 &privacy.checkbtn_store_passphrase,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -913,13 +867,6 @@ static void set_button_bg_color			(GtkWidget	*widget,
 static void prefs_enable_message_color_toggled	(void);
 static void prefs_recycle_colors_toggled	(GtkWidget	*widget);
 
-static void prefs_font_select	(GtkButton *button, GtkEntry *entry);
-
-static gboolean prefs_font_selection_key_pressed	(GtkWidget	*widget,
-							 GdkEventKey	*event,
-							 gpointer	 data);
-static void prefs_font_selection_ok		(GtkButton	*button, GtkEntry *entry);
-
 static void prefs_keybind_select		(void);
 static gint prefs_keybind_deleted		(GtkWidget	*widget,
 						 GdkEventAny	*event,
@@ -1083,12 +1030,6 @@ static void prefs_receive_create(void)
 	GtkWidget *entry_incext;
 	/* GtkWidget *button_incext; */
 
-	GtkWidget *frame_spool;
-	GtkWidget *checkbtn_local;
-	GtkWidget *checkbtn_filter_on_inc;
-	GtkWidget *label_spool;
-	GtkWidget *entry_spool;
-
 	GtkWidget *hbox_autochk;
 	GtkWidget *checkbtn_autochk;
 	GtkWidget *label_autochk1;
@@ -1148,35 +1089,6 @@ static void prefs_receive_create(void)
 	gtk_widget_show (button_incext);
 	gtk_box_pack_start (GTK_BOX (hbox), button_incext, FALSE, FALSE, 0);
 #endif
-
-	PACK_FRAME(vbox1, frame_spool, _("Local spool"));
-
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (frame_spool), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
-
-	hbox = gtk_hbox_new (FALSE, 32);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
-
-	PACK_CHECK_BUTTON (hbox, checkbtn_local, _("Incorporate from spool"));
-	PACK_CHECK_BUTTON (hbox, checkbtn_filter_on_inc,
-			   _("Filter on incorporation"));
-	SET_TOGGLE_SENSITIVITY (checkbtn_local, checkbtn_filter_on_inc);
-
-	hbox = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY (checkbtn_local, hbox);
-
-	label_spool = gtk_label_new (_("Spool directory"));
-	gtk_widget_show (label_spool);
-	gtk_box_pack_start (GTK_BOX (hbox), label_spool, FALSE, FALSE, 0);
-
-	entry_spool = gtk_entry_new ();
-	gtk_widget_show (entry_spool);
-	gtk_box_pack_start (GTK_BOX (hbox), entry_spool, TRUE, TRUE, 0);
 
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
@@ -1292,10 +1204,6 @@ static void prefs_receive_create(void)
 	receive.entry_incext    = entry_incext;
 	/* receive.button_incext   = button_incext; */
 
-	receive.checkbtn_local         = checkbtn_local;
-	receive.checkbtn_filter_on_inc = checkbtn_filter_on_inc;
-	receive.entry_spool            = entry_spool;
-
 	receive.checkbtn_autochk    = checkbtn_autochk;
 	receive.spinbtn_autochk     = spinbtn_autochk;
 	receive.spinbtn_autochk_adj = spinbtn_autochk_adj;
@@ -1317,13 +1225,7 @@ static void prefs_send_create(void)
 {
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
-	GtkWidget *frame_extsend;
-	GtkWidget *vbox_extsend;
-	GtkWidget *checkbtn_extsend;
 	GtkWidget *hbox1;
-	GtkWidget *label_extsend;
-	GtkWidget *entry_extsend;
-	/* GtkWidget *button_extsend; */
 	GtkWidget *checkbtn_savemsg;
 	GtkWidget *checkbtn_queuemsg;
 	GtkWidget *label_outcharset;
@@ -1344,35 +1246,6 @@ static void prefs_send_create(void)
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	PACK_FRAME(vbox1, frame_extsend, _("External program"));
-
-	vbox_extsend = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox_extsend);
-	gtk_container_add (GTK_CONTAINER (frame_extsend), vbox_extsend);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_extsend), 8);
-
-	PACK_CHECK_BUTTON (vbox_extsend, checkbtn_extsend,
-			   _("Use external program for sending"));
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox_extsend), hbox1, FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(checkbtn_extsend, hbox1);
-
-	label_extsend = gtk_label_new (_("Command"));
-	gtk_widget_show (label_extsend);
-	gtk_box_pack_start (GTK_BOX (hbox1), label_extsend, FALSE, FALSE, 0);
-
-	entry_extsend = gtk_entry_new ();
-	gtk_widget_show (entry_extsend);
-	gtk_box_pack_start (GTK_BOX (hbox1), entry_extsend, TRUE, TRUE, 0);
-
-#if 0
-	button_extsend = gtk_button_new_with_label ("... ");
-	gtk_widget_show (button_extsend);
-	gtk_box_pack_start (GTK_BOX (hbox1), button_extsend, FALSE, FALSE, 0);
-#endif
-
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
@@ -1383,7 +1256,6 @@ static void prefs_send_create(void)
 			   _("Queue messages that fail to send"));
 
 	hbox_senddialog = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox_senddialog, FALSE, FALSE, 0);
 
 	label_senddialog = gtk_label_new (_("Show send dialog"));
@@ -1498,10 +1370,6 @@ static void prefs_send_create(void)
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-
-	p_send.checkbtn_extsend = checkbtn_extsend;
-	p_send.entry_extsend    = entry_extsend;
-	/* p_send.button_extsend   = button_extsend; */
 
 	p_send.checkbtn_savemsg  = checkbtn_savemsg;
 	p_send.checkbtn_queuemsg = checkbtn_queuemsg;
@@ -1878,11 +1746,6 @@ static void prefs_quote_create(void)
 static void prefs_display_create(void)
 {
 	GtkWidget *vbox1;
-	GtkWidget *frame_font;
-	GtkWidget *table1;
-	GtkWidget *label_textfont;
-	GtkWidget *entry_textfont;
-	GtkWidget *button_textfont;
 	GtkWidget *chkbtn_transhdr;
 	GtkWidget *chkbtn_folder_unread;
 	GtkWidget *hbox1;
@@ -1899,98 +1762,11 @@ static void prefs_display_create(void)
 	GtkWidget *button_datefmt;
 	GtkWidget *entry_datefmt;
 	GtkWidget *button_dispitem;
-	GtkWidget *tmplabel, *tmpbutton, *tmpentry;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
-
-	PACK_FRAME(vbox1, frame_font, _("Font"));
-
-	table1 = gtk_table_new (4, 3, FALSE);
-
-	gtk_widget_show (table1);
-	gtk_container_add (GTK_CONTAINER (frame_font), table1);
-	gtk_container_set_border_width (GTK_CONTAINER (table1), 8);
-	gtk_table_set_row_spacings (GTK_TABLE (table1), 8);
-	gtk_table_set_col_spacings (GTK_TABLE (table1), 8);
-
-	label_textfont = gtk_label_new (_("Text"));
-	gtk_misc_set_alignment(GTK_MISC(label_textfont), 0, 0.5);
-	gtk_widget_show (label_textfont);
-	gtk_table_attach (GTK_TABLE (table1), label_textfont, 0, 1, 0, 1,
-			  GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-
-	entry_textfont = gtk_entry_new ();
-	gtk_widget_show (entry_textfont);
-	gtk_table_attach (GTK_TABLE (table1), entry_textfont, 1, 2, 0, 1,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
-
-	button_textfont = gtk_button_new_with_label (" ... ");
-
-	gtk_widget_show (button_textfont);
-	gtk_table_attach (GTK_TABLE (table1), button_textfont, 2, 3, 0, 1,
-			  0, 0, 0, 0);
-	g_signal_connect (G_OBJECT (button_textfont), "clicked",
-			  G_CALLBACK (prefs_font_select), entry_textfont);
-
-	tmplabel = gtk_label_new (_("Small"));
-	gtk_misc_set_alignment(GTK_MISC(tmplabel), 0, 0.5);
-	gtk_widget_show (tmplabel);
-	gtk_table_attach (GTK_TABLE (table1), tmplabel, 0, 1, 1, 2,
-			  GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-
-	tmpentry = gtk_entry_new ();
-	gtk_widget_show (tmpentry);
-	gtk_table_attach (GTK_TABLE (table1), tmpentry, 1, 2, 1, 2,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
-
-	tmpbutton = gtk_button_new_with_label (" ... ");
-	gtk_widget_show (tmpbutton);
-	gtk_table_attach (GTK_TABLE (table1), tmpbutton, 2, 3, 1, 2,
-			  0, 0, 0, 0);
-	g_signal_connect (G_OBJECT(tmpbutton), "clicked",
-			  G_CALLBACK(prefs_font_select), tmpentry);
-	display.entry_smallfont = tmpentry;			  
-
-	tmplabel = gtk_label_new (_("Normal"));
-	gtk_misc_set_alignment(GTK_MISC(tmplabel), 0, 0.5);
-	gtk_widget_show (tmplabel);
-	gtk_table_attach (GTK_TABLE (table1), tmplabel, 0, 1, 2, 3,
-			  GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-
-	tmpentry = gtk_entry_new ();
-	gtk_widget_show (tmpentry);
-	gtk_table_attach (GTK_TABLE (table1), tmpentry, 1, 2, 2, 3,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
-
-	tmpbutton = gtk_button_new_with_label (" ... ");
-	gtk_widget_show (tmpbutton);
-	gtk_table_attach (GTK_TABLE (table1), tmpbutton, 2, 3, 2, 3,
-			  0, 0, 0, 0);
-	g_signal_connect (G_OBJECT(tmpbutton), "clicked",
-			  G_CALLBACK(prefs_font_select), tmpentry);
-	display.entry_normalfont = tmpentry;			  
-
-	tmplabel = gtk_label_new (_("Bold"));
-	gtk_misc_set_alignment(GTK_MISC(tmplabel), 0, 0.5);
-	gtk_widget_show (tmplabel);
-	gtk_table_attach (GTK_TABLE (table1), tmplabel, 0, 1, 3, 4,
-			  GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-
-	tmpentry = gtk_entry_new ();
-	gtk_widget_show (tmpentry);
-	gtk_table_attach (GTK_TABLE (table1), tmpentry, 1, 2, 3, 4,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
-
-	tmpbutton = gtk_button_new_with_label (" ... ");
-	gtk_widget_show (tmpbutton);
-	gtk_table_attach (GTK_TABLE (table1), tmpbutton, 2, 3, 3, 4,
-			  0, 0, 0, 0);
-	g_signal_connect (G_OBJECT(tmpbutton), "clicked",
-			  G_CALLBACK(prefs_font_select), tmpentry);
-	display.entry_boldfont = tmpentry;
 
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
@@ -2082,9 +1858,6 @@ static void prefs_display_create(void)
 	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
 			  G_CALLBACK (prefs_summary_column_open),
 			  NULL);
-
-	display.entry_textfont	= entry_textfont;
-	display.button_textfont	= button_textfont;
 
 	display.chkbtn_transhdr           = chkbtn_transhdr;
 	display.chkbtn_folder_unread      = chkbtn_folder_unread;
@@ -2284,7 +2057,6 @@ static void prefs_privacy_create(void)
 	GtkWidget *hbox_spc;
 	GtkWidget *label;
 	GtkWidget *checkbtn_auto_check_signatures;
-	GtkWidget *checkbtn_gpg_signature_popup;
 	GtkWidget *checkbtn_store_passphrase;
 	GtkObject *spinbtn_store_passphrase_adj;
 	GtkWidget *spinbtn_store_passphrase;
@@ -2303,9 +2075,6 @@ static void prefs_privacy_create(void)
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_auto_check_signatures,
 			   _("Automatically check signatures"));
-
-	PACK_CHECK_BUTTON (vbox2, checkbtn_gpg_signature_popup,
-			   _("Show signature check result in a popup window"));
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_store_passphrase,
 			   _("Store passphrase in memory temporarily"));
@@ -2372,8 +2141,6 @@ static void prefs_privacy_create(void)
 
 	privacy.checkbtn_auto_check_signatures
 					     = checkbtn_auto_check_signatures;
-	privacy.checkbtn_gpg_signature_popup
-					     = checkbtn_gpg_signature_popup;
 	privacy.checkbtn_store_passphrase    = checkbtn_store_passphrase;
 	privacy.spinbtn_store_passphrase     = spinbtn_store_passphrase;
 	privacy.spinbtn_store_passphrase_adj = spinbtn_store_passphrase_adj;
@@ -3403,77 +3170,6 @@ static void prefs_recycle_colors_toggled(GtkWidget *widget)
 	prefs_common.recycle_quote_colors = is_active;
 }
 
-static void prefs_font_select(GtkButton *button, GtkEntry *entry)
-{
-	gchar *font_name;
-	
-	g_return_if_fail(entry != NULL);
-	
-	if (!font_sel_win) {
-		font_sel_win = gtk_font_selection_dialog_new
-			(_("Font selection"));
-		gtk_window_set_position(GTK_WINDOW(font_sel_win),
-					GTK_WIN_POS_CENTER);
-		g_signal_connect(G_OBJECT(font_sel_win), "delete_event",
-				 G_CALLBACK(gtk_widget_hide_on_delete),
-				 NULL);
-		g_signal_connect
-			(G_OBJECT(font_sel_win), "key_press_event",
-			 G_CALLBACK(prefs_font_selection_key_pressed),
-			 NULL);
-		g_signal_connect_closure
-			(G_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->cancel_button),
-			 "clicked",
-			 g_cclosure_new_swap(G_CALLBACK(gtk_widget_hide_on_delete),
-					     font_sel_win, NULL),
-			 FALSE);
-	}
-
-	if(font_sel_conn_id) {
-		gtk_signal_disconnect(GTK_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->ok_button), font_sel_conn_id);
-	}
-	font_sel_conn_id = g_signal_connect
-		(G_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->ok_button),
-	         "clicked",
-		 G_CALLBACK(prefs_font_selection_ok),
-		 entry);
-	printf("%i\n", font_sel_conn_id);
-
-	font_name = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
-	gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(font_sel_win), font_name);
-	g_free(font_name);
-	manage_window_set_transient(GTK_WINDOW(font_sel_win));
-	gtk_window_set_modal(GTK_WINDOW(font_sel_win), TRUE);
-	gtk_widget_grab_focus
-		(GTK_FONT_SELECTION_DIALOG(font_sel_win)->ok_button);
-	gtk_widget_show(font_sel_win);
-}
-
-static gboolean prefs_font_selection_key_pressed(GtkWidget *widget,
-						 GdkEventKey *event,
-						 gpointer data)
-{
-	if (event && event->keyval == GDK_Escape)
-		gtk_widget_hide(font_sel_win);
-	return FALSE;
-}
-
-static void prefs_font_selection_ok(GtkButton *button, GtkEntry *entry)
-{
-	gchar *fontname;
-
-	fontname = gtk_font_selection_dialog_get_font_name
-		(GTK_FONT_SELECTION_DIALOG(font_sel_win));
-
-	if (fontname) {
-		gtk_entry_set_text(entry, fontname);
-
-		g_free(fontname);
-	}
-
-	gtk_widget_hide(font_sel_win);
-}
-
 static void prefs_keybind_select(void)
 {
 	GtkWidget *window;
@@ -3999,6 +3695,7 @@ static void prefs_common_apply(void)
 	const gchar *entry_pixmap_theme_str;
 	gboolean update_pixmap_theme;
 	gchar *backup_theme_path;
+	MainWindow *mainwindow;
 	
 	entry_pixmap_theme_str = gtk_entry_get_text(GTK_ENTRY(interface.entry_pixmap_theme));
 	if (entry_pixmap_theme_str && 
@@ -4025,9 +3722,13 @@ static void prefs_common_apply(void)
 
 	/*!< FIXME: Now it's safe to delete the backup path */
 	g_free(backup_theme_path);
-	
+
 	prefs_common_save_config();
 
+	mainwindow = mainwindow_get_mainwindow();
+	log_window_set_clipping(mainwindow->logwin, prefs_common.cliplog,
+				prefs_common.loglength);
+	
 	inc_autocheck_timer_remove();
 	inc_autocheck_timer_set();
 }

@@ -64,9 +64,6 @@ struct _PrefsCommon
 	/* Receive */
 	gboolean use_extinc;
 	gchar *extinc_cmd;
-	gboolean inc_local;
-	gboolean filter_on_inc;
-	gchar *spool_path;
 	gboolean scan_all_after_inc;
 	gboolean autochk_newmail;
 	gint autochk_itv;
@@ -79,8 +76,6 @@ struct _PrefsCommon
 	gboolean no_recv_err_panel;
 
 	/* Send */
-	gboolean use_extsend;
-	gchar *extsend_cmd;
 	gboolean savemsg;
 	gboolean queue_msg;
 	SendDialogMode send_dialog_mode;

@@ -10,16 +10,19 @@ libsylpheedgtk_la_SOURCES = \
 	description_window.c \
 	filesel.c \
 	gtkaspell.c \
-	gtkutils.c \
+	gtksctree.c \
 	gtkshruler.c \
 	gtksctree.c \
+	gtkutils.c \
+	gtkvscrollbutton.c \
+	logwindow.c \
 	manage_window.c \
 	menu.c \
 	pluginwindow.c \
 	prefswindow.c \
+	progressdialog.c \
 	sslcertwindow.c \
-	sylpheed-marshal.c \
-	gtkvscrollbutton.c
+	sylpheed-marshal.c
 
 sylpheedgtkincludedir = $(pkgincludedir)/gtk
 sylpheedgtkinclude_HEADERS = \
@@ -29,16 +32,20 @@ sylpheedgtkinclude_HEADERS = \
 	description_window.h \
 	filesel.h \
 	gtkaspell.h \
-	gtkutils.h \
+	gtksctree.h \
 	gtkshruler.h \
 	gtksctree.h \
+	gtkutils.h \
+	gtkvscrollbutton.h \
+	logwindow.h \
 	manage_window.h \
 	menu.h \
 	pluginwindow.h \
 	prefswindow.h \
+	gtkvscrollbutton.h \
+	progressdialog.h \
 	sslcertwindow.h \
-	sylpheed-marshal.h \
-	gtkvscrollbutton.h
+	sylpheed-marshal.h
 
 AM_CPPFLAGS = \
 	-I../common \

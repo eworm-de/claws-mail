@@ -37,7 +37,6 @@ static SSL_CTX *ssl_ctx;
 void ssl_init(void)
 {
 	SSL_METHOD *meth;
-	FILE *cert_test;
 
 	/* Global system initialization*/
 	SSL_library_init();

@@ -22,6 +22,8 @@
 
 typedef struct _NoticeView	NoticeView;
 
+#include "stock_pixmap.h"
+
 struct _NoticeView 
 {
 	GtkWidget	*vbox;
@@ -30,6 +32,7 @@ struct _NoticeView
 	GtkWidget	*icon;
 	GtkWidget	*text;
 	GtkWidget	*button;
+	GtkWidget	*window;
 	gboolean	 visible;
 	gpointer	 user_data;
 	void		(*press) (NoticeView *, gpointer user_data);
@@ -39,7 +42,7 @@ NoticeView	*noticeview_create	(MainWindow 	*mainwin);
 void		 noticeview_destroy	(NoticeView	*noticeview);
 void		 noticeview_init	(NoticeView	*noticeview);
 void		 noticeview_set_icon	(NoticeView	*noticeview,
-					 GtkWidget	*icon);
+					 StockPixmap	 icon);
 void		 noticeview_set_text	(NoticeView	*noticeview,
 					 const gchar	*text);
 void		 noticeview_set_button_text 
@@ -55,4 +58,3 @@ void		 noticeview_set_button_press_callback
 					 gpointer	*user_data);
 					
 #endif /* NOTICEVIEW_H__ */
-

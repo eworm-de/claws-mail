@@ -30,53 +30,41 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include <pthread.h>
+#include <ldap.h>
 
+#include "addrquery.h"
 #include "ldapctrl.h"
 #include "ldapserver.h"
 #include "addritem.h"
 #include "addrcache.h"
 
-/*
- * Constants.
- */
-#define LDAPQUERY_NONE     0
-#define LDAPQUERY_STATIC   1
-#define LDAPQUERY_DYNAMIC  2
-
-/* Error codes */
-#define LDAPRC_SUCCESS    0
-#define LDAPRC_CONNECT    -1
-#define LDAPRC_INIT       -2
-#define LDAPRC_BIND       -3
-#define LDAPRC_SEARCH     -4
-#define LDAPRC_TIMEOUT    -5
-#define LDAPRC_CRITERIA   -6
-#define LDAPRC_NOENTRIES  -7
-
 typedef struct _LdapQuery LdapQuery;
 struct _LdapQuery {
-	LdapControl *control;
-	gint        retVal;
-	gint        queryType;
-	gchar       *queryName;
-	gchar       *searchValue;
-	gint        queryID;
-	gint        entriesRead;
-	gint        elapsedTime;
-	gboolean    stopFlag;
-	gboolean    busyFlag;
-	gboolean    agedFlag;
-	gboolean    completed;
-	time_t      touchTime;
-	pthread_t   *thread;
+	AddrQueryObject obj;
+	LdapControl     *control;
+	LdapServer      *server;	/* Reference to (parent) LDAP server */
+	gint            entriesRead;
+	gint            elapsedTime;
+	gboolean        stopFlag;
+	gboolean        busyFlag;
+	gboolean        agedFlag;
+	gboolean        completed;
+	time_t          startTime;
+	time_t          touchTime;
+	pthread_t       *thread;
 	pthread_mutex_t *mutexStop;
 	pthread_mutex_t *mutexBusy;
 	pthread_mutex_t *mutexEntry;
-	void        (*callBackStart)( void * );
-	void        (*callBackEntry)( void *, void * );
-	void        (*callBackEnd)( void * );
-	ItemFolder  *folder;		/* Reference to folder in cache */
-	LdapServer  *server;		/* Reference to (parent) LDAP server */
+	void            (*callBackEntry)( void *, gint, void *, void * );
+	void            (*callBackEnd)( void *, gint, gint, void * );
+	LDAP            *ldap;
+	gpointer        data;
+};
+
+typedef struct _NameValuePair NameValuePair;
+struct _NameValuePair {
+	gchar *name;
+	gchar *value;
 };
 
 /* Function prototypes */
@@ -86,7 +74,7 @@ void ldapqry_set_control	( LdapQuery *qry, LdapControl *ctl );
 void ldapqry_set_name		( LdapQuery* qry, const gchar *value );
 void ldapqry_set_search_value	( LdapQuery *qry, const gchar *value );
 void ldapqry_set_error_status	( LdapQuery* qry, const gint value );
-void ldapqry_set_query_type	( LdapQuery* qry, const gint value );
+void ldapqry_set_search_type	( LdapQuery *qry, const AddrSearchType value );
 void ldapqry_set_query_id	( LdapQuery* qry, const gint value );
 void ldapqry_set_entries_read	( LdapQuery* qry, const gint value );
 void ldapqry_set_callback_start	( LdapQuery *qry, void *func );
@@ -101,15 +89,17 @@ void ldapqry_set_busy_flag	( LdapQuery *qry, const gboolean value );
 gboolean ldapqry_get_busy_flag	( LdapQuery *qry );
 void ldapqry_set_aged_flag	( LdapQuery *qry, const gboolean value );
 gboolean ldapqry_get_aged_flag	( LdapQuery *qry );
+void ldapqry_set_data		( LdapQuery *qry, const gpointer value );
+gpointer ldapqry_get_data	( LdapQuery *qry );
 
 gboolean ldapqry_check_search	( LdapQuery *qry );
 void ldapqry_touch		( LdapQuery *qry );
 gint ldapqry_search		( LdapQuery *qry );
 gint ldapqry_read_data_th	( LdapQuery *qry );
-void ldapqry_join_thread	( LdapQuery *qry );
 void ldapqry_cancel		( LdapQuery *qry );
 void ldapqry_age		( LdapQuery *qry, gint maxAge );
 void ldapqry_delete_folder	( LdapQuery *qry );
+void ldapquery_remove_results	( LdapQuery *qry );
 
 #endif	/* USE_LDAP */
 

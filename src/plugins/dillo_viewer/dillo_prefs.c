@@ -114,7 +114,6 @@ static void create_dillo_prefs_page(PrefsPage *page,
 	label = gtk_label_new(_("You can still load remote links "
 			      "by reloading the page"));
         gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
         gtk_widget_show(label);
 
 	full_tooltip = gtk_tooltips_new();

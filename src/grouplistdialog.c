@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,6 +79,9 @@ static gboolean grouplist_recv_func	(SockInfo	*sock,
 					 gint		 read_bytes,
 					 gpointer	 data);
 
+static gint window_deleted	(GtkWidget	*widget,
+				 GdkEventAny	*event,
+				 gpointer	 data);
 static void ok_clicked		(GtkWidget	*widget,
 				 gpointer	 data);
 static void cancel_clicked	(GtkWidget	*widget,
@@ -172,7 +175,7 @@ static void grouplist_dialog_create(void)
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Newsgroup subscription"));
 	g_signal_connect(G_OBJECT(dialog), "delete_event",
-			 G_CALLBACK(cancel_clicked), NULL);
+			 G_CALLBACK(window_deleted), NULL);
 	g_signal_connect(G_OBJECT(dialog), "key_press_event",
 			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(dialog);
@@ -482,6 +485,15 @@ static gboolean grouplist_recv_func(SockInfo *sock, gint count, gint read_bytes,
 		return FALSE;
 	else
 		return TRUE;
+}
+
+static gint window_deleted(GtkWidget *widget, GdkEventAny *event, gpointer data)
+{
+	ack = FALSE;
+	if (gtk_main_level() > 1)
+		gtk_main_quit();
+
+	return TRUE;
 }
 
 static void ok_clicked(GtkWidget *widget, gpointer data)

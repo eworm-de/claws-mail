@@ -21,7 +21,6 @@
 #define MATCHER_PARSER_H
 
 #include "filtering.h"
-#include "scoring.h"
 #include <glib.h>
 
 extern FILE *matcher_parserin;
@@ -34,7 +33,6 @@ int matcher_parserparse			(void);
 MatcherList *matcher_parser_get_cond	(const gchar *str);
 MatcherProp *matcher_parser_get_prop	(const gchar *str);
 FilteringProp *matcher_parser_get_filtering	(const gchar *str);
-ScoringProp *matcher_parser_get_scoring		(const gchar *str);
 GSList *matcher_parser_get_action_list(const gchar *str);
 
 #endif

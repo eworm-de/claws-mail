@@ -118,7 +118,6 @@ static gint inc_dialog_delete_cb	(GtkWidget	*widget,
 					 GdkEventAny	*event,
 					 gpointer	 data);
 
-static gint inc_spool			(void);
 static gint get_spool			(FolderItem	*dest,
 					 const gchar	*mbox);
 
@@ -152,6 +151,8 @@ static void inc_finished(MainWindow *mainwin, gboolean new_messages)
 		item = cur_account && cur_account->inbox
 			? folder_find_item_from_identifier(cur_account->inbox)
 			: folder_get_default_inbox();
+		folderview_unselect(mainwin->folderview);
+		folderview_select(mainwin->folderview, item);
 	}
 }
 
@@ -179,19 +180,7 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 			inc_autocheck_timer_set();
 			return;
 		}
-
-		if (prefs_common.inc_local) {
-			account_new_msgs = inc_spool();
-			if (account_new_msgs > 0)
-				new_msgs += account_new_msgs;
-		}
 	} else {
-		if (prefs_common.inc_local) {
-			account_new_msgs = inc_spool();
-			if (account_new_msgs > 0)
-				new_msgs += account_new_msgs;
-		}
-
 		account_new_msgs = inc_account_mail(cur_account, mainwin);
 		if (account_new_msgs > 0)
 			new_msgs += account_new_msgs;
@@ -274,12 +263,6 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 
 	inc_autocheck_timer_remove();
 	main_window_lock(mainwin);
-
-	if (prefs_common.inc_local) {
-		account_new_msgs = inc_spool();
-		if (account_new_msgs > 0)
-			new_msgs += account_new_msgs;	
-	}
 
 	list = account_get_list();
 	if (!list) {
@@ -1098,25 +1081,14 @@ static gint inc_dialog_delete_cb(GtkWidget *widget, GdkEventAny *event,
 	return TRUE;
 }
 
-static gint inc_spool(void)
-{
-	gchar *mbox;
-	const gchar *logname;
-	gint msgs;
-
-	logname = g_get_user_name();
-	mbox = g_strconcat(prefs_common.spool_path
-			   ? prefs_common.spool_path : DEFAULT_SPOOL_PATH,
-			   G_DIR_SEPARATOR_S, logname, NULL);
-	msgs = get_spool(folder_get_default_inbox(), mbox);
-	g_free(mbox);
-
-	return msgs;
-}
-
 static gint inc_spool_account(PrefsAccount *account)
 {
 	FolderItem *inbox;
+	gchar *mbox;
+	const gchar *logname;
+	gint result;
+
+	logname = g_get_user_name();
 
 	if (account->inbox) {
 		inbox = folder_find_item_from_path(account->inbox);
@@ -1125,7 +1097,14 @@ static gint inc_spool_account(PrefsAccount *account)
 	} else
 		inbox = folder_get_default_inbox();
 
-	return get_spool(inbox, account->local_mbox);
+	if (is_file_exist(account->local_mbox))
+		mbox = g_strdup(account->local_mbox);
+	else 
+		mbox = g_strconcat(account->local_mbox,
+			   	   G_DIR_SEPARATOR_S, logname, NULL);
+	result = get_spool(inbox, mbox);
+	g_free(mbox);
+	return result;
 }
 
 static gint inc_all_spool(void)

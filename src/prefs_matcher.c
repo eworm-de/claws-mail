@@ -78,7 +78,7 @@ static struct Matcher {
 	GtkWidget *regexp_chkbtn;
 	GtkWidget *color_optmenu;
 
-	GtkWidget *exec_btn;
+	GtkWidget *test_btn;
 
 	GtkWidget *cond_clist;
 
@@ -128,7 +128,7 @@ enum {
 	CRITERIA_SCORE_LOWER = 25,
 	CRITERIA_SCORE_EQUAL = 26,
 
-	CRITERIA_EXECUTE = 27,
+	CRITERIA_TEST = 27,
 
 	CRITERIA_SIZE_GREATER = 28,
 	CRITERIA_SIZE_SMALLER = 29,
@@ -153,7 +153,7 @@ static const gchar *criteria_text [] = {
 	N_("Ignore thread"),
 	N_("Score greater than"), N_("Score lower than"),
 	N_("Score equal to"),
-	N_("Execute"),
+	N_("Test"),
 	N_("Size greater than"), 
 	N_("Size smaller than"),
 	N_("Size exactly")
@@ -232,7 +232,7 @@ static void prefs_matcher_select	(GtkCList	*clist,
 					 gint		 row,
 					 gint		 column,
 					 GdkEvent	*event);
-static gboolean prefs_matcher_key_pressed	(GtkWidget	*widget,
+static gboolean prefs_matcher_key_pressed(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
 static void prefs_matcher_ok		(void);
@@ -346,7 +346,7 @@ static void prefs_matcher_create(void)
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
 
-	GtkWidget *exec_btn;
+	GtkWidget *test_btn;
 
 	GtkWidget *color_optmenu;
 
@@ -464,12 +464,12 @@ static void prefs_matcher_create(void)
 	gtk_table_attach(GTK_TABLE(criteria_table), value_entry, 2, 3, 1, 2,
 			 GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
 
-	exec_btn = gtk_button_new_with_label(_("Info ..."));
-	gtk_widget_show(exec_btn);
-	gtk_table_attach(GTK_TABLE (criteria_table), exec_btn, 3, 4, 1, 2,
+	test_btn = gtk_button_new_with_label(_("Info ..."));
+	gtk_widget_show(test_btn);
+	gtk_table_attach(GTK_TABLE (criteria_table), test_btn, 3, 4, 1, 2,
 			 GTK_FILL | GTK_SHRINK | GTK_EXPAND, 0, 0, 0);
-	gtk_signal_connect(GTK_OBJECT (exec_btn), "clicked",
-			   GTK_SIGNAL_FUNC (prefs_matcher_exec_info),
+	gtk_signal_connect(GTK_OBJECT (test_btn), "clicked",
+			   GTK_SIGNAL_FUNC (prefs_matcher_test_info),
 			   NULL);
 
 	color_optmenu = gtk_option_menu_new();
@@ -662,7 +662,7 @@ static void prefs_matcher_create(void)
 	matcher.case_chkbtn = case_chkbtn;
 	matcher.regexp_chkbtn = regexp_chkbtn;
 	matcher.bool_op_list = bool_op_list;
-	matcher.exec_btn = exec_btn;
+	matcher.test_btn = test_btn;
 	matcher.color_optmenu = color_optmenu;
 	matcher.criteria_table = criteria_table;
 
@@ -881,9 +881,9 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 		return CRITERIA_SCORE_LOWER;
 	case MATCHCRITERIA_SCORE_EQUAL:
 		return CRITERIA_SCORE_EQUAL;
-	case MATCHCRITERIA_NOT_EXECUTE:
-	case MATCHCRITERIA_EXECUTE:
-		return CRITERIA_EXECUTE;
+	case MATCHCRITERIA_NOT_TEST:
+	case MATCHCRITERIA_TEST:
+		return CRITERIA_TEST;
 	case MATCHCRITERIA_SIZE_GREATER:
 		return CRITERIA_SIZE_GREATER;
 	case MATCHCRITERIA_SIZE_SMALLER:
@@ -960,8 +960,8 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHCRITERIA_BODY_PART;
 	case CRITERIA_MESSAGE:
 		return MATCHCRITERIA_MESSAGE;
-	case CRITERIA_EXECUTE:
-		return MATCHCRITERIA_EXECUTE;
+	case CRITERIA_TEST:
+		return MATCHCRITERIA_TEST;
 	case CRITERIA_SIZE_GREATER:
 		return MATCHCRITERIA_SIZE_GREATER;
 	case CRITERIA_SIZE_SMALLER:
@@ -1024,8 +1024,8 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 		return MATCHCRITERIA_NOT_HEADERS_PART;
 	case MATCHCRITERIA_MESSAGE:
 		return MATCHCRITERIA_NOT_MESSAGE;
-	case MATCHCRITERIA_EXECUTE:
-		return MATCHCRITERIA_NOT_EXECUTE;
+	case MATCHCRITERIA_TEST:
+		return MATCHCRITERIA_NOT_TEST;
 	case MATCHCRITERIA_BODY_PART:
 		return MATCHCRITERIA_NOT_BODY_PART;
 	default:
@@ -1072,7 +1072,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_REPLIED:
 	case CRITERIA_FORWARDED:
 	case CRITERIA_LOCKED:
-	case CRITERIA_EXECUTE:
+	case CRITERIA_TEST:
 	case CRITERIA_COLORLABEL:
 	case CRITERIA_IGNORE_THREAD:
 		if (value_pred_flag == PREDICATE_FLAG_DISABLED)
@@ -1137,7 +1137,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_HEADERS_PART:
 	case CRITERIA_BODY_PART:
 	case CRITERIA_MESSAGE:
-	case CRITERIA_EXECUTE:
+	case CRITERIA_TEST:
 		expr = gtk_entry_get_text(GTK_ENTRY(matcher.value_entry));
 		break;
 
@@ -1374,7 +1374,7 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 	case MATCHCRITERIA_HEADERS_PART:
 	case MATCHCRITERIA_BODY_PART:
 	case MATCHCRITERIA_MESSAGE:
-	case MATCHCRITERIA_EXECUTE:
+	case MATCHCRITERIA_TEST:
 		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), prop->expr);
 		break;
 
@@ -1494,7 +1494,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		gtk_widget_show(matcher.predicate_flag_combo);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
-		gtk_widget_set_sensitive(matcher.exec_btn, FALSE);
+		gtk_widget_set_sensitive(matcher.test_btn, FALSE);
 		break;
 
 	case CRITERIA_UNREAD:
@@ -1516,7 +1516,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		gtk_widget_show(matcher.predicate_flag_combo);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
-		gtk_widget_set_sensitive(matcher.exec_btn, FALSE);
+		gtk_widget_set_sensitive(matcher.test_btn, FALSE);
 		break;
 		
 	case CRITERIA_COLORLABEL:
@@ -1530,7 +1530,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		gtk_widget_show(matcher.predicate_flag_combo);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
-		gtk_widget_set_sensitive(matcher.exec_btn, FALSE);
+		gtk_widget_set_sensitive(matcher.test_btn, FALSE);
 		break;
 
 	case CRITERIA_SUBJECT:
@@ -1555,10 +1555,10 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		gtk_widget_hide(matcher.predicate_flag_combo);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, TRUE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, TRUE);
-		gtk_widget_set_sensitive(matcher.exec_btn, FALSE);
+		gtk_widget_set_sensitive(matcher.test_btn, FALSE);
 		break;
 
-	case CRITERIA_EXECUTE:
+	case CRITERIA_TEST:
 		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
 		gtk_widget_set_sensitive(matcher.header_label, FALSE);
 		gtk_widget_set_sensitive(matcher.value_label, TRUE);
@@ -1570,7 +1570,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		gtk_widget_show(matcher.predicate_flag_combo);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
-		gtk_widget_set_sensitive(matcher.exec_btn, TRUE);
+		gtk_widget_set_sensitive(matcher.test_btn, TRUE);
 		break;
 
 	case CRITERIA_AGE_GREATER:
@@ -1592,7 +1592,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		gtk_widget_hide(matcher.predicate_flag_combo);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
-		gtk_widget_set_sensitive(matcher.exec_btn, FALSE);
+		gtk_widget_set_sensitive(matcher.test_btn, FALSE);
 		break;
 
 	case CRITERIA_HEADER:
@@ -1607,7 +1607,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 		gtk_widget_hide(matcher.predicate_flag_combo);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, TRUE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, TRUE);
-		gtk_widget_set_sensitive(matcher.exec_btn, FALSE);
+		gtk_widget_set_sensitive(matcher.test_btn, FALSE);
 		break;
 	}
 }
@@ -1624,6 +1624,7 @@ static gboolean prefs_matcher_key_pressed(GtkWidget *widget, GdkEventKey *event,
 {
 	if (event && event->keyval == GDK_Escape)
 		prefs_matcher_cancel();
+	return TRUE;		
 }
 
 /*!
@@ -1697,11 +1698,15 @@ static gint prefs_matcher_deleted(GtkWidget *widget, GdkEventAny *event,
 }
 
 /*
- * Strings describing exec format strings
+ * Strings describing test format strings
  * 
  * When adding new lines, remember to put 2 strings for each line
  */
-static gchar *exec_desc_strings[] = {
+static gchar *test_desc_strings[] = {
+	N_("'Test' allows you to test a message or message element"), NULL,
+	N_("using an external program or script. The program will"), NULL,
+	N_("return either 0 or 1"), NULL,
+	N_("The following symbols can be used:"), NULL,
 	"%%",	"%",
 	"%s",	N_("Subject"),
 	"%f",	N_("From"),
@@ -1714,24 +1719,24 @@ static gchar *exec_desc_strings[] = {
 	"%F",	N_("Filename - should not be modified"),
 	"\\n",	N_("new line"),
 	"\\",	N_("escape character for quotes"),
-	"\\\"",N_("quote character"),
-	NULL, NULL
+	"\\\"", N_("quote character"),
+	NULL,   NULL
 };
 
-static DescriptionWindow exec_desc_win = { 
+static DescriptionWindow test_desc_win = { 
         NULL, 
         2,
-        N_("Description of symbols"),
-        exec_desc_strings
+        N_("Match Type: 'Test'"),
+        test_desc_strings
 };
 
 
 
 /*!
- *\brief	Show Execute action's info
+ *\brief	Show Test action's info
  */
-void prefs_matcher_exec_info(void)
+void prefs_matcher_test_info(void)
 {
-	description_window_create(&exec_desc_win);
+	description_window_create(&test_desc_win);
 }
 

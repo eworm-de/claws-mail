@@ -1,3 +1,287 @@
+2003-12-15
+
+	* version 0.9.8a
+
+2003-12-15
+
+	* src/procmsg.c: procmsg_open_data_file(): DATA_READ が指定されて
+	  バッファが与えられたらバッファをセットするようにした。
+	  procmsg_open_cache_file_with_buffer(): 新規。
+	  procmsg_read_cache(): ファイル I/O の後に setvbuf() を呼んでいた
+	  (バッファ読み込みエラーを起こしていた)バグを修正。
+
+2003-12-12
+
+	* version 0.9.8
+
+2003-12-12
+
+	* configure.in: IPv6 にデフォルトで対応するようにした。
+
+2003-12-11
+
+	* src/inc.c: inc_mail(), inc_all_account_mail(): オフラインモードの
+	  ときはユーザにオンラインに切り替えるように促すようにした。
+	* src/mainwindow.h: main_window_toggle_online() を追加。
+
+2003-12-11
+
+	* src/foldersel.c
+	  src/folderview.[ch]
+	  src/mainwindow.c
+	  src/stock_pixmap.[ch]
+	  src/pixmap/dir-noselect.xpm: no-select フォルダを薄いアイコンと
+	  文字列で表示。
+	* src/Makefile.am: offline.xpm, online.xpm, dir-noselect.xpm を
+	  EXTRA_DIST に追加。
+
+2003-12-11
+
+	* src/folder.h: マクロ FOLDER_ITEM_CAN_ADD() を追加。
+	* src/folderview.c: folderview_drag_motion_cb(): コードの整理。
+	  folderview_drag_received_cb(): no_select フォルダで、あるいは
+	  それ自身から受け付けないようにした。
+	* src/foldersel.c: no_select フラグがセットされているフォルダを選択
+	  不可にした。
+
+2003-12-10
+
+	* src/imap.c: imap_do_copy_msgs(), imap_remove_msgs(): コードの整理。
+	  メッセージを削除したときに MSG_INVALID フラグをセット。
+	* src/mh.c: mh_do_move_msgs(), mh_remove_msg(): メッセージを削除した
+	  ときに MSG_INVALID フラグをセット。
+	* src/procmsg.[ch]:
+	  procmsg_move_messages()
+	  procmsg_copy_messages(): エラーステータスを返すようにした。
+	  MsgTmpFlags に MSG_INVALID を追加。
+	* src/summaryview.c: summary_execute(): エラーを検出し、無効になった
+	  ノードのみを削除するようにした。
+	  summary_unthread_for_exec(): 閉じたツリー中のノードを削除しない
+	  バグを修正。
+
+2003-12-06
+
+	* src/mainwindow.[ch]: ステータスバーにオンラインスイッチボタンを
+	  追加し、メニューに「/ファイル/オフラインにする」を追加。
+	* src/pixmaps/offline.xpm
+	  src/pixmaps/online.xpm: 新規(Mozilla の
+	  themes/classic/communicator/icons/ から拝借)。
+	* src/stock_pixmap.[ch]: online.xpm と offline.xpm を追加。
+	* src/textview.[ch]: textview_show_error(): 新規。
+	* src/summaryview.c: summary_display_msg_full(): メッセージが表示
+	  された場合のみマークを更新。
+	* src/prefs_common.[ch]: PrefsCommon::online_mode を追加。
+	* src/news.c: news_session_get()
+	  src/imap.c: imap_session_get(): オフラインモードのときは NULL を
+	  返すようにした。
+	* src/messageview.[ch]: messageview_show(): メッセージが表示できた
+	  かどうかのステータスを返すようにした。失敗したときはエラー
+	  メッセージをビューに表示するようにした。
+	* src/procmsg.c:
+	  procmsg_get_message_file()
+	  procmsg_open_message(): 取得に失敗したときに警告を表示しないように
+	  した。
+
+2003-12-04
+
+	* src/html.c: html_get_tag(): 値を持たない属性に対応。
+
+2003-12-04
+
+	* src/codeconv.c: conv_get_code_conv_func(): src_charset と現在の
+	  文字コードが同一の場合、または現在の文字コードがマルチバイトで
+	  ある場合のみ conv_latintodisp を返す(KOI8-R locale 上での
+	  ISO-8859-5 の表示を修正)。
+
+2003-11-25
+
+	* autogen.sh: aclocal で m4 ディレクトリを含まないようにした。
+	* intl/libgnuintl.h: cvs から削除。
+	* po/.cvsignore: stamp-po と remove-potcdate.sed を追加。
+
+2003-11-24
+
+	* gettext-0.12.1 に移行。
+
+2003-11-21
+
+	* configure.in: struct dirent 中の d_type メンバのチェックを追加。
+	* src/mh.c: mh_scan_folder(): 利用可能な場合は d->d_type を使用。
+	  mh_get_uncached_msgs(): 余分な stat() を削除。
+	  mh_parse_msg(): 通常のファイルでない場合は NULL を返す。
+	  mh_scan_tree_recursive(): 利用可能な場合は d->d_type を使用。
+	* src/utils.[ch]:
+	  dirent_is_regular_file()
+	  dirent_is_directory(): 新規。利用可能な場合はエントリのタイプを
+	  判別するのに d->d_type を使用。
+	  remove_dir_recursive(): dirent_is_directory() を使用。
+
+2003-11-14
+
+	* src/folder.h: FolderItem に 'updated' フラグを追加。
+	* src/folderview.[ch]: folderview_update_all_updated(): 新規。全ての
+	  更新されたフォルダを更新する。
+	* src/imap.c: 内容の変更時に FolderView::update フラグをセット。
+	* src/main.c: send_queue()
+	  src/mainwindow.c: send_queue_cb(): コードの整理。
+	* src/mh.c: コードの整理。
+	  mh_scan_folder(): 新着メッセージを正しくカウントするようにした。
+	* src/procmsg.[ch]: コードの整理。
+	  procmsg_open_cache_file(): 新規。
+	  procmsg_open_mark_file(): 読み込み/書き込み/追加書き込みができる
+	  ようにした。
+	  procmsg_send_queue(): アカウントに対応する送信控を正しく選択する
+	  ようにした。
+	* src/send_message.[ch]: send_get_queue_info(): 送信待ちメッセージ
+	  からキュー情報を取得。
+	  send_queue_info_free(): QueueInfo を開放。
+	  send_message_queue(): ファイルの代わりに QueueInfo を引数にとる
+	  ようにした。
+	* src/summaryview.c: summary_write_cache(): コードの整理。
+
+2003-11-10
+
+	* src/compose.c: compose_redirect_write_headers(): Resent-Cc: ヘッダ
+	  を正しく付加するようにした。
+
+2003-11-05
+
+	* src/imap.c: imap_get_msg_list(): フラグを得るための SEARCH コマンド
+	  に失敗した場合 FETCH コマンドに fallback するようにした。
+	  imap_search_flags(): SEARCH コマンドを使用して UID の配列とフラグの
+	  ハッシュテーブルを返す。
+	  imap_fetch_flags(): FETCH コマンドを使用して UID の配列とフラグの
+	  ハッシュテーブルを返す。
+
+2003-10-28
+
+	* src/summary_search.c: summary_search_execute(): 後方検索が有効な
+	  ときの「一括検索」を修正。
+	  「一括検索」が有効なときは後方検索ボタンを無効にするようにした。
+
+2003-10-15
+
+	* version 0.9.7
+
+2003-10-15
+
+	* src/imap.c: imap_scan_tree(): ルートディレクトリの存在を STATUS
+	  ではなく LIST でチェックするようにした。
+
+2003-10-07
+
+	* src/send_message.c: alertpanel_error() を呼ぶときのフォーマット
+	  文字列のバグ(悪意のある SMTP サーバによって攻撃可能)を修正
+	  (Georgi Guninski さん thanks)。
+
+2003-10-03
+
+	* src/folder.[ch]
+	  src/imap.[ch
+	  src/mh.[ch]
+	  src/news.[ch]: フォルダシステムのリファクタリング(claws の実装に
+	  基づく)。
+	* src/account.c
+	  src/foldersel.c
+	  src/folderview.c
+	  src/mainwindow.c
+	  src/messageview.c
+	  src/procmsg.c
+	  src/setup.c
+	  src/summaryview.c: 全ての場所で FOLDER_TYPE() マクロを使用。
+
+2003-09-17
+
+	* version 0.9.6
+
+2003-09-17
+
+	* src/addressbook.c:
+	  addressbook_folder_load_person()
+	  addressbook_folder_load_group(): ループの後で ctree をソートする
+	  ようにした(一つのフォルダに多くのアドレスがある場合のパフォーマンス
+	  の問題を解決)(christian mock さん thanks)。
+
+2003-09-16
+
+	* src/folderview.c: folder_init(): コードを整理。
+	* src/summaryview.c: summary_init(): boldfont が正しくロードされたか
+	  どうかをチェック。
+	* src/grouplistdialog.c: delete_event に適切なコールバックを使用する
+	  ようにした(足永さん thanks)。
+	* src/imap.c: ゼロ長メッセージを許すようにした。
+	* src/recv.c: recv_bytes_write(): size == 0 の場合はすぐに戻るように
+	  した。
+
+2003-09-16
+
+	* src/folderview.c: folderview_init(): フォントが読み込めない場合は
+	  gtk のデフォルトに fallback するようにした(起動時のクラッシュを
+	  修正)。さらに不要なコードを除去。
+
+2003-09-15
+
+	* src/compose.c: compose_insert_sig(): マニュアル操作のときは現在の
+	  カーソルの位置に署名を挿入するようにした。
+
+2003-09-11
+
+	* src/summaryview.c: summary_key_pressed(): メインウィンドウがロック
+	  されていても delete キーを無視しないようにした。
+
+2003-09-10
+
+	* src/action.c: action 終了のコードを改良(RH9 で action 終了時に
+	  長時間待たされるのを修正) (Melvin さん thanks)。
+	* src/stringtable.[ch]: string_table_insert_string(): 警告
+	  "dereferencing type-punned pointer will break strict-aliasing
+	  rules" を除去するためにコードを修正。
+	  引数に gchar * の代わりに const gchar * を使用。
+
+2003-09-05
+
+	* src/utils.[ch]: generate_mime_boundary(): MIME boundary を作成する
+	  新規関数(rfc2015.c から移動)。
+	  さらに特別文字を除去。
+	  obsolete な lrand48() のかわりに random() を使用。
+	  重複を避けるために prefix の引数を追加。
+	  対 QP シーケンスとして常に "=_" を追加し、コードを単純化。
+	* src/rfc2015.c:
+	  rfc2015_decrypt_message()
+	  rfc2015_encrypt()
+	  rfc2015_sign(): 継続する content 行を正しく扱っていなかったバグを
+	  修正。
+	* src/compose.c
+	  src/rfc2015.c: generate_mime_boundary() を使用。
+
+2003-09-05
+
+	* src/folderview.c:
+	  folderview_delete_folder_cb()
+	  folderview_remove_mailbox_cb(): FolderItem を削除する前に現在表示
+	  されているフォルダを閉じるようにした(フォルダ削除時のクラッシュを
+	  修正)。
+	* src/folder.h
+	  src/imap.[ch]: imap_scan_tree()
+	  src/mh.[ch]: mh_scan_tree(): スキャンに失敗したときは -1 を返す。
+	* src/summaryview.c: summary_clear_all(): メッセージビューもクリア。
+	* src/imap.c: imap_close(): 指定したフォルダが選択されていなければ
+	  失敗。
+	  imap_scan_tree(): 指定したルートディレクトリが存在するかどうかを
+	  調べ、なければ作成するようにした。
+	  imap_parse_list(): サーバがエラーを返したら警告を出力。
+	  imap_find_namespace_from_list(): スラッシュで区切られていないパス
+	  に対応。
+	  imap_status(): 指定しなければ値を返さないようにした。
+
+2003-09-02
+
+	* sylpheed.spec.in: typo を修正。
+
+2003-09-02
+
+	* version 0.9.5
+
 2003-09-01
 
 	* src/inc.[ch]

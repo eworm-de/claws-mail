@@ -45,7 +45,9 @@ typedef GSList MsgNumberList;
 #define MSG_DELETED		(1U << 3)
 #define MSG_REPLIED		(1U << 4)
 #define MSG_FORWARDED		(1U << 5)
+#if 0
 #define MSG_REALLY_DELETED	(1U << 6)		/* mbox stuff */
+#endif
 
 #define MSG_CLABEL_SBIT	(7)		/* start bit of color label */
 #define MAKE_MSG_CLABEL(h, m, l)	(((h) << (MSG_CLABEL_SBIT + 2)) | \
@@ -149,9 +151,9 @@ typedef enum {
 	MSGINFO_UPDATE_DELETED = 1 << 1,
 } MsgInfoUpdateFlags;
 
-#include "folder.h"
 #include "procmime.h"
 #include "prefs_filtering.h"
+#include "folder.h"
 
 struct _MsgFlags
 {
@@ -200,6 +202,8 @@ struct _MsgInfo
 	/* used only for encrypted messages */
 	gchar *plaintext_file;
 	guint decryption_failed : 1;
+        
+        gint hidden;
 };
 
 struct _MsgFileInfo
@@ -247,10 +251,6 @@ gchar  *procmsg_get_message_file	(MsgInfo	*msginfo);
 GSList *procmsg_get_message_file_list	(MsgInfoList	*mlist);
 void	procmsg_message_file_list_free	(MsgInfoList	*file_list);
 FILE   *procmsg_open_message		(MsgInfo	*msginfo);
-#if USE_GPGME
-FILE   *procmsg_open_message_decrypted	(MsgInfo	*msginfo,
-					 MimeInfo      **mimeinfo);
-#endif
 gboolean procmsg_msg_exist		(MsgInfo	*msginfo);
 
 void	procmsg_get_filter_keyword	(MsgInfo	  *msginfo,

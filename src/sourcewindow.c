@@ -86,10 +86,8 @@ SourceWindow *source_window_create(void)
 	if (!font_desc && prefs_common.textfont)
 		font_desc = pango_font_description_from_string
 					(prefs_common.textfont);
-	if (font_desc) {
+	if (font_desc)
 		gtk_widget_modify_font(text, font_desc);
-		pango_font_description_free(font_desc);
-	}
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 	gtk_widget_show(text);
 

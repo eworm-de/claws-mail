@@ -26,9 +26,9 @@ typedef struct _FolderView	FolderView;
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkctree.h>
 
-#include "folder.h"
 #include "mainwindow.h"
 #include "summaryview.h"
+#include "folder.h"
 
 struct _FolderView
 {
@@ -37,12 +37,16 @@ struct _FolderView
 	GtkWidget *mail_popup;
 	GtkWidget *imap_popup;
 	GtkWidget *news_popup;
+#if 0
 	GtkWidget *mbox_popup;
+#endif
 
 	GtkItemFactory *mail_factory;
 	GtkItemFactory *imap_factory;
 	GtkItemFactory *news_factory;
+#if 0
 	GtkItemFactory *mbox_factory;
+#endif
 
 	GtkCTreeNode *selected;
 	GtkCTreeNode *opened;

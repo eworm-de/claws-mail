@@ -27,7 +27,7 @@
 #include <gtk/gtkwindow.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtktext.h>
+#include <gtk/gtktextview.h>
 #include <gtk/gtkstyle.h>
 
 #include "intl.h"
@@ -39,7 +39,7 @@
 
 static void hide_cb			(GtkWidget	*widget,
 					 LogWindow	*logwin);
-static void key_pressed			(GtkWidget	*widget,
+static gboolean key_pressed		(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 LogWindow	*logwin);
 static gboolean log_window_append	(gpointer 	 source,
@@ -53,6 +53,8 @@ LogWindow *log_window_create(void)
 	GtkWidget *window;
 	GtkWidget *scrolledwin;
 	GtkWidget *text;
+	GtkTextBuffer *buffer;
+	GtkTextIter iter;
 
 	debug_print("Creating log window...\n");
 	logwin = g_new0(LogWindow, 1);
@@ -61,13 +63,13 @@ LogWindow *log_window_create(void)
 	gtk_window_set_title(GTK_WINDOW(window), _("Protocol log"));
 	gtk_window_set_wmclass(GTK_WINDOW(window), "log_window", "Sylpheed");
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, FALSE);
-	gtk_widget_set_usize(window, 520, 400);
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(gtk_widget_hide_on_delete), NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(key_pressed), logwin);
-	gtk_signal_connect(GTK_OBJECT(window), "hide",
-			   GTK_SIGNAL_FUNC(hide_cb), logwin);
+	gtk_widget_set_size_request(window, 520, 400);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(key_pressed), logwin);
+	g_signal_connect(G_OBJECT(window), "hide",
+			 G_CALLBACK(hide_cb), logwin);
 	gtk_widget_realize(window);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
@@ -76,13 +78,14 @@ LogWindow *log_window_create(void)
 	gtk_container_add(GTK_CONTAINER(window), scrolledwin);
 	gtk_widget_show(scrolledwin);
 
-	text = gtk_text_new(gtk_scrolled_window_get_hadjustment
-			    (GTK_SCROLLED_WINDOW(scrolledwin)),
-			    gtk_scrolled_window_get_vadjustment
-			    (GTK_SCROLLED_WINDOW(scrolledwin)));
+	text = gtk_text_view_new();
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
+	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	gtk_text_buffer_get_start_iter(buffer, &iter);
+	gtk_text_buffer_create_mark(buffer, "end", &iter, FALSE);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 	gtk_widget_show(text);
-	gtk_text_freeze(GTK_TEXT(text));
 
 	logwin->window = window;
 	logwin->scrolledwin = scrolledwin;
@@ -94,6 +97,7 @@ LogWindow *log_window_create(void)
 
 void log_window_init(LogWindow *logwin)
 {
+	GtkTextBuffer *buffer;
 	GdkColormap *colormap;
 	GdkColor color[3] =
 		{{0, 0, 0xafff, 0}, {0, 0xefff, 0, 0}, {0, 0xefff, 0, 0}};
@@ -120,17 +124,27 @@ void log_window_init(LogWindow *logwin)
 			break;
 		}
 	}
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(logwin->text));
+	gtk_text_buffer_create_tag(buffer, "message",
+				   "foreground-gdk", &logwin->msg_color,
+				   NULL);
+	gtk_text_buffer_create_tag(buffer, "warn",
+				   "foreground-gdk", &logwin->warn_color,
+				   NULL);
+	gtk_text_buffer_create_tag(buffer, "error",
+				   "foreground-gdk", &logwin->error_color,
+				   NULL);
 }
 
 void log_window_show(LogWindow *logwin)
 {
-	GtkText *text = GTK_TEXT(logwin->text);
+	GtkTextView *text = GTK_TEXT_VIEW(logwin->text);
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+	GtkTextMark *mark;
 
-	gtk_widget_hide(logwin->window);
-
-	gtk_text_thaw(text);
-	text->vadj->value = text->vadj->upper - text->vadj->page_size;
-	gtk_signal_emit_by_name(GTK_OBJECT(text->vadj), "value_changed");
+	mark = gtk_text_buffer_get_mark(buffer, "end");
+	gtk_text_view_scroll_mark_onscreen(text, mark);
 
 	gtk_widget_show(logwin->window);
 }
@@ -147,9 +161,12 @@ static gboolean log_window_append(gpointer source, gpointer data)
 {
 	LogText *logtext = (LogText *) source;
 	LogWindow *logwindow = (LogWindow *) data;
-	GtkText *text;
+	GtkTextView *text;
+	GtkTextBuffer *buffer;
+	GtkTextIter iter;
 	GdkColor *color = NULL;
 	gchar *head = NULL;
+	const gchar *tag;
 
 	g_return_val_if_fail(logtext != NULL, TRUE);
 	g_return_val_if_fail(logtext->text != NULL, TRUE);
@@ -158,27 +175,40 @@ static gboolean log_window_append(gpointer source, gpointer data)
 	if (logwindow->clip && !logwindow->clip_length)
 		return FALSE;
 
-	text = GTK_TEXT(logwindow->text);
+	text = GTK_TEXT_VIEW(logwindow->text);
+	buffer = gtk_text_view_get_buffer(text);
+	gtk_text_buffer_get_iter_at_offset(buffer, &iter, -1);
 
 	switch (logtext->type) {
 	case LOG_MSG:
 		color = &logwindow->msg_color;
+		tag = "message";
 		head = "* ";
 		break;
 	case LOG_WARN:
 		color = &logwindow->warn_color;
+		tag = "warn";
 		head = "** ";
 		break;
 	case LOG_ERROR:
 		color = &logwindow->error_color;
+		tag = "error";
 		head = "*** ";
 		break;
 	default:
+		tag = NULL;
 		break;
 	}
+  
+	if (head)
+		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, head, -1,
+							 tag, NULL);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, logtext->text, -1,
+						 tag, NULL);
 
-	if (head) gtk_text_insert(text, NULL, color, NULL, head, -1);
-	gtk_text_insert(text, NULL, color, NULL, logtext->text, -1);
+	gtk_text_buffer_get_start_iter(buffer, &iter);
+	gtk_text_buffer_place_cursor(buffer, &iter);
+
 	if (logwindow->clip)
 	       log_window_clip (GTK_WIDGET (text), logwindow->clip_length);
 
@@ -187,46 +217,35 @@ static gboolean log_window_append(gpointer source, gpointer data)
 
 static void hide_cb(GtkWidget *widget, LogWindow *logwin)
 {
-	if (GTK_TEXT(logwin->text)->freeze_count == 0)
-		gtk_text_freeze(GTK_TEXT(logwin->text));
 }
 
-static void key_pressed(GtkWidget *widget, GdkEventKey *event,
+static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 			LogWindow *logwin)
 {
 	if (event && event->keyval == GDK_Escape)
 		gtk_widget_hide(logwin->window);
+	return FALSE;
 }
 
 static void log_window_clip(GtkWidget *textw, guint clip_length)
 {
         guint length;
 	guint point;
-	gboolean was_frozen = FALSE;
-	GtkText *text = GTK_TEXT(textw);
+	GtkTextView *textview = GTK_TEXT_VIEW(textw);
+	GtkTextBuffer *textbuf = gtk_text_view_get_buffer(textview);
+	GtkTextIter start_iter, end_iter;
 	
-	length = gtk_text_get_length (text);
+	length = gtk_text_buffer_get_char_count (textbuf);
 	debug_print("Log window length: %u\n", length);
 	
 	if (length > clip_length) {
 	        /* find the end of the first line after the cut off
 		 * point */
        	        point = length - clip_length;
-		while (point < length && GTK_TEXT_INDEX(text, point) != '\n')
-			point++;
-		/* erase the text */
-		if (text->freeze_count) {
-			was_frozen = TRUE;
-			gtk_text_thaw(text);
-		}
-		gtk_text_set_point (text, 0);
-		gtk_text_freeze(text);
-		if (!gtk_text_forward_delete (text, point + 1))
-		        debug_print("Error clearing log\n");
-		gtk_text_thaw(text);
-		gtk_text_set_point(text,
-				   gtk_text_get_length (GTK_TEXT (text)));
-		if (was_frozen)
-			gtk_text_freeze(text);
+		gtk_text_buffer_get_iter_at_offset(textbuf, &end_iter, point);
+		if (!gtk_text_iter_forward_to_line_end(&end_iter))
+			return;
+		gtk_text_buffer_get_start_iter(textbuf, &start_iter);
+		gtk_text_buffer_delete(textbuf, &start_iter, &end_iter);
 	}
 }

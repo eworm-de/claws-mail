@@ -21,6 +21,7 @@
 #  include "config.h"
 #endif
 
+#include <stddef.h>
 #include <glib.h>
 #include <gtk/gtkstatusbar.h>
 

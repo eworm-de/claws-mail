@@ -84,8 +84,8 @@
 #include "pixmaps/unread.xpm"
 #include "pixmaps/vcard.xpm"
 #include "pixmaps/ignorethread.xpm"
-#include "pixmaps/work_online.xpm"
-#include "pixmaps/work_offline.xpm"
+#include "pixmaps/online.xpm"
+#include "pixmaps/offline.xpm"
 #include "pixmaps/notice_warn.xpm"
 #include "pixmaps/notice_error.xpm"
 #include "pixmaps/notice_note.xpm"
@@ -93,21 +93,22 @@
 #include "pixmaps/gpg_signed.xpm"
 #include "pixmaps/drafts_close.xpm"
 #include "pixmaps/drafts_open.xpm"
-#include "pixmaps/messageview_text.xpm"
 #include "pixmaps/mime_text_plain.xpm"
 #include "pixmaps/mime_text_html.xpm"
 #include "pixmaps/mime_application.xpm"
-#include "pixmaps/mime_application_octet_stream.xpm"
 #include "pixmaps/mime_image.xpm"
 #include "pixmaps/mime_audio.xpm"
 #include "pixmaps/mime_text_enriched.xpm"
 #include "pixmaps/mime_unknown.xpm"
-#include "pixmaps/mime_gpg_signed.xpm"
-#include "pixmaps/mime_gpg_passed.xpm"
-#include "pixmaps/mime_gpg_failed.xpm"
-#include "pixmaps/mime_gpg_unknown.xpm"
-#include "pixmaps/mime_gpg_expired.xpm"                  
+#include "pixmaps/privacy_signed.xpm"
+#include "pixmaps/privacy_passed.xpm"
+#include "pixmaps/privacy_failed.xpm"
+#include "pixmaps/privacy_unknown.xpm"
+#include "pixmaps/privacy_expired.xpm"
+#include "pixmaps/privacy_warn.xpm"                 
+#include "pixmaps/mime_message.xpm"                  
 #include "pixmaps/address_search.xpm"
+#include "pixmaps/check_spelling.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
 
@@ -124,78 +125,78 @@ static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname);
 
 static StockPixmapData pixmaps[] =
 {
-	{address_xpm			, NULL, NULL, "address", "  "},
-	{address_book_xpm		, NULL, NULL, "address_book", "  "},
-	{address_search_xpm		, NULL, NULL, "address_search", "  "},
+	{address_xpm				, NULL, NULL, "address", "  "},
+	{address_book_xpm			, NULL, NULL, "address_book", "  "},
+	{address_search_xpm			, NULL, NULL, "address_search", "  "},
 	{book_xpm				, NULL, NULL, "book", "  "},
-	{category_xpm			, NULL, NULL, "category", "  "},
-	{checkbox_off_xpm		, NULL, NULL, "checkbox_off", "  "},
-	{checkbox_on_xpm		, NULL, NULL, "checkbox_on", "  "},
+	{category_xpm				, NULL, NULL, "category", "  "},
+	{checkbox_off_xpm			, NULL, NULL, "checkbox_off", "  "},
+	{checkbox_on_xpm			, NULL, NULL, "checkbox_on", "  "},
+	{check_spelling_xpm                     , NULL, NULL, "check_spelling", "  "},
 	{clip_xpm				, NULL, NULL, "clip", "  "},
-	{clipkey_xpm			, NULL, NULL, "clipkey", "  "},
+	{clipkey_xpm				, NULL, NULL, "clipkey", "  "},
 	{close_xpm				, NULL, NULL, "close", "  "},
-	{complete_xpm			, NULL, NULL, "complete", "  "},
-	{continue_xpm			, NULL, NULL, "continue", "  "},
-	{deleted_xpm			, NULL, NULL, "deleted", "  "},
-	{dir_close_xpm			, NULL, NULL, "dir_close", "  "},
-	{dir_close_xpm			, NULL, NULL, "dir_close_hrm", " "},
-	{dir_open_xpm			, NULL, NULL, "dir_open", "  "},
-	{dir_open_hrm_xpm		, NULL, NULL, "dir_open_hrm", "  "},
-	{down_arrow_xpm			, NULL, NULL, "down_arrow", "  "},
-	{up_arrow_xpm			, NULL, NULL, "up_arrow", "  "},
-	{mail_compose_xpm		, NULL, NULL, "edit_extern", "  "},
+	{complete_xpm				, NULL, NULL, "complete", "  "},
+	{continue_xpm				, NULL, NULL, "continue", "  "},
+	{deleted_xpm				, NULL, NULL, "deleted", "  "},
+	{dir_close_xpm				, NULL, NULL, "dir_close", "  "},
+	{dir_close_xpm				, NULL, NULL, "dir_close_hrm", " "},
+	{dir_open_xpm				, NULL, NULL, "dir_open", "  "},
+	{dir_open_hrm_xpm			, NULL, NULL, "dir_open_hrm", "  "},
+	{down_arrow_xpm				, NULL, NULL, "down_arrow", "  "},
+	{up_arrow_xpm				, NULL, NULL, "up_arrow", "  "},
+	{mail_compose_xpm			, NULL, NULL, "edit_extern", "  "},
 	{error_xpm				, NULL, NULL, "error", "  "},
 	{exec_xpm				, NULL, NULL, "exec", "  "},
-	{forwarded_xpm			, NULL, NULL, "forwarded", "  "},
+	{forwarded_xpm				, NULL, NULL, "forwarded", "  "},
 	{group_xpm				, NULL, NULL, "group", "  "},
-	{ignorethread_xpm		, NULL, NULL, "ignorethread", "  "},
+	{ignorethread_xpm			, NULL, NULL, "ignorethread", "  "},
 	{inbox_xpm				, NULL, NULL, "inbox_close", "  "},
-	{inbox_hrm_xpm			, NULL, NULL, "inbox_close_hrm", "  "},
+	{inbox_hrm_xpm				, NULL, NULL, "inbox_close_hrm", "  "},
 	{inbox_xpm				, NULL, NULL, "inbox_open", "  "},
-	{inbox_hrm_xpm			, NULL, NULL, "inbox_open_hrm", "  "},
+	{inbox_hrm_xpm				, NULL, NULL, "inbox_open_hrm", "  "},
 	{paste_xpm				, NULL, NULL, "insert_file", "  "},
-	{interface_xpm			, NULL, NULL, "interface", "  "},
+	{interface_xpm				, NULL, NULL, "interface", "  "},
 	{jpilot_xpm				, NULL, NULL, "jpilot", "  "},
 	{key_xpm				, NULL, NULL, "key", "  "},
 	{ldap_xpm				, NULL, NULL, "ldap", "  "},
-	{linewrap_xpm			, NULL, NULL, "linewrap", "  "},
+	{linewrap_xpm				, NULL, NULL, "linewrap", "  "},
 	{locked_xpm				, NULL, NULL, "locked", "  "},
 	{mail_xpm				, NULL, NULL, "mail", "  "},
-	{mail_attach_xpm		, NULL, NULL, "mail_attach", "  "},
-	{mail_compose_xpm		, NULL, NULL, "mail_compose", "  "},
-	{mail_forward_xpm		, NULL, NULL, "mail_forward", "  "},
-	{mail_receive_xpm		, NULL, NULL, "mail_receive", "  "},
-	{mail_receive_all_xpm	, NULL, NULL, "mail_receive_all", "  "},
-	{mail_reply_xpm			, NULL, NULL, "mail_reply", "  "},
-	{mail_reply_to_all_xpm	, NULL, NULL, "mail_reply_to_all", "  "},
-	{mail_reply_to_author_xpm
-							, NULL, NULL, "mail_reply_to_author", "  "},
-	{mail_send_xpm			, NULL, NULL, "mail_send", "  "},
-	{mail_send_queue_xpm	, NULL, NULL, "mail_send_queue", "  "},
+	{mail_attach_xpm			, NULL, NULL, "mail_attach", "  "},
+	{mail_compose_xpm			, NULL, NULL, "mail_compose", "  "},
+	{mail_forward_xpm			, NULL, NULL, "mail_forward", "  "},
+	{mail_receive_xpm			, NULL, NULL, "mail_receive", "  "},
+	{mail_receive_all_xpm			, NULL, NULL, "mail_receive_all", "  "},
+	{mail_reply_xpm				, NULL, NULL, "mail_reply", "  "},
+	{mail_reply_to_all_xpm			, NULL, NULL, "mail_reply_to_all", "  "},
+	{mail_reply_to_author_xpm		, NULL, NULL, "mail_reply_to_author", "  "},
+	{mail_send_xpm				, NULL, NULL, "mail_send", "  "},
+	{mail_send_queue_xpm			, NULL, NULL, "mail_send_queue", "  "},
 	{mail_xpm				, NULL, NULL, "mail_sign", "  "},
 	{mark_xpm				, NULL, NULL, "mark", "  "},
 	{new_xpm				, NULL, NULL, "new", "  "},
-	{news_compose_xpm		, NULL, NULL, "news_compose", "  "},
+	{news_compose_xpm			, NULL, NULL, "news_compose", "  "},
 	{outbox_xpm				, NULL, NULL, "outbox_close", "  "},
-	{outbox_hrm_xpm			, NULL, NULL, "outbox_close_hrm", "  "},
+	{outbox_hrm_xpm				, NULL, NULL, "outbox_close_hrm", "  "},
 	{outbox_xpm				, NULL, NULL, "outbox_open", "  "},
-	{outbox_hrm_xpm			, NULL, NULL, "outbox_open_hrm", "  "},
-	{replied_xpm			, NULL, NULL, "replied", "  "},
+	{outbox_hrm_xpm				, NULL, NULL, "outbox_open_hrm", "  "},
+	{replied_xpm				, NULL, NULL, "replied", "  "},
 	{paste_xpm				, NULL, NULL, "paste", "  "},
-	{preferences_xpm		, NULL, NULL, "preferences", "  "},
-	{properties_xpm			, NULL, NULL, "properties", "  "},
+	{preferences_xpm			, NULL, NULL, "preferences", "  "},
+	{properties_xpm				, NULL, NULL, "properties", "  "},
 	{outbox_xpm				, NULL, NULL, "queue_close", "  "},
-	{outbox_hrm_xpm			, NULL, NULL, "queue_close_hrm", "  "},
+	{outbox_hrm_xpm				, NULL, NULL, "queue_close_hrm", "  "},
 	{outbox_xpm				, NULL, NULL, "queue_open", "  "},
-	{outbox_hrm_xpm			, NULL, NULL, "queue_open_hrm", "  "},
+	{outbox_hrm_xpm				, NULL, NULL, "queue_open_hrm", "  "},
 	{trash_xpm				, NULL, NULL, "trash_open", "  "},
-	{trash_hrm_xpm			, NULL, NULL, "trash_open_hrm", "  "},
+	{trash_hrm_xpm				, NULL, NULL, "trash_open_hrm", "  "},
 	{trash_xpm				, NULL, NULL, "trash_close", "  "},
-	{trash_hrm_xpm			, NULL, NULL, "trash_close_hrm", "  "},
+	{trash_hrm_xpm				, NULL, NULL, "trash_close_hrm", "  "},
 	{unread_xpm				, NULL, NULL, "unread", "  "},
 	{vcard_xpm				, NULL, NULL, "vcard", "  "},
-	{work_online_xpm			, NULL, NULL, "work_online", "  "},
-	{work_offline_xpm			, NULL, NULL, "work_offline", "  "},
+	{online_xpm				, NULL, NULL, "online", "  "},
+	{offline_xpm				, NULL, NULL, "offline", "  "},
 	{notice_warn_xpm			, NULL, NULL, "notice_warn",  "  "},
 	{notice_error_xpm			, NULL, NULL, "notice_error",  "  "},
 	{notice_note_xpm			, NULL, NULL, "notice_note",  "  "},
@@ -203,20 +204,20 @@ static StockPixmapData pixmaps[] =
 	{gpg_signed_xpm				, NULL, NULL, "gpg_signed", "  "},
 	{drafts_close_xpm			, NULL, NULL, "drafts_close", "  "},
 	{drafts_open_xpm			, NULL, NULL, "drafts_open", "  "},
-	{messageview_text_xpm			, NULL, NULL, "messageview_text", "  "},
 	{mime_text_plain_xpm			, NULL, NULL, "mime_text_plain", "  "},
 	{mime_text_html_xpm			, NULL, NULL, "mime_text_html", "  "},
 	{mime_application_xpm			, NULL, NULL, "mime_application", "  "},
-	{mime_application_octet_stream_xpm	, NULL, NULL, "mime_application_octet_stream", "  "},
 	{mime_image_xpm				, NULL, NULL, "mime_image", "  "},
 	{mime_audio_xpm				, NULL, NULL, "mime_audio", "  "},
 	{mime_text_enriched_xpm			, NULL, NULL, "mime_text_enriched", "  "},
 	{mime_unknown_xpm			, NULL, NULL, "mime_unknown", "  "},	
-	{mime_gpg_signed_xpm			, NULL, NULL, "mime_gpg_signed", "  "},
-	{mime_gpg_passed_xpm			, NULL, NULL, "mime_gpg_passed", "  "},
-	{mime_gpg_failed_xpm			, NULL, NULL, "mime_gpg_failed", "  "},	
-	{mime_gpg_unknown_xpm			, NULL, NULL, "mime_gpg_unknown", "  "},
-	{mime_gpg_expired_xpm			, NULL, NULL, "mime_gpg_expired", "  "},
+	{privacy_signed_xpm			, NULL, NULL, "privacy_signed", "  "},
+	{privacy_passed_xpm			, NULL, NULL, "privacy_passed", "  "},
+	{privacy_failed_xpm			, NULL, NULL, "privacy_failed", "  "},	
+	{privacy_unknown_xpm			, NULL, NULL, "privacy_unknown", "  "},
+	{privacy_expired_xpm			, NULL, NULL, "privacy_expired", "  "},
+	{privacy_warn_xpm			, NULL, NULL, "privacy_warn", "  "},
+	{mime_message_xpm			, NULL, NULL, "mime_message", "  "},
 	{sylpheed_logo_xpm			, NULL, NULL, "sylpheed_logo", "  "},
 };
 

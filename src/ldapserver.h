@@ -32,14 +32,18 @@
 #include "addritem.h"
 #include "addrcache.h"
 #include "adbookbase.h"
+#include "addrquery.h"
 
-#define MGU_LDAP_CONNECT   -51
-#define MGU_LDAP_INIT      -52
-#define MGU_LDAP_BIND      -53
-#define MGU_LDAP_SEARCH    -54
-#define MGU_LDAP_TIMEOUT   -55
-#define MGU_LDAP_CRITERIA  -56
-#define MGU_LDAP_NOENTRIES -57
+/* Error codes */
+#define LDAPRC_SUCCESS    0
+#define LDAPRC_CONNECT    -1
+#define LDAPRC_INIT       -2
+#define LDAPRC_BIND       -3
+#define LDAPRC_SEARCH     -4
+#define LDAPRC_TIMEOUT    -5
+#define LDAPRC_CRITERIA   -6
+#define LDAPRC_NOENTRIES  -7
+#define LDAPRC_STOP_FLAG  -8
 
 typedef struct _LdapServer LdapServer;
 struct _LdapServer {
@@ -79,6 +83,9 @@ void ldapsvr_stop_query_id	( LdapServer *server, const gint queryID );
 void ldapsvr_stop_all_query	( LdapServer *server );
 void ldapsvr_cancel_all_query	( LdapServer *server );
 void ldapsvr_retire_query	( LdapServer *server );
+
+gboolean ldapsvr_reuse_previous	( const LdapServer *server,
+				  const QueryRequest *req );
 
 #endif	/* USE_LDAP */
 

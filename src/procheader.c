@@ -36,8 +36,82 @@
 
 #define BUFFSIZE	8192
 
+typedef char *(*getlinefunc)(char *, int, void *);
+typedef int (*peekcharfunc)(void *);
+typedef int (*getcharfunc)(void *);
+typedef gint (*get_one_field_func)(gchar *, gint, void *, HeaderEntry[]);
+
+static gint string_get_one_field(gchar *buf, gint len, char **str,
+				 HeaderEntry hentry[]);
+
+static char *string_getline(char *buf, int len, char **str);
+static int string_peekchar(char **str);
+static int string_getchar(char **str);
+static int file_peekchar(FILE *fp);
+static int file_getchar(FILE *fp);
+static gint generic_get_one_field(gchar *buf, gint len, void *data,
+				  HeaderEntry hentry[],
+				  getlinefunc getline, 
+				  peekcharfunc peekchar,
+				  getcharfunc getchar);
+static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
+			     gboolean full, gboolean decrypted);
+
+
 gint procheader_get_one_field(gchar *buf, gint len, FILE *fp,
 			      HeaderEntry hentry[])
+{
+	return generic_get_one_field(buf, len, fp, hentry,
+				     (getlinefunc)fgets, (peekcharfunc)file_peekchar,
+				     (getcharfunc)file_getchar);
+}
+
+static gint string_get_one_field(gchar *buf, gint len, char **str,
+				 HeaderEntry hentry[])
+{
+	return generic_get_one_field(buf, len, str, hentry,
+				     (getlinefunc)string_getline,
+				     (peekcharfunc)string_peekchar,
+				     (getcharfunc)string_getchar);
+}
+
+static char *string_getline(char *buf, int len, char **str)
+{
+	if (!**str)
+		return NULL;
+
+	for (; **str && len > 1; --len)
+		if ((*buf++ = *(*str)++) == '\n')
+		    break;
+	*buf = '\0';
+
+	return buf;
+}
+
+static int string_peekchar(char **str)
+{
+	return **str;
+}
+
+static int string_getchar(char **str)
+{
+	return *(*str)++;
+}
+
+static int file_peekchar(FILE *fp)
+{
+	return ungetc(getc(fp), fp);
+}
+
+static int file_getchar(FILE *fp)
+{
+	return getc(fp);
+}
+
+static gint generic_get_one_field(gchar *buf, gint len, void *data,
+			  HeaderEntry *hentry,
+			  getlinefunc getline, peekcharfunc peekchar,
+			  getcharfunc getchar_)
 {
 	gint nexthead;
 	gint hnum = 0;
@@ -47,7 +121,7 @@ gint procheader_get_one_field(gchar *buf, gint len, FILE *fp,
 		/* skip non-required headers */
 		do {
 			do {
-				if (fgets(buf, len, fp) == NULL)
+				if (getline(buf, len, data) == NULL)
 					return -1;
 				if (buf[0] == '\r' || buf[0] == '\n')
 					return -1;
@@ -61,90 +135,42 @@ gint procheader_get_one_field(gchar *buf, gint len, FILE *fp,
 			}
 		} while (hp->name == NULL);
 	} else {
-		if (fgets(buf, len, fp) == NULL) return -1;
+		if (getline(buf, len, data) == NULL) return -1;
 		if (buf[0] == '\r' || buf[0] == '\n') return -1;
 	}
 
-	/* unfold the specified folded line */
-	if (hp && hp->unfold) {
-		gboolean folded = FALSE;
-		gchar *bufp = buf + strlen(buf);
+	/* remove trailing new line */
+	strretchomp(buf);
 
-		for (; bufp > buf &&
-		     (*(bufp - 1) == '\n' || *(bufp - 1) == '\r');
-		     bufp--)
-			*(bufp - 1) = '\0';
+#define UNFOLD_LINE() \
+	(!hentry || (hp && hp->unfold))
 
-		while (1) {
-			nexthead = fgetc(fp);
-
-			/* folded */
-			if (nexthead == ' ' || nexthead == '\t')
-				folded = TRUE;
-			else if (nexthead == EOF)
-				break;
-			else if (folded == TRUE) {
-				if (nexthead == '\r' || nexthead == '\n') {
-					folded = FALSE;
-					continue;
-				}
-
-				if ((len - (bufp - buf)) <= 2) break;
-
-				/* replace return code on the tail end
-				   with space */
-				*bufp++ = ' ';
-				*bufp++ = nexthead;
-				*bufp = '\0';
-				/* concatenate next line */
-				if (fgets(bufp, len - (bufp - buf), fp)
-				    == NULL) break;
-				bufp += strlen(bufp);
-
-				for (; bufp > buf &&
-				     (*(bufp - 1) == '\n' || *(bufp - 1) == '\r');
-				     bufp--)
-					*(bufp - 1) = '\0';
-
-				folded = FALSE;
-			} else {
-				ungetc(nexthead, fp);
-				break;
-			}
-		}
-
-		return hnum;
-	}
-
+	/* unfold line */
 	while (1) {
-		nexthead = fgetc(fp);
+		nexthead = peekchar(data);
+		/* ([*WSP CRLF] 1*WSP) */
 		if (nexthead == ' ' || nexthead == '\t') {
 			size_t buflen = strlen(buf);
-
+			
 			/* concatenate next line */
 			if ((len - buflen) > 2) {
-				gchar *p = buf + buflen;
-
-				*p++ = nexthead;
-				*p = '\0';
-				buflen++;
-				if (fgets(p, len - buflen, fp) == NULL)
+				if (getline(buf + buflen, len - buflen, data) == NULL)
 					break;
+				/* trim trailing \n if requesting one header or
+				 * unfolding was requested */
+				if (UNFOLD_LINE())				 
+				    strretchomp(buf);
 			} else
 				break;
-		} else {
-			if (nexthead != EOF)
-				ungetc(nexthead, fp);
+		} else
 			break;
-		}
 	}
-
-	/* remove trailing return code */
-	strretchomp(buf);
+#undef UNFOLD_LINE	
 
 	return hnum;
 }
 
+#if 0
 gchar *procheader_get_unfolded_line(gchar *buf, gint len, FILE *fp)
 {
 	gboolean folded = FALSE;
@@ -204,7 +230,9 @@ gchar *procheader_get_unfolded_line(gchar *buf, gint len, FILE *fp)
 
 	return buf;
 }
+#endif
 
+#if 0
 GSList *procheader_get_header_list_from_file(const gchar *file)
 {
 	FILE *fp;
@@ -252,7 +280,9 @@ GSList *procheader_get_header_list(FILE *fp)
 
 	return hlist;
 }
+#endif
 
+#if 0
 GPtrArray *procheader_get_header_array(FILE *fp)
 {
 	gchar buf[BUFFSIZE];
@@ -286,6 +316,7 @@ GPtrArray *procheader_get_header_array(FILE *fp)
 
 	return headers;
 }
+#endif
 
 GPtrArray *procheader_get_header_array_asis(FILE *fp)
 {
@@ -320,6 +351,7 @@ GPtrArray *procheader_get_header_array_asis(FILE *fp)
 	return headers;
 }
 
+#if 0
 void procheader_header_list_destroy(GSList *hlist)
 {
 	Header *header;
@@ -330,6 +362,7 @@ void procheader_header_list_destroy(GSList *hlist)
 		hlist = g_slist_remove(hlist, header);
 	}
 }
+#endif
 
 void procheader_header_array_destroy(GPtrArray *harray)
 {
@@ -454,15 +487,7 @@ MsgInfo *procheader_parse_file(const gchar *file, MsgFlags flags,
 MsgInfo *procheader_parse_str(const gchar *str, MsgFlags flags, gboolean full,
 			      gboolean decrypted)
 {
-	FILE *fp;
-	MsgInfo *msginfo;
-
-	if ((fp = str_open_as_stream(str)) == NULL)
-		return NULL;
-
-	msginfo = procheader_parse_stream(fp, flags, full, decrypted);
-	fclose(fp);
-	return msginfo;
+	return parse_stream(&str, TRUE, flags, full, decrypted);
 }
 
 enum
@@ -526,8 +551,14 @@ HeaderEntry* procheader_get_headernames(gboolean full)
 	return full ? hentry_full : hentry_short;
 }
 
-MsgInfo *procheader_parse_stream(FILE *fp, MsgFlags flags, gboolean full, 
+MsgInfo *procheader_parse_stream(FILE *fp, MsgFlags flags, gboolean full,
 				 gboolean decrypted)
+{
+	return parse_stream(fp, FALSE, flags, full, decrypted);
+}
+
+static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
+			     gboolean full, gboolean decrypted)
 {
 	MsgInfo *msginfo;
 	gchar buf[BUFFSIZE], tmp[BUFFSIZE];
@@ -536,12 +567,15 @@ MsgInfo *procheader_parse_stream(FILE *fp, MsgFlags flags, gboolean full,
 	gchar *hp;
 	HeaderEntry *hentry;
 	gint hnum;
+	get_one_field_func get_one_field =
+		isstring ? (get_one_field_func)string_get_one_field
+			 : (get_one_field_func)procheader_get_one_field;
 
 	hentry = procheader_get_headernames(full);
 
 	if (MSG_IS_QUEUED(flags) || MSG_IS_DRAFT(flags)) {
-		while (fgets(buf, sizeof(buf), fp) != NULL)
-			if (buf[0] == '\r' || buf[0] == '\n') break;
+		while (get_one_field(buf, sizeof(buf), data, NULL) != -1)
+			; /* loop */
 	}
 
 	msginfo = procmsg_msginfo_new();
@@ -556,7 +590,7 @@ MsgInfo *procheader_parse_stream(FILE *fp, MsgFlags flags, gboolean full,
 
 	msginfo->inreplyto = NULL;
 
-	while ((hnum = procheader_get_one_field(buf, sizeof(buf), fp, hentry))
+	while ((hnum = get_one_field(buf, sizeof(buf), data, hentry))
 	       != -1) {
 		hp = buf + strlen(hentry[hnum].name);
 		while (*hp == ' ' || *hp == '\t') hp++;
@@ -922,7 +956,9 @@ void procheader_date_get_localtime(gchar *dest, gint len, const time_t timer)
 #endif
 }
 
-gint get_header_from_msginfo(MsgInfo *msginfo, gchar *buf, gint len, gchar *header)
+/* Added by Mel Hadasht on 27 Aug 2001 */
+/* Get a header from msginfo */
+gint procheader_get_header_from_msginfo(MsgInfo *msginfo, gchar *buf, gint len, gchar *header)
 {
 	gchar *file;
 	FILE *fp;

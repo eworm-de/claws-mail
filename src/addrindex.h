@@ -99,10 +99,11 @@ struct _AddressDataSource {
 	gpointer rawDataSource;
 };
 
-void addrindex_initialize		( AddressIndex *addrIndex );
-void addrindex_teardown			( AddressIndex *addrIndex );
+void addrindex_initialize		( void );
+void addrindex_teardown			( void );
 
 AddressIndex *addrindex_create_index	( void );
+AddressIndex *addrindex_get_object	( void );
 void addrindex_set_file_path		( AddressIndex *addrIndex,
 					  const gchar *value );
 void addrindex_set_file_name		( AddressIndex *addrIndex,
@@ -157,20 +158,27 @@ GList *addrindex_ds_get_all_persons	( AddressDataSource *ds );
 GList *addrindex_ds_get_all_groups	( AddressDataSource *ds );
 
 /* Search support */
-gint addrindex_setup_search	( AddressIndex *addrIndex,
-				  const gchar *searchTerm,
-				  const gpointer target,
-				  AddrSearchCallbackFunc callBack );
-gboolean addrindex_start_search	( AddressIndex *addrIndex,
-				  const gint queryID );
-void addrindex_stop_search	( AddressIndex *addrIndex,
-				  const gint queryID );
+gint addrindex_setup_search		( const gchar *searchTerm,
+					  void *callBackEnd,
+					  void *callBackEntry );
 
-void addrindex_read_all		( AddressIndex *addrIndex );
+gint addrindex_setup_static_search	( AddressDataSource *ds,
+					  const gchar *searchTerm,
+					  ItemFolder *folder,
+					  void *callBackEnd,
+					  void *callBackEntry );
+
+gboolean addrindex_start_search		( const gint queryID );
+void addrindex_stop_search		( const gint queryID );
+void addrindex_remove_results		( AddressDataSource *ds,
+					  ItemFolder *folder );
+
 gboolean addrindex_load_completion(
-		AddressIndex *addrIndex,
 		gint (*callBackFunc)
 			( const gchar *, const gchar *, const gchar * ) );
+gint addrindex_setup_explicit_search(
+	AddressDataSource *ds, const gchar *searchTerm, ItemFolder *folder,
+	void *callBackEnd, void *callBackEntry );
 
 #endif /* __ADDRINDEX_H__ */
 

@@ -46,8 +46,6 @@
 #include "gtkutils.h"
 #include "utils.h"
 
-PangoFontDescription *boldfont;
-
 #define TR(str)	(prefs_common.trans_hdr ? gettext(str) : str)
 
 #if 0
@@ -133,6 +131,8 @@ HeaderView *headerview_create(void)
 
 void headerview_init(HeaderView *headerview)
 {
+	static PangoFontDescription *boldfont = NULL;
+
 	if (!boldfont && BOLD_FONT)
 		boldfont = pango_font_description_from_string
 				(BOLD_FONT);

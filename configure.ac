@@ -8,7 +8,7 @@ PACKAGE=sylpheed
 dnl version number
 MAJOR_VERSION=0
 MINOR_VERSION=9
-MICRO_VERSION=5
+MICRO_VERSION=8
 INTERFACE_AGE=0
 BINARY_AGE=0
 EXTRA_VERSION=0
@@ -60,7 +60,7 @@ AC_SUBST(LT_REVISION)
 AC_SUBST(LT_AGE)
 
 dnl Specify a header configuration file
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS(config.h)
 
 AM_MAINTAINER_MODE
 
@@ -68,7 +68,6 @@ dnl Checks for programs.
 dnl AC_ARG_PROGRAM
 AC_PROG_CC
 AC_ISC_POSIX
-AM_PROG_CC_STDC
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
@@ -76,7 +75,7 @@ AC_PROG_CPP
 dnl AC_PROG_RANLIB
 AM_PROG_LEX
 AC_PROG_YACC
-AM_PROG_LIBTOOL
+AC_PROG_LIBTOOL
 
 SYLPHEED_ACLOCAL_INCLUDE(ac)
   
@@ -126,7 +125,7 @@ dnl Checks for iconv
 AM_ICONV
 
 dnl for gettext
-ALL_LINGUAS="bg cs de el en_GB es fr hr hu it ja ko nl pl pt_BR ru sk sr sv zh_TW.Big5"
+ALL_LINGUAS="bg cs de el en_GB es fr hr hu it ja ko nl pl pt_BR ru sk sr sv zh_CN zh_TW.Big5"
 GETTEXT_PACKAGE=sylpheed
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define text domain.])
@@ -170,6 +169,19 @@ if test x"$use_threads" = xyes ; then
 	fi
 else
 	AC_MSG_RESULT(no)
+fi
+
+dnl Check for d_type member in struct dirent
+AC_MSG_CHECKING([whether struct dirent has d_type member])
+AC_CACHE_VAL(ac_cv_dirent_d_type,[
+	AC_TRY_COMPILE([#include <dirent.h>],
+		       [struct dirent d; d.d_type = DT_REG;],
+		       ac_cv_dirent_d_type=yes, ac_cv_dirent_d_type=no)
+])
+AC_MSG_RESULT($ac_cv_dirent_d_type)
+if test $ac_cv_dirent_d_type = yes; then
+	AC_DEFINE(HAVE_DIRENT_D_TYPE, 1,
+		  Define if `struct dirent' has `d_type' member.)
 fi
 
 dnl Checks for header files.
@@ -239,8 +251,8 @@ LIBS=$syl_save_LIBS
 
 dnl check for IPv6 option
 AC_ARG_ENABLE(ipv6,
-	[  --enable-ipv6           Enable IPv6 support [default=no]],
-	[ac_cv_enable_ipv6=$enableval], [ac_cv_enable_ipv6=no])
+	[  --disable-ipv6           Disable IPv6 support],
+	[ac_cv_enable_ipv6=$enableval], [ac_cv_enable_ipv6=yes])
 
 dnl automated checks for IPv6 support.
 AC_MSG_CHECKING([whether to use IPv6])
@@ -337,8 +349,20 @@ dnl Check for X-Face support
 AC_ARG_ENABLE(compface,
 	[  --disable-compface      Do not use compface (X-Face)],
 	[ac_cv_enable_compface=$enableval], [ac_cv_enable_compface=yes])
-if test "$ac_cv_enable_compface" = yes; then
-	AC_CHECK_LIB(compface, uncompface,,[ac_cv_enable_compface=no])
+AC_MSG_CHECKING([whether to use compface])
+if test x"$ac_cv_enable_compface" = xyes; then
+	AC_MSG_RESULT(yes)
+	AC_CHECK_LIB(compface, uncompface, 
+		[AC_DEFINE(HAVE_LIBCOMPFACE, 1, Define if you want compface support.)],
+		[ac_cv_enable_compface=no])
+	if test x"$ac_cv_enable_compface" = xyes; then
+		COMPFACE_LIBS="-lcompface"
+	else
+		COMPFACE_LIBS=""
+	fi
+	AC_SUBST(COMPFACE_LIBS)
+else
+	AC_MSG_RESULT(no)
 fi
 
 dnl for LDAP support in addressbook
@@ -401,12 +425,14 @@ if test "$ac_cv_enable_jpilot" = yes; then
 				 [ ac_cv_enable_jpilot=yes
 				   AC_DEFINE(USE_JPILOT, 1, Define if you want JPilot support in addressbook.) ])
 	fi
-	AC_MSG_CHECKING([whether jpilot is available])
-	AC_MSG_RESULT($ac_cv_enable_jpilot)
 
-	if test "$ac_cv_enable_jpilot" = yes; then
-		LIBS="$LIBS -lpisock"
+	AC_CHECK_LIB(pisock, unpack_Address, [JPILOT_LIBS="-lpisock"], [JPILOT_LIBS="" ac_cv_enable_jpilot="no"])
+	if test x"$ac_cv_enable_jpilot" = xyes; then
+		AC_DEFINE(USE_JPILOT, 1, Define if you want JPilot support in addressbook.)
+	else
+		AC_MSG_NOTICE([JPilot support not available])
 	fi
+	AC_SUBST(JPILOT_LIBS)
 else
 	AC_MSG_RESULT(no)
 fi
@@ -433,7 +459,7 @@ PLUGINS=""
 
 dnl --- Trayicon ---
 AC_ARG_ENABLE(trayicon-plugin,
-	[  --enable-trayicon-plugin   System Tray Icon [default=no]],
+	[  --disable-trayicon-plugin         Do not build System Tray Icon plugin],
 	[ac_cv_enable_trayicon_plugin=$enableval], [ac_cv_enable_trayicon_plugin=yes])
 if test x"$ac_cv_enable_trayicon_plugin" = xyes; then
 	PLUGINS="trayicon $PLUGINS"
@@ -442,7 +468,7 @@ AM_CONDITIONAL(BUILD_TRAYICON_PLUGIN, test x"$ac_cv_enable_trayicon_plugin" = xy
 
 dnl --- SpamAssassin ---
 AC_ARG_ENABLE(spamassassin-plugin,
-	[  --enable-spamassassin-plugin    Build SpamAssassin plugin [default=no]],
+	[  --enable-spamassassin-plugin      Build SpamAssassin plugin [default=no]],
 	[ac_cv_enable_spamassassin_plugin=$enableval], [ac_cv_enable_spamassassin_plugin=no])
 if test x"$ac_cv_enable_spamassassin_plugin" = xyes; then
 	AC_SPAMASSASSIN
@@ -452,10 +478,10 @@ AM_CONDITIONAL(BUILD_SPAMASSASSIN_PLUGIN, test x"$ac_cv_enable_spamassassin_plug
 
 dnl --- MathML Viewer ---
 AC_ARG_ENABLE(mathml-viewer-plugin,
-	[  --enable-mathml-viewer-plugin    Build MathML-Viewer plugin [default=no]],
+	[  --disable-mathml-viewer-plugin    Do not build MathML-Viewer plugin],
 	[ac_cv_enable_mathml_viewer_plugin=$enableval], [ac_cv_enable_mathml_viewer_plugin=yes])
 if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
-	PKG_CHECK_MODULES(GTK_MATH_VIEW, gtkmathview >= 0.4.2, :, ac_cv_enable_mathml_viewer_plugin=no)
+	PKG_CHECK_MODULES(GTK_MATH_VIEW, gtkmathview >= 0.4.2 gtkmathview < 0.5, :, ac_cv_enable_mathml_viewer_plugin=no)
 
 	if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
 		AC_SUBST(GTK_MATH_VIEW_CFLAGS)
@@ -468,14 +494,14 @@ AM_CONDITIONAL(BUILD_MATHML_VIEWER_PLUGIN, test x"$ac_cv_enable_mathml_viewer_pl
 
 dnl --- Image Viewer ---
 AC_ARG_ENABLE(image-viewer-plugin,
-	[  --disable-image-viewer-plugin   Do not build image viewer plugin],
+	[  --disable-image-viewer-plugin     Do not build image viewer plugin],
 	[ac_cv_enable_image_viewer_plugin=$enableval], [ac_cv_enable_image_viewer_plugin=yes])
 if test x"$ac_cv_enable_image_viewer_plugin" = xyes; then
 	AC_ARG_ENABLE(gdk-pixbuf,
-		[  --disable-gdk-pixbuf    Do not use gdk-pixbuf],
+		[  --disable-gdk-pixbuf              Do not use gdk-pixbuf],
 		[ac_cv_enable_gdk_pixbuf=$enableval], [ac_cv_enable_gdk_pixbuf=yes])
 	AC_ARG_ENABLE(imlib,
-		[  --disable-imlib         Do not use imlib],
+		[  --disable-imlib                   Do not use imlib],
 		[ac_cv_enable_imlib=$enableval], [ac_cv_enable_imlib=yes])
 
 	if test "$ac_cv_enable_gdk_pixbuf" = yes; then
@@ -495,7 +521,7 @@ AM_CONDITIONAL(BUILD_IMAGE_VIEWER_PLUGIN, test x"$ac_cv_enable_image_viewer_plug
 
 dnl --- Dillo Viewer ---
 AC_ARG_ENABLE(dillo-viewer-plugin,
-	[  --enable-dillo-viewer-plugin   Build Dillo plugin for html mail rendering [default=no]],
+	[  --disable-dillo-viewer-plugin     Do not build Dillo plugin for html mail rendering],
 	[ac_cv_enable_dillo_viewer_plugin=$enableval], [ac_cv_enable_dillo_viewer_plugin=yes])
 if test x"$ac_cv_enable_dillo_viewer_plugin" = xyes; then
 	PLUGINS="dillo-viewer $PLUGINS"
@@ -504,7 +530,7 @@ AM_CONDITIONAL(BUILD_DILLO_VIEWER_PLUGIN, test x"$ac_cv_enable_dillo_viewer_plug
 
 dnl --- Demo ---
 AC_ARG_ENABLE(demo-plugin,
-	[  --enable-demo-plugin    Build demo plugin [default=no]],
+	[  --enable-demo-plugin              Build demo plugin [default=no]],
 	[ac_cv_enable_demo_plugin=$enableval], [ac_cv_enable_demo_plugin=no])
 if test x"$ac_cv_enable_demo_plugin" = xyes; then
 	PLUGINS="demo $PLUGINS"
@@ -513,7 +539,7 @@ AM_CONDITIONAL(BUILD_DEMO_PLUGIN, test x"$ac_cv_enable_demo_plugin" = xyes)
 
 dnl --- ClamAV ---
 AC_ARG_ENABLE(clamav-plugin,
-	[  --enable-clamav-plugin    Build Clam AntiVirus plugin [default=no]],
+	[  --disable-clamav-plugin           Do not build Clam AntiVirus plugin],
 	[ac_cv_enable_clamav_plugin=$enableval], [ac_cv_enable_clamav_plugin=yes])
 if test x"$ac_cv_enable_clamav_plugin" = xyes; then
 	AC_CHECK_LIB(clamav, cl_scanfile, clamav_lib=-lclamav, ac_cv_enable_clamav_plugin=no)

@@ -31,7 +31,6 @@
 #include "utils.h"
 #include "prefs_gtk.h"
 #include "filtering.h"
-#include "prefs_scoring.h"
 #include "folder_item_prefs.h"
 
 FolderItemPrefs tmp_prefs;
@@ -53,10 +52,12 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	/*{"enable_thread", "TRUE", &tmp_prefs.enable_thread, P_BOOL,
 	 NULL, NULL, NULL},*/
+#if 0
 	{"hide_score", "-9999", &tmp_prefs.kill_score, P_INT,
 	 NULL, NULL, NULL},
 	{"important_score", "1", &tmp_prefs.important_score, P_INT,
 	 NULL, NULL, NULL},
+#endif
 	/* MIGRATION */	 
 	{"request_return_receipt", "", &tmp_prefs.request_return_receipt, P_BOOL,
 	 NULL, NULL, NULL},
@@ -89,6 +90,10 @@ static PrefParam param[] = {
 	{"save_copy_to_folder", NULL, &tmp_prefs.save_copy_to_folder, P_BOOL,
 	 NULL, NULL, NULL},
 	{"folder_color", "", &tmp_prefs.color, P_INT,
+	 NULL, NULL, NULL},
+	{"enable_processing", "FALSE", &tmp_prefs.enable_processing, P_BOOL,
+	 NULL, NULL, NULL},
+	{"newmailcheck", "TRUE", &tmp_prefs.newmailcheck, P_BOOL,
 	 NULL, NULL, NULL},
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -162,8 +167,6 @@ static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 	prefs->sort_by_subject = FALSE;
 	prefs->sort_by_score = FALSE;
 	prefs->sort_descending = FALSE;
-	prefs->kill_score = -9999;
-	prefs->important_score = 9999;
 
 	prefs->request_return_receipt = FALSE;
 	prefs->enable_default_to = FALSE;
@@ -183,8 +186,11 @@ static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 	prefs->save_copy_to_folder = FALSE;
 	prefs->color = 0;
 
-	prefs->scoring = NULL;
+        prefs->enable_processing = TRUE;
 	prefs->processing = NULL;
+
+	prefs->newmailcheck = TRUE;
+
 	return prefs;
 }
 
@@ -203,8 +209,6 @@ void folder_item_prefs_free(FolderItemPrefs * prefs)
 		g_free(prefs->default_to);
 	if (prefs->default_reply_to) 
 		g_free(prefs->default_reply_to);
-	if (prefs->scoring != NULL)
-		prefs_scoring_free(prefs->scoring);
 	g_free(prefs);
 }
 
@@ -239,18 +243,10 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 	tmp_prefs.sort_by_score			= src->prefs->sort_by_score;
 	tmp_prefs.sort_descending		= src->prefs->sort_descending;
 	tmp_prefs.enable_thread			= src->prefs->enable_thread;
-	tmp_prefs.kill_score			= src->prefs->kill_score;
-	tmp_prefs.important_score		= src->prefs->important_score;
+        tmp_prefs.enable_processing             = src->prefs->enable_processing;
+    tmp_prefs.newmailcheck             = src->prefs->newmailcheck;
 
 	prefs_matcher_read_config();
-	for (tmp = src->prefs->scoring; tmp != NULL && tmp->data != NULL;) {
-		ScoringProp *prop = (ScoringProp *)tmp->data;
-		
-		tmp_scor_list = g_slist_append(tmp_scor_list,
-					   scoringprop_copy(prop));
-		tmp = tmp->next;
-	}
-	tmp_prefs.scoring			= tmp_scor_list;
 
 	for (tmp = src->prefs->processing; tmp != NULL && tmp->data != NULL;) {
 		FilteringProp *prop = (FilteringProp *)tmp->data;

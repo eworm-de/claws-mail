@@ -23,19 +23,9 @@
 #include <glib.h>
 #include <stdio.h>
 
-#include "folder.h"
-
-typedef struct _NewsFolder	NewsFolder;
 typedef struct _NewsGroupInfo	NewsGroupInfo;
 
-#define NEWS_FOLDER(obj)	((NewsFolder *)obj)
-
-struct _NewsFolder
-{
-	RemoteFolder rfolder;
-
-	gboolean use_auth;
-};
+#include "folder.h"
 
 struct _NewsGroupInfo
 {
@@ -46,14 +36,14 @@ struct _NewsGroupInfo
 };
 
 FolderClass *news_get_class		(void);
-gint news_post				(Folder		* folder,
-					 const gchar	* file);
 
-GSList *news_get_group_list		(Folder 	* folder);
-void news_group_list_free		(GSList 	* group_list);
-void news_remove_group_list_cache	(Folder 	* folder);
+GSList *news_get_group_list		(Folder		*folder);
+void news_group_list_free		(GSList		*group_list);
+void news_remove_group_list_cache	(Folder		*folder);
 
-gint news_cancel_article		(Folder 	* folder,
-					 MsgInfo 	* msginfo);
+gint news_post				(Folder		*folder,
+					 const gchar	*file);
+gint news_cancel_article		(Folder 	*folder,
+					 MsgInfo 	*msginfo);
 
 #endif /* __NEWS_H__ */

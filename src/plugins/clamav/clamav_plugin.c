@@ -59,22 +59,52 @@ static PrefParam param[] = {
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
+struct scan_parameters {
+	gboolean is_infected;
+
+	struct cl_node *root;
+	struct cl_limits limits;
+	gboolean scan_archive;
+};
+
+static gboolean scan_func(GNode *node, gpointer data)
+{
+	struct scan_parameters *params = (struct scan_parameters *) data;
+	MimeInfo *mimeinfo = (MimeInfo *) node->data;
+	gchar *outfile;
+	int ret;
+	unsigned long int size;
+	char *virname;
+
+	outfile = procmime_get_tmp_file_name(mimeinfo);
+	if (procmime_get_part(outfile, mimeinfo) < 0)
+		g_warning("Can't get the part of multipart message.");
+	else {
+		debug_print("Scanning %s\n", outfile);
+    		if ((ret = cl_scanfile(outfile, &virname, &size, params->root, 
+				      &params->limits, params->scan_archive)) == CL_VIRUS) {
+			params->is_infected = TRUE;
+			debug_print("Detected %s virus.\n", virname); 
+    		} else {
+			debug_print("No virus detected.\n");
+			if (ret != CL_CLEAN)
+				debug_print("Error: %s\n", cl_strerror(ret));
+    		}
+
+		unlink(outfile);
+	}
+
+	return params->is_infected;
+}
+
 static gboolean mail_filtering_hook(gpointer source, gpointer data)
 {
 	MailFilteringData *mail_filtering_data = (MailFilteringData *) source;
 	MsgInfo *msginfo = mail_filtering_data->msginfo;
-	gboolean is_infected = FALSE;
 	MimeInfo *mimeinfo;
-	MimeInfo *child;
-	gchar *infile;
-	gchar *outfile;
-	gint scan_archive = 0;
 
-	int ret, no;
-	unsigned long int size;
-	char *virname;
-	struct cl_node *root = NULL;
-	struct cl_limits limits;
+	int ret, no = 0;
+	struct scan_parameters params;
 
 	if (!config.clamav_enable)
 		return FALSE;
@@ -82,68 +112,29 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	mimeinfo = procmime_scan_message(msginfo);
 	if (!mimeinfo) return FALSE;
 
-	child = mimeinfo->children;
-	if (!child) {
-		procmime_mimeinfo_free_all(mimeinfo);
-		return FALSE;
-	}
-
 	debug_print("Scanning message %d for viruses\n", msginfo->msgnum);
 
-	infile = procmsg_get_message_file_path(msginfo);
+	params.is_infected = FALSE;
+	params.root = NULL;
 
-
-    	if((ret = cl_loaddbdir(cl_retdbdir(), &root, &no))) {
-		debug_print("cl_loaddbdir: %s\n", cl_perror(ret));
-		exit(2);
-    	}
-
-    	debug_print("Database loaded (containing in total %d signatures)\n", no);
-
-    	cl_buildtrie(root);
-
-    	limits.maxfiles = 1000; /* max files */
-    	limits.maxfilesize = config.clamav_max_size * 1048576; /* maximum archived file size */
-    	limits.maxreclevel = 8; /* maximum recursion level */
+    	params.limits.maxfiles = 1000; /* max files */
+    	params.limits.maxfilesize = config.clamav_max_size * 1048576; /* maximum archived file size */
+    	params.limits.maxreclevel = 8; /* maximum recursion level */
 
 	if (config.clamav_enable_arc)
-		scan_archive = TRUE;
+		params.scan_archive = TRUE;
 
-	while (child != NULL) {
-		if (child->children || child->mime_type == MIME_MULTIPART) {
-			child = procmime_mimeinfo_next(child);
-			continue;
-		}
-		if(child->parent && child->parent->parent
-		&& !strcasecmp(child->parent->parent->content_type, "multipart/signed")
-		&& child->mime_type == MIME_TEXT) {
-			/* this is the main text part of a signed message */
-			child = procmime_mimeinfo_next(child);
-			continue;
-		}
-		outfile = procmime_get_tmp_file_name(child);
-		if (procmime_get_part(outfile, infile, child) < 0)
-			g_warning("Can't get the part of multipart message.");
-		else {
-			debug_print("Scanning %s\n", outfile);
-    	 		if ((ret = cl_scanfile(outfile, &virname, &size, root, 
-					      &limits, scan_archive)) == CL_VIRUS) {
-				is_infected = TRUE;
-				debug_print("Detected %s virus.\n", virname); 
-    			} else {
-				debug_print("No virus detected.\n");
-				if (ret != CL_CLEAN)
-	    				debug_print("Error: %s\n", cl_perror(ret));
-    			}
+    	if((ret = cl_loaddbdir(cl_retdbdir(), &params.root, &no))) {
+		debug_print("cl_loaddbdir: %s\n", cl_strerror(ret));
+		exit(2);
+    	}
+    	debug_print("Database loaded (containing in total %d signatures)\n", no);
 
-			unlink(outfile);
+    	cl_buildtrie(params.root);
 
-			if (is_infected) break;
-			child = child->next;
-		}
-	}
+	g_node_traverse(mimeinfo->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, scan_func, &params);
 
-	if (is_infected) {
+	if (params.is_infected) {
 		if (config.clamav_recv_infected) {
 			FolderItem *clamav_save_folder;
 
@@ -159,11 +150,10 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		}
 	}
 	
-    	cl_freetrie(root);
-	g_free(infile);
+    	cl_freetrie(params.root);
 	procmime_mimeinfo_free_all(mimeinfo);
 	
-	return is_infected;
+	return params.is_infected;
 }
 
 ClamAvConfig *clamav_get_config(void)
@@ -236,8 +226,8 @@ const gchar *plugin_name(void)
 
 const gchar *plugin_desc(void)
 {
-	return _("This plugin uses Clam AntiVirus to scan all message attachments "
-	       "that are received from a POP account.\n"
+	return _("This plugin uses Clam AntiVirus to scan all messages that are "
+	       "received from an IMAP, LOCAL or POP account.\n"
 	       "\n"
 	       "When a message attachment is found to contain a virus it can be "
 	       "deleted or saved in a specially designated folder.\n"

@@ -245,7 +245,8 @@ void compose_reply			(MsgInfo	*msginfo,
 Compose *compose_forward		(PrefsAccount *account,
 					 MsgInfo	*msginfo,
 					 gboolean	 as_attach,
-					 const gchar	*body);
+					 const gchar	*body,
+					 gboolean	 no_extedit);
 Compose *compose_forward_multiple	(PrefsAccount	*account, 
 					 GSList		*msginfo_list);
 /* remove end */

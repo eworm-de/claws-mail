@@ -37,9 +37,6 @@
 #include "folder.h"
 #include "prefs_common.h"
 #include "account.h"
-#if USE_GPGME
-#  include "rfc2015.h"
-#endif
 #include "alertpanel.h"
 #include "news.h"
 #include "hooks.h"
@@ -126,16 +123,6 @@ struct MarkSum {
 	gint *max;
 	gint first;
 };
-
-static gboolean procmsg_ignore_node(GNode *node, gpointer data)
-{
-	MsgInfo *msginfo = (MsgInfo *)node->data;
-	
-	procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
-	procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
-
-	return FALSE;
-}
 
 /* CLAWS subject threading:
   
@@ -414,7 +401,7 @@ gchar *procmsg_get_message_file(MsgInfo *msginfo)
 
 	filename = folder_item_fetch_msg(msginfo->folder, msginfo->msgnum);
 	if (!filename)
-		g_warning("can't fetch message %d\n", msginfo->msgnum);
+		debug_print("can't fetch message %d\n", msginfo->msgnum);
 
 	return filename;
 }
@@ -476,7 +463,8 @@ FILE *procmsg_open_message(MsgInfo *msginfo)
 	if (!is_file_exist(file)) {
 		g_free(file);
 		file = procmsg_get_message_file(msginfo);
-		g_return_val_if_fail(file != NULL, NULL);
+		if (!file)
+			return NULL;
 	}
 
 	if ((fp = fopen(file, "rb")) == NULL) {
@@ -496,57 +484,6 @@ FILE *procmsg_open_message(MsgInfo *msginfo)
 
 	return fp;
 }
-
-#if USE_GPGME
-FILE *procmsg_open_message_decrypted(MsgInfo *msginfo, MimeInfo **mimeinfo)
-{
-	FILE *fp;
-	MimeInfo *mimeinfo_;
-	glong fpos;
-
-	g_return_val_if_fail(msginfo != NULL, NULL);
-
-	if (mimeinfo) *mimeinfo = NULL;
-
-	if ((fp = procmsg_open_message(msginfo)) == NULL) return NULL;
-
-	mimeinfo_ = procmime_scan_mime_header(fp);
-	if (!mimeinfo_) {
-		fclose(fp);
-		return NULL;
-	}
-
-	if (!MSG_IS_ENCRYPTED(msginfo->flags) &&
-	    rfc2015_is_encrypted(mimeinfo_)) {
-		MSG_SET_TMP_FLAGS(msginfo->flags, MSG_ENCRYPTED);
-	}
-
-	if (MSG_IS_ENCRYPTED(msginfo->flags) &&
-	    !msginfo->plaintext_file &&
-	    !msginfo->decryption_failed) {
-		fpos = ftell(fp);
-		rfc2015_decrypt_message(msginfo, mimeinfo_, fp);
-		if (msginfo->plaintext_file &&
-		    !msginfo->decryption_failed) {
-			fclose(fp);
-			procmime_mimeinfo_free_all(mimeinfo_);
-			if ((fp = procmsg_open_message(msginfo)) == NULL)
-				return NULL;
-			mimeinfo_ = procmime_scan_mime_header(fp);
-			if (!mimeinfo_) {
-				fclose(fp);
-				return NULL;
-			}
-		} else {
-			if (fseek(fp, fpos, SEEK_SET) < 0)
-				perror("fseek");
-		}
-	}
-
-	if (mimeinfo) *mimeinfo = mimeinfo_;
-	return fp;
-}
-#endif
 
 gboolean procmsg_msg_exist(MsgInfo *msginfo)
 {
@@ -813,7 +750,6 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 			procmsg_msginfo_free(msginfo);		/* refcnt-- */
 		}	
 	}
-	folder_item_update(outbox, TRUE);
 
 	return 0;
 }
@@ -969,19 +905,6 @@ MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 	procmsg_msginfo_free(full_msginfo);
 
 	return procmsg_msginfo_new_ref(msginfo);
-#if 0
-	full_msginfo->msgnum = msginfo->msgnum;
-	full_msginfo->size = msginfo->size;
-	full_msginfo->mtime = msginfo->mtime;
-	full_msginfo->folder = msginfo->folder;
-#if USE_GPGME
-	full_msginfo->plaintext_file = g_strdup(msginfo->plaintext_file);
-	full_msginfo->decryption_failed = msginfo->decryption_failed;
-#endif
-	procmsg_msginfo_set_to_folder(full_msginfo, msginfo->to_folder);
-
-	return full_msginfo;
-#endif
 }
 
 void procmsg_msginfo_free(MsgInfo *msginfo)
@@ -1161,9 +1084,6 @@ gint procmsg_send_message_queue(const gchar *file)
 		} else if (mailac && mailac->use_mail_command &&
 			   mailac->mail_command && (* mailac->mail_command)) {
 			mailval = send_message_local(mailac->mail_command, fp);
-			local = 1;
-		} else if (prefs_common.use_extsend && prefs_common.extsend_cmd) {
-			mailval = send_message_local(prefs_common.extsend_cmd, fp);
 			local = 1;
 		} else {
 			if (!mailac) {
@@ -1585,8 +1505,8 @@ gboolean procmsg_msginfo_filter(MsgInfo *msginfo)
 		return TRUE;
 
 	/* filter if enabled in prefs or move to inbox if not */
-	if((global_processing != NULL) &&
-	   filter_message_by_msginfo(global_processing, msginfo))
+	if((filtering_rules != NULL) &&
+	   filter_message_by_msginfo(filtering_rules, msginfo))
 		return TRUE;
 
 	return FALSE;

@@ -645,6 +645,7 @@ static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 {
 	GtkItemFactory *ifactory;
 	MainWindow *mainwin = (MainWindow *)data;
+	GtkItemFactoryEntry ifentry = {NULL, NULL, NULL, 0, "<Branch>"};
 
 	prefs_actions_write_config();
 	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
@@ -678,6 +679,7 @@ static gchar *actions_desc_strings[] = {
 	"     %u",  N_("for a user provided argument"),
 	"     %h",  N_("for a user provided hidden argument (e.g. password)"),
 	"     %s",  N_("for the text selection"),
+	"  %as{}",  N_("apply filtering actions between {} to selected messages"),
 	NULL
 };
 

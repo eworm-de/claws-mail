@@ -39,6 +39,7 @@
 #include <gtk/gtkhandlebox.h>
 #include <gtk/gtktoolbar.h>
 #include <gtk/gtkbutton.h>
+#include <gtk/gtktooltips.h>
 #include <string.h>
 
 #include "intl.h"
@@ -62,7 +63,6 @@
 #include "prefs_common.h"
 #include "prefs_actions.h"
 #include "prefs_filtering.h"
-#include "prefs_scoring.h"
 #include "prefs_account.h"
 #include "prefs_summary_column.h"
 #include "prefs_template.h"
@@ -86,6 +86,8 @@
 #include "pluginwindow.h"
 #include "hooks.h"
 #include "progressindicator.h"
+#include "localfolder.h"
+#include "filtering.h"
 
 #define AC_LABEL_WIDTH	240
 
@@ -134,9 +136,6 @@ static void message_window_size_allocate_cb	(GtkWidget	*widget,
 						 gpointer	 data);
 
 static void new_folder_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void add_mbox_cb 	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 static void rename_folder_cb	 (MainWindow	*mainwin,
@@ -345,6 +344,9 @@ static void select_thread_cb	 (MainWindow	*mainwin,
 static void create_filter_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void create_processing_cb (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
 
 static void prefs_common_open_cb	(MainWindow	*mainwin,
 					 guint		 action,
@@ -358,9 +360,15 @@ static void prefs_actions_open_cb	(MainWindow	*mainwin,
 static void prefs_account_open_cb	(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
-static void prefs_scoring_open_cb 	(MainWindow	*mainwin,
-				  	 guint		 action,
-				  	 GtkWidget	*widget);
+
+static void prefs_pre_processing_open_cb  (MainWindow	*mainwin,
+				  	   guint	 action,
+				  	   GtkWidget	*widget);
+
+static void prefs_post_processing_open_cb (MainWindow	*mainwin,
+				  	   guint	 action,
+				  	   GtkWidget	*widget);
+
 static void prefs_filtering_open_cb 	(MainWindow	*mainwin,
 				  	 guint		 action,
 				  	 GtkWidget	*widget);
@@ -425,14 +433,14 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, update_folderview_cb, 0, NULL},
 	{N_("/_File/_Add mailbox"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Add mailbox/MH..."),	NULL, add_mailbox_cb, 0, NULL},
-	{N_("/_File/_Add mailbox/mbox..."),     NULL, add_mbox_cb, 0, NULL},
 	{N_("/_File/_Import mbox file..."),	NULL, import_mbox_cb, 0, NULL},
 	{N_("/_File/_Export to mbox file..."),	NULL, export_mbox_cb, 0, NULL},
 	{N_("/_File/Empty _trash"),		"<shift>D", empty_trash_cb, 0, NULL},
-	{N_("/_File/_Work offline"),		"<control>W", toggle_work_offline_cb, 0, "<ToggleItem>"},						
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Save as..."),		"<control>S", save_as_cb, 0, NULL},
 	{N_("/_File/_Print..."),		NULL, print_cb, 0, NULL},
+	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_File/_Work offline"),		"<control>W", toggle_work_offline_cb, 0, "<ToggleItem>"},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	/* {N_("/_File/_Close"),		"<alt>W", app_exit_cb, 0, NULL}, */
 	{N_("/_File/E_xit"),			"<control>Q", app_exit_cb, 0, NULL},
@@ -665,6 +673,15 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, create_filter_cb, FILTER_BY_TO, NULL},
 	{N_("/_Tools/_Create filter rule/by _Subject"),
 						NULL, create_filter_cb, FILTER_BY_SUBJECT, NULL},
+	{N_("/_Tools/_Create processing rule"),	NULL, NULL, 0, "<Branch>"},
+	{N_("/_Tools/_Create processing rule/_Automatically"),
+						NULL, create_processing_cb, FILTER_BY_AUTO, NULL},
+	{N_("/_Tools/_Create processing rule/by _From"),
+						NULL, create_processing_cb, FILTER_BY_FROM, NULL},
+	{N_("/_Tools/_Create processing rule/by _To"),
+						NULL, create_processing_cb, FILTER_BY_TO, NULL},
+	{N_("/_Tools/_Create processing rule/by _Subject"),
+						NULL, create_processing_cb, FILTER_BY_SUBJECT, NULL},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/Actio_ns"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
@@ -692,8 +709,10 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Configuration/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Configuration/_Common preferences..."),
 						NULL, prefs_common_open_cb, 0, NULL},
-	{N_("/_Configuration/_Scoring..."),
-						NULL, prefs_scoring_open_cb, 0, NULL},
+	{N_("/_Configuration/Pre-processing..."),
+						NULL, prefs_pre_processing_open_cb, 0, NULL},
+	{N_("/_Configuration/Post-processing..."),
+						NULL, prefs_post_processing_open_cb, 0, NULL},
 	{N_("/_Configuration/_Filtering..."),
 						NULL, prefs_filtering_open_cb, 0, NULL},
 	{N_("/_Configuration/_Templates..."),	NULL, prefs_template_open_cb, 0, NULL},
@@ -824,16 +843,17 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_widget_set_size_request(progressbar, 120, 1);
 	gtk_box_pack_start(GTK_BOX(hbox_stat), progressbar, FALSE, FALSE, 0);
 
-	online_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_WORK_ONLINE);
-	offline_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_WORK_OFFLINE);
+	online_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_ONLINE);
+	offline_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_OFFLINE);
 	online_tip = gtk_tooltips_new();
 	online_switch = gtk_button_new ();
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(online_tip),
-			     online_switch, _("Go offline"), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(online_tip),online_switch, 
+			     _("You are online. Click the icon to go offline"), NULL);
 	offline_tip = gtk_tooltips_new();
 	offline_switch = gtk_button_new ();
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(offline_tip),
-			     offline_switch, _("Go online"), NULL);
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(offline_tip),offline_switch, 
+			     _("You are offline. Click the icon to go online"),
+			     NULL);
 	gtk_container_add (GTK_CONTAINER(online_switch), online_pixmap);
 	gtk_button_set_relief (GTK_BUTTON(online_switch), GTK_RELIEF_NONE);
 	g_signal_connect (G_OBJECT(online_switch), "clicked", G_CALLBACK(online_switch_clicked), mainwin);
@@ -1013,6 +1033,8 @@ MainWindow *main_window_create(SeparateType type)
 	summary_init(summaryview);
 	messageview_init(messageview);
 	log_window_init(mainwin->logwin);
+	log_window_set_clipping(mainwin->logwin, prefs_common.cliplog,
+				prefs_common.loglength);
 #ifdef USE_OPENSSL
 	sslcertwindow_register_hook();
 #endif
@@ -1033,6 +1055,12 @@ MainWindow *main_window_create(SeparateType type)
 		online_switch_clicked (GTK_BUTTON(online_switch), mainwin);
 
 	return mainwin;
+}
+
+void main_window_destroy(MainWindow *mainwin)
+{
+	/* TODO : destroy other component */
+	messageview_destroy(mainwin->messageview);
 }
 
 void main_window_cursor_wait(MainWindow *mainwin)
@@ -1118,13 +1146,13 @@ void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
 			folderview_reflect_prefs_pixmap_theme(mainwin->folderview);
 			summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
 
-			pixmap = stock_pixmap_widget(mainwin->hbox_stat, STOCK_PIXMAP_WORK_ONLINE);
+			pixmap = stock_pixmap_widget(mainwin->hbox_stat, STOCK_PIXMAP_ONLINE);
 			gtk_container_remove(GTK_CONTAINER(mainwin->online_switch), 
 					     mainwin->online_pixmap);
 			gtk_container_add (GTK_CONTAINER(mainwin->online_switch), pixmap);
 			gtk_widget_show(pixmap);
 			mainwin->online_pixmap = pixmap;
-			pixmap = stock_pixmap_widget(mainwin->hbox_stat, STOCK_PIXMAP_WORK_OFFLINE);
+			pixmap = stock_pixmap_widget(mainwin->hbox_stat, STOCK_PIXMAP_OFFLINE);
 			gtk_container_remove(GTK_CONTAINER(mainwin->offline_switch), 
 					     mainwin->offline_pixmap);
 			gtk_container_add (GTK_CONTAINER(mainwin->offline_switch), pixmap);
@@ -1482,39 +1510,6 @@ void main_window_add_mailbox(MainWindow *mainwin)
 	folderview_set(mainwin->folderview);
 }
 
-void main_window_add_mbox(MainWindow *mainwin)
-{
-	gchar *path;
-	Folder *folder;
-	FolderItem * item;
-
-	path = input_dialog(_("Add mbox mailbox"),
-			    _("Input the location of mailbox."),
-			    "mail");
-
-	if (!path) return;
-
-	if (folder_find_from_path(path)) {
-		alertpanel_error(_("The mailbox `%s' already exists."), path);
-		g_free(path);
-		return;
-	}
-
-	folder = folder_new(folder_get_class_from_string("mbox"), 
-			    g_basename(path), path);
-	g_free(path);
-
-	if (folder->klass->create_tree(folder) < 0) {
-		alertpanel_error(_("Creation of the mailbox failed."));
-		folder_destroy(folder);
-		return;
-	}
-
-	folder_add(folder);
-
-	folderview_set(mainwin->folderview);
-}
-
 SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 {
 	SensitiveCond state = 0;
@@ -1596,7 +1591,6 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/File/Add mailbox"                          , M_UNLOCKED},
 
                 {"/File/Add mailbox/MH..."   		      , M_UNLOCKED},
-		{"/File/Add mailbox/mbox..."                  , M_UNLOCKED},
 		{"/File/Export to mbox file..."               , M_UNLOCKED},
 		{"/File/Empty trash"                          , M_UNLOCKED},
 		{"/File/Work offline"	       		      , M_UNLOCKED},
@@ -1721,7 +1715,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	}
 
 	SET_CHECK_MENU_ACTIVE("/View/Show all headers",
-			      mainwin->messageview->textview->show_all_headers);
+			      mainwin->messageview->mimeview->textview->show_all_headers);
 	SET_CHECK_MENU_ACTIVE("/View/Thread view", (state & M_THREADED) != 0);
 
 #undef SET_CHECK_MENU_ACTIVE
@@ -1854,9 +1848,6 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		g_signal_connect(G_OBJECT(messagewin), "delete_event",
 				 G_CALLBACK(message_window_close_cb),
 				 mainwin);
-		gtk_container_add(GTK_CONTAINER(messagewin),
-				  GTK_WIDGET_PTR(mainwin->messageview));
-		gtk_widget_realize(messagewin);
 		if (messageview_is_visible(mainwin->messageview))
 			gtk_widget_show(messagewin);
 	}
@@ -1944,14 +1935,32 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		mainwin->win.sep_message.messagewin = messagewin;
 		mainwin->win.sep_message.hpaned     = hpaned;
 
+		gtk_widget_realize(messagewin);
+		gtk_widget_show_all(GTK_WIDGET_PTR(mainwin->messageview));
+		gtk_widget_show_all(messagewin);
+		toolbar_set_style(mainwin->messageview->toolbar->toolbar, 
+				  mainwin->messageview->handlebox, 
+				  prefs_common.toolbar_style);
+
 		break;
 	case SEPARATE_BOTH:
+		messageview_add_toolbar(mainwin->messageview, messagewin);
+		msgview_ifactory = gtk_item_factory_from_widget(mainwin->messageview->menubar);
+		menu_set_sensitive(msgview_ifactory, "/File/Close", FALSE);
+
 		gtk_box_pack_start(GTK_BOX(vbox_body),
 				   GTK_WIDGET_PTR(mainwin->summaryview),
 				   TRUE, TRUE, 0);
-
+		
 		mainwin->win.sep_both.folderwin = folderwin;
 		mainwin->win.sep_both.messagewin = messagewin;
+		
+		gtk_widget_realize(messagewin);
+		gtk_widget_show_all(GTK_WIDGET_PTR(mainwin->messageview));
+		gtk_widget_show_all(messagewin);
+		toolbar_set_style(mainwin->messageview->toolbar->toolbar, 
+				  mainwin->messageview->handlebox, 
+				  prefs_common.toolbar_style);		
 
 		break;
 	}
@@ -1967,6 +1976,8 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 	 * and mimeview icon list/ctree lose track of their visibility states */
 	if (!noticeview_is_visible(mainwin->messageview->noticeview)) 
 		gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->noticeview));
+	if (!noticeview_is_visible(mainwin->messageview->mimeview->siginfoview)) 
+		gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->mimeview->siginfoview));
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(mainwin->messageview->mimeview->mime_toggle)))
 		gtk_widget_hide(mainwin->messageview->mimeview->icon_mainbox);
 	else 
@@ -2155,12 +2166,6 @@ static void add_mailbox_cb(MainWindow *mainwin, guint action,
 			   GtkWidget *widget)
 {
 	main_window_add_mailbox(mainwin);
-}
-
-static void add_mbox_cb(MainWindow *mainwin, guint action,
-			GtkWidget *widget)
-{
-	main_window_add_mbox(mainwin);
 }
 
 static void update_folderview_cb(MainWindow *mainwin, guint action,
@@ -2681,8 +2686,7 @@ static void allsel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 	if (GTK_WIDGET_HAS_FOCUS(mainwin->summaryview->ctree))
 		summary_select_all(mainwin->summaryview);
 	else if (messageview_is_visible(msgview) &&
-		 (GTK_WIDGET_HAS_FOCUS(msgview->textview->text) ||
-		  GTK_WIDGET_HAS_FOCUS(msgview->mimeview->textview->text)))
+		 (GTK_WIDGET_HAS_FOCUS(msgview->mimeview->textview->text)))
 		messageview_select_all(mainwin->messageview);
 }
 
@@ -2695,7 +2699,13 @@ static void select_thread_cb(MainWindow *mainwin, guint action,
 static void create_filter_cb(MainWindow *mainwin, guint action,
 			     GtkWidget *widget)
 {
-	summary_filter_open(mainwin->summaryview, (PrefsFilterType)action);
+	summary_filter_open(mainwin->summaryview, (PrefsFilterType)action, 0);
+}
+
+static void create_processing_cb(MainWindow *mainwin, guint action,
+			     GtkWidget *widget)
+{
+	summary_filter_open(mainwin->summaryview, (PrefsFilterType)action, 1);
 }
 
 static void prefs_common_open_cb(MainWindow *mainwin, guint action,
@@ -2704,16 +2714,28 @@ static void prefs_common_open_cb(MainWindow *mainwin, guint action,
 	prefs_common_open();
 }
 
-static void prefs_scoring_open_cb(MainWindow *mainwin, guint action,
-				  GtkWidget *widget)
+static void prefs_pre_processing_open_cb(MainWindow *mainwin, guint action,
+				         GtkWidget *widget)
 {
-	prefs_scoring_open(NULL);
+	prefs_filtering_open(&pre_global_processing,
+			     _("Processing rules to apply before folder rules"),
+			     NULL, NULL);
+}
+
+static void prefs_post_processing_open_cb(MainWindow *mainwin, guint action,
+				          GtkWidget *widget)
+{
+	prefs_filtering_open(&post_global_processing,
+			     _("Processing rules to apply after folder rules"),
+			     NULL, NULL);
 }
 
 static void prefs_filtering_open_cb(MainWindow *mainwin, guint action,
 				    GtkWidget *widget)
 {
-	prefs_filtering_open(NULL, NULL, NULL);
+	prefs_filtering_open(&filtering_rules,
+			     _("Filtering configuration"),
+			     NULL, NULL);
 }
 
 static void prefs_template_open_cb(MainWindow *mainwin, guint action,
@@ -2800,6 +2822,11 @@ static gboolean mainwindow_focus_in_event(GtkWidget *widget, GdkEventFocus *focu
 	g_return_val_if_fail(data, FALSE);
 	summary = ((MainWindow *)data)->summaryview;
 	g_return_val_if_fail(summary, FALSE);
+
+	if (GTK_CLIST(summary->ctree)->selection && 
+	    g_list_length(GTK_CLIST(summary->ctree)->selection) > 1)
+		return FALSE;
+
 	if (summary->selected != summary->displayed)
 		summary_select_node(summary, summary->displayed, FALSE, TRUE);
 	return FALSE;

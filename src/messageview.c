@@ -61,11 +61,10 @@
 #include "send_message.h"
 #include "stock_pixmap.h"
 #include "hooks.h"
+#include "filtering.h"
 
 static GList *messageview_list = NULL;
 
-static void messageview_change_view_type(MessageView	*messageview,
-					 MessageType	 type);
 static void messageview_destroy_cb	(GtkWidget	*widget,
 					 MessageView	*messageview);
 static void messageview_size_allocate_cb(GtkWidget	*widget,
@@ -126,6 +125,9 @@ static void add_address_cb		(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
 static void create_filter_cb		(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void create_processing_cb	(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
 
@@ -271,6 +273,14 @@ static GtkItemFactoryEntry msgview_entries[] =
 					NULL, create_filter_cb, FILTER_BY_TO, NULL},
 	{N_("/_Tools/_Create filter rule/by _Subject"),
 					NULL, create_filter_cb, FILTER_BY_SUBJECT, NULL},
+	{N_("/_Tools/Create processing rule/_Automatically"),
+					NULL, create_processing_cb, FILTER_BY_AUTO, NULL},
+	{N_("/_Tools/Create processing rule/by _From"),
+					NULL, create_processing_cb, FILTER_BY_FROM, NULL},
+	{N_("/_Tools/Create processing rule/by _To"),
+					NULL, create_processing_cb, FILTER_BY_TO, NULL},
+	{N_("/_Tools/Create processing rule/by _Subject"),
+					NULL, create_processing_cb, FILTER_BY_SUBJECT, NULL},
 	{N_("/_Tools/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/Actio_ns"),	NULL, NULL, 0, "<Branch>"},
 
@@ -283,21 +293,15 @@ MessageView *messageview_create(MainWindow *mainwin)
 	MessageView *messageview;
 	GtkWidget *vbox;
 	HeaderView *headerview;
-	TextView *textview;
 	MimeView *mimeview;
 	NoticeView *noticeview;
 
 	debug_print("Creating message view...\n");
 	messageview = g_new0(MessageView, 1);
 
-	messageview->type = MVIEW_TEXT;
-
 	headerview = headerview_create();
 
 	noticeview = noticeview_create(mainwin);
-
-	textview = textview_create();
-	textview->messageview = messageview;
 
 	mimeview = mimeview_create(mainwin);
 	mimeview->textview = textview_create();
@@ -309,20 +313,14 @@ MessageView *messageview_create(MainWindow *mainwin)
 			   FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET_PTR(noticeview),
 			   FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET_PTR(textview),
-			   TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),
+                           GTK_WIDGET_PTR(mimeview), TRUE, TRUE, 0);
 	gtk_widget_show(vbox);
-
-	/* to remove without destroyed */
-	gtk_widget_ref(GTK_WIDGET_PTR(textview));
-	gtk_widget_ref(GTK_WIDGET_PTR(mimeview));
-	gtk_widget_ref(GTK_WIDGET_PTR(mimeview->textview));
 
 	messageview->vbox       = vbox;
 	messageview->new_window = FALSE;
 	messageview->window     = NULL;
 	messageview->headerview = headerview;
-	messageview->textview   = textview;
 	messageview->mimeview   = mimeview;
 	messageview->noticeview = noticeview;
 	messageview->mainwin    = mainwin;
@@ -395,8 +393,8 @@ MessageView *messageview_create_with_new_window(MainWindow *mainwin)
 
 	messageview_add_toolbar(msgview, window);
 
-	gtk_widget_grab_focus(msgview->textview->text);
-	gtk_widget_show_all(window);
+	gtk_widget_grab_focus(msgview->mimeview->textview->text);
+	gtk_widget_show(window);
 
 	msgview->new_window = TRUE;
 	msgview->window = window;
@@ -412,7 +410,6 @@ MessageView *messageview_create_with_new_window(MainWindow *mainwin)
 void messageview_init(MessageView *messageview)
 {
 	headerview_init(messageview->headerview);
-	textview_init(messageview->textview);
 	mimeview_init(messageview->mimeview);
 	/*messageview_set_font(messageview);*/
 
@@ -454,6 +451,8 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	FolderItem *queue, *outbox;
 	gint num;
 	gchar *path;
+        gchar *addr;
+        gchar *addrp;
 
 	if ((!msginfo->returnreceiptto) && 
 	    (!msginfo->dispositionnotificationto)) 
@@ -465,7 +464,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	else
 		to = msginfo->returnreceiptto;
 
-	ok = get_header_from_msginfo(msginfo, buf, sizeof(buf),
+	ok = procheader_get_header_from_msginfo(msginfo, buf, sizeof(buf),
 				"Return-Path:");
 	if (ok == 0) {
 		gchar *to_addr = g_strdup(to);
@@ -532,7 +531,12 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		FILE_OP_ERROR(tmp, "chmod");
 		g_warning("can't change file mode\n");
 	}
-
+	
+	addr = g_strdup(to);
+	
+	extract_address(addr);
+	addrp = addr;
+	
 	/* write queue headers */
 	fprintf(fp, "AF:\n");
 	fprintf(fp, "NF:0\n");
@@ -550,7 +554,9 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	else
 		fprintf(fp, "SSV:\n");
 	fprintf(fp, "SSH:\n");
-	fprintf(fp, "R:<%s>\n", to);
+	fprintf(fp, "R:<%s>\n", addrp);
+	
+	g_free(addrp);
 	
 	/* check whether we need to save the message */
 	outbox = account_get_special_folder(account, F_OUTBOX); 
@@ -623,22 +629,55 @@ GList *messageview_get_window_list(void)
 	return messageview_list;
 }
 
-void messageview_show(MessageView *messageview, MsgInfo *msginfo,
+static gboolean find_encrypted_func(GNode *node, gpointer data)
+{
+	MimeInfo *mimeinfo = (MimeInfo *) node->data;
+	MimeInfo **encinfo = (MimeInfo **) data;
+	
+	if (privacy_mimeinfo_is_encrypted(mimeinfo)) {
+		*encinfo = mimeinfo;
+		return TRUE;
+	}
+	
+	return FALSE;
+}
+
+static MimeInfo *find_encrypted_part(MimeInfo *rootinfo)
+{
+	MimeInfo *encinfo = NULL;
+
+	g_node_traverse(rootinfo->node, G_IN_ORDER, G_TRAVERSE_ALL, -1,
+		find_encrypted_func, &encinfo);
+	
+	return encinfo;
+}
+
+gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		      gboolean all_headers)
 {
 	gchar *file;
-	MimeInfo *mimeinfo;
+	MimeInfo *mimeinfo, *encinfo;
 
-	g_return_if_fail(msginfo != NULL);
+	g_return_val_if_fail(msginfo != NULL, -1);
 
 	mimeinfo = procmime_scan_message(msginfo);
-	g_return_if_fail(mimeinfo != NULL);
+	if (!mimeinfo) {
+		textview_show_error(messageview->mimeview->textview);
+		return -1;
+	}
 
+	while ((encinfo = find_encrypted_part(mimeinfo)) != NULL) {
+		debug_print("decrypting message part\n");
+		if (privacy_mimeinfo_decrypt(encinfo) < 0)
+			break;
+	}
+	
 	file = procmsg_get_message_file_path(msginfo);
 	if (!file) {
 		g_warning("can't get message file path.\n");
 		procmime_mimeinfo_free_all(mimeinfo);
-		return;
+		textview_show_error(messageview->mimeview->textview);
+		return -1;
 	}
 
 	if (messageview->msginfo != msginfo) {
@@ -648,17 +687,9 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	headerview_show(messageview->headerview, messageview->msginfo);
 
 	messageview->all_headers = all_headers;
-	textview_set_all_headers(messageview->textview, all_headers);
 	textview_set_all_headers(messageview->mimeview->textview, all_headers);
 
-	if (mimeinfo->mime_type != MIME_TEXT) {
-		messageview_change_view_type(messageview, MVIEW_MIME);
-		mimeview_show_message(messageview->mimeview, mimeinfo, file);
-	} else {
-		messageview_change_view_type(messageview, MVIEW_TEXT);
-		textview_show_message(messageview->textview, mimeinfo, file);
-		procmime_mimeinfo_free_all(mimeinfo);
-	}
+	mimeview_show_message(messageview->mimeview, mimeinfo, file);
 
 	if ((messageview->msginfo->dispositionnotificationto || 
 	     messageview->msginfo->returnreceiptto) &&
@@ -668,41 +699,8 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		noticeview_hide(messageview->noticeview);
 
 	g_free(file);
-}
 
-static void messageview_change_view_type(MessageView *messageview,
-					 MessageType type)
-{
-	TextView *textview = messageview->textview;
-	MimeView *mimeview = messageview->mimeview;
-	gboolean hadfocus  = GTK_WIDGET_HAS_FOCUS(textview->text);
-
-	if (messageview->type == type) return;
-
-	if (type == MVIEW_MIME) {
-		gtkut_container_remove
-			(GTK_CONTAINER(GTK_WIDGET_PTR(messageview)),
-			 GTK_WIDGET_PTR(textview));
-		gtk_box_pack_start(GTK_BOX(messageview->vbox),
-				   GTK_WIDGET_PTR(mimeview), TRUE, TRUE, 0);
-		gtk_container_add(GTK_CONTAINER(mimeview->vbox),
-				  GTK_WIDGET_PTR(textview));
-	} else if (type == MVIEW_TEXT) {
-		gtkut_container_remove
-			(GTK_CONTAINER(GTK_WIDGET_PTR(messageview)),
-			 GTK_WIDGET_PTR(mimeview));
-
-		if (mimeview->vbox == GTK_WIDGET_PTR(textview)->parent)
-			gtkut_container_remove(GTK_CONTAINER(mimeview->vbox),
-			 		       GTK_WIDGET_PTR(textview));
-
-		gtk_box_pack_start(GTK_BOX(messageview->vbox),
-				   GTK_WIDGET_PTR(textview), TRUE, TRUE, 0);
-	} else
-		return;
-	if (hadfocus) gtk_widget_grab_focus(textview->text);
-
-	messageview->type = type;
+	return 0;
 }
 
 void messageview_reflect_prefs_pixmap_theme(void)
@@ -721,16 +719,14 @@ void messageview_clear(MessageView *messageview)
 {
 	procmsg_msginfo_free(messageview->msginfo);
 	messageview->msginfo = NULL;
-	messageview_change_view_type(messageview, MVIEW_TEXT);
 	messageview->filtered = FALSE;
+	mimeview_clear(messageview->mimeview);
 	headerview_clear(messageview->headerview);
-	textview_clear(messageview->textview);
 	noticeview_hide(messageview->noticeview);
 }
 
 void messageview_destroy(MessageView *messageview)
 {
-	GtkWidget *textview  = GTK_WIDGET_PTR(messageview->textview);
 	GtkWidget *mimeview  = GTK_WIDGET_PTR(messageview->mimeview);
 
 	debug_print("destroy messageview\n");
@@ -740,7 +736,6 @@ void messageview_destroy(MessageView *messageview)
 			      messageview->msginfo_update_callback_id);
 
 	headerview_destroy(messageview->headerview);
-	textview_destroy(messageview->textview);
 	mimeview_destroy(messageview->mimeview);
 	noticeview_destroy(messageview->noticeview);
 
@@ -755,16 +750,30 @@ void messageview_destroy(MessageView *messageview)
 
 	g_free(messageview);
 
-	gtk_widget_unref(textview);
 	gtk_widget_unref(mimeview);
 }
 
 void messageview_delete(MessageView *msgview)
 {
 	MsgInfo *msginfo = (MsgInfo *) msgview->msginfo;
-	FolderItem *trash = folder_get_default_trash();
+	FolderItem *trash = NULL;
+	PrefsAccount *ac = NULL;
 
 	g_return_if_fail(msginfo != NULL);
+
+	/* to get the trash folder, we have to choose either
+	 * the folder's or account's trash default - we prefer
+	 * the one in the account prefs */
+	if (msginfo->folder) {
+		if (NULL != (ac = account_find_from_item(msginfo->folder)))
+			trash = account_get_special_folder(ac, F_TRASH);
+		if (!trash && msginfo->folder->folder)	
+			trash = msginfo->folder->folder->trash;
+		/* if still not found, use the default */
+		if (!trash) 
+			trash =	folder_get_default_trash();
+	}	
+
 	g_return_if_fail(trash   != NULL);
 
 	if (prefs_common.immediate_exec)
@@ -805,32 +814,20 @@ void messageview_quote_color_set(void)
 
 void messageview_set_font(MessageView *messageview)
 {
-	textview_set_font(messageview->textview, NULL);
 }
 
 TextView *messageview_get_current_textview(MessageView *messageview)
 {
 	TextView *text = NULL;
 
-	if (messageview->type == MVIEW_TEXT)
-		text = messageview->textview;
-	else if (messageview->type == MVIEW_MIME) {
-		if (gtk_notebook_get_current_page
-			(GTK_NOTEBOOK(messageview->mimeview->notebook)) == 0)
-			text = messageview->textview;
-		else if (messageview->mimeview->type == MIMEVIEW_TEXT)
-			text = messageview->mimeview->textview;
-	}
+	text = messageview->mimeview->textview;
 
 	return text;
 }
 
 MimeInfo *messageview_get_selected_mime_part(MessageView *messageview)
 {
-	if (messageview->type == MVIEW_MIME)
-		return mimeview_get_selected_part(messageview->mimeview);
-
-	return NULL;
+	return mimeview_get_selected_part(messageview->mimeview);
 }
 
 void messageview_copy_clipboard(MessageView *messageview)
@@ -859,13 +856,21 @@ void messageview_select_all(MessageView *messageview)
 
 void messageview_set_position(MessageView *messageview, gint pos)
 {
-	textview_set_position(messageview->textview, pos);
+	TextView *text;
+
+	text = messageview_get_current_textview(messageview);
+	if (text)
+		textview_set_position(text, pos);
 }
 
 gboolean messageview_search_string(MessageView *messageview, const gchar *str,
 				   gboolean case_sens)
 {
-	return textview_search_string(messageview->textview, str, case_sens);
+	TextView *text;
+
+	text = messageview_get_current_textview(messageview);
+	if (text)
+		return textview_search_string(text, str, case_sens);
 	return FALSE;
 }
 
@@ -873,8 +878,11 @@ gboolean messageview_search_string_backward(MessageView *messageview,
 					    const gchar *str,
 					    gboolean case_sens)
 {
-	return textview_search_string_backward(messageview->textview,
-					       str, case_sens);
+	TextView *text;
+
+	text = messageview_get_current_textview(messageview);
+		return textview_search_string_backward(text,
+						       str, case_sens);
 	return FALSE;
 }
 
@@ -964,7 +972,6 @@ void messageview_toggle_view_real(MessageView *messageview)
 		gtkut_container_remove(GTK_CONTAINER(container), vpaned);
 		gtk_widget_reparent(GTK_WIDGET_PTR(messageview), container);
 		menu_set_sensitive(ifactory, "/View/Expand Summary View", FALSE);
-		gtk_widget_grab_focus(GTK_WIDGET(messageview->textview->text));
 	} else {
 		gtk_widget_reparent(GTK_WIDGET_PTR(messageview), vpaned);
 		gtk_container_add(GTK_CONTAINER(container), vpaned);
@@ -1060,15 +1067,11 @@ gchar *messageview_get_selection(MessageView *msgview)
 	g_return_val_if_fail(msgview != NULL, NULL);
 
 	textview = messageview_get_current_textview(msgview);
-	if (textview) {
-		edit = GTK_TEXT_VIEW(textview->text);
-		body_pos = textview->body_pos;
-	} else {
-		edit = GTK_TEXT_VIEW(msgview->mimeview->textview->text);
-		body_pos = msgview->mimeview->textview->body_pos;
-	}
+	g_return_val_if_fail(textview != NULL, NULL);
 
+	edit = GTK_EDITABLE(textview->text);
 	g_return_val_if_fail(edit != NULL, NULL);
+	body_pos = textview->body_pos;
 
 	textbuf = gtk_text_view_get_buffer(edit);
 
@@ -1205,12 +1208,14 @@ static void reply_cb(gpointer data, guint action, GtkWidget *widget)
 	MsgInfo *msginfo;
 	gchar *text = NULL;
 	ComposeMode mode = (ComposeMode)action;
+	TextView *textview;
 
 	msginfo = messageview->msginfo;
 	mlist = g_slist_append(NULL, msginfo);
 
+	textview = messageview_get_current_textview(messageview);
 	text = gtkut_editable_get_selection
-		(GTK_EDITABLE(messageview->textview->text));
+		(GTK_EDITABLE(textview->text));
 	if (text && *text == '\0') {
 		g_free(text);
 		text = NULL;
@@ -1272,7 +1277,7 @@ static void reply_cb(gpointer data, guint action, GtkWidget *widget)
 		}
 		break;
 	case COMPOSE_FORWARD_INLINE:
-		compose_forward(NULL, msginfo, FALSE, text);
+		compose_forward(NULL, msginfo, FALSE, text, FALSE);
 		break;
 	case COMPOSE_FORWARD_AS_ATTACH:
 		compose_forward_multiple(NULL, mlist);
@@ -1326,17 +1331,26 @@ static void add_address_cb(gpointer data, guint action, GtkWidget *widget)
 static void create_filter_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	MessageView *messageview = (MessageView *)data;
-	gchar *header = NULL;
-	gchar *key = NULL;
-
+	FolderItem * item;
+	
 	if (!messageview->msginfo) return;
+	
+	item = messageview->msginfo->folder;
+	summary_msginfo_filter_open(item,  messageview->msginfo,
+				    (PrefsFilterType)action, 0);
+}
 
-	procmsg_get_filter_keyword(messageview->msginfo, &header, &key,
-				   (PrefsFilterType)action);
-	prefs_filtering_open(NULL, header, key);
-
-	g_free(header);
-	g_free(key);
+static void create_processing_cb(gpointer data, guint action,
+				 GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	FolderItem * item;
+	
+	if (!messageview->msginfo) return;
+	
+	item = messageview->msginfo->folder;
+	summary_msginfo_filter_open(item,  messageview->msginfo,
+				    (PrefsFilterType)action, 1);
 }
 
 static void about_cb(gpointer data, guint action, GtkWidget *widget)

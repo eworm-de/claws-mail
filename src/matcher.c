@@ -28,6 +28,7 @@
 #include "intl.h"
 #include "matcher_parser.h"
 #include "prefs_gtk.h"
+#include <ctype.h>
 
 /*!
  *\brief	Keyword lookup element
@@ -100,8 +101,8 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHCRITERIA_NOT_MESSAGE, "~message"},
 	{MATCHCRITERIA_BODY_PART, "body_part"},
 	{MATCHCRITERIA_NOT_BODY_PART, "~body_part"},
-	{MATCHCRITERIA_EXECUTE, "execute"},
-	{MATCHCRITERIA_NOT_EXECUTE, "~execute"},
+	{MATCHCRITERIA_TEST, "test"},
+	{MATCHCRITERIA_NOT_TEST, "~test"},
 
 	/* match type */
 	{MATCHTYPE_MATCHCASE, "matchcase"},
@@ -110,7 +111,7 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHTYPE_REGEXP, "regexp"},
 
 	/* actions */
-	{MATCHACTION_SCORE, "score"},
+	{MATCHACTION_SCORE, "score"},    /* for backward compatibility */
 	{MATCHACTION_MOVE, "move"},
 	{MATCHACTION_COPY, "copy"},
 	{MATCHACTION_DELETE, "delete"},
@@ -125,7 +126,10 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHACTION_EXECUTE, "execute"},
 	{MATCHACTION_COLOR, "color"},
 	{MATCHACTION_REDIRECT, "redirect"},
-	{MATCHACTION_CHANGE_SCORE, "change_score"}
+	{MATCHACTION_CHANGE_SCORE, "change_score"},
+	{MATCHACTION_SET_SCORE, "set_score"},
+	{MATCHACTION_STOP, "stop"},
+	{MATCHACTION_HIDE, "hide"},
 };
 
 /*!
@@ -181,92 +185,6 @@ gint get_matchparser_tab_id(const gchar *str)
 		return res->id;
 	} else
 		return -1;
-}
-
-/*!
- *\brief	Escape characters in a string by inserting '\' characters
- *
- *\param	str String with characters to be escaped
- *
- *\return	gchar * Newly allocated string with escaped characters
- */
-gchar *matcher_escape_str(const gchar *str)
-{
-	register const gchar *walk;
-	register int escape;
-	gchar *res;
-	register char *reswalk;
-
-	if (str == NULL)
-		return NULL;
-
-	for (escape = 0, walk = str; *walk; walk++)
-		if (*walk == '\\' || *walk == '\'' || *walk == '\"')
-			escape++;
-
-	if (!escape)
-		return g_strdup(str);
-	
-	reswalk = res = g_new0(gchar, (walk - str) + escape + 1);
-	for (walk = str; *walk; walk++, reswalk++) {
-		if (*walk == '\\' || *walk == '\'' || *walk == '\"')
-			*reswalk++ = '\\';
-		*reswalk = *walk;
-	}
-
-	*reswalk = 0;
-	return res;
-}
-
-/*!
- *\brief	Unescape string by replacing escaped char sequences
- *		(\b, \n, etc) by their actual char. Note that this
- *		function changes the contents of the buffer pointed
- *		to by \a str.
- *
- *\param	str Buffer containing string that needs to be escaped.
- *		Note that this function changes the contents of the
- *		buffer
- *
- *\return	gchar * Pointer to changed buffer
- */
-gchar *matcher_unescape_str(gchar *str)
-{
-	gchar *tmp = alloca(strlen(str) + 1);
-	register gchar *src = tmp;
-	register gchar *dst = str;
-	
-	strcpy(tmp, str);
-
-	for ( ; *src; src++) {
-		if (*src != '\\') 
-			*dst++ = *src;
-		else {
-			src++;
-                        if (*src == 'n')   /* insert control characters */
-				*dst++ = '\n';
-			else if (*src == 'r') 
-				*dst++ = '\r';
-			else if (*src == 't') 
-				*dst++ = '\t';
-			else if (*src == 'r') 
-				*dst++ = '\r';
-			else if (*src == 'b')
-				*dst++ = '\b';
-			else if (*src == 'f')
-				*dst++ = '\f';
-			else if (*src == '\\' || *src == '\'' || *src == '\"')
-                                /* insert \\, \' or \" */
-				*dst++ = *src;
-			else {
-				/* FIXME: should perhaps escape character... */
-				src--;
-				*dst++ = *src;
-			}				
-		}
-	}
-	*dst = 0;
-	return str;
 }
 
 /* **************** data structure allocation **************** */
@@ -342,42 +260,6 @@ MatcherProp *matcherprop_copy(const MatcherProp *src)
 	return prop;		
 }
 
-/* ****************** wrapper for file reading ************** */
-
-/*!
- *\brief	Allocate a matcher structure where all strings
- *		are unescaped ("unquoted")
- *
- *\param	criteria One of the MATCHCRITERIA_XXX constants
- *\param	header A header string
- *\param	matchtype Type of matcher (MATCHTYPE_XXX)
- *\param	expr Matcher string expression
- *\param	value Matcher integer value
- *
- *\return	MatcherProp * Pointer to newly allocated matcher
- *		structure
- */
-MatcherProp *matcherprop_unquote_new(gint criteria, const gchar *header,
-				     gint matchtype, const gchar *expr,
-				     int value)
-{
-        MatcherProp *prop;
-
-        if (expr != NULL)
-                expr = matcher_unescape_str(g_strdup(expr));
-
-        if (header != NULL)
-                header = matcher_unescape_str(g_strdup(header));
-        
-        prop = matcherprop_new(criteria, header, matchtype, expr, value);
-
-        g_free((gpointer) header);
-        g_free((gpointer) expr);
-
-	return prop;
-}
-
-
 /* ************** match ******************************/
 
 /*!
@@ -446,7 +328,7 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str)
  *
  *\return	gboolean TRUE if command was executed succesfully
  */
-static gboolean matcherprop_match_execute(const MatcherProp *prop, 
+static gboolean matcherprop_match_test(const MatcherProp *prop, 
 					  MsgInfo *info)
 {
 	gchar *file;
@@ -577,10 +459,10 @@ gboolean matcherprop_match(MatcherProp *prop,
 		return matcherprop_string_match(prop, info->references);
 	case MATCHCRITERIA_NOT_REFERENCES:
 		return !matcherprop_string_match(prop, info->references);
-	case MATCHCRITERIA_EXECUTE:
-		return matcherprop_match_execute(prop, info);
-	case MATCHCRITERIA_NOT_EXECUTE:
-		return !matcherprop_match_execute(prop, info);
+	case MATCHCRITERIA_TEST:
+		return matcherprop_match_test(prop, info);
+	case MATCHCRITERIA_NOT_TEST:
+		return !matcherprop_match_test(prop, info);
 	default:
 		return 0;
 	}
@@ -1028,8 +910,8 @@ gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 		case MATCHCRITERIA_SIZE_GREATER:
 		case MATCHCRITERIA_SIZE_SMALLER:
 		case MATCHCRITERIA_SIZE_EQUAL:
-		case MATCHCRITERIA_EXECUTE:
-		case MATCHCRITERIA_NOT_EXECUTE:
+		case MATCHCRITERIA_TEST:
+		case MATCHCRITERIA_NOT_TEST:
 			if (matcherprop_match(matcher, info)) {
 				if (!matchers->bool_and) {
 					return TRUE;
@@ -1057,6 +939,68 @@ gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 	return result;
 }
 
+
+static gint quote_filter_str(gchar * result, guint size,
+			     const gchar * path)
+{
+	const gchar * p;
+	gchar * result_p;
+	guint remaining;
+
+	result_p = result;
+	remaining = size;
+
+	for(p = path ; * p != '\0' ; p ++) {
+
+		if ((* p != '\"') && (* p != '\\')) {
+			if (remaining > 0) {
+				* result_p = * p;
+				result_p ++; 
+				remaining --;
+			}
+			else {
+				result[size - 1] = '\0';
+				return -1;
+			}
+		}
+		else { 
+			if (remaining >= 2) {
+				* result_p = '\\';
+				result_p ++; 
+				* result_p = * p;
+				result_p ++; 
+				remaining -= 2;
+			}
+			else {
+				result[size - 1] = '\0';
+				return -1;
+			}
+		}
+	}
+	if (remaining > 0) {
+		* result_p = '\0';
+	}
+	else {
+		result[size - 1] = '\0';
+		return -1;
+	}
+  
+	return 0;
+}
+
+
+gchar * matcher_quote_str(const gchar * src)
+{
+	gchar * res;
+	gint len;
+	
+	len = strlen(src) * 2 + 1;
+	res = g_malloc(len);
+	quote_filter_str(res, len, src);
+	
+	return res;
+}
+
 /*!
  *\brief	Convert a matcher structure to a string
  *
@@ -1070,8 +1014,8 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 	const gchar *criteria_str;
 	const gchar *matchtype_str;
 	int i;
-        gchar *expr;
-
+	gchar * quoted_expr;
+	
 	criteria_str = NULL;
 	for (i = 0; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)); i++) {
 		if (matchparser_tab[i].id == matcher->criteria)
@@ -1110,11 +1054,12 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 	case MATCHCRITERIA_IGNORE_THREAD:
 	case MATCHCRITERIA_NOT_IGNORE_THREAD:
 		return g_strdup(criteria_str);
-	case MATCHCRITERIA_EXECUTE:
-	case MATCHCRITERIA_NOT_EXECUTE:
-                expr = matcher_escape_str(matcher->expr);
-		matcher_str = g_strdup_printf("%s \"%s\"", criteria_str, expr);
-                g_free((gpointer) expr);
+	case MATCHCRITERIA_TEST:
+	case MATCHCRITERIA_NOT_TEST:
+		quoted_expr = matcher_quote_str(matcher->expr);
+		matcher_str = g_strdup_printf("%s \"%s\"",
+					      criteria_str, quoted_expr);
+		g_free(quoted_expr);
                 return matcher_str;
 	}
 
@@ -1132,17 +1077,22 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 	case MATCHTYPE_MATCHCASE:
 	case MATCHTYPE_REGEXP:
 	case MATCHTYPE_REGEXPCASE:
-                expr = matcher_escape_str(matcher->expr);
-		if (matcher->header)
+		quoted_expr = matcher_quote_str(matcher->expr);
+		if (matcher->header) {
+			gchar * quoted_header;
+			
+			quoted_header = matcher_quote_str(matcher->header);
 			matcher_str = g_strdup_printf
 					("%s \"%s\" %s \"%s\"",
-					 criteria_str, matcher->header,
-					 matchtype_str, expr);
+					 criteria_str, quoted_header,
+					 matchtype_str, quoted_expr);
+			g_free(quoted_header);
+		}
 		else
 			matcher_str = g_strdup_printf
 					("%s %s \"%s\"", criteria_str,
-					 matchtype_str, expr);
-                g_free((gpointer) expr);
+					 matchtype_str, quoted_expr);
+                g_free(quoted_expr);
 		break;
 	}
 
@@ -1187,8 +1137,27 @@ gchar *matcherlist_to_string(const MatcherList *matchers)
 	return result;
 }
 
+
 #define STRLEN_ZERO(s) ((s) ? strlen(s) : 0)
 #define STRLEN_DEFAULT(s,d) ((s) ? strlen(s) : STRLEN_ZERO(d))
+
+static void add_str_default(gchar ** dest,
+			    const gchar * s, const gchar * d)
+{
+	gchar quoted_str[4096];
+	const gchar * str;
+	
+        if (s != NULL)
+		str = s;
+	else
+		str = d;
+	
+	quote_cmd_argument(quoted_str, sizeof(quoted_str), str);
+	strcpy(* dest, quoted_str);
+	
+	(* dest) += strlen(* dest);
+}
+
 /* matching_build_command() - preferably cmd should be unescaped */
 /*!
  *\brief	Build the command line to execute
@@ -1197,9 +1166,6 @@ gchar *matcherlist_to_string(const MatcherList *matchers)
  *\param	info Message info to use for command
  *
  *\return	gchar * Newly allocated string
- *
- *\warning	The \a cmd string should have been unescaped using
- *		#matcher_unescape_str.
  */
 gchar *matching_build_command(const gchar *cmd, MsgInfo *info)
 {
@@ -1251,21 +1217,25 @@ gchar *matching_build_command(const gchar *cmd, MsgInfo *info)
 				size += STRLEN_DEFAULT(info->references, no_references) - 2;
 				break;
 			case 'F': /* file */
-				filename = folder_item_fetch_msg(info->folder,
-								 info->msgnum);
+				if (filename == NULL)
+					filename = folder_item_fetch_msg(info->folder, info->msgnum);
 				
 				if (filename == NULL) {
 					g_warning("filename is not set");
 					return NULL;
 				}
-				else
+				else {
 					size += strlen(filename) - 2;
+				}
 				break;
 			}
 			s++;
 		}
 		else s++;
 	}
+	
+	/* as the string can be quoted, we double the result */
+	size *= 2;
 
 	processed_cmd = g_new0(gchar, size);
 	s = cmd;
@@ -1280,65 +1250,40 @@ gchar *matching_build_command(const gchar *cmd, MsgInfo *info)
 				p++;
 				break;
 			case 's': /* subject */
-				if (info->subject != NULL)
-					strcpy(p, info->subject);
-				else
-					strcpy(p, no_subject);
-				p += strlen(p);
+				add_str_default(&p, info->subject,
+						no_subject);
 				break;
 			case 'f': /* from */
-				if (info->from != NULL)
-					strcpy(p, info->from);
-				else
-					strcpy(p, no_from);
-				p += strlen(p);
+				add_str_default(&p, info->from,
+						no_from);
 				break;
 			case 't': /* to */
-				if (info->to != NULL)
-					strcpy(p, info->to);
-				else
-					strcpy(p, no_to);
-				p += strlen(p);
+				add_str_default(&p, info->to,
+						no_to);
 				break;
 			case 'c': /* cc */
-				if (info->cc != NULL)
-					strcpy(p, info->cc);
-				else
-					strcpy(p, no_cc);
-				p += strlen(p);
+				add_str_default(&p, info->cc,
+						no_cc);
 				break;
 			case 'd': /* date */
-				if (info->date != NULL)
-					strcpy(p, info->date);
-				else
-					strcpy(p, no_date);
-				p += strlen(p);
+				add_str_default(&p, info->date,
+						no_date);
 				break;
 			case 'i': /* message-id */
-				if (info->msgid != NULL)
-					strcpy(p, info->msgid);
-				else
-					strcpy(p, no_msgid);
-				p += strlen(p);
+				add_str_default(&p, info->msgid,
+						no_msgid);
 				break;
 			case 'n': /* newsgroups */
-				if (info->newsgroups != NULL)
-					strcpy(p, info->newsgroups);
-				else
-					strcpy(p, no_newsgroups);
-				p += strlen(p);
+				add_str_default(&p, info->newsgroups,
+						no_newsgroups);
 				break;
 			case 'r': /* references */
-				if (info->references != NULL)
-					strcpy(p, info->references);
-				else
-					strcpy(p, no_references);
-				p += strlen(p);
+				add_str_default(&p, info->references,
+						no_references);
 				break;
 			case 'F': /* file */
-				strcpy(p, filename);
-				p += strlen(p);
-				g_free(filename);
+				if (filename != NULL)
+					add_str_default(&p, filename, NULL);
 				break;
 			default:
 				*p = '%';
@@ -1355,7 +1300,8 @@ gchar *matching_build_command(const gchar *cmd, MsgInfo *info)
 			s++;
 		}
 	}
-
+	g_free(filename);
+	
 	return processed_cmd;
 }
 #undef STRLEN_DEFAULT
@@ -1363,31 +1309,6 @@ gchar *matching_build_command(const gchar *cmd, MsgInfo *info)
 
 /* ************************************************************ */
 
-/*!
- *\brief	Write scoring list to file
- *
- *\param	fp File
- *\param	prefs_scoring List of scoring conditions
- */
-static void prefs_scoring_write(FILE *fp, GSList *prefs_scoring)
-{
-	GSList *cur;
-
-	for (cur = prefs_scoring; cur != NULL; cur = cur->next) {
-		gchar *scoring_str;
-		ScoringProp *prop;
-
-		prop = (ScoringProp *) cur->data;
-		scoring_str = scoringprop_to_string(prop);
-		if (fputs(scoring_str, fp) == EOF ||
-		    fputc('\n', fp) == EOF) {
-			FILE_OP_ERROR("scoring config", "fputs || fputc");
-			g_free(scoring_str);
-			return;
-		}
-		g_free(scoring_str);
-	}
-}
 
 /*!
  *\brief	Write filtering list to file
@@ -1432,33 +1353,20 @@ static gboolean prefs_matcher_write_func(GNode *node, gpointer data)
 	FolderItem *item;
 	FILE *fp = data;
 	gchar *id;
-	GSList *prefs_scoring;
 	GSList *prefs_filtering;
 
-	if (node != NULL) {
-		item = node->data;
-		/* prevent warning */
-		if (item->path == NULL)
-			return FALSE;
-		id = folder_item_get_identifier(item);
-		if (id == NULL)
-			return FALSE;
-		prefs_scoring = item->prefs->scoring;
-		prefs_filtering = item->prefs->processing;
-	}
-	else {
-		item = NULL;
-		id = g_strdup("global"); /* because it is g_freed */
-		prefs_scoring = global_scoring;
-		prefs_filtering = global_processing;
-	}
+        item = node->data;
+        /* prevent warning */
+        if (item->path == NULL)
+                return FALSE;
+        id = folder_item_get_identifier(item);
+        if (id == NULL)
+                return FALSE;
+        prefs_filtering = item->prefs->processing;
 
-	if (prefs_filtering != NULL || prefs_scoring != NULL) {
+	if (prefs_filtering != NULL) {
 		fprintf(fp, "[%s]\n", id);
-
 		prefs_filtering_write(fp, prefs_filtering);
-		prefs_scoring_write(fp, prefs_scoring);
-
 		fputc('\n', fp);
 	}
 
@@ -1483,7 +1391,21 @@ static void prefs_matcher_save(FILE *fp)
 		g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
 				prefs_matcher_write_func, fp);
 	}
-	prefs_matcher_write_func(NULL, fp);
+        
+        /* pre global rules */
+        fprintf(fp, "[preglobal]\n");
+        prefs_filtering_write(fp, pre_global_processing);
+        fputc('\n', fp);
+
+        /* post global rules */
+        fprintf(fp, "[postglobal]\n");
+        prefs_filtering_write(fp, post_global_processing);
+        fputc('\n', fp);
+        
+        /* filtering rules */
+        fprintf(fp, "[filtering]\n");
+        prefs_filtering_write(fp, filtering_rules);
+        fputc('\n', fp);
 }
 
 /*!
@@ -1527,7 +1449,6 @@ void prefs_matcher_read_config(void)
 	FILE *f;
 
 	create_matchparser_hashtab();
-	prefs_scoring_clear();
 	prefs_filtering_clear();
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MATCHER_RC, NULL);

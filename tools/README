@@ -17,6 +17,7 @@ Addressbook conversion:
   kmail2sylpheed_v2.pl          Import a Kmail address book (KDE3)
   outlook2sylpheed.pl           Import an Outlook generated contact list
   tb2sylpheed                   Import The Bat! address books
+  vcard2xml.py			Import an Evolution vCard
 
 Mailbox conversion:
   calypso_convert.pl            Import mbox files with attachments from Calypso
@@ -255,6 +256,30 @@ Address book conversion
 
   Contact: Urke MMI <urke@gmx.net>  
 
+
+* vcard2xml.py
+
+  WHAT IT DOES
+  	This python script will convert an Evolution vCard into a Sylpheed
+	address book.
+
+  HOW TO USE IT
+	(You must run sylpheed at least once before running this script.)
+
+  	If Sylpheed is running, close it.
+	From the command line, execute the following:
+
+  		vcard2xml.py source_file [destination_file]
+ 
+  	When only <source_file> is specified it will overwrite (and
+	create a backup of) the existing addressbook. 
+	When both arguments are suplied it will create a new additional 
+	addressbook named as <destination_file>.
+	If the script encounters an error it will attempt to roll back
+	the changes and restore the original files.
+
+  Contact: Bogdan Sumanariu <bsumanariu@one5.ro> 
+
 --------------------------------------------------------------------------------
 
 Mailbox conversion
@@ -324,6 +349,11 @@ Mailbox conversion
 	You may also need to run '/File/Folder/Check for new messages
 	in all folders'
 	Your maildir directory will be backed-up.
+	
+	Additional options:
+		--debug		debug mode
+		--dry-run	test mode, nothing is actually written
+		--help		brief usage info
 	
   Contact: Paul Mangan <claws@thewildbeast.co.uk>
 --------------------------------------------------------------------------------

@@ -1040,6 +1040,12 @@ void subst_for_filename(gchar *str)
 	subst_chars(str, " \t\r\n\"/\\", '_');
 }
 
+void subst_for_shellsafe_filename(gchar *str)
+{
+	subst_for_filename(str);
+	subst_chars(str, "|&;()<>'!{}[]",'_');
+}
+
 gboolean is_header_line(const gchar *str)
 {
 	if (str[0] == ':') return FALSE;
@@ -1787,6 +1793,34 @@ gboolean is_file_entry_exist(const gchar *file)
 	return TRUE;
 }
 
+gboolean dirent_is_regular_file(struct dirent *d)
+{
+	struct stat s;
+
+#ifdef HAVE_DIRENT_D_TYPE
+	if (d->d_type == DT_REG)
+		return TRUE;
+	else if (d->d_type != DT_UNKNOWN)
+		return FALSE;
+#endif
+
+	return (stat(d->d_name, &s) == 0 && S_ISREG(s.st_mode));
+}
+
+gboolean dirent_is_directory(struct dirent *d)
+{
+	struct stat s;
+
+#ifdef HAVE_DIRENT_D_TYPE
+	if (d->d_type == DT_DIR)
+		return TRUE;
+	else if (d->d_type != DT_UNKNOWN)
+		return FALSE;
+#endif
+
+	return (stat(d->d_name, &s) == 0 && S_ISDIR(s.st_mode));
+}
+
 gint change_dir(const gchar *dir)
 {
 	gchar *prevdir = NULL;
@@ -2096,14 +2130,9 @@ gint remove_dir_recursive(const gchar *dir)
 		    !strcmp(d->d_name, ".."))
 			continue;
 
-		if (stat(d->d_name, &s) < 0) {
-			FILE_OP_ERROR(d->d_name, "stat");
-			continue;
-		}
-
 		/* g_print("removing %s\n", d->d_name); */
 
-		if (S_ISDIR(s.st_mode)) {
+		if (dirent_is_directory(d)) {
 			if (remove_dir_recursive(d->d_name) < 0) {
 				g_warning("can't remove directory\n");
 				return -1;
@@ -2707,6 +2736,55 @@ gchar *get_outgoing_rfc2822_str(FILE *fp)
 	return ret;
 }
 
+/*
+ * Create a new boundary in a way that it is very unlikely that this
+ * will occur in the following text.  It would be easy to ensure
+ * uniqueness if everything is either quoted-printable or base64
+ * encoded (note that conversion is allowed), but because MIME bodies
+ * may be nested, it may happen that the same boundary has already
+ * been used. We avoid scanning the message for conflicts and hope the
+ * best.
+ *
+ *   boundary := 0*69<bchars> bcharsnospace
+ *   bchars := bcharsnospace / " "
+ *   bcharsnospace := DIGIT / ALPHA / "'" / "(" / ")" /
+ *                    "+" / "_" / "," / "-" / "." /
+ *                    "/" / ":" / "=" / "?"
+ *
+ * some special characters removed because of buggy MTAs
+ */
+
+gchar *generate_mime_boundary(const gchar *prefix)
+{
+	static gchar tbl[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+			     "abcdefghijklmnopqrstuvwxyz"
+			     "1234567890+_./=";
+	gchar buf_uniq[17];
+	gchar buf_date[64];
+	gint i;
+	gint pid;
+
+	pid = getpid();
+
+	/* We make the boundary depend on the pid, so that all running
+	 * processes generate different values even when they have been
+	 * started within the same second and srandom(time(NULL)) has been
+	 * used.  I can't see whether this is really an advantage but it
+	 * doesn't do any harm.
+	 */
+	for (i = 0; i < sizeof(buf_uniq) - 1; i++)
+		buf_uniq[i] = tbl[(random() ^ pid) % (sizeof(tbl) - 1)];
+	buf_uniq[i] = '\0';
+
+	get_rfc822_date(buf_date, sizeof(buf_date));
+	subst_char(buf_date, ' ', '_');
+	subst_char(buf_date, ',', '_');
+	subst_char(buf_date, ':', '_');
+
+	return g_strdup_printf("%s=_%s_%s", prefix ? prefix : "Multipart",
+			       buf_date, buf_uniq);
+}
+
 gint change_file_mode_rw(FILE *fp, const gchar *file)
 {
 #if HAVE_FCHMOD
@@ -2754,6 +2832,16 @@ FILE *my_tmpfile(void)
 #endif /* HAVE_MKSTEMP */
 
 	return tmpfile();
+}
+
+FILE *get_tmpfile_in_dir(const gchar *dir, gchar **filename)
+{
+	int fd;
+	
+	*filename = g_strdup_printf("%s%csylpheed.XXXXXX", dir, G_DIR_SEPARATOR);
+	fd = mkstemp(*filename);
+
+	return fdopen(fd, "w+");
 }
 
 FILE *str_open_as_stream(const gchar *str)
@@ -3364,16 +3452,6 @@ int subject_get_prefix_length(const gchar *subject)
 		return 0;
 }
 
-FILE *get_tmpfile_in_dir(const gchar *dir, gchar **filename)
-{
-	int fd;
-	
-	*filename = g_strdup_printf("%s%csylpheed.XXXXXX", dir, G_DIR_SEPARATOR);
-	fd = mkstemp(*filename);
-
-	return fdopen(fd, "w+");
-}
-
 /* allow Mutt-like patterns in quick search */
 gchar *expand_search_string(const gchar *search_string)
 {
@@ -3425,6 +3503,7 @@ gchar *expand_search_string(const gchar *search_string)
 		{ "T",	"marked",			0,	FALSE,	FALSE },
 		{ "U",	"unread",			0,	FALSE,	FALSE },
 		{ "x",	"header \"References\"",	1,	TRUE,	TRUE  },
+		{ "X",  "test",				1,	FALSE,  FALSE }, 
 		{ "y",	"header \"X-Label\"",		1,	TRUE,	TRUE  },
 		{ "&",	"&",				0,	FALSE,	FALSE },
 		{ "|",	"|",				0,	FALSE,	FALSE },
@@ -3615,64 +3694,60 @@ gchar *generate_msgid(const gchar *address, gchar *buf, gint len)
 	return buf;
 }
 
-/**
- * Create a new boundary in a way that it is very unlikely that this
- * will occur in the following text.  It would be easy to ensure
- * uniqueness if everything is either quoted-printable or base64
- * encoded (note that conversion is allowed), but because MIME bodies
- * may be nested, it may happen that the same boundary has already
- * been used. We avoid scanning the message for conflicts and hope the
- * best.
- *
- *   boundary := 0*69<bchars> bcharsnospace
- *   bchars := bcharsnospace / " "
- *   bcharsnospace := DIGIT / ALPHA / "'" / "(" / ")" /
- *                    "+" / "_" / "," / "-" / "." /
- *                    "/" / ":" / "=" / "?"  
- *
- * ":" and "," removed because of buggy MTAs
- */
 
-gchar *generate_mime_boundary(void)
+/*
+   quote_cmd_argument()
+   
+   return a quoted string safely usable in argument of a command.
+   
+   code is extracted and adapted from etPan! project -- DINH V. Hoà.
+*/
+
+gint quote_cmd_argument(gchar * result, guint size,
+			const gchar * path)
 {
-	static gchar tbl[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	                     "abcdefghijklmnopqrstuvwxyz" 
-			     "1234567890'()+_./=?";
-	gchar bufuniq[17];
-	gchar bufdate[BUFFSIZE];
-	int i, equal;
-	int pid;
+	const gchar * p;
+	gchar * result_p;
+	guint remaining;
 
-	pid = getpid();
+	result_p = result;
+	remaining = size;
 
-	/* We make the boundary depend on the pid, so that all running
-	 * processed generate different values even when they have been
-	 * started within the same second and srand48(time(NULL)) has been
-	 * used.  I can't see whether this is really an advantage but it
-	 * doesn't do any harm.
-	 */
-	equal = -1;
-	for (i = 0; i < sizeof(bufuniq) - 1; i++) {
-		bufuniq[i] = tbl[(lrand48() ^ pid) % (sizeof(tbl) - 1)];	/* fill with random */
-		if (bufuniq[i] == '=' && equal == -1)
-			equal = i;
+	for(p = path ; * p != '\0' ; p ++) {
+
+		if (isalnum(* p) || (* p == '/')) {
+			if (remaining > 0) {
+				* result_p = * p;
+				result_p ++; 
+				remaining --;
+			}
+			else {
+				result[size - 1] = '\0';
+				return -1;
+			}
+		}
+		else { 
+			if (remaining >= 2) {
+				* result_p = '\\';
+				result_p ++; 
+				* result_p = * p;
+				result_p ++; 
+				remaining -= 2;
+			}
+			else {
+				result[size - 1] = '\0';
+				return -1;
+			}
+		}
 	}
-	bufuniq[i] = 0;
-
-	/* now make sure that we do have the sequence "=." in it which cannot
-	 * be matched by quoted-printable or base64 encoding */
-	if (equal != -1 && (equal + 1) < i)
-		bufuniq[equal + 1] = '.';
+	if (remaining > 0) {
+		* result_p = '\0';
+	}
 	else {
-		bufuniq[0] = '=';
-		bufuniq[1] = '.';
+		result[size - 1] = '\0';
+		return -1;
 	}
-
-	get_rfc822_date(bufdate, sizeof(bufdate));
-	subst_char(bufdate, ' ', '_');
-	subst_char(bufdate, ',', '_');
-	subst_char(bufdate, ':', '_');
-
-	return g_strdup_printf("Multipart_%s_%s",
-			       bufdate, bufuniq);
+  
+	return 0;
 }
+

@@ -41,11 +41,10 @@ struct _FolderItemPrefs {
 
 	gboolean enable_thread;
 
-	gint kill_score;
-	gint important_score;
-
-	GSList * scoring;
+        int enable_processing;
 	GSList * processing;
+
+	int newmailcheck;
 
 	gboolean request_return_receipt;
 	gboolean enable_default_to;

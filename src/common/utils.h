@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <dirent.h>
 #include <time.h>
 #if HAVE_ALLOCA_H
 #  include <alloca.h>
@@ -279,6 +280,7 @@ void subst_chars			(gchar		*str,
 					 gchar		*orig,
 					 gchar		 subst);
 void subst_for_filename			(gchar		*str);
+void subst_for_shellsafe_filename	(gchar		*str);
 gboolean is_header_line			(const gchar	*str);
 gboolean is_ascii_str			(const guchar	*str);
 gint get_quote_level			(const gchar	*str,
@@ -334,6 +336,8 @@ gboolean file_exist		(const gchar	*file,
 				 gboolean	 allow_fifo);
 gboolean is_dir_exist		(const gchar	*dir);
 gboolean is_file_entry_exist	(const gchar	*file);
+gboolean dirent_is_regular_file	(struct dirent	*d);
+gboolean dirent_is_directory	(struct dirent	*d);
 
 #define is_file_exist(file)		file_exist(file, FALSE)
 #define is_file_or_fifo_exist(file)	file_exist(file, TRUE)
@@ -380,6 +384,8 @@ gchar *get_outgoing_rfc2822_str	(FILE		*fp);
 gint change_file_mode_rw	(FILE		*fp,
 				 const gchar	*file);
 FILE *my_tmpfile		(void);
+FILE *get_tmpfile_in_dir	(const gchar 	*dir,
+				 gchar	       **filename);
 FILE *str_open_as_stream	(const gchar	*str);
 gint str_write_to_file		(const gchar	*str,
 				 const gchar	*file);
@@ -427,6 +433,9 @@ gint g_stricase_equal	(gconstpointer gptr1, gconstpointer gptr2);
 gint g_int_compare	(gconstpointer a, gconstpointer b);
 
 gchar *generate_msgid		(const gchar *address, gchar *buf, gint len);
-gchar *generate_mime_boundary	(void);
+gchar *generate_mime_boundary	(const gchar *prefix);
+
+gint quote_cmd_argument(gchar * result, guint size,
+			const gchar * path);
 
 #endif /* __UTILS_H__ */

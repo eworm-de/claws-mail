@@ -37,6 +37,7 @@ typedef struct _MimeViewer 		MimeViewer;
 #include "textview.h"
 #include "messageview.h"
 #include "procmime.h"
+#include "noticeview.h"
 
 typedef enum
 {
@@ -48,8 +49,6 @@ struct _MimeView
 {
 	GtkWidget *hbox;
 	GtkWidget *paned;
-	GtkWidget *notebook;
-	GtkWidget *vbox;
 	GtkWidget *scrolledwin;
 	GtkWidget *ctree;
 	GtkWidget *mime_notebook;
@@ -83,6 +82,9 @@ struct _MimeView
 	MainWindow *mainwin;
 	GtkTooltips *tooltips;
 	gint oldsize;
+
+	NoticeView *siginfoview;
+	MimeInfo *siginfo;
 };
 
 struct _MimeViewerFactory
@@ -114,12 +116,11 @@ void mimeview_show_message	(MimeView	*mimeview,
 				 const gchar	*file);
 void mimeview_destroy		(MimeView	*mimeview);
 void mimeview_update		(MimeView 	*mimeview);
+void mimeview_clear		(MimeView	*mimeview);
 
 MimeInfo *mimeview_get_selected_part	(MimeView	*mimeview);
 
-#if USE_GPGME
-void mimeview_check_signature	(MimeView 	*mimeview);
-#endif
+void mimeview_check_signature		(MimeView 	*mimeview);
 void mimeview_pass_key_press_event	(MimeView	*mimeview,
 					 GdkEventKey	*event);
 

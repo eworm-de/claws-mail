@@ -1,5 +1,38 @@
 Changes of Sylpheed
 
+* 0.9.8a
+
+    * The bug that caused the failure of cache data read has been fixed.
+
+* 0.9.8
+
+    * The offline mode has been implemented.
+    * The performance of the scanning of MH folders has been improved on
+      the platforms which support d_type in 'struct dirent'.
+    * The error checking on moving/deleting messages has become strict.
+    * When getting IMAP4 message list, it now fallbacks to FETCH command
+      if server doesn't fully support SEARCH command.
+    * Outbox for accounts are now correctly chosen when sending from queue.
+    * Gettext has been upgraded to 0.12.1.
+    * IPv6 support is now enabled by default.
+    * Other bugfixes have been made.
+
+* 0.9.7
+
+    * The vulnerability in SMTP response handling, which is exploitable by
+      a malicious SMTP server, has been fixed.
+    * The structure of folder system has been sorted out.
+    * The checking of the existence of IMAP root directory has been modified.
+
+* 0.9.6
+
+    * A crash bug when deleting currently opened folder has been fixed.
+    * The performance issue of the address book has been fixed.
+    * The behavior of manual signature insertion has been reverted.
+    * A crash bug on startup when a font can't be loaded has been fixed.
+    * The format of MIME boundary has been modified again.
+    * Other minor bugfixes have been made.
+
 * 0.9.5
 
     * The size, the position, and the visibility of separated views are now

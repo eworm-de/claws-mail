@@ -27,7 +27,6 @@
 #include "intl.h"
 #include "utils.h"
 #include "filtering.h"
-#include "scoring.h"
 #include "matcher.h"
 #include "matcher_parser.h"
 #include "matcher_parser_lex.h"
@@ -50,23 +49,18 @@ static GSList *action_list = NULL;
 static FilteringAction *action = NULL;
 
 static FilteringProp *filtering;
-static ScoringProp *scoring = NULL;
 
-static GSList **prefs_scoring = NULL;
 static GSList **prefs_filtering = NULL;
-
-#if 0
-static int matcher_parser_dialog = 0;
-#endif
+static int enable_compatibility = 0;
 
 enum {
-        MATCHER_PARSE_NONE,
+        MATCHER_PARSE_FILE,
         MATCHER_PARSE_NO_EOL,
         MATCHER_PARSE_CONDITION,
-        MATCHER_PARSE_FILTERING_OR_SCORING,
+        MATCHER_PARSE_FILTERING_ACTION,
 };
 
-static int matcher_parse_op = MATCHER_PARSE_NONE;
+static int matcher_parse_op = MATCHER_PARSE_FILE;
 
 
 /* ******************************************************************** */
@@ -76,6 +70,9 @@ void matcher_parser_start_parsing(FILE *f)
 	matcher_parserrestart(f);
 	matcher_parserparse();
 }
+
+ 
+void * matcher_parser_scan_string(const char * str);
  
 FilteringProp *matcher_parser_get_filtering(const gchar *str)
 {
@@ -87,32 +84,13 @@ FilteringProp *matcher_parser_get_filtering(const gchar *str)
 	matcher_parse_op = MATCHER_PARSE_NO_EOL;
 	matcher_parserrestart(NULL);
         matcher_parser_init();
-	bufstate = matcher_parser_scan_string(str);
+	bufstate = matcher_parser_scan_string((const char *) str);
         matcher_parser_switch_to_buffer(bufstate);
 	if (matcher_parserparse() != 0)
 		filtering = NULL;
-	matcher_parse_op = MATCHER_PARSE_NONE;
+	matcher_parse_op = MATCHER_PARSE_FILE;
 	matcher_parser_delete_buffer(bufstate);
 	return filtering;
-}
-
-ScoringProp *matcher_parser_get_scoring(const gchar *str)
-{
-	void *bufstate;
-
-	/* bad coding to enable the sub-grammar matching
-	   in yacc */
-	matcher_parserlineno = 1;
-	matcher_parse_op = MATCHER_PARSE_NO_EOL;
-	matcher_parserrestart(NULL);
-        matcher_parser_init();
-	bufstate = matcher_parser_scan_string(str);
-        matcher_parser_switch_to_buffer(bufstate);
-	if (matcher_parserparse() != 0)
-		scoring = NULL;
-	matcher_parse_op = MATCHER_PARSE_NONE;
-	matcher_parser_delete_buffer(bufstate);
-	return scoring;
 }
 
 static gboolean check_quote_symetry(gchar *str)
@@ -151,7 +129,7 @@ MatcherList *matcher_parser_get_cond(const gchar *str)
         matcher_parser_init();
 	bufstate = matcher_parser_scan_string(str);
 	matcher_parserparse();
-	matcher_parse_op = MATCHER_PARSE_NONE;
+	matcher_parse_op = MATCHER_PARSE_FILE;
 	matcher_parser_delete_buffer(bufstate);
 	return cond;
 }
@@ -168,12 +146,12 @@ GSList *matcher_parser_get_action_list(const gchar *str)
 	/* bad coding to enable the sub-grammar matching
 	   in yacc */
 	matcher_parserlineno = 1;
-	matcher_parse_op = MATCHER_PARSE_FILTERING_OR_SCORING;
+	matcher_parse_op = MATCHER_PARSE_FILTERING_ACTION;
 	matcher_parserrestart(NULL);
         matcher_parser_init();
 	bufstate = matcher_parser_scan_string(str);
 	matcher_parserparse();
-	matcher_parse_op = MATCHER_PARSE_NONE;
+	matcher_parse_op = MATCHER_PARSE_FILE;
 	matcher_parser_delete_buffer(bufstate);
 	return action_list;
 }
@@ -216,7 +194,7 @@ void matcher_parsererror(char *str)
 		matchers_list = NULL;
 	}
 	cond = NULL;
-	g_warning("scoring / filtering parsing: %i: %s\n",
+	g_warning("filtering parsing: %i: %s\n",
 		  matcher_parserlineno, str);
 	error = 1;
 }
@@ -245,9 +223,11 @@ int matcher_parserwrap(void)
 %token MATCHER_SCORE_LOWER  MATCHER_HEADER  MATCHER_NOT_HEADER
 %token MATCHER_HEADERS_PART  MATCHER_NOT_HEADERS_PART  MATCHER_MESSAGE
 %token MATCHER_NOT_MESSAGE  MATCHER_BODY_PART  MATCHER_NOT_BODY_PART
-%token MATCHER_EXECUTE  MATCHER_NOT_EXECUTE  MATCHER_MATCHCASE  MATCHER_MATCH
+%token MATCHER_TEST  MATCHER_NOT_TEST  MATCHER_MATCHCASE  MATCHER_MATCH
 %token MATCHER_REGEXPCASE  MATCHER_REGEXP  MATCHER_SCORE  MATCHER_MOVE
-%token MATCHER_COPY  MATCHER_DELETE  MATCHER_MARK  MATCHER_UNMARK MATCHER_LOCK MATCHER_UNLOCK
+%token MATCHER_COPY  MATCHER_DELETE  MATCHER_MARK  MATCHER_UNMARK
+%token MATCHER_LOCK MATCHER_UNLOCK
+%token MATCHER_EXECUTE
 %token MATCHER_MARK_AS_READ  MATCHER_MARK_AS_UNREAD  MATCHER_FORWARD
 %token MATCHER_FORWARD_AS_ATTACHMENT  MATCHER_EOL  MATCHER_STRING  
 %token MATCHER_OR MATCHER_AND  
@@ -256,7 +236,8 @@ int matcher_parserwrap(void)
 %token MATCHER_LOCKED MATCHER_NOT_LOCKED
 %token MATCHER_COLORLABEL MATCHER_NOT_COLORLABEL
 %token MATCHER_IGNORE_THREAD MATCHER_NOT_IGNORE_THREAD
-%token MATCHER_CHANGE_SCORE
+%token MATCHER_CHANGE_SCORE MATCHER_SET_SCORE
+%token MATCHER_STOP MATCHER_HIDE
 
 %start file
 
@@ -268,9 +249,8 @@ int matcher_parserwrap(void)
 
 file:
 {
-	if (matcher_parse_op == MATCHER_PARSE_NONE) {
-		prefs_scoring = &global_scoring;
-		prefs_filtering = &global_processing;
+	if (matcher_parse_op == MATCHER_PARSE_FILE) {
+		prefs_filtering = &pre_global_processing;
 	}
 }
 file_line_list;
@@ -297,17 +277,26 @@ MATCHER_SECTION MATCHER_EOL
 	gchar *folder = $1;
 	FolderItem *item = NULL;
 
-	if (matcher_parse_op == MATCHER_PARSE_NONE) {
+	if (matcher_parse_op == MATCHER_PARSE_FILE) {
+                enable_compatibility = 0;
 		if (!strcmp(folder, "global")) {
-			prefs_scoring = &global_scoring;
-			prefs_filtering = &global_processing;
-		} else {
+                        /* backward compatibility */
+                        enable_compatibility = 1;
+                }
+		else if (!strcmp(folder, "preglobal")) {
+			prefs_filtering = &pre_global_processing;
+                }
+		else if (!strcmp(folder, "postglobal")) {
+			prefs_filtering = &post_global_processing;
+                }
+		else if (!strcmp(folder, "filtering")) {
+                        prefs_filtering = &filtering_rules;
+		}
+                else {
 			item = folder_find_item_from_identifier(folder);
 			if (item != NULL) {
-				prefs_scoring = &item->prefs->scoring;
 				prefs_filtering = &item->prefs->processing;
 			} else {
-				prefs_scoring = NULL;
 				prefs_filtering = NULL;
 			}
 		}
@@ -316,8 +305,8 @@ MATCHER_SECTION MATCHER_EOL
 ;
 
 instruction:
-condition filtering_or_scoring MATCHER_EOL
-| condition filtering_or_scoring
+condition filtering MATCHER_EOL
+| condition filtering
 {
 	if (matcher_parse_op == MATCHER_PARSE_NO_EOL)
 		YYACCEPT;
@@ -337,7 +326,7 @@ condition filtering_or_scoring MATCHER_EOL
 }
 | filtering_action_list
 {
-	if (matcher_parse_op == MATCHER_PARSE_FILTERING_OR_SCORING)
+	if (matcher_parse_op == MATCHER_PARSE_FILTERING_ACTION)
 		YYACCEPT;
 	else {
 		matcher_parsererror("parse error");
@@ -347,27 +336,31 @@ condition filtering_or_scoring MATCHER_EOL
 | MATCHER_EOL
 ;
 
-filtering_or_scoring:
+filtering:
 filtering_action_list
 {
 	filtering = filteringprop_new(cond, action_list);
+        
+        if (enable_compatibility) {
+                prefs_filtering = &filtering_rules;
+                if (action_list != NULL) {
+                        FilteringAction * first_action;
+                        
+                        first_action = action_list->data;
+                        
+                        if (first_action->type == MATCHACTION_CHANGE_SCORE)
+                                prefs_filtering = &pre_global_processing;
+                }
+        }
+        
 	cond = NULL;
 	action_list = NULL;
-	if ((matcher_parse_op == MATCHER_PARSE_NONE) && (prefs_filtering != NULL)) {
+        
+	if ((matcher_parse_op == MATCHER_PARSE_FILE) &&
+            (prefs_filtering != NULL)) {
 		*prefs_filtering = g_slist_append(*prefs_filtering,
 						  filtering);
 		filtering = NULL;
-	}
-}
-| scoring_rule
-{
-	scoring = scoringprop_new(cond, score);
-	cond = NULL;
-	score = 0;
-	if ((matcher_parse_op == MATCHER_PARSE_NONE)
-            && (prefs_scoring != NULL)) {
-		*prefs_scoring = g_slist_append(*prefs_scoring, scoring);
-		scoring = NULL;
 	}
 }
 ;
@@ -441,105 +434,105 @@ MATCHER_ALL
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_ALL;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_UNREAD
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_UNREAD;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_NOT_UNREAD 
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NOT_UNREAD;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_NEW
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NEW;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_NOT_NEW
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NOT_NEW;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_MARKED
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_MARKED;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_NOT_MARKED
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NOT_MARKED;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_DELETED
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_DELETED;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_NOT_DELETED
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NOT_DELETED;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_REPLIED
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_REPLIED;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_NOT_REPLIED
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NOT_REPLIED;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_FORWARDED
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_FORWARDED;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_NOT_FORWARDED
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NOT_FORWARDED;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_LOCKED
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_LOCKED;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_NOT_LOCKED
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NOT_LOCKED;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_COLORLABEL MATCHER_INTEGER
 {
@@ -547,10 +540,10 @@ MATCHER_ALL
 	gint value = 0;
 
 	criteria = MATCHCRITERIA_COLORLABEL;
-	value = atoi($2);
-	if (value < 1) value = 1;
+	value = strtol($2, NULL, 10);
+	if (value < 0) value = 0;
 	else if (value > MAX_COLORLABELS) value = MAX_COLORLABELS;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_NOT_COLORLABEL MATCHER_INTEGER
 {
@@ -558,24 +551,24 @@ MATCHER_ALL
 	gint value = 0;
 
 	criteria = MATCHCRITERIA_NOT_COLORLABEL;
-	value = atoi($2);
-	if (value < 1) value = 1;
+	value = strtol($2, NULL, 0);
+	if (value < 0) value = 0;
 	else if (value > MAX_COLORLABELS) value = MAX_COLORLABELS;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_IGNORE_THREAD
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_IGNORE_THREAD;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_NOT_IGNORE_THREAD
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NOT_IGNORE_THREAD;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_SUBJECT match_type MATCHER_STRING
 {
@@ -584,7 +577,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_SUBJECT;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_SUBJECT match_type MATCHER_STRING
 {
@@ -593,7 +586,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_SUBJECT;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_FROM match_type MATCHER_STRING
 {
@@ -602,7 +595,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_FROM;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_FROM match_type MATCHER_STRING
 {
@@ -611,7 +604,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_FROM;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_TO match_type MATCHER_STRING
 {
@@ -620,7 +613,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_TO;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_TO match_type MATCHER_STRING
 {
@@ -629,7 +622,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_TO;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_CC match_type MATCHER_STRING
 {
@@ -638,7 +631,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_CC;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_CC match_type MATCHER_STRING
 {
@@ -647,7 +640,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_CC;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_TO_OR_CC match_type MATCHER_STRING
 {
@@ -656,7 +649,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_TO_OR_CC;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_TO_AND_NOT_CC match_type MATCHER_STRING
 {
@@ -665,7 +658,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_TO_AND_NOT_CC;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_AGE_GREATER MATCHER_INTEGER
 {
@@ -673,8 +666,8 @@ MATCHER_ALL
 	gint value = 0;
 
 	criteria = MATCHCRITERIA_AGE_GREATER;
-	value = atoi($2);
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
+	value = strtol($2, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_AGE_LOWER MATCHER_INTEGER
 {
@@ -682,8 +675,8 @@ MATCHER_ALL
 	gint value = 0;
 
 	criteria = MATCHCRITERIA_AGE_LOWER;
-	value = atoi($2);
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
+	value = strtol($2, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_NEWSGROUPS match_type MATCHER_STRING
 {
@@ -692,7 +685,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NEWSGROUPS;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_NEWSGROUPS match_type MATCHER_STRING
 {
@@ -701,7 +694,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_NEWSGROUPS;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_INREPLYTO match_type MATCHER_STRING
 {
@@ -710,7 +703,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_INREPLYTO;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_INREPLYTO match_type MATCHER_STRING
 {
@@ -719,7 +712,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_INREPLYTO;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_REFERENCES match_type MATCHER_STRING
 {
@@ -728,7 +721,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_REFERENCES;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_REFERENCES match_type MATCHER_STRING
 {
@@ -737,7 +730,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_REFERENCES;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_SCORE_GREATER MATCHER_INTEGER
 {
@@ -745,8 +738,8 @@ MATCHER_ALL
 	gint value = 0;
 
 	criteria = MATCHCRITERIA_SCORE_GREATER;
-	value = atoi($2);
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
+	value = strtol($2, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_SCORE_LOWER MATCHER_INTEGER
 {
@@ -754,8 +747,8 @@ MATCHER_ALL
 	gint value = 0;
 
 	criteria = MATCHCRITERIA_SCORE_LOWER;
-	value = atoi($2);
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
+	value = strtol($2, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_SCORE_EQUAL MATCHER_INTEGER
 {
@@ -763,32 +756,32 @@ MATCHER_ALL
 	gint value = 0;
 
 	criteria = MATCHCRITERIA_SCORE_EQUAL;
-	value = atoi($2);
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
+	value = strtol($2, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_SIZE_GREATER MATCHER_INTEGER 
 {
 	gint criteria = 0;
 	gint value    = 0;
 	criteria = MATCHCRITERIA_SIZE_GREATER;
-	value = atoi($2);
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
+	value = strtol($2, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_SIZE_SMALLER MATCHER_INTEGER
 {
 	gint criteria = 0;
 	gint value    = 0;
 	criteria = MATCHCRITERIA_SIZE_SMALLER;
-	value = atoi($2);
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
+	value = strtol($2, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_SIZE_EQUAL MATCHER_INTEGER
 {
 	gint criteria = 0;
 	gint value    = 0;
 	criteria = MATCHCRITERIA_SIZE_EQUAL;
-	value = atoi($2);
-	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
+	value = strtol($2, NULL, 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_HEADER MATCHER_STRING
 {
@@ -800,7 +793,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_HEADER;
 	expr = $2;
-	prop = matcherprop_unquote_new(criteria, header, match_type, expr, 0);
+	prop = matcherprop_new(criteria, header, match_type, expr, 0);
 	g_free(header);
 }
 | MATCHER_NOT_HEADER MATCHER_STRING
@@ -813,7 +806,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_HEADER;
 	expr = $2;
-	prop = matcherprop_unquote_new(criteria, header, match_type, expr, 0);
+	prop = matcherprop_new(criteria, header, match_type, expr, 0);
 	g_free(header);
 }
 | MATCHER_HEADERS_PART match_type MATCHER_STRING
@@ -823,7 +816,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_HEADERS_PART;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_HEADERS_PART match_type MATCHER_STRING
 {
@@ -832,7 +825,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_HEADERS_PART;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_MESSAGE match_type MATCHER_STRING
 {
@@ -841,7 +834,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_MESSAGE;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_MESSAGE match_type MATCHER_STRING
 {
@@ -850,7 +843,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_MESSAGE;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_BODY_PART match_type MATCHER_STRING
 {
@@ -859,7 +852,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_BODY_PART;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
 | MATCHER_NOT_BODY_PART match_type MATCHER_STRING
 {
@@ -868,25 +861,25 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_BODY_PART;
 	expr = $3;
-	prop = matcherprop_unquote_new(criteria, NULL, match_type, expr, 0);
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
-| MATCHER_EXECUTE MATCHER_STRING
+| MATCHER_TEST MATCHER_STRING
 {
 	gint criteria = 0;
 	gchar *expr = NULL;
 
-	criteria = MATCHCRITERIA_EXECUTE;
+	criteria = MATCHCRITERIA_TEST;
 	expr = $2;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, expr, 0);
+	prop = matcherprop_new(criteria, NULL, 0, expr, 0);
 }
-| MATCHER_NOT_EXECUTE MATCHER_STRING
+| MATCHER_NOT_TEST MATCHER_STRING
 {
 	gint criteria = 0;
 	gchar *expr = NULL;
 
-	criteria = MATCHCRITERIA_NOT_EXECUTE;
+	criteria = MATCHCRITERIA_NOT_TEST;
 	expr = $2;
-	prop = matcherprop_unquote_new(criteria, NULL, 0, expr, 0);
+	prop = matcherprop_new(criteria, NULL, 0, expr, 0);
 }
 ;
 
@@ -898,7 +891,7 @@ MATCHER_EXECUTE MATCHER_STRING
 
 	action_type = MATCHACTION_EXECUTE;
 	cmd = $2;
-	action = filteringaction_new(action_type, 0, cmd, 0);
+	action = filteringaction_new(action_type, 0, cmd, 0, 0);
 }
 | MATCHER_MOVE MATCHER_STRING
 {
@@ -907,7 +900,7 @@ MATCHER_EXECUTE MATCHER_STRING
 
 	action_type = MATCHACTION_MOVE;
 	destination = $2;
-	action = filteringaction_new(action_type, 0, destination, 0);
+	action = filteringaction_new(action_type, 0, destination, 0, 0);
 }
 | MATCHER_COPY MATCHER_STRING
 {
@@ -916,56 +909,56 @@ MATCHER_EXECUTE MATCHER_STRING
 
 	action_type = MATCHACTION_COPY;
 	destination = $2;
-	action = filteringaction_new(action_type, 0, destination, 0);
+	action = filteringaction_new(action_type, 0, destination, 0, 0);
 }
 | MATCHER_DELETE
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_DELETE;
-	action = filteringaction_new(action_type, 0, NULL, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0);
 }
 | MATCHER_MARK
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_MARK;
-	action = filteringaction_new(action_type, 0, NULL, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0);
 }
 | MATCHER_UNMARK
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_UNMARK;
-	action = filteringaction_new(action_type, 0, NULL, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0);
 }
 | MATCHER_LOCK
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_LOCK;
-	action = filteringaction_new(action_type, 0, NULL, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0);
 }
 | MATCHER_UNLOCK
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_UNLOCK;
-	action = filteringaction_new(action_type, 0, NULL, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0);
 }
 | MATCHER_MARK_AS_READ
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_MARK_AS_READ;
-	action = filteringaction_new(action_type, 0, NULL, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0);
 }
 | MATCHER_MARK_AS_UNREAD
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_MARK_AS_UNREAD;
-	action = filteringaction_new(action_type, 0, NULL, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0);
 }
 | MATCHER_FORWARD MATCHER_INTEGER MATCHER_STRING
 {
@@ -974,9 +967,10 @@ MATCHER_EXECUTE MATCHER_STRING
 	gint account_id = 0;
 
 	action_type = MATCHACTION_FORWARD;
-	account_id = atoi($2);
+	account_id = strtol($2, NULL, 10);
 	destination = $3;
-	action = filteringaction_new(action_type, account_id, destination, 0);
+	action = filteringaction_new(action_type,
+            account_id, destination, 0, 0);
 }
 | MATCHER_FORWARD_AS_ATTACHMENT MATCHER_INTEGER MATCHER_STRING
 {
@@ -985,9 +979,10 @@ MATCHER_EXECUTE MATCHER_STRING
 	gint account_id = 0;
 
 	action_type = MATCHACTION_FORWARD_AS_ATTACHMENT;
-	account_id = atoi($2);
+	account_id = strtol($2, NULL, 10);
 	destination = $3;
-	action = filteringaction_new(action_type, account_id, destination, 0);
+	action = filteringaction_new(action_type,
+            account_id, destination, 0, 0);
 }
 | MATCHER_REDIRECT MATCHER_INTEGER MATCHER_STRING
 {
@@ -996,9 +991,10 @@ MATCHER_EXECUTE MATCHER_STRING
 	gint account_id = 0;
 
 	action_type = MATCHACTION_REDIRECT;
-	account_id = atoi($2);
+	account_id = strtol($2, NULL, 10);
 	destination = $3;
-	action = filteringaction_new(action_type, account_id, destination, 0);
+	action = filteringaction_new(action_type,
+            account_id, destination, 0, 0);
 }
 | MATCHER_COLOR MATCHER_INTEGER
 {
@@ -1006,35 +1002,40 @@ MATCHER_EXECUTE MATCHER_STRING
 	gint color = 0;
 
 	action_type = MATCHACTION_COLOR;
-	color = atoi($2);
-	action = filteringaction_new(action_type, 0, NULL, color);
+	color = strtol($2, NULL, 10);
+	action = filteringaction_new(action_type, 0, NULL, color, 0);
 }
-| MATCHER_CHANGE_SCORE MATCHER_STRING
+| MATCHER_CHANGE_SCORE MATCHER_INTEGER
 {
-	gint action_type = MATCHACTION_CHANGE_SCORE;
-	char *last_tok = NULL;
-	const gchar *first_tok;
-	long int chscore;
-	int change_type; /* -1 == decrement, 0 == assign, 1 == increment */	
-
-#define is_number(x) ( ((x) == '+') || ((x) == '-') || (isdigit((x))) ) 
-	/* find start */
-	for (first_tok = $2; *first_tok && !is_number(*first_tok); first_tok++)
-		;	     
-#undef is_number		
-	
-	chscore = strtol(first_tok, &last_tok, 10);
-	if (last_tok == first_tok || *last_tok == 0) 
-		chscore = 0;
-	change_type = *first_tok == '+' ? 1 : *first_tok == '-' ? -1 : 0;
-	action = filteringaction_new(MATCHACTION_CHANGE_SCORE, change_type,
-				     NULL, chscore);
+        gint score = 0;
+        
+        score = strtol($2, NULL, 10);
+	action = filteringaction_new(MATCHACTION_CHANGE_SCORE, 0,
+				     NULL, 0, score);
 }
-;
-
-scoring_rule:
-MATCHER_SCORE MATCHER_INTEGER
+/* backward compatibility */
+| MATCHER_SCORE MATCHER_INTEGER
 {
-	score = atoi($2);
+        gint score = 0;
+        
+        score = strtol($2, NULL, 10);
+	action = filteringaction_new(MATCHACTION_CHANGE_SCORE, 0,
+				     NULL, 0, score);
+}
+| MATCHER_SET_SCORE MATCHER_INTEGER
+{
+        gint score = 0;
+        
+        score = strtol($2, NULL, 10);
+	action = filteringaction_new(MATCHACTION_SET_SCORE, 0,
+				     NULL, 0, score);
+}
+| MATCHER_HIDE
+{
+	action = filteringaction_new(MATCHACTION_HIDE, 0, NULL, 0, 0);
+}
+| MATCHER_STOP
+{
+	action = filteringaction_new(MATCHACTION_STOP, 0, NULL, 0, 0);
 }
 ;
