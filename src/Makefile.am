@@ -138,7 +138,8 @@ sylpheed_SOURCES = \
 	msgcache.h msgcache.c \
 	noticeview.h noticeview.c \
 	toolbar.c toolbar.h \
-	prefs_toolbar.c prefs_toolbar.h
+	prefs_toolbar.c prefs_toolbar.h \
+	crash.c crash.h
 
 BUILT_SOURCES = \
 	quote_fmt_lex.c \

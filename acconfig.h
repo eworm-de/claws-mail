@@ -39,6 +39,8 @@
 /* Used to test for a u32 typedef */
 #undef HAVE_U32_TYPEDEF
 
+/* If gdb is available */
+#undef HAVE_GDB
 
 #undef CLAWS
 

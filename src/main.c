@@ -40,6 +40,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <signal.h>
+#include <execinfo.h>
 
 #if HAVE_LOCALE_H
 #  include <locale.h>
@@ -84,6 +85,8 @@
 
 #include "version.h"
 
+#include "crash.h"
+
 gchar *prog_version;
 gchar *startup_dir;
 gboolean debug_mode = FALSE;
@@ -99,6 +102,8 @@ static struct Cmd {
 	GPtrArray *attach_files;
 	gboolean status;
 	gboolean send;
+	gboolean crash;
+	gchar   *crash_params;
 } cmd;
 
 static void parse_cmd_opt(int argc, char *argv[]);
@@ -157,6 +162,13 @@ int main(int argc, char *argv[])
 
 	gtk_set_locale();
 	gtk_init(&argc, &argv);
+
+	if (cmd.crash) {
+		crash_main(cmd.crash_params);
+		return 0;
+	}
+
+	crash_install_handlers();
 
 #if USE_THREADS || USE_LDAP
 	g_thread_init(NULL);
@@ -405,7 +417,12 @@ static void parse_cmd_opt(int argc, char *argv[])
 			puts(_("  --version              output version information and exit"));
 
 			exit(1);
+		} else if (!strncmp(argv[i], "--crash", 7)) {
+			cmd.crash = TRUE;
+			cmd.crash_params = g_strdup(argv[i + 1]);
+			i++;
 		}
+		
 	}
 
 	if (cmd.attach_files && cmd.compose == FALSE) {
