@@ -1,3 +1,8 @@
+2002-10-10 [christoph]	0.8.5claws9
+
+	* src/summaryview.c
+		update folders after thread building for ignored threads
+
 2002-10-10 [christoph]	0.8.5claws8
 
 	* config/.cvsignore

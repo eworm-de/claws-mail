@@ -2131,6 +2131,8 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 
 		g_node_destroy(root);
 
+		folderview_update_items_when_required(FALSE);
+
 		summary_thread_init(summaryview);
 	} else {
 		gchar *text[N_SUMMARY_COLS];
