@@ -1,3 +1,8 @@
+2001-10-18 [hoa]        0.6.3claws27
+
+	* src/grouplistdialog.[c]
+		bugfix when we refresh was clicked
+
 2001-10-19 [christoph]	0.6.3claws26
 
 	* src/compose.c
@@ -16,6 +21,7 @@
 		reimplement ignore thread
 	
 2001-10-18 [hoa]        0.6.3claws23
+
 	* src/folderview.c
 	* src/grouplistdialog.[ch]
 		enhanced news subscription interface

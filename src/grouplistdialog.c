@@ -384,6 +384,7 @@ static void refresh_clicked(GtkWidget *widget, gpointer data)
 	if (locked) return;
 
 	news_group_list_free(group_list);
+	group_list = NULL;
 	news_remove_group_list(news_folder);
 
 	str = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
