@@ -1,3 +1,11 @@
+2003-01-06 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.8claws61
+
+	* src/prefs_actions.c
+		mark strings for gettext
+	* src/prefs_matcher.c
+		use new description window for Execute action and
+		match condition in Filtering
+
 2003-01-06 [alfons]	0.8.8claws60
 
 	keep myself inspired to re-organize matcher part 8; 

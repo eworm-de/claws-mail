@@ -45,6 +45,7 @@
 #include "gtkutils.h"
 #include "alertpanel.h"
 #include "folder.h"
+#include "description_window.h"
 
 #include "matcher_parser.h"
 #include "colorlabel.h"
@@ -242,7 +243,6 @@ static void prefs_matcher_criteria_select	(GtkList   *list,
 						 GtkWidget *widget,
 						 gpointer   user_data);
 static MatcherList *prefs_matcher_get_list	(void);
-static void prefs_matcher_exec_info_create	(void);
 
 
 /*!
@@ -1693,98 +1693,42 @@ static gint prefs_matcher_deleted(GtkWidget *widget, GdkEventAny *event,
 	return TRUE;
 }
 
-/*!
- *\brief	Widget displaying information about the Execute action's
- *		format specifiers
+/*
+ * Strings describing exec format strings
+ * 
+ * When adding new lines, remember to put 2 strings for each line
  */
-static GtkWidget *exec_info_win;
+static gchar *exec_desc_strings[] = {
+	"%%",	"%",
+	"%s",	N_("Subject"),
+	"%f",	N_("From"),
+	"%t",	N_("To"),
+	"%c",	N_("Cc"),
+	"%d",	N_("Date"),
+	"%i",	N_("Message-ID"),
+	"%n",	N_("Newsgroups"),
+	"%r",	N_("References"),
+	"%F",	N_("Filename - should not be modified"),
+	"\\n",	N_("new line"),
+	"\\",	N_("escape character for quotes"),
+	"\\\"",N_("quote character"),
+	NULL, NULL
+};
+
+static DescriptionWindow exec_desc_win = { 
+        NULL, 
+        2,
+        N_("Description of symbols"),
+        exec_desc_strings
+};
+
+
 
 /*!
  *\brief	Show Execute action's info
  */
 void prefs_matcher_exec_info(void)
 {
-	if (!exec_info_win)
-		prefs_matcher_exec_info_create();
-
-	gtk_widget_show(exec_info_win);
-	gtk_main();
-	gtk_widget_hide(exec_info_win);
+	description_window_create(&exec_desc_win);
 }
 
-/*!
- *\brief	Create dialog for Execute action's info
- */
-static void prefs_matcher_exec_info_create(void)
-{
-	GtkWidget *vbox;
-	GtkWidget *hbox;
-	GtkWidget *hbbox;
-	GtkWidget *label;
-	GtkWidget *ok_btn;
-
-	exec_info_win = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_window_set_title(GTK_WINDOW(exec_info_win),
-			     _("Description of symbols"));
-	gtk_container_set_border_width(GTK_CONTAINER(exec_info_win), 8);
-	gtk_window_set_position(GTK_WINDOW(exec_info_win), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(exec_info_win), TRUE);
-	gtk_window_set_policy(GTK_WINDOW(exec_info_win), FALSE, TRUE, FALSE);
-
-	vbox = gtk_vbox_new(FALSE, 8);
-	gtk_container_add(GTK_CONTAINER(exec_info_win), vbox);
-
-	hbox = gtk_hbox_new(FALSE, 4);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
-
-	label = gtk_label_new
-		("%%:\n"
-		 "%s:\n"
-		 "%f:\n"
-		 "%t:\n"
-		 "%c:\n"
-		 "%d:\n"
-		 "%i:\n"
-		 "%n:\n"
-		 "%r:\n"
-		 "%F:\n"
-		 "\\n:\n"
-		 "\\:\n"
-		 "\\\":\n"
-		 "%%:");
-
-	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
-	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
-
-	label = gtk_label_new
-		(_("%\n"
-		   "Subject\n"
-		   "From\n"
-		   "To\n"
-		   "Cc\n"
-		   "Date\n"
-		   "Message-ID\n"
-		   "Newsgroups\n"
-		   "References\n"
-		   "Filename - should not be modified\n"
-		   "new line\n"
-		   "escape character for quotes\n"
-		   "quote character\n"
-		   "%"));
-
-	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
-	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
-
-	gtkut_button_set_create(&hbbox, &ok_btn, _("OK"),
-				NULL, NULL, NULL, NULL);
-	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
-
-	gtk_widget_grab_default(ok_btn);
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-				  GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
-
-	gtk_signal_connect(GTK_OBJECT(exec_info_win), "delete_event",
-					  GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
-
-	gtk_widget_show_all(vbox);
-}

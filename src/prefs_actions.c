@@ -1810,26 +1810,27 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 /*
  * Strings describing action format strings
  * 
- * When adding new lines, remember to put 2 strings for each line
+ * When adding new lines, remember to put one string for each line
  */
 static gchar *actions_desc_strings[] = {
-	"Menu name:",
-	"   Use / in menu name to make submenus.",
-	"",
-	"Command line:",
-	"   Begin with:",
-	"     | to send message body or selection to command",
-	"     > to send user provided text to command",
-	"     * to send user provided hidden text to command",
-	" End with:",
-	"     | to replace message body or selection with command output",
-	"     > to insert command's output without replacing old text",
-	"     & to run command asynchronously",
-	" Use %f for message file name",
-	"     %F for the list of the file names of selected messages",
-	"     %p for the selected message MIME part.",
+	N_("Menu name:"),
+	N_("   Use / in menu name to make submenus."),
+	N_(""),
+	N_("Command line:"),
+	N_("   Begin with:"),
+	N_("     | to send message body or selection to command"),
+	N_("     > to send user provided text to command"),
+	N_("     * to send user provided hidden text to command"),
+	N_(" End with:"),
+	N_("     | to replace message body or selection with command output"),
+	N_("     > to insert command's output without replacing old text"),
+	N_("     & to run command asynchronously"),
+	N_(" Use %f for message file name"),
+	N_("     %F for the list of the file names of selected messages"),
+	N_("     %p for the selected message MIME part."),
 	NULL
 };
+
 
 static DescriptionWindow actions_desc_win = { 
         NULL, 
