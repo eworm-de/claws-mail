@@ -1,3 +1,8 @@
+2002-04-30 [paul]	0.7.5claws3
+
+	* src/summaryview.c
+		fix account_find_from_address() bug
+
 2002-04-28 [colin]	0.7.5claws2
 
 	* src/compose.c
