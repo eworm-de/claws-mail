@@ -1,3 +1,12 @@
+2001-12-07 [paul]	0.6.5claws57
+
+	* src/mainwindow.[ch]
+        * src/menu.[ch]
+		further usability enhancements to replying with or without 
+                quoting via the toolbar, use of Ctrl key is replaced by 
+                drop down menu 
+                Submitted by Carsten Schurig       	
+
 2001-12-07 [melvin]	0.6.5claws56
 
 	* src/messageview.c

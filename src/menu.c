@@ -63,6 +63,22 @@ GtkWidget *menu_create_items(GtkItemFactoryEntry *entries,
 	return gtk_item_factory_get_widget(*factory, path);
 }
 
+GtkWidget *popupmenu_create(GtkWidget *window, GtkItemFactoryEntry *entries,
+			     guint n_entries, const gchar *path, gpointer data)
+{
+	GtkItemFactory *factory;
+	GtkAccelGroup *accel_group;
+
+	accel_group = gtk_accel_group_new();
+	factory = gtk_item_factory_new(GTK_TYPE_MENU, path, accel_group);
+	gtk_item_factory_set_translate_func(factory, menu_translate,
+					    NULL, NULL);
+	gtk_item_factory_create_items(factory, n_entries, entries, data);
+	gtk_accel_group_attach(accel_group, GTK_OBJECT(window));
+
+	return gtk_item_factory_get_widget(factory, path);
+}
+
 static gchar *menu_translate(const gchar *path, gpointer data)
 {
 	gchar *retval;

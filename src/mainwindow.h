@@ -94,12 +94,25 @@ struct _MainWindow
 	GtkWidget *compose_news_btn_plain;	/* plain (text/icon only) */
 	ComposeButtonType compose_btn_type;
 	
+	/* for the reply buttons */
 	GtkWidget *reply_btn;
+	GtkWidget *reply_btn_plain;
 	GtkWidget *reply_quote_btn;
+	GtkWidget *reply_quote_btn_plain;
+	GtkWidget *reply_popup_btn;
+	GtkWidget *reply_popup;
 	GtkWidget *replyall_btn;
+	GtkWidget *replyall_btn_plain;
 	GtkWidget *replyall_quote_btn;
+	GtkWidget *replyall_quote_btn_plain;
+	GtkWidget *replyall_popup_btn;
+	GtkWidget *replyall_popup;
 	GtkWidget *replysender_btn;
+	GtkWidget *replysender_btn_plain;
 	GtkWidget *replysender_quote_btn;
+	GtkWidget *replysender_quote_btn_plain;
+	GtkWidget *replysender_popup_btn;
+	GtkWidget *replysender_popup;
 	GtkWidget *fwd_btn;
 	GtkWidget *send_btn;
 	/*
@@ -159,8 +172,6 @@ void main_window_empty_trash		(MainWindow	*mainwin,
 void main_window_add_mailbox		(MainWindow	*mainwin);
 
 void main_window_set_toolbar_sensitive	(MainWindow	*mainwin);
-void main_window_set_toolbar_reply_buttons	(MainWindow	*mainwin,
-					 gboolean keymod);
 void main_window_set_menu_sensitive	(MainWindow	*mainwin);
 
 

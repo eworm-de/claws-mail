@@ -45,6 +45,11 @@ GtkWidget *menu_create_items	(GtkItemFactoryEntry	*entries,
 				 const gchar		*path,
 				 GtkItemFactory	       **factory,
 				 gpointer		 data);
+GtkWidget *popupmenu_create(GtkWidget *window,
+				 GtkItemFactoryEntry *entries,
+			     guint n_entries,
+				 const gchar *path,
+				 gpointer data);
 void menu_set_sensitive		(GtkItemFactory		*ifactory,
 				 const gchar		*path,
 				 gboolean		 sensitive);
