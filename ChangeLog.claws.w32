@@ -1,3 +1,8 @@
+2002-11-24 [thorsten]	0.8.5claws178-1
+
+	* src/w32_aspell_init.c
+		removed check for aspell-common.dll (removed in aspell-0.50.3)
+
 2002-11-14 [thorsten]	0.8.5claws151-1
 
 	* src/mimeview.c

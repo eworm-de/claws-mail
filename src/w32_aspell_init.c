@@ -15,11 +15,12 @@ int w32_aspell_null(void);
 	;
 
 int w32_aspell_init(void) {
+	/* compatibility for aspell-0-50-2 (static in 0-50-3) */
 	hMod_aspell_common = LoadLibrary(prefs_common.aspell_common_lib);
 	hMod_aspell = LoadLibrary(prefs_common.aspell_lib);
-  	w32_aspell_assign();
+	w32_aspell_assign();
 	if (!w32_aspell_loaded()) {
-  		FreeLibrary(hMod_aspell);
+		FreeLibrary(hMod_aspell);
 		return 0 ;
 	} else {
 		return 1 ;
@@ -27,7 +28,7 @@ int w32_aspell_init(void) {
 }
 
 int w32_aspell_loaded(void) {
-	if (hMod_aspell_common && hMod_aspell)
+	if (hMod_aspell)
 		return 1;
 	else
 		return 0;
