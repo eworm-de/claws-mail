@@ -184,7 +184,8 @@ void summary_filter_open	  (SummaryView		*summaryview,
 				   PrefsFilterType	 type);
 
 void summary_sort		  (SummaryView		*summaryview,
-				   FolderSortKey	 sort_key);
+				   FolderSortKey	 sort_key,
+				   FolderSortType	 sort_type);
 
 void summary_delete		  (SummaryView		*summaryview);
 void summary_delete_duplicated	  (SummaryView		*summaryview);

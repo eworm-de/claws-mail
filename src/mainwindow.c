@@ -362,6 +362,9 @@ static void set_display_item_cb	 (MainWindow	*mainwin,
 static void sort_summary_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void sort_summary_type_cb (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
 static void attract_by_subject_cb(MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -538,17 +541,21 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/Ex_pand Message View"),	"<shift>V", toggle_expand_messageview_cb, 0, "<ToggleItem>"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Sort"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/_Sort/by _number"),		NULL, sort_summary_cb, SORT_BY_NUMBER, NULL},
-	{N_("/_View/_Sort/by s_ize"),		NULL, sort_summary_cb, SORT_BY_SIZE, NULL},
-	{N_("/_View/_Sort/by _date"),		NULL, sort_summary_cb, SORT_BY_DATE, NULL},
-	{N_("/_View/_Sort/by _from"),		NULL, sort_summary_cb, SORT_BY_FROM, NULL},
-	{N_("/_View/_Sort/by _subject"),	NULL, sort_summary_cb, SORT_BY_SUBJECT, NULL},
+	{N_("/_View/_Sort/by _number"),		NULL, sort_summary_cb, SORT_BY_NUMBER, "<RadioItem>"},
+	{N_("/_View/_Sort/by s_ize"),		NULL, sort_summary_cb, SORT_BY_SIZE, "/View/Sort/by number"},
+	{N_("/_View/_Sort/by _date"),		NULL, sort_summary_cb, SORT_BY_DATE, "/View/Sort/by number"},
+	{N_("/_View/_Sort/by _from"),		NULL, sort_summary_cb, SORT_BY_FROM, "/View/Sort/by number"},
+	{N_("/_View/_Sort/by _subject"),	NULL, sort_summary_cb, SORT_BY_SUBJECT, "/View/Sort/by number"},
 	{N_("/_View/_Sort/by _color label"),
-						NULL, sort_summary_cb, SORT_BY_LABEL, NULL},
-	{N_("/_View/_Sort/by _mark"),		NULL, sort_summary_cb, SORT_BY_MARK, NULL},
-	{N_("/_View/_Sort/by _unread"),		NULL, sort_summary_cb, SORT_BY_UNREAD, NULL},
+						NULL, sort_summary_cb, SORT_BY_LABEL, "/View/Sort/by number"},
+	{N_("/_View/_Sort/by _mark"),		NULL, sort_summary_cb, SORT_BY_MARK, "/View/Sort/by number"},
+	{N_("/_View/_Sort/by _unread"),		NULL, sort_summary_cb, SORT_BY_UNREAD, "/View/Sort/by number"},
 	{N_("/_View/_Sort/by a_ttachment"),
-						NULL, sort_summary_cb, SORT_BY_MIME, NULL},
+						NULL, sort_summary_cb, SORT_BY_MIME, "/View/Sort/by number"},
+	{N_("/_View/_Sort/D_on't sort"),	NULL, sort_summary_cb, SORT_BY_NONE, "/View/Sort/by number"},
+	{N_("/_View/_Sort/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/_Sort/Ascending"),		NULL, sort_summary_type_cb, SORT_ASCENDING, "<RadioItem>"},
+	{N_("/_View/_Sort/Descending"),		NULL, sort_summary_type_cb, SORT_DESCENDING, "/View/Sort/Ascending"},
 	{N_("/_View/_Sort/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Sort/_Attract by subject"),
 						NULL, attract_by_subject_cb, 0, NULL},
@@ -866,6 +873,7 @@ MainWindow *main_window_create(SeparateType type)
 				 n_menu_entries, "<Main>", mainwin);
 	gtk_widget_show(menubar);
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
+	ifactory = gtk_item_factory_from_widget(menubar);
 
 	handlebox = gtk_handle_box_new();
 	gtk_widget_show(handlebox);
@@ -1623,6 +1631,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	SensitiveCond state;
 	gboolean sensitive;
 	GtkWidget *menuitem;
+	FolderItem *item;
+	gchar *menu_path;
 	gint i;
 
 	static const struct {
@@ -1699,13 +1709,62 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	}
 
 	main_window_menu_callback_block(mainwin);
-	menuitem = gtk_item_factory_get_widget(ifactory, "/View/Show all header");
-	gtk_check_menu_item_set_active
-		(GTK_CHECK_MENU_ITEM(menuitem),
-		 mainwin->messageview->textview->show_all_headers);
-	menuitem = gtk_item_factory_get_widget(ifactory, "/View/Thread view");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
-				       (state & M_THREADED) != 0);
+
+#define SET_CHECK_MENU_ACTIVE(path, active) \
+{ \
+	menuitem = gtk_item_factory_get_widget(ifactory, path); \
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), active); \
+}
+
+	item = mainwin->summaryview->folder_item;
+	menu_path = "/View/Sort/Don't sort";
+	if (item) {
+		switch (item->sort_key) {
+		case SORT_BY_NUMBER:
+			menu_path = "/View/Sort/by number"; break;
+		case SORT_BY_SIZE:
+			menu_path = "/View/Sort/by size"; break;
+		case SORT_BY_DATE:
+			menu_path = "/View/Sort/by date"; break;
+		case SORT_BY_FROM:
+			menu_path = "/View/Sort/by from"; break;
+		case SORT_BY_SUBJECT:
+			menu_path = "/View/Sort/by subject"; break;
+		case SORT_BY_LABEL:
+			menu_path = "/View/Sort/by color label"; break;
+		case SORT_BY_MARK:
+			menu_path = "/View/Sort/by mark"; break;
+		case SORT_BY_UNREAD:
+			menu_path = "/View/Sort/by unread"; break;
+		case SORT_BY_MIME:
+			menu_path = "/View/Sort/by attachment"; break;
+		case SORT_BY_NONE:
+		default:
+			menu_path = "/View/Sort/Don't sort"; break;
+		}
+	}
+	SET_CHECK_MENU_ACTIVE(menu_path, TRUE);
+
+	if (!item || item->sort_type == SORT_ASCENDING) {
+		SET_CHECK_MENU_ACTIVE("/View/Sort/Ascending", TRUE);
+	} else {
+		SET_CHECK_MENU_ACTIVE("/View/Sort/Descending", TRUE);
+	}
+
+	if (item && item->sort_key != SORT_BY_NONE) {
+		menu_set_sensitive(ifactory, "/View/Sort/Ascending", TRUE);
+		menu_set_sensitive(ifactory, "/View/Sort/Descending", TRUE);
+	} else {
+		menu_set_sensitive(ifactory, "/View/Sort/Ascending", FALSE);
+		menu_set_sensitive(ifactory, "/View/Sort/Descending", FALSE);
+	}
+
+	SET_CHECK_MENU_ACTIVE("/View/Show all header",
+			      mainwin->messageview->textview->show_all_headers);
+	SET_CHECK_MENU_ACTIVE("/View/Thread view", (state & M_THREADED) != 0);
+
+#undef SET_CHECK_MENU_ACTIVE
+
 	main_window_menu_callback_unblock(mainwin);
 }
 
@@ -2993,7 +3052,30 @@ static void set_display_item_cb(MainWindow *mainwin, guint action,
 static void sort_summary_cb(MainWindow *mainwin, guint action,
 			    GtkWidget *widget)
 {
-	summary_sort(mainwin->summaryview, (FolderSortKey)action);
+	FolderItem *item = mainwin->summaryview->folder_item;
+	GtkItemFactory *ifactory;
+	GtkWidget *menuitem;
+
+	if (mainwin->menu_lock_count) return;
+	if (item) {
+		ifactory = gtk_item_factory_from_widget(mainwin->menubar);
+		menuitem = gtk_item_factory_get_item
+			(ifactory, "/View/Sort/Ascending");
+		summary_sort(mainwin->summaryview, (FolderSortKey)action,
+			     GTK_CHECK_MENU_ITEM(menuitem)->active
+			     ? SORT_ASCENDING : SORT_DESCENDING);
+	}
+}
+
+static void sort_summary_type_cb(MainWindow *mainwin, guint action,
+				 GtkWidget *widget)
+{
+	FolderItem *item = mainwin->summaryview->folder_item;
+
+	if (mainwin->menu_lock_count) return;
+	if (item)
+		summary_sort(mainwin->summaryview,
+			     item->sort_key, (FolderSortType)action);
 }
 
 static void attract_by_subject_cb(MainWindow *mainwin, guint action,

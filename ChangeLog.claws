@@ -1,3 +1,13 @@
+2002-06-05 [paul]	0.7.6claws30
+
+	* sync with 0.7.6cvs24
+		see ChangeLog 2002-06-04
+
+2002-06-04 [paul]	0.7.6claws29
+
+	* po/pt_BR.po
+		updated by Fabio Junior Beneditto
+
 2002-06-03 [thorsten]	0.7.6claws28
 
 	* src/matcher.c

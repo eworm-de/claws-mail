@@ -897,13 +897,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 
 	g_slist_free(mlist);
 
-	if (item->sort_key != SORT_BY_NONE) {
-		if (item->sort_type == SORT_DESCENDING)
-			item->sort_type = SORT_ASCENDING;
-		else
-			item->sort_type = SORT_DESCENDING;
-		summary_sort(summaryview, item->sort_key);
-	}
+	if (item->sort_key != SORT_BY_NONE)
+		summary_sort(summaryview, item->sort_key, item->sort_type);
 
 	summary_write_cache(summaryview);
 
@@ -1920,7 +1915,8 @@ static void summary_set_column_titles(SummaryView *summaryview)
 	}
 }
 
-void summary_sort(SummaryView *summaryview, FolderSortKey sort_key)
+void summary_sort(SummaryView *summaryview,
+		  FolderSortKey sort_key, FolderSortType sort_type)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
@@ -1963,6 +1959,12 @@ void summary_sort(SummaryView *summaryview, FolderSortKey sort_key)
 	case SORT_BY_LABEL:
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_label;
 		break;
+	case SORT_BY_NONE:
+		item->sort_key = sort_key;
+		item->sort_type = SORT_ASCENDING;
+		summary_set_column_titles(summaryview);
+		summary_set_menu_sensitive(summaryview);
+		return;
 	default:
 		return;
 	}
@@ -1974,17 +1976,12 @@ void summary_sort(SummaryView *summaryview, FolderSortKey sort_key)
 
 	gtk_clist_set_compare_func(clist, cmp_func);
 
-	/* toggle sort type if the same column is selected */
-	if (item->sort_key == sort_key)
-		item->sort_type =
-			item->sort_type == SORT_ASCENDING
-			? SORT_DESCENDING : SORT_ASCENDING;
-	else
-		item->sort_type = SORT_ASCENDING;
-	gtk_clist_set_sort_type(clist, (GtkSortType)item->sort_type);
+	gtk_clist_set_sort_type(clist, (GtkSortType)sort_type);
 	item->sort_key = sort_key;
+	item->sort_type = sort_type;
 
 	summary_set_column_titles(summaryview);
+	summary_set_menu_sensitive(summaryview);
 
 	gtk_ctree_sort_recursive(ctree, NULL);
 
@@ -4908,57 +4905,72 @@ static void summary_create_filter_cb(SummaryView *summaryview,
 	summary_filter_open(summaryview, (PrefsFilterType)action);
 }
 
+static void summary_sort_by_column_click(SummaryView *summaryview,
+					 FolderSortKey sort_key)
+{
+	FolderItem *item = summaryview->folder_item;
+
+	if (!item) return;
+
+	if (item->sort_key == sort_key)
+		summary_sort(summaryview, sort_key,
+			     item->sort_type == SORT_ASCENDING
+			     ? SORT_DESCENDING : SORT_ASCENDING);
+	else
+		summary_sort(summaryview, sort_key, SORT_ASCENDING);
+}
+
 static void summary_mark_clicked(GtkWidget *button, SummaryView *summaryview)
 {
-	summary_sort(summaryview, SORT_BY_MARK);
+	summary_sort_by_column_click(summaryview, SORT_BY_MARK);
 }
 
 static void summary_unread_clicked(GtkWidget *button, SummaryView *summaryview)
 {
-	summary_sort(summaryview, SORT_BY_UNREAD);
+	summary_sort_by_column_click(summaryview, SORT_BY_UNREAD);
 }
 
 static void summary_mime_clicked(GtkWidget *button, SummaryView *summaryview)
 {
-	summary_sort(summaryview, SORT_BY_MIME);
+	summary_sort_by_column_click(summaryview, SORT_BY_MIME);
 }
 
 static void summary_num_clicked(GtkWidget *button, SummaryView *summaryview)
 {
-	summary_sort(summaryview, SORT_BY_NUMBER);
-}
-
-static void summary_score_clicked(GtkWidget *button,
-				  SummaryView *summaryview)
-{
-	summary_sort(summaryview, SORT_BY_SCORE);
-}
-
-static void summary_locked_clicked(GtkWidget *button,
-				  SummaryView *summaryview)
-{
-	summary_sort(summaryview, SORT_BY_LOCKED);
+	summary_sort_by_column_click(summaryview, SORT_BY_NUMBER);
 }
 
 static void summary_size_clicked(GtkWidget *button, SummaryView *summaryview)
 {
-	summary_sort(summaryview, SORT_BY_SIZE);
+	summary_sort_by_column_click(summaryview, SORT_BY_SIZE);
 }
 
 static void summary_date_clicked(GtkWidget *button, SummaryView *summaryview)
 {
-	summary_sort(summaryview, SORT_BY_DATE);
+	summary_sort_by_column_click(summaryview, SORT_BY_DATE);
 }
 
 static void summary_from_clicked(GtkWidget *button, SummaryView *summaryview)
 {
-	summary_sort(summaryview, SORT_BY_FROM);
+	summary_sort_by_column_click(summaryview, SORT_BY_FROM);
 }
 
 static void summary_subject_clicked(GtkWidget *button,
 				    SummaryView *summaryview)
 {
-	summary_sort(summaryview, SORT_BY_SUBJECT);
+	summary_sort_by_column_click(summaryview, SORT_BY_SUBJECT);
+}
+
+static void summary_score_clicked(GtkWidget *button,
+				  SummaryView *summaryview)
+{
+	summary_sort_by_column_click(summaryview, SORT_BY_SCORE);
+}
+
+static void summary_locked_clicked(GtkWidget *button,
+				   SummaryView *summaryview)
+{
+	summary_sort_by_column_click(summaryview, SORT_BY_LOCKED);
 }
 
 static void summary_start_drag(GtkWidget *widget, gint button, GdkEvent *event,

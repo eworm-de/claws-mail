@@ -762,6 +762,7 @@ Compose *compose_new_with_folderitem(PrefsAccount *account, FolderItem *item)
 Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderItem *item)
 {
 	Compose *compose;
+	GtkSText *text;
 
 	if (item && item->prefs && item->prefs->enable_default_account)
 		account = account_find_from_id(item->prefs->default_account);
@@ -772,10 +773,19 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	compose = compose_create(account, COMPOSE_NEW);
 	compose->replyinfo = NULL;
 
+	text = GTK_STEXT(compose->text);
+	gtk_stext_freeze(text);
+
 	if (prefs_common.auto_sig)
 		compose_insert_sig(compose);
-	gtk_editable_set_position(GTK_EDITABLE(compose->text), 0);
-	gtk_stext_set_point(GTK_STEXT(compose->text), 0);
+	gtk_editable_set_position(GTK_EDITABLE(text), 0);
+	gtk_stext_set_point(text, 0);
+
+	gtk_stext_thaw(text);
+
+	/* workaround for initial XIM problem */
+	gtk_widget_grab_focus(compose->text);
+	gtkut_widget_wait_for_draw(compose->text);
 
 	if (account->protocol != A_NNTP) {
 		if (mailto) {
