@@ -777,10 +777,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, prefs_toolbar_cb, TOOLBAR_MAIN, NULL},
 	{N_("/_Configuration/C_ustomize toolbar/_Compose toolbar..."),
 						NULL, prefs_toolbar_cb, TOOLBAR_COMPOSE, NULL},
-#if 0
-	{N_("/_Configuration/_Filter setting..."),
-						NULL, prefs_filter_open_cb, 0, NULL},
-#endif
 	{N_("/_Configuration/_Scoring..."),
 						NULL, prefs_scoring_open_cb, 0, NULL},
 	{N_("/_Configuration/_Filtering..."),

@@ -1,3 +1,8 @@
+2002-11-01 [paul]	0.8.5claws67
+
+	* src/mainwindow.c
+		remove last remnants of main's filter code
+
 2002-11-01 [paul]	0.8.5claws66
 
 	* tools/filter_conv.pl
