@@ -2261,14 +2261,8 @@ gtk_stext_key_press (GtkWidget   *widget,
 	case GDK_Page_Down: move_cursor_page_ver (text, +1); break;
 	  /* CUA has Ctrl-Up/Ctrl-Down as paragraph up down */
 	case GDK_Up:       
-		if (text->wrap_rmargin > 0) {
-			/* SYLPHEED
-			 */
-			move_cursor_to_display_row_up(text);
-		}
-		else {
-			move_cursor_ver (text, -1); 
-		}
+		move_cursor_to_display_row_up(text);
+		/* move_cursor_ver (text, -1); */
 		break;
 	case GDK_Down:      
 		move_cursor_to_display_row_down(text);

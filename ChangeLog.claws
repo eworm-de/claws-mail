@@ -1,3 +1,8 @@
+2004-11-22 [luke]	0.9.12cvs161
+
+	* src/gtk/gtkstext.c
+		'Up' key moves one line (not one paragraph) like 'Down'
+
 2004-11-22 [paul]	0.9.12cvs160
 
 	* src/prefs_themes.c
