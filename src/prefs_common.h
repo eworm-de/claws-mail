@@ -65,6 +65,7 @@ struct _PrefsCommon
 	gchar *fw_quotemark;
 	gchar *fw_quotefmt;
 	gboolean forward_as_attachment;
+	gboolean reply_account_autoselect;
 
 	/* Display */
 	gchar *widgetfont;
