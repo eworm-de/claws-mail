@@ -21,6 +21,7 @@
 #define __FOLDERVIEW_H__
 
 typedef struct _FolderView	FolderView;
+typedef struct _FolderViewPopup	FolderViewPopup;
 
 #include <glib.h>
 #include <gtk/gtkwidget.h>
@@ -34,19 +35,8 @@ struct _FolderView
 {
 	GtkWidget *scrolledwin;
 	GtkWidget *ctree;
-	GtkWidget *mail_popup;
-	GtkWidget *imap_popup;
-	GtkWidget *news_popup;
-#if 0
-	GtkWidget *mbox_popup;
-#endif
 
-	GtkItemFactory *mail_factory;
-	GtkItemFactory *imap_factory;
-	GtkItemFactory *news_factory;
-#if 0
-	GtkItemFactory *mbox_factory;
-#endif
+	GHashTable *popups;
 
 	GtkCTreeNode *selected;
 	GtkCTreeNode *opened;
@@ -71,6 +61,15 @@ struct _FolderView
 	GtkTargetList *target_list; /* DnD */
 };
 
+struct _FolderViewPopup
+{
+	gchar		 *klass;
+	gchar		 *path;
+	GSList		 *entries;
+	void		(*set_sensitivity)	(GtkItemFactory *menu, FolderItem *item);
+};
+
+void folderview_initialize		(void);
 FolderView *folderview_create		(void);
 void folderview_init			(FolderView	*folderview);
 void folderview_set			(FolderView	*folderview);
@@ -94,12 +93,15 @@ void folderview_update_item_foreach	(GHashTable	*table,
 					 gboolean	 update_summary);
 void folderview_update_all_updated	(gboolean	 update_summary);
 
-void folderview_new_folder		(FolderView	*folderview);
-void folderview_rename_folder		(FolderView	*folderview);
-void folderview_delete_folder		(FolderView	*folderview);
+void folderview_move_folder		(FolderView 	*folderview,
+					 FolderItem 	*from_folder,
+					 FolderItem 	*to_folder);
 
 void folderview_set_target_folder_color (gint		color_op);
 
 void folderview_reflect_prefs_pixmap_theme	(FolderView *folderview);
+
+void folderview_register_popup		(FolderViewPopup	*fpopup);
+void folderview_unregister_popup	(FolderViewPopup	*fpopup);
 
 #endif /* __FOLDERVIEW_H__ */

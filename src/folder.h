@@ -111,6 +111,7 @@ typedef enum
 {
 	F_ITEM_UPDATE_MSGCNT = 1 << 0,
 	F_ITEM_UPDATE_CONTENT = 1 << 1,
+	F_ITEM_UPDATE_NAME = 1 << 2,
 } FolderItemUpdateFlags;
 
 typedef void (*FolderUIFunc)		(Folder		*folder,
@@ -675,6 +676,7 @@ gint   folder_read_list		(void);
 void   folder_write_list	(void);
 void   folder_scan_tree		(Folder *folder);
 FolderItem *folder_create_folder(FolderItem	*parent, const gchar *name);
+gint   folder_item_rename	(FolderItem *item, gchar *newname);
 void   folder_update_op_count		(void);
 void   folder_func_to_all_folders	(FolderItemFunc function,
 					 gpointer data);

@@ -144,15 +144,6 @@ static void message_window_size_allocate_cb	(GtkWidget	*widget,
 						 GtkAllocation	*allocation,
 						 gpointer	 data);
 
-static void new_folder_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void rename_folder_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void delete_folder_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
 static void update_folderview_cb (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -437,14 +428,6 @@ gboolean mainwindow_progressindicator_hook	(gpointer 	 source,
 static GtkItemFactoryEntry mainwin_entries[] =
 {
 	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_File/_Folder"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_File/_Folder/Create _new folder..."),
-						NULL, new_folder_cb, 0, NULL},
-	{N_("/_File/_Folder/_Rename folder..."),NULL, rename_folder_cb, 0, NULL},
-	{N_("/_File/_Folder/_Delete folder"),	NULL, delete_folder_cb, 0, NULL},
-	{N_("/_File/_Folder/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_File/_Folder/_Check for new messages in all folders"),
-						NULL, update_folderview_cb, 0, NULL},
 	{N_("/_File/_Add mailbox"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Add mailbox/MH..."),	NULL, add_mailbox_cb, 0, NULL},
 	{N_("/_File/_Import mbox file..."),	NULL, import_mbox_cb, 0, NULL},
@@ -707,6 +690,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/Actio_ns"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Tools/_Check for new messages in all folders"),
+						NULL, update_folderview_cb, 0, NULL},
 	{N_("/_Tools/Delete du_plicated messages"),
 						NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/Delete du_plicated messages/In selected folder"),
@@ -1703,7 +1688,6 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		gchar *const entry;
 		SensitiveCond cond;
 	} entry[] = {
-		{"/File/Folder"                               , M_UNLOCKED},
 		{"/File/Add mailbox"                          , M_UNLOCKED},
 
                 {"/File/Add mailbox/MH..."   		      , M_UNLOCKED},
@@ -2318,24 +2302,6 @@ static void update_folderview_cb(MainWindow *mainwin, guint action,
 {
 	summary_show(mainwin->summaryview, NULL);
 	folderview_check_new_all();
-}
-
-static void new_folder_cb(MainWindow *mainwin, guint action,
-			  GtkWidget *widget)
-{
-	folderview_new_folder(mainwin->folderview);
-}
-
-static void rename_folder_cb(MainWindow *mainwin, guint action,
-			     GtkWidget *widget)
-{
-	folderview_rename_folder(mainwin->folderview);
-}
-
-static void delete_folder_cb(MainWindow *mainwin, guint action,
-			     GtkWidget *widget)
-{
-	folderview_delete_folder(mainwin->folderview);
 }
 
 static void import_mbox_cb(MainWindow *mainwin, guint action,

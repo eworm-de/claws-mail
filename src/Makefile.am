@@ -47,6 +47,7 @@ sylpheed_SOURCES = \
 	headerview.c \
 	html.c \
 	imap.c \
+	imap_gtk.c \
 	import.c \
 	importldif.c \
 	importmutt.c \
@@ -71,10 +72,12 @@ sylpheed_SOURCES = \
 	message_search.c \
 	messageview.c \
 	mh.c \
+	mh_gtk.c \
 	mimeview.c \
 	msgcache.c \
 	mutt.c \
 	news.c \
+	news_gtk.c \
 	noticeview.c \
 	passphrase.c \
 	pgpmime.c \
@@ -173,6 +176,7 @@ sylpheedinclude_HEADERS = \
 	headerview.h \
 	html.h \
 	imap.h \
+	imap_gtk.h \
 	import.h \
 	importldif.h \
 	importmutt.h \
@@ -198,10 +202,12 @@ sylpheedinclude_HEADERS = \
 	message_search.h \
 	messageview.h \
 	mh.h \
+	mh_gtk.h \
 	mimeview.h \
 	msgcache.h \
 	mutt.h \
 	news.h \
+	news_gtk.h \
 	noticeview.h \
 	passphrase.h \
 	pgpmime.h \

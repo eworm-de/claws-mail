@@ -1,3 +1,26 @@
+2004-04-20 [christoph]	0.9.10claws48
+
+	* src/mainwindow.c
+	* src/foldersel.c
+		remove new/rename/delete folder GUI functions because
+		they are always active, even for news folders, and can
+		not be easily made folder class dependent
+
+	* src/gtk/menu.[ch]
+		make menu_translate() public
+
+	* src/Makefile.am
+	* src/folder.[ch]
+	* src/folderview.[ch]
+	* src/imap_gtk.[ch]			** NEW **
+	* src/main.c
+	* src/mh_gtk.[ch]			** NEW **
+	* src/news_gtk.[ch]			** NEW **
+		o dynamically build FolderView popup menus from a folder
+		  specific part, with callbacks to seperated code, and
+                  a common part
+		o remove the folder class dependent code from folderview.c
+
 2004-04-15 [luke]	0.9.10claws47
 
 	* src/prefs_folder_item.c

@@ -281,7 +281,7 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 	item->threaded  = TRUE;
 	item->ret_rcpt  = FALSE;
 	item->opened    = FALSE;
-	item->node = NULL;
+	item->node = g_node_new(item);
 	item->folder = NULL;
 	item->account = NULL;
 	item->apply_sub = FALSE;
@@ -301,7 +301,7 @@ void folder_item_append(FolderItem *parent, FolderItem *item)
 	g_return_if_fail(item != NULL);
 
 	item->folder = parent->folder;
-	item->node = g_node_append_data(parent->node, item);
+	g_node_append(parent->node, item->node);
 }
 
 static gboolean folder_item_remove_func(GNode *node, gpointer data)
@@ -766,10 +766,11 @@ void folder_scan_tree(Folder *folder)
 FolderItem *folder_create_folder(FolderItem *parent, const gchar *name)
 {
 	FolderItem *new_item;
-	FolderUpdateData hookdata;
 
 	new_item = parent->folder->klass->create_folder(parent->folder, parent, name);
 	if (new_item) {
+		FolderUpdateData hookdata;
+
 		new_item->cache = msgcache_new();
 
 		hookdata.folder = new_item->folder;
@@ -779,6 +780,26 @@ FolderItem *folder_create_folder(FolderItem *parent, const gchar *name)
 	}
 
 	return new_item;
+}
+
+gint folder_item_rename(FolderItem *item, gchar *newname)
+{
+	gint retval;
+
+	g_return_val_if_fail(item != NULL, -1);
+	g_return_val_if_fail(newname != NULL, -1);
+
+	retval = item->folder->klass->rename_folder(item->folder, item, newname);
+
+	if (retval >= 0) {
+		FolderItemUpdateData hookdata;
+
+		hookdata.item = item;
+		hookdata.update_flags = FOLDER_TREE_CHANGED;
+		hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &hookdata);
+	}
+
+	return retval;
 }
 
 struct TotalMsgCount

@@ -46,8 +46,6 @@
 #include "foldersel.h"
 #include "alertpanel.h"
 #include "manage_window.h"
-#include "folderview.h"
-#include "inputdialog.h"
 #include "folder.h"
 
 static GdkPixmap *folderxpm;
@@ -60,7 +58,6 @@ static GtkWidget *ctree;
 static GtkWidget *entry;
 static GtkWidget *ok_button;
 static GtkWidget *cancel_button;
-static GtkWidget *new_button;
 
 static FolderItem *folder_item;
 static FolderItem *selected_item;
@@ -82,8 +79,6 @@ static void foldersel_selected	(GtkCList	*clist,
 static void foldersel_ok	(GtkButton	*button,
 				 gpointer	 data);
 static void foldersel_cancel	(GtkButton	*button,
-				 gpointer	 data);
-static void foldersel_new_folder(GtkButton	*button,
 				 gpointer	 data);
 static void foldersel_activated	(void);
 static gint delete_event	(GtkWidget	*widget,
@@ -203,7 +198,7 @@ static void foldersel_create(void)
 	gtkut_button_set_create(&confirm_area,
 				&ok_button,	_("OK"),
 				&cancel_button,	_("Cancel"),
-				&new_button,    _("New folder"));
+				NULL,    	NULL);
 
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_button);
@@ -212,8 +207,6 @@ static void foldersel_create(void)
 			   GTK_SIGNAL_FUNC(foldersel_ok), NULL);
 	gtk_signal_connect(GTK_OBJECT(cancel_button), "clicked",
 			   GTK_SIGNAL_FUNC(foldersel_cancel), NULL);
-	gtk_signal_connect(GTK_OBJECT(new_button), "clicked",
-			   GTK_SIGNAL_FUNC(foldersel_new_folder), NULL);
 
 	gtk_widget_show_all(window);
 }
@@ -344,66 +337,6 @@ static void foldersel_cancel(GtkButton *button, gpointer data)
 {
 	cancelled = TRUE;
 	finished = TRUE;
-}
-
-static void foldersel_new_folder(GtkButton *button, gpointer data)
-{
-	FolderItem *new_item;
-	gchar *new_folder;
-	gchar *disp_name;
-	gchar *p;
-	gchar *text[1] = {NULL};
-	GtkCTreeNode *selected_node;
-	GtkCTreeNode *node;
-
-	if (!selected_item || FOLDER_TYPE(selected_item->folder) == F_NEWS)
-		return;
-	selected_node = gtk_ctree_find_by_row_data(GTK_CTREE(ctree), NULL,
-						   selected_item);
-	if (!selected_node) return;
-
-	new_folder = input_dialog(_("New folder"),
-				  _("Input the name of new folder:"),
-				  _("NewFolder"));
-	if (!new_folder) return;
-	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
-
-	p = strchr(new_folder, G_DIR_SEPARATOR);
-	if ((p && FOLDER_TYPE(selected_item->folder) != F_MBOX) ||
-	    (p && FOLDER_TYPE(selected_item->folder) != F_IMAP) ||
-	    (p && FOLDER_TYPE(selected_item->folder) == F_IMAP &&
-	     *(p + 1) != '\0')) {
-		alertpanel_error(_("`%c' can't be included in folder name."),
-				G_DIR_SEPARATOR);
-		return;
-	}
-
-	disp_name = trim_string(new_folder, 32);
-	AUTORELEASE_STR(disp_name, {g_free(new_folder); return;});
-
-	/* find whether the directory already exists */
-	if (folder_find_child_item_by_name(selected_item, new_folder)) {
-		alertpanel_error(_("The folder `%s' already exists."),
-				 disp_name);
-		return;
-	}
-
-	new_item = folder_create_folder(selected_item, new_folder);
-	if (!new_item) {
-		alertpanel_error(_("Can't create the folder `%s'."), disp_name);
-		return;
-	}
-
-	text[0] = new_item->name;
-	node = gtk_ctree_insert_node(GTK_CTREE(ctree), selected_node,
-				     NULL, text, FOLDER_SPACING,
-				     folderxpm, folderxpmmask,
-				     folderopenxpm, folderopenxpmmask,
-				     FALSE, FALSE);
-	gtk_ctree_expand(GTK_CTREE(ctree), selected_node);
-	gtk_ctree_node_set_row_data(GTK_CTREE(ctree), node, new_item);
-	gtk_ctree_sort_recursive(GTK_CTREE(ctree), selected_node);
-	folderview_append_item(new_item);
 }
 
 static void foldersel_activated(void)
