@@ -1,3 +1,11 @@
+2005-03-05 [thorsten]	1.0.1cvs0.4
+
+	* src/common/partial_download.c		*** REMOVED ***
+	* src/common/partial_download.h		*** REMOVED ****
+	* win32/sylpheed_dll_d.dsp
+		fix: Remove stale files, update project file
+		Thanks to Thomas Gilgin for spotting this.
+
 2005-03-05 [thorsten]	1.0.1cvs0.3
 
 	* src/pop.c

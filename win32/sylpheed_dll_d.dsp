@@ -484,7 +484,7 @@ SOURCE=..\src\noticeview.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\common\partial_download.c
+SOURCE=..\src\partial_download.c
 # End Source File
 # Begin Source File
 
@@ -720,11 +720,11 @@ SOURCE=..\src\common\sylpheed.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\sylpheed.rc
+SOURCE=.\sylpheed_d.def
 # End Source File
 # Begin Source File
 
-SOURCE=.\sylpheed_d.def
+SOURCE=.\sylpheed.rc
 # End Source File
 # Begin Source File
 
@@ -1132,7 +1132,7 @@ SOURCE=..\src\noticeview.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\common\partial_download.h
+SOURCE=..\src\partial_download.h
 # End Source File
 # Begin Source File
 
