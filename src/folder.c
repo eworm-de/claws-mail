@@ -2173,7 +2173,7 @@ static void folder_get_persist_prefs_recursive(GNode *node, GHashTable *pptable)
 		pp->hide_read_msgs = item->hide_read_msgs;
 		pp->sort_key  = item->sort_key;
 		pp->sort_type = item->sort_type;
-		g_hash_table_insert(pptable, item->path, pp);
+		g_hash_table_insert(pptable, g_strdup(item->path), pp);
 	}		
 
 	if (node->children) {
@@ -2188,6 +2188,8 @@ static void folder_get_persist_prefs_recursive(GNode *node, GHashTable *pptable)
 
 static gboolean persist_prefs_free(gpointer key, gpointer val, gpointer data)
 {
+	if (key) 
+		g_free(key);
 	if (val) 
 		g_free(val);
 	return TRUE;	
