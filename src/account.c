@@ -753,6 +753,11 @@ static void account_clone(void)
 
 	row = GPOINTER_TO_INT(clist->selection->data);
 	ac_prefs = gtk_clist_get_row_data(clist, row);
+
+	if (ac_prefs->protocol == A_IMAP4 || ac_prefs->protocol == A_NNTP) {
+		alertpanel_error(_("Accounts with remote folders cannot be cloned"));
+		return;
+	}
 	
 	ac_clon = prefs_account_new();
 	/* copy fields */
