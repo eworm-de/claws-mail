@@ -1,3 +1,13 @@
+2004-11-24 [colin]	0.9.12cvs171
+
+	* src/plugins/pgpmime/pgpmime.c
+		Fix numerous GpgmeGtk leaks
+
+2004-11-24 [colin]	0.9.12cvs170
+
+	* src/plugins/pgpmime/pgpmime.c
+		Fix numerous GpgmeCtx leaks
+
 2004-11-24 [colin]	0.9.12cvs169
 
 	* src/plugins/pgpmime/plugin.c
