@@ -469,12 +469,8 @@ static GHashTable *procmsg_read_mark_file(const gchar *folder)
 
 		flags = g_new0(MsgFlags, 1);
 		flags->perm_flags = perm_flags;
-    
-		if(!MSG_IS_REALLY_DELETED(*flags)) {
-			g_hash_table_insert(mark_table, GUINT_TO_POINTER(num), flags);
-		} else {
-			g_hash_table_remove(mark_table, GUINT_TO_POINTER(num));
-		}
+
+		g_hash_table_insert(mark_table, GUINT_TO_POINTER(num), flags);
 	}
 
 	fclose(fp);
@@ -548,7 +544,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 				parent = root;
 			} else {
 				if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags)) {
-					procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
+					MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
 				}
 			}
 		}
@@ -579,7 +575,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 				(parent, parent->children, node);
 			/* CLAWS: ignore thread */
 			if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags)) {
-				procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
+				MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
 			}
 		}
 		node = next;
@@ -610,7 +606,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 				g_node_append(parent, node);
 				/* CLAWS: ignore thread */
 				if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags)) {
-					procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
+					MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
 				}
 			}
 		}					
@@ -1233,123 +1229,4 @@ gint procmsg_send_message_queue(const gchar *file)
 	}
 
 	return (newsval != 0 ? newsval : mailval);
-}
-
-#define CHANGE_FLAGS(msginfo) \
-{ \
-if (msginfo->folder->folder->change_flags != NULL) \
-msginfo->folder->folder->change_flags(msginfo->folder->folder, \
-				      msginfo->folder, \
-				      msginfo); \
-}
-
-void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
-{
-	gboolean changed = FALSE;
-	FolderItem *item = msginfo->folder;
-
-	debug_print(_("Setting flags for message %d in folder %s\n"), msginfo->msgnum, item->path);
-
-	/* if new flag is set */
-	if((perm_flags & MSG_NEW) && !MSG_IS_NEW(msginfo->flags) &&
-	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-		item->new++;
-		changed = TRUE;
-	}
-
-	/* if unread flag is set */
-	if((perm_flags & MSG_UNREAD) && !MSG_IS_UNREAD(msginfo->flags) &&
-	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-		item->unread++;
-		changed = TRUE;
-	}
-
-	/* if ignore thread flag is set */
-	if((perm_flags & MSG_IGNORE_THREAD) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-		if(MSG_IS_NEW(msginfo->flags) || (perm_flags & MSG_NEW)) {
-			item->new--;
-			changed = TRUE;
-		}
-		if(MSG_IS_UNREAD(msginfo->flags) || (perm_flags & MSG_UNREAD)) {
-			item->unread--;
-			changed = TRUE;
-		}
-	}
-
-	if (MSG_IS_IMAP(msginfo->flags))
-		imap_msg_set_perm_flags(msginfo, perm_flags);
-
-	msginfo->flags.perm_flags |= perm_flags;
-	msginfo->flags.tmp_flags |= tmp_flags;
-
-	if(changed) {
-		folderview_update_item(item, FALSE);
-	}
-	CHANGE_FLAGS(msginfo);
-	procmsg_msginfo_write_flags(msginfo);
-}
-
-void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
-{
-	gboolean changed = FALSE;
-	FolderItem *item = msginfo->folder;
-	
-	debug_print(_("Unsetting flags for message %d in folder %s\n"), msginfo->msgnum, item->path);
-
-	/* if new flag is unset */
-	if((perm_flags & MSG_NEW) && MSG_IS_NEW(msginfo->flags) &&
-	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-		item->new--;
-		changed = TRUE;
-	}
-
-	/* if unread flag is unset */
-	if((perm_flags & MSG_UNREAD) && MSG_IS_UNREAD(msginfo->flags) &&
-	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-		item->unread--;
-		changed = TRUE;
-	}
-
-	/* if ignore thread flag is unset */
-	if((perm_flags & MSG_IGNORE_THREAD) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-		if(MSG_IS_NEW(msginfo->flags) || (perm_flags & MSG_NEW)) {
-			item->new++;
-			changed = TRUE;
-		}
-		if(MSG_IS_UNREAD(msginfo->flags) || (perm_flags & MSG_UNREAD)) {
-			item->unread++;
-			changed = TRUE;
-		}
-	}
-
-	if (MSG_IS_IMAP(msginfo->flags))
-		imap_msg_unset_perm_flags(msginfo, perm_flags);
-
-	msginfo->flags.perm_flags &= ~perm_flags;
-	msginfo->flags.tmp_flags &= ~tmp_flags;
-
-	if(changed) {
-		folderview_update_item(item, FALSE);
-	}
-	CHANGE_FLAGS(msginfo);
-	procmsg_msginfo_write_flags(msginfo);
-}
-
-void procmsg_msginfo_write_flags(MsgInfo *msginfo)
-{
-	gchar *destdir;
-	FILE *fp;
-
-	destdir = folder_item_get_path(msginfo->folder);
-	if (!is_dir_exist(destdir))
-		make_dir_hier(destdir);
-
-	if ((fp = procmsg_open_mark_file(destdir, TRUE))) {
-		procmsg_write_flags(msginfo, fp);
-		fclose(fp);
-	} else {
-		g_warning(_("Can't open mark file.\n"));
-	}
-	
-	g_free(destdir);
 }

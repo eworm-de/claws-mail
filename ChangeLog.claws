@@ -1,3 +1,11 @@
+2002-03-19 [christoph]	0.7.4claws26
+
+	* src/mh.c
+	* src/procmsg.[ch]
+	* src/summaryview.c
+		revert changes for flag updates
+		(does not work correctly and no time to debug)
+
 2002-03-20 [alfons]	0.7.4claws25
 
 	* src/pop.c

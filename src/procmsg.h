@@ -122,9 +122,6 @@ typedef enum
 #define MSG_SET_COLORLABEL_VALUE(msg, val) \
 	MSG_SET_PERM_FLAGS(msg, ((((guint)(val)) & 7) << MSG_CLABEL_SBIT))
 
-#define MSG_COLORLABEL_TO_FLAGS(val) ((((guint)(val)) & 7) << MSG_CLABEL_SBIT)
-#define MSG_COLORLABEL_FROM_FLAGS(val) (val >> MSG_CLABEL_SBIT)
-
 #define MSG_IS_MOVE(msg)		(((msg).tmp_flags & MSG_MOVE) != 0)
 #define MSG_IS_COPY(msg)		(((msg).tmp_flags & MSG_COPY) != 0)
 
@@ -255,12 +252,5 @@ void	 procmsg_msginfo_free		(MsgInfo	*msginfo);
 gint procmsg_cmp_msgnum_for_sort	(gconstpointer	 a,
 					 gconstpointer	 b);
 gint procmsg_send_message_queue		(const gchar *file);
-
-void procmsg_msginfo_set_flags		(MsgInfo *msginfo,
-					 MsgPermFlags perm_flags,
-					  MsgTmpFlags tmp_flags);
-void procmsg_msginfo_unset_flags	(MsgInfo *msginfo,
-					 MsgPermFlags perm_flags,
-					  MsgTmpFlags tmp_flags);
 
 #endif /* __PROCMSG_H__ */
