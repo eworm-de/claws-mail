@@ -310,4 +310,10 @@ void log_message	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
 void log_warning	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
 void log_error		(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
 
+/* subject threading */
+void * subject_table_lookup(GHashTable *subject_table, gchar * subject)
+void subject_table_insert(GHashTable *subject_table, gchar * subject,
+			  void * data);
+void subject_table_remove(GHashTable *subject_table, gchar * subject);
+
 #endif /* __UTILS_H__ */

@@ -496,30 +496,6 @@ FILE *procmsg_open_mark_file(const gchar *folder, gboolean append)
 	return fp;
 }
 
-static GNode * subject_table_lookup(GHashTable * subject_table,
-				    gchar * subject)
-{
-	if (subject == NULL)
-		subject = "";
-
-	if (g_strncasecmp(subject, "Re: ", 4) == 0)
-		return g_hash_table_lookup(subject_table, subject + 4);
-	else
-		return g_hash_table_lookup(subject_table, subject);
-}
-
-static void subject_table_insert(GHashTable * subject_table, gchar * subject,
-				 GNode * node)
-{
-	if (subject == NULL)
-		subject = "";
-
-	if (g_strncasecmp(subject, "Re: ", 4) == 0)
-		g_hash_table_insert(subject_table, subject + 4, node);
-	else
-		g_hash_table_insert(subject_table, subject, node);
-}
-
 /* return the reversed thread tree */
 GNode *procmsg_get_thread_tree(GSList *mlist)
 {

@@ -2223,3 +2223,44 @@ void log_error(const gchar *format, ...)
 		fflush(log_fp);
 	}
 }
+
+
+void * subject_table_lookup(GHashTable *subject_table, gchar * subject)
+{
+	if (subject == NULL)
+		subject = "";
+
+	if (g_strncasecmp(subject, "Re: ", 4) == 0)
+		return g_hash_table_lookup(subject_table, subject + 4);
+	else
+		return g_hash_table_lookup(subject_table, subject);
+}
+
+void subject_table_insert(GHashTable *subject_table, gchar * subject,
+			  void * data)
+{
+	if (subject == NULL)
+		return;
+	if (* subject == 0)
+		return;
+	if (g_strcasecmp(subject, "Re:") == 0)
+		return;
+	if (g_strcasecmp(subject, "Re: ") == 0)
+		return;
+
+	if (g_strncasecmp(subject, "Re: ", 4) == 0)
+		g_hash_table_insert(subject_table, subject + 4, data);
+	else
+		g_hash_table_insert(subject_table, subject, data);
+}
+
+void subject_table_remove(GHashTable *subject_table, gchar * subject)
+{
+	if (subject == NULL)
+		return;
+
+	if (g_strncasecmp(subject, "Re: ", 4) == 0)
+		g_hash_table_remove(subject_table, subject + 4);
+	else
+		g_hash_table_remove(subject_table, subject);
+}

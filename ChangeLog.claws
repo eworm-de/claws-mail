@@ -1,3 +1,11 @@
+2001-11-06 [hoa]	0.6.4claws30
+	
+	* src/procmsg.c
+	* src/summaryview.c
+	* src/utils.c
+	* src/utils.h
+		threading by subject - empty subject are ignored
+
 2001-11-06 [christoph]	0.6.4claws29
 
 	* src/socket.c
