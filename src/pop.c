@@ -353,7 +353,7 @@ static gboolean should_delete(const char *uidl, gpointer data)
 		tdate    = atoi(sdate);
 		keep_for = atoi(state->ac_prefs->leave_time); /* FIXME: leave time should be an int */
 
-		g_date_clear(&curdate, time(NULL));
+		g_date_clear(&curdate, 1);
 		g_date_set_time(&curdate, time(NULL));
 		today = g_date_day_of_year(&curdate);
 		
