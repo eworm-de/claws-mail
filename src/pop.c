@@ -89,8 +89,6 @@ gint pop3_getauth_user_send(SockInfo *sock, gpointer data)
 
 	g_return_val_if_fail(state->user != NULL, -1);
 
-	inc_progress_update(state, POP3_GETAUTH_USER_SEND);
-
 	pop3_gen_send(sock, "USER %s", state->user);
 
 	return POP3_GETAUTH_USER_RECV;
@@ -150,8 +148,6 @@ gint pop3_getauth_apop_send(SockInfo *sock, gpointer data)
 	g_return_val_if_fail(state->user != NULL, -1);
 	g_return_val_if_fail(state->pass != NULL, -1);
 
-	inc_progress_update(state, POP3_GETAUTH_APOP_SEND);
-
 	if ((start = strchr(state->greeting, '<')) == NULL) {
 		log_warning(_("Required APOP timestamp not found "
 			      "in greeting\n"));
@@ -196,10 +192,6 @@ gint pop3_getauth_apop_recv(SockInfo *sock, gpointer data)
 
 gint pop3_getrange_stat_send(SockInfo *sock, gpointer data)
 {
-	Pop3State *state = (Pop3State *)data;
-
-	inc_progress_update(state, POP3_GETRANGE_STAT_SEND);
-
 	pop3_gen_send(sock, "STAT");
 
 	return POP3_GETRANGE_STAT_RECV;
@@ -235,10 +227,6 @@ gint pop3_getrange_stat_recv(SockInfo *sock, gpointer data)
 
 gint pop3_getrange_last_send(SockInfo *sock, gpointer data)
 {
-	Pop3State *state = (Pop3State *)data;
-
-	inc_progress_update(state, POP3_GETRANGE_LAST_SEND);
-
 	pop3_gen_send(sock, "LAST");
 
 	return POP3_GETRANGE_LAST_RECV;
@@ -269,10 +257,6 @@ gint pop3_getrange_last_recv(SockInfo *sock, gpointer data)
 
 gint pop3_getrange_uidl_send(SockInfo *sock, gpointer data)
 {
-	Pop3State *state = (Pop3State *)data;
-
-	inc_progress_update(state, POP3_GETRANGE_UIDL_SEND);
-
 	pop3_gen_send(sock, "UIDL");
 
 	return POP3_GETRANGE_UIDL_RECV;
@@ -286,11 +270,17 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 	gchar buf[POPBUFSIZE];
 	gchar id[IDLEN + 1];
 
-	if (pop3_ok(sock, NULL) != PS_SUCCESS) return POP3_GETRANGE_LAST_SEND;
-
 	if (!state->uidl_table) new = TRUE;
 	if (state->ac_prefs->getall)
 		get_all = TRUE;
+
+	if (pop3_ok(sock, NULL) != PS_SUCCESS) {
+		/* UIDL is not supported */
+		if (!get_all)
+			return POP3_GETRANGE_LAST_SEND;
+		else
+			return POP3_GETSIZE_LIST_SEND;
+	}
 
 	while (sock_gets(sock, buf, sizeof(buf)) >= 0) {
 		gint num;
@@ -370,10 +360,6 @@ static gboolean should_delete(const char *uidl, gpointer data)
 
 gint pop3_getsize_list_send(SockInfo *sock, gpointer data)
 {
-	Pop3State *state = (Pop3State *)data;
-
-	inc_progress_update(state, POP3_GETSIZE_LIST_SEND);
-
 	pop3_gen_send(sock, "LIST");
 
 	return POP3_GETSIZE_LIST_RECV;
@@ -469,8 +455,6 @@ gint pop3_retr_send(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 
-	inc_progress_update(state, POP3_RETR_SEND);
-
 	pop3_gen_send(sock, "RETR %d", state->cur_msg);
 
 	return POP3_RETR_RECV;
@@ -522,8 +506,6 @@ gint pop3_delete_send(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 
-	/* inc_progress_update(state, POP3_DELETE_SEND); */
-
 	pop3_gen_send(sock, "DELE %d", state->cur_msg);
 
 	return POP3_DELETE_RECV;
@@ -571,8 +553,6 @@ gint pop3_logout_send(SockInfo *sock, gpointer data)
 		g_strfreev(parts);	
 	}
 	
-	inc_progress_update(state, POP3_LOGOUT_SEND);
-
 	pop3_gen_send(sock, "QUIT");
 
 	return POP3_LOGOUT_RECV;

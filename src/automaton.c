@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,8 @@ void automaton_input_cb(gpointer data, gint dummy_source,
 	gdk_input_remove(atm->tag);
 	atm->tag = 0;
 
+	if (atm->ui_func)
+		atm->ui_func(atm->data, atm->num);
 	next = atm->state[atm->num].handler(sock, atm->data);
 
 	if (atm->terminated)

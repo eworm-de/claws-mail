@@ -1,3 +1,25 @@
+2002-05-11
+
+	* src/imap.c: imap_scan_tree(): don't use namespace for prefix.
+	* src/prefs_folder_item.c: show also identifier path.
+	  Made layout using table. Show uneditable entry using background
+	  color of window.
+	* src/procmime.c: procmime_get_tmp_file_name(): generate safe
+	  file name.
+
+2002-05-11
+
+	* src/automaton.[ch]: added UI callback to Automaton.
+	* src/inc.c
+	  src/pop.c: use callback instead of calling inc_progress_update()
+	  directly.
+	  pop3_getrange_uidl_recv(): don't fall back to LAST when 'get all'
+	  option is set.
+
+2002-05-10
+
+	* src/folderview.c: properly sort abbreviated newsgroups.
+
 2002-05-10
 
 	* src/folderview.c

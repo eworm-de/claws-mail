@@ -156,6 +156,9 @@ static GtkCTreeNode *folderview_find_by_name	(GtkCTree	*ctree,
 						 GtkCTreeNode	*node,
 						 const gchar	*name);
 
+static gint folderview_clist_compare	(GtkCList	*clist,
+					 gconstpointer	 ptr1,
+					 gconstpointer	 ptr2);
 static gint folderview_compare_name	(gconstpointer	 a,
 					 gconstpointer	 b);
 
@@ -387,6 +390,7 @@ FolderView *folderview_create(void)
 	gtk_ctree_set_expander_style(GTK_CTREE(ctree),
 				     GTK_CTREE_EXPANDER_SQUARE);
 	gtk_ctree_set_indent(GTK_CTREE(ctree), CTREE_INDENT);
+	gtk_clist_set_compare_func(GTK_CLIST(ctree), folderview_clist_compare);
 
 	/* don't let title buttons take key focus */
 	for (i = 0; i < N_FOLDER_COLS; i++)
@@ -2295,7 +2299,7 @@ static void folderview_new_news_group_cb(FolderView *folderview, guint action,
 		gtk_ctree_node_set_row_data(ctree, node, newitem);
 	}
 
-	gtk_ctree_sort_node(ctree, servernode);
+	folderview_sort_folders(folderview, servernode, folder);
 	gtk_clist_thaw(GTK_CLIST(ctree));
 
 	slist_free_strings(new_subscr);
@@ -2507,6 +2511,20 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		}
 	} else
 		gtk_drag_finish(drag_context, FALSE, FALSE, time);
+}
+
+static gint folderview_clist_compare(GtkCList *clist,
+				     gconstpointer ptr1, gconstpointer ptr2)
+{
+	FolderItem *item1 = ((GtkCListRow *)ptr1)->data;
+	FolderItem *item2 = ((GtkCListRow *)ptr2)->data;
+
+	if (!item1->name)
+		return (item2->name != NULL);
+	if (!item2->name)
+		return -1;
+
+	return g_strcasecmp(item1->name, item2->name);
 }
 
 static gint folderview_compare_name(gconstpointer a, gconstpointer b)

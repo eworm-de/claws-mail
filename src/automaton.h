@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,12 +27,16 @@
 typedef struct _AtmState	AtmState;
 typedef struct _Automaton	Automaton;
 
-typedef gint	(*AtmHandler)	(SockInfo *source, gpointer data);
+typedef gint	(*AtmHandler)	(SockInfo	*source,
+				 gpointer	 data);
+typedef void	(*AtmUIFunc)	(gpointer	 data,
+				 gint		 state);
 
 struct _AtmState
 {
 	GdkInputCondition condition;
-	gint (*handler)(SockInfo *source, gpointer data);
+	gint (*handler)	(SockInfo	*source,
+			 gpointer	 data);
 };
 
 struct _Automaton
@@ -43,15 +47,22 @@ struct _Automaton
 	guint timeout_tag;
 	guint elapsed;
 	gboolean terminated;
+
 	gpointer data;
 	AtmState *state;
-	gint (*terminate)(SockInfo *source, gpointer data);
+
+	gint (*terminate)	(SockInfo	*source,
+				 gpointer	 data);
+
+	AtmUIFunc ui_func;
+
 	SockInfo *help_sock;
 };
 
-Automaton *automaton_create(gint num);
-void automaton_destroy(Automaton *atm);
-void automaton_input_cb(gpointer data, gint dummy_source,
-			GdkInputCondition condition);
+Automaton *automaton_create	(gint			 num);
+void automaton_destroy		(Automaton		*atm);
+void automaton_input_cb		(gpointer		 data,
+				 gint			 dummy_source,
+				 GdkInputCondition	 condition);
 
 #endif /* __AUTOMATON_H__ */

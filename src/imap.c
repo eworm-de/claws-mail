@@ -973,7 +973,6 @@ gint imap_scan_folder(Folder *folder, FolderItem *item)
 
 void imap_scan_tree(Folder *folder)
 {
-	IMAPFolder *imapfolder = IMAP_FOLDER(folder);
 	FolderItem *item;
 	IMAPSession *session;
 	gchar *root_folder = NULL;
@@ -985,29 +984,15 @@ void imap_scan_tree(Folder *folder)
 	if (!session) return;
 
 	if (folder->account->imap_dir && *folder->account->imap_dir) {
-		gchar *imap_dir;
-		IMAPNameSpace *namespace = NULL;
-
-		Xstrdup_a(imap_dir, folder->account->imap_dir, return);
-		strtailchomp(imap_dir, '/');
-
-		if (imapfolder->ns_personal && imapfolder->ns_personal->data)
-			namespace = (IMAPNameSpace *)imapfolder->ns_personal->data;
-		root_folder = g_strconcat
-			(namespace && namespace->name ? namespace->name : "",
-			 imap_dir, NULL);
-		if (namespace && namespace->separator)
-			subst_char(root_folder, namespace->separator, '/');
-	}
-
-	if (root_folder)
+		Xstrdup_a(root_folder, folder->account->imap_dir, return);
+		strtailchomp(root_folder, '/');
 		debug_print("IMAP root directory: %s\n", root_folder);
+	}
 
 	folder_tree_destroy(folder);
 	item = folder_item_new(folder->name, root_folder);
 	item->folder = folder;
 	folder->node = g_node_new(item);
-	g_free(root_folder);
 
 	imap_scan_tree_recursive(session, item);
 
