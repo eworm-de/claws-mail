@@ -1,4 +1,4 @@
-* calypso_import.pl
+* calypso_convert.pl
 
   WHAT IT DOES
 
@@ -16,7 +16,7 @@
     $mboxfile : name of exported mbox, e.g. 'mail.txt'
     $outdir   : name of the MH folder to create, e.g. 'Calypso'
   Run the script using
-    perl calypso_import.pl
+    perl calypso_convert.pl
   Finally, import that folder by either selecting "New mailbox" or
   moving it into your existing directory and recreate the folder
   structure manually (contentmenu from folderview).

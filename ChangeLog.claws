@@ -1,6 +1,12 @@
+2002-07-19 [paul]	0.7.8claws79
+
+	* tools/Makefile.am
+	  tools/README
+		correct typos
+
 2002-07-19 [thorsten]	0.7.8claws78
 
-	* tools/calypso_import.pl	** NEW FILE **
+	* tools/calypso_convert.pl	** NEW FILE **
 	  tools/README
 	  tools/Makefile.am
 	  	script to import mbox files exported

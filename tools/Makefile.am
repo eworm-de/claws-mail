@@ -1,5 +1,5 @@
 EXTRA_TOOLS = \
-	calypso_import.pl \
+	calypso_convert.pl \
 	eud2gc.py \
 	filter_conv.pl \
 	gif2xface.pl \
