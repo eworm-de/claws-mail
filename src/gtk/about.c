@@ -162,6 +162,16 @@ static void about_create(void)
 	label = gtk_label_new(buf);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
+	g_snprintf(buf, sizeof(buf),
+		   "Compiled plugins:%s",
+#if USE_SPAMASSASSIN
+		   " SpamAssassin"
+#endif
+	"");
+
+	label = gtk_label_new(buf);
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+
 	label = gtk_label_new
 		("Copyright (C) 1999-2003 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>");
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);

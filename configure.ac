@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=10
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws79
+EXTRA_VERSION=claws80
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -388,6 +388,7 @@ AM_CONDITIONAL(BUILD_SPAMASSASSIN_PLUGIN, test x"$ac_cv_enable_spamassassin_plug
 if test x"$ac_cv_enable_spamassassin_plugin" = xyes; then
 	AC_SPAMASSASSIN
 	PLUGINS="spamassassin $PLUGINS"
+	AC_DEFINE(USE_SPAMASSASSIN, 1, Define if you use the SpamAssassin plugin)
 fi
 
 dnl ****************************

@@ -1,3 +1,8 @@
+2003-03-04 [paul]	0.8.10claws80
+
+	* src/gtk/about.c
+		list 'Compiled plugins'
+
 2003-03-03 [christoph]	0.8.10claws79
 
 	* src/news.c
