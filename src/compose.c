@@ -2181,6 +2181,7 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 	MimeInfo *child;
 	gchar *infile;
 	gchar *outfile;
+	const gchar *partname = NULL;
 
 	mimeinfo = procmime_scan_message(msginfo);
 	if (!mimeinfo) return;
@@ -2218,10 +2219,10 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 			gchar *content_type;
 
 			content_type = g_strdup_printf("%s/%s", procmime_get_type_str(child->type), child->subtype);
-			compose_attach_append
-				(compose, outfile,
-				 child->filename ? child->filename : child->name,
-				 content_type);
+			partname = procmime_mimeinfo_get_parameter(child, "name");
+			
+			compose_attach_append(compose, outfile, 
+					      partname, content_type);
 			g_free(content_type);
 		}
 

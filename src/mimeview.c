@@ -1004,11 +1004,15 @@ static void mimeview_save_as(MimeView *mimeview)
 {
 	gchar *filename;
 	gchar *defname = NULL;
+	MsgInfo *msginfo;
 	MimeInfo *partinfo;
 	gchar *res;
+	const gchar *partname = NULL;
 
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
+	if (!mimeview->messageview->msginfo) return;
+	msginfo = mimeview->messageview->msginfo;
 
 	partinfo = mimeview_get_selected_part(mimeview);
 	if (!partinfo) { 
@@ -1019,14 +1023,15 @@ static void mimeview_save_as(MimeView *mimeview)
 				    "pop_partinfo", NULL);
 	}			 
 	g_return_if_fail(partinfo != NULL);
-
-	if (partinfo->filename)
-		defname = partinfo->filename;
-	else if (partinfo->name) {
-		Xstrdup_a(defname, partinfo->name, return);
+	
+	if (partname = procmime_mimeinfo_get_parameter(partinfo, "name")) {
+		Xstrdup_a(defname, partname, return);
+		subst_for_filename(defname);
+	} else if (msginfo->subject) {
+		Xstrdup_a(defname, msginfo->subject, return);
 		subst_for_filename(defname);
 	}
-
+	
 	filename = filesel_select_file(_("Save as"), defname);
 	if (!filename) return;
 	if (is_file_exist(filename)) {

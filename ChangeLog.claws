@@ -1,3 +1,12 @@
+2003-10-29 [paul]	0.9.6claws59
+
+	* src/compose.c
+		get name of attachment(s) when re-editing, fwd'ing or
+		redirecting
+		
+	* src/mimeview.c
+		get name of attachment(s) when saving
+
 2003-10-29 [hoa]	0.9.6claws58
 
 	* src/textview.c
