@@ -6,8 +6,8 @@
 # Fred Marton <Fred.Marton@uni-bayreuth.de>
 #
 # Note: Running this with the -w flag generates the following warnings:
-# Scalar value @word[1] better written as $word[1] at /path/to/convert_mbox.pl line 44
-# Scalar value @word[0] better written as $word[1] at /path/to/convert_mbox.pl line 46
+# Scalar value @word[1] better written as $word[1] at /path/to/convert_mbox.pl line 54
+# Scalar value @word[0] better written as $word[1] at /path/to/convert_mbox.pl line 56
 # Making these changes requires further changes in the script
 # that results in much longer run-times.  
 #
@@ -52,7 +52,7 @@ while ($line = <IN>) {
    $year = $word[6];
 # ignore the MAILER-DAEMON message from pine
    if (@word[1] ne "MAILER-DAEMON") {
-# start a new file
+# start a new file, assuming $year is > 1970
       if (@word[0] eq "From" && $year > 1970) {
          $i++;
          close (OUT);
