@@ -981,7 +981,7 @@ static void prefs_receive_create(void)
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 8);
 
 	label_maxarticle = gtk_label_new
-		(_("Maximum article number to download\n"
+		(_("Maximum number of articles to download\n"
 		   "(unlimited if 0 is specified)"));
 	gtk_widget_show (label_maxarticle);
 	gtk_box_pack_start (GTK_BOX (hbox), label_maxarticle, FALSE, FALSE, 0);
@@ -2133,8 +2133,7 @@ static void prefs_interface_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox1, FALSE, FALSE, 0);
 
 	label = gtk_label_new
-		(_("(Messages will be just marked till execution\n"
-		   " if this is turned off)"));
+		(_("(Messages will be marked until execution if this is turned off)"));
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 8);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 

@@ -689,7 +689,7 @@ static void prefs_account_basic_create(void)
 	gtk_widget_set_usize (acname_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), acname_entry, TRUE, TRUE, 0);
 
-	default_chkbtn = gtk_check_button_new_with_label (_("Usually used"));
+	default_chkbtn = gtk_check_button_new_with_label (_("Set as default"));
 	gtk_widget_show (default_chkbtn);
 	gtk_box_pack_end (GTK_BOX (hbox), default_chkbtn, FALSE, FALSE, 0);
 

@@ -3,6 +3,10 @@
 	* sync with sylpheed 0.6.4cvs1
 		see ChangeLog entry 2001-10-26
 
+	* src/prefs_account.c, src/prefs_common.c,
+	  src/prefs_summary_column.c
+	  	minor improvements to the English
+
 2001-10-25 [alfons]	0.6.4claws6
 
 	* src/gtkstext.c
