@@ -1,3 +1,12 @@
+2005-03-30 [colin]	1.9.6cvs13
+
+	* src/common/socket.c
+		Force the glibc to read resolv.conf again when 
+		it has changed. Should fix issues when changing
+		networks on a laptop and not restarting sylpheed. 
+		(I'll check tomorrow if a similar hack has to be 
+		done if the route changes).
+
 2005-03-30 [paul]	1.9.6cvs12
 
 	partial sync with main:
