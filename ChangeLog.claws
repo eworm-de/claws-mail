@@ -1,3 +1,20 @@
+2001-12-07 [carsten]	0.6.5claws59
+	* src/addressbook.c
+		addressbook window gets a wmclass distinct from the main
+		sylpheed window
+	* src/compose.h
+	* src/mainwindow.[ch]
+		  forward menu item will use mode selected in prefs, forward 
+		as attatchment in menu removed (will be substituted in the
+		toolbar similar to reply buttons)
+		  create news message menu entry and news button is now 
+		sensitive to the existance of a news account
+	* src/pixmaps/stock_mail_reply_quote.xpm           ** REMOVED **
+	* src/pixmaps/stock_mail_reply_to_all_quote.xpm    ** REMOVED **
+	* src/pixmaps/stock_mail_reply_to_sender_quote.xpm ** REMOVED **
+		these are removed because the toolbar buttons don't show
+		the quoting modus any longer
+
 2001-12-07 [paul]
 
 	* tools/newscache_clean.pl	** NEW FILE **
