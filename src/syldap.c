@@ -35,7 +35,6 @@
 #include <ldap.h>
 #include <lber.h>
 #include <pthread.h>
-#include <dlfcn.h>
 
 #include "mgutils.h"
 #include "addritem.h"
@@ -1058,65 +1057,11 @@ gboolean syldap_test_connect( SyldapServer *ldapServer ) {
 	return retVal;
 }
 
-#define LDAP_LINK_LIB_NAME_1 "libldap.so"
-#define LDAP_LINK_LIB_NAME_2 "liblber.so"
-#define LDAP_LINK_LIB_NAME_3 "libresolv.so"
-#define LDAP_LINK_LIB_NAME_4 "libpthread.so"
-
 /*
 * Test whether LDAP libraries installed.
 * Return: TRUE if library available.
 */
 gboolean syldap_test_ldap_lib() {
-	void *handle, *fun;
-	
-	/* Get library */
-	handle = dlopen( LDAP_LINK_LIB_NAME_1, RTLD_LAZY );
-	if( ! handle ) {
-		return FALSE;
-	}
-
-	/* Test for symbols we need */
-	fun = dlsym( handle, "ldap_init" );
-	if( ! fun ) {
-		dlclose( handle );
-		return FALSE;
-	}
-	dlclose( handle ); handle = NULL; fun = NULL;
-
-	handle = dlopen( LDAP_LINK_LIB_NAME_2, RTLD_LAZY );
-	if( ! handle ) {
-		return FALSE;
-	}
-	fun = dlsym( handle, "ber_init" );
-	if( ! fun ) {
-		dlclose( handle );
-		return FALSE;
-	}
-	dlclose( handle ); handle = NULL; fun = NULL;
-
-	handle = dlopen( LDAP_LINK_LIB_NAME_3, RTLD_LAZY );
-	if( ! handle ) {
-		return FALSE;
-	}
-	fun = dlsym( handle, "res_query" );
-	if( ! fun ) {
-		dlclose( handle );
-		return FALSE;
-	}
-	dlclose( handle ); handle = NULL; fun = NULL;
-
-	handle = dlopen( LDAP_LINK_LIB_NAME_4, RTLD_LAZY );
-	if( ! handle ) {
-		return FALSE;
-	}
-	fun = dlsym( handle, "pthread_create" );
-	if( ! fun ) {
-		dlclose( handle );
-		return FALSE;
-	}
-	dlclose( handle ); handle = NULL; fun = NULL;
-
 	return TRUE;
 }
 

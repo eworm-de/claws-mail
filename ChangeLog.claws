@@ -1,3 +1,11 @@
+2002-02-18 [alfons]	0.7.1claws13
+
+	* src/syldap.c
+	* src/jpilot.c
+		remove references to dlfcn and explicitly loading functions
+		from dynalink libs, because libs linked anyway, and functions
+		are loaded explicitly
+
 2002-02-17 [melvin]	0.7.1claws12
 
 	* src/prefs_actions.c

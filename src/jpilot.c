@@ -35,7 +35,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <dlfcn.h>
 #include <netinet/in.h>
 
 #ifdef HAVE_LIBPISOCK_PI_ARGS_H
@@ -1622,26 +1621,6 @@ gboolean jpilot_test_custom_label( JPilotFile *pilotFile, const gchar *labelName
 * Return: TRUE if library available.
 */
 gboolean jpilot_test_pilot_lib( void ) {
-	void *handle, *fun;
-
-	handle = dlopen( PILOT_LINK_LIB_NAME, RTLD_LAZY );
-	if( ! handle ) {
-		return FALSE;
-	}
-
-	/* Test for symbols we need */
-	fun = dlsym( handle, "unpack_Address" );
-	if( ! fun ) {
-		dlclose( handle );
-		return FALSE;
-	}
-
-	fun = dlsym( handle, "unpack_AddressAppInfo" );
-	if( ! fun ) {
-		dlclose( handle );
-		return FALSE;
-	}
-	dlclose( handle );
 	return TRUE;
 }
 
