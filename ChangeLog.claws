@@ -1,3 +1,9 @@
+2002-05-10 [colin]	0.7.5claws15
+
+	* src/textview.c
+		Corrected a bug that prevented sylpheed to open
+		double-clicked URIs.
+
 2002-05-09 [paul]	0.7.5claws14
 
 	* sync with 0.7.5cvs14
