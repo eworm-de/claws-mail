@@ -1,3 +1,10 @@
+2003-01-18 [christoph]	0.8.8claws114
+
+	* src/procmsg.c
+		o add debug output when MsgInfos are really freed
+		o free GSLists in procmsg_find_children and
+		  procmsg_update_unread_children
+
 2003-01-18 [christoph]	0.8.8claws113
 
 	* src/mainwindow.c
