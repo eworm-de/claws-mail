@@ -719,8 +719,8 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		procmime_mimeinfo_free_all(mimeinfo);
 	}
 
-	if (MSG_IS_RETRCPT_PENDING(msginfo->flags))
-		return_receipt_show(messageview->noticeview, msginfo);
+	if (MSG_IS_RETRCPT_PENDING(messageview->msginfo->flags))
+		return_receipt_show(messageview->noticeview, messageview->msginfo);
 	else 
 		noticeview_hide(messageview->noticeview);
 

@@ -1,3 +1,8 @@
+2003-04-26 [paul]	0.8.11claws116
+
+	* src/messageview.c
+		fix return-receipt, make it work again
+
 2003-04-26 [paul]	0.8.11claws115
 
 	* src/mimeview.c
