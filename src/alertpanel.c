@@ -53,7 +53,8 @@ static void alertpanel_create		(const gchar	*title,
 					 const gchar	*button2_label,
 					 const gchar	*button3_label,
 					 gboolean	 can_disable,
-					 GtkWidget	*custom_widget);
+					 GtkWidget	*custom_widget,
+					 gint		 alert_type);
 
 static void alertpanel_button_toggled	(GtkToggleButton	*button,
 					 gpointer		 data);
@@ -78,7 +79,7 @@ AlertValue alertpanel(const gchar *title,
 		alertpanel_is_open = TRUE;
 
 	alertpanel_create(title, message, button1_label, button2_label,
-			  button3_label, FALSE, NULL);
+			  button3_label, FALSE, NULL, ALERT_QUESTION);
 	alertpanel_show();
 
 	debug_print("return value = %d\n", value);
@@ -97,32 +98,35 @@ AlertValue alertpanel_with_widget(const gchar *title,
 	else
 		alertpanel_is_open = TRUE;
 	alertpanel_create(title, message, button1_label, button2_label, 
-			  button3_label, FALSE, widget);
+			  button3_label, FALSE, widget, ALERT_QUESTION);
 	alertpanel_show();
 
 	debug_print("return value = %d\n", value);
 	return value;
 }
-void alertpanel_message(const gchar *title, const gchar *message)
+
+static void alertpanel_message(const gchar *title, const gchar *message, gint type)
 {
 	if (alertpanel_is_open)
 		return;
 	else
 		alertpanel_is_open = TRUE;
 
-	alertpanel_create(title, message, NULL, NULL, NULL, FALSE, NULL);
+	alertpanel_create(title, message, NULL, NULL, NULL, FALSE, NULL, type);
 	alertpanel_show();
 }
 
 AlertValue alertpanel_message_with_disable(const gchar *title,
-					   const gchar *message)
+					   const gchar *message,
+					   gint alert_type)
 {
 	if (alertpanel_is_open)
 		return 0;
 	else
 		alertpanel_is_open = TRUE;
 
-	alertpanel_create(title, message, NULL, NULL, NULL, TRUE, NULL);
+	alertpanel_create(title, message, NULL, NULL, NULL, TRUE, NULL,
+			  alert_type);
 	alertpanel_show();
 
 	return value;
@@ -138,7 +142,7 @@ void alertpanel_notice(const gchar *format, ...)
 	va_end(args);
 	strretchomp(buf);
 
-	alertpanel_message(_("Notice"), buf);
+	alertpanel_message(_("Notice"), buf, ALERT_NOTICE);
 }
 
 void alertpanel_warning(const gchar *format, ...)
@@ -151,7 +155,7 @@ void alertpanel_warning(const gchar *format, ...)
 	va_end(args);
 	strretchomp(buf);
 
-	alertpanel_message(_("Warning"), buf);
+	alertpanel_message(_("Warning"), buf, ALERT_WARNING);
 }
 
 void alertpanel_error(const gchar *format, ...)
@@ -164,7 +168,7 @@ void alertpanel_error(const gchar *format, ...)
 	va_end(args);
 	strretchomp(buf);
 
-	alertpanel_message(_("Error"), buf);
+	alertpanel_message(_("Error"), buf, ALERT_ERROR);
 }
 
 /*!
@@ -218,7 +222,8 @@ static void alertpanel_create(const gchar *title,
 			      const gchar *button2_label,
 			      const gchar *button3_label,
 			      gboolean	   can_disable,
-			      GtkWidget *custom_widget)
+			      GtkWidget   *custom_widget,
+			      gint	   alert_type)
 {
 	static PangoFontDescription *font_desc;
 	GtkWidget *label;
@@ -235,6 +240,10 @@ static void alertpanel_create(const gchar *title,
 	GtkWidget *icon;
 	const gchar *label2;
 	const gchar *label3;
+	gchar *icon_desc[] = {	GTK_STOCK_DIALOG_INFO,
+				GTK_STOCK_DIALOG_QUESTION,
+				GTK_STOCK_DIALOG_WARNING,
+				GTK_STOCK_DIALOG_ERROR };
 
 	debug_print("Creating alert panel dialog...\n");
 
@@ -254,7 +263,10 @@ static void alertpanel_create(const gchar *title,
 
 	/* for title label */
 	w_hbox = gtk_hbox_new(FALSE, 0);
-	icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_WARNING,
+	
+	if (alert_type < 0 || alert_type > 3)
+		alert_type = 0;
+	icon = gtk_image_new_from_stock(icon_desc[alert_type],
         				GTK_ICON_SIZE_DIALOG); 
 	gtk_box_pack_start(GTK_BOX(w_hbox), icon, FALSE, FALSE, 16);
 	hbox = gtk_hbox_new(FALSE, 0);

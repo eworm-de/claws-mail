@@ -1,3 +1,16 @@
+2004-07-27 [colin]	0.9.12cvs35.2
+
+	* src/mimeview.c
+		Fix width a bit (by Paul)
+	* src/alertpanel.c
+	* src/alertpanel.h
+		Specialize icons, make alertpanel_message()
+		private
+	* src/message_search.c
+	* src/sgpgme.c
+	* src/summary_search.c
+		Suit alertpanel changes
+
 2004-07-27 [colin]	0.9.12cvs35.1
 
 	* src/alertpanel.c

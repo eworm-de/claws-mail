@@ -1697,21 +1697,23 @@ static void icon_scroll_size_allocate_cb(GtkWidget *widget,
 static void icon_list_create(MimeView *mimeview, MimeInfo *mimeinfo)
 {
 	GtkRequisition size;
-	gint           width;
+
 	g_return_if_fail(mimeinfo != NULL);
 
 	while (mimeinfo != NULL) {
 		if (mimeinfo->type != MIMETYPE_MULTIPART)
 			icon_list_append_icon(mimeview, mimeinfo);
 		if (mimeinfo->node->children != NULL)
-			icon_list_create(mimeview, (MimeInfo *) mimeinfo->node->children->data);
-		mimeinfo = mimeinfo->node->next != NULL ? (MimeInfo *) mimeinfo->node->next->data : NULL;
+			icon_list_create(mimeview, 
+				(MimeInfo *) mimeinfo->node->children->data);
+		mimeinfo = mimeinfo->node->next != NULL 
+			 ? (MimeInfo *) mimeinfo->node->next->data 
+			 : NULL;
 	}
 	gtk_widget_size_request(mimeview->icon_vbox, &size);
-	width = size.width + 4;
-	if (width > mimeview->icon_mainbox->requisition.width) {
+	if (size.width > mimeview->icon_mainbox->requisition.width) {
 		gtk_widget_set_size_request(mimeview->icon_mainbox, 
-					    width, -1);
+					    size.width, -1);
 	}
 
 }
