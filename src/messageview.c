@@ -106,6 +106,7 @@ MessageView *messageview_create(void)
 	messageview->textview   = textview;
 	messageview->imageview  = imageview;
 	messageview->mimeview   = mimeview;
+	messageview->plugview   = gtk_socket_new();
 
 	return messageview;
 }
@@ -423,8 +424,8 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	textview_set_all_headers(messageview->textview, all_headers);
 	textview_set_all_headers(messageview->mimeview->textview, all_headers);
 
-	if (mimeinfo->mime_type != MIME_TEXT &&
-	    mimeinfo->mime_type != MIME_TEXT_HTML) {
+	if (mimeinfo->mime_type != MIME_TEXT /*&&
+	    mimeinfo->mime_type != MIME_TEXT_HTML*/) {
 		messageview_change_view_type(messageview, MVIEW_MIME);
 		mimeview_show_message(messageview->mimeview, mimeinfo, file);
 	} else {
@@ -441,28 +442,49 @@ static void messageview_change_view_type(MessageView *messageview,
 {
 	TextView *textview = messageview->textview;
 	MimeView *mimeview = messageview->mimeview;
+	GtkWidget *plugview = messageview->plugview;
 
 	if (messageview->type == type) return;
 
 	if (type == MVIEW_MIME) {
-		gtkut_container_remove
-			(GTK_CONTAINER(GTK_WIDGET_PTR(messageview)),
-			 GTK_WIDGET_PTR(textview));
+		if (messageview->type == MVIEW_TEXT)
+			gtkut_container_remove
+				(GTK_CONTAINER(GTK_WIDGET_PTR(messageview)),
+				 GTK_WIDGET_PTR(textview));
+		else if (messageview->type == MVIEW_PLUG)
+			gtkut_container_remove
+				(GTK_CONTAINER(GTK_WIDGET_PTR(messageview)),
+				 GTK_WIDGET_PTR(plugview));
 		gtk_box_pack_start(GTK_BOX(messageview->vbox),
 				   GTK_WIDGET_PTR(mimeview), TRUE, TRUE, 0);
 		gtk_container_add(GTK_CONTAINER(mimeview->vbox),
 				  GTK_WIDGET_PTR(textview));
 	} else if (type == MVIEW_TEXT) {
-		gtkut_container_remove
-			(GTK_CONTAINER(GTK_WIDGET_PTR(messageview)),
-			 GTK_WIDGET_PTR(mimeview));
-
+		if (messageview->type == MVIEW_MIME)
+			gtkut_container_remove
+				(GTK_CONTAINER(GTK_WIDGET_PTR(messageview)),
+				 GTK_WIDGET_PTR(mimeview));
+		else if (messageview->type == MVIEW_PLUG)
+			gtkut_container_remove
+				(GTK_CONTAINER(GTK_WIDGET_PTR(messageview)),
+				 GTK_WIDGET_PTR(plugview));
 		if (mimeview->vbox == GTK_WIDGET_PTR(textview)->parent)
 			gtkut_container_remove(GTK_CONTAINER(mimeview->vbox),
 			 		       GTK_WIDGET_PTR(textview));
 
 		gtk_box_pack_start(GTK_BOX(messageview->vbox),
 				   GTK_WIDGET_PTR(textview), TRUE, TRUE, 0);
+	} else if (type == MVIEW_PLUG) {
+		if (messageview->type == MVIEW_MIME)
+			gtkut_container_remove
+				(GTK_CONTAINER(GTK_WIDGET_PTR(messageview)),
+				 GTK_WIDGET_PTR(mimeview));
+		else if (messageview->type == MVIEW_TEXT)
+			gtkut_container_remove
+				(GTK_CONTAINER(GTK_WIDGET_PTR(messageview)),
+				 GTK_WIDGET_PTR(textview));
+		gtk_box_pack_start(GTK_BOX(messageview->vbox),
+				   GTK_WIDGET_PTR(plugview), TRUE, TRUE, 0);
 	} else
 		return;
 
@@ -487,6 +509,7 @@ void messageview_destroy(MessageView *messageview)
 	textview_destroy(messageview->textview);
 	imageview_destroy(messageview->imageview);
 	mimeview_destroy(messageview->mimeview);
+	gtk_widget_destroy(messageview->plugview);
 
 	g_free(messageview);
 
@@ -504,43 +527,39 @@ void messageview_set_font(MessageView *messageview)
 	textview_set_font(messageview->textview, NULL);
 }
 
+TextView *messageview_get_current_textview(MessageView *messageview)
+{
+	TextView *text = NULL;
+
+	if (messageview->type == MVIEW_TEXT)
+		text = messageview->textview;
+	else if (messageview->type == MVIEW_MIME) {
+		if (gtk_notebook_get_current_page
+			(GTK_NOTEBOOK(messageview->mimeview->notebook)) == 0)
+			text = messageview->textview;
+		else if (messageview->mimeview->type == MIMEVIEW_TEXT)
+			text = messageview->mimeview->textview;
+	}
+
+	return text;
+}
+
 void messageview_copy_clipboard(MessageView *messageview)
 {
-	gint displaytype = /* force MVIEV_TEXT on first page */
-		((messageview->type == MVIEW_MIME)
-		&& (gtk_notebook_get_current_page(GTK_NOTEBOOK(
-				messageview->mimeview->notebook)) > 0))
-		? MVIEW_MIME
-		: MVIEW_TEXT;
+	TextView *text;
 
-	switch (displaytype) {
-	case MVIEW_TEXT:
-		gtk_editable_copy_clipboard(GTK_EDITABLE(messageview->textview->text));
-		break;
-	case MVIEW_MIME:
-		if (messageview->mimeview->type == MIMEVIEW_TEXT)
-			gtk_editable_copy_clipboard(GTK_EDITABLE(messageview->mimeview->textview->text));
-	default:
-		break;
-	}
+	text = messageview_get_current_textview(messageview);
+	if (text)
+		gtk_editable_copy_clipboard(GTK_EDITABLE(text->text));
 }
 
 void messageview_select_all(MessageView *messageview)
 {
-	GtkWidget *text = NULL;
+	TextView *text;
 
-	if (messageview->type == MVIEW_TEXT)
-		text = messageview->textview->text;
-	else if (messageview->type == MVIEW_MIME) {
-		if (gtk_notebook_get_current_page
-			(GTK_NOTEBOOK(messageview->mimeview->notebook)) == 0)
-			text = messageview->textview->text;
-		else if (messageview->mimeview->type == MIMEVIEW_TEXT)
-			text = messageview->mimeview->textview->text;
-	}
-
+	text = messageview_get_current_textview(messageview);
 	if (text)
-		gtk_editable_select_region(GTK_EDITABLE(text), 0, -1);
+		gtk_editable_select_region(GTK_EDITABLE(text->text), 0, -1);
 }
 
 void messageview_set_position(MessageView *messageview, gint pos)
@@ -562,11 +581,6 @@ gboolean messageview_search_string_backward(MessageView *messageview,
 	return textview_search_string_backward(messageview->textview,
 					       str, case_sens);
 	return FALSE;
-}
-
-GtkWidget *messageview_get_text_widget(MessageView *messageview)
-{
-	return messageview->textview->text;
 }
 
 gboolean messageview_is_visible(MessageView *messageview)

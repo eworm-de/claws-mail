@@ -62,8 +62,8 @@ typedef enum
 	COMPOSE_FORWARD,
 	COMPOSE_FORWARD_AS_ATTACH,
 	COMPOSE_FORWARD_INLINE,
-	COMPOSE_REDIRECT,
 	COMPOSE_NEW,
+	COMPOSE_REDIRECT,
 	COMPOSE_REEDIT
 } ComposeMode;
 
@@ -176,6 +176,7 @@ struct _Compose
 	gboolean modified;
 
 	gboolean return_receipt;
+	gboolean paste_as_quotation;
 
 	GSList *to_list;
 	GSList *newsgroup_list;

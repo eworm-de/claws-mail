@@ -126,6 +126,8 @@ struct _PrefsCommon
 	gboolean use_addr_book;
 	gchar *date_format;
 
+	gint folderview_vscrollbar_policy;
+
 	/* Filtering */
 	GSList *fltlist;
 

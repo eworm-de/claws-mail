@@ -1,3 +1,22 @@
+2002-06-20
+
+	* src/folderview.c
+	  src/prefs_common.[ch]: added the hidden option to specify the
+	  policy of the vertical scrollbar on folder view.
+
+2002-06-19
+
+	* src/messageview.[ch]:
+	  messageview_copy_clipboard(): fixed a bug that couldn't copy text
+	  on MIME mode.
+	  messageview_get_current_textview(): new.
+	  messageview_get_text_widget(): removed.
+	* src/quote_fmt_parse.y: quote message even if msginfo is empty.
+	* src/compose.[ch]: implemented the "Paste as quotation" feature.
+	  text_inserted(): new callback for "insert_text" signal.
+	  Add quote mark to the pasted text if Compose::paste_as_quotation
+	  is TRUE.
+
 2002-06-19
 
 	* src/compose.c: if the Content-Type of a file is text/*, check

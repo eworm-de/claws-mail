@@ -508,10 +508,13 @@ static PrefParam param[] = {
 
 	{"enable_thread", "TRUE", &prefs_common.enable_thread, P_BOOL,
 	 NULL, NULL, NULL},
-	
 	{"toolbar_style", "3", &prefs_common.toolbar_style, P_ENUM,
 	 NULL, NULL, NULL},
 	{"show_statusbar", "TRUE", &prefs_common.show_statusbar, P_BOOL,
+	 NULL, NULL, NULL},
+
+	{"folderview_vscrollbar_policy", "0",
+	 &prefs_common.folderview_vscrollbar_policy, P_ENUM,
 	 NULL, NULL, NULL},
 
 	{"summary_col_show_mark", "TRUE",
