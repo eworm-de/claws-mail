@@ -520,10 +520,12 @@ void undo_insert_text_cb(GtkEditable *editable, gchar *new_text,
 
 	if (prefs_common.undolevels <= 0) return;
 
-	Xstrndup_a(text_to_insert, new_text, new_text_length, return);
 #ifdef WIN32
-	wlen = new_text_length;
+	text_to_insert=g_strndup(new_text,new_text_length);
+	locale_from_utf8(&text_to_insert);
+	wlen = strlen(text_to_insert);
 #else
+	Xstrndup_a(text_to_insert, new_text, new_text_length, return);
 	if (MB_CUR_MAX > 1) {
 		wchar_t *wstr;
 
@@ -549,6 +551,9 @@ void undo_delete_text_cb(GtkEditable *editable, gint start_pos,
 
 	text_to_delete = gtk_editable_get_chars(GTK_EDITABLE(editable),
 						start_pos, end_pos);
+#ifdef WIN32
+	locale_from_utf8(&text_to_delete);
+#endif
 	undo_add(text_to_delete, start_pos, end_pos, UNDO_ACTION_DELETE,
 		 undostruct);
 	g_free(text_to_delete);

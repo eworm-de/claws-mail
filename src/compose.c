@@ -973,9 +973,21 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		else
 			qmark = "> ";
 
+#ifdef WIN32
+	{
+	  	gchar *p_body = g_strdup(body);
+		locale_from_utf8(&p_body);
+		
+		quote_str = compose_quote_fmt(compose, msginfo,
+					      prefs_common.quotefmt,
+					      qmark, p_body);
+		g_free(p_body);
+	}
+#else
 		quote_str = compose_quote_fmt(compose, msginfo,
 					      prefs_common.quotefmt,
 					      qmark, body);
+#endif
 	}
 
 	if (prefs_common.auto_sig)
