@@ -3383,7 +3383,7 @@ static void addressbook_ldap_show_results( LdapServer *server ) {
 }
 
 static gint _idleID_ = 0;
-static gchar *_tempMessage_ = "Busy searching LDAP...";
+static gchar *_tempMessage_ = N_("Busy searching LDAP...");
 
 /*
  * LDAP idle function. This function is called during UI idle time while
@@ -3435,7 +3435,7 @@ static void addressbook_ldap_lookup( AdapterDSource *ads, gchar *sLookup ) {
 		addressbook_status_show( _tempMessage_ );
 	}
 }
-#endif
+#endif /* USE_LDAP */
 
 /*
  * Lookup button handler.
