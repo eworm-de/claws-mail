@@ -898,6 +898,7 @@ gboolean messageview_search_string_backward(MessageView *messageview,
 	TextView *text;
 
 	text = messageview_get_current_textview(messageview);
+	if (text)	
 		return textview_search_string_backward(text,
 						       str, case_sens);
 	return FALSE;
