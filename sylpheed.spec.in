@@ -54,14 +54,14 @@ CFLAGS="$RPM_OPT_FLAGS" ./configure \
                 --enable-ldap \
                 --enable-ipv6 \
                 --enable-gpgme \
-                --enable-ssl \
+                --enable-openssl \
                 --enable-jpilot \
                 --enable-aspell
 make
 
 %install
 [ "$RPM_BUILD_ROOT" != "/" ] && [ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT;
-make prefix=${RPM_BUILD_ROOT}%{prefix} install
+make DESTDIR=${RPM_BUILD_ROOT} install
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}

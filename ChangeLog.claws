@@ -1,3 +1,55 @@
+2003-02-12 [paul]	0.8.10claws
+
+	* 0.8.10claws released
+
+2003-02-12 [paul]	0.8.9claws56
+
+	* po/bg.po
+	  po/es.po
+	  po/it.po
+	  po/ru.po
+	  po/sr.po
+	  	updated translations by George Danchev, Ricardo Mones Lastra,
+		Alessandro Maestri, Ruslan N. Balkin and Urke MMI respectively
+		
+	* sylpheed.spec.in
+		Allow the building of RPMs by a regular user. Submitted
+		by Sergei Astanin
+
+2003-02-11 [alfons]	0.8.9claws55
+
+	* src/colorlabel.c
+		don't use pixmaps for label color rect but draw rectangles
+		so we can respect the color map of palette based visuals
+		(fixes the long time crashes on Suns - thanks to Andreas
+		Engel and Steve O'Hara-Smith for testing)
+
+2003-02-11 [christoph]	0.8.9claws54
+
+	* src/matcher_parser_parse.y
+		correct bug where filering rules of not existing folders in
+		matcherrc were added to global filtering
+		
+	(closes Debian Bug #180253 - Directory's filter-rules are merged with
+	 main filter-rules after removing directory
+	 http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=180253)
+	
+2003-02-11 [paul]	0.8.9claws53
+
+	* sync with 0.8.10cvs7
+		see ChangeLog 2003-02-09
+
+2003-02-11 [melvin]	0.8.9claws52
+
+	* po/fr.po
+		Updated French tranlsations
+
+2003-02-10 [paul]	0.8.9claws51
+
+	* sylpheed.spec.in
+		correct --enable-openssl
+		Fix submitted by Sergei Astanin <asita@users.sourceforge.net>
+
 2003-02-09 [martin]	0.8.9claws50
 
 	* src/prefs_matcher.c

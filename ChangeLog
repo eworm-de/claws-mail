@@ -1,3 +1,10 @@
+2003-02-09
+
+	* src/codeconv.c:
+	  LBREAK_IF_REQUIRED(): don't break lines before first word (fixes
+	  X-Face header problem).
+	  conv_encode_header(): allow up to 97 characters for one word.
+
 2003-02-07
 
 	* src/filter.c: filter_match_condition(): fixed the bug that
