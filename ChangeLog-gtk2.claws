@@ -1,3 +1,8 @@
+2005-02-01 [colin]	1.0.0cvs24.3
+
+	* src/common/xml.c
+		Write file as advertised (UTF-8)
+
 2005-02-01 [paul]	1.0.0cvs24.2
 
 	* src/addrbook.c

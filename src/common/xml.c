@@ -536,11 +536,10 @@ gint xml_unescape_str(gchar *str)
 	return 0;
 }
 
-#warning FIXME_GTK2
 gint xml_file_put_escape_str(FILE *fp, const gchar *str)
 {
-	const gchar *src_codeset = CS_UTF_8;
-	const gchar *dest_codeset = conv_get_locale_charset_str();
+	const gchar *src_codeset = CS_INTERNAL;
+	const gchar *dest_codeset = CS_INTERNAL;
 	gchar *tmpstr = NULL;
 	const gchar *p;
 
