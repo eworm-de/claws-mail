@@ -4907,7 +4907,7 @@ static void template_apply_cb(gchar *s, gpointer data)
 
 	if(!s) return;
 	
-	if(compose->replyinfo=NULL) {
+	if(compose->replyinfo == NULL) {
 	        gtk_stext_freeze(text);
 		gtk_stext_set_point(text, 0);
 		gtk_stext_forward_delete(text, gtk_stext_get_length(text));
