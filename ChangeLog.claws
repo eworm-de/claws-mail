@@ -1,3 +1,13 @@
+2004-06-02 [paul]	0.9.8claws63
+
+	* po/es.po
+	  po/pl.po
+	  po/sk.po
+	  sr.po
+	  	update Spanish, Polish, Slovak, and Serbian translations.
+		submitted by Ricardo Mones Lastra, Emil Nowak, Andrej Kacian,
+		and Urke MMI
+
 2004-04-02 [alfons]	0.9.8claws62
 
 	* src/compose.c
