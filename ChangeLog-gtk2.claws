@@ -1,3 +1,8 @@
+2005-02-16 [colin]	1.0.1cvs11.2
+
+	* src/messageview.c
+		Fix messageview_select_all
+
 2005-02-16 [colin]	1.0.1cvs11.1
 
 	* src/mh.c

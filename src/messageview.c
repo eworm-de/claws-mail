@@ -914,10 +914,28 @@ void messageview_copy_clipboard(MessageView *messageview)
 void messageview_select_all(MessageView *messageview)
 {
 	TextView *text;
+	GtkTextView *edit = NULL;
+	GtkTextBuffer *textbuf;
+	gint body_pos = 0;
+	GtkTextIter start, end;
+	
+	g_return_if_fail(messageview != NULL);
 
 	text = messageview_get_current_textview(messageview);
-	if (text)
-		gtk_editable_select_region(GTK_EDITABLE(text->text), 0, -1);
+	g_return_if_fail(text != NULL);
+
+	edit = GTK_TEXT_VIEW(text->text);
+	g_return_if_fail(edit != NULL);
+
+	textbuf = gtk_text_view_get_buffer(edit);
+	g_return_if_fail(textbuf != NULL);
+
+	gtk_text_buffer_get_bounds(textbuf, &start, &end);
+	
+	gtk_text_buffer_move_mark_by_name(textbuf, 
+		"selection_bound", &start);
+	gtk_text_buffer_move_mark_by_name(textbuf, 
+		"insert", &end);
 }
 
 void messageview_set_position(MessageView *messageview, gint pos)
