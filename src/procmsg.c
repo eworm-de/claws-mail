@@ -52,7 +52,6 @@ struct _FlagInfo
 
 static GHashTable *procmsg_read_mark_file	(const gchar	*folder);
 void   procmsg_msginfo_write_flags		(MsgInfo 	*msginfo);
-static void procmsg_update_unread_children (MsgInfo *info, gboolean newly_marked);
 
 GHashTable *procmsg_msg_hash_table_create(GSList *mlist)
 {
@@ -1735,7 +1734,7 @@ GSList *procmsg_find_children (MsgInfo *info)
 	return children;
 }
 
-static void procmsg_update_unread_children(MsgInfo *info, gboolean newly_marked)
+void procmsg_update_unread_children(MsgInfo *info, gboolean newly_marked)
 {
 	GSList *children = procmsg_find_children(info);
 	GSList *cur;

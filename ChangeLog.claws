@@ -1,3 +1,11 @@
+2003-01-19 [christoph]	0.8.8claws120
+
+	* src/summaryview.c
+	* src/procmsg.[ch]
+		fix wrong usage of procmsg_find_children in summaryview
+		by using procmsg_update_unread_children instead of
+		summaryview_update_unread_children
+
 2003-01-19 [christoph]	0.8.8claws118
 
 	* src/procmsg.c

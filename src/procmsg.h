@@ -294,6 +294,8 @@ gboolean procmsg_msg_has_flagged_parent	(MsgInfo 	*info,
 					 MsgPermFlags    perm_flags);
 gboolean procmsg_msg_has_marked_parent	(MsgInfo	*info);
 GSList *procmsg_find_children		(MsgInfo	*info);
+void procmsg_update_unread_children	(MsgInfo 	*info,
+					 gboolean 	 newly_marked);
 void procmsg_msginfo_set_to_folder	(MsgInfo 	*msginfo,
 					 FolderItem 	*to_folder);
 #endif /* __PROCMSG_H__ */
