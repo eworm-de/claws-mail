@@ -1,3 +1,8 @@
+2002-07-22 [melvin]	0.7.8claws94
+
+	* po/fr.po
+		Updated French translations.
+
 2002-07-22 [christoph]	0.7.8claws93
 
 	* src/matcher.c
