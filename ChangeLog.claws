@@ -1,4 +1,9 @@
-2003-09-03 [christoph]	0.9.4claws64
+2003-09-06 [christoph]	0.9.4claws65
+
+	* src/plugins/clamav/clamav_plugin.c
+		fix copy & paste bug
+
+2003-09-05 [christoph]	0.9.4claws64
 
 	* src/folder.c
 	* src/messageview.[ch]
@@ -9,20 +14,20 @@
 		work even if messages are deleted in MainWindow or by
 		processing.
 
-2003-09-03 [alfons]	0.9.4claws63
+2003-09-05 [alfons]	0.9.4claws63
 
 	* src/messageview.c
 		deleting a message in a message view frees its msginfo, make 
 		messageview_update_all() aware of that (should fix bug #293,
 		"deleting message caused crash")
 
-2003-09-03 [melvin]	0.9.4claws62
+2003-09-05 [melvin]	0.9.4claws62
 
 	* src/action.c
 		Improve synchronous action exit code (fixes 
 		a ~5 seconds delay after action exit on RedHat 9)
 
-2003-09-03 [christoph]	0.9.4claws61
+2003-09-04 [christoph]	0.9.4claws61
 
 	* src/compose.c
 	* src/rfc2015.c
@@ -30,7 +35,7 @@
 		add util function to create mime boundary and use it
 		in compose and gpg code
 
-2003-09-03 [alfons]	0.9.4claws60
+2003-09-04 [alfons]	0.9.4claws60
 
 	* src/folder.c
 		source folder item's GNode should already have been freed in 

@@ -64,7 +64,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	MailFilteringData *mail_filtering_data = (MailFilteringData *) source;
 	MsgInfo *msginfo = mail_filtering_data->msginfo;
 	gboolean is_infected = FALSE;
-	FILE  *fp;
 	MimeInfo *mimeinfo;
 	MimeInfo *child;
 	gchar *infile;
@@ -80,11 +79,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	if (!config.clamav_enable)
 		return FALSE;
 
-	fp = procmsg_open_message(msginfo);
-	if (fp == NULL) {
-		debug_print("failed to open message file");
-	} 
-	
 	mimeinfo = procmime_scan_message(msginfo);
 	if (!mimeinfo) return FALSE;
 
