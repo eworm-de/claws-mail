@@ -38,8 +38,6 @@
 #endif
 
 #include "intl.h"
-#include "main.h"
-#include "headerview.h"
 #include "prefs_common.h"
 #include "gtkutils.h"
 #include "utils.h"

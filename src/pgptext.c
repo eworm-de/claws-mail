@@ -34,17 +34,8 @@
 #include <gpgme.h>
 
 #include "intl.h"
-#include "procmime.h"
-#include "procheader.h"
-#include "base64.h"
-#include "uuencode.h"
-#include "unmime.h"
-#include "codeconv.h"
 #include "utils.h"
-#include "prefs_common.h"
 #include "passphrase.h"
-#include "select-keys.h"
-#include "sigstatus.h"
 #include "rfc2015.h"
 
 #include "pgptext.h"

@@ -1,3 +1,26 @@
+2002-12-08 [paul]	0.8.6claws78
+
+	* src/about.c
+	* src/addrcache.c
+	* src/addrclip.c
+	* src/addr_compl.c
+	* src/addrselect.c
+	* src/codeconv.c
+	* src/colorlabel.c
+	* src/enriched.c
+	* src/esmtp.c
+	* src/exporthtml.c
+	* src/headerview.c
+	* src/imageview.c
+	* src/manual.c
+	* src/noticeview.c
+	* src/pgptext.c
+	* src/scoring.c
+	* src/sourcewindow.c
+	* src/stringtable.c
+	* src/undo.c
+	  	clean up: remove unneccesary includes
+
 2002-12-08 [christoph]	0.8.6claws77
 
 	* src/folderview.c

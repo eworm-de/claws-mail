@@ -41,7 +41,6 @@
 
 #include "intl.h"
 #include "about.h"
-#include "gtkutils.h"
 #include "stock_pixmap.h"
 #include "prefs_common.h"
 #include "utils.h"

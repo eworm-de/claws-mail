@@ -34,7 +34,6 @@
 #endif /* HAVE_GDK_PIXBUF */
 
 #include "intl.h"
-#include "mainwindow.h"
 #include "prefs_common.h"
 #include "procmime.h"
 #include "imageview.h"

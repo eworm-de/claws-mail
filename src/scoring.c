@@ -6,11 +6,7 @@
 #include "defs.h"
 #include "intl.h"
 #include "utils.h"
-#include "procheader.h"
-#include "matcher.h"
 #include "scoring.h"
-#include "prefs.h"
-#include "folder.h"
 
 #define PREFSBUFSIZE		1024
 

@@ -38,7 +38,6 @@
 
 #include "intl.h"
 #include "colorlabel.h"
-#include "gtkutils.h"
 #include "utils.h"
 
 static gchar *labels[] = {

@@ -26,7 +26,6 @@
 #include <sys/stat.h>
 
 #include "mgutils.h"
-#include "addritem.h"
 #include "addrcache.h"
 
 #define ID_TIME_OFFSET             998000000

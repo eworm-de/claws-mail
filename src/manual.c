@@ -29,7 +29,6 @@
 
 #include "prefs_common.h"
 #include "manual.h"
-#include "utils.h"
 
 static gchar *sylpheeddoc_manuals[] =
 {

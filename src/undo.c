@@ -30,7 +30,6 @@
 #include <stdlib.h> /* for mbstowcs */
 
 #include "undo.h"
-#include "gtkstext.h"
 #include "utils.h"
 #include "prefs_common.h"
 

@@ -32,7 +32,6 @@
 
 #include "intl.h"
 #include "sourcewindow.h"
-#include "procmsg.h"
 #include "utils.h"
 #include "gtkutils.h"
 #include "prefs_common.h"
