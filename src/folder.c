@@ -1675,13 +1675,15 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 	ret = folder->remove_msg(folder, item, num);
 
 	msginfo = msgcache_get_msg(item->cache, num);
-	if(MSG_IS_NEW(msginfo->flags))
-		item->new--;
-	if(MSG_IS_UNREAD(msginfo->flags))
-		item->unread--;
+	if(msginfo != NULL) {
+		if(MSG_IS_NEW(msginfo->flags))
+			item->new--;
+		if(MSG_IS_UNREAD(msginfo->flags))
+			item->unread--;
+		procmsg_msginfo_free(msginfo);
+		msgcache_remove_msg(item->cache, num);
+	}
 	item->total--;
-	procmsg_msginfo_free(msginfo);
-	msgcache_remove_msg(item->cache, num);
 
 	return ret;
 }

@@ -1,3 +1,13 @@
+2002-07-31 [christoph]	0.8.1claws4
+
+	* src/folder.c
+		check if folder_item_get_msginfo in
+		folder_item_remove_msg returned NULL
+	* src/imap.c
+		better clear the uid cache in the
+		uid validity check function and delete
+		cached messages
+
 2002-07-31 [paul]	0.8.1claws3
 
 	* man/sylpheed.1

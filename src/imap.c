@@ -1664,7 +1664,7 @@ static void imap_delete_all_cached_messages(FolderItem *item)
 	g_return_if_fail(item->folder != NULL);
 	g_return_if_fail(item->folder->type == F_IMAP);
 
-	debug_print(_("Deleting all cached messages... "));
+	debug_print(_("Deleting all cached messages...\n"));
 
 	dir = folder_item_get_path(item);
 	remove_all_numbered_files(dir);
@@ -3119,14 +3119,6 @@ GSList *imap_get_num_list(Folder *folder, FolderItem *_item)
 	if (ok != IMAP_SUCCESS)
 		return NULL;
 
-	if(item->item.mtime != uid_validity) {
-		item->lastuid = 0;
-		g_slist_free(item->uid_list);
-		item->uid_list = NULL;
-		
-		item->item.mtime = uid_validity;
-	}
-	
 	argbuf = g_ptr_array_new();
 	if(item->lastuid) {
 		cmdbuf = g_strdup_printf("UID FETCH %d:* (UID)", (item->lastuid + 1));
@@ -3256,5 +3248,17 @@ gboolean imap_check_msgnum_validity(Folder *folder, FolderItem *_item)
 	if (ok != IMAP_SUCCESS)
 		return FALSE;
 
-	return item->item.mtime == uid_validity;
+	if(item->item.mtime == uid_validity)
+		return TRUE;
+
+	debug_print("Freeing imap uid cache");
+	item->lastuid = 0;
+	g_slist_free(item->uid_list);
+	item->uid_list = NULL;
+		
+	item->item.mtime = uid_validity;
+
+	imap_delete_all_cached_messages((FolderItem *)item);
+
+	return FALSE;
 }
