@@ -1,3 +1,16 @@
+2002-06-29 [paul]	0.7.8claws34
+
+	* configure.in
+	  Makefile.am
+	  man/Makefile.am	** NEW FILE **
+	  man/sylpheed.1.gz	** NEW FILE **
+	  	add Sylpheed man page
+
+2002-06-29 [paul]	0.7.8claws33
+
+	* po/pt_BR.po
+		updated by Fabio Junior Beneditto
+
 2002-06-28 [jens]	0.7.8claws32
 
 	* po/de.po
