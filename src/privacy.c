@@ -190,7 +190,38 @@ gboolean privacy_mimeinfo_is_encrypted(MimeInfo *mimeinfo)
 	return FALSE;
 }
 
+static gint decrypt(MimeInfo *mimeinfo, PrivacySystem *system)
+{
+	MimeInfo *decryptedinfo, *parentinfo;
+	gint childnumber;
+	
+	g_return_val_if_fail(system->decrypt != NULL, -1);
+	
+	decryptedinfo = system->decrypt(mimeinfo);
+	if (decryptedinfo == NULL)
+		return -1;
+
+	parentinfo = procmime_mimeinfo_parent(mimeinfo);
+	childnumber = g_node_child_index(parentinfo->node, mimeinfo);
+	
+	procmime_mimeinfo_free_all(mimeinfo);
+
+	g_node_insert(parentinfo->node, childnumber, decryptedinfo->node);
+
+	return 0;
+}
+
 gint privacy_mimeinfo_decrypt(MimeInfo *mimeinfo)
 {
+	GSList *cur;
+	g_return_val_if_fail(mimeinfo != NULL, FALSE);
+
+	for(cur = systems; cur != NULL; cur = g_slist_next(cur)) {
+		PrivacySystem *system = (PrivacySystem *) cur->data;
+
+		if(system->is_encrypted != NULL && system->is_encrypted(mimeinfo))
+			return decrypt(mimeinfo, system);
+	}
+
 	return -1;
 }

@@ -59,7 +59,7 @@ MimeInfo *procmime_mimeinfo_new(void)
 
 	mimeinfo->parameters = g_hash_table_new(g_str_hash, g_str_equal);
 	mimeinfo->node       = g_node_new(mimeinfo);
-
+	
 	return mimeinfo;
 }
 

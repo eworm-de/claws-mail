@@ -217,6 +217,53 @@ gchar *sgpgme_sigstat_info_full(GpgmeCtx ctx, GpgmeSigStat status)
 	return ret;
 }
 
+GpgmeData sgpgme_data_from_mimeinfo(MimeInfo *mimeinfo)
+{
+	GpgmeData data;
+	
+	gpgme_data_new_from_filepart(&data,
+		mimeinfo->filename,
+		NULL,
+		mimeinfo->offset,
+		mimeinfo->length);
+	
+	return data;
+}
+
+GpgmeData sgpgme_decrypt(GpgmeData cipher)
+{
+	GpgmeCtx ctx;
+	struct passphrase_cb_info_s info;
+	GpgmeData plain;
+	GpgmeError err;
+
+	memset (&info, 0, sizeof info);
+	
+	if (gpgme_new(&ctx) != GPGME_No_Error)
+		return NULL;
+
+	if (gpgme_data_new(&plain) != GPGME_No_Error) {
+		gpgme_release(ctx);
+		return NULL;
+	}
+	
+    	if (!getenv("GPG_AGENT_INFO")) {
+        	info.c = ctx;
+        	gpgme_set_passphrase_cb (ctx, gpgmegtk_passphrase_cb, &info);
+    	}
+
+	err = gpgme_op_decrypt(ctx, cipher, plain);
+	gpgmegtk_free_passphrase();
+	gpgme_release(ctx);
+
+	if (err != GPGME_No_Error) {
+		gpgme_data_release(plain);
+		return NULL;
+	}
+
+	return plain;
+}
+
 void sgpgme_init()
 {
 	if (gpgme_engine_check_version(GPGME_PROTOCOL_OpenPGP) != 

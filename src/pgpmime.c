@@ -161,15 +161,10 @@ static gint pgpmime_check_signature(MimeInfo *mimeinfo)
 		g_free(buf2);
 	}
 	g_string_truncate(textstr, textstr->len - 2);
-	
-	
+		
 	gpgme_data_new_from_mem(&textdata, textstr->str, textstr->len, 0);
 	signature = (MimeInfo *) mimeinfo->node->next->data;
-	gpgme_data_new_from_filepart(&sigdata,
-		signature->filename,
-		NULL,
-		signature->offset,
-		signature->length);
+	sigdata = sgpgme_data_from_mimeinfo(signature);
 
 	data->sigstatus =
 		sgpgme_verify_signature	(data->ctx, sigdata, textdata);
@@ -236,6 +231,61 @@ static gboolean pgpmime_is_encrypted(MimeInfo *mimeinfo)
 	return TRUE;
 }
 
+static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
+{
+	MimeInfo *encinfo, *decinfo, *parseinfo;
+	GpgmeData cipher, plain;
+	static gint id = 0;
+	FILE *dstfp;
+	gint nread;
+	gchar *fname;
+	gchar buf[BUFFSIZE];
+	
+	g_return_val_if_fail(pgpmime_is_encrypted(mimeinfo), NULL);
+	
+	encinfo = (MimeInfo *) g_node_nth_child(mimeinfo->node, 1)->data;
+
+	cipher = sgpgme_data_from_mimeinfo(encinfo);
+	plain = sgpgme_decrypt(cipher);
+	gpgme_data_release(cipher);
+	if (plain == NULL)
+		return NULL;
+	
+    	fname = g_strdup_printf("%s%cplaintext.%08x",
+		get_mime_tmp_dir(), G_DIR_SEPARATOR, ++id);
+
+    	if ((dstfp = fopen(fname, "wb")) == NULL) {
+        	FILE_OP_ERROR(fname, "fopen");
+        	g_free(fname);
+        	gpgme_data_release(plain);
+		return NULL;
+    	}
+
+	gpgme_data_rewind (plain);
+	while (gpgme_data_read(plain, buf, sizeof(buf), &nread) == GPGME_No_Error) {
+      		fwrite (buf, nread, 1, dstfp);
+	}
+	fclose(dstfp);
+	
+	gpgme_data_release(plain);
+
+	parseinfo = procmime_scan_file(fname);
+	g_free(fname);
+	if (parseinfo == NULL)
+		return NULL;
+	decinfo = g_node_first_child(parseinfo->node) != NULL ?
+		g_node_first_child(parseinfo->node)->data : NULL;
+	if (decinfo == NULL)
+		return NULL;
+
+	g_node_unlink(decinfo->node);
+	procmime_mimeinfo_free_all(parseinfo);
+
+	decinfo->tmpfile = TRUE;
+	
+	return decinfo;
+}
+
 static PrivacySystem pgpmime_system = {
 	"PGP/Mime",			/* name */
 
@@ -247,9 +297,8 @@ static PrivacySystem pgpmime_system = {
 	pgpmime_get_sig_info_short,	/* get_sig_info_short(MimeInfo *) */
 	pgpmime_get_sig_info_full,	/* get_sig_info_full(MimeInfo *) */
 
-	/* NOT YET */
 	pgpmime_is_encrypted,		/* is_encrypted(MimeInfo *) */
-	NULL,				/* decrypt(MimeInfo *) */
+	pgpmime_decrypt,		/* decrypt(MimeInfo *) */
 };
 
 void pgpmime_init()
