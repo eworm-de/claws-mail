@@ -603,25 +603,51 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	PrefsAccount *account;
 	PrefsAccount *reply_account;
 	GtkSText *text;
+	GList *cur_ac;
+	GList *account_list;
+	PrefsAccount *ac_prefs;
 
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(msginfo->folder != NULL);
 
-	account = msginfo->folder->folder->account;
-	if (!account && msginfo->to && prefs_common.reply_account_autosel) {
-		gchar *to;
-		Xstrdup_a(to, msginfo->to, return);
-		extract_address(to);
-		account = account_find_from_address(to);
+	/* select the account set in folderitem's property (if enabled) */
+	account = NULL;
+	if (msginfo->folder->prefs && msginfo->folder->prefs->enable_default_account) {
+		if (!account) {
+			/* get a PrefsAccount *pointer on the wished account */
+			account_list = account_get_list();
+			for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
+				ac_prefs = (PrefsAccount *)cur_ac->data;
+				if (ac_prefs->account_id == msginfo->folder->prefs->default_account) {
+					account = ac_prefs;
+					break;
+				}
+			}
+		}
 	}
-        if(!account&& prefs_common.reply_account_autosel) {
-               	gchar cc[BUFFSIZE];
-		if(!get_header_from_msginfo(msginfo,cc,sizeof(cc),"CC:")){ /* Found a CC header */
-		        extract_address(cc);
-		        account = account_find_from_address(cc);
-                }        
+	
+	/* select the account for the whole folder (IMAP / NNTP) */
+	if (!account)
+		account = msginfo->folder->folder->account;
+
+	/* select account by to: and cc: header if enabled */
+	if (prefs_common.reply_account_autosel) {
+		if (!account && msginfo->to) {
+			gchar *to;
+			Xstrdup_a(to, msginfo->to, return);
+			extract_address(to);
+			account = account_find_from_address(to);
+		}
+		if (!account) {
+			gchar cc[BUFFSIZE];
+			if(!get_header_from_msginfo(msginfo, cc, sizeof(cc), "CC:")) { /* Found a CC header */
+				extract_address(cc);
+				account = account_find_from_address(cc);
+			}        
+		}
 	}
 
+	/* select current account */
 	if (!account) account = cur_account;
 	g_return_if_fail(account != NULL);
 
@@ -635,6 +661,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 			return;
 	} else
 		reply_account = account;
+
 	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_FORWARDED);
 	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_REPLIED);
 

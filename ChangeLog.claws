@@ -1,3 +1,9 @@
+2001-10-27 [christoph]	0.6.4claws11
+
+	* src/compose.c
+		make the folder's default account to be used when
+		replying. (patch by wwp <subscript@free.fr>)
+
 2001-10-26 [alfons]
 
 	* src/utils.h
