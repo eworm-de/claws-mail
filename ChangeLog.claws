@@ -1,3 +1,8 @@
+2004-02-21 [alfons]	0.9.9claws25
+
+	* src/folderview.c
+		don't forget to save folder properties after renaming folder
+
 2004-02-20 [paul]	0.9.9.claws24
 
 	* src/addressbook.c

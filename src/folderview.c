@@ -2137,7 +2137,8 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 	}
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
-
+	
+	folder_item_prefs_save_config(item);
 	folder_write_list();
 }
 
