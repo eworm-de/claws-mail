@@ -1,6 +1,16 @@
-2003-04-15 [paul]	0.8.11claws95
+2003-04-17 [paul]	0.8.11claws96
 
-	* sync with 0.8.11cvs27
+	* src/prefs_common.h
+		use gulong for P_COLOR so that it compiles/runs on
+		64-bit systems. Patch submitted by James Noyes
+		<jnoyes-claws@retrogeeks.com>
+		
+	* po/de.po
+		updated by Jens
+
+2003-04-17 [paul]	0.8.11claws95
+
+	* sync with 0.8.11cvs26
 		see ChangeLog 2003-04-16
 
 2003-04-15 [paul]	0.8.11claws94

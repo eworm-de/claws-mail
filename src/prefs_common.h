@@ -118,7 +118,7 @@ struct _PrefsCommon
 	gboolean enable_aspell;
 	gchar *aspell_path;
 	gchar *dictionary;
-	gint misspelled_col;
+	gulong misspelled_col;
 	gint aspell_sugmode;
 	gboolean check_while_typing;
 	gboolean use_alternate;
@@ -198,12 +198,12 @@ struct _PrefsCommon
 
 	/* Message */
 	gboolean enable_color;
-	gint quote_level1_col;
-	gint quote_level2_col;
-	gint quote_level3_col;
-	gint uri_col;
-	gint tgt_folder_col;
-	gint signature_col;
+	gulong quote_level1_col;
+	gulong quote_level2_col;
+	gulong quote_level3_col;
+	gulong uri_col;
+	gulong tgt_folder_col;
+	gulong signature_col;
 	gboolean recycle_quote_colors;
 	gboolean conv_mb_alnum;
 	gboolean display_header_pane;
@@ -279,7 +279,7 @@ struct _PrefsCommon
 	gboolean work_offline;
 	
 	gint summary_quicksearch_type;
-	gint color_new;
+	gulong color_new;
 };
 
 extern PrefsCommon prefs_common;
