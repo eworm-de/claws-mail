@@ -1,3 +1,7 @@
+2001-10-15 [hoa] 0.6.3claws17
+	* src/grouplistdialog.c
+		we can choose the newsgroups to display with wildcards
+
 2001-10-15 [christoph]	0.6.3claws16
 
 	* src/account.c
