@@ -390,9 +390,9 @@ static void mimeview_set_multipart_tree(MimeView *mimeview,
 	while (mimeinfo != NULL) {
 		node = mimeview_append_part(mimeview, mimeinfo, parent);
 
-		if (mimeinfo->children)
-			mimeview_set_multipart_tree(mimeview, mimeinfo->children, node);
-		mimeinfo = mimeinfo->next;
+		if (mimeinfo->node->children)
+			mimeview_set_multipart_tree(mimeview, (MimeInfo *) mimeinfo->node->children->data, node);
+		mimeinfo = mimeinfo->node->next != NULL ? (MimeInfo *) mimeinfo->node->next->data : NULL;
 	}
 }
 
@@ -892,8 +892,9 @@ static void mimeview_save_all(MimeView *mimeview)
 	}
 
 	/* return to first children */
-	if (!partinfo->parent->children) return;  /* multipart container? */
-	attachment = partinfo->parent->children->next;
+	if (partinfo->node->parent->children == NULL) return;  /* multipart container? */
+	attachment = partinfo->node->parent->children->next != NULL ?
+	    (MimeInfo *) partinfo->node->parent->children->next->data : NULL;
 	/* for each attachment, extract it in the selected dir. */
 	while (attachment != NULL) {
 		static guint subst_cnt = 1;
@@ -926,7 +927,7 @@ static void mimeview_save_all(MimeView *mimeview)
 
 		if ((G_ALERTDEFAULT != aval) || (procmime_get_part(buf, attachment) < 0))
 			alertpanel_error(_("Can't save the part of multipart message."));
-		attachment = attachment->next;
+		attachment = attachment->node->next != NULL ? (MimeInfo *) attachment->node->next->data : NULL;
 	}
 }
 
@@ -1476,9 +1477,9 @@ static void icon_list_create(MimeView *mimeview, MimeInfo *mimeinfo)
 	while (mimeinfo != NULL) {
 		if (mimeinfo->type != MIMETYPE_MULTIPART)
 			icon_list_append_icon(mimeview, mimeinfo);
-		if (mimeinfo->children != NULL)
-			icon_list_create(mimeview, mimeinfo->children);
-		mimeinfo = mimeinfo->next;
+		if (mimeinfo->node->children != NULL)
+			icon_list_create(mimeview, (MimeInfo *) mimeinfo->node->children->data);
+		mimeinfo = mimeinfo->node->next != NULL ? (MimeInfo *) mimeinfo->node->next->data : NULL;
 	}
 	gtk_widget_size_request(mimeview->icon_vbox, &size);
 	width = size.width + 4;

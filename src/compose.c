@@ -2171,8 +2171,8 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 	((info->type == MIMETYPE_TEXT) || \
 	 (info->type == MIMETYPE_MULTIPART && info->subtype && \
 	  !strcasecmp(info->subtype, "alternative") && \
-	  (info->children && \
-	   (info->children->type == MIMETYPE_TEXT))))
+	  (info->node->children && \
+	   (((MimeInfo *) info->node->children->data)->type == MIMETYPE_TEXT))))
 
 static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 {
@@ -2185,25 +2185,25 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 	if (!mimeinfo) return;
 
 	/* skip first text (presumably message body) */
-	child = mimeinfo->children;
+	child = (MimeInfo *) mimeinfo->node->children->data;
 	if (!child || IS_FIRST_PART_TEXT(mimeinfo)) {
 		procmime_mimeinfo_free_all(mimeinfo);
 		return;
 	}
 
 	if (IS_FIRST_PART_TEXT(child))
-		child = child->next;
+		child = (MimeInfo *) child->node->next;
 
 	infile = procmsg_get_message_file_path(msginfo);
 
 	while (child != NULL) {
-		if (child->children || child->type == MIMETYPE_MULTIPART) {
+		if (child->node->children || child->type == MIMETYPE_MULTIPART) {
 			child = procmime_mimeinfo_next(child);
 			continue;
 		}
-		if (child->parent && child->parent->parent
-		&& (child->parent->parent->type == MIMETYPE_MULTIPART)
-		&& !strcasecmp(child->parent->parent->subtype, "signed")
+		if (child->node->parent && child->node->parent->parent
+		&& (((MimeInfo *) child->node->parent->parent->data)->type == MIMETYPE_MULTIPART)
+		&& !strcasecmp(((MimeInfo *) child->node->parent->parent->data)->subtype, "signed")
 		&& child->type == MIMETYPE_TEXT) {
 			/* this is the main text part of a signed message */
 			child = procmime_mimeinfo_next(child);
@@ -2224,7 +2224,7 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 			g_free(content_type);
 		}
 
-		child = child->next;
+		child = child->node->next != NULL ? (MimeInfo *) child->node->next->data : NULL;
 	}
 
 	g_free(infile);

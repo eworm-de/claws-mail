@@ -524,6 +524,7 @@ leave:
     return plain;
 }
 
+#if 0 /* UNUSED */
 MimeInfo * rfc2015_find_signature (MimeInfo *mimeinfo)
 {
     MimeInfo *partinfo;
@@ -570,6 +571,7 @@ void rfc2015_check_signature (MimeInfo *mimeinfo, FILE *fp)
 
     check_signature (mimeinfo, partinfo, fp);
 }
+#endif
 
 int rfc2015_is_encrypted (MimeInfo *mimeinfo)
 {
@@ -1472,7 +1474,7 @@ static gboolean rfc2015_is_signed(MimeInfo *mimeinfo)
 	g_return_val_if_fail(mimeinfo != NULL, FALSE);
 	
 	/* check parent */
-	parent = mimeinfo->parent;
+	parent = procmime_mimeinfo_parent(mimeinfo);
 	if (parent == NULL)
 		return FALSE;
 	if ((parent->type != MIMETYPE_MULTIPART) ||
@@ -1483,11 +1485,12 @@ static gboolean rfc2015_is_signed(MimeInfo *mimeinfo)
 		return FALSE;
 
 	/* check if mimeinfo is the first child */
-	if (parent->children != mimeinfo)
+	if (parent->node->children->data != mimeinfo)
 		return FALSE;
 
 	/* check signature */
-	signature = parent->children->next;
+	signature = parent->node->children->next != NULL ? 
+	    (MimeInfo *) parent->node->children->next->data : NULL;
 	if (signature == NULL)
 		return FALSE;
 	if ((signature->type != MIMETYPE_APPLICATION) ||

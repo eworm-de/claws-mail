@@ -97,17 +97,11 @@ struct _MimeInfo
 
 	gchar *content_disposition;
 
-	MimeInfo *main;
-
-	gint level;
-
 	/* Internal data */
 	gchar *filename;
 	gboolean tmpfile;
 
-	MimeInfo *next;
-	MimeInfo *parent;
-	MimeInfo *children;
+	GNode *node;
 
 	/* --- NEW MIME STUFF --- */
 	/* Content-Type */
@@ -145,6 +139,7 @@ MimeInfo *procmime_mimeinfo_insert	(MimeInfo	*parent,
 void procmime_mimeinfo_replace		(MimeInfo	*old_mimeinfo,
 					 MimeInfo	*new_mimeinfo);
 
+MimeInfo *procmime_mimeinfo_parent	(MimeInfo	*mimeinfo);
 MimeInfo *procmime_mimeinfo_next	(MimeInfo	*mimeinfo);
 
 MimeInfo *procmime_scan_message		(MsgInfo	*msginfo);

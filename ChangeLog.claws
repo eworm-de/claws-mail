@@ -1,4 +1,17 @@
+2003-10-14 [christoph]	0.9.6claws26
+
+	* src/compose.c
+	* src/mimeview.c
+	* src/procmime.[ch]
+	* src/rfc2015.c
+	* src/textview.c
+	* src/plugins/clamav/clamav_plugin.c
+		use GNode to create the mime tree (some changes to functions
+		that traverse the tree are just quick and dirty. Maybe we
+		can find better solutions with g_node_*-functions)
+
 2003-10-14 [luke]	0.9.6claws25
+
 	* src/mimeview.c
 		fix a navigation bug (stupid typo of mine)
 

@@ -131,14 +131,11 @@ static void textview_show_ertf		(TextView	*textview,
 					 FILE		*fp,
 					 CodeConverter	*conv);
 static void textview_add_part		(TextView	*textview,
-					 MimeInfo	*mimeinfo,
-					 FILE		*fp);
+					 MimeInfo	*mimeinfo);
 static void textview_add_parts		(TextView	*textview,
-					 MimeInfo	*mimeinfo,
-					 FILE		*fp);
+					 MimeInfo	*mimeinfo);
 static void textview_write_body		(TextView	*textview,
 					 MimeInfo	*mimeinfo,
-					 FILE		*fp,
 					 const gchar	*charset);
 static void textview_show_html		(TextView	*textview,
 					 FILE		*fp,
@@ -349,7 +346,7 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 		textview->body_pos = gtk_stext_get_length(text);
 	}
 */
-	textview_add_parts(textview, mimeinfo, fp);
+	textview_add_parts(textview, mimeinfo);
 
 	gtk_stext_thaw(text);
 
@@ -367,7 +364,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	if ((mimeinfo->type == MIMETYPE_MULTIPART) ||
 	    ((mimeinfo->type == MIMETYPE_MESSAGE) && !g_strcasecmp(mimeinfo->subtype, "rfc822"))) {
 		textview_clear(textview);
-		textview_add_parts(textview, mimeinfo, fp);
+		textview_add_parts(textview, mimeinfo);
 		return;
 	}
 
@@ -400,14 +397,14 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	}
 */
 	if (mimeinfo->type == MIMETYPE_MULTIPART)
-		textview_add_parts(textview, mimeinfo, fp);
+		textview_add_parts(textview, mimeinfo);
 	else
-		textview_write_body(textview, mimeinfo, fp, charset);
+		textview_write_body(textview, mimeinfo, charset);
 
 	gtk_stext_thaw(text);
 }
 
-static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
+static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 {
 	GtkSText *text = GTK_STEXT(textview->text);
 	gchar buf[BUFFSIZE];
@@ -415,16 +412,14 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	GPtrArray *headers = NULL;
 
 	g_return_if_fail(mimeinfo != NULL);
-	g_return_if_fail(fp != NULL);
 
 	if (mimeinfo->type == MIMETYPE_MULTIPART) return;
 
-	if (fseek(fp, mimeinfo->offset, SEEK_SET) < 0) {
-		perror("fseek");
-		return;
-	}
-
 	if ((mimeinfo->type == MIMETYPE_MESSAGE) && !g_strcasecmp(mimeinfo->subtype, "rfc822")) {
+		FILE *fp;
+
+		fp = fopen(mimeinfo->filename, "rb");
+		fseek(fp, mimeinfo->offset, SEEK_SET);
 		headers = textview_scan_header(textview, fp);
 		if (headers) {
 			gtk_stext_freeze(text);
@@ -434,6 +429,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 			procheader_header_array_destroy(headers);
 			gtk_stext_thaw(text);
 		}
+		fclose(fp);
 		return;
 	}
 
@@ -452,11 +448,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	if (mimeinfo->type != MIMETYPE_TEXT) {
 		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
 	} else {
-		if (!mimeinfo->main &&
-		    mimeinfo->parent &&
-		    mimeinfo->parent->children != mimeinfo)
-			gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
-		else if (prefs_common.display_header && (gtk_stext_get_length(text) > 0))
+		if (prefs_common.display_header && (gtk_stext_get_length(text) > 0))
 			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
 		if (textview->messageview->forced_charset)
 			charset = textview->messageview->forced_charset;
@@ -464,33 +456,29 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 			charset = prefs_common.force_charset;
 		else if (mimeinfo->charset)
 			charset = mimeinfo->charset;
-		textview_write_body(textview, mimeinfo, fp, charset);
+		textview_write_body(textview, mimeinfo, charset);
 	}
 
 	gtk_stext_thaw(text);
 }
 
-static void textview_add_parts_func(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
+static gboolean add_parts_func(GNode *node, gpointer data)
 {
-	g_return_if_fail(mimeinfo != NULL);
-	g_return_if_fail(fp != NULL);
+	MimeInfo *mimeinfo = (MimeInfo *) node->data;
+	TextView *textview = (TextView *) data;
 
-	while (mimeinfo) {
-		textview_add_part(textview, mimeinfo, fp);
-		if(mimeinfo->children)
-			textview_add_parts_func(textview, mimeinfo->children, fp);
-		mimeinfo = mimeinfo->next;
-	}
+	g_return_val_if_fail(mimeinfo != NULL, FALSE);
+
+	textview_add_part(textview, mimeinfo);
+
+	return FALSE;
 }
 
-static void textview_add_parts(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
+static void textview_add_parts(TextView *textview, MimeInfo *mimeinfo)
 {
 	g_return_if_fail(mimeinfo != NULL);
-	g_return_if_fail(fp != NULL);
 
-	textview_add_part(textview, mimeinfo, fp);
-	if(mimeinfo->children)
-		textview_add_parts_func(textview, mimeinfo->children, fp);
+	g_node_traverse(mimeinfo->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, add_parts_func, textview);
 }
 
 #define TEXT_INSERT(str) \
@@ -526,7 +514,7 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 #undef TEXT_INSERT
 
 static void textview_write_body(TextView *textview, MimeInfo *mimeinfo,
-				FILE *fp, const gchar *charset)
+				const gchar *charset)
 {
 	FILE *tmpfp;
 	gchar buf[BUFFSIZE];
@@ -540,7 +528,6 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo,
 	   mimeinfo->encoding_type != ENC_7BIT && 
 	   mimeinfo->encoding_type != ENC_8BIT)
 		procmime_decode_content(mimeinfo);
-
 
 	if (!g_strcasecmp(mimeinfo->subtype, "html")) {
 		gchar *filename;
