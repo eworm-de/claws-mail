@@ -184,7 +184,7 @@ static gint smtp_auth_recv(SMTPSession *session, const gchar *msg)
 			gint challengelen;
 			guchar hexdigest[33];
 
-			challenge = g_malloc(strlen(buf + 4) + 1);
+			challenge = g_malloc(strlen(msg + 4) + 1);
 			challengelen = base64_decode(challenge, msg + 4, -1);
 			challenge[challengelen] = '\0';
 			log_print("ESMTP< [Decoded: %s]\n", challenge);

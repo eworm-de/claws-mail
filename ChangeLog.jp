@@ -1,3 +1,7 @@
+2003-03-22
+
+	* src/smtp.c: smtp_auth_recv(): CRAM-MD5 Ç§¾Ú¤ò½¤Àµ¡£
+
 2003-03-20
 
 	* src/session.[ch]: session_start_tls(): ¿·µ¬¡£
