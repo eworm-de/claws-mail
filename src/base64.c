@@ -9,7 +9,14 @@
  *
  * Modified by Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>
  */
+
+#include "defs.h"
+
 #include <ctype.h>
+#include <string.h>
+#include <glib.h>
+
+#include "base64.h"
 
 static const char base64digits[] =
    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -93,6 +100,77 @@ int from64tobits(char *out, const char *in)
     } while (*in && *in != '\r' && *in != '\n' && digit4 != '=');
 
     return len;
+}
+
+struct _Base64Decoder
+{
+	int buf_len;
+	unsigned char buf[4];
+};
+
+Base64Decoder *
+base64_decoder_new (void)
+{
+	Base64Decoder *decoder;
+
+	decoder = g_new0 (Base64Decoder, 1);
+	return decoder;
+}
+
+void
+base64_decoder_free (Base64Decoder *decoder)
+{
+	g_free (decoder);
+}
+
+int
+base64_decoder_decode (Base64Decoder *decoder,
+		       const char    *in, 
+		       char          *out)
+{
+	int len = 0;
+	int buf_len;
+	unsigned char buf[4];
+
+	g_return_val_if_fail (decoder != NULL, -1);
+	g_return_val_if_fail (in != NULL, -1);
+	g_return_val_if_fail (out != NULL, -1);
+
+	buf_len = decoder->buf_len;
+	memcpy (buf, decoder->buf, sizeof(buf));
+	while (1) {
+		while (buf_len < 4) {
+			int c = *(unsigned char *)in++;
+			if (c == '\0') break;
+			if (c == '\r' || c == '\n') continue;
+			if (c != '=' && DECODE64(c) == BAD)
+				return -1;
+			buf[buf_len++] = c;
+		}
+		if (buf_len < 4 || buf[0] == '=' || buf[1] == '=') {
+			decoder->buf_len = buf_len;
+			memcpy (decoder->buf, buf, sizeof(buf));
+			return len;
+		}
+		*out++ = ((DECODE64(buf[0]) << 2)
+			  | ((DECODE64(buf[1]) >> 4) & 0x03));
+		++len;
+		if (buf[2] != '=') {
+			*out++ = (((DECODE64(buf[1]) << 4) & 0xf0)
+				  | (DECODE64(buf[2]) >> 2));
+			++len;
+			if (buf[3] != '=') {
+				*out++ = (((DECODE64(buf[2]) << 6) & 0xc0)
+					  | DECODE64(buf[3]));
+				++len;
+			}
+		}
+		buf_len = 0;
+		if (buf[2] == '=' || buf[3] == '=') {
+			decoder->buf_len = 0;
+			return len;
+		}
+	}
 }
 
 /* base64.c ends here */

@@ -528,17 +528,20 @@ FILE *procmime_decode_content(FILE *outfp, FILE *infp, MimeInfo *mimeinfo)
 	} else if (mimeinfo->encoding_type == ENC_BASE64) {
 		gchar outbuf[BUFFSIZE];
 		gint len;
+		Base64Decoder *decoder;
 
+		decoder = base64_decoder_new();
 		while (fgets(buf, sizeof(buf), infp) != NULL &&
 		       (!boundary ||
 			!IS_BOUNDARY(buf, boundary, boundary_len))) {
-			len = from64tobits(outbuf, buf);
+			len = base64_decoder_decode(decoder, buf, outbuf);
 			if (len < 0) {
 				g_warning("Bad BASE64 content\n");
 				break;
 			}
 			fwrite(outbuf, sizeof(gchar), len, outfp);
 		}
+		base64_decoder_free(decoder);
 	} else if (mimeinfo->encoding_type == ENC_X_UUENCODE) {
 		gchar outbuf[BUFFSIZE];
 		gint len;

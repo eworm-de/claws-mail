@@ -1,3 +1,11 @@
+2001-06-16 [sergey]
+
+	* src/base64.c, src/base64.h (Base64Decoder, base64_decoder_new,
+	base64_decoder_free, base64_decoder_decode): new object and
+	functions for decoding base64 streams.
+	* src/procmime.c (procmime_decode_content): modified to use the
+	new base64 decoder.
+
 2001-06-15 [paul]
 
         0.4.99claws10
