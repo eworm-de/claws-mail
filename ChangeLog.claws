@@ -5,6 +5,9 @@
 	* src/prefs_folder_item.c
 		using table for widget alignment
 		fixed memory leak and broken octal display
+	* src/filesel.c
+		remove file selection dialog lost filename
+		workaround (causes segfault on doubleclick)
 
 2001-10-10 [paul]	0.6.3claws6
 

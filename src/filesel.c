@@ -30,6 +30,7 @@
 #include "filesel.h"
 #include "manage_window.h"
 #include "gtkutils.h"
+#include "utils.h"
 
 static GtkWidget *filesel;
 static gboolean filesel_ack;
@@ -181,15 +182,6 @@ static void filesel_create(const gchar *title, gboolean multiple_files)
 				   "select_row",
 				   GTK_SIGNAL_FUNC(filesel_dir_list_select_row_multi),
 				   NULL);
-	} else {
-		gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filesel)->file_list),
-				   "select_row", 
-				   GTK_SIGNAL_FUNC(filesel_file_list_select_row_single),
-				   NULL);
-		gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filesel)->dir_list),
-				   "select_row",
-				   GTK_SIGNAL_FUNC(filesel_dir_list_select_row_single),
-				   NULL);
 	}
 }
 
@@ -261,26 +253,6 @@ static void filesel_dir_list_select_row_multi(GtkCList *clist, gint row, gint co
 	/* if dir list is selected we clean everything */
 	gtk_editable_delete_text(GTK_EDITABLE(entry), 0, -1);
 	gtk_clist_unselect_all(file_list);
-}
-
-static void filesel_file_list_select_row_single(GtkCList *clist, gint row, gint col,
-					        GdkEventButton *event, gpointer userdata)
-{
-	GtkEntry *entry = GTK_ENTRY(GTK_FILE_SELECTION(filesel)->selection_entry);
-
-	g_free(filesel_oldfilename);
-	filesel_oldfilename = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
-}
-
-static void filesel_dir_list_select_row_single(GtkCList *clist, gint row, gint col,
-					       GdkEventButton *event, gpointer userdata)
-{
-	GtkEntry *entry     = GTK_ENTRY(GTK_FILE_SELECTION(filesel)->selection_entry);
-
-	gtk_editable_delete_text(GTK_EDITABLE(entry), 0, -1);
-	if(filesel_oldfilename) {
-		gtk_entry_append_text(entry, filesel_oldfilename);
-	}
 }
 
 static GList *filesel_get_multiple_filenames(void)
