@@ -4592,6 +4592,7 @@ static void summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	if (!event) return;
 
 	if (event->button == 3) {
+		summaryview->display_msg = TRUE;
 		/* right clicked */
 		gtk_menu_popup(GTK_MENU(summaryview->popupmenu), NULL, NULL,
 			       NULL, NULL, event->button, event->time);

@@ -1,3 +1,16 @@
+2003-01-05 [alfons]	0.8.8claws47
+
+	fine tune solution to focus problems (bug #7)
+
+	* src/mainwindow.c
+		mainwindow_focus_in_event(): remove grab event check
+	* src/summaryview.c
+		summary_button_pressed(): move selection on right-click
+		too. we can't possibly move the selection back after
+		canceling a dialog, because gtk's incomplete focus 
+		management. whether this is a good solution, only time
+		will tell.
+
 2003-01-05 [christoph]	0.8.8claws46
 
 	* src/imap.c
