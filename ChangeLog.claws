@@ -1,3 +1,8 @@
+2002-08-19 [paul]	0.8.1claws77
+
+	* src/compose.c
+		add check for '.' to QUOTE_IF_REQUIRED
+
 2002-08-19 [paul]	0.8.1claws76
 
 	* src/inc.c
