@@ -1,3 +1,14 @@
+2001-07-12 [alfons]
+
+	* AUTHORS
+		add Jens
+
+	* po/nl.po
+		add updated Dutch translation
+
+	* po/de.po
+		add updated German translation submitted by Jens
+
 2001-07-11 [alfons]
 
 	Prerelease before 0.5.0claws. Please test.
