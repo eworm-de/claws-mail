@@ -1296,8 +1296,6 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	GtkWidget *menuitem;
 	gint i;
 
-	main_window_set_menu_sensitive(summaryview->mainwin);
-
 	static const struct {
 		gchar *const entry;
 		SensitiveCond cond;
@@ -1345,6 +1343,8 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 
 		{NULL, 0}
 	};
+
+	main_window_set_menu_sensitive(summaryview->mainwin);
 
 	state = main_window_get_current_state(summaryview->mainwin);
 

@@ -1,3 +1,8 @@
+2003-07-30 [darko]	0.9.3claws78
+
+	* src/summaryview.c
+		make it compile again
+
 2003-07-30 [luke]	0.9.3claws77
 	* src/crash.c
 	* src/main.c
