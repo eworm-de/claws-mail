@@ -1,3 +1,9 @@
+2004-08-29 [colin]	0.9.12cvs79
+
+	* src/mimeview.c
+		Don't escape filenames before saving - that's 
+		not dangerous. By the way, fix the leak.
+
 2004-08-27 [paul]	0.9.12cvs83
 
 	* src/mh.c
