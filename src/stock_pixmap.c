@@ -92,7 +92,7 @@
 #include "pixmaps/quicksearch.xpm"
 #include "pixmaps/gpg_signed.xpm"
 #include "pixmaps/drafts_close.xpm"
-#include "pixmaps/drafts_open.xpm";
+#include "pixmaps/drafts_open.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
 

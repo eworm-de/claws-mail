@@ -1,3 +1,8 @@
+2003-02-18 [colin]	0.8.10claws24
+	
+	* src/stock_pixmap.c
+		fix compile error
+
 2003-02-18 [colin]	0.8.10claws23
 
 	* src/common/smtp.[ch]
