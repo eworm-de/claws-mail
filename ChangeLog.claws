@@ -1,3 +1,13 @@
+2002-04-07 [paul]	0.7.4claws71
+
+	* src/esmtp.[ch]
+	  src/smtp.c
+		try to authenticate with CRAM-MD5 in SMTP when 
+		SMTP-AUTH enabled even if MTA doesn't issue this 
+		auth-method in it's ehlo-response. bug item #531364,
+		patch item #938910. patch submitted by Colin Leroy 
+		<colin@colino.net>
+
 2002-04-07 [paul]	0.7.4claws70
 
 	* src/nntp.c

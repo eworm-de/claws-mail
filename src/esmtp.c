@@ -35,6 +35,7 @@ static gchar esmtp_response[MSGBUFSIZE];
 
 gint esmtp_ehlo(SockInfo *sock, const gchar *hostname)
 {
+	smtp_auth_methods[0] = smtp_auth_methods[1] = smtp_auth_methods[2] = smtp_auth_methods[3] = FALSE;
 	sock_printf(sock, "EHLO %s\r\n", hostname);
 	if (verbose)
 		log_print("ESMTP> EHLO %s\n", hostname);
@@ -156,6 +157,12 @@ gint esmtp_ok(SockInfo *sock)
 
 		if (verbose)
 			log_print("ESMTP< %s\n", esmtp_response);
+
+		if (strncasecmp("250-AUTH", esmtp_response, 8) == 0) {
+			smtp_auth_methods[SMTPAUTH_LOGIN]      = (strstr(esmtp_response, " LOGIN") != NULL); 
+			smtp_auth_methods[SMTPAUTH_CRAM_MD5]   = (strstr(esmtp_response, " CRAM-MD5") != NULL);
+			smtp_auth_methods[SMTPAUTH_DIGEST_MD5] = FALSE; /* not implemented yet */
+		}
 
 		if ((esmtp_response[0] == '1' || esmtp_response[0] == '2' ||
 		     esmtp_response[0] == '3') && esmtp_response[3] == ' ')

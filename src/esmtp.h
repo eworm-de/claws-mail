@@ -45,5 +45,6 @@ gint esmtp_auth_cram_md5(SockInfo *sock);
 gint esmtp_auth(SockInfo *sock, SMTPAuthType authtype,
 		const gchar *userid, const gchar *passwd);
 gint esmtp_ok(SockInfo *sock);
+gboolean smtp_auth_methods[4];
 
 #endif /* __ESMTP_H__ */

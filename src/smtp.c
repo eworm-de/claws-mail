@@ -53,9 +53,11 @@ gint smtp_from(SockInfo *sock, const gchar *from,
 
 	if (use_smtp_auth) {
 		/* exist AUTH-Type CRAM_MD5 */
-		if (esmtp_auth_cram_md5(sock) == SM_ERROR) {
+		if (!smtp_auth_methods[SMTPAUTH_CRAM_MD5]
+		    || esmtp_auth_cram_md5(sock) == SM_ERROR) {
 			/* exist AUTH-Type LOGIN */
-			if (esmtp_auth_login(sock) == SM_ERROR)
+			if (!smtp_auth_methods[SMTPAUTH_LOGIN]
+			    || esmtp_auth_login(sock) == SM_ERROR)
 				return SM_ERROR;
 			else
 				authtype = SMTPAUTH_LOGIN;
