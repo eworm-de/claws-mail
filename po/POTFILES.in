@@ -6,6 +6,7 @@ src/automaton.c
 src/base64.c
 src/codeconv.c
 src/compose.c
+src/export.c
 src/filesel.c
 src/filter.c
 src/folder.c

@@ -1,3 +1,19 @@
+2001-04-20
+
+	* src/mbox.[ch]: renamed export_mbox() to export_to_mbox().
+	  Fixed a memory leak bug.
+	* src/export.[ch]: added for exporting folder to mbox.
+	* src/import.[ch]: made import_mbox() take default folder.
+	  Added description to the dialog.
+	* src/summaryview.c: summary_show(): fixed a bug that kept the
+	  toolbar buttons insensitive after receiving messages.
+	* src/export.c
+	  src/import.c: fixed a bug that caused quitting of the program
+	  when OK or Cancel button was clicked several time.
+	* src/prefs_common.[ch]
+	  src/addressbook.c: added "Add address to destination when
+	  double-clicked" option.
+
 2001-04-19
 
 	* src/prefs_common.[ch]: reorganized the items of settings,

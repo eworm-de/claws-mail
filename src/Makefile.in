@@ -117,7 +117,7 @@ manualdir = @manualdir@
 
 bin_PROGRAMS = sylpheed
 
-sylpheed_SOURCES =  	intl.h 	defs.h 	main.c main.h 	mainwindow.c mainwindow.h 	folderview.c folderview.h 	summaryview.c summaryview.h 	messageview.c messageview.h 	headerview.c headerview.h 	textview.c textview.h 	imageview.c imageview.h 	mimeview.c mimeview.h 	summary_search.c summary_search.h 	folder.c folder.h 	procmsg.c procmsg.h 	procheader.c procheader.h 	filter.c filter.h 	compose.c compose.h 	gtkshruler.c gtkshruler.h 	gtksctree.c gtksctree.h 	menu.c menu.h 	prefs.c prefs.h 	prefs_common.c prefs_common.h 	prefs_filter.c prefs_filter.h 	prefs_account.c prefs_account.h 	account.c account.h 	addressbook.c addressbook.h 	filesel.c filesel.h 	foldersel.c foldersel.h 	statusbar.c statusbar.h 	headerwindow.c headerwindow.h 	logwindow.c logwindow.h 	sourcewindow.c sourcewindow.h 	manage_window.c manage_window.h 	alertpanel.c alertpanel.h 	inputdialog.c inputdialog.h 	progressdialog.c progressdialog.h 	about.c about.h 	setup.c setup.h 	utils.c utils.h 	gtkutils.c gtkutils.h 	codeconv.c codeconv.h 	unmime.c unmime.h 	base64.c base64.h 	uuencode.c uuencode.h 	md5c.c md5.h md5global.h 	md5ify.c md5ify.h 	rfc822.c rfc822.h 	socket.c socket.h 	automaton.c automaton.h 	session.c session.h 	smtp.c smtp.h 	esmtp.c esmtp.h 	pop.c pop.h 	mh.c mh.h 	mbox.c mbox.h 	send.c send.h 	recv.c recv.h 	inc.c inc.h 	import.c import.h 	nntp.c nntp.h 	news.c news.h 	imap.c imap.h 	xml.c xml.h 	html.c html.h 	procmime.c procmime.h 	rfc2015.c rfc2015.h 	passphrase.c passphrase.h 	select-keys.c select-keys.h 	manual.c manual.h 	addr_compl.c addr_compl.h
+sylpheed_SOURCES =  	intl.h 	defs.h 	main.c main.h 	mainwindow.c mainwindow.h 	folderview.c folderview.h 	summaryview.c summaryview.h 	messageview.c messageview.h 	headerview.c headerview.h 	textview.c textview.h 	imageview.c imageview.h 	mimeview.c mimeview.h 	summary_search.c summary_search.h 	folder.c folder.h 	procmsg.c procmsg.h 	procheader.c procheader.h 	filter.c filter.h 	compose.c compose.h 	gtkshruler.c gtkshruler.h 	gtksctree.c gtksctree.h 	menu.c menu.h 	prefs.c prefs.h 	prefs_common.c prefs_common.h 	prefs_filter.c prefs_filter.h 	prefs_account.c prefs_account.h 	account.c account.h 	addressbook.c addressbook.h 	filesel.c filesel.h 	foldersel.c foldersel.h 	statusbar.c statusbar.h 	headerwindow.c headerwindow.h 	logwindow.c logwindow.h 	sourcewindow.c sourcewindow.h 	manage_window.c manage_window.h 	alertpanel.c alertpanel.h 	inputdialog.c inputdialog.h 	progressdialog.c progressdialog.h 	about.c about.h 	setup.c setup.h 	utils.c utils.h 	gtkutils.c gtkutils.h 	codeconv.c codeconv.h 	unmime.c unmime.h 	base64.c base64.h 	uuencode.c uuencode.h 	md5c.c md5.h md5global.h 	md5ify.c md5ify.h 	rfc822.c rfc822.h 	socket.c socket.h 	automaton.c automaton.h 	session.c session.h 	smtp.c smtp.h 	esmtp.c esmtp.h 	pop.c pop.h 	mh.c mh.h 	mbox.c mbox.h 	send.c send.h 	recv.c recv.h 	inc.c inc.h 	import.c import.h 	nntp.c nntp.h 	news.c news.h 	imap.c imap.h 	xml.c xml.h 	html.c html.h 	procmime.c procmime.h 	rfc2015.c rfc2015.h 	passphrase.c passphrase.h 	select-keys.c select-keys.h 	manual.c manual.h 	addr_compl.c addr_compl.h 	export.c export.h
 
 
 EXTRA_DIST =  	pixmaps/clip.xpm 	pixmaps/deleted.xpm 	pixmaps/dir-close.xpm 	pixmaps/dir-open.xpm 	pixmaps/folder.xpm 	pixmaps/forwarded.xpm 	pixmaps/group.xpm 	pixmaps/inbox.xpm 	pixmaps/mark.xpm 	pixmaps/new.xpm 	pixmaps/outbox.xpm 	pixmaps/regular.xpm 	pixmaps/replied.xpm 	pixmaps/trash.xpm 	pixmaps/unread.xpm 	pixmaps/linewrap.xpm 	pixmaps/stock_mail.xpm 	pixmaps/stock_mail_attach.xpm 	pixmaps/stock_mail_receive.xpm 	pixmaps/stock_mail_receive_all.xpm 	pixmaps/stock_mail_send.xpm 	pixmaps/stock_mail_compose.xpm 	pixmaps/stock_mail_reply.xpm 	pixmaps/stock_mail_reply_to_all.xpm 	pixmaps/stock_mail_forward.xpm 	pixmaps/stock_preferences.xpm 	pixmaps/stock_properties.xpm 	pixmaps/stock_search.xpm 	pixmaps/stock_close.xpm 	pixmaps/stock_exec.xpm 	pixmaps/stock_trash.xpm 	pixmaps/stock_up_arrow.xpm 	pixmaps/stock_down_arrow.xpm 	pixmaps/stock_paste.xpm 	pixmaps/tb_address_book.xpm 	pixmaps/sylpheed-logo.xpm
@@ -150,7 +150,8 @@ alertpanel.o inputdialog.o progressdialog.o about.o setup.o utils.o \
 gtkutils.o codeconv.o unmime.o base64.o uuencode.o md5c.o md5ify.o \
 rfc822.o socket.o automaton.o session.o smtp.o esmtp.o pop.o mh.o \
 mbox.o send.o recv.o inc.o import.o nntp.o news.o imap.o xml.o html.o \
-procmime.o rfc2015.o passphrase.o select-keys.o manual.o addr_compl.o
+procmime.o rfc2015.o passphrase.o select-keys.o manual.o addr_compl.o \
+export.o
 sylpheed_DEPENDENCIES =  $(top_builddir)/libkcc/libkcc.a
 sylpheed_LDFLAGS = 
 CFLAGS = @CFLAGS@
@@ -163,26 +164,27 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 DEP_FILES =  .deps/about.P .deps/account.P .deps/addr_compl.P \
 .deps/addressbook.P .deps/alertpanel.P .deps/automaton.P .deps/base64.P \
-.deps/codeconv.P .deps/compose.P .deps/esmtp.P .deps/filesel.P \
-.deps/filter.P .deps/folder.P .deps/foldersel.P .deps/folderview.P \
-.deps/gtksctree.P .deps/gtkshruler.P .deps/gtkutils.P \
-.deps/headerview.P .deps/headerwindow.P .deps/html.P .deps/imageview.P \
-.deps/imap.P .deps/import.P .deps/inc.P .deps/inputdialog.P \
-.deps/logwindow.P .deps/main.P .deps/mainwindow.P .deps/manage_window.P \
-.deps/manual.P .deps/mbox.P .deps/md5c.P .deps/md5ify.P .deps/menu.P \
-.deps/messageview.P .deps/mh.P .deps/mimeview.P .deps/news.P \
-.deps/nntp.P .deps/passphrase.P .deps/pop.P .deps/prefs.P \
-.deps/prefs_account.P .deps/prefs_common.P .deps/prefs_filter.P \
-.deps/procheader.P .deps/procmime.P .deps/procmsg.P \
-.deps/progressdialog.P .deps/recv.P .deps/rfc2015.P .deps/rfc822.P \
-.deps/select-keys.P .deps/send.P .deps/session.P .deps/setup.P \
-.deps/smtp.P .deps/socket.P .deps/sourcewindow.P .deps/statusbar.P \
-.deps/summary_search.P .deps/summaryview.P .deps/textview.P \
-.deps/unmime.P .deps/utils.P .deps/uuencode.P .deps/xml.P
+.deps/codeconv.P .deps/compose.P .deps/esmtp.P .deps/export.P \
+.deps/filesel.P .deps/filter.P .deps/folder.P .deps/foldersel.P \
+.deps/folderview.P .deps/gtksctree.P .deps/gtkshruler.P \
+.deps/gtkutils.P .deps/headerview.P .deps/headerwindow.P .deps/html.P \
+.deps/imageview.P .deps/imap.P .deps/import.P .deps/inc.P \
+.deps/inputdialog.P .deps/logwindow.P .deps/main.P .deps/mainwindow.P \
+.deps/manage_window.P .deps/manual.P .deps/mbox.P .deps/md5c.P \
+.deps/md5ify.P .deps/menu.P .deps/messageview.P .deps/mh.P \
+.deps/mimeview.P .deps/news.P .deps/nntp.P .deps/passphrase.P \
+.deps/pop.P .deps/prefs.P .deps/prefs_account.P .deps/prefs_common.P \
+.deps/prefs_filter.P .deps/procheader.P .deps/procmime.P \
+.deps/procmsg.P .deps/progressdialog.P .deps/recv.P .deps/rfc2015.P \
+.deps/rfc822.P .deps/select-keys.P .deps/send.P .deps/session.P \
+.deps/setup.P .deps/smtp.P .deps/socket.P .deps/sourcewindow.P \
+.deps/statusbar.P .deps/summary_search.P .deps/summaryview.P \
+.deps/textview.P .deps/unmime.P .deps/utils.P .deps/uuencode.P \
+.deps/xml.P
 SOURCES = $(sylpheed_SOURCES)
 OBJECTS = $(sylpheed_OBJECTS)
 

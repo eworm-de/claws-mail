@@ -1,3 +1,19 @@
+2001-04-20
+
+	* src/mbox.[ch]: export_mbox() を export_to_mbox() に変更。
+	  メモリリークのバグを修正。
+	* src/export.[ch]: フォルダを mbox にエクスポートするために追加。
+	* src/import.[ch]: import_mbox() がデフォルトのフォルダをとる
+	  ようにした。ダイアログに説明を追加。
+	* src/summaryview.c: summary_show(): メッセージの受信後にツールバー
+	  のボタンが押せないままになっていたバグを修正。
+	* src/export.c
+	  src/import.c: OK またはキャンセルボタンが数回押されたらプログラム
+	  が終了してしまうバグを修正。
+	* src/prefs_common.[ch]
+	  src/addressbook.c: 「ダブルクリックしたときにアドレスを宛先に
+	  追加する」オプションを追加。
+
 2001-04-19
 
 	* src/prefs_common.[ch]: 設定項目を再構成し、メッセージタブを追加。

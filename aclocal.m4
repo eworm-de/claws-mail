@@ -177,7 +177,12 @@ NONE) lt_target="$host" ;;
 esac
 
 # Check for any special flags to pass to ltconfig.
-libtool_flags="--cache-file=$cache_file"
+#
+# the following will cause an existing older ltconfig to fail, so
+# we ignore this at the expense of the cache file... Checking this 
+# will just take longer ... bummer!
+#libtool_flags="--cache-file=$cache_file"
+#
 test "$enable_shared" = no && libtool_flags="$libtool_flags --disable-shared"
 test "$enable_static" = no && libtool_flags="$libtool_flags --disable-static"
 test "$enable_fast_install" = no && libtool_flags="$libtool_flags --disable-fast-install"
@@ -1648,7 +1653,7 @@ AC_ARG_ENABLE(imlibtest, [  --disable-imlibtest       Do not try to compile and 
   fi
 
   AC_PATH_PROG(IMLIB_CONFIG, imlib-config, no)
-  min_imlib_version=ifelse([$1], ,1.8.2,$1)
+  min_imlib_version=ifelse([$1], ,1.9.5,$1)
   AC_MSG_CHECKING(for IMLIB - version >= $min_imlib_version)
   no_imlib=""
   if test "$IMLIB_CONFIG" = "no" ; then
@@ -1806,7 +1811,7 @@ AC_ARG_ENABLE(imlibtest, [  --disable-imlibtest       Do not try to compile and 
   fi
 
   AC_PATH_PROG(IMLIB_CONFIG, imlib-config, no)
-  min_imlib_version=ifelse([$1], ,1.8.2,$1)
+  min_imlib_version=ifelse([$1], ,1.9.5,$1)
   AC_MSG_CHECKING(for IMLIB - version >= $min_imlib_version)
   no_imlib=""
   if test "$IMLIB_CONFIG" = "no" ; then
@@ -1948,7 +1953,7 @@ dnl
 
   AC_PATH_PROG(GPGME_CONFIG, gpgme-config, no)
   min_gpgme_version=ifelse([$1], ,1.0.0,$1)
-  AC_MSG_CHECKING(for gpgme - version >= $min_gpgme_version)
+  AC_MSG_CHECKING(for GPGME - version >= $min_gpgme_version)
   no_gpgme=""
   if test "$GPGME_CONFIG" = "no" ; then
     no_gpgme=yes

@@ -146,7 +146,7 @@ DIST_COMMON =  README Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 DEP_FILES =  .deps/buffer.P .deps/check.P .deps/compare.P .deps/dec.P \
 .deps/euc.P .deps/filter.P .deps/getstr.P .deps/guess.P .deps/jis.P \
