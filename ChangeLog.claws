@@ -1,3 +1,18 @@
+2003-07-30 [luke]	0.9.3claws77
+	* src/crash.c
+	* src/main.c
+        	o added/moved signal handlers for SIGTERM (normal kill command) 
+		  and SIGINT (ctl-c) to be used even without 
+		  --enable-crash-dialog, fixing bug 166
+
+	* src/summaryview.c
+		o rewrote menu sensitivity code as per mainwindow.c, fixing 
+		  bug 227
+
+	* src/mainwindow.c
+		o changed sensitivity condition for 'Next new' and 'Next 
+		  unread', fixing bug 8
+
 2003-07-29 [alfons]	0.9.3claws76
 
 	* src/common/utils.[ch]
