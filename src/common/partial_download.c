@@ -1,6 +1,7 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * This file (C) 2004 Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,6 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+/* Partial download:
+ * A mail which has been completely downloaded will have no special headers,
+ * and its entry in the uidl file will end by 0 (POP3_TOTALLY_RECEIVED);
+ *
+ * A mail which has been partially downloaded will have some special headers,
+ * and its entry in the uidl file will first be 1 (POP3_PARTIALLY_RECEIVED);
+ * the special headers will be including "SC-Marked-For-Download" which can 
+ * have three values:
+ * 0 (POP3_PARTIAL_DLOAD_UNKN) meaning that the user has not yet chosen to
+ *  download the mail or let it be deleted - this header is absent until the
+ *  user first chooses an action
+ * 1 (POP3_PARTIAL_DLOAD_DLOAD) meaning that the user wants to finish 
+ *  downloading the mail
+ * 2 (POP3_PARTIAL_DLOAD_DELE) meaning that the user does not want to finish
+ *  downloading the mail
+ * When updating this header to POP3_PARTIAL_DLOAD_DLOAD, the uidl line of
+ * this mail will end with the mail's physical path, which Sylpheed will remove
+ * after having downloaded the complete mail. msg->partial_recv will equal
+ * 2 (POP3_MUST_COMPLETE_RECV).
+ * When updating this header to POP3_PARTIAL_DLOAD_DELE, the uidl line of
+ * this mail will be 0 (POP3_TOTALLY_RECEIVED), which will let Sylpheed delete
+ * this mail from the server as soon as the leave_time preference specifies.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -238,30 +263,6 @@ bail:
 	
 	return err;
 }
-
-/* Partial download:
- * A mail which has been completely downloaded will have no special headers,
- * and its entry in the uidl file will end by 0 (POP3_TOTALLY_RECEIVED);
- *
- * A mail which has been partially downloaded will have some special headers,
- * and its entry in the uidl file will first be 1 (POP3_PARTIALLY_RECEIVED);
- * the special headers will be including "SC-Marked-For-Download" which can 
- * have three values:
- * 0 (POP3_PARTIAL_DLOAD_UNKN) meaning that the user has not yet chosen to
- *  download the mail or let it be deleted - this header is absent until the
- *  user first chooses an action
- * 1 (POP3_PARTIAL_DLOAD_DLOAD) meaning that the user wants to finish 
- *  downloading the mail
- * 2 (POP3_PARTIAL_DLOAD_DELE) meaning that the user does not want to finish
- *  downloading the mail
- * When updating this header to POP3_PARTIAL_DLOAD_DLOAD, the uidl line of
- * this mail will end with the mail's physical path, which Sylpheed will remove
- * after having downloaded the complete mail. msg->partial_recv will equal
- * 2 (POP3_MUST_COMPLETE_RECV).
- * When updating this header to POP3_PARTIAL_DLOAD_DELE, the uidl line of
- * this mail will be 0 (POP3_TOTALLY_RECEIVED), which will let Sylpheed delete
- * this mail from the server as soon as the leave_time preference specifies.
- */
  
 int partial_mark_for_delete(MsgInfo *msginfo)
 {

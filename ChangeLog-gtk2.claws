@@ -1,3 +1,9 @@
+2004-07-14 [colin]	0.9.12cvs18.12
+
+	* src/common/partial_download.c
+	* src/common/partial_download.h
+		Move doc at top, add correct copyright
+
 2004-07-14 [colin]	0.9.12cvs18.11
 
 	* src/folder.c
