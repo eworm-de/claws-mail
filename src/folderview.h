@@ -66,10 +66,7 @@ void folderview_select			(FolderView	*folderview,
 void folderview_unselect		(FolderView	*folderview);
 void folderview_select_next_unread	(FolderView	*folderview);
 void folderview_update_msg_num		(FolderView	*folderview,
-					 GtkCTreeNode	*row,
-					 gint		 new,
-					 gint		 unread,
-					 gint		 total);
+					 GtkCTreeNode	*row);
 void folderview_update_tree		(Folder		*folder);
 void folderview_update_all		(void);
 void folderview_update_all_node		(void);

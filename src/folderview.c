@@ -681,17 +681,25 @@ void folderview_select_next_unread(FolderView *folderview)
 		folderview_select_node(folderview, node);
 }
 
-void folderview_update_msg_num(FolderView *folderview, GtkCTreeNode *row,
-			       gint new, gint unread, gint total)
+void folderview_update_msg_num(FolderView *folderview, GtkCTreeNode *row)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	static GtkCTreeNode *prev_row = NULL;
 	FolderItem *item;
+	gint new, unread, total;
+	gchar *new_str, *unread_str, *total_str;
 
 	if (!row) return;
 
 	item = gtk_ctree_node_get_row_data(ctree, row);
 	if (!item) return;
+
+	gtk_ctree_node_get_text(ctree, row, COL_NEW, &new_str);
+	gtk_ctree_node_get_text(ctree, row, COL_UNREAD, &unread_str);
+	gtk_ctree_node_get_text(ctree, row, COL_TOTAL, &total_str);
+	new = atoi(new_str);
+	unread = atoi(unread_str);
+	total = atoi(total_str);
 
 	/* CLAWS: don't know why but this always seems to be true
 	 * when deleting messages. Somewhere claws does a folder
@@ -702,15 +710,11 @@ void folderview_update_msg_num(FolderView *folderview, GtkCTreeNode *row,
 	if (prev_row     == row    &&
 	    item->new    == new    &&
 	    item->unread == unread &&
-	    item->total  == total) 
+	    item->total  == total)
 		return;
 #endif		
 
 	prev_row = row;
-
-	item->new    = new;
-	item->unread = unread;
-	item->total  = total;
 
 	folderview_update_node(folderview, row);
 }

@@ -308,13 +308,6 @@ static void foldersel_set_tree(Folder *cur_folder, FolderSelectionType type)
 		if (type != FOLDER_SEL_ALL) {
 			if (folder->type == F_NEWS)
 				continue;
-			if (type == FOLDER_SEL_MOVE && cur_folder) {
-				if (cur_folder->type != folder->type)
-					continue;
-				if (cur_folder->type == F_IMAP &&
-				    cur_folder != folder)
-					continue;
-			}
 		}
 
 		node = gtk_ctree_insert_gnode(GTK_CTREE(ctree), NULL, NULL,

@@ -1,3 +1,32 @@
+2002-02-16
+
+	* version 0.7.2
+
+2002-02-16
+
+	* src/summary_search(): summary_search_execute(): scroll the view
+	  when message view is hidden.
+
+2002-02-15
+
+	* src/foldersel.c: foldersel_set_tree(): made different type of
+	  folders selectable in moving mode.
+	* src/folderview.[ch]: folderview_update_msg_num(): compare the
+	  numbers with the CTree's labels, and don't update folder_item here.
+	* src/imap.c: imap_move_msg(), imap_move_msgs_with_dest():
+	  implemented moving between different type of folders.
+	* src/mh.c: SET_DEST_MSG_FLAGS(): new macro.
+	  mh_do_move(), mh_do_move_msgs_with_dest(): new (renamed previous
+	  mh_move_msg() and mh_move_msgs_with_dest()).
+	  mh_move_msg(), mh_move_msgs_with_dest(): implemented message
+	  moving between different type of folders.
+	  mh_copy_msg(), mh_copy_msgs_with_dest(): some code cleanups.
+	* src/summaryview.c: summary_status_show(): update folder_item
+	  here.
+	* po/POTFILES.in: removed reference to headerwindow.c.
+	* src/summaryview.c: summary_step(): fixed the behavior on the
+	  head and tail of the list.
+
 2002-02-15
 
 	* src/mainwindow.c: main_window_set_menu_sensitive(): set 'Show

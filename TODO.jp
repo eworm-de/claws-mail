@@ -5,11 +5,13 @@ TODO
 
 o POP before SMTP
 o オリジナルのアイコンとロゴ
-o 自動保存機能
+o フォルダ管理の拡張
+o より堅牢な IMAP4 応答パーサ
 o 振り分け処理の強化
 o MH, mbox 以外の形式への対応 (Maildir 等)
 o 重要度 (Priority:, X-Priority:, X-MSMail-Priority:)
 o 受信確認 (Disposition-Notification-To:)
+o 自動保存機能
 o ツールバーのカスタマイズ
 o フォルダ毎の設定
 o RFC 2231 (MIME ファイル名のエンコーディング) 対応
@@ -20,7 +22,6 @@ o プラグイン機能
 o メーリングリストマネージャ
 o マルチパートMIMEでのインライン画像表示
 o 圧縮フォルダ
-o GNOME対応
 o コードをさらにきれいにする
 o 処理をさらに速くする
 o 怪しげな英語をなんとかする :)

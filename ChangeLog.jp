@@ -1,3 +1,32 @@
+2002-02-16
+
+	* version 0.7.2
+
+2002-02-16
+
+	* src/summary_search(): summary_search_execute(): メッセージビュー
+	  が隠れている場合ビューをスクロールするようにした。
+
+2002-02-15
+
+	* src/foldersel.c: foldersel_set_tree(): 移動モードで異なるタイプ
+	  のフォルダを選択可能にした。
+	* src/folderview.[ch]: folderview_update_msg_num(): 数を CTree の
+	  ラベルと比較し、ここで folder_item を更新しないようにした。
+	* src/imap.c: imap_move_msg(), imap_move_msgs_with_dest():
+	  異なるタイプのフォルダ間での移動を実装。
+	* src/mh.c: SET_DEST_MSG_FLAGS(): 新規マクロ。
+	  mh_do_move(), mh_do_move_msgs_with_dest(): 新規(以前の mh_move_msg()
+	  と mh_move_msgs_with_dest() を改名)。
+	  mh_move_msg(), mh_move_msgs_with_dest(): 異なるタイプのフォルダ
+	  間での移動を実装。
+	  mh_copy_msg(), mh_copy_msgs_with_dest(): コードの整理。
+	* src/summaryview.c: summary_status_show(): folder_item をここで
+	  更新。
+	* po/POTFILES.in: headerwindow.c への参照を削除。
+	* src/summaryview.c: summary_step(): リストの先頭と末尾での挙動
+	  を修正。
+
 2002-02-15
 
 	* src/mainwindow.c: main_window_set_menu_sensitive(): 「全ての

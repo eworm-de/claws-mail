@@ -1,5 +1,16 @@
 Changes of Sylpheed
 
+* 0.7.2
+
+    * Message moving between different type of folders has been enabled.
+    * PGP decryption failure bug has been fixed.
+    * IMAP4 APPEND command failure has been fixed.
+    * Selection reply bug has been fixed.
+    * The bug that the external editor fails to launch when quotation
+      characters are used in the command line, has been fixed.
+    * 'Show all header' and 'Thread view' became toggle switch.
+    * Some code cleanups have been made.
+
 * 0.7.1
 
     * Message copy between different type of folders has been enabled.

@@ -724,13 +724,51 @@ static gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
 
 gint imap_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 {
-	return imap_do_copy(folder, dest, msginfo, TRUE);
+	gchar *srcfile;
+	gint ret = 0;
+
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(dest != NULL, -1);
+	g_return_val_if_fail(msginfo != NULL, -1);
+	g_return_val_if_fail(msginfo->folder != NULL, -1);
+
+	if (folder == msginfo->folder->folder)
+		return imap_do_copy(folder, dest, msginfo, TRUE);
+
+	srcfile = procmsg_get_message_file(msginfo);
+	if (!srcfile) return -1;
+
+	ret = imap_add_msg(folder, dest, srcfile, FALSE);
+	g_free(srcfile);
+
+	if (ret == 0)
+		ret = folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
+
+	return ret;
 }
 
 gint imap_move_msgs_with_dest(Folder *folder, FolderItem *dest, 
 			      GSList *msglist)
 {
-	return imap_do_copy_msgs_with_dest(folder, dest, msglist, TRUE);
+	MsgInfo *msginfo;
+	GSList *cur;
+	gint ret = 0;
+
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(dest != NULL, -1);
+	g_return_val_if_fail(msglist != NULL, -1);
+
+	msginfo = (MsgInfo *)msglist->data;
+	if (folder == msginfo->folder->folder)
+		return imap_do_copy_msgs_with_dest(folder, dest, msglist, TRUE);
+
+	for (cur = msglist; cur != NULL; cur = cur->next) {
+		msginfo = (MsgInfo *)cur->data;
+		ret = imap_move_msg(folder, dest, msginfo);
+		if (ret != 0) break;
+	}
+
+	return ret;
 }
 
 gint imap_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
