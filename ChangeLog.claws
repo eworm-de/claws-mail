@@ -1,3 +1,9 @@
+2002-11-06 [colin]	0.8.5claws80
+
+	* src/mh.c
+		mh_create_folder() returns NULL if can't create
+		directory hierarchy
+
 2002-11-06 [paul]	0.8.5claws79
 
 	* src/compose.[ch]
