@@ -1,3 +1,8 @@
+2002-02-13 [melvin]	0.7.0claws75
+
+	* src/prefs_actions.c
+		Added missing "signal.h" include
+
 2002-02-13 [melvin]	0.7.0claws74
 
 	* src/prefs_folder_item.c
