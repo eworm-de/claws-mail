@@ -1791,7 +1791,9 @@ static void folderview_empty_trash_cb(FolderView *folderview, guint action,
 	
 	for (cur = mlist ; cur != NULL ; cur = cur->next) {
 		MsgInfo * msginfo = (MsgInfo *) cur->data;
-		if (msginfo->partial_recv)
+		/* is it partially received? (partial_recv isn't cached) */
+		if (msginfo->total_size != 0 && 
+		    msginfo->size != (off_t)msginfo->total_size)
 			partial_mark_for_delete(msginfo);
 	}
 	procmsg_msg_list_free(mlist);
