@@ -1,3 +1,8 @@
+2005-02-12 [paul]	1.0.1cvs4.5
+
+	* src/textview.c
+		remove unnecessary code (thanks to Alfons)
+
 2005-02-12 [paul]	1.0.1cvs4.4
 
 	* src/textview.c
