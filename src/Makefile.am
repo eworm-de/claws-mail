@@ -308,8 +308,6 @@ EXTRA_DIST = \
 	pixmaps/mail_send.xpm \
 	pixmaps/mail.xpm \
 	pixmaps/mark.xpm \
-	pixmaps/messageview_text.xpm \
-	pixmaps/mime_application_octet_stream.xpm \
 	pixmaps/mime_application.xpm \
 	pixmaps/mime_audio.xpm \
 	pixmaps/mime_gpg_expired.xpm \
