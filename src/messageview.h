@@ -23,7 +23,7 @@
 #include <glib.h>
 #include <gtk/gtkwidget.h>
 
-typedef struct _MessageView	MessageView;
+typedef struct _MessageView		MessageView;
 
 #include "mainwindow.h"
 #include "headerview.h"
@@ -32,6 +32,7 @@ typedef struct _MessageView	MessageView;
 #include "mimeview.h"
 #include "noticeview.h"
 #include "procmsg.h"
+#include "toolbar.h"
 
 typedef enum
 {
@@ -42,10 +43,15 @@ typedef enum
 struct _MessageView
 {
 	GtkWidget *vbox;
+	GtkWidget *menubar;
 
 	MessageType type;
 	gboolean new_window;
 	GtkWidget *window;
+
+	/* Toolbar handlebox */
+	GtkWidget *handlebox;
+	Toolbar *toolbar;
 
 	HeaderView *headerview;
 	TextView *textview;
@@ -56,10 +62,15 @@ struct _MessageView
 	MainWindow *mainwin;
 
 	gboolean visible;
+
+	/* From messageview_show */
+	gboolean all_headers;
+	MsgInfo *msginfo;
 };
 
 MessageView *messageview_create			(MainWindow	*mainwin);
 MessageView *messageview_create_with_new_window	(MainWindow	*mainwin);
+
 void messageview_init				(MessageView	*messageview);
 void messageview_show				(MessageView	*messageview,
 						 MsgInfo	*msginfo,

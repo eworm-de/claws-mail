@@ -34,6 +34,7 @@
 #include "main.h"
 #include "messageview.h"
 #include "headerview.h"
+#include "summaryview.h"
 #include "textview.h"
 #include "imageview.h"
 #include "mimeview.h"
@@ -44,11 +45,13 @@
 #include "gtkutils.h"
 #include "utils.h"
 #include "rfc2015.h"
+#include "about.h"
 #include "account.h"
 #include "alertpanel.h"
 #include "send.h"
 #include "pgptext.h"
 #include "menu.h"
+#include "stock_pixmap.h"
 
 static void messageview_change_view_type(MessageView	*messageview,
 					 MessageType	 type);
@@ -59,6 +62,10 @@ static void messageview_size_allocate_cb(GtkWidget	*widget,
 static void key_pressed			(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 MessageView	*messageview);
+static void messageview_toolbar_create	(MessageView	*messageview,
+					 GtkWidget	*container);
+static void toolbar_messageview_buttons_cb  (GtkWidget      *widget, 
+					     ToolbarItem    *item);
 
 static void return_receipt_show		(NoticeView     *noticeview, 
 				         MsgInfo        *msginfo);	
@@ -67,6 +74,21 @@ static void return_receipt_send_clicked (NoticeView	*noticeview,
 
 static PrefsAccount *select_account_from_list
 					(GList		*ac_list);
+
+static void messageview_reply_cb	(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+					 
+static void messageview_delete_cb	(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+					 
+static void messageview_close_cb	(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+
+static void set_toolbar_style(MessageView *messageview);
+
 
 MessageView *messageview_create(MainWindow *mainwin)
 {
@@ -121,14 +143,43 @@ MessageView *messageview_create(MainWindow *mainwin)
 	messageview->imageview  = imageview;
 	messageview->mimeview   = mimeview;
 	messageview->noticeview = noticeview;
+	messageview->mainwin    = mainwin;
 
 	return messageview;
 }
+
+static GtkItemFactoryEntry messageview_entries[] =
+{
+	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
+	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_File/_Close"),			"<control>W", messageview_close_cb, 0, NULL},
+
+	{N_("/_Message"),		NULL, NULL, 0, "<Branch>"},
+	{N_("/_Message/_Reply"),		"<control>R", 	messageview_reply_cb, COMPOSE_REPLY, NULL},
+	{N_("/_Message/Repl_y to"),		NULL, NULL, 0, "<Branch>"},
+	{N_("/_Message/Repl_y to/_all"),	"<shift><control>R", messageview_reply_cb, COMPOSE_REPLY_TO_ALL, NULL},
+	{N_("/_Message/Repl_y to/_sender"),	NULL, messageview_reply_cb, COMPOSE_REPLY_TO_SENDER, NULL},
+	{N_("/_Message/Repl_y to/mailing _list"),
+						"<control>L", messageview_reply_cb, COMPOSE_REPLY_TO_LIST, NULL},
+	{N_("/_Message/Follow-up and reply to"),NULL, messageview_reply_cb, COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL},
+	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/_Delete"),		"<control>D", messageview_delete_cb,  0, NULL},
+	
+	{N_("/_Help"),			NULL, NULL, 0, "<Branch>"},
+	{N_("/_Help/_About"),		NULL, about_show, 0, NULL}
+};
+
+
 
 MessageView *messageview_create_with_new_window(MainWindow *mainwin)
 {
 	GtkWidget *window;
 	MessageView *msgview;
+	GtkWidget *vbox;
+	GtkWidget *menubar;
+	GtkWidget *handlebox;
+
+	guint n_menu_entries;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Sylpheed - Message View"));
@@ -137,6 +188,10 @@ MessageView *messageview_create_with_new_window(MainWindow *mainwin)
 	gtk_widget_set_usize(window, prefs_common.msgwin_width,
 			     prefs_common.msgwin_height);
 
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_widget_show(vbox);
+	gtk_container_add(GTK_CONTAINER(window), vbox);
+	
 	msgview = messageview_create(mainwin);
 
 	gtk_signal_connect(GTK_OBJECT(window), "size_allocate",
@@ -147,15 +202,28 @@ MessageView *messageview_create_with_new_window(MainWindow *mainwin)
 	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
 			   GTK_SIGNAL_FUNC(key_pressed), msgview);
 
-	gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET_PTR(msgview));
+	n_menu_entries = sizeof(messageview_entries) / sizeof(messageview_entries[0]);
+	menubar = menubar_create(window, messageview_entries,
+				 n_menu_entries, "<MessageView>", msgview);
+	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
+
+	handlebox = gtk_handle_box_new();
+	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
+	messageview_toolbar_create(msgview,handlebox);
+
+	gtk_container_add(GTK_CONTAINER(vbox), GTK_WIDGET_PTR(msgview));
 	gtk_widget_grab_focus(msgview->textview->text);
 	gtk_widget_show_all(window);
 
 	msgview->new_window = TRUE;
 	msgview->window = window;
 	msgview->visible = TRUE;
+	msgview->menubar = menubar; 
+	msgview->handlebox = handlebox;
 
+	
 	messageview_init(msgview);
+	common_toolbar_set_style(msgview, TOOLBAR_MSGVIEW);
 
 	return msgview;
 }
@@ -432,6 +500,7 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	MsgInfo *tmpmsginfo;
 
 	g_return_if_fail(msginfo != NULL);
+	messageview->msginfo = msginfo;
 
 #if USE_GPGME
 	if ((fp = procmsg_open_message_decrypted(msginfo, &mimeinfo)) == NULL)
@@ -455,6 +524,7 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	headerview_show(messageview->headerview, tmpmsginfo);
 	procmsg_msginfo_free(tmpmsginfo);
 
+	messageview->all_headers = all_headers;
 	textview_set_all_headers(messageview->textview, all_headers);
 	textview_set_all_headers(messageview->mimeview->textview, all_headers);
 
@@ -529,6 +599,10 @@ void messageview_destroy(MessageView *messageview)
 	imageview_destroy(messageview->imageview);
 	mimeview_destroy(messageview->mimeview);
 	noticeview_destroy(messageview->noticeview);
+
+	toolbar_clear_list(TOOLBAR_MSGVIEW);
+        TOOLBAR_DESTROY_ITEMS(messageview->toolbar->item_list);	
+        TOOLBAR_DESTROY_ACTIONS(messageview->toolbar->action_list);
 
 	g_free(messageview);
 
@@ -634,7 +708,7 @@ void messageview_toggle_view_real(MessageView *messageview)
 	union CompositeWin *cwin = &mainwin->win;
 	GtkWidget *vpaned = NULL;
 	GtkWidget *container = NULL;
-	GtkItemFactory *ifactory =gtk_item_factory_from_widget(mainwin->menubar);
+	GtkItemFactory *ifactory = gtk_item_factory_from_widget(mainwin->menubar);
 	
 	switch (mainwin->type) {
 	case SEPARATE_NONE:
@@ -730,4 +804,200 @@ static PrefsAccount *select_account_from_list(GList *ac_list)
 			        optmenu) != G_ALERTDEFAULT)
 		return NULL;
 	return account_find_from_id(account_id);
+}
+
+static void messageview_toolbar_create(MessageView   *messageview, 
+				       GtkWidget *container)
+{
+	ToolbarItem *toolbar_item;
+
+	GtkWidget *toolbar;
+	GtkWidget *icon_wid = NULL;
+	GtkWidget *item;
+	GtkTooltips *toolbar_tips;
+	ToolbarSylpheedActions *action_item;
+	GSList *cur;
+	GSList *toolbar_list;
+	GList *elem;
+ 	toolbar_tips = gtk_tooltips_new();
+	
+	toolbar_read_config_file(TOOLBAR_MSGVIEW);
+	toolbar_list = toolbar_get_list(TOOLBAR_MSGVIEW);
+
+	messageview->toolbar = g_new0(Toolbar, 1); 
+
+	toolbar = gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL,
+				  GTK_TOOLBAR_BOTH);
+	gtk_container_add(GTK_CONTAINER(container), toolbar);
+	gtk_container_set_border_width(GTK_CONTAINER(container), 2);
+	gtk_toolbar_set_button_relief(GTK_TOOLBAR(toolbar), GTK_RELIEF_NONE);
+	gtk_toolbar_set_space_style(GTK_TOOLBAR(toolbar),
+				    GTK_TOOLBAR_SPACE_LINE);
+	
+	for (cur = toolbar_list; cur != NULL; cur = cur->next) {
+
+		if (g_strcasecmp(((ToolbarItem*)cur->data)->file, SEPARATOR) == 0) {
+			gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
+			continue;
+		}
+		
+		toolbar_item = g_new0(ToolbarItem, 1); 
+		toolbar_item->file = g_strdup(((ToolbarItem*)cur->data)->file);
+		toolbar_item->text = g_strdup(((ToolbarItem*)cur->data)->text);
+		toolbar_item->index = ((ToolbarItem*)cur->data)->index;
+
+		toolbar_item->parent = g_new0(ToolbarParent, 1);
+		toolbar_item->parent->data = (gpointer)messageview;
+		toolbar_item->parent->type = TOOLBAR_MSGVIEW;
+
+		/* collect toolbar items in list to keep track */
+		messageview->toolbar->item_list = 
+			g_slist_append(messageview->toolbar->item_list, 
+				       toolbar_item);
+
+		icon_wid = stock_pixmap_widget(container, stock_pixmap_get_icon(toolbar_item->file));
+		item  = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
+						toolbar_item->text,
+						(""),
+						(""),
+						icon_wid, toolbar_messageview_buttons_cb, 
+						toolbar_item);
+		
+		switch (toolbar_item->index) {
+		case A_COMPOSE_EMAIL:
+			messageview->toolbar->compose_mail_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     messageview->toolbar->compose_mail_btn,
+					   _("Compose Email"), NULL);
+			break;
+		case A_REPLY_MESSAGE:
+			messageview->toolbar->reply_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     messageview->toolbar->reply_btn,
+					   _("Reply to Message"), NULL);
+			break;
+		case A_REPLY_SENDER:
+			messageview->toolbar->replysender_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     messageview->toolbar->replysender_btn,
+					   _("Reply to Sender"), NULL);
+			break;
+		case A_REPLY_ALL:
+			messageview->toolbar->replyall_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     messageview->toolbar->replyall_btn,
+					   _("Reply to All"), NULL);
+			break;
+		case A_REPLY_ML:
+			messageview->toolbar->replylist_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     messageview->toolbar->replylist_btn,
+					   _("Reply to Mailing-list"), NULL);
+			break;
+		case A_FORWARD:
+			messageview->toolbar->fwd_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     messageview->toolbar->fwd_btn,
+					   _("Forward Message"), NULL);
+			break;
+		case A_DELETE:
+			messageview->toolbar->delete_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     messageview->toolbar->delete_btn,
+					   _("Delete Message"), NULL);
+			break;
+		case A_GOTO_NEXT:
+			messageview->toolbar->next_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     messageview->toolbar->next_btn,
+					   _("Goto Next Message"), NULL);
+			break;
+		case A_SYL_ACTIONS:
+			action_item = g_new0(ToolbarSylpheedActions, 1);
+			action_item->widget = item;
+			action_item->name   = g_strdup(toolbar_item->text);
+
+			messageview->toolbar->action_list = 
+				g_slist_append(messageview->toolbar->action_list,
+					       action_item);
+
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     item,
+					     action_item->name, NULL);
+
+			gtk_widget_show(item);
+			break;
+		default:
+			break;
+		}
+
+	}
+	messageview->toolbar->toolbar = toolbar;
+
+	gtk_widget_show_all(toolbar);
+}
+
+static void toolbar_messageview_buttons_cb(GtkWidget   *widget, 
+					   ToolbarItem *item)
+{
+
+	struct {
+		gint   index;
+		void (*func)(GtkWidget *widget, gpointer data);
+	} messageview_action[] = {
+		{ A_COMPOSE_EMAIL,	common_toolbar_compose_cb		},
+		{ A_REPLY_MESSAGE,	common_toolbar_reply_cb			},
+		{ A_REPLY_SENDER,	common_toolbar_reply_to_sender_cb	},
+		{ A_REPLY_ALL,		common_toolbar_reply_to_all_cb		},
+		{ A_REPLY_ML,		common_toolbar_reply_to_list_cb		},
+		{ A_FORWARD,		common_toolbar_forward_cb		},
+		{ A_DELETE,		common_toolbar_delete_cb		},
+		{ A_GOTO_NEXT,		common_toolbar_next_unread_cb		},
+		{ A_SYL_ACTIONS,	common_toolbar_actions_execute_cb	},
+		};
+
+
+	gint num_items = sizeof(messageview_action)/sizeof(messageview_action[0]);
+	gint i;
+	for (i = 0; i < num_items; i++) {
+		
+		if (messageview_action[i].index == item->index) {
+			messageview_action[i].func(widget, (gpointer)item->parent);
+			break;
+		}
+	}
+}
+
+void messageview_reply_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	
+	switch (action) {
+	case COMPOSE_REPLY:
+		common_toolbar_reply_cb(NULL,messageview);
+		break;
+	case COMPOSE_REPLY_TO_ALL:
+		common_toolbar_reply_to_all_cb(NULL,messageview);
+		break;
+	case COMPOSE_REPLY_TO_SENDER:
+		common_toolbar_reply_to_sender_cb(NULL,messageview);
+		break;
+	case COMPOSE_REPLY_TO_LIST:
+		common_toolbar_reply_to_list_cb(NULL,messageview);
+		break;
+	}
+}
+
+static void messageview_delete_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+
+	common_toolbar_delete_cb(NULL,messageview);
+}
+
+static void messageview_close_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+
+	gtk_widget_destroy(messageview->window);
 }
