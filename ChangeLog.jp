@@ -1,9 +1,21 @@
+2002-08-27
+
+	* src/compose.c: 通常行の結合を自動改行時のみ行うようにした。
+
+2002-08-26
+
+	* version 0.8.2
+
 2002-08-26
 
 	* src/compose.c:
 	  join_next_line()
 	  compose_wrap_line_all(): インデントされていない行を結合する変更
 	  を元に戻した。
+	* NEWS
+	  TODO
+	  TODO.jp: 更新。
+	* configure.in: 少なくとも gpgme-0.3.5 を要求するようにした。
 
 2002-08-23
 

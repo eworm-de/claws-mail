@@ -21,9 +21,11 @@ Changes of Sylpheed
     * Automatic cache expiration for News has been implemented.
     * Time stamp has been added to the log messages.
     * Temporary files are created under ~/.sylpheed/tmp/.
-    * Folder and summary view refresh on incorporation has been fixed.
+    * The problem of folder and summary view refresh on incorporation has
+      been fixed.
     * The correct FQDN will be returned to server.
     * Some major memory leaks have been fixed.
+    * Some other bugs have been fixed.
 
 * 0.8.1
 
