@@ -1,3 +1,9 @@
+2005-01-30 [thorsten]	1.0.0cvs23.4
+
+	* src/common/utils.c
+	* src/common/utils.h
+		fix: wrong header in last commit
+
 2005-01-30 [thorsten]	1.0.0cvs23.3
 
 	* src/action.c

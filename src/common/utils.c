@@ -4383,7 +4383,7 @@ gai_strerrorW(
 #endif /* defined(INET6) && defined(__MINGW32__) */
 
 /* removes all CRs from buf, limited by length. returns new length */
-int strip_all_cr(const char *buf, int length)
+int strip_all_cr(char *buf, const int length)
 {
 	register int cr = length;
 	register char *to;
