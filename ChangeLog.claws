@@ -1,3 +1,9 @@
+2004-09-13 [christoph]	0.9.12cvs100
+
+	* src/folder.c
+		add NULL pointer checks to fix segfault when messages can
+		not be fetched
+
 2004-09-08 [colin]	0.9.12cvs99
 
 	* src/account.c
