@@ -1,5 +1,21 @@
 2002-03-20
 
+	* src/compose.c: compose_send(): use account's outbox folder
+	  if it exists.
+	* src/procmsg.[ch]: procmsg_save_to_outbox(): changed the API so
+	  that the outbox can be specified.
+
+2002-03-20
+
+	* src/compose.c: don't save to outbox when messages are queued.
+	  compose_save_to_outbox(): moved to procmsg.c.
+	* src/procmsg.[ch]: procmsg_send_queue(): save to outbox when
+	  sending succeeded.
+	  procmsg_save_to_outbox(): new. Removes the queueing headers if
+	  needed, and adds the given file to the outbox.
+
+2002-03-20
+
 	* src/compose.c: compose_wrap_line(): treat '|' also as quote char.
 	  get_indent_length(): treat ':' and '#' also as quote char, and
 	  cleaned up using strchr().

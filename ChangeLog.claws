@@ -1,3 +1,8 @@
+2002-03-21 [paul]	0.7.4claws29
+
+	* sync with 0.7.4cvs11
+		see ChangeLog entries 2002-03-20
+
 2002-03-20 [alfons]	0.7.4claws28
 
 	* src/inc.c

@@ -1,5 +1,21 @@
 2002-03-20
 
+	* src/compose.c: compose_send(): アカウントの送信控フォルダが存在
+	  すればそれを使用するようにした。
+	* src/procmsg.[ch]: procmsg_save_to_outbox(): 送信控を指定できる
+	  ように API を変更。
+
+2002-03-20
+
+	* src/compose.c: メッセージを待機後に送信控に保存しないようにした。
+	  compose_save_to_outbox(): procmsg.c に移動。
+	* src/procmsg.[ch]: procmsg_send_queue(): 送信に成功した場合送信控
+	  に保存するようにした。
+	  procmsg_save_to_outbox(): 新規。必要があれば送信待機用ヘッダを
+	  削除し、与えられたファイルを送信控に追加する。
+
+2002-03-20
+
 	* src/compose.c: compose_wrap_line(): '|' も引用文字として扱う
 	  ようにした。
 	  get_indent_length(): ':' と '#' も引用文字として扱うようにし、
@@ -85,7 +101,7 @@
 	  src/unmime.c
 	  src/utils.c
 	  src/vcard.c
-	  src/xml.c: added 'b' to the option of all fopen().
+	  src/xml.c: 全ての fopen() のオプションに 'b' を追加。
 
 2002-03-09
 
