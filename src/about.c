@@ -41,11 +41,11 @@
 
 #include "intl.h"
 #include "about.h"
+#include "gtkutils.h"
 #include "stock_pixmap.h"
 #include "prefs_common.h"
 #include "utils.h"
 #include "version.h"
-#include "gtkutils.h"
 
 static GtkWidget *window;
 
@@ -136,11 +136,11 @@ static void about_create(void)
 #if INET6
 		   " IPv6"
 #endif
+#if HAVE_ICONV
+		   " iconv"
+#endif
 #if HAVE_LIBCOMPFACE
 		   " compface"
-#endif
-#if HAVE_LIBJCONV
-		   " jconv"
 #endif
 #if USE_GPGME
 		   " GnuPG"

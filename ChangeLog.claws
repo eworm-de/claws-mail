@@ -1,3 +1,8 @@
+2002-01-12 [paul]	0.8.8claws86
+
+	* sync with 0.8.8cvs5
+		see ChangeLog 2002-01-13 (!)
+
 2002-01-12 [alfons]	0.8.8claws85
 
 	* src/filtering.c

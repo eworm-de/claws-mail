@@ -519,7 +519,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/_Code set/7bit ascii (US-ASC_II)"),
 	 CODESET_ACTION(C_US_ASCII)},
 
-#if HAVE_LIBJCONV
+#if HAVE_ICONV
 	{N_("/_View/_Code set/Unicode (_UTF-8)"),
 	 CODESET_ACTION(C_UTF_8)},
 	CODESET_SEPARATOR,
@@ -529,7 +529,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/_Code set/Western European (ISO-8859-15)"),
 	 CODESET_ACTION(C_ISO_8859_15)},
 	CODESET_SEPARATOR,
-#if HAVE_LIBJCONV
+#if HAVE_ICONV
 	{N_("/_View/_Code set/Central European (ISO-8859-_2)"),
 	 CODESET_ACTION(C_ISO_8859_2)},
 	CODESET_SEPARATOR,
@@ -554,7 +554,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 #endif
 	{N_("/_View/_Code set/Japanese (ISO-2022-_JP)"),
 	 CODESET_ACTION(C_ISO_2022_JP)},
-#if HAVE_LIBJCONV
+#if HAVE_ICONV
 	{N_("/_View/_Code set/Japanese (ISO-2022-JP-2)"),
 	 CODESET_ACTION(C_ISO_2022_JP_2)},
 #endif
@@ -562,7 +562,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	 CODESET_ACTION(C_EUC_JP)},
 	{N_("/_View/_Code set/Japanese (_Shift__JIS)"),
 	 CODESET_ACTION(C_SHIFT_JIS)},
-#if HAVE_LIBJCONV
+#if HAVE_ICONV
 	CODESET_SEPARATOR,
 	{N_("/_View/_Code set/Simplified Chinese (_GB2312)"),
 	 CODESET_ACTION(C_GB2312)},

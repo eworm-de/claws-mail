@@ -136,11 +136,17 @@ gint conv_convert			(CodeConverter	*conv,
 					 const gchar	*inbuf);
 
 gchar *conv_codeset_strdup		(const gchar	*inbuf,
-					 const gchar	*src_codeset,
-					 const gchar	*dest_codeset);
+					 const gchar	*src_code,
+					 const gchar	*dest_code);
 
 CodeConvFunc conv_get_code_conv_func	(const gchar	*src_charset_str,
 					 const gchar	*dest_charset_str);
+
+#if HAVE_ICONV
+gchar *conv_iconv_strdup		(const gchar	*inbuf,
+					 const gchar	*src_code,
+					 const gchar	*dest_code);
+#endif
 
 const gchar *conv_get_charset_str		(CharSet	 charset);
 CharSet conv_get_charset_from_str		(const gchar	*charset);

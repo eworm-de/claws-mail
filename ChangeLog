@@ -1,3 +1,12 @@
+2003-01-13
+
+	* src/codeconv.[ch]: made the transition from libjconv to iconv().
+	  conv_iconv_strdup(): new.
+	* src/about.c
+	  src/imap.c
+	  src/mainwindow.c
+	  src/prefs_common.c: replaced HAVE_LIBJCONV to HAVE_ICONV.
+
 2003-01-10
 
 	* src/compose.c

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,8 +31,8 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <time.h>
-#if HAVE_LIBJCONV
-#  include <jconv.h>
+#if HAVE_ICONV
+#  include <iconv.h>
 #endif
 
 #include "intl.h"
@@ -3157,7 +3157,7 @@ static void imap_path_separator_subst(gchar *str, gchar separator)
 
 static gchar *imap_modified_utf7_to_locale(const gchar *mutf7_str)
 {
-#if !HAVE_LIBJCONV
+#if !HAVE_ICONV
 	return g_strdup(mutf7_str);
 #else
 	static iconv_t cd = (iconv_t)-1;
@@ -3225,12 +3225,12 @@ static gchar *imap_modified_utf7_to_locale(const gchar *mutf7_str)
 	*to_p = '\0';
 
 	return to_str;
-#endif /* !HAVE_LIBJCONV */
+#endif /* !HAVE_ICONV */
 }
 
 static gchar *imap_locale_to_modified_utf7(const gchar *from)
 {
-#if !HAVE_LIBJCONV
+#if !HAVE_ICONV
 	return g_strdup(from);
 #else
 	static iconv_t cd = (iconv_t)-1;
@@ -3321,7 +3321,7 @@ static gchar *imap_locale_to_modified_utf7(const gchar *from)
 	g_string_free(to_str, FALSE);
 
 	return to;
-#endif
+#endif /* !HAVE_ICONV */
 }
 
 static gboolean imap_rename_folder_func(GNode *node, gpointer data)
