@@ -1,3 +1,14 @@
+2002-11-28 [paul]	0.8.6claws35
+
+	* src/folderview.c
+		re-instate 'Check for new messages' in Newsgroup
+		folders right-click menu, after a suggestion from
+		Tim Mann <timmann@users.sourceforge.net>
+
+	* src/main.c
+		after a crash check only local folders for new
+		messages
+
 2002-11-28 [paul]	0.8.6claws34
 
 	* configure.in
