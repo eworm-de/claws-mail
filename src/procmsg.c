@@ -234,6 +234,7 @@ GSList *procmsg_read_cache(FolderItem *item, gboolean scan_file)
 		READ_CACHE_DATA(msginfo->subject, fp);
 		READ_CACHE_DATA(msginfo->msgid, fp);
 		READ_CACHE_DATA(msginfo->inreplyto, fp);
+		READ_CACHE_DATA(msginfo->references, fp);
 
 		MSG_SET_FLAGS(msginfo->flags, default_flags);
 
@@ -363,6 +364,7 @@ void procmsg_write_cache(MsgInfo *msginfo, FILE *fp)
 	WRITE_CACHE_DATA(msginfo->subject, fp);
 	WRITE_CACHE_DATA(msginfo->msgid, fp);
 	WRITE_CACHE_DATA(msginfo->inreplyto, fp);
+	WRITE_CACHE_DATA(msginfo->references, fp);
 }
 
 void procmsg_write_flags(MsgInfo *msginfo, FILE *fp)
@@ -755,6 +757,7 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 	MEMBDUP(xface);
 	MEMBDUP(dispositionnotificationto);
 	MEMBDUP(returnreceiptto);
+	MEMBDUP(references);
 
 	MEMBCOPY(score);
 	MEMBCOPY(threadscore);
@@ -766,6 +769,7 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 {
 	if (msginfo == NULL) return;
 
+	g_free(msginfo->references);
 	g_free(msginfo->returnreceiptto);
 	g_free(msginfo->dispositionnotificationto);
 	g_free(msginfo->xface);

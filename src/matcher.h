@@ -40,6 +40,10 @@ enum {
 	MATCHING_NOT_NEWSGROUPS,
 	MATCHING_INREPLYTO,
 	MATCHING_NOT_INREPLYTO,
+	MATCHING_REFERENCES,
+	MATCHING_NOT_REFERENCES,
+	MATCHING_SCORE_GREATER,
+	MATCHING_SCORE_LOWER,
 
 	/* file content */
 	MATCHING_HEADER,
@@ -76,7 +80,7 @@ struct _MatcherProp {
 	int criteria;
 	gchar * header;
 	gchar * expr;
-	int age;
+	int value;
 	regex_t * preg;
 	int error;
 };

@@ -1,3 +1,14 @@
+2001-05-13 [hoa]
+	* src/defs.h
+		changed version of cache
+	* src/matcher.[ch]
+	* src/prefs_matcher.c
+		added additionnal matching criteria
+	* src/procheader.c
+	* src/procmsg.[ch]
+	* src/news.c
+		added references in MsgInfo
+
 2001-05-12 [hoa]
 
 	* src/defs.h

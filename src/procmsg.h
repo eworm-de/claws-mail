@@ -125,6 +125,8 @@ struct _MsgInfo
 	gchar *dispositionnotificationto;
 	gchar *returnreceiptto;
 
+	gchar *references;
+
 	gint score;
 	gint threadscore;
 

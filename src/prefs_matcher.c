@@ -85,19 +85,23 @@ enum {
 	CRITERIA_TO_OR_CC = 5,
 	CRITERIA_NEWSGROUPS = 6,
 	CRITERIA_INREPLYTO = 7,
-	CRITERIA_AGE_GREATER = 8,
-	CRITERIA_AGE_LOWER = 9,
-	CRITERIA_HEADER = 10,
-	CRITERIA_HEADERS_PART = 11,
-	CRITERIA_BODY_PART = 12,
-	CRITERIA_MESSAGE = 13,
+	CRITERIA_REFERENCES = 8,
+	CRITERIA_AGE_GREATER = 9,
+	CRITERIA_AGE_LOWER = 10,
+	CRITERIA_HEADER = 11,
+	CRITERIA_HEADERS_PART = 12,
+	CRITERIA_BODY_PART = 13,
+	CRITERIA_MESSAGE = 14,
 
-	CRITERIA_UNREAD = 14,
-	CRITERIA_NEW = 15,
-	CRITERIA_MARKED = 16,
-	CRITERIA_DELETED = 17,
-	CRITERIA_REPLIED = 18,
-	CRITERIA_FORWARDED = 19
+	CRITERIA_UNREAD = 15,
+	CRITERIA_NEW = 16,
+	CRITERIA_MARKED = 17,
+	CRITERIA_DELETED = 18,
+	CRITERIA_REPLIED = 19,
+	CRITERIA_FORWARDED = 20,
+
+	CRITERIA_SCORE_GREATER = 21,
+	CRITERIA_SCORE_LOWER = 22
 };
 
 enum {
@@ -130,13 +134,14 @@ gchar * predicate_flag_text [] = {
 gchar * criteria_text [] = {
 	"All messages", "Subject",
 	"From", "To", "Cc", "To or Cc",
-	"Newsgroups", "In reply to",
+	"Newsgroups", "In reply to", "References",
 	"Age greater than", "Age lower than",
 	"Header", "Headers part",
 	"Body part", "Whole message",
 	"Unread flag", "New flag",
 	"Marked flag", "Deleted flag",
-	"Replied flag", "Forwarded flag"
+	"Replied flag", "Forwarded flag",
+	"Score greater than", "Score lower than"
 };
 
 gint get_sel_from_list(GtkList * list)
@@ -702,10 +707,16 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHING_NEWSGROUPS;
 	case CRITERIA_INREPLYTO:
 		return MATCHING_INREPLYTO;
+	case CRITERIA_REFERENCES:
+		return MATCHING_REFERENCES;
 	case CRITERIA_AGE_GREATER:
 		return MATCHING_AGE_GREATER;
 	case CRITERIA_AGE_LOWER:
 		return MATCHING_AGE_LOWER;
+	case CRITERIA_SCORE_GREATER:
+		return MATCHING_SCORE_GREATER;
+	case CRITERIA_SCORE_LOWER:
+		return MATCHING_SCORE_LOWER;
 	case CRITERIA_HEADER:
 		return MATCHING_HEADER;
 	case CRITERIA_HEADERS_PART:
@@ -748,6 +759,8 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 		return MATCHING_NOT_NEWSGROUPS;
 	case MATCHING_INREPLYTO:
 		return MATCHING_NOT_INREPLYTO;
+	case MATCHING_REFERENCES:
+		return MATCHING_NOT_REFERENCES;
 	case MATCHING_HEADER:
 		return MATCHING_NOT_HEADER;
 	case MATCHING_HEADERS_PART:
@@ -773,8 +786,8 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 	gboolean case_sensitive;
 	gchar * header;
 	gchar * expr;
-	gint age;
-	gchar * age_str;
+	gint value;
+	gchar * value_str;
 
 	value_criteria = get_sel_from_list(GTK_LIST(matcher.criteria_list));
 
@@ -803,6 +816,7 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 	case CRITERIA_TO_OR_CC:
 	case CRITERIA_NEWSGROUPS:
 	case CRITERIA_INREPLYTO:
+	case CRITERIA_REFERENCES:
 	case CRITERIA_HEADERS_PART:
 	case CRITERIA_BODY_PART:
 	case CRITERIA_MESSAGE:
@@ -829,7 +843,7 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 
 	header = NULL;
 	expr = NULL;
-	age = 0;
+	value = 0;
 
 	switch (value_criteria) {
 	case CRITERIA_ALL:
@@ -848,6 +862,7 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 	case CRITERIA_TO_OR_CC:
 	case CRITERIA_NEWSGROUPS:
 	case CRITERIA_INREPLYTO:
+	case CRITERIA_REFERENCES:
 	case CRITERIA_HEADERS_PART:
 	case CRITERIA_BODY_PART:
 	case CRITERIA_MESSAGE:
@@ -863,14 +878,16 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 
 	case CRITERIA_AGE_GREATER:
 	case CRITERIA_AGE_LOWER:
-		age_str = gtk_entry_get_text(GTK_ENTRY(matcher.value_entry));
+	case CRITERIA_SCORE_GREATER:
+	case CRITERIA_SCORE_LOWER:
+		value_str = gtk_entry_get_text(GTK_ENTRY(matcher.value_entry));
 
-		if (*age_str == '\0') {
-		    alertpanel_error(_("Age is not set."));
+		if (*value_str == '\0') {
+		    alertpanel_error(_("Value is not set."));
 		    return NULL;
 		}
 
-		age = atoi(age_str);
+		value = atoi(value_str);
 
 		break;
 
@@ -892,7 +909,8 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 		break;
 	}
 
-	matcherprop =  matcherprop_new(criteria, header, matchtype, expr, age);
+	matcherprop =  matcherprop_new(criteria, header, matchtype,
+				       expr, value);
 
 	return matcherprop;
 }
@@ -1084,6 +1102,13 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 				     CRITERIA_INREPLYTO);
 		break;
 
+	case MATCHING_NOT_REFERENCES:
+		negative_cond = TRUE;
+	case MATCHING_REFERENCES:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_REFERENCES);
+		break;
+
 	case MATCHING_NOT_TO_AND_NOT_CC:
 		negative_cond = TRUE;
 	case MATCHING_TO_OR_CC:
@@ -1128,6 +1153,16 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
 				     CRITERIA_AGE_LOWER);
 		break;
+
+	case MATCHING_SCORE_GREATER:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_SCORE_GREATER);
+		break;
+
+	case MATCHING_SCORE_LOWER:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_SCORE_LOWER);
+		break;
 	}
 	
 	switch(prop->criteria) {
@@ -1141,6 +1176,7 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 	case MATCHING_NOT_TO_AND_NOT_CC:
 	case MATCHING_NOT_NEWSGROUPS:
 	case MATCHING_NOT_INREPLYTO:
+	case MATCHING_NOT_REFERENCES:
 	case MATCHING_NOT_HEADERS_PART:
 	case MATCHING_NOT_BODY_PART:
 	case MATCHING_NOT_MESSAGE:
@@ -1151,6 +1187,7 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 	case MATCHING_TO_OR_CC:
 	case MATCHING_NEWSGROUPS:
 	case MATCHING_INREPLYTO:
+	case MATCHING_REFERENCES:
 	case MATCHING_HEADERS_PART:
 	case MATCHING_BODY_PART:
 	case MATCHING_MESSAGE:
@@ -1159,7 +1196,9 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 
 	case MATCHING_AGE_GREATER:
 	case MATCHING_AGE_LOWER:
-		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), itos(prop->age));
+	case MATCHING_SCORE_GREATER:
+	case MATCHING_SCORE_LOWER:
+		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), itos(prop->value));
 		break;
 
 	case MATCHING_NOT_HEADER:
@@ -1246,6 +1285,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 	case CRITERIA_TO_OR_CC:
 	case CRITERIA_NEWSGROUPS:
 	case CRITERIA_INREPLYTO:
+	case CRITERIA_REFERENCES:
 	case CRITERIA_HEADERS_PART:
 	case CRITERIA_BODY_PART:
 	case CRITERIA_MESSAGE:
@@ -1264,6 +1304,8 @@ static void prefs_matcher_criteria_select(GtkList *list,
 
 	case CRITERIA_AGE_GREATER:
 	case CRITERIA_AGE_LOWER:
+	case CRITERIA_SCORE_GREATER:
+	case CRITERIA_SCORE_LOWER:
 		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
 		gtk_widget_set_sensitive(matcher.header_label, FALSE);
 		gtk_widget_set_sensitive(matcher.value_label, TRUE);

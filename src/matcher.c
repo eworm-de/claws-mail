@@ -47,6 +47,10 @@ MatchParser matchparser_tab[] = {
 	{MATCHING_NOT_NEWSGROUPS, "~newsgroups"},
 	{MATCHING_INREPLYTO, "inreplyto"},
 	{MATCHING_NOT_INREPLYTO, "~inreplyto"},
+	{MATCHING_REFERENCES, "references"},
+	{MATCHING_NOT_REFERENCES, "~references"},
+	{MATCHING_SCORE_GREATER, "score_greater"},
+	{MATCHING_SCORE_LOWER, "score_lower"},
 
 	/* content have to be read */
 	{MATCHING_HEADER, "header"},
@@ -103,7 +107,7 @@ MatcherProp * matcherprop_parse(gchar ** str)
 	MatcherProp * prop;
 	gchar * tmp;
 	gint key;
-	gint age;
+	gint value;
 	gchar * expr;
 	gint match;
 	gchar * header = NULL;
@@ -118,14 +122,16 @@ MatcherProp * matcherprop_parse(gchar ** str)
 	switch (key) {
 	case MATCHING_AGE_LOWER:
 	case MATCHING_AGE_GREATER:
-		age = matcher_parse_number(&tmp);
+	case MATCHING_SCORE_LOWER:
+	case MATCHING_SCORE_GREATER:
+		value = matcher_parse_number(&tmp);
 		if (tmp == NULL) {
 			* str = NULL;
 			return NULL;
 		}
 		*str = tmp;
 
-		prop = matcherprop_new(key, NULL, 0, NULL, age);
+		prop = matcherprop_new(key, NULL, 0, NULL, value);
 
 		return prop;
 
@@ -160,6 +166,8 @@ MatcherProp * matcherprop_parse(gchar ** str)
 	case MATCHING_NEWSGROUPS:
 	case MATCHING_NOT_NEWSGROUPS:
 	case MATCHING_INREPLYTO:
+	case MATCHING_NOT_REFERENCES:
+	case MATCHING_REFERENCES:
 	case MATCHING_NOT_INREPLYTO:
 	case MATCHING_MESSAGE:
 	case MATCHING_NOT_MESSAGE:
@@ -249,11 +257,12 @@ gint matcher_parse_keyword(gchar ** str)
 	match = -1;
 	for(i = 0 ; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)) ;
 	    i++) {
-		if (strncasecmp(matchparser_tab[i].str, start,
-				p - start) == 0) {
-			match = i;
-			break;
-		}
+		if ((strlen(matchparser_tab[i].str) == p - start) &&
+		    (strncasecmp(matchparser_tab[i].str, start,
+				 p - start) == 0)) {
+				match = i;
+				break;
+			}
 	}
 
 	if (match == -1) {
@@ -394,7 +403,7 @@ gchar * matcher_parse_str(gchar ** str)
 
 MatcherProp * matcherprop_new(gint criteria, gchar * header,
 			      gint matchtype, gchar * expr,
-			      int age)
+			      int value)
 {
 	MatcherProp * prop;
 
@@ -410,7 +419,7 @@ MatcherProp * matcherprop_new(gint criteria, gchar * header,
 		prop->expr = NULL;
 	prop->matchtype = matchtype;
 	prop->preg = NULL;
-	prop->age = age;
+	prop->value = value;
 	prop->error = 0;
 
 	return prop;
@@ -536,10 +545,14 @@ gboolean matcherprop_match(MatcherProp * prop, MsgInfo * info)
 		|| matcherprop_string_match(prop, info->cc));
 	case MATCHING_AGE_GREATER:
 		t = time(NULL);
-		return ((t - info->date_t) / (60 * 60 * 24)) >= prop->age;
+		return ((t - info->date_t) / (60 * 60 * 24)) >= prop->value;
 	case MATCHING_AGE_LOWER:
 		t = time(NULL);
-		return ((t - info->date_t) / (60 * 60 * 24)) <= prop->age;
+		return ((t - info->date_t) / (60 * 60 * 24)) <= prop->value;
+	case MATCHING_SCORE_GREATER:
+		return info->score >= prop->value;
+	case MATCHING_SCORE_LOWER:
+		return info->score <= prop->value;
 	case MATCHING_NEWSGROUPS:
 		return matcherprop_string_match(prop, info->newsgroups);
 	case MATCHING_NOT_NEWSGROUPS:
@@ -548,6 +561,10 @@ gboolean matcherprop_match(MatcherProp * prop, MsgInfo * info)
 		return matcherprop_string_match(prop, info->inreplyto);
 	case MATCHING_NOT_INREPLYTO:
 		return !matcherprop_string_match(prop, info->inreplyto);
+	case MATCHING_REFERENCES:
+		return matcherprop_string_match(prop, info->references);
+	case MATCHING_NOT_REFERENCES:
+		return !matcherprop_string_match(prop, info->references);
 	case MATCHING_HEADER:
 	default:
 		return 0;
@@ -987,7 +1004,7 @@ static void matcherprop_print(MatcherProp * matcher)
 	if (matcher->expr)
 		printf("expr : %s\n", matcher->expr);
 
-	printf("age: %i\n", matcher->age);
+	printf("age: %i\n", matcher->value;
 
 	printf("compiled : %s\n", matcher->preg != NULL ? "yes" : "no");
 	printf("error: %i\n",  matcher->error);
@@ -1017,7 +1034,9 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 	switch(matcher->criteria) {
 	case MATCHING_AGE_GREATER:
 	case MATCHING_AGE_LOWER:
-		return g_strdup_printf("%s %i", criteria_str, matcher->age);
+	case MATCHING_SCORE_GREATER:
+	case MATCHING_SCORE_LOWER:
+		return g_strdup_printf("%s %i", criteria_str, matcher->value);
 		break;
 	case MATCHING_ALL:
 	case MATCHING_UNREAD:

@@ -548,6 +548,7 @@ MsgInfo *procheader_parse(const gchar *file, MsgFlags flags, gboolean full)
 			break;
 		case H_REFERENCES:
 			if (!reference) {
+				msginfo->references = g_strdup(hp);
 				eliminate_parenthesis(hp, '(', ')');
 				if ((p = strrchr(hp, '<')) != NULL &&
 				    strchr(p + 1, '>') != NULL) {

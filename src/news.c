@@ -566,6 +566,7 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
 	if (*msgid != '\0')
 		msginfo->msgid = g_strdup(msgid);
 
+	msginfo->references = g_strdup(ref);
 	eliminate_parenthesis(ref, '(', ')');
 	if ((p = strrchr(ref, '<')) != NULL) {
 		extract_parenthesis(p, '<', '>');
