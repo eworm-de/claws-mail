@@ -8,6 +8,9 @@
 		sync with main, see ChangeLog entries 2004-12-10
 		and 2004-12-13
 
+	* po/ru.po
+		updated by Pavlo Bohmat
+
 2004-12-13 [thorsten]	0.9.13cvs15
 
 	* src/plugins/spamassassin/libspamc.c
