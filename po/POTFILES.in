@@ -34,7 +34,7 @@ src/folderview.c
 src/grouplistdialog.c
 src/gtk/about.c
 src/gtk/colorlabel.c
-src/gtk_description_window.c
+src/gtk/description_window.c
 src/gtk/gtkaspell.c
 src/gtk/gtkutils.c
 src/gtk/logwindow.c

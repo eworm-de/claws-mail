@@ -1,3 +1,12 @@
+2003-11-27 [paul]	0.9.7claws2
+
+	* po/POTFILES.in
+		fix a typo
+
+	* po/zh_CN.po
+		update Simplified Chinese translation. submitted by
+		Hansom Young
+
 2003-11-27 [paul]	0.9.7claws1
 
 	* po/POTFILES.in
