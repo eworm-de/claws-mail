@@ -1959,6 +1959,36 @@ static void folderview_rm_imap_server_cb(FolderView *folderview, guint action,
 	folder_write_list();
 }
 
+
+
+
+
+static GList *folderview_news_get_subscriptions(GtkCTree *ctree,
+						GtkCTreeNode *node)
+{
+	FolderItem *item;
+	GList * result;
+
+	result = NULL;
+
+	if (!node)
+		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+	if (!node)
+		return NULL;
+
+	node = GTK_CTREE_ROW(node)->children;
+
+	while (node) {
+		item = gtk_ctree_node_get_row_data(ctree, node);
+
+		result = g_list_append(result, item->name);
+		node = GTK_CTREE_ROW(node)->sibling;
+	}
+
+	return result;
+}
+
+
 static void folderview_new_news_group_cb(FolderView *folderview, guint action,
 					 GtkWidget *widget)
 {
@@ -1967,8 +1997,10 @@ static void folderview_new_news_group_cb(FolderView *folderview, guint action,
 	GtkCTreeNode *servernode, *node;
 	FolderItem *item;
 	FolderItem *newitem;
-	gchar *new_group;
 	const gchar *server;
+	GList * subscriptions;
+	GList * new_subscriptions;
+	GList * l;
 
 	if (!folderview->selected) return;
 
@@ -1978,41 +2010,83 @@ static void folderview_new_news_group_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item->folder->type == F_NEWS);
 	g_return_if_fail(item->folder->account != NULL);
 
-	new_group = grouplist_dialog(item->folder);
-	if (!new_group) return;
-
 	if (GTK_CTREE_ROW(folderview->selected)->parent != NULL)
 		servernode = GTK_CTREE_ROW(folderview->selected)->parent;
 	else
 		servernode = folderview->selected;
 
-	if (folderview_find_by_name(ctree, servernode, new_group)) {
-		alertpanel_error(_("The newsgroup `%s' already exists."),
-				 new_group);
-		g_free(new_group);
-		return;
+	subscriptions = folderview_news_get_subscriptions(ctree, servernode);
+
+	new_subscriptions = grouplist_dialog(item->folder, subscriptions);
+
+	for(l = subscriptions ; l != NULL ; l = l->next) {
+	  gchar * name;
+	  
+	  name = (gchar *) l->data;
+
+	  if (g_list_find_custom(new_subscriptions, name,
+				 (GCompareFunc) g_strcasecmp) == NULL) {
+	    GtkCTreeNode * sel;
+
+	    /* remove subscription */
+
+	    sel = folderview_find_by_name(ctree, servernode, name);
+	    g_return_if_fail(sel != NULL);
+
+	    item = gtk_ctree_node_get_row_data(ctree, sel);
+
+	    g_return_if_fail(item != NULL);
+	    g_return_if_fail(item->folder != NULL);
+	    g_return_if_fail(item->folder->type == F_NEWS);
+	    g_return_if_fail(item->folder->account != NULL);
+
+	    if (folderview->opened == sel) {
+	      summary_clear_all(folderview->summaryview);
+	      folderview->opened = NULL;
+	    }
+	    
+	    folder_item_remove(item);
+	    gtk_ctree_remove_node(ctree, sel);
+
+	  }
 	}
 
-	gtk_clist_freeze(GTK_CLIST(ctree));
+	g_list_free(subscriptions);
 
-	text[COL_FOLDER] = new_group;
-	node = gtk_ctree_insert_node(ctree, servernode, NULL, text,
-				     FOLDER_SPACING,
-				     folderxpm, folderxpmmask,
-				     folderopenxpm, folderopenxpmmask,
-				     FALSE, FALSE);
-	gtk_ctree_expand(ctree, servernode);
+	for(l = new_subscriptions ; l != NULL ; l = l->next) {
+	  gchar * name;
+	  
+	  name = (gchar *) l->data;
 
-	item = gtk_ctree_node_get_row_data(ctree, servernode);
-	server = item->folder->account->nntp_server;
+	  if (folderview_find_by_name(ctree, servernode, name) == NULL) {
 
-	newitem = folder_item_new(new_group, new_group);
-	g_free(new_group);
-	folder_item_append(item, newitem);
-	gtk_ctree_node_set_row_data(ctree, node, newitem);
-	gtk_ctree_sort_node(ctree, servernode);
+	    /* add newsgroup */
 
-	gtk_clist_thaw(GTK_CLIST(ctree));
+	    gtk_clist_freeze(GTK_CLIST(ctree));
+	    
+	    text[COL_FOLDER] = name;
+	    node = gtk_ctree_insert_node(ctree, servernode, NULL, text,
+					 FOLDER_SPACING,
+					 folderxpm, folderxpmmask,
+					 folderopenxpm, folderopenxpmmask,
+					 FALSE, FALSE);
+	    gtk_ctree_expand(ctree, servernode);
+	    
+	    item = gtk_ctree_node_get_row_data(ctree, servernode);
+	    server = item->folder->account->nntp_server;
+	    
+	    newitem = folder_item_new(name, name);
+	    folder_item_append(item, newitem);
+	    gtk_ctree_node_set_row_data(ctree, node, newitem);
+	    gtk_ctree_sort_node(ctree, servernode);
+	    
+	    gtk_clist_thaw(GTK_CLIST(ctree));
+	    
+	  }
+	}
+
+	list_free_strings(new_subscriptions);
+	g_list_free(new_subscriptions);
 
 	folder_write_list();
 }

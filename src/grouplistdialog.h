@@ -24,6 +24,7 @@
 
 #include "folder.h"
 
-gchar *grouplist_dialog	(Folder *folder);
+GList *grouplist_dialog(Folder *folder, GList * cur_subscriptions);
+     //gchar *grouplist_dialog	(Folder *folder);
 
 #endif /* __GROUPLISTDIALOG_H__ */

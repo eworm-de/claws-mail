@@ -52,8 +52,12 @@
 #include "recv.h"
 #include "socket.h"
 
-#define GROUPLIST_DIALOG_WIDTH	420
+#define GROUPLIST_DIALOG_WIDTH	500
+#define GROUPLIST_NAMES	        250
 #define GROUPLIST_DIALOG_HEIGHT	400
+
+static GList * subscribed = NULL;
+gboolean dont_unsubscribed = FALSE;
 
 static gboolean ack;
 static gboolean locked;
@@ -63,7 +67,7 @@ static GtkWidget *entry;
 static GtkWidget *clist;
 static GtkWidget *status_label;
 static GtkWidget *ok_button;
-static GSList *group_list;
+static GSList *group_list = NULL;
 static Folder *news_folder;
 
 static void grouplist_dialog_create	(void);
@@ -88,11 +92,17 @@ static void clist_selected	(GtkCList	*clist,
 				 gint		 column,
 				 GdkEventButton	*event,
 				 gpointer	 user_data);
+static void clist_unselected	(GtkCList	*clist,
+				 gint		 row,
+				 gint		 column,
+				 GdkEventButton	*event,
+				 gpointer	 user_data);
 static void entry_activated	(GtkEditable	*editable);
 
-gchar *grouplist_dialog(Folder *folder)
+GList *grouplist_dialog(Folder *folder, GList * cur_subscriptions)
 {
 	gchar *str;
+	GList * l;
 
 	if (dialog && GTK_WIDGET_VISIBLE(dialog)) return NULL;
 
@@ -106,6 +116,11 @@ gchar *grouplist_dialog(Folder *folder)
 	manage_window_set_transient(GTK_WINDOW(dialog));
 	GTK_EVENTS_FLUSH();
 
+	subscribed = NULL;
+
+	for(l = cur_subscriptions ; l != NULL ; l = l->next)
+	  subscribed = g_list_append(subscribed, g_strdup((gchar *) l->data));
+
 	grouplist_dialog_set_list(NULL);
 
 	gtk_main();
@@ -113,6 +128,7 @@ gchar *grouplist_dialog(Folder *folder)
 	manage_window_focus_out(dialog, NULL, NULL);
 	gtk_widget_hide(dialog);
 
+	/*
 	if (ack) {
 		str = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
 		if (str && *str == '\0') {
@@ -121,19 +137,29 @@ gchar *grouplist_dialog(Folder *folder)
 		}
 	} else
 		str = NULL;
+	*/
+	if (!ack) {
+	  list_free_strings(subscribed);
+	  g_list_free(subscribed);
+
+	  subscribed = NULL;
+	  
+	  for(l = cur_subscriptions ; l != NULL ; l = l->next)
+	    subscribed = g_list_append(subscribed, g_strdup((gchar *) l->data));
+	}
 
 	GTK_EVENTS_FLUSH();
 
 	debug_print("return string = %s\n", str ? str : "(none)");
-	return str;
+	return subscribed;
 }
 
 static void grouplist_clear(void)
 {
+	dont_unsubscribed = TRUE;
 	gtk_clist_clear(GTK_CLIST(clist));
 	gtk_entry_set_text(GTK_ENTRY(entry), "");
-	slist_free_strings(group_list);
-	g_slist_free(group_list);
+	dont_unsubscribed = FALSE;
 }
 
 static void grouplist_dialog_create(void)
@@ -145,6 +171,9 @@ static void grouplist_dialog_create(void)
 	GtkWidget *cancel_button;	
 	GtkWidget *refresh_button;	
 	GtkWidget *scrolledwin;
+	gchar * col_names[3] = {
+		_("name"), _("count of messages"), _("type")
+	};
 
 	dialog = gtk_dialog_new();
 	gtk_window_set_policy(GTK_WINDOW(dialog), FALSE, TRUE, FALSE);
@@ -186,14 +215,15 @@ static void grouplist_dialog_create(void)
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	clist = gtk_clist_new(1);
+	clist = gtk_clist_new_with_titles(3, col_names);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), clist);
-	gtk_clist_set_column_width(GTK_CLIST(clist), 0, 80);
-	gtk_clist_set_selection_mode(GTK_CLIST(clist), GTK_SELECTION_BROWSE);
+	gtk_clist_set_selection_mode(GTK_CLIST(clist), GTK_SELECTION_MULTIPLE);
 	GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(clist)->column[0].button,
 			       GTK_CAN_FOCUS);
 	gtk_signal_connect(GTK_OBJECT(clist), "select_row",
 			   GTK_SIGNAL_FUNC(clist_selected), NULL);
+	gtk_signal_connect(GTK_OBJECT(clist), "unselect_row",
+			   GTK_SIGNAL_FUNC(clist_unselected), NULL);
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
@@ -232,24 +262,68 @@ static void grouplist_dialog_set_list(gchar * pattern)
 
 	grouplist_clear();
 
-	recv_set_ui_func(grouplist_recv_func, NULL);
-	group_list = news_get_group_list(news_folder);
-	recv_set_ui_func(NULL, NULL);
 	if (group_list == NULL) {
-		alertpanel_error(_("Can't retrieve newsgroup list."));
-		locked = FALSE;
-		return;
+	  recv_set_ui_func(grouplist_recv_func, NULL);
+	  group_list = news_get_group_list(news_folder);
+	  recv_set_ui_func(NULL, NULL);
+	  if (group_list == NULL) {
+	    alertpanel_error(_("Can't retrieve newsgroup list."));
+	    locked = FALSE;
+	    return;
+	  }
 	}
+
+	dont_unsubscribed = TRUE;
 
 	gtk_clist_freeze(GTK_CLIST(clist));
 	for (cur = group_list; cur != NULL ; cur = cur->next) {
-		if (fnmatch(pattern, cur->data, 0) == 0) {
-			row = gtk_clist_append(GTK_CLIST(clist),
-					       (gchar **)&(cur->data));
-			gtk_clist_set_row_data(GTK_CLIST(clist), row,
-					       cur->data);
+		struct NNTPGroupInfo * info;
+
+		info = (struct NNTPGroupInfo *) cur->data;
+
+		if (fnmatch(pattern, info->name, 0) == 0) {
+			gchar count_str[10];
+			gchar * cols[3];
+			gint count;
+			GList * l;
+
+			count = info->last - info->first;
+			if (count < 0)
+				count = 0;
+			snprintf(count_str, 10, "%i", count);
+
+			cols[0] = info->name;
+			cols[1] = count_str;
+			if (info->type == 'y')
+				cols[2] = "";
+			else if (info->type == 'm')
+				cols[2] = "moderated";
+			else if (info->type == 'n')
+				cols[2] = "readonly";
+			else
+				cols[2] = "unkown";
+
+			row = gtk_clist_append(GTK_CLIST(clist), cols);
+			gtk_clist_set_row_data(GTK_CLIST(clist), row, info);
+
+			l = g_list_find_custom(subscribed, info->name,
+					       (GCompareFunc) g_strcasecmp);
+			
+			if (l != NULL)
+			  gtk_clist_select_row(GTK_CLIST(clist), row, 0);
 		}
 	}
+
+	gtk_clist_moveto(GTK_CLIST(clist), 0, 0, 0, 0);
+
+	dont_unsubscribed = FALSE;
+
+	gtk_clist_set_column_width(GTK_CLIST(clist), 0, GROUPLIST_NAMES);
+	gtk_clist_set_column_justification (GTK_CLIST(clist), 1,
+					    GTK_JUSTIFY_RIGHT);
+	gtk_clist_set_column_auto_resize(GTK_CLIST(clist), 1, TRUE);
+	gtk_clist_set_column_auto_resize(GTK_CLIST(clist), 2, TRUE);
+
 	gtk_clist_thaw(GTK_CLIST(clist));
 
 	gtk_widget_grab_focus(ok_button);
@@ -274,9 +348,26 @@ static void grouplist_recv_func(SockInfo *sock, gint count, gint read_bytes,
 
 static void ok_clicked(GtkWidget *widget, gpointer data)
 {
-	ack = TRUE;
-	if (gtk_main_level() > 1)
-		gtk_main_quit();
+	gchar * str;
+	gboolean update_list;
+
+	str = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
+
+	update_list = FALSE;
+
+	if (strchr(str, '*') != NULL)
+	  update_list = TRUE;
+
+	if (update_list) {
+		grouplist_dialog_set_list(str);
+		g_free(str);
+	}
+	else {
+		g_free(str);
+		ack = TRUE;
+		if (gtk_main_level() > 1)
+			gtk_main_quit();
+	}
 }
 
 static void cancel_clicked(GtkWidget *widget, gpointer data)
@@ -292,14 +383,12 @@ static void refresh_clicked(GtkWidget *widget, gpointer data)
  
 	if (locked) return;
 
-	grouplist_clear();
+	news_group_list_free(group_list);
 	news_remove_group_list(news_folder);
 
 	str = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
 	grouplist_dialog_set_list(str);
 	g_free(str);
-
-	grouplist_dialog_set_list(str);
 }
 
 static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
@@ -311,10 +400,34 @@ static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 static void clist_selected(GtkCList *clist, gint row, gint column,
 			   GdkEventButton *event, gpointer user_data)
 {
-	gchar *group;
+	struct NNTPGroupInfo * group;
+	GList * l;
 
-	group = (gchar *)gtk_clist_get_row_data(GTK_CLIST(clist), row);
-	gtk_entry_set_text(GTK_ENTRY(entry), group ? group : "");
+	group = (struct NNTPGroupInfo *)
+	  gtk_clist_get_row_data(GTK_CLIST(clist), row);
+
+	if (!dont_unsubscribed) {
+		subscribed = g_list_append(subscribed, g_strdup(group->name));
+	}
+}
+
+static void clist_unselected(GtkCList *clist, gint row, gint column,
+			     GdkEventButton *event, gpointer user_data)
+{
+	struct NNTPGroupInfo * group;
+	GList * l;
+
+	group = (struct NNTPGroupInfo *)
+	  gtk_clist_get_row_data(GTK_CLIST(clist), row);
+
+	if (!dont_unsubscribed) {
+		l = g_list_find_custom(subscribed, group->name,
+				       (GCompareFunc) g_strcasecmp);
+		if (l != NULL) {
+		  g_free(l->data);
+			subscribed = g_list_remove(subscribed, l->data);
+		}
+	}
 }
 
 static gboolean match_string(gchar * str, gchar * expr)

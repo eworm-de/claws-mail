@@ -289,6 +289,41 @@ void news_scan_group(Folder *folder, FolderItem *item)
 {
 }
 
+static struct NNTPGroupInfo * group_info_new(gchar * name,
+					     gint first, gint last,
+					     gchar type)
+{
+	struct NNTPGroupInfo * info;
+
+	info = g_new(struct NNTPGroupInfo, 1);
+	if (info == NULL)
+		return NULL;
+	info->name = g_strdup(name);
+	info->first = first;
+	info->last = last;
+	info->type = type;
+
+	return info;
+}
+
+static void group_info_free(struct NNTPGroupInfo * info)
+{
+  g_free(info->name);
+  g_free(info);
+}
+
+void news_group_list_free(GSList * list)
+{
+  g_slist_foreach(list, (GFunc) group_info_free, NULL);
+  g_slist_free(list);
+}
+
+gint news_group_info_compare(struct NNTPGroupInfo * info1,
+			     struct NNTPGroupInfo * info2)
+{
+  return g_strcasecmp(info1->name, info2->name);
+}
+
 GSList *news_get_group_list(Folder *folder)
 {
 	gchar *path, *filename;
@@ -335,13 +370,48 @@ GSList *news_get_group_list(Folder *folder)
 	}
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		gchar *p = buf;
-		while (*p != '\0' && *p != ' ') p++;
-		*p = '\0';
+		gchar * p;
+		gchar * cur;
+		gchar * name;
+		gint last_article;
+		gint first_article;
+		gchar type;
+		struct NNTPGroupInfo * info;
+
+		cur = buf;
+		p = strchr(cur, ' ');
+		if (p == NULL)
+			continue;
+		* p = 0;
+
+		name = cur;
+		
+		cur = p + 1;
+		p = strchr(cur, ' ');
+		if (p == NULL)
+			continue;
+		* p = 0;
+		last_article = atoi(cur);
+
+		cur = p + 1;
+		p = strchr(cur, ' ');
+		if (p == NULL)
+			continue;
+		* p = 0;
+		first_article = atoi(cur);
+
+		cur = p + 1;
+		type = * cur;
+
+		info = group_info_new(name, first_article,
+				      last_article, type);
+		if (info == NULL)
+			continue;
+
 		if (!last)
-			last = list = g_slist_append(NULL, g_strdup(buf));
+			last = list = g_slist_append(NULL, info);
 		else {
-			last = g_slist_append(last, g_strdup(buf));
+			last = g_slist_append(last, info);
 			last = last->next;
 		}
 	}
@@ -349,7 +419,7 @@ GSList *news_get_group_list(Folder *folder)
 	fclose(fp);
 	g_free(filename);
 
-	list = g_slist_sort(list, (GCompareFunc)g_strcasecmp);
+	list = g_slist_sort(list, (GCompareFunc) news_group_info_compare);
 
 	statusbar_pop_all();
 

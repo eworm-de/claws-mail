@@ -1,3 +1,14 @@
+2001-10-18 [hoa]        0.6.3claws23
+	* src/folderview.c
+	* src/grouplistdialog.[ch]
+		enhanced news subscription interface
+
+	* src/news.c
+	* src/news.h
+		enchanced newsgroup listing,
+		now, we can get groups informations
+		(NNTPGroupInfo)
+
 2001-10-18 [paul]	0.6.3claws22
 
 	* src/summaryview.c
