@@ -2470,7 +2470,8 @@ static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 {
 	gchar *real_path;
 	gint ok;
-	gint exists_, recent_, unseen_, uid_validity_;
+	gint exists_, recent_, unseen_;
+	guint32 uid_validity_;
 
 	if (!exists || !recent || !unseen || !uid_validity) {
 		if (session->mbox && strcmp(session->mbox, path) == 0)
@@ -2722,6 +2723,7 @@ static gint imap_cmd_do_select(IMAPSession *session, const gchar *folder,
 	GPtrArray *argbuf;
 	gchar *select_cmd;
 	gchar *folder_;
+	unsigned int uid_validity_;
 
 	*exists = *recent = *unseen = *uid_validity = 0;
 	argbuf = g_ptr_array_new();
@@ -2754,11 +2756,12 @@ static gint imap_cmd_do_select(IMAPSession *session, const gchar *folder,
 
 	resp_str = search_array_contain_str(argbuf, "UIDVALIDITY");
 	if (resp_str) {
-		if (sscanf(resp_str, "OK [UIDVALIDITY %u] ", uid_validity)
+		if (sscanf(resp_str, "OK [UIDVALIDITY %u] ", &uid_validity_)
 		    != 1) {
 			g_warning("imap_cmd_select(): invalid UIDVALIDITY line.\n");
 			THROW;
 		}
+		uid_validity = uid_validity_;
 	}
 
 	resp_str = search_array_contain_str(argbuf, "UNSEEN");
