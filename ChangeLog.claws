@@ -1,3 +1,14 @@
+2003-04-15 [paul]	0.8.11claws94
+
+	* src/prefs_common.[ch]
+		rearrange to stop the window getting too long:
+			move Receive dialog stuff to Receive tab
+			move Send dialog to Send tab
+			remove Dialogs frame
+		rename 'Open messages in summary with cursor keys' to
+		'Always open messages in summary when selected', as its
+		more appropriate
+
 2003-04-15 [paul]	0.8.11claws93
 
 	* src/prefs_common.[ch]

@@ -74,12 +74,16 @@ struct _PrefsCommon
  	gboolean newmail_notify_auto;
  	gboolean newmail_notify_manu;
  	gchar   *newmail_notify_cmd;
+	RecvDialogMode recv_dialog_mode;
+	gboolean close_recv_dialog;
+	gboolean no_recv_err_panel;
 
 	/* Send */
 	gboolean use_extsend;
 	gchar *extsend_cmd;
 	gboolean savemsg;
 	gboolean queue_msg;
+	SendDialogMode send_dialog_mode;
 	gchar *outgoing_charset;
 	TransferEncodingMethod encoding_method;
 
@@ -244,10 +248,6 @@ struct _PrefsCommon
 	gboolean open_on_delete;
 	gboolean open_inbox_on_inc;
 	gboolean immediate_exec;
-	RecvDialogMode recv_dialog_mode;
-	SendDialogMode send_dialog_mode;
-	gboolean close_recv_dialog;
-	gboolean no_recv_err_panel;
 	NextUnreadMsgDialogShow next_unread_msg_dialog;
 	gboolean add_address_by_click;
 	gchar *pixmap_theme_path;

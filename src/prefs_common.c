@@ -85,6 +85,9 @@ static struct Receive {
 	GtkWidget *checkbtn_newmail_manu;
 	GtkWidget *entry_newmail_notify_cmd;
 	GtkWidget *hbox_newmail_notify;
+	GtkWidget *optmenu_recvdialog;
+	GtkWidget *checkbtn_no_recv_err_panel;
+	GtkWidget *checkbtn_close_recv_dialog;
 } receive;
 
 static struct Send {
@@ -94,6 +97,7 @@ static struct Send {
 
 	GtkWidget *checkbtn_savemsg;
 	GtkWidget *checkbtn_queuemsg;
+	GtkWidget *optmenu_senddialog;
 
 	GtkWidget *optmenu_charset;
 	GtkWidget *optmenu_encoding_method;
@@ -210,10 +214,6 @@ static struct Interface {
 	GtkWidget *checkbtn_open_on_delete;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
-	GtkWidget *optmenu_recvdialog;
-	GtkWidget *optmenu_senddialog;
-	GtkWidget *checkbtn_no_recv_err_panel;
-	GtkWidget *checkbtn_close_recv_dialog;
  	GtkWidget *optmenu_nextunreadmsgdialog;
 	GtkWidget *entry_pixmap_theme;
 	GtkWidget *combo_pixmap_theme;
@@ -329,6 +329,16 @@ static PrefParam param[] = {
  	{"newmail_notify_cmd", "", &prefs_common.newmail_notify_cmd, P_STRING,
  	 &receive.entry_newmail_notify_cmd,
  	 prefs_set_data_from_entry, prefs_set_entry},
+	{"receive_dialog_mode", "1", &prefs_common.recv_dialog_mode, P_ENUM,
+	 &receive.optmenu_recvdialog,
+	 prefs_common_recv_dialog_set_data_from_optmenu,
+	 prefs_common_recv_dialog_set_optmenu},
+	{"no_receive_error_panel", "FALSE", &prefs_common.no_recv_err_panel,
+	 P_BOOL, &receive.checkbtn_no_recv_err_panel,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"close_receive_dialog", "TRUE", &prefs_common.close_recv_dialog,
+	 P_BOOL, &receive.checkbtn_close_recv_dialog,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
  
 	/* Send */
 	{"use_ext_sendmail", "FALSE", &prefs_common.use_extsend, P_BOOL,
@@ -343,6 +353,10 @@ static PrefParam param[] = {
 	{"queue_message", "FALSE", &prefs_common.queue_msg, P_BOOL,
 	 &p_send.checkbtn_queuemsg,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"send_dialog_mode", "0", &prefs_common.send_dialog_mode, P_ENUM,
+	 &p_send.optmenu_senddialog,
+	 prefs_common_send_dialog_set_data_from_optmenu,
+	 prefs_common_send_dialog_set_optmenu},
 
 	{"outgoing_charset", CS_AUTO, &prefs_common.outgoing_charset, P_STRING,
 	 &p_send.optmenu_charset,
@@ -753,20 +767,6 @@ static PrefParam param[] = {
 	{"immediate_execution", "TRUE", &prefs_common.immediate_exec, P_BOOL,
 	 &interface.checkbtn_immedexec,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"receive_dialog_mode", "1", &prefs_common.recv_dialog_mode, P_ENUM,
-	 &interface.optmenu_recvdialog,
-	 prefs_common_recv_dialog_set_data_from_optmenu,
-	 prefs_common_recv_dialog_set_optmenu},
-	{"send_dialog_mode", "0", &prefs_common.send_dialog_mode, P_ENUM,
-	 &interface.optmenu_senddialog,
-	 prefs_common_send_dialog_set_data_from_optmenu,
-	 prefs_common_send_dialog_set_optmenu},
-	{"no_receive_error_panel", "FALSE", &prefs_common.no_recv_err_panel,
-	 P_BOOL, &interface.checkbtn_no_recv_err_panel,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"close_receive_dialog", "TRUE", &prefs_common.close_recv_dialog,
-	 P_BOOL, &interface.checkbtn_close_recv_dialog,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"nextunreadmsg_dialog", NULL, &prefs_common.next_unread_msg_dialog, P_ENUM,
 	 &interface.optmenu_nextunreadmsgdialog,
 	 prefs_nextunreadmsgdialog_set_data_from_optmenu,
@@ -1088,6 +1088,14 @@ static void prefs_receive_create(void)
 	GtkWidget *entry_newmail_notify_cmd;
 	GtkWidget *label_newmail_notify_cmd;
 
+	GtkWidget *hbox_recvdialog;
+	GtkWidget *label_recvdialog;
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+	GtkWidget *optmenu_recvdialog;
+	GtkWidget *checkbtn_no_recv_err_panel;
+	GtkWidget *checkbtn_close_recv_dialog;
+
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
@@ -1189,6 +1197,34 @@ static void prefs_receive_create(void)
 	PACK_CHECK_BUTTON (vbox2, checkbtn_scan_after_inc,
 			   _("Update all local folders after incorporation"));
 
+
+	/* receive dialog */
+	hbox_recvdialog = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox_recvdialog);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox_recvdialog, FALSE, FALSE, 0);
+
+	label_recvdialog = gtk_label_new (_("Show receive dialog"));
+	gtk_misc_set_alignment(GTK_MISC(label_recvdialog), 0, 0.5);
+	gtk_widget_show (label_recvdialog);
+	gtk_box_pack_start (GTK_BOX (hbox_recvdialog), label_recvdialog, FALSE, FALSE, 0);
+
+	optmenu_recvdialog = gtk_option_menu_new ();
+	gtk_widget_show (optmenu_recvdialog);
+	gtk_box_pack_start (GTK_BOX (hbox_recvdialog), optmenu_recvdialog, FALSE, FALSE, 0);
+
+	menu = gtk_menu_new ();
+	MENUITEM_ADD (menu, menuitem, _("Always"), RECV_DIALOG_ALWAYS);
+	MENUITEM_ADD (menu, menuitem, _("Only if a window is active"),
+		      RECV_DIALOG_ACTIVE);
+	MENUITEM_ADD (menu, menuitem, _("Never"), RECV_DIALOG_NEVER);
+
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_recvdialog), menu);
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_no_recv_err_panel,
+			   _("Don't popup error dialog on receive error"));
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_close_recv_dialog,
+			   _("Close receive dialog when finished"));
 	
 	PACK_FRAME(vbox1, frame_newmail, _("Run command when new mail "
 					   "arrives"));
@@ -1254,6 +1290,9 @@ static void prefs_receive_create(void)
 	receive.checkbtn_newmail_manu  = checkbtn_newmail_manu;
 	receive.hbox_newmail_notify    = hbox_newmail_notify;
 	receive.entry_newmail_notify_cmd = entry_newmail_notify_cmd;
+	receive.optmenu_recvdialog	    = optmenu_recvdialog;
+	receive.checkbtn_no_recv_err_panel  = checkbtn_no_recv_err_panel;
+	receive.checkbtn_close_recv_dialog  = checkbtn_close_recv_dialog;
 }
 
 static void prefs_send_create(void)
@@ -1277,6 +1316,10 @@ static void prefs_send_create(void)
 	GtkWidget *optmenu_encoding;
 	GtkWidget *label_encoding;
 	GtkWidget *label_encoding_desc;
+	GtkWidget *label_senddialog;
+	GtkWidget *menu;
+	GtkWidget *optmenu_senddialog;
+	GtkWidget *hbox_senddialog;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1320,6 +1363,24 @@ static void prefs_send_create(void)
 			   _("Save sent messages to Sent folder"));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_queuemsg,
 			   _("Queue messages that fail to send"));
+
+	hbox_senddialog = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox_senddialog, FALSE, FALSE, 0);
+
+	label_senddialog = gtk_label_new (_("Show send dialog"));
+	gtk_widget_show (label_senddialog);
+	gtk_box_pack_start (GTK_BOX (hbox_senddialog), label_senddialog, FALSE, FALSE, 0);
+
+	optmenu_senddialog = gtk_option_menu_new ();
+	gtk_widget_show (optmenu_senddialog);
+	gtk_box_pack_start (GTK_BOX (hbox_senddialog), optmenu_senddialog, FALSE, FALSE, 0);
+	
+	menu = gtk_menu_new ();
+	MENUITEM_ADD (menu, menuitem, _("Always"), SEND_DIALOG_ALWAYS);
+	MENUITEM_ADD (menu, menuitem, _("Never"), SEND_DIALOG_NEVER);
+
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_senddialog), menu);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -1432,6 +1493,7 @@ static void prefs_send_create(void)
 
 	p_send.checkbtn_savemsg  = checkbtn_savemsg;
 	p_send.checkbtn_queuemsg = checkbtn_queuemsg;
+	p_send.optmenu_senddialog = optmenu_senddialog;
 
 	p_send.optmenu_charset = optmenu_charset;
 	p_send.optmenu_encoding_method = optmenu_encoding;
@@ -2605,20 +2667,14 @@ static void prefs_interface_create(void)
 	GtkWidget *checkbtn_open_on_delete;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
-	GtkWidget *frame_dialogs;
-	GtkWidget *vbox_dialogs;
 	GtkWidget *hbox1;
 	GtkWidget *label;
-	GtkWidget *dialogs_table;
-	GtkWidget *optmenu_recvdialog;
-	GtkWidget *optmenu_senddialog;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
-	GtkWidget *checkbtn_no_recv_err_panel;
-	GtkWidget *checkbtn_close_recv_dialog;
 
 	GtkWidget *button_keybind;
 
+	GtkWidget *hbox_nextunreadmsgdialog;
  	GtkWidget *optmenu_nextunreadmsgdialog;
 
 	GtkWidget *frame_pixmap_theme;
@@ -2644,7 +2700,7 @@ static void prefs_interface_create(void)
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_show_msg_with_cursor,
-		 _("Open messages in summary with cursor keys"));
+		 _("Always open messages in summary when selected"));
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_openunread,
@@ -2681,32 +2737,18 @@ static void prefs_interface_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 8);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 
-	PACK_FRAME (vbox1, frame_dialogs, _("Dialogs"));
-	vbox_dialogs = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox_dialogs);
-	gtk_container_add (GTK_CONTAINER (frame_dialogs), vbox_dialogs);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_dialogs), 8);
-
-	dialogs_table = gtk_table_new (2, 2, FALSE);
-	gtk_widget_show (dialogs_table);
-	gtk_container_add (GTK_CONTAINER (vbox_dialogs), dialogs_table);
-	gtk_container_set_border_width (GTK_CONTAINER (dialogs_table), 4);
-	gtk_table_set_row_spacings (GTK_TABLE (dialogs_table), VSPACING_NARROW);
-	gtk_table_set_col_spacings (GTK_TABLE (dialogs_table), 8);
-
  	/* Next Unread Message Dialog */
-	label = gtk_label_new (_("Show no-unread-message dialog"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_widget_show (label);
-	gtk_table_attach (GTK_TABLE (dialogs_table), label, 0, 1, 0, 1,
-			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	hbox_nextunreadmsgdialog = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox_nextunreadmsgdialog, FALSE, FALSE, 0);
 
+	label = gtk_label_new (_("Show no-unread-message dialog"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox_nextunreadmsgdialog), label, FALSE, FALSE, 8);
 
  	optmenu_nextunreadmsgdialog = gtk_option_menu_new ();
  	gtk_widget_show (optmenu_nextunreadmsgdialog);
-	gtk_table_attach (GTK_TABLE (dialogs_table), 
-			  optmenu_nextunreadmsgdialog, 1, 2, 0, 1,
-			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_box_pack_start (GTK_BOX (hbox_nextunreadmsgdialog), optmenu_nextunreadmsgdialog, FALSE, FALSE, 8);
 	
 	menu = gtk_menu_new ();
 	MENUITEM_ADD (menu, menuitem, _("Always"), NEXTUNREADMSGDIALOG_ALWAYS);
@@ -2716,50 +2758,6 @@ static void prefs_interface_create(void)
 		      NEXTUNREADMSGDIALOG_ASSUME_NO);
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_nextunreadmsgdialog), menu);
-
-	label = gtk_label_new (_("Show send dialog"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_widget_show (label);
-	gtk_table_attach (GTK_TABLE (dialogs_table), label, 0, 1, 1, 2,
-			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-
-	optmenu_senddialog = gtk_option_menu_new ();
-	gtk_widget_show (optmenu_senddialog);
-	gtk_table_attach (GTK_TABLE (dialogs_table), 
-			  optmenu_senddialog, 1, 2, 1, 2,
-			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-	
-	menu = gtk_menu_new ();
-	MENUITEM_ADD (menu, menuitem, _("Always"), SEND_DIALOG_ALWAYS);
-	MENUITEM_ADD (menu, menuitem, _("Never"), SEND_DIALOG_NEVER);
-
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_senddialog), menu);
-
-	label = gtk_label_new (_("Show receive dialog"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_widget_show (label);
-	gtk_table_attach (GTK_TABLE (dialogs_table), label, 0, 1, 2, 3,
-			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-
-	optmenu_recvdialog = gtk_option_menu_new ();
-	gtk_widget_show (optmenu_recvdialog);
-	gtk_table_attach (GTK_TABLE (dialogs_table), optmenu_recvdialog, 1, 2, 2, 3,
-			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-
-	menu = gtk_menu_new ();
-	MENUITEM_ADD (menu, menuitem, _("Always"), RECV_DIALOG_ALWAYS);
-	MENUITEM_ADD (menu, menuitem, _("Only if a window is active"),
-		      RECV_DIALOG_ACTIVE);
-	MENUITEM_ADD (menu, menuitem, _("Never"), RECV_DIALOG_NEVER);
-
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_recvdialog), menu);
-
-	PACK_CHECK_BUTTON (vbox_dialogs, checkbtn_no_recv_err_panel,
-			   _("Don't popup error dialog on receive error"));
-
-	PACK_CHECK_BUTTON (vbox_dialogs, checkbtn_close_recv_dialog,
-			   _("Close receive dialog when finished"));
-
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -2798,10 +2796,6 @@ static void prefs_interface_create(void)
 					      = checkbtn_open_on_delete;
 	interface.checkbtn_openinbox          = checkbtn_openinbox;
 	interface.checkbtn_immedexec          = checkbtn_immedexec;
-	interface.optmenu_recvdialog	      = optmenu_recvdialog;
-	interface.optmenu_senddialog	      = optmenu_senddialog;
-	interface.checkbtn_no_recv_err_panel  = checkbtn_no_recv_err_panel;
-	interface.checkbtn_close_recv_dialog  = checkbtn_close_recv_dialog;
 	interface.optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
 	interface.combo_pixmap_theme	      = combo_pixmap_theme;
  	interface.entry_pixmap_theme	      = entry_pixmap_theme;
