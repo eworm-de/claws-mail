@@ -78,6 +78,8 @@
 #include "importldif.h"
 #include "mutt.h"
 #include "importmutt.h"
+#include "pine.h"
+#include "importpine.h"
 
 #ifdef USE_JPILOT
 #include "jpilot.h"
@@ -332,6 +334,7 @@ static void addressbook_list_select_remove	( AddrItemObject    *aio );
 
 static void addressbook_import_ldif_cb		( void );
 static void addressbook_import_mutt_cb		( void );
+static void addressbook_import_pine_cb		( void );
 static void addressbook_clip_cut_cb		( void );
 static void addressbook_clip_copy_cb		( void );
 static void addressbook_clip_paste_cb		( void );
@@ -373,6 +376,7 @@ static GtkItemFactoryEntry addressbook_entries[] =
 	{N_("/_Tools/---"),		NULL,		NULL, 0, "<Separator>"},
 	{N_("/_Tools/Import _LDIF file"), NULL,		addressbook_import_ldif_cb,	0, NULL},
 	{N_("/_Tools/Import M_utt file"), NULL,         addressbook_import_mutt_cb,	0, NULL},
+	{N_("/_Tools/Import _Pine file"), NULL,         addressbook_import_pine_cb,	0, NULL},
 	{N_("/_Help"),			NULL,		NULL, 0, "<LastBranch>"},
 	{N_("/_Help/_About"),		NULL,		about_show, 0, NULL}
 };
@@ -3900,6 +3904,44 @@ static void addressbook_import_mutt_cb() {
 	if( adapter ) {
 		if( adapter->treeNode ) {
 			abf = addressbook_imp_mutt( _addressIndex_ );
+			if( abf ) {
+				ds = addrindex_index_add_datasource(
+					_addressIndex_, ADDR_IF_BOOK, abf );
+				ads = addressbook_create_ds_adapter(
+					ds, ADDR_BOOK, NULL );
+				addressbook_ads_set_name(
+					ads, addrbook_get_name( abf ) );
+				newNode = addressbook_add_object(
+					adapter->treeNode,
+					ADDRESS_OBJECT(ads) );
+				if( newNode ) {
+					gtk_ctree_select(
+						GTK_CTREE(addrbook.ctree),
+						newNode );
+					addrbook.treeSelected = newNode;
+				}
+
+				/* Notify address completion */
+				invalidate_address_completion();
+			}
+		}
+	}
+}
+
+/*
+* Import Pine file.
+*/
+static void addressbook_import_pine_cb() {
+	AddressDataSource *ds = NULL;
+	AdapterDSource *ads = NULL;
+	AddressBookFile *abf = NULL;
+	AdapterInterface *adapter;
+	GtkCTreeNode *newNode;
+
+	adapter = addrbookctl_find_interface( ADDR_IF_BOOK );
+	if( adapter ) {
+		if( adapter->treeNode ) {
+			abf = addressbook_imp_pine( _addressIndex_ );
 			if( abf ) {
 				ds = addrindex_index_add_datasource(
 					_addressIndex_, ADDR_IF_BOOK, abf );

@@ -38,6 +38,7 @@ src/imap.c
 src/import.c
 src/importldif.c
 src/importmutt.c
+src/importpine.c
 src/inc.c
 src/inputdialog.c
 src/jpilot.c
@@ -59,6 +60,7 @@ src/mutt.c
 src/news.c
 src/nntp.c
 src/passphrase.c
+src/pine.c
 src/pop.c
 src/prefs.c
 src/prefs_account.c

@@ -54,6 +54,8 @@ sylpheed_SOURCES = \
 	importldif.c importldif.h \
 	mutt.c mutt.h \
 	importmutt.c importmutt.h \
+	pine.c pine.h \
+	importpine.c importpine.h \
 	jpilot.c jpilot.h \
 	syldap.c syldap.h \
 	editbook.c editbook.h \

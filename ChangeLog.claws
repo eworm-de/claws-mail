@@ -1,5 +1,12 @@
 2002-04-01 [match]	0.7.4claws60
 
+	* src/pine.[ch]
+	* src/importpine.[ch]
+	* src/addressbook.c
+		import Pine address book.
+
+2002-04-01 [match]	0.7.4claws60
+
 	* src/addrharvest.[ch]
 		improve address parsing of funky addresses.
 
