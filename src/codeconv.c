@@ -47,7 +47,7 @@ typedef enum
 	JIS_AUXKANJI
 } JISState;
 
-#define SUBST_CHAR	'_'
+#define SUBST_CHAR	0x5f;
 #define ESC		'\033'
 
 #define iseuckanji(c) \
@@ -574,6 +574,22 @@ void conv_unreadable_latin(gchar *str)
 	}
 }
 
+void conv_unreadable_utf8(gchar *str)
+{
+	register guchar *p = str;
+
+	while (*p != '\0') {
+		/* convert CR+LF -> LF */
+		printf("p %c (%d)\n", *p, *p);
+		if (*p == '\r' && *(p + 1) == '\n')
+			memmove(p, p + 1, strlen(p));
+		else if (((*p & 0xff) >= 0x7f && (*p & 0xff) <= 0x9f) 
+			 || *p == 0xfc)
+			*p = SUBST_CHAR;
+		p++;
+	}
+}
+
 void conv_unreadable_locale(gchar *str)
 {
 	switch (conv_get_current_charset()) {
@@ -596,6 +612,9 @@ void conv_unreadable_locale(gchar *str)
 		break;
 	case C_EUC_JP:
 		conv_unreadable_eucjp(str);
+		break;
+	case C_UTF_8:
+		conv_unreadable_utf8(str);
 		break;
 	default:
 		break;

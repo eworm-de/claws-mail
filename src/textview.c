@@ -1074,10 +1074,11 @@ static void textview_write_line(TextView *textview, const gchar *str,
 	buffer = gtk_text_view_get_buffer(text);
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 
-	if (!conv)
+	if (!conv) {
 		strncpy2(buf, str, sizeof(buf));
-	else if (conv_convert(conv, buf, sizeof(buf), str) < 0)
-		strncpy2(buf, str, sizeof(buf));
+	} else if (conv_convert(conv, buf, sizeof(buf), str) < 0) {
+		conv_localetodisp(buf, sizeof(buf), str);
+	}
 
 	strcrchomp(buf);
 	if (prefs_common.conv_mb_alnum) conv_mb_alnum(buf);
