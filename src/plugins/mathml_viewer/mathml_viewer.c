@@ -27,6 +27,8 @@
 #include <gtk/gtk.h>
 #include <gtkmathview/gtkmathview.h>
 
+#include "common/sylpheed.h"
+#include "common/version.h"
 #include "plugin.h"
 #include "utils.h"
 #include "intl.h"
@@ -137,6 +139,16 @@ static MimeViewerFactory mathml_viewer_factory =
 
 gint plugin_init(gchar **error)
 {
+	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
+		*error = g_strdup("Your sylpheed version is newer than the version the plugin was built with");
+		return -1;
+	}
+
+	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
+		*error = g_strdup("Your sylpheed version is too old");
+		return -1;
+	}
+
 	mimeview_register_viewer_factory(&mathml_viewer_factory);
 	return 0;	
 }

@@ -22,6 +22,8 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
+#include "common/sylpheed.h"
+#include "common/version.h"
 #include "plugin.h"
 #include "utils.h"
 #include "hooks.h"
@@ -178,6 +180,16 @@ static void create_trayicon()
 
 int plugin_init(gchar **error)
 {
+	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
+		*error = g_strdup("Your sylpheed version is newer than the version the plugin was built with");
+		return -1;
+	}
+
+	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
+		*error = g_strdup("Your sylpheed version is too old");
+		return -1;
+	}
+
 	hook_id = hooks_register_hook (FOLDER_ITEM_UPDATE_HOOKLIST, folder_item_update_hook, NULL);
 	if (hook_id == -1) {
 		*error = g_strdup("Failed to register folder item update hook");

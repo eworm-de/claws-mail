@@ -26,6 +26,8 @@
 #include <glib.h>
 #include <clamav.h>
 
+#include "common/sylpheed.h"
+#include "common/version.h"
 #include "intl.h"
 #include "plugin.h"
 #include "utils.h"
@@ -200,6 +202,16 @@ void clamav_save_config(void)
 
 gint plugin_init(gchar **error)
 {
+	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
+		*error = g_strdup("Your sylpheed version is newer than the version the plugin was built with");
+		return -1;
+	}
+
+	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
+		*error = g_strdup("Your sylpheed version is too old");
+		return -1;
+	}
+
 	hook_id = hooks_register_hook(MAIL_FILTERING_HOOKLIST, mail_filtering_hook, NULL);
 	if (hook_id == -1) {
 		*error = g_strdup("Failed to register mail filtering hook");

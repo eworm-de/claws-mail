@@ -23,11 +23,23 @@
 
 #include "intl.h"
 
+#include "common/sylpheed.h"
+#include "common/version.h"
 #include "viewer.h"
 #include "viewerprefs.h"
 
 gint plugin_init(gchar **error)
 {
+	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
+		*error = g_strdup("Your sylpheed version is newer than the version the plugin was built with");
+		return -1;
+	}
+
+	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
+		*error = g_strdup("Your sylpheed version is too old");
+		return -1;
+	}
+
 	image_viewer_prefs_init();
 	image_viewer_init();
 	return 0;	
