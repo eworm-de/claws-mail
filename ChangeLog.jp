@@ -1,3 +1,8 @@
+2003-07-08
+
+	* src/rfc2015.c: rfc2015_is_encrypted(): 警告を抑えるために
+	  MimeInfo::mime_type をチェック。
+
 2003-07-07
 
 	* src/compose.c: PGP/MIME 署名を使用するときは text/plain パートに
