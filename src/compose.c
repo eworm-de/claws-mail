@@ -84,6 +84,7 @@
 #include "customheader.h"
 #include "prefs_common.h"
 #include "prefs_account.h"
+#include "prefs_actions.h"
 #include "account.h"
 #include "filesel.h"
 #include "procheader.h"
@@ -104,7 +105,6 @@
 #include "template.h"
 #include "undo.h"
 #include "foldersel.h"
-#include "prefs_actions.h"
 
 #if USE_GPGME
 #  include "rfc2015.h"
