@@ -1,3 +1,17 @@
+2002-05-15
+
+	* src/imap.c: imap_create_folder(): サブフォルダを含むフォルダを
+	  作成するために末尾のディレクトリセパレータを保つようにした。
+
+2002-05-14
+
+	* src/foldersel.c: ツリーを大小文字を区別せずにソート。
+	* src/mainwindow.c: allsel_cb()
+	  src/messageview.c: messageview_select_all(): MIME ビューでの
+	  「すべて選択」を修正。
+	* src/mainwindow.c: 全般・アカウントの設定ボタンをツールバーから
+	  削除。
+
 2002-05-13
 
 	* src/compose.c: compose_account_option_menu_create(): ac->name が
@@ -13,7 +27,7 @@
 	  manual/en/*: 英語マニュアルを更新。
 	* faq/de/*
 	  faq/it/*: ドイツ語とイタリア語マニュアルを追加。
-	  faq/en/*
+	* faq/en/*
 	  faq/es/*
 	  faq/fr/*: FAQ を更新。
 	* src/manual.[ch]

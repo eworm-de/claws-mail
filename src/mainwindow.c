@@ -169,9 +169,11 @@ static void toolbar_prefs_cb		(GtkWidget	*widget,
 static void toolbar_account_cb		(GtkWidget	*widget,
 					 gpointer	 data);
 
+#if 0
 static void toolbar_account_button_pressed	(GtkWidget	*widget,
 						 GdkEventButton	*event,
 						 gpointer	 data);
+#endif
 static void ac_label_button_pressed		(GtkWidget	*widget,
 						 GdkEventButton	*event,
 						 gpointer	 data);
@@ -1549,39 +1551,41 @@ void main_window_set_toolbar_sensitive(MainWindow *mainwin)
 {
 	SensitiveCond state;
 	gboolean sensitive;
-	gint i;
+	gint i = 0;
 
 	struct {
 		GtkWidget *widget;
 		SensitiveCond cond;
 	} entry[11];
 
-	entry[0].widget  = mainwin->get_btn;
-	entry[0].cond    = M_HAVE_ACCOUNT|M_UNLOCKED;
-	entry[1].widget  = mainwin->getall_btn;
-	entry[1].cond    = M_HAVE_ACCOUNT|M_UNLOCKED;
-	entry[2].widget  = mainwin->compose_news_btn;
-	entry[2].cond    = M_HAVE_NEWS_ACCOUNT;
-	entry[3].widget  = mainwin->reply_btn;
-	entry[3].cond    = M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST;
-	entry[4].widget  = mainwin->replyall_btn;
-	entry[4].cond    = M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST;
-	entry[5].widget  = mainwin->replysender_btn;
-	entry[5].cond    = M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST;
-	entry[6].widget  = mainwin->fwd_btn;
-	entry[6].cond    = M_HAVE_ACCOUNT|M_TARGET_EXIST;
-/*	entry[6].widget  = mainwin->prefs_btn;
-	entry[6].cond    = M_UNLOCKED;
-	entry[7].widget  = mainwin->account_btn;
-	entry[7].cond    = M_UNLOCKED; */
-	entry[7].widget  = mainwin->next_btn;
-	entry[7].cond    = M_MSG_EXIST;
-	entry[8].widget  = mainwin->delete_btn;
-	entry[8].cond    = M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED;
-	entry[9].widget = mainwin->exec_btn;
-	entry[9].cond   = M_MSG_EXIST|M_EXEC|M_UNLOCKED;
-	entry[10].widget = NULL;
-	entry[10].cond   = 0;
+#define SET_WIDGET_COND(w, c)	\
+{				\
+	entry[i].widget = w;	\
+	entry[i].cond = c;	\
+	i++;			\
+}
+
+	SET_WIDGET_COND(mainwin->get_btn, M_HAVE_ACCOUNT|M_UNLOCKED);
+	SET_WIDGET_COND(mainwin->getall_btn, M_HAVE_ACCOUNT|M_UNLOCKED);
+	SET_WIDGET_COND(mainwin->compose_news_btn, M_HAVE_ACCOUNT);
+	SET_WIDGET_COND(mainwin->reply_btn,
+			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
+	SET_WIDGET_COND(mainwin->replyall_btn,
+			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
+	SET_WIDGET_COND(mainwin->replysender_btn,
+			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
+	SET_WIDGET_COND(mainwin->fwd_btn, M_HAVE_ACCOUNT|M_TARGET_EXIST);
+#if 0
+	SET_WIDGET_COND(mainwin->prefs_btn, M_UNLOCKED);
+	SET_WIDGET_COND(mainwin->account_btn, M_UNLOCKED);
+#endif
+	SET_WIDGET_COND(mainwin->next_btn, M_MSG_EXIST);
+	SET_WIDGET_COND(mainwin->delete_btn,
+			M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED);
+	SET_WIDGET_COND(mainwin->exec_btn, M_MSG_EXIST|M_EXEC|M_UNLOCKED);
+	SET_WIDGET_COND(NULL, 0);
+
+#undef SET_WIDGET_COND
 
 	state = main_window_get_current_state(mainwin);
 
@@ -1938,10 +1942,10 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	GtkWidget *replysender_btn;
 	GtkWidget *fwd_btn;
 	GtkWidget *send_btn;
-	/*
+#if 0
 	GtkWidget *prefs_btn;
 	GtkWidget *account_btn;
-	*/
+#endif
 	GtkWidget *next_btn;
 	GtkWidget *delete_btn;
 	GtkWidget *exec_btn;
@@ -2075,13 +2079,13 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 					   toolbar_next_unread_cb,
 					   mainwin);
 
-	/*
+#if 0
 	gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
 
 	icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_PREFERENCES);
 	prefs_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					    _("Prefs"),
-					    _("Common preference"),
+					    _("Common preferences"),
 					    "Prefs",
 					    icon_wid,
 					    toolbar_prefs_cb,
@@ -2097,7 +2101,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	gtk_signal_connect(GTK_OBJECT(account_btn), "button_press_event",
 			   GTK_SIGNAL_FUNC(toolbar_account_button_pressed),
 			   mainwin);
-	*/
+#endif
 
 	gtk_signal_connect(GTK_OBJECT(reply_btn), "button_press_event",
 		GTK_SIGNAL_FUNC(toolbar_reply_popup_cb),
@@ -2116,23 +2120,23 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 		mainwin);
 	
 
-	mainwin->toolbar        		 = toolbar;
-	mainwin->get_btn        		 = get_btn;
-	mainwin->getall_btn     		 = getall_btn;
-	mainwin->compose_mail_btn		 = compose_mail_btn;
-	mainwin->compose_news_btn		 = compose_news_btn;
-	mainwin->reply_btn      		 = reply_btn;
-	mainwin->replyall_btn   		 = replyall_btn;
-	mainwin->replysender_btn		 = replysender_btn;
-	mainwin->fwd_btn         = fwd_btn;
-	mainwin->send_btn        = send_btn;
-	/*
-	mainwin->prefs_btn       = prefs_btn;
-	mainwin->account_btn     = account_btn;
-	*/
-	mainwin->next_btn        = next_btn;
-	mainwin->delete_btn      = delete_btn;
-	mainwin->exec_btn        = exec_btn;
+	mainwin->toolbar        	= toolbar;
+	mainwin->get_btn        	= get_btn;
+	mainwin->getall_btn     	= getall_btn;
+	mainwin->compose_mail_btn	= compose_mail_btn;
+	mainwin->compose_news_btn	= compose_news_btn;
+	mainwin->reply_btn      	= reply_btn;
+	mainwin->replyall_btn   	= replyall_btn;
+	mainwin->replysender_btn	= replysender_btn;
+	mainwin->fwd_btn          	= fwd_btn;
+	mainwin->send_btn        	= send_btn;
+	#if 0
+	mainwin->prefs_btn       	= prefs_btn;
+	mainwin->account_btn     	= account_btn;
+	#endif
+	mainwin->next_btn        	= next_btn;
+	mainwin->delete_btn      	= delete_btn;
+	mainwin->exec_btn        	= exec_btn;
 
 	gtk_widget_show_all(toolbar);
 }
@@ -2358,6 +2362,7 @@ static void toolbar_account_cb	(GtkWidget	*widget,
 	prefs_account_open_cb(mainwin, 0, NULL);
 }
 
+#if 0
 static void toolbar_account_button_pressed(GtkWidget *widget,
 					   GdkEventButton *event,
 					   gpointer data)
@@ -2375,6 +2380,7 @@ static void toolbar_account_button_pressed(GtkWidget *widget,
 		       menu_button_position, widget,
 		       event->button, event->time);
 }
+#endif
 
 static void ac_label_button_pressed(GtkWidget *widget, GdkEventButton *event,
 				    gpointer data)

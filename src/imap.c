@@ -1272,8 +1272,10 @@ FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	} else
 		dirpath = g_strdup(name);
 
-	strtailchomp(dirpath, '/');
+	/* keep trailing directory separator to create a folder that contains
+	   sub folder */
 	imap_path = imap_locale_to_modified_utf7(dirpath);
+	strtailchomp(dirpath, '/');
 	Xstrdup_a(new_name, name, {g_free(dirpath); return NULL;});
 	strtailchomp(new_name, '/');
 	separator = imap_get_path_separator(IMAP_FOLDER(folder), imap_path);
