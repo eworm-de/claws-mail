@@ -3745,7 +3745,7 @@ void summary_unthread(SummaryView *summaryview)
 	debug_print(_("Unthreading..."));
 	STATUSBAR_PUSH(summaryview->mainwin, _("Unthreading..."));
 	main_window_cursor_wait(summaryview->mainwin);
-
+	
 	gtk_signal_handler_block_by_func(GTK_OBJECT(ctree),
 					 summary_tree_collapsed, summaryview);
 	gtk_clist_freeze(GTK_CLIST(ctree));
@@ -3761,6 +3761,9 @@ void summary_unthread(SummaryView *summaryview)
 			child = next_child;
 		}
 	}
+
+	/* CLAWS: and sort it */
+	gtk_sctree_sort_recursive(ctree, NULL);	
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
 	gtk_signal_handler_unblock_by_func(GTK_OBJECT(ctree),

@@ -1,3 +1,33 @@
+2002-07-21 [paul]	0.7.8claws86
+
+	* src/prefs_common.c
+		add browser command line for Galeon
+
+2002-07-21 [paul]	0.7.8claws85
+
+	* Makefile.am
+		fix 'EXTRA_DIST': remove README.README, add TODO
+		and TODO.claws
+
+2002-07-21 [alfons]	0.7.8claws84
+
+	* src/gtkstext.c
+		make enter clear selection
+		(closes "[ 579888 ] Editor selection/entry error"
+		reported by Steve Lamb)
+
+2002-07-21 [alfons]	0.7.8claws83
+	
+	* src/summaryview.c
+		sort message list when selecting unthread messages
+		(closes "[ 501593 ] switching threaded view doesn't sort"
+		reported by Simon Schubert)
+
+2002-07-20 [alfons]	0.7.8claws82
+	
+	* src/matcher.c
+		const-correctness
+
 2002-07-20 [thorsten]	0.7.8claws81
 
 	* src/matcher.c

@@ -2399,8 +2399,16 @@ gtk_stext_key_press (GtkWidget   *widget,
 	    gtk_signal_emit_by_name (GTK_OBJECT (text), "activate");
 	  else
 	    {
+	      /* SYLPHEED: 
+	       * delete selection 
+	       */
+	      gtk_editable_delete_selection (editable);
 	      position = text->point.index;
 	      gtk_editable_insert_text (editable, "\n", 1, &position);
+	      /* SYLPHEED:
+	       * clear selection
+	       */
+	      gtk_stext_set_selection (editable, 0, 0);
 	    }
 	  break;
 	case GDK_Escape:

@@ -2934,6 +2934,7 @@ static void prefs_other_create(void)
 			       "\"?p\\mozilla\\mozilla.exe\" \"%s\"",
 			       "\"?p\\k-meleon\\k-meleon.exe\" \"%s\"",
 #else
+			       "galeon '%s'",
 			       "mozilla -remote 'openurl(%s,new-window)'",
 			       "netscape -remote 'openURL(%s,raise)'",
 			       "netscape '%s'",

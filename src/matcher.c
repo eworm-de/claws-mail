@@ -959,14 +959,14 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 	gchar * p;
 	gint size;
 
-	gchar *no_subject    = _("(none)") ;
-	gchar *no_from       = _("(none)") ;
-	gchar *no_to         = _("(none)") ;
-	gchar *no_cc         = _("(none)") ;
-	gchar *no_date       = _("(none)") ;
-	gchar *no_msgid      = _("(none)") ;
-	gchar *no_newsgroups = _("(none)") ;
-	gchar *no_references = _("(none)") ;
+	const gchar *const no_subject    = _("(none)") ;
+	const gchar *const no_from       = _("(none)") ;
+	const gchar *const no_to         = _("(none)") ;
+	const gchar *const no_cc         = _("(none)") ;
+	const gchar *const no_date       = _("(none)") ;
+	const gchar *const no_msgid      = _("(none)") ;
+	const gchar *const no_newsgroups = _("(none)") ;
+	const gchar *const no_references = _("(none)") ;
 
 	size = STRLEN_ZERO(cmd) + 1;
 	while (*s != '\0') {
