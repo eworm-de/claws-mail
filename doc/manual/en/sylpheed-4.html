@@ -2,15 +2,16 @@
 <HTML>
 <HEAD>
  <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
- <TITLE>Sylpheed User's Manual: Installation.</TITLE>
- <LINK HREF="sylpheed-5.html" REL=next>
- <LINK HREF="sylpheed-3.html" REL=previous>
- <LINK HREF="sylpheed.html#toc4" REL=contents>
+ <TITLE>: Installation.</TITLE>
+ <link HREF="sylpheed-5.html" REL=next>
+<link HREF="sylpheed-3.html" REL=previous>
+<link HREF="sylpheed.html#toc4" REL=contents>
+
 </HEAD>
 <BODY>
-<A HREF="sylpheed-5.html">Next</A>
-<A HREF="sylpheed-3.html">Previous</A>
-<A HREF="sylpheed.html#toc4">Contents</A>
+<a HREF="sylpheed-5.html">Next</a>
+<a HREF="sylpheed-3.html">Previous</a>
+<a HREF="sylpheed.html#toc4">Contents</a>
 <HR>
 <H2><A NAME="s4">4. Installation.</A></H2>
 
@@ -30,6 +31,8 @@ Optionally you need:
 <LI>libcompface (for X-Face)</LI>
 <LI>libjconv (for I18N)</LI>
 <LI>GPGME (for GnuPG)</LI>
+<LI>OpenLDAP (for LDAP connection)</LI>
+<LI>Jpilot (for Palm addressbook use)</LI>
 <LI>the equivalent of GTK+-devel and Xfree86-devel. (Otherwise ./configure will fail.)</LI>
 </UL>
 
@@ -56,7 +59,8 @@ Notice: Sylpheed may be unstable depending on the environment. Please use the ne
 <LI>RedHat Linux 6.1 + Helix GNOME (glibc 2.1.x) </LI>
 <LI>RedHat Linux 6.2 / 6.2J (glibc 2.1.x) </LI>
 <LI>RedHat Linux 7.0 / 7.0J </LI>
-<LI>RedHat Linux 7.1 </LI>
+<LI>RedHat Linux 7.1</LI>
+<LI>RedHat Linux 7.2 (beta 'Roswell')</LI>
 <LI>LinuxPPC2000 + Yukikaze(Japanization kit) </LI>
 <LI>Linux2000G (Intel, PowerPC) </LI>
 <LI>HOLON Linux 2.0 (Intel / PPC) </LI>
@@ -89,6 +93,8 @@ Notice: Sylpheed may be unstable depending on the environment. Please use the ne
 
 <P>
 <UL>
+<LI>Download the latest version of the Sylpheed package from
+<A HREF="http://sylpheed.good-day.net/">http://sylpheed.good-day.net/</A></LI>
 <LI>Untar the sourcefiles to a new directory</LI>
 <LI>tar -xvfz sylpheed-.tar.gz (for tar.gz)</LI>
 <LI>tar -xvfI sylpheed-.tar.bz2 (for tar.bz2) </LI>
@@ -106,8 +112,8 @@ Notice: Sylpheed may be unstable depending on the environment. Please use the ne
 
 <P>With an internet connection :
 <P>apt-get install sylpheed (to install it with a internet connection)
-<P>Without internet connection, fetch the debian package for example on http://packages.debian.org/unstable/mail/sylpheed.html
-<P>dpkg -i sylpheedx.x.x-1i386.deb
+<P>Without internet connection, fetch the debian package for example on
+<A HREF="http://packages.debian.org/unstable/mail/sylpheed.html">http://packages.debian.org/unstable/mail/sylpheed.html</A><P>dpkg -i sylpheedx.x.x-1i386.deb
 <P>dpkg --install sylpheedx.x.x-1i386.deb
 <H2><A NAME="ss4.6">4.6 Installation on FreeBSD</A>
 </H2>
@@ -117,11 +123,11 @@ Notice: Sylpheed may be unstable depending on the environment. Please use the ne
 <P>in the main menu choose "Configure" -> "Packages" -> "mail", then "sylpheed" then, back to the "Packages" list, choose "Install"
 <P>Using the ports
 <P>Get the sylpheed port on :
-<P>ftp://ftp.freebsd.org/pub/FreeBSD/ports/i386/packages-4.3-release/mail
-<P>then, as root: pkg-add sylpheed-0.x.x.tgz
+<P>
+<A HREF="ftp://ftp.freebsd.org/pub/FreeBSD/ports/i386/packages-4.3-release/mail">ftp://ftp.freebsd.org/pub/FreeBSD/ports/i386/packages-4.3-release/mail</A><P>then, as root: pkg-add sylpheed-0.x.x.tgz
 <P>using the ports with compiling:
-<P>first, update your port, fetch it on http://www.freebsd.org/ports/mail.html
-<P>cd /usr/ports/mail/sylpheed
+<P>first, update your port, fetch it on 
+<A HREF="http://www.freebsd.org/ports/mail.html">http://www.freebsd.org/ports/mail.html</A><P>cd /usr/ports/mail/sylpheed
 <P>make
 <P>If it succeeds, type "make install"
 <P>In case it fails, fetch the required package if necessary
@@ -135,8 +141,9 @@ then :
 <P>Need a more up-to-date version ?
 <P>Just use the Unix standard method (see "Nuts and bolts of installation")
 <HR>
-<A HREF="sylpheed-5.html">Next</A>
-<A HREF="sylpheed-3.html">Previous</A>
-<A HREF="sylpheed.html#toc4">Contents</A>
+<a HREF="sylpheed-5.html">Next</a>
+<a HREF="sylpheed-3.html">Previous</a>
+<a HREF="sylpheed.html#toc4">Contents</a>
+
 </BODY>
 </HTML>

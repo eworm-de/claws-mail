@@ -2,97 +2,47 @@
 <HTML>
 <HEAD>
  <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
- <TITLE>Sylpheed User's Manual: Reference</TITLE>
- <LINK HREF="sylpheed-17.html" REL=next>
- <LINK HREF="sylpheed-15.html" REL=previous>
- <LINK HREF="sylpheed.html#toc16" REL=contents>
+ <TITLE>: FAQ</TITLE>
+<link HREF="sylpheed-17.html" REL=next>
+<link HREF="sylpheed-15.html" REL=previous>
+<link HREF="sylpheed.html#toc16" REL=contents>
 </HEAD>
 <BODY>
-<A HREF="sylpheed-17.html">Next</A>
-<A HREF="sylpheed-15.html">Previous</A>
-<A HREF="sylpheed.html#toc16">Contents</A>
+<a HREF="sylpheed-17.html">Next</a>
+<a HREF="sylpheed-15.html">Previous</a>
+<a HREF="sylpheed.html#toc16">Contents</a>
 <HR>
-<H2><A NAME="s16">16. Reference</A></H2>
+<H2><A NAME="s16">16. FAQ</A></H2>
 
-<P>In this section you will find a few pieces of information that might be handy in making Sylpheed more clear for you in respect to the used shortcut keys, and a layout of the format of the address book.
-<H2><A NAME="ss16.1">16.1 Short-Cut Key List</A>
+<P>You can find the latest, updated, FAQ (Frequently Asked Questions list) at 
+<A HREF="http://nlpagan.net/sylpheed-faq.html">http://nlpagan.net/sylpheed-faq.html.</A><P>
+<H2><A NAME="ss16.1">16.1 Unread News Messages</A>
 </H2>
 
-<P>Shortcuts to the File menu:
-<UL>
-<LI>Alt-F: open FILE menu</LI>
-<LI>Alt-P: print</LI>
-<LI>Alt-W: close</LI>
-<LI>Alt-Q: exit</LI>
-</UL>
-
-Shortcuts to the Edit menu
-<UL>
-<LI>Alt-E: open EDIT menu</LI>
-<LI>Ctrl-C: copy</LI>
-<LI>Ctrl-A: select all</LI>
-<LI>Ctrl-S: search</LI>
-</UL>
-
-Shortcuts to the View menu
-<UL>
-<LI>Alt-V: open VIEW menu</LI>
-</UL>
-
-Shortcuts to the Message menu
-<UL>
-<LI>Alt-M: open MESSAGE menu</LI>
-<LI>Alt-I: check mail for current account</LI>
-<LI>Shift-Alt-I: Check mail for all accounts</LI>
-<LI>Alt-N: compose new message</LI>
-<LI>Alt-R: reply to message</LI>
-<LI>Ctrl-Alt-R: reply to sender (contrary to reply to e.g. mailing list)</LI>
-<LI>Shift-Alt-R: reply to all (includes all addresses in To: and Cc:)</LI>
-<LI>Ctrl-F: forward message</LI>
-<LI>Shift-Ctrl-F: forward message as attachment</LI>
-<LI>Alt-O: move message</LI>
-<LI>Alt-D: delete message</LI>
-<LI>Shift-Ctrl-N: open message in new window</LI>
-<LI>Ctrl-U: view message source</LI>
-<LI>Ctrl-H: show all message headers</LI>
-</UL>
-
-Shortcuts to the Summary menu
-<UL>
-<LI>Alt-S: open SUMMARY menu</LI>
-<LI>Alt-X: execute (pending commands, only useful when commands are not executed immediately)</LI>
-<LI>Alt-U: update view</LI>
-<LI>Alt-G: go to other folder</LI>
-<LI>Ctrl-T: thread view</LI>
-<LI>Shift-Ctrl-T: unthread view</LI>
-</UL>
-
-Shortcuts to the Tool menu:
-<UL>
-<LI>Alt-T: open tool menu</LI>
-<LI>Alt-A: open addressbook</LI>
-<LI>Alt-L: open logfile</LI>
-</UL>
-<H2><A NAME="ss16.2">16.2 Data Format of Address Book</A>
+<H2><A NAME="ss16.2">16.2 Using MSN Mail Accounts</A>
 </H2>
 
-<P>The addressbook is located in &nbsp;/.sylpheed. It is named addressbook.xml.
-The general format of the addressbook is:
-<P>&lt; addressbook &gt;
-<P>&lt; common_address &gt;
-<P>&lt; group name="Common addresses" &gt;
-<P>&lt; item &gt;
-<P>&lt; name &gt; Paul &lt; /name &gt;
-<P>&lt; address &gt; paul@nlpagan.net &lt; /address &gt;
-<P>&lt; remarks &gt; Writes Sylph. manual &lt; /remarks &gt;
-<P>&lt; /item &gt;
-<P>&lt; /group &gt;
-<P>&lt; /common_address &gt;
-<P>&lt; /addressbook &gt;
+<H2><A NAME="ss16.3">16.3 Changing Fonts on Menu, etc.</A>
+</H2>
+
+<P>If you want to change the font that shows the menu of Sylpheed, this is controlled by the window manager that you are using. You have to go into the setup of the window manager (KDE, Gnome, XFCE) and change the font to your desired one.
+<P>Changing the font of the views of Sylpheed is done by selecting "Common preferences" in the Configuration menu. There you select the "Display" tab, and in the first section of the window you can browse the fonts available on your computer.
+<H2><A NAME="ss16.4">16.4 Changing Key Binding of Short-Cut Key</A>
+</H2>
+
+<P>Sylpheed's graphical interface is based on GTK. This means that it is very simple to change the key binding (shortcut key, hotkey) for menu items. If you are used to a certain key combination from another program, you can tell Sylpheed to use that same key combination.
+<P>The procedure is very simple. Suppose you want to change the key binding for getting new mail (message menu) from Alt-I to Ctrl-M.
 <P>
+<UL>
+<LI>Open the message menu with the mouse or by pressing Alt-M</LI>
+<LI>Select the "get new mail" option (do not click it, this will activate the function!). If you use the mouse, just move the mouse cursor over the option.</LI>
+<LI>Now you press Ctrl-M. You will immediately see the new key combination appear on the menu.</LI>
+</UL>
+
+Congratulations, you have just changed a key binding. This way you can change all the options that you want. Do note that it is best to use just the alt, shift and ctrl key combinations. Several functions within Sylpheed are called up by one-key actions which are programmed in.
 <HR>
-<A HREF="sylpheed-17.html">Next</A>
-<A HREF="sylpheed-15.html">Previous</A>
-<A HREF="sylpheed.html#toc16">Contents</A>
+<a HREF="sylpheed-17.html">Next</a>
+<a HREF="sylpheed-15.html">Previous</a>
+<a HREF="sylpheed.html#toc16">Contents</a>
 </BODY>
 </HTML>
