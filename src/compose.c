@@ -509,15 +509,20 @@ static GtkItemFactoryEntry compose_popup_entries[] =
 
 static GtkItemFactoryEntry compose_entries[] =
 {
-	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_File/_Save"),
+	{N_("/_Message"),				NULL, NULL, 0, "<Branch>"},
+	{N_("/_Message/_Send"),		"<control>Return",
+					compose_send_cb, 0, NULL},
+	{N_("/_Message/Send _later"),	"<shift><control>S",
+					compose_send_later_cb,  0, NULL},
+	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/_Attach file"),		"<control>M", compose_attach_cb,      0, NULL},
+	{N_("/_Message/_Insert file"),		"<control>I", compose_insert_file_cb, 0, NULL},
+	{N_("/_Message/Insert si_gnature"),	"<control>G", compose_insert_sig_cb,  0, NULL},
+	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/_Save"),
 						"<control>S", compose_draft_cb, 1, NULL},
-	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_File/_Attach file"),		"<control>M", compose_attach_cb,      0, NULL},
-	{N_("/_File/_Insert file"),		"<control>I", compose_insert_file_cb, 0, NULL},
-	{N_("/_File/Insert si_gnature"),	"<control>G", compose_insert_sig_cb,  0, NULL},
-	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_File/_Close"),			"<control>W", compose_close_cb, 0, NULL},
+	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/_Close"),			"<control>W", compose_close_cb, 0, NULL},
 
 	{N_("/_Edit"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Edit/_Undo"),		"<control>Z", compose_undo_cb, 0, NULL},
@@ -628,26 +633,22 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Spelling/_Spelling Configuration"),
 					NULL, NULL, 0, "<Branch>"},
 #endif
-	{N_("/_Message"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/_Send"),		"<control>Return",
-					compose_send_cb, 0, NULL},
-	{N_("/_Message/Send _later"),	"<shift><control>S",
-					compose_send_later_cb,  0, NULL},
-	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/System"),		NULL, NULL,   0, "<Branch>"},
-	{N_("/_Message/System/None"),		NULL, compose_set_privacy_system_cb,   0, "<RadioItem>"},
-	{N_("/_Message/Si_gn"),   	NULL, compose_toggle_sign_cb   , 0, "<ToggleItem>"},
-	{N_("/_Message/_Encrypt"),	NULL, compose_toggle_encrypt_cb, 0, "<ToggleItem>"},
-	{N_("/_Message/---"),		NULL,		NULL,	0, "<Separator>"},
-	{N_("/_Message/_Priority"),	NULL,		NULL,   0, "<Branch>"},
-	{N_("/_Message/Priority/_Highest"), NULL, compose_set_priority_cb, PRIORITY_HIGHEST, "<RadioItem>"},
-	{N_("/_Message/Priority/Hi_gh"),    NULL, compose_set_priority_cb, PRIORITY_HIGH, "/Message/Priority/Highest"},
-	{N_("/_Message/Priority/_Normal"),  NULL, compose_set_priority_cb, PRIORITY_NORMAL, "/Message/Priority/Highest"},
-	{N_("/_Message/Priority/Lo_w"),	   NULL, compose_set_priority_cb, PRIORITY_LOW, "/Message/Priority/Highest"},
-	{N_("/_Message/Priority/_Lowest"),  NULL, compose_set_priority_cb, PRIORITY_LOWEST, "/Message/Priority/Highest"},
-	{N_("/_Message/---"),		NULL,		NULL,	0, "<Separator>"},
-	{N_("/_Message/_Request Return Receipt"),	NULL, compose_toggle_return_receipt_cb, 0, "<ToggleItem>"},
-	{N_("/_Message/Remo_ve references"),	NULL, compose_toggle_remove_refs_cb, 0, "<ToggleItem>"},
+	{N_("/_Options"),		NULL, NULL, 0, "<Branch>"},
+	{N_("/_Options/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Options/Privacy System"),		NULL, NULL,   0, "<Branch>"},
+	{N_("/_Options/Privacy System/None"),	NULL, compose_set_privacy_system_cb,   0, "<RadioItem>"},
+	{N_("/_Options/Si_gn"),   	NULL, compose_toggle_sign_cb   , 0, "<ToggleItem>"},
+	{N_("/_Options/_Encrypt"),	NULL, compose_toggle_encrypt_cb, 0, "<ToggleItem>"},
+	{N_("/_Options/---"),		NULL,		NULL,	0, "<Separator>"},
+	{N_("/_Options/_Priority"),	NULL,		NULL,   0, "<Branch>"},
+	{N_("/_Options/Priority/_Highest"), NULL, compose_set_priority_cb, PRIORITY_HIGHEST, "<RadioItem>"},
+	{N_("/_Options/Priority/Hi_gh"),    NULL, compose_set_priority_cb, PRIORITY_HIGH, "/Options/Priority/Highest"},
+	{N_("/_Options/Priority/_Normal"),  NULL, compose_set_priority_cb, PRIORITY_NORMAL, "/Options/Priority/Highest"},
+	{N_("/_Options/Priority/Lo_w"),	   NULL, compose_set_priority_cb, PRIORITY_LOW, "/Options/Priority/Highest"},
+	{N_("/_Options/Priority/_Lowest"),  NULL, compose_set_priority_cb, PRIORITY_LOWEST, "/Options/Priority/Highest"},
+	{N_("/_Options/---"),		NULL,		NULL,	0, "<Separator>"},
+	{N_("/_Options/_Request Return Receipt"),	NULL, compose_toggle_return_receipt_cb, 0, "<ToggleItem>"},
+	{N_("/_Options/Remo_ve references"),	NULL, compose_toggle_remove_refs_cb, 0, "<ToggleItem>"},
 	{N_("/_Tools"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/Show _ruler"),	NULL, compose_toggle_ruler_cb, 0, "<ToggleItem>"},
 	{N_("/_Tools/_Address book"),	"<shift><control>A", compose_address_cb , 0, NULL},
@@ -1353,15 +1354,15 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	menu_set_sensitive(ifactory, "/Property...", FALSE);
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
-	menu_set_sensitive(ifactory, "/File/Save", FALSE);
-	menu_set_sensitive(ifactory, "/File/Insert file", FALSE);
-	menu_set_sensitive(ifactory, "/File/Attach file", FALSE);
-	menu_set_sensitive(ifactory, "/File/Insert signature", FALSE);
+	menu_set_sensitive(ifactory, "/Message/Save", FALSE);
+	menu_set_sensitive(ifactory, "/Message/Insert file", FALSE);
+	menu_set_sensitive(ifactory, "/Message/Attach file", FALSE);
+	menu_set_sensitive(ifactory, "/Message/Insert signature", FALSE);
 	menu_set_sensitive(ifactory, "/Edit", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Sign", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Encrypt", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Priority", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Request Return Receipt", FALSE);
+	menu_set_sensitive(ifactory, "/Options/Sign", FALSE);
+	menu_set_sensitive(ifactory, "/Options/Encrypt", FALSE);
+	menu_set_sensitive(ifactory, "/Options/Priority", FALSE);
+	menu_set_sensitive(ifactory, "/Options/Request Return Receipt", FALSE);
 	menu_set_sensitive(ifactory, "/Tools/Show ruler", FALSE);
 	menu_set_sensitive(ifactory, "/Tools/Actions", FALSE);
 	
@@ -2180,7 +2181,7 @@ static void compose_use_signing(Compose *compose, gboolean use_signing)
 	compose->use_signing = use_signing;
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	menuitem = gtk_item_factory_get_item
-		(ifactory, "/Message/Sign");
+		(ifactory, "/Options/Sign");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), 
 				       use_signing);
 }
@@ -2193,7 +2194,7 @@ static void compose_use_encryption(Compose *compose, gboolean use_encryption)
 	compose->use_encryption = use_encryption;
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	menuitem = gtk_item_factory_get_item
-		(ifactory, "/Message/Encrypt");
+		(ifactory, "/Options/Encrypt");
 
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), 
 				       use_encryption);
@@ -2983,13 +2984,13 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 #endif
 
 	if (account->default_sign)
-		menu_set_active(ifactory, "/Message/Sign", TRUE);
+		menu_set_active(ifactory, "/Options/Sign", TRUE);
 	else
-		menu_set_active(ifactory, "/Message/Sign", FALSE);
+		menu_set_active(ifactory, "/Options/Sign", FALSE);
 	if (account->default_encrypt)
-		menu_set_active(ifactory, "/Message/Encrypt", TRUE);
+		menu_set_active(ifactory, "/Options/Encrypt", TRUE);
 	else
-		menu_set_active(ifactory, "/Message/Encrypt", FALSE);
+		menu_set_active(ifactory, "/Options/Encrypt", FALSE);
 				       
 	activate_privacy_system(compose, account);
 
@@ -4693,7 +4694,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	ifactory = gtk_item_factory_from_widget(menubar);
 	menu_set_sensitive(ifactory, "/Edit/Undo", FALSE);
 	menu_set_sensitive(ifactory, "/Edit/Redo", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Remove references", FALSE);
+	menu_set_sensitive(ifactory, "/Options/Remove references", FALSE);
 
 	tmpl_menu = gtk_item_factory_get_item(ifactory, "/Tools/Template");
 
@@ -4916,23 +4917,23 @@ static void compose_update_priority_menu_item(Compose * compose)
 	switch (compose->priority) {
 		case PRIORITY_HIGHEST:
 			menuitem = gtk_item_factory_get_item
-				(ifactory, "/Message/Priority/Highest");
+				(ifactory, "/Options/Priority/Highest");
 			break;
 		case PRIORITY_HIGH:
 			menuitem = gtk_item_factory_get_item
-				(ifactory, "/Message/Priority/High");
+				(ifactory, "/Options/Priority/High");
 			break;
 		case PRIORITY_NORMAL:
 			menuitem = gtk_item_factory_get_item
-				(ifactory, "/Message/Priority/Normal");
+				(ifactory, "/Options/Priority/Normal");
 			break;
 		case PRIORITY_LOW:
 			menuitem = gtk_item_factory_get_item
-				(ifactory, "/Message/Priority/Low");
+				(ifactory, "/Options/Priority/Low");
 			break;
 		case PRIORITY_LOWEST:
 			menuitem = gtk_item_factory_get_item
-				(ifactory, "/Message/Priority/Lowest");
+				(ifactory, "/Options/Priority/Lowest");
 			break;
 	}
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
@@ -4958,13 +4959,13 @@ static void compose_set_privacy_system_cb(gpointer data,
 	}
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
-	menu_set_sensitive(ifactory, "/Message/Sign", can_sign);
-	menu_set_sensitive(ifactory, "/Message/Encrypt", can_encrypt);
+	menu_set_sensitive(ifactory, "/Options/Sign", can_sign);
+	menu_set_sensitive(ifactory, "/Options/Encrypt", can_encrypt);
 }
 
 static void compose_update_privacy_system_menu_item(Compose * compose)
 {
-	static gchar *branch_path = "/Message/System";
+	static gchar *branch_path = "/Options/Privacy System";
 	GtkItemFactory *ifactory;
 	GtkWidget *menuitem = NULL;
 	GList *amenu;
@@ -5000,8 +5001,8 @@ static void compose_update_privacy_system_menu_item(Compose * compose)
 			gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 	}
 
-	menu_set_sensitive(ifactory, "/Message/Sign", can_sign);
-	menu_set_sensitive(ifactory, "/Message/Encrypt", can_encrypt);
+	menu_set_sensitive(ifactory, "/Options/Sign", can_sign);
+	menu_set_sensitive(ifactory, "/Options/Encrypt", can_encrypt);
 }	
  
 static void compose_set_template_menu(Compose *compose)
@@ -5040,7 +5041,7 @@ void compose_update_actions_menu(Compose *compose)
 
 void compose_update_privacy_systems_menu(Compose *compose)
 {
-	static gchar *branch_path = "/Message/System";
+	static gchar *branch_path = "/Options/Privacy System";
 	GtkItemFactory *ifactory;
 	GtkWidget *menuitem;
 	gchar *menu_path;
@@ -5066,7 +5067,7 @@ void compose_update_privacy_systems_menu(Compose *compose)
 	ifentry.accelerator     = NULL;
 	ifentry.callback_action = 0;
 	ifentry.callback        = compose_set_privacy_system_cb;
-	ifentry.item_type       = "/Message/System/None";
+	ifentry.item_type       = "/Options/Privacy System/None";
 
 	systems = privacy_get_system_ids();
 	for (cur = systems; cur != NULL; cur = g_slist_next(cur)) {
@@ -5768,8 +5769,8 @@ static void compose_set_ext_editor_sensitive(Compose *compose,
 
 	menu_set_sensitive(ifactory, "/Message/Send", sensitive);
 	menu_set_sensitive(ifactory, "/Message/Send later", sensitive);
-	menu_set_sensitive(ifactory, "/File/Insert file", sensitive);
-	menu_set_sensitive(ifactory, "/File/Insert signature", sensitive);
+	menu_set_sensitive(ifactory, "/Message/Insert file", sensitive);
+	menu_set_sensitive(ifactory, "/Message/Insert signature", sensitive);
 	menu_set_sensitive(ifactory, "/Edit/Wrap current paragraph", sensitive);
 	menu_set_sensitive(ifactory, "/Edit/Wrap all long lines", sensitive);
 	menu_set_sensitive(ifactory, "/Edit/Edit with external editor",
@@ -5973,12 +5974,12 @@ static void compose_allow_user_actions (Compose *compose, gboolean allow)
 {
 	GtkItemFactory *ifactory = gtk_item_factory_from_widget(compose->menubar);
 	toolbar_comp_set_sensitive(compose, allow);
-	menu_set_sensitive(ifactory, "/File", allow);
+	menu_set_sensitive(ifactory, "/Message", allow);
 	menu_set_sensitive(ifactory, "/Edit", allow);
 #if USE_ASPELL
 	menu_set_sensitive(ifactory, "/Spelling", allow);
 #endif	
-	menu_set_sensitive(ifactory, "/Message", allow);
+	menu_set_sensitive(ifactory, "/Options", allow);
 	menu_set_sensitive(ifactory, "/Tools", allow);
 	menu_set_sensitive(ifactory, "/Help", allow);
 }

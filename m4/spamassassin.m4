@@ -82,7 +82,7 @@ if test $haveexmax = yes ; then
   AC_DEFINE(HAVE_EX__MAX, 1, HAVE_EX__MAX)
 fi
 
-if test "$USE_OPENSSL" -ne 0; then
+if test x$ac_cv_enable_openssl = xyes; then
     AC_DEFINE(SPAMC_SSL, 1, Compile libspamc with OpenSSL support)
 fi
 
