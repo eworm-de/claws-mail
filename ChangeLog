@@ -5,6 +5,7 @@
 	  src/about.c: removed the copyright notice for libkcc.
 	* src/codeconv.c: conv_guess_encoding(): check for ASCII code first
 	  for speedup.
+	* src/prefs_actions.c: removed unnecessary spaces/tabs.
 
 2002-07-05
 
