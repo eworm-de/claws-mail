@@ -32,9 +32,9 @@ struct _Plugin
 {
 	gchar	*filename;
 	GModule	*module;
-	gchar	*(*name) (void);
-	gchar	*(*desc) (void);
-	gchar	*(*type) (void);
+	const gchar *(*name) (void);
+	const gchar *(*desc) (void);
+	const gchar *(*type) (void);
 };
 
 /**
@@ -46,6 +46,15 @@ GSList *plugin_types = NULL;
 static gint list_find_by_string(gconstpointer data, gconstpointer str)
 {
 	return strcmp((gchar *)data, (gchar *)str) ? TRUE : FALSE;
+}
+
+static gint list_find_by_plugin_filename(const Plugin *plugin, const gchar *filename)
+{
+        g_return_val_if_fail(plugin, 1);
+        g_return_val_if_fail(plugin->filename, 1);
+        g_return_val_if_fail(filename, 1);
+        
+        return strcmp(filename, plugin->filename);
 }
 
 void plugin_save_list(void)
@@ -98,6 +107,13 @@ gint plugin_load(const gchar *filename, gchar **error)
 
 	g_return_val_if_fail(filename != NULL, -1);
 	g_return_val_if_fail(error != NULL, -1);
+
+        /* check duplicate plugin path name */
+        if (g_slist_find_custom(plugins, filename, 
+                                (GCompareFunc)list_find_by_plugin_filename)) {
+                *error = g_strdup(_("Plugin already loaded"));
+                return -1;                
+        }                               
 	
 	plugin = g_new0(Plugin, 1);
 	if (plugin == NULL) {
