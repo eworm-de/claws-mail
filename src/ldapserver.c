@@ -66,7 +66,7 @@ LdapServer *ldapsvr_create_noctl( void ) {
 LdapServer *ldapsvr_create( void ) {
 	LdapServer *server;
 
-	server = ldapsvr_create();
+	server = ldapsvr_create_noctl();
 	server->control = ldapctl_create();
 	return server;
 }
