@@ -615,6 +615,7 @@ void prefs_filtering_rename_path(const gchar *old_path, const gchar *new_path)
 	gchar *prefix;
 	gchar *suffix;
 	gchar *dest_path;
+	gchar *old_path_with_sep;
 	gint destlen;
 	gint prefixlen;
 	gint oldpathlen;
@@ -623,6 +624,7 @@ void prefs_filtering_rename_path(const gchar *old_path, const gchar *new_path)
 	g_return_if_fail(new_path != NULL);
 
 	oldpathlen = strlen(old_path);
+	old_path_with_sep = g_strconcat(old_path,G_DIR_SEPARATOR_S,NULL);
 
 	for (cur = global_processing; cur != NULL; cur = cur->next) {
 		FilteringProp   *filtering = (FilteringProp *)cur->data;
@@ -656,6 +658,17 @@ void prefs_filtering_rename_path(const gchar *old_path, const gchar *new_path)
 				g_free(prefix);
 				g_free(action->destination);
 				action->destination = dest_path;
+			} else { /* for non-leaf folders */
+				/* compare with trailing slash */
+				if(!strncmp(old_path_with_sep, action->destination, oldpathlen+1)) {
+					
+					suffix = action->destination + oldpathlen + 1;
+					dest_path = g_strconcat(new_path,
+								G_DIR_SEPARATOR_S,
+								suffix, NULL);
+					g_free(action->destination);
+					action->destination = dest_path;
+				}
 			}
 		}
 	}
