@@ -1,9 +1,9 @@
-2004-05-22 [colin]	0.9.10claws69
+2004-05-22 [colin]	0.9.10claws67.2
 
 	* src/procmime.c
 		Fix parsing of multiparts mails
 
-2004-05-22 [colin]	0.9.10claws68
+2004-05-22 [colin]	0.9.10claws67.1
 
 	* src/summaryview.c
 		Fix quicksearch
