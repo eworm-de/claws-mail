@@ -1,3 +1,8 @@
+2004-11-23 [colin]	0.9.12cvs165
+
+	* src/procmime.c
+		Fix mime headers wrapping
+
 2004-11-23 [christoph]	0.9.12cvs164
 
 	* src/common/Makefile.am
