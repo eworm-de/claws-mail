@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws15
+EXTRA_VERSION=claws16
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -128,7 +128,7 @@ AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS(fcntl.h sys/file.h unistd.h paths.h \
 		 sys/param.h sys/utsname.h sys/select.h \
-		 wchar.h wctype.h)
+		 wchar.h wctype.h fnmatch.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST

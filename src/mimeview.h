@@ -74,6 +74,10 @@ struct _MimeView
 
 struct _MimeViewerFactory
 {
+	/**
+         * Array of supported content types.
+	 * Must be NULL terminated and lower case
+	 */
 	gchar **content_types;
 	gint priority;
 	

@@ -1,3 +1,18 @@
+2003-06-06 [christoph]	0.9.0claws16
+
+	* configure.ac
+	* src/mimeview.h
+		add check for fnmatch.h and include it when available
+
+	* src/mimeview.[ch]
+		fix wrong case sensitivity of Content-Types
+
+	* src/gtk/Makefile.am
+		need the same include paths in gtk directory as in
+		common directory because .h files in common can
+		include files from these directories, when included
+		in gtk's .h or .c files
+
 2003-06-06 [alfons]	0.9.0claws15
 
 	* src/mimeview.c

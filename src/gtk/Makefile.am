@@ -14,10 +14,11 @@ libsylpheedgtk_la_SOURCES = \
 	prefswindow.c prefswindow.h \
 	sslcertwindow.c sslcertwindow.h
 
-INCLUDES = \
+CPPFLAGS = \
 	-I../common \
 	-I.. \
 	$(GTK_CFLAGS)
+	$(OPENSSL_CFLAGS)
 
 libsylpheedgtk_la_LIBADD = \
 	../common/libsylpheedcommon.la \
