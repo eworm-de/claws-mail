@@ -2441,6 +2441,8 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 #endif
 
 #ifdef WIN32
+/* "from" column gets free()d later 
+ * -> dont free "to", it will be free()d via the column too */
 	{
 		gchar *p_fromname;
 		p_fromname = g_strdup(msginfo->fromname);
@@ -2462,34 +2464,26 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 		if (prefs_common.use_addr_book) {
 			if (account_find_from_address(addr)) {
 				addr = summary_complete_address(msginfo->to);
+#ifndef WIN32
 				g_free(to);
+#endif
 				to   = g_strconcat("-->", addr == NULL ? msginfo->to : addr, NULL);
 #ifdef WIN32
-				{
-					gchar *p_to;
-					p_to = g_strdup(to);
-					locale_to_utf8(&p_to);
-					text[col_pos[S_COL_FROM]] = p_to;
-				}
-#else
-				text[col_pos[S_COL_FROM]] = to;
+				to = g_locale_to_utf8(to, -1, NULL, NULL, NULL);
 #endif
+				text[col_pos[S_COL_FROM]] = to;
 				g_free(addr);
 			}
 		} else {
 			if (account_find_from_address(addr)) {
+#ifndef WIN32
 				g_free(to);
+#endif
 				to = g_strconcat("-->", msginfo->to, NULL);
 #ifdef WIN32
-				{
-					gchar *p_to;
-					p_to = g_strdup(to);
-					locale_to_utf8(&p_to);
-					text[col_pos[S_COL_FROM]] = p_to;
-				}
-#else
-				text[col_pos[S_COL_FROM]] = to;
+				to = g_locale_to_utf8(to, -1, NULL, NULL, NULL);
 #endif
+				text[col_pos[S_COL_FROM]] = to;
 			}
 		}
 	}
@@ -2502,18 +2496,14 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	if (text[col_pos[S_COL_FROM]] != to && prefs_common.use_addr_book && msginfo->from) {
 		gchar *from = summary_complete_address(msginfo->from);
 		if (from) {
+#ifndef WIN32
 			g_free(to);
+#endif
 			to = from;
 #ifdef WIN32
-			{
-				gchar *p_to;
-				p_to = g_strdup(to);
-				locale_to_utf8(&p_to);
-				text[col_pos[S_COL_FROM]] = p_to;
-			}
-#else
-			text[col_pos[S_COL_FROM]] = to;
+			to = g_locale_to_utf8(to, -1, NULL, NULL, NULL);
 #endif
+			text[col_pos[S_COL_FROM]] = to;
 		}			
 	}
 
