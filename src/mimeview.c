@@ -36,9 +36,7 @@
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkselection.h>
 #include <stdio.h>
-#include <unistd.h>
-#include <fnmatch.h>
- 
+
 #include "intl.h"
 #include "main.h"
 #include "mimeview.h"

@@ -44,9 +44,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <regex.h>
 
 #include "intl.h"
 #include "main.h"

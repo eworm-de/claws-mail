@@ -1,3 +1,11 @@
+2003-06-06 [alfons]	0.9.0claws15
+
+	* src/mimeview.c
+	* src/summaryview.c
+		make it compile again because of regex.h / fnmatch.h 
+		include problems (related to recent mime stuff, can
+		someone check this?)
+
 2003-06-06 [thorsten]	0.9.0claws14
 
 	* src/folderview.c
