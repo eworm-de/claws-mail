@@ -219,6 +219,10 @@ gint get_next_word_len		(const gchar *s);
 /* functions for string parsing */
 gint subject_compare			(const gchar	*s1,
 					 const gchar	*s2);
+gint subject_compare_for_sort		(const gchar	*s1,
+					 const gchar	*s2);
+void trim_subject_for_compare		(gchar		*str);
+void trim_subject_for_sort		(gchar		*str);
 void trim_subject			(gchar		*str);
 void eliminate_parenthesis		(gchar		*str,
 					 gchar		 op,

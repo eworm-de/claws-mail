@@ -1,3 +1,21 @@
+2003-03-10
+
+	* src/headerview.c: headerview_show()
+	  src/textview.c: textview_write_line(): マルチバイト環境での
+	  クラッシュを防ぐために表示文字列から表示不能な文字を削除するように
+	  した。
+	* src/codeconv.[ch]: conv_unreadable_locale(): 新規。
+	  conv_localetodisp() から分離。
+
+2003-03-10
+
+	* src/procmsg.c: procmsg_cmp_by_subject()
+	  src/summaryview.c: summary_cmp_by_subject(): 件名を比較するときに
+	  Re: を無視するようにした。
+	* src/utils.[ch]:
+	  subject_compare_for_sort()
+	  trim_subject_for_sort(): 新規。
+
 2003-03-07
 
 	* version 0.8.11

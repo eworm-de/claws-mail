@@ -3396,6 +3396,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 				return -1;
 			} else {
 				buf = chars;
+				out_codeset = src_codeset;
 				chars = NULL;
 			}
 		}

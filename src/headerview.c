@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@
 #include "intl.h"
 #include "headerview.h"
 #include "prefs_common.h"
+#include "codeconv.h"
 #include "gtkutils.h"
 #include "utils.h"
 
@@ -167,25 +168,38 @@ void headerview_init(HeaderView *headerview)
 
 void headerview_show(HeaderView *headerview, MsgInfo *msginfo)
 {
+	gchar *str;
+
 	headerview_clear(headerview);
 
+	if (msginfo->from) {
+		Xstrdup_a(str, msginfo->from, return);
+		conv_unreadable_locale(str);
+	} else
+		str = NULL;
 	gtk_label_set_text(GTK_LABEL(headerview->from_body_label),
-			   msginfo->from ? msginfo->from : _("(No From)"));
+			   str ? str : _("(No From)"));
 	if (msginfo->to) {
-		gtk_label_set_text(GTK_LABEL(headerview->to_body_label),
-				   msginfo->to);
+		Xstrdup_a(str, msginfo->to, return);
+		conv_unreadable_locale(str);
+		gtk_label_set_text(GTK_LABEL(headerview->to_body_label), str);
 		gtk_widget_show(headerview->to_header_label);
 		gtk_widget_show(headerview->to_body_label);
 	}
 	if (msginfo->newsgroups) {
-		gtk_label_set_text(GTK_LABEL(headerview->ng_body_label),
-				   msginfo->newsgroups);
+		Xstrdup_a(str, msginfo->newsgroups, return);
+		conv_unreadable_locale(str);
+		gtk_label_set_text(GTK_LABEL(headerview->ng_body_label), str);
 		gtk_widget_show(headerview->ng_header_label);
 		gtk_widget_show(headerview->ng_body_label);
 	}
+	if (msginfo->subject) {
+		Xstrdup_a(str, msginfo->subject, return);
+		conv_unreadable_locale(str);
+	} else
+		str = NULL;
 	gtk_label_set_text(GTK_LABEL(headerview->subject_body_label),
-			   msginfo->subject ? msginfo->subject :
-			   _("(No Subject)"));
+			   str ? str : _("(No Subject)"));
 
 #if HAVE_LIBCOMPFACE
 	headerview_show_xface(headerview, msginfo);

@@ -1174,22 +1174,15 @@ static void textview_write_line(TextView *textview, const gchar *str,
 	GdkColor *fg_color;
 	gint quotelevel = -1;
 
-#if 0
-	if (!conv)
-		strncpy2(buf, str, sizeof(buf));
-	else if (conv_convert(conv, buf, sizeof(buf), str) < 0) {
-		gtk_stext_insert(text, textview->msgfont,
-				prefs_common.enable_color
-				? &error_color : NULL, NULL,
-				"*** Warning: code conversion failed ***\n",
-				-1);
-		return;
-	}
-#endif
-	if (!conv)
-		strncpy2(buf, str, sizeof(buf));
-	else if (conv_convert(conv, buf, sizeof(buf), str) < 0)
+	if (!conv) {
+		if (textview->text_is_mb)
+			conv_localetodisp(buf, sizeof(buf), str);
+		else
+			strncpy2(buf, str, sizeof(buf));
+	} else if (conv_convert(conv, buf, sizeof(buf), str) < 0)
 		conv_localetodisp(buf, sizeof(buf), str);
+	else if (textview->text_is_mb)
+		conv_unreadable_locale(buf);
 
 	strcrchomp(buf);
 	if (prefs_common.conv_mb_alnum) conv_mb_alnum(buf);
@@ -1480,6 +1473,9 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 		    procheader_headername_equal(header->name, "To")      ||
 		    procheader_headername_equal(header->name, "Cc"))
 			unfold_line(header->body);
+
+		if (textview->text_is_mb == TRUE)
+			conv_unreadable_locale(header->body);
 
 		if (prefs_common.enable_color &&
 		    (procheader_headername_equal(header->name, "X-Mailer") ||

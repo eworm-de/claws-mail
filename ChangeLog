@@ -1,3 +1,21 @@
+2003-03-10
+
+	* src/headerview.c: headerview_show()
+	  src/textview.c: textview_write_line(): remove unreadable characters
+	  from displayed strings to prevent crashes on multi-byte
+	  environments.
+	* src/codeconv.[ch]: conv_unreadable_locale(): new. It was separated
+	  from conv_localetodisp().
+
+2003-03-10
+
+	* src/procmsg.c: procmsg_cmp_by_subject()
+	  src/summaryview.c: summary_cmp_by_subject(): ignore Re: when
+	  comparing subjects.
+	* src/utils.[ch]:
+	  subject_compare_for_sort()
+	  trim_subject_for_sort(): new.
+
 2003-03-07
 
 	* version 0.8.11

@@ -365,9 +365,6 @@ static gint summary_cmp_by_date		(GtkCList		*clist,
 static gint summary_cmp_by_from		(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
-static gint summary_cmp_by_subject	(GtkCList		*clist,
-					 gconstpointer		 ptr1,
-					 gconstpointer		 ptr2);
 static gint summary_cmp_by_simplified_subject
 					(GtkCList 		*clist, 
 					 gconstpointer 		 ptr1, 
@@ -379,6 +376,9 @@ static gint summary_cmp_by_label	(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
 static gint summary_cmp_by_to		(GtkCList		*clist,
+					 gconstpointer		 ptr1,
+					 gconstpointer		 ptr2);
+static gint summary_cmp_by_subject	(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
 static gint summary_cmp_by_locked	(GtkCList 		*clist,
@@ -5002,10 +5002,25 @@ static gint func_name(GtkCList *clist,					 \
 	return strcasecmp(msginfo1->var_name, msginfo2->var_name);	 \
 }
 
-CMP_FUNC_DEF(summary_cmp_by_subject, subject);
 CMP_FUNC_DEF(summary_cmp_by_to, to);
 
 #undef CMP_FUNC_DEF
+
+static gint summary_cmp_by_subject(GtkCList *clist,			 \
+				   gconstpointer ptr1,			 \
+				   gconstpointer ptr2)			 \
+{									 \
+	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;		 \
+	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;		 \
+									 \
+	if (!msginfo1->subject)						 \
+		return (msginfo2->subject != NULL);			 \
+	if (!msginfo2->subject)						 \
+		return -1;						 \
+									 \
+	return subject_compare_for_sort					 \
+		(msginfo1->subject, msginfo2->subject);			 \
+}
 
  static gint summary_cmp_by_from(GtkCList *clist, gconstpointer ptr1,
  				 gconstpointer ptr2)

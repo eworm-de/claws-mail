@@ -1,3 +1,8 @@
+2003-03-10 [paul]	0.8.10claws104
+
+	* sync with 0.8.11cvs2
+		see ChangeLog 2003-03-10
+
 2003-03-09 [melvin]	0.8.10claws103
 
 	* src/textview.c

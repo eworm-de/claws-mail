@@ -462,6 +462,34 @@ void conv_unreadable_latin(gchar *str)
 	}
 }
 
+void conv_unreadable_locale(gchar *str)
+{
+	switch (conv_get_current_charset()) {
+	case C_US_ASCII:
+	case C_ISO_8859_1:
+	case C_ISO_8859_2:
+	case C_ISO_8859_3:
+	case C_ISO_8859_4:
+	case C_ISO_8859_5:
+	case C_ISO_8859_6:
+	case C_ISO_8859_7:
+	case C_ISO_8859_8:
+	case C_ISO_8859_9:
+	case C_ISO_8859_10:
+	case C_ISO_8859_11:
+	case C_ISO_8859_13:
+	case C_ISO_8859_14:
+	case C_ISO_8859_15:
+		conv_unreadable_latin(str);
+		break;
+	case C_EUC_JP:
+		conv_unreadable_eucjp(str);
+		break;
+	default:
+		break;
+	}
+}
+
 #define NCV	'\0'
 
 void conv_mb_alnum(gchar *str)
@@ -606,39 +634,15 @@ void conv_latintodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 	conv_unreadable_latin(outbuf);
 }
 
-void conv_noconv(gchar *outbuf, gint outlen, const gchar *inbuf)
-{
-	strncpy2(outbuf, inbuf, outlen);
-}
-
 void conv_localetodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	strncpy2(outbuf, inbuf, outlen);
+	conv_unreadable_locale(outbuf);
+}
 
-	switch (conv_get_current_charset()) {
-	case C_US_ASCII:
-	case C_ISO_8859_1:
-	case C_ISO_8859_2:
-	case C_ISO_8859_3:
-	case C_ISO_8859_4:
-	case C_ISO_8859_5:
-	case C_ISO_8859_6:
-	case C_ISO_8859_7:
-	case C_ISO_8859_8:
-	case C_ISO_8859_9:
-	case C_ISO_8859_10:
-	case C_ISO_8859_11:
-	case C_ISO_8859_13:
-	case C_ISO_8859_14:
-	case C_ISO_8859_15:
-		conv_unreadable_latin(outbuf);
-		break;
-	case C_EUC_JP:
-		conv_unreadable_eucjp(outbuf);
-		break;
-	default:
-		break;
-	}
+void conv_noconv(gchar *outbuf, gint outlen, const gchar *inbuf)
+{
+	strncpy2(outbuf, inbuf, outlen);
 }
 
 CodeConverter *conv_code_converter_new(const gchar *charset)
