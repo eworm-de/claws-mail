@@ -1,3 +1,8 @@
+2003-08-06 [christoph]	0.9.4claws6
+
+	* src/imap.c
+		make sure source folder is selected when copying messages
+
 2003-08-06 [christoph]	0.9.4claws5
 
 	* sync with 0.9.4cvs2

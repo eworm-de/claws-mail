@@ -944,6 +944,11 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 		return -1;
 	}
 
+	ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
+			 NULL, NULL, NULL, NULL);
+	if (ok != IMAP_SUCCESS)
+		return ok;
+
 	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
 	seq_list = imap_get_seq_set_from_msglist(msglist);
 	uid_mapping = g_relation_new(2);
