@@ -3489,6 +3489,34 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	}
 	g_free(chars);
 
+	/* Canonicalize line endings in the message text */
+	{
+		gchar *canon_buf, *out;
+		const gchar *p;
+		guint new_len = 0;
+
+		for (p = buf ; *p; ++p) {
+			if (*p != '\r') {
+				++new_len;
+				if (*p == '\n')
+					++new_len;
+			}
+		}
+
+		out = canon_buf = g_new(gchar, new_len + 1);
+		for (p = buf; *p; ++p) {
+			if (*p != '\r') {
+				if (*p == '\n')
+					*out++ = '\r';
+				*out++ = *p;
+			}
+		}
+		*out = '\0';
+
+		free(buf);
+		buf = canon_buf;
+	}
+
 #if USE_GPGME
 	if (!is_draft && compose->use_signing && compose->account->clearsign) {
 		if (compose_clearsign_text(compose, &buf) < 0) {

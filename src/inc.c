@@ -243,11 +243,15 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 	IncProgressDialog *inc_dialog;
 	IncSession *session;
 	gchar *text[3];
+	FolderItem *item = mainwin->summaryview->folder_item;
 
 	switch (account->protocol) {
 	case A_IMAP4:
 	case A_NNTP:
 		folderview_check_new(FOLDER(account->folder));
+		if (!prefs_common.scan_all_after_inc && item != NULL &&
+		    FOLDER(account->folder) == item->folder)
+			folderview_update_item(item, TRUE);
 		return 1;
 
 	case A_POP3:
@@ -319,8 +323,14 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 	for (; list != NULL; list = list->next) {
 		PrefsAccount *account = list->data;
 		if ((account->protocol == A_IMAP4 ||
-		     account->protocol == A_NNTP) && account->recv_at_getall)
+		     account->protocol == A_NNTP) && account->recv_at_getall) {
+			FolderItem *item = mainwin->summaryview->folder_item;
+
 			folderview_check_new(FOLDER(account->folder));
+			if (!prefs_common.scan_all_after_inc && item != NULL &&
+			    FOLDER(account->folder) == item->folder)
+				folderview_update_item(item, TRUE);
+		}
 	}
 
 	/* check POP3 accounts */

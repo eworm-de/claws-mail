@@ -175,7 +175,7 @@ static void prefs_summary_column_create(void)
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
 	gtk_window_set_title(GTK_WINDOW(window),
-			     _("Summary display item setting"));
+			     _("Summary displayed items setting"));
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
 			   GTK_SIGNAL_FUNC(prefs_summary_column_delete_event),
 			   NULL);

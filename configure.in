@@ -10,7 +10,7 @@ MINOR_VERSION=8
 MICRO_VERSION=3
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws36
+EXTRA_VERSION=claws43
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -405,7 +405,7 @@ elif test "$ac_cv_enable_imlib" = yes; then
 else
 	echo "image support : no"
 fi
-echo "GPGME         : $ac_cv_enable_gpgme"
+echo "GnuPG         : $ac_cv_enable_gpgme"
 echo "JPilot        : $ac_cv_enable_jpilot"
 echo "LDAP          : $ac_cv_enable_ldap"
 echo "OpenSSL       : $ac_cv_enable_ssl"

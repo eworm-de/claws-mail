@@ -591,7 +591,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/E_xpand all threads"),	NULL, expand_threads_cb, 0, NULL},
 	{N_("/_View/Co_llapse all threads"),	NULL, collapse_threads_cb, 0, NULL},
 	{N_("/_View/_Hide read messages"),	NULL, hide_read_messages, 0, "<ToggleItem>"},
-	{N_("/_View/Set display _item..."),	NULL, set_display_item_cb, 0, NULL},
+	{N_("/_View/Set displayed _items..."),	NULL, set_display_item_cb, 0, NULL},
 
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Go to"),			NULL, NULL, 0, "<Branch>"},
@@ -702,7 +702,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Open in new _window"),	"<control><alt>N", open_msg_cb, 0, NULL},
 	{N_("/_View/Mess_age source"),		"<control>U", view_source_cb, 0, NULL},
-	{N_("/_View/Show all _header"),		"<control>H", show_all_header_cb, 0, "<ToggleItem>"},
+	{N_("/_View/Show all _headers"),	"<control>H", show_all_header_cb, 0, "<ToggleItem>"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Update summary"),		"<control><alt>U", update_summary_cb,  0, NULL},
 
@@ -778,11 +778,11 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Configuration"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Configuration/_Common preferences..."),
 						NULL, prefs_common_open_cb, 0, NULL},
-	{N_("/_Configuration/C_ustom toolbar"),
+	{N_("/_Configuration/C_ustomize toolbar"),
 						NULL, NULL, 0, "<Branch>"},
-	{N_("/_Configuration/C_ustom toolbar/_Main toolbar..."),
+	{N_("/_Configuration/C_ustomize toolbar/_Main toolbar..."),
 						NULL, prefs_toolbar_cb, TOOLBAR_MAIN, NULL},
-	{N_("/_Configuration/C_ustom toolbar/_Compose toolbar..."),
+	{N_("/_Configuration/C_ustomize toolbar/_Compose toolbar..."),
 						NULL, prefs_toolbar_cb, TOOLBAR_COMPOSE, NULL},
 #if 0
 	{N_("/_Configuration/_Filter setting..."),
@@ -863,8 +863,8 @@ MainWindow *main_window_create(SeparateType type)
 	GtkWidget *statuslabel;
 	GtkWidget *ac_button;
 	GtkWidget *ac_label;
- 	GtkWidget *online_status;
-	GtkWidget *offline_status;
+ 	GtkWidget *online_pixmap;
+	GtkWidget *offline_pixmap;
 	GtkWidget *online_switch;
 	GtkWidget *offline_switch;
 
@@ -948,15 +948,15 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_widget_set_usize(progressbar, 120, 1);
 	gtk_box_pack_start(GTK_BOX(hbox_stat), progressbar, FALSE, FALSE, 0);
 
-	online_status = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_WORK_ONLINE);
-	offline_status = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_WORK_OFFLINE);
+	online_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_WORK_ONLINE);
+	offline_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_WORK_OFFLINE);
 	online_switch = gtk_button_new ();
 	offline_switch = gtk_button_new ();
-	gtk_container_add (GTK_CONTAINER(online_switch), online_status);
+	gtk_container_add (GTK_CONTAINER(online_switch), online_pixmap);
 	gtk_button_set_relief (GTK_BUTTON(online_switch), GTK_RELIEF_NONE);
 	gtk_signal_connect (GTK_OBJECT(online_switch), "clicked", (GtkSignalFunc)online_switch_clicked, mainwin);
 	gtk_box_pack_start (GTK_BOX(hbox_stat), online_switch, FALSE, FALSE, 0);
-	gtk_container_add (GTK_CONTAINER(offline_switch), offline_status);
+	gtk_container_add (GTK_CONTAINER(offline_switch), offline_pixmap);
 	gtk_button_set_relief (GTK_BUTTON(offline_switch), GTK_RELIEF_NONE);
 	gtk_signal_connect (GTK_OBJECT(offline_switch), "clicked", (GtkSignalFunc)online_switch_clicked, mainwin);
 	gtk_box_pack_start (GTK_BOX(hbox_stat), offline_switch, FALSE, FALSE, 0);
@@ -1008,6 +1008,8 @@ MainWindow *main_window_create(SeparateType type)
 	
 	mainwin->online_switch     = online_switch;
 	mainwin->offline_switch    = offline_switch;
+	mainwin->online_pixmap	   = online_pixmap;
+	mainwin->offline_pixmap    = offline_pixmap;
 	
 	/* set context IDs for status bar */
 	mainwin->mainwin_cid = gtk_statusbar_get_context_id
@@ -1196,6 +1198,7 @@ void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
 {
 	GList *cur;
 	MainWindow *mainwin;
+	GtkWidget *pixmap;
 
 	for (cur = mainwin_list; cur != NULL; cur = cur->next) {
 		mainwin = (MainWindow *)cur->data;
@@ -1210,6 +1213,19 @@ void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
 			set_toolbar_style(mainwin);
 			folderview_reflect_prefs_pixmap_theme(mainwin->folderview);
 			summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
+
+			pixmap = stock_pixmap_widget(mainwin->hbox_stat, STOCK_PIXMAP_WORK_ONLINE);
+			gtk_container_remove(GTK_CONTAINER(mainwin->online_switch), 
+					     mainwin->online_pixmap);
+			gtk_container_add (GTK_CONTAINER(mainwin->online_switch), pixmap);
+			gtk_widget_show(pixmap);
+			mainwin->online_pixmap = pixmap;
+			pixmap = stock_pixmap_widget(mainwin->hbox_stat, STOCK_PIXMAP_WORK_OFFLINE);
+			gtk_container_remove(GTK_CONTAINER(mainwin->offline_switch), 
+					     mainwin->offline_pixmap);
+			gtk_container_add (GTK_CONTAINER(mainwin->offline_switch), pixmap);
+			gtk_widget_show(pixmap);
+			mainwin->offline_pixmap = pixmap;
 		}
 		
 		summary_redisplay_msg(mainwin->summaryview);
@@ -1663,7 +1679,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/View/Go to/Prev labeled message", M_MSG_EXIST},
 		{"/View/Go to/Next labeled message", M_MSG_EXIST},
 		{"/View/Open in new window"        , M_SINGLE_TARGET_EXIST},
-		{"/View/Show all header"           , M_SINGLE_TARGET_EXIST},
+		{"/View/Show all headers"          , M_SINGLE_TARGET_EXIST},
 		{"/View/Message source"            , M_SINGLE_TARGET_EXIST},
 
 		{"/Message/Get new mail"          , M_HAVE_ACCOUNT|M_UNLOCKED},
@@ -1760,7 +1776,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		menu_set_sensitive(ifactory, "/View/Sort/Descending", FALSE);
 	}
 
-	SET_CHECK_MENU_ACTIVE("/View/Show all header",
+	SET_CHECK_MENU_ACTIVE("/View/Show all headers",
 			      mainwin->messageview->textview->show_all_headers);
 	SET_CHECK_MENU_ACTIVE("/View/Thread view", (state & M_THREADED) != 0);
 
@@ -2315,10 +2331,16 @@ static void toolbar_reply_cb(GtkWidget   *widget,
 {
 	MainWindow *mainwin = (MainWindow *)data;
 
-	reply_cb(mainwin, 
-		 prefs_common.reply_with_quote ? COMPOSE_REPLY_WITH_QUOTE 
-		 : COMPOSE_REPLY_WITHOUT_QUOTE,
-		 NULL);
+	if (prefs_common.default_reply_list)
+		reply_cb(mainwin, 
+		 	 prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_LIST_WITH_QUOTE 
+		 	 : COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE, 
+			 NULL);
+	else
+		reply_cb(mainwin, 
+		 	 prefs_common.reply_with_quote ? COMPOSE_REPLY_WITH_QUOTE 
+			 : COMPOSE_REPLY_WITHOUT_QUOTE,
+			 NULL);
 }
 
 static void toolbar_reply_to_all_cb(GtkWidget   *widget, 

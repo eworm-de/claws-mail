@@ -1,3 +1,53 @@
+2002-10-02 [christoph]	0.8.3claws43
+
+	* po/de.po
+		fix small spelling error
+
+2002-10-02 [melvin]	0.8.3claws42
+
+	* ac/aspell.m4
+		Behave better and say "no" when test program cannot be run.
+
+2002-10-02 [paul]	0.8.3claws41
+
+	* sync with 0.8.4cvs1
+		see ChangeLog 2002-09-30, 2002-10-01, 2002-10-02
+		
+	* src/summaryview.c
+		toggle the behavior of Reply menuitem between
+	  	normal reply and reply-to-list
+
+2002-10-01 [sergey]	0.8.3claws40
+
+	* src/compose.c
+		Convert newlines in the message text to the canonical form
+		before base64 encoding (RFC2045 compliance, fixes some
+		interoperability issues with Evolution 1.0.3)
+
+2002-09-29 [colin]	0.8.3claws39
+
+	* src/summaryview.c
+		Fix an unwanted copy/paste
+
+2002-09-29 [colin]	0.8.3claws38
+
+	* src/mainwindow.c
+		Renamed "Custom toolbar" to "Customize toolbar"
+		Renamed "Show all header" to "Show all headers"
+		Renamed "Set diplay item" to "Set displayed items"
+	* src/prefs_common.c
+		Renamed "Show all header" to "Show all headers"
+	* src/prefs_summary_column.c
+		Renamed "diplay item" to "displayed items"
+
+2002-09-29 [colin]	0.8.3claws37
+
+	* src/mainwindow.[ch]
+		online/offline status pixmaps follow theme
+		changes
+	* src/summaryview.[ch]
+		quicksearch pixmap follows theme changes
+
 2002-09-29 [thorsten]	0.8.3claws36
 
 	* src/compose.c

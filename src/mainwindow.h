@@ -114,6 +114,8 @@ struct _MainWindow
 	GtkWidget *ac_menu;
 	GtkWidget *online_switch;
 	GtkWidget *offline_switch;
+	GtkWidget *online_pixmap;
+	GtkWidget *offline_pixmap;
 
 	/* context IDs for status bar */
 	gint mainwin_cid;

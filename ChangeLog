@@ -1,3 +1,31 @@
+2002-10-02
+
+	* src/inc.c: inc_account_mail(), inc_all_account_mail(): update
+	  IMAP4 and NNTP folder summary after checking those accounts.
+
+2002-10-01
+
+	* version 0.8.4
+
+2002-10-01
+
+	* src/prefs_common.c: prefs_compose_create(): modified the label
+	  of the option for Reply button.
+	* configure.in: add -lldap and -llber to the 5th argument of
+	  AC_CHECK_LIB() for LDAP library detection.
+
+2002-09-30
+
+	* INSTALL
+	  INSTALL.jp: updated.
+
+2002-09-30
+
+	* src/mainwindow.c: toggle the behavior of Reply button between
+	  normal reply and reply-to-list.
+	* src/prefs_common.[ch]: added an option to switch the function
+	  of Reply button.
+
 2002-09-27
 
 	* src/compose.c: compose_new(): removed the workaround for XIM

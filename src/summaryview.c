@@ -703,6 +703,7 @@ void summary_init(SummaryView *summaryview)
 	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_QUICKSEARCH);
 	gtk_container_add (GTK_CONTAINER(summaryview->toggle_search), pixmap);
 	gtk_widget_show(pixmap);
+	summaryview->quick_search_pixmap = pixmap;
 	
 	/* Init summaryview prefs */
 	summaryview->sort_key = SORT_BY_NONE;
@@ -4129,14 +4130,24 @@ void summary_reply(SummaryView *summaryview, ComposeMode mode)
 	
 	switch (mode) {
 	case COMPOSE_REPLY:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, FALSE, FALSE, text);
+		if (prefs_common.default_reply_list)
+			compose_reply(msginfo, prefs_common.reply_with_quote,
+			    	      FALSE, TRUE, FALSE, text);
+		else
+			compose_reply(msginfo, prefs_common.reply_with_quote,
+				      FALSE, FALSE, FALSE, text);
 		break;
 	case COMPOSE_REPLY_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, FALSE, FALSE, text);
+		if (prefs_common.default_reply_list)
+			compose_reply(msginfo, TRUE, FALSE, TRUE, FALSE, text);
+		else
+			compose_reply(msginfo, TRUE, FALSE, FALSE, FALSE, text);
 		break;
 	case COMPOSE_REPLY_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, FALSE, FALSE, NULL);
+		if (prefs_common.default_reply_list)
+			compose_reply(msginfo, FALSE, FALSE, TRUE, FALSE, NULL);
+		else
+			compose_reply(msginfo, FALSE, FALSE, FALSE, FALSE, NULL);
 		break;
 	case COMPOSE_REPLY_TO_SENDER:
 		compose_reply(msginfo, prefs_common.reply_with_quote,
@@ -5331,6 +5342,13 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	gtk_box_reorder_child(GTK_BOX(summaryview->hbox), pixmap, 1); /* search_toggle before */
 	gtk_widget_show(pixmap);
 	summaryview->folder_pixmap = pixmap; 
+
+	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_QUICKSEARCH);
+	gtk_container_remove (GTK_CONTAINER(summaryview->toggle_search), 
+			      summaryview->quick_search_pixmap);
+	gtk_container_add(GTK_CONTAINER(summaryview->toggle_search), pixmap);
+	gtk_widget_show(pixmap);
+	summaryview->quick_search_pixmap = pixmap;
 
 	folderview_unselect(summaryview->folderview);
 	folderview_select(summaryview->folderview, summaryview->folder_item);

@@ -104,8 +104,9 @@ Password: [Enter password]
 Additional libraries
 ====================
 
-I recommend you to install gdk-pixbuf or gdk_imlib library before installing
-for built-in image view support, and compface library for X-Face support.
+It is recommend to install gdk-pixbuf or gdk_imlib library before installing
+Sylpheed for built-in image view support, and compface library for X-Face
+support.
 
 You can get compface utilities and library from the following location:
 
@@ -116,30 +117,30 @@ If you want other character set / encoding (such as UTF-8, KOI8-R, and GB2312)
 to be supported, you have to install libjconv, which is a wrapper for
 iconv(). You can obtain it from the following location:
 
-  http://www.kondara.org/libjconv/index.html
+  http://ghost.math.sci.hokudai.ac.jp/misc/libjconv/
 
-If you want to enable SSL support, append the option
---enable-ssl after ./configure (you need OpenSSL).
-
-If you want to enable IPv6 support, append the option
---enable-ipv6 after ./configure.
-
-If you want to enable GnuPG support, you need GPGME 0.2.3 or later, and
-GnuPG 1.0.6 or later. You can get them from the following location:
+GnuPG (>= 1.0.7) and GPGME (>= 0.3.5) are required for GnuPG (PGP) support.
+You can get GnuPG and GPGME from the following location:
 
   ftp://ftp.gnupg.org/pub/gcrypt/alpha/gpgme/
   ftp://ftp.gnupg.org/pub/gcrypt/gnupg/
 
-and append the option --enable-gpgme after ./configure.
+Options for configure script
+============================
 
-WARNING: the GnuPG support is still in the development stage, and it
-         may not work correctly. I suggest never to use a real key.
-         Please use sample keys.
+  --disable-compface  disable compface (X-Face) support
+  --disable-jconv     disable libjconv support
+  --enable-ssl        SSL support (requires OpenSSL)
+  --enable-ipv6       IPv6 support
+  --enable-gpgme      GnuPG support (requires GPGME and GnuPG)
+  --enable-ldap       LDAP support
+  --enable-jpilot     JPilot support
 
 For other options, refer to ./configure --help .
 
 
-If the installation of Sylpheed failed, check all needed libraries are
-correctly installed. If it still failed, please send bug report to:
+If the installation of Sylpheed failed, check whether all the required
+libraries are correctly installed. If it still failed, please send bug
+report to:
 
   Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>
