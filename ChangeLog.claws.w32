@@ -1,3 +1,15 @@
+2002-11-05 [thorsten]	0.8.5claws69-2
+
+	* src/defs.h
+	  src/esmtp.c
+	  src/imap.h
+	  src/inc.c
+	  src/nntp.h
+	  src/smtp.h
+	  src/socket.c
+	  src/utils.c
+		workaround: smaller socket bufsize
+
 2002-11-03 [thorsten]	0.8.5claws69-1
 
 	* win32/Make-ming.mak

@@ -82,7 +82,11 @@
 #  define DEFAULT_SPOOL_PATH	"/var/spool/mail"
 #endif
 
+#ifdef WIN32
+#define BUFFSIZE			8191
+#else
 #define BUFFSIZE			8192
+#endif
 
 #ifndef MAXPATHLEN
 #  define MAXPATHLEN			4095

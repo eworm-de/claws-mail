@@ -83,7 +83,11 @@ static GdkBitmap *errorxpmmask;
 static GdkPixmap *okxpm;
 static GdkBitmap *okxpmmask;
 
+#ifdef WIN32
+#define MSGBUFSIZE	8191
+#else
 #define MSGBUFSIZE	8192
+#endif
 
 static void inc_finished		(MainWindow		*mainwin,
 					 gboolean		 new_messages);

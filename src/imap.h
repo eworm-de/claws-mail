@@ -78,7 +78,11 @@ struct _IMAPNameSpace
 #define IMAP_IOERR	6
 #define IMAP_ERROR	7
 
+#ifdef WIN32
+#define IMAPBUFSIZE	8191
+#else
 #define IMAPBUFSIZE	8192
+#endif
 
 typedef enum
 {

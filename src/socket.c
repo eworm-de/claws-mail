@@ -62,7 +62,11 @@
 # define SD_BOTH         0x02
 #endif
 
+#ifdef WIN32
+#define BUFFSIZE	8191
+#else
 #define BUFFSIZE	8192
+#endif
 #define IO_TIMEOUT	60
 
 static gint sock_connect_with_timeout	(gint			 sock,

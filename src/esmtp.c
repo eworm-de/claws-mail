@@ -28,7 +28,11 @@
 #include "md5.h"
 #include "base64.h"
 
+#ifdef WIN32
+#define MSGBUFSIZE	8191
+#else
 #define MSGBUFSIZE	8192
+#endif
 
 static gint verbose = 1;
 static gchar esmtp_response[MSGBUFSIZE];

@@ -52,7 +52,11 @@
 # include "codeconv.h"
 #endif
 
+#ifdef WIN32
+#define BUFFSIZE	8191
+#else
 #define BUFFSIZE	8192
+#endif
 
 extern gboolean debug_mode;
 
