@@ -1,3 +1,9 @@
+2002-11-28 [paul]	0.8.6claws32
+
+	* sync with 0.8.6cvs13
+		see ChangeLog 2002-11-28 (no sync needed
+		for src/compose.c)
+
 2002-11-28 [Ivan Francolin Martinez (ivanfm@sourceforge.net)]	0.8.6claws31
 	
 	* src/mainwindow.[ch]

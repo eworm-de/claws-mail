@@ -748,65 +748,66 @@ static const struct {
 static const struct {
 	gchar *const locale;
 	CharSet charset;
+	CharSet out_charset;
 } locale_table[] = {
-	{"ja_JP.eucJP"	, C_EUC_JP},
-	{"ja_JP.ujis"	, C_EUC_JP},
-	{"ja_JP.EUC"	, C_EUC_JP},
-	{"ja_JP.SJIS"	, C_SHIFT_JIS},
-	{"ja_JP.JIS"	, C_ISO_2022_JP},
-	{"ja_JP"	, C_EUC_JP},
-	{"ko_KR"	, C_EUC_KR},
-	{"zh_CN.GB2312"	, C_GB2312},
-	{"zh_CN"	, C_GB2312},
-	{"zh_TW.eucTW"	, C_EUC_TW},
-	{"zh_TW.Big5"	, C_BIG5},
-	{"zh_TW"	, C_BIG5},
+	{"ja_JP.eucJP"	, C_EUC_JP	, C_ISO_2022_JP},
+	{"ja_JP.ujis"	, C_EUC_JP	, C_ISO_2022_JP},
+	{"ja_JP.EUC"	, C_EUC_JP	, C_ISO_2022_JP},
+	{"ja_JP.SJIS"	, C_SHIFT_JIS	, C_ISO_2022_JP},
+	{"ja_JP.JIS"	, C_ISO_2022_JP	, C_ISO_2022_JP},
+	{"ja_JP"	, C_EUC_JP	, C_ISO_2022_JP},
+	{"ko_KR"	, C_EUC_KR	, C_EUC_KR},
+	{"zh_CN.GB2312"	, C_GB2312	, C_GB2312},
+	{"zh_CN"	, C_GB2312	, C_GB2312},
+	{"zh_TW.eucTW"	, C_EUC_TW	, C_BIG5},
+	{"zh_TW.Big5"	, C_BIG5	, C_BIG5},
+	{"zh_TW"	, C_BIG5	, C_BIG5},
 
-	{"ru_RU.KOI8-R"	, C_KOI8_R},
-	{"ru_RU.CP1251"	, C_WINDOWS_1251},
+	{"ru_RU.KOI8-R"	, C_KOI8_R	, C_ISO_8859_5},
+	{"ru_RU.CP1251"	, C_WINDOWS_1251, C_ISO_8859_5},
 
-	{"bg_BG"	, C_WINDOWS_1251},
+	{"bg_BG"	, C_WINDOWS_1251, C_WINDOWS_1251},
 
-	{"en_US"	, C_ISO_8859_1},
-	{"ca_ES"	, C_ISO_8859_1},
-	{"da_DK"	, C_ISO_8859_1},
-	{"de_DE"	, C_ISO_8859_1},
-	{"nl_NL"	, C_ISO_8859_1},
-	{"et_EE"	, C_ISO_8859_1},
-	{"fi_FI"	, C_ISO_8859_1},
-	{"fr_FR"	, C_ISO_8859_1},
-	{"is_IS"	, C_ISO_8859_1},
-	{"it_IT"	, C_ISO_8859_1},
-	{"no_NO"	, C_ISO_8859_1},
-	{"pt_PT"	, C_ISO_8859_1},
-	{"pt_BR"	, C_ISO_8859_1},
-	{"es_ES"	, C_ISO_8859_1},
-	{"sv_SE"	, C_ISO_8859_1},
+	{"en_US"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"ca_ES"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"da_DK"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"de_DE"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"nl_NL"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"et_EE"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"fi_FI"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"fr_FR"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"is_IS"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"it_IT"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"no_NO"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"pt_PT"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"pt_BR"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_ES"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"sv_SE"	, C_ISO_8859_1	, C_ISO_8859_1},
 
-	{"hr_HR"	, C_ISO_8859_2},
-	{"hu_HU"	, C_ISO_8859_2},
-	{"pl_PL"	, C_ISO_8859_2},
-	{"ro_RO"	, C_ISO_8859_2},
-	{"sk_SK"	, C_ISO_8859_2},
-	{"sl_SI"	, C_ISO_8859_2},
-	{"ru_RU"	, C_ISO_8859_5},
-	{"el_GR"	, C_ISO_8859_7},
-	{"iw_IL"	, C_ISO_8859_8},
-	{"tr_TR"	, C_ISO_8859_9},
+	{"hr_HR"	, C_ISO_8859_2	, C_ISO_8859_2},
+	{"hu_HU"	, C_ISO_8859_2	, C_ISO_8859_2},
+	{"pl_PL"	, C_ISO_8859_2	, C_ISO_8859_2},
+	{"ro_RO"	, C_ISO_8859_2	, C_ISO_8859_2},
+	{"sk_SK"	, C_ISO_8859_2	, C_ISO_8859_2},
+	{"sl_SI"	, C_ISO_8859_2	, C_ISO_8859_2},
+	{"ru_RU"	, C_ISO_8859_5	, C_ISO_8859_5},
+	{"el_GR"	, C_ISO_8859_7	, C_ISO_8859_7},
+	{"iw_IL"	, C_ISO_8859_8	, C_ISO_8859_8},
+	{"tr_TR"	, C_ISO_8859_9	, C_ISO_8859_9},
 
-	{"th_TH"	, C_TIS_620},
+	{"th_TH"	, C_TIS_620	, C_TIS_620},
 	/* {"th_TH"	, C_WINDOWS_874}, */
 	/* {"th_TH"	, C_ISO_8859_11}, */
 
-	{"lt_LT.iso88594"	, C_ISO_8859_4},
-	{"lt_LT.ISO8859-4"	, C_ISO_8859_4},
-	{"lt_LT.ISO_8859-4"	, C_ISO_8859_4},
-	{"lt_LT"		, C_ISO_8859_13},
-	{"lv_LV"		, C_ISO_8859_13},
+	{"lt_LT.iso88594"	, C_ISO_8859_4	, C_ISO_8859_4},
+	{"lt_LT.ISO8859-4"	, C_ISO_8859_4	, C_ISO_8859_4},
+	{"lt_LT.ISO_8859-4"	, C_ISO_8859_4	, C_ISO_8859_4},
+	{"lt_LT"		, C_ISO_8859_13	, C_ISO_8859_13},
+	{"lv_LV"		, C_ISO_8859_13	, C_ISO_8859_13},
 
-	{"C"			, C_US_ASCII},
-	{"POSIX"		, C_US_ASCII},
-	{"ANSI_X3.4-1968"	, C_US_ASCII},
+	{"C"			, C_US_ASCII	, C_US_ASCII},
+	{"POSIX"		, C_US_ASCII	, C_US_ASCII},
+	{"ANSI_X3.4-1968"	, C_US_ASCII	, C_US_ASCII},
 };
 #endif /* !HAVE_LIBJCONV */
 
@@ -859,14 +860,7 @@ CharSet conv_get_current_charset(void)
 		}
 	}
 #else
-	cur_locale = g_getenv("LC_ALL");
-	if (!cur_locale) cur_locale = g_getenv("LC_CTYPE");
-	if (!cur_locale) cur_locale = g_getenv("LANG");
-	if (!cur_locale) cur_locale = setlocale(LC_CTYPE, NULL);
-
-	debug_print("current locale: %s\n",
-		    cur_locale ? cur_locale : "(none)");
-
+	cur_locale = conv_get_current_locale();
 	if (!cur_locale) {
 		cur_charset = C_US_ASCII;
 		return cur_charset;
@@ -914,12 +908,13 @@ const gchar *conv_get_current_charset_str(void)
 CharSet conv_get_outgoing_charset(void)
 {
 	static CharSet out_charset = -1;
+	gint i;
 
 #if HAVE_LIBJCONV
-	gint i, j, n_pref_codesets;
+	gint j, n_pref_codesets;
 	const gchar *const *pref_codesets;
 #else
-	CharSet cur_charset;
+	const gchar *cur_locale;
 #endif
 
 	if (out_charset != -1)
@@ -946,15 +941,35 @@ CharSet conv_get_outgoing_charset(void)
 
 	out_charset = C_AUTO;
 #else
-	cur_charset = conv_get_current_charset();
-	switch (cur_charset) {
-	case C_EUC_JP:
-	case C_SHIFT_JIS:
-		out_charset = C_ISO_2022_JP;
-		break;
-	default:
-		out_charset = cur_charset;
+	cur_locale = conv_get_current_locale();
+	if (!cur_locale) {
+		out_charset = C_AUTO;
+		return out_charset;
 	}
+
+	for (i = 0; i < sizeof(locale_table) / sizeof(locale_table[0]); i++) {
+		const gchar *p;
+
+		if (!strncasecmp(cur_locale, locale_table[i].locale,
+				 strlen(locale_table[i].locale))) {
+			out_charset = locale_table[i].out_charset;
+			break;
+		} else if ((p = strchr(locale_table[i].locale, '_')) &&
+			 !strchr(p + 1, '.')) {
+			if (strlen(cur_locale) == 2 &&
+			    !strncasecmp(cur_locale, locale_table[i].locale, 2)) {
+				out_charset = locale_table[i].out_charset;
+				break;
+			}
+		}
+	}
+
+	/* encoding conversion without libjconv is only supported
+	   on Japanese locale for now */
+	if (out_charset == C_ISO_2022_JP)
+		return out_charset;
+
+	out_charset = conv_get_current_charset();
 #endif
 
 	return out_charset;
@@ -984,6 +999,7 @@ const gchar *conv_get_current_locale(void)
 	gchar *cur_locale;
 
 	cur_locale = g_getenv("LC_ALL");
+	if (!cur_locale) cur_locale = g_getenv("LC_CTYPE");
 	if (!cur_locale) cur_locale = g_getenv("LANG");
 	if (!cur_locale) cur_locale = setlocale(LC_CTYPE, NULL);
 
