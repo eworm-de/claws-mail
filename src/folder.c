@@ -1638,7 +1638,7 @@ static void add_msginfo_to_cache(FolderItem *item, MsgInfo *newmsginfo, MsgInfo 
 static void remove_msginfo_from_cache(FolderItem *item, MsgInfo *msginfo)
 {
 	if (!item->cache)
-	    folder_item_read_cache(item);
+		folder_item_read_cache(item);
 
 	if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		msginfo->folder->new_msgs--;
@@ -1965,7 +1965,7 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 
 		num = GPOINTER_TO_INT(l2->data);
 		l2 = g_slist_next(l2);
-		
+
 		if ((num >= 0) && (item->folder->klass->remove_msg != NULL)) {
 			item->folder->klass->remove_msg(item->folder,
 					    	        msginfo->folder,

@@ -851,11 +851,21 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 
 MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 {
+#if 0
 	MsgInfo *full_msginfo;
 	gchar *file;
+#endif
 
 	if (msginfo == NULL) return NULL;
 
+	/* 
+	 * In Claws we simply return a new reference to the same msginfo.
+	 * otherwise the new msginfo has wrong flags and causes incorrect
+	 * msgcounts... TODO: fill in data from full_msginfo into msginfo,
+	 * we can then keep the new data in the cache
+         */
+	return procmsg_msginfo_new_ref(msginfo);
+#if 0
 	file = procmsg_get_message_file(msginfo);
 	if (!file) {
 		g_warning("procmsg_msginfo_get_full_info(): can't get message file.\n");
@@ -877,6 +887,7 @@ MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 	procmsg_msginfo_set_to_folder(full_msginfo, msginfo->to_folder);
 
 	return full_msginfo;
+#endif
 }
 
 void procmsg_msginfo_free(MsgInfo *msginfo)

@@ -279,7 +279,7 @@ static struct SpamAssassinPage spamassassin_page;
 
 gint plugin_init(gchar **error)
 {
-	spamassassin_page.page.path = "Filtering/SpamAssassin";
+	spamassassin_page.page.path = _("Filtering/SpamAssassin");
 	spamassassin_page.page.create_widget = spamassassin_create_widget_func;
 	spamassassin_page.page.destroy_widget = spamassassin_destroy_widget_func;
 	spamassassin_page.page.save_page = spamassassin_save_func;

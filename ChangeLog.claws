@@ -1,3 +1,15 @@
+2003-07-20 [christoph]	0.9.3claws36
+
+	* src/procmsg.c
+		fix wrong flags in MsgInfo returned by
+		procmsg_msginfo_get_full_info()
+
+	(closes Bug 221 Deleting messages from the Message View gives incorrect
+	 new/unread message counts in the folder view)
+
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		add gettext macro for prefs page title
+
 2003-07-20 [paul]	0.9.3claws35
 
 	* src/mimeview.c
