@@ -346,7 +346,7 @@ int main(int argc, char *argv[])
 	prefs_common_read_config();
 
 #if USE_GPGME
-	prefs_common.gpg_started = FALSE;
+	gpg_started = FALSE;
 	if (gpgme_check_engine()) {  /* Also does some gpgme init */
 		rfc2015_disable_all();
 		debug_print("gpgme_engine_version:\n%s\n",
@@ -362,7 +362,8 @@ int main(int argc, char *argv[])
 			if (val & G_ALERTDISABLE)
 				prefs_common.gpg_warning = FALSE;
 		}
-	} else prefs_common.gpg_started = TRUE;
+	} else
+		gpg_started = TRUE;
 
 	gpgme_register_idle(idle_function_for_gpgme);
 #endif

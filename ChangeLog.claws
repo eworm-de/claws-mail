@@ -1,3 +1,21 @@
+2002-11-03 [thorsten]	0.8.5claws69
+
+	* src/main.c
+	  src/mimeview.c
+	  src/rfc2015.h
+	  	add check if gpg is active
+
+2002-11-03 [thorsten]	0.8.5claws68
+
+	* src/toolbar.h
+		removed GSList declaration causing trouble on MacOS-X
+		(submitted by alfons, reported by xfesty)
+
+2002-11-01 [paul]	0.8.5claws67
+
+	* src/mainwindow.c
+		remove last remnants of main's filter code
+
 2002-11-01 [paul]	0.8.5claws66
 
 	* tools/filter_conv.pl

@@ -227,7 +227,6 @@ struct _PrefsCommon
 	gint store_passphrase_timeout;
 	gboolean passphrase_grab;
 	gboolean gpg_warning;
-	gboolean gpg_started;
 #endif /* USE_GPGME */
 
 	/* Interface */

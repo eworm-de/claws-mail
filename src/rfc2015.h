@@ -45,4 +45,5 @@ gint rfc2015_sign			(const gchar	*file,
 gint rfc2015_clearsign			(const gchar	*file,
 					 GSList		*key_list);
 
+gboolean gpg_started;
 #endif /* __RFC2015_H__ */
