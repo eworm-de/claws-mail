@@ -17,24 +17,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#if !defined(LABELCOLORS_H__)
-#define LABELCOLORS_H__
+#if !defined(COLORLABEL_H__)
+#define COLORLABEL_H__
 
-gint labelcolors_get_color_count(void);
+#include <glib.h>
 
-GdkColor labelcolors_get_color(gint color_index);
+gint colorlabel_get_color_count			(void);
+GdkColor colorlabel_get_color			(gint		 color_index);
+gchar *colorlabel_get_color_text		(gint		 color_index);
+GtkPixmap *colorlabel_create_color_pixmap	(GdkColor	 color);
+gboolean colorlabel_changed			(void);
+GtkWidget *colorlabel_create_check_color_menu_item
+						(gint		 color_index);
+GtkWidget *colorlabel_create_color_menu		(void);
+guint colorlabel_get_color_menu_active_item	(GtkWidget	*menu);
 
-gchar *labelcolors_get_color_text(gint color_index);
-
-GtkPixmap *labelcolors_create_color_pixmap(GdkColor color);
-
-gboolean labelcolors_changed(void);
-
-GtkWidget *labelcolors_create_check_color_menu_item(gint color_index);
-
-GtkWidget *labelcolors_create_color_menu(void);
-
-guint labelcolors_get_color_menu_active_item(GtkWidget *menu);
-
-#endif /* LABELCOLORS_H__ */
- 
+#endif /* COLORLABEL_H__ */
