@@ -504,6 +504,7 @@ void procmime_scan_content_description(MimeInfo *mimeinfo,
 	Xalloca(tmp, blen, return);
 	conv_unmime_header(tmp, blen, buf, NULL);
 	g_free(mimeinfo->name);
+	mimeinfo->name = NULL;
 	/*pgp signatures should NOT have a name */
 	if (mimeinfo->content_type 
 	&&  strcasecmp(mimeinfo->content_type, "application/pgp-signature"))
