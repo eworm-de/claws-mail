@@ -314,10 +314,10 @@ are hardly noticeable, but deserve mentioning:
 
   ./configure --enable-aspell --with-aspell-prefix=/foo/bar
 
-  Using the '--with-aspell-prefix=PREFIX' option will let the configure
-  script look for includes and libraries in PREFIX/include and PREFIX/lib.
+  The '--with-aspell-prefix=PREFIX' option will let the configure
+  script search for includes and libraries in PREFIX/include and PREFIX/lib.
 
-  You can also specify manualle the includes and libraries path by using
+  You can also specify manually the includes and libraries path by using
   either following options:
 
   --with-aspell-includes=/foo/bar/include
@@ -328,7 +328,7 @@ are hardly noticeable, but deserve mentioning:
 
   as appropriate.
 
-  The configure script summarizes the options compiled in. Check that
+  The configure script summarizes the options compiled in.  Check that
   it lists 'GNU/aspell = yes'.
 
   Then proceed as usual, with 'make' and 'make install'.
@@ -339,7 +339,7 @@ are hardly noticeable, but deserve mentioning:
   NOTE: if you upgraded from Sylpheed-Claws 0.8.2 (or cvs version 0.8.2claws2) 
   or earlier, please check if the dictionary path was updated in the
   Configuration -> Common Preferences -> Spell Checker menu.  If not, update
-  accordingly as explained below.
+  it accordingly as explained below.
 
   After successful compiling, you need to tell Sylpheed where your
   dictionaries reside. The configure script should have found it,
