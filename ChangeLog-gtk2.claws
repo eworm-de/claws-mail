@@ -1,3 +1,16 @@
+2005-02-17 [paul]	1.0.1cvs11.4
+
+	* src/compose.c
+	* src/exportldif.c
+	* src/matcher_parser_parse.y
+	* src/procmime.c
+	* src/sourcewindow.c
+	* src/common/Makefile.am
+	* src/common/intl.h 		** REMOVED **
+	* src/plugins/trayicon/libeggtrayicon/eggtrayicon.c
+		sync with main (revision 109)
+		and clean up
+
 2005-02-16 [colin]	1.0.1cvs11.3
 
 	* src/summaryview.c

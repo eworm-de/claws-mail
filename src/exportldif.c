@@ -27,8 +27,8 @@
 #include <time.h>
 #include <string.h>
 #include <glib.h>
+#include <glib/gi18n.h>
 
-#include "intl.h"
 #include "mgutils.h"
 #include "utils.h"
 #include "exportldif.h"

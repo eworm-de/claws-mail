@@ -890,8 +890,9 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 			basetmp = procmime_mimeinfo_get_parameter(mimeinfo, "name");
 		if (basetmp == NULL)
 			basetmp = "mimetmp";
-		base = g_path_get_basename(basetmp);
-		if (*base == '\0') base = g_strdup("mimetmp");
+		basetmp = g_path_get_basename(basetmp);
+		if (*basetmp == '\0') basetmp = g_strdup("mimetmp");
+		base = conv_filename_from_utf8(basetmp);
 		subst_for_shellsafe_filename(base);
 	}
 
@@ -899,6 +900,7 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 			       f_prefix, base, NULL);
 
 	g_free(base);
+	
 	return filename;
 }
 

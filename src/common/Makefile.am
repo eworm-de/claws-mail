@@ -31,7 +31,6 @@ sylpheedcommoninclude_HEADERS = \
 	base64.h \
 	defs.h \
 	hooks.h \
-	intl.h \
 	log.h \
 	md5.h \
 	mgutils.h \

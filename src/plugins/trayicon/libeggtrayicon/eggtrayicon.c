@@ -21,7 +21,9 @@
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
-#include "intl.h"
+
+#include <glib.h>
+#include <glib/gi18n.h>
 
 #include <string.h>
 #include "eggtrayicon.h"
