@@ -1,3 +1,8 @@
+2002-11-01 [paul]	0.8.5claws65
+
+	* src/logwindow.c
+		make a debug_print() not translatable
+
 2002-10-31 [melvin]	0.8.5claws64
 
 	* ac/aspell.m4
