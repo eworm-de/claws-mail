@@ -1,3 +1,10 @@
+2002-04-06
+
+	* src/compose.c: made template able to be inserted into the current
+	  cursor position.
+	* src/mainwindow.c: moved some menu items under the submenu
+	  '/View/Show or hide'.
+
 2002-04-05
 
 	* src/filter.c

@@ -492,16 +492,24 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						"<control>F", search_cb, 0, NULL},
 	{N_("/_Edit/_Search folder..."),	"<shift><control>F", search_cb, 1, NULL},
 	{N_("/_View"),				NULL, NULL, 0, "<Branch>"},
+	{N_("/_View/Show or hi_de"),		NULL, NULL, 0, "<Branch>"},
+	{N_("/_View/Show or hi_de/_Toolbar"),
+						NULL, NULL, 0, "<Branch>"},
+	{N_("/_View/Show or hi_de/_Toolbar/Icon _and text"),
+						NULL, toggle_toolbar_cb, TOOLBAR_BOTH, "<RadioItem>"},
+	{N_("/_View/Show or hi_de/_Toolbar/_Icon"),
+						NULL, toggle_toolbar_cb, TOOLBAR_ICON, "/View/Show or hide/Toolbar/Icon and text"},
+	{N_("/_View/Show or hi_de/_Toolbar/_Text"),
+						NULL, toggle_toolbar_cb, TOOLBAR_TEXT, "/View/Show or hide/Toolbar/Icon and text"},
+	{N_("/_View/Show or hi_de/_Toolbar/_None"),
+						NULL, toggle_toolbar_cb, TOOLBAR_NONE, "/View/Show or hide/Toolbar/Icon and text"},
+	{N_("/_View/Show or hi_de/Status _bar"),
+						NULL, toggle_statusbar_cb, 0, "<ToggleItem>"},
+	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Separate _Folder Tree"),	NULL, NULL, SEPARATE_ACTION + SEPARATE_FOLDER,  "<ToggleItem>"},
 	{N_("/_View/Separate _Message View"),	NULL, NULL, SEPARATE_ACTION + SEPARATE_MESSAGE, "<ToggleItem>"},
 	{N_("/_View/E_xpand Summary View"),	"V", toggle_expand_summaryview_cb, 0, "<ToggleItem>"},
 	{N_("/_View/Ex_pand Message View"),	"<shift>V", toggle_expand_messageview_cb, 0, "<ToggleItem>"},
-	{N_("/_View/_Toolbar"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/_Toolbar/Icon _and text"),	NULL, toggle_toolbar_cb, TOOLBAR_BOTH, "<RadioItem>"},
-	{N_("/_View/_Toolbar/_Icon"),		NULL, toggle_toolbar_cb, TOOLBAR_ICON, "/View/Toolbar/Icon and text"},
-	{N_("/_View/_Toolbar/_Text"),		NULL, toggle_toolbar_cb, TOOLBAR_TEXT, "/View/Toolbar/Icon and text"},
-	{N_("/_View/_Toolbar/_None"),		NULL, toggle_toolbar_cb, TOOLBAR_NONE, "/View/Toolbar/Icon and text"},
-	{N_("/_View/Status _bar"),		NULL, toggle_statusbar_cb, 0, "<ToggleItem>"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Sort"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/_Sort/Sort by _number"),	NULL, sort_summary_cb, SORT_BY_NUMBER, NULL},
@@ -957,24 +965,25 @@ MainWindow *main_window_create(SeparateType type)
 	switch (prefs_common.toolbar_style) {
 	case TOOLBAR_NONE:
 		menuitem = gtk_item_factory_get_item
-			(ifactory, "/View/Toolbar/None");
+			(ifactory, "/View/Show or hide/Toolbar/None");
 		break;
 	case TOOLBAR_ICON:
 		menuitem = gtk_item_factory_get_item
-			(ifactory, "/View/Toolbar/Icon");
+			(ifactory, "/View/Show or hide/Toolbar/Icon");
 		break;
 	case TOOLBAR_TEXT:
 		menuitem = gtk_item_factory_get_item
-			(ifactory, "/View/Toolbar/Text");
+			(ifactory, "/View/Show or hide/Toolbar/Text");
 		break;
 	case TOOLBAR_BOTH:
 		menuitem = gtk_item_factory_get_item
-			(ifactory, "/View/Toolbar/Icon and text");
+			(ifactory, "/View/Show or hide/Toolbar/Icon and text");
 	}
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 
 	gtk_widget_hide(mainwin->hbox_stat);
-	menuitem = gtk_item_factory_get_item(ifactory, "/View/Status bar");
+	menuitem = gtk_item_factory_get_item
+		(ifactory, "/View/Show or hide/Status bar");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 				       prefs_common.show_statusbar);
 #if 0 /* FIXED SEPARATE WINDOWS */
