@@ -1,3 +1,8 @@
+2003-07-08 [match]	0.9.0claws88
+
+	* src/ldapctrl.c
+		extend LDAP search for first/last name by parsing search term.
+
 2003-07-08 [alfons]	0.9.0claws87
 
 	* src/send_message.c
