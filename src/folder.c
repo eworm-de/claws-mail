@@ -545,8 +545,6 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 	num = folder->add_msg(folder, dest, file, remove_source);
 	if (num > 0) dest->last_num = num;
 
-	printf("%i\n", num);
-
 	return num;
 }
 
