@@ -72,40 +72,40 @@ static gint   toolbar_ret_val_from_text      (gchar *text);
 
 
 /* callback functions */
-static void toolbar_inc_cb		        (GtkWidget	*widget,
-				        gpointer	         data);
+static void toolbar_inc_cb		(GtkWidget	*widget,
+				         gpointer	 data);
 
 static void toolbar_inc_all_cb	        (GtkWidget	*widget,
-				        gpointer	         data);
+				         gpointer	 data);
 
 static void toolbar_send_cb	        (GtkWidget	*widget,
-				        gpointer	         data);
+				         gpointer	 data);
 
 static void toolbar_compose_cb	        (GtkWidget	*widget,
-				        gpointer	         data);
+				         gpointer	 data);
 
 static void toolbar_reply_cb	        (GtkWidget	*widget,
-				        gpointer	         data);
+				         gpointer	 data);
 
-static void toolbar_reply_to_all_cb	        (GtkWidget	*widget,
-				        gpointer	         data);
+static void toolbar_reply_to_all_cb	(GtkWidget	*widget,
+				         gpointer	 data);
 
-static void toolbar_reply_to_sender_cb       (GtkWidget	*widget,
-					gpointer	         data);
+static void toolbar_reply_to_sender_cb	(GtkWidget	*widget,
+					 gpointer	 data);
 
 static void toolbar_forward_cb	        (GtkWidget	*widget,
-				        gpointer	          data);
+				         gpointer	 data);
 
 static void toolbar_delete_cb	        (GtkWidget	*widget,
-					gpointer	         data);
+					 gpointer	 data);
 
 static void toolbar_exec_cb	        (GtkWidget	*widget,
-					gpointer	         data);
+					 gpointer	 data);
 
 static void toolbar_next_unread_cb	(GtkWidget	*widget,
-				 gpointer	 data);
+				 	 gpointer	 data);
 
-static void toolbar_actions_execute_cb       (GtkWidget	*widget,
+static void toolbar_actions_execute_cb	(GtkWidget	*widget,
 					 gpointer	 data);
 
 static void toolbar_reply_popup_cb	(GtkWidget	*widget,
@@ -118,39 +118,42 @@ static void toolbar_reply_to_all_popup_cb(GtkWidget	*widget,
 					 GdkEventButton *event,
 					 gpointer	 data);
 
-static void toolbar_reply_to_all_popup_closed_cb(GtkMenuShell	*menu_shell,
+static void toolbar_reply_to_all_popup_closed_cb
+					(GtkMenuShell	*menu_shell,
 					 gpointer	 data);
 
 static void toolbar_reply_to_sender_popup_cb(GtkWidget	*widget,
 					 GdkEventButton *event,
 					 gpointer	 data);
-static void toolbar_reply_to_sender_popup_closed_cb(GtkMenuShell	*menu_shell,
+static void toolbar_reply_to_sender_popup_closed_cb
+					(GtkMenuShell	*menu_shell,
 					 gpointer	 data);
 
 static void toolbar_forward_popup_cb	 (GtkWidget	 *widget,
 					 GdkEventButton    *event,
 					 gpointer	 data);
 
-static void toolbar_forward_popup_closed_cb   (GtkMenuShell	*menu_shell,
+static void toolbar_forward_popup_closed_cb   		
+					(GtkMenuShell	*menu_shell,
 					 gpointer	 data);
 
 static ToolbarAction t_action[] = 
 {
-	{ "A_RECEIVE_ALL",   N_("Receive Mail on all Accounts"),    toolbar_inc_all_cb               },
-	{ "A_RECEIVE_CUR",   N_("Receive Mail on current Account"), toolbar_inc_cb                   },
-	{ "A_SEND_QUEUD",    N_("Send Queud Message(s)"),           toolbar_send_cb                  },
-	{ "A_COMPOSE_EMAIL", N_("Compose Email"),                   toolbar_compose_cb               },
-	{ "A_REPLY_MESSAGE", N_("Reply to Message"),                toolbar_reply_cb                 },
-	{ "A_REPLY_SENDER",  N_("Reply to Sender"),                 toolbar_reply_to_sender_cb       },
-	{ "A_REPLY_ALL",     N_("Reply to All"),                    toolbar_reply_to_all_cb          },
-	{ "A_FORWARD",       N_("Forward Message"),                 toolbar_forward_cb               },
-	{ "A_DELETE",        N_("Delete Message"),                  toolbar_delete_cb                },
-	{ "A_EXECUTE",       N_("Execute"),                         toolbar_exec_cb                  },
-	{ "A_GOTO_NEXT",     N_("Goto Next Message"),               toolbar_next_unread_cb           },
-	{ "A_SYL_ACTIONS",   N_("Sylpheed Actions Feature"),        toolbar_actions_execute_cb       },
+	{ "A_RECEIVE_ALL",   N_("Receive Mail on all Accounts"),    toolbar_inc_all_cb        },
+	{ "A_RECEIVE_CUR",   N_("Receive Mail on current Account"), toolbar_inc_cb            },
+	{ "A_SEND_QUEUD",    N_("Send Queued Message(s)"),          toolbar_send_cb           },
+	{ "A_COMPOSE_EMAIL", N_("Compose Email"),                   toolbar_compose_cb        },
+	{ "A_REPLY_MESSAGE", N_("Reply to Message"),                toolbar_reply_cb          },
+	{ "A_REPLY_SENDER",  N_("Reply to Sender"),                 toolbar_reply_to_sender_cb},
+	{ "A_REPLY_ALL",     N_("Reply to All"),                    toolbar_reply_to_all_cb   },
+	{ "A_FORWARD",       N_("Forward Message"),                 toolbar_forward_cb        },
+	{ "A_DELETE",        N_("Delete Message"),                  toolbar_delete_cb         },
+	{ "A_EXECUTE",       N_("Execute"),                         toolbar_exec_cb           },
+	{ "A_GOTO_NEXT",     N_("Goto Next Message"),               toolbar_next_unread_cb    },
+	{ "A_SYL_ACTIONS",   N_("Sylpheed Actions Feature"),        toolbar_actions_execute_cb},
 
-	{ "A_COMPOSE_NEWS",  N_("Compose News"),                    toolbar_compose_cb               },    
-	{ "A_SEPARATOR",     SEPARATOR,                             NULL                             },
+	{ "A_COMPOSE_NEWS",  N_("Compose News"),                    toolbar_compose_cb        },    
+	{ "A_SEPARATOR",     SEPARATOR,                             NULL                      }
 };
 
 static GtkItemFactoryEntry reply_popup_entries[] =

@@ -573,7 +573,7 @@ static void prefs_toolbar_selection_changed(GtkList *list,
 	if (g_strcasecmp (cur_entry, actions_entry) == 0) {
 		gtk_widget_hide (mtoolbar.entry_icon_text);
 		gtk_widget_show (mtoolbar.combo_syl_action);
-		gtk_label_set_text (GTK_LABEL(mtoolbar.label_icon_text), _("select Sylpheed Action"));
+		gtk_label_set_text (GTK_LABEL(mtoolbar.label_icon_text), _("Sylpheed Action"));
 
 		if (prefs_common.actions_list == NULL) {
 		    gtk_widget_set_sensitive (mtoolbar.combo_syl_action, FALSE);
@@ -582,7 +582,7 @@ static void prefs_toolbar_selection_changed(GtkList *list,
 	} else {
 		gtk_widget_hide (mtoolbar.combo_syl_action);
 		gtk_widget_show (mtoolbar.entry_icon_text);
-		gtk_label_set_text (GTK_LABEL(mtoolbar.label_icon_text), _("enter Toolbar Text (shown below Pixmap)"));
+		gtk_label_set_text (GTK_LABEL(mtoolbar.label_icon_text), _("Toolbar text (shown below Pixmap)"));
 	}
 }
 
@@ -658,7 +658,7 @@ static void prefs_toolbar_create(void)
 	top_hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (main_vbox), top_hbox, TRUE, TRUE, 0);
   
-	compose_frame = gtk_frame_new (_("compose Toolbar Item"));
+	compose_frame = gtk_frame_new (_("Available toolbar items"));
 	gtk_box_pack_start (GTK_BOX (top_hbox), compose_frame, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (compose_frame), 5);
 
@@ -704,7 +704,7 @@ static void prefs_toolbar_create(void)
 	gtk_container_add (GTK_CONTAINER (vbox_frame), hbox_action);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox_action), 5);
 	
-	label_action_sel = gtk_label_new (_("select Action executed on click"));
+	label_action_sel = gtk_label_new (_("Event executed on click"));
 	gtk_box_pack_start (GTK_BOX (hbox_action), label_action_sel, FALSE, FALSE, 0);
 	gtk_label_set_justify (GTK_LABEL (label_action_sel), GTK_JUSTIFY_RIGHT);
 	
@@ -746,7 +746,7 @@ static void prefs_toolbar_create(void)
 			    NULL);
 
 	/* currently active toolbar items */
-	frame_toolbar_items = gtk_frame_new (_("set ToolbarItems"));
+	frame_toolbar_items = gtk_frame_new (_("Displayed toolbar items"));
 	gtk_box_pack_start (GTK_BOX (main_vbox), frame_toolbar_items, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (frame_toolbar_items), 5);
 	
@@ -768,16 +768,16 @@ static void prefs_toolbar_create(void)
 	gtk_clist_column_titles_show (GTK_CLIST (clist_set));
 	gtk_widget_set_usize (clist_set, 300, 200);
 
-	label_icon = gtk_label_new (_("Toolbar Icon"));
+	label_icon = gtk_label_new (_("Pixmap"));
 	gtk_clist_set_column_widget (GTK_CLIST (clist_set), 0, label_icon);
 	
-	label_file = gtk_label_new (_("File Name"));
+	label_file = gtk_label_new (_("File name"));
 	gtk_clist_set_column_widget (GTK_CLIST (clist_set), 1, label_file);
 
-	label_text = gtk_label_new (_("Icon Text"));
+	label_text = gtk_label_new (_("Pixmap text"));
 	gtk_clist_set_column_widget (GTK_CLIST (clist_set), 2, label_text);
 
-	label_action = gtk_label_new (_("Mapped Action"));
+	label_action = gtk_label_new (_("Mapped event"));
 	gtk_clist_set_column_widget (GTK_CLIST (clist_set), 3, label_action);
 	
 	toolbar = gtk_toolbar_new (GTK_ORIENTATION_VERTICAL, GTK_TOOLBAR_BOTH);

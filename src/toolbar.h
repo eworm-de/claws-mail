@@ -40,7 +40,7 @@ typedef enum
 	A_GOTO_NEXT,
 	A_SYL_ACTIONS, 
 	
-	N_ACTION_VAL,
+	N_ACTION_VAL
 } CTActionVal;
 
 #define A_COMPOSE_NEWS N_ACTION_VAL + 1
