@@ -5305,10 +5305,10 @@ static void compose_attach_property(Compose *compose)
 
 	optmenu = GTK_OPTION_MENU(attach_prop.encoding_optmenu);
 	if (ainfo->encoding == ENC_UNKNOWN)
-		menu_select_by_data(gtk_option_menu_get_menu(optmenu),
+		menu_select_by_data(GTK_MENU(gtk_option_menu_get_menu(optmenu)),
 				    GINT_TO_POINTER(ENC_BASE64));
 	else
-		menu_select_by_data(gtk_option_menu_get_menu(optmenu),
+		menu_select_by_data(GTK_MENU(gtk_option_menu_get_menu(optmenu)),
 				    GINT_TO_POINTER(ainfo->encoding));
 
 	gtk_entry_set_text(GTK_ENTRY(attach_prop.mimetype_entry),

@@ -62,7 +62,7 @@ static void foldersel_cb(GtkWidget *widget, gpointer data)
 	}
 }
 
-static void spamassassin_create_widget_func(PrefsPage * _page, gpointer data)
+static void spamassassin_create_widget_func(PrefsPage * _page, GtkWindow *window, gpointer data)
 {
 	struct SpamAssassinPage *page = (struct SpamAssassinPage *) _page;
 

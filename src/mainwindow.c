@@ -67,7 +67,6 @@
 #include "prefs_folder_item.h"
 #include "prefs_summary_column.h"
 #include "prefs_template.h"
-#include "prefs_toolbar.h"
 #include "account.h"
 #include "addressbook.h"
 #include "logwindow.h"
@@ -190,10 +189,6 @@ static void log_window_show_cb	(MainWindow	*mainwin,
 static void sel_download_cb          (MainWindow *mainwin, 
 				 guint action,
 				 GtkWidget *widget);
-static void prefs_toolbar_cb        (MainWindow *mainwin, 
-				 guint action,
-				 GtkWidget *widget);
-
 
 static void inc_cancel_cb		(MainWindow	*mainwin,
 					 guint		 action,
@@ -676,14 +671,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Configuration"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Configuration/_Common preferences..."),
 						NULL, prefs_common_open_cb, 0, NULL},
-	{N_("/_Configuration/C_ustomize toolbars"),
-						NULL, NULL, 0, "<Branch>"},
-	{N_("/_Configuration/C_ustomize toolbars/_Main window..."),
-						NULL, prefs_toolbar_cb, TOOLBAR_MAIN, NULL},
-	{N_("/_Configuration/C_ustomize toolbars/_Compose window..."),
-						NULL, prefs_toolbar_cb, TOOLBAR_COMPOSE, NULL},
-	{N_("/_Configuration/C_ustomize toolbars/M_essage view..."),
-						NULL, prefs_toolbar_cb, TOOLBAR_MSGVIEW, NULL},
 	{N_("/_Configuration/_Scoring..."),
 						NULL, prefs_scoring_open_cb, 0, NULL},
 	{N_("/_Configuration/_Filtering..."),
@@ -2240,12 +2227,6 @@ static void sel_download_cb(MainWindow *mainwin, guint action,
 			       GtkWidget *widget)
 {
 	selective_download(mainwin);
-}
-
-static void prefs_toolbar_cb(MainWindow *mainwin, guint action,
-			     GtkWidget *widget)
-{
-	prefs_toolbar_open((ToolbarType)action);
 }
 
 static void inc_cancel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)

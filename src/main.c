@@ -71,6 +71,7 @@
 #include "utils.h"
 #include "gtkutils.h"
 #include "log.h"
+#include "prefs_toolbar.h"
 
 #if USE_GPGME
 #  include "rfc2015.h"
@@ -351,9 +352,13 @@ int main(int argc, char *argv[])
 		main_window_toggle_work_offline(mainwin, TRUE);
 	if (cmd.online_mode == ONLINE_MODE_ONLINE)
 		main_window_toggle_work_offline(mainwin, FALSE);
+
+	prefs_toolbar_init();
 	
 	static_mainwindow = mainwin;
 	gtk_main();
+
+	prefs_toolbar_done();
 
 	addressbook_destroy();
 

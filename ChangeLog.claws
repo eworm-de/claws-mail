@@ -1,3 +1,23 @@
+2003-01-12 [christoph]	0.8.8claws84
+
+	* src/compose.c
+		fix 2 warnings
+
+	* src/gtk/prefswindow.[ch]
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		changed the call of the widget create function
+		for PrefsPages, because sometimes the widget
+		create function needs a widget that already has
+		been attached to a window (to create GDK pixmaps
+		for exmaple). So we simply pass the GtkWindow as
+		the second parameter now.
+
+	* src/main.c
+	* src/mainwindow.c
+	* src/prefs_toolbar.[ch]
+		rewrite Toolbar Preferences using the new
+		prefs window
+
 2003-01-11 [alfons]	0.8.8claws83
 
 	* src/addressadd.c
