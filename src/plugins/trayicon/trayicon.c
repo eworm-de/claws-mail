@@ -76,7 +76,7 @@ static void trayicon_exit_cb	    ( gpointer data, guint action, GtkWidget *widge
 static GtkItemFactoryEntry trayicon_popup_menu_entries[] =
 {
 	{N_("/_Get"),			NULL, trayicon_get_cb, 		0, NULL},
-	{N_("/_Get _All"),		NULL, trayicon_get_all_cb, 	0, NULL},
+	{N_("/Get _All"),		NULL, trayicon_get_all_cb, 	0, NULL},
 	{N_("/---"),			NULL, NULL, 			0, "<Separator>"},
 	{N_("/_Email"),			NULL, trayicon_compose_cb,   	0, NULL},
 	{N_("/Open A_ddressbook"),	NULL, trayicon_addressbook_cb, 	0, NULL},

@@ -1,3 +1,9 @@
+2004-08-22 [paul]	0.9.12cvs76
+
+	* src/plugins/trayicon/trayicon.c
+		fix formatting bug in trayicon_popup_menu_entries[]
+
+
 2004-08-22 [paul]	0.9.12cvs75
 
 	* m4/Makefile.am
