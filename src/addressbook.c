@@ -1944,8 +1944,10 @@ static void addressbook_list_button_pressed(GtkWidget *widget,
 				addressbook_to_clicked(NULL, GINT_TO_POINTER(COMPOSE_TO));
 			else
 				addressbook_edit_address_cb(NULL, 0, NULL);
-		}
-		lasttime = event->time;
+
+			lasttime = 0;
+		} else
+			lasttime = event->time;
 		
 	}
 

@@ -90,3 +90,4 @@
 ( cvs diff -u -r 1.3047 -r 1.3048 ChangeLog.claws; cvs diff -u -r 1.245 -r 1.246 src/folderview.c; ) > 0.9.12cvs105.patchset
 ( cvs diff -u -r 1.177 -r 1.178 src/inc.c; ) > 0.9.12cvs106.patchset
 ( cvs diff -u -r 1.71 -r 1.73 src/addressbook.c; ) > 0.9.12cvs107.patchset
+( cvs diff -u -r 1.73 -r 1.74 src/addressbook.c; ) > 0.9.12cvs108.patchset
