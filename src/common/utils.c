@@ -3297,7 +3297,8 @@ int subject_get_reply_prefix_length(const gchar *subject)
 		"Antw\\:",			/* "Antw:" (Dutch / German Outlook) */
 		"Aw\\:",			/* "Aw:"   (German) */
 		"Antwort\\:",			/* "Antwort:" (German Lotus Notes) */
-		"Res\\:"			/* "Res:" (Brazilian Outlook) */
+		"Res\\:",			/* "Res:" (Brazilian Outlook) */
+		"Fw\\:"				/* "Fw:" Forward */
 		/* add more */
 	};
 	const int REPLY_PREFIXES = sizeof reply_prefixes / sizeof reply_prefixes[0];

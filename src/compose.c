@@ -1038,9 +1038,17 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		compose->fwdinfo = procmsg_msginfo_copy(msginfo);
 
 	if (msginfo->subject && *msginfo->subject) {
-		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), "Fw: ");
-		gtk_entry_append_text(GTK_ENTRY(compose->subject_entry),
-				      msginfo->subject);
+		gchar *buf, *buf2, *p;
+
+		buf = p = g_strdup(msginfo->subject);
+		p += subject_get_reply_prefix_length(p);
+		memmove(buf, p, strlen(p) + 1);
+
+		buf2 = g_strdup_printf("Fw: %s", buf);
+		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), buf2);
+		
+		g_free(buf);
+		g_free(buf2);
 	}
 
 	text = GTK_STEXT(compose->text);

@@ -1,3 +1,10 @@
+2003-07-19 [alfons]	0.9.3claws26
+
+	* src/compose.c
+	* src/common/utils.c
+		honour #240 "Better SUBJECT handling" by cleaning the prefix
+		for both forwarding as replying
+
 2003-07-18 [christoph]	0.9.3claws25
 
 	* configure.ac
