@@ -1099,7 +1099,7 @@ static gboolean address_completion_complete_address_in_entry(GtkEntry *entry,
 		gchar *addr = get_complete_address(1);
 
 		if (addr) {
-			replace_address_in_edit(entry, addr, 0);
+			replace_address_in_edit(entry, addr, cursor_pos);
 			g_free(addr);
 		}
 

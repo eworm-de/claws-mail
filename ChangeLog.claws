@@ -1,3 +1,8 @@
+2004-04-06 [alfons]	0.9.10claws42
+
+	* src/addr_compl.c
+		use cursor position to prevent clearing the entire entry
+
 2004-04-06 [alfons]	0.9.10claws41
 
 	* src/folderview.c
