@@ -253,7 +253,7 @@ static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *data,
 
 		if (sscanf(buf, "%d %" Xstr(IDLEN) "s", &num, id) != 2 ||
 		    num <= 0 || num > session->count) {
-			log_error(_("invalid UIDL response: %s\n"), buf);
+			log_warning(_("invalid UIDL response: %s\n"), buf);
 			continue;
 		}
 
@@ -1016,7 +1016,7 @@ static gint pop3_session_recv_data_finished(Session *session, guchar *data,
 		}
 		break;
 	case POP3_TOP:
-		log_error(_("TOP command unsupported\n"));
+		log_warning(_("TOP command unsupported\n"));
 		if (pop3_session->cur_msg == pop3_session->count)
 			pop3_logout_send(pop3_session);
 		else {
