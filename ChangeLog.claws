@@ -1,3 +1,8 @@
+2003-02-05 [paul]	0.8.9claws42
+
+	* sync with 0.8.10cvs2
+		see ChangeLog 2003-02-05
+
 2003-02-04 [colin]	0.8.9claws41
 
 	* src/prefs_common.[ch]

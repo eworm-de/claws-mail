@@ -3271,11 +3271,15 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 		buf = conv_codeset_strdup(chars, src_codeset, out_codeset);
 		if (!buf) {
 			AlertValue aval;
+			gchar *msg;
 
+			msg = g_strdup_printf(_("Can't convert the character encoding of the message from\n"
+						"%s to %s.\n"
+						"Send it anyway?"), src_codeset, out_codeset);
 			aval = alertpanel
-				(_("Error"),
-				 _("Can't convert the character encoding of the message.\n"
-				   "Send it anyway?"), _("Yes"), _("+No"), NULL);
+				(_("Error"), msg, _("Yes"), _("+No"), NULL);
+			g_free(msg);
+
 			if (aval != G_ALERTDEFAULT) {
 				g_free(chars);
 				fclose(fp);

@@ -1,3 +1,24 @@
+2003-02-05
+
+	* src/gtkutils.[ch]: gtkut_ctree_node_prev(): new.
+	* src/summary_search.c: summary_search_execute(): search collapsed
+	  nodes, too.
+
+2003-02-05
+
+	* src/codeconv.c:
+	  conv_unreadable_latin(): include 0x7f as an unreadable character.
+	  conv_localetodisp(): don't remove 8bit characters by default.
+	  conv_get_current_charset()
+	  conv_get_outgoing_charset(): return ISO-8859-15 if "@euro" is
+	  appended at the last of locale name.
+	* src/compose.c: compose_write_to_file(): show from and to encoding
+	  when code conversion failed.
+
+2003-02-04
+
+	* version 0.8.10
+
 2003-02-04
 
 	* src/procmsg.h: WRITE_CACHE_DATA(): little speed improvement

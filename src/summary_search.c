@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -288,9 +288,11 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 		}
 	} else {
 		if (backward)
-			node = GTK_CTREE_NODE_PREV(summaryview->selected);
+			node = gtkut_ctree_node_prev
+				(ctree, summaryview->selected);
 		else
-			node = GTK_CTREE_NODE_NEXT(summaryview->selected);
+			node = gtkut_ctree_node_next
+				(ctree, summaryview->selected);
 	}
 
 	if (*body_str)
@@ -395,8 +397,8 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 			}
 		}
 
-		node = backward ? GTK_CTREE_NODE_PREV(node)
-				: GTK_CTREE_NODE_NEXT(node);
+		node = backward ? gtkut_ctree_node_prev(ctree, node)
+				: gtkut_ctree_node_next(ctree, node);
 	}
 
 	if (*body_str)

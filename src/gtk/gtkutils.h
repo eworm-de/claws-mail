@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,6 +100,8 @@ void gtkut_ctree_node_move_if_on_the_edge
 gint gtkut_ctree_get_nth_from_node	(GtkCTree	*ctree,
 					 GtkCTreeNode	*node);
 GtkCTreeNode *gtkut_ctree_node_next	(GtkCTree	*ctree,
+					 GtkCTreeNode	*node);
+GtkCTreeNode *gtkut_ctree_node_prev	(GtkCTree	*ctree,
 					 GtkCTreeNode	*node);
 gboolean gtkut_ctree_node_is_selected	(GtkCTree	*ctree,
 					 GtkCTreeNode	*node);
