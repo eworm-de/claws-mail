@@ -14,3 +14,8 @@ EXTRA_DIST = \
 	README \
 	README.sylprint \
 	$(EXTRA_TOOLS)
+
+MAKE_EXE = chmod u+x $(EXTRA_TOOLS)
+
+all-local:
+	$(MAKE_EXE)
