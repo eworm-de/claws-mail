@@ -194,7 +194,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			GNode *found_subject = NULL;
 			
 			subject  = msginfo->subject;
-			subject += subject_get_reply_prefix_length(subject);
+			subject += subject_get_prefix_length(subject);
 			found_subject = subject_table_lookup_clean
 					(subject_table, (gchar *) subject);
 									   
@@ -239,7 +239,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 		for (node = last; node && node != NULL;) {
 			next = node->prev;
 			msginfo = (MsgInfo *) node->data;
-			subject = msginfo->subject + subject_get_reply_prefix_length(msginfo->subject);
+			subject = msginfo->subject + subject_get_prefix_length(msginfo->subject);
 			
 			/* may not parentize if parent was delivered after childs */
 			if (subject != msginfo->subject)

@@ -1041,7 +1041,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		gchar *buf, *buf2, *p;
 
 		buf = p = g_strdup(msginfo->subject);
-		p += subject_get_reply_prefix_length(p);
+		p += subject_get_prefix_length(p);
 		memmove(buf, p, strlen(p) + 1);
 
 		buf2 = g_strdup_printf("Fw: %s", buf);
@@ -1799,7 +1799,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 		gchar *buf, *buf2, *p;
 
 		buf = p = g_strdup(msginfo->subject);
-		p += subject_get_reply_prefix_length(p);
+		p += subject_get_prefix_length(p);
 		memmove(buf, p, strlen(p) + 1);
 
 		buf2 = g_strdup_printf("Re: %s", buf);

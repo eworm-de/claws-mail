@@ -582,7 +582,7 @@ void trim_subject_for_compare(gchar *str)
 	eliminate_parenthesis(str, '(', ')');
 	g_strstrip(str);
 
-	srcp = str + subject_get_reply_prefix_length(str);
+	srcp = str + subject_get_prefix_length(str);
 	if (srcp != str)
 		memmove(str, srcp, strlen(srcp) + 1);
 }
@@ -593,7 +593,7 @@ void trim_subject_for_sort(gchar *str)
 
 	g_strstrip(str);
 
-	srcp = str + subject_get_reply_prefix_length(str);
+	srcp = str + subject_get_prefix_length(str);
 	if (srcp != str)	
 		memmove(str, srcp, strlen(srcp) + 1);
 }
@@ -604,7 +604,7 @@ void trim_subject(gchar *str)
 	gchar op, cl;
 	gint in_brace;
 
-	destp = str + subject_get_reply_prefix_length(str);
+	destp = str + subject_get_prefix_length(str);
 
 	if (*destp == '[') {
 		op = '[';
@@ -3254,7 +3254,7 @@ void * subject_table_lookup(GHashTable *subject_table, gchar * subject)
 	if (subject == NULL)
 		subject = "";
 	else
-		subject += subject_get_reply_prefix_length(subject);
+		subject += subject_get_prefix_length(subject);
 
 	return g_hash_table_lookup(subject_table, subject);
 }
@@ -3264,7 +3264,7 @@ void subject_table_insert(GHashTable *subject_table, gchar * subject,
 {
 	if (subject == NULL || *subject == 0)
 		return;
-	subject += subject_get_reply_prefix_length(subject);
+	subject += subject_get_prefix_length(subject);
 	g_hash_table_insert(subject_table, subject, data);
 }
 
@@ -3273,13 +3273,13 @@ void subject_table_remove(GHashTable *subject_table, gchar * subject)
 	if (subject == NULL)
 		return;
 
-	subject += subject_get_reply_prefix_length(subject);	
+	subject += subject_get_prefix_length(subject);	
 	g_hash_table_remove(subject_table, subject);
 }
 
 /*!
  *\brief	Check if a string is prefixed with known (combinations) 
- *		of reply prefixes. The function assumes that each prefix 
+ *		of prefixes. The function assumes that each prefix 
  *		is terminated by zero or exactly _one_ space.
  *
  *\param	str String to check for a prefixes
@@ -3288,20 +3288,21 @@ void subject_table_remove(GHashTable *subject_table, gchar * subject)
  *		for a "clean" subject line. If no prefix was found, 0
  *		is returned.
  */		
-int subject_get_reply_prefix_length(const gchar *subject)
+int subject_get_prefix_length(const gchar *subject)
 {
 	/*!< Array with allowable reply prefixes regexps. */
-	static const gchar * const reply_prefixes[] = {
+	static const gchar * const prefixes[] = {
 		"Re\\:",			/* "Re:" */
 		"Re\\[[1-9][0-9]*\\]\\:",	/* "Re[XXX]:" (non-conforming news mail clients) */
 		"Antw\\:",			/* "Antw:" (Dutch / German Outlook) */
 		"Aw\\:",			/* "Aw:"   (German) */
 		"Antwort\\:",			/* "Antwort:" (German Lotus Notes) */
 		"Res\\:",			/* "Res:" (Brazilian Outlook) */
-		"Fw\\:"				/* "Fw:" Forward */
+		"Fw\\:",			/* "Fw:" Forward */
+		"Enc\\:"			/* "Enc:" Forward (Brazilian Outlook) */
 		/* add more */
 	};
-	const int REPLY_PREFIXES = sizeof reply_prefixes / sizeof reply_prefixes[0];
+	const int PREFIXES = sizeof prefixes / sizeof prefixes[0];
 	int n;
 	regmatch_t pos;
 	static regex_t regex;
@@ -3313,12 +3314,12 @@ int subject_get_reply_prefix_length(const gchar *subject)
 	if (!init_) {
 		GString *s = g_string_new("");
 		
-		for (n = 0; n < REPLY_PREFIXES; n++)
+		for (n = 0; n < PREFIXES; n++)
 			/* Terminate each prefix regexpression by a
 			 * "\ ?" (zero or ONE space), and OR them */
 			g_string_sprintfa(s, "(%s\\ ?)%s",
-					  reply_prefixes[n],
-					  n < REPLY_PREFIXES - 1 ? 
+					  prefixes[n],
+					  n < PREFIXES - 1 ? 
 					  "|" : "");
 		
 		g_string_prepend(s, "(");
