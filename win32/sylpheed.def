@@ -837,7 +837,6 @@ EXPORTS
 	get_tmpfile_in_dir 
 	global_processing 
 	global_scoring 
-	gpg_started 
 	gpgmegtk_free_passphrase 
 	gpgmegtk_passphrase_cb 
 	gpgmegtk_recipient_selection 
@@ -967,7 +966,6 @@ EXPORTS
 	html_parse 
 	html_parser_destroy 
 	html_parser_new 
-	imap_class 
 	imap_get_class 
 	imp_mutt_status_show 
 	imp_pine_status_show 
@@ -1187,10 +1185,9 @@ EXPORTS
 	mgu_slist_test_unq_nc 
 	mgu_str_ltc2space 
 	mgu_str_unescape 
-	mh_class 
 	mh_get_class 
 	mh_get_last_num 
-	mimeview_check_signature 
+	mimeview_clear 
 	mimeview_create 
 	mimeview_destroy 
 	mimeview_get_selected_part 
@@ -1203,6 +1200,7 @@ EXPORTS
 	mimeviewer_factories 
 	mimeviews 
 	mkstemp 
+	mkstemp_name 
 	move_file 
 	msgcache_add_msg 
 	msgcache_destroy 
@@ -1235,7 +1233,6 @@ EXPORTS
 	new_aspell_string_list 
 	new_aspell_string_map 
 	news_cancel_article 
-	news_class 
 	news_get_class 
 	news_get_group_list 
 	news_get_msginfo 
@@ -1247,7 +1244,6 @@ EXPORTS
 	news_post_stream 
 	news_remove_group_list_cache 
 	news_scan_required 
-	news_session_get 
 	newsgroup_list_append 
 	nntp_article 
 	nntp_body 
@@ -1401,6 +1397,12 @@ EXPORTS
 	prefs_write_open 
 	prefs_write_param 
 	prefswindow_open 
+	privacy_free_privacydata 
+	privacy_get_signer 
+	privacy_mimeinfo_is_encrypted 
+	privacy_mimeinfo_is_signed 
+	privacy_register_system 
+	privacy_unregister_system 
 	proc_mbox 
 	procheader_date_get_localtime 
 	procheader_date_parse 
@@ -1434,20 +1436,19 @@ EXPORTS
 	procmime_get_part 
 	procmime_get_text_content 
 	procmime_get_tmp_file_name 
+	procmime_get_type_str 
 	procmime_mimeinfo_free_all 
 	procmime_mimeinfo_insert 
 	procmime_mimeinfo_new 
 	procmime_mimeinfo_next 
 	procmime_mimeinfo_replace 
-	procmime_scan_content_description 
-	procmime_scan_content_disposition 
-	procmime_scan_content_type 
-	procmime_scan_encoding 
+	procmime_parse_message_rfc822 
+	procmime_parse_mimepart 
+	procmime_parse_multipart 
+	procmime_scan_file 
+	procmime_scan_fp 
 	procmime_scan_message 
-	procmime_scan_mime_header 
-	procmime_scan_mime_type 
-	procmime_scan_multipart_message 
-	procmime_scan_subject 
+	procmime_scan_queue_file 
 	procmsg_cmp_msgnum_for_sort 
 	procmsg_copy_messages 
 	procmsg_empty_trash 
@@ -1479,7 +1480,6 @@ EXPORTS
 	procmsg_msginfo_set_to_folder 
 	procmsg_msginfo_unset_flags 
 	procmsg_open_message 
-	procmsg_open_message_decrypted 
 	procmsg_print_message 
 	procmsg_remove_special_headers 
 	procmsg_save_to_outbox 
@@ -1555,9 +1555,11 @@ EXPORTS
 	rfc2015_create_signers_list 
 	rfc2015_decrypt_message 
 	rfc2015_disable_all 
+	rfc2015_done 
 	rfc2015_encrypt 
 	rfc2015_find_signature 
 	rfc2015_has_signature 
+	rfc2015_init 
 	rfc2015_is_encrypted 
 	rfc2015_msg_is_encrypted 
 	rfc2015_secure_remove 
@@ -1794,7 +1796,6 @@ EXPORTS
 	textview_show_message 
 	textview_show_mime_part 
 	textview_show_part 
-	textview_show_signature_part 
 	textview_update_message_colors 
 	tmp_prefs 
 	to_aspell_document_checker 

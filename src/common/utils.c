@@ -71,20 +71,30 @@ static char *GetIniHomeDir(void);
 #endif
 
 #ifdef WIN32
-gint mkstemp(const gchar const *template)
+gint mkstemp_name(const gchar *template, gchar **name_used)
 {
 	static gulong count=0; /* W32-_mktemp only supports up to 27 tempfiles... */
-	gchar *name_used = g_strdup_printf("%s.%d",_mktemp(template),count++);
-	int tmpfd = _open(name_used, _O_CREAT | _O_RDWR | _O_BINARY
-	    			   | _S_IREAD | _S_IWRITE);
+	int tmpfd;
 
-	tempfiles=g_slist_append(tempfiles, name_used);
+	*name_used = g_strdup_printf("%s.%d",_mktemp(template),count++);
+	tmpfd = _open(*name_used, _O_CREAT | _O_RDWR | _O_BINARY
+	    			| _S_IREAD | _S_IWRITE);
+
+	tempfiles=g_slist_append(tempfiles, g_strdup(*name_used));
 	if (tmpfd<0) {
-		perror(g_strdup_printf("cant create %s",name_used));
+		perror(g_strdup_printf("cant create %s",*name_used));
 		return -1;
 	}
 	else
-		return (fdopen(tmpfd,"w+b"));
+		return tmpfd;
+}
+
+gint mkstemp(const gchar *template)
+{
+	gchar *dummyname;
+	gint res = mkstemp_name(template, &dummyname);
+	g_free(dummyname);
+	return res;
 }
 #endif
 
@@ -2856,20 +2866,33 @@ FILE *my_tmpfile(void)
 	if (fd < 0)
 		return tmpfile();
 
-#ifdef WIN32
-	return fd;
-#else
+#ifndef WIN32
 	unlink(fname);
+#endif
 
 	fp = fdopen(fd, "w+b");
 	if (!fp)
 		close(fd);
 	else
 		return fp;
-#endif
 #endif /* HAVE_MKSTEMP */
 
 	return tmpfile();
+}
+
+FILE *get_tmpfile_in_dir(const gchar *dir, gchar **filename)
+{
+	int fd;
+	
+#ifdef WIN32 /* XXX:tm */
+	gchar *template=g_strdup_printf("%s%csylpheed.XXXXXX", dir, G_DIR_SEPARATOR);
+	fd = mkstemp_name(template, filename);
+#else
+	*filename = g_strdup_printf("%s%csylpheed.XXXXXX", dir, G_DIR_SEPARATOR);
+	fd = mkstemp(*filename);
+#endif
+
+	return fdopen(fd, "w+");
 }
 
 FILE *str_open_as_stream(const gchar *str)
@@ -3614,16 +3637,6 @@ int subject_get_prefix_length(const gchar *subject)
 		return pos.rm_eo;
 	else
 		return 0;
-}
-
-FILE *get_tmpfile_in_dir(const gchar *dir, gchar **filename)
-{
-	int fd;
-	
-	*filename = g_strdup_printf("%s%csylpheed.XXXXXX", dir, G_DIR_SEPARATOR);
-	fd = mkstemp(*filename);
-
-	return fdopen(fd, "w+");
 }
 
 /* allow Mutt-like patterns in quick search */

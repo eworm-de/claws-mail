@@ -1,3 +1,25 @@
+2003-10-07
+
+	* src/send_message.c: alertpanel_error() を呼ぶときのフォーマット
+	  文字列のバグ(悪意のある SMTP サーバによって攻撃可能)を修正
+	  (Georgi Guninski さん thanks)。
+
+2003-10-03
+
+	* src/folder.[ch]
+	  src/imap.[ch
+	  src/mh.[ch]
+	  src/news.[ch]: フォルダシステムのリファクタリング(claws の実装に
+	  基づく)。
+	* src/account.c
+	  src/foldersel.c
+	  src/folderview.c
+	  src/mainwindow.c
+	  src/messageview.c
+	  src/procmsg.c
+	  src/setup.c
+	  src/summaryview.c: 全ての場所で FOLDER_TYPE() マクロを使用。
+
 2003-09-17
 
 	* version 0.9.6

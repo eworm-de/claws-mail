@@ -191,7 +191,7 @@ static void image_viewer_load_image(ImageViewer *imageviewer)
 	gchar *imgfile;
 
 	imgfile = procmime_get_tmp_file_name(imageviewer->mimeinfo);
-	if (procmime_get_part(imgfile, imageviewer->file, imageviewer->mimeinfo) < 0) {
+	if (procmime_get_part(imgfile, imageviewer->mimeinfo) < 0) {
 		g_warning("Can't get mimepart file");	
 		g_free(imgfile);
 		return;
@@ -214,8 +214,8 @@ static void image_viewer_show_mimepart(MimeViewer *_mimeviewer, const gchar *fil
 		image_viewer_load_image(imageviewer);
 	else {
 		gtk_label_set_text(GTK_LABEL(imageviewer->filename), mimeinfo->filename);
-		gtk_label_set_text(GTK_LABEL(imageviewer->filesize), to_human_readable(mimeinfo->size));
-		gtk_label_set_text(GTK_LABEL(imageviewer->content_type), mimeinfo->content_type);
+		gtk_label_set_text(GTK_LABEL(imageviewer->filesize), to_human_readable(mimeinfo->length));
+		gtk_label_set_text(GTK_LABEL(imageviewer->content_type), mimeinfo->subtype);
 	}
 }
 

@@ -1,3 +1,25 @@
+2003-10-07
+
+	* src/send_message.c: fixed format string bug (exploitable by
+	  malicious SMTP server) when calling alertpanel_error()
+	  (thanks to Georgi Guninski).
+
+2003-10-03
+
+	* src/folder.[ch]
+	  src/imap.[ch]
+	  src/mh.[ch]
+	  src/news.[ch]: refactoring of the folder system (based on the claws'
+	  implementation).
+	* src/account.c
+	  src/foldersel.c
+	  src/folderview.c
+	  src/mainwindow.c
+	  src/messageview.c
+	  src/procmsg.c
+	  src/setup.c
+	  src/summaryview.c: use FOLDER_TYPE() macro at every place.
+
 2003-09-17
 
 	* version 0.9.6

@@ -92,6 +92,7 @@ sylpheed_SOURCES = \
 	prefs_summary_column.c \
 	prefs_template.c \
 	prefs_toolbar.c \
+	privacy.c \
 	procheader.c \
 	procmime.c \
 	procmsg.c \
@@ -213,6 +214,7 @@ sylpheedinclude_HEADERS = \
 	prefs_summary_column.h \
 	prefs_template.h \
 	prefs_toolbar.h \
+	privacy.h \
 	procheader.h \
 	procmime.h \
 	procmsg.h \

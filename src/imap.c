@@ -168,50 +168,64 @@ struct _IMAPFolderItem
 	GSList *uid_list;
 };
 
-static Folder *imap_folder_new(const gchar * name, const gchar * path);
-static void imap_folder_destroy(Folder * folder);
-
-static IMAPSession *imap_session_new(const PrefsAccount * account);
-static void imap_session_authenticate(IMAPSession * session,
-				      const PrefsAccount * account);
-static void imap_session_destroy(Session * session);
-
-static gchar *imap_fetch_msg(Folder * folder, FolderItem * item, gint uid);
-static gint imap_add_msg(Folder * folder,
-			 FolderItem * dest,
-			 const gchar * file, MsgFlags * flags);
-static gint imap_add_msgs(Folder * folder, FolderItem * dest,
-			  GSList * file_list,
-			  GRelation *relation);
-
-static gint imap_copy_msg(Folder * folder,
-			  FolderItem * dest, MsgInfo * msginfo);
-static gint imap_copy_msgs(Folder *folder, FolderItem *dest, 
-		    MsgInfoList *msglist, GRelation *relation);
-
-static gint imap_remove_msg(Folder * folder, FolderItem * item, gint uid);
-static gint imap_remove_all_msg(Folder * folder, FolderItem * item);
-
-static gboolean imap_is_msg_changed(Folder * folder,
-				    FolderItem * item, MsgInfo * msginfo);
-
-static gint imap_close(Folder * folder, FolderItem * item);
-
-static gint imap_scan_tree(Folder * folder);
-
-static gint imap_create_tree(Folder * folder);
-
-static FolderItem *imap_create_folder(Folder * folder,
-				      FolderItem * parent,
-				      const gchar * name);
-static gint imap_rename_folder(Folder * folder,
-			       FolderItem * item, const gchar * name);
-static gint imap_remove_folder(Folder * folder, FolderItem * item);
-
-
 static void imap_folder_init		(Folder		*folder,
 					 const gchar	*name,
 					 const gchar	*path);
+
+static Folder	*imap_folder_new	(const gchar	*name,
+					 const gchar	*path);
+static void	 imap_folder_destroy	(Folder		*folder);
+
+static IMAPSession *imap_session_new	(const PrefsAccount 	*account);
+static void 	imap_session_authenticate(IMAPSession 		*session,
+				      	  const PrefsAccount 	*account);
+static void 	imap_session_destroy	(Session 	*session);
+
+static gchar   *imap_fetch_msg		(Folder 	*folder, 
+					 FolderItem 	*item, 
+					 gint 		 uid);
+static gint 	imap_add_msg		(Folder 	*folder,
+			 		 FolderItem 	*dest,
+			 		 const gchar 	*file, 
+					 MsgFlags 	*flags);
+static gint 	imap_add_msgs		(Folder 	*folder, 
+					 FolderItem 	*dest,
+			  		 GSList 	*file_list,
+			  		 GRelation 	*relation);
+
+static gint 	imap_copy_msg		(Folder 	*folder,
+			  		 FolderItem 	*dest, 
+					 MsgInfo 	*msginfo);
+static gint 	imap_copy_msgs		(Folder 	*folder, 
+					 FolderItem 	*dest, 
+		    			 MsgInfoList 	*msglist, 
+					 GRelation 	*relation);
+
+static gint 	imap_remove_msg		(Folder 	*folder, 
+					 FolderItem 	*item, 
+					 gint 		 uid);
+static gint 	imap_remove_all_msg	(Folder 	*folder, 
+					 FolderItem 	*item);
+
+static gboolean imap_is_msg_changed	(Folder 	*folder,
+				    	 FolderItem 	*item, 
+					 MsgInfo 	*msginfo);
+
+static gint 	imap_close		(Folder 	*folder, 
+					 FolderItem 	*item);
+
+static gint 	imap_scan_tree		(Folder 	*folder);
+
+static gint 	imap_create_tree	(Folder 	*folder);
+
+static FolderItem *imap_create_folder	(Folder 	*folder,
+				      	 FolderItem 	*parent,
+				      	 const gchar 	*name);
+static gint 	imap_rename_folder	(Folder 	*folder,
+			       		 FolderItem 	*item, 
+					 const gchar 	*name);
+static gint 	imap_remove_folder	(Folder 	*folder, 
+					 FolderItem 	*item);
 
 static FolderItem *imap_folder_item_new	(Folder		*folder);
 static void imap_folder_item_destroy	(Folder		*folder,
@@ -232,7 +246,7 @@ static GSList *imap_parse_list		(IMAPFolder	*folder,
 					 const gchar	*real_path,
 					 gchar		*separator);
 
-static void imap_create_missing_folders	(Folder			*folder);
+static void imap_create_missing_folders	(Folder		*folder);
 static FolderItem *imap_create_special_folder
 					(Folder			*folder,
 					 SpecialFolderItemType	 stype,
@@ -432,7 +446,7 @@ static gchar *imap_folder_get_path		(Folder		*folder);
 static gchar *imap_item_get_path		(Folder		*folder,
 						 FolderItem	*item);
 
-FolderClass imap_class =
+static FolderClass imap_class =
 {
 	F_IMAP,
 	"imap",
@@ -477,7 +491,7 @@ FolderClass *imap_get_class(void)
 	return &imap_class;
 }
 
-Folder *imap_folder_new(const gchar *name, const gchar *path)
+static Folder *imap_folder_new(const gchar *name, const gchar *path)
 {
 	Folder *folder;
 
@@ -488,7 +502,7 @@ Folder *imap_folder_new(const gchar *name, const gchar *path)
 	return folder;
 }
 
-void imap_folder_destroy(Folder *folder)
+static void imap_folder_destroy(Folder *folder)
 {
 	gchar *dir;
 
@@ -677,7 +691,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 	return IMAP_SESSION(session);
 }
 
-IMAPSession *imap_session_new(const PrefsAccount *account)
+static IMAPSession *imap_session_new(const PrefsAccount *account)
 {
 	IMAPSession *session;
 	SockInfo *imap_sock;
@@ -752,7 +766,8 @@ IMAPSession *imap_session_new(const PrefsAccount *account)
 			session_destroy(SESSION(session));
 			return NULL;
 		}
-		if (!ssl_init_socket_with_method(SESSION(session)->sock, SSL_METHOD_TLSv1)) {
+		if (!ssl_init_socket_with_method(SESSION(session)->sock, 
+		    SSL_METHOD_TLSv1)) {
 			session_destroy(SESSION(session));
 			return NULL;
 		}
@@ -774,7 +789,8 @@ IMAPSession *imap_session_new(const PrefsAccount *account)
 	return session;
 }
 
-void imap_session_authenticate(IMAPSession *session, const PrefsAccount *account)
+static void imap_session_authenticate(IMAPSession *session, 
+				      const PrefsAccount *account)
 {
 	gchar *pass;
 
@@ -798,7 +814,7 @@ void imap_session_authenticate(IMAPSession *session, const PrefsAccount *account
 	session->authenticated = TRUE;
 }
 
-void imap_session_destroy(Session *session)
+static void imap_session_destroy(Session *session)
 {
 	imap_free_capabilities(IMAP_SESSION(session));
 	g_free(IMAP_SESSION(session)->mbox);
@@ -806,7 +822,7 @@ void imap_session_destroy(Session *session)
 	session->sock = NULL;
 }
 
-gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
+static gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
 {
 	gchar *path, *filename;
 	IMAPSession *session;
@@ -823,7 +839,7 @@ gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
 		make_dir_hier(path);
 	filename = g_strconcat(path, G_DIR_SEPARATOR_S, itos(uid), NULL);
 	g_free(path);
- 
+
 	if (is_file_exist(filename)) {
 		debug_print("message %d has been already cached.\n", uid);
 		return filename;
@@ -855,7 +871,8 @@ gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
 	return filename;
 }
 
-gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file, MsgFlags *flags)
+static gint imap_add_msg(Folder *folder, FolderItem *dest, 
+			 const gchar *file, MsgFlags *flags)
 {
 	gint ret;
 	GSList file_list;
@@ -873,7 +890,7 @@ gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file, MsgFlags 
 	return ret;
 }
 
-gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
+static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		   GRelation *relation)
 {
 	gchar *destdir;
@@ -1005,7 +1022,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 					  GPOINTER_TO_INT(0));
 		g_tuples_destroy(tuples);
 	}
-	
+
 	imap_seq_set_free(seq_list);
 
 	g_free(destdir);
@@ -1016,7 +1033,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 		return -1;
 }
 
-gint imap_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
+static gint imap_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 {
 	GSList msglist;
 
@@ -1028,7 +1045,7 @@ gint imap_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	return imap_copy_msgs(folder, dest, &msglist, NULL);
 }
 
-gint imap_copy_msgs(Folder *folder, FolderItem *dest, 
+static gint imap_copy_msgs(Folder *folder, FolderItem *dest, 
 		    MsgInfoList *msglist, GRelation *relation)
 {
 	MsgInfo *msginfo;
@@ -1055,7 +1072,7 @@ gint imap_copy_msgs(Folder *folder, FolderItem *dest,
 	return ret;
 }
 
-gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
+static gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 {
 	gint ok;
 	IMAPSession *session;
@@ -1112,7 +1129,7 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 	return IMAP_SUCCESS;
 }
 
-gint imap_remove_all_msg(Folder *folder, FolderItem *item)
+static gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 {
 	gint ok;
 	IMAPSession *session;
@@ -1153,13 +1170,14 @@ gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 	return IMAP_SUCCESS;
 }
 
-gboolean imap_is_msg_changed(Folder *folder, FolderItem *item, MsgInfo *msginfo)
+static gboolean imap_is_msg_changed(Folder *folder, FolderItem *item,
+				    MsgInfo *msginfo)
 {
 	/* TODO: properly implement this method */
 	return FALSE;
 }
 
-gint imap_close(Folder *folder, FolderItem *item)
+static gint imap_close(Folder *folder, FolderItem *item)
 {
 	gint ok;
 	IMAPSession *session;
@@ -1187,7 +1205,7 @@ gint imap_close(Folder *folder, FolderItem *item)
 	return 0;
 }
 
-gint imap_scan_tree(Folder *folder)
+static gint imap_scan_tree(Folder *folder)
 {
 	FolderItem *item = NULL;
 	IMAPSession *session;
@@ -1486,7 +1504,7 @@ static GSList *imap_parse_list(IMAPFolder *folder, IMAPSession *session,
 	return item_list;
 }
 
-gint imap_create_tree(Folder *folder)
+static gint imap_create_tree(Folder *folder)
 {
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(folder->node != NULL, -1);
@@ -1606,7 +1624,7 @@ static gchar *imap_item_get_path(Folder *folder, FolderItem *item)
 	return path;
 }
 
-FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
+static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 			       const gchar *name)
 {
 	gchar *dirpath, *imap_path;
@@ -1705,7 +1723,8 @@ FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	return new_item;
 }
 
-gint imap_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
+static gint imap_rename_folder(Folder *folder, FolderItem *item,
+			       const gchar *name)
 {
 	gchar *dirpath;
 	gchar *newpath;
@@ -1814,7 +1833,7 @@ gint imap_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 	return 0;
 }
 
-gint imap_remove_folder(Folder *folder, FolderItem *item)
+static gint imap_remove_folder(Folder *folder, FolderItem *item)
 {
 	gint ok;
 	IMAPSession *session;
@@ -2565,8 +2584,8 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 	real_path = imap_get_real_path(folder, path);
 	QUOTE_IF_REQUIRED(real_path_, real_path);
 	imap_gen_send(session, "STATUS %s "
-		      "(MESSAGES RECENT UIDNEXT UIDVALIDITY UNSEEN)",
-		      real_path_);
+			  "(MESSAGES RECENT UIDNEXT UIDVALIDITY UNSEEN)",
+			  real_path_);
 
 	ok = imap_cmd_ok(session, argbuf);
 	if (ok != IMAP_SUCCESS || !argbuf) THROW(ok);
@@ -2625,7 +2644,7 @@ static gboolean imap_has_capability(IMAPSession *session, const gchar *cap)
 	return FALSE;
 }
 
-void imap_free_capabilities(IMAPSession *session)
+static void imap_free_capabilities(IMAPSession *session)
 {
 	g_strfreev(session->capability);
 	session->capability = NULL;
@@ -2871,7 +2890,8 @@ static gint imap_cmd_delete(IMAPSession *session, const gchar *folder)
 	return imap_cmd_ok(session, NULL);
 }
 
-static gint imap_cmd_search(IMAPSession *session, const gchar *criteria, GSList **list)
+static gint imap_cmd_search(IMAPSession *session, const gchar *criteria, 
+			    GSList **list)
 {
 	gint ok;
 	gchar *uidlist;
@@ -2910,7 +2930,8 @@ static gint imap_cmd_search(IMAPSession *session, const gchar *criteria, GSList 
 	return IMAP_SUCCESS;
 }
 
-static gint imap_cmd_fetch(IMAPSession *session, guint32 uid, const gchar *filename)
+static gint imap_cmd_fetch(IMAPSession *session, guint32 uid, 
+			   const gchar *filename)
 {
 	gint ok;
 	gchar *buf = NULL;
@@ -2954,7 +2975,8 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid, const gchar *filen
 
 	g_free(buf);
 
-	if (recv_bytes_write_to_file(SESSION(session)->sock, size_num, filename) != 0)
+	if (recv_bytes_write_to_file(SESSION(session)->sock,
+				     size_num, filename) != 0)
 		return IMAP_ERROR;
 
 	if (imap_gen_recv(session, &buf) != IMAP_SUCCESS) {
@@ -2974,7 +2996,8 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid, const gchar *filen
 }
 
 static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
-			    const gchar *file, IMAPFlags flags, guint32 *new_uid)
+			    const gchar *file, IMAPFlags flags, 
+			    guint32 *new_uid)
 {
 	gint ok;
 	gint size;

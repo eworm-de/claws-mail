@@ -734,7 +734,8 @@ Folder *folder_find_from_path(const gchar *path)
 
 	for (list = folder_list; list != NULL; list = list->next) {
 		folder = list->data;
-		if ((FOLDER_TYPE(folder) == F_MH || FOLDER_TYPE(folder) == F_MBOX) &&
+		if ((FOLDER_TYPE(folder) == F_MH || 
+		     FOLDER_TYPE(folder) == F_MBOX) &&
 		    !path_cmp(LOCAL_FOLDER(folder)->rootpath, path))
 			return folder;
 	}
@@ -753,7 +754,8 @@ Folder *folder_find_from_name(const gchar *name, FolderClass *klass)
 #endif
 	for (list = folder_list; list != NULL; list = list->next) {
 		folder = list->data;
-		if (folder->klass == klass && strcmp2(name, folder->name) == 0)
+		if (folder->klass == klass && 
+		    strcmp2(name, folder->name) == 0)
 			return folder;
 	}
 #ifdef WIN32
@@ -2641,7 +2643,9 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 		fprintf(fp, "<folder type=\"%s\"", folder->klass->idstr);
 		if (folder->name)
 			PUT_ESCAPE_STR(fp, "name", folder->name);
-		if (FOLDER_TYPE(folder) == F_MH || FOLDER_TYPE(folder) == F_MBOX || FOLDER_TYPE(folder) == F_MAILDIR)
+		if (FOLDER_TYPE(folder) == F_MH || 
+		    FOLDER_TYPE(folder) == F_MBOX || 
+		    FOLDER_TYPE(folder) == F_MAILDIR)
 			PUT_ESCAPE_STR(fp, "path",
 				       LOCAL_FOLDER(folder)->rootpath);
 		if (item->collapsed && node->children)

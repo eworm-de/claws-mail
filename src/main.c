@@ -127,10 +127,6 @@ static struct RemoteCmd {
 
 static void parse_cmd_opt(int argc, char *argv[]);
 
-#if USE_GPGME
-static void idle_function_for_gpgme(void);
-#endif /* USE_GPGME */
-
 static gint prohibit_duplicate_launch	(void);
 static gchar * get_crashfile_name	(void);
 static gint lock_socket_remove		(void);
@@ -324,27 +320,7 @@ int main(int argc, char *argv[])
 	prefs_common_read_config();
 
 #if USE_GPGME
-	gpg_started = FALSE;
-	if (gpgme_engine_check_version(GPGME_PROTOCOL_OpenPGP) != 
-			GPGME_No_Error) {  /* Also does some gpgme init */
-		rfc2015_disable_all();
-		debug_print("gpgme_engine_version:\n%s\n",
-			    gpgme_get_engine_info());
-
-		if (prefs_common.gpg_warning) {
-			AlertValue val;
-
-			val = alertpanel_message_with_disable
-				(_("Warning"),
-				 _("GnuPG is not installed properly, or needs to be upgraded.\n"
-				   "OpenPGP support disabled."));
-			if (val & G_ALERTDISABLE)
-				prefs_common.gpg_warning = FALSE;
-		}
-	} else
-		gpg_started = TRUE;
-
-	gpgme_register_idle(idle_function_for_gpgme);
+	rfc2015_init();
 #endif
 
 	prefs_fonts_init();
@@ -465,6 +441,10 @@ int main(int argc, char *argv[])
 	prefs_toolbar_done();
 
 	addressbook_destroy();
+
+#ifdef USE_GPGME
+	rfc2015_done();
+#endif
 
 	prefs_fonts_done();
 #ifdef USE_ASPELL       
@@ -724,10 +704,6 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 
 	inc_autocheck_timer_remove();
 
-#if USE_GPGME
-        gpgmegtk_free_passphrase();
-#endif
-
 	if (prefs_common.clean_on_exit)
 		main_window_empty_trash(mainwin, prefs_common.ask_on_clean);
 
@@ -777,14 +753,6 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 
 	gtk_main_quit();
 }
-
-#if USE_GPGME
-static void idle_function_for_gpgme(void)
-{
-	while (gtk_events_pending())
-		gtk_main_iteration();
-}
-#endif /* USE_GPGME */
 
 /*
  * CLAWS: want this public so crash dialog can delete the

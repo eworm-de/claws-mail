@@ -295,6 +295,7 @@ OBJECTS= \
 	plugin.o \
 	pluginwindow.o \
 	pop.o \
+	privacy.o \
 	prefs.o \
 	prefs_account.o \
 	prefs_actions.o \
@@ -632,6 +633,7 @@ pine.o: 	pine.c pine.h
 plugin.o: 	plugin.c plugin.h
 pluginwindow.o: 	pluginwindow.c pluginwindow.h
 pop.o: 	pop.c pop.h
+privacy.o: 	privacy.c privacy.h
 prefs.o: 	prefs.c prefs.h
 prefs_account.o: 	prefs_account.c prefs_account.h
 prefs_actions.o: 	prefs_actions.c prefs_actions.h

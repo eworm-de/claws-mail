@@ -488,6 +488,10 @@ SOURCE=..\src\pop.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\privacy.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\common\prefs.c
 # End Source File
 # Begin Source File
@@ -1101,6 +1105,10 @@ SOURCE=..\src\gtk\pluginwindow.h
 # Begin Source File
 
 SOURCE=..\src\pop.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\privacy.h
 # End Source File
 # Begin Source File
 

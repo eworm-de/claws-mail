@@ -2277,14 +2277,11 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 }
 
 #define IS_FIRST_PART_TEXT(info) \
-	((info->mime_type == MIME_TEXT || info->mime_type == MIME_TEXT_HTML || \
-	  info->mime_type == MIME_TEXT_ENRICHED) || \
-	 (info->mime_type == MIME_MULTIPART && info->content_type && \
-	  !strcasecmp(info->content_type, "multipart/alternative") && \
+	((info->type == MIMETYPE_TEXT) || \
+	 (info->type == MIMETYPE_MULTIPART && info->subtype && \
+	  !strcasecmp(info->subtype, "alternative") && \
 	  (info->children && \
-	   (info->children->mime_type == MIME_TEXT || \
-	    info->children->mime_type == MIME_TEXT_HTML || \
-	    info->children->mime_type == MIME_TEXT_ENRICHED))))
+	   (info->children->type == MIMETYPE_TEXT))))
 
 static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 {
@@ -2309,25 +2306,32 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 	infile = procmsg_get_message_file_path(msginfo);
 
 	while (child != NULL) {
-		if (child->children || child->mime_type == MIME_MULTIPART) {
+		if (child->children || child->type == MIMETYPE_MULTIPART) {
 			child = procmime_mimeinfo_next(child);
 			continue;
 		}
 		if (child->parent && child->parent->parent
-		&& !strcasecmp(child->parent->parent->content_type, "multipart/signed")
-		&& child->mime_type == MIME_TEXT) {
+		&& (child->parent->parent->type == MIMETYPE_MULTIPART)
+		&& !strcasecmp(child->parent->parent->subtype, "signed")
+		&& child->type == MIMETYPE_TEXT) {
 			/* this is the main text part of a signed message */
 			child = procmime_mimeinfo_next(child);
 			continue;
 		}
 		outfile = procmime_get_tmp_file_name(child);
-		if (procmime_get_part(outfile, infile, child) < 0)
+		if (procmime_get_part(outfile, child) < 0)
 			g_warning("Can't get the part of multipart message.");
-		else if (compose->mode != COMPOSE_REEDIT || strcmp(child->content_type, "application/pgp-signature"))
+		else if (compose->mode != COMPOSE_REEDIT || 
+		    !((child->type == MIMETYPE_APPLICATION) && !strcmp(child->subtype, "pgp-signature"))) {
+			gchar *content_type;
+
+			content_type = g_strdup_printf("%s/%s", procmime_get_type_str(child->type), child->subtype);
 			compose_attach_append
 				(compose, outfile,
 				 child->filename ? child->filename : child->name,
-				 child->content_type);
+				 content_type);
+			g_free(content_type);
+		}
 
 		child = child->next;
 	}
@@ -3866,7 +3870,6 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	GSList *cur;
 	gchar buf[BUFFSIZE];
 	gint num;
-	MsgFlags flag = {0, 0};
         static gboolean lock = FALSE;
 	PrefsAccount *mailac = NULL, *newsac = NULL;
 	

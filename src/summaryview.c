@@ -1386,7 +1386,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menuitem = gtk_item_factory_get_widget(ifactory, "/View/All header");
 	gtk_check_menu_item_set_active
 		(GTK_CHECK_MENU_ITEM(menuitem),
-		 summaryview->messageview->textview->show_all_headers);
+		 summaryview->messageview->mimeview->textview->show_all_headers);
 	summary_unlock(summaryview);
 }
 
@@ -2578,11 +2578,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 		if (!messageview_is_visible(msgview))
 			main_window_toggle_message_view(summaryview->mainwin);
 		messageview_show(msgview, msginfo, all_headers);
-		if (msgview->type == MVIEW_TEXT ||
-		    (msgview->type == MVIEW_MIME &&
-		     (GTK_CLIST(msgview->mimeview->ctree)->row_list == NULL ||
-		      gtk_notebook_get_current_page
-			(GTK_NOTEBOOK(msgview->mimeview->notebook)) == 0)))
+		if (GTK_CLIST(msgview->mimeview->ctree)->row_list == NULL)
 			gtk_widget_grab_focus(summaryview->ctree);
 		GTK_EVENTS_FLUSH();
 		gtkut_ctree_node_move_if_on_the_edge(ctree, row);
@@ -3175,9 +3171,6 @@ void summary_delete(SummaryView *summaryview)
 	GtkCTreeNode *node;
 
 	if (!item) return;
-#if 0
-	if (!item || item->folder->type == F_NEWS) return;
-#endif
 
 	if (summary_is_locked(summaryview)) return;
 
@@ -4571,12 +4564,7 @@ static gint summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	}
 
 	messageview = summaryview->messageview;
-	if (messageview->type == MVIEW_MIME &&
-	    gtk_notebook_get_current_page
-		(GTK_NOTEBOOK(messageview->mimeview->notebook)) == 1)
-		textview = messageview->mimeview->textview;
-	else
-		textview = messageview->textview;
+	textview = messageview->mimeview->textview;
 
 	switch (event->keyval) {
 	case GDK_space:		/* Page down or go to the next */

@@ -1,3 +1,71 @@
+2003-10-10 [thorsten]	0.9.6claws14
+
+	* src/main.c
+	* src/privacy.[ch]
+	* src/rfc2015.[ch]
+		implement detection of signed message parts for rfc2015
+
+2003-10-10 [thorsten]	0.9.6claws13
+
+	* src/mimeview.c
+		fix typo
+
+2003-10-10 [christoph]	0.9.6claws12
+
+	* src/stock_pixmap.[ch]
+	* src/pixmaps/mime_message.xpm			** NEW **
+		add a new icon for mime type "message"
+
+	* src/privacy.[ch]
+	* src/procmime.[ch]
+		add crypto api
+
+	* src/mimeview.c
+		o use crypto api
+		o add icons for message type mime parts
+
+2003-10-10 [christoph]	0.9.6claws11
+
+	* src/mainwindow.c
+	* src/messageview.[ch]
+	* src/mimeview.[ch]
+	* src/procmime.[ch]
+	* src/procmsg.[ch]
+	* src/rfc2015.c
+	* src/summaryview.c
+	* src/textview.[ch]
+		o remove switching between TextView and MimeView in MessageView
+		  (if required we can hide the icon box and the MimeView will
+		   look exaxtly like the TextView)
+		o temporary remove signature and decrypting GPGME code
+
+2003-10-09 [christoph]	0.9.6claws10
+
+	* src/action.c
+	* src/compose.c
+	* src/messageview.c
+	* src/mimeview.c
+	* src/procmime.[ch]
+	* src/procmsg.c
+	* src/rfc2015.c
+	* src/textview.c
+	* src/common/utils.[ch]
+	* src/plugins/clamav/clamav_plugin.c
+	* src/plugins/dillo_viewer/dillo_viewer.c
+	* src/plugins/image_viewer/viewer.c
+	* src/plugins/mathml_viewer/mathml_viewer.c
+		new mime parser (several things need fixing)
+
+2003-10-09 [paul]	0.9.6claws9
+
+	* src/imap.c
+		a little more sync with 0.9.6cvs2 and a tidy up
+
+2003-10-08 [paul]	0.9.6claws8
+
+	* sync with 0.9.6cvs2
+		see ChangeLog 2003-10-03
+
 2003-10-05 [christoph]	0.9.6claws7
 
 	* src/summaryview.c

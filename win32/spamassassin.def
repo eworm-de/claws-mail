@@ -4,7 +4,6 @@ EXPORTS
 	full_read 
 	full_read_ssl 
 	full_write 
-	gpg_started 
 	libspamc_timeout 
 	message_cleanup 
 	message_dump 

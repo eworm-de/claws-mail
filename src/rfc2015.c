@@ -46,6 +46,7 @@
 #include "select-keys.h"
 #include "sigstatus.h"
 #include "rfc2015.h"
+#include "alertpanel.h"
 
 #define DIM(v)     (sizeof(v)/sizeof((v)[0]))
 
@@ -328,6 +329,7 @@ sig_status_full (GpgmeCtx ctx)
 
 static void check_signature (MimeInfo *mimeinfo, MimeInfo *partinfo, FILE *fp)
 {
+#if 0 /* FIXME */
     GpgmeCtx ctx = NULL;
     GpgmeError err;
     GpgmeData sig = NULL, text = NULL;
@@ -348,16 +350,16 @@ static void check_signature (MimeInfo *mimeinfo, MimeInfo *partinfo, FILE *fp)
 
     /* don't include the last empty line.
        It does not belong to the signed text */
-    if (mimeinfo->children->size > 0) {
-	if (fseek(fp, mimeinfo->children->fpos + mimeinfo->children->size - 1,
+    if (mimeinfo->children->length > 0) {
+	if (fseek(fp, mimeinfo->children->offset + mimeinfo->children->length - 1,
 		  SEEK_SET) < 0) {
 	    perror("fseek");
 	    goto leave;
 	}
 	if (fgetc(fp) == '\n') {
 	    n_exclude_chars++;
-	    if (mimeinfo->children->size > 1) {
-		if (fseek(fp, mimeinfo->children->fpos + mimeinfo->children->size - 2,
+	    if (mimeinfo->children->length > 1) {
+		if (fseek(fp, mimeinfo->children->offset + mimeinfo->children->length - 2,
 			  SEEK_SET) < 0) {
 		    perror("fseek");
 		    goto leave;
@@ -370,8 +372,8 @@ static void check_signature (MimeInfo *mimeinfo, MimeInfo *partinfo, FILE *fp)
 
     /* canonicalize the file part. */
     tmp_file = get_tmp_file();
-    if (copy_file_part(fp, mimeinfo->children->fpos,
-		       mimeinfo->children->size - n_exclude_chars,
+    if (copy_file_part(fp, mimeinfo->children->offset,
+		       mimeinfo->children->length - n_exclude_chars,
 		       tmp_file) < 0) {
 	g_free(tmp_file);
 	goto leave;
@@ -389,7 +391,7 @@ static void check_signature (MimeInfo *mimeinfo, MimeInfo *partinfo, FILE *fp)
 
     if (!err)
 	err = gpgme_data_new_from_filepart (&sig, NULL, fp,
-					    partinfo->fpos, partinfo->size);
+					    partinfo->offset, partinfo->length);
     if (err) {
         debug_print ("gpgme_data_new_from_filepart failed: %s\n",
 		   gpgme_strerror (err));
@@ -442,6 +444,7 @@ leave:
     gpgme_release (ctx);
     if (prefs_common.gpg_signature_popup)
 	gpgmegtk_sig_status_destroy (statuswindow);
+#endif
 }
 
 /*
@@ -503,7 +506,7 @@ pgp_decrypt (MimeInfo *partinfo, FILE *fp)
     }
 
     err = gpgme_data_new_from_filepart (&cipher, NULL, fp,
-					partinfo->fpos, partinfo->size);
+					partinfo->offset, partinfo->length);
     if (err) {
         debug_print ("gpgme_data_new_from_filepart failed: %s\n",
                      gpgme_strerror (err));
@@ -545,7 +548,7 @@ MimeInfo * rfc2015_find_signature (MimeInfo *mimeinfo)
 
     if (!mimeinfo)
         return NULL;
-    if (g_strcasecmp (mimeinfo->content_type, "multipart/signed"))
+    if (!((mimeinfo->type == MIMETYPE_MULTIPART) && !g_strcasecmp(mimeinfo->subtype, "signed")))
         return NULL;
 
     debug_print ("** multipart/signed encountered\n");
@@ -553,8 +556,8 @@ MimeInfo * rfc2015_find_signature (MimeInfo *mimeinfo)
     /* check that we have at least 2 parts of the correct type */
     for (partinfo = mimeinfo->children;
          partinfo != NULL; partinfo = partinfo->next) {
-        if (++n > 1  && !g_strcasecmp (partinfo->content_type,
-				       "application/pgp-signature"))
+        if (++n > 1 && (partinfo->type == MIMETYPE_APPLICATION && 
+		!g_strcasecmp (partinfo->subtype, "pgp-signature")))
             break;
     }
 
@@ -587,9 +590,9 @@ void rfc2015_check_signature (MimeInfo *mimeinfo, FILE *fp)
 
 int rfc2015_is_encrypted (MimeInfo *mimeinfo)
 {
-    if (!mimeinfo || mimeinfo->mime_type != MIME_MULTIPART)
+    if (!mimeinfo || mimeinfo->type != MIMETYPE_MULTIPART)
         return 0;
-    if (g_strcasecmp (mimeinfo->content_type, "multipart/encrypted"))
+    if (g_strcasecmp (mimeinfo->subtype, "encrypted"))
         return 0;
     /* fixme: we should check the protocol parameter */
     return 1;
@@ -599,8 +602,9 @@ gboolean rfc2015_msg_is_encrypted (const gchar *file)
 {
 	FILE *fp;
 	MimeInfo *mimeinfo;
-	int ret;
+	int ret = 0;
 
+#if 0	/* FIXME */
 	if ((fp = fopen(file, "rb")) == NULL)
 		return FALSE;
 
@@ -612,6 +616,7 @@ gboolean rfc2015_msg_is_encrypted (const gchar *file)
 
 	ret = rfc2015_is_encrypted(mimeinfo);
 	procmime_mimeinfo_free_all(mimeinfo);
+#endif
 	return ret != 0 ? TRUE : FALSE;
 }
 
@@ -679,58 +684,38 @@ void rfc2015_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
     g_return_if_fail (msginfo != NULL);
     g_return_if_fail (mimeinfo != NULL);
     g_return_if_fail (fp != NULL);
-    g_return_if_fail ((mimeinfo->mime_type == MIME_MULTIPART) || 
-                      (mimeinfo->mime_type == MIME_APPLICATION_PGP));
+    g_return_if_fail (mimeinfo->type == MIMETYPE_MULTIPART);
 
     debug_print ("** decrypting multipart/encrypted message\n");
 
+#if 0 /* FIXME */
+
     /* skip headers */
-    if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0)
+    if (fseek(fp, mimeinfo->offset, SEEK_SET) < 0)
         perror("fseek");
     tmpinfo = procmime_scan_mime_header(fp);
-    if (!tmpinfo) {
+    if (!tmpinfo || tmpinfo->type != MIMETYPE_MULTIPART) {
         DECRYPTION_ABORT();
     }
 
-    procmime_scan_multipart_message(tmpinfo, fp);
-   
-    switch (tmpinfo->mime_type) {
-    case MIME_APPLICATION_PGP:
-	/* Support for mutt-style application/pgp content */
+    procmime_scan_message(tmpinfo);
 
-        /* check that we have the 1 part */
-        partinfo = tmpinfo->children;
-        
-	/* Fixme: check that the version is 1 */
+    /* check that we have the 2 parts */
+    partinfo = tmpinfo->children;
+    if (!partinfo || !partinfo->next) {
+        DECRYPTION_ABORT();
+    }
+    if ((partinfo->type == MIMETYPE_APPLICATION) && !g_strcasecmp(partinfo->subtype, "pgp-encrypted")) {
+        /* Fixme: check that the version is 1 */
         ver_ok = 1;
-        break;
-    case MIME_MULTIPART:
-    
-        /* check that we have the 2 parts */
-        partinfo = tmpinfo->children;
-        if (!partinfo || !partinfo->next) {
-            DECRYPTION_ABORT();
-        }
-        if (!g_strcasecmp (partinfo->content_type, "application/pgp-encrypted")) {
-            /* Fixme: check that the version is 1 */
-            ver_ok = 1;
-        }
-        partinfo = partinfo->next;
-        if (!g_strcasecmp (partinfo->content_type, "application/octet-stream")) 
-	{
-            if (partinfo->next)
-                g_warning ("oops: pgp_encrypted with more than 2 parts");
-        }
-        else {
-            DECRYPTION_ABORT();
-        }
-	break;
-    default:
-        DECRYPTION_ABORT();
     }
-   
-    if (!ver_ok) {
-	debug_print("incorrect version\n");
+    partinfo = partinfo->next;
+    if (ver_ok && (partinfo->type == MIMETYPE_APPLICATION) &&
+        !g_strcasecmp (partinfo->subtype, "octet-stream")) {
+        if (partinfo->next)
+            g_warning ("oops: pgp_encrypted with more than 2 parts");
+    }
+    else {
         DECRYPTION_ABORT();
     }
 
@@ -751,7 +736,7 @@ void rfc2015_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
     }
 
     /* write the orginal header to the new file */
-    if (fseek(fp, tmpinfo->fpos, SEEK_SET) < 0)
+    if (fseek(fp, tmpinfo->offset, SEEK_SET) < 0)
         perror("fseek");
 
     in_cline = 0;
@@ -787,6 +772,8 @@ void rfc2015_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
 
     msginfo->plaintext_file = fname;
     msginfo->decryption_failed = 0;
+
+#endif
 }
 
 #undef DECRYPTION_ABORT
@@ -1491,6 +1478,90 @@ failure:
     gpgme_data_release(text);
     gpgme_data_release(sigdata);
     return -1;
+}
+
+static gboolean rfc2015_is_signed(MimeInfo *mimeinfo)
+{
+	MimeInfo *parent;
+	MimeInfo *signature;
+	gchar *protocol;
+
+	g_return_val_if_fail(mimeinfo != NULL, FALSE);
+	
+	/* check parent */
+	parent = mimeinfo->parent;
+	if (parent == NULL)
+		return FALSE;
+	if ((parent->type != MIMETYPE_MULTIPART) ||
+	    g_strcasecmp(parent->subtype, "signed"))
+		return FALSE;
+	protocol = g_hash_table_lookup(parent->parameters, "protocol");
+	if ((protocol == NULL) || g_strcasecmp(protocol, "application/pgp-signature"))
+		return FALSE;
+
+	/* check if mimeinfo is the first child */
+	if (parent->children != mimeinfo)
+		return FALSE;
+
+	/* check signature */
+	signature = parent->children->next;
+	if (signature == NULL)
+		return FALSE;
+	if ((signature->type != MIMETYPE_APPLICATION) ||
+	    g_strcasecmp(signature->subtype, "pgp-signature"))
+		return FALSE;
+
+	return TRUE;
+}
+
+static void idle_function_for_gpgme(void)
+{
+	while (gtk_events_pending())
+		gtk_main_iteration();
+}
+
+static PrivacySystem rfc2015_system = {
+	"PGP/Mime",		/* name */
+
+	g_free,			/* free_privacydata */
+
+	rfc2015_is_signed,	/* is_signed(MimeInfo *) */
+	NULL,			/* get_signer(MimeInfo *) */
+	NULL,			/* check_signature(MimeInfo *) */
+
+	/* NOT YET */
+	NULL,			/* is_encrypted(MimeInfo *) */
+	NULL,			/* decrypt(MimeInfo *) */
+};
+
+void rfc2015_init()
+{
+	if (gpgme_engine_check_version(GPGME_PROTOCOL_OpenPGP) != 
+			GPGME_No_Error) {  /* Also does some gpgme init */
+		rfc2015_disable_all();
+		debug_print("gpgme_engine_version:\n%s\n",
+			    gpgme_get_engine_info());
+
+		if (prefs_common.gpg_warning) {
+			AlertValue val;
+
+			val = alertpanel_message_with_disable
+				(_("Warning"),
+				 _("GnuPG is not installed properly, or needs to be upgraded.\n"
+				   "OpenPGP support disabled."));
+			if (val & G_ALERTDISABLE)
+				prefs_common.gpg_warning = FALSE;
+		}
+	} else
+		privacy_register_system(&rfc2015_system);
+
+	gpgme_register_idle(idle_function_for_gpgme);
+}
+
+void rfc2015_done()
+{
+	privacy_unregister_system(&rfc2015_system);
+        gpgmegtk_free_passphrase();
 }
 
 #endif /* USE_GPGME */
